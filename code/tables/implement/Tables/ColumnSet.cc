@@ -205,7 +205,7 @@ Bool ColumnSet::canRemoveRow() const
 Bool ColumnSet::canRemoveColumn (const Vector<String>& columnNames) const
 {
     // Cannot be removed if column is unknown.
-    for (uInt i=0; i<columnNames(i); i++) {
+    for (uInt i=0; i<columnNames.nelements(); i++) {
         if (! tdescPtr_p->isColumn (columnNames(i))) {
 	    return False;
 	}
