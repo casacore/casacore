@@ -131,10 +131,10 @@ private:
     void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // intialize the row related stuff
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<Bool> &handledCols, const Vector<String> &colNames, const Record &row);
 
     // get the required table desc given the unhandled columns and the row
-    TableDesc requiredTableDesc(Vector<Bool> &handledCols, const Record &row);
+    TableDesc requiredTableDesc(Vector<Bool> &handledCols, Vector<String> &colNames, const Record &row);
 };
 
 #endif
