@@ -1,5 +1,5 @@
 //# ImageSummary.h: List descriptive information from an image 
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/ObsInfo.h>
