@@ -1407,6 +1407,9 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
   iMom_p(iMom),
   os_p(os)
 {
+// Avoid double deletion by LogIO::cleanup
+
+   os_p.makePermanent();
 
 // Set moment selection vector
 
@@ -1845,6 +1848,10 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
   iMom_p(iMom),
   os_p(os)
 {
+// Avoid double deletion by LogIO::cleanup
+
+   os_p.makePermanent();
+
 // Set moment selection vector
 
    selectMoments_p = selectMoments(iMom_p);
@@ -2579,6 +2586,10 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 : iMom_p(iMom),
   os_p(os)
 {
+// Avoid double deletion by LogIO::cleanup
+
+   os_p.makePermanent();
+
 // Set moment selection vector
 
    selectMoments_p = selectMoments(iMom_p);

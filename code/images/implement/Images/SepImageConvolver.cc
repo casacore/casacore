@@ -59,12 +59,17 @@ SepImageConvolver<T>::SepImageConvolver (ImageInterface<T>& image,
   itsAxes(0),
   itsVectorKernels(0),
   itsShowProgress(showProgress)
-{}
+{
+// Avoid double deletion by LogIO::cleanup
+   itsOs.makePermanent();
+}
 
 template <class T>
 SepImageConvolver<T>::SepImageConvolver(const SepImageConvolver<T> &other)
 : itsImagePtr(0)
 {
+// Avoid double deletion by LogIO::cleanup
+   itsOs.makePermanent();
    operator=(other);
 }
 
