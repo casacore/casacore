@@ -50,13 +50,7 @@ int main() {
     ComponentShape* shapePtr = 0;
     {
       // Create a default point shape 
-      //      const PointShape defPoint;
-      PointShape defPoint;
-      {
-	MVDirection mvdir;
-	MDirection md(mvdir, MDirection::J2000);
-	defPoint.setRefDirection(md);
-      }
+      const PointShape defPoint;
       AlwaysAssert(defPoint.type() == ComponentType::POINT, AipsError);
       AlwaysAssert(defPoint.isSymmetric() == True, AipsError);
       
