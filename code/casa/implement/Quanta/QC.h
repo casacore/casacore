@@ -68,7 +68,7 @@
 // <example>
 // To obtain the velocity of light in pc/a, use:
 // <srcblock>
-// #include <aips/Measures.h>
+// #include <aips/Quanta.h>
 // Double vel_pcpy = (C::c).convert("pc/a").getValue();
 // </srcblock>
 // </example>

@@ -124,7 +124,7 @@
 // All known names can be viewed by running the tUnit test program, or
 // using the MapUnit::list() routine.
 // They are also (at least the 941123 values) available in the
-// <linkto module="Measures">Measures module documentation</linkto>.
+// <linkto module="Quanta">Quanta module documentation</linkto>.
 // 
 //
 //  <h3> Unit class </h3>
@@ -148,7 +148,7 @@
 //
 // <example>
 // <srcblock>
-// #include <aips/Measures.h>
+// #include <aips/Quanta.h>
 // // check if a string is a valid unit
 // if ( !UnitVal::check("Km") ) { cout << "Invalid unit string " << "Km" << endl;
 // // define some units

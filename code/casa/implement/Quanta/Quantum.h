@@ -235,7 +235,7 @@ typedef Quantum<Double> Quantity;
 // output the wavelength and frequency of this photon (see the
 // <linkto class=QC">QC</linkto> class for quantity constants):
 // <srcblock>
-//	#include <aips/Measures.h>
+//	#include <aips/Quanta.h>
 //	Double myval;			// keV photon energy
 //	Quantity quant(myval,"keV");	// make quantity
 //	cout << "A photon with energy " << quant << endl
