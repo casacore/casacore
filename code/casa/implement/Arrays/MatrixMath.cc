@@ -1,5 +1,5 @@
 //# MatrixMath.cc: The AIPS++ linear algebra functions
-//# Copyright (C) 1994,1995,1996,1998,2001
+//# Copyright (C) 1994,1995,1996,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -348,7 +348,7 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
   // diagonal elements which are in vector diag.  On return x contains the
   // solution.  b and x can be the same vector to save memory space.
 
-  Int i, j, k, n;
+  Int i, k, n;
   T sum;
 
   n = A.nrow();
