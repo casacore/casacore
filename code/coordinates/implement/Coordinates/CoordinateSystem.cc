@@ -471,6 +471,7 @@ void CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
     }
 }
 
+
 CoordinateSystem CoordinateSystem::subImage(const Vector<Int> &originShift,
 					    const Vector<Int> &pixinc) const
 {
@@ -1398,732 +1399,786 @@ Coordinate *CoordinateSystem::clone() const
     return new CoordinateSystem(*this);
 }
 
+
+
 Bool CoordinateSystem::toFITSHeader(RecordInterface &header, 
 				    IPosition &shape,
 				    Bool oneRelative,
 				    char prefix, Bool writeWCS,
 				    Bool preferVelocity, 
-				    Bool ious thing to do.
-// 
-//
-// The separation of world axes and pixel axes, and the ability to
-// remove axes makes this function a great big mess.
-//
+				    Bool opticalVelocity) const
 {
-// Basic checks
+    LogIO os(LogOrigin("CoordinateSystem", "toFITSHeader", WHERE));
 
-   if (this->type() != pOther->type()) {
-      set_error("Comparison is not with another CoordinateSystem");
-      return False;
-   }
+    // If we have any tabular axes that aren't pure linear report that the
+    // table will be lost.
+    Int tabCoord = -1;
+    while ((tabCoord = findCoordinate(Coordinate::TABULAR, tabCoord)) > 0) {
+	if (tabularCoordinate(tabCoord).pixelValues().nelements() > 0) {
+	    os << LogIO::WARN <<
+		"Note: Your coordinate system has one or more TABULAR axes.\n"
+		"The lookup table will be lost in the conversion to FITS, and\n"
+		"will be replaced by averaged (i.e. linearized) axes." <<
+		LogIO::POST;
+	    break;
+	}
+    }
 
-   CoordinateSystem* cSys = (CoordinateSystem*)pOther;  
+    // ********** Validation
 
-   if (nCoordinates() != cSys->nCoordinates()) {
-      set_error("The CoordinateSystems have different numbers of coordinates");
-      return False;
-   }
-
-   if (nPixelAxes() != cSys->nPixelAxes()) {
-      set_error("The CoordinateSystems have different numbers of pixel axes");
-      return False;
-   }
-   if (nWorldAxes() != cSys->nWorldAxes()) {
-      set_error("The CoordinateSystems have different numbers of world axes");
-      return False;
-   }
+    const Int n = nWorldAxes();
 
 
-
-// Loop over number of coordinates
-
-   ostrstream oss;
-   for (Int i=0; i<Int(nCoordinates()); i++) {
-
-// Although the coordinates are checked for their types in
-// the coordinate comparison routines, we can save ourselves
-// some time by checking here too
-
-      if (coordinate(i).type() != cSys->coordinate(i).type()) {
-         oss << "The coordinate types differ for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-
-// Find which pixel axes in the CoordinateSystem this coordinate
-// inhabits and compare the vectors.   Here we don't take into 
-// account the exclusion axes vector; that's only used when we are 
-// actually comparing the axis descriptor values on certain axes
-
-      if (pixelAxes(i).nelements() != cSys->pixelAxes(i).nelements()) {
-         oss << "The number of pixel axes differs for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-      if (!allEQ(pixelAxes(i).ac(), cSys->pixelAxes(i).ac())) {
-         oss << "The pixel axes differ for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-
-// Find which world axes in the CoordinateSystem this
-// coordinate inhabits and compare the vectors
-    
-      if (worldAxes(i).nelements() != cSys->worldAxes(i).nelements()) {
-         oss << "The number of world axes differs for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-      if (!allEQ(worldAxes(i).ac(), cSys->worldAxes(i).ac())) {
-         oss << "The world axes differ for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
- 
-
-// Were all the world axes for this coordinate removed ? If so
-// we don't check it
-
-      Bool allGone = True;
-      for (Int j=0; j<Int(worldAxes(i).nelements()); j++) {
-         if (worldAxes(i)(j) >= 0) {
-            allGone = False;
-            break;
-         }
-      }
-      
-
-// Continue if we have some unremoved world axes in this coordinate
-
-      Int excSize = coordinate(i).nPixelAxes();
-      Vector<Int> excludeAxes(excSize);
-      if (!allGone) {
-
-// If any of the list of CoordinateSystem exclusion pixel axes
-// inhabit this coordinate, make a list of the axes in this
-// coordinate that they correspond to.  
-
-         Int coord, axisInCoord;
-         Int k = 0;
-         for (j=0; j<Int(excludePixelAxes.nelements()); j++) {
-
-// Any invalid excludePixelAxes are dealt with here.  If they are
-// rubbish, we just don't find them ! 
-
-            findPixelAxis(coord, axisInCoord, excludePixelAxes(j));
-            if (coord == i) {
-
-// OK, this pixel axis is in this coordinate, so stick it in the list
-// We may have to resize if the stupid user has given us duplicates
-// in the list of exclusion axes
-
-               if (k == Int(excludeAxes.nelements())) {
-                  Int n = Int(excludeAxes.nelements()) + excSize;
-                  excludeAxes.resize(n,True);
-               }
-               excludeAxes(k++) = axisInCoord;
-            }
-         }
-         excludeAxes.resize(k,True);
-
-
-// Now, for the current coordinate, convert the world axes in 
-// the CoordinateSystems to axes in the current coordinate
-// and compare the two 
-
-         Int coord1, coord2, axisInCoord1, axisInCoord2;
-         for (j=0; j<Int(worldAxes(i).nelements()); j++) {
-            if (worldAxes(i)(j) >= 0) {
-
-// Not removed (can't find it if it's been removed !)
-  
-                     findWorldAxis(coord1, axisInCoord1, worldAxes(i)(j));
-               cSys->findWorldAxis(coord2, axisInCoord2, worldAxes(i)(j));
-
-// This better not happen !  
-
-               if (coord1 != coord2) {
-                  oss << "The coordinate numbers differ (!!) for coordinate number "
-                      << i << ends;
-                  set_error(String(oss));
-                  return False;
-               }
-
-// This might
-               if (axisInCoord1 != axisInCoord2) {
-                  oss << "World axis " << j << " in the CoordinateSystems"
-                      << "has a different axis number in coordinate number "
-                      << i << ends;
-                  set_error(String(oss));
-                  return False;
-               }
-            }
-         }
-         
-// Now, finally, compare the current coordinate from the two 
-// CoordinateSystems except on the specified axes. Leave it
-// this function to set the error message
-
-         return coordinate(i).near(&cSys->coordinate(i),excludeAxes,tol);
-
-      }
-   }
-   return True;
-}
-
-
-
-
-String CoordinateSystem::format(String& units,
-                          const Coordinate::formatType format,
-                          const Double worldValue,
-                          const uInt worldAxis,
-                          const Bool absolute,
-                          const Int precision) const   
-{
-    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
- 
-    Int coord, axis;
-    findWorldAxis(coord, axis, worldAxis);
-     
-    // Should never fail  
-    AlwaysAssert(coord>=0 && axis >= 0, AipsError);
-    
-    return coordinate(coord).format(units, format, worldValue, axis, 
-                                    absolute, precision);
-}
-
-
-Bool CoordinateSystem::save(RecordInterface &container,
-			    const String &fieldName) const
-{
-    Record subrec;
-    if (container.isDefined(fieldName)) {
+    String sprefix = prefix;
+    if (header.isDefined(sprefix + "rval") ||
+	header.isDefined(sprefix + "rpix") ||
+	header.isDefined(sprefix + "delt") ||
+	header.isDefined(sprefix + "type") ||
+	header.isDefined(sprefix + "unit")) {
+	os << LogIO::SEVERE << "Already contains one or more of *rval, *rpix, "
+	    "*delt, *type, *unit";
 	return False;
     }
 
-    uInt nc = coordinates_p.nelements();
-    for (uInt i=0; i<nc; i++)
-    {
-	// Write eaach string into a field it's type plus coordinate
-	// number, e.g. direction0
-	String basename = "unknown";
-	switch (coordinates_p[i]->type()) {
-	case Coordinate::LINEAR:    basename = "linear"; break;
-	case Coordinate::DIRECTION: basename = "direction"; break;
-	case Coordinate::SPECTRAL:  basename = "spectral"; break;
-	case Coordinate::STOKES:    basename = "stokes"; break;
-	case Coordinate::TABULAR:    basename = "tabular"; break;
-	case Coordinate::COORDSYS:  basename = "coordsys"; break;
-	}
-	ostrstream onum;
-	onum << i;
-	String num = onum;
-	String name = basename + num;
-	coordinates_p[i]->save(subrec, name);
-	name = String("worldmap") + num;
-	subrec.define(name, Vector<Int>(*world_maps_p[i]));
-	name = String("worldreplace") + num;
-	subrec.define(name, Vector<Double>(*world_replacement_values_p[i]));
-	name = String("pixelmap") + num;
-	subrec.define(name, Vector<Int>(*pixel_maps_p[i]));
-	name = String("pixelreplace") + num;
-	subrec.define(name, Vector<Double>(*pixel_replacement_values_p[i]));
+    Double offset = 0.0;
+    if (oneRelative) {
+	offset = 1.0;
     }
-    container.defineRecord(fieldName, subrec);
+
+    // ********** Canonicalize units and find sky axes
+    CoordinateSystem coordsys = *this;
+
+    // Find the sky coordinate, if any
+    Int skyCoord = coordsys.findCoordinate(Coordinate::DIRECTION);
+    Int longAxis = -1, latAxis = -1;
+
+    // Find the spectral axis, if any
+    Int specCoord = coordsys.findCoordinate(Coordinate::SPECTRAL);
+    Int specAxis = -1;
+    
+    // Find the stokes axis, if any
+    Int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
+    Int stokesAxis = -1;
+
+    for (Int i=0; i<n ; i++) {
+	Int c, a;
+	coordsys.findWorldAxis(c, a, i);
+	if (c == skyCoord) {
+	    if (a == 0) {
+		longAxis = i;
+	    } else if (a == 1) {
+		latAxis = i;
+	    }
+	} else if (c == specCoord) {
+	    specAxis = i;
+	} else if (c == stokesCoord) {
+	    stokesAxis = i;
+	}
+    }
+    // change the units to degrees for the sky axes
+    Vector<String> units = coordsys.worldAxisUnits();
+    if (longAxis >= 0) units(longAxis) = "deg";
+    if (latAxis >= 0) units(latAxis) = "deg";
+    if (specAxis >= 0) units(specAxis) = "Hz";
+    if (stokesAxis >= 0) units(stokesAxis) = "";
+    coordsys.setWorldAxisUnits(units);
+
+    // ********** Generate keywords
+
+    // crval
+    Vector<Double> crval = coordsys.referenceValue();
+
+    // crpix
+    Vector<Double> crpix = coordsys.referencePixel().ac() + offset;
+    
+    // cdelt
+    Vector<Double> cdelt = coordsys.increment().ac();
+
+    // projp
+    Vector<Double> projp;
+    if (skyCoord >= 0) {
+	projp = coordsys.directionCoordinate(skyCoord).projection().
+	    parameters();
+    }
+
+    // ctype
+    Vector<String> ctype = coordsys.worldAxisNames();
+    Bool isNCP = False;
+    for (i=0; i < n; i++) {
+	if ((i == longAxis || i == latAxis) && writeWCS) {
+	    const DirectionCoordinate &dc = 
+		coordsys.directionCoordinate(skyCoord);
+	    String name = dc.axisNames(dc.directionType(), True)(i==latAxis);
+	    while (name.length() < 4) {
+		name += "-";
+	    }
+	    name = name + "-" + dc.projection().name();
+	    ctype(i) = name.chars();
+	} else if (i == longAxis || i == latAxis) { // && !writeWCS
+	    const DirectionCoordinate &dc = 
+		coordsys.directionCoordinate(skyCoord);
+	    String name = dc.axisNames(dc.directionType(), True)(i==latAxis);
+	    while (name.length() < 4) {
+		name += "-";
+	    }
+	    switch(dc.projection().type()) {
+	    case Projection::TAN:  // Fallthrough
+	    case Projection::ARC:
+		name = name + "-" + dc.projection().name();
+		break;
+	    case Projection::SIN:
+		// This is either "real" SIN or NCP
+		AlwaysAssert(projp.nelements() == 2, AipsError);
+		if (::near(projp(0), 0.0) && ::near(projp(1), 0.0)) {
+		    // True SIN
+		    name = name + "-" + dc.projection().name();
+		} else {
+		    // NCP?
+		    // From Greisen and Calabretta
+		    if (::near(projp(0), 0.0) && 
+			::near(projp(1), 1.0/tan(crval(latAxis)*C::pi/180.0))) {
+			// Is NCP
+		        isNCP = True;
+			name = name + "-NCP";
+		    } else {
+			// Doesn't appear to be NCP
+
+		        // Only print this once
+			if (!isNCP) {
+			    os << LogIO::WARN << "SIN projection with non-zero"
+				" projp does not appear to be NCP." << endl <<
+				"However, assuming NCP anyway." << LogIO::POST;
+			}
+			name = name + "-NCP";
+			isNCP = True;
+		    }
+		}
+		break;
+	    default:
+		if (i == longAxis) {
+		    // Only print the message once for long/lat
+		    os << LogIO::WARN << dc.projection().name() << 
+			" is not known to standard FITS (it is known to WCS)."
+		       << LogIO::POST;
+		}
+		name = name + "-" + dc.projection().name();
+		break;
+	    }
+	    ctype(i) = name.chars();
+	} else if (i == specAxis) {
+	    // Nothing - will be handled in SpectraCoordinate
+	} else if (i == stokesAxis) {
+	    ctype(i) = "STOKES  ";
+	} else {
+	    ctype(i).upcase();
+	    if (ctype(i).length() > 8) {
+		ctype(i) = ctype(i).at(0,8);
+	    }
+	    while (ctype(i).length() < 8) {
+		ctype(i) += " ";
+	    }
+	}
+    }
+    
+    // cunit
+    Vector<String> cunit = coordsys.worldAxisUnits();
+    for (i=0; i<n; i++) {
+	cunit(i).upcase();
+	if (cunit(i).length() > 8) {
+	    cunit(i) = cunit(i).at(0,8);
+	}
+	while (cunit(i).length() < 8) {
+	    cunit(i) += " ";
+	}
+    }
+
+
+    // pc
+    Matrix<Double> pc = linearTransform();
+
+    // crota: Greisen and Calabretta "Converting Previous Formats"
+    Vector<Double> crota(n);
+    crota = 0;
+    if (longAxis >= 0 && latAxis >= 0) {
+	Double rholong = atan2(pc(latAxis, longAxis)*C::pi/180.0,
+			pc(longAxis, longAxis)*C::pi/180.0)*180.0/C::pi;
+	Double rholat = atan2(-pc(longAxis, latAxis)*C::pi/180.0,
+			pc(latAxis, latAxis)*C::pi/180.0)*180.0/C::pi;
+	crota(latAxis) = (rholong + rholat)/2.0;
+	if (!::near(rholong, rholat)) {
+	    os << LogIO::WARN << sprefix + "rota is not very accurate."
+		" PC matrix"
+		" is not a pure rotation.";
+	    if (! writeWCS) {
+		os << endl << "Consider writing the DRAFT WCS convention to"
+		    " avoid losing information.";
+	    }
+	    os << LogIO::POST;
+	}
+    }
+
+    // Special stokes handling
+    if (stokesCoord >= 0) {
+	Vector<Int> stokes(coordsys.stokesCoordinate(stokesCoord).stokes());
+	Int inc = 1;
+	Bool inorder = True;
+	if (stokes.nelements() > 1) {
+	    inc = Stokes::FITSValue(Stokes::StokesTypes(stokes(1))) - 
+		Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
+	    for (uInt i=2; i<stokes.nelements(); i++) {
+		if ((Stokes::FITSValue(Stokes::StokesTypes(stokes(i))) - 
+		     Stokes::FITSValue(Stokes::StokesTypes(stokes(i-1)))) !=
+		    inc) {
+		    inorder = False;
+		}
+	    }
+	}
+	if (inorder) {
+	    crval(stokesAxis) = 
+		Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
+	    crpix(stokesAxis) = 1;
+	    cdelt(stokesAxis) = inc;
+	} else {
+	    // !inorder
+	    crval(stokesAxis) = 
+		Stokes::FITSValue(Stokes::StokesTypes(stokes(0))) + 200;
+	    crpix(stokesAxis) = 1;
+	    cdelt(stokesAxis) = 1;
+	}
+    }
+
+    // If there are more world than pixel axes, we will need to add
+    // degenerate pixel axes and modify the shape.
+    if (Int(nPixelAxes()) < n) {
+	IPosition shapetmp = shape; shape.resize(n);
+	Vector<Double> crpixtmp = crpix.copy(); crpix.resize(n);
+	Int count = 0;
+	for (Int worldAxis=0; worldAxis<n; worldAxis++) {
+	    Int coordinate, axisInCoordinate;
+	    coordsys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+	    Int pixelAxis = coordsys.pixelAxes(coordinate)(axisInCoordinate);
+	    if (pixelAxis >= 0) {
+		// We have a pixel axis
+		shape(worldAxis) = shapetmp(count);
+		crpix(worldAxis) = crpixtmp(count);
+		count++;
+	    } else {
+		// No corresponding pixel axis.
+		shape(worldAxis) = 1;
+		crpix(worldAxis) = 1.0;
+	    }
+	}
+    }
+
+    // Try to work out the epoch/equinox
+    if (skyCoord >= 0) {
+	MDirection::Types radecsys = 
+	    directionCoordinate(skyCoord).directionType();
+	Double equinox = -1.0;
+	switch(radecsys) {
+	case MDirection::J2000:
+	    equinox = 2000.0;
+	    break;
+	case MDirection::B1950:
+	    equinox = 1950.0;
+	    break;
+	default:
+	    ; // Nothing
+	}
+	if (equinox > 0) {
+	    if (writeWCS) {
+		header.define("equinox", equinox);
+	    } else {
+		header.define("epoch", equinox);
+	    }
+	}
+    }
+
+    // Actually write the header
+    if (writeWCS && Int(coordsys.nPixelAxes()) == n) {
+	header.define("pc", pc);
+    } else if (writeWCS) {
+	os << LogIO::SEVERE << "writeWCS && nPixelAxes() != n. Requires "
+	  "development!!!"  << LogIO::POST;
+    }
+
+    header.define(sprefix + "type", ctype);
+    header.define(sprefix + "rval", crval);
+    header.define(sprefix + "delt", cdelt);
+    header.define(sprefix + "rota", crota);
+    header.define(sprefix + "rpix", crpix);
+    header.define(sprefix + "unit", cunit);
+    if (!isNCP && projp.nelements() > 0) {
+	if (!writeWCS) {
+	    for (uInt i=0; i<projp.nelements(); i++) {
+		if (!::nearAbs(projp(i), 0.0)) {
+		    os << LogIO::NORMAL << 
+			"PROJPn not all zero.Information lost in FITS"
+			" conversion. Try WCS?." <<
+			LogIO::POST;
+		    break;
+		}
+	    }
+	}
+	if (writeWCS) {
+	    header.define("projp", projp);
+	}
+    }
+
+    if (specAxis > 1) {
+	const SpectralCoordinate &spec = spectralCoordinate(specCoord);
+	spec.toFITS(header, specAxis, os, oneRelative, preferVelocity, 
+		    opticalVelocity);
+    }
 
     return True;
 }
 
-CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
-					   const String &fieldName)
+Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys, 
+				      const RecordInterface &header,
+				      Bool oneRelative,
+				      char prefix)
 {
-    CoordinateSystem *retval = 0;
+    LogIO os(LogOrigin("CoordinateSystem", "fromFITSHeader", WHERE));
 
-    if (!container.isDefined(fieldName)) {
-	return retval;
+    if (coordsys.nCoordinates() != 0) {
+	CoordinateSystem empty;
+	coordsys = empty;
     }
 
-    Record subrec(container.asRecord(fieldName));
-    PtrBlock<Coordinate *> tmp;
+    String sprefix = prefix;
+    Double offset = 0.0;
+    if (oneRelative) {
+	offset = 1.0;
+    }
 
-    Int nc = 0; // num coordinates
-    PtrBlock<Coordinate *> coords;
-    String linear = "linear";
-    String direction = "direction";
-    String spectral = "spectral";
-    String stokes = "stokes";
-    String tabular = "tabular";
-    String coordsys = "coordsys";
-    while(1) {
-	ostrstream onum;
-	onum << nc;
-	String num = onum;
-	nc++;
-	if (subrec.isDefined(linear + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = LinearCoordinate::restore(subrec, linear+num);
-	} else if (subrec.isDefined(direction + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = 
-		DirectionCoordinate::restore(subrec, direction+num);
-	} else if (subrec.isDefined(spectral + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = SpectralCoordinate::restore(subrec, spectral+num);
-	} else if (subrec.isDefined(stokes + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = StokesCoordinate::restore(subrec, stokes+num);
-	} else if (subrec.isDefined(tabular + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = TabularCoordinate::restore(subrec, tabular+num);
-	} else if (subrec.isDefined(coordsys + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = CoordinateSystem::restore(subrec, coordsys+num);
-	} else {
-	    break;
+    Vector<Double> cdelt, crval, crpix;
+    Vector<String> ctype, cunit;
+    Matrix<Double> pc;
+    Bool haveUnit = False;
+    Int rotationAxis = -1;
+    try {
+	header.get(sprefix + "rval", crval);
+	header.get(sprefix + "rpix", crpix);
+	crpix.ac() -= offset;
+	header.get(sprefix + "delt", cdelt);
+	header.get(sprefix + "type", ctype);
+
+	// Units are optional
+	if (header.isDefined(sprefix + "unit")) {
+	    header.get(sprefix + "unit", cunit);
+	    UnitMap::addFITS();
+	    haveUnit = True;
 	}
-	AlwaysAssert(coords[nc-1] != 0, AipsError);
-    }
-    nc = coords.nelements();
 
-    retval = new CoordinateSystem;
-    for (Int i=0; i<nc; i++) {
-	retval->addCoordinate(*(coords[i]));
-	delete coords[i];
-	coords[i] = 0;
-    }
-    for (i=0; i<nc; i++) {
-	retval->world_tmps_p[i] = 
-	    new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
-	AlwaysAssert(retval->world_tmps_p[i], AipsError);
-	retval->pixel_tmps_p[i] = 
-	    new Vector<Double>(retval->coordinates_p[i]->nPixelAxes());
-	AlwaysAssert(retval->pixel_tmps_p[i], AipsError);
-	ostrstream onum;
-	onum << i;
-	Vector<Int> dummy;
-	String num(onum), name;
-	name = String("worldmap") + num;
-	subrec.get(name, dummy);
-	dummy.toBlock(*(retval->world_maps_p[i]));
-	name = String("worldreplace") + num;
-	subrec.get(name, *(retval->world_replacement_values_p[i]));
-	name = String("pixelmap") + num;
-	subrec.get(name, dummy);
-	dummy.toBlock(*(retval->pixel_maps_p[i]));
-	name = String("pixelreplace") + num;
-	subrec.get(name, *(retval->pixel_replacement_values_p[i]));
-    }
+	// PC and/or CROTA is optional. We prefer PC if it is defined.
+	if (header.isDefined("pc")) {
+	    if (header.isDefined(sprefix + "rota")) {
+		os << "Ignoring redundant " << sprefix << "rota in favour of "
+		    "pc matrix." << LogIO::NORMAL << LogIO::POST;
+	    }
+	    header.get("pc", pc);
+	} else if (header.isDefined(sprefix + "rota")) {
+	    Vector<Double> crota;
+	    header.get(sprefix + "rota", crota);
+	    // Turn crota into PC matrix
+	    pc.resize(crota.nelements(), crota.nelements());
+	    pc = 0.0;
+	    pc.diagonal() = 1.0;
+	    // We can only handle one non-zero angle
+	    for (uInt i=0; i<crota.nelements(); i++) {
+		if (!::near(crota(i), 0.0)) {
+		    if (rotationAxis >= 0) {
+			os << LogIO::SEVERE << "Can only convert one non-zero"
+			    " angle from " << sprefix << 
+			    "rota to pc matrix. Using the first." <<
+			    LogIO::POST;
+		    } else {
+			rotationAxis = i;
+		    }
+		}
+	    }
+	    if (rotationAxis >= 0 && pc.nrow() > 1) { // can't rotate 1D!
+		if (rotationAxis > 0) {
+		    pc(rotationAxis-1,rotationAxis-1) =
+			pc(rotationAxis,rotationAxis) = 
+			cos(crota(rotationAxis)*C::pi/180.0);
+		    pc(rotationAxis-1,rotationAxis)=
+			-sin(crota(rotationAxis)*C::pi/180.0);
+		    pc(rotationAxis,rotationAxis-1)=
+			sin(crota(rotationAxis)*C::pi/180.0);
+		} else {
+		    os << LogIO::NORMAL << "Unusual to rotate about first"
+			" axis." << LogIO::POST;
+		    pc(rotationAxis+1,rotationAxis+1) =
+			pc(rotationAxis,rotationAxis) = 
+			cos(crota(rotationAxis)*C::pi/180.0);
+		    // Might be backwards?
+		    pc(rotationAxis+1,rotationAxis)=
+			-sin(crota(rotationAxis)*C::pi/180.0);
+		    pc(rotationAxis,rotationAxis+1)=
+			sin(crota(rotationAxis)*C::pi/180.0);
+		}
+	    }
+	} else {
+	    // Pure diagonal PC matrix
+	    pc.resize(ctype.nelements(), ctype.nelements());
+	    pc = 0.0;
+	    pc.diagonal() = 1.0;
+	}
+	
+    } catch (AipsError x) {
+	os << LogIO::WARN << "Error retrieving *rval, *rpix, *delt, *type "
+	    "from header";
+	return False;
+    } end_try;
 
-    return retval;
-}
+    const Int n = ctype.nelements();
 
-
-Coordinate *CoordinateSystem::clone() const
-{
-    return new CoordinateSystem(*this);
-}
-
-Bool CoordinateSystem::toFITSHeader(RecordInterface &header, 
-				    IPosition &shape,
-				    Bool oneRelative,
-				    char prefix, Bool writeWCS,
-				    Bool preferVelocity, 
-				    Bool ious thing to do.
-// 
-//
-// The separation of world axes and pixel axes, and the ability to
-// remove axes makes this function a great big mess.
-//
-{
-// Basic checks
-
-   if (this->type() != pOther->type()) {
-      set_error("Comparison is not with another CoordinateSystem");
-      return False;
-   }
-
-   CoordinateSystem* cSys = (CoordinateSystem*)pOther;  
-
-   if (nCoordinates() != cSys->nCoordinates()) {
-      set_error("The CoordinateSystems have different numbers of coordinates");
-      return False;
-   }
-
-   if (nPixelAxes() != cSys->nPixelAxes()) {
-      set_error("The CoordinateSystems have different numbers of pixel axes");
-      return False;
-   }
-   if (nWorldAxes() != cSys->nWorldAxes()) {
-      set_error("The CoordinateSystems have different numbers of world axes");
-      return False;
-   }
-
-
-
-// Loop over number of coordinates
-
-   ostrstream oss;
-   for (Int i=0; i<Int(nCoordinates()); i++) {
-
-// Although the coordinates are checked for their types in
-// the coordinate comparison routines, we can save ourselves
-// some time by checking here too
-
-      if (coordinate(i).type() != cSys->coordinate(i).type()) {
-         oss << "The coordinate types differ for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-
-// Find which pixel axes in the CoordinateSystem this coordinate
-// inhabits and compare the vectors.   Here we don't take into 
-// account the exclusion axes vector; that's only used when we are 
-// actually comparing the axis descriptor values on certain axes
-
-      if (pixelAxes(i).nelements() != cSys->pixelAxes(i).nelements()) {
-         oss << "The number of pixel axes differs for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-      if (!allEQ(pixelAxes(i).ac(), cSys->pixelAxes(i).ac())) {
-         oss << "The pixel axes differ for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-
-// Find which world axes in the CoordinateSystem this
-// coordinate inhabits and compare the vectors
-    
-      if (worldAxes(i).nelements() != cSys->worldAxes(i).nelements()) {
-         oss << "The number of world axes differs for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-      if (!allEQ(worldAxes(i).ac(), cSys->worldAxes(i).ac())) {
-         oss << "The world axes differ for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
- 
-
-// Were all the world axes for this coordinate removed ? If so
-// we don't check it
-
-      Bool allGone = True;
-      for (Int j=0; j<Int(worldAxes(i).nelements()); j++) {
-         if (worldAxes(i)(j) >= 0) {
-            allGone = False;
-            break;
-         }
-      }
-      
-
-// Continue if we have some unremoved world axes in this coordinate
-
-      Int excSize = coordinate(i).nPixelAxes();
-      Vector<Int> excludeAxes(excSize);
-      if (!allGone) {
-
-// If any of the list of CoordinateSystem exclusion pixel axes
-// inhabit this coordinate, make a list of the axes in this
-// coordinate that they correspond to.  
-
-         Int coord, axisInCoord;
-         Int k = 0;
-         for (j=0; j<Int(excludePixelAxes.nelements()); j++) {
-
-// Any invalid excludePixelAxes are dealt with here.  If they are
-// rubbish, we just don't find them ! 
-
-            findPixelAxis(coord, axisInCoord, excludePixelAxes(j));
-            if (coord == i) {
-
-// OK, this pixel axis is in this coordinate, so stick it in the list
-// We may have to resize if the stupid user has given us duplicates
-// in the list of exclusion axes
-
-               if (k == Int(excludeAxes.nelements())) {
-                  Int n = Int(excludeAxes.nelements()) + excSize;
-                  excludeAxes.resize(n,True);
-               }
-               excludeAxes(k++) = axisInCoord;
-            }
-         }
-         excludeAxes.resize(k,True);
-
-
-// Now, for the current coordinate, convert the world axes in 
-// the CoordinateSystems to axes in the current coordinate
-// and compare the two 
-
-         Int coord1, coord2, axisInCoord1, axisInCoord2;
-         for (j=0; j<Int(worldAxes(i).nelements()); j++) {
-            if (worldAxes(i)(j) >= 0) {
-
-// Not removed (can't find it if it's been removed !)
-  
-                     findWorldAxis(coord1, axisInCoord1, worldAxes(i)(j));
-               cSys->findWorldAxis(coord2, axisInCoord2, worldAxes(i)(j));
-
-// This better not happen !  
-
-               if (coord1 != coord2) {
-                  oss << "The coordinate numbers differ (!!) for coordinate number "
-                      << i << ends;
-                  set_error(String(oss));
-                  return False;
-               }
-
-// This might
-               if (axisInCoord1 != axisInCoord2) {
-                  oss << "World axis " << j << " in the CoordinateSystems"
-                      << "has a different axis number in coordinate number "
-                      << i << ends;
-                  set_error(String(oss));
-                  return False;
-               }
-            }
-         }
-         
-// Now, finally, compare the current coordinate from the two 
-// CoordinateSystems except on the specified axes. Leave it
-// this function to set the error message
-
-         return coordinate(i).near(&cSys->coordinate(i),excludeAxes,tol);
-
-      }
-   }
-   return True;
-}
-
-
-
-
-String CoordinateSystem::format(String& units,
-                          const Coordinate::formatType format,
-                          const Double worldValue,
-                          const uInt worldAxis,
-                          const Bool absolute,
-                          const Int precision) const   
-{
-    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
- 
-    Int coord, axis;
-    findWorldAxis(coord, axis, worldAxis);
-     
-    // Should never fail  
-    AlwaysAssert(coord>=0 && axis >= 0, AipsError);
-    
-    return coordinate(coord).format(units, format, worldValue, axis, 
-                                    absolute, precision);
-}
-
-
-Bool CoordinateSystem::save(RecordInterface &container,
-			    const String &fieldName) const
-{
-    Record subrec;
-    if (container.isDefined(fieldName)) {
+    if (Int(crval.nelements()) != n || Int(crpix.nelements()) != n || 
+	Int(cdelt.nelements()) != n || Int(pc.nrow()) != n || 
+	Int(pc.ncolumn()) != n ||
+	(cunit.nelements() > 0 && Int(cunit.nelements()) != n)) {
+	os << LogIO::SEVERE << "Inconsistent number of axes in header";
 	return False;
     }
 
-    uInt nc = coordinates_p.nelements();
-    for (uInt i=0; i<nc; i++)
-    {
-	// Write eaach string into a field it's type plus coordinate
-	// number, e.g. direction0
-	String basename = "unknown";
-	switch (coordinates_p[i]->type()) {
-	case Coordinate::LINEAR:    basename = "linear"; break;
-	case Coordinate::DIRECTION: basename = "direction"; break;
-	case Coordinate::SPECTRAL:  basename = "spectral"; break;
-	case Coordinate::STOKES:    basename = "stokes"; break;
-	case Coordinate::TABULAR:    basename = "tabular"; break;
-	case Coordinate::COORDSYS:  basename = "coordsys"; break;
+    // OK, find out what standard axes we have.
+    Int longAxis=-1, latAxis=-1, stokesAxis=-1, specAxis=-1;
+    for (Int i=0; i<n; i++) {
+	if (ctype(i).contains("RA") || ctype(i).contains("LON")) {
+	    if (longAxis >= 0) {
+		os << LogIO::SEVERE << "More than one longitude axis is "
+		    "present in header!";
+		return False;
+	    }
+	    longAxis = i;
+	} else if (ctype(i).contains("DEC") || ctype(i).contains("LAT")) {
+	    if (latAxis >= 0) {
+		os << LogIO::SEVERE << "More than one latitude axis is "
+		    "present in header!";
+		return False; // we already have a latitude axis!
+	    }
+	    latAxis = i;
+	} else if (ctype(i).contains("STOKES")) {
+	    stokesAxis = i;
+	} else if (ctype(i).contains("FREQ") || 
+		   ctype(i).contains("FELO") ||
+		   ctype(i).contains("VELO")) {
+	    specAxis = i;
 	}
-	ostrstream onum;
-	onum << i;
-	String num = onum;
-	String name = basename + num;
-	coordinates_p[i]->save(subrec, name);
-	name = String("worldmap") + num;
-	subrec.define(name, Vector<Int>(*world_maps_p[i]));
-	name = String("worldreplace") + num;
-	subrec.define(name, Vector<Double>(*world_replacement_values_p[i]));
-	name = String("pixelmap") + num;
-	subrec.define(name, Vector<Int>(*pixel_maps_p[i]));
-	name = String("pixelreplace") + num;
-	subrec.define(name, Vector<Double>(*pixel_replacement_values_p[i]));
     }
-    container.defineRecord(fieldName, subrec);
 
+
+    // We must have longitude AND latitude
+    if (longAxis >= 0 && latAxis < 0) {
+	os << LogIO::SEVERE << "We have a longitude axis but no latitude axis!";
+	return False; 
+    }
+    if (latAxis >= 0 && longAxis < 0) {
+	os << LogIO::SEVERE << "We have a latitude axis but no longitude axis!";
+	return False; 
+    }
+
+    // Sanity check that PC is only non-diagonal for the longitude and
+    // latitude axes.
+    for (Int j=0; j<n; j++) {
+	for (i=0; i<n; i++) {
+	    if (i == j) {
+		continue;
+	    } else {
+		if (!::near(pc(i,j), 0.0)) {
+		    if (rotationAxis < 0 || (i == longAxis && j == latAxis) ||
+			(i == latAxis  && j == longAxis)) {
+			continue;
+		    } else {
+			os << LogIO::WARN << sprefix + "rota may only" <<
+			    " be set for longitude/latitude axes" << 
+			    LogIO::POST;
+		    }
+		}
+	    }
+	}
+    }
+
+    // DIRECTION
+    if (longAxis >= 0) {
+        String proj = ctype(longAxis);
+        Bool isGalactic = False;
+	if (proj.contains("GLON")) {
+	    isGalactic = True;
+	}
+	// Get rid of the first 4 characters, e.g., RA--
+	proj.gsub(Regex("^...."), "");  
+	String proj2 = ctype(latAxis);
+	proj2.gsub(Regex("^...."), "");  
+	// Get rid of leading -'s
+	proj.gsub(Regex("^-*"), "");
+	proj2.gsub(Regex("^-*"), "");
+	proj.gsub(Regex(" *"), "");    // Get rid of spaces
+	proj2.gsub(Regex(" *"), "");
+	if (proj == "" && proj2 == "") {
+	    // Default to cartesian if no projection is defined.
+	    proj = Projection::name(Projection::CAR); proj2 = proj;
+	    os << WHERE << LogIO::WARN << 
+	      "No projection has been defined (e.g., SIN), assuming\n"
+	      "cartesian (CAR). Some FITS readers will not recognize\n"
+	       "the CAR projection." << LogIO::POST;
+	}
+	if (proj != proj2) {
+	    // Maybe instead I should switch to CAR, or use the first?
+	    os << LogIO::SEVERE << "Longitude and latitude axes have different"
+	        " projections (" << proj << "!=" << proj2 << ")" << LogIO::POST;
+	    return False;
+	}
+
+	// OK, let's make our Direction coordinate and add it to the
+	// coordinate system. We'll worry about transposing later. FITS
+	// should always be degrees, but if the units are set we'll honor
+	// them.
+
+	// First, work out what the projection actually is.
+	// Special case NCP - now SIN with  parameters
+	Vector<Double> projp;
+	Projection::Type ptype;
+	
+	if (proj == "NCP") {
+	    os << LogIO::NORMAL << "NCP projection is now SIN projection in"
+		" WCS.\nOld FITS readers will not handle this correctly." <<
+	        LogIO::POST;
+	    ptype = Projection::SIN;
+	    projp.resize(2);
+	    // According to Greisen and Calabretta
+	    projp(0) = 0.0;
+	    projp(1) = 1.0/tan(crval(latAxis)*C::pi/180.0);
+	} else {
+	    ptype = Projection::type(proj);
+	    if (ptype == Projection::N_PROJ) {
+		os << LogIO::SEVERE << "Unknown projection: (" << proj << ")";
+		return False;
+	    }
+	    if (header.isDefined("projp")) {
+		header.get("projp", projp);
+	    }
+	}
+
+	// OK, now try making the projection
+	Projection projn;
+	try {
+	    projn = Projection(ptype, projp);
+	} catch (AipsError x) {
+	    os << LogIO::WARN << "Error forming projection, maybe the "
+		"wrong number of parameters\n(" << x.getMesg() << ")" << 
+		LogIO::POST;
+	    return False;
+	} end_try;
+
+	// Assume the units are degrees unless we are told otherwise
+	Double toRadX = C::pi/180.0;
+	Double toRadY = toRadX;
+	if (cunit.nelements() > 0) {
+	    Unit longu = cunit(longAxis);
+	    Unit latu = cunit(latAxis);
+	    Unit rad = "rad";
+	    if (longu.getValue() != rad.getValue() ||
+		latu.getValue() != rad.getValue()) {
+		os << LogIO::SEVERE << "Longitude or latitude units are unknwon "
+		    "or incompatible with angle (" << cunit(longAxis) <<
+		    "," << cunit(latAxis) << ")" << LogIO::POST;
+	    }
+	    toRadX = longu.getValue().getFac()/rad.getValue().getFac();
+	    toRadY = latu.getValue().getFac()/rad.getValue().getFac();
+	}
+	
+	// DEFAULT
+	MDirection::Types radecsys = MDirection::J2000;
+	if (isGalactic) {
+	    radecsys = MDirection::GALACTIC;
+	} else {
+	    if (header.isDefined("epoch") && 
+		(header.dataType("epoch") == TpDouble || 
+		 header.dataType("epoch") == TpFloat || 
+		 header.dataType("epoch") == TpInt)) {
+		Double epoch = header.asdouble("epoch");
+		if (::near(epoch, 1950.0)) {
+		    radecsys = MDirection::B1950;
+		} else if (::near(epoch, 2000.0)) {
+		    radecsys = MDirection::J2000;
+		}
+	    } else if (header.isDefined("equinox") && 
+		       (header.dataType("equinox") == TpDouble ||
+			header.dataType("equinox") == TpDouble ||
+			header.dataType("equinox") == TpInt)) {
+		Double epoch = header.asdouble("equinox");
+		if (::near(epoch, 1950.0)) {
+		    radecsys = MDirection::B1950;
+		} else if (::near(epoch, 2000.0)) {
+		    radecsys = MDirection::J2000;
+		}
+	    } else {
+		os << LogIO::NORMAL << "Could not find or figure out the "
+		    "equinox from the FITS header, using J2000" << LogIO::POST;
+	    }
+	}	
+	    
+	Matrix<Double> dirpc(2,2);
+	dirpc(0,0) = pc(longAxis, longAxis);
+	dirpc(0,1) = pc(longAxis, latAxis);
+	dirpc(1,0) = pc(latAxis, longAxis);
+	dirpc(1,1) = pc(latAxis, latAxis);
+	DirectionCoordinate dir(radecsys,
+				projn,
+				crval(longAxis)*toRadX,	crval(latAxis)*toRadY,
+				cdelt(longAxis)*toRadX, cdelt(latAxis)*toRadY,
+				dirpc,
+				crpix(longAxis), crpix(latAxis));
+	coordsys.addCoordinate(dir);
+    }
+
+    // STOKES
+    if (stokesAxis >= 0) {
+	Vector<Int> stokes(4); // at most 4 stokes
+	// Must be stokes.nelements() since the default switch might resize
+	// the vector.
+	for (uInt i=0; i<stokes.nelements(); i++) {
+	    Double tmp = crval(stokesAxis) + 
+		(i - crpix(stokesAxis))*cdelt(stokesAxis);
+	    if (tmp >= 0) {
+		stokes(i) = Int(floor(tmp + 0.01));
+	    } else {
+		stokes(i) = Int(floor(tmp - 0.01));
+	    }
+	    switch (stokes(i)) {
+	    case 1: stokes(i) = Stokes::I; break;
+	    case 2: stokes(i) = Stokes::Q; break;
+	    case 3: stokes(i) = Stokes::U; break;
+	    case 4: stokes(i) = Stokes::V; break;
+	    case -1: stokes(i) = Stokes::RR; break;
+	    case -2: stokes(i) = Stokes::LL; break;
+	    case -3: stokes(i) = Stokes::RL; break;
+	    case -4: stokes(i) = Stokes::LR; break;
+	    case -5: stokes(i) = Stokes::XX; break;
+	    case -6: stokes(i) = Stokes::YY; break;
+	    case -7: stokes(i) = Stokes::XY; break;
+	    case -8: stokes(i) = Stokes::YX; break;
+	    default:
+		os << LogIO::NORMAL << "There are at most " << i << " known "
+		    "Stokes values on the Stokes axis" << LogIO::POST;
+		stokes.resize(i, True);
+	    }
+	}
+	try {
+	    StokesCoordinate sc(stokes);
+	    coordsys.addCoordinate(sc);
+	} catch (AipsError x) {
+	    os << "Error forming stokes axis : " << x.getMesg() <<
+		LogIO::SEVERE << LogIO::POST;
+	    return False;
+	} end_try;
+    }
+
+    // SPECTRAL
+    if (specAxis >= 0) {
+	// Will be overwritten or ignored.
+	SpectralCoordinate tmp;
+	String error;
+	if (SpectralCoordinate::fromFITS(tmp, error, header, specAxis,
+					 os)) {
+	    coordsys.addCoordinate(tmp);
+	} else {
+	    os << LogIO::WARN << "Cannot convert apparent spectral axis " <<
+		ctype(specAxis) << " into a true spectral coordinate (error="
+	       << error << "). Turning it into a linear axis." << LogIO::POST;
+	    specAxis = -1;
+	}
+    }
+    
+    // Remaining axes are LINEAR
+    uInt nlin = n;
+    if (longAxis >= 0) {nlin--;}
+    if (latAxis >= 0) {nlin--;}
+    if (specAxis >= 0) {nlin--;}
+    if (stokesAxis >= 0) {nlin--;}
+    if (nlin > 0) {
+        if (nlin > 1) {
+	    os << LogIO::NORMAL << 
+	      "Assuming no rotation/skew/... in linear axes." 
+	       << LogIO::POST;
+	}
+	Matrix<Double> linpc(nlin, nlin); linpc = 0; linpc.diagonal() = 1.0;
+	Vector<Double> lincrpix(nlin), lincdelt(nlin), lincrval(nlin);
+	Vector<String> linctype(nlin), lincunit(nlin);
+	Int where_i = 0;
+	for (Int i=0; i<n; i++) {
+	    if (i != longAxis && i != latAxis && i != stokesAxis &&
+		i != specAxis) {
+		lincrpix(where_i) = crpix(i);
+		lincrval(where_i) = crval(i);
+		lincdelt(where_i) = cdelt(i);
+		linctype(where_i) = ctype(i);
+		if (cunit.nelements() > 0) {
+		    lincunit(where_i) = cunit(i);
+		} else if (specAxis < 0 && (ctype(i).contains("FELO") ||
+					    ctype(i).contains("VELO"))) {
+		  lincunit(where_i) = "m/s";
+		}
+		where_i++;
+	    }
+	}
+	Int where_j = 0;
+	for (Int j=0; j<n; j++) {
+	    where_i = 0;
+	    if (j != longAxis && j != latAxis && j != stokesAxis &&
+		j != specAxis) {
+		for (i=0; i<n; i++) {
+		    if (i != longAxis && i != latAxis && i != stokesAxis &&
+			i != specAxis) {
+			linpc(where_i, where_j) = pc(i,j);
+			where_i++;
+		    }
+		}
+		where_j++;
+	    }
+	}
+	LinearCoordinate lc(linctype, lincunit, lincrval, lincdelt,
+			    linpc, lincrpix);
+	coordsys.addCoordinate(lc);
+    }
+
+    // Now we need to work out the transpose order
+    Vector<Int> order(n);
+    Int nspecial = 0;
+    if (longAxis >= 0) {nspecial++;}
+    if (latAxis >= 0) {nspecial++;}
+    if (stokesAxis >= 0) {nspecial++;}
+    if (specAxis >= 0) {nspecial++;}
+    Int linused = 0;
+    for (i=0; i<n; i++) {
+	if (i == longAxis) {
+	    order(i) = 0; // long is always first if it exist
+	} else if (i == latAxis) {
+	    order(i) = 1; // lat is always second if it exists
+	} else if (i == stokesAxis) {
+	    if (longAxis >= 0) { // stokes is axis 0 if no dir, otherwise 2
+		order(i) = 2;
+	    } else {
+		order(i) = 0;
+	    }
+	} else if (i == specAxis) {
+	    if (longAxis >= 0 && stokesAxis >= 0) {
+		order(i) = 3; // stokes and dir
+	    } else if (longAxis >= 0) {
+		order(i) = 2; // dir only
+	    } else if (stokesAxis >= 0) {
+		order(i) = 0; // neither stokes or dir
+	    }
+	} else {
+	    order(i) = nspecial + linused;
+	    linused++;
+	}
+    }
+    coordsys.transpose(order, order);
+    
     return True;
 }
 
-CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
-					   const String &fieldName)
-{
-    CoordinateSystem *retval = 0;
-
-    if (!container.isDefined(fieldName)) {
-	return retval;
-    }
-
-    Record subrec(container.asRecord(fieldName));
-    PtrBlock<Coordinate *> tmp;
-
-    Int nc = 0; // num coordinates
-    PtrBlock<Coordinate *> coords;
-    String linear = "linear";
-    String direction = "direction";
-    String spectral = "spectral";
-    String stokes = "stokes";
-    String tabular = "tabular";
-    String coordsys = "coordsys";
-    while(1) {
-	ostrstream onum;
-	onum << nc;
-	String num = onum;
-	nc++;
-	if (subrec.isDefined(linear + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = LinearCoordinate::restore(subrec, linear+num);
-	} else if (subrec.isDefined(direction + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = 
-		DirectionCoordinate::restore(subrec, direction+num);
-	} else if (subrec.isDefined(spectral + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = SpectralCoordinate::restore(subrec, spectral+num);
-	} else if (subrec.isDefined(stokes + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = StokesCoordinate::restore(subrec, stokes+num);
-	} else if (subrec.isDefined(tabular + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = TabularCoordinate::restore(subrec, tabular+num);
-	} else if (subrec.isDefined(coordsys + num)) {
-	    coords.resize(nc);
-	    coords[nc - 1] = CoordinateSystem::restore(subrec, coordsys+num);
-	} else {
-	    break;
-	}
-	AlwaysAssert(coords[nc-1] != 0, AipsError);
-    }
-    nc = coords.nelements();
-
-    retval = new CoordinateSystem;
-    for (Int i=0; i<nc; i++) {
-	retval->addCoordinate(*(coords[i]));
-	delete coords[i];
-	coords[i] = 0;
-    }
-    for (i=0; i<nc; i++) {
-	retval->world_tmps_p[i] = 
-	    new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
-	AlwaysAssert(retval->world_tmps_p[i], AipsError);
-	retval->pixel_tmps_p[i] = 
-	    new Vector<Double>(retval->coordinates_p[i]->nPixelAxes());
-	AlwaysAssert(retval->pixel_tmps_p[i], AipsError);
-	ostrstream onum;
-	onum << i;
-	Vector<Int> dummy;
-	String num(onum), name;
-	name = String("worldmap") + num;
-	subrec.get(name, dummy);
-	dummy.toBlock(*(retval->world_maps_p[i]));
-	name = String("worldreplace") + num;
-	subrec.get(name, *(retval->world_replacement_values_p[i]));
-	name = String("pixelmap") + num;
-	subrec.get(name, dummy);
-	dummy.toBlock(*(retval->pixel_maps_p[i]));
-	name = String("pixelreplace") + num;
-	subrec.get(name, *(retval->pixel_replacement_values_p[i]));
-    }
-
-    return retval;
-}
-
-
-Coordinate *CoordinateSystem::clone() const
-{
-    return new CoordinateSystem(*this);
-}
-
-Bool CoordinateSystem::toFITSHeader(RecordInterface &header, 
-				    IPosition &shape,
-				    Bool oneRelative,
-				    char prefix, Bool writeWCS,
-				    Bool preferVelocity, 
-				    Bool ious thing to do.
-// 
-//
-// The separation of world axes and pixel axes, and the ability to
-// remove axes makes this function a great big mess.
-//
-{
-// Basic checks
-
-   if (this->type() != pOther->type()) {
-      set_error("Comparison is not with another CoordinateSystem");
-      return False;
-   }
-
-   CoordinateSystem* cSys = (CoordinateSystem*)pOther;  
-
-   if (nCoordinates() != cSys->nCoordinates()) {
-      set_error("The CoordinateSystems have different numbers of coordinates");
-      return False;
-   }
-
-   if (nPixelAxes() != cSys->nPixelAxes()) {
-      set_error("The CoordinateSystems have different numbers of pixel axes");
-      return False;
-   }
-   if (nWorldAxes() != cSys->nWorldAxes()) {
-      set_error("The CoordinateSystems have different numbers of world axes");
-      return False;
-   }
-
-
-
-// Loop over number of coordinates
-
-   ostrstream oss;
-   for (Int i=0; i<Int(nCoordinates()); i++) {
-
-// Although the coordinates are checked for their types in
-// the coordinate comparison routines, we can save ourselves
-// some time by checking here too
-
-      if (coordinate(i).type() != cSys->coordinate(i).type()) {
-         oss << "The coordinate types differ for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-
-// Find which pixel axes in the CoordinateSystem this coordinate
-// inhabits and compare the vectors.   Here we don't take into 
-// account the exclusion axes vector; that's only used when we are 
-// actually comparing the axis descriptor values on certain axes
-
-      if (pixelAxes(i).nelements() != cSys->pixelAxes(i).nelements()) {
-         oss << "The number of pixel axes differs for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-      if (!allEQ(pixelAxes(i).ac(), cSys->pixelAxes(i).ac())) {
-         oss << "The pixel axes differ for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-
-// Find which world axes in the CoordinateSystem this
-// coordinate inhabits and compare the vectors
-    
-      if (worldAxes(i).nelements() != cSys->worldAxes(i).nelements()) {
-         oss << "The number of world axes differs for coordinate number " << i << ends;
-         set_error(String(oss));
-         return False;
-      }
-      if (!allEQ(worldAxes(i).
