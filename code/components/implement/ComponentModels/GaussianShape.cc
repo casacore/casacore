@@ -126,7 +126,7 @@ GaussianShape & GaussianShape::operator=(const GaussianShape & other) {
 
 ComponentType::Shape GaussianShape::shape() const {
   DebugAssert(ok(), AipsError);
-  return ComponentType::POINT;
+  return ComponentType::GAUSSIAN;
 }
 
 void GaussianShape::setRefDirection(const MDirection & newRefDir) {
