@@ -1292,6 +1292,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 
     // ctype
     Vector<String> ctype = coordsys.worldAxisNames();
+    Bool isNCP = False;
     for (i=0; i < n; i++) {
 	if ((i == longAxis || i == latAxis) && writeWCS) {
 	    const DirectionCoordinate &dc = 
@@ -1326,15 +1327,19 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 		    if (::near(projp(0), 0.0) && 
 			::near(projp(1), 1.0/tan(crval(latAxis)*C::pi/180.0))) {
 			// Is NCP
-			projp = 0.0;
+		        isNCP = True;
 			name = name + "-NCP";
 		    } else {
 			// Doesn't appear to be NCP
-			os << LogIO::WARN << "SIN projection with non-zero"
-			    " projp does not appear to be NCP." << endl <<
-			    "However, assuming NCP anyway." << LogIO::POST;
+
+		        // Only print this once
+			if (!isNCP) {
+			    os << LogIO::WARN << "SIN projection with non-zero"
+				" projp does not appear to be NCP." << endl <<
+				"However, assuming NCP anyway." << LogIO::POST;
+			}
 			name = name + "-NCP";
-			projp = 0.0;
+			isNCP = True;
 		    }
 		}
 		break;
@@ -1492,7 +1497,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     header.define(sprefix + "rota", crota);
     header.define(sprefix + "rpix", crpix);
     header.define(sprefix + "unit", cunit);
-    if (projp.nelements() > 0) {
+    if (!isNCP && projp.nelements() > 0) {
 	if (!writeWCS) {
 	    for (uInt i=0; i<projp.nelements(); i++) {
 		if (!::nearAbs(projp(i), 0.0)) {
