@@ -60,18 +60,16 @@ Fit2D::Fit2D(const Fit2D& other)
 : itsLogger(other.itsLogger),                  // Reference semantics
   itsValid(other.itsValid),
   itsValidSolution(other.itsValidSolution),
-  itsIsNormalized(other.itsIsNormalized),
   itsHasSigma(other.itsHasSigma),
   itsInclude(other.itsInclude),
   itsPixelRange(other.itsPixelRange.copy()),   // Copy semantics
-  itsFunction(other.itsFunction),              // Copy semantics
-  itsSolution(other.itsSolution.copy()),       // Copy semantics
+  itsFunction(other.itsFunction),        
+  itsSolution(other.itsSolution.copy()), 
+  itsErrors(other.itsErrors.copy()),     
   itsChiSquared(other.itsChiSquared),
   itsErrorMessage(other.itsErrorMessage),
   itsNumberPoints(other.itsNumberPoints),
-  itsTypeList(other.itsTypeList.copy()),       // Copy semantics
-  itsNormVal(other.itsNormVal),
-  itsNormPos(other.itsNormPos)
+  itsTypeList(other.itsTypeList.copy())        // Copy semantics
 {
 // 
 // Note that the variable itsFitter is not copied.
@@ -101,18 +99,16 @@ Fit2D& Fit2D::operator=(const Fit2D& other)
       itsLogger = other.itsLogger;                  // Reference semantics
       itsValid = other.itsValid;
       itsValidSolution = other.itsValidSolution;
-      itsIsNormalized = other.itsIsNormalized;
       itsHasSigma = other.itsHasSigma;
       itsInclude = other.itsInclude;
       itsPixelRange = other.itsPixelRange.copy();   // Copy semantics
-      itsFunction = other.itsFunction;              // Copy semantics
-      itsSolution = other.itsSolution.copy();       // Copy semantics
+      itsFunction = other.itsFunction;          
+      itsSolution = other.itsSolution.copy();   
+      itsErrors = other.itsErrors.copy();       
       itsChiSquared = other.itsChiSquared;
       itsErrorMessage = other.itsErrorMessage;
       itsNumberPoints = other.itsNumberPoints;
       itsTypeList = other.itsTypeList.copy();       // Copy semantics
-      itsNormVal = other.itsNormVal;
-      itsNormPos = other.itsNormPos;
    }
    return *this;
 }
@@ -240,8 +236,7 @@ uInt Fit2D::nParameters(Fit2D::Types type)
 }
 
  
-Fit2D::ErrorTypes Fit2D::fit(const MaskedLattice<Float>& data, 
-                             const Lattice<Float>& sigma, Bool norm)
+Fit2D::ErrorTypes Fit2D::fit(const MaskedLattice<Float>& data, const Lattice<Float>& sigma)
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
@@ -262,10 +257,10 @@ Fit2D::ErrorTypes Fit2D::fit(const MaskedLattice<Float>& data,
 //
    if (sigma.ndim()==0) {
       Array<Float> sigma2;
-      return fit(pixels, mask, sigma2, norm);
+      return fit(pixels, mask, sigma2);
    } else {
       Array<Float> sigma2 = sigma.get(True);
-      return fit(pixels, mask, sigma2, norm);
+      return fit(pixels, mask, sigma2);
    }
 }
 
@@ -273,8 +268,7 @@ Fit2D::ErrorTypes Fit2D::fit(const MaskedLattice<Float>& data,
 
 
 Fit2D::ErrorTypes Fit2D::fit(const Lattice<Float>& data, 
-                             const Lattice<Float>& sigma,
-                             Bool norm)
+                             const Lattice<Float>& sigma)
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
@@ -291,17 +285,16 @@ Fit2D::ErrorTypes Fit2D::fit(const Lattice<Float>& data,
 //
    if (sigma.ndim()==0) {
       Array<Float> sigma2;
-      return fit(pixels, mask, sigma2, norm);
+      return fit(pixels, mask, sigma2);
    } else {
       Array<Float> sigma2 = sigma.get(True);
-      return fit(pixels, mask, sigma2, norm);
+      return fit(pixels, mask, sigma2);
    }
 }
 
 
 Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data, 
-                             const Array<Float>& sigma, 
-                             Bool norm)
+                             const Array<Float>& sigma)
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
@@ -318,17 +311,14 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
       }
    }
 //
-   itsIsNormalized = norm;
-//
    Matrix<Double> pos;
    Vector<Double> values;
    Vector<Double> weights;
    Array<Bool> mask;
-   if (!normalizeData (pos, values, weights, data, mask, sigma)) {
+   if (!selectData (pos, values, weights, data, mask, sigma)) {
       itsErrorMessage = String("There were no selected data points");
       return Fit2D::NOGOOD;
    }
-   if (itsIsNormalized) normalizeModels (0);
 //
    return fitData(values, pos, weights);
 }
@@ -336,8 +326,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
 
 Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
                              const Array<Bool>& mask, 
-                             const Array<Float>& sigma, 
-                             Bool norm)
+                             const Array<Float>& sigma)
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
@@ -360,16 +349,13 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
       }
    }
 //
-   itsIsNormalized = norm;
-//
    Matrix<Double> pos;
    Vector<Double> values;
    Vector<Double> weights;
-   if (!normalizeData (pos, values, weights, data, mask, sigma)) {
+   if (!selectData (pos, values, weights, data, mask, sigma)) {
       itsErrorMessage = String("There were no selected data points");
       return Fit2D::NOGOOD;
    }
-   if (itsIsNormalized) normalizeModels (0);
 //
    return fitData(values, pos, weights);
 
@@ -504,7 +490,7 @@ Vector<Double> Fit2D::availableSolution ()  const
    const uInt nF = itsFunction.nFunctions();
    Vector<Double> sol(itsFunction.nparameters());
    for (uInt i=0, l=0; i<nF; i++) {
-      Vector<Double> sol2 = availableSolution(i);
+      Vector<Double> sol2 = availableSolution(i).copy();
       for (uInt j=0; j<sol2.nelements(); j++) sol(l++) = sol2(j);
    }
    return sol;
@@ -528,7 +514,7 @@ Vector<Double> Fit2D::availableSolution (uInt which)  const
    }
 //
    uInt iStart;
-   Vector<Double> sol = availableSolution(iStart, which);
+   Vector<Double> sol = availableSolution(iStart, which).copy();
 //
 // Convert Gaussian solution axial ratio to major/minor axis.
 // sol2(3) may be the major or minor axis after fitting.
@@ -599,8 +585,8 @@ Vector<Double> Fit2D::availableErrors ()  const
    const uInt nF = itsFunction.nFunctions();
    Vector<Double> errors(itsFunction.nparameters());
    for (uInt i=0, l=0; i<nF; i++) {
-      Vector<Double> errors2 = availableErrors(i);
-      for (uInt j=0; j<errors2.nelements(); j++) errors(l++) = errors2(j);
+      Vector<Double> errors2 = availableErrors(i).copy();
+       for (uInt j=0; j<errors2.nelements(); j++) errors(l++) = errors2(j);
    }
    return errors;
 } 
@@ -621,8 +607,8 @@ Vector<Double> Fit2D::availableErrors (uInt which)  const
    }
 //
    uInt iStart;
-   Vector<Double> errors = availableErrors (iStart, which);
-   Vector<Double> sol = availableSolution (iStart, which);
+   Vector<Double> errors = availableErrors (iStart, which).copy();
+   Vector<Double> sol = availableSolution (iStart, which).copy();
 //
 // Convert Gaussian solution axial ratio to major/minor axis.
 // ratio  = other / YWIDTH
@@ -687,16 +673,15 @@ Vector<Double> Fit2D::availableErrors (uInt& iStart, uInt which)  const
 // Find the number of available parameters for the model of interest
 //
    uInt nP = itsFunction.function(which).nparameters();
-   if (itsSolution.nelements() < iStart+nP) {
+   if (itsErrors.nelements() < iStart+nP) {
      itsLogger << LogIO::SEVERE 
 	       << "Fit2D::availableErrors - "
-       "solution vector is not long enough; did you call function fit ?"
+       "errors vector is not long enough; did you call function fit ?"
 	       << LogIO::POST;
    }
 //
-   Vector<Double> allErrors = itsFitter.errors();
    Vector<Double> errors(nP,0.0);
-   for (uInt i=0; i<nP; i++) errors(i) = allErrors(iStart+i);
+   for (uInt i=0; i<nP; i++) errors(i) = itsErrors(iStart+i);
    return errors;
 }
 
@@ -917,14 +902,13 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 
 // Private functions
 
-Bool Fit2D::normalizeData (Matrix<Double>& pos, Vector<Double>& values, 
-			     Vector<Double>& weights,
-			     const Array<Float>& pixels,
-			     const Array<Bool>& mask,
-			     const Array<Float>& sigma)
+Bool Fit2D::selectData (Matrix<Double>& pos, Vector<Double>& values, 
+                        Vector<Double>& weights,
+		        const Array<Float>& pixels,
+		        const Array<Bool>& mask,
+		        const Array<Float>& sigma)
 //
-// Fish out the unmasked data, and optionally normalize it.
-// They may help rounding problems for many parameter fits.
+// Fish out the unmasked data.
 //
 // If the mask is of zero length all pixels are assumed good.
 // If the sigma array is of zero length the weights are given
@@ -1020,73 +1004,17 @@ Bool Fit2D::normalizeData (Matrix<Double>& pos, Vector<Double>& values,
    locX.resize(itsNumberPoints, True);
    locY.resize(itsNumberPoints, True);
 //
-   itsNormPos = max(shape(0)-1, shape(1)-1);
-   itsNormVal = max(abs(maxVal),abs(minVal));
-//
-   if (itsIsNormalized) {
-//
-// Normalize the data
-//
-      Double dummyWidth(0);
-      for (uInt k=0; k<itsNumberPoints; k++) {
-         pos(k,0) = locX(k);
-         pos(k,1) = locY(k);
-         normalize (values(k), pos(k,0), pos(k,1), dummyWidth,
-                    itsNormPos, itsNormVal);
-         if (itsHasSigma) weights(k) = weights(k) / itsNormVal;
-      }
-   } else {
-//
 // Just fill in the position matrix
 //
-      for (uInt k=0; k<itsNumberPoints; k++) {
-         pos(k,0) = locX(k);
-         pos(k,1) = locY(k);
-      }
+   for (uInt k=0; k<itsNumberPoints; k++) {
+      pos(k,0) = locX(k);
+      pos(k,1) = locY(k);
    }
 //   cout << "Data = " << values << endl;
 //   cout << "weights = " << weights << endl;
 //   cout << "Pos = " << pos << endl;
-//   if (itsIsNormalized) {
-//      cout << "normVal = " << itsNormVal << endl;
-//      cout << "normPos = " << itsNormPos << endl;
-//   }
 
    return True;
-}
-
-void Fit2D::normalizeModels (uInt direction) 
-//
-// Normalize the parameter estimates in the
-// SumFunction in the same way that the data were
-// normalized.  
-//
-// direction = 0 means normalize
-// direction = 1 means un-normalize
-//
-{
-   const uInt nModels = itsFunction.nFunctions();
-   for (uInt i=0; i<nModels; i++) {
-      Vector<Double> params = getParams(i);
-      Fit2D::Types type = (Fit2D::Types)itsTypeList(i);
-//
-      if (type==Fit2D::LEVEL) {
-	itsLogger << "Fit2D - Level fitting not yet implemented" <<
-	  LogIO::EXCEPTION;
-      } else if (type==Fit2D::DISK) {
-	itsLogger << "Fit2D - Disk fitting not yet implemented" <<
-	  LogIO::EXCEPTION;
-      } else if (type==Fit2D::GAUSSIAN) {
-	if (direction==0) {
-	  normalize (params(0), params(1), params(2), params(3),
-		     itsNormPos, itsNormVal);
-	} else {
-	  unNormalize (params(0), params(1), params(2), params(3),
-		       itsNormPos, itsNormVal);
-	};
-	setParams(params, i);
-      }
-   }
 }
 
  
@@ -1118,27 +1046,18 @@ Fit2D::ErrorTypes Fit2D::fitData(const Vector<Double>& values,
    itsSolution.resize(0);
    try {
 
-// itsSolution holds values for adjustable and fixed parameters
+// itsSolution and itsErrors holds values and errors for adjustable and fixed parameters
 
       itsSolution = itsFitter.fit(pos, values, weights);
+      itsErrors = itsFitter.errors();
       if(!itsFitter.converged()) {
          itsErrorMessage = String("The fit did not converge");
          status = Fit2D::NOCONVERGE;
       }
 //
-// Find chi-squared.  Account for normalization factors
+// Find chi-squared.  
 //
       itsChiSquared = itsFitter.chiSquare();
-      if (itsIsNormalized && !itsHasSigma) {
-         itsChiSquared = itsChiSquared * itsNormVal * itsNormVal;
-      }    
-//
-// Un-normalize the fit and model
-//
-      if (itsIsNormalized) {
-         normalizeSolution();
-         normalizeModels(1);
-      }
 //
 // A valid solution includes non-convergence
 //
@@ -1151,38 +1070,6 @@ Fit2D::ErrorTypes Fit2D::fitData(const Vector<Double>& values,
    return status;
 }
 
-
-
-void Fit2D::normalizeSolution()
-{
-   const uInt nModels = itsFunction.nFunctions();
-   uInt iStart;
-//
-   for (uInt i=0; i<nModels; i++) {
-      Vector<Double> sol = availableSolution(iStart, i);
-
-      Fit2D::Types type = (Fit2D::Types)itsTypeList(i);
-//
-      if (type==Fit2D::LEVEL) {
-         itsLogger << "Fit2D - Level fitting not yet implemented" <<
-	   LogIO::EXCEPTION;
-      } else if (type==Fit2D::DISK) {
-         itsLogger << "Fit2D - Disk fitting not yet implemented" <<
-	   LogIO::EXCEPTION;
-      } else if (type==Fit2D::GAUSSIAN) {
-	sol(Gaussian2D<AutoDiff<Double> >::HEIGHT) *= itsNormVal;
-	sol(Gaussian2D<AutoDiff<Double> >::XCENTER) *= itsNormPos;
-	sol(Gaussian2D<AutoDiff<Double> >::YCENTER) *= itsNormPos;
-	sol(Gaussian2D<AutoDiff<Double> >::YWIDTH) *= itsNormPos;
-// 
-// Replace in main solution vector
-//
-         for (uInt j=0; j<sol.nelements(); j++) {
-	   itsSolution(iStart+j) = sol(j);
-         }
-      }
-   }
-}
 
 
 void Fit2D::piRange (Double& pa) const

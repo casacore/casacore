@@ -188,26 +188,19 @@ public:
                             const Array<Bool>& mask);
     //</group>
 
-    // Do the fit.  The internal normalization, if invoked,
-    // may help round off for many parameter fits. Returns
-    // an enum value to tell you what happened if the fit failed
-    // for some reasons.  A message can also be found with 
-    // function errorMessage if the fit was not successful.
-    // For Array(i,j) i is x and j is y
+    // Do the fit.  Returns an enum value to tell you what happened if the fit failed
+    // for some reasons.  A message can also be found with function errorMessage if 
+    // the fit was not successful.  For Array(i,j) i is x and j is y
     //<group>
     Fit2D::ErrorTypes fit(const MaskedLattice<Float>& data, 
-                          const Lattice<Float>& sigma ,
-                          Bool norm=True);
+                          const Lattice<Float>& sigma);
     Fit2D::ErrorTypes fit(const Lattice<Float>& data, 
-                          const Lattice<Float>& sigma, 
-                          Bool norm=True);
+                          const Lattice<Float>& sigma);
     Fit2D::ErrorTypes fit(const Array<Float>& data, 
-                          const Array<Float>& sigma, 
-                          Bool norm=True);
+                          const Array<Float>& sigma);
     Fit2D::ErrorTypes fit(const Array<Float>& data,
                           const Array<Bool>& mask, 
-                          const Array<Float>& sigma, 
-                          Bool norm=True);
+                          const Array<Float>& sigma);
     //</group>
 
     // Find the residuals to the fit.   
@@ -225,15 +218,15 @@ public:
 
     // Recover solution for either all model components or
     // a specific one.  These functions will return an empty vector
-    // if there is no valid solution.    All available parameters (fixed or
+    // if there is no valid solution.    All available parameters (fixed and
     // adjustable) are included in the solution vectors.  
     //<group>
     Vector<Double> availableSolution () const;
     Vector<Double> availableSolution (uInt which) const;
     //</group>
 
-    // The errors. All available parameters (fixed or adjustable) are 
-    // included in the solution vectors.  Unsolved for parameters will 
+    // The errors. All available parameters (fixed and adjustable) are 
+    // included in the error vectors.  Unsolved for parameters will 
     // have error 0.
     //<group>
     Vector<Double> availableErrors() const;
@@ -269,19 +262,18 @@ public:
 private:
 
    mutable LogIO itsLogger;
-   Bool itsValid, itsValidSolution, itsIsNormalized, itsHasSigma;
+   Bool itsValid, itsValidSolution, itsHasSigma;
    Bool itsInclude;
    Vector<Float> itsPixelRange;
    CompoundFunction<AutoDiff<Double> > itsFunction;
    NonLinearFitLM<Double> itsFitter;
    Vector<Double> itsSolution;
+   Vector<Double> itsErrors;
    Double itsChiSquared;
    String itsErrorMessage;
    uInt itsNumberPoints;
 //
    Vector<uInt> itsTypeList;
-   Double itsNormVal;
-   Double itsNormPos;
 //
    Fit2D::ErrorTypes fitData(const Vector<Double>& values,
                              const Matrix<Double>& pos,
@@ -302,43 +294,12 @@ private:
    Bool includeIt (Float value, const Vector<Float>& range, 
                    Int includeIt) const;
 
-   Bool normalizeData (Matrix<Double>& pos, Vector<Double>& values,
-                       Vector<Double>& weights,  const Array<Float>& pixels,
-                       const Array<Bool>& mask, const Array<Float>& sigma);
-
-   void normalizeModels (uInt direction);
-
-   void normalizeSolution();
-
-   void normalize (Double& value, Double& x, Double& y, 
-                   Double& width, Double posNorm,
-                   Double valNorm) const;
+   Bool selectData (Matrix<Double>& pos, Vector<Double>& values,
+                    Vector<Double>& weights,  const Array<Float>& pixels,
+                    const Array<Bool>& mask, const Array<Float>& sigma);
    void piRange (Double& pa) const;
 
-   void unNormalize (Double& value, Double& x, Double& y, 
-                     Double& width, Double posNorm,
-                     Double valNorm) const;
 };
-
-inline void Fit2D::normalize (Double& value, Double& x, Double& y, 
-                              Double& width, Double posNorm, 
-                              Double valNorm) const
-{  
-   x = x/posNorm;
-   y = y/posNorm;
-   width = width/posNorm;
-   value = value/valNorm;
-}
-
-inline void Fit2D::unNormalize (Double& value, Double& x, Double& y, 
-                                Double& width, Double posNorm, 
-                                Double valNorm) const
-{  
-   x = x*posNorm;
-   y = y*posNorm;
-   width = width*posNorm;
-   value = value*valNorm;
-}
 
 inline Bool Fit2D::includeIt (Float value, const Vector<Float>& range, 
                               Int includeIt) const
@@ -347,7 +308,10 @@ inline Bool Fit2D::includeIt (Float value, const Vector<Float>& range,
 //
    if (includeIt==1) {
       if (value >= range(0) && value <= range(1)) return True;
-   } else if (value < range(0) || value > range(1)) return True;
+   } else if (value < range(0) || value > range(1)) {
+      return True;
+   }
+//
    return False;
 }
 
