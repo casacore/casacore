@@ -149,8 +149,8 @@ void SkyComponent::sample(Matrix<Flux<Double> >& samples,
 			  const Vector<MVFrequency>& frequencies,
 			  const MeasRef<MFrequency>& freqRef) const {
   DebugAssert(ok(), AipsError);
-  return itsCompPtr->sample(samples, directions, dirRef, pixelSize, 
-			    frequencies, freqRef);
+  itsCompPtr->sample(samples, directions, dirRef, pixelSize, 
+		     frequencies, freqRef);
 }
 
 Flux<Double> SkyComponent::visibility(const Vector<Double>& uvw,
