@@ -33,13 +33,14 @@ structure between the classes is straightforward.  The Envelope class is
 {\tt LatticeExpr}.  {\tt LatticeExpr} invokes {\tt LatticeExprNode},
 which provides a bridge from {\tt LatticeExpr} to the letter classes
 {\tt LELBinary}, {\tt LELBinaryCmp}, {\tt LELBinaryBool}, {\tt
-LELConvert}, {\tt LELFunction1D}, {\tt LELFunctionReal1D}, {\tt
-LELFunctionFloat}, {\tt LELFunctionDouble}, {\tt LELFunctionComplex},
-{\tt LELFunctionDComplex}, {\tt LELFunctionBool}, {\tt LELLattice}, {\tt
-LELUnaryConst}, {\tt LELUnary}, and {\tt LELUnaryBool}.  The letter
-classes all inherit from {\tt LELInterface} which defines their common
-interface.  There is one more class, {\tt LELAttribute}, which is a
-helper class containing some attribute information about the expression. 
+LELConvert}, {\tt LELFunction1D}, {\tt LELFunctionND}, {\tt
+LELFunctionReal1D}, {\tt LELFunctionFloat}, {\tt LELFunctionDouble},
+{\tt LELFunctionComplex}, {\tt LELFunctionDComplex}, {\tt
+LELFunctionBool}, {\tt LELLattice}, {\tt LELUnaryConst}, {\tt LELUnary},
+and {\tt LELUnaryBool}.  The letter classes all inherit from {\tt
+LELInterface} which defines their common interface.  There is one more
+class, {\tt LELAttribute}, which is a helper class containing some
+attribute information about the expression. 
  
 The purpose of the bridge class, {\tt LatticeExprNode} is to handle type
 conversions.  If all the data were of the same type (e.g.  {\tt Float})
@@ -71,6 +72,7 @@ LELBinaryBool & LELBinary\{.h,2.cc\} & none & LELInterface$<$Bool$>$ & letter cl
 LELConvert & LELConvert.\{h,cc\} & $<T,F>$ & LELInterface$<T>$ & letter class \\
 LELFunctionEnums & LELFunctionEnums.h & none & none & enum \\
 LELFunction1D & LELFunction.\{h,cc\}& $<T>$ & LELInterface$<T>$ & letter class \\
+LELFunctionND & LELFunction.\{h,cc\}& $<T>$ & LELInterface$<T>$ & letter class \\
 LELFunctionReal1D & LELFunction.\{h,cc\}& $<T>$ & LELInterface$<T>$ & letter class \\
 LELFunctionFloat & LELFunction\{.h,2.cc\} & none & LELInterface$<$Float$>$ & letter class \\
 LELFunctionDouble & LELFunction\{.h,2.cc\} & none & LELInterface$<$Double$>$ & letter class \\
@@ -1372,6 +1374,7 @@ LELBinary   &  Handles numerical binary operators & 1,2,3,4 & 1,2,3,4 \\
 LELBinaryCmp  &  Handles relational binary numerical operators & 1,2,3,4 & 5 \\
 LELBinaryBool &  Handles logical binary operators & 5 & 5 \\
 LELFunction1D &  Handles numerical 1-argument functions  & 1,2,3,4 & 1,2,3,4 \\
+LELFunctionND &  Handles numerical N-argument functions  & 1,2,3,4 & 1,2,3,4 \\
 LELFunctionReal1D &  Handles real numerical 1-argument functions & 1,2 & 1,2 \\
 LELFunctionFloat  &   Handles numerical N-argument functions returning Float & 1,3 & 1 \\
 LELFunctionDouble &   Handles numerical N-argument functions returning Double & 2,4 & 2 \\
@@ -1444,6 +1447,7 @@ LELFunction1D &        sin      &   1,2,3,4    &   Scalar,Array   &   1   &   ex
               &        max      &   1,2,3,4    &   Scalar         &   1   &   expr = max(a) \\
                &       mean     &   1,2,3,4    &   Scalar         &   1   &   expr = meann(a) \\
                 &      sum      &   1,2,3,4    &   Scalar         &   1   &   expr = sum(a) \\
+LELFunctionND &        iif      &   1,2,3,4    &   Scalar,Array   &   1   &   expr = iif(aBool,a,b) \\  
 LELFunctionReal1D &    asin     &   1,2        &   Scalar,Array   &   1   &   expr = asin(a) \\
                   &    acos     &   1,2        &   Scalar,Array   &   1   &   expr = acos(a) \\
                   &    tan      &   1,2        &   Scalar,Array   &   1   &   expr = tan(a) \\
