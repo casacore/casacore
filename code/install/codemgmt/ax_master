@@ -2187,3 +2187,4 @@
 09 047 src rm trial/implement/Display/AttributeValueBase.cc
 09 047 src rm trial/implement/Display/AttributeValueBase.h
 09 047 src rm trial/implement/Display/AttributeValuePoi.cc
+09 047 src rm trial/implement/Display/AttributeValuePoi.h
