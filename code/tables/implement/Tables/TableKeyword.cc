@@ -1,5 +1,5 @@
 //# TableKeyword.cc: A keyword value representing a table
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,15 +102,14 @@ void TableKeyword::renameTable (const String& newParentName,
 {
     // When stripping off the parent table name changes the name,
     // the table is part of the parent table.
-    // In that case the main table has already been renamed.
-    // So open the subtable with its new name and call rename
-    // to rename the possible subtables in it.
-    // Add a fake "/a" to let oldParentName be treated as directory.
-    String old = tableName (oldParentName + "/a");
+    String old = tableName (oldParentName);
     if (old != name_p) {
-	String newName = Path::addDirectory (old, newParentName + "/a");
+	String newName = Path::addDirectory (old, newParentName);
 	name_p = newName;
     }
+    // Note that renaming subtables of a subtable is not necessary,
+    // because they are always relative to the subtable (which
+    // is not really renamed).
 }
 
 
