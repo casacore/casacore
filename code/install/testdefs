@@ -482,7 +482,7 @@ system :
 	-@ set ADVISORY $(MIRLIBLIBD) $(MIRLIBLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
-	-@ echo "XLIBLIST=$(XLIBLIST)"
+	-@ echo "XLIBLIST=$($(XLIBSEL))"
 	-@ echo "XLIBPATH=$(XLIBPATH)"
 	-@ echo "XTRNLIBS=$(XTRNLIBS)"
 	-@ echo "XTRNDEFS=$(XTRNDEFS)"

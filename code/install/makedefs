@@ -230,22 +230,25 @@ MIRLIBLIB  := -lmir
 # This sad state of affairs may arise, for example, when running multiple
 # versions of the Sun compiler.
 #
-# You shouldn't need to modify any of the following four variables.
+XLIBSEL := XLIBLIST
+XLIBLIST_shared=GLISH XmPGPLOT Motif X11 WCSLIB LAPACK F77
 
-# List of directories in which to search for libraries.
-XLIBPATH  = $(addprefix -L,$(foreach XLIB,$(XLIBLIST),$($(XLIB)LIBD)))
+###
+### You shouldn't need to modify any of the following four variables.
+### List of directories in which to search for libraries.
+XLIBPATH  = $(addprefix -L,$(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIBD)))
 
 # All required external libraries.
-XTRNLIBS  = $(XLIBPATH) $(foreach XLIB,$(XLIBLIST),$($(XLIB)LIB)) $(ARCHLIBS)
+XTRNLIBS  = $(XLIBPATH) $(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIB)) $(ARCHLIBS)
 
 # Preprocessor defines for all required external libraries.
-XTRNDEFS  = $(foreach XLIB,$(XLIBLIST),$($(XLIB)DEFS))
+XTRNDEFS  = $(foreach XLIB,$($(XLIBSEL)),$($(XLIB)DEFS))
 
 # Include path for system compilations.
 #--------------------------------------
 AIPSINCL  = $(addprefix -I,  \
                $(AIPSCODE)/include   \
-               $(foreach LIB,$(XLIBLIST),$($(LIB)INCD)))
+               $(foreach LIB,$($(XLIBSEL)),$($(LIB)INCD)))
 
 
 #-----------------------------------------------------------------------------

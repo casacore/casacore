@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1995,1996,1997,1998
+#   Copyright (C) 1995,1996,1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -121,7 +121,7 @@ FCOPTLVL := -fast
 FCOPT    += -PIC -Qoption ld -i
 
 # Linker flags for system debug/optimized compilations.
-LDDBG := -Qoption ld -R$(subst $(space),:,$(strip $(foreach XLIB,$(XLIBLIST),$($(XLIB)LIBD)) /opt/SUNWspro/lib:/usr/openwin/lib:/usr/local/lib:/usr/ccs/lib:/usr/ucblib:$(AIPSARCH)/lib.))
+LDDBG := -Qoption ld -R$(subst $(space),:,$(strip $(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIBD)) /opt/SUNWspro/lib:/usr/openwin/lib:/usr/local/lib:/usr/ccs/lib:/usr/ucblib:$(AIPSARCH)/lib.))
 LDOPT := $(LDDBG)
 
 # Object library utilities.

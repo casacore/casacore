@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996,1997,1998
+#   Copyright (C) 1996,1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -118,7 +118,7 @@ C++OPT   += -pipe -fno-implicit-templates -Wreturn-type
 TEMPLATES := diy
 
 # Linker flags for system debug/optimized compilations.
-LDDBG := -Wl,+b,$(subst $(space),:,$(strip $(foreach XLIB,$(XLIBLIST),$($(XLIB)LIBD)) $(AIPSARCH)/lib))
+LDDBG := -Wl,+b,$(subst $(space),:,$(strip $(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIBD)) $(AIPSARCH)/lib))
 LDOPT := $(LDDBG)
 
 # FORTRAN compiler flags for system debug/optimized compilations.
