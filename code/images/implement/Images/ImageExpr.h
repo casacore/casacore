@@ -1,5 +1,5 @@
 //# ImageExpr.h: contains expressions involving images
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Images/MaskedImage.h>
+#include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <aips/Containers/Record.h>
 
@@ -107,7 +107,7 @@ class String;
 // </todo>
 
 
-template <class T> class ImageExpr: public MaskedImage<T>
+template <class T> class ImageExpr: public ImageInterface<T>
 {
 public: 
   // The default constructor
@@ -129,16 +129,13 @@ public:
   ImageExpr<T>& operator=(const ImageExpr<T>& other);
   
   // Make a copy of the object (reference semantics).
-  // <group>
-  virtual Lattice<T>* clone() const;
-  virtual MaskedImage<T>* cloneMI() const;
-  // </group>
+  virtual ImageInterface<T>* cloneII() const;
 
   // Has the object really a mask?
   virtual Bool isMasked() const;
 
   // Get the region used.
-  virtual const LatticeRegion& region() const;
+  virtual const LatticeRegion* getRegionPtr() const;
 
   // return the shape of the ImageExpr
   virtual IPosition shape() const;
