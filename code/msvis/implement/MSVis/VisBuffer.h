@@ -152,7 +152,7 @@ public:
 
   MDirection& phaseCenter() 
   { return phaseCenterOK_p ? phaseCenter_p : fillPhaseCenter();}
-  const MDirection& phaseCenter() const {return This->phaseCenter_p;}
+  const MDirection& phaseCenter() const {return This->phaseCenter();}
 
   Int polFrame() const {return polFrameOK_p ? polFrame_p : This->fillPolFrame();}
 
