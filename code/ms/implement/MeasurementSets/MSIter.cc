@@ -419,9 +419,13 @@ void MSIter::setMSInfo()
     }
 
     // determine the reference frame position
-    String observatory = msc_p->observation().telescopeName()
-      (msc_p->observationId()(0));
-    if (!MeasTable::Observatory(telescopePosition_p,observatory)) {
+    String observatory;
+    if (msc_p->observation().nrow() > 0) {
+      observatory = msc_p->observation().telescopeName()
+	(msc_p->observationId()(0));
+    }
+    if (observatory.length() == 0 || 
+	!MeasTable::Observatory(telescopePosition_p,observatory)) {
       // unknown observatory, use first antenna
       telescopePosition_p=msc_p->antenna().positionMeas()(0);
     }
