@@ -85,27 +85,6 @@
 // yet structured for higher dimensions.
 // </synopsis>
 
-//
-//
-//
-//  DEFINITIONS of terms used in this code, which hopefully are used 
-//  consistently in the code function/variable names and remarks.
-// 
-//  Region - a contiguous block of pixels holding one or more objects
-//  Componentmap - a lattice of pixels (see above)  where the the value
-//     of each pixel is an integer representing the Region to which it belongs.
-//  Object - a consolidated block of pixels found by a single threshold scan.
-//     Simple Objects contain just one Component.
-//  Area - a group of pixels located in a specified rectagular subsection
-//     of a pmap / Image.
-//  Component - an individual single source in the image.  May refer either
-//     to the pmap pixels or the 9 parameters used to model them.  Components
-//     have no substructure, and are the base unit for Gaussian fitting.
-//
-//
-
-//
-//
 // <example>
 // <srcblock>
 //  TempImage<Double> image;
@@ -125,7 +104,10 @@
 //
 // <todo asof="2002/06/20">
 //   <li> Generalize dimensionality 
-//   <li> Numerous possible improvements to make are documented in the code.
+//   <li> Use Lattice iterators in place of IPosition loops wherever possible
+//   <li> Speed up fitting by not sending every region pixel to the fitter
+//   <li> Send the completed componentmap to the user as an AIPS++ (Int?) Image
+//   <li> Numerous other improvements to make are documented in the code
 // </todo>
   
 
@@ -139,8 +121,8 @@ public:
 // assigned.  A masked pixel is not inside the targeted region of the
 // sub-componentmap and is not used in decomposition or fitting.
    enum componentValues {
-       INDETERMINATE=-1,
-       MASKED=-2 
+     INDETERMINATE = -1,
+     MASKED = -2 
    };
 
 // Default constructor.   Object is not viable until setImage called
@@ -170,7 +152,7 @@ public:
 // fit for that many components is made.
 //
 // The fit will be repeated until it converges to a result with 
-// RMS < maximumError, though if it cannot converge within 3 x 2^g iterations
+// RMS < maximumRMS, though if it cannot converge within 3 x 2^g iterations
 // it will take the best result available.
 //
 // Does not generate an accurate componentmap. 
@@ -186,7 +168,7 @@ public:
 // block is contoured separately depending on its regional maximum.
 // If varyContours=False, all components are contoured based on the global
 // maximum.
-  void decomposeImage(T thresholdVal, uInt nContour, T maximumError, 
+  void decomposeImage(T thresholdVal, uInt nContour, T maximumRMS, 
                       Bool varyContours=True);
 
 //Retrieves the target image's value at the given location.
@@ -194,19 +176,24 @@ public:
   T getImageVal(IPosition coord) const;
 // </group>
 
-// Returns the number of regions found in the image.
+// Returns the number of regions found in the image.  A 'region' as defined
+// in this code is a subset of the image of contiguous pixels whose values
+// are greater than the threshold value specified in decomposeImage. A region
+// may contain one or more components.
   uInt numRegions() const;
 
-// Returns the number of components found in the image.
+// Returns the number of components found in the image.  A 'component' as
+// defined in this code is a source that can be described as a single Gaussian.
+// This can only be determined after deblending.
   uInt numComponents() const;
-//
+
 // Command-line text output functions; generally useful only for debugging.
 // <group>
   void display() const;
   void displayContourMap(const Vector<T>& clevels) const;
   void printComponents() const;
 // </group>
-//
+
 private:
   ImageInterface<T> *itsImagePtr;// Points to the target image.
   Lattice<Int> *itsMapPtr;       // The actual component map.  
@@ -381,15 +368,14 @@ private:
 
 // Fits multiple gaussians to a single region.  First performs  a local 
 // maximum scan to estimate the number of components in the region.
-  Matrix<T> fitRegion(Int region, T maximumError);
-
+  Matrix<T> fitRegion(Int region, T maximumRMS);
 
 // Fits gaussians to an image; multiple gaussians per region in the pmap.
 // The regions are fit sequentially and independently, so this function 
 // can be used on the main image.
 // If the map is not yet thresholded, will fit to the entire image as if it
 // were a single composite object, which will be very slow.
-  void fitRegions(T maximumError);
+  void fitRegions(T maximumRMS);
 
 // Fits gaussians to an image; one gaussian per region in the pmap.
 // This function is intended to be used only by ImageDecomposer on its
@@ -399,7 +385,7 @@ private:
 
 // If the deblended flag is True, the function will treat each region as
 // an individual component and will fit that many gaussians to the image
-  void fitComponents(T maximumError);
+  void fitComponents(T maximumRMS);
 
 
 // Fits the specified number of 3D gaussians to the data, and returns 
@@ -409,12 +395,12 @@ private:
   Matrix<T> fitGauss(const Matrix<T>& positions, 
                      const Vector<T>& dataValues,
                      uInt ngaussians,
-                     const Matrix<T>& initestimate, T maximumError) const;
+                     const Matrix<T>& initestimate, T maximumRMS) const;
   Matrix<T> fitGauss(const Matrix<T>& positions,
                      const Vector<T>& dataValue, 
                      uInt ngaussians,
                      const Matrix<T>& initestimate, 
-                     const Matrix<T>& retrymatrix, T maximumError) const;
+                     const Matrix<T>& retrymatrix, T maximumRMS) const;
 // </group>
 
 };
