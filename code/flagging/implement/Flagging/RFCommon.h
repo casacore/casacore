@@ -94,7 +94,13 @@ const char
     RF_CENTERTIME[] = "timeslot",
     RF_TIMEDELTA[] = "dtime",
     
-    RF_QUACK[] = "quack";
+    RF_QUACK[] = "quack",
+
+    RF_NCHAN[] = "nchan",
+    RF_START[] = "start",
+    RF_STEP[] = "step",
+    RF_MODE[] = "mode",
+    RF_MSSELECT[] = "msselect";
 
 // <summary>
 // FlaggerEnums: collection of enums for various flagger classes
