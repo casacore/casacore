@@ -26,10 +26,13 @@
 //# $Id$
 
 #include <trial/ComponentModels/Flux.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/Glish/GlishArray.h>
+#include <aips/Glish/GlishRecord.h>
+#include <aips/Glish/GlishValue.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
+#include <aips/Mathematics/Complex.h>
+#include <aips/Utilities/String.h>
 
 template<class T> FluxRep<T>::
 FluxRep()
@@ -263,10 +266,10 @@ scaleValue(const T & factor) {
   DebugAssert(ok(), AipsError);
 }
 template<class T> Bool FluxRep<T>::
-toRecord(String & errorMessage, const GlishRecord & record) {
+fromRecord(String & errorMessage, const GlishRecord & record) {
   {
     if (!record.exists("polarisation")) {
-      thisFlux.setPol(ComponentType::STOKES);
+      setPol(ComponentType::STOKES);
     } else {
       if (record.get("polarisation").type() != GlishValue::ARRAY) {
 	errorMessage += "\nThe 'polarisation' field cannot be a record";
@@ -297,7 +300,7 @@ toRecord(String & errorMessage, const GlishRecord & record) {
 	  String("\nCommon values are 'Stokes', 'Linear' & 'Circular'");
 	return False;
       }
-      thisFlux.setPol(pol);
+      setPol(pol);
     }
   }
   {
@@ -326,7 +329,7 @@ toRecord(String & errorMessage, const GlishRecord & record) {
 	String("in the flux record for an unknown reason");
       return False;
     }
-    thisFlux.setValue(fluxVal);
+    setValue(fluxVal);
   }
   {
     if (!record.exists("unit")) {
@@ -352,24 +355,24 @@ toRecord(String & errorMessage, const GlishRecord & record) {
 	String("in the flux record for an unknown reason");
       return False;
     }
-    thisFlux.setUnit(Unit(unitVal));
+    setUnit(Unit(unitVal));
   }
   return True;
 }
 
 template<class T> Bool FluxRep<T>::
 toRecord(String & errorMessage, GlishRecord & record) const {
-  if (thisFlux.pol() == ComponentType::STOKES) {
-    Flux<Double> fluxCopy = thisFlux;
+  if (pol() == ComponentType::STOKES) {
+    FluxRep<Double> fluxCopy = *this;
     Vector<Double> fluxVal(4);
     fluxCopy.value(fluxVal);
     record.add("value", GlishArray(fluxVal.ac()));
     record.add("polarisation", ComponentType::name(ComponentType::STOKES));
   } else {
-    record.add("value", GlishArray(thisFlux.value().ac()));
-    record.add("polarisation", ComponentType::name(thisFlux.pol()));
+    record.add("value", GlishArray(value().ac()));
+    record.add("polarisation", ComponentType::name(pol()));
   }
-  record.add("unit", thisFlux.unit().getName());
+  record.add("unit", unit().getName());
   if (errorMessage == ""); // Suppress compiler warning about unused variable
   return True;
 }
