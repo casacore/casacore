@@ -1,5 +1,5 @@
 //# dLattice.cc:  illustrates the functions discused in the docs of Lattice.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,10 +71,10 @@ void FFT2DReal2Complex(Lattice<Complex> & result,
   const uInt npol = shape(2);
   const uInt nchan = shape(3); const IPosition resultShape = result.shape();
   AlwaysAssert(resultShape.nelements() == 4, AipsError);
-  AlwaysAssert(resultShape(3) == nchan, AipsError);
-  AlwaysAssert(resultShape(2) == npol, AipsError);
-  AlwaysAssert(resultShape(1) == ny, AipsError);
-  AlwaysAssert(resultShape(0) == nx/2 + 1, AipsError);
+  AlwaysAssert(resultShape(3) == Int(nchan), AipsError);
+  AlwaysAssert(resultShape(2) == Int(npol), AipsError);
+  AlwaysAssert(resultShape(1) == Int(ny), AipsError);
+  AlwaysAssert(resultShape(0) == Int(nx/2 + 1), AipsError);
 
   const IPosition inputSliceShape(4,nx,ny,1,1);
   const IPosition resultSliceShape(4,nx/2+1,ny,1,1);
@@ -114,7 +114,7 @@ int main() {
     makePsf(psf);
     IPosition xfrShape(psfShape);
     xfrShape(0) = psfShape(0)/2 + 1;
-    SetupNewTable xfrSetup("dLattice_xfr_tmp.array", TableDesc(), 
+    SetupNewTable xfrSetup("dLattice_tmp_xfr.array", TableDesc(), 
 			   Table::Scratch);
     Table xfrTable(xfrSetup);
     PagedArray<Complex> xfr(xfrShape, xfrTable);
