@@ -27,7 +27,7 @@
 
 
 #include <aips/IO/LockFile.h>
-#include <aips/IO/FilebufIO.h>
+#include <aips/IO/FiledesIO.h>
 #include <aips/IO/MemoryIO.h>
 #include <aips/IO/CanonicalIO.h>
 #include <aips/OS/RegularFile.h>
@@ -36,8 +36,6 @@
 #include <aips/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <errno.h>
-#include <string.h>
 #include <iostream.h>
 #include <strstream.h>
 
@@ -82,25 +80,16 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     //# If it did not succeed, open as readonly.
     int fd;
     if (!create) {
-	fd = open (itsName, O_RDWR);
+	fd = FiledesIO::open (itsName, True, False);
 	if (fd == -1) {
-	    fd = open (itsName, O_RDONLY);
-	    if (fd == -1) {
-		throw (AipsError ("Lock file " + itsName +
-				  " could not be opened: " + strerror(errno)));
-	    }
+	    fd = FiledesIO::open (itsName, False);
 	    itsWritable  = False;
 	    itsAddToList = False;
 	}
     }else{
 	//# Create a new file with world write access.
 	//# Initialize the values in it.
-	fd = open (itsName, O_RDWR | O_CREAT | O_TRUNC,
-		   0666);
-	if (fd == -1) {
-	    throw (AipsError ("Lock file " + itsName +
-			      " could not be created: " + strerror(errno)));
-	}
+	fd = FiledesIO::create (itsName, 0666);
 	putReqId (fd);
     }
     //# Create FileLocker objects for this lock file.
@@ -108,7 +97,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     //# The second one is to set the file to "in use".
     itsLocker    = FileLocker (fd, 0, 1);
     itsUseLocker = FileLocker (fd, 1, 1);
-    itsFileIO = new FilebufIO (fd);
+    itsFileIO = new FiledesIO (fd);
     itsCanIO  = new CanonicalIO (itsFileIO);
     // Set the file to in use by acquiring a read lock.
     itsUseLocker.acquire (False, 1);
@@ -118,7 +107,7 @@ LockFile::~LockFile()
 {
     delete itsCanIO;
     delete itsFileIO;
-    close (itsLocker.fd());
+    FiledesIO::close (itsLocker.fd());
 }
 
 Bool LockFile::isMultiUsed()

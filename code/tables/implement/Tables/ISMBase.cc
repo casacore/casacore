@@ -39,7 +39,7 @@
 #include <aips/IO/AipsIO.h>
 #include <aips/IO/RawIO.h>
 #include <aips/IO/CanonicalIO.h>
-#include <aips/IO/FilebufIO.h>
+#include <aips/IO/FiledesIO.h>
 #include <aips/Tables/DataManError.h>
 #include <iostream.h>
 
@@ -232,7 +232,7 @@ void ISMBase::readIndex()
 {
     file_p->seek (0);
     // Use the file indicated by the fd from the BucketFile object.
-    FilebufIO fio (file_p->fd());
+    FiledesIO fio (file_p->fd());
     TypeIO* tio;
     // It is stored in canonical or local format.
     if (asCanonical()) {
@@ -267,7 +267,7 @@ void ISMBase::writeIndex()
     // Write a few items at the beginning of the file.
     file_p->seek (0);
     // Use the file indicated by the fd from the BucketFile object.
-    FilebufIO fio (file_p->fd());
+    FiledesIO fio (file_p->fd());
     TypeIO* tio;
     // Store it in canonical or local format.
     if (asCanonical()) {

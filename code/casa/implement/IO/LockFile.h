@@ -41,7 +41,7 @@
 #include <sys/types.h>
 
 //# Forward declarations
-class FilebufIO;
+class FiledesIO;
 class MemoryIO;
 class CanonicalIO;
 
@@ -254,7 +254,7 @@ private:
     //# The member variables.
     FileLocker   itsLocker;
     FileLocker   itsUseLocker;
-    FilebufIO*   itsFileIO;
+    FiledesIO*   itsFileIO;
     CanonicalIO* itsCanIO;
     Bool         itsWritable;         //# lock file is writable?
     Bool         itsAddToList;        //# Should acquire add to request list?
