@@ -177,7 +177,7 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the Chebyshev interval and mode=CONSTANT.
     ChebyshevParam(const T &min, const T &max,
-		   const OutOfIntervalMode mode=CONSTANT,
+		   const OutOfIntervalMode mode=ChebyshevParam<T>::CONSTANT,
 		   const T &defval=T(0));
   
     // create a fully specified Chebyshev polynomial.  
@@ -191,7 +191,7 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the canonical range and mode=CONSTANT.
     ChebyshevParam(const Vector<T> &coeffs, const T &min, const T &max, 
-		   const OutOfIntervalMode mode=CONSTANT, const T &defval=T(0));
+		   const OutOfIntervalMode mode=ChebyshevParam<T>::CONSTANT, const T &defval=T(0));
   
     // create a fully specified Chebyshev polynomial.
     //   config  is a record that contains the non-coefficient data 
@@ -334,13 +334,13 @@ public:
     explicit ChebyshevParamModeImpl(const uInt n) : ChebyshevParam<T>(n) {}
 
     ChebyshevParamModeImpl(const T &min, const T &max,
-			   const OutOfIntervalMode mode=CONSTANT,
+			   const typename ChebyshevParam<T>::OutOfIntervalMode mode=CONSTANT,
 			   const T &defval=T(0))
 	: ChebyshevParam<T>(min, max, mode, defval) {}
   
     ChebyshevParamModeImpl(const Vector<T> &coeffs, 
 			   const T &min, const T &max, 
-			   const OutOfIntervalMode mode=CONSTANT, 
+			   const typename ChebyshevParam<T>::OutOfIntervalMode mode=CONSTANT, 
 			   const T &defval=T(0))
 	: ChebyshevParam<T>(coeffs, min, max, mode, defval) {}
   
@@ -403,13 +403,13 @@ public:
 	: ChebyshevParam<AutoDiff<T> >(n) {}
 
     ChebyshevParamModeImpl_PS(const AutoDiff<T> &min, const AutoDiff<T> &max,
-			      const OutOfIntervalMode mode=CONSTANT,
+			      const typename ChebyshevParam<AutoDiff<T> >::OutOfIntervalMode mode=CONSTANT,
 			      const AutoDiff<T> &defval=AutoDiff<T>(0))
 	: ChebyshevParam<AutoDiff<T> >(min, max, mode, defval) {}
   
     ChebyshevParamModeImpl_PS(const Vector<AutoDiff<T> > &coeffs, 
 			      const AutoDiff<T> &min, const AutoDiff<T> &max, 
-			      const OutOfIntervalMode mode=CONSTANT, 
+			      const typename ChebyshevParam<AutoDiff<T> >::OutOfIntervalMode mode=CONSTANT, 
 			      const AutoDiff<T> &defval=AutoDiff<T>(0))
 	: ChebyshevParam<AutoDiff<T> >(coeffs, min, max, mode, defval) {}
   
@@ -447,14 +447,14 @@ public:
 
     ChebyshevParamModeImpl_PSA(const AutoDiffA<T> &min, 
 			       const AutoDiffA<T> &max,
-			       const OutOfIntervalMode mode=CONSTANT,
+			       const typename ChebyshevParam<AutoDiffA<T> >::OutOfIntervalMode mode=CONSTANT,
 			       const AutoDiffA<T> &defval=AutoDiffA<T>(0))
 	: ChebyshevParam<AutoDiffA<T> >(min, max, mode, defval) {}
   
     ChebyshevParamModeImpl_PSA(const Vector<AutoDiffA<T> > &coeffs, 
 			       const AutoDiffA<T> &min, 
 			       const AutoDiffA<T> &max, 
-			       const OutOfIntervalMode mode=CONSTANT, 
+			       const typename ChebyshevParam<AutoDiffA<T> >::OutOfIntervalMode mode=CONSTANT, 
 			       const AutoDiffA<T> &defval=AutoDiffA<T>(0))
 	: ChebyshevParam<AutoDiffA<T> >(coeffs, min, max, mode, defval) {}
   
