@@ -62,6 +62,16 @@ class Coordinate;
 // is loosely termed the header. This is information describing the
 // coordinate system, the image units etc.  This class enables you to
 // retrieve the descriptive header information and/or list it.
+//
+// The functions that retrieve specific coordinate information in vectors 
+// (e.g. <src>referenceValues</src>) return it in the order of the axes of 
+// the image.  Note that this can be different from the order in which 
+// the <linkto class=CoordinateSystem>CoordinateSystem</linkto>
+// functions of similar name might return them.   This is because the
+// order of the coordinates in the CoordinateSystem is not necessarily 
+// the same order as the pixel axes in the associated image, although 
+// of course there is a known association.
+// 
 // </synopsis>
 //
 // <example>
