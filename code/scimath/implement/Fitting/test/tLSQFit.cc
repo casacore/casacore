@@ -412,6 +412,31 @@ int main() {
     }
     
     cout << "---------------------------------------------------" << endl;
+    
+    cout << "Real -- 3 angles - add constraint 180" << endl;
+    {
+      LSQFit lsq5(3);
+      Float *val = new Float[3];
+      val[0] = 1; val[1] = 0; val[2] = 0;
+      lsq5.makeNorm(val, 1.0f, 90.0f);
+      val[0] = 0; val[1] = 1; val[2] = 0;
+      lsq5.makeNorm(val, 1.0f, 45.0f);
+      val[0] = 0; val[1] = 0; val[2] = 1;
+      lsq5.makeNorm(val, 1.0f, 46.0f);
+      val[0] = 1; val[1] = 1; val[2] = 1;
+      lsq5.addConstraint(val, 180.0f);
+      lsq5.invert(nr1);
+      lsq5.solve(sol1);
+      sd1 = lsq5.getSD();
+      mu1 = lsq5.getWeightedSD();
+      for (uInt i=0; i<3; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
+      };
+      delete [] val;
+    }
+    cout << "---------------------------------------------------" << endl;
+
     cout << "Complex-----------------------" << endl;
     LSQFit lsqc1(N, LSQComplex());
     for (uInt i=0; i<M; i++) {
