@@ -231,13 +231,16 @@ public:
 // plotting arguments or that the internal status of the class is bad. If you
 // don't call this function, the default state of the class is to not set
 // a plotting device.
-   Bool setPlotting(const PGPlotter& plotter,
+   Bool setPlotting(PGPlotter& plotter,
                     const Vector<Int>& nxy);
 
 // Display the histograms by plotting them.  A return value of <src>False</src> 
 // indicates an invalid plotting device, or that the internal status of the class is bad.
 // If you don't call this function you won't see any histograms.
    Bool display ();
+
+// CLose the plotter
+   void closePlotting();
 
 // Return the display axes
    Vector<Int> displayAxes() const {return displayAxes_p;}
