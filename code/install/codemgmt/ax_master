@@ -6323,3 +6323,4 @@
 18 078 src rm trial/implement/FITS/FITSUtil2.cc
 18 078 src rm trial/implement/FITS/test/tFITSUtil.cc
 18 090 src mv aips/glish/glish/sysinfo/dummy.cc aips/glish/glish/sysinfo/stub.cc
+18 113 src mv trial/implement/Tables/test/tTiledShapeStM_1.cc aips/implement/Tables/test/tTiledShapeStM_1.cc
