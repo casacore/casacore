@@ -2388,3 +2388,7 @@
 09 339 src rm trial/scripts/inputs.help
 09 339 src rm trial/scripts/inputs.g
 09 339 src rm trial/apps/tableplotter
+09 340 src rm aips/implement/Graphics/test/tVisualize.cc
+09 340 src rm aips/implement/Graphics/test/tVisualize.exec
+09 340 src rm aips/implement/Graphics/test/tVisualize.in
+09 340 src rm aips/implement/Graphics/test/tVisualize.out
