@@ -13,3 +13,27 @@ The MFrequency and MRadialVelocity classes have two different definitions of the
 The classes were originally designed having an 'LSR' and an 'LSRK' definition, with the LSR being the default (the dynamical). This turned out a bad choice, since radio astronomy uses the kinematoical definition more; call it plain LSR, and often have no idea that there is a difference.
 
 After the multi-beam and the VLA filler programs had problems, a chnage was made. In principle there are now only the LSRK and LSRD fefinition. To make current programs compile, for a short while an LSR alias will be present, equal to the LSRK definition. This could influence some of the results of (test-) programs.
+
+change id: 0012
+ author:   Wim Brouw
+ date:     2000/06/15
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   measures
+ type:     Code Documentation
+ category: Change
+ summary:  Change in LSR definition
+The MFrequency and MRadialVelocity classes have two different
+definitions of the Local Standard of Rest (LSR): the dynamical, and
+the kinematical one.  The classes were originally designed having an
+'LSR' and an 'LSRK' definition, with the LSR being the default (the
+dynamical). This turned out a bad choice, since radio astronomy uses
+the kinematoical definition more; call it plain LSR, and often have no
+idea that there is a difference.
+
+After the multi-beam and the VLA filler programs had problems, a
+chnage was made. In principle there are now only the LSRK and LSRD
+fefinition. To make current programs compile, for a short while an LSR
+alias will be present, equal to the LSRK definition. This could
+influence some of the results of (test-) programs.
