@@ -1467,7 +1467,7 @@ Bool CoordinateUtil::setDirectionConversion (String& errorMsg,
 Bool CoordinateUtil::setCoordinateUnits (CoordinateSystem& cSys, const Vector<String>& units, uInt which)
 {
   AlwaysAssert(which<cSys.nCoordinates(), AipsError);
-  AlwaysAssert(which>=0, AipsError);
+  AlwaysAssert(which>0, AipsError);
 
 // Find the world axes for this coordinate
 
