@@ -29,6 +29,7 @@
 
 #include <aips/Tasking/AipsrcVector.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Arrays/Vector.h>
 
 // The following global function defined for gcc 1.0.3b

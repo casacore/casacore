@@ -1,5 +1,5 @@
 //# AipsrcVector.cc: Read multiple values from the  Aipsrc resource files
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 //# Includes
 
 #include <aips/Tasking/AipsrcVector.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/Quantum.h>

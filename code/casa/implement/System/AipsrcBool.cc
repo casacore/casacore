@@ -28,6 +28,7 @@
 //# Includes
 
 #include <aips/Tasking/AipsrcValue.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
 
 // The following global function defined for gcc 1.0.3b
