@@ -2596,3 +2596,5 @@
 09 515 src mv trial/implement/Measures/test/tUVWMachine.out aips/implement/Measures/test/tUVWMachine.out
 09 518 src rm trial/implement/Measures/test/tSkyPosition.cc
 09 518 src rm trial/implement/Measures/test/tMeasuredValue.cc
+09 518 src rm trial/implement/Measures/SkyPosition.h
+09 518 src rm trial/implement/Measures/SkyPosition.cc
