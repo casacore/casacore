@@ -1,5 +1,5 @@
 //# ImageUtilities.h: Some utility functions handy for accessing images
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -118,7 +118,7 @@ public:
 //
 //  5 values for ComponentType::Gaussian, CT::Disk.  3 values for CT::Point.
 //
-   static SkyComponent encodeSkyComponent(LogIO& os,   
+   static SkyComponent encodeSkyComponent(LogIO& os, Double& fluxRatio,
                                           const ImageInfo& ii,
                                           const CoordinateSystem& cSys,
                                           const Unit& brightnessUnit,
