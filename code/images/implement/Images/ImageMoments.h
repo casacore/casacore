@@ -548,6 +548,7 @@ private:
    Bool fixedYLimits_p;
 
    Int momentAxis_p;
+   Int worldMomentAxis_p;
    Vector<Int> kernelTypes_p;
    Vector<Double> kernelWidths_p;   
    Vector<Int> nxy_p;
