@@ -133,17 +133,17 @@ void ComponentList::sample(Vector<Double> & result,
   result = 0.0;
   Vector<Double> compResult(4);
   for (uInt i = 0; i < nelements(); i++) {
-    component(i).sample(compResult, sampleDir, pixelSize);
+    component(i).sample(sampleDir, pixelSize).value(compResult);
     result.ac() += compResult.ac();
   }
 }
 
-void ComponentList::project(ImageInterface<Float> & plane) const {
-  DebugAssert(ok(), AipsError);
-  for (uInt i = 0; i < nelements(); i++) {
-    component(i).project(plane);
-  }
-}
+// void ComponentList::project(ImageInterface<Float> & plane) const {
+//   DebugAssert(ok(), AipsError);
+//   for (uInt i = 0; i < nelements(); i++) {
+//     component(i).project(plane);
+//   }
+// }
 
 void ComponentList::add(SkyComponent component) {
   AlwaysAssert(itsROFlag == False, AipsError);
@@ -288,8 +288,7 @@ void ComponentList::sort(ComponentList::SortCriteria criteria) {
     MVDirection refDir(0.0, 0.0);
     Vector<Double> position(2);
     for (uInt i = 0; i < nelements(); i++) {
-      itsList[i].direction(compDir);
-      val[i] = refDir.separation(compDir.getValue());
+      val[i] = refDir.separation(itsList[i].refDirection().getValue());
     }
     order = Sort::Ascending;
     break;
@@ -494,10 +493,10 @@ void ComponentList::writeTable() {
     }
     {
       shapeCol.put(i, ComponentType::name(component(i).shape()));
-      component(i).direction(compDir);
+      compDir = component(i).refDirection();
       dirCol.put(i, compDir);
-      shapeParms.resize(component(i).nParameters());
-      component(i).parameters(shapeParms);
+      shapeParms.resize(component(i).nShapeParameters());
+      component(i).shapeParameters(shapeParms);
       shapeParmCol.put(i, shapeParms);
     }
     {
@@ -508,8 +507,7 @@ void ComponentList::writeTable() {
       specShapeParmCol.put(i, spectralParms);
     }
     {
-      component(i).label(compLabel);
-      labelCol.put(i, compLabel);
+      labelCol.put(i, component(i).label());
     }
   }
 }
@@ -564,10 +562,10 @@ void ComponentList::readTable(const String & fileName, const Bool readOnly) {
     }
     {
       dirCol.get(i, compDir);
-      currentComp.setDirection(compDir);
+      currentComp.setRefDirection(compDir);
       shapeParms.resize(0);
       shapeParmCol.get(i, shapeParms);
-      currentComp.setParameters(shapeParms);
+      currentComp.setShapeParameters(shapeParms);
     }
     {
       freqCol.get(i, compFreq);
