@@ -28,12 +28,14 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: inhale [-c|-m] [-D] [-d] [-l] [-n] [-r #] [-w #]
+# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-r #] [-w #]
 #-----------------------------------------------------------------------------
 # inhale retrieves the latest AIPS++ update from the master ftp directories on
 # aips2.nrao.edu.  It is invoked regularly as a cron job.
 #
 # Options:
+#   -b     Use the most recent "blessed" release, which is not necessarily
+#          the most recent release.  Good for sites that need stability.
 #   -c     Force a cumulative update.
 #   -D     Fetch the latest version which has passed the test suite.
 #   -d     If the "-n" option is specified, don't remake the "docsys" target.
@@ -43,6 +45,7 @@
 #          from being recorded in the LOGFILE entry for the rebuild.
 #   -l     Latchkey mode; fetch latchkey updates (if any) together with any
 #          other updates intended for general distribution.
+#          (This mode is now pretty much obsolete.)
 #   -m     Do a "mixed" update: (mostly) incremental inhale, cumulative sneeze.
 #   -n     Don't remake the system (allsys).  The "install" and "docsys"
 #          targets will still be remade; see also the "-d" option.
@@ -113,6 +116,8 @@
 
 # Get the site name.
   SITE=`echo $AIPSPATH | awk '{print $3}'`
+# And its architecture.
+  ARCH=`echo $AIPSPATH | awk '{print $2}'`
 
 # Produce a status report.
   echo ""
@@ -153,6 +158,7 @@
   umask 002
 
 # Parse command input.
+  BLESSED=""
   MODE=incremental
   HYBRID=
   DINKUM=
@@ -165,6 +171,9 @@
   while [ "$#" -gt 0 ]
   do
      case $1 in
+     -b)
+        BLESSED=1
+        ;;
      -c)
         MODE=cumulative
         ;;
@@ -313,6 +322,7 @@
      else
         echo "get VERSION" >> ftpcommands
      fi
+     echo "get BLESSED" >> ftpcommands
      echo "quit" >> ftpcommands
   else
 #    The update files must have been fetched manually.
@@ -432,6 +442,65 @@
      echo ""
      echo "inhale: Failed to get a directory listing from the master, abort!"
      exit 2
+  fi
+
+# Check to see if we only want a "blessed" version.
+# I'm sure this could still use a tweak or two.
+  if [ "$BLESSED" != "" ]
+  then
+     echo ""
+     echo "inhale: Blessed inhale requested...checking availability."
+
+     if [ "$MODE" = base ]
+     then
+        echo "inhale: Blessed request overridden by new base release."
+     elif [ -f BLESSED ]
+     then
+        BLESSEDVERSN=`sed 's/#.*//' BLESSED | \
+         awk "{ for (i = 2; i <= NF; i++)
+                if (\\$i == \"ALL\" || \\$i == \"$ARCH\") {
+                   blessed = \\$1
+                   next
+                }
+              }
+              END { print blessed }"`
+
+        if [ "$BLESSEDVERSN" != "" ]
+        then
+           BLESSEDMINOR=`echo $BLESSEDVERSN | awk -F. '{print $2}'`
+
+           if [ "$BLESSEDMINOR" -le "$OLDMINOR" ]
+           then
+              echo "inhale: Nothing to do...no new blessings."
+              echo "        Current version: $OLDVERSN"
+              echo "        Blessed version: $BLESSEDVERSN"
+              cd $AIPSLAVE
+              [ -f LOGFILE ] || touch LOGFILE
+              mv -f LOGFILE LOGFILE_
+              echo "$OLDVERSN `adate`  (unchanged)" | cat - LOGFILE_ > LOGFILE
+              chmod 444 LOGFILE
+              rm -f LOGFILE_
+              rm -rf $SLAVTMPD
+              trap 0 1 2 3 15
+              exit 0
+           fi
+
+           echo "inhale: Using blessed version $BLESSEDVERSN"
+           NEWVERSN="$BLESSEDVERSN"
+           NEWMAJOR=`echo $NEWVERSN | awk -F. '{print $1}'`
+           NEWMINOR=`echo $NEWVERSN | awk -F. '{print $2}'`
+           MAJMIN="$NEWMAJOR.$NEWMINOR"
+        else
+#          Should I do this, or just default to a normal inhale?
+#          I'll be conservative/paranoid for now and abort the inhale....
+           exec 1>&2
+           echo "inhale: Blessed versions exist, but I can't figure out which"
+           echo "        which one to use--check the BLESSED file's syntax!"
+           exit 2
+        fi
+     else
+        echo "inhale: No blessed versions exist, defaulting to normal inhale"
+     fi
   fi
 
 # Remove any extraneous information from masterdir.
@@ -632,6 +701,9 @@
      echo ""
      echo "inhale: Using prefetched files."
   fi
+
+# EXIT HERE WHEN TESTING!
+#   exit
 
 #-----------------------------------------------------------------------------
 # Extract and install the update files
@@ -1040,3 +1112,9 @@
   [ "$MODE" = base -a "$NEWMINOR" != 000 ] && exec inhale $ARGS
 
   exit 0
+
+# Local Variables:
+# indent-tabs-mode: nil
+# ksh-indent: 3
+# ksh-group-offset: -3
+# End:
