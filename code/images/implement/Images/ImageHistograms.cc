@@ -263,8 +263,8 @@ Bool ImageHistograms<T>::setNBins (const Int& nBinsU)
       os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
-      
-   if (nBinsU <= 1) {
+
+   if (nBinsU < 1) {
       os_p << LogIO::SEVERE << "Invalid number of bins" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
@@ -511,10 +511,23 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 // Since I already set the tile shape to be unity on all but the first 
 // axis where it is is the axis length, just use the LatticeStepper (default) 
 // navigator, which will also guarentee the access pattern.  There will
-// be no overhang
+// be no overhang.  
   
-   IPosition cursorShape(1,pHistImage_p->shape()(0));
-   RO_LatticeIterator<Int> histIterator(*pHistImage_p, cursorShape);
+   IPosition cursorShape(1,pHistImage_p->ndim(),1);
+   cursorShape(0) = pHistImage_p->shape()(0);
+
+   IPosition vectorAxis(1); vectorAxis(0) = 0;
+
+   IPosition axisPath(pHistImage_p->ndim());
+   for (Int i=0; i<axisPath.nelements(); i++) axisPath(i) = i;
+   
+// Make the stepper explicitly so we can specify the cursorAxes
+// and then vectorCursor will cope with an axis of length 1
+// (it is possible the user could ask for a histogram with one bin !)
+
+   LatticeStepper histStepper(pHistImage_p->shape(), cursorShape,
+                          vectorAxis, axisPath);
+   RO_LatticeIterator<Int> histIterator(*pHistImage_p, histStepper);
 
 
 // Resize output arrays and setup vector iterators
@@ -710,8 +723,22 @@ Bool ImageHistograms<T>::displayHistograms ()
 // and this will guarentee the access pattern is row based rather than tile based
 // There will be no overhang
  
-   IPosition cursorShape(1,pHistImage_p->shape()(0));
-   RO_LatticeIterator<Int> histIterator(*pHistImage_p, cursorShape);
+   IPosition cursorShape(1,pHistImage_p->ndim(),1);
+   cursorShape(0) = pHistImage_p->shape()(0);
+
+   IPosition vectorAxis(1); vectorAxis(0) = 0;
+
+   IPosition axisPath(pHistImage_p->ndim());
+   for (Int i=0; i<axisPath.nelements(); i++) axisPath(i) = i;
+   
+
+// Make the stepper explicitly so we can specify the cursorAxes
+// and then vectorCursor will cope with an axis of length 1
+// (it is possible the user could ask for a histogram with one bin !)
+
+   LatticeStepper histStepper(pHistImage_p->shape(), cursorShape,
+                          vectorAxis, axisPath);
+   RO_LatticeIterator<Int> histIterator(*pHistImage_p, histStepper);
 
 
 // Histogram vectors and other bits and pieces
@@ -745,8 +772,8 @@ Bool ImageHistograms<T>::displayHistograms ()
 // Display the histogram
 
       if (!displayOneHistogram (linearSum, linearYMax, histIterator.position(), 
-                           range, stats, values, counts)) return False;
- 
+                                range, stats, values, counts)) return False;
+    
    }
       
 // Close plotting device
@@ -1677,7 +1704,7 @@ void ImageHistograms<T>::putInStats (const IPosition& imagePosition,
 
 template <class T>
 T ImageHistograms<T>::setBinWidth (const Vector<T>& clip,
-                                          const Int& nBins)
+                                   const Int& nBins)
 //
 // Set the bin width for the current histogram
 //
