@@ -123,7 +123,7 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     Int n1 = genSort (inx, arr, nr, ord, type);
     cout <<":  Indirect / direct" << endl;
     if (!showFlag) {
-	cout << "<<< Resulting number may vary" << endl;
+	cout << ">>> Resulting number may vary" << endl;
     }
     cout << setw(8) << n1 << endl;
     if (!showFlag) {
