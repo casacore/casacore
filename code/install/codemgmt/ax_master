@@ -4927,3 +4927,4 @@
 14 316 sys rm libexec/dishplot_range_cursor.g
 14 316 sys rm libexec/dishplot_printing.g
 14 316 sys rm libexec/dishplot_data.g
+14 316 sys rm libexec/dishplot_buttons.g
