@@ -2753,3 +2753,4 @@
 10 087 src rm trial/apps/sky/sky_meta.g
 10 087 src rm trial/apps/sky/sky_standard.gp
 10 087 src rm trial/apps/sky/templates
+10 087 src rm trial/apps/simulator
