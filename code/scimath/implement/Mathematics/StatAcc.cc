@@ -275,7 +275,7 @@ StatAcc<T> StatAcc<T>::operator+ (const StatAcc<T>& that)
 template<class T>
 void StatAcc<T>::printSummaryLine (ostream& os, const String& caption) const
 { 
-    long flags = os.flags();          // save current setting
+	ios::fmtflags flags = os.flags();          // save current setting
     uInt p = 4;                       // precision
     os.setf(ios::right,ios::adjustfield);
 
@@ -299,7 +299,7 @@ void StatAcc<T>::printSummaryLine (ostream& os, const String& caption) const
 template<class T>
 void StatAcc<T>::printSummaryLineHeader (ostream& os, const String& caption) const
 { 
-    long flags = os.flags();          // save current setting
+	ios::fmtflags flags = os.flags();          // save current setting
     uInt p = 4;                       // precision
 
     // print one-line header
@@ -322,7 +322,7 @@ void StatAcc<T>::printSummaryLineHeader (ostream& os, const String& caption) con
 template<class T>
 void StatAcc<T>::printSummaryList (ostream& os, const String& caption) const
 { 
-    long flags = os.flags();         // save current setting
+	ios::fmtflags flags = os.flags();         // save current setting
 
     os << " " << endl;               // skip line
     os << " StatAcc summary for: " << caption << endl; 
