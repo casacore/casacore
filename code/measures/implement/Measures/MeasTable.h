@@ -139,9 +139,17 @@ public:
     N_JPLconst };
 
   //# General Member Functions
+  // Selection related data
+  // <group>
+  // Are the IAU2000 precession/nutation to be used or not (IAU1984)
+  Bool useIAU2000();
+  // If IAU2000 model, do we use the high precision 2000A model?
+  Bool useIAU2000A();
+  // </group>
+
   // Precession related data
   // <group>
-  // Get the precession-rate part of the IAU 2000 precession-nutation models
+  // Get the precession-rate part of the IAU2000 precession-nutation models
   // (which 0=dpsi (long) and 1=deps (obliquity))
   static Double precRate00(const uInt which, const Double tt);
 
@@ -464,6 +472,13 @@ private:
   static Vector<Double> dIGRF;
   static Vector<Double> resIGRF;
   // </group>
+  // Aipsrc registration (for speed) of use of iau2000 and if so
+  // the 2000a version
+  // <group>
+  static uInt iau2000_reg;
+  static uInt iau2000a_reg;
+  // </group>
+
 };
 
 #endif

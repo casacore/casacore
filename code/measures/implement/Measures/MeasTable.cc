@@ -27,27 +27,28 @@
 
 //# Includes
 #include <aips/Measures/MeasTable.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Quanta/MVEpoch.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Containers/RecordField.h>
+#include <aips/Logging.h>
+#include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasIERS.h>
 #include <aips/Measures/MeasJPL.h>
-#include <aips/Quanta/MUString.h>
 #include <aips/OS/Time.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Logging.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/Euler.h>
+#include <aips/Quanta/MUString.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableRow.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tasking/Aipsrc.h>
-#include <aips/Containers/RecordField.h>
+#include <aips/Tasking/AipsrcValue.h>
+#include <aips/Utilities/Assert.h>
 
 //# Constants
 
@@ -69,8 +70,28 @@ Double MeasTable::lastIGRF = 0;
 Vector<Double> MeasTable::coefIGRF(0);
 Vector<Double> MeasTable::dIGRF(0);
 Vector<Double> MeasTable::resIGRF(0);
+uInt MeasTable::iau2000_reg = 0;
+uInt MeasTable::iau2000a_reg = 0;
 
 //# Member functions
+Bool MeasTable::useIAU2000() {
+  if (!MeasTable::iau2000_reg) {
+    iau2000_reg =
+      AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use"),
+                                    False);
+  };
+  return AipsrcValue<Bool>::get(MeasTable::iau2000_reg);
+}
+
+Bool MeasTable::useIAU2000A() {
+  if (!MeasTable::iau2000a_reg) {
+    iau2000a_reg =
+      AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use2000a"),
+                                    False);
+  };
+  return AipsrcValue<Bool>::get(MeasTable::iau2000a_reg);
+}
+
 Double MeasTable::
 precRate00(const uInt which, const Double tt) {
   static Double preoblcor[2] = { -0.29965*C::arcsec,
