@@ -59,30 +59,17 @@ Bool Interpolate2D::interp(Float& result,
                            const Array<Float>& data,
                            Interpolate2D::Method method)  const
 {
-  AlwaysAssert( (data.ndim() == 2 ), AipsError);
   const Matrix<Float>& data2 = dynamic_cast<const Matrix<Float>&>(data);
   return interp(result, where, data2, method);
 }
-
-
-Bool Interpolate2D::interp(Float& result, 
-                           const Vector<Double>& where, 
-                           const Array<Float>& data,
-                           const Array<Bool>& mask,
-                           Interpolate2D::Method method)  const
-{
-  AlwaysAssert(data.ndim()==2, AipsError);
-  const Matrix<Float>& data2 = dynamic_cast<const Matrix<Float>&>(data);
-  const Matrix<Bool>& mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
-  return interp(result, where, data2, mask2, method);
-}
-
 
 Bool Interpolate2D::interp(Float& result, 
                            const Vector<Double>& where, 
                            const Matrix<Float>& data,
                            Interpolate2D::Method method) const
 {
+  AlwaysAssert(data.ndim()==2, AipsError);
+//
   const Matrix<Bool>* maskPtr(0);
   if (method==Interpolate2D::LINEAR) {
     return interpLinear(result, where, data, maskPtr);
@@ -95,12 +82,30 @@ Bool Interpolate2D::interp(Float& result,
 }
 
 
+
+Bool Interpolate2D::interp(Float& result, 
+                           const Vector<Double>& where, 
+                           const Array<Float>& data,
+                           const Array<Bool>& mask,
+                           Interpolate2D::Method method)  const
+{
+  const Matrix<Float>& data2 = dynamic_cast<const Matrix<Float>&>(data);
+  const Matrix<Bool>& mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
+  return interp(result, where, data2, mask2, method);
+}
+
+
+
 Bool Interpolate2D::interp(Float& result, 
                            const Vector<Double>& where, 
                            const Matrix<Float>& data,
                            const Matrix<Bool>& mask,
                            Interpolate2D::Method method)  const
 {
+  AlwaysAssert(data.ndim()==2, AipsError);
+  AlwaysAssert(data.ndim()==mask.ndim(), AipsError);
+  AlwaysAssert(data.shape()==mask.shape(), AipsError);
+//
   const Matrix<Bool>* maskPtr = &mask;
   if (method==Interpolate2D::LINEAR) {
     return interpLinear(result, where, data, maskPtr);
@@ -233,6 +238,7 @@ Bool Interpolate2D::interpCubic(Float& result,
 
    Int i = Int(where(0)+0.5);
    Int j = Int(where(1)+0.5);
+
 
 // Interpolation grid is 4x4 :  [i-1,j-1] -> [i+2,j+2]
 // Handle edge (and beyond) by using linear.
@@ -374,6 +380,7 @@ Interpolate2D::Method Interpolate2D::stringToMethod (const String& method)
 Bool Interpolate2D::anyBadMaskPixels (const Matrix<Bool>*& maskPtr,
                                       Int i1, Int i2, Int j1, Int j2) const
 {
+   if (maskPtr==0) return False;
    for (Int j=j1; j<=j2; j++) {
       for (Int i=i1; i<=i2; i++) {
          if (!(*maskPtr)(i,j)) return True;
@@ -382,7 +389,6 @@ Bool Interpolate2D::anyBadMaskPixels (const Matrix<Bool>*& maskPtr,
     return False;
 
 /*
-   if (maskPtr==0) return False;
 
 // Damn, can't make const version.  Have to drop const from function
 // and all the ones that call it.
