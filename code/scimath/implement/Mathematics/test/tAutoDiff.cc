@@ -363,7 +363,7 @@ int main()
 	  // log10(x) : derivative = (1/x) / log(10)
 	  y = log10(x);
 	  if (y.value() != Float(log10(x.value())) ||
-	      !allEQ(y.derivatives(), x.derivatives() / Float((x.value()*log(10))))) {
+	      !allEQ(y.derivatives(), x.derivatives() / Float((x.value()*log(10.0))))) {
 	    cerr << "log10(const AutoDiff<T> &) failed" << endl;
 	    nerr++;
 	  }
