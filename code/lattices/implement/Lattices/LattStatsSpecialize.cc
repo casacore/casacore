@@ -1,5 +1,5 @@
 //# LattStatsSpecialize.cc:  
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,12 @@
 #include <trial/Lattices/LattStatsSpecialize.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Lattices/Lattice.h>
+#include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
@@ -232,6 +235,21 @@ Complex LattStatsSpecialize::max(Complex v1, Complex v2)
 {
    return Complex(::max(real(v1),real(v2)),::max(imag(v1),imag(v2)));
 }
+
+void LattStatsSpecialize::putNodeInStorageLattice(Lattice<Float>& lat, 
+                                                  const LatticeExprNode& node, 
+                                                  const IPosition& where)
+{
+   lat.putAt(node.getFloat(), where);      
+}
+
+void LattStatsSpecialize::putNodeInStorageLattice(Lattice<Complex>& lat, 
+                                                  const LatticeExprNode& node, 
+                                                  const IPosition& where)
+{
+   lat.putAt(node.getComplex(), where);      
+}
+
 
 
 Float LattStatsSpecialize::usePixelInc (Float dMin, Float dMax, Float datum)
