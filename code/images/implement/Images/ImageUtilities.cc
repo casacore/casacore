@@ -332,8 +332,7 @@ Table ImageUtilities::setScratchTable (const String &name,
 //
 // Example:
 //
-//   Table table = ImageUtilities::setScratchTable(inImage.name(),
-//                               String("Scratch_"));
+//   Table table = ImageUtilities::setScratchTable(String("Scratch_"), 100);
 //   PagedArray<Float> scratch(inImage.shape(), table);
 //
 //   and if inImage.name() was say "mydata/ngc1234" then
