@@ -231,7 +231,7 @@ and 0 (BARY) to LSR: 5251.89
 and back: 0
 Test real radial velocity
 -----------------------------------------
-Frame: Epoch: 50217::15:00:00.0000 (TDB = 50217.6)
+Frame: Epoch: 50217::15:00:00.0000 (TDB = 50217.6, UT1 = 50217.6, TT = 50217.6)
        Position: [6.00587, 0.695346, 7.9653]
         (Longitude = 0.115265 Latitude = 0.918296)
        Direction: [-0.846092, -0.0803642, 0.526943]
@@ -265,7 +265,7 @@ Frame: Position: [1.07394e-07, -6.33753e-07, 7.66044e-07]
 Test MeasFrame ...
 --------------------------------------
 Epoch B1950: Epoch: 33281::22:09:46.8619
-Frame: Epoch: 33281::22:09:46.8619 (TDB = 33281.9)
+Frame: Epoch: 33281::22:09:46.8619 (TDB = 33281.9, UT1 = 33281.9, TT = 33281.9)
 Test coordinate conversion ...
 --------------------------------------
 Converted B1950 galactic pole Direction: [-0.867601, -0.188375, 0.4602]

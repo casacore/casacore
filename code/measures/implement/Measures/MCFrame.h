@@ -1,5 +1,5 @@
 //# MCFrame.h: Measure frame calculations proxy
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -103,6 +103,10 @@ public:
   static void make(MeasFrame &in);
   // Get TDB in days
   Bool getTDB(Double &tdb);
+  // Get UT1 in days
+  Bool getUT1(Double &tdb);
+  // Get TT in days
+  Bool getTT(Double &tdb);
   // Get the longitude (in rad)
   Bool getLong(Double &tdb);
   // Get the latitude (ITRF) (in rad)
@@ -154,6 +158,14 @@ private:
   void *epConvTDB;
   // TDB time
   Double *epTDBp;
+  // Conversion to UT1 time
+  void *epConvUT1;
+  // UT1 time
+  Double *epUT1p;
+  // Conversion to TT time
+  void *epConvTT;
+  // TT time
+  Double *epTTp;
   // Conversion to LAST time
   void *epConvLAST;
   // LAST time

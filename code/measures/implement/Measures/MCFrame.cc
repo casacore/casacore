@@ -1,5 +1,5 @@
 //# MCFrame.cc: Measure frame calculations proxy
-//# Copyright (C) 1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,6 +48,8 @@
 MCFrame::MCFrame(MeasFrame &inf) :
   myf(inf),
   epConvTDB(0), epTDBp(0), 
+  epConvUT1(0), epUT1p(0), 
+  epConvTT(0), epTTp(0), 
   epConvLAST(0), epLASTp(0), 
   posConvLong(0), posLongp(0), posITRFp(0),
   posConvLongGeo(0), posLongGeop(0), posGeop(0),
@@ -69,6 +71,10 @@ MCFrame::MCFrame(MeasFrame &inf) :
 MCFrame::~MCFrame() {
   delete static_cast<MEpoch::Convert *>(epConvTDB);
   delete epTDBp;
+  delete static_cast<MEpoch::Convert *>(epConvUT1);
+  delete epUT1p;
+  delete static_cast<MEpoch::Convert *>(epConvTT);
+  delete epTTp;
   delete static_cast<MEpoch::Convert *>(epConvLAST);
   delete epLASTp;
   delete static_cast<MPosition::Convert *>(posConvLong);
@@ -105,18 +111,12 @@ void MCFrame::make(MeasFrame &in) {
 }
 
 void MCFrame::resetEpoch() {
-  if (epTDBp) {
     delete epTDBp; epTDBp = 0;
-  };
-  if (epLASTp) {
+    delete epUT1p; epUT1p = 0;
+    delete epTTp; epTTp = 0;
     delete epLASTp; epLASTp = 0;
-  };
-  if (dirAppp) {
     delete dirAppp; dirAppp = 0;
-  };
-  if (radLSRp) {
     delete radLSRp; radLSRp = 0;
-  };
 }
 
 void MCFrame::resetPosition() {
@@ -167,6 +167,36 @@ Bool MCFrame::getTDB(Double &tdb) {
 	getValue().get();
     };
     tdb = *epTDBp;
+    return True;
+  };
+  tdb = 0.0;
+  return False;
+}
+
+Bool MCFrame::getUT1(Double &tdb) {
+  if (myf.epoch()) {
+    if (!epUT1p) {
+      epUT1p = new Double;
+      *epUT1p = static_cast<MEpoch::Convert *>(epConvUT1)->operator()
+	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
+	getValue().get();
+    };
+    tdb = *epUT1p;
+    return True;
+  };
+  tdb = 0.0;
+  return False;
+}
+
+Bool MCFrame::getTT(Double &tdb) {
+  if (myf.epoch()) {
+    if (!epTTp) {
+      epTTp = new Double;
+      *epTTp = static_cast<MEpoch::Convert *>(epConvTT)->operator()
+	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
+	getValue().get();
+    };
+    tdb = *epTTp;
     return True;
   };
   tdb = 0.0;
@@ -513,13 +543,35 @@ void MCFrame::create() {
 void MCFrame::makeEpoch() {
   static const MEpoch::Ref REFTDB 
     = MEpoch::Ref(MEpoch::TDB);
+  static const MEpoch::Ref REFUT1
+    = MEpoch::Ref(MEpoch::UT1);
+  static const MEpoch::Ref REFTT 
+    = MEpoch::Ref(MEpoch::TT);
   delete static_cast<MEpoch::Convert *>(epConvTDB);
+  delete static_cast<MEpoch::Convert *>(epConvUT1);
+  delete static_cast<MEpoch::Convert *>(epConvTT);
   epConvTDB = new MEpoch::Convert(*(myf.epoch()),
 				  REFTDB);
+  epConvUT1 = new MEpoch::Convert(*(myf.epoch()),
+				  REFUT1);
+  epConvTT  = new MEpoch::Convert(*(myf.epoch()),
+				  REFTT);
   if (epTDBp) {
+    epConvTDB = new MEpoch::Convert(*(myf.epoch()),
+				    REFTDB);
     delete epTDBp; epTDBp = 0;
   };
-  if (epConvLAST) {
+  if (epUT1p) {
+    epConvUT1 = new MEpoch::Convert(*(myf.epoch()),
+				    REFUT1);
+    delete epUT1p; epUT1p = 0;
+  };
+  if (epTTp) {
+    epConvTT = new MEpoch::Convert(*(myf.epoch()),
+				   REFTT);
+    delete epTTp; epTTp = 0;
+  };
+ if (epConvLAST) {
     myf.lock();
     delete static_cast<MEpoch::Convert *>(epConvLAST);
     epConvLAST = 0;
@@ -648,6 +700,14 @@ Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result) {
       return static_cast<MCFrame *>(dmf)->getTDB(result);
       break;
       
+    case MeasFrame::GetUT1:
+      return static_cast<MCFrame *>(dmf)->getUT1(result);
+      break;
+       
+    case MeasFrame::GetTT:
+      return static_cast<MCFrame *>(dmf)->getTT(result);
+      break;
+       
     case MeasFrame::GetLong:
       return static_cast<MCFrame *>(dmf)->getLong(result);
       break;

@@ -1,5 +1,5 @@
 //# MeasFrame.cc: Container for Measure frame
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -468,6 +468,18 @@ Bool MeasFrame::getTDB(Double &tdb) {
   return False; 
 }
 
+Bool MeasFrame::getUT1(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetUT1, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getTT(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetTT, tdb);
+  tdb = 0;
+  return False; 
+}
+
 Bool MeasFrame::getLong(Double &tdb) {
   if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLong, tdb);
   tdb = 0;
@@ -654,11 +666,12 @@ void MeasFrame::errorReset(const String &txt) {
 
 ostream &operator<<(ostream &os, MeasFrame &mf) {
   os << "Frame: ";
-  Double tmp;
+  Double tmp, tmp1, tmp2;
   if (mf.rep && mf.rep->epval) {
     os << *(mf.rep->epval);
-    if (mf.getTDB(tmp)) 
-      os << " (TDB = " << tmp << ")";
+    if (mf.getTDB(tmp) && mf.getUT1(tmp1) && mf.getTT(tmp2)) 
+      os << " (TDB = " << tmp << ", UT1 = " << tmp1 << ", TT = " << tmp2 <<
+	")";
   };
   if (mf.rep && mf.rep->posval) {
     if (mf.rep && mf.rep->epval) os << endl << "       ";

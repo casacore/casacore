@@ -1,5 +1,5 @@
 //# MeasFrame.h: Container for Measure frame
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -243,6 +243,10 @@ class MeasFrame {
   // <group>
   // Get TDB in days
   Bool getTDB(Double &tdb);
+  // Get UT1 in days
+  Bool getUT1(Double &tdb);
+  // Get TT in days
+  Bool getTT(Double &tdb);
   // Get the ITRF longitude (in rad)
   Bool getLong(Double &tdb);
   // Get the ITRF latitude (in rad)
@@ -294,6 +298,10 @@ private:
   enum GetTypes {
     // Get TDB in days
     GetTDB,
+    // Get UT1 in days
+    GetUT1,
+    // Get TT in days
+    GetTT,
     // Get the ITRF longitude (in rad)
     GetLong,
     // Get the ITRF latitude (in rad)
