@@ -37,15 +37,12 @@
 #include <aips/Containers/Record.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Containers/Block.h>
+#include <aips/FITS/hdu.h>
 
 class String;
-class BinaryTableExtension;
 class FitsInput;
 class FitsOutput;
-class BinaryTableExtension;
-class HeaderDataUnit;
 class FITSFieldCopier;
-template<class T> class PrimaryGroup;
 template<class T> class Vector;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
@@ -234,6 +231,12 @@ private:
     // One per field in row_p, of the right type. i.e. casting required.
     Block<void *> row_fields_p;
     Block<Int> field_types_p;
+    // these are used by VADESC columns
+    Block<Int> vatypes_p;
+    Block<void *> vaptr_p;
+    // I had trouble making a Block<VADescFitsField>
+    VADescFitsField *va_p;
+    char *theheap_p;
 };
 
 class FITSTableWriter

@@ -104,7 +104,8 @@
 //   <li> Throw exceptions rather than send messages to cout : however the entire FITS
 //        module behaves this way, so it should all remain consistent.
 //   <li> The following types of columns are not dealt with very well or at all
-//          (Bit, Byte, 0-length columns, variable length arrays).
+//          (Bit, Byte, 0-length columns).
+//   <li> No attempt use any TDIM columns or keywords to shape arrays.
 // </todo>
 
 class BinaryTable : public BinaryTableExtension
@@ -162,6 +163,12 @@ private:
     SimpleOrderedMap<Int, String> *colNames;
 
     TableRecord kwSet;
+
+    // These are used by any VADesc columns
+    FITS::ValueType *vatypes_p;
+    void **vaptr_p;
+    VADescFitsField *va_p;
+    char *theheap_p;
 
     // this is the function that fills each row in as needed
     void fillRow();

@@ -61,8 +61,97 @@ Bool isSDFitsColumn(FITS::ReservedName name) {
 
 BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
 			 Bool sdfits) :
-    BinaryTableExtension(fitsin, output), currRowTab(0), nelem(0), colNames(0)
+    BinaryTableExtension(fitsin, output), currRowTab(0), nelem(0), 
+    colNames(0), theheap_p(0), vaptr_p(0), vatypes_p(0), va_p(0)
 {
+    // is there a heap
+    if (pcount()) {
+	// yes, must read the entire table in at once so that
+	// we can have access to the heap as we step through the table
+	read(nrows());
+	if (notnull(theap())) {
+	    int heapOffset = theap() - rowsize()*nrows();
+	    // Skip to the start of the heap
+	    // I don't see any way except to read these bogus bytes
+	    char junk[heapOffset];
+	    ExtensionHeaderDataUnit::read(junk, heapOffset);
+	}
+	theheap_p = new char [pcount()];
+	AlwaysAssert(theheap_p, AipsError);
+	ExtensionHeaderDataUnit::read(theheap_p, pcount());
+	// and do some initial decoding of the VADesc related stuff
+	vatypes_p = new FITS::ValueType [ncols()];
+	AlwaysAssert(vatypes_p, AipsError);
+	vaptr_p = new void * [ncols()];
+	AlwaysAssert(vaptr_p, AipsError);
+	va_p = new VADescFitsField [ncols()];
+	AlwaysAssert(va_p, AipsError);
+	for (Int i=0;i<ncols();++i) {
+	    vaptr_p[i] = 0;
+	    if (field(i).fieldtype() == FITS::VADESC) {
+		int maxsize;
+		FITS::parse_vatform(tform(i), vatypes_p[i], maxsize);
+		bind(i, va_p[i]);
+		if (vatypes_p[i] == FITS::NOVALUE) {
+		    cerr << "Error in VA desc format for column " 
+			 << i << " : " << tform(i) << endl;
+		} else {
+		    switch (vatypes_p[i]) {
+		    case FITS::LOGICAL: 
+			vaptr_p[i] = (void *)(new FitsLogical[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    case FITS::BIT: 
+			{
+			    Int nbytes = maxsize / 8;
+			    if (maxsize % 8) nbytes++;
+			    maxsize = nbytes;
+			}
+			// fall throught to BYTE for the actual allocation
+		    case FITS::BYTE: 
+			vaptr_p[i] = (void *)(new uChar[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    case FITS::SHORT: 
+			vaptr_p[i] = (void *)(new Short[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    case FITS::LONG: 
+			vaptr_p[i] = (void *)(new FitsLong[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    case FITS::CHAR: 
+			vaptr_p[i] = (void *)(new Char[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    case FITS::FLOAT: 
+			vaptr_p[i] = (void *)(new Float[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    case FITS::DOUBLE:
+			vaptr_p[i] = (void *)(new Double[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    case FITS::COMPLEX:
+			vaptr_p[i] = (void *)(new Complex[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    case FITS::DCOMPLEX:
+			vaptr_p[i] = (void *)(new DComplex[maxsize]);
+			AlwaysAssert(vaptr_p[i], AipsError);
+			break;
+		    default: 
+			cerr << "Impossible VADesc type in column " 
+			     << i << " : " << vatypes_p[i] << endl;
+			break;
+		    }
+		}
+	    } else {
+		vatypes_p[i] = FITS::NOVALUE;
+	    }
+	}
+    }
+
 //		this table descriptor is not kept, it is used 
 //		during construction only
    TableDesc td;
@@ -157,11 +246,16 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
        //		enter the name in the colNames map
        colNames->define(i, colname);
        //		get a shorthand Bool for array versus scalar
+       //               NOTE: VADESC are always assumed to be array columns
+       //               but that fact is ignored by isArray - but thats ok,
+       //               it is not used in that case.
        Bool isArray = ToBool(nelem[i] > 1 && field(i).fieldtype() != FITS::CHAR
 			     && field(i).fieldtype() != FITS::STRING);
        //		switch on the type of column
        switch (field(i).fieldtype()) {
-       case FITS::LOGICAL: 
+	   // BIT stored as LOGICAL
+       case FITS::BIT:
+       case FITS::LOGICAL:
 	   if (isArray) {
                td.addColumn(ArrayColumnDesc<Bool>(colname,"",
 						  IPosition(1,nelem[i]),
@@ -170,11 +264,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
                td.addColumn(ScalarColumnDesc<Bool>(colname,""));
 	   }
 	   break;
-	   //		BIT, BYTE stored as uChar
-       case FITS::BIT: 
-	   //			assumes 8 bits per uChar
-	   nelem[i] = ((nelem[i] % 8) == 0) ?
-	       (nelem[i] % 8) : (nelem[i] % 8) + 1;
+	   //		BYTE stored as uChar
        case FITS::BYTE:
 	   if (isArray) {
                td.addColumn(ArrayColumnDesc<uChar>(colname,"",
@@ -184,8 +274,15 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
                td.addColumn(ScalarColumnDesc<uChar>(colname,""));
 	   }
 	   break;
-	   //		SHORTs are promoted to LONGs
        case FITS::SHORT:
+	   if (isArray) {
+	       td.addColumn(ArrayColumnDesc<Short>(colname,"",
+						   IPosition(1,nelem[i]),
+						   ColumnDesc::Direct));
+	   } else {
+	       td.addColumn(ScalarColumnDesc<Short>(colname,""));
+	   }
+	   break;
        case FITS::LONG:
 	   if (isArray) {
                td.addColumn(ArrayColumnDesc<Int>(colname,"",
@@ -238,12 +335,44 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
                td.addColumn(ScalarColumnDesc<DComplex>(colname,""));
 	   }
 	   break;
-	   //		VADESC still needs to be dealt with, NOVALUE should not
-	   //		happen in a table
+       case FITS::VADESC:
+	   {
+	       // there MUST be a heap at this point
+	       AlwaysAssert(theheap_p, AipsError);
+	       switch (vatypes_p[i]) {
+	       case FITS::BIT:
+	       case FITS::LOGICAL: 
+		   td.addColumn(ArrayColumnDesc<Bool>(colname,"")); break;
+	       case FITS::BYTE: 
+		   td.addColumn(ArrayColumnDesc<uChar>(colname,"")); break;
+	       // shorts are promoted to LONGs
+	       case FITS::SHORT: 
+	       case FITS::LONG:
+		   td.addColumn(ArrayColumnDesc<Int>(colname,"")); break;
+	       // an array of chars is just a scalar String
+	       case FITS::CHAR: 
+		   td.addColumn(ScalarColumnDesc<String>(colname,"")); break;
+	       case FITS::FLOAT: 
+		   td.addColumn(ArrayColumnDesc<Float>(colname,"")); break;
+	       case FITS::DOUBLE:
+		   td.addColumn(ArrayColumnDesc<Double>(colname,"")); break;
+	       case FITS::COMPLEX: 
+		   td.addColumn(ArrayColumnDesc<Complex>(colname,"")); break;
+	       case FITS::DCOMPLEX:
+		   td.addColumn(ArrayColumnDesc<DComplex>(colname,"")); break;
+	       default:
+		   cerr << "Error:: column " << i
+			<< " has impossible type for variable array descriptor "
+			<< vatypes_p[i] << endl;
+		   break;
+	       }
+	   }
+	   break;
+	   //	NOVALUE should not happen in a table
        default:
 	   cerr << "Error: column " << i
-	       << " has untranslatable type " << field(i).fieldtype()
-		   << " This should NEVER happen " << endl;
+		<< " has untranslatable type " << field(i).fieldtype()
+		<< " This should NEVER happen " << endl;
 	   continue;
        }		// end of switch on FITS type
        //		set the comment string if appropriate
@@ -333,21 +462,13 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
        newtab.bindAll(stman);
    }
 
-    // For some reason at the present time we need to shape all the direct
-    // array columns after newtab is created but before a table is created.
-    for (uInt j=0; j<tfields(); j++) {
-	if (td[(*colNames)(j)].isArray()) {
-	    // Every array is a direct array in BinaryTable
-	    newtab.setShapeColumn((*colNames)(j), IPosition(1,nelem[j]));
-	}
-    }
-
    //		and finally create the Table
    currRowTab = new Table(newtab, 1);
 
    //		OK, fill the one row of CurrRowTab
    if (nrows() > 0) {
-       read(1);
+       // if we don't have a heap, read a row
+       if (!theheap_p) read(1);
        fillRow();
    }
 }
@@ -379,14 +500,12 @@ void BinaryTable::fillRow()
             {
 		FitsField<FitsBit> thisfield =
 		    *(FitsField<FitsBit> *)&field(j);
-		Vector<uChar> vec(nelem[j]);
-		//			assumes 8 bits per uChar
+		Vector<Bool> vec(nelem[j]);
 		for (Int k=0;k<field(j).nelements();k++) {
-		    uChar mask = 1 << (k % 8);
-		    vec(k%8) = ((vec(k%8) & ~mask) | thisfield(k) << (k % 8));
+		    vec(k) = ToBool(int(thisfield(k)));
 		}
 		if (nelem[j] > 1) {
-		    ArrayColumn<uChar> arrcol(tabcol);
+		    ArrayColumn<Bool> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -428,13 +547,13 @@ void BinaryTable::fillRow()
             {
 		FitsField<short> thisfield = 
 		    *(FitsField<short> *)&field(j);
-		Vector<Int> vec(nelem[j]);
+		Vector<Short> vec(nelem[j]);
 		for (Int k=0;k<nelem[j];k++) {
-		    vec(k) = (Short )thisfield(k);
+		    vec(k) = thisfield(k);
 		}
 		//			any scaling should happen here
 		if (nelem[j] > 1) {
-		    ArrayColumn<Int> arrcol(tabcol);
+		    ArrayColumn<Short> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -520,7 +639,7 @@ void BinaryTable::fillRow()
 		    vec.ac() *= Complex(tscal(j),0); 
 		    vec.ac() += Complex(tzero(j),0);
 		} else if (tzero(j) != 0) {
-		    vec.ac() += Complex(tzero(j));
+		    vec.ac() += Complex(tzero(j),0);
 		}
 		if (nelem[j] > 1) {
 		    ArrayColumn<Complex> arrcol(tabcol);
@@ -576,8 +695,186 @@ void BinaryTable::fillRow()
 		}
             }
             break;
+	case FITS::VADESC:
+	    { 
+		FitsVADesc thisva = va_p[j]();
+		// its a pity so many copies seem to be necessary
+		// one to copy the heap into the local version of the
+		// desired type
+		// the second to hold and scale the values in an aips++ type
+		// and finally the copy actually placed in the table
+		switch (vatypes_p[j]) {
+		case FITS::LOGICAL:
+		    {
+			FitsLogical *vptr = (FitsLogical *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			Vector<Bool> vec(thisva.num());
+			for (Int k=0;k<thisva.num();k++) {
+			    vec(k) = vptr[k];
+			}
+			ArrayColumn<Bool> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		case FITS::BIT:
+		    {
+			uChar *vptr = (uChar *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			// assumes 8 bits per uChar
+			Int whichByte = -1;
+			Vector<Bool> vec(thisva.num());
+			uChar mask = 0200;
+			for (Int k=0;k<thisva.num();k++) {
+			    if (k%8 == 0) whichByte++;
+			    vec(k) = ToBool(vptr[whichByte] & (mask >> k%8));
+			}
+			ArrayColumn<Bool> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		case FITS::BYTE:
+		    {
+			uChar *vptr = (uChar *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			Vector<uChar> vec(thisva.num());
+			for (Int k=0;k<thisva.num();k++) {
+			    vec(k) = vptr[k];
+			}
+			ArrayColumn<uChar> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		case FITS::CHAR:
+		    {
+			Char *vptr = (Char *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			tabcol.putScalar(0,String(vptr, thisva.num()));
+		    }
+		    break;
+		case FITS::SHORT:
+		    {
+			Short *vptr = (Short *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			Vector<Int> vec(thisva.num());
+			for (Int k=0;k<thisva.num();k++) {
+			    vec(k) = vptr[k];
+			}
+			// any scaling should happen here
+			ArrayColumn<Int> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		case FITS::LONG:
+		    {
+			FitsLong *vptr = (FitsLong *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			Vector<Int> vec(thisva.num());
+			for (Int k=0;k<thisva.num();k++) {
+			    vec(k) = vptr[k];
+			}
+			// any scaling should happen here
+			ArrayColumn<Int> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		case FITS::FLOAT:
+		    {
+			Float *vptr = (Float *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			Vector<Float> vec(thisva.num());
+			for (Int k=0;k<thisva.num();k++) {
+			    vec(k) = vptr[k];
+			}
+			// scale as appropriate
+			if (tscal(j) != 1) {
+			    Vector<Double> dvec(thisva.num());
+			    convertArray(dvec.ac(), vec.ac());
+			    dvec.ac() *= tscal(j);
+			    dvec.ac() += tzero(j);
+			    convertArray(vec.ac(), dvec.ac());
+			} else if (tzero(j) != 0) {
+			    vec.ac() += (Float )tzero(j);
+			}
+			ArrayColumn<Float> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		case FITS::DOUBLE:
+		    {
+			Double *vptr = (Double *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			Vector<Double> vec(thisva.num());
+			for (Int k=0;k<thisva.num();k++) {
+			    vec(k) = vptr[k];
+			}
+			// scale as appropriate
+			if (tscal(j) != 1) {
+			    vec.ac() *= tscal(j);
+			    vec.ac() += tzero(j);
+			} else if (tzero(j) != 0) {
+			    vec.ac() += (Double )tzero(j);
+			}
+			ArrayColumn<Double> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		case FITS::COMPLEX:
+		    {
+			Complex *vptr = (Complex *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			Vector<Complex> vec(thisva.num());
+			for (Int k=0;k<thisva.num();k++) {
+			    vec(k) = vptr[k];
+			}
+			// scale as appropriate
+			if (tscal(j) != 1) {
+			    vec.ac() *= Complex(tscal(j),0);
+			    vec.ac() += Complex(tzero(j),0);
+			} else if (tzero(j) != 0) {
+			    vec.ac() += Complex(tzero(j),0);
+			}
+			ArrayColumn<Complex> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		case FITS::DCOMPLEX:
+		    {
+			DComplex *vptr = (DComplex *)(vaptr_p[j]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			Vector<DComplex> vec(thisva.num());
+			for (Int k=0;k<thisva.num();k++) {
+			    vec(k) = vptr[k];
+			}
+			// scale as appropriate
+			if (tscal(j) != 1) {
+			    vec.ac() *= DComplex(tscal(j),0);
+			    vec.ac() += DComplex(tzero(j),0);
+			} else if (tzero(j) != 0) {
+			    vec.ac() += DComplex(tzero(j),0);
+			}
+			ArrayColumn<DComplex> arrcol(tabcol);
+			arrcol.put(0,vec);
+		    }
+		    break;
+		default:
+		    cerr << "Error unrecognized variable array type for field "
+			 << j << " type : " << vatypes_p[j] << endl;
+		    break;
+		}
+	    }
+	    break;
 	default:
-	    //			VARDESC and NOVALUE (which shouldn't occur here
+	    // NOVALUE (which shouldn't occur here
             cerr << "Error: unrecognized table data type for field "
 		<< j << endl;
             cerr << "That should not have happened" << endl;
@@ -632,6 +929,29 @@ void BinaryTable::fillRow()
 
 BinaryTable::~BinaryTable()
 {
+    if (vaptr_p) {
+	for (Int i=0;i<ncols();++i) {
+	    if (vaptr_p[i]) {
+		switch (vatypes_p[i]) {
+		case FITS::LOGICAL: delete [] (FitsLogical *)vaptr_p[i]; break;
+		case FITS::BIT: delete [] (uChar *)vaptr_p[i]; break;
+		case FITS::BYTE: delete [] (uChar *)vaptr_p[i]; break;
+		case FITS::SHORT: delete [] (Short *)vaptr_p[i]; break;
+		case FITS::LONG: delete [] (FitsLong *)vaptr_p[i]; break;
+		case FITS::CHAR: delete [] (Char *)vaptr_p[i]; break;
+		case FITS::FLOAT: delete [] (Float *)vaptr_p[i]; break;
+		case FITS::DOUBLE: delete [] (Double *)vaptr_p[i]; break;
+		case FITS::COMPLEX: delete [] (Complex *)vaptr_p[i]; break;
+		case FITS::DCOMPLEX: delete [] (DComplex *)vaptr_p[i]; break;
+		}
+	    }
+	}
+    }
+    delete [] vatypes_p;
+    delete [] vaptr_p;
+    delete [] va_p;
+    delete [] theheap_p;
+
     delete currRowTab;
     delete [] nelem;
     delete colNames;
@@ -659,7 +979,8 @@ Table BinaryTable::fullTable(const String& tabname,
 	rowcop.copy(outrow, 0);
 	//		don't read past the end of the table
 	if ((infitsrow+1) < nrows()) {
-	    read(1);
+	    if (!theheap_p) read(1);
+	    else ++(*this);
 	    fillRow();
 	}
     }		// end of loop over rows
@@ -685,7 +1006,8 @@ const Table &BinaryTable::nextRow()
 {
     //		here, its user beware in reading past end of table
     //		i.e. just the same way FITS works.
-    read(1);
+    if (!theheap_p) read(1);
+    else ++(*this);
     fillRow();
     return (*currRowTab);
 }

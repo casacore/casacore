@@ -51,13 +51,13 @@ static DataType fitsDataType(FITS::ValueType fitsType)
     case FITS::LONG:     return TpInt;
     case FITS::FLOAT:    return TpFloat;
     case FITS::DOUBLE:   return TpDouble;
-    case FITS::ICOMPLEX:
     case FITS::COMPLEX:  return TpComplex;
+    case FITS::ICOMPLEX:  // ICOMPLEX promoted to DComplex so no precision is lost
     case FITS::DCOMPLEX: return TpDComplex;
     case FITS::STRING: //  return TpString; // FITS just has character arrays,
 			 // not strings
     default:
-	return TpOther;
+	return TpOther; // VADESC will trigger this
     }
 }
 
@@ -149,6 +149,15 @@ RecordDesc FITSTabular::descriptionFromHDU(
 	}
 	String colname(hdu.ttype(i));
 	colname = colname.before(trailing);
+	// watch for VADESC columns
+	if (hdu.field(i).fieldtype() == FITS::VADESC) {
+	    // variable array descriptor
+	    FITS::ValueType ftype;
+	    int maxelem;
+	    FITS::parse_vatform(hdu.tform(i), ftype, maxelem);
+	    type = fitsDataType(ftype);
+	    shape.resize(0);
+	}
 	// TpString is always a scalar column, it typically comes from
 	// an array of FITS::CHAR
 	if (type == TpString || 
@@ -157,7 +166,14 @@ RecordDesc FITSTabular::descriptionFromHDU(
 	    description.addField(colname, type);
 	} else {
 	    // Array
-	    description.addField(colname, type, shape);
+	    if (shape.nelements() == 0) {
+		// variable shapped array
+		// leave shape off, make sure this is an array DataType
+		// this makes this a variable sized array
+		description.addField(colname, asArray(type));
+	    } else {
+		description.addField(colname, type, shape);
+	    }
 	}
     }
     return description;
@@ -183,7 +199,8 @@ FITSTable::FITSTable(const String &fileName, uInt whichHDU,
 		     Bool allKeywords)
     : row_nr_p(-1), raw_table_p(0), io_p(0), row_fields_p(0), 
       hdu_nr_p(whichHDU), row_p(RecordInterface::Variable),
-      field_types_p(0), allKeys_p(allKeywords)
+      field_types_p(0), allKeys_p(allKeywords), vaptr_p(0),
+      va_p(0), theheap_p(0), vatypes_p(0)
 {
     isValid_p = reopen(fileName);
 }
@@ -224,6 +241,28 @@ Bool FITSTable::reopen(const String &fileName)
     units_p = FITSTabular::unitsFromHDU(*raw_table_p);
 
     row_p.restructure(description_p);
+
+    // read the heap (and the rest of the table, since this is a
+    // sequential access file only) if one is present
+    if (raw_table_p->pcount()) {
+	raw_table_p->read(raw_table_p->nrows());
+	if (raw_table_p->notnull(raw_table_p->theap())) {
+	    int heapOffset = raw_table_p->theap() - 
+		raw_table_p->rowsize()*raw_table_p->nrows();
+	    // skip to the start of the heap
+	    // I don't see any way except to read these bogus bytes
+	    char junk[heapOffset];
+	    raw_table_p->ExtensionHeaderDataUnit::read(junk, heapOffset);
+	}
+	theheap_p = new char [raw_table_p->pcount()];
+	AlwaysAssert(theheap_p, AipsError);
+	raw_table_p->ExtensionHeaderDataUnit::read(theheap_p, 
+						   raw_table_p->pcount());
+    } else {
+	// just read one row, assuming there are any rows to read
+	if (raw_table_p->nrows()) raw_table_p->read(1);
+    }
+    row_nr_p++;
 
     // Setup the record fields (one time only)
     uInt n = description_p.nfields();
@@ -290,6 +329,79 @@ Bool FITSTable::reopen(const String &fileName)
     }
 
     name_p = fileName;
+    // set up things necessary fo VADESC cols
+    // this is only necessary if a heap exists
+    if (theheap_p) {
+	vatypes_p.resize(raw_table_p->ncols());
+	vaptr_p.resize(raw_table_p->ncols());
+	va_p = new VADescFitsField [raw_table_p->ncols()];
+	AlwaysAssert(va_p, AipsError);
+	for (i=0;i<raw_table_p->ncols();i++) {
+	    vaptr_p[i] = 0;
+	    vatypes_p[i] = FITS::NOVALUE;
+	    if (raw_table_p->field(i).fieldtype() == FITS::VADESC) {
+		int maxsize;
+		FITS::ValueType vtype;
+		FITS::parse_vatform(raw_table_p->tform(i),
+				    vtype, maxsize);
+		vatypes_p[i] = vtype;
+		raw_table_p->bind(i, va_p[i]);
+		if (vatypes_p[i] == FITS::NOVALUE) {
+		    throw(AipsError("FITSTable::reopen() - invalid VADESC format"));
+		}
+		switch (vatypes_p[i]) {
+		case FITS::LOGICAL: 
+		    vaptr_p[i] = (void *)(new FitsLogical[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		case FITS::BIT: 
+		    {
+			Int nbytes = maxsize / 8;
+			if (maxsize % 8) nbytes++;
+			maxsize = nbytes;
+		    }
+		    // fall through to BYTE for actual allocation
+		case FITS::BYTE: 
+		    vaptr_p[i] = (void *)(new uChar[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		case FITS::SHORT: 
+		    vaptr_p[i] = (void *)(new Short[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		case FITS::LONG: 
+		    vaptr_p[i] = (void *)(new FitsLong[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		case FITS::CHAR: 
+		    vaptr_p[i] = (void *)(new Char[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		case FITS::FLOAT: 
+		    vaptr_p[i] = (void *)(new Float[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		case FITS::DOUBLE:
+		    vaptr_p[i] = (void *)(new Double[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		case FITS::COMPLEX:
+		    vaptr_p[i] = (void *)(new Complex[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		case FITS::DCOMPLEX:
+		    vaptr_p[i] = (void *)(new DComplex[maxsize]);
+		    AlwaysAssert(vaptr_p[i], AipsError);
+		    break;
+		default: 
+		    cerr << "Impossible VADesc type in column " 
+			 << i << " : " << vatypes_p[i] << endl;
+		    break;
+		}
+	    }
+	}
+    }
+	
     if (description_p.nfields() > 0) {
 	fill_row();
     }
@@ -322,21 +434,21 @@ const Record &FITSTable::units() const
 
 void FITSTable::next()
 {
+    // first, read a row or step to the next row
+    row_nr_p++;
+    if (row_nr_p >= raw_table_p->nrows()) {
+	return; // Don't read past the end, this row is already filled
+    }
+    // Use the native FITS classes
+    if (!theheap_p) raw_table_p->read(1);
+    else ++(*raw_table_p);
     if (isValid()) fill_row();
 }
 
 // What an ugly function! Simplify somehow!
 void FITSTable::fill_row()
 {
-    row_nr_p++;
-    if (row_nr_p >= raw_table_p->nrows()) {
-	return; // Don't read past the end
-    }
-
-    // Use the native FITS classes
-    raw_table_p->read(1);
-
-    // And now fill it into the Row object.
+    // fill the current row into the Row object.
     uInt n = row_fields_p.nelements();
     for (uInt i=0; i < n; i++) {
 	switch (raw_table_p->field(i).fieldtype()) {
@@ -565,6 +677,240 @@ void FITSTable::fill_row()
 	    }
 	}
 	break;
+	case FITS::ICOMPLEX:
+	{
+	    FitsField<IComplex> &fitsRef = 
+		(FitsField<IComplex> &)(raw_table_p->field(i));
+	    if (field_types_p[i] == TpDComplex) {
+		RecordFieldPtr<DComplex> &rowRef =
+		    *((RecordFieldPtr<DComplex> *)row_fields_p[i]);
+		(*rowRef) = fitsRef();
+	    } else {
+		DebugAssert(field_types_p[i] == TpArrayDComplex, AipsError);
+		RecordFieldPtr<Array<DComplex> > &rowRef =
+		    *((RecordFieldPtr<Array<DComplex> > *)row_fields_p[i]);
+		Bool deleteIt;
+		DComplex *data = (*rowRef).getStorage(deleteIt);
+		Int n = raw_table_p->field(i).nelements();
+		while (n) {
+		    n--;
+		    data[n] = fitsRef(n);
+		}
+		(*rowRef).putStorage(data, deleteIt);
+	    }
+	}
+	break;
+	case FITS::VADESC: 
+	    {
+		FitsVADesc thisva = va_p[i]();
+		switch (vatypes_p[i]) {
+		case FITS::LOGICAL:
+		    {
+			FitsLogical *vptr = (FitsLogical *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayBool, AipsError);
+			RecordFieldPtr<Array<Bool> > &rowRef = 
+			    *((RecordFieldPtr<Array<Bool> > *) row_fields_p[i]);\
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			Bool *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			while (n) {
+			    n--;
+			    data[n] = vptr[n];
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		case FITS::BIT:
+		    {
+			uChar *vptr = (uChar *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayBool, AipsError);
+			RecordFieldPtr<Array<Bool> > &rowRef = 
+			    *((RecordFieldPtr<Array<Bool> > *) row_fields_p[i]);
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			Bool *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			Int whichByte = n/8 - 1;
+			if (n%8) whichByte++;
+			uChar mask = 0200;
+			while (n) {
+			    n--;
+			    if (n%8 == 7) whichByte--;
+			    data[n] = ToBool(vptr[whichByte] & (mask >> n%8));
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		case FITS::CHAR:
+		    {
+			Char *vptr = (Char *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpString, AipsError);
+			RecordFieldPtr<String> &rowRef = 
+			    *((RecordFieldPtr<String> *) row_fields_p[i]);
+			// look for the true end of the string
+			uInt length = thisva.num();
+			while (length > 0 && 
+			       (vptr[length-1] == '\0' || vptr[length-1] == ' ')) {
+			    length--;
+			}
+			(*rowRef) = String(vptr, length);
+		    }
+		    break;
+		case FITS::BYTE:
+		    {
+			uChar *vptr = (uChar *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayUChar, AipsError);
+			RecordFieldPtr<Array<uChar> > &rowRef = 
+			    *((RecordFieldPtr<Array<uChar> > *) row_fields_p[i]);
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			uChar *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			while (n) {
+			    n--;
+			    data[n] = vptr[n];
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		case FITS::SHORT:
+		    {
+			Short *vptr = (Short *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayShort, AipsError);
+			RecordFieldPtr<Array<Short> > &rowRef = 
+			    *((RecordFieldPtr<Array<Short> > *) row_fields_p[i]);
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			Short *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			while (n) {
+			    n--;
+			    data[n] = vptr[n];
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		case FITS::LONG:
+		    {
+			FitsLong *vptr = (FitsLong *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayInt, AipsError);
+			RecordFieldPtr<Array<Int> > &rowRef = 
+			    *((RecordFieldPtr<Array<Int> > *) row_fields_p[i]);
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			Int *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			while (n) {
+			    n--;
+			    data[n] = vptr[n];
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		case FITS::FLOAT:
+		    {
+			Float *vptr = (Float *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayFloat, AipsError);
+			RecordFieldPtr<Array<Float> > &rowRef = 
+			    *((RecordFieldPtr<Array<Float> > *) row_fields_p[i]);
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			Float *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			while (n) {
+			    n--;
+			    data[n] = vptr[n];
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		case FITS::DOUBLE:
+		    {
+			Double *vptr = (Double *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayDouble, AipsError);
+			RecordFieldPtr<Array<Double> > &rowRef = 
+			    *((RecordFieldPtr<Array<Double> > *) row_fields_p[i]);
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			Double *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			while (n) {
+			    n--;
+			    data[n] = vptr[n];
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		case FITS::COMPLEX:
+		    {
+			Complex *vptr = (Complex *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayComplex, AipsError);
+			RecordFieldPtr<Array<Complex> > &rowRef = 
+			    *((RecordFieldPtr<Array<Complex> > *) row_fields_p[i]);
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			Complex *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			while (n) {
+			    n--;
+			    data[n] = vptr[n];
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		case FITS::DCOMPLEX:
+		    {
+			DComplex *vptr = (DComplex *)(vaptr_p[i]);
+			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
+				  thisva.num());
+			DebugAssert(field_types_p[i] == TpArrayDComplex, AipsError);
+			RecordFieldPtr<Array<DComplex> > &rowRef = 
+			    *((RecordFieldPtr<Array<DComplex> > *) row_fields_p[i]);
+			// need to shape the output array
+			(*rowRef).resize(IPosition(1,thisva.num()));
+			Bool deleteIt;
+			DComplex *data = (*rowRef).getStorage(deleteIt);
+			Int n = thisva.num();
+			while (n) {
+			    n--;
+			    data[n] = vptr[n];
+			}
+			(*rowRef).putStorage(data, deleteIt);
+		    }
+		    break;
+		default:
+		    throw(AipsError("FITSTable::fillrow() - unexpected variable array type"));
+		    break;
+		}
+	    }
+	    break;
         default:
 	    throw(AipsError("FITSTable::fill_row() - unknown data type"));
 	}
@@ -640,6 +986,28 @@ void FITSTable::clear_self()
 	}
 	row_fields_p[i] = 0;
     }
+    for (i=0;i<vatypes_p.nelements();i++) {
+	if (vaptr_p[i]) {
+	    switch (vatypes_p[i]) {
+	    case FITS::LOGICAL: delete [] (FitsLogical *)vaptr_p[i]; break;
+	    case FITS::BIT: delete [] (uChar *)vaptr_p[i]; break;
+	    case FITS::BYTE: delete [] (uChar *)vaptr_p[i]; break;
+	    case FITS::CHAR: delete [] (Char *)vaptr_p[i]; break;
+	    case FITS::SHORT: delete [] (Short *)vaptr_p[i]; break;
+	    case FITS::LONG: delete [] (FitsLong *)vaptr_p[i]; break;
+	    case FITS::FLOAT: delete [] (Float *)vaptr_p[i]; break;
+	    case FITS::DOUBLE: delete [] (Double *)vaptr_p[i]; break;
+	    case FITS::COMPLEX: delete [] (Complex *)vaptr_p[i]; break;
+	    case FITS::DCOMPLEX: delete [] (DComplex *)vaptr_p[i]; break;
+	    }
+	}
+    }
+    vatypes_p.resize(0);
+    vaptr_p.resize(0);
+    delete [] va_p;
+    va_p = 0;
+    delete [] theheap_p;
+    theheap_p = 0;
     row_fields_p.resize(0);
     RecordDesc tmp;
     description_p = tmp;
