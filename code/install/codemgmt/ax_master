@@ -1750,3 +1750,4 @@
 11 085 src rm doc/html/navpages/images/nrao54.gif
 11 085 src rm doc/html/navpages/programmer/programmer.html
 11 085 src rm doc/html/navpages/firstpage.html
+11 085 src rm nrao/apps/otfgridder/GLSProjector.h
