@@ -6395,3 +6395,4 @@
 18 390 src rm doc/newsletters/dec02/2002_06_17_07:24:27A.1.gif
 18 398 src rm trial/implement/MeasurementEquations/MFSkyEquation.h
 18 398 src rm trial/implement/MeasurementEquations/MFSkyEquation.cc
+18 410 src rm alma/apps/clic
