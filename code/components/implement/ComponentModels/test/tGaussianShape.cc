@@ -64,7 +64,7 @@ int main() {
       MVDirection sampleDirVal(Quantity(0,"deg"), 
   			       Quantity(90, "deg") - Quantity(.5, "'"));
       MDirection sampleDir(sampleDirVal, MDirection::J2000);
-      const RotMatrix rotDec(Euler(Quantity(0.5, "'").getValue("rad"), 2u));
+      const RotMatrix rotDec((Euler(Quantity(0.5, "'").getValue("rad"), 2u)));
    
       // This is not exact. To be exact I should do a integration over the
       // pixel area. Instead I set the pixel size to be something small enough!
@@ -96,14 +96,15 @@ int main() {
    			    Quantity(90, "deg") - Quantity(1, "'"));
       // And now make another rotater that can rotate this point about the pole
       // in steps of say 40 degrees
-      const RotMatrix rotater(Euler(Quantity(40, "deg").getValue("rad"), 3u));
+      const RotMatrix rotater((Euler(Quantity(40, "deg").getValue("rad"),
+				     3u)));
 
       // Create a rotation matrix that can rotate the pole down to the
       // component. 
-      const RotMatrix pole2src(Euler(Quantity(-153.7,"deg").getValue("rad"),
-				     2u, 
-  				     Quantity(-293.5,"deg").getValue("rad"),
-  				     3u));
+      const RotMatrix pole2src((Euler(Quantity(-153.7,"deg").getValue("rad"),
+				      2u, 
+				      Quantity(-293.5,"deg").getValue("rad"),
+				      3u)));
       // Sample at a set of MDirections equidistant from the direction of the
       // component. All these points should have the same flux of half the
       // maximum.

@@ -73,7 +73,7 @@ void plotSpectrum(const SpectralModel& modelSpectrum) {
 
 int main() {
   try {
-    SpectralIndex SImodel(MFrequency(Quantity(1.0, "GHz")), 0.5);
+    SpectralIndex SImodel((MFrequency(Quantity(1.0, "GHz"))), 0.5);
     plotSpectrum(SImodel);
   }
   catch (AipsError x) {

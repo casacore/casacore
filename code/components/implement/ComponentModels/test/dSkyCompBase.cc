@@ -44,9 +44,9 @@ void printComponent(const SkyCompBase & comp);
 
 int main() {
   try {
-    const PointShape p(MDirection(Quantity(211, "deg"), 
- 				  Quantity(-34, "deg"), MDirection::J2000));
-    const SpectralIndex si(MFrequency(Quantity(1.415, "GHz")), -0.2);
+    const PointShape p((MDirection(Quantity(211, "deg"), 
+ 				  Quantity(-34, "deg"), MDirection::J2000)));
+    const SpectralIndex si((MFrequency(Quantity(1.415, "GHz"))), -0.2);
     Flux<Double> f(12.5);
     f.setUnit("mJy");
     SkyComponent comp(f, p, si);

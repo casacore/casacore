@@ -130,12 +130,13 @@ int main() {
       {
   	SkyComponent alpha1Crux(ComponentType::POINT);
 	alpha1Crux.flux() = Flux<Double>(0.235, 0.0, 0.0, 0.235);
-  	const MDirection direction(MVAngle(Quantity(12, "h")).get()
-				   + MVAngle(Quantity(26, "min")).get() 
-				   + MVAngle(Quantity(35.9, "s")).get(), 
-				   Quantity(-63, "deg") 
-				   - Quantity(5, "'")
-				   - Quantity(56, "''"), MDirection::J2000);
+  	const MDirection direction((MVAngle(Quantity(12, "h")).get()
+				    + MVAngle(Quantity(26, "min")).get() 
+				    + MVAngle(Quantity(35.9, "s")).get()), 
+				   (Quantity(-63, "deg") 
+				    - Quantity(5, "'")
+				    - Quantity(56, "''")),
+				   MDirection::J2000);
 	alpha1Crux.shape().setRefDirection(direction);
  	alpha1Crux.label() = "Alpha1 Crux";
   	crux.add(alpha1Crux);
@@ -143,12 +144,13 @@ int main() {
       {
   	SkyComponent alpha2Crux(ComponentType::POINT);
   	alpha2Crux.flux() = Flux<Double>(0.147, 0.147, 0.0, 0.0);
-  	const MDirection direction(MVAngle(Quantity(12, "h")).get()
-				   + MVAngle(Quantity(26, "min")).get()
-				   + MVAngle(Quantity(36.5, "s")).get(), 
-				   Quantity(-63, "deg") 
-				   - Quantity(5, "'")
-				   - Quantity(58, "''"), MDirection::J2000);
+  	const MDirection direction((MVAngle(Quantity(12, "h")).get()
+				    + MVAngle(Quantity(26, "min")).get()
+				    + MVAngle(Quantity(36.5, "s")).get()), 
+				   (Quantity(-63, "deg") 
+				    - Quantity(5, "'")
+				    - Quantity(58, "''")),
+				   MDirection::J2000);
 	alpha2Crux.shape().setRefDirection(direction);
  	alpha2Crux.label() = "Alpha2 Crux";
   	crux.add(alpha2Crux);
@@ -156,12 +158,13 @@ int main() {
       {
   	SkyComponent betaCrux(ComponentType::POINT);
   	betaCrux.flux() = Flux<Double>(0.318, 0.0, 0.318, 0.0);
-  	const MDirection direction(MVAngle(Quantity(12, "h")).get()
-				   + MVAngle(Quantity(47, "min")).get()
-				   + MVAngle(Quantity(43.3, "s")).get(), 
-				   Quantity(-59, "deg")
-				   - Quantity(41, "'")
-				   - Quantity(19, "''"), MDirection::J2000);
+  	const MDirection direction((MVAngle(Quantity(12, "h")).get()
+				    + MVAngle(Quantity(47, "min")).get()
+				    + MVAngle(Quantity(43.3, "s")).get()), 
+				   (Quantity(-59, "deg")
+				    - Quantity(41, "'")
+				    - Quantity(19, "''")),
+				   MDirection::J2000);
 	betaCrux.shape().setRefDirection(direction);
  	betaCrux.label() = "Beta Crux";
   	crux.add(betaCrux);
@@ -169,12 +172,13 @@ int main() {
       {
 	SkyComponent gammaCrux(ComponentType::GAUSSIAN);
  	gammaCrux.flux() = Flux<Double>(.225);
- 	const MDirection direction(MVAngle(Quantity(12, "h")).get()
-				   + MVAngle(Quantity(31, "min")).get()
-				   + MVAngle(Quantity(16.7, "s")).get(), 
-				   Quantity(-57, "deg")
-				   - Quantity(4, "'")
-				   - Quantity(51, "''"), MDirection::J2000);
+ 	const MDirection direction((MVAngle(Quantity(12, "h")).get()
+				    + MVAngle(Quantity(31, "min")).get()
+				    + MVAngle(Quantity(16.7, "s")).get()), 
+				   (Quantity(-57, "deg")
+				    - Quantity(4, "'")
+				    - Quantity(51, "''")),
+				   MDirection::J2000);
 	gammaCrux.shape().setRefDirection(direction);
  	//	const MVAngle width(Quantity(35, "mas"));
  	const MVAngle width(Quantity(10, "'"));
@@ -192,12 +196,13 @@ int main() {
 			       ComponentType::SPECTRAL_INDEX);
  	const Flux<Double> flux(0.0769);
  	deltaCrux.flux() = flux;
- 	const MDirection direction(MVAngle(Quantity(12, "h")).get()
-				   + MVAngle(Quantity(15, "min")).get()
-				   + MVAngle(Quantity(8.6, "s")).get(), 
-				   Quantity(-58, "deg")
-				   - Quantity(44, "'")
-				   - Quantity(56, "''"), MDirection::J2000);
+ 	const MDirection direction((MVAngle(Quantity(12, "h")).get()
+				    + MVAngle(Quantity(15, "min")).get()
+				    + MVAngle(Quantity(8.6, "s")).get()), 
+				   (Quantity(-58, "deg")
+				    - Quantity(44, "'")
+				    - Quantity(56, "''")),
+				   MDirection::J2000);
  	deltaCrux.shape().setRefDirection(direction);
 	deltaCrux.spectrum().setRefFrequency(MFrequency(Quantity(1, "GHz")));
 	Vector<Double> specParms(1, 0.5);
@@ -209,12 +214,13 @@ int main() {
       {
 	SkyComponent epsilonCrux(ComponentType::POINT);
  	epsilonCrux.flux() = Flux<Double>(0.0373);
- 	const MDirection direction(MVAngle(Quantity(12, "h")).get()
-				   + MVAngle(Quantity(21, "min")).get()
-				   + MVAngle(Quantity(21.5, "s")).get(),
-				   Quantity(-60, "deg")
-				   - Quantity(24, "'")
-				   - Quantity(4, "''"), MDirection::J2000);
+ 	const MDirection direction((MVAngle(Quantity(12, "h")).get()
+				    + MVAngle(Quantity(21, "min")).get()
+				    + MVAngle(Quantity(21.5, "s")).get()),
+				   (Quantity(-60, "deg")
+				    - Quantity(24, "'")
+				    - Quantity(4, "''")),
+				   MDirection::J2000);
  	epsilonCrux.shape().setRefDirection(direction);
 	epsilonCrux.label() = "Epsilon Crux";
  	crux.add(epsilonCrux);

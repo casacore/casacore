@@ -83,10 +83,11 @@ int main() {
 //   SkyCompRep & operator=(const SkyCompRep & other);
     {
       Flux<Double> flux(10, 5, 2, 1);
-      PointShape shape(MDirection(Quantity(1, "deg"), 
-				  Quantity(2, "deg"), 
-				  MDirection::B1950));
-      SpectralIndex spectrum(MFrequency(Quantity(100, "MHz"),MFrequency::TOPO),
+      PointShape shape((MDirection(Quantity(1, "deg"), 
+				   Quantity(2, "deg"), 
+				   MDirection::B1950)));
+      SpectralIndex spectrum((MFrequency(Quantity(100, "MHz"),
+					 MFrequency::TOPO)),
 			     -0.2);
       gComp = SkyCompRep(flux, shape, spectrum);
       gComp.label() = String("Original component");
