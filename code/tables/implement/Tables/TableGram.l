@@ -95,7 +95,7 @@ IN        [Ii][Nn]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}
 TEMPTAB   [$]{INT}
-NAMETAB   [A-Za-z0-9./_+\-~$]+
+NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 
 
 %%
@@ -207,8 +207,8 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 's';
-	    lvalp->val->str = TableGramtext;
-	    return LITERAL;
+	    lvalp->val->str = tableGramRemoveQuotes (TableGramtext);
+	    return STRINGLITERAL;
 	  }
 {DATETIME} {
             tableGramPosition() += yyleng;
@@ -237,8 +237,7 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
 	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
 	    return NAME;
 	  }
- /* Field names can be used in the SELECT, FROM, WHERE, and ORDERBY clause.
- */
+ /* Field names can be used in the SELECT, FROM, WHERE, and ORDERBY clause */
 {NAMEFLD} {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
@@ -256,12 +255,12 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
 	    return TABNAME;
 	  }
 
- /* A table file name can be given in FROM or GIVING clause */
+ /* A table file name can be given in the FROM or GIVING clause */
 <FROMstate,GIVINGstate>{NAMETAB} {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 's';
-	    lvalp->val->str = TableGramtext;
+	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
 	    return TABNAME;
 	  }
 
