@@ -1,6 +1,6 @@
 /*
     TableGram.l: Lexical analyzer for table commands
-    Copyright (C) 1994,1995,1996,1997
+    Copyright (C) 1994,1995,1996,1997,1998
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -192,8 +192,15 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
 {INT}     {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
-            lvalp->val->type = 'i';
-            lvalp->val->ival = atoi(TableGramtext);
+            Int ival = atoi(TableGramtext);
+            Double dval = atof(TableGramtext);
+            if (ival < dval-0.1  ||  ival > dval+0.1) {
+                lvalp->val->type = 'f';
+                lvalp->val->dval[0] = dval;
+            } else {
+                lvalp->val->type = 'i';
+                lvalp->val->ival = ival;
+            }
             return LITERAL;
 	  }
 {STRING}  {
