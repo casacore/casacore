@@ -494,7 +494,9 @@ public:
     virtual Bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
-    // Restore the CoordinateSystem from a record.
+    // Restore the CoordinateSystem from a record.  The <src>fieldName</src>
+    // can be empty, in which case the CoordinateSystem is restored 
+    // directly from the Record, rather than a subrecord of it.
     // A null pointer means that the restoration did not succeed - probably 
     // because fieldName doesn't exist or doesn't contain a CoordinateSystem.
     static CoordinateSystem *restore(const RecordInterface &container,

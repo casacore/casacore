@@ -1647,13 +1647,21 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 {
     CoordinateSystem *retval = 0;
 
-    if (!container.isDefined(fieldName)) {
-	return retval;
+// Handle an empty field name
+
+    Record subrec;
+    if (fieldName.empty()) {
+       subrec = Record(container);
+    } else {
+       if (container.isDefined(fieldName)) {
+          subrec = Record(container.asRecord(fieldName));
+       } else {
+ 	  return retval;
+       }
     }
+//
 
-    Record subrec(container.asRecord(fieldName));
     PtrBlock<Coordinate *> tmp;
-
     Int nc = 0;                         // num coordinates
     PtrBlock<Coordinate *> coords;
     String linear = "linear";
