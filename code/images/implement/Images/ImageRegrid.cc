@@ -64,6 +64,7 @@
 #include <aips/Utilities/Assert.h>
 
 #include <strstream.h>
+#include <fstream.h>
 
 
 template<class T>
@@ -222,12 +223,15 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 // Attach mask if out is masked.  Don't init mask because it will be overwritten
 
             TiledShape tmp(outShape2);
-            outPtr = new TempImage<T>(tmp, outCoords, 0);
+            outPtr = new TempImage<T>(tmp, outCoords);
             if (outIsMasked) {
                TempLattice<Bool> mask(tmp);
                TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
                tmpPtr->attachMask(mask);
             }
+
+
+
 // Get DirectionCoordinates for input and output
 
             Vector<String> units(2);
@@ -290,7 +294,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 // Attach mask if out is masked.  
 
             TiledShape tmp(outShape2);
-            outPtr = new TempImage<T>(tmp, outCoords, 0);
+            outPtr = new TempImage<T>(tmp, outCoords);
             if (outIsMasked) {
                TempLattice<Bool> mask(tmp);
                mask.set(True);
@@ -502,6 +506,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // Any output mask is overwritten
 //
 {
+   LogIO os(LogOrigin("ImageRegrid", "regrid2D(...)", WHERE));
+//   ofstream outf("junk.txt");
 
 // Setup
 
@@ -511,8 +517,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    Bool outIsMasked = outLattice.isMasked() && outLattice.hasPixelMask() &&
                       outLattice.isMaskWritable();
    if (itsShowLevel>0) {
-      cerr << "inIsMasked " << inIsMasked << endl;
-      cerr << "outIsMasked " << outIsMasked << endl;
+      cerr << LogIO::WARN << "inIsMasked " << inIsMasked << endl;
+      cerr << LogIO::WARN << "outIsMasked " << outIsMasked << endl;
    }
 //
    const Int& inPixelAxis0 = inCoordPixelAxes(0);
@@ -527,10 +533,13 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    IPosition outPath = IPosition::makeAxisPath(nDim, IPosition(outCoordPixelAxes));
    if (itsShowLevel>0) cerr << "out path = " << outPath << endl;
 
-// Make navigator and iterator for output data and mask
+// Make navigator and iterator for output data and mask.  It is vital that
+// the "niceShape" is the same for both iterators.  Because the mask and 
+// lattice are both TempLattices, one might be on disk, one in core.
+// Hence we pick one nice shape and use it on both iterators
 
-   LatticeStepper outStepper(outShape, outLattice.niceCursorShape(), outPath,
-                             LatticeStepper::RESIZE);
+   IPosition niceShape = outLattice.niceCursorShape();
+   LatticeStepper outStepper(outShape, niceShape, outPath, LatticeStepper::RESIZE);
    LatticeIterator<T> outIter(outLattice, outStepper);
 
 // Deal with mask.  Stepper will make a reference copy of the mask
@@ -538,8 +547,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    LatticeIterator<Bool>* outMaskIterPtr = 0;
    if (outIsMasked) {
       Lattice<Bool>& outMask = outLattice.pixelMask();
-      LatticeStepper outMaskStepper(outShape, outMask.niceCursorShape(), outPath,
-                                   LatticeStepper::RESIZE);
+      LatticeStepper outMaskStepper(outShape, niceShape, outPath, LatticeStepper::RESIZE);
       outMaskIterPtr = new LatticeIterator<Bool>(outMask, outMaskStepper);
    }
 
@@ -582,7 +590,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // Iterate through output image
 
    Vector<Double> in2DPos2(2);
-   IPosition outPos3, outPos2, inPos;
+   IPosition outPos4, outPos3, outPos2, inPos;
    T result = 0.0;
    Bool anyBad;
    Int minInX, minInY, maxInX, maxInY;
@@ -596,8 +604,6 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // outPos is the location of the blc of the lattice iterator cursor
 
       if (itsShowLevel>1) {
-         cerr << "Output lattice iterator position = " <<  outPos << endl;
-         cerr << endl << endl;
          cerr << "Output lattice iterator position = " <<  outPos << endl;
          cerr << "Shape of cursor = " << outIter.cursor().shape() << endl;
       }
@@ -614,6 +620,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       maxInY = -100000000;
       Bool allFailed = True, ok1, ok2;
       MDirection inMD, outMD;
+      MVDirection inMVD, outMVD;
       for (Int j=0; j<cursorShape(1); j++) {
          for (Int i=0; i<cursorShape(0); i++) {
             outPixel(0) = i + outPos(0);
@@ -621,21 +628,31 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 
 // Do coordinate conversions. out pixel to world to in pixel
 // for the axes of interest
-
+            
             if (useMachine) {
               ok1 = outCoord.toWorld(outMD, outPixel);            
+              ok2 = False;
               if (ok1) {
                  inMD = machine(outMD);
                  ok2 = inCoord.toPixel(inPixel, inMD);
               } 
-            } else {
+            } else { 
+               world = 0.0;
                ok1 = outCoord.toWorld(world, outPixel);
+               ok2 = False;
+               inPixel = 0.0;
                if (ok1) ok2 = inCoord.toPixel(inPixel, world);
+//
+               if (itsShowLevel>1) {
+                 cerr << "outPos, world, inPos, ok1, ok2 = " 
+                      << outPixel << world << inPixel << ", " << ok1 << ", " << 
+                       ok2 << endl;
+               }
             }
             if (!ok1 || !ok2) {
                failed(i,j) = True;
             } else {
-//
+
 // Find pixel to left and below point of interest in input grid for
 // pixel axes of interest
 
@@ -668,6 +685,9 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       }
       if (itsShowLevel>0) {
          cerr << "allFailed, missedIt  = " << allFailed << ", " << missedIt << endl;
+      }
+      if (itsShowLevel>1) {
+         cerr << "failed  = " << failed << endl;
       }
 //
       if (missedIt || allFailed) {
@@ -743,11 +763,18 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
             outPos3 = outPos + outPos2;
             for (Int j=0; j<cursorShape(1); j++) {
                for (Int i=0; i<cursorShape(0); i++) {
+                  if (itsShowLevel>1) {
+                     outPos4 = outPos3; 
+                     outPos4(0) = outPos4(0) + i;
+                     outPos4(1) = outPos4(1) + j;
+                  }
+
                   if (failed(i,j)) {
                      outCursorIter.rwMatrixCursor()(i,j) = 0.0;
                      if (outIsMasked) {
                         outMaskCursorIterPtr->rwMatrixCursor()(i,j) = False;
                      }
+                     if (itsShowLevel>1) cerr << "Coord fail - Putting zero to image at " << outPos4 << endl;
                   } else {
 
 // Define input pixel grid relative to the input data chunk we read in.
@@ -761,7 +788,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                      inBlc(inPixelAxis1) = inBlc2D(i,j,1) - inChunkBlc(inPixelAxis1);
                      inTrc(inPixelAxis0) = inBlc(inPixelAxis0) + widthm1;
                      inTrc(inPixelAxis1) = inBlc(inPixelAxis1) + widthm1;
-//                     if (itsShowLevel>1) cerr << "inBlc, inTrc = " << inBlc << inTrc << endl;
+                     if (itsShowLevel>1) cerr << "inBlc, inTrc = " << inBlc << inTrc << endl;
 
 // See if the input grid is contained within the input image
 // We only have to worry about the regridding axes.
@@ -802,21 +829,21 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                            in2DPos2(1) = in2DPos(i,j,1);
 //
                            if (itsShowLevel>1) {
-//                              cerr << "Interpolate array of shape " << 
-//                                    inDataSub.shape() << " at " << in2DPos2 << endl;
+                              cerr << "Interpolate array of shape " << 
+                                    inDataSub.shape() << " at " << in2DPos2 << endl;
                            }
 //
                            if(interp.interp(result, in2DPos2, inDataSub)) {
                               if (itsShowLevel>1) {
-//                                 cerr << "result = " << result << endl;
-//                                 cerr << "OK   - Putting " << result << " to cursor at" << outPos2 << endl;
+                                 cerr << "result = " << result << endl;
+                                 cerr << "OK   - Putting " << result << " to image at" << outPos4 << endl;
                               }
                               outCursorIter.rwMatrixCursor()(i,j) = result;
                               if (outIsMasked) {
                                  outMaskCursorIterPtr->rwMatrixCursor()(i,j) = True; 
                               }
                            } else {
-//                              if (itsShowLevel>1) cerr << "Fail - Putting zero to cursor at " << outPos2 << endl; 
+                              if (itsShowLevel>1) cerr << "Fail - Putting zero to image at " << outPos4 << endl;
                               outCursorIter.rwMatrixCursor()(i,j) = 0.0;
                               if (outIsMasked) {
                                  outMaskCursorIterPtr->rwMatrixCursor()(i,j) = False; 
@@ -968,15 +995,19 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    }
    if (itsShowLevel>0) cerr << endl;
 
-// Make navigator and iterator for output data and mask
+// Make navigator and iterator for output data and mask. It is vital that
+// the "niceShape" is the same for both iterators.  Because the mask and 
+// lattice are both TempLattices, one might be on disk, one in core.
+// Hence we pick one nice shape and use it on both iterators
 
-   TiledLineStepper outStepper(outShape, outLattice.niceCursorShape(), outPixelAxis);
+   IPosition niceShape = outLattice.niceCursorShape();
+   TiledLineStepper outStepper(outShape, niceShape, outPixelAxis);
    LatticeIterator<T> outIter(outLattice, outStepper);
 //
    LatticeIterator<Bool>* outMaskIterPtr = 0;
    if (outIsMasked) {
       Lattice<Bool>& outMask = outLattice.pixelMask();    
-      TiledLineStepper outMaskStepper(outShape, outMask.niceCursorShape(), outPixelAxis);
+      TiledLineStepper outMaskStepper(outShape, niceShape, outPixelAxis);
       outMaskIterPtr = new LatticeIterator<Bool>(outMask, outMaskStepper);
    }
 //
@@ -1165,7 +1196,7 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
  
       Coordinate::Type type = outCoords.type(outCoordinate);
       if (type==Coordinate::STOKES) {
-         os << LogIO::WARN << "The Stokes axis cannot be regridded - removing from list" << LogIO::POST;
+         os << LogIO::WARN << "The Stokes axis cannot be regridded - removing from list" << endl;
       } else {
          outPixelAxes(j) = outPixelAxes(i);
          j++;
