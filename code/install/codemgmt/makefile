@@ -2,7 +2,7 @@
 # AIPS++ code management directory makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997
+#   Copyright (C) 1992-1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -45,7 +45,7 @@ include $(AIPSARCH)/makedefs
 AISCRIPT := ai ae amv am ao au ax rau
 SUIDWRAP := sau sai
 DISTSCRP := inhale sneeze
-SCRIPTS  := alog av ih_log_info.pl inhold mktree rai rao runtests squiz testsuite xrcs
+SCRIPTS  := alog av ih_log_info.pl inhold mktree rai rao runtests squiz testsuite xrcs testsum.sh
 
 AIPSEXES := $(basename $(filter-out %_master.c,$(filter %.c,$(AIPSSRCS))))
 PGMREXES := $(basename $(filter-out %_master.c,$(wildcard *.c)))
