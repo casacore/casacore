@@ -457,11 +457,12 @@ public:
     // Coordinate units.
     //<group>
     virtual String format(String& units,
-                          const Coordinate::formatType format,
-                          const Double worldValue,
-                          const uInt worldAxis,
-                          const Bool absolute,
-                          const Int precision = -1) const;
+                          Coordinate::formatType format,
+                          Double worldValue,
+                          uInt worldAxis,
+                          Bool absolute,
+                          Int precision=-1,
+                          Bool native=False) const;
 
     // Miscellaneous information related to an observation, for example the
     // observation date.

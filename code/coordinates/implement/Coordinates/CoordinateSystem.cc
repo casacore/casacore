@@ -1516,11 +1516,12 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 
 
 String CoordinateSystem::format(String& units,
-                                const Coordinate::formatType format,
-                                const Double worldValue,
-                                const uInt worldAxis,
-                                const Bool absolute,
-                                const Int precision) const   
+                                Coordinate::formatType format,
+                                Double worldValue,
+                                uInt worldAxis,
+                                Bool absolute,
+                                Int precision,
+                                Bool native) const   
 {
     AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
 // 
@@ -1532,7 +1533,7 @@ String CoordinateSystem::format(String& units,
     AlwaysAssert(coord>=0 && axis >= 0, AipsError);
     
     return coordinate(coord).format(units, format, worldValue, axis, 
-                                    absolute, precision);
+                                    absolute, precision, native);
 }
 
 ObsInfo CoordinateSystem::obsInfo() const
