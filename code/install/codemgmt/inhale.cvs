@@ -316,7 +316,8 @@
 
 # Now use CVS to update the code areas.
   cd $AIPSROOT
-  export CVSROOT=`getrc inhale.cvsroot`
+  CVSROOT=`getrc inhale.cvsroot`
+  export CVSROOT
   if [ ! "$CVSROOT" ]
   then
      export CVSROOT=`getrc inhale.cvsroot 2>/dev/null`
