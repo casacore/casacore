@@ -99,7 +99,8 @@ inline Float min(Float a, Float b) { if (a > b) return b; else return a; }
 // </group>
 
 // Get the absolute value of Float or Double values. Should already be defined
-// for integers in <src><stdlib.h></src> .
+// for integers in <src><stdlib.h></src>.  Define it for uInts so that certain
+// compilers can resolve the ambiguity when used in a templated class.
 // <group>
 #if !defined(AIPS_STDLIB)
 inline Float abs(Float Val) {return Val > 0 ? Val : -Val;}
@@ -110,6 +111,8 @@ inline Float abs(Float Val) {return Val > 0 ? Val : -Val;}
 // (which is probably slower!)
 inline Double abs(Double Val) {return Val > 0 ? Val : -Val;}
 #endif
+
+inline uInt abs(uInt Val) {return Val;}
 // </group>
 
 // Return the square of a value.
