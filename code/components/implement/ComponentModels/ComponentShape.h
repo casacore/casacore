@@ -34,6 +34,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Mathematics/Complex.h>
 
+class DirectionCoordinate;
 class MVAngle;
 class RecordInterface;
 class String;
@@ -248,6 +249,11 @@ public:
   // String.
   static ComponentType::Shape getType(String& errorMessage,
 				      const RecordInterface& record);
+
+// Convert component shape to absolute pixels (e.g. major/minor etc)
+// The default implementation is to throw an exception.
+// It is currently implemented only for TwoSided shape
+   virtual Vector<Double> toPixel (const DirectionCoordinate& dirCoord) const;
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
