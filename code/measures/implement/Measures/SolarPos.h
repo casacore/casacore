@@ -88,6 +88,8 @@
 //		measures.jpl.ephemeris (at the moment of writing DE200 (default),
 //		or DE405)
 // </ul>
+// Reference: M. Soma et al., Cel. Mech. 41 (1988), 389;
+// E.M. Standish, Astron. Astroph. 114 (1982), 297.
 // </synopsis>
 //
 // <example>

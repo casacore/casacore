@@ -92,8 +92,9 @@ const MVPosition &SolarPos::operator()(Double epoch) {
     for (Int i=0; i<3; i++) {
 	result[lres](i) = (-eval[i] - dt*deval[i]);
     };
-    if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
-      result[lres] *= MeasTable::posToRect();
+    // Convert to rectangular
+    if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+      result[lres] *= MeasTable::RectToPos();
     };
     return result[lres];
 }
@@ -112,8 +113,9 @@ const MVPosition &SolarPos::baryEarth(Double epoch) {
     for (i=0; i<3; i++) {
 	result[lres](i) -= (sval[i] + dt*dsval[i]);
     };
-    if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
-      result[lres] *= MeasTable::posToRect();
+    // Convert to rectangular
+    if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+      result[lres] *= MeasTable::RectToPos();
     };
     return result[lres];
 }
@@ -125,8 +127,9 @@ const MVPosition &SolarPos::barySun(Double epoch) {
     for (Int i=0; i<3; i++) {
 	result[lres](i) = (-sval[i] - dt*dsval[i]);
     };
-    if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
-      result[lres] *= MeasTable::posToRect();
+    // Convert to rectangular
+    if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+      result[lres] *= MeasTable::RectToPos();
     };
     return result[lres];
 }
@@ -137,8 +140,9 @@ const MVPosition &SolarPos::derivative(Double epoch) {
     for (Int i=0; i<3; i++) {
 	result[lres](i) = (-deval[i]);
     };
-    if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
-      result[lres] *= MeasTable::posToRect();
+    // Convert to rectangular
+    if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+      result[lres] *= MeasTable::RectToPos();
     };
     return result[lres];
 }
@@ -150,8 +154,9 @@ const MVPosition &SolarPos::baryEarthDerivative(Double epoch) {
     for (Int i=0; i<3; i++) {
 	result[lres](i) = (deval[i] - dsval[i]);
     };
-    if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
-      result[lres] *= MeasTable::posToRect();
+    // Convert to rectangular
+    if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+      result[lres] *= MeasTable::RectToPos();
     };
     return result[lres];
 }
@@ -162,8 +167,9 @@ const MVPosition &SolarPos::barySunDerivative(Double epoch) {
     for (Int i=0; i<3; i++) {
 	result[lres](i) = (-dsval[i]);
     };
-    if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
-      result[lres] *= MeasTable::posToRect();
+    // Convert to rectangular
+    if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+      result[lres] *= MeasTable::RectToPos();
     };
     return result[lres];
 }
