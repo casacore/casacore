@@ -1,5 +1,5 @@
 //# tArray.cc: Test program for the Array class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -164,18 +164,18 @@ void oldArrayTest()
 	cout << "Testing Vectors......................";
  	Vector<Int> x(10);
 	x = 5;     
-	for (int i=0; i < 10; i++)
+	for (Int i=0; i < 10; i++)
 	    AlwaysAssertExit(x(i) == 5);
 	Vector<Int> y(x);
 	AlwaysAssertExit(x.nrefs() == y.nrefs() && x.nrefs() > 1);
-	for (i=0; i < 10; i++)
+	for (Int i=0; i < 10; i++)
 	    AlwaysAssertExit(y(i) == 5);
 	Vector<Int> z(x.copy());
 	z = 11;
-	for (i=0; i < 10; i++)
+	for (Int i=0; i < 10; i++)
 	    AlwaysAssertExit(z(i) == 11 && x(i) == 5);
 	x(Slice(0,5,2)) = z(Slice(0,5,2));
-	for(i=0; i < 10; i += 2)
+	for(Int i=0; i < 10; i += 2)
 	    AlwaysAssertExit(x(i) == 11 && x(i+1) == 5);
 	Vector<Int> zz; // default constructor
 	AlwaysAssertExit(zz.nelements() == 0);
@@ -218,11 +218,11 @@ void oldArrayTest()
 	    x(i) = double(i+1)/10.0;
 	
 	y = floor(x.ac());
-	for (i = 0; i < 5; i++)
+	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(y(i) == 0.0);
 	
 	z = pow(x.ac(),y.ac());
-	for (i = 0; i < 5; i++)
+	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(z(i) == 1.0);
 	
 	AlwaysAssertExit(min(z.ac()) == 1.0 && max(z.ac()) == 1.0);
@@ -435,8 +435,8 @@ void oldArrayTest()
 	IPosition l(1);
 	l(0) = a.nelements();
 	Vector<Int> d(a.reform(l));
-	for (int i = 0; i < 5; i++)
-	    for (int j = 0; j < 5; j++)
+	for (Int i = 0; i < 5; i++)
+	    for (Int j = 0; j < 5; j++)
 		AlwaysAssertExit(a(i,j) == d(i + j*5));
 	Matrix<Int> y1(5u,6u, 4u);
 	AlwaysAssertExit (allEQ(y1.ac(), 4));
@@ -446,7 +446,7 @@ void oldArrayTest()
 	indgen(v.ac());
 	Matrix<Int> vm(v);
 	AlwaysAssertExit(vm.ndim() == 2 && vm.nelements() == v.nelements());
-	for (i = 0; i < v.nelements(); i++)
+	for (Int i = 0; i < v.nelements(); i++)
 	    AlwaysAssertExit(vm(i,0) == v(i) && v(i) == i);
 	
 	cout << "OK\n";
@@ -461,7 +461,7 @@ void oldArrayTest()
 		for (Int i=0; i <= 2; i++)
 		    AlwaysAssertExit(c(i,j,k) == 3);
 	
-	for (k=0; k <= 2; k++)
+	for (Int k=0; k <= 2; k++)
 	    AlwaysAssertExit(allEQ (c.xyPlane(k).ac(), 3));
 	
 	// Check copy ctor
@@ -510,7 +510,7 @@ void oldArrayTest()
 	m.putStorage(storage, deleteIt);
 	storage = m(Slice(0,2,3), Slice(2,2,4)).getStorage(deleteIt);
 	AlwaysAssertExit(deleteIt == True);
-	for (i=0; i < 4; i++)
+	for (Int i=0; i < 4; i++)
 	    storage[i] = 0;
 	AlwaysAssertExit(m(0,2) == 1 && m(0,6) == 1 && m(3,2) == 1 && m(3,6) == 1);
 	m(Slice(0,2,3), Slice(2,2,4)).putStorage(storage,deleteIt);
