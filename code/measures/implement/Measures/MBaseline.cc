@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/Measures/MBaseline.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
@@ -206,6 +207,13 @@ void MBaseline::checkMyTypes() {
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MBaseline::getType(tp, MBaseline::showType(i)) &&
 		   tp == i, AipsError);
+    };
+    // Check if baseline types are identical to direction types
+    AlwaysAssert(static_cast<Int>(MBaseline::N_Types) == 
+		 static_cast<Int>(MDirection::N_Types), AipsError);
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MBaseline::showType(i) == MDirection::showType(i),
+		   AipsError);
     };
   };
 }

@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/Measures/Muvw.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
@@ -186,7 +187,7 @@ const String *const Muvw::allTypes(Int &nall, Int &nextra,
 
 void Muvw::checkTypes() const {
   Muvw::checkMyTypes();
-};
+}
 
 void Muvw::checkMyTypes() {
   static Bool first(True);
@@ -205,6 +206,13 @@ void Muvw::checkMyTypes() {
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(Muvw::getType(tp, Muvw::showType(i)) &&
 		   tp == i, AipsError);
+    };
+    // Check if uvw types are identical to direction types
+    AlwaysAssert(static_cast<Int>(Muvw::N_Types) == 
+		 static_cast<Int>(MDirection::N_Types), AipsError);
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(Muvw::showType(i) == MDirection::showType(i),
+		   AipsError);
     };
   };
 }
