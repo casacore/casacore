@@ -69,7 +69,7 @@
 // conversion should be put somewhere central like Array2Math.cc.</note>
 // </synopsis>
 
-// <group name="complex-to-complex-fft">
+// <group name="Complex To Complex Transforms">
 
 // cffti initializes the array wsave which is used in both cfftf and cfftb. The
 // prime factorization of n together with a tabulation of the trigonometric
@@ -215,7 +215,7 @@ void cfftb(Int n, DComplex * c, Double * wsave);
 // </note>
 // </synopsis>
 
-// <group name="real-to-complex-fft">
+// <group name="Real To Complex Transforms">
 
 // rffti initializes the array wsave which is used in both <src>rfftf</src> and
 // <src>rfftb</src>. The prime factorization of n together with a tabulation of
@@ -471,7 +471,8 @@ void ezfftb(Int n, Float * r, Float * azero, Float * a, Float * b,
 // Float & float, Double & double and Int & int.
 // </note>
 // </synopsis>
-// <group name="sine-transform">
+
+// <group name="Sine Transforms">
 
 // sinti initializes the array wsave which is used in
 // subroutine sint. The prime factorization of n together with
@@ -569,7 +570,7 @@ void sint(Int n, Double * x, Double * wsave);
 // </note>
 // </synopsis>
 
-// <group name="cosine-transform">
+// <group name="Cosine Transforms">
 
 // costi initializes the array wsave which is used in
 // subroutine cost. The prime factorization of n together with
@@ -644,7 +645,7 @@ void cost(Int n, Double * x, Double * wsave);
 // </group>
 
 // <summary>Quarter-wave sine transform</summary>
-// <group name="quarter-wave-sine-transform">
+// <group name="Quarter Wave Sine Transforms">
 // <group>
 void sinqi(Int n, Float * wsave);
 void sinqi(Int n, Double * wsave);
@@ -659,8 +660,8 @@ void sinqb(Int n, Double * x, Double * wsave);
 // </group>
 // </group>
 
-// <summary>Quarter-wave cosine transform</summary>
-// <group name="quarter-wave-cosine-transform">
+// <summary>C++ Interface to the Fortran Quarter Wave Cosine Transforms</summary>
+// <group name="Quarter Wave Cosine Transforms">
 // <group>
 void cosqi(Int n, Float * wsave);
 void cosqi(Int n, Double * wsave);
