@@ -103,7 +103,7 @@ void MSIter::construct(const Block<Int>& sortColumns)
   tabIter_p.resize(nMS_p);
   tabIterAtStart_p.resize(nMS_p);
   // 'sort out' the sort orders
-  // We require the table to be sorted on FIELD_ID,
+  // We require the table to be sorted on ARRAY_ID and FIELD_ID,
   // DATA_DESC_ID and TIME for the correct operation of the
   // VisibilityIterator (it needs to know when any of these changes to
   // be able to give the correct coordinates with the data)
@@ -124,11 +124,12 @@ void MSIter::construct(const Block<Int>& sortColumns)
     cols=sortColumns;
   }
 
-  Bool timeSeen=False, ddSeen=False, fieldSeen=False;
+  Bool timeSeen=False, arraySeen=False, ddSeen=False, fieldSeen=False;
   Int nCol=0;
   for (uInt i=0; i<cols.nelements(); i++) {
     if (cols[i]>0 && 
 	cols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
+      if (cols[i]==MS::ARRAY_ID) { arraySeen=True; nCol++; }
       if (cols[i]==MS::FIELD_ID) { fieldSeen=True; nCol++; }
       if (cols[i]==MS::DATA_DESC_ID) { ddSeen=True; nCol++; }
       if (cols[i]==MS::TIME) { timeSeen=True; nCol++; }
@@ -136,9 +137,14 @@ void MSIter::construct(const Block<Int>& sortColumns)
       throw(AipsError("MSIter() - invalid sort column"));
     }
   }
-  Block<String> columns(cols.nelements()+3-nCol);
+  Block<String> columns(cols.nelements()+4-nCol);
 
   Int iCol=0;
+  if (!arraySeen) {
+    // add array if it's not there
+    columns[iCol++]=MS::columnName(MS::ARRAY_ID);
+  };
+
   if (!fieldSeen) {
     // add field if it's not there
     columns[iCol++]=MS::columnName(MS::FIELD_ID);
@@ -293,7 +299,7 @@ void MSIter::origin()
   MSInterval::setInterval(interval_p);
   if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
   setState();
-  newMS_p=newSpectralWindow_p=newField_p=newPolarizationId_p=
+  newMS_p=newArray_p=newSpectralWindow_p=newField_p=newPolarizationId_p=
     newDataDescId_p=more_p=checkFeed_p=True;
 }
 
@@ -313,7 +319,7 @@ MSIter & MSIter::operator++()
 
 void MSIter::advance()
 {
-  newMS_p=newSpectralWindow_p=newPolarizationId_p=
+  newMS_p=newArray_p=newSpectralWindow_p=newPolarizationId_p=
     newDataDescId_p=newField_p=checkFeed_p=False;
   // make sure we've still got the right interval
   MSInterval::setInterval(interval_p);
@@ -333,9 +339,11 @@ void MSIter::setState()
   checkFeed_p = newMS_p;
   setMSInfo();
   curTable_p=tabIter_p[curMS_p]->table();
+  colArray_p.attach(curTable_p,MS::columnName(MS::ARRAY_ID));
   colDataDesc_p.attach(curTable_p,MS::columnName(MS::DATA_DESC_ID));
   colField_p.attach(curTable_p,MS::columnName(MS::FIELD_ID));
   setDataDescInfo();
+  setArrayInfo();
   setFeedInfo();
   setFieldInfo();
 }
@@ -419,11 +427,22 @@ void MSIter::setMSInfo()
 
     // force updates
     lastSpectralWindow_p=-1;
+    lastArray_p=-1;
     lastPolarizationId_p=-1;
     lastDataDescId_p=-1;
     lastField_p=-1;
   }
 }
+
+void MSIter::setArrayInfo()
+{
+  // Set the array info
+  curArray_p=colArray_p(0);
+  newArray_p=ToBool(lastArray_p!=curArray_p);
+  if (newArray_p) {
+    lastArray_p=curArray_p;
+  };
+};
 
 void MSIter::setFeedInfo()
 { 
