@@ -1,5 +1,5 @@
 //# LatticeRegion.cc: An optionally strided region in a lattice
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,38 +36,25 @@
 
 LatticeRegion::LatticeRegion()
 : itsRegion (0),
-  itsParent (0),
-  itsHasRegionMask (False),
-  itsHasParentMask (False)
+  itsHasRegionMask (False)
 {}
 
-LatticeRegion::LatticeRegion (const LCRegion& region,
-			      const LatticeRegion* parent)
+LatticeRegion::LatticeRegion (const LCRegion& region)
 : itsRegion (region.cloneRegion()),
   itsSlicer (region.boundingBox()),
-  itsParent (parent),
-  itsHasRegionMask (region.hasMask()),
-  itsHasParentMask (False)
-{
-    if (itsParent != 0) {
-        itsHasParentMask = parent->hasMask();
-    }
-}
+  itsHasRegionMask (region.hasMask())
+{}
 
 LatticeRegion::LatticeRegion (LCRegion* region)
 : itsRegion (region),
   itsSlicer (region->boundingBox()),
-  itsParent (0),
-  itsHasRegionMask (region->hasMask()),
-  itsHasParentMask (False)
+  itsHasRegionMask (region->hasMask())
 {}
 
 LatticeRegion::LatticeRegion (const Slicer& slicer,
 			      const IPosition& latticeShape)
 : itsRegion (0),
-  itsParent (0),
-  itsHasRegionMask (False),
-  itsHasParentMask (False)
+  itsHasRegionMask (False)
 {
   // Make sure that the slicer has blc,trc filled in.
   IPosition blc, trc, inc;
@@ -77,27 +64,10 @@ LatticeRegion::LatticeRegion (const Slicer& slicer,
 			 latticeShape);
 }
   
-LatticeRegion::LatticeRegion (const Slicer& slicer,
-			      const LatticeRegion* parent)
-: itsRegion (0),
-  itsParent (parent),
-  itsHasRegionMask (False),
-  itsHasParentMask (parent->hasMask())
-{
-  // Make sure that the slicer has blc,trc filled in.
-  IPosition blc, trc, inc;
-  slicer.inferShapeFromSource (parent->shape(), blc, trc, inc);
-  itsSlicer = Slicer (blc, trc, inc, Slicer::endIsLast);
-  itsRegion = new LCBox (Slicer (slicer.start(), slicer.length()),
-			 parent->shape());
-}
-  
 LatticeRegion::LatticeRegion (const LatticeRegion& other)
 : itsRegion (other.itsRegion->cloneRegion()),
   itsSlicer (other.itsSlicer),
-  itsParent (other.itsParent),
-  itsHasRegionMask (other.itsHasRegionMask),
-  itsHasParentMask (other.itsHasParentMask)
+  itsHasRegionMask (other.itsHasRegionMask)
 {}
     
 LatticeRegion::~LatticeRegion()
@@ -114,9 +84,7 @@ LatticeRegion& LatticeRegion::operator= (const LatticeRegion& other)
 	    itsRegion = itsRegion->cloneRegion();
 	}
 	itsSlicer = other.itsSlicer;
-	itsParent = other.itsParent;
 	itsHasRegionMask = other.itsHasRegionMask;
-	itsHasParentMask = other.itsHasParentMask;
     }
     return *this;
 }
@@ -163,36 +131,9 @@ Bool LatticeRegion::doGetSlice (Array<Bool>& buffer,
         buffer = True;
 	return False;
     }
-    // If parent has no mask, return the required section.
-    if (!itsHasParentMask) {
-        LCRegion* reg = (LCRegion*)itsRegion;
-        return reg->doGetSlice (buffer, section);
-    }
-    // If we have no mask, return the parent mask.
-    LCRegion* par = (LCRegion*)itsParent;
-    if (!itsHasRegionMask) {
-        return par->doGetSlice (buffer, convert(section));
-    }
-    // We have to combine this mask and the parent mask.
-    Array<Bool> tmpbuf = itsRegion->getSlice (section);
-    par->doGetSlice (buffer, convert (section));
-    Bool deleteBuf, deleteTmp;
-    Bool* tmp = tmpbuf.getStorage (deleteTmp);
-    Bool* tmpptr = tmp;
-    const Bool* buf = buffer.getStorage (deleteBuf);
-    const Bool* bufptr = buf;
-    const Bool* bufend = buf + buffer.nelements();
-    while (bufptr < bufend) {
-        if (*tmpptr) {
-	    *tmpptr = *bufptr;
-	}
-	bufptr++;
-	tmpptr++;
-    }
-    buffer.freeStorage (buf, deleteBuf);
-    tmpbuf.putStorage (tmp, deleteTmp);
-    buffer.reference (tmpbuf);
-    return False;
+    // Return the required section.
+    ///    LCRegion* reg = (LCRegion*)itsRegion;
+    return itsRegion->doGetSlice (buffer, section);
 }
 
 void LatticeRegion::doPutSlice (const Array<Bool>& sourceBuffer,
