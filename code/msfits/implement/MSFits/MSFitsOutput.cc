@@ -871,19 +871,11 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
   // Calculate GSTIA0, DEGPDY, UT1UTC, and IATUTC.
 
-  ROScalarQuantColumn<Double> intime(ms, MS::columnName(MS::TIME));
-
   MEpoch measTime = ROMSColumns(ms).timeMeas()(0);
-
-  cout << "measTime.getRefString() = " << measTime.getRefString() << endl;
-  cout << "measTime  = " << measTime << endl;
 
   MEpoch utctime = MEpoch::Convert (measTime, MEpoch::UTC) ();
   MEpoch iattime = MEpoch::Convert (measTime, MEpoch::IAT) ();
   MEpoch ut1time = MEpoch::Convert (measTime, MEpoch::UT1) ();
-  cout << "utctime   = " << utctime << endl;
-  cout << "iattime   = " << iattime << endl;
-  cout << "ut1time   = " << ut1time << endl;
   Double utcsec = utctime.get("s").getValue();
   Double ut1sec = ut1time.get("s").getValue();
   Double iatsec = iattime.get("s").getValue();
@@ -892,26 +884,18 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
   Double iatday = floor(iattime.get("d").getValue());
   Double gstday, gstday1;
   {
-    //    Quantum<Double> itime(iatday, "d");
-    //    MEpoch ia0time (itime, MEpoch::IAT);
-    //    MEpoch gsttime = MEpoch::Convert (ia0time, MEpoch::GMST) ();
-    //    gstday = gsttime.get("d").getValue();
+    // Use IAT=0 to get GST:
     Quantum<Double> itime(iatday, "d");
-    MEpoch ia0time (itime, MEpoch::IAT);
+    MEpoch ia0time (itime, MEpoch::UTC);
     MEpoch gsttime = MEpoch::Convert (ia0time, MEpoch::GMST) ();
     gstday = gsttime.get("d").getValue();
-    cout << "iatday  = " << iatday << endl;
-    cout << "itime   = " << itime << endl;
-    cout << "ia0time = " << ia0time << endl;
-    cout << "gsttime = " << gsttime << endl;
-    cout << "gstday  = " << gstday << endl;
 
   }
   Double gstdeg = 360 * (gstday - floor(gstday));
   {
     // #degrees/IATday is the difference between this and the next day.
     Quantum<Double> itime(iatday+1, "d");
-    MEpoch ia0time (itime, MEpoch::IAT);
+    MEpoch ia0time (itime, MEpoch::UTC);
     MEpoch gsttime = MEpoch::Convert (ia0time, MEpoch::GMST) ();
     gstday1 = gsttime.get("d").getValue();
   }
@@ -1133,7 +1117,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   // Basically we make the FIELD_ID the source ID.
   MSField fieldTable(ms.field());
   ROMSFieldColumns msfc(fieldTable);
-  //  const ROScalarColumn<Int>& insrcid=msfc.sourceId();
+  const ROScalarColumn<Int>& insrcid=msfc.sourceId();
   const ROScalarColumn<String>& inname=msfc.name();
 
   // If source table exists, access it
@@ -1146,19 +1130,19 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
 
   // This is for case where SOURCE may not exist:
   //   (doesn't work yet!)
-  //  MSSource sourceTable();
-  //  ROMSSourceColumns sourceColumns();
-  //  ColumnsIndex srcInx();
-  //  RecordFieldPtr<Int> srcInxFld();
-  //  if (!ms.source().isNull()) {
-  //    sourceTable = ms.source();
-  //    sourceColumns = ROMSSourceColumns(sourceTable);
+  MSSource* sourceTable=0;
+  ROMSSourceColumns* sourceColumns=0;
+  ColumnsIndex* srcInx=0;
+  RecordFieldPtr<Int>* srcInxFld=0;
+  if (!ms.source().isNull()) {
+    sourceTable = new MSSource(ms.source());
+    sourceColumns = new ROMSSourceColumns(*sourceTable);
     // Create an index for the SOURCE table.
     // Make a RecordFieldPtr for the SOURCE_ID field in the index key record.
-  //    srcInx=ColumnsIndex(sourceTable, "SOURCE_ID");
-  //    srcInxFld=RecordFieldPtr<Int>(srcInx.accessKey(), "SOURCE_ID");
-  //  }
-
+    srcInx=new ColumnsIndex(*sourceTable, "SOURCE_ID");
+    srcInxFld= new RecordFieldPtr<Int>(srcInx->accessKey(), "SOURCE_ID");
+  }
+  
   MSSpectralWindow spectralTable(ms.spectralWindow());
 
   const uInt nrow = fieldTable.nrow();
@@ -1294,32 +1278,32 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
       // Try to find the SOURCE_ID in the SOURCE table.
       // If multiple rows found, use the first one.
 
-      //  Optional access to SOURCE table doesn't work yet!
-      //      if (!sourceTable.isNull()) {
-      //      	*srcInxFld = insrcid(fieldnum);
-      //      	Vector<uInt> rownrs = srcInx.getRowNumbers();
-      //      	if (rownrs.nelements() > 0) {
-      //      	  uInt rownr = rownrs(0);
-      //      	  *source = sourceColumns.name()(rownr);
-      //	  *lsrvel = sourceColumns.sysvel()(rownr);
-      //      	  if (sourceColumns.properMotion().isDefined(rownr)) {
-      //      	    Vector<Double> pm = sourceColumns.properMotion()(rownr);
-      //      	    *pmra = pm(0);
-      //      	    *pmdec = pm(1);
-      //      	  }
-      //      	  *qual = sourceColumns.calibrationGroup()(rownr);
-      //      	  *calcode = sourceColumns.code()(rownr);
-      //      	  
-      //      	  // Directions have to be converted from radians to degrees.
-      //      	  if (sourceColumns.direction().isDefined(rownr)) {
-      //      	    dir = sourceColumns.directionMeas()(rownr);
-      //      	  }
-      //      	  if (dir.type()==MDirection::B1950) {
-      //      	    *epoch = 1950.;
-      //      	  }
-      //      	}
-      //      }
-
+      //  Optional access to SOURCE table 
+      if (sourceTable) {
+      	**srcInxFld = insrcid(fieldnum);
+      	Vector<uInt> rownrs = srcInx->getRowNumbers();
+      	if (rownrs.nelements() > 0) {
+      	  uInt rownr = rownrs(0);
+	  // Name in SOURCE table overides name in FIELD table
+      	  *source = sourceColumns->name()(rownr);
+	  *lsrvel = sourceColumns->sysvel()(rownr);
+      	  if (sourceColumns->properMotion().isDefined(rownr)) {
+      	    Vector<Double> pm = sourceColumns->properMotion()(rownr);
+      	    *pmra = pm(0);
+      	    *pmdec = pm(1);
+      	  }
+      	  *qual = sourceColumns->calibrationGroup()(rownr);
+      	  *calcode = sourceColumns->code()(rownr);
+      	  
+      	  // Directions have to be converted from radians to degrees.
+      	  if (sourceColumns->direction().isDefined(rownr)) {
+      	    dir = sourceColumns->directionMeas()(rownr);
+      	  }
+      	  if (dir.type()==MDirection::B1950) {
+      	    *epoch = 1950.;
+      	  }
+      	}
+      }
 
       // Write ra/dec as epoch and apparent (in degrees).
       // Use the time in the field table to calculate apparent.
@@ -1337,6 +1321,13 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
     }
   }
   os << LogIO::NORMAL << "writing " << nrfield << " sources" << LogIO::POST;
+
+  // Delete dynamic memory, if nec:
+  if (sourceTable) delete sourceTable;
+  if (sourceColumns) delete sourceColumns;
+  if (srcInx) delete srcInx;
+  if (srcInxFld) delete srcInxFld;
+
   return True;
 }
 
