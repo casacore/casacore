@@ -131,6 +131,10 @@ public:
   ~VisSet();
   // referencing assignment operator
   VisSet& operator=(const VisSet& other);
+
+  // Initializes scratch columns
+  void initCalSet(Int val=0);
+
   // Flushes the data to disk
   void flush();
   // Iterator access to the  data
