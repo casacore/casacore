@@ -93,13 +93,13 @@ void show(HeaderDataUnit *h) {
 	if (x.dims() == 2) { \
 	    n0 = x.dim(0) > 6 ? 6 : x.dim(0); \
 	    n1 = x.dim(1) > 6 ? 6 : x.dim(1); \
-	  if( x.hdutype() != FITS::PrimaryArrayHDU ){ \ 
+	  if( x.hdutype() != FITS::PrimaryArrayHDU ){ \
 	    for (i = 0; i < n0; ++i) \
 	    for (j = 0; j < n1; ++j) \
 		 { cout << "(" << i << "," << j << ") = " \
 		     << x(i,j) << "\n"; \
 		 } \
-	  } \	  
+	  } \
 	} \
 	delete &x; \
 }
