@@ -1,5 +1,5 @@
 //# WCComplement.h: Make the complement of an image region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,7 +87,7 @@ public:
     WCComplement& operator= (const WCComplement& other);
 
     // Comparison
-    virtual Bool operator== (const WCCompound& other) const;
+    virtual Bool operator== (const WCRegion& other) const;
 
     // Make a copy of the derived object.
     // cloneRegion needs to return a WCRegion * because the

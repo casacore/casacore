@@ -1,5 +1,5 @@
 //# WCComplement.cc: Make the complement of an image region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,7 +56,7 @@ WCComplement& WCComplement::operator= (const WCComplement& other)
     return *this;
 }
 
-Bool WCComplement::operator== (const WCCompound& other) const
+Bool WCComplement::operator== (const WCRegion& other) const
 {
    return WCCompound::operator== (other);
 }
