@@ -27,15 +27,14 @@
 
 #include <trial/ComponentModels/GaussianShape.h>
 #include <trial/ComponentModels/Flux.h>
+#include <trial/Measures/QuantumHolder.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <trial/Measures/DOmeasures.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
@@ -280,7 +279,6 @@ void GaussianShape::shapeParameters(Vector<Double> & compParms) const {
 Bool GaussianShape::fromRecord(String & errorMessage,
 			       const RecordInterface & record) {
   if (!ComponentShape::readDir(errorMessage, record)) return False;
-
   MVAngle majorAxis;
   {
     const String fieldString("majorAxis");
@@ -289,9 +287,9 @@ Bool GaussianShape::fromRecord(String & errorMessage,
       return False;
     }
     const RecordFieldId field(fieldString);
-    if (record.shape(field) != IPosition(1,1)) {
-	errorMessage += "\nThe 'majoraxis' field have only 1 element";
-	return False;
+    if (!record.shape(field).isEqual(IPosition(1,1))) {
+      errorMessage += "\nThe 'majoraxis' field have only 1 element";
+      return False;
     }      
     Record quantumRecord;
     try {
@@ -301,14 +299,13 @@ Bool GaussianShape::fromRecord(String & errorMessage,
       errorMessage += "\nThe 'majoraxis' field must be a record";
       return False;
     } end_try;
-    
-    GlishRecord glishRecord;
-    glishRecord.fromRecord(quantumRecord);
-    if (!measures::isQuantity(glishRecord)) {
+    QuantumHolder qHolder;
+    if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
+	!qHolder.isQuantity()) {
       errorMessage += "\nThe 'majoraxis' field is not a quantity";
       return False;
     }
-    Quantum<Double> quantum = measures::fromRecord(glishRecord);
+    const Quantum<Double> & quantum = qHolder.asQuantity();
     if (quantum.getFullUnit() != Unit("deg")) {
       errorMessage += "\nThe 'majoraxis' field must have angular units";
       return False;
@@ -335,14 +332,18 @@ Bool GaussianShape::fromRecord(String & errorMessage,
       errorMessage += "\nThe 'minoraxis' field must be a record";
       return False;
     } end_try;
-    
-    GlishRecord glishRecord;
-    glishRecord.fromRecord(quantumRecord);
-    if (!measures::isQuantity(glishRecord)) {
+    QuantumHolder qHolder;
+    if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
+	!qHolder.isQuantity()) {
       errorMessage += "\nThe 'minoraxis' field is not a quantity";
       return False;
     }
-    Quantum<Double> quantum = measures::fromRecord(glishRecord);
+    if (!qHolder.isQuantity()) {
+      errorMessage += 
+	"\nThe 'minoraxis' field could not converted to a quantity";
+      return False;
+    }
+    const Quantum<Double> & quantum = qHolder.asQuantity();
     if (quantum.getFullUnit() != Unit("deg")) {
       errorMessage += "\nThe 'minoraxis' field must have angular units";
       return False;
@@ -369,14 +370,13 @@ Bool GaussianShape::fromRecord(String & errorMessage,
       errorMessage += "\nThe 'positionangle' field must be a record";
       return False;
     } end_try;
-    
-    GlishRecord glishRecord;
-    glishRecord.fromRecord(quantumRecord);
-    if (!measures::isQuantity(glishRecord)) {
+    QuantumHolder qHolder;
+    if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
+	!qHolder.isQuantity()) {
       errorMessage += "\nThe 'positionangle' field is not a quantity";
       return False;
     }
-    Quantum<Double> quantum = measures::fromRecord(glishRecord);
+    const Quantum<Double> & quantum = qHolder.asQuantity();
     if (quantum.getFullUnit() != Unit("deg")) {
       errorMessage += "\nThe 'positionangle' field must have angular units";
       return False;
@@ -394,17 +394,33 @@ Bool GaussianShape::toRecord(String & errorMessage,
 
   record.define(RecordFieldId("type"), String("gaussian"));
   if (!ComponentShape::addDir(errorMessage, record)) return False;
+  const Unit arcmin("'");
   {
-    GlishRecord gParmRecord = measures::toRecord(majorAxis().get("'"));
-    Record parmRecord;
-    gParmRecord.toRecord(parmRecord);
-    record.defineRecord(RecordFieldId("majoraxis"), parmRecord);
-    gParmRecord = measures::toRecord(minorAxis().get("'"));
-    gParmRecord.toRecord(parmRecord);
-    record.defineRecord(RecordFieldId("minoraxis"), parmRecord);
-    gParmRecord = measures::toRecord(positionAngle().get("'"));
-    gParmRecord.toRecord(parmRecord);
-    record.defineRecord(RecordFieldId("positionangle"), parmRecord);
+    const QuantumHolder qHolder(majorAxis().get(arcmin));
+    Record qRecord;
+    if (!qHolder.toRecord(errorMessage, qRecord)) {
+      errorMessage += "\nCannot convert the major axis to a record";
+      return False;
+    }
+    record.defineRecord(RecordFieldId("majoraxis"), qRecord);
+  }
+  {
+    const QuantumHolder qHolder(minorAxis().get(arcmin));
+    Record qRecord;
+    if (!qHolder.toRecord(errorMessage, qRecord)) {
+      errorMessage += "\nCannot convert the minor axis to a record";
+      return False;
+    }
+    record.defineRecord(RecordFieldId("minoraxis"), qRecord);
+  }
+  {
+    const QuantumHolder qHolder(positionAngle().get(Unit("deg")));
+    Record qRecord;
+    if (!qHolder.toRecord(errorMessage, qRecord)) {
+      errorMessage += "\nCannot convert the position angle to a record";
+      return False;
+    }
+    record.defineRecord(RecordFieldId("positionangle"), qRecord);
   }
   return True;
 }
