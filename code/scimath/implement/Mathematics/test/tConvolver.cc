@@ -1,5 +1,5 @@
 //# tConvolver.cc:  this tests the Convolver class
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,12 +66,12 @@ int main() {
       cout << "Passed";
     cout << " the Circular Convolution in Double Precision Test"
 	 << endl;
-    mod.resize(6);
+    mod.resize(IPosition(1,6));
     mod = 0;
     mod(5) = 1;
     mod(0) = 2;
     if (!failed){
-      result.resize(0);
+      result.resize(IPosition(1,0));
       conv.circularConv(result, mod);
       expectedResult.resize(IPosition(1,6));
       expectedResult = 0.;
@@ -185,7 +185,7 @@ int main() {
       psf(IPosition(1,2)) = .3;
       psf(IPosition(1,3)) = .1;
       conv.setPsf(psf); 
-      result.resize(0);
+      result.resize(IPosition(1,0));
       conv.linearConv(result, mod);
       expectedResult.resize(IPosition(1,4));
       expectedResult(IPosition(1,0)) = 0.3;
@@ -205,7 +205,7 @@ int main() {
       mod.resize(IPosition(1,2));
       mod(IPosition(1,0)) = 0;
       mod(IPosition(1,1)) = 1;
-      result.resize(0);
+      result.resize(IPosition(1,0));
       conv.linearConv(result, mod);
       expectedResult.resize(IPosition(1,2));
       expectedResult(IPosition(1,0)) = 1;
