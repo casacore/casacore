@@ -1,5 +1,5 @@
 //# dVSCEngine.h: Example virtual column engine to handle data type A
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -153,7 +153,8 @@ public:
     // Define the "constructor" to construct this engine when a
     // table is read back.
     // This "constructor" has to be registered by the user of the engine.
-    static DataManager* makeObject (const String& dataManagerName);
+    static DataManager* makeObject (const String& dataManagerName,
+				    const Record& spec);
 };
 
 
