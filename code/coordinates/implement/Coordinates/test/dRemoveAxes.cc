@@ -1,5 +1,5 @@
 //# dRemoveAxes.cc: demonstrate use of CoordinateUtil::removeAxes function
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,12 +40,11 @@
 
 
 
-main (int argc, char **argv)
-{
+int main (int argc, char **argv) {
 try {
 
-   LogOrigin or("dRemoveAxes", "main()", WHERE);
-   LogIO os(or);
+   LogOrigin lor("dRemoveAxes", "main()", WHERE);
+   LogIO os(lor);
    IPosition d1, d2;
    Vector<Double> worldReplacement;
    Vector<Double> pixelReplacement;
