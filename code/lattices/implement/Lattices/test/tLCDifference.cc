@@ -96,6 +96,18 @@ void doIt (const IPosition& latticeShape,
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete interscop;
     }
+    {   
+    // Test ordered equality.
+       LCDifference diff1(box, cir);
+       LCDifference diff2(diff1);
+       AlwaysAssertExit (diff1 == diff2);
+    }
+    {
+    // Test unordered equality.  The bounding boxes will differ.
+       LCDifference diff1(box, cir);
+       LCDifference diff2(cir, box);
+       AlwaysAssertExit (diff1 != diff2);
+    }
 }
 
 
@@ -110,8 +122,8 @@ main()
 	      IPosition (2,4,16), 5.);
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
-	return 1;
+	exit(1);
     } end_try;
-    cout << "OK" << endl;
-    return 0;
+    cout << "OK" << endl; 
+    exit(0);
 }
