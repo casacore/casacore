@@ -174,7 +174,7 @@ public:
   //	  the default type for the Measure.
   // <li> m0, m1, ... = TpRecord(Quantity): one or more Quantities giving
   //	  the value(s) for this Measure (e.g. longitude and latitude for a
-  //	  direction.
+  //	  direction).
   // <li> offset = TpRecord(Measure)--optional: an optional offset as a
   //	  Measure of the same type as the main Measure (e.g. an MEpoch for an
   //	   MEpoch)

@@ -130,63 +130,63 @@ const MDirection &MeasureHolder::asMDirection() const {
   if (!hold_p.ptr() || !isMDirection()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDirection"));
   };
-  return (const MDirection &) *hold_p.ptr();
+  return dynamic_cast<const MDirection &>(*hold_p.ptr());
 }
 
 const MDoppler &MeasureHolder::asMDoppler() const {
   if (!hold_p.ptr() || !isMDoppler()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDoppler"));
   };
-  return (const MDoppler &) *hold_p.ptr();
+  return dynamic_cast<const MDoppler &>(*hold_p.ptr());
 }
 
 const MEpoch &MeasureHolder::asMEpoch() const {
   if (!hold_p.ptr() || !isMEpoch()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMEpoch"));
   };
-  return (const MEpoch &) *hold_p.ptr();
+  return dynamic_cast<const MEpoch &>(*hold_p.ptr());
 }
 
 const MFrequency &MeasureHolder::asMFrequency() const {
   if (!hold_p.ptr() || !isMFrequency()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMFrequency"));
   };
-  return (const MFrequency &) *hold_p.ptr();
+  return dynamic_cast<const MFrequency &>(*hold_p.ptr());
 }
 
 const MPosition &MeasureHolder::asMPosition() const {
   if (!hold_p.ptr() || !isMPosition()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMPosition"));
   };
-  return (const MPosition &) *hold_p.ptr();
+  return dynamic_cast<const MPosition &>(*hold_p.ptr());
 }
 
 const MRadialVelocity &MeasureHolder::asMRadialVelocity() const {
   if (!hold_p.ptr() || !isMRadialVelocity()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMRadialVelocity"));
   };
-  return (const MRadialVelocity &) *hold_p.ptr();
+  return dynamic_cast<const MRadialVelocity &>(*hold_p.ptr());
 }
 
 const MEarthMagnetic &MeasureHolder::asMEarthMagnetic() const {
   if (!hold_p.ptr() || !isMEarthMagnetic()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMEarthMagnetic"));
   };
-  return (const MEarthMagnetic &) *hold_p.ptr();
+  return dynamic_cast<const MEarthMagnetic &>(*hold_p.ptr());
 }
 
 const MBaseline &MeasureHolder::asMBaseline() const {
   if (!hold_p.ptr() || !isMBaseline()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMBaseline"));
   };
-  return (const MBaseline &) *hold_p.ptr();
+  return dynamic_cast<const MBaseline &>(*hold_p.ptr());
 }
 
 const Muvw &MeasureHolder::asMuvw() const {
   if (!hold_p.ptr() || !isMuvw()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMuvw"));
   };
-  return (const Muvw &) *hold_p.ptr();
+  return dynamic_cast<const Muvw &>(*hold_p.ptr());
 }
 
 Bool MeasureHolder::fromRecord(String &error,
