@@ -233,26 +233,19 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const;
 
-    // Set the world min and max ranges, for use in toMix, for 
-    // a lattice of the given shape for this coordinate. The 
-    // implementation here gives a coordinate dangling 25% off the
-    // edge of the image assuming a linear Coordinate.
+    // Set the world min and max ranges, for use in function <src>toMix</src>, for 
+    // a lattice of the given shape for this coordinate. 
     // Returns False if fails with a reason  in <src>errorMessage()</src>.
     // If it fails, the function <src>setDefaultMixRanges</src>
-    // supplies the values.  Of the derived  classes, only
-    // DirectionCoordinate actually needs these ranges.
-    // The <src>setDefaultMixRanges</src> function
-    // gives you [-1e99->1e99]. It is meant to be used
-    // if you don't have a shape, and then for each coordinate
-    // type it gives you a full range.
-    //<group>
-
+    // supplies the values.   The <src>setDefaultMixRanges</src> function 
+    // is meant to be used if you don't have a shape, and then for each coordinate
+    // type it gives you a full range possible.  The ranges are held internally
+    // in each Coordinate and recovered via <src>worldMixMin, worldMixMax</src>
     // <group>
-    virtual Bool setMixRanges (Vector<Double>& worldMin, 
-                               Vector<Double>& worldMax,         
-                               const IPosition& shape) const;
-    virtual void setDefaultMixRanges (Vector<Double>& worldMin,
-                                      Vector<Double>& worldMax) const;
+    virtual Bool setWorldMixRanges (const IPosition& shape) = 0;
+    virtual void setDefaultWorldMixRanges () = 0;
+    virtual Vector<Double> worldMixMin () const = 0;
+    virtual Vector<Double> worldMixMax () const = 0;
     //</group>
 
 
@@ -338,6 +331,21 @@ public:
                       Double tol=1.0e-6) const = 0;
     // </group>
 
+
+    // Set and recover the preferred world axis units.  These can be used to specify
+    // a favoured unit for conversions for example.  The given units must be empty
+    // or dimensionally consistent with the native world axis units, else
+    // False is returned and <src>errorMessage()</src>
+    // has an error message for you.  The preferred units are empty strings
+    // until you explicitly set them.  The only functions in the Coordinates classes 
+    // which uses the preferred unit are <src>format, save, and restore</src>.
+    // <group>
+    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
+    virtual Vector<String> preferredWorldAxisUnits() const = 0;
+    // </group>
+
+
+
     // Provide a common interface to getting formatted representations of
     // coordinate values.    Different derived Coordinate types are formatted
     // in different ways.  For example, an RA/DEC  DirectionCoordinate
@@ -376,8 +384,12 @@ public:
     // specifies which axis of the Coordinate this value belongs to.
     //
     // <src>units</src> specifies the units in which the input world value
-    // will be formatted.  If the <src>units</src> string is empty, units will be supplied
-    // for you and the input world value converted to those units.
+    // will be formatted.  
+    // If <src>units</src> is empty, the units given by the
+    // units specified by <src>setPreferredWorldAxisUnits</src> is used.
+    // If those preferred units are empty, the native units of
+    // the Coordinate are used.
+    //
     // Some derived classes will format in units different from the 
     // native unit of the Coordinate. The units of
     // the formatted number are returned in <src>units</src>.
@@ -450,6 +462,13 @@ protected:
                        Coordinate::Type type, Int axis, 
                        const String& unitIn, 
                        const String& nameIn) const;
+
+   // Default toMix ranges using toWorld.  Called by most derived coordinates
+   Bool setWorldMixRanges (Vector<Double>& worldMin,
+                           Vector<Double>& worldMax,
+                           const IPosition& shape) const;
+   void setDefaultWorldMixRanges (Vector<Double>& worldMin,
+                                  Vector<Double>& worldMax) const;
 
 private:
     mutable String error_p;
