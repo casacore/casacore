@@ -751,7 +751,7 @@ Bool MomentCalcBase<T>::getInterGaussianFit (uInt& nFailed,
       plotter.message("Accept (left),  redo (middle), reject (right)");
       getButton(ditch, redo, plotter);
       if (ditch) {
-         os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
+         plotter.message("Rejecting spectrum");
          gaussPars = 0;
          return False;
       } else if (redo) {
