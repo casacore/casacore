@@ -32,20 +32,18 @@
 #include <trial/ComponentModels/SpectralIndex.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-// #include <aips/Arrays/Array.h>
-// #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
 #include <aips/Exceptions/Error.h>
-// #include <aips/Lattices/IPosition.h>
-// #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/Quantum.h>
+#include <aips/Measures/Unit.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MVAngle.h>
-// #include <aips/Measures/MVDirection.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/DataType.h>
 
 SkyCompRep::SkyCompRep() 
   :itsShapePtr(new PointShape),
@@ -287,115 +285,106 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
 			    const RecordInterface & record) {
   {
     const String fluxString("flux");
-    if (!record.isDefined(fluxString)) {
-      errorMessage += "\nThe 'component' record must have a 'flux' field";
-      return False;
-    }
-    const RecordFieldId flux(fluxString);
-    if (record.shape(flux) != IPosition(1,1)) {
-      errorMessage += "\nThe 'flux' field must have only 1 element";
-      return False;
-    }      
-    Record fluxRec;
-    try {
-      fluxRec = record.asRecord(flux);
-    }
-    catch (AipsError x) {
-      errorMessage += "\nThe 'flux' field must be a record";
-      return False;
-    } end_try;
-    if (!itsFlux.fromRecord(errorMessage, fluxRec)) {
-      return False;
+    if (record.isDefined(fluxString)) {
+      const RecordFieldId flux(fluxString);
+      if (record.dataType(flux) != TpRecord) {
+	errorMessage += "The 'flux' field must be a record\n";
+	return False;
+      }
+      const Record & fluxRec = record.asRecord(flux);
+      if (!itsFlux.fromRecord(errorMessage, fluxRec)) {
+	errorMessage += "Problem parsing the 'flux' field\n";
+	return False;
+      }
+    } else {
+      LogIO logErr(LogOrigin("SkyCompRep", "fromRecord()"));
+      logErr << LogIO::WARN 
+	     << "The component does not have a 'flux' field." << endl
+	     << "The default is 1.0 Jy in I and 0.0 in Q, U & V"
+	     << LogIO::POST;
+      itsFlux = Flux<Double>(1);
     }
   }
   {
     const String shapeString("shape");
-    if (!record.isDefined(shapeString)) {
-      errorMessage += "\nThe 'component' record must have a 'shape' field";
-      return False;
-    }
-    const RecordFieldId shape(shapeString);
-    if (record.shape(shape) != IPosition(1,1)) {
-      errorMessage += "\nThe 'shape' field must have only 1 element";
-      return False;
-    }      
-    Record shapeRec;
-    try {
-      shapeRec = record.asRecord(shape);
-    }
-    catch (AipsError x) {
-      errorMessage += "\nThe 'shape' field must be a record";
-      return False;
-    } end_try;
-    const ComponentType::Shape recShape = 
-      ComponentShape::getType(errorMessage, shapeRec);
-    const ComponentType::Shape thisShape = itsShapePtr->shape();
-    if (recShape != thisShape) {
-      errorMessage += String("The shape record specifies a ") + 
-	ComponentType::name(recShape) + 
-	String(" shape\nwhich cannot be assigned to a ") +
-	ComponentType::name(thisShape) + String(" object");
-      return False;
-    }
-    if (!itsShapePtr->fromRecord(errorMessage, shapeRec)) {
-      return False;
+    if (record.isDefined(shapeString)) {
+      const RecordFieldId shape(shapeString);
+      if (record.dataType(shape) != TpRecord) {
+	errorMessage += "\nThe 'shape' field must be a record";
+	return False;
+      }      
+      const Record & shapeRec = record.asRecord(shape);
+      const ComponentType::Shape recShape = 
+	ComponentShape::getType(errorMessage, shapeRec);
+      const ComponentType::Shape thisShape = itsShapePtr->shape();
+      if (recShape != thisShape) {
+	errorMessage += String("The shape record specifies a ") + 
+	  ComponentType::name(recShape) + String(" shape\n") +
+	  String("which cannot be assigned to a component with a ") +
+	  ComponentType::name(thisShape) + String(" shape");
+	return False;
+      }
+      if (!itsShapePtr->fromRecord(errorMessage, shapeRec)) {
+	errorMessage += "Problem parsing the 'shape' field\n";
+	return False;
+      }
+    } else {
+      LogIO logErr(LogOrigin("SkyCompRep", "fromRecord()"));
+      logErr << LogIO::WARN 
+	     << "The component does not have a 'shape' field." << endl
+	     << "The default is a point component at the J2000 north pole"
+	     << LogIO::POST;
+      const Unit deg("deg");
+      itsShapePtr = new PointShape(MDirection(Quantum<Double>(0.0, deg),
+					      Quantum<Double>(90.0, deg),
+					      MDirection::J2000));
     }
   }
   {
     const String spectrumString("spectrum");
-    const Bool recExists = record.isDefined(spectrumString);
-    if (!recExists && 
-	(itsSpectrumPtr->spectralShape() != ComponentType::CONSTANT_SPECTRUM)){
-      errorMessage += "\nThe 'component' record must have a 'spectrum' field";
-      return False;
-    }
-    if (recExists) {
+    if (record.isDefined(spectrumString)) {
       const RecordFieldId spectrum(spectrumString);
-      if (record.shape(spectrum) != IPosition(1,1)) {
-	errorMessage += "\nThe 'spectrum' field must have only 1 element";
-	return False;
-      }      
-      Record spectrumRec;
-      try {
-	spectrumRec = record.asRecord(spectrum);
-      }
-      catch (AipsError x) {
+      if (record.dataType(spectrum) != TpRecord) {
 	errorMessage += "\nThe 'spectrum' field must be a record";
 	return False;
-      } end_try;
+      }      
+      const Record & spectrumRec = record.asRecord(spectrum);
       const ComponentType::SpectralShape recShape = 
 	SpectralModel::getType(errorMessage, spectrumRec);
       const ComponentType::SpectralShape thisShape = 
 	itsSpectrumPtr->spectralShape();
       if (recShape != thisShape) {
 	errorMessage += String("The spectrum record specifies a ") + 
-	  ComponentType::name(recShape) + 
-	  String(" spectrum\nwhich cannot be assigned to a ") +
-	  ComponentType::name(thisShape) + String(" object");
+	  ComponentType::name(recShape) + String(" spectrum\n") +
+	  String("which cannot be assigned to a component with a") +
+	  ComponentType::name(thisShape) + String(" spectrum");
 	return False;
       }
       if (!itsSpectrumPtr->fromRecord(errorMessage, spectrumRec)) {
 	return False;
       }
+    } else {
+      LogIO logErr(LogOrigin("SkyCompRep", "fromRecord()"));
+      logErr << LogIO::WARN 
+	     << "The component does not have a 'spectrum' field." << endl
+	     << "The default is a constant spectrum"
+	     << LogIO::POST;
+      itsSpectrumPtr = new ConstantSpectrum;
     }
   }
   {
     const String labelString("label");
     if (record.isDefined(labelString)) {
       const RecordFieldId label(labelString);
+      if (record.dataType(label) != TpString) {
+	errorMessage += "\nThe 'label' field must be a string";
+	return False;
+      }      
       if (record.shape(label) != IPosition(1,1)) {
 	errorMessage += "\nThe 'label' field must have only 1 element";
 	return False;
-      }      
-      String labelVal;
-      try {
-	labelVal = record.asString(label);
-      }
-      catch (AipsError x) {
-	errorMessage += "\nThe 'label' field must be a string";
-	return False;
-      } end_try;
-      itsLabel = labelVal;
+      } 
+      itsLabel = record.asString(label);
     }
   }
   return True;
