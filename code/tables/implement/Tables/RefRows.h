@@ -184,7 +184,7 @@ private:
 //     uInt incr = rowiter.sliceIncr();
 //     // Iterate through the row numbers in the slice.
 //     while (rownr <= end) {
-//       rownr += incr; \
+//       rownr += incr;
 //     }
 //     // Go to next slice.
 //     rowiter++;
