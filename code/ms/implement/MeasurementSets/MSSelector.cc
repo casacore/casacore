@@ -56,13 +56,13 @@
 
 
 MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(0),
-lastDataDescId_p(0),
+lastDataDescId_p(1,-1),
 useSlicer_p(False),haveSlicer_p(False),wantedOne_p(-1),convert_p(False)
 { }
 
 MSSelector::MSSelector(MeasurementSet& ms):ms_p(ms),
 selms_p(ms),savems_p(ms),msIter_p(0),initSel_p(False),dataDescId_p(0),
-lastDataDescId_p(0),
+lastDataDescId_p(1,-1),
 useSlicer_p(False),haveSlicer_p(False),wantedOne_p(-1),convert_p(False)
 { }
 
@@ -146,7 +146,7 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 	"there is only one" << LogIO::POST;
     }
   } else {
-    if (dataDescId.nelements()>0) {
+    if (dataDescId.nelements()>0 && dataDescId(0)!=-1) {
       selms_p=selms_p(selms_p.col(MS::columnName(MS::DATA_DESC_ID)) 
 		      .in(dataDescId));
     }
