@@ -1938,7 +1938,7 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
    account name an environment variable may be used to translate between them:
 
 \begin{verbatim}
-   ARSH="ssh aips2.nrao.edu -l <remotename>"
+   AUID="<remotename>"
 \end{verbatim}
 
    \noindent
@@ -2085,7 +2085,7 @@ local host via a suitable entry in the \file{.ssh/authorized\_keys} file.  The
 programmer
 must also have an up-to-date \aipspp\ workspace on \host{aips2.nrao.edu} and
 it \emph{must} be  rooted at \file{\$HOME/aips++} (see \exeref{mktree}).
- 
+%$ 
 \subsection*{Options}
  
 Refer to the options for \exeref{ao}.  \exe{rao} itself has no options.
@@ -2122,7 +2122,7 @@ Refer to the options for \exeref{ao}.  \exe{rao} itself has no options.
    account name an environment variable may be used to translate between them:
  
 \begin{verbatim}
-   ARSH="ssh aips2.nrao.edu -l <remotename>"
+   AUID="<remotename>"
 \end{verbatim}
  
    \noindent
@@ -2223,6 +2223,7 @@ Update \aipspp\ sources from the master via \unixexe{ssh}.
  
 \exe{rau} updates the \aipspp\ \file{slave} and \file{code} areas with the
 lastest version of a file in \file{\$AIPSMSTR}.  It is provided as an
+%$
 alternative to \aipsexe{au} which operates on machines on which the \aipspp\
 master directory is remotely \textsc{nfs} mounted.
 
@@ -2232,7 +2233,7 @@ local host via a suitable entry in the \file{.ssh/authorized\_keys} file.  The
 programmer
 must also have an up-to-date \aipspp\ workspace on \host{aips2.nrao.edu} and
 it \emph{must} be  rooted at \file{\$HOME/aips++}.
-
+%$
 \exe{rau} assumes that you are working within a private directory tree which
 shadows that of the \aipspp\ master source code tree, see \exeref{mktree}.
 The filename arguments specified to \exe{rau} must be simple filenames without
@@ -2289,7 +2290,7 @@ None.
    account name an environment variable may be used to translate between them:
  
 \begin{verbatim}
-   ARSH="ssh aips2.nrao.edu -l <remotename>"
+   AUID="<remotename>"
 \end{verbatim}
  
    \noindent
