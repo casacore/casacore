@@ -1,5 +1,5 @@
 //# MemoryIO.cc: Class for IO in memory
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -202,7 +202,7 @@ Bool MemoryIO::expand (uLong minSize)
 }
 
 
-Long MemoryIO::length()
+Long MemoryIO::length() const
 {
     return itsUsed;
 }

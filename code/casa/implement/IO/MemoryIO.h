@@ -1,5 +1,5 @@
 //# MemoryIO.h: Class for IO in memory
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -192,7 +192,7 @@ public:
     const uChar* getBuffer() const;
 
     // Get the length of the data in the buffer.
-    virtual Long length();
+    virtual Long length() const;
 
     // Get the allocated length of the buffer.
     uLong allocated() const;
