@@ -1,5 +1,5 @@
 //# TiledDataStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -150,13 +150,14 @@ void TiledDataStMan::addHypercube (const IPosition& cubeShape,
 {
     // Check if the number of rows involved fits in the table.
     checkNrrow (cubeShape, cubeShape(nrdim_p - 1));
+    // Check the hypercube definition and create the hypercube.
+    checkAddHypercube (cubeShape, values);
     TSMCube* hypercube = makeHypercube (cubeShape, tileShape, values);
     uInt ncube = cubeSet_p.nelements();
     cubeSet_p.resize (ncube + 1);
     cubeSet_p[ncube] = hypercube;
     // Update the row map with the number of pixels in last dimension.
     updateRowMap (ncube, cubeShape(nrdim_p-1));
-    setDataChanged();
 }
 
 void TiledDataStMan::extendHypercube (uInt incrInLastDim,
