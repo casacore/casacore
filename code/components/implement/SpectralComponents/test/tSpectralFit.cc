@@ -246,18 +246,42 @@ int main(int argc, char **argv) {
       for (uInt i=0; i<fitter.list().nelements(); i++) {
 	cout << fitter.list()[i] << endl;
       };
+
       cout << "---------------------------------------------------" << endl;
       cout << "Execute the fitter, can do (1:Y): " <<
 	fitter.fit(dat,freq) << endl;
       cout << "The results: " << endl;
       Vector<Double> tmp;
       for (uInt i=0; i<fitter.list().nelements(); i++) {
-	cout << fitter.list()[i] << endl;
+	cout << fitter.list()[i];
 	fitter.list()[i].get(tmp);
 	cout << "Parameters: " << tmp << endl;
 	fitter.list()[i].getError(tmp);
-	cout << "Errors:     " << tmp << endl;
+	cout << "Errors:     " << tmp << endl << endl;
       };
+      cout << "---------------------------------------------------" << endl;
+      
+      {
+	///el[3].fixAmpl();
+	SpectralFit fitter;
+	for (uInt i=0; i<ncomp; i++) fitter.addFitElement(el[i]);
+	for (uInt i=0; i<fitter.list().nelements(); i++) {
+	  cout << fitter.list()[i] << endl;
+	};
+	
+	cout << "---------------------------------------------------" << endl;
+	cout << "Execute the fitter again with a fixed ampl, can do (1:Y): " <<
+	  fitter.fit(dat,freq) << endl;
+	cout << "The results: " << endl;
+	Vector<Double> tmp;
+	for (uInt i=0; i<fitter.list().nelements(); i++) {
+	  cout << fitter.list()[i];
+	  fitter.list()[i].get(tmp);
+	  cout << "Parameters: " << tmp << endl;
+	  fitter.list()[i].getError(tmp);
+	  cout << "Errors:     " << tmp << endl << endl;
+	};
+      }
       cout << "---------------------------------------------------" << endl;
       
       cout << "Different start values: " << endl;
