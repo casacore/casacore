@@ -134,7 +134,8 @@
 
 #       Update the code directory, read-only.
         [ -f "$CODEDIR/$TARGET" ] && rm -f $CODEDIR/$TARGET
-        (umask 333 ; co -p $SLAVDIR/$TARGET,v > $CODEDIR/$TARGET) ||
+        (co -p $SLAVDIR/$TARGET,v > $CODEDIR/$TARGET &&
+         chmod a-wx $CODEDIR/$TARGET) ||
            echo "au: Failed to update $CODEDIR/$TARGET" 1>&2
 
      elif [ -d "$MSTRDIR/$TARGET" ]
