@@ -1,5 +1,5 @@
 //# TabVecMath.h: Global functions for table vector mathematics
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -306,34 +306,38 @@ template<class T> inline
 
 //# Inline all these functions.
 //# The actual work is done by functions (tabVecRep...) operating on TabVecRep.
+//# Because the preprocessor of gcc-3 gives warnings when using the macro as
+//# e.g. TABVECMATHOPER(add,+,+=), the r is removed from the function name and
+//# put befroe the + in the macro call.
+
 #define TABVECMATHOPER(NAME,OP,OPA) \
 template<class T> inline \
-TableVector<T> aips_name2(operator,OP) (const ROTableVector<T>& tv, \
+TableVector<T> aips_name2(operato,OP) (const ROTableVector<T>& tv, \
 					const T& v) \
     { return TableVector<T> (aips_name2(tabVecRepvalr,NAME) (tv.tabVec(), \
 							     v)); } \
 template<class T> inline \
-TableVector<T> aips_name2(operator,OP) (const T& v, \
+TableVector<T> aips_name2(operato,OP) (const T& v, \
 					const ROTableVector<T>& tv) \
     { return TableVector<T> (aips_name2(tabVecRepvall,NAME) (v, \
 							     tv.tabVec())); } \
 template<class T> inline \
-TableVector<T> aips_name2(operator,OP) (const ROTableVector<T>& l, \
+TableVector<T> aips_name2(operato,OP) (const ROTableVector<T>& l, \
 					const ROTableVector<T>& r) \
     { return TableVector<T> (aips_name2(tabVecReptv,NAME) (l.tabVec(), \
 							   r.tabVec())); } \
 template<class T> inline \
-void aips_name2(operator,OPA) (TableVector<T>& tv, const T& v) \
+void aips_name2(operato,OPA) (TableVector<T>& tv, const T& v) \
     { aips_name2(tabVecRepvalass,NAME) (tv.tabVec(), v); } \
 template<class T> inline \
-void aips_name2(operator,OPA) (TableVector<T>& l, \
+void aips_name2(operato,OPA) (TableVector<T>& l, \
 			       const ROTableVector<T>& r) \
     { aips_name2(tabVecReptvass,NAME) (l.tabVec(), r.tabVec()); }
 
-TABVECMATHOPER(add,+,+=)
-TABVECMATHOPER(sub,-,-=)
-TABVECMATHOPER(tim,*,*=)
-TABVECMATHOPER(div,/,/=)
+TABVECMATHOPER(add,r+,r+=)
+TABVECMATHOPER(sub,r-,r-=)
+TABVECMATHOPER(tim,r*,r*=)
+TABVECMATHOPER(div,r/,r/=)
 
 
 #define TABVECMATHFUNC(NAME) \
