@@ -185,7 +185,7 @@ $objItems
         delete $funcs{$key};
       }
       s/\\ahfuncs{}/
-\\subsubsection*{Functions}
+\\textbf{Functions}
 \\begin{longtable}{ll}
 $funItems
 \\end{longtable}/g;
@@ -265,9 +265,9 @@ sub make_tex_file{
          $miname =~ s/\\_/_/g;
          $wlabel = "\\subsection";
          $has_methods = 0;
-         $iname = $1;
+         $iname = $mname;
          $dum = $2;
-         $iname =~ s/\\_/_/g;
+         $iname = $miname;
          undef @funcsid;
          undef @objsid;
          $psfile = "../$miname-Module.ps.gz";
