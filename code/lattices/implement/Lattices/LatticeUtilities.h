@@ -1,5 +1,5 @@
 //# CopyLattice.h: global functions to copy a Lattices
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COPY_LATTICE_UTILITIES_H)
+#if !defined(AIPS_LATTICE_UTILITIES_H)
 #define AIPS_LATTICE_UTILITIES_H
 
 
@@ -76,7 +76,7 @@ class IPosition;
 // </todo>
 //
 
-
+// <group name=LatticeUtilities>
 
 // This global function finds the max of a Lattice, and also
 // the IPositions of the max.  (LEL does not get you the IPositions of the
@@ -85,6 +85,8 @@ template <class T>
 void minMax(T & min, T & max, 
 		   IPosition & posMin, IPosition & posMax, 
 		   const Lattice<T>& lat);
+
+// </group>
 
 #endif
 
