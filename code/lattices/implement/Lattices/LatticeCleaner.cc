@@ -271,6 +271,11 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       os << "Scale " << scale+1 << ", peak of PSF " << maxPsfConvScales(scale)
 	 << " at "   << positionPeakPsfConvScales+1 << LogIO::POST;
     }
+    if ( maxPsfConvScales(scale) < 0.0) {
+      os << "As Peak of PSF is negative, you should setscales again with a smaller scale size" 
+	 << LogIO::SEVERE;
+      return False;
+    }
   }
 
 
