@@ -1,5 +1,5 @@
 //# tInput.cc: this tests the simple argc, argv command line user interface.
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -54,26 +54,26 @@ main(int argc, char *argv[])
     // and whether key is unique for the program.
     // The value, help and remaining arguments are all optional.
     // <group>
-    prgInput.Create("zero"); 
-    prgInput.Create("one", "1"); 
-    prgInput.Create("two", "2.00", "the key named two"); 
-    prgInput.Create("three", "three", "the key named three", "String"); 
-    prgInput.Create("four", "True", "the key named four", "Bool", "N/A");
-    prgInput.Create("five", "5,5,5,5,5", "a Block of fives", "Block<Int>", 
+    prgInput.create("zero"); 
+    prgInput.create("one", "1"); 
+    prgInput.create("two", "2.00", "the key named two"); 
+    prgInput.create("three", "three", "the key named three", "String"); 
+    prgInput.create("four", "True", "the key named four", "Bool", "N/A");
+    prgInput.create("five", "5,5,5,5,5", "a Block of fives", "Block<Int>", 
 		    "3-5", "meters/second");
     // <group>
     
     // Set a new value for an existing named parameter
     // Returns FALSE if key is an unknown parameter name.
     // <group>
-    AlwaysAssertExit(prgInput.Put("zero", "False"));
+    AlwaysAssertExit(prgInput.put("zero", "False"));
     // The single argument is of the
     // form `key=value', where key is a valid parameter name.
-    AlwaysAssertExit(prgInput.Put("zero=666.012"));
+    AlwaysAssertExit(prgInput.put("zero=666.012"));
     // </group>
     
     // fill the parameter list from argc, argv command line args
-    prgInput.ReadArguments(argc, argv);
+    prgInput.readArguments(argc, argv);
     
     // Disable the creation of parameters. Highly recommended, but
     // not required. ReadArguments calls it when filling the values from argv[]
@@ -81,41 +81,41 @@ main(int argc, char *argv[])
     
     // Get the double value of the parameter (or 0.0 if unknown key).
     // If the program is in prompt mode, ask the user for the value.
-    AlwaysAssertExit(666.012 == prgInput.GetDouble("zero"));
+    AlwaysAssertExit(666.012 == prgInput.getDouble("zero"));
     
     // Get the Block<double> value of the parameter (or default Block if 
     // unknown key).
     // If the program is in prompt mode, ask the user for the value.
-    AlwaysAssertExit(1.0==prgInput.GetDoubleArray("one")[0]);
+    AlwaysAssertExit(1.0==prgInput.getDoubleArray("one")[0]);
 
     // Get the int value of the parameter (or 0 if unknown key).
     // If the program is in prompt mode, ask the user for the value.
-    AlwaysAssertExit(2 == prgInput.GetInt("two"));
+    AlwaysAssertExit(2 == prgInput.getInt("two"));
 
     // Get the Block<int> value of the parameter (or default Block if 
     // unknown key)
     // If the program is in prompt mode, ask the user for the value.
-    for (int i=0;i<5;i++) AlwaysAssertExit(5==prgInput.GetIntArray("five")[i]);
+    for (int i=0;i<5;i++) AlwaysAssertExit(5==prgInput.getIntArray("five")[i]);
     
     // Get the String value of the parameter (or "" if unknown key).
     // If the program is in prompt mode, ask the user for the value.
-    AlwaysAssertExit(String("three")== prgInput.GetString("three"));
+    AlwaysAssertExit(String("three")== prgInput.getString("three"));
     
     // Get the boolean value of the parameter (or FALSE if unknown key).
     // If the program is in prompt mode, ask the user for the value.
-    AlwaysAssertExit(prgInput.GetBool("four"));
+    AlwaysAssertExit(prgInput.getBool("four"));
     
     // Get the total number of parameters of this program
-    int num = prgInput.Count();
+    AlwaysAssertExit (prgInput.count() == 9);
     
     // See if the current debug level is thresholded
-    Bool foobool = prgInput.Debug(2);
+    AlwaysAssertExit (!prgInput.debug(2))
     
     // Set version string for announcements
-    prgInput.Version("OK");
+    prgInput.version("OK");
     
     // Announce program and version.
-    prgInput.Announce();
+    prgInput.announce();
     
   } catch(AipsError x) {
     cout << "Caught exception at line " << x.thrownLine()

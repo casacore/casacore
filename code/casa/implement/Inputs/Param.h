@@ -1,5 +1,5 @@
 //# Param: A simple keyword/value pair with internal help Strings.
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 #include <string.h>             // need things like strlen() and such
 
 // <summary> 
-// Param: A simple keyword/value pair with internal help Strings.
+// A simple keyword/value pair with internal help Strings.
 // </summary>
 
 // <use visibility=local>
@@ -69,7 +69,7 @@
 // specified.  The intent is to provide a well documented value and a "key"
 // by which to "call" it.
 //
-// The "GetWhatever" member functions of Param convert the internal Strings 
+// The "getWhatever" member functions of Param convert the internal Strings 
 // into the desired output data type.  The Strings themselves may also be 
 // returned.
 // </synopsis> 
@@ -91,7 +91,7 @@
 // // Now we may build our Param
 // Param PleaseDontTouchMeThere(key, value, help, type, range, unit);
 // // to retrieve the value we use the GetInt function
-// for (int i=0, i<PleaseDontTouchMeThere.GetInt(); i++, chutzpah++);
+// for (Int i=0, i<PleaseDontTouchMeThere.getInt(); i++, chutzpah++);
 // </srcblock></example>
 //
 // <motivation>
@@ -105,97 +105,109 @@
 //   <li> replace entirely with AIPS++ Keywords?
 // </todo>
 
-class Param {
+
+class Param
+{
 public:
 				// constructors and destructor
   // default constructor
   Param();
 
   // normal constructor with optional value and help strings
-  Param(String key, String value, String help, String type, String range, 
-	String unit);
+  Param (const String& key, const String& value, const String& help,
+	 const String& type, const String& range, const String& unit);
   
   // copy constructor
-  Param(const Param&);
+  Param (const Param&);
   
   // destructor
   ~Param();
   
   // assignment operator
-  Param& operator=(const Param&);
+  Param& operator= (const Param&);
   
   // Equality comparitor <note role=warning> This function ALWAYS returns 
   // false.  I have no idea why it was designed to do this. </note>
-  Bool operator==(const Param&) const;
+  Bool operator== (const Param&) const;
   
   // I/O operators
   //<group>
-  friend ostream & operator<<(ostream &, const Param &p);
-  friend istream & operator>>(istream &, Param &p);
-  
-  friend AipsIO & operator<<(AipsIO &, const Param &p);
-  friend AipsIO & operator>>(AipsIO &, Param &p);
+  friend ostream& operator<< (ostream&, const Param& p);
+  friend istream& operator>> (istream&, Param& p);
+  friend AipsIO& operator<< (AipsIO&, const Param& p);
+  friend AipsIO& operator>> (AipsIO&, Param& p);
   //</group>
   
   // get a double parameter value; prompt if switch is TRUE
-  double GetDouble(Bool do_prompt=False);
+  Double getDouble (Bool do_prompt=False) const;
 
   // get a Block<double> parameter value; prompt if switch is TRUE
-  Block<double> GetDoubleArray(Bool do_prompt=False);
+  Block<Double> getDoubleArray (Bool do_prompt=False) const;
   
-  // get an int parameter value; prompt if switch is TRUE
-  int GetInt(Bool do_prompt=False);
+  // get an Int parameter value; prompt if switch is TRUE
+  Int getInt (Bool do_prompt=False) const;
 
   // get an Block<Int> parameter value; prompt if switch is TRUE
-  Block<Int> GetIntArray(Bool do_prompt=False);
+  Block<Int> getIntArray (Bool do_prompt=False) const;
   
   // get a String parameter value; prompt if switch is TRUE
-  String GetString(Bool do_prompt=False);
+  const String& getString (Bool do_prompt=False) const;
 
   // get a Block<String> parameter value; prompt if switch is TRUE
-  Block<String> GetStringArray(Bool do_prompt=False);
+  Block<String> getStringArray (Bool do_prompt=False) const;
   
   // get a Boolean parameter value; prompt if switch is TRUE
-  Bool GetBool(Bool do_prompt=False);
+  Bool getBool (Bool do_prompt=False) const;
   
   // get parameter value as a string
-  String Get(){ return value; }
+  const String& get() const
+    { return value; }
   
   // get parameter help string
-  String GetHelp(){ return help; }
+  const String& getHelp() const
+    { return help; }
   
   // get parameter name 
-  String GetKey(){ return key; }
+  const String& getKey() const
+    { return key; }
   
   // get the string `key = value' for the parameter
-  String KeyVal() const { return key + "=" + value; }
+  String keyVal() const
+    { return key + "=" + value; }
   
   // get the type of a parameter
-  String GetType(){ return type; }
+  const String& getType() const
+    { return type; }
   
   // get the valid range of a parameter
-  String GetRange(){ return range; }
+  const String& getRange() const
+    { return range; }
   
   // get the units of a parameter
-  String GetUnit(){ return unit; }
+  const String& getUnit() const
+    { return unit; }
   
   // set new parameter value; return FALSE if invalid value
-  Bool Put(const String a_value);
+  Bool put (const String& a_value);
   
   // set a parameter as a system parameter
-  void SetSystem(Bool val);
+  void setSystem (Bool val)
+    { system = val; }
   
   // check if a parameter is a system parameter
-  Bool IsSystem();
+  Bool isSystem() const
+    { return system; }
   
   // set an index for a program parameter
-  void SetIndex(int);
-  
-  // get the index of a parameter
-  int GetIndex();
-  
-private:
+  void setIndex (Int inx)
+    { index = inx; }
 
+  // get the index of a parameter
+  Int getIndex() const
+    { return index; }
+
+
+private:
   // parameter name
   String key;
 
@@ -221,9 +233,9 @@ private:
   Bool system;
 
   // index for program keywords (>=1)
-  int index;
-  
+  Int index;
 };
+
 
 #endif
 

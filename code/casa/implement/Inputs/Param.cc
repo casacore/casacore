@@ -1,5 +1,5 @@
 //# Param.cc: Helper class for key=value user interface
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,25 +31,23 @@
 
 #include <aips/Inputs/Param.h>
 
+
 Param::Param()			// default constructor; doesn't do anything
-{
-}
+{}
 
 				// standard constructors
-Param::Param(String a_key, String a_value, String a_help,
-             String a_type, String a_range, String a_unit)
+Param::Param (const String& a_key, const String& a_value, const String& a_help,
+             const String& a_type, const String& a_range, const String& a_unit)
+: key      (a_key),
+  value    (a_value),
+  help     (a_help),
+  type     (a_type),
+  range    (a_range),
+  unit     (a_unit),
+  hasvalue ((value.length() > 0) ? True : False),
+  system   (False),
+  index    (0)
 {
-    key   = a_key;
-    value = a_value;
-    help  = a_help;
-    type  = a_type;
-    range = a_range;
-    unit  = a_unit;
-
-    hasvalue = (value.length() > 0) ? True : False;
-    system = False;
-    index = 0;
-
 #if defined(DEBUG)
     cout << "Creating parameter " << key      << "\n"
          << "         value:    " << value    << "\n"
@@ -61,7 +59,6 @@ Param::Param(String a_key, String a_value, String a_help,
 }
 
 
-				// destructor
 Param::~Param()
 {
 #if defined(DEBUG)
@@ -70,19 +67,17 @@ Param::~Param()
 }
 
 
-Param::Param(const Param& other)		// copy
+Param::Param (const Param& other)		// copy
+: key      (other.key),
+  value    (other.value),
+  help     (other.help),
+  type     (other.type),
+  range    (other.range),
+  unit     (other.unit),
+  hasvalue (other.hasvalue),
+  system   (other.system),
+  index    (other.index)
 {
-
-    key   = other.key;
-    value = other.value;
-    help  = other.help;
-    type  = other.type;
-    range = other.range;
-    unit  = other.unit;
-
-    hasvalue = other.hasvalue;
-    system   = other.system;
-    index    = other.index;
 #if defined(DEBUG)
     cout << "Copying  parameter " << key      << "\n"
          << "         value:    " << value    << "\n"
@@ -92,26 +87,22 @@ Param::Param(const Param& other)		// copy
          << "         index:    " << index    << "\n";
 #endif
 }
-
+
 				// operator functions
-Param& 
-Param::operator= (const Param& other)          // assignment
+Param& Param::operator= (const Param& other)          // assignment
 {
     // Make sure we don't assign ourselves
-    if (this == &other ) return *this;
-
-    // No deletion of old ones yet..
-    key   = other.key;
-    value = other.value;
-    help  = other.help;
-    type  = other.type;
-    range = other.range;
-    unit  = other.unit;
-
-    hasvalue = other.hasvalue;    
-    system   = other.system;
-    index    = other.index;
-
+    if (this != &other ) {
+      key   = other.key;
+      value = other.value;
+      help  = other.help;
+      type  = other.type;
+      range = other.range;
+      unit  = other.unit;
+      hasvalue = other.hasvalue;    
+      system   = other.system;
+      index    = other.index;
+    }
     return *this;
 }
 
@@ -120,38 +111,46 @@ Param::operator== (const Param&) const
 {
     return False;
 }
-
-// query functions
 
-double 
-Param::GetDouble(Bool prompt)			// double value
+
+Double 
+Param::getDouble (Bool prompt) const		// Double value
 {
 #if defined(EVAL)
-    double d;
-    int n;
-    n = eval_double((const char *)value, &d, 1, &iret);
-    if (n==1) return d;
-    else return 0.0;
+    Double d;
+    Int n = eval_double((const char *)value, &d, 1, &iret);
+    if (n==1) {
+      return d;
+    } else {
+      return 0.0;
+    }
 #else
-    if (prompt) cerr << "No prompting implemented yet" << endl;
-    return atof((const char *)value);
+    if (prompt) {
+      cerr << "No prompting implemented yet" << endl;
+    }
+    return atof(value.chars());
 #endif
 }
 
-Block<double>
-Param::GetDoubleArray(Bool prompt)			// double value
+Block<Double>
+Param::getDoubleArray (Bool prompt) const	// Double value
 {
-    int i, idx=0, n = value.freq(",")+1;
+    Int i;
+    Int idx=0;
+    Int n = value.freq(",")+1;
     String z;
-    Block<double> x(n);
+    String val(value);            // need a non-const String
+    Block<Double> x(n);
 
-    if (prompt) cerr << "No prompting implemented yet" << endl;
+    if (prompt) {
+      cerr << "No prompting implemented yet" << endl;
+    }
     for (i=0; i<n; i++) {
         if (i==0) {
-            z=value;
-            idx =  z.index(",");
+            z = val;
+            idx = z.index(",");
         } else {
-            z=value.after(idx);
+            z = val.after(idx);
             idx += z.index(",") + 1;
         }
         x[i] = atof(z);
@@ -159,27 +158,34 @@ Param::GetDoubleArray(Bool prompt)			// double value
     return x;
 }
 
-int 
-Param::GetInt(Bool prompt)			// int value
+Int 
+Param::getInt (Bool prompt) const		// Int value
 {
-    if (prompt) cerr << "No prompting implemented yet" << endl;
-    return atoi((const char *)value);
+    if (prompt) {
+      cerr << "No prompting implemented yet" << endl;
+    }
+    return atoi(value.chars());
 }
 
 Block<Int>
-Param::GetIntArray(Bool prompt)
+Param::getIntArray (Bool prompt) const
 {
-    int i, idx=0, n = value.freq(",")+1;
+    Int i;
+    Int idx=0;
+    Int n = value.freq(",")+1;
     String z;
+    String val(value);            // need a non-const String
     Block<Int> x(n);
 
-    if (prompt) cerr << "No prompting implemented yet" << endl;
+    if (prompt) {
+      cerr << "No prompting implemented yet" << endl;
+    }
     for (i=0; i<n; i++) {
         if (i==0) {
-            z=value;
-            idx =  z.index(",");
+            z = val;
+            idx = z.index(",");
         } else {
-            z=value.after(idx);
+            z = val.after(idx);
             idx += z.index(",") + 1;
         }
         x[i] = atoi(z);
@@ -187,27 +193,34 @@ Param::GetIntArray(Bool prompt)
     return x;
 }
 
-String
-Param::GetString(Bool prompt)			// string value
+const String&
+Param::getString (Bool prompt) const		// string value
 {
-    if (prompt) cerr << "No prompting implemented yet" << endl;
+    if (prompt) {
+      cerr << "No prompting implemented yet" << endl;
+    }
     return value;
 }
 
 Block<String>
-Param::GetStringArray(Bool prompt)
+Param::getStringArray (Bool prompt) const
 {
-    int i, idx=0, n = value.freq(",")+1;
+    Int i;
+    Int idx=0;
+    Int n = value.freq(",")+1;
     String z;
+    String val(value);            // need a non-const String
     Block<String> x(n);
 
-    if (prompt) cerr << "No prompting implemented yet" << endl;
+    if (prompt) {
+      cerr << "No prompting implemented yet" << endl;
+    }
     for (i=0; i<n; i++) {
         if (i==0) {
-            z=value;
-            idx =  z.index(",");
+            z = val;
+            idx = z.index(",");
         } else {
-            z=value.after(idx);
+            z = val.after(idx);
             idx += z.index(",") + 1;
         }
         x[i] = z;
@@ -216,24 +229,27 @@ Param::GetStringArray(Bool prompt)
 }
 
 Bool
-Param::GetBool(Bool prompt)			// Bool value
+Param::getBool(Bool prompt) const		// Bool value
 {
-    if (prompt) cerr << "No prompting implemented yet" << endl;
-    if (value.contains(Regex("[TtYy1Jj]")))
-        return True;
-    else
-        return False;
+    if (prompt) {
+      cerr << "No prompting implemented yet" << endl;
+    }
+    return ToBool (value.contains(Regex("[TtYy1Jj]")));
 }
 
 #if 0
 Block<Bool>
-Param::GetBoolArray(Bool prompt)
+Param::getBoolArray(Bool prompt) const
 {
-    int i, idx, n = value.freq(",")+1;
+    Int i;
+    Int idx;
+    Int n = value.freq(",")+1;
     String z;
     Block<Bool> x(n);
 
-    if (prompt) cerr << "No prompting implemented yet" << endl;
+    if (prompt) {
+      cerr << "No prompting implemented yet" << endl;
+    }
     for (i=0; i<n; i++) {
         if (i==0) {
             z=value;
@@ -242,21 +258,17 @@ Param::GetBoolArray(Bool prompt)
             z=value.after(idx);
             idx += z.index(",") + 1;
         }
-        if (z.contains(Regex("[TtYy1Jj]")))
-            x[i] = True;
-        else
-            x[i] = False;
+        x[i] = ToBool (z.contains(Regex("[TtYy1Jj]")));
     }
     return x;
 }
 #endif
 
 
-
 // modify and other misc function
 
 Bool
-Param::Put(const String other)			// set new value
+Param::put (const String& other)			// set new value
 { 
 // value checking will be done here too?
 //        cout << "Param::Put> " << key << "=" << value << "\n";
@@ -265,49 +277,25 @@ Param::Put(const String other)			// set new value
     return True;
 }
 
-void
-Param::SetSystem(Bool val)                      // set system level
-{
-    system = val;
-}
 
-Bool
-Param::IsSystem()                               // get system level
-{
-    return system;
-}
-
-void
-Param::SetIndex(int val)
-{
-    index = val;
-}
-
-int
-Param::GetIndex()
-{
-    return index;
-}
-
-
-ostream & operator<<(ostream &os, const Param& p) {
+ostream & operator<< (ostream &os, const Param& p) {
     os << p.key << "=" << p.value;
     return os;
 }
 
-istream & operator>>(istream &os, Param& p) {
+istream & operator>> (istream &os, Param& p) {
     // needed because of Slist<Param>
     cerr << "==>Got to implement >> operator for Param now; " << p << endl;
     return os;
 }
 
-AipsIO & operator<<(AipsIO &os, const Param& p) {
+AipsIO & operator<< (AipsIO &os, const Param& p) {
     //
     cerr << "==>Got to implement << operator for Param now; " << p << endl;
     return os;
 }
 
-AipsIO & operator>>(AipsIO &os, Param& p) {
+AipsIO & operator>> (AipsIO &os, Param& p) {
     // needed because of Slist<Param>
     cerr << "==>Got to implement >> operator for Param now; " << p << endl;
     return os;

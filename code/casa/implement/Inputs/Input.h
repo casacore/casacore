@@ -1,5 +1,5 @@
 //# Input.h: A simple command-line argument method for applications.
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,9 +77,9 @@ template<class T> class Vector;
 // The default existance of the help parameter allows the user to specify 
 // predefined modes for the "help" key.  The argument "help=prompt" turns
 // on prompting for parameter values not specified on the command-line.  In
-// such an instance, the optional String arguments to Input::Create become 
+// such an instance, the optional String arguments to Input::create become 
 // important.  The argument "help=keys" will print to standard output a list 
-// of all the paramters.  Finally, "help=pane" prints to standard output a
+// of all the parameters.  Finally, "help=pane" prints to standard output a
 // pane file usable as a graphic user interface within Khoros Cantata.
 // 
 // The default existance of the debug parameter allows the user to specify
@@ -88,16 +88,16 @@ template<class T> class Vector;
 // <srcblock> 
 // Input inp;
 // // this will execute the block only for values higher than 5
-// if(inp.Debug(5)) 
+// if(inp.debug(5)) 
 //   {  
 //         // do debugging stuff here
 //   }
 // </srcblock>
 //
 // Additional parameters must be created inside the main block (or deeper) 
-// of your application.  The member function Create() is overloaded to accept
+// of your application.  The member function create() is overloaded to accept
 // from one to six String arguments.  All but the first are optional.  However,
-// should the user decide to call any of the Get() functions which return a
+// should the user decide to call any of the get() functions which return a
 // String, that String will be empty.  In this case it is assumed that all
 // values will be filled from the command line.
 // Some examples:
@@ -106,12 +106,12 @@ template<class T> class Vector;
 // {
 //   Input inp;
 //   // Create a parameter called "foo" which defaults to True.
-//   inp.Create("foo", "True");
+//   inp.create("foo", "True");
 //   // Create a parameter called "iterbound" which defaults to 2000 and
 //   // has a help String used in cases of prompting.
-//   inp.Create("iterbound", "2000", "The upper boundary of the iterator");
+//   inp.create("iterbound", "2000", "The upper boundary of the iterator");
 //   // Create a normalising value with a range, type, and unit.
-//   inp.Create("dividend", "10000", The normalization factor of the chutspah",
+//   inp.create("dividend", "10000", The normalization factor of the chutspah",
 //              "0-100000", "Double", "clean steps");
 // </srcblock>
 // The parameters are "filled" from the command line arguments by the member
@@ -119,25 +119,25 @@ template<class T> class Vector;
 // within the main block but specified at the command line, an exception is
 // thrown. 
 // <srcblock>
-// inp.ReadArguments(argc, argv);
+// inp.readArguments(argc, argv);
 // </srcblock>
 //
 // Finally, the values of the various parameter's are utilized by calling the 
-// Input::GetWhatever(key) member functions.  They return either a String or
+// Input::getWhatever(key) member functions.  They return either a String or
 // are converted to the data type chosen by the "whatever" in the name of the
 // function.  The value associated with the passed key is returned.
 // <srcblock>
 // // get a boolean
-// if(inp.GetBool("foo")
+// if(inp.getBool("foo")
 //   // get an iteration boundary
-//   for(int i=0; i<inp.GetInt("iterbound"); i++) {
+//   for(Int i=0; i<inp.getInt("iterbound"); i++) {
 //     // get a double
-//     chutspah /= inp.GetDouble("dividend");
+//     chutspah /= inp.getDouble("dividend");
 //   }
 // </srcblock>
 //
 // Optional items include: 
-// <ol> <li> specifying a version <src> inp.Version("$ID:");</src>
+// <ol> <li> specifying a version <src> inp.version("$ID:");</src>
 // will print at run time the version of the program being run.
 // <li> run time checking of ranges 
 // <src> inp.makeMaskFromRanges(const String &ranges, uInt length,
@@ -156,43 +156,43 @@ template<class T> class Vector;
 //  Input inp(1);
 //  // set the version to be automatically expanded by the RCS.  This will
 //  // print the version at run time.
-//  inp.Version("$ID:$");
+//  inp.version("$ID:$");
 //  // We will now create some parameters.
 //  // Create a parameter with no default value i.e. it must be set by a 
 //  // command line argument.
-//  inp.Create("test");
+//  inp.create("test");
 //  // Create a parameter with a default value.
-//  inp.Create("file", "$AIPSROOT/data.txt");
+//  inp.create("file", "$AIPSROOT/data.txt");
 //  // Create a parameter with a help String which will be displayed when in
 //  // the prompted entry mode.
-//  inp.Create("ubound", "1000", "The number of iterations to clean.");
+//  inp.create("ubound", "1000", "The number of iterations to clean.");
 //  // Create a parameter with a type.  This is utilized to create the correct
 //  // labels on a Khoros pane.  You could do type checking yourself, as well.
-//  inp.Create("baseline", "451", "The number of baselines.", "Int");
+//  inp.create("baseline", "451", "The number of baselines.", "Int");
 //  // Create a parameter with a range of acceptable values.  Note: checking
 //  // must be done by the user as this isn't coded in.
-//  inp.Create("gainstride", "0.5", "The factor by which the Clean strides.",
+//  inp.create("gainstride", "0.5", "The factor by which the Clean strides.",
 //             "Double", "0-1.0");
 //  // Create a parameter with a unit String.  Note: checking must be done
 //  // by the user as this test isn't coded in.
 //  String help("The velocity of the Earth in the direction of the object.");
-//  inp.Create("velocity", "2.89e+05", help, "Double", "0-3.0e+06", "m/s");
+//  inp.create("velocity", "2.89e+05", help, "Double", "0-3.0e+06", "m/s");
 //  // Now we close parameter creation and get the values from the command line
 //  // arguments.
-//  inp.ReadArguments(argc, argv);
+//  inp.readArguments(argc, argv);
 //  // Now we may utilize the values from the paramters we have created.
 //  // Here we are getting a boolean from the parameter with the key "test".
-//  if(inp.GetBool("test") {
+//  if(inp.getBool("test") {
 //    // Here we get a String from the parameter with the key "file".
-//    Image myImage(inp.GetString("file"));
+//    Image myImage(inp.getString("file"));
 //    // Here we set the boundary of the loop.
-//    for(int i=0;i<inp.GetInt("ubound"), i++) {
+//    for(Int i=0;i<inp.getInt("ubound"), i++) {
 //      // Here we set a value to the number of baselines.
-//      Int baseline = inp.GetInt("baseline");
+//      Int baseline = inp.getInt("baseline");
 //      // Here we set the gain stride.
-//      Cleaner.gain(inp.GetDouble("gainstride"));
+//      Cleaner.gain(inp.getDouble("gainstride"));
 //      // lets add a debugging block
-//      if(inp.Debug(5)) cout << "the chutspah is " << chutspah << endl;
+//      if(inp.debug(5)) cout << "the chutspah is " << chutspah << endl;
 //   }
 // }
 // </srcblock>
@@ -213,6 +213,7 @@ template<class T> class Vector;
 //   <li> replace List<Param> with keywords
 // </todo>
 
+
 class Input {
 public:
 
@@ -222,7 +223,7 @@ public:
   // This puts the program in no-prompt mode unless environment variable HELP 
   // is defined with value "prompt". The output debug level is set according 
   // to the value of the environment variable DEBUG.
-  Input(Int createEnv=0);
+  Input (Int createEnv=0);
   
   // Destructor.
   ~Input();
@@ -234,72 +235,71 @@ public:
   // The value, help and remaining arguments are all optional.
   // <note> The multiple definitions are to allow default values</note>
   // <group>
-  void Create(String key); 
-  void Create(String key, String value); 
-  void Create(String key, String value, String help); 
-  void Create(String key, String value, String help, String type); 
-  void Create(String key, String value, String help, String type, 
-	      String range);
-  void Create(String key, String value, String help, String type, 
-	      String range, String unit);
+  void create (const String& key); 
+  void create (const String& key, const String& value); 
+  void create (const String& key, const String& value, const String& help); 
+  void create (const String& key, const String& value, const String& help,
+	       const String& type); 
+  void create (const String& key, const String& value, const String& help,
+	       const String& type, const String& range);
+  void create (const String& key, const String& value, const String& help,
+	       const String& type, const String& range, const String& unit);
   // </group>
 
   // Disable the creation of parameters. Highly recommended, but
-  // not required. ReadArguments calls it when filling the values from argv[].
-  void Close();
+  // not required. readArguments calls it when filling the values from argv[].
+  void close();
 
   // fill the parameter list from argc, argv command line args
-  void ReadArguments(Int argc, char *argv[]);
+  void readArguments (Int argc, char *argv[]);
 
   // Get the double value of the parameter (or 0.0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  double GetDouble(String key);
+  Double getDouble (const String& key);
 
   // Get the Block<double> value of the parameter (or default Block if unknown 
   // key).
   // If the program is in prompt mode, ask the user for the value.
-  Block<double> GetDoubleArray(String key);
+  Block<Double> getDoubleArray (const String& key);
 
   // Get the int value of the parameter (or 0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  int GetInt(String key);
+  Int getInt (const String& key);
 
   // Get the Block<int> value of parameter (or default Block if unknown key)
   // If the program is in prompt mode, ask the user for the value.
-  Block<Int> GetIntArray(String key);
+  Block<Int> getIntArray (const String& key);
 
   // Get the String value of the parameter (or "" if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  String GetString(String key);
+  String getString (const String& key);
 
   // Get the boolean value of the parameter (or FALSE if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Bool GetBool(String key);
+  Bool getBool (const String& key);
 
   // Get the total number of parameters of this program
-  int Count();
+  Int count() const;
 
   // See if the current debug level is thresholded
-  Bool Debug(int l);
+  Bool debug (Int l) const
+    { return (debug_level >= l) ? True : False; }
 
   // Set a new value for an existing named parameter
   // Returns FALSE if key is an unknown parameter name.
   // <group>
-  Bool Put(String key, String value);
+  Bool put (const String& key, const String& value);
 
   // The single argument is of the form `key=value', where key is a valid 
   // parameter name.
-  Bool Put(String keyval);
+  Bool put (const String& keyval);
   // </group>
 
   // Set version string for announcements
-  void Version(String);
-
-  // <note> This is a deprecated function </note>
-  void Usage(String);
+  void version (const String&);
 
   // Announce program and version.
-  void Announce();
+  void announce();
 
   // Turn a string in the form "5,7,9-11,13,2-4" into a Vector<Bool>, where
   // each specified position or range, is set to True and every other position
@@ -308,15 +308,86 @@ public:
   // decremented before use. Spaces in ranges are ignored, but otherwise
   // ill-formed strings, or numbers that would fill in beyond the length
   // of the Vector<Bool> results in an exception being thrown.
-  static Vector<Bool> makeMaskFromRanges(const String &ranges, uInt length,
+  static Vector<Bool> makeMaskFromRanges(const String& ranges, uInt length,
 					 Bool oneRelative=False);
 
+  // Capitalized synonyms of the functions for compatibility with
+  // the old functions names.
+  // They will be removed in the near future.
+  // <group>
+  void Create(String key)
+    { create(key); }
+  void Create(String key, String value)
+    { create(key, value); }
+  void Create(String key, String value, String help)
+    { create(key, value, help); }
+  void Create(String key, String value, String help, String type)
+    { create(key, value, help, type); }
+  void Create(String key, String value, String help, String type, 
+	      String range)
+    { create(key, value, help, type, range); }
+  void Create(String key, String value, String help, String type, 
+	      String range, String unit)
+    { create(key, value, help, type, range, unit); }
+  void Close()
+    { close(); }
+  void ReadArguments(Int argc, char *argv[])
+    { readArguments(argc, argv); }
+  double GetDouble(String key)
+    { return getDouble(key); }
+  Block<double> GetDoubleArray(String key)
+    { return getDoubleArray(key); }
+  int GetInt(String key)
+    { return getInt(key); }
+  Block<Int> GetIntArray(String key)
+    { return getIntArray(key); }
+  String GetString(String key)
+    { return getString(key); }
+  Bool GetBool(String key)
+    { return getBool(key); }
+  int Count()
+    { return count(); }
+  Bool Debug(int l)
+    { return debug(l); }
+  Bool Put(String key, String value)
+    { return put(key, value); }
+  Bool Put(String keyval)
+    { return put(keyval); }
+  void Version(String str)
+    { version(str); }
+  void Announce()
+    { announce(); }
+  // </group>
+
+
 private:
+  // Get the index of the named parameter (0 if unknown key).
+  // Anywhere from 1.. if a key is found.
+  Int getParam (const String& key) const;
+
+  // Prompt the user for a value for the parameter.
+  // If he gives a non-empty answer, set that value.
+  void prompt (Param& parameter) const;
+
+  // Bind an environment variable to a parameter
+  void envCreate (const Char *env, const String& key, const String& def);
+
+  // The actual creation of a new (system/program) parameter
+  void createPar (Int, const String&, const String&, const String&,
+		  const String&, const String&, const String&);
+
+  // output to stdout a Khoros Cantata pane.
+  void pane();
+
+  // output to stdout a listing of all "key=value" pairs.
+  void keys();
+
+
   // linked list container of parameters
-  List<Param> ParList;           
+  List<Param> parList_p;
 
   // version id         
-  String version;    
+  String version_id;    
 
   // parameter creation allowed?   
   Bool is_closed;    
@@ -325,33 +396,13 @@ private:
   Bool do_prompt;               
 
   // threshold value for debug output
-  int debug_level;              
+  Int debug_level;              
 
   // "prompt", "keys", or "pane" indicates the various types of help.
   String help_mode;     
 
   // count of program parameters
-  int p_count;                 
-  
-  // Get the index of the named parameter (0 if unknown key).
-  // Anywhere from 1.. if a key is found.
-  int GetParam(String key);
-
-  // Prompt the user for a value for the parameter.
-  // If he gives a non-empty answer, set that value.
-  void Prompt(Param& parameter);  
-
-  // Bind an environment variable to a parameter
-  void EnvCreate(char *env, String key, String def);
-
-  // The actual creation of a new (system/program) parameter
-  void CreatePar(int, String, String, String, String, String, String);
-
-  // output to stdout a Khoros Cantata pane.
-  void Pane();
-
-  // output to stdout a listing of all "key=value" pairs.
-  void Keys();
+  Int p_count;                 
 };
 
 #endif

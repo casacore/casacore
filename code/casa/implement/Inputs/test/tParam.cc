@@ -1,5 +1,5 @@
 //# tParam.cc:  the test code for the Param class.
-//# Copyright (C) 1994,1995,1998
+//# Copyright (C) 1994,1995,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -64,66 +64,66 @@ main()
     //</group>
       
     // get a String parameter value; prompt if switch is TRUE
-    AlwaysAssertExit(String("value")==deflt.GetString());
+    AlwaysAssertExit(String("value")==deflt.getString());
     
    // set new parameter value; return FALSE if invalid value
-    AlwaysAssertExit(deflt.Put("5.0"));
+    AlwaysAssertExit(deflt.put("5.0"));
     
     // get a double parameter value; prompt if switch is TRUE
-    AlwaysAssertExit(5.0 == deflt.GetDouble());
+    AlwaysAssertExit(5.0 == deflt.getDouble());
     
     // get an int parameter value; prompt if switch is TRUE
-    AlwaysAssertExit(5 == deflt.GetInt());
+    AlwaysAssertExit(5 == deflt.getInt());
     
     // get a Block<double> parameter value; prompt if switch is TRUE
-    AlwaysAssertExit(deflt.Put("5.0, 5.0, 5.0"));
+    AlwaysAssertExit(deflt.put("5.0, 5.0, 5.0"));
     int i;
-    for (i=0;i<3;i++) AlwaysAssertExit(5.0 == deflt.GetDoubleArray()[i]);
+    for (i=0;i<3;i++) AlwaysAssertExit(5.0 == deflt.getDoubleArray()[i]);
     
     // get an Block<Int> parameter value; prompt if switch is TRUE
-    for (i=0;i<3;i++) AlwaysAssertExit(5 == deflt.GetIntArray()[i]);
+    for (i=0;i<3;i++) AlwaysAssertExit(5 == deflt.getIntArray()[i]);
     
 // this function doesn't work
     // get a Block<String> parameter value; prompt if switch is TRUE
-//    for (i=0;i<3;i++) cout << deflt.GetStringArray()[i] << endl;
-//    for (i=0;i<3;i++) AlwaysAssertExit(String("5") == deflt.GetStringArray()[i]);
+//    for (i=0;i<3;i++) cout << deflt.getStringArray()[i] << endl;
+//    for (i=0;i<3;i++) AlwaysAssertExit(String("5") == deflt.getStringArray()[i]);
 
     // get a Boolean parameter value; prompt if switch is TRUE
-    deflt.Put("True");
-    AlwaysAssertExit(deflt.GetBool());
+    deflt.put("True");
+    AlwaysAssertExit(deflt.getBool());
   
     // get parameter value as a string
-    AlwaysAssertExit(String("True")==deflt.Get());
+    AlwaysAssertExit(String("True")==deflt.get());
     
     // get parameter help string
-    AlwaysAssertExit(String("help")==deflt.GetHelp());
+    AlwaysAssertExit(String("help")==deflt.getHelp());
     
     // get parameter name 
-    AlwaysAssertExit(String("key")==deflt.GetKey());
+    AlwaysAssertExit(String("key")==deflt.getKey());
     
     // get the string `key = value' for the parameter
-    AlwaysAssertExit(String("key=True")==deflt.KeyVal());
+    AlwaysAssertExit(String("key=True")==deflt.keyVal());
     
     // get the type of a parameter
-    AlwaysAssertExit(String("type")==deflt.GetType());
+    AlwaysAssertExit(String("type")==deflt.getType());
     
     // get the valid range of a parameter
-    AlwaysAssertExit(String("range")==deflt.GetRange());
+    AlwaysAssertExit(String("range")==deflt.getRange());
     
     // get the units of a parameter
-    AlwaysAssertExit(String("unit")==deflt.GetUnit());
+    AlwaysAssertExit(String("unit")==deflt.getUnit());
     
     // set a parameter as a system parameter
-    deflt.SetSystem(True);
+    deflt.setSystem(True);
     
     // check if a parameter is a system parameter
-    AlwaysAssertExit(deflt.IsSystem());
+    AlwaysAssertExit(deflt.isSystem());
     
     // set an index for a program parameter
-    deflt.SetIndex(2);
+    deflt.setIndex(2);
     
     // get the index of a parameter
-    AlwaysAssertExit(2==deflt.GetIndex());
+    AlwaysAssertExit(2==deflt.getIndex());
 
     cout << "OK" << endl;
 
