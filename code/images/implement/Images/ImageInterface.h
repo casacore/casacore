@@ -213,6 +213,10 @@ public:
   virtual Bool setImageInfo(const ImageInfo& info);
   // </group>
 
+  // Can the derived class handle region definition?
+  // The default implementation returns False.
+  virtual Bool canDefineRegion() const;
+
   // The "region/mask" functions are only implemented in PagedImage.
   // All other Image classes ignore these operations (they are no-op's).
   // See <linkto class=PagedImage>PagedImage</linkto> for a description

@@ -154,6 +154,11 @@ LELCoordinates ImageInterface<T>::lelCoordinates() const
 
 
 template <class T>
+Bool ImageInterface<T>::canDefineRegion() const
+{
+  return False;
+}
+template <class T>
 void ImageInterface<T>::defineRegion (const String&, const ImageRegion&,
 				      RegionHandler::GroupType, Bool)
 {}

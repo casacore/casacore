@@ -314,14 +314,15 @@ public:
   virtual Bool setMiscInfo (const RecordInterface& newInfo);
   // </group>
 
-  // The ImageInfo object contains some miscellaneous information about the image
-  // which unlike that stored in MiscInfo, has a standard list of things,
+  // The ImageInfo object contains some miscellaneous information about the
+  // image, which unlike that stored in MiscInfo, has a standard list of things,
   // such as the restoring beam.
-  //
   // Note that setImageInfo REPLACES the information with the new information.
   // It can fail if, e.g., the underlying table is not writable.
-  // 
-   virtual Bool setImageInfo(const ImageInfo& info);
+  virtual Bool setImageInfo(const ImageInfo& info);
+
+  // A PagedImage can handle region definition.
+  virtual Bool canDefineRegion() const;
 
   // Define a region/mask belonging to the image.
   // The group type determines if it stored as a region or mask.

@@ -758,6 +758,11 @@ Unit PagedImage<T>::units() const
 }
 
 
+template <class T>
+Bool PagedImage<T>::canDefineRegion() const
+{
+  return True;
+}
 template<class T> 
 void PagedImage<T>::defineRegion (const String& name,
 				  const ImageRegion& region,
