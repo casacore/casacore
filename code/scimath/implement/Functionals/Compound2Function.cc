@@ -1,5 +1,5 @@
 //# Compound2Function.cc:  Compound of functions AutoDiff specialization
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,13 +65,10 @@ void CompoundFunction<AutoDiff<T> >::fromParam_p() const {
       uInt k = functionPtr_p[funpar_p[i]]->nparameters();
       uInt l = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
       // Set correct number of derivatives in sub-functions
-      if (param_p[i].nDerivatives() == 0) {
-	if (l != 0) {
-	  (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>();
-	  l = 0;
-	};
-      };
-      if (k != l && l != 0) {
+      if (param_p[i].nDerivatives() < paroff_p[funpar_p[i]] + k) {
+	if (l != 0) (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>();
+	l = 0;
+      } else if (k != l) {
 	(*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>(T(0), k);
 	l = k;
       };
@@ -89,33 +86,21 @@ void CompoundFunction<AutoDiff<T> >::fromParam_p() const {
 
 template <class T>
 void CompoundFunction<AutoDiff<T> >::toParam_p() {
-  // Total number of sub derivatives
-  uInt tk(0);
-  for (uInt i=0; i<nparameters(); ++i) {
-    uInt k = functionPtr_p[funpar_p[i]]->nparameters();
-    uInt l = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
-    if (l != 0 && k != l) {
-      (*functionPtr_p[funpar_p[i]])[locpar_p[i]] =
-	AutoDiff<T>(T(0), k);
-      l = k;
-    };
-    tk += l;
+  // Set derivatives
+  if (nparameters() != param_p[i].nDerivatives()) {
+    param_p[i] = AutoDiff<T>(param_p[i].value(), nparameters());
   };
-  // Set correct number of derivatives
   for (uInt i=0; i<nparameters(); ++i) {
     uInt k = functionPtr_p[funpar_p[i]]->nparameters();
     uInt l = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
-    if (param_p[i].nDerivatives() == 0) {
-      if (tk != 0) {
-	param_p[i] = AutoDiff<T>(param_p[i].value(), nparameters());
+    // Set correct number of derivatives in sub-functions
+      if (param_p[i].nDerivatives() < paroff_p[funpar_p[i]] + k) {
+	if (l != 0) (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>();
+	l = 0;
+      } else if (k != l) {
+	(*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>(T(0), k);
+	l = k;
       };
-    } else if (nparameters() != param_p[i].nDerivatives()) {
-      param_p[i] = AutoDiff<T>(param_p[i].value(), nparameters());
-    };
-    if (k != l && l != 0) {
-      (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>(T(0), k);
-      l = k;
-    };
     // Set the parameter data
     for (uInt j=0; j<l; ++j) {
       param_p[i].deriv(j+paroff_p[funpar_p[i]]) =
