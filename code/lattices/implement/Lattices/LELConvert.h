@@ -1,5 +1,5 @@
-//# LELConvert.h:  LELConvert.h
-//# Copyright (C) 1997
+//# LELConvert.h:  Class to convert a LEL node from one numerical type to another
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,28 +32,27 @@
 //# Includes
 #include <trial/Lattices/LELInterface.h>
 
-//# Forward Declarations
 
+// <summary>
+// Class to convert a LEL node from one numerical type to another
+// </summary>
 
-
-// <summary> This LEL class handles conversions between numerical types </summary>
-//
 // <use visibility=local>
-//
+
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-//
+
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
 //   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
 //   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
 //   <li> <linkto class="LELInterface"> LELInterface</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 //  This derived LEL letter class handles numerical type conversions
 // </etymology>
-//
+
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that know how to convert
@@ -61,12 +60,11 @@
 // operate on numerical Lattices and return a numerical Lattice. 
 // The LELConvert object is embedded in the tree, and the conversion
 // actually happens at tree evaluation time.
-//
+// <p>
 // A description of the implementation details of the LEL classes can
 // be found in <a href="../../../notes/216/216.html">Note 216</a>
-//
 // </synopsis> 
-//
+
 // <example>
 // Examples are not very useful as the user would never use 
 // these classes directly.  Look in LatticeExprNode.cc to see 
@@ -81,13 +79,13 @@
 // The LELConvert class is embedded in the tree at construction time
 // so as to handle the conversion from Float to Double at evaluation time
 // </example>
-//
+
 // <motivation>
 //  We needed to be able to handle mixed types in the LEL classes
 // </motivation>
-//
-// <todo asof="1998/01/21">
-// </todo>
+
+//# <todo asof="1998/01/21">
+//# </todo>
 
 
 template <class T, class F> class LELConvert : public LELInterface<T>
@@ -96,20 +94,20 @@ public:
    
 // Constructor.  <src><F></src> is the type we are coinverting from.
 // <src><T></src> is the type we are converting to.
-   LELConvert(const CountedPtr<LELInterface<F> >& expr);
+   LELConvert (const CountedPtr<LELInterface<F> >& expr);
 
 // Destructor does nothing
   ~LELConvert();
 
 // Recursively evaluate the expression.
-   virtual void eval (Array<T>& result,
+   virtual void eval (LELArray<T>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar
-   virtual T getScalar() const;
+   virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
