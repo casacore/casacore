@@ -13,3 +13,25 @@ change id: 0048
 Added new tool map.g, which resides one level higher than
 calibrater and imager. Includes associated data item
 managers for the composite data item types required.
+
+change id: 0049
+ author:   Tim Cornwell
+ date:     2000/09/06
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   tasking
+ type:     Code Documentation
+ category: New Change
+ summary:  Now support list of types
+
+A list of other types may now be defined. This allows one to
+define e.g. a source containing a name (string) and a direction
+(direction). The interface allows the user to add and delete 
+these at will. This allows the determination of how many
+sources are to be processed to be independent of the user
+interface (in this example).
+
+The list type is designed for use in map.g but will almost
+certainly be useful elsewhere. To see it at work, run the
+global test function typestest() found in types.g
