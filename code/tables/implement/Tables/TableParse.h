@@ -80,7 +80,7 @@ template<class T> class Vector;
 //
 // Global functions are used to operate on the information.
 // The main function is the global function tableCommand.
-// This function executes the given command and returns the resulting table.
+// It executes the given TaQL command and returns the resulting table.
 // This is, in fact, the only function to be used by a user.
 // </synopsis> 
 
@@ -108,10 +108,28 @@ friend AipsIO& operator>> (AipsIO&, TableParse&);
 // It returns the resulting table. 
 friend Table tableCommand (const String& command);
 
+// Parse and execute the given command.
+// It is the same as above, but a temporary table can be used in the command
+// using the $nnn syntax.
+friend Table tableCommand (const String& command, const Table& tempTable);
+
+// Parse and execute the given command.
+// It is the same as above, but multiple temporary tables can be used
+// in the command using the $nnn syntax.
+friend Table tableCommand (const String& command,
+			   const PtrBlock<const Table*>& tempTables);
+
 // Parse and execute the command.
 // It will open (and close) all tables needed.
 // It returns the resulting table and the selected column names.
 friend Table tableCommand (const String& command,
+			   Vector<String>& columnNames);
+
+// Parse and execute the command.
+// It is the same as above, but multiple temporary tables can be used
+// in the command using the $nnn syntax.
+friend Table tableCommand (const String& command,
+			   const PtrBlock<const Table*>& tempTables,
 			   Vector<String>& columnNames);
 
 public:
@@ -292,7 +310,7 @@ public:
     void handleSort (PtrBlock<TableParseSort*>*& sortList, Bool noDuplicates);
 
     // Add a table name to the linked list.
-    void addTable (const String& name, const String& shorthand);
+    void addTable (const TableParseVal* name, const String& shorthand);
 
     // Find the keyword or column name and create a TableExprNode from it.
     TableExprNode handleKeyCol (const String& name);

@@ -37,7 +37,8 @@
 
 /* states */
 %s EXPRstate
-%s NAMEstate
+%s GIVINGstate
+%s FROMstate
 
 /* The order in the following list is important, since, for example,
    the word "giving" must be recognized as GIVING and not as NAME.
@@ -93,6 +94,7 @@ DESC      [Dd][Ee][Ss][Cc]
 IN        [Ii][Nn]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}
+TEMPTAB   [$]{INT}
 NAMETAB   [A-Za-z0-9./_+\-~$]+
 
 
@@ -106,8 +108,9 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
     followed by whitespace and an alphanumeric name. That 2nd name
     serves as a shorthand for possible later use in the field name.
     A table name can be given in the FROM part and in the giving PART.
-    These are indicated by the NAMEstate, because a table name can contain
-    special characters like -.
+    These are indicated by the FROM/GIVINGstate, because a table name
+    can contain special characters like -. In the FROMstate a table name
+    can also be $nnn indicating a temporary table.
     In a subquery care must be taken that the state is switched back to
     EXPRstate, because a FROM can be the last part in a subquery and
     because a set can be specified in the GIVING part.
@@ -121,7 +124,7 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
 	  }
 {FROM}    {
             tableGramPosition() += yyleng;
-	    BEGIN(NAMEstate);
+	    BEGIN(FROMstate);
 	    return FROM;
 	  }
 {WHERE}   {
@@ -140,7 +143,7 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
           }
 {GIVING}  {
             tableGramPosition() += yyleng;
-	    BEGIN(NAMEstate);
+	    BEGIN(GIVINGstate);
 	    return GIVING;
           }
 
@@ -217,10 +220,13 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
 
  /* In the FROM clause a shorthand (for a table) can be given.
     In the WHERE and ORDERBY clause a function name can be given.
+    Note that this rule could also be done by NAMEFLD. However, in the
+    future :: and . will be operators instead of parts of the name.
  */
 {NAME}    {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 's';
 	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
 	    return NAME;
 	  }
@@ -229,13 +235,25 @@ NAMETAB   [A-Za-z0-9./_+\-~$]+
 {NAMEFLD} {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 's';
 	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
-	    return NAME;
+	    return FLDNAME;
 	  }
- /* A NAMETAB is always a table file name */
-<NAMEstate>{NAMETAB} {
+
+ /* A temporary table number can be given in the FROM clause */
+<FROMstate>{TEMPTAB} {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 'i';
+            lvalp->val->ival = atoi(TableGramtext+1);
+	    return TABNAME;
+	  }
+
+ /* A table file name can be given in FROM or GIVING clause */
+<FROMstate,GIVINGstate>{NAMETAB} {
+            tableGramPosition() += yyleng;
+            lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 's';
 	    lvalp->val->str = TableGramtext;
 	    return TABNAME;
 	  }

@@ -49,8 +49,9 @@
 #include <aips/OS/Timer.h>
 #include <iostream.h>
 
-typedef Quantum<Double> gpp_bug1;
+typedef Quantum<Double> TableParse_gpp_bug1;
 
+static const PtrBlock<const Table*>* theTempTables;
 
 
 //# Default constructor.
@@ -181,16 +182,29 @@ void TableParseSelect::clearSelect()
 
 
 //# Construct a TableParse object and add it to the linked list.
-void TableParseSelect::addTable (const String& name, const String& shorthand)
+void TableParseSelect::addTable (const TableParseVal* name,
+				 const String& shorthand)
 {
-    //# When the name contains ::, it is a keyword in a table at an outer
-    //# SELECT statement.
     Table table;
-    String shand, columnName, keyName;
-    if (splitName (shand, columnName, keyName, name)) { 
-	table = tableKey (shand, columnName, keyName);
+    //# When the table name is numeric, we have a temporary table number.
+    //# Find it in the block of temporary tables.
+    if (name->type == 'i') {
+	Int tabnr = name->ival - 1;
+	if (tabnr < 0  ||  tabnr >= theTempTables->nelements()
+	||  (*theTempTables)[tabnr] == 0) {
+	    throw (TableInvExpr ("Invalid temporary table number given"));
+	}
+	table = *((*theTempTables)[tabnr]);
     }else{
-	table = Table(name);
+	//# The table name is a string.
+	//# When the name contains ::, it is a keyword in a table at an outer
+	//# SELECT statement.
+	String shand, columnName, keyName;
+	if (splitName (shand, columnName, keyName, name->str)) { 
+	    table = tableKey (shand, columnName, keyName);
+	}else{
+	    table = Table(name->str);
+	}
     }
     parseIter_p->toEnd();
     parseIter_p->addRight (TableParse(table, shorthand));
@@ -920,19 +934,38 @@ void TableParseSelect::show (ostream& os) const
 }
 
 
-//# Simplified form of general tableCommand function.
+//# Simplified forms of general tableCommand function.
 Table tableCommand (const String& str)
 {
     Vector<String> cols;
     return tableCommand (str, cols);
 }
+Table tableCommand (const String& str, const Table& tempTable)
+{
+    PtrBlock<const Table*> tmp(1);
+    tmp[0] = &tempTable;
+    return tableCommand (str, tmp);
+}
+Table tableCommand (const String& str, const PtrBlock<const Table*>& tempTables)
+{
+    Vector<String> cols;
+    return tableCommand (str, tempTables, cols);
+}
+Table tableCommand (const String& str, Vector<String>& cols)
+{
+    PtrBlock<const Table*> tmp;
+    return tableCommand (str, tmp, cols);
+}
 
 //# Do the actual parsing of a command and execute it.
-Table tableCommand (const String& str, Vector<String>& cols)
+Table tableCommand (const String& str,
+		    const PtrBlock<const Table*>& tempTables,
+		    Vector<String>& cols)
 {
 #if defined(AIPS_TRACE)
     Timer timer;
 #endif
+    theTempTables = &tempTables;
     TableParseSelect::clearSelect();
     String message;
     String command = str + '\n';

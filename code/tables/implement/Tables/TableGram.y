@@ -48,7 +48,8 @@ TableParseSelect* select;
 %token GIVING
 %token SORTASC
 %token SORTDESC
-%token <val> NAME           /* name of field or shorthand for table */
+%token <val> NAME           /* name of function or shorthand for table */
+%token <val> FLDNAME        /* name of field or shorthand for table */
 %token <val> TABNAME        /* table name */
 %token <val> LITERAL
 %token INTOKEN
@@ -66,6 +67,7 @@ TableParseSelect* select;
 %token EMPTYOPEN
 %token CLOSEDEMPTY
 %token EMPTYCLOSED
+%type <val> tfname
 %type <val> tabname
 %type <node> whexpr
 %type <node> orexpr
@@ -146,36 +148,42 @@ columns:             /* no column names given (thus take all) */
          ;
 
 table:     NAME {                            /* table is shorthand */
-	       TableParseSelect::currentSelect()->addTable ($1->str, $1->str);
+	       TableParseSelect::currentSelect()->addTable ($1, $1->str);
 	       delete $1;
 	   }
-         | TABNAME {                         /* no shorthand */
-	       TableParseSelect::currentSelect()->addTable ($1->str, "");
+         | tfname {                          /* no shorthand */
+	       TableParseSelect::currentSelect()->addTable ($1, "");
 	       delete $1;
 	   }
 	 | tabname NAME {
-	       TableParseSelect::currentSelect()->addTable ($1->str, $2->str);
+	       TableParseSelect::currentSelect()->addTable ($1, $2->str);
 	       delete $1;
 	       delete $2;
 	   }
          | table COMMA NAME {
-	       TableParseSelect::currentSelect()->addTable ($3->str, $3->str);
+	       TableParseSelect::currentSelect()->addTable ($3, $3->str);
 	       delete $3;
 	   }
-         | table COMMA TABNAME {
-	       TableParseSelect::currentSelect()->addTable ($3->str, "");
+         | table COMMA tfname {
+	       TableParseSelect::currentSelect()->addTable ($3, "");
 	       delete $3;
 	   }
 	 | table COMMA tabname NAME {
-	       TableParseSelect::currentSelect()->addTable ($3->str, $4->str);
+	       TableParseSelect::currentSelect()->addTable ($3, $4->str);
 	       delete $3;
 	       delete $4;
 	   }
          ;
 
+tfname:    TABNAME
+               { $$ = $1; }
+         | FLDNAME
+               { $$ = $1; }
+         ;
+
 tabname:   NAME
                { $$ = $1; }
-         | TABNAME
+         | tfname
                { $$ = $1; }
          ;
 
@@ -304,6 +312,11 @@ simexpr:   LPAREN orexpr RPAREN
 	       delete $3;
 	   }
          | NAME {
+	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
+                                                 handleKeyCol($1->str));
+	       delete $1;
+	   }
+         | FLDNAME {
 	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
                                                  handleKeyCol($1->str));
 	       delete $1;
