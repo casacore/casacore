@@ -86,10 +86,20 @@ or a distributed object.
 *** shape - the length of each axis on the object
 *** length - the total number of values in the object.
 *** ok - checks the object is consistent returns T or F (or Fail)
+*** copy - does a deep copy of the closure so that if it can be passed
+    into another closure and and used even if the external tool is
+    deleted
 ** use defaultclass (and an abbreviation) for common objects
    that are premade by the script (eg defaultlogger aliased to dl).
 ** do not allow null objects. Every object should be functional.
 ** Is plugin enabled unless there is a reason not to do this.
+** If an function interface needs to read data that may be in a table
+   it accepts at least the following argument types:
+   - string (table name)
+   - tool of the relevant type.
+   - and optionally a table tool (table type is checked).
+   In the meta information the designer may choose one of the relevant
+   input types as the primary type or use the 'untyped' type.
 
 * Distributed object guidelines
 ** Uses version 2 of the DO system.
