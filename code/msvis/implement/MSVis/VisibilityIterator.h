@@ -213,9 +213,9 @@ public:
   // returns the same as frequency() if there is no vel selection active.
   Vector<Double>& lsrFrequency(Vector<Double>& freq) const;
 
-  // Return the current phase center as 2-vector of positions in radians.
+  // Return the current phase center as an MDirection
   const MDirection& phaseCenter() const
-  { return msIter_p.phaseCenter(); }
+  {return msIter_p.phaseCenter(); }
 
   // Return frame for polarization (returns PolFrame enum)
   Int polFrame() const
