@@ -1,5 +1,5 @@
 //# Matrix.h: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@
 // 
 // <summary> A 2-D Specialization of the Array class </summary>
 //
-// Matrix objects are two-dimensional specializations (e.g., more convenient
+// Matrix tools are two-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want
 // to look at the Array documentation to see inherited functionality. A
 // tutorial on using the array classes in general is available in the
