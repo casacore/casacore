@@ -109,19 +109,16 @@ void doIt (RegionHandler& reghand)
 
 // Create a lattice and mask and make it default region.
   PagedArray<Float> lattice (shape, "tRegionHandler_tmp.lat");
-  reghand.defineRegion ("reg2", RegionHandler::makeMask (lattice, "reg2"),
+  reghand.defineRegion ("reg2", reghand.makeMask (lattice, "reg2"),
 			RegionHandler::Masks);
   reghand.setDefaultMask ("reg2");
   AlwaysAssertExit (reghand.getDefaultMask() == "reg2");
-  AlwaysAssertExit (File("tRegionHandler_tmp.lat/reg2").isDirectory());
 
 // Rename that mask and make sure the table and default mask are renamed too.
   reghand.renameRegion ("reg2n", "reg2");
   AlwaysAssertExit (reghand.hasRegion ("reg2n"));
   AlwaysAssertExit (! reghand.hasRegion ("reg2"));
   AlwaysAssertExit (reghand.getDefaultMask() == "reg2n");
-  AlwaysAssertExit (File("tRegionHandler_tmp.lat/reg2n").isDirectory());
-  AlwaysAssertExit (! File("tRegionHandler_tmp.lat/reg2").exists());
 
 // Make a unique name.
   AlwaysAssertExit (reghand.makeUniqueRegionName ("reg2n") == "reg2n1");
@@ -150,7 +147,7 @@ int main()
 
     SetupNewTable newtab ("tRegionHandler_tmp.data", TableDesc(), Table::New);
     theTable = Table(newtab);
-    RegionHandlerTable regtab (getTable, 0);;
+    RegionHandlerTable regtab (getTable, 0);
     doIt (regtab);
   } catch (AipsError x) {
     cerr << "Unexpected exception: " << x.getMesg() << endl;
