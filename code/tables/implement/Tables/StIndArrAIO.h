@@ -28,14 +28,12 @@
 #if !defined(AIPS_STINDARRAIO_H)
 #define AIPS_STINDARRAIO_H
 
-#if defined(_AIX)
-#pragma implementation ("StIndArrAIO.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/IO/ByteIO.h>
 
 //# Forward Declarations
 class AipsIO;
@@ -246,6 +244,9 @@ private:
     // The file containing the arrays.
     StManArrayFile* iosfile_p;
 
+
+    // Open the file with the given mode.
+    void openFile (ByteIO::OpenOption opt);
 
     // Delete the array in the given row.
     void deleteArray (uInt rownr);
