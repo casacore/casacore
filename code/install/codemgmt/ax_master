@@ -5948,3 +5948,4 @@
 16 346 src mv trial/implement/Functionals/NQSinusoid1D.h aips/implement/Functionals/NQSinusoid1D.h
 16 346 src mv trial/implement/Functionals/NQSinusoid1DParam.h aips/implement/Functionals/NQSinusoid1DParam.h
 16 346 src mv trial/implement/Functionals/NQWrapperBase.h aips/implement/Functionals/NQWrapperBase.h
+16 346 src mv trial/implement/Functionals/NQWrapperData.h aips/implement/Functionals/NQWrapperData.h
