@@ -172,7 +172,7 @@ public:
 
   // get the shape of the component. This function always returns
   // ComponentType::POINT.
-  virtual ComponentType::Shape shape() const;
+  virtual ComponentType::Shape type() const;
 
   // set/get the reference direction of the point.
   // <group>
@@ -209,7 +209,7 @@ public:
   // Return a pointer to a copy of this object upcast to a ComponentShape
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual ComponentShape * cloneShape() const;
+  virtual ComponentShape * clone() const;
 
   // return the number of parameters in this shape and set/get them.
   //
@@ -217,9 +217,9 @@ public:
   // <src>setShapeParameters</src> or <src>shapeParameters</src> with anything
   // other than a zero length Vector will throw an exception.
   // <group>
-  virtual uInt nShapeParameters() const;
-  virtual void setShapeParameters(const Vector<Double> & newParms);
-  virtual void shapeParameters(Vector<Double> & compParms) const;
+  virtual uInt nParameters() const;
+  virtual void setParameters(const Vector<Double> & newParms);
+  virtual void parameters(Vector<Double> & compParms) const;
   // </group>
 
   // This functions convert between a RecordInterface and a PointShape. These

@@ -83,7 +83,7 @@ PointShape & PointShape::operator=(const PointShape & other) {
   return *this;
 }
 
-ComponentType::Shape PointShape::shape() const {
+ComponentType::Shape PointShape::type() const {
   DebugAssert(ok(), AipsError);
   return ComponentType::POINT;
 }
@@ -121,26 +121,26 @@ void PointShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
   if (&flux == 0) {}; // Suppress compiler warning about unused variable
 }
 
-ComponentShape * PointShape::cloneShape() const {
+ComponentShape * PointShape::clone() const {
   DebugAssert(ok(), AipsError);
   ComponentShape * tmpPtr = new PointShape(*this);
   AlwaysAssert(tmpPtr != 0, AipsError);
   return tmpPtr;
 }
 
-uInt PointShape::nShapeParameters() const {
+uInt PointShape::nParameters() const {
   DebugAssert(ok(), AipsError);
   return 0;
 }
 
-void PointShape::setShapeParameters(const Vector<Double> & newParms) {
-  DebugAssert(newParms.nelements() == nShapeParameters(), AipsError);
+void PointShape::setParameters(const Vector<Double> & newParms) {
+  DebugAssert(newParms.nelements() == nParameters(), AipsError);
   DebugAssert(ok(), AipsError);
 }
 
-void PointShape::shapeParameters(Vector<Double> & compParms) const {
+void PointShape::parameters(Vector<Double> & compParms) const {
   DebugAssert(ok(), AipsError);
-  DebugAssert(compParms.nelements() == nShapeParameters(), AipsError);
+  DebugAssert(compParms.nelements() == nParameters(), AipsError);
 }
 
 Bool PointShape::fromRecord(String & errorMessage,
