@@ -148,12 +148,12 @@ public:
 
     // Recover the WCS structure.  Generally this is not needed,
     // but DirectionCoordinate needs to get at it for its
-    // interface to wcsmix()
-    linprm linprmWCS() const {return *linprm_p;}
-
+    // interface to wcsmix().  Get this pointer and use it
+    // immediately, but do NOT delete it !
+    linprm* linprmWCS() const {return linprm_p;}
 private:
     // A WCSLIB C-structure.
-    linprm *linprm_p;
+    linprm* linprm_p;
 };
 
 #endif
