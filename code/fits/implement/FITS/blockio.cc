@@ -1,5 +1,5 @@
 //# blockio.cc:
-//# Copyright (C) 1993,1994,1995,1996,1999,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1999,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-# include <aips/strstream.h>
+# include <aips/sstream.h>
 # include <aips/FITS/blockio.h>
 # include <aips/string.h>
 
 void BlockIO::errmsg(IOErrs e, char *s) { 
-    ostrstream msgline;
+    ostringstream msgline;
     msgline << "BlockIO:  ";
     if (filename == 0 || *filename == '\0')
 	msgline << "File Descriptor " << fd;
@@ -40,7 +40,7 @@ void BlockIO::errmsg(IOErrs e, char *s) {
 	    << " logical record " << rec_no << " --\n\t" << s << ends;
     err_status = e;
     // all BlockIO messages are SEVERE
-    char * mptr = msgline.str();
+    const char * mptr = msgline.str().data();
     errfn(mptr, FITSError::SEVERE);
     // delete [] mptr;
 }
