@@ -35,8 +35,6 @@ give some details per \mes, and also some information on \quans.
 
 Currently the following measures exist:
 \begin{description}
-%{1}{}
-%{\setlength{\labelwidth}{60em}}
 \item[$Epoch$] a high precision epoch, a moment in time
 \item[$Position$] a 3-dimensional position vector, in general indicating
 a position w.r.t. Earth
@@ -71,8 +69,8 @@ Some \mess\ can often also be obtained from a catalog, especially a list of
 observatories, a source list and a spectral line list. They can be
 obtained as: \\
 \\
-\hspace{.05\linewidth}
-\begin{minipage}[t]{.9\linewidth}
+\hspace{.05\textwidth}
+\begin{minipage}[t]{.9\textwidth}
 \begin{verbatim}
     MDirection source;
     MFrequency line;
@@ -123,8 +121,8 @@ A \refq\ is created as a specialised {\em MeasRef} object, using the
 {\tt Measure::Ref} alias (e.g. {\tt MDirection::Ref}). A full
 reference could be:\\
 \\
-\hspace{.05\linewidth}
-\begin{minipage}[t]{.9\linewidth}
+\hspace{.05\textwidth}
+\begin{minipage}[t]{.9\textwidth}
 \begin{verbatim}
    // A time in MJD
    MEpoch epoch(Quantity("50500.5d"), MEpoch::UTC);
@@ -150,8 +148,8 @@ MDirection::Convert}. The conversion object needs at least a {\em from}
 
 Example: \\
 \\
-\hspace{.05\linewidth}
-\begin{minipage}[t]{.95\linewidth}
+\hspace{.05\textwidth}
+\begin{minipage}[t]{.95\textwidth}
 \begin{verbatim}
    MDirection::Convert(MDirection::Ref(MDirection::VENUS,
                                        frame),
@@ -448,20 +446,178 @@ Example:
    uvm.convertUVW(uvw);
 \end{verbatim}
 
+\subsection{Specifying execution details}
 
+The precision of a \mes\ conversion can be influenced by the use of
+{\em aipsrc} variables. The relevant variables can be found in the
+{\em aipsrcdata} section of the standard {\em User Reference
+Manual}.
+\begin{htmlonly}
+\htmladdnormallink{(see here)}{../../user/Refman/Refman.html}.
+\end{htmlonly}
+Changing the precision will influence the efficiency of the
+\mess\ conversion.
 
-\subsection{Specifying details}
+Parameters that can be used are, a.o., the length of periods over
+which computations can be re-used; if it is necessary to use $IERS$
+tables for precise calculation of time and polar motion, or that the
+simple model suffices.
+
+A few examples: \\
+\\
+\begin{tabular}{|l|p{0.4\textwidth}|l|}
+\hline
+Name & Description &  Default \\ \hline
+measures.nutation.d\_interval &
+interval in days over which linear
+                       interpolation of nutation
+                       calculation is appropriate
+& 0.04d \\ \hline
+measures.nutation.b\_useiers & 
+use the IERS Earth orientation
+                       parameters tables to calculate
+                       nutation
+& false \\ \hline
+measures.nutation.b\_usejpl &
+use the JPL DE database (use
+                       measures.jpl.ephemeris to specify
+                       which one) to calculate nutation
+& false \\ \hline
+measures.measiers.b\_notable &
+do not use the IERSeop97 or
+IERSpredict tables at all for calculations
+& false \\ \hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Interface}
 
+The interface to the different \mess\ have a large set of identical
+methods. Only when values are clearly related to a specific \mes\
+(like e.g. a latitude) does the method to obtain not exist for e.g. a
+frequency.
+
+Constructor of \mess\ have often specialisations (like one with a
+longitude and latitude for a direction), but they all have also
+standard ones. The standard ones are described in the
+\begin{latexonly}
+Measures.h class description.
+\end{latexonly}
+\begin{htmlonly}
+\htmladdnormallink{Measures.h}{../../aips/implement/Measures/Measure.html}
+class description.
+\end{htmlonly}
+
 \subsection{Getting values from a Measure}
+
+The various value that are contained in the \mes\ object can be
+obtained by the following calls:
+\begin{description}
+\item[$getValue()$] will obtain the {\em MeasValue} (i.e. the {\em
+MVName} object) from the \mes\ 
+\item[$getData()$] will obtain a pointer to the {\em MeasValue}
+\item[$getRef()$] will obtain the {\tt Measure::Ref} reference object
+\item[$getRefPtr()$] will obtain a pointer to the {\tt Measure::Ref} object
+\end{description}
+
+General calls are available to obtain the information contained in the
+{\tt Measure::Ref} object:
+\begin{description}
+\item[$getType()$] will obtain the reference code from the {\tt
+Measure::Ref} object 
+\item[$getFrame()$] will obtain the frame from the {\tt Measure::Ref}
+object
+\item[$offset()$] will return the pointer to the offset (or 0 if no
+offset specified)
+\end{description}
+
+{\tt set()} methods are available to fill in the fields in the {\tt
+Measure::Ref} object. 
 
 \subsection{Getting values from a MeasValue}
 
+Each {\tt MeasValue} has methods to obtain the internal data in a
+standard way. Some have additional ones available when appropriate
+(like {\em getLong()}):
+\begin{description}
+\item[$getVector()$] will always return the internal value as a
+\verb+Vector<Double>+
+\item[$getValue$] will obtain the internal value as a $Double$ or as a
+\verb+Vector<Double>+, depending on the dimension of the internal value
+\item[$get()$] will obtain the internal value as a {\em Qauntity} or
+as a \verb+Vector<Double>+
+\end{description}
+
 \subsection{Can I obtain information from the MeasFrame?}
 
+The frame can be used as an automatic converter. An example could be
+the automatic conversion to a sidereal time from a civil time (like
+$UTC$). All conversions that are used by the various conversion
+engines are available. Of course, the epcoh should have been put into
+the frame for it to be converted; and in this case also the position
+should have been put into it. Available information from the frame: \\
+\\
+\hspace{.05\textwidth}
+\begin{minipage}[t]{.95\textwidth}
+\begin{verbatim}
+  // Get the epoch pointer (0 if not present)
+  const Measure *const epoch() const;
+  // Get the position pointer (0 if not present)
+  const Measure *const position() const;
+  // Get the direction pointer (0 if not present)
+  const Measure *const direction() const;
+  // Get the radial velocity pointer (0 if not present)
+  const Measure *const radialVelocity() const;
+  // Get the comet pointer (0 if not present)
+  const MeasComet *const comet() const;
+  // Get data from frame.
+  // Only available if appropriate measures are set,
+  // and the frame is in a calculating state.
+  // <group>
+  // Get TDB in days
+  Bool getTDB(Double &tdb);
+  // Get the longitude (in rad)
+  Bool getLong(Double &tdb);
+  // Get the latitude (in rad)
+  Bool getLat(Double &tdb);
+  // Get the position
+  Bool getITRF(MVPosition &tdb);
+  // Get the gecentric position (in m)
+  Bool getRadius(Double &tdb);
+  // Get the LAST (in days)
+  Bool getLAST(Double &tdb);
+  // Get the LAST (in rad)
+  Bool getLASTr(Double &tdb);
+  // Get J2000 coordinates (direction cosines)
+  Bool getJ2000(MVDirection &tdb);
+  // Get B1950 coordinates (direction cosines)
+  Bool getB1950(MVDirection &tdb);
+  // Get apparent coordinates (direction cosines)
+  Bool getApp(MVDirection &tdb);
+  // Get LSR radial velocity (m/s)
+  Bool getLSR(Double &tdb);
+  // Get the comet table reference type
+  Bool getCometType(uInt &tdb);
+  // Get the comet coordinates
+  Bool getComet(MVPosition &tdb);
+  // </group>
+\end{verbatim}
+\end{minipage}
+\\
+
+In the above reference is made to the {\em calculating state} of the
+frame. This state is set when the frame has been actively used by a
+{\tt Measure::Convert} engine; or if you do it explicitly with:
+\verb+MCFrame::make(frame);+.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Details for individual Measures}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Use of units and quantities}
+
