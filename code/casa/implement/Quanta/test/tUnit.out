@@ -232,10 +232,12 @@ User list after FITS:
     Jypb      (Jansky/beam)                1.35425483146e-15 kg.s-2.sr-1
     KELVIN    (kelvin)                     1 K
     KELVINS   (kelvin)                     1 K
+    KM        (km)                         1000 m
     M         (meter)                      1 m
     METERS    (meter)                      1 m
     PASCAL    (pascal)                     1 m-1.kg.s-2
     PIXEL     (dimensionless pixel)        1
+    S         (second)                     1 s
     SEC       (second)                     1 s
     SECONDS   (second)                     1 s
     VOLTS     (volt)                       1 m2.kg.s-3.A-1
