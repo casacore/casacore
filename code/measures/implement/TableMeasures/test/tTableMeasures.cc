@@ -252,7 +252,7 @@ int main(int argc)
       tmdMDir.write(td);
     }
     {
-      MEpoch obsTime(MVEpoch(MVTime(1995, 5, 17, (8+18./60.)/24.)),
+      MEpoch obsTime((MVEpoch(MVTime(1995, 5, 17, (8+18./60.)/24.))),
 		     MEpoch::UTC);
       // The following creates an (empty) Measure column.  This
       // particular column is to contain MEpoch with a fixed reference
