@@ -325,7 +325,7 @@ int main() {
       try {
 	RO_Model.remove(0);
       } catch (AipsError x) {
-        if (!x.getMesg().contains("theROFlag == False")) {
+        if (!x.getMesg().contains("ROFlag == False")) {
           cout << x.getMesg() << endl << "FAIL" << endl;
           return 1;
 	}
