@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-------------------------------------------------------------------------------------
-# Usage: aupdate [[no]data | [no]auxdata] [[no]docs] [[no]binary] [[no]libexec
+# Usage: aupdate [[no]data | auxdata] [[no]docs] [[no]binary] [[no]libexec
 #                [no]code] [[no]gui | useftp] 
 #                [basestable | stable | beta | release | usefile[s] filenames ...]
 #-------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@
 #
 # options:
 # [no]data 	retrieves [or not] necessary data files from the data repository to run aips++
-# [no]auxdata 	retrieves [or not] auxillary data files used for demos and tests from the
+# auxdata 	retrieves auxillary data files used for demos and tests from the
 #		data repository.
 # [no]docs	retrieves [or not] documentation
 # [no]binary	retrieves [or not] bin and lib/*.so* files necessary for the system
@@ -139,10 +139,13 @@
 # Set default file creation mode.
   umask 002
 
-  DATA=base
-  DOCS="stable"
-  BINARY=bin
-  LIBEXEC=libexec
+#
+# Set the defaults for fetching
+#
+  DATA=""
+  DOCS=""
+  BINARY=""
+  LIBEXEC=""
   CODE=""
   GUI=""
   USEFTP=""
@@ -151,20 +154,43 @@
   BASE="base"
   USECVSUP=1
 
+#
+#  If nothing requested do the standard thing
+#
+  if [ $# -eq 0 ]
+  then
+     DATA="base"
+     DOCS="stable"
+     BINARY="bin"
+     LIBEXEC="libexec"
+  fi
+
   while [ "$#" -gt 0 ]
   do
      case $1 in 
+        data )
+           DATA="base"
+           ;;
         nodata)
 	   DATA=""
 	   ;;
         auxdata)
 	   DATA=all
 	   ;;
+        docs)
+	   DOCS="stable"
+	   ;;
         nodocs)
 	   DOCS=""
 	   ;;
+        binary)
+	   BINARY="bin"
+	   ;;
         nobinary)
 	   BINARY=""
+	   ;;
+        libexec)
+	   LIBEXEC="libexec"
 	   ;;
         nolibexec)
 	   LIBEXEC=""
