@@ -80,8 +80,9 @@ void TableLock::init()
 {
   if (itsOption == DefaultLocking) {
     itsOption           = AutoLocking;
-    ////if defaultlocking does not work need to comment below
-    itsIsDefaultLocking = True;
+    //// defaultlocking does not work in all cases it seems;
+    ////  commented below till fixed
+    //// itsIsDefaultLocking = True;
   } else if (itsOption == AutoNoReadLocking) {
     itsOption      = AutoLocking;
     itsReadLocking = False;
