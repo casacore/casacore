@@ -1,5 +1,5 @@
 //# tPagedImage.cc: This program tests the PagedImage class
-//# Copyright(C) 1994,1995, 1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -25,9 +25,10 @@
 //#
 //# $Id$
 //#--------------------------------------------------------------------------
+
 #include<aips/aips.h>
 #include <trial/Images/PagedImage.h>
-#include <trial/ImgCrdSys/ImageCoordinate.h>
+///#include <trial/ImgCrdSys/ImageCoordinate.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Cube.h>
@@ -39,6 +40,12 @@
 #include <stdlib.h>
 #include <iostream.h>
 
+main()
+{
+    cout << "untested" << endl;
+}
+
+/*
 //#predeclarations
 void getArguments(int argc, char **argv, Bool &verbose);
 Bool fudgedEquality(Float a, Float b);
@@ -121,7 +128,7 @@ void deleteFile(const String &filename)
 void describeImage(const String &message, const PagedImage<Float> &image)
 {
   cout << message << " shape: "<< image.shape() << endl;
-/*
+// *
   cout << "coordinates, axisNames: "
        << image.coordinates().axisNames() << endl;
   cout << "             referencePixels: "
@@ -132,7 +139,7 @@ void describeImage(const String &message, const PagedImage<Float> &image)
        << image.coordinates().deltas()<< endl;
   cout << "             shape: "
        << image.coordinates().imageShape() << endl;
-*/
+// * /
   cout << "             ok: "<< image.ok()<< endl; 
 }
 
@@ -299,7 +306,7 @@ void testSetMemberFunctions()
 void testArrayofImagesAndAssignmentOperator()
 {
   if(verbose_) cout<< "-- test array of images --"<< endl;
-/*
+// *
   const uInt max = 10;
   String filenames [max];
   filenames [0] = NAME0;
@@ -340,5 +347,6 @@ void testArrayofImagesAndAssignmentOperator()
 
   for(uInt i=0; i< max; i++)
     deleteFile(filenames [i]);
-  */
+//  * /
 }
+*/
