@@ -182,7 +182,7 @@ void MomentCalcBase<T>::drawHorizontal(const T& y,
 {
    Vector<Float> minMax(4);
    minMax = plotter.qwin();
-   Float yy = Float(real(y));
+   Float yy = convertT(y);
 
    plotter.move (minMax(0), yy);
    plotter.draw (minMax(1), yy);
@@ -255,12 +255,12 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
          if(!stats(yMin, yMax, minPos, maxPos, yMean, y, mask)) return False;
       }
 
-      yMinF = Float(real(yMin));
-      yMaxF = Float(real(yMax));
+      yMinF = convertT(yMin);
+      yMaxF = convertT(yMax);
       ImageUtilities::stretchMinMax (yMinF, yMaxF);
    } else {
-      yMinF = Float(real(yMinAuto));
-      yMaxF = Float(real(yMaxAuto));
+      yMinF = convertT(yMinAuto);
+      yMaxF = convertT(yMaxAuto);
    }
 
    const uInt nPts = x.nelements();
@@ -286,15 +286,15 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
       if (nPtsPerSeg(i) == 1) {
           xtmp.resize(1);
           ytmp.resize(1);
-          xtmp(0) = real(x(ip));
-          ytmp(0) = real(y(ip));
+          xtmp(0) = convertT(x(ip));
+          ytmp(0) = convertT(y(ip));
           plotter.pt (xtmp, ytmp, 1);
       } else {
           xtmp.resize(nPtsPerSeg(i));
           ytmp.resize(nPtsPerSeg(i));
           for (uInt j=0; j<nPtsPerSeg(i); j++) {
-             xtmp(j) = real(x(start(i)+j));
-             ytmp(j) = real(y(start(i)+j));
+             xtmp(j) = convertT(x(start(i)+j));
+             ytmp(j) = convertT(y(start(i)+j));
           }
           plotter.line (xtmp, ytmp);
       }
@@ -748,7 +748,7 @@ Bool MomentCalcBase<T>::getInterGaussianFit (uInt& nFailed,
 // Are we happy ?
 
    
-      os << LogIO::NORMAL << "Accept (left),  redo (middle), reject (right)" << LogIO::POST;
+      plotter.message("Accept (left),  redo (middle), reject (right)");
       getButton(ditch, redo, plotter);
       if (ditch) {
          os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
@@ -803,16 +803,17 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
 // Peak/pos first
 
    String str;
-   static Float x = (minMax(0)+minMax(1))/2;
-   static Float y = (minMax(2)+minMax(3))/2;
+   Float xCurLocF = (minMax(0)+minMax(1))/2;
+   Float yCurLocF = (minMax(2)+minMax(3))/2;
    Bool miss=True;
    while (miss) {
-     ImageMoments<T>::readCursor(plotter, x, y, str);
+     ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
      str.upcase();
      if (str == "X") {
         miss = False;
      } else {
-        miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
+        miss = ToBool(xCurLocF<minMax(0) || xCurLocF>minMax(1) ||
+                      yCurLocF<minMax(2) || yCurLocF>minMax(3));
      }
      if (miss) plotter.message("Cursor off image");
    }
@@ -824,14 +825,15 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
      return;
    }
    plotter.sci(3);
-   Vector<Float> xData(1), yData(1);
-   xData(0) = x; 
-   yData(0) = y;
-   plotter.pt (xData, yData, 2);
+
+   Vector<Float> xDataF(1), yDataF(1);
+   xDataF(0) = xCurLocF;
+   yDataF(0) = yCurLocF;
+   plotter.pt (xDataF, yDataF, 2);
    plotter.updt ();
    plotter.sci (1);
-   posGuess = x;
-   peakGuess = y; 
+   posGuess = convertT(xCurLocF);
+   peakGuess = convertT(yCurLocF);
    
      
 // Now FWHM
@@ -840,12 +842,13 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    plotter.message("Mark location of the FWHM - click right to reject spectrum");
    miss = True;   
    while (miss) {
-     ImageMoments<T>::readCursor(plotter, x, y, str);
+     ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
      str.upcase();
      if (str == "X") {
         miss = False;
      } else {
-        miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
+        miss = ToBool(xCurLocF<minMax(0) || xCurLocF>minMax(1) ||
+                      yCurLocF<minMax(2) || yCurLocF>minMax(3));
      }
      if (miss) plotter.message("Cursor off image");
    }
@@ -854,12 +857,14 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
      reject = True;
    }
    plotter.sci (3);
-   xData(0) = x; yData(0) = y;
-   plotter.pt (xData, yData, 2);
+
+   xDataF(0) = xCurLocF;
+   yDataF(0) = yCurLocF;
+   plotter.pt (xDataF, yDataF, 2);
    plotter.sci (1);
-   y = Float(peakGuess)/2;
+   yCurLocF = convertT(peakGuess)/2;
    plotter.updt (); 
-   widthGuess = 2*abs(posGuess-x);
+   widthGuess = 2*abs(posGuess-T(xCurLocF));
   
 // Now window
     
@@ -867,12 +872,13 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    plotter.message("Mark location of fit window; right to reject spectrum, middle fits whole spectrum");
    miss=True;
    while (miss) {
-     ImageMoments<T>::readCursor(plotter, x, y, str);
+     ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
      str.upcase();
      if (str == "X") {
         miss = False;
      } else {
-        miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
+        miss = ToBool(xCurLocF<minMax(0) || xCurLocF>minMax(1) || 
+                      yCurLocF<minMax(2) || yCurLocF>minMax(3));
      }
      if (miss) plotter.message("Cursor off image");
    }
@@ -886,20 +892,21 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
      window(1) = nPts-1;
      return; 
    }
-   T tX = x;
+   T tX = convertF(xCurLocF);
    T tY1 = minMax(2);
    T tY2 = minMax(3);
    drawVertical (tX, tY1, tY2, plotter);
-   window(0) = Int(x+0.5);
+   window(0) = Int(xCurLocF+0.5);
    
    miss = True;
    while (miss) {
-     ImageMoments<T>::readCursor(plotter, x, y, str);
+     ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
      str.upcase();
      if (str == "X") {
         miss = False;
      } else {
-        miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
+        miss = ToBool(xCurLocF<minMax(0) || xCurLocF>minMax(1) || 
+                      yCurLocF<minMax(2) || yCurLocF>minMax(3));
      }
      if (miss) plotter.message("Cursor off image");
    }
@@ -913,11 +920,11 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
      window(1) = nPts-1;
      return;
    }
-   tX = x;
+   tX = convertT(xCurLocF);
    tY1 = minMax(2);
    tY2 = minMax(3);
    drawVertical (tX, tY1, tY2, plotter);
-   window(1) = Int(x+0.5);
+   window(1) = Int(xCurLocF+0.5);
    Int iTemp = window(0);
    window(0) = min(iTemp, window(1));
    window(1) = max(iTemp, window(1));
@@ -964,10 +971,10 @@ Bool MomentCalcBase<T>::getLoc (T& x,
       
 // Position and read cursor
       
-   Float xx = Float(x);
-   static Float yy = 0.0;
+   Float xCurLocF = convertT(x);
+   Float yCurLocF = 0.0;
    String str;
-   ImageMoments<T>::readCursor(plotter, xx, yy, str);
+   ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
        
 // Interpret location and character
 
@@ -983,8 +990,8 @@ Bool MomentCalcBase<T>::getLoc (T& x,
       plotter.message("Redoing window for this spectrum");
       redo = True;
    } else {
-      if (xx >= minMax(0) && xx <= minMax(1)) {
-         x = xx;
+      if (xCurLocF >= minMax(0) && xCurLocF <= minMax(1)) {
+         x = convertF(xCurLocF);
       } else {
          plotter.message("Cursor out of range");
          return False;
@@ -1263,7 +1270,7 @@ void MomentCalcBase<T>::showGaussFit(const T peak,
 // Generate plot values
  
    uInt i;
-   Float xx;
+   T xx;
    for (i=0,xx=xMin; i<nGPts; xx+=dx,i++) {
       xG(i) = xx;
       yG(i) = gauss(xx) + level;
@@ -1525,16 +1532,17 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
          drawHorizontal(range_p(0), plotter_p);
          drawHorizontal(range_p(1), plotter_p);
       
-         Vector<Float> minMax(4);
-         Float y1 = Float(real(range_p(0)));
-         Float y2 = Float(real(range_p(1)));
 
+         Float y1F = convertT(range_p(0));
+         Float y2F = convertT(range_p(1));
+
+         Vector<Float> minMax(4);
          minMax = plotter_p.qwin();
-         Float x = minMax(0) + 0.05*(minMax(1)-minMax(0));
-         Float y = y2 - 0.2*y1;
-         plotter_p.arro (x, y2, x, y);
-         y = y1 + 0.2*y2;
-         plotter_p.arro (x, y, x, y1);
+         Float xF = minMax(0) + 0.05*(minMax(1)-minMax(0));
+         Float yF = y2F - 0.2*y1F;
+         plotter_p.arro (xF, y2F, xF, yF);
+         yF = y1F + 0.2*y2F;
+         plotter_p.arro (xF, yF, xF, y1F);
          plotter_p.sci(1);
       } 
    }
@@ -2101,8 +2109,8 @@ void MomentWindow<T>::drawWindow(const Vector<Int>& window,
 {  
    Vector<Float> minMax(4);
    minMax = plotter.qwin();
-   T yMin = minMax(2);
-   T yMax = minMax(3);
+   T yMin = convertF(minMax(2));
+   T yMax = convertF(minMax(3));
 
    T x = window(0);
    drawVertical (x, yMin, yMax, plotter);
@@ -2217,7 +2225,7 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
    minMax = plotter.qwin();
    Bool more = True;
    Bool ditch, redo;
-   const Int nPts = y.nelements();   
+   const uInt nPts = y.nelements();   
    T tX, tY1, tY2;
 
    while (more) {
@@ -2225,7 +2233,7 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
 // Get and draw first location   
 
       Bool final = False;
-      T x1 = nPts/2;
+      T x1 = convertF(Float(nPts))/2;
       allSubsequent = True;
       while (!getLoc(x1, allSubsequent, ditch, redo, final, plotter)) {};
       if (ditch) {
@@ -2255,7 +2263,7 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
             drawSpectrum  (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
                           xLabel, yLabel, title, False, plotter);
          } else {
-            window(1) = min(nPts-1,Int(x2+0.5));
+            window(1) = min(nPts-1,uInt(x2+0.5));
             tX = window(1);
             drawVertical (tX, tY1, tY2, plotter);
          
@@ -2569,6 +2577,7 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 // Number of failed Gaussian fits 
 
    nFailed_p = 0;
+
 }
 
 

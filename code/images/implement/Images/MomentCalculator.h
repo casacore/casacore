@@ -193,7 +193,6 @@ protected:
 // This is the number of Gaussian fits that failed.
    uInt nFailed_p;
 
-
 // Accumulate statistical sums from a vector
    void accumSums(NumericTraits<T>::PrecisionType& s0,
                   NumericTraits<T>::PrecisionType& s0Sq,
@@ -249,6 +248,13 @@ protected:
    void constructorCheck(Vector<T>& calcMoments,
                          const Vector<Int>& selectMoments,
                          const uInt nLatticeOut) const;
+
+// Convert from <T> to <Float> for plotting
+   static Float convertT(const T value) {return ImageMoments<T>::convertT(value);};
+
+
+// Convert from <Float> (from plotting) to a <T> 
+   static T convertF(const Float value) {return ImageMoments<T>::convertF(value);};
 
 // Find out from the selectMoments array whether we want
 // to compute the more expensive moments

@@ -32,7 +32,7 @@
 #endif
 
 #include <aips/aips.h>
-
+#include <aips/Measures/QMath.h>
 
 template <class T> class Array;
 template <class T> class Matrix;
@@ -561,8 +561,8 @@ private:
    Bool checkMethod();
 
 // Plot a histogram                     
-   static void drawHistogram  (const Vector<Float>& values,
-                               const Vector<Float>& counts,
+   static void drawHistogram  (const Vector<T>& values,
+                               const Vector<T>& counts,
                                PGPlotter& plotter);
 
 // Plot a line 
@@ -588,9 +588,17 @@ private:
    void makePSF        (Array<T>& psf,
                         Matrix<T>& psfSep);
 
+// Convert a <T> to a <Float> for plotting
+   static Float convertT (const T value) {return Float(real(value));};
+
+// Convert a <Float> (from plotting) to a <T> 
+   static T convertF (const Float value) {return T(value);};
+
 // Fish out cursor values
-   static Bool readCursor (PGPlotter& plotter, Float& x,
-                           Float& y, String& ch);
+   static Bool readCursor (PGPlotter& plotter, 
+                           Float& x,
+                           Float& y, 
+                           String& ch);
 
 // Take the user's data inclusion and exclusion data ranges and
 // generate the range and Booleans to say what sort it is
