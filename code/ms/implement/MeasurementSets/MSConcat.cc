@@ -41,6 +41,10 @@
 #include <aips/Utilities/String.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordField.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MeasConvert.h>
 
 MSConcat::MSConcat(NewMeasurementSet& ms):
   NewMSColumns(ms),
@@ -92,9 +96,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   return fixedShape;
 }
 
-
 void MSConcat::concatenate(const NewMeasurementSet& otherMS)
 {
+  LogIO log(LogOrigin("MSConcat", "concatenate"));
+  log << "Appending " << otherMS.tableName() 
+      << " to " << itsMS.tableName() << endl;
   RONewMSColumns otherCols(otherMS);
   if (otherMS.nrow() > 0) {
     if (itsFixedShape.nelements() > 0) {
@@ -105,8 +111,25 @@ void MSConcat::concatenate(const NewMeasurementSet& otherMS)
     }
     checkCategories(otherCols);
   }
+  uInt oldRows = itsMS.antenna().nrow();
   const Block<uInt> newAntIndices = 
     copyAntennaAndFeed(otherMS.antenna(), otherMS.feed());
+  {
+    uInt addedRows = itsMS.antenna().nrow() - oldRows;
+    uInt matchedRows = otherMS.antenna().nrow() - addedRows;
+    log << "Added " << addedRows 
+	<< " rows and matched " << matchedRows 
+	<< " from the antenna subtable" << endl;
+  }
+  oldRows = itsMS.field().nrow();
+  const Block<uInt> newFldIndices = copyField(otherMS.field());
+  {
+    uInt addedRows = itsMS.field().nrow() - oldRows;
+    uInt matchedRows = otherMS.field().nrow() - addedRows;
+    log << "Added " << addedRows 
+	<< " rows and matched " << matchedRows 
+	<< " from the field subtable" << endl;
+  }
 }
 
 void MSConcat::checkShape(const IPosition& otherShape) const 
@@ -187,17 +210,19 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const NewMSAntenna& otherAnt,
   for (uInt a = 0; a < nAntIds; a++) {
     const Int newAntId = 
       antCols.matchAntenna(otherAntCols.positionMeas()(a), tol);
-    if (newAntId < 0) {
+    if (newAntId >= 0) {
+      antMap[a] = newAntId;
+      // Should really check that the FEED table contains all the entries for
+      // this antenna and that they are the same. I'll just assume this for
+      // now.
+    } else { // need to add a new entry in the ANTENNA subtable
       antMap[a] = ant.nrow();
       ant.addRow();
       antRow.putMatchingFields(antMap[a], otherAntRow.get(a));
-      cerr << "Antenna " << a << " is mapped to " << antMap[a];
       // Copy all the feeds associated with the antenna into the feed
       // table. I'm assuming that they are not already there.
       *antInd = a;
       const Vector<uInt> feedsToCopy = feedIndex.getRowNumbers();
-      cerr << " I need to copy the feeds from rows " 
-	   << feedsToCopy << endl;
       const uInt nFeedsToCopy = feedsToCopy.nelements();
       uInt destRow = feed.nrow();
       feed.addRow(nFeedsToCopy);
@@ -206,17 +231,62 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const NewMSAntenna& otherAnt,
 	feedRecord.define(antField, static_cast<Int>(antMap[a]));
 	feedRow.putMatchingFields(destRow, feedRecord);
       }
-    } else {
-      antMap[a] = newAntId;
-      cerr << "Antenna " << a << " matches " << antMap[a] << endl;
-      // Should really check that the FEED table contains all the entries for
-      // this antenna and that they are the same. I'll just assume this for
-      // now.
     }
   }
   return antMap;
 }
 
+Block<uInt>  MSConcat::copyField(const NewMSField& otherFld) {
+  const uInt nFlds = otherFld.nrow();
+  Block<uInt> fldMap(nFlds);
+  const Quantum<Double> tolerance(.1, "deg");
+  const RONewMSFieldColumns otherFieldCols(otherFld);
+  NewMSFieldColumns& fieldCols = field();
+
+  const MDirection::Types dirType = MDirection::castType(
+    fieldCols.referenceDirMeasCol().getMeasRef().getType());
+  const MDirection::Types otherDirType = MDirection::castType(
+    otherFieldCols.referenceDirMeasCol().getMeasRef().getType());
+  
+  MDirection::Convert dirCtr;
+  if (dirType != otherDirType) { // setup a converter
+    dirCtr = MDirection::Convert(otherDirType, dirType);
+  }
+  MDirection refDir, delayDir, phaseDir;
+  NewMSField& fld = itsMS.field();
+  const ROTableRow otherFldRow(otherFld);
+  TableRow fldRow(fld);
+  for (uInt f = 0; f < nFlds; f++) {
+    delayDir = otherFieldCols.delayDirMeas(f);
+    phaseDir = otherFieldCols.phaseDirMeas(f);
+    refDir = otherFieldCols.referenceDirMeas(f);
+    if (dirType != otherDirType) {
+      delayDir = dirCtr(delayDir.getValue());
+      phaseDir = dirCtr(phaseDir.getValue());
+      refDir = dirCtr(refDir.getValue());
+    }
+
+    const Int newFld = 
+      fieldCols.matchDirection(refDir, delayDir, phaseDir, tolerance);
+    if (newFld >= 0) {
+      fldMap[f] = newFld;
+    } else { // need to add a new entry in the FIELD subtable
+      fldMap[f] = fld.nrow();
+      fld.addRow();
+      fldRow.putMatchingFields(fldMap[f], otherFldRow.get(f));
+      if (dirType != otherDirType) {
+	DebugAssert(fieldCols.numPoly()(fldMap[f]) == 0, AipsError);
+	Vector<MDirection> vdir(1, refDir);
+	fieldCols.referenceDirMeasCol().put(fldMap[f], vdir);
+	vdir(0) = delayDir;
+	fieldCols.delayDirMeasCol().put(fldMap[f], vdir);
+	vdir(0) = phaseDir;
+	fieldCols.phaseDirMeasCol().put(fldMap[f], vdir);
+      }
+    }
+  }
+  return fldMap;
+}
 // Local Variables: 
 // compile-command: "gmake MSConcat"
 // End: 
