@@ -312,7 +312,8 @@ public:
 // for error images, the value of the foreground RM if you know it
 // (helps for unwinding ambiguity), the absolute maximum RM it should 
 // solve for, and the maximum error in the position angle that should
-// be allowed.
+// be allowed.  The state of the plotter should be set by the caller
+// (e.g. character size, number of plots in x and y etc).
    void rotationMeasure(ImageInterface<Float>*& rmPtr,  ImageInterface<Float>*& rmErrPtr, 
                         ImageInterface<Float>*& pa0Ptr, ImageInterface<Float>*& pa0ErrPtr,
                         ImageInterface<Float>*& nTurns, ImageInterface<Float>*& rChiSqPtr,
