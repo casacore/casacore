@@ -168,7 +168,7 @@ IPosition IPosition::nonDegenerate(uInt startingAxis) const
       if (data[i]!=1) ctr++;
   }
   if (ctr == size) return *this;
-
+  if (ctr == 0) ctr = 1;
   IPosition nondegenerateIP(ctr,1);
   ctr=0;
   if(size <= BufferLength) {
@@ -1096,3 +1096,6 @@ Bool isInsideArray (const IPosition &iposition,
     return result;
 
 }
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 IPosition"
+// End: 
