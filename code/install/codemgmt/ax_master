@@ -4419,3 +4419,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSAntennaEnums.h aips/implement/MeasurementSets/OldMSAntennaEnums.h
 14 296 src mv aips/implement/MeasurementSets/MSColumns.cc aips/implement/MeasurementSets/OldMSColumns.cc
 14 296 src mv aips/implement/MeasurementSets/MSColumns.h aips/implement/MeasurementSets/OldMSColumns.h
+14 296 src mv aips/implement/MeasurementSets/MSFeed.cc aips/implement/MeasurementSets/OldMSFeed.cc
