@@ -378,8 +378,9 @@ public:
 
     // Convert a pixel position to a world position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns <src>False</src> and
-    // <src>errorMessage()</src> contains an error message. The output vectors
-    // are resized.
+    // <src>errorMessage()</src> contains an error message. 
+    // The input vector must be of length <src>nPixelAxes</src> or
+    // <src>nWorldAxes</src>.  The output vector  is resized appropriately.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;

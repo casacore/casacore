@@ -187,7 +187,8 @@ public:
     // versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
     // errorMessage contains an error message. The input vector must be of length
-    // <src>nPixelAxes</src> or <src>nWorldAxes</src>.
+    // <src>nPixelAxes</src> or <src>nWorldAxes</src>.  The output vector
+    // is resized appropriately.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const = 0;
