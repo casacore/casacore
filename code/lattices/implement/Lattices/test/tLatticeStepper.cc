@@ -184,11 +184,13 @@ int main()
     AlwaysAssert(s3.hangOver() == False, AipsError);
     AlwaysAssert(s3.position() == IPosition(4,0), AipsError);
     AlwaysAssert(s3.endPosition() == IPosition(4,3,0,0,0), AipsError);
+    AlwaysAssert(s3.cursorShape() == IPosition(4,4,1,1,1), AipsError);
     s3++; 
     s3++;
     AlwaysAssert(s3.hangOver() == True, AipsError);
     AlwaysAssert(s3.position() == IPosition(4,8,0,0,0), AipsError);
     AlwaysAssert(s3.endPosition() == IPosition(4,9,0,0,0), AipsError);
+    AlwaysAssert(s3.cursorShape() == IPosition(4,2,1,1,1), AipsError);
 
     LatticeStepper s4(latticeShape, stepperShape, stepperOrientation, 
 		      LatticeStepper::RESIZE);
@@ -199,12 +201,14 @@ int main()
     AlwaysAssert(s4.position() == IPosition(4,1,0,0,0), AipsError);
     AlwaysAssert(s4.relativeEndPosition() == IPosition(4,3,0,0,0), AipsError);
     AlwaysAssert(s4.endPosition() == IPosition(4,7,0,0,0), AipsError);
+    AlwaysAssert(s4.cursorShape() == IPosition(4,4,1,1,1), AipsError);
     s4++; 
     AlwaysAssert(s4.hangOver() == True, AipsError);
     AlwaysAssert(s4.relativePosition() == IPosition(4,4,0,0,0), AipsError);
     AlwaysAssert(s4.position() == IPosition(4,9,0,0,0), AipsError);
     AlwaysAssert(s4.relativeEndPosition() == IPosition(4,4,0,0,0), AipsError);
     AlwaysAssert(s4.endPosition() == IPosition(4,9,0,0,0), AipsError);
+    AlwaysAssert(s4.cursorShape() == IPosition(4,1,1,1,1), AipsError);
     
     // Check the latticeshape, cursorShape & orientation functions
     AlwaysAssert(s1.latticeShape() == latticeShape, AipsError);
