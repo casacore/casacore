@@ -64,8 +64,7 @@ ImageConcat<T>::ImageConcat()
   warnInc_p(True),
   warnTab_p(True),
   isContig_p(True)
-{
-}
+{}
 
 template<class T>
 ImageConcat<T>::ImageConcat (uInt axis, Bool tempClose)
@@ -79,8 +78,7 @@ ImageConcat<T>::ImageConcat (uInt axis, Bool tempClose)
   warnInc_p(True),
   warnTab_p(True),
   isContig_p(True)
-{
-}
+{}
 
 template<class T>
 ImageConcat<T>::ImageConcat (const ImageConcat<T>& other) 
@@ -96,7 +94,8 @@ ImageConcat<T>::ImageConcat (const ImageConcat<T>& other)
   warnTab_p(other.warnTab_p),
   isContig_p(other.isContig_p),
   pixelValues_p(other.pixelValues_p.copy()),
-  worldValues_p(other.worldValues_p.copy())
+  worldValues_p(other.worldValues_p.copy()),
+  originalAxisType_p(other.originalAxisType_p)
 {
   isImage_p.resize(other.isImage_p.nelements());
   isImage_p = other.isImage_p;
@@ -104,8 +103,7 @@ ImageConcat<T>::ImageConcat (const ImageConcat<T>& other)
 
 template<class T>
 ImageConcat<T>::~ImageConcat()
-{
-}
+{}
 
 template<class T>
 ImageConcat<T>& ImageConcat<T>::operator= (const ImageConcat<T>& other)
@@ -128,6 +126,7 @@ ImageConcat<T>& ImageConcat<T>::operator= (const ImageConcat<T>& other)
      pixelValues_p = other.pixelValues_p;
      worldValues_p.resize(other.worldValues_p.nelements());
      worldValues_p = other.worldValues_p;
+     originalAxisType_p = other.originalAxisType_p;
   }
   return *this;
 }
@@ -194,19 +193,24 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
             << LogIO::EXCEPTION;
       }
 //
-      Int coord1, axisInCoordinate1;
-      Int coord2, axisInCoordinate2;
-      cSys0.findPixelAxis (coord1, axisInCoordinate1,
+      Int coord0, axisInCoordinate0;
+      Int coord, axisInCoordinate;
+      cSys0.findPixelAxis (coord0, axisInCoordinate0,
                            latticeConcat_p.axis());
-      cSys.findPixelAxis(coord2, axisInCoordinate2, latticeConcat_p.axis());
-      if (coord1<0 || coord2<0) {
+      cSys.findPixelAxis(coord, axisInCoordinate, latticeConcat_p.axis());
+      if (coord0<0 || coord<0) {
          os << "Pixel axis has been removed for concatenation axis" << LogIO::EXCEPTION;
       }
       if (cSys.pixelAxisToWorldAxis(latticeConcat_p.axis())<0 ||
           coordinates().pixelAxisToWorldAxis(latticeConcat_p.axis())<0) {
          os << "World axis has been removed for concatenation axis" << LogIO::EXCEPTION;
       }
-      if (cSys.type(coord1)!=cSys0.type(coord2)) {
+
+// This could be cleverer.  E.g. allow some mixed types (Tabular/Linear)
+// Because the CoordinateSystem may change (e.g. -> Tabular) we hang onto
+// the Coordinate type of the original coordinate system for the first image
+
+      if (cSys.type(coord0)!=originalAxisType_p) {
          os << "Coordinate types for concatenation axis are inconsistent" << LogIO::EXCEPTION;
       }
 //
@@ -585,6 +589,10 @@ void ImageConcat<T>::setCoordinates()
             throw(AipsError(String("Coordinate conversion failed because")+cSys.errorMessage()));        
          }
       }
+
+// Hang on to the type of coordinate of the concat axis for the first image 
+
+      originalAxisType_p = cSys.coordinate(coord).type();
       return;
    }
 //

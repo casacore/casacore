@@ -149,7 +149,7 @@ public:
 // If relax is False, throws an exception if the images
 // are not contiguous along the concatenation axis.
 // If relax is True, it will create a non-regular TabularCoordinate
-// for non-contiguous images if the coordinaets are monotonic.
+// for non-contiguous images if the coordinates are monotonic.
 // Otherwise, it just uses the coordinates of the image
    void setImage (ImageInterface<T>& image, Bool relax);
 
@@ -255,6 +255,7 @@ private:
    Vector<Bool> isImage_p;
    Vector<Double> pixelValues_p;
    Vector<Double> worldValues_p;
+   Coordinate::Type originalAxisType_p;
 //
    Double coordConvert(Int& worldAxis, LogIO& os,
                        const CoordinateSystem& cSys,
