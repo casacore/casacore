@@ -27,204 +27,30 @@
 
 #include <aips/OS/EnvVar.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/stdlib.h>
 
-extern char **environ;  
 
-EnvironmentVariables::EnvironmentVariables() {
-
-  register int i;
-
-  // Change pointer of environ list to myenviron and then
-  // point new environ to big area
-  if (environ != myenviron) {
-    for (i = 0; i < maxenviron &&  environ[i]; i++)
-      myenviron[i] = environ[i];
-    if (i < maxenviron) {
-      environ = myenviron;
-      myenviron[i] = 0;
-    }
-  }
+Bool EnvironmentVariable::isDefined (const String& name)
+{
+  return getenv (name.chars());
 }
 
-EnvironmentVariables::EnvironmentVariables(const String &namevalue) {
-  register int i;
-
-  // Change pointer of environ list to myenviron and then
-  // point environ to big area
-  if (environ != myenviron) {
-    for (i = 0; i < maxenviron &&  environ[i]; i++)
-      myenviron[i] = environ[i];
-    if (i < maxenviron) {
-      environ = myenviron;
-      myenviron[i] = 0;
-    }
-  }
-  if(!EnvironmentVariables().set(namevalue))
-    DebugAssert(!EnvironmentVariables().set(namevalue), AipsError);
-}
-
-EnvironmentVariables::EnvironmentVariables(const String &name, const String &value) {
-  register int i;
-
-  // Change pointer of environ list to myenviron and then
-  // point environ to big area
-  if (environ != myenviron) {
-    for (i = 0; i < maxenviron &&  environ[i]; i++)
-      myenviron[i] = environ[i];
-    if (i < maxenviron) {
-      environ = myenviron;
-      myenviron[i] = 0;
-    }
-  }
-  if(!EnvironmentVariables().set(name, value))
-    DebugAssert(!EnvironmentVariables().set(name, value), AipsError);
-}
-
-uInt EnvironmentVariables::number() {
-
-  uInt i;
-  for(i=0; environ[i]; i++)
-    ;
-  return i;
-}
-
-String EnvironmentVariables::name(uInt number) {
-
-  String s;
-
-  if(number > EnvironmentVariables().number())
-    return s;
-  else {
-    s=environ[number];
-    s=s.before("=");
-    return s;
-  }
-}
-
-String EnvironmentVariables::value(const String &name) {
-
-  Char *env = getenv(name.chars());
+String EnvironmentVariable::get (const String& name)
+{
+  Char* env = getenv (name.chars());
   if (env) return String(env);
   return String();
 }
 
-String EnvironmentVariables::value(uInt number) {
-
-  String s;
-
-  if(number > EnvironmentVariables().number())
-    return s;
-  else {
-    s=environ[number];
-    s=s.after("=");
-    return s;
-  }
-}
-
-Bool EnvironmentVariables::isSet(const String &name) {
-
-  if(getenv(name.chars())) return True;
-  else return False;
-}
-
-Bool EnvironmentVariables::set(const String &name, const String &value) {
-
-  if(name == "" || value == "")
-    return False;
-  if(!EnvironmentVariables().setenv(name, value)) {
-    DebugAssert(!EnvironmentVariables().setenv(name, value), AipsError);
-    return False;
-  }
-  return True;
-}
-
-Bool EnvironmentVariables::set(const String &nameAndValuePair ){
-
-  String name=nameAndValuePair, value=nameAndValuePair;
-
-  name=name.before("=");
-  value=value.after("=");
-  if(name == "" || value == "")
-    return False;
-  if(!EnvironmentVariables().setenv(name, value)) {
-    DebugAssert(!EnvironmentVariables().setenv(name, value), AipsError);
-    return False;
-  }
-  return True;
-}
-
-void EnvironmentVariables::unSet(const String &name) {
-
-  // unsetenv function removes any definition of name. It is not
-  // a error if such a definition doesn't exist.
-  register char **cp;
-  String env;
-
-  for (Int i=0; environ[i]; i++) {
-    env=environ[i];
-    env=env.before("=");
-    if (env==name) {
-      for (cp = &environ[i];; ++cp) {
-        if (!(*cp = *(cp + 1))) break;
-      };
-    };
-  };
-}
-
-Bool EnvironmentVariables::setenv(const String &name, const String &value){
-
-  char *ptr,*envnew;
-  int i,found,need,lvalue;
-  String snew,ev;
-
-  snew=name+"="+value;
-
-  found = 0;
-  for (i = 0; environ[i]; i++) {
-  // If exist the definition
-    ev=environ[i];
-    if( name == ev.before("=") ) {
-      found = 1;
-      need=snew.length() - ev.length();
-      if (need > 0) {
-        // Create space for new name=value
-	need=snew.length()+1;
-	if (!(ptr =(char *)malloc(need))) {
-	  DebugAssert(!(ptr = (char *)malloc(need)), AipsError);
-	  return False;
-	};
-	environ[i] = ptr;
-      }
-      // copy name=value into environment list
-      envnew=(char *)snew.chars();
-      strcpy (environ[i], envnew);
-    }
-  }
-  // If doesn't exist the definition
-  lvalue=value.length();
-  if (found == 0 && lvalue >= 0) {
-    if (i >= maxenviron) {
-      // environment list is full
-      DebugAssert(i >= maxenviron, AipsError);
-      return False;
-    }
-    else {
-      // Create a new slot
-      need=snew.length()+1;
-      if (!(environ[i] =(char *)malloc(need))) {
-	DebugAssert(!(environ[i] = (char *)malloc(need)), AipsError);
-	return False;
-      }
-      else {
-        // copy name=value into environment list
-	envnew=(char *)snew.chars();
-	strcpy (environ[i], envnew);
-        // Environment list need NULL in last position
-	environ[i+1] = 0;
-      }
-    }
-  }
-  return True;
+void EnvironmentVariable::set (const String& name, const String& value)
+{
+  uInt nl = name.length();
+  uInt vl = value.length();
+  Char* str = new Char [nl + vl + 2];
+  strcpy (str, name.chars());
+  str[nl] = '=';
+  strcpy (str+nl+1, value.chars());
+  // Note that putenv takes over the pointer, so we should not delete str.
+  AlwaysAssert (putenv(str) == 0, AipsError);
 }

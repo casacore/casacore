@@ -1,5 +1,5 @@
 //# EnvVar.h: Environment variables class
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,97 +31,51 @@
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 
-// <summary> This class allows for setting and getting enviroment variables
+// <summary>
+// This class allows for getting enviroment variables
 // </summary>
+
 // <use visibility=export>
 // <reviewed reviewer="Paul Shannon, pshannon@nrao.edu" date="1995/02/08" tests="tEnvVar" demos="">
+
 // <synopsis> 
 // Environment variables are familiar to every Unix, MSDOS and VMS
-// computer user.  This class makes it convenient to set, get, and
+// computer user.  This class makes it convenient to get and
 // enquire about environment variables from within a C++ program.
 // </synopsis> 
+
 // <example>
-// Display all of the environment variables, add one, make sure the
-// count has changed, then remove it.
+// Check if an environment variable is defined.
+// If so, get its value.
 // <srcblock>
-//  EnvironmentVariables ev;
-//  cout << "currently " << ev.number() << " variables set" << endl;
-//
-//  for (uInt i=0; i < ev.number (); i++)
-//     cout << ev.name (i) << ": " << ev.value (i) << endl;
-//
-//  ev.set ("newVar", "newValue");
-//  cout << "now there are " << ev.number  () << " variables" << endl;
-//  cout << "variable newVar has value " << ev.value ("newVar") << endl;
-//
-//  if ev.isSet ("newVar")
-//     ev.unSet ("newVar");
+//  if (EnvironmentVariable::isDefined ("PATH")) {
+//    cout << EnvironmentVariable::get ("PATH") << endl;
+//  }
 // </srcblock>
 // </example>
 
-
-
 // <todo asof=1994/02/08>
-//   <li> class is poorly designed: with no data members, hard-coded maximum
-//        number of environment variables
-//   <li> redesign should include destructor 
-//   <li> static member functions are a curious choice, usually used
-//        to share data among class instances...
-//   <li> name, value ought to throw an exception when number is out
-//        of range, rather than return an empty string.
 // </todo>
 
-class EnvironmentVariables {
+class EnvironmentVariable
+{
+public:
+  // Is environment variable with given name defined? 
+  static Bool isDefined (const String& name);
 
- public:
-   enum {maxenviron = 1000}; // Maximun environment size
+  // Get the value of environment variable with given name.
+  // If not defined, return an empty String.
+  static String get (const String& name);
 
-   // Construct a new instance, which is filled with the current environment.
-   EnvironmentVariables ();
+  // Define environment variable.
+  // If it already exists, its value will be overwritten.
+  static void set (const String& name, const String& value);
 
-   // Construct a new instance, which is filled with the current environment,
-   // to which is added the name=value pair <nameAndValuePair>.
-   EnvironmentVariables (const String &nameAndValuePair);
-
-   // Construct a new instance, which is filled with the current environment
-   // to which is added the new name/value pair described by the two
-   // arguments.
-   EnvironmentVariables (const String &name, const String &value);
-
-   // The number of environment variables.
-   static uInt number ();
-
-   // The name of the nth environment variable; returns an empty String
-   // if number is out of range.
-   static String name (uInt number);
-
-   // The value of the nth environment variable; an empty string if
-   // number is out of range.
-   static String value (uInt number);
-
-   // Get the value corresponding to name.
-   // otherwise, returns a empty String
-   static String value (const String &name);
-
-   // Is name set? 
-   static Bool isSet (const String &name);
-
-   // Deletes the name/value pair.
-   static void unSet (const String &name);
-
-   // Add name/value pair to the environment.  
-   // If the name already exists, its old definition is first removed.
-   static Bool set (const String &name, const String &value);
-
-   // Add name/value pair (encoded in a single String: "name=value")
-   // to the environment.  
-   // If the name already exists, its old definition is first removed.
-   static Bool set (const String &nameAndValuePair);
-
- private:
-   char *myenviron [maxenviron+1];
-   static Bool setenv (const String &name, const String &value);
+private:
+  // This class is not meant to be constructed.
+  EnvironmentVariable();
 };
+
 
 #endif
 
