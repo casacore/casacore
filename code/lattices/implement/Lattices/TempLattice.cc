@@ -46,7 +46,7 @@ TempLattice<T>::TempLattice (const TiledShape& shape, Int maxMemoryInMB)
   if (maxMemoryInMB > 0) {
     memoryAvail = maxMemoryInMB;
   } else {
-    memoryAvail = AppInfo::memoryInMB() / 4;
+    memoryAvail = AppInfo::availableMemoryInMB() / 2;
   }
   memoryAvail *= 1024*1024;
 
