@@ -3,7 +3,7 @@
 # inhale: Retrieve and install the latest AIPS++ update
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997
+#   Copyright (C) 1992-1997,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -740,23 +740,12 @@
   do
      cd $SLAVTMPD
 
-#    Uncompress it.
-     gunzip --force $FILE
-     if [ "$?" = 1 ]
-     then
-        exec 1>&2
-        echo ""
-        echo "inhale: Failed to uncompress $FILE, abort!"
-        exit 4
-     fi
-
-     FILE=`echo $FILE | sed -e 's/\.gz$//'`
      echo ""
      echo "inhale: Extracting $FILE..."
 
 #    The tar log is filtered to reduce excess verbiage.
      exec 3>&1
-     TARSTAT=`((tar pmvxf $FILE ; echo $? >&4) | \
+     TARSTAT=`(gunzip --force --stdout $FILE | ((tar pmvxf - ; echo $? >&4) | \
         sed -e 's#^.*master/#master/#' \
             -e 's#\(.*/\)\([^/]*\)#\1 \2#' \
             -e 's# bytes, .*# bytes#' | \
@@ -767,7 +756,7 @@
                }
                $1 = "      "
                print
-            }' 1>&3) 4>&1`
+            }' 1>&3)) 4>&1`
      if [ "$TARSTAT" = 1 ]
      then
         exec 1>&2
