@@ -3405,3 +3405,4 @@
 13 261 src mv trial/implement/ComponentModels/ComponentImager.h trial/implement/Images/ComponentImager.h
 13 261 src mv trial/implement/ComponentModels/ComponentImager.cc trial/implement/Images/ComponentImager.cc
 13 261 src mv trial/implement/ComponentModels/test/tComponentImager.cc trial/implement/Images/test/tComponentImager.cc
+13 264 src mv trial/implement/XX aips/implement/TableMeasures
