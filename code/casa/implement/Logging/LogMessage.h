@@ -1,5 +1,5 @@
 //# LogMessage.h: Informational log messages with with time,priority, and origin
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -210,7 +210,10 @@ private:
     void copy_other(const LogMessage &other);
 };
 
-// Write a LogMessage to an ostream. Merely calls
+// <summary>
+// Write a LogMessage to an ostream.
+// </summary>
+// Write a LogMessage as a string to an ostream. Merely calls
 // <src>LogMessage::toString()</src>
 // <group name=LogMessage_ostream>  
 ostream &operator<<(ostream &os, const LogMessage &message);

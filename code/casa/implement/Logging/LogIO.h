@@ -1,5 +1,5 @@
 //# LogIO.h: ostream-like interface to creating log messages.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -234,6 +234,9 @@ private:
 
 };
 
+// <summary>
+// Functions to send commands to a LogIO object.
+// </summary>
 // The following commands don't change the accumulated message, rather they
 // send commands to the LogIO object, either to:
 // <ol>
@@ -255,6 +258,9 @@ LogIO &operator<<(LogIO &os, const LogOrigin &or);
 // </group>
 
 
+// <summary>
+// Functions to accumulate text in the output message.
+// </summary>
 // Accumulate text in the output message. The last entry is for things like 
 // <src>endl</src>.
 // <group name=output>

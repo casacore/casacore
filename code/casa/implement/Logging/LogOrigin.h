@@ -1,5 +1,5 @@
 //# LogOrigin.h: The source code location of the originator of a LogMessageLogOrig
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -179,12 +179,18 @@ private:
     void copy_other(const LogOrigin &other);
 };
 
-// Write a LogOrigin to an ostream. Merely calls
+// <summary>
+// Write a LogOrigin to an ostream.
+// </summary>
+// Write a LogOrigin as a string to an ostream. Merely calls
 // <src>LogOrigin::toString()</src>
 // <group name=LogOrigin_ostream>  
 ostream &operator<<(ostream &os, const LogOrigin &origin);
 // </group>
 
+// <summary>
+// Helper struct to get the source line.
+// </summary>
 // The user should only use the <src>WHERE</src> macro.
 // <group name=SourceLocation>
 struct SourceLocation
