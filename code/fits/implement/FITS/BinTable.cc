@@ -1,5 +1,5 @@
 //#
-//# Copyright (C) 1994 Associated Universities, Inc. Washington DC, USA.,1995,1996,1997
+//# Copyright (C) 1994 Associated Universities, Inc. Washington DC, USA.,1995,1996,1997,1999
 //# 
 //# This program is free software; you can redistribute it and/or modify
 //# it under the terms of the GNU General Public License as published by
@@ -59,9 +59,9 @@ Bool isSDFitsColumn(FITS::ReservedName name) {
 	
 //   The constructor
 
-BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
-			 Bool sdfits) :
-    BinaryTableExtension(fitsin, output), currRowTab(0), nelem(0), 
+BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler, 
+			 Bool useIncrSM, Bool sdfits) :
+    BinaryTableExtension(fitsin, errhandler), currRowTab(0), nelem(0), 
     colNames(0), vatypes_p(0), vaptr_p(0), va_p(0), theheap_p(0)
 {
     // is there a heap

@@ -1,5 +1,5 @@
 //# fits.h:
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,10 +35,11 @@
 # define UNIX
 # endif
 
-# include <iostream.h>
 # include <ctype.h>
+# include <iostream.h>
 # include <aips/aips.h>
 # include <aips/Mathematics/Complex.h>
+# include <aips/FITS/FITSError.h>
 
 //#  Automatically configure for known LITTLE ENDIAN systems
 #if !(defined(AIPS_LITTLE_ENDIAN))
@@ -166,6 +167,8 @@ class FitsVADesc {
 
 class FITS {
     public:
+
+    // FITS I/O Error message types
 
 	// Basic FITS Data Types for keywords and data
 	enum ValueType {
@@ -784,8 +787,9 @@ class FitsKeywordList {
 
 	//<group>
 	void delete_all(); 
-	int rules(FitsKeyword &, ostream & = cout);
-	int rules(ostream & = cout);
+	int rules(FitsKeyword &, 
+		  FITSErrorHandler errhandler = FITSError::defaultHandler);
+	int rules(FITSErrorHandler errhandler = FITSError::defaultHandler);
 	Bool basic_rules();
 	//</group>
 
@@ -930,7 +934,7 @@ class FitsKeyCardTranslator {
 	FitsKeyCardTranslator(int = 100);
 	~FitsKeyCardTranslator();
 	FitsKeywordList & parse(const char *, 
-		FitsKeywordList &, int, ostream &, Bool);
+		FitsKeywordList &, int, FITSErrorHandler, Bool);
 	int build(char *, FitsKeywordList &);
 	int no_errs() const;
 	const char *err(int) const;

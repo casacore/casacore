@@ -113,13 +113,14 @@ class BinaryTable : public BinaryTableExtension
 public: 
 
     //   The only constructor is from a FitsInput, you can also optionally
-    //   describe where the error messages go.  If useMiriadSM is True, use
+    //   provide a FITS error handler.  If useMiriadSM is True, use
     //   the Miriad storage manager for all columns, otherwise AipsIO.
     //   If sdfits is True, all non-reserved and some reserved keyword
     //   are treated as if they were columns with constant values
     //   "virtual columns" in the sdfits convention.
-    BinaryTable(FitsInput &, ostream & = cout, Bool useMiriadSM = False,
-		Bool sdfits = False);
+    BinaryTable(FitsInput &,
+		FITSErrorHandler errhandler = FITSError::defaultHandler, 
+		Bool useMiriadSM = False, Bool sdfits = False);
 
     ~BinaryTable();
 

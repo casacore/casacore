@@ -31,6 +31,7 @@
 # include <aips/FITS/fits.h>
 # include <string.h>
 # include <stdlib.h>
+# include <strstream.h>
 # include <aips/Mathematics/Constants.h>
 
 
@@ -2242,7 +2243,7 @@ FitsKeyword *FitsKeywordList::next(const char *w) {
 	return x ? curr() : 0;
 }
 
-int FitsKeywordList::rules(FitsKeyword &x, ostream &o) {
+int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 	// apply rules to x against the keyword list
 	// return: 0 = no errors, 1 = minor errors, -1 = major errors
 	if (x.kw().name() == FITS::USER_DEF)
@@ -2253,13 +2254,18 @@ int FitsKeywordList::rules(FitsKeyword &x, ostream &o) {
 	    case FITS::NAXIS:
 		if (x.isindexed()) {
 		    if ((*this)(FITS::NAXIS) == 0) {
-			o << "There is no NAXIS keyword\n";
+			errhandler("There is no NAXIS keyword",
+				   FITSError::SEVERE);
 			return -1;
 		    } else {
 			if (x.index() >= 1 && x.index() <= curr()->asInt()) {
 			    if (x.asInt() < 0) {
-				o << "Illegal value for keyword NAXIS"
-				  << x.index() << "\n";
+				ostrstream msgline;
+				msgline << "Illegal value for keyword NAXIS"
+					<< x.index() << ends;
+				char * mptr = msgline.str();
+				errhandler(mptr, FITSError::SEVERE);
+				delete [] mptr;
 				return -1;
 			    }
 			}
@@ -2268,20 +2274,26 @@ int FitsKeywordList::rules(FitsKeyword &x, ostream &o) {
 		break;
 	    case FITS::END:	// there must be no comment
 		if (x.commlen() != 0) {
-		    o << "Comments are not allowed on keyword END\n";
+		    errhandler("Comments are not allowed on keyword END",
+			       FITSError::WARN);
 		    return 1;
 		}
 		break;
 	    case FITS::TBCOL:
 		// for index between 1 and TFIELDS, value must be >= 0
 		if ((*this)(FITS::TFIELDS) == 0) {
-		    o << "There is no TFIELDS keyword\n";
+		    errhandler("There is no TFIELDS keyword",
+			       FITSError::SEVERE);
 		    return -1;
 		} else {
 		    if (x.index() >= 1 && x.index() <= curr()->asInt()) {
 			if (x.asInt() < 0) {
-			    o << "Illegal value for keyword TBCOL"
-				<< x.index() << "\n";
+			    ostrstream msgline;
+			    msgline << "Illegal value for keyword TBCOL"
+				    << x.index() << ends;
+			    char * mptr = msgline.str();
+			    errhandler(mptr, FITSError::SEVERE);
+			    delete [] mptr;
 			    return -1;
 			}
 		    }
@@ -2289,13 +2301,13 @@ int FitsKeywordList::rules(FitsKeyword &x, ostream &o) {
 		break;
 	    case FITS::BLANK:	// BITPIX must exist and be positive
 		if ((*this)(FITS::BITPIX) == 0) {
-		    o << "There is no BITPIX keyword\n";
+		    errhandler("There is no BITPIX keyword", FITSError::SEVERE);
 		    return -1;
 		} else {
 		    if (curr()->asInt() < 0) {
 		        // Used to be an error. Make it a warning instead.
-			o << "Warning: Keyword BLANK not allowed when "
-			  "BITPIX < 0\n";
+			errhandler("Keyword BLANK not allowed when BITPIX < 0",
+				   FITSError::WARN);
 			return 0;
 		    }
 		}
@@ -2311,14 +2323,14 @@ int FitsKeywordList::rules(FitsKeyword &x, ostream &o) {
 	return 0;
 }
 
-int FitsKeywordList::rules(ostream &o) {
+int FitsKeywordList::rules(FITSErrorHandler errhandler) {
 	int rtn = 0;
 	int n;
 	FitsKeyword *endkey = 0;
 	//first();
 	FitsKeyword *x;
 	for (x = beg_; x != 0; x = x->next_) {
-	    n = rules(*x,o);
+	    n = rules(*x,errhandler);
 	    if (n != 0 && (rtn == 0 || (rtn == 1 && n == -1)))
 		    rtn = n;
 	    if (x->isreserved() && (x->kw().name() == FITS::END)) {
@@ -2327,13 +2339,14 @@ int FitsKeywordList::rules(ostream &o) {
 	    }
 	}
 	if (!endkey) {
-	    o << "Keyword list has no END keyword.\n";
+	    errhandler("Keyword list has no END keyword.", FITSError::SEVERE);
 	    rtn = -1;
 	} else {
 	    for (x = x->next_; x != 0; x = x->next_) {
 		if (!(x->isreserved() && (x->kw().name() == FITS::SPACES)
 			 && x->commlen() == 0)) {
-		    o << "END keyword is not the last keyword.\n";
+		    errhandler("END keyword is not the last keyword.",
+			       FITSError::SEVERE);
 		    rtn = -1;
 		}
 	    }
@@ -2365,7 +2378,10 @@ FitsKeyCardTranslator::FitsKeyCardTranslator(int max) : cardno(0),
 }
 
 FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff, 
-	FitsKeywordList &kwlist, int count, ostream &o, Bool show_err) {
+					      FitsKeywordList &kwlist, 
+					      int count, 
+					      FITSErrorHandler errhandler, 
+					      Bool show_err) {
 	int i, j;
 	cardno = 0;
 	int end_found = 0;
@@ -2373,17 +2389,18 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 	    ++cardno;
 	    kwlist.parse(&buff[i*80],80);
 	    if (show_err && (kwlist.no_parse_errs() > 0)) {
-		    o << "FITS card " << (count * 36 + cardno) << ": ";
-		    o.write(&buff[i*80],80);
-		    o << "\n";
-		Bool isSevere = (strcmp(kwlist.curr()->name(),"ERROR") == 0);
+		FITSError::ErrorLevel errlev = FITSError::WARN;
+		if (strcmp(kwlist.curr()->name(),"ERROR") == 0)
+		    errlev = FITSError::SEVERE;
+		ostrstream msgline;
+		msgline << "FITS card " << (count * 36 + cardno) << ": ";
+		msgline.write(&buff[i*80],80);
+		msgline << ends;
+		char * mptr = msgline.str();
+		errhandler(mptr, errlev);
+		delete [] mptr;
 		for (j = 0; j < kwlist.no_parse_errs(); ++j) {
-		    if (isSevere) {
-			o << "\tError: ";
-		    } else {
-			o << "\tWarning: ";
-		    }
-		    o << kwlist.parse_err(j) << "\n";
+		    errhandler(kwlist.parse_err(j), errlev);
 		}
 	    }
 	    if (end_found) {
@@ -2393,9 +2410,16 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		    kwlist.del();
 		else {
 		    if (no_errs_ < max_errs) {
-		    	o << "FITS card " << (count * 36 + cardno) << ": ";
-		    	o.write(&buff[i*80],80);
-		    	o << "\n\tWarning: Invalid card after END keyword.\n";
+			ostrstream msgline;
+		    	msgline << "FITS card " 
+				<< (count * 36 + cardno) << ": ";
+		    	msgline.write(&buff[i*80],80);
+			msgline << ends;
+			char * mptr = msgline.str();
+			errhandler(mptr, FITSError::WARN);
+			delete [] mptr;
+		    	errhandler("Invalid card after END keyword.",
+				   FITSError::WARN);
 		    }
 		}
 	    }

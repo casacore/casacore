@@ -1,5 +1,5 @@
 //# hdu2.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 # include <string.h>
 # include <stdio.h>
 # include <assert.h>
+# include <strstream.h>
 
 //== FitsBit specializations ==================================================
 FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT,n), field(0) { }
@@ -111,15 +112,20 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 //== HeaderDataUnit ===========================================================
 
 void HeaderDataUnit::errmsg(HDUErrs e, char *s) {
-	errs << "HDU error:  " << s << "\n";
-	err_status = e;
+    ostrstream msgline;
+    msgline << "HDU error:  " << s << ends;
+    err_status = e;
+    // all of the errors which use this function are SEVERE
+    char * mptr = msgline.str();
+    errfn(mptr, FITSError::SEVERE);
+    delete [] mptr;
 }
 
 //== determine_type of HeaderDataUnit ========================================
 
 // This function determines the HDU type and the data type
 Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype, 
-	FITS::ValueType &dtype, ostream &err, HDUErrs &errstat) {
+	FITS::ValueType &dtype, FITSErrorHandler errhandler, HDUErrs &errstat) {
 
 	errstat = OK;
 	// Get SIMPLE or XTENSION, BITPIX, NAXIS, and NAXIS1
@@ -127,7 +133,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	FitsKeyword *word1 = kw.next();
 	if (!word1) {
 	    errstat = MISSKEY; 
-	    err << "There are no keywords.\n"; 
+	    errhandler("There are no keywords", FITSError::SEVERE);
 	    htype = FITS::NotAHDU;
 	    return False;
 	}
@@ -138,19 +144,19 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	    p_bitpix = kw(FITS::BITPIX); // look for BITPIX elsewhere
 	    if (!p_bitpix || (p_bitpix->kw().name() != FITS::BITPIX)) {
 	        errstat = MISSKEY; 
-		err << "Missing required BITPIX keyword.\n";
+		errhandler("Missing required BITPIX keyword", FITSError::WARN);
 	    } else
-		err << "Keyword BITPIX is out of order.\n";
+		errhandler("Keyword BITPIX is out of order", FITSError::WARN);
 	}
 	if ((!naxis || 
 	     !(naxis->kw().name() == FITS::NAXIS && naxis->index() == 0))) {
 	    naxis = kw(FITS::NAXIS); // look for NAXIS elsewhere
 	    if ((!naxis || 
 	       !(naxis->kw().name() == FITS::NAXIS && naxis->index() == 0))) {
-	        errstat = MISSKEY; 
-		err << "Missing required NAXIS keyword.\n";
+	        errstat = MISSKEY;
+		errhandler("Missing required NAXIS keyword.", FITSError::WARN);
 	    } else
-		err << "Keyword NAXIS is out of order.\n";
+		errhandler("Keyword NAXIS is out of order.", FITSError::WARN);
 	}
         if ((errstat == OK) && (naxis->asInt() != 0)) {
             if (!naxis1 || 
@@ -160,9 +166,9 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
         	   !(naxis1->kw().name() == FITS::NAXIS && 
 			naxis1->index() == 1)) {
 	            errstat = MISSKEY; 
-		    err << "Missing required NAXIS1 keyword.\n";
+		    errhandler("Missing required NAXIS1 keyword.", FITSError::WARN);
 		} else
-		    err << "Keyword NAXIS1 is out of order.\n";
+		    errhandler("Keyword NAXIS1 is out of order.", FITSError::WARN);
 	    }
 	}
 	if (word1->kw().name() != FITS::SIMPLE &&
@@ -171,15 +177,16 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	    if (!word1) {
 		word1 = kw(FITS::XTENSION); // look for XTENSION
 		if (word1)
-		    err << "Keyword XTENSION is out of order.\n";
+		    errhandler("Keyword XTENSION is out of order.", FITSError::WARN);
 		else
-		    err << "Missing keywords SIMPLE and XTENSION.\n";
+		    errhandler("Missing keywords SIMPLE and XTENSION.",
+			       FITSError::WARN);
 	    } else
-		err << "Keyword SIMPLE is out of order.\n";
+		errhandler("Keyword SIMPLE is out of order.", FITSError::WARN);
 	}
 	if (!word1) {
 	    errstat = BADREC; 
-	    err << "Unrecognizeable record.\n";
+	    errhandler("Unrecognizeable record.", FITSError::SEVERE);
 	}
 	if (errstat != OK) {
 	    htype = FITS::NotAHDU;
@@ -195,7 +202,8 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	    case -32: dtype = FITS::FLOAT; break;
 	    case -64: dtype = FITS::DOUBLE; break;
 	    default:
-		errstat = BADBITPIX; err << "Invalid value of BITPIX\n";
+		errstat = BADBITPIX; 
+		errhandler("Invalid value of BITPIX", FITSError::SEVERE);
 		htype = FITS::NotAHDU;
 		return False;
 	}
@@ -231,7 +239,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 
 Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	Int &dims, FITS::HDUType &htype, FITS::ValueType &dtype,
-	ostream &o, HDUErrs &st) {
+	FITSErrorHandler errhandler, HDUErrs &st) {
 
 	datasize = 0;
 	dims   = 0;
@@ -248,7 +256,8 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	    case -32: dtype = FITS::FLOAT; break;
 	    case -64: dtype = FITS::DOUBLE; break;
 	    default:
-		st = BADBITPIX; o << "Invalid value of BITPIX\n";
+		st = BADBITPIX; 
+		errhandler("Invalid value of BITPIX", FITSError::SEVERE);
 		htype = FITS::NotAHDU;
 		return False;
 	}
@@ -269,12 +278,14 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 		    if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
 				 naxisn->index() == n)) {
 		    	st = NOAXISN; 
-			o << "Missing required NAXISn keyword\n";
+			errhandler("Missing required NAXISn keyword",
+				   FITSError::SEVERE);
 		        datasize = 0;
 		        htype = FITS::NotAHDU;
 		        return False;
 		    } else
-			o << "NAXISn keyword is out of order.\n";
+			errhandler("NAXISn keyword is out of order.",
+				   FITSError::WARN);
 		}
 		datasize *= naxisn->asInt();
 
@@ -294,24 +305,31 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 		    naxisn = kw(FITS::NAXIS,n);
 		    if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
 				 naxisn->index() == n)) {
-		    	st = NOAXISN; o << "Missing required NAXISn keyword\n";
+		    	st = NOAXISN; 
+			errhandler("Missing required NAXISn keyword",
+				   FITSError::SEVERE);
 		    	datasize = 0;
 		    	htype = FITS::NotAHDU;
 		    	return False;
 		    } else
-			o << "NAXISn keyword is out of order.\n";
+			errhandler("NAXISn keyword is out of order.",
+				   FITSError::WARN);
 		}
 		datasize *= naxisn->asInt();
 	    }
 	    if (!kw(FITS::PCOUNT)) {
-		st = NOPCOUNT; o << "Missing required PCOUNT keyword\n";
+		st = NOPCOUNT; 
+		errhandler("Missing required PCOUNT keyword",
+			   FITSError::SEVERE);
 		datasize = 0;
 		htype = FITS::NotAHDU;
 		return False;
 	    }
 	    datasize += kw.curr()->asInt();
 	    if (!kw(FITS::GCOUNT)) {
-		st = NOGCOUNT; o << "Missing required GCOUNT keyword\n";
+		st = NOGCOUNT; 
+		errhandler("Missing required GCOUNT keyword",
+			   FITSError::SEVERE);
 		datasize = 0;
 		htype = FITS::NotAHDU;
 		return False;
@@ -319,7 +337,11 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	    datasize *= kw.curr()->asInt();
 	    datasize *= FITS::fitssize(dtype);
 	    if (!kw(FITS::GROUPS))
-		{ st = NOGROUPS; o << "Missing required GROUPS keyword\n"; }
+		{ 
+		    st = NOGROUPS; 
+		    errhandler("Missing required GROUPS keyword",
+			       FITSError::WARN); 
+		}
 	    return True;
 	} 
 
@@ -335,23 +357,35 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 		    if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
 				     naxisn->index() == n)) {
 		    	st = NOAXISN; 
-			o << "Missing required NAXISn keyword\n";
+			errhandler("Missing required NAXISn keyword",
+				   FITSError::SEVERE);
 		        datasize = 0;
 		        htype = FITS::NotAHDU;
 		        return False;
 		    } else
-			o << "NAXISn keyword is out of order.\n";
+			errhandler("NAXISn keyword is out of order.",
+				   FITSError::WARN);
 		}
 		datasize *= naxisn->asInt();
 	    }
-	    if (!kw(FITS::PCOUNT))
-		{ st = NOPCOUNT; o << "Missing required PCOUNT keyword\n"; }
-	    else if (kw.curr()->asInt() != 0)
-		{ st = BADPCOUNT; o << "Invalid value of PCOUNT keyword\n"; }
-	    if (!kw(FITS::GCOUNT))
-		{ st = NOGCOUNT; o << "Missing required GCOUNT keyword\n"; }
-	    else if (kw.curr()->asInt() != 1)
-		{ st = BADGCOUNT; o << "Invalid value of GCOUNT keyword\n"; }
+	    if (!kw(FITS::PCOUNT)) { 
+		st = NOPCOUNT; 
+		errhandler("Missing required PCOUNT keyword",
+			   FITSError::WARN); 
+	    } else if (kw.curr()->asInt() != 0) {
+		st = BADPCOUNT; 
+		errhandler("Invalid value of PCOUNT keyword",
+			   FITSError::WARN); 
+	    }
+	    if (!kw(FITS::GCOUNT)) { 
+		st = NOGCOUNT; 
+		errhandler("Missing required GCOUNT keyword",
+			   FITSError::WARN); 
+	    } else if (kw.curr()->asInt() != 1) { 
+		st = BADGCOUNT; 
+		errhandler("Invalid value of GCOUNT keyword",
+			   FITSError::WARN); 
+	    }
 	    datasize *= FITS::fitssize(dtype);
 	    return True;
 
@@ -368,24 +402,30 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 		    if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
 				 naxisn->index() == n)) {
 		    	st = NOAXISN; 
-			o << "Missing required NAXISn keyword\n";
+			errhandler("Missing required NAXISn keyword",
+				   FITSError::SEVERE);
 		        datasize = 0;
 		        htype = FITS::NotAHDU;
 		        return False;
 		    } else
-			o << "NAXISn keyword is out of order.\n";
+			errhandler("NAXISn keyword is out of order.",
+				   FITSError::SEVERE);
 		}
 		datasize *= naxisn->asInt();
 	    }
 	    if (!kw(FITS::PCOUNT)) {
-		st = NOPCOUNT; o << "Missing required PCOUNT keyword\n";
+		st = NOPCOUNT; 
+		errhandler("Missing required PCOUNT keyword",
+			   FITSError::SEVERE);
 		datasize = 0;
 		htype = FITS::NotAHDU;
 		return False;
 	    }
 	    datasize += kw.curr()->asInt();
 	    if (!kw(FITS::GCOUNT)) {
-		st = NOGCOUNT; o << "Missing required GCOUNT keyword\n";
+		st = NOGCOUNT; 
+		errhandler("Missing required GCOUNT keyword",
+			   FITSError::SEVERE);
 		datasize = 0;
 		htype = FITS::NotAHDU;
 		return False;
@@ -399,13 +439,17 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	// ASCII Table HDU
 	else if ( htype == FITS::AsciiTableHDU ) {
 	    if (FITS::fitssize(dtype) != 1) {
-		st = BADBITPIX; o << "BITPIX must be 8\n";
+		st = BADBITPIX; 
+		errhandler("BITPIX must be 8",
+			   FITSError::SEVERE);
 		htype = FITS::NotAHDU;
 		return False;
 	    }
 	    dtype = FITS::CHAR; // This is the proper type
 	    if (dims != 2) {
-		st = BADNAXIS; o << "NAXIS must be 2\n";
+		st = BADNAXIS; 
+		errhandler("NAXIS must be 2",
+			   FITSError::SEVERE);
 		htype = FITS::NotAHDU;
 		return False;
 	    }
@@ -414,7 +458,9 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	        naxisn = kw.next();
         	if (!naxisn || 
         	    !(naxisn->kw().name() == FITS::NAXIS && naxisn->index() == n)) {
-		    st = NOAXISN; o << "Missing required NAXISn keyword\n";
+		    st = NOAXISN; 
+		    errhandler("Missing required NAXISn keyword",
+			       FITSError::SEVERE);
 		    datasize = 0;
 		    htype = FITS::NotAHDU;
 		    return False;
@@ -423,16 +469,24 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	    }
 	    FitsKeyword *pcount = kw.next();
 	    if (!pcount ||
-        	!(pcount->kw().name() == FITS::PCOUNT && pcount->index() == 0))
-		{ st = NOPCOUNT; o << "Missing required PCOUNT keyword\n"; }
-	    else if (pcount->asInt() != 0)
-		{ st = BADPCOUNT; o << "PCOUNT must be 0\n"; }
+        	!(pcount->kw().name() == FITS::PCOUNT && pcount->index() == 0)) { 
+		st = NOPCOUNT;
+		errhandler("Missing required PCOUNT keyword",
+			   FITSError::WARN); 
+	    } else if (pcount->asInt() != 0) { 
+		st = BADPCOUNT; 
+		errhandler("PCOUNT must be 0", FITSError::WARN); 
+	    }
 	    FitsKeyword *gcount = kw.next();
 	    if (!gcount ||
-        	!(gcount->kw().name() == FITS::GCOUNT && gcount->index() == 0))
-		{ st = NOGCOUNT; o << "Missing required GCOUNT keyword\n"; }
-	    else if (gcount->asInt() != 1)
-		{ st = BADGCOUNT; o << "GCOUNT must be 1\n"; }
+        	!(gcount->kw().name() == FITS::GCOUNT && gcount->index() == 0)) { 
+		st = NOGCOUNT; 
+		errhandler("Missing required GCOUNT keyword",
+			   FITSError::WARN); 
+	    } else if (gcount->asInt() != 1) { 
+		st = BADGCOUNT; 
+		errhandler("GCOUNT must be 1", FITSError::WARN); 
+	    }
 	    return True;
 
 	} 
@@ -440,12 +494,14 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	// Binary Table HDU
 	else if ( htype == FITS::BinaryTableHDU ) {
 	    if (FITS::fitssize(dtype) != 1) {
-		st = BADBITPIX; o << "BITPIX must be 8\n";
+		st = BADBITPIX; 
+		errhandler("BITPIX must be 8", FITSError::SEVERE);
 		htype = FITS::NotAHDU;
 		return False;
 	    }
 	    if (dims != 2) {
-		st = BADNAXIS; o << "NAXIS must be 2\n";
+		st = BADNAXIS; 
+		errhandler("NAXIS must be 2", FITSError::SEVERE);
 		htype = FITS::NotAHDU;
 		return False;
 	    }
@@ -454,7 +510,9 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	        naxisn = kw.next();
         	if (!naxisn || 
         	    !(naxisn->kw().name() == FITS::NAXIS && naxisn->index() == n)) {
-		    st = NOAXISN; o << "Missing required NAXISn keyword\n";
+		    st = NOAXISN; 
+		    errhandler("Missing required NAXISn keyword",
+			       FITSError::SEVERE);
 		    datasize = 0;
 		    htype = FITS::NotAHDU;
 		    return False;
@@ -463,16 +521,23 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
 	    }
 	    FitsKeyword *pcount = kw.next();
 	    if (!pcount ||
-        	!(pcount->kw().name() == FITS::PCOUNT && pcount->index() == 0))
-		{ st = NOPCOUNT; o << "Missing required PCOUNT keyword\n"; }
-	    else
+        	!(pcount->kw().name() == FITS::PCOUNT && pcount->index() == 0)) { 
+		st = NOPCOUNT; 
+		errhandler("Missing required PCOUNT keyword",
+			   FITSError::WARN); 
+	    } else {
 	        datasize += pcount->asInt(); // The heap convention
+	    }
 	    FitsKeyword *gcount = kw.next();
 	    if (!gcount ||
-        	!(gcount->kw().name() == FITS::GCOUNT && gcount->index() == 0))
-		{ st = NOGCOUNT; o << "Missing required GCOUNT keyword\n"; }
-	    else if (gcount->asInt() != 1)
-		{ st = BADGCOUNT; o << "GCOUNT must be 1\n"; }
+        	!(gcount->kw().name() == FITS::GCOUNT && gcount->index() == 0)) { 
+		st = NOGCOUNT; 
+		errhandler("Missing required GCOUNT keyword",
+			   FITSError::WARN); 
+	    } else if (gcount->asInt() != 1) { 
+		st = BADGCOUNT; 
+		errhandler("GCOUNT must be 1", FITSError::WARN); 
+	    }
 	    return True;
 	}
 	return False;
@@ -486,12 +551,13 @@ HeaderDataUnit::~HeaderDataUnit() {
 }
 
 
-HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, ostream &e ) : 
+HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, 
+			       FITSErrorHandler errhandler) : 
 	kwlist_(*(new FitsKeywordList)), constkwlist_(kwlist_), fin(&f),
-	errs(e), err_status(OK), no_dims(0), dimn(0), fits_data_size(0),
-	data_type(FITS::NOVALUE), fits_item_size(0), local_item_size(0),
-	hdu_type(FITS::NotAHDU), pad_char('\0'), double_null(FITS::mindouble),
-	char_null('\0'), Int_null(FITS::minInt) {
+	errfn(errhandler), err_status(OK), no_dims(0), dimn(0), 
+	fits_data_size(0), data_type(FITS::NOVALUE), fits_item_size(0), 
+	local_item_size(0), hdu_type(FITS::NotAHDU), pad_char('\0'), 
+	double_null(FITS::mindouble), char_null('\0'), Int_null(FITS::minInt) {
 	if (fin->hdutype() != t) {
 	    errmsg(BADTYPE,"Input does not contain an HDU of this type.");
 	    return;
@@ -521,25 +587,26 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, ostream &e ) :
 }
 
 
-HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t, ostream &e,
-	  FitsInput *f ) : kwlist_(*new FitsKeywordList(k)),
-	  constkwlist_(kwlist_), fin(f), errs(e), err_status(OK), no_dims(0),
-	  dimn(0), fits_data_size(0), data_type(FITS::NOVALUE),
-	  fits_item_size(0), local_item_size(0), hdu_type(FITS::NotAHDU), 
-	  pad_char('\0'), double_null(FITS::mindouble), char_null('\0'),
-	  Int_null(FITS::minInt) {
+HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t, 
+			       FITSErrorHandler errhandler, FitsInput *f ) 
+    : kwlist_(*new FitsKeywordList(k)), constkwlist_(kwlist_), fin(f), 
+      errfn(errhandler), err_status(OK), no_dims(0),
+      dimn(0), fits_data_size(0), data_type(FITS::NOVALUE),
+      fits_item_size(0), local_item_size(0), hdu_type(FITS::NotAHDU), 
+      pad_char('\0'), double_null(FITS::mindouble), char_null('\0'),
+      Int_null(FITS::minInt) {
 
-	if ((!kwlist_.basic_rules()) || (kwlist_.rules(errs) != 0)) {
+	if ((!kwlist_.basic_rules()) || (kwlist_.rules(errfn) != 0)) {
 	    errmsg(BADRULES,"Errors in keyword list");
 	    return;
 	}
-	if (!determine_type(kwlist_,hdu_type,data_type,errs,err_status)) {
+	if (!determine_type(kwlist_,hdu_type,data_type,errfn,err_status)) {
 	    errmsg(BADTYPE,"Could not determine HDU type from keyword list");
 	    hdu_type = FITS::NotAHDU;
 	    return;
 	}
 	if (!compute_size(kwlist_,fits_data_size,no_dims,
-		hdu_type,data_type,errs,err_status)) {
+		hdu_type,data_type,errfn,err_status)) {
 	    errmsg(BADSIZE,"Could not compute data size from keyword list");
 	    hdu_type = FITS::NotAHDU;
 	    return;
@@ -637,23 +704,29 @@ double HeaderDataUnit::asgdbl(FITS::ReservedName n, int i, double x) {
 //== ExtensionHeaderDataUnit =================================================
 
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsInput &f,
-	ostream &e ) : HeaderDataUnit(f,FITS::UnknownExtensionHDU,e) {
-	ex_assign();
+						 FITSErrorHandler errhandler) 
+    : HeaderDataUnit(f,FITS::UnknownExtensionHDU,errhandler) {
+    ex_assign();
 }
 
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsInput &f, 
-	FITS::HDUType t, ostream &e ) : HeaderDataUnit(f,t,e) {
-	ex_assign();
+						 FITS::HDUType t, 
+						 FITSErrorHandler errhandler) 
+    : HeaderDataUnit(f,t,errhandler) {
+    ex_assign();
 }
 
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsKeywordList &k, 
-	ostream &e ) : HeaderDataUnit(k,FITS::UnknownExtensionHDU,e,0) {
-	ex_assign();
+						 FITSErrorHandler errhandler) 
+    : HeaderDataUnit(k,FITS::UnknownExtensionHDU,errhandler,0) {
+    ex_assign();
 }
 
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsKeywordList &k, 
-	FITS::HDUType t, ostream &e ) : HeaderDataUnit(k,t,e,0) {
-	ex_assign();
+						 FITS::HDUType t, 
+						 FITSErrorHandler errhandler) 
+    : HeaderDataUnit(k,t,errhandler,0) {
+    ex_assign();
 }
 
 ExtensionHeaderDataUnit::~ExtensionHeaderDataUnit() {
@@ -754,14 +827,16 @@ FitsBase * FitsBase::make(FitsBase &x) {
 
 //== AsciiTableExtension =====================================================
 
-AsciiTableExtension::AsciiTableExtension(FitsInput &f, ostream &e ) : 
-	BinaryTableExtension(f,FITS::AsciiTableHDU,e) {
+AsciiTableExtension::AsciiTableExtension(FitsInput &f, 
+					 FITSErrorHandler errhandler) : 
+	BinaryTableExtension(f,FITS::AsciiTableHDU,errhandler) {
 	pad_char = ' ';
 	at_assign();	
 }
 
-AsciiTableExtension::AsciiTableExtension(FitsKeywordList &k, ostream &e ) : 
-	BinaryTableExtension(k,FITS::AsciiTableHDU,e) {
+AsciiTableExtension::AsciiTableExtension(FitsKeywordList &k,
+					 FITSErrorHandler errhandler) : 
+	BinaryTableExtension(k,FITS::AsciiTableHDU,errhandler) {
 	pad_char = ' ';
 	at_assign();	
 }
@@ -1113,21 +1188,25 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
 //== BinaryTableExtension =====================================================
 
 BinaryTableExtension::BinaryTableExtension(FitsInput &f, 
-	ostream &e ) : ExtensionHeaderDataUnit(f,FITS::BinaryTableHDU,e) {
+					   FITSErrorHandler errhandler) 
+    : ExtensionHeaderDataUnit(f,FITS::BinaryTableHDU,errhandler) {
 	bt_assign();	
 }
 
 BinaryTableExtension::BinaryTableExtension(FitsKeywordList &k,
-	ostream &e ) : ExtensionHeaderDataUnit(k,FITS::BinaryTableHDU,e) {
+					   FITSErrorHandler errhandler) 
+    : ExtensionHeaderDataUnit(k,FITS::BinaryTableHDU,errhandler) {
 	bt_assign();
 }
 
 BinaryTableExtension::BinaryTableExtension(FitsInput &f, FITS::HDUType t,
-	ostream &e ) : ExtensionHeaderDataUnit(f,t,e) {
+					   FITSErrorHandler errhandler) 
+    : ExtensionHeaderDataUnit(f,t,errhandler) {
 }
 
 BinaryTableExtension::BinaryTableExtension(FitsKeywordList &k, FITS::HDUType t,
-	ostream &e ) : ExtensionHeaderDataUnit(k,t,e) {
+					   FITSErrorHandler errhandler) 
+    : ExtensionHeaderDataUnit(k,t,errhandler) {
 }
 
 BinaryTableExtension::~BinaryTableExtension() {

@@ -1,5 +1,5 @@
 //# blockio.h:
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,6 @@
 #endif
 
 # include <stdlib.h>
-# include <iostream.h>
 # if defined(UNIX)
 #   include <unistd.h>
 # endif
@@ -46,6 +45,8 @@
 # endif
 # include <fcntl.h>
 #include <aips/aips.h>
+
+#include <aips/FITS/FITSError.h>
 
 //<category lib=aips module=FITS sect="Blocked I/O">   
 //<summary> fixed-length blocked sequentual I/O base class </summary> 
@@ -86,8 +87,10 @@ class BlockIO {
 	// of records that make up a physical record followed by the 
 	// output stream that is used to write error messages to.
 	//<group>
-	BlockIO(const char *, int, int, int = 1, ostream & = cout);
-	BlockIO(int,               int, int = 1, ostream & = cout);
+	BlockIO(const char *, int, int, int = 1, 
+		FITSErrorHandler errhandler = FITSError::defaultHandler);
+	BlockIO(int,               int, int = 1, 
+		FITSErrorHandler errhandler = FITSError::defaultHandler);
 	virtual ~BlockIO();
 	//</group>
 
@@ -96,7 +99,7 @@ class BlockIO {
 	const int recsize;	// size in bytes of a logical record
 	const int nrec;		// maximum number of logical records
 	const int blocksize;	// size in bytes of physical records
-	ostream &ioerr;		// ostream to write error messages to
+        FITSErrorHandler errfn; // FITS error handler function
 	IOErrs err_status;	// error number
 	int fd;			// file descriptor
 	char *buffer;		// the actual data buffer itself
@@ -126,8 +129,10 @@ class BlockInput : public BlockIO {
 	// of records that make up a physical record followed by the 
 	// output stream that is used to write error messages to.
 	//<group>
-	BlockInput(const char *, int, int = 1, ostream & = cout);
-	BlockInput(int,          int, int = 1, ostream & = cout);
+	BlockInput(const char *, int, int = 1, 
+		   FITSErrorHandler errhandler = FITSError::defaultHandler);
+	BlockInput(int,          int, int = 1, 
+		   FITSErrorHandler errhandler = FITSError::defaultHandler);
 	virtual ~BlockInput();
 	//</group>
 
@@ -162,8 +167,10 @@ class BlockOutput : public BlockIO {
 	// of records that make up a physical record followed by the 
 	// output stream that is used to write error messages to.
 	//<group>
-	BlockOutput(const char *, int, int = 1, ostream & = cout);
-	BlockOutput(int,          int, int = 1, ostream & = cout);
+	BlockOutput(const char *, int, int = 1,
+		    FITSErrorHandler errhandler = FITSError::defaultHandler);
+	BlockOutput(int,          int, int = 1,
+		    FITSErrorHandler errhandler = FITSError::defaultHandler);
 	virtual ~BlockOutput();
 	//</group>
 

@@ -1,5 +1,5 @@
 //# hdu.h:
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,11 +105,11 @@ class HeaderDataUnit {
 	int write_hdr(FitsOutput &);
 
 	// Determines the HDU type and the data type 
-	// Parameterss: keyword list, hdu type, data type, ostream and 
+	// Parameterss: keyword list, hdu type, data type, error handler and 
 	// error status.
 	// Returns False if a serious error was detected, otherwise True
 	static Bool determine_type(FitsKeywordList &, FITS::HDUType &, 
-		FITS::ValueType &, ostream &, HDUErrs &);
+		FITS::ValueType &, FITSErrorHandler, HDUErrs &);
 
  
 	// Compute the total size of the data associated with an HDU.  
@@ -118,7 +118,7 @@ class HeaderDataUnit {
 	// be changed in the process.  Data type is also determined.
 	// Returns False if a serious error was detected, otherwise True
 	static Bool compute_size(FitsKeywordList &, Int &, Int &,
-		FITS::HDUType &, FITS::ValueType &, ostream &, HDUErrs &);
+		FITS::HDUType &, FITS::ValueType &, FITSErrorHandler, HDUErrs &);
 
 	// Operations on the HDU's keyword list
 	//<group>
@@ -166,14 +166,16 @@ class HeaderDataUnit {
 	Bool notnull(Int l) const { return Int_null < l ? True : False; }
 
     protected:
-	//	For input -- ~ should delete the keyword list: kwflag = 1
-	HeaderDataUnit(FitsInput &, FITS::HDUType, ostream & = cout);
-	//	For output -- ~ should not delete keyword list: kwflag = 0
+    //	For input -- ~ should delete the keyword list: kwflag = 1
+    HeaderDataUnit(FitsInput &, FITS::HDUType, 
+		   FITSErrorHandler errhandler = FITSError::defaultHandler);
+    //	For output -- ~ should not delete keyword list: kwflag = 0
     // 07/21/98 AKH Clarification: HeaderDataUnit has a copy of the
     //              FitsKeywordList, and should delete it.  The kwflag
     //              comments above are not important now.
-	HeaderDataUnit(FitsKeywordList &, FITS::HDUType, ostream & = cout,
-		FitsInput * = 0);
+    HeaderDataUnit(FitsKeywordList &, FITS::HDUType, 
+		   FITSErrorHandler errhandler = FITSError::defaultHandler,
+		   FitsInput * = 0);
 
 	int read_data(char *, int);
 	int write_data(FitsOutput &, char *, int);
@@ -185,7 +187,7 @@ class HeaderDataUnit {
 	void posEnd();
 
 	FitsInput *fin;
-	ostream &errs;
+	FITSErrorHandler errfn;
 	HDUErrs err_status;
 	void errmsg(HDUErrs, char *);
 
@@ -347,9 +349,10 @@ class PrimaryArray : public HeaderDataUnit {
         typedef TYPE ElementType;
 
 	// constructor from a FitsInput
-	PrimaryArray(FitsInput &, ostream & = cout);
+	PrimaryArray(FitsInput &, FITSErrorHandler= FITSError::defaultHandler);
 	// constructor from a FitsKeywordList
-	PrimaryArray(FitsKeywordList &, ostream & = cout);
+        PrimaryArray(FitsKeywordList &, 
+		     FITSErrorHandler= FITSError::defaultHandler);
 	// destructor
 	virtual ~PrimaryArray();
 
@@ -451,9 +454,11 @@ class PrimaryArray : public HeaderDataUnit {
 
     protected:
 	// construct from a FitsInput with given HDU type
-	PrimaryArray(FitsInput &, FITS::HDUType, ostream &);
+	PrimaryArray(FitsInput &, FITS::HDUType, 
+		     FITSErrorHandler errhandler = FITSError::defaultHandler);
 	// construct from a FitsKeywordList with given HDU type
-	PrimaryArray(FitsKeywordList &, FITS::HDUType, ostream &);
+	PrimaryArray(FitsKeywordList &, FITS::HDUType, 
+		     FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	double bscale_x;
 	double bzero_x;
@@ -512,8 +517,10 @@ class ImageExtension : public PrimaryArray<TYPE> {
     public:
         typedef TYPE ElementType;
 
-	ImageExtension(FitsInput &, ostream & = cout);
-	ImageExtension(FitsKeywordList &, ostream & = cout);
+	ImageExtension(FitsInput &, 
+		       FITSErrorHandler errhandler = FITSError::defaultHandler);
+	ImageExtension(FitsKeywordList &, 
+		       FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~ImageExtension();
 	char *xtension() 	{ return xtension_x; }
 	char *extname() 	{ return extname_x; }
@@ -567,8 +574,10 @@ typedef ImageExtension<double> DoubleImageExtension;
 template <class TYPE>
 class PrimaryGroup : public PrimaryArray<TYPE> {
     public:
-	PrimaryGroup(FitsInput &, ostream & = cout);
-	PrimaryGroup(FitsKeywordList &, ostream & = cout);
+	PrimaryGroup(FitsInput &, 
+		     FITSErrorHandler errhandler = FITSError::defaultHandler);
+	PrimaryGroup(FitsKeywordList &, 
+		     FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~PrimaryGroup();
 
 	// Return basic parameters of a random group
@@ -626,8 +635,10 @@ typedef PrimaryGroup<double> DoublePrimaryGroup;
 
 class ExtensionHeaderDataUnit : public HeaderDataUnit {
     public:
-	ExtensionHeaderDataUnit(FitsInput &, ostream & = cout);
-	ExtensionHeaderDataUnit(FitsKeywordList &, ostream & = cout);
+	ExtensionHeaderDataUnit(FitsInput &, 
+				FITSErrorHandler errhandler = FITSError::defaultHandler);
+	ExtensionHeaderDataUnit(FitsKeywordList &, 
+				FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~ExtensionHeaderDataUnit();
 	char *xtension() 	{ return xtension_x; }
 	char *extname() 	{ return extname_x; }
@@ -644,8 +655,10 @@ class ExtensionHeaderDataUnit : public HeaderDataUnit {
 	    return write_data(fout,addr,nbytes); }
 
     protected:
-	ExtensionHeaderDataUnit(FitsInput &, FITS::HDUType, ostream &);
-	ExtensionHeaderDataUnit(FitsKeywordList &, FITS::HDUType, ostream &);
+	ExtensionHeaderDataUnit(FitsInput &, FITS::HDUType, 
+				FITSErrorHandler errhandler = FITSError::defaultHandler);
+	ExtensionHeaderDataUnit(FitsKeywordList &, FITS::HDUType, 
+				FITSErrorHandler errhandler = FITSError::defaultHandler);
 	char *xtension_x;
 	char *extname_x;
 	Int extver_x;
@@ -870,8 +883,10 @@ typedef FitsArray<FitsVADesc> VADescFitsArray;
 
 class BinaryTableExtension : public ExtensionHeaderDataUnit {
     public:
-	BinaryTableExtension(FitsInput &, ostream & = cout);
-	BinaryTableExtension(FitsKeywordList &, ostream & = cout);
+	BinaryTableExtension(FitsInput &, 
+			     FITSErrorHandler errhandler = FITSError::defaultHandler);
+	BinaryTableExtension(FitsKeywordList &, 
+			     FITSErrorHandler errhandler = FITSError::defaultHandler);
 	virtual ~BinaryTableExtension();
 
 	// return basic elements of a table
@@ -919,8 +934,10 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 	Int currrow() const		{ return curr_row; }
 
     protected:
-	BinaryTableExtension(FitsInput &, FITS::HDUType, ostream & = cout);
-	BinaryTableExtension(FitsKeywordList &, FITS::HDUType, ostream & = cout);
+	BinaryTableExtension(FitsInput &, FITS::HDUType, 
+			     FITSErrorHandler errhandler = FITSError::defaultHandler);
+	BinaryTableExtension(FitsKeywordList &, FITS::HDUType, 
+			     FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	Int tfields_x;
 	char **tform_x;
@@ -969,8 +986,10 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 
 class AsciiTableExtension : public BinaryTableExtension {
     public:
-	AsciiTableExtension(FitsInput &, ostream & = cout);
-	AsciiTableExtension(FitsKeywordList &, ostream & = cout);
+	AsciiTableExtension(FitsInput &, 
+			    FITSErrorHandler errhandler = FITSError::defaultHandler);
+	AsciiTableExtension(FitsKeywordList &, 
+			    FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~AsciiTableExtension();
 
 	//# special overriden functions for ascii TABLE only

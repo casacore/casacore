@@ -1,5 +1,5 @@
 //# fitsio.h:
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,7 +105,7 @@ class FitsIO {
 	Int currsize() const 			{ return curr_size; }
 
     protected:
-	FitsIO(ostream &);
+	FitsIO(FITSErrorHandler);
 
 	const int FitsRecSize;
 	Bool valid_fits;		// True if SIMPLE == T
@@ -115,7 +115,7 @@ class FitsIO {
 	FITS::FitsRecType rec_type; 	// always set
 	FITS::HDUType hdu_type;		// always set
 
-	ostream &errs;			// to write error messages to
+	FITSErrorHandler errfn;	        // error handler function
 	FitsErrs err_status;
 	FitsKeyCardTranslator kc;
 	FitsKeywordList kw;
@@ -149,8 +149,8 @@ class FitsInput : public FitsIO {
     public:
 	//<group>
 	FitsInput(const char *, const FITS::FitsDevice &, int = 10, 
-		ostream &o = cout);
-	FitsInput(ostream & = cout); 
+		  FITSErrorHandler errhandler = FITSError::defaultHandler);
+	FitsInput(FITSErrorHandler errhandler = FITSError::defaultHandler); 
 	~FitsInput();
 	//</group>
 
@@ -161,7 +161,7 @@ class FitsInput : public FitsIO {
     private:
 	BlockInput &fin;
 	BlockInput &make_input(const char *, const FITS::FitsDevice &, int, 
-		ostream &);
+			       FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	// flag used for read control in errors
 	Bool got_rec;		
@@ -197,8 +197,8 @@ class FitsOutput : public FitsIO {
     public:
 	//<group>
 	FitsOutput(const char *, const FITS::FitsDevice &, int = 10, 
-		ostream & = cout);
-	FitsOutput(ostream & = cout);
+		   FITSErrorHandler errhandler = FITSError::defaultHandler);
+	FitsOutput(FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsOutput();
 	//</group>
 
@@ -209,7 +209,7 @@ class FitsOutput : public FitsIO {
     private:
 	BlockOutput &fout;
 	BlockOutput &make_output(const char *, const FITS::FitsDevice &, int, 
-		ostream &);
+				 FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	virtual void errmsg(FitsErrs, char *);
 
@@ -232,7 +232,8 @@ class FitsOutput : public FitsIO {
 
 class FitsDiskInput : public BlockInput {
     public:
-	FitsDiskInput(const char *, int, int = 1, ostream & = cout);
+	FitsDiskInput(const char *, int, int = 1, 
+		      FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsDiskInput();
         // implements skip in terms of lseek
 	char *skip(int); 
@@ -242,7 +243,8 @@ class FitsDiskInput : public BlockInput {
 
 class FitsDiskOutput : public BlockOutput {
     public:
-	FitsDiskOutput(const char *, int, int = 1, ostream & = cout);
+	FitsDiskOutput(const char *, int, int = 1, 
+		       FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsDiskOutput();
 };
 
@@ -250,7 +252,8 @@ class FitsDiskOutput : public BlockOutput {
 
 class FitsStdInput : public BlockInput {
     public:
-	FitsStdInput(int, ostream & = cout);
+	FitsStdInput(int, 
+		     FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsStdInput();
 };
 
@@ -258,7 +261,8 @@ class FitsStdInput : public BlockInput {
 
 class FitsStdOutput : public BlockOutput {
     public:
-	FitsStdOutput(int, ostream & = cout);
+	FitsStdOutput(int, 
+		      FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsStdOutput();
 };
 
@@ -266,7 +270,8 @@ class FitsStdOutput : public BlockOutput {
 
 class FitsTape9Input : public BlockInput {
     public:
-	FitsTape9Input(const char *, int, int = 10, ostream & = cout);
+	FitsTape9Input(const char *, int, int = 10, 
+		       FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsTape9Input();
 };
 
@@ -274,7 +279,8 @@ class FitsTape9Input : public BlockInput {
 
 class FitsTape9Output : public BlockOutput {
     public:
-	FitsTape9Output(const char *, int, int = 10, ostream & = cout);
+	FitsTape9Output(const char *, int, int = 10, 
+			FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsTape9Output();
 };
 

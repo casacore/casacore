@@ -1,5 +1,5 @@
 //# fitsio.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 # include <aips/FITS/hdu.h>
 # include <aips/FITS/fitsio.h>
 # include <string.h>
+# include <strstream.h>
 
 FitsIO::~FitsIO() {
 }
@@ -55,14 +56,19 @@ FitsTape9Output::~FitsTape9Output() {
 }
 
 void FitsInput::errmsg(FitsErrs e, char *s) {
-	errs << "FitsInput error:  ";
-	if (fin.fname() == 0 || *fin.fname() == '\0') 
-		errs << "File Descriptor " << fin.fdes();
-	else
-		errs << "File " << fin.fname();
-	errs << " Physical record " << fin.blockno()
-	      << " logical record " << fin.recno() << " --\n\t" << s << "\n";
-	err_status = e;
+    ostrstream msgline;
+    msgline << "FitsInput error:  ";
+    if (fin.fname() == 0 || *fin.fname() == '\0') 
+	msgline << "File Descriptor " << fin.fdes();
+    else
+	msgline << "File " << fin.fname();
+    msgline << " Physical record " << fin.blockno()
+	    << " logical record " << fin.recno() << " --\n\t" << s << ends;
+    err_status = e;
+    // all FitsIO messages are SEVERE
+    char * mptr = msgline.str();
+    errfn(mptr, FITSError::SEVERE);
+    delete [] mptr;
 }
 
 char *FitsDiskInput::skip(int n) { // skip n logical records and read
@@ -93,19 +99,20 @@ char *FitsDiskInput::skip(int n) { // skip n logical records and read
 }
 
 BlockInput &FitsInput::make_input(const char *n, const FITS::FitsDevice &d, 
-	int b, ostream &e) 
+				  int b, 
+				  FITSErrorHandler errhandler)
 {
     BlockInput *bptr = 0;
 
 	switch (d) {
 	    case FITS::Disk:
-		bptr =  new FitsDiskInput(n,FitsRecSize,b,e);
+		bptr =  new FitsDiskInput(n,FitsRecSize,b,errhandler);
 		break;
 	    case FITS::Tape9: 
-		bptr = new FitsTape9Input(n,FitsRecSize,b,e);
+		bptr = new FitsTape9Input(n,FitsRecSize,b,errhandler);
 		break;
 	    case FITS::Std: 
-		bptr = new FitsStdInput(FitsRecSize,e);
+		bptr = new FitsStdInput(FitsRecSize,errhandler);
 		break;
 	}
     // Dereferences a null pointer if "d" was not caught in the above switch.
@@ -113,29 +120,36 @@ BlockInput &FitsInput::make_input(const char *n, const FITS::FitsDevice &d,
 }
 
 void FitsOutput::errmsg(FitsErrs e, char *s) {
-	errs << "FitsOutput error:  ";
-	if (fout.fname() == 0 || *fout.fname() == '\0') 
-		errs << "File Descriptor " << fout.fdes();
-	else
-		errs << "File " << fout.fname();
-	errs << " Physical record " << fout.blockno()
-	      << " logical record " << fout.recno() << " --\n\t" << s << "\n";
-	err_status = e;
+    ostrstream msgline;
+    msgline << "FitsOutput error:  ";
+    if (fout.fname() == 0 || *fout.fname() == '\0') 
+	msgline << "File Descriptor " << fout.fdes();
+    else
+	msgline << "File " << fout.fname();
+    msgline << " Physical record " << fout.blockno()
+	    << " logical record " << fout.recno() << " --\n\t" << s << ends;
+    err_status = e;
+    // all FitsIO messages are SEVERE
+    char * mptr = msgline.str();
+    errfn(mptr, FITSError::SEVERE);
+    delete [] mptr;
 }
 
 BlockOutput &FitsOutput::make_output(const char *n, const FITS::FitsDevice &d, 
-	int b, ostream &e) 
+				     int b, 
+				     FITSErrorHandler errhandler)
+				     
 {
     BlockOutput *bptr = 0;
 	switch (d) {
 	    case FITS::Disk:
-		bptr =  new FitsDiskOutput(n,FitsRecSize,b,e);
+		bptr =  new FitsDiskOutput(n,FitsRecSize,b,errhandler);
 		break;
 	    case FITS::Tape9: 
-		bptr =  new FitsTape9Output(n,FitsRecSize,b,e);
+		bptr =  new FitsTape9Output(n,FitsRecSize,b,errhandler);
 		break;
 	    case FITS::Std: 
-		bptr =  new FitsStdOutput(FitsRecSize,e);
+		bptr =  new FitsStdOutput(FitsRecSize,errhandler);
 		break;
 	}
 
@@ -145,8 +159,8 @@ BlockOutput &FitsOutput::make_output(const char *n, const FITS::FitsDevice &d,
 }
 
 FitsOutput::FitsOutput(const char *n, const FITS::FitsDevice &d, int b, 
-	ostream &e) : 
-	FitsIO(e), fout(make_output(n,d,b,e)) {
+		       FITSErrorHandler errhandler) :
+	FitsIO(errhandler), fout(make_output(n,d,b,errhandler)) {
 	if (fout.err()) {
 	    rec_type = FITS::EndOfFile;
 	    errmsg(IOERR,"Error constructing output");
@@ -159,8 +173,8 @@ FitsOutput::FitsOutput(const char *n, const FITS::FitsDevice &d, int b,
 	}
 }
 
-FitsOutput::FitsOutput(ostream &e) : FitsIO(e), 
-	fout(*(BlockOutput *)(new FitsStdOutput(FitsRecSize,e))) {
+FitsOutput::FitsOutput(FITSErrorHandler errhandler) : FitsIO(errhandler), 
+	fout(*(BlockOutput *)(new FitsStdOutput(FitsRecSize,errhandler))) {
 	if (fout.err()) {
 	    rec_type = FITS::EndOfFile;
 	    errmsg(IOERR,"Error constructing output");
@@ -196,9 +210,9 @@ void FitsInput::init() {
 	        rec_type = FITS::BadBeginningRecord;
 	        return;
 	    }
-	    kc.parse(curr,kw,0,errs,True);
+	    kc.parse(curr,kw,0,errfn,True);
 	    HeaderDataUnit::HDUErrs n;
-	    if (!HeaderDataUnit::determine_type(kw,hdu_type,data_type,errs,n)) {
+	    if (!HeaderDataUnit::determine_type(kw,hdu_type,data_type,errfn,n)) {
 	        errmsg(BADBEGIN,"Unrecognizable record at the beginning.");
 	        rec_type = FITS::BadBeginningRecord;
 	        return;
@@ -211,8 +225,8 @@ void FitsInput::init() {
 	        if (kw(FITS::SIMPLE)->asBool() == True) 
 		    valid_fits = True;
 		else
-		    errs << "\n>>> WARNING!  Value of keyword SIMPLE is \
-FALSE;\n              this file may not be a valid FITS file.\n\n";
+		    errfn("Value of keyword SIMPLE is FALSE; this file may not be a valid FITS file.",
+			  FITSError::WARN);
 	        if (kw(FITS::EXTEND))
 		    if (kw.curr()->asBool() == True)
 		        extend = True;
@@ -239,10 +253,10 @@ char * FitsInput::read_sp() {
 	    		return curr;
 		}
 		kw.delete_all();
-		kc.parse(curr,kw,0,errs,True);
+		kc.parse(curr,kw,0,errfn,True);
 	        HeaderDataUnit::HDUErrs n;
 	        if (!HeaderDataUnit::determine_type(kw,
-			hdu_type,data_type,errs,n))
+			hdu_type,data_type,errfn,n))
 	            return curr;
 	        if (!(hdu_type == FITS::PrimaryArrayHDU || 
 		      hdu_type == FITS::PrimaryGroupHDU)) {
@@ -251,8 +265,8 @@ char * FitsInput::read_sp() {
 	            if (kw(FITS::SIMPLE)->asBool() == True) 
 		        valid_fits = True;
 		    else
-		    errs << "\n>>> WARNING!  Value of keyword SIMPLE is \
-FALSE;\n              this file may not be a valid FITS file.\n\n";
+		    errfn("Value of keyword SIMPLE is FALSE; this file may not be a valid FITS file.",
+			  FITSError::WARN);
 	            if (kw(FITS::EXTEND))
 		        if (kw.curr()->asBool() == True)
 		            extend = True;
@@ -276,10 +290,10 @@ FALSE;\n              this file may not be a valid FITS file.\n\n";
 	    		return curr;
 		}
 		kw.delete_all();
-		kc.parse(curr,kw,0,errs,True);
+		kc.parse(curr,kw,0,errfn,True);
 	        HeaderDataUnit::HDUErrs n;
 	        if (!HeaderDataUnit::determine_type(kw,
-			hdu_type,data_type,errs,n))
+			hdu_type,data_type,errfn,n))
 	            return curr;
 	        rec_type = FITS::HDURecord;
 		got_rec = True;
@@ -319,9 +333,9 @@ void FitsInput::read_header_rec() {
 	    return;
 	}
 	kw.delete_all();
-	kc.parse(curr,kw,0,errs,True);
+	kc.parse(curr,kw,0,errfn,True);
 	HeaderDataUnit::HDUErrs n;
-	if (!HeaderDataUnit::determine_type(kw,hdu_type,data_type,errs,n)) {
+	if (!HeaderDataUnit::determine_type(kw,hdu_type,data_type,errfn,n)) {
 	    rec_type = FITS::SpecialRecord;
 	    return;
 	}
@@ -340,7 +354,7 @@ int FitsInput::skip_hdu() { //Skip an entire header-data unit
 	int i;
 	FitsKeyword *x, *y;
 	kw.first(); y = kw.next(); // set the list pointer
-        for (; ; kc.parse(curr,kw,0,errs,False)) {
+        for (; ; kc.parse(curr,kw,0,errfn,False)) {
 	    // The worst error is if there is no END keyword.
 	    kw.last(); x = kw.prev(); // do backwards search for END 
 	    if (x->kw().name() == FITS::END)
@@ -384,7 +398,7 @@ found in name field.\n\tEnd of keywords assumed.");
 	HeaderDataUnit::HDUErrs nerr;
 	Int nd;
 	if (!HeaderDataUnit::compute_size(kw,data_size,nd,
-		hdu_type,data_type,errs,nerr)) {
+		hdu_type,data_type,errfn,nerr)) {
 		item_size = 0;
 		data_type = FITS::NOVALUE;
 		data_size = 0;
@@ -432,7 +446,7 @@ int FitsInput::process_header(FITS::HDUType t, FitsKeywordList &uk) {
 	int i;
 	FitsKeyword *x, *y;
 	uk.first(); y = uk.next(); // set the list pointer
-        for (; ; kc.parse(curr,uk,cnt,errs,True)) {
+        for (; ; kc.parse(curr,uk,cnt,errfn,True)) {
 	    // The worst error is if there is no END keyword.
 	    uk.last(); x = uk.prev(); // do backwards search for END 
 	    if (x->kw().name() == FITS::END)
@@ -477,7 +491,7 @@ found in name field.\n\tEnd of keywords assumed.");
 	HeaderDataUnit::HDUErrs n;
 	Int nd;
 	if (!HeaderDataUnit::compute_size(uk,data_size,nd,
-		hdu_type,data_type,errs,n)) {
+		hdu_type,data_type,errfn,n)) {
 	    	errmsg(BADSIZE,"Error computing size of data.");
 	        rec_type = FITS::UnrecognizableRecord;
 	        return -1;
@@ -850,44 +864,51 @@ int FitsOutput::write_sp (char *rec) { // write a special record
 }
 		
 
-FitsDiskInput::FitsDiskInput(const char *f, int l, int n, ostream &s) :
-	BlockInput(f,l,n,s) {
+FitsDiskInput::FitsDiskInput(const char *f, int l, int n, 
+			     FITSErrorHandler errhandler) :
+    BlockInput(f,l,n,errhandler) {
 }
 
-FitsDiskOutput::FitsDiskOutput(const char *f, int l, int n, ostream &s) :
-	BlockOutput(f,l,n,s) {
+FitsDiskOutput::FitsDiskOutput(const char *f, int l, int n,
+			       FITSErrorHandler errhandler) :
+    BlockOutput(f,l,n,errhandler) {
 }
 
-FitsStdInput::FitsStdInput(int l, ostream &s) :
-	BlockInput(0,l,1,s) {
+FitsStdInput::FitsStdInput(int l, FITSErrorHandler errhandler) :
+    BlockInput(0,l,1,errhandler) {
 }
 
-FitsStdOutput::FitsStdOutput(int l, ostream &s) :
-	BlockOutput(1,l,1,s) {
+FitsStdOutput::FitsStdOutput(int l, FITSErrorHandler errhandler) :
+
+    BlockOutput(1,l,1,errhandler) {
 }
 
-FitsTape9Input::FitsTape9Input(const char *f, int l, int n, ostream &s) :
-	BlockInput(f,l,n,s) {
+FitsTape9Input::FitsTape9Input(const char *f, int l, int n,
+			       FITSErrorHandler errhandler) :
+    BlockInput(f,l,n,errhandler) {
 }
 
-FitsTape9Output::FitsTape9Output(const char *f, int l, int n, ostream &s) :
-	BlockOutput(f,l,n,s) {
+FitsTape9Output::FitsTape9Output(const char *f, int l, int n, 
+				 FITSErrorHandler errhandler) :
+	BlockOutput(f,l,n,errhandler) {
 }
 
-FitsIO::FitsIO(ostream &e) : FitsRecSize(2880), valid_fits(False),
-	extend(False), isaprimary(False), header_done(False),
-	rec_type(FITS::InitialState), hdu_type(FITS::NotAHDU), errs(e), 
-	err_status(OK), curr(0), bytepos(0), item_size(0), 
-	data_type(FITS::NOVALUE), data_size(0), curr_size(0)  {
+FitsIO::FitsIO(FITSErrorHandler errhandler) : 
+    FitsRecSize(2880), valid_fits(False),
+    extend(False), isaprimary(False), header_done(False),
+    rec_type(FITS::InitialState), hdu_type(FITS::NotAHDU), errfn(errhandler), 
+    err_status(OK), curr(0), bytepos(0), item_size(0), 
+    data_type(FITS::NOVALUE), data_size(0), curr_size(0)  {
 }
 
 FitsInput::FitsInput(const char *n, const FITS::FitsDevice &d, int b, 
-	ostream &e) : FitsIO(e), fin(make_input(n,d,b,e)), got_rec(False) {
-	init();
+		     FITSErrorHandler errhandler) : 
+    FitsIO(errhandler), fin(make_input(n,d,b,errhandler)), got_rec(False) {
+    init();
 }
 
-FitsInput::FitsInput(ostream &e) : FitsIO(e), 
-	fin(*(BlockInput *)(new FitsStdInput(FitsRecSize,e))),
+FitsInput::FitsInput(FITSErrorHandler errhandler) : FitsIO(errhandler), 
+	fin(*(BlockInput *)(new FitsStdInput(FitsRecSize,errhandler))),
 	got_rec(False) {
 	init();
 }

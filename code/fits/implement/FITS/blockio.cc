@@ -1,5 +1,5 @@
 //# blockio.cc:
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,23 +25,30 @@
 //#
 //# $Id$
 
+# include <strstream.h>
 # include <aips/FITS/blockio.h>
 # include <string.h>
 
 void BlockIO::errmsg(IOErrs e, char *s) { 
-	ioerr << "BlockIO:  ";
-	if (filename == 0 || *filename == '\0')
-		ioerr << "File Descriptor " << fd;
-	else
-		ioerr << "File " << filename;
-	ioerr << " Physical record " << block_no
-	      << " logical record " << rec_no << " --\n\t" << s << "\n";
-	err_status = e;
+    ostrstream msgline;
+    msgline << "BlockIO:  ";
+    if (filename == 0 || *filename == '\0')
+	msgline << "File Descriptor " << fd;
+    else
+	msgline << "File " << filename;
+    msgline << " Physical record " << block_no
+	    << " logical record " << rec_no << " --\n\t" << s << ends;
+    err_status = e;
+    // all BlockIO messages are SEVERE
+    char * mptr = msgline.str();
+    errfn(mptr, FITSError::SEVERE);
+    delete [] mptr;
 }
 
-BlockIO::BlockIO(const char *f, int o, int r, int n, ostream &s) :
+BlockIO::BlockIO(const char *f, int o, int r, int n, 
+		 FITSErrorHandler errhandler) :
 	filename(0), options(o), recsize(r), nrec(n), blocksize(r * n),
-        ioerr(s), err_status(OK), fd(-1), buffer(0), block_no(0), 
+        errfn(errhandler), err_status(OK), fd(-1), buffer(0), block_no(0), 
         rec_no(0), current(0), iosize(0) {
 	if (f == 0 || (*f == '\0')) {
 		errmsg(NOSUCHFILE,"No filename was specified");
@@ -74,10 +81,10 @@ BlockIO::BlockIO(const char *f, int o, int r, int n, ostream &s) :
 	}
 }
 
-BlockIO::BlockIO(int f, int r, int n, ostream &s) : 
+BlockIO::BlockIO(int f, int r, int n, FITSErrorHandler errhandler) :
 	filename(""), options(0), recsize(r), nrec(n), blocksize(n * r), 
-	ioerr(s), err_status(OK), fd(f), block_no(0), rec_no(0), current(0), 
-	iosize(0) {
+	errfn(errhandler), err_status(OK), fd(f), block_no(0), rec_no(0), 
+	current(0), iosize(0) {
 	if ((buffer = new char [blocksize]) == 0) {
 		errmsg(NOMEM,"Cannot allocate memory");
 		return;
@@ -101,7 +108,6 @@ BlockInput::~BlockInput() {
 
 char *BlockInput::read() {
     current += recsize;
-    int nreadlast = 0;
     if (current >= iosize) {
 	int ntoread = blocksize;
 	int nreadlast;
@@ -172,14 +178,18 @@ int BlockOutput::write(char *addr) {
 	return (int)err_status;
 }
 
-BlockInput::BlockInput(const char *f, int r, int n, ostream &s) :
-	BlockIO(f,O_RDONLY,r,n,s) { }
+BlockInput::BlockInput(const char *f, int r, int n, 
+		       FITSErrorHandler errhandler) :
+	BlockIO(f,O_RDONLY,r,n,errhandler) { }
 
-BlockInput::BlockInput(int f, int r, int n, ostream &s) :
-	BlockIO(f,r,n,s) { }
+BlockInput::BlockInput(int f, int r, int n,
+		       FITSErrorHandler errhandler) :
+	BlockIO(f,r,n,errhandler) { }
 
-BlockOutput::BlockOutput(const char *f, int r, int n, ostream &s) :
-	BlockIO(f,O_WRONLY|O_CREAT|O_TRUNC,r,n,s) { }
+BlockOutput::BlockOutput(const char *f, int r, int n, 
+			 FITSErrorHandler errhandler) :
+	BlockIO(f,O_WRONLY|O_CREAT|O_TRUNC,r,n,errhandler) { }
 
-BlockOutput::BlockOutput(int f, int r, int n, ostream &s) :
-	BlockIO(f,r,n,s) { }
+BlockOutput::BlockOutput(int f, int r, int n, 
+			 FITSErrorHandler errhandler) :
+	BlockIO(f,r,n,errhandler) { }

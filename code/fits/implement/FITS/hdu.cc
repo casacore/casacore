@@ -1,5 +1,5 @@
 //# hdu.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,26 +36,30 @@
 //============================================================================
 
 template <class TYPE>
-PrimaryArray<TYPE>::PrimaryArray(FitsInput &f, ostream &e ) : 
-	HeaderDataUnit(f,FITS::PrimaryArrayHDU,e) {
+PrimaryArray<TYPE>::PrimaryArray(FitsInput &f, 
+				 FITSErrorHandler errhandler) : 
+	HeaderDataUnit(f,FITS::PrimaryArrayHDU,errhandler) {
 	pa_assign(); // assign values from keyword list
 }
 
 template <class TYPE>
-PrimaryArray<TYPE>::PrimaryArray(FitsInput &f, FITS::HDUType t, ostream &e ) : 
-	HeaderDataUnit(f,t,e) {
+PrimaryArray<TYPE>::PrimaryArray(FitsInput &f, FITS::HDUType t, 
+				 FITSErrorHandler errhandler) : 
+	HeaderDataUnit(f,t,errhandler) {
 	pa_assign(); // assign values from keyword list
 }
 
 template <class TYPE>
-PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, ostream &e ) :
-	HeaderDataUnit(k,FITS::PrimaryArrayHDU,e,0) {
+PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, 
+				 FITSErrorHandler errhandler) :
+	HeaderDataUnit(k,FITS::PrimaryArrayHDU,errhandler,0) {
 	pa_assign(); // assign values from keyword list
 }
 
 template <class TYPE>
-PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, FITS::HDUType t, ostream &e ) :
-	HeaderDataUnit(k,t,e,0) {
+PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, FITS::HDUType t, 
+				 FITSErrorHandler errhandler) :
+	HeaderDataUnit(k,t,errhandler,0) {
 	pa_assign(); // assign values from keyword list
 }
 
@@ -623,14 +627,16 @@ void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
 //============================================================================
 
 template <class TYPE>
-ImageExtension<TYPE>::ImageExtension(FitsInput &f, ostream &e ) : 
-	PrimaryArray<TYPE>(f,FITS::ImageExtensionHDU,e) {
+ImageExtension<TYPE>::ImageExtension(FitsInput &f, 
+				     FITSErrorHandler errhandler) : 
+	PrimaryArray<TYPE>(f,FITS::ImageExtensionHDU,errhandler) {
 	ie_assign();
 }
 
 template <class TYPE>
-ImageExtension<TYPE>::ImageExtension(FitsKeywordList &k, ostream &e) :
-	PrimaryArray<TYPE>(k,FITS::ImageExtensionHDU,e) {
+ImageExtension<TYPE>::ImageExtension(FitsKeywordList &k, 
+				     FITSErrorHandler errhandler) :
+	PrimaryArray<TYPE>(k,FITS::ImageExtensionHDU,errhandler) {
 	ie_assign();
 }
 
@@ -655,14 +661,15 @@ void ImageExtension<TYPE>::ie_assign() {
 //============================================================================
 
 template <class TYPE>
-PrimaryGroup<TYPE>::PrimaryGroup(FitsInput &f, ostream &e ) : 
-	PrimaryArray<TYPE>(f,FITS::PrimaryGroupHDU,e) {
+PrimaryGroup<TYPE>::PrimaryGroup(FitsInput &f, FITSErrorHandler errhandler) : 
+	PrimaryArray<TYPE>(f,FITS::PrimaryGroupHDU,errhandler) {
 	pg_assign();
 }
 
 template <class TYPE>
-PrimaryGroup<TYPE>::PrimaryGroup(FitsKeywordList &k, ostream &e) :
-	PrimaryArray<TYPE>(k,FITS::PrimaryGroupHDU,e) {
+PrimaryGroup<TYPE>::PrimaryGroup(FitsKeywordList &k, 
+				 FITSErrorHandler errhandler) :
+	PrimaryArray<TYPE>(k,FITS::PrimaryGroupHDU,errhandler) {
 	pg_assign();
 }
 
