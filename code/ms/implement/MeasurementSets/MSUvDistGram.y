@@ -45,7 +45,6 @@ using namespace casa;
 
 %token <str> UNIT
 %token EQASS
-%token <ival> NUMBER
 %token <dval> FNUMBER
 %token SQUOTE
 %token DASH
