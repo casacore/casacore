@@ -903,18 +903,17 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                   inChunkTrc2D(k) = inChunkBlc2D(k);
                } 
             }
+//
 /*
             if (itsShowLevel>0) {
-               cerr << "inChunkBlc2D, inChunkTrc2D " << inChunkBlc2D << inChunkTrc2D << endl;
+               cerr << "inChunkBlc2D, inChunkTrc2D, inChunk2DShape " << inChunkBlc2D 
+                    << inChunkTrc2D << inChunk2DShape << endl;
             }
 */
-//
-//            const Matrix<T>& inDataChunk2D = inDataChunk(inChunkBlc2D, inChunkTrc2D).nonDegenerate();
             const Matrix<T> inDataChunk2D = inDataChunk(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape);
             Matrix<Bool>* inMaskChunk2DPtr = 0;
             if (inIsMasked) {
                inMaskChunk2DPtr = 
-//                  new Matrix<Bool>((*inMaskChunkPtr)(inChunkBlc2D, inChunkTrc2D).nonDegenerate());
                   new Matrix<Bool>((*inMaskChunkPtr)(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape));
             }
 
@@ -1409,8 +1408,8 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 
 // Iterate through output image by line
 
-   static Vector<Bool> dummyInMask(nLine, True);
    Bool goodIsTrue = True;
+   Bool extrapolate = False;
    Vector<Bool> dummyOutMask(nLine);
    for (outIter.reset(); !outIter.atEnd(); outIter++) {
       const IPosition& outPos = outIter.position();
@@ -1426,87 +1425,42 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
          inPos(i) = outPos(pixelAxisMap(i));
       }
       const Vector<T>& inY = inLattice.getSlice(inPos, inSubShape, True);
-      if (itsShowLevel>1) cerr << "inPos=" << inPos << endl;
-      if (itsShowLevel>1) cerr << "inY=" << inY << endl;
+      const Vector<Bool>& inMask = inLattice.getMaskSlice(inPos, inSubShape, True);
+
+      if (itsShowLevel>1) {
+         cerr << "inPos=" << inPos << endl;
+         cerr << "inY=" << inY << endl;
+         cerr << "inY=" << inMask << endl;
+      }
 //
-      if (inIsMasked) {
-
-// We must AND the coordinate conversion failure vector and the 
-// actual mask.  Take short cuts where we can.
-
-         if (allGood) {
-            const Vector<Bool>& inMask = 
-               (inLattice.getMaskSlice(inPos, inSubShape, True));
-            if (itsShowLevel>1) {
-               cerr << "inMask=" << inMask << endl;
-            }
-            if (outIsMasked) {
-               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        outMaskIterPtr->rwVectorCursor(),
-                                                        outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue, False);
-            } else {
-               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        dummyOutMask,
-                                                        outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue, False);
-            }
+      if (allGood) {
+         if (outIsMasked) {
+            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+                                                     outMaskIterPtr->rwVectorCursor(),
+                                                     outX, inX, inY, inMask,
+                                                     method1D, goodIsTrue, extrapolate);
          } else {
-            const Vector<Bool>& inMask = 
-               (failed && inLattice.getMaskSlice(inPos, inSubShape, True));
-            if (itsShowLevel>1) {
-               cerr << "inMask=" << inMask << endl;
-            }
-            if (outIsMasked) {
-               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        outMaskIterPtr->rwVectorCursor(),
-                                                        outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue, False);
-            } else {
-               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        dummyOutMask,
-                                                        outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue, False);
-            }
+            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+                                                     dummyOutMask,
+                                                     outX, inX, inY, inMask,
+                                                     method1D, goodIsTrue, extrapolate);
          }
       } else {
 
-// We need to use the extrapolate=False flag in the interpolator, so we
-// always need an input mask.
+// AND the coordinate conversion success vector and the input mask
 
-
-         if (allGood) {
-            const Vector<Bool>& inMask = dummyInMask;
-            if (itsShowLevel>1) {
-               cerr << "inMask=" << inMask << endl;
-            }
-            if (outIsMasked) {
-               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        outMaskIterPtr->rwVectorCursor(),
-                                                        outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue, False);
-            } else {
-               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        dummyOutMask,
-                                                        outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue, False);
-            }
+         if (outIsMasked) {
+            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+                                                     outMaskIterPtr->rwVectorCursor(),
+                                                     outX, inX, inY, 
+                                                    (failed && inMask),
+                                                     method1D, goodIsTrue, extrapolate);
          } else {
-            const Vector<Bool>& inMask = (failed && dummyInMask);
-            if (itsShowLevel>1) {
-               cerr << "inMask=" << inMask << endl;
-            }
-            if (outIsMasked) {
-               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        outMaskIterPtr->rwVectorCursor(),
-                                                        outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue, False);
-            } else {
-               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        dummyOutMask,
-                                                        outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue, False);
-            }
+            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+                                                     dummyOutMask,
+                                                     outX, inX, inY, 
+                                                    (failed && inMask),
+                                                     method1D, goodIsTrue, extrapolate);
          }
       }
 //
