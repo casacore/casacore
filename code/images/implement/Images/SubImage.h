@@ -1,5 +1,5 @@
 //# SubImage.h: A (masked) subset of an ImageInterface object
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -225,6 +225,13 @@ public:
 
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+
+  // Handle the (un)locking.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  // </group>
 
 private:
   //# Both pointers point to the same object.

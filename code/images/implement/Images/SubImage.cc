@@ -1,5 +1,5 @@
 //# SubImage.cc: A subset of a Image
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -363,4 +363,20 @@ LatticeIterInterface<T>* SubImage<T>::makeIter
                                (const LatticeNavigator& navigator) const
 {
   return itsSubLatPtr->makeIter (navigator);
+}
+
+template<class T>
+Bool SubImage<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return itsSubLatPtr->lock (type, nattempts);
+}
+template<class T>
+void SubImage<T>::unlock()
+{
+  itsSubLatPtr->unlock();
+}
+template<class T>
+Bool SubImage<T>::hasLock (FileLocker::LockType type) const
+{
+  return itsSubLatPtr->hasLock (type);
 }

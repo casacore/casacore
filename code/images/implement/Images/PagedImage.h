@@ -46,7 +46,6 @@ class LogTable;
 template <class T> class Array;
 template <class T> class LatticeIterInterface;
 class String;
-class TableLock;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -277,6 +276,13 @@ public:
 
   // Report on cache success
   void showCacheStatistics(ostream &os) const;
+
+  // Handle the (un)locking.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  // </group>
 
 private:  
   // the default constructor -- useless.

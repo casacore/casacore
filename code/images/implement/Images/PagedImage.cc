@@ -739,4 +739,20 @@ void PagedImage<T>::setTableType()
     if (info.subType() != reqdSubType)
       info.setSubType(reqdSubType);
   }
-};
+}
+
+template<class T>
+Bool PagedImage<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return table_p.lock (type, nattempts);
+}
+template<class T>
+void PagedImage<T>::unlock()
+{
+  table_p.unlock();
+}
+template<class T>
+Bool PagedImage<T>::hasLock (FileLocker::LockType type) const
+{
+  return table_p.hasLock (type);
+}
