@@ -89,6 +89,16 @@ void doIt (const LCRegion& region,
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete prismcop;
       }
+      {
+        // Test ordered equality.
+        LCExtension prism2(prism);
+        AlwaysAssertExit (prism2 == prism);
+      }
+      {
+        // Test unordered equality.
+        LCExtension prism2 (region, axes, blc, trc-1, latticeShape);
+        AlwaysAssertExit (prism2 != prism);
+      }
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } end_try;
@@ -116,8 +126,8 @@ main()
 	      IPosition(3,12,20,14));
 	doIt (polygon, IPosition(2,0,2), IPosition(2,2,0), IPosition(2,3,2),
 	      IPosition(4,20,12,10,14));
-	// Error; trc outside lattice.
-	doIt (polygon, IPosition(1,2), IPosition(1,2), IPosition(1,3),
+	// Trc outside lattice, is silently adjusted
+	doIt (polygon, IPosition(1,2), IPosition(1,2), IPosition(1,5),
 	      IPosition(3,12,14,3));
 	// Error; lattice axes lengths mismatch (15 should be 14).
 	doIt (polygon, IPosition(1,1), IPosition(1,2), IPosition(1,3),
@@ -130,8 +140,8 @@ main()
 	      IPosition(4,12,20,14,3));
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
-	return 1;
+	exit(1);
     } end_try;
     cout << "OK" << endl;
-    return 0;
+    exit(0);
 }
