@@ -1,5 +1,5 @@
 //# StArrayFile.cc: Read/write array in external format for a storage manager
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,9 +114,9 @@ Bool StManArrayFile::flush (Bool)
 	put (version_p);
 	iofil_p->write (1, &leng_p);
 	hasPut_p = False;
-	return True;
 	file_p->flush();
 	setpos (leng_p);
+	return True;
     }
     return False;
 }
@@ -254,7 +254,7 @@ uInt StManArrayFile::putShape (const IPosition& shape, Int64& offset,
 {
     uInt n = putRes (shape, offset, sizeuInt_p);
     uInt nr = shape.product();
-    Block<uInt> data(nr, 0);
+    Block<uInt> data(nr, 0u);
     put (offset+n, 0, nr, data.storage());
     return n;
 }

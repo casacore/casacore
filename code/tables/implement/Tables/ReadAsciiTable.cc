@@ -1000,7 +1000,7 @@ String ReadAsciiTable::doRun (const String& headerfile, const String& filein,
     ifstream jFile;
     Path headerPath(headerfile);
     String hdrName = headerPath.expandedName();
-    jFile.open(hdrName, ios::in);
+    jFile.open(hdrName.chars(), ios::in);
     if (! jFile) {
         throw (AipsError ("Cannot open header file " + hdrName));
     }
@@ -1050,7 +1050,7 @@ String ReadAsciiTable::doRun (const String& headerfile, const String& filein,
         jFile.close();
 	Path filePath(filein);
 	String fileName = filePath.expandedName();
-	jFile.open(fileName, ios::in);
+	jFile.open(fileName.chars(), ios::in);
 	if (! jFile) {
 	    throw (AipsError ("Cannot open input file " + fileName));
 	}

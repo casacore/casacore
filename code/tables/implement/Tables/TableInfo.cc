@@ -1,5 +1,5 @@
 //# TableInfo.cc: Table type, subtype and further info
-//# Copyright (C) 1996,1997,1999,2001
+//# Copyright (C) 1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,7 +45,7 @@ TableInfo::TableInfo (const String& fileName)
     if (! file.exists()) {
 	return;
     }
-    ifstream os(file.path().expandedName(), ios::in);
+    ifstream os(file.path().expandedName().chars(), ios::in);
     char buf[1025];
     int  len;
     if (! os.getline (buf, 1024)) {              // Type = string
@@ -116,7 +116,7 @@ TableInfo::~TableInfo()
 void TableInfo::flush (const String& fileName)
 {
     if (writeIt_p) {
-	ofstream os(Path(fileName).expandedName(), ios::out);
+	ofstream os(Path(fileName).expandedName().chars(), ios::out);
 	os << "Type = " << type_p << endl;
 	os << "SubType = " << subType_p << endl;
 	os << endl;
