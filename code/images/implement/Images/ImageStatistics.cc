@@ -45,8 +45,10 @@
 #include <aips/Measures/QMath.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
+#include <aips/Utilities/LinearSearch.h>
+#include <aips/Utilities/String.h>
+
 
 
 #include <iostream.h>
@@ -1598,16 +1600,17 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 {
 // Work out what we are plotting
 
-   const Bool doMean  = ToBool(ImageUtilities::inVector(Int(MEAN), statsToPlot_p) != -1);
-   const Bool doSigma = ToBool(ImageUtilities::inVector(Int(SIGMA), statsToPlot_p) != -1);
-   const Bool doVar   = ToBool(ImageUtilities::inVector(Int(VARIANCE), statsToPlot_p) != -1);
-   const Bool doRms   = ToBool(ImageUtilities::inVector(Int(RMS), statsToPlot_p) != -1);
-   const Bool doSum   = ToBool(ImageUtilities::inVector(Int(SUM), statsToPlot_p) != -1);
-   const Bool doSumSq = ToBool(ImageUtilities::inVector(Int(SUMSQ), statsToPlot_p) != -1);
-   const Bool doMin   = ToBool(ImageUtilities::inVector(Int(MIN), statsToPlot_p) != -1);
-   const Bool doMax   = ToBool(ImageUtilities::inVector(Int(MAX), statsToPlot_p) != -1);
-   const Bool doNPts  = ToBool(ImageUtilities::inVector(Int(NPTS), statsToPlot_p) != -1);
-
+   const uInt n = statsToPlot_p.nelements();
+   Bool doMean, doSigma, doVar, doRms, doSum, doSumSq, doMin, doMax, doNPts;
+   linearSearch(doMean, statsToPlot_p, Int(MEAN), n);
+   linearSearch(doSigma, statsToPlot_p, Int(SIGMA), n);
+   linearSearch(doVar, statsToPlot_p, Int(VARIANCE), n);
+   linearSearch(doRms, statsToPlot_p, Int(RMS), n);
+   linearSearch(doSum, statsToPlot_p, Int(SUM), n);
+   linearSearch(doSumSq, statsToPlot_p, Int(SUMSQ), n);
+   linearSearch(doMin, statsToPlot_p, Int(MIN), n);
+   linearSearch(doMax, statsToPlot_p, Int(MAX), n);
+   linearSearch(doNPts, statsToPlot_p, Int(NPTS), n);
 
    Bool none;
    Bool first = True;

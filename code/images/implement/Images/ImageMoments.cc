@@ -46,6 +46,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <aips/Arrays/ArrayPosIter.h>
 
 #include <trial/Coordinates/CoordinateUtil.h>
@@ -376,9 +377,10 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
 
 // Assign Boooools
 
-   doWindow_p = ToBool(ImageUtilities::inVector(WINDOW, methodU)!=-1);
-   doFit_p    = ToBool(ImageUtilities::inVector(FIT, methodU)!=-1);
-   doAuto_p   = ToBool(ImageUtilities::inVector(INTERACTIVE, methodU)==-1);
+   linearSearch(doWindow_p, methodU, Int(WINDOW), methodU.nelements());
+   linearSearch(doFit_p, methodU, Int(FIT), methodU.nelements());
+   linearSearch(doAuto_p, methodU, Int(INTERACTIVE), methodU.nelements());
+   doAuto_p  = ToBool(!doAuto_p);
 
    return True;
 }
@@ -1045,7 +1047,8 @@ Bool ImageMoments<T>::checkMethod ()
 
 // Only can have the median coordinate under certain conditions
    
-   if (ImageUtilities::inVector(MEDIAN_COORDINATE, moments_p) != -1) {
+   Bool found;
+   if(linearSearch(found, moments_p, Int(MEDIAN_COORDINATE), moments_p.nelements()) != -1) {
       Bool noGood = False;
       if (doWindow_p || doFit_p || doSmooth_p) {
          noGood = True;
@@ -1337,8 +1340,9 @@ void ImageMoments<T>::makePSF (Array<T>& psf,
 // Work out the shape of the PSF.
 
    IPosition psfShape(psfDim);
+   Bool found;
    for (i=0,k=0; i<psfDim; i++) {
-      if (ImageUtilities::inVector(Int(i), smoothAxes_p)==-1) {
+      if (linearSearch(found, smoothAxes_p, Int(i), smoothAxes_p.nelements())==-1) {
          psfShape(i) = 1;
       } else {
          if (kernelTypes_p(k) == GAUSSIAN) { 
@@ -1366,7 +1370,8 @@ void ImageMoments<T>::makePSF (Array<T>& psf,
 
    for (i=0,k=0; i<psfDim; i++) {
 
-      if (ImageUtilities::inVector(Int(i), smoothAxes_p)==-1) {
+      if(linearSearch(found, smoothAxes_p, Int(i), smoothAxes_p.nelements())==-1) {
+
 
 // If this axis is not in the user's list, make the shape
 // of the PSF array 1
@@ -1568,9 +1573,10 @@ MaskedImage<T>* ImageMoments<T>::smoothImage (String& smoothName)
       CoordinateSystem psfCSys = pInImage_p->coordinates();
       Int coordinate, axisInCoordinate, worldAxis, pixelAxis;
       Vector<Double> refPix(smoothAxes_p.nelements());
+      Bool found;
       Int i;
       for (i=0,pixelAxis=0; pixelAxis<Int(psfCSys.nPixelAxes()); pixelAxis++) {
-         if (ImageUtilities::inVector(pixelAxis, smoothAxes_p) == -1) {
+         if(linearSearch(found, smoothAxes_p, pixelAxis, smoothAxes_p.nelements())==-1) {
             psfCSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
             worldAxis = psfCSys.worldAxes(coordinate)(axisInCoordinate);
 
