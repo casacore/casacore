@@ -122,14 +122,14 @@ heapSort    Ascending   (no duplicates)
 >>> Timing:         0.26 real        0.03 user           0 system
 <<<
   random array  :  Indirect / direct
-<<< Resulting number may vary
+>>> Resulting number may vary
     2411
 <<<
 >>> Timing:         0.03 real        0.03 user           0 system
 <<<
 >>>
     2411
-<<< Resulting number may vary
+>>> Resulting number may vary
 >>> Timing:         0.02 real        0.02 user           0 system
 <<<
   equal array   :  Indirect / direct
@@ -162,14 +162,14 @@ insSort     Ascending   (no duplicates)
 >>> Timing:         3.31 real        1.27 user           0 system
 <<<
   random array  :  Indirect / direct
-<<< Resulting number may vary
+>>> Resulting number may vary
     2411
 <<<
 >>> Timing:         1.49 real        0.77 user           0 system
 <<<
 >>>
     2411
-<<< Resulting number may vary
+>>> Resulting number may vary
 >>> Timing:          1.1 real        0.61 user           0 system
 <<<
   equal array   :  Indirect / direct
@@ -202,14 +202,14 @@ quickSort   Ascending   (no duplicates)
 >>> Timing:            0 real           0 user           0 system
 <<<
   random array  :  Indirect / direct
-<<< Resulting number may vary
+>>> Resulting number may vary
     2411
 <<<
 >>> Timing:         0.13 real        0.02 user           0 system
 <<<
 >>>
     2411
-<<< Resulting number may vary
+>>> Resulting number may vary
 >>> Timing:         0.01 real        0.01 user           0 system
 <<<
   equal array   :  Indirect / direct
@@ -350,14 +350,14 @@ heapSort    Descending   (no duplicates)
 >>> Timing:         0.02 real        0.02 user           0 system
 <<<
   random array  :  Indirect / direct
-<<< Resulting number may vary
+>>> Resulting number may vary
     2411
 <<<
 >>> Timing:         0.03 real        0.03 user           0 system
 <<<
 >>>
     2411
-<<< Resulting number may vary
+>>> Resulting number may vary
 >>> Timing:         0.02 real        0.02 user           0 system
 <<<
   equal array   :  Indirect / direct
@@ -390,14 +390,14 @@ insSort     Descending   (no duplicates)
 >>> Timing:            0 real           0 user           0 system
 <<<
   random array  :  Indirect / direct
-<<< Resulting number may vary
+>>> Resulting number may vary
     2411
 <<<
 >>> Timing:         0.73 real        0.73 user           0 system
 <<<
 >>>
     2411
-<<< Resulting number may vary
+>>> Resulting number may vary
 >>> Timing:         0.57 real        0.57 user           0 system
 <<<
   equal array   :  Indirect / direct
@@ -430,14 +430,14 @@ quickSort   Descending   (no duplicates)
 >>> Timing:            0 real           0 user           0 system
 <<<
   random array  :  Indirect / direct
-<<< Resulting number may vary
+>>> Resulting number may vary
     2411
 <<<
 >>> Timing:         0.02 real        0.02 user           0 system
 <<<
 >>>
     2411
-<<< Resulting number may vary
+>>> Resulting number may vary
 >>> Timing:            0 real           0 user           0 system
 <<<
   equal array   :  Indirect / direct
