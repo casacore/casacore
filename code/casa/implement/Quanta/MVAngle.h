@@ -112,7 +112,7 @@ class MUString;
 //	  <li> <7 : ddd.mm.ss
 //	  <li> >6 : with precision-6 t's added
 //	</ul> 
-//	comparable for time. <note> The added periods are to enable input
+//	comparable for time. <note role=tip> The added periods are to enable input
 //	checking of the format. Look at the 'clean' types to bypass them.
 //	</note>
 //	The output format can be modified with modifiers (specify as
@@ -160,7 +160,7 @@ class MUString;
 // The format set holds for all MVAngle output on all streams.<br>
 // Temporary formats (i.e. for one MVAngle output only), can be set by
 // outputting a format (i.e. <src> stream << MVAngle::Format() << ... </src>).
-// <note> A setFormat() will also reset any lingering temporary format.
+// <note role=caution> A setFormat() will also reset any lingering temporary format.
 // A setFormat(getFormat()) will reset without changing. Problems could
 // arise in parallel processors. </note>
 // Input can be read if the values are in any of the above (non-clean) output
@@ -191,6 +191,23 @@ class MUString;
 //	5..259		5deg + 259arcsec
 //	5.259a		5.259 * pi * 2 *365.25 rad (normalised)
 // </srcblock>
+// <note role=caution> In general the input will be read as a Quantity.
+// Reading of Quantities will always try to read special formats (like 
+// MVAngle, MVTime) first. In
+// that case problems could arise converting strings like 5d, 5::, 5hm, 5dm.
+// In 'angle' mode they could have meant to be
+// 5d0m, 5:0:, 5h0m, 5d0m, but they could have
+// meant: days, min, hectometre, decimetre. In the same vain 5d2 could have
+// meant 5d2m or 5 d<sup>2</sup>.
+// To try to guess the general use, the following interpretation is made:
+// <ul>
+//   <li> 5d, 5:: == 5deg, 5h0m; make float (like 5.d) to make it days/min
+//   <li> 5dm, 5hm == decimetre, hectometre; use 5d0m 5h0m for
+//		angle
+//   <li> 5d2, 5h2, 5:2 == 5d2m, 5h2m, 5:2:; use float 5 or explicit () for
+//		other interpretation 
+// </ul>
+// </note>
 // </synopsis>
 //
 // <example>
