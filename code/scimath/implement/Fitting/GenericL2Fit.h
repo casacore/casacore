@@ -236,7 +236,6 @@ template<class T> class LQGenericL2Fit : public FitLSQ {
   // so that derivatives with respect to the adjustable parameters
   // can be calculated.  The current values of the "available" parameters
   // of the function are taken as the initial guess for the non-linear fitting.
-  // <group>
   void setFunction(Function<typename FunctionTraits<T>::DiffType> &function);
 
   // Set the collinearity factor as the square of the sine of the
