@@ -154,6 +154,7 @@ void b()
     showHyper (td, "TSMExample9");
     showHyper (td, "TSMExample10");
     showHyper (td, "TSMExample11");
+    td.show();
 }
 
 void excpDesc()
