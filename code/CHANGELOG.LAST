@@ -59,3 +59,21 @@ change id: 0150
 Added public methods almafuvrd(), almatifuvrd() and private
 method loadalmauvfits() to benchmark.g.  Updated documentation
 in benchmark.help.
+
+change id: 0151
+ author:   Raymond Rusk
+ date:     2003/04/14
+ avers:    1.8
+ area:     Library
+ package:  trial
+ module:   MeasurementEquations
+ type:     Code Test
+ category: New
+ summary:  Performance profiling of AIPS++ simulator
+Tim Cornwell requested profiling be done on his script sim.g.
+Added test programs tSimulator.cc and tSimulatorEND.cc
+for profiling DOsimulator.cc.  Found most of the time
+spent in FORTRAN fft routines.  Some parts of sim.g had
+no C++ counterpart.  Overall glish and C++ timings found
+to be very similar since compute-intensive parts are done
+in C++.
