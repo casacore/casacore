@@ -281,6 +281,8 @@ public:
     // for row i.
     TableExprNodeSet (uInt n, const TableExprNodeSetElem&);
 
+    TableExprNodeSet(const TableExprNodeSet &);
+
     ~TableExprNodeSet();
     
     // Add an element to the set.
