@@ -280,7 +280,7 @@ void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
     td.addColumn(ScalarColumnDesc<Double>("FDELT"));
     td.addColumn(ScalarColumnDesc<Double>("FREQRES"));
     td.addColumn(ScalarColumnDesc<Int>("IF_CONV_CHAIN"));
-    SetupNewTable newTab("",td,Table::New);
+    SetupNewTable newTab("",td,Table::Scratch);
     theCache_p = new Table(newTab, TableLock::PermanentLocking);
     AlwaysAssert(theCache_p, AipsError);
 
