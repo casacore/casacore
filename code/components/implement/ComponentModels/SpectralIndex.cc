@@ -151,6 +151,10 @@ void SpectralIndex::spectralParameters(Vector<Double> & spectralParms) const {
 Bool SpectralIndex::fromRecord(String & errorMessage, 
 			       const GlishRecord & record) {
   {
+    if (!record.exists("reference")) {
+      errorMessage += "\nThe 'spectrum' record must have an 'reference' field";
+      return False;
+    }
     MeasureParameterAccessor<MFrequency> mpa(String("reference"),
 					     ParameterSet::In, 
 					     (GlishRecord *) &record);
