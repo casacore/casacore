@@ -153,11 +153,13 @@ template <class T>
 void AutoDiff<T>::operator+=(const AutoDiff<T> &other) {
   if (other.rep_p->nd_p != 0) {
     if (rep_p->nd_p == 0) {
+      T v = rep_p->val_p;
       release();
       rep_p = pool.get(other.rep_p->nd_p);
       for (uInt i=0; i<rep_p->nd_p; i++) {
 	rep_p->grad_p[i] = other.rep_p->grad_p[i];
       };
+      rep_p->val_p = v;
     } else {
       for (uInt i=0; i<rep_p->nd_p ; i++) {
 	rep_p->grad_p[i] += other.rep_p->grad_p[i];
