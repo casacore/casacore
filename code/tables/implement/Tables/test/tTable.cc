@@ -498,6 +498,35 @@ void b (Bool doExcp)
     }
     ROScalarColumn<Int> expr2ab(expr2tab, "ab");
     cout << expr2ab.getColumn() << endl;
+
+    // Test persistency of reference tables.
+    // When RefTable::renameColumn is fine, the lines starting with ///
+    // should be outcommented and the lines ending with /// removed.
+    {
+        Table ex1tab = tab(tab.col("ab") > 5);
+///	ex1tab.renameColumn ("abnew", "ab");
+///	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
+	AlwaysAssertExit (ex1tab.tableDesc().isColumn ("ab"));  ///
+///	ROScalarColumn<Int> abcol(ex1tab, "abnew");
+	ROScalarColumn<Int> abcol(ex1tab, "ab");                ///
+	cout << abcol.getColumn() << endl;
+	cout << ">>>" << endl;
+	ex1tab.rename ("tTable_tmp.ex1", Table::New);
+	cout << "<<<" << endl;
+    }
+    {
+        Table ex1tab ("tTable_tmp.ex1");
+///	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
+	AlwaysAssertExit (ex1tab.tableDesc().isColumn ("ab"));  ///
+///	ROScalarColumn<Int> abcol(ex1tab, "abnew");
+	ROScalarColumn<Int> abcol(ex1tab, "ab");                ///
+///	Table ex2tab = ex1tab (ex1tab.col("abnew") > 6);
+	Table ex2tab = ex1tab (ex1tab.col("ab") > 6);
+///	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("ab"));
+	AlwaysAssertExit (ex2tab.tableDesc().isColumn ("ab"));  ///
+///	ROScalarColumn<Int> abcol2(ex2tab, "abnew");
+	ROScalarColumn<Int> abcol2(ex2tab, "ab");               ///
+    }
 }
 
 //# Test deletion of rows, array of Strings, and some more.
@@ -559,9 +588,12 @@ void c (Bool doExcp)
 	} end_try;
     }
 
+    // Rename a column. It'll be renamed back later.
+    tab.renameColumn ("acnew", "ac");
+
     ScalarColumn<Int> ab1(tab,"ab");
     ROScalarColumn<Int> ab2(tab,"ab");
-    ScalarColumn<Int> ac (tab,"ac");
+    ScalarColumn<Int> ac (tab,"acnew");
     ScalarColumn<uInt> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
@@ -591,6 +623,9 @@ void c (Bool doExcp)
     }
     ag1.putColumn (ad);
     arrf -= (float)(arrf.nelements()*tab.nrow());
+
+    // Rename the column back.
+    tab.renameColumn ("ac", "acnew");
 
     //# Select some rows from the table.
     Table expr2tab = tab(tab.col("af") == "V3"  ||

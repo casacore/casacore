@@ -1,5 +1,5 @@
 //# tTableDesc.cc: Test program for the TableDesc class
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -314,7 +314,7 @@ void c (Bool doExcp) {
     cout << endl;
 }
 
-void d (Bool)
+void d (Bool doExcp)
 {
     // Create a new description.
     TableDesc td("tTableDesc_tmp1", TableDesc::New);
@@ -335,6 +335,29 @@ void d (Bool)
 
     // Extend the comment.
     td.rwColumnDesc("colint").comment() += " addition";
+
+    // Rename the column and back.
+    td.renameColumn ("colintnew", "colint");
+    AlwaysAssertExit (td.isColumn ("colintnew"));
+    AlwaysAssertExit (! td.isColumn ("colint"));
+    td.renameColumn ("colint", "colintnew");
+    AlwaysAssertExit (! td.isColumn ("colintnew"));
+    AlwaysAssertExit (td.isColumn ("colint"));
+
+    // Rename to already existing column must fail.
+    // Also a non-existing column cannot be renamed.
+    if (doExcp) {
+	try {
+	    td.renameColumn ("colint2", "colint");
+	} catch (AipsError x) {
+	    cout << x.getMesg() << endl;
+	} end_try;
+	try {
+	    td.renameColumn ("colintnew", "colintxxx");
+	} catch (AipsError x) {
+	    cout << x.getMesg() << endl;
+	} end_try;
+    }
 
     // Define a keyword for the table.
     td.rwKeywordSet().define ("tab_key1", "this is a string");
