@@ -1,5 +1,5 @@
 //# ConvertScalar.h: Templated functions to convert scalars
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@
 
 // <group name="Scalar conversion">
 template<class T, class F> inline void convertScalar (T& out, F in)
-  { out = in; }
+  { out = static_cast<T>(in); }
 inline void convertScalar (Complex& out, DComplex in)
   { out = Complex(in.real(), in.imag()); }
 // </group>
