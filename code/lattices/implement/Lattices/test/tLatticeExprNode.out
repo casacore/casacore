@@ -284,6 +284,18 @@ pa
  Float Array
  Double Scalar
  Double Array
+mask
+ Float Scalar 1
+ Float Scalar 2
+ Float Array
+ Bool Scalar
+ Bool Array
+value
+ Float Scalar 1
+ Float Scalar 2
+ Float Array
+ Bool Scalar
+ Bool Array
 replace
  Float Scalar
  Float Array
@@ -638,6 +650,18 @@ pa
  Float Array
  Double Scalar
  Double Array
+mask
+ Float Scalar 1
+ Float Scalar 2
+ Float Array
+ Bool Scalar
+ Bool Array
+value
+ Float Scalar 1
+ Float Scalar 2
+ Float Array
+ Bool Scalar
+ Bool Array
 replace
  Float Scalar
  Float Array
@@ -992,6 +1016,18 @@ pa
  Float Array
  Double Scalar
  Double Array
+mask
+ Float Scalar 1
+ Float Scalar 2
+ Float Array
+ Bool Scalar
+ Bool Array
+value
+ Float Scalar 1
+ Float Scalar 2
+ Float Array
+ Bool Scalar
+ Bool Array
 replace
  Float Scalar
  Float Array
