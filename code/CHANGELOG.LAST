@@ -1,0 +1,14 @@
+
+change id: 0002
+ author:   Wim Brouw
+ date:     2002/12/12
+ avers:    1.8
+ area:     Tool
+ package:  trial
+ module:   measures
+ type:     Code Documentation
+ category: New
+ summary:  Added uvw and derivative calculations
+A touvw() to calculate uvw coordinates and their time derivative uvw-dot have been added to the measures tool ('dm').
+Methods in aid: asbaseline(position) to make a baseline from a position; and 'expand' to make baseline based values from telescope based values were added as well.
+Please indicate any other wish for interfaceing.
