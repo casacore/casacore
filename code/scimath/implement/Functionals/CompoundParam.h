@@ -113,8 +113,8 @@ template<class T> class NQCompoundParam : public Function<T> {
   //# Operators
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &operator[](const uInt n);
-  const T &operator[](const uInt n) const;
+  virtual T &operator[](const uInt n);
+  virtual const T &operator[](const uInt n) const;
   // </group>
   
   //# Member functions
@@ -132,7 +132,7 @@ template<class T> class NQCompoundParam : public Function<T> {
   const Function<T> &function(uInt which) const {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]); };
-  const Function<T> &function(uInt which) {
+  Function<T> &function(uInt which) {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]); };
   // </group>
@@ -148,13 +148,13 @@ template<class T> class NQCompoundParam : public Function<T> {
   // (e.g. to indicate whether the parameter should be adjusted or not).
   // Note no index check.
   // <group>
-  Bool &mask(const uInt n);
-  Bool mask(const uInt n) const;
+  virtual Bool &mask(const uInt n);
+  virtual const Bool &mask(const uInt n) const;
   // </group>
   // Return the parameter interface
   // <group>
-  const FunctionParam<T> &parameters() const;
-  FunctionParam<T> &parameters();
+  virtual const FunctionParam<T> &parameters() const;
+  virtual FunctionParam<T> &parameters();
   // </group>
 
 private:

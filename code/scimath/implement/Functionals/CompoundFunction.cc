@@ -34,8 +34,6 @@
 template<class T>
 T NQCompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   T tmp(0);
-  for (uInt i = 0; i< nFunctions(); ++i) {
-    tmp += (function(i))(x);
-  };
+  for (uInt i = 0; i< nFunctions(); ++i) tmp += (function(i))(x);
   return tmp;
 }

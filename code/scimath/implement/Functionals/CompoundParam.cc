@@ -135,7 +135,7 @@ Bool &NQCompoundParam<T>::mask(const uInt n) {
 }
 
 template <class T>
-Bool NQCompoundParam<T>::mask(const uInt n) const {
+const Bool &NQCompoundParam<T>::mask(const uInt n) const {
   fromParam_p();
   return (*functionPtr_p[funpar_p[n]]).mask(locpar_p[n]);
 }
