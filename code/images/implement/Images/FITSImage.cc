@@ -62,6 +62,8 @@ FITSImage::FITSImage (const String& name)
   pPixelMask_p(0)
 {
    if (name_p.empty()) throw(AipsError("Given file name is empty"));
+   Path path(name_p);
+   String fullName = path.absoluteName();
 
 // Fish things out of the FITS file
 
@@ -72,7 +74,7 @@ FITSImage::FITSImage (const String& name)
    Int recno;
    Int recsize;          // Should be 2880 bytes (unless blocking used)
    getImageAttributes(cSys, shape, imageInfo, brightnessUnit, rec_p, 
-                      recsize, recno, name_p);
+                      recsize, recno, fullName);
 
 // set ImageInterface data
 
@@ -105,7 +107,7 @@ FITSImage::FITSImage (const String& name)
    if (shape.nelements()>0) tileShape_p(0) = shape(0);
    if (shape.nelements()>1) tileShape_p(1) = shape(1);
    pTiledFile_p = 
-      new TiledFileAccess(name_p, fileOffset, shape, tileShape_p,
+      new TiledFileAccess(fullName, fileOffset, shape, tileShape_p,
                           TpFloat, maxCacheSize, writable, canonical);
 
 // Shares the pTiledFile_p pointer
