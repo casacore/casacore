@@ -1,5 +1,5 @@
 //# ArrayUtil.cc: Utility functions for arrays (non-templated)
-//# Copyright (C) 1995,1999
+//# Copyright (C) 1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,4 +73,44 @@ Vector<String> stringToVector (const String& string, const Regex& delim)
     vec.resize (nr+1, True);
     vec(nr) = String (s+pos, sl - pos);
     return vec;
+}
+
+
+uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
+			 const IPosition& shape, const IPosition& newAxisOrder)
+{
+  uInt ndim = shape.nelements();
+  // Get the remaining axes forming mapping of new to old axes.
+  // It also checks if axes are specified correctly.
+  IPosition toOld = IPosition::makeAxisPath (ndim, newAxisOrder);
+  // Create the mapping from old to new axes.
+  // Create the new shape and the volume for each dimension.
+  // Check if axes are really reordered.
+  IPosition toNew(ndim);
+  newShape.resize (ndim);
+  IPosition volume(ndim+1, 1);
+  uInt contAxes = ndim;
+  for (uInt i=0; i<ndim; i++) {
+    uInt oldAxis = toOld(i);
+    toNew(oldAxis) = i;
+    newShape(i) = shape(oldAxis);
+    volume(i+1) = volume(i) * newShape(i);
+    if (contAxes == ndim  &&  oldAxis != i) {
+      contAxes = i;
+    }
+  }
+  // Create an array which determines how to increment in the result
+  // when incrementing an axis of the input array.
+  incr.resize (ndim);
+  // The increment in the first dimension is the volume of the axes
+  // that get in front of the originally first axis.
+  incr(0) = volume(toNew(0));
+  // The increment in the other axes is the difference between the
+  // last item in the previous dimension and the first one in the next.
+  for (uInt i=1; i<ndim; i++) {
+    uInt prevAxis = toNew(i-1);
+    uInt newAxis = toNew(i);
+    incr(i) = volume(newAxis) - volume(prevAxis+1);
+  }
+  return contAxes;
 }
