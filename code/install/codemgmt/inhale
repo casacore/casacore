@@ -3,7 +3,7 @@
 # inhale: Retrieve and install the latest AIPS++ update
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999,2000,2001
+#   Copyright (C) 1992-1997,1999,2000,2001,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -27,9 +27,9 @@
 #                          520 Edgemont Road
 #                          Charlottesville, VA 22903-2475 USA
 #
-#-----------------------------------------------------------------------------
-# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-P] [-R NAME] [-r #] [-w #]
-#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------
+# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-P] [-R NAME] [-r #] [-w #] binary
+#-----------------------------------------------------------------------------------
 # inhale retrieves the latest AIPS++ update from the master ftp directories on
 # aips2.nrao.edu.  It is invoked regularly as a cron job.
 #
@@ -56,6 +56,8 @@
 #   -r #   Maximum number of ftp attempts, default 12.
 #          Set this to zero to circumvent the ftp.
 #   -w #   Set retry interval for the ftp in seconds, default 900.
+#   binary This retrieves the latest stable/linux_gnu binary from aips2.nrao.edu
+#          it sets the -b and -n options so a build will not happen.
 #
 # Status return values correspond to the various phases of the operation
 #    0:  success
@@ -172,11 +174,17 @@
   FTPLIMIT=12
   FTPINTVL=900
   PASSIVEFTP=
+  BINARY=
 
   while [ "$#" -gt 0 ]
   do
      case $1 in
      -b)
+        BLESSED=1
+        ;;
+     binary)
+        BINARY=1
+        TARGETS=install
         BLESSED=1
         ;;
      -c)
@@ -237,7 +245,7 @@
      *)
         exec 1>&2
         echo ""
-        echo "Usage: inhale [-c|-m] [-d] [-n] [-l] [-P] [-r #] [-w #]"
+        echo "Usage: inhale [-b|-c|-m] [-d] [-n] [-l] [-P] [-r #] [-w #] binary"
         exit 1
         ;;
      esac
@@ -617,6 +625,12 @@
      FILES="$FILES $CUMLFILE"
   fi
 
+  # Add the blessed binary to the files list
+  if [ "$BINARY" ]
+  then
+     FILES="$FILES .blessed-binary-$MAJMIN.tar.gz"
+  fi
+
 # Log information.
   if [ "$FILES" != "" ]
   then
@@ -669,6 +683,8 @@
         if [ -f CHKSUM ]
         then
 #          Checksum verification.
+#  Hey Don't forget to add the binary file check sum
+#
            FETCH=""
            for FILE in $FILES
            do
@@ -778,13 +794,19 @@
   for FILE in $FILES
   do
      cd $SLAVTMPD
+# If we got the binary we need to unpack in $AIPSROOT
+     if [ "$FILE" = .blessed-binary-$MAJMIN.tar.gz ]
+     then
+	cd $AIPSROOT
+     fi
+
 
      echo ""
      echo "inhale: Extracting $FILE..."
 
 #    The tar log is filtered to reduce excess verbiage.
      exec 3>&1
-     TARSTAT=`(gunzip --force --stdout $FILE | ((tar pmvxf - ; echo $? >&4) | \
+     TARSTAT=`(gunzip --force --stdout $SLAVTMPD/$FILE | ((tar pmvxf - ; echo $? >&4) | \
         sed -e 's#^.*master/#master/#' \
             -e 's#\(.*/\)\([^/]*\)#\1 \2#' \
             -e 's# bytes, .*# bytes#' | \
@@ -806,6 +828,13 @@
 
 #    Finished with the distribution file.
      rm -f $FILE
+
+#    No need to do any of this other stuff if we're a binary inhale.
+     if [ "$FILE" = .blessed-binary-$MAJMIN.tar.gz ]
+     then
+        cd $SLAVTMPD
+	break;
+     fi
 
 #    Change it to slave code.
      mv master slave
@@ -1095,6 +1124,9 @@
         continue
      fi
 
+#
+# OK here is where we put the binary extraction possibly gunzip/tar xf -
+#
 #    Determine what command to use for remote sneeze.  Default is rsh.
      RCMD=`getrc -i inhale.sneeze.$INHOST.rcmd 2> /dev/null`
      [ "$RCMD" = "" ] && RCMD=rsh
