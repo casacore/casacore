@@ -1,5 +1,5 @@
 //# FFTServer.cc: A class with methods for Fast Fourier Transforms
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -599,7 +599,7 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
     VectorIterator<S> iter((Array<S> &) cData);
     uInt lastElem = cShape(0)-1;
     while (!iter.pastEnd()) {
-      if (!near(iter.vector()(lastElem).imag(), 0.0f)) {
+      if (!near(iter.vector()(lastElem).imag(), (S)0.0)) {
 	IPosition oddLength(cShape);
 	oddLength(0) = cShape(0)*2-1;
 	return oddLength;

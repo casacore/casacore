@@ -1,5 +1,5 @@
 //# Quantum2.cc: class to manipulate phsical, dimensioned quantities
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

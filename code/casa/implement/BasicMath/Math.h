@@ -1,5 +1,5 @@
 //# Math.h: AIPS++ interface to <src><math.h></src> and other general functions
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,8 +54,9 @@
 // Some machines might have efficient versions of these (require ifdefs)
 // <group>
 #if !defined(AIPS_STDLIB)
-inline float pow(float f1, float f2) {return pow (double(f1), double(f2));}
 #endif
+inline float pow(float f1, float f2) {return pow (double(f1), double(f2));}
+inline float pow(float f1, double f2) {return pow (double(f1), f2);}
 inline int pow(int f1,int f2) {return int(pow(double(f1), double(f2)));}
 // </group>
 
