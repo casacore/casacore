@@ -84,6 +84,9 @@
 #       in it, and of course, 'tar' automatically propagates newly created
 #       directories which contain newly created files.
 #
+#    4) Known bug: exhale will break if GNU tar (gtar) is the system's
+#       default tar.  Replacing the tar option -I with -T fixes this.
+#
 # Original: 1992/04/06 by Mark Calabretta, ATNF
 # $Id$
 #=============================================================================
@@ -876,13 +879,13 @@
      rm -f $CODEFTPD/configure
 
      cd $IMPTFTPD
-     GZIP=`echo gzip-*.tar`
+     GZIPS=`echo gzip-*.tar`
      GMAKE=`echo make-*.tar.gz`
      BISON=`echo bison-*.tar.gz`
      FLEX=`echo flex-*.tar.gz`
 
      cat $TEMPCODE/install/configure | \
-     sed -e "s#__GZIP#$GZIP#" \
+     sed -e "s#__GZIP#$GZIPS#" \
          -e "s#__GMAKE#$GMAKE#" \
          -e "s#__BISON#$BISON#" \
          -e "s#__FLEX#$FLEX#" > $CODEFTPD/configure
