@@ -195,7 +195,8 @@ Bool ImageFit1D<T>::setData (const ImageRegion& region,
 
 // Average over non-profile axes 
 
-   IPosition axes = IPosition::otherAxes(subImage.ndim(), IPosition(1,itsAxis));
+   const uInt nDim = subImage.ndim();
+   IPosition axes = IPosition::otherAxes(nDim, IPosition(1,itsAxis));
    Bool dropDeg = True;
 //
    Vector<T> y;
@@ -214,13 +215,6 @@ Bool ImageFit1D<T>::setData (const ImageRegion& region,
 
    Vector<T> x;
    if (!makeAbcissa(x, abcissaType, doAbs)) return False;
-/*
-cerr << "ImageFit1D::setting data " << endl;
-cerr << "x = " << x << endl;
-cerr << "y = " << y << endl;
-*/
-
-
   
 // Set data in fitter
 
@@ -263,20 +257,24 @@ Bool ImageFit1D<T>::setAbcissaState (String& errMsg, ImageFit1D<T>::AbcissaType&
                                      CoordinateSystem& cSys, const String& xUnit,
                                      const String& doppler, uInt pixelAxis)
 {
-   Unit unit(xUnit);
    Unit unitKMS(String("km/s"));
+//
+   if (xUnit.contains(String("pix"))) {
+      type = ImageFit1D<T>::PIXEL;
+      return True;
+   }
 
 // Is the axis Spectral ?
 
    Int pAxis, wAxis, sCoord;
    CoordinateUtil::findSpectralAxis (pAxis, wAxis, sCoord, cSys);
    Bool isSpectral = (Int(pixelAxis)==pAxis);
-//
+
+// Defer unit making until now as 'pix' not a valid unit
+
    Bool ok(False);
-   if (xUnit.contains(String("pix"))) {
-      type = ImageFit1D<T>::PIXEL;
-      ok = True;
-   } else if (unit==unitKMS && isSpectral) {
+   Unit unit(xUnit);
+   if (unit==unitKMS && isSpectral) {
       ok = CoordinateUtil::setSpectralState (errMsg, cSys, xUnit, doppler);
       type = ImageFit1D<T>::VELOCITY;
    } else {
