@@ -902,7 +902,7 @@ String SpectralCoordinate::format(String& units,
 
 // Requested unit is consistent with km/s
 
-      if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
+      world.resize(nWorldAxes());
       String tunits(units);
 
 // We must convert to absolute first (regardless of how we want
