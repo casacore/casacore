@@ -1,5 +1,5 @@
 //# ArrayLogical.h: Element by element logical operations on arrays.
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,15 @@
 #if !defined(AIPS_ARRAY_LOGICAL_H)
 #define AIPS_ARRAY_LOGICAL_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/LogiArray.h>
 
+//# Forward Declarations
+template <class T> class Vector;
+template <class T> class Matrix;
+template <class T> class Cube;
 
 // <summary>
 //    Logical operations for Arrays.
@@ -152,13 +157,62 @@ template<class T> Bool allOR (const Array<T> &l, const Array<T> &r);
 // is a LogicalArray.
 // The arrays must conform or an exception is thrown.
 //
+// The Vector, Matrix and Cube version are present to bypass the problems
+// due to the existence of automatic comparison inline templates in standard
+// algorithm library, producing a single Bool value.
+//
 // <group>
-template<class T> LogicalArray operator <= (const Array<T> &l, const Array<T> &r);
-template<class T> LogicalArray operator <  (const Array<T> &l, const Array<T> &r);
-template<class T> LogicalArray operator >= (const Array<T> &l, const Array<T> &r);
-template<class T> LogicalArray operator >  (const Array<T> &l, const Array<T> &r);
-template<class T> LogicalArray operator == (const Array<T> &l, const Array<T> &r);
-template<class T> LogicalArray operator != (const Array<T> &l, const Array<T> &r);
+template<class T> LogicalArray operator <= (const Array<T> &l,
+					    const Array<T> &r);
+template<class T> LogicalArray operator <  (const Array<T> &l,
+					    const Array<T> &r);
+template<class T> LogicalArray operator >= (const Array<T> &l,
+					    const Array<T> &r);
+template<class T> LogicalArray operator >  (const Array<T> &l,
+					    const Array<T> &r);
+template<class T> LogicalArray operator == (const Array<T> &l,
+					    const Array<T> &r);
+template<class T> LogicalArray operator != (const Array<T> &l,
+					    const Array<T> &r);
+
+
+
+#define VECLOG_LA_OP_AA(OP,TYP) \
+template<class T> \
+inline LogicalArray operator OP (const TYP <T> &l, \
+				 const TYP <T> &r) {\
+  return (dynamic_cast<const Array<T> &>(l) OP \
+	  dynamic_cast<const Array<T> &>(r)); }
+
+VECLOG_LA_OP_AA ( <=, Vector  )
+VECLOG_LA_OP_AA ( <,  Vector  )
+VECLOG_LA_OP_AA ( >=, Vector  )
+VECLOG_LA_OP_AA ( >,  Vector  )
+VECLOG_LA_OP_AA ( ==, Vector  )
+VECLOG_LA_OP_AA ( !=, Vector  )
+VECLOG_LA_OP_AA ( &&, Vector  )
+VECLOG_LA_OP_AA ( ||, Vector  )
+
+VECLOG_LA_OP_AA ( <=, Matrix  )
+VECLOG_LA_OP_AA ( <,  Matrix  )
+VECLOG_LA_OP_AA ( >=, Matrix  )
+VECLOG_LA_OP_AA ( >,  Matrix  )
+VECLOG_LA_OP_AA ( ==, Matrix  )
+VECLOG_LA_OP_AA ( !=, Matrix  )
+VECLOG_LA_OP_AA ( &&, Matrix  )
+VECLOG_LA_OP_AA ( ||, Matrix  )
+
+VECLOG_LA_OP_AA ( <=, Cube  )
+VECLOG_LA_OP_AA ( <,  Cube  )
+VECLOG_LA_OP_AA ( >=, Cube  )
+VECLOG_LA_OP_AA ( >,  Cube  )
+VECLOG_LA_OP_AA ( ==, Cube  )
+VECLOG_LA_OP_AA ( !=, Cube  )
+VECLOG_LA_OP_AA ( &&, Cube  )
+VECLOG_LA_OP_AA ( ||, Cube  )
+
+#undef VECLOG_LA_OP_AA
+
 template<class T> LogicalArray near(const Array<T> &l, const Array<T> &r,
 				    Double tol);
 template<class T> LogicalArray nearAbs(const Array<T> &l, const Array<T> &r,
@@ -333,6 +387,5 @@ template<class T> Bool anyOR (const T &val, const Array<T> &array);
 
 
 // </group>
-
 
 #endif
