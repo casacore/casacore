@@ -57,6 +57,7 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/OS/File.h>
+#include <aips/OS/HostInfo.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/IncrementalStMan.h>
@@ -235,10 +236,23 @@ void MSFitsInput::readFitsFile(Int obsType)
           
   // fill the OBSERVATION table
   fillObsTables();
-          
-  // fill the main table
-  fillMSMainTable(nField, nSpW);
+  
 
+  Int totMem=HostInfo::memoryTotal();
+  // 8 bytes per complex number and the other data like flag, weight is 
+  // is 1/2 of the total 
+  Int estMem= priGroup_p.gcount()*max(1, nIF_p)/1024*nPixel_p(getIndex(coordType_p,"STOKES"))*nPixel_p(getIndex(coordType_p,"FREQ"))*8*2;
+
+  
+  // fill the main table
+  if(estMem < totMem){
+    //fill column wise and keep columns in memory
+    fillMSMainTableColWise(nField, nSpW);
+  }
+  else{
+    //else fill row wise
+    fillMSMainTable(nField, nSpW);
+  }
   // now handle the BinaryTable extensions for the subtables
   Bool haveAn=False, haveField=False, haveSpW=False;
 
@@ -643,8 +657,313 @@ void MSFitsInput::fillObsTables() {
 }
 
 //
+
 // Extract the data from the PrimaryGroup object and stick it into
 // the MeasurementSet 
+// keep the arrays of data in memory before dumping them in columns
+void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW)
+{
+  itsLog << LogOrigin("MSFitsInput", "fillMSMainTable");
+  // Get access to the MS columns
+  MSColumns& msc(*msc_p);
+  const Regex trailing(" *$"); // trailing blanks
+
+  // get the random group parameter names
+  Int nParams;
+  Int nGroups;
+  nParams= priGroup_p.pcount(); 
+  nGroups = priGroup_p.gcount(); 
+  Vector<String> pType(nParams);
+  for (Int i =0; i < nParams; i++) {
+    pType(i) = priGroup_p.ptype(i); 
+    pType(i) = pType(i).before(trailing);
+  }
+  Int totRows=nGroups*max(1, nIF_p);
+
+  Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
+  Int nChan = nPixel_p(getIndex(coordType_p,"FREQ"));
+  
+  Cube<Complex> vis(nCorr,nChan,totRows);
+  Matrix<Float> sigma(nCorr, totRows);
+  Cube<Float> weightSpec(nCorr, nChan,totRows);
+  Matrix<Float> weight(nCorr,totRows);
+  const Int nCat = 3; // three initial categories
+  // define the categories
+  Vector<String> cat(nCat);
+  cat(0)="FLAG_CMD";
+  cat(1)="ORIGINAL"; 
+  cat(2)="USER"; 
+  msc.flagCategory().rwKeywordSet().define("CATEGORY",cat);
+  Cube<Bool> flagCat(nCorr,nChan,nCat,False);
+  //  Matrix<Bool> flag = flagCat.xyPlane(0); // references flagCat's storage
+  Cube<Bool> flag(nCorr, nChan, totRows);
+  // find out the indices for U, V and W, there are several naming schemes
+  Int iU,iV,iW;
+  iU = getIndexContains(pType,"UU"); 
+  iV = getIndexContains(pType,"VV");
+  iW = getIndexContains(pType,"WW");
+  if (iU < 0 || iV < 0 || iW < 0) {
+    throw(AipsError("MSFitsInput: Cannot find UVW information"));
+  }
+  // get index for baseline
+  Int iBsln = getIndex(pType, "BASELINE");
+  // get indices for time
+  Int iTime0 = getIndex(pType, "DATE",0);
+  Int iTime1 = getIndex(pType, "DATE",1);
+  // get index for source
+  Int iSource = getIndex(pType, "SOURCE");
+  // get index for Freq
+  Int iFreq = getIndex(pType, "FREQSEL");
+
+  // get index for Integration time
+  Int iInttim = getIndex(pType, "INTTIM");
+
+  receptorAngle_p.resize(1);
+  nAnt_p=0;
+  itsLog << LogIO::NORMAL << "Reading and writing " << nGroups
+     << " visibility groups"<< LogIO::POST;
+  Int row=-1;
+  Double interval, exposure;
+  interval=0.0; exposure=0.0;
+
+  // ProgressMeter meter(0.0, nGroups*1.0, "UVFITS Filler", "Groups copied", "",// 		      "", True,  nGroups/100);
+ 
+
+  Matrix<Double> uvw(3,totRows);
+
+  // Remember last-filled values for TSM use
+  Int lastFillArrayId, lastFillFieldId, lastFillScanNumber;
+  lastFillArrayId=-1; lastFillFieldId=-1, lastFillScanNumber=0;
+  Double lastFillTime=0;
+
+  // Keep track of array-specific scanNumbers, FieldIds and FreqIds
+  Vector<Int> scanNumber(1);
+  Vector<Int> lastFieldId(1), lastFreqId(1);
+  scanNumber=0; lastFieldId=-1, lastFreqId=-1;
+
+  Int fixToRow=-1;
+  Bool lastRowFlag=False;
+  Vector<Int> ant1(totRows);
+  Vector<Int> ant2(totRows);
+  Vector<Double> interv(totRows);
+  Vector<Double> expos(totRows);
+  Vector<Int> datDescId(totRows);
+
+  ms_p.addRow(totRows);
+  Int nif=max(1,nIF_p);
+
+  // Loop over groups
+  for (Int group=0; group<nGroups; group++) {
+
+    // Read next group and
+    priGroup_p.read();
+
+    // Extract time in MJD seconds
+    const Double JDofMJD0=2400000.5;
+    Double time = priGroup_p.parm(iTime0); 
+    time -= JDofMJD0;
+    if (iTime1>=0) time += priGroup_p.parm(iTime1);
+    time  *= C::day; 
+
+    // Extract fqid 
+    Int freqId = Int(priGroup_p.parm(iFreq));
+
+    // Extract field Id
+    Int fieldId = 0;
+    if (iSource>=0) {
+      // make 0-based
+      fieldId = (Int)priGroup_p.parm(iSource) - 1; 
+    }
+    Float baseline = priGroup_p.parm(iBsln); 
+    Int arrayId = Int(100.0*(baseline - Int(baseline)+0.001));
+    nArray_p = max(nArray_p,arrayId+1);
+    for(Int k=0; k < nif; ++k){
+
+      Int index=group*nif+k;
+      // Extract uvw
+      uvw(0,index) = priGroup_p.parm(iU) * C::c;
+      uvw(1,index) = priGroup_p.parm(iV) * C::c;
+      uvw(2,index) = priGroup_p.parm(iW) * C::c;
+      // Convert from units of seconds to meters
+      
+      ant1(index) = Int(baseline)/256; 
+      nAnt_p = max(nAnt_p,ant1(index));
+      ant2(index) = Int(baseline) - ant1(index)*256; 
+      nAnt_p = max(nAnt_p,ant2(index));
+      ant1(index)--; ant2(index)--; // make 0-based
+    }
+    // Ensure arrayId-specific params are of correct length:
+    if (scanNumber.shape()<nArray_p) {
+      scanNumber.resize(nArray_p,True);
+      lastFieldId.resize(nArray_p,True);
+      lastFreqId.resize(nArray_p,True);
+      scanNumber(nArray_p-1)=0;
+      lastFieldId(nArray_p-1)=-1;
+      lastFreqId(nArray_p-1)=-1;
+    }
+
+    // Detect new scan (field or freqid change) for each arrayId
+    if (fieldId!=lastFieldId(arrayId) || 
+	freqId!=lastFreqId(arrayId) ||
+        time-lastFillTime > 300.0 ) {
+      scanNumber(arrayId)++;
+      lastFieldId(arrayId)=fieldId;
+      lastFreqId(arrayId)=freqId;
+    }
+
+    // If integration time is a RP, use it:
+    if (iInttim > -1) {
+      exposure = priGroup_p.parm(iInttim);
+      interval = exposure;
+    } else {
+      // keep track of minimum which is the only one
+      Double tempint;
+      tempint=time-lastFillTime;
+      // if interval larger than UVFITS precision (and zero):
+      if (tempint > 0.01) {
+	interval=tempint;
+        // assume exposure=interval (wrong for pulsar gating!)
+        exposure=interval;
+      }
+    }
+
+    // Work out which axis increments fastests, pol or channel
+    // The COMPLEX axis is assumed to be first, and the IF axis is assumed
+    // to be after STOKES and FREQ.
+    Bool polFastest = (getIndex(coordType_p,"STOKES")<
+		       getIndex(coordType_p,"FREQ"));
+    const Int nx = (polFastest ? nChan : nCorr);
+    const Int ny = (polFastest ? nCorr : nChan);
+
+    Int count = 0;
+    for (Int ifno=0; ifno < nif ; ifno++) {
+      // IFs go to separate rows in the MS 
+      row++;
+
+      // fill in values for all the unused columns
+      if (row==0) {
+ 	msc.feed1().put(row,0);
+ 	msc.feed2().put(row,0);
+ 	msc.flagRow().put(row,False);
+ 	lastRowFlag=False;
+ 	msc.processorId().put(row,-1);
+ 	msc.observationId().put(row,0);
+ 	msc.stateId().put(row,-1);
+      }
+
+      // Fill scanNumber if changed since last row
+      if (scanNumber(arrayId)!=lastFillScanNumber) {
+ 	msc.scanNumber().put(row,scanNumber(arrayId));
+        lastFillScanNumber=scanNumber(arrayId);
+      }
+
+      weight.column(row).set(0.0);
+      
+      // Loop over chans and corrs:
+      for (Int ix=0; ix<nx; ix++) {
+	for (Int iy=0; iy<ny; iy++) {
+ 	  const Float visReal = priGroup_p(count++);
+ 	  const Float visImag = priGroup_p(count++);
+ 	  const Float wt = priGroup_p(count++); 
+	  const Int pol = (polFastest ? corrIndex_p[iy] : corrIndex_p[ix]);
+	  const Int chan = (polFastest ? ix : iy);
+ 	  if (wt <= 0.0) {
+	    weightSpec(pol, chan, row) = abs(wt);
+	    flag(pol, chan, row) = True;
+	  } else {
+	    weightSpec(pol, chan, row) = wt;
+	    flag(pol, chan, row) = False;
+            // weight column is sum of weight_spectrum (each pol):
+            weight(pol,row)+=wt;
+	  }
+	  vis(pol, chan, row) = Complex(visReal, visImag);
+ 	}
+      }
+      
+      // calculate sigma (weight = inverse variance)
+      for (Int nc=0; nc<nCorr; nc++) {
+        if (weight(nc, row)>0.0) {
+	  sigma(nc, row)=sqrt(1.0/weight(nc, row));
+	} else {
+	  sigma(nc, row)=0.0;
+	}
+      }
+
+      interv(row)=interval;
+      expos(row)=exposure;
+      Bool rowFlag=allEQ(flag.xyPlane(row),True);
+      if (rowFlag!=lastRowFlag) {
+	msc.flagRow().put(row,rowFlag);
+ 	lastRowFlag=rowFlag;
+      }
+
+      if (arrayId!=lastFillArrayId) {
+ 	msc.arrayId().put(row,arrayId);
+ 	lastFillArrayId=arrayId;
+      }
+      // Always put antenna1 & antenna2 since it is bound to the
+      // aipsStMan and is assumed to change every row
+      //     msc.antenna1().put(row,ant1);
+      //     msc.antenna2().put(row,ant2);
+      if (time!=lastFillTime) {
+ 	msc.time().put(row,time);
+ 	msc.timeCentroid().put(row,time);
+	// the second integration: record row number
+	if (fixToRow==-2) fixToRow=row-1;
+	// the first integration: get ready to record row number 
+	if (lastFillTime==0) fixToRow=-2;
+ 	lastFillTime=time;
+      }
+      
+      // determine the spectralWindowId
+      Int spW = ifno;
+      if (iFreq>=0) {
+ 	spW = (Int)priGroup_p.parm(iFreq) - 1; // make 0-based
+ 	if (nIF_p>0) {
+ 	  spW *=nIF_p; 
+ 	  spW+=ifno;
+ 	}
+      }
+      nSpW = max(nSpW, spW+1);
+
+      // Always put DDI (SSM) since it might change rapidly
+      //   msc.dataDescId().put(row,spW);
+      datDescId[row]=spW;
+      // store the fieldId 
+      if (fieldId!=lastFillFieldId) {
+ 	msc.fieldId().put(row,fieldId);
+ 	nField = max(nField, fieldId+1);
+ 	lastFillFieldId=fieldId;
+      }
+    }
+  }
+
+  // If determining interval on-the-fly, fill interval/exposure columns
+  //  now:
+  if (interval==0.0) {
+    msc.interval().fillColumn(exposure);
+    msc.exposure().fillColumn(exposure);
+  }
+  else{
+    msc.interval().putColumn(interv);
+    msc.exposure().putColumn(expos);
+  }
+  msc.uvw().putColumn(uvw);
+  msc.antenna1().putColumn(ant1);
+  msc.antenna2().putColumn(ant2);
+  msc.dataDescId().putColumn(datDescId);
+  msc.data().putColumn(vis);
+  msc.weight().putColumn(weight);
+  msc.sigma().putColumn(sigma);
+  msc.weightSpectrum().putColumn(weightSpec); 
+  msc.flag().putColumn(flag);
+  // fill the receptorAngle with defaults, just in case there is no AN table
+  receptorAngle_p=0;
+}
+
+// Extract the data from the PrimaryGroup object and stick it into
+// the MeasurementSet 
+// Doing it row by row
 void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 {
   itsLog << LogOrigin("MSFitsInput", "fillMSMainTable");
@@ -958,6 +1277,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   //  dmWeight.showCacheStatistics(cout);
   //  cout << "---------------------------------------------------" << endl;
 }
+
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt)
 {

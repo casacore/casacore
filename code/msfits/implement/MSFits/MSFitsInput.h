@@ -211,6 +211,9 @@ protected:
   void fillObsTables();
 
   // Fill the main table from the Primary group data
+  // if we have enough memory try to do it in mem
+  void fillMSMainTableColWise(Int& nField, Int& nSpW);
+  //else do it row by row
   void fillMSMainTable(Int& nField, Int& nSpW);
 
   // Read a binary table extension of type AIPS AN and create an antenna table
