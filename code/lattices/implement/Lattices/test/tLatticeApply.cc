@@ -102,8 +102,7 @@ main (int argc, char *argv[])
 	LatticeIterator<Int> iter(lat, tileShape);
 	Timer tim;
 	for (iter.reset(); !iter.atEnd(); iter++, arr += tileShape.product()) {
-	    iter.cursor() = arr;
-	    iter.writeCursor();
+	    iter.woCursor() = arr;
 	}
 	tim.show();
     }
