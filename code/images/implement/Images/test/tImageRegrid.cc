@@ -1,5 +1,5 @@
 //# tImageRegrid.cc: This program test Measure functionsimage regridding
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -47,7 +47,6 @@
 #include <trial/Mathematics/Interpolate2D.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/strstream.h>
 #include <aips/iostream.h>
 
 

@@ -1,5 +1,5 @@
 //# tMemoryStMan.cc: Test program for the MemoryStMan storage manager
-//# Copyright (C) 2003
+//# Copyright (C) 2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -44,7 +44,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
 
 // <summary>
 // Test program for the MemoryStMan storage manager
