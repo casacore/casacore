@@ -147,7 +147,7 @@
 // <dd>is FLT_MAX for Float and complex Types and DBL_MAX for Double and
 // DComplex data types.
 // </dl>
-// See the <linkto class="struct C ">Constants</linkto> structure for the
+// See the <linkto class="C">Constants</linkto> class for the
 // values of these variables.
 // </example>
 //
