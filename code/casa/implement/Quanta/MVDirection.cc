@@ -244,17 +244,22 @@ Double MVDirection::positionAngle(const MVPosition &other) const {
 }
 
 Double MVDirection::positionAngle(const MVDirection &other) const {
-  Vector<Double> t1(2);
-  Vector<Double> t2(2);
-  t1 = get();
-  t2 = other.get();
-  Double s1, c1;
-  Double df(t1(0) - t2(0));
-  Double c2(cos(t2(1)));
-  c1 = cos(t1(1)) * sin(t2(1)) - sin(t1(1)) * c2 * cos(df);
-  s1 = -c2 * sin(df);
-  if (s1 != 0 || c1 != 0) return atan2(s1, c1);
-  else return Double(0.0);
+  const Double long1 = (xyz(0)!=0.0 || xyz(1)!=0.0) 
+                     ? atan2(xyz(1), xyz(0)) 
+                     : 0.0;
+  const Double lat1 = asin(xyz(2));
+  const Vector<Double>& otherxyz = other.getValue();
+  const Double long2 = (otherxyz(0)!=0.0 || otherxyz(1)!=0.0) 
+                     ? atan2(otherxyz(1), otherxyz(0))
+                     : 0.0;
+  const Double lat2 = asin(otherxyz(2));
+
+  const Double longdiff = long1 - long2;
+  const Double clat2 = cos(lat2);
+  const Double s1 = -clat2 * sin(longdiff);
+  const Double c1 = cos(lat1) * sin(lat2) - sin(lat1)*clat2*cos(longdiff);
+  if (s1 != 0.0 || c1 != 0.0) return atan2(s1, c1);
+  return 0.0;
 }
 
 Quantity MVDirection::positionAngle(const MVPosition &other, 
@@ -280,12 +285,12 @@ Double MVDirection::separation(const MVPosition &other) const {
 }
 
 Double MVDirection::separation(const MVDirection &other) const {
-  Vector<Double> t1(3);
-  t1 = this->getValue();
-  t1 -= other.getValue();
-  Double d1 = norm(t1)/2.0;
+  const Vector<Double>& otherxyz = other.getValue();
+  Double d1 = sqrt(square(xyz(0) - otherxyz(0)) + 
+		   square(xyz(1) - otherxyz(1)) +
+		   square(xyz(2) - otherxyz(2)))/2.0; 
   d1 = (d1 < 1.0 ? d1 : 1.0);
-  return (2*asin(d1));
+  return 2.0*asin(d1);
 }
 
 Quantity MVDirection::separation(const MVPosition &other, 
