@@ -371,7 +371,7 @@ void PagedImage<T>::doReopenRW()
 template<class T>
 const LatticeRegion* PagedImage<T>::getRegionPtr() const
 {
-    return regionPtr_p;
+  return regionPtr_p;
 }
 
 template<class T>
@@ -383,8 +383,8 @@ void PagedImage<T>::setDefaultMask (const String& regionName)
   }
   // Reopen for write when needed and possible.
   reopenRW();
-  // Use the new region as the image's region.
-  makeRegion (regionName);
+  // Use the new region as the image's mask.
+  applyMask (regionName);
   // Store the new default name.
   RegionHandler::setDefaultMask (table_p, regionName);
 }
@@ -398,30 +398,34 @@ String PagedImage<T>::getDefaultMask() const
 template<class T>
 void PagedImage<T>::applyDefaultMask()
 {
-  makeRegion (getDefaultMask());
+  applyMask (getDefaultMask());
 }
 
 template<class T>
-void PagedImage<T>::makeRegion (const String& regionName)
+void PagedImage<T>::applyMask (const String& maskName)
 {
-  // Reconstruct the ImageRegion object.
-  ImageRegion* regPtr = RegionHandler::makeRegion (table_p, regionName);
-  // Delete current region if no region.
-  if (regPtr == 0) {
+  // No region if no mask name is given.
+  if (maskName.empty()) {
     delete regionPtr_p;
     regionPtr_p = 0;
     return;
   }
+  // Reconstruct the ImageRegion object.
   // Turn the region into lattice coordinates.
-  regionPtr_p = new LatticeRegion(regPtr->toLatticeRegion (coordinates(),
-							   shape()));
+  ImageRegion* regPtr = RegionHandler::getRegion (table_p, maskName,
+						  RegionHandler::Masks);
+  LatticeRegion* latReg = new LatticeRegion
+                          (regPtr->toLatticeRegion (coordinates(), shape()));
   delete regPtr;
-  if (regionPtr_p->shape() != shape()) {
-    delete regionPtr_p;
-    regionPtr_p = 0;
-    throw (AipsError ("PagedImage::setDefaultMask - region " + regionName +
+  // The mask has to cover the entire image.
+  if (latReg->shape() != shape()) {
+    delete latReg;
+    throw (AipsError ("PagedImage::setDefaultMask - region " + maskName +
 		      " does not cover the full image"));
   }
+  // Replace current by new mask.
+  delete regionPtr_p;
+  regionPtr_p = latReg;
 }
 
 
@@ -714,21 +718,26 @@ Unit PagedImage<T>::units() const
 template<class T> 
 void PagedImage<T>::defineRegion (const String& name,
 				  const ImageRegion& region,
+				  RegionHandler::GroupType type,
 				  Bool overwrite)
 {
   reopenRW();
-  RegionHandler::defineRegion (table_p, name, region, overwrite);
+  RegionHandler::defineRegion (table_p, name, region, type, overwrite);
 }
 template<class T> 
-void PagedImage<T>::removeRegion (const String& name)
+void PagedImage<T>::removeRegion (const String& name,
+				  RegionHandler::GroupType type,
+				  Bool throwIfUnknown)
 {
   reopenRW();
-  RegionHandler::removeRegion (table_p, name);
+  RegionHandler::removeRegion (table_p, name, type, throwIfUnknown);
 }
 template<class T> 
-ImageRegion* PagedImage<T>::getImageRegionPtr (const String& name) const
+ImageRegion* PagedImage<T>::getImageRegionPtr (const String& name,
+				  RegionHandler::GroupType type,
+				  Bool throwIfUnknown) const
 {
-  return RegionHandler::getRegion (table_p, name);
+  return RegionHandler::getRegion (table_p, name, type, throwIfUnknown);
 }
 
 

@@ -33,7 +33,7 @@
 #include <trial/Coordinates/StokesCoordinate.h>
 
 #include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageCoord.h>
+#include <trial/Images/LELImageCoord.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/LatticeIterator.h>
 
@@ -144,20 +144,25 @@ const CoordinateSystem &ImageInterface<T>::coordinates() const
 }
 
 template <class T> 
-LatticeCoordinates ImageInterface<T>::latticeCoordinates() const
+LELCoordinates ImageInterface<T>::lelCoordinates() const
 {
-    return LatticeCoordinates (new ImageCoord (coords_p));
+    return LELCoordinates (new LELImageCoord (coords_p));
 }
 
 
 template <class T>
-void ImageInterface<T>::defineRegion (const String&, const ImageRegion&, Bool)
+void ImageInterface<T>::defineRegion (const String&, const ImageRegion&,
+				      RegionHandler::GroupType, Bool)
 {}
 template <class T>
-ImageRegion* ImageInterface<T>::getImageRegionPtr (const String&) const
+ImageRegion* ImageInterface<T>::getImageRegionPtr (const String&,
+						   RegionHandler::GroupType,
+						   Bool) const
 { return 0; }
 template <class T>
-void ImageInterface<T>::removeRegion (const String& )
+void ImageInterface<T>::removeRegion (const String&,
+				      RegionHandler::GroupType,
+				      Bool)
 {}
 template <class T>
 void ImageInterface<T>::setDefaultMask (const String&)
@@ -167,13 +172,10 @@ String ImageInterface<T>::getDefaultMask() const
 { return ""; }
 
 template <class T>
-ImageRegion ImageInterface<T>::getRegion (const String& regionName) const
+ImageRegion ImageInterface<T>::getRegion (const String& regionName,
+					  RegionHandler::GroupType type) const
 {
-    ImageRegion* regptr = getImageRegionPtr (regionName);
-    if (regptr == 0) {
-	throw (AipsError ("ImageInterface::getRegion - region " + regionName
-			  + " is unknown in image " + name()));
-    }
+    ImageRegion* regptr = getImageRegionPtr (regionName, type, True);
     ImageRegion reg(*regptr);
     delete regptr;
     return reg;
