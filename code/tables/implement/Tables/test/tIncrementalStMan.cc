@@ -89,7 +89,7 @@ main (int argc, char** argv) {
 
 void init (Cube<float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
 {
-    indgen (arrf);
+    indgen (arrf.ac());
     arrdc(0) = DComplex(1.2, 3.4);
     arrdc(1) = DComplex(-2.3, 5.6);
     IPosition shape(arrb.shape());
