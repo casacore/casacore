@@ -63,20 +63,36 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
     return node();
 }
 
-const TableExprNode* MSAntennaParse::selectAntennaName(const Vector<String>& antennaNames)
+const TableExprNode* MSAntennaParse::selectNameOrStation(const String& identifier)
 {
-    MSAntennaIndex msAI(ms()->antenna());
 
-    TableExprNode condition =
-        ms()->col(colName1).in(msAI.matchAntennaName(antennaNames)) ||
-        ms()->col(colName2).in(msAI.matchAntennaName(antennaNames));
+  Vector<Int> antennaIdsFromStation ;
+  //  Bool searchStation = True;
+  TableExprNode condition;
 
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
+  MSAntennaIndex msAI(ms()->antenna());
 
-    return node();
+  antennaIdsFromStation = msAI.matchAntennaStation(identifier);
+  cout << "antennaIdsFromStation " << antennaIdsFromStation.nelements() << endl;
+
+  if(antennaIdsFromStation.nelements() > 0) {
+    cout << "this station exists  " << endl;
+    condition = ms()->col(colName1).in(antennaIdsFromStation) ||
+      ms()->col(colName2).in(antennaIdsFromStation);
+    cout << " TableExprNode created " << endl;
+    //    searchStation = False;
+  } else {
+    cout << "this name exists  " << identifier << endl;
+    condition = ms()->col(colName1).in(msAI.matchAntennaName(identifier)) ||
+      ms()->col(colName2).in(msAI.matchAntennaName(identifier));
+  }
+  
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node();
 }
 
 const TableExprNode* MSAntennaParse::node()
