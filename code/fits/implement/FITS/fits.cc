@@ -33,6 +33,7 @@
 # include <stdlib.h>
 # include <aips/Mathematics/Constants.h>
 
+
 # include <stdio.h>
 #include <assert.h>
 
@@ -2375,8 +2376,15 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		    o << "FITS card " << (count * 36 + cardno) << ": ";
 		    o.write(&buff[i*80],80);
 		    o << "\n";
-		for (j = 0; j < kwlist.no_parse_errs(); ++j)
-		    o << "\tError: " << kwlist.parse_err(j) << "\n";
+		Bool isSevere = (strcmp(kwlist.curr()->name(),"ERROR") == 0);
+		for (j = 0; j < kwlist.no_parse_errs(); ++j) {
+		    if (isSevere) {
+			o << "\tError: ";
+		    } else {
+			o << "\tWarning: ";
+		    }
+		    o << kwlist.parse_err(j) << "\n";
+		}
 	    }
 	    if (end_found) {
 		if (kwlist.curr()->isreserved() && 
@@ -2387,7 +2395,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		    if (no_errs_ < max_errs) {
 		    	o << "FITS card " << (count * 36 + cardno) << ": ";
 		    	o.write(&buff[i*80],80);
-		    	o << "\n\tError: Invalid card after END keyword.\n";
+		    	o << "\n\tWarning: Invalid card after END keyword.\n";
 		    }
 		}
 	    }
