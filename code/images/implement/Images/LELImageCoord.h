@@ -31,6 +31,9 @@
 //# Includes
 #include <trial/Lattices/LELLattCoord.h>
 #include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Images/ImageInfo.h>
+#include <aips/Tables/TableRecord.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/CountedPtr.h>
 
 //# Forward Declarations
@@ -73,12 +76,22 @@ class LELImageCoord : public LELLattCoord
 public:
   LELImageCoord();
 
-  LELImageCoord (const CoordinateSystem& coords);
+  LELImageCoord (const CoordinateSystem& coords, const ImageInfo& imageInfo,
+		 const Unit& unit, const RecordInterface& miscInfo);
 
   virtual ~LELImageCoord();
 
   // Get the coordinates.
   const CoordinateSystem& coordinates() const;
+
+  // Get the ImageInfo.
+  const ImageInfo& imageInfo() const;
+
+  // Get the brightness unit.
+  const Unit& unit() const;
+
+  // Get the MiscInfo.
+  const TableRecord& miscInfo() const;
 
   // Create a SubLattice for an expression node.
   virtual LatticeExprNode makeSubLattice
@@ -119,8 +132,31 @@ public:
 
 private:
   CountedPtr<CoordinateSystem> coords_p;
+  ImageInfo   imageInfo_p;
+  Unit        unit_p;
+  TableRecord miscInfo_p;
 };
 
 
-#endif
+inline const CoordinateSystem& LELImageCoord::coordinates() const
+{
+  return *coords_p;
+}
 
+inline const ImageInfo& LELImageCoord::imageInfo() const
+{
+  return imageInfo_p;
+}
+
+inline const Unit& LELImageCoord::unit() const
+{
+  return unit_p;
+}
+
+inline const TableRecord& LELImageCoord::miscInfo() const
+{
+  return miscInfo_p;
+}
+
+
+#endif

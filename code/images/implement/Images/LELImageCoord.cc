@@ -42,17 +42,18 @@
 LELImageCoord::LELImageCoord()
 {}
 
-LELImageCoord::LELImageCoord (const CoordinateSystem& coordinates)
-: coords_p (new CoordinateSystem(coordinates))
+LELImageCoord::LELImageCoord (const CoordinateSystem& coordinates,
+			      const ImageInfo& imageInfo,
+			      const Unit& unit,
+			      const RecordInterface& miscInfo)
+: coords_p    (new CoordinateSystem(coordinates)),
+  imageInfo_p (imageInfo),
+  unit_p      (unit),
+  miscInfo_p  (miscInfo)
 {}
 
 LELImageCoord::~LELImageCoord()
 {}
-
-const CoordinateSystem& LELImageCoord::coordinates() const
-{
-  return *coords_p;
-}
 
 Bool LELImageCoord::hasCoordinates() const
 {
