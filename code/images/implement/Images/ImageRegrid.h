@@ -44,6 +44,7 @@ class DirectionCoordinate;
 class Coordinate;
 class ObsInfo;
 class IPosition;
+class Unit;
 
 // <summary>This regrids one image to match the coordinate system of another</summary>
 
@@ -188,6 +189,12 @@ public:
                  const CoordinateSystem& inCoords,
                  const CoordinateSystem& outCoords) const;
 
+  // Find scale factor to conserve flux 
+   Double findScaleFactor(const Unit& units, 
+                          const DirectionCoordinate& dirIn, 
+                          const DirectionCoordinate& dirOut,
+                          LogIO& os) const;
+
   // Regrid 2 coupled axes
   void regrid2D (MaskedLattice<T>& outLattice,
                  const MaskedLattice<T>& inLattice,   
@@ -198,7 +205,7 @@ public:
                  const Vector<Int> pixelAxisMap,
                  Interpolate2D<T>::Method method,
                  MDirection::Convert& machine,
-                 Bool useMachine, Bool showProgress);
+                 Bool useMachine, Bool showProgress, Double scale);
 
   // Regrid 1 axis
   void regrid1D (MaskedLattice<T>& outLattice,
