@@ -39,7 +39,7 @@ eval(Function<AutoDiff<T> >::FunctionArg x) const {
   if (param_p[HEIGHT].nDerivatives() > 0) tmp = param_p[HEIGHT];
   else if (param_p[CENTER].nDerivatives() > 0) tmp = param_p[CENTER];
   else if (param_p[WIDTH].nDerivatives() > 0) tmp = param_p[WIDTH];
-  T x_norm = (x[0].value() - param_p[CENTER].value())/
+  T x_norm = (x[0] - param_p[CENTER].value())/
     param_p[WIDTH].value()/fwhm2int.value();
   T exponential = exp(-(x_norm*x_norm));
   // function value

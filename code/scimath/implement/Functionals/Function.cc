@@ -29,8 +29,8 @@
 #include <aips/Functionals/Function.h>
 
 template<class T>
-T Function<T>::operator()(const T &x, const T &y) const {
-  static Vector<T> lv(2);
+T Function<T>::operator()(const ArgType &x, const ArgType &y) const {
+  static Vector<ArgType> lv(2);
   lv[0] = x; lv[1] = y;
   return this->eval(&(lv[0]));
 }

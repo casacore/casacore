@@ -46,7 +46,7 @@ eval(Function<AutoDiff<T> >::FunctionArg x) const {
   Int j = nparameters();
   tmp.value() = param_p[--j].value();
   while (--j >= 0) {
-    tmp.value() *= x[0].value();
+    tmp.value() *= x[0];
     tmp.value() += param_p[j].value();
   };
   // derivatives
@@ -55,7 +55,7 @@ eval(Function<AutoDiff<T> >::FunctionArg x) const {
     for (uInt j=0; j<param_p[i].nDerivatives(); j++) {
       tmp.deriv(j) += dev*param_p[i].deriv(j);
     };
-    dev *= x[0].value();
+    dev *= x[0];
   };
   return tmp;
 }

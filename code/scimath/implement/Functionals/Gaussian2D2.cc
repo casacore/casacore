@@ -43,8 +43,8 @@ eval(Function<AutoDiff<T> >::FunctionArg x) const {
   else if (param_p[RATIO].nDerivatives() > 0) tmp = param_p[RATIO];
   else if (param_p[PANGLE].nDerivatives() > 0) tmp = param_p[PANGLE];
 
-  T x2mean = x[0].value() - param_p[XCENTER].value();
-  T y2mean = x[1].value() - param_p[YCENTER].value();
+  T x2mean = x[0] - param_p[XCENTER].value();
+  T y2mean = x[1] - param_p[YCENTER].value();
   T xnorm = x2mean*theCpa.value() + y2mean*theSpa.value();
   T ynorm = -x2mean*theSpa.value() + y2mean*theCpa.value();
   T xnorm2 = xnorm*xnorm;

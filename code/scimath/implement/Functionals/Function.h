@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Functionals/Functional.h>
 #include <aips/Functionals/FunctionParam.h>
+#include <aips/Functionals/FunctionTraits.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 
@@ -181,12 +182,14 @@
 //   <li> use maybe Poolstack for static Vector
 // </todo>
 
-template<class T> class Function : public Functional<T, T>,
-  public Functional<Vector<T>, T> {
+template<class T> class Function :
+public Functional<typename FunctionTraits<T>::ArgType, T>,
+  public Functional<Vector<typename FunctionTraits<T>::ArgType>, T> {
 
  public:
   //# Typedefs
-  typedef const T* FunctionArg;
+  typedef typename FunctionTraits<T>::ArgType ArgType;
+  typedef const ArgType* FunctionArg;
 
   //# Constructors
   // Constructors for FunctionParam
@@ -217,13 +220,13 @@ template<class T> class Function : public Functional<T, T>,
   // <group>
   virtual T operator()() const {
     DebugAssert(ndim()==0, AipsError); return this->eval(FunctionArg(0)); };
-  virtual T operator()(const T &x) const {
+  virtual T operator()(const ArgType &x) const {
     DebugAssert(ndim()<=1, AipsError); return this->eval(&x); };
-  virtual T operator()(const Vector<T> &x) const {
+  virtual T operator()(const Vector<ArgType> &x) const {
     DebugAssert(x.contiguousStorage() && ndim()<=x.nelements(), AipsError);
     return this->eval(&(x[0])); };
   virtual T operator()(FunctionArg x) const { return this->eval(x); };
-  virtual T operator()(const T &x, const T &y) const;
+  virtual T operator()(const ArgType &x, const ArgType &y) const;
   // </group>
 
   //# Member functions
