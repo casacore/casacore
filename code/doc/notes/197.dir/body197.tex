@@ -96,7 +96,7 @@ Some of the issues we'd like you to consider are:
     file, or create one from a shape and a description. Use different
     names for these two purposes.
 
-    \item Prefer Glish object methods to global functions if
+    \item Prefer Glish tool methods to global functions if
     there are a number of related functions, even if they do not need to
     share any state.
 
@@ -167,30 +167,25 @@ Applications in glish are conveniently written in the glish closure
 object idiom. In this idiom, the object contains both publically and
 privately visible functions and data. A full blown example is the
 \htmlref{imager}{imager} module in the \htmlref{synthesis}{synthesis}
-package. A simpler example is to be seen in the
-\htmlref{tableplotter}{tableplotter} object, (in {\tt 
-trial/apps/tableplotter}) which we show here without and with support for
-parameters.
+package. A simpler example is to be seen in the example of a
+\htmlref{tableplotter}{tableplotter} tool (this does not actually 
+exist in the package):
 
 \begin{verbatim}
-if (! is_defined('tableplotter_g_included')) { # include guard
-  
-  tableplotter_g_included := 'yes';
-  
-  include "table.g";
-  include "plotter.g";
+pragma include once  
+include "table.g";
+include "plotter.g";
   
 # Constructor for a table plotter object
 const tableplotter:=function(tableplotterlogger=defaultlogger,         #1
-	        	     tableplotterplotter=defaultplotter) 
-  {
+	        	     tableplotterplotter=defaultplotter) {
     
 # Private functions and data
 #------------------------------------------------------------------------
-  self:=[=];                                                           #2
+  private:=[=];                                                           #2
 
 # Convenience function: is this vector one-dimensional?                #3
-  const self.is_1d:=function(vec) { ... };
+  const private.is_1d:=function(vec) { ... };
 
 # Public functions
 #------------------------------------------------------------------------
@@ -199,9 +194,9 @@ const tableplotter:=function(tableplotterlogger=defaultlogger,         #1
 
 # Is this object valid?                                                #4
   const public.ok:=function() {
-    if(is_boolean(self.table)) fail "need to settable";                #5
-    if(!self.is_1d(self.x.data)) fail "x is not a 1d vector";
-    if(!self.is_1d(self.y.data)) fail "y is not a 1d vector";
+    if(is_boolean(private.table)) fail "need to settable";                #5
+    if(!private.is_1d(private.x.data)) fail "x is not a 1d vector";
+    if(!private.is_1d(private.y.data)) fail "y is not a 1d vector";
     return T;
   }
 
@@ -210,12 +205,12 @@ const tableplotter:=function(tableplotterlogger=defaultlogger,         #1
 
 # set and verify x
   const public.setx:=function(x, fn=F) {
-    wider self;
-    self.x.col:=x;
-    self.x.data:=self.table.getcol(x);
-    if(is_function(fn)) self.x.data:=fn(self.x.data);
-    if(!self.is_1d(self.x.data)) fail paste("not a 1-d vector:",
-      self.x.data::shape);
+    wider private;
+    private.x.col:=x;
+    private.x.data:=private.table.getcol(x);
+    if(is_function(fn)) private.x.data:=fn(private.x.data);
+    if(!private.is_1d(private.x.data)) fail paste("not a 1-d vector:",
+      private.x.data::shape);
     return T;
   }
 
@@ -267,8 +262,8 @@ section \ref{sec:documenting}. Some comments on this code:
 \item The basic trick of a closure object is that the 
 public data and functions are attached to a record that is the returned value
 of the defining function (or constructor). The private functions are
-declared as part of a record (self) that is not visible externally.
-\item Define convenient but private functions as belonging to self.
+declared as part of a record (private) that is not visible externally.
+\item Define convenient but private functions as belonging to private.
 \item Provide a public method \texttt{ok()} that checks the
 status of the object. This returns either T if ok, or a fail
 if not ok. You should check the returned value of any method
@@ -288,7 +283,7 @@ another function guarantees a fail return some forms
 of checking can be omitted.
 
 \begin{verbatim}
-table:=function(tablename)
+tablefromname:=function(tablename)
   {
     if(!tableexist(tablename)) fail "table does not exist";
     return tableopen(tablename);
@@ -297,7 +292,7 @@ table:=function(tablename)
 vs:=function(vsname)
   {
     public:=[=];
-    result:=table(vs);
+    result:=tablefromname(vs);
     if(is_fail(result)) return result;
     public.table:=result;
     return ref table;
@@ -307,7 +302,7 @@ vs:=function(vsname)
 \item All important attributes of real classes can be simulated using
 the closure object idiom except for destructors. This means that you
 have to provide {\em and document} a method (conventionally called
-delete) that deactivates the object ({\em e.g.} deletes any open
+done) that deactivates the object ({\em e.g.} deletes any open
 objects). This has to be used before the object is destroyed by Glish
 by, for example, going out of scope. Please provide this even if it
 does nothing for your implementation. If the implementation changes it
@@ -319,48 +314,6 @@ default such object is thus defaulttableplotter. Since this is
 rather long-winded, we provide a standard abbrievation tp.
 \item If you are creating something, tell the user.
 \end{enumerate}
-
-It is often convenient to attach user parameters to glish
-objects and functions. The \htmlref{inputs}{inputs} object 
-provides a simple way to do just this. 
-
-We'll expand our example by adding publicly visible data to
-control the range and labelling for each axis:
-
-\begin{verbatim}
-  
-  include "table.g";
-  include "plotter.g";
-  include "inputs.g";
-  
-# Constructor for a table plotter object
-const tableplotter:=function(tableplotterlogger=defaultlogger,
-		       tableplotterplotter=defaultplotter) 
-  {
-    
-# Private functions and data
-#------------------------------------------------------------------------
-  ...
-
-# Public functions
-#------------------------------------------------------------------------
-  public:=[=];
-
-# Define public data
-  public.title:='tableplotter';
-  public.x:=[range=F, label="X Axis"];
-  public.y:=[range=F, label="Y Axis"];
-  
-# Add functions for inputs
-  public:=inputs(public, 'tableplotter', tableplotterlogger);
-\end{verbatim}
-
-In this design, the object is controlled by public data that can set
-directly, and by private data ({\em e.g.} the table and columns).  We
-choose public data if no checking is necessary, otherwise we use set
-functions such as settable, setx, sety to set private data. Using the
-above idiom, the public functions of inputs (get, save, show, log,
-defaults) are inherited by the tableplotter object.
 
 \input{gui197.tex}
 \input{doc197.tex}
