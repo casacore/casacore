@@ -1,5 +1,5 @@
 //# tLatticeFit.cc: test the baselineFit function
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -65,9 +65,9 @@ int main()
 		  Float(j*k)*((Array<Float>&)x)*((Array<Float>&)x);
 	    }
 	}
-	ArrayLattice<Float> inLattice(cube);
+	ArrayLattice<Float> inLattice(cube.ac());
 	Cube<Float> outCube(nx,ny,nz);
-	ArrayLattice<Float> outLattice(outCube);
+	ArrayLattice<Float> outLattice(outCube.ac());
 	baselineFit(outLattice, fittedParameters, fitter, inLattice, 0, mask, 
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 7.e-3));
@@ -93,9 +93,9 @@ int main()
 		  Float(i*k)*((Array<Float>&)x)*((Array<Float>&)x);
 	    }
 	}
-	ArrayLattice<Float> inLattice(cube);
+	ArrayLattice<Float> inLattice(cube.ac());
 	Cube<Float> outCube(nx,ny,nz);
-	ArrayLattice<Float> outLattice(outCube);
+	ArrayLattice<Float> outLattice(outCube.ac());
 	baselineFit(outLattice, fittedParameters, fitter, inLattice, 1, mask, 
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 3.e-2));
@@ -119,9 +119,9 @@ int main()
 	       }
 	     }
 	}
-	ArrayLattice<Float> inLattice(cube);
+	ArrayLattice<Float> inLattice(cube.ac());
 	Cube<Float> outCube(nx,ny,nz);
-	ArrayLattice<Float> outLattice(outCube);
+	ArrayLattice<Float> outLattice(outCube.ac());
 	baselineFit(outLattice, fittedParameters, fitter, inLattice, 2, mask, 
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 2.0e-2));
