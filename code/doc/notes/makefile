@@ -101,6 +101,7 @@ notes := -split 0
 254 := -split 0
 255 := -split 0
 256 := -split 0
+257 := -split 0
 
 # Use the generic AIPS++ documentation makefile
 #----------------------------------------------
