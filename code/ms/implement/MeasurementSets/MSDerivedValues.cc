@@ -89,7 +89,7 @@ MSDerivedValues& MSDerivedValues::setAntennaPositions(const Vector<MPosition>&
   }
   avPos/=Double(nAnt);
   mObsPos_p=mAntPos_p(0);
-  mObsPos_p.set(MVDirection(avPos));
+  mObsPos_p.set(MVPosition(avPos));
   setAntenna(0);
   return *this;
 }
