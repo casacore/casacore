@@ -27,7 +27,7 @@
 *                          Charlottesville, VA 22903-2475 USA
 *
 *-----------------------------------------------------------------------------
-* Usage: sau <file or directory> ...
+* Usage: sau <same options as au>
 *-----------------------------------------------------------------------------
 * sau is a setuid C wrapper for sau.sh.  It simply exec's a non-setuid
 * copy of au, sau.sh, allowing systems that do not support setuid shell
@@ -35,12 +35,11 @@
 * operations.  See the documentation for au for further details.
 *
 * Options:
-*    none
+*    See the documentation for au.
 *
 * Exit status:
 *   -1:  exec of sau.sh failed
-*    0:  initialization succeeded (returned by sau.sh)
-*    1:  initialization error (returned by sau.sh)
+*        All others returned by sau.sh.
 *
 * Original: 1997/09/08 by Jeff Uphoff, NRAO
 * $Id$
