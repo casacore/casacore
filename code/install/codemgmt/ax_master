@@ -5412,3 +5412,4 @@
 15 168 src mv trial/implement/aipsiosfwd.h aips/implement/aipsiosfwd.h
 15 168 src mv trial/implement/aipsiosstrfwd.h aips/implement/aipsiosstrfwd.h
 15 176 src mv trial/implement/Mathematics/IComplex2.cc aips/implement/Mathematics/IComplex.cc
+15 179 src rm npoi/implement/Cuttlefish/geoparm.g
