@@ -2066,3 +2066,4 @@
 08 254 src rm aips/glish/rivet/tkpgplot/TkPgplot.h
 08 260 src rm trial/apps/image/templates
 08 261 src rm trial/apps/image/templates
+08 264 src rm trial/implement/Display/templates
