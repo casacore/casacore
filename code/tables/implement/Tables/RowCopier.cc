@@ -62,16 +62,13 @@ private:
 
 
 ColumnHolder::ColumnHolder(Table &outTab, const Table &inTab)
-: out(outTab), in(inTab)
-{
-   ;
-}
+: in(inTab),
+  out(outTab)
+{}
 
 ColumnHolder::~ColumnHolder()
 {
-    uInt colNum;
-
-    for (colNum=0; colNum < inTabCol.nelements(); colNum++) {
+    for (uInt colNum=0; colNum < inTabCol.nelements(); colNum++) {
 	delete inTabCol[colNum];   delete outTabCol[colNum];
 	inTabCol[colNum] = 0;      outTabCol[colNum] = 0;
     }

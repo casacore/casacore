@@ -261,7 +261,7 @@ void StManColumnIndArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 void StManColumnIndArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
 {
     int dtype;
-    uInt version = ios.getstart ("StManColumnIndArrayAipsIO");
+    ios.getstart ("StManColumnIndArrayAipsIO");
     ios >> dtype;                   // for backward compatibility
     ios >> seqnr_p;
     doCreate (0);                   // open the array file

@@ -285,8 +285,8 @@ private:
     //# Now define the data members.
     String         scaleName_p;          //# name of scale column
     String         offsetName_p;         //# name of offset column
-    SourceType     offset_p;             //# offset value
     SourceType     scale_p;              //# scale factor
+    SourceType     offset_p;             //# offset value
     Bool           fixedScale_p;         //# scale is a fixed column
     Bool           fixedOffset_p;        //# scale is a fixed column
     ROScalarColumn<SourceType>* scaleColumn_p;  //# column with scale value

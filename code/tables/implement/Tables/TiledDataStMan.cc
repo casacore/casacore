@@ -165,7 +165,7 @@ void TiledDataStMan::extendHypercube (uInt incrInLastDim,
     // Check if id values are correctly given.
     // Get the hypercube using the id values.
     checkValues (idColSet_p, values);
-    uInt cubeNr = getCubeIndex (values);
+    Int cubeNr = getCubeIndex (values);
     if (cubeNr < 0) {
 	throw (TSMError ("extendHypercube with unknown id values"));
     }

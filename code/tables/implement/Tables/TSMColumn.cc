@@ -37,16 +37,16 @@
 TSMColumn::TSMColumn (TiledStMan* stman, int dataType,
 		      const String& columnName)
 : StManColumn (dataType),
-  dtype_p     (dataType),
   stmanPtr_p  (stman),
+  dtype_p     (dataType),
   name_p      (columnName),
   colPtr_p    (0)
 {}
 
 TSMColumn::TSMColumn (const TSMColumn& that)
 : StManColumn   (that.dtype_p),
-  dtype_p       (that.dtype_p),
   stmanPtr_p    (that.stmanPtr_p),
+  dtype_p       (that.dtype_p),
   name_p        (that.name_p),
   columnShape_p (that.columnShape_p),
   colPtr_p      (0)

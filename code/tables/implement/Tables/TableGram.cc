@@ -103,7 +103,8 @@ void TableGramerror (char*)
 String tableGramRemoveEscapes (const String& in)
 {
     String out;
-    for (int i=0; i<in.length(); i++) {
+    int leng = in.length();
+    for (int i=0; i<leng; i++) {
 	if (in[i] == '\\') {
 	    i++;
 	}

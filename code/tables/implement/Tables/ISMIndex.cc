@@ -69,7 +69,7 @@ void ISMIndex::addBucketNr (uInt rownr, uInt bucketNr)
 	bucketNr_p.resize (nused_p + 64);
     }
     Bool found;
-    uInt index = binarySearchBrackets (found, rows_p, rownr, (uInt)nused_p);
+    uInt index = binarySearchBrackets (found, rows_p, rownr, nused_p);
     AlwaysAssert (!found, AipsError);
     objmove (&rows_p[index+1], &rows_p[index], nused_p + 1 - index);
     objmove (&bucketNr_p[index+1], &bucketNr_p[index], nused_p - index);

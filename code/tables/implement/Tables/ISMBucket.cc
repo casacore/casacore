@@ -449,7 +449,7 @@ uInt ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     Matrix<uInt> itemLeng(nrcol, nruniq);
     itemLeng = 0;
     Block<uInt> cursor(nrcol, uInt(0));
-    uInt index;
+    uInt index = 0;
     for (j=0; j<nruniq; j++) {
 	for (i=0; i<nrcol; i++) {
 	    if (cursor[i] < indexUsed_p[i]

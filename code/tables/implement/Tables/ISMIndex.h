@@ -140,7 +140,7 @@ private:
     // Pointer to the parent storage manager.
     ISMBase*          stmanPtr_p;
     // Number of entries used.
-    Int               nused_p;
+    uInt              nused_p;
     // Rownr index (i.e. row rows_p[i] starts in bucketNr_p[i]).
     Block<uInt>       rows_p;
     // Corresponding bucket number.

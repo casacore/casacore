@@ -94,7 +94,7 @@ void TableExprRange::mixAnd (const TableExprRange& that)
     uInt nrres=0;
     Vector<double> stres (sval_p.nelements() + that.sval_p.nelements());
     Vector<double> endres(sval_p.nelements() + that.sval_p.nelements());
-    Int i,j;
+    uInt i,j;
     //# Loop through all intervals of this.
     for (i=0; i<sval_p.nelements(); i++) {
 	for (j=0; j<that.sval_p.nelements(); j++) {
@@ -124,8 +124,8 @@ void TableExprRange::mixOr (const TableExprRange& that)
     uInt nrres=0;
     Vector<double> stres (sval_p.nelements() + that.sval_p.nelements());
     Vector<double> endres(sval_p.nelements() + that.sval_p.nelements());
-    Int i;
-    Int j=0;
+    uInt i;
+    uInt j=0;
     //# Loop through all intervals of this.
     //# Store in the result, while inserting the that intervals,
     //# in order of start-value.

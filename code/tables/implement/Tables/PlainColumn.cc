@@ -87,7 +87,7 @@ ColumnCache& PlainColumn::columnCache()
 //# Its data will be read/written by the appropriate storage manager.
 //# It was felt that putstart takes too much space, so therefore
 //# the version is put "manually".
-void PlainColumn::putFile (AipsIO& ios, const String& tableName)
+void PlainColumn::putFile (AipsIO& ios, const String&)
 {
     ios << (uInt)2;                  // class version 2
     ios << originalName_p;

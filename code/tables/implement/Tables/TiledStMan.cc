@@ -49,23 +49,23 @@
 TiledStMan::TiledStMan ()
 : DataManager       (),
   nrrow_p           (0),
-  nrdim_p           (0),
-  nrCoordVector_p   (0),
+  fileSet_p         (1, (TSMFile*)0),
   persMaxCacheSize_p(0),
   maxCacheSize_p    (0),
-  fileSet_p         (1, (TSMFile*)0),
+  nrdim_p           (0),
+  nrCoordVector_p   (0),
   dataChanged_p     (False)
 {}
 
 TiledStMan::TiledStMan (const String& hypercolumnName, uInt maximumCacheSize)
 : DataManager       (),
+  hypercolumnName_p (hypercolumnName),
   nrrow_p           (0),
-  nrdim_p           (0),
-  nrCoordVector_p   (0),
+  fileSet_p         (1, (TSMFile*)0),
   persMaxCacheSize_p(maximumCacheSize),
   maxCacheSize_p    (maximumCacheSize),
-  fileSet_p         (1, (TSMFile*)0),
-  hypercolumnName_p (hypercolumnName),
+  nrdim_p           (0),
+  nrCoordVector_p   (0),
   dataChanged_p     (False)
 {}
 
@@ -105,7 +105,8 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
     double nrLeft = nrPixelsPerTile;
     Vector<double> tmpShape(nrdim);
     IPosition tileShape(nrdim, 0);
-    Int i, j;
+    uInt i;
+    Int j;
     // Iterate until the tile shape is set nicely.
     // This is needed to prevent tile shape dimensions from underflow
     // or overflow.
@@ -669,7 +670,7 @@ void TiledStMan::checkCoordinatesShapes (const TSMCube* hypercube,
     //# matches the hypercube shape.
     for (uInt i=0; i<coordColSet_p.nelements(); i++) {
 	if (coordColSet_p[i] != 0) {
-	    uInt size = hypercube->coordinateSize
+	    Int size = hypercube->coordinateSize
 		                            (coordColSet_p[i]->columnName());
 	    if (size != 0  &&  size != cubeShape(i)) {
 		throw (TSMError ("Mismatch in shape of coordinate column "

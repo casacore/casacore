@@ -193,8 +193,6 @@ void TSMCoordColumn::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
 { \
     IPosition position; \
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, position); \
-    const Array<T>& values = hypercube->valueRecord(). \
-	            aips_name2(asArray,T) (columnName()); \
     RORecordFieldPtr<Array<T> > field (hypercube->valueRecord(),columnName());\
     *dataPtr = (*field) (IPosition (1, position(axisNr_p))); \
 } \

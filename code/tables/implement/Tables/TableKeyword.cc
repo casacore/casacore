@@ -34,22 +34,22 @@
 #include <aips/OS/Path.h>
 
 TableKeyword::TableKeyword (const String& tableDescName)
-: table_p (new Table),
-  openWritable_p  (False),
+: openWritable_p  (False),
+  table_p (new Table),
   tableDescName_p (tableDescName)
 {}
 
 TableKeyword::TableKeyword (const Table& table, const String& tableDescName)
-: table_p (new Table(table)),
-  name_p  (table.tableName()),
+: name_p  (table.tableName()),
   openWritable_p  (table.isWritable()),
+  table_p (new Table(table)),
   tableDescName_p (tableDescName)
 {}
 
 TableKeyword::TableKeyword (const TableKeyword& that)
-: table_p (new Table(*that.table_p)),
-  name_p  (that.name_p),
+: name_p  (that.name_p),
   openWritable_p  (that.openWritable_p),
+  table_p (new Table(*that.table_p)),
   tableDescName_p (that.tableDescName_p)
 {}
 

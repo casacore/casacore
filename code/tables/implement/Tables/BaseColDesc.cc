@@ -184,7 +184,7 @@ void BaseColumnDesc::setShape (const IPosition& shape)
 	throw (TableInvOper ("setShape(): shape of column "
 			     + colName_p + " already defined"));
     }
-    if (nrdim_p > 0  &&  shape.nelements() != nrdim_p) {
+    if (nrdim_p > 0  &&  Int(shape.nelements()) != nrdim_p) {
 	throw (TableInvOper ("setShape(): dimensionality of column "
 			     + colName_p + " mismatches new shape"));
     }

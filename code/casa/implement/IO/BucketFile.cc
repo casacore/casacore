@@ -118,7 +118,7 @@ void BucketFile::setRW()
 
 uInt BucketFile::read (void* buffer, uInt length) const
 {
-    if (::read (fd_p, buffer, length)  !=  length) {
+    if (::read (fd_p, buffer, length)  !=  Int(length)) {
 	throw (AipsError ("BucketFile: read error on file " + name_p +
 	                  ": " + strerror(errno)));
     }
@@ -127,7 +127,7 @@ uInt BucketFile::read (void* buffer, uInt length) const
 
 uInt BucketFile::write (const void* buffer, uInt length)
 {
-    if (::write (fd_p, buffer, length)  !=  length) {
+    if (::write (fd_p, buffer, length)  !=  Int(length)) {
 	throw (AipsError ("BucketFile: write error on file " + name_p +
 	                  ": " + strerror(errno)));
     }

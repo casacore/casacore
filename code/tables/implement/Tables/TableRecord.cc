@@ -36,43 +36,43 @@
 
 TableRecord::TableRecord()
 : RecordInterface (),
-  parent_p (0),
-  rep_p    (new TableRecordRep)
+  rep_p    (new TableRecordRep),
+  parent_p (0)
 {}
 
 TableRecord::TableRecord (RecordType type,
 			  CheckFieldFunction* func, const void* checkArgument)
 : RecordInterface (type, func, checkArgument),
-  parent_p (0),
-  rep_p    (new TableRecordRep)
+  rep_p    (new TableRecordRep),
+  parent_p (0)
 {}
 	
 TableRecord::TableRecord (const RecordDesc& description,
 			  RecordType type,
 			  CheckFieldFunction* func, const void* checkArgument)
 : RecordInterface (type, func, checkArgument),
-  parent_p (0),
-  rep_p    (new TableRecordRep (description))
+  rep_p    (new TableRecordRep (description)),
+  parent_p (0)
 {}
 
 // When description is empty, TableRecord is not fixed.
 TableRecord::TableRecord (TableRecordRep* parent,
 			  const RecordDesc& description)
 : RecordInterface (description.nfields()==0 ? Variable : Fixed, 0, 0),
-  parent_p (parent),
-  rep_p    (new TableRecordRep (description))
+  rep_p    (new TableRecordRep (description)),
+  parent_p (parent)
 {}
 
 TableRecord::TableRecord (const TableRecord& other)
 : RecordInterface (other),
-  parent_p (other.parent_p),
-  rep_p    (other.rep_p)
+  rep_p    (other.rep_p),
+  parent_p (other.parent_p)
 {}
 
 TableRecord::TableRecord (const RecordInterface& other)
 : RecordInterface (other),
-  parent_p (0),
-  rep_p    (new TableRecordRep (other.description()))
+  rep_p    (new TableRecordRep (other.description())),
+  parent_p (0)
 {
     uInt n = other.nfields();
     const RecordDesc& desc = description();

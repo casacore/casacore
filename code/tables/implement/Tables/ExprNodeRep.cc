@@ -458,7 +458,7 @@ TableExprNodeRep* TableExprNodeRep::convertNode (TableExprNodeRep* thisNode,
 	return thisNode;
     }
     // Evaluate the constant subexpression and replace the node.
-    TableExprNodeRep* newNode;
+    TableExprNodeRep* newNode = 0;
     if (thisNode->valueType() == VTScalar) {
 	switch (thisNode->dataType()) {
 	case NTBool:

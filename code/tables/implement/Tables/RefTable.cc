@@ -41,9 +41,9 @@
 RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 		    const TableLock& lockOptions)
 : BaseTable    (name, opt, nrrow),
+  rowStorage_p (0),              // initially empty vector of rownrs
   nameMap_p    (""),
   colMap_p     ((RefColumn*)0),
-  rowStorage_p (0),              // initially empty vector of rownrs
   changed_p    (False)
 {
     //# Read the file in.
@@ -60,11 +60,11 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 
 RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
 : BaseTable    ("", Table::Scratch, nrall),
-  nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
   baseTabPtr_p (btp->root()),
   rowOrd_p     (order),
   rowStorage_p (nrall),       // allocate vector of rownrs
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
   changed_p    (True)
 {
     rows_p = getStorage (rowStorage_p);
@@ -81,11 +81,11 @@ RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
 
 RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
 : BaseTable    ("", Table::Scratch, rownrs.nelements()),
-  nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
   baseTabPtr_p (btp->root()),
   rowOrd_p     (True),
   rowStorage_p (0),
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
@@ -111,11 +111,11 @@ RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
 
 RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
 : BaseTable    ("", Table::Scratch, 0),
-  nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
   baseTabPtr_p (btp->root()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),              // initially empty vector of rownrs
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
@@ -139,11 +139,11 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
 
 RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
 : BaseTable    ("", Table::Scratch, btp->nrow()),
-  nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
   baseTabPtr_p (btp->root()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
   changed_p    (True)
 {
     //# Create table description by copying the selected columns.

@@ -31,8 +31,8 @@
 #include <aips/Arrays/Array.h>
 
 ROTableColumn::ROTableColumn ()
-: baseColPtr_p(0),
-  baseTabPtr_p(0)
+: baseTabPtr_p(0),
+  baseColPtr_p(0)
 {}
 
 ROTableColumn::ROTableColumn (const Table& tab, const String& columnName)

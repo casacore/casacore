@@ -265,7 +265,7 @@ void BaseTable::rename (const String& newName, int tableOption)
     }
 }
 
-void BaseTable::renameSubTables (const String& newName, const String& oldName)
+void BaseTable::renameSubTables (const String&, const String&)
 {}
 
 void BaseTable::copy (const String& newName, int tableOption) const

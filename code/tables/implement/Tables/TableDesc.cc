@@ -161,7 +161,7 @@ void TableDesc::init (const TabPath& tdpath)
     }
 
     //# Determine the AipsIO option for this file.
-    ByteIO::OpenOption fopt;
+    ByteIO::OpenOption fopt = ByteIO::Old;
     switch (option_p) {
     case TableDesc::Old:
 	fopt = ByteIO::Old;
@@ -423,7 +423,7 @@ void TableDesc::defineHypercolumn (const String& name,
 	if (cellNdim == 0) {
 	    cellNdim = desc.ndim();
 	}
-	if (cellNdim != desc.ndim()) {
+	if (Int(cellNdim) != desc.ndim()) {
 	    throwHypercolumn (name, "the dimensionality of data column " +
                    dataColumnNames(i) +
 		   " mismatches that of previous data columns");

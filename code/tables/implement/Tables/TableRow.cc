@@ -202,6 +202,8 @@ void ROTableRow::deleteObjects()
 	    delete (ROArrayColumn<String>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<String> >*)(itsFields[i]);
 	    break;
+	default:
+	    throw (TableError ("TableRow: unknown data type"));
 	}
 	itsTabCols[i] = 0;
 	itsColumns[i] = 0;
@@ -493,11 +495,11 @@ void ROTableRow::makeObjects (const RecordDesc& description,
 const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 {
     // Only read when needed.
-    if (rownr == *itsLastRow  &&  !itsReread  &&  !alwaysRead) {
+    if (Int(rownr) == *itsLastRow  &&  !itsReread  &&  !alwaysRead) {
 	return *itsRecord;
     }
     const RecordDesc& desc = itsRecord->description();
-    Int ndim;
+    Int ndim = 0;
     uInt nrfield = desc.nfields();
     for (uInt i=0; i<nrfield; i++) {
 	//# First determine if an array value is defined.
@@ -663,6 +665,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		                         Array<String> (IPosition(ndim, 0)));
 	    }
 	    break;
+	default:
+	    throw (TableError ("TableRow: unknown data type"));
 	}
     }
     *itsLastRow = rownr;
@@ -674,7 +678,7 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 // internal record. Be sure to reread when the same row is asked for.
 void ROTableRow::setReread (uInt rownr)
 {
-    if (rownr == *itsLastRow) {
+    if (Int(rownr) == *itsLastRow) {
 	*itsReread = True;
     }
 }
@@ -763,6 +767,8 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	(*(ArrayColumn<String>*)(itsColumns[whichColumn])).put
 	                        (rownr, record.asArrayString (whichField));
 	break;
+    default:
+	throw (TableError ("TableRow: unknown data type"));
     }
 }
 
@@ -852,6 +858,8 @@ void ROTableRow::putRecord (uInt rownr)
 	    (*(ArrayColumn<String>*)(itsColumns[i])).put (rownr,
 	         (*(RecordFieldPtr<Array<String> >*) itsFields[i]).get());
 	    break;
+	default:
+	    throw (TableError ("TableRow: unknown data type"));
 	}
     }
     // The values (might) have changed, which is not reflected in the

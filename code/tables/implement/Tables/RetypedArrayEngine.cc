@@ -50,8 +50,8 @@ template<class S, class T>
 RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& sourceColumnName,
 					     const String& targetColumnName)
 : BaseMappedArrayEngine<S,T> (sourceColumnName, targetColumnName),
-  isSourceFixedShape_p (False),
   shape_p    (S::shape()),
+  isSourceFixedShape_p (False),
   copyInfo_p (0)
 {}
 
@@ -61,8 +61,8 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& sourceColumnName,
 					   const IPosition& sourceShape,
 					   const TableRecord& extraInformation)
 : BaseMappedArrayEngine<S,T> (sourceColumnName, targetColumnName),
-  isSourceFixedShape_p (False),
   shape_p    (sourceShape),
+  isSourceFixedShape_p (False),
   record_p   (extraInformation),
   copyInfo_p (0)
 {}
@@ -71,8 +71,8 @@ template<class S, class T>
 RetypedArrayEngine<S,T>::RetypedArrayEngine
                                         (const RetypedArrayEngine<S,T>& that)
 : BaseMappedArrayEngine<S,T> (that),
-  isSourceFixedShape_p (False),
   shape_p    (that.shape_p),
+  isSourceFixedShape_p (False),
   record_p   (that.record_p),
   copyInfo_p (0)
 {}

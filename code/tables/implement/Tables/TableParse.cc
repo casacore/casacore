@@ -75,9 +75,11 @@ TableParse::TableParse (const TableParse& that)
 
 TableParse& TableParse::operator= (const TableParse& that)
 {
-    shorthand_p = that.shorthand_p;
-    table_p     = that.table_p;
-    table_p.makePermanent();
+    if (this != &that) {
+	shorthand_p = that.shorthand_p;
+	table_p     = that.table_p;
+	table_p.makePermanent();
+    }
     return *this;
 }
 
@@ -124,9 +126,9 @@ uInt TableParseSelect::currentSelect_p = 0;
 
 
 TableParseSelect::TableParseSelect()
-: node_p      (0),
+: resultSet_p (0),
+  node_p      (0),
   sort_p      (0),
-  resultSet_p (0),
   noDupl_p    (False)
 {
     parseList_p = new List<TableParse>;
@@ -190,7 +192,7 @@ void TableParseSelect::addTable (const TableParseVal* name,
     //# Find it in the block of temporary tables.
     if (name->type == 'i') {
 	Int tabnr = name->ival - 1;
-	if (tabnr < 0  ||  tabnr >= theTempTables->nelements()
+	if (tabnr < 0  ||  tabnr >= Int(theTempTables->nelements())
 	||  (*theTempTables)[tabnr] == 0) {
 	    throw (TableInvExpr ("Invalid temporary table number given"));
 	}
@@ -344,7 +346,7 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
     //# (needed for overloading functions min and max).
     Bool isOneArg = ToBool (arguments.nelements() == 1);
     //# Determine the function type.
-    TableExprFuncNode::FunctionType ftype;
+    TableExprFuncNode::FunctionType ftype = TableExprFuncNode::piFUNC;
     String funcName (name);
     funcName.downcase();
     if (funcName == "pi") {
@@ -526,9 +528,11 @@ TableExprNode TableParseSelect::handleLiteral (TableParseVal* val)
 	                   (DComplex (val->dval[0], val->dval[1]));
 	break;
     case 's':
+    {
 	//# A string is formed as "..."'...''...' etc.
 	//# All ... parts will be extracted and concatenated into string s.
-	while (pos < val->str.length()) {
+	int leng = val->str.length();
+	while (pos < leng) {
 	    //# Find next occurrence of leading ' or ""
 	    inx = val->str.index (val->str[pos], pos+1);
 	    if (inx < 0) {
@@ -542,6 +546,7 @@ TableExprNode TableParseSelect::handleLiteral (TableParseVal* val)
 	}
 	tsnp = new TableExprNodeConstString (s);
 	break;
+    }
     case 'd':
       {
 	MUString str (val->str);

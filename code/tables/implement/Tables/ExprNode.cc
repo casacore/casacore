@@ -227,7 +227,7 @@ TableExprNodeRep* TableExprNode::newPlus (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtPlus);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
@@ -267,7 +267,7 @@ TableExprNodeRep* TableExprNode::newMinus (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtMinus);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
@@ -301,7 +301,7 @@ TableExprNodeRep* TableExprNode::newTimes (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtTimes);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
@@ -332,7 +332,7 @@ TableExprNodeRep* TableExprNode::newDivide (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtDivide);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
@@ -363,7 +363,7 @@ TableExprNodeRep* TableExprNode::newModulo (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtModulo);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
@@ -388,7 +388,7 @@ TableExprNodeRep* TableExprNode::newEQ (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtEQ);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTBool:
@@ -443,7 +443,7 @@ TableExprNodeRep* TableExprNode::newNE (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtNE);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTBool:
@@ -498,7 +498,7 @@ TableExprNodeRep* TableExprNode::newGT (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtGT);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
@@ -541,7 +541,7 @@ TableExprNodeRep* TableExprNode::newGE (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtGE);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
@@ -600,7 +600,7 @@ TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right) const
 			   TableExprNodeRep::NoArr, extype,
 			   node_p->ndim(), node_p->shape(),
 			   node_p->baseTablePtr());
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
@@ -643,7 +643,7 @@ TableExprNodeRep* TableExprNode::newOR (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtOR);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTBool:
@@ -668,7 +668,7 @@ TableExprNodeRep* TableExprNode::newAND (TableExprNodeRep* right) const
 {
     TableExprNodeRep node = TableExprNodeBinary::getTypes
                                 (*node_p, *right, TableExprNodeRep::OtAND);
-    TableExprNodeBinary* tsnptr;
+    TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTBool:
@@ -732,7 +732,7 @@ TableExprNode TableExprNode::newColumnNode (const Table& tab,
 {
     //# Get the column description. This throws an exception if
     //# the name is not a column.
-    TableExprNodeRep* tsnptr;
+    TableExprNodeRep* tsnptr = 0;
     const ColumnDesc& coldes = tab.tableDesc().columnDesc (name);
     ROTableColumn col(tab, name);
     if (coldes.isArray()) {
@@ -793,7 +793,7 @@ TableExprNode TableExprNode::newColumnNode (const Table& tab,
 TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
 					  const String& name)
 {
-    TableExprNodeRep* tsnptr;
+    TableExprNodeRep* tsnptr = 0;
     switch (keyset.dataType (name)) {
     case TpBool:
 	tsnptr = new TableExprNodeConstBool (keyset.asBool (name));

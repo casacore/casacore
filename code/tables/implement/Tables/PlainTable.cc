@@ -46,8 +46,8 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 			const TableLock& lockOptions)
 : BaseTable      (newtab.name(), newtab.option(), 0),
   colSetPtr_p    (0),
-  lockPtr_p      (0),
-  tableChanged_p (True)
+  tableChanged_p (True),
+  lockPtr_p      (0)
 {
     // Set initially to no write in destructor.
     // At the end it is reset. In this way nothing is written if
@@ -118,8 +118,8 @@ PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
 			const TableLock& lockOptions)
 : BaseTable      (tabname, opt, nrrow),
   colSetPtr_p    (0),
-  lockPtr_p      (0),
-  tableChanged_p (False)
+  tableChanged_p (False),
+  lockPtr_p      (0)
 {
     //# Set initially to no write in destructor.
     //# At the end it is reset. In this way nothing is written if
@@ -282,7 +282,7 @@ uInt PlainTable::getModifyCounter() const
 }
 
 
-void PlainTable::flush (Bool fsync)
+void PlainTable::flush (Bool)
 {
     if (openedForWrite()) {
 	putFile (False);

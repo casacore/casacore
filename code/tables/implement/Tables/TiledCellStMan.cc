@@ -98,7 +98,7 @@ void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
     // dimensionality of the hypercolumn.
     for (uInt i=0; i<dataNames.nelements(); i++) {
 	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
-	if (! columnDesc.isArray()  ||  nrdim_p != columnDesc.ndim()) {
+	if (! columnDesc.isArray()  ||  Int(nrdim_p) != columnDesc.ndim()) {
 	    throw (TSMError ("Dimensionality of column " + dataNames(i) +
 			     " is incorrect"));
 	}

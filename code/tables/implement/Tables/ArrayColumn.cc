@@ -39,25 +39,25 @@
 template<class T>
 ROArrayColumn<T>::ROArrayColumn()
 : ROTableColumn (),
-  reaskAccessSlice_p       (new Bool(True)),
-  reaskAccessColumn_p      (new Bool(True)),
-  reaskAccessColumnSlice_p (new Bool(True)),
+  canChangeShape_p         (False),
   canAccessSlice_p         (new Bool(False)),
   canAccessColumn_p        (new Bool(False)),
   canAccessColumnSlice_p   (new Bool(False)),
-  canChangeShape_p         (False)
+  reaskAccessSlice_p       (new Bool(True)),
+  reaskAccessColumn_p      (new Bool(True)),
+  reaskAccessColumnSlice_p (new Bool(True))
 {}
 
 template<class T>
 ROArrayColumn<T>::ROArrayColumn (const Table& tab,
 				 const String& columnName)
 : ROTableColumn (tab, columnName),
-  reaskAccessSlice_p       (new Bool(True)),
-  reaskAccessColumn_p      (new Bool(True)),
-  reaskAccessColumnSlice_p (new Bool(True)),
   canAccessSlice_p         (new Bool(False)),
   canAccessColumn_p        (new Bool(False)),
-  canAccessColumnSlice_p   (new Bool(False))
+  canAccessColumnSlice_p   (new Bool(False)),
+  reaskAccessSlice_p       (new Bool(True)),
+  reaskAccessColumn_p      (new Bool(True)),
+  reaskAccessColumnSlice_p (new Bool(True))
 {
     checkDataType();
     canChangeShape_p = baseColPtr_p->canChangeShape();
@@ -66,12 +66,12 @@ ROArrayColumn<T>::ROArrayColumn (const Table& tab,
 template<class T>
 ROArrayColumn<T>::ROArrayColumn (const ROTableColumn& column)
 : ROTableColumn (column),
-  reaskAccessSlice_p       (new Bool(True)),
-  reaskAccessColumn_p      (new Bool(True)),
-  reaskAccessColumnSlice_p (new Bool(True)),
   canAccessSlice_p         (new Bool(False)),
   canAccessColumn_p        (new Bool(False)),
-  canAccessColumnSlice_p   (new Bool(False))
+  canAccessColumnSlice_p   (new Bool(False)),
+  reaskAccessSlice_p       (new Bool(True)),
+  reaskAccessColumn_p      (new Bool(True)),
+  reaskAccessColumnSlice_p (new Bool(True))
 {
     checkDataType();
     canChangeShape_p = baseColPtr_p->canChangeShape();
@@ -80,13 +80,13 @@ ROArrayColumn<T>::ROArrayColumn (const ROTableColumn& column)
 template<class T>
 ROArrayColumn<T>::ROArrayColumn (const ROArrayColumn<T>& that)
 : ROTableColumn (that),
-  reaskAccessSlice_p       (new Bool (*that.reaskAccessSlice_p)),
-  reaskAccessColumn_p      (new Bool (*that.reaskAccessColumn_p)),
-  reaskAccessColumnSlice_p (new Bool (*that.reaskAccessColumnSlice_p)),
+  canChangeShape_p         (that.canChangeShape_p),
   canAccessSlice_p         (new Bool (*that.canAccessSlice_p)),
   canAccessColumn_p        (new Bool (*that.canAccessColumn_p)),
   canAccessColumnSlice_p   (new Bool (*that.canAccessColumnSlice_p)),
-  canChangeShape_p         (that.canChangeShape_p)
+  reaskAccessSlice_p       (new Bool (*that.reaskAccessSlice_p)),
+  reaskAccessColumn_p      (new Bool (*that.reaskAccessColumn_p)),
+  reaskAccessColumnSlice_p (new Bool (*that.reaskAccessColumnSlice_p))
 {}
 
 template<class T>
@@ -99,24 +99,24 @@ template<class T>
 void ROArrayColumn<T>::reference (const ROArrayColumn<T>& that)
 {
     ROTableColumn::reference (that);
-    *reaskAccessSlice_p       = *that.reaskAccessSlice_p;
-    *reaskAccessColumn_p      = *that.reaskAccessColumn_p;
-    *reaskAccessColumnSlice_p = *that.reaskAccessColumnSlice_p;
+    canChangeShape_p          = that.canChangeShape_p;
     *canAccessSlice_p         = *that.canAccessSlice_p;
     *canAccessColumn_p        = *that.canAccessColumn_p;
     *canAccessColumnSlice_p   = *that.canAccessColumnSlice_p;
-    canChangeShape_p          = that.canChangeShape_p;
+    *reaskAccessSlice_p       = *that.reaskAccessSlice_p;
+    *reaskAccessColumn_p      = *that.reaskAccessColumn_p;
+    *reaskAccessColumnSlice_p = *that.reaskAccessColumnSlice_p;
 }
 
 template<class T>
 ROArrayColumn<T>::~ROArrayColumn()
 {
-    delete reaskAccessSlice_p;
-    delete reaskAccessColumn_p;
-    delete reaskAccessColumnSlice_p;
     delete canAccessSlice_p;
     delete canAccessColumn_p;
     delete canAccessColumnSlice_p;
+    delete reaskAccessSlice_p;
+    delete reaskAccessColumn_p;
+    delete reaskAccessColumnSlice_p;
 }
 
 
@@ -314,7 +314,7 @@ void ROArrayColumn<T>::getColumnRange (const Slicer& rowRange,
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
     //# When the entire column is accessed, use that function.
-    if (shp(0) == nrrow) {
+    if (shp(0) == Int(nrrow)) {
 	getColumn (arr, resize);
 	return;
     }
@@ -485,7 +485,7 @@ void ArrayColumn<T>::putColumn (const Array<T>& arr)
     uInt nrrow = nrow();
     IPosition shp  = arr.shape();
     uInt last = shp.nelements() - 1;
-    if (shp(last) != nrrow) {
+    if (shp(last) != Int(nrrow)) {
 	throw (TableArrayConformanceError("ArrayColumn::putColumn (nrrow)"));
     }
     //# Remove #rows from shape to get the shape of each cell.
@@ -563,7 +563,7 @@ void ArrayColumn<T>::putColumnRange (const Slicer& rowRange,
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
     //# When the entire column is accessed, use that function.
-    if (shp(0) == nrrow) {
+    if (shp(0) == Int(nrrow)) {
 	putColumn (arr);
 	return;
     }
@@ -571,7 +571,7 @@ void ArrayColumn<T>::putColumnRange (const Slicer& rowRange,
     nrrow = shp(0);
     IPosition arrshp  = arr.shape();
     uInt last = arrshp.nelements() - 1;
-    if (arrshp(last) != nrrow) {
+    if (arrshp(last) != Int(nrrow)) {
 	throw (TableArrayConformanceError(
 	                              "ArrayColumn::putColumnRange (nrrow)"));
     }

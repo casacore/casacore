@@ -38,16 +38,16 @@
 template<class T>
 ROScalarColumn<T>::ROScalarColumn()
 : ROTableColumn(),
-  reaskAccessColumn_p (new Bool(True)),
-  canAccessColumn_p   (new Bool(False))
+  canAccessColumn_p   (new Bool(False)),
+  reaskAccessColumn_p (new Bool(True))
 {}
 
 template<class T>
 ROScalarColumn<T>::ROScalarColumn (const Table& tab,
 				   const String& columnName)
 : ROTableColumn (tab, columnName),
-  reaskAccessColumn_p (new Bool(True)),
-  canAccessColumn_p   (new Bool(False))
+  canAccessColumn_p   (new Bool(False)),
+  reaskAccessColumn_p (new Bool(True))
 {
     checkDataType();
 }
@@ -55,8 +55,8 @@ ROScalarColumn<T>::ROScalarColumn (const Table& tab,
 template<class T>
 ROScalarColumn<T>::ROScalarColumn (const ROTableColumn& column)
 : ROTableColumn (column),
-  reaskAccessColumn_p (new Bool(True)),
-  canAccessColumn_p   (new Bool(False))
+  canAccessColumn_p   (new Bool(False)),
+  reaskAccessColumn_p (new Bool(True))
 {
     checkDataType();
 }
@@ -64,8 +64,8 @@ ROScalarColumn<T>::ROScalarColumn (const ROTableColumn& column)
 template<class T>
 ROScalarColumn<T>::ROScalarColumn (const ROScalarColumn<T>& that)
 : ROTableColumn (that),
-  reaskAccessColumn_p (new Bool (*that.reaskAccessColumn_p)),
-  canAccessColumn_p   (new Bool (*that.canAccessColumn_p))
+  canAccessColumn_p   (new Bool (*that.canAccessColumn_p)),
+  reaskAccessColumn_p (new Bool (*that.reaskAccessColumn_p))
 {}
 
 template<class T>
@@ -78,15 +78,15 @@ template<class T>
 void ROScalarColumn<T>::reference (const ROScalarColumn<T>& that)
 {
     ROTableColumn::reference (that);
-    *reaskAccessColumn_p = *that.reaskAccessColumn_p;
     *canAccessColumn_p   = *that.canAccessColumn_p;
+    *reaskAccessColumn_p = *that.reaskAccessColumn_p;
 }
 
 template<class T>
 ROScalarColumn<T>::~ROScalarColumn()
 {
-    delete reaskAccessColumn_p;
     delete canAccessColumn_p;
+    delete reaskAccessColumn_p;
 }
 
 template<class T>
@@ -162,7 +162,7 @@ void ROScalarColumn<T>::getColumnRange (const Slicer& rowRange,
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
     //# When the entire column is accessed, use that function.
-    if (shp(0) == nrrow) {
+    if (shp(0) == Int(nrrow)) {
 	getColumn (vec, resize);
 	return;
     }
@@ -276,7 +276,7 @@ void ScalarColumn<T>::putColumnRange (const Slicer& rowRange,
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
     //# When the entire column is accessed, use that function.
-    if (shp(0) == nrrow) {
+    if (shp(0) == Int(nrrow)) {
 	putColumn (vec);
 	return;
     }

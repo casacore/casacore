@@ -114,7 +114,7 @@ void ArrayColumnData<T>::setShapeColumn (const IPosition& shp)
 	}
     }
     if (columnDesc().ndim() > 0) {
-	if (shp.nelements() != columnDesc().ndim()) {
+	if (Int(shp.nelements()) != columnDesc().ndim()) {
 	    throw (TableInvOper
 	       ("ArrayColumnData: mismatch in #dim of FixedShape array shape"));
 	}
@@ -337,7 +337,7 @@ void ArrayColumnData<T>::checkShape (const IPosition& shape) const
 	     ("ArrayColumn::setShape only possible for non-FixedShape arrays"));
     }
     if (columnDesc().ndim() > 0) {
-	if (shape.nelements() != columnDesc().ndim()) {
+	if (Int(shape.nelements()) != columnDesc().ndim()) {
 	    throw (TableInvOper
 		   ("ArrayColumn::setShape: mismatch in #dim of array"));
 	}

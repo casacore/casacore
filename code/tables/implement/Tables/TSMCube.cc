@@ -46,11 +46,11 @@
 
 TSMCube::TSMCube (TiledStMan* stman, TSMFile* file)
 : stmanPtr_p     (stman),
-  filePtr_p      (file),
-  fileOffset_p   (0),
+  extensible_p   (False),
   nrdim_p        (0),
   tileSize_p     (0),
-  extensible_p   (False),
+  filePtr_p      (file),
+  fileOffset_p   (0),
   cache_p        (0),
   userSetCache_p (False)
 {}
@@ -61,12 +61,12 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
                   const IPosition& tileShape,
                   const Record& values)
 : stmanPtr_p     (stman),
-  filePtr_p      (file),
-  fileOffset_p   (0),
-  nrdim_p        (0),
-  tileSize_p     (0),
   values_p       (values),
   extensible_p   (ToBool (cubeShape(cubeShape.nelements()-1) == 0)),
+  nrdim_p        (0),
+  tileSize_p     (0),
+  filePtr_p      (file),
+  fileOffset_p   (0),
   cache_p        (0),
   userSetCache_p (False)
 {
@@ -327,7 +327,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 Array<Bool> newArray (concatenateArray (array, vector.ac()));
                 array.reference (newArray);
             }
-            if (start(0) < length) {
+            if (start(0) < Int(length)) {
                 array(start, end) = coordValues.asArrayBool (name);
             }
         }
@@ -346,7 +346,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 Array<Int> newArray (concatenateArray (array, vector.ac()));
                 array.reference (newArray);
             }
-            if (start(0) < length) {
+            if (start(0) < Int(length)) {
                 array(start, end) = coordValues.asArrayInt (name);
             }
         }
@@ -365,7 +365,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 Array<uInt> newArray (concatenateArray (array, vector.ac()));
                 array.reference (newArray);
             }
-            if (start(0) < length) {
+            if (start(0) < Int(length)) {
                 array(start, end) = coordValues.asArrayuInt (name);
             }
         }
@@ -384,7 +384,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 Array<float> newArray (concatenateArray (array, vector.ac()));
                 array.reference (newArray);
             }
-            if (start(0) < length) {
+            if (start(0) < Int(length)) {
                 array(start, end) = coordValues.asArrayfloat (name);
             }
         }
@@ -403,7 +403,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 Array<double> newArray (concatenateArray (array, vector.ac()));
                 array.reference (newArray);
             }
-            if (start(0) < length) {
+            if (start(0) < Int(length)) {
                 array(start, end) = coordValues.asArraydouble (name);
             }
         }
@@ -422,7 +422,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 Array<Complex> newArray (concatenateArray (array, vector.ac()));
                 array.reference (newArray);
             }
-            if (start(0) < length) {
+            if (start(0) < Int(length)) {
                 array(start, end) = coordValues.asArrayComplex (name);
             }
         }
@@ -441,7 +441,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 Array<DComplex> newArray (concatenateArray (array, vector.ac()));
                 array.reference (newArray);
             }
-            if (start(0) < length) {
+            if (start(0) < Int(length)) {
                 array(start, end) = coordValues.asArrayDComplex (name);
             }
         }
@@ -460,7 +460,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 Array<String> newArray (concatenateArray (array, vector.ac()));
                 array.reference (newArray);
             }
-            if (start(0) < length) {
+            if (start(0) < Int(length)) {
                 array(start, end) = coordValues.asArrayString (name);
             }
         }
@@ -1147,7 +1147,7 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
             startPixel(i) = pixelPos(i) - tilePos(i) * tileShape_p(i);
             uInt leng = (tileShape_p(i) - startPixel(i) + stride(i) - 1)
                         / stride(i);
-            if (leng + sectionPos(i) > sectionShape(i)) {
+            if (Int(leng + sectionPos(i)) > sectionShape(i)) {
                 leng = sectionShape(i) - sectionPos(i);
             }
             nrPixel(i) = leng;
@@ -1196,7 +1196,8 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
         }
         while (True) {
             if (strided) {
-                for (j=0; j<nrPixel(0); j++) {
+		uInt nrp = nrPixel(0);
+                for (j=0; j<nrp; j++) {
                     if (writeFlag) {
                         memcpy (dataArray+dataOffset, section+sectionOffset,
 				localPixelSize);

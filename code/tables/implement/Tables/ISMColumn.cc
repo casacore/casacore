@@ -39,9 +39,9 @@
 ISMColumn::ISMColumn (ISMBase* parent, int dataType, uInt colnr)
 : StManColumn   (dataType),
   stmanPtr_p    (parent),
+  fixedLength_p (0),
   colnr_p       (colnr),
   nrelem_p      (1),
-  fixedLength_p (0),
   startRow_p    (-1),
   endRow_p      (-1),
   lastValue_p   (0),
@@ -245,7 +245,7 @@ void ISMColumn::getScalarColumnBoolV (Vector<Bool>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getBoolV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(Bool*)lastValue_p;
 	}
     }
@@ -256,7 +256,7 @@ void ISMColumn::getScalarColumnuCharV (Vector<uChar>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getuCharV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(uChar*)lastValue_p;
 	}
     }
@@ -267,7 +267,7 @@ void ISMColumn::getScalarColumnShortV (Vector<Short>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getShortV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(Short*)lastValue_p;
 	}
     }
@@ -278,7 +278,7 @@ void ISMColumn::getScalarColumnuShortV (Vector<uShort>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getuShortV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(uShort*)lastValue_p;
 	}
     }
@@ -289,7 +289,7 @@ void ISMColumn::getScalarColumnIntV (Vector<Int>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getIntV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(Int*)lastValue_p;
 	}
     }
@@ -300,7 +300,7 @@ void ISMColumn::getScalarColumnuIntV (Vector<uInt>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getuIntV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(uInt*)lastValue_p;
 	}
     }
@@ -313,7 +313,7 @@ void ISMColumn::getScalarColumnfloatV (Vector<float>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getfloatV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(float*)lastValue_p;
 	}
     }
@@ -324,7 +324,7 @@ void ISMColumn::getScalarColumndoubleV (Vector<double>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getdoubleV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(double*)lastValue_p;
 	}
     }
@@ -335,7 +335,7 @@ void ISMColumn::getScalarColumnComplexV (Vector<Complex>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getComplexV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(Complex*)lastValue_p;
 	}
     }
@@ -346,7 +346,7 @@ void ISMColumn::getScalarColumnDComplexV (Vector<DComplex>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getDComplexV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(DComplex*)lastValue_p;
 	}
     }
@@ -357,7 +357,7 @@ void ISMColumn::getScalarColumnStringV (Vector<String>* dataPtr)
     uInt rownr = 0;
     while (rownr < nrrow) {
 	getStringV (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; rownr<=endRow_p; rownr++) {
+	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
 	    (*dataPtr)(rownr) = *(String*)lastValue_p;
 	}
     }
@@ -1022,20 +1022,28 @@ Bool ISMColumn::addData (ISMBucket* bucket, uInt bucketStartRow,
     return True;
 }
 
+#ifdef AIPS_TRACE
 void ISMColumn::handleCopy (uInt rownr, const char*)
 {
-#ifdef AIPS_TRACE
     cout << "   handleCopy for row " << rownr
 	 << ", column " << colnr_p << endl;
+#else
+void ISMColumn::handleCopy (uInt, const char*)
+{
 #endif
 }
+
+#ifdef AIPS_TRACE
 void ISMColumn::handleRemove (uInt rownr, const char*)
 {
-#ifdef AIPS_TRACE
     cout << "   handleRemove for row " << rownr
 	 << ", column " << colnr_p << endl;
+#else
+void ISMColumn::handleRemove (uInt, const char*)
+{
 #endif
 }
+
 
 void ISMColumn::handleSplit (ISMBucket& bucket, const Block<Bool>& duplicated)
 {

@@ -45,12 +45,12 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
 				      const PtrBlock<ObjCompareFunc*>& cmpFunc,
 				      const Block<Int>& order,
 				      int option)
-: lastVal_p (keys.nelements()),
+: lastRow_p (0),
+  nrkeys_p  (keys.nelements()),
+  lastVal_p (keys.nelements()),
   curVal_p  (keys.nelements()),
-  lastRow_p (0),
   colPtr_p  (keys.nelements()),
-  cmpFunc_p (cmpFunc),
-  nrkeys_p  (keys.nelements())
+  cmpFunc_p (cmpFunc)
 {
     // If needed sort the table in order of the iteration keys.
     // DontCare is sorted as ascending.
@@ -94,12 +94,12 @@ BaseTableIterator* BaseTableIterator::clone() const
 
 
 BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
-: lastVal_p (that.nrkeys_p),
+: lastRow_p (0),
+  nrkeys_p  (that.nrkeys_p),
+  lastVal_p (that.nrkeys_p),
   curVal_p  (that.nrkeys_p),
-  lastRow_p (0),
   colPtr_p  (that.colPtr_p),
-  cmpFunc_p (that.cmpFunc_p),
-  nrkeys_p  (that.nrkeys_p)
+  cmpFunc_p (that.cmpFunc_p)
 {
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.

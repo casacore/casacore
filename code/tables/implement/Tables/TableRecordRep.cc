@@ -157,7 +157,7 @@ void TableRecordRep::addField (const String& name, const Table& value,
 void TableRecordRep::defineDataField (Int whichField, DataType type,
 				      const void* value)
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < nused_p
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p)
 		  &&  desc_p.type(whichField) == type, AipsError);
     if (type == TpRecord) {
 	*(TableRecord*)data_p[whichField] = *(const TableRecord*)value;
@@ -181,7 +181,7 @@ Bool TableRecordRep::conform (const TableRecordRep& other) const
 	return False;
     }
     // Now check for each fixed sub-record and table if it conforms.
-    for (Int i=0; i<nused_p; i++) {
+    for (Int i=0; i<Int(nused_p); i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    const TableRecord& thisRecord = *(const TableRecord*)data_p[i];
 	    if (thisRecord.isFixed()) {
@@ -234,14 +234,14 @@ void* TableRecordRep::get_pointer (Int whichField, DataType type,
 }
 void* TableRecordRep::get_pointer (Int whichField, DataType type) const
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < desc_p.nfields()
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(desc_p.nfields())
 		  &&  type == desc_p.type(whichField), AipsError);
     return data_p[whichField];
 }
 
 void TableRecordRep::closeTable (Int whichField) const
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < desc_p.nfields()
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(desc_p.nfields())
 		  &&  desc_p.type(whichField) == TpTable, AipsError);
     ((TableKeyword*)data_p[whichField])->close();
 }
@@ -283,7 +283,7 @@ void TableRecordRep::mergeField (const TableRecordRep& other,
 void TableRecordRep::merge (const TableRecordRep& other,
 			    RecordInterface::DuplicatesFlag flag)
 {
-    uInt n = other.desc_p.nfields();
+    Int n = other.desc_p.nfields();
     for (Int i=0; i<n; i++) {
 	mergeField (other, i, flag);
     }

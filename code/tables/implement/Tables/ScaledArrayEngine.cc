@@ -99,9 +99,9 @@ template<class S, class T>
 ScaledArrayEngine<S,T>::ScaledArrayEngine (const ScaledArrayEngine<S,T>& that)
 : BaseMappedArrayEngine<S,T> (that),
   scaleName_p   (that.scaleName_p),
+  offsetName_p  (that.offsetName_p),
   scale_p       (that.scale_p),
   offset_p      (that.offset_p),
-  offsetName_p  (that.offsetName_p),
   fixedScale_p  (that.fixedScale_p),
   fixedOffset_p (that.fixedOffset_p),
   scaleColumn_p (0),
@@ -274,21 +274,21 @@ void ScaledArrayEngine<S,T>::scaleOnPut (S scale, S offset,
     if (offset == 0) {
 	if (scale == 1) {
 	    while (op < last) {
-		*op++ = *ip++;
+		*op++ = T(*ip++);
 	    }
 	}else{
 	    while (op < last) {
-		*op++ = *ip++ / scale;
+		*op++ = T(*ip++ / scale);
 	    }
 	}
     }else{
 	if (scale == 1) {
 	    while (op < last) {
-		*op++ = *ip++ - offset;
+		*op++ = T(*ip++ - offset);
 	    }
 	}else{
 	    while (op < last) {
-		*op++ = (*ip++ - offset) / scale;
+		*op++ = T((*ip++ - offset) / scale);
 	    }
 	}
     }

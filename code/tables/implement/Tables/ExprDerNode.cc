@@ -636,7 +636,7 @@ Double TableExprNodeRandom::getDouble (uInt)
 
 void TableExprNodeEQDouble::ranges (Block<TableExprRange>& blrange)
 {
-    Double dval;
+    Double dval = 0;
     TableExprNodeRep* tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).
@@ -661,7 +661,8 @@ void TableExprNodeEQDouble::ranges (Block<TableExprRange>& blrange)
 
 void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
 {
-    Double st,end;
+    Double st = 0;
+    Double end = 0;
     TableExprNodeRep* tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).
@@ -688,7 +689,8 @@ void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
 
 void TableExprNodeGTDouble::ranges (Block<TableExprRange>& blrange)
 {
-    Double st,end;
+    Double st = 0;
+    Double end = 0;
     TableExprNodeRep* tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).

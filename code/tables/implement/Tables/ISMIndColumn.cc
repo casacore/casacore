@@ -89,7 +89,7 @@ void ISMIndColumn::reopenRW()
     iosfile_p->reopenRW();
 }
 
-void ISMIndColumn::addRow (uInt newNrrow, uInt oldNrrow)
+void ISMIndColumn::addRow (uInt, uInt oldNrrow)
 {
     // If the shape is fixed and if the first row is added, define
     // an array to have an array for all rows.

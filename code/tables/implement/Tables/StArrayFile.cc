@@ -106,7 +106,7 @@ StManArrayFile::~StManArrayFile ()
 }
 
 
-Bool StManArrayFile::flush (Bool fsync)
+Bool StManArrayFile::flush (Bool)
 {
     if (hasPut_p) {
 	setpos (0);

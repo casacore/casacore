@@ -41,8 +41,8 @@
 StManColumnAipsIO::StManColumnAipsIO (StManAipsIO* smptr,
 				      int dataType, Bool byPtr)
 : StManColumn(dataType),
-  dtype_p    (dataType),
   stmanPtr_p (smptr),
+  dtype_p    (dataType),
   byPtr_p    (byPtr),
   nralloc_p  (0),
   nrext_p    (0),
@@ -110,7 +110,7 @@ uInt StManColumnAipsIO::findExt (uInt index)
             }
         }
     }
-    if (i>nrext_p) {
+    if (i > Int(nrext_p)) {
 	throw (indexError<uInt>(index, "StManColumnAipsIO::findExt - "
 				"rownr out of range"));
     }
@@ -168,7 +168,6 @@ void StManColumnAipsIO::aips_name2(putBlock,NM) (uInt rownr, uInt nrmax, const T
     uInt nr; \
     uInt extnr = findExt(rownr); \
     nrmax = min (nrmax, nralloc_p-rownr); \
-    uInt nrm = nrmax; \
     while (nrmax > 0) { \
         nr = min (nrmax, ncum_p[extnr]-rownr); \
 	objcopy (((T*)(data_p[extnr])) +rownr-ncum_p[extnr-1], value, nr); \
@@ -310,7 +309,7 @@ void StManColumnAipsIO::deleteData (void* datap, Bool byPtr)
 
 void* StManColumnAipsIO::allocData (uInt nrval, Bool byPtr)
 {
-    void* datap;
+    void* datap = 0;
     if (byPtr) {
 	datap = new void*[nrval];
 	if (datap != 0) {
@@ -566,8 +565,8 @@ StManAipsIO::StManAipsIO ()
 : DataManager (),
   uniqnr_p    (0),
   nrrow_p     (0),
-  hasPut_p    (False),
-  colSet_p    (0)
+  colSet_p    (0),
+  hasPut_p    (False)
 {}
 
 StManAipsIO::StManAipsIO (const String& storageManagerName)
@@ -575,8 +574,8 @@ StManAipsIO::StManAipsIO (const String& storageManagerName)
   stmanName_p (storageManagerName),
   uniqnr_p    (0),
   nrrow_p     (0),
-  hasPut_p    (False),
-  colSet_p    (0)
+  colSet_p    (0),
+  hasPut_p    (False)
 {}
 
 StManAipsIO::~StManAipsIO()
@@ -728,7 +727,7 @@ void StManAipsIO::removeRow (uInt rownr)
 }
 
 
-Bool StManAipsIO::flush (AipsIO&, Bool fsync)
+Bool StManAipsIO::flush (AipsIO&, Bool)
 {
     //# Do not write if nothing has been put..
     if (! hasPut_p) {
