@@ -3,5 +3,5 @@
 # Script to invoke tMSSimulator
 #=============================================================================
  
-assay tMSSimulator obs.params
+assay tMSSimulator
 rm -rf fakems
