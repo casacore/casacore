@@ -6152,3 +6152,7 @@
 17 168 src rm hia/implement/GSDDataSource/gsd/gsd_f77.now
 17 168 src mv hia/implement/GSDDataSource/gsd hia/gsdlib
 17 177 src rm trial/implement/Fitting/test/tLinearFitSVD.cc
+17 177 src rm trial/implement/Fitting/LinearFit.h
+17 177 src rm trial/implement/Fitting/LinearFit.cc
+17 177 src rm trial/implement/Fitting/LinearFitSVD.h
+17 177 src rm trial/implement/Fitting/LinearFitSVD.cc
