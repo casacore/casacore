@@ -27,8 +27,7 @@
 
 //# Includes
 #include <aips/Mathematics/IComplex.h>
-#include <iostream.h>
-
+#include <aips/iostream.h>
 
 ostream& operator<< (ostream& os, const IComplex& val)
 {
