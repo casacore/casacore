@@ -28,6 +28,7 @@
 #include <aips/Tables/ISMColumn.h>
 #include <aips/Tables/ISMBase.h>
 #include <aips/Tables/ISMBucket.h>
+#include <aips/Tables/RefRows.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/ValType.h>
@@ -368,6 +369,74 @@ void ISMColumn::getScalarColumnStringV (Vector<String>* dataPtr)
 	}
     }
 }
+
+#define ISMCOLUMN_GET(T,NM) \
+void ISMColumn::aips_name2(getScalarColumnCells,NM) \
+                                             (const RefRows& rownrs, \
+					      Vector<T>* values) \
+{ \
+    Bool delV; \
+    T* value = values->getStorage (delV); \
+    T* valptr = value; \
+    const ColumnCache& cache = columnCache(); \
+    if (rownrs.isSliced()) { \
+        RefRowsSliceIter iter(rownrs); \
+        while (! iter.pastEnd()) { \
+            uInt rownr = iter.sliceStart(); \
+            uInt end = iter.sliceEnd(); \
+            uInt incr = iter.sliceIncr(); \
+            while (rownr <= end) { \
+                if (rownr < cache.start()  ||  rownr > cache.end()) { \
+                    aips_name2(get,NM) (rownr, valptr); \
+                    DebugAssert (cache.incr() == 0, AipsError); \
+                } \
+                const T* cacheValue = (const T*)(cache.dataPtr()); \
+                uInt endrow = min (end, cache.end()); \
+                while (rownr <= endrow) { \
+	            *valptr++ = *cacheValue; \
+                    rownr += incr; \
+	        } \
+     	    } \
+	    iter++; \
+        } \
+    } else { \
+        const Vector<uInt>& rowvec = rownrs.rowVector(); \
+        Bool delR; \
+        const uInt* rows = rowvec.getStorage (delR); \
+        uInt nr = rowvec.nelements(); \
+        if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
+            aips_name2(get,NM) (0, &(value[0])); \
+        } \
+        const T* cacheValue = (const T*)(cache.dataPtr()); \
+        uInt strow = cache.start(); \
+        uInt endrow = cache.end(); \
+        AlwaysAssert (cache.incr() == 0, AipsError); \
+        for (uInt i=0; i<nr; i++) { \
+	    uInt rownr = rows[i]; \
+            if (rownr >= strow  &&  rownr <= endrow) { \
+	        value[i] = *cacheValue; \
+	    } else { \
+	        aips_name2(get,NM) (rownr, &(value[i])); \
+                cacheValue = (const T*)(cache.dataPtr()); \
+                strow = cache.start(); \
+                endrow = cache.end(); \
+	    } \
+	} \
+        rowvec.freeStorage (rows, delR); \
+    } \
+    values->putStorage (value, delV); \
+}
+ISMCOLUMN_GET(Bool,BoolV)
+ISMCOLUMN_GET(uChar,uCharV)
+ISMCOLUMN_GET(Short,ShortV)
+ISMCOLUMN_GET(uShort,uShortV)
+ISMCOLUMN_GET(Int,IntV)
+ISMCOLUMN_GET(uInt,uIntV)
+ISMCOLUMN_GET(float,floatV)
+ISMCOLUMN_GET(double,doubleV)
+ISMCOLUMN_GET(Complex,ComplexV)
+ISMCOLUMN_GET(DComplex,DComplexV)
+ISMCOLUMN_GET(String,StringV)
 
 void ISMColumn::getValue (uInt rownr, void* value)
 {
