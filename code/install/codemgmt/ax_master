@@ -4550,3 +4550,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSStateColumns.h aips/implement/MeasurementSets/MSStateColumns.h
 14 296 src mv aips/implement/MeasurementSets/NewMSStateEnums.h aips/implement/MeasurementSets/MSStateEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSSysCal.cc aips/implement/MeasurementSets/MSSysCal.cc
+14 296 src mv aips/implement/MeasurementSets/NewMSSysCal.h aips/implement/MeasurementSets/MSSysCal.h
