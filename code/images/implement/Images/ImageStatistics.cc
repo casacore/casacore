@@ -47,6 +47,7 @@
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
+#include <trial/Tasking/ProgressMeter.h>
 
 
 #include <iostream.h>
@@ -403,14 +404,6 @@ Bool ImageStatistics<T>::display()
    Int nDisplayAxes = displayAxes_p.nelements();
 
     
-// Declare an array to hold the averaged pixel index of the statistics axes.
-
-   Vector<Float> sPos(nStatsAxes);
-   sPos = 0.0;
-   for (Int i=0; i<nStatsAxes; i++) 
-      sPos(i) = 0.5*Float(pInImage_p->shape()(cursorAxes_p(i))-1);
-
-
 // Size of plotting abcissa axis
 
    Int n1 = pStoreImage_p->shape()(0);
@@ -452,7 +445,7 @@ Bool ImageStatistics<T>::display()
 // calculations with double precision values. 
  
       Matrix<Double> matrix(pixelIterator.matrixCursor());
-      for (i=0; i<n1; i++) {
+      for (Int i=0; i<n1; i++) {
          Int nPts = Int(matrix(i,NPTS)+0.1);
          if (nPts > 0) {
             ord(i,MEAN) = matrix(i,SUM) / matrix(i,NPTS);
@@ -479,7 +472,9 @@ Bool ImageStatistics<T>::display()
 
 // Plot statistics
 
-      if (doPlot) plotStats (pixelIterator.position(), n1, ord);
+      if (doPlot) {
+        if (!plotStats (pixelIterator.position(), n1, ord)) return False;
+      }
 
 
 // List statistics
@@ -631,7 +626,9 @@ Bool ImageStatistics<T>::getMax(Array<T>& stats)
    }
 
 // Do it
+
    retrieveStorageStatistic (stats, Int(MAX));
+
    return True;
 }
 
@@ -661,6 +658,7 @@ Bool ImageStatistics<T>::getMean(Array<T>& stats)
 // Do it
 
    calculateStatistic (stats, Int(MEAN));
+
    return True;
 }
 
@@ -689,6 +687,7 @@ Bool ImageStatistics<T>::getSigma(Array<T>& stats)
 // Do it
 
    calculateStatistic (stats, Int(SIGMA));
+
    return True;
 }
 
@@ -717,6 +716,7 @@ Bool ImageStatistics<T>::getRms(Array<T>& stats)
 // Do it
 
    calculateStatistic (stats, Int(RMS));
+
    return True;
 }
 
@@ -954,9 +954,8 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
       Int nDisplayAxes = displayAxes_p.nelements();
 
     
-// Iterate through storage image. The cursor may be of > 2 dimensions, but only the
-// first (first display axsi) and last (statistics) axes are of non-unit size, so it
-// is effectively a matrix.  Thus we can use the matrix cursor for fast indexing.
+// Iterate through storage image by planes and compute the statistics
+// which are output with a vector iterator
 
       IPosition cursorShape(pStoreImage_p->ndim(),1);
       cursorShape(0) = pStoreImage_p->shape()(0);
@@ -1119,6 +1118,7 @@ void ImageStatistics<T>::generateStorageImage()
 //
 // Iterate through the image and generate the accumulation image
 {
+
 // Work out dimensions of accumulation image, resize 
 // and initialize it
 
@@ -1148,10 +1148,19 @@ void ImageStatistics<T>::generateStorageImage()
 
 // Iterate through image and accumulate statistical sums
 
+/*
+   Double min = Double(0);
+   Double max = Double(pInImage_p->shape().product())/Double(pixelIterator.cursor().shape().product());
+   ProgressMeter clock(min, max, String("Generate Storage Image"), String(""), 
+                       String(""), String(""), True, Int(max/20));
+   Double value = 0.0;
+*/
    Int nIter =0;
    for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
       accumulate (nIter, pixelIterator.position(), 
                   pixelIterator.cursor());
+//      clock.update(value);
+//      value += 1.0;
    }  
 }
 
@@ -1329,7 +1338,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 
 
 template <class T>
-void ImageStatistics<T>::plotStats (const IPosition& dPos,
+Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
                                     const Int& n1,
                                     const Matrix<Float>& ord)
 //
@@ -1371,7 +1380,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos,
    Float yMin, yMax, xMin, xMax, yLMin, yLMax, yRMin, yRMax;
 
    minMax(none, xMin, xMax, abc, ord.column(NPTS), n1);
-   if (none) return;
+   if (none) return True;
 
 // Left hand y axis
 
@@ -1675,6 +1684,8 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos,
       cpgptxt (mx, my, 0.0, 0.0, tLabel);
       cpgstbg(tbg);
    }
+
+   return True;
 }
 
 
@@ -2007,6 +2018,9 @@ void ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
 //
 // Retrieve values from accumulation image
 //
+// Input
+//   ISTAT        Points at location of desired statistic in 
+//                accumulation image (last axis)
 // Input/output
 //   slice        The statistics; should be of zero size on input
 //
@@ -2018,7 +2032,9 @@ void ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
 
 // Fill output
 
+   Int i;
    Int nDim = pStoreImage_p->ndim() - 1;
+
    if (nDim == 0) {
       Double tmp = (*pStoreImage_p)(IPosition(1,NPTS));
       Int nPts = Int(tmp + 0.1);
@@ -2028,32 +2044,44 @@ void ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
       }
    } else {
 
-// Define shape of iterator cursor 
 
-      IPosition shape(nDim);
-      for (Int i=0; i<nDim; i++) shape(i) = pStoreImage_p->shape()(i);
-      RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, shape);
+// Set up slice corners
 
-// Discard storage image until NPTS plane reached
+      Int sDim = pStoreImage_p->ndim();
+      IPosition blc(sDim,0);
+      IPosition stride(sDim,1);
 
-      for (i=0,pixelIterator.reset(); i<NPTS; i++,pixelIterator++) {;};
+// Set shape of slice 
+
+      Array<Double> doubleSlice;
+      IPosition sliceShape(sDim);
+      for (i=0; i<sDim-1; i++) sliceShape(i) = pStoreImage_p->shape()(i);
+      sliceShape(sDim-1) = 1;
+      doubleSlice.resize(sliceShape);
+
+
+// Get NPTS slice
+
+      blc(sDim-1) = NPTS;
+      pStoreImage_p->getSlice(doubleSlice, blc, sliceShape, stride);
+
 
 // Were there some good points ?  If so, continue on
 
-      if (someGoodPoints(pixelIterator.cursor())) {
+      if (someGoodPoints(doubleSlice)) {
 
-// Resize output array
 
-         slice.resize(shape);
+// Get desired statistic slice
 
-// Discard unwanted planes of accumulation image
+         blc(sDim-1) = ISTAT;
+         pStoreImage_p->getSlice(doubleSlice, blc, sliceShape, stride);
 
-         for (i=0,pixelIterator.reset(); i<ISTAT; i++,pixelIterator++) {;};
-
-// Now copy the next cursor chunk to the output
-
-         copyCursor (slice, pixelIterator.cursor());
       }
+
+// Copy to output template type
+
+      slice.resize(sliceShape);
+      copyCursor (slice, doubleSlice);
    }
 }
 
