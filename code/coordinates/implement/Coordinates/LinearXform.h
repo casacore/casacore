@@ -162,6 +162,11 @@ private:
     linprm* linprm_p;
     Bool isPCDiagonal_p;
 
+// Temporaries
+
+    uInt tmp_maxSize_p;                        // Must be set to 10 in constructor
+    mutable double d1_world_p[10], d1_pixel_p[10];
+    mutable double d2_world_p[10], d2_pixel_p[10];
 //
     linprm* make_linprm(int naxis) const;
     void delete_linprm(linprm *&to) const;
