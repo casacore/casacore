@@ -1,5 +1,5 @@
 //# tOrdMap2.cc: Test program for class OrderedMap
-//# Copyright (C) 1992,1993,1994,1995,1996
+//# Copyright (C) 1992,1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 // this test program makes a diff of the output and a reference output.
 
 main () {
-    AipsIO io("tOrdMap2_data", ByteIO::New);
+    AipsIO io("tOrdMap2_tmp", ByteIO::New);
     Int i;
     i=-32768;
     OrderedMap<Int,Int> Name(i);

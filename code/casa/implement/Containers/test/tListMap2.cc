@@ -1,5 +1,5 @@
 //# tListMap2.cc: This program tests the ListMap class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 // this test program makes a diff of the output and a reference output.
 
 main () {
-    AipsIO io("tListMap2_data", ByteIO::New);
+    AipsIO io("tListMap2_tmp", ByteIO::New);
     Int i;
     i=-32768;
     ListMap<Int,Int> Name(i);
