@@ -14,7 +14,8 @@
   {\htmladdimg{../../gif/home.gif}}{{../../html/aips++.html}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
 This guide gives a short overview of the background and use of the
@@ -26,6 +27,7 @@ Section 2 explains what a \mes\ consists of, and why; section 3
 discusses conversion; section 4 some notes on efficient use and
 section 5 gives the common interface of \mess\ and their values. Appendices 
 give some details per \mes, and also some information on \quans.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -54,11 +56,11 @@ an $MDirection$.
 A \mes\ consists of a \val\ and a \refq. The \val\ of a \mes\ is a vector
 of double floating point numbers, in some internal format. The \val\ is
 called a {\em MeasValue}, and specific ones are indicated with the
-letters $MV$, e.g. $MVDirection$. 
+letters $MV$, e.g. $MVDirection$
 \footnote{Note that it is an
 unfortunate circumstance that there exist the classes $MVTime$ and
 $MVAngle$, which are not {\em MeasValues}, but only formatting classes
-for times and angles.}
+for times and angles.}.
 Appendix A gives the various internal values.
 
 A \val\ can be constructed in many different ways. An $MVDirection$
@@ -72,12 +74,12 @@ obtained as: \\
 \hspace{.05\linewidth}
 \begin{minipage}[t]{.9\linewidth}
 \begin{verbatim}
-	MDirection source;
-	MFrequency line;
-	MPosition obs;
-	if (MeasTable::Observatory(obs, "ATCA")) {};
-	if (MeasTable::Line(line, "HI")) {};
-	if (MeasTable::Source(source, "0008-421")) {};
+    MDirection source;
+    MFrequency line;
+    MPosition obs;
+    if (MeasTable::Observatory(obs, "ATCA")) {};
+    if (MeasTable::Line(line, "HI")) {};
+    if (MeasTable::Source(source, "0008-421")) {};
 \end{verbatim}
 \end{minipage}
 \\
@@ -124,11 +126,12 @@ reference could be:\\
 \hspace{.05\linewidth}
 \begin{minipage}[t]{.9\linewidth}
 \begin{verbatim}
-	MEpoch epoch(Quantity("50500.5d"), MEpoch::UTC); // An MJD
-	MPosition obs;
-	MeasTable::Observatory(obs, "WSRT");
-	MeasFrame frame(obs, epoch);
-	MDirection::Ref ref(MDirection::VENUS, frame);
+   // A time in MJD
+   MEpoch epoch(Quantity("50500.5d"), MEpoch::UTC);
+   MPosition obs;
+   MeasTable::Observatory(obs, "WSRT");
+   MeasFrame frame(obs, epoch);
+   MDirection::Ref ref(MDirection::VENUS, frame);
 \end{verbatim}
 \end{minipage}
 
@@ -150,8 +153,9 @@ Example: \\
 \hspace{.05\linewidth}
 \begin{minipage}[t]{.95\linewidth}
 \begin{verbatim}
-	MDirection::Convert(MDirection::Ref(MDirection::VENUS, frame),
-			    MDirection::Ref(MDirection::J2000));
+   MDirection::Convert(MDirection::Ref(MDirection::VENUS,
+                                       frame),
+                       MDirection::Ref(MDirection::J2000));
 \end{verbatim}
 \end{minipage}
 \\
@@ -251,7 +255,7 @@ globally). Re-use of a {\em farme}, e.g. for a different time, is made
 possible by the {\tt set()} methods, e.g. $set(MEpoch)$, which will
 try to minimize the re-calculations necessary.
 
-\subsection{Re-use of conversion engines}
+\subsection{Re-use of conversion objects}
 
 Similar to the frame discussed in the previous section, a conversion
 object (e.g. {\tt MDirection::Convert}) is a repository of the
@@ -261,6 +265,190 @@ information, the same conversion object should be used if more than
 one conversion of the same type has to be done.
 
 \subsection{Specialised conversion engines}
+
+Although the official {\tt MeasConvert} objects are very versatile,
+using them can be quite a job. For that reason a set of specialised
+``Conversion engines'' have been put together for easy use. The three
+engines available at the moment are described in the following
+paragraphs. They have all a basic format:
+\begin{itemize}
+\item a constructor is used to create an engine object. The object
+knows (either through constructor, or through the use of {\tt set()}
+methods) about the conversions to be done
+\item the {\em ()} operator is used to convert a value the appropriate
+way.
+\end{itemize}
+
+\subsubsection{EarthMagneticMachine}
+
+The {\em EarthMagneticMachine} calculates the Earth' magnetic field in
+a ceratin direction at a certain height above the Earth' surface.
+
+The machine object's constructor needs in principle:
+\begin{itemize}
+\item a direction {\em reference code} to be able to interpret input
+direction values
+\item height above the Earth' surface
+\item position (of observation point) on Earth
+\item epoch of observation (the $IGRF$ model used is time dependent)
+\end{itemize}
+
+The $()$ operator will produce the line-of-sight component of the
+magnetic field (see the header files for details). Other methods exist
+to get the complete magnetic field; the longitude of the point
+specified and the position on Earth of the point.
+The following example calculates the magnetic field at 200$km$ height
+at the Compact Array:
+\begin{verbatim}
+   // Define a time/position frame
+   MEpoch epo(MVEpoch(MVTime(98,5,16,0.5).day()));
+   MPosition pos;
+   MeasTable::Observatory(pos, "ATCA");
+   MeasFrame frame(epo, pos);
+   // Note that the time in the frame can be changed later
+   // Set up a machine
+   EarthMagneticMachine exec(MDirection::B1950,
+                             Quantity(200, "km"), frame);
+   // Given a current observational direction
+   MDirection indir(Quantity(3.25745692, "rad"),
+                    Quantity(0.040643336,"rad"),
+                    MDirection::Ref(MDirection::B1950));
+   // The field in this direction is calculated
+   exec.calculate(indir.getValue());
+   // Show some data
+   cout << "Parallel field: " << exec.getLOSField() <<
+           " nT" << endl;
+   cout << "Sub-ionosphere long: " << exec.getLong("deg") <<
+           endl;
+\end{verbatim}
+
+
+\subsubsection{VelocityMachine}
+\begin{sloppypar}
+The velocity machine converts between frequencies and velocities (or
+$vice$ $versa$). This
+machine has been developed to aid in the, especially for the beginning
+user of \mess, intricate way {\em RadialVelocity}, {\em Doppler} and
+{\em Frequency} are connected. The machine converts between $Doppler$
+and $Frequency$ values.
+\end{sloppypar}
+The constructor of the machine needs:
+\begin{itemize}
+\item a frequency reference (e.g. {\tt MFrequency::LSR}), including a
+possible offset and frame
+\item preferred frequency units (e.g. $cm$ or $GHz$)
+\item velocity reference (e.g. {\tt MDoppler::OPTICAL}), including a
+possible offset
+\item preferred velocity units (e.g. $AU/a$)
+\item the rest frequency used for the conversion, given as an {\tt
+MVFrequency}
+\end{itemize}
+
+The $()$ operator has an {\tt MVFrequency}, an {\tt MVDoppler} or a
+{\tt Quantity} as argument. Depending on if it is a velocity or a
+frequency, the argument is converted to the other representation. {\tt
+makeFrequency} and {\tt makeVelocity} exist to create a vector of
+velocities or frequencies from a vector of Doubles.
+
+An example:
+\begin{verbatim}
+      // Define a time/position frame
+      MEpoch epo(MVEpoch(MVTime(98,5,16,0.5).day()));
+      MPosition pos;
+      MeasTable::Observatory(pos, "ATCA");
+      MeasFrame frame(epo, pos);
+      //
+      // Note that the time in the frame can be changed later
+      // Specify the frequency reference
+      MFrequency::Ref fr(MFrequency::LSR);
+      //
+      // Specify the velocity reference
+      MDoppler::Ref vr(MDoppler::OPT);
+      //
+      // Specify the default units
+      Unit fu("eV");
+      Unit vu("AU/a");
+      //
+      // Get the rest frequency
+      MVFrequency rfrq(QC::HI);
+      //
+      // Set up a machine (no conversion of reference frame)
+      VelocityMachine exec(fr, fu, rfrq, vr, vu, frame);
+      //
+      // or as (with conversion of reference frame it
+      // could have been)
+      // VelocityMachine exec(fr, fu, rfrq, vr, vu,
+      //                      MFrequency::TOPO, frame);
+      // Given a current observational frequency of 
+      //    5.87432837e-06 eV
+      // its velocity will be (in AU/yr)
+      cout << "Velocity: " <<
+              exec.makeVelocity(5.87432837e-06 << endl;
+      //
+      // Introducing an offset
+      MFrequency foff(MVFrequency(Quantity(5.87432837e-06,
+                      "eV")), MFrequency::LSR);
+      //
+      // and setting it in the reference, and regenerating
+      // machine:
+      fr.set(foff);
+      exec.set(fr);
+      //
+      // the following will give the same result:
+      cout << "Velocity: " << exec.makeVelocity(0.0)
+           << endl;
+\end{verbatim}
+
+\subsubsection{UVWMachine}
+
+The {\em UVWMachine} can convert $UVW$-coordinates between coordinate
+systems. In addition it can provide the phase rotation necessary on
+the data to have a new fringe-stopping center. A simple conversion of
+$UVW$ coordinates will be executed if only the coordinate reference
+frame is changed (e.g. from a $J2000$ to a $Galactic$ or an $AzEl$
+coordinate system). If also the actual position on the sky is changed,
+the phase rotation necessary on the data is provided as well. Fringe
+stopping centers can be centered on other bodies as well (e.g. a
+planet). Read the caveats in the detailed help file.
+
+The constructor of the machine needs the following input:
+\begin{itemize}
+\item an input {\tt MDirection} specifying the original fringe
+stopping center's position and reference frame
+\item an output {\tt reference code} to indicate the output reference
+frame of the $UVW$ coordinates; or an output {\tt MDirection}
+indicating both the new fringe stopping center and its reference position. 
+\end{itemize}
+
+The output of the machine can be one or all of the following:
+\begin{itemize}
+\item a rotation matrix that can be used to transpose the
+$UVW$-coordinates
+\item a vector that can be used to produce the necessary phase
+rotation
+\item actual conversion of a set of input $UVW$ points
+\item actual vector of phase rotations for a set of $UVW$ points
+\end{itemize}
+
+Example:
+\begin{verbatim}
+   // Given a current phase stopping Center
+   MDirection indir(Quantity(3.25745692, "rad"),
+                    Quantity(0.040643336,"rad"),
+                    MDirection::Ref(MDirection::B1950));
+   // Conversion to J2000 is set by:
+   UVWMachine uvm(MDirection::Ref(MDirection::J2000), indir);
+   // The rotation matrix to go to new UVW is obtained by:
+   RotMatrix rm(uvm.rotationUVM());
+   // If an UVW specified:
+   MVPosition uvw(-739.048461, -1939.10604, 1168.62562);
+   // This can be converted by e.g.:
+   uvw *= rm;
+   // Or, alternatively, by e.g.:
+   uvm.convertUVW(uvw);
+\end{verbatim}
+
+
 
 \subsection{Specifying details}
 
@@ -272,10 +460,8 @@ one conversion of the same type has to be done.
 
 \subsection{Can I obtain information from the MeasFrame?}
 
-\appendix{Details for individual Measures}
+\appendix
 
-\appendix{Use of units and quantities}
+\section{Details for individual Measures}
 
-
-
-
+\section{Use of units and quantities}
