@@ -33,7 +33,7 @@
 #include <unistd.h>               // needed for ::close
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno
-#include <aips/string.h>               // needed for strerror
+#include <aips/string.h>          // needed for strerror
 #include <sys/mtio.h>             // needed for ioctl
 #if defined(AIPS_SOLARIS)
 #include <sys/ioctl.h>            // needed for ioctl
@@ -41,7 +41,8 @@
 #endif
 
 TapeIO::TapeIO()
-  :itsDevice(-1),
+  :ByteIO(),
+   itsDevice(-1),
    itsOwner(False),
    itsReadable(False),
    itsWritable(False),
@@ -51,13 +52,15 @@ TapeIO::TapeIO()
 }
 
 TapeIO::TapeIO (int fd)
-  :itsDevice(-1)
+  :ByteIO(),
+   itsDevice(-1)
 {
   attach(fd);
 }
 
 TapeIO::TapeIO(const Path& device, Bool writable) 
-  :itsDevice(-1)
+  :ByteIO(),
+   itsDevice(-1)
 {
   attach(device, writable);
 }
@@ -91,7 +94,7 @@ void TapeIO::write (uInt size, const void* buf) {
   if (!itsWritable) {
     throw (AipsError ("TapeIO object is not writable"));
   }
-  if (::write (itsDevice, buf, size) != Int(size)) {
+  if (::write (itsDevice, buf, size) != static_cast<Int>(size)) {
     throw (AipsError (String("TapeIO: write error: ")
 		      + strerror(errno)));
   }
@@ -107,10 +110,10 @@ Int TapeIO::read(uInt size, void* buf, Bool throwException) {
 			     " error returned by system call: ") + 
 		      strerror(errno)));
   }
-  if (bytesRead > Int(size)) { // Should never be executed
+  if (bytesRead > static_cast<Int>(size)) { // Should never be executed
     throw (AipsError ("TapeIO::read - read more bytes than requested"));
   }
-  if (bytesRead != Int(size) && throwException == True) {
+  if (bytesRead != static_cast<Int>(size) && throwException == True) {
     throw (AipsError ("TapeIO::read - incorrect number of bytes read"));
   }
   return bytesRead;
