@@ -196,8 +196,6 @@ return 0;
 
 
 
-
-
 void doit1 (const IPosition& shapeIn, const Vector<uInt>& factors)
 {
 
@@ -206,52 +204,47 @@ void doit1 (const IPosition& shapeIn, const Vector<uInt>& factors)
    TiledShape shape2(shapeIn);
    TempLattice<Float> inLat(shape2);
    inLat.set(1.0);
-   TempLattice<Bool> inMask(shape2);
-   inMask.set(True);
-//
    SubLattice<Float> inML(inLat, True);
-// inML.pixelMask() = inMask;
 
+// Unmasked input
+
+   {
+ 
 // Make rebinner
 
-   RebinLattice<Float> reBinLat(inML, factors);
-   
-// Make output ML
-
-   IPosition shapeOut = reBinLat.shape();
-   TiledShape shapeOut2(shapeOut);
-   TempLattice<Float> outLat(shapeOut2);
-   TempLattice<Bool> outMask(shapeOut2);
-   outMask.set(True);
+      RebinLattice<Float> reBinLat(inML, factors);
 //
-   SubLattice<Float> outML(outLat, True);
-   outML.setPixelMask(outMask, True);
-
-// Rebin via copy
-
-   cerr << endl << endl;
-   cerr << "factors = " << factors << endl;
-   cerr << "shapeIn, shapeOut = " << shapeIn << shapeOut << endl;
-   LogIO os(LogOrigin("tRebinLattice", "main()", WHERE));
-   LatticeUtilities::copyDataAndMask(os, outML, reBinLat);
+      const Array<Float>& data = reBinLat.get();
+      Float val(1.0);
+      Bool ok = ::allNear(data, val, 1.0e-6);
+      AlwaysAssert(ok, AipsError);
 //
-   const Array<Float>& data = outML.get();
-   Float val(1.0);
-   Bool ok = ::allNear(data, val, 1.0e-6);
-   AlwaysAssert(ok, AipsError);
-//
-   const Array<Bool>& mask = outML.getMask();
-   ok = ::allEQ(mask, True);
-   AlwaysAssert(ok, AipsError);
-/*
-   cerr << "Data = " << endl;
-   cerr << "in = " << inML.get() << endl;
-   cerr << "out = " << outML.get() << endl;
+      const Array<Bool>& mask = reBinLat.getMask();
+      ok = ::allEQ(mask, True);
+      AlwaysAssert(ok, AipsError);
+    }
 
-   cerr << "Masks = " << endl;
-   cerr << "in = " << inML.getMask() << endl;
-   cerr << "out = " << outML.getMask() << endl;
-*/
+// Masked input
+
+   {
+
+      TempLattice<Bool> inMask(shape2);
+      inMask.set(True);
+      inML.setPixelMask(inMask, True);
+ 
+// Make rebinner
+
+      RebinLattice<Float> reBinLat(inML, factors);
+//
+      const Array<Float>& data = reBinLat.get();
+      Float val(1.0);
+      Bool ok = ::allNear(data, val, 1.0e-6);
+      AlwaysAssert(ok, AipsError);
+//
+      const Array<Bool>& mask = reBinLat.getMask();
+      ok = ::allEQ(mask, True);
+      AlwaysAssert(ok, AipsError);
+    }
 }
 
 
@@ -293,28 +286,12 @@ void doit2 ()
 // Make rebinner
 
    RebinLattice<Float> reBinLat(inML, factors);
-   
-// Make output ML
-
-   IPosition shapeOut2 = reBinLat.shape();
-   TiledShape tShapeOut2(shapeOut);
-   TempLattice<Float> outLat(tShapeOut2);
-   TempLattice<Bool> outMask(tShapeOut2);
-   outMask.set(True);
 //
-   SubLattice<Float> outML(outLat, True);
-   outML.setPixelMask(outMask, True);
-
-// Rebin
-
-   LogIO os(LogOrigin("tRebinLattice", "main()", WHERE));
-   LatticeUtilities::copyDataAndMask(os, outML, reBinLat);
-//
-   const Array<Float>& dataOut2 = outML.get();
+   const Array<Float>& dataOut2 = reBinLat.get();
    Bool ok = ::allNear(dataOut, dataOut2, 1.0e-6);
    AlwaysAssert(ok, AipsError);
 //
-   const Array<Bool>& maskOut2 = outML.getMask();
+   const Array<Bool>& maskOut2 = reBinLat.getMask();
    ok = ::allEQ(maskOut2, True);
    AlwaysAssert(ok, AipsError);
 /*
@@ -326,7 +303,7 @@ void doit2 ()
 /*/
    cerr << "Masks = " << endl;
    cerr << "in = " << inML.getMask() << endl;
-   cerr << "out = " << outML.getMask() << endl;
+   cerr << "out = " << reBinLat.getMask() << endl;
 */
 }
 
@@ -356,7 +333,6 @@ void doit3 ()
 //
    SubLattice<Float> inML(inLat, True);
    inML.setPixelMask(inMask, True);
-cerr << "in is masked = " << inML.isMasked() << endl;
 
 // Make rebinner
 
@@ -382,7 +358,7 @@ void doit4 (RebinLattice<Float>& rb, const IPosition& shape,
             const Vector<uInt>& factors)
 {
 
-//   AlwaysAssert(rb.isMasked(), AipsError);
+   AlwaysAssert(rb.isMasked(), AipsError);
    AlwaysAssert(!rb.isPaged(), AipsError);
    AlwaysAssert(!rb.isWritable(), AipsError);
 //
