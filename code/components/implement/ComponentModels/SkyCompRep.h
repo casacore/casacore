@@ -1,5 +1,5 @@
 //# SkyCompRep.h: A model component of the sky brightness
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -195,7 +195,8 @@ public:
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
   virtual Flux<Double> sample(const MDirection& direction, 
-			      const MVAngle& pixelSize, 
+			      const MVAngle& pixelLatSize,
+			      const MVAngle& pixelLongSize,
 			      const MFrequency& centerFrequency) const;
 
   // See the corresponding function in the
@@ -204,7 +205,8 @@ public:
   virtual void sample(Matrix<Flux<Double> >& samples,
  		      const Vector<MVDirection>& directions, 
  		      const MeasRef<MDirection>& dirRef, 
- 		      const MVAngle& pixelSize, 
+ 		      const MVAngle& pixelLatSize, 
+ 		      const MVAngle& pixelLongSize, 
 		      const Vector<MVFrequency>& frequencies,
  		      const MeasRef<MFrequency>& freqRef) const;
 

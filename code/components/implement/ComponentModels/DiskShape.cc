@@ -1,5 +1,5 @@
 //# DiskShape.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -140,7 +140,8 @@ Double DiskShape::positionAngleInRad() const {
 }
 
 Double DiskShape::sample(const MDirection& direction, 
-			 const MVAngle& pixelSize) const {
+			 const MVAngle& pixelLatSize,
+			 const MVAngle& pixelLongSize) const {
   DebugAssert(ok(), AipsError);
   const MDirection& compDir(refDirection());
   const MDirection::Ref& compDirFrame(compDir.getRef());
@@ -154,7 +155,8 @@ Double DiskShape::sample(const MDirection& direction,
   }
   Double retVal = calcSample(*compDirValue, direction.getValue(),
 			     itsMajValue/2.0, itsMinValue/2.0, 
-			     itsHeight*square(pixelSize.radian()));
+			     itsHeight*pixelLatSize.radian()*
+			     pixelLongSize.radian());
   if (deleteValue) delete compDirValue;
   return retVal;
 }
@@ -162,7 +164,8 @@ Double DiskShape::sample(const MDirection& direction,
 void DiskShape::sample(Vector<Double>& scale, 
 		       const Vector<MVDirection>& directions, 
 		       const MDirection::Ref& refFrame,
-		       const MVAngle& pixelSize) const {
+		       const MVAngle& pixelLatSize,
+		       const MVAngle& pixelLongSize) const {
   DebugAssert(ok(), AipsError);
   const uInt nSamples = directions.nelements();
   DebugAssert(scale.nelements() == nSamples, AipsError);
@@ -179,7 +182,8 @@ void DiskShape::sample(Vector<Double>& scale,
   }
   const Double majRad = itsMajValue/2.0; 
   const Double minRad = itsMinValue/2.0; 
-  const Double pixValue = square(pixelSize.radian()) * itsHeight;
+  const Double pixValue = itsHeight * 
+    pixelLatSize.radian() * pixelLongSize.radian();
   for (uInt i = 0; i < nSamples; i++) {
     scale(i) = calcSample(*compDirValue, directions(i), 
 			  majRad, minRad, pixValue);

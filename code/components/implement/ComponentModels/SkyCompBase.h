@@ -1,5 +1,5 @@
 //# SkyCompBase.h: Base class for model components of the sky brightness
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -207,16 +207,17 @@ public:
   // Calculate the flux at the specified direction & frequency, in a pixel of
   // specified size.
   virtual Flux<Double> sample(const MDirection& direction, 
-			      const MVAngle& pixelSize, 
+			      const MVAngle& pixelLatSize, 
+			      const MVAngle& pixelLongSize, 
 			      const MFrequency& centerFrequency) const = 0;
 
   // Same as the previous function except that many directions & frequencies
-  // are done at once. A default implementation is available which calls the
-  // single pixel function.
+  // are done at once. 
   virtual void sample(Matrix<Flux<Double> >& samples,
  		      const Vector<MVDirection>& directions, 
  		      const MeasRef<MDirection>& dirRef, 
- 		      const MVAngle& pixelSize, 
+ 		      const MVAngle& pixelLatSize, 
+ 		      const MVAngle& pixelLongSize, 
 		      const Vector<MVFrequency>& frequencies,
  		      const MeasRef<MFrequency>& freqRef) const = 0;
 

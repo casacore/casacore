@@ -1,5 +1,5 @@
 //# GaussianShape.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -149,7 +149,8 @@ Double GaussianShape::positionAngleInRad() const {
 }
 
 Double GaussianShape::sample(const MDirection& direction, 
-			     const MVAngle& pixelSize) const {
+			     const MVAngle& pixelLatSize,
+			     const MVAngle& pixelLongSize) const {
   DebugAssert(ok(), AipsError);
   const MDirection& compDir(refDirection());
   const MDirection::Ref& compDirFrame(compDir.getRef());
@@ -166,7 +167,7 @@ Double GaussianShape::sample(const MDirection& direction,
   Double retVal = 0.0;
   if (separation < 4 * itsShape.majorAxis()) {
     const Double pa = - compDirValue->positionAngle(dirValue);
-    retVal = square(pixelSize.radian()) *
+    retVal = pixelLatSize.radian() * pixelLongSize.radian() * 
       itsShape(separation*sin(pa), separation*cos(pa));
   }
   if (deleteValue) delete compDirValue;
@@ -176,7 +177,8 @@ Double GaussianShape::sample(const MDirection& direction,
 void GaussianShape::sample(Vector<Double>& scale, 
 			   const Vector<MDirection::MVType>& directions, 
 			   const MDirection::Ref& refFrame,
-			   const MVAngle& pixelSize) const {
+			   const MVAngle& pixelLatSize,
+			   const MVAngle& pixelLongSize) const {
   DebugAssert(ok(), AipsError);
   const uInt nSamples = directions.nelements();
   DebugAssert(scale.nelements() == nSamples, AipsError);
@@ -191,7 +193,7 @@ void GaussianShape::sample(Vector<Double>& scale,
       (MDirection::Convert(compDir, refFrame)().getValue());
     deleteValue = True;
   }
-  const Double pixArea = square(pixelSize.radian());
+  const Double pixArea = pixelLatSize.radian() * pixelLongSize.radian();
   const Double maxSep = 4.0 * itsShape.majorAxis();
   Double separation, pa;
   for (uInt i = 0; i < nSamples; i++) {

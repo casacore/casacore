@@ -122,7 +122,8 @@ ComponentList& ComponentList::operator=(const ComponentList& other){
 }
 
 Flux<Double> ComponentList::sample(const MDirection& sampleDir,
-				   const MVAngle& pixelSize,
+				   const MVAngle& pixelLatSize,
+				   const MVAngle& pixelLongSize,
 				   const MFrequency& centerFreq) const {
   DebugAssert(ok(), AipsError);
   const Unit retUnit("Jy");
@@ -130,7 +131,8 @@ Flux<Double> ComponentList::sample(const MDirection& sampleDir,
   Vector<DComplex> result(4, DComplex(0,0));
   Flux<Double> compFlux;
   for (uInt i = 0; i < nelements(); i++) {
-    compFlux = component(i).sample(sampleDir, pixelSize, centerFreq);
+    compFlux = component(i).sample(sampleDir, pixelLatSize, pixelLongSize,
+				   centerFreq);
     compFlux.convertUnit(retUnit);
     compFlux.convertPol(retPol);
     result += compFlux.value();
@@ -141,7 +143,8 @@ Flux<Double> ComponentList::sample(const MDirection& sampleDir,
 void ComponentList::sample(Matrix<Flux<Double> >& samples,
 			   const Vector<MVDirection>& directions, 
 			   const MeasRef<MDirection>& dirRef, 
-			   const MVAngle& pixelSize, 
+			   const MVAngle& pixelLatSize, 
+			   const MVAngle& pixelLongSize, 
 			   const Vector<MFrequency::MVType>& frequencies,
 			   const MFrequency::Ref& freqRef) const {
   const Unit retUnit("Jy");
@@ -159,8 +162,8 @@ void ComponentList::sample(Matrix<Flux<Double> >& samples,
 
   Matrix<Flux<Double> > compSamples(nDirs, nFreqs);
   for (uInt i = 0; i < nelements(); i++) {
-    component(i).sample(compSamples, directions, dirRef, pixelSize, 
-			frequencies, freqRef);
+    component(i).sample(compSamples, directions, dirRef,
+			pixelLatSize, pixelLongSize, frequencies, freqRef);
     for (uInt f = 0; f < nFreqs; f++) { 
       for (uInt d = 0; d < nDirs; d++) { 
 	Flux<Double>& thisFlux = compSamples(d, f);

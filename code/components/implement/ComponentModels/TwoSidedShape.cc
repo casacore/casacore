@@ -1,5 +1,5 @@
 //# TwoSidedShape.cc:
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,8 +102,10 @@ Double TwoSidedShape::axialRatio() const {
 void TwoSidedShape::sample(Vector<Double>& scale, 
 			   const Vector<MDirection::MVType>& directions, 
 			   const MDirection::Ref& refFrame,
-			   const MVAngle& pixelSize) const {
-  ComponentShape::sample(scale, directions, refFrame, pixelSize);
+			   const MVAngle& pixelLatSize,
+			   const MVAngle& pixelLongSize) const {
+  ComponentShape::sample(scale, directions, refFrame, pixelLatSize,
+			 pixelLongSize);
 }
 
 void TwoSidedShape::visibility(Vector<DComplex>& scale,

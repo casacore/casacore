@@ -1,5 +1,5 @@
 //# ComponentShape.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,13 +88,15 @@ const MDirection& ComponentShape::refDirection() const {
 void  ComponentShape::sample(Vector<Double>& scale, 
 			     const Vector<MDirection::MVType>& directions, 
 			     const MDirection::Ref& refFrame,
-			     const MVAngle& pixelSize) const {
+			     const MVAngle& pixelLatSize,
+			     const MVAngle& pixelLongSize) const {
   DebugAssert(ComponentShape::ok(), AipsError);
   const uInt nSamples = directions.nelements();
   DebugAssert(scale.nelements() == nSamples, AipsError);
 
   for (uInt i = 0; i < nSamples; i++) {
-    scale(i) = sample(MDirection(directions(i), refFrame), pixelSize);
+    scale(i) = sample(MDirection(directions(i), refFrame), 
+		      pixelLatSize, pixelLongSize);
   }
 }
 

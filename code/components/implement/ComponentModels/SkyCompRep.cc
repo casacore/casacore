@@ -1,5 +1,5 @@
 //# SkyCompRep.cc:  this defines SkyCompRep
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -161,10 +161,11 @@ const String& SkyCompRep::label() const {
 }
 
 Flux<Double> SkyCompRep::sample(const MDirection& direction, 
-				const MVAngle& pixelSize, 
+				const MVAngle& pixelLatSize,
+				const MVAngle& pixelLongSize,
 				const MFrequency& centerFrequency) const {
   DebugAssert(ok(), AipsError);
-  Double scale = itsShapePtr->sample(direction, pixelSize);
+  Double scale = itsShapePtr->sample(direction, pixelLatSize, pixelLongSize);
   scale *= itsSpectrumPtr->sample(centerFrequency);
   Flux<Double> flux = itsFlux.copy();
   flux.scaleValue(scale, scale, scale, scale);
@@ -174,7 +175,8 @@ Flux<Double> SkyCompRep::sample(const MDirection& direction,
 void SkyCompRep::sample(Matrix<Flux<Double> >& samples,
 			const Vector<MVDirection>& directions, 
 			const MeasRef<MDirection>& dirRef, 
-			const MVAngle& pixelSize, 
+			const MVAngle& pixelLatSize, 
+			const MVAngle& pixelLongSize, 
 			const Vector<MVFrequency>& frequencies,
 			const MeasRef<MFrequency>& freqRef) const {
   DebugAssert(ok(), AipsError);
@@ -182,13 +184,15 @@ void SkyCompRep::sample(Matrix<Flux<Double> >& samples,
   DebugAssert(samples.nrow() == nDirSamples, AipsError);
   const uInt nFreqSamples = frequencies.nelements();
   DebugAssert(samples.ncolumn() == nFreqSamples, AipsError);
-  DebugAssert(pixelSize.radian() > 0.0, AipsError);
+  DebugAssert(pixelLatSize.radian() > 0.0, AipsError);
+  DebugAssert(pixelLongSize.radian() > 0.0, AipsError);
   
   const Vector<DComplex> fluxVal = itsFlux.value();
   const Unit fluxUnit = itsFlux.unit();
   const ComponentType::Polarisation fluxPol = itsFlux.pol();
   Vector<Double> dirScales(nDirSamples);
-  itsShapePtr->sample(dirScales, directions, dirRef, pixelSize);
+  itsShapePtr->sample(dirScales, directions, dirRef,
+		      pixelLatSize, pixelLongSize);
   Vector<Double> freqScales(nFreqSamples);
   itsSpectrumPtr->sample(freqScales, frequencies, freqRef);
 

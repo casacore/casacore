@@ -1,5 +1,5 @@
 //# SkyComponent.cc:  this defines SkyComponent
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -136,20 +136,23 @@ const String& SkyComponent::label() const {
 }
 
 Flux<Double> SkyComponent::sample(const MDirection& direction, 
-			      const MVAngle& pixelSize, 
+			      const MVAngle& pixelLatSize, 
+			      const MVAngle& pixelLongSize, 
 			      const MFrequency& centerFrequency) const {
   DebugAssert(ok(), AipsError);
-  return itsCompPtr->sample(direction, pixelSize, centerFrequency);
+  return itsCompPtr->sample(direction, pixelLatSize, pixelLongSize, 
+			    centerFrequency);
 }
 
 void SkyComponent::sample(Matrix<Flux<Double> >& samples,
 			  const Vector<MVDirection>& directions, 
 			  const MeasRef<MDirection>& dirRef, 
-			  const MVAngle& pixelSize, 
+			  const MVAngle& pixelLatSize, 
+			  const MVAngle& pixelLongSize, 
 			  const Vector<MVFrequency>& frequencies,
 			  const MeasRef<MFrequency>& freqRef) const {
   DebugAssert(ok(), AipsError);
-  itsCompPtr->sample(samples, directions, dirRef, pixelSize, 
+  itsCompPtr->sample(samples, directions, dirRef, pixelLatSize, pixelLongSize,
 		     frequencies, freqRef);
 }
 

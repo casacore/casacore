@@ -1,5 +1,5 @@
 //# ComponentShape.h: Base class for component shapes
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -153,7 +153,8 @@ public:
   // centered in the specified direction. The returned value will always be
   // between zero and one (inclusive).
   virtual Double sample(const MDirection& direction,
-			const MVAngle& pixelSize) const = 0;
+			const MVAngle& pixelLatSize, 
+			const MVAngle& pixelLongSize) const = 0;
 
   // Same as the previous function except that many directions can be sampled
   // at once. The reference frame and pixel size must be the same for all the
@@ -164,7 +165,8 @@ public:
   virtual void sample(Vector<Double>& scale, 
 		      const Vector<MDirection::MVType>& directions, 
 		      const MDirection::Ref& refFrame,
-		      const MVAngle& pixelSize) const = 0;
+		      const MVAngle& pixelLatSize,
+		      const MVAngle& pixelLongSize) const = 0;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3-element vector

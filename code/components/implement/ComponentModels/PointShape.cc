@@ -1,5 +1,5 @@
 //# PointShape.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -74,30 +74,41 @@ ComponentType::Shape PointShape::type() const {
 }
 
 Double PointShape::sample(const MDirection& direction, 
-			  const MVAngle& pixelSize) const {
+			  const MVAngle& pixelLatSize,
+			  const MVAngle& pixelLongSize) const {
   DebugAssert(ok(), AipsError);
   const MDirection& compDir(refDirection());
   const MDirection::Ref& compDirFrame(compDir.getRef());
-  const MDirection::MVType& compDirValue(compDir.getValue());
-  Double separation;
+  const MDirection::MVType* compDirValue = &(compDir.getValue());
+  Bool deleteValue = False;
   // Convert direction to the same frame as the reference direction
   if (direction.getRef() != compDirFrame) {
-    const MDirection::MVType sampledDirValue = 
-      MDirection::Convert(direction, compDirFrame)().getValue();
-    separation = compDirValue.separation(sampledDirValue);
-  } else {
-    separation = compDirValue.separation(direction.getValue());
+    compDirValue = new MDirection::MVType
+      (MDirection::Convert(compDir, direction.getRef())().getValue());
+    deleteValue = True;
   }
-  if (separation < pixelSize.radian()/2.0) {
-    return 1.0;
+  const MDirection::MVType& dirValue = direction.getValue();
+  const Double separation = compDirValue->separation(dirValue);
+  const Double latSize = pixelLatSize.radian();
+  const Double longSize = pixelLongSize.radian();
+  Double retVal = 0.0;
+  if (separation < max(latSize, longSize)) {
+    // Calculate the pa.
+    const Double pa = compDirValue->positionAngle(dirValue);
+    if (separation*cos(pa) < longSize/2.0 &&
+	separation*sin(pa) < latSize/2.0) {
+      retVal = 1.0;
+    }
   }
-  return 0.0;
+  if (deleteValue) delete compDirValue;
+  return retVal;
 }
 
 void PointShape::sample(Vector<Double>& scale, 
 			const Vector<MDirection::MVType>& directions, 
 			const MDirection::Ref& refFrame, 
-			const MVAngle& pixelSize) const {
+			const MVAngle& pixelLatSize,
+			const MVAngle& pixelLongSize) const {
   DebugAssert(ok(), AipsError);
   const uInt nSamples = directions.nelements();
   DebugAssert(scale.nelements() == nSamples, AipsError);
@@ -112,14 +123,21 @@ void PointShape::sample(Vector<Double>& scale,
       (MDirection::Convert(compDir, refFrame)().getValue());
     deleteValue = True;
   }
-  const Double pixSize = pixelSize.radian()/2.0;
+  const Double latSize = pixelLatSize.radian();
+  const Double longSize = pixelLongSize.radian();
+  const Double nearSize = max(latSize, longSize);
   Double separation;
+  scale = 0.0;
   for (uInt i = 0; i < nSamples; i++) {
-    separation = compDirValue->separation(directions(i));
-    if (separation < pixSize) {
-      scale(i) = 1.0;
-    } else {
-      scale(i) = 0.0;
+    const MDirection::MVType& dirVal = directions(i);
+    separation = compDirValue->separation(dirVal);
+    if (separation < nearSize) {
+    // Calculate the pa.
+      const Double pa = compDirValue->positionAngle(dirVal);
+      if (separation*cos(pa) < longSize/2.0 &&
+	  separation*sin(pa) < latSize/2.0) {
+	scale(i) = 1.0;
+      }
     }
   }
   if (deleteValue) delete compDirValue;

@@ -1,5 +1,5 @@
 //# ComponentList: this defines ComponentList.h
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -166,7 +166,8 @@ public:
   // Sample all the members of the componentList at the specified
   // direction. 
   Flux<Double> sample(const MDirection& sampleDir,
-		      const MVAngle& pixelSize,
+		      const MVAngle& pixelLatSize,
+		      const MVAngle& pixelLongSize,
 		      const MFrequency& centerFreq) const;
 
   // Same as the previous function except that many directions & frequencies
@@ -174,7 +175,8 @@ public:
   void sample(Matrix<Flux<Double> >& samples,
 	      const Vector<MVDirection>& directions, 
 	      const MeasRef<MDirection>& dirRef, 
-	      const MVAngle& pixelSize, 
+	      const MVAngle& pixelLatSize, 
+	      const MVAngle& pixelLongSize, 
 	      const Vector<MVFrequency>& frequencies,
 	      const MeasRef<MFrequency>& freqRef) const;
 
