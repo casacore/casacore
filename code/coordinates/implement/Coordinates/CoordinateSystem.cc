@@ -469,7 +469,10 @@ Int CoordinateSystem::pixelAxisToWorldAxis(uInt pixelAxis) const
 {
    Int coordinate, axisInCoordinate;
    findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-   return worldAxes(coordinate)(axisInCoordinate);
+   if (axisInCoordinate>=0 && coordinate>=0) {
+      return worldAxes(coordinate)(axisInCoordinate);
+   }
+   return -1;
 }
 
 Vector<Int> CoordinateSystem::worldAxes(uInt whichCoord) const
@@ -495,7 +498,7 @@ Vector<Int> CoordinateSystem::worldAxes(uInt whichCoord) const
 Vector<Int> CoordinateSystem::pixelAxes(uInt whichCoord) const
 {
     AlwaysAssert(whichCoord < nCoordinates(), AipsError);
-    Vector<Int> retval(coordinate(whichCoord).nPixelAxes());
+   Vector<Int> retval(coordinate(whichCoord).nPixelAxes());
 
     retval = -1;  // Axes which aren't found must be removed!
     const uInt naxes = nPixelAxes();
@@ -847,6 +850,152 @@ Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
     return ok;
 }
 
+
+Bool CoordinateSystem::near(const Coordinate* pOther, 
+                            Double tol) const
+//
+// Compare this CoordinateSystem with another. 
+//
+{
+   Vector<Int> excludePixelAxes;
+   return near(pOther,excludePixelAxes,tol);
+}
+
+
+Bool CoordinateSystem::near(const Coordinate* pOther, 
+                            const Vector<Int>& excludePixelAxes,
+                            Double tol) const
+//
+// Compare this CoordinateSystem with another. 
+//
+// Do not compare axis descriptors on the specified pixel axes; 
+// a dubious thing to do.
+// 
+//
+// The separation of world axes and pixel axes, and the ability to
+// remove axes makes this function a great big mess.
+//
+{
+// Basic checks
+
+   if (this->type() != pOther->type()) return False;
+
+   CoordinateSystem* cSys = (CoordinateSystem*)pOther;  
+
+   if (nCoordinates() != cSys->nCoordinates()) return False;
+
+   if (nPixelAxes() != cSys->nPixelAxes()) return False;
+   if (nWorldAxes() != cSys->nWorldAxes()) return False;
+
+
+
+// Loop over number of coordinates
+
+   for (Int i=0; i<nCoordinates(); i++) {
+
+// Although the coordinates are checked for their types in
+// the coordinate comparison routines, we can save ourselves
+// some time by checking here too
+
+      if (coordinate(i).type() != cSys->coordinate(i).type()) 
+         return False;
+
+// Find which pixel axes in the CoordinateSystem this coordinate
+// inhabits and compare the vectors.   Here we don't take into 
+// account the exclusion axes vector; that's only used when we are 
+// actually comparing the axis descriptor values on certain axes
+
+      if (pixelAxes(i).nelements() != cSys->pixelAxes(i).nelements())
+         return False;
+      if (!allEQ(pixelAxes(i).ac(), cSys->pixelAxes(i).ac())) 
+         return False;
+
+// Find which world axes in the CoordinateSystem this
+// coordinate inhabits and compare the vectors
+    
+      if (worldAxes(i).nelements() != cSys->worldAxes(i).nelements()) 
+         return False;
+      if (!allEQ(worldAxes(i).ac(), cSys->worldAxes(i).ac())) 
+         return False;
+
+
+// Were all the world axes for this coordinate removed ? If so
+// we don't check it
+
+      Bool allGone = True;
+      for (Int j=0; j<worldAxes(i).nelements(); j++) {
+         if (worldAxes(i)(j) >= 0) {
+            allGone = False;
+            break;
+         }
+      }
+      
+
+// Continue if we have some unremoved world axes in this coordinate
+
+      Int excSize = coordinate(i).nPixelAxes();
+      Vector<Int> excludeAxes(excSize);
+      if (!allGone) {
+
+// If any of the list of CoordinateSystem exclusion pixel axes
+// inhabit this coordinate, make a list of the axes in this
+// coordinate that they correspond to.  
+
+         Int coord, axisInCoord;
+         Int k = 0;
+         for (j=0; j<excludePixelAxes.nelements(); j++) {
+
+// Any invalid excludePixelAxes are dealt with here.  If they are
+// rubbish, we just don't find them ! 
+
+            findPixelAxis(coord, axisInCoord, excludePixelAxes(j));
+            if (coord == i) {
+
+// OK, this pixel axis is in this coordinate, so stick it in the list
+// We may have to resize if the stupid user has given us duplicates
+// in the list of exclusion axes
+
+               if (k == excludeAxes.nelements()) {
+                  Int n = excludeAxes.nelements() + excSize;
+                  excludeAxes.resize(n,True);
+               }
+               excludeAxes(k++) = axisInCoord;
+            }
+         }
+         excludeAxes.resize(k,True);
+
+
+// Now, for the current coordinate, convert the world axes in 
+// the CoordinateSystems to axes in the current coordinate
+// and compare the two CoordinateSystems
+
+         Int coord1, coord2, axisInCoord1, axisInCoord2;
+         for (j=0; j<worldAxes(i).nelements(); j++) {
+            if (worldAxes(i)(j) >= 0) {
+
+// Not removed (can't find it if it's been removed !)
+  
+                     findWorldAxis(coord1, axisInCoord1, worldAxes(i)(j));
+               cSys->findWorldAxis(coord2, axisInCoord2, worldAxes(i)(j));
+
+               if (coord1 != coord2) return False;
+               if (axisInCoord1 != axisInCoord2) return False;
+            }
+         }
+         
+// Now, finally, compare the current coordinate from the two 
+// CoordinateSystems except on the specified axes
+
+         return coordinate(i).near(&cSys->coordinate(i),excludeAxes,tol);
+
+      }
+   }
+   return True;
+}
+
+
+
+
 String CoordinateSystem::format(String& units,
                           const Coordinate::formatType format,
                           const Double worldValue,
@@ -1124,14 +1273,14 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	    case Projection::SIN:
 		// This is either "real" SIN or NCP
 		AlwaysAssert(projp.nelements() == 2, AipsError);
-		if (near(projp(0), 0.0) && near(projp(1), 0.0)) {
+		if (::near(projp(0), 0.0) && ::near(projp(1), 0.0)) {
 		    // True SIN
 		    name = name + "-" + dc.projection().name();
 		} else {
 		    // NCP?
 		    // From Greisen and Calabretta
-		    if (near(projp(0), 0.0) && 
-			near(projp(1), 1.0/tan(crval(latAxis)*C::pi/180.0))) {
+		    if (::near(projp(0), 0.0) && 
+			::near(projp(1), 1.0/tan(crval(latAxis)*C::pi/180.0))) {
 			// Is NCP
 			projp = 0.0;
 			name = name + "-NCP";
@@ -1196,7 +1345,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	Double rholat = atan2(-pc(longAxis, latAxis)*C::pi/180.0,
 			pc(latAxis, latAxis)*C::pi/180.0)*180.0/C::pi;
 	crota(latAxis) = (rholong + rholat)/2.0;
-	if (!near(rholong, rholat)) {
+	if (!::near(rholong, rholat)) {
 	    os << LogIO::SEVERE << sprefix + "rota is not very accurate."
 		" PC matrix"
 		" is not a pure rotation.";
@@ -1302,7 +1451,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     if (projp.nelements() > 0) {
 	if (!writeWCS) {
 	    for (uInt i=0; i<projp.nelements(); i++) {
-		if (! nearAbs(projp(i), 0.0)) {
+		if (!::nearAbs(projp(i), 0.0)) {
 		    os << LogIO::NORMAL << 
 			"PROJPn not all zero.Information lost in FITS"
 			" conversion. Try WCS?." <<
@@ -1378,7 +1527,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    pc.diagonal() = 1.0;
 	    // We can only handle one non-zero angle
 	    for (uInt i=0; i<crota.nelements(); i++) {
-		if (!near(crota(i), 0.0)) {
+		if (!::near(crota(i), 0.0)) {
 		    if (rotationAxis >= 0) {
 			os << LogIO::SEVERE << "Can only convert one non-zero"
 			    " angle from " << sprefix << 
@@ -1478,7 +1627,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    if (i == j) {
 		continue;
 	    } else {
-		if (!near(pc(i,j), 0.0)) {
+		if (!::near(pc(i,j), 0.0)) {
 		    if (rotationAxis < 0 || (i == longAxis && j == latAxis) ||
 			(i == latAxis  && j == longAxis)) {
 			continue;
@@ -1576,9 +1725,9 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 		 header.dataType("epoch") == TpFloat || 
 		 header.dataType("epoch") == TpInt)) {
 		Double epoch = header.asdouble("epoch");
-		if (near(epoch, 1950.0)) {
+		if (::near(epoch, 1950.0)) {
 		    radecsys = MDirection::B1950;
-		} else if (near(epoch, 2000.0)) {
+		} else if (::near(epoch, 2000.0)) {
 		    radecsys = MDirection::J2000;
 		}
 	    } else if (header.isDefined("equinox") && 
@@ -1586,9 +1735,9 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 			header.dataType("equinox") == TpDouble ||
 			header.dataType("equinox") == TpInt)) {
 		Double epoch = header.asdouble("equinox");
-		if (near(epoch, 1950.0)) {
+		if (::near(epoch, 1950.0)) {
 		    radecsys = MDirection::B1950;
-		} else if (near(epoch, 2000.0)) {
+		} else if (::near(epoch, 2000.0)) {
 		    radecsys = MDirection::J2000;
 		}
 	    } else {

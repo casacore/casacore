@@ -137,6 +137,16 @@ public:
 				   Bool adjust = True);
 
 
+    // Comparison function. Any private Double data members are compared
+    // with the specified fractional tolerance.  
+    // <group>
+    virtual Bool near(const Coordinate* pOther, 
+                      Double tol=1e-6) const;
+    virtual Bool near(const Coordinate* pOther, 
+                      const Vector<Int>& excludeAxes,
+                      Double tol=1e-6) const;
+    // </group>
+
     // Format a LinearCoordinate world value with the common format
     // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
     // for more details on this interface, particularly with regards polymorphic use).

@@ -151,10 +151,10 @@ public:
     // transposing and removing axes.
     uInt nCoordinates() const;
 
-    // For a given coordinate say where it's world and coordinate axes are in
+    // For a given coordinate say where its world and coordinate axes are in
     // this coordinate system. The position in the returned Vector is its
-    // position in the original coordinate system, and its value is the axis
-    // number in the coordinate system. If the value is less than zero the axis
+    // axis number in the Coordinate system, and its value is the axis
+    // number in the CoordinateSystem. If the value is less than zero the axis
     // has been removed from this CoordinateSystem.  <group>
     Vector<Int> worldAxes(uInt whichCoord) const;
     Vector<Int> pixelAxes(uInt whichCoord) const;
@@ -257,6 +257,13 @@ public:
     // length.
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
+
+    // Comparison function. Any private Double data members are compared
+    // with the specified fractional tolerance.  
+    virtual Bool near(const Coordinate* pOther, Double tol=1e-6) const;
+    virtual Bool near(const Coordinate* pOther, const Vector<Int>& excludePixelAxes,
+                      Double tol=1e-6) const;
+ 
 
     // Format a world value with the common format interface (refer to the base 
     // class <linkto class=Coordinate>Coordinate</linkto> for more details on this 

@@ -36,6 +36,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MVAngle.h>
+#include <trial/Images/ImageUtilities.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
@@ -83,6 +84,7 @@ static void make_celprm_and_prjprm(celprm *&celprm_p, prjprm *&prjprm_p,
         errmsg += celset_errmsg[errnum];
         throw(AipsError(errmsg));
     }
+
 }
 
 static void copy_celprm_and_prjprm(celprm *&tocel, prjprm *&toprj, Projection::Type fromproj,
@@ -364,9 +366,18 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
     } else {
 	Vector<Double> tmp(refval.copy());
 	toDegrees(tmp);
-	celprm_p->flag = 0;
+	celprm_p->flag  = 0;
 	celprm_p->ref[0] = tmp(0);
 	celprm_p->ref[1] = tmp(1);
+
+        String name = Projection::name(projection().type());
+        const char *nameptr = name.chars();
+        int errnum = celset(nameptr, celprm_p, prjprm_p);
+        ok = ToBool(errnum==0);
+        if (!ok) {
+           String errmsg = "wcs celset_error: ";
+           errmsg += celset_errmsg[errnum];
+        }
     }
     return ok;
 }
@@ -649,6 +660,100 @@ void DirectionCoordinate::toDegrees(Vector<Double> &other) const
     other(0) *= to_degrees_p[0];
     other(1) *= to_degrees_p[1];
 }
+
+
+Bool DirectionCoordinate::near(const Coordinate* pOther, 
+                               Double tol) const
+{
+   Vector<Int> excludeAxes;
+   return near(pOther, excludeAxes, tol);
+}
+
+
+
+Bool DirectionCoordinate::near(const Coordinate* pOther, 
+                               const Vector<Int>& excludeAxes,
+                               Double tol) const
+
+{
+   if (this->type() != pOther->type()) return False;
+     
+   DirectionCoordinate* dCoord = (DirectionCoordinate*)pOther;
+   
+   if (!projection_p.near(dCoord->projection_p, tol)) return False;
+   if (type_p != dCoord->type_p) return False;
+
+
+// Number of pixel and world axes is the same for a DirectionCoordinate
+// Add an assertion check should this change 
+ 
+   AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
+   Vector<Bool> exclude(nPixelAxes());   
+   exclude = False;
+   Int j = 0;
+   for (Int i=0; i<nPixelAxes(); i++) {
+      if(ImageUtilities::inVector(i,excludeAxes) >=0) exclude(j++) = True;
+   }
+
+// Check linear transformation
+
+   if (!linear_p.near(dCoord->linear_p, excludeAxes, tol)) return False;
+
+
+// Check names and units
+
+   if (names_p.nelements() != dCoord->names_p.nelements()) return False;
+   if (units_p.nelements() != dCoord->units_p.nelements()) return False;
+   for (i=0; i<names_p.nelements(); i++) {
+      if (!exclude(i)) {
+         if (names_p(i) != dCoord->names_p(i)) return False;      
+      }
+   }
+   for (i=0; i<units_p.nelements(); i++) {
+      if (!exclude(i)) {
+         if (units_p(i) != dCoord->units_p(i)) return False;      
+      }
+   }
+
+     
+// WCS structures.  
+
+   if (celprm_p->flag != dCoord->celprm_p->flag) return False;
+
+// Items 0 and 2 are longitudes, items 1 and 3 are latitiudes
+// So treat them as axes 0 and 1 ???
+
+   for (i=0; i<2; i++) {
+     if (!exclude(i)) {
+        if (!::near(celprm_p->ref[i],dCoord->celprm_p->ref[i],tol)) return False;
+        if (!::near(celprm_p->ref[i+2],dCoord->celprm_p->ref[i+2],tol)) return False;
+     }
+   }
+
+// No idea what to do here for exclusion axes !
+   
+   if (prjprm_p->flag != dCoord->prjprm_p->flag) return False;
+   if (prjprm_p->r0 != dCoord->prjprm_p->r0) return False;
+   for (i=0; i<10; i++) {
+     if (!::near(prjprm_p->p[i],dCoord->prjprm_p->p[i],tol)) return False;
+   }
+   
+                          
+// Probably these arrays are implicitly the same if the units are the same
+// but might as well make sure
+
+   if (!exclude(0)) {
+      if (!::near(to_degrees_p[0],dCoord->to_degrees_p[0],tol)) return False;
+   }
+   if (!exclude(1)) {
+      if (!::near(to_degrees_p[1],dCoord->to_degrees_p[1],tol)) return False;
+   }
+    
+   return True;
+}
+
+
+
 
 Bool DirectionCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const

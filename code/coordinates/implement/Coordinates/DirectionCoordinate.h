@@ -170,6 +170,17 @@ public:
     static Vector<String> axisNames(MDirection::Types type, 
 				    Bool FITSName = False);
 
+    // Comparison function. Any private Double data members are compared
+    // with the specified fractional tolerance.  
+    // <group>
+    Bool near(const Coordinate* pOther, 
+              Double tol=1e-6) const;
+    Bool near(const Coordinate* pOther, 
+              const Vector<Int>& excludeAxes,
+              Double tol=1e-6) const;
+    // </group>
+
+
     // Format a DirectionCoordinate coordinate world value nicely through the
     // common format interface.  Formatting types that are allowed are
     // <src>Coordinate::SCIENTIFIC, Coordinate::FIXED, Coordinate::TIME</src>

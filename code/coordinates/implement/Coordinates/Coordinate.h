@@ -207,6 +207,16 @@ public:
     // message).
     const String &errorMessage() const;
 
+    // Comparison to fractional tolerance (for floating point values). 
+    // Don't compare on specified axes in coordinate.
+    // <group>
+    virtual Bool near(const Coordinate* pOther, 
+                      Double tol) const = 0;
+    virtual Bool near(const Coordinate* pOther, 
+                      const Vector<Int>& excludeAxes,
+                      Double tol) const = 0;
+    // </group>
+
     // Provide a common interface to getting formatted representations of
     // coordinate values.    Different derived coordinate types are formatted
     // in different ways.  For example, an RA/DEC  <src>DirectionCoordinate</src>  
