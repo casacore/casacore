@@ -1,4 +1,4 @@
-//# Math.h: AIPS++ interface to <src><math.h></src> and other general functions
+//# Math.h: AIPS++ interface to <math.h> and other scalar math functions
 //# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,63 +28,116 @@
 #if !defined (AIPS_MATH_H)
 #define AIPS_MATH_H
 
-#include <aips/aips_exit.h>
+#include <aips/aips.h>
 #include <math.h>
+#if defined(AIPS_STDLIB)
 //# The following is to get abs(int)
 #include <stdlib.h>
-#include <aips/aips.h>
-
-// <summary> AIPS++ interface to <src><math.h></src> and other general
-// functions. </summary>
+#endif
+// <summary>AIPS++ interface to math.h and other scalar math functions</summary>
 
 // <synopsis> 
-// AIPS++ interface to <src><math.h></src> .
 
-// You should include this file, <src><aips/Mathematics/Math.h></src>
-// rather than <src><math.h></src> directly.  It will be
-// used to cover up any deficiencies in the system <src><math.h></src>. This
-// does not include things like element-by-element array operations, just
-// scalar mathematical functions.
+// AIPS++ interface to <src><math.h></src>. You should include this file rather
+// than <src><math.h></src> directly.  It will be used to cover up any
+// deficiencies in the system <src><math.h></src>.
+
+// This file does not include things like element-by-element
+// array operations. See the 
+// <linkto group="ArrayMath.h#Array mathematical operations">ArrayMath</linkto>
+// functions for these functions.
+
+// This file includes the standard math library. Hence besides the functions
+// defined here the following functions are also available.
+// <srcblock>
+// Double sin(Double x)       Sine function
+// Double cos(Double x)       Cosine function
+// Double tan(Double x)       Tangent function
+// Double asin(Double x)      Inverse sine function
+// Double acos(Double x)      Inverse cosine function
+// Double atan(Double x)      Inverse tangent function
+// Double atan2(Double y, Double x) Four quandrant inverse tangent function
+// Double hypot(Double y, Double x) Euclidean distance sqrt(x*x+y*y)
+
+// Double sinh(Double x)      Hyperbolic sine
+// Double cosh(Double x)      Hyperbolic cosine
+// Double tanh(Double x)      Hyperbolic tangent
+// Double acosh(Double x)     Inverse hyperbolic sine
+// Double asinh(Double x)     Inverse hyperbolic cosine
+// Double atanh(Double x)     Inverse hyperbolic tangent
+
+// Double sqrt(Double x)      Square root
+// Double cbrt(Double x)      Cube root
+
+// Double pow(Double x, Double y) x raised to the power of y
+// Double exp(Double x)       Exponental function
+// Double expm1(Double x)     exp(x)-1. Use when x is small.
+// Double log(Double x)       Natural logarithm
+// Double log10(Double x)     Base ten logarithm
+// Double log1p(Double x)     log(x+1). Use when x is small
+
+// Double j0(Double x)        Bessel function of the first kind, zeroth order 
+// Double j1(Double x)        Bessel function of the first kind, first order
+// Double jn(Int n, Double x) Bessel function of the first kind nth order
+// Double y0(Double x)        Bessel function of the second kind, zeroth order 
+// Double y1(Double x)        Bessel function of the second kind, first order 
+// Double yn(Int n, Double x) Bessel function of the second kind, nth order
+//
+// Double lgamma(Double x)    Natural Log of the absolute value of the gamma
+//                            function
+// Double lgamma_r(Double x, Int* sign) Same as lgamma. The sign of the gamma
+//                            function is returned in the second argument.
+
+// Double erf(Double x)       Error function
+// Double erfc(Double x)      Complementary error function (1 - erf(x)). 
+//                            Use for large x.
+
+// Double ceil(Double x)      Returns the least integral value greater than or
+//                            equal to x
+// Double floor(Double x)     Returns the least integral value than than or
+//                            equal to x
+// Double rint(Double x)      Round to an integer using the current direction.
+
+// Double fabs(Double x)      Absolute value of x
+// Double remainder(Double x, Double y) the remainder. x - y*Int(x/y)
+// Double fmod(Double x, Double y) As above. May differ by +/- y
+// Int isnan(Double x) Returns 1 if x is a NaN, zero otherwise
+// Int ilogb(Double x) Unbiased exponent of x
+// Double logb(Double x)      As above but returns floating point result
+// Double scalbn(Double x, Int n) x*2**n. Uses exponent manipulation.
+// Double scalb(Double x, Double n) x*2**n. As above but n is a Double
+// Double significand(Double x) Returns the fractional part of x 
+//                            (between 1 and 2)
+// Double copysign(Double x, Double y)  returns a value with the magnitude of
+//                                      x and the sign bit of y.
+// Double nextafter(Double x, Double y) Returns the next machine representable
+//                            number after x in the direction specified by y
+// </srcblock>
 // </synopsis>
 
 // <group name="Math.h interface for AIPS++">
 
-
-// To get rid of ambiguities on Suns
-// Some machines might have efficient versions of these (require ifdefs)
+// Returns f1**f2. The Double precision version is defined in the standard
+// library. But many compilers are not good enough to automatically do the type
+// promotion. Hence these functions are explicitly defined.
 // <group>
-#if !defined(AIPS_STDLIB)
-#endif
-inline float pow(float f1, double f2) {return pow (double(f1), f2);}
-inline float pow(float f1, float f2) {return pow (double(f1), double(f2));}
-inline int pow(int f1,int f2) {return int(pow(double(f1), double(f2)));}
+inline Float pow(Float f1, Float f2) 
+{return Float(pow(Double(f1), Double(f2)));}
+inline Float pow(Float f1, Double f2) {return Float(pow(Double(f1), f2));}
+inline Float pow(Double f1, Float f2) {return Float(pow(f1, Double(f2)));}
+inline Int pow(Int f1, Int f2) {return Int(pow(Double(f1), Double(f2)));}
 // </group>
 
 // Return the integer "less than" point (i.e. the one further from zero if
 // "point" is negative.
 // <group>
-inline Int ifloor(float point)
-{
-Int result;
-if (point >= 0.0)
-   result = Int (point);
-else
-   result = Int (point - 1.0);
-return result;
-}
-inline Int ifloor(double point)
-{
-Int result;
-if (point >= 0.0)
-   result = Int (point);
-else
-   result = Int (point - 1.0);
-return result;
-}
+inline Int ifloor(Float point)
+{ if (point >= 0.0) return Int (point); else return Int(point - 1.0); }
+inline Int ifloor(Double point) 
+{ if (point >= 0.0) return Int(point); else return Int(point - 1.0); }
 // </group>
 
-//  Functions to get the max or min of two numbers. This is implemented as
-//  an inline function.
+//  Functions to get the max or min of two numbers.
 // <group>
 inline Int max(Int a, Int b) { if (a > b) return a; else return b; } 
 inline Int min(Int a, Int b) { if (a > b) return b; else return a; }
@@ -103,16 +156,11 @@ inline Float min(Float a, Float b) { if (a > b) return b; else return a; }
 // for integers in <src><stdlib.h></src>.  Define it for uInts so that certain
 // compilers can resolve the ambiguity when used in a templated class.
 // <group>
+inline Float abs(Float Val) {if (Val >= 0) return Val; else return -Val;}
+inline Double abs(Double Val) {return fabs(Val);}
 #if !defined(AIPS_STDLIB)
-inline Float abs(Float Val) {return Val > 0 ? Val : -Val;}
+inline Int abs(Int Val) {if (Val >= 0) return Val; else return -Val;}
 #endif
-
-#if !defined(AIPS_IBM) && !defined(AIPS_CL) && !defined(AIPS_STDLIB)
-// AIX and CenterLine provde an <src>abs(double)</src>
-// (which is probably slower!)
-inline Double abs(Double Val) {return Val > 0 ? Val : -Val;}
-#endif
-
 inline uInt abs(uInt Val) {return Val;}
 // </group>
 
@@ -140,9 +188,10 @@ Bool near(Int val1, Int val2, Double tol = 1.0e-5);
 Bool near(Float val1, Float val2, Double tol = 1.0e-5);
 Bool near(Double val1, Double val2, Double tol = 1.0e-13);
 // </group>
+
 // The "allNear" versions are aliases for the normal "near" versions. They
-// exist to make template functions that work for both arrays and scalars easier
-// to write.
+// exist to make template functions that work for both arrays and scalars
+// easier to write. These functions should be moved to ArrayMath.h
 // <group>
 inline Bool allNear(uInt val1, uInt val2, Double tol = 1.0e-5)
     { return near(val1, val2, tol); }
@@ -157,14 +206,15 @@ inline Bool allNear(Double val1, Double val2, Double tol = 1.0e-13)
 // Functions to return whether a value is "absolutely" near another. Returns
 // <src> tol > abs(val2 - val1)</src> 
 // <group>
-Bool nearAbs(uInt val1, uInt val2, uInt tol = 1);
-Bool nearAbs(Int val1, Int val2, Int tol = 1);
+Bool nearAbs(uInt val1, uInt val2, Double tol = 1.0e-5);
+Bool nearAbs(Int val1, Int val2, Double tol = 1.0e-5);
 Bool nearAbs(Float val1, Float val2, Double tol = 1.0e-5);
 Bool nearAbs(Double val1, Double val2, Double tol = 1.0e-13);
 // </group>
-// The "allNearAbs" versions are aliases for the normal "nearAbs" versions. They
-// exist to make template functions that work for both arrays and scalars easier
-// to write.
+
+// The "allNearAbs" versions are aliases for the normal "nearAbs"
+// versions. They exist to make template functions that work for both arrays
+// and scalars easier to write. These functions should be in ArrayMath.h
 // <group>
 inline Bool allNearAbs(uInt val1, uInt val2, uInt tol = 1)
     { return nearAbs(val1, val2, tol); }
@@ -176,14 +226,14 @@ inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13)
     { return nearAbs(val1, val2, tol); }
 // </group>
 
-// </group>
 
 // Functions to set and test for IEEE NaN's.
 // <group>
-Bool isNaN(const float &val);
-Bool isNaN(const double &val);
-void setNaN(float &val);
-void setNaN(double &val);
+Bool isNaN(const Float &val);
+Bool isNaN(const Double &val);
+void setNaN(Float &val);
+void setNaN(Double &val);
+// </group>
 // </group>
 
 #endif
