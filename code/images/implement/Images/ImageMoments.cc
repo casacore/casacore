@@ -59,6 +59,7 @@
 #include <trial/Images/ImageMoments.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/ArrayLattice.h>
+#include <trial/Lattices/CopyLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/PagedArray.h>
@@ -3456,46 +3457,21 @@ void ImageMoments<T>::saveLattice (const Lattice<T>* const pLattice,
 //  fileName    name of disk file
 //  coordinate  Coordinate System of an image from which we wish to
 //              construct the Coordinates for the saved PagedImage
-//  blc, trc    Region
-//  pLattice  Pointer to Lattice to save
+//  blc, trc    Region of lattice to save.
+//  pLattice    Pointer to Lattice to save
+//
 {
-
-// Create output image
-
    Int inDim = pLattice->ndim();
 
    IPosition outShape(inDim,1);
-   for (Int i=0; i<inDim; i++) {
-      outShape(i) = trc(i) - blc(i) + 1;
-   }
+   for (Int i=0; i<inDim; i++) outShape(i) = trc(i) - blc(i) + 1;
 
    CoordinateSystem outCSys = cSys;
    outCSys.subImage(blc.asVector(), IPosition(inDim,1).asVector());
    PagedImage<T> outImage(outShape, outCSys, fileName);
 
+   CopyLattice (outImage.lc(), pLattice->lc(), blc, trc);
 
-// Construct iterator to iterate through in output image tiles.
-// Since a) this tile shape may be different from the input 
-// Lattice tile shape and b) we may have subsectioned the input
-// Lattice, this might not be very efficient.
-
-   IPosition shape(outImage.niceCursorShape(outImage.maxPixels())); 
-   LatticeStepper navOut(outImage.shape(), IPosition(outImage.ndim(),1));
-   navOut.subSection (blc, trc);
-   LatticeIterator<T> outIt(outImage, shape);
-
-   LatticeStepper navIn(pLattice->shape(), 
-                        IPosition(pLattice->ndim(),1));
-   navIn.subSection (blc, trc);
-   RO_LatticeIterator<T> inIt(*pLattice, shape);
-
-
-// Save
-
-   while (!inIt.atEnd()) {
-      outIt.cursor() = inIt.cursor();
-      inIt++; outIt++; 
-   }
 }
 
 
@@ -3728,6 +3704,10 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
             i++;
          }
       }
+      Vector<Double> refValue(cSys.nWorldAxes(),Double(0.0));
+      cSys.setReferenceValue(refValue);
+
+// Save image to disk
     
       IPosition blc(IPosition(pPSF->ndim(),0));
       IPosition trc(pPSF->shape());
