@@ -90,7 +90,6 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   formatUnit_p("")
 {
    AlwaysAssert(restFrequency>=0.0, AipsError);
-   AlwaysAssert(inc > 0.0, AipsError);
    restfreqs_p.resize(1);
    restfreqs_p(0) = max(0.0, restFrequency);
 //
@@ -1068,8 +1067,8 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &,
 					       'c',
 					       oneRelative);
 //
-    if (deltaFrequency <= 0.0) {
-       logger << LogIO::WARN << "The increment is invalid.  Arbitrarily setting to 10% of the reference value" << LogIO::POST;
+    if (::near(deltaFrequency,Double(0.0), Double(1.0e-6))) {
+       logger << LogIO::WARN << "The increment is zero.  Arbitrarily setting to 10% of the reference value" << LogIO::POST;
        deltaFrequency = referenceFrequency / 10.0;
     }
     restFrequency = max(0.0, restFrequency);
