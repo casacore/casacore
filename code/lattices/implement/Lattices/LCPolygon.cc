@@ -1,5 +1,5 @@
 //# LCPolygon.cc: Define a 2-dimensional region by a polygon
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -231,7 +231,7 @@ void LCPolygon::defineBox()
     // Determine blc and trc. Note that float to int conversion truncates,
     // so add almost 1 to get correct blc.
     IPosition blc(2, 0);
-    IPosition trc(shape);
+    IPosition trc(shape-1);
     if (minx > 0) blc(0) = Int(minx+0.5);
     if (miny > 0) blc(1) = Int(miny+0.5);
     if (maxx < shape(0)-1) trc(0) = Int(maxx+0.5);
@@ -326,10 +326,12 @@ void LCPolygon::defineMask()
 	DebugAssert (nrcross%2 == 0, AipsError);
 	GenSort<Int>::sort (cross, nrcross);
 	for (i=0; i<nrcross; i+=2) {
-	    Int ys = cross[i];
-	    Int ye = cross[i+1];
-	    while (ys <= ye) {
-		mask(x,ys++) = True;
+	    if (x >= 0  &&  x < shape(0)) {
+	        Int ys = max (0, cross[i]);
+	        Int ye = min (shape(1)-1, cross[i+1]);
+		while (ys <= ye) {
+		    mask(x,ys++) = True;
+		}
 	    }
 	}
     }
@@ -338,12 +340,20 @@ void LCPolygon::defineMask()
 
 void LCPolygon::fillLine (Matrix<Bool>& mask, Int x, Int y1, Int y2)
 {
-    Int ys = y1;
-    if (y2 < y1) {
-	ys = y2;
-	y2 = y1;
-    }
-    while (ys <= y2) {
-	mask(x,ys++) = True;
+    if (x >= 0  &&  x < mask.shape()(0)) {
+        Int ys = y1;
+	if (y2 < y1) {
+	    ys = y2;
+	    y2 = y1;
+	}
+	if (ys < 0) {
+	    ys = 0;
+	}
+	if (y2 >= mask.shape()(1)) {
+	    y2 = mask.shape()(1) - 1;
+	}
+	while (ys <= y2) {
+	    mask(x,ys++) = True;
+	}
     }
 }
