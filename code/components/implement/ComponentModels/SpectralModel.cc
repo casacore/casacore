@@ -1,5 +1,5 @@
 //# SpectralModel.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@
 #include <aips/Logging/LogOrigin.h>
 
 SpectralModel::SpectralModel()
-  :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR),
+  :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::DEFAULT),
    itsFreqUnit("GHz")
 {
   DebugAssert(SpectralModel::ok(), AipsError);
