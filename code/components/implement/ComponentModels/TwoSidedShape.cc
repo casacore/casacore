@@ -204,45 +204,6 @@ Vector<Double> TwoSidedShape::errors() const {
   return compErrors;
 }
 
-Bool TwoSidedShape::fromAngQRecord(Quantum<Double>& retVal, 
-				   String& errorMessage,
-				   const String fieldString, 
-				   const RecordInterface& record) {
-  
-  if (!record.isDefined(fieldString)) {
-    errorMessage += "The '" + fieldString + "' field does not exist\n";
-    return False;
-  }
-  const RecordFieldId field(fieldString);
-  if (!(record.dataType(field) == TpRecord || 
-	((record.dataType(field) == TpString) && 
-	 (record.shape(field) == IPosition(1,1))))) {
-    errorMessage += "The '" + fieldString + "' field must be a record\n";
-    errorMessage += "or a string (but not a vector of strings)\n";
-    return False;
-  }
-  QuantumHolder qHolder;
-  if (record.dataType(field) == TpString) {
-    if (!qHolder.fromString(errorMessage, record.asString(field))) {
-      errorMessage += "Problem parsing the '" + fieldString + "' string\n";
-      return False;
-    }
-  } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
-    errorMessage += "Problem parsing the '" + fieldString +"' record\n";
-    return False;
-  }
-  if (!(qHolder.isScalar() && qHolder.isReal())) {
-    errorMessage += "The '" + fieldString + "' field is not a quantity\n";
-    return False;
-  }
-  retVal = qHolder.asQuantumDouble();
-  if (retVal.getFullUnit() != Unit("rad")) {
-    errorMessage += "The '" + fieldString + 
-      "' field must have angular units\n";
-    return False;
-  }
-}
-
 Bool TwoSidedShape::fromRecord(String& errorMessage,
 			       const RecordInterface& record) {
   if (!ComponentShape::fromRecord(errorMessage, record)) return False;
@@ -300,6 +261,33 @@ Bool TwoSidedShape::toRecord(String& errorMessage,
       return False;
     }
     record.defineRecord(RecordFieldId("positionangle"), qRecord);
+  }
+  {
+    const QuantumHolder qHolder(majorAxisError());
+    Record qRecord;
+    if (!qHolder.toRecord(errorMessage, qRecord)) {
+      errorMessage += "Cannot convert the major axis error to a record\n";
+      return False;
+    }
+    record.defineRecord(RecordFieldId("majoraxiserror"), qRecord);
+  }
+  {
+    const QuantumHolder qHolder(minorAxisError());
+    Record qRecord;
+    if (!qHolder.toRecord(errorMessage, qRecord)) {
+      errorMessage += "Cannot convert the minor axis error to a record\n";
+      return False;
+    }
+    record.defineRecord(RecordFieldId("minoraxiserror"), qRecord);
+  }
+  {
+    const QuantumHolder qHolder(positionAngleError());
+    Record qRecord;
+    if (!qHolder.toRecord(errorMessage, qRecord)) {
+      errorMessage += "Cannot convert the position angle error to a record\n";
+      return False;
+    }
+    record.defineRecord(RecordFieldId("positionangleerror"), qRecord);
   }
   return True;
 }

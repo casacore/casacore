@@ -327,12 +327,6 @@ protected:
   TwoSidedShape& operator=(const TwoSidedShape& other);
   // </group>
 
-  // Tirns the specified field in the specified record into an Quantum
-  static Bool fromAngQRecord(Quantum<Double>& returnValue, 
-			     String& errorMessage,
-			     const String fieldString, 
-			     const RecordInterface& record);
-
 private:
   Unit itsMajUnit;
   Unit itsMinUnit;
