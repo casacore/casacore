@@ -34,20 +34,68 @@
 
 int main() {
   try {
-    ComponentType::Shape e(ComponentType::POINT);
-    AlwaysAssert(ComponentType::name(e) == "Point", AipsError);
-    e = ComponentType::GAUSSIAN;
-    AlwaysAssert(ComponentType::name(e) == "Gaussian", AipsError);
-    e = ComponentType::UNKNOWN;
-    AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
-    e = ComponentType::NUMBER_SHAPES;
-    AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
-    String s("point");
-    AlwaysAssert(ComponentType::shape(s) == ComponentType::POINT, AipsError);
-    s = "GAUSSIAN";
-    AlwaysAssert(ComponentType::shape(s) == ComponentType::GAUSSIAN,AipsError);
-    s = "Pointer";
-    AlwaysAssert(ComponentType::shape(s) == ComponentType::UNKNOWN, AipsError);
+    {
+      ComponentType::Shape e(ComponentType::POINT);
+      AlwaysAssert(ComponentType::name(e) == "Point", AipsError);
+      e = ComponentType::GAUSSIAN;
+      AlwaysAssert(ComponentType::name(e) == "Gaussian", AipsError);
+      e = ComponentType::UNKNOWN;
+      AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
+      e = ComponentType::NUMBER_SHAPES;
+      AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
+      String s("point");
+      AlwaysAssert(ComponentType::shape(s) == ComponentType::POINT, 
+		   AipsError);
+      s = "GAUSSIAN";
+      AlwaysAssert(ComponentType::shape(s) == ComponentType::GAUSSIAN,
+		   AipsError);
+      s = "Pointer";
+      AlwaysAssert(ComponentType::shape(s) == ComponentType::UNKNOWN,
+		   AipsError);
+    }
+    {
+      ComponentType::Polarisation e(ComponentType::STOKES);
+      AlwaysAssert(ComponentType::name(e) == "Stokes", AipsError);
+      e = ComponentType::LINEAR;
+      AlwaysAssert(ComponentType::name(e) == "Linear", AipsError);
+      e = ComponentType::CIRCULAR;
+      AlwaysAssert(ComponentType::name(e) == "Circular", AipsError);
+      e = ComponentType::UNKNOWN_POLARISATION;
+      AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
+      e = ComponentType::NUMBER_POLARISATIONS;
+      AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
+      String s("stokes");
+      AlwaysAssert(ComponentType::polarisation(s) == ComponentType::STOKES,
+		   AipsError);
+      s = "LINEAR";
+      AlwaysAssert(ComponentType::polarisation(s) == ComponentType::LINEAR,
+		   AipsError);
+      s = "Circular";
+      AlwaysAssert(ComponentType::polarisation(s) == ComponentType::CIRCULAR,
+		   AipsError);
+      s = "Pointer";
+      AlwaysAssert(ComponentType::polarisation(s) ==
+		   ComponentType::UNKNOWN_POLARISATION, AipsError);
+    }
+    {
+      ComponentType::SpectralShape e(ComponentType::CONSTANT);
+      AlwaysAssert(ComponentType::name(e) == "Constant", AipsError);
+      e = ComponentType::SPECTRAL_INDEX;
+      AlwaysAssert(ComponentType::name(e) == "Spectral Index", AipsError);
+      e = ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+      AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
+      e = ComponentType::NUMBER_SPECTRAL_SHAPES;
+      AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
+      String s("constant");
+      AlwaysAssert(ComponentType::spectralShape(s) == ComponentType::CONSTANT, 
+		   AipsError);
+      s = "SPECTRAL INDEX";
+      AlwaysAssert(ComponentType::spectralShape(s) == 
+		   ComponentType::SPECTRAL_INDEX, AipsError);
+      s = "Pointer";
+      AlwaysAssert(ComponentType::spectralShape(s) ==
+		   ComponentType::UNKNOWN_SPECTRAL_SHAPE, AipsError);
+    }
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
