@@ -123,9 +123,6 @@ public:
 
     ~ISMColumn();
 
-    // Access to a column is not supported (yet).
-    virtual Bool canAccessScalarColumn (Bool& reask) const;
-
     // Set the shape of an array in the column.
     virtual void setShapeColumn (const IPosition& shape);
 
@@ -183,6 +180,40 @@ public:
     virtual void putComplexV  (uInt rownr, const Complex* dataPtr);
     virtual void putDComplexV (uInt rownr, const DComplex* dataPtr);
     virtual void putStringV   (uInt rownr, const String* dataPtr);
+    // </group>
+
+    // Get the scalar values in the entire column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ScalarColumn getColumn function).
+    // <group>
+    virtual void getScalarColumnBoolV     (Vector<Bool>* dataPtr);
+    virtual void getScalarColumnuCharV    (Vector<uChar>* dataPtr);
+    virtual void getScalarColumnShortV    (Vector<Short>* dataPtr);
+    virtual void getScalarColumnuShortV   (Vector<uShort>* dataPtr);
+    virtual void getScalarColumnIntV      (Vector<Int>* dataPtr);
+    virtual void getScalarColumnuIntV     (Vector<uInt>* dataPtr);
+    virtual void getScalarColumnfloatV    (Vector<float>* dataPtr);
+    virtual void getScalarColumndoubleV   (Vector<double>* dataPtr);
+    virtual void getScalarColumnComplexV  (Vector<Complex>* dataPtr);
+    virtual void getScalarColumnDComplexV (Vector<DComplex>* dataPtr);
+    virtual void getScalarColumnStringV   (Vector<String>* dataPtr);
+    // </group>
+
+    // Put the scalar values into the entire column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ScalarColumn putColumn function).
+    // <group>
+    virtual void putScalarColumnBoolV     (const Vector<Bool>* dataPtr);
+    virtual void putScalarColumnuCharV    (const Vector<uChar>* dataPtr);
+    virtual void putScalarColumnShortV    (const Vector<Short>* dataPtr);
+    virtual void putScalarColumnuShortV   (const Vector<uShort>* dataPtr);
+    virtual void putScalarColumnIntV      (const Vector<Int>* dataPtr);
+    virtual void putScalarColumnuIntV     (const Vector<uInt>* dataPtr);
+    virtual void putScalarColumnfloatV    (const Vector<float>* dataPtr);
+    virtual void putScalarColumndoubleV   (const Vector<double>* dataPtr);
+    virtual void putScalarColumnComplexV  (const Vector<Complex>* dataPtr);
+    virtual void putScalarColumnDComplexV (const Vector<DComplex>* dataPtr);
+    virtual void putScalarColumnStringV   (const Vector<String>* dataPtr);
     // </group>
 
     // Get an array value in the given row.
