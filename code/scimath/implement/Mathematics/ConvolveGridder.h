@@ -37,9 +37,9 @@ class ConvolveGridder : public Gridder<Domain, Range>{
 public:
 
   ConvolveGridder(const IPosition& shape, const Vector<Domain>& scale,
-		  const Vector<Domain>& offset, const String convType="SF");
+		  const Vector<Domain>& offset, const String& convType="SF");
 
-  virtual void setConvolutionFunction(const String type);
+  virtual void setConvolutionFunction(const String& type);
 
   virtual ~ConvolveGridder() {};
 
