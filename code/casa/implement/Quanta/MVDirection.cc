@@ -168,12 +168,8 @@ void MVDirection::adjust(Double &res) {
 
 Vector<Double> MVDirection::get() const {
   Vector<Double> tmp(2);
-  Double loc = xyz(0);
-  if (loc == 0) {
-    tmp(0) = asin(xyz(1));
-  } else {
-    tmp(0) = atan2(xyz(1),xyz(0));
-  }
+  if (xyz(0) != 0 || xyz(1) != 0) tmp(0) = atan2(xyz(1),xyz(0));
+  else tmp(0) = 0.0;
   tmp(1) = asin(xyz(2));
   return tmp;
 }    
