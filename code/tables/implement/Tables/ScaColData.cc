@@ -96,7 +96,11 @@ Bool ScalarColumnData<T>::isDefined (uInt rownr) const
 
 template<class T>
 void ScalarColumnData<T>::get (uInt rownr, void* val) const
-    { dataColPtr_p->get (rownr, (T*)val); }
+{
+    checkLock (False, True);
+    dataColPtr_p->get (rownr, (T*)val);
+    autoReleaseLock();
+}
 
 
 template<class T>
@@ -106,7 +110,9 @@ void ScalarColumnData<T>::getScalarColumn (void* val) const
     if (vecPtr->nelements() != nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::getColumn"));
     }
+    checkLock (False, True);
     dataColPtr_p->getScalarColumnV (vecPtr);
+    autoReleaseLock();
 }
 
 // Remove eventually - needed for g++
@@ -120,9 +126,11 @@ void ScalarColumnData<T>::getColumn (const Vector<uInt>& rownrs,
     if (vec.nelements() != rownrs.nelements()) {
 	throw (TableArrayConformanceError("ScalarColumnData::getColumn"));
     }
+    checkLock (False, True);
     for (uInt i=0; i<rownrs.nelements(); i++) {
 	dataColPtr_p->get (rownrs(i), &(vec(i)));
     }
+    autoReleaseLock();
 }
 
 
@@ -130,7 +138,10 @@ template<class T>
 void ScalarColumnData<T>::put (uInt rownr, const void* val)
 {
     checkValueLength ((const T*)val);
-    dataColPtr_p->put (rownr, (const T*)val); }
+    checkLock (True, True);
+    dataColPtr_p->put (rownr, (const T*)val);
+    autoReleaseLock();
+}
 
 template<class T>
 void ScalarColumnData<T>::putScalarColumn (const void* val)
@@ -140,7 +151,9 @@ void ScalarColumnData<T>::putScalarColumn (const void* val)
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
     checkValueLength (vecPtr);
+    checkLock (True, True);
     dataColPtr_p->putScalarColumnV (vecPtr);
+    autoReleaseLock();
 }
 
 template<class T>
@@ -152,9 +165,11 @@ void ScalarColumnData<T>::putColumn (const Vector<uInt>& rownrs,
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
     checkValueLength (&vec);
+    checkLock (True, True);
     for (uInt i=0; i<rownrs.nelements(); i++) {
 	dataColPtr_p->put (rownrs(i), &(vec(i)));
     }
+    autoReleaseLock();
 }
 
 
@@ -178,9 +193,11 @@ void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
     if (canAccessScalarColumn (reask)) {
 	getScalarColumn (vecPtr);
     }else{
+	checkLock (False, True);
 	for (uInt i=0; i<nrrow; i++) {
 	    dataColPtr_p->get (i,  &(*vecPtr)(i));
 	}
+	autoReleaseLock();
     }
     dataSave = vecPtr;
     fillSortKey (vecPtr, sortobj, cmpFunc, order);
