@@ -1,5 +1,5 @@
 //# TableMeasures.h: Create Measure and Quantum columns Tables.
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,14 +61,14 @@
 // The TableMeasures system exists to provide a way of creating (defining)
 // Measure and Quantum Table columns thus enabling the direct storage of 
 // Quanta and Measures in Aips++ Tables. 
-//
+// <p>
 // Defining Quantum and Measure columns is a once only operation (for each
 // column).  It can be seen as an extension to the existing Column Descriptor 
 // mechanism which adds a column of a specified type to a table.  The 
 // <linkto><class=TableMeasDesc>TableMeasDesc</linkto> and 
 // <linkto><class=TableQuantumDesc>TableQuantumDesc</linkto> class 
 // hierarchies are used to define Measure and Quantum columns.
-// 
+// <p>
 // Once defined, Measure and Quantum column objects are used to access a
 // column for reading and writing of Measures and Quanta.  For Quantum
 // column objects see the classes 
