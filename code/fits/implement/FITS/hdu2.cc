@@ -31,7 +31,7 @@
 # include <aips/string.h>
 # include <aips/stdio.h>
 # include <assert.h>
-# include <aips/strstream.h>
+# include <aips/sstream.h>
 
 //== FitsBit specializations ==================================================
 FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT,n), field(0) { }
@@ -112,13 +112,12 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 //== HeaderDataUnit ===========================================================
 
 void HeaderDataUnit::errmsg(HDUErrs e, char *s) {
-    ostrstream msgline;
-    msgline << "HDU error:  " << s << ends;
+    ostringstream msgline;
+    msgline << "HDU error:  " << s;
     err_status = e;
     // all of the errors which use this function are SEVERE
-    char * mptr = msgline.str();
+    const char * mptr = msgline.str().c_str();
     errfn(mptr, FITSError::SEVERE);
-    // delete [] mptr;
 }
 
 //== determine_type of HeaderDataUnit ========================================
