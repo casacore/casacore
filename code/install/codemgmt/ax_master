@@ -6422,3 +6422,4 @@
 18 461 src rm aips/implement/Lattices/ArrLatticeIter.cc
 18 478 src rm trial/apps/measures/measures_data.g
 18 478 src rm trial/apps/measures/measures_IERS.g
+18 482 src rm trial/apps/dish/pgplotwidget_gplot1d.gp
