@@ -1,4 +1,4 @@
- //# LatticeApply.cc: Optimally iterate through lattices and apply supplied function
+//# LatticeApply.cc: Optimally iterate through lattices and apply supplied function
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -378,7 +378,6 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
     Bool firstTime = True;
     IPosition outPos(outDim, 0);
     IPosition iterPos(outDim, 0);
-    Array<T> array;
     while (! inIter.atEnd()) {
 
 // Calculate the size of each chunk of output data.
@@ -396,29 +395,30 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 	}
 	if (firstTime  ||  outPos != iterPos) {
 	    if (!firstTime) {
-		latticeOut.putSlice (array, outPos);
+		latticeOut.putSlice (collapser.endAccumulator(outShape),
+				     outPos);
 	    }
 	    firstTime = False;
 	    outPos = iterPos;
+	    uInt n1 = 1;
+	    uInt n3 = 1;
 	    for (j=0; j<outDim; j++) {
 		if (ioMap(j) >= 0) {
 		    outShape(j) = cursorShape(ioMap(j));
+		    if (j < resultAxis) {
+		        n1 *= outShape(j);
+		    } else {
+		        n3 *= outShape(j);
+		    }
 		}
 	    }
-	    array.resize (outShape);
-	    collapser.initAccumulator (array);
+	    collapser.initAccumulator (n1, n3);
 	}
 
 // Put the collapsed lines into an output buffer
-// Determine the increment between elements in output array.
-// Initialize some positions needed in the loop.
+// Initialize the cursor position needed in the loop.
 
-	uInt outIncr = 1;
-	for (j=0; j<resultAxis; j++) {
-	    outIncr *= outShape(j);
-	}
 	IPosition curPos (inDim, 0);
-	IPosition arrPos (outDim, 0);
 
 // Determine the increment for the first collapse axes.
 // This is done by taking the difference between the adresses of two pixels
@@ -426,12 +426,9 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 
 	const uInt axis = collapseAxes(0);
 	uInt nval = cursorShape(axis);
-	uInt incr = 0;
-	if (nval > 1) {
-	    IPosition pos(inDim, 0);
-	    const T* p1 = &(cursor(pos));
-	    pos(axis) = 1;
-	    incr = &(cursor(pos)) - p1;
+	uInt incr = 1;
+	for (uint i=0; i<axis; i++) {
+	    incr *= cursorShape(i);
 	}
 	
 //	cout << " cursorShape " << cursorShape << endl;
@@ -441,11 +438,12 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 // Iterate in the outer loop through the iterator axes.
 // Iterate in the inner loop through the collapse axes.
 
+	uInt index1 = 0;
+	uInt index3 = 0;
 	for (;;) {
-	    T* arrData = &(array(arrPos));
 	    for (;;) {
 //	        cout << curPos << ' ' << collPos << endl;
-		collapser.process (arrData, outIncr,
+		collapser.process (index1, index3,
 				   &(cursor(curPos)), incr, nval);
 		// Increment a sum axis until all axes are handled.
 		for (j=1; j<collDim; j++) {
@@ -465,11 +463,15 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 	    for (j=0; j<iterDim; j++) {
 		uInt arraxis = iterAxes(j);
 		uInt axis = ioMap(arraxis);
-		++arrPos(arraxis);
 		if (++curPos(axis) < cursorShape(axis)) {
+		    if (arraxis < resultAxis) {
+		        index1++;
+		    } else {
+		        index3++;
+			index1 = 0;
+		    }
 		    break;
 		}
-		arrPos(arraxis) = 0;
 		curPos(axis) = 0;
 	    }
 	    if (j == iterDim) {
@@ -481,7 +483,7 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
     }
 
 // Write out the last output array.
-    latticeOut.putSlice (array, outPos);
+    latticeOut.putSlice (collapser.endAccumulator(outShape), outPos);
     if (tellProgress != 0) tellProgress->done();
 }
 

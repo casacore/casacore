@@ -33,6 +33,7 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/OS/Timer.h>
 #include <aips/Tables/Table.h>
@@ -82,27 +83,63 @@ class MyTiledCollapser : public TiledCollapser<Int>
 public:
     MyTiledCollapser() {};
     virtual void init (uInt nOutPixelsPerCollapse);
-    virtual void initAccumulator (Array<Int>& accumulator);
-    virtual void process (Int* accumulatorData, uInt accIncr,
+    virtual void initAccumulator (uInt n1, uInt n3);
+    virtual void process (uInt index1, uInt index3,
 			  const Int* inData, uInt inIncr, uInt nrval);
+    virtual Array<Int> endAccumulator (const IPosition& shape);
+private:
+    Matrix<uInt>* itsSum1;
+    Block<Int>*   itsSum2;
+    uInt          itsn1;
+    uInt          itsn3;
 };
 void MyTiledCollapser::init (uInt nOutPixelsPerCollapse)
 {
     AlwaysAssert (nOutPixelsPerCollapse == 2, AipsError);
 }
-void MyTiledCollapser::initAccumulator (Array<Int>& accumulator)
+void MyTiledCollapser::initAccumulator (uInt n1, uInt n3)
 {
-    accumulator = 0;
+    itsSum1 = new Matrix<uInt> (n1, n3);
+    itsSum2 = new Block<Int> (n1*n3);
+    itsSum1->set (0);
+    itsSum2->set (0);
+    itsn1 = n1;
+    itsn3 = n3;
 }
-void MyTiledCollapser::process (Int* accumulatorData, uInt accIncr,
+void MyTiledCollapser::process (uInt index1, uInt index3,
 				const Int* inData,
 				uInt inIncr, uInt nrval)
 {
+    uInt& sum1 = (*itsSum1)(index1, index3);
+    Int& sum2 = (*itsSum2)[index1 + index3*itsn1];
     for (uInt i=0; i<nrval; i++) {
-	accumulatorData[0] += *inData;
-	accumulatorData[accIncr] -= *inData;
+	sum1 += *inData;
+	sum2 -= *inData;
 	inData += inIncr;
     }
+}
+Array<Int> MyTiledCollapser::endAccumulator (const IPosition& shape)
+{
+    Array<Int> result(shape);
+    Bool deleteRes, deleteSum1;
+    Int* res = result.getStorage (deleteRes);
+    Int* resptr = res;
+    const uInt* sum1 = itsSum1->getStorage (deleteSum1);
+    const uInt* sum1ptr = sum1;
+    const Int* sum2ptr = itsSum2->storage();
+    for (uInt i=0; i<itsn3; i++) {
+        for (uInt j=0; j<itsn1; j++) {
+	    *resptr++ = Int(*sum1ptr++);
+	}
+	objcopy (resptr, sum2ptr, itsn1);
+	resptr += itsn1;
+	sum2ptr += itsn1;
+    }
+    itsSum1->freeStorage (sum1, deleteSum1);
+    result.putStorage (res, deleteRes);
+    delete itsSum1;
+    delete itsSum2;
+    return result;
 }
 
 
