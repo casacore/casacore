@@ -1,5 +1,5 @@
 //# Arrays.h:  A module implementing multidimensional arrays and operations
-//# Copyright (C) 1995,1999
+//# Copyright (C) 1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -112,9 +112,9 @@
 // advanced iteration.
 //
 // <li>
-// <linkto class=ArrayMath>Mathematical</linkto>,
-// <linkto class=ArrayLogical>logical</linkto>,
-// <linkto class=ArrayIO>IO</linkto>,
+// <linkto group="ArrayMath.h#Array mathematical operations">Mathematical</linkto>,
+// <linkto group="ArrayLogical.h#Array logical operations">logical</linkto>,
+// <linkto group="ArrayIO.h#Array IO">IO</linkto>,
 // and other useful operations are provided for
 // Arrays and MaskedArrays.
 //
