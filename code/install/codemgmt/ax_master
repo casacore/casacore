@@ -2667,3 +2667,4 @@
 10 014 src mv trial/implement/Measures/MCuvw.cc aips/implement/Measures/MCuvw.cc
 10 014 src mv trial/implement/Measures/test/tMuvw.cc aips/implement/Measures/test/tMuvw.cc
 10 014 src mv trial/implement/Measures/test/tMuvw.out aips/implement/Measures/test/tMuvw.out
+10 014 src mv trial/implement/Measures/Muvw.h aips/implement/Measures/Muvw.h
