@@ -5780,3 +5780,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSWeather.h
 16 134 src rm aips/implement/MeasurementSets/OldMSWeatherColumns.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSWeatherColumns.h
+16 134 src rm aips/implement/MeasurementSets/OldMSWeatherEnums.h
