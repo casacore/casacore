@@ -108,6 +108,8 @@ void a (Bool canonical, uInt version,
     l1 = io.putShape (IPosition(2,100,100), off1, static_cast<Int*>(0));
     cout << l1 << " " << off1 << endl;
     cout << "Length=" << io.length() << endl;
+    //# Note that because the data is not written here (but a bit later),
+    //# valgrind gives an uninitialized error when the buffer gets written.
     l3 = io.putShape (IPosition(2,2000,5), off3, static_cast<String*>(0));
     cout << l3 << " " << off3 << endl;
     cout << "Length=" << io.length() << endl;
