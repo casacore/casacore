@@ -925,4 +925,25 @@ inline const char *FitsKeyCardTranslator::err(int i) const { return err_[i]; }
 inline int FitsKeyCardTranslator::err_cardno(int i) const {
 	return err_cardno_[i]; }
 
+// <summary>Utility functions for floating point values</summary>
+class FitsFPUtil
+{
+public:
+    // These functions are useful to tell if some type is a floating point type.
+    // This is useful in a templated function, where the processing can vary
+    // depending on whether the type is FP or not (e.g. blank handling).
+    // <group>
+    static Bool isFP(const float *);
+    static Bool isFP(const double *);
+    static Bool isFP(const void *);
+    // </group>
+
+    // For blanking purposes, we need to be able to get a NaN. The NaN we set
+    // is all bits on.
+    // <group>
+    static void setNaN(double &val);
+    static void setNaN(float &val);
+    // </group>
+};
+
 # endif
