@@ -116,6 +116,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   visCube_p.resize(other.visCube_p.shape()); visCube_p=other.visCube_p;
   uvwMat_p.resize(other.uvwMat_p.shape()); uvwMat_p=other.uvwMat_p;
   pa_p.resize(other.pa_p.nelements()); pa_p=other.pa_p;
+  azel_p.resize(other.azel_p.nelements()); azel_p=other.azel_p;
 
   msd_p=other.msd_p;
   lastUT_p=other.lastUT_p;
@@ -303,6 +304,8 @@ void ROVisibilityIterator::setState()
 				     msIter_p.arrayId()) + 1;
     This->pa_p.resize(nAnt_p);
     This->pa_p.set(0);
+    This->azel_p.resize(nAnt_p);
+
   }	
   if (msIter_p.newField()) { 
     msd_p.setFieldCenter(msIter_p.phaseCenter());
@@ -720,6 +723,46 @@ const Vector<Float>& ROVisibilityIterator::feed_pa(Double time) const
     }
   }
   return pa_p;
+}
+
+
+// Fill in azimuth/elevation of the antennas.
+// Cloned from feed_pa, we need to check that this is all correct!
+const Vector<MDirection>& ROVisibilityIterator::azel(Double time) const
+{
+  //  LogMessage message(LogOrigin("ROVisibilityIterator","azel"));
+
+  // Absolute UT
+  Double ut=time;
+
+  if (ut!=lastUT_p) {
+    This->lastUT_p=ut;
+
+    // Set up the Epoch using the absolute MJD in seconds
+    // get the Epoch reference from the column keyword
+        MEpoch mEpoch=MS::epochMeasure(colTime);
+    //#     now set the value
+        mEpoch.set(MVEpoch(Quantity(ut, "s")));
+    //# Note the above fails for VLA data with TAI epoch, the resulting
+    //# pa's are wrong (by much more than UTC-TAI), we force UTC here 
+    //# for the moment
+    //    MEpoch mEpoch(Quantity(ut, "s"), MEpoch::Ref(MEpoch::UTC));
+
+    This->msd_p.setEpoch(mEpoch);
+
+    // Calculate az/el for all antennas.
+    Int nAnt = msIter_p.receptorAngle().shape()(1);
+    for (Int iant=0;iant<nAnt;iant++) {
+      This->msd_p.setAntenna(iant);
+      This->azel_p(iant) = This->msd_p.azel();
+      if (aips_debug) {
+	if (iant==0) 
+	  cout<<"Antenna "<<iant<<" at time: "<<MVTime(mEpoch.getValue())<<
+	  " has AzEl = "<<This->azel_p(iant).getAngle("deg")<<endl;
+      }
+    }
+  }
+  return azel_p;
 }
 
 Vector<Float>& ROVisibilityIterator::sigma(Vector<Float>& sig) const

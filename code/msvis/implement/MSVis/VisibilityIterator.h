@@ -204,6 +204,9 @@ public:
   // Return feed parallactic angles Vector(nant) (1 feed/ant)
   const Vector<Float>& feed_pa(Double time) const;
 
+  // Return the antenna AZ/EL Vector(nant) 
+  const Vector<MDirection>& azel(Double time) const;
+
   // Return the current FieldId
   Int fieldId() const
     { return msIter_p.fieldId(); }
@@ -388,6 +391,7 @@ protected:
   Matrix<Double> uvwMat_p;
   Matrix<Float> imagingWeight_p;
   Vector<Float> pa_p;
+  Vector<MDirection> azel_p;
 
   // for PA calculations
   MSDerivedValues msd_p;
