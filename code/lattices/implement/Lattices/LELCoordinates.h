@@ -36,28 +36,73 @@
 
 
 // <summary>
-// Envelope class for Lattice coordinates.
+// Envelope class to handle Lattice Coordinates.
 // </summary>
-
+//
 // <use visibility=export>
-
+//
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
-
+//
 // <prerequisite>
+//   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LattCoord"> LattCoord</linkto>
+//   <li> <linkto class="ImageCoord"> ImageCoord</linkto>
 // </prerequisite>
-
+//
 // <synopsis> 
+//  The LatticeExpression classes (LatticeExpr, LatticeExprNode, LEL*)
+//  exist so that the C++ programmer can manipulate  mathematical 
+//  expressions involving Lattices.  A further usage of these classes 
+//  is to manipulate ImageInterface objects (which inherit from Lattice) such 
+//  as PagedImages.   These objects have Coordinates as well as the Lattice 
+//  pixels.  In order that Coordinate conformance be enforcable, we must 
+//  give the LatticeExpression classes access to the Coordinates of the 
+//  ImageInterface objects.
+//
+//  This is done through the interface of the LatticeCoordinates class.
+//  It is actually an envelope class which holds letter classes which
+//  are the actual implementation of the objects which hold the Lattice
+//  CoordinateSystems.  Lattice objects have a member function called latticeCoordinates.
+//  This returns a LatticeCoordinates object.   This object contains a
+//  pointer (actually a CountedPtr) of type LattCoord.  This is the base
+//  class of the letter classes.   For Lattices such as ImageInterface,
+//  this pointer actually points at the derived letter class ImageCoord.  This
+//  class in turn contains a pointer (a CountedPtr) to the actual
+//  CoordinateSystem object.   
+// 
+//  Note that every time the latticeCoordinates function is called, the
+//  LatticeCoordinate and ImageCoord (or whatever the letter class
+//  actually being invoked is)  objects are constructed.  For example
+//  the internals of ImageInterface::latticeCoordinates are
+//  <src>return LatticeCoordinates (new ImageCoord (coords_p));</src>
+//  so that the LatticeCoordinates constructor invokes the ImageCoord
+//  constructor with the CoordinateSystem as its argument.  However,
+//  the internal use of CountedPtrs make subsequent constructions inexpensive.
+//
+//  Having a LatticeCoordinates object in hand, the programmer then has access
+//  to the CoordinateSystem that it ultimately contains.  This is via the
+//  LatticeCoordinates member function coordinates which returns a reference to the 
+//  letter base class LattCoord.   For example, if the actual letter class object
+//  was ImageCoord, one has to then cast the reference to the LattCoord returned
+//  by LatticeCoordinates::coordinates() to an ImageCoord.  This is because
+//  the letter class functions that actually return the CoordinateSystem
+//  are not virtual (i.e. they are not defined in LattCoord).
 // </synopsis>
-
+//
 // <example>
 // <srcblock>
+//    PagedImage<Float> im("myimage");
+//    LatticeCoordinates* pLatCoord = &(im.latticeCoordinates());
+//    ImageCoord* pImCoord = (ImageCoord*)pLatCoord;
+//    CoordinateSystem coords = pImCoord->coordinates();
 // </srcblock>
 // </example>
-
+//
 // <motivation>
+//   We needed access to CoordinateSystems in the Lattice Expression classes
 // </motivation>
-
+//
 // <todo asof="1995/09/12">
 //  <li>
 // </todo>
