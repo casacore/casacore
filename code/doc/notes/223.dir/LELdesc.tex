@@ -378,8 +378,8 @@ The result of these functions is a scalar.
     taken, otherwise from the third argument. It is similar to the
     ternary \texttt{?:} construct in C++. E.g.
     \begin{verbatim}
-    iff (lat1>0, lat1, 0)      same as max(lat1,0)
-    iff (sum(lat1)>0, lat1, lat2)
+    iif (lat1>0, lat1, 0)      same as max(lat1,0)
+    iif (sum(lat1)>0, lat1, lat2)
     \end{verbatim}
     The examples shows that scalars and lattices can be freely mixed.
     When all arguments are scalars, the result is a scalar. Otherwise
