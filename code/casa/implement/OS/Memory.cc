@@ -27,16 +27,15 @@
 //# $Id$
 
 #include <aips/OS/Memory.h>
-#include <malloc.h>
+#include <aips/OS/malloc.h>
 
 size_t Memory::allocatedMemoryInBytes()
 {
     size_t total = 0;
 
-#if defined(AIPS_LINUX)
     struct mallinfo m = mallinfo();
     total = m.hblkhd + m.usmblks + m.uordblks;
-#endif
+
     return total;
 }
 
@@ -44,10 +43,9 @@ size_t Memory::assignedMemoryInBytes()
 {
     size_t total = 0;
 
-#if defined(AIPS_LINUX)
     struct mallinfo m = mallinfo();
     total = m.arena;
-#endif
+
     return total;
 }
 
@@ -55,7 +53,7 @@ void Memory::releaseMemory()
 {
 #if defined(AIPS_RELEASEMEM)
     AIPS_RELEASEMEM;
-#elif defined(AIPS_LINUX)
+#else
     malloc_trim(0);
 #endif
 }
