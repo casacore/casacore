@@ -1,4 +1,4 @@
-//# NewMSSource.cc: The NewMeasurementSet SOURCE Table
+//# MSSource.cc: The MeasurementSet SOURCE Table
 //# Copyright (C) 1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSSource.h>
+#include <aips/MeasurementSets/MSSource.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -37,74 +37,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSSource::NewMSSource():hasBeenDestroyed_p(True) { }
+MSSource::MSSource():hasBeenDestroyed_p(True) { }
 
-NewMSSource::NewMSSource(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSSource::MSSource(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSource(String &, TableOption) - "
-			 "table is not a valid NewMSSource"));
+	throw (AipsError("MSSource(String &, TableOption) - "
+			 "table is not a valid MSSource"));
 }
 
-NewMSSource::NewMSSource(const String& tableName, const String &tableDescName,
+MSSource::MSSource(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSource(String &, String &, TableOption) - "
-			 "table is not a valid NewMSSource"));
+	throw (AipsError("MSSource(String &, String &, TableOption) - "
+			 "table is not a valid MSSource"));
 }
 
-NewMSSource::NewMSSource(SetupNewTable &newTab, uInt nrrow,
+MSSource::MSSource(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSource(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSSource"));
+	throw (AipsError("MSSource(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSSource"));
 }
 
-NewMSSource::NewMSSource(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSSource::MSSource(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSource(const Table &) - "
-			 "table is not a valid NewMSSource"));
+	throw (AipsError("MSSource(const Table &) - "
+			 "table is not a valid MSSource"));
 }
 
-NewMSSource::NewMSSource(const NewMSSource &other)
-    : NewMSTable<PredefinedColumns,
+MSSource::MSSource(const MSSource &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSSource(const NewMSSource &) - "
-			     "table is not a valid NewMSSource"));
+	    throw (AipsError("MSSource(const MSSource &) - "
+			     "table is not a valid MSSource"));
 }
 
-NewMSSource::~NewMSSource()
+MSSource::~MSSource()
 {
-// check to make sure that this NewMSSource is still valid
+// check to make sure that this MSSource is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSSource() - "
-			 "Table written is not a valid NewMSSource"));
+	throw (AipsError("~MSSource() - "
+			 "Table written is not a valid MSSource"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -112,17 +112,17 @@ NewMSSource::~NewMSSource()
 }
 
 
-NewMSSource& NewMSSource::operator=(const NewMSSource &other)
+MSSource& MSSource::operator=(const MSSource &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSSource::init()
+void MSSource::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -207,9 +207,9 @@ void NewMSSource::init()
 }
 
 	
-NewMSSource NewMSSource::referenceCopy(const String& newTableName, 
+MSSource MSSource::referenceCopy(const String& newTableName, 
 				 const Block<String>& writableColumns) const
 {
-    return NewMSSource(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSSource(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

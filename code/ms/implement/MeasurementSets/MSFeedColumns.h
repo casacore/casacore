@@ -1,4 +1,4 @@
-//# NewMSFeedColumns.h: provides easy access to NewMSFeed columns
+//# MSFeedColumns.h: provides easy access to MSFeed columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSFEEDCOLUMNS_H)
-#define AIPS_NEWMSFEEDCOLUMNS_H
+#if !defined(AIPS_MSFEEDCOLUMNS_H)
+#define AIPS_MSFEEDCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
@@ -41,10 +41,10 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
 
-class NewMSFeed;
+class MSFeed;
 
 // <summary>
-// A class to provide easy read-only access to NewMSFeed columns
+// A class to provide easy read-only access to MSFeed columns
 // </summary>
 
 // <use visibility=export>
@@ -53,37 +53,37 @@ class NewMSFeed;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSFeed
+//   <li> MSFeed
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSFeedColumns stands for Read-Only NewMeasurementSet Feed Table columns.
+// ROMSFeedColumns stands for Read-Only MeasurementSet Feed Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSFeed Table.
+// This class provides read-only access to the columns in the MSFeed Table.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
+// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSFeedColumns
+class ROMSFeedColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSFeedColumns(const NewMSFeed& msFeed);
+  ROMSFeedColumns(const MSFeed& msFeed);
 
   // The destructor does nothing special
-  ~RONewMSFeedColumns();
+  ~ROMSFeedColumns();
 
   // Access to required columns
   // <group>
@@ -132,19 +132,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSFeedColumns();
+  ROMSFeedColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSFeed& msFeed);
+  void attach(const MSFeed& msFeed);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSFeedColumns(const RONewMSFeedColumns&);
-  RONewMSFeedColumns& operator=(const RONewMSFeedColumns&);
+  ROMSFeedColumns(const ROMSFeedColumns&);
+  ROMSFeedColumns& operator=(const ROMSFeedColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSFeed& msFeed);
+  void attachOptionalCols(const MSFeed& msFeed);
   
   //# required columns
   ROScalarColumn<Int> antennaId_p;
@@ -179,7 +179,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSFeed columns
+// A class to provide easy read-write access to MSFeed columns
 // </summary>
 
 // <use visibility=export>
@@ -188,37 +188,37 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSFeed
+//   <li> MSFeed
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSFeedColumns stands for NewMeasurementSet Feed Table columns.
+// MSFeedColumns stands for MeasurementSet Feed Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSFeed Table,
+// This class provides access to the columns in the MSFeed Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSFeedColumns: public RONewMSFeedColumns
+class MSFeedColumns: public ROMSFeedColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSFeedColumns(NewMSFeed& msFeed);
+  MSFeedColumns(MSFeed& msFeed);
 
   // The desctructor does nothing special
-  ~NewMSFeedColumns();
+  ~MSFeedColumns();
 
   // Read-write access to required columns
   // <group>
@@ -257,55 +257,55 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Int>& antennaId() const {
-    return RONewMSFeedColumns::antennaId();}
+    return ROMSFeedColumns::antennaId();}
   const ROScalarColumn<Int>& beamId() const {
-    return RONewMSFeedColumns::beamId();}
+    return ROMSFeedColumns::beamId();}
   const ROArrayColumn<Double>& beamOffset() const {
-    return RONewMSFeedColumns::beamOffset();}
+    return ROMSFeedColumns::beamOffset();}
   const ROArrayQuantColumn<Double>& beamOffsetQuant() const {
-    return RONewMSFeedColumns::beamOffsetQuant();}
+    return ROMSFeedColumns::beamOffsetQuant();}
   const ROArrayMeasColumn<MDirection>& beamOffsetMeas() const {
-    return RONewMSFeedColumns::beamOffsetMeas();}
+    return ROMSFeedColumns::beamOffsetMeas();}
   const ROScalarColumn<Int>& feedId() const {
-    return RONewMSFeedColumns::feedId();}
+    return ROMSFeedColumns::feedId();}
   const ROScalarColumn<Double>& interval() const {
-    return RONewMSFeedColumns::interval();}
+    return ROMSFeedColumns::interval();}
   const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return RONewMSFeedColumns::intervalQuant();}
+    return ROMSFeedColumns::intervalQuant();}
   const ROScalarColumn<Int>& numReceptors() const {
-    return RONewMSFeedColumns::numReceptors();}
+    return ROMSFeedColumns::numReceptors();}
   const ROArrayColumn<Complex>& polResponse() const {
-    return RONewMSFeedColumns::polResponse();}
+    return ROMSFeedColumns::polResponse();}
   const ROArrayColumn<String>& polarizationType() const {
-    return RONewMSFeedColumns::polarizationType();}
+    return ROMSFeedColumns::polarizationType();}
   const ROArrayColumn<Double>& position() const {
-    return RONewMSFeedColumns::position();}
+    return ROMSFeedColumns::position();}
   const ROArrayQuantColumn<Double>& positionQuant() const {
-    return RONewMSFeedColumns::positionQuant();}
+    return ROMSFeedColumns::positionQuant();}
   const ROScalarMeasColumn<MPosition>& positionMeas() const {
-    return RONewMSFeedColumns::positionMeas();}
+    return ROMSFeedColumns::positionMeas();}
   const ROArrayColumn<Double>& receptorAngle() const {
-    return RONewMSFeedColumns::receptorAngle();}
+    return ROMSFeedColumns::receptorAngle();}
   const ROArrayQuantColumn<Double>& receptorAngleQuant() const {
-    return RONewMSFeedColumns::receptorAngleQuant();}
+    return ROMSFeedColumns::receptorAngleQuant();}
   const ROScalarColumn<Int>& spectralWindowId() const {
-    return RONewMSFeedColumns::spectralWindowId();}
+    return ROMSFeedColumns::spectralWindowId();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSFeedColumns::time();}
+    return ROMSFeedColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSFeedColumns::timeQuant();}
+    return ROMSFeedColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return RONewMSFeedColumns::timeMeas();}
+    return ROMSFeedColumns::timeMeas();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROScalarColumn<Double>& focusLength() const {
-    return RONewMSFeedColumns::focusLength();}
+    return ROMSFeedColumns::focusLength();}
   const ROScalarQuantColumn<Double>& focusLengthQuant() const {
-    return RONewMSFeedColumns::focusLengthQuant();}
+    return ROMSFeedColumns::focusLengthQuant();}
   const ROScalarColumn<Int>& phasedFeedId() const {
-    return RONewMSFeedColumns::phasedFeedId();}
+    return ROMSFeedColumns::phasedFeedId();}
   // </group>
 
   // set the epoch type for the TIME column.
@@ -332,19 +332,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSFeedColumns();
+  MSFeedColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSFeed& msFeed);
+  void attach(MSFeed& msFeed);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSFeedColumns(const NewMSFeedColumns&);
-  NewMSFeedColumns& operator=(const NewMSFeedColumns&);
+  MSFeedColumns(const MSFeedColumns&);
+  MSFeedColumns& operator=(const MSFeedColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSFeed& msFeed);
+  void attachOptionalCols(MSFeed& msFeed);
   
   //# required columns
   ScalarColumn<Int> antennaId_p;

@@ -1,4 +1,4 @@
-//# NewMSSpectralWindowEnums.h: Definitions for the NewMS SPECTRAL_WINDOW table
+//# MSSpectralWindowEnums.h: Definitions for the NewMS SPECTRAL_WINDOW table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,35 +26,35 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSSPECTRALWINDOWENUNewMS_H)
-#define AIPS_NewMSSPECTRALWINDOWENUNewMS_H
+#if !defined(AIPS_MSSPECTRALWINDOWENUMS_H)
+#define AIPS_MSSPECTRALWINDOWENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet SPECTRAL_WINDOW table </summary>
+// <summary> Enums for the MeasurementSet SPECTRAL_WINDOW table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet SPECTRAL_WINDOW table
+// This class contains the enums for the MeasurementSet SPECTRAL_WINDOW table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMeasurementSet class.  These enumerations define the
+// used by the MeasurementSet class.  These enumerations define the
 // standard columns and keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1996/01/16">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
 
-class NewMSSpectralWindowEnums {
+class MSSpectralWindowEnums {
 public:
     // The SpectralWindow table colums with predefined meaning.
     // The SPECTRAL_WINDOW_ID is the row number in the table.

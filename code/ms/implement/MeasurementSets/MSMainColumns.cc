@@ -1,4 +1,4 @@
-//# NewMSMainColumns.cc: Easy access to NewMeasurementSet main table columns
+//# MSMainColumns.cc: Easy access to MeasurementSet main table columns
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSMainColumns.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MSMainColumns.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
@@ -38,7 +38,7 @@
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
 
-RONewMSMainColumns::RONewMSMainColumns(const NewMeasurementSet& ms):
+ROMSMainColumns::ROMSMainColumns(const MeasurementSet& ms):
   antenna1_p(ms, NewMS::columnName(NewMS::ANTENNA1)),
   antenna2_p(ms, NewMS::columnName(NewMS::ANTENNA2)),
   arrayId_p(ms, NewMS::columnName(NewMS::ARRAY_ID)),
@@ -92,9 +92,9 @@ RONewMSMainColumns::RONewMSMainColumns(const NewMeasurementSet& ms):
   attachOptionalCols(ms);
 }
 
-RONewMSMainColumns::~RONewMSMainColumns() {}
+ROMSMainColumns::~ROMSMainColumns() {}
 
-Vector<String> RONewMSMainColumns::flagCategories() const {
+Vector<String> ROMSMainColumns::flagCategories() const {
   const TableRecord& keywords = flagCategory().keywordSet();
   const RecordFieldId key("CATEGORY");
   DebugAssert(keywords.isDefined(key.fieldName()), AipsError);
@@ -105,7 +105,7 @@ Vector<String> RONewMSMainColumns::flagCategories() const {
   return Vector<String>(keywords.asArrayString(key));
 }
 
-RONewMSMainColumns::RONewMSMainColumns():
+ROMSMainColumns::ROMSMainColumns():
   antenna1_p(),
   antenna2_p(),
   arrayId_p(),
@@ -158,7 +158,7 @@ RONewMSMainColumns::RONewMSMainColumns():
 {
 }
 
-void RONewMSMainColumns::attach(const NewMeasurementSet& ms)
+void ROMSMainColumns::attach(const MeasurementSet& ms)
 {
   antenna1_p.attach(ms, NewMS::columnName(NewMS::ANTENNA1));
   antenna2_p.attach(ms, NewMS::columnName(NewMS::ANTENNA2));
@@ -184,7 +184,7 @@ void RONewMSMainColumns::attach(const NewMeasurementSet& ms)
   attachOptionalCols(ms);
 }
 
-void RONewMSMainColumns::attachOptionalCols(const NewMeasurementSet& ms)
+void ROMSMainColumns::attachOptionalCols(const MeasurementSet& ms)
 {
   const ColumnDescSet& cds=ms.tableDesc().columnDescSet();
   if (cds.isDefined(NewMS::columnName(NewMS::ANTENNA3))) {
@@ -243,8 +243,8 @@ void RONewMSMainColumns::attachOptionalCols(const NewMeasurementSet& ms)
   }
 }
 
-NewMSMainColumns::NewMSMainColumns(NewMeasurementSet& ms):
-  RONewMSMainColumns(ms),
+MSMainColumns::MSMainColumns(MeasurementSet& ms):
+  ROMSMainColumns(ms),
   antenna1_p(ms, NewMS::columnName(NewMS::ANTENNA1)),
   antenna2_p(ms, NewMS::columnName(NewMS::ANTENNA2)),
   arrayId_p(ms, NewMS::columnName(NewMS::ARRAY_ID)),
@@ -298,9 +298,9 @@ NewMSMainColumns::NewMSMainColumns(NewMeasurementSet& ms):
   attachOptionalCols(ms);
 }
 
-NewMSMainColumns::~NewMSMainColumns() {}
+MSMainColumns::~MSMainColumns() {}
 
-void NewMSMainColumns::setFlagCategories(const Vector<String>& categories) {
+void MSMainColumns::setFlagCategories(const Vector<String>& categories) {
   TableRecord& keywords = flagCategory().rwKeywordSet();
   const RecordFieldId key("CATEGORY");
   DebugAssert(nrow() == 0 || 
@@ -309,12 +309,12 @@ void NewMSMainColumns::setFlagCategories(const Vector<String>& categories) {
   keywords.define(key, categories);
 }
 
-void NewMSMainColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSMainColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
   timeCentroidMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
-void NewMSMainColumns::setUVWRef(Muvw::Types ref)
+void MSMainColumns::setUVWRef(Muvw::Types ref)
 {
   uvwMeas_p.setDescRefCode(ref);
   if (!uvw2_p.isNull()) {
@@ -322,8 +322,8 @@ void NewMSMainColumns::setUVWRef(Muvw::Types ref)
   }
 }
 
-NewMSMainColumns::NewMSMainColumns():
-  RONewMSMainColumns(),
+MSMainColumns::MSMainColumns():
+  ROMSMainColumns(),
   antenna1_p(),
   antenna2_p(),
   arrayId_p(),
@@ -376,9 +376,9 @@ NewMSMainColumns::NewMSMainColumns():
 {
 }
 
-void NewMSMainColumns::attach(NewMeasurementSet& ms)
+void MSMainColumns::attach(MeasurementSet& ms)
 {
-  RONewMSMainColumns::attach(ms);
+  ROMSMainColumns::attach(ms);
   antenna1_p.attach(ms, NewMS::columnName(NewMS::ANTENNA1));
   antenna2_p.attach(ms, NewMS::columnName(NewMS::ANTENNA2));
   arrayId_p.attach(ms, NewMS::columnName(NewMS::ARRAY_ID));
@@ -403,7 +403,7 @@ void NewMSMainColumns::attach(NewMeasurementSet& ms)
   attachOptionalCols(ms);
 }
 
-void NewMSMainColumns::attachOptionalCols(NewMeasurementSet& ms)
+void MSMainColumns::attachOptionalCols(MeasurementSet& ms)
 {
   const ColumnDescSet& cds=ms.tableDesc().columnDescSet();
   if (cds.isDefined(NewMS::columnName(NewMS::ANTENNA3))) {
@@ -462,5 +462,5 @@ void NewMSMainColumns::attachOptionalCols(NewMeasurementSet& ms)
   }
 }
 // Local Variables: 
-// compile-command: "gmake NewMSMainColumns"
+// compile-command: "gmake MSMainColumns"
 // End: 

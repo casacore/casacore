@@ -1,4 +1,4 @@
-//# NewMSAntennaColumns.h: provides easy access to NewMSAntenna columns
+//# MSAntennaColumns.h: provides easy access to MSAntenna columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSANTENNACOLUMNS_H)
-#define AIPS_NEWMSANTENNACOLUMNS_H
+#if !defined(AIPS_MSANTENNACOLUMNS_H)
+#define AIPS_MSANTENNACOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MPosition.h>
@@ -37,10 +37,10 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
 
-class NewMSAntenna;
+class MSAntenna;
 
 // <summary>
-// A class to provide easy read-only access to NewMSAntenna columns
+// A class to provide easy read-only access to MSAntenna columns
 // </summary>
 
 // <use visibility=export>
@@ -49,38 +49,38 @@ class NewMSAntenna;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSAntenna
+//   <li> MSAntenna
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSAntennaColumns stands for Read-Only NewMeasurementSet Antenna Table columns.
+// ROMSAntennaColumns stands for Read-Only MeasurementSet Antenna Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSAntenna
+// This class provides read-only access to the columns in the MSAntenna
 // Table.  It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to worry about
 // getting those right. There is an access function for every predefined
 // column. Access to non-predefined columns will still have to be done with
 // explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
+// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSAntennaColumns
+class ROMSAntennaColumns
 {
 public:
 
   // Create a columns object that accesses the data in the specified Table
-  RONewMSAntennaColumns(const NewMSAntenna& msAntenna);
+  ROMSAntennaColumns(const MSAntenna& msAntenna);
 
   // The destructor does nothing special
-  ~RONewMSAntennaColumns();
+  ~ROMSAntennaColumns();
 
   // Access to columns
   // <group>
@@ -135,19 +135,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSAntennaColumns();
+  ROMSAntennaColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSAntenna& msAntenna);
+  void attach(const MSAntenna& msAntenna);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSAntennaColumns(const RONewMSAntennaColumns&);
-  RONewMSAntennaColumns& operator=(const RONewMSAntennaColumns&);
+  ROMSAntennaColumns(const ROMSAntennaColumns&);
+  ROMSAntennaColumns& operator=(const ROMSAntennaColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSAntenna& msAntenna);
+  void attachOptionalCols(const MSAntenna& msAntenna);
   
   //# Functions which check the supplied values against the relevant column and
   //# the specified row.
@@ -181,7 +181,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSAntenna columns
+// A class to provide easy read-write access to MSAntenna columns
 // </summary>
 
 // <use visibility=export>
@@ -190,38 +190,38 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSAntenna
+//   <li> MSAntenna
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSAntennaColumns stands for NewMeasurementSet Antenna Table columns.
+// MSAntennaColumns stands for MeasurementSet Antenna Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSAntenna Table,
+// This class provides access to the columns in the MSAntenna Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSAntennaColumns: public RONewMSAntennaColumns
+class MSAntennaColumns: public ROMSAntennaColumns
 {
 public:
 
   // Create a columns object that accesses the data in the specified Table
-  NewMSAntennaColumns(NewMSAntenna& msAntenna);
+  MSAntennaColumns(MSAntenna& msAntenna);
 
   // The destructor does nothing special
-  ~NewMSAntennaColumns();
+  ~MSAntennaColumns();
 
   // Read-write access to required columns
   // <group>
@@ -250,41 +250,41 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Double>& dishDiameter() const {
-    return RONewMSAntennaColumns::dishDiameter();}
+    return ROMSAntennaColumns::dishDiameter();}
   const ROScalarQuantColumn<Double>& dishDiameterQuant() const {
-    return RONewMSAntennaColumns::dishDiameterQuant();}
+    return ROMSAntennaColumns::dishDiameterQuant();}
   const ROScalarColumn<Bool>& flagRow() const {
-    return RONewMSAntennaColumns::flagRow();}
+    return ROMSAntennaColumns::flagRow();}
   const ROScalarColumn<String>& mount() const {
-    return RONewMSAntennaColumns::mount();}
+    return ROMSAntennaColumns::mount();}
   const ROScalarColumn<String>& name() const {
-    return RONewMSAntennaColumns::name();}
+    return ROMSAntennaColumns::name();}
   const ROArrayColumn<Double>& offset() const {
-    return RONewMSAntennaColumns::offset();}
+    return ROMSAntennaColumns::offset();}
   const ROArrayQuantColumn<Double>& offsetQuant() const {
-    return RONewMSAntennaColumns::offsetQuant();}
+    return ROMSAntennaColumns::offsetQuant();}
   const ROScalarMeasColumn<MPosition>& offsetMeas() const {
-    return RONewMSAntennaColumns::offsetMeas();}
+    return ROMSAntennaColumns::offsetMeas();}
   const ROArrayColumn<Double>& position() const {
-    return RONewMSAntennaColumns::position();}
+    return ROMSAntennaColumns::position();}
   const ROArrayQuantColumn<Double>& positionQuant() const {
-    return RONewMSAntennaColumns::positionQuant();}
+    return ROMSAntennaColumns::positionQuant();}
   const ROScalarMeasColumn<MPosition>& positionMeas() const {
-    return RONewMSAntennaColumns::positionMeas();}
+    return ROMSAntennaColumns::positionMeas();}
   const ROScalarColumn<String>& station() const {
-    return RONewMSAntennaColumns::station();}
+    return ROMSAntennaColumns::station();}
   const ROScalarColumn<String>& type() const {
-    return RONewMSAntennaColumns::type();}
+    return ROMSAntennaColumns::type();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROArrayColumn<Double>& meanOrbit() const {
-    return RONewMSAntennaColumns::meanOrbit();}
+    return ROMSAntennaColumns::meanOrbit();}
   const ROScalarColumn<Int>& orbitId() const {
-    return RONewMSAntennaColumns::orbitId();}
+    return ROMSAntennaColumns::orbitId();}
   const ROScalarColumn<Int>& phasedArrayId() const {
-    return RONewMSAntennaColumns::phasedArrayId();}
+    return ROMSAntennaColumns::phasedArrayId();}
   // </group>
 
   // set the position type for the POSITION column. This can only be done when
@@ -300,19 +300,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSAntennaColumns();
+  MSAntennaColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSAntenna& msAntenna);
+  void attach(MSAntenna& msAntenna);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSAntennaColumns(const NewMSAntennaColumns&);
-  NewMSAntennaColumns& operator=(const NewMSAntennaColumns&);
+  MSAntennaColumns(const MSAntennaColumns&);
+  MSAntennaColumns& operator=(const MSAntennaColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSAntenna& msAntenna);
+  void attachOptionalCols(MSAntenna& msAntenna);
   
   //# required columns
   ScalarColumn<Double> dishDiameter_p;

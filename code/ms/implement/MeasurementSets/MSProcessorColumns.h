@@ -1,4 +1,4 @@
-//# NewMSProcessorColumns.h: provides easy access to NewMSProcessor columns
+//# MSProcessorColumns.h: provides easy access to MSProcessor columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSPROCESSORCOLUMNS_H)
-#define AIPS_NEWMSPROCESSORCOLUMNS_H
+#if !defined(AIPS_MSPROCESSORCOLUMNS_H)
+#define AIPS_MSPROCESSORCOLUMNS_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSProcessor.h>
+#include <aips/MeasurementSets/MSProcessor.h>
 #include <aips/Tables/ScalarColumn.h>
 
-class NewMSProcessor;
+class MSProcessor;
 
 // <summary>
-// A class to provide easy read-only access to NewMSProcessor columns
+// A class to provide easy read-only access to MSProcessor columns
 // </summary>
 
 // <use visibility=export>
@@ -44,37 +44,37 @@ class NewMSProcessor;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSProcessor
+//   <li> MSProcessor
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSProcessorColumns stands for Read-Only NewMeasurementSet Processor Table columns.
+// ROMSProcessorColumns stands for Read-Only MeasurementSet Processor Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSProcessor
+// This class provides read-only access to the columns in the MSProcessor
 // Table.  It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to worry about
 // getting those right. There is an access function for every predefined
 // column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=RONewMSColumns>
-// RONewMSColumns</linkto> for an example.
+// explicit declarations.  See <linkto class=ROMSColumns>
+// ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSProcessorColumns
+class ROMSProcessorColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSProcessorColumns(const NewMSProcessor& msProcessor);
+  ROMSProcessorColumns(const MSProcessor& msProcessor);
 
   // The destructor does nothing special
-  ~RONewMSProcessorColumns();
+  ~ROMSProcessorColumns();
 
   // Access to required columns
   // <group>
@@ -96,19 +96,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSProcessorColumns();
+  ROMSProcessorColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSProcessor& msProcessor);
+  void attach(const MSProcessor& msProcessor);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSProcessorColumns(const RONewMSProcessorColumns&);
-  RONewMSProcessorColumns& operator=(const RONewMSProcessorColumns&);
+  ROMSProcessorColumns(const ROMSProcessorColumns&);
+  ROMSProcessorColumns& operator=(const ROMSProcessorColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSProcessor& msField);
+  void attachOptionalCols(const MSProcessor& msField);
   
   //# required columns
   ROScalarColumn<Bool> flagRow_p;
@@ -121,7 +121,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSProcessor columns
+// A class to provide easy read-write access to MSProcessor columns
 // </summary>
 
 // <use visibility=export>
@@ -130,36 +130,36 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSProcessor
+//   <li> MSProcessor
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSProcessorColumns stands for NewMeasurementSet Processor Table columns.
+// MSProcessorColumns stands for MeasurementSet Processor Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSProcessor Table,
+// This class provides access to the columns in the MSProcessor Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSProcessorColumns: public RONewMSProcessorColumns
+class MSProcessorColumns: public ROMSProcessorColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSProcessorColumns(NewMSProcessor& msProcessor);
+  MSProcessorColumns(MSProcessor& msProcessor);
 
   // The destructor does nothing special
-  ~NewMSProcessorColumns();
+  ~MSProcessorColumns();
 
   // Read-write access to required columns
   // <group>
@@ -178,39 +178,39 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Bool>& flagRow() const {
-    return RONewMSProcessorColumns::flagRow();}
+    return ROMSProcessorColumns::flagRow();}
   const ROScalarColumn<Int>& modeId() const {
-    return RONewMSProcessorColumns::modeId();}
+    return ROMSProcessorColumns::modeId();}
   const ROScalarColumn<String>& type() const {
-    return RONewMSProcessorColumns::type();}
+    return ROMSProcessorColumns::type();}
   const ROScalarColumn<Int>& typeId() const {
-    return RONewMSProcessorColumns::typeId();}
+    return ROMSProcessorColumns::typeId();}
   const ROScalarColumn<String>& subType() const {
-    return RONewMSProcessorColumns::subType();}
+    return ROMSProcessorColumns::subType();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROScalarColumn<Int>& passId() const {
-    return RONewMSProcessorColumns::passId();}
+    return ROMSProcessorColumns::passId();}
   // </group>
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSProcessorColumns();
+  MSProcessorColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSProcessor& msProcessor);
+  void attach(MSProcessor& msProcessor);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSProcessorColumns(const NewMSProcessorColumns&);
-  NewMSProcessorColumns& operator=(const NewMSProcessorColumns&);
+  MSProcessorColumns(const MSProcessorColumns&);
+  MSProcessorColumns& operator=(const MSProcessorColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSProcessor& msProcessor);
+  void attachOptionalCols(MSProcessor& msProcessor);
   
   //# required columns
   ScalarColumn<Bool> flagRow_p;

@@ -1,4 +1,4 @@
-//# NewMSObsColumns.cc:  provides easy access to NewMeasurementSet columns
+//# NewMSObsColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,41 +25,41 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSObsColumns.h>
-#include <aips/MeasurementSets/NewMSObservation.h>
+#include <aips/MeasurementSets/MSObsColumns.h>
+#include <aips/MeasurementSets/MSObservation.h>
 
-RONewMSObservationColumns::
-RONewMSObservationColumns(const NewMSObservation& msObservation):
-  flagRow_p(msObservation, NewMSObservation::
-	    columnName(NewMSObservation::FLAG_ROW)),
-  log_p(msObservation, NewMSObservation::columnName(NewMSObservation::LOG)),
-  observer_p(msObservation, NewMSObservation::
-	     columnName(NewMSObservation::OBSERVER)),
-  project_p(msObservation, NewMSObservation::
-	    columnName(NewMSObservation::PROJECT)),
-  releaseDate_p(msObservation, NewMSObservation::
-		columnName(NewMSObservation::RELEASE_DATE)),
-  schedule_p(msObservation, NewMSObservation::
-	     columnName(NewMSObservation::SCHEDULE)),
-  scheduleType_p(msObservation, NewMSObservation::
-		 columnName(NewMSObservation::SCHEDULE_TYPE)),
-  telescopeName_p(msObservation, NewMSObservation::
-		  columnName(NewMSObservation::TELESCOPE_NAME)),
-  timeRange_p(msObservation, NewMSObservation::
-	      columnName(NewMSObservation::TIME_RANGE)),
-  releaseDateMeas_p(msObservation, NewMSObservation::
-		    columnName(NewMSObservation::RELEASE_DATE)),
-  timeRangeMeas_p(msObservation, NewMSObservation::
-		  columnName(NewMSObservation::TIME_RANGE)),
-  releaseDateQuant_p(msObservation, NewMSObservation::
-		     columnName(NewMSObservation::RELEASE_DATE)),
-  timeRangeQuant_p(msObservation, NewMSObservation::
-		   columnName(NewMSObservation::TIME_RANGE))
+ROMSObservationColumns::
+ROMSObservationColumns(const MSObservation& msObservation):
+  flagRow_p(msObservation, MSObservation::
+	    columnName(MSObservation::FLAG_ROW)),
+  log_p(msObservation, MSObservation::columnName(MSObservation::LOG)),
+  observer_p(msObservation, MSObservation::
+	     columnName(MSObservation::OBSERVER)),
+  project_p(msObservation, MSObservation::
+	    columnName(MSObservation::PROJECT)),
+  releaseDate_p(msObservation, MSObservation::
+		columnName(MSObservation::RELEASE_DATE)),
+  schedule_p(msObservation, MSObservation::
+	     columnName(MSObservation::SCHEDULE)),
+  scheduleType_p(msObservation, MSObservation::
+		 columnName(MSObservation::SCHEDULE_TYPE)),
+  telescopeName_p(msObservation, MSObservation::
+		  columnName(MSObservation::TELESCOPE_NAME)),
+  timeRange_p(msObservation, MSObservation::
+	      columnName(MSObservation::TIME_RANGE)),
+  releaseDateMeas_p(msObservation, MSObservation::
+		    columnName(MSObservation::RELEASE_DATE)),
+  timeRangeMeas_p(msObservation, MSObservation::
+		  columnName(MSObservation::TIME_RANGE)),
+  releaseDateQuant_p(msObservation, MSObservation::
+		     columnName(MSObservation::RELEASE_DATE)),
+  timeRangeQuant_p(msObservation, MSObservation::
+		   columnName(MSObservation::TIME_RANGE))
 {}
 
-RONewMSObservationColumns::~RONewMSObservationColumns() {}
+ROMSObservationColumns::~ROMSObservationColumns() {}
 
-RONewMSObservationColumns::RONewMSObservationColumns():
+ROMSObservationColumns::ROMSObservationColumns():
   flagRow_p(),
   log_p(),
   observer_p(),
@@ -75,77 +75,77 @@ RONewMSObservationColumns::RONewMSObservationColumns():
   timeRangeQuant_p()
 {}
 
-void RONewMSObservationColumns::attach(const NewMSObservation& msObservation)
+void ROMSObservationColumns::attach(const MSObservation& msObservation)
 {
-  flagRow_p.attach(msObservation, NewMSObservation::
-		   columnName(NewMSObservation::FLAG_ROW));
-  log_p.attach(msObservation, NewMSObservation::
-	       columnName(NewMSObservation::LOG));
-  observer_p.attach(msObservation, NewMSObservation::
-		    columnName(NewMSObservation::OBSERVER));
-  project_p.attach(msObservation, NewMSObservation::
-		   columnName(NewMSObservation::PROJECT));
-  releaseDate_p.attach(msObservation, NewMSObservation::
-		       columnName(NewMSObservation::RELEASE_DATE));
-  schedule_p.attach(msObservation, NewMSObservation::
-		    columnName(NewMSObservation::SCHEDULE));
-  scheduleType_p.attach(msObservation, NewMSObservation::
-			columnName(NewMSObservation::SCHEDULE_TYPE));
-  telescopeName_p.attach(msObservation, NewMSObservation::
-			 columnName(NewMSObservation::TELESCOPE_NAME));
-  timeRange_p.attach(msObservation, NewMSObservation::
-		     columnName(NewMSObservation::TIME_RANGE));
-  releaseDateMeas_p.attach(msObservation, NewMSObservation::
-			   columnName(NewMSObservation::RELEASE_DATE));
-  timeRangeMeas_p.attach(msObservation, NewMSObservation::
-			 columnName(NewMSObservation::TIME_RANGE));
-  releaseDateQuant_p.attach(msObservation, NewMSObservation::
-			    columnName(NewMSObservation::RELEASE_DATE));
-  timeRangeQuant_p.attach(msObservation, NewMSObservation::
-			  columnName(NewMSObservation::TIME_RANGE));
+  flagRow_p.attach(msObservation, MSObservation::
+		   columnName(MSObservation::FLAG_ROW));
+  log_p.attach(msObservation, MSObservation::
+	       columnName(MSObservation::LOG));
+  observer_p.attach(msObservation, MSObservation::
+		    columnName(MSObservation::OBSERVER));
+  project_p.attach(msObservation, MSObservation::
+		   columnName(MSObservation::PROJECT));
+  releaseDate_p.attach(msObservation, MSObservation::
+		       columnName(MSObservation::RELEASE_DATE));
+  schedule_p.attach(msObservation, MSObservation::
+		    columnName(MSObservation::SCHEDULE));
+  scheduleType_p.attach(msObservation, MSObservation::
+			columnName(MSObservation::SCHEDULE_TYPE));
+  telescopeName_p.attach(msObservation, MSObservation::
+			 columnName(MSObservation::TELESCOPE_NAME));
+  timeRange_p.attach(msObservation, MSObservation::
+		     columnName(MSObservation::TIME_RANGE));
+  releaseDateMeas_p.attach(msObservation, MSObservation::
+			   columnName(MSObservation::RELEASE_DATE));
+  timeRangeMeas_p.attach(msObservation, MSObservation::
+			 columnName(MSObservation::TIME_RANGE));
+  releaseDateQuant_p.attach(msObservation, MSObservation::
+			    columnName(MSObservation::RELEASE_DATE));
+  timeRangeQuant_p.attach(msObservation, MSObservation::
+			  columnName(MSObservation::TIME_RANGE));
 }
 
-NewMSObservationColumns::
-NewMSObservationColumns(NewMSObservation& msObservation):
-  RONewMSObservationColumns(msObservation),
-  flagRow_p(msObservation, NewMSObservation::
-	    columnName(NewMSObservation::FLAG_ROW)),
-  log_p(msObservation, NewMSObservation::columnName(NewMSObservation::LOG)),
-  observer_p(msObservation, NewMSObservation::
-	     columnName(NewMSObservation::OBSERVER)),
-  project_p(msObservation, NewMSObservation::
-	    columnName(NewMSObservation::PROJECT)),
-  releaseDate_p(msObservation, NewMSObservation::
-		columnName(NewMSObservation::RELEASE_DATE)),
-  schedule_p(msObservation, NewMSObservation::
-	     columnName(NewMSObservation::SCHEDULE)),
-  scheduleType_p(msObservation, NewMSObservation::
-		 columnName(NewMSObservation::SCHEDULE_TYPE)),
-  telescopeName_p(msObservation, NewMSObservation::
-		  columnName(NewMSObservation::TELESCOPE_NAME)),
-  timeRange_p(msObservation, NewMSObservation::
-	      columnName(NewMSObservation::TIME_RANGE)),
-  releaseDateMeas_p(msObservation, NewMSObservation::
-		    columnName(NewMSObservation::RELEASE_DATE)),
-  timeRangeMeas_p(msObservation, NewMSObservation::
-		  columnName(NewMSObservation::TIME_RANGE)),
-  releaseDateQuant_p(msObservation, NewMSObservation::
-		     columnName(NewMSObservation::RELEASE_DATE)),
-  timeRangeQuant_p(msObservation, NewMSObservation::
-		   columnName(NewMSObservation::TIME_RANGE))
+MSObservationColumns::
+MSObservationColumns(MSObservation& msObservation):
+  ROMSObservationColumns(msObservation),
+  flagRow_p(msObservation, MSObservation::
+	    columnName(MSObservation::FLAG_ROW)),
+  log_p(msObservation, MSObservation::columnName(MSObservation::LOG)),
+  observer_p(msObservation, MSObservation::
+	     columnName(MSObservation::OBSERVER)),
+  project_p(msObservation, MSObservation::
+	    columnName(MSObservation::PROJECT)),
+  releaseDate_p(msObservation, MSObservation::
+		columnName(MSObservation::RELEASE_DATE)),
+  schedule_p(msObservation, MSObservation::
+	     columnName(MSObservation::SCHEDULE)),
+  scheduleType_p(msObservation, MSObservation::
+		 columnName(MSObservation::SCHEDULE_TYPE)),
+  telescopeName_p(msObservation, MSObservation::
+		  columnName(MSObservation::TELESCOPE_NAME)),
+  timeRange_p(msObservation, MSObservation::
+	      columnName(MSObservation::TIME_RANGE)),
+  releaseDateMeas_p(msObservation, MSObservation::
+		    columnName(MSObservation::RELEASE_DATE)),
+  timeRangeMeas_p(msObservation, MSObservation::
+		  columnName(MSObservation::TIME_RANGE)),
+  releaseDateQuant_p(msObservation, MSObservation::
+		     columnName(MSObservation::RELEASE_DATE)),
+  timeRangeQuant_p(msObservation, MSObservation::
+		   columnName(MSObservation::TIME_RANGE))
 {}
 
-NewMSObservationColumns::~NewMSObservationColumns() {}
+MSObservationColumns::~MSObservationColumns() {}
 
 
-void NewMSObservationColumns::
+void MSObservationColumns::
 setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
   timeRangeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
   releaseDateMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
-NewMSObservationColumns::NewMSObservationColumns():
-  RONewMSObservationColumns(),
+MSObservationColumns::MSObservationColumns():
+  ROMSObservationColumns(),
   flagRow_p(),
   log_p(),
   observer_p(),
@@ -161,35 +161,35 @@ NewMSObservationColumns::NewMSObservationColumns():
   timeRangeQuant_p()
 {}
 
-void NewMSObservationColumns::attach(NewMSObservation& msObservation)
+void MSObservationColumns::attach(MSObservation& msObservation)
 {
-  RONewMSObservationColumns::attach(msObservation);
-  flagRow_p.attach(msObservation, NewMSObservation::
-		   columnName(NewMSObservation::FLAG_ROW));
+  ROMSObservationColumns::attach(msObservation);
+  flagRow_p.attach(msObservation, MSObservation::
+		   columnName(MSObservation::FLAG_ROW));
   log_p.attach(msObservation, 
-	       NewMSObservation::columnName(NewMSObservation::LOG));
-  observer_p.attach(msObservation, NewMSObservation::
-		    columnName(NewMSObservation::OBSERVER));
-  project_p.attach(msObservation, NewMSObservation::
-		   columnName(NewMSObservation::PROJECT));
-  releaseDate_p.attach(msObservation, NewMSObservation::
-		       columnName(NewMSObservation::RELEASE_DATE));
-  schedule_p.attach(msObservation, NewMSObservation::
-		    columnName(NewMSObservation::SCHEDULE));
-  scheduleType_p.attach(msObservation, NewMSObservation::
-			columnName(NewMSObservation::SCHEDULE_TYPE));
-  telescopeName_p.attach(msObservation, NewMSObservation::
-			 columnName(NewMSObservation::TELESCOPE_NAME));
-  timeRange_p.attach(msObservation, NewMSObservation::
-		     columnName(NewMSObservation::TIME_RANGE));
-  releaseDateMeas_p.attach(msObservation, NewMSObservation::
-			   columnName(NewMSObservation::RELEASE_DATE));
-  timeRangeMeas_p.attach(msObservation, NewMSObservation::
-			 columnName(NewMSObservation::TIME_RANGE));
-  releaseDateQuant_p.attach(msObservation, NewMSObservation::
-			    columnName(NewMSObservation::RELEASE_DATE));
-  timeRangeQuant_p.attach(msObservation, NewMSObservation::
-			  columnName(NewMSObservation::TIME_RANGE));
+	       MSObservation::columnName(MSObservation::LOG));
+  observer_p.attach(msObservation, MSObservation::
+		    columnName(MSObservation::OBSERVER));
+  project_p.attach(msObservation, MSObservation::
+		   columnName(MSObservation::PROJECT));
+  releaseDate_p.attach(msObservation, MSObservation::
+		       columnName(MSObservation::RELEASE_DATE));
+  schedule_p.attach(msObservation, MSObservation::
+		    columnName(MSObservation::SCHEDULE));
+  scheduleType_p.attach(msObservation, MSObservation::
+			columnName(MSObservation::SCHEDULE_TYPE));
+  telescopeName_p.attach(msObservation, MSObservation::
+			 columnName(MSObservation::TELESCOPE_NAME));
+  timeRange_p.attach(msObservation, MSObservation::
+		     columnName(MSObservation::TIME_RANGE));
+  releaseDateMeas_p.attach(msObservation, MSObservation::
+			   columnName(MSObservation::RELEASE_DATE));
+  timeRangeMeas_p.attach(msObservation, MSObservation::
+			 columnName(MSObservation::TIME_RANGE));
+  releaseDateQuant_p.attach(msObservation, MSObservation::
+			    columnName(MSObservation::RELEASE_DATE));
+  timeRangeQuant_p.attach(msObservation, MSObservation::
+			  columnName(MSObservation::TIME_RANGE));
 }
 // Local Variables: 
 // compile-command: "gmake NewMSObsColumns"

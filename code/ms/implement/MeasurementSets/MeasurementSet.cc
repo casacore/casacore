@@ -1,4 +1,4 @@
-//# NewMeasurementSet.cc:  the class that hold measurements from telescopes
+//# MeasurementSet.cc:  the class that hold measurements from telescopes
 //# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -46,11 +46,11 @@
 #include <aips/Tables/ForwardCol.h>
 #include <aips/Utilities/String.h>
 
-NewMeasurementSet::NewMeasurementSet():hasBeenDestroyed_p(True) { }
+MeasurementSet::MeasurementSet():hasBeenDestroyed_p(True) { }
 
-NewMeasurementSet::NewMeasurementSet(const String &tableName,
+MeasurementSet::MeasurementSet(const String &tableName,
 			       TableOption option) 
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option), 
       hasBeenDestroyed_p(False)
 {
@@ -62,7 +62,7 @@ NewMeasurementSet::NewMeasurementSet(const String &tableName,
     initRefs();
 }
 
-void NewMeasurementSet::addCat()
+void MeasurementSet::addCat()
 {
   // For a transition period: add the CATEGORY keyword to the FLAG_CATEGORY
   // column silently if it is not there - 2000/08/22, remove next MS update.
@@ -79,10 +79,10 @@ void NewMeasurementSet::addCat()
 }
 
 
-NewMeasurementSet::NewMeasurementSet(const String &tableName,
+MeasurementSet::MeasurementSet(const String &tableName,
 			       const TableLock& lockOptions,
 			       TableOption option) 
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, lockOptions, option), 
       hasBeenDestroyed_p(False)
 {
@@ -94,9 +94,9 @@ NewMeasurementSet::NewMeasurementSet(const String &tableName,
     initRefs();
 }
 
-NewMeasurementSet::NewMeasurementSet(const String& tableName, const String &tableDescName,
+MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName, option),
       hasBeenDestroyed_p(False)
 {
@@ -108,9 +108,9 @@ NewMeasurementSet::NewMeasurementSet(const String& tableName, const String &tabl
     initRefs();
 }
 
-NewMeasurementSet::NewMeasurementSet(const String& tableName, const String &tableDescName,
+MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescName,
 			       const TableLock& lockOptions, TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName, lockOptions, option),
       hasBeenDestroyed_p(False)
 {
@@ -122,9 +122,9 @@ NewMeasurementSet::NewMeasurementSet(const String& tableName, const String &tabl
     initRefs();
 }
 
-NewMeasurementSet::NewMeasurementSet(SetupNewTable &newTab, uInt nrrow,
+MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
@@ -135,10 +135,10 @@ NewMeasurementSet::NewMeasurementSet(SetupNewTable &newTab, uInt nrrow,
 			 "table is not a valid NewMS"));
 }
 
-NewMeasurementSet::NewMeasurementSet(SetupNewTable &newTab,
+MeasurementSet::MeasurementSet(SetupNewTable &newTab,
 			       const TableLock& lockOptions, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, lockOptions, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
@@ -149,8 +149,8 @@ NewMeasurementSet::NewMeasurementSet(SetupNewTable &newTab,
 			 "table is not a valid NewMS"));
 }
 
-NewMeasurementSet::NewMeasurementSet(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MeasurementSet::MeasurementSet(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
@@ -161,20 +161,20 @@ NewMeasurementSet::NewMeasurementSet(const Table &table)
     initRefs();
 }
 
-NewMeasurementSet::NewMeasurementSet(const NewMeasurementSet &other)
-    : NewMSTable<PredefinedColumns,
+MeasurementSet::MeasurementSet(const MeasurementSet &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
         addCat(); 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMS(const NewMeasurementSet &) - "
-			     "NewMeasurementSet is not a valid NewMS"));
+	    throw (AipsError("NewMS(const MeasurementSet &) - "
+			     "MeasurementSet is not a valid NewMS"));
     if (!isNull()) initRefs();
 }
 
-NewMeasurementSet::~NewMeasurementSet()
+MeasurementSet::~MeasurementSet()
 {
 // check to make sure that this NewMS is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
@@ -189,10 +189,10 @@ NewMeasurementSet::~NewMeasurementSet()
     hasBeenDestroyed_p = True;
 }
 
-NewMeasurementSet& NewMeasurementSet::operator=(const NewMeasurementSet &other)
+MeasurementSet& MeasurementSet::operator=(const MeasurementSet &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,PredefinedKeywords>::operator=(other);
+	MSTable<PredefinedColumns,PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
 	if (!isNull()) {
 	  initRefs();
@@ -201,7 +201,7 @@ NewMeasurementSet& NewMeasurementSet::operator=(const NewMeasurementSet &other)
     return *this;
 }
 
-void NewMeasurementSet::init()
+void MeasurementSet::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -423,34 +423,34 @@ void NewMeasurementSet::init()
     }
 }
 	
-NewMeasurementSet NewMeasurementSet::referenceCopy(const String& newTableName, 
+MeasurementSet MeasurementSet::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return NewMeasurementSet(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MeasurementSet(MSTable<PredefinedColumns,PredefinedKeywords>::
 			  referenceCopy(newTableName,writableColumns));
 }
 
-void NewMeasurementSet::initRefs()
+void MeasurementSet::initRefs()
 {
   if (isNull()) {
     // clear subtable references
-    antenna_p=NewMSAntenna();
-    dataDesc_p=NewMSDataDescription();
-    doppler_p=NewMSDoppler();
-    feed_p=NewMSFeed();
-    field_p=NewMSField();
-    flagCmd_p=NewMSFlagCmd();
-    freqOffset_p=NewMSFreqOffset();
-    history_p=NewMSHistory();
-    observation_p=NewMSObservation();
-    pointing_p=NewMSPointing();
-    polarization_p=NewMSPolarization();
-    processor_p=NewMSProcessor();
-    source_p=NewMSSource();
-    spectralWindow_p=NewMSSpectralWindow();
-    state_p=NewMSState();
-    sysCal_p=NewMSSysCal();
-    weather_p=NewMSWeather();
+    antenna_p=MSAntenna();
+    dataDesc_p=MSDataDescription();
+    doppler_p=MSDoppler();
+    feed_p=MSFeed();
+    field_p=MSField();
+    flagCmd_p=MSFlagCmd();
+    freqOffset_p=MSFreqOffset();
+    history_p=MSHistory();
+    observation_p=MSObservation();
+    pointing_p=MSPointing();
+    polarization_p=MSPolarization();
+    processor_p=MSProcessor();
+    source_p=MSSource();
+    spectralWindow_p=MSSpectralWindow();
+    state_p=MSState();
+    sysCal_p=MSSysCal();
+    weather_p=MSWeather();
   } else {
     // write the table info if needed
     if (this->tableInfo().type()=="") {
@@ -458,100 +458,100 @@ void NewMeasurementSet::initRefs()
       this->tableInfo().setType(reqdType);
       String reqdSubType=this->tableInfo().subType(TableInfo::MEASUREMENTSET);
       this->tableInfo().setSubType(reqdSubType);
-      this->tableInfo().readmeAddLine("This is a NewMeasurementSet Table"
+      this->tableInfo().readmeAddLine("This is a MeasurementSet Table"
 				      " holding measurements from a Telescope");
     }
     if (this->keywordSet().isDefined("ANTENNA"))
-      antenna_p=NewMSAntenna(this->keywordSet().asTable("ANTENNA"));
+      antenna_p=MSAntenna(this->keywordSet().asTable("ANTENNA"));
     if (this->keywordSet().isDefined("DATA_DESCRIPTION"))
-      dataDesc_p=NewMSDataDescription(this->keywordSet().
+      dataDesc_p=MSDataDescription(this->keywordSet().
 				   asTable("DATA_DESCRIPTION"));
     if (this->keywordSet().isDefined("DOPPLER"))
-      doppler_p=NewMSDoppler(this->keywordSet().asTable("DOPPLER"));
+      doppler_p=MSDoppler(this->keywordSet().asTable("DOPPLER"));
     if (this->keywordSet().isDefined("FEED"))
-      feed_p=NewMSFeed(this->keywordSet().asTable("FEED"));
+      feed_p=MSFeed(this->keywordSet().asTable("FEED"));
     if (this->keywordSet().isDefined("FIELD"))
-      field_p=NewMSField(this->keywordSet().asTable("FIELD"));
+      field_p=MSField(this->keywordSet().asTable("FIELD"));
     if (this->keywordSet().isDefined("FLAG_CMD"))
-      flagCmd_p=NewMSFlagCmd(this->keywordSet().asTable("FLAG_CMD"));
+      flagCmd_p=MSFlagCmd(this->keywordSet().asTable("FLAG_CMD"));
     if (this->keywordSet().isDefined("FREQ_OFFSET"))
-      freqOffset_p=NewMSFreqOffset(this->keywordSet().asTable("FREQ_OFFSET"));
+      freqOffset_p=MSFreqOffset(this->keywordSet().asTable("FREQ_OFFSET"));
     if (this->keywordSet().isDefined("HISTORY"))
-      history_p=NewMSHistory(this->keywordSet().asTable("HISTORY"));
+      history_p=MSHistory(this->keywordSet().asTable("HISTORY"));
     if (this->keywordSet().isDefined("OBSERVATION"))
-      observation_p=NewMSObservation(this->keywordSet().asTable("OBSERVATION"));
+      observation_p=MSObservation(this->keywordSet().asTable("OBSERVATION"));
     if (this->keywordSet().isDefined("POINTING"))
-      pointing_p=NewMSPointing(this->keywordSet().asTable("POINTING"));
+      pointing_p=MSPointing(this->keywordSet().asTable("POINTING"));
     if (this->keywordSet().isDefined("POLARIZATION"))
-      polarization_p=NewMSPolarization(this->keywordSet().asTable("POLARIZATION"));
+      polarization_p=MSPolarization(this->keywordSet().asTable("POLARIZATION"));
     if (this->keywordSet().isDefined("PROCESSOR"))
-      processor_p=NewMSProcessor(this->keywordSet().asTable("PROCESSOR"));
+      processor_p=MSProcessor(this->keywordSet().asTable("PROCESSOR"));
     if (this->keywordSet().isDefined("SOURCE"))
-      source_p=NewMSSource(this->keywordSet().asTable("SOURCE"));
+      source_p=MSSource(this->keywordSet().asTable("SOURCE"));
     if (this->keywordSet().isDefined("SPECTRAL_WINDOW"))
-      spectralWindow_p=NewMSSpectralWindow(this->keywordSet().
+      spectralWindow_p=MSSpectralWindow(this->keywordSet().
 					asTable("SPECTRAL_WINDOW"));
     if (this->keywordSet().isDefined("STATE"))
-      state_p=NewMSState(this->keywordSet().asTable("STATE"));
+      state_p=MSState(this->keywordSet().asTable("STATE"));
     if (this->keywordSet().isDefined("SYSCAL"))
-      sysCal_p=NewMSSysCal(this->keywordSet().asTable("SYSCAL"));
+      sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL"));
     if (this->keywordSet().isDefined("WEATHER"))
-      weather_p=NewMSWeather(this->keywordSet().asTable("WEATHER"));
+      weather_p=MSWeather(this->keywordSet().asTable("WEATHER"));
   }
 }
 
-void NewMeasurementSet::createDefaultSubtables(Table::TableOption option)
+void MeasurementSet::createDefaultSubtables(Table::TableOption option)
 {
     SetupNewTable antennaSetup(antennaTableName(),
-			       NewMSAntenna::requiredTableDesc(),option);
+			       MSAntenna::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::ANTENNA),
 			       Table(antennaSetup));
     SetupNewTable dataDescSetup(dataDescriptionTableName(),
-			       NewMSDataDescription::requiredTableDesc(),option);
+			       MSDataDescription::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::DATA_DESCRIPTION), 
 			       Table(dataDescSetup));
     SetupNewTable feedSetup(feedTableName(),
-			       NewMSFeed::requiredTableDesc(),option);
+			       MSFeed::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::FEED), Table(feedSetup));
     SetupNewTable flagCmdSetup(flagCmdTableName(),
-			       NewMSFlagCmd::requiredTableDesc(),option);
+			       MSFlagCmd::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::FLAG_CMD), 
 			       Table(flagCmdSetup));
     SetupNewTable fieldSetup(fieldTableName(),
-			       NewMSField::requiredTableDesc(),option);
+			       MSField::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::FIELD), Table(fieldSetup));
     SetupNewTable historySetup(historyTableName(),
-			       NewMSHistory::requiredTableDesc(),option);
+			       MSHistory::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::HISTORY), 
 			       Table(historySetup));
     SetupNewTable observationSetup(observationTableName(),
-			       NewMSObservation::requiredTableDesc(),option);
+			       MSObservation::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::OBSERVATION), 
 			       Table(observationSetup));
     SetupNewTable pointingSetup(pointingTableName(),
-			       NewMSPointing::requiredTableDesc(),option);
+			       MSPointing::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::POINTING),
 			       Table(pointingSetup));
     SetupNewTable polarizationSetup(polarizationTableName(),
-			       NewMSPolarization::requiredTableDesc(),option);
+			       MSPolarization::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::POLARIZATION),
 			       Table(polarizationSetup));
     SetupNewTable processorSetup(processorTableName(),
-			       NewMSProcessor::requiredTableDesc(),option);
+			       MSProcessor::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::PROCESSOR),
 			       Table(processorSetup));
     SetupNewTable spectralWindowSetup(spectralWindowTableName(),
-			       NewMSSpectralWindow::requiredTableDesc(),option);
+			       MSSpectralWindow::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::SPECTRAL_WINDOW),  
 			       Table(spectralWindowSetup));
     SetupNewTable stateSetup(stateTableName(),
-			       NewMSState::requiredTableDesc(),option);
+			       MSState::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::STATE),  
 			       Table(stateSetup));
     initRefs();
 }
 
-Bool NewMeasurementSet::makeComplexData()
+Bool MeasurementSet::makeComplexData()
 {
   // for now we use an extremely simplistic implementation (should find out
   // storage managers and tiles and keep things the same)
@@ -574,7 +574,7 @@ Bool NewMeasurementSet::makeComplexData()
   return True;
 }
 
-Bool NewMeasurementSet::validateMeasureRefs()
+Bool MeasurementSet::validateMeasureRefs()
 {
   Bool ok=True;
   // check main table

@@ -1,4 +1,4 @@
-//# NewMSAntenna.cc: The NewMeasurementSet ANTENNA Table
+//# MSAntenna.cc: The MeasurementSet ANTENNA Table
 //# Copyright (C) 1996,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSAntenna.h>
+#include <aips/MeasurementSets/MSAntenna.h>
 
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -38,74 +38,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSAntenna::NewMSAntenna():hasBeenDestroyed_p(True) { }
+MSAntenna::MSAntenna():hasBeenDestroyed_p(True) { }
 
-NewMSAntenna::NewMSAntenna(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSAntenna::MSAntenna(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSAntenna(String &, TableOption) - "
-			 "table is not a valid NewMSAntenna"));
+	throw (AipsError("MSAntenna(String &, TableOption) - "
+			 "table is not a valid MSAntenna"));
 }
 
-NewMSAntenna::NewMSAntenna(const String& tableName, const String &tableDescName,
+MSAntenna::MSAntenna(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSAntenna(String &, String &, TableOption) - "
-			 "table is not a valid NewMSAntenna"));
+	throw (AipsError("MSAntenna(String &, String &, TableOption) - "
+			 "table is not a valid MSAntenna"));
 }
 
-NewMSAntenna::NewMSAntenna(SetupNewTable &newTab, uInt nrrow,
+MSAntenna::MSAntenna(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSAntenna(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSAntenna"));
+	throw (AipsError("MSAntenna(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSAntenna"));
 }
 
-NewMSAntenna::NewMSAntenna(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSAntenna::MSAntenna(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSAntenna(const Table &) - "
-			 "table is not a valid NewMSAntenna"));
+	throw (AipsError("MSAntenna(const Table &) - "
+			 "table is not a valid MSAntenna"));
 }
 
-NewMSAntenna::NewMSAntenna(const NewMSAntenna &other)
-    : NewMSTable<PredefinedColumns,
+MSAntenna::MSAntenna(const MSAntenna &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSAntenna(const NewMSAntenna &) - "
-			     "table is not a valid NewMSAntenna"));
+	    throw (AipsError("MSAntenna(const MSAntenna &) - "
+			     "table is not a valid MSAntenna"));
 }
 
-NewMSAntenna::~NewMSAntenna()
+MSAntenna::~MSAntenna()
 {
-// check to make sure that this NewMSAntenna is still valid
+// check to make sure that this MSAntenna is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSAntenna() - "
-			 "Table written is not a valid NewMSAntenna"));
+	throw (AipsError("~MSAntenna() - "
+			 "Table written is not a valid MSAntenna"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -113,17 +113,17 @@ NewMSAntenna::~NewMSAntenna()
 }
 
 
-NewMSAntenna& NewMSAntenna::operator=(const NewMSAntenna &other)
+MSAntenna& MSAntenna::operator=(const MSAntenna &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSAntenna::init()
+void MSAntenna::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -190,9 +190,9 @@ void NewMSAntenna::init()
 }
 
 	
-NewMSAntenna NewMSAntenna::referenceCopy(const String& newTableName, 
+MSAntenna MSAntenna::referenceCopy(const String& newTableName, 
 		    const Block<String>& writableColumns) const
 {
-    return NewMSAntenna(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSAntenna(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

@@ -1,4 +1,4 @@
-//# NewMSStateEnums.h: Defs for the NewMS STATE table
+//# MSStateEnums.h: Defs for the NewMS STATE table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSSTATEENUNewMS_H)
-#define AIPS_NewMSSTATEENUNewMS_H
+#if !defined(AIPS_MSSTATEENUMS_H)
+#define AIPS_MSSTATEENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet STATE table </summary>
+// <summary> Enums for the MeasurementSet STATE table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet STATE table
+// This class contains the enums for the MeasurementSet STATE table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMSState class.  These enumerations define the
+// used by the MSState class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/22">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSStateEnums {
+class MSStateEnums {
 public:
     // The STATE table colums with predefined meaning.
     enum PredefinedColumns {

@@ -1,4 +1,4 @@
-//# NewMSProcessor.cc: The NewMeasurementSet PROCESSOR Table
+//# MSProcessor.cc: The MeasurementSet PROCESSOR Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSProcessor.h>
+#include <aips/MeasurementSets/MSProcessor.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -37,74 +37,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSProcessor::NewMSProcessor():hasBeenDestroyed_p(True) { }
+MSProcessor::MSProcessor():hasBeenDestroyed_p(True) { }
 
-NewMSProcessor::NewMSProcessor(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSProcessor::MSProcessor(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSProcessor(String &, TableOption) - "
-			 "table is not a valid NewMSProcessor"));
+	throw (AipsError("MSProcessor(String &, TableOption) - "
+			 "table is not a valid MSProcessor"));
 }
 
-NewMSProcessor::NewMSProcessor(const String& tableName, const String &tableDescName,
+MSProcessor::MSProcessor(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSProcessor(String &, String &, TableOption) - "
-			 "table is not a valid NewMSProcessor"));
+	throw (AipsError("MSProcessor(String &, String &, TableOption) - "
+			 "table is not a valid MSProcessor"));
 }
 
-NewMSProcessor::NewMSProcessor(SetupNewTable &newTab, uInt nrrow,
+MSProcessor::MSProcessor(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSProcessor(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSProcessor"));
+	throw (AipsError("MSProcessor(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSProcessor"));
 }
 
-NewMSProcessor::NewMSProcessor(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSProcessor::MSProcessor(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSProcessor(const Table &) - "
-			 "table is not a valid NewMSProcessor"));
+	throw (AipsError("MSProcessor(const Table &) - "
+			 "table is not a valid MSProcessor"));
 }
 
-NewMSProcessor::NewMSProcessor(const NewMSProcessor &other)
-    : NewMSTable<PredefinedColumns,
+MSProcessor::MSProcessor(const MSProcessor &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSProcessor(const NewMSProcessor &) - "
-			     "table is not a valid NewMSProcessor"));
+	    throw (AipsError("MSProcessor(const MSProcessor &) - "
+			     "table is not a valid MSProcessor"));
 }
 
-NewMSProcessor::~NewMSProcessor()
+MSProcessor::~MSProcessor()
 {
-// check to make sure that this NewMSProcessor is still valid
+// check to make sure that this MSProcessor is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSProcessor() - "
-			 "Table written is not a valid NewMSProcessor"));
+	throw (AipsError("~MSProcessor() - "
+			 "Table written is not a valid MSProcessor"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -112,17 +112,17 @@ NewMSProcessor::~NewMSProcessor()
 }
 
 
-NewMSProcessor& NewMSProcessor::operator=(const NewMSProcessor &other)
+MSProcessor& MSProcessor::operator=(const MSProcessor &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSProcessor::init()
+void MSProcessor::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -166,9 +166,9 @@ void NewMSProcessor::init()
 }
 
 	
-NewMSProcessor NewMSProcessor::referenceCopy(const String& newTableName, 
+MSProcessor MSProcessor::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return NewMSProcessor(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSProcessor(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

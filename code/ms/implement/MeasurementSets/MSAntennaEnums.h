@@ -1,4 +1,4 @@
-//# NewMSAntennaEnums.h: Definitions for the NewMeasurementSet ANTENNA table
+//# MSAntennaEnums.h: Definitions for the MeasurementSet ANTENNA table
 //# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSANTENNAENUNewMS_H)
-#define AIPS_NewMSANTENNAENUNewMS_H
+#if !defined(AIPS_MSANTENNAENUMS_H)
+#define AIPS_MSANTENNAENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet ANTENNA table </summary>
+// <summary> Enums for the MeasurementSet ANTENNA table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet ANTENNA table
+// This class contains the enums for the MeasurementSet ANTENNA table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMSAntenna class.  These enumerations define the
+// used by the MSAntenna class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1996/02/12">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSAntennaEnums {
+class MSAntennaEnums {
 public:
     // The ANTENNA table colums with predefined meaning.
     // Keys: ANTENNA_ID, ARRAY_ID

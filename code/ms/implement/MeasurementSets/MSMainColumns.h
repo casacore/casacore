@@ -1,4 +1,4 @@
-//# NewMSmainColumns.h: provides easy access to NewMeasurementSet main table columns
+//# NewMSmainColumns.h: provides easy access to MeasurementSet main table columns
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSMAINCOLUMNS_H)
-#define AIPS_NEWMSMAINCOLUMNS_H
+#if !defined(AIPS_MSMAINCOLUMNS_H)
+#define AIPS_MSMAINCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MEpoch.h>
@@ -37,12 +37,12 @@
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/TableMeasures/ArrayQuantColumn.h>
 
-class NewMeasurementSet;
+class MeasurementSet;
 class String;
 template <class T> class Vector;
 
 // <summary>
-// A class for easy read-only access to NewMeasurementSet main table columns
+// A class for easy read-only access to MeasurementSet main table columns
 // </summary>
 
 // <use visibility=export>
@@ -51,17 +51,17 @@ template <class T> class Vector;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMeasurementSet
+//   <li> MeasurementSet
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSColumns stands for Read-Only NewMeasurementSet Table columns.
+// ROMSColumns stands for Read-Only MeasurementSet Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMeasurementSet.
+// This class provides read-only access to the columns in the MeasurementSet.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
@@ -76,8 +76,8 @@ template <class T> class Vector;
 // <example>
 // <srcblock>
 // // use as follows
-// NewMeasurementSet ms("myNewMS"); 
-// RONewMSColumns msc(ms);
+// MeasurementSet ms("myNewMS"); 
+// ROMSColumns msc(ms);
 // // show data from row 5
 // cout << msc.data()(5);
 // // show name of antenna on row 3 in antenna table
@@ -86,22 +86,22 @@ template <class T> class Vector;
 // </example>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 //
 // <todo asof="1997/02/01">
 //   <li> We might decide to merge all the NewMSColumn classes with the
-//        corresponding NewMeasurementSet classes.
+//        corresponding MeasurementSet classes.
 // </todo>
 
-class RONewMSMainColumns
+class ROMSMainColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSMainColumns(const NewMeasurementSet& ms);
+  ROMSMainColumns(const MeasurementSet& ms);
 
   // The desctructor does nothing special
-  ~RONewMSMainColumns();
+  ~ROMSMainColumns();
 
   // Access to required columns
   // <group>
@@ -180,19 +180,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSMainColumns();
+  ROMSMainColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMeasurementSet& ms);
+  void attach(const MeasurementSet& ms);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSMainColumns(const RONewMSMainColumns&);
-  RONewMSMainColumns& operator=(const RONewMSMainColumns&);
+  ROMSMainColumns(const ROMSMainColumns&);
+  ROMSMainColumns& operator=(const ROMSMainColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMeasurementSet& ms);
+  void attachOptionalCols(const MeasurementSet& ms);
   
   //# required columns
   ROScalarColumn<Int> antenna1_p;
@@ -257,7 +257,7 @@ private:
 };
 
 // <summary>
-// A class for easy read-write access to NewMeasurementSet main table columns
+// A class for easy read-write access to MeasurementSet main table columns
 // </summary>
 
 // <use visibility=export>
@@ -266,17 +266,17 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMeasurementSet
+//   <li> MeasurementSet
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSMainColumns stands for NewMeasurementSet main Table columns.
+// MSMainColumns stands for MeasurementSet main Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMeasurementSet.
+// This class provides access to the columns in the MeasurementSet.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
@@ -291,8 +291,8 @@ private:
 // <example>
 // <srcblock>
 // // use as follows
-// NewMeasurementSet ms("myNewMS",Table::Update); 
-// NewMSColumns msc(ms);
+// MeasurementSet ms("myNewMS",Table::Update); 
+// MSColumns msc(ms);
 // // show data from row 5
 // cout << msc.data()(5);
 // // change name of antenna on row 3 in antenna table
@@ -310,18 +310,18 @@ private:
 // </motivation>
 //
 // <todo asof="1997/02/01">
-//   <li> We might decide to merge this class with the NewMeasurementSet
+//   <li> We might decide to merge this class with the MeasurementSet
 // </todo>
 
-class NewMSMainColumns: public RONewMSMainColumns
+class MSMainColumns: public ROMSMainColumns
 {
 public:
 
   // Create a columns object that accesses the data in the specified Table
-  NewMSMainColumns(NewMeasurementSet& ms);
+  MSMainColumns(MeasurementSet& ms);
 
   // The desctructor does nothing special
-  ~NewMSMainColumns();
+  ~MSMainColumns();
 
   // Read-write access to required columns
   // <group>
@@ -394,107 +394,107 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Int>& antenna1() const {
-    return RONewMSMainColumns::antenna1();}
+    return ROMSMainColumns::antenna1();}
   const ROScalarColumn<Int>& antenna2() const {
-    return RONewMSMainColumns::antenna2();}
+    return ROMSMainColumns::antenna2();}
   const ROScalarColumn<Int>& arrayId() const {
-    return RONewMSMainColumns::arrayId();}
+    return ROMSMainColumns::arrayId();}
   const ROScalarColumn<Int>& dataDescId() const {
-    return RONewMSMainColumns::dataDescId();}
+    return ROMSMainColumns::dataDescId();}
   const ROScalarColumn<Double>& exposure() const {
-    return RONewMSMainColumns::exposure();}
+    return ROMSMainColumns::exposure();}
   const ROScalarQuantColumn<Double>& exposureQuant() const { 
-    return RONewMSMainColumns::exposureQuant();}
+    return ROMSMainColumns::exposureQuant();}
   const ROScalarColumn<Int>& feed1() const {
-    return RONewMSMainColumns::feed1();}
+    return ROMSMainColumns::feed1();}
   const ROScalarColumn<Int>& feed2() const {
-    return RONewMSMainColumns::feed2();}
+    return ROMSMainColumns::feed2();}
   const ROScalarColumn<Int>& fieldId() const {
-    return RONewMSMainColumns::fieldId();}
+    return ROMSMainColumns::fieldId();}
   const ROArrayColumn<Bool>& flag() const {
-    return RONewMSMainColumns::flag();}
+    return ROMSMainColumns::flag();}
   const ROArrayColumn<Bool>& flagCategory() const {
-    return RONewMSMainColumns::flagCategory();}
+    return ROMSMainColumns::flagCategory();}
   const ROScalarColumn<Bool>& flagRow() const {
-    return RONewMSMainColumns::flagRow();}
+    return ROMSMainColumns::flagRow();}
   const ROScalarColumn<Double>& interval() const {
-    return RONewMSMainColumns::interval();}
+    return ROMSMainColumns::interval();}
   const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return RONewMSMainColumns::intervalQuant();}
+    return ROMSMainColumns::intervalQuant();}
   const ROScalarColumn<Int>& observationId() const {
-    return RONewMSMainColumns::observationId();}
+    return ROMSMainColumns::observationId();}
   const ROScalarColumn<Int>& processorId() const {
-    return RONewMSMainColumns::processorId();}
+    return ROMSMainColumns::processorId();}
   const ROScalarColumn<Int>& scanNumber() const {
-    return RONewMSMainColumns::scanNumber();}
+    return ROMSMainColumns::scanNumber();}
   const ROArrayColumn<Float>& sigma() const {
-    return RONewMSMainColumns::sigma();}
+    return ROMSMainColumns::sigma();}
   const ROScalarColumn<Int>& stateId() const {
-    return RONewMSMainColumns::stateId();}
+    return ROMSMainColumns::stateId();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSMainColumns::time();}
+    return ROMSMainColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSMainColumns::timeQuant();}
+    return ROMSMainColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return RONewMSMainColumns::timeMeas();}
+    return ROMSMainColumns::timeMeas();}
   const ROScalarColumn<Double>& timeCentroid() const {
-    return RONewMSMainColumns::timeCentroid();}
+    return ROMSMainColumns::timeCentroid();}
   const ROScalarQuantColumn<Double>& timeCentroidQuant() const {
-    return RONewMSMainColumns::timeCentroidQuant();}
+    return ROMSMainColumns::timeCentroidQuant();}
   const ROScalarMeasColumn<MEpoch>& timeCentroidMeas() const {
-    return RONewMSMainColumns::timeCentroidMeas();}
+    return ROMSMainColumns::timeCentroidMeas();}
   const ROArrayColumn<Double>& uvw() const {
-    return RONewMSMainColumns::uvw();}
+    return ROMSMainColumns::uvw();}
   const ROArrayQuantColumn<Double>& uvwQuant() const {
-    return RONewMSMainColumns::uvwQuant();}
+    return ROMSMainColumns::uvwQuant();}
   const ROScalarMeasColumn<Muvw>& uvwMeas() const {
-    return RONewMSMainColumns::uvwMeas();}
+    return ROMSMainColumns::uvwMeas();}
   const ROArrayColumn<Float>& weight() const {
-    return RONewMSMainColumns::weight();}
+    return ROMSMainColumns::weight();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROScalarColumn<Int>& antenna3() const {
-    return RONewMSMainColumns::antenna3();}
+    return ROMSMainColumns::antenna3();}
   const ROScalarColumn<Bool>& baselineRef() const {
-    return RONewMSMainColumns::baselineRef();}
+    return ROMSMainColumns::baselineRef();}
   const ROArrayColumn<Complex>& correctedData() const {
-    return RONewMSMainColumns::correctedData();}
+    return ROMSMainColumns::correctedData();}
   const ROArrayColumn<Complex>& data() const {
-    return RONewMSMainColumns::data();}
+    return ROMSMainColumns::data();}
   const ROScalarColumn<Int>& feed3() const {
-    return RONewMSMainColumns::feed3();}
+    return ROMSMainColumns::feed3();}
   const ROArrayColumn<Float>& floatData() const {
-    return RONewMSMainColumns::floatData();}
+    return ROMSMainColumns::floatData();}
   const ROArrayColumn<Float>& imagingWeight() const {
-    return RONewMSMainColumns::imagingWeight();}
+    return ROMSMainColumns::imagingWeight();}
   const ROArrayColumn<Complex>& lagData() const {
-    return RONewMSMainColumns::lagData();}
+    return ROMSMainColumns::lagData();}
   const ROArrayColumn<Complex>& modelData() const {
-    return RONewMSMainColumns::modelData();}
+    return ROMSMainColumns::modelData();}
   const ROScalarColumn<Int>& phaseId() const {
-    return RONewMSMainColumns::phaseId();}
+    return ROMSMainColumns::phaseId();}
   const ROScalarColumn<Int>& pulsarBin() const {
-    return RONewMSMainColumns::pulsarBin();}
+    return ROMSMainColumns::pulsarBin();}
   const ROScalarColumn<Int>& pulsarGateId() const {
-    return RONewMSMainColumns::pulsarGateId();}
+    return ROMSMainColumns::pulsarGateId();}
   const ROArrayColumn<Float>& sigmaSpectrum() const {
-    return RONewMSMainColumns::sigmaSpectrum();}
+    return ROMSMainColumns::sigmaSpectrum();}
   const ROScalarColumn<Double>& timeExtraPrec() const {
-    return RONewMSMainColumns::timeExtraPrec();}
+    return ROMSMainColumns::timeExtraPrec();}
   const ROScalarQuantColumn<Double>& timeExtraPrecQuant() const {
-    return RONewMSMainColumns::timeExtraPrecQuant();}
+    return ROMSMainColumns::timeExtraPrecQuant();}
   const ROArrayColumn<Double>& uvw2() const {
-    return RONewMSMainColumns::uvw2();}
+    return ROMSMainColumns::uvw2();}
   const ROScalarMeasColumn<Muvw>& uvw2Meas() const {
-    return RONewMSMainColumns::uvw2Meas();}
+    return ROMSMainColumns::uvw2Meas();}
   const ROArrayQuantColumn<Double>& uvw2Quant() const {
-    return RONewMSMainColumns::uvw2Quant();}
+    return ROMSMainColumns::uvw2Quant();}
   const ROArrayColumn<Complex>& videoPoint() const {
-    return RONewMSMainColumns::videoPoint();}
+    return ROMSMainColumns::videoPoint();}
   const ROArrayColumn<Float>& weightSpectrum() const {
-    return RONewMSMainColumns::weightSpectrum();}
+    return ROMSMainColumns::weightSpectrum();}
   // </group>
 
   // set the epoch type for the TIME and TIME_CENTROID columns. 
@@ -522,19 +522,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSMainColumns();
+  MSMainColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMeasurementSet& ms);
+  void attach(MeasurementSet& ms);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSMainColumns(const NewMSMainColumns&);
-  NewMSMainColumns& operator=(const NewMSMainColumns&);
+  MSMainColumns(const MSMainColumns&);
+  MSMainColumns& operator=(const MSMainColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMeasurementSet& ms);
+  void attachOptionalCols(MeasurementSet& ms);
   
   //# required columns
   ScalarColumn<Int> antenna1_p;

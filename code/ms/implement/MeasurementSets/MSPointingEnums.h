@@ -1,4 +1,4 @@
-//# NewMSPointingEnums.h: Definitions for the NewMeasurementSet POINTING table
+//# MSPointingEnums.h: Definitions for the MeasurementSet POINTING table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSPOINTINGENUNewMS_H)
-#define AIPS_NewMSPOINTINGENUNewMS_H
+#if !defined(AIPS_MSPOINTINGENUMS_H)
+#define AIPS_MSPOINTINGENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet POINTING table </summary>
+// <summary> Enums for the MeasurementSet POINTING table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet POINTING table
+// This class contains the enums for the MeasurementSet POINTING table
 // </etymology>
 // <synopsis>
 // This class does nothing. It is merely a container for the enumerations
-// used by the NewMSPointing class.  These enumerations define the
+// used by the MSPointing class.  These enumerations define the
 // standard columns and keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/14">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSPointingEnums {
+class MSPointingEnums {
 public:
     // The POINTING table colums with predefined meaning.
     // Keys: ANTENNA_ID, TIME, INTERVAL

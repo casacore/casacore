@@ -1,4 +1,4 @@
-//# NewMSDataDescription.h: The NewMeasurementSet DATADESCRIPTION Table
+//# MSDataDescription.h: The MeasurementSet DATADESCRIPTION Table
 //# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSDATADESCRIPTION_H)
-#define AIPS_NewMSDATADESCRIPTION_H
+#if !defined(AIPS_MSDATADESCRIPTION_H)
+#define AIPS_MSDATADESCRIPTION_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSDataDescEnums.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MSDataDescEnums.h>
 
 // <summary> 
-// A Table intended to hold a NewMeasurementSet DATADESCRIPTION table.
+// A Table intended to hold a MeasurementSet DATADESCRIPTION table.
 // </summary>
 
 // <use visibility=export>
@@ -43,62 +43,62 @@
 
 // <prerequisite>
 // <ul>
-//   <li> <linkto class="NewMeasurementSet:description">NewMeasurementSet</linkto> 
-//   <li> <linkto class="NewMSTable">NewMSTable</linkto> 
+//   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto> 
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// NewMSDataDescription stands for the NewMeasurementSet Datadescription table.
+// MSDataDescription stands for the MeasurementSet Datadescription table.
 // </etymology>
 //
 // <synopsis> 
-// An NewMSDataDescription is a table intended to hold the DATADESCRIPTION table for
-// the NewMeasurementSet. It has an identical set of member functions as
-// the main NewMeasurementSet class, except (currently) for the default
+// An MSDataDescription is a table intended to hold the DATADESCRIPTION table for
+// the MeasurementSet. It has an identical set of member functions as
+// the main MeasurementSet class, except (currently) for the default
 // calibration members. For further info and examples see the 
-// NewMeasurementSet class.
+// MeasurementSet class.
 // </synopsis> 
 //
 // <example>
-// See the NewMeasurementSet for an example of how to access and use this class.
+// See the MeasurementSet for an example of how to access and use this class.
 // </example>
 //
 // <motivation>
-// It was found that subtables and the main table of the NewMeasurementSet have
+// It was found that subtables and the main table of the MeasurementSet have
 // a lot in common, therefore they derive their interface from the same
 // base class. Each subtable has its own class to keep the enum definitions
 // and conversion functions in separate scopes.
 // </motivation>
 //
 // <todo asof="1999/01/13">
-// see NewMeasurementSet.
+// see MeasurementSet.
 // </todo>
 
 
-class NewMSDataDescription:public NewMSDataDescriptionEnums,
-                public NewMSTable<NewMSDataDescriptionEnums::PredefinedColumns,
-		               NewMSDataDescriptionEnums::PredefinedKeywords>
+class MSDataDescription:public MSDataDescriptionEnums,
+                public MSTable<MSDataDescriptionEnums::PredefinedColumns,
+		               MSDataDescriptionEnums::PredefinedKeywords>
 {
 public:
-    // This constructs an empty NewMSDataDescription
-    NewMSDataDescription ();
+    // This constructs an empty MSDataDescription
+    MSDataDescription ();
     //
     // These constructors mirror the Table ones with additional checking
-    // on validity (verifying that the NewMSDataDescription will have the required columns
+    // on validity (verifying that the MSDataDescription will have the required columns
     // and keywords).
-    // An exception is thrown if the constructed Table is not a valid NewMSDataDescription
+    // An exception is thrown if the constructed Table is not a valid MSDataDescription
     // <thrown>
     //   <li> AipsError
     // </thrown>
     // <group name=tableLikeConstructors>
-    NewMSDataDescription (const String &tableName, TableOption = Table::Old);
-    NewMSDataDescription (const String &tableName, const String &tableDescName,
+    MSDataDescription (const String &tableName, TableOption = Table::Old);
+    MSDataDescription (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    NewMSDataDescription (SetupNewTable &newTab, uInt nrrow = 0,
+    MSDataDescription (SetupNewTable &newTab, uInt nrrow = 0,
 		    Bool initialize = False);
-    NewMSDataDescription (const Table &table);
-    NewMSDataDescription (const NewMSDataDescription &other);
+    MSDataDescription (const Table &table);
+    MSDataDescription (const MSDataDescription &other);
     // </group>
 
     // As with tables, the destructor writes the table if necessary.
@@ -108,23 +108,23 @@ public:
     // <thrown>
     //   <li> AipsError
     // </thrown>
-    ~NewMSDataDescription();
+    ~MSDataDescription();
 
     //  Assignment operator, reference semantics
-    NewMSDataDescription& operator=(const NewMSDataDescription&);
+    MSDataDescription& operator=(const MSDataDescription&);
 
     // Make a special copy of this Table which references all columns from
     // this Table except those mentioned; those are empty and writable.
     // Each forwarded column has the same writable status as the underlying
     // column. The mentioned columns all use the AipsIO storage manager.
-    // This function is inherited from NewMSTable and unlikely to be of use,
-    // except in the class NewMeasurementSet (see comment there)..
-    NewMSDataDescription referenceCopy(const String& newTableName,
+    // This function is inherited from MSTable and unlikely to be of use,
+    // except in the class MeasurementSet (see comment there)..
+    MSDataDescription referenceCopy(const String& newTableName,
 			    const Block<String>& writableColumns) const;
 
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
-    // NewMSTableImpl.
+    // MSTableImpl.
     static void init();
 
 private:

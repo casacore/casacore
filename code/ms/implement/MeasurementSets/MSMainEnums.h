@@ -1,4 +1,4 @@
-//# NewMSMainEnums.h: Class with definitions for the main NewMeasurementSet table
+//# MSMainEnums.h: Class with definitions for the main MeasurementSet table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,36 +26,36 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSMAINENUNewMS_H)
-#define AIPS_NewMSMAINENUNewMS_H
+#if !defined(AIPS_MSMAINENUMS_H)
+#define AIPS_MSMAINENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet main table </summary>
+// <summary> Enums for the MeasurementSet main table </summary>
 // <etymology>
-// This class contains the enum defininitions for the main NewMeasurementSet
+// This class contains the enum defininitions for the main MeasurementSet
 // table.
 // </etymology>
 
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMeasurementSet class.  These enumerations define the
+// used by the MeasurementSet class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/02/04">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSMainEnums {
+class MSMainEnums {
 public:
     // The Main table colums with predefined meaning.
     enum PredefinedColumns {

@@ -1,4 +1,4 @@
-//# NewMSFeedColumns.cc:  provides easy access to NewMeasurementSet columns
+//# MSFeedColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,46 +25,46 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSFeedColumns.h>
-#include <aips/MeasurementSets/NewMSFeed.h>
+#include <aips/MeasurementSets/MSFeedColumns.h>
+#include <aips/MeasurementSets/MSFeed.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/ColDescSet.h>
 
-RONewMSFeedColumns::RONewMSFeedColumns(const NewMSFeed& msFeed):
-  antennaId_p(msFeed, NewMSFeed::columnName(NewMSFeed::ANTENNA_ID)),
-  beamId_p(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_ID)),
-  beamOffset_p(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET)),
-  feedId_p(msFeed, NewMSFeed::columnName(NewMSFeed::FEED_ID)),
-  interval_p(msFeed, NewMSFeed::columnName(NewMSFeed::INTERVAL)),
-  numReceptors_p(msFeed, NewMSFeed::columnName(NewMSFeed::NUM_RECEPTORS)),
-  polResponse_p(msFeed, NewMSFeed::columnName(NewMSFeed::POL_RESPONSE)),
-  polarizationType_p(msFeed, NewMSFeed::
-		     columnName(NewMSFeed::POLARIZATION_TYPE)),
-  position_p(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION)),
-  receptorAngle_p(msFeed, NewMSFeed::columnName(NewMSFeed::RECEPTOR_ANGLE)),
-  spectralWindowId_p(msFeed, NewMSFeed::
-		     columnName(NewMSFeed::SPECTRAL_WINDOW_ID)),
-  time_p(msFeed, NewMSFeed::columnName(NewMSFeed::TIME)),
+ROMSFeedColumns::ROMSFeedColumns(const MSFeed& msFeed):
+  antennaId_p(msFeed, MSFeed::columnName(MSFeed::ANTENNA_ID)),
+  beamId_p(msFeed, MSFeed::columnName(MSFeed::BEAM_ID)),
+  beamOffset_p(msFeed, MSFeed::columnName(MSFeed::BEAM_OFFSET)),
+  feedId_p(msFeed, MSFeed::columnName(MSFeed::FEED_ID)),
+  interval_p(msFeed, MSFeed::columnName(MSFeed::INTERVAL)),
+  numReceptors_p(msFeed, MSFeed::columnName(MSFeed::NUM_RECEPTORS)),
+  polResponse_p(msFeed, MSFeed::columnName(MSFeed::POL_RESPONSE)),
+  polarizationType_p(msFeed, MSFeed::
+		     columnName(MSFeed::POLARIZATION_TYPE)),
+  position_p(msFeed, MSFeed::columnName(MSFeed::POSITION)),
+  receptorAngle_p(msFeed, MSFeed::columnName(MSFeed::RECEPTOR_ANGLE)),
+  spectralWindowId_p(msFeed, MSFeed::
+		     columnName(MSFeed::SPECTRAL_WINDOW_ID)),
+  time_p(msFeed, MSFeed::columnName(MSFeed::TIME)),
   focusLength_p(), 
   phasedFeedId_p(),
-  beamOffsetMeas_p(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET)),
-  positionMeas_p(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION)),
-  timeMeas_p(msFeed, NewMSFeed::columnName(NewMSFeed::TIME)),
-  beamOffsetQuant_p(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET)),
-  intervalQuant_p(msFeed, NewMSFeed::columnName(NewMSFeed::INTERVAL)),
-  positionQuant_p(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION)),
-  receptorAngleQuant_p(msFeed, NewMSFeed::
-		       columnName(NewMSFeed::RECEPTOR_ANGLE)),
-  timeQuant_p(msFeed, NewMSFeed::columnName(NewMSFeed::TIME)),
+  beamOffsetMeas_p(msFeed, MSFeed::columnName(MSFeed::BEAM_OFFSET)),
+  positionMeas_p(msFeed, MSFeed::columnName(MSFeed::POSITION)),
+  timeMeas_p(msFeed, MSFeed::columnName(MSFeed::TIME)),
+  beamOffsetQuant_p(msFeed, MSFeed::columnName(MSFeed::BEAM_OFFSET)),
+  intervalQuant_p(msFeed, MSFeed::columnName(MSFeed::INTERVAL)),
+  positionQuant_p(msFeed, MSFeed::columnName(MSFeed::POSITION)),
+  receptorAngleQuant_p(msFeed, MSFeed::
+		       columnName(MSFeed::RECEPTOR_ANGLE)),
+  timeQuant_p(msFeed, MSFeed::columnName(MSFeed::TIME)),
   focusLengthQuant_p()
 {
   attachOptionalCols(msFeed);
 }
 
-RONewMSFeedColumns::~RONewMSFeedColumns() {}
+ROMSFeedColumns::~ROMSFeedColumns() {}
 
-RONewMSFeedColumns::RONewMSFeedColumns():
+ROMSFeedColumns::ROMSFeedColumns():
   antennaId_p(),
   beamId_p(),
   beamOffset_p(),
@@ -91,100 +91,100 @@ RONewMSFeedColumns::RONewMSFeedColumns():
 {
 }
 
-void RONewMSFeedColumns::attach(const NewMSFeed& msFeed)
+void ROMSFeedColumns::attach(const MSFeed& msFeed)
 {
-  antennaId_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::ANTENNA_ID));
-  beamId_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_ID));
-  beamOffset_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET));
-  feedId_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::FEED_ID));
-  interval_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::INTERVAL));
+  antennaId_p.attach(msFeed, MSFeed::columnName(MSFeed::ANTENNA_ID));
+  beamId_p.attach(msFeed, MSFeed::columnName(MSFeed::BEAM_ID));
+  beamOffset_p.attach(msFeed, MSFeed::columnName(MSFeed::BEAM_OFFSET));
+  feedId_p.attach(msFeed, MSFeed::columnName(MSFeed::FEED_ID));
+  interval_p.attach(msFeed, MSFeed::columnName(MSFeed::INTERVAL));
   numReceptors_p.attach(msFeed,
-			NewMSFeed::columnName(NewMSFeed::NUM_RECEPTORS));
-  polResponse_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::POL_RESPONSE));
-  polarizationType_p.attach(msFeed, NewMSFeed::
-			    columnName(NewMSFeed::POLARIZATION_TYPE));
-  position_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION));
+			MSFeed::columnName(MSFeed::NUM_RECEPTORS));
+  polResponse_p.attach(msFeed, MSFeed::columnName(MSFeed::POL_RESPONSE));
+  polarizationType_p.attach(msFeed, MSFeed::
+			    columnName(MSFeed::POLARIZATION_TYPE));
+  position_p.attach(msFeed, MSFeed::columnName(MSFeed::POSITION));
   receptorAngle_p.attach(msFeed,
-			 NewMSFeed::columnName(NewMSFeed::RECEPTOR_ANGLE));
-  spectralWindowId_p.attach(msFeed, NewMSFeed::
-			    columnName(NewMSFeed::SPECTRAL_WINDOW_ID));
-  time_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::TIME));
+			 MSFeed::columnName(MSFeed::RECEPTOR_ANGLE));
+  spectralWindowId_p.attach(msFeed, MSFeed::
+			    columnName(MSFeed::SPECTRAL_WINDOW_ID));
+  time_p.attach(msFeed, MSFeed::columnName(MSFeed::TIME));
   beamOffsetMeas_p.attach(msFeed,
-			  NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET));
-  positionMeas_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION));
-  timeMeas_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::TIME));
+			  MSFeed::columnName(MSFeed::BEAM_OFFSET));
+  positionMeas_p.attach(msFeed, MSFeed::columnName(MSFeed::POSITION));
+  timeMeas_p.attach(msFeed, MSFeed::columnName(MSFeed::TIME));
   beamOffsetQuant_p.attach(msFeed,
-			   NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET));
-  intervalQuant_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::INTERVAL));
-  positionQuant_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION));
-  receptorAngleQuant_p.attach(msFeed, NewMSFeed::
-			      columnName(NewMSFeed::RECEPTOR_ANGLE));
-  timeQuant_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::TIME));
+			   MSFeed::columnName(MSFeed::BEAM_OFFSET));
+  intervalQuant_p.attach(msFeed, MSFeed::columnName(MSFeed::INTERVAL));
+  positionQuant_p.attach(msFeed, MSFeed::columnName(MSFeed::POSITION));
+  receptorAngleQuant_p.attach(msFeed, MSFeed::
+			      columnName(MSFeed::RECEPTOR_ANGLE));
+  timeQuant_p.attach(msFeed, MSFeed::columnName(MSFeed::TIME));
   attachOptionalCols(msFeed);
 }
 
-void RONewMSFeedColumns::attachOptionalCols(const NewMSFeed& msFeed)
+void ROMSFeedColumns::attachOptionalCols(const MSFeed& msFeed)
 {
   const ColumnDescSet& cds=msFeed.tableDesc().columnDescSet();
-  const String& focusLength=NewMSFeed::columnName(NewMSFeed::FOCUS_LENGTH);
+  const String& focusLength=MSFeed::columnName(MSFeed::FOCUS_LENGTH);
   if (cds.isDefined(focusLength)) {
     focusLength_p.attach(msFeed, focusLength);
     focusLengthQuant_p.attach(msFeed, focusLength);
   }
-  const String& phasedFeedId=NewMSFeed::columnName(NewMSFeed::PHASED_FEED_ID);
+  const String& phasedFeedId=MSFeed::columnName(MSFeed::PHASED_FEED_ID);
   if (cds.isDefined(phasedFeedId)) phasedFeedId_p.attach(msFeed, phasedFeedId);
 }
 
-NewMSFeedColumns::NewMSFeedColumns(NewMSFeed& msFeed):
-  RONewMSFeedColumns(msFeed),
-  antennaId_p(msFeed, NewMSFeed::columnName(NewMSFeed::ANTENNA_ID)),
-  beamId_p(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_ID)),
-  beamOffset_p(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET)),
-  feedId_p(msFeed, NewMSFeed::columnName(NewMSFeed::FEED_ID)),
-  interval_p(msFeed, NewMSFeed::columnName(NewMSFeed::INTERVAL)),
-  numReceptors_p(msFeed, NewMSFeed::columnName(NewMSFeed::NUM_RECEPTORS)),
-  polResponse_p(msFeed, NewMSFeed::columnName(NewMSFeed::POL_RESPONSE)),
-  polarizationType_p(msFeed, NewMSFeed::
-		     columnName(NewMSFeed::POLARIZATION_TYPE)),
-  position_p(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION)),
-  receptorAngle_p(msFeed, NewMSFeed::columnName(NewMSFeed::RECEPTOR_ANGLE)),
-  spectralWindowId_p(msFeed, NewMSFeed::
-		     columnName(NewMSFeed::SPECTRAL_WINDOW_ID)),
-  time_p(msFeed, NewMSFeed::columnName(NewMSFeed::TIME)),
+MSFeedColumns::MSFeedColumns(MSFeed& msFeed):
+  ROMSFeedColumns(msFeed),
+  antennaId_p(msFeed, MSFeed::columnName(MSFeed::ANTENNA_ID)),
+  beamId_p(msFeed, MSFeed::columnName(MSFeed::BEAM_ID)),
+  beamOffset_p(msFeed, MSFeed::columnName(MSFeed::BEAM_OFFSET)),
+  feedId_p(msFeed, MSFeed::columnName(MSFeed::FEED_ID)),
+  interval_p(msFeed, MSFeed::columnName(MSFeed::INTERVAL)),
+  numReceptors_p(msFeed, MSFeed::columnName(MSFeed::NUM_RECEPTORS)),
+  polResponse_p(msFeed, MSFeed::columnName(MSFeed::POL_RESPONSE)),
+  polarizationType_p(msFeed, MSFeed::
+		     columnName(MSFeed::POLARIZATION_TYPE)),
+  position_p(msFeed, MSFeed::columnName(MSFeed::POSITION)),
+  receptorAngle_p(msFeed, MSFeed::columnName(MSFeed::RECEPTOR_ANGLE)),
+  spectralWindowId_p(msFeed, MSFeed::
+		     columnName(MSFeed::SPECTRAL_WINDOW_ID)),
+  time_p(msFeed, MSFeed::columnName(MSFeed::TIME)),
   focusLength_p(), 
   phasedFeedId_p(),
-  beamOffsetMeas_p(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET)),
-  positionMeas_p(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION)),
-  timeMeas_p(msFeed, NewMSFeed::columnName(NewMSFeed::TIME)),
-  beamOffsetQuant_p(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET)),
-  intervalQuant_p(msFeed, NewMSFeed::columnName(NewMSFeed::INTERVAL)),
-  positionQuant_p(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION)),
-  receptorAngleQuant_p(msFeed, NewMSFeed::
-		       columnName(NewMSFeed::RECEPTOR_ANGLE)),
-  timeQuant_p(msFeed, NewMSFeed::columnName(NewMSFeed::TIME)),
+  beamOffsetMeas_p(msFeed, MSFeed::columnName(MSFeed::BEAM_OFFSET)),
+  positionMeas_p(msFeed, MSFeed::columnName(MSFeed::POSITION)),
+  timeMeas_p(msFeed, MSFeed::columnName(MSFeed::TIME)),
+  beamOffsetQuant_p(msFeed, MSFeed::columnName(MSFeed::BEAM_OFFSET)),
+  intervalQuant_p(msFeed, MSFeed::columnName(MSFeed::INTERVAL)),
+  positionQuant_p(msFeed, MSFeed::columnName(MSFeed::POSITION)),
+  receptorAngleQuant_p(msFeed, MSFeed::
+		       columnName(MSFeed::RECEPTOR_ANGLE)),
+  timeQuant_p(msFeed, MSFeed::columnName(MSFeed::TIME)),
   focusLengthQuant_p()
 {
   attachOptionalCols(msFeed);
 }
 
-NewMSFeedColumns::~NewMSFeedColumns() {}
+MSFeedColumns::~MSFeedColumns() {}
 
-void NewMSFeedColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSFeedColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
-void NewMSFeedColumns::setDirectionRef(MDirection::Types ref) 
+void MSFeedColumns::setDirectionRef(MDirection::Types ref) 
 {
   beamOffsetMeas_p.setDescRefCode(ref);
 }
 
-void NewMSFeedColumns::setPositionRef(MPosition::Types ref) 
+void MSFeedColumns::setPositionRef(MPosition::Types ref) 
 {
   positionMeas_p.setDescRefCode(ref);
 }
 
-NewMSFeedColumns::NewMSFeedColumns():
-  RONewMSFeedColumns(),
+MSFeedColumns::MSFeedColumns():
+  ROMSFeedColumns(),
   antennaId_p(),
   beamId_p(),
   beamOffset_p(),
@@ -211,51 +211,51 @@ NewMSFeedColumns::NewMSFeedColumns():
 {
 }
 
-void NewMSFeedColumns::attach(NewMSFeed& msFeed)
+void MSFeedColumns::attach(MSFeed& msFeed)
 {
-  RONewMSFeedColumns::attach(msFeed);
-  antennaId_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::ANTENNA_ID));
-  beamId_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_ID));
-  beamOffset_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET));
-  feedId_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::FEED_ID));
-  interval_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::INTERVAL));
+  ROMSFeedColumns::attach(msFeed);
+  antennaId_p.attach(msFeed, MSFeed::columnName(MSFeed::ANTENNA_ID));
+  beamId_p.attach(msFeed, MSFeed::columnName(MSFeed::BEAM_ID));
+  beamOffset_p.attach(msFeed, MSFeed::columnName(MSFeed::BEAM_OFFSET));
+  feedId_p.attach(msFeed, MSFeed::columnName(MSFeed::FEED_ID));
+  interval_p.attach(msFeed, MSFeed::columnName(MSFeed::INTERVAL));
   numReceptors_p.attach(msFeed,
-			NewMSFeed::columnName(NewMSFeed::NUM_RECEPTORS));
-  polResponse_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::POL_RESPONSE));
-  polarizationType_p.attach(msFeed, NewMSFeed::
-			    columnName(NewMSFeed::POLARIZATION_TYPE));
-  position_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION));
+			MSFeed::columnName(MSFeed::NUM_RECEPTORS));
+  polResponse_p.attach(msFeed, MSFeed::columnName(MSFeed::POL_RESPONSE));
+  polarizationType_p.attach(msFeed, MSFeed::
+			    columnName(MSFeed::POLARIZATION_TYPE));
+  position_p.attach(msFeed, MSFeed::columnName(MSFeed::POSITION));
   receptorAngle_p.attach(msFeed,
-			 NewMSFeed::columnName(NewMSFeed::RECEPTOR_ANGLE));
-  spectralWindowId_p.attach(msFeed, NewMSFeed::
-			    columnName(NewMSFeed::SPECTRAL_WINDOW_ID));
-  time_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::TIME));
+			 MSFeed::columnName(MSFeed::RECEPTOR_ANGLE));
+  spectralWindowId_p.attach(msFeed, MSFeed::
+			    columnName(MSFeed::SPECTRAL_WINDOW_ID));
+  time_p.attach(msFeed, MSFeed::columnName(MSFeed::TIME));
   beamOffsetMeas_p.attach(msFeed,
-			  NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET));
-  positionMeas_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION));
-  timeMeas_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::TIME));
+			  MSFeed::columnName(MSFeed::BEAM_OFFSET));
+  positionMeas_p.attach(msFeed, MSFeed::columnName(MSFeed::POSITION));
+  timeMeas_p.attach(msFeed, MSFeed::columnName(MSFeed::TIME));
   beamOffsetQuant_p.attach(msFeed,
-			   NewMSFeed::columnName(NewMSFeed::BEAM_OFFSET));
-  intervalQuant_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::INTERVAL));
-  positionQuant_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::POSITION));
-  receptorAngleQuant_p.attach(msFeed, NewMSFeed::
-			      columnName(NewMSFeed::RECEPTOR_ANGLE));
-  timeQuant_p.attach(msFeed, NewMSFeed::columnName(NewMSFeed::TIME));
+			   MSFeed::columnName(MSFeed::BEAM_OFFSET));
+  intervalQuant_p.attach(msFeed, MSFeed::columnName(MSFeed::INTERVAL));
+  positionQuant_p.attach(msFeed, MSFeed::columnName(MSFeed::POSITION));
+  receptorAngleQuant_p.attach(msFeed, MSFeed::
+			      columnName(MSFeed::RECEPTOR_ANGLE));
+  timeQuant_p.attach(msFeed, MSFeed::columnName(MSFeed::TIME));
   attachOptionalCols(msFeed);
 }
 
-void NewMSFeedColumns::attachOptionalCols(NewMSFeed& msFeed)
+void MSFeedColumns::attachOptionalCols(MSFeed& msFeed)
 {
   const ColumnDescSet& cds = msFeed.tableDesc().columnDescSet();
-  const String& focusLength = NewMSFeed::columnName(NewMSFeed::FOCUS_LENGTH);
+  const String& focusLength = MSFeed::columnName(MSFeed::FOCUS_LENGTH);
   if (cds.isDefined(focusLength)) {
     focusLength_p.attach(msFeed, focusLength);
     focusLengthQuant_p.attach(msFeed, focusLength);
   }
-  const String& phasedFeedId =NewMSFeed::columnName(NewMSFeed::PHASED_FEED_ID);
+  const String& phasedFeedId =MSFeed::columnName(MSFeed::PHASED_FEED_ID);
   if (cds.isDefined(phasedFeedId)) phasedFeedId_p.attach(msFeed, phasedFeedId);
 }
 
 // Local Variables: 
-// compile-command: "gmake NewMSFeedColumns"
+// compile-command: "gmake MSFeedColumns"
 // End: 

@@ -1,4 +1,4 @@
-//# NewMSFreqOffset.cc: The NewMeasurementSet FREQ_OFFSET Table
+//# MSFreqOffset.cc: The MeasurementSet FREQ_OFFSET Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSFreqOffset.h>
+#include <aips/MeasurementSets/MSFreqOffset.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -37,74 +37,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSFreqOffset::NewMSFreqOffset():hasBeenDestroyed_p(True) { }
+MSFreqOffset::MSFreqOffset():hasBeenDestroyed_p(True) { }
 
-NewMSFreqOffset::NewMSFreqOffset(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSFreqOffset::MSFreqOffset(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFreqOffset(String &, TableOption) - "
-			 "table is not a valid NewMSFreqOffset"));
+	throw (AipsError("MSFreqOffset(String &, TableOption) - "
+			 "table is not a valid MSFreqOffset"));
 }
 
-NewMSFreqOffset::NewMSFreqOffset(const String& tableName, const String &tableDescName,
+MSFreqOffset::MSFreqOffset(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFreqOffset(String &, String &, TableOption) - "
-			 "table is not a valid NewMSFreqOffset"));
+	throw (AipsError("MSFreqOffset(String &, String &, TableOption) - "
+			 "table is not a valid MSFreqOffset"));
 }
 
-NewMSFreqOffset::NewMSFreqOffset(SetupNewTable &newTab, uInt nrrow,
+MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFreqOffset(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSFreqOffset"));
+	throw (AipsError("MSFreqOffset(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSFreqOffset"));
 }
 
-NewMSFreqOffset::NewMSFreqOffset(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSFreqOffset::MSFreqOffset(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFreqOffset(const Table &) - "
-			 "table is not a valid NewMSFreqOffset"));
+	throw (AipsError("MSFreqOffset(const Table &) - "
+			 "table is not a valid MSFreqOffset"));
 }
 
-NewMSFreqOffset::NewMSFreqOffset(const NewMSFreqOffset &other)
-    : NewMSTable<PredefinedColumns,
+MSFreqOffset::MSFreqOffset(const MSFreqOffset &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSFreqOffset(const NewMSFreqOffset &) - "
-			     "table is not a valid NewMSFreqOffset"));
+	    throw (AipsError("MSFreqOffset(const MSFreqOffset &) - "
+			     "table is not a valid MSFreqOffset"));
 }
 
-NewMSFreqOffset::~NewMSFreqOffset()
+MSFreqOffset::~MSFreqOffset()
 {
-// check to make sure that this NewMSFreqOffset is still valid
+// check to make sure that this MSFreqOffset is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSFreqOffset() - "
-			 "Table written is not a valid NewMSFreqOffset"));
+	throw (AipsError("~MSFreqOffset() - "
+			 "Table written is not a valid MSFreqOffset"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -112,17 +112,17 @@ NewMSFreqOffset::~NewMSFreqOffset()
 }
 
 
-NewMSFreqOffset& NewMSFreqOffset::operator=(const NewMSFreqOffset &other)
+MSFreqOffset& MSFreqOffset::operator=(const MSFreqOffset &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSFreqOffset::init()
+void MSFreqOffset::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -170,10 +170,10 @@ void NewMSFreqOffset::init()
 }
 
 	
-NewMSFreqOffset NewMSFreqOffset::referenceCopy(const String& newTableName, 
+MSFreqOffset MSFreqOffset::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return NewMSFreqOffset(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSFreqOffset(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

@@ -1,4 +1,4 @@
-//# NewMSFlagCmd.h: The NewMeasurementSet FLAG_CMD Table
+//# MSFlagCmd.h: The MeasurementSet FLAG_CMD Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSFLAGCMD_H)
-#define AIPS_NewMSFLAGCMD_H
+#if !defined(AIPS_MSFLAGCMD_H)
+#define AIPS_MSFLAGCMD_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSFlagCmdEnums.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MSFlagCmdEnums.h>
 
 // <summary> 
-// A Table intended to hold a NewMeasurementSet FLAG_CMD table.
+// A Table intended to hold a MeasurementSet FLAG_CMD table.
 // </summary>
 
 // <use visibility=export>
@@ -43,62 +43,62 @@
 
 // <prerequisite>
 // <ul>
-//   <li> <linkto class="NewMeasurementSet:description">NewMeasurementSet</linkto> 
-//   <li> <linkto class="NewMSTable">NewMSTable</linkto> 
+//   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto> 
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// NewMSFlagCmd stands for the NewMeasurementSet FLAG_CMD table.
+// MSFlagCmd stands for the MeasurementSet FLAG_CMD table.
 // </etymology>
 //
 // <synopsis> 
-// An NewMSFlagCmd is a table intended to hold the FLAG_CMD table for
-// the NewMeasurementSet. It has an identical set of member functions as
-// the main NewMeasurementSet class, except (currently) for the default
+// An MSFlagCmd is a table intended to hold the FLAG_CMD table for
+// the MeasurementSet. It has an identical set of member functions as
+// the main MeasurementSet class, except (currently) for the default
 // calibration members. For further info and examples see the 
-// NewMeasurementSet class.
+// MeasurementSet class.
 // </synopsis> 
 //
 // <example>
-// See the NewMeasurementSet for an example of how to access and use this class.
+// See the MeasurementSet for an example of how to access and use this class.
 // </example>
 //
 // <motivation>
-// It was found that subtables and the main table of the NewMeasurementSet have
+// It was found that subtables and the main table of the MeasurementSet have
 // a lot in common, therefore they derive their interface from the same
 // base class. Each subtable has its own class to keep the enum definitions
 // and conversion functions in separate scopes.
 // </motivation>
 //
 // <todo asof="1999/01/13">
-// see NewMeasurementSet.
+// see MeasurementSet.
 // </todo>
 
-class NewMSFlagCmd:public NewMSFlagCmdEnums,
-                public NewMSTable<NewMSFlagCmdEnums::PredefinedColumns,
-		               NewMSFlagCmdEnums::PredefinedKeywords>
+class MSFlagCmd:public MSFlagCmdEnums,
+                public MSTable<MSFlagCmdEnums::PredefinedColumns,
+		               MSFlagCmdEnums::PredefinedKeywords>
 {
 public:
 
-    // This constructs an empty NewMSFlagCmd.
-    NewMSFlagCmd ();
+    // This constructs an empty MSFlagCmd.
+    MSFlagCmd ();
 
     // These constructors mirror the Table ones with additional checking
-    // on validity (verifying that the NewMSFlagCmd will have the required columns
+    // on validity (verifying that the MSFlagCmd will have the required columns
     // and keywords)
-    // An exception is thrown if the constructed Table is not a valid NewMSFlagCmd
+    // An exception is thrown if the constructed Table is not a valid MSFlagCmd
     // <thrown>
     //   <li> AipsError
     // </thrown>
     // <group name=tableLikeConstructors>
-    NewMSFlagCmd (const String &tableName, TableOption = Table::Old);
-    NewMSFlagCmd (const String &tableName, const String &tableDescName,
+    MSFlagCmd (const String &tableName, TableOption = Table::Old);
+    MSFlagCmd (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    NewMSFlagCmd (SetupNewTable &newTab, uInt nrrow = 0,
+    MSFlagCmd (SetupNewTable &newTab, uInt nrrow = 0,
 		    Bool initialize = False);
-    NewMSFlagCmd (const Table &table);
-    NewMSFlagCmd (const NewMSFlagCmd &other);
+    MSFlagCmd (const Table &table);
+    MSFlagCmd (const MSFlagCmd &other);
     // </group>
 
     // As with tables, the destructor writes the table if necessary.
@@ -108,23 +108,23 @@ public:
     // <thrown>
     //   <li> AipsError
     // </thrown>
-    ~NewMSFlagCmd();
+    ~MSFlagCmd();
 
     //  Assignment operator, reference semantics
-    NewMSFlagCmd& operator=(const NewMSFlagCmd&);
+    MSFlagCmd& operator=(const MSFlagCmd&);
 
     // Make a special copy of this Table which references all columns from
     // this Table except those mentioned; those are empty and writable.
     // Each forwarded column has the same writable status as the underlying
     // column. The mentioned columns all use the AipsIO storage manager.
-    // This function is inherited from NewMSTable and unlikely to be of use,
-    // except in the class NewMeasurementSet (see comment there)..
-    NewMSFlagCmd referenceCopy(const String& newTableName,
+    // This function is inherited from MSTable and unlikely to be of use,
+    // except in the class MeasurementSet (see comment there)..
+    MSFlagCmd referenceCopy(const String& newTableName,
 			  const Block<String>& writableColumns) const;
 
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
-    // NewMSTableImpl.
+    // MSTableImpl.
     static void init();
 
 private:

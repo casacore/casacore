@@ -1,4 +1,4 @@
-//# NewMSFlagCmdEnums.h: Defs for the NewMS FLAG_CMD table
+//# MSFlagCmdEnums.h: Defs for the NewMS FLAG_CMD table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSFLAGCMDENUNewMS_H)
-#define AIPS_NewMSFLAGCMDENUNewMS_H
+#if !defined(AIPS_MSFLAGCMDENUMS_H)
+#define AIPS_MSFLAGCMDENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet FLAG_CMD table </summary>
+// <summary> Enums for the MeasurementSet FLAG_CMD table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet FLAG_CMD table
+// This class contains the enums for the MeasurementSet FLAG_CMD table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMSFlagCmd class.  These enumerations define the
+// used by the MSFlagCmd class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/13">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSFlagCmdEnums {
+class MSFlagCmdEnums {
 public:
     // The FLAG_CMD table colums with predefined meaning.
     enum PredefinedColumns {

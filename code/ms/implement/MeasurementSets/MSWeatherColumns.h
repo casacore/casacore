@@ -1,4 +1,4 @@
-//# NewMSWeatherColumns.h: provides easy access to NewMSWeather columns
+//# MSWeatherColumns.h: provides easy access to MSWeather columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSWEATHERCOLUMNS_H)
-#define AIPS_NEWMSWEATHERCOLUMNS_H
+#if !defined(AIPS_MSWEATHERCOLUMNS_H)
+#define AIPS_MSWEATHERCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MEpoch.h>
@@ -34,10 +34,10 @@
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 
-class NewMSWeather;
+class MSWeather;
 
 // <summary>
-// A class to provide easy read-only access to NewMSWeather columns
+// A class to provide easy read-only access to MSWeather columns
 // </summary>
 
 // <use visibility=export>
@@ -46,40 +46,40 @@ class NewMSWeather;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSWeather
+//   <li> MSWeather
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSWeatherColumns stands for Read-Only NewMeasurementSet Weather Table
+// ROMSWeatherColumns stands for Read-Only MeasurementSet Weather Table
 // columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSWeather
+// This class provides read-only access to the columns in the MSWeather
 // Table.  It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to worry about
 // getting those right. There is an access function for every predefined
 // column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=RONewMSColumns>
-// RONewMSColumns</linkto> for an example.
+// explicit declarations.  See <linkto class=ROMSColumns>
+// ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSWeatherColumns
+class ROMSWeatherColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSWeatherColumns(const NewMSWeather& msWeather);
+  ROMSWeatherColumns(const MSWeather& msWeather);
 
   // The destructor does nothing special
-  ~RONewMSWeatherColumns();
+  ~ROMSWeatherColumns();
 
-  // Is this object defined? (NewMSWeather table is optional)
+  // Is this object defined? (MSWeather table is optional)
   Bool isNull() const {return isNull_p;}
   
   // Access to columns
@@ -137,19 +137,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSWeatherColumns();
+  ROMSWeatherColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSWeather& msWeather);
+  void attach(const MSWeather& msWeather);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSWeatherColumns(const RONewMSWeatherColumns&);
-  RONewMSWeatherColumns& operator=(const RONewMSWeatherColumns&);
+  ROMSWeatherColumns(const ROMSWeatherColumns&);
+  ROMSWeatherColumns& operator=(const ROMSWeatherColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSWeather& msWeather);
+  void attachOptionalCols(const MSWeather& msWeather);
 
   //# Is the object not attached to a Table.
   Bool isNull_p;
@@ -193,7 +193,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSWeather columns
+// A class to provide easy read-write access to MSWeather columns
 // </summary>
 
 // <use visibility=export>
@@ -202,37 +202,37 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSWeather
+//   <li> MSWeather
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSWeatherColumns stands for NewMeasurementSet Weather Table columns.
+// MSWeatherColumns stands for MeasurementSet Weather Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSWeather Table,
+// This class provides access to the columns in the MSWeather Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSWeatherColumns: public RONewMSWeatherColumns
+class MSWeatherColumns: public ROMSWeatherColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSWeatherColumns(NewMSWeather& msWeather);
+  MSWeatherColumns(MSWeather& msWeather);
 
   // The destructor does nothing special
-  ~NewMSWeatherColumns();
+  ~MSWeatherColumns();
 
   // Read-write access to required columns
   // <group>
@@ -274,67 +274,67 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Int>& antennaId() const {
-    return RONewMSWeatherColumns::antennaId();}
+    return ROMSWeatherColumns::antennaId();}
   const ROScalarColumn<Double>& interval() const {
-    return RONewMSWeatherColumns::interval();}
+    return ROMSWeatherColumns::interval();}
   const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return RONewMSWeatherColumns::intervalQuant();}
+    return ROMSWeatherColumns::intervalQuant();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSWeatherColumns::time();}
+    return ROMSWeatherColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSWeatherColumns::timeQuant();}
+    return ROMSWeatherColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return RONewMSWeatherColumns::timeMeas();}
+    return ROMSWeatherColumns::timeMeas();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROScalarColumn<Float>& dewPoint() const {
-    return RONewMSWeatherColumns::dewPoint();}
+    return ROMSWeatherColumns::dewPoint();}
   const ROScalarQuantColumn<Float>& dewPointQuant() const {
-    return RONewMSWeatherColumns::dewPointQuant();}
+    return ROMSWeatherColumns::dewPointQuant();}
   const ROScalarColumn<Bool>& dewPointFlag() const {
-    return RONewMSWeatherColumns::dewPointFlag();}
+    return ROMSWeatherColumns::dewPointFlag();}
   const ROScalarColumn<Float>& H2O() const {
-    return RONewMSWeatherColumns::H2O();}
+    return ROMSWeatherColumns::H2O();}
   const ROScalarColumn<Bool>& H2OFlag() const {
-    return RONewMSWeatherColumns::H2OFlag();}
+    return ROMSWeatherColumns::H2OFlag();}
   const ROScalarQuantColumn<Float>& H2OQuant() const {
-    return RONewMSWeatherColumns::H2OQuant();}
+    return ROMSWeatherColumns::H2OQuant();}
   const ROScalarColumn<Float>& ionosElectron() const {
-    return RONewMSWeatherColumns::ionosElectron();}
+    return ROMSWeatherColumns::ionosElectron();}
   const ROScalarQuantColumn<Float>& ionosElectronQuant() const {
-    return RONewMSWeatherColumns::ionosElectronQuant();}
+    return ROMSWeatherColumns::ionosElectronQuant();}
   const ROScalarColumn<Bool>& ionosElectronFlag() const {
-    return RONewMSWeatherColumns::ionosElectronFlag();}
+    return ROMSWeatherColumns::ionosElectronFlag();}
   const ROScalarColumn<Float>& pressure() const {
-    return RONewMSWeatherColumns::pressure();}
+    return ROMSWeatherColumns::pressure();}
   const ROScalarQuantColumn<Float>& pressureQuant() const {
-    return RONewMSWeatherColumns::pressureQuant();}
+    return ROMSWeatherColumns::pressureQuant();}
   const ROScalarColumn<Bool>& pressureFlag() const {
-    return RONewMSWeatherColumns::pressureFlag();}
+    return ROMSWeatherColumns::pressureFlag();}
   const ROScalarColumn<Float>& relHumidity() const {
-    return RONewMSWeatherColumns::relHumidity();}
+    return ROMSWeatherColumns::relHumidity();}
   const ROScalarColumn<Bool>& relHumidityFlag() const {
-    return RONewMSWeatherColumns::relHumidityFlag();}
+    return ROMSWeatherColumns::relHumidityFlag();}
   const ROScalarColumn<Float>& temperature() const {
-    return RONewMSWeatherColumns::temperature();}
+    return ROMSWeatherColumns::temperature();}
   const ROScalarQuantColumn<Float>& temperatureQuant() const {
-    return RONewMSWeatherColumns::temperatureQuant();}
+    return ROMSWeatherColumns::temperatureQuant();}
   const ROScalarColumn<Bool>& temperatureFlag() const {
-    return RONewMSWeatherColumns::temperatureFlag();}
+    return ROMSWeatherColumns::temperatureFlag();}
   const ROScalarColumn<Float>& windDirection() const {
-    return RONewMSWeatherColumns::windDirection();}
+    return ROMSWeatherColumns::windDirection();}
   const ROScalarQuantColumn<Float>& windDirectionQuant() const {
-    return RONewMSWeatherColumns::windDirectionQuant();}
+    return ROMSWeatherColumns::windDirectionQuant();}
   const ROScalarColumn<Bool>& windDirectionFlag() const {
-    return RONewMSWeatherColumns::windDirectionFlag();}
+    return ROMSWeatherColumns::windDirectionFlag();}
   const ROScalarColumn<Float>& windSpeed() const {
-    return RONewMSWeatherColumns::windSpeed();}
+    return ROMSWeatherColumns::windSpeed();}
   const ROScalarQuantColumn<Float>& windSpeedQuant() const {
-    return RONewMSWeatherColumns::windSpeedQuant();}
+    return ROMSWeatherColumns::windSpeedQuant();}
   const ROScalarColumn<Bool>& windSpeedFlag() const {
-    return RONewMSWeatherColumns::windSpeedFlag();}
+    return ROMSWeatherColumns::windSpeedFlag();}
   // </group>
 
   // set the epoch type for the TIME column.
@@ -351,19 +351,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSWeatherColumns();
+  MSWeatherColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSWeather& msWeather);
+  void attach(MSWeather& msWeather);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSWeatherColumns(const NewMSWeatherColumns&);
-  NewMSWeatherColumns& operator=(const NewMSWeatherColumns&);
+  MSWeatherColumns(const MSWeatherColumns&);
+  MSWeatherColumns& operator=(const MSWeatherColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSWeather& msWeather);
+  void attachOptionalCols(MSWeather& msWeather);
   
   //# required columns
   ScalarColumn<Int> antennaId_p;

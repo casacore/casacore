@@ -1,4 +1,4 @@
-//# NewMSStateColumns.h: provides easy access to NewMSState columns
+//# MSStateColumns.h: provides easy access to MSState columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSSTATECOLUMNS_H)
-#define AIPS_NEWMSSTATECOLUMNS_H
+#if !defined(AIPS_MSSTATECOLUMNS_H)
+#define AIPS_MSSTATECOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/Utilities/String.h>
 
-class NewMSState;
+class MSState;
 
 // <summary>
-// A class to provide easy read-only access to NewMSState columns
+// A class to provide easy read-only access to MSState columns
 // </summary>
 
 // <use visibility=export>
@@ -45,36 +45,36 @@ class NewMSState;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSState
+//   <li> MSState
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSStateColumns stands for Read-Only NewMeasurementSet State Table columns.
+// ROMSStateColumns stands for Read-Only MeasurementSet State Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSState Table.
+// This class provides read-only access to the columns in the MSState Table.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
+// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSStateColumns
+class ROMSStateColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSStateColumns(const NewMSState& msState);
+  ROMSStateColumns(const MSState& msState);
 
   // The destructor does nothing special
-  ~RONewMSStateColumns();
+  ~ROMSStateColumns();
 
   // Access to required columns
   // <group>
@@ -95,16 +95,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSStateColumns();
+  ROMSStateColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSState& msState);
+  void attach(const MSState& msState);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSStateColumns(const RONewMSStateColumns&);
-  RONewMSStateColumns& operator=(const RONewMSStateColumns&);
+  ROMSStateColumns(const ROMSStateColumns&);
+  ROMSStateColumns& operator=(const ROMSStateColumns&);
 
   //# required columns
   ROScalarColumn<Double> cal_p;
@@ -121,7 +121,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSState columns
+// A class to provide easy read-write access to MSState columns
 // </summary>
 
 // <use visibility=export>
@@ -130,36 +130,36 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSState
+//   <li> MSState
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSStateColumns stands for NewMeasurementSet State Table columns.
+// MSStateColumns stands for MeasurementSet State Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSState Table,
+// This class provides access to the columns in the MSState Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSStateColumns: public RONewMSStateColumns
+class MSStateColumns: public ROMSStateColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSStateColumns(NewMSState& msState);
+  MSStateColumns(MSState& msState);
 
   // The destructor does nothing special
-  ~NewMSStateColumns();
+  ~MSStateColumns();
 
   // Read-write access to required columns
   // <group>
@@ -181,16 +181,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSStateColumns();
+  MSStateColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSState& msState);
+  void attach(MSState& msState);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSStateColumns(const NewMSStateColumns&);
-  NewMSStateColumns& operator=(const NewMSStateColumns&);
+  MSStateColumns(const MSStateColumns&);
+  MSStateColumns& operator=(const MSStateColumns&);
 
   //# required columns
   ScalarColumn<Double> cal_p;

@@ -1,4 +1,4 @@
-//# NewMSTable.cc:  the class that hold measurements from telescopes
+//# MSTable.cc:  the class that hold measurements from telescopes
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,39 +27,39 @@
 
 
 #if defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ < 91)
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
  
-#define NewMSTableStatics(ColEnum,KeyEnum) \
-SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::columnMap_p(""); \
-SimpleOrderedMap<Int, Int> NewMSTable<ColEnum,KeyEnum>::colDTypeMap_p(TpOther); \
-SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::colCommentMap_p(""); \
-SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::colUnitMap_p(""); \
+#define MSTableStatics(ColEnum,KeyEnum) \
+SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::columnMap_p(""); \
+SimpleOrderedMap<Int, Int> MSTable<ColEnum,KeyEnum>::colDTypeMap_p(TpOther); \
+SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::colCommentMap_p(""); \
+SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::colUnitMap_p(""); \
 SimpleOrderedMap<Int, String> \
-  NewMSTable<ColEnum,KeyEnum>::colMeasureTypeMap_p(""); \
-SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::keywordMap_p(""); \
-SimpleOrderedMap<Int, Int> NewMSTable<ColEnum,KeyEnum>::keyDTypeMap_p(TpOther); \
-SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::keyCommentMap_p(""); \
-SimpleCountedConstPtr<TableDesc> NewMSTable<ColEnum,KeyEnum>::requiredTD_p;
+  MSTable<ColEnum,KeyEnum>::colMeasureTypeMap_p(""); \
+SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::keywordMap_p(""); \
+SimpleOrderedMap<Int, Int> MSTable<ColEnum,KeyEnum>::keyDTypeMap_p(TpOther); \
+SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::keyCommentMap_p(""); \
+SimpleCountedConstPtr<TableDesc> MSTable<ColEnum,KeyEnum>::requiredTD_p;
  
-NewMSTableStatics(NewMS::PredefinedColumns,NewMS::PredefinedKeywords)
-NewMSTableStatics(NewMSAntenna::PredefinedColumns,NewMSAntenna::PredefinedKeywords)
-NewMSTableStatics(NewMSDataDescription::PredefinedColumns,NewMSDataDescription::PredefinedKeywords)
-NewMSTableStatics(NewMSFeed::PredefinedColumns,NewMSFeed::PredefinedKeywords)
-NewMSTableStatics(NewMSField::PredefinedColumns,NewMSField::PredefinedKeywords)
-NewMSTableStatics(NewMSFlagCmd::PredefinedColumns,NewMSFlagCmd::PredefinedKeywords)
-NewMSTableStatics(NewMSFreqOffset::PredefinedColumns,NewMSFreqOffset::PredefinedKeywords)
-NewMSTableStatics(NewMSHistory::PredefinedColumns,NewMSHistory::PredefinedKeywords)
-NewMSTableStatics(NewMSObservation::PredefinedColumns,NewMSObservation::PredefinedKeywords)
-NewMSTableStatics(NewMSPointing::PredefinedColumns,NewMSPointing::PredefinedKeywords)
-NewMSTableStatics(NewMSPolarization::PredefinedColumns,NewMSPolarization::PredefinedKeywords)
-NewMSTableStatics(NewMSProcessor::PredefinedColumns,NewMSProcessor::PredefinedKeywords)
-NewMSTableStatics(NewMSSource::PredefinedColumns,NewMSSource::PredefinedKeywords)
-NewMSTableStatics(NewMSSpectralWindow::PredefinedColumns,NewMSSpectralWindow::PredefinedKeywords)
-NewMSTableStatics(NewMSState::PredefinedColumns,NewMSState::PredefinedKeywords)
-NewMSTableStatics(NewMSSysCal::PredefinedColumns,NewMSSysCal::PredefinedKeywords)
-NewMSTableStatics(NewMSWeather::PredefinedColumns,NewMSWeather::PredefinedKeywords)
-NewMSTableStatics(NewMSDoppler::PredefinedColumns,NewMSDoppler::PredefinedKeywords)
+MSTableStatics(NewMS::PredefinedColumns,NewMS::PredefinedKeywords)
+MSTableStatics(MSAntenna::PredefinedColumns,MSAntenna::PredefinedKeywords)
+MSTableStatics(MSDataDescription::PredefinedColumns,MSDataDescription::PredefinedKeywords)
+MSTableStatics(MSFeed::PredefinedColumns,MSFeed::PredefinedKeywords)
+MSTableStatics(MSField::PredefinedColumns,MSField::PredefinedKeywords)
+MSTableStatics(MSFlagCmd::PredefinedColumns,MSFlagCmd::PredefinedKeywords)
+MSTableStatics(MSFreqOffset::PredefinedColumns,MSFreqOffset::PredefinedKeywords)
+MSTableStatics(MSHistory::PredefinedColumns,MSHistory::PredefinedKeywords)
+MSTableStatics(MSObservation::PredefinedColumns,MSObservation::PredefinedKeywords)
+MSTableStatics(MSPointing::PredefinedColumns,MSPointing::PredefinedKeywords)
+MSTableStatics(MSPolarization::PredefinedColumns,MSPolarization::PredefinedKeywords)
+MSTableStatics(MSProcessor::PredefinedColumns,MSProcessor::PredefinedKeywords)
+MSTableStatics(MSSource::PredefinedColumns,MSSource::PredefinedKeywords)
+MSTableStatics(MSSpectralWindow::PredefinedColumns,MSSpectralWindow::PredefinedKeywords)
+MSTableStatics(MSState::PredefinedColumns,MSState::PredefinedKeywords)
+MSTableStatics(MSSysCal::PredefinedColumns,MSSysCal::PredefinedKeywords)
+MSTableStatics(MSWeather::PredefinedColumns,MSWeather::PredefinedKeywords)
+MSTableStatics(MSDoppler::PredefinedColumns,MSDoppler::PredefinedKeywords)
 
 
 #endif

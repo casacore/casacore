@@ -1,4 +1,4 @@
-//# NewMSColumns.h: provides easy access to NewMeasurementSet columns
+//# MSColumns.h: provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,35 +25,35 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSCOLUMNS_H)
-#define AIPS_NEWMSCOLUMNS_H
+#if !defined(AIPS_MSCOLUMNS_H)
+#define AIPS_MSCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MEpoch.h>
-#include <aips/MeasurementSets/NewMSAntennaColumns.h>
-#include <aips/MeasurementSets/NewMSDataDescColumns.h>
-#include <aips/MeasurementSets/NewMSDopplerColumns.h>
-#include <aips/MeasurementSets/NewMSFeedColumns.h>
-#include <aips/MeasurementSets/NewMSFieldColumns.h>
-#include <aips/MeasurementSets/NewMSFlagCmdColumns.h>
-#include <aips/MeasurementSets/NewMSFreqOffColumns.h>
-#include <aips/MeasurementSets/NewMSHistoryColumns.h>
-#include <aips/MeasurementSets/NewMSMainColumns.h>
-#include <aips/MeasurementSets/NewMSObsColumns.h>
-#include <aips/MeasurementSets/NewMSPointingColumns.h>
-#include <aips/MeasurementSets/NewMSPolColumns.h>
-#include <aips/MeasurementSets/NewMSProcessorColumns.h>
-#include <aips/MeasurementSets/NewMSSourceColumns.h>
-#include <aips/MeasurementSets/NewMSSpWindowColumns.h>
-#include <aips/MeasurementSets/NewMSStateColumns.h>
-#include <aips/MeasurementSets/NewMSSysCalColumns.h>
-#include <aips/MeasurementSets/NewMSWeatherColumns.h>
+#include <aips/MeasurementSets/MSAntennaColumns.h>
+#include <aips/MeasurementSets/MSDataDescColumns.h>
+#include <aips/MeasurementSets/MSDopplerColumns.h>
+#include <aips/MeasurementSets/MSFeedColumns.h>
+#include <aips/MeasurementSets/MSFieldColumns.h>
+#include <aips/MeasurementSets/MSFlagCmdColumns.h>
+#include <aips/MeasurementSets/MSFreqOffColumns.h>
+#include <aips/MeasurementSets/MSHistoryColumns.h>
+#include <aips/MeasurementSets/MSMainColumns.h>
+#include <aips/MeasurementSets/MSObsColumns.h>
+#include <aips/MeasurementSets/MSPointingColumns.h>
+#include <aips/MeasurementSets/MSPolColumns.h>
+#include <aips/MeasurementSets/MSProcessorColumns.h>
+#include <aips/MeasurementSets/MSSourceColumns.h>
+#include <aips/MeasurementSets/MSSpWindowColumns.h>
+#include <aips/MeasurementSets/MSStateColumns.h>
+#include <aips/MeasurementSets/MSSysCalColumns.h>
+#include <aips/MeasurementSets/MSWeatherColumns.h>
 
-class NewMeasurementSet;
+class MeasurementSet;
 
 // <summary>
-// A class to provide easy read-only access to NewMeasurementSet columns
+// A class to provide easy read-only access to MeasurementSet columns
 // </summary>
 
 // <use visibility=export>
@@ -62,17 +62,17 @@ class NewMeasurementSet;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMeasurementSet
+//   <li> MeasurementSet
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSColumns stands for Read-Only NewMeasurementSet Table columns.
+// ROMSColumns stands for Read-Only MeasurementSet Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMeasurementSet.
+// This class provides read-only access to the columns in the MeasurementSet.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
@@ -83,8 +83,8 @@ class NewMeasurementSet;
 // <example>
 // <srcblock>
 // // use as follows
-// NewMeasurementSet ms("myNewMS"); 
-// RONewMSColumns msc(ms);
+// MeasurementSet ms("myNewMS"); 
+// ROMSColumns msc(ms);
 // // show data from row 5
 // cout << msc.data()(5);
 // // show name of antenna on row 3 in antenna table
@@ -93,73 +93,73 @@ class NewMeasurementSet;
 // </example>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 //
 // <todo asof="1997/02/01">
 //   <li> We might decide to merge all the NewMSColumn classes with the
-//        corresponding NewMeasurementSet classes.
+//        corresponding MeasurementSet classes.
 // </todo>
 
-class RONewMSColumns: public RONewMSMainColumns
+class ROMSColumns: public ROMSMainColumns
 {
 public:
   // Create a columns object that accesses the data in the specified MS
-  RONewMSColumns(const NewMeasurementSet& ms);
+  ROMSColumns(const MeasurementSet& ms);
 
   // The destructor does nothing special
-  ~RONewMSColumns();
+  ~ROMSColumns();
 
   // Access to required subtables
   // <group>
-  const RONewMSAntennaColumns& antenna() const {return antenna_p;}
-  const RONewMSDataDescColumns& dataDescription() const {return dataDesc_p;}
-  const RONewMSFeedColumns& feed() const {return feed_p;}
-  const RONewMSFieldColumns& field() const {return field_p;}
-  const RONewMSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
-  const RONewMSHistoryColumns& history() const {return history_p;}
-  const RONewMSObservationColumns& observation() const {return observation_p;}
-  const RONewMSPointingColumns& pointing() const {return pointing_p;}
-  const RONewMSPolarizationColumns& polarization() const {
+  const ROMSAntennaColumns& antenna() const {return antenna_p;}
+  const ROMSDataDescColumns& dataDescription() const {return dataDesc_p;}
+  const ROMSFeedColumns& feed() const {return feed_p;}
+  const ROMSFieldColumns& field() const {return field_p;}
+  const ROMSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
+  const ROMSHistoryColumns& history() const {return history_p;}
+  const ROMSObservationColumns& observation() const {return observation_p;}
+  const ROMSPointingColumns& pointing() const {return pointing_p;}
+  const ROMSPolarizationColumns& polarization() const {
     return polarization_p;}
-  const RONewMSProcessorColumns& processor() const {return processor_p;}
-  const RONewMSSpWindowColumns& spectralWindow() const {
+  const ROMSProcessorColumns& processor() const {return processor_p;}
+  const ROMSSpWindowColumns& spectralWindow() const {
     return spectralWindow_p;}
-  const RONewMSStateColumns& state() const {return state_p;}
+  const ROMSStateColumns& state() const {return state_p;}
   // </group>
 
   // Access to optional subtables
   // <group>
-  const RONewMSDopplerColumns& doppler() const {return doppler_p;}
-  const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
-  const RONewMSSourceColumns& source() const {return source_p;}
-  const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
-  const RONewMSWeatherColumns& weather() const {return weather_p;}
+  const ROMSDopplerColumns& doppler() const {return doppler_p;}
+  const ROMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
+  const ROMSSourceColumns& source() const {return source_p;}
+  const ROMSSysCalColumns& sysCal() const {return sysCal_p;}
+  const ROMSWeatherColumns& weather() const {return weather_p;}
   // </group>
 
 private:
   // Access to subtables
-  RONewMSAntennaColumns antenna_p;
-  RONewMSDataDescColumns dataDesc_p;
-  RONewMSDopplerColumns doppler_p; //optional
-  RONewMSFeedColumns feed_p;
-  RONewMSFieldColumns field_p;
-  RONewMSFlagCmdColumns flagCmd_p;
-  RONewMSFreqOffsetColumns freqOffset_p; //optional
-  RONewMSHistoryColumns history_p;
-  RONewMSObservationColumns observation_p;
-  RONewMSPointingColumns pointing_p;
-  RONewMSPolarizationColumns polarization_p;
-  RONewMSProcessorColumns processor_p;
-  RONewMSSourceColumns source_p; // optional
-  RONewMSSpWindowColumns spectralWindow_p;
-  RONewMSStateColumns state_p;
-  RONewMSSysCalColumns sysCal_p; //optional
-  RONewMSWeatherColumns weather_p; //optional
+  ROMSAntennaColumns antenna_p;
+  ROMSDataDescColumns dataDesc_p;
+  ROMSDopplerColumns doppler_p; //optional
+  ROMSFeedColumns feed_p;
+  ROMSFieldColumns field_p;
+  ROMSFlagCmdColumns flagCmd_p;
+  ROMSFreqOffsetColumns freqOffset_p; //optional
+  ROMSHistoryColumns history_p;
+  ROMSObservationColumns observation_p;
+  ROMSPointingColumns pointing_p;
+  ROMSPolarizationColumns polarization_p;
+  ROMSProcessorColumns processor_p;
+  ROMSSourceColumns source_p; // optional
+  ROMSSpWindowColumns spectralWindow_p;
+  ROMSStateColumns state_p;
+  ROMSSysCalColumns sysCal_p; //optional
+  ROMSWeatherColumns weather_p; //optional
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMeasurementSet columns
+// A class to provide easy read-write access to MeasurementSet columns
 // </summary>
 
 // <use visibility=export>
@@ -168,18 +168,18 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMeasurementSet
+//   <li> MeasurementSet
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSColumns stands for NewMeasurementSet Table columns.
+// MSColumns stands for MeasurementSet Table columns.
 // </etymology>
 //
 // <synopsis>
 // This class provides access to all the subtables and direct access to all the
-// columns in the NewMeasurementSet.  It does the declaration of all the Scalar
+// columns in the MeasurementSet.  It does the declaration of all the Scalar
 // and ArrayColumns with the correct types, so the application programmer
 // doesn't have to worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
@@ -189,8 +189,8 @@ private:
 // <example>
 // <srcblock>
 // // use as follows
-// NewMeasurementSet ms("myNewMS",Table::Update); 
-// NewMSColumns msc(ms);
+// MeasurementSet ms("myNewMS",Table::Update); 
+// MSColumns msc(ms);
 // // show data from row 5
 // cout << msc.data()(5);
 // // change name of antenna on row 3 in antenna table
@@ -208,68 +208,68 @@ private:
 // </motivation>
 //
 // <todo asof="1997/02/01">
-//   <li> We might decide to merge this class with the NewMeasurementSet
+//   <li> We might decide to merge this class with the MeasurementSet
 // </todo>
 
-class NewMSColumns: public NewMSMainColumns
+class MSColumns: public MSMainColumns
 {
 public:
   // Create a columns object that accesses the data in the specified MS
-  NewMSColumns(NewMeasurementSet& ms);
+  MSColumns(MeasurementSet& ms);
 
   // The destructor does nothing special
-  ~NewMSColumns();
+  ~MSColumns();
 
   // Read-write access to required subtables
   // <group>
-  NewMSAntennaColumns& antenna() {return antenna_p;}
-  NewMSDataDescColumns& dataDescription() {return dataDesc_p;}
-  NewMSFeedColumns& feed() {return feed_p;}
-  NewMSFieldColumns& field() {return field_p;}
-  NewMSFlagCmdColumns& flagCmd() {return flagCmd_p;}
-  NewMSHistoryColumns& history() {return history_p;}
-  NewMSObservationColumns& observation() {return observation_p;}
-  NewMSPointingColumns& pointing() {return pointing_p;}
-  NewMSPolarizationColumns& polarization() {return polarization_p;}
-  NewMSProcessorColumns& processor() {return processor_p;}
-  NewMSSpWindowColumns& spectralWindow() {return spectralWindow_p;}
-  NewMSStateColumns& state() {return state_p;}
+  MSAntennaColumns& antenna() {return antenna_p;}
+  MSDataDescColumns& dataDescription() {return dataDesc_p;}
+  MSFeedColumns& feed() {return feed_p;}
+  MSFieldColumns& field() {return field_p;}
+  MSFlagCmdColumns& flagCmd() {return flagCmd_p;}
+  MSHistoryColumns& history() {return history_p;}
+  MSObservationColumns& observation() {return observation_p;}
+  MSPointingColumns& pointing() {return pointing_p;}
+  MSPolarizationColumns& polarization() {return polarization_p;}
+  MSProcessorColumns& processor() {return processor_p;}
+  MSSpWindowColumns& spectralWindow() {return spectralWindow_p;}
+  MSStateColumns& state() {return state_p;}
   // </group>
 
   // Read-write access to optional subtables
   // <group>
-  NewMSDopplerColumns& doppler() {return doppler_p;}
-  NewMSFreqOffsetColumns& freqOffset() {return freqOffset_p;}
-  NewMSSourceColumns& source() {return source_p;}
-  NewMSSysCalColumns& sysCal() {return sysCal_p;}
-  NewMSWeatherColumns& weather() {return weather_p;}
+  MSDopplerColumns& doppler() {return doppler_p;}
+  MSFreqOffsetColumns& freqOffset() {return freqOffset_p;}
+  MSSourceColumns& source() {return source_p;}
+  MSSysCalColumns& sysCal() {return sysCal_p;}
+  MSWeatherColumns& weather() {return weather_p;}
   // </group>
 
   // Read-only access to required subtables
   // <group>
-  const RONewMSAntennaColumns& antenna() const {return antenna_p;}
-  const RONewMSDataDescColumns& dataDescription() const {return dataDesc_p;}
-  const RONewMSFeedColumns& feed() const {return feed_p;}
-  const RONewMSFieldColumns& field() const {return field_p;}
-  const RONewMSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
-  const RONewMSHistoryColumns& history() const {return history_p;}
-  const RONewMSObservationColumns& observation() const {return observation_p;}
-  const RONewMSPointingColumns& pointing() const {return pointing_p;}
-  const RONewMSPolarizationColumns& polarization() const {
+  const ROMSAntennaColumns& antenna() const {return antenna_p;}
+  const ROMSDataDescColumns& dataDescription() const {return dataDesc_p;}
+  const ROMSFeedColumns& feed() const {return feed_p;}
+  const ROMSFieldColumns& field() const {return field_p;}
+  const ROMSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
+  const ROMSHistoryColumns& history() const {return history_p;}
+  const ROMSObservationColumns& observation() const {return observation_p;}
+  const ROMSPointingColumns& pointing() const {return pointing_p;}
+  const ROMSPolarizationColumns& polarization() const {
     return polarization_p;}
-  const RONewMSProcessorColumns& processor() const {return processor_p;}
-  const RONewMSSourceColumns& source() const {return source_p;}
-  const RONewMSSpWindowColumns& spectralWindow() const {
+  const ROMSProcessorColumns& processor() const {return processor_p;}
+  const ROMSSourceColumns& source() const {return source_p;}
+  const ROMSSpWindowColumns& spectralWindow() const {
     return spectralWindow_p;}
-  const RONewMSStateColumns& state() const {return state_p;}
+  const ROMSStateColumns& state() const {return state_p;}
   // </group>
 
   // Read-only access to optional subtables
   // <group>
-  const RONewMSDopplerColumns& doppler() const {return doppler_p;}
-  const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
-  const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
-  const RONewMSWeatherColumns& weather() const {return weather_p;}
+  const ROMSDopplerColumns& doppler() const {return doppler_p;}
+  const ROMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
+  const ROMSSysCalColumns& sysCal() const {return sysCal_p;}
+  const ROMSWeatherColumns& weather() const {return weather_p;}
   // </group>
 
   // set the EPOCH reference type in all EPOCH columns in the NewMS. Note that
@@ -290,23 +290,23 @@ public:
 
 private:
   // Access to subtables
-  NewMSAntennaColumns antenna_p;
-  NewMSDataDescColumns dataDesc_p;
-  NewMSDopplerColumns doppler_p; //optional
-  NewMSFeedColumns feed_p;
-  NewMSFieldColumns field_p;
-  NewMSFlagCmdColumns flagCmd_p;
-  NewMSFreqOffsetColumns freqOffset_p; //optional
-  NewMSHistoryColumns history_p;
-  NewMSObservationColumns observation_p;
-  NewMSPointingColumns pointing_p;
-  NewMSPolarizationColumns polarization_p;
-  NewMSProcessorColumns processor_p;
-  NewMSSourceColumns source_p; // optional
-  NewMSSpWindowColumns spectralWindow_p;
-  NewMSStateColumns state_p;
-  NewMSSysCalColumns sysCal_p; //optional
-  NewMSWeatherColumns weather_p; //optional
+  MSAntennaColumns antenna_p;
+  MSDataDescColumns dataDesc_p;
+  MSDopplerColumns doppler_p; //optional
+  MSFeedColumns feed_p;
+  MSFieldColumns field_p;
+  MSFlagCmdColumns flagCmd_p;
+  MSFreqOffsetColumns freqOffset_p; //optional
+  MSHistoryColumns history_p;
+  MSObservationColumns observation_p;
+  MSPointingColumns pointing_p;
+  MSPolarizationColumns polarization_p;
+  MSProcessorColumns processor_p;
+  MSSourceColumns source_p; // optional
+  MSSpWindowColumns spectralWindow_p;
+  MSStateColumns state_p;
+  MSSysCalColumns sysCal_p; //optional
+  MSWeatherColumns weather_p; //optional
 };
 #endif
 

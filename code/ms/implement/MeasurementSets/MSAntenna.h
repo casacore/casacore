@@ -1,4 +1,4 @@
-//# NewMSAntenna.h: The NewMeasurementSet ANTENNA Table
+//# MSAntenna.h: The MeasurementSet ANTENNA Table
 //# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSANTENNA_H)
-#define AIPS_NewMSANTENNA_H
+#if !defined(AIPS_MSANTENNA_H)
+#define AIPS_MSANTENNA_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSAntennaEnums.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MSAntennaEnums.h>
 
 // <summary> 
-// A Table intended to hold a NewMeasurementSet ANTENNA table.
+// A Table intended to hold a MeasurementSet ANTENNA table.
 // </summary>
 
 // <use visibility=export>
@@ -43,62 +43,62 @@
 
 // <prerequisite>
 // <ul>
-//   <li> <linkto class="NewMeasurementSet:description">NewMeasurementSet</linkto> 
-//   <li> <linkto class="NewMSTable">NewMSTable</linkto> 
+//   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto> 
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// NewMSAntenna stands for the NewMeasurementSet Antenna table.
+// MSAntenna stands for the MeasurementSet Antenna table.
 // </etymology>
 //
 // <synopsis> 
-// An NewMSAntenna is a table intended to hold the ANTENNA table for
-// the NewMeasurementSet. It has an identical set of member functions as
-// the main NewMeasurementSet class, except (currently) for the default
+// An MSAntenna is a table intended to hold the ANTENNA table for
+// the MeasurementSet. It has an identical set of member functions as
+// the main MeasurementSet class, except (currently) for the default
 // calibration members. For further info and examples see the 
-// NewMeasurementSet class.
+// MeasurementSet class.
 // </synopsis> 
 //
 // <example>
-// See the NewMeasurementSet for an example of how to access and use this class.
+// See the MeasurementSet for an example of how to access and use this class.
 // </example>
 //
 // <motivation>
-// It was found that subtables and the main table of the NewMeasurementSet have
+// It was found that subtables and the main table of the MeasurementSet have
 // a lot in common, therefore they derive their interface from the same
 // base class. Each subtable has its own class to keep the enum definitions
 // and conversion functions in separate scopes.
 // </motivation>
 //
 // <todo asof="1996/2/22">
-// see NewMeasurementSet.
+// see MeasurementSet.
 // </todo>
 
 
-class NewMSAntenna:public NewMSAntennaEnums,
-                public NewMSTable<NewMSAntennaEnums::PredefinedColumns,
-		               NewMSAntennaEnums::PredefinedKeywords>
+class MSAntenna:public MSAntennaEnums,
+                public MSTable<MSAntennaEnums::PredefinedColumns,
+		               MSAntennaEnums::PredefinedKeywords>
 {
 public:
-    // This constructs an empty NewMSAntenna
-    NewMSAntenna ();
+    // This constructs an empty MSAntenna
+    MSAntenna ();
     //
     // These constructors mirror the Table ones with additional checking
-    // on validity (verifying that the NewMSAntenna will have the required columns
+    // on validity (verifying that the MSAntenna will have the required columns
     // and keywords).
-    // An exception is thrown if the constructed Table is not a valid NewMSAntenna
+    // An exception is thrown if the constructed Table is not a valid MSAntenna
     // <thrown>
     //   <li> AipsError
     // </thrown>
     // <group name=tableLikeConstructors>
-    NewMSAntenna (const String &tableName, TableOption = Table::Old);
-    NewMSAntenna (const String &tableName, const String &tableDescName,
+    MSAntenna (const String &tableName, TableOption = Table::Old);
+    MSAntenna (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    NewMSAntenna (SetupNewTable &newTab, uInt nrrow = 0,
+    MSAntenna (SetupNewTable &newTab, uInt nrrow = 0,
 		    Bool initialize = False);
-    NewMSAntenna (const Table &table);
-    NewMSAntenna (const NewMSAntenna &other);
+    MSAntenna (const Table &table);
+    MSAntenna (const MSAntenna &other);
     // </group>
 
     // As with tables, the destructor writes the table if necessary.
@@ -108,23 +108,23 @@ public:
     // <thrown>
     //   <li> AipsError
     // </thrown>
-    ~NewMSAntenna();
+    ~MSAntenna();
 
     //  Assignment operator, reference semantics
-    NewMSAntenna& operator=(const NewMSAntenna&);
+    MSAntenna& operator=(const MSAntenna&);
 
     // Make a special copy of this Table which references all columns from
     // this Table except those mentioned; those are empty and writable.
     // Each forwarded column has the same writable status as the underlying
     // column. The mentioned columns all use the AipsIO storage manager.
-    // This function is inherited from NewMSTable and unlikely to be of use,
-    // except in the class NewMeasurementSet (see comment there)..
-    NewMSAntenna referenceCopy(const String& newTableName,
+    // This function is inherited from MSTable and unlikely to be of use,
+    // except in the class MeasurementSet (see comment there)..
+    MSAntenna referenceCopy(const String& newTableName,
 			    const Block<String>& writableColumns) const;
 
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
-    // NewMSTableImpl.
+    // MSTableImpl.
     static void init();
 
 private:

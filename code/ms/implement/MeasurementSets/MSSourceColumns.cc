@@ -1,4 +1,4 @@
-//# NewMSSourceColumns.cc:  provides easy access to NewMeasurementSet columns
+//# MSSourceColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSSourceColumns.h>
-#include <aips/MeasurementSets/NewMSSource.h>
+#include <aips/MeasurementSets/MSSourceColumns.h>
+#include <aips/MeasurementSets/MSSource.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MRadialVelocity.h>
 
-RONewMSSourceColumns::RONewMSSourceColumns(const NewMSSource& msSource):
+ROMSSourceColumns::ROMSSourceColumns(const MSSource& msSource):
   isNull_p(True),
   calibrationGroup_p(),
   code_p(),
@@ -66,9 +66,9 @@ RONewMSSourceColumns::RONewMSSourceColumns(const NewMSSource& msSource):
   attach(msSource);
 }
 
-RONewMSSourceColumns::~RONewMSSourceColumns() {}
+ROMSSourceColumns::~ROMSSourceColumns() {}
 
-RONewMSSourceColumns::RONewMSSourceColumns():
+ROMSSourceColumns::ROMSSourceColumns():
   isNull_p(True),
   calibrationGroup_p(),
   code_p(),
@@ -101,74 +101,74 @@ RONewMSSourceColumns::RONewMSSourceColumns():
 {
 }
 
-void RONewMSSourceColumns::attach(const NewMSSource& msSource)
+void ROMSSourceColumns::attach(const MSSource& msSource)
 {
   isNull_p = msSource.isNull();
   if (!isNull()) {
-    calibrationGroup_p.attach(msSource, NewMSSource::
-			      columnName(NewMSSource::CALIBRATION_GROUP));
-    code_p.attach(msSource, NewMSSource::columnName(NewMSSource::CODE));
-    direction_p.attach(msSource, NewMSSource::
-		       columnName(NewMSSource::DIRECTION));
-    interval_p.attach(msSource, NewMSSource::
-		      columnName(NewMSSource::INTERVAL));
-    name_p.attach(msSource, NewMSSource::columnName(NewMSSource::NAME));
-    numLines_p.attach(msSource, NewMSSource::
-		      columnName(NewMSSource::NUM_LINES));
-    properMotion_p.attach(msSource, NewMSSource::
-			  columnName(NewMSSource::PROPER_MOTION));
-    sourceId_p.attach(msSource, NewMSSource::
-		      columnName(NewMSSource::SOURCE_ID));
-    spectralWindowId_p.attach(msSource, NewMSSource::
-			      columnName(NewMSSource::SPECTRAL_WINDOW_ID));
-    time_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-    directionMeas_p.attach(msSource, NewMSSource::
-			   columnName(NewMSSource::DIRECTION));
-    timeMeas_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-    directionQuant_p.attach(msSource, NewMSSource::
-			    columnName(NewMSSource::DIRECTION));
-    intervalQuant_p.attach(msSource, NewMSSource::
-			   columnName(NewMSSource::INTERVAL));
-    properMotionQuant_p.attach(msSource, NewMSSource::
-			       columnName(NewMSSource::PROPER_MOTION));
-    timeQuant_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
+    calibrationGroup_p.attach(msSource, MSSource::
+			      columnName(MSSource::CALIBRATION_GROUP));
+    code_p.attach(msSource, MSSource::columnName(MSSource::CODE));
+    direction_p.attach(msSource, MSSource::
+		       columnName(MSSource::DIRECTION));
+    interval_p.attach(msSource, MSSource::
+		      columnName(MSSource::INTERVAL));
+    name_p.attach(msSource, MSSource::columnName(MSSource::NAME));
+    numLines_p.attach(msSource, MSSource::
+		      columnName(MSSource::NUM_LINES));
+    properMotion_p.attach(msSource, MSSource::
+			  columnName(MSSource::PROPER_MOTION));
+    sourceId_p.attach(msSource, MSSource::
+		      columnName(MSSource::SOURCE_ID));
+    spectralWindowId_p.attach(msSource, MSSource::
+			      columnName(MSSource::SPECTRAL_WINDOW_ID));
+    time_p.attach(msSource, MSSource::columnName(MSSource::TIME));
+    directionMeas_p.attach(msSource, MSSource::
+			   columnName(MSSource::DIRECTION));
+    timeMeas_p.attach(msSource, MSSource::columnName(MSSource::TIME));
+    directionQuant_p.attach(msSource, MSSource::
+			    columnName(MSSource::DIRECTION));
+    intervalQuant_p.attach(msSource, MSSource::
+			   columnName(MSSource::INTERVAL));
+    properMotionQuant_p.attach(msSource, MSSource::
+			       columnName(MSSource::PROPER_MOTION));
+    timeQuant_p.attach(msSource, MSSource::columnName(MSSource::TIME));
     attachOptionalCols(msSource);
   }
 }
 
-void RONewMSSourceColumns::attachOptionalCols(const NewMSSource& msSource)
+void ROMSSourceColumns::attachOptionalCols(const MSSource& msSource)
 {
   const ColumnDescSet& cds = msSource.tableDesc().columnDescSet();
-  const String& position = NewMSSource::columnName(NewMSSource::POSITION);
+  const String& position = MSSource::columnName(MSSource::POSITION);
   if (cds.isDefined(position)) {
     position_p.attach(msSource, position);
     positionMeas_p.attach(msSource, position);
     positionQuant_p.attach(msSource, position);
   }
-  const String& pulsarId = NewMSSource::columnName(NewMSSource::PULSAR_ID);
+  const String& pulsarId = MSSource::columnName(MSSource::PULSAR_ID);
   if (cds.isDefined(pulsarId)) pulsarId_p.attach(msSource, pulsarId);
   const String& restFrequency = 
-    NewMSSource::columnName(NewMSSource::REST_FREQUENCY);
+    MSSource::columnName(MSSource::REST_FREQUENCY);
   if (cds.isDefined(restFrequency)) {
     restFrequency_p.attach(msSource, restFrequency);
     restFrequencyMeas_p.attach(msSource, restFrequency);
     restFrequencyQuant_p.attach(msSource, restFrequency);
   }
   const String& sourceModel = 
-    NewMSSource::columnName(NewMSSource::SOURCE_MODEL);
+    MSSource::columnName(MSSource::SOURCE_MODEL);
   if (cds.isDefined(sourceModel)) sourceModel_p.attach(msSource, sourceModel);
-  const String& sysvel = NewMSSource::columnName(NewMSSource::SYSVEL);
+  const String& sysvel = MSSource::columnName(MSSource::SYSVEL);
   if (cds.isDefined(sysvel)) {
     sysvel_p.attach(msSource, sysvel);
     sysvelMeas_p.attach(msSource, sysvel);
     sysvelQuant_p.attach(msSource, sysvel);
   }
-  const String& transition = NewMSSource::columnName(NewMSSource::TRANSITION);
+  const String& transition = MSSource::columnName(MSSource::TRANSITION);
   if (cds.isDefined(transition)) transition_p.attach(msSource, transition);
 }
 
-NewMSSourceColumns::NewMSSourceColumns(NewMSSource& msSource):
-  RONewMSSourceColumns(),
+MSSourceColumns::MSSourceColumns(MSSource& msSource):
+  ROMSSourceColumns(),
   calibrationGroup_p(),
   code_p(),
   direction_p(),
@@ -200,10 +200,10 @@ NewMSSourceColumns::NewMSSourceColumns(NewMSSource& msSource):
   attach(msSource);
 }
 
-NewMSSourceColumns::~NewMSSourceColumns() {}
+MSSourceColumns::~MSSourceColumns() {}
 
-NewMSSourceColumns::NewMSSourceColumns():
-  RONewMSSourceColumns(),
+MSSourceColumns::MSSourceColumns():
+  ROMSSourceColumns(),
   calibrationGroup_p(),
   code_p(),
   direction_p(),
@@ -235,100 +235,100 @@ NewMSSourceColumns::NewMSSourceColumns():
 {
 }
 
-void NewMSSourceColumns::attach(NewMSSource& msSource)
+void MSSourceColumns::attach(MSSource& msSource)
 {
-  RONewMSSourceColumns::attach(msSource);
+  ROMSSourceColumns::attach(msSource);
   if (!isNull()) {
-    calibrationGroup_p.attach(msSource, NewMSSource::
-			      columnName(NewMSSource::CALIBRATION_GROUP));
-    code_p.attach(msSource, NewMSSource::columnName(NewMSSource::CODE));
-    direction_p.attach(msSource, NewMSSource::
-		       columnName(NewMSSource::DIRECTION));
-    interval_p.attach(msSource, NewMSSource::
-		      columnName(NewMSSource::INTERVAL));
-    name_p.attach(msSource, NewMSSource::columnName(NewMSSource::NAME));
-    numLines_p.attach(msSource, NewMSSource::
-		      columnName(NewMSSource::NUM_LINES));
-    properMotion_p.attach(msSource, NewMSSource::
-			  columnName(NewMSSource::PROPER_MOTION));
-    sourceId_p.attach(msSource, NewMSSource::
-		      columnName(NewMSSource::SOURCE_ID));
-    spectralWindowId_p.attach(msSource, NewMSSource::
-			      columnName(NewMSSource::SPECTRAL_WINDOW_ID));
-    time_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-    directionMeas_p.attach(msSource, NewMSSource::
-			   columnName(NewMSSource::DIRECTION));
-    timeMeas_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-    directionQuant_p.attach(msSource, NewMSSource::
-			    columnName(NewMSSource::DIRECTION));
-    intervalQuant_p.attach(msSource, NewMSSource::
-			   columnName(NewMSSource::INTERVAL));
-    properMotionQuant_p.attach(msSource, NewMSSource::
-			       columnName(NewMSSource::PROPER_MOTION));
-    timeQuant_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
+    calibrationGroup_p.attach(msSource, MSSource::
+			      columnName(MSSource::CALIBRATION_GROUP));
+    code_p.attach(msSource, MSSource::columnName(MSSource::CODE));
+    direction_p.attach(msSource, MSSource::
+		       columnName(MSSource::DIRECTION));
+    interval_p.attach(msSource, MSSource::
+		      columnName(MSSource::INTERVAL));
+    name_p.attach(msSource, MSSource::columnName(MSSource::NAME));
+    numLines_p.attach(msSource, MSSource::
+		      columnName(MSSource::NUM_LINES));
+    properMotion_p.attach(msSource, MSSource::
+			  columnName(MSSource::PROPER_MOTION));
+    sourceId_p.attach(msSource, MSSource::
+		      columnName(MSSource::SOURCE_ID));
+    spectralWindowId_p.attach(msSource, MSSource::
+			      columnName(MSSource::SPECTRAL_WINDOW_ID));
+    time_p.attach(msSource, MSSource::columnName(MSSource::TIME));
+    directionMeas_p.attach(msSource, MSSource::
+			   columnName(MSSource::DIRECTION));
+    timeMeas_p.attach(msSource, MSSource::columnName(MSSource::TIME));
+    directionQuant_p.attach(msSource, MSSource::
+			    columnName(MSSource::DIRECTION));
+    intervalQuant_p.attach(msSource, MSSource::
+			   columnName(MSSource::INTERVAL));
+    properMotionQuant_p.attach(msSource, MSSource::
+			       columnName(MSSource::PROPER_MOTION));
+    timeQuant_p.attach(msSource, MSSource::columnName(MSSource::TIME));
     attachOptionalCols(msSource);
   }
 }
 
-void NewMSSourceColumns::attachOptionalCols(NewMSSource& msSource)
+void MSSourceColumns::attachOptionalCols(MSSource& msSource)
 {
   const ColumnDescSet& cds = msSource.tableDesc().columnDescSet();
-  const String& position = NewMSSource::columnName(NewMSSource::POSITION);
+  const String& position = MSSource::columnName(MSSource::POSITION);
   if (cds.isDefined(position)) {
     position_p.attach(msSource, position);
     positionMeas_p.attach(msSource, position);
     positionQuant_p.attach(msSource, position);
   }
-  const String& pulsarId = NewMSSource::columnName(NewMSSource::PULSAR_ID);
+  const String& pulsarId = MSSource::columnName(MSSource::PULSAR_ID);
   if (cds.isDefined(pulsarId)) pulsarId_p.attach(msSource, pulsarId);
   const String& restFrequency =
-    NewMSSource::columnName(NewMSSource::REST_FREQUENCY);
+    MSSource::columnName(MSSource::REST_FREQUENCY);
   if (cds.isDefined(restFrequency)) {
     restFrequency_p.attach(msSource, restFrequency);
     restFrequencyMeas_p.attach(msSource, restFrequency);
     restFrequencyQuant_p.attach(msSource, restFrequency);
   }
   const String& sourceModel =
-    NewMSSource::columnName(NewMSSource::SOURCE_MODEL);
+    MSSource::columnName(MSSource::SOURCE_MODEL);
   if (cds.isDefined(sourceModel)) sourceModel_p.attach(msSource, sourceModel);
-  const String& sysvel = NewMSSource::columnName(NewMSSource::SYSVEL);
+  const String& sysvel = MSSource::columnName(MSSource::SYSVEL);
   if (cds.isDefined(sysvel)) {
     sysvel_p.attach(msSource, sysvel);
     sysvelMeas_p.attach(msSource, sysvel);
     sysvelQuant_p.attach(msSource, sysvel);
   }
-  const String& transition = NewMSSource::columnName(NewMSSource::TRANSITION);
+  const String& transition = MSSource::columnName(MSSource::TRANSITION);
   if (cds.isDefined(transition)) transition_p.attach(msSource, transition);
 }
 
-void NewMSSourceColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSSourceColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
-void NewMSSourceColumns::setDirectionRef(MDirection::Types ref) {
+void MSSourceColumns::setDirectionRef(MDirection::Types ref) {
   directionMeas_p.setDescRefCode(ref);
 }
 
-void NewMSSourceColumns::setPositionRef(MPosition::Types ref)
+void MSSourceColumns::setPositionRef(MPosition::Types ref)
 {
   if (!positionMeas_p.isNull()) {
     positionMeas_p.setDescRefCode(ref);
   }
 }
 
-void NewMSSourceColumns::setFrequencyRef(MFrequency::Types ref)
+void MSSourceColumns::setFrequencyRef(MFrequency::Types ref)
 {
   if (!restFrequencyMeas_p.isNull()) {
     restFrequencyMeas_p.setDescRefCode(ref);
   }
 }
 
-void NewMSSourceColumns::setRadialVelocityRef(MRadialVelocity::Types ref)
+void MSSourceColumns::setRadialVelocityRef(MRadialVelocity::Types ref)
 {
   if (!sysvelMeas_p.isNull()) {
     sysvelMeas_p.setDescRefCode(ref);
   }
 }
 // Local Variables: 
-// compile-command: "gmake NewMSSourceColumns"
+// compile-command: "gmake MSSourceColumns"
 // End: 

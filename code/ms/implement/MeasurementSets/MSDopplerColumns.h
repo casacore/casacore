@@ -1,4 +1,4 @@
-//# NewMSDopplerColumns.h: provides easy access to NewMSDoppler columns
+//# MSDopplerColumns.h: provides easy access to MSDoppler columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSDOPPLERCOLUMNS_H)
-#define AIPS_NEWMSDOPPLERCOLUMNS_H
+#if !defined(AIPS_MSDOPPLERCOLUMNS_H)
+#define AIPS_MSDOPPLERCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MDoppler.h>
@@ -34,10 +34,10 @@
 #include <aips/TableMeasures/ScalarMeasColumn.h>
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 
-class NewMSDoppler;
+class MSDoppler;
 
 // <summary>
-// A class to provide easy read-only access to NewMSDoppler columns
+// A class to provide easy read-only access to MSDoppler columns
 // </summary>
 
 // <use visibility=export>
@@ -46,39 +46,39 @@ class NewMSDoppler;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSDoppler
+//   <li> MSDoppler
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSDopplerColumns stands for Read-Only NewMeasurementSet Doppler Table
+// ROMSDopplerColumns stands for Read-Only MeasurementSet Doppler Table
 // columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSDoppler
+// This class provides read-only access to the columns in the MSDoppler
 // Table.  It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to worry about
 // getting those right. There is an access function for every predefined
 // column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=RONewMSColumns>
-// RONewMSColumns</linkto> for an example.
+// explicit declarations.  See <linkto class=ROMSColumns>
+// ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSDopplerColumns
+class ROMSDopplerColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSDopplerColumns(const NewMSDoppler& msDoppler);
+  ROMSDopplerColumns(const MSDoppler& msDoppler);
   
   // The destructor does nothing special
-  ~RONewMSDopplerColumns();
+  ~ROMSDopplerColumns();
   
-  // Is this object defined? (NewMSDoppler table is optional)
+  // Is this object defined? (MSDoppler table is optional)
   Bool isNull() const {return isNull_p;}
   
   // Access to columns
@@ -98,16 +98,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSDopplerColumns();
+  ROMSDopplerColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSDoppler& msDoppler);
+  void attach(const MSDoppler& msDoppler);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSDopplerColumns(const RONewMSDopplerColumns&);
-  RONewMSDopplerColumns& operator=(const RONewMSDopplerColumns&);
+  ROMSDopplerColumns(const ROMSDopplerColumns&);
+  ROMSDopplerColumns& operator=(const ROMSDopplerColumns&);
 
   //# Is the object not attached to a Table.
   Bool isNull_p;
@@ -127,7 +127,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSDoppler columns
+// A class to provide easy read-write access to MSDoppler columns
 // </summary>
 
 // <use visibility=export>
@@ -136,36 +136,36 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSDoppler
+//   <li> MSDoppler
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSDopplerColumns stands for NewMeasurementSet Doppler Table columns.
+// MSDopplerColumns stands for MeasurementSet Doppler Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSDoppler Table,
+// This class provides access to the columns in the MSDoppler Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSDopplerColumns: public RONewMSDopplerColumns
+class MSDopplerColumns: public ROMSDopplerColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSDopplerColumns(NewMSDoppler& msDoppler);
+  MSDopplerColumns(MSDoppler& msDoppler);
 
   // The destructor does nothing special
-  ~NewMSDopplerColumns();
+  ~MSDopplerColumns();
 
   // Read-write access to required columns
   // <group>
@@ -180,17 +180,17 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Int>& dopplerId() const {
-    return RONewMSDopplerColumns::dopplerId();}
+    return ROMSDopplerColumns::dopplerId();}
   const ROScalarColumn<Int>& sourceId() const {
-    return RONewMSDopplerColumns::sourceId();}
+    return ROMSDopplerColumns::sourceId();}
   const ROScalarColumn<Int>& transitionId() const {
-    return RONewMSDopplerColumns::transitionId();}
+    return ROMSDopplerColumns::transitionId();}
   const ROScalarColumn<Double>& velDef() const {
-    return RONewMSDopplerColumns::velDef();}
+    return ROMSDopplerColumns::velDef();}
   const ROScalarQuantColumn<Double>& velDefQuant() const {
-    return RONewMSDopplerColumns::velDefQuant();}
+    return ROMSDopplerColumns::velDefQuant();}
   const ROScalarMeasColumn<MDoppler>& velDefMeas() const {
-    return RONewMSDopplerColumns::velDefMeas();}
+    return ROMSDopplerColumns::velDefMeas();}
   // </group>
 
   // set the DOPPLER type for the VELDEF column.
@@ -199,16 +199,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSDopplerColumns();
+  MSDopplerColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSDoppler& msDoppler);
+  void attach(MSDoppler& msDoppler);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSDopplerColumns(const NewMSDopplerColumns&);
-  NewMSDopplerColumns& operator=(const NewMSDopplerColumns&);
+  MSDopplerColumns(const MSDopplerColumns&);
+  MSDopplerColumns& operator=(const MSDopplerColumns&);
 
   //# required columns
   ScalarColumn<Int> dopplerId_p;

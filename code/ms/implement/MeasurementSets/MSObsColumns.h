@@ -1,4 +1,4 @@
-//# NewMSObservationColumns.h: provides easy access to NewMSObservation columns
+//# MSObservationColumns.h: provides easy access to MSObservation columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSOBSERVATIONCOLUMNS_H)
-#define AIPS_NEWMSOBSERVATIONCOLUMNS_H
+#if !defined(AIPS_MSOBSERVATIONCOLUMNS_H)
+#define AIPS_MSOBSERVATIONCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MEpoch.h>
@@ -38,10 +38,10 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
 
-class NewMSObservation;
+class MSObservation;
 
 // <summary>
-// A class to provide easy read-only access to NewMSObservation columns
+// A class to provide easy read-only access to MSObservation columns
 // </summary>
 
 // <use visibility=export>
@@ -50,38 +50,38 @@ class NewMSObservation;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSObservation
+//   <li> MSObservation
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSObservationColumns stands for Read-Only NewMeasurementSet Observation
+// ROMSObservationColumns stands for Read-Only MeasurementSet Observation
 // Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSObservation
+// This class provides read-only access to the columns in the MSObservation
 // Table.  It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to worry about
 // getting those right. There is an access function for every predefined
 // column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=RONewMSColumns>
-// RONewMSColumns</linkto> for an example.
+// explicit declarations.  See <linkto class=ROMSColumns>
+// ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSObservationColumns
+class ROMSObservationColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSObservationColumns(const NewMSObservation& msObservation);
+  ROMSObservationColumns(const MSObservation& msObservation);
 
   // The destructor does nothing special
-  ~RONewMSObservationColumns();
+  ~ROMSObservationColumns();
 
   // Access to required columns
   // <group>
@@ -110,16 +110,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSObservationColumns();
+  ROMSObservationColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSObservation& msObservation);
+  void attach(const MSObservation& msObservation);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSObservationColumns(const RONewMSObservationColumns&);
-  RONewMSObservationColumns& operator=(const RONewMSObservationColumns&);
+  ROMSObservationColumns(const ROMSObservationColumns&);
+  ROMSObservationColumns& operator=(const ROMSObservationColumns&);
 
   //# required columns
   ROScalarColumn<Bool> flagRow_p;
@@ -142,7 +142,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSObservation columns
+// A class to provide easy read-write access to MSObservation columns
 // </summary>
 
 // <use visibility=export>
@@ -151,38 +151,38 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSObservation
+//   <li> MSObservation
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSObservationColumns stands for NewMeasurementSet Observation Table
+// MSObservationColumns stands for MeasurementSet Observation Table
 // columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSObservation Table,
+// This class provides access to the columns in the MSObservation Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSObservationColumns: public RONewMSObservationColumns
+class MSObservationColumns: public ROMSObservationColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSObservationColumns(NewMSObservation& msObservation);
+  MSObservationColumns(MSObservation& msObservation);
 
   // The desctructor does nothing special
-  ~NewMSObservationColumns();
+  ~MSObservationColumns();
 
   // Read-write access to required columns
   // <group>
@@ -204,31 +204,31 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Bool>& flagRow() const {
-    return RONewMSObservationColumns::flagRow();}
+    return ROMSObservationColumns::flagRow();}
   const ROArrayColumn<String>& log() const {
-    return RONewMSObservationColumns::log();}
+    return ROMSObservationColumns::log();}
   const ROScalarColumn<String>& observer() const {
-    return RONewMSObservationColumns::observer();}
+    return ROMSObservationColumns::observer();}
   const ROScalarColumn<String>& project() const {
-    return RONewMSObservationColumns::project();}
+    return ROMSObservationColumns::project();}
   const ROScalarColumn<Double>& releaseDate() const {
-    return RONewMSObservationColumns::releaseDate();}
+    return ROMSObservationColumns::releaseDate();}
   const ROScalarQuantColumn<Double>& releaseDateQuant() const {
-    return RONewMSObservationColumns::releaseDateQuant();}
+    return ROMSObservationColumns::releaseDateQuant();}
   const ROScalarMeasColumn<MEpoch>& releaseDateMeas() const {
-    return RONewMSObservationColumns::releaseDateMeas();}
+    return ROMSObservationColumns::releaseDateMeas();}
   const ROArrayColumn<String>& schedule() const {
-    return RONewMSObservationColumns::schedule();}
+    return ROMSObservationColumns::schedule();}
   const ROScalarColumn<String>& scheduleType() const {
-    return RONewMSObservationColumns::scheduleType();}
+    return ROMSObservationColumns::scheduleType();}
   const ROScalarColumn<String>& telescopeName() const {
-    return RONewMSObservationColumns::telescopeName();}
+    return ROMSObservationColumns::telescopeName();}
   const ROArrayColumn<Double>& timeRange() const {
-    return RONewMSObservationColumns::timeRange();}
+    return ROMSObservationColumns::timeRange();}
   const ROArrayQuantColumn<Double>& timeRangeQuant() const {
-    return RONewMSObservationColumns::timeRangeQuant();}
+    return ROMSObservationColumns::timeRangeQuant();}
   const ROArrayMeasColumn<MEpoch>& timeRangeMeas() const {
-    return RONewMSObservationColumns::timeRangeMeas();}
+    return ROMSObservationColumns::timeRangeMeas();}
   // </group>
 
   // set the epoch type for the TIME_RANGE & RELEASE_DATE columns.
@@ -245,16 +245,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSObservationColumns();
+  MSObservationColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSObservation& msObservation);
+  void attach(MSObservation& msObservation);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSObservationColumns(const NewMSObservationColumns&);
-  NewMSObservationColumns& operator=(const NewMSObservationColumns&);
+  MSObservationColumns(const MSObservationColumns&);
+  MSObservationColumns& operator=(const MSObservationColumns&);
 
   //# required columns
   ScalarColumn<Bool> flagRow_p;

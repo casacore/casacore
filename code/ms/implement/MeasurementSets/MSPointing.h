@@ -1,4 +1,4 @@
-//# NewMSPointing.h: The NewMeasurementSet POINTING Table
+//# MSPointing.h: The MeasurementSet POINTING Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSPOINTING_H)
-#define AIPS_NewMSPOINTING_H
+#if !defined(AIPS_MSPOINTING_H)
+#define AIPS_MSPOINTING_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSPointingEnums.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MSPointingEnums.h>
 
 // <summary> 
-// A Table intended to hold a NewMeasurementSet POINTING table.
+// A Table intended to hold a MeasurementSet POINTING table.
 // </summary>
 
 // <use visibility=export>
@@ -43,62 +43,62 @@
 
 // <prerequisite>
 // <ul>
-//   <li> <linkto class="NewMeasurementSet:description">NewMeasurementSet</linkto> 
-//   <li> <linkto class="NewMSTable">NewMSTable</linkto> 
+//   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto> 
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// NewMSPointing stands for the NewMeasurementSet Pointing table.
+// MSPointing stands for the MeasurementSet Pointing table.
 // </etymology>
 //
 // <synopsis> 
-// An NewMSPointing is a table intended to hold the POINTING table for
-// the NewMeasurementSet. It has an identical set of member functions as
-// the main NewMeasurementSet class, except (currently) for the default
+// An MSPointing is a table intended to hold the POINTING table for
+// the MeasurementSet. It has an identical set of member functions as
+// the main MeasurementSet class, except (currently) for the default
 // calibration members. For further info and examples see the 
-// NewMeasurementSet class.
+// MeasurementSet class.
 // </synopsis> 
 //
 // <example>
-// See the NewMeasurementSet for an example of how to access and use this class.
+// See the MeasurementSet for an example of how to access and use this class.
 // </example>
 //
 // <motivation>
-// It was found that subtables and the main table of the NewMeasurementSet have
+// It was found that subtables and the main table of the MeasurementSet have
 // a lot in common, therefore they derive their interface from the same
 // base class. Each subtable has its own class to keep the enum definitions
 // and conversion functions in separate scopes.
 // </motivation>
 //
 // <todo asof="1999/01/14">
-// see NewMeasurementSet.
+// see MeasurementSet.
 // </todo>
 
-class NewMSPointing:public NewMSPointingEnums,
-		 public NewMSTable<NewMSPointingEnums::PredefinedColumns,
-		                NewMSPointingEnums::PredefinedKeywords>
+class MSPointing:public MSPointingEnums,
+		 public MSTable<MSPointingEnums::PredefinedColumns,
+		                MSPointingEnums::PredefinedKeywords>
 {
 public:
 
-    // This constructs an empty NewMSPointing.
-    NewMSPointing ();
+    // This constructs an empty MSPointing.
+    MSPointing ();
 
     // These constructors mirror the Table ones with additional checking
-    // on validity (verifying that the NewMSPointing will have the required columns
+    // on validity (verifying that the MSPointing will have the required columns
     // and keywords)
-    // An exception is thrown if the constructed Table is not a valid NewMSPointing
+    // An exception is thrown if the constructed Table is not a valid MSPointing
     // <thrown>
     //   <li> AipsError
     // </thrown>
     // <group name=tableLikeConstructors>
-    NewMSPointing (const String &tableName, TableOption = Table::Old);
-    NewMSPointing (const String &tableName, const String &tableDescName,
+    MSPointing (const String &tableName, TableOption = Table::Old);
+    MSPointing (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    NewMSPointing (SetupNewTable &newTab, uInt nrrow = 0,
+    MSPointing (SetupNewTable &newTab, uInt nrrow = 0,
 		    Bool initialize = False);
-    NewMSPointing (const Table &table);
-    NewMSPointing (const NewMSPointing &other);
+    MSPointing (const Table &table);
+    MSPointing (const MSPointing &other);
     // </group>
 
     // As with tables, the destructor writes the table if necessary.
@@ -108,23 +108,23 @@ public:
     // <thrown>
     //   <li> AipsError
     // </thrown>
-    ~NewMSPointing();
+    ~MSPointing();
 
     //  Assignment operator, reference semantics
-    NewMSPointing& operator=(const NewMSPointing&);
+    MSPointing& operator=(const MSPointing&);
 
     // Make a special copy of this Table which references all columns from
     // this Table except those mentioned; those are empty and writable.
     // Each forwarded column has the same writable status as the underlying
     // column. The mentioned columns all use the AipsIO storage manager.
-    // This function is inherited from NewMSTable and unlikely to be of use,
-    // except in the class NewMeasurementSet (see comment there)..
-    NewMSPointing referenceCopy(const String& newTableName,
+    // This function is inherited from MSTable and unlikely to be of use,
+    // except in the class MeasurementSet (see comment there)..
+    MSPointing referenceCopy(const String& newTableName,
 			  const Block<String>& writableColumns) const;
 
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
-    // NewMSTableImpl.
+    // MSTableImpl.
     static void init();
 
 private:

@@ -1,4 +1,4 @@
-//# NewMSHistoryEnums.h: Defns for the NewMeasurementSet HISTORY table
+//# MSHistoryEnums.h: Defns for the MeasurementSet HISTORY table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,32 +26,32 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSHISTORYENUMS_H)
-#define AIPS_NEWMSHISTORYENUMS_H
+#if !defined(AIPS_MSHISTORYENUMS_H)
+#define AIPS_MSHISTORYENUMS_H
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet HISTORY table </summary>
+// <summary> Enums for the MeasurementSet HISTORY table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet HISTORY table
+// This class contains the enums for the MeasurementSet HISTORY table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMSHistory class.  These enumerations define the
+// used by the MSHistory class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/14">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSHistoryEnums {
+class MSHistoryEnums {
 public:
     // The HISTORY table colums with predefined meaning.
     // Keys: TIME, OBSERVATION_ID

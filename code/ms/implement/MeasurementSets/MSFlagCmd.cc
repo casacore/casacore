@@ -1,4 +1,4 @@
-//# NewMSFlagCmd.cc: The NewMeasurementSet FLAG_CMD Table
+//# MSFlagCmd.cc: The MeasurementSet FLAG_CMD Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSFlagCmd.h>
+#include <aips/MeasurementSets/MSFlagCmd.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -37,74 +37,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSFlagCmd::NewMSFlagCmd():hasBeenDestroyed_p(True) { }
+MSFlagCmd::MSFlagCmd():hasBeenDestroyed_p(True) { }
 
-NewMSFlagCmd::NewMSFlagCmd(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSFlagCmd::MSFlagCmd(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFlagCmd(String &, TableOption) - "
-			 "table is not a valid NewMSFlagCmd"));
+	throw (AipsError("MSFlagCmd(String &, TableOption) - "
+			 "table is not a valid MSFlagCmd"));
 }
 
-NewMSFlagCmd::NewMSFlagCmd(const String& tableName, const String &tableDescName,
+MSFlagCmd::MSFlagCmd(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFlagCmd(String &, String &, TableOption) - "
-			 "table is not a valid NewMSFlagCmd"));
+	throw (AipsError("MSFlagCmd(String &, String &, TableOption) - "
+			 "table is not a valid MSFlagCmd"));
 }
 
-NewMSFlagCmd::NewMSFlagCmd(SetupNewTable &newTab, uInt nrrow,
+MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFlagCmd(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSFlagCmd"));
+	throw (AipsError("MSFlagCmd(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSFlagCmd"));
 }
 
-NewMSFlagCmd::NewMSFlagCmd(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSFlagCmd::MSFlagCmd(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFlagCmd(const Table &) - "
-			 "table is not a valid NewMSFlagCmd"));
+	throw (AipsError("MSFlagCmd(const Table &) - "
+			 "table is not a valid MSFlagCmd"));
 }
 
-NewMSFlagCmd::NewMSFlagCmd(const NewMSFlagCmd &other)
-    : NewMSTable<PredefinedColumns,
+MSFlagCmd::MSFlagCmd(const MSFlagCmd &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSFlagCmd(const NewMSFlagCmd &) - "
-			     "table is not a valid NewMSFlagCmd"));
+	    throw (AipsError("MSFlagCmd(const MSFlagCmd &) - "
+			     "table is not a valid MSFlagCmd"));
 }
 
-NewMSFlagCmd::~NewMSFlagCmd()
+MSFlagCmd::~MSFlagCmd()
 {
-// check to make sure that this NewMSFlagCmd is still valid
+// check to make sure that this MSFlagCmd is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSFlagCmd() - "
-			 "Table written is not a valid NewMSFlagCmd"));
+	throw (AipsError("~MSFlagCmd() - "
+			 "Table written is not a valid MSFlagCmd"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -112,17 +112,17 @@ NewMSFlagCmd::~NewMSFlagCmd()
 }
 
 
-NewMSFlagCmd& NewMSFlagCmd::operator=(const NewMSFlagCmd &other)
+MSFlagCmd& MSFlagCmd::operator=(const MSFlagCmd &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSFlagCmd::init()
+void MSFlagCmd::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -174,10 +174,10 @@ void NewMSFlagCmd::init()
 }
 
 	
-NewMSFlagCmd NewMSFlagCmd::referenceCopy(const String& newTableName, 
+MSFlagCmd MSFlagCmd::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return NewMSFlagCmd(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSFlagCmd(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
 

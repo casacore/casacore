@@ -1,4 +1,4 @@
-//# NewMSSysCalEnums.h: Class with definitions for the NewMSSysCal table
+//# MSSysCalEnums.h: Class with definitions for the MSSysCal table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSSYSCALENUNewMS_H)
-#define AIPS_NewMSSYSCALENUNewMS_H
+#if !defined(AIPS_MSSYSCALENUMS_H)
+#define AIPS_MSSYSCALENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet SYSCAL table </summary>
+// <summary> Enums for the MeasurementSet SYSCAL table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet SYSCAL table
+// This class contains the enums for the MeasurementSet SYSCAL table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMSSysCal class.  These enumerations define the
+// used by the MSSysCal class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/22">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSSysCalEnums {
+class MSSysCalEnums {
 public:
     // The SYSCAL table colums with predefined meaning.
     // Keys: ANTENNA_ID, ARRAY_ID, FEED_ID, SPECTRAL_WINDOW_ID, INTERVAL, TIME

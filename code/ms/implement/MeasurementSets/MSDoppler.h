@@ -1,4 +1,4 @@
-//# NewMSDoppler.h: The NewMeasurementSet DOPPLER Table
+//# MSDoppler.h: The MeasurementSet DOPPLER Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSDOPPLER_H)
-#define AIPS_NewMSDOPPLER_H
+#if !defined(AIPS_MSDOPPLER_H)
+#define AIPS_MSDOPPLER_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSDopplerEnums.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MSDopplerEnums.h>
 
 // <summary> 
-// A Table intended to hold a NewMeasurementSet DOPPLER table.
+// A Table intended to hold a MeasurementSet DOPPLER table.
 // </summary>
 
 // <use visibility=export>
@@ -43,62 +43,62 @@
 
 // <prerequisite>
 // <ul>
-//   <li> <linkto class="NewMeasurementSet:description">NewMeasurementSet</linkto> 
-//   <li> <linkto class="NewMSTable">NewMSTable</linkto> 
+//   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto> 
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// NewMSDoppler stands for the NewMeasurementSet Doppler table.
+// MSDoppler stands for the MeasurementSet Doppler table.
 // </etymology>
 //
 // <synopsis> 
-// An NewMSDoppler is a table intended to hold the DOPPLER table for
-// the NewMeasurementSet. It has an identical set of member functions as
-// the main NewMeasurementSet class, except (currently) for the default
+// An MSDoppler is a table intended to hold the DOPPLER table for
+// the MeasurementSet. It has an identical set of member functions as
+// the main MeasurementSet class, except (currently) for the default
 // calibration members. For further info and examples see the 
-// NewMeasurementSet class.
+// MeasurementSet class.
 // </synopsis> 
 //
 // <example>
-// See the NewMeasurementSet for an example of how to access and use this class.
+// See the MeasurementSet for an example of how to access and use this class.
 // </example>
 //
 // <motivation>
-// It was found that subtables and the main table of the NewMeasurementSet have
+// It was found that subtables and the main table of the MeasurementSet have
 // a lot in common, therefore they derive their interface from the same
 // base class. Each subtable has its own class to keep the enum definitions
 // and conversion functions in separate scopes.
 // </motivation>
 //
 // <todo asof="1999/01/13">
-// see NewMeasurementSet.
+// see MeasurementSet.
 // </todo>
 
 
-class NewMSDoppler:public NewMSDopplerEnums,
-                public NewMSTable<NewMSDopplerEnums::PredefinedColumns,
-		               NewMSDopplerEnums::PredefinedKeywords>
+class MSDoppler:public MSDopplerEnums,
+                public MSTable<MSDopplerEnums::PredefinedColumns,
+		               MSDopplerEnums::PredefinedKeywords>
 {
 public:
-    // This constructs an empty NewMSDoppler
-    NewMSDoppler ();
+    // This constructs an empty MSDoppler
+    MSDoppler ();
     //
     // These constructors mirror the Table ones with additional checking
-    // on validity (verifying that the NewMSDoppler will have the required columns
+    // on validity (verifying that the MSDoppler will have the required columns
     // and keywords).
-    // An exception is thrown if the constructed Table is not a valid NewMSDoppler
+    // An exception is thrown if the constructed Table is not a valid MSDoppler
     // <thrown>
     //   <li> AipsError
     // </thrown>
     // <group name=tableLikeConstructors>
-    NewMSDoppler (const String &tableName, TableOption = Table::Old);
-    NewMSDoppler (const String &tableName, const String &tableDescName,
+    MSDoppler (const String &tableName, TableOption = Table::Old);
+    MSDoppler (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    NewMSDoppler (SetupNewTable &newTab, uInt nrrow = 0,
+    MSDoppler (SetupNewTable &newTab, uInt nrrow = 0,
 		    Bool initialize = False);
-    NewMSDoppler (const Table &table);
-    NewMSDoppler (const NewMSDoppler &other);
+    MSDoppler (const Table &table);
+    MSDoppler (const MSDoppler &other);
     // </group>
 
     // As with tables, the destructor writes the table if necessary.
@@ -108,23 +108,23 @@ public:
     // <thrown>
     //   <li> AipsError
     // </thrown>
-    ~NewMSDoppler();
+    ~MSDoppler();
 
     //  Assignment operator, reference semantics
-    NewMSDoppler& operator=(const NewMSDoppler&);
+    MSDoppler& operator=(const MSDoppler&);
 
     // Make a special copy of this Table which references all columns from
     // this Table except those mentioned; those are empty and writable.
     // Each forwarded column has the same writable status as the underlying
     // column. The mentioned columns all use the AipsIO storage manager.
-    // This function is inherited from NewMSTable and unlikely to be of use,
-    // except in the class NewMeasurementSet (see comment there)..
-    NewMSDoppler referenceCopy(const String& newTableName,
+    // This function is inherited from MSTable and unlikely to be of use,
+    // except in the class MeasurementSet (see comment there)..
+    MSDoppler referenceCopy(const String& newTableName,
 			    const Block<String>& writableColumns) const;
 
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
-    // NewMSTableImpl.
+    // MSTableImpl.
     static void init();
 
 private:

@@ -1,4 +1,4 @@
-//# NewMSPolarization.cc: The NewMeasurementSet POLARIZATION Table
+//# MSPolarization.cc: The MeasurementSet POLARIZATION Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSPolarization.h>
+#include <aips/MeasurementSets/MSPolarization.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -37,74 +37,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSPolarization::NewMSPolarization():hasBeenDestroyed_p(True) { }
+MSPolarization::MSPolarization():hasBeenDestroyed_p(True) { }
 
-NewMSPolarization::NewMSPolarization(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSPolarization::MSPolarization(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSPolarization(String &, TableOption) - "
-			 "table is not a valid NewMSPolarization"));
+	throw (AipsError("MSPolarization(String &, TableOption) - "
+			 "table is not a valid MSPolarization"));
 }
 
-NewMSPolarization::NewMSPolarization(const String& tableName, const String &tableDescName,
+MSPolarization::MSPolarization(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSPolarization(String &, String &, TableOption) - "
-			 "table is not a valid NewMSPolarization"));
+	throw (AipsError("MSPolarization(String &, String &, TableOption) - "
+			 "table is not a valid MSPolarization"));
 }
 
-NewMSPolarization::NewMSPolarization(SetupNewTable &newTab, uInt nrrow,
+MSPolarization::MSPolarization(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSPolarization(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSPolarization"));
+	throw (AipsError("MSPolarization(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSPolarization"));
 }
 
-NewMSPolarization::NewMSPolarization(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSPolarization::MSPolarization(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSPolarization(const Table &) - "
-			 "table is not a valid NewMSPolarization"));
+	throw (AipsError("MSPolarization(const Table &) - "
+			 "table is not a valid MSPolarization"));
 }
 
-NewMSPolarization::NewMSPolarization(const NewMSPolarization &other)
-    : NewMSTable<PredefinedColumns,
+MSPolarization::MSPolarization(const MSPolarization &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSPolarization(const NewMSPolarization &) - "
-			     "table is not a valid NewMSPolarization"));
+	    throw (AipsError("MSPolarization(const MSPolarization &) - "
+			     "table is not a valid MSPolarization"));
 }
 
-NewMSPolarization::~NewMSPolarization()
+MSPolarization::~MSPolarization()
 {
-// check to make sure that this NewMSPolarization is still valid
+// check to make sure that this MSPolarization is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSPolarization() - "
-			 "Table written is not a valid NewMSPolarization"));
+	throw (AipsError("~MSPolarization() - "
+			 "Table written is not a valid MSPolarization"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -112,17 +112,17 @@ NewMSPolarization::~NewMSPolarization()
 }
 
 
-NewMSPolarization& NewMSPolarization::operator=(const NewMSPolarization &other)
+MSPolarization& MSPolarization::operator=(const MSPolarization &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSPolarization::init()
+void MSPolarization::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -164,9 +164,9 @@ void NewMSPolarization::init()
 }
 
 	
-NewMSPolarization NewMSPolarization::referenceCopy(const String& newTableName, 
+MSPolarization MSPolarization::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return NewMSPolarization(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSPolarization(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

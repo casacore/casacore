@@ -1,4 +1,4 @@
-//# NewMSDopplerColumns.cc:  provides easy access to NewMeasurementSet columns
+//# MSDopplerColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSDopplerColumns.h>
-#include <aips/MeasurementSets/NewMSDoppler.h>
+#include <aips/MeasurementSets/MSDopplerColumns.h>
+#include <aips/MeasurementSets/MSDoppler.h>
 
-RONewMSDopplerColumns::RONewMSDopplerColumns(const NewMSDoppler& msDoppler):
+ROMSDopplerColumns::ROMSDopplerColumns(const MSDoppler& msDoppler):
   isNull_p(True),
   dopplerId_p(),
   sourceId_p(),
@@ -40,9 +40,9 @@ RONewMSDopplerColumns::RONewMSDopplerColumns(const NewMSDoppler& msDoppler):
   attach(msDoppler);
 }
 
-RONewMSDopplerColumns::~RONewMSDopplerColumns() {}
+ROMSDopplerColumns::~ROMSDopplerColumns() {}
 
-RONewMSDopplerColumns::RONewMSDopplerColumns():
+ROMSDopplerColumns::ROMSDopplerColumns():
   isNull_p(True),
   dopplerId_p(),
   sourceId_p(),
@@ -53,26 +53,26 @@ RONewMSDopplerColumns::RONewMSDopplerColumns():
 {
 }
 
-void RONewMSDopplerColumns::attach(const NewMSDoppler& msDoppler)
+void ROMSDopplerColumns::attach(const MSDoppler& msDoppler)
 {
   isNull_p = msDoppler.isNull();
   if (!isNull()) {
-    dopplerId_p.attach(msDoppler, NewMSDoppler::
-		       columnName(NewMSDoppler::DOPPLER_ID));
-    sourceId_p.attach(msDoppler, NewMSDoppler::
-		      columnName(NewMSDoppler::SOURCE_ID));
-    transitionId_p.attach(msDoppler, NewMSDoppler::
-			  columnName(NewMSDoppler::TRANSITION_ID));
-    velDef_p.attach(msDoppler, NewMSDoppler::columnName(NewMSDoppler::VELDEF));
-    velDefMeas_p.attach(msDoppler, NewMSDoppler::
-			columnName(NewMSDoppler::VELDEF));
-    velDefQuant_p.attach(msDoppler, NewMSDoppler::
-			 columnName(NewMSDoppler::VELDEF));
+    dopplerId_p.attach(msDoppler, MSDoppler::
+		       columnName(MSDoppler::DOPPLER_ID));
+    sourceId_p.attach(msDoppler, MSDoppler::
+		      columnName(MSDoppler::SOURCE_ID));
+    transitionId_p.attach(msDoppler, MSDoppler::
+			  columnName(MSDoppler::TRANSITION_ID));
+    velDef_p.attach(msDoppler, MSDoppler::columnName(MSDoppler::VELDEF));
+    velDefMeas_p.attach(msDoppler, MSDoppler::
+			columnName(MSDoppler::VELDEF));
+    velDefQuant_p.attach(msDoppler, MSDoppler::
+			 columnName(MSDoppler::VELDEF));
   }
 }
 
-NewMSDopplerColumns::NewMSDopplerColumns(NewMSDoppler& msDoppler):
-  RONewMSDopplerColumns(),
+MSDopplerColumns::MSDopplerColumns(MSDoppler& msDoppler):
+  ROMSDopplerColumns(),
   dopplerId_p(),
   sourceId_p(),
   transitionId_p(),
@@ -83,10 +83,10 @@ NewMSDopplerColumns::NewMSDopplerColumns(NewMSDoppler& msDoppler):
   attach(msDoppler);
 }
 
-NewMSDopplerColumns::~NewMSDopplerColumns() {}
+MSDopplerColumns::~MSDopplerColumns() {}
 
-NewMSDopplerColumns::NewMSDopplerColumns():
-  RONewMSDopplerColumns(),
+MSDopplerColumns::MSDopplerColumns():
+  ROMSDopplerColumns(),
   dopplerId_p(),
   sourceId_p(),
   transitionId_p(),
@@ -96,29 +96,29 @@ NewMSDopplerColumns::NewMSDopplerColumns():
 {
 }
 
-void NewMSDopplerColumns::attach(NewMSDoppler& msDoppler)
+void MSDopplerColumns::attach(MSDoppler& msDoppler)
 {
-  RONewMSDopplerColumns::attach(msDoppler);
+  ROMSDopplerColumns::attach(msDoppler);
   if (!isNull()) {
-    dopplerId_p.attach(msDoppler, NewMSDoppler::
-		       columnName(NewMSDoppler::DOPPLER_ID));
-    sourceId_p.attach(msDoppler, NewMSDoppler::
-		      columnName(NewMSDoppler::SOURCE_ID));
-    transitionId_p.attach(msDoppler, NewMSDoppler::
-			  columnName(NewMSDoppler::TRANSITION_ID));
-    velDef_p.attach(msDoppler, NewMSDoppler::columnName(NewMSDoppler::VELDEF));
-    velDefMeas_p.attach(msDoppler, NewMSDoppler::
-			columnName(NewMSDoppler::VELDEF));
-    velDefQuant_p.attach(msDoppler, NewMSDoppler::
-			 columnName(NewMSDoppler::VELDEF));
+    dopplerId_p.attach(msDoppler, MSDoppler::
+		       columnName(MSDoppler::DOPPLER_ID));
+    sourceId_p.attach(msDoppler, MSDoppler::
+		      columnName(MSDoppler::SOURCE_ID));
+    transitionId_p.attach(msDoppler, MSDoppler::
+			  columnName(MSDoppler::TRANSITION_ID));
+    velDef_p.attach(msDoppler, MSDoppler::columnName(MSDoppler::VELDEF));
+    velDefMeas_p.attach(msDoppler, MSDoppler::
+			columnName(MSDoppler::VELDEF));
+    velDefQuant_p.attach(msDoppler, MSDoppler::
+			 columnName(MSDoppler::VELDEF));
   }
 }
 
-void NewMSDopplerColumns::setVelDefRef(MDoppler::Types ref)
+void MSDopplerColumns::setVelDefRef(MDoppler::Types ref)
 {
   velDefMeas_p.setDescRefCode(ref,False);
 }
 
 // Local Variables: 
-// compile-command: "gmake NewMSDopplerColumns"
+// compile-command: "gmake MSDopplerColumns"
 // End: 

@@ -1,4 +1,4 @@
-//# NewMSSpWindowColumns.h: provides easy access to NewMSSpectralWindow columns
+//# MSSpWindowColumns.h: provides easy access to MSSpectralWindow columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSSPWINDOWCOLUMNS_H)
-#define AIPS_NEWMSSPWINDOWCOLUMNS_H
+#if !defined(AIPS_MSSPWINDOWCOLUMNS_H)
+#define AIPS_MSSPWINDOWCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MFrequency.h>
@@ -38,7 +38,7 @@
 #include <aips/TableMeasures/ArrayQuantColumn.h>
 #include <aips/Utilities/String.h>
 
-class NewMSSpectralWindow;
+class MSSpectralWindow;
 
 // <summary>
 // A class to provide easy read-only access to NewMSASpectralWindow columns
@@ -50,37 +50,37 @@ class NewMSSpectralWindow;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSSpectralWindow
+//   <li> MSSpectralWindow
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSSpectralWindowColumns stands for Read-Only NewMeasurementSet SpectralWindow Table columns.
+// ROMSSpectralWindowColumns stands for Read-Only MeasurementSet SpectralWindow Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSSpectralWindow Table.
+// This class provides read-only access to the columns in the MSSpectralWindow Table.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
+// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSSpWindowColumns
+class ROMSSpWindowColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSSpWindowColumns(const NewMSSpectralWindow& msSpWindow);
+  ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow);
 
   // The destructor does nothing special
-  ~RONewMSSpWindowColumns();
+  ~ROMSSpWindowColumns();
 
   // Access to columns
   // <group>
@@ -149,19 +149,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSSpWindowColumns();
+  ROMSSpWindowColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSSpectralWindow& msSpWindow);
+  void attach(const MSSpectralWindow& msSpWindow);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSSpWindowColumns(const RONewMSSpWindowColumns&);
-  RONewMSSpWindowColumns& operator=(const RONewMSSpWindowColumns&);
+  ROMSSpWindowColumns(const ROMSSpWindowColumns&);
+  ROMSSpWindowColumns& operator=(const ROMSSpWindowColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSSpectralWindow& msSpWindow);
+  void attachOptionalCols(const MSSpectralWindow& msSpWindow);
 
   //# functions to match the supplied arguments against the values in the
   //# specified row.
@@ -214,7 +214,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSSpectralWindow columns
+// A class to provide easy read-write access to MSSpectralWindow columns
 // </summary>
 
 // <use visibility=export>
@@ -223,37 +223,37 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSSpectralWindow
+//   <li> MSSpectralWindow
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSSpectralWindowColumns stands for NewMeasurementSet SpectralWindow Table columns.
+// MSSpectralWindowColumns stands for MeasurementSet SpectralWindow Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSSpectralWindow Table,
+// This class provides access to the columns in the MSSpectralWindow Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSSpWindowColumns: public RONewMSSpWindowColumns
+class MSSpWindowColumns: public ROMSSpWindowColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSSpWindowColumns(NewMSSpectralWindow& msSpWindow);
+  MSSpWindowColumns(MSSpectralWindow& msSpWindow);
 
   // The destructor does nothing special
-  ~NewMSSpWindowColumns();
+  ~MSSpWindowColumns();
 
   // Read-write access to required columns
   // <group>
@@ -295,83 +295,83 @@ public:
   // Read-only access to required columns
   // <group>
   const ROArrayColumn<Double>& chanFreq() const {
-    return RONewMSSpWindowColumns::chanFreq();}
+    return ROMSSpWindowColumns::chanFreq();}
   const ROArrayQuantColumn<Double>& chanFreqQuant() const {
-    return RONewMSSpWindowColumns::chanFreqQuant();}
+    return ROMSSpWindowColumns::chanFreqQuant();}
   const ROArrayMeasColumn<MFrequency>& chanFreqMeas() const {
-    return RONewMSSpWindowColumns::chanFreqMeas();}
+    return ROMSSpWindowColumns::chanFreqMeas();}
   const ROArrayColumn<Double>& chanWidth() const {
-    return RONewMSSpWindowColumns::chanWidth();}
+    return ROMSSpWindowColumns::chanWidth();}
   const ROArrayQuantColumn<Double>& chanWidthQuant() const {
-    return RONewMSSpWindowColumns::chanWidthQuant();}
+    return ROMSSpWindowColumns::chanWidthQuant();}
   const ROArrayColumn<Double>& effectiveBW() const {
-    return RONewMSSpWindowColumns::effectiveBW();}
+    return ROMSSpWindowColumns::effectiveBW();}
   const ROArrayQuantColumn<Double>& effectiveBWQuant() const {
-    return RONewMSSpWindowColumns::effectiveBWQuant();}
+    return ROMSSpWindowColumns::effectiveBWQuant();}
   const ROScalarColumn<Int>& freqGroup() const {
-    return RONewMSSpWindowColumns::freqGroup();}
+    return ROMSSpWindowColumns::freqGroup();}
   const ROScalarColumn<String>& freqGroupName() const {
-    return RONewMSSpWindowColumns::freqGroupName();}
+    return ROMSSpWindowColumns::freqGroupName();}
   const ROScalarColumn<Int>& ifConvChain() const {
-    return RONewMSSpWindowColumns::ifConvChain();}
+    return ROMSSpWindowColumns::ifConvChain();}
   const ROScalarColumn<Bool>& flagRow() const {
-    return RONewMSSpWindowColumns::flagRow();}
+    return ROMSSpWindowColumns::flagRow();}
   const ROScalarColumn<Int>& measFreqRef() const {
-    return RONewMSSpWindowColumns::measFreqRef();}
+    return ROMSSpWindowColumns::measFreqRef();}
   const ROScalarColumn<String>& name() const {
-    return RONewMSSpWindowColumns::name();}
+    return ROMSSpWindowColumns::name();}
   const ROScalarColumn<Int>& netSideband() const {
-    return RONewMSSpWindowColumns::netSideband();}
+    return ROMSSpWindowColumns::netSideband();}
   const ROScalarColumn<Int>& numChan() const {
-    return RONewMSSpWindowColumns::numChan();}
+    return ROMSSpWindowColumns::numChan();}
   const ROScalarColumn<Double>& refFrequency() const {
-    return RONewMSSpWindowColumns::refFrequency();}
+    return ROMSSpWindowColumns::refFrequency();}
   const ROScalarQuantColumn<Double>& refFrequencyQuant() const {
-    return RONewMSSpWindowColumns::refFrequencyQuant();}
+    return ROMSSpWindowColumns::refFrequencyQuant();}
   const ROScalarMeasColumn<MFrequency>& refFrequencyMeas() const {
-    return RONewMSSpWindowColumns::refFrequencyMeas();}
+    return ROMSSpWindowColumns::refFrequencyMeas();}
   const ROArrayColumn<Double>& resolution() const {
-    return RONewMSSpWindowColumns::resolution();}
+    return ROMSSpWindowColumns::resolution();}
   const ROArrayQuantColumn<Double>& resolutionQuant() const {
-    return RONewMSSpWindowColumns::resolutionQuant();}
+    return ROMSSpWindowColumns::resolutionQuant();}
   const ROScalarColumn<Double>& totalBandwidth() const {
-    return RONewMSSpWindowColumns::totalBandwidth();}
+    return ROMSSpWindowColumns::totalBandwidth();}
   const ROScalarQuantColumn<Double>& totalBandwidthQuant() const {
-    return RONewMSSpWindowColumns::totalBandwidthQuant();}
+    return ROMSSpWindowColumns::totalBandwidthQuant();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROArrayColumn<String>& assocNature() const {
-    return RONewMSSpWindowColumns::assocNature();}
+    return ROMSSpWindowColumns::assocNature();}
   const ROArrayColumn<Int>& assocSpwId() const {
-    return RONewMSSpWindowColumns::assocSpwId();}
+    return ROMSSpWindowColumns::assocSpwId();}
   const ROScalarColumn<Int>& bbcNo() const {
-    return RONewMSSpWindowColumns::bbcNo();}
+    return ROMSSpWindowColumns::bbcNo();}
   const ROScalarColumn<Int>& bbcSideband() const {
-    return RONewMSSpWindowColumns::bbcSideband();}
+    return ROMSSpWindowColumns::bbcSideband();}
   const ROScalarColumn<Int>& dopplerId() const {
-    return RONewMSSpWindowColumns::dopplerId();}
+    return ROMSSpWindowColumns::dopplerId();}
   const ROScalarColumn<Int>& receiverId() const {
-    return RONewMSSpWindowColumns::receiverId();}
+    return ROMSSpWindowColumns::receiverId();}
   // </group>
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSSpWindowColumns();
+  MSSpWindowColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSSpectralWindow& msSpWindow);
+  void attach(MSSpectralWindow& msSpWindow);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSSpWindowColumns(const NewMSSpWindowColumns&);
-  NewMSSpWindowColumns& operator=(const NewMSSpWindowColumns&);
+  MSSpWindowColumns(const MSSpWindowColumns&);
+  MSSpWindowColumns& operator=(const MSSpWindowColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSSpectralWindow& msSpWindow);
+  void attachOptionalCols(MSSpectralWindow& msSpWindow);
   
   //# required columns
   ArrayColumn<Double> chanFreq_p;

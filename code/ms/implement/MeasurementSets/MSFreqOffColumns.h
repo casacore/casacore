@@ -1,4 +1,4 @@
-//# NewMSFreqOffsetColumns.h: provides easy access to FREQ_OFFSET columns
+//# MSFreqOffsetColumns.h: provides easy access to FREQ_OFFSET columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSFREQ_OFFSETCOLUMNS_H)
-#define AIPS_NEWMSFREQ_OFFSETCOLUMNS_H
+#if !defined(AIPS_MSFREQ_OFFSETCOLUMNS_H)
+#define AIPS_MSFREQ_OFFSETCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MEpoch.h>
@@ -34,10 +34,10 @@
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 
-class NewMSFreqOffset;
+class MSFreqOffset;
 
 // <summary>
-// A class to provide easy read-only access to NewMSFreqOffset columns
+// A class to provide easy read-only access to MSFreqOffset columns
 // </summary>
 
 // <use visibility=export>
@@ -46,41 +46,41 @@ class NewMSFreqOffset;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSFreqOffset
+//   <li> MSFreqOffset
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSFreqOffsetColumns stands for Read-Only NewMeasurementSet FreqOffset
+// ROMSFreqOffsetColumns stands for Read-Only MeasurementSet FreqOffset
 // Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSFreqOffset
+// This class provides read-only access to the columns in the MSFreqOffset
 // Table.  It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to worry about
 // getting those right. There is an access function for every predefined
 // column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=RONewMSColumns>
-// RONewMSColumns</linkto> for an example.
+// explicit declarations.  See <linkto class=ROMSColumns>
+// ROMSColumns</linkto> for an example.
 
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSFreqOffsetColumns
+class ROMSFreqOffsetColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSFreqOffsetColumns(const NewMSFreqOffset& msFreqOffset);
+  ROMSFreqOffsetColumns(const MSFreqOffset& msFreqOffset);
   
   // The destructor does nothing special
-  ~RONewMSFreqOffsetColumns();
+  ~ROMSFreqOffsetColumns();
   
-  // Is this object defined? (NewMSFreqOffset table is optional)
+  // Is this object defined? (MSFreqOffset table is optional)
   Bool isNull() const {return isNull_p;}
   
   // Access to columns
@@ -108,16 +108,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSFreqOffsetColumns();
+  ROMSFreqOffsetColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSFreqOffset& msFreqOffset);
+  void attach(const MSFreqOffset& msFreqOffset);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSFreqOffsetColumns(const RONewMSFreqOffsetColumns&);
-  RONewMSFreqOffsetColumns& operator=(const RONewMSFreqOffsetColumns&);
+  ROMSFreqOffsetColumns(const ROMSFreqOffsetColumns&);
+  ROMSFreqOffsetColumns& operator=(const ROMSFreqOffsetColumns&);
 
   //# Is the object not attached to a Table.
   Bool isNull_p;
@@ -141,7 +141,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSFreqOffset columns
+// A class to provide easy read-write access to MSFreqOffset columns
 // </summary>
 
 // <use visibility=export>
@@ -150,37 +150,37 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSFreqOffset
+//   <li> MSFreqOffset
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSFreqOffsetColumns stands for NewMeasurementSet FreqOffset Table
+// MSFreqOffsetColumns stands for MeasurementSet FreqOffset Table
 // columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSFreqOffset Table,
+// This class provides access to the columns in the MSFreqOffset Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSFreqOffsetColumns: public RONewMSFreqOffsetColumns
+class MSFreqOffsetColumns: public ROMSFreqOffsetColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSFreqOffsetColumns(NewMSFreqOffset& msFreqOffset);
+  MSFreqOffsetColumns(MSFreqOffset& msFreqOffset);
 
   // The destructor does nothing special
-  ~NewMSFreqOffsetColumns();
+  ~MSFreqOffsetColumns();
   
   // Read-write access to required columns
   // <group>
@@ -200,27 +200,27 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Int>& antenna1() const {
-    return RONewMSFreqOffsetColumns::antenna1();}
+    return ROMSFreqOffsetColumns::antenna1();}
   const ROScalarColumn<Int>& antenna2() const {
-    return RONewMSFreqOffsetColumns::antenna2();}
+    return ROMSFreqOffsetColumns::antenna2();}
   const ROScalarColumn<Int>& feedId() const {
-    return RONewMSFreqOffsetColumns::feedId();}
+    return ROMSFreqOffsetColumns::feedId();}
   const ROScalarColumn<Double>& interval() const {
-    return RONewMSFreqOffsetColumns::interval();}
+    return ROMSFreqOffsetColumns::interval();}
   const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return RONewMSFreqOffsetColumns::intervalQuant();}
+    return ROMSFreqOffsetColumns::intervalQuant();}
   const ROScalarColumn<Double>& offset() const {
-    return RONewMSFreqOffsetColumns::offset();}
+    return ROMSFreqOffsetColumns::offset();}
   const ROScalarQuantColumn<Double>& offsetQuant() const {
-    return RONewMSFreqOffsetColumns::offsetQuant();}
+    return ROMSFreqOffsetColumns::offsetQuant();}
   const ROScalarColumn<Int>& spectralWindowId() const {
-    return RONewMSFreqOffsetColumns::spectralWindowId();}
+    return ROMSFreqOffsetColumns::spectralWindowId();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSFreqOffsetColumns::time();}
+    return ROMSFreqOffsetColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSFreqOffsetColumns::timeQuant();}
+    return ROMSFreqOffsetColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return RONewMSFreqOffsetColumns::timeMeas();}
+    return ROMSFreqOffsetColumns::timeMeas();}
   // </group>
   
   // set the epoch type for the TIME column.
@@ -237,16 +237,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSFreqOffsetColumns();
+  MSFreqOffsetColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSFreqOffset& msFreqOffset);
+  void attach(MSFreqOffset& msFreqOffset);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSFreqOffsetColumns(const NewMSFreqOffsetColumns&);
-  NewMSFreqOffsetColumns& operator=(const NewMSFreqOffsetColumns&);
+  MSFreqOffsetColumns(const MSFreqOffsetColumns&);
+  MSFreqOffsetColumns& operator=(const MSFreqOffsetColumns&);
 
   //# required columns
   ScalarColumn<Int> antenna1_p;

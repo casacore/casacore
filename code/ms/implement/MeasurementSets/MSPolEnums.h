@@ -1,4 +1,4 @@
-//# NewMSPolarizationEnums.h: Definitions for the NewMeasurementSet POLARIZATION table
+//# MSPolarizationEnums.h: Definitions for the MeasurementSet POLARIZATION table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSPOLARIZATIONENUNewMS_H)
-#define AIPS_NewMSPOLARIZATIONENUNewMS_H
+#if !defined(AIPS_MSPOLARIZATIONENUMS_H)
+#define AIPS_MSPOLARIZATIONENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet POLARIZATION table </summary>
+// <summary> Enums for the MeasurementSet POLARIZATION table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet POLARIZATION table
+// This class contains the enums for the MeasurementSet POLARIZATION table
 // </etymology>
 // <synopsis>
 // This class does nothing. It is merely a container for the enumerations
-// used by the NewMSPolarization class.  These enumerations define the
+// used by the MSPolarization class.  These enumerations define the
 // standard columns and keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/14">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSPolarizationEnums {
+class MSPolarizationEnums {
 public:
     // The POLARIZATION table colums with predefined meaning.
     // Keys: POLARIZATION_ID is rownumber

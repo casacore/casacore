@@ -1,4 +1,4 @@
-//# NewMSObservationEnums.h: Definitions for the NewMeasurementSet OBSERVATION table
+//# MSObservationEnums.h: Definitions for the MeasurementSet OBSERVATION table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,32 +26,32 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSOBSERVATIONENUNewMS_H)
-#define AIPS_NewMSOBSERVATIONENUNewMS_H
+#if !defined(AIPS_MSOBSERVATIONENUMS_H)
+#define AIPS_MSOBSERVATIONENUMS_H
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet OBSERVATION table </summary>
+// <summary> Enums for the MeasurementSet OBSERVATION table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet OBSERVATION table
+// This class contains the enums for the MeasurementSet OBSERVATION table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMSObservation class.  These enumerations define the
+// used by the MSObservation class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/14">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSObservationEnums {
+class MSObservationEnums {
 public:
     // The OBSERVATION table colums with predefined meaning.
     // The OBSERVATION_ID is the row number .

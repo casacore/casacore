@@ -1,4 +1,4 @@
-//# NewMSDopplerEnums.h: Defs for the NewMS DOPPLER table
+//# MSDopplerEnums.h: Defs for the NewMS DOPPLER table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSDOPPLERENUNewMS_H)
-#define AIPS_NewMSDOPPLERENUNewMS_H
+#if !defined(AIPS_MSDOPPLERENUMS_H)
+#define AIPS_MSDOPPLERENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet DOPPLER table </summary>
+// <summary> Enums for the MeasurementSet DOPPLER table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet DOPPLER table
+// This class contains the enums for the MeasurementSet DOPPLER table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMSDoppler class.  These enumerations define the
+// used by the MSDoppler class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/13">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSDopplerEnums {
+class MSDopplerEnums {
 public:
     // The DOPPLER table colums with predefined meaning.
     enum PredefinedColumns {

@@ -1,4 +1,4 @@
-//# NewMSSourceColumns.h: provides easy access to NewMSSource columns
+//# MSSourceColumns.h: provides easy access to MSSource columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSSOURCECOLUMNS_H)
-#define AIPS_NEWMSSOURCECOLUMNS_H
+#if !defined(AIPS_MSSOURCECOLUMNS_H)
+#define AIPS_MSSOURCECOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MDirection.h>
@@ -43,10 +43,10 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/String.h>
 
-class NewMSSource;
+class MSSource;
 
 // <summary>
-// A class to provide easy read-only access to NewMSSource columns
+// A class to provide easy read-only access to MSSource columns
 // </summary>
 
 // <use visibility=export>
@@ -55,39 +55,39 @@ class NewMSSource;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSSource
+//   <li> MSSource
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSSourceColumns stands for Read-Only NewMeasurementSet Source Table columns.
+// ROMSSourceColumns stands for Read-Only MeasurementSet Source Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSSource Table.
+// This class provides read-only access to the columns in the MSSource Table.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
+// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSSourceColumns
+class ROMSSourceColumns
 {
 public:
   // Construct from the supplied Table
-  RONewMSSourceColumns(const NewMSSource& msSource);
+  ROMSSourceColumns(const MSSource& msSource);
 
   // The destructor does nothing special
-  ~RONewMSSourceColumns();
+  ~ROMSSourceColumns();
 
-  // Is this object defined? (NewMSSource table is optional)
+  // Is this object defined? (MSSource table is optional)
   Bool isNull() const {return isNull_p;}
 
   // Access to required columns
@@ -145,19 +145,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSSourceColumns();
+  ROMSSourceColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSSource& msSource);
+  void attach(const MSSource& msSource);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSSourceColumns(const RONewMSSourceColumns&);
-  RONewMSSourceColumns& operator=(const RONewMSSourceColumns&);
+  ROMSSourceColumns(const ROMSSourceColumns&);
+  ROMSSourceColumns& operator=(const ROMSSourceColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSSource& msSource);
+  void attachOptionalCols(const MSSource& msSource);
   
   //# Is the object not attached to a Table.
   Bool isNull_p;
@@ -201,7 +201,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSSource columns
+// A class to provide easy read-write access to MSSource columns
 // </summary>
 
 // <use visibility=export>
@@ -210,37 +210,37 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSSource
+//   <li> MSSource
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSSourceColumns stands for NewMeasurementSet Source Table columns.
+// MSSourceColumns stands for MeasurementSet Source Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSSource Table,
+// This class provides access to the columns in the MSSource Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSSourceColumns: public RONewMSSourceColumns
+class MSSourceColumns: public ROMSSourceColumns
 {
 public:
   // Construct from the supplied Table
-  NewMSSourceColumns(NewMSSource& msSource);
+  MSSourceColumns(MSSource& msSource);
 
   // The destructor does nothing special
-  ~NewMSSourceColumns();
+  ~MSSourceColumns();
 
   // Read-write access to required columns
   // <group>
@@ -282,65 +282,65 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Int>& calibrationGroup() const {
-    return RONewMSSourceColumns::calibrationGroup();}
+    return ROMSSourceColumns::calibrationGroup();}
   const ROScalarColumn<String>& code() const {
-    return RONewMSSourceColumns::code();}
+    return ROMSSourceColumns::code();}
   const ROArrayColumn<Double>& direction() const {
-    return RONewMSSourceColumns::direction();}
+    return ROMSSourceColumns::direction();}
   const ROArrayQuantColumn<Double>& directionQuant() const {
-    return RONewMSSourceColumns::directionQuant();}
+    return ROMSSourceColumns::directionQuant();}
   const ROScalarMeasColumn<MDirection>& directionMeas() const {
-    return RONewMSSourceColumns::directionMeas();}
+    return ROMSSourceColumns::directionMeas();}
   const ROScalarColumn<Double>& interval() const {
-    return RONewMSSourceColumns::interval();}
+    return ROMSSourceColumns::interval();}
   const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return RONewMSSourceColumns::intervalQuant();}
+    return ROMSSourceColumns::intervalQuant();}
   const ROScalarColumn<String>& name() const {
-    return RONewMSSourceColumns::name();}
+    return ROMSSourceColumns::name();}
   const ROScalarColumn<Int>& numLines() const {
-    return RONewMSSourceColumns::numLines();}
+    return ROMSSourceColumns::numLines();}
   const ROArrayColumn<Double>& properMotion() const {
-    return RONewMSSourceColumns::properMotion();}
+    return ROMSSourceColumns::properMotion();}
   const ROArrayQuantColumn<Double>& properMotionQuant() const {
-    return RONewMSSourceColumns::properMotionQuant();}
+    return ROMSSourceColumns::properMotionQuant();}
   const ROScalarColumn<Int>& sourceId() const {
-    return RONewMSSourceColumns::sourceId();}
+    return ROMSSourceColumns::sourceId();}
   const ROScalarColumn<Int>& spectralWindowId() const {
-    return RONewMSSourceColumns::spectralWindowId();}
+    return ROMSSourceColumns::spectralWindowId();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSSourceColumns::time();}
+    return ROMSSourceColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSSourceColumns::timeQuant();}
+    return ROMSSourceColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return RONewMSSourceColumns::timeMeas();}
+    return ROMSSourceColumns::timeMeas();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROArrayColumn<Double>& position() const {
-    return RONewMSSourceColumns::position();}
+    return ROMSSourceColumns::position();}
   const ROArrayQuantColumn<Double>& positionQuant() const {
-    return RONewMSSourceColumns::positionQuant();}
+    return ROMSSourceColumns::positionQuant();}
   const ROScalarMeasColumn<MPosition>& positionMeas() const {
-    return RONewMSSourceColumns::positionMeas();}
+    return ROMSSourceColumns::positionMeas();}
   const ROScalarColumn<Int>& pulsarId() const {
-    return RONewMSSourceColumns::pulsarId();}
+    return ROMSSourceColumns::pulsarId();}
   const ROArrayColumn<Double>& restFrequency() const {
-    return RONewMSSourceColumns::restFrequency();}
+    return ROMSSourceColumns::restFrequency();}
   const ROArrayQuantColumn<Double>& restFrequencyQuant() const {
-    return RONewMSSourceColumns::restFrequencyQuant();}
+    return ROMSSourceColumns::restFrequencyQuant();}
   const ROArrayMeasColumn<MFrequency>& restFrequencyMeas() const {
-    return RONewMSSourceColumns::restFrequencyMeas();}
+    return ROMSSourceColumns::restFrequencyMeas();}
   const ROScalarColumn<TableRecord>& sourceModel() const {
-    return RONewMSSourceColumns::sourceModel();}
+    return ROMSSourceColumns::sourceModel();}
   const ROArrayColumn<Double>& sysvel() const {
-    return RONewMSSourceColumns::sysvel();}
+    return ROMSSourceColumns::sysvel();}
   const ROArrayQuantColumn<Double>& sysvelQuant() const {
-    return RONewMSSourceColumns::sysvelQuant();}
+    return ROMSSourceColumns::sysvelQuant();}
   const ROArrayMeasColumn<MRadialVelocity>& sysvelMeas() const {
-    return RONewMSSourceColumns::sysvelMeas();}
+    return ROMSSourceColumns::sysvelMeas();}
   const ROArrayColumn<String>& transition() const {
-    return RONewMSSourceColumns::transition();}
+    return ROMSSourceColumns::transition();}
   // </group>
 
   // set the epoch type for the TIME column.
@@ -377,19 +377,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSSourceColumns();
+  MSSourceColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSSource& msSource);
+  void attach(MSSource& msSource);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSSourceColumns(const NewMSSourceColumns&);
-  NewMSSourceColumns& operator=(const NewMSSourceColumns&);
+  MSSourceColumns(const MSSourceColumns&);
+  MSSourceColumns& operator=(const MSSourceColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSSource& msSource);
+  void attachOptionalCols(MSSource& msSource);
   
   //# required columns
   ScalarColumn<Int> calibrationGroup_p;

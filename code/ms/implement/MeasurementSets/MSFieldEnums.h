@@ -1,4 +1,4 @@
-//# NewMSFieldEnums.h: Definitions for the NewMeasurementSet FIELD table
+//# MSFieldEnums.h: Definitions for the MeasurementSet FIELD table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSFIELDENUNewMS_H)
-#define AIPS_NewMSFIELDENUNewMS_H
+#if !defined(AIPS_MSFIELDENUMS_H)
+#define AIPS_MSFIELDENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet FIELD table </summary>
+// <summary> Enums for the MeasurementSet FIELD table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet FIELD table
+// This class contains the enums for the MeasurementSet FIELD table
 // </etymology>
 // <synopsis>
 // This class does nothing. It is merely a container for the enumerations
-// used by the NewMSField class.  These enumerations define the
+// used by the MSField class.  These enumerations define the
 // standard columns and keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/13">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSFieldEnums {
+class MSFieldEnums {
 public:
     // The FIELD table colums with predefined meaning.
     // Keys: FIELD_ID, SOURCE_ID

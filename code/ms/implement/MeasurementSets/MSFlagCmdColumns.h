@@ -1,4 +1,4 @@
-//# NewMSFlagCmdColumns.h: provides easy access to NewMSFlagCmd columns
+//# MSFlagCmdColumns.h: provides easy access to MSFlagCmd columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSFLAGCMDCOLUMNS_H)
-#define AIPS_NEWMSFLAGCMDCOLUMNS_H
+#if !defined(AIPS_MSFLAGCMDCOLUMNS_H)
+#define AIPS_MSFLAGCMDCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MEpoch.h>
@@ -35,10 +35,10 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
 
-class NewMSFlagCmd;
+class MSFlagCmd;
 
 // <summary>
-// A class to provide easy read-only access to NewMSFlagCmd columns
+// A class to provide easy read-only access to MSFlagCmd columns
 // </summary>
 
 // <use visibility=export>
@@ -47,36 +47,36 @@ class NewMSFlagCmd;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSFlagCmd
+//   <li> MSFlagCmd
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSFlagCmdColumns stands for Read-Only NewMeasurementSet FlagCmd Table columns.
+// ROMSFlagCmdColumns stands for Read-Only MeasurementSet FlagCmd Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSFlagCmd
+// This class provides read-only access to the columns in the MSFlagCmd
 // Table.  It does the declaration of all the ScalarColumns with the correct
 // types, so the application programmer doesn't have to worry about getting
 // those right. There is an access function for every predefined column. Access
 // to non-predefined columns will still have to be done with explicit
-// declarations.  See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for
+// declarations.  See <linkto class=ROMSColumns> ROMSColumns</linkto> for
 // an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSFlagCmdColumns
+class ROMSFlagCmdColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSFlagCmdColumns(const NewMSFlagCmd& msFlagCmd);
+  ROMSFlagCmdColumns(const MSFlagCmd& msFlagCmd);
 
   // The destructor does nothing special
-  ~RONewMSFlagCmdColumns();
+  ~ROMSFlagCmdColumns();
 
   // Access to required columns
   // <group>
@@ -100,16 +100,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSFlagCmdColumns();
+  ROMSFlagCmdColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSFlagCmd& msFlagCmd);
+  void attach(const MSFlagCmd& msFlagCmd);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSFlagCmdColumns(const RONewMSFlagCmdColumns&);
-  RONewMSFlagCmdColumns& operator=(const RONewMSFlagCmdColumns&);
+  ROMSFlagCmdColumns(const ROMSFlagCmdColumns&);
+  ROMSFlagCmdColumns& operator=(const ROMSFlagCmdColumns&);
 
   //# required columns
   ROScalarColumn<Bool> applied_p;
@@ -130,7 +130,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSFlagCmd columns
+// A class to provide easy read-write access to MSFlagCmd columns
 // </summary>
 
 // <use visibility=export>
@@ -139,36 +139,36 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSFlagCmd
+//   <li> MSFlagCmd
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSFlagCmdColumns stands for NewMeasurementSet FlagCmd Table columns.
+// MSFlagCmdColumns stands for MeasurementSet FlagCmd Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSFlagCmd Table, it does
+// This class provides access to the columns in the MSFlagCmd Table, it does
 // the declaration of all the ScalarColumns with the correct types, so the
 // application programmer doesn't have to worry about getting those
 // right. There is an access function for every predefined column. Access to
 // non-predefined columns will still have to be done with explicit
-// declarations.  See <linkto class=NewMSColumns> NewMSColumns</linkto> for an
+// declarations.  See <linkto class=MSColumns> MSColumns</linkto> for an
 // example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSFlagCmdColumns: public RONewMSFlagCmdColumns
+class MSFlagCmdColumns: public ROMSFlagCmdColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSFlagCmdColumns(NewMSFlagCmd& msFlagCmd);
+  MSFlagCmdColumns(MSFlagCmd& msFlagCmd);
   
   // The destructor does nothing special
-  ~NewMSFlagCmdColumns();
+  ~MSFlagCmdColumns();
 
   // Read-write access to required columns
   // <group>
@@ -188,27 +188,27 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Bool>& applied() const {
-    return RONewMSFlagCmdColumns::applied();}
+    return ROMSFlagCmdColumns::applied();}
   const ROScalarColumn<String>& command() const {
-    return RONewMSFlagCmdColumns::command();}
+    return ROMSFlagCmdColumns::command();}
   const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return RONewMSFlagCmdColumns::intervalQuant();}
+    return ROMSFlagCmdColumns::intervalQuant();}
   const ROScalarColumn<Double>& interval() const {
-    return RONewMSFlagCmdColumns::interval();}
+    return ROMSFlagCmdColumns::interval();}
   const ROScalarColumn<Int>& level() const {
-    return RONewMSFlagCmdColumns::level();}
+    return ROMSFlagCmdColumns::level();}
   const ROScalarColumn<String>& reason() const {
-    return RONewMSFlagCmdColumns::reason();}
+    return ROMSFlagCmdColumns::reason();}
   const ROScalarColumn<Int>& severity() const {
-    return RONewMSFlagCmdColumns::severity();}
+    return ROMSFlagCmdColumns::severity();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSFlagCmdColumns::time();}
+    return ROMSFlagCmdColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSFlagCmdColumns::timeQuant();}
+    return ROMSFlagCmdColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return RONewMSFlagCmdColumns::timeMeas();}
+    return ROMSFlagCmdColumns::timeMeas();}
   const ROScalarColumn<String>& type() const {
-    return RONewMSFlagCmdColumns::type();}
+    return ROMSFlagCmdColumns::type();}
   // </group>
 
   // set the epoch type for the FLAG_CMD column.
@@ -225,16 +225,16 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSFlagCmdColumns();
+  MSFlagCmdColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSFlagCmd& msFlagCmd);
+  void attach(MSFlagCmd& msFlagCmd);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSFlagCmdColumns(const NewMSFlagCmdColumns&);
-  NewMSFlagCmdColumns& operator=(const NewMSFlagCmdColumns&);
+  MSFlagCmdColumns(const MSFlagCmdColumns&);
+  MSFlagCmdColumns& operator=(const MSFlagCmdColumns&);
 
   //# required columns
   ScalarColumn<Bool> applied_p;

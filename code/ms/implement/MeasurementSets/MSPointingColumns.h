@@ -1,4 +1,4 @@
-//# NewMSPointingColumns.h: provides easy access to NewMSPointing columns
+//# MSPointingColumns.h: provides easy access to MSPointing columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSPOINTINGCOLUMNS_H)
-#define AIPS_NEWMSPOINTINGCOLUMNS_H
+#if !defined(AIPS_MSPOINTINGCOLUMNS_H)
+#define AIPS_MSPOINTINGCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MDirection.h>
@@ -37,10 +37,10 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 
-class NewMSPointing;
+class MSPointing;
 
 // <summary>
-// A class to provide easy read-only access to NewMSPointing columns
+// A class to provide easy read-only access to MSPointing columns
 // </summary>
 
 // <use visibility=export>
@@ -49,37 +49,37 @@ class NewMSPointing;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSPointing
+//   <li> MSPointing
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSPointingColumns stands for Read-Only NewMeasurementSet Pointing Table columns.
+// ROMSPointingColumns stands for Read-Only MeasurementSet Pointing Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSPointing
+// This class provides read-only access to the columns in the MSPointing
 // Table.  It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to worry about
 // getting those right. There is an access function for every predefined
 // column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=RONewMSColumns>
-// RONewMSColumns</linkto> for an example.
+// explicit declarations.  See <linkto class=ROMSColumns>
+// ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSPointingColumns
+class ROMSPointingColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSPointingColumns(const NewMSPointing& msPointing);
+  ROMSPointingColumns(const MSPointing& msPointing);
 
   // The destructor does nothing special
-  ~RONewMSPointingColumns();
+  ~ROMSPointingColumns();
 
   // Access to required columns
   // <group>
@@ -143,19 +143,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSPointingColumns();
+  ROMSPointingColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSPointing& msPointing);
+  void attach(const MSPointing& msPointing);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSPointingColumns(const RONewMSPointingColumns&);
-  RONewMSPointingColumns& operator=(const RONewMSPointingColumns&);
+  ROMSPointingColumns(const ROMSPointingColumns&);
+  ROMSPointingColumns& operator=(const ROMSPointingColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSPointing& msPointing);
+  void attachOptionalCols(const MSPointing& msPointing);
   
   //# required columns
   ROScalarColumn<Int> antennaId_p;
@@ -192,7 +192,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSPointing columns
+// A class to provide easy read-write access to MSPointing columns
 // </summary>
 
 // <use visibility=export>
@@ -201,44 +201,44 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSPointing
+//   <li> MSPointing
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSPointingColumns stands for NewMeasurementSet Pointing Table columns.
+// MSPointingColumns stands for MeasurementSet Pointing Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSPointing Table,
+// This class provides access to the columns in the MSPointing Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSPointingColumns: public RONewMSPointingColumns
+class MSPointingColumns: public ROMSPointingColumns
 {
 public:
   // Construct from the supplied Table
-  NewMSPointingColumns(NewMSPointing& msPointing);
+  MSPointingColumns(MSPointing& msPointing);
 
   // The destructor does nothing special
-  ~NewMSPointingColumns();
+  ~MSPointingColumns();
 
   // Read-write access to required columns
   //
   // Note that the direction measures with a stored polynomial have Col() added
   // to their name. They are better accessed via the functions that have the
   // same name, without the Col suffix, that will do the interpolation for
-  // you. These functions are in the RONewMSPointingColumns class.
+  // you. These functions are in the ROMSPointingColumns class.
   // <group>
   ScalarColumn<Int>& antennaId() {return antennaId_p;}
   ScalarColumn<Double>& time() {return time_p;}
@@ -263,7 +263,7 @@ public:
   // Note that the direction measures with a stored polynomial have Col() added
   // to their name. They are better accessed via the functions that have the
   // same name, without the Col suffix, that will do the interpolation for
-  // you. These functions are in the RONewMSPointingColumns class.
+  // you. These functions are in the ROMSPointingColumns class.
   // <group>
   ArrayColumn<Double>& pointingOffset() {return pointingOffset_p;}
   ArrayMeasColumn<MDirection>& pointingOffsetMeasCol() {
@@ -281,59 +281,59 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Int>& antennaId() const {
-    return RONewMSPointingColumns::antennaId();}
+    return ROMSPointingColumns::antennaId();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSPointingColumns::time();}
+    return ROMSPointingColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSPointingColumns::timeQuant();}
+    return ROMSPointingColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return RONewMSPointingColumns::timeMeas();}
+    return ROMSPointingColumns::timeMeas();}
   const ROScalarColumn<Double>& interval() const {
-    return RONewMSPointingColumns::interval();}
+    return ROMSPointingColumns::interval();}
   const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return RONewMSPointingColumns::intervalQuant();}
+    return ROMSPointingColumns::intervalQuant();}
   const ROScalarColumn<String>& name() const {
-    return RONewMSPointingColumns::name();}
+    return ROMSPointingColumns::name();}
   const ROScalarColumn<Int>& numPoly() const {
-    return RONewMSPointingColumns::numPoly();}
+    return ROMSPointingColumns::numPoly();}
   const ROScalarColumn<Double>& timeOrigin() const {
-    return RONewMSPointingColumns::timeOrigin();}
+    return ROMSPointingColumns::timeOrigin();}
   const ROScalarQuantColumn<Double>& timeOriginQuant() const {
-    return RONewMSPointingColumns::timeOriginQuant();}
+    return ROMSPointingColumns::timeOriginQuant();}
   const ROScalarMeasColumn<MEpoch>& timeOriginMeas() const {
-    return RONewMSPointingColumns::timeOriginMeas();}
+    return ROMSPointingColumns::timeOriginMeas();}
   const ROArrayColumn<Double>& direction() const {
-    return RONewMSPointingColumns::direction();}
+    return ROMSPointingColumns::direction();}
   const ROArrayMeasColumn<MDirection>& directionMeasCol() const {
-    return RONewMSPointingColumns::directionMeasCol();}
+    return ROMSPointingColumns::directionMeasCol();}
   const ROArrayColumn<Double>& target() const {
-    return RONewMSPointingColumns::target();}
+    return ROMSPointingColumns::target();}
   const ROArrayMeasColumn<MDirection>& targetMeasCol()const {
-    return RONewMSPointingColumns::targetMeasCol();}
+    return ROMSPointingColumns::targetMeasCol();}
   const ROScalarColumn<Bool>& tracking() const {
-    return RONewMSPointingColumns::tracking();}
+    return ROMSPointingColumns::tracking();}
   // </group>
 
   // Access to optional columns
   // <group>
   const ROArrayColumn<Double>& pointingOffset() const {
-    return RONewMSPointingColumns::pointingOffset();}
+    return ROMSPointingColumns::pointingOffset();}
   const ROArrayMeasColumn<MDirection>& pointingOffsetMeasCol() const {
-    return RONewMSPointingColumns::pointingOffsetMeasCol();}
+    return ROMSPointingColumns::pointingOffsetMeasCol();}
   const ROArrayColumn<Double>& sourceOffset() const {
-    return RONewMSPointingColumns::sourceOffset();}
+    return ROMSPointingColumns::sourceOffset();}
   const ROArrayMeasColumn<MDirection>& sourceOffsetMeasCol() const {
-    return RONewMSPointingColumns::sourceOffsetMeasCol();}
+    return ROMSPointingColumns::sourceOffsetMeasCol();}
   const ROArrayColumn<Double>& encoder() const {
-    return RONewMSPointingColumns::encoder();}
+    return ROMSPointingColumns::encoder();}
   const ROScalarMeasColumn<MDirection>& encoderMeas() const {
-    return RONewMSPointingColumns::encoderMeas();}
+    return ROMSPointingColumns::encoderMeas();}
   const ROScalarColumn<Int>& pointingModelId() const {
-    return RONewMSPointingColumns::pointingModelId();}
+    return ROMSPointingColumns::pointingModelId();}
   const ROScalarColumn<Bool>& onSource() const {
-    return RONewMSPointingColumns::onSource();}
+    return ROMSPointingColumns::onSource();}
   const ROScalarColumn<Bool>& overTheTop() const {
-    return RONewMSPointingColumns::overTheTop();}
+    return ROMSPointingColumns::overTheTop();}
   // </group>
   
   // set the epoch reference type for the TIME & TIME_ORIGIN column.
@@ -362,19 +362,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSPointingColumns();
+  MSPointingColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSPointing& msPointing);
+  void attach(MSPointing& msPointing);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSPointingColumns(const NewMSPointingColumns&);
-  NewMSPointingColumns& operator=(const NewMSPointingColumns&);
+  MSPointingColumns(const MSPointingColumns&);
+  MSPointingColumns& operator=(const MSPointingColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSPointing& msPointing);
+  void attachOptionalCols(MSPointing& msPointing);
   
   //# required columns
   ScalarColumn<Int> antennaId_p;

@@ -1,4 +1,4 @@
-//# NewMSWeatherEnums.h: Definitions for the NewMeasurementSet WEATHER table
+//# MSWeatherEnums.h: Definitions for the MeasurementSet WEATHER table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,34 +26,34 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSWEATHERENUNewMS_H)
-#define AIPS_NewMSWEATHERENUNewMS_H
+#if !defined(AIPS_MSWEATHERENUMS_H)
+#define AIPS_MSWEATHERENUMS_H
 
 #include <aips/aips.h>
 
 // <use visibility=export>
 
-// <summary> Enums for the NewMeasurementSet WEATHER table </summary>
+// <summary> Enums for the MeasurementSet WEATHER table </summary>
 // <etymology>
-// This class contains the enums for the NewMeasurementSet WEATHER table
+// This class contains the enums for the MeasurementSet WEATHER table
 // </etymology>
 // <synopsis>
 // This class does nothing.  It is merely a container for the enumerations
-// used by the NewMSWeather class.  These enumerations define the
+// used by the MSWeather class.  These enumerations define the
 // standard columns, keywords.
 // </synopsis>
 
 // <example>
-// See the documentation for NewMeasurementSet for examples on the use of these
+// See the documentation for MeasurementSet for examples on the use of these
 // enumerations.
 // </example>
 // <todo asof="1999/01/22">
 // All the todo items which may be related to this class are
-// grouped with the todo items for NewMeasurementSet
+// grouped with the todo items for MeasurementSet
 // </todo>
 //
 
-class NewMSWeatherEnums {
+class MSWeatherEnums {
 public:
     // The WEATHER table colums with predefined meaning.
     // Keys: ANTENNA_ID, TIME, INTERVAL.

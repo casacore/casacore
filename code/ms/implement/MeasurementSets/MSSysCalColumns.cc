@@ -1,4 +1,4 @@
-//# NewMSSysCalColumns.cc:  provides easy access to NewMeasurementSet columns
+//# MSSysCalColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSSysCalColumns.h>
-#include <aips/MeasurementSets/NewMSSysCal.h>
+#include <aips/MeasurementSets/MSSysCalColumns.h>
+#include <aips/MeasurementSets/MSSysCal.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/String.h>
 
-RONewMSSysCalColumns::RONewMSSysCalColumns(const NewMSSysCal& msSysCal):
+ROMSSysCalColumns::ROMSSysCalColumns(const MSSysCal& msSysCal):
   isNull_p(True),
   antennaId_p(),
   feedId_p(),
@@ -76,9 +76,9 @@ RONewMSSysCalColumns::RONewMSSysCalColumns(const NewMSSysCal& msSysCal):
   attach(msSysCal);
 }
 
-RONewMSSysCalColumns::~RONewMSSysCalColumns() {}
+ROMSSysCalColumns::~ROMSSysCalColumns() {}
 
-RONewMSSysCalColumns::RONewMSSysCalColumns():
+ROMSSysCalColumns::ROMSSysCalColumns():
   isNull_p(True),
   antennaId_p(),
   feedId_p(),
@@ -122,107 +122,107 @@ RONewMSSysCalColumns::RONewMSSysCalColumns():
 {
 }
 
-void RONewMSSysCalColumns::attach(const NewMSSysCal& msSysCal)
+void ROMSSysCalColumns::attach(const MSSysCal& msSysCal)
 {
   isNull_p = msSysCal.isNull();
   if (!isNull()) {
-    antennaId_p.attach(msSysCal, NewMSSysCal::
-		       columnName(NewMSSysCal::ANTENNA_ID));
-    feedId_p.attach(msSysCal, NewMSSysCal::columnName(NewMSSysCal::FEED_ID));
-    interval_p.attach(msSysCal, NewMSSysCal::
-		      columnName(NewMSSysCal::INTERVAL));
-    spectralWindowId_p.attach(msSysCal, NewMSSysCal::
-			      columnName(NewMSSysCal::SPECTRAL_WINDOW_ID));
-    time_p.attach(msSysCal, NewMSSysCal::columnName(NewMSSysCal::TIME));
-    timeMeas_p.attach(msSysCal, NewMSSysCal::columnName(NewMSSysCal::TIME));
-    intervalQuant_p.attach(msSysCal, NewMSSysCal::
-			   columnName(NewMSSysCal::INTERVAL));
-    timeQuant_p.attach(msSysCal, NewMSSysCal::columnName(NewMSSysCal::TIME));
+    antennaId_p.attach(msSysCal, MSSysCal::
+		       columnName(MSSysCal::ANTENNA_ID));
+    feedId_p.attach(msSysCal, MSSysCal::columnName(MSSysCal::FEED_ID));
+    interval_p.attach(msSysCal, MSSysCal::
+		      columnName(MSSysCal::INTERVAL));
+    spectralWindowId_p.attach(msSysCal, MSSysCal::
+			      columnName(MSSysCal::SPECTRAL_WINDOW_ID));
+    time_p.attach(msSysCal, MSSysCal::columnName(MSSysCal::TIME));
+    timeMeas_p.attach(msSysCal, MSSysCal::columnName(MSSysCal::TIME));
+    intervalQuant_p.attach(msSysCal, MSSysCal::
+			   columnName(MSSysCal::INTERVAL));
+    timeQuant_p.attach(msSysCal, MSSysCal::columnName(MSSysCal::TIME));
 
     const ColumnDescSet& cds = msSysCal.tableDesc().columnDescSet();
-    const String& phaseDiff = NewMSSysCal::columnName(NewMSSysCal::PHASE_DIFF);
+    const String& phaseDiff = MSSysCal::columnName(MSSysCal::PHASE_DIFF);
     if (cds.isDefined(phaseDiff)) {
       phaseDiff_p.attach(msSysCal, phaseDiff);
       phaseDiffQuant_p.attach(msSysCal, phaseDiff);
     }
-    const String& phaseDiffFlag = NewMSSysCal::
-      columnName(NewMSSysCal::PHASE_DIFF_FLAG);
+    const String& phaseDiffFlag = MSSysCal::
+      columnName(MSSysCal::PHASE_DIFF_FLAG);
     if (cds.isDefined(phaseDiffFlag)) {
       phaseDiffFlag_p.attach(msSysCal, phaseDiffFlag);
     }
-    const String& tant = NewMSSysCal::columnName(NewMSSysCal::TANT);
+    const String& tant = MSSysCal::columnName(MSSysCal::TANT);
     if (cds.isDefined(tant)) {
       tant_p.attach(msSysCal, tant);
       tantQuant_p.attach(msSysCal, tant);
     }
-    const String& tantFlag = NewMSSysCal::columnName(NewMSSysCal::TANT_FLAG);
+    const String& tantFlag = MSSysCal::columnName(MSSysCal::TANT_FLAG);
     if (cds.isDefined(tantFlag)) tantFlag_p.attach(msSysCal, tantFlag);
     const String& tantSpectrum = 
-      NewMSSysCal::columnName(NewMSSysCal::TANT_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TANT_SPECTRUM);
     if (cds.isDefined(tantSpectrum)) {
       tantSpectrum_p.attach(msSysCal, tantSpectrum);
       tantSpectrumQuant_p.attach(msSysCal, tantSpectrum);
     }
-    const String& tantTsys = NewMSSysCal::columnName(NewMSSysCal::TANT_TSYS);
+    const String& tantTsys = MSSysCal::columnName(MSSysCal::TANT_TSYS);
     if (cds.isDefined(tantTsys)) tantTsys_p.attach(msSysCal, tantTsys);
     const String& tantTsysFlag = 
-      NewMSSysCal::columnName(NewMSSysCal::TANT_TSYS_FLAG);
+      MSSysCal::columnName(MSSysCal::TANT_TSYS_FLAG);
     if (cds.isDefined(tantTsysFlag)) {
       tantTsysFlag_p.attach(msSysCal, tantTsysFlag);
     }
     const String& tantTsysSpectrum = 
-      NewMSSysCal::columnName(NewMSSysCal::TANT_TSYS_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TANT_TSYS_SPECTRUM);
     if (cds.isDefined(tantTsysSpectrum)) {
       tantTsysSpectrum_p.attach(msSysCal, tantTsysSpectrum);
     }
-    const String& tcal = NewMSSysCal::columnName(NewMSSysCal::TCAL);
+    const String& tcal = MSSysCal::columnName(MSSysCal::TCAL);
     if (cds.isDefined(tcal)) {
       tcal_p.attach(msSysCal, tcal);
       tcalQuant_p.attach(msSysCal, tcal);
     }
-    const String& tcalFlag = NewMSSysCal::columnName(NewMSSysCal::TCAL_FLAG);
+    const String& tcalFlag = MSSysCal::columnName(MSSysCal::TCAL_FLAG);
     if (cds.isDefined(tcalFlag)) tcalFlag_p.attach(msSysCal, tcalFlag);
     const String& tcalSpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TCAL_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TCAL_SPECTRUM);
     if (cds.isDefined(tcalSpectrum)) {
       tcalSpectrum_p.attach(msSysCal, tcalSpectrum);
       tcalSpectrumQuant_p.attach(msSysCal, tcalSpectrum);
     }
-    const String& trx = NewMSSysCal::columnName(NewMSSysCal::TRX);
+    const String& trx = MSSysCal::columnName(MSSysCal::TRX);
     if (cds.isDefined(trx)) {
       trx_p.attach(msSysCal, trx);
       trxQuant_p.attach(msSysCal, trx);
     }
-    const String& trxFlag = NewMSSysCal::columnName(NewMSSysCal::TRX_FLAG);
+    const String& trxFlag = MSSysCal::columnName(MSSysCal::TRX_FLAG);
     if (cds.isDefined(trxFlag)) trxFlag_p.attach(msSysCal, trxFlag);
     const String& trxSpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TRX_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TRX_SPECTRUM);
     if (cds.isDefined(trxSpectrum)) {
       trxSpectrum_p.attach(msSysCal, trxSpectrum);
       trxSpectrumQuant_p.attach(msSysCal, trxSpectrum);
     }
-    const String& tsky = NewMSSysCal::columnName(NewMSSysCal::TSKY);
+    const String& tsky = MSSysCal::columnName(MSSysCal::TSKY);
     if (cds.isDefined(tsky)) {
       tsky_p.attach(msSysCal, tsky);
       tskyQuant_p.attach(msSysCal, tsky);
     }
-    const String& tskyFlag = NewMSSysCal::columnName(NewMSSysCal::TSKY_FLAG);
+    const String& tskyFlag = MSSysCal::columnName(MSSysCal::TSKY_FLAG);
     if (cds.isDefined(tskyFlag)) tskyFlag_p.attach(msSysCal, tskyFlag);
     const String& tskySpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TSKY_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TSKY_SPECTRUM);
     if (cds.isDefined(tskySpectrum)) {
       tskySpectrum_p.attach(msSysCal, tskySpectrum);
       tskySpectrumQuant_p.attach(msSysCal, tskySpectrum);
     }
-    const String& tsys = NewMSSysCal::columnName(NewMSSysCal::TSYS);
+    const String& tsys = MSSysCal::columnName(MSSysCal::TSYS);
     if (cds.isDefined(tsys)) {
       tsys_p.attach(msSysCal, tsys);
       tsysQuant_p.attach(msSysCal, tsys);
     }
-    const String& tsysFlag = NewMSSysCal::columnName(NewMSSysCal::TSYS_FLAG);
+    const String& tsysFlag = MSSysCal::columnName(MSSysCal::TSYS_FLAG);
     if (cds.isDefined(tsysFlag)) tsysFlag_p.attach(msSysCal, tsysFlag);
     const String& tsysSpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TSYS_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TSYS_SPECTRUM);
     if (cds.isDefined(tsysSpectrum)) {
       tsysSpectrum_p.attach(msSysCal, tsysSpectrum);
       tsysSpectrumQuant_p.attach(msSysCal, tsysSpectrum);
@@ -230,8 +230,8 @@ void RONewMSSysCalColumns::attach(const NewMSSysCal& msSysCal)
   }
 }
 
-NewMSSysCalColumns::NewMSSysCalColumns(NewMSSysCal& msSysCal):
-  RONewMSSysCalColumns(),
+MSSysCalColumns::MSSysCalColumns(MSSysCal& msSysCal):
+  ROMSSysCalColumns(),
   antennaId_p(),
   feedId_p(),
   interval_p(),
@@ -275,14 +275,14 @@ NewMSSysCalColumns::NewMSSysCalColumns(NewMSSysCal& msSysCal):
   attach(msSysCal);
 }
 
-NewMSSysCalColumns::~NewMSSysCalColumns() {}
+MSSysCalColumns::~MSSysCalColumns() {}
 
-void NewMSSysCalColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSSysCalColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
-NewMSSysCalColumns::NewMSSysCalColumns():
-  RONewMSSysCalColumns(),
+MSSysCalColumns::MSSysCalColumns():
+  ROMSSysCalColumns(),
   antennaId_p(),
   feedId_p(),
   interval_p(),
@@ -325,106 +325,106 @@ NewMSSysCalColumns::NewMSSysCalColumns():
 {
 }
 
-void NewMSSysCalColumns::attach(NewMSSysCal& msSysCal)
+void MSSysCalColumns::attach(MSSysCal& msSysCal)
 {
-  RONewMSSysCalColumns::attach(msSysCal);
+  ROMSSysCalColumns::attach(msSysCal);
   if (!isNull()) {
-    antennaId_p.attach(msSysCal, NewMSSysCal::
-		       columnName(NewMSSysCal::ANTENNA_ID));
-    feedId_p.attach(msSysCal, NewMSSysCal::columnName(NewMSSysCal::FEED_ID));
-    interval_p.attach(msSysCal, NewMSSysCal::
-		      columnName(NewMSSysCal::INTERVAL));
-    spectralWindowId_p.attach(msSysCal, NewMSSysCal::
-			      columnName(NewMSSysCal::SPECTRAL_WINDOW_ID));
-    time_p.attach(msSysCal, NewMSSysCal::columnName(NewMSSysCal::TIME));
-    timeMeas_p.attach(msSysCal, NewMSSysCal::columnName(NewMSSysCal::TIME));
-    intervalQuant_p.attach(msSysCal, NewMSSysCal::
-			   columnName(NewMSSysCal::INTERVAL));
-    timeQuant_p.attach(msSysCal, NewMSSysCal::columnName(NewMSSysCal::TIME));
+    antennaId_p.attach(msSysCal, MSSysCal::
+		       columnName(MSSysCal::ANTENNA_ID));
+    feedId_p.attach(msSysCal, MSSysCal::columnName(MSSysCal::FEED_ID));
+    interval_p.attach(msSysCal, MSSysCal::
+		      columnName(MSSysCal::INTERVAL));
+    spectralWindowId_p.attach(msSysCal, MSSysCal::
+			      columnName(MSSysCal::SPECTRAL_WINDOW_ID));
+    time_p.attach(msSysCal, MSSysCal::columnName(MSSysCal::TIME));
+    timeMeas_p.attach(msSysCal, MSSysCal::columnName(MSSysCal::TIME));
+    intervalQuant_p.attach(msSysCal, MSSysCal::
+			   columnName(MSSysCal::INTERVAL));
+    timeQuant_p.attach(msSysCal, MSSysCal::columnName(MSSysCal::TIME));
     const ColumnDescSet& cds = msSysCal.tableDesc().columnDescSet();
-    const String& phaseDiff = NewMSSysCal::columnName(NewMSSysCal::PHASE_DIFF);
+    const String& phaseDiff = MSSysCal::columnName(MSSysCal::PHASE_DIFF);
     if (cds.isDefined(phaseDiff)) {
       phaseDiff_p.attach(msSysCal, phaseDiff);
       phaseDiffQuant_p.attach(msSysCal, phaseDiff);
     }
     const String& phaseDiffFlag =
-      NewMSSysCal::columnName(NewMSSysCal::PHASE_DIFF_FLAG);
+      MSSysCal::columnName(MSSysCal::PHASE_DIFF_FLAG);
     if (cds.isDefined(phaseDiffFlag)) {
       phaseDiffFlag_p.attach(msSysCal, phaseDiffFlag);
     }
-    const String& tant = NewMSSysCal::columnName(NewMSSysCal::TANT);
+    const String& tant = MSSysCal::columnName(MSSysCal::TANT);
     if (cds.isDefined(tant)) {
       tant_p.attach(msSysCal, tant);
       tantQuant_p.attach(msSysCal, tant);
     }
-    const String& tantFlag = NewMSSysCal::columnName(NewMSSysCal::TANT_FLAG);
+    const String& tantFlag = MSSysCal::columnName(MSSysCal::TANT_FLAG);
     if (cds.isDefined(tantFlag)) tantFlag_p.attach(msSysCal, tantFlag);
     const String& tantSpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TANT_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TANT_SPECTRUM);
     if (cds.isDefined(tantSpectrum)) {
       tantSpectrum_p.attach(msSysCal, tantSpectrum);
       tantSpectrumQuant_p.attach(msSysCal, tantSpectrum);
     }
-    const String& tantTsys = NewMSSysCal::columnName(NewMSSysCal::TANT_TSYS);
+    const String& tantTsys = MSSysCal::columnName(MSSysCal::TANT_TSYS);
     if (cds.isDefined(tantTsys)) tantTsys_p.attach(msSysCal, tantTsys);
     const String& tantTsysFlag =
-      NewMSSysCal::columnName(NewMSSysCal::TANT_TSYS_FLAG);
+      MSSysCal::columnName(MSSysCal::TANT_TSYS_FLAG);
     if (cds.isDefined(tantTsysFlag)) {
       tantTsysFlag_p.attach(msSysCal, tantTsysFlag);
     }
     const String& tantTsysSpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TANT_TSYS_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TANT_TSYS_SPECTRUM);
     if (cds.isDefined(tantTsysSpectrum)) {
       tantTsysSpectrum_p.attach(msSysCal, tantTsysSpectrum);
     }
-    const String& tcal = NewMSSysCal::columnName(NewMSSysCal::TCAL);
+    const String& tcal = MSSysCal::columnName(MSSysCal::TCAL);
     if (cds.isDefined(tcal)) {
       tcal_p.attach(msSysCal, tcal);
       tcalQuant_p.attach(msSysCal, tcal);
     }
-    const String& tcalFlag = NewMSSysCal::columnName(NewMSSysCal::TCAL_FLAG);
+    const String& tcalFlag = MSSysCal::columnName(MSSysCal::TCAL_FLAG);
     if (cds.isDefined(tcalFlag)) tcalFlag_p.attach(msSysCal, tcalFlag);
     const String& tcalSpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TCAL_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TCAL_SPECTRUM);
     if (cds.isDefined(tcalSpectrum)) {
       tcalSpectrum_p.attach(msSysCal, tcalSpectrum);
       tcalSpectrumQuant_p.attach(msSysCal, tcalSpectrum);
     }
-    const String& trx = NewMSSysCal::columnName(NewMSSysCal::TRX);
+    const String& trx = MSSysCal::columnName(MSSysCal::TRX);
     if (cds.isDefined(trx)) {
       trx_p.attach(msSysCal, trx);
       trxQuant_p.attach(msSysCal, trx);
     }
-    const String& trxFlag = NewMSSysCal::columnName(NewMSSysCal::TRX_FLAG);
+    const String& trxFlag = MSSysCal::columnName(MSSysCal::TRX_FLAG);
     if (cds.isDefined(trxFlag)) trxFlag_p.attach(msSysCal, trxFlag);
     const String& trxSpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TRX_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TRX_SPECTRUM);
     if (cds.isDefined(trxSpectrum)) {
       trxSpectrum_p.attach(msSysCal, trxSpectrum);
       trxSpectrumQuant_p.attach(msSysCal, trxSpectrum);
     }
-    const String& tsky = NewMSSysCal::columnName(NewMSSysCal::TSKY);
+    const String& tsky = MSSysCal::columnName(MSSysCal::TSKY);
     if (cds.isDefined(tsky)) {
       tsky_p.attach(msSysCal, tsky);
       tskyQuant_p.attach(msSysCal, tsky);
     }
-    const String& tskyFlag = NewMSSysCal::columnName(NewMSSysCal::TSKY_FLAG);
+    const String& tskyFlag = MSSysCal::columnName(MSSysCal::TSKY_FLAG);
     if (cds.isDefined(tskyFlag)) tskyFlag_p.attach(msSysCal, tskyFlag);
     const String& tskySpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TSKY_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TSKY_SPECTRUM);
     if (cds.isDefined(tskySpectrum)) {
       tskySpectrum_p.attach(msSysCal, tskySpectrum);
       tskySpectrumQuant_p.attach(msSysCal, tskySpectrum);
     }
-    const String& tsys = NewMSSysCal::columnName(NewMSSysCal::TSYS);
+    const String& tsys = MSSysCal::columnName(MSSysCal::TSYS);
     if (cds.isDefined(tsys)) {
       tsys_p.attach(msSysCal, tsys);
       tsysQuant_p.attach(msSysCal, tsys);
     }
-    const String& tsysFlag = NewMSSysCal::columnName(NewMSSysCal::TSYS_FLAG);
+    const String& tsysFlag = MSSysCal::columnName(MSSysCal::TSYS_FLAG);
     if (cds.isDefined(tsysFlag)) tsysFlag_p.attach(msSysCal, tsysFlag);
     const String& tsysSpectrum =
-      NewMSSysCal::columnName(NewMSSysCal::TSYS_SPECTRUM);
+      MSSysCal::columnName(MSSysCal::TSYS_SPECTRUM);
     if (cds.isDefined(tsysSpectrum)) {
       tsysSpectrum_p.attach(msSysCal, tsysSpectrum);
       tsysSpectrumQuant_p.attach(msSysCal, tsysSpectrum);
@@ -433,5 +433,5 @@ void NewMSSysCalColumns::attach(NewMSSysCal& msSysCal)
 }
 
 // Local Variables: 
-// compile-command: "gmake NewMSSysCalColumns"
+// compile-command: "gmake MSSysCalColumns"
 // End: 

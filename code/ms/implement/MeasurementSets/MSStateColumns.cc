@@ -1,4 +1,4 @@
-//# NewMSStateColumns.cc:  provides easy access to NewMeasurementSet columns
+//# MSStateColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSStateColumns.h>
-#include <aips/MeasurementSets/NewMSState.h>
+#include <aips/MeasurementSets/MSStateColumns.h>
+#include <aips/MeasurementSets/MSState.h>
 
-RONewMSStateColumns::RONewMSStateColumns(const NewMSState& msState):
-  cal_p(msState, NewMSState::columnName(NewMSState::CAL)),
-  flagRow_p(msState, NewMSState::columnName(NewMSState::FLAG_ROW)),
-  load_p(msState, NewMSState::columnName(NewMSState::LOAD)),
-  obsMode_p(msState, NewMSState::columnName(NewMSState::OBS_MODE)),
-  ref_p(msState, NewMSState::columnName(NewMSState::REF)),
-  sig_p(msState, NewMSState::columnName(NewMSState::SIG)),
-  subScan_p(msState, NewMSState::columnName(NewMSState::SUB_SCAN)),
-  calQuant_p(msState, NewMSState::columnName(NewMSState::CAL)),
-  loadQuant_p(msState, NewMSState::columnName(NewMSState::LOAD))
+ROMSStateColumns::ROMSStateColumns(const MSState& msState):
+  cal_p(msState, MSState::columnName(MSState::CAL)),
+  flagRow_p(msState, MSState::columnName(MSState::FLAG_ROW)),
+  load_p(msState, MSState::columnName(MSState::LOAD)),
+  obsMode_p(msState, MSState::columnName(MSState::OBS_MODE)),
+  ref_p(msState, MSState::columnName(MSState::REF)),
+  sig_p(msState, MSState::columnName(MSState::SIG)),
+  subScan_p(msState, MSState::columnName(MSState::SUB_SCAN)),
+  calQuant_p(msState, MSState::columnName(MSState::CAL)),
+  loadQuant_p(msState, MSState::columnName(MSState::LOAD))
 {}
 
-RONewMSStateColumns::~RONewMSStateColumns() {}
+ROMSStateColumns::~ROMSStateColumns() {}
 
-RONewMSStateColumns::RONewMSStateColumns():
+ROMSStateColumns::ROMSStateColumns():
   cal_p(),
   flagRow_p(),
   load_p(),
@@ -54,36 +54,36 @@ RONewMSStateColumns::RONewMSStateColumns():
   loadQuant_p()
 {}
 
-void RONewMSStateColumns::attach(const NewMSState& msState) 
+void ROMSStateColumns::attach(const MSState& msState) 
 {
-  cal_p.attach(msState, NewMSState::columnName(NewMSState::CAL));
-  flagRow_p.attach(msState, NewMSState::columnName(NewMSState::FLAG_ROW));
-  load_p.attach(msState, NewMSState::columnName(NewMSState::LOAD));
-  obsMode_p.attach(msState, NewMSState::columnName(NewMSState::OBS_MODE));
-  ref_p.attach(msState, NewMSState::columnName(NewMSState::REF));
-  sig_p.attach(msState, NewMSState::columnName(NewMSState::SIG));
-  subScan_p.attach(msState, NewMSState::columnName(NewMSState::SUB_SCAN));
-  calQuant_p.attach(msState, NewMSState::columnName(NewMSState::CAL));
-  loadQuant_p.attach(msState, NewMSState::columnName(NewMSState::LOAD));
+  cal_p.attach(msState, MSState::columnName(MSState::CAL));
+  flagRow_p.attach(msState, MSState::columnName(MSState::FLAG_ROW));
+  load_p.attach(msState, MSState::columnName(MSState::LOAD));
+  obsMode_p.attach(msState, MSState::columnName(MSState::OBS_MODE));
+  ref_p.attach(msState, MSState::columnName(MSState::REF));
+  sig_p.attach(msState, MSState::columnName(MSState::SIG));
+  subScan_p.attach(msState, MSState::columnName(MSState::SUB_SCAN));
+  calQuant_p.attach(msState, MSState::columnName(MSState::CAL));
+  loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
 }
 
-NewMSStateColumns::NewMSStateColumns(NewMSState& msState):
-  RONewMSStateColumns(msState),
-  cal_p(msState, NewMSState::columnName(NewMSState::CAL)),
-  flagRow_p(msState, NewMSState::columnName(NewMSState::FLAG_ROW)),
-  load_p(msState, NewMSState::columnName(NewMSState::LOAD)),
-  obsMode_p(msState, NewMSState::columnName(NewMSState::OBS_MODE)),
-  ref_p(msState, NewMSState::columnName(NewMSState::REF)),
-  sig_p(msState, NewMSState::columnName(NewMSState::SIG)),
-  subScan_p(msState, NewMSState::columnName(NewMSState::SUB_SCAN)),
-  calQuant_p(msState, NewMSState::columnName(NewMSState::CAL)),
-  loadQuant_p(msState, NewMSState::columnName(NewMSState::LOAD))
+MSStateColumns::MSStateColumns(MSState& msState):
+  ROMSStateColumns(msState),
+  cal_p(msState, MSState::columnName(MSState::CAL)),
+  flagRow_p(msState, MSState::columnName(MSState::FLAG_ROW)),
+  load_p(msState, MSState::columnName(MSState::LOAD)),
+  obsMode_p(msState, MSState::columnName(MSState::OBS_MODE)),
+  ref_p(msState, MSState::columnName(MSState::REF)),
+  sig_p(msState, MSState::columnName(MSState::SIG)),
+  subScan_p(msState, MSState::columnName(MSState::SUB_SCAN)),
+  calQuant_p(msState, MSState::columnName(MSState::CAL)),
+  loadQuant_p(msState, MSState::columnName(MSState::LOAD))
 {}
 
-NewMSStateColumns::~NewMSStateColumns() {}
+MSStateColumns::~MSStateColumns() {}
 
-NewMSStateColumns::NewMSStateColumns():
-  RONewMSStateColumns(),
+MSStateColumns::MSStateColumns():
+  ROMSStateColumns(),
   cal_p(),
   flagRow_p(),
   load_p(),
@@ -95,19 +95,19 @@ NewMSStateColumns::NewMSStateColumns():
   loadQuant_p()
 {}
 
-void NewMSStateColumns::attach(NewMSState& msState) 
+void MSStateColumns::attach(MSState& msState) 
 {
-  RONewMSStateColumns::attach(msState);
-  cal_p.attach(msState, NewMSState::columnName(NewMSState::CAL));
-  flagRow_p.attach(msState, NewMSState::columnName(NewMSState::FLAG_ROW));
-  load_p.attach(msState, NewMSState::columnName(NewMSState::LOAD));
-  obsMode_p.attach(msState, NewMSState::columnName(NewMSState::OBS_MODE));
-  ref_p.attach(msState, NewMSState::columnName(NewMSState::REF));
-  sig_p.attach(msState, NewMSState::columnName(NewMSState::SIG));
-  subScan_p.attach(msState, NewMSState::columnName(NewMSState::SUB_SCAN));
-  calQuant_p.attach(msState, NewMSState::columnName(NewMSState::CAL));
-  loadQuant_p.attach(msState, NewMSState::columnName(NewMSState::LOAD));
+  ROMSStateColumns::attach(msState);
+  cal_p.attach(msState, MSState::columnName(MSState::CAL));
+  flagRow_p.attach(msState, MSState::columnName(MSState::FLAG_ROW));
+  load_p.attach(msState, MSState::columnName(MSState::LOAD));
+  obsMode_p.attach(msState, MSState::columnName(MSState::OBS_MODE));
+  ref_p.attach(msState, MSState::columnName(MSState::REF));
+  sig_p.attach(msState, MSState::columnName(MSState::SIG));
+  subScan_p.attach(msState, MSState::columnName(MSState::SUB_SCAN));
+  calQuant_p.attach(msState, MSState::columnName(MSState::CAL));
+  loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
 }
 // Local Variables: 
-// compile-command: "gmake NewMSStateColumns"
+// compile-command: "gmake MSStateColumns"
 // End: 

@@ -1,4 +1,4 @@
-//# NewMSPolColumns.h: provides easy access to NewMSPolarization columns
+//# MSPolColumns.h: provides easy access to MSPolarization columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSPOLCOLUMNS_H)
-#define AIPS_NEWMSPOLCOLUMNS_H
+#if !defined(AIPS_MSPOLCOLUMNS_H)
+#define AIPS_MSPOLCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Measures/Stokes.h>
 
-class NewMSPolarization;
+class MSPolarization;
 template <class T> class Vector;
 template <class T> class Matrix;
 
 // <summary>
-// A class to provide easy read-only access to NewMSPolarization columns
+// A class to provide easy read-only access to MSPolarization columns
 // </summary>
 
 // <use visibility=export>
@@ -47,37 +47,37 @@ template <class T> class Matrix;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSPolarization
+//   <li> MSPolarization
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSPolarizationColumns stands for Read-Only NewMeasurementSet Polarization Table columns.
+// ROMSPolarizationColumns stands for Read-Only MeasurementSet Polarization Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSPolarization Table.
+// This class provides read-only access to the columns in the MSPolarization Table.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
+// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSPolarizationColumns
+class ROMSPolarizationColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSPolarizationColumns(const NewMSPolarization& msPolarization);
+  ROMSPolarizationColumns(const MSPolarization& msPolarization);
 
   // The destructor does nothing special
-  ~RONewMSPolarizationColumns();
+  ~ROMSPolarizationColumns();
 
   // Access to required columns
   // <group>
@@ -102,10 +102,10 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSPolarizationColumns();
+  ROMSPolarizationColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSPolarization& msPolarization);
+  void attach(const MSPolarization& msPolarization);
 
 private:
   //# Functions which check the supplied values against the relevant column and
@@ -115,8 +115,8 @@ private:
 
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSPolarizationColumns(const RONewMSPolarizationColumns&);
-  RONewMSPolarizationColumns& operator=(const RONewMSPolarizationColumns&);
+  ROMSPolarizationColumns(const ROMSPolarizationColumns&);
+  ROMSPolarizationColumns& operator=(const ROMSPolarizationColumns&);
 
   //# required columns
   ROArrayColumn<Int> corrProduct_p;
@@ -126,7 +126,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSPolarization columns
+// A class to provide easy read-write access to MSPolarization columns
 // </summary>
 
 // <use visibility=export>
@@ -135,37 +135,37 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSPolarization
+//   <li> MSPolarization
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSPolarizationColumns stands for NewMeasurementSet Polarization Table columns.
+// MSPolarizationColumns stands for MeasurementSet Polarization Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSPolarization Table,
+// This class provides access to the columns in the MSPolarization Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSPolarizationColumns: public RONewMSPolarizationColumns
+class MSPolarizationColumns: public ROMSPolarizationColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSPolarizationColumns(NewMSPolarization& msPolarization);
+  MSPolarizationColumns(MSPolarization& msPolarization);
   
   // The destructor does nothing special
-  ~NewMSPolarizationColumns();
+  ~MSPolarizationColumns();
   
   // Read-write access to required columns
   // <group>
@@ -178,28 +178,28 @@ public:
   // Read-only access to required columns
   // <group>
   const ROArrayColumn<Int>& corrProduct() const {
-    return RONewMSPolarizationColumns::corrProduct();}
+    return ROMSPolarizationColumns::corrProduct();}
   const ROArrayColumn<Int>& corrType() const {
-    return RONewMSPolarizationColumns::corrType();}
+    return ROMSPolarizationColumns::corrType();}
   const ROScalarColumn<Bool>& flagRow() const {
-    return RONewMSPolarizationColumns::flagRow();}
+    return ROMSPolarizationColumns::flagRow();}
   const ROScalarColumn<Int>& numCorr() const {
-    return RONewMSPolarizationColumns::numCorr();}
+    return ROMSPolarizationColumns::numCorr();}
   // </group>
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSPolarizationColumns();
+  MSPolarizationColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSPolarization& msPolarization);
+  void attach(MSPolarization& msPolarization);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSPolarizationColumns(const NewMSPolarizationColumns&);
-  NewMSPolarizationColumns& operator=(const NewMSPolarizationColumns&);
+  MSPolarizationColumns(const MSPolarizationColumns&);
+  MSPolarizationColumns& operator=(const MSPolarizationColumns&);
 
   //# required columns
   ArrayColumn<Int> corrProduct_p;

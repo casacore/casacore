@@ -1,4 +1,4 @@
-//# NewMSDataDescColumns.h: provides easy access to NewMSDataDescription columns
+//# MSDataDescColumns.h: provides easy access to MSDataDescription columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSDATADESCCOLUMNS_H)
-#define AIPS_NEWMSDATADESCCOLUMNS_H
+#if !defined(AIPS_MSDATADESCCOLUMNS_H)
+#define AIPS_MSDATADESCCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Tables/ScalarColumn.h>
 
-class NewMSDataDescription;
+class MSDataDescription;
 // <summary>
-// A class to provide easy read-only access to NewMSDataDesc columns
+// A class to provide easy read-only access to MSDataDesc columns
 // </summary>
 
 // <use visibility=export>
@@ -42,23 +42,23 @@ class NewMSDataDescription;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSDataDesc
+//   <li> MSDataDesc
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSDataDescColumns stands for Read-Only NewMeasurementSet DataDesc Table
+// ROMSDataDescColumns stands for Read-Only MeasurementSet DataDesc Table
 // columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSDataDesc
+// This class provides read-only access to the columns in the MSDataDesc
 // Table.  It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to worry about
 // getting those right. There is an access function for every predefined
 // column. Access to non-predefined columns will still have to be done with
-// explicit declarations.  See <linkto class=RONewMSColumns>
-// RONewMSColumns</linkto> for an example.  <note role=warning> The Table that
+// explicit declarations.  See <linkto class=ROMSColumns>
+// ROMSColumns</linkto> for an example.  <note role=warning> The Table that
 // is used to construct this class must not be destroyed (or go out of scope)
 // before this class does. Otherwise the scalar and array columns use by this
 // class will be left dangling.</note>
@@ -66,17 +66,17 @@ class NewMSDataDescription;
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSDataDescColumns
+class ROMSDataDescColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSDataDescColumns(const NewMSDataDescription& msDataDesc);
+  ROMSDataDescColumns(const MSDataDescription& msDataDesc);
   
   // The destructor does nothing special
-  ~RONewMSDataDescColumns();
+  ~ROMSDataDescColumns();
   
   // Access to required columns
   // <group>
@@ -105,19 +105,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSDataDescColumns();
+  ROMSDataDescColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSDataDescription& msDataDesc);
+  void attach(const MSDataDescription& msDataDesc);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSDataDescColumns(const RONewMSDataDescColumns&);
-  RONewMSDataDescColumns& operator=(const RONewMSDataDescColumns&);
+  ROMSDataDescColumns(const ROMSDataDescColumns&);
+  ROMSDataDescColumns& operator=(const ROMSDataDescColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSDataDescription& msDataDesc);
+  void attachOptionalCols(const MSDataDescription& msDataDesc);
   
   //# required columns
   ROScalarColumn<Bool> flagRow_p;
@@ -128,7 +128,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSDataDescription columns
+// A class to provide easy read-write access to MSDataDescription columns
 // </summary>
 
 // <use visibility=export>
@@ -137,40 +137,40 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSDataDesc
+//   <li> MSDataDesc
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSDataDescColumns stands for NewMeasurementSet DataDescription Table
+// MSDataDescColumns stands for MeasurementSet DataDescription Table
 // columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSDataDesc Table,
+// This class provides access to the columns in the MSDataDesc Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // <note role=warning> The Table that is used to construct this class must not
 // be destroyed (or go out of scope) before this class does. Otherwise the
 // scalar and array columns use by this class will be left dangling.</note>
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSDataDescColumns: public RONewMSDataDescColumns
+class MSDataDescColumns: public ROMSDataDescColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSDataDescColumns(NewMSDataDescription& msDataDesc);
+  MSDataDescColumns(MSDataDescription& msDataDesc);
 
   // The destructor does nothing special
-  ~NewMSDataDescColumns();
+  ~MSDataDescColumns();
 
   // Read-write access to required columns
   // <group>
@@ -187,35 +187,35 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Bool>& flagRow() const {
-    return RONewMSDataDescColumns::flagRow();}
+    return ROMSDataDescColumns::flagRow();}
   const ROScalarColumn<Int>& polarizationId() const {
-    return RONewMSDataDescColumns::polarizationId();}
+    return ROMSDataDescColumns::polarizationId();}
   const ROScalarColumn<Int>& spectralWindowId() const {
-    return RONewMSDataDescColumns::spectralWindowId();}
+    return ROMSDataDescColumns::spectralWindowId();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROScalarColumn<Int>& lagId() const {
-    return RONewMSDataDescColumns::lagId();}
+    return ROMSDataDescColumns::lagId();}
   // </group>
   
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSDataDescColumns();
+  MSDataDescColumns();
 
   //# attach all the columns in the supplied table to this object
-  void attach(NewMSDataDescription& msDataDesc);
+  void attach(MSDataDescription& msDataDesc);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSDataDescColumns(const NewMSDataDescColumns&);
-  NewMSDataDescColumns& operator=(const NewMSDataDescColumns&);
+  MSDataDescColumns(const MSDataDescColumns&);
+  MSDataDescColumns& operator=(const MSDataDescColumns&);
 
   //# attach optional columns in the supplied Table (if they exist)
-  void attachOptionalCols(NewMSDataDescription& msDataDesc);
+  void attachOptionalCols(MSDataDescription& msDataDesc);
 
   //# required columns
   ScalarColumn<Bool> flagRow_p;

@@ -1,4 +1,4 @@
-//# NewMSSysCalColumns.h: provides easy access to NewMSSysCal columns
+//# MSSysCalColumns.h: provides easy access to MSSysCal columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSSYSCALCOLUMNS_H)
-#define AIPS_NEWMSSYSCALCOLUMNS_H
+#if !defined(AIPS_MSSYSCALCOLUMNS_H)
+#define AIPS_MSSYSCALCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MEpoch.h>
@@ -36,10 +36,10 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 
-class NewMSSysCal;
+class MSSysCal;
 
 // <summary>
-// A class to provide easy read-only access to NewMSSysCal columns
+// A class to provide easy read-only access to MSSysCal columns
 // </summary>
 
 // <use visibility=export>
@@ -48,40 +48,40 @@ class NewMSSysCal;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSSysCal
+//   <li> MSSysCal
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSSysCalColumns stands for Read-Only NewMeasurementSet SysCal Table
+// ROMSSysCalColumns stands for Read-Only MeasurementSet SysCal Table
 // columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSSysCal Table.
+// This class provides read-only access to the columns in the MSSysCal Table.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
+// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSSysCalColumns
+class ROMSSysCalColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  RONewMSSysCalColumns(const NewMSSysCal& msSysCal);
+  ROMSSysCalColumns(const MSSysCal& msSysCal);
 
   // The destructor does nothing special
-  ~RONewMSSysCalColumns();
+  ~ROMSSysCalColumns();
 
-  // Is this object defined? (NewMSSysCal table is optional)
+  // Is this object defined? (MSSysCal table is optional)
   Bool isNull() const {return isNull_p;}
 
   // Access to columns
@@ -147,19 +147,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSSysCalColumns();
+  ROMSSysCalColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSSysCal& msSysCal);
+  void attach(const MSSysCal& msSysCal);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSSysCalColumns(const RONewMSSysCalColumns&);
-  RONewMSSysCalColumns& operator=(const RONewMSSysCalColumns&);
+  ROMSSysCalColumns(const ROMSSysCalColumns&);
+  ROMSSysCalColumns& operator=(const ROMSSysCalColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSSysCal& msSysCal);
+  void attachOptionalCols(const MSSysCal& msSysCal);
 
   //# Is the object not attached to a Table.
   Bool isNull_p;
@@ -213,7 +213,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSSysCal columns
+// A class to provide easy read-write access to MSSysCal columns
 // </summary>
 
 // <use visibility=export>
@@ -222,37 +222,37 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSSysCal
+//   <li> MSSysCal
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSSysCalColumns stands for NewMeasurementSet SysCal Table columns.
+// MSSysCalColumns stands for MeasurementSet SysCal Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSSysCal Table,
+// This class provides access to the columns in the MSSysCal Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSSysCalColumns: public RONewMSSysCalColumns
+class MSSysCalColumns: public ROMSSysCalColumns
 {
 public:
   // Create a columns object that accesses the data in the specified Table
-  NewMSSysCalColumns(NewMSSysCal& msSysCal);
+  MSSysCalColumns(MSSysCal& msSysCal);
 
   // The destructor does nothing special
-  ~NewMSSysCalColumns();
+  ~MSSysCalColumns();
 
   // Read-write access to required columns
   // <group>
@@ -304,86 +304,86 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<Int>& antennaId() const {
-    return RONewMSSysCalColumns::antennaId();}
+    return ROMSSysCalColumns::antennaId();}
   const ROScalarColumn<Int>& feedId() const {
-    return RONewMSSysCalColumns::feedId();}
+    return ROMSSysCalColumns::feedId();}
   const ROScalarColumn<Double>& interval() const {
-    return RONewMSSysCalColumns::interval();}
+    return ROMSSysCalColumns::interval();}
   const ROScalarQuantColumn<Double>& intervalQuant() const {
-    return RONewMSSysCalColumns::intervalQuant();}
+    return ROMSSysCalColumns::intervalQuant();}
   const ROScalarColumn<Int>& spectralWindowId() const {
-    return RONewMSSysCalColumns::spectralWindowId();}
+    return ROMSSysCalColumns::spectralWindowId();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSSysCalColumns::time();}
+    return ROMSSysCalColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSSysCalColumns::timeQuant();}
+    return ROMSSysCalColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const {
-    return RONewMSSysCalColumns::timeMeas();}
+    return ROMSSysCalColumns::timeMeas();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROScalarColumn<Float>& phaseDiff() const {
-    return RONewMSSysCalColumns::phaseDiff();}
+    return ROMSSysCalColumns::phaseDiff();}
   const ROScalarQuantColumn<Float>& phaseDiffQuant() const {
-    return RONewMSSysCalColumns::phaseDiffQuant();}
+    return ROMSSysCalColumns::phaseDiffQuant();}
   const ROScalarColumn<Bool>& phaseDiffFlag() const {
-    return RONewMSSysCalColumns::phaseDiffFlag();}
+    return ROMSSysCalColumns::phaseDiffFlag();}
   const ROArrayColumn<Float>& tant() const {
-    return RONewMSSysCalColumns::tant();}
+    return ROMSSysCalColumns::tant();}
   const ROArrayQuantColumn<Float>& tantQuant() const {
-    return RONewMSSysCalColumns::tantQuant();}
+    return ROMSSysCalColumns::tantQuant();}
   const ROScalarColumn<Bool>& tantFlag() const {
-    return RONewMSSysCalColumns::tantFlag();}
+    return ROMSSysCalColumns::tantFlag();}
   const ROArrayColumn<Float>& tantSpectrum() const {
-    return RONewMSSysCalColumns::tantSpectrum();}
+    return ROMSSysCalColumns::tantSpectrum();}
   const ROArrayQuantColumn<Float>& tantSpectrumQuant() const {
-    return RONewMSSysCalColumns::tantSpectrumQuant();}
+    return ROMSSysCalColumns::tantSpectrumQuant();}
   const ROArrayColumn<Float>& tantTsys() const {
-    return RONewMSSysCalColumns::tantTsys();}
+    return ROMSSysCalColumns::tantTsys();}
   const ROScalarColumn<Bool>& tantTsysFlag() const {
-    return RONewMSSysCalColumns::tantTsysFlag();}
+    return ROMSSysCalColumns::tantTsysFlag();}
   const ROArrayColumn<Float>& tantTsysSpectrum() const {
-    return RONewMSSysCalColumns::tantTsysSpectrum();}
+    return ROMSSysCalColumns::tantTsysSpectrum();}
   const ROArrayColumn<Float>& tcal() const {
-    return RONewMSSysCalColumns::tcal();}
+    return ROMSSysCalColumns::tcal();}
   const ROArrayQuantColumn<Float>& tcalQuant() const {
-    return RONewMSSysCalColumns::tcalQuant();}
+    return ROMSSysCalColumns::tcalQuant();}
   const ROScalarColumn<Bool>& tcalFlag() const {
-    return RONewMSSysCalColumns::tcalFlag();}
+    return ROMSSysCalColumns::tcalFlag();}
   const ROArrayColumn<Float>& tcalSpectrum() const {
-    return RONewMSSysCalColumns::tcalSpectrum();}
+    return ROMSSysCalColumns::tcalSpectrum();}
   const ROArrayQuantColumn<Float>& tcalSpectrumQuant() const {
-    return RONewMSSysCalColumns::tcalSpectrumQuant();}
-  const ROArrayColumn<Float>& trx() const {return RONewMSSysCalColumns::trx();}
+    return ROMSSysCalColumns::tcalSpectrumQuant();}
+  const ROArrayColumn<Float>& trx() const {return ROMSSysCalColumns::trx();}
   const ROArrayQuantColumn<Float>& trxQuant() const {
-    return RONewMSSysCalColumns::trxQuant();}
+    return ROMSSysCalColumns::trxQuant();}
   const ROScalarColumn<Bool>& trxFlag() const {
-    return RONewMSSysCalColumns::trxFlag();}
+    return ROMSSysCalColumns::trxFlag();}
   const ROArrayColumn<Float>& trxSpectrum() const {
-    return RONewMSSysCalColumns::trxSpectrum();}
+    return ROMSSysCalColumns::trxSpectrum();}
   const ROArrayQuantColumn<Float>& trxSpectrumQuant() const {
-    return RONewMSSysCalColumns::trxSpectrumQuant();}
+    return ROMSSysCalColumns::trxSpectrumQuant();}
   const ROArrayColumn<Float>& tsky() const {
-    return RONewMSSysCalColumns::tsky();}
+    return ROMSSysCalColumns::tsky();}
   const ROArrayQuantColumn<Float>& tskyQuant() const {
-    return RONewMSSysCalColumns::tskyQuant();}
+    return ROMSSysCalColumns::tskyQuant();}
   const ROScalarColumn<Bool>& tskyFlag() const {
-    return RONewMSSysCalColumns::tskyFlag();}
+    return ROMSSysCalColumns::tskyFlag();}
   const ROArrayColumn<Float>& tskySpectrum() const {
-    return RONewMSSysCalColumns::tskySpectrum();}
+    return ROMSSysCalColumns::tskySpectrum();}
   const ROArrayQuantColumn<Float>& tskySpectrumQuant() const {
-    return RONewMSSysCalColumns::tskySpectrumQuant();}
+    return ROMSSysCalColumns::tskySpectrumQuant();}
   const ROArrayColumn<Float>& tsys() const {
-    return RONewMSSysCalColumns::tsys();}
+    return ROMSSysCalColumns::tsys();}
   const ROArrayQuantColumn<Float>& tsysQuant() const {
-    return RONewMSSysCalColumns::tsysQuant();}
+    return ROMSSysCalColumns::tsysQuant();}
   const ROScalarColumn<Bool>& tsysFlag() const {
-    return RONewMSSysCalColumns::tsysFlag();}
+    return ROMSSysCalColumns::tsysFlag();}
   const ROArrayColumn<Float>& tsysSpectrum() const {
-    return RONewMSSysCalColumns::tsysSpectrum();}
+    return ROMSSysCalColumns::tsysSpectrum();}
   const ROArrayQuantColumn<Float>& tsysSpectrumQuant() const {
-    return RONewMSSysCalColumns::tsysSpectrumQuant();}
+    return ROMSSysCalColumns::tsysSpectrumQuant();}
   // </group>
 
   // set the epoch type for the TIME column.
@@ -400,19 +400,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSSysCalColumns();
+  MSSysCalColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSSysCal& msSysCal);
+  void attach(MSSysCal& msSysCal);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSSysCalColumns(const NewMSSysCalColumns&);
-  NewMSSysCalColumns& operator=(const NewMSSysCalColumns&);
+  MSSysCalColumns(const MSSysCalColumns&);
+  MSSysCalColumns& operator=(const MSSysCalColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSSysCal& msSysCal);
+  void attachOptionalCols(MSSysCal& msSysCal);
   
   //# required columns
   ScalarColumn<Int> antennaId_p;

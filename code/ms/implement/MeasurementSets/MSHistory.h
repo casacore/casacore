@@ -1,4 +1,4 @@
-//# NewMSHistory.h: The NewMeasurementSet HISTORY Table
+//# MSHistory.h: The MeasurementSet HISTORY Table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSHISTORY_H)
-#define AIPS_NewMSHISTORY_H
+#if !defined(AIPS_MSHISTORY_H)
+#define AIPS_MSHISTORY_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSHistoryEnums.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MSHistoryEnums.h>
 
 // <summary> 
-// A Table intended to hold a NewMeasurementSet OBSERVATIONLOG table.
+// A Table intended to hold a MeasurementSet OBSERVATIONLOG table.
 // </summary>
 
 // <use visibility=export>
@@ -43,61 +43,61 @@
 
 // <prerequisite>
 // <ul>
-//   <li> <linkto class="NewMeasurementSet:description">NewMeasurementSet</linkto> 
-//   <li> <linkto class="NewMSTable">NewMSTable</linkto> 
+//   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto> 
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// NewMSHistory stands for the NewMeasurementSet ObservationLog table.
+// MSHistory stands for the MeasurementSet ObservationLog table.
 // </etymology>
 //
 // <synopsis> 
-// An NewMSHistory is a table intended to hold the OBSERVATIONLOG table for
-// the NewMeasurementSet. It has an identical set of member functions as
-// the main NewMeasurementSet class, except (currently) for the default
+// An MSHistory is a table intended to hold the OBSERVATIONLOG table for
+// the MeasurementSet. It has an identical set of member functions as
+// the main MeasurementSet class, except (currently) for the default
 // calibration members. For further info and examples see the 
-// NewMeasurementSet class.
+// MeasurementSet class.
 // </synopsis> 
 //
 // <example>
-// See the NewMeasurementSet for an example of how to access and use this class.
+// See the MeasurementSet for an example of how to access and use this class.
 // </example>
 //
 // <motivation>
-// It was found that subtables and the main table of the NewMeasurementSet have
+// It was found that subtables and the main table of the MeasurementSet have
 // a lot in common, therefore they derive their interface from the same
 // base class. Each subtable has its own class to keep the enum definitions
 // and conversion functions in separate scopes.
 // </motivation>
 //
 // <todo asof="1999/1/14">
-// see NewMeasurementSet.
+// see MeasurementSet.
 // </todo>
 
-class NewMSHistory:public NewMSHistoryEnums,
-		public NewMSTable<NewMSHistoryEnums::PredefinedColumns,
-		               NewMSHistoryEnums::PredefinedKeywords>
+class MSHistory:public MSHistoryEnums,
+		public MSTable<MSHistoryEnums::PredefinedColumns,
+		               MSHistoryEnums::PredefinedKeywords>
 {
 public:
 
-    // This constructs an empty NewMSHistory
-    NewMSHistory ();
+    // This constructs an empty MSHistory
+    MSHistory ();
 
     // These constructors mirror the Table ones with additional checking
-    // on validity (verifying that the NewMSHistory will have the required columns
+    // on validity (verifying that the MSHistory will have the required columns
     // and keywords)
-    // An exception is thrown if the constructed Table is not a valid NewMSHistory
+    // An exception is thrown if the constructed Table is not a valid MSHistory
     // <thrown>
     //   <li> AipsError
     // </thrown>
     // <group name=tableLikeConstructors>
-    NewMSHistory (const String &tableName, TableOption = Table::Old);
-    NewMSHistory (const String &tableName, const String &tableDescName,
+    MSHistory (const String &tableName, TableOption = Table::Old);
+    MSHistory (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    NewMSHistory (SetupNewTable &newTab, uInt nrrow = 0, Bool initialize = False);
-    NewMSHistory (const Table &table);
-    NewMSHistory (const NewMSHistory &other);
+    MSHistory (SetupNewTable &newTab, uInt nrrow = 0, Bool initialize = False);
+    MSHistory (const Table &table);
+    MSHistory (const MSHistory &other);
     // </group>
 
     // As with tables, the destructor writes the table if necessary.
@@ -107,23 +107,23 @@ public:
     // <thrown>
     //   <li> AipsError
     // </thrown>
-    ~NewMSHistory();
+    ~MSHistory();
 
     //  Assignment operator, reference semantics
-    NewMSHistory& operator=(const NewMSHistory&);
+    MSHistory& operator=(const MSHistory&);
 
     // Make a special copy of this Table which references all columns from
     // this Table except those mentioned; those are empty and writable.
     // Each forwarded column has the same writable status as the underlying
     // column. The mentioned columns all use the AipsIO storage manager.
-    // This function is inherited from NewMSTable and unlikely to be of use,
-    // except in the class NewMeasurementSet (see comment there)..
-    NewMSHistory referenceCopy(const String& newTableName,
+    // This function is inherited from MSTable and unlikely to be of use,
+    // except in the class MeasurementSet (see comment there)..
+    MSHistory referenceCopy(const String& newTableName,
 			   const Block<String>& writableColumns) const;
 
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
-    // NewMSTableImpl.
+    // MSTableImpl.
     static void init();
 
 private:

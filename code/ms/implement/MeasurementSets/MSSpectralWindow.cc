@@ -1,4 +1,4 @@
-//# NewMSSpectralWindow.cc: The NewMeasurementSet FREQUENCY Table
+//# MSSpectralWindow.cc: The MeasurementSet FREQUENCY Table
 //# Copyright (C) 1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSSpectralWindow.h>
+#include <aips/MeasurementSets/MSSpectralWindow.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -38,74 +38,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSSpectralWindow::NewMSSpectralWindow():hasBeenDestroyed_p(True) { }
+MSSpectralWindow::MSSpectralWindow():hasBeenDestroyed_p(True) { }
 
-NewMSSpectralWindow::NewMSSpectralWindow(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSSpectralWindow::MSSpectralWindow(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSpectralWindow(String &, TableOption) - "
-			 "table is not a valid NewMSSpectralWindow"));
+	throw (AipsError("MSSpectralWindow(String &, TableOption) - "
+			 "table is not a valid MSSpectralWindow"));
 }
 
-NewMSSpectralWindow::NewMSSpectralWindow(const String& tableName, const String &tableDescName,
+MSSpectralWindow::MSSpectralWindow(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSpectralWindow(String &, String &, TableOption) - "
-			 "table is not a valid NewMSSpectralWindow"));
+	throw (AipsError("MSSpectralWindow(String &, String &, TableOption) - "
+			 "table is not a valid MSSpectralWindow"));
 }
 
-NewMSSpectralWindow::NewMSSpectralWindow(SetupNewTable &newTab, uInt nrrow,
+MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSpectralWindow(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSSpectralWindow"));
+	throw (AipsError("MSSpectralWindow(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSSpectralWindow"));
 }
 
-NewMSSpectralWindow::NewMSSpectralWindow(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSSpectralWindow::MSSpectralWindow(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSpectralWindow(const Table &) - "
-			 "table is not a valid NewMSSpectralWindow"));
+	throw (AipsError("MSSpectralWindow(const Table &) - "
+			 "table is not a valid MSSpectralWindow"));
 }
 
-NewMSSpectralWindow::NewMSSpectralWindow(const NewMSSpectralWindow &other)
-    : NewMSTable<PredefinedColumns,
+MSSpectralWindow::MSSpectralWindow(const MSSpectralWindow &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSSpectralWindow(const NewMSSpectralWindow &) - "
-			     "table is not a valid NewMSSpectralWindow"));
+	    throw (AipsError("MSSpectralWindow(const MSSpectralWindow &) - "
+			     "table is not a valid MSSpectralWindow"));
 }
 
-NewMSSpectralWindow::~NewMSSpectralWindow()
+MSSpectralWindow::~MSSpectralWindow()
 {
-// check to make sure that this NewMSSpectralWindow is still valid
+// check to make sure that this MSSpectralWindow is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSSpectralWindow() - "
-			 "Table written is not a valid NewMSSpectralWindow"));
+	throw (AipsError("~MSSpectralWindow() - "
+			 "Table written is not a valid MSSpectralWindow"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -113,17 +113,17 @@ NewMSSpectralWindow::~NewMSSpectralWindow()
 }
 
 
-NewMSSpectralWindow& NewMSSpectralWindow::operator=(const NewMSSpectralWindow &other)
+MSSpectralWindow& MSSpectralWindow::operator=(const MSSpectralWindow &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSSpectralWindow::init()
+void MSSpectralWindow::init()
 {
     if (! columnMap_p.ndefined()) {
       // the PredefinedColumns
@@ -226,9 +226,9 @@ void NewMSSpectralWindow::init()
 }
 
 	
-NewMSSpectralWindow NewMSSpectralWindow::referenceCopy(const String& newTableName, 
+MSSpectralWindow MSSpectralWindow::referenceCopy(const String& newTableName, 
 				     const Block<String>& writableColumns) const
 {
-    return NewMSSpectralWindow(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSSpectralWindow(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

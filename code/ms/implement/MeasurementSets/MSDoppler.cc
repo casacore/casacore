@@ -1,4 +1,4 @@
-//# NewMSDoppler.cc: The NewMeasurementSet DOPPLER Table
+//# MSDoppler.cc: The MeasurementSet DOPPLER Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSDoppler.h>
+#include <aips/MeasurementSets/MSDoppler.h>
 
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -39,21 +39,21 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSDoppler::NewMSDoppler():hasBeenDestroyed_p(True) { }
+MSDoppler::MSDoppler():hasBeenDestroyed_p(True) { }
 
-NewMSDoppler::NewMSDoppler(const String &tableName, 
+MSDoppler::MSDoppler(const String &tableName, 
 				     TableOption option) 
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     addVelDef();
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSDoppler(String &, TableOption) - "
-			 "table is not a valid NewMSDoppler"));
+	throw (AipsError("MSDoppler(String &, TableOption) - "
+			 "table is not a valid MSDoppler"));
 }
 
-void NewMSDoppler::addVelDef()
+void MSDoppler::addVelDef()
 {
   // For a transition period: add the VELDEF column
   // silently if it is not there - 2000/09/12, remove next MS update.
@@ -74,45 +74,45 @@ void NewMSDoppler::addVelDef()
   }
 }
 
-NewMSDoppler::NewMSDoppler(const String& tableName, const String &tableDescName,
+MSDoppler::MSDoppler(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     addVelDef();
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSDoppler(String &, String &, TableOption) - "
-			 "table is not a valid NewMSDoppler"));
+	throw (AipsError("MSDoppler(String &, String &, TableOption) - "
+			 "table is not a valid MSDoppler"));
 }
 
-NewMSDoppler::NewMSDoppler(SetupNewTable &newTab, uInt nrrow,
+MSDoppler::MSDoppler(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     addVelDef();
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSDoppler(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSDoppler"));
+	throw (AipsError("MSDoppler(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSDoppler"));
 }
 
-NewMSDoppler::NewMSDoppler(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSDoppler::MSDoppler(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     addVelDef();
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSDoppler(const Table &) - "
-			 "table is not a valid NewMSDoppler"));
+	throw (AipsError("MSDoppler(const Table &) - "
+			 "table is not a valid MSDoppler"));
 }
 
-NewMSDoppler::NewMSDoppler(const NewMSDoppler &other)
-    : NewMSTable<PredefinedColumns,
+MSDoppler::MSDoppler(const MSDoppler &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
@@ -120,20 +120,20 @@ NewMSDoppler::NewMSDoppler(const NewMSDoppler &other)
     if (&other != this) 
         addVelDef();
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSDoppler(const NewMSDoppler &) - "
-			     "table is not a valid NewMSDoppler"));
+	    throw (AipsError("MSDoppler(const MSDoppler &) - "
+			     "table is not a valid MSDoppler"));
 }
 
-NewMSDoppler::~NewMSDoppler()
+MSDoppler::~MSDoppler()
 {
-// check to make sure that this NewMSDoppler is still valid
+// check to make sure that this MSDoppler is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSDoppler() - "
-			 "Table written is not a valid NewMSDoppler"));
+	throw (AipsError("~MSDoppler() - "
+			 "Table written is not a valid MSDoppler"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -141,17 +141,17 @@ NewMSDoppler::~NewMSDoppler()
 }
 
 
-NewMSDoppler& NewMSDoppler::operator=(const NewMSDoppler &other)
+MSDoppler& MSDoppler::operator=(const MSDoppler &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSDoppler::init()
+void MSDoppler::init()
 {
     if (! columnMap_p.ndefined()) {
         // the PredefinedColumns
@@ -188,9 +188,9 @@ void NewMSDoppler::init()
 }
 
 	
-NewMSDoppler NewMSDoppler::referenceCopy(const String& newTableName, 
+MSDoppler MSDoppler::referenceCopy(const String& newTableName, 
 		    const Block<String>& writableColumns) const
 {
-    return NewMSDoppler(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSDoppler(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

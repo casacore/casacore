@@ -1,4 +1,4 @@
-//# NewMSTableImpl.h: Helper class to implement common functions for NewMS Tables
+//# MSTableImpl.h: Helper class to implement common functions for NewMS Tables
 //# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSTABLEIMPL_H)
-#define AIPS_NewMSTABLEIMPL_H
+#if !defined(AIPS_MSTABLEIMPL_H)
+#define AIPS_MSTABLEIMPL_H
 
 #include <aips/aips.h>
 #include <aips/Utilities/DataType.h>
@@ -40,7 +40,7 @@
 
 
 // <summary> 
-// An implementation class for the NewMeasurementSet to share code.
+// An implementation class for the MeasurementSet to share code.
 // </summary>
 
 // <use visibility=local>
@@ -49,18 +49,18 @@
 
 // <prerequisite>
 // <ul>
-//   <li> <linkto class=NewMeasurementSet:description">NewMeasurementSet</linkto>
+//   <li> <linkto class=MeasurementSet:description">MeasurementSet</linkto>
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// The NewMSTableImpl implements non-templated static functions shared by
-// all NewMSTable objects.
+// The MSTableImpl implements non-templated static functions shared by
+// all MSTable objects.
 // </etymology>
 //
 // <synopsis> 
-// NewMSTableImpl is only for internal use by the NewMeasurementSet base class
-// NewMSTable.
+// MSTableImpl is only for internal use by the MeasurementSet base class
+// MSTable.
 // </synopsis> 
 //
 // <example>
@@ -69,14 +69,14 @@
 //
 // <motivation>
 // The reasons for existance for this class are: sharing of code between
-// the various NewMeasurementSet Tables and avoiding duplicate code in the
-// instantiations of NewMSTable
+// the various MeasurementSet Tables and avoiding duplicate code in the
+// instantiations of MSTable
 // </motivation>
 //
 // <todo asof="1996/2/22">
 // </todo>
 
-class NewMSTableImpl 
+class MSTableImpl 
 {
 public:
     // Convert a name to a ColEnum, 
@@ -154,7 +154,7 @@ public:
     // those given in writableColumns, those are empty and writable.
     static Table referenceCopy(const Table& tab, const String& newTableName, 
 			       const Block<String>& writableColumns);
-    // Initialize all NewMeasurementSet static mappings
+    // Initialize all MeasurementSet static mappings
     static void init();
     
 private:

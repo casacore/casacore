@@ -1,4 +1,4 @@
-//# NewMSState.cc: The NewMeasurementSet STATE Table
+//# MSState.cc: The MeasurementSet STATE Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSState.h>
+#include <aips/MeasurementSets/MSState.h>
 
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -38,75 +38,75 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSState::NewMSState():hasBeenDestroyed_p(True) { }
+MSState::MSState():hasBeenDestroyed_p(True) { }
 
-NewMSState::NewMSState(const String &tableName, 
+MSState::MSState(const String &tableName, 
 				     TableOption option) 
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSState(String &, TableOption) - "
-			 "table is not a valid NewMSState"));
+	throw (AipsError("MSState(String &, TableOption) - "
+			 "table is not a valid MSState"));
 }
 
-NewMSState::NewMSState(const String& tableName, const String &tableDescName,
+MSState::MSState(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSState(String &, String &, TableOption) - "
-			 "table is not a valid NewMSState"));
+	throw (AipsError("MSState(String &, String &, TableOption) - "
+			 "table is not a valid MSState"));
 }
 
-NewMSState::NewMSState(SetupNewTable &newTab, uInt nrrow,
+MSState::MSState(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSState(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSState"));
+	throw (AipsError("MSState(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSState"));
 }
 
-NewMSState::NewMSState(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSState::MSState(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSState(const Table &) - "
-			 "table is not a valid NewMSState"));
+	throw (AipsError("MSState(const Table &) - "
+			 "table is not a valid MSState"));
 }
 
-NewMSState::NewMSState(const NewMSState &other)
-    : NewMSTable<PredefinedColumns,
+MSState::MSState(const MSState &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSState(const NewMSState &) - "
-			     "table is not a valid NewMSState"));
+	    throw (AipsError("MSState(const MSState &) - "
+			     "table is not a valid MSState"));
 }
 
-NewMSState::~NewMSState()
+MSState::~MSState()
 {
-// check to make sure that this NewMSState is still valid
+// check to make sure that this MSState is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSState() - "
-			 "Table written is not a valid NewMSState"));
+	throw (AipsError("~MSState() - "
+			 "Table written is not a valid MSState"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -114,17 +114,17 @@ NewMSState::~NewMSState()
 }
 
 
-NewMSState& NewMSState::operator=(const NewMSState &other)
+MSState& MSState::operator=(const MSState &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSState::init()
+void MSState::init()
 {
     if (! columnMap_p.ndefined()) {
         // the PredefinedColumns
@@ -171,9 +171,9 @@ void NewMSState::init()
 }
 
 	
-NewMSState NewMSState::referenceCopy(const String& newTableName, 
+MSState MSState::referenceCopy(const String& newTableName, 
 		    const Block<String>& writableColumns) const
 {
-    return NewMSState(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSState(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

@@ -1,4 +1,4 @@
-//# NewMSFieldColumns.h: provides easy access to NewMSField columns
+//# MSFieldColumns.h: provides easy access to MSField columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSFIELDCOLUMNS_H)
-#define AIPS_NEWMSFIELDCOLUMNS_H
+#if !defined(AIPS_MSFIELDCOLUMNS_H)
+#define AIPS_MSFIELDCOLUMNS_H
 
 #include <aips/aips.h>
 #include <aips/Measures/MDirection.h>
@@ -39,12 +39,12 @@
 #include <aips/Utilities/String.h>
 
 class MVDirection;
-class NewMSField;
+class MSField;
 template <class Qtype> class Quantum;
 template <class T> class Matrix;
 
 // <summary>
-// A class to provide easy access to NewMSField columns
+// A class to provide easy access to MSField columns
 // </summary>
 
 // <use visibility=export>
@@ -53,37 +53,37 @@ template <class T> class Matrix;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSField
+//   <li> MSField
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// RONewMSFieldColumns stands for Read-Only NewMeasurementSet Field Table columns.
+// ROMSFieldColumns stands for Read-Only MeasurementSet Field Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSField Table.
+// This class provides read-only access to the columns in the MSField Table.
 // It does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
+// See <linkto class=ROMSColumns> ROMSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class RONewMSFieldColumns
+class ROMSFieldColumns
 {
 public:
   // Construct from the supplied Table
-  RONewMSFieldColumns(const NewMSField& msField);
+  ROMSFieldColumns(const MSField& msField);
 
   // The desctructor does nothing special
-  ~RONewMSFieldColumns();
+  ~ROMSFieldColumns();
 
   // Read-only access to required columns
   // <group>
@@ -140,19 +140,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  RONewMSFieldColumns();
+  ROMSFieldColumns();
 
   //# attach this object to the supplied table.
-  void attach(const NewMSField& msField);
+  void attach(const MSField& msField);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  RONewMSFieldColumns(const RONewMSFieldColumns&);
-  RONewMSFieldColumns& operator=(const RONewMSFieldColumns&);
+  ROMSFieldColumns(const ROMSFieldColumns&);
+  ROMSFieldColumns& operator=(const ROMSFieldColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(const NewMSField& msField);
+  void attachOptionalCols(const MSField& msField);
   
   //# Functions which check the supplied values against the relevant column and
   //# the specified row. The row must have a numpoly value of zero and the
@@ -195,7 +195,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMSField columns
+// A class to provide easy read-write access to MSField columns
 // </summary>
 
 // <use visibility=export>
@@ -204,44 +204,44 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMSField
+//   <li> MSField
 //   <li> ArrayColumn
 //   <li> ScalarColumn
 // </prerequisite>
 //
 // <etymology>
-// NewMSFieldColumns stands for NewMeasurementSet Field Table columns.
+// MSFieldColumns stands for MeasurementSet Field Table columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides access to the columns in the NewMSField Table,
+// This class provides access to the columns in the MSField Table,
 // it does the declaration of all the Scalar and ArrayColumns with the
 // correct types, so the application programmer doesn't have to
 // worry about getting those right. There is an access function
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// See <linkto class=MSColumns> MSColumns</linkto> for an example.
 // </synopsis>
 //
 // <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSFieldColumns: public RONewMSFieldColumns
+class MSFieldColumns: public ROMSFieldColumns
 {
 public:
   // Construct from the supplied Table
-  NewMSFieldColumns(NewMSField& msField);
+  MSFieldColumns(MSField& msField);
 
   // The desctructor does nothing special
-  ~NewMSFieldColumns();
+  ~MSFieldColumns();
 
   // Read-write access to required columns
   //
   // Note that the direction measures with a stored polynomial have Col() added
   // to their name. They are better accessed via the functions that have the
   // same name, without the Col suffix, that will do the interpolation for
-  // you. These functions are in the RONewMSFieldColumns class.
+  // you. These functions are in the ROMSFieldColumns class.
   // <group>
   ScalarColumn<String>& code() {return code_p;}
   ArrayColumn<Double>& delayDir() {return delayDir_p;}
@@ -270,39 +270,39 @@ public:
   // Read-only access to required columns
   // <group>
   const ROScalarColumn<String>& code() const {
-    return RONewMSFieldColumns::code();}
+    return ROMSFieldColumns::code();}
   const ROArrayColumn<Double>& delayDir() const {
-    return RONewMSFieldColumns::delayDir();}
+    return ROMSFieldColumns::delayDir();}
   const ROArrayMeasColumn<MDirection>& delayDirMeasCol() const {
-    return RONewMSFieldColumns::delayDirMeasCol();}
+    return ROMSFieldColumns::delayDirMeasCol();}
   const ROScalarColumn<Bool>& flagRow() const {
-    return RONewMSFieldColumns::flagRow();}
+    return ROMSFieldColumns::flagRow();}
   const ROScalarColumn<String>& name() const {
-    return RONewMSFieldColumns::name();}
+    return ROMSFieldColumns::name();}
   const ROScalarColumn<Int>& numPoly() const {
-    return RONewMSFieldColumns::numPoly();}
+    return ROMSFieldColumns::numPoly();}
   const ROArrayColumn<Double>& phaseDir() const {
-    return RONewMSFieldColumns::phaseDir();}
+    return ROMSFieldColumns::phaseDir();}
   const ROArrayMeasColumn<MDirection>& phaseDirMeasCol() const {
-    return RONewMSFieldColumns::phaseDirMeasCol();}
+    return ROMSFieldColumns::phaseDirMeasCol();}
   const ROArrayColumn<Double>& referenceDir() const {
-    return RONewMSFieldColumns::referenceDir();}
+    return ROMSFieldColumns::referenceDir();}
   const ROArrayMeasColumn<MDirection>& referenceDirMeasCol() const {
-    return RONewMSFieldColumns::referenceDirMeasCol();}
+    return ROMSFieldColumns::referenceDirMeasCol();}
   const ROScalarColumn<Int>& sourceId() const {
-    return RONewMSFieldColumns::sourceId();}
+    return ROMSFieldColumns::sourceId();}
   const ROScalarColumn<Double>& time() const {
-    return RONewMSFieldColumns::time();}
+    return ROMSFieldColumns::time();}
   const ROScalarQuantColumn<Double>& timeQuant() const {
-    return RONewMSFieldColumns::timeQuant();}
+    return ROMSFieldColumns::timeQuant();}
   const ROScalarMeasColumn<MEpoch>& timeMeas() const { 
-    return RONewMSFieldColumns::timeMeas();}
+    return ROMSFieldColumns::timeMeas();}
   // </group>
 
   // Read-only access to optional columns
   // <group>
   const ROScalarColumn<Int>& ephemerisId() const {
-    return RONewMSFieldColumns::ephemerisId();}
+    return ROMSFieldColumns::ephemerisId();}
   // </group>
 
   // Interpolate the direction Measure polynomial
@@ -329,19 +329,19 @@ public:
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
-  NewMSFieldColumns();
+  MSFieldColumns();
 
   //# attach this object to the supplied table.
-  void attach(NewMSField& msField);
+  void attach(MSField& msField);
 
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
-  NewMSFieldColumns(const NewMSFieldColumns&);
-  NewMSFieldColumns& operator=(const NewMSFieldColumns&);
+  MSFieldColumns(const MSFieldColumns&);
+  MSFieldColumns& operator=(const MSFieldColumns&);
 
   //# Check if any optional columns exist and if so attach them.
-  void attachOptionalCols(NewMSField& msField);
+  void attachOptionalCols(MSField& msField);
   
   //# required columns
   ScalarColumn<String> name_p;

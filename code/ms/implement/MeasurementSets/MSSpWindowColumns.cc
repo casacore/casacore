@@ -1,4 +1,4 @@
-//# NewMSSpWindowColumns.cc:  provides easy access to NewMeasurementSet columns
+//# MSSpWindowColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSSpWindowColumns.h>
+#include <aips/MeasurementSets/MSSpWindowColumns.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/MeasurementSets/NewMSSpectralWindow.h>
+#include <aips/MeasurementSets/MSSpectralWindow.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
@@ -40,65 +40,65 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Assert.h>
 
-RONewMSSpWindowColumns::
-RONewMSSpWindowColumns(const NewMSSpectralWindow& msSpWindow):
-  chanFreq_p(msSpWindow, NewMSSpectralWindow::
-	     columnName(NewMSSpectralWindow::CHAN_FREQ)),
-  chanWidth_p(msSpWindow, NewMSSpectralWindow::
-	      columnName(NewMSSpectralWindow::CHAN_WIDTH)),
-  effectiveBW_p(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::EFFECTIVE_BW)),
-  flagRow_p(msSpWindow, NewMSSpectralWindow::
-	    columnName(NewMSSpectralWindow::FLAG_ROW)),
-  freqGroup_p(msSpWindow, NewMSSpectralWindow::
-	      columnName(NewMSSpectralWindow::FREQ_GROUP)),
-  freqGroupName_p(msSpWindow, NewMSSpectralWindow::
-		  columnName(NewMSSpectralWindow::FREQ_GROUP_NAME)),
-  ifConvChain_p(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::IF_CONV_CHAIN)),
-  measFreqRef_p(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::MEAS_FREQ_REF)),
-  name_p(msSpWindow, NewMSSpectralWindow::
-	 columnName(NewMSSpectralWindow::NAME)),
-  netSideband_p(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::NET_SIDEBAND)),
-  numChan_p(msSpWindow, NewMSSpectralWindow::
-	    columnName(NewMSSpectralWindow::NUM_CHAN)),
-  refFrequency_p(msSpWindow, NewMSSpectralWindow::
-		 columnName(NewMSSpectralWindow::REF_FREQUENCY)),
-  resolution_p(msSpWindow, NewMSSpectralWindow::
-	       columnName(NewMSSpectralWindow::RESOLUTION)),
-  totalBandwidth_p(msSpWindow, NewMSSpectralWindow::
-		   columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH)),
+ROMSSpWindowColumns::
+ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow):
+  chanFreq_p(msSpWindow, MSSpectralWindow::
+	     columnName(MSSpectralWindow::CHAN_FREQ)),
+  chanWidth_p(msSpWindow, MSSpectralWindow::
+	      columnName(MSSpectralWindow::CHAN_WIDTH)),
+  effectiveBW_p(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::EFFECTIVE_BW)),
+  flagRow_p(msSpWindow, MSSpectralWindow::
+	    columnName(MSSpectralWindow::FLAG_ROW)),
+  freqGroup_p(msSpWindow, MSSpectralWindow::
+	      columnName(MSSpectralWindow::FREQ_GROUP)),
+  freqGroupName_p(msSpWindow, MSSpectralWindow::
+		  columnName(MSSpectralWindow::FREQ_GROUP_NAME)),
+  ifConvChain_p(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::IF_CONV_CHAIN)),
+  measFreqRef_p(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::MEAS_FREQ_REF)),
+  name_p(msSpWindow, MSSpectralWindow::
+	 columnName(MSSpectralWindow::NAME)),
+  netSideband_p(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::NET_SIDEBAND)),
+  numChan_p(msSpWindow, MSSpectralWindow::
+	    columnName(MSSpectralWindow::NUM_CHAN)),
+  refFrequency_p(msSpWindow, MSSpectralWindow::
+		 columnName(MSSpectralWindow::REF_FREQUENCY)),
+  resolution_p(msSpWindow, MSSpectralWindow::
+	       columnName(MSSpectralWindow::RESOLUTION)),
+  totalBandwidth_p(msSpWindow, MSSpectralWindow::
+		   columnName(MSSpectralWindow::TOTAL_BANDWIDTH)),
   assocNature_p(),
   assocSpwId_p(),
   bbcNo_p(),
   bbcSideband_p(),
   dopplerId_p(),
   receiverId_p(),
-  chanFreqMeas_p(msSpWindow, NewMSSpectralWindow::
-		 columnName(NewMSSpectralWindow::CHAN_FREQ)),
-  refFrequencyMeas_p(msSpWindow, NewMSSpectralWindow::
-		     columnName(NewMSSpectralWindow::REF_FREQUENCY)),
-  chanFreqQuant_p(msSpWindow, NewMSSpectralWindow::
-		  columnName(NewMSSpectralWindow::CHAN_FREQ)),
-  chanWidthQuant_p(msSpWindow, NewMSSpectralWindow::
-		   columnName(NewMSSpectralWindow::CHAN_WIDTH)),
-  effectiveBWQuant_p(msSpWindow, NewMSSpectralWindow::
-		     columnName(NewMSSpectralWindow::EFFECTIVE_BW)),
-  refFrequencyQuant_p(msSpWindow, NewMSSpectralWindow::
-		      columnName(NewMSSpectralWindow::REF_FREQUENCY)),
-  resolutionQuant_p(msSpWindow, NewMSSpectralWindow::
-		    columnName(NewMSSpectralWindow::RESOLUTION)),
-  totalBandwidthQuant_p(msSpWindow, NewMSSpectralWindow::
-			columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH))
+  chanFreqMeas_p(msSpWindow, MSSpectralWindow::
+		 columnName(MSSpectralWindow::CHAN_FREQ)),
+  refFrequencyMeas_p(msSpWindow, MSSpectralWindow::
+		     columnName(MSSpectralWindow::REF_FREQUENCY)),
+  chanFreqQuant_p(msSpWindow, MSSpectralWindow::
+		  columnName(MSSpectralWindow::CHAN_FREQ)),
+  chanWidthQuant_p(msSpWindow, MSSpectralWindow::
+		   columnName(MSSpectralWindow::CHAN_WIDTH)),
+  effectiveBWQuant_p(msSpWindow, MSSpectralWindow::
+		     columnName(MSSpectralWindow::EFFECTIVE_BW)),
+  refFrequencyQuant_p(msSpWindow, MSSpectralWindow::
+		      columnName(MSSpectralWindow::REF_FREQUENCY)),
+  resolutionQuant_p(msSpWindow, MSSpectralWindow::
+		    columnName(MSSpectralWindow::RESOLUTION)),
+  totalBandwidthQuant_p(msSpWindow, MSSpectralWindow::
+			columnName(MSSpectralWindow::TOTAL_BANDWIDTH))
 {
   attachOptionalCols(msSpWindow);
 }
 
-RONewMSSpWindowColumns::~RONewMSSpWindowColumns() {}
+ROMSSpWindowColumns::~ROMSSpWindowColumns() {}
 
-Int RONewMSSpWindowColumns::
+Int ROMSSpWindowColumns::
 matchSpw(const MFrequency& refFreq, uInt nChan, 
 	 const Quantum<Double>& bandwidth, Int ifChain,
 	 const Quantum<Double>& tolerance, Int tryRow) const {
@@ -119,7 +119,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("RONewMSSpWindowColumns::match(...) - "
+      throw(AipsError("ROMSSpWindowColumns::match(...) - "
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -144,7 +144,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
   return -1;
 }
 
-RONewMSSpWindowColumns::RONewMSSpWindowColumns():
+ROMSSpWindowColumns::ROMSSpWindowColumns():
   chanFreq_p(),
   chanWidth_p(),
   effectiveBW_p(),
@@ -176,80 +176,80 @@ RONewMSSpWindowColumns::RONewMSSpWindowColumns():
 {
 }
 
-void RONewMSSpWindowColumns::attach(const NewMSSpectralWindow& msSpWindow)
+void ROMSSpWindowColumns::attach(const MSSpectralWindow& msSpWindow)
 {
-  chanFreq_p.attach(msSpWindow, NewMSSpectralWindow::
-		    columnName(NewMSSpectralWindow::CHAN_FREQ));
-  chanWidth_p.attach(msSpWindow, NewMSSpectralWindow::
-		     columnName(NewMSSpectralWindow::CHAN_WIDTH));
-  effectiveBW_p.attach(msSpWindow, NewMSSpectralWindow::
-		       columnName(NewMSSpectralWindow::EFFECTIVE_BW));
-  flagRow_p.attach(msSpWindow, NewMSSpectralWindow::
-		   columnName(NewMSSpectralWindow::FLAG_ROW));
-  freqGroup_p.attach(msSpWindow, NewMSSpectralWindow::
-		     columnName(NewMSSpectralWindow::FREQ_GROUP));
-  freqGroupName_p.attach(msSpWindow, NewMSSpectralWindow::
-			 columnName(NewMSSpectralWindow::FREQ_GROUP_NAME));
-  ifConvChain_p.attach(msSpWindow, NewMSSpectralWindow::
-		       columnName(NewMSSpectralWindow::IF_CONV_CHAIN));
-  measFreqRef_p.attach(msSpWindow, NewMSSpectralWindow::
-		       columnName(NewMSSpectralWindow::MEAS_FREQ_REF));
-  name_p.attach(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::NAME));
-  netSideband_p.attach(msSpWindow, NewMSSpectralWindow::
-		       columnName(NewMSSpectralWindow::NET_SIDEBAND));
-  numChan_p.attach(msSpWindow, NewMSSpectralWindow::
-		   columnName(NewMSSpectralWindow::NUM_CHAN));
-  refFrequency_p.attach(msSpWindow, NewMSSpectralWindow::
-			columnName(NewMSSpectralWindow::REF_FREQUENCY));
-  resolution_p.attach(msSpWindow, NewMSSpectralWindow::
-		      columnName(NewMSSpectralWindow::RESOLUTION));
-  totalBandwidth_p.attach(msSpWindow, NewMSSpectralWindow::
-			  columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH));
-  chanFreqMeas_p.attach(msSpWindow, NewMSSpectralWindow::
-			columnName(NewMSSpectralWindow::CHAN_FREQ));
-  refFrequencyMeas_p.attach(msSpWindow, NewMSSpectralWindow::
-			    columnName(NewMSSpectralWindow::REF_FREQUENCY));
-  chanFreqQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			 columnName(NewMSSpectralWindow::CHAN_FREQ));
-  chanWidthQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			  columnName(NewMSSpectralWindow::CHAN_WIDTH));
-  effectiveBWQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			    columnName(NewMSSpectralWindow::EFFECTIVE_BW));
-  refFrequencyQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			     columnName(NewMSSpectralWindow::REF_FREQUENCY));
-  resolutionQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			   columnName(NewMSSpectralWindow::RESOLUTION));
-  totalBandwidthQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			       columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH));
+  chanFreq_p.attach(msSpWindow, MSSpectralWindow::
+		    columnName(MSSpectralWindow::CHAN_FREQ));
+  chanWidth_p.attach(msSpWindow, MSSpectralWindow::
+		     columnName(MSSpectralWindow::CHAN_WIDTH));
+  effectiveBW_p.attach(msSpWindow, MSSpectralWindow::
+		       columnName(MSSpectralWindow::EFFECTIVE_BW));
+  flagRow_p.attach(msSpWindow, MSSpectralWindow::
+		   columnName(MSSpectralWindow::FLAG_ROW));
+  freqGroup_p.attach(msSpWindow, MSSpectralWindow::
+		     columnName(MSSpectralWindow::FREQ_GROUP));
+  freqGroupName_p.attach(msSpWindow, MSSpectralWindow::
+			 columnName(MSSpectralWindow::FREQ_GROUP_NAME));
+  ifConvChain_p.attach(msSpWindow, MSSpectralWindow::
+		       columnName(MSSpectralWindow::IF_CONV_CHAIN));
+  measFreqRef_p.attach(msSpWindow, MSSpectralWindow::
+		       columnName(MSSpectralWindow::MEAS_FREQ_REF));
+  name_p.attach(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::NAME));
+  netSideband_p.attach(msSpWindow, MSSpectralWindow::
+		       columnName(MSSpectralWindow::NET_SIDEBAND));
+  numChan_p.attach(msSpWindow, MSSpectralWindow::
+		   columnName(MSSpectralWindow::NUM_CHAN));
+  refFrequency_p.attach(msSpWindow, MSSpectralWindow::
+			columnName(MSSpectralWindow::REF_FREQUENCY));
+  resolution_p.attach(msSpWindow, MSSpectralWindow::
+		      columnName(MSSpectralWindow::RESOLUTION));
+  totalBandwidth_p.attach(msSpWindow, MSSpectralWindow::
+			  columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+  chanFreqMeas_p.attach(msSpWindow, MSSpectralWindow::
+			columnName(MSSpectralWindow::CHAN_FREQ));
+  refFrequencyMeas_p.attach(msSpWindow, MSSpectralWindow::
+			    columnName(MSSpectralWindow::REF_FREQUENCY));
+  chanFreqQuant_p.attach(msSpWindow, MSSpectralWindow::
+			 columnName(MSSpectralWindow::CHAN_FREQ));
+  chanWidthQuant_p.attach(msSpWindow, MSSpectralWindow::
+			  columnName(MSSpectralWindow::CHAN_WIDTH));
+  effectiveBWQuant_p.attach(msSpWindow, MSSpectralWindow::
+			    columnName(MSSpectralWindow::EFFECTIVE_BW));
+  refFrequencyQuant_p.attach(msSpWindow, MSSpectralWindow::
+			     columnName(MSSpectralWindow::REF_FREQUENCY));
+  resolutionQuant_p.attach(msSpWindow, MSSpectralWindow::
+			   columnName(MSSpectralWindow::RESOLUTION));
+  totalBandwidthQuant_p.attach(msSpWindow, MSSpectralWindow::
+			       columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
   attachOptionalCols(msSpWindow);
 }
 
-void RONewMSSpWindowColumns::
-attachOptionalCols(const NewMSSpectralWindow& msSpWindow)
+void ROMSSpWindowColumns::
+attachOptionalCols(const MSSpectralWindow& msSpWindow)
 {
   const ColumnDescSet& cds=msSpWindow.tableDesc().columnDescSet();
   const String& assocNature=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::ASSOC_NATURE);
+    MSSpectralWindow::columnName(MSSpectralWindow::ASSOC_NATURE);
   if (cds.isDefined(assocNature)) assocNature_p.attach(msSpWindow,assocNature);
   const String& assocSpwId=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::ASSOC_SPW_ID);
+    MSSpectralWindow::columnName(MSSpectralWindow::ASSOC_SPW_ID);
   if (cds.isDefined(assocSpwId)) assocSpwId_p.attach(msSpWindow,assocSpwId);
   const String& bbcNo=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::BBC_NO);
+    MSSpectralWindow::columnName(MSSpectralWindow::BBC_NO);
   if (cds.isDefined(bbcNo)) bbcNo_p.attach(msSpWindow,bbcNo);
   const String& bbcSideband=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::BBC_SIDEBAND);
+    MSSpectralWindow::columnName(MSSpectralWindow::BBC_SIDEBAND);
   if (cds.isDefined(bbcSideband)) bbcSideband_p.attach(msSpWindow,bbcSideband);
   const String& dopplerId=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::DOPPLER_ID);
+    MSSpectralWindow::columnName(MSSpectralWindow::DOPPLER_ID);
   if (cds.isDefined(dopplerId)) dopplerId_p.attach(msSpWindow,dopplerId);
   const String& receiverId=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::RECEIVER_ID);
+    MSSpectralWindow::columnName(MSSpectralWindow::RECEIVER_ID);
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
 }
 
-Bool RONewMSSpWindowColumns::
+Bool ROMSSpWindowColumns::
 matchRefFrequency(uInt row, MFrequency::Types refType, 
 		  Double refFreqInHz, Double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
@@ -260,7 +260,7 @@ matchRefFrequency(uInt row, MFrequency::Types refType,
   return nearAbs(rowFreq.getValue().getValue(), refFreqInHz, tolInHz);
 }
 
-Bool RONewMSSpWindowColumns::
+Bool ROMSSpWindowColumns::
 matchChanFreq(uInt row, const Vector<Double>& chanFreqInHz,
 	      Double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
@@ -272,85 +272,85 @@ matchChanFreq(uInt row, const Vector<Double>& chanFreqInHz,
   return allNearAbs(chanFreq()(row), chanFreqInHz, tolInHz);
 }
   
-Bool RONewMSSpWindowColumns::
+Bool ROMSSpWindowColumns::
 matchIfConvChain(uInt row, Int ifChain) const {
   DebugAssert(row < nrow(), AipsError);
   return ifChain == ifConvChain()(row);
 }
 
-Bool RONewMSSpWindowColumns::
+Bool ROMSSpWindowColumns::
 matchTotalBandwidth(uInt row, Double bandwidthInHz,
 		    Double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
   return nearAbs(totalBandwidth()(row), bandwidthInHz, tolInHz);
 }
 
-Bool RONewMSSpWindowColumns::
+Bool ROMSSpWindowColumns::
 matchNumChan(uInt row, Int nChan) const {
   DebugAssert(row < nrow(), AipsError);
   return nChan == numChan()(row);
 }
 
-NewMSSpWindowColumns::NewMSSpWindowColumns(NewMSSpectralWindow& msSpWindow):
-  RONewMSSpWindowColumns(msSpWindow),
-  chanFreq_p(msSpWindow, NewMSSpectralWindow::
-	     columnName(NewMSSpectralWindow::CHAN_FREQ)),
-  chanWidth_p(msSpWindow, NewMSSpectralWindow::
-	      columnName(NewMSSpectralWindow::CHAN_WIDTH)),
-  effectiveBW_p(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::EFFECTIVE_BW)),
-  flagRow_p(msSpWindow, NewMSSpectralWindow::
-	    columnName(NewMSSpectralWindow::FLAG_ROW)),
-  freqGroup_p(msSpWindow, NewMSSpectralWindow::
-	      columnName(NewMSSpectralWindow::FREQ_GROUP)),
-  freqGroupName_p(msSpWindow, NewMSSpectralWindow::
-		  columnName(NewMSSpectralWindow::FREQ_GROUP_NAME)),
-  ifConvChain_p(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::IF_CONV_CHAIN)),
-  measFreqRef_p(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::MEAS_FREQ_REF)),
-  name_p(msSpWindow, NewMSSpectralWindow::
-	 columnName(NewMSSpectralWindow::NAME)),
-  netSideband_p(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::NET_SIDEBAND)),
-  numChan_p(msSpWindow, NewMSSpectralWindow::
-	    columnName(NewMSSpectralWindow::NUM_CHAN)),
-  refFrequency_p(msSpWindow, NewMSSpectralWindow::
-		 columnName(NewMSSpectralWindow::REF_FREQUENCY)),
-  resolution_p(msSpWindow, NewMSSpectralWindow::
-	       columnName(NewMSSpectralWindow::RESOLUTION)),
-  totalBandwidth_p(msSpWindow, NewMSSpectralWindow::
-		   columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH)),
+MSSpWindowColumns::MSSpWindowColumns(MSSpectralWindow& msSpWindow):
+  ROMSSpWindowColumns(msSpWindow),
+  chanFreq_p(msSpWindow, MSSpectralWindow::
+	     columnName(MSSpectralWindow::CHAN_FREQ)),
+  chanWidth_p(msSpWindow, MSSpectralWindow::
+	      columnName(MSSpectralWindow::CHAN_WIDTH)),
+  effectiveBW_p(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::EFFECTIVE_BW)),
+  flagRow_p(msSpWindow, MSSpectralWindow::
+	    columnName(MSSpectralWindow::FLAG_ROW)),
+  freqGroup_p(msSpWindow, MSSpectralWindow::
+	      columnName(MSSpectralWindow::FREQ_GROUP)),
+  freqGroupName_p(msSpWindow, MSSpectralWindow::
+		  columnName(MSSpectralWindow::FREQ_GROUP_NAME)),
+  ifConvChain_p(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::IF_CONV_CHAIN)),
+  measFreqRef_p(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::MEAS_FREQ_REF)),
+  name_p(msSpWindow, MSSpectralWindow::
+	 columnName(MSSpectralWindow::NAME)),
+  netSideband_p(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::NET_SIDEBAND)),
+  numChan_p(msSpWindow, MSSpectralWindow::
+	    columnName(MSSpectralWindow::NUM_CHAN)),
+  refFrequency_p(msSpWindow, MSSpectralWindow::
+		 columnName(MSSpectralWindow::REF_FREQUENCY)),
+  resolution_p(msSpWindow, MSSpectralWindow::
+	       columnName(MSSpectralWindow::RESOLUTION)),
+  totalBandwidth_p(msSpWindow, MSSpectralWindow::
+		   columnName(MSSpectralWindow::TOTAL_BANDWIDTH)),
   assocNature_p(),
   assocSpwId_p(),
   bbcNo_p(),
   bbcSideband_p(),
   dopplerId_p(),
   receiverId_p(),
-  chanFreqMeas_p(msSpWindow, NewMSSpectralWindow::
-		 columnName(NewMSSpectralWindow::CHAN_FREQ)),
-  refFrequencyMeas_p(msSpWindow, NewMSSpectralWindow::
-		     columnName(NewMSSpectralWindow::REF_FREQUENCY)),
-  chanFreqQuant_p(msSpWindow, NewMSSpectralWindow::
-		  columnName(NewMSSpectralWindow::CHAN_FREQ)),
-  chanWidthQuant_p(msSpWindow, NewMSSpectralWindow::
-		   columnName(NewMSSpectralWindow::CHAN_WIDTH)),
-  effectiveBWQuant_p(msSpWindow, NewMSSpectralWindow::
-		     columnName(NewMSSpectralWindow::EFFECTIVE_BW)),
-  refFrequencyQuant_p(msSpWindow, NewMSSpectralWindow::
-		      columnName(NewMSSpectralWindow::REF_FREQUENCY)),
-  resolutionQuant_p(msSpWindow, NewMSSpectralWindow::
-		    columnName(NewMSSpectralWindow::RESOLUTION)),
-  totalBandwidthQuant_p(msSpWindow, NewMSSpectralWindow::
-			columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH))
+  chanFreqMeas_p(msSpWindow, MSSpectralWindow::
+		 columnName(MSSpectralWindow::CHAN_FREQ)),
+  refFrequencyMeas_p(msSpWindow, MSSpectralWindow::
+		     columnName(MSSpectralWindow::REF_FREQUENCY)),
+  chanFreqQuant_p(msSpWindow, MSSpectralWindow::
+		  columnName(MSSpectralWindow::CHAN_FREQ)),
+  chanWidthQuant_p(msSpWindow, MSSpectralWindow::
+		   columnName(MSSpectralWindow::CHAN_WIDTH)),
+  effectiveBWQuant_p(msSpWindow, MSSpectralWindow::
+		     columnName(MSSpectralWindow::EFFECTIVE_BW)),
+  refFrequencyQuant_p(msSpWindow, MSSpectralWindow::
+		      columnName(MSSpectralWindow::REF_FREQUENCY)),
+  resolutionQuant_p(msSpWindow, MSSpectralWindow::
+		    columnName(MSSpectralWindow::RESOLUTION)),
+  totalBandwidthQuant_p(msSpWindow, MSSpectralWindow::
+			columnName(MSSpectralWindow::TOTAL_BANDWIDTH))
 {
   attachOptionalCols(msSpWindow);
 }
 
-NewMSSpWindowColumns::~NewMSSpWindowColumns() {}
+MSSpWindowColumns::~MSSpWindowColumns() {}
 
-NewMSSpWindowColumns::NewMSSpWindowColumns():
-  RONewMSSpWindowColumns(),
+MSSpWindowColumns::MSSpWindowColumns():
+  ROMSSpWindowColumns(),
   chanFreq_p(),
   chanWidth_p(),
   effectiveBW_p(),
@@ -382,82 +382,82 @@ NewMSSpWindowColumns::NewMSSpWindowColumns():
 {
 }
 
-void NewMSSpWindowColumns::attach(NewMSSpectralWindow& msSpWindow)
+void MSSpWindowColumns::attach(MSSpectralWindow& msSpWindow)
 {
-  RONewMSSpWindowColumns::attach(msSpWindow);
-  chanFreq_p.attach(msSpWindow, NewMSSpectralWindow::
-		    columnName(NewMSSpectralWindow::CHAN_FREQ));
-  chanWidth_p.attach(msSpWindow, NewMSSpectralWindow::
-		     columnName(NewMSSpectralWindow::CHAN_WIDTH));
-  effectiveBW_p.attach(msSpWindow, NewMSSpectralWindow::
-		       columnName(NewMSSpectralWindow::EFFECTIVE_BW));
-  flagRow_p.attach(msSpWindow, NewMSSpectralWindow::
-		   columnName(NewMSSpectralWindow::FLAG_ROW));
-  freqGroup_p.attach(msSpWindow, NewMSSpectralWindow::
-		     columnName(NewMSSpectralWindow::FREQ_GROUP));
-  freqGroupName_p.attach(msSpWindow, NewMSSpectralWindow::
-			 columnName(NewMSSpectralWindow::FREQ_GROUP_NAME));
-  ifConvChain_p.attach(msSpWindow, NewMSSpectralWindow::
-		       columnName(NewMSSpectralWindow::IF_CONV_CHAIN));
-  measFreqRef_p.attach(msSpWindow, NewMSSpectralWindow::
-		       columnName(NewMSSpectralWindow::MEAS_FREQ_REF));
-  name_p.attach(msSpWindow, NewMSSpectralWindow::
-		columnName(NewMSSpectralWindow::NAME));
-  netSideband_p.attach(msSpWindow, NewMSSpectralWindow::
-		       columnName(NewMSSpectralWindow::NET_SIDEBAND));
-  numChan_p.attach(msSpWindow, NewMSSpectralWindow::
-		   columnName(NewMSSpectralWindow::NUM_CHAN));
-  refFrequency_p.attach(msSpWindow, NewMSSpectralWindow::
-			columnName(NewMSSpectralWindow::REF_FREQUENCY));
-  resolution_p.attach(msSpWindow, NewMSSpectralWindow::
-		      columnName(NewMSSpectralWindow::RESOLUTION));
-  totalBandwidth_p.attach(msSpWindow, NewMSSpectralWindow::
-			  columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH));
-  chanFreqMeas_p.attach(msSpWindow, NewMSSpectralWindow::
-			columnName(NewMSSpectralWindow::CHAN_FREQ));
-  refFrequencyMeas_p.attach(msSpWindow, NewMSSpectralWindow::
-			    columnName(NewMSSpectralWindow::REF_FREQUENCY));
-  chanFreqQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			 columnName(NewMSSpectralWindow::CHAN_FREQ));
-  chanWidthQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			  columnName(NewMSSpectralWindow::CHAN_WIDTH));
-  effectiveBWQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			    columnName(NewMSSpectralWindow::EFFECTIVE_BW));
-  refFrequencyQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			     columnName(NewMSSpectralWindow::REF_FREQUENCY));
-  resolutionQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			   columnName(NewMSSpectralWindow::RESOLUTION));
-  totalBandwidthQuant_p.attach(msSpWindow, NewMSSpectralWindow::
-			       columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH));
+  ROMSSpWindowColumns::attach(msSpWindow);
+  chanFreq_p.attach(msSpWindow, MSSpectralWindow::
+		    columnName(MSSpectralWindow::CHAN_FREQ));
+  chanWidth_p.attach(msSpWindow, MSSpectralWindow::
+		     columnName(MSSpectralWindow::CHAN_WIDTH));
+  effectiveBW_p.attach(msSpWindow, MSSpectralWindow::
+		       columnName(MSSpectralWindow::EFFECTIVE_BW));
+  flagRow_p.attach(msSpWindow, MSSpectralWindow::
+		   columnName(MSSpectralWindow::FLAG_ROW));
+  freqGroup_p.attach(msSpWindow, MSSpectralWindow::
+		     columnName(MSSpectralWindow::FREQ_GROUP));
+  freqGroupName_p.attach(msSpWindow, MSSpectralWindow::
+			 columnName(MSSpectralWindow::FREQ_GROUP_NAME));
+  ifConvChain_p.attach(msSpWindow, MSSpectralWindow::
+		       columnName(MSSpectralWindow::IF_CONV_CHAIN));
+  measFreqRef_p.attach(msSpWindow, MSSpectralWindow::
+		       columnName(MSSpectralWindow::MEAS_FREQ_REF));
+  name_p.attach(msSpWindow, MSSpectralWindow::
+		columnName(MSSpectralWindow::NAME));
+  netSideband_p.attach(msSpWindow, MSSpectralWindow::
+		       columnName(MSSpectralWindow::NET_SIDEBAND));
+  numChan_p.attach(msSpWindow, MSSpectralWindow::
+		   columnName(MSSpectralWindow::NUM_CHAN));
+  refFrequency_p.attach(msSpWindow, MSSpectralWindow::
+			columnName(MSSpectralWindow::REF_FREQUENCY));
+  resolution_p.attach(msSpWindow, MSSpectralWindow::
+		      columnName(MSSpectralWindow::RESOLUTION));
+  totalBandwidth_p.attach(msSpWindow, MSSpectralWindow::
+			  columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+  chanFreqMeas_p.attach(msSpWindow, MSSpectralWindow::
+			columnName(MSSpectralWindow::CHAN_FREQ));
+  refFrequencyMeas_p.attach(msSpWindow, MSSpectralWindow::
+			    columnName(MSSpectralWindow::REF_FREQUENCY));
+  chanFreqQuant_p.attach(msSpWindow, MSSpectralWindow::
+			 columnName(MSSpectralWindow::CHAN_FREQ));
+  chanWidthQuant_p.attach(msSpWindow, MSSpectralWindow::
+			  columnName(MSSpectralWindow::CHAN_WIDTH));
+  effectiveBWQuant_p.attach(msSpWindow, MSSpectralWindow::
+			    columnName(MSSpectralWindow::EFFECTIVE_BW));
+  refFrequencyQuant_p.attach(msSpWindow, MSSpectralWindow::
+			     columnName(MSSpectralWindow::REF_FREQUENCY));
+  resolutionQuant_p.attach(msSpWindow, MSSpectralWindow::
+			   columnName(MSSpectralWindow::RESOLUTION));
+  totalBandwidthQuant_p.attach(msSpWindow, MSSpectralWindow::
+			       columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
   attachOptionalCols(msSpWindow);
 }
 
-void NewMSSpWindowColumns::
-attachOptionalCols(NewMSSpectralWindow& msSpWindow)
+void MSSpWindowColumns::
+attachOptionalCols(MSSpectralWindow& msSpWindow)
 {
   const ColumnDescSet& cds=msSpWindow.tableDesc().columnDescSet();
   const String& assocNature=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::ASSOC_NATURE);
+    MSSpectralWindow::columnName(MSSpectralWindow::ASSOC_NATURE);
   if (cds.isDefined(assocNature)) assocNature_p.attach(msSpWindow,assocNature);
   const String& assocSpwId=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::ASSOC_SPW_ID);
+    MSSpectralWindow::columnName(MSSpectralWindow::ASSOC_SPW_ID);
   if (cds.isDefined(assocSpwId)) assocSpwId_p.attach(msSpWindow,assocSpwId);
   const String& bbcNo=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::BBC_NO);
+    MSSpectralWindow::columnName(MSSpectralWindow::BBC_NO);
   if (cds.isDefined(bbcNo)) bbcNo_p.attach(msSpWindow,bbcNo);
   const String& bbcSideband=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::BBC_SIDEBAND);
+    MSSpectralWindow::columnName(MSSpectralWindow::BBC_SIDEBAND);
   if (cds.isDefined(bbcSideband)) bbcSideband_p.attach(msSpWindow,bbcSideband);
   const String& dopplerId=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::DOPPLER_ID);
+    MSSpectralWindow::columnName(MSSpectralWindow::DOPPLER_ID);
   if (cds.isDefined(dopplerId)) dopplerId_p.attach(msSpWindow,dopplerId);
   const String& receiverId=
-    NewMSSpectralWindow::columnName(NewMSSpectralWindow::RECEIVER_ID);
+    MSSpectralWindow::columnName(MSSpectralWindow::RECEIVER_ID);
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
 }
 
 
 // Local Variables: 
-// compile-command: "gmake NewMSSpWindowColumns"
+// compile-command: "gmake MSSpWindowColumns"
 // End: 
 

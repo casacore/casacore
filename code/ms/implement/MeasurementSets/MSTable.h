@@ -1,4 +1,4 @@
-//# NewMSTable.h: A Table to hold astronomical data (a set of Measurements)
+//# MSTable.h: A Table to hold astronomical data (a set of Measurements)
 //# Copyright (C) 1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSTABLE_H)
-#define AIPS_NewMSTABLE_H
+#if !defined(AIPS_MSTABLE_H)
+#define AIPS_MSTABLE_H
 
 #include <aips/aips.h>
 #include <aips/Utilities/DataType.h>
@@ -57,19 +57,19 @@ template <class T> class Block;
 // </prerequisite>
 //
 // <etymology>
-// The NewMSTable is the base class for all NewMeasurementSet Tables, hence the
+// The MSTable is the base class for all MeasurementSet Tables, hence the
 // name.
 // </etymology>
 //
 // <synopsis> 
-// A NewMSTable is a Table.  Most operations on a NewMSTable are
+// A MSTable is a Table.  Most operations on a MSTable are
 // Table operations. See the <linkto module="Tables:description">Tables</linkto> 
 // module for a list of those operations.  The member functions provided by this
 // class are primarily convenience functions to help users follow the 
 // agreed upon column and keyword naming conventions.  They are useful when
-// creating a Table following the NewMSTable conventions from
+// creating a Table following the MSTable conventions from
 // scratch as well as when creating the column objects to access those
-// columns. All actual NewMeasurementSet Tables will be derived from this class.
+// columns. All actual MeasurementSet Tables will be derived from this class.
 //
 // The standard way of accessing
 // table columns is through Strings.  Mistakes in typing the column
@@ -88,17 +88,17 @@ template <class T> class Block;
 // </synopsis> 
 //
 // <example>
-// For examples of use, see the NewMeasurementSet class.
+// For examples of use, see the MeasurementSet class.
 // </example>
 //
 // <motivation>
 // The Table module is more than adequate as a container of data.  
 // However, in order for applications to be useful with data from 
 // different sources, some conventions need to be adopted in the use 
-// of Tables to store data.  The NewMSTable provides the framework for
+// of Tables to store data.  The MSTable provides the framework for
 // these conventions and conversion functions. The actual definitions
 // of columns and keywords are found in the derived classes and their
-// "enum" base class (e.g. NewMSAntenna and NewMSAntennaEnums).
+// "enum" base class (e.g. MSAntenna and MSAntennaEnums).
 // </motivation>
 //
 // <todo asof="1996/2/22">
@@ -109,7 +109,7 @@ template <class T> class Block;
 //      be necessary to modify referenceCopy().
 // </todo>
 
-template <class ColEnum, class KeyEnum> class NewMSTable : public Table 
+template <class ColEnum, class KeyEnum> class MSTable : public Table 
 {
 public:
     // ColEnum convenience functions
@@ -213,25 +213,25 @@ protected:
     // These constructors mirror the Table ones
     // <group name=tableLikeConstructors>
     // Default constructor for use by derived classes
-    NewMSTable ();
-    NewMSTable (const String &tableName, TableOption option);
-    NewMSTable (const String &tableName, const TableLock& lockOptions,
+    MSTable ();
+    MSTable (const String &tableName, TableOption option);
+    MSTable (const String &tableName, const TableLock& lockOptions,
 	     TableOption option);
-    NewMSTable (const String &tableName, const String &tableDescName,
+    MSTable (const String &tableName, const String &tableDescName,
 	     TableOption option);
-    NewMSTable (const String &tableName, const String &tableDescName,
+    MSTable (const String &tableName, const String &tableDescName,
 	     const TableLock& lockOptions, TableOption option);
-    NewMSTable (SetupNewTable &newTab, uInt nrrow,
+    MSTable (SetupNewTable &newTab, uInt nrrow,
 	     Bool initialize);
-    NewMSTable (SetupNewTable &newTab, const TableLock& lockOptions, uInt nrrow,
+    MSTable (SetupNewTable &newTab, const TableLock& lockOptions, uInt nrrow,
 	     Bool initialize);
-    NewMSTable (const Table &table);
-    NewMSTable (const NewMSTable<ColEnum,KeyEnum> &other);
+    MSTable (const Table &table);
+    MSTable (const MSTable<ColEnum,KeyEnum> &other);
     // </group>
-    ~NewMSTable();
+    ~MSTable();
 
     //  Assignment operator, reference semantics
-    NewMSTable& operator=(const NewMSTable<ColEnum,KeyEnum>&);
+    MSTable& operator=(const MSTable<ColEnum,KeyEnum>&);
  
     // These are the static ordered maps which contain the above info
     // ColEnum -> name

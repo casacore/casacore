@@ -1,4 +1,4 @@
-//# NewMSSource.h: The NewMeasurementSet SOURCE Table
+//# MSSource.h: The MeasurementSet SOURCE Table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSSOURCE_H)
-#define AIPS_NewMSSOURCE_H
+#if !defined(AIPS_MSSOURCE_H)
+#define AIPS_MSSOURCE_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSSourceEnums.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MSSourceEnums.h>
 
 // <summary> 
-// A Table intended to hold a NewMeasurementSet SOURCE table.
+// A Table intended to hold a MeasurementSet SOURCE table.
 // </summary>
 
 // <use visibility=export>
@@ -43,61 +43,61 @@
 
 // <prerequisite>
 // <ul>
-//   <li> <linkto class="NewMeasurementSet:description">NewMeasurementSet</linkto> 
-//   <li> <linkto class="NewMSTable">NewMSTable</linkto> 
+//   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto> 
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// NewMSSource stands for the NewMeasurementSet Source table.
+// MSSource stands for the MeasurementSet Source table.
 // </etymology>
 //
 // <synopsis> 
-// An NewMSSource is a table intended to hold the SOURCE table for
-// the NewMeasurementSet. It has an identical set of member functions as
-// the main NewMeasurementSet class. For further info and examples see the 
-// NewMeasurementSet class.
+// An MSSource is a table intended to hold the SOURCE table for
+// the MeasurementSet. It has an identical set of member functions as
+// the main MeasurementSet class. For further info and examples see the 
+// MeasurementSet class.
 // </synopsis> 
 //
 // <example>
-// See the NewMeasurementSet for an example of how to access and use this class.
+// See the MeasurementSet for an example of how to access and use this class.
 // </example>
 //
 // <motivation>
-// It was found that subtables and the main table of the NewMeasurementSet have
+// It was found that subtables and the main table of the MeasurementSet have
 // a lot in common, therefore they derive their interface from the same
 // base class. Each subtable has its own class to keep the enum definitions
 // and conversion functions in separate scopes.
 // </motivation>
 //
 // <todo asof="1999/01/16">
-// see NewMeasurementSet.
+// see MeasurementSet.
 // </todo>
 
-class NewMSSource:public NewMSSourceEnums,
-	       public NewMSTable<NewMSSourceEnums::PredefinedColumns,
-	                      NewMSSourceEnums::PredefinedKeywords>
+class MSSource:public MSSourceEnums,
+	       public MSTable<MSSourceEnums::PredefinedColumns,
+	                      MSSourceEnums::PredefinedKeywords>
 {
 public:
 
-    // This constructs an empty NewMSSource.
-    NewMSSource ();
+    // This constructs an empty MSSource.
+    MSSource ();
 
     // These constructors mirror the Table ones with additional checking
-    // on validity (verifying that the NewMSSource will have the required columns
+    // on validity (verifying that the MSSource will have the required columns
     // and keywords)
-    // An exception is thrown if the constructed Table is not a valid NewMSSource
+    // An exception is thrown if the constructed Table is not a valid MSSource
     // <thrown>
     //   <li> AipsError
     // </thrown>
     // <group name=tableLikeConstructors>
-    NewMSSource (const String &tableName, TableOption = Table::Old);
-    NewMSSource (const String &tableName, const String &tableDescName,
+    MSSource (const String &tableName, TableOption = Table::Old);
+    MSSource (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    NewMSSource (SetupNewTable &newTab, uInt nrrow = 0,
+    MSSource (SetupNewTable &newTab, uInt nrrow = 0,
 		    Bool initialize = False);
-    NewMSSource (const Table &table);
-    NewMSSource (const NewMSSource &other);
+    MSSource (const Table &table);
+    MSSource (const MSSource &other);
     // </group>
 
     // As with tables, the destructor writes the table if necessary.
@@ -107,23 +107,23 @@ public:
     // <thrown>
     //   <li> AipsError
     // </thrown>
-    ~NewMSSource();
+    ~MSSource();
 
     //  Assignment operator, reference semantics
-    NewMSSource& operator=(const NewMSSource&);
+    MSSource& operator=(const MSSource&);
 
     // Make a special copy of this Table which references all columns from
     // this Table except those mentioned; those are empty and writable.
     // Each forwarded column has the same writable status as the underlying
     // column. The mentioned columns all use the AipsIO storage manager.
-    // This function is inherited from NewMSTable and unlikely to be of use,
-    // except in the class NewMeasurementSet (see comment there)..
-    NewMSSource referenceCopy(const String& newTableName,
+    // This function is inherited from MSTable and unlikely to be of use,
+    // except in the class MeasurementSet (see comment there)..
+    MSSource referenceCopy(const String& newTableName,
 			   const Block<String>& writableColumns) const;
 
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
-    // NewMSTableImpl.
+    // MSTableImpl.
     static void init();
 
 private:

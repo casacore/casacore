@@ -1,4 +1,4 @@
-//# NewMSFlagCmdColumns.cc:  provides easy access to NewMeasurementSet columns
+//# MSFlagCmdColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSFlagCmdColumns.h>
-#include <aips/MeasurementSets/NewMSFlagCmd.h>
+#include <aips/MeasurementSets/MSFlagCmdColumns.h>
+#include <aips/MeasurementSets/MSFlagCmd.h>
 
-RONewMSFlagCmdColumns::RONewMSFlagCmdColumns(const NewMSFlagCmd& msFlagCmd):
-  applied_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::APPLIED)),
-  command_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::COMMAND)),
-  interval_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::INTERVAL)),
-  level_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::LEVEL)),
-  reason_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::REASON)),
-  severity_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::SEVERITY)),
-  time_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME)),
-  type_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TYPE)),
-  timeMeas_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME)),
-  intervalQuant_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::INTERVAL)),
-  timeQuant_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME))
+ROMSFlagCmdColumns::ROMSFlagCmdColumns(const MSFlagCmd& msFlagCmd):
+  applied_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::APPLIED)),
+  command_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::COMMAND)),
+  interval_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::INTERVAL)),
+  level_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::LEVEL)),
+  reason_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::REASON)),
+  severity_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::SEVERITY)),
+  time_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME)),
+  type_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TYPE)),
+  timeMeas_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME)),
+  intervalQuant_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::INTERVAL)),
+  timeQuant_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME))
 {}
 
-RONewMSFlagCmdColumns::~RONewMSFlagCmdColumns() {}
+ROMSFlagCmdColumns::~ROMSFlagCmdColumns() {}
 
-RONewMSFlagCmdColumns::RONewMSFlagCmdColumns():
+ROMSFlagCmdColumns::ROMSFlagCmdColumns():
   applied_p(),
   command_p(),
   interval_p(),
@@ -58,48 +58,48 @@ RONewMSFlagCmdColumns::RONewMSFlagCmdColumns():
   timeQuant_p()
 {}
 
-void RONewMSFlagCmdColumns::attach(const NewMSFlagCmd& msFlagCmd)
+void ROMSFlagCmdColumns::attach(const MSFlagCmd& msFlagCmd)
 {
-  applied_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::APPLIED));
-  command_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::COMMAND));
-  interval_p.attach(msFlagCmd, NewMSFlagCmd::
-		    columnName(NewMSFlagCmd::INTERVAL));
-  level_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::LEVEL));
-  reason_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::REASON));
-  severity_p.attach(msFlagCmd, NewMSFlagCmd::
-		    columnName(NewMSFlagCmd::SEVERITY));
-  time_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME));
-  type_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TYPE));
-  timeMeas_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME));
-  intervalQuant_p.attach(msFlagCmd, NewMSFlagCmd::
-			 columnName(NewMSFlagCmd::INTERVAL));
-  timeQuant_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME));
+  applied_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::APPLIED));
+  command_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::COMMAND));
+  interval_p.attach(msFlagCmd, MSFlagCmd::
+		    columnName(MSFlagCmd::INTERVAL));
+  level_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::LEVEL));
+  reason_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::REASON));
+  severity_p.attach(msFlagCmd, MSFlagCmd::
+		    columnName(MSFlagCmd::SEVERITY));
+  time_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME));
+  type_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TYPE));
+  timeMeas_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME));
+  intervalQuant_p.attach(msFlagCmd, MSFlagCmd::
+			 columnName(MSFlagCmd::INTERVAL));
+  timeQuant_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME));
 }
 
-NewMSFlagCmdColumns::NewMSFlagCmdColumns(NewMSFlagCmd& msFlagCmd):
-  RONewMSFlagCmdColumns(msFlagCmd),
-  applied_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::APPLIED)),
-  command_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::COMMAND)),
-  interval_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::INTERVAL)),
-  level_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::LEVEL)),
-  reason_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::REASON)),
-  severity_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::SEVERITY)),
-  time_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME)),
-  type_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TYPE)),
-  timeMeas_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME)),
-  intervalQuant_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::INTERVAL)),
-  timeQuant_p(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME))
+MSFlagCmdColumns::MSFlagCmdColumns(MSFlagCmd& msFlagCmd):
+  ROMSFlagCmdColumns(msFlagCmd),
+  applied_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::APPLIED)),
+  command_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::COMMAND)),
+  interval_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::INTERVAL)),
+  level_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::LEVEL)),
+  reason_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::REASON)),
+  severity_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::SEVERITY)),
+  time_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME)),
+  type_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TYPE)),
+  timeMeas_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME)),
+  intervalQuant_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::INTERVAL)),
+  timeQuant_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME))
 {}
 
-NewMSFlagCmdColumns::~NewMSFlagCmdColumns() {}
+MSFlagCmdColumns::~MSFlagCmdColumns() {}
 
 
-void NewMSFlagCmdColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty){
+void MSFlagCmdColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty){
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
-NewMSFlagCmdColumns::NewMSFlagCmdColumns():
-  RONewMSFlagCmdColumns(),
+MSFlagCmdColumns::MSFlagCmdColumns():
+  ROMSFlagCmdColumns(),
   applied_p(),
   command_p(),
   interval_p(),
@@ -113,24 +113,24 @@ NewMSFlagCmdColumns::NewMSFlagCmdColumns():
   timeQuant_p()
 {}
 
-void NewMSFlagCmdColumns::attach(NewMSFlagCmd& msFlagCmd)
+void MSFlagCmdColumns::attach(MSFlagCmd& msFlagCmd)
 {
-  RONewMSFlagCmdColumns::attach(msFlagCmd);
-  applied_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::APPLIED));
-  command_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::COMMAND));
-  interval_p.attach(msFlagCmd, NewMSFlagCmd::
-		    columnName(NewMSFlagCmd::INTERVAL));
-  level_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::LEVEL));
-  reason_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::REASON));
-  severity_p.attach(msFlagCmd, NewMSFlagCmd::
-		    columnName(NewMSFlagCmd::SEVERITY));
-  time_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME));
-  type_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TYPE));
-  timeMeas_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME));
-  intervalQuant_p.attach(msFlagCmd, NewMSFlagCmd::
-			 columnName(NewMSFlagCmd::INTERVAL));
-  timeQuant_p.attach(msFlagCmd, NewMSFlagCmd::columnName(NewMSFlagCmd::TIME));
+  ROMSFlagCmdColumns::attach(msFlagCmd);
+  applied_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::APPLIED));
+  command_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::COMMAND));
+  interval_p.attach(msFlagCmd, MSFlagCmd::
+		    columnName(MSFlagCmd::INTERVAL));
+  level_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::LEVEL));
+  reason_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::REASON));
+  severity_p.attach(msFlagCmd, MSFlagCmd::
+		    columnName(MSFlagCmd::SEVERITY));
+  time_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME));
+  type_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TYPE));
+  timeMeas_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME));
+  intervalQuant_p.attach(msFlagCmd, MSFlagCmd::
+			 columnName(MSFlagCmd::INTERVAL));
+  timeQuant_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME));
 }
 // Local Variables: 
-// compile-command: "gmake NewMSFlagCmdColumns"
+// compile-command: "gmake MSFlagCmdColumns"
 // End: 

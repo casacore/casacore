@@ -1,4 +1,4 @@
-//# NewMSTableImpl.cc:  the class that hold measurements from telescopes
+//# MSTableImpl.cc:  the class that hold measurements from telescopes
 //# Copyright (C) 1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSTableImpl.h>
+#include <aips/MeasurementSets/MSTableImpl.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -39,7 +39,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
 
 #include <aips/TableMeasures/TableMeasRefDesc.h>
 #include <aips/TableMeasures/TableMeasValueDesc.h>
@@ -55,7 +55,7 @@
 #include <aips/Measures/Muvw.h>
 #include <aips/Measures/MEarthMagnetic.h>
 
-void NewMSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
+void MSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
 				const String& measure, const String& refCol) {
   String meas = measure;
   meas.downcase();
@@ -102,9 +102,9 @@ void NewMSTableImpl::addMeasColumn(TableDesc& td, const String& column,
 }
 
 
-Bool NewMSTableImpl::initialized_p(False);
+Bool MSTableImpl::initialized_p(False);
 
-Int NewMSTableImpl::mapType(const SimpleOrderedMap<Int,String>& columnMap,
+Int MSTableImpl::mapType(const SimpleOrderedMap<Int,String>& columnMap,
 			 const String &name)
 {
     // find first occurrance of name in the map (must be only occurrance)
@@ -119,7 +119,7 @@ Int NewMSTableImpl::mapType(const SimpleOrderedMap<Int,String>& columnMap,
     return type;
 }
 
-void NewMSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
+void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 				  Int colDType, const String& colComment,
 				  const String& colUnit,
 				  const String& colMeasure, Int ndim,
@@ -290,9 +290,9 @@ void NewMSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 	    }
 	}	    
     } else {
-      cerr << "NewMSTableImpl::addColumnToDesc - Invalid data type: "
+      cerr << "MSTableImpl::addColumnToDesc - Invalid data type: "
 	   << colDType <<", "<<colName<<endl;
-      //	throw(AipsError ("NewMSTableImpl::addColumnToDesc(...) - "
+      //	throw(AipsError ("MSTableImpl::addColumnToDesc(...) - "
       //			 "Invalid default data type for specified column"));
     }
     // now add the Unit keywords for non Measure Columns
@@ -309,7 +309,7 @@ void NewMSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
     }
 }
 
-void NewMSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName,
+void MSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName,
 			       Int keyDType, const String& keyComment)
 {
     switch (keyDType) {
@@ -334,12 +334,12 @@ void NewMSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName,
 	break; 
     default:
       cerr << "Data type: "<< keyDType << ", "<< keyName<< "not handled"<<endl;
-      //	throw(AipsError ("NewMSTableImpl::addKeyToDesc(...) - "
+      //	throw(AipsError ("MSTableImpl::addKeyToDesc(...) - "
       //			 "Data type not handled"));
     }  
 }
 
-void NewMSTableImpl::colMapDef(SimpleOrderedMap<Int,String>& columnMap,
+void MSTableImpl::colMapDef(SimpleOrderedMap<Int,String>& columnMap,
 			    SimpleOrderedMap<Int,Int>& colDTypeMap,
 			    SimpleOrderedMap<Int,String>& colCommentMap,
 			    SimpleOrderedMap<Int,String>& colUnitMap,
@@ -360,7 +360,7 @@ void NewMSTableImpl::colMapDef(SimpleOrderedMap<Int,String>& columnMap,
     if (colMeasureType != "") colMeasureTypeMap.define(col, colMeasureType);
 }
 
-void NewMSTableImpl::keyMapDef(SimpleOrderedMap<Int,String>& keywordMap,
+void MSTableImpl::keyMapDef(SimpleOrderedMap<Int,String>& keywordMap,
 			    SimpleOrderedMap<Int,Int>& keyDTypeMap,
 			    SimpleOrderedMap<Int,String>& keyCommentMap,
 			    Int key,
@@ -373,7 +373,7 @@ void NewMSTableImpl::keyMapDef(SimpleOrderedMap<Int,String>& keywordMap,
     keyCommentMap.define(key, keyComment);
 }
 
-Bool NewMSTableImpl::validate(const TableDesc& tabDesc, 
+Bool MSTableImpl::validate(const TableDesc& tabDesc, 
 			   const TableDesc& requiredTD)
 {
     Bool eqDTypes;
@@ -381,7 +381,7 @@ Bool NewMSTableImpl::validate(const TableDesc& tabDesc,
 	isSuperset(requiredTD.columnDescSet(), eqDTypes);
 #if defined(AIPS_DEBUG)
     if (!temp) {
-	cerr << "NewMSTableImpl::validate - tabDesc not superset of requiredTD"<<endl;
+	cerr << "MSTableImpl::validate - tabDesc not superset of requiredTD"<<endl;
     }
 #endif
     // check all of the UNIT and MEASINFO-Type values against 
@@ -398,7 +398,7 @@ Bool NewMSTableImpl::validate(const TableDesc& tabDesc,
 	  detail = keySet.isDefined("QuantumUnits");
 #if defined(AIPS_DEBUG)
 	  if (!detail) {
-	    cerr <<"NewMSTableImpl::validate - column "<<colNames(colnr) <<
+	    cerr <<"MSTableImpl::validate - column "<<colNames(colnr) <<
 	      " doesn't have QuantumUnits"<<endl;
 	  }
 #endif
@@ -410,7 +410,7 @@ Bool NewMSTableImpl::validate(const TableDesc& tabDesc,
 //	    keySet.asArrayString("QuantumUnits")<<endl;
 //*** testing
 	    if (!detail) {
-	      cerr <<"NewMSTableImpl::validate - column "<<colNames(colnr) <<
+	      cerr <<"MSTableImpl::validate - column "<<colNames(colnr) <<
 		" has invalid QuantumUnits: "<< 
 		keySet.asArrayString("QuantumUnits")<<endl;
 	    }
@@ -420,7 +420,7 @@ Bool NewMSTableImpl::validate(const TableDesc& tabDesc,
 	      detail = ToBool(keySet.isDefined("MEASINFO"));
 #if defined(AIPS_DEBUG)
 	      if (!detail) {
-		cerr <<"NewMSTableImpl::validate - column "<<colNames(colnr) <<
+		cerr <<"MSTableImpl::validate - column "<<colNames(colnr) <<
 		  " doesn't have MEASINFO"<<endl;
 	      }
 #endif
@@ -430,7 +430,7 @@ Bool NewMSTableImpl::validate(const TableDesc& tabDesc,
 	      }
 #if defined(AIPS_DEBUG)
 		if (!detail) {
-		  cerr << "NewMSTableImpl::validate - column "<<colNames(colnr)
+		  cerr << "MSTableImpl::validate - column "<<colNames(colnr)
 		       << " has invalid MEASURE TYPE: "
 		       << keySet.asRecord("MEASINFO").asString("type") << endl;
 		}
@@ -442,7 +442,7 @@ Bool NewMSTableImpl::validate(const TableDesc& tabDesc,
     return ToBool(temp && eqDTypes && detail);
 }
  
-Bool NewMSTableImpl::validate(const TableRecord& tabRec, 
+Bool MSTableImpl::validate(const TableRecord& tabRec, 
 			   const TableDesc& requiredTD)
 {
     Bool eqDTypes;
@@ -451,7 +451,7 @@ Bool NewMSTableImpl::validate(const TableRecord& tabRec,
     return ToBool(temp && eqDTypes);
 }
 
-Table NewMSTableImpl::referenceCopy(const Table& tab, const String& newTableName, 
+Table MSTableImpl::referenceCopy(const Table& tab, const String& newTableName, 
 				 const Block<String>& writableColumns)
 {
   TableDesc td(tab.tableDesc());
@@ -469,28 +469,28 @@ Table NewMSTableImpl::referenceCopy(const Table& tab, const String& newTableName
   return msTab;
 }
 
-void NewMSTableImpl::init()
+void MSTableImpl::init()
 {
     if (initialized_p) return;
     initialized_p = True;
-    NewMeasurementSet::init();
-    NewMSAntenna::init();
-    NewMSDataDescription::init();
-    NewMSDoppler::init();
-    NewMSFeed::init();
-    NewMSField::init();
-    NewMSFlagCmd::init();
-    NewMSFreqOffset::init();
-    NewMSHistory::init();
-    NewMSObservation::init();
-    NewMSPointing::init();
-    NewMSPolarization::init();
-    NewMSProcessor::init();
-    NewMSSource::init();
-    NewMSSpectralWindow::init();
-    NewMSState::init();
-    NewMSSysCal::init();
-    NewMSWeather::init();
+    MeasurementSet::init();
+    MSAntenna::init();
+    MSDataDescription::init();
+    MSDoppler::init();
+    MSFeed::init();
+    MSField::init();
+    MSFlagCmd::init();
+    MSFreqOffset::init();
+    MSHistory::init();
+    MSObservation::init();
+    MSPointing::init();
+    MSPolarization::init();
+    MSProcessor::init();
+    MSSource::init();
+    MSSpectralWindow::init();
+    MSState::init();
+    MSSysCal::init();
+    MSWeather::init();
 }
 
 

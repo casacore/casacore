@@ -1,4 +1,4 @@
-//# NewMSHistoryColumns.cc:  provides easy access to NewMeasurementSet columns
+//# MSHistoryColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,28 +25,28 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSHistoryColumns.h>
-#include <aips/MeasurementSets/NewMSHistory.h>
+#include <aips/MeasurementSets/MSHistoryColumns.h>
+#include <aips/MeasurementSets/MSHistory.h>
 
-RONewMSHistoryColumns::RONewMSHistoryColumns(const NewMSHistory& msHistory):
-  application_p(msHistory, NewMSHistory::
-		columnName(NewMSHistory::APPLICATION)),
-  appParams_p(msHistory, NewMSHistory::columnName(NewMSHistory::APP_PARAMS)),
-  cliCommand_p(msHistory, NewMSHistory::columnName(NewMSHistory::CLI_COMMAND)),
-  message_p(msHistory, NewMSHistory::columnName(NewMSHistory::MESSAGE)),
-  objectId_p(msHistory, NewMSHistory::columnName(NewMSHistory::OBJECT_ID)),
-  observationId_p(msHistory, NewMSHistory::
-		  columnName(NewMSHistory::OBSERVATION_ID)),
-  origin_p(msHistory, NewMSHistory::columnName(NewMSHistory::ORIGIN)),
-  priority_p(msHistory, NewMSHistory::columnName(NewMSHistory::PRIORITY)),
-  time_p(msHistory, NewMSHistory::columnName(NewMSHistory::TIME)),
-  timeMeas_p(msHistory, NewMSHistory::columnName(NewMSHistory::TIME)),
-  timeQuant_p(msHistory, NewMSHistory::columnName(NewMSHistory::TIME))
+ROMSHistoryColumns::ROMSHistoryColumns(const MSHistory& msHistory):
+  application_p(msHistory, MSHistory::
+		columnName(MSHistory::APPLICATION)),
+  appParams_p(msHistory, MSHistory::columnName(MSHistory::APP_PARAMS)),
+  cliCommand_p(msHistory, MSHistory::columnName(MSHistory::CLI_COMMAND)),
+  message_p(msHistory, MSHistory::columnName(MSHistory::MESSAGE)),
+  objectId_p(msHistory, MSHistory::columnName(MSHistory::OBJECT_ID)),
+  observationId_p(msHistory, MSHistory::
+		  columnName(MSHistory::OBSERVATION_ID)),
+  origin_p(msHistory, MSHistory::columnName(MSHistory::ORIGIN)),
+  priority_p(msHistory, MSHistory::columnName(MSHistory::PRIORITY)),
+  time_p(msHistory, MSHistory::columnName(MSHistory::TIME)),
+  timeMeas_p(msHistory, MSHistory::columnName(MSHistory::TIME)),
+  timeQuant_p(msHistory, MSHistory::columnName(MSHistory::TIME))
 {}
 
-RONewMSHistoryColumns::~RONewMSHistoryColumns() {}
+ROMSHistoryColumns::~ROMSHistoryColumns() {}
 
-RONewMSHistoryColumns::RONewMSHistoryColumns():
+ROMSHistoryColumns::ROMSHistoryColumns():
   application_p(),
   appParams_p(),
   cliCommand_p(),
@@ -60,52 +60,52 @@ RONewMSHistoryColumns::RONewMSHistoryColumns():
   timeQuant_p()
 {}
 
-void RONewMSHistoryColumns::attach(const NewMSHistory& msHistory)
+void ROMSHistoryColumns::attach(const MSHistory& msHistory)
 {
-  application_p.attach(msHistory, NewMSHistory::
-		       columnName(NewMSHistory::APPLICATION));
-  appParams_p.attach(msHistory, NewMSHistory::
-		     columnName(NewMSHistory::APP_PARAMS));
-  cliCommand_p.attach(msHistory, NewMSHistory::
-		      columnName(NewMSHistory::CLI_COMMAND));
-  message_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::MESSAGE));
-  objectId_p.attach(msHistory, NewMSHistory::
-		    columnName(NewMSHistory::OBJECT_ID));
-  observationId_p.attach(msHistory, NewMSHistory::
-			 columnName(NewMSHistory::OBSERVATION_ID));
-  origin_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::ORIGIN));
-  priority_p.attach(msHistory, NewMSHistory::
-		    columnName(NewMSHistory::PRIORITY));
-  time_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::TIME));
-  timeMeas_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::TIME));
-  timeQuant_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::TIME));
+  application_p.attach(msHistory, MSHistory::
+		       columnName(MSHistory::APPLICATION));
+  appParams_p.attach(msHistory, MSHistory::
+		     columnName(MSHistory::APP_PARAMS));
+  cliCommand_p.attach(msHistory, MSHistory::
+		      columnName(MSHistory::CLI_COMMAND));
+  message_p.attach(msHistory, MSHistory::columnName(MSHistory::MESSAGE));
+  objectId_p.attach(msHistory, MSHistory::
+		    columnName(MSHistory::OBJECT_ID));
+  observationId_p.attach(msHistory, MSHistory::
+			 columnName(MSHistory::OBSERVATION_ID));
+  origin_p.attach(msHistory, MSHistory::columnName(MSHistory::ORIGIN));
+  priority_p.attach(msHistory, MSHistory::
+		    columnName(MSHistory::PRIORITY));
+  time_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
+  timeMeas_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
+  timeQuant_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
 }
 
-NewMSHistoryColumns::NewMSHistoryColumns(NewMSHistory& msHistory):
-  RONewMSHistoryColumns(msHistory),
-  application_p(msHistory, NewMSHistory::
-		columnName(NewMSHistory::APPLICATION)),
-  appParams_p(msHistory, NewMSHistory::columnName(NewMSHistory::APP_PARAMS)),
-  cliCommand_p(msHistory, NewMSHistory::columnName(NewMSHistory::CLI_COMMAND)),
-  message_p(msHistory, NewMSHistory::columnName(NewMSHistory::MESSAGE)),
-  objectId_p(msHistory, NewMSHistory::columnName(NewMSHistory::OBJECT_ID)),
-  observationId_p(msHistory, NewMSHistory::
-		  columnName(NewMSHistory::OBSERVATION_ID)),
-  origin_p(msHistory, NewMSHistory::columnName(NewMSHistory::ORIGIN)),
-  priority_p(msHistory, NewMSHistory::columnName(NewMSHistory::PRIORITY)),
-  time_p(msHistory, NewMSHistory::columnName(NewMSHistory::TIME)),
-  timeMeas_p(msHistory, NewMSHistory::columnName(NewMSHistory::TIME)),
-  timeQuant_p(msHistory, NewMSHistory::columnName(NewMSHistory::TIME))
+MSHistoryColumns::MSHistoryColumns(MSHistory& msHistory):
+  ROMSHistoryColumns(msHistory),
+  application_p(msHistory, MSHistory::
+		columnName(MSHistory::APPLICATION)),
+  appParams_p(msHistory, MSHistory::columnName(MSHistory::APP_PARAMS)),
+  cliCommand_p(msHistory, MSHistory::columnName(MSHistory::CLI_COMMAND)),
+  message_p(msHistory, MSHistory::columnName(MSHistory::MESSAGE)),
+  objectId_p(msHistory, MSHistory::columnName(MSHistory::OBJECT_ID)),
+  observationId_p(msHistory, MSHistory::
+		  columnName(MSHistory::OBSERVATION_ID)),
+  origin_p(msHistory, MSHistory::columnName(MSHistory::ORIGIN)),
+  priority_p(msHistory, MSHistory::columnName(MSHistory::PRIORITY)),
+  time_p(msHistory, MSHistory::columnName(MSHistory::TIME)),
+  timeMeas_p(msHistory, MSHistory::columnName(MSHistory::TIME)),
+  timeQuant_p(msHistory, MSHistory::columnName(MSHistory::TIME))
 {}
 
-NewMSHistoryColumns::~NewMSHistoryColumns() {}
+MSHistoryColumns::~MSHistoryColumns() {}
 
-void NewMSHistoryColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty){
+void MSHistoryColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty){
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
-NewMSHistoryColumns::NewMSHistoryColumns():
-  RONewMSHistoryColumns(),
+MSHistoryColumns::MSHistoryColumns():
+  ROMSHistoryColumns(),
   application_p(),
   appParams_p(),
   cliCommand_p(),
@@ -119,27 +119,27 @@ NewMSHistoryColumns::NewMSHistoryColumns():
   timeQuant_p()
 {}
 
-void NewMSHistoryColumns::attach(NewMSHistory& msHistory)
+void MSHistoryColumns::attach(MSHistory& msHistory)
 {
-  RONewMSHistoryColumns::attach(msHistory);
-  application_p.attach(msHistory, NewMSHistory::
-		       columnName(NewMSHistory::APPLICATION));
-  appParams_p.attach(msHistory, NewMSHistory::
-		     columnName(NewMSHistory::APP_PARAMS));
-  cliCommand_p.attach(msHistory, NewMSHistory::
-		      columnName(NewMSHistory::CLI_COMMAND));
-  message_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::MESSAGE));
-  objectId_p.attach(msHistory, NewMSHistory::
-		    columnName(NewMSHistory::OBJECT_ID));
-  observationId_p.attach(msHistory, NewMSHistory::
-			 columnName(NewMSHistory::OBSERVATION_ID));
-  origin_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::ORIGIN));
-  priority_p.attach(msHistory, NewMSHistory::
-		    columnName(NewMSHistory::PRIORITY));
-  time_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::TIME));
-  timeMeas_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::TIME));
-  timeQuant_p.attach(msHistory, NewMSHistory::columnName(NewMSHistory::TIME));
+  ROMSHistoryColumns::attach(msHistory);
+  application_p.attach(msHistory, MSHistory::
+		       columnName(MSHistory::APPLICATION));
+  appParams_p.attach(msHistory, MSHistory::
+		     columnName(MSHistory::APP_PARAMS));
+  cliCommand_p.attach(msHistory, MSHistory::
+		      columnName(MSHistory::CLI_COMMAND));
+  message_p.attach(msHistory, MSHistory::columnName(MSHistory::MESSAGE));
+  objectId_p.attach(msHistory, MSHistory::
+		    columnName(MSHistory::OBJECT_ID));
+  observationId_p.attach(msHistory, MSHistory::
+			 columnName(MSHistory::OBSERVATION_ID));
+  origin_p.attach(msHistory, MSHistory::columnName(MSHistory::ORIGIN));
+  priority_p.attach(msHistory, MSHistory::
+		    columnName(MSHistory::PRIORITY));
+  time_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
+  timeMeas_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
+  timeQuant_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
 }
 // Local Variables: 
-// compile-command: "gmake NewMSHistoryColumns"
+// compile-command: "gmake MSHistoryColumns"
 // End: 

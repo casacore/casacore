@@ -1,4 +1,4 @@
-//# NewMSPointing.cc: The NewMeasurementSet POINTING Table
+//# MSPointing.cc: The MeasurementSet POINTING Table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSPointing.h>
+#include <aips/MeasurementSets/MSPointing.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -37,74 +37,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSPointing::NewMSPointing():hasBeenDestroyed_p(True) { }
+MSPointing::MSPointing():hasBeenDestroyed_p(True) { }
 
-NewMSPointing::NewMSPointing(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSPointing::MSPointing(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSPointing(String &, TableOption) - "
-			 "table is not a valid NewMSPointing"));
+	throw (AipsError("MSPointing(String &, TableOption) - "
+			 "table is not a valid MSPointing"));
 }
 
-NewMSPointing::NewMSPointing(const String& tableName, const String &tableDescName,
+MSPointing::MSPointing(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSPointing(String &, String &, TableOption) - "
-			 "table is not a valid NewMSPointing"));
+	throw (AipsError("MSPointing(String &, String &, TableOption) - "
+			 "table is not a valid MSPointing"));
 }
 
-NewMSPointing::NewMSPointing(SetupNewTable &newTab, uInt nrrow,
+MSPointing::MSPointing(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSPointing(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSPointing"));
+	throw (AipsError("MSPointing(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSPointing"));
 }
 
-NewMSPointing::NewMSPointing(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSPointing::MSPointing(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSPointing(const Table &) - "
-			 "table is not a valid NewMSPointing"));
+	throw (AipsError("MSPointing(const Table &) - "
+			 "table is not a valid MSPointing"));
 }
 
-NewMSPointing::NewMSPointing(const NewMSPointing &other)
-    : NewMSTable<PredefinedColumns,
+MSPointing::MSPointing(const MSPointing &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSPointing(const NewMSPointing &) - "
-			     "table is not a valid NewMSPointing"));
+	    throw (AipsError("MSPointing(const MSPointing &) - "
+			     "table is not a valid MSPointing"));
 }
 
-NewMSPointing::~NewMSPointing()
+MSPointing::~MSPointing()
 {
-// check to make sure that this NewMSPointing is still valid
+// check to make sure that this MSPointing is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSPointing() - "
-			 "Table written is not a valid NewMSPointing"));
+	throw (AipsError("~MSPointing() - "
+			 "Table written is not a valid MSPointing"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -112,17 +112,17 @@ NewMSPointing::~NewMSPointing()
 }
 
 
-NewMSPointing& NewMSPointing::operator=(const NewMSPointing &other)
+MSPointing& MSPointing::operator=(const MSPointing &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSPointing::init()
+void MSPointing::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -198,9 +198,9 @@ void NewMSPointing::init()
 }
 
 	
-NewMSPointing NewMSPointing::referenceCopy(const String& newTableName, 
+MSPointing MSPointing::referenceCopy(const String& newTableName, 
 			       const Block<String>& writableColumns) const
 {
-    return NewMSPointing(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSPointing(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

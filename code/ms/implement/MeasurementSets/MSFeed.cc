@@ -1,4 +1,4 @@
-//# NewMSFeed.cc: The NewMeasurementSet FEED Table
+//# MSFeed.cc: The MeasurementSet FEED Table
 //# Copyright (C) 1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSFeed.h>
+#include <aips/MeasurementSets/MSFeed.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -37,74 +37,74 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSFeed::NewMSFeed():hasBeenDestroyed_p(True) { }
+MSFeed::MSFeed():hasBeenDestroyed_p(True) { }
 
-NewMSFeed::NewMSFeed(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSFeed::MSFeed(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFeed(String &, TableOption) - "
-			 "table is not a valid NewMSFeed"));
+	throw (AipsError("MSFeed(String &, TableOption) - "
+			 "table is not a valid MSFeed"));
 }
 
-NewMSFeed::NewMSFeed(const String& tableName, const String &tableDescName,
+MSFeed::MSFeed(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFeed(String &, String &, TableOption) - "
-			 "table is not a valid NewMSFeed"));
+	throw (AipsError("MSFeed(String &, String &, TableOption) - "
+			 "table is not a valid MSFeed"));
 }
 
-NewMSFeed::NewMSFeed(SetupNewTable &newTab, uInt nrrow,
+MSFeed::MSFeed(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFeed(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSFeed"));
+	throw (AipsError("MSFeed(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSFeed"));
 }
 
-NewMSFeed::NewMSFeed(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSFeed::MSFeed(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSFeed(const Table &) - "
-			 "table is not a valid NewMSFeed"));
+	throw (AipsError("MSFeed(const Table &) - "
+			 "table is not a valid MSFeed"));
 }
 
-NewMSFeed::NewMSFeed(const NewMSFeed &other)
-    : NewMSTable<PredefinedColumns,
+MSFeed::MSFeed(const MSFeed &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSFeed(const NewMSFeed &) - "
-			     "table is not a valid NewMSFeed"));
+	    throw (AipsError("MSFeed(const MSFeed &) - "
+			     "table is not a valid MSFeed"));
 }
 
-NewMSFeed::~NewMSFeed()
+MSFeed::~MSFeed()
 {
-// check to make sure that this NewMSFeed is still valid
+// check to make sure that this MSFeed is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSFeed() - "
-			 "Table written is not a valid NewMSFeed"));
+	throw (AipsError("~MSFeed() - "
+			 "Table written is not a valid MSFeed"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -112,17 +112,17 @@ NewMSFeed::~NewMSFeed()
 }
 
 
-NewMSFeed& NewMSFeed::operator=(const NewMSFeed &other)
+MSFeed& MSFeed::operator=(const MSFeed &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSFeed::init()
+void MSFeed::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -204,9 +204,9 @@ void NewMSFeed::init()
     }
 }
 
-NewMSFeed NewMSFeed::referenceCopy(const String& newTableName, 
+MSFeed MSFeed::referenceCopy(const String& newTableName, 
 			     const Block<String>& writableColumns) const
 {
-    return NewMSFeed(NewMSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
+    return MSFeed(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
 		  (newTableName,writableColumns));
 }

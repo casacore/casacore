@@ -1,4 +1,4 @@
-//# NewMSDataDescription.cc: The NewMeasurementSet DATA_DESCRIPTION Table
+//# MSDataDescription.cc: The MeasurementSet DATA_DESCRIPTION Table
 //# Copyright (C) 1996,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSDataDescription.h>
+#include <aips/MeasurementSets/MSDataDescription.h>
 
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -38,75 +38,75 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSDataDescription::NewMSDataDescription():hasBeenDestroyed_p(True) { }
+MSDataDescription::MSDataDescription():hasBeenDestroyed_p(True) { }
 
-NewMSDataDescription::NewMSDataDescription(const String &tableName, 
+MSDataDescription::MSDataDescription(const String &tableName, 
 				     TableOption option) 
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSDataDescription(String &, TableOption) - "
-			 "table is not a valid NewMSDataDescription"));
+	throw (AipsError("MSDataDescription(String &, TableOption) - "
+			 "table is not a valid MSDataDescription"));
 }
 
-NewMSDataDescription::NewMSDataDescription(const String& tableName, const String &tableDescName,
+MSDataDescription::MSDataDescription(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSDataDescription(String &, String &, TableOption) - "
-			 "table is not a valid NewMSDataDescription"));
+	throw (AipsError("MSDataDescription(String &, String &, TableOption) - "
+			 "table is not a valid MSDataDescription"));
 }
 
-NewMSDataDescription::NewMSDataDescription(SetupNewTable &newTab, uInt nrrow,
+MSDataDescription::MSDataDescription(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSDataDescription(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSDataDescription"));
+	throw (AipsError("MSDataDescription(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSDataDescription"));
 }
 
-NewMSDataDescription::NewMSDataDescription(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSDataDescription::MSDataDescription(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSDataDescription(const Table &) - "
-			 "table is not a valid NewMSDataDescription"));
+	throw (AipsError("MSDataDescription(const Table &) - "
+			 "table is not a valid MSDataDescription"));
 }
 
-NewMSDataDescription::NewMSDataDescription(const NewMSDataDescription &other)
-    : NewMSTable<PredefinedColumns,
+MSDataDescription::MSDataDescription(const MSDataDescription &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSDataDescription(const NewMSDataDescription &) - "
-			     "table is not a valid NewMSDataDescription"));
+	    throw (AipsError("MSDataDescription(const MSDataDescription &) - "
+			     "table is not a valid MSDataDescription"));
 }
 
-NewMSDataDescription::~NewMSDataDescription()
+MSDataDescription::~MSDataDescription()
 {
-// check to make sure that this NewMSDataDescription is still valid
+// check to make sure that this MSDataDescription is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSDataDescription() - "
-			 "Table written is not a valid NewMSDataDescription"));
+	throw (AipsError("~MSDataDescription() - "
+			 "Table written is not a valid MSDataDescription"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -114,17 +114,17 @@ NewMSDataDescription::~NewMSDataDescription()
 }
 
 
-NewMSDataDescription& NewMSDataDescription::operator=(const NewMSDataDescription &other)
+MSDataDescription& MSDataDescription::operator=(const MSDataDescription &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSDataDescription::init()
+void MSDataDescription::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -161,9 +161,9 @@ void NewMSDataDescription::init()
 }
 
 	
-NewMSDataDescription NewMSDataDescription::referenceCopy(const String& newTableName, 
+MSDataDescription MSDataDescription::referenceCopy(const String& newTableName, 
 		    const Block<String>& writableColumns) const
 {
-    return NewMSDataDescription(NewMSTable<PredefinedColumns,PredefinedKeywords>::
+    return MSDataDescription(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }

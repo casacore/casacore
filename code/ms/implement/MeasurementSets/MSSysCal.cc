@@ -1,4 +1,4 @@
-//# NewMSSysCal.cc: The NewMeasurementSet SYSCAL Table
+//# MSSysCal.cc: The MeasurementSet SYSCAL Table
 //# Copyright (C) 1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSSysCal.h>
+#include <aips/MeasurementSets/MSSysCal.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
@@ -38,74 +38,74 @@
 #include <aips/Exceptions/Error.h>
 
 // set hasBeenDestroyed to True to avoid validity check in destructor.
-NewMSSysCal::NewMSSysCal():hasBeenDestroyed_p(True) { }
+MSSysCal::MSSysCal():hasBeenDestroyed_p(True) { }
 
-NewMSSysCal::NewMSSysCal(const String &tableName, TableOption option) 
-    : NewMSTable<PredefinedColumns,
+MSSysCal::MSSysCal(const String &tableName, TableOption option) 
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSysCal(String &, TableOption) - "
-			 "table is not a valid NewMSSysCal"));
+	throw (AipsError("MSSysCal(String &, TableOption) - "
+			 "table is not a valid MSSysCal"));
 }
 
-NewMSSysCal::NewMSSysCal(const String& tableName, const String &tableDescName,
+MSSysCal::MSSysCal(const String& tableName, const String &tableDescName,
 			       TableOption option)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName,option),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSysCal(String &, String &, TableOption) - "
-			 "table is not a valid NewMSSysCal"));
+	throw (AipsError("MSSysCal(String &, String &, TableOption) - "
+			 "table is not a valid MSSysCal"));
 }
 
-NewMSSysCal::NewMSSysCal(SetupNewTable &newTab, uInt nrrow,
+MSSysCal::MSSysCal(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
-    : NewMSTable<PredefinedColumns,
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSysCal(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMSSysCal"));
+	throw (AipsError("MSSysCal(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MSSysCal"));
 }
 
-NewMSSysCal::NewMSSysCal(const Table &table)
-    : NewMSTable<PredefinedColumns,
+MSSysCal::MSSysCal(const Table &table)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMSSysCal(const Table &) - "
-			 "table is not a valid NewMSSysCal"));
+	throw (AipsError("MSSysCal(const Table &) - "
+			 "table is not a valid MSSysCal"));
 }
 
-NewMSSysCal::NewMSSysCal(const NewMSSysCal &other)
-    : NewMSTable<PredefinedColumns,
+MSSysCal::MSSysCal(const MSSysCal &other)
+    : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), 
       hasBeenDestroyed_p(False)
 {
     // verify that other is valid
     if (&other != this) 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMSSysCal(const NewMSSysCal &) - "
-			     "table is not a valid NewMSSysCal"));
+	    throw (AipsError("MSSysCal(const MSSysCal &) - "
+			     "table is not a valid MSSysCal"));
 }
 
-NewMSSysCal::~NewMSSysCal()
+MSSysCal::~MSSysCal()
 {
-// check to make sure that this NewMSSysCal is still valid
+// check to make sure that this MSSysCal is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMSSysCal() - "
-			 "Table written is not a valid NewMSSysCal"));
+	throw (AipsError("~MSSysCal() - "
+			 "Table written is not a valid MSSysCal"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -113,17 +113,17 @@ NewMSSysCal::~NewMSSysCal()
 }
 
 
-NewMSSysCal& NewMSSysCal::operator=(const NewMSSysCal &other)
+MSSysCal& MSSysCal::operator=(const MSSysCal &other)
 {
     if (&other != this) {
-	NewMSTable<PredefinedColumns,
+	MSTable<PredefinedColumns,
 	PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
     }
     return *this;
 }
 
-void NewMSSysCal::init()
+void MSSysCal::init()
 {
     if (! columnMap_p.ndefined()) {
 	// the PredefinedColumns
@@ -228,9 +228,9 @@ void NewMSSysCal::init()
     }
 }
 
-NewMSSysCal NewMSSysCal::referenceCopy(const String& newTableName, 
+MSSysCal MSSysCal::referenceCopy(const String& newTableName, 
 				 const Block<String>& writableColumns) const
 {
-    return NewMSSysCal(NewMSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
+    return MSSysCal(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
 		    (newTableName,writableColumns));
 }

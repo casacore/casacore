@@ -1,4 +1,4 @@
-//# Mscolumnsc.cc:  provides easy access to NewMeasurementSet columns
+//# Mscolumnsc.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/NewMSColumns.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MSColumns.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
 
-RONewMSColumns::RONewMSColumns(const NewMeasurementSet& ms):
-  RONewMSMainColumns(ms),
+ROMSColumns::ROMSColumns(const MeasurementSet& ms):
+  ROMSMainColumns(ms),
   antenna_p(ms.antenna()),
   dataDesc_p(ms.dataDescription()),
   doppler_p(ms.doppler()),
@@ -50,10 +50,10 @@ RONewMSColumns::RONewMSColumns(const NewMeasurementSet& ms):
 {
 }
 
-RONewMSColumns::~RONewMSColumns() {}
+ROMSColumns::~ROMSColumns() {}
 
-NewMSColumns::NewMSColumns(NewMeasurementSet& ms):
-  NewMSMainColumns(ms),
+MSColumns::MSColumns(MeasurementSet& ms):
+  MSMainColumns(ms),
   antenna_p(ms.antenna()),
   dataDesc_p(ms.dataDescription()),
   doppler_p(ms.doppler()),
@@ -74,12 +74,12 @@ NewMSColumns::NewMSColumns(NewMeasurementSet& ms):
 {
 }
 
-NewMSColumns::~NewMSColumns() {}
+MSColumns::~MSColumns() {}
 
-void NewMSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
+void MSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
 {
   // Adjust the relevant columns in the main table
-  NewMSMainColumns::setEpochRef(ref, tableMustBeEmpty);
+  MSMainColumns::setEpochRef(ref, tableMustBeEmpty);
   // Now the same for the subtables.
   feed().setEpochRef(ref, tableMustBeEmpty);
   field().setEpochRef(ref, tableMustBeEmpty);
@@ -101,7 +101,7 @@ void NewMSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
   }
 }
 
-void NewMSColumns::setDirectionRef(MDirection::Types ref)
+void MSColumns::setDirectionRef(MDirection::Types ref)
 {
   field().setDirectionRef(ref);
   pointing().setDirectionRef(ref);
@@ -110,5 +110,5 @@ void NewMSColumns::setDirectionRef(MDirection::Types ref)
   }
 }
 // Local Variables: 
-// compile-command: "gmake NewMSColumns"
+// compile-command: "gmake MSColumns"
 // End: 

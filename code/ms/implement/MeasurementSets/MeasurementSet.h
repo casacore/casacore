@@ -1,4 +1,4 @@
-//# NewMeasurementSet.h: A Table to hold astronomical data (a set of Measurements)
+//# MeasurementSet.h: A Table to hold astronomical data (a set of Measurements)
 //# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,25 +30,25 @@
 #define AIPS_NEWMEASUREMENTSET_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSMainEnums.h>
-#include <aips/MeasurementSets/NewMSAntenna.h>
-#include <aips/MeasurementSets/NewMSDataDescription.h>
-#include <aips/MeasurementSets/NewMSDoppler.h>
-#include <aips/MeasurementSets/NewMSFeed.h>
-#include <aips/MeasurementSets/NewMSField.h>
-#include <aips/MeasurementSets/NewMSFlagCmd.h>
-#include <aips/MeasurementSets/NewMSFreqOffset.h>
-#include <aips/MeasurementSets/NewMSHistory.h>
-#include <aips/MeasurementSets/NewMSObservation.h>
-#include <aips/MeasurementSets/NewMSPointing.h>
-#include <aips/MeasurementSets/NewMSPolarization.h>
-#include <aips/MeasurementSets/NewMSProcessor.h>
-#include <aips/MeasurementSets/NewMSSource.h>
-#include <aips/MeasurementSets/NewMSSpectralWindow.h>
-#include <aips/MeasurementSets/NewMSState.h>
-#include <aips/MeasurementSets/NewMSSysCal.h>
-#include <aips/MeasurementSets/NewMSWeather.h>
+#include <aips/MeasurementSets/MSTable.h>
+#include <aips/MeasurementSets/MSMainEnums.h>
+#include <aips/MeasurementSets/MSAntenna.h>
+#include <aips/MeasurementSets/MSDataDescription.h>
+#include <aips/MeasurementSets/MSDoppler.h>
+#include <aips/MeasurementSets/MSFeed.h>
+#include <aips/MeasurementSets/MSField.h>
+#include <aips/MeasurementSets/MSFlagCmd.h>
+#include <aips/MeasurementSets/MSFreqOffset.h>
+#include <aips/MeasurementSets/MSHistory.h>
+#include <aips/MeasurementSets/MSObservation.h>
+#include <aips/MeasurementSets/MSPointing.h>
+#include <aips/MeasurementSets/MSPolarization.h>
+#include <aips/MeasurementSets/MSProcessor.h>
+#include <aips/MeasurementSets/MSSource.h>
+#include <aips/MeasurementSets/MSSpectralWindow.h>
+#include <aips/MeasurementSets/MSState.h>
+#include <aips/MeasurementSets/MSSysCal.h>
+#include <aips/MeasurementSets/MSWeather.h>
  
 //# Forward Declarations, more could be if they weren't part of the
 //# static classes 
@@ -61,11 +61,11 @@ class MPosition;
 
 
 //# forward declared so that the following typedef is up-front
-class NewMeasurementSet;
+class MeasurementSet;
 
-// NewMeasurementSet is too cumbersome for a number of common uses,
+// MeasurementSet is too cumbersome for a number of common uses,
 // so we give a typedef here.
-typedef NewMeasurementSet NewMS;
+typedef MeasurementSet NewMS;
 
 // <summary> 
 // A Table intended to hold astronomical data (a set of Measurements).
@@ -73,29 +73,29 @@ typedef NewMeasurementSet NewMS;
 
 // <use visibility=export>
 
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="tNewMeasurementSet.cc" demos="">
+// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="tMeasurementSet.cc" demos="">
 
 // <prerequisite>
 // <ul>
 //   <li> <linkto module="Tables:description">Tables</linkto> module
-//   <li> <linkto class="NewMSTable">NewMSTable</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto> 
 // </ul>
 // </prerequisite>
 //
 // <etymology>
-// The NewMeasurementSet is where all data are ultimately to be found
+// The MeasurementSet is where all data are ultimately to be found
 // in AIPS++.  Since, this is a collection of 
-// measurements (either actual or simulated), the term NewMeasurementSet
+// measurements (either actual or simulated), the term MeasurementSet
 // seems appropriate.
 // </etymology>
 //
 // <synopsis> 
-// A NewMeasurementSet is a Table.  Most operations on a NewMeasurementSet are
+// A MeasurementSet is a Table.  Most operations on a MeasurementSet are
 // Table operations. See the <linkto module="Tables:description">Tables</linkto> 
 // module for a list of those operations.  The member functions provided by this
 // class are primarily convenience functions to help users follow the 
 // agreed upon column and keyword naming conventions.  They are useful when
-// creating a Table following the NewMeasurementSet conventions from
+// creating a Table following the MeasurementSet conventions from
 // scratch as well as when creating the column objects to access those
 // columns.
 //
@@ -108,43 +108,43 @@ typedef NewMeasurementSet NewMS;
 // to the strings that are ultimately used. 
 //
 // Upon destruction, the table is checked to see that the
-// NewMeasurementSet remains valid, i.e., all required columns are present
+// MeasurementSet remains valid, i.e., all required columns are present
 // An exception is thrown if not all required columns are present
 // Nevertheless, the table will be flushed to disk if it is writable -
 // preserving its state.
 //
-// A NewMeasurementSet has a number of required subtables. These are stored
+// A MeasurementSet has a number of required subtables. These are stored
 // as keywords in the Table. Access to these subtables is provided via
 // member functions (e.g. antenna() for the ANTENNA table). All subtables
-// have associated NewMeasurementSet-like classes defined for them (NewMSAntenna
+// have associated MeasurementSet-like classes defined for them (MSAntenna
 // for the ANTENNA table) which provide analogous column and keyword mapping
 // as provided here.
 //
-// While the class name, NewMeasurementSet, is descriptive, it is often
+// While the class name, MeasurementSet, is descriptive, it is often
 // too long for many common uses.  The typedef NewMS is provided as
-// a convenient shorthand for NewMeasurementSet.  The example below uses this
+// a convenient shorthand for MeasurementSet.  The example below uses this
 // typedef.
 // 
 // Due to the inheritance scheme, it was necessary to separate the enumerations
-// used by NewMeasurementSet into a separate class, 
-// <linkto class=NewMSMainEnums>NewMSMainEnums</linkto>.
+// used by MeasurementSet into a separate class, 
+// <linkto class=MSMainEnums>MSMainEnums</linkto>.
 //
 // </synopsis> 
 //
 // <example>
-// This example illustrates a simple use of the NewMeasurementSet class.
+// This example illustrates a simple use of the MeasurementSet class.
 // <srcblock>
 //      // create the table descriptor
 //      TableDesc simpleDesc = NewMS::requiredTableDesc()
 //      // set up a new table
 //      SetupNewTable newTab("simpleTab", simpleDesc, Table::New);
-//      // create the NewMeasurementSet
-//      NewMeasurementSet simpleNewMS(newTab);
+//      // create the MeasurementSet
+//      MeasurementSet simpleNewMS(newTab);
 //      // now we need to define all required subtables
 //      // the following call does this for us if we don't need to
 //      // specify details of Storage Managers for columns.
 //      simpleNewMS.createDefaultSubtables(Table::New);
-//      // fill NewMeasurementSet via its Table interface
+//      // fill MeasurementSet via its Table interface
 //      // For example, construct one of the columns
 //      TableColumn feed(simpleNewMS, NewMS::columnName(NewMS::FEED1));
 //      uInt rownr = 0;
@@ -154,7 +154,7 @@ typedef NewMeasurementSet NewMS;
 //      feed.putScalar(rownr,1);
 //      // Access a subtable
 //      ArrayColumn<Double> antpos(simpleNewMS.antenna(),
-//                                 NewMSAntenna::columnName(NewMSAntenna::POSITION));
+//                                 MSAntenna::columnName(MSAntenna::POSITION));
 //      simpleNewMS.antenna().addRow();
 //      Array<Double> position(3); 
 //      position(0)=1.; position(1)=2.; position(2)=3.;
@@ -168,17 +168,17 @@ typedef NewMeasurementSet NewMS;
 // The Table module is more than adequate as a container of data.  
 // However, in order for applications to be useful with data from 
 // different sources, some conventions need to be adopted in the use 
-// of Tables to store data.  The NewMeasurementSet is
+// of Tables to store data.  The MeasurementSet is
 // where those conventions are defined and, to some extent, enforced.
 //
-// There are a number of reasons why NewMeasurementSet is more
+// There are a number of reasons why MeasurementSet is more
 // than just a Table.
 // <ul>
 // <li> To provide one location where the column and keyword names, data 
 //      types, and table comment strings are found.
 // <li> To provide one location where the required table descriptor for
-//      the NewMeasurementSet is found. 
-// <li> To provide a means of verifying the validity of a NewMeasurementSet
+//      the MeasurementSet is found. 
+// <li> To provide a means of verifying the validity of a MeasurementSet
 //      at construction and destruction.
 // <li> To allow application programmers to catch name or data type
 //      mistakes at compile time rather than at run time.
@@ -194,14 +194,14 @@ typedef NewMeasurementSet NewMS;
 //      be necessary to modify referenceCopy().
 // </todo>
 
-class NewMeasurementSet : public NewMSTable<NewMSMainEnums::PredefinedColumns,
-                                      NewMSMainEnums::PredefinedKeywords>,
-		       public NewMSMainEnums
+class MeasurementSet : public MSTable<MSMainEnums::PredefinedColumns,
+                                      MSMainEnums::PredefinedKeywords>,
+		       public MSMainEnums
 {
 public:
-  // This constructs an empty NewMeasurementSet, only useful to assign to
+  // This constructs an empty MeasurementSet, only useful to assign to
   // (it is not a valid NewMS yet).
-  NewMeasurementSet ();
+  MeasurementSet ();
 
   // These constructors mirror the Table ones with additional checking
   // on validity (verifying that the NewMS will have the required columns
@@ -212,19 +212,19 @@ public:
   // </thrown>
   // <group name=tableLikeConstructors>
 
-  NewMeasurementSet (const String &tableName, TableOption = Table::Old);
-  NewMeasurementSet (const String &tableName, const TableLock& lockOptions,
+  MeasurementSet (const String &tableName, TableOption = Table::Old);
+  MeasurementSet (const String &tableName, const TableLock& lockOptions,
 		  TableOption = Table::Old);
-  NewMeasurementSet (const String &tableName, const String &tableDescName,
+  MeasurementSet (const String &tableName, const String &tableDescName,
 		  TableOption = Table::Old);
-  NewMeasurementSet (const String &tableName, const String &tableDescName,
+  MeasurementSet (const String &tableName, const String &tableDescName,
 		  const TableLock& lockOptions, TableOption = Table::Old);
-  NewMeasurementSet (SetupNewTable &newTab, uInt nrrow = 0,
+  MeasurementSet (SetupNewTable &newTab, uInt nrrow = 0,
 		  Bool initialize = False);
-  NewMeasurementSet (SetupNewTable &newTab, const TableLock& lockOptions,
+  MeasurementSet (SetupNewTable &newTab, const TableLock& lockOptions,
 		  uInt nrrow = 0, Bool initialize = False);
-  NewMeasurementSet (const Table &table);
-  NewMeasurementSet (const NewMeasurementSet &other);
+  MeasurementSet (const Table &table);
+  MeasurementSet (const MeasurementSet &other);
   // </group>
 
   // As with tables, the destructor writes the table if necessary.
@@ -234,10 +234,10 @@ public:
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  ~NewMeasurementSet();
+  ~MeasurementSet();
 
   //  Assignment operator, reference semantics
-  NewMeasurementSet& operator=(const NewMeasurementSet&);
+  MeasurementSet& operator=(const MeasurementSet&);
 
   // Make a special copy of this NewMS which references all columns from
   // this NewMS except those mentioned; those are empty and writable.
@@ -247,7 +247,7 @@ public:
   // model visibilities are stored as new DATA columns in an NewMS which 
   // references the raw NewMS for the other columns. Except for these special
   // cases, the use of this function will be rare.
-  NewMeasurementSet referenceCopy(const String& newTableName,
+  MeasurementSet referenceCopy(const String& newTableName,
 			       const Block<String>& writableColumns) const;
 
   // Return the name of each of the subtables. This should be used by the
@@ -276,40 +276,40 @@ public:
     
   // Access functions for the subtables, using the NewMS-like interface for each
   // <group>
-  NewMSAntenna& antenna() {return antenna_p;}
-  NewMSDataDescription& dataDescription() {return dataDesc_p;}
-  NewMSDoppler& doppler() {return doppler_p;}
-  NewMSFeed& feed() {return feed_p;}
-  NewMSField& field() {return field_p;}
-  NewMSFlagCmd& flagCmd() {return flagCmd_p;}
-  NewMSFreqOffset& freqOffset() {return freqOffset_p;}
-  NewMSHistory& history() {return history_p;}
-  NewMSObservation& observation() {return observation_p;}
-  NewMSPointing& pointing() {return pointing_p;}
-  NewMSPolarization& polarization() {return polarization_p;}
-  NewMSProcessor& processor() {return processor_p;}
-  NewMSSource& source() {return source_p;}
-  NewMSSpectralWindow& spectralWindow() {return spectralWindow_p;}
-  NewMSState& state() {return state_p;}
-  NewMSSysCal& sysCal() {return sysCal_p;}
-  NewMSWeather& weather() {return weather_p;}
-  const NewMSAntenna& antenna() const {return antenna_p;}
-  const NewMSDataDescription& dataDescription() const {return dataDesc_p;}
-  const NewMSDoppler& doppler() const {return doppler_p;}
-  const NewMSFeed& feed() const {return feed_p;}
-  const NewMSField& field() const {return field_p;}
-  const NewMSFlagCmd& flagCmd() const {return flagCmd_p;}
-  const NewMSFreqOffset& freqOffset() const {return freqOffset_p;}
-  const NewMSHistory& history() const {return history_p;}
-  const NewMSObservation& observation() const {return observation_p;}
-  const NewMSPointing& pointing() const {return pointing_p;}
-  const NewMSPolarization& polarization() const {return polarization_p;}
-  const NewMSProcessor& processor() const {return processor_p;}
-  const NewMSSource& source() const {return source_p;}
-  const NewMSSpectralWindow& spectralWindow() const {return spectralWindow_p;}
-  const NewMSState& state() const {return state_p;}
-  const NewMSSysCal& sysCal() const {return sysCal_p;}
-  const NewMSWeather& weather() const {return weather_p;}
+  MSAntenna& antenna() {return antenna_p;}
+  MSDataDescription& dataDescription() {return dataDesc_p;}
+  MSDoppler& doppler() {return doppler_p;}
+  MSFeed& feed() {return feed_p;}
+  MSField& field() {return field_p;}
+  MSFlagCmd& flagCmd() {return flagCmd_p;}
+  MSFreqOffset& freqOffset() {return freqOffset_p;}
+  MSHistory& history() {return history_p;}
+  MSObservation& observation() {return observation_p;}
+  MSPointing& pointing() {return pointing_p;}
+  MSPolarization& polarization() {return polarization_p;}
+  MSProcessor& processor() {return processor_p;}
+  MSSource& source() {return source_p;}
+  MSSpectralWindow& spectralWindow() {return spectralWindow_p;}
+  MSState& state() {return state_p;}
+  MSSysCal& sysCal() {return sysCal_p;}
+  MSWeather& weather() {return weather_p;}
+  const MSAntenna& antenna() const {return antenna_p;}
+  const MSDataDescription& dataDescription() const {return dataDesc_p;}
+  const MSDoppler& doppler() const {return doppler_p;}
+  const MSFeed& feed() const {return feed_p;}
+  const MSField& field() const {return field_p;}
+  const MSFlagCmd& flagCmd() const {return flagCmd_p;}
+  const MSFreqOffset& freqOffset() const {return freqOffset_p;}
+  const MSHistory& history() const {return history_p;}
+  const MSObservation& observation() const {return observation_p;}
+  const MSPointing& pointing() const {return pointing_p;}
+  const MSPolarization& polarization() const {return polarization_p;}
+  const MSProcessor& processor() const {return processor_p;}
+  const MSSource& source() const {return source_p;}
+  const MSSpectralWindow& spectralWindow() const {return spectralWindow_p;}
+  const MSState& state() const {return state_p;}
+  const MSSysCal& sysCal() const {return sysCal_p;}
+  const MSWeather& weather() const {return weather_p;}
   // </group>
 
   // Initialize the references to the subtables. You need to call
@@ -326,7 +326,7 @@ public:
 
   // Initialize the statics appropriately. This does not need to be
   // called by users, it is called by the implementation class
-  // NewMSTableImpl.
+  // MSTableImpl.
   static void init();
 
   // Create DATA column from existing FLOAT_DATA column. Noop if DATA already
@@ -346,23 +346,23 @@ private:
   void addCat();
 
   // keep references to the subtables
-  NewMSAntenna antenna_p;
-  NewMSDataDescription dataDesc_p;
-  NewMSDoppler doppler_p; //optional
-  NewMSFeed feed_p;
-  NewMSField field_p;
-  NewMSFlagCmd flagCmd_p;
-  NewMSFreqOffset freqOffset_p; //optional
-  NewMSHistory history_p;
-  NewMSObservation observation_p;
-  NewMSPointing pointing_p;
-  NewMSPolarization polarization_p;
-  NewMSProcessor processor_p;
-  NewMSSource source_p;
-  NewMSSpectralWindow spectralWindow_p;
-  NewMSState state_p;
-  NewMSSysCal sysCal_p; //optional
-  NewMSWeather weather_p; //optional
+  MSAntenna antenna_p;
+  MSDataDescription dataDesc_p;
+  MSDoppler doppler_p; //optional
+  MSFeed feed_p;
+  MSField field_p;
+  MSFlagCmd flagCmd_p;
+  MSFreqOffset freqOffset_p; //optional
+  MSHistory history_p;
+  MSObservation observation_p;
+  MSPointing pointing_p;
+  MSPolarization polarization_p;
+  MSProcessor processor_p;
+  MSSource source_p;
+  MSSpectralWindow spectralWindow_p;
+  MSState state_p;
+  MSSysCal sysCal_p; //optional
+  MSWeather weather_p; //optional
 
   // required by the need to throw an exception in the destructor
   Bool hasBeenDestroyed_p;
