@@ -31,51 +31,46 @@
 #include <trial/TableMeasures/TableMeasDescBase.h>
 #include <trial/TableMeasures/TableMeasOffsetDesc.h>
 #include <trial/TableMeasures/TableMeasRefDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 
 
 TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode)
 : itsRefCode(referenceCode),
-  itsVarRefCol(0),
   itsOffset(0)
 {}
 
 TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode, 
 	    	    	    	   const TableMeasOffsetDesc& offset)
 : itsRefCode(referenceCode),
-  itsVarRefCol(0),
   itsOffset(new TableMeasOffsetDesc(offset))
 {}
 
-TableMeasRefDesc::TableMeasRefDesc(const String& column)
+TableMeasRefDesc::TableMeasRefDesc(const TableDesc &td, const String& column)
 : itsRefCode(0),
-  itsVarColName(column),
-  itsVarRefCol(0),
+  itsColumn(column),
   itsOffset(0)
-{}
+{
+    checkColumn(td);
+}
 
-TableMeasRefDesc::TableMeasRefDesc(const String& column,
+TableMeasRefDesc::TableMeasRefDesc(const TableDesc &td, const String& column,
 	    	    	    	   const TableMeasOffsetDesc& offset)
 : itsRefCode(0),
-  itsVarColName(column),
-  itsVarRefCol(0),
+  itsColumn(column),
   itsOffset(new TableMeasOffsetDesc(offset))
-{}
+{
+    checkColumn(td);
+}
 
 TableMeasRefDesc::TableMeasRefDesc(const TableMeasRefDesc& that)
 : itsRefCode(that.itsRefCode),
-  itsVarColName(that.itsVarColName),
-  itsVarRefCol(that.itsVarRefCol),
+  itsColumn(that.itsColumn),
   itsOffset(that.itsOffset)
 {
     if (itsOffset != 0) {
 	itsOffset = new TableMeasOffsetDesc(*itsOffset);
-    }
-    if (itsVarRefCol != 0) {
-	itsVarRefCol = new ScalarColumn<int>(*itsVarRefCol);
     }
 }
     
@@ -83,16 +78,11 @@ TableMeasRefDesc& TableMeasRefDesc::operator= (const TableMeasRefDesc& that)
 {
     if (this != &that) {
 	delete itsOffset;
-	delete itsVarRefCol;
 	itsRefCode = that.itsRefCode;
-	itsVarColName = that.itsVarColName;
-	itsVarRefCol = that.itsVarRefCol;
+	itsColumn = that.itsColumn;
 	itsOffset  = that.itsOffset;
 	if (itsOffset != 0) {
 	    itsOffset = new TableMeasOffsetDesc(*itsOffset);
-	}
-	if (itsVarRefCol != 0) {
-	    itsVarRefCol = new ScalarColumn<Int>(*itsVarRefCol);
 	}
     }
     return *this;
@@ -101,28 +91,21 @@ TableMeasRefDesc& TableMeasRefDesc::operator= (const TableMeasRefDesc& that)
 TableMeasRefDesc::~TableMeasRefDesc()
 {
     delete itsOffset;
-    delete itsVarRefCol;
 }
 
 TableMeasRefDesc::TableMeasRefDesc(const TableRecord& measInfo,
     	    	    	    	   const Table& tab,
 				   const TableMeasDescBase& mDesc,
     	    	    	    	   const String& refString)
-: itsVarRefCol(0),
-  itsOffset(0)
+: itsOffset(0)
 {
     itsOffset = TableMeasOffsetDesc::reconstruct(measInfo, "RefOff", tab);
     if (refString == "variable") {
     	Int fnr;
 	fnr = measInfo.fieldNumber("VarRefCol");
 	if (fnr >= 0) {
-	    itsVarColName = measInfo.asString(fnr);
+	    itsColumn = measInfo.asString(fnr);
 	}
-	// This is a reconstruct.  All that is needed is the variable refcol's
-	// name. The object rectructing the TMD will create the column object.
-	// So the following is commented out (otherwise the following causes
-	// a problem when attempting to open the table RO.
-	//    	itsVarRefCol = new ScalarColumn<Int>(tab, itsVarColName);
     } else {
 	itsRefCode = mDesc.refCode(refString);
     }
@@ -155,7 +138,7 @@ void TableMeasRefDesc::write(TableDesc& td, TableRecord& measInfo,
     if (isVariable()) {
     	refString = "variable";
 	measInfo.define("Ref", "variable");
-	measInfo.define("VarRefCol", itsVarColName);
+	measInfo.define("VarRefCol", itsColumn);
     } else {
     	refString = measDesc.refType(itsRefCode);
     	measInfo.define("Ref", refString);
@@ -165,3 +148,17 @@ void TableMeasRefDesc::write(TableDesc& td, TableRecord& measInfo,
 	itsOffset->write(td, measInfo, "RefOff");
     }
 }
+
+void TableMeasRefDesc::checkColumn(const TableDesc& td) const
+{
+    if (td.isColumn(itsColumn) == False) {
+    	throw(AipsError("TableMeasRefDesc::checkColumn; No such column: "
+            	    	 + itsColumn));
+    } else if ((td.columnDesc(itsColumn).dataType() != TpInt) &&
+	       (td.columnDesc(itsColumn).dataType() != TpString)) {
+    	throw(AipsError("TableMeasRefDesc::checkColumn; Reference column's "
+			"type must be Int or String: " + itsColumn));
+    }
+
+}
+

@@ -30,7 +30,6 @@
 
 //# Includes
 #include <trial/TableMeasures/TableMeasOffsetDesc.h>
-#include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations
@@ -39,7 +38,6 @@ class TableRecord;
 class TableDesc;
 class TableMeasDescBase;
 class MRBase;
-template <class T> class ScalarColumnDesc;
 
 // <summary>
 // Definition of a Measure Reference in a Table.
@@ -99,11 +97,16 @@ public:
     // </group>
     
     // Define a variable reference by supplying the name of the column 
-    // in which the reference is to be stored.  Optionally supply
-    // a measure offset descriptor.
+    // in which the reference is to be stored.  Either an <src>Int</src> or
+    // <src>String</src> column can be specified.  This determines how
+    // references are stored.  <src>Int</src> columns are likely to be
+    // faster but storing 
+    // references as <src>Strings</src> may be useful if there is a need to
+    // browse tables manually.
     // <group>
-    TableMeasRefDesc(const String& column);
-    TableMeasRefDesc(const String& column, const TableMeasOffsetDesc&);
+    TableMeasRefDesc(const TableDesc&, const String& column);
+    TableMeasRefDesc(const TableDesc&, const String& column, 
+		     const TableMeasOffsetDesc&);
     // </group>
 
     // Reconstruct the object from the MEASINFO record.
@@ -123,10 +126,10 @@ public:
     uInt getRefCode() const { return itsRefCode; }
 
     // Is the reference variable?
-    Bool isVariable() const { return (itsVarColName.empty()) ? False : True; }
+    Bool isVariable() const { return (itsColumn.empty()) ? False : True; }
 
     // Return the name of its variable reference code column.
-    const String& columnName() const { return itsVarColName; }
+    const String& columnName() const { return itsColumn; }
     
     // Returns True if the reference has an offset.    
     Bool hasOffset() const { return (itsOffset != 0  ? True : False); }
@@ -151,18 +154,20 @@ public:
     void write(TableDesc& td, TableRecord& measInfo, const TableMeasDescBase&);
     
 private:
-    // Contructor which uses the MEASINFO record. Not useful for the public.
+    //# Contructor which uses the MEASINFO record. Not useful for the public.
     TableMeasRefDesc(const TableRecord& measInfo, 
     	    	     const Table&,
 		     const TableMeasDescBase&,
 		     const String& refString);
 
+    //# Throws an exception if the column doesn't exist or is of the
+    //# wrong type.
+    void checkColumn(const TableDesc& td) const;
+
     //# MeasRef units when not variable.
     uInt itsRefCode;    
     // The name of column containing its variable references.
-    String itsVarColName;
-    //# Its variable reference column if references vary per row.
-    ScalarColumn<Int>* itsVarRefCol;	
+    String itsColumn;
     //# Its reference offset.
     TableMeasOffsetDesc* itsOffset; 	
 };
