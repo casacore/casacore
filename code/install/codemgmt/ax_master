@@ -1388,3 +1388,4 @@
 11 051 src mv aips/implement/Mathematics/test/tGridTool.exec aips/implement/Mathematics/test/tGridTool.in
 11 052 src rm admin/personnel/diary
 11 059 src mv aips/implement/Tables/test/tTableGram.exec aips/implement/Tables/test/tTableGram.run
+11 064 src mv doc/newsletters/oct98 doc/newsletters/nov98
