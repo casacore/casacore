@@ -56,7 +56,6 @@
 
 #include <strstream.h>
 #include <iomanip.h>
-//#include <ieeefp.h>
 
 // Cure some problems seen on dec alpha - something is defining macros
 // major and minor

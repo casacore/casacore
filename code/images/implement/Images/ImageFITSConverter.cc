@@ -44,15 +44,10 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
-
 #include <aips/Logging/LogIO.h>
- 
 #include <aips/Containers/Record.h>
-
 #include <trial/Tasking/ProgressMeter.h>
 
-#include <strstream.h>
-#include <ieeefp.h>
 
 #if defined(__GNUG__)
 // These might not all be necessary
