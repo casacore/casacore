@@ -86,6 +86,9 @@ UQSTRING   \"[^\"\n]*\n
 UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
+UNION     [Uu][Nn][Ii][Oo][Nn]
+INTERSECT [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt]
+EXCEPT    ([Ee][Xx][Cc][Ee][Pp][Tt])|([Mm][Ii][Nn][Uu][Ss])
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
@@ -151,6 +154,18 @@ PATT      {PATT1}|{PATT2}|{PATT3}
     are found. ( and [ indicate the beginning of a set(subquery).
     ) and ] indicate the end of subquery.
  */
+{UNION}  {
+            tableGramPosition() += yyleng;
+            throw (TableInvExpr ("UNION is not supported yet"));
+	  }
+{INTERSECT}  {
+            tableGramPosition() += yyleng;
+            throw (TableInvExpr ("INTERSECT is not supported yet"));
+	  }
+{EXCEPT}  {
+            tableGramPosition() += yyleng;
+            throw (TableInvExpr ("EXCEPT/MINUS is not supported yet"));
+	  }
 {SELECT}  {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
