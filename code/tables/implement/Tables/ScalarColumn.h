@@ -1,5 +1,5 @@
 //# SclarColumn.h: access to a scalar table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/TableColumn.h>
+#include <aips/Tables/ColumnCache.h>
 
 //# Forward Declarations
 class BaseColumn;
@@ -136,8 +137,21 @@ public:
     // The row numbers count from 0 until #rows-1.
     // <group>
     void get (uInt rownr, T& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->get (rownr, &value); }
-    T operator() (uInt rownr) const;
+    {
+	TABLECOLUMNCHECKROW(rownr);
+	Int off = colCachePtr_p->offset(rownr);
+	if (off >= 0) {
+	    value = ((T*)(colCachePtr_p->dataPtr()))[off];
+	}else{
+	    baseColPtr_p->get (rownr, &value);
+	}
+    }
+    T operator() (uInt rownr) const
+    {
+	T value;
+	get (rownr, value);
+	return value;
+    }
     // </group>
 
     // Get the vector of all values in the column.
