@@ -459,6 +459,16 @@ public:
     void setObsInfo(const ObsInfo &obsinfo);
     // </group>
 
+    // Find the CoordinateSystem (you can safely caste the pointer to a CoordinateSystem)
+    // for when we Fourier Transform ourselves.  This pointer 
+    // must be deleted by the caller. Axes specifies which pixel axes of the Coordinate
+    // System you wish to transform.   Shape specifies the shape of the image
+    // associated with all the axes of the CoordinateSystem.  Currently you have
+    // no control over the reference pixel, it is always shape/2.
+    virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
+                                               const Vector<Int>& shape) const;
+
+
     // Save ourself into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
@@ -553,6 +563,8 @@ private:
 
     void copy(const CoordinateSystem &other);
     void clear();
+    Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
+
 };
 
 #endif
