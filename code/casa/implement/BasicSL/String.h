@@ -960,8 +960,6 @@ inline Bool String::contains(const string &str, Int pos) const {
   return (index(str, pos) != npos); }
 inline Bool String::contains(const Char *s, Int pos) const {
   return (index(s, pos) != npos); }
-inline Bool String::contains(const RegexBase &r, Int pos) const {
-  return (index(r, pos) != npos); }
 
 inline Bool String::matches(const string &str, Int pos) const {
   return ((pos < 0) ? index(str, pos) == 0 :
