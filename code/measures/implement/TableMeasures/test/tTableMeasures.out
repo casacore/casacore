@@ -1,4 +1,16 @@
 Test of TableMeasures classes.
+The following should report no such column  for TableMeasRefDesc.
+TableMeasRefDesc::checkColumn; No such column: SillyColumnName
+The following should report that the column's type is no good.
+TableMeasRefDesc::checkColumn; Reference column's type must be Int or String: Time4ScaOffset
+The following should report no such column for TableMeasValueDesc.
+TableMeasValueDesc::checkColumn; No such column: SillyColumnName
+The following should report that the column is not array for TabelMeasValueDesc.
+TableMeasValueDesc::checkColumn; MeasValue column must be an array: Time4StrRef
+The following should report that the column's type should be double for the TableMeasValueDesc.
+TableMeasValueDesc::checkColumn; Column's type must be Double: Time2ArrRef
+PASS - TMRefDesc doesn't have an offset yet
+PASS - Reference has column offset.
 Create MEpochScaCol from column TimeOffset...
 A column of MEpochs where the reference and offset are non-variable.
 Null MEpochScaCol successfully attached
@@ -20,6 +32,19 @@ retrieve: Epoch: 1234::07:11:60.0000
   Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
 retrieve: Epoch: 1234::09:36:00.0000
   Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+TEST of attach/reference...
+Column attached...
+Epoch: 1::00:00:00.0000
+Epoch: 1::00:00:00.0000
+Epoch: 1::00:00:00.0000
+Epoch: 1::00:00:00.0000
+Epoch: 1::00:00:00.0000
+The following line should report an error in reconstruct - invalid column exception.
+TableMeasDescBase::reconstruct; MEASINFO record not found for column TimeRef
+The following line should be a null column exception.
+Invalid Table operation: Measure table column is null
+The following line should be an illegal offset column type exception.
+ROScalarMeasColumn::ROScalarMeasColumn Offset column must be a ScalarMeasColumn.
 Reopening the table read-only and reading contents...
 retrieve: Epoch: 1234::00:00:00.0000
   Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
@@ -54,10 +79,12 @@ retrieve: Epoch: 51234::07:12:00.0000
 retrieve: Epoch: 51234::09:36:00.0000
   Reference for an Epoch with Type: UTC, Offset: Epoch: 1234::07:11:60.0000
 retrieve: Epoch: 51234::12:00:00.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 1234::09:36:00.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 0::00:00:00.0000
 Creating an MEpoch Array Column
 Null MEpochArrCol successfully attached
 Adding a vector to the column at row 0.
+PASS - nothing in the measure array column row yet
+PASS - valid entry in array column row 0
 ev: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI
 ew: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
 ev: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI
@@ -81,4 +108,70 @@ ew: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch
 Open table again in RO mode to test ROArrayMeasColumn...
 Creating an MEpoch Array Column
 [Epoch: 0::13:26:60.0000, Epoch: 0::14:26:60.0000, Epoch: 0::15:27:00.0000, Epoch: 0::16:26:60.0000, Epoch: 0::17:26:60.0000, Epoch: 0::18:27:00.0000, Epoch: 0::19:26:60.0000, Epoch: 0::20:26:60.0000, Epoch: 0::21:27:00.0000, Epoch: 0::22:26:60.0000]
-Bye.
+Adding vectors to the test measure column
+in:  Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+in:  Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+in:  Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+in:  Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+in:  Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+Reference for the ArrayMeasCol is: Reference for an Epoch with Type: LAST
+The following line should be a null column exception.
+Invalid Table operation: Measure table column is null
+in:  Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC
+in:  Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI
+in:  Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC
+in:  Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI
+in:  Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC
+in:  Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI
+in:  Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC
+in:  Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI
+in:  Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC
+in:  Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI
+in:  Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+out: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+in:  Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+out: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+The following line should be a Table array conformance error exception.
+ArrayQuantColumn::get: Table array conformance error
+Test completed normally...bye.
