@@ -1,5 +1,5 @@
 //# LatticeStepper.cc: defines LatticeStepper class
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -133,14 +133,16 @@ LatticeStepper& LatticeStepper::operator=(const LatticeStepper& other)
 Bool LatticeStepper::operator++(int)
 {
   DebugAssert (ok() == True, AipsError);
-  if (itsEnd) return False;
+  if (itsEnd) {
+    return False;
+  }
+  // Increment the counter.
+  itsNsteps++;
+  // itsStart = false by definition when incrementing
+  itsStart = False;
   Bool successful = itsIndexer.tiledCursorMove (True, itsCursorPos, 
 						itsCursorShape, itsAxisPath);
   if (successful) {
-    // itsStart = false by definition when incrementing
-    itsStart = False;
-    // increment the counter since we have moved
-    itsNsteps++;
     // test for hang over since cursor has moved.
     if (itsNiceFit == False) {
       const IPosition curPos(itsCursorPos);
@@ -163,27 +165,23 @@ Bool LatticeStepper::operator++(int)
 Bool LatticeStepper::operator--(int)
 {
   DebugAssert (ok() == True, AipsError);
-  if (itsStart) return False;
+  if (itsStart) {
+    return False;
+  }
+  // Increment the counter.
+  itsNsteps++;
+  // itsEnd = false by definition when decrementing
+  itsEnd = False; 
   Bool successful = itsIndexer.tiledCursorMove (False, itsCursorPos, 
 						itsCursorShape, itsAxisPath);
   if (successful) {
-    // itsEnd = false by definition when decrementing
-    itsEnd = False; 
-    // increment the counter since we have moved
-    itsNsteps++;
-    // test to see if we are at the beginning
+    // test for hang over since cursor has moved
     const IPosition curPos(itsCursorPos);
     const uInt ndim = itsIndexer.ndim();
-    uInt i = 0;
-    while (i < ndim  &&  curPos(i) == 0) {
-      i++;
-    }
-    itsStart = ToBool (i == ndim);
-    // test for hang over since cursor has moved
     if (itsNiceFit == False) {
       const IPosition curEndPos(itsCursorPos+itsCursorShape);
       const IPosition latShape(itsIndexer.shape());
-      i = 0;
+      uInt i = 0;
       while (i < ndim  &&  curPos(i) >= 0  &&  curEndPos(i) < latShape(i)) {
 	i++;
       }
