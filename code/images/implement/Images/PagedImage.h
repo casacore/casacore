@@ -50,7 +50,11 @@ template <class T> class Array;
 template <class T> class COWPtr;
 template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 class String;
 class TableLock;
 
