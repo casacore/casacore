@@ -28,6 +28,7 @@
 //  Class Input: the user interface
 
 #include <aips/Inputs/Input.h>
+#include <aips/OS/EnvVar.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
@@ -408,11 +409,8 @@ void Input::prompt (Param& x) const
 
 void Input::envCreate (const Char *env, const String& key, const String& def)
 {
-  char *cp=getenv(env);
-  String s;
-  if (cp) {
-    s = cp;
-  } else {
+  String s (EnvironmentVariable::get(env));
+  if (s.empty()) {
     s = def;
   }
   createPar (1, key, s, "-", "", "", "");
