@@ -3433,3 +3433,4 @@
 13 264 src mv trial/implement/TableMeasures/ScalarQuantColumn.h aips/implement/TableMeasures/ScalarQuantColumn.h
 13 264 src mv trial/implement/TableMeasures.h aips/implement/TableMeasures.h
 13 264 src mv trial/implement/TableMeasures/test aips/implement/TableMeasures/test
+13 265 src rm doc/gettingstarted.latex
