@@ -187,10 +187,19 @@ public:
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True) = 0;
 
-    // If the last conversion to world or pixel coordinates resulted in an error,
-    // report that error. If the last conversion succeeded, it is undefined what
-    // this will return (it might well contain the last error message).
+    // If the last conversion to world or pixel coordinates resulted in an
+    // error, report that error. If the last conversion succeeded, it is
+    // undefined what this will return (it might well contain the last error
+    // message).
     const String &errorMessage() const;
+
+    // Provide a common interface to getting formatted representations of
+    // coordinate values out. The default implementation merely turns
+    // the number into a string using operator<<(Double). Derived classes
+    // might, e.g., use an hms representation. sigDigits <=1 means make
+    // your best guess.
+    virtual String format(Double worldValue, uInt worldAxis, 
+			  Int sigDigits = -1) const;
 
     // Used for persistence. Derived classes will have similar static
     // restore methods. It will typically only return False if fieldName
@@ -198,8 +207,8 @@ public:
     virtual Bool save(RecordInterface &container,
 		    const String &fieldName) const = 0;
 
-    // Make a copy of ourself. This pointer has been allocated with <src>new</src>
-    // and must be deleted by the caller.
+    // Make a copy of ourself. This pointer has been allocated with
+    // <src>new</src> and must be deleted by the caller.
     virtual Coordinate *clone() const = 0;
 protected:
     void set_error(const String &errorMsg) const;

@@ -34,6 +34,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 
+#include <stdio.h> // sprintf
 
 Coordinate::~Coordinate()
 {
@@ -194,6 +195,21 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units,
     return ok;
 }
 
+String Coordinate::format(Double worldValue, uInt worldAxis, 
+			  Int sigDigits) const
+{
+    if (sigDigits <= 0) {
+	sigDigits = 8;
+    }
+    if (sigDigits > 50) {
+	sigDigits = 20;
+    }
+    char buffer[50];
+    char formatbuf[10];
+    sprintf(&formatbuf[0], "%s%d%s", "%.", int(sigDigits), "E");
+    sprintf(&buffer[0], &formatbuf[0], double(worldValue));
+    return String(buffer);
+}
 
 // after = factor * before
 Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor, 
