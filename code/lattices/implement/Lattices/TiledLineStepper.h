@@ -261,9 +261,11 @@ public:
 
   // Functions which returns the shape of the Lattice being iterated
   // through. <src>latticeShape</src> always returns the shape of the main
-  // Lattice.
+  // Lattice while <src>subLatticeShape</src> returns the shape of any
+  // sub-Lattice defined using the <src>subSection</src> function. 
   // <group>
   virtual IPosition latticeShape() const;
+  virtual IPosition subLatticeShape() const;
   // </group>
 
   // Function which returns the shape of the cursor. This always includes
@@ -285,14 +287,29 @@ public:
   // is hanging over the edge of the Lattice. This always returns False.
   virtual Bool hangOver() const;
 
+  // Functions to specify a "section" of the Lattice to step over. A section
+  // is defined in terms of the Bottom Left Corner (blc), Top Right Corner
+  // (trc), and step size (inc), on ALL of its axes, including degenerate
+  // axes. The step size defaults to one if not specified.
+  // <group>
+  virtual void subSection(const IPosition & blc, const IPosition & trc);
+  virtual void subSection(const IPosition & blc, const IPosition & trc, 
+			  const IPosition & inc);
+  // </group>
+
   // Return the bottom left hand corner (blc), top right corner (trc) or
-  // step size (increment) used by the current Lattice. These always return
-  // blc=0, trc=latticeShape-1, increment=1
+  // step size (increment) used by the current sub-Lattice. If no
+  // sub-Lattice has been defined (with the <src>subSection</src> function)
+  // these functions return blc=0, trc=latticeShape-1, increment=1, ie. the
+  // entire Lattice.
   // <group>
   virtual IPosition blc() const;
   virtual IPosition trc() const;
   virtual IPosition increment() const;
   // </group>
+
+  // Return the axis path.
+  const IPosition & axisPath() const;
 
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this instance.  The pointer returned by this function must
@@ -316,15 +333,21 @@ private:
   // prevent the default constructor from being used externally
   TiledStepper();
 
-  LatticeIndexer theIndexer;//# For stepping within a tile
-  LatticeIndexer theTiler;  //# For stepping between tiles
-  IPosition theCursorPos;   //# The current position of the iterator.
-  IPosition theCursorShape; //# The shape of the cursor
-  IPosition theAxisPath;    //# Path for traverseing within and between tiles
-  uInt theNsteps;           //# the number of iterator steps taken thus far; 
-                            //# set to 0 on reset()
-  Bool theEnd;              //# is the cursor beyond the end?
-  Bool theStart;            //# is the cursor at the beginning?
+  IPosition theBlc;              //# Bottom Left Corner
+  IPosition theTrc;              //# Top Right Corner
+  IPosition theInc;              //# Increment
+  LatticeIndexer theSubSection;  //# The current subsection
+  LatticeIndexer theIndexer;     //# For moving within a tile
+  LatticeIndexer theTiler;       //# For moving between tiles
+  IPosition theIndexerCursorPos; //# The current position of the iterator.
+  IPosition theTilerCursorPos;   //# The current position of the iterator.
+  IPosition theCursorShape;      //# The shape of the cursor for theIndexer
+  IPosition theTileShape;        //# The tile shape (= theTiler cursor shape)
+  IPosition theAxisPath;         //# Path for traversing
+  uInt theNsteps;                //# The number of iterator steps taken so far; 
+  uInt theAxis;                  //# The axis containing the data vector
+  Bool theEnd;                   //# Is the cursor beyond the end?
+  Bool theStart;                 //# Is the cursor at the beginning?
 };
 
 #endif
