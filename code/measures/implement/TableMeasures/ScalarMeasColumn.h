@@ -266,13 +266,21 @@ public:
 
   // Reset the refCode, offset, or units.
   // It overwrites the value used when defining the TableMeasDesc.
-  // It is only possible if the table is still empty.
   // Resetting the refCode and offset can only be done if they were
   // defined as fixed in the description.
+  // <note role=tip>
+  // In principle the functions can only be used if the table is empty,
+  // otherwise already written values have thereafter the incorrect
+  // reference, offset, or unit.
+  // However, it is possible that part of the table is already
+  // written and that the entire measure column is filled in later.
+  // In that case the reference, offset, or units can be set by using
+  // a False <src>tableMustBeEmpty</src> argument.
+  // </note>
   // <group>
-  void setDescRefCode (uInt refCode);
-  void setDescOffset (const Measure& offset);
-  void setDescUnits (const Vector<Unit>& units);
+  void setDescRefCode (uInt refCode, Bool tableMustBeEmpty=True);
+  void setDescOffset (const Measure& offset, Bool tableMustBeEmpty=True);
+  void setDescUnits (const Vector<Unit>& units, Bool tableMustBeEmpty=True);
   // </group>
 
   // Put a Measure into the given row.

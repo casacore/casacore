@@ -499,10 +499,11 @@ void ArrayMeasColumn<M>::attach (const Table& tab,
 }
 
 template<class M>
-void ArrayMeasColumn<M>::setDescRefCode (uInt refCode)
+void ArrayMeasColumn<M>::setDescRefCode (uInt refCode,
+					 Bool tableMustBeEmpty)
 {
   Table tab = table();
-  if (tab.nrow() != 0) {
+  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
     throw (AipsError ("ArrayMeasColumn::setDescRefCode cannot be done; "
 		      "the table is not empty"));
   }
@@ -512,10 +513,11 @@ void ArrayMeasColumn<M>::setDescRefCode (uInt refCode)
 }
 
 template<class M>
-void ArrayMeasColumn<M>::setDescOffset (const Measure& offset)
+void ArrayMeasColumn<M>::setDescOffset (const Measure& offset,
+					Bool tableMustBeEmpty)
 {
   Table tab = table();
-  if (tab.nrow() != 0) {
+  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
     throw (AipsError ("ArrayMeasColumn::setDescOffset cannot be done; "
 		      "the table is not empty"));
   }
@@ -525,10 +527,11 @@ void ArrayMeasColumn<M>::setDescOffset (const Measure& offset)
 }
 
 template<class M>
-void ArrayMeasColumn<M>::setDescUnits (const Vector<Unit>& units)
+void ArrayMeasColumn<M>::setDescUnits (const Vector<Unit>& units,
+				       Bool tableMustBeEmpty)
 {
   Table tab = table();
-  if (tab.nrow() != 0) {
+  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
     throw (AipsError ("ArrayMeasColumn::setDescUnits cannot be done; "
 		      "the table is not empty"));
   }

@@ -357,10 +357,11 @@ void ScalarMeasColumn<M>::attach (const Table& tab,
 }
 
 template<class M>
-void ScalarMeasColumn<M>::setDescRefCode (uInt refCode)
+void ScalarMeasColumn<M>::setDescRefCode (uInt refCode,
+					  Bool tableMustBeEmpty)
 {
   Table tab = table();
-  if (tab.nrow() != 0) {
+  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
     throw (AipsError ("ScalarMeasColumn::setDescRefCode cannot be done; "
 		      "the table is not empty"));
   }
@@ -370,10 +371,11 @@ void ScalarMeasColumn<M>::setDescRefCode (uInt refCode)
 }
 
 template<class M>
-void ScalarMeasColumn<M>::setDescOffset (const Measure& offset)
+void ScalarMeasColumn<M>::setDescOffset (const Measure& offset,
+					 Bool tableMustBeEmpty)
 {
   Table tab = table();
-  if (tab.nrow() != 0) {
+  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
     throw (AipsError ("ScalarMeasColumn::setDescOffset cannot be done; "
 		      "the table is not empty"));
   }
@@ -383,10 +385,11 @@ void ScalarMeasColumn<M>::setDescOffset (const Measure& offset)
 }
 
 template<class M>
-void ScalarMeasColumn<M>::setDescUnits (const Vector<Unit>& units)
+void ScalarMeasColumn<M>::setDescUnits (const Vector<Unit>& units,
+					Bool tableMustBeEmpty)
 {
   Table tab = table();
-  if (tab.nrow() != 0) {
+  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
     throw (AipsError ("ScalarMeasColumn::setDescUnits cannot be done; "
 		      "the table is not empty"));
   }
