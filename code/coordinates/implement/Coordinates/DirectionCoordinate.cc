@@ -228,12 +228,14 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 	    errorMsg_p += celrev_errmsg[errnum];
 	}
     }
-
     if (!ok) {
 	set_error(errorMsg_p);
     }
 
+// Convert to appropriate units from degrees
+
     toOther(world);
+//
     return ok;
 }
 
@@ -423,7 +425,7 @@ Bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
 }
 
 Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units, 
-					  Bool adjust)
+                                            Bool adjust)
 {
     Bool ok = ToBool(units.nelements()==nWorldAxes());
     if (!ok) {
@@ -1354,9 +1356,14 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
 // Make a copy of ourselves and set the new units
 
    DirectionCoordinate dc = *this;
-   if (!dc.setWorldAxisUnits(unitsCanon)) {
+   if (!dc.setWorldAxisUnits(unitsCanon, True)) {
       throw(AipsError("Could not set world axis units"));
    }
+
+// The LinearXform is always in degrees. So we need to 
+// account for the appropriate units in the scale factor
+
+   const LinearXform& linear = dc.linear_p;
 
 // Now we must make a LinearCoordinate.  We use the LinearXform class
 // to do the inversion of the conversion matrices for us.
@@ -1365,10 +1372,9 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
    crpix(0) = Int(shape(0) / 2);
    crpix(1) = Int(shape(1) / 2);
 //
-   scale(0) = 1.0 / Double(shape(0));
-   scale(1) = 1.0 / Double(shape(1));
+   scale(0) = dc.to_degrees_p[0] / Double(shape(0));
+   scale(1) = dc.to_degrees_p[1] / Double(shape(1));
 //
-   const LinearXform& linear = dc.linear_p;
    const LinearXform linear2 = linear.fourierInvert(axes, crpix, scale);
 //
    return new LinearCoordinate(namesOut, unitsOut, crval, linear2.cdelt(),
