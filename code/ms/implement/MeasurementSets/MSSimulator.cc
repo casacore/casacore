@@ -329,49 +329,49 @@ void MSSimulator::initFeeds(const String& mode)
   feedAngle_p.resize(2,nFeed_p); polResp_p.resize(2,2,nFeed_p);
   feedAntId_p(0)=antId;
 
-  Int i = 0;
-  feedAntId_p(i)=0;
-  feedId_p(i) = 0;
-  feedSpWId_p(i) = 0;
-  feedBeamId_p(i) = 0;
-  feedNumRec_p(i) = 2;
-  for (Int j=0; j<feedNumRec_p(i); j++) {
-    beamOffset_p(0,j,i) = 0.0;
-    beamOffset_p(1,j,i) = 0.0;
-  }
+  for(Int i=0; i < nSpWindows_p ; i++){
+    feedAntId_p(i)=0;
+    feedId_p(i) = 0;
+    feedSpWId_p(i) = -1;
+    feedBeamId_p(i) = 0;
+    feedNumRec_p(i) = 2;
+    for (Int j=0; j<feedNumRec_p(i); j++) {
+      beamOffset_p(0,j,i) = 0.0;
+      beamOffset_p(1,j,i) = 0.0;
+    }
   
-  feedPol_p(0,i) = feedPol0;
-  feedPol_p(1,i) = feedPol1;
+    feedPol_p(0,i) = feedPol0;
+    feedPol_p(1,i) = feedPol1;
+    
+    feedXYZ_p(0,i) = 0.0;
+    feedXYZ_p(1,i) = 0.0;
+    feedXYZ_p(2,i) = 0.0;
+    
+    feedAngle_p(0,i) = 0.0;
+    feedAngle_p(1,i) = 0.0;
 
-  feedXYZ_p(0,i) = 0.0;
-  feedXYZ_p(1,i) = 0.0;
-  feedXYZ_p(2,i) = 0.0;
-
-  feedAngle_p(0,i) = 0.0;
-  feedAngle_p(1,i) = 0.0;
-
-  //# polResp_p(0,0,i)=Complex(axr,axi);
-  //# polResp_p(1,0,i)=Complex(ayr,ayi);
-  //# polResp_p(0,1,i)=Complex(bxr,bxi);
-  //# polResp_p(1,1,i)=Complex(byr,byi);
-  polResp_p.xyPlane(i)=Complex(0.0,0.0); //# skip this for now
-  polResp_p(0,0,i)=polResp_p(1,1,i)=Complex(1.0,0.0);
-
+    //# polResp_p(0,0,i)=Complex(axr,axi);
+    //# polResp_p(1,0,i)=Complex(ayr,ayi);
+    //# polResp_p(0,1,i)=Complex(bxr,bxi);
+    //# polResp_p(1,1,i)=Complex(byr,byi);
+    polResp_p.xyPlane(i)=Complex(0.0,0.0); //# skip this for now
+    polResp_p(0,0,i)=polResp_p(1,1,i)=Complex(1.0,0.0);
+  }
   
   // copy entries for first antenna to all others (except for spWindow)
   for (Int i=1; i<nAnt_p; i++) {
     for (Int j=0; j<nSpWindows_p; j++) {
       Int n=i*nSpWindows_p+j;
       feedAntId_p(n)=i;
-      feedId_p(n)=feedId_p(0);
+      feedId_p(n)=feedId_p(j);
       feedSpWId_p(n)= -1;              //  HEY!  Watch out for this when we get real
-      feedBeamId_p(n)=feedBeamId_p(0);
-      feedNumRec_p(n)=feedNumRec_p(0);
-      beamOffset_p.xyPlane(n)=beamOffset_p.xyPlane(0);
-      feedPol_p.column(n)=feedPol_p.column(0);
-      feedXYZ_p.column(n)=feedXYZ_p.column(0);
-      feedAngle_p.column(n)=feedAngle_p.column(0);
-      polResp_p.xyPlane(n)=polResp_p.xyPlane(0);
+      feedBeamId_p(n)=feedBeamId_p(j);
+      feedNumRec_p(n)=feedNumRec_p(j);
+      beamOffset_p.xyPlane(n)=beamOffset_p.xyPlane(j);
+      feedPol_p.column(n)=feedPol_p.column(j);
+      feedXYZ_p.column(n)=feedXYZ_p.column(j);
+      feedAngle_p.column(n)=feedAngle_p.column(j);
+      polResp_p.xyPlane(n)=polResp_p.xyPlane(j);
     }
   }
 };
