@@ -5928,3 +5928,4 @@
 16 329 src rm trial/apps/dish/gbtuts_standard.gp
 16 329 sys rm libexec/gbtuts_standard.gp
 16 329 sys rm libexec/dishcli.g
+16 338 src rm trial/apps/calibrater/templates
