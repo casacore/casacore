@@ -42,7 +42,7 @@ LELBinaryBool::LELBinaryBool(const LELBinaryEnums::Operation op,
 			 pRightExpr_p->getAttribute()));
    if (op == LELBinaryEnums::EQ  ||  op == LELBinaryEnums::NE) {
        if (pLeftExpr_p->isScalar() != pRightExpr_p->isScalar()) {
-	   throw (AipsError ("LatticeExpr: comparison between Bool scalar and "
+	   throw (AipsError ("LELBinaryBool:: - comparison between Bool scalar and "
 			     " array not possible; use function ANY or ALL"));
        }
    }
@@ -134,7 +134,7 @@ void LELBinaryBool::eval(Array<Bool>& result,
        }
        break;
    default:
-       throw(AipsError("LELBinaryBool: unknown operation"));
+       throw(AipsError("LELBinaryBool::eval - unknown operation"));
    }
 
 }
@@ -154,7 +154,7 @@ Bool LELBinaryBool::getScalar() const
       if (! pLeftExpr_p->getScalar()) return False;
       return pRightExpr_p->getScalar();
    default:
-       throw(AipsError("LELBinaryBool: unknown operation"));
+       throw(AipsError("LELBinaryBool::eval - unknown operation"));
    }
    return False;
 }
