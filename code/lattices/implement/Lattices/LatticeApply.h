@@ -1,5 +1,5 @@
-//# LatticeApply.h: Optimally iterate through Lattices and apply provided function
-//# Copyright (C) 1996,1997
+//# LatticeApply.h: Optimally iterate through a Lattice and apply provided function object
+//# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,22 +27,22 @@
 #if !defined(AIPS_LATTICEAPPLY_H)
 #define AIPS_LATTICEAPPLY_H
  
-#if defined(_AIX)
-#pragma implementation ("LatticeApply.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
 
 //# Forward Declarations
-template <class T> class VectorCollapser;
+template <class T> class TiledCollapser;
+template <class T> class LineCollapser;
 template <class T> class Lattice;
+class LatticeProgress;
 class IPosition;
+class PixelRegion;
 
 
 // <summary>
-// Optimally iterate through Lattices and apply provided function
+// Optimally iterate through a Lattice and apply provided function object
 // </summary>
 
 // <use visibility=export>
@@ -51,21 +51,72 @@ class IPosition;
 // </reviewed>
 
 // <prerequisite>
-//   <li> Lattice
-//   <li> TiledLineStepper
+//   <li> <linkto class=Lattice>Lattice</linkto>
+//   <li> <linkto class=LineCollapser>LineCollapser</linkto>
+//   <li> <linkto class=TiledCollapser>TiledCollapser</linkto>
 // </prerequisite>
 
 // <synopsis>
-// Optimally iterate though a Lattice and apply the supplied function
-// to the Lattice data.
+// This function iterates through a Lattice and applies a user given
+// function object to chunks along the specified axes. Usually the
+// function collapses the chunk to 1 or a few values (e.g. get min/max).
+// The result of the function is written into the output Lattice(s) at the
+// location of the collapsed chunk.  The output lattice(s) must be supplied
+// with the correct shape. E.g. when a lattice with shape [nx,ny,nz] is
+// collapsed by calculating the mean of each y-line, the output lattice
+// has to have shape [nx,nz]. It is also possible to have output shape
+// [nx,1,nz], [1,nx,nz], [nx,nz,1] or even e.g. [nx,1,1,1,nz].
+// <p>
+// By specifying a region it is possible to apply the function object
+// to a subset of the lattice. Of course, the shape of the output lattice(s)
+// have to match the shape of the region.
+// <p>
+// The iteration is done in an optimal way. To keep memory usage down,
+// it caches as few tiles as possible.
+// There are 2 ways to iterate.
+// <ol>
+// <li> For some applications an entire line is needed. An example is
+// the calculation of the moment. The functions <src>lineApply</src>
+// and <src>lineMultiApply</src> can be used for that purpose.
+// Internally they use the
+// <linkto class=TiledLineStepper<TiledLineStepper</linkto>
+// navigator, so only a few tiles are kept in the cache.
+// <br> One can also think of applications where an entire plane (or cube)
+// is needed. This is not supported, but can be implemented when needed.
+// <li> Other applications do not care how the data are traversed,
+// making it possible to iterate tile by tile (which is optimal).
+// An example is the calculation of the minimum, maximum, mean of
+// a line, plane, etc..
+// For this purpose the function <stc>tiledApply</src> can be used.
+// This function is faster and uses less memory than <src>lineApply</src>,
+// so whenever possible this one should be used. Another advantage of
+// this function is that it is possible to operate per line, plane, etc.
+// or even for the entire lattice.
+// <ol>
+// The user has to supply a function object derived from the abstract base
+// class <linkto class=LineCollapser>LineCollapser</linkto> or 
+// <linkto class=TiledCollapser>TiledCollapser</linkto>, resp..
+// The <src>process</src> function in these classes has to process
+// the chunk of data passed in. The <src>nstepsDone</src> function
+// in these classes can be used to monitor the progress.
 // </synopsis>
 
 // <example>
+// Collapse each line in the y-direction using my collapser function object.
 // <srcblock>
+//    MyLineCollapser collapser;
+//    PagedArray>Float> latticeIn("lattice.file");
+//    IPosition shape = latticeIn.shape();
+//    shape(1) = 1;
+//    ArrayLattice<Float> latticeOut(shape);
+//    LatticeApply<Float>::lineApply (latticeOut, latticeIn, collapser, 1);
 // </srcblock>
 // </example>
 
 // <motivation>
+// This class makes it possible that a user can apply functions to
+// a lattice in an optimal way, without having to know all the details
+// of iterating through a lattice.
 // </motivation>
 
 //# <todo asof="1997/08/01">   
@@ -73,118 +124,84 @@ class IPosition;
 //# </todo>
 
  
-// Provided by the experts to push the data through the algorithm as
-// efficiently as possible
-
 template <class T> class LatticeApply
 {
 public:
-// This function iterates through a Lattice and applies a user given
-// function to profiles along the specified axis.  The result of the
-// user supplied function is written into the output Lattice at the
-// location of the collapsed profile.  The output lattice must be supplied
-// with the correct shape; it must have the shape of the supplied region
-// 
-// Inputs
-//  latticeIn  The input Lattice
-//  collapser  The user supplies an object of a class derived from
-//             the base class VectorCollapser.  The user provides the
-//             implementation of the method "collapse" which takes
-//             a profile and returns a value from it.
-//  profileAxis     
-//             The profile axis
-//  blc,trc    The region of interest of the input Lattice.  Will be
-//             filled in (0 & shape-1)if values not given or illegal
-//  dropAxis   If False, then the output Lattice must have as many 
-//             dimensions as the input Lattice, but its shape for
-//             axis "index" must be unity.   E.g. if
-//               in.shape() = [2,4,6]  and profileAxis=1,  then
-//              out.shape() = [2,1,6]
-//          
-//             If True, then the output Lattice must have one less 
-//             dimension than the input Lattice; the axis "index" is 
-//             thus dropped from the output Lattice.    E.g. if
-//               in.shape() = [2,4,6]  and profileAxis=1,  then
-//              out.shape() = [2,6]
-//  showProgress 
-//             Show ProgressMeter
-//  progressTitle
-//             title for progress meter
-// Output
-//  latticeOut The output lattice.  It must be the correct shape to account
-//             for the desired region (i.e. shape = trc - blc + 1)
-
-    static void vectorApply (Lattice<T>& latticeOut, 
-			     const Lattice<T>& latticeIn,
-			     VectorCollapser<T>& operation,
-			     const Int profileAxis,
-			     const IPosition& blc,
-			     const IPosition& trc,
-////			     const IPosition& inc,
-			     const Bool dropAxis,
-			     const Bool showProgress,
-			     const String& progressTitle);
+// This function iterates line by line through an input lattice and applies
+// a user supplied function object to each line along the specified axis.
+// The scalar result of the function object is written into the output
+// lattice at the location of the collapsed line. The output lattice must
+// be supplied with the correct shape (the shape of the supplied region).
+// The default region is the entire input lattice.
+// <group>
+    static void lineApply (Lattice<T>& latticeOut, 
+			   const Lattice<T>& latticeIn,
+			   LineCollapser<T>& collapser,
+			   uInt collapseAxis,
+			   LatticeProgress* tellProgress = 0);
+    static void lineApply (Lattice<T>& latticeOut, 
+			   const Lattice<T>& latticeIn,
+			   const PixelRegion& region,
+			   LineCollapser<T>& collapser,
+			   uInt collapseAxis,
+			   LatticeProgress* tellProgress = 0);
+// </group>
     
-// This function iterates through a Lattice and applies a user given
-// function to profiles along the specified axis.  The result of the
-// user supplied function is written into the output Lattices at the
-// location of the collapsed profile.  The output lattices must be supplied
-// with the correct shape; it must have the shape of the supplied region
-//
-// The collapser member function "collapse" must return a vector of numbers.
-// These are assigned to the output lattices, one to one.
-// 
-// Inputs
-//  latticeIn  The input Lattice
-//  collapser  The user supplies an object of a class derived from
-//             the base class VectorCollapser.  The user provides the
-//             implementation of the method "multiCollapse" which takes
-//             a profile and returns a vector of values from it.
-//  profileAxis     
-//             The profile axis
-//  blc,trc    The region of interest of the input Lattice.  Will be
-//             filled in (0 & shape-1)if values not given or illegal
-//  dropAxis   If False, then the output Lattice must have as many 
-//             dimensions as the input Lattice, but its shape for
-//             axis "index" must be unity.   E.g. if
-//               in.shape() = [2,4,6]  and profileAxis=1,  then
-//              out.shape() = [2,1,6]
-//          
-//             If True, then the output Lattice must have one less 
-//             dimension than the input Lattice; the axis "index" is 
-//             thus dropped from the output Lattice.    E.g. if
-//               in.shape() = [2,4,6]  and profileAxis=1,  then
-//              out.shape() = [2,6]
-//  showProgress 
-//             Show ProgressMeter
-//  progressTitle
-//             title for progress meter
-// Output
-//  latticeOut The output lattices.  They must be the correct shape to account
-//             for the desired region (i.e. shape = trc - blc + 1)
+// This function iterates line by line through an input lattice and applies
+// a user supplied function object to each line along the specified axis.
+// The vector result of the function object is written into the output
+// lattices at the location of the collapsed line (1 value per lattice).
+// The output lattices must be supplied with the correct shape (the shape
+// of the supplied region).
+// The default region is the entire input lattice.
+// <group>
+    static void lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
+				const Lattice<T>& latticeIn,
+				LineCollapser<T>& collapser,
+				uInt collapseAxis,
+				LatticeProgress* tellProgress = 0);
+    static void lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
+				const Lattice<T>& latticeIn,
+				const PixelRegion& region,
+				LineCollapser<T>& collapser,
+				uInt collapseAxis,
+				LatticeProgress* tellProgress = 0);
+// </group>
 
-    static void vectorMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
-				  const Lattice<T>& latticeIn,
-				  VectorCollapser<T>& collapser,
-				  const Int VectorAxis,
-				  const IPosition& blc,
-				  const IPosition& trc,
-////				  const IPosition& inc,
-				  const Bool dropAxis,
-				  const Bool showProgress,
-				  const String& progressTitle);
-    
+// This function iterates tile by tile through an input lattice and applies
+// a user supplied function object to each chunk along the specified axes.\
+// A chunk can be a line, plane, etc. which is determined by the argument
+// <src>collapseAxes</src>. E.g. IPosition(2,1,2) means planes along
+// axes 1 and 2 (thus y,z planes).
+// The result of the function object is written into the output
+// lattice at the location of the collapsed line. The output lattice must
+// be supplied with the correct shape (the shape of the supplied region
+// plus the number of values resulting from the collapse).
+// The default region is the entire input lattice.
+// <group>
+    static void tiledApply (Lattice<T>& latticeOut,
+			    const Lattice<T>& latticeIn,
+			    TiledCollapser<T>& collapser,
+			    const IPosition& collapseAxes,
+			    LatticeProgress* tellProgress = 0);
+    static void tiledApply (Lattice<T>& latticeOut,
+			    const Lattice<T>& latticeIn,
+			    const PixelRegion& region,
+			    TiledCollapser<T>& collapser,
+			    const IPosition& collapseAxes,
+			    LatticeProgress* tellProgress = 0);
+// </group>
+
+
 private:
-
-   static void prepare (IPosition& ioMap,
-			IPosition& inBlc,
-			IPosition& inTrc,
-			IPosition& inInc,
-			const Lattice<T>& latticeIn,
-			Lattice<T>& latticeOut,
-			const Int VectorAxis,
-			const Bool dropAxis);
-
+    // Do some checks on the given arguments.
+    // It returns an IPosition with the same length as shapeOut.
+    // It contains a mapping of output to input axes. A value of -1
+    // indicates that the axis is new (to contain the collapse result).
+    static IPosition prepare (const IPosition& shapeIn,
+			      const IPosition& shapeOut,
+			      const IPosition& collapseAxes);
 };
+
 
 #endif
