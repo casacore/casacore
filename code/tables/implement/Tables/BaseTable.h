@@ -149,6 +149,9 @@ public:
     // Get the modify counter.
     virtual uInt getModifyCounter() const = 0;
 
+    // Set the table to being changed. By default it does nothing.
+    virtual void setTableChanged();
+
     // Do not write the table (used in in case of exceptions).
     void doNotWrite()
 	{ noWrite_p = True; }
@@ -193,8 +196,8 @@ public:
     // </dl>
     // The rename function in this base class renames the table file.
     // In a derived class (e.g. PlainTable) the function should also
-    // be implemented to rename subtables in its keywords..
-    void rename (const String& newName, int tableOption);
+    // be implemented to rename subtables in its keywords.
+    virtual void rename (const String& newName, int tableOption);
 
     // Copy the table and all its subtables.
     // The default implementation of deepCopy is to call copy.
@@ -209,7 +212,7 @@ public:
     // <dd> Same as Table::New, but followed by markForDelete().
     // </dl>
     // <group>
-    void copy (const String& newName, int tableOption) const;
+    virtual void copy (const String& newName, int tableOption) const;
     virtual void deepCopy (const String& newName,
 			   const Record& dataManagerInfo,
 			   int tableOption,
@@ -351,7 +354,7 @@ public:
 				     const PtrBlock<ObjCompareFunc*>&,
 				     const Block<Int>& orders, int option);
 
-    // Add a column to the table.
+    // Add one or more columns to the table.
     // The default implementation throws an "invalid operation" exception.
     // <group>
     virtual void addColumn (const ColumnDesc& columnDesc);
@@ -362,6 +365,10 @@ public:
     virtual void addColumn (const TableDesc& tableDesc,
 			    const DataManager& dataManager);
     // </group>
+
+    // Add one or more columns to the table.
+    // The data manager to use is described in the record.
+    void addColumns (const TableDesc& tableDesc, const Record& dmInfo);
 
     // Test if columns can be removed.
     virtual Bool canRemoveColumn (const Vector<String>& columnNames) const = 0;
