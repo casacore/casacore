@@ -27,36 +27,21 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/Containers/Record.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 #include <components/SpectralComponents/SpectralElement.h>
-#include <components/SpectralComponents/SpectralList.h>
 #include <components/SpectralComponents/SpectralEstimate.h>
 #include <components/SpectralComponents/SpectralFit.h>
-#include <trial/Tasking/ApplicationEnvironment.h>
-#include <casa/System/PGPlotter.h>
-#include<casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Containers/Record.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/Inputs/Input.h>
+#include <components/SpectralComponents/SpectralList.h>
 #include <casa/iostream.h>
 
 int main(int argc, char **argv) {
       
-  ApplicationEnvironment::registerPGPlotter();
-  // Inputs
-  cout << ">>>" << endl;
-  Input inputs(1);
-  inputs.version("$Id$");
-  inputs.create("plotter", "", "plotter"); 
-  inputs.readArguments(argc, argv);
-  const String device = inputs.getString("plotter"); 
-  cout << "<<<" << endl;
-
-  PGPlotter plotter(device, 3, 3);
-
   // RecordInterface
   {
     cout << "Test RecordInterface" << endl;
@@ -130,10 +115,6 @@ int main(int argc, char **argv) {
       cout << SpectralElement(SpectralElement::GAUSSIAN,
 			      par[3*i+0], par[3*i+1], par[3*i+2]) << endl;
     };
-    plotter.env(xy(0), xy(n-1), -1, 12, 0, 0);
-    plotter.lab("", "", "Noiseless data with 3 components and "
-		"estimate residuals");
-    plotter.line(xy, y);
     {
       SpectralEstimate est(rms, cutoff, minsig);
       Vector<Float> deriv(n);
@@ -150,22 +131,8 @@ int main(int argc, char **argv) {
       slist.residual(res);
       cout << "Minimum, Maximum residuals: " << min(res) << ", " <<
 	max(res) << endl;
-      plotter.sci(2);
-      plotter.line(xy, res);
-      plotter.env(xy(0), xy(n-1), -2, 12, 0, 0);
-      plotter.sci(1);
-      plotter.lab("", "", "Noiseless spectrum with 2nd derivative");
-      plotter.line(xy, y);
-      plotter.sci(2);
-      plotter.line(xy, deriv);
-      plotter.env(xy(0), xy(n-1), -1, 12, 0, 0);
-      plotter.sci(1);
-      plotter.lab("", "", "Noiseless spectrum with estimates");
-      plotter.line(xy, y);
-      plotter.sci(2);
       for (Int j=0; j<r; j++) {
 	for (Int i = 0; i<n; i++) res(i) = slist[j](i);
-	plotter.line(xy, res);
       };
     }
     {
@@ -276,11 +243,6 @@ int main(int argc, char **argv) {
       for (uInt i=300; i<316; i++) cout << freq(i) << ": " << dat(i) << endl;
       cout << "---------------------------------------------------" << endl;
       
-      plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
-      plotter.sci(1);
-      plotter.lab("", "", "Synthetic spectra and residual after fit");
-      plotter.line(ffreq, fdat);
-
       cout << "Specify fitter on the 4 gaussians:" << endl;
       SpectralFit fitter;
       for (uInt i=0; i<ncomp; i++) fitter.addFitElement(el[i]);
@@ -371,8 +333,6 @@ int main(int argc, char **argv) {
       cout << "Min difference: " << mn <<
 	", max: " << mx << ", average: " << avg <<
 	", sigma: " << sg << endl;
-      plotter.sci(2);
-      plotter.line(ffreq, fxdat);
       cout << "---------------------------------------------------" << endl;
       
       cout << "---------------------------------------------------" << endl;
@@ -385,22 +345,10 @@ int main(int argc, char **argv) {
       for (Int i=0; i<mr; i++) {
 	cout << "Estimate " << i << ": " << slist[i] << endl;
       };
-      plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
-      plotter.sci(1);
-      plotter.lab("", "", "Synthetic spectra and residual after estimates");
-      plotter.line(ffreq, fdat);
       fxdat= fdat;
       slist.residual(fxdat);
-      plotter.sci(2);
-      plotter.line(ffreq, fxdat);
-      plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
-      plotter.sci(1);
-      plotter.lab("", "", "Synthetic spectrum with estimates");
-      plotter.line(ffreq, fdat);
-      plotter.sci(2);
       for (Int j=0; j<mr; j++) {
 	slist.evaluate(fxdat);
-	plotter.line(ffreq, fxdat);
       };
       
       cout << "---------------------------------------------------" << endl;
@@ -414,24 +362,11 @@ int main(int argc, char **argv) {
 	for (Int i=0; i<mr; i++) {
 	  cout << "Estimate " << i << ": " << slist[i] << endl;
 	};
-	plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
-	plotter.sci(1);
-	plotter.lab("", "", "Synthetic spectra and residual after estimates");
-	plotter.line(ffreq, fdat);
 	fxdat= fdat;
 	slist.residual(fxdat);
-	plotter.sci(2);
-	plotter.line(ffreq, fxdat);
-	plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
-	plotter.sci(1);
-	plotter.lab("", "", "Synthetic spectrum with estimates");
-	plotter.line(ffreq, fdat);
-	plotter.sci(2);
 	for (Int j=0; j<mr; j++) {
 	  slist.evaluate(fxdat);
-	  plotter.line(ffreq, fxdat);
 	};
-	plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
       }      
       cout << "---------------------------------------------------" << endl;
       
