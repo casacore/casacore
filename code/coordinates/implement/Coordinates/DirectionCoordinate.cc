@@ -303,20 +303,6 @@ void DirectionCoordinate::setConversionDirectionType (MDirection::Types directio
 Bool DirectionCoordinate::toWorld(Vector<Double> &world,
  				  const Vector<Double> &pixel) const
 {
-
-/*
-cerr << "Enter toWorld" << endl;
-   {
-         ostrstream oss;
-         oss.setf(ios::fixed, ios::floatfield);
-         oss.precision(15);
-         oss << "pixel = " << pixel(0) << ", " << pixel(1) << endl;
-         String s(oss);
-         cerr << s << endl;
-   }
-*/
-
-
  // Temporaries
 
     double d_phi, d_theta, d_x, d_y, d_lng, d_lat;
@@ -332,10 +318,6 @@ cerr << "Enter toWorld" << endl;
 	d_x = world(0);
         d_y = world(1);
 //
-/*
-        listProj();
-        listCel();  
-*/
 	int errnum = celrev(pcodes[projection_p.type()],
 			    d_x, d_y, prjprm_p, &d_phi, &d_theta,
 			    celprm_p, &d_lng, &d_lat);
@@ -358,27 +340,7 @@ cerr << "Enter toWorld" << endl;
 
 // Convert to specified conversion reference type
 
-/*
-   {
-         ostrstream oss;
-         oss.setf(ios::fixed, ios::floatfield);
-         oss.precision(15);
-         oss << "native world = " << world(0) << ", " << world(1) << endl;
-         String s(oss);
-         cerr << s << endl;
-   }
-*/
     convertTo(world);
-/*
-   {
-         ostrstream oss;
-         oss.setf(ios::fixed, ios::floatfield);
-         oss.precision(15);
-         oss << "changed world = " << world(0) << ", " << world(1) << endl;
-         String s(oss);
-         cerr << s << endl;
-   }
-*/
 //
     return True;
 }
@@ -387,8 +349,6 @@ cerr << "Enter toWorld" << endl;
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 				  const Vector<Double> &world) const
 {
-//cerr << "Enter toPixel" << endl;
-
 // Temporaries 
 
     static Vector<Double> world_tmp;
@@ -404,27 +364,7 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 
 // Convert from specified conversion reference type
 
-/*
-   {
-         ostrstream oss;
-         oss.setf(ios::fixed, ios::floatfield);
-         oss.precision(15);
-         oss << "changed world = " << world_tmp(0) << ", " << world_tmp(1) << endl;
-         String s(oss);
-         cerr << s << endl;
-   }
-*/
     convertFrom(world_tmp);
-/*
-   {
-         ostrstream oss;
-         oss.setf(ios::fixed, ios::floatfield);
-         oss.precision(15);
-         oss << "native world = " << world_tmp(0) << ", " << world_tmp(1) << endl;
-         String s(oss);
-         cerr << s << endl;
-   }
-*/
 //
     toDegrees(world_tmp);
     d_lng = world_tmp(0);
@@ -451,16 +391,6 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 //        theta = d_theta;
     }
 //
-/*
-   {
-         ostrstream oss;
-         oss.setf(ios::fixed, ios::floatfield);
-         oss.precision(15);
-         oss << "pixel = " << pixel(0) << ", " << pixel(1) << endl;
-         String s(oss);
-         cerr << s << endl;
-   }
-*/
     return True;
 }
 
@@ -471,7 +401,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
                                 const Vector<Bool>& worldAxes,
                                 const Vector<Bool>& pixelAxes,
                                 const Vector<Double>& worldMin,
-                                const Vector<Double>& worldMax) const
+                                const Vector<Double>& worldMax,
+                                Bool useConversionType) const
 {
 // Temporaries
 
@@ -539,6 +470,10 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       pixelOut(1) = out_tmp(1);
       worldOut(0) = out_tmp(0);
       worldOut(1) = in_tmp(1);  
+//
+      if (useConversionType) {
+         convertTo(worldOut);
+      }
    } else if (worldAxes(0) && pixelAxes(1)) {
 //
 // world,pixel->pixel,world
@@ -563,6 +498,11 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       pixelOut(1) = in_tmp(1);
       worldOut(0) = in_tmp(0);
       worldOut(1) = out_tmp(1);
+//
+      if (useConversionType) {
+         convertTo(worldOut);
+      }
+
    }
    return True;   
 }
