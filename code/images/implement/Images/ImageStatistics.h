@@ -33,6 +33,7 @@
 
 #include <aips/aips.h>
 #include <trial/Images/ImageStatsBase.h>
+#include <trial/Tasking/PGPlotter.h>
 template <class T> class ImageInterface;
 template <class T> class PagedArray;
 template <class T> class Vector;
@@ -233,7 +234,7 @@ public:
 // or that the internal state of the class is bad.  If you don't call this function,
 // the default state of the class is to not make plots.
    Bool setPlotting(const Vector<Int>& statsToPlot,
-                    const String& device,
+                    const PGPlotter& plotter,
                     const Vector<Int>& nxy);
 
 // Display the statistics by listing and/or plotting them.  If you don't call
@@ -281,7 +282,7 @@ private:
    Vector<Int> cursorAxes_p, displayAxes_p;
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<Float> range_p;
-   String device_p; 
+   PGPlotter plotter_p;
    Bool doList_p;
    Bool noInclude_p, noExclude_p;
    Bool goodParameterStatus_p;
@@ -409,4 +410,3 @@ private:
 };
 
 #endif
-

@@ -57,13 +57,6 @@
 #include <stdlib.h>
 #include <strstream.h>
 
-
-// C wrappers for PGPLOT
-
-extern "C" {
-#include <cpgplot.h>
-};
-
 // Public functions
 
 template <class T>
@@ -87,7 +80,6 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
    range_p.resize(0);
-   device_p = "";
    minPos_p.resize(0);
    maxPos_p.resize(0);
    blc_p.resize(0);
@@ -122,7 +114,7 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
                         nxy_p(other.nxy_p),
                         statsToPlot_p(other.statsToPlot_p), 
                         range_p(other.range_p),
-                        device_p(other.device_p), 
+                        plotter_p(other.plotter_p), 
                         doList_p(other.doList_p),
                         noInclude_p(other.noInclude_p), 
                         noExclude_p(other.noExclude_p),
@@ -175,7 +167,7 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
       nxy_p = other.nxy_p;
       statsToPlot_p = other.statsToPlot_p; 
       range_p = other.range_p;
-      device_p = other.device_p; 
+      plotter_p = other.plotter_p; 
       doList_p = other.doList_p;
       goodParameterStatus_p = other.goodParameterStatus_p;
       needStorageImage_p = other.needStorageImage_p;
@@ -296,7 +288,7 @@ Bool ImageStatistics<T>::setList (const Bool& doList)
 
 template <class T>
 Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
-                                     const String& deviceU,
+                                     const PGPlotter& plotter,
                                      const Vector<Int>& nxyU)
 //
 // Assign the desired PGPLOT device name and number
@@ -325,7 +317,7 @@ Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
 
 // Plotting device and subplots.  nxy_p is set to [1,1] if zero length
  
-   device_p = deviceU;
+   plotter_p = plotter;
    nxy_p.resize(0);
    nxy_p = nxyU;
    ostrstream os;
@@ -337,7 +329,7 @@ Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
 
 // Set mean and sigma if no statistics requested
 
-   if (!device_p.empty() && statsToPlot_p.nelements()==0) {
+   if (plotter_p.isAttached() && statsToPlot_p.nelements()==0) {
       statsToPlot_p.resize(2);
       statsToPlot_p(0) = MEAN;
       statsToPlot_p(1) = SIGMA;
@@ -430,7 +422,7 @@ Bool ImageStatistics<T>::display()
 
 // Do we have anything to do
 
-   if (!doList_p && device_p.empty()) {
+   if (!doList_p && !plotter_p.isAttached()) {
      os_p << LogIO::NORMAL
           << "There is nothing to plot or list" << endl << LogIO::POST;
      return True;
@@ -439,15 +431,11 @@ Bool ImageStatistics<T>::display()
 
 // Open plotting device if required and set up some plotting things
 
-   if (!device_p.empty()) {
-      if(cpgbeg(0, device_p.chars(), nxy_p(0), nxy_p(1)) != 1) {
-         os_p << LogIO::SEVERE << endl << "Couldn't open display device" 
-              << endl << LogIO::POST;
-         return False;
-      }
-      cpgask(1);
-      cpgsch (1.2);
-      cpgsvp(0.1,0.9,0.1,0.9);
+   if (plotter_p.isAttached()) {
+       plotter_p.subp(nxy_p(0), nxy_p(1));
+       plotter_p.ask(True);
+       plotter_p.sch (1.2);
+       plotter_p.svp(0.1,0.9,0.1,0.9);
    }
 
 
@@ -526,7 +514,7 @@ Bool ImageStatistics<T>::display()
 
 // Plot statistics
 
-      if (!device_p.empty()) {
+      if (plotter_p.isAttached()) {
         if (!plotStats (pixelIterator.position(), ord)) return False;
       }
 
@@ -541,7 +529,9 @@ Bool ImageStatistics<T>::display()
 
 // Finish up
 
-   if (!device_p.empty()) cpgend();
+   if (plotter_p.isAttached()) {
+       plotter_p.updt();
+   }
    return True;
 }
 
@@ -1731,67 +1721,67 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
    int ls = 0;
    int i = -1;
    Bool initColours = True;
-   cpgpage();
+   plotter_p.page();
 
    if (nL>0) {
-      cpgswin(xMin, xMax, yLMin, yLMax);
+      plotter_p.swin(xMin, xMax, yLMin, yLMax);
       if (nR>0) 
-         cpgbox("BCNST", 0.0, 0, "BNST", 0.0, 0);
+         plotter_p.box("BCNST", 0.0, 0, "BNST", 0.0, 0);
       else
-         cpgbox("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-      cpglab(xLabel.chars(), "", "");
+         plotter_p.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
+      plotter_p.lab(xLabel, "", "");
 
       if (doMean) {
          if (++ls > 5) ls = 1;
-         cpgsls (ls);
+         plotter_p.sls (ls);
 
          lCols(++i) = niceColour (initColours);
-         cpgsci (lCols(i));
+         plotter_p.sci (lCols(i));
 
          multiPlot ( n1, abc, stats.column(MEAN), stats.column(NPTS));
       }
       if (doSum) {
          if (++ls > 5) ls = 1;
-         cpgsls (ls);
+         plotter_p.sls (ls);
 
          lCols(++i) = niceColour (initColours);
-         cpgsci (lCols(i));
+         plotter_p.sci (lCols(i));
 
          multiPlot (n1, abc, stats.column(SUM), stats.column(NPTS));
       }
       if (doSumSq) {
          if (++ls > 5) ls = 1;
-         cpgsls (ls);
+         plotter_p.sls (ls);
 
          lCols(++i) = niceColour (initColours);
-         cpgsci (lCols(i));
+         plotter_p.sci (lCols(i));
 
          multiPlot (n1, abc, stats.column(SUMSQ), stats.column(NPTS));
       }
       if (doMin) {
          if (++ls > 5) ls = 1;
-         cpgsls (ls);
+         plotter_p.sls (ls);
 
          lCols(++i) = niceColour (initColours);
-         cpgsci (lCols(i));
+         plotter_p.sci (lCols(i));
 
          multiPlot (n1, abc, stats.column(MIN), stats.column(NPTS));
       }
       if (doMax) {
          if (++ls > 5) ls = 1;
-         cpgsls (ls);
+         plotter_p.sls (ls);
 
          lCols(++i) = niceColour (initColours);
-         cpgsci (lCols(i));
+         plotter_p.sci (lCols(i));
 
          multiPlot (n1, abc, stats.column(MAX), stats.column(NPTS));
       }
       if (doNPts) {
          if (++ls > 5) ls = 1;
-         cpgsls (ls);
+         plotter_p.sls (ls);
 
          lCols(++i) = niceColour (initColours);
-         cpgsci (lCols(i));
+         plotter_p.sci (lCols(i));
 
          multiPlot (n1, abc, stats.column(NPTS), stats.column(NPTS));
       }
@@ -1800,36 +1790,36 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
       multiColourYLabel ("L", yLLabel, lCols, nLLabs);
    }
-   cpgsls (1);
-   cpgsci (1);
+   plotter_p.sls (1);
+   plotter_p.sci (1);
 
 
    i = -1;
    if (nR>0) {
-      cpgswin(xMin, xMax, yRMin, yRMax);
-      cpgsci (1); 
+      plotter_p.swin(xMin, xMax, yRMin, yRMax);
+      plotter_p.sci (1); 
       if (nL>0) 
-         cpgbox("", 0.0, 0, "CMST", 0.0, 0);
+         plotter_p.box("", 0.0, 0, "CMST", 0.0, 0);
       else {
-         cpgbox("BCNST", 0.0, 0, "BCMST", 0.0, 0);
-         cpglab(xLabel.chars(), "", "");
+         plotter_p.box("BCNST", 0.0, 0, "BCMST", 0.0, 0);
+         plotter_p.lab(xLabel, "", "");
       }
 
       if (doSigma) {
          if (++ls > 5) ls = 1;
-         cpgsls(ls);
+         plotter_p.sls(ls);
 
          rCols(++i) = niceColour (initColours);
-         cpgsci (rCols(i));
+         plotter_p.sci (rCols(i));
 
          multiPlot (n1, abc, stats.column(SIGMA), stats.column(NPTS));
       }
       if (doRms) {
          if (++ls > 5) ls = 1;
-         cpgsls(ls);
+         plotter_p.sls(ls);
 
          rCols(++i) = niceColour (initColours);
-         cpgsci (rCols(i));
+         plotter_p.sci (rCols(i));
 
          multiPlot (n1, abc, stats.column(RMS), stats.column(NPTS));
       }
@@ -1839,8 +1829,8 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
       multiColourYLabel ("R", yRLabel, rCols, nRLabs);
 
    }
-   cpgsls(1);
-   cpgsci (1);
+   plotter_p.sls(1);
+   plotter_p.sci (1);
 
 
 // Write values of other display axes on plot
@@ -1868,11 +1858,13 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
 // Write on plot
       
-      float xb[4], yb[4];
-      cpgqtxt (0.0, 0.0, 0.0, 0.0, "X", xb, yb);
-      float dx = xb[3] - xb[0];
-      cpgqtxt (0.0, 0.0, 0.0, 0.0, tLabel, xb, yb);
-      float dy = yb[1] - yb[0];
+      Vector<Float> result(8);
+      result = plotter_p.qtxt (0.0, 0.0, 0.0, 0.0, "X");
+      Vector<Float> xb = result(Slice(0,4)), yb = result(Slice(0,4));
+      float dx = xb(3) - xb(0);
+      result = plotter_p.qtxt (0.0, 0.0, 0.0, 0.0, tLabel);
+      xb = result(Slice(0,4)), yb = result(Slice(0,4));
+      float dy = yb(1) - yb(0);
 
       float mx = xMin + dx;
       float my;
@@ -1882,10 +1874,10 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          my = yLMax + 0.5*dy;
 
       int tbg;
-      cpgqtbg(&tbg);
-      cpgstbg(0);
-      cpgptxt (mx, my, 0.0, 0.0, tLabel);
-      cpgstbg(tbg);
+      tbg = plotter_p.qtbg();
+      plotter_p.stbg(0);
+      plotter_p.ptxt (mx, my, 0.0, 0.0, tLabel);
+      plotter_p.stbg(tbg);
    }
 
    return True;
@@ -1903,17 +1895,20 @@ void ImageStatistics<T>::multiColourYLabel (const String& LRLoc,
 {
 // Get attributes
 
-   float x1, x2, y1, y2;
-   cpgqwin (&x1, &x2, &y1, &y2);
-   int sci;
-   cpgqci (&sci);
+
+   Vector<Float> result= plotter_p.qwin ();
+   float x1=result(0), x2=result(1), y1=result(2), y2=result(3);
+   int sci = plotter_p.qci ();
 
 
 // Find y-location of start of string as fraction of window
 
-   float xb[4], yb[4];
-   cpgqtxt (0.0, 0.0, 90.0, 0.0, label.chars(), xb, yb);
-   float dy = yb[2]-yb[0];
+   result.resize(0);
+   result = plotter_p.qtxt (0.0, 0.0, 90.0, 0.0, label);
+   Vector<Float> xb, yb;
+   xb = result(Slice(0,4));
+   yb = result(Slice(4,4));
+   float dy = yb(2)-yb(0);
    float yLoc = abs(0.5*(y2-y1-dy)/(y2-y1));
 
 
@@ -1928,7 +1923,7 @@ void ImageStatistics<T>::multiColourYLabel (const String& LRLoc,
 // Fish out next sub label
 
       if (!findNextLabel (subLabel, iLab, label)) {
-         cpgsci (sci);
+         plotter_p.sci (sci);
          return;
       } 
       
@@ -1937,8 +1932,8 @@ void ImageStatistics<T>::multiColourYLabel (const String& LRLoc,
 
       if (iLab < nLabs-1) subLabel = subLabel + ",";
       if (iLab > 0) subLabel.prepend(" ");
-      cpgsci (colours(iLab));
-      cpgmtxt (LRLoc.chars(), disp, yLoc, just, subLabel.chars());
+      plotter_p.sci (colours(iLab));
+      plotter_p.mtxt (LRLoc, disp, yLoc, just, subLabel);
 
 
 // Increment y location.  pgqtxt won't count a leading blank so
@@ -1951,14 +1946,17 @@ void ImageStatistics<T>::multiColourYLabel (const String& LRLoc,
          s2 = "x" + s;
       } else
          s2 = subLabel;
-      cpgqtxt (0.0, 0.0, 90.0, 0.0, s2.chars(), xb, yb);
-      dy = abs((yb[2]-yb[0])/(y2-y1));
+      result.resize(0);
+      result = plotter_p.qtxt (0.0, 0.0, 90.0, 0.0, s2.chars());
+      xb = result(Slice(0,4));
+      yb = result(Slice(4,4));
+      dy = abs((yb(2)-yb(0))/(y2-y1));
       yLoc += dy;
    }                       
 
 // Set colour back to what it was
 
-   cpgsci (sci);
+   plotter_p.sci (sci);
    return;
 }
 
@@ -1995,13 +1993,20 @@ void ImageStatistics<T>::multiPlot (const Int& n1,
    lineSegments (nSeg, start, nPts, pn,  n1);
 
 // Loop over segments and plot them
+   Vector<Float> xtmp, ytmp;
 
    for (Int i=0; i<nSeg; i++) {
       Int ip = start(i);
       if (nPts(i) == 1) {
-         cpgpt (1, &px[ip], &py[ip], 1);
+	  xtmp.resize(1); ytmp.resize(1); xtmp(0) = px[ip]; ytmp(0) = py[ip];
+	  plotter_p.pt (xtmp, ytmp, 1);
       } else {
-         cpgline (nPts(i), &px[ip], &py[ip]);
+	  xtmp.resize(nPts(i)); ytmp.resize(nPts(i));
+	  // The following cast is safe because we are only making a copy of
+	  // the pixels.
+	  xtmp = ((Vector<Float> &)x)(Slice(ip, nPts(i)));
+	  ytmp = ((Vector<Float> &)y)(Slice(ip, nPts(i)));
+	  plotter_p.line (xtmp, ytmp);
       }
    }
 
