@@ -2127,3 +2127,4 @@
 11 108 src mv doc/papers/dsadass95.latex doc/papers/adass95/dsadass95.latex
 11 108 src mv doc/papers/psadass95.latex doc/papers/adass95/psadass95.latex
 11 108 src mv doc/papers/rcadass95.latex doc/papers/adass95/rcadass95.latex
+11 108 src mv doc/papers/bgadass95.latex doc/papers/adass95/bgadass95.latex
