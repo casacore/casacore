@@ -1,5 +1,5 @@
 //# RegionType.h: Define the various region types in an enum.
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,8 +59,8 @@ public:
 	LC = 1,
         // image region (world coordinates)
 	WC = 2,
-        // slicer (pixel based with optional stride)
-	Slicer = 3,
+        // array slicer (pixel based with optional stride)
+	ArrSlicer = 3,
         // Number of recognized types only
         nRegionTypes
     };
