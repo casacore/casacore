@@ -51,11 +51,23 @@ using std::less;
 #endif
 
 #if defined(AIPS_GCC)
+#if defined(AIPS_GCC3)
+#define AIPS_MAP_AUX_TEMPLATES(T, U) \
+template class \
+  std::_Rb_tree<T, std::pair<T const, U >, \
+  std::_Select1st<std::pair<T const, U> >, \
+  std::less<T>, std::allocator<U > >; \
+template class \
+  std::_Rb_tree<T, std::pair<T const, U >, \
+  std::_Select1st<std::pair<T const, U> >, \
+  std::less<T>, std::allocator<pair<T const, U > > >;
+#else
 #define AIPS_MAP_AUX_TEMPLATES(T, U) \
 template class \
   _Rb_tree<T, pair<T const, U >, \
   _Select1st<pair<T const, U> >, \
   less<T>, allocator<U > >;
+#endif
 #else
 #if defined(AIPS_SUN_NATIVE)
 #define AIPS_MAP_AUX_TEMPLATES(T, U) \
