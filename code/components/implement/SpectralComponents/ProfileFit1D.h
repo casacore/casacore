@@ -113,9 +113,10 @@ public:
     Bool setData (const Vector<T>& x, const Vector<T>& y);
     // </group>
 
-    // Set a SpectralList of SpectralElements to fit for.  
+    // Set a SpectralList of SpectralElements to fit for.
     // The SpectralElements in the list hold the
-    // initial estimates.  They also contain the information about whether
+    // initial estimates and must reflect the abcissa and ordinate units.  
+    // They also contain the information about whether
     // specific parameters are to be held fixed or allowed to vary in
     // the fitting process.
     // You can recover the list of elements with function getList.
@@ -125,7 +126,8 @@ public:
     // The initial estimates for the Gaussians will be automatically determined.
     // All of the parameters created by this function will be solved for
     // by default. You can recover the list of elements with function getList.
-    // Status is returned, if False, error message can be recovered with <src>errorMessage</src>
+    // Status is returned, if False, error message can be 
+    // recovered with <src>errorMessage</src>
     Bool setGaussianElements (uInt nGauss);
 
     // Add new SpectralElement(s) to the SpectralList (can be empty)
