@@ -190,11 +190,11 @@ void MVEpoch::adjust(Double &res) {
   res = 1.0;
 }
 
-Double MVEpoch::get() const{
+Double MVEpoch::get() const {
   return ((secFract + sec)/MVEpoch::secInDay + kDday * 10000);
 }
 
-Quantity MVEpoch::getTime() const{
+Quantity MVEpoch::getTime() const {
   return (Quantity(get(), "d"));
 }
 
@@ -202,16 +202,20 @@ Quantity MVEpoch::getTime(const Unit &unit) const {
   return (getTime().get(unit));
 }
 
-Double MVEpoch::getDay() const{
+Double MVEpoch::getDay() const {
   return (kDday * 10000 + ifloor(sec/MVEpoch::secInDay));
 }
 
-Double MVEpoch::getSecond() const{
+Double MVEpoch::getSecond() const {
   return (fmod(Double(sec),MVEpoch::secInDay));
 }
 
-Double MVEpoch::getFraction() const{
+Double MVEpoch::getFraction() const {
   return (secFract);
+}
+
+Double MVEpoch::getDayFraction() const {
+  return (getSecond() + getFraction())/MVEpoch::secInDay;
 }
 
 void MVEpoch::print(ostream &os) const {

@@ -170,12 +170,15 @@ public:
   // Get value of integer days
   Double getDay() const;
   
-  // Get value of seconds
+  // Get value of whole seconds in day
   Double getSecond() const;
   
   // Get value of fractional seconds
   Double getFraction() const;
   
+  // Get fraction of days
+  Double getDayFraction() const;
+
   // Print a value
   virtual void print(ostream &os) const;
   
