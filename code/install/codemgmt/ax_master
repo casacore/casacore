@@ -3985,3 +3985,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCPositionEH.h trialdisplay/implement/DisplayEvents/WCPositionEH.h
 14 065 src mv trial/implement/DisplayEvents/WCPositionEvent.h trialdisplay/implement/DisplayEvents/WCPositionEvent.h
 14 065 src mv trial/implement/DisplayEvents/WCRTRegion.h trialdisplay/implement/DisplayEvents/WCRTRegion.h
+14 065 src mv trial/implement/DisplayEvents/WCRTZoomer.h trialdisplay/implement/DisplayEvents/WCRTZoomer.h
