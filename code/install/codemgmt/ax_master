@@ -6568,3 +6568,4 @@
 18 746 src rm aips/implement/Logging/LogSink2.cc
 18 746 src rm aips/implement/Tasking/ObjectID3.cc
 18 755 src rm aips/implement/Measures/MeasureHolder2.cc
+18 755 src rm aips/implement/Functionals/FunctionOrder2.cc
