@@ -1,5 +1,5 @@
 //# LatticeBase.h: A non-templated, abstract base class for array-like classes
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,6 +82,12 @@ public:
 
   // Make a copy of the derived object (reference semantics).
   virtual LatticeBase* cloneBase() const = 0;
+
+  // Is the lattice persistent and can it be loaded by other processes as well?
+  // That is the case for a PagedArray or PagedImage and for an ImageExpr
+  // which does not use transient lattices or regions.
+  // <br>Default implementation returns False.
+  virtual Bool isPersistent() const;
 
   // Is the lattice paged to disk?
   // <br>Default implementation returns False.

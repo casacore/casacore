@@ -1,5 +1,5 @@
 //# PagedArray.cc: this defines the PagedArray class
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -197,6 +197,12 @@ template<class T>
 Lattice<T>* PagedArray<T>::clone() const
 {
   return new PagedArray<T> (*this);
+}
+
+template<class T>
+Bool PagedArray<T>::isPersistent() const
+{
+  return True;
 }
 
 template<class T>
