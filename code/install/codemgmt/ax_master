@@ -4009,3 +4009,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCCrosshairTool.cc trialdisplay/implement/DisplayEvents/WCCrosshairTool.cc
 14 065 src mv trial/implement/DisplayEvents/WCInvisTool.cc trialdisplay/implement/DisplayEvents/WCInvisTool.cc
 14 065 src mv trial/implement/DisplayEvents/WCMotionEH.cc trialdisplay/implement/DisplayEvents/WCMotionEH.cc
+14 065 src mv trial/implement/DisplayEvents/WCMotionEvent.cc trialdisplay/implement/DisplayEvents/WCMotionEvent.cc
