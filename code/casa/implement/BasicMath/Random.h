@@ -42,6 +42,12 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Math.h>
 
+//# on the alpha long is 64 bits, we redefine it here to make 
+//# this nasty piece of code work
+#ifdef __alpha__
+#define long int
+#endif
+
 // used to access floats as unsigneds
 union PrivateRNGSingleType {
     float s;
@@ -119,6 +125,9 @@ union PrivateRNGDoubleType {
 //    <li> <linkto class=MLCG>MLCG</linkto>:
 //         Multiplicative Linear Congruential Generator
 // </ul>
+// 
+// Note that on the DecAlpha we use Int instead of long to implement these
+// classes. The function signatures below can thus be misleading.
 
 class RNG {
     static PrivateRNGSingleType singleMantissa;	// mantissa bit vector
@@ -1118,4 +1127,9 @@ inline double Weibull::beta(double x) {
   return tmp;
 };
 
+#ifdef __alpha__
+#undef long
 #endif
+
+#endif
+
