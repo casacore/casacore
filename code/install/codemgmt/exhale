@@ -1007,11 +1007,12 @@
   then
 #    New prayer: forget about any previous blessings.
      OLDBLESSED=`echo blessed-master-*.tar.gz`
-     echo "Removing old blessed versions:"
+     echo
+     echo "exhale: Removing old blessed versions:"
 
      for OLDBLESSING in $OLDBLESSED
      do
-        echo "   $OLDBLESSING"
+        echo "        $OLDBLESSING"
         rm -f $OLDBLESSING
      done
 
@@ -1023,10 +1024,10 @@
         for BLESSING in $BLESSED
         do
            [ -f "master-$BLESSING.tar.gz" ] && \
-            echo "Blessing incremental $BLESSING" && \
+            echo "exhale: Blessing incremental $BLESSING" && \
             ln "master-$BLESSING.tar.gz" "blessed-master-$BLESSING.tar.gz"
            [ -f "master-$BLESSING.ALL.tar.gz" ] && \
-            echo "Blessing cumulative $BLESSING" && \
+            echo "exhale: Blessing cumulative $BLESSING" && \
             ln "master-$BLESSING.ALL.tar.gz" "blessed-master-$BLESSING.ALL.tar.gz"
         done
      fi
