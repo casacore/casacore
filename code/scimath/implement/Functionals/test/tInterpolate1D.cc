@@ -1,5 +1,5 @@
 //# tInterpolate1D.cc: This program tests the Interpolate1D class
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -75,12 +75,12 @@ int main()
     v1.setData(fx, fy1);
     v2.setData(fx, fy2);
     for (xs = -1; xs < 5; xs += 0.1) {
-      if (near(v1(xs), xs+1.0, 1E-5) == False){
+      if (near(v1(xs), xs+1.0f, 1.0E-5) == False){
 	cout << "v1(" << xs << ") = " << v1(xs) << 
 	  " which is not near the expected value of " << xs+1.0f << endl;
 	failed = True;
       }
-      if (near(v2(xs), xs+2.0, 1E-5) == False){
+      if (near(v2(xs), xs+2.0f, 1.0E-5) == False){
 	cout << "v2(" << xs << ") = " << v2(xs) << 
 	  " which is not near the expected value of " << xs+2.0f << endl;
 	failed = True;
@@ -151,7 +151,7 @@ int main()
   
     value.setMethod(Interpolate1D<Double,DComplex>::nearestNeighbour);
     Double ev;
-    for (Double xs = -5.0000001; xs < 5; xs += .1){
+    for (Float xs = -5.0000001; xs < 5; xs += .1){
       ev = max(min((Int) (xs+0.5),4),0);
       if (near((value(xs)).real(), ev) == False ||  
 	  near((value(xs)).imag(), ev*ev) == False) {
@@ -239,7 +239,7 @@ int main()
   // Test the Interpolate1D class with Float Vector / DComplex Array and spline
   // interpolation 
     {
-#ifdef __GNUG__ 
+#if defined(__GNUG__)  || defined(__EDG)
   // This test cannot be run for g++ as it cannot instantiate the 
   // templates required (it will not do trivial type conversions from float
   // to double when instantiating templates). In particular it cannot
@@ -356,7 +356,7 @@ int main()
     // Test the Interpolate1D class with the array columns
      { 
        Bool failed = False;
-#ifdef __GNUG__ 
+#if defined(__GNUG__) || defined(__EDG)
   // This test cannot be run for g++ as it cannot instantiate the 
   // templates required (it will not do trivial type conversions from float
   // to double when instantiating templates). In particular it cannot
@@ -379,14 +379,14 @@ int main()
   	sv10 = av(IPosition(2, 1, 0));
   	sv01 = av(IPosition(2, 0, 1));
   	sv11 = av(IPosition(2, 1, 1));
- 	if ((near(sv00.real(), xs+0.1) == False) || 
- 	    (near(sv00.imag(), 2*xs+0.2) == False) ||
- 	    (near(sv10.real(), xs+0.3) == False) || 
- 	    (near(sv10.imag(), 2*xs+0.4) == False) ||
- 	    (near(sv01.real(), xs+0.5) == False) || 
- 	    (near(sv01.imag(), 2*xs+0.6) == False) ||
- 	    (near(sv11.real(), xs+0.7) == False) || 
- 	    (near(sv11.imag(), 2*xs+0.8) == False)){
+ 	if ((near(sv00.real(), xs+0.1f) == False) || 
+ 	    (near(sv00.imag(), 2*xs+0.2f) == False) ||
+ 	    (near(sv10.real(), xs+0.3f) == False) || 
+ 	    (near(sv10.imag(), 2*xs+0.4f) == False) ||
+ 	    (near(sv01.real(), xs+0.5f) == False) || 
+ 	    (near(sv01.imag(), 2*xs+0.6f) == False) ||
+ 	    (near(sv11.real(), xs+0.7f) == False) || 
+ 	    (near(sv11.imag(), 2*xs+0.8f) == False)){
  	  failed = True;
  	  cout << "value(" << xs << "): " << endl
  	       << av
