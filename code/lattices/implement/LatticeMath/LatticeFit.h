@@ -1,5 +1,5 @@
 //# LatticeFit.h: Fit every line of pixels parallel to any axis in a Lattice.
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,6 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 #if !defined(AIPS_LATTICE_FIT_H)
 #define AIPS_LATTICE_FIT_H
 
