@@ -235,7 +235,7 @@ void SSMColumn::getComplexV (uInt aRowNr, Complex* aValue)
 void SSMColumn::getDComplexV (uInt aRowNr,DComplex* aValue)
 {
   getValue(aRowNr);
-  *aValue = static_cast<Complex*>(itsData)[aRowNr-columnCache().start()];
+  *aValue = static_cast<DComplex*>(itsData)[aRowNr-columnCache().start()];
 }
 
 void SSMColumn::getStringV (uInt aRowNr, String* aValue)
