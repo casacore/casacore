@@ -4,22 +4,8 @@
      = casa/BasicSL/Complex.h 
      template Bool allNear(Array<Complex> const &, Array<Complex> const &, Double) 
 ######################################################################
-# Needed for tTempImage.cc
-1000 lattices/Lattices/ArrayLattice.cc 
-     template class ArrayLattice<Double> 
-     template class ArrayLattice<DComplex> 
-######################################################################
 # Needed for tImageInfo, tPagedImage.cc, tTempImage.cc
 #
-1000 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
-     = casa/Utilities/CountedPtr.cc 
-     = lattices/Lattices/Lattice.h 
-     template class TempLattice<Complex> 
-     template class CountedConstPtr<Lattice<Complex> > 
-     template class CountedPtr<Lattice<Complex> > 
-     template class PtrRep<Lattice<Complex> > 
-     template class SimpleCountedConstPtr<Lattice<Complex> > 
-     template class SimpleCountedPtr<Lattice<Complex> > 
 1010 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
      = casa/Utilities/CountedPtr.cc 
      = lattices/Lattices/Lattice.h 
@@ -56,12 +42,6 @@
      = casa/Utilities/CountedPtr.cc 
      template class TempImage<Double> 
      template class ImageInterface<Double> 
-     template class TempLattice<Double> 
-     template class CountedPtr<Lattice<Double> > 
-     template class CountedConstPtr<Lattice<Double> > 
-     template class SimpleCountedPtr<Lattice<Double> > 
-     template class SimpleCountedConstPtr<Lattice<Double> > 
-     template class PtrRep<Lattice<Double> > 
 1010 images/Images/TempImage.cc images/Images/ImageInterface.cc 
      template class TempImage<Int> 
      template class ImageInterface<Int> 
@@ -73,5 +53,3 @@
      template class LatticeApply<Complex, DComplex> 
      template class StatsTiledCollapser<Complex, DComplex> 
      template class TiledCollapser<Complex, DComplex> 
-######################################################################
-# Needed for tImageUtilities
