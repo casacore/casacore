@@ -39,7 +39,7 @@
 // #include <tables/Tables/Table.h>
 // #include <casa/Utilities/Assert.h>
 // #include <casa/BasicSL/String.h>
-// #include <iostream.h>
+// #include <casa/iostream.h>
 
 int main() {
 //   const String filename = "tMSMainBuffer_tmp.table";
@@ -364,6 +364,7 @@ int main() {
 //     return 1;
 //   }
 //   cout << "OK" << endl;
+  return 3;  //untested
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 XLIBLIST=0 tMSMainBuffer"

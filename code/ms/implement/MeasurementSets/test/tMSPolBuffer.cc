@@ -30,7 +30,7 @@
 // #include <aips/Exceptions/Excp.h>
 // #include <casa/Utilities/Assert.h>
 // #include <casa/BasicSL/String.h>
-// #include <iostream.h>
+// #include <casa/iostream.h>
 
 // #include <trial/MeasurementSets/MSPolBuffer.h>
 // #include <casa/Arrays/ArrayLogical.h>
@@ -176,6 +176,7 @@ int main() {
 //     return 1;
 //   }
 //   cout << "OK" << endl;
+  return 3;   //untested
 }
 
 // Local Variables: 

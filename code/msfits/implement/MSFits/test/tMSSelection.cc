@@ -1,32 +1,31 @@
-#include <aips/Glish.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/VectorIter.h>
-#include <aips/Arrays/VectorSTLIterator.h>
-#include <aips/Utilities/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Arrays/VectorSTLIterator.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/Exceptions/Error.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <casa/Exceptions/Error.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
 
-#include <trial/MeasurementSets/MSSelection.h>
-#include <trial/MeasurementSets/MSExpr.h>
-#include <trial/MeasurementSets/MSAntennaExpr.h>
-#include <trial/MeasurementSets/MSCorrExpr.h>
-#include <trial/MeasurementSets/MSFieldExpr.h>
-#include <trial/MeasurementSets/MSSPWExpr.h>
-#include <trial/MeasurementSets/MSTimeExpr.h>
-#include <trial/MeasurementSets/MSUVDistExpr.h>
+#include <ms/MeasurementSets/MSSelection.h>
+#include <ms/MeasurementSets/MSExpr.h>
+#include <ms/MeasurementSets/MSAntennaExpr.h>
+#include <ms/MeasurementSets/MSCorrExpr.h>
+#include <ms/MeasurementSets/MSFieldExpr.h>
+#include <ms/MeasurementSets/MSSPWExpr.h>
+#include <ms/MeasurementSets/MSTimeExpr.h>
+#include <ms/MeasurementSets/MSUVDistExpr.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Containers/RecordField.h>
+#include <tables/Tables/TableRecord.h>
 
 
 int main(int argc, char **argv)
