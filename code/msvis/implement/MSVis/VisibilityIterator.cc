@@ -995,7 +995,8 @@ void ROVisibilityIterator::allSelectedSpectralWindows(const Vector<Int>& spws, V
 }
 
 
-void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq){
+void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq, 
+					Bool& convert){
 
   // This method is not good for conversion between frames which are extremely
   // time dependent over the course of the observation e.g topo to lsr unless
@@ -1011,6 +1012,7 @@ void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq){
   if (!freqCacheOK_p) {
     frequency(freq);   
   }
+
   Vector<Double> chanFreq(0);
   chanFreq=msIter_p.msColumns().spectralWindow().chanFreq()(spw);
   //      Int start=chanStart_p[spw]-msIter_p.startChan();
@@ -1032,8 +1034,15 @@ void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq){
 
 
   for (Int i=0; i<chanWidth_p[spw]; i++) {
-    freq[i]=tolsr(chanFreq(start+
-			   (numChanGroup_p[spw]-1)*chanInc_p[spw]+i)).getValue().getValue();
+    if(convert){
+      freq[i]=tolsr(chanFreq(start+
+			     (numChanGroup_p[spw]-1)*chanInc_p[spw]+i)).
+	getValue().getValue();
+    }
+    else{
+      freq[i]=chanFreq(start+
+		       (numChanGroup_p[spw]-1)*chanInc_p[spw]+i);
+    }
   }
 
 }
