@@ -1,5 +1,5 @@
 //# UnitMap7.cc: Unit map custom units initialisation part 3
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -143,6 +143,10 @@ void UnitMap::initUMCust3() {
 			   ("beam",	UnitName("beam",
 						 UnitVal(1.,UnitDim::Dnon),
 						 "undefined beam area")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+                           ("count", 	UnitName("count",
+                                                 UnitVal(1.,UnitDim::Dnon),
+                                                 "count")));
   UnitMap::mapCust->insert(map<String, UnitName>::value_type
 			   ("pixel",	UnitName("pixel",
 						 UnitVal(1.,UnitDim::Dnon),
