@@ -180,6 +180,10 @@ String MRadialVelocity::getRefString() const {
   return MRadialVelocity::showType(ref.getType());
 }
 
+uInt MRadialVelocity::myType() {
+  return Register((MRadialVelocity *)0);
+}
+
 Quantity MRadialVelocity::get(const Unit &un) const {
     return data.get(un);
 }

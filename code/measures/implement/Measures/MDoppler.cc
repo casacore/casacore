@@ -169,6 +169,9 @@ const String &MDoppler::getDefaultType() const {
 String MDoppler::getRefString() const {
   return MDoppler::showType(ref.getType());
 }
+uInt MDoppler::myType() {
+  return Register((MDoppler *)0);
+}
 
 Quantity MDoppler::get(const Unit &un) const {
     return data.get(un);

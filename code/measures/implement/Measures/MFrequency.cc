@@ -178,6 +178,10 @@ String MFrequency::getRefString() const {
   return MFrequency::showType(ref.getType());
 }
 
+uInt MFrequency::myType() {
+  return Register((MFrequency *)0);
+}
+
 Quantity MFrequency::get(const Unit &un) const {
     return data.get(un);
 }
