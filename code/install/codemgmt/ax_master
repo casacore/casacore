@@ -4279,3 +4279,4 @@
 14 131 src mv ./aips/implement/Measures/MCuvw.h ./trial/implement/Measures/MCuvw.h
 14 131 src mv trial/implement/Measures/MCuvw.h aips/implement/Measures/MCuvw.h
 14 131 src mv ./aips/implement/Measures/MCuvw.h ./trial/implement/Measures/MCuvw.h
+14 131 src mv trial/implement/Measures/MCuvw.h aips/implement/Measures/MCuvw.h
