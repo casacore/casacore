@@ -153,7 +153,7 @@ int main (int argc, char** argv)
     uInt initleng = 0;
     uInt colindex = 4;
     uInt normalleng = 0;
-    Block<uInt> sameleng (nrent, 0);
+    Block<uInt> sameleng (nrent, 0u);
     Block<uInt> times (nrent);
     for (i=0; i<nrent; i++) {
 	if (same[i] % lowest != 0) {
