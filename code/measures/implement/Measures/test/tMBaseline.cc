@@ -73,8 +73,14 @@ main()
 	  " as " << bconv() << endl;
 
 	MBaseline::Convert bconvb(mbref1, mbref0);
-	cout << "Back      " << bconv() << endl <<
+	if (allNearAbs(mb0.getValue().getValue().ac(),
+		       bconvb(bconv()).getValue().getValue().ac(),
+		       1e-8)) {
+	  cout << "Back      " << bconv() << " : ok" << endl;
+	} else {
+	  cout << "Back      " << bconv() << " : not ok" << endl <<
 	  " as " << bconvb(bconv()) << endl;
+	};
 
 	cout << "--------------------------------------" << endl;
 	cout << "Testing all conversions forward/backward" << endl;
