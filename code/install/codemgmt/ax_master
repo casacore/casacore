@@ -5905,3 +5905,4 @@
 16 313 src mv trial/implement/Functionals/FunctionNN.cc aips/implement/Functionals/Function.cc
 16 317 src mv trial/implement/Functionals/NQFunction1D.h aips/implement/Functionals/NQFunction1D.h
 16 317 src mv trial/implement/Functionals/NQGaussian1D.cc aips/implement/Functionals/NQGaussian1D.cc
+16 317 src mv trial/implement/Functionals/NQGaussian1D.h aips/implement/Functionals/NQGaussian1D.h
