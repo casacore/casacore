@@ -177,6 +177,7 @@ public:
                                    const CoordinateSystem& cSys,
                                    const IPosition& pixelAxes);
 
+private:
 
 // Convert 2d sky shape (parameters=major axis, minor axis, position angle) 
 // from pixels to world at reference pixel. pixelAxes describes which
@@ -202,7 +203,6 @@ public:
                                              Double length,
                                              const CoordinateSystem& cSys,
                                              const IPosition& pixelAxes);
-   private:
 };
 
 
