@@ -33,6 +33,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <trial/Coordinates/Projection.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
@@ -494,3 +495,71 @@ Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
     }
     return ctype;
 }
+
+
+Coordinate* Coordinate::makeFourierCoordinate (const Vector<Bool>& axes,
+                                               const Vector<Int>& shape)  const
+{
+   String tmp = String("Coordinates of type ") + showType() + String(" cannot be Fourier Transformed");
+   throw(AipsError(tmp));
+}
+
+
+void Coordinate::fourierUnits (String& nameOut, String& unitOut, String& unitInCanon,
+                               Coordinate::Type type, Int axis,   
+                               const String& unitIn,
+                               const String& nameIn) const
+
+//
+// A disgusting fudgy routine to work out some nice names and units
+// Fourier coordinates.  Rather limited in its knowledge currently.
+//
+{
+   Unit time("s");
+   Unit freq("Hz");
+   Unit rad("rad");
+   Unit unitIn2(unitIn);
+//
+   if (type==Coordinate::DIRECTION) {
+      if (unitIn2==rad) {
+         unitInCanon = String("rad");
+         if (axis==0) {
+            nameOut = String("UU");
+         } else if (axis==1) {
+            nameOut = String("VV");
+         } else {
+            throw(AipsError("Illegal DirectionCoordinate axis"));
+         }
+         unitOut = String("lambda");
+      } else {
+         nameOut = String("Inverse(") + nameIn + String(")");
+         unitOut = String("1/") + unitIn;
+         unitInCanon = unitIn;
+      }
+   } else if (type==Coordinate::LINEAR ||
+              type==Coordinate::SPECTRAL ||
+              type==Coordinate::TABULAR) {
+      if (unitIn2==freq) {
+         nameOut = String("Time");
+         unitOut = String("s");
+         unitInCanon = "Hz";
+      } else if (unitIn2==time) {
+         nameOut = String("Frequency");
+         unitOut = String("Hz");
+         unitInCanon = "s";
+      } else {
+         nameOut = String("Inverse(") + nameIn + String(")");
+         unitOut = String("1/") + unitIn;
+         unitInCanon = unitIn;
+      }
+   } else if (type==Coordinate::STOKES) {
+      throw (AipsError("Cannot provide Fourier coordinate name for Stokes coordinate"));
+   } else if (type==Coordinate::COORDSYS) {
+      throw (AipsError("Cannot provide Fourier coordinate name for CoordinateSystem coordinate"));
+   } else {
+      nameOut = String("Inverse(") + nameIn + String(")");
+      unitOut = String("1/") + unitIn;
+      unitInCanon = unitIn;
+   }
+}
+

@@ -260,6 +260,21 @@ public:
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True) = 0;
 
+    // Find the Coordinate for when we Fourier Transform ourselves.  This pointer 
+    // must be deleted by the caller. Axes specifies which axes of the coordinate
+    // you wish to transform.   Shape specifies the shape of the image
+    // associated with all the axes of the coordinate.
+    virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
+                                               const Vector<Int>& shape) const;
+
+    // Tries to find a canonical unit for input unit (e.g.  GHz -> Hz), and
+    // tells you the output name and unit for the Fourier coordinate 
+    // pairing with the canonical unit
+    void fourierUnits (String& nameOut, String& unitOut, String& unitInCanon,
+                       Coordinate::Type type, Int axis, 
+                       const String& unitIn, 
+                       const String& nameIn) const;
+
     // If the last conversion to world or pixel coordinates resulted in an
     // error, report that error. If the last conversion succeeded, it is
     // undefined what this will return (it might well contain the last error
