@@ -50,9 +50,16 @@
 
 DirectionCoordinate::DirectionCoordinate()
 : Coordinate(),
-  type_p(MDirection::J2000), projection_p(Projection(Projection::CAR)),
-  celprm_p(0), prjprm_p(0), wcs_p(0), linear_p(1),
-  names_p(2), units_p(2)
+  type_p(MDirection::J2000), 
+  projection_p(Projection(Projection::CAR)),
+  celprm_p(0), 
+  prjprm_p(0), 
+  wcs_p(0), 
+  linear_p(1),
+  names_p(2), 
+  units_p(2), 
+  canDoToMix_p(True),
+  canDoToMixErrorMsg_p("")
 {
     // Initially we are in radians
     to_degrees_p[0] = 180.0 / C::pi;
@@ -70,9 +77,10 @@ DirectionCoordinate::DirectionCoordinate()
     toDegrees(crval);
     toDegrees(cdelt);
     linear_p = LinearXform(crpix, cdelt, xform);
-    make_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, c_crval_p,
-                           projection_p, type_p, crval(0), crval(1), 
-			   999.0, 999.0);
+    make_celprm_and_prjprm(canDoToMix_p, canDoToMixErrorMsg_p,
+                           celprm_p, prjprm_p, wcs_p, 
+                           c_ctype_p, c_crval_p, projection_p, type_p, 
+                           crval(0), crval(1), 999.0, 999.0);
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -82,10 +90,16 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          const Matrix<Double> &xform,
                                          Double refX, Double refY)
 : Coordinate(),
-  type_p(directionType), projection_p(projection),
-  celprm_p(0), prjprm_p(0), wcs_p(0), linear_p(1),
+  type_p(directionType), 
+  projection_p(projection),
+  celprm_p(0), 
+  prjprm_p(0), 
+  wcs_p(0), 
+  linear_p(1),
   names_p(axisNames(directionType).copy()),
-  units_p(2)
+  units_p(2),
+  canDoToMix_p(True),
+  canDoToMixErrorMsg_p("")
 {
     // Initially we are in radians
     to_degrees_p[0] = 180.0 / C::pi;
@@ -101,16 +115,24 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
     toDegrees(cdelt);
     linear_p = LinearXform(crpix, cdelt, xform);
 
-    make_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
-                           c_crval_p, projection_p, type_p, 
-                           crval(0), crval(1),  999.0, 999.0);
+    make_celprm_and_prjprm(canDoToMix_p, canDoToMixErrorMsg_p, celprm_p, 
+                           prjprm_p, wcs_p, c_ctype_p, c_crval_p, 
+                           projection_p, type_p, crval(0), crval(1),  
+                           999.0, 999.0);
 }
 
 DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
 : Coordinate(other),
-  type_p(other.type_p), projection_p(other.projection_p),
-  celprm_p(0), prjprm_p(0), wcs_p(0), linear_p(other.linear_p),
-  names_p(other.names_p.copy()), units_p(other.units_p.copy())
+  type_p(other.type_p), 
+  projection_p(other.projection_p),
+  celprm_p(0), 
+  prjprm_p(0), 
+  wcs_p(0), 
+  linear_p(other.linear_p),
+  names_p(other.names_p.copy()), 
+  units_p(other.units_p.copy()),
+  canDoToMix_p(other.canDoToMix_p),
+  canDoToMixErrorMsg_p(other.canDoToMixErrorMsg_p)
 {
     to_degrees_p[0] = other.to_degrees_p[0];
     to_degrees_p[1] = other.to_degrees_p[1];
@@ -138,6 +160,8 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
 	units_p = other.units_p.copy();
 	to_degrees_p[0] = other.to_degrees_p[0];
 	to_degrees_p[1] = other.to_degrees_p[1];
+        canDoToMix_p = other.canDoToMix_p;
+        canDoToMixErrorMsg_p = other.canDoToMixErrorMsg_p;
     }
     return *this;
 }
@@ -261,7 +285,7 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
    for (uInt i=0; i<nPixel; i++) {   
       if (pixelAxes(i) && worldAxes(i)) {
          set_error("DirectionCoordinate::toMix - duplicate pixel/world axes");
-         return False;
+         return False; 
       }
       if (!pixelAxes(i) && !worldAxes(i)) {
          set_error("DirectionCoordinate::toMix - each coordinate must be either pixel or world");
@@ -290,6 +314,12 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
 //
 // pixel,world->world,pixel
 //
+      if (!canDoToMix_p) {
+         set_error("DirectionCoordinate::toMix - " + 
+                   canDoToMixErrorMsg_p);
+          return False;
+      }
+//
       if (in_tmp_p.nelements()!=2) in_tmp_p.resize(2);
       if (out_tmp_p.nelements()!=2) out_tmp_p.resize(2);
 //
@@ -304,6 +334,12 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
    } else if (worldAxes(0) && pixelAxes(1)) {
 //
 // world,pixel->pixel,world
+//
+      if (!canDoToMix_p) {
+         set_error("DirectionCoordinate::toMix - " + 
+                   canDoToMixErrorMsg_p);
+          return False;
+      }
 //
       if (in_tmp_p.nelements()!=2) in_tmp_p.resize(2);
       if (out_tmp_p.nelements()!=2) out_tmp_p.resize(2);
@@ -1061,6 +1097,12 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
                                  const Vector<Double>& maxWorld,
                                  Bool longIsWorld) const
 //
+// This function is implemented at the wcs interface level, whereas
+// the toWorld and toPixel functions are implemented at the cel
+// (lower) level.  This is why we have to make some extra things
+// for this function (wcs_p, c_ctype_p, c_crval_p) which aren't used
+// elsewhere.
+//
 // vectors must be of length 2. no checking
 //
 {
@@ -1150,12 +1192,12 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 
 // Helper functions to help us interface to WCS
 
-void DirectionCoordinate::make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,  
-                                                 char c_ctype[2][9], double c_crval[2],
-                                                 const Projection& proj,
-                                                 MDirection::Types directionType,
-                                                 Double refLong, Double refLat,  
-                                                 Double longPole, Double latPole) const
+void DirectionCoordinate::make_celprm_and_prjprm(Bool& canDoToMix, String& canDoToMixErrorMsg,
+           celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,  
+           char c_ctype[2][9], double c_crval[2],
+           const Projection& proj, MDirection::Types directionType,
+           Double refLong, Double refLat,  
+           Double longPole, Double latPole) const
 {
     pCelPrm = new celprm;
     if (! pCelPrm) {
@@ -1215,9 +1257,9 @@ void DirectionCoordinate::make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrj
 //
     int iret = wcsset(2, c_ctype, pWcs);
     if (iret!=0) {
-        String errorMsg = "wcs wcsset_error: ";
-        errorMsg += wcsset_errmsg[iret];
-        throw(AipsError(errorMsg));
+        canDoToMix = False;
+        canDoToMixErrorMsg = "wcs error : ";
+        canDoToMixErrorMsg += wcsset_errmsg[iret];
     }
 }
 
