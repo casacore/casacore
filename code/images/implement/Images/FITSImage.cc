@@ -582,8 +582,10 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
     String groupType;
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
+
+// Set the contents of the ImageInterface logger object (its accessed by reference)
+
     LoggerHolder& log = logger();
-//
     uInt n;
     while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
        if (groupType == "LOGTABLE") {
@@ -685,8 +687,10 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
     String groupType;
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
+
+// Set the contents of the ImageInterface logger object (its accessed by reference)
+
     LoggerHolder& log = logger();
-//
     uInt n;
     while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
        if (groupType == "LOGTABLE") {
