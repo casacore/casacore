@@ -28,14 +28,12 @@
 #if !defined(AIPS_TILEDLINESTEPPER_H)
 #define AIPS_TILEDLINESTEPPER_H
 
+//# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeNavigator.h>
 #include <trial/Lattices/LatticeIndexer.h>
 #include <aips/Lattices/IPosition.h>
 
-#if defined(_AIX)
-#pragma implementation ("TiledLineStepper.cc")
-#endif 
 
 // <summary>
 // Traverse a Tiled Lattice optimally with a Vector cursor
@@ -43,11 +41,10 @@
 // <use visibility=export>
 
 // <reviewed reviewer="" date="" tests="">
+// </reviewed>
 
 // <prerequisite>
-// <list>
 //   <li> <linkto class=LatticeNavigator> LatticeNavigator </linkto>
-// </list>
 // </prerequisite>
 
 // <etymology>
@@ -62,7 +59,7 @@
 // derived from the abstract LatticeNavigator that allows you to move
 // a Vector cursor through the Lattice in a way that will minimise the
 // amount of cache memory consumed.
-//
+// <p>
 // Some Lattices (in particular PagedArrays) are stored (on disk) in
 // tiles. For an N-dimensional Lattice a tile is an N-dimensional
 // subsection with fewer elements along each axis. For example a Lattice of
@@ -74,14 +71,14 @@
 // number of tiles held in the cache. But it is also desirable to minimise
 // the number of times a tiles must be read into or written from the
 // cache as this may require a time consuming operation like disk I/O.
-//
+// <p>
 // Now suppose you wanted to traverse a Lattice with a Vector cursor of
 // length 512 pixel aligned along the x-axis. Using a
 // <linkto class=LatticeStepper>LatticeStepper</linkto>, each Vector is
 // retrieved from the Lattice sequentially and without any consideration of
 // the underlying tile shape. What is the optimal cache size for the above
 // example?
-//
+// <p>
 // Suppose we have a cache size of 16 ie., the number of tiles along the
 // x-axis. Then Vectors beginning at positions [0,0,0,0] to [0,15,0,0] will
 // be stored in the cache. But the next Vector beginning at position
@@ -90,7 +87,7 @@
 // Lattice. Further when the cursor moves to position [0,0,1,0] the 16 tiles
 // that where initially in the cache will need to be read again. To avoid
 // all this cache I/O it is better to have a bigger cache.
-//
+// <p>
 // Suppose the cache size is 16*32 (=512) ie., enough tiles to contain an
 // (x,y)-plane. Then the cache size will not be flushed until the cursor is
 // moved to position [0,0,0,16]. Further the cache will never need to read
@@ -98,7 +95,7 @@
 // cache is big enough to store tiles until they have been completely
 // used. But this cache is 64MBytes in size, and consumes too much memory
 // for many computers.
-//
+// <p>
 // This where a TiledLineStepper is useful. Because it knows the shape of the
 // tiles in the underlying Lattice it moves the cursor to return all the
 // Vectors in the smallest possible cache of tiles before moving on to the
@@ -118,14 +115,16 @@
 // accessed. Using a TiledLineStepper rather than a LatticeStepper has,
 // in this example, resulted in a drop in the required cache size from
 // 64MBytes down to 2MBytes. 
-//
+// <p>
 // In constructing a TiledLineStepper, you specify the Lattice shape, the
 // tile shape and the axis the Vector cursor will be aligned with. Specifying
 // an axis=0 will align the cursor with the x-axis and axis=2 will produce a
 // cursor that is along the z-axis. The length of the cursor is always the
 // same as the number of elements in the Lattice along the axis the cursor
 // is aligned with.
-//
+// <br>It is possible to use the function <src>subSection</src> to
+// traverse only a subsection of the lattice.
+// <p>
 // The cursor position can be incremented or decremented to retrieve the next
 // or previous Vector in the Lattice. The position of the next Vector in the
 // Lattice will depend on the tile shape, and is described above. Within a tile
@@ -148,31 +147,33 @@
 // iterator.
 //
 // <srcblock>
-// void FFT2DComplex(Lattice<Complex>& cArray,
-// 		     const Bool direction)
+// void FFT2DComplex (Lattice<Complex>& cArray,
+// 		      const Bool direction)
 // {
 //   const uInt ndim = cArray.ndim();
 //   AlwaysAssert(ndim > 1, AipsError);
 //   const IPosition latticeShape = cArray.shape();
 //   const uInt nx=latticeShape(0);
 //   const uInt ny=latticeShape(1);
-//   const IPosition tileShape = cArray.niceCursorShape(cArray.maxPixels());
+//   const IPosition tileShape = cArray.niceCursorShape();
 //
 //   {
 //     TiledLineStepper tsx(latticeShape, tileShape, 0);
 //     LatticeIterator<Complex> lix(cArray, tsx);
 //     FFTServer<Float,Complex> fftx(IPosition(1, nx));
-//     for (lix.reset();!lix.atEnd();lix++)
-//       fftx.fft(lix.vectorCursor(), direction);
+//     for (lix.reset();!lix.atEnd();lix++) {
+//       fftx.fft(lix.rwVectorCursor(), direction);
+//     }
 //   }
 //   {
 //     TiledLineStepper tsy(latticeShape, tileShape, 1);
 //     LatticeIterator<Complex> liy(cArray, tsy);
 //     FFTServer<Float,Complex> ffty(IPosition(1, ny));
-//     for (liy.reset();!liy.atEnd();liy++)
-//       ffty.fft(liy.vectorCursor(), direction);
+//     for (liy.reset();!liy.atEnd();liy++) {
+//       ffty.fft(liy.rwVectorCursor(), direction);
+//     }
 //   }
-// };
+// }
 // </srcblock>
 // </example>
 
@@ -180,10 +181,9 @@
 // Moving through a Lattice by equal sized chunks, and without regard
 // to the nature of the data, is a basic and common procedure.  
 // </motivation>
-//
+
 // <todo asof="1997/03/28">
-//  <li> Provide support for Matrix and higher dimensional cursors
-//       can be used.
+//  <li> Support for Matrix and higher dimensional cursors can be used.
 // </todo>
 
 class TiledLineStepper : public LatticeNavigator
@@ -210,14 +210,11 @@ public:
   TiledLineStepper& operator= (const TiledLineStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor
-  // forward one step. Returns True if the cursor was moved.  Both functions
-  // do the same thing.
+  // forward one step. Returns True if the cursor was moved.
   virtual Bool operator++(Int);
 
   // Decrement operator (postfix or prefix version) - move the cursor
-  // backwards one step. Returns True if the cursor was moved. Both
-  // functions do the same thing.
-  // <group>
+  // backwards one step. Returns True if the cursor was moved.
   virtual Bool operator--(Int);
 
   // Function to move the cursor to the beginning of the Lattice. Also
@@ -328,21 +325,22 @@ private:
   // prevent the default constructor from being used externally.
   TiledLineStepper();
 
-  IPosition theBlc;              //# Bottom Left Corner
-  IPosition theTrc;              //# Top Right Corner
-  IPosition theInc;              //# Increment
-  LatticeIndexer theSubSection;  //# The current subsection
-  LatticeIndexer theIndexer;     //# For moving within a tile
-  LatticeIndexer theTiler;       //# For moving between tiles
-  IPosition theIndexerCursorPos; //# The current position of the iterator.
-  IPosition theTilerCursorPos;   //# The current position of the iterator.
-  IPosition theCursorShape;      //# The shape of the cursor for theIndexer
-  IPosition theTileShape;        //# The tile shape (= theTiler cursor shape)
-  IPosition theAxisPath;         //# Path for traversing
-  uInt theNsteps;                //# The number of iterator steps taken so far; 
-  uInt theAxis;                  //# The axis containing the data vector
-  Bool theEnd;                   //# Is the cursor beyond the end?
-  Bool theStart;                 //# Is the cursor at the beginning?
+  IPosition itsBlc;              //# Bottom Left Corner
+  IPosition itsTrc;              //# Top Right Corner
+  IPosition itsInc;              //# Increment
+  LatticeIndexer itsSubSection;  //# The current subsection
+  LatticeIndexer itsIndexer;     //# For moving within a tile
+  LatticeIndexer itsTiler;       //# For moving between tiles
+  IPosition itsIndexerCursorPos; //# The current position of the iterator.
+  IPosition itsTilerCursorPos;   //# The current position of the iterator.
+  IPosition itsCursorShape;      //# The shape of the cursor for itsIndexer
+  IPosition itsTileShape;        //# The tile shape (= itsTiler cursor shape)
+  IPosition itsAxisPath;         //# Path for traversing
+  uInt itsNsteps;                //# The number of iterator steps taken so far; 
+  uInt itsAxis;                  //# The axis containing the data vector
+  Bool itsEnd;                   //# Is the cursor beyond the end?
+  Bool itsStart;                 //# Is the cursor at the beginning?
 };
+
 
 #endif
