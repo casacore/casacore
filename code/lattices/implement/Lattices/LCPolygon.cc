@@ -27,8 +27,8 @@
 
 
 #include <trial/Lattices/LCPolygon.h>
-#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/GenSort.h>
@@ -92,40 +92,37 @@ LCPolygon& LCPolygon::operator= (const LCPolygon& other)
 
 
 Bool LCPolygon::operator== (const LCRegion& other) const
-// 
-// See if this region is the same as the other region
-//
 {
-
-// Check below us
-   
-   if (!LCRegionFixed::operator==(other)) return False;
-
-// Caste (is safe)
-
-   const LCPolygon& that = (const LCPolygon&)other;
-   
-// Check polygon values (x and y have same number)
-
-   if (itsX.nelements() != that.itsX.nelements()) return False;
-   if (itsY.nelements() != that.itsY.nelements()) return False;
-   
-   Bool deleteX1, deleteY1;
-   Bool deleteX2, deleteY2;
-   const Float* pX1 = itsX.getStorage(deleteX1);
-   const Float* pY1 = itsY.getStorage(deleteY1);
-   const Float* pX2 = that.itsX.getStorage(deleteX2);
-   const Float* pY2 = that.itsY.getStorage(deleteY2);
-   for (uInt i=0; i<itsX.nelements(); i++) {
-      if (!near(pX1[i], pX2[i])) return False;
-      if (!near(pY1[i], pY2[i])) return False;
-   }
-   itsX.freeStorage(pX1, deleteX1);
-   itsY.freeStorage(pY1, deleteY1);
-   that.itsX.freeStorage(pX2, deleteX2);
-   that.itsY.freeStorage(pY2, deleteY2);
-
-   return True;
+    // Check if parent class matches.
+    // If so, we can safely cast.
+    if (! LCRegionFixed::operator== (other)) {
+	return False;
+    }
+    const LCPolygon& that = (const LCPolygon&)other;
+    // Compare private data.
+    if (itsX.nelements() != that.itsX.nelements()
+    ||  itsY.nelements() != that.itsY.nelements()) {
+	return False;
+    }
+    Bool deleteX1, deleteY1;
+    Bool deleteX2, deleteY2;
+    const Float* pX1 = itsX.getStorage (deleteX1);
+    const Float* pY1 = itsY.getStorage (deleteY1);
+    const Float* pX2 = that.itsX.getStorage (deleteX2);
+    const Float* pY2 = that.itsY.getStorage (deleteY2);
+    Bool result = True;
+    for (uInt i=0; i<itsX.nelements(); i++) {
+	if (!near (pX1[i], pX2[i])
+	||  !near (pY1[i], pY2[i])) {
+	    result = False;
+	    break;
+	}
+    }
+    itsX.freeStorage (pX1, deleteX1);
+    itsY.freeStorage (pY1, deleteY1);
+    that.itsX.freeStorage (pX2, deleteX2);
+    that.itsY.freeStorage (pY2, deleteY2);
+    return result;
 }
 
 
@@ -137,12 +134,6 @@ LCRegion* LCPolygon::cloneRegion() const
 LCRegion* LCPolygon::doTranslate (const Vector<Float>& translateVector,
 				  const IPosition& newLatticeShape) const
 {
-    uInt ndim = latticeShape().nelements();
-    if (translateVector.nelements() != ndim
-    ||  newLatticeShape.nelements() != ndim) {
-        throw (AipsError ("LCEllipsoid::translate - "
-			  "dimensionalities mismatch"));
-    }
     Vector<Float> x, y;
     x = itsX;
     y = itsY;
@@ -169,8 +160,10 @@ TableRecord LCPolygon::toRecord (const String&) const
 {
     TableRecord rec;
     defineRecordFields (rec, className());
-    rec.define ("x", itsX);
-    rec.define ("y", itsY);
+    // Write 1-relative.
+    rec.define ("oneRel", True);
+    rec.define ("x", itsX.ac() + Float(1));
+    rec.define ("y", itsY.ac() + Float(1));
     rec.define ("shape", latticeShape().asVector());
     return rec;
 }
@@ -178,8 +171,12 @@ TableRecord LCPolygon::toRecord (const String&) const
 LCPolygon* LCPolygon::fromRecord (const TableRecord& rec,
 				  const String&)
 {
-    return new LCPolygon (Vector<Float>(rec.asArrayFloat ("x")),
-                          Vector<Float>(rec.asArrayFloat ("y")),
+    // If 1-relative, subtract 1 from x and y.
+    Bool oneRel = rec.asBool ("oneRel");
+    Float off = (oneRel ? 1:0);
+    Array<Float> x (rec.asArrayFloat ("x"));
+    Array<Float> y (rec.asArrayFloat ("y"));
+    return new LCPolygon (x-off, y-off,
                           Vector<Int>(rec.asArrayInt ("shape")));
 }
 
@@ -189,17 +186,13 @@ void LCPolygon::defineBox()
     uInt i;
     uInt nrp = itsX.nelements();
     // First make sure basic things are right.
-    if (shape.nelements() != 2) {
-	throw (AipsError ("LCPolygon::LCPolygon - "
-			  "lattice is not 2-dimensional"));
-    }
     if (itsY.nelements() != nrp) {
 	throw (AipsError ("LCPolygon::LCPolygon - "
-			  "lengths of x and y vector differ"));
+			  "x and y vectors must have equal length"));
     }
-    if (nrp < 3) {
+    if (shape.nelements() != 2) {
 	throw (AipsError ("LCPolygon::LCPolygon - "
-			  "at least 3 x,y points should be defined"));
+			  "can only be used as a 2-dim region"));
     }
     // If the last point is not equal to the first one, add it.
     if (!near (itsX(nrp-1), itsX(0))  ||  !near(itsY(nrp-1), itsY(0))) {
@@ -209,6 +202,10 @@ void LCPolygon::defineBox()
     }
     itsX(nrp-1) = itsX(0);        // Make sure they are always equal.
     itsY(nrp-1) = itsY(0);
+    if (nrp < 4) {
+	throw (AipsError ("LCPolygon::LCPolygon - "
+			  "at least 3 different points have to be specified"));
+    }
     // Determine the maximum and minimum x,y.
     // They form the bounding box.
     // Check if at least one point is inside lattice.
@@ -239,15 +236,15 @@ void LCPolygon::defineBox()
     if (miny > 0) blc(1) = Int(miny+0.5);
     if (maxx < shape(0)-1) trc(0) = Int(maxx+0.5);
     if (maxy < shape(1)-1) trc(1) = Int(maxy+0.5);
-    setBox (Slicer(blc, trc, Slicer::endIsLast));
+    setBoundingBox (Slicer(blc, trc, Slicer::endIsLast));
 }
 
 void LCPolygon::defineMask()
 {
     uInt i;
     // Create and initialize the mask.
-    const IPosition& blc = box().start();
-    const IPosition& shape = box().length();
+    const IPosition& blc = boundingBox().start();
+    const IPosition& shape = boundingBox().length();
     Matrix<Bool> mask(shape);
     mask = False;
     uInt nrline = itsX.nelements() - 1;
