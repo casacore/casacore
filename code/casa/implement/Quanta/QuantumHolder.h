@@ -168,11 +168,14 @@ public:
   Bool isQuantumArrayDComplex() const;
   // </group>
   // Get number of numeric elements (1 if scalar, else
-  // vector length)
+  // vector length) or dimensions (0 if scalar)
   // <thrown>
   //  <li> AipsError if holder empty
   // </thrown>
+  // <group>
   Int nelements() const;
+  Int ndim() const;
+  // </group>
 
   // Get a Quantum from the holder (with lifetime as long 
   // as holder exists). Conversions done if necessary and as described in
