@@ -1,5 +1,5 @@
 //# LatticeFFT.cc: functions for doing FFT's on Lattices.
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,7 +114,7 @@ void LatticeFFT::rcfft(Lattice<Complex> & out, const Lattice<Float> & in,
   FFTServer<Float,Complex> ffts;
 
   for (uInt dim = 0; dim < ndim; dim++) {
-    if (whichAxes(dim) == True) {
+    if (inShape(dim)>1&&(whichAxes(dim) == True)) {
       if (dim == firstAxis) { // Do real->complex Transforms
 	RO_LatticeIterator<Float> inIter(in, 
 					 TiledLineStepper(inShape,
@@ -180,7 +180,7 @@ void LatticeFFT::crfft(Lattice<Float> & out, Lattice<Complex> & in,
   uInt dim = ndim;
   while (dim != 0) {
     dim--;
-    if (whichAxes(dim) == True) {
+    if (inShape(dim)>1&&(whichAxes(dim) == True)) {
       if (dim != firstAxis) { // Do complex->complex Transforms
  	LatticeIterator<Complex> iter(in, TiledLineStepper(inShape,
 							   tileShape, dim));
