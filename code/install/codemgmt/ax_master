@@ -2167,3 +2167,4 @@
 11 137 src rm trial/implement/Images/test_image
 11 138 src rm doc/html/navpages/ref/reference.html
 11 138 src rm doc/html/navpages/ref/makefile
+11 138 src rm doc/html/aips.html
