@@ -179,6 +179,12 @@ inline Float cube(Float val) {return val*val*val;}
 inline Double cube(Double val) {return val*val*val;}
 // </group>
 
+// The square/cube root for non-Double data types.
+// <group>
+inline Float sqrt(Float val) {return Float(sqrt(Double(val)));}
+inline Float cbrt(Float val) {return Float(cbrt(Double(val)));}
+// </group>
+
 // Functions to return whether a value is "relatively" near another. Returns
 // <src> tol > abs(val2 - val1)/max(abs(val1),(val2))</src>. 
 // If tol <= 0, returns val1 == val2. If either val is 0.0, take care of area
