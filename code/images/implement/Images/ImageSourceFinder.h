@@ -37,7 +37,9 @@
 
 //# Forward Declarations
 template <class T> class ImageInterface;
+template <class T> class Vector;
 class ComponentList;
+class SkyComponent;
 class LogIO;
 
 
@@ -95,14 +97,26 @@ public:
    ImageSourceFinder<T> &operator=(const ImageSourceFinder<T> &other);
 
 // Find strong point sources
-   ComponentList findPointSources (LogIO& os, Int nMax, 
+   ComponentList findPointSources (LogIO& os, 
+                                   Int nMax, 
                                    Double cutoff, Bool absFind);
+
+// Find one source in sky plane.  Exception if no sky
+   SkyComponent findSourceInSky (LogIO& os, Vector<Double>& absPixel,
+                                 Double cutoff, Bool absFind);
 
 // Set a new image
    Bool setNewImage (const ImageInterface<T>& image);
 
 private:
    const ImageInterface<T>* pImage_p;
+
+// Find strong point sources
+   ComponentList findPointSources (LogIO& os, const ImageInterface<T>& image,
+                                   Int nMax, 
+                                   Double cutoff, Bool absFind);
+
+
 };
 
 #endif

@@ -31,17 +31,23 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Slicer.h>
+#include <trial/Arrays/AxesSpecifier.h>
 #include <aips/Containers/Block.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/SkyComponent.h>
 #include <aips/Fitting/FitLSQ.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageUtilities.h>
+#include <trial/Images/SubImage.h>
+#include <trial/Lattices/LatticeStatistics.h>
+#include <trial/Lattices/LCBox.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/NumericTraits.h> 
 #include <aips/Measures/Stokes.h>
@@ -97,12 +103,114 @@ Bool ImageSourceFinder<T>::setNewImage (const ImageInterface<T>& image)
 }
 
 template <class T>
-ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax, 
-                                                        Double cutoff, Bool absFind)
+ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, 
+                                                      Int nMax, 
+                                                      Double cutoff, Bool absFind)
+{
+   return findPointSources(os, *pImage_p, nMax, cutoff, absFind);
+}
+
+
+template <class T>
+SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& absPixel,
+                                                    Double cutoff, Bool absFind)
+{
+
+// Find sky
+   
+   Int dC;
+   String errorMessage;
+   Vector<Int> pixelAxes, worldAxes;
+   CoordinateSystem cSys = pImage_p->coordinates();
+   if (!CoordinateUtil::findSky(errorMessage, dC, pixelAxes,
+                                worldAxes, cSys)) {
+     os << errorMessage << LogIO::EXCEPTION;
+   } 
+
+// Find maximum/minimum
+   
+   LatticeStatistics<T> stats(*pImage_p, os, True);
+   IPosition minPos, maxPos;
+   if (!stats.getMinMaxPos(minPos, maxPos)) {
+      os << stats.errorMessage() << LogIO::EXCEPTION;
+   }
+      
+// Make new little SubImage around location in plane of sky
+         
+   IPosition shape = pImage_p->shape();
+   const uInt nDim = pImage_p->ndim();
+// 
+   absPixel.resize(nDim);
+   IPosition blc;
+   IPosition trc;
+   if (absFind) {
+
+// Find positive only
+
+      blc = maxPos;
+      trc = maxPos;
+      for (uInt i=0; i<nDim; i++) absPixel(i) = maxPos(i);
+   } else {
+
+// Find positive or negative only
+   
+      Float valueMin = pImage_p->getAt(minPos);
+      Float valueMax = pImage_p->getAt(maxPos);
+//
+      if (abs(valueMax) > abs(valueMin)) {
+         blc = maxPos;
+         trc = maxPos;
+         for (uInt i=0; i<nDim; i++) absPixel(i) = maxPos(i);
+      } else {
+         blc = minPos;
+         trc = minPos;
+         for (uInt i=0; i<nDim; i++) absPixel(i) = maxPos(i);
+      }
+   }
+// 
+   blc(pixelAxes(0)) -= 3;
+   blc(pixelAxes(1)) -= 3;
+   trc(pixelAxes(0)) += 3;
+   trc(pixelAxes(1)) += 3;
+//
+   IPosition inc(nDim,1);
+   LCBox::verify (blc, trc, inc, shape);
+   Slicer slicer(blc, trc, inc, Slicer::endIsLast);
+   AxesSpecifier axesSpec(False);   // drop degenerate
+   const SubImage<T> subImage(*pImage_p, slicer, axesSpec);
+   
+// Find one source
+
+   const uInt nMax = 1;
+   ComponentList list = findPointSources (os, subImage, nMax, cutoff, absFind);
+//
+   SkyComponent sky = list.component(0);
+//
+   DirectionCoordinate dCoord = cSys.directionCoordinate(dC);
+   MDirection mDir = sky.shape().refDirection();
+   Vector<Double> dirPixel(2);
+   if (!dCoord.toPixel(dirPixel, mDir)) {
+     os << dCoord.errorMessage() << LogIO::EXCEPTION;
+   }
+//
+   absPixel(pixelAxes(0)) = dirPixel(0);
+   absPixel(pixelAxes(1)) = dirPixel(1);
+//
+   return sky;
+}
+
+
+
+
+template <class T>
+ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, 
+	                                              const ImageInterface<T>& image,
+                                                      Int nMax, 
+                                                      Double cutoff, Bool absFind)
 {
 // Make sure the Image is 2D and that it holds the sky.  Exception if not.
 
-   const CoordinateSystem& cSys = pImage_p->coordinates();
+   const CoordinateSystem& cSys = image.coordinates();
    Bool xIsLong = CoordinateUtil::isSky(os, cSys);
 
 // Results matrix
@@ -125,7 +233,7 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax,
    
 // Input data arrays
 
-   IPosition inShape = pImage_p->shape();
+   IPosition inShape = image.shape();
    uInt nx(inShape(0));
    uInt ny(inShape(1));
    if (ny <=3) {
@@ -143,23 +251,23 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax,
    }
    Int inp(0);
 //
-   IPosition start(pImage_p->shape());
+   IPosition start(inShape);
    start = 0;  
       
 // Read first line and set mask  
 
    Bool isRef, isMaskRef;   
-   isRef = pImage_p->getSlice(inPtr[inp], Slicer(start, inSliceShape), True);
-   isMaskRef = pImage_p->getMaskSlice(inMaskPtr[inp], Slicer(start, inSliceShape),
-				     True);
+   isRef = image.getSlice(inPtr[inp], Slicer(start, inSliceShape), True);
+   isMaskRef = image.getMaskSlice(inMaskPtr[inp], Slicer(start, inSliceShape),
+                                  True);
    for (uInt i0=0; i0<nx; i0++) inDone(inp, i0) =
 				  inMaskPtr[inp].ref()(IPosition(1, i0));
    start(1) += 1;
    
 // Read 2nd line and set mask
 
-   isRef = pImage_p->getSlice(inPtr[inp+1], Slicer(start, inSliceShape), True);
-   isMaskRef = pImage_p->getMaskSlice(inMaskPtr[inp+1], Slicer(start, inSliceShape),
+   isRef = image.getSlice(inPtr[inp+1], Slicer(start, inSliceShape), True);
+   isMaskRef = image.getMaskSlice(inMaskPtr[inp+1], Slicer(start, inSliceShape),
 				     True);
    for (uInt i0=0; i0<nx; i0++) {
       inDone(inp+1, i0) = inMaskPtr[inp+1].ref()(IPosition(1, i0));
@@ -171,9 +279,9 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax,
    for (uInt i=2; i<ny; i++) {
       inp++;
       inp %= 3;
-      isRef = pImage_p->getSlice(inPtr[(inp+1)%3],
+      isRef = image.getSlice(inPtr[(inp+1)%3],
 				Slicer(start, inSliceShape), True);
-      isMaskRef = pImage_p->getMaskSlice(inMaskPtr[(inp+1)%3],
+      isMaskRef = image.getMaskSlice(inMaskPtr[(inp+1)%3],
                                         Slicer(start, inSliceShape), True);
       for (uInt i0=0; i0<nx; i0++) inDone((inp+1)%3, i0) =
 				     !(inMaskPtr[(inp+1)%3].ref()(IPosition(1, i0)));
@@ -289,8 +397,8 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax,
       os << LogIO::WARN << "No sources were found" << LogIO::POST;
    } else {
       os << LogIO::NORMAL << "Found " << nFound << " sources" << LogIO::POST;
-      const ImageInfo& ii = pImage_p->imageInfo();
-      const Unit& bU = pImage_p->units();
+      const ImageInfo& ii = image.imageInfo();
+      const Unit& bU = image.units();
       Double rat;
       for (Int i=0; i<nFound; i++) {
          pars(0) = rs(i,0);
@@ -304,5 +412,3 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax,
 //
    return listOut;
 }
-
-
