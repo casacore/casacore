@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
       cdelt_p(1), name_p("Stokes"), unit_p("")
 {
     Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
-    if (whichStokes.nelements > 0) {
+    if (whichStokes.nelements() > 0) {
 	crval_p = whichStokes(0);
     }
     whichStokes.toBlock(values_p);
