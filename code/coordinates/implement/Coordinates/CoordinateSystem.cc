@@ -2372,6 +2372,24 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	dirpc(0,1) = pc(longAxis, latAxis);
 	dirpc(1,0) = pc(latAxis, longAxis);
 	dirpc(1,1) = pc(latAxis, latAxis);
+	// watch for cdelt=0 - its okay if that axis is degenerate
+	// and (crpix+offset)=1 and rotationAxis < 0 = i.e. the only
+	// pixel on that axis is the reference pixel and there is
+	// no rotation specified - then cdelt=1 on that axis.  If that
+	// isn't done, that coord. can't be constructed because the
+	// PC matrix will be reported as singular since its first 
+	// multiplied by cdelt before its used and in this case, that
+	// doesn't matter since other pixels on that axis are never used.
+	if (::near(cdelt(latAxis), 0.0) && 
+	    ::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
+	    cdelt(latAxis) = 1.0;
+	} 
+
+	if (::near(cdelt(longAxis), 0.0) && 
+	    ::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
+	    cdelt(longAxis) = 1.0;
+	}
+
 	DirectionCoordinate dir(radecsys,
 				projn,
 				crval(longAxis)*toRadX,	crval(latAxis)*toRadY,
