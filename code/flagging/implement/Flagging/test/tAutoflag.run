@@ -17,9 +17,9 @@
   MS='WSRT-test.MS2'
   AIPSDEMO=`echo $AIPSPATH | awk '{printf("%s/data/demo/autoflag",$1)}'`
   MSPATH="$AIPSDEMO/$MS"
-  if [ ! -d "$MSPATH" ]; then
+  if [ ! -d "$MSPATH" -o ! -w "$MSPATH" ]; then
     MSPATH="$HOME/aips++/data/demo/autoflag/$MS"
-    if [ ! -d "$MSPATH" ]; then
+    if [ ! -d "$MSPATH" -o ! -w "$MSPATH" ]; then
       echo "UNTESTED: tAutoflag.run (found neither $AIPSDEMO/$MS nor $MSPATH)"
       exit 3
     fi
