@@ -148,8 +148,10 @@ public:
     Vector<Double> worldValues() const;
     // </group>
 
-    // Comparison function. Any private Double data members are compared
-    // with the specified fractional tolerance.  
+    // Comparison function. Any private Double data members are compared    
+    // with the specified fractional tolerance.  Don't compare on the specified     
+    // axes in the Coordinate.  If the comparison returns False, 
+    // <src>errorMessage()</src> contains a message about why.
     // <group>
     virtual Bool near(const Coordinate* pOther, 
                       Double tol=1e-6) const;
