@@ -1,5 +1,5 @@
 //# MeasTable.h: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -295,7 +295,9 @@ public:
   // Get the rotation matrix to change position from rectangular to ecliptic
   // for Soma et al. analytical expression
   static const RotMatrix &rectToPos();
-  // Get the rotation matrix from galactic to supergalactic
+  // Get the rotation matrix from galactic to supergalactic.
+  // Based on matrix as available in Miriad, leading to Euler Angles
+  // of 90, 83.68, 47.34 degrees
   static const RotMatrix &galToSupergal();
   // </group>
   
