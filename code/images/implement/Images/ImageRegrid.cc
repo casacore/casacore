@@ -236,7 +236,7 @@ ImageRegrid<T>::convergentDirCoords(const DirectionCoordinate& aaa,
   Vector<Double> bInc = bbb.increment();
   Vector<Double> bRefPix = bbb.referencePixel();
   Vector<String> bAxisNames = bbb.worldAxisNames();
-  Matrix<Double> blinearTransform = bbb.linearTransform();
+  Matrix<Double> bLinearTransform = bbb.linearTransform();
   
   if ( (aRefVal(0) != bRefVal(0)) ||  (aRefVal(1) != bRefVal(1)) ) {
     isConvergent = False;
@@ -248,21 +248,21 @@ ImageRegrid<T>::convergentDirCoords(const DirectionCoordinate& aaa,
     isConvergent = False;
   }
   
-  uInt iax, iay, ibx, iby;
-  alinearTransform.shape(iax, iay);
-  blinearTransform.shape(ibx, iby);
+  Int iax, iay, ibx, iby;
+  aLinearTransform.shape(iax, iay);
+  bLinearTransform.shape(ibx, iby);
   if (iax != ibx || iay != iby) {
       isConvergent = False;
   }
-  for (uInt ix=0;ix<iax; ix++) {
-    for (uInt iy=0;iy<iay; iy++) {
-      if (alinearTransform(ix, iy) !=  blinearTransform(ix, iy)) {
+  for (Int ix=0;ix<iax; ix++) {
+    for (Int iy=0;iy<iay; iy++) {
+      if (aLinearTransform(ix, iy) !=  bLinearTransform(ix, iy)) {
 	isConvergent = False;
       }
     }
   }
 
-  if ( (taxisNames(0) != daxisNames(0)) || (taxisNames(1) != daxisNames(1)) ) {
+  if ( (aAxisNames(0) != bAxisNames(0)) || (aAxisNames(1) != bAxisNames(1)) ) {
     isConvergent = False;
   }
 
