@@ -33,6 +33,7 @@
 #include <aips/Tables/TiledDataStMan.h>
 #include <aips/Tables/TiledCellStMan.h>
 #include <aips/Tables/TiledColumnStMan.h>
+#include <aips/Tables/TiledShapeStMan.h>
 #include <aips/Tables/ForwardCol.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
@@ -408,5 +409,6 @@ void DataManager::registerAllCtor ()
     registerCtor ("TiledDataStMan", TiledDataStMan::makeObject);
     registerCtor ("TiledCellStMan", TiledCellStMan::makeObject);
     registerCtor ("TiledColumnStMan", TiledColumnStMan::makeObject);
+    registerCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
     ForwardColumnEngine::registerClass();
 }
