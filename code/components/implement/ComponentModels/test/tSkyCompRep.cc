@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/Mathematics/Constants.h>
@@ -45,6 +46,10 @@
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/ComponentModels/SpectralIndex.h>
 #include <trial/ComponentModels/SpectralModel.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/DirectionCoordinate.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
+
 // #include <aips/Arrays/Vector.h>
 // #include <aips/Arrays/IPosition.h>
 // #include <aips/Quanta/MVAngle.h>
@@ -179,6 +184,49 @@ int main() {
       AlwaysAssert(siComp.ok() == True, AipsError);
     }
 //   virtual ~SkyCompRep();
+
+   {
+
+// Make SkyComponent
+
+      Flux<Double> flux(1.0, 0.1, 0.2, 0.01);
+      MDirection dir(MVDirection(0.0, 0.0), MDirection::J2000);
+      Quantum<Double> majorAxis(10.0, String("deg"));
+      Quantum<Double> minorAxis(300.0, String("arcmin"));
+      Quantum<Double> pa(20.0, String("deg"));
+      GaussianShape gc(dir, majorAxis, minorAxis, pa);
+      ConstantSpectrum cs;
+      SkyCompRep sky(flux, gc, cs);
+
+// Make CoordinateSystem
+
+      Matrix<Double> xform(2,2);
+      xform = 0.0; xform.diagonal() = 1.0;
+      DirectionCoordinate dC(MDirection::J2000, Projection::SIN, 0.0, 0.0,
+                             1.0e-4, 1.0e-4, xform, 0.0, 0.0);
+      SpectralCoordinate sC;
+      CoordinateSystem cSys;
+      cSys.addCoordinate(dC);
+      cSys.addCoordinate(sC);
+
+// Make beam
+
+      Vector<Quantum<Double> > beam(3);
+      beam(0) = Quantum<Double>(10.0, "arcsec");
+      beam(1) = Quantum<Double>(5.0, "arcsec");
+      beam(2) = Quantum<Double>(-20.0, "deg");
+      Unit unit("Jy/beam");
+//
+      Vector<Double> pars1 = sky.toPixel(unit, beam, cSys, Stokes::I);
+      AlwaysAssert(pars1.nelements()==6, AipsError);
+//
+      SkyCompRep sky2;
+      sky2.fromPixel (pars1, unit, beam, cSys, ComponentType::GAUSSIAN, Stokes::I);
+      Vector<Double> pars2 = sky2.toPixel(unit, beam, cSys, Stokes::I);
+      for (uInt i=0; i<6; i++) AlwaysAssert(near(pars1(i), pars2(i)), AipsError);
+      cout << "Passed the {to,from}Pixel handling test" << endl;
+    }
+
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;

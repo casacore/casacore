@@ -29,7 +29,9 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/GaussianShape.h>
 #include <trial/ComponentModels/TwoSidedShape.h>
+#include <trial/Coordinates/DirectionCoordinate.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
@@ -42,7 +44,6 @@
 #include <aips/Quanta/Euler.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Quanta/RotMatrix.h>
@@ -409,8 +410,34 @@ int main() {
       cout << "Passed the record handling test" << endl;
     }
     delete shapePtr;
-  }
-  catch (AipsError x) {
+
+   {
+      MDirection dir(MVDirection(0.0, 0.0), MDirection::J2000);
+      Quantum<Double> majorAxis(10.0, String("deg"));
+      Quantum<Double> minorAxis(300.0, String("arcmin"));
+      Quantum<Double> pa(20.0, String("deg"));
+      GaussianShape gc(dir, majorAxis, minorAxis, pa);
+//
+      Matrix<Double> xform(2,2);
+      xform = 0.0; xform.diagonal() = 1.0;
+      DirectionCoordinate dC(MDirection::J2000, Projection::SIN, 0.0, 0.0,
+                             1.0e-4, 1.0e-4, xform, 0.0, 0.0);
+//
+      Vector<Double> pars1 = gc.toPixel(dC);
+      AlwaysAssert(pars1.nelements()==5, AipsError);
+      GaussianShape gc2;
+      gc2.fromPixel(pars1, dC);
+      AlwaysAssert(near(gc2.majorAxis().getValue("deg"), 10.0), AipsError);
+      AlwaysAssert(near(gc2.minorAxis().getValue("arcmin"), 300.0), AipsError);
+      AlwaysAssert(near(gc2.positionAngle().getValue("deg"), 20.0), AipsError);
+//
+      Vector<Double> pars2 = gc2.toPixel(dC);
+      for (uInt i=0; i<5; i++) AlwaysAssert(near(pars1(i), pars2(i)), AipsError);
+      cout << "Passed the {to,from}Pixel handling test" << endl;
+    }
+
+
+  } catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
