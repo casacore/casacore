@@ -250,8 +250,8 @@ public:
    friend MomentCalcBase<T>;
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
-// You specify whether output images are  overwritten if pre-existing,
-// or whether an intercative choice dialog widget appears.
+// You specify whether output images are  automatically overwritten if pre-existing,
+// or whether an intercative choice dialog widget appears (overWriteOutput=F)
 // You may also determine whether a progress meter is displayed or not.
    ImageMoments (ImageInterface<T>& image, 
                  LogIO &os,
