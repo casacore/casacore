@@ -41,7 +41,12 @@
 // Module for various forms of mathematical fitting. 
 // </summary>
 //
-// <reviewed reviewer="" date="" demos="dLSQBase">
+// <prerequisite>
+// <li> Basic principles can be found in 
+//      <a href="../../notes/224/">Note 224</a>.
+// </prerequisite>
+//
+// <reviewed reviewer="Neil Killeen" date="2000/06/01" demos="dLSQBase">
 // </reviewed>
 //
 // <synopsis> 
@@ -64,10 +69,10 @@
 // The best fit is assumed to be the one which minimises the 'chi-squared'.
 //
 // In the (rather common) case that individual errors are not known for
-// the individual data points, one can <em>assume</em> that the the
+// the individual data points, one can <em>assume</em> that the
 // individual errors are unity, calculate the best fit function, and then
 // <em>estimate</em> the errors (assuming they are all identical) by
-// inverting the <em>normal equation</em>.
+// inverting the <em>normal equations</em>.
 // Of course, in this case we do not have an independent estimate of
 // chi<sup>2</sup>.
 //
@@ -133,12 +138,16 @@
 //
 // The basic classes are <linkto class=LSQBase>LSQBase</linkto>, 
 //  <linkto class=LSQ>LSQ</linkto>, and <linkto class=FitLSQ>FitLSQ</linkto>.
-// They provide the basic  framework for normal equations, solving and iterating.
-// The classes LSQBase and LSQ use a native C++ interface.  They handle
-// real data (LSQBase), and real and complex (LSQ).  There is an additional
-// class, FitLSQ which offers the functionality of LSQ, but with
-// an additional aips++ Array interface.<br>
-// Note that LSQBase and LSQ will be merged into a single class (LSQ) once
+// They provide the basic  framework for normal equations generation, solving 
+// and iterating in the case of non-linear equations. 
+//
+// The classes <em>LSQBase</em> and <em>LSQ</em> use a native C++ interface.
+// They handle real data (<em>LSQBase</em>), and real and complex
+// (<em>LSQ</em>).  There is an additional
+// class, <em>FitLSQ</em> which offers the functionality of <em>LSQ</em>,
+// but with an additional aips++ Array interface.<br>
+// Note that <em>LSQBase</em> and <em>LSQ</em> will be merged into a single
+// class (<em>LSQ</em>) once
 // aips++ uses the standard library complex classes.
 //
 // The inheritance tree is FitLSQ : LSQ : LSQBase
@@ -154,15 +163,32 @@
 // <li> Solve (as opposed to fit to a set of data), a set of equations
 // </ol> 
 //
+// In addition to the basic Least Squares routines in the <src>LSQ</src> and
+// <src>FitLSQ</src> classes, this module contains also a set of direct
+// data fitters:
+// <ul>
+// <li> <src>Fit2D</src>
+// <li> <src>LatticeFit</src>
+// <li> <src>LinearFit</src>
+// <li> <src>LinearFitSVD</src>
+// <li> <src>NonLinearFit</src>
+// <li> <src>NonLinearFitLM</src>
+// <li> <src>LinearFitConstraint</src>
+// </ul>
 // Note that the basic functions have <em>LSQ</em> in their title; the
 // one-step fitting functions <em>Fit</em>, and the solution with more
-// freedom <em>Solve</em>.
+// freedom <em>Solve</em> (none available yet).
 //
 // The above fitting problems can usually be solved by directly 
-// calling the fit(...) member function provided by the classes or by 
+// calling the <src>fit()</src> member function provided by one of the
+// <src>Fit</src> classes above, or by 
 // gradually building the normal equation matrix and solving the
-// normal equation (solve(...)).  
+// normal equations (<src>solve()</src>).  
 //  
+// A Distributed Object interface to the classes is available
+// (<src>DOfitting</src>) for use in the <I>Glish</I> <src>dfit</src>
+// object, available through the <src>fitting.g</src> script.
+//
 // </synopsis> 
 //
 // <motivation>
