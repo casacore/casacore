@@ -47,7 +47,7 @@
 //    // Array specific errors
 // } catch (AipsError x) {
 //    // All other errors caught here.
-// } end_try;
+// }
 // </srcblock>
 //
 // <note role=tip> There are too many ArrayRelated classes. Some should be deleted.

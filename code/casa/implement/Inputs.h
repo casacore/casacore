@@ -1,5 +1,5 @@
 //# Inputs.h: a module for simple command line user interface classes
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -185,7 +185,7 @@
 // 41  } catch (AipsError x) {
 // 42       cerr << "aipserror: error " << x.getMesg() << endl;
 // 43       return 1;
-// 44  } end_try;
+// 44  }
 // 45
 // 46    cout << "Any key to exit:\n";
 // 47

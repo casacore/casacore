@@ -1,5 +1,5 @@
 //# ArrayUtil.h: Utility functions for arrays
-//# Copyright (C) 1995,1999
+//# Copyright (C) 1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,7 +159,7 @@ Vector<String> stringToVector (const String& string, const Regex& delim);
 //     concatenateArray (matrix1, matrix2);
 // } catch (ArrayConformanceError x) {
 //     cout << x.getMesg() << endl;
-// } end_try;
+// }
 // </srcblock>
 // <example>
 
