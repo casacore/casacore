@@ -196,8 +196,9 @@ public:
     //</group>
 
     // Fit all profiles with shapes + optional polynomial in the region and write out images.
-    // If fillRecord is True, the output record is filled with the
-    // the parameters of every fit.  This can get VERY large so use with care.
+    // If fillRecord is True, the output record is filled with the the parameters of 
+    // every fit.  This can get VERY large so use with care.  If the output images
+    // have a writable mask, the input mask is transferred to the output.
     //<group>
     void fit (Bool fillRecord, RecordInterface& rec,  
               Bool xAbsRec,
