@@ -3772,3 +3772,4 @@
 14 029 src mv aips/implement/Tables/test/tIncrementalStMan.exec aips/implement/Tables/test/tIncrementalStMan.run
 14 029 src mv aips/implement/Utilities/test/tGenSort.exec aips/implement/Utilities/test/tGenSort.run
 14 030 src rm aips/implement/Mathematics/test/tProtoMap.exec
+14 036 src rm trial/apps/simulator/simulator.help
