@@ -304,7 +304,6 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, 
        
    LatticeStatsBase::stretchMinMax(xMin, xMax);
    LatticeStatsBase::stretchMinMax(yMin, yMax2);
-
 //
    if (page) plotter.page();
    plotter.bbuf();
@@ -318,7 +317,6 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, 
       plotter.box("CMST", 0.0, 0, "CMST", 0.0, 0);
    }
 //
-
    plotHist (values, counts, plotter);
    if (doGauss) plotter.line (gX, gY);
 
@@ -331,8 +329,7 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, 
       } else {
          plotter.lab("Pixel Value", "Cumulative Counts", "");
       }
-   }
-   else {
+   } else {
       if (doLog) {
          plotter.lab("Pixel Value", "Log10 (Counts)", "");
       } else {
