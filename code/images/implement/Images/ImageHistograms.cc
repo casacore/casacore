@@ -50,6 +50,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/PagedArray.h>
+#include <trial/Lattices/TiledStepper.h>
 
 #include <iomanip.h>
 #include <stdlib.h>
@@ -451,6 +452,9 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 
 
 // Set up iterator to work through histogram storage image line by line
+// Since I already set the tile shape to be unity on all but the first 
+// axis, just use the default Navigatgor, which will also guarentee the 
+// access pattern
   
    IPosition cursorShape(pHistImage_p->ndim(),1);
    cursorShape(0) = pHistImage_p->shape()(0);
@@ -632,7 +636,8 @@ Bool ImageHistograms<T>::displayHistograms ()
  
    IPosition cursorShape(pHistImage_p->ndim(),1);
    cursorShape(0) = pHistImage_p->shape()(0);
-   RO_LatticeIterator<Int> histIterator(*pHistImage_p, cursorShape);
+   TiledStepper histNavigator(pHistImage_p->shape(), pHistImage_p->tileShape(), 0);
+   RO_LatticeIterator<Int> histIterator(*pHistImage_p, histNavigator);
 
 
 // Create storage image indexing IPositions and slice arrays. 
@@ -967,17 +972,18 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 
 // Set cursor arrays (can't assign to potentially zero length array)
 
-   Vector<Int> cursorAxes(axesU);
+   cursorAxes_p.resize(0);   
+   cursorAxes_p = axesU;
    ostrstream os;
    if (!ImageUtilities::setCursor(nVirCursorIter_p, cursorShape_p, 
-        cursorAxes, pInImage_p, True, 2, os)) {
+        cursorAxes_p, pInImage_p, True, 2, os)) {
       os_p << LogIO::SEVERE << "Invalid cursor axes given" << LogIO::POST;
       return False;
    }   
    
 // Set display axes array
 
-   ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes, pInImage_p->ndim());
+   ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p, pInImage_p->ndim());
 
 
 // Signal that we have changed the axes and need a new accumulation image
@@ -990,7 +996,7 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 
 
 template <class T>
-void ImageHistograms<T>::findMinMax (RO_LatticeIterator<T>& imageIterator)
+void ImageHistograms<T>::findMinMax (RO_LatticeIterator<T>* imageIterator)
                
 //    
 // In order to work out a histogram we need to know the min and max
@@ -1062,15 +1068,15 @@ void ImageHistograms<T>::findMinMax (RO_LatticeIterator<T>& imageIterator)
       IPosition stride(pMinMaxImage_p->ndim(),1);
       IPosition pos;
 
-      for (imageIterator.reset(); !imageIterator.atEnd(); imageIterator++) {
+      for (imageIterator->reset(); !imageIterator->atEnd(); (*imageIterator)++) {
 
 // Find min and max
 
-         minMax(dMin, dMax, imageIterator.cursor());
+         minMax(dMin, dMax, imageIterator->cursor());
 
 // Find location in min/max image of this min/max slice
  
-         pos = locInMinMax (imageIterator.position());
+         pos = locInMinMax (imageIterator->position());
 
 // Fill slice 
 
@@ -1109,14 +1115,9 @@ template <class T>
 void ImageHistograms<T>::generateStorageImage()
 //
 // Generate the histogram, min/max and statistics storage images.
-// The iterate through the image and fill these storage images.
+// Then iterate through the image and fill these storage images.
 //
 {
-
-// Create image iterator
-   
-   RO_LatticeIterator<T> pixelIterator(*pInImage_p, cursorShape_p);
-
 
 // Find the directory of the input image
 
@@ -1132,7 +1133,7 @@ void ImageHistograms<T>::generateStorageImage()
 
 // Create scratch histogram storage image file name.  
 
-      Path fileName = File::newUniqueName(path, String("PagedArray"));
+      Path fileName = File::newUniqueName(path, String("Scratch_ImageHistograms_"));
       SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
       Table myTable(setup);   
 
@@ -1143,13 +1144,10 @@ void ImageHistograms<T>::generateStorageImage()
       ImageUtilities::setStorageImageShape(storeImageShape, False, nBins_p,
                                            displayAxes_p, pInImage_p->shape());
 
-// Set tile shape.   The histogram storage image is generally accessed by
+// Set tile shape.   The histogram storage image is only accessed by
 // vectors along the first axis.   Therefore set the tile shape to be unity
 // except for the first axis and equal to the length of the first axis   
-// (the number of bins) for the first axis.  It is accessed more globally
-// by the getHistograms function, but since I reckon this will less
-// often be used than just accumulating the histograms, I will
-// leave the tile shape as is.
+// (the number of bins) for the first axis.  
 
       IPosition tileShape(storeImageShape.nelements(),1);
       tileShape(0) = storeImageShape(0);
@@ -1171,7 +1169,7 @@ void ImageHistograms<T>::generateStorageImage()
 
 // Generate the min/max storage image file name
 
-      Path fileName = File::newUniqueName(path, String("PagedArray"));
+      Path fileName = File::newUniqueName(path, String("Scratch_ImageHistograms_"));
       SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
       Table myTable(setup);   
 
@@ -1208,7 +1206,7 @@ void ImageHistograms<T>::generateStorageImage()
 
 // Create statistics storage image file name
 
-      Path fileName = File::newUniqueName(path, String("PagedArray"));
+      Path fileName = File::newUniqueName(path, String("Scratch_ImageHistograms_"));
       SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
       Table myTable(setup);   
 
@@ -1237,22 +1235,36 @@ void ImageHistograms<T>::generateStorageImage()
    os_p << LogIO::NORMAL << "Created new storage images" << LogIO::POST;
    needStorageImage_p = False;     
    
+// Create image iterator
+
+   RO_LatticeIterator<T> *pPixelIterator;
+   if (cursorAxes_p.nelements() == 1) {
+     TiledStepper imageNavigator (pInImage_p->shape(), 
+                                  pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
+                                  cursorAxes_p(0));
+     pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, imageNavigator);
+   } else {
+     pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, cursorShape_p);
+   }
+
+
 
 // Before we can proceed, we need to know the min and max of each chunk
 // of data that we will want to make a histogram for.  If the user does
 // not give us the range to histogram, we must work it out by making an
 // extra pass through the data.  
 
-   findMinMax (pixelIterator);
-
+   findMinMax (pPixelIterator);
    
 
 // Iterate through image and accumulate histogram and statistics images
      
    os_p << LogIO::NORMAL << "Begin accumulating histograms" << LogIO::POST;
-   for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
-      accumulate (pixelIterator.position(), pixelIterator.cursor());
+   for (pPixelIterator->reset(); !pPixelIterator->atEnd();(*pPixelIterator)++) {
+      accumulate (pPixelIterator->position(), pPixelIterator->cursor());
    }
+
+   delete pPixelIterator;
 }
 
 
@@ -1423,6 +1435,15 @@ void ImageHistograms<T>::pix2World (Vector<String>& sWorld,
    
    CoordinateSystem cSys = pInImage_p->coordinates();
 
+// Set angular units in radians
+
+   Vector<String> units = cSys.worldAxisUnits();
+   Int coordinate, axisInCoordinate;
+   for (Int j=0; j<cSys.nWorldAxes(); j++) {
+      cSys.findWorldAxis(coordinate, axisInCoordinate, j);
+      if (cSys.type(coordinate) == Coordinate::DIRECTION) units(j) = "rad";
+   }
+   cSys.setWorldAxisUnits(units,True);
 
 // Create pixel and world vectors for all pixel axes. Initialize pixel values
 // to reference pixel, but if an axis is a cursor axis (whose coordinate is
@@ -1432,7 +1453,7 @@ void ImageHistograms<T>::pix2World (Vector<String>& sWorld,
    Vector<Double> world(cSys.nPixelAxes());
    pix = cSys.referencePixel(); 
    for (Int i=0; i<pix.nelements(); i++) {
-     if (ImageUtilities::inVector(i, cursorAxes_p)) {
+     if (ImageUtilities::inVector(i, cursorAxes_p) != -1) {
        pix(i) = Double(pInImage_p->shape()(i)) / 2.0;
      }
    }
@@ -1445,7 +1466,7 @@ void ImageHistograms<T>::pix2World (Vector<String>& sWorld,
             
 // Find coordinate for this pixel axis
             
-   Int coordinate, axisInCoordinate, otherAxisInCoordinate;
+   Int otherAxisInCoordinate;
    cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
 
           
@@ -1527,7 +1548,6 @@ void ImageHistograms<T>::pix2World (Vector<String>& sWorld,
          }
       }
    }
-   return True;
 }
 
 template <class T>
