@@ -149,36 +149,40 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
 	    newRow = newRow || !allEQ(trx, msSysCalCols_p->trx()(rownr_p));
 	}
 	newRow = newRow || numReceptors != nrecpt_p;
-	Double interval = timeRange(1) - timeRange(0);
-	// former MS time or the time used in this function argument?
-	Double thisTime = time;
-	if (!newRow) {
-	    if (timeField_p.isAttached()) {
-		thisTime = *timeField_p;
-		newRow = !near(msSysCalCols_p->time()(rownr_p), thisTime);
-		if (!newRow && intervalField_p.isAttached()) {
-		    interval = *intervalField_p;
-		}
-		newRow = !near(msSysCalCols_p->interval()(rownr_p), interval);
-	    } else {
-		Double rowTime = msSysCalCols_p->time()(rownr_p);
-		Double maxTime = rowTime + msSysCalCols_p->interval()(rownr_p)/2.0;
-		newRow = newRow || 
-		    (!near(rowTime,thisTime) && (!timeRange(0) < maxTime || !near(timeRange(0), maxTime)));
-	    }
-	}
 	newRow = newRow || msSysCalCols_p->antennaId()(rownr_p) != antennaId || 
 	    msSysCalCols_p->feedId()(rownr_p) != feedId ||
 	    msSysCalCols_p->spectralWindowId()(rownr_p) != spectralWindowId;
-	if (!newRow && phaseDiffField_p.isAttached() && !near(*phaseDiffField_p, 0.0f) && 
+	if (!newRow && phaseDiffField_p.isAttached() && !near(*phaseDiffField_p, 0.0) && 
 	    !isNaN(*phaseDiffField_p) && !isInf(*phaseDiffField_p)) {
 	    // we seem to have a valid phase diff value
-	    newRow = msSysCalCols_p->phaseDiff().isNull();
-	    newRow = !newRow && msSysCalCols_p->phaseDiff()(rownr_p) != *phaseDiffField_p;
 	    // is it flagged
 	    // newRow != True here -> PHASE_DIFF col must exist -> PHASE_DIFF_FLAG must also exist
+	    newRow = !newRow && msSysCalCols_p->phaseDiff()(rownr_p) != *phaseDiffField_p;
 	    newRow = !newRow && phaseDiffFlagField_p.isAttached() &&
-		*phaseDiffFlagField_p == msSysCalCols_p->phaseDiffFlag()(rownr_p);
+		*phaseDiffFlagField_p != msSysCalCols_p->phaseDiffFlag()(rownr_p);
+	}
+	Double interval = timeRange(1) - timeRange(0);
+	// former MS time or the time used in this function argument?
+	Double thisTime = time;
+	if (timeField_p.isAttached()) {
+	    // former MS time
+	    thisTime = *timeField_p;
+	    // MS interval can't exist with MS time
+	    if (intervalField_p.isAttached()) {
+		interval = *intervalField_p;
+	    }
+	}
+	if (!newRow) {
+	    // all of the fields except TIME and INTERVAL match.
+	    // if the time falls within the row interval of the row time
+	    // or the row time falls within the interval of time, then the rows overlap and
+	    // can be reused
+	    Double rowTime = msSysCalCols_p->time()(rownr_p);
+	    Double rowInterval = msSysCalCols_p->interval()(rownr_p);
+	    Double rid2 = rowInterval/2.0;
+	    Double id2 = interval/2.0;
+	    newRow = !(((time-id2)<(rowTime+rid2)) && 
+		       ((rowTime-rid2)<(time+id2)));
 	}
 	if (newRow) {
 	    // fill it
