@@ -6509,3 +6509,4 @@
 18 587 src mv trial/implement/Tables/MemoryTable.h aips/implement/Tables/MemoryTable.h
 18 587 src mv trial/implement/Tables/MemoryTable.cc aips/implement/Tables/MemoryTable.cc
 18 587 src mv trial/implement/Tables/test/tMemoryTable.cc aips/implement/Tables/test/tMemoryTable.cc
+18 587 src mv trial/implement/Tables/test/tMemoryTable.out aips/implement/Tables/test/tMemoryTable.out
