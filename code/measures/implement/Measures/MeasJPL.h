@@ -72,11 +72,14 @@ class MVEpoch;
 // tables (i.e. the <src>DE200</src> and
 // the <src>DE405</src> tables). The data obtained will be the barycentric
 // position (AU) and velocity (AU/d) of planets; the nutation (rad, rad/d)
-// or the libration (rad, rad/d; DE405 only). The position of the Moon is 
-// geocentric. All in the J200 system.<br>
+// or the libration (rad, rad/d; DE405 only). All in the J2000 system.<br>
+// The JPL DE Tables have a large set of constants attach to it. Some
+// will be available by their own special code, the others their filed name.
+// (See the <src>get</src> functions.<br>
 // The enumeration code gives the available data and planets. See
 // E.M. Standish et al., JPL IOM 314.10 - 127 for further details.
 // <br>
+// Note that the normal usage of these tables is through the Measures system.
 // 
 // <logged>
 // 	<li> A message is Logged (once) if a table cannot be found
@@ -163,6 +166,19 @@ public:
     // Default
     DEFAULT = DE200 };
   
+  // Codes for special constants
+  enum Codes {
+    // Light velocity used in AU/d
+    CAU,
+    // Solar mass (GM0)/c<sup>2</sup> in AU
+    GMS,
+    // AU in km
+    AU,
+    // Solar radius in AU
+    RADS,
+    // # of codes
+    N_Codes };
+  
   //# General Member Functions
   // Get the values from a DE table, interpolated for date(in MJD(TDB)).
   // The file can be DE200 or DE405, the type as given in enum.
@@ -170,7 +186,12 @@ public:
 		  MeasJPL::Files file, 
 		  MeasJPL::Types type,
 		  const MVEpoch &date);
-  
+  // Get indicated special constant
+  static Bool getConst(Double &res, MeasJPL::Files which,
+		       MeasJPL::Codes what);
+  // Get filed constant with name nam
+  static Bool getConst(Double &res, MeasJPL::Files which,
+		       const String &nam);
 private:
   
   //# Constructors
@@ -236,6 +257,7 @@ private:
   // <group>
   static Double aufac[N_Files];
   static Double emrat[N_Files];
+  static Double cn[N_Files][N_Codes];
   static Int np;
   static Int nv;
   static Double twot;

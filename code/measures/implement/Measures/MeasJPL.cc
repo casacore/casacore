@@ -115,6 +115,27 @@ Bool MeasJPL::get(Vector<Double> &returnValue,
   return True;
 }
 
+Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
+		       MeasJPL::Codes what) {
+  if (initMeas(which)) {
+    res = cn[which][what];
+    return True;
+  };
+  return False;
+}
+
+Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
+		       const String &nam) {
+  if (initMeas(which)) {
+    const TableRecord &tr = t[which].keywordSet();
+    if (tr.isDefined(nam)) {
+      res = tr.asDouble(nam);
+      return True;
+    };
+  };
+  return False;
+}
+
 Bool MeasJPL::initMeas(MeasJPL::Files which) {
   static const String names[MeasJPL::N_Columns] = {
     "MJD",
@@ -137,14 +158,29 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
     };
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
 	!kws.isDefined("dMJD") || kws.asDouble("dMJD") < 8 ||
-	!kws.isDefined("AU") || kws.asDouble("AU") == 0 ||
-	!kws.isDefined("EMRAT"))
+	!kws.isDefined("AU") || kws.asDouble("AU") < 1e8 ||
+	!kws.isDefined("CLIGHT") || kws.asDouble("CLIGHT") < 2e5 ||
+	!kws.isDefined("GMS") || kws.asDouble("GMS") < 2e-4 ||
+	!((kws.isDefined("RADS") && kws.asDouble("RADS") > 6e5) ||
+	(kws.isDefined("ASUN") && kws.asDouble("ASUN") > 6e5))||
+	!kws.isDefined("EMRAT") || kws.asDouble("EMRAT") < 10 )
       ok = False;
     if (ok) {
       mjd0[which] = Int(kws.asDouble("MJD0"));
       dmjd[which] = Int(kws.asDouble("dMJD"));
-      aufac[which] = 1./kws.asDouble("AU");
+      cn[which][MeasJPL::AU] = kws.asDouble("AU");
+      aufac[which] = 1./cn[which][MeasJPL::AU];
       emrat[which] = 1.+kws.asDouble("EMRAT");
+      cn[which][MeasJPL::CAU] = 86400 * kws.asDouble("CLIGHT")/
+	cn[which][MeasJPL::AU];
+      if (kws.isDefined("RADS"))
+	cn[which][MeasJPL::RADS] = kws.asDouble("RADS")/
+	cn[which][MeasJPL::AU];
+      else
+	cn[which][MeasJPL::RADS] = kws.asDouble("ASUN")/
+	cn[which][MeasJPL::AU];
+      cn[which][MeasJPL::GMS] = kws.asDouble("GMS")/
+	cn[which][MeasJPL::CAU]/cn[which][MeasJPL::CAU];
       Int n = t[which].nrow();
       row[which].get(n-1);
       if (*(rfp[which][0]) != mjd0[which] + n*dmjd[which]) { 
@@ -260,6 +296,7 @@ Double MeasJPL::chc[18];
 Double MeasJPL::chcv[18];
 Double MeasJPL::aufac[MeasJPL::N_Files];
 Double MeasJPL::emrat[MeasJPL::N_Files];
+Double MeasJPL::cn[MeasJPL::N_Files][MeasJPL::N_Codes];
 Int MeasJPL::np = 2;
 Int MeasJPL::nv = 3;
 Double MeasJPL::twot = 0.;
