@@ -3798,3 +3798,4 @@
 14 060 src mv trial/apps/aips2help/ac install/docutils/ac
 14 060 src mv trial/apps/aips2help/rac install/docutils/rac
 14 060 src mv trial/apps/aips2help/buildchangelog install/docutils/buildchangelog
+14 060 src mv trial/apps/aips2help/CHANGELOG.LASTID CHANGELOG.LASTID
