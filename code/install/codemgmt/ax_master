@@ -2421,3 +2421,4 @@
 09 352 src rm aips/implement/Functionals/test/tBinaryOperation.out
 09 361 src rm nrao/apps/sdcalc
 09 361 src rm nrao/apps/sdplot
+09 361 src mv nrao/data/sddemo1.fits nrao/data/dishdemo1.fits
