@@ -6424,3 +6424,4 @@
 18 478 src rm trial/apps/measures/measures_IERS.g
 18 482 src rm trial/apps/dish/pgplotwidget_gplot1d.gp
 18 484 src mv doc/reference/targetsjan03.html doc/reference/targets/jan03.html
+18 495 src mv trialdisplay/apps/viewer/qv trialdisplay/apps/viewer/aqview
