@@ -1,3 +1,32 @@
+Test SpectralEstimate
+---------------------------------------------------
+Made spectrum with components: 
+GAUSSIAN element: 
+  Amplitude: 5
+  Center:    45
+  Sigma:     1.1
+
+GAUSSIAN element: 
+  Amplitude: 4
+  Center:    50
+  Sigma:     1.1
+
+GAUSSIAN element: 
+  Amplitude: 6
+  Center:    55
+  Sigma:     1.1
+
+Found: 2 estimates
+Estimate 0: GAUSSIAN element: 
+  Amplitude: 4.00036
+  Center:    49.7661
+  Sigma:     1.44454
+
+Estimate 1: GAUSSIAN element: 
+  Amplitude: 6.00013
+  Center:    54.7422
+  Sigma:     1.53555
+
 Test SpectralFit
 ---------------------------------------------------
 Spectral elements: 

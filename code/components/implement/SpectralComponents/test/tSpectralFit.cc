@@ -33,6 +33,7 @@
 #include <trial/Wnbt/SpectralElement.h>
 #include <trial/Wnbt/SpectralEstimate.h>
 #include <trial/Wnbt/SpectralFit.h>
+#include <aips/iostream.h>
 
 int main() {
   // get estimates
@@ -67,10 +68,15 @@ int main() {
 	};
       };
     };
+    cout << "Made spectrum with components: " << endl;
+    for (uInt i=0; i<3; i++) {
+      cout << SpectralElement(SpectralElement::GAUSSIAN,
+			      par[3*i+0], par[3*i+1], par[3*i+2]) << endl;
+    };
     SpectralEstimate est;
     r = est.estimate(y);
     cout << "Found: " << r << " estimates" << endl;
-    for (uInt i=0; i<r; i++) {
+    for (Int i=0; i<r; i++) {
       cout << "Estimate " << i << ": " << est.element(i) << endl;
     };
   }
