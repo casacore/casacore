@@ -61,6 +61,10 @@
 // <p>
 // When the SubLattice is created from a const <src>Lattice</src> object,
 // it is not writable, thus it can only be used as an rvalue.
+// <p>
+// Using an <linkto class=AxesSpecifier>AxesSpecifier</linkto> object
+// it is possible to remove some or all degenerate axes (i.e. axes
+// with length 1) to get a lattice with a lower dimensionality.
 // </synopsis>
 
 // <example>
@@ -211,7 +215,7 @@ public:
   virtual IPosition shape() const;
   
   // Return the name of the parent lattice.
-  virtual String name (const Bool stripPath=False) const;
+  virtual String name (Bool stripPath=False) const;
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
@@ -245,6 +249,10 @@ public:
 
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+
+  // Set the axes mapping from the specification.
+  const AxesMapping& getAxesMap() const
+    { return itsAxesMap; }
 
 protected:
   // Set the various pointer needed to construct the object.
