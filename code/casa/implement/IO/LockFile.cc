@@ -214,11 +214,11 @@ Bool LockFile::inspect()
 	return False;
     }
 
-    //# Only check elapsed time every n-th request (where n=100 at present),
+    //# Only check elapsed time every n-th request (where n=25 at present),
     //# as the elapsed time calculation is computationally expensive
-    //    if (itsInterval > 0 && itsInspectCount++ < 100) {
-    //      return False;
-    //    }
+    if (itsInterval > 0 && itsInspectCount++ < 25) {
+      return False;
+    }
     itsInspectCount = 0;
 
     //# Only inspect if time interval has passed.
