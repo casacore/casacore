@@ -114,8 +114,7 @@ try {
    if (peak) norm = 1.0;
    LogOrigin or("tSeparableImageConvolver", "main()", WHERE);
    LogIO os(or);
-   Vector<Int> types = VectorKernel::toKernelTypes(kernelType);
-   VectorKernel::KernelTypes type = VectorKernel::KernelTypes(types(0));
+   VectorKernel::KernelTypes type = VectorKernel::toKernelType(kernelType);
 
 
 // Give kernel with vectors directly
