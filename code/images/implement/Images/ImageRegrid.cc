@@ -100,7 +100,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                             typename Interpolate2D::Method method,
                             const IPosition& outPixelAxesU,
                             const ImageInterface<T>& inImage,
-                            Bool replicate, Bool showProgress)
+                            Bool replicate, uInt decimate, Bool showProgress)
 {
    LogIO os(LogOrigin("ImageRegrid", "regrid(...)", WHERE));
 //
@@ -183,7 +183,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                               inPtr, outPtr, outCoords, inCoords2,
                               pixelAxisMap1, pixelAxisMap2, 
                               outPixelAxes(i), inImage, outShape,
-                              replicate, outIsMasked, 
+                              replicate, decimate, outIsMasked, 
                               showProgress, method);
       }
    }
@@ -208,7 +208,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
                                           Int outPixelAxis, 
                                           const ImageInterface<T>& inImage,    
                                           const IPosition& outShape,
-                                          Bool replicate,
+                                          Bool replicate, uInt decimate,
                                           Bool outIsMasked, Bool showProgress,
                                           typename Interpolate2D::Method method)
 {
@@ -319,7 +319,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        }
        regrid2D (*outPtr, *inPtr, inDir, outDir, inPixelAxes,
                  outPixelAxes, pixelAxisMap1, pixelAxisMap2, method,
-                 machine, replicate, madeIt, showProgress, scale);
+                 machine, replicate, decimate, madeIt, showProgress, scale);
     } else {
        ostrstream oss;
        oss << "Regridding output axis " << outPixelAxis+1 
@@ -527,7 +527,7 @@ template<class T>
 CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
                                                       const CoordinateSystem& cSysTo,
                                                       const CoordinateSystem& cSysFrom,
-                                                      const IPosition& outPixelAxes) 
+                                                      const IPosition& outPixelAxes)
 //
 // For regrid axes
 //   Copy from cSysTo   if Coordinate type provided in cSysTo
@@ -540,6 +540,7 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
 // coordinates as the 'from' image.
 //
 {
+   const uInt nCoordsTo = cSysTo.nCoordinates();
    const uInt nCoordsFrom = cSysFrom.nCoordinates();
    const uInt nPixelAxesFrom = cSysFrom.nPixelAxes();
 
@@ -559,6 +560,7 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
 
 // Loop over output pixel axes from output CS. 
 
+   Vector<Bool> usedTo(nCoordsTo, False);
    Int iCoordFrom, axisInCoordinateFrom;
    Int iCoordTo;
    Vector<Bool> done(nCoordsFrom,False);  
@@ -589,11 +591,20 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
 // If it hasn't, we take the Coordinate from the 'from' CS
 
             Int afterCoord = -1;
-            iCoordTo = cSysTo.findCoordinate(type, afterCoord);
-//
+            iCoordTo = cSysTo.findCoordinate(type, afterCoord);    // Trouble with multiple Coordinates
+                                                                   // of this type
+
+// There is a significant limitation here.  If we wish to regrid some 
+// subset of axes from a Coordinate we are in trouble.  E.g. regrid axis 0 
+// from a LinearCoordinate holding more than 1 axis.  Trying to do this will just cause
+// an ugly CoordinateSystem exception when it tries to make the image. I think
+// I have to write a function to recover part of a Coordinate through
+// specified axes to deal with this.  
+
             if (iCoordTo >= 0) {
                const Coordinate& coordTo = cSysTo.coordinate(iCoordTo);
                cSysOut.addCoordinate(coordTo);
+               usedTo(iCoordTo) = True;
             } else {
                cSysOut.addCoordinate(coordFrom);
             }
@@ -618,6 +629,18 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
    cSysOut.pixelMap(pMap, pTrans, cSysFrom);
    cSysOut.transpose (wTrans, pTrans);
 //
+   Bool orderTo = False;
+   if (orderTo) {
+      for (uInt i=0; i<nCoordsTo; i++) {
+         if (usedTo(i)) {
+
+// This Coordinate was used in creating cSysOut
+
+
+         }
+      }
+   }
+
    return cSysOut;
 }
 
@@ -633,7 +656,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                const Vector<Int> pixelAxisMap2,
                                typename Interpolate2D::Method method,
                                MDirection::Convert& machine,
-                               Bool replicate,
+                               Bool replicate, uInt decimate,
                                Bool useMachine, Bool showProgress, Double scale)
 //
 // Compute output coordinate, find region around this coordinate
@@ -789,7 +812,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    Bool allFailedFull = False;
    Bool missedItFull = True;
    IPosition outPosFull(outLattice.ndim(),0);
-//   Timer timer0;
+   Timer timer0;
    if (resample) {
       make2DCoordinateGrid (pix2DPosFull, minInX, minInY, maxInX, maxInY,
                             pixelScale, xInAxis, yInAxis, xOutAxis, yOutAxis,
@@ -803,10 +826,12 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                             pix2DPosFull, failedFull, machine, inCoord, outCoord, 
                             xInAxis, yInAxis, xOutAxis, yOutAxis,
                             inPixelAxes, outPixelAxes, inShape, outPosFull, 
-                            outShape, useMachine);
+                            outShape, useMachine, decimate);
    }
-//   cerr << "Full plane make2DCoordinateGrid took " << timer0.all() << endl;
-//   timer0.show();
+   if (itsShowLevel > 0) {
+      cerr << "Making coordinate grid took " << endl;
+      timer0.show();
+   }
 //
    if (missedItFull || allFailedFull) {
       outLattice.set(0.0);
@@ -831,6 +856,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 
 // Iterate through output image
 
+   timer0.mark();
    Double iPix = 0.0;
    Int i2;
    for (outIter.reset(); !outIter.atEnd(); outIter++) {
@@ -926,6 +952,10 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       if (outIsMasked) (*outMaskIterPtr)++;
    } 
 //
+   if (itsShowLevel > 0) {
+      cerr << "Regridding took " << endl;
+      timer0.show();
+   }
    if (outIsMasked) delete outMaskIterPtr;
    if (showProgress) delete pProgressMeter;
 }
@@ -948,7 +978,10 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
                                            const IPosition& inShape,
                                            const IPosition& outPos,
                                            const IPosition& outCursorShape,
-                                           Bool useMachine)
+                                           Bool useMachine, uInt decimate) 
+//
+// in2DPos says where the output pixel (i,j) is located in the input image
+//
 {
    Vector<Double> world(2), inPixel(2), outPixel(2);
    minInX =  100000000.0;
@@ -981,161 +1014,161 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
      outYIdx = 0;
    }
 //
+   Matrix<Bool> doneIt(ni,nj);
+   doneIt = False;
+//
    if (itsShowLevel > 0) {                 
       cerr << "inXIdx, inYIdx = " << inXIdx << ", " << inYIdx << endl;
       cerr << "outXIdx, outYIdx = " << outXIdx << ", " << outYIdx << endl;
    }
 //
-   if (useMachine) {
-      for (uInt j=0; j<nj; j++) {
-         for (uInt i=0; i<ni; i++) {
-            outPixel(outXIdx) = i + outPos(xOutAxis);
-            outPixel(outYIdx) = j + outPos(yOutAxis);
+   uInt nOutI = 0;
+   uInt nOutJ = 0;
+   uInt iInc = 1;
+   uInt jInc = 1;
+   if (decimate > 1) {
+      Int nOut = ni / decimate;
+      if (nOut <= 1) {
+         cerr << "Illegal decimation factor for X; setting to unity" << endl;
+         nOut = ni;
+      }   
+      iInc = ni / (nOut- 1);
+//
+      nOut = nj / decimate;
+      if (nOut <= 1) {
+         cerr << "Illegal decimation factor for Y; setting to unity" << endl;
+         nOut = nj;
+      }   
+      jInc = nj / (nOut - 1);
+      if (iInc < 1) {
+         cerr << "Illegal decimation increment computed for X; setting to unity" << endl;
+         iInc = 1;
+      }
+      if (jInc < 1) {
+         cerr << "Illegal decimation increment computed for Y; setting to unity" << endl;
+         jInc = 1;
+      }
+//
+      if (iInc==1 && jInc==1) {
+         decimate = 0;
+      } else {
+         for (uInt j=0; j<nj; j+=jInc,nOutJ++) {;}
+         for (uInt i=0; i<ni; i+=iInc,nOutI++) {;}
+      }
+//
+      if (itsShowLevel > 0) {                 
+         cerr << "decimate, nOutI, nOutJ = " << decimate << ", " << nOutI << ", " << nOutJ << endl;
+         cerr << "iInc, jInc = " << iInc << ", " << jInc << endl;
+      }
+   }
+//
+   Matrix<Double> iInPos2D(nOutI,nOutJ);
+   Matrix<Double> jInPos2D(nOutI,nOutJ);
+   Matrix<Bool> ijInMask2D(nOutI,nOutJ);
+
+// If decimating, compute a sparse grid of coordinates and then
+// interpolate the others.  Otherwise, compute all coordinates (expensive)f
+// This approach is going to cause pixels along the right and top edges
+// to be masked as the coarse grid is unlikely to finish exactly
+// on the lattice edge
+
+   uInt ii = 0;
+   uInt jj = 0;
+   for (uInt j=0; j<nj; j+=jInc,jj++) {
+      ii = 0;
+      for (uInt i=0; i<ni; i+=iInc,ii++) {
+         outPixel(outXIdx) = i + outPos(xOutAxis);
+         outPixel(outYIdx) = j + outPos(yOutAxis);
 
 // Do coordinate conversions (outpixel to world to inpixel)
 // for the axes of interest
-            
+
+         if (useMachine) {            
             ok1 = outCoord.toWorld(outMVD, outPixel);            
             ok2 = False;
             if (ok1) {
                inMVD = machine(outMVD).getValue();
                ok2 = inCoord.toPixel(inPixel, inMVD);
             } 
-//
-            if (!ok1 || !ok2) {
-               failed(i,j) = True;
-            } else {
-
-// This gives the 2D input pixel coordinate (relative to the start of the full Lattice)
-// to find the interpolated result at.  (,,0) pertains to inX and (,,1) to inY
-
-               in2DPos(i,j,0) = inPixel(inXIdx);
-               in2DPos(i,j,1) = inPixel(inYIdx);
-               allFailed = False;
-               failed(i,j) = False;
-//
-               minInX = min(minInX,inPixel(inXIdx));
-               minInY = min(minInY,inPixel(inYIdx));
-               maxInX = max(maxInX,inPixel(inXIdx));
-               maxInY = max(maxInY,inPixel(inYIdx));
-            }
+         } else {
+            ok1 = outCoord.toWorld(world, outPixel);
+            ok2 = False;
+            if (ok1) ok2 = inCoord.toPixel(inPixel, world);
          }
-      }
-   } else {
-/*
-      Double s1 = 0.0;
-      Double s2 = 0.0;
-      Double s3 = 0.0;
-      Timer t1,t2,t3;
-*/
-
-
-// There is no performance benefit using the *Many functions because
-// of the loading and unloading
-
-// Load
-
-/*
-      t1.mark();
-      Matrix<Double> worldMany(2,ni*nj), inPixelMany(2,ni*nj), outPixelMany(2,ni*nj);
-      uInt i,j;
-      for (uInt k=0; k<ni*nj; k++) {
-         j = k/ni;
-         i = k - j*ni;
 //
-         outPixelMany(outXIdx,k) = i + outPos(xOutAxis);
-         outPixelMany(outYIdx,k) = j + outPos(yOutAxis);
-      }
-      s1 = t1.all();
-
-// Convert
-
-      t2.mark();
-      Vector<Int> failures1, failures2;
-      uInt nFail1 = outCoord.toWorldMany(worldMany, outPixelMany, failures1);
-      uInt nFail2 = inCoord.toPixelMany(inPixelMany, worldMany, failures2);
-      s2 = t2.all();
-
-
-// Unload
-
-      t3.mark();
-      for (uInt k=0; k<ni*nj; k++) {
-         j = k/ni;
-         i = k - j*ni;
-//
-         if ( (k<nFail1 && failures1(k)) || 
-              (k<nFail2 && failures2(k)) ) {
+         if (!ok1 || !ok2) {
             failed(i,j) = True;
+            if (decimate>1) ijInMask2D(ii,jj) = False;
          } else {
 
 // This gives the 2D input pixel coordinate (relative to the start of the full Lattice)
 // to find the interpolated result at.  (,,0) pertains to inX and (,,1) to inY
 
-            in2DPos(i,j,0) = inPixelMany(inXIdx,k);
-            in2DPos(i,j,1) = inPixelMany(inYIdx, k);
+            in2DPos(i,j,0) = inPixel(inXIdx);
+            in2DPos(i,j,1) = inPixel(inYIdx);
             allFailed = False;
             failed(i,j) = False;
 //
-            minInX = min(minInX,inPixelMany(inXIdx,k));
-            minInY = min(minInY,inPixelMany(inYIdx,k));
-            maxInX = max(maxInX,inPixelMany(inXIdx,k));
-            maxInY = max(maxInY,inPixelMany(inYIdx,k));
-         }
-      }
-      s3 = t3.all();
-*/
-
-//
-      uInt k = 0;
-      for (uInt j=0; j<nj; j++) {
-         for (uInt i=0; i<ni; i++,k++) {
-//            t1.mark();
-            outPixel(outXIdx) = i + outPos(xOutAxis);
-            outPixel(outYIdx) = j + outPos(yOutAxis);
-//            s1 += t1.all();
-
-// Do coordinate conversions (outpixel to world to inpixel)
-// for the axes of interest
-            
-//            t2.mark();
-            ok1 = outCoord.toWorld(world, outPixel);
-            ok2 = False;
-            if (ok1) ok2 = inCoord.toPixel(inPixel, world);
-//            s2 += t2.all();
-//
-//            if (itsShowLevel>1) {
-//              cerr << "outPos, world, inPos, ok1, ok2 = ";
-//              cerr.precision(12);
-//              cerr  << outPixel << world << inPixel << ", " << ok1 << ", " << 
-//                    ok2 << endl;
-//            }
-
-//
-//            t3.mark();
-            if (!ok1 || !ok2) {
-               failed(i,j) = True;
-            } else {
-
-// This gives the 2D input pixel coordinate (relative to the start of the full Lattice)
-// to find the interpolated result at.  (,,0) pertains to inX and (,,1) to inY
-
-               in2DPos(i,j,0) = inPixel(inXIdx);
-               in2DPos(i,j,1) = inPixel(inYIdx);
-               allFailed = False;
-               failed(i,j) = False;
-//
+            if (decimate<=1) {
                minInX = min(minInX,inPixel(inXIdx));
                minInY = min(minInY,inPixel(inYIdx));
                maxInX = max(maxInX,inPixel(inXIdx));
                maxInY = max(maxInY,inPixel(inYIdx));
+            } else {
+               iInPos2D(ii,jj) = inPixel(inXIdx);
+               jInPos2D(ii,jj) = inPixel(inYIdx);
+               ijInMask2D(ii,jj) = True;
             }
-//            s3 += t3.all();
          }
       }
+   }
+   if (itsShowLevel > 0) {
+      cerr << "nII, nJJ= " << ii << ", " << jj << endl;
+   }
 
-//cerr << "s1, s2, s3 = " << s1 << ", " << s2 << ", " << s3 << endl;
+// Bi-linear Interpolation of x and y coordinates in the sparse grid 
+// The coordinates that were already computed get interpolated as 
+// well (should be identical).
 
+   if (decimate > 1) {
+      if (itsShowLevel > 1) {
+         cerr << "iGrid = " << iInPos2D << endl;
+         cerr << "jGrid = " << jInPos2D << endl;
+         cerr << "ijMask = " << ijInMask2D << endl;
+      }
+//
+      Interpolate2D interp(Interpolate2D::LINEAR);
+      Vector<Double> pos(2);
+      Double resultI, resultJ;
+      for (uInt j=0; j<nj; j++) {
+         pos(1) = Double(j) / Double(jInc);              
+         for (uInt i=0; i<ni; i++) {
+            pos(0) = Double(i) / Double(iInc);         
+            ok1 = interp.interp (resultI, pos, iInPos2D, ijInMask2D);
+            ok2 = interp.interp (resultJ, pos, jInPos2D, ijInMask2D);
+            if (itsShowLevel > 1) {
+               if (i==(ni-1)) {
+                  cerr << "pos" << pos << endl;
+                  cerr << "  ok, resultI = " << ok1 << ", " << resultI << endl;
+                  cerr << "  ok, resultJ = " << ok2 << ", " << resultJ << endl;
+               }
+            }
+//
+            if (ok1 && ok2) {
+               in2DPos(i,j,0) = resultI;
+               in2DPos(i,j,1) = resultJ;
+               failed(i,j) = False;
+               allFailed = False;
+//
+               minInX = min(minInX,resultI);
+               minInY = min(minInY,resultJ);
+               maxInX = max(maxInX,resultI);
+               maxInY = max(maxInY,resultJ);
+            } else {
+               failed(i,j) = True;
+            }
+         }
+      }
    }
 
 
@@ -1159,7 +1192,6 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
       cerr << "failed  = " << failed << endl;
    }
 }
-
 
 
 template<class T>
