@@ -39,16 +39,17 @@
 #include <aips/Mathematics/Math.h>
 
 MSFeedIndex::MSFeedIndex() 
-    : MSTableIndex()
+    : MSTableIndex(), msFeedCols_p(0)
 {;}
 
 MSFeedIndex::MSFeedIndex(const MSFeed &feed)
   : MSTableIndex(feed, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"),
-		 compare)
+		 compare),
+    msFeedCols_p(0)
 { attachIds();}
 
 MSFeedIndex::MSFeedIndex(const MSFeedIndex &other)
-    : MSTableIndex(other)
+    : MSTableIndex(other), msFeedCols_p(0)
 { attachIds();}
 
 MSFeedIndex::~MSFeedIndex()
@@ -79,7 +80,7 @@ void MSFeedIndex::attachIds()
     spwId_p.attachToRecord(accessKey(), "SPECTRAL_WINDOW_ID");
 
     // Attach the MSFeed columns accessor
-    msFeedCols_p = new MSFeedColumns(static_cast<MSFeed&>(table()));
+    msFeedCols_p = new ROMSFeedColumns(static_cast<MSFeed&>(table()));
 }
 
 Int MSFeedIndex::compare (const Block<void*>& fieldPtrs,
