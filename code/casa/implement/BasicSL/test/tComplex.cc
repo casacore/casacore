@@ -143,12 +143,20 @@ int main() {
   cout << endl;
 
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  cout << "pow(" << f1 << ",3) = " << pow(f1,3) << endl;
-  cout << "pow(" << f1 << ",-8) = " << pow(f1,-8) << endl;
-  cout << "pow(" << f1 << ",0.214) = " << pow(f1,0.214f) << endl;
-  cout << "pow(" << f1 << "," << i1 << " = " <<
-    pow(f1,Complex(i1.real(), i1.imag())) << endl;
-  cout << "pow(" << f1 << "," << f2 << " = " << pow(f1,f2) << endl;
+  if (! near (pow(f1,3), Complex(19283.3,42518.8))) {
+    cout << "pow(" << f1 << ",3) = " << pow(f1,3) << endl;
+  }
+  if (! near (pow(f1,-8), Complex(-3.52463e-13,-3.11743e-14))) {
+    cout << "pow(" << f1 << ",-8) = " << pow(f1,-8) << endl;
+  }
+  if (! near (pow(f1,0.214f), Complex(2.14595,0.175667))) {
+    cout << "pow(" << f1 << ",0.214) = " << pow(f1,0.214f) << endl;
+  }
+  cout << "pow(" << f1 << "," << i1 << " = "
+       << pow(f1,Complex(i1.real(), i1.imag())) << endl;
+  if (! near (pow(f1,f2), Complex(8.06899e+11,9.07712e+12))) {
+    cout << "pow(" << f1 << "," << f2 << " = " << pow(f1,f2) << endl;
+  }
   cout << endl;
 
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
