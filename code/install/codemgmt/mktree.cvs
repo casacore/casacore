@@ -169,6 +169,10 @@
   for myDir in $DIRS
   do
 	  newdir=`echo $myDir | sed -e "s^$ROOTSTEM/^^g"`
+          if [ "$newdir" = "$ROOTSTEM" ]
+          then
+             newdir="."
+          fi
 	  if [ ! -d "$newdir" ]
 	  then
 	     case "$newdir" in 
@@ -191,11 +195,14 @@
 	     if `mkdir $newdir`
 	     then
 		  echo "created directory $newdir"
-	          ln -s $myDir $newdir/src
-		  cp -r $myDir/CVS $newdir
-                  if [  "$CVSROOT" ]
-                  then
-                     echo $CVSROOT > $newdir/CVS/Root
+                  if [ -d $myDir/CVS ]
+                  then 
+	             ln -s $myDir $newdir/src
+		     cp -r $myDir/CVS $newdir
+                     if [  "$CVSROOT" ]
+                     then
+                        echo $CVSROOT > $newdir/CVS/Root
+                     fi
                   fi
 	     else
 		  echo "Failed to create director $newdir"
@@ -205,10 +212,17 @@
 
 		  # Update the CVS repository files, be careful
 		   echo Refreshing $newdir/CVS.
+                   if [ -d $myDir/CVS ]
+                   then
+                      if [ ! -d $newdir/CVS ]
+                      then
+                          mkdir $newdir/CVS
+                      fi
 	           cp $myDir/CVS/* $newdir/CVS
                    if [  "$CVSROOT" ]
                    then
                      echo $CVSROOT > $newdir/CVS/Root
+                   fi
                    fi
 	  fi
   done
