@@ -6028,3 +6028,7 @@
 17 070 src rm aips/implement/Functionals/test/tGaussian2D.cc
 17 070 src rm aips/implement/Functionals/test/tGaussian1D.cc
 17 070 src rm aips/implement/Functionals/test/tSumFunction.cc
+17 070 src rm aips/implement/Functionals/Gaussian1D.h
+17 070 src rm aips/implement/Functionals/Gaussian1D.cc
+17 070 src rm aips/implement/Functionals/Gaussian2D.h
+17 070 src rm aips/implement/Functionals/Gaussian2D.cc
