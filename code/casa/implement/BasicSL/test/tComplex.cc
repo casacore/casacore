@@ -1,5 +1,5 @@
 //# tComplex.cc: This program tests the Complex class
-//# Copyright (C) 1993,1994,1995,1996,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,17 +28,18 @@
 //# Includes
 
 #include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/IComplex.h>
 
 #include <assert.h>
 #include <stdio.h>
 #include <fstream.h>
 #include <unistd.h>
 
-main() {
+int main() {
 
-  Complex f1(23.9,1.8),f2(9.2,8.2),f3(2.7,1.8),fo(237.561,0.9312),fi;
-  IComplex i1(5,2),i2(33,6),i3(f1);
-  DComplex d1,d2(f1.real(),f1.imag()),d3(0.921,7.812);
+  Complex f1(23.9,1.8), f2(9.2,8.2), f3(2.7,1.8), fo(237.561,0.9312), fi;
+  IComplex i1(5,2), i3(Int(f1.real()),Int(f1.imag()));
+  DComplex d1, d2(f1.real(),f1.imag()), d3(0.921,7.812);
   char tmpname[L_tmpnam];
   fstream fio(tmpnam(tmpname),ios::out | ios::trunc);
 
@@ -62,7 +63,7 @@ main() {
   cout << "out: " << fo << "           in: " << fi << endl;
 
   
-  d1 = i1;
+  d1 = DComplex(i1.real(), i1.imag());
   cout << d1 << " == " << i1 << endl;
 
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
@@ -116,10 +117,11 @@ main() {
   cout << endl;
 
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  cout << f1 << " +=  " << d3 << " -> "; cout << (f1 += d3) << endl;
-  cout << f1 << " *=  " << d3 << " -> "; cout << (f1 *= d3) << endl;
-  cout << f1 << " -=  " << d3 << " -> "; cout << (f1 -= d3) << endl;
-  cout << f1 << " /=  " << d3 << " -> "; cout << (f1 /= d3) << endl;
+  Complex d3c = Complex(d3.real(), d3.imag());
+  cout << f1 << " +=  " << d3 << " -> "; cout << (f1 += d3c) << endl;
+  cout << f1 << " *=  " << d3 << " -> "; cout << (f1 *= d3c) << endl;
+  cout << f1 << " -=  " << d3 << " -> "; cout << (f1 -= d3c) << endl;
+  cout << f1 << " /=  " << d3 << " -> "; cout << (f1 /= d3c) << endl;
   cout << endl;
 
   i1 = IComplex(36, 14);
