@@ -156,6 +156,18 @@ template <class T> class Vector;
 // it is a very good way to get the correct answers of the derivatives. In
 // practice actual production code will be better off with specialization
 // of the <src>f<AutoDiff<> ></src> implementation.
+//
+// The <src>AutoDiff</src> class is the class the user communicates with.
+// An alias class (<linkto class=AutoDiffA>AutoDiffA</linkto>) exists
+// to make it possible to have different incarnations of a templated
+// method (e.g. a generic one and a specialized one). See the
+// <src>dAutoDiff</src> demo for an example of its use.
+//
+// All operators and functions are declared in <linkto file=AutoDiffMath.h> 
+// AutoDiffMath</linkto>. The output operator in 
+// <linkto file=AutoDiffIO.h>AutoDiffIO</linkto>. The actual structure of the
+// data block used by <src>AutoDiff</src> is described in 
+// <linkto class=AutoDiffRep>AutoDiffRep</linkto>.
 // </synopsis>
 //
 // <example>
