@@ -547,7 +547,7 @@ public:
     Bool toFITSHeader(RecordInterface &header, 
 		      IPosition &shape,
 		      Bool oneRelative, 
-		      char prefix = 'c', Bool writeWCS=False,
+		      Char prefix = 'c', Bool writeWCS=False,
 		      Bool preferVelocity=True, 
 		      Bool opticalVelocity=True) const;
 
@@ -561,7 +561,7 @@ public:
 			       const RecordInterface &header,
                                const IPosition& shape,
 			       Bool oneRelative,
-			       char prefix = 'c');
+			       Char prefix = 'c');
 
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
