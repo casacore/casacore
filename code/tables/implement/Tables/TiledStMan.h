@@ -1,5 +1,5 @@
 //# TiledStMan.h: Base class for Tiled Storage Managers
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_TILEDSTMAN_H)
 #define AIPS_TILEDSTMAN_H
 
-#if defined(_AIX)
-#pragma implementation ("TiledStMan.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -310,6 +307,12 @@ public:
     // resulting in only one iso. two virtual column calls to get the data.
     DataManagerColumn* reallocateColumn (DataManagerColumn* column);
 
+    // Set the shape and tile shape of a hypercube.
+    // By default it throws an "impossible" exception.
+    virtual void setShape (uInt rownr, TSMCube* hypercube,
+			   const IPosition& shape,
+			   const IPosition& tileShape);
+
     // Check the shape to be set for a hypercube.
     // It checks if it matches predefined (fixed shape) columns
     // and the shape of already defined coordinate columns.
@@ -362,6 +365,10 @@ protected:
     // Check if the cube shape matches that of defined coordinates.
     void checkCoordinatesShapes (const TSMCube* hypercube,
 				 const IPosition& cubeShape) const;
+
+    // Check if the hypercube to be added is correctly defined.
+    void checkAddHypercube (const IPosition& cubeShape,
+			    const Record& values) const;
 
     // Make a new TSMCube object.
     TSMCube* makeHypercube (const IPosition& cubeShape,
