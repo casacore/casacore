@@ -50,10 +50,10 @@ void doIt (const IPosition& latticeShape,
     AlwaysAssertExit (compl.hasMask());
     AlwaysAssertExit (! compl.isWritable());
     cout << compl.hasMask() << ' ' << endl;
-    cout << compl.box().start() << compl.box().end()
-	 << compl.box().length() << compl.latticeShape() << endl;
+    cout << compl.boundingBox().start() << compl.boundingBox().end()
+	 << compl.boundingBox().length() << compl.latticeShape() << endl;
     Array<Bool> mask;
-    compl.getSlice (mask, IPosition(ndim,0), compl.box().length(),
+    compl.getSlice (mask, IPosition(ndim,0), compl.boundingBox().length(),
 		     IPosition(ndim,1));
     cout << mask << endl;
 
@@ -61,7 +61,7 @@ void doIt (const IPosition& latticeShape,
     AlwaysAssertExit (compl1.hasMask());
     AlwaysAssertExit (! compl1.isWritable());
     Array<Bool> mask1;
-    compl1.getSlice (mask1, IPosition(ndim,0), compl1.box().length(),
+    compl1.getSlice (mask1, IPosition(ndim,0), compl1.boundingBox().length(),
 		     IPosition(ndim,1));
     cout << mask1 << endl;
    
@@ -69,12 +69,17 @@ void doIt (const IPosition& latticeShape,
 	// Test cloning.
         LCRegion* complcop = compl.cloneRegion();
 	AlwaysAssertExit (compl.hasMask() == complcop->hasMask());
-	AlwaysAssertExit (compl.box().start() == complcop->box().start());
-	AlwaysAssertExit (compl.box().end() == complcop->box().end());
-	AlwaysAssertExit (compl.box().stride() == complcop->box().stride());
-	AlwaysAssertExit (compl.box().length() == complcop->box().length());
+	AlwaysAssertExit (compl.boundingBox().start() ==
+			  complcop->boundingBox().start());
+	AlwaysAssertExit (compl.boundingBox().end() ==
+			  complcop->boundingBox().end());
+	AlwaysAssertExit (compl.boundingBox().stride() ==
+			  complcop->boundingBox().stride());
+	AlwaysAssertExit (compl.boundingBox().length() ==
+			  complcop->boundingBox().length());
 	Array<Bool> arr;
-	complcop->getSlice (arr, IPosition(ndim,0), compl.box().length(),
+	complcop->getSlice (arr, IPosition(ndim,0),
+			    compl.boundingBox().length(),
 			     IPosition(ndim,1));
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete complcop;
@@ -83,13 +88,18 @@ void doIt (const IPosition& latticeShape,
 	// Test persistency.
 	LCRegion* complcop = (LCRegion::fromRecord (compl.toRecord(""), ""));
 	AlwaysAssertExit (compl.hasMask() == complcop->hasMask());
-	AlwaysAssertExit (compl.box().start() == complcop->box().start());
-	AlwaysAssertExit (compl.box().end() == complcop->box().end());
-	AlwaysAssertExit (compl.box().stride() == complcop->box().stride());
-	AlwaysAssertExit (compl.box().length() == complcop->box().length());
+	AlwaysAssertExit (compl.boundingBox().start() ==
+			  complcop->boundingBox().start());
+	AlwaysAssertExit (compl.boundingBox().end() ==
+			  complcop->boundingBox().end());
+	AlwaysAssertExit (compl.boundingBox().stride() ==
+			  complcop->boundingBox().stride());
+	AlwaysAssertExit (compl.boundingBox().length() ==
+			  complcop->boundingBox().length());
 	Array<Bool> arr;
-	complcop->getSlice (arr, IPosition(ndim,0), compl.box().length(),
-			     IPosition(ndim,1));
+	complcop->getSlice (arr, IPosition(ndim,0),
+			    compl.boundingBox().length(),
+			    IPosition(ndim,1));
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete complcop;
     }
