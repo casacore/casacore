@@ -115,7 +115,7 @@ template <class T> class Block;
 //  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
 //  f2.set(2.0);
 //  f1.copyData(2*f2+f2);
-//
+// </srcblock>
 //  In this example, the values of the pixels in Lattice f1 are set
 //  to the values resulting from the expression "2*f2 + f2"
 //  I.e. the expression is evaluated for each pixel in the Lattices
@@ -161,7 +161,7 @@ template <class T> class Block;
 //  LatticeExprNode exp1(sin(f2));
 //  LatticeExprNode exp2(pow(f2,2.0));
 //  f1.copyData(exp1+exp2);
-//
+// </srcblock>
 //  In this example, the expression is "sin(f2) + pow(f2,2.0)",
 //  but we have put it together from two subexpressions contained
 //  in LatticeExprNode objects exp1 and exp2.  Again the LatticeExprNode
