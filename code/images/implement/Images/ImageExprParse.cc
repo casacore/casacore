@@ -1,5 +1,5 @@
 //# ImageExprParse.cc: Classes to hold results from image expression parser
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <trial/Images/ImageExprGram.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/FITSImage.h>
-//#include <trial/Images/MIRIADImage.h>
+#include <trial/Images/MIRIADImage.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/RegionHandlerTable.h>
@@ -462,9 +462,9 @@ Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
         if (imageType==ImageUtilities::FITS) {
            FITSImage img(name);
            node = LatticeExprNode (img);
-//        } else if (imageType==ImageUtilities::MIRIAD) {
-//           MIRIADImage img(name);
-//           node = LatticeExprNode (img);
+        } else if (imageType==ImageUtilities::MIRIAD) {
+           MIRIADImage img(name);
+           node = LatticeExprNode (img);
         } else {
            return False;
         }
