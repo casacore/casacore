@@ -667,6 +667,8 @@
 
      if [ "$SYSMIN" -lt 0 ]
      then
+#       Delete all libexec files.
+        rm -f "$AIPSARCH/libexec/*.g"
 #       Delete all static object libraries.
         PACKAGES="`(cd $AIPSCODE ; ls -d */implement | \
            sed -e 's#/implement##')`"
