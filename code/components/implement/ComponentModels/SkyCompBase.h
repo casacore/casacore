@@ -207,6 +207,11 @@ public:
   virtual const String& label() const = 0;
   // </group>
 
+  // Return True if the component parameters are physically plausable. This
+  // checks that I, Q, U, & V are all real numbers and if 
+  // I^2 >= Q^2 + U^2 + U^2
+  virtual Bool isPhysical() const = 0;
+  
   // Calculate the flux at the specified direction & frequency, in a pixel of
   // specified x & y size.
   virtual Flux<Double> sample(const MDirection& direction, 

@@ -194,6 +194,11 @@ public:
   // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
+  virtual Bool isPhysical() const;
+  
+  // See the corresponding function in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of this function.
   virtual Flux<Double> sample(const MDirection& direction, 
 			      const MVAngle& pixelLatSize,
 			      const MVAngle& pixelLongSize,

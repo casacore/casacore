@@ -186,6 +186,11 @@ public:
   virtual const String & label() const;
   // </group>
 
+  // See the corresponding function in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of this function.
+  virtual Bool isPhysical() const;
+  
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.

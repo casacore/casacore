@@ -29,23 +29,25 @@
 #include <trial/ComponentModels/ConstantSpectrum.h>
 #include <trial/ComponentModels/PointShape.h>
 #include <trial/ComponentModels/SkyCompRep.h>
-#include <trial/ComponentModels/SpectralModel.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Cube.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Containers/Record.h>
+#include <aips/Containers/RecordFieldId.h>
+#include <aips/Containers/RecordInterface.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/Record.h>
-#include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Complex.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
+#include <trial/ComponentModels/SpectralModel.h>
 
 SkyCompRep::SkyCompRep() 
   :itsShapePtr(new PointShape),
@@ -158,6 +160,27 @@ String& SkyCompRep::label() {
 const String& SkyCompRep::label() const {
   DebugAssert(ok(), AipsError);
   return itsLabel;
+}
+
+Bool SkyCompRep::isPhysical() const {
+  Flux<Double> compFlux = flux().copy();
+  compFlux.convertPol(ComponentType::STOKES);
+  const Vector<DComplex>& iquv = compFlux.value();
+  const DComplex& i = iquv(0);
+  const DComplex& q = iquv(1);
+  const DComplex& u = iquv(2);
+  const DComplex& v = iquv(3);
+  if (!nearAbs(i.imag(), 0.0) || 
+      !nearAbs(q.imag(), 0.0) || 
+      !nearAbs(u.imag(), 0.0) || 
+      !nearAbs(v.imag(), 0.0) ) {
+    return False;
+  }
+  if (square(i.real()) < 
+      square(q.real()) + square(u.real()) + square(v.real()) ) {
+    return False;
+  }
+  return True;
 }
 
 Flux<Double> SkyCompRep::sample(const MDirection& direction, 

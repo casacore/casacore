@@ -135,6 +135,11 @@ const String& SkyComponent::label() const {
   return itsCompPtr->label();
 }
 
+Bool SkyComponent::isPhysical() const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->isPhysical();
+}
+
 Flux<Double> SkyComponent::sample(const MDirection& direction, 
 			      const MVAngle& pixelLatSize, 
 			      const MVAngle& pixelLongSize, 
