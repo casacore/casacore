@@ -35,9 +35,13 @@ typedef Quantum<Double> gpp_MCFrame_bug1;
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MCEpoch.h>
 #include <aips/Measures/MPosition.h>
+#include <aips/Measures/MCPosition.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MRadialVelocity.h>
+#include <aips/Measures/MCRadialVelocity.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Measures/MeasConvert.h>
 #ifdef __GNUG__

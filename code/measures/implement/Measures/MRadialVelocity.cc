@@ -36,6 +36,7 @@ typedef Quantum<Double> gpp_mradvel_bug1;
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/MDoppler.h>
+#include <aips/Measures/MCDoppler.h>
 #include <aips/Measures/MeasConvert.h>
 #ifdef __GNUG__
 typedef MeasConvert<MDoppler,MVDoppler,MCDoppler> gpp_mradvel_bug2;
