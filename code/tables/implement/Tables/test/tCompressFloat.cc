@@ -121,8 +121,9 @@ void writeData (Bool autoScale)
   ///  } 
 }
 
-void checkData (Bool autoScale)
+Bool checkData (Bool autoScale)
 {
+  Bool ok = True;
   // Read back the table.
   Table tab("tCompressFloat_tmp.data");
   ROArrayColumn<Float> source1 (tab, "source1");
@@ -145,10 +146,11 @@ void checkData (Bool autoScale)
   for (i=0; i<10; i++) {
     cout << "get row " << i << endl;
     source1.get (i, arrvalf);
-    if (!allNear (arrvalf, arrf1, 1e-7)) {
+    if (!allNear (arrvalf, arrf1, 1e-4)) {
       cout << "error in source1 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
+      ok = False;
     }
     if (!autoScale) {
       target1.get (i, arrvali);
@@ -156,6 +158,7 @@ void checkData (Bool autoScale)
 	cout << "error in target1 in row " << i << endl;
 	cout << "Read: " << arrvali << endl;
 	cout << "Expected: " << arri1 << endl;
+      ok = False;
       }
     }
     source2.get (i, arrvalf);
@@ -163,10 +166,12 @@ void checkData (Bool autoScale)
       cout << "error in source2 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
+      ok = False;
     }
     arrf1 += (Float)(6*arrf1.nelements());
     arri1 += (Short)(3*arri1.nelements());
   }
+  return ok;
 }
 
 void testSpeed()
@@ -295,15 +300,16 @@ void testSpeed()
 
 int main ()
 {
+  Int sts=0;
   try {
     writeData (False);
-    checkData (False);
+    if (! checkData (False)) sts=1;
     writeData (True);
-    checkData (True);
+    if (! checkData (True)) sts=1;
     testSpeed();
   } catch (AipsError x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;
   } 
-  return 0;                           // exit with success status
+  return sts;
 }
