@@ -62,7 +62,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   
   // I currently REQUIRE that the image has one direction coordinate (only).
   // All other coordinates (ie. polarization and frequency) are optional. 
-  const Vector<uInt> dirAxes = findDirectionAxes(coords);
+  const Vector<uInt> dirAxes = CoordinateUtil::findDirectionAxes(coords);
   AlwaysAssert(dirAxes.nelements() != 0, AipsError);
   const uInt nPixAxes = dirAxes.nelements();
   Vector<Double> pixelCoord(nPixAxes); pixelCoord = 0.0;
@@ -102,7 +102,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   // Check if there is a Stokes Axes and if so which polarizations. Otherwise
   // only grid the I polarisation.
   Vector<Int> stokes; // Vector stating which polarisations is on each plane
-  const Int polAxis = findStokesAxis(stokes, coords);  // The stokes pixel axis
+  const Int polAxis = CoordinateUtil::findStokesAxis(stokes, coords);  // The stokes pixel axis
   const uInt nStokes = stokes.nelements(); 
   if (polAxis >= 0)
     AlwaysAssert(imageShape(polAxis) == nStokes, AipsError);

@@ -312,7 +312,7 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
 
    momentAxis_p= momentAxisU;
    if (momentAxis_p == momentAxisDefault_p) {
-     momentAxis_p = findSpectralAxis(pInImage_p->coordinates());
+     momentAxis_p = CoordinateUtil::findSpectralAxis(pInImage_p->coordinates());
      if (momentAxis_p == -1) {
        os_p << LogIO::SEVERE << "There is no spectral axis in this image -- specify the axis" << LogIO::POST;
        goodParameterStatus_p = False;
@@ -751,7 +751,7 @@ Bool ImageMoments<T>::createMoments()
 // Find spectral axis and its units
 
    if (momentAxis_p == momentAxisDefault_p) {
-     momentAxis_p = findSpectralAxis(pInImage_p->coordinates());
+     momentAxis_p = CoordinateUtil::findSpectralAxis(pInImage_p->coordinates());
      if (momentAxis_p == -1) {
        os_p << LogIO::SEVERE << endl << "There is no spectral axis in this image -- specify "
 	 "the axis" << LogIO::POST;

@@ -187,7 +187,7 @@ int main() {
     {
       uInt nx=6, ny=nx;
       PagedImage<Float> image(IPosition(2,nx,ny), 
- 			      defaultCoords2D(),
+ 			      CoordinateUtil::defaultCoords2D(),
  			      "tPointComponent_tmp.image");
       image.set(0.0f);
       PointComponent defComp;

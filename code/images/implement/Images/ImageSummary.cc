@@ -273,7 +273,7 @@ void ImageSummary<T>::list (LogIO& os,
 
 // List rest frequency if we can find a spectral axis
 
-   Int spectralAxis = findSpectralAxis(cSys);
+   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys);
    if (spectralAxis >= 0) {
       Int coordinate, axisInCoordinate;
       cSys.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
