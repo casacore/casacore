@@ -69,3 +69,10 @@ Array<Complex> operator *(const Array<Complex> &in, Double f) {
 Array<Complex> operator /(const Array<Complex> &in, Double f) {
   return in / Complex(f);
 }
+
+Array<DComplex> operator *(const Array<DComplex> &in, Double f) {
+  return in * DComplex(f);
+}
+Array<DComplex> operator /(const Array<DComplex> &in, Double f) {
+  return in / DComplex(f);
+}

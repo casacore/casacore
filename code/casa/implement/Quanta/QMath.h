@@ -218,6 +218,8 @@ Int ceil(const Int &val);
 Int floor(const Int &val);
 Array<Complex> operator *(const Array<Complex> &in, Double f);
 Array<Complex> operator /(const Array<Complex> &in, Double f);
+Array<DComplex> operator *(const Array<DComplex> &in, Double f);
+Array<DComplex> operator /(const Array<DComplex> &in, Double f);
 // </group>
 //# Inline Implementations
 
