@@ -150,11 +150,6 @@
 //            The default is the input image name with the suffix appended (whether
 //            you ask for one or more moments).
 //
-//   psfout   If you invoke the smooth and clip method, you can save the
-//            point spread function image in this file.
-//
-//            The default is to not save the point spread function.
-//
 //   smout    If you invoke the smooth and clip method, you can save the
 //            smoothed image in this file.  It might be useful to look
 //            at this to get the clip limits right.
@@ -178,10 +173,11 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Lattices/LCSlicer.h>
+#include <trial/Mathematics/VectorKernel.h>
 
 #include <iostream.h>
 
-enum defaults {IN, MOMENTS, AXIS, REGION, METHOD, SMOOTH, RANGE, SNR, OUT, PSFOUT, SMOUT, 
+enum defaults {IN, MOMENTS, AXIS, REGION, METHOD, SMOOTH, RANGE, SNR, OUT, SMOUT, 
                PLOTTING, NDEFAULTS};
 
 main (int argc, char **argv)
@@ -211,7 +207,6 @@ try {
    inputs.Create("exclude", "0.0", "Pixel range to exclude");
    inputs.Create("snr", "3.0,0.0", "SNR cutoff and sigma for automatic window method");
    inputs.Create("out", "dImageMoments.output_file", "Output root image name");
-   inputs.Create("psfout", "", "Output PSF image name");
    inputs.Create("smout", "", "Output smoothed image name");
    inputs.Create("plotter", "none", "PGPLOT device");
    inputs.Create("nxy", "-1", "Number of subplots in x and y");
@@ -232,7 +227,6 @@ try {
    const Block<Double> excludeB = inputs.GetDoubleArray("exclude");
    const Block<Double> snrB = inputs.GetDoubleArray("snr");
    const String out = inputs.GetString("out");
-   const String psfOut = inputs.GetString("psfout");
    const String smOut = inputs.GetString("smout");
    String device = inputs.GetString("plotter");
    const Block<Int> nxyB = inputs.GetIntArray("nxy");
@@ -307,7 +301,7 @@ try {
 // Convert kernel types to an Int vector
 
    Vector<Int> kernelTypes;
-   kernelTypes = ImageMoments<Float>::toKernelTypes(kernels);
+   kernelTypes = VectorKernel::toKernelTypes(kernels);
    if (kernelTypes.nelements() != 0) validInputs(SMOOTH) = True;
 
 
@@ -364,7 +358,6 @@ try {
 // Output file names
 
    if (!out.empty()) validInputs(OUT) = True;
-   if (!psfOut.empty()) validInputs(PSFOUT) = True;
    if (!smOut.empty()) validInputs(SMOUT) = True;
 
 
@@ -431,7 +424,6 @@ try {
       if (validInputs(RANGE)) {if (!moment.setInExCludeRange(include, exclude)) return 1;}
       if (validInputs(SNR)) {if (!moment.setSnr(peakSNR, stdDeviation)) return 1;}
       if (validInputs(OUT)) {moment.setOutName(out);}
-      if (validInputs(PSFOUT)) moment.setPsfOutName(psfOut);
       if (validInputs(SMOUT)) moment.setSmoothOutName(smOut);
       if (validInputs(PLOTTING)) {
          PGPlotter plotter(device);
