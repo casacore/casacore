@@ -2288,3 +2288,8 @@
 11 184 src rm trial/implement/Display/test/tWorldCanvasColormaps.exec
 11 184 src rm trial/implement/Display/test/tWorldCanvasHello.exec
 11 184 src rm trial/implement/Display/test/templates
+11 186 src rm trial/implement/test/Input1
+11 186 src rm trial/implement/test/Input2
+11 186 src rm trial/implement/test/Input3
+11 186 src rm trial/implement/test/tExamples.exec
+11 186 src rm trial/implement/test/tExamples.out
