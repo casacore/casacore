@@ -62,8 +62,8 @@ TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
 				    const Record& spec)
 : TiledStMan  (hypercolumnName, 0)
 {
-    if (spec.isDefined ("TILESHAPE")) {
-        tileShape_p = IPosition (spec.asArrayInt ("TILESHAPE"));
+    if (spec.isDefined ("DEFAULTTILESHAPE")) {
+        tileShape_p = IPosition (spec.asArrayInt ("DEFAULTTILESHAPE"));
     }
     if (spec.isDefined ("MAXIMUMCACHESIZE")) {
         setPersMaxCacheSize (spec.asInt ("MAXIMUMCACHESIZE"));
@@ -89,14 +89,16 @@ DataManager* TiledColumnStMan::makeObject (const String& group,
 }
 
 String TiledColumnStMan::dataManagerType() const
-    { return "TiledColumnStMan"; }
-
-Record TiledColumnStMan::dataManagerSpec() const
 {
-  Record rec;
-  rec.define ("TILESHAPE", tileShape_p.asVector());
-  rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
-  return rec;
+    return "TiledColumnStMan";
+}
+
+IPosition TiledColumnStMan::defaultTileShape() const
+{
+  if (tileShape_p.nelements() == 0  &&  cubeSet_p.nelements() > 0) {
+      return cubeSet_p[0]->tileShape();
+  }
+  return tileShape_p;
 }
 
 Bool TiledColumnStMan::canAccessColumn (Bool& reask) const
