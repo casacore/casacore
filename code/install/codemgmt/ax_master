@@ -1390,3 +1390,4 @@
 11 059 src mv aips/implement/Tables/test/tTableGram.exec aips/implement/Tables/test/tTableGram.run
 11 064 src mv doc/newsletters/oct98 doc/newsletters/nov98
 11 071 src mv doc/html/navpages/recipes doc/recipes
+11 074 src rm trial/apps/deconvolver/templates
