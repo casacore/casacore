@@ -2643,3 +2643,4 @@
 10 010 src mv aips/implement/Measures/MUString.cc aips/implement/Quanta/MUString.cc
 10 010 src mv aips/implement/Measures/MUString.h aips/implement/Quanta/MUString.h
 10 010 src mv aips/implement/Measures/MVAngle.cc aips/implement/Quanta/MVAngle.cc
+10 010 src mv aips/implement/Measures/MVAngle.h aips/implement/Quanta/MVAngle.h
