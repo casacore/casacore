@@ -216,6 +216,9 @@ public:
   // Return the selected table
   Table selectedTable() const;
 
+  // Return the selection status of the table
+  Bool selected() const;
+
 protected:
   // average and convert data
   void getAveragedData(Array<Complex>& avData, 
@@ -292,7 +295,7 @@ private:
 };
 inline Int MSSelector::nrow() const { return selms_p.nrow();}
 inline Int MSSelector::dataDescId() const { return dataDescId_p;}
-inline Table MSSelector::selectedTable() const {return selms_p;}
+inline Bool MSSelector::selected() const {return initSel_p;}
 
 #endif
 
