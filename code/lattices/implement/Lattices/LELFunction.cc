@@ -1,5 +1,5 @@
 //# LELFunction.cc:  this defines templated classes in LELFunction.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@ LELFunction1D<T>::LELFunction1D(const LELFunctionEnums::Function function,
    case LELFunctionEnums::MAX1D :
    case LELFunctionEnums::MEAN1D :
    case LELFunctionEnums::SUM :
-      setAttr(LELAttribute (True, IPosition()));    // these result in a scalar
+      setAttr(LELAttribute());          // these result in a scalar
       break;
    default:
       setAttr(exp->getAttribute());
@@ -216,17 +216,17 @@ T LELFunction1D<T>::getScalar() const
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       Bool deleteIt;
-      Int i;
 
 // Do the sum ourselves to avoid round off
 
       while (! iter.atEnd()) {
-         const T *data = iter.cursor().getStorage(deleteIt);
-         for (i=0;i<iter.cursor().nelements();i++) {
+	 const Array<T>& array = iter.cursor();
+         const T* data = array.getStorage(deleteIt);
+	 uInt nrval = array.nelements();
+         for (uInt i=0; i<nrval; i++) {
             sumVal += data[i];
          }
-         iter.cursor().freeStorage(data, deleteIt);
-
+         array.freeStorage(data, deleteIt);
 	 iter++;
       }
       return sumVal / pExpr_p->shape().product();
@@ -240,17 +240,17 @@ T LELFunction1D<T>::getScalar() const
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       Bool deleteIt;
-      Int i;
 
 // Do the sum ourselves to avoid round off
 
       while (! iter.atEnd()) {
-         const T *data = iter.cursor().getStorage(deleteIt);
-         for (i=0;i<iter.cursor().nelements();i++) {
+	 const Array<T>& array = iter.cursor();
+         const T* data = array.getStorage(deleteIt);
+	 uInt nrval = array.nelements();
+         for (uInt i=0; i<nrval; i++) {
             sumVal += data[i];
          }
-         iter.cursor().freeStorage(data, deleteIt);
-
+         array.freeStorage(data, deleteIt);
 	 iter++;
       }
       return sumVal;

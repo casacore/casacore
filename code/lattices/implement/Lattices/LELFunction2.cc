@@ -1,5 +1,5 @@
 //# LELFunction.cc:  this defines non-templated classes in LELFunction.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,7 +55,7 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
           throw (AipsError ("LELFunctionFloat::constructor - functions can only"
                             "have one argument"));
        }
-       setAttr(LELAttribute(arg_p[0].isScalar(), arg_p[0].shape()));
+       setAttr(arg_p[0].getAttribute());
        break;
     }
     case LELFunctionEnums::ATAN2 :
@@ -304,12 +304,12 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
           throw (AipsError ("LELFunctionDouble::constructor - functions can only"
                             "have one argument"));
        }
-       setAttr(LELAttribute(arg_p[0].isScalar(), arg_p[0].shape()));
+       setAttr(arg_p[0].getAttribute());
        break;
     }
     case LELFunctionEnums::NELEM :
     {
-	setAttr (LELAttribute (True, IPosition()));       // result is scalar
+	setAttr (LELAttribute());                         // result is scalar
 	break;
     }
     case LELFunctionEnums::NTRUE :
@@ -318,7 +318,7 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
 	Block<Int> argType(1);
 	argType[0] = TpBool;
 	LatticeExprNode::checkArg (arg_p, argType, True); // expect 1 Bool array
-	setAttr (LELAttribute (True, IPosition()));       // result is scalar
+	setAttr (LELAttribute());                         // result is scalar
 	break;
     }
     case LELFunctionEnums::ATAN2 :
@@ -608,7 +608,7 @@ LELFunctionComplex::LELFunctionComplex
           throw (AipsError ("LELFunctionComplex::constructor - functions can only"
                             "have one argument"));
        }
-       setAttr(LELAttribute(arg_p[0].isScalar(), arg_p[0].shape()));
+       setAttr(arg_p[0].getAttribute());
        break;
     }
     case LELFunctionEnums::POW :
@@ -756,7 +756,7 @@ LELFunctionDComplex::LELFunctionDComplex
           throw (AipsError ("LELFunctionDComplex::constructor - functions can only"
                             "have one argument"));
        }
-       setAttr(LELAttribute(arg_p[0].isScalar(), arg_p[0].shape()));
+       setAttr(arg_p[0].getAttribute());
        break;
     }
     case LELFunctionEnums::POW :
@@ -900,7 +900,7 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
 	Block<Int> argType(1);
 	argType[0] = TpBool;
 	LatticeExprNode::checkArg (arg_p, argType, True); // expect 1 Bool array
-	setAttr (LELAttribute (True, IPosition()));       // result is scalar
+	setAttr (LELAttribute());                         // result is scalar
 	break;
     }
     default:
