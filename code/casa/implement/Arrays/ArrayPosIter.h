@@ -1,5 +1,5 @@
 //# ArrayPosIter.h: Iterate an IPosition through the shape of an Array
-//# Copyright (C) 1993,1994,1995,1998
+//# Copyright (C) 1993,1994,1995,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 // volume defined by an origin and shape. This position can in turn be
 // used to index into, or otherwise define a position in, an Array. Normally
 // users won't use this class directly, rather they will use an ArrayIterator,
-// VectorIterator or MatrixIterator object, which in turn uses this class.
+// VectorIterator or MatrixIterator tool, which in turn uses this class.
 // ArrayPositionIterator is also used in the implementation of Array.
 //
 // <srcblock>
@@ -100,7 +100,7 @@ public:
     // How many steps have we taken from the beginning?
     uInt nSteps() const {return stepsFromBegin;}
 private:
-    // Setup the object for the constructor.
+    // Setup the tool for the constructor.
     void setup();
 
     //# We should probably have mf's for getting at Start,Shape and End.
