@@ -303,7 +303,7 @@ public:
 //#//    void renameColumn (const String& newname, const String& oldname);
 
     // Get number of columns.
-    Int ncolumn() const;
+    uInt ncolumn() const;
 
     // Test if a column with this name exists.
     Bool isColumn (const String& name) const;
@@ -491,7 +491,7 @@ public:
 
 
 //# Get number of columns.
-inline Int TableDesc::ncolumn () const
+inline uInt TableDesc::ncolumn () const
     { return col_p.ncolumn(); }
 
 //# Test if column exists.
