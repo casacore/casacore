@@ -606,6 +606,26 @@ int main (int argc, char *argv[])
     }
   }
   {
+    cout << "Expr:  a = b+sum(kpa[indexnotin(2,[1:2,10,4:7:3,10])])" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("b+sum(kpa[indexnotin(2,[1:2,10,4:7:3,10])])"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    if (shape(1) > 9) {
+      Int n = shape(0);
+      Double result = 1 + (0+1+9+3+6)*n*n + 5*n*(n-1)/2;
+      n *= shape(1);
+      result = n*(n-1)/2 - result + 2*1;
+      if (! allNear (aArr, result, 1e-10)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+      }
+    }
+  }
+  {
     cout << "Expr:  a = b+sum(kpa[index2 in [1:2,10,4:7:3,10]])" << endl;
 
     LatticeExpr<Double> expr(ImageExprParse::command
