@@ -193,9 +193,7 @@ Vector<Bool> Fit2D::convertMask (const String mask,
    Vector<Bool> parameterMask;
    if (type==Fit2D::LEVEL) {
       throw (AipsError("Fit2D - Level fitting not yet implemented"));
-   } else if (type==Fit2D::DISK) {
-      throw (AipsError("Fit2D - Disk fitting not yet implemented"));
-   } else if (type==Fit2D::GAUSSIAN) {
+   } else if (type==Fit2D::DISK || type==Fit2D::GAUSSIAN) {
       parameterMask.resize(6);
       parameterMask = True;
       if (mask.contains("f")) parameterMask(0) = False;
@@ -446,6 +444,23 @@ String Fit2D::type(Fit2D::Types type)
 }
 
 
+Fit2D::Types Fit2D::type(const String& type)
+{
+   String tmp = upcase(type);
+   Fit2D::Types tmp2;
+   if (tmp.contains("LEV")) {
+      tmp2 = Fit2D::LEVEL;
+   } else if (tmp.contains("DIS")) {
+      tmp2 = Fit2D::DISK;
+   } else if (tmp.contains("GAU")) {
+      tmp2 = Fit2D::GAUSSIAN;
+   } else {
+      throw(AipsError("Fit2D::type - illegal model type"));
+   }
+   return tmp2;
+}
+
+
 Fit2D::Types Fit2D::type(uInt which) 
 {
    if (which+1 > itsFunction.nFunctions()) {
@@ -653,6 +668,10 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 // (same as Gaussian2D.cc) and opposite to Miriad
 //
 {
+   if (type!=Fit2D::GAUSSIAN  && type==Fit2D::DISK) {
+      itsLogger << LogIO::SEVERE << "Only Gaussian and disk models are currently supported" << LogIO::POST;
+   }
+//
    Vector<Double> parameters;
    IPosition shape = data.shape();
    if (shape.nelements() !=2) {
@@ -720,7 +739,7 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
       return parameters;
    }
 //
-   if (type==Fit2D::GAUSSIAN) {
+   if (type==Fit2D::GAUSSIAN || type==Fit2D::DISK) {
       parameters.resize(6);
 //
       fac = 4*log(2.0);
@@ -742,8 +761,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
       Float sn = 1.0;
       if (SP<0) sn = -1.0;
       parameters(0) = sn * fac * P / ( C::pi * parameters(3) * parameters(4));
-   } else {
-      itsLogger << LogIO::SEVERE << "Only Gaussian models are currently implemented" << LogIO::POST;
+   } else if (type==Fit2D::LEVEL) {
+      itsLogger << LogIO::SEVERE << "Level models are not currently supported" << LogIO::POST;
    }
    return parameters;
 }
