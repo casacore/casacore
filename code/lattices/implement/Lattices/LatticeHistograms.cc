@@ -589,9 +589,9 @@ Bool LatticeHistograms<T>::getHistograms (Array<T>& values,
 
 template <class T>
 Bool LatticeHistograms<T>::getHistogram (Vector<T>& values,
-                                       Vector<T>& counts,
-                                       const IPosition& pos,
-                                       const Bool posInLattice)
+                                        Vector<T>& counts,
+                                        const IPosition& pos,
+                                        const Bool posInLattice)
 //
 // Retrieve histogram values and counts from specified
 // location into vectors
@@ -676,8 +676,11 @@ Bool LatticeHistograms<T>::getHistogram (Vector<T>& values,
 
 // Get statistics slice.  
 
-   Vector<T> stats;
-   pStats_p->getStats(stats, pos, posInLattice);
+   Vector<AccumType> statsA;
+   Vector<T> statsT;
+   pStats_p->getStats(statsA, pos, posInLattice);
+   statsT.resize(statsA.nelements());
+   convertArray (statsT, statsA);
 
 // Convert to desired form and make values vector too
 
@@ -685,7 +688,7 @@ Bool LatticeHistograms<T>::getHistogram (Vector<T>& values,
    values.resize(nBins_p);
    T linearSum, linearYMax;
    extractOneHistogram (linearSum, linearYMax, values,
-                        counts, stats, intCountsV);
+                        counts, statsT, intCountsV);
 
    return True;
 
@@ -830,11 +833,11 @@ Bool LatticeHistograms<T>::displayOneHistogram (const T& linearSum,
 
 template <class T>
 void LatticeHistograms<T>::extractOneHistogram (T& linearSum,
-                                              T& linearYMax,
-                                              Vector<T>& values, 
-                                              Vector<T>& counts,
-                                              const Vector<T>& stats, 
-                                              const Vector<T>& intCounts)
+                                                T& linearYMax,
+                                                Vector<T>& values, 
+                                                Vector<T>& counts,
+                                                const Vector<T>& stats, 
+                                                const Vector<T>& intCounts)
 
 //
 // Extract this histogram, convert to the appropriate form
@@ -909,7 +912,7 @@ Bool LatticeHistograms<T>::generateStorageLattice()
 
 template <class T> 
 void LatticeHistograms<T>::getStatistics (Vector<T> &stats, 
-                                        const IPosition& histPos) const
+                                          const IPosition& histPos) const
 //
 // Extract statistics slice for the given position in the
 // histogram storage lattice.  
@@ -932,8 +935,11 @@ void LatticeHistograms<T>::getStatistics (Vector<T> &stats,
    }
 
 // Get the statistics
-
-   pStats_p->getStats(stats, pos, False);
+   
+   Vector<AccumType> statsA;
+   pStats_p->getStats(statsA, pos, False);
+   stats.resize(statsA.nelements());
+   convertArray (stats, statsA);
 }
 
 template <class T>
@@ -1042,7 +1048,7 @@ Bool LatticeHistograms<T>::makeStatistics()
 // activate the statistics object and make it a bit
 // more obvious to the user the order in which things are done.
 
-   Vector<T> stats;
+   Vector<AccumType> stats;
    IPosition pos(displayAxes_p.nelements(),0);
    if (!pStats_p->getStats(stats, pos, False)) return False;
 
@@ -1103,9 +1109,9 @@ void LatticeHistograms<T>::makeHistograms()
 // Output has to be a MaskedLattice, so make a writable SubLattice.
 
    SubLattice<T> outLatt (*pStoreLattice_p, True);
-   LatticeApply<T>::tiledApply(outLatt, *pInLattice_p, 
-                               collapser, IPosition(cursorAxes_p),
-                               newOutAxis, pProgressMeter);
+   LatticeApply<T,T>::tiledApply(outLatt, *pInLattice_p, 
+                                 collapser, IPosition(cursorAxes_p),
+                                 newOutAxis, pProgressMeter);
    if (pProgressMeter != 0) {
       delete pProgressMeter;
       pProgressMeter = 0;
@@ -1227,8 +1233,7 @@ void LatticeHistograms<T>::setStream (ostream& os, Int oPrec)
    
  
 template <class T>
-HistTiledCollapser<T>::HistTiledCollapser(LatticeStatistics<T>* pStats,
-                                          const uInt nBins)
+HistTiledCollapser<T>::HistTiledCollapser(LatticeStatistics<T>* pStats, uInt nBins)
 : pStats_p(pStats),
   nBins_p(nBins)
 {;}
@@ -1273,8 +1278,12 @@ void HistTiledCollapser<T>::process (uInt index1,
 // Fish out the min and max for this chunk of the data 
 // from the statistics object
 
-   Vector<T> stats;
+   typedef typename NumericTraits<T>::PrecisionType AccumType; 
+   Vector<AccumType> stats;
    pStats_p->getStats(stats, startPos, True);
+
+// Assignment from AccumType to T ok (e.g. Double to FLoat)
+
    Vector<T> clip(2);
    clip(0) = stats(LatticeStatsBase::MIN);
    clip(1) = stats(LatticeStatsBase::MAX);
@@ -1283,13 +1292,12 @@ void HistTiledCollapser<T>::process (uInt index1,
    
    const T binWidth = LatticeHistSpecialize::setBinWidth(clip(0), clip(1), nBins_p);
 
-
 // Fill histograms.  
 
    uInt offset = (nBins_p*index1) + (nBins_p*n1_p*index3);
    LatticeHistSpecialize::process(pInData, pInMask, pHist_p, clip,
-                                binWidth, offset, nrval, 
-                                nBins_p, inIncr);
+                                  binWidth, offset, nrval, 
+                                  nBins_p, inIncr);
 }
 
 
@@ -1316,7 +1324,7 @@ void HistTiledCollapser<T>::endAccumulator(Array<T>& result,
     const T* histPtr = pHist_p->storage();
 
 // The histogram storage lattice has the logical shape
-// [nBins, n1, n3]
+// [nBins, n1, n3].  
 
     for (uInt k=0; k<nBins_p*n1_p*n3_p; k++) {
        *resptr++ = *histPtr++;

@@ -35,6 +35,7 @@
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LatticeProgress.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/NumericTraits.h>
 
 //# Forward Declarations
 template <class T> class MaskedLattice;
@@ -298,6 +299,9 @@ protected:
 
 private:
 
+// A useful typedef
+   typedef typename NumericTraits<T>::PrecisionType AccumType;
+
    const MaskedLattice<T>* pInLattice_p;
    TempLattice<T>* pStoreLattice_p;
    LatticeStatistics<T>* pStats_p;
@@ -446,13 +450,12 @@ private:
 // </todo>
 
 template <class T>
-class HistTiledCollapser : public TiledCollapser<T>
+class HistTiledCollapser : public TiledCollapser<T,T>
 {
  
 public:
 // Constructor
-    HistTiledCollapser(LatticeStatistics<T>* pStats,
-                       const uInt nBins);
+    HistTiledCollapser(LatticeStatistics<T>* pStats, uInt nBins);
 
 // Initialize process, making some checks
     virtual void init (uInt nOutPixelsPerCollapse);
