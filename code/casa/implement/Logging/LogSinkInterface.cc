@@ -74,6 +74,12 @@ void LogSinkInterface::flush()
     // Defult implementation is to do nothing.
 }
 
+Bool LogSinkInterface::isTableLogSink() const
+{
+    return False;
+}
+
+
 void LogSinkInterface::cleanup()
 {
     flush();
