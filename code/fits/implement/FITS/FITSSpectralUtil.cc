@@ -181,22 +181,8 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 
     referenceChannel = crpix(spectralAxis) - offset;
 
-    // Get ALTRVAL and ALTRPIX if they exist
-    Bool altExists = header.isDefined("altrval") &&  header.isDefined("altrpix");
-    Double altrval, altrpix = offset;
-    if (altExists) {
-	if ((header.dataType(String("altrval")) == TpDouble ||
-	     header.dataType(String("altrval")) == TpFloat) && (
-			header.dataType(String("altrpix")) == TpDouble ||
-			header.dataType(String("altrpix")) == TpFloat)) {
-	    header.get("altrval", altrval);
-	    header.get("altrpix", altrpix);
-	} else {
-	    logger << LogIO::SEVERE << 
-		"ALTRVAL or ALTRPIX is the wrong type. Ignoring" << LogIO::POST;
-	}
-    }
-    altrpix = altrpix - offset;
+    // ALTRVAL and ALTRPIX are ignored - conversion here is to frequency in
+    // the same reference frame as the pseudo velocity axis (FELO).
 
     // Get NAXIS if we have it
 
@@ -227,40 +213,8 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 	    logger << LogIO::SEVERE << "FELO axis does not have rest frequency "
 		"information (RESTFREQ)" << LogIO::POST;
 	    return False;
-	} else if (altExists) {
-	    // Have RESTFREQ, ALTRVAL and ALTRPIX
-	    referenceChannel = altrpix;
-	    referenceFrequency = altrval;
-	    switch(velocityPreference) {
-	    case MDoppler::OPTICAL:
-		{
-		    deltaFrequency =   -delt*altrval / (
-			       ( delt*(rpix - altrpix) + (C::c + rval) ) );
-		}
-		break;
-	    case MDoppler::RADIO:
-		{
-		    logger << LogIO::SEVERE << "FELO/RADIO is not illegal" <<
-			LogIO::POST;
-		    return False;
-		}
-		break;
-	    default:
-		{
-		    AlwaysAssert(0, AipsError); // NOTREACHED
-		}
-	    }
-	    frequencies.resize(nChan);
-	    for (Int i=0; i<nChan; i++) {
-		frequencies(i) = referenceFrequency + 
-		    (Double(i)-referenceChannel) * deltaFrequency;
-	    }
 	} else {
 	    // Have RESTFREQ
-	    logger << LogIO::NORMAL << "ALTRVAL and ALTRPIX have not been "
-		"supplied in the FITS header, so I will\ndeduce the "
-		"frequencies from the velocities and rest frequency" << 
-		LogIO::POST;
 	    referenceChannel = rpix;
 	    switch(velocityPreference) {
 	    case MDoppler::OPTICAL:
@@ -293,40 +247,8 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 	    logger << LogIO::SEVERE << "VELO axis does not have rest frequency "
 		"information (RESTFREQ)" << LogIO::POST;
 	    return False;
-	} else if (altExists) {
-	    // Have RESTFREQ, ALTRVAL and ALTRPIX
-	    referenceChannel = altrpix;
-	    referenceFrequency = altrval;
-	    switch(velocityPreference) {
-	    case MDoppler::RADIO:
-		{
-		    deltaFrequency =        -delt*altrval / (
-				   ( delt*(rpix - altrpix) + (C::c - rval) ) );
-		}
-		break;
-	    case MDoppler::OPTICAL:
-		{
-		    logger << LogIO::SEVERE << 
-			"VELO/OPTICAL is not implemented" <<LogIO::POST;
-		    return False;
-		}
-		break;
-	    default:
-		{
-		    AlwaysAssert(0, AipsError); // NOTREACHED
-		}
-	    }
-	    frequencies.resize(nChan);
-	    for (Int i=0; i<nChan; i++) {
-		frequencies(i) = referenceFrequency + 
-		    (Double(i)-referenceChannel) * deltaFrequency;
-	    }
 	} else {
 	    // Have RESTFREQ
-	    logger << LogIO::NORMAL << "ALTRVAL and ALTRPIX have not been "
-		"supplied in the FITS header, so I \nwill deduce the "
-		"frequencies from the velocities and rest frequency." << 
-		LogIO::POST;
 	    referenceChannel = rpix;
 	    switch(velocityPreference) {
 	    case MDoppler::RADIO:
