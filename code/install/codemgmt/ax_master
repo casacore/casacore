@@ -1936,3 +1936,4 @@
 08 030 src rm atnf/implement/test/tygbp.cc
 08 030 src rm atnf/implement/test/tygmon.cc
 08 030 src rm atnf/implement/test/tygms.cc
+08 031 src mv trial/scripts/guicomponents.g trial/implement/guiutils/guicomponents.g
