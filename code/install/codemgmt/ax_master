@@ -2466,3 +2466,5 @@
 09 401 src rm trial/implement/ComponentModels/SIPointCompRep.h
 09 401 src rm trial/implement/ComponentModels/SIPointCompRep.cc
 09 406 src mv doc/user/synthesis.latex doc/user/Synthesis.latex
+09 420 src rm nrao/apps/sditerator/sdutilDO.h
+09 420 src rm nrao/apps/sditerator/sdutilDO.cc
