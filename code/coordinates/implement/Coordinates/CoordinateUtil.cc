@@ -33,6 +33,7 @@
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Coordinates/Projection.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Measures/MFrequency.h>
@@ -52,7 +53,7 @@ void addDirAxes(CoordinateSystem & coords){
   // reset the increment to 1 minute of arc on both axes
   Vector<String> units(2); units = String("'"); 
   dirAxes.setWorldAxisUnits(units);
-  Vector<Double> inc(2); inc = 1.0; 
+  Vector<Double> inc(2); inc = C::pi/180.0/60.0; 
   AlwaysAssert(dirAxes.setIncrement(inc) == True, AipsError);
   // Add the direction coordinates to the system. 
   coords.addCoordinate(dirAxes);
