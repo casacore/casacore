@@ -27,195 +27,143 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/SpectralIndex.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MeasureHolder.h>
+#include <aips/Measures/MeasRef.h>
 #include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
-#include <iomanip.h>
 
 int main() {
   try {
-    SpectralIndex siModel;
-    const MFrequency refFreq(Quantity(1.0, "GHz"));
-    siModel.setRefFrequency(refFreq);
-    siModel.setIndex(1.0, Stokes::I);  
-    siModel.setIndex(0.5, Stokes::Q);  
-    siModel.setIndex(0.5, Stokes::U);  
-    siModel.setIndex(-1.0, Stokes::V);
-    const Flux<Double> LBandFlux(1.0, 1.0, 1.0, 1.0);
-    const MVFrequency step(Quantity(100.0, "MHz"));
-    MVFrequency sampleFreq = siModel.refFrequency().getValue();
-    Flux<Double> sampleFlux;
-    cout << "Frequency\t I-Flux\t Q-Flux\t U-Flux\t V-Flux\n";
-    for (uInt i = 0; i < 11; i++) {
-      sampleFlux = LBandFlux.copy();
-      sampleFlux.convertPol(ComponentType::LINEAR);
-      sampleFlux.convertUnit(Unit("WU"));
-      siModel.sample(sampleFlux,
-		     MFrequency(sampleFreq, siModel.refFrequency().getRef()));
-      cout << setprecision(3) << sampleFreq.get("GHz")
-	   << "\t\t " << sampleFlux.value(0u).re
-	   << "\t " << sampleFlux.value(1u).re
-	   << "\t " << sampleFlux.value(2u).re
-	   << "\t " << sampleFlux.value(3u).re
-	   << " " << sampleFlux.unit().getName() << endl;
-      sampleFreq += step;
-    }
-    AlwaysAssert(sampleFlux.pol() == ComponentType::STOKES, AipsError);
-    Double req = 2 * 200;
-    AlwaysAssert(near(sampleFlux.value(0), req, req*C::dbl_epsilon),
-		 AipsError);
-    req = C::sqrt2 * 200;
-    AlwaysAssert(near(sampleFlux.value(1), req, req*C::dbl_epsilon),
-		 AipsError);
-    AlwaysAssert(near(sampleFlux.value(2), req, req*C::dbl_epsilon),
-		 AipsError);
-    req = 0.5 * 200;
-    AlwaysAssert(near(sampleFlux.value(3), req, req*C::dbl_epsilon),
-		 AipsError);
-    AlwaysAssert(siModel.isIonly() == False, AipsError);
-    Vector<Double> newIndices = siModel.indices();
-    AlwaysAssert(newIndices.nelements() == 4, AipsError);
-    req = 1.0;
-    AlwaysAssert(near(newIndices(0), req, req*C::dbl_epsilon), AipsError);
-    req = 0.5;
-    AlwaysAssert(near(newIndices(1), req, req*C::dbl_epsilon), AipsError);
-    req = 0.5;
-    AlwaysAssert(near(newIndices(2), req, req*C::dbl_epsilon), AipsError);
-    req = -1.0;
-    AlwaysAssert(near(newIndices(3), req, abs(req)*C::dbl_epsilon), AipsError);
-
-    AlwaysAssert(siModel.nParameters() == 4, AipsError);
-    Vector<Double> parms(4);
-    siModel.parameters(parms);
-    AlwaysAssert(allNear(parms, newIndices, C::dbl_epsilon),
-		 AipsError);
-
-    MFrequency newFreq = siModel.refFrequency();
-    AlwaysAssert(newFreq.getValue() == refFreq.getValue(), AipsError);
-    AlwaysAssert(newFreq.getRef() == refFreq.getRef(), AipsError);
-    newFreq.set(MVFrequency(Quantity(5, "GHz")));
-    newFreq.set(MFrequency::Ref(MFrequency::TOPO));
-    SpectralIndex zeroModel(siModel);
-    zeroModel.setRefFrequency(newFreq);
-    newIndices = 0.0;
-    zeroModel.setIndices(newIndices);
-    newIndices = 2.0;
-
-    AlwaysAssert(zeroModel.isIonly() == True, AipsError);
-    AlwaysAssert(nearAbs(zeroModel.index(Stokes::I), 0.0, C::dbl_min),
- 		 AipsError);
-    AlwaysAssert(nearAbs(zeroModel.index(Stokes::Q), 0.0, C::dbl_min),
- 		 AipsError);
-    AlwaysAssert(nearAbs(zeroModel.index(Stokes::U), 0.0, C::dbl_min),
- 		 AipsError);
-    AlwaysAssert(nearAbs(zeroModel.index(Stokes::V), 0.0, C::dbl_min),
- 		 AipsError);
-    AlwaysAssert(allNearAbs(zeroModel.indices(), 0.0, C::dbl_min),
-		 AipsError);
-    AlwaysAssert(zeroModel.refFrequency().getValue() ==
-		 MVFrequency(Quantity(5, "GHz")), AipsError);
-    AlwaysAssert(zeroModel.refFrequency().getRef().getType() ==
-		 MFrequency::Ref(MFrequency::TOPO).getType(), AipsError);
-    
-    SpectralIndex otherModel; otherModel = siModel;
-    otherModel.setRefFrequency(newFreq);
-    parms += 1.0;
-    otherModel.setParameters(parms);
-    AlwaysAssert(otherModel.isIonly() == False, AipsError);
-    AlwaysAssert(near(otherModel.index(Stokes::I), 2.0, C::dbl_epsilon),
- 		 AipsError);
-    AlwaysAssert(near(otherModel.index(Stokes::Q), 1.5, C::dbl_epsilon),
- 		 AipsError);
-    AlwaysAssert(near(otherModel.index(Stokes::U), 1.5, C::dbl_epsilon),
- 		 AipsError);
-    AlwaysAssert(near(otherModel.index(Stokes::V), 0.0, C::dbl_epsilon),
- 		 AipsError);
-    AlwaysAssert(otherModel.refFrequency().getValue() ==
-		 MVFrequency(Quantity(5, "GHz")), AipsError);
-    AlwaysAssert(otherModel.refFrequency().getRef().getType() ==
-		 MFrequency::Ref(MFrequency::TOPO).getType(), AipsError);
-
-    AlwaysAssert(siModel.isIonly() == False, AipsError);
-    AlwaysAssert(near(siModel.index(Stokes::I), 1.0, C::dbl_epsilon),
- 		 AipsError);
-    AlwaysAssert(near(siModel.index(Stokes::Q), 0.5, C::dbl_epsilon),
- 		 AipsError);
-    AlwaysAssert(near(siModel.index(Stokes::U), 0.5, C::dbl_epsilon),
- 		 AipsError);
-    AlwaysAssert(near(siModel.index(Stokes::V), -1.0, C::dbl_epsilon),
- 		 AipsError);
-    AlwaysAssert(siModel.refFrequency().getValue() == refFreq.getValue(),
-		 AipsError);
-    AlwaysAssert(siModel.refFrequency().getRef().getType() == 
-		 refFreq.getRef().getType(), AipsError);
+    SpectralModel* siPtr = 0;;
+    const MFrequency f1(Quantity(1.0, "GHz"), MFrequency::LSR);
+    const MFrequency f2(Quantity(2.0, "GHz"), MFrequency::LSR);
+    const MFrequency f4(Quantity(4.0, "GHz"), MFrequency::LSR);
     {
-      SpectralIndex siModel1(refFreq, -0.1);
-      AlwaysAssert(siModel1.isIonly() == True, AipsError);
-      AlwaysAssert(near(siModel1.index(Stokes::I), -0.1, C::dbl_epsilon),
+      SpectralIndex siModel;
+      AlwaysAssert(siModel.ok(), AipsError);
+      AlwaysAssert(siModel.type() == ComponentType::SPECTRAL_INDEX, 
 		   AipsError);
-      AlwaysAssert(near(siModel1.index(Stokes::Q), 0.0, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siModel1.index(Stokes::U), 0.0, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siModel1.index(Stokes::V), 0.0, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(siModel1.type() == ComponentType::SPECTRAL_INDEX,
-		   AipsError);
-      SpectralIndex * siPtr = (SpectralIndex *) siModel1.clone();
-      Record rec;
-      String error;
-      AlwaysAssert(siModel1.toRecord(error, rec), AipsError);
-      rec.define(RecordFieldId("index"), parms);
-      AlwaysAssert(siModel1.fromRecord(error, rec), AipsError);
-      AlwaysAssert(siModel1.isIonly() == False, AipsError);
-      AlwaysAssert(near(siModel1.index(Stokes::I), 2.0, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siModel1.index(Stokes::Q), 1.5, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siModel1.index(Stokes::U), 1.5, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siModel1.index(Stokes::V), 0.0, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(siPtr->isIonly() == True, AipsError);
-      AlwaysAssert(near(siPtr->index(Stokes::I), -0.1, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siPtr->index(Stokes::Q), 0.0, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siPtr->index(Stokes::U), 0.0, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siPtr->index(Stokes::V), 0.0, C::dbl_epsilon),
-		   AipsError);
-      SpectralIndex siModel2(refFreq, parms);
-      AlwaysAssert(siModel2.ok(), AipsError);
-      AlwaysAssert(near(siModel2.index(Stokes::I), 2.0, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siModel2.index(Stokes::Q), 1.5, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siModel2.index(Stokes::U), 1.5, C::dbl_epsilon),
-		   AipsError);
-      AlwaysAssert(near(siModel2.index(Stokes::V), 0.0, C::dbl_epsilon),
-		   AipsError);
+      AlwaysAssert(near(siModel.index(), 0.0), AipsError);
+      cout << "Passed the default constructor test" << endl;
+       
+      AlwaysAssert(near(siModel.sample(f1), 1.0), AipsError);
+      AlwaysAssert(near(siModel.sample(f2), 1.0), AipsError);
+       
+      siModel.setIndex(1.0);  
+      AlwaysAssert(near(siModel.sample(f1), 1.0), AipsError);
+      AlwaysAssert(near(siModel.sample(f2), 2.0), AipsError);
+      siModel.setRefFrequency(f2);
+      siPtr = siModel.clone();
+      cout << "Passed the index test" << endl;
     }
+    {
+      Vector<Double> p(1);
+      siPtr->parameters(p);
+      AlwaysAssert(near(p(0), 1.0), AipsError);
+      AlwaysAssert(near(siPtr->refFrequency().get("GHz").getValue(), 2.0), 
+		   AipsError);
+      AlwaysAssert(siPtr->nParameters() == 1, AipsError);
+      p(0) = -1.0;
+      siPtr->setParameters(p);
+      cout << "Passed the parameters test" << endl;
+      SpectralIndex copy(*((SpectralIndex*)siPtr));
+      SpectralIndex assigned;
+      assigned = copy;
+      p(0) = 1.0;
+      siPtr->setParameters(p);
+      siPtr->setRefFrequency(f4);
+      copy.setIndex(0.0);
+      copy.setRefFrequency(f1);
+      p(0) = -10.0;
+      siPtr->parameters(p);
+      AlwaysAssert(near(p(0), 1.0), AipsError);
+      AlwaysAssert(near(siPtr->refFrequency().get("GHz").getValue(), 4.0), 
+		   AipsError);
+      AlwaysAssert(near(copy.index(), 0.0), AipsError);
+      AlwaysAssert(near(copy.refFrequency().get("GHz").getValue(), 1.0), 
+		   AipsError);
+      AlwaysAssert(near(assigned.index(), -1.0), AipsError);
+      AlwaysAssert(near(assigned.refFrequency().get("GHz").getValue(), 2.0), 
+		   AipsError);
+      cout << "Passed the copy semantics test" << endl;
+    }
+    {
+      SpectralIndex siModel(f2, 1.0);
+      AlwaysAssert(near(siModel.index(), 1.0), AipsError);
+      AlwaysAssert(near(siModel.refFrequency().get("GHz").getValue(), 2.0), 
+		   AipsError);
+      Vector<MVFrequency> freqs(3);
+      freqs(0) = f1.getValue(); 
+      freqs(1) = f2.getValue();
+      freqs(2) = f4.getValue();
+      MFrequency::Ref ref(MFrequency::LSR);
+      Vector<Double> results(3);
+      siModel.sample(results, freqs, ref);
+      AlwaysAssert(near(results(0), 0.5), AipsError);
+      AlwaysAssert(near(results(1), 1.0), AipsError);
+      AlwaysAssert(near(results(2), 2.0), AipsError);
+      cout << "Passed the multi-sample test" << endl;
+      Record rec;
+      String errMsg;
+      AlwaysAssert(siModel.toRecord(errMsg, rec), AipsError); 
+      AlwaysAssert(errMsg == "", AipsError); 
+      AlwaysAssert(rec.isDefined("type"), AipsError);
+      AlwaysAssert(rec.isDefined("frequency"), AipsError);
+      AlwaysAssert(rec.isDefined("index"), AipsError);
+      String type;
+      rec.get(RecordFieldId("type"), type);
+      AlwaysAssert(type == "Spectral Index", AipsError);
+      Double index;
+      rec.get(RecordFieldId("index"), index);
+      AlwaysAssert(near(index, 1.0), AipsError); 
+      Record freqRec = rec.asRecord(RecordFieldId("frequency"));
+      MeasureHolder mh;
+      mh.fromRecord(errMsg, freqRec);
+      AlwaysAssert(errMsg.length() == 0, AipsError);
+      AlwaysAssert(mh.isMFrequency(), AipsError);
+      mh = f1;
+      Record newRec;
+      newRec.define(RecordFieldId("type"), "spEctrAl IndEx");
+      newRec.define(RecordFieldId("index"), 0.0);
+      Record newFreq;
+      AlwaysAssert(mh.toRecord(errMsg, newFreq), AipsError);
+      AlwaysAssert(errMsg.length() == 0, AipsError);
+      newRec.defineRecord(RecordFieldId("frequency"), newFreq);
+      AlwaysAssert(siModel.fromRecord(errMsg, newRec), AipsError);
+      AlwaysAssert(near(siModel.index(), 0.0), AipsError);
+      AlwaysAssert(near(siModel.refFrequency().get("GHz").getValue(), 1.0), 
+		   AipsError);
+      Record emptyRec;
+      AlwaysAssert(siModel.convertUnit(errMsg, emptyRec), AipsError);
+      emptyRec.define(RecordFieldId("index"), "");
+      AlwaysAssert(siModel.convertUnit(errMsg, emptyRec), AipsError);
+      emptyRec.define(RecordFieldId("index"), "deg");
+      AlwaysAssert(siModel.convertUnit(errMsg, emptyRec) == False, AipsError);
+      cout << "Passed the record handling test" << endl;
+    }
+    delete siPtr;
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  }
+  catch (...) {
+    cerr << "Exception not derived from AipsError" << endl;
+    cout << "FAIL" << endl;
+    return 2;
+  }
   cout << "OK" << endl;
   return 0;
 }
