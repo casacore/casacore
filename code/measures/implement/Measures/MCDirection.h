@@ -132,6 +132,8 @@ private:
     HADEC_AZEL,
     AZEL_HADEC,
     HADEC_APP,
+    AZEL_AZELSW,
+    AZELSW_AZEL,
     N_Routes };
   
   //# Typedefs

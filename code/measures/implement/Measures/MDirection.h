@@ -79,7 +79,9 @@ template <class M, class F, class MC> class MeasConvert;
 //  <li>MDirection::BTRUE -- true equator and equinox at frame epoch
 //  <li>MDirection::GALACTIC -- galactic coordinates
 //  <li>MDirection::HADEC -- topocentric HA and declination
-//  <li>MDirection::AZEL --- topocentric Azimuth and Elevation
+//  <li>MDirection::AZEL --- topocentric Azimuth and Elevation (N through E)
+//  <li>MDirection::AZELSW - topocentric Azimuth and Elevation (S through W)
+//  <li>MDirection::AZELNE - topocentric Azimuth and Elevation (N through E)
 //  <li>MDirection::DEFAULT = J2000
 // </ul>
 // <p>
@@ -148,8 +150,10 @@ public:
 		GALACTIC,
 		HADEC,
 		AZEL,
+		AZELSW,
 		N_Types,
-		DEFAULT=J2000};
+		DEFAULT=J2000,
+	        AZELNE=AZEL};
 
 //# Typedefs
 // MeasRef use

@@ -118,7 +118,8 @@ const String &MDirection::showType(uInt tp) {
 	"BTRUE",
 	"GALACTIC",
 	"HADEC",
-	"AZEL"};
+	"AZEL",
+        "AZELSW"};
     DebugAssert(tp < MDirection::N_Types, AipsError);
     return tname[tp];
 }
@@ -135,7 +136,8 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
 	"BTRUE",
 	"GALACTIC",
 	"HADEC",
-	"AZEL"};
+	"AZEL",
+        "AZELSW"};
 
     static const uInt oname[N_name] = {
 	MDirection::J2000,
@@ -147,7 +149,8 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
 	MDirection::BTRUE,
 	MDirection::GALACTIC,
 	MDirection::HADEC,
-	MDirection::AZEL};
+	MDirection::AZEL,
+        MDirection::AZELSW};
 
     uInt i = Measure::giveMe(in, N_name, tname);
 

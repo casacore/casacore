@@ -70,7 +70,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 
 // Array of conversion routines to call
     static const MCDirection::Routes 
-	FromTo[MDirection::N_Types][MDirection::N_Types] = {
+    FromTo[MDirection::N_Types][MDirection::N_Types] = {
 	{ MCDirection::N_Routes,
 	  MCDirection::J2000_JMEAN,
 	  MCDirection::J2000_JMEAN,
@@ -79,6 +79,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	  MCDirection::J2000_B1950, 
 	  MCDirection::J2000_B1950,
 	  MCDirection::J2000_GAL,
+	  MCDirection::J2000_APP,
 	  MCDirection::J2000_APP,
 	  MCDirection::J2000_APP},
     { MCDirection::JMEAN_J2000, 
@@ -90,6 +91,7 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::JMEAN_J2000,
       MCDirection::JMEAN_J2000,
       MCDirection::JMEAN_J2000, 
+      MCDirection::JMEAN_J2000, 
       MCDirection::JMEAN_J2000},
     { MCDirection::JTRUE_JMEAN, 
       MCDirection::JTRUE_JMEAN, 
@@ -99,6 +101,7 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::JTRUE_JMEAN, 
       MCDirection::JTRUE_JMEAN,
       MCDirection::JTRUE_JMEAN,
+      MCDirection::JTRUE_JMEAN,  
       MCDirection::JTRUE_JMEAN,  
       MCDirection::JTRUE_JMEAN},
     { MCDirection::APP_J2000,  
@@ -110,6 +113,7 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::APP_B1950,
       MCDirection::APP_J2000,
       MCDirection::APP_HADEC, 
+      MCDirection::APP_HADEC, 
       MCDirection::APP_HADEC},
     { MCDirection::B1950_J2000, 
       MCDirection::B1950_J2000, 
@@ -119,6 +123,7 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::B1950_BMEAN,
       MCDirection::B1950_BMEAN,
       MCDirection::B1950_GAL,
+      MCDirection::B1950_APP, 
       MCDirection::B1950_APP, 
       MCDirection::B1950_APP},
     { MCDirection::BMEAN_B1950, 
@@ -130,6 +135,7 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::BMEAN_BTRUE,
       MCDirection::BMEAN_B1950,
       MCDirection::BMEAN_B1950, 
+      MCDirection::BMEAN_B1950, 
       MCDirection::BMEAN_B1950},
     { MCDirection::BTRUE_BMEAN, 
       MCDirection::BTRUE_BMEAN, 
@@ -139,6 +145,7 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::BTRUE_BMEAN, 
       MCDirection::N_Routes,   
       MCDirection::BTRUE_BMEAN,
+      MCDirection::BTRUE_BMEAN, 
       MCDirection::BTRUE_BMEAN, 
       MCDirection::BTRUE_BMEAN},
     { MCDirection::GAL_J2000,   
@@ -150,6 +157,7 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::GAL_B1950,
       MCDirection::N_Routes,
       MCDirection::GAL_J2000,   
+      MCDirection::GAL_J2000,   
       MCDirection::GAL_J2000},
     { MCDirection::HADEC_APP,   
       MCDirection::HADEC_APP,   
@@ -160,6 +168,7 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::HADEC_APP,
       MCDirection::HADEC_APP,
       MCDirection::N_Routes,    
+      MCDirection::HADEC_AZEL,
       MCDirection::HADEC_AZEL},
     { MCDirection::AZEL_HADEC,  
       MCDirection::AZEL_HADEC,  
@@ -170,7 +179,19 @@ void MCDirection::getConvert(MConvertBase &mc,
       MCDirection::AZEL_HADEC,  
       MCDirection::AZEL_HADEC,  
       MCDirection::AZEL_HADEC,  
-      MCDirection::N_Routes}
+      MCDirection::N_Routes,
+      MCDirection::AZEL_AZELSW},  
+    { MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::AZELSW_AZEL,
+      MCDirection::N_Routes},
     };
 
 // List of codes converted to
@@ -185,7 +206,8 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MDirection::APP,      	MDirection::J2000,
 	MDirection::APP,      	MDirection::B1950,
 	MDirection::HADEC,    	MDirection::AZEL,
-	MDirection::HADEC,    	MDirection::APP
+	MDirection::HADEC,    	MDirection::APP,
+	MDirection::AZELSW,    	MDirection::AZEL,
 	};
 
     Int iout = outref.getType();
@@ -343,6 +365,12 @@ void MCDirection::initConvert(uInt which, MConvertBase &mc) {
     break;
 
   case HADEC_APP:
+    break;
+
+  case AZEL_AZELSW:
+    break;
+
+  case AZELSW_AZEL:
     break;
 
   default:
@@ -680,7 +708,8 @@ void MCDirection::doConvert(MVDirection &in,
 	((MCFrame *)(MDirection::Ref::framePosition(outref, inref).
 		     getMCFramePoint()))->
 	  getLat(g1);
-	*ROTMAT1 = RotMatrix(Euler(C::pi_2-g1 ,(uInt) 2));
+	*ROTMAT1 = RotMatrix(Euler(C::pi_2-g1 ,(uInt) 2,
+			     C::pi, (uInt) 3));
 	in *= *ROTMAT1;
 	break;
 
@@ -688,7 +717,8 @@ void MCDirection::doConvert(MVDirection &in,
 	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
 		     getMCFramePoint()))->
 	  getLat(g1);
-	*ROTMAT1 = RotMatrix(Euler(C::pi_2-g1 ,(uInt) 2));
+	*ROTMAT1 = RotMatrix(Euler(C::pi_2-g1 ,(uInt) 2,
+			     C::pi, (uInt) 3));
 	in = *ROTMAT1 * in;
 	break;
 	
@@ -712,6 +742,13 @@ void MCDirection::doConvert(MVDirection &in,
 	*ROTMAT1 = RotMatrix(Euler(g1 ,(uInt) 3));
 	in = *ROTMAT1 * in;
 	in -= *MVPOS3;
+      }
+      break;
+
+      case AZEL_AZELSW: 
+      case AZELSW_AZEL: {
+	in(0) = -in(0);
+	in(1) = -in(1);
       }
       break;
 
