@@ -113,6 +113,10 @@ $(DOCSAREA)/%.ps : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
 	         $(RM) -r $(basename $@) ; \
 	         ln -s $< ; \
 	         $(LATEX2HTML) -dir $(basename $@) $($*) $(<F) ; \
+                 if [ "$(ICONSERVER)" != "" -a \
+                      "$(ICONS2LOCAL)" != "" ] ; then \
+                    $(ICONS2LOCAL) $(CODEAREA) $(ICONSERVER) $(basename $@) ; \
+                 fi ; \
 	      fi
 	@ chmod 664 $@
 
