@@ -32,6 +32,8 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Measures/Stokes.h>
+#include <aips/Utilities/PtrHolder.h>
+
 template <class T> class ImageInterface;
 template <class T> class Vector;
 template <class T> class Quantum;
@@ -42,6 +44,7 @@ class String;
 class IPosition;
 class LogIO;
 class Unit;
+
 
 //
 // <summary>
@@ -95,6 +98,17 @@ public:
 
 // Return the type of an image with the given name.
    static ImageTypes imageType (const String& fileName);
+
+// Open disk image (can be aips++, fits, Miriad).  Exception
+// if fileName empty or file does not exist or file is not
+// of legal image type.   For aips++ images, the default mask is
+// applied.
+//  <group>
+   static void openImage (PtrHolder<ImageInterface<Float> >& image,
+                          const String& fileName, LogIO& os);
+   static void openImage (ImageInterface<Float>*& image,
+                          const String& fileName, LogIO& os);
+//  </group>
 
 // Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
 // SHould template this function.
