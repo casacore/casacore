@@ -73,11 +73,11 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 			 "const CoordinateSystem & coordinateInfo, "
 			 "Table & table, Bool masking, uInt)", WHERE);
   
-  sink_p << LogIO::NORMAL 
+  sink_p << LogIO::DEBUGGING 
 	    << "Creating an image in row " << rowNumber 
 	    << " of an existing table called"
-	    << "'" << name() << "'" << endl
-	    << "The image shape is " << shape << LogIO::POST;
+	    << " '" << name() << "'" << endl
+	    << "The image shape is " << shape << endl;
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table, "mask", rowNumber);
     sink_p << "A mask was created" << LogIO::POST;
@@ -98,11 +98,11 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 			 "PagedImage(const IPosition & shape,  "
 			 "const CoordinateSystem & coordinateInfo, "
 			 "const String & filename, Bool masking, uInt rowNumber)", WHERE);
-  sink_p << LogIO::NORMAL 
+  sink_p << LogIO::DEBUGGING
 	    << "Creating an image in row " << rowNumber 
 	    << " of a new table called"
-	    << "'" << filename << "'" << endl
-	    << "The image shape is " << shape << LogIO::POST;
+	    << " '" << filename << "'" << endl
+	    << "The image shape is " << shape << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab);
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
@@ -128,8 +128,8 @@ PagedImage(Table & table, uInt rowNumber)
   sink_p << LogIO::NORMAL 
 	    << "Reading an image from row " << rowNumber 
 	    << " of a table called"
-	    << "'" << name() << "'" << endl
-	    << "The image shape is " << map_p.shape() << LogIO::POST;
+	    << " '" << name() << "'" << endl
+	    << "The image shape is " << map_p.shape() << endl;
   CoordinateSystem * restoredCoords =
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
@@ -154,13 +154,13 @@ PagedImage(const String & filename, uInt rowNumber)
   sink_p << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const String & filename, "
 			 "uInt rowNumber)", WHERE);
-  sink_p << LogIO::NORMAL 
+  sink_p << LogIO::DEBUGGING
 	 << "Reading an image from row " << rowNumber 
 	 << " of a file called"
-	 << "'" << filename << "'" << endl;
+	 << " '" << filename << "'" << endl;
   openTable(filename);
   map_p = PagedArray<T>(table_p, "map", rowNumber);
-  sink_p << "The image shape is " << map_p.shape() << LogIO::POST;
+  sink_p << "The image shape is " << map_p.shape() << endl;
 
   CoordinateSystem * restoredCoords =
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
@@ -267,7 +267,7 @@ setCoordinateInfo(const CoordinateSystem & coords) {
       }
     } 
     else
-      sink_p << LogIO::NORMAL 
+      sink_p << LogIO::SEVERE
 		<< "Table is not writable: not saving coordinates to disk."
 		<< LogIO::POST;
   }
