@@ -24,10 +24,10 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+#include <aips/stdio.h>
 #include <trial/Flagging/RFAMedianClip.h>
 #include <trial/Tasking/PGPlotterLocal.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <stdio.h>
     
 // -----------------------------------------------------------------------
 // RFATimeMedian
