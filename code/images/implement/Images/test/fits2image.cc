@@ -34,7 +34,7 @@
 
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageFITSConverter.h>
-#include <trial/Tasking/ApplicationEnvironment.h>
+#include <aips/Tasking/AppInfo.h>
 
 #include <iostream.h>
 
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     String error;
     PagedImage<Float>* pOutImage;
     ImageFITSConverter::FITSToImage(pOutImage, error, outFile, fitsFile, 0,
-                                    ApplicationEnvironment::memoryInMB());
+                                    AppInfo::memoryInMB());
     LogIO os(LogOrigin("fits2image", "main()", WHERE));
     if (!pOutImage) {
         os << LogIO::SEVERE << error << LogIO::EXCEPTION;
