@@ -454,7 +454,115 @@ int main ()
 			   iterCopy.vectorCursor().ac(), 1E-6) 
  		   == False, AipsError);
     }
-    
+    // Test the non-congruent cursor handling
+    {
+      cout << "Testing using a non-congruent cursor" << endl;
+      Table tData("tPagedArrIter_saved_tmp.table", Table::Update);
+      const PagedArray<Float> pagedArr(tData);
+      const IPosition latticeShape(pagedArr.shape());
+      IPosition cursorShape(2,9);
+      LatticeStepper step(latticeShape, cursorShape);
+      RO_PagedArrIter<Float>  iter(pagedArr, step);
+      Matrix<Float> expectedResult(cursorShape); 
+      Vector<Float> oneRow(cursorShape(0));
+      indgen(oneRow.ac());
+      uInt i;
+      for (i = 0; i < cursorShape(1); i++) {
+	expectedResult.column(i) = oneRow;
+	oneRow.ac() += Float(latticeShape(0));
+      }
+      AlwaysAssert(allNear(expectedResult.ac(), iter.cursor(), 1E-6), 
+		   AipsError);
+      iter++;
+      indgen(oneRow.ac(), Float(cursorShape(0))); 
+      for (i = 0; i < cursorShape(1); i++) {
+	oneRow(7) = 0.0;
+	oneRow(8) = 0.0;
+	expectedResult.column(i) = oneRow;
+	oneRow.ac() += Float(latticeShape(0));
+      }
+      AlwaysAssert(allNear(expectedResult.ac(), iter.cursor(), 1E-6), 
+		   AipsError);
+      iter++;
+      expectedResult = 0.0f;
+      indgen(oneRow.ac(), Float(cursorShape(0)*latticeShape(0))); 
+      for (i = 0; i < 3; i++) {
+	expectedResult.column(i) = oneRow;
+	oneRow.ac() += Float(latticeShape(0));
+      }
+      AlwaysAssert(allNear(expectedResult.ac(), iter.cursor(), 1E-6), 
+		   AipsError);
+      iter++; 
+      expectedResult = 0.0f;
+      indgen(oneRow.ac(), Float(cursorShape(0)*(latticeShape(0)+1))); 
+      for (i = 0; i < 3; i++) {
+	oneRow(7) = 0.0;
+	oneRow(8) = 0.0;
+	expectedResult.column(i) = oneRow;
+	oneRow.ac() += Float(latticeShape(0));
+      }
+      cursorShape = 5;
+      step.setCursorShape(cursorShape);
+      step.subSection(IPosition(4, 3,0,0,0), latticeShape-1, 
+ 		      IPosition(4, 2,2,1,1));
+      RO_PagedArrIter<Float>  subIter(pagedArr, step);
+
+      oneRow.resize(5);
+      Matrix<Float> expectedResult1(5,5);
+      expectedResult1 = 0.0f;
+      indgen(oneRow.ac(), 3.0f, 2.0f); 
+      for (i = 0; i < 5; i++) {
+ 	expectedResult1.column(i) = oneRow;
+ 	oneRow.ac() += 32.0f;
+      }
+      AlwaysAssert(allNear(expectedResult1.ac(), subIter.cursor(), 1E-6), 
+ 		   AipsError);
+      subIter++;
+      Matrix<Float> expectedResult2(5,5);
+      expectedResult2 = 0.0f;
+      indgen(oneRow.ac(), 13.0f, 2.0f); 
+      for (i = 0; i < 5; i++) {
+ 	oneRow(2) = 0.0f;
+ 	oneRow(3) = 0.0f;
+ 	oneRow(4) = 0.0f;
+ 	expectedResult2.column(i) = oneRow;
+ 	oneRow.ac() += 32.0f;
+      }
+      AlwaysAssert(allNear(expectedResult2.ac(), subIter.cursor(), 1E-6), 
+ 		   AipsError);
+      subIter++;
+      Matrix<Float> expectedResult3(5,5);
+      expectedResult3 = 0.0f;
+      indgen(oneRow.ac(), 163.0f, 2.0f); 
+      for (i = 0; i < 1; i++) {
+ 	expectedResult3.column(i) = oneRow;
+ 	oneRow.ac() += 32.0f;
+      }
+      AlwaysAssert(allNear(expectedResult3.ac(), subIter.cursor(), 1E-6), 
+ 		   AipsError);
+      subIter++;
+      Matrix<Float> expectedResult4(5,5);
+      expectedResult4 = 0.0f;
+      indgen(oneRow.ac(), 173.0f, 2.0f); 
+       for (i = 0; i < 1; i++) {
+	 oneRow(2) = 0.0f;
+	 oneRow(3) = 0.0f;
+	 oneRow(4) = 0.0f;
+	 expectedResult4.column(i) = oneRow;
+	 oneRow.ac() += 32.0f;
+       }
+       AlwaysAssert(allNear(expectedResult4.ac(), subIter.cursor(), 1E-6), 
+		    AipsError);
+       subIter--;
+       AlwaysAssert(allNear(expectedResult3.ac(), subIter.cursor(), 1E-6), 
+		    AipsError);
+       subIter--;
+       AlwaysAssert(allNear(expectedResult2.ac(), subIter.cursor(), 1E-6), 
+		    AipsError);
+       subIter--;
+       AlwaysAssert(allNear(expectedResult1.ac(), subIter.cursor(), 1E-6), 
+		    AipsError);
+    }
     //++++++++++++++++++++ Test PagedArrIter ++++++++++++++++++++
     cout << "Testing the RW iterator" << endl;
     // Check the Iterator with a Vector cursor. 
@@ -862,6 +970,178 @@ int main ()
       AlwaysAssert(allNear(expectedResult.ac(),
 			   iterCopy.vectorCursor().ac(), 1E-6) 
  		   == True, AipsError);
+    }
+    // Test the non-congruent cursor handling
+    {
+      cout << "Testing using a non-congruent cursor" << endl;
+      Table tData("tPagedArrIter_saved_tmp.table", Table::Update);
+      PagedArray<Float> pagedArr(tData);
+      const IPosition latticeShape(pagedArr.shape());
+      {
+	Array<Float> arr;
+	pagedArr.getSlice(arr, IPosition(latticeShape.nelements(), 0),
+			  latticeShape, IPosition(latticeShape.nelements(), 1));
+	indgen(arr);
+	pagedArr.putSlice(arr, IPosition(latticeShape.nelements(), 0),
+			  IPosition(latticeShape.nelements(), 1));
+      }
+      IPosition cursorShape(2,9);
+      LatticeStepper step(latticeShape, cursorShape);
+      PagedArrIter<Float>  iter(pagedArr, step);
+      Matrix<Float> expectedResult1(cursorShape); 
+      Vector<Float> oneRow(cursorShape(0));
+      indgen(oneRow.ac());
+      uInt i;
+      for (i = 0; i < cursorShape(1); i++) {
+ 	expectedResult1.column(i) = oneRow;
+ 	oneRow.ac() += Float(latticeShape(0));
+      }
+      AlwaysAssert(allNear(expectedResult1.ac(), iter.cursor(), 1E-6), 
+ 		   AipsError);
+      iter.cursor() = -1.0f * iter.cursor() - 1.0f;
+      iter++;
+      Matrix<Float> expectedResult2(cursorShape); 
+      indgen(oneRow.ac(), Float(cursorShape(0))); 
+      for (i = 0; i < cursorShape(1); i++) {
+  	oneRow(7) = 0.0;
+  	oneRow(8) = 0.0;
+  	expectedResult2.column(i) = oneRow;
+  	oneRow.ac() += Float(latticeShape(0));
+      }
+      AlwaysAssert(allNear(expectedResult2.ac(), iter.cursor(), 1E-6), 
+  		   AipsError);
+      iter.cursor() = -1.0f * iter.cursor() - 1.0f;
+      iter++;
+      Matrix<Float> expectedResult3(cursorShape); 
+      expectedResult3 = 0.0f;
+      indgen(oneRow.ac(), Float(cursorShape(0)*latticeShape(0))); 
+      for (i = 0; i < 3; i++) {
+  	expectedResult3.column(i) = oneRow;
+  	oneRow.ac() += Float(latticeShape(0));
+      }
+      AlwaysAssert(allNear(expectedResult3.ac(), iter.cursor(), 1E-6), 
+		   AipsError);
+      iter.cursor() = -1.0f * iter.cursor() - 1.0f;
+      iter++; 
+      Matrix<Float> expectedResult4(cursorShape); 
+      expectedResult4 = 0.0f;
+      indgen(oneRow.ac(), Float(cursorShape(0)*(latticeShape(0)+1))); 
+      for (i = 0; i < 3; i++) {
+  	oneRow(7) = 0.0;
+ 	oneRow(8) = 0.0;
+  	expectedResult4.column(i) = oneRow;
+  	oneRow.ac() += Float(latticeShape(0));
+      }
+      AlwaysAssert(allNear(expectedResult4.ac(), iter.cursor(), 1E-6), 
+		   AipsError);
+      iter.cursor() = -1.0f * iter.cursor() - 1.0f;
+      iter--; iter++;
+      iter.cursor() += expectedResult4.ac();
+      {
+	Array<Float> m(iter.cursor()(IPosition(2,0),IPosition(2,6,2)));
+	m += 1.0f;
+	AlwaysAssert(allNear(iter.cursor(), 0.0f, 1E-6), AipsError);
+      }
+      iter--;
+      iter.cursor() += expectedResult3.ac();
+      {
+	Array<Float> m(iter.cursor()(IPosition(2,0),IPosition(2,8,2)));
+	m += 1.0f;
+	AlwaysAssert(allNear(iter.cursor(), 0.0f, 1E-6), AipsError);
+      }
+      iter--;
+      iter.cursor() += expectedResult2.ac();
+      {
+	Array<Float> m(iter.cursor()(IPosition(2,0),IPosition(2,6,8)));
+	m += 1.0f;
+	AlwaysAssert(allNear(iter.cursor(), 0.0f, 1E-6), AipsError);
+      }
+      iter--;
+      iter.cursor() += expectedResult1.ac();
+      iter.cursor() += 1.0f;
+      AlwaysAssert(allNear(iter.cursor(), 0.0f, 1E-6), AipsError);
+
+      {
+	Array<Float> arr;
+	pagedArr.getSlice(arr, IPosition(latticeShape.nelements(), 0),
+			  latticeShape, IPosition(latticeShape.nelements(), 1));
+	indgen(arr);
+	pagedArr.putSlice(arr, IPosition(latticeShape.nelements(), 0),
+			  IPosition(latticeShape.nelements(), 1));
+      }
+
+      cursorShape = 5;
+      step.setCursorShape(cursorShape);
+      step.subSection(IPosition(4, 3,0,0,0), latticeShape-1, 
+  		      IPosition(4, 2,2,1,1));
+      PagedArrIter<Float> subIter(pagedArr, step);
+
+      oneRow.resize(5);
+      Matrix<Float> expectedResulta(5,5);
+      expectedResulta = 0.0f;
+      indgen(oneRow.ac(), 3.0f, 2.0f); 
+      for (i = 0; i < 5; i++) {
+  	expectedResulta.column(i) = oneRow;
+  	oneRow.ac() += 32.0f;
+      }
+      AlwaysAssert(allNear(expectedResulta.ac(), subIter.cursor(), 1E-6), 
+  		   AipsError);
+      subIter.cursor() = -1.0f * subIter.cursor() - 1.0f;
+      subIter++;
+      Matrix<Float> expectedResultb(5,5);
+      expectedResultb = 0.0f;
+      indgen(oneRow.ac(), 13.0f, 2.0f); 
+      for (i = 0; i < 5; i++) {
+  	oneRow(2) = 0.0f;
+  	oneRow(3) = 0.0f;
+  	oneRow(4) = 0.0f;
+  	expectedResultb.column(i) = oneRow;
+  	oneRow.ac() += 32.0f;
+      }
+      AlwaysAssert(allNear(expectedResultb.ac(), subIter.cursor(), 1E-6), 
+		   AipsError);
+      subIter.cursor() = -1.0f * subIter.cursor() - 1.0f;
+      subIter++;
+      Matrix<Float> expectedResultc(5,5);
+      expectedResultc = 0.0f;
+      indgen(oneRow.ac(), 163.0f, 2.0f); 
+      for (i = 0; i < 1; i++) {
+  	expectedResultc.column(i) = oneRow;
+  	oneRow.ac() += 32.0f;
+      }
+      AlwaysAssert(allNear(expectedResultc.ac(), subIter.cursor(), 1E-6), 
+		   AipsError);
+      subIter.cursor() = -1.0f * subIter.cursor() - 1.0f;
+      subIter++;
+      Matrix<Float> expectedResultd(5,5);
+      expectedResultd = 0.0f;
+      indgen(oneRow.ac(), 173.0f, 2.0f); 
+      for (i = 0; i < 1; i++) {
+	oneRow(2) = 0.0f;
+	oneRow(3) = 0.0f;
+	oneRow(4) = 0.0f;
+	expectedResultd.column(i) = oneRow;
+	oneRow.ac() += 32.0f;
+      }
+      AlwaysAssert(allNear(expectedResultd.ac(), subIter.cursor(), 1E-6), 
+		   AipsError);
+      subIter.cursor() = -1.0f * subIter.cursor() - 1.0f;
+      subIter--; subIter++;
+      Array<Float> arr;
+      pagedArr.getSlice(arr, IPosition(latticeShape.nelements(), 0),
+			IPosition(4,16,12,1,1), 
+			IPosition(latticeShape.nelements(), 1));
+      AlwaysAssert(near(arr(IPosition(4,0)), 0.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,1,0,0,0)), 1.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,1,0,0,0)), 1.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,3,0,0,0)), -4.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,13,0,0,0)), -14.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,14,0,0,0)), 14.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,2,10,0,0)), 162.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,3,10,0,0)), -164.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,3,11,0,0)), 179.0f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,15,10,0,0)), -176.f, 1E-6), AipsError);
+      AlwaysAssert(near(arr(IPosition(4,15,11,0,0)), 191.0f, 1E-6), AipsError);
     }
     cout << "OK" << endl;
     return 0;
