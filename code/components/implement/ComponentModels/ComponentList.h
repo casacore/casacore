@@ -137,7 +137,7 @@ public:
   // Remove the specified SkyComponent from the ComponentList. After removing a
   // component all the components with an index greater than this one will be
   // reduced by one.
-  void remove(const uInt index);
+  void remove(uInt index);
 
   // returns how many components are in the list.
   uInt nelements() const;
