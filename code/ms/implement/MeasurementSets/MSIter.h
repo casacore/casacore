@@ -168,8 +168,8 @@ public:
 
   // Construct from MS and a Block of MS column enums specifying the 
   // iteration order, if none are specified, ARRAY_ID, FIELD_ID, DATA_DESC_ID,
-  // and TIME iteration is implicit. 
-  // These columns will always be added first if they are not specified.
+  // and TIME iteration is implicit (unless addDefaultSortColumns=False)
+  // These columns will be added first if they are not specified.
   // An optional timeInterval can be given to iterate through chunks of time.
   // The default interval of 0 groups all times together.
   // Every 'chunk' of data contains all data within a certain time interval
@@ -177,11 +177,11 @@ public:
   // DATA_DESCRIPTION_ID and FIELD_ID).
   // See the examples above for the effect of different sort orders.
   MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns, 
-	 Double timeInterval=0);
+	 Double timeInterval=0, Bool addDefaultSortColumns=True);
 
   // Same as above with multiple MSs as input.
   MSIter(const Block<MeasurementSet>& mss, const Block<Int>& sortColumns, 
-	 Double timeInterval=0);
+	 Double timeInterval=0, Bool addDefaultSortColumns=True);
 
   // Copy construct. This calls the assigment operator.
   MSIter(const MSIter & other);
@@ -296,7 +296,7 @@ public:
 
 protected:
   // handle the construction details
-  void construct(const Block<Int>& sortColumns);
+  void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
   // advance the iteration
   void advance();
   // set the iteration state

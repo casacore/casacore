@@ -58,20 +58,22 @@ MSIter::MSIter():nMS_p(0),msc_p(0) {}
 
 MSIter::MSIter(const MeasurementSet& ms,
 	       const Block<Int>& sortColumns,
-	       Double timeInterval)
+	       Double timeInterval,
+	       Bool addDefaultSortColumns)
 : msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval)
 {
   bms_p.resize(1); 
   bms_p[0]=ms;
-  construct(sortColumns);
+  construct(sortColumns,addDefaultSortColumns);
 }
 
 MSIter::MSIter(const Block<MeasurementSet>& mss,
 	       const Block<Int>& sortColumns,
-	       Double timeInterval)
+	       Double timeInterval,
+	       Bool addDefaultSortColumns)
 : bms_p(mss),msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval)
 {
-  construct(sortColumns);
+  construct(sortColumns,addDefaultSortColumns);
 }
 
 Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
@@ -92,7 +94,8 @@ Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
   return ok;
 }
 
-void MSIter::construct(const Block<Int>& sortColumns)
+void MSIter::construct(const Block<Int>& sortColumns, 
+		       Bool addDefaultSortColumns)
 {
   This = (MSIter*)this; 
   nMS_p=bms_p.nelements();
@@ -105,12 +108,12 @@ void MSIter::construct(const Block<Int>& sortColumns)
   tabIter_p.resize(nMS_p);
   tabIterAtStart_p.resize(nMS_p);
   // 'sort out' the sort orders
-  // We require the table to be sorted on ARRAY_ID and FIELD_ID,
+  // We normally require the table to be sorted on ARRAY_ID and FIELD_ID,
   // DATA_DESC_ID and TIME for the correct operation of the
   // VisibilityIterator (it needs to know when any of these changes to
   // be able to give the correct coordinates with the data)
   // If these columns are not explicitly sorted on, they will be added
-  // BEFORE any others.
+  // BEFORE any others, unless addDefaultSortColumns=False
 
   Block<Int> cols; 
   // try to reuse the existing sorted table if we didn't specify
@@ -139,31 +142,41 @@ void MSIter::construct(const Block<Int>& sortColumns)
       throw(AipsError("MSIter() - invalid sort column"));
     }
   }
-  Block<String> columns(cols.nelements()+4-nCol);
-
+  Block<String> columns;
+  
   Int iCol=0;
-  if (!arraySeen) {
-    // add array if it's not there
-    columns[iCol++]=MS::columnName(MS::ARRAY_ID);
-  };
-
-  if (!fieldSeen) {
-    // add field if it's not there
-    columns[iCol++]=MS::columnName(MS::FIELD_ID);
-  }
-  if (!ddSeen) {
-    // add dd if it's not there
-    columns[iCol++]=MS::columnName(MS::DATA_DESC_ID);
-  }
-  if (!timeSeen) {
-    // add time if it's not there
-    columns[iCol++]=MS::columnName(MS::TIME);
+  if (addDefaultSortColumns) {
+    columns.resize(cols.nelements()+4-nCol);
+    if (!arraySeen) {
+      // add array if it's not there
+      columns[iCol++]=MS::columnName(MS::ARRAY_ID);
+    }
+    if (!fieldSeen) {
+      // add field if it's not there
+      columns[iCol++]=MS::columnName(MS::FIELD_ID);
+    }
+    if (!ddSeen) {
+      // add dd if it's not there
+      columns[iCol++]=MS::columnName(MS::DATA_DESC_ID);
+    }
+    if (!timeSeen) {
+      // add time if it's not there
+      columns[iCol++]=MS::columnName(MS::TIME);
+    }
+  } else {
+    columns.resize(cols.nelements());
   }
   for (uInt i=0; i<cols.nelements(); i++) {
     columns[iCol++]=MS::columnName(MS::PredefinedColumns(cols[i]));
   }
   if (interval_p==0.0) {
     interval_p=DBL_MAX; // semi infinite
+  } else {
+    // assume that we want to sort on time if interval is set
+    if (!timeSeen) {
+      columns.resize(columns.nelements()+1);
+      columns[iCol++]=MS::columnName(MS::TIME);
+    }
   }
   MSInterval::setInterval(interval_p);
   // do not set the offset (all intervals are zero based so we can convert
@@ -173,7 +186,7 @@ void MSIter::construct(const Block<Int>& sortColumns)
   // (We could reintroduce offsets later, at some cost in evaluating
   // the VisEquation for solve() - keep full resolution until the current
   // VisJones is reached -> only one averaging step)
-
+  
   // now find the time column and set the compare function
   PtrBlock<ObjCompareFunc*> objCompFuncs(columns.nelements());
   for (uInt i=0; i<columns.nelements(); i++) {
@@ -184,7 +197,7 @@ void MSIter::construct(const Block<Int>& sortColumns)
     }
   }
   Block<Int> orders(columns.nelements(),TableIterator::Ascending);
-
+  
   // Store the sorted table for future access if possible, 
   // reuse it if already there
   for (Int i=0; i<nMS_p; i++) {
@@ -193,7 +206,7 @@ void MSIter::construct(const Block<Int>& sortColumns)
     // check if we already have a sorted table consistent with the requested
     // sort order
     if (!bms_p[i].keywordSet().isDefined("SORT_COLUMNS") ||
-      !bms_p[i].keywordSet().isDefined("SORTED_TABLE") ||
+	!bms_p[i].keywordSet().isDefined("SORTED_TABLE") ||
 	bms_p[i].keywordSet().asArrayString("SORT_COLUMNS").nelements()!=
 	columns.nelements() ||
 	!allEQ(bms_p[i].keywordSet().asArrayString("SORT_COLUMNS"),
@@ -225,6 +238,7 @@ void MSIter::construct(const Block<Int>& sortColumns)
 
     if (!useIn && !useSorted) {
       // we have to resort the input
+      if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
       sorted = bms_p[i].sort(columns);
     }
     
