@@ -99,31 +99,35 @@ Menubars should have the following characteristics:
         related to dismissing the GUI.  The possible types
         of dismissal which could appear in the File menu
         are:
-            o Dismiss Window - this item closes the outer frame
-                controlled by this GUI.  It does not destroy
-                any objects related to this GUI which have
-                a command-line interface (i.e. the GUI should
-                be restart-able from that object and that
-                object should be usable without the GUI).
-		The GUI should be easily re-created by the user 
+            o Dismiss Window - this item makes the outer frame
+                controlled by this GUI invisible.  It does not destroy
+                any glish closures (except perhaps its own so long
+		as doing so does not lead to any loss of information).
+ 		The GUI should be easily re-creatable by the user 
 		with no loss of information in the GUI.
 		Often an unmap event will be all that is necessary
 		to implement the action behind this menu item.
+
             o Dismiss All Windows - this item should be used if
                 there are a number of related windows launched
                 from the same or closely related GUIs.  Again,
                 as in "Close Window" this does not disable any
-                underlying objects having viable command-line
-                interfaces.
+                underlying closures.  This is just "Dismiss Window"
+		applied to a number of windows.
+
 	    o Done - This destroys the GUI and any
 		underlying closures but does not exit glish.
+		It is often the GUI front-end to a distributed
+		object "done" function.
+
             o Exit - this menu item is reserved only for GUIs which
-                are intended to run as stand alone scripts where they
-                are the sole reason that glish is running
+                are intended to run as stand-alone scripts where they
+                are the sole reason that particular session of glish exists
                 (e.g. some background glish script with a controlling
                 GUI which has been started without direct access to the
                 underlying glish).  When invoked, the underlying glish
                 is exited.
+
         It is often wise for each of these menu items to lead to
         an "Are you sure?" dialog box giving the user the option to cancel
         that operation.  It is up to the programmer to decide when
@@ -174,6 +178,11 @@ in which an outer GUI frame might be closed:
         right of the frame it is controlling as possible
         without this requirement leading to excessive wasted
         space in the frame.
+	    In general, there should be only one such short-cut
+	button which removes or unmaps the GUI.  GUIs
+	with both a "Done" and a "Dismiss" button are needlessly
+	confusing.  Choose one.  Multiple options for removing
+	a GUI should only appear in the File menu.
 
     o From a required choice.  When a GUI exists only to demand
         some choice from the user (for example the
