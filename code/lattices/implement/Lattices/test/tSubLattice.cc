@@ -1,5 +1,5 @@
 //# tSubLattice.cc: Test program for class SubLattice
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,6 +38,8 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Inputs/Input.h>
+#include <aips/OS/Timer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
@@ -279,7 +281,36 @@ void testAxes()
 }
 
 
-main ()
+void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2, Bool useRef)
+{
+  {
+    PagedArray<Int>* pa1 = dynamic_cast<PagedArray<Int>*> (&lat1);
+    if (pa1) pa1->clearCache();
+    PagedArray<Int>* pa2 = dynamic_cast<PagedArray<Int>*> (&lat2);
+    if (pa2) pa2->clearCache();
+    Timer timer;
+    LatticeIterator<Int> lat1Iter (lat1, useRef);
+    // Create dummy lat2Iter to setup cache correctly.
+    // It may not be necessary, because the Table getSlice function
+    // will setup the cache on its first access.
+    RO_LatticeIterator<Int> lat2Iter (lat2, lat1.niceCursorShape(), useRef);
+    Array<Int> lat2Buffer;
+    while (! lat1Iter.atEnd()) {
+      // Do separate getSlice to use reference semantics if
+      // lat2 is an ArrayLattice.
+      // Note that it requires lat2 to be non-const.
+      lat2.getSlice (lat2Buffer, lat1Iter.position(),
+		     lat1Iter.cursorShape());
+      lat1Iter.rwCursor() += lat2Buffer;
+      lat1Iter++;
+    }
+    timer.show ();
+    ///if (pa1) pa1->showCacheStatistics (cout);
+    ///if (pa2) pa2->showCacheStatistics (cout);
+  }
+}
+
+int main (int argc, char* argv[])
 {
   try {
     {
@@ -307,8 +338,57 @@ main ()
     }
     // Test some other SubLattice functions.
     testRest();
-    // Test the axes removal..
+    // Test the axes removal.
     testAxes();
+
+    {
+      // Test performance.
+      Input inp(1);
+      inp.version(" ");
+      inp.create("nx", "512", "Number of pixels along the x-axis", "int");
+      inp.create("ny", "512", "Number of pixels along the y-axis", "int");
+      inp.readArguments(argc, argv);
+      const uInt nx=inp.getInt("nx");
+      const uInt ny=inp.getInt("ny");
+      IPosition shape(2,nx,ny);
+      ArrayLattice<Int> latArr1(shape);
+      ArrayLattice<Int> latArr2(shape);
+
+      Array<Int> arr(latArr1.shape());
+      indgen(arr);
+      latArr1.put (arr);
+      latArr2.put (arr);
+      cout << "Shape " << shape << endl;
+
+      {
+	SubLattice<Int> slatArr1(latArr1, True);
+	SubLattice<Int> slatArr2(latArr2);
+	cout << "subarray+=subarray useRef=False" << endl;
+	testAdd (slatArr1, slatArr2, False);
+	AlwaysAssert (allEQ(latArr1.get(), 2*arr), AipsError);
+	cout << "subarray+=subarray useRef=True" << endl;
+	testAdd (slatArr1, slatArr2, True);
+	AlwaysAssert (allEQ(latArr1.get(), 3*arr), AipsError);
+	cout << "array+=subarray useRef=False" << endl;
+	testAdd (latArr1, slatArr2, False);
+	AlwaysAssert (allEQ(latArr1.get(), 4*arr), AipsError);
+	cout << "array+=subarray useRef=True" << endl;
+	testAdd (latArr1, slatArr2, True);
+	AlwaysAssert (allEQ(latArr1.get(), 5*arr), AipsError);
+	cout << "subarray+=array useRef=False" << endl;
+	testAdd (slatArr1, latArr2, False);
+	AlwaysAssert (allEQ(latArr1.get(), 6*arr), AipsError);
+	cout << "subarray+=array useRef=True" << endl;
+	testAdd (slatArr1, latArr2, True);
+	AlwaysAssert (allEQ(latArr1.get(), 7*arr), AipsError);
+	cout << "array+=array useRef=False" << endl;
+	testAdd (latArr1, latArr2, False);
+	AlwaysAssert (allEQ(latArr1.get(), 8*arr), AipsError);
+	cout << "array+=array useRef=True" << endl;
+	testAdd (latArr1, latArr2, True);
+	AlwaysAssert (allEQ(latArr1.get(), 9*arr), AipsError);
+      }
+    }
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
