@@ -1,5 +1,5 @@
 //# SpectralCoordinate.h: Interconvert between pixel and frequency.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -324,6 +324,48 @@ public:
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
+    // Set the preferred velocity type.  It can be used to specify
+    // a favoured velocity type for conversions.  The SpectralCoordinate
+    // is constructed with <src>MDoppler::RADIO</src> as the preferred type.
+    // The only functions in this class which use the preferred type
+     // are <src>format, save, restore</src>
+    // <group>
+    void setPreferredVelocityType (MDoppler::Types velType=MDoppler::RADIO) 
+      {prefVelType_p = velType;};
+    MDoppler::Types preferredVelocityType () const {return prefVelType_p;};
+    // </group>
+
+    // Set and recover the preferred spectral units.  It can be used to specify
+    // a favoured spectral unit for conversions.  This unit must be empty
+    // or consistent with Hz or km/s, else False is returned an <src>errorMessage()</src>
+    // has an error message for you.  The SpectralCoordinate
+    // is constructed with the preferred units an empty string.
+    // The only functions in this class which uses the preferred typef
+    // are <src>format, save, restore</src>.  
+    // <group>
+    Bool setPreferredSpectralUnit (const String& units);
+    String preferredSpectralUnit () const {return prefSpecUnit_p;};
+    // </group>
+
+    // Format a world value.  It must be in the native units of the SpectralCoordinate.
+    // If <src>units</src> is given, it must be consistent with Hz
+    // or m/s and the world value will be converted to those units.  
+    // If you give a unit consistent with m/s then the
+    // appropriate velocity definition is taken from that set by
+    // function <src>setPreferredVelocityType</src>.
+    // If <src>units</src> is emoty, the units given by the
+    // units specified by <src>setPreferredSpectralUnits</src> is used.
+    // If those preferred units are empty, the native units are used.
+    // Argument <src>native</src> is ignored.
+    virtual String format(String& units,
+                          Coordinate::formatType format,
+                          Double worldValue,  
+                          uInt worldAxis,
+                          Bool absolute,
+                          Int precision=-1,
+                          Bool native=False);
+    // </group>
+
     // Save the SpectralCoordinate into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
@@ -342,11 +384,18 @@ private:
     Double restfreq_p;
     TabularCoordinate worker_p;
     VelocityMachine* pVelocityMachine_p;
+    MDoppler::Types prefVelType_p;         // Preferred velocity type
+    String prefSpecUnit_p;                 // Preferred spectral units
 
 // Make and delete velocity machine
 
    void makeVelocityMachine (const String& velUnit, MDoppler::Types velType);
    void deleteVelocityMachine ();
+
+// Format checker
+   void checkFormat(Coordinate::formatType& format,
+                    const Bool ) const;
+
 };
 
 #endif
