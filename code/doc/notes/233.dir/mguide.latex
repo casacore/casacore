@@ -4,6 +4,7 @@
 \newcommand{\quans}{{\em Quantities}}
 \newcommand{\val}{{\sc value}}
 \newcommand{\refq}{{\sc reference}}
+\newcommand{\refqs}{{\sc references}}
 
 % Add home page navigation button
 %
@@ -51,7 +52,7 @@ A \mes\ consists of a \val\ and a \refq. The \val\ of a \mes\ is a vector
 of double floating point numbers, in some internal format. The \val\ is
 called a {\em MeasValue}, and specific ones are indicated with the
 letters $MV$, e.g. $MVDirection$. 
-\footnote{Note that it is un
+\footnote{Note that it is an
 unfortunate circumstance that there exist the classes $MVTime$ and
 $MVAngle$, which are not {\em MeasValues}, but only formatting classes
 for times and angles.}
@@ -129,6 +130,54 @@ reference could be:\\
 \end{minipage}
 
 \section{Conversion}
+
+\mess\ can be converted from one \refq\ into another \refq. E.g. from
+a {\tt MDirection::J2000} direction coordinate into an {\tt
+MDirection::AZEL} coordinate; or from an {\tt MEpoch::UTC} into an
+{\tt MEpoch::TAI}. Conversion objects are {\tt MeasConvert} objects,
+using the {\tt MEasure::Convert} alias (e.g. {\tt
+MDirection::Convert}. The conversion object needs at least a {\em from}
+\refq\ and a  {\em to} \refq. E.g: \\
+\\
+\hspace{.05\linewidth}
+\begin{minipage}[t]{.9\linewidth}
+\begin{verbatim}
+	MDirection::Convert(MDirection::Ref(MDirection::VENUS, frame),
+			    MDirection::Ref(MDirection::J2000));
+\end{verbatim}
+\end{minipage}
+{\em Note} that if a {\em frame} is necessary, it suffices to give it
+with either one of the two \refqs. Unless, of course, they are
+different for the two \refqs, like converting the {\tt AZEL} at one
+telescope to that at another.
+
+The {\em from} \refq\ can also be specified as a complet \mes. In that
+case that \val\ of the \mes\ will act as the {\em default} \val\ to be
+converted.
+
+Constructing a conversion object will set up a series of conversions
+that have to be done to get from the {\em from} to the {\em to} \refq. This
+state-machine like approach is to be able to use less than the
+required odd 400 conversion routines for say 20 different allowable
+reference codes.
+
+The conversion object is executed with the () operator. The actual
+conversion done depends on the argument of the operator:
+\begin{itemize}
+\item {\em none}: use the default value of the Measure specified in the
+constructor (or using a {\tt set()} method).
+\item {\em MeasVale}: convert it to a \mes\ using the {\em from}
+reference of the object
+\item {\em Measure}: re-initialise the conversion object, and do the
+conversion with the new default value (since the \refq\ has changed!).
+\end{itemize}
+
+If the conversion needs information, it will cache anything it
+calculates, either in the conversion object (like calculated {\em
+Nutation}), or in the {\em frame} (like e.g. the sidereal time of a
+frame MEpoch specified in UTC). This information will be re-useed if
+possible and feasable in subsequent conversions with the same
+conversion object or using the same frame.
 
 \section{Efficiency}
 
