@@ -306,18 +306,19 @@ Bool ConvolveGridder<Domain, Range>::grid(Array<Range> &gridded,
   if(onGrid(loc,supportVec)) {
     Bool del;
     posVec=position(posVec, p);
+    IPosition s(gridded.shape());
     switch(loc.nelements()) {
     case 1:
-      grd1d(&gridded.shape()(0), &loc(0), gridded.getStorage(del), &value, &support,
+      grd1d(&s(0), &loc(0), gridded.getStorage(del), &value, &support,
 	       &sampling, &posVec(0), convFunc.getStorage(del));
       break;
     case 2:
-      grd2d(&gridded.shape()(0), &gridded.shape()(1), &loc(0), &loc(1), gridded.getStorage(del),
+      grd2d(&s(0), &s(1), &loc(0), &loc(1), gridded.getStorage(del),
 	       &value, &support, &sampling, &posVec(0), &posVec(1),
 	       convFunc.getStorage(del));
       break;
     case 3:
-      grd3d(&gridded.shape()(0), &gridded.shape()(1), &gridded.shape()(2), &loc(0), &loc(1), &loc(2),
+      grd3d(&s(0), &s(1), &s(2), &loc(0), &loc(1), &loc(2),
 	       gridded.getStorage(del), &value, &support,
 	       &sampling, &posVec(0), &posVec(1), &posVec(2),
 	       convFunc.getStorage(del));
@@ -343,18 +344,19 @@ Bool ConvolveGridder<Domain, Range>::degrid(const Array<Range> &gridded,
  if(onGrid(loc,supportVec)) {
     Bool del;
     posVec=position(posVec, p);
+    IPosition s(gridded.shape());
     switch(loc.nelements()) {
     case 1:
-      dgrd1d(&gridded.shape()(0), &loc(0), gridded.getStorage(del), &value, &support,
+      dgrd1d(&s(0), &loc(0), gridded.getStorage(del), &value, &support,
 	       &sampling, &posVec(0), convFunc.getStorage(del));
       break;
     case 2:
-      dgrd2d(&gridded.shape()(0), &gridded.shape()(1), &loc(0), &loc(1), gridded.getStorage(del),
+      dgrd2d(&s(0), &s(1), &loc(0), &loc(1), gridded.getStorage(del),
 	       &value, &support, &sampling, &posVec(0), &posVec(1),
 	       convFunc.getStorage(del));
       break;
     case 3:
-      dgrd3d(&gridded.shape()(0), &gridded.shape()(1), &gridded.shape()(2), &loc(0), &loc(1), &loc(2),
+      dgrd3d(&s(0), &s(1), &s(2), &loc(0), &loc(1), &loc(2),
 	       gridded.getStorage(del), &value, &support,
 	       &sampling, &posVec(0), &posVec(1), &posVec(2),
 	       convFunc.getStorage(del));
