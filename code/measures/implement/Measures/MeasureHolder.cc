@@ -313,7 +313,7 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
     if (n > 0) {
       if (!QuantumHolder(res(0)).toRecord(error, val)) return False;
       out.defineRecord(RecordFieldId("ev0"), val);
-    };
+      };
     return True;
   };
   error += String("No Measure specified in MeasureHolder::toRecord\n");
