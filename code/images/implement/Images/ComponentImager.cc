@@ -68,6 +68,7 @@ project(ImageInterface<Float>& image, const ComponentList& list) {
   // * Polarization and frequency coordinates are optional, however at most one
   //   each of these coordinates can exist.
   // * If there is a Stokes axis it can only contain Stokes::I,Q,U,V pols.
+  // * No other coordinate types, like LinearCoordinate, are used.
   // * The pixels are square.
   uInt latAxis, longAxis;
   {
