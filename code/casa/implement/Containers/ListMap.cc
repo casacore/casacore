@@ -1,5 +1,5 @@
 //# ListMap.cc: Map with list ordering/operations
-//# Copyright (C) 1993,1994,1995,2000
+//# Copyright (C) 1993,1994,1995,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
