@@ -6048,3 +6048,4 @@
 17 070 src rm trial/implement/Fitting/test/tNonLinearFitLM.cc
 17 070 src rm aips/implement/Functionals/SumFunction.cc
 17 070 src rm aips/implement/Functionals/SumFunction.h
+17 070 src rm aips/implement/Functionals/test/tSumFunction.cc
