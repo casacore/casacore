@@ -318,6 +318,9 @@
   endif
 
 # Source possible local AIPS++ initialization files.
+  if (-r $a_root/.aipsinit.csh) then
+    source $a_root/.aipsinit.csh
+  endif
   if (-r $a_root/aips++local.csh) then
     source $a_root/aips++local.csh
   endif
