@@ -167,7 +167,6 @@ project(ImageInterface<Float>& image, const ComponentList& list) {
     for (pixelStepper.reset(), d = 0; 
 	 !pixelStepper.atEnd(); pixelStepper++, d++) {
       pixelPosition = pixelStepper.position();
-      //      cout <<  pixelPosition << endl;
       pixelDir(0) = pixelPosition(latAxis);
       pixelDir(1) = pixelPosition(longAxis);
       if (!dirCoord.toWorld(worldDir, pixelDir)) {
@@ -185,8 +184,7 @@ project(ImageInterface<Float>& image, const ComponentList& list) {
     for (pixelStepper.reset(), d = 0; !pixelStepper.atEnd(); 
 	 pixelStepper++, d++) {
       if (pixelFlag(d) == False) {
-	pixelPosition = pixelStepper.position();
-	//	cout <<  pixelPosition << endl;
+	pixelPosition = pixelStepper.relativePosition();
 	for (uInt f = 0; f < nFreqs; f++) {
 	  if (freqAxis >= 0) pixelPosition(freqAxis) = f;
 	  const Flux<Double>& thisFlux = pixelVals(d, f);
