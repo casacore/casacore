@@ -32,35 +32,44 @@
 // <summary> Relationships between numeric data types </summary>
 // <use visibility=export>
 //
-// <reviewed reviewer="nkilleen" date="1996/12/12" tests="tConvolver">
+// <reviewed reviewer="nkilleen" date="1996/12/12" tests="tConvolver,tFFTServer">
 // </reviewed>
 //
 // <etymology>
 // A trait is a characteristic feature. NumericTraits defines relationships
-// between Numeric data types.
+// between and characteristics of Numeric data types.
 // </etymology>
 //
 // <synopsis>
-// This templated class contains a number of typedefs that describe the
-// relationship between different numeric data types. Its use is in
-// templated classes where the use of one type implictly implies the use of
-// a corresponding one.  Use of this class avoids the need for double
-// templating.
+
+// This templated class contains a number of typedefs and definitions that
+// describe the relationship between different numeric data types and there
+// characteristics. Its use is in templated classes either where the use of one
+// type implictly implies the use of a corresponding one or where a
+// characteristic value differs with templating argument.  Use of this class
+// often avoids the need for double templating.
 //
-// Curently this class defines the following relationships:
-// <ul> 
-// <li> <src>ConjugateType</src> - the Type of the result if a Fourier
-//      Transform was to be done.
-// <li> <src>PrecisionType</src> - a Type of the next higher numerical
-//      precision. 
-// </ul>
+// Currently this class defines the following relationships:
+// <dl> 
+// <dt> <src>ConjugateType</src>
+// <dd>      the Type of the result if a Fourier Transform was to be done.
+// <dt> <src>PrecisionType</src>
+// <dd>      a Type of the next higher numerical precision. 
+// </dl>
+// 
+// And the following characteristics:
+// <dl> 
+// <dt> <src>epsilon</src>
+// <dd> the smallest value such that 1+epsilon is different from 1
+// </dl>
 // 
 // 
 // The use of this class is best illustrated in a number of examples.
 // </synopsis>
 //
 // <example>
-// eg 1. Suppose you are writing a templated class that needs to do Fourier
+// <h4>Example 1:</h4>
+// Suppose you are writing a templated class that needs to do Fourier
 // Transforms. The FFTServer class can do FFT's of Float or Double data
 // types, but you need to doubly template it on the conjugate data type. To
 // avoid having the conjugate data type appear as a template in the class
@@ -79,7 +88,8 @@
 // <li> DComplex -> Double
 // </ul>
 //
-// eg 2. Suppose you have a templated numerical integrator class. Because the
+// <h4>Example 2:</h4>
+// Suppose you have a templated numerical integrator class. Because the
 // individual samples can be negative it is possible to add two numbers
 // of nearly equal magnitude but opposite sign and lose precision
 // considerably. One way to combat this is to make the accumulator variable
@@ -98,6 +108,25 @@
 // <li> Complex -> DComplex
 // <li> DComplex -> DComplex
 // </ul>
+
+// <h4>Example 3:</h4>
+// Suppose you have a templated class that needs to use the <src>allNear</src>
+// functions from <linkto class="ArrayMath">ArrayMath</linkto> to determine if
+// a templated Array is near zero. The tolerance argument to the allNear
+// function will depend on the template type and this is not known untill the
+// template is instantiated. The epsilon trait can be used to supply this
+// value.
+// <srcblock> 
+// template<class T> void myClass<T>::myFunction(Array<T> & aArray) {
+//   if (allNearAbs(aArray, T(0), NumericTraits<T>::epsilon))
+//     return;
+// // Do something
+// }
+// </srcblock>
+// epsilon is defined as FLT_EPSILON for Float and Complex types and
+// DBL_EPSILON for Double and DComplex data types. See the <linkto
+// class="Constants">Constants</linkto> class for the values of these
+// variables.
 // </example>
 //
 // <motivation>
@@ -119,11 +148,12 @@
 // <src>NumericTraits<ArbitraryType>::ConjugateType</src> returns 
 //   <src>ArbitraryType</src> and <br>
 // <src>NumericTraits<ArbitraryType>::PrecisionType</src> returns 
-//   <src>ArbitraryType</src>
+//   <src>ArbitraryType</src><br>
+// <src>NumericTraits<ArbitraryType>::epsilon</src> is undefined
 // </templating>
 //
 // <thrown>
-// This class only contains typedefs and hence cannot throw any exceptions
+// This class does not throw any exceptions
 // </thrown>
 //
 // <todo asof="1996/11/09">
@@ -140,6 +170,7 @@ template <class T> class NumericTraits {
 public:
   typedef T ConjugateType; 
   typedef T PrecisionType;      
+  static const Double & epsilon;
 };
 
 //# These specialisations are in a seperate file so that cxx2html 

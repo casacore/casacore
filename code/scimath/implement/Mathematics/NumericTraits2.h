@@ -30,12 +30,14 @@
 #define AIPS_NUMERICTRAITS2_H
 
 #include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Constants.h>
 
 // <summary> A specialisation for T=Float of the NumericTraits class </summary>
 class NumericTraits<Float> {
 public:
   typedef Complex ConjugateType;
   typedef Double PrecisionType;
+  static const Double & epsilon;
 };
 
 // <summary> A specialisation for T=Double of the NumericTraits class </summary>
@@ -43,6 +45,7 @@ class NumericTraits<Double> {
 public:
   typedef DComplex ConjugateType;
   typedef Double PrecisionType;
+  static const Double & epsilon;
 };
 
 // <summary> A specialisation for T=Complex of the NumericTraits class </summary>
@@ -50,6 +53,7 @@ class NumericTraits<Complex> {
 public:
   typedef Float ConjugateType;
   typedef DComplex PrecisionType;
+  static const Double & epsilon;
 };
 
 // <summary> A specialisation for T=DComplex of the NumericTraits class </summary>
@@ -67,6 +71,7 @@ class NumericTraits<DComplex> {
 public:
   typedef Double ConjugateType;
   typedef DComplex PrecisionType;
+  static const Double & epsilon;
 };
 
 #endif
