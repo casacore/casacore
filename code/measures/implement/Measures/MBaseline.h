@@ -52,7 +52,7 @@ template <class M, class F, class MC> class MeasConvert;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tBaseline" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMBaseline" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -68,7 +68,8 @@ template <class M, class F, class MC> class MeasConvert;
 // IERS base.<br>
 // Note that at the moment no correction for Earth tides (error <~ 0.05 mm/km
 // EW baseline), plate motion (not relevant for telescopes on same plate) and
-// relativistic effects.
+// relativistic effects are incorporated. B1950 has the same caveat as in
+// <linkto class=MDirection>MDirection</linkto>.
 // </synopsis>
 //
 // <example>
@@ -90,7 +91,8 @@ public:
 
 //# Enumerations
 // Types of known MBaselines
-// <note role=warning> The order defines the order in the translation matrix FromTo
+// <note role=warning>
+// The order defines the order in the translation matrix FromTo
 // in the getConvert routine. Do not change the order without
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
