@@ -167,6 +167,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	end_elem = -1;
 }
 
+#ifndef AIPS_OSF
 template <class TYPE>
 int PrimaryArray<TYPE>::offset(int d0, int d1, int d2, va_list ap) const {
 	int offset;
@@ -179,12 +180,14 @@ int PrimaryArray<TYPE>::offset(int d0, int d1, int d2, va_list ap) const {
 	}
 	return offset;
 }
+#endif
 
 template <class TYPE>
 int PrimaryArray<TYPE>::offset(int d0, int d1) const {
 		return d0 + factor[1] * d1;
 }
 
+#ifndef AIPS_OSF
 template <class TYPE>
 double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2, ...) const {
 	va_list ap;
@@ -195,6 +198,7 @@ double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2, ...) const {
 	//}
 	return bscale() * array[n - beg_elem] + bzero();
 }
+#endif
 
 template <class TYPE>
 double PrimaryArray<TYPE>::operator () (int d0, int d1) const {
@@ -211,6 +215,7 @@ double PrimaryArray<TYPE>::operator () (int d0) const {
 	return bscale() * array[d0 - beg_elem] + bzero();
 }
 
+#ifndef AIPS_OSF
 template <class TYPE>
 TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2, ...) {
 	va_list ap;
@@ -221,6 +226,7 @@ TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2, ...) {
 	//}
 	return array[n - beg_elem];
 }
+#endif
 
 template <class TYPE>
 TYPE & PrimaryArray<TYPE>::data(int d0, int d1) {
@@ -816,7 +822,7 @@ inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1)
 {
         return (*field)[d0 + (factor[1] * d1)]; 
 }
-
+#ifndef AIPS_OSF
 template <class TYPE>
 TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2 ...) {
 	long offset;
@@ -831,3 +837,4 @@ TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2 ...) {
 	} else
 	    return (*field)[d0 + d1 * factor[1] + d2 * factor[2]];
 }
+#endif
