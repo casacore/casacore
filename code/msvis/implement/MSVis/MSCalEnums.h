@@ -1,5 +1,5 @@
 //# MSCalEnums.h: Field name dictionary for MS and CAL tables
-//# Copyright (C) 1996,1997,1998,2000
+//# Copyright (C) 1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -106,8 +106,8 @@ class MSCalEnums
   INTERVAL = 8,
   // Array identifier
   ARRAY_ID = 9,
-  // Correlator identifier
-  CORRELATOR_ID = 10,
+  // Processor identifier
+  PROCESSOR_ID = 10,
   // Field identifier
   FIELD_ID = 11,
   // Observation identifier
@@ -116,96 +116,113 @@ class MSCalEnums
   PULSAR_GATE_ID = 13,
   // Spectral window identifier
   SPECTRAL_WINDOW_ID = 14,
+  // Phase identifier
+  PHASE_ID = 15,
+  // State identifier
+  STATE_ID = 16,
   
   // Other secondary MeasurementSet columns
   //
   // Frequency group
-  FREQ_GROUP = 15,
+  FREQ_GROUP = 100,
+  // Frequency group name
+  FREQ_GROUP_NAME = 101,
   // Field name
-  FIELD_NAME = 16,
+  FIELD_NAME = 102,
+  // Field code
+  FIELD_CODE = 103,
   // Source name
-  SOURCE_NAME = 17, 
+  SOURCE_NAME = 104,
+  // Source code
+  SOURCE_CODE = 105,
+  // Source calibration group
+  CALIBRATION_GROUP = 106,
   
   // Other calibration table columns
   //
   // Gain matrix values
-  GAIN = 18,
+  GAIN = 200,
   // Reference antenna
-  REF_ANT = 19,
+  REF_ANT = 201,
   // Reference feed
-  REF_FEED = 20,
+  REF_FEED = 202,
   // Reference receptor
-  REF_RECEPTOR = 21,
+  REF_RECEPTOR = 203,
   // Reference frequency
-  REF_FREQUENCY = 22,
+  REF_FREQUENCY = 204,
+  // Reference frequency frame
+  MEAS_FREQ_REF = 205,
   // Reference direction
-  REF_DIRECTION = 23,
+  REF_DIRECTION = 206,
+  // Reference direction frame
+  MEAS_DIR_REF = 207,
+  // 
   // Calibration format descriptor
-  CAL_DESC_ID = 24, 
+  CAL_DESC_ID = 300, 
   // Calibration history identifier
-  CAL_HISTORY_ID = 25,
+  CAL_HISTORY_ID = 301,
 
   // Solution statistics and weights
   //
   // Solution validity flag
-  TOTAL_SOLUTION_OK = 26,
+  TOTAL_SOLUTION_OK = 400,
   // RMS of fit
-  TOTAL_FIT = 27,
+  TOTAL_FIT = 401,
   // Sum of fit weights
-  TOTAL_FIT_WEIGHT = 28,
+  TOTAL_FIT_WEIGHT = 402,
   // Solution validity flag (per solution)
-  SOLUTION_OK = 29,
+  SOLUTION_OK = 403,
   // RMS of fit (per solution)
-  FIT = 30,
+  FIT = 404,
   // Sum of fit weights (per solution)
-  FIT_WEIGHT = 31,
+  FIT_WEIGHT = 405,
   
   // Calibration description columns
   //
   // Number of spectral windows
-  NUM_SPW = 32,
+  NUM_SPW = 500,
   // Number of frequency channels
-  NUM_CHAN = 33,
+  NUM_CHAN = 501,
   // Number of receptors
-  NUM_RECEPTORS = 34,
+  NUM_RECEPTORS = 502,
   // Jones matrix dimension
-  N_JONES = 35,
+  N_JONES = 503,
   // Midpoint of frequency channels
-  CHAN_FREQ = 36,
+  CHAN_FREQ = 504,
   // Frequency channel width
-  CHAN_WIDTH = 37,
+  CHAN_WIDTH = 505,
   // Channel range
-  CHAN_RANGE = 38,
+  CHAN_RANGE = 506,
   // Jones matrix type
-  JONES_TYPE = 39, 
+  JONES_TYPE = 507, 
   // Polarization enumerations
-  POLARIZATION_TYPE = 40,
+  POLARIZATION_TYPE = 508,
   // MeasurementSet name
-  MS_NAME = 41,
+  MS_NAME = 509,
   
   // Calibration history columns
   //
   // Application parameter values
-  CAL_PARMS = 42,
+  CAL_PARMS = 600,
   // Associated calibration tables
-  CAL_TABLES = 43,
+  CAL_TABLES = 601,
   // Calibration selection
-  CAL_SELECT = 44,
+  CAL_SELECT = 602,
   // Calibration notes
-  CAL_NOTES = 45,
+  CAL_NOTES = 603,
 
   // Keywords
   //
   // Cal Desc sub-table
-  CAL_DESC = 46,
+  CAL_DESC = 700,
   // Cal History sub-table
-  CAL_HISTORY = 47,
+  CAL_HISTORY = 701,
   
   // FJones additions
-  ROT_MEASURE = 48,
-  ROT_MEASURE_ERROR = 49,
-  IONOSPH_TEC = 50,
-  IONOSPH_TEC_ERROR = 51
+  ROT_MEASURE = 800,
+  ROT_MEASURE_ERROR = 801,
+  IONOSPH_TEC = 802,
+  IONOSPH_TEC_ERROR = 803
   };
 
   // Access functions for column/keyword description data

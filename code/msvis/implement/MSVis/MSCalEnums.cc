@@ -1,5 +1,5 @@
 //# MSCalEnums.cc: Implementation of MSCalEnums.h
-//# Copyright (C) 1996,1997,1998,2000
+//# Copyright (C) 1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,22 +51,30 @@ void MSCalEnums::initMap ()
     theirFieldMap.define (TIME_EXTRA_PREC, "TIME_EXTRA_PREC");
     theirFieldMap.define (INTERVAL, "INTERVAL");
     theirFieldMap.define (ARRAY_ID, "ARRAY_ID");
-    theirFieldMap.define (CORRELATOR_ID, "CORRELATOR_ID");
+    theirFieldMap.define (PROCESSOR_ID, "PROCESSOR_ID");
     theirFieldMap.define (FIELD_ID, "FIELD_ID");
     theirFieldMap.define (OBSERVATION_ID, "OBSERVATION_ID");
     theirFieldMap.define (PULSAR_GATE_ID, "PULSAR_GATE_ID");
     theirFieldMap.define (SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID");
+    theirFieldMap.define (PHASE_ID, "PHASE_ID");
+    theirFieldMap.define (STATE_ID, "STATE_ID");
 
     theirFieldMap.define (FREQ_GROUP, "FREQ_GROUP");
+    theirFieldMap.define (FREQ_GROUP_NAME, "FREQ_GROUP_NAME");
     theirFieldMap.define (FIELD_NAME, "FIELD_NAME");
+    theirFieldMap.define (FIELD_CODE, "FIELD_CODE");
     theirFieldMap.define (SOURCE_NAME, "SOURCE_NAME");
+    theirFieldMap.define (SOURCE_CODE, "SOURCE_CODE");
+    theirFieldMap.define (CALIBRATION_GROUP, "CALIBRATION_GROUP");
 
     theirFieldMap.define (GAIN, "GAIN");
     theirFieldMap.define (REF_ANT, "REF_ANT");
     theirFieldMap.define (REF_FEED, "REF_FEED"); 
     theirFieldMap.define (REF_RECEPTOR, "REF_RECEPTOR");
     theirFieldMap.define (REF_FREQUENCY, "REF_FREQUENCY");
+    theirFieldMap.define (MEAS_FREQ_REF, "MEAS_FREQ_REF");
     theirFieldMap.define (REF_DIRECTION, "REF_DIRECTION");
+    theirFieldMap.define (MEAS_DIR_REF, "MEAS_DIR_REF");
     theirFieldMap.define (CAL_DESC_ID, "CAL_DESC_ID");
     theirFieldMap.define (CAL_HISTORY_ID, "CAL_HISTORY_ID");
     
