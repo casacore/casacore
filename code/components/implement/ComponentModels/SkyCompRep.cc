@@ -1,5 +1,5 @@
 //# SkyCompRep.cc:  this defines SkyCompRep
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -475,9 +475,6 @@ void SkyCompRep::fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
 // pars(5) = pa radians
 //
 {
-
-// Check number of parameters
-  
    LogIO os(LogOrigin("SkyCompRep", "fromPixel()"));
       
 // Find DirectionCoordinate
