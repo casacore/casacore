@@ -26,12 +26,7 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_mepoch_bug1;
-#endif
 #include <aips/Mathematics/Constants.h>
-#include <aips/Quanta/QMath.h>
 #include <aips/Measures/MCRadialVelocity.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Quanta/MVPosition.h>
@@ -40,9 +35,31 @@ typedef Quantum<Double> gpp_mepoch_bug1;
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MDoppler.h>
 
+//# Statics
+Bool MCRadialVelocity::stateMade_p = False;
+uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {
+  {MRadialVelocity::LSR,	MRadialVelocity::BARY,	 	0},
+  {MRadialVelocity::BARY,	MRadialVelocity::LSR,		0},
+  {MRadialVelocity::BARY,	MRadialVelocity::GEO,		0},
+  {MRadialVelocity::GEO,	MRadialVelocity::TOPO,		2},
+  {MRadialVelocity::GEO,	MRadialVelocity::BARY,		0},
+  {MRadialVelocity::TOPO,	MRadialVelocity::GEO,		2},
+  {MRadialVelocity::LSR,	MRadialVelocity::GALACTO,	0},
+  {MRadialVelocity::GALACTO,	MRadialVelocity::LSR,		0},
+  {MRadialVelocity::LSRK,	MRadialVelocity::BARY,		0},
+  {MRadialVelocity::BARY,	MRadialVelocity::LSRK,		0} };
+uInt MCRadialVelocity::
+FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
+
 //# Constructors
 MCRadialVelocity::MCRadialVelocity() :
-  MVPOS1(0), MVDIR1(0), ABERTO(0), ABERFROM(0) {}
+  MVPOS1(0), MVDIR1(0), ABERFROM(0), ABERTO(0) {
+  if (!stateMade_p) {
+    MCBase::makeState(MCRadialVelocity::stateMade_p, MCRadialVelocity::FromTo_p[0],
+		      MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
+		      MCRadialVelocity::ToRef_p);
+  };
+}
 
 //# Destructor
 MCRadialVelocity::~MCRadialVelocity() {
@@ -56,70 +73,16 @@ MCRadialVelocity::~MCRadialVelocity() {
 void MCRadialVelocity::getConvert(MConvertBase &mc,
 				  const MRBase &inref, 
 				  const MRBase &outref) {
-// Array of conversion routines to call
-  static const MCRadialVelocity::Routes 
-    FromTo[MRadialVelocity::N_Types][MRadialVelocity::N_Types] = {
-      { MCRadialVelocity::N_Routes,
-	MCRadialVelocity::LSR_BARY,
-	MCRadialVelocity::LSR_BARY,
-	MCRadialVelocity::LSR_BARY,
-	MCRadialVelocity::LSR_BARY,
-	MCRadialVelocity::LSR_GALACTO},
-      { MCRadialVelocity::LSRK_BARY,
-	MCRadialVelocity::N_Routes,
-	MCRadialVelocity::LSRK_BARY,
-	MCRadialVelocity::LSRK_BARY,
-	MCRadialVelocity::LSRK_BARY,
-	MCRadialVelocity::LSRK_BARY},
-      { MCRadialVelocity::BARY_LSR,
-	MCRadialVelocity::BARY_LSRK,
-	MCRadialVelocity::N_Routes,
-	MCRadialVelocity::BARY_GEO,
-	MCRadialVelocity::BARY_GEO,
-	MCRadialVelocity::BARY_LSR},
-      { MCRadialVelocity::GEO_BARY,
-	MCRadialVelocity::GEO_BARY,
-	MCRadialVelocity::GEO_BARY,
-	MCRadialVelocity::N_Routes,
-	MCRadialVelocity::GEO_TOPO,
-	MCRadialVelocity::GEO_BARY},
-      { MCRadialVelocity::TOPO_GEO,
-	MCRadialVelocity::TOPO_GEO,
-	MCRadialVelocity::TOPO_GEO,
-	MCRadialVelocity::TOPO_GEO,
-	MCRadialVelocity::N_Routes,
-	MCRadialVelocity::TOPO_GEO},
-      { MCRadialVelocity::GALACTO_LSR,
-	MCRadialVelocity::GALACTO_LSR,
-	MCRadialVelocity::GALACTO_LSR,
-	MCRadialVelocity::GALACTO_LSR,
-	MCRadialVelocity::GALACTO_LSR,
-	MCRadialVelocity::N_Routes}
-    };
-    
-// List of codes converted to
-    static const MRadialVelocity::Types ToRef[MCRadialVelocity::N_Routes] = {
-      MRadialVelocity::BARY,
-      MRadialVelocity::LSR,
-      MRadialVelocity::GEO,
-      MRadialVelocity::TOPO,
-      MRadialVelocity::BARY,
-      MRadialVelocity::GEO,
-      MRadialVelocity::GALACTO,
-      MRadialVelocity::LSR,
-      MRadialVelocity::BARY,
-      MRadialVelocity::LSRK
-    };
 
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    Int tmp;
-    while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-    }
+  Int iin  = inref.getType();
+  Int iout = outref.getType();
+  Int tmp;
+  while (iin != iout) {
+    tmp = FromTo_p[iin][iout];
+    iin = ToRef_p[tmp][1];
+    mc.addMethod(tmp);
+    initConvert(tmp, mc);
+  };
 }
 
 void MCRadialVelocity::clearConvert() {
@@ -131,27 +94,17 @@ void MCRadialVelocity::clearConvert() {
 
 //# Conversion routines
 void MCRadialVelocity::initConvert(uInt which, MConvertBase &mc) {
-  if (!MVPOS1) {
-    MVPOS1 = new MVPosition();
-  };
-  if (!MVDIR1) {
-    MVDIR1 = new MVDirection();
-  };
+
+  if (False) initConvert(which, mc);	// Stop warning
+
+  if (!MVPOS1) MVPOS1 = new MVPosition();
+  if (!MVDIR1) MVDIR1 = new MVDirection();
 
   switch (which) {
-      
-  case LSR_BARY:
-    break;
-
-  case BARY_LSR:
-    break;
 
   case BARY_GEO:
     if (ABERFROM) delete ABERFROM;
     ABERFROM = new Aberration(Aberration::STANDARD);
-    break;
-
-  case GEO_TOPO:
     break;
 
   case GEO_BARY:
@@ -159,24 +112,9 @@ void MCRadialVelocity::initConvert(uInt which, MConvertBase &mc) {
     ABERTO = new Aberration(Aberration::STANDARD);
     break;
 
-  case TOPO_GEO:
-    break;
-
-  case LSR_GALACTO:
-    break;
-
-  case GALACTO_LSR:
-    break;
-
-  case LSRK_BARY:
-    break;
-
-  case BARY_LSRK:
-    break;
-
   default:
     break;
-  }
+  };
 }
 
 void MCRadialVelocity::doConvert(MeasValue &in,
@@ -342,7 +280,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     default:
       break;
-    }
-  }
+    }; // switch
+  }; // for
 }
 

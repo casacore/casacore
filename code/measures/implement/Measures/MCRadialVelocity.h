@@ -1,5 +1,5 @@
 //# MCRadialVelocity.h: MRadialVelocity conversion routines 
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 #if !defined(AIPS_MCRADIALVELOCITY_H)
 #define AIPS_MCRADIALVELOCITY_H
 
-#if defined(_AIX)
-#pragma implementation ("MCRadialVelocity.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
@@ -50,9 +46,7 @@ class Aberration;
 
 //# Typedefs
 
-// <summary>
-// MRadialVelocity conversion routines 
-// </summary>
+// <summary> MRadialVelocity conversion routines </summary>
 
 // <use visibility=local>
 
@@ -139,6 +133,14 @@ private:
   MVDirection *MVDIR1;
   Aberration *ABERFROM;
   Aberration *ABERTO;
+
+  //# State machine data
+  // Has state matrix been made
+  static Bool stateMade_p;
+  // Transition list
+  static uInt ToRef_p[N_Routes][3];
+  // Transition matrix
+  static uInt FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
   
   //# Constructors
   // Copy constructor (not implemented)
