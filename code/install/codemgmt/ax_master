@@ -3785,3 +3785,5 @@
 14 047 src mv npoi/implement/Cuttlefish/rgb.g npoi/implement/GDC/rgb.g
 14 052 src rm trial/implement/Display/X11PCDLRoundedRectangle.cc
 14 052 src rm trial/implement/Display/X11PCDLRoundedRectangle.h
+14 052 src rm trial/implement/Fitting/LSQBasic.h
+14 052 src rm trial/implement/Fitting/LSQBasic.cc
