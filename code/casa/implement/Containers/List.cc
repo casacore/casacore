@@ -99,6 +99,7 @@ template<class t> List<t> &List<t>::operator=(const List<t> &other) {
     for (; !iter.atEnd(); iter++ )
 	cur = new Link<t>(iter.getRight(),cur);
     tail = cur;
+    return *this;
 }
     
 template<class t> List<t> &List<t>::operator=(const List<t> *other) {
@@ -116,6 +117,7 @@ template<class t> List<t> &List<t>::operator=(const List<t> *other) {
     for (; !iter.atEnd(); iter++ )
 	cur = new Link<t>(iter.getRight(),cur);
     tail = cur;
+    return *this;
 }
 
     
