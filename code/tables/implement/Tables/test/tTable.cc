@@ -1,5 +1,5 @@
 //# tTable.cc: Test program for the Table classes
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableLock.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
@@ -203,7 +204,7 @@ void b (Bool doExcp)
 
     // Read back the table.
     cout << "start reading Table" << endl;
-    Table tab("tTable_tmp.data");
+    Table tab("tTable_tmp.data", TableLock(TableLock::PermanentLockingWait));
     cout << "end reading Table" << endl;
     cout << "type = " << tab.tableInfo().type() << endl;
     cout << "subtype = " << tab.tableInfo().subType() << endl;
