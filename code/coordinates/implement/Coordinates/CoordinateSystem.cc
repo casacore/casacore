@@ -4519,7 +4519,9 @@ StokesCoordinate CoordinateSystem::stokesSubImage(const StokesCoordinate& sc, In
       newStokes.resize(n, True);
    }
 //  
-   return StokesCoordinate(newStokes);
+   StokesCoordinate scOut(sc);
+   scOut.setStokes(newStokes);
+   return scOut;
 }
 
 
