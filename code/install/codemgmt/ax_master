@@ -3510,3 +3510,4 @@
 13 285 src mv trial/implement/Lattices/test/templates aips/implement/Lattices/test/templates
 13 285 src rm admin/personnel/directory
 13 288 src mv trial/implement/Lattices/LELCoordinates.h aips/implement/Lattices/LELCoordinates.h
+13 288 src mv trial/implement/Lattices/LELCoordinates.cc aips/implement/Lattices/LELCoordinates.cc
