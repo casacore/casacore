@@ -283,12 +283,12 @@ void checkConversion (Int& error)
     result[1] = 0;
     uInt nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, 32421, result[0]);
+    compare(error, Short(32421), result[0]);
     result[0] = 0;
     nbytes = ModcompConversion::toLocal(result, input, 2);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, 32421, result[0]);
-    compare(error, -17, result[1]);
+    compare(error, Short(32421), result[0]);
+    compare(error, Short(-17), result[1]);
     result[0] = -2;
     result[1] = 30000;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
