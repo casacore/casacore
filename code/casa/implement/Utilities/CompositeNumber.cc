@@ -38,9 +38,11 @@ CompositeNumber::CompositeNumber(const uInt maxval) {
 
 void CompositeNumber::generate(const uInt maxval) {
   
-  uInt n2 = (uInt)(log((Float)maxval)/log(2.0) + 1);
-  uInt n3 = (uInt)(log((Float)maxval)/log(3.0) + 1);
-  uInt n5 = (uInt)(log((Float)maxval)/log(5.0) + 1);
+  itsMaxComplete = maxval;
+
+  uInt n2 = (uInt)(log((Float)maxval)/log(2.0) + 1) +1;
+  uInt n3 = (uInt)(log((Float)maxval)/log(3.0) + 1) +1;
+  uInt n5 = (uInt)(log((Float)maxval)/log(5.0) + 1) +1;
   
   itsNumbers.resize(n2*n3*n5);
   uInt n = 0;
@@ -59,6 +61,9 @@ void CompositeNumber::generate(const uInt maxval) {
 
 CompositeNumber::~CompositeNumber() {}
 
+
+
+
 uInt CompositeNumber::nextLarger(const uInt testValue) {
 
   if (testValue >  itsMaxComplete) {
@@ -74,9 +79,7 @@ uInt CompositeNumber::nextLarger(const uInt testValue) {
     
 
 
-
 uInt CompositeNumber::nextSmaller(const uInt testValue) {
-
   if (testValue >  itsMaxComplete) {
     generate(testValue);
   }
@@ -111,4 +114,59 @@ uInt CompositeNumber::nearest(const uInt testValue) {
   return itsNumbers[0];
 }; 
 
+
+
+
+
+uInt CompositeNumber::nextLargerEven(const uInt testValue) {
+
+  if (testValue >  itsMaxComplete) {
+    generate(testValue);
+  }
+  for (uInt i=0;i< itsNumbers.nelements(); i++) {
+    if (itsNumbers[i] > testValue && (itsNumbers[i]%2==0)) {
+      return itsNumbers[i];
+    }
+  }
+  return  itsNumbers[0];
+};
+    
+
+uInt CompositeNumber::nextSmallerEven(const uInt testValue) {
+  if (testValue >  itsMaxComplete) {
+    generate(testValue);
+  }
+
+  for (Int i=itsNumbers.nelements()-1; i>=0; i--) {
+    if (itsNumbers[i] < testValue && (itsNumbers[i]%2==0)) {
+      return itsNumbers[i];
+    }
+  }
+  return itsNumbers[0];
+};
+    
+
+uInt CompositeNumber::nearestEven(const uInt testValue) {
+
+  uInt up = nextLargerEven( testValue );
+  uInt down = nextSmallerEven( testValue );
+  if (abs((Int)(up-testValue)) < abs((Int)(down-testValue)) ) {
+    return up;
+  } else {
+    return down;
+  }
+};
+    
+
+Bool CompositeNumber::isComposite(const uInt testValue) {
+  if (testValue >  itsMaxComplete) {
+    generate(testValue);
+  }
+  for (uInt i=0;i< itsNumbers.nelements(); i++) {
+    if (itsNumbers[i] == testValue) {
+      return True;
+    }
+  }
+  return False;
+}; 
 

@@ -72,12 +72,25 @@ public:
   // return the nearest composite number
   uInt nearest(const uInt value);
 
+  // return the next larger even composite number
+  uInt nextLargerEven(const uInt value);
+
+  // return the next smaller even composite number
+  uInt nextSmallerEven(const uInt value);
+
+  // return the closest even composite number
+  uInt nearestEven(const uInt value);
+
+  // returns True is value is composite
+  Bool isComposite(const uInt value);
+
  private:
 
   Block<uInt> itsNumbers;
   uInt         itsMaxComplete;
 
   void generate(const uInt maxval);
+
 };
 
 #endif
