@@ -41,6 +41,7 @@ class RecordInterface;
 class GlishRecord;
 template <class Qtype> class Quantum;
 template <class T> class Vector;
+template <class T> class Array;
 
 // <summary> A holder for Quantums to enable record conversions </summary>
 
@@ -73,6 +74,9 @@ template <class T> class Vector;
 //  <li> <src>Quantum<Vector<Int> >, Quantum<Vector<Float> ></src>, 
 //	 <src>Quantum<Vector<Double> ></src>
 //  <li> <src>Quantum<Vector<Complex> >, Quantum<Vector<DComplex> ></src>
+//  <li> <src>Quantum<Array<Int> >, Quantum<Array<Float> ></src>, 
+//	 <src>Quantum<Array<Double> ></src>
+//  <li> <src>Quantum<Array<Complex> >, Quantum<Array<DComplex> ></src>
 // </ul>
 // Scalars in the same group can be converted to any in the same group (e.g.
 // Int to Double); Vectors of length 1 can be converted to scalars in the 
@@ -142,6 +146,7 @@ public:
   Bool isEmpty() const;
   Bool isQuantum() const;
   Bool isScalar() const;
+  Bool isVector() const;
   Bool isArray() const;
   Bool isReal() const;
   Bool isComplex() const;
@@ -156,6 +161,11 @@ public:
   Bool isQuantumVectorInt() const;
   Bool isQuantumVectorComplex() const;
   Bool isQuantumVectorDComplex() const;
+  Bool isQuantumArrayDouble() const;
+  Bool isQuantumArrayFloat() const;
+  Bool isQuantumArrayInt() const;
+  Bool isQuantumArrayComplex() const;
+  Bool isQuantumArrayDComplex() const;
   // </group>
   // Get number of numeric elements (1 if scalar, else
   // vector length)
@@ -183,6 +193,11 @@ public:
   const Quantum<Vector<Int> > &asQuantumVectorInt() ;
   const Quantum<Vector<Complex> > &asQuantumVectorComplex() ;
   const Quantum<Vector<DComplex> > &asQuantumVectorDComplex() ;
+  const Quantum<Array<Double> > &asQuantumArrayDouble() ;
+  const Quantum<Array<Float> > &asQuantumArrayFloat() ;
+  const Quantum<Array<Int> > &asQuantumArrayInt() ;
+  const Quantum<Array<Complex> > &asQuantumArrayComplex() ;
+  const Quantum<Array<DComplex> > &asQuantumArrayDComplex() ;
   // </group>
 
   // Create a Quantum from a record or a string.
@@ -220,8 +235,10 @@ private:
   void toReal(const uInt &tp);
   // Convert to a different complex scalar quantum
   void toComplex(const uInt &tp);
-  // Convert scalar to Array
+  // Convert scalar to Vector
   void toVector();
+  // Convert scalar to Array
+  void toArray();
 };
 
 #endif
