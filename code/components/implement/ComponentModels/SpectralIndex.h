@@ -1,4 +1,4 @@
-//# SpectralIndex.h:
+//# SpectralIndex.h: Models the spectral variation with a spectral index
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -38,52 +38,80 @@ template <class T> class Flux;
 class RecordInterface;
 class String;
 
-// <summary></summary>
+// <summary>Models the spectral variation with a spectral index</summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tSpectralIndex" demos="">
 // </reviewed>
 
 // <prerequisite>
-//   <li> SomeClass
-//   <li> SomeOtherClass
-//   <li> some concept
+//   <li> <linkto class="SpectralModel">SpectralModel</linkto>
 // </prerequisite>
 //
-// <etymology>
-// </etymology>
-//
 // <synopsis>
+// This class models the spectral variation of a component with a spectral
+// index. A spectral index is is the exponent for a power law model that
+// mathematically is defined as:
+// <srcblock>
+// I = I_0 * (\nu / \nu_0)^\alpha
+// </srcblock>
+// Where:
+// <dl compact>
+// <dt><src>\nu_0</src><dd> is the reference frequency
+// <dt><src>I_0</src><dd> is the reference frequency
+// <dt><src>\alpha</src><dd> is the spectral index
+// <dt><src>\nu</src><dd> is the user specified frequency
+// <dt><src>I</src><dd> is the flux, in the I polarisation, 
+//                      at the specified frequency
+// <dl>
+// In general the flux has four polarisation components and this class has
+// seperate indicies for each of the four Stokes parameters, I, Q, U, \& V.
+
+// As with all classes derived from SpectralModel the basic operation of this
+// class is to model the flux as a function of frequency. This class does not
+// know what the flux is at the reference frequency and this must be supplied
+// as an argument to the <src>sample</src> function. This classes will scale
+// the supplied flux using the formula shown above after converting the flux to
+// a Stokes representation. The returned flux is always in the Stokes
+// representation.
+
+// This class has besides the reference frequency, four parameters. These are
+// the spectral indices.
 // </synopsis>
 //
 // <example>
-// </example>
+// These examples are coded in the tSpectralModel.h file.
+// <h4>Example 1:</h4>
+// In this example ...
+// <srcblock>
+// </srcblock>
+/// </example>
 //
-// <motivation>
+// <motivation> A Spectral Index frequency variation is the  most widely used
+// model in radio astronomy. In particular the NFRA package 'newstar' uses it
+// extensively.
 // </motivation>
 //
-// <thrown>
-//    <li>
-//    <li>
-// </thrown>
-//
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+// <todo asof="1998/05/18">
+//   <li> Nothing I hope
 // </todo>
 
+// <linkfrom anchor="SpectralIndex" classes="SpectralModel ConstantSpectrum">
+//  <here>SpectralIndex</here> - Uses a spectral index to model the spectrum
+// </linkfrom>
+ 
 class SpectralIndex: public SpectralModel
 {
 public:
-  // The default SpectralIndex has all exponents set to zero and a reference
-  // frequency of 0 Hz in the LSR frame
+  // The default SpectralIndex has all indices set to zero and a reference
+  // frequency of 0 Hz in the LSR frame. As such it is no different from the
+  // ConstantSpectrum class (except slower).
   SpectralIndex();
 
   // Construct a SpectralIndex with specified reference frequency and set the
-  // specified Stokes::I exponent to the supplied value. The exponent for the
-  // other polarisations is zero.
+  // Stokes::I exponent to the supplied value. The exponent for the other
+  // polarisations is zero.
   SpectralIndex(const MFrequency & refFreq, Double exponent);
 
   // Construct a SpectralIndex with specified reference frequency and set all
