@@ -282,24 +282,35 @@ Bool GaussianShape::fromRecord(String & errorMessage,
   if (!ComponentShape::readDir(errorMessage, record)) return False;
   MVAngle majorAxis;
   {
-    const String fieldString("majorAxis");
+    const String fieldString("majoraxis");
     if (!record.isDefined(fieldString)) {
       errorMessage += "The 'majoraxis' field does not exist\n";
       return False;
     }
     const RecordFieldId field(fieldString);
-    if (record.dataType(field) != TpRecord) {
+    if (!(record.dataType(field) == TpRecord || 
+	  ((record.dataType(field) == TpString) && 
+	   (record.shape(field) == IPosition(1,1))))) {
       errorMessage += "The 'majoraxis' field must be a record\n";
+      errorMessage += "or a string (but not a vector of strings)\n";
       return False;
     }
-    const Record & quantumRecord = record.asRecord(field);
-    QuantumHolder qHolder;
-    if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
-	!qHolder.isQuantumDouble()) {
-      errorMessage += "The 'majoraxis' field is not a quantity\n";
-      return False;
+    Quantum<Double> quantum;
+    if (record.dataType(field) == TpString) {
+      if (!Quantum<Double>::read(quantum, record.asString(field))) {
+	errorMessage += "Problem parsing the majoraxis string";
+	return False;
+      }
+    } else {
+      const Record & quantumRecord = record.asRecord(field);
+      QuantumHolder qHolder;
+      if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
+	  !qHolder.isQuantumDouble()) {
+	errorMessage += "The 'majoraxis' field is not a quantity\n";
+	return False;
+      }
+      quantum = qHolder.asQuantumDouble();
     }
-    const Quantum<Double> & quantum = qHolder.asQuantumDouble();
     if (quantum.getFullUnit() != Unit("deg")) {
       errorMessage += "The 'majoraxis' field must have angular units\n";
       return False;
@@ -308,24 +319,35 @@ Bool GaussianShape::fromRecord(String & errorMessage,
   }
   MVAngle minorAxis;
   {
-    const String fieldString("minorAxis");
+    const String fieldString("minoraxis");
     if (!record.isDefined(fieldString)) {
       errorMessage += "The 'minoraxis' field does not exist\n";
       return False;
     }
     const RecordFieldId field(fieldString);
-    if (record.dataType(field) != TpRecord) {
-	errorMessage += "The 'minoraxis' field must be a record\n";
-	return False;
-    }      
-    const Record & quantumRecord = record.asRecord(field);
-    QuantumHolder qHolder;
-    if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
-	!qHolder.isQuantumDouble()) {
-      errorMessage += "The 'minoraxis' field is not a quantity\n";
+    if (!(record.dataType(field) == TpRecord || 
+	  ((record.dataType(field) == TpString) && 
+	   (record.shape(field) == IPosition(1,1))))) {
+      errorMessage += "The 'minoraxis' field must be a record\n";
+      errorMessage += "or a string (but not a vector of strings)\n";
       return False;
+    }      
+    Quantum<Double> quantum;
+    if (record.dataType(field) == TpString) {
+      if (!Quantum<Double>::read(quantum, record.asString(field))) {
+	errorMessage += "Problem parsing the minoraxis string";
+	return False;
+      }
+    } else {
+      const Record & quantumRecord = record.asRecord(field);
+      QuantumHolder qHolder;
+      if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
+	  !qHolder.isQuantumDouble()) {
+	errorMessage += "The 'minoraxis' field is not a quantity\n";
+	return False;
+      }
+      quantum = qHolder.asQuantumDouble();
     }
-    const Quantum<Double> & quantum = qHolder.asQuantumDouble();
     if (quantum.getFullUnit() != Unit("deg")) {
       errorMessage += "The 'minoraxis' field must have angular units\n";
       return False;
@@ -340,18 +362,29 @@ Bool GaussianShape::fromRecord(String & errorMessage,
       return False;
     }
     const RecordFieldId field(fieldString);
-    if (record.dataType(field) != TpRecord) {
+    if (!(record.dataType(field) == TpRecord || 
+	  ((record.dataType(field) == TpString) && 
+	   (record.shape(field) == IPosition(1,1))))) {
       errorMessage += "The 'positionangle' field must be a record\n";
+      errorMessage += "or a string (but not a vector of strings)\n";
       return False;
     }      
-    Record quantumRecord = record.asRecord(field);
-    QuantumHolder qHolder;
-    if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
-	!qHolder.isQuantity()) {
-      errorMessage += "The 'positionangle' field is not a quantity\n";
-      return False;
+    Quantum<Double> quantum;
+    if (record.dataType(field) == TpString) {
+      if (!Quantum<Double>::read(quantum, record.asString(field))) {
+	errorMessage += "Problem parsing the positionangle string";
+	return False;
+      }
+    } else {
+      Record quantumRecord = record.asRecord(field);
+      QuantumHolder qHolder;
+      if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
+	  !qHolder.isQuantity()) {
+	errorMessage += "The 'positionangle' field is not a quantity\n";
+	return False;
+      }
+      quantum = qHolder.asQuantity();
     }
-    const Quantum<Double> & quantum = qHolder.asQuantity();
     if (quantum.getFullUnit() != Unit("deg")) {
       errorMessage += "The 'positionangle' field must have angular units\n";
       return False;
