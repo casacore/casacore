@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/local/bin/perl5
 
 #   buildchangelog: build changelog html files
 #
@@ -248,8 +248,10 @@ sub processtext (file, alltext, chrecarr, filter)
     $author  =~ s/\s$//;
     $area    = $1 if $text =~ s@<area>(.+)</area>@@is;
     $area    =~ s/\s+//sg;
-    $pkg     = $1 if $text =~ s@<package>(.+)</package>@@is;
-    $pkg     =~ s/\s+//sg;
+    if ($area ne 'Tool') {
+      $pkg     = $1 if $text =~ s@<package>(.+)</package>@@is;
+      $pkg     =~ s/\s+//sg;
+    }
     $module  = $1 if $text =~ s@<module>(.+)</module>@@is;
     $module  =~ s/\s+//sg;
     $cat     = $1 if $text =~ s@<category>(.+)</category>@@is;
