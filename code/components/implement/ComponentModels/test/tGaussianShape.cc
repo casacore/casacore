@@ -1,4 +1,4 @@
-//# tGaussianCompRep.cc:  this defines tGaussianCompRep.cc
+//# tGaussianShape.cc: Test program for the GaussianShape & TwoSidedShape classes
 //# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,628 +26,399 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/GaussianShape.h>
-#include <trial/ComponentModels/Flux.h>
-// #include <trial/ComponentModels/ComponentType.h>
-// #include <trial/ComponentModels/Flux.h>
-// #include <trial/ComponentModels/SkyCompRep.h>
-// #include <trial/Coordinates/CoordinateSystem.h>
-// #include <trial/Coordinates/CoordinateUtil.h>
-// #include <trial/Coordinates/StokesCoordinate.h>
-// #include <trial/Images/PagedImage.h>
-// #include <aips/Arrays/Array.h>
-// #include <aips/Arrays/ArrayLogical.h>
-// #include <aips/Arrays/ArrayMath.h>
-// #include <aips/Arrays/Vector.h>
+#include <trial/ComponentModels/TwoSidedShape.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Containers/Record.h>
+#include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
-// #include <aips/Glish/GlishArray.h>
-// #include <aips/Glish/GlishRecord.h>
-// #include <aips/Glish/GlishValue.h>
-// #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Constants.h>
-// #include <aips/Mathematics/Math.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Quanta/Quantum.h>
-// #include <aips/Measures/MCDirection.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MeasureHolder.h>
+#include <aips/Quanta/Euler.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVDirection.h>
-// #include <aips/Measures/MeasConvert.h>
-// #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QuantumHolder.h>
 #include <aips/Quanta/RotMatrix.h>
-// #include <aips/Measures/Stokes.h>
-// #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
-#include <aips/OS/Timer.h>
-
-Bool compareFlux(const Flux<Double>& f1, 
-		 const Flux<Double>& f2, Double tol=C::dbl_min) {
-  if (!near(f1.value(0).real(), f2.value(0).real(), tol)) return False;
-  if (!near(f1.value(0).imag(), f2.value(0).imag(), tol)) return False;
-  if (!near(f1.value(1).real(), f2.value(1).real(), tol)) return False;
-  if (!near(f1.value(1).imag(), f2.value(1).imag(), tol)) return False;
-  if (!near(f1.value(2).real(), f2.value(2).real(), tol)) return False;
-  if (!near(f1.value(2).imag(), f2.value(2).imag(), tol)) return False;
-  if (!near(f1.value(3).real(), f2.value(3).real(), tol)) return False;
-  if (!near(f1.value(3).imag(), f2.value(3).imag(), tol)) return False;
-  return True;
-}
- 
 int main() {
   try {
+    TwoSidedShape* shapePtr = 0;
     {
-      // Create a Gaussian component at the default direction
+      // Create a Gaussian shape at the default direction
       const GaussianShape defGaussian;
+      AlwaysAssert(defGaussian.ok(), AipsError);
+      AlwaysAssert(defGaussian.type() == ComponentType::GAUSSIAN, AipsError);
+      AlwaysAssert(defGaussian.isSymmetric() == True, AipsError);
       const MVAngle pixelSize(Quantity(1.0,"''"));
       // Sample the Gaussian at the Maximum and half an arc-min on either side.
       MVDirection sampleDirVal(Quantity(0,"deg"), 
- 			       Quantity(90, "deg") - Quantity(.5, "'"));
+  			       Quantity(90, "deg") - Quantity(.5, "'"));
       MDirection sampleDir(sampleDirVal, MDirection::J2000);
       const RotMatrix rotDec(Euler(Quantity(0.5, "'").getValue("rad"), 2u));
    
       // This is not exact. To be exact I should do a integration over the
       // pixel area. Instead I set the pixel size to be something small enough!
       const Double peak = 4. * 3600 * pow(180.,2.) * C::ln2 * pow(C::pi,-3.0) *
- 	pixelSize.radian() * pixelSize.radian();
-      Flux<Double> expectedSample(peak*0.50);
-      Flux<Double> actualSample(1,0,0,0);
-      defGaussian.sample(actualSample, sampleDir, pixelSize);
-      AlwaysAssert(compareFlux(actualSample, expectedSample, 1E-10), 
-		   AipsError);
+  	square(pixelSize.radian());
+      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize), 
+			peak*0.5, 1E-11), AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
-      expectedSample.setValue(peak);
-      actualSample.setValue(1);
-      defGaussian.sample(actualSample, sampleDir, pixelSize);
-      AlwaysAssert(compareFlux(actualSample, expectedSample, 1E-10), 
-		   AipsError);
+      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize), 
+			peak, 1E-12), AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
-      expectedSample.setValue(peak*0.5);
-      actualSample.setValue(1);
-      defGaussian.sample(actualSample, sampleDir, pixelSize);
-      AlwaysAssert(compareFlux(actualSample, expectedSample, 1E-10), 
-		   AipsError);
-      cout << "Passed the default Gaussian component test" << endl;
+      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize), 
+			peak*0.5, 1E-11), AipsError);
+      cout << "Passed the default Gaussian shape test" << endl;
     }
     {
       // Create a Gaussian shape at a defined non-J2000 direction
       const MVDirection dir1934(Quantity(293.5,"deg"), Quantity(-63.7, "deg"));
       const MDirection coord1934J2000(dir1934, MDirection::J2000);
-      const Quantity majorAxis(2E-3, "''");
-      const Quantity minorAxis(2E-3, "''");
+      const Quantity majorAxis(2, "'");
+      const Quantity minorAxis(2, "'");
       const Quantity pa(10, "deg");
-      const GaussianShape J1934(coord1934J2000, majorAxis, minorAxis, pa);
-      // Create a direction that is 1 mas away from the pole
+      GaussianShape J1934(coord1934J2000, majorAxis, minorAxis, pa);
+      // Create a direction that is 1 arc-min away from the pole
       MVDirection sampleDir(Quantity(0,"deg"),
-  			    Quantity(90, "deg") - Quantity(1, "mas"));
+   			    Quantity(90, "deg") - Quantity(1, "'"));
       // And now make another rotater that can rotate this point about the pole
       // in steps of say 40 degrees
       const RotMatrix rotater(Euler(Quantity(40, "deg").getValue("rad"), 3u));
 
       // Create a rotation matrix that can rotate the pole down to the
       // component. 
-      const RotMatrix pole2src(Euler(Quantity(-153.7,"deg").getValue("rad"), 
- 				     2u, 
- 				     Quantity(-293.5,"deg").getValue("rad"),
- 				     3u));
-      const MVDirection pole;
+      const RotMatrix pole2src(Euler(Quantity(-153.7,"deg").getValue("rad"),
+				     2u, 
+  				     Quantity(-293.5,"deg").getValue("rad"),
+  				     3u));
       // Sample at a set of MDirections equidistant from the direction of the
-      // component. All these points should have the same flux (in Jy/pixel)
-      // of half the maximum. 
+      // component. All these points should have the same flux of half the
+      // maximum.
       const MVAngle pixelSize(Quantity(1.0,"''"));
       MDirection sampledDirection;
-      Flux<Double> sampledFlux(1.0);
-      Double peak;
-      peak = 4. * pow(180. * 60. * 60. * 1000. /2. , 2.)
- 	* C::ln2 * pow(C::pi,-3.) 
- 	* pixelSize.radian() * pixelSize.radian();
+      const Double peak = 4. * square(180. * 60. /2.) * C::ln2 * 
+	pow(C::pi,-3.) * square(pixelSize.radian());
       for (uInt i = 0; i < 6; i++){
-  	sampledDirection = MDirection(sampleDir*pole2src, MDirection::J2000);
- 	J1934.sample(sampledFlux, sampledDirection, pixelSize);
- 	// Precision is lost because of the subtraction done in the
- 	// MVPosition::separation member function
-	AlwaysAssert(near(sampledFlux.value(0).re, peak*0.5, 1E-6), 
- 		     AipsError);
-    	AlwaysAssert(near(sampledFlux.value(1), 0.0, C::dbl_epsilon), 
-   		     AipsError);
-    	AlwaysAssert(near(sampledFlux.value(2), 0.0, C::dbl_epsilon), 
-   		     AipsError);
-    	AlwaysAssert(near(sampledFlux.value(3), 0.0, C::dbl_epsilon), 
-   		     AipsError);
-	sampledFlux.setValue(1.0);
-  	sampleDir *= rotater;
+	sampledDirection = MDirection(sampleDir*pole2src, MDirection::J2000);
+ 	AlwaysAssert(near(J1934.sample(sampledDirection, pixelSize), 
+			  peak*0.5, 1E-11), AipsError);
+   	sampleDir *= rotater;
+       }
+      const MVDirection pole;
+      sampledDirection = MDirection(pole*pole2src, MDirection::J2000);
+      AlwaysAssert(near(J1934.sample(sampledDirection, pixelSize), peak), 
+		   AipsError);
+      cout << "Passed the arbitrary Gaussian shape test" << endl;
+      // test the copy semantics
+      GaussianShape othergc(J1934);
+      GaussianShape assignedgc;
+      assignedgc = othergc;
+      shapePtr = (TwoSidedShape*) J1934.clone();
+      J1934.setWidthInRad(1., 0.5, .1);
+      shapePtr->setWidth(Quantity(1000, "mas"), Quantity(0.5, "arcsec"), 
+			 Quantity(-10, "deg"));
+      othergc.setWidth(Quantity(5, "deg"), 0.5, Quantity(1, "rad"));
+      {
+ 	AlwaysAssert(near(assignedgc.majorAxis().getValue("arcmin"), 2.0),
+		     AipsError);
+	AlwaysAssert(assignedgc.majorAxis().getFullUnit().getName() == "'",
+		     AipsError);
+ 	AlwaysAssert(near(assignedgc.minorAxis().getValue("arcmin"), 2.0),
+		     AipsError);
+	AlwaysAssert(assignedgc.minorAxis().getFullUnit().getName() == "'",
+		     AipsError);
+ 	AlwaysAssert(near(assignedgc.positionAngle().getValue("deg"), 10.0),
+		     AipsError);
+	AlwaysAssert(assignedgc.positionAngle().getFullUnit().getName() =="deg",
+		     AipsError);
       }
-      cout << "Passed the arbitrary Gaussian component test" << endl;
+      {
+ 	AlwaysAssert(near(othergc.majorAxis().getValue("deg"), 5.0),
+		     AipsError);
+	AlwaysAssert(othergc.majorAxis().getFullUnit().getName() == "deg",
+		     AipsError);
+ 	AlwaysAssert(near(othergc.axialRatio(), 0.5), AipsError);
+ 	AlwaysAssert(near(othergc.TwoSidedShape::axialRatio(), 0.5), AipsError);
+	AlwaysAssert(othergc.minorAxis().getFullUnit().getName() == "deg",
+		     AipsError);
+ 	AlwaysAssert(near(othergc.positionAngle().getValue("rad"), 1.0),
+		     AipsError);
+	AlwaysAssert(othergc.positionAngle().getFullUnit().getName() =="rad",
+		     AipsError);
+      }
+      {
+ 	AlwaysAssert(near(J1934.majorAxisInRad(), 1.0), AipsError);
+ 	AlwaysAssert(near(J1934.minorAxisInRad(), 0.5), AipsError);
+ 	AlwaysAssert(near(J1934.positionAngleInRad(), 0.1), AipsError);
+	AlwaysAssert(J1934.majorAxis().getFullUnit().getName() == "'",
+		     AipsError);
+	AlwaysAssert(J1934.minorAxis().getFullUnit().getName() == "'",
+		     AipsError);
+	AlwaysAssert(J1934.positionAngle().getFullUnit().getName() =="deg",
+		     AipsError);
+      }
+      {
+ 	AlwaysAssert(near(shapePtr->majorAxis().getValue("mas"), 1000.0),
+		     AipsError);
+	AlwaysAssert(shapePtr->majorAxis().getFullUnit().getName() == "mas",
+		     AipsError);
+ 	AlwaysAssert(near(shapePtr->minorAxis().getValue("arcsec"), 0.5),
+		     AipsError);
+	AlwaysAssert(shapePtr->minorAxis().getFullUnit().getName() == "arcsec",
+		     AipsError);
+ 	AlwaysAssert(near(shapePtr->positionAngle().getValue("deg"), 170.0),
+		     AipsError);
+	AlwaysAssert(shapePtr->positionAngle().getFullUnit().getName() =="deg",
+		     AipsError);
+	AlwaysAssert(shapePtr->type() == ComponentType::GAUSSIAN, AipsError);
+	AlwaysAssert(shapePtr->isSymmetric() == True, AipsError);
+      }
+      cout << "Passed the copy semantics test" << endl;
     }
     {
-      // Create a Gaussian component in a defined direction
-      Flux<Double> initialFlux(2.0, 2.0, 2.0, 2.0);
-      Vector<Double> initialVal;
-      initialFlux.value(initialVal);
-      const MDirection initialPosition(MVDirection(1.0), MDirection::B1950);
-      const Quantity initialMajorAxis(13, "''");
-      const Double initialAxialRatio = 0.1;
-      const Quantity initialPA(10, "deg");
-      GaussianShape B1934(initialPosition, initialMajorAxis,
-			  initialAxialRatio, initialPA);
-      // Set and verify the direction of the Gaussian component.
-      AlwaysAssert(B1934.refDirection().getRef().getType()==MDirection::B1950,
-    		   AipsError); 
-      AlwaysAssert(B1934.refDirection().getValue().near(MVDirection(1.0)), 
-		   AipsError);
-      const MVDirection dir1934(Quantity(293.5,"deg"),Quantity(-63.8,"deg"));
-      B1934.setRefDirection(MDirection(dir1934, MDirection::J2000));
-      AlwaysAssert(B1934.refDirection().getRef().getType()==MDirection::J2000,
-    		   AipsError); 
-      AlwaysAssert(B1934.refDirection().getValue().near(dir1934), AipsError);
-      // Set and verify the width of the Gaussian component. 
-      AlwaysAssert(near(B1934.majorAxis().getValue("deg"),
-			initialMajorAxis.getValue("deg"), C::dbl_epsilon), 
-		   AipsError);
-      AlwaysAssert(near(B1934.minorAxis().getValue("deg"),
-			0.1*initialMajorAxis.getValue("deg"), C::dbl_epsilon), 
-		   AipsError);
-      AlwaysAssert(near(B1934.axialRatio(), 0.1, C::dbl_epsilon), 
-		   AipsError);
-//       MVAngle majorAxis;
-//       B1934.majorAxis(majorAxis);
-//       MVAngle minorAxis;
-//       B1934.minorAxis(minorAxis);
-//       AlwaysAssert(near(minorAxis.radian(), 
-// 			initialMajorAxis.radian()*initialAxialRatio,
-// 			C::dbl_epsilon), AipsError);
-//       Double axialRatio;
-//       B1934.axialRatio(axialRatio);
-//       AlwaysAssert(near(axialRatio, initialAxialRatio, C::dbl_epsilon),
-// 		   AipsError);
-//       MVAngle pa;
-//       B1934.positionAngle(pa);
-//       AlwaysAssert(near(pa.radian(), initialPA.radian(),
-// 			C::dbl_epsilon), AipsError);
+      MDirection dir(MVDirection(0.0, 0.0), MDirection::J2000);
+      GaussianShape gc(dir, Quantity(1, "deg"), 0.5, Quantity(0, "deg"));
 
-//       MVAngle compMajorAxis(Quantity(4, "''" ));
-//       const MVAngle compMinorAxis(Quantity(2, "''" ));
-//       MVAngle compPA(Quantity(45, "deg" ));
-//       B1934.setWidth(compMajorAxis, compMinorAxis, compPA);
-//       B1934.width(majorAxis, minorAxis, pa);
-//       AlwaysAssert(near(majorAxis.radian(), compMajorAxis.radian(),
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(minorAxis.radian(), compMinorAxis.radian(),
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(pa.radian(), compPA.radian(), C::dbl_epsilon),
-// 		   AipsError);
+      const MVAngle pixSize(Quantity(1, "mas"));
+      Vector<MDirection::MVType> dirs(5);
+      dirs(0) = MVDirection(Quantity(0,"deg"), Quantity(0, "deg"));
+      dirs(1) = MVDirection(Quantity(0.25,"deg"), Quantity(0, "deg"));
+      dirs(2) = MVDirection(Quantity(-0.25,"deg"), Quantity(0, "deg"));
+      dirs(3) = MVDirection(Quantity(0.,"deg"), Quantity(0.5, "deg"));
+      dirs(4) = MVDirection(Quantity(0.,"deg"), Quantity(-0.5, "deg"));
+      MDirection::Ref ref(shapePtr->refDirection().getRef());
+      Vector<Double> scales(5, -1.0);
+      gc.sample(scales, dirs, ref, pixSize);
+      const Double peak = 2. * square(6.*60) * C::ln2 * 
+	pow(C::pi,-3.) * square(pixSize.radian());
+      AlwaysAssert(near(scales(0), peak), AipsError);
+      AlwaysAssert(near(scales(1), peak/2), AipsError);
+      AlwaysAssert(near(scales(2), peak/2), AipsError);
+      AlwaysAssert(near(scales(3), peak/2), AipsError);
+      AlwaysAssert(near(scales(4), peak/2), AipsError);
+      scales = -1.0;
+      gc.TwoSidedShape::sample(scales, dirs, ref, pixSize);
+      AlwaysAssert(near(scales(0), peak), AipsError);
+      AlwaysAssert(near(scales(1), peak/2), AipsError);
+      AlwaysAssert(near(scales(2), peak/2), AipsError);
+      AlwaysAssert(near(scales(3), peak/2), AipsError);
+      AlwaysAssert(near(scales(4), peak/2), AipsError);
+
+      Vector<Double> uvw(3,0.0);
+      Double freq = 1E6;
+      AlwaysAssert(near(gc.visibility(uvw, freq).real(), 1.0), AipsError);
+      AlwaysAssert(near(gc.visibility(uvw, freq).imag(), 0.0), AipsError);
+      uvw(0) = 4*C::ln2/square(C::pi)*180.*C::c/freq;
+      AlwaysAssert(near(gc.visibility(uvw, freq).real(), 0.5), AipsError);
+      AlwaysAssert(near(gc.visibility(uvw, freq).imag(), 0.0), AipsError);
+      uvw(1) = uvw(0)/2; uvw(0) = 0.0;
+      AlwaysAssert(near(gc.visibility(uvw, freq).real(), 0.5), AipsError);
+      AlwaysAssert(near(gc.visibility(uvw, freq).imag(), 0.0), AipsError);
       
-//       compMajorAxis = Quantity(8, "''");
-//       compPA = Quantity(30, "deg");
-//       Double compAxialRatio = .5;
-//       B1934.setWidth(compMajorAxis, compAxialRatio, compPA);
-//       B1934.width(majorAxis, axialRatio, pa);
-//       AlwaysAssert(near(majorAxis.radian(), compMajorAxis.radian(),
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(axialRatio, compAxialRatio, C::dbl_epsilon),
-// 		   AipsError);
-//       AlwaysAssert(near(pa.radian(), compPA.radian(), C::dbl_epsilon),
-// 		   AipsError);
+      Matrix<Double> uvws(3, 2);
+      uvws = 0.0; 
+      uvws(0,0) = -uvw(1)*2;
+      uvws(1,1) = -uvw(1);
+      Vector<DComplex> results(2, DComplex(10.0, 10.0));
+      gc.visibility(results, uvws, freq);
+      AlwaysAssert(near(results(0).real(), 0.5), AipsError);
+      AlwaysAssert(near(results(0).imag(), 0.0), AipsError);
+      AlwaysAssert(near(results(1).real(), 0.5), AipsError);
+      AlwaysAssert(near(results(1).imag(), 0.0), AipsError);
+      results = DComplex(10.,10.);
+      gc.TwoSidedShape::visibility(results, uvws, freq);
+      AlwaysAssert(near(results(0).real(), 0.5), AipsError);
+      AlwaysAssert(near(results(0).imag(), 0.0), AipsError);
+      AlwaysAssert(near(results(1).real(), 0.5), AipsError);
+      AlwaysAssert(near(results(1).imag(), 0.0), AipsError);
 
-//       // Check this is a Gaussian component
-//       AlwaysAssert(B1934.shape() == ComponentType::GAUSSIAN, AipsError);
-//       AlwaysAssert(ComponentType::name(B1934.shape()).matches("Gaussian") == 1,
-//  		   AipsError);
-
-//       // Check the parameters interface
-//       AlwaysAssert(B1934.nParameters() == 3, AipsError);
-//       Vector<Double> parms(3);
-//       B1934.parameters(parms);
-//       AlwaysAssert(near(parms(0), compMajorAxis.radian(), C::dbl_epsilon),
-// 		   AipsError);
-//       AlwaysAssert(near(parms(1), compMajorAxis.radian()*compAxialRatio,
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(parms(2), compPA.radian(), C::dbl_epsilon), AipsError);
-//       parms(0) = Quantity(4, "''").getValue("rad");
-//       parms(1) = Quantity(2, "''").getValue("rad");;
-//       parms(2) = Quantity(45.0, "deg").getValue("rad");
-//       B1934.setParameters(parms);
-//       parms = 0.0;
-//       B1934.parameters(parms);
-//       AlwaysAssert(near(parms(0), Quantity(4, "''").getValue("rad"),
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(parms(1), Quantity(2, "''").getValue("rad"),
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(parms(2), Quantity(45, "deg").getValue("rad"),
-// 			C::dbl_epsilon), AipsError);
-//       parms.resize(1);
-//       try {
-//  	B1934.setParameters(parms);
-//    	throw(AipsError("GaussianCompRep incorrectly accepted a too small "
-//    			"Parameter Vector"));
-//       }
-//       catch (AipsError x) {
-//   	if (!x.getMesg().contains("newParms.nelements() == nParameters()")) {
-//   	  cerr << x.getMesg() << endl;
-//   	  cout << "FAIL" << endl;
-//   	  return 1;
-//   	}
-//       }
-//       end_try;
-//       cout << "Passed the set/get parameters test for Gaussian components"
-//    	   << endl;
-//       String errorMessage("");
-//       GlishRecord compRec;
-//       AlwaysAssert(B1934.toRecord(errorMessage, compRec) == True, AipsError);
-//       AlwaysAssert(errorMessage == "", AipsError);
-//       {
-//  	AlwaysAssert(compRec.exists("flux"), AipsError);
-//  	AlwaysAssert(compRec.get("flux").type() == GlishValue::RECORD, 
-//  		     AipsError);
-//  	GlishRecord fluxRec(compRec.get("flux"));
-//  	AlwaysAssert(fluxRec.exists("value"), AipsError);
-//  	AlwaysAssert(fluxRec.get("value").type() == GlishValue::ARRAY, 
-//  		     AipsError);
-//  	GlishArray fluxVal(fluxRec.get("value"));
-//  	AlwaysAssert(fluxVal.elementType() != GlishArray::STRING, AipsError);
-//  	AlwaysAssert(fluxVal.shape().isEqual(IPosition(1,4)), AipsError);
-//  	Vector<Double> value(4);
-//  	fluxVal.get(value);
-//  	AlwaysAssert(near(value(0), 6.3, C::dbl_epsilon), AipsError);
-//  	AlwaysAssert(near(value(1), 0.0, C::dbl_epsilon), AipsError);
-//  	AlwaysAssert(near(value(2), 0.0, C::dbl_epsilon), AipsError);
-//  	AlwaysAssert(near(value(3), 0.0, C::dbl_epsilon), AipsError);
-//  	AlwaysAssert(fluxRec.exists("unit"), AipsError);
-//  	AlwaysAssert(fluxRec.get("unit").type() == GlishValue::ARRAY, 
-//  		     AipsError);
-//  	GlishArray fluxUnit(fluxRec.get("unit"));
-//  	AlwaysAssert(fluxUnit.elementType() == GlishArray::STRING, AipsError);
-//  	AlwaysAssert(fluxUnit.shape().isEqual(IPosition(1,1)), AipsError);
-//  	String unit;
-//  	fluxUnit.get(unit);
-//  	AlwaysAssert(unit == "Jy", AipsError);
-//  	AlwaysAssert(fluxRec.exists("polarisation"), AipsError);
-//  	AlwaysAssert(fluxRec.get("polarisation").type() == GlishValue::ARRAY, 
-//  		     AipsError);
-//  	GlishArray fluxPol(fluxRec.get("polarisation"));
-//  	AlwaysAssert(fluxPol.elementType() == GlishArray::STRING, AipsError);
-//  	AlwaysAssert(fluxPol.shape().isEqual(IPosition(1,1)), AipsError);
-//  	String pol;
-//  	fluxPol.get(pol);
-//  	AlwaysAssert(pol == "Stokes", AipsError);
-//       }
-//       {
-// 	AlwaysAssert(compRec.exists("direction"), AipsError);
-// 	AlwaysAssert(compRec.get("direction").type() == GlishValue::RECORD, 
-// 		     AipsError);
-// 	GlishRecord dirRec(compRec.get("direction"));
-// 	AlwaysAssert(dirRec.exists("refer"), AipsError);
-// 	AlwaysAssert(dirRec.get("refer").type() == GlishValue::ARRAY, 
-// 		     AipsError);
-// 	GlishArray referVal(dirRec.get("refer"));
-// 	AlwaysAssert(referVal.elementType() == GlishArray::STRING, AipsError);
-// 	AlwaysAssert(referVal.shape().isEqual(IPosition(1,1)), AipsError);
-// 	String refer;
-// 	referVal.get(refer);
-// 	AlwaysAssert(refer == "J2000", AipsError);
-
-// 	AlwaysAssert(dirRec.exists("type"), AipsError);
-// 	AlwaysAssert(dirRec.get("type").type() == GlishValue::ARRAY, 
-// 		     AipsError);
-// 	GlishArray typeVal(dirRec.get("type"));
-// 	AlwaysAssert(typeVal.elementType() == GlishArray::STRING, AipsError);
-// 	AlwaysAssert(typeVal.shape().isEqual(IPosition(1,1)), AipsError);
-// 	String type;
-// 	typeVal.get(type);
-// 	AlwaysAssert(type == "direction", AipsError);
-  
-// 	AlwaysAssert(dirRec.exists("m0"), AipsError);
-// 	AlwaysAssert(dirRec.get("m0").type() == GlishValue::RECORD, 
-// 		     AipsError);
-// 	{
-// 	  GlishRecord mRec(dirRec.get("m0"));
-// 	  AlwaysAssert(mRec.exists("value"), AipsError);
-// 	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mVal(mRec.get("value"));
-// 	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  Double value;
-// 	  mVal.get(value);
-// 	  AlwaysAssert(near(value, -65.3439, 1E-6), AipsError);
-// 	  AlwaysAssert(mRec.exists("unit"), AipsError);
-// 	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mUnit(mRec.get("unit"));
-// 	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  String unit;
-// 	  mUnit.get(unit);
-// 	  AlwaysAssert(unit == "deg", AipsError);
-// 	}
-// 	AlwaysAssert(dirRec.exists("m1"), AipsError);
-// 	AlwaysAssert(dirRec.get("m1").type() == GlishValue::RECORD, 
-// 		     AipsError);
-// 	{
-// 	  GlishRecord mRec(dirRec.get("m1"));
-// 	  AlwaysAssert(mRec.exists("value"), AipsError);
-// 	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mVal(mRec.get("value"));
-// 	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  Double value;
-// 	  mVal.get(value);
-// 	  AlwaysAssert(near(value, -63.6864, 1E-6), AipsError);
-// 	  AlwaysAssert(mRec.exists("unit"), AipsError);
-// 	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mUnit(mRec.get("unit"));
-// 	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  String unit;
-// 	  mUnit.get(unit);
-// 	  AlwaysAssert(unit == "deg", AipsError);
-// 	}
+      cout << "Passed the sample/visibility test" << endl;
     }
-//       {
-// 	AlwaysAssert(compRec.exists("shape"), AipsError);
-// 	AlwaysAssert(compRec.get("shape").type() == GlishValue::RECORD, 
-// 		     AipsError);
-// 	GlishRecord shapeRec(compRec.get("shape"));
-// 	AlwaysAssert(shapeRec.exists("type"), AipsError);
-// 	AlwaysAssert(shapeRec.get("type").type() == GlishValue::ARRAY, 
-// 		     AipsError);
-// 	GlishArray typeVal(shapeRec.get("type"));
-// 	AlwaysAssert(typeVal.elementType() == GlishArray::STRING, AipsError);
-// 	AlwaysAssert(typeVal.shape().isEqual(IPosition(1,1)), AipsError);
-// 	String type;
-// 	typeVal.get(type);
-// 	AlwaysAssert(type == "gaussian", AipsError);
-
-// 	AlwaysAssert(shapeRec.exists("majoraxis"), AipsError);
-// 	AlwaysAssert(shapeRec.get("majoraxis").type() == GlishValue::RECORD, 
-// 		     AipsError);
-// 	{
-// 	  GlishRecord mRec(shapeRec.get("majoraxis"));
-// 	  AlwaysAssert(mRec.exists("value"), AipsError);
-// 	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mVal(mRec.get("value"));
-// 	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  Double value;
-// 	  mVal.get(value);
-// 	  AlwaysAssert(near(value, 0.0666667, 1E-6), AipsError);
-// 	  AlwaysAssert(mRec.exists("unit"), AipsError);
-// 	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mUnit(mRec.get("unit"));
-// 	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  String unit;
-// 	  mUnit.get(unit);
-// 	  AlwaysAssert(unit == "'", AipsError);
-// 	}
-// 	AlwaysAssert(shapeRec.exists("minoraxis"), AipsError);
-// 	AlwaysAssert(shapeRec.get("minoraxis").type() == GlishValue::RECORD, 
-// 		     AipsError);
-// 	{
-// 	  GlishRecord mRec(shapeRec.get("minoraxis"));
-// 	  AlwaysAssert(mRec.exists("value"), AipsError);
-// 	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mVal(mRec.get("value"));
-// 	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  Double value;
-// 	  mVal.get(value);
-// 	  AlwaysAssert(near(value, 0.0333333, 1E-6), AipsError);
-// 	  AlwaysAssert(mRec.exists("unit"), AipsError);
-// 	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mUnit(mRec.get("unit"));
-// 	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  String unit;
-// 	  mUnit.get(unit);
-// 	  AlwaysAssert(unit == "'", AipsError);
-// 	}
-// 	AlwaysAssert(shapeRec.exists("positionangle"), AipsError);
-// 	AlwaysAssert(shapeRec.get("positionangle").type() ==GlishValue::RECORD,
-// 		     AipsError);
-//  	{
-//  	  GlishRecord mRec(shapeRec.get("positionangle"));
-// 	  AlwaysAssert(mRec.exists("value"), AipsError);
-// 	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mVal(mRec.get("value"));
-// 	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  Double value;
-// 	  mVal.get(value);
-// 	  AlwaysAssert(near(value, 45.0, C::dbl_epsilon), AipsError);
-// 	  AlwaysAssert(mRec.exists("unit"), AipsError);
-// 	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
-// 		       AipsError);
-// 	  GlishArray mUnit(mRec.get("unit"));
-// 	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
-// 	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
-// 	  String unit;
-// 	  mUnit.get(unit);
-// 	  AlwaysAssert(unit == "deg", AipsError);
-// 	}
-//       }
-//       GaussianCompRep newComp;
-//       AlwaysAssert(newComp.fromRecord(errorMessage, compRec) == True,
-// 		   AipsError);
-//       AlwaysAssert(errorMessage == "", AipsError);
-//       AlwaysAssert(near(flux1934.value(0), newComp.flux().value(0),
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(flux1934.value(1), newComp.flux().value(1),
-// 			C::dbl_epsilon), AipsError);
-//       newComp.direction(coord1934J2000);
-//       AlwaysAssert(coord1934J2000.getValue()
-//  		   .near(MDirection::Convert(coord1934B1950,MDirection::J2000)
-//  			 ().getValue()), AipsError);
-//       newComp.width(majorAxis, minorAxis, pa);
-//       parms.resize(3);
-//       newComp.parameters(parms);
-//       AlwaysAssert(near(parms(0), Quantity(4, "''").getValue("rad"),
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(parms(1), Quantity(2, "''").getValue("rad"),
-// 			C::dbl_epsilon), AipsError);
-//       AlwaysAssert(near(parms(2), Quantity(45, "deg").getValue("rad"),
-// 			C::dbl_epsilon), AipsError);
-//       cout << "Passed the to/from GlishRecord test for Gaussian components"
-//   	   << endl;
-
-//       const SkyCompRep * compRepPtr = B1934.clone();
-//       AlwaysAssert(compRepPtr->shape() == ComponentType::GAUSSIAN, AipsError);
-//       flux1934 = 0.0;
-//       AlwaysAssert(near(compRepPtr->flux().value(0).re, 6.3), AipsError);
-//       GaussianCompRep copiedComp(*((GaussianCompRep *) compRepPtr));
-//       copiedComp.flux().setValue(0.0);
-//       AlwaysAssert(near(compRepPtr->flux().value(0), 6.3), AipsError);
-//       AlwaysAssert(near(copiedComp.flux().value(0), 0.0), AipsError);
-//       copiedComp = B1934;
-//       AlwaysAssert(near(copiedComp.flux().value(0), 6.3), AipsError);
-//       copiedComp.flux().setValue(0.0);
-//       AlwaysAssert(near(B1934.flux().value(0), 6.3), AipsError);
-//       AlwaysAssert(near(copiedComp.flux().value(0), 0.0), AipsError);
-//       AlwaysAssert(B1934.ok(), AipsError);
-//       AlwaysAssert(copiedComp.SkyCompRep::ok(), AipsError);
-//       AlwaysAssert(compRepPtr->ok(), AipsError);
-//       cout << "Passed the copy and assignment tests" << endl;
-//     }
-//     {
-//       const uInt imSize = 6;
-//       const uInt nPol = 2;
-//       const uInt nFreq = 1;
-//       CoordinateSystem coords(CoordinateUtil::defaultCoords2D());
-//       {
-//   	Vector<Int> pols(nPol);
-//   	pols(0) = Stokes::I;
-//   	pols(1) = Stokes::U;
-//   	StokesCoordinate polAxis(pols);
-//   	coords.addCoordinate(polAxis);
-//       }
-//       CoordinateUtil::addFreqAxis(coords);
-//       PagedImage<Float> image(IPosition(4,imSize,imSize,nPol,nFreq), 
-//    			      coords, "tGaussianCompRep_tmp.image");
-//       image.set(0.0f);
-//       GaussianCompRep defComp;
-
-//       MVAngle majorAxis(Quantity(2., "'"));
-//       MVAngle minorAxis = majorAxis;
-//       MVAngle pa(Quantity(0., "deg"));
-//       defComp.setWidth(majorAxis, minorAxis, pa);
-//       Vector<Double> flux(4);
-//       flux(0) = 1.0;
-//       flux(1) = 0.5;
-//       flux(2) = 0.2;
-//       flux(3) = 0.1;
-//       defComp.flux().setValue(flux);
-
-//       MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
-//       MDirection coord00(ra0dec0, MDirection::J2000);
-//       defComp.setDirection(coord00);
-//       defComp.project(image);
-//       Double pixelSize = Quantity(1.0, "'").getValue("rad");
-//       Float peak = 60.*60.* pow(180.,2.) * C::ln2 * pow(C::pi,-3.0) 
-//  	* pixelSize * pixelSize;
-//       AlwaysAssert(near(image(IPosition(4, 2, 1, 0, 0)), peak), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 0, 0, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 2, 0, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 1, 1, 0, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 3, 1, 0, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 1, 1, 0)),peak*0.2f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 0, 1, 0)),peak*0.1f), AipsError);
-
-//       majorAxis = Quantity(10., "'");
-//       minorAxis = Quantity(2., "'");
-//       pa = Quantity(-1.0*atan(3.0/4.0), "rad");
-//       defComp.setWidth(majorAxis, minorAxis, pa);
-//       image.set(0.0f);
-//       defComp.project(image);
-//       peak = image(IPosition(4,2,1,0,0));
-//       AlwaysAssert(near(image(IPosition(4, 5, 5, 0, 0)), peak*0.5f),
-//  		   AipsError);
-//       image.table().markForDelete();
-//       cout << "Passed the projection to an image test" << endl;
-//     }
-//     {
-//       // Create a Gaussian component at the default direction
-//       GaussianCompRep comp;
-//       Vector<Double> flux(4);
-//       flux(0) = 1;
-//       flux(1) = 0.1;
-//       flux(2) = 0.01;
-//       flux(3) = 0.001;
-//       comp.flux().setValue(flux);
-//       Vector<Double> uvw(3, 0.0);
-//       Double freq = C::c;
-//       Vector<Double> realVis;
-//       comp.visibility(uvw, freq).value(realVis);
-//       AlwaysAssert(allNear(realVis, flux, C::dbl_epsilon),AipsError);
-//       Vector<DComplex> vis = comp.visibility(uvw, freq).value();
-//       Vector<DComplex> expectedVis(4);
-//       for (uInt s = 0; s < 4; s++) {
-//  	expectedVis(s).re = flux(s);
-//  	expectedVis(s).im = 0.0;
-//       }
-//       AlwaysAssert(allNear(vis, expectedVis, C::dbl_epsilon),
-//   		   AipsError);
-//       uvw(0) = (4.0*C::ln2/C::pi)/((1.0/60.0) * C::pi/180.0)/2.0;
-//       comp.visibility(uvw, freq).value(realVis);
-//       AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
-//  		   AipsError);
-//       uvw(1) = uvw(0); uvw(0) = 0.0;
-//       comp.visibility(uvw, freq).value(realVis);
-//       AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
-//  		   AipsError);
-//       uvw(2) = uvw(1); uvw(1) = 0.0;
-//       comp.visibility(uvw, freq).value(realVis);
-//       AlwaysAssert(allNear(realVis, flux, C::dbl_epsilon),
-//  		   AipsError);
-//       const MVAngle compMajorAxis(Quantity(1, "'" ));
-//       const MVAngle compMinorAxis(Quantity(30, "''" ));
-//       MVAngle compPA(Quantity(0, "deg" ));
-//       comp.setWidth(compMajorAxis, compMinorAxis, compPA);
-//       uvw(1) = uvw(2); uvw(2) = 0.0;
-//       comp.visibility(uvw, freq).value(realVis);
-//       AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
-//  		   AipsError);
-//       uvw(0) = uvw(1)*2; uvw(1) = 0.0;
-//       comp.visibility(uvw, freq).value(realVis);
-//       AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
-//  		   AipsError);
-//       compPA = Quantity(30, "deg");
-//       comp.setWidth(compMajorAxis, compMinorAxis, compPA);
-//       uvw(1)  = .5 * uvw(0);
-//       uvw(0)  *= C::sqrt3/2.0;
-//       comp.visibility(uvw, freq).value(realVis);
-//       AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
-//  		   AipsError);
-//       freq *= 2.0;
-//       uvw(0) /= -2.0;
-//       uvw(1) /= -2.0;
-//       comp.visibility(uvw, freq).value(realVis);
-//       AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
-//  		   AipsError);
-//       cout << "Passed the Fourier transform test" << endl;
-//     }
-
-    
+    {
+      AlwaysAssert(shapePtr->nParameters() == 3, AipsError);
+      Vector<Double> v(3);
+      shapePtr->parameters(v);
+      AlwaysAssert(near(v(0), 1.0/60/60/180.*C::pi), AipsError);
+      AlwaysAssert(near(v(1), 0.5/60/60/180.*C::pi), AipsError);
+      AlwaysAssert(near(v(2), 170.0/180.*C::pi), AipsError);
+      v(0) = 1.0/180*C::pi;
+      v(1) = 0.1/180*C::pi;
+      v(2) = 10.0/180*C::pi;
+      shapePtr->setParameters(v);
+      AlwaysAssert(near(shapePtr->majorAxis().getValue("deg"), 1.0), AipsError);
+      AlwaysAssert(near(shapePtr->minorAxis().getValue("deg"), 0.1), AipsError);
+      AlwaysAssert(near(shapePtr->positionAngle().getValue("deg"), 10.0), 
+		   AipsError);
+#if defined(AIPS_DEBUG)
+      v.resize(1);
+      try{
+ 	shapePtr->setParameters(v);
+ 	throw(AipsError("Incorrect parameter vector exception NOT thrown"));
+      }
+      catch (AipsError x) {
+ 	if(!x.getMesg().contains("newParms.nelements() == nParameters()")) {
+ 	  rethrow(x);
+ 	}
+      }
+      try{
+ 	shapePtr->parameters(v);
+ 	throw(AipsError("Incorrect parameter vector exception NOT thrown"));
+      }
+      catch (AipsError x) {
+ 	if(!x.getMesg().contains("compParms.nelements() == nParameters()")) {
+ 	  rethrow(x);
+ 	}
+      }
+#endif
+      cout << "Passed the parameter interface test" << endl;
+    }
+    {
+      String errorMsg;
+      Record rec;
+      AlwaysAssert(shapePtr->toRecord(errorMsg, rec), AipsError);
+      AlwaysAssert(errorMsg.length() == 0, AipsError);
+      AlwaysAssert(rec.isDefined("type"), AipsError);
+      AlwaysAssert(rec.isDefined("direction"), AipsError);
+      AlwaysAssert(rec.isDefined("majoraxis"), AipsError);
+      AlwaysAssert(rec.isDefined("minoraxis"), AipsError);
+      AlwaysAssert(rec.isDefined("positionangle"), AipsError);
+      String type;
+      rec.get(RecordFieldId("type"), type);
+      AlwaysAssert(type == "Gaussian", AipsError);
+      {
+	Record qRec = rec.asRecord(RecordFieldId("majoraxis"));
+	QuantumHolder qh;
+	qh.fromRecord(errorMsg, qRec);
+	AlwaysAssert(errorMsg.length() == 0, AipsError);
+	AlwaysAssert(qh.isQuantity(), AipsError);
+	Quantum<Double> q = qh.asQuantity();
+	AlwaysAssert(near(q.getValue("deg"), 1.0), AipsError);
+	AlwaysAssert(q.getFullUnit().getName() == "mas", AipsError);
+      }
+      {
+	Record qRec = rec.asRecord(RecordFieldId("minoraxis"));
+	QuantumHolder qh;
+	qh.fromRecord(errorMsg, qRec);
+	AlwaysAssert(errorMsg.length() == 0, AipsError);
+	AlwaysAssert(qh.isQuantity(), AipsError);
+	Quantum<Double> q = qh.asQuantity();
+	AlwaysAssert(near(q.getValue("deg"), 0.1), AipsError);
+	AlwaysAssert(q.getFullUnit().getName() == "arcsec", AipsError);
+      }
+      {
+	Record qRec = rec.asRecord(RecordFieldId("positionangle"));
+	QuantumHolder qh;
+	qh.fromRecord(errorMsg, qRec);
+	AlwaysAssert(errorMsg.length() == 0, AipsError);
+	AlwaysAssert(qh.isQuantity(), AipsError);
+	Quantum<Double> q = qh.asQuantity();
+	AlwaysAssert(near(q.getValue("deg"), 10.), AipsError);
+	AlwaysAssert(q.getFullUnit().getName() == "deg", AipsError);
+      }
+      {
+ 	Record unitRec;
+	unitRec.define(RecordFieldId("majoraxis"), "deg");
+	unitRec.define(RecordFieldId("minoraxis"), "arcmin");
+	unitRec.define(RecordFieldId("positionangle"), "rad");
+	AlwaysAssert(shapePtr->convertUnit(errorMsg, unitRec), AipsError);
+	AlwaysAssert(errorMsg.length() == 0, AipsError);
+      }
+      AlwaysAssert(shapePtr->toRecord(errorMsg, rec), AipsError);
+      {
+	Record qRec = rec.asRecord(RecordFieldId("majoraxis"));
+	QuantumHolder qh;
+	qh.fromRecord(errorMsg, qRec);
+	Quantum<Double> q = qh.asQuantity();
+	AlwaysAssert(near(q.getValue("deg"), 1.0), AipsError);
+	AlwaysAssert(q.getFullUnit().getName() == "deg", AipsError);
+      }
+      {
+	Record qRec = rec.asRecord(RecordFieldId("minoraxis"));
+	QuantumHolder qh;
+	qh.fromRecord(errorMsg, qRec);
+	Quantum<Double> q = qh.asQuantity();
+	AlwaysAssert(near(q.getValue("deg"), 0.1), AipsError);
+	AlwaysAssert(q.getFullUnit().getName() == "arcmin", AipsError);
+      }
+      {
+	Record qRec = rec.asRecord(RecordFieldId("positionangle"));
+	QuantumHolder qh;
+	qh.fromRecord(errorMsg, qRec);
+	Quantum<Double> q = qh.asQuantity();
+	AlwaysAssert(near(q.getValue("deg"), 10.), AipsError);
+	AlwaysAssert(q.getFullUnit().getName() == "rad", AipsError);
+      }
+      Record shapeRec;
+      {
+	QuantumHolder qh(Quantum<Double>(3, "arcmin"));
+	Record rec;
+	qh.toRecord(errorMsg, rec);
+	shapeRec.defineRecord(RecordFieldId("majoraxis"), rec);
+      }
+      {
+	QuantumHolder qh(Quantum<Double>(20, "arcsec"));
+	Record rec;
+	qh.toRecord(errorMsg, rec);
+	shapeRec.defineRecord(RecordFieldId("minoraxis"), rec);
+      }
+      {
+	QuantumHolder qh(Quantum<Double>(2, "deg"));
+	Record rec;
+	qh.toRecord(errorMsg, rec);
+	shapeRec.defineRecord(RecordFieldId("positionangle"), rec);
+      }
+      {
+	MVDirection val(Quantity(2, "rad"), Quantity(1, "rad"));
+	MeasureHolder mh(MDirection(val, MDirection::B1950));
+	Record rec;
+	mh.toRecord(errorMsg, rec);
+	shapeRec.defineRecord(RecordFieldId("direction"), rec);
+      }
+      shapeRec.define(RecordFieldId("type"), "gAUssian");
+      AlwaysAssert(shapePtr->fromRecord(errorMsg, shapeRec), AipsError);
+      AlwaysAssert(errorMsg.length() == 0, AipsError);
+      AlwaysAssert(near(shapePtr->majorAxis().getValue("'"), 3.), AipsError);
+      AlwaysAssert(shapePtr->majorAxis().getFullUnit().getName() =="arcmin",
+		   AipsError);
+      AlwaysAssert(near(shapePtr->minorAxis().getValue("''"), 20.), AipsError);
+      AlwaysAssert(shapePtr->minorAxis().getFullUnit().getName() =="arcsec",
+		   AipsError);
+      AlwaysAssert(near(shapePtr->positionAngle().getValue("deg"), 2.0), 
+		   AipsError);
+      
+      AlwaysAssert(shapePtr->positionAngle().getFullUnit().getName() =="deg",
+		   AipsError);
+      AlwaysAssert(shapePtr->type() == ComponentType::GAUSSIAN, AipsError);
+      Vector<Double> v = shapePtr->refDirection().getValue().get();
+      AlwaysAssert(near(v(0), 2.), AipsError);
+      AlwaysAssert(near(v(1), 1.), AipsError);
+      cout << "Passed the record handling test" << endl;
+    }
+    delete shapePtr;
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  }
+  catch (...) {
+    cerr << "Exception not derived from AipsError" << endl;
+    cout << "FAIL" << endl;
+    return 2;
+  }
   cout << "OK" << endl;
-  return 0;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 tGaussianShape"
