@@ -28,6 +28,14 @@
 #include <aips/Utilities/Copy.h>
 #include <aips/Exceptions/Error.h>
 
+//#  Note of Ger van Diepen on 7-Nov-1997:
+//# For one reason or another the compiler did not compile
+//#    objcopy (MPosition*, const MPosition*, 2)
+//# correctly when   *from++   was used in e.g.  *to++ = *from++.
+//# It appeared that the from pointer was updated incorrectly.
+//# Therefore everywhere the from pointer is updated explicitly using
+//#    from += 1;
+
 
 template<class T> void objmove (T* to, const T* from, uInt n)
 {
@@ -38,11 +46,17 @@ template<class T> void objmove (T* to, const T* from, uInt n)
 			" uInt n) - to or from is null"));
     }
     if (to < from  ||  to >= from+n) {
-	while (n--) *to++ = *from++;
+	while (n--) {
+	    *to++ = *from;
+	    from += 1;
+	}
     }else{
 	to += n;
 	from +=n;
-	while (n--) *--to = *--from;
+	while (n--) {
+	    from -= 1;
+	    *--to = *from;
+	}
     }
 }
 
@@ -160,7 +174,10 @@ template<class T> void objcopy (T* to, const T* from, uInt n)
 	throw(AipsError("template<class T> void objcopy(T* to, const T* from,"
 			"uInt n) - to or from is null"));
     }
-    while (n--) *to++ = *from++;
+    while (n--) {
+	*to++ = *from;
+	from += 1;
+    }
 }
 
 template<class T> void objcopy (T* to, const T* from, uInt n, uInt toStride,
@@ -175,30 +192,13 @@ template<class T> void objcopy (T* to, const T* from, uInt n, uInt toStride,
 			"illegal argument"));
     }
 
-    if (toStride == 1) {
-	if (fromStride == 1) {
-	    objcopy (to, from, n);
-	} else {
-	    // fromStride > 1
-	    while(n--) {
-		*to++ = *from;
-		from += fromStride;
-	    }
-	}
+    if (toStride == 1  &&  fromStride == 1) {
+	objcopy (to, from, n);
     } else {
-	// toStride > 1
-	if (fromStride == 1) {
-	    while(n--) {
-		*to = *from++;
-		to += toStride;
-	    }
-	} else {
-	    // fromStride > 1
-	    while(n--) {
-		*to = *from;
-		from += fromStride;
-		to += toStride;
-	    }
+	while (n--) {
+	    *to = *from;
+	    to += toStride;
+	    from += fromStride;
 	}
     }
 }
