@@ -1,5 +1,5 @@
 //# Lattices.h: Regular N-dimensional data structures.
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -430,11 +430,6 @@
 //   Lattice based classes may need to derive an iterator from
 //   LatticeIterInterface to optimize for the LatticeIterator
 //   internals which impact upon the new Lattice.
-//   <li> <linkto class="ArrLatticeIter">ArrLatticeIter</linkto> - this
-//   class is the ArrayLattice's optimized method of iterating.  It is
-//   derived from LatticeIterInterface.  This class is a "letter" utilized
-//   within the LatticeIterator "envelope" and cannot be
-//   instantiated by any user.
 //   <li> <linkto class="PagedArrIter">PagedArrIter</linkto> - this class is
 //   the PagedArray's optimized method of iterating. This class is a
 //   "letter" utilized within the LatticeIterator "envelope" and cannot
