@@ -289,50 +289,51 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
     const uInt np = newPixelOrder.nelements();
 
     // Verify that all axes are in new*Order once (only)
-    Block<Bool> found(nw);
+    Vector<Bool> found(nw);
     found = False;
     uInt i;
     for (i=0; i<found.nelements(); i++) {
 	Int which = newWorldOrder(i);
-	AlwaysAssert(which >=0 && uInt(which) < nw && !found[which], AipsError);
-	found[which] = True;
+	AlwaysAssert(which>=0 && uInt(which)<nw && !found(which), AipsError);
+	found(which) = True;
     }
+//
     found.resize(np);
     found = False;
     for (i=0; i<found.nelements(); i++) {
 	Int which = newPixelOrder(i);
-	AlwaysAssert(which >=0 && uInt(which) < np && !found[which], AipsError);
-	found[which] = True;
+	AlwaysAssert(which >=0 && uInt(which) < np && !found(which), AipsError);
+	found(which) = True;
     }
-
+//
     PtrBlock<Block<Int> *> newWorldMaps(nc);
     PtrBlock<Block<Int> *> newPixelMaps(nc);
     newWorldMaps.set(static_cast<Block<Int> *>(0));
     newPixelMaps.set(static_cast<Block<Int> *>(0));
 
-    // copy the maps (because the deleted axes will be staying put)
+// copy the maps (because the deleted axes will be staying put)
     for (i=0; i<nc; i++) {
 	newWorldMaps[i] = new Block<Int>(*world_maps_p[i]);
 	newPixelMaps[i] = new Block<Int>(*pixel_maps_p[i]);
 	AlwaysAssert((newWorldMaps[i] && newPixelMaps[i]), AipsError);
     }
 
-    // Move the world axes to their new home
+// Move the world axes to their new home
     for (i=0; i<nw; i++) {
 	Int coord, axis;
 	findWorldAxis(coord, axis, newWorldOrder(i));
 	newWorldMaps[coord]->operator[](axis) = i;
     }
 
-    // Move the pixel axes to their new home
+// Move the pixel axes to their new home
     for (i=0; i<np; i++) {
 	Int coord, axis;
 	findPixelAxis(coord, axis, newPixelOrder(i));
 	newPixelMaps[coord]->operator[](axis) = i;
     }
 
-    // OK, now overwrite the new locations (after deleting the old pointers to avoid
-    // a leak
+// OK, now overwrite the new locations (after deleting the old pointers to avoid
+// a leak
     for (i=0; i<nc; i++) {
 	delete world_maps_p[i];
 	world_maps_p[i] = newWorldMaps[i];
@@ -4464,10 +4465,18 @@ StokesCoordinate CoordinateSystem::stokesSubImage(const StokesCoordinate& sc, In
 
 Bool CoordinateSystem::setWorldMixRanges (const IPosition& shape)
 {
+   AlwaysAssert(shape.nelements()==nPixelAxes(), AipsError);
+//
    for (uInt i=0; i<nCoordinates(); i++) {
       Vector<Int> pA = pixelAxes(i);
       IPosition shape2(coordinates_p[i]->nPixelAxes());
-      for (uInt j=0; j<shape2.nelements(); j++) shape2(j) = shape(pA(j));
+      for (uInt j=0; j<shape2.nelements(); j++) {
+         if (pA(j) != -1) {
+            shape2(j) = shape(pA(j));
+         } else {
+            shape2(j) = -1;          // Pixel axis removed
+         }             
+      }
 
 // Set range for this coordinate
 
@@ -4478,6 +4487,7 @@ Bool CoordinateSystem::setWorldMixRanges (const IPosition& shape)
    }
    return True;
 }
+
 
 void CoordinateSystem::setDefaultWorldMixRanges ()
 {
