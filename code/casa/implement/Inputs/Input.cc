@@ -29,6 +29,7 @@
 
 #include <aips/Inputs/Input.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
 
 #if defined(TESTBED)
