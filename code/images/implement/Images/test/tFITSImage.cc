@@ -119,6 +119,20 @@ try {
    AlwaysAssert(allNear(fitsArray, dataArray, 1.0e-6), AipsError);
    AlwaysAssert(allEQ(fitsMask, dataMask), AipsError);
    AlwaysAssert(fitsCS.near(dataCS), AipsError);
+
+// Test Clone
+
+   ImageInterface<Float>* pFitsImage = fitsImage.cloneII();
+   Array<Float> fitsArray2 = pFitsImage->get();
+   Array<Bool> fitsMask2 = pFitsImage->getMask();
+   CoordinateSystem fitsCS2 = pFitsImage->coordinates();
+   delete pFitsImage;
+//
+   AlwaysAssert(allNear(fitsArray2, dataArray, 1.0e-6), AipsError);
+   AlwaysAssert(allEQ(fitsMask2, dataMask), AipsError);
+   AlwaysAssert(fitsCS2.near(dataCS), AipsError);
+
+
 //
    if (print) {
       IPosition start (fitsImage.ndim(),0);
