@@ -139,7 +139,7 @@ public:
 // Retrieve image units
    Unit units () const;
  
-// Retrieve image name
+// Retrieve image name.  Any prepended path is stripped off.
    String name() const;
 
 // Retrieve whether image has mask or not

@@ -254,7 +254,8 @@ String ImageSummary<T>::name () const
 // Get image name
 //
 {
-   return pImage_p->name();
+   const Bool stripPath = True;
+   return pImage_p->name(stripPath);
 }
 
 
