@@ -292,7 +292,7 @@ void ROVisibilityIterator::setState()
   curTableNumRow_p = msIter_p.table().nrow();
   // get the times for this (major) iteration, so we can do (minor) 
   // iteration by constant time (needed for VisBuffer averaging).
-  ScalarColumn<Double> lcolTime(msIter_p.table(),MS::columnName(MS::TIME));
+  ROScalarColumn<Double> lcolTime(msIter_p.table(),MS::columnName(MS::TIME));
   time_p.resize(curTableNumRow_p); 
   lcolTime.getColumn(time_p);
   curStartRow_p=0;
@@ -818,7 +818,7 @@ ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width,
   curNumChanGroup_p = nGroup;
   // have to reset the iterator so all caches get filled & slicer sizes
   // get updated
-  originChunks();
+  //  originChunks();
   return *this;
 }
 
