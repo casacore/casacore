@@ -1,0 +1,105 @@
+<html>
+<head>
+
+<title>Known Problems</title>
+</head>
+
+
+<body background="../gif/watermark.gif" bgcolor="#ffffff" text="#000000"
+link="#cc0f0f" vlink="#00009c">
+
+<table bgcolor="#00009c" cellpadding=4 cellspacing=0 border=0 width=600
+height=25>
+<tr><td>
+<a href="../gettingstarted.html">
+<font size=2 face=helvetica  color="#ffdd00">
+<b>Getting Started</b></a></td>
+<td>
+<a href="../user/documentation.html">
+<font size=2 face=helvetica color="#ffffff">
+<b>Documentation</b></a></td>
+<td>
+<a href="../glish/glish.html">
+<font size=2 face=helvetica color="#ffffff">
+<b>Glish</b></a></td>
+<td>
+<a href="../learnmore.html">
+<font size=2 face=helvetica color="#ffffff">
+<b>Learn More</b></a></td>
+<td>
+<a href="../programmer/programmer.html">
+<font size=2 face=helvetica color="#ffffff">
+<b>Programming</b></a></td>
+<td>
+<a href="../contactus/contactus.html">
+<font size=2 face=helvetica color="#ffffff">
+<b>Contact Us</b></a>
+</td></tr></table>
+<table border=0 width=600>
+<tr><td><img src="../gif/aipslogo.gif">
+</td><td valign=middle>
+<font size=2 face=helvetica color="#cc0f0f"><a
+href="../newsletters/index.html"><img src="../gif/tri2.gif" border=0> 
+ <b>News</a></font></b><P>
+<font size=2 face=helvetica color="#cc0f0f"><a
+href="../faq/faq.html"><img src="../gif/tri2.gif" border=0>  <b>FAQ</a
+></font></b><P>
+<font size=2 face=helvetica color="#cc0f0f"><a
+href="../search/search.html"><img src="../gif/tri2.gif" border=0>  <b>
+Search</a></font></b><P>
+<font size=2 face=helvetica color="#cc0f0f"><a href="../aips++.html"><img
+src="../gif/tri2.gif" border=0>  <b>Home</a
+></font></b><P>
+
+</td></tr></table>
+
+<BR>
+ 
+<font face=helvetica size="+2" color="cc0000">
+Known Problems</font><p>
+
+<p> 
+Some users have reported that on their system the RH 6.0 and SuSE 6.2
+version of <font face=helvetica>AIPS++</font> cannot be run either from
+the CDROM or from disk.  The reason is that this version was linked 
+against a shared LessTif library libXm.so.  Hence <font face=helvetica>
+AIPS++</font> will not run from the CDROM or from disk uncless you have 
+Motif (a commercially available product) or lesstif (available under
+the GPL) installed.
+</p>
+<p>
+If you do not have lesstif installed, the easiest fix is 
+to install the library from the following rpms lesstif-0.85-1.i386.rpm
+and lesstif-devel-0.85-1.i386.rpm.
+</p>
+<p>
+These rpms are widely available.  A copy is available on our
+server aips2.nrao.edu.  To install, do the following as root:
+<blockquote>
+<font face=courier size="+2">
+ftp aips2.nrao.edu<p>
+binary<p>
+cd pub/misc<p>
+get lesstif-0.85-1.i386.rpm<nobr> lesstif-devel-0.85-1.i386.rpm<p>
+quit<p>
+rpm -i lesstif-0.85-1.i386.rpm<nobr> lesstif-devel-0.85-1.i386.rpm<p>
+</font>
+</blockquote>
+<p>
+<font face=helvetica>AIPS++</font> should then run correctly.
+You should not have to reinstall <font face=helvetica>AIPS++</font>
+if you have already done so.<p>
+Tim Cornwell, <font face=helvetica>AIPS++</font> Project Manager<br>
+10/26/99
+
+
+</p>
+
+<hr>
+
+Copyright &#169; 1995-1999 Associated Universities Inc.,
+Washington, D.C.</i>
+</td></tr></table>
+
+</body>
+</html>
