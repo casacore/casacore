@@ -3767,3 +3767,4 @@
 14 029 src mv aips/implement/OS/test/tPath.exec aips/implement/OS/test/tPath.run
 14 029 src mv aips/implement/OS/test/tFile.exec aips/implement/OS/test/tFile.run
 14 029 src mv aips/implement/OS/test/tRegularFile.exec aips/implement/OS/test/tRegularFile.run
+14 029 src mv aips/implement/OS/test/tSymLink.exec aips/implement/OS/test/tSymLink.run
