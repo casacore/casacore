@@ -429,7 +429,6 @@ public:
     // Recover the requested attribute.
     // <group>
     MDirection::Types directionType() const;    
-    MDirection::Types conversionDirectionType() const;
     Projection projection() const;
     virtual Vector<String> worldAxisNames() const;
     virtual Vector<String> worldAxisUnits() const;
