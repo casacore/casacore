@@ -5638,3 +5638,4 @@
 15 279 src rm trial/implement/Wnbt/test/templates
 15 280 src mv trial/implement/typeinfo.h aips/implement/typeinfo.h
 15 293 src rm trial/apps/visplot/visplot_meta.g
+15 301 src rm npoi/implement/Cuttlefish/IBData.cc
