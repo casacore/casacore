@@ -65,7 +65,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/iostream.h>
 #include <aips/fstream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 uInt MSSimFeedRec::write(MSFeed& msf, MSFeedColumns &msfc, 
 			 uInt row, uInt nant) const 
@@ -668,16 +668,14 @@ void NewMSSimulator::fillCoords(MeasurementSet & ms)
 	      fieldc.delayDirMeasCol().put(row,direction);
 	      fieldc.phaseDirMeasCol().put(row,direction);
 	      fieldc.referenceDirMeasCol().put(row,direction);
-	      ostrstream name;
+	      ostringstream name;
 	      if (nMos_p(0,i)*nMos_p(1,i)>1) {
 		name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
 	      } else {
 		name << flush <<srcName_p(i) << ends;
 	      }
-	      char* pName=name.str();
-	      fieldc.name().put(row,String(pName));
+	      fieldc.name().put(row,String(name));
 	      // os << pName << LogIO::POST;
-	      delete pName;
 	      row++;
 	    }
 	}
