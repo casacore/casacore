@@ -1,5 +1,5 @@
 //# ColumnSet.cc: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,6 @@
 #include <aips/Tables/TableAttr.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/PlainTable.h>
 #include <aips/Tables/DataManager.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
@@ -47,7 +46,7 @@
 
 ColumnSet::ColumnSet (TableDesc* tdesc)
 : tdescPtr_p      (tdesc),
-  plainTablePtr_p (0),
+  baseTablePtr_p  (0),
   lockPtr_p       (0),
   colMap_p        (static_cast<void *>(0), tdesc->ncolumn()),
   seqCount_p      (0),
@@ -252,12 +251,12 @@ void ColumnSet::removeRow (uInt rownr)
 {
     if (!canRemoveRow()) {
 	throw (TableInvOper ("Rows cannot be removed from table " +
-			     plainTablePtr_p->tableName() + 
+			     baseTablePtr_p->tableName() + 
 			     "; its storage managers do not support it"));
     }
     if (rownr >= nrrow_p) {
 	throw (TableInvOper ("removeRow: rownr " + String::toString(rownr) +
-			     " too high in table " + plainTablePtr_p->tableName() +
+			     " too high in table " + baseTablePtr_p->tableName() +
 			     " (#rows=" + String::toString(nrrow_p) + ")"));
     }
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
@@ -298,7 +297,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
     if (dataManager.empty()) {
 	throw (TableInvOper ("Table::addColumn: no datamanager name/type given "
 			     "when adding column " + columnDesc.name() +
-			     " to table " + plainTablePtr_p->tableName()));
+			     " to table " + baseTablePtr_p->tableName()));
     }
     // When given by name, find the data manager and add the column to it.
     // findDataManager throws an exception when the data manager is unknown.
@@ -337,7 +336,7 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 			dataManPtr->dataManagerName() + " (" +
 			dataManPtr->dataManagerType() +
 			") does not support column addition to table " +
-			plainTablePtr_p->tableName());
+			baseTablePtr_p->tableName());
     }
     checkWriteLock (True);
     //# When the column already exists, TableDesc::addColumn throws
@@ -503,7 +502,7 @@ SimpleOrderedMap<void*,Int> ColumnSet::checkRemoveColumn
 					(const Vector<String>& columnNames)
 {
     // Check if the column names are valid.
-    plainTablePtr_p->checkRemoveColumn (columnNames, True);
+    baseTablePtr_p->checkRemoveColumn (columnNames, True);
     // Count how many columns in each data manager are to be deleted.
     SimpleOrderedMap<void*,Int> dmCounts(0, 16);
     for (uInt i=0; i<columnNames.nelements(); i++) {
@@ -526,7 +525,7 @@ SimpleOrderedMap<void*,Int> ColumnSet::checkRemoveColumn
         if (dmCounts(dmPtr) >= 0  &&  ! dmPtr->canRemoveColumn()) {
 	    throw TableInvOper ("Table::removeColumn - column " +
 				columnNames(i) + " cannot be removed from table " +
-				plainTablePtr_p->tableName());
+				baseTablePtr_p->tableName());
 	}
     }
     return dmCounts;
@@ -537,12 +536,12 @@ void ColumnSet::renameColumn (const String& newName, const String& oldName)
     if (! tdescPtr_p->isColumn (oldName)) {
         throw (TableInvOper ("Table::renameColumn; column " + oldName +
 			     " does not exist in table " +
-			     plainTablePtr_p->tableName()));
+			     baseTablePtr_p->tableName()));
     }
     if (tdescPtr_p->isColumn (newName)) {
         throw (TableInvOper ("Table::renameColumn; new column " + newName +
 			     " already exists in table " +
-			     plainTablePtr_p->tableName()));
+			     baseTablePtr_p->tableName()));
     }
     checkWriteLock (True);
     tdescPtr_p->renameColumn (newName, oldName);
@@ -562,7 +561,7 @@ DataManager* ColumnSet::findDataManager (const String& dataManagerName) const
     }
     throw (TableInvOper ("Data manager " + dataManagerName +
 			 " is unknown in table " +
-			 plainTablePtr_p->tableName()));
+			 baseTablePtr_p->tableName()));
     return 0;
 }
 
@@ -586,7 +585,7 @@ Bool ColumnSet::checkDataManagerName (const String& name, uInt from,
 	        if (doTthrow) {
 		    throw (TableInvOper ("Data manager name " + name +
 					 " is already used in table " +
-					 plainTablePtr_p->tableName()));
+					 baseTablePtr_p->tableName()));
 		}
 		return False;
 	    }
@@ -624,32 +623,34 @@ TableDesc ColumnSet::actualTableDesc() const
     return td;
 }
 
-Record ColumnSet::dataManagerInfo() const
+Record ColumnSet::dataManagerInfo (Bool virtualOnly) const
 {
     Record rec;
     uInt nrec=0;
     // Loop through all data managers.
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
         DataManager* dmPtr = BLOCKDATAMANVAL(i);
-	Record subrec;
-	subrec.define ("TYPE", dmPtr->dataManagerType());
-	subrec.define ("NAME", dmPtr->dataManagerName());
-	subrec.defineRecord ("SPEC", dmPtr->dataManagerSpec());
-	// Loop through all columns with this data manager and add
-	// its name to the vector.
-	uInt ncol = colMap_p.ndefined();
-	Vector<String> columns(ncol);
-	uInt nc=0;
-	for (uInt j=0; j<ncol; j++) {
-	    if (COLMAPVAL(j)->dataManager() == dmPtr) {
-	      columns(nc++) = colMap_p.getKey(j);
+	if (!virtualOnly  ||  !dmPtr->isStorageManager()) {
+	    Record subrec;
+	    subrec.define ("TYPE", dmPtr->dataManagerType());
+	    subrec.define ("NAME", dmPtr->dataManagerName());
+	    subrec.defineRecord ("SPEC", dmPtr->dataManagerSpec());
+	    // Loop through all columns with this data manager and add
+	    // its name to the vector.
+	    uInt ncol = colMap_p.ndefined();
+	    Vector<String> columns(ncol);
+	    uInt nc=0;
+	    for (uInt j=0; j<ncol; j++) {
+	        if (COLMAPVAL(j)->dataManager() == dmPtr) {
+	            columns(nc++) = colMap_p.getKey(j);
+		}
 	    }
-	}
-	if (nc > 0) {
-	    columns.resize (nc, True);
-	    subrec.define ("COLUMNS", columns);
-	    rec.defineRecord (nrec, subrec);
-	    nrec++;
+	    if (nc > 0) {
+	        columns.resize (nc, True);
+		subrec.define ("COLUMNS", columns);
+		rec.defineRecord (nrec, subrec);
+		nrec++;
+	    }
 	}
     }
     return rec;
@@ -836,10 +837,10 @@ Bool ColumnSet::userLock (FileLocker::LockType type, Bool wait)
     // - not locked yet
     // - not NoReadLocking
     if (lockPtr_p->option() == TableLock::UserLocking) {
-	if (! plainTablePtr_p->hasLock (type)) {
+	if (! baseTablePtr_p->hasLock (type)) {
 	    if (type != FileLocker::Read  ||  lockPtr_p->readLocking()) {
 	        uInt nattempts = (wait  ?  0 : 1);
-		plainTablePtr_p->lock (type, nattempts);
+		baseTablePtr_p->lock (type, nattempts);
 		return True;
 	    }
 	}
@@ -855,16 +856,11 @@ void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
 	    str = "UserLocking";
 	}
 	throw (TableError ("ColumnSet::doLock: table " +
-			   plainTablePtr_p->tableName() +
+			   baseTablePtr_p->tableName() +
 			   " should be locked when using " + str));
     }
-    uInt nattempts = (wait  ?  plainTablePtr_p->lockOptions().maxWait() : 1);
-    plainTablePtr_p->lock (type, nattempts);
-}
-
-void ColumnSet::setTableChanged()
-{
-    plainTablePtr_p->setTableChanged();
+    uInt nattempts = (wait  ?  baseTablePtr_p->lockOptions().maxWait() : 1);
+    baseTablePtr_p->lock (type, nattempts);
 }
 
 void ColumnSet::syncColumns (const ColumnSet& other,
@@ -874,7 +870,7 @@ void ColumnSet::syncColumns (const ColumnSet& other,
     if (other.colMap_p.ndefined() != ncol) {
 	throw (TableError ("ColumnSet::syncColumns; another process "
 			   "changed the number of columns of table " +
-			   plainTablePtr_p->tableName()));
+			   baseTablePtr_p->tableName()));
     }
     for (uInt i=0; i<ncol; i++) {
 	PlainColumn* thiscol = getColumn(i);
@@ -883,7 +879,7 @@ void ColumnSet::syncColumns (const ColumnSet& other,
 	    throw (TableError ("ColumnSet::syncColumns; another process "
 			       "changed the description of column " +
 		               thiscol->columnDesc().name() + " in table " +
-			       plainTablePtr_p->tableName()));
+			       baseTablePtr_p->tableName()));
 	}
 	// Adjust the attributes of subtables.
 	// Update the table keywords.
