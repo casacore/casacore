@@ -139,7 +139,7 @@ lowindexboundexpr: GT INDEX {
 		     Int len = msFieldCols_p.nrow();
 		     if(len- startID -1 <= 0) {
 		       cout << "Your selection is out of range " << endl;
-		       exit(0);
+		       return NULL;
 		     } else {
 		       Vector<Int> fieldids(len- startID -1);
 		       for(Int i = 0; i < (Int)fieldids.nelements(); i++) {
