@@ -165,7 +165,6 @@ Bool ProfileFit1D<T>::setGaussianElements (uInt nGauss)
 
 // Make estimate for Gaussians.  
 
-   SpectralEstimate est;
    SpectralEstimate estimator (nGauss);
    estimator.setQ(5);
    SpectralList listGauss = estimator.estimate (itsX, itsY);    // Ignores masked data
