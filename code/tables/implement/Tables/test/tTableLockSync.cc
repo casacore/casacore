@@ -75,7 +75,7 @@ void a()
     // Now create a new table from the description.
     SetupNewTable newtab("tTableLockSync_tmp.tab", td, Table::New);
     StManAipsIO sm1;
-    StandardStMan sm2(100);
+    StandardStMan sm2(128);
     IncrementalStMan sm3;
     TiledCellStMan sm4 ("TSMExample", IPosition(2,5,6));
     newtab.setShapeColumn ("Freq", IPosition(1,25));
