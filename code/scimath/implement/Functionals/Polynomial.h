@@ -45,7 +45,7 @@
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Function1D>Function1D</linkto>
+//   <li> <linkto class=Function>Function</linkto>
 // </prerequisite>
 //
 // <synopsis> 

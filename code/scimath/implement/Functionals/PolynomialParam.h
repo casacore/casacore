@@ -45,7 +45,7 @@ template<class T> class Vector;
 
 // <prerequisite>
 //   <li> <linkto class="FunctionParam">FunctionParam</linkto> class
-//   <li> <linkto class=Function1D>Function1D</linkto>
+//   <li> <linkto class=NQFunction1D>NQFunction1D</linkto>
 // </prerequisite>
 
 // <etymology> 
