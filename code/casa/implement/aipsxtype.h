@@ -36,4 +36,7 @@
 typedef long long Int64;
 typedef unsigned long long uInt64;
 
+//# Slicer is used in GLU (OpenGL Utilities), so use another name for AIPS++.
+#define Slicer ArraySlicer
+
 #endif
