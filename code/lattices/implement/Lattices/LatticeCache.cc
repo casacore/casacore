@@ -139,7 +139,8 @@ void LatticeCache<T>::flush() {
 // contents, otherwise we write them out, possibly adding to current
 // tile.
 template <class T>
-Array<T>& LatticeCache<T>::tile(IPosition& cacheLoc, const IPosition& tileLoc, Bool readonly) {
+Array<T>& LatticeCache<T>::tile(IPosition& cacheLoc, const IPosition& tileLoc,
+				Bool readonly) {
   cacheLoc=cacheLocation(cacheLoc, tileLoc);
   cacheAccesses++;
   Int foundTile=-1;
@@ -228,6 +229,7 @@ IPosition& LatticeCache<T>::cacheLocation(IPosition& cacheLoc, const IPosition& 
       if((loco-loc)>=3*tileShapeVec(i)/4) loc+=tileOffsetVec(i);
       if((loco-loc)<   tileShapeVec(i)/4) loc-=tileOffsetVec(i);
       if((loco-loc)<0) loc-=tileOffsetVec(i);
+      if(loc<0) loc+=tileOffsetVec(i);
       cacheLoc(i)=loc;
     }
     else {
@@ -248,7 +250,7 @@ void LatticeCache<T>::writeTile(Int tile) {
   if(additive) {
     Array<T> tileOnDisk(tileContents[tile].shape());
     tileOnDisk=0.0;
-    image_p->getSlice(tileOnDisk, tileLocs[tile], tileOnDisk.shape(),
+    image_p->getSlice(tileOnDisk, tileLocs[tile], tileContents[tile].shape(), 
 		      IPosition(tileShape.nelements(), 1));
     tileContents[tile]+=tileOnDisk;
     cacheReads++;
