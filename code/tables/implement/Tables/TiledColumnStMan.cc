@@ -1,5 +1,5 @@
 //# TiledColumnStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,15 +152,24 @@ void TiledColumnStMan::setupCheck (const TableDesc& tableDesc,
     Int ndim = nrdim_p - 1;
     for (uInt i=0; i<dataNames.nelements(); i++) {
 	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
-	if (! columnDesc.isArray()  ||  ndim != columnDesc.ndim()) {
-	    throw (TSMError ("Dimensionality of column " + dataNames(i) +
-			     " is incorrect"));
-	}
-	// The data columns in a column hypercube must be fixed shape.
-	if ((columnDesc.options() & ColumnDesc::FixedShape)
+	if (columnDesc.isScalar()) {
+	    if (ndim != 0) {
+	        throw (TSMError ("Using scalar column " + dataNames(i) +
+				 " in TiledColumnStMan needs the hypercolumn"
+				 " to be 1-dim"));
+	    }
+	} else {
+	    if (! columnDesc.isArray()  ||  ndim != columnDesc.ndim()) {
+	        throw (TSMError ("Dimensionality of column " + dataNames(i) +
+				 " should be one less than hypercolumn"
+				 " definition when used in TiledColumnStMan"));
+	    }
+	    // The data columns in a column hypercube must be fixed shape.
+	    if ((columnDesc.options() & ColumnDesc::FixedShape)
 	                                        != ColumnDesc::FixedShape) {
-	    throw (TSMError ("Column " + dataNames(i) +
-			     " is no FixedShape array"));
+	      throw (TSMError ("TiledColumnStMan needs array column " +
+			       dataNames(i) + " to be FixedShape"));
+	    }
 	}
     }
 }
