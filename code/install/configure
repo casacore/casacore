@@ -1328,7 +1328,7 @@ EOT
   tz=`expr $tz`
 
 
-  echo "tzoffset: $tz" >>$AIPSARCH/$SITE/aipsrc
+  echo "system.time.tzoffset: $tz" >>$AIPSARCH/$SITE/aipsrc
   echo "Added my best guess at timezone offset ($tz) to $AIPSARCH/$SITE/aipsrc"
 
   mem="DEFINE_ME"
