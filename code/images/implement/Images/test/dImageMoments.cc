@@ -41,6 +41,8 @@
 //
 //           The default is the first spectral axis in the image.
 //
+//   blc,trc  Region (1 relative)
+//
 //   moments This integer array specifies which moments will be output.
 //
 //           Give a list chosen from:
@@ -201,8 +203,8 @@
 
 #include <iostream.h>
 
-enum defaults {IN, MOMENTS, AXIS, METHOD, SMOOTH, RANGE, SNR, OUT, PSFOUT, SMOUT, 
-               PLOTTING, NDEFAULTS=12};
+enum defaults {IN, MOMENTS, AXIS, REGION, METHOD, SMOOTH, RANGE, SNR, OUT, PSFOUT, SMOUT, 
+               PLOTTING, NDEFAULTS};
 
 main (int argc, char **argv)
 {
@@ -218,6 +220,9 @@ try {
    inputs.Create("in", "", "Input image name");
    inputs.Create("moments", "0", "Moments to output");
    inputs.Create("axis", "-100", "Moment axis");
+   inputs.Create("blc", "-10", "blc");
+   inputs.Create("trc", "-10", "trc");
+   inputs.Create("inc", "-10", "inc");
    inputs.Create("method","","Method (window,fit,inter)");
    inputs.Create("smaxes","-100","Smoothing axes");
    inputs.Create("smwidth", "-100.0", "Smoothing width along axes");
@@ -235,6 +240,9 @@ try {
    const String in = inputs.GetString("in");
    const Block<Int> momentsB = inputs.GetIntArray("moments");
    Int momentAxis = inputs.GetInt("axis");
+   const Block<Int> blcB(inputs.GetIntArray("blc"));
+   const Block<Int> trcB(inputs.GetIntArray("trc"));
+   const Block<Int> incB(inputs.GetIntArray("inc"));
    const String method = inputs.GetString("method");
    const Block<Int> smoothAxesB = inputs.GetIntArray("smaxes");
    const String kernels = inputs.GetString("smtype");
@@ -279,6 +287,33 @@ try {
       momentAxis--;
       validInputs(AXIS) = True;
    } 
+
+// Convert region things to IPositions (0 relative)
+   
+   IPosition blc;
+   IPosition trc;
+   IPosition inc;
+   if (blcB.nelements() == 1 && blcB[0] == -10) {
+      blc.resize(0);
+   } else {
+      blc.resize(blcB.nelements());
+      for (Int i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
+      validInputs(REGION) = True;
+   }
+   if (trcB.nelements() == 1 && trcB[0] == -10) {
+      trc.resize(0);
+   } else {
+      trc.resize(trcB.nelements());
+      for (Int i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
+      validInputs(REGION) = True;
+   }
+   if (incB.nelements() == 1 && incB[0] == -10) {
+      inc.resize(0);
+   } else {
+      inc.resize(incB.nelements());
+      for (Int i=0; i<incB.nelements(); i++) inc(i) = incB[i];
+      validInputs(REGION) = True;
+   }
 
 
 // Method.
@@ -373,6 +408,7 @@ try {
 // Set inputs.  
 
       if (validInputs(MOMENTS)) {if (!moment.setMoments(moments)) return 1;}
+      if (validInputs(REGION)) {if (!moment.setRegion(blc, trc, inc)) return 1;}
       if (validInputs(AXIS)) {if (!moment.setMomentAxis(momentAxis)) return 1;}
       if (validInputs(METHOD)) {
          if (!moment.setWinFitMethod(winFitMethods)) return 1;
@@ -390,6 +426,18 @@ try {
 // Do work
 
       if (!moment.createMoments()) return 1;
+
+// Test copy constructor// Test assignment operator
+
+      os << "Testing copy constructor" << endl;
+      ImageMoments<Float> moment2(moment);
+
+
+// Test assignment operator
+
+      os << "Testing assignment operator" << endl;
+      moment = moment2;
+
    } else {
       cout << "images of type " << imageType << " not yet supported" << endl;
       return 1;

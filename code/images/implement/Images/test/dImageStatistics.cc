@@ -47,6 +47,8 @@
 // 
 //            The default is to evaluate the statistics over the entire image.
 //    
+//   blc,trc  Region (1 relative)
+//   inc      Increment to step through image
 //   stats    This specifies which statistics you would like to see plotted.
 //            Give a list choosing from 
 //
@@ -107,7 +109,7 @@
 
 #include <iostream.h>
 
-enum defaults {AXES, STATS, RANGE, PLOTTING, NDEFAULTS=4};
+enum defaults {AXES, REGION, STATS, RANGE, PLOTTING, NDEFAULTS=5};
 
 
 main (int argc, char **argv)
@@ -122,6 +124,9 @@ try {
 
    inputs.Create("in", "", "Input file name");
    inputs.Create("axes", "-10", "Cursor axes");
+   inputs.Create("blc", "-10", "blc");
+   inputs.Create("trc", "-10", "trc");
+   inputs.Create("inc", "-10", "inc");
    inputs.Create("stats", "mean,sigma", "Statistics to plot");
    inputs.Create("include", "0.0", "Pixel range to include");
    inputs.Create("exclude", "0.0", "Pixel range to exclude");
@@ -132,6 +137,9 @@ try {
 
    const String in = inputs.GetString("in");
    const Block<Int> cursorAxesB(inputs.GetIntArray("axes"));
+   const Block<Int> blcB(inputs.GetIntArray("blc"));
+   const Block<Int> trcB(inputs.GetIntArray("trc"));
+   const Block<Int> incB(inputs.GetIntArray("inc"));
    const String statsToPlot = inputs.GetString("stats");
    const Block<Double> includeB = inputs.GetDoubleArray("include");
    const Block<Double> excludeB = inputs.GetDoubleArray("exclude");
@@ -144,12 +152,14 @@ try {
 
    Vector<Bool> validInputs(NDEFAULTS);
    validInputs = False;
+   LogOrigin or("imstat", "main()", WHERE);
+   LogIO os(or);
  
 
 // Check image name and get image data type. 
 
    if (in.empty()) {
-      cout << "You must specify the image file name" << endl;
+      os << LogIO::NORMAL << "You must specify the image file name" << LogIO::POST;
       return 1;
    }
 
@@ -164,6 +174,34 @@ try {
       validInputs(AXES) = True;
    }
    
+
+// Convert region things to IPositions (0 relative)
+   
+   IPosition blc;
+   IPosition trc;
+   IPosition inc;
+   if (blcB.nelements() == 1 && blcB[0] == -10) {
+      blc.resize(0);
+   } else {
+      blc.resize(blcB.nelements());
+      for (Int i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
+      validInputs(REGION) = True;
+   }
+   if (trcB.nelements() == 1 && trcB[0] == -10) {
+      trc.resize(0);
+   } else {
+      trc.resize(trcB.nelements());
+      for (Int i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
+      validInputs(REGION) = True;
+   }
+   if (incB.nelements() == 1 && incB[0] == -10) {
+      inc.resize(0);
+   } else {
+      inc.resize(incB.nelements());
+      for (Int i=0; i<incB.nelements(); i++) inc(i) = incB[i];
+      validInputs(REGION) = True;
+   }
+
 
 // Convert inclusion and exclusion ranges to vectors.
 
@@ -203,9 +241,6 @@ try {
 
 // Construct statistics object
    
-
-      LogOrigin or("imstat", "main()", WHERE);
-      LogIO os(or);
       ImageStatistics<Float> stats(inImage, os);
 
 
@@ -213,6 +248,9 @@ try {
 
       if (validInputs(AXES)) {
          if (!stats.setAxes(cursorAxes)) return 1;
+      }
+      if (validInputs(REGION)) {
+         if (!stats.setRegion(blc, trc, inc)) return 1;
       }
       if (validInputs(RANGE)) {
          if (!stats.setInExCludeRange(include, exclude)) return 1;
@@ -222,12 +260,52 @@ try {
          if (!stats.setPlotting(statisticTypes, device, nxy)) return 1;
       }
 
+// Recover things
+
+     os.post();
+     Array<Float> data;
+     os << LogIO::NORMAL << "Recovering npts array"  << endl;
+     Bool ok = stats.getNPts(data);
+
+     os << "Recovering sum array" << endl;
+     ok = stats.getSum(data);
+     os << "Recovering sum squared array" << endl;
+     ok = stats.getSumSquared(data);
+
+     os << "Recovering min array" << endl;
+     ok = stats.getMin(data);
+
+     os << "Recovering max array" << endl;
+     ok = stats.getMax(data);
+
+     os << "Recovering mean array" << endl;
+     ok = stats.getMean(data);
+
+     os << "Recovering sigma array " << endl;
+     ok = stats.getSigma(data);
+
+     os << "Recovering rms array" << LogIO::POST;
+     ok = stats.getRms(data);
+
+
+// Test copy constructor
+     
+     os << LogIO::NORMAL << "Applying copy constructor" << endl;
+     ImageStatistics<Float> stats2(stats);
+
+// Test assignment operator
+
+     os << "Applying assignment" << LogIO::POST;
+     stats = stats2;
+
 
 // Display statistics
 
      if (!stats.display()) return 1;
+
+
    } else {
-      cout << "images of type " << imageType << " not yet supported" << endl;
+      os << LogIO::NORMAL << "images of type " << imageType << " not yet supported" << LogIO::POST;
       return 1;
    }
 
