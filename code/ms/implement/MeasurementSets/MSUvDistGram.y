@@ -39,16 +39,16 @@ using namespace casa;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
   Int ival;
-  Double dval[2];
+  char * str;
+  Double dval;
 }
 
+%token <str> UNIT
 %token EQASS
-%token SQUOTE
 %token <ival> NUMBER
 %token <dval> FNUMBER
+%token SQUOTE
 %token DASH
-%token DISTANCEUNIT
-%token WAVELENTHUNIT
 %token LT
 %token GT
 %token COLON
@@ -65,14 +65,16 @@ using namespace casa;
 %type <node> uvdiststatement
 %type <node> uvdistexpr
 %type <node> rangeexprlist
+%type <node> rangeexpr
 %type <node> upuvbound
 %type <node> lowuvbound
 %type <node> uvdistwithfract
-%type <node> rangeexpr
 
 %left OR
-%left AND
-%nonassoc EQ EQASS GT GE LT LE NE
+%left AND 
+%left UNIT
+%right PERCENT
+%nonassoc EQ EQASS GT GE LT LE NE COLON 
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %nonassoc UNARY
@@ -90,41 +92,36 @@ uvdiststatement: SQUOTE uvdistexpr SQUOTE {
                ;
 
 uvdistexpr: rangeexprlist
-          | upuvbound
-          | lowuvbound
+          | upuvbound 
+          | lowuvbound 
           | uvdistwithfract {
-              $$ = $1;
-            }
+              $$ = $1;}
           ;
 
-rangeexprlist: rangeexpr
+rangeexprlist: rangeexpr {
+                 $$ = $1;}
              | rangeexprlist COMMA rangeexpr {
-                 $$ = $1;
-                 delete $1;
-               }
+       	         $$ = $3;
+	       }
              ;
 
-rangeexpr: NUMBER DASH NUMBER unit {
-             $$ = MSUvDistParse().selectUVRange($1, $3);
+rangeexpr: FNUMBER DASH FNUMBER UNIT {
+             $$ = MSUvDistParse().selectUVRange($1, $3, String($4));
            }
          ;
 
-unit: DISTANCEUNIT
-    | WAVELENTHUNIT
-    ;
-
-upuvbound: LT NUMBER unit {
-             $$ = MSUvDistParse().selectUVRange(0, $2);
+upuvbound: LT FNUMBER UNIT {
+             $$ = MSUvDistParse().selectUVRange(0, $2, String($3));
            }
          ;
         
-lowuvbound: GT NUMBER unit {
-              $$ = MSUvDistParse().selectUVRange($2, 1000000);
+lowuvbound: GT FNUMBER UNIT {
+              $$ = MSUvDistParse().selectUVRange($2, 1000000, String($3));
             }
           ;
 
-uvdistwithfract: NUMBER unit COLON NUMBER PERCENT {
-                   $$ = MSUvDistParse().selectUVRange($1-$4*0.01, 1+$4*0.01);
+uvdistwithfract: FNUMBER UNIT COLON FNUMBER PERCENT {
+                   $$ = MSUvDistParse().selectUVRange($1-$4*0.01, $1+$4*0.01, String($2));
                  }
                ;
 %%
