@@ -34,3 +34,8 @@ tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [
 tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN arr1'
 tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where any(arr1 > 100  &&  arr1<200)'
 tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where count(shape(arr1))==3 && count(ab)==1 && ndim(ac)==0 && isdefined(arr2)'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab in ab'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where any(arr1 in ab)'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where (ab=ab)=T'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where (ab=ab)=F'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where rownumber()==rowid()+1'
