@@ -85,6 +85,17 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
 //    avrow_p          Int                  Start row of current accumulation
 //    avBuf_p          VisBuffer            Averaging buffer
 //
+  // Check if avBuf_p initialization required; if so,
+  // assign to vb to establish a two-way connection to
+  // the underlying VisIter. 
+  if (firstInterval_p) {
+    // Initialize the averaging buffer
+    avBuf_p = vb;
+    avBuf_p.nRow();
+    avBuf_p.nRow() = 0;
+  };
+
+  // Iterate through the current VisBuffer
   Int row = 0;
   while (row < vb.nRow()) {
     // Find the next unflagged time
@@ -103,10 +114,6 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
 	tStart_p = startTime;
 	firstInterval_p = False;
 	nChan_p = vb.nChannel();
-	// Initialize the averaging buffer
-	avBuf_p = vb;
-	avBuf_p.nRow();
-	avBuf_p.nRow() = 0;
 	// Initialize the first accumulation interval
 	initialize();
       };
