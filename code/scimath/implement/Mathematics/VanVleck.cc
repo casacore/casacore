@@ -38,7 +38,7 @@
 // initial values for the static data members
 
 Interpolate1D<Double, Double> *VanVleck::itsInterp = NULL;
-uInt VanVleck::itsSize = 33;
+uInt VanVleck::itsSize = 65;
 uInt VanVleck::itsNx = 0;
 uInt VanVleck::itsNy = 0;
 Bool VanVleck::itsEquiSpaced = False;
@@ -60,6 +60,12 @@ Double VanVleck::itsYmean = 0.0;
 #define dqags dqags_
 #define vvr3 vvr3_
 #define vvr9 vvr9_
+#define vvr3auto vvr3auto_
+#define vvr9auto vvr9auto_
+#define vvr3zmean vvr3zmean_
+#define vvr9zmean vvr9zmean_
+#define vvr3zauto vvr3zauto_
+#define vvr9zauto vvr9zauto_
 #endif
 
 extern "C" { 
@@ -73,6 +79,30 @@ extern "C" {
 
 extern "C" { 
    Double vvr9(Double*, Double *, Double *, Double *, Double *);
+}
+
+extern "C" { 
+   Double vvr3auto(Double*, Double *, Double *);
+}
+
+extern "C" { 
+   Double vvr9auto(Double*, Double *, Double *);
+}
+
+extern "C" { 
+   Double vvr3zmean(Double*, Double *, Double *);
+}
+
+extern "C" { 
+   Double vvr9zmean(Double*, Double *, Double *);
+}
+
+extern "C" { 
+   Double vvr3zauto(Double*, Double *);
+}
+
+extern "C" { 
+   Double vvr9zauto(Double*, Double *);
 }
 
 
@@ -190,14 +220,66 @@ void VanVleck::initInterpolator()
 	  Double lo = midi-i;
 	  rhos[lo] = -cos(Double(2*lo+1)*C::pi/twoN)/denom;
       }
-      if (itsNx == 3) {
-	  for (uInt i=0;i<rhos.nelements();i++) {
-	      rs[i] = vvr3(&itsXmean, &itsYmean, &itsXlev, &itsYlev, &(rhos[i]));
+      if (nearAbs(itsXlev, itsYlev)) {
+	  // auto-correlation
+	  if (nearAbs(itsXmean, 0.0) && nearAbs(itsYmean, 0.0)) {
+	      // zero-mean
+	      // these are symetric about the mid-point
+	      if (itsNx == 3) {
+		  for (Int i=1;i<=midi;i++) {
+		      Int hi = midi+i;
+		      Int lo = midi-i;
+		      rs[hi] = vvr3zauto(&itsXlev, &(rhos[hi]));
+		      rs[lo] = -rs[hi];
+		  }
+	      } else {
+		  // it must be 9
+		  for (Int i=1;i<=midi;i++) {
+		      Int hi = midi+i;
+		      Int lo = midi-i;
+		      rs[hi] = vvr9zauto(&itsXlev, &(rhos[hi]));
+		      rs[lo] = -rs[hi];
+		  }
+	      }
+	  } else {
+	      if (itsNx == 3) {
+		  for (uInt i=0;i<rhos.nelements();i++) {
+		      rs[i] = vvr3auto(&itsXmean, &itsXlev, &(rhos[i]));
+		  }
+	      } else {
+		  // it must be 9
+		  for (uInt i=0;i<rhos.nelements();i++) {
+		      rs[i] = vvr9auto(&itsXmean, &itsXlev, &(rhos[i]));
+		  }
+	      }
 	  }
       } else {
-	  // it must be 9
-	  for (uInt i=0;i<rhos.nelements();i++) {
-	      rs[i] = vvr9(&itsXmean, &itsYmean, &itsXlev, &itsYlev, &(rhos[i]));
+	  // cross-correlation
+	  if (nearAbs(itsXmean, 0.0) && nearAbs(itsYmean, 0.0)) {
+	      // zero-mean
+	      if (itsNx == 3) {
+		  for (uInt i=0;i<rhos.nelements();i++) {
+		      rs[i] = vvr3zmean(&itsXlev, &itsYlev, &(rhos[i]));
+		  }
+	      } else {
+		  // it must be 9
+		  for (uInt i=0;i<rhos.nelements();i++) {
+		      rs[i] = vvr9zmean(&itsXlev, &itsYlev, &(rhos[i]));
+		  }
+	      }
+	  } else {
+	      if (itsNx == 3) {
+		  for (uInt i=0;i<rhos.nelements();i++) {
+		      rs[i] = vvr3(&itsXmean, &itsYmean, &itsXlev, &itsYlev, 
+				   &(rhos[i]));
+		  }
+	      } else {
+		  // it must be 9
+		  for (uInt i=0;i<rhos.nelements();i++) {
+		      rs[i] = vvr9(&itsXmean, &itsYmean, &itsXlev, &itsYlev, 
+				   &(rhos[i]));
+		  }
+	      }
 	  }
       }
   }
