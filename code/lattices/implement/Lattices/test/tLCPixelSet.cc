@@ -76,9 +76,20 @@ void testArrayRWIter (Lattice<Bool>& lattice)
 
 
 main ()
+
 {
   try {
     {
+      {
+        IPosition latticeShape(2, 4, 8);
+        Array<Bool> arr(latticeShape);
+        arr.set(True);
+        arr(IPosition(2,0,0)) = False;
+        LCMask mask(IPosition(2,0), arr, latticeShape);
+        cout << mask.hasMask() << mask.maskArray() << endl;
+      }
+
+
       IPosition latticeShape(4, 16, 12, 4, 32);
       Array<Bool> arr(latticeShape);
       arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = True;
@@ -118,12 +129,25 @@ main ()
       // Check the region functions using the iterator.
       testVectorROIter (region, True, False);
     }
+    {
+      IPosition latticeShape(2, 4, 8);
+      Array<Bool> arr(latticeShape);
+      arr.set(True);
+      arr(IPosition(2,0)) = False;
+      arr(latticeShape-1) = False;
+      LCMask mask1(IPosition(2,0), arr, latticeShape);
+      LCMask mask2(mask1);
+      AlwaysAssertExit (mask2 == mask1);
+
+      arr(latticeShape-1) = True;
+      LCMask mask3(IPosition(2,0), arr, latticeShape);
+      AlwaysAssertExit (mask3 != mask1);
+    }
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
-    return 1;
+    exit(1);
   } end_try;
-
   cout << "OK" << endl;
-  return 0;
+  exit(0);
 }
