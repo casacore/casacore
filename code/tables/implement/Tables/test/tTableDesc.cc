@@ -200,6 +200,56 @@ void a (Bool doExcp)
     AlwaysAssertExit (set3.isSuperset (set2, equalDataTypes));
     AlwaysAssertExit (! set3.isStrictSubset (set2, equalDataTypes));
     AlwaysAssertExit (set3.isStrictSuperset (set2, equalDataTypes));
+
+    // Try some ColumnDesc functions.
+    // First add the column; remove it at the end.
+    td.addColumn (ArrayColumnDesc<Int> ("ArrExtra"));
+    ColumnDesc& cdesc = td.rwColumnDesc("ArrExtra");
+    AlwaysAssertExit (cdesc.ndim() == -1);
+    AlwaysAssertExit (cdesc.shape() == IPosition());
+    AlwaysAssertExit (cdesc.options() == 0);
+    cdesc.setShape (IPosition(1,4));
+    AlwaysAssertExit (cdesc.ndim() == 1);
+    AlwaysAssertExit (cdesc.shape() == IPosition(1,4));
+    AlwaysAssertExit (cdesc.options() == ColumnDesc::FixedShape);
+    cdesc.setNdim (0);
+    AlwaysAssertExit (cdesc.ndim() == -1);
+    AlwaysAssertExit (cdesc.shape() == IPosition());
+    AlwaysAssertExit (cdesc.options() == ColumnDesc::FixedShape);
+    cdesc.setShape (IPosition(2,4,5), True);
+    AlwaysAssertExit (cdesc.ndim() == 2);
+    AlwaysAssertExit (cdesc.shape() == IPosition(2,4,5));
+    AlwaysAssertExit (cdesc.options() ==
+                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+    cdesc.setNdim (0);
+    AlwaysAssertExit (cdesc.ndim() == -1);
+    AlwaysAssertExit (cdesc.shape() == IPosition());
+    AlwaysAssertExit (cdesc.options() ==
+                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+    cdesc.setShape (IPosition(1,4));
+    AlwaysAssertExit (cdesc.ndim() == 1);
+    AlwaysAssertExit (cdesc.shape() == IPosition(1,4));
+    AlwaysAssertExit (cdesc.options() ==
+                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+    cdesc.setNdim (0);
+    AlwaysAssertExit (cdesc.ndim() == -1);
+    AlwaysAssertExit (cdesc.shape() == IPosition());
+    AlwaysAssertExit (cdesc.options() ==
+                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+    cdesc.setShape (IPosition(2,4,5), False);
+    AlwaysAssertExit (cdesc.ndim() == 2);
+    AlwaysAssertExit (cdesc.shape() == IPosition(2,4,5));
+    AlwaysAssertExit (cdesc.options() == ColumnDesc::FixedShape);
+    cdesc.setOptions (0);
+    AlwaysAssertExit (cdesc.ndim() == -1);
+    AlwaysAssertExit (cdesc.shape() == IPosition());
+    AlwaysAssertExit (cdesc.options() == 0);
+    cdesc.setOptions (ColumnDesc::Direct);
+    AlwaysAssertExit (cdesc.ndim() == -1);
+    AlwaysAssertExit (cdesc.shape() == IPosition());
+    AlwaysAssertExit (cdesc.options() ==
+                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+    td.removeColumn ("ArrExtra");
 }
 
 // Remove some keywords/columns.
