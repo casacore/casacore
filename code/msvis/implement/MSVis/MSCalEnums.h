@@ -1,5 +1,5 @@
 //# MSCalEnums.h: Field name dictionary for MS and CAL tables
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -199,7 +199,14 @@ class MSCalEnums
   // Cal Desc sub-table
   CAL_DESC = 46,
   // Cal History sub-table
-  CAL_HISTORY = 47};
+  CAL_HISTORY = 47,
+  
+  // FJones additions
+  ROT_MEASURE = 48,
+  ROT_MEASURE_ERROR = 49,
+  IONOSPH_TEC = 50,
+  IONOSPH_TEC_ERROR = 51
+  };
 
   // Access functions for column/keyword description data
   static String fieldName (Int enumField);

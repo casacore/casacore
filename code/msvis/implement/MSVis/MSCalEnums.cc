@@ -1,5 +1,5 @@
 //# MSCalEnums.cc: Implementation of MSCalEnums.h
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,6 +95,11 @@ void MSCalEnums::initMap ()
     
     theirFieldMap.define (CAL_DESC, "CAL_DESC");
     theirFieldMap.define (CAL_HISTORY, "CAL_HISTORY");
+    
+    theirFieldMap.define (ROT_MEASURE, "ROT_MEASURE");
+    theirFieldMap.define (ROT_MEASURE_ERROR, "ROT_MEASURE_ERROR");
+    theirFieldMap.define (IONOSPH_TEC, "IONOSPH_TEC");
+    theirFieldMap.define (IONOSPH_TEC_ERROR, "IONOSPH_TEC_ERROR");
   };
 };
 
