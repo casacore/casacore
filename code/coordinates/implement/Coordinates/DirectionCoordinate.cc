@@ -1072,17 +1072,24 @@ DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &contain
 // to avoid divide by zero in Coordinate::make_Direction_FITS_ctype() function.
 // See that function for further comments
 // 
+
+    Quantum<Double> refLong(crval(0), units(0));
+    Quantum<Double> refLat(crval(1), units(1));
+    Quantum<Double> incLong(cdelt(0), units(0));
+    Quantum<Double> incLat(cdelt(1), units(1));
+
     DirectionCoordinate *retval = 
-	new DirectionCoordinate(sys, proj, 0.0, 0.5, 1, 1, pc, 0, 0);
+	new DirectionCoordinate(sys, proj, 
+                                refLong.getValue(Unit("rad")), 
+                                refLat.getValue(Unit("rad")), 
+                                incLong.getValue(Unit("rad")), 
+                                incLat.getValue(Unit("rad")), 
+                                pc, crpix(0), crpix(1));
     AlwaysAssert(retval, AipsError);
 
-    // We have to do the units first since they will change the
-    // reference value and increment if we do them too late.
+    // Set the actual units and names
     retval->setWorldAxisUnits(units);
     retval->setWorldAxisNames(axes);
-    retval-> setIncrement(cdelt);
-    retval->setReferenceValue(crval);
-    retval->setReferencePixel(crpix);
 							  
     return retval;
 }
@@ -1233,7 +1240,8 @@ void DirectionCoordinate::make_celprm_and_prjprm(Bool& canDoToMix, String& canDo
 // Construct FITS ctype vector
 //
     Vector<String> axisNames = DirectionCoordinate::axisNames(directionType, True);
-    Vector<String> ctype = make_Direction_FITS_ctype(proj, axisNames, refLat, False);
+    Vector<String> ctype = make_Direction_FITS_ctype(proj, axisNames, 
+                                                     refLat*C::pi/180.0, False);
     strncpy (c_ctype[0], ctype(0).chars(), 9);
     strncpy (c_ctype[1], ctype(1).chars(), 9);
 //
