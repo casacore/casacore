@@ -152,6 +152,9 @@ public:
     // This constructor is called from the derived TableExprNodeRep.
     TableExprNodeRep (NodeDataType, ValueType, OperType, const BaseTable*);
 
+    // Copy constructor.
+    TableExprNodeRep (const TableExprNodeRep&);
+
     // The destructor deletes all the underlying TableExprNode objects.
     virtual ~TableExprNodeRep();
 
@@ -303,14 +306,11 @@ protected:
     NodeDataType      dtype_p;       //# data type of the operation
     ValueType         vtype_p;       //# value type of the result
     OperType          optype_p;      //# operator type
-    ExprType          exprtype_p;    //# Constant or Variable
     ArgType           argtype_p;     //# argument types
+    ExprType          exprtype_p;    //# Constant or Variable
     Int               ndim_p;        //# Fixed dimensionality of node values
                                      //# -1 = variable dimensionality
     IPosition         shape_p;       //# Fixed shape of node values
-
-    // Copy constructor.
-    TableExprNodeRep (const TableExprNodeRep&);
 
     // Get the shape for the given row.
     virtual const IPosition& getShape (uInt rownr);
