@@ -6304,3 +6304,4 @@
 17 385 src mv ./trial/implement/Measures/ParAngleMachine.h ./aips/implement/Measures/ParAngleMachine.h
 17 385 src mv ./trial/implement/Measures/test/tParAngleMachine.cc ./aips/implement/Measures/test/tParAngleMachine.cc
 17 385 src mv ./trial/implement/Measures/test/tParAngleMachine.out ./aips/implement/Measures/test/tParAngleMachine.out
+17 392 src rm trial/implement/Measures/test/templates
