@@ -91,6 +91,8 @@
 // <dd> Type used for parameters
 // <dt> <src>ArgType</src>
 // <dd> Type used for arguments
+// <dt> <src>DiffType</src>
+// <dd> The default differentiation type
 // </dl>
 //
 // The specializations are done in such a way that higher order
@@ -134,6 +136,8 @@ public:
   typedef T ParamType;
   // Type for arguments
   typedef T ArgType;
+  // Default type for differentiation
+  typedef AutoDiff<T> DiffType;
 };
 
 //# Following are specializations. Naming only for documentation
@@ -154,6 +158,8 @@ public:
   typedef AutoDiff<T> ParamType;
   // Type for arguments
   typedef T ArgType;
+  // Default type for differentiation
+  typedef AutoDiff<T> DiffType;
 };
 
 #undef FunctionTraits_P
