@@ -119,10 +119,15 @@ class SpectralFit {
    	   const Vector<Float> &x);
   // </group>
 
+  // Get the number of iterations last fit
+  uInt nIterations() { return iter_p; };
+
  private:
   //#Data
   // Elements to be fitted
   SpectralList slist_p;
+  // Number of iterations last fit
+  uInt iter_p;
 
   //# Member functions
 

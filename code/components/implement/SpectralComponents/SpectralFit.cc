@@ -38,41 +38,49 @@
 
 //# Constructors
 SpectralFit::SpectralFit() :
-  slist_p(0) {}
+  slist_p(0), iter_p(0) {}
 
 SpectralFit::SpectralFit(const SpectralList &in) :
-  slist_p(in) {}
+  slist_p(in), iter_p(0) {}
 
 SpectralFit::SpectralFit(const SpectralFit &other) :
-  slist_p(other.slist_p) {}
+  slist_p(other.slist_p), iter_p(other.iter_p) {}
 
 SpectralFit::~SpectralFit() {}
 
 SpectralFit &SpectralFit::operator=(const SpectralFit &other) {
-  if (this != &other) slist_p = other.slist_p;
+  if (this != &other) {
+    slist_p = other.slist_p;
+    iter_p = other.iter_p;
+  };
   return *this;
 }
 
 void SpectralFit::setFitElement(uInt index, const SpectralElement &elem) {
   slist_p.set(elem, index);
+  iter_p = 0;
 }
 
 void SpectralFit::addFitElement(const SpectralElement &elem) {
   slist_p.add(elem);
+  iter_p = 0;
 }
 
 void SpectralFit::addFitElement(const SpectralList &elem) {
   slist_p.add(elem);
+  iter_p = 0;
 }
 
 void SpectralFit::clear() {
   slist_p.clear();
+  iter_p = 0;
 }
 
 Bool SpectralFit::fit(const Vector<Double> &y,
 		      const Vector<Double> &x) {
   // The fitter
   NonLinearFitLM<Double> fitter;
+  iter_p = 0;
   // The functions to fit
   const Gaussian1D<AutoDiff<Double> > gauss; 
   const Polynomial<AutoDiff<Double> > poly; 
@@ -124,6 +132,8 @@ Bool SpectralFit::fit(const Vector<Double> &y,
   sol = fitter.fit(x, y, sigma);
   // Calculate the errors
   err = fitter.errors();
+  // Number of iterations
+  iter_p = fitter.currentIteration();
   j = 0;
   Vector<Double> tmp, terr;
   for (uInt i=0; i<slist_p.nelements(); i++) {
@@ -151,6 +161,7 @@ Bool SpectralFit::fit(const Vector<Float> &y,
 		      const Vector<Float> &x) {
   // The fitter
   NonLinearFitLM<Float> fitter;
+  iter_p = 0;
   // The functions to fit
   const Gaussian1D<AutoDiff<Float> > gauss; 
   const Polynomial<AutoDiff<Float> > poly; 
