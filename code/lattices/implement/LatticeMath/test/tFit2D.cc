@@ -89,7 +89,7 @@ int main(int argc, char **argv)
    Fit2D fitter(logger);
 //
    IPosition shape(2,nx,ny);
-   Array<Float> pixels(shape);
+   Array<Float> pixels(shape, Float(0));
    Array<Float> sigma(shape);
 //
    Double xsep = nx / nModels;
