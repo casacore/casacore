@@ -47,12 +47,13 @@ Bool doIt()
 {
   Bool ok = True;
   IPosition shp1(2,10,10);
+  IPosition shp1a(3,10,10,1);
   IPosition shp2(3,10,10,15);
   Double freq, freql, freqstep, scafreq;
   Array<Float> arr1(shp1);
   Array<Float> arr2(shp2);
   Array<Float> arr1a(shp2);
-  Array<Float> arr1b(IPosition(3,10,10,1));
+  Array<Float> arr1b(shp1a);
   indgen(arr1, Float(1));
   indgen(arr1b, Float(1));
   indgen(arr2, Float(10));
@@ -75,10 +76,12 @@ Bool doIt()
     CoordinateUtil::addDirAxes(cSys3);
     cSys3.removePixelAxis (0, Double(shp2(2)) / 2 + 1);
     PagedImage<Float> pa1(shp1, cSys1, "tLELSpectralIndex_tmp.pa1");
+    PagedImage<Float> pa1a(shp1a, cSys2, "tLELSpectralIndex_tmp.pa1a");
     PagedImage<Float> pa2(TiledShape(shp2, IPosition(3,4,3,6)),
 				     cSys2, "tLELSpectralIndex_tmp.pa2");
     PagedImage<Float> pa3(shp1, cSys3, "tLELSpectralIndex_tmp.pa3");
     pa1.put (arr1);
+    pa1a.put (arr1b);
     pa2.put (arr2);
     pa3.put (arr1 + Float(100));
   }
@@ -96,6 +99,30 @@ Bool doIt()
       }
     }
     Array<Float> expect = log(arr1a / arr2) / arrf;
+    if (! allNear (result, expect, 1e-5)) {
+      cout << expect << endl;
+      cout << result << endl;
+      ok = False;
+    }
+  }
+  {
+    PagedImage<Float> pa1("tLELSpectralIndex_tmp.pa1a");
+    PagedImage<Float> pa2("tLELSpectralIndex_tmp.pa2");
+    LatticeExpr<Float> expr = spectralindex(pa1,pa2);
+    Array<Float> result = expr.get();
+    Cube<Float> arrf(shp2);
+    for (Int i=0; i<shp2(0); i++) {
+      for (Int j=0; j<shp2(1); j++) {
+	arrf(i,j,0) = 1;
+	for (Int k=1; k<shp2(2); k++) {
+	  arrf(i,j,k) = log (freq / (freq + k*freqstep));
+	}
+      }
+    }
+    Array<Float> expect = log(arr1a / arr2) / arrf;
+    Array<Float> subarr = expect(IPosition(3, 0, 0, 0),
+				 IPosition(3, shp2(0)-1, shp2(1)-1, 0));
+    subarr = 0;
     if (! allNear (result, expect, 1e-5)) {
       cout << expect << endl;
       cout << result << endl;
