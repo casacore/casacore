@@ -17,7 +17,7 @@
 *   License along with this library; if not, write to the Free
 *   Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   Correspondence concerning WCSLIB may be directed to:
+*   Correspondence concerning PGCRVL may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
 *      Postal address: Dr. Mark Calabretta,
 *                      Australia Telescope National Facility,
@@ -408,24 +408,24 @@
 *   $Id$
 *=======================================================================
       SUBROUTINE PGCRVL (AXEN, IDENTS, OPT, LABCTL, LABDEN, CI, GCODE,
-     *   TIKLEN, NG1, GRID1, NG2, GRID2, DOEQ, NLFUNC, NLC, NLI, NLD,
-     *   NLCPRM, NLIPRM, NLDPRM, NC, IC, CACHE, IERR)
+     :   TIKLEN, NG1, GRID1, NG2, GRID2, DOEQ, NLFUNC, NLC, NLI, NLD,
+     :   NLCPRM, NLIPRM, NLDPRM, NC, IC, CACHE, IERR)
 *-----------------------------------------------------------------------
       INTEGER   BUFSIZ
       PARAMETER (BUFSIZ = 2048)
 
       LOGICAL   DOEQ, GETEND, INSIDE, ISANGL(2), MAJOR, PRVIN
       INTEGER   AXEN(2), CI(7), CI0, CJ(7), CONTRL, DENS(2), FSEG,
-     *          GCODE(2), IC, IERR, IPIX, ISTEP, IWJ, IWK, J, JPIX, K,
-     *          L, LABCTL, LABDEN, LDIV(2), LTABL(6,2:6), N1, N2, NC,
-     *          NG(2), NG1, NG2, NLC, NLD, NLI, NLIPRM(NLI), NP, NW(2),
-     *          TCODE(2,4)
+     :          GCODE(2), IC, IERR, IPIX, ISTEP, IWJ, IWK, J, JPIX, K,
+     :          L, LABCTL, LABDEN, LDIV(2), LTABL(6,2:6), N1, N2, NC,
+     :          NG(2), NG1, NG2, NLC, NLD, NLI, NLIPRM(NLI), NP, NW(2),
+     :          TCODE(2,4)
       REAL      S, WPIX(4), X1, X2, XPOINT, XR(BUFSIZ), XSCL, XVP1,
-     *          XVP2, Y1, Y2, YR(BUFSIZ), YSCL, YVP1, YVP2
+     :          XVP2, Y1, Y2, YR(BUFSIZ), YSCL, YVP1, YVP2
       DOUBLE PRECISION CONTXT(20), CACHE(4,0:NC), D1, D2, DW(2), FACT,
-     *          G0(2), GSTEP(2), GRID1(0:NG1), GRID2(0:NG2),
-     *          NLDPRM(NLD), PIXEL(2), STEP, TIKLEN, TMP, VMAX(2,2),
-     *          VMIN(2,2), WMAX(2), WMIN(2), WORLD(2)
+     :          G0(2), GSTEP(2), GRID1(0:NG1), GRID2(0:NG2),
+     :          NLDPRM(NLD), PIXEL(2), STEP, TIKLEN, TMP, VMAX(2,2),
+     :          VMIN(2,2), WMAX(2), WMIN(2), WORLD(2)
       CHARACTER IDENTS(3)*(*), NLCPRM(NLC)*1, OPT(2)*(*), TYPE(2)
 
       EXTERNAL NLFUNC
@@ -444,14 +444,14 @@
 
 *     Table of logarithmic grid values.
       DATA LTABL /3, 10,  0,  0,  0,  0,
-     *            2,  5, 10,  0,  0,  0,
-     *            2,  3,  5, 10,  0,  0,
-     *            2,  3,  5,  7, 10,  0,
-     *            2,  3,  4,  5,  7, 10/
+     :            2,  5, 10,  0,  0,  0,
+     :            2,  3,  5, 10,  0,  0,
+     :            2,  3,  5,  7, 10,  0,
+     :            2,  3,  4,  5,  7, 10/
 *-----------------------------------------------------------------------
 *  Initialize.
       CALL NLFUNC (0, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM, WORLD,
-     *   PIXEL, CONTRL, CONTXT, IERR)
+     :   PIXEL, CONTRL, CONTXT, IERR)
 *     Quick return for now.
       IF (IERR.NE.0) THEN
          IERR = 1
@@ -471,7 +471,7 @@
       XSCL = AXEN(1)/(XVP2-XVP1)
       YSCL = AXEN(2)/(YVP2-YVP1)
       CALL PGSWIN (0.5-XSCL*XVP1, AXEN(1)+0.5+XSCL*(1.0-XVP2),
-     *             0.5-YSCL*YVP1, AXEN(2)+0.5+YSCL*(1.0-YVP2))
+     :             0.5-YSCL*YVP1, AXEN(2)+0.5+YSCL*(1.0-YVP2))
 
 *     Labels only?
       IF (LABCTL.GE.10000) GO TO 120
@@ -515,7 +515,7 @@
             PIXEL(2) = 0.5D0
             DO 10 JPIX = 0, N2
                CALL NLFUNC (-1, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
-     *            WORLD, PIXEL, CONTRL, CONTXT, IERR)
+     :            WORLD, PIXEL, CONTRL, CONTXT, IERR)
                IF (IERR.NE.0) GO TO 10
 
                IF (WORLD(1).LT.WMIN(1)) WMIN(1) = WORLD(1)
@@ -559,7 +559,7 @@
          DO 30 J = 1, 2
             IF (ISANGL(J)) THEN
                IF (WMAX(J)-WMIN(J).LT.360D0 .AND.
-     *             WMAX(J)-WMIN(J).GT.VMAX(J,1)-VMIN(J,1)+TOL) THEN
+     :             WMAX(J)-WMIN(J).GT.VMAX(J,1)-VMIN(J,1)+TOL) THEN
 *                 Must have a cycle, preserve the sign.
                   IF (WMAX(J).GE.0D0) THEN
                      WMIN(J) = VMIN(J,1)
@@ -571,7 +571,7 @@
                END IF
 
                IF (WMAX(J)-WMIN(J).LT.360D0 .AND.
-     *             WMAX(J)-WMIN(J).GT.VMAX(J,2)-VMIN(J,2)+TOL) THEN
+     :             WMAX(J)-WMIN(J).GT.VMAX(J,2)-VMIN(J,2)+TOL) THEN
 *                 Must have a cycle, preserve the sign.
                   IF (WMAX(J).GE.0D0) THEN
                      IF (VMAX(J,2).GE.0D0) THEN
@@ -659,7 +659,7 @@
                END IF
 
             ELSE IF (INDEX('GHI',TYPE(J)).NE.0 .AND. STEP.GE.15D0 .OR.
-     *         TYPE(J).EQ.'T' .AND. STEP.GE.1D0) THEN
+     :         TYPE(J).EQ.'T' .AND. STEP.GE.1D0) THEN
 *              Angle or time in hms format with multi-hour increment.
 
                FACT = 1D0
@@ -694,7 +694,7 @@
                STEP = STEP/FACT
 
             ELSE IF (INDEX('GHI',TYPE(J)).NE.0 .AND. STEP.LT.15D0 .OR.
-     *               INDEX('DEFT',TYPE(J)).NE.0 .AND. STEP.LT.1D0) THEN
+     :               INDEX('DEFT',TYPE(J)).NE.0 .AND. STEP.LT.1D0) THEN
 *              Angle or time in sexagesimal format with sub-degree/hour
 *              increment.
 
@@ -940,16 +940,16 @@
                IF (GETEND) THEN
 *                 Get end-point context.
                   CALL NLFUNC (1, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
-     *               WORLD, PIXEL, CONTRL, CONTXT, IERR)
+     :               WORLD, PIXEL, CONTRL, CONTXT, IERR)
                   IF (IERR.EQ.0) THEN
-                     INSIDE = PIXEL(1).GT.0.5 .AND.
-     *                        PIXEL(1).LT.AXEN(1)+0.5 .AND.
-     *                        PIXEL(2).GT.0.5 .AND.
-     *                        PIXEL(2).LT.AXEN(2)+0.5
+                     X1 = REAL(PIXEL(1))
+                     Y1 = REAL(PIXEL(2))
+                     INSIDE = X1.GT.0.5 .AND. X1.LT.AXEN(1)+0.5 .AND.
+     :                        Y1.GT.0.5 .AND. Y1.LT.AXEN(2)+0.5
 
                      NP = 1
-                     XR(1) = PIXEL(1)
-                     YR(1) = PIXEL(2)
+                     XR(1) = X1
+                     YR(1) = Y1
 
                      PRVIN  = INSIDE
                      GETEND = .FALSE.
@@ -959,7 +959,7 @@
 
                DO 80 ISTEP = 1, 1000
                   CALL NLFUNC (2, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
-     *               WORLD, PIXEL, CONTRL, CONTXT, IERR)
+     :               WORLD, PIXEL, CONTRL, CONTXT, IERR)
                   IF (IERR.NE.0) THEN
 *                    Flush buffer.
                      IF (NP.GT.0) CALL PGLINE(NP, XR, YR)
@@ -974,15 +974,15 @@
                      NP = 1
                   END IF
 
-                  INSIDE = PIXEL(1).GT.0.5 .AND.
-     *                     PIXEL(1).LT.AXEN(1)+0.5 .AND.
-     *                     PIXEL(2).GT.0.5 .AND.
-     *                     PIXEL(2).LT.AXEN(2)+0.5
+                  X2 = REAL(PIXEL(1))
+                  Y2 = REAL(PIXEL(2))
+                  INSIDE = X2.GT.0.5 .AND. X2.LT.AXEN(1)+0.5 .AND.
+     :                     Y2.GT.0.5 .AND. Y2.LT.AXEN(2)+0.5
 
                   IF (NP.EQ.0) THEN
                      NP = 1
-                     XR(1) = PIXEL(1)
-                     YR(1) = PIXEL(2)
+                     XR(1) = X2
+                     YR(1) = Y2
                   ELSE
                      IF (INSIDE) THEN
 *                       This point is inside the frame...
@@ -990,8 +990,6 @@
 *                          ...but the previous one was outside.
                            X1 = XR(NP)
                            Y1 = YR(NP)
-                           X2 = PIXEL(1)
-                           Y2 = PIXEL(2)
 
                            IF (X2.NE.X1) THEN
                               S = (Y2-Y1)/(X2-X1)
@@ -1039,7 +1037,7 @@
                               X1 = XR(NP)
                               Y1 = YR(NP)
                               S = SQRT((XSCL*(X2-X1))**2 +
-     *                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
+     :                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
                               IF (MAJOR) S = S/1.5
                               NP = NP + 1
                               XR(NP) = X1 + (X2-X1)*TIKLEN/S
@@ -1054,20 +1052,18 @@
 *                          Full grid.
                            NP = NP + 1
                         END IF
-                        XR(NP) = PIXEL(1)
-                        YR(NP) = PIXEL(2)
+                        XR(NP) = X2
+                        YR(NP) = Y2
                      ELSE
 *                       This point is outside the frame...
                         IF (PRVIN) THEN
 *                          ...but the previous one was inside.
                            X1 = XR(NP)
                            Y1 = YR(NP)
-                           X2 = PIXEL(1)
-                           Y2 = PIXEL(2)
 
                            NP = NP + 1
-                           XR(NP) = PIXEL(1)
-                           YR(NP) = PIXEL(2)
+                           XR(NP) = X2
+                           YR(NP) = Y2
                            IF (X2.NE.X1) THEN
                               S = (Y2-Y1)/(X2-X1)
                               IF (XR(NP).LE.0.5) THEN
@@ -1116,7 +1112,7 @@
                               X2 = XR(NP-1)
                               Y2 = YR(NP-1)
                               S = SQRT((XSCL*(X2-X1))**2 +
-     *                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
+     :                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
                               IF (MAJOR) S = S/1.5
                               XR(NP-1) = X1 + (X2-X1)*TIKLEN/S
                               YR(NP-1) = Y1 + (Y2-Y1)*TIKLEN/S
@@ -1129,8 +1125,8 @@
                            NP = 0
                         ELSE
 *                          The previous point was also outside.
-                           XR(NP) = PIXEL(1)
-                           YR(NP) = PIXEL(2)
+                           XR(NP) = X2
+                           YR(NP) = Y2
                         END IF
                      END IF
                   END IF
@@ -1154,7 +1150,7 @@
 
 *  Produce axis labels.
  120  IF (LABCTL.NE.-1) CALL PGCRLB (AXEN, IDENTS, TYPE, LABCTL, CJ, NC,
-     *   IC, CACHE)
+     :   IC, CACHE)
 
 
 *  Clean up.
@@ -1202,18 +1198,18 @@
 *-----------------------------------------------------------------------
       LOGICAL   ANGLE, LFORCE, TICKIT
       INTEGER   AXEN(2), CI(7), EDGE, IC, IMAG(2), ITER, IWRLD, J, JC,
-     *          K, K1, K2, L, LABCTL, LD, LM, LMAG(2), LS, LV, M, M1,
-     *          M2, MM, NC, NCH, NI(2,0:4), NSWAP, PP, PRVD(2), PRVH(2),
-     *          PRVM(2), PRVEDG, SKIP(4), SKOP(4)
+     :          K, K1, K2, L, LABCTL, LD, LM, LMAG(2), LS, LV, M, M1,
+     :          M2, MM, NC, NCH, NI(2,0:4), NSWAP, PP, PRVD(2), PRVH(2),
+     :          PRVM(2), PRVEDG, SKIP(4), SKOP(4)
       REAL      ANGL, FJUST, BNDRY(4), OMAG(2), SI(2), X, XBOX(4),
-     *          XCH, XL, XW1, XW2, Y, YCH, YBOX(4), YL, YW1, YW2, Z
+     :          XCH, XL, XW1, XW2, Y, YCH, YBOX(4), YL, YW1, YW2, Z
       DOUBLE PRECISION CACHE(4,0:NC), TMP
       CHARACTER EXPONT*20, FMT*8, IDENTS(3)*(*), TEXT*80, TYPE(2)*1,
-     *          TXT(2)*40
+     :          TXT(2)*40
 *-----------------------------------------------------------------------
 *  Normalize angular table entries.
       IF (INDEX('ABDEGH',TYPE(1)).NE.0 .OR.
-     *    INDEX('ABDEGH',TYPE(2)).NE.0) THEN
+     :    INDEX('ABDEGH',TYPE(2)).NE.0) THEN
          DO 10 J = 1, IC
             IF (CACHE(3,J).EQ.1D0) THEN
                IWRLD = 1
@@ -1248,7 +1244,7 @@
          DO 30 J = 1, IC-1
             IF (CACHE(1,J).LT.CACHE(1,J+1)) GO TO 30
             IF (CACHE(1,J).EQ.CACHE(1,J+1) .AND.
-     *          CACHE(2,J).LE.CACHE(2,J+1)) GO TO 30
+     :          CACHE(2,J).LE.CACHE(2,J+1)) GO TO 30
 
             NSWAP = NSWAP + 1
             DO 20 M = 1, 4
@@ -1520,7 +1516,7 @@
 
 *     Sexagesimal labelling.
       IF (INDEX('DEFGHIT', TYPE(1)).NE.0 .OR.
-     *    INDEX('DEFGHIT', TYPE(2)).NE.0) THEN
+     :    INDEX('DEFGHIT', TYPE(2)).NE.0) THEN
          LMAG(1) = -2
          LMAG(2) = -2
 
