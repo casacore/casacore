@@ -38,6 +38,7 @@
 #include <aips/Containers/Block.h>
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/String.h>
+#include <aips/OS/HostInfo.h>
 #include <aips/Tasking/AipsrcValue.h>
 
 
@@ -699,14 +700,11 @@ void PlainTable::setEndian (int endianFormat)
 	}
     }
     if (endOpt == Table::LocalEndian) {
-#if defined(AIPS_LITTLE_ENDIAN)
-        endOpt = Table::LittleEndian;
-#else
-        endOpt = Table::BigEndian;
-#endif
-    }
-    bigEndian_p = True;
-    if (endOpt == Table::LittleEndian) {
-        bigEndian_p = False;
+        bigEndian_p = HostInfo::bigEndian();
+    } else {
+        bigEndian_p = True;
+	if (endOpt == Table::LittleEndian) {
+	    bigEndian_p = False;
+	}
     }
 }
