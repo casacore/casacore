@@ -47,20 +47,22 @@ class NewMSDataDescription;
 // </prerequisite>
 //
 // <etymology>
-// RONewMSDataDescColumns stands for Read-Only NewMeasurementSet DataDesc Table columns.
+// RONewMSDataDescColumns stands for Read-Only NewMeasurementSet DataDesc Table
+// columns.
 // </etymology>
 //
 // <synopsis>
-// This class provides read-only access to the columns in the NewMSDataDesc Table.
-// It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
-// <note role=warning> The Table that is used to construct this class must not
-// be destroyed (or go out of scope) before this class does. Otherwise the
-// scalar and array columns use by this class will be left dangling.</note>
+// This class provides read-only access to the columns in the NewMSDataDesc
+// Table.  It does the declaration of all the Scalar and ArrayColumns with the
+// correct types, so the application programmer doesn't have to worry about
+// getting those right. There is an access function for every predefined
+// column. Access to non-predefined columns will still have to be done with
+// explicit declarations.  See <linkto class=RONewMSColumns>
+// RONewMSColumns</linkto> for an example.  <note role=warning> The Table that
+// is used to construct this class must not be destroyed (or go out of scope)
+// before this class does. Otherwise the scalar and array columns use by this
+// class will be left dangling.</note>
+
 // </synopsis>
 //
 // <motivation>
@@ -79,7 +81,8 @@ public:
   // Access to columns
   const ROScalarColumn<Bool>& flagRow() const {return flagRow_p;}
   const ROScalarColumn<Int>& polarizationId() const {return polarizationId_p;}
-  const ROScalarColumn<Int>& spectralWindowId() const {return spectralWindowId_p;}
+  const ROScalarColumn<Int>& spectralWindowId() const {
+    return spectralWindowId_p;}
   const ROScalarColumn<Int>& lagId() const {return lagId_p;}
   
 protected:
@@ -90,15 +93,19 @@ protected:
   //# attach this object to the supplied table.
   void attach(const NewMSDataDescription& msDataDesc);
 
+private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  RONewMSDataDescColumns(const RONewMSDataDescColumns&);
+  RONewMSDataDescColumns& operator=(const RONewMSDataDescColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSDataDescription& msDataDesc);
   
-private:
   ROScalarColumn<Bool> flagRow_p;
   ROScalarColumn<Int> polarizationId_p;
   ROScalarColumn<Int> spectralWindowId_p;
   ROScalarColumn<Int> lagId_p;
-  
 };
 
 // <summary>
@@ -116,7 +123,8 @@ private:
 // </prerequisite>
 //
 // <etymology>
-// NewMSDataDescColumns stands for NewMeasurementSet DataDescription Table columns.
+// NewMSDataDescColumns stands for NewMeasurementSet DataDescription Table
+// columns.
 // </etymology>
 //
 // <synopsis>
@@ -162,21 +170,25 @@ public:
     return RONewMSDataDescColumns::lagId();}
   
 protected:
-  // default constructor creates a object that is not usable. Use the attach
-  // function correct this.
+  //# default constructor creates a object that is not usable. Use the attach
+  //# function correct this.
   NewMSDataDescColumns();
 
-  // attach all the columns in the supplied table to this object
+  //# attach all the columns in the supplied table to this object
   void attach(NewMSDataDescription& msDataDesc);
 
-  // attach optional columns in the supplied Table (if they exist)
+private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  NewMSDataDescColumns(const NewMSDataDescColumns&);
+  NewMSDataDescColumns& operator=(const NewMSDataDescColumns&);
+
+  //# attach optional columns in the supplied Table (if they exist)
   void attachOptionalCols(NewMSDataDescription& msDataDesc);
 
-private:
   ScalarColumn<Bool> flagRow_p;
   ScalarColumn<Int> polarizationId_p;
   ScalarColumn<Int> spectralWindowId_p;
   ScalarColumn<Int> lagId_p;
 };
-
 #endif
