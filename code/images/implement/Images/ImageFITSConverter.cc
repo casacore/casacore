@@ -74,6 +74,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 // to the enum HDUType in class FITS !
 
 // ndim
+
     uInt ndim = fitsImage.dims();
 
 // shape
@@ -92,6 +93,12 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
         os << LogIO::SEVERE << "Error retrieving keywords from fits header.\n"
             "Coordinate system may be in error." << LogIO::POST;
     }
+
+// Add naxis into header (not in the keyword list).  People
+// provide headers with funny mixtues of CTYPEi and  naxis so
+// we need to do this
+
+    header.define("naxis", shape.asVector());
 
 // Get Coordinate System
 

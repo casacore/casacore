@@ -511,9 +511,9 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
 // Shape
 
     PrimaryArray<Float> fitsImage(infile);
-    uInt ndim = fitsImage.dims();
+    Int ndim = fitsImage.dims();
     shape.resize(ndim);
-    for (uInt i=0; i<ndim; i++) {
+    for (Int i=0; i<ndim; i++) {
        shape(i) = fitsImage.dim(i);
     }
 
@@ -534,11 +534,16 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
        throw (AipsError("bitpix card inconsistent with data type: expected bitpix = -32"));
     }  
 
+// Add naxis into header (not in the keyword list).  People
+// provide headers with funny mixtures of CTYPEi and  naxis so
+// we need to do this
+
+   header.define("naxis", shape.asVector());
+
 // CoordinateSystem
 
     cSys = ImageFITSConverter::getCoordinateSystem(header, os, shape);
     ndim = shape.nelements();
-
 
 // Brightness Unit
 
@@ -593,9 +598,9 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
 // Shape
 
     PrimaryArray<Short> fitsImage(infile);
-    uInt ndim = fitsImage.dims();
+    Int ndim = fitsImage.dims();
     shape.resize(ndim);
-    for (uInt i=0; i<ndim; i++) {
+    for (Int i=0; i<ndim; i++) {
        shape(i) = fitsImage.dim(i);
     }
 
@@ -615,6 +620,12 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
     if (bitpix != 16) {
        throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 16"));
     }  
+
+// Add naxis into header (not in the keyword list).  People
+// provide headers with funny mixtures of CTYPEi and  naxis so
+// we need to do this
+
+   header.define("naxis", shape.asVector());
 
 // Scale and blank
 
