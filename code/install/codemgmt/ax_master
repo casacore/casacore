@@ -5367,3 +5367,4 @@
 15 099 src rm aips/implement/aips_enter.h
 15 099 src rm aips/implement/aips_exit.h
 15 101 src mv nrao/apps/gbtobsparser/symtab.cc nrao/apps/gbtobsparser/GBTObsSymtab.cc
+15 101 src mv nrao/apps/gbtobsparser/symtab.h nrao/apps/gbtobsparser/GBTObsSymtab.h
