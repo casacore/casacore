@@ -53,9 +53,6 @@
 #include <aips/Functionals/ArraySampledFunctional.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
 
-//# ND Functions
-#include <aips/Functionals/SumFunction.h>
-
 // <module>
 //
 // <summary>A module that represents various function-like classes.</summary>
