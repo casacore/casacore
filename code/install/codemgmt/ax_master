@@ -5695,3 +5695,4 @@
 15 355 src rm aips/implement/Deconvolution
 16 004 src rm aips/implement/Deconvolution.h
 16 004 src rm trial/apps/visplot
+16 032 src mv trial/implement/Arrays/test/tArrayMath2.cc aips/implement/Arrays/test/tArrayMath2.cc
