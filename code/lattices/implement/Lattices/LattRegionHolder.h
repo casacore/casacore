@@ -85,10 +85,10 @@ class LattRegionHolder
 {
 public:
     // Construct from a region based on lattice coordinates.
-    explicit LattRegionHolder (const LCRegion&);
+    LattRegionHolder (const LCRegion&);
 
     // Construct from a slicer based on lattice coordinates.
-    explicit LattRegionHolder (const LCSlicer&);
+    LattRegionHolder (const LCSlicer&);
 
     // Similar constructors as above, but using a pointer.
     // It takes over the pointer, so the user should not delete the
