@@ -2,7 +2,7 @@
     ##
     ## Did the user request no GUIs?
     ##
-    if ( ! any(argv == '-nogui' ) ) {
+    if ( any(argv == '-nogui' ) ) {
 	system.nogui := T
     } else {
 	system.nogui := F
