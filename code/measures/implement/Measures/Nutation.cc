@@ -38,9 +38,9 @@
 const Double Nutation::INTV = 0.04;
 
 //# Static data
-uInt Nutation::interval_reg = 0;
-uInt Nutation::useiers_reg = 0;
-uInt Nutation::usejpl_reg = 0;
+uInt Nutation::myInterval_reg = 0;
+uInt Nutation::myUseiers_reg = 0;
+uInt Nutation::myUsejpl_reg = 0;
 
 //# Constructors
 Nutation::Nutation() :
@@ -118,19 +118,19 @@ void Nutation::fill() {
     result_p[i].set(1,3,1);
   };
   // Get interval and other switches
-  if (!Nutation::interval_reg) {
-    interval_reg = 
+  if (!Nutation::myInterval_reg) {
+    myInterval_reg = 
       AipsrcValue<Double>::registerRC(String("measures.nutation.d_interval"),
 				      Unit("d"), Unit("d"),
 				      Nutation::INTV);
   };
-  if (!Nutation::useiers_reg) {
-    useiers_reg =
+  if (!Nutation::myUseiers_reg) {
+    myUseiers_reg =
       AipsrcValue<Bool>::registerRC(String("measures.nutation.b_useiers"),
 				    False);
   };
-  if (!Nutation::usejpl_reg) {
-    usejpl_reg =
+  if (!Nutation::myUsejpl_reg) {
+    myUsejpl_reg =
       AipsrcValue<Bool>::registerRC(String("measures.nutation.b_usejpl"),
 				    False);
   };
@@ -160,7 +160,7 @@ Quantity Nutation::getEqoxAngle(Double epoch, const Unit &unit) {
 
 void Nutation::calcNut(Double t) {
   if (!nearAbs(t, checkEpoch_p,
-	       AipsrcValue<Double>::get(Nutation::interval_reg))) {
+	       AipsrcValue<Double>::get(Nutation::myInterval_reg))) {
     checkEpoch_p = t;
     Double dEps = 0;
     Double dPsi = 0;
@@ -173,7 +173,7 @@ void Nutation::calcNut(Double t) {
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     default:
-      if (AipsrcValue<Bool>::get(Nutation::useiers_reg)) {
+      if (AipsrcValue<Bool>::get(Nutation::myUseiers_reg)) {
 	dPsi = MeasTable::dPsiEps(0, t);
 	dEps = MeasTable::dPsiEps(1, t);
       };
@@ -280,7 +280,7 @@ void Nutation::calcNut(Double t) {
     default:
       nval_p[0] = MeasTable::fundArg(0)(t); 	//eps0
       dval_p[0] = (MeasTable::fundArg(0).derivative())(t)/MeasData::JDCEN;
-      if (AipsrcValue<Bool>::get(Nutation::usejpl_reg)) {
+      if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
 	const Vector<Double> &mypl =
 	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
 	nval_p[1] = mypl[0];

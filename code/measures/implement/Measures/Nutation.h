@@ -40,7 +40,8 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMeasMath" demos="">
+// <reviewed reviewer="Tim Cornwell" date="1996/07/01" tests="tMeasMath"
+//	demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -55,26 +56,32 @@
 //
 // <synopsis>
 // Nutation forms the class for Nutation calculations. It is a simple
-// container with the selected method, and the mean epoch.<br>
-// The method is selected from one of the following:
+// container with the selected method, and the mean epoch.
+// It acts as a cache
+// for values and their derivatives, to enable fast calculations for time
+// epochs close together (see the <em>aipsrc</em> variable
+// <em>measures.nutation.d_interval</em>).
+//
+// The calculation method is selected from one of the following:
 // <ul>
-//   <li> Nutation::STANDARD   (at 1995/09/04 the IAU1980 definition)
+//   <li> Nutation::STANDARD   (at 1995/09/04 the IAU1980 definition,
+//				from 2004/01/01 IAU2000B)
 //   <li> Nutation::NONE       (nutation of zero returned)
 //   <li> Nutation::IAU1980
 //   <li> Nutation::B1950
 //   <li> Nutation::IAU2000
-//   <li> Nutation::IAU2000A   (equal to IAU2000)
-//   <li> Nutation::IAU2000B   (official short form of IAU2000)
+//   <li> Nutation::IAU2000A   (equal to the full precision (uas) IAU2000)
+//   <li> Nutation::IAU2000B   (official lower precision (mas) of IAU2000)
 // </ul>
 // Epochs can be specified as the MJD (with defined constants MeasData::MJD2000
 // and MeasData::MJDB1950 or the actual MJD),
 // leading to the following constructors:
 // <ul>
-//   <li> Nutation() default; assuming IAU1980
+//   <li> Nutation() default; assuming STANDARD
 //   <li> Nutation(method) 
 // </ul>
 // Actual Nutation for a certain Epoch is calculated by the () operator
-// as Nutation(epoch), with epoch Double MJD. values returned as an
+// as Nutation(epoch), with epoch Double MJD. Values are returned as an
 // <linkto class=Euler>Euler</linkto>.
 // The derivative (d<sup>-1</sup>) can be obtained as well by 
 // derivative(epoch). <br>
@@ -90,23 +97,28 @@
 //  <li> measures.nutation.d_interval: approximation interval as time 
 //	(fraction of days is default unit) over which linear approximation
 //	is used (default 0.04d (about 1 hour)).
-//  <li> measures.nutation.b_usejpl: use the JPL database nutations for IAU1980.
+//  <li> measures.nutation.b_usejpl: use the JPL database nutations for
+//		 IAU1980.
 //	Else analytical expression, relative error about 10<sup>-9</sup>
 //	Note that the JPL database to be used can be set with 
-//		measures.jpl.ephemeris (at the moment of writing DE200 (default),
-//		or DE405)
-//  <li> measures.nutation.b_useiers: use the IERS Database nutation corrections
-//		for IAU1980 (default False)
+//		measures.jpl.ephemeris (at the moment of writing DE200
+//		 (default), or DE405)
+//  <li> measures.nutation.b_useiers: use the IERS Database nutation
+//		 corrections for IAU1980 (default False)
 // </ul>
 // </synopsis>
 //
 // <example>
+//  <srcblock>
 // #include <aips/Measures.h>
 //	MVDirection pos(Quantity(10,"degree"),Quantity(-10.5,"degree"));
 //						// direction RA=10; DEC=-10.5
 //	Nutation mine(Nutation::IAU1980);	// define nutation type
 //	RotMatrix rotat(mine(45837.0));		// rotation matrix for 84/05/17
 //	MVDirection new = rotat*pos;		// apply nutation
+//  </srcblock>
+// The normal way to use Nutation is by using the
+// <linkto class=MeasConvert>MeasConvert</linkto> class.
 // </example>
 //
 // <motivation>
@@ -126,7 +138,8 @@ class Nutation {
   static const Double INTV;
   
   //# Enumerations
-  // Types of known Nutation calculations (at 1995/09/04 STANDARD == IAU1976)
+  // Types of known Nutation calculations (at 1995/09/04 STANDARD == IAU1980,
+  //	after 2004/01/01 it will be IAU2000B))
   enum NutationTypes {
     NONE, IAU1980, B1950, IAU2000A, IAU2000B,
     IAU2000 = IAU2000A,
@@ -193,11 +206,11 @@ class Nutation {
   // Last calculation
   Euler result_p[4];
   // Interpolation interval
-  static uInt interval_reg;
+  static uInt myInterval_reg;
   // IERS use
-  static uInt useiers_reg;
+  static uInt myUseiers_reg;
   // JPL use
-  static uInt usejpl_reg;
+  static uInt myUsejpl_reg;
   //# Member functions
   // Make a copy
   void copy(const Nutation &other);
