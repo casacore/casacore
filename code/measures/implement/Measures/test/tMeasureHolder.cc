@@ -42,7 +42,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
 
-Int main() {
+main() {
 
   try {
 
