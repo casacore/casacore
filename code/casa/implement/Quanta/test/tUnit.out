@@ -168,23 +168,9 @@ User unit table (2):
 --------------------------
 List contents of Cache
 
-Cached unit table (16):
+Cached unit table (2):
     "_2       ()                           2.35044305391e-11 sr
-    AU3/d2/S0 ()                           2.25492217393e-07 m3.kg-1.s-2
-    C         ()                           1 s.A
-    C/mol     ()                           1 s.A.mol-1
-    F/m       ()                           1 m-3.kg-1.s4.A2
-    H/m       ()                           1 m.kg.s-2.A-2
-    J.s       ()                           1 m2.kg.s-1
-    J/K       ()                           1 m2.kg.s-2.K-1
-    J/K/mol   ()                           1 m2.kg.s-2.K-1.mol-1
     Jy/beam   ()                           1.35425483146e-15 kg.s-2.sr-1
-    MHz       ()                           1000000 s-1
-    N.m2/kg2  ()                           1 m3.kg-1.s-2
-    kg        ()                           1 kg
-    m         ()                           1 m
-    m/s       ()                           1 m.s-1
-    mol-1     ()                           1 mol-1
 
 --------------------------
 Check if prefixes known
