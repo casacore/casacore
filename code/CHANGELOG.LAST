@@ -1,0 +1,25 @@
+
+change id: 0031
+ author:   Tim Cornwell
+ date:     2000/08/06
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   gopher
+ type:     Code Documentation
+ category: New Change
+ summary:  gopher can now get antennas to be used
+
+gopher can now use the new graphical chooser widget, gchooser,
+to allow the user to specify which antennas are to be used.
+To use this e.g.
+
+	include 'gopher.g'
+	myantennas := dgo.getantennas('xband.ms')
+
+There is also a subsequence version gopher.antennas for non-blocking
+use in a GUI.
+
+The graphical chooser widget allows plotting of labelled items
+on a two-dimensional scatter plot. The user can then select
+items by clicking. The list of all selected items is then returned.
