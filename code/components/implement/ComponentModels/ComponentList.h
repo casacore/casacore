@@ -1,5 +1,5 @@
 //# ComponentList: this defines ComponentList.h
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,6 +38,7 @@
 #include <aips/Tables/Table.h>
 
 class String;
+class Path;
 class MVDirection;
 class MVFrequency;
 class MVAngle;
@@ -150,7 +151,7 @@ public:
   // Read a componentList from an existing table. By default the Table is
   // opened read-write. It is recommended that you create a const ComponentList
   // if you open the Table readOnly.
-  ComponentList(const String& fileName, const Bool readOnly=False);
+  ComponentList(const Path& fileName, const Bool readOnly=False);
 
   // The Copy constructor uses reference semantics
   ComponentList(const ComponentList& other);
@@ -385,7 +386,7 @@ public:
   //                  readonly
   // <li> AipsError - If option is Table::Old as this does not make sense
   // </thrown>
-  void rename(const String& newName, 
+  void rename(const Path& newName, 
 	      const Table::TableOption option=Table::New);
 
   // Make a real copy of this componentList. As the copy constructor and the
@@ -408,7 +409,7 @@ public:
 
 private:
   // Privarte function to create the Table which will hold the components
-  void createTable(const String& fileName, const Table::TableOption option);
+  void createTable(const Path& fileName, const Table::TableOption option);
   // Private function to write the components to disk
   // <thrown>
   // <li> AipsError - If the table is not writable
@@ -420,7 +421,7 @@ private:
   // <li> AipsError - If the table is not readable
   // <li> AipsError - If the table is not writable (and readOnly==False)
   // </thrown>
-  void readTable(const String& fileName, const Bool readOnly);
+  void readTable(const Path& fileName, const Bool readOnly);
   Block<SkyComponent> itsList;
   uInt itsNelements;
   Table itsTable;
