@@ -115,8 +115,13 @@ public:
   // thrown. 
   // If constInput is False then the input Array may be scrambled after calling
   // this function. Setting constInput to True will guarantee this does not
-  // happen by making an internal copy of the input Array.
+  // happen by making an internal copy of the input Array. Alternatively you
+  // can use the version of this function that has a const input Array. This
+  // also makes an internal copy.
+  // <group>
   void fft(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
+  void fft(Array<S> & cResult, const Array<T> & rData);
+  // </group>
 
   // Complex to real fft. The origin of the transform is in the centre of the
   // Array. Because of the Hermiton property the input Array only contains half
@@ -144,9 +149,13 @@ public:
 
   // If constInput is False then the input Array may be scrambled after calling
   // this function. Setting constInput to True will guarantee this does not
-  // happen by making an internal copy of the input Array.
+  // happen by making an internal copy of the input Array. Alternatively you
+  // can use the version of this function that has a const input Array. This
+  // also makes an internal copy
+  // <group>
   void fft(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
-
+  void fft(Array<T> & rResult, const Array<S> & cData);
+  // </group>
 
   // Complex to complex inplace fft. The origin of the transform is in the
   // centre of the Array. The direction of the transform is controlled by the
@@ -177,7 +186,9 @@ public:
   // the Array.
   // <group>
   void fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
+  void fft0(Array<S> & cResult, const Array<T> & rData);
   void fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
+  void fft0(Array<T> & rResult, const Array<S> & cData);
   void fft0(Array<S> & cValues, const Bool toFrequency=True);
   void fft0(Array<S> & cResult, const Array<S> & cData,
 	    const Bool toFrequency=True);

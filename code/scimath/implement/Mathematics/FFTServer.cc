@@ -173,6 +173,11 @@ fft(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
 }
 
 template<class T, class S> void FFTServer<T,S>::
+fft(Array<S> & cResult, const Array<T> & rData) {
+ fft(cResult, (Array<T> &) rData, True);
+}
+
+template<class T, class S> void FFTServer<T,S>::
 fft(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   if (constInput) {
     Array<S> cCopy = cData.copy();
@@ -184,6 +189,11 @@ fft(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
     fft0(rResult, cData, False);
   }
   flip(rResult, False, False);
+}
+
+template<class T, class S> void FFTServer<T,S>::
+fft(Array<T> & rResult, const Array<S> & cData) {
+  fft(rResult, (Array<S> &) cData, True);
 }
 
 template<class T, class S> void FFTServer<T,S>::
@@ -305,6 +315,11 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
 }
   
 template<class T, class S> void FFTServer<T,S>::
+fft0(Array<S> & cResult, const Array<T> & rData) {
+  fft0(cResult, (Array<T> &) rData, True);
+}
+
+template<class T, class S> void FFTServer<T,S>::
 fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   Array<S> cCopy;
   if (constInput)
@@ -387,6 +402,11 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
     *resultRowPtr *= scale;
   // We have finished with the output data array
   rResult.putStorage(resultPtr, resultIsAcopy);
+}
+
+template<class T, class S> void FFTServer<T,S>::
+fft0(Array<T> & rResult, const Array<S> & cData) {
+  fft0(rResult, (Array<S> &) cData, True);
 }
 
 template<class T, class S> void FFTServer<T,S>::
