@@ -25,6 +25,10 @@
 //#
 //# $Id: Interpolate1DArray.h,v 8.1 1997/05/21 22:59:29 rm
 
+#if !defined(AIPS_INTERPOLATEARRAY1D_H)
+#define AIPS_INTERPOLATEARRAY1D_H
+
+
 #include <aips/aips.h>
 
 template <class T> class PtrBlock;
@@ -225,3 +229,6 @@ private:
 				      const PtrBlock<const Range*>& yin, 
 				      Int order);
 };
+
+
+#endif
