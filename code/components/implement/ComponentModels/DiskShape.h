@@ -35,7 +35,6 @@
 
 class MDirection;
 class MVAngle;
-class MVDirection;
 template <class Qtype> class Quantum;
 template <class T> class Flux;
 template <class T> class Vector;
@@ -204,23 +203,27 @@ public:
   virtual Double positionAngleInRad() const;
   // </group>
 
-  // Calculate the flux at the specified direction, in a pixel of specified
-  // size, given the total flux of the component. The total flux of the
-  // component must be supplied in the flux variable and the proportion of the
-  // flux in the specified pixel is returned in the same variable.
+  // Calculate the proportion of the flux that is in a pixel of specified size
+  // centered in the specified direction. The returned value will always be
+  // between zero and one (inclusive).
   //
-  // Currently this function does <em>NOT<\em> integrate the Disk over the
-  // area of the sky subtended by the pixel. Instead it simply samples the
-  // Disk at the centre of the pixel and scales by the pixel area. This is
-  // satisfactory for Disks that are large compared with the size of the
-  // pixel. This function will be updated to deal with small Disks sometime
-  // in the future.
-  virtual void sample(Flux<Double>& flux, const MDirection& direction, 
-		      const MVAngle& pixelSize) const;
+  // Currently this function does <em>NOT<\em> integrate the Disk over the area
+  // of the sky subtended by the pixel. Instead it simply samples the Disk at
+  // the centre of the pixel and scales by the pixel area. This is satisfactory
+  // for pixels which are not near the edge of the disk. However if the disk
+  // edge passes through the pixel there will be an error in the value returned
+  // by this function.
+  virtual Double sample(const MDirection& direction, 
+			const MVAngle& pixelSize) const;
 
-  virtual void multiSample(Vector<Double>& scale, 
- 			   const Vector<MVDirection>& directions, 
- 			   const MVAngle& pixelSize) const;
+  // Calculate the amount of flux that is in the pixels of specified, constant
+  // size centered on the specified directions. The returned values will always
+  // be between zero and one (inclusive). All the supplied directions must have
+  // the same reference frame (that is specified in the refFrame argument). 
+  virtual void sample(Vector<Double>& scale, 
+		      const Vector<MDirection::MVType>& directions, 
+		      const MDirection::Ref& refFrame,
+		      const MVAngle& pixelSize) const;
 
   // Return the Fourier transform of the component at the specified disk in
   // the spatial frequency domain. The point is specified by a 3 element vector
