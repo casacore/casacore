@@ -196,6 +196,10 @@ public:
     // The referenced table will also be created (if not stored in the cache).
     void getRef (AipsIO&, int option, const TableLock& lockOptions);
 
+    // Copy the table and all its subtables.
+    // It copies the contents of each row to get a real copy.
+    virtual void deepCopy (const String& newName, int tableOption) const;
+
     // Get the actual table description.
     virtual TableDesc actualTableDesc() const;
 

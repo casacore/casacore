@@ -194,6 +194,7 @@ public:
     void rename (const String& newName, int tableOption);
 
     // Copy the table and all its subtables.
+    // The default implementation of deepCopy is to call copy.
     // The following options can be given:
     // <dl>
     // <dt> Table::New
@@ -204,7 +205,10 @@ public:
     // <dt> Table::Scratch
     // <dd> Same as Table::New, but followed by markForDelete().
     // </dl>
-    void copy (const String& newName, int TableOption) const;
+    // <group>
+    void copy (const String& newName, int tableOption) const;
+    virtual void deepCopy (const String& newName, int tableOption) const;
+    // </group>
 
     // Get the table option.
     int tableOption() const
