@@ -4919,3 +4919,4 @@
 14 316 src rm trial/apps/newdishplot/dishplot_buttons.g
 14 316 src rm trial/apps/newdishplot/dishplot_data.g
 14 316 src rm trial/apps/newdishplot/dishplot_printing.g
+14 316 src rm trial/apps/newdishplot/dishplot_range_cursor.g
