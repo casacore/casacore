@@ -96,6 +96,9 @@ public:
     // On source flag - true if on source <BR>
     // Bool
     ON_SOURCE,
+    // Over the top flag - true if antenna has been driven over the top <BR>
+    // Bool
+    OVER_THE_TOP,
     // Pointing model id <BR>
     // Int 
     POINTING_MODEL_ID,
