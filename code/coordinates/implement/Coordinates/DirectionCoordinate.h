@@ -39,6 +39,7 @@
 
 class celprm;
 class prjprm;
+class MVDirection;
 template<class T> class Quantum;
 
 
@@ -190,15 +191,17 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const; 
 
-    // A convenient way to turn the world vector into an MDirection for further
-    // processing in the Measures system.
-    // 
+    // A convenient way to turn the world vector into an MDirection or MVDirection 
+    // for further processing in the Measures system.  
+    //
     // We could improve the performance of this if it would be useful, however I
     // expect that normally you would just call this once to get a template
     // MDirection, and then call the vector versions. 
     // <group>
     Bool toWorld(MDirection &world, const Vector<Double> &pixel) const;
     Bool toPixel(Vector<Double> &pixel, const MDirection &world) const;
+    Bool toWorld(MVDirection &world, const Vector<Double> &pixel) const;
+    Bool toPixel(Vector<Double> &pixel, const MVDirection &world) const;
      //</group>
 
     // Recover the requested attributed.
@@ -332,6 +335,7 @@ private:
     // WCS computes in degrees - use this to convert back and forth between
     // degrees and the currently requested units.
     Double to_degrees_p[2];
+    Double to_radians_p[2];
 
     // Axis names.
     Vector<String> names_p;

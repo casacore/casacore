@@ -39,14 +39,27 @@ Bool DirectionCoordinate::toWorld(MDirection &world,
 				  const Vector<Double> &pixel) const
 {
     static Vector<Double> world_tmp(2);
+    Quantum<Double> longi;
+    Quantum<Double> lati;
 //
     Bool ok = toWorld(world_tmp, pixel);
-
-// We could cache much of this for efficiency
-
-    Quantum<Double> longi(world_tmp(0), units_p(0));
-    Quantum<Double> lati(world_tmp(1), units_p(1));
+//
+    longi.setValue(world_tmp(0));
+    longi.setUnit(units_p(0));
+    lati.setValue(world_tmp(1));
+    lati.setUnit(units_p(1));
+//
     world = MDirection(longi, lati, type_p);
+//
+    return ok;
+}
+
+Bool DirectionCoordinate::toWorld(MVDirection &world, 
+				  const Vector<Double> &pixel) const
+{
+    static MDirection world_tmp;
+    Bool ok = toWorld(world_tmp, pixel);
+    if (ok) world = world_tmp.getValue();
 //
     return ok;
 }
@@ -54,10 +67,12 @@ Bool DirectionCoordinate::toWorld(MDirection &world,
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
                                   const MDirection &world) const
 {
+    static Quantum<Vector<Double> > lonlat;
+    static Vector<Double> lonlatVal(2);
+
 // Convert to current units
 
-    Quantum<Vector<Double> > lonlat = world.getAngle();
-    Vector<Double> lonlatVal(2);
+    lonlat = world.getAngle();
 
 // Don't think this can be done more easily
 
@@ -69,8 +84,16 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 
 // Do it
 
-    if (pixel.nelements()!=2) pixel.resize(2,False);
     return toPixel(pixel, lonlatVal);
+}
+
+
+Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
+                                  const MVDirection &world) const
+{
+   static MDirection world_tmp;
+   world_tmp.set(world, type_p);
+   return toPixel(pixel, world_tmp);
 }
 
 
