@@ -1,5 +1,5 @@
 //# AipsrcVBool.cc: Specialisation for AipsrcVector<Bool>
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,21 +33,18 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/strstream.h>
 
-// The following global function defined for gcc 1.0.3b
-AipsrcVector<Bool> &AipsrcVectorBoolInit();
-
-// This specialisation is necessary to be able to analyse all values that
-// are supposed to be True (strings starting with one of 'tTyY123456789')
+//# Data
+AipsrcVector<Bool> AipsrcVector<Bool>::myp_p;
 
 //# Constructor
-template <> AipsrcVector<Bool>::AipsrcVector() : 
+AipsrcVector<Bool>::AipsrcVector() : 
   tlst(0), ntlst(0) {}
 
 //# Destructor
-template <> AipsrcVector<Bool>::~AipsrcVector() {}
+AipsrcVector<Bool>::~AipsrcVector() {}
 
-template <> Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
-					  const String &keyword) {
+Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
+			      const String &keyword) {
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
@@ -66,63 +63,42 @@ template <> Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
   return x;
 }
 
-template <> Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
-					  const String &keyword, 
-					  const Vector<Bool> &deflt) {
+Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
+			      const String &keyword, 
+			      const Vector<Bool> &deflt) {
   return (find(value, keyword) ? True : (value = deflt, False));
 }
 
-
-// The following construction necessary since the gnu compiler does not (yet)
-// support static templated data.
-// egcs 1.1.b requires it to be in front of its use.
-template <> AipsrcVector<Bool> &AipsrcVector<Bool>::init() {
-  // The following necessary for 1.0.3b gnu compiler; which cannot compile next
-  // line.
-  //  static AipsrcVector<Bool> myp;
-  return AipsrcVectorBoolInit();
-}
-
-
-template <> uInt AipsrcVector<Bool>::registerRC(const String &keyword,
-						const Vector<Bool> &deflt) {
-  AipsrcVector<Bool> &gcl = init();
-  uInt n = Aipsrc::registerRC(keyword, gcl.ntlst);
-  gcl.tlst.resize(n);
-  find ((gcl.tlst)[n-1], keyword, deflt);
+uInt AipsrcVector<Bool>::registerRC(const String &keyword,
+				    const Vector<Bool> &deflt) {
+  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  myp_p.tlst.resize(n);
+  find ((myp_p.tlst)[n-1], keyword, deflt);
   return n;
 }
 
-template <> const Vector<Bool> &AipsrcVector<Bool>::get(uInt keyword) {
-  AipsrcVector<Bool> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
-  return (gcl.tlst)[keyword-1];
+const Vector<Bool> &AipsrcVector<Bool>::get(uInt keyword) {
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+  return (myp_p.tlst)[keyword-1];
 }
 
-template <> void AipsrcVector<Bool>::set(uInt keyword,
-					 const Vector<Bool> &deflt) {
-  AipsrcVector<Bool> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
-  (gcl.tlst)[keyword-1].resize(deflt.nelements());
-  (gcl.tlst)[keyword-1] = deflt;
+void AipsrcVector<Bool>::set(uInt keyword,
+			     const Vector<Bool> &deflt) {
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+  (myp_p.tlst)[keyword-1].resize(deflt.nelements());
+  (myp_p.tlst)[keyword-1] = deflt;
 }
 
-template <> void AipsrcVector<Bool>::save(uInt keyword) {
-  AipsrcVector<Bool> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
+void AipsrcVector<Bool>::save(uInt keyword) {
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostrstream oss;
-  Int n = ((gcl.tlst)[keyword-1]).nelements();
+  Int n = ((myp_p.tlst)[keyword-1]).nelements();
   for (Int i=0; i<n; i++) {
-    if (((gcl.tlst)[keyword-1])(i)) {
+    if (((myp_p.tlst)[keyword-1])(i)) {
       oss << " true";
     } else {
       oss << " false";
     };
   };
-  Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
-}
-
-AipsrcVector<Bool> &AipsrcVectorBoolInit() {
-  static AipsrcVector<Bool> myp;
-  return myp;
+  Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }

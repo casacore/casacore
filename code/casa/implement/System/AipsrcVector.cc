@@ -1,5 +1,5 @@
 //# AipsrcVector.cc: Read multiple values from the  Aipsrc resource files
-//# Copyright (C) 1995,1996,1997,1998,2001
+//# Copyright (C) 1995,1996,1997,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,10 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/strstream.h>
 
+//# Data
+template <class T>
+AipsrcVector<T> AipsrcVector<T>::myp_p;
+
 //# Constructor
 template <class T>
 AipsrcVector<T>::AipsrcVector() : 
@@ -45,7 +49,7 @@ AipsrcVector<T>::~AipsrcVector() {}
 
 template <class T>
 Bool AipsrcVector<T>::find(Vector<T> &value,
-			  const String &keyword) {
+			   const String &keyword) {
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
@@ -55,7 +59,7 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<T>(m);
-    for (uInt i=0; i<m; i++) {
+    for (Int i=0; i<m; i++) {
       istrstream instr((nres[i]).chars());
       instr >> value(i);
     };
@@ -84,7 +88,7 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
     m = split(res, nres, m, " ");
     value = Vector<T>(m);
     Quantum<Double> qres;
-    for (uInt i=0; i<m; i++) {
+    for (Int i=0; i<m; i++) {
       istrstream instr((nres[i]).chars());
       instr >> qres;
       if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
@@ -105,10 +109,9 @@ Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword,
 template <class T>
 uInt AipsrcVector<T>::registerRC(const String &keyword,
 				 const Vector<T> &deflt) {
-  AipsrcVector<T> &gcl = init();
-  uInt n = Aipsrc::registerRC(keyword, gcl.ntlst);
-  gcl.tlst.resize(n);
-  find ((gcl.tlst)[n-1], keyword, deflt);
+  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  myp_p.tlst.resize(n);
+  find ((myp_p.tlst)[n-1], keyword, deflt);
   return n;
 }
 
@@ -116,42 +119,30 @@ template <class T>
 uInt AipsrcVector<T>::registerRC(const String &keyword,
 				 const Unit &defun, const Unit &resun,
 				 const Vector<T> &deflt) {
-  AipsrcVector<T> &gcl = init();
-  uInt n = Aipsrc::registerRC(keyword, gcl.ntlst);
-  gcl.tlst.resize(n);
-  find ((gcl.tlst)[n-1], keyword, defun, resun, deflt);
+  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  myp_p.tlst.resize(n);
+  find ((myp_p.tlst)[n-1], keyword, defun, resun, deflt);
   return n;
 }
 
 template <class T>
 const Vector<T> &AipsrcVector<T>::get(uInt keyword) {
-  AipsrcVector<T> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
-  return (gcl.tlst)[keyword-1];
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+  return (myp_p.tlst)[keyword-1];
 }
 
 template <class T>
 void AipsrcVector<T>::set(uInt keyword, const Vector<T> &deflt) {
-  AipsrcVector<T> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
-  (gcl.tlst)[keyword-1].resize(deflt.nelements());
-  (gcl.tlst)[keyword-1] = deflt;
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+  (myp_p.tlst)[keyword-1].resize(deflt.nelements());
+  (myp_p.tlst)[keyword-1] = deflt;
 }
 
 template <class T>
 void AipsrcVector<T>::save(uInt keyword) {
-  AipsrcVector<T> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostrstream oss;
-  Int n = ((gcl.tlst)[keyword-1]).nelements();
-  for (Int i=0; i<n; i++) oss << " " << ((gcl.tlst)[keyword-1])(i);
-  Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
-}
-
-// The following construction necessary since the gnu compiler does not (yet)
-// support static templated data.
-template <class T>
-AipsrcVector<T> &AipsrcVector<T>::init() {
-  static AipsrcVector<T> myp;
-  return myp;
+  Int n = ((myp_p.tlst)[keyword-1]).nelements();
+  for (Int i=0; i<n; i++) oss << " " << ((myp_p.tlst)[keyword-1])(i);
+  Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }

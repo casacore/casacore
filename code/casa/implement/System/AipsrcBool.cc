@@ -1,5 +1,5 @@
 //# AipsrcBool.cc: Specialisation for AipsrcValue<Bool>
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,21 +32,17 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/strstream.h>
 
-// The following global function defined for gcc 1.0.3b
-AipsrcValue<Bool> &AipsrcValueBoolInit();
-
-// This specialisation is necessary to be able to analyse all values that
-// are supposed to be True (strings starting with one of 'tTyY123456789')
+//# Data
+AipsrcValue<Bool> AipsrcValue<Bool>::myp_p;
 
 //# Constructor
-template <> AipsrcValue<Bool>::AipsrcValue() :
+AipsrcValue<Bool>::AipsrcValue() :
   tlst(0), ntlst(0) {}
 
 //# Destructor
-template <> AipsrcValue<Bool>::~AipsrcValue() {}
+AipsrcValue<Bool>::~AipsrcValue() {}
 
-template <> Bool AipsrcValue<Bool>::find(Bool &value,
-					 const String &keyword) {
+Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword) {
   const Regex tTrue("^([tT]|[yY]|[1-9])");
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
@@ -54,57 +50,36 @@ template <> Bool AipsrcValue<Bool>::find(Bool &value,
   return x;
 }
 
-template <> Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword, 
-					 const Bool &deflt) {
+Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword, 
+			     const Bool &deflt) {
   return (find(value, keyword) ? True : (value = deflt, False));
 }
 
-
-// The following construction necessary since the gnu compiler does not (yet)
-// support static templated data.
-// egcs 1.1.b requires it to be in front of its use.
-template <> AipsrcValue<Bool> &AipsrcValue<Bool>::init() {
-  // The following necessary for 1.0.3b gnu compiler; which cannot compile next
-  // line.
-  //  static AipsrcValue<Bool> myp;
-  return AipsrcValueBoolInit();
-}
-
-
-template <> uInt AipsrcValue<Bool>::registerRC(const String &keyword,
-					       const Bool &deflt) {
-  AipsrcValue<Bool> &gcl = init();
-  uInt n = Aipsrc::registerRC(keyword, gcl.ntlst);
-  gcl.tlst.resize(n);
-  find ((gcl.tlst)[n-1], keyword, deflt);
+uInt AipsrcValue<Bool>::registerRC(const String &keyword,
+				   const Bool &deflt) {
+  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  myp_p.tlst.resize(n);
+  find ((myp_p.tlst)[n-1], keyword, deflt);
   return n;
 }
 
-template <> const Bool &AipsrcValue<Bool>::get(uInt keyword) {
-  AipsrcValue<Bool> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
-  return (gcl.tlst)[keyword-1];
+const Bool &AipsrcValue<Bool>::get(uInt keyword) {
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+  return (myp_p.tlst)[keyword-1];
 }
 
-template <> void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
-  AipsrcValue<Bool> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
-  (gcl.tlst)[keyword-1] = deflt;
+void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+  (myp_p.tlst)[keyword-1] = deflt;
 }
 
-template <> void AipsrcValue<Bool>::save(uInt keyword) {
-  AipsrcValue<Bool> &gcl = init();
-  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
+void AipsrcValue<Bool>::save(uInt keyword) {
+  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostrstream oss;
-  if ((gcl.tlst)[keyword-1]) {
+  if ((myp_p.tlst)[keyword-1]) {
     oss << "true";
   } else {
     oss << "false";
   };
-  Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
-}
-
-AipsrcValue<Bool> &AipsrcValueBoolInit() {
-  static AipsrcValue<Bool> myp;
-  return myp;
+  Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
