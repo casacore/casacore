@@ -1,5 +1,5 @@
 //# ascii2Table.cc: This program loads an ASCII file into a table
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -48,7 +48,6 @@ void calc(Table&, const String&);
 
 main (int argc, char** argv) {
     try {
-	Bool virt = False;
 	if (argc < 3) {
 	    cout << ">>>" << endl;
 	    cout << "Needs arguments: filein tablename [column]" << endl;
