@@ -2608,3 +2608,4 @@
 09 533 src mv trial/implement/Lattices/RefRows.cc aips/implement/Tables/RefRows.cc
 09 533 src mv trial/implement/Lattices/test/tRefRows.cc aips/implement/Tables/test/tRefRows.cc
 09 537 src mv trial/implement/Guiutils/barchart.g aips/implement/Guiutils/barchart.g
+09 537 src mv aips/scripts/timer.g aips/implement/Utilities/timer.g
