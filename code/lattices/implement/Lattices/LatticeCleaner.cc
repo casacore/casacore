@@ -38,11 +38,16 @@
 #include <trial/Lattices/LatticeNavigator.h> 
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/TempLattice.h>
-#include <trial/Lattices/LatticeConvolver.h>
+#include <trial/Lattices/LatticeFFT.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCBox.h>
 #include <aips/Lattices/Slicer.h>
+
+#include <aips/Tasking/AppInfo.h>
+#include <trial/Tasking/ApplicationEnvironment.h>
+#include <trial/Tasking/PGPlotter.h>
+#include <trial/Tasking/ObjectController.h>
 
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
@@ -69,14 +74,13 @@ Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
   findMaxAbsLattice(psf, maxPsf, itsPositionPeakPsf);
   os << "Peak of PSF " << maxPsf << " at " << itsPositionPeakPsf+1
      << LogIO::POST;
-  itsPsf = new TempLattice<T>(psf.shape());
-  itsPsf->copyData(psf);
   return True;
 }
   
 
 template<class T> LatticeCleaner<T>::
-LatticeCleaner(const Lattice<T> & psf, const Lattice<T> &dirty)
+LatticeCleaner(const Lattice<T> & psf, const Lattice<T> &dirty):
+  itsChoose(True)
 {
   AlwaysAssert(validatePsf(psf), AipsError);
   // Check that everything is the same dimension and that none of the
@@ -85,11 +89,19 @@ LatticeCleaner(const Lattice<T> & psf, const Lattice<T> &dirty)
 	       AipsError);
   AlwaysAssert(dirty.shape().product() != 0, AipsError);
   // looks OK so make the convolver
-  itsPsf   = new TempLattice<T>(psf.shape());
+  
+  // We need to guess the memory use. For the moment, we'll assume
+  // that about 5 scales will be used, giving about 32 TempLattices
+  // in all.
+  itsMemoryMB=AppInfo::memoryInMB()/32;
+
+  itsPsf   = new TempLattice<T>(psf.shape(), itsMemoryMB);
   itsPsf->copyData(psf);
-  itsDirty = new TempLattice<T>(dirty.shape());
+  itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
-  itsConvolver=new LatticeConvolver<T>(psf);
+  itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);
+  itsXfr->copyData(LatticeExpr<Complex>(*itsPsf, 0.0));
+  LatticeFFT::cfft(*itsXfr);
 }
 
 template <class T> LatticeCleaner<T>::
@@ -97,7 +109,7 @@ LatticeCleaner(const LatticeCleaner<T> & other):
    itsCleanType(other.itsCleanType),
    itsDirty(other.itsDirty),
    itsPsf(other.itsPsf),
-   itsConvolver(other.itsConvolver)
+   itsXfr(other.itsXfr)
 {
 }
 
@@ -105,7 +117,7 @@ template<class T> LatticeCleaner<T> & LatticeCleaner<T>::
 operator=(const LatticeCleaner<T> & other) {
   if (this != &other) {
     itsCleanType = other.itsCleanType;
-    itsConvolver = other.itsConvolver;
+    itsXfr = other.itsXfr;
     itsPsf = other.itsPsf;
     itsDirty = other.itsDirty;
   }
@@ -118,7 +130,7 @@ template<class T> LatticeCleaner<T>::
   destroyScales();
   if(itsPsf) delete itsPsf;
   if(itsDirty) delete itsDirty;
-  if(itsConvolver) delete itsConvolver;
+  if(itsXfr) delete itsXfr;
 }
 
 // Set up the control parameters
@@ -139,6 +151,7 @@ Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
 template <class T>
 Bool LatticeCleaner<T>::clean(Lattice<T>& model)
 {
+
   AlwaysAssert(model.shape()==itsPsf->shape(), AipsError);
 
   LogIO os(LogOrigin("LatticeCleaner", "clean()", WHERE));
@@ -341,6 +354,8 @@ Bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc)
 
 }
   
+// We calculate all the scales and the corresponding convolutions
+// and cross convolutions.
 template<class T>
 Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
 {
@@ -353,54 +368,70 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
 
   AlwaysAssert(itsDirty, AipsError);
   AlwaysAssert(itsPsf, AipsError);
-  
+
+  TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
+
+  PtrBlock<TempLattice<Complex> *> scaleXfr(itsNscales);
+
   for (Int scale=0; scale<itsNscales;scale++) {
     os << "Calculating image for scale " << scale+1 << LogIO::POST;
-    itsScales[scale] = new TempLattice<T>(itsDirty->shape());
+    itsScales[scale] = new TempLattice<T>(itsDirty->shape(),
+					  itsMemoryMB);
     AlwaysAssert(itsScales[scale], AipsError);
-    itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape());
+    itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
+						   itsMemoryMB);
     AlwaysAssert(itsDirtyConvScales[scale], AipsError);
-    
-    // We need to store the Psf convolved with each scale, and
-    // the dirty image convolved with that. This part could
-    // be optimized considerably.
     
     // First make the scale
     makeScale(*itsScales[scale], scaleSizes(scale));
+    scaleXfr[scale] = new TempLattice<Complex> (itsScales[scale]->shape(),
+						itsMemoryMB);
+    // Now store the XFR
+    scaleXfr[scale]->copyData(LatticeExpr<Complex>(*itsScales[scale], 0.0));
+    LatticeFFT::cfft(*scaleXfr[scale], True);
   }
     
   itsPsfConvScales.resize((itsNscales+1)*(itsNscales+1));
   
   // Now we can do all the convolutions
+  TempLattice<Complex> cWork(itsDirty->shape(), itsMemoryMB);
   for (scale=0; scale<itsNscales;scale++) {
     os << "Calculating convolutions for scale " << scale+1 << LogIO::POST;
-    itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape());
+    itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
+						 itsMemoryMB);
     AlwaysAssert(itsPsfConvScales[scale], AipsError);
     
     // PSF * PSF * scale
-    LatticeConvolver<T> scaleConvolver(*itsScales[scale]);
-    itsConvolver->circular(*itsPsfConvScales[scale], *itsPsf);
-    scaleConvolver.circular(*itsPsfConvScales[scale]);
+    LatticeExpr<Complex> ppsExpr((*itsXfr)*(*scaleXfr[scale])*conj(*scaleXfr[scale]));
+    cWork.copyData(ppsExpr);
+    LatticeFFT::cfft(cWork);
+    LatticeExpr<Float> realWork(real(cWork));
+    itsPsfConvScales[scale]->copyData(realWork);
     
     // Dirty * PSF * scale
-    itsConvolver->circular(*itsDirtyConvScales[scale], *itsDirty);
-    scaleConvolver.circular(*itsDirtyConvScales[scale]);
+    LatticeExpr<Complex> dpsExpr((*itsXfr)*(dirtyFT)*conj(*scaleXfr[scale]));
+    cWork.copyData(dpsExpr);
+    LatticeFFT::cfft(cWork);
+    itsDirtyConvScales[scale]->copyData(realWork);
     for (Int otherscale=scale;otherscale<itsNscales;otherscale++) {
       
       AlwaysAssert(index(scale, otherscale)<Int(itsPsfConvScales.nelements()),
 		   AipsError);
       
       // PSF * PSF * scale * otherscale
-      LatticeConvolver<T> otherscaleConvolver(*itsScales[otherscale]);
       itsPsfConvScales[index(scale,otherscale)] =
-	new TempLattice<T>(itsDirty->shape());
-      
-      AlwaysAssert(itsPsfConvScales[index(scale,otherscale)], AipsError);
-      otherscaleConvolver.circular(*itsPsfConvScales[index(scale,otherscale)],
-				   *itsPsfConvScales[scale]);
+	new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
+      LatticeExpr<Complex>
+	ppsoExpr((*itsXfr)*(*scaleXfr[index(scale,otherscale)])*conj(*scaleXfr[scale]));
+      cWork.copyData(ppsoExpr);
+      LatticeFFT::cfft(cWork);
+      itsPsfConvScales[index(scale,otherscale)]->copyData(realWork);
     }
   }
   itsScalesValid=True;
+  for(scale=0; scale<itsNscales;scale++) {
+    if(scaleXfr[scale]) delete scaleXfr[scale];
+  }
   return True;
 }
   
@@ -469,3 +500,31 @@ Bool LatticeCleaner<T>::destroyScales()
   return True;
 }
 
+template<class T>
+Bool LatticeCleaner<T>::stopnow() {
+  if(itsChoose) {
+    LogIO os(LogOrigin("LatticeCleaner", "stopnow()", WHERE));
+    Vector<String> choices(2);
+    choices(0)="Continue";
+    choices(1)="Stop Now";
+    choices(2)="Don't ask again";
+    String choice =
+      ApplicationEnvironment::choice("Do you want to continue or stop?",
+				     choices);
+    if (choice==choices(0)) {
+      return False;
+    }
+    else if (choice==choices(2)) {
+      itsChoose=False;
+      os << "Continuing: won't ask again" << LogIO::POST;
+      return False;
+    }
+    else {
+      os << "Lattice clean stopped at user request" << LogIO::POST;
+      return True;
+    }
+  }
+  else {
+    return False;
+  }
+}
