@@ -88,7 +88,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend class MBaseline::Convert;
+  friend MBaseline::Convert;
   
   //# Constructors
   // Default constructor
