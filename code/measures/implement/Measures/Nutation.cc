@@ -162,15 +162,8 @@ void Nutation::calcNut(Double t) {
     default:
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       if (MeasDetail::get(Nutation::B_UseIERS)) {
-	if (!MeasIERS::get(MeasIERS::MEASURED, MeasIERS::dPsi,
-			   t, dPsi) ||
-	    !MeasIERS::get(MeasIERS::MEASURED, MeasIERS::dEpsilon,
-			   t, dEps)) {
-	  //  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
-	  // ///		       "No IERS nutation data available"));
-	};
-	dPsi *= C::arcsec;
-	dEps *= C::arcsec;
+	dPsi = MeasTable::dPsiEps(0, t);
+	dEps = MeasTable::dPsiEps(1, t);
       };
       break;
       };
