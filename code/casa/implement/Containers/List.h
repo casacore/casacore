@@ -90,10 +90,10 @@ public:
 
 private:
     modification mod;
-    Link<t> *ocur;
     Link<t> *oprev;
-    Link<t> *ncur;
+    Link<t> *ocur;
     Link<t> *nprev;
+    Link<t> *ncur;
     int off;
     int otherOff;
 
@@ -454,7 +454,7 @@ public:
 	AlwaysAssert(isValid(),InvalidIterError);
 	//# Traps a negative offset because aparently some compilers
 	//# do not handle modulo of a negative number correctly.
-	toffset = offset < 0 && -offset > curPos ? -((- curPos - offset) % ((*container_).length + 1)) 
+	toffset = offset < 0 && -offset > Int(curPos) ? -((- curPos - offset) % ((*container_).length + 1)) 
                                            : (curPos + offset) % ((*container_).length + 1);
 	return(pos(toffset >= 0 ? toffset : (*container_).length + toffset + 1));}
 
@@ -519,10 +519,10 @@ public:
 
 protected:
 
-    Link<t> *prev;
     Link<t> *cur;
-    List<t> *container_;
+    Link<t> *prev;
     uInt curPos;
+    List<t> *container_;
 };
 
 //# Initialize the List type() rtti functions
