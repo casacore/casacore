@@ -274,6 +274,8 @@ IAUR(gmst82)(const Double &dj1, const Double &dj2);
 extern "C" Double 
 IAUR(ee00a)(const Double &date1, const Double &date2);
 extern "C" Double 
+IAUR(eect00)(const Double &date1, const Double &date2);
+extern "C" Double 
 IAUR(eqeq94)(const Double &date1, const Double &date2);
 extern "C" void 
 IAUR(pnm00a)(const Double &date1, const Double &date2, Double *rbpn);
