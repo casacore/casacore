@@ -824,19 +824,19 @@ void NewMSFitsInput::fillAntennaTable(BinaryTable& bt)
     ant.dishDiameter().put(row,diameter); 
     String mount;
     switch (mountType(i)) {
-    case 0: mount="alt-az"; break;
-    case 1: mount="equatorial"; break;
+    case 0: mount="ALT-AZ"; break;
+    case 1: mount="EQUATORIAL"; break;
     case 2: mount="X-Y"; break;
-    case 3: mount="orbiting"; break;
-    case 4: mount="bizarre"; break;
-    default: mount="unknown"; break;
+    case 3: mount="ORBITING"; break;
+    case 4: mount="BIZARRE"; break;
+    default: mount="UNKNOWN"; break;
     }
     ant.flagRow().put(row,False);
     ant.mount().put(row,mount);
     ant.name().put(row,name(i));
     Vector<Double> offsets(3); offsets=0.; offsets(0)=offset(i);
     ant.offset().put(row,offsets);
-    ant.station().put(row,"unknown");
+    ant.station().put(row,name(i));
     ant.type().put(row,"GROUND-BASED");
     ant.position().put(row,arrayXYZ+antXYZ(i));
     // store the angle for use in the feed table
