@@ -204,6 +204,8 @@ inline Float cbrt(Float val) {return Float(cbrt(Double(val)));}
 Bool near(uInt val1, uInt val2, Double tol = 1.0e-5);
 Bool near(Int val1, Int val2, Double tol = 1.0e-5);
 Bool near(Float val1, Float val2, Double tol = 1.0e-5);
+Bool near(Float val1, Double val2, Double tol = 1.0e-5);
+Bool near(Double val1, Float val2, Double tol = 1.0e-5);
 Bool near(Double val1, Double val2, Double tol = 1.0e-13);
 // </group>
 
@@ -214,6 +216,10 @@ Bool near(Double val1, Double val2, Double tol = 1.0e-13);
 inline Bool allNear(uInt val1, uInt val2, Double tol = 1.0e-5)
     { return near(val1, val2, tol); }
 inline Bool allNear(Int val1, Int val2, Double tol = 1.0e-5)
+    { return near(val1, val2, tol); }
+inline Bool allNear(Float val1, Double val2, Double tol = 1.0e-5)
+    { return near(val1, val2, tol); }
+inline Bool allNear(Double val1, Float val2, Double tol = 1.0e-5)
     { return near(val1, val2, tol); }
 inline Bool allNear(Float val1, Float val2, Double tol = 1.0e-5)
     { return near(val1, val2, tol); }
@@ -227,6 +233,8 @@ inline Bool allNear(Double val1, Double val2, Double tol = 1.0e-13)
 Bool nearAbs(uInt val1, uInt val2, Double tol = 1.0e-5);
 Bool nearAbs(Int val1, Int val2, Double tol = 1.0e-5);
 Bool nearAbs(Float val1, Float val2, Double tol = 1.0e-5);
+Bool nearAbs(Float val1, Double val2, Double tol = 1.0e-5);
+Bool nearAbs(Double val1, Float val2, Double tol = 1.0e-5);
 Bool nearAbs(Double val1, Double val2, Double tol = 1.0e-13);
 // </group>
 
@@ -239,6 +247,10 @@ inline Bool allNearAbs(uInt val1, uInt val2, uInt tol = 1)
 inline Bool allNearAbs(Int val1, Int val2, Int tol = 1)
     { return nearAbs(val1, val2, tol); }
 inline Bool allNearAbs(Float val1, Float val2, Double tol = 1.0e-5)
+    { return nearAbs(val1, val2, tol); }
+inline Bool allNearAbs(Float val1, Double val2, Double tol = 1.0e-5)
+    { return nearAbs(val1, val2, tol); }
+inline Bool allNearAbs(Double val1, Float val2, Double tol = 1.0e-5)
     { return nearAbs(val1, val2, tol); }
 inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13)
     { return nearAbs(val1, val2, tol); }
