@@ -244,9 +244,11 @@ public:
 
     // Clear the cache from the given slot on.
     // By default the entire cache is cleared.
-    // It will flush and remove the buckets in the cleared part.
+    // It will remove the buckets in the cleared part.
+    // If wanted and needed, the buckets are flushed to the file
+    // before removing them.
     // It can be used to enforce rereading buckets from the file.
-    void clear (uInt fromSlot = 0);
+    void clear (uInt fromSlot = 0, Bool doFlush = True);
 
     // Resize the cache.
     // When the cache gets smaller, the latter buckets are cached out.

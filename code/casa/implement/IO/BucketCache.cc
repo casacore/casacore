@@ -99,9 +99,11 @@ BucketCache::~BucketCache()
     delete [] its_Buffer;
 }
 
-void BucketCache::clear (uInt fromSlot)
+void BucketCache::clear (uInt fromSlot, Bool doFlush)
 {
-    flush (fromSlot);
+    if (doFlush) {
+        flush (fromSlot);
+    }
     for (uInt i=fromSlot; i<its_CacheSizeUsed; i++) {
 	its_DeleteCallBack (its_Owner, its_Cache[i]);
 	its_Cache[i] = 0;
