@@ -35,6 +35,9 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Array.h>
 
+#include <fstream.h>
+
+
 // <summary>
 // A two dimension interpolator for Lattices, Matrices, or Arrays
 // </summary>
@@ -98,7 +101,7 @@ template<class T> class Interpolate2D
     CUBIC};
  
   // Constructor
-  Interpolate2D(Interpolate2D::Method method);
+  Interpolate2D();
 
   // Copy constructor (copy semantics)
   Interpolate2D(const Interpolate2D& other);
@@ -113,36 +116,42 @@ template<class T> class Interpolate2D
   // <group>
   // do one interpolation, supply Matrix
   Bool  interp(T& result, const Vector<Double>& where, 
-               const Matrix<T>& data);
+               const Matrix<T>& data, Interpolate2D::Method method);
+
+  // do one interpolation, supply Matrix and mask (True is good)
+  Bool  interp(T& result, const Vector<Double>& where,
+               const Matrix<T>& data, const Matrix<Bool>& mask,
+               Interpolate2D::Method method);
 
   // do one interpolation, supply Array
-  Bool interp(T& result, const Vector<Double>& where, const Array<T>& data);
+  Bool interp(T& result, const Vector<Double>& where, 
+              const Array<T>& data, Interpolate2D::Method method);
 
-  // do many interpolations, supply Matrix
-//Bool interp(Vector<T>& result,  Interpolate2D::Method method, 
-//              const Block<Vector<Double> >& where, const Matrix<T>& data);
-
-  // do many interpolations, supply Array
-//Bool interp(Vector<T>& result, Interpolate2D::Method method, 
-//              const Block< Vector<Double> >& where, const Array<T>& data);
-  // </group>
+  // do one interpolation, supply Array and mask (True is good)
+  Bool interp(T& result, const Vector<Double>& where, 
+              const Array<T>& data, const Array<Bool>& mask,
+              Interpolate2D::Method method);
 
 // Convert string ("nearest", "linear", "cubic") to Method
 // The first 3 letters will do.
   static Interpolate2D<T>::Method stringToMethod(const String& method);
 
+//  void location (IPosition& nearLoc, IPosition& loc, IPosition& min, IPosition& max) const;
+
 
 private:
 
-  Bool ok();
-  
+  // Are any of the mask pixels bad  
+  Bool anyBadMaskPixels ();
+
   // checks that "where" is sufficiently within data, considering itsOrder;
   // If not, return false
-  Bool check(const Vector<Double>& where, const Matrix<T>& data);
-
+  Bool check(const Vector<Double>& where, const IPosition& shape,
+             Interpolate2D<T>::Method method);
 
   // nearest neighbour interpolation
   Bool interpNearest(T& result, const Vector<Double>& where, const Matrix<T>& data);
+
   // bi-linear interpolation
   Bool interpLinear(T& result, const Vector<Double>& where, const Matrix<T>& data);
 
@@ -153,19 +162,14 @@ private:
   void bcucof (Vector<T> y, Vector<T> y1, Vector<T> y2, Vector<T> y12,
 	       Double d1, Double d2, Matrix<T> c);
 
-  // initialize temporarys
-  void initArrays();
-
 //
   Interpolate2D<T>::Method itsMethod;
-  mutable Int its1I, its1J;                      // interp1
-  mutable Double its1T, its1U;                   // interp1
-  mutable Int its2I, its2J;                      // interp2
-  mutable Double its2T, its2U;                   // interp2
-  mutable Vector<T> itsY, itsY1, itsY2, itsY12;  // interp2
-  mutable Matrix<T> itsC;                        // interp2
-  mutable Vector<T> itsCL, itsX;                 // bcucof 
-
+//
+  Int itsI, itsJ;
+  Int itsMinI, itsMaxI, itsMinJ, itsMaxJ;
+  Int itsII, itsJJ;
+//
+  const Matrix<Bool>* itsMaskPtr;
 };
 
 #endif
