@@ -1,4 +1,4 @@
-//# LatticeGram.cc: Grammar for lattice expressions
+//# ImageExprGram.cc: Grammar for image expressions
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-// LatticeGram; grammar for lattice command lines
+// ImageExprGram; grammar for image command lines
 
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.
@@ -45,62 +45,62 @@ extern "C" char *__builtin_alloca(int);
 #endif
 
 #include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LatticeGram.h>
-#include <trial/Lattices/LatticeParse.h>    // routines used by bison actions
+#include <trial/Images/ImageExprGram.h>
+#include <trial/Images/ImageExprParse.h>    // routines used by bison actions
 #include <aips/Exceptions/Error.h>
 
-#include <LatticeGram.ycc>                  // flex output
-#include <LatticeGram.lcc>                  // bison output
+#include <ImageExprGram.ycc>                  // flex output
+#include <ImageExprGram.lcc>                  // bison output
 
 
 //# Declare a file global pointer to a char* for the input string.
-static const char*  strpLatticeGram = 0;
-static Int          posLatticeGram = 0;
+static const char*  strpImageExprGram = 0;
+static Int          posImageExprGram = 0;
 
 
 // Define the yywrap function for flex.
-int LatticeGramwrap()
+int ImageExprGramwrap()
 {
     return 1;
 }
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int latticeGramParseCommand (const String& command)
+int imageExprGramParseCommand (const String& command)
 {
-    LatticeGramrestart (LatticeGramin);
+    ImageExprGramrestart (ImageExprGramin);
     yy_start = 1;
-    strpLatticeGram = command.chars();     // get pointer to command string
-    posLatticeGram  = 0;                   // initialize string position
-    return LatticeGramparse();             // parse command string
+    strpImageExprGram = command.chars();     // get pointer to command string
+    posImageExprGram  = 0;                   // initialize string position
+    return ImageExprGramparse();             // parse command string
 }
 
 //# Give the string position.
-Int& latticeGramPosition()
+Int& imageExprGramPosition()
 {
-    return posLatticeGram;
+    return posImageExprGram;
 }
 
 //# Get the next input characters for flex.
-int latticeGramInput (char* buf, int max_size)
+int imageExprGramInput (char* buf, int max_size)
 {
     int nr=0;
-    while (*strpLatticeGram != 0) {
+    while (*strpImageExprGram != 0) {
 	if (nr >= max_size) {
 	    break;                         // get max. max_size char.
 	}
-	buf[nr++] = *strpLatticeGram++;
+	buf[nr++] = *strpImageExprGram++;
     }
     return nr;
 }
 
-void LatticeGramerror (char*)
+void ImageExprGramerror (char*)
 {
-    throw (AipsError ("Lattice Expression: Parse error at or near '" +
+    throw (AipsError ("Image Expression: Parse error at or near '" +
 		      String(yytext) + "'"));
 }
 
-String latticeGramRemoveEscapes (const String& in)
+String imageExprGramRemoveEscapes (const String& in)
 {
     String out;
     int leng = in.length();
@@ -109,6 +109,27 @@ String latticeGramRemoveEscapes (const String& in)
 	    i++;
 	}
 	out += in[i];
+    }
+    return out;
+}
+
+String imageExprGramRemoveQuotes (const String& in)
+{
+    //# A string is formed as "..."'...''...' etc.
+    //# All ... parts will be extracted and concatenated into an output string.
+    String out;
+    String str = in;
+    int leng = str.length();
+    int pos = 0;
+    while (pos < leng) {
+	//# Find next occurrence of leading ' or ""
+	int inx = str.index (str[pos], pos+1);
+	if (inx < 0) {
+	    throw (AipsError ("ImageExprParse - Ill-formed quoted string: " +
+			      str));
+	}
+	out += str.at (pos+1, inx-pos-1);             // add substring
+	pos = inx+1;
     }
     return out;
 }
