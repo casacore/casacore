@@ -34,6 +34,7 @@
 #include <aips/OS/Directory.h>
 #include <aips/OS/SymLink.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Tables/Table.h>
 
 #include <aips/Logging/LogMessage.h>
 #include <aips/Logging/LogSink.h>
@@ -75,12 +76,6 @@ Bool NewFile::valueOK(const String &value, String &error) const
     File thefile(value);
     if (thefile.exists()) {
 	String text = String("File '") + value + "' already exists. Remove it?";
-	text += "\n\n"
-	  "A current limitation is that if some other process has the\n"
-	  "file open the removal may only partly succeed. This is most\n"
-	  "apt to happen with AIPS++ data and calibration tables, less so\n"
-	  "for FITS and other 'plain' files. This problem shall be fixed\n"
-	  "in the next release.";
 	  
 	Vector<String> choices(2);
 	choices(0) = "no";
@@ -95,9 +90,20 @@ Bool NewFile::valueOK(const String &value, String &error) const
 		    rfile.remove();
 		    removed = True;
 		} else if (thefile.isDirectory()) {
-		    Directory dfile = thefile;
-		    dfile.removeRecursive();
-		    removed = True;
+		    // Assume that directories are tables.
+		    if (! Table::isWritable(value)) {
+			removed = False;
+			extra_error = "Table is not writable!";
+		    } else {
+			Table table(value, Table::Update);
+			if (table.isMultiUsed()) {
+			    removed = False;
+			    extra_error = "The table is already in use!";
+			} else {
+			    table.markForDelete();
+			    removed = True;
+			}
+		    }
 		} else if (thefile.isSymLink()) {
 		    SymLink sfile = thefile;
 		    sfile.remove();
