@@ -72,7 +72,7 @@
   fi
 
 # Get the work directory.
-  PGMRDIR=`pwd | sed -e 's#.*/aips++/#aips++/#'`
+  PGMRDIR=`pwd | sed -e 's#.*/code/#code/#'`
 
 # Make sure we've got something sensible.
   case "$PGMRDIR" in
@@ -81,6 +81,7 @@
      exit 1
      ;;
   esac
+  PGMRDIR=aips++/$PGMRDIR
 
 # Get file names.
   REMOTETAR=a.tmp.tar
