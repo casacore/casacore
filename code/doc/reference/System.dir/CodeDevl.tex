@@ -3209,37 +3209,45 @@ Do a duplicates template test on templates files in the \aipspp\ code tree.
 
 \noindent
 The \exe{UPdup} script executes the \exe{duplicates} program on templates
-files in the \aipspp\ system. It checks each package against the standard
-\exe{trial} and \exe{aips} packages, creating a list with duplicates in the
-\exe{<type>.dup} file. This output can be used to check if templates can
-e.g. be safely be moved from some local test or application templates file to
-one of the standard \exe{aips} or \exe{trial} packages. An \exe{-s} switch is
+files in the \aipspp\ system. It checks the repositories in the casa
+packages against each other; checks the repositories and test
+templates for the casa packages, and it checks all other packages
+against the standard \exe{casa} packages, creating a list with
+duplicates in the \exe{<type>.dup} file.
+This output can be used to check if templates can
+e.g. safely be moved from some local test or application templates file to
+one of the standard \exe{casa} packages. An \exe{-s} switch is
 available to run in {\em system} mode, which will only indicate duplicates
-that are a problem as it is. \\
-The normal operation is to check \code{aips} package templates against its
-repository; the check \code{trial} package templates against its and aips'
-repository; to check all other package templates files agains aips' and
-trial's repository templates.
+that in general could produce compilation and/or linking problems. \\
 
+The package handling is done with the aid of in-built lists of
+'standard' packages (\exe{casapack}), packages that should be
+skipped (\exe{skippack}) and packages that should each be checked
+against the standard \exe{casa} packages (\exe{checkpack}). The
+defaults can be overwritten by specifying one or more of these 3
+variables in the  \exe{<type>.pak} file. After each run the used
+variables are saved in the \exe{<type>.pak} file. A template can
+easily be derived by running with the \exe{-n} switch.
 
 \subsubsection*{Options}
 
 \begin{description}
 \item[\code{\exe{-s}}]
     Execute in {\em system} mode. I.e. only show duplicates that are a
-    problem.
-\item[\code{\exe{UPdup.packages}}]
-    If the \exe{UPdup.packages} file is present in the directory from which
+    real problem.
+\item[\code{\exe{<type>.pak}}]
+    If the \exe{<type>.pak} file is present in the directory from which
     the \exe{UPdup} script is run, the checking behaviour can be
     influenced. Each line in the file contains a series of package names. The
-    first is the indicator for the package to be checked, the rest are
-    packages, in addition to aips and trial, which repositories are used in
-    the checking process. I.e. if \exe{UPdup.packages} contains a line:
+    name follwing a '//' field gives the name of the variable to be
+    overwritten, the rest are package names. I.e. if
+    \exe{<type>.pak} contains a line:
 \begin{verbatim}
-  atnf trialdisplay
+  // checkpack atnf trialdisplay
 \end{verbatim}
-    then the duplicates check for the \code{atnf} package will be aginat
-    trial, aips and trialdisplay.
+    then the duplicates check for the \code{atnf} and
+    \code{trialdisplay} packages only will be done against the casa
+    base packages.
 \end{description}
 
 \subsubsection*{Examples}
@@ -3249,16 +3257,16 @@ UPdup -h
 Usage:   UPdup [-s] [-c] [-r] [-u] [-d] [-n] <typ>
   Determine the template duplicates between the package and
   application/test programs. The result will be in <typ>.dup.
-Uses:    <typ>.def
-Creates: <typ>.dup
+Uses:    <typ>.def   <typ>.pak
+Creates: <typ>.dup   <type.pak
   -s show only the system template files that can cause
      problems in the aips++ system
 
   UPdup -s -u
   Assuming <typ> as 'xc'.
   Getting info...
-  Starting package aips...
-  Starting package trial...
+  Starting package display...
+  ...
 \end{verbatim}
 \ldots
 
