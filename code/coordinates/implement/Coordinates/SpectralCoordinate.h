@@ -338,11 +338,11 @@ public:
     // is active in the <src>pixelToVelocity</src> functions (because internally
     // the use <src>toPixel</src>) but not in the <src>frequencyToVelocity</src> functions.
     // <group>  
-    Bool velocityToPixel (Double& pixel, Double velocity);
-    Bool velocityToPixel (Vector<Double>& pixel, const Vector<Double>& velocity);
+    Bool velocityToPixel (Double& pixel, Double velocity) const;
+    Bool velocityToPixel (Vector<Double>& pixel, const Vector<Double>& velocity) const;
 //
-    Bool velocityToFrequency (Double& frequency, Double velocity);
-    Bool velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity);
+    Bool velocityToFrequency (Double& frequency, Double velocity) const;
+    Bool velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity) const;
     // </group>
 
 
