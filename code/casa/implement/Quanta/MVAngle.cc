@@ -201,7 +201,7 @@ String MVAngle::string(const MVAngle::Format &form) const {
 const Double &MVAngle::timeZone() {
   if (MVAngle::tzone < -100.0) {
     String val;
-    if (Aipsrc::find(val, "time.tzoffset")) {
+    if (Aipsrc::find(val, "system.time.tzoffset")) {
       MUString in(val);
       Double s = in.getSign();
       Double r = in.getuInt();
