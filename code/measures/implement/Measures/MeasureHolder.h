@@ -139,18 +139,13 @@ public:
   // <li> AipsError if holder empty
   // <li> AipsError if holder contains wrong Measure
   // </thrown>
-  // Note that the following can be used once there is dynamic_cast
-  // const MDirection &asMDirection() const;
-  //
-  // etc.
-  // <group>
   const Measure &asMeasure() const;
-  MDirection asMDirection() const;
-  MDoppler asMDoppler() const;
-  MEpoch asMEpoch() const;
-  MFrequency asMFrequency() const;
-  MPosition asMPosition() const;
-  MRadialVelocity asMRadialVelocity() const;
+  const MDirection &asMDirection();
+  const MDoppler &asMDoppler();
+  const MEpoch &asMEpoch();
+  const MFrequency &asMFrequency();
+  const MPosition &asMPosition();
+  const MRadialVelocity &asMRadialVelocity();
   // </group>
   // Create a Measure from a record
   // <group>
@@ -169,6 +164,13 @@ private:
 //# Data Members
   // Pointer to a Measure
   PtrHolder<Measure> hold;
+  // The following list can disappear once dynamic_cast available
+  PtrHolder<MDirection> hdir;
+  PtrHolder<MDoppler> hdop;
+  PtrHolder<MEpoch> hepo;
+  PtrHolder<MFrequency> hfrq;
+  PtrHolder<MPosition> hpos;
+  PtrHolder<MRadialVelocity> hrad;
 
 };
 

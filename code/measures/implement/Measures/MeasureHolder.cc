@@ -45,13 +45,16 @@
 #include <aips/Glish.h>
 
 //# Constructors
-MeasureHolder::MeasureHolder() : hold() {};
+MeasureHolder::MeasureHolder() : hold(),
+  hdir(), hdop(), hepo(), hfrq(), hpos(), hrad() {};
 
-MeasureHolder::MeasureHolder(const Measure &in) : hold(in.clone()) {}
+MeasureHolder::MeasureHolder(const Measure &in) : hold(in.clone()),
+    hdir(), hdop(), hepo(), hfrq(), hpos(), hrad() {}
 
-MeasureHolder::MeasureHolder(const MeasureHolder &other) : hold() {
-  if (other.hold.ptr()) hold.set(other.hold.ptr()->clone());
-}
+MeasureHolder::MeasureHolder(const MeasureHolder &other) : hold(),
+      hdir(), hdop(), hepo(), hfrq(), hpos(), hrad() {
+	if (other.hold.ptr()) hold.set(other.hold.ptr()->clone());
+      }
 
 //# Destructor
 MeasureHolder::~MeasureHolder() {}
@@ -106,58 +109,58 @@ const Measure &MeasureHolder::asMeasure() const {
   return *hold.ptr();
 }
 
-/// const MDirection &MeasureHolder::asMDirection() const {
-MDirection MeasureHolder::asMDirection() const {
+const MDirection &MeasureHolder::asMDirection() {
   if (!hold.ptr() || !isMDirection()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDirection"));
   };
   /// return dynamic_cast<MDirection &>(*hold.ptr());
-  return MDirection(hold.ptr());
+  hdir.set(new MDirection(hold.ptr()));
+  return *hdir.ptr();
 }
 
-/// const MDoppler &MeasureHolder::asMDoppler() const {
-MDoppler MeasureHolder::asMDoppler() const {
+const MDoppler &MeasureHolder::asMDoppler() {
   if (!hold.ptr() || !isMDoppler()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDoppler"));
   };
   /// return dynamic_cast<MDoppler &>(*hold.ptr());
-  return MDoppler(hold.ptr());
+  hdop.set(new MDoppler(hold.ptr()));
+  return *hdop.ptr();
 }
 
-/// const MEpoch &MeasureHolder::asMEpoch() const {
-MEpoch MeasureHolder::asMEpoch() const {
+const MEpoch &MeasureHolder::asMEpoch() {
   if (!hold.ptr() || !isMEpoch()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMEpoch"));
   };
   /// return dynamic_cast<MEpoch &>(*hold.ptr());
-  return MEpoch(hold.ptr());
+  hepo.set(new MEpoch(hold.ptr()));
+  return *hepo.ptr();
 }
 
-/// const MFrequency &MeasureHolder::asMFrequency() const {
-MFrequency MeasureHolder::asMFrequency() const {
+const MFrequency &MeasureHolder::asMFrequency() {
   if (!hold.ptr() || !isMFrequency()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMFrequency"));
   };
   /// return dynamic_cast<MFrequency &>(*hold.ptr());
-  return MFrequency(hold.ptr());
+  hfrq.set(new MFrequency(hold.ptr()));
+  return *hfrq.ptr();
 }
 
-/// const MPosition &MeasureHolder::asMPosition() const {
-MPosition MeasureHolder::asMPosition() const {
+const MPosition &MeasureHolder::asMPosition() {
   if (!hold.ptr() || !isMPosition()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMPosition"));
   };
   /// return dynamic_cast<MPosition &>(*hold.ptr());
-  return MPosition(hold.ptr());
+  hpos.set(new MPosition(hold.ptr()));
+  return *hpos.ptr();
 }
 
-/// const MRadialVelocity &MeasureHolder::asMRadialVelocity() const {
-MRadialVelocity MeasureHolder::asMRadialVelocity() const {
+const MRadialVelocity &MeasureHolder::asMRadialVelocity() {
   if (!hold.ptr() || !isMRadialVelocity()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMRadialVelocity"));
   };
   /// return dynamic_cast<MRadialVelocity &>(*hold.ptr());
-  return MRadialVelocity(hold.ptr());
+  hrad.set(new MRadialVelocity(hold.ptr()));
+  return *hrad.ptr();
 }
 
 Bool MeasureHolder::fromRecord(String &error,
