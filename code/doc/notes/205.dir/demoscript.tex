@@ -60,25 +60,18 @@ AIPS++ (aipsrc variables)
 \begin{verbatim}
 a:=1:1000
 b:=sin(pi*(a/360)^2)
-a, b
-\end{verbatim}
-\item Control of output:
-\begin{verbatim}
-a, b
-system.print.limit:=10
-b::print.limit:=50
-a, b
+print a[1:10] , b[1:10]
 \end{verbatim}
 \item Plotting: 
 \begin{verbatim}
-dp.plotxy(a, b, "squares")
+dp.plotxy(a, b, "Chirp")
 \end{verbatim}
 \item Servers and FFTs:
 \begin{verbatim}
 fft:=fftserver()
 c:=fft.realtocomplexfft(b)
 dp.clear()
-dp.ploty(abs(c))
+dp.ploty(abs(c), "FT of Chirp")
 \end{verbatim}
 Zoom on plot to show detail.
 \item Aipsview. Make and display an array:
@@ -96,41 +89,45 @@ dd.array(a)
 \begin{verbatim}
 dc.gui()
 \end{verbatim}
-\item Set up a MeasurementSet: 
+\item Set up a MeasurementSet by using imagerdemo to set the inputs.
 \begin{verbatim}
-imagedemo(T)
+imagerdemo(T)
 di.init_ms()
 \end{verbatim}
 \item Browse the MS: 
 \begin{verbatim}
 t:=table('MS')
 t.browse()
+t.close()
 \end{verbatim}
-\item Reweight the data for one antenna
+\item To demonstrate ad hoc processing, rescale the length
+of all base-lines to antenna 4:
 \begin{verbatim}
 t:=table('MS', read_only=F)
 t.colnames()
 st:=t.query('ANTENNA1==4 || ANTENNA2==4')
 st.nrows()
 t.nrows()
-w:=st.getcol('WEIGHT')
-w[w>0]*:=2.0
-st.putcol('WEIGHT', w)
+uvw:=st.getcol('UVW')
+uvw*:=0.95
+st.putcol('UVW', uvw)
 st.flush()
+t.close();
 \end{verbatim}
-\item Make an image: 
+\item Now demonstrate the synthesis processing: first deconvolve an an image: 
 \begin{verbatim}
 di.inputs()
-di.npix:=[256,256] # Or whatever
-di.weight_ms() # Robust weighting
-di.deconvolve()
+di.npix:=[256,256]            # Could be greater
+di.npol:=4                    # I,Q,U,V images
+di.weight_ms()                # Robust weighting
+di.deconvolve()               # Does CLEAN only deconvolution
 \end{verbatim}
 \item Display it:
 \begin{verbatim}
 di.display()
 \end{verbatim}
 \item Set levels on aipsview (-0.03, 0.05 works). Go through all planes. Show the axes.
-\item Do a selfcal.
+\item Now, do a selfcal.
 \begin{itemize}
 \item Set a threshold: 
 \begin{verbatim}
@@ -151,13 +148,14 @@ di.solve_cal()
 image: 
 \begin{verbatim}
 di.images.restored:='restored.1'
+di.deconvolve()               # Does CLEAN only deconvolution
 \end{verbatim}
 \item Display the image again.
 \end{itemize}
 \item Show a gaintable:
 \begin{verbatim}
 gt:=gaintable('tcal')
-gt.plot('phase')
+gt.plot()
 \end{verbatim}
 \end{itemize}
 
@@ -196,6 +194,7 @@ sysinfo().host()
 f:=infowindow('Eat at Bodos', 'Dining recommendations') # Informative only
 choicewin('Type of bagel',"plain wheat sourdough")      # Choice returned to Glish
 g:=guiframework()					# Framework of GUIs
+g:=F							# How to kill the frame
 \end{verbatim}
 \end{itemize}
 
@@ -207,4 +206,14 @@ g:=guiframework()					# Framework of GUIs
 include 'sddemo.g'
 sddemo()
 \end{verbatim}
+\item Load the table using the File menu.
+\item Browse
+\item Look at a number of records and see how the plot changes
+\item Look at record 65 (it's bad!)
+\item Select an operation: selection and averaging
+\item In the Record region of the selection pane, enter [1-64][66-256]
+to avoid the bad record
+\item Press the averaging button and look at spectrum
+\item Now do some smoothing
+\item Now play with plotting options on plotting window
 \end{itemize}
