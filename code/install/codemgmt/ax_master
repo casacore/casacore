@@ -3824,3 +3824,4 @@
 14 065 src mv trial/implement/Display/DParameterChoice.h trialdisplay/implement/Display/DParameterChoice.h
 14 065 src mv trial/implement/Display/DParameterColorChoice.h trialdisplay/implement/Display/DParameterColorChoice.h
 14 065 src mv trial/implement/Display/DParameterRange.h trialdisplay/implement/Display/DParameterRange.h
+14 065 src mv trial/implement/Display/DParameterString.h trialdisplay/implement/Display/DParameterString.h
