@@ -6104,3 +6104,4 @@
 17 151 src rm admin/system/aips2-patches.list
 17 151 src rm admin/system/aips2-pipelines.list
 17 151 src rm admin/system/aips2-plugins.list
+17 151 src rm admin/system/aips2-reports.list
