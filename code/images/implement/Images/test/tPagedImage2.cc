@@ -140,13 +140,23 @@ int main()
       AlwaysAssertExit (allEQ(pIm.getMask(), mask));
 
 // Now get the mask as a region and check it is correct.
-      ImageRegion reg1 (pIm.getRegion (pIm.getDefaultMask()));
-      AlwaysAssertExit (reg1.isLCRegion());
-      AlwaysAssertExit (allEQ(reg1.asLCRegion().get(), mask));
+      {
+	ImageRegion reg1 (pIm.getRegion (pIm.getDefaultMask()));
+	AlwaysAssertExit (reg1.isLCRegion());
+	AlwaysAssertExit (allEQ(reg1.asLCRegion().get(), mask));
+      }
 
 // Check number of elements.
-      LatticeExprNode expr (nelements(pIm));
-      AlwaysAssertExit (expr.getDouble() == shape.product()-1);
+      {
+	LatticeExprNode expr (nelements(pIm));
+	AlwaysAssertExit (expr.getDouble() == shape.product()-1);
+      }
+
+// Remove the region, which should also remove the default mask.
+      pIm.removeRegion ("reg2");
+      AlwaysAssertExit (pIm.getDefaultMask() == "");
+      AlwaysAssertExit (! pIm.isMasked());
+      AlwaysAssertExit (! pIm.isMaskWritable());
     }
 
     cout<< "ok"<< endl;
