@@ -1,5 +1,5 @@
 //# TSMCube.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -364,6 +364,8 @@ void TSMCube::extend (uInt nr, const Record& coordValues,
     if (!extensible_p) {
         throw (TSMError ("Hypercube is not extensible"));
     }
+    // Make the cache here, otherwise nrTiles_p is too high.
+    makeCache();
     uInt lastDim = nrdim_p - 1;
     uInt nrold = nrTiles_p;
     cubeShape_p(lastDim) += nr;
