@@ -143,6 +143,7 @@
   then
      rm -f a.tmp.tar && tar cf a.tmp.tar $FILES
      scp -qpC a.tmp.tar $AUID@aips2.nrao.edu:$PGMRDIR/a.tmp.tar
+     rm -f a.tmp.tar
      COMMAND="cd $PGMRDIR && tar pvxf a.tmp.tar > /dev/null && rm -f a.tmp.tar"
      $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
   fi
