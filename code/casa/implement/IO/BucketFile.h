@@ -1,5 +1,5 @@
 //# BucketFile.h: File object for Tiled hypercube Storage Manager
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,8 +33,6 @@
 #include <aips/Utilities/String.h>
 #include <stdio.h>
 #include <unistd.h>
-
-//# Forward Declarations
 
 
 // <summary>
@@ -129,11 +127,11 @@ public:
     uInt write (const void* buffer, uInt length);
 
     // Seek in the file.
-    void seek (uInt offset) const;
+    void seek (Int64 offset) const;
 
     // Get the (physical) size of the file.
     // This is doing a seek and sets the file pointer to end-of-file.
-    uInt fileSize() const;
+    Int64 fileSize() const;
 
     // Get the file descriptor of the internal file.
     int fd();
@@ -160,12 +158,6 @@ inline const String& BucketFile::name() const
 
 inline Bool BucketFile::isWritable() const
     { return isWritable_p; }
-
-inline void BucketFile::seek (uInt offset) const
-    { ::lseek (fd_p, offset, SEEK_SET); }
-
-inline uInt BucketFile::fileSize () const
-    { return ::lseek (fd_p, 0, SEEK_END); }
 
 inline int BucketFile::fd()
     { return fd_p; }

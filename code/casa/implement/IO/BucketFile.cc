@@ -1,5 +1,5 @@
 //# BucketFile.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <aips/Tables/BucketFile.h>
+#include <aips/IO/BucketFile.h>
 #include <aips/OS/Path.h>
 #include <aips/Exceptions/Error.h>
 #include <sys/types.h>
@@ -37,20 +37,35 @@
 #include <string.h>               // needed for strerror
 
 
-#ifdef PABLO_IO
-#include "IOTrace.h"
+#ifdef AIPS_LARGEFILE
+# define traceFCLOSE fclose
+# define traceFSEEK fseeko64
+# define traceFTELL ftello64
+# define traceFREAD fread
+# define traceFWRITE fwrite
+# define traceREAD read
+# define traceWRITE write
+# define trace2OPEN open64
+# define traceLSEEK lseek64
+# define trace3OPEN open64
+# define traceCLOSE close
 #else
-#define traceFCLOSE fclose
-#define traceFSEEK fseek
-#define traceFREAD fread
-#define traceFWRITE fwrite
-#define traceREAD read
-#define traceWRITE write
-#define trace2OPEN open
-#define traceLSEEK lseek
-#define trace3OPEN open
-#define traceCLOSE close
-#endif //PABLO_IO
+# define traceFTELL ftell
+# ifdef PABLO_IO
+#  include "IOTrace.h"
+# else
+#  define traceFCLOSE fclose
+#  define traceFSEEK fseek
+#  define traceFREAD fread
+#  define traceFWRITE fwrite
+#  define traceREAD read
+#  define traceWRITE write
+#  define trace2OPEN open
+#  define traceLSEEK lseek
+#  define trace3OPEN open
+#  define traceCLOSE close
+# endif
+#endif
 
 
 
@@ -150,3 +165,9 @@ uInt BucketFile::write (const void* buffer, uInt length)
     }
     return length;
 }
+
+void BucketFile::seek (Int64 offset) const
+    { ::traceLSEEK (fd_p, offset, SEEK_SET); }
+
+Int64 BucketFile::fileSize () const
+    { return ::traceLSEEK (fd_p, 0, SEEK_END); }
