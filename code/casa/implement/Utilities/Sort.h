@@ -1,5 +1,5 @@
 //# Sort.h: Sort objects on one or more keys
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -252,7 +252,7 @@ protected:
 // </example>
 
 
-class Sort : public Cleanup
+class Sort
 {
 public:
     // Enumerate the sort options:
@@ -280,9 +280,6 @@ public:
     Sort (const Sort&);
 
     ~Sort();
-
-    // Needed for Cleanup.
-    void cleanup ();
 
     // Assignment (copy semantics).
     Sort& operator= (const Sort&);
