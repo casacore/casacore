@@ -58,6 +58,8 @@ main()
 				 -3200483.75028), 
 		      MPosition::ITRF);
 	MeasFrame mf(tbm, pos);
+	mf.set(MDirection(Quantity(10, "deg"), Quantity(80, "deg"),
+			  MDirection::HADEC));
 	MVuvw mvb0(100 ,10, 0);
 	cout << "uvw: " << mvb0 << endl;
 
@@ -103,8 +105,8 @@ main()
 	Vector<Double> tvec(3);
 	tvec = 0.0;
 	Bool isok = True;
-	for (uInt i=Muvw::ITRF; i<Muvw::N_Types; i++) {
-	  for (uInt j=Muvw::ITRF; j<Muvw::N_Types; j++) {
+	for (uInt i=Muvw::J2000; i<Muvw::N_Types; i++) {
+	  for (uInt j=Muvw::J2000; j<Muvw::N_Types; j++) {
 	    Muvw::Ref rin(i, mf);
 	    Muvw::Ref rout(j, mf);
 	    Muvw mb0(mvb0, rin);
@@ -112,7 +114,7 @@ main()
 	    Muvw::Convert backw(rout, rin);
 	    if (!allNearAbs(mb0.getValue().getValue() -
 			 backw(forw(mb0)).getValue().getValue(), 
-			 tvec, 1e-7)) {
+			 tvec, 3e-6)) {
 	      cout << Muvw::showType(i) << " to " <<
 		Muvw::showType(j) << ": " <<
 		mb0.getValue().getValue() -

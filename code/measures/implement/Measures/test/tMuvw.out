@@ -47,14 +47,15 @@ uvw: uvw: [100, 10, 0]
 uvw reference: Reference for an uvw with Type: ITRF,
 Frame: Epoch: 50927::22:18:12.3840
        Position: [-4.75092e+06, 2.79291e+06, -3.20048e+06]
+       Direction: [0.17101, 0.0301537, 0.984808]
 uvw reference: Reference for an uvw with Type: J2000
 Test uvw conversion ...
 --------------------------------------
 Converted uvw: [100, 10, 0]
  to Reference for an uvw with Type: J2000
- as uvw: [-97.914, -22.6468, -0.0182887]
+ as uvw: [99.9944, 10.0562, -1.50948e-07]
 Back      uvw: [100, 10, 0] : not ok
- as uvw: [99.9991, 10.0086, -0.00329049]
+ as uvw: [100, 10, -1.50878e-07]
 --------------------------------------
 Make uvw from Baseline
 Baseline: [100, 10, 1][5.71059, 0.570096] deg
@@ -103,7 +104,7 @@ near:           0
 nearAbs:        0
 !=:             1
 ==:             0
-type:           3
+type:           4
 Original:       [30, 40, 0]
 adjust:         [0.6, 0.8, 0]
 readjust:       [30, 40, 0]
@@ -119,9 +120,9 @@ get:            [10000, 1000, 0] cm
 getAngle:       [5.71059, 0] deg
 getDefaultType: ITRF
 getRefString:   HADEC
-myType:         4
+myType:         5
 Original:       uvw: [100, 10, 0]
-type:           4
+type:           5
 Ctor copy:      uvw: [100, 10, 0]
 Assign:         uvw: [100, 10, 0]
 tellMe:         uvw
