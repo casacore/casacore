@@ -1,5 +1,5 @@
 //# tQuantum.cc: test program for Quantum and QC class
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,11 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures.h>
+#include <aips/Measures/Quantum.h>
+#include <aips/Measures/QMath.h>
+#include <aips/Measures/QLogical.h>
+#include <aips/Measures/QC.h>
+#include <aips/Measures/UnitMap.h>
 
 main ()
 {
@@ -196,7 +200,8 @@ try {
     } end_try;
     
     try {
-	Bool loc=A<D;
+	Bool loc;
+	loc = A<D;
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } end_try;
