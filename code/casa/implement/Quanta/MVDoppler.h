@@ -34,7 +34,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/QC.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MeasValue.h>
+#include <trial/Quanta/MeasValue.h>
 
 //# Forward Declarations
 #include <aips/iosfwd.h>

@@ -30,7 +30,7 @@
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Exceptions.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MeasValue.h>
+#include <trial/Quanta/MeasValue.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEpoch.h>
