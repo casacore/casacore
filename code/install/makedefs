@@ -224,7 +224,7 @@ MIRLIBLIB  := -lmir
 
 
 #-----------------------------------------------------------------------------
-# Construct library lists and include paths; XLIBLIST contains a list of all
+# Construct library lists and include paths; XLILIST contains a list of all
 # required libraries.  It may be defined in the including makefile or on the
 # command line.  "Computed" variables are used to build the lists.
 #-----------------------------------------------------------------------------
@@ -651,10 +651,10 @@ SITEDEFS := makedefs
 ### shared library linking if either of the C++ library is
 ### specified as shared
 ###
-ifneq "$(word 1,$(LIB$(PACKAGE)))" "static"
+ifeq "$(word 1,$(LIB$(PACKAGE)))" "shared"
 XLIB_do_shared = YES
 endif
-ifneq "$(word 2,$(LIB$(PACKAGE)))" "static"
+ifeq "$(word 2,$(LIB$(PACKAGE)))" "shared"
 XLIB_do_shared = YES
 endif
 
