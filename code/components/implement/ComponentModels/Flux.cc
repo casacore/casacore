@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <trial/ComponentModels/Flux.h>
-#include <aips/Arrays/Array.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
@@ -321,15 +320,53 @@ fromRecord(String & errorMessage, const RecordInterface & record) {
     }      
     Vector<NumericTraits<T>::ConjugateType> fluxVal(4);
     try {
-      Array<DComplex> val = record.asArrayDComplex(value);
-      // This is needed as there is not an automatic conversion from
-      // Array<DComplex> to Array<Complex> (when instantiated Flux<Float>)
-      for (uInt i = 1; i < 4; i++) {
-	fluxVal(i) = val(i);
+      switch (record.dataType(value)) {
+      case TpArrayDComplex: {
+	const Vector<DComplex> val = record.asArrayDComplex(value);
+	for (uInt i = 0; i < 4; i++) {
+	  fluxVal(i).re = T(val(i).re);
+	  fluxVal(i).im = T(val(i).im);
+	}
+      }
+      break;
+      case TpArrayComplex: {
+	const Vector<Complex> val = record.asArrayComplex(value);
+	for (uInt i = 0; i < 4; i++) {
+	  fluxVal(i).re = T(val(i).re);
+	  fluxVal(i).im = T(val(i).im);
+	}
+      }
+      break;
+      case TpArrayDouble: {
+	const Vector<Double> val = record.asArrayDouble(value);
+	for (uInt i = 0; i < 4; i++) {
+	  fluxVal(i).re = T(val(i));
+	  fluxVal(i).im = T(0);
+	}
+      }
+      break;
+      case TpArrayFloat: {
+	const Vector<Float> val = record.asArrayFloat(value);
+	for (uInt i = 0; i < 4; i++) {
+	  fluxVal(i).re = T(val(i));
+	  fluxVal(i).im = T(0);
+	}
+      }
+      break;
+      case TpArrayInt: {
+	const Vector<Int> val = record.asArrayInt(value);
+	for (uInt i = 0; i < 4; i++) {
+	  fluxVal(i).re = T(val(i));
+	  fluxVal(i).im = T(0);
+	}
+      }
+      break;
+      default:
+	throw(AipsError("FluxRep<T>::fromRecord(...) - cannot promote Array"));
       }
     }
     catch (AipsError x) {
-      errorMessage += "\nThe 'value' field must have 4 numbers";
+      errorMessage += "\nThe 'value' field must be a vector of numbers";
       return False;
     } end_try;
     setValue(fluxVal);
