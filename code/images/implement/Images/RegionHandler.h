@@ -1,5 +1,5 @@
-//# RegionHandler.h: Handle regions stored as table keywords
-//# Copyright (C) 1999
+//# RegionHandler.h: Abstract base class for handling regions in images
+//# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Utilities/String.h>
 
 //# Forward Declarations
 class Table;
@@ -42,7 +43,7 @@ template<class T> class Vector;
 
 
 // <summary>
-// Handle regions stored as table keywords.
+// Base class for handling regions in images
 // </summary>
 
 // <use visibility=local>
@@ -70,8 +71,6 @@ template<class T> class Vector;
 // <p>
 // Another function performed by this class for PagedImage is the
 // definition of the default region to be used with an image.
-// <p>
-// The class consists of static functions only.
 // </synopsis> 
 
 // <example>
@@ -81,7 +80,7 @@ template<class T> class Vector;
 // This class has 2 purposes:
 // <ol>
 // <li> This untemplated code can be factored out from the templated
-// PagedImage class.
+//      Image classes.
 // <li> The functions can easily be used by other code.
 // </ol>
 // </motivation>
@@ -94,86 +93,93 @@ template<class T> class Vector;
 class RegionHandler
 {
 public: 
+  virtual ~RegionHandler();
 
   // Define the possible group types (regions or masks).
-    enum GroupType {
-        Regions,
-	Masks,
-	Any      
-    };
+  enum GroupType {
+    Regions,
+    Masks,
+    Any      
+  };
 
-    // Set the default mask to the mask with the given name.
-    // It constructs a ImageRegion object for the new default mask.
-    // If the table is writable, the setting is persistent by writing
-    // the name as a keyword.
-    // If the given maskName is the empty string, the default mask is unset.
-    static void setDefaultMask (Table& table, const String& maskName);
-    
-    // Get the name of the default mask.
-    // An empty string is returned if no default mask.
-    static String getDefaultMask (const Table& table);
-    
-    // Define a region belonging to the table.
-    // The group type determines if it stored as a region or mask.
-    // If overwrite=False, an exception will be thrown if the region
-    // already exists in the "regions" or "masks" keyword.
-    // Otherwise the region will be removed first.
-    // <br>A False status is returned if the table is not writable
-    static Bool defineRegion (Table& table, const String& name,
-			      const ImageRegion& region,
-			      RegionHandler::GroupType,
-			      Bool overwrite = False);
-    
-    // Does the table have a region with the given name?
-    static Bool hasRegion (const Table& table,
-			   const String& name,
-			   RegionHandler::GroupType = RegionHandler::Any);
+  // Make a copy of the object.
+  virtual RegionHandler* clone() const;
 
-    // Get a region belonging to the table.
-    // A zero pointer is returned if the region does not exist.
-    // The caller has to delete the <src>ImageRegion</src> object created.
-    // <br>No exception is thrown if the region does not exist.
-    static ImageRegion* getRegion (const Table& table, const String& name,
-				   RegionHandler::GroupType = Any,
-				   Bool throwIfUnknown = True);
-    
-    // Rename a region.
-    // If a region with the new name already exists, it is deleted or
-    // an exception is thrown (depending on <src>overwrite</src>).
-    // The region name is looked up in the given group(s).
-    // <br>An exception is thrown if the old region name does not exist.
-    static Bool renameRegion (Table& table, const String& newName,
-			      const String& oldName,
-			      RegionHandler::GroupType = Any,
-			      Bool overwrite = False);
-    
-    // Remove a region belonging to the table.
-    // <br>Optionally an exception is thrown if the region does not exist.
-    // <br>A False status is returned if the table is not writable
-    static Bool removeRegion (Table& table, const String& name,
-			      RegionHandler::GroupType = Any,
-			      Bool throwIfUnknown = True);
+  // Set the object pointer (for RegionHandlerTable's callback).
+  // Default implementation does nothing.
+  virtual void setObjectPtr (void* objectPtr);
 
-    // Get the names of all regions/masks.
-    static Vector<String> regionNames (const Table& table,
-				       RegionHandler::GroupType = Any);
+  // Can the class indeed define and handle regions?
+  // The default implementation returns False.
+  virtual Bool canDefineRegion() const;
 
-    // Find field number of the region group to which a region belongs
-    // (i.e. the field number of the "regions" or "masks" field).
-    // <0 is returned if the region does not exist.
-    // <br>Optionally an exception is thrown if the region does not exist.
-    static Int findRegionGroup (const Table& table, const String& regionName,
-				RegionHandler::GroupType = Any,
-				Bool throwIfUnknown = True);
+  // Set the default mask to the mask with the given name.
+  // It constructs a ImageRegion object for the new default mask.
+  // If the table is writable, the setting is persistent by writing
+  // the name as a keyword.
+  // If the given maskName is the empty string, the default mask is unset.
+  virtual void setDefaultMask (const String& maskName);
 
-    // Make a mask for a stored lattice (e.g. a PagedImage).
-    // It creates it as a subtable of the lattice with the same tile shape.
-    static LCPagedMask makeMask (const LatticeBase& lattice,
-				 const String& name);
-    
-private:  
-    // This class is not meant to be constructed.
-    RegionHandler();
+  // Get the name of the default mask.
+  // An empty string is returned if no default mask.
+  virtual String getDefaultMask() const;
+
+  // Define a region belonging to the table.
+  // The group type determines if it stored as a region or mask.
+  // If overwrite=False, an exception will be thrown if the region
+  // already exists in the "regions" or "masks" keyword.
+  // Otherwise the region will be removed first.
+  // <br>A False status is returned if the table is not writable
+  virtual Bool defineRegion (const String& name,
+			     const ImageRegion& region,
+			     RegionHandler::GroupType,
+			     Bool overwrite = False);
+
+  // Does the table have a region with the given name?
+  virtual Bool hasRegion (const String& name,
+			  RegionHandler::GroupType = RegionHandler::Any) const;
+  
+  // Get a region belonging to the table.
+  // A zero pointer is returned if the region does not exist.
+  // The caller has to delete the <src>ImageRegion</src> object created.
+  // <br>No exception is thrown if the region does not exist.
+  virtual ImageRegion* getRegion (const String& name,
+				  RegionHandler::GroupType = Any,
+				  Bool throwIfUnknown = True) const;
+
+  // Rename a region.
+  // If a region with the new name already exists, it is deleted or
+  // an exception is thrown (depending on <src>overwrite</src>).
+  // The region name is looked up in the given group(s).
+  // <br>An exception is thrown if the old region name does not exist.
+  virtual Bool renameRegion (const String& newName,
+			     const String& oldName,
+			     RegionHandler::GroupType = Any,
+			     Bool overwrite = False);
+
+  // Remove a region belonging to the table.
+  // <br>Optionally an exception is thrown if the region does not exist.
+  // <br>A False status is returned if the table is not writable
+  virtual Bool removeRegion (const String& name,
+			     RegionHandler::GroupType = Any,
+			     Bool throwIfUnknown = True);
+
+  // Get the names of all regions/masks.
+  virtual Vector<String> regionNames (RegionHandler::GroupType = Any) const;
+
+  // Make a unique region name from the given root name, thus make it such
+  // that the name is not already in use for a region or mask.
+  // The root name is returned if it is already unique.
+  // Otherwise a number is appended to the root name to make it unique.
+  // The number starts at the given number and is incremented until the name
+  // is unique.
+  String makeUniqueRegionName (const String& rootName,
+			       uInt startNumber=1) const;
+
+  // Make a mask for a lattice (e.g. a PagedImage or TempImage).
+  // It creates it with the shape and tile shape of the lattice.
+  virtual ImageRegion makeMask (const LatticeBase& lattice,
+				const String& name);
 };
 
 
