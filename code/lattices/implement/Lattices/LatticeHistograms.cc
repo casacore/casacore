@@ -35,7 +35,6 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/VectorIter.h>
-#include <trial/Coordinates.h>  
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <aips/Lattices/LatticeIterator.h>
