@@ -688,7 +688,7 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 	    // some point.
 	    //              -OO
 	    default:
-	        assert(0);
+	      // Nothing - OK
 	        break;
 	}
 	// For reserved keywords, if the data type is STRING,
@@ -1773,8 +1773,7 @@ void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
 	    // some point.
 	    //              -OO
 	        default:
-		    assert(0);
-		    break;
+		  break;
 	    }
 	}
 }
@@ -2191,8 +2190,7 @@ int FitsKeywordList::rules(FitsKeyword &x, ostream &o) {
 	    // some point.
 	    //              -OO
 	    default:
-	        assert(0);
-	        break;
+	      break;
 	}
 	return 0;
 }
@@ -2378,7 +2376,6 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 		// some point.
 		//              -OO
 	        default:
-		    assert(0);
 	            break;
 	    }
 	    if (k.commlen()) {
