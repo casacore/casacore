@@ -275,14 +275,12 @@ void LatticeSlice1D<T>::doGetSlice (Vector<T>& data, Vector<Bool>& mask,
 // Interpolate
 
    const uInt nPts = itsX.nelements();
-   T result;
    data.resize(nPts);
    mask.resize(nPts);
    for (uInt i=0; i<nPts; i++) {
       itsPos[0] = itsX[i];
       itsPos[1] = itsY[i];
-      mask[i] = itsInterpPtr->interp (result, itsPos, dataIn, maskIn);
-      data[i] = result;
+      mask[i] = itsInterpPtr->interp (data[i], itsPos, dataIn, maskIn);
    }
 }
 
