@@ -73,6 +73,7 @@
 #include <aips/Utilities/Fallible.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/Utilities/Assert.h>
   
 #include <trial/FITS/FITSUtil.h>
 #include <trial/FITS/BinTable.h>
