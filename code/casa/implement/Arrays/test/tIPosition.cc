@@ -84,15 +84,15 @@ main()
 
     IPosition ip3(5,0,1,2,3,4);
 
-    AipsIO io("ipostest.out", ByteIO::New);
+    AipsIO io("tIPosition_tmp.data", ByteIO::New);
     io << ip3;
     io.close();
-    io.open("ipostest.out", ByteIO::Old);
+    io.open("tIPosition_tmp.data", ByteIO::Old);
     IPosition ip4;
     io >> ip4;
     assert (ip4 == ip3);
     io.close();
-    io.open("ipostest.out", ByteIO::Delete);
+    io.open("tIPosition_tmp.data", ByteIO::Delete);
     io.close();
 }
 
@@ -280,15 +280,20 @@ main()
     assert (IPosition(6,2,1,1,3,1,4).isEqual (IPosition(5,2,3,4,1,1), True));
     assert (IPosition(3,2,3,4).isEqual (IPosition(5,2,1,3,1,4), True));
 
-    AipsIO io("ipostest.out", ByteIO::New);   // AipsIO << and >>
-    io << ip1 << ip2;
+    AipsIO io("tIPosition_tmp.data", ByteIO::New);   // AipsIO << and >>
+    IPosition iptmp1;
+    io << ip1 << ip2 << iptmp1;
     io.close();
-    io.open("ipostest.out", ByteIO::Old);
-    IPosition ip5, ip6;
-    io >> ip5 >> ip6;
-    assert (ip1 == ip5 && ip2 == ip6);
+    io.open("tIPosition_tmp.data", ByteIO::Old);
+    IPosition iptmp2;
+    io >> iptmp2;
+    assert (ip1 == iptmp2);
+    io >> iptmp2;
+    assert (ip2 == iptmp2);
+    io >> iptmp2;
+    assert (iptmp1 == iptmp2);
     io.close();
-    io.open("ipostest.out", ByteIO::Delete);
+    io.open("tIPosition_tmp.data", ByteIO::Delete);
     io.close();
 
     // Use an ostrstream to convert to ASCII and reading it back.
