@@ -1,4 +1,4 @@
-//# map.h: Interim solution for standard/nonstandard system map
+//# stdmap.h: Interim solution for standard/nonstandard system map
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_MAP_H)
-#define AIPS_AIPS_MAP_H
+#if !defined(AIPS_AIPS_STDMAP_H)
+#define AIPS_AIPS_STDMAP_H
 
 // Define the C standard C++ include file. 
 // This is an interim solution to cater for the SGI non-existence of
