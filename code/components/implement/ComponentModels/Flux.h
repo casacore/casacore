@@ -52,56 +52,124 @@ class GlishRecord;
 // </reviewed>
 
 // <prerequisite>
-//   <li> SomeClass
-//   <li> SomeOtherClass
-//   <li> some concept
+//   <li> <linkto class="Vector">Vector</linkto>
+//   <li> <linkto class="Unit">Unit</linkto>
 // </prerequisite>
 //
 // <etymology>
+// This class actually contains the flux values as distinct from the Flux class
+// which is a pointer to this class. Hence this class name is a shortening of
+// "Flux Representation". The Flux class is probably of more general user
+// utility as its reference semantics can cut down on the number of temporary
+// objects that get constructed.
 // </etymology>
 //
 // <synopsis>
+// This class encapsulates three quantities that are needed to more completely
+// represent the polarised flux of a component. These quantities are:
+// <dl>
+// <dt> Flux values.
+// <dd> These are four numbers which are the numerical value of the flux in all
+//      four polarisations. The values can be represented in either single or
+//      double precision depending on the template type.
+// <dt> Flux units.
+// <dd> These are the units for the flux values. The units must have dimensions
+//      of W/m^2/Hz and are represented using the
+//      <linkto class="Unit">Unit</linkto> class. The most common unit is "Jy".
+// <dt> Polarisation representation.
+// <dd> This describes how the polarised flux is represented. It can be one of
+//      the following:
+//      <dl compact><dt>Stokes<dd>
+//      The flux is representing using the Stokes I, Q, U, V components
+//      respectively.
+//      <dt>Linear<dd>
+//      The flux is representing using the XX,XY,YX,YY correlation products
+//      resp. X and Y is the signal from linear feeds at zero parallactic
+//      angle.
+//      <dt>Circular<dd>
+//      The flux is representing using the RR,RL,LR,LL correlation products
+//      resp. R and L is the signal from right and left handed circular feeds.
+//      </dl>
+// </dl>
+// This class is templated but only two templated types are valid. These are:
+// <ul> 
+// <li> T = Float
+// <li> T = Double
+// </ul>
+// The template type defines the precision of the Flux Values.
+//
+// This class uses functions in the Flux class which convert between the
+// different polarisation representations. They assume (until a decision has
+// been made on this) that the total intensity is the average of the linear or
+// circular correlation products. ie., <src>I = (RR+LL)/2 = (XX+YY)/2</src>.
+//
+// In order to represent the Flux using the circular or linear representations
+// the Flux values need to be complex (eg.,<src>XY = I + iV, YX = I - iV</src>)
+// This class does not require, or check a number of constraints such as
+// <src>XY = conj(YX)</src> and hence it is possible to define a flux using a
+// linear or circular representation that cannot be completely represented
+// using the Stokes representation. Because this class stores the flux values
+// as complex numbers there is no loss of accuracy when converting between
+// different polarisation representations. But it discards the imaginary
+// component of the flux when externally representing the flux using with a
+// Stokes representation (eg., when calling the <src>value(Vector<T> &)</src>
+// function).
+//
+// Because this class using Complex numbers with a precision that depends on
+// the template type many of the function arguments are of type
+// <src>NumericTraits<T></src>. This simply a type that maps to Complex if T is
+// Float and DComplex if T is a Double. Because of problems with the the gnu
+// compiler functions which use this type as an argument MUST be
+// inline. Hopefully this problem will go away sometime.
 // </synopsis>
 //
 // <example>
+// The following example creates a FluxRep object using a Stokes representation
+// and converts it to "WU" (Westerbork Units). After printing out the converted
+// I flux it converts the Flux to a linear representation and prints out a
+// Vector with the [XX,XY,YX,YY] values (still in "WU")
+// <srcblock>
+// FluxRep<Double> flux(1.0, 0.0, 0.0, 0.1); // I = 1.0, V = 0.1
+// flux.convertUnit("WU");
+// cout << "The I flux (in WU is)" << flux.value(0) << endl;
+// flux.convertPol(ComponentType::LINEAR);
+// cout << "The XX,XY,YX,YY flux (in WU is)" << flux.value().ac() << endl;
+// </srcblock>
 // </example>
 //
 // <motivation>
-// This class was needed to contain the flux in the ComponentModels class. It
-// centralises a lot of code that would otherwise be duplicated. It may be
-// replaced by a Flux Measure in the future.
+// This class was needed to contain the flux in the ComponentModels module and
+// centralizes a lot of code that would otherwise be duplicated in disparate
+// places. 
 // </motivation>
 //
-// <templating arg=T>
-//    <li>
-//    <li>
-// </templating>
-//
 // <thrown>
-//    <li>
-//    <li>
+//    <li> AipsError, When the Vectors are not of length 4 or when indices are
+//          greater than 4
 // </thrown>
 //
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+// <todo asof="1998/03/11">
+//   <li> get this class reviewed.
 // </todo>
 
 template<class T> class FluxRep
 {
 public:
 
-  // Assume I = 1, Q=U=V=0, Stokes representation, units are Jy.
+  // The default constructor makes an object with <src>I = 1, Q=U=V=0</src>,
+  // a Stokes representation, and units of "Jy".
   FluxRep();
 
-  // Q=U=V=0, Stokes representation, units are Jy.
+  // This constructor makes an object where I is specified and
+  // <src>Q=U=V=0</src>. It assumes a Stokes representation, and units of "Jy".
   FluxRep(T i);
 
-  // Stokes representation, units are Jy.
+  // This constructor makes an object where I,Q,U,V are all specified. It
+  // assumes a Stokes representation, and units of "Jy".
   FluxRep(T i, T q, T u, T v);
 
-  // units are Jy.
+  // This constructor makes an object where the flux values and polarisation
+  // representation are specified. It assumes the units are "Jy".
   FluxRep(NumericTraits<T>::ConjugateType xx,
 	  NumericTraits<T>::ConjugateType xy,
 	  NumericTraits<T>::ConjugateType yx,
@@ -117,10 +185,14 @@ public:
       DebugAssert(ok(), AipsError);
     };
   
-  // Stokes representation, units are Jy.
+  // This constructor makes an object where I,Q,U,V are all specified by a
+  // Vector that must have four elements. It assumes a Stokes representation,
+  // and units of "Jy".
   FluxRep(const Vector<T> & flux);
 
-  // units are Jy.
+  // This constructor makes an object where the flux values are all specified
+  // by a Vector that must have four elements. The polarisation representation
+  // must also be specified. It assumes the units are "Jy".
   FluxRep(const Vector<NumericTraits<T>::ConjugateType> & flux,
   		const ComponentType::Polarisation & pol)
     :itsVal(flux.copy()),
@@ -130,10 +202,18 @@ public:
       DebugAssert(ok(), AipsError);
     };
   
-  // Stokes representation
+  // This constructor makes an object where the flux values are all specified
+  // by a Quantum<Vector> that must have four elements.  The Quantum must have
+  // units that are dimensionally equivalent to the "Jy" and these are the
+  // units of the FluxRep object. A Stokes polarisation representation is
+  // assumed.
   FluxRep(const Quantum<Vector<T> > & flux);
 
-  // Fully Specified
+  // This constructor makes an object where the flux values are all specified
+  // by a Quantum<Vector> that must have four elements. The Quantum must have
+  // units that are dimensionally equivalent to the "Jy" and these are the
+  // units of the FluxRep object. The polarisation representation must also be
+  // specified.
   FluxRep(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
 	  const ComponentType::Polarisation & pol)
     :itsVal(flux.getValue().copy()),
@@ -152,49 +232,72 @@ public:
   // The assignment operator uses copy semantics.
   FluxRep<T> & operator=(const FluxRep<T> & other);
 
-  // get the default units
-  Unit unit() const;
+  // These two functions return the current units
+  // <group>
+  const Unit & unit() const;
   void unit(Unit & unit) const;
-  // set the default units
+  // </group>
+
+  // This function sets the current unit. It does NOT convert the flux values
+  // to correspond to the new unit. The new unit must be dimensionally
+  // equivalent to the "Jy".
   void setUnit(const Unit & unit);
-  // set the default units and convert the internal flux
+
+  // This function sets the current units to the supplied value and
+  // additionally converts the internal flux values to the correspond to the
+  // new unit.
   void convertUnit(const Unit & unit);
 
-  // get the default polarisation representation
-  ComponentType::Polarisation pol() const;
+  // These two functions return the current polarisation representation.
+  // <group>
+  const ComponentType::Polarisation & pol() const;
   void pol(ComponentType::Polarisation & pol) const;
-  // set the default polarisation representation
+  // </group>
+
+  // This function sets the current polarisation representation. It does NOT
+  // convert the flux values.
   void setPol(const ComponentType::Polarisation & pol);
-  // set the default polarisation representation and convert the internal flux
+
+  // This function sets the current polarisation representation to the supplied
+  // value and additionally converts the internal flux values to the correspond
+  // to the new polarisation representation.
   void convertPol(const ComponentType::Polarisation & pol);
 
-  // get the flux value assuming ...
-  // <group>
-  // the current units and polarisation
+  // This function returns the flux values. The polarisation representation and
+  // units are in whatever is current.
   const Vector<NumericTraits<T>::ConjugateType> & value() const {
     DebugAssert(ok(), AipsError);
     return itsVal;
   };
 
-  // the current units and polarisation only return the specified polarisation.
+  // This function returns the specified component of the flux values.
+  // The polarisation representation and units are in whatever is current.
   const NumericTraits<T>::ConjugateType & value(uInt p) const {
     DebugAssert(p < 4, AipsError);
     DebugAssert(ok(), AipsError);
     return itsVal(p);
   };
 
-  // Stokes representation & current unit
+  // This function returns the flux values after converting it to the Stokes
+  // representation. The units of the returned Vector are the current units.
   void value(Vector<T> & value);
-  // current unit and pol
+
+  // This function returns the flux values. The polarisation representation and
+  // units are in whatever is current.
   void value(Vector<NumericTraits<T>::ConjugateType> & value) const {
     DebugAssert(ok(), AipsError);
     uInt len = value.nelements();
     DebugAssert (len == 4 || len == 0, AipsError);
     value = itsVal;
   };
-  // Stokes pol.
+
+  // This function returns the flux values after converting it to the Stokes
+  // representation. The units of the returned Quantum are the current units.
   void value(Quantum<Vector<T> > & value);
-  // Don't assume anything
+
+  // This function returns the flux values. The polarisation representation is
+  // whatever is specified. The units of the returned Quantum are the current
+  // units.
   void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
   	    const ComponentType::Polarisation & pol) {
     uInt len = value.getValue().nelements();
@@ -204,58 +307,80 @@ public:
     value.setValue(itsVal);
     DebugAssert(ok(), AipsError);
   };
-  // </group>
 
-  // Set the current flux assuming for the unspecified values ...
-  // <group>
-  // User specifies I only and Q=U=V=0 and the current unit
-  void setValue(T value); 
-  // a Stokes pol and the current unit
+  // This function sets the Flux values assuming the supplied value represents
+  // the Stokes I flux in the current units. The other Stokes parameters are
+  // set to zero.
+  void setValue(T value);
+ 
+  // This function sets the Flux values assuming the supplied values represent
+  // the flux in the Stokes representation and is in the current units. The
+  // Vector must have four elements.
   void setValue(const Vector<T> & value); 
-  // the current unit and pol
+
+  // This function sets the Flux values assuming the supplied values represent
+  // the flux in the current representation and units. The Vector must have
+  // four elements.
   void setValue(const Vector<NumericTraits<T>::ConjugateType> & value) {
     DebugAssert (value.nelements() == 4, AipsError);
     itsVal = value;
     DebugAssert(ok(), AipsError);
   };
-  // a Stokes pol
+
+  // This function sets the flux values and units assuming the supplied values
+  // represent the flux in the Stokes representation. The units of the Quantum
+  // must be dimensionally equivalent to the "Jy" and the Vector must have four
+  // elements.
   void setValue(const Quantum<Vector<T> > & value);
-  // Nothing. Flux is fully specified.
+
+  // This function sets the flux values, units and polarisation assuming the
+  // supplied values represent the flux in the specified representation. The
+  // units of the Quantum must be dimensionally equivalent to the "Jy" and the
+  // Vector must have four elements.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
- 	       const ComponentType::Polarisation & pol) {
+		const ComponentType::Polarisation & pol) {
     DebugAssert (value.getValue().nelements() == 4, AipsError);
     itsVal = value.getValue();
     itsUnit = value.getFullUnit();
     itsPol = pol;
     DebugAssert(ok(), AipsError);
   };
-  // </group>
 
-  // Scale the Flux value by the specified amount
+  // Scale the Flux value by the specified amount. These functions multiply the
+  // flux values irrespective of the current polarisation
+  // representation. Scalar factors multiply all four polarisations of the
+  // flux.
   // <group>
   void scaleValue(const T & factor);
+  void scaleValue(const T & factor0, const T & factor1,
+		  const T & factor2, const T & factor3);
   void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
     itsVal.ac() *= factor;
     DebugAssert(ok(), AipsError);
   };
-  void scaleValue(const Vector<NumericTraits<T>::ConjugateType> & factor) {
-    DebugAssert (factor.nelements() == 4, AipsError);
-    itsVal.ac() *= factor.ac();
+  void scaleValue(const NumericTraits<T>::ConjugateType & factor0,
+		  const NumericTraits<T>::ConjugateType & factor1,
+		  const NumericTraits<T>::ConjugateType & factor2,
+		  const NumericTraits<T>::ConjugateType & factor3) {
+    itsVal(0) *= factor0;
+    itsVal(1) *= factor1;
+    itsVal(2) *= factor2;
+    itsVal(3) *= factor3;
     DebugAssert(ok(), AipsError);
   };
   // </group>
 
-  // This functions convert between a glish record and a FluxRep object. These
-  // functions define how the FluxRep is represented in glish.  They return
-  // False if the glish record is malformed and append an error message to the
-  // supplied string giving the reason.  
+  // This functions convert between a glish record and a FluxRep object and
+  // define how the FluxRep is represented in glish.  They return False if the
+  // glish record is malformed and append an error message to the supplied
+  // string giving the reason.
   // <group>
   Bool fromRecord(String & errorMessage, const GlishRecord & record);
   Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. Returns True if everything is fine
+  // dimensionality and consistent values. Returns True if everything is fine
   // otherwise returns False.
   Bool ok() const;
 
@@ -273,56 +398,99 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> SomeClass
-//   <li> SomeOtherClass
-//   <li> some concept
+//   <li> <linkto class="Vector">Vector</linkto>
+//   <li> <linkto class="Unit">Unit</linkto>
+//   <li> <linkto class="FluxRep">FluxRep</linkto>
 // </prerequisite>
 //
 // <etymology>
+// The Flux class is used to represent the flux of a component on the sky
 // </etymology>
 //
 // <synopsis>
+
+// This class is nearly identical to the <linkto
+// class="FluxRep">FluxRep</linkto> class and the reader is referred to the
+// documentation of this class for a general explanation of this class.  Most
+// of the functions in this class just call the functions in the FluxRep class.
+
+// There are two important differences between the Flux class and the FluxRep
+// class. 
+// <ul>
+// <li> This class uses reference semantics rather than copy semantics. This
+// aids in cutting down on the number of temporary objects that need to be
+// constructed. An example of this is illustrated in the examples section
+// below.
+// <li> This class contains functions for converting between different
+// polarisation representations. 
+// </ul>
+// The functions for converting between different polarisation representations
+// require that the supplied and returned vector have all four polarisations.
+// In the Stokes representation the order of the elements is I,Q,U,V, in the
+// linear representation it is XX,XY,YX,YY, and in the circular representation
+// it is RR,RL,LR,LL.
+//
+// These functions will correctly convert between Linear/Circular
+// representations and the Stokes representation even if the linear or circular
+// polarisation cannot represent a physically realisable polarisation (eg if
+// <src>XY != conj(YX)</src>). In these cases the stokes representation will
+// have an imaginary component and be complex. When converting the complex
+// Stokes representation to a real one the imaginary components are simply
+// discarded.
 // </synopsis>
 //
 // <example>
+// The function in this example calculates the total flux of all the
+// components in a list. It accumulates the flux in a Vector after ensuring
+// that the flux is in the appropriate units and Polarisation. It then returns
+// the sum as a Flux object. Because this class uses reference semantics the
+// returned object is passed by reference and hence this is a relatively cheap
+// operation.
+// <srcblock>
+// Flux<Double> totalFlux(ComponentList & list) {
+//   Vector<DComplex> sum(4, DComplex(0.0, 0.0));
+//   for (uInt i = 0; i < list.nelements(); i++) {
+//     list.component(i).flux().convertPol(ComponentType::STOKES);
+//     list.component(i).flux().convertUnit("Jy");
+//     sum.ac() += list.component(i).flux().value().ac()
+//   }
+//   return Flux<Double>(value, ComponentType::STOKES);
+// }
+// </srcblock>
 // </example>
 //
 // <motivation>
 // This class was needed to contain the flux in the ComponentModels class. It
-// centralises a lot of code that would otherwise be duplicated. It may be
-// replaced by a Flux Measure in the future.
+// centralizes a lot of code that would otherwise be duplicated. The reference
+// semantics further simplify the interface that the component classes use.
 // </motivation>
 //
-// <templating arg=T>
-//    <li>
-//    <li>
-// </templating>
-//
 // <thrown>
-//    <li>
-//    <li>
+//    <li> AipsError, When the Vectors are not of length 4 or when indices are
+//          greater than 4
 // </thrown>
 //
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+// <todo asof="1998/03/11">
+//   <li> get this class reviewed.
 // </todo>
 
 template<class T> class Flux
 {
 public:
-
-  // Assume I = 1, Q=U=V=0, Stokes representation, units are Jy.
+  // The default constructor makes an object with <src>I = 1, Q=U=V=0</src>,
+  // a Stokes representation, and units of "Jy".
   Flux();
 
-  // Q=U=V=0, Stokes representation, units are Jy.
-  Flux(T i);
+  // The default constructor makes an object with <src>I = 1, Q=U=V=0</src>,
+  // a Stokes representation, and units of "Jy".
+   Flux(T i);
 
-  // Stokes representation, units are Jy.
+  // This constructor makes an object where I,Q,U,V are all specified. It
+  // assumes a Stokes representation, and units of "Jy".
   Flux(T i, T q, T u, T v);
 
-  // units are Jy.
+  // This constructor makes an object where the flux values and polarisation
+  // representation are specified. It assumes the units are "Jy".
   Flux(NumericTraits<T>::ConjugateType xx, NumericTraits<T>::ConjugateType xy,
        NumericTraits<T>::ConjugateType yx, NumericTraits<T>::ConjugateType yy, 
        ComponentType::Polarisation pol)  
@@ -330,10 +498,15 @@ public:
     {
       DebugAssert(ok(), AipsError);
     };
-  // Stokes representation, units are Jy.
+
+  // This constructor makes an object where I,Q,U,V are all specified by a
+  // Vector that must have four elements. It assumes a Stokes representation,
+  // and units of "Jy".
   Flux(const Vector<T> & flux);
 
-  // units are Jy.
+  // This constructor makes an object where the flux values are all specified
+  // by a Vector that must have four elements. The polarisation representation
+  // must also be specified. It assumes the units are "Jy".
   Flux(const Vector<NumericTraits<T>::ConjugateType> & flux,
        const ComponentType::Polarisation & pol)
     :itsFluxPtr(new FluxRep<T>(flux, pol))
@@ -341,20 +514,28 @@ public:
       DebugAssert(ok(), AipsError);
     };
   
-  // Stokes representation
+  // This constructor makes an object where the flux values are all specified
+  // by a Quantum<Vector> that must have four elements.  The Quantum must have
+  // units that are dimensionally equivalent to the "Jy" and these are the
+  // units of the FluxRep object. A Stokes polarisation representation is
+  // assumed.
   Flux(const Quantum<Vector<T> > & flux);
 
-  // Fully Specified
+  // This constructor makes an object where the flux values are all specified
+  // by a Quantum<Vector> that must have four elements. The Quantum must have
+  // units that are dimensionally equivalent to the "Jy" and these are the
+  // units of the FluxRep object. The polarisation representation must also be
+  // specified.
   Flux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
        const ComponentType::Polarisation & pol);
 
-  // The copy constructor uses copy semantics.
+  // The copy constructor uses reference semantics.
   Flux(const Flux<T> & other);
 
   // The destructor is trivial
   ~Flux();
 
-  // The assignment operator uses copy semantics.
+  // The assignment operator uses reference semantics.
   Flux<T> & operator=(const Flux<T> & other);
 
   // Return a distinct copy of this flux. As both the assignment operator
@@ -362,78 +543,146 @@ public:
   // get a real copy.
   Flux<T> copy() const;
 
-  // get the default units
-  Unit unit() const;
+  // These two functions return the current units.
+  // <group>
+  const Unit & unit() const;
   void unit(Unit & unit) const;
-  // set the default units
+  // </group>
+
+  // This function sets the current unit. It does NOT convert the flux values
+  // to correspond to the new unit. The new unit must be dimensionally
+  // equivalent to the "Jy".
   void setUnit(const Unit & unit);
-  // set the default units and convert the internal flux
+
+  // This function sets the current units to the supplied value and
+  // additionally converts the internal flux values to the correspond to the
+  // new unit.
   void convertUnit(const Unit & unit);
 
-  // get the default polarisation representation
-  ComponentType::Polarisation pol() const;
+  // These two functions return the current polarisation representation.
+  // <group>
+  const ComponentType::Polarisation & pol() const;
   void pol(ComponentType::Polarisation & pol) const;
-  // set the default polarisation representation
+  // </group>
+
+  // This function sets the current polarisation representation. It does NOT
+  // convert the flux values.
   void setPol(const ComponentType::Polarisation & pol);
-  // set the default polarisation representation and convert the internal flux
+
+  // This function sets the current polarisation representation to the supplied
+  // value and additionally converts the internal flux values to the correspond
+  // to the new polarisation representation.
   void convertPol(const ComponentType::Polarisation & pol);
 
-  // get the flux value assuming ...
-  // <group>
-  // user wants I flux only
-  // the current units and polarisation
+  // This function returns the flux values. The polarisation representation and
+  // units are in whatever is current.
   const Vector<NumericTraits<T>::ConjugateType> & value() const {
     DebugAssert(ok(), AipsError);
     return itsFluxPtr->value();
   };
 
-  // the current units and polarisation only return the specified polarisation.
+  // This function returns the specified component of the flux values.
+  // The polarisation representation and units are in whatever is current.
   const NumericTraits<T>::ConjugateType & value(uInt p) const {
     DebugAssert(ok(), AipsError);
     return itsFluxPtr->value(p);
   };
 
-  // Stokes representation & current unit
+  // This function returns the flux values after converting it to the Stokes
+  // representation. The units of the returned Vector are the current units.
   void value(Vector<T> & value);
-  // current unit and pol
+
+  // This function returns the flux values. The polarisation representation and
+  // units are in whatever is current.
   void value(Vector<NumericTraits<T>::ConjugateType> & value) const {
     DebugAssert(ok(), AipsError);
     itsFluxPtr->value(value);
   };
-  // Stokes pol.
+
+  // This function returns the flux values after converting it to the Stokes
+  // representation. The units of the returned Quantum are the current units.
   void value(Quantum<Vector<T> > & value);
-  // Don't assume anything
+
+  // This function returns the flux values. The polarisation representation is
+  // whatever is specified. The units of the returned Quantum are the current
+  // units.
   void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
 	     const ComponentType::Polarisation & pol) {
     DebugAssert(ok(), AipsError);
     itsFluxPtr->value(value, pol);
   };
-  // </group>
 
-  // Set the current flux assuming for the unspecified values ...
-  // <group>
-  // User specifies I only and Q=U=V=0 and the current unit
+  // This function sets the Flux values assuming the supplied value represents
+  // the Stokes I flux in the current units. The other Stokes parameters are
+  // set to zero.
   void setValue(T value); 
-  // a Stokes pol and the current unit
+
+  // This function sets the Flux values assuming the supplied values represent
+  // the flux in the Stokes representation and is in the current units. The
+  // Vector must have four elements.
   void setValue(const Vector<T> & value); 
-  // the current unit and pol
+
+  // This function sets the Flux values assuming the supplied values represent
+  // the flux in the current representation and units. The Vector must have
+  // four elements.
   void setValue(const Vector<NumericTraits<T>::ConjugateType> & value) {
     DebugAssert(ok(), AipsError);
     itsFluxPtr->setValue(value);
   };
-  // a Stokes pol
+
+  // This function sets the flux values and units assuming the supplied values
+  // represent the flux in the Stokes representation. The units of the Quantum
+  // must be dimensionally equivalent to the "Jy" and the Vector must have four
+  // elements.
   void setValue(const Quantum<Vector<T> > & value);
-  // Nothing. Flux is fully specified.
+
+  // This function sets the flux values, units and polarisation assuming the
+  // supplied values represent the flux in the specified representation. The
+  // units of the Quantum must be dimensionally equivalent to the "Jy" and the
+  // Vector must have four elements.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
 		const ComponentType::Polarisation & pol) {
     DebugAssert(ok(), AipsError);
     itsFluxPtr->setValue(value, pol);
   };
+
+  // Scale the Flux value by the specified amount. These functions multiply the
+  // flux values irrespective of the current polarisation
+  // representation. Scalar factors multiply all four polarisations of the
+  // flux.
+  // <group>
+  void scaleValue(const T & factor);
+  void scaleValue(const T & factor0, const T & factor1,
+		  const T & factor2, const T & factor3);
+  void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
+    itsFluxPtr->scaleValue(factor);
+    DebugAssert(ok(), AipsError);
+  };
+  void scaleValue(const NumericTraits<T>::ConjugateType & factor0,
+		  const NumericTraits<T>::ConjugateType & factor1,
+		  const NumericTraits<T>::ConjugateType & factor2,
+		  const NumericTraits<T>::ConjugateType & factor3) {
+    itsFluxPtr->scaleValue(factor0, factor1, factor2, factor3);
+    DebugAssert(ok(), AipsError);
+  };
   // </group>
 
-  // Functions for converting a 4 element complex vector between
-  // different representations.
+  // This functions convert between a glish record and a Flux object and define
+  // how the Flux is represented in glish.  They return False if the glish
+  // record is malformed and append an error message to the supplied string
+  // giving the reason.
   // <group>
+  Bool fromRecord(String & errorMessage, const GlishRecord & record);
+  Bool toRecord(String & errorMessage, GlishRecord & record) const;
+  // </group>
+
+  // Function which checks the internal data of this class for correct
+  // dimensionality and consistent values. Returns True if everything is fine
+  // otherwise returns False.
+  Bool ok() const;
+
+  // This function converts between a Vector in Stokes representation and one
+  // in Circular representation.
   static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
     			       const Vector<T> & in) {
     DebugAssert(in.nelements() == 4, AipsError);
@@ -448,6 +697,9 @@ public:
     out(3).re = i - v; out(3).im = T(0);
   };
 
+  // This function converts between a Vector in Stokes representation and one
+  // in Circular representation. The imaginary components of the Stokes vector
+  // are NOT ignored.
   static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
  			       in) {
@@ -464,6 +716,9 @@ public:
     out(3) = i - v;
   };
 
+  // This function converts between a Vector in Circular representation and one
+  // in Stokes representation. The imaginary components of the Stokes vector
+  // are discarded.
   static void circularToStokes(Vector<T> & out,
  			       const Vector<NumericTraits<T>::ConjugateType> &
  			       in) {
@@ -479,6 +734,9 @@ public:
     out(3) = (rr - ll)/T(2);
   };
 
+  // This function converts between a Vector in Circular representation and one
+  // in Stokes representation. The imaginary components of the Stokes vector
+  // are NOT ignored.
   static void circularToStokes(Vector<NumericTraits<T>::ConjugateType> & out,
  			       const Vector<NumericTraits<T>::ConjugateType> &
  			       in) {
@@ -496,6 +754,8 @@ public:
     out(3) = (rr - ll)/T(2);
   };
 
+  // This function converts between a Vector in Stokes representation and one
+  // in Linear representation.
   static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
   			     const Vector<T> & in) {
     DebugAssert(in.nelements() == 4, AipsError);
@@ -510,6 +770,9 @@ public:
     out(3).re = i - q; out(3).im = T(0);
   };
 
+  // This function converts between a Vector in Stokes representation and one
+  // in Linear representation. The imaginary components of the Stokes vector
+  // are NOT ignored.
   static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
   			     const Vector<NumericTraits<T>::ConjugateType> &
  			     in) {
@@ -526,6 +789,9 @@ public:
     out(3) = i - q;
   };
 
+  // This function converts between a Vector in Linear representation and one
+  // in Stokes representation. The imaginary components of the Stokes vector
+  // are discarded.
   static void linearToStokes(Vector<T> & out, 
  			     const Vector<NumericTraits<T>::ConjugateType> &
  			     in) {
@@ -541,6 +807,9 @@ public:
     out(3) = (xy.im - yx.im)/T(2);
   };
 
+  // This function converts between a Vector in Linear representation and one
+  // in Stokes representation. The imaginary components of the Stokes vector
+  // are NOT ignored.
   static void linearToStokes(Vector<NumericTraits<T>::ConjugateType> & out, 
  			     const Vector<NumericTraits<T>::ConjugateType> &
  			     in) {
@@ -558,6 +827,8 @@ public:
     v.im = (yx.re-xy.im)/T(2);
   };
 
+  // This function converts between a Vector in Linear representation and one
+  // in Circular representation.
   static void linearToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
  			       in) {
@@ -575,6 +846,8 @@ public:
     out(3) = (xx + jxy - jyx + yy)/T(2);
   };
 
+  // This function converts between a Vector in Circular representation and one
+  // in Linear representation.
   static void circularToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
  			       in) {
@@ -591,34 +864,6 @@ public:
     out(2).im = (-rr.re - rl.re + lr.re + ll.re)/T(2);
     out(3) = (rr - rl - lr + ll)/T(2);
   };
-  // </group>
-
-  // Scale the Flux value by the specified amount
-  // <group>
-  void scaleValue(const T & factor);
-  void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
-    DebugAssert(ok(), AipsError);
-    itsFluxPtr->scaleValue(factor);
-  };
-  void scaleValue(const Vector<NumericTraits<T>::ConjugateType> & factor) {
-    DebugAssert(ok(), AipsError);
-    itsFluxPtr->scaleValue(factor);
-  };
-  // </group>
-
-  // This functions convert between a glish record and a Flux object and define
-  // how the Flux is represented in glish.  They return False if the glish
-  // record is malformed and append an error message to the supplied string
-  // giving the reason.
-  // <group>
-  Bool fromRecord(String & errorMessage, const GlishRecord & record);
-  Bool toRecord(String & errorMessage, GlishRecord & record) const;
-  // </group>
-
-  // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. Returns True if everything is fine
-  // otherwise returns False.
-  Bool ok() const;
 
 private:
   CountedPtr<FluxRep<T> > itsFluxPtr;
