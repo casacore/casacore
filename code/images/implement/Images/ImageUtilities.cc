@@ -1,5 +1,5 @@
 //# ImageUtilities.cc:  Helper class for accessing images
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,13 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/IPosition.h>
 #include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/SkyComponent.h>
+#include <trial/Images/ImageInfo.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Measures/Stokes.h>
+#include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/Unit.h>
 
   
 
@@ -152,4 +159,35 @@ String ImageUtilities::shortAxisName (const String& axisName)
    }
    return temp;
 }
+
+
+SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os,
+                                                const ImageInfo& ii,
+                                                const CoordinateSystem& cSys,
+                                                const Unit& brightnessUnit,
+                                                ComponentType::Shape type,
+                                                const Vector<Double>& parameters,
+                                                Stokes::StokesTypes stokes,
+                                                Bool xIsLong)
+{
+   SkyComponent sky;
+  
+// Account for the fact that 'x' could be longitude or latitude.  Urk.
+
+   Vector<Double> pars = parameters.copy();
+   if (!xIsLong) {
+      Double tmp = pars(0);
+      pars(0) = pars(1);
+      pars(1) = tmp;
+//
+      Double pa0 = pars(5);
+      MVAngle pa(pa0 + C::pi_2);
+      pa();                         // +/- pi
+      pars(5) = pa.radian();
+   }
+//
+   Vector<Quantum<Double> > beam = ii.restoringBeam();
+   sky.fromPixel(pars, brightnessUnit, beam, cSys, type, stokes);
+   return sky;
+} 
 

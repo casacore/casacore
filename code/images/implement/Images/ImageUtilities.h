@@ -1,5 +1,5 @@
 //# ImageUtilities.h: Some utility functions handy for accessing images
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,14 +30,20 @@
 
 
 #include <aips/aips.h>
+#include <trial/ComponentModels/ComponentType.h>
+#include <aips/Measures/Stokes.h>
 template <class T> class Vector;
 class CoordinateSystem;
+class SkyComponent;
+class ImageInfo;
 class String;
 class IPosition;
+class LogIO;
+class Unit;
 
 //
 // <summary>
-// A set of simple functions to help access and iteration through images
+// Utility functions for Image manipulation
 // </summary>
 //   
 //
@@ -96,7 +102,30 @@ public:
 // "Velocity" to "RA", "Dec", "Freq", "Vel" respectively.  Unknown strings
 // are returned as given.
    static String shortAxisName (const String& axisName);
-
+//
+// This function takes a vector of doubles holding SkyComponent values
+// (the output from SkyComponent::toPixel) and converts them to a 
+// SkyComponent.   The coordinate values are in the 'x' and 'y' frames (
+// It is possible that the x and y axes of the pixel array are
+// lat/long (xIsLong=False)  rather than  long/lat.
+//
+//   pars(0) = FLux     image units
+//   pars(1) = x cen    abs pix
+//   pars(2) = y cen    abs pix
+//   pars(3) = major    pix
+//   pars(4) = minor    pix
+//   pars(5) = pa radians (pos +x -> +y)
+//
+//  5 values for ComponentType::Gaussian, CT::Disk.  3 values for CT::Point.
+//
+   static SkyComponent encodeSkyComponent(LogIO& os,   
+                                          const ImageInfo& ii,
+                                          const CoordinateSystem& cSys,
+                                          const Unit& brightnessUnit,
+                                          ComponentType::Shape type,
+                                          const Vector<Double>& parameters,
+                                          Stokes::StokesTypes stokes,
+                                          Bool xIsLong);
 };
 
 #endif
