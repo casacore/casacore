@@ -77,3 +77,18 @@ spent in FORTRAN fft routines.  Some parts of sim.g had
 no C++ counterpart.  Overall glish and C++ timings found
 to be very similar since compute-intensive parts are done
 in C++.
+
+change id: 0152
+ author:   Raymond Rusk
+ date:     2003/04/14
+ avers:    1.8
+ area:     System
+ package:  trial
+ module:   alma benchmarking
+ type:     Test
+ category: Other
+ summary:  alma benchmarking for PDR in Tucson
+In conjunction with Robert Lucas and Kumar conducted
+AIPS++ benchmarking on IRAM datasets for AIPS++ ALMA
+phase 3 (simulated 8, 16, 32 and 64 antennas).  Work
+presented at Tucson PDR.
