@@ -3621,3 +3621,12 @@
 13 344 src mv trial/apps/gtablebrowser/tablebrowser.g trial/apps/table/tablebrowser.g
 13 344 src mv trial/apps/table/newtb.help trial/apps/table/tablebrowser.help
 13 345 src rm trial/apps/datalinetool/
+13 345 src rm trial/implement/Datalinetool/datagroup.g
+13 345 src rm trial/implement/Datalinetool/dataline.g
+13 345 src rm trial/implement/Datalinetool/dgplot.g
+13 345 src rm trial/implement/Datalinetool/dlt_col.g
+13 345 src rm trial/implement/Datalinetool/dlt_style.g
+13 345 src rm trial/implement/Datalinetool/dlt_zoom.g
+13 345 src rm trial/implement/Datalinetool/dltplot.g
+13 345 src rm trial/implement/Datalinetool/textgroup.g
+13 345 src rm trial/implement/Datalinetool/tgplot.g
