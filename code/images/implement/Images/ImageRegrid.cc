@@ -526,77 +526,79 @@ template<class T>
 CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
                                                       const CoordinateSystem& cSysOut,
                                                       const CoordinateSystem& cSysIn,
-                                                      const IPosition& axes) 
+                                                      const IPosition& outPixelAxes) 
 //
-// We are regridding from cSysIn to cSysOut for the given axes.
-// This function adds coordinates from cSysIn to cSysOut if there
-// are any missing for the axes that are not being regridded.
-// It also discards the coordinates in cSysOut pertaining to 
-// the axes not being regridded and replaces them.
-// 
+// Copy from cSysOut for     regrid axes  (user given)
+// Copy from cSysIn  for non-regrid axes  (from input image)
+//
 {
-   if (cSysOut.nCoordinates()==cSysIn.nCoordinates()) return cSysOut;
+   AlwaysAssert(cSysOut.nCoordinates()==cSysIn.nCoordinates(),AipsError);
+   AlwaysAssert(cSysOut.nPixelAxes()==cSysIn.nPixelAxes(),AipsError);
+//
+   const uInt nCoords = cSysOut.nCoordinates();
+   const uInt nPixelAxes = cSysOut.nPixelAxes();
 
-// Loop over pixel axes from input CS. We will create a new
-// CS called cSys2
-         
+// Create output CS.  Copy the output ObsInfo over first.
+
    CoordinateSystem cSys2;
-   Int iCoordIn, axisInCoordinate;
-   Vector<Bool> done(cSysIn.nCoordinates(),False);  
-   for (uInt i=0; i<cSysIn.nPixelAxes(); i++) {
+   cSys2.setObsInfo(cSysIn.obsInfo());
+
+// Loop over output pixel axes from output CS. 
+
+
+   Int iCoordIn, iCoordOut, axisInCoordinateOut;
+   Vector<Bool> done(nCoords,False);  
+   for (uInt i=0; i<nPixelAxes; i++) {
  
-// Is this axis one to be regridded ?
+// Is this output CS axis one to be regridded ?
          
       Bool regridIt = False;                 
-      for (uInt j=0; j<axes.nelements(); j++) {
-         if (Int(i)==axes(j)) {              
+      for (uInt j=0; j<outPixelAxes.nelements(); j++) {
+         if (Int(i)==outPixelAxes(j)) {              
             regridIt = True;  
             break;
          }
       }
 
-// Find coordinate for this pixel axis in input CS
+// Find coordinate for this output pixel axis in output CS
    
-      cSysIn.findPixelAxis(iCoordIn, axisInCoordinate, i);
-      if (!done(iCoordIn)) {
-         const Coordinate& coord = cSysIn.coordinate(iCoordIn);
-         Coordinate::Type type = coord.type();
-      
-// Find this coordinate type in output CS
-
-         Int afterCoord = -1;
-         Int iCoordOut = cSysOut.findCoordinate(type, afterCoord);
-//
+      cSysOut.findPixelAxis(iCoordOut, axisInCoordinateOut, i);
+      if (!done(iCoordOut)) {
+         const Coordinate& coordOut = cSysOut.coordinate(iCoordOut);
+         Coordinate::Type type = coordOut.type();
+//    
          if (regridIt) {
 
-// This is a regridding axis
+// This is a regridding axis. Copy the coordinate from the 
+// output CS (user given) to cSys2
 
-            if (iCoordOut==-1) {
-
-// The required coordinate does not exist in the  output CS.  Give up.
-
-               ostrstream oss;
-               oss << "A coordinate of type " << coord.showType()
-                   << " does not exist in the given CoordinateSystem" << ends;
-               os << String(oss) << LogIO::EXCEPTION;
-            }
-
-// Copy the coordinate from the output CS to cSys2
-
-            cSys2.addCoordinate(cSysOut.coordinate(iCoordOut));
+            cSys2.addCoordinate(coordOut);
          } else {
          
-// We don't want to regrid this axis.  Copy the coordinate from the input CS
-// to cSys2.  
+// We don't want to regrid this axis.  Copy the coordinate from the 
+// input CS  to cSys2.  
 
-            cSys2.addCoordinate(coord);
+            Int afterCoord = -1;
+            Int iCoordIn = cSysIn.findCoordinate(type, afterCoord);
+//
+            if (iCoordIn==-1) {
+
+// The required coordinate does not exist in the  input CS.  Give up.
+
+               ostrstream oss;
+               oss << "A coordinate of type " << coordOut.showType()
+                   << " does not exist in the input image CoordinateSystem" << ends;
+               os << String(oss) << LogIO::EXCEPTION;
+            }
+//
+            cSys2.addCoordinate(cSysIn.coordinate(iCoordIn));
             ostrstream oss;  
-            oss << "Adding coordinate of type " << coord.showType()
-                   << " to the given CoordinateSystem" << ends;
+            oss << "Replacing coordinate of type " << coordOut.showType()
+                   << " in the given CoordinateSystem" << ends;
             os << LogIO::NORMAL << String(oss) << LogIO::POST;
          }                                   
 //                                           
-         done(iCoordIn) = True;
+         done(iCoordOut) = True;
       }
    }
 // 
@@ -1970,10 +1972,10 @@ void ImageRegrid<T>::findMaps (uInt nDim,
       throw(AipsError(inCoords.errorMessage()));
    }
 
-// pixelAxisMap1(i) says where pixel axis i in the output image
-// is in the input image
-// pixelAxisMap2(i) says where pixel axis i in the input image
-// is in the output image
+// pixelAxisMap1(i) says where pixel axis i in the output coordinate system
+// is in the input coordinate system
+// pixelAxisMap2(i) says where pixel axis i in the input coordinate system
+// is in the output coordinate system
 
    pixelAxisMap1.resize(nDim);
    pixelAxisMap2.resize(nDim);
