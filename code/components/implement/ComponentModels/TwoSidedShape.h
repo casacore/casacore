@@ -35,6 +35,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Quanta/Unit.h>
 
+class DirectionCoordinate;
 class MDirection;
 class MVAngle;
 class RecordInterface;
@@ -280,6 +281,9 @@ public:
   // dimensionality and consistent values. Returns True if everything is fine
   // otherwise returns False.
   virtual Bool ok() const;
+
+// Convert component shape to absolute pixels (major, minor, position angle [rad])
+   virtual Vector<Double> toPixel (const DirectionCoordinate& dirCoord) const;
 
 protected:
   // The constructors and assignment operator are protected as only derived
