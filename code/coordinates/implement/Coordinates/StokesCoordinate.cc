@@ -36,7 +36,7 @@
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Mathematics/Math.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
 : Coordinate(),
@@ -542,7 +542,7 @@ void StokesCoordinate::makePixelRelative (Vector<Double>& pixel) const
    if (index >= 0 && index < nValues_p) {
       pixel -= referencePixel();
    } else {
-      ostrstream os;
+      ostringstream os;
       os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
       String s(os);
       throw(AipsError(s));
@@ -561,7 +561,7 @@ void StokesCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
 //
    Int index = Int(pixel(0) + 0.5);
    if (index < 0 ||  index >= nValues_p) {
-      ostrstream os;
+      ostringstream os;
       os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
       String s(os);
       throw(AipsError(s));
@@ -595,7 +595,7 @@ Bool StokesCoordinate::toWorld(Double& world, const Double pixel) const
 	world = values_p[index];
 	return True;
     } else {
-	ostrstream os;
+	ostringstream os;
 	os << "Pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
 	set_error(os);
 	return False;
@@ -612,7 +612,7 @@ Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
 	if (found) break;
     }
     if (!found) {
-	ostrstream os;
+	ostringstream os;
         Stokes::StokesTypes t0 = toWorld(world);
         String t = Stokes::name(t0);
 	os << "Stokes value " << t << " is not contained in this StokesCoordinate";

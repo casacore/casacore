@@ -43,7 +43,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Quantum.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 TabularCoordinate::TabularCoordinate()

@@ -1,5 +1,5 @@
 //# LinearCoordinate.cc: this defines LinearCoordinate
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Quantum.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
 : Coordinate(),
@@ -416,7 +416,7 @@ Bool LinearCoordinate::near(const Coordinate& other,
 
 // Check the descriptors
 
-   ostrstream oss;
+   ostringstream oss;
    for (i=0; i<names_p.nelements(); i++) {
       if (!exclude(i)) {
 //

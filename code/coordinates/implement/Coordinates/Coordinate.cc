@@ -46,7 +46,7 @@
 
 
 #include <aips/iomanip.h>  
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 Coordinate::Coordinate()
@@ -417,7 +417,7 @@ String Coordinate::format(String& units,
        
 // Format and get units.  
          
-   ostrstream oss;
+   ostringstream oss;
    if (form == Coordinate::SCIENTIFIC) {
       oss.setf(ios::scientific, ios::floatfield);
       oss.precision(prec);
@@ -952,7 +952,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 //
          String y1 = String(x1.before(i1));
          String y2 = String(x2.before(i2));
-         ostrstream oss;
+         ostringstream oss;
          if (y1 != y2) {
            oss << "The Coordinates have differing axis units for axis "
                << i << ends;

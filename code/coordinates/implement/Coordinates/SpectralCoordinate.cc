@@ -46,7 +46,7 @@
 #include <trial/FITS/FITSKeywordUtil.h>
 #include <trial/FITS/FITSSpectralUtil.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 SpectralCoordinate::SpectralCoordinate()
@@ -1152,7 +1152,7 @@ String SpectralCoordinate::format(String& units,
          worldValue = vel(1) - vel(0);           // rel = abs - ref
       }
 //
-      ostrstream oss;
+      ostringstream oss;
       if (form == Coordinate::SCIENTIFIC) {
          oss.setf(ios::scientific, ios::floatfield);
          oss.precision(prec);
@@ -1206,7 +1206,7 @@ String SpectralCoordinate::formatRestFrequencies () const
 // but there is more than one.  Zero is often used when making
 // a continuum SpectralCoordinate where the restfreq is irrelevant
    
-   ostrstream oss;
+   ostringstream oss;
    if (rf > 0.0) {
       oss << "Rest frequency      : " << rf;
 //

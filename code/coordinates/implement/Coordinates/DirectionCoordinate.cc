@@ -51,7 +51,7 @@
 #include <aips/Utilities/String.h>
 
 #include <aips/iomanip.h>  
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 DirectionCoordinate::DirectionCoordinate()
@@ -926,7 +926,7 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
                                              Coordinate::formatType form,
                                              Int prec) const
 {
-   ostrstream oss;         
+   ostringstream oss;         
    MVAngle mVA2(mVA);
 
 // Time formatting we can do straight away
@@ -1028,7 +1028,7 @@ String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
                                             Coordinate::formatType form,
                                             Int prec) const
 {
-   ostrstream oss;         
+   ostringstream oss;         
    MVAngle mVA2(mVA);
 
 // TIME formatting we can do straight away
@@ -1140,7 +1140,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 
 // Check names and units
 
-   ostrstream oss;
+   ostringstream oss;
    if (names_p.nelements() != dCoord.names_p.nelements()) {
       set_error("The DirectionCoordinates have differing numbers of world axis names");
       return False;

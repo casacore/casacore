@@ -1,5 +1,5 @@
 //# CoordinateUtils.cc: 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,7 +56,7 @@
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/String.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
@@ -466,7 +466,7 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
    if (doLinear) {
       Vector<String> names(n);
       for (uInt i=0; i<n; i++) {
-         ostrstream oss;
+         ostringstream oss;
          oss << (i+1);
          String t(oss);
          names(i) = "linear" + t;
@@ -528,7 +528,7 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
          Vector<String> names(nLeft);
          for (uInt i=0; i<nLeft; i++) {
             shape2(i) = shape(i+nDone);
-            ostrstream oss;
+            ostringstream oss;
             oss << (i+1);
             String t(oss);
             names(i) = "linear" + t;
