@@ -444,9 +444,9 @@ void MIRIADImage::open()
 
 
 void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
-                                    IPosition& shape, ImageInfo& imageInfo,
-                                    Unit& brightnessUnit, Record& miscInfo, 
-                                    Bool& hasBlanks, const String& name)
+                                      IPosition& shape, ImageInfo& imageInfo,
+                                      Unit& brightnessUnit, Record& miscInfo, 
+                                      Bool& hasBlanks, const String& name)
 {
   LogIO os(LogOrigin("MIRIADImage", "getImageAttributes", WHERE));
   int naxis = MAXNAX, axes[MAXNAX];              // see miriad's maxdimc.h
@@ -486,7 +486,6 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   Vector<String> ctype;
   Matrix<Double> pc(2,2);
   String cunit, tmps, digit;
-  Bool haveUnit = False;
   char tmps64[64];
   
   cdelt.resize(ndim);
@@ -883,7 +882,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
   // STOKES.   shape is used only here as the StokesCoordinate
   // is a bit peculiar, and not really separable from the shape
-  
+
   if (stokesAxis >= 0) {
       if (shape(stokesAxis)>4) {
 	os << "Stokes axis longer than 4 pixels.  This is not acceptable" 
@@ -892,7 +891,6 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       }
       Vector<Int> stokes(shape(stokesAxis)); 
       
-      Bool foundI = False;
       for (Int k=0; k<shape(stokesAxis); k++) {
 	
 	// crpix is 0-relative
@@ -907,18 +905,43 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	  stokes(k) = Int(tmp - 0.01);
 	}
 
-	switch (stokes(k)) {
+        switch (stokes(k)) {
+        case -8: 
+	   stokes(k) = Stokes::YX; 
+	   break;
+        case -7: 
+	   stokes(k) = Stokes::XY; 
+	   break;
+        case -6: 
+	   stokes(k) = Stokes::YY; 
+	   break;
+        case -5: 
+	   stokes(k) = Stokes::XX; 
+	   break;
+        case -4: 
+	   stokes(k) = Stokes::LR; 
+	   break;
+        case -3: 
+	   stokes(k) = Stokes::RL; 
+	   break;
+        case -2: 
+	   stokes(k) = Stokes::LL; 
+	   break;
+        case -1: 
+	   stokes(k) = Stokes::RR; 
+	   break;
+        case 0:
+	   {
+              os << LogIO::WARN
+                 << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
+              os << "Convention for an image containing a beam.  Putting Stokes=Undefined" << endl;
+              os << "Better would be to write your FITS image with the correct Stokes" << LogIO::POST;
+              stokes(k) = Stokes::Undefined;
+              break;
+	   }
 	case 1:  
 	   {
-	     if (foundI) {
-	       os << LogIO::SEVERE
-		  << "Stokes I already used for this image, possibly for a beam" << endl;
-	       os << "Cannot continue building the StokesCoordinate" << LogIO::POST;
-	       //return False;
-	     }
-	     //
 	     stokes(k) = Stokes::I; 
-	     foundI = True;
 	     break;
 	   }
 	 case 2: 
@@ -930,52 +953,9 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	 case 4: 
 	   stokes(k) = Stokes::V; 
 	   break;
-	 case -1: 
-	   stokes(k) = Stokes::RR; 
-	   break;
-	 case -2: 
-	   stokes(k) = Stokes::LL; 
-	   break;
-	 case -3: 
-	   stokes(k) = Stokes::RL; 
-	   break;
-	 case -4: 
-	   stokes(k) = Stokes::LR; 
-	   break;
-	 case -5: 
-	   stokes(k) = Stokes::XX; 
-	   break;
-	 case -6: 
-	   stokes(k) = Stokes::YY; 
-	   break;
-	 case -7: 
-	   stokes(k) = Stokes::XY; 
-	   break;
-	 case -8: 
-	   stokes(k) = Stokes::YX; 
-	   break;
-	 case 0:
-	   {
-	     if (!foundI) {
-	       stokes(k) = Stokes::I;
-	       os << LogIO::WARN 
-		  << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
-	       os << "Convention for an image containing a beam.  Assuming Stokes=I" << endl;
-	       os << "Better would be to write your miriad image with the correct Stokes" << LogIO::POST;
-	       foundI = True;
-	     } else {
-	       os << LogIO::SEVERE
-		  << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
-	       os << "Convention for an image containing a beam.  Cannot assume Stokes=I" << endl;
-	       os << "for it because Stokes I has already been used for this image" << endl;
-	       os << "Cannot continue building the StokesCoordinate" << LogIO::POST;
-	       //return False;
-	     }
-	     break;
-	   }
 	 case 5:
 	   
-	   // Percentage linear polarization not supported
+	   // Percentage linear polarization not properly supported
 	   
 	   {
 	     os << LogIO::SEVERE << "The Stokes axis has the unofficial percentage polarization value." << endl;
@@ -995,24 +975,26 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	   // Spectral index not supported
 	   
 	   {
-	     os << LogIO::SEVERE << "The Stokes axis has the unofficial spectal index value." << endl;
-	     os << "This is not supported, cannot continue building the StokesCoordinate" << LogIO::POST;
-	     //return False;
+              os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial spectral index value." << endl;
+              os << "This is not supported. Putting Stokes=Undefined" << LogIO::POST;
+              stokes(k) = Stokes::Undefined;
+              break;
 	   }
 	 case 9:
-	   
 	   // Optical depth not supported
-	   
-	   {
-	     os << LogIO::SEVERE << "The Stokes axis has the unofficial optical depth" << endl;
-	     os << "value.  This is not supported, cannot continue building the StokesCoordinate" << LogIO::POST;
-	     //return False;
-	   }
+
+             {	   
+                 os << LogIO::SEVERE << "The Stokes axis has the unofficial optical depth" << endl;
+                 os << "value.  This is not supported. Putting Stokes=Undefined" << LogIO::POST;
+                 stokes(k) = Stokes::Undefined;
+                 break;
+             }
 	 default:
-	   os << LogIO::SEVERE << "A Stokes coordinate of " << stokes(k) 
-	      << " was detected; this is not valid." << endl;
-	   os << "Cannot continue building the StokesCoordinate" << LogIO::POST;
-	   //return False;
+            {
+              os << LogIO::SEVERE << "A Stokes coordinate of " << stokes(k)
+                 << " was detected; this is not valid. Putting Stokes=Undefined" << endl;
+              stokes(k) = Stokes::Undefined;
+            }
 	 }
       }
       try {
@@ -1033,6 +1015,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   if (stokesAxis >= 0) nspecial++;
   if (spectralAxis >= 0) nspecial++;
 #if 0
+
   // I can't figure this out now, there is something wrong here for miriad
   Int linused = 0;
   for (i=0; i<ndim; i++) {
@@ -1063,7 +1046,27 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   }
 //
   cSys.transpose(order, order);
+
 #endif
+
+  // ImageInfo. 
+
+  String btype;
+  rdhda_c(tno_p, "btype", tmps64,"",64);
+  btype = tmps64;
+  ImageInfo::ImageTypes type = ImageInfo::MiriadImageType (btype);
+  if (type!=ImageInfo::Undefined) imageInfo.setImageType(type);
+//
+   Double bmaj, bmin, bpa;
+   rdhdd_c(tno_p, "bmaj", &bmaj, 0.0);
+   rdhdd_c(tno_p, "bmin", &bmin, 0.0);
+   rdhdd_c(tno_p, "bpa", &bpa, 0.0);
+   if (bmaj>0.0 && bmin>0.0 && abs(bpa)>0.0) {
+      Quantum<Double> qbmaj(bmaj,Unit("rad"));
+      Quantum<Double> qbmin(bmin,Unit("rad"));
+      Quantum<Double> qbpa(bpa,Unit("deg"));
+      imageInfo.setRestoringBeam(qbmaj, qbmin, qbpa);
+   }
 
   // DATE-OBS
   Double obstime;
