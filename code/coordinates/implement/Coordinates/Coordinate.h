@@ -88,10 +88,25 @@ class Projection;
 // is merely added to the relative physical coordinate. The interface also
 // allows the axes to be assigned names (reasonable defaults will be selected),
 // and for physical units.
+// 
+// Both absolute and relative coordinates are supported.  The main
+// interface supports conversion between absolute pixel
+// and absolute world coordinate.  There are then functions to
+// convert absolute coordinates to relative and vice versa.
+// A relative pixel coordinate is defined according to 
+// 
+// relative = absolute - reference
+//
+// A relative world coordinate is similar, although there may
+// be deviations from this formula (e.g. for DirectionCoordinate
+// a cos(latitude) term is incorporated and for StokesCoordinate
+// relative world coordinates  are defined to be the same as
+// absolute world coordinates.
+//
 // </synopsis>
 //
 // <note role=caution>
-// All pixels coordinates are zero relative.
+// All absolute pixels coordinates are zero relative.
 // </note>
 //
 // <example>
@@ -168,7 +183,7 @@ public:
     virtual uInt nWorldAxes() const = 0;
     // </group>
 
-    // Convert a pixel position to a world position or vice versa. Returns True
+    // Convert an absolute pixel position to an absolute world position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
     // errorMessage contains an error message.
     // <group>
@@ -178,7 +193,7 @@ public:
 			 const Vector<Double> &world) const = 0;
     // </group>
 
-    // Mixed pixel/world coordinate conversion.
+    // Mixed absolute pixel/world coordinate conversion.
     // worldIn and worldAxes are vectors of length <src>nWorldAxes</src>.
     // <src>pixelIn</src> and <src>pixelAxes</src> are of length <src>nPixelAxes</src>.
     // <src>worldAxes(i) = True</src> specifies you have given a world
@@ -234,6 +249,14 @@ public:
     virtual uInt toPixelMany(Matrix<Double> &pixel, 
 			      const Matrix<Double> &world, 
 			      Vector<Int> &failures) const;
+    // </group>
+
+    // Make absolute coordinates relative and vice-versa.
+    // <group>
+    virtual void makePixelRelative (Vector<Double>& pixel) const;
+    virtual void makePixelAbsolute (Vector<Double>& pixel) const;
+    virtual void makeWorldRelative (Vector<Double>& world) const;
+    virtual void makeWorldAbsolute (Vector<Double>& world) const;
     // </group>
 
     // Return the requested attributed.

@@ -465,7 +465,6 @@ void Coordinate::set_error(const String &errorMsg) const
 
 
 
-
 Vector<String> Coordinate::make_Direction_FITS_ctype (Bool& isNCP, const Projection& proj,
                                                       const Vector<String>& axisNames,
                                                       Double refLat, Bool printError) const
@@ -608,4 +607,48 @@ void Coordinate::fourierUnits (String& nameOut, String& unitOut, String& unitInC
       unitInCanon = unitIn;
    }
 }
+
+
+void Coordinate::makePixelRelative (Vector<Double>& pixel) const
+//
+// rel = abs - ref 
+//
+{
+   AlwaysAssert(pixel.nelements()==nPixelAxes(),AipsError);
+   pixel -= referencePixel();
+}
+
+
+
+void Coordinate::makePixelAbsolute (Vector<Double>& pixel) const
+//
+// abs = rel + ref 
+//
+{
+   AlwaysAssert(pixel.nelements()==nPixelAxes(),AipsError);
+   pixel += referencePixel();
+}
+
+
+void Coordinate::makeWorldRelative (Vector<Double>& world) const
+//
+// rel = abs - ref 
+//
+{
+   AlwaysAssert(world.nelements()==nWorldAxes(),AipsError);
+   world -= referenceValue();
+}
+
+
+
+void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
+//
+// abs = rel + ref 
+//
+{
+   AlwaysAssert(world.nelements()==nWorldAxes(),AipsError);
+   world += referenceValue();
+}
+
+
 
