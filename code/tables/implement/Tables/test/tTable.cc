@@ -42,6 +42,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayUtil.h>
+#include <aips/Arrays/ArrayIO.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Lattices/Slice.h>
 #include <aips/Utilities/Sort.h>
@@ -411,7 +412,7 @@ void b (Bool doExcp)
 	cout << "seltab1 does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> sel1ab(seltab1, "ab");
-    cout << sel1ab.getColumn() << endl;
+    cout << sel1ab.getColumn().ac() << endl;
     cout << "#columns in seltab1: " << seltab1.tableDesc().ncolumn() << endl;
 
     // Project the table.
@@ -424,7 +425,7 @@ void b (Bool doExcp)
 	cout << "seltab2 does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> sel2ab(seltab2, "ab");
-    cout << sel2ab.getColumn() << endl;
+    cout << sel2ab.getColumn().ac() << endl;
     cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
     // Get a subset via a mask.
@@ -436,7 +437,7 @@ void b (Bool doExcp)
 	cout << "seltab3 does not contain 2 rows" << endl;
     }
     ROScalarColumn<Int> sel3ab(seltab3, "ab");
-    cout << sel3ab.getColumn() << endl;
+    cout << sel3ab.getColumn().ac() << endl;
     cout << "#columns in seltab3: " << seltab3.tableDesc().ncolumn() << endl;
     seltab3.tableDesc().show();
 
@@ -445,7 +446,7 @@ void b (Bool doExcp)
 	cout << "xortab does not contain 6 rows" << endl;
     }
     ROScalarColumn<Int> xorab(xortab, "ab");
-    cout << xorab.getColumn() << endl;
+    cout << xorab.getColumn().ac() << endl;
     cout << "#columns in xortab: " << xortab.tableDesc().ncolumn() << endl;
 
     Table or1tab = xortab | seltab3;
@@ -453,7 +454,7 @@ void b (Bool doExcp)
 	cout << "or1tab does not contain 8 rows" << endl;
     }
     ROScalarColumn<Int> or1ab(or1tab, "ab");
-    cout << or1ab.getColumn() << endl;
+    cout << or1ab.getColumn().ac() << endl;
     cout << "#columns in or1tab: " << or1tab.tableDesc().ncolumn() << endl;
 
     Table or2tab = seltab3 | xortab;
@@ -461,7 +462,7 @@ void b (Bool doExcp)
 	cout << "or2tab does not contain 8 rows" << endl;
     }
     ROScalarColumn<Int> or2ab(or2tab, "ab");
-    cout << or2ab.getColumn() << endl;
+    cout << or2ab.getColumn().ac() << endl;
     cout << "#columns in or2tab: " << or2tab.tableDesc().ncolumn() << endl;
 
     Table exprtab = sortab(sortab.col("ab") >= 5);
@@ -469,7 +470,7 @@ void b (Bool doExcp)
 	cout << "exprtab does not contain 5 rows" << endl;
     }
     ROScalarColumn<Int> exprab(exprtab, "ab");
-    cout << exprab.getColumn() << endl;
+    cout << exprab.getColumn().ac() << endl;
 
     Table expr2tab = tab(tab.col("af") == "V3"  ||
 			      tab.col("ab") >= 5  &&  tab.col("ab") < 8);
@@ -477,7 +478,7 @@ void b (Bool doExcp)
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> expr2ab(expr2tab, "ab");
-    cout << expr2ab.getColumn() << endl;
+    cout << expr2ab.getColumn().ac() << endl;
 }
 
 //# Test deletion of rows, array of Strings, and some more.
@@ -579,7 +580,7 @@ void c (Bool doExcp)
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> expr2ab(expr2tab, "ab");
-    cout << expr2ab.getColumn() << endl;
+    cout << expr2ab.getColumn().ac() << endl;
 
     //# Remove 2 rows from the selected rows.
     expr2tab.removeRow (1);
@@ -587,14 +588,14 @@ void c (Bool doExcp)
     if (expr2tab.nrow() != 2) {
 	cout << "expr2tab does not contain 2 rows" << endl;
     }
-    cout << expr2ab.getColumn() << endl;
+    cout << expr2ab.getColumn().ac() << endl;
     
     //# Remove those rows.
     tab.removeRow (expr2tab.rowNumbers());
     if (tab.nrow() != 8) {
 	cout << "tab does not contain 8 rows" << endl;
     }
-    cout << ab2.getColumn() << endl;
+    cout << ab2.getColumn().ac() << endl;
     tab.removeRow (7);
     if (tab.nrow() != 7) {
 	cout << "tab does not contain 7 rows" << endl;
@@ -606,7 +607,7 @@ void c (Bool doExcp)
 	    cout << x.getMesg() << endl;
 	} end_try;
     }
-    cout << ab2.getColumn() << endl;
+    cout << ab2.getColumn().ac() << endl;
 
     //# Check if the values are still okay.
     Int abval;
