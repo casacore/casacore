@@ -143,7 +143,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 
    IPosition outShape2(nDim);
    for (uInt paOut=0; paOut<nDim; paOut++) {
-      outShape2(paOut) = inShape(pixelAxisMap1(paOut));
+      outShape2(paOut) = inShape(pixelAxisMap1[paOut]);
    }
 
 // Specify input and output lattices for each regridding pass
@@ -156,14 +156,14 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 //
    Vector<Bool> doneOutPixelAxes(outCoords.nPixelAxes(), True);
    for (uInt i=0; i<nOutRegridPixelAxes; i++) {
-      doneOutPixelAxes(outPixelAxes(i)) = False;
+      doneOutPixelAxes(outPixelAxes[i]) = False;
    }
 
 // Loop over specified pixel axes of output image
 
    Bool first = True;   
    for (uInt i=0; i<nOutRegridPixelAxes; i++) {
-      if (!doneOutPixelAxes(outPixelAxes(i))) {
+      if (!doneOutPixelAxes(outPixelAxes[i])) {
 
 // Set input and output images for this pass. The new  input must be the last 
 // output image.  We end up with at least one temporary image. Could
@@ -192,7 +192,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
          regridOneCoordinate (os, outShape2, doneOutPixelAxes,
                               finalOutPtr,
                               inPtr, outPtr, outCoords, inCoords2,
-                              outPixelAxes(i), inImage, outShape,
+                              outPixelAxes[i], inImage, outShape,
                               replicate, decimate, outIsMasked, 
                               showProgress, forceRegrid, method);
 
@@ -211,7 +211,8 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                inCoords2.findPixelAxis(inCoord2, inAxisInCoord2, j);
 //
                Int inCoord, inAxisInCoord;
-               inCoords.findPixelAxis(inCoord, inAxisInCoord, pixelAxisMap1(j));
+               inCoords.findPixelAxis(inCoord, inAxisInCoord,
+				      pixelAxisMap1[j]);
 
 	       // We might end up replacing the same coordinate more than
 	       // once with this algorithm
@@ -268,7 +269,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
 // Find Coordinate in input image.
 
-   Int inPixelAxis = pixelAxisMap1(outPixelAxis);
+   Int inPixelAxis = pixelAxisMap1[outPixelAxis];
    Int inWorldAxis = inCoords.pixelAxisToWorldAxis(inPixelAxis);
    inCoords.findPixelAxis(inCoordinate, inAxisInCoordinate, inPixelAxis);
    if (inCoordinate==-1 || inAxisInCoordinate==-1) {
@@ -304,21 +305,21 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
 // Note that we will do two pixel axes in this pass
 
-       doneOutPixelAxes(outPixelAxes(0)) = True;
-       doneOutPixelAxes(outPixelAxes(1)) = True;
+       doneOutPixelAxes(outPixelAxes[0]) = True;
+       doneOutPixelAxes(outPixelAxes[1]) = True;
 
 // Update the incremental output image shape.
 
-       outShape2(outPixelAxes(0)) = outShape(outPixelAxes(0));
-       outShape2(outPixelAxes(1)) = outShape(outPixelAxes(1));
-       if (outShape2(outPixelAxes(0))==1 && outShape2(outPixelAxes(1))==1) {
+       outShape2(outPixelAxes[0]) = outShape(outPixelAxes[0]);
+       outShape2(outPixelAxes[1]) = outShape(outPixelAxes[1]);
+       if (outShape2(outPixelAxes[0])==1 && outShape2(outPixelAxes[1])==1) {
 	 os << "You cannot regrid the DirectionCoordinate as it is "
 	   "of shape [1,1]" << LogIO::EXCEPTION;
        }
        const IPosition inShape = inPtr->shape();
        Bool shapeDiff =
-	 (outShape2(outPixelAxes(0)) != inShape(inPixelAxes(0))) ||
-	 (outShape2(outPixelAxes(1)) != inShape(inPixelAxes(1)));
+	 (outShape2(outPixelAxes[0]) != inShape(inPixelAxes(0))) ||
+	 (outShape2(outPixelAxes[1]) != inShape(inPixelAxes(1)));
 
 // Get DirectionCoordinates for input and output
 
@@ -803,13 +804,13 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 //
    const uInt xOutAxis = min(outPixelAxes(0), outPixelAxes(1));
    const uInt yOutAxis = max(outPixelAxes(0), outPixelAxes(1));
-   uInt xInCorrAxis = pixelAxisMap1(xOutAxis);
-   uInt yInCorrAxis = pixelAxisMap1(yOutAxis);
+   uInt xInCorrAxis = pixelAxisMap1[xOutAxis];
+   uInt yInCorrAxis = pixelAxisMap1[yOutAxis];
 //
    const uInt xInAxis = min(inPixelAxes(0), inPixelAxes(1));
    const uInt yInAxis = max(inPixelAxes(0), inPixelAxes(1));
-   uInt xOutCorrAxis = pixelAxisMap2(xInAxis);
-   uInt yOutCorrAxis = pixelAxisMap2(yInAxis);
+   uInt xOutCorrAxis = pixelAxisMap2[xInAxis];
+   uInt yOutCorrAxis = pixelAxisMap2[yInAxis];
 
 // Make navigator and iterator for output data and mask.  It is vital that
 // the "niceShape" is the same for both iterators.  Because the mask and 
@@ -1016,8 +1017,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 	// image is in the output image.  
 
          for (uInt k=0; k<nDim; k++) {
-            inChunkBlc(k) = outPos(pixelAxisMap2(k));
-            inChunkTrc(k) = outIter.endPosition()(pixelAxisMap2(k));
+            inChunkBlc(k) = outPos[pixelAxisMap2[k]];
+            inChunkTrc(k) = outIter.endPosition()(pixelAxisMap2[k]);
          }
 
 	 // Now overwrite the blc/trc for the regrid axes.
@@ -1027,7 +1028,6 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 	 // pixels on either side is enough.
 	 // If this should change, the interpolation 
 	 // would return False at the edges
-
          i2 = static_cast<Int>(floor(minInX)) - 3;
          inChunkBlc(xInAxis) = max(0,i2);
          i2 = static_cast<Int>(floor(minInY)) - 3;
@@ -1133,7 +1133,7 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
    maxInX = -100000000.0;
    maxInY = -100000000.0;
    allFailed = True;
-   Bool ok1, ok2;
+   Bool ok1=False, ok2=False;
    MVDirection inMVD, outMVD;
 //
    uInt ni = outCursorShape(xOutAxis);
@@ -1225,8 +1225,8 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
    for (uInt j=0; j<nj; j+=jInc,jj++) {
       ii = 0;
       for (uInt i=0; i<ni; i+=iInc,ii++) {
-         outPixel(outXIdx) = i + outPos(xOutAxis);
-         outPixel(outYIdx) = j + outPos(yOutAxis);
+         outPixel(outXIdx) = i + outPos[xOutAxis];
+         outPixel(outYIdx) = j + outPos[yOutAxis];
 
 // Do coordinate conversions (outpixel to world to inpixel)
 // for the axes of interest
@@ -1291,43 +1291,111 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
 //
       Interpolate2D interp(Interpolate2D::LINEAR);
       Vector<Double> pos(2);
-      Double resultI, resultJ;
+      Double resultI=0.0, resultJ=0.0;
+      ///
+      uInt si = uInt(iInPos2D.shape()[0] - 1);;;
+      uInt sj = uInt(iInPos2D.shape()[1] - 1);;;
+      uInt jp, ip;;;
+      Bool *inMask = &((ijInMask2D)(0,0));;;
+      Int dj = &((ijInMask2D)(0,1)) - inMask;;;
+      Int di = &((ijInMask2D)(1,0)) - inMask;;;
+      // Note: the dimensions of the Mask and Pos2D are the same
+      Bool *leMask = 0;;;
+      Double *leDataI = 0;;;
+      Double *leDataJ = 0;;;
+      Double *inDataI = & iInPos2D(0,0);;;
+      Double *inDataJ = & jInPos2D(0,0);;;
+      Double *in2DPtr = &in2DPos(0,0,0);;;
+      Int din2Di = &in2DPos(1,0,0) - in2DPtr;;;
+      Int din2Dj = &in2DPos(0,1,0) - in2DPtr;;;
+      Int din2Dk = &in2DPos(0,0,1) - in2DPtr;;;
+      Double *in2Dp = 0;;;
+      Bool *succeedPtr = &succeed(0,0);;;
+      Int dsi = &succeed(1,0) - succeedPtr;;;
+      Int dsj = &succeed(0,1) - succeedPtr;;;
+      Bool *succeedp = 0;;;
+      ///
       for (uInt j=0; j<nj; j++) {
-         pos(1) = Double(j) / Double(jInc);              
-         for (uInt i=0; i<ni; i++) {
-            pos(0) = Double(i) / Double(iInc);         
-            ok1 = interp.interp (resultI, pos, iInPos2D, ijInMask2D);
-            ok2 = interp.interp (resultJ, pos, jInPos2D, ijInMask2D);
-            if (itsShowLevel > 1) {
-               if (i==(ni-1)) {
-                  cerr << "pos" << pos << endl;
-                  cerr << "  ok, resultI = " << ok1 << ", " << resultI << endl;
-                  cerr << "  ok, resultJ = " << ok2 << ", " << resultJ << endl;
-               }
-            }
+	succeedp = succeedPtr + j*dsj - dsi;;;
+	in2Dp = in2DPtr + j*din2Dj - din2Di;;;
+	pos[1] = Double(j) / Double(jInc); 
+	jp = j/jInc;;;
+	if (jp==sj) --jp;;;
+	for (uInt i=0; i<ni; i++) {
+	  succeedp += dsi;;;
+	  in2Dp += din2Di;
+	  pos[0] = Double(i) / Double(iInc);  
+	  ip = i/iInc;;;
+	  if (ip==si) --ip;;;
+	  if (ip<si && jp<sj) {
+	    uInt k = ip*di +jp*dj;
+	    leMask = inMask + k;;;
+	    if (! *leMask || ! *(leMask+di) || ! *(leMask+dj) ||
+		! *(leMask+di+dj)) ok1 = False;
+	    else {
+	      Double TT = pos[0] - ip;
+	      Double UU = pos[1] - jp;
+	      Double x1 = (1.0-TT);;;
+	      Double y1 = (1.0-UU);;;
+	      leDataI = inDataI + k;;;
+	      leDataJ = inDataJ + k;;;
+	      Double x = x1*y1;;;
+	      resultI = x * (*leDataI);;;
+	      resultJ = x * (*leDataJ);;;
+	      x = TT*y1;;;
+	      leDataI += di;;;
+	      leDataJ += di;;;
+	      resultI += x * (*leDataI);;;
+	      resultJ += x * (*leDataJ);;;
+	      x = TT*UU;;;
+	      leDataI += dj;;;
+	      leDataJ += dj;;;
+	      resultI += x * (*leDataI);;;
+	      resultJ += x * (*leDataJ);;;
+	      x = x1*UU;;;
+	      leDataI -= di;;;
+	      leDataJ -= di;;;
+	      resultI += x * (*leDataI);;;
+	      resultJ += x * (*leDataJ);;;
+	      ok1 = True;;;
+	    };
+	  } else ok1 = False;;;
+	  ///	    ok1 = interp.interp (resultI, pos, iInPos2D, ijInMask2D);
+	  ///	    ok2 = interp.interp (resultJ, pos, jInPos2D, ijInMask2D);
+	  if (itsShowLevel > 1) {
+	    if (i==(ni-1)) {
+	      cerr << "pos" << pos << endl;
+	      cerr << "  ok, resultI = " << ok1 << ", " << resultI << endl;
+	      cerr << "  ok, resultJ = " << ok2 << ", " << resultJ << endl;
+	    }
+	  }
 //
-            if (ok1 && ok2) {
-               in2DPos(i,j,0) = resultI;
-               in2DPos(i,j,1) = resultJ;
-               succeed(i,j) = True;
-               allFailed = False;
-//
-               minInX = min(minInX,resultI);
-               minInY = min(minInY,resultJ);
-               maxInX = max(maxInX,resultI);
-               maxInY = max(maxInY,resultJ);
-            } else {
-               succeed(i,j) = False;
-            }
-         }
+	  if (ok1) {
+	    ///	    in2DPos(i,j,0) = resultI;
+	    ///	    in2DPos(i,j,1) = resultJ;
+	    ///	    succeed(i,j) = True;
+	    *in2Dp = resultI;;;
+	    *(in2Dp+din2Dk) = resultJ;;;
+	    *succeedp = True;;;
+	    allFailed = False;
+	    //
+	    minInX = min(minInX,resultI);
+	    minInY = min(minInY,resultJ);
+	    maxInX = max(maxInX,resultI);
+	    maxInY = max(maxInY,resultJ);
+	  } else {
+	    succeed(i,j) = False;
+	  }
+	}
       }
-//
+
+      //
       if (itsShowLevel > 0) {
-         cerr << "Interpolated grid took " << t1.all() << endl;
+	cerr << "Interpolated grid took " << t1.all() << endl;
       }
    }
-
-
+   
+   
 // Does the output map to anywhere on the input ?
 
    missedIt = False;
@@ -1374,8 +1442,8 @@ void ImageRegrid<T>::make2DCoordinateGrid (Cube<Double>& in2DPos,
 
 // First output Direction axis corresponds to the first input Direction axis
 
-      Double t0 = (outPos(xOutCorrAxis) / pixelScale(xInAxis)) + oX;
-      Double t1 = (outPos(yOutCorrAxis) / pixelScale(yInAxis)) + oY;
+      Double t0 = (outPos[xOutCorrAxis] / pixelScale(xInAxis)) + oX;
+      Double t1 = (outPos[yOutCorrAxis] / pixelScale(yInAxis)) + oY;
 //
       for (uInt j=0; j<nj; j++) {
          for (uInt i=0; i<ni; i++) {
@@ -1387,8 +1455,8 @@ void ImageRegrid<T>::make2DCoordinateGrid (Cube<Double>& in2DPos,
 
 // First output Direction axis corresponds to the second input Direction axis
 
-      Double t0 = (outPos(yOutCorrAxis) / pixelScale(xInAxis)) + oX;
-      Double t1 = (outPos(xOutCorrAxis) / pixelScale(yInAxis)) + oY;
+      Double t0 = (outPos[yOutCorrAxis] / pixelScale(xInAxis)) + oX;
+      Double t1 = (outPos[xOutCorrAxis] / pixelScale(yInAxis)) + oY;
 //
       for (uInt j=0; j<nj; j++) {
          for (uInt i=0; i<ni; i++) {
@@ -1428,8 +1496,8 @@ void ImageRegrid<T>::findXYExtent (Bool& missedIt, Bool& allFailed,
                
 // outPos is the BLC of this chunk in the output lattice
  
-   uInt iOff = outPos(xOutAxis);
-   uInt jOff = outPos(yOutAxis);
+   uInt iOff = outPos[xOutAxis];
+   uInt jOff = outPos[yOutAxis];
 //
    IPosition blc(2);
    blc(0) = iOff;
@@ -1495,13 +1563,6 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
 // Iterate through a stack of DirectionCoordinate planes and interpolate them
 //
 {
-/*
-   Timer t0, t1, t3, t4;
-   Double s0 = 0.0;
-   Double s1 = 0.0;
-   Double s3 = 0.0;
-   Double s4 = 0.0;
-*/
 
 //cerr << "Enter regrid2Dmatrix" << endl;
 //cerr << "Pix2Dpos shape = " << pix2DPos.shape() << endl;
@@ -1524,33 +1585,19 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
      outMaskCursorIterPtr = new LatticeIterator<Bool>(*outMaskCursorPtr,
 						      outCursorIterStepper);
    }
-/*
-   if (itsShowLevel>0) {
-      cerr << "outCursorAxisPath = " << axisPath << endl;
-      cerr << "outCursorAxes" << outCursorAxes << endl;
-      cerr << "outCursorIterShape = " << outCursorIterShape << endl;
-      cerr << "outMatrixCursorIterShape = " <<
-      outCursorIter.matrixCursor().shape() << endl;
-   }
-*/
 //
    IPosition inChunkBlc2D(nDim, 0);
    IPosition inChunkTrc2D(nDim);
    inChunkTrc2D = inChunkShape - 1;
 //
    IPosition inChunk2DShape(2);
-   inChunk2DShape(0) = inChunkTrc2D(xInAxis) - inChunkBlc2D(xInAxis) + 1;
-   inChunk2DShape(1) = inChunkTrc2D(yInAxis) - inChunkBlc2D(yInAxis) + 1;
+   inChunk2DShape[0] = inChunkTrc2D[xInAxis] - inChunkBlc2D[xInAxis] + 1;
+   inChunk2DShape[1] = inChunkTrc2D[yInAxis] - inChunkBlc2D[yInAxis] + 1;
 //
    Vector<Double> pix2DPos2(2);
    IPosition outPos3;
    Bool interpOK;
    T result(0);
-//
-/*
-   s0 += t0.all();
-   t1.mark();
-*/
 //
    for (outCursorIter.reset(); !outCursorIter.atEnd(); outCursorIter++) {
 
@@ -1566,18 +1613,11 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
 
       for (uInt k=0; k<nDim; k++) {
          if (k!=xInAxis&& k!=yInAxis) {
-            inChunkBlc2D(k) = outPos3(pixelAxisMap2(k)) - inChunkBlc(k);
-            inChunkTrc2D(k) = inChunkBlc2D(k);
+            inChunkBlc2D[k] = outPos3[pixelAxisMap2[k]] - inChunkBlc[k];
+            inChunkTrc2D[k] = inChunkBlc2D[k];
          } 
       }
 //
-/*
-      if (itsShowLevel>1) {
-         cerr << "inChunkBlc2D, inChunkTrc2D, inChunk2DShape " << inChunkBlc2D 
-              << inChunkTrc2D << inChunk2DShape << endl;
-      }
-*/
-//      t3.mark();
       const Matrix<T>& inDataChunk2D =
 	inDataChunk(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape);
       Matrix<Bool>* inMaskChunk2DPtr = 0;
@@ -1602,96 +1642,130 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
       uInt ii = 0;
       uInt jj = 0;
 // 
-//     t4.mark();
+      T *outMPtr = &outMCursor(0,0);;;
+      Int doutMi = &outMCursor(1,0) - outMPtr;;;
+      Int doutMj = &outMCursor(0,1) - outMPtr;;;
+      T *outMp = 0;;;
+      Bool *outMaskMPtr = 0;;;
+      Int doutMaskMi = 0;;;
+      Int doutMaskMj = 0;;;
+      Bool *outMaskMp = 0;;;
+      if (outIsMasked) {
+	outMaskMPtr = &(outMaskMCursor->operator()(0,0));;;
+	doutMaskMi = &(outMaskMCursor->operator()(1,0)) - outMaskMPtr;;;
+	doutMaskMj = &(outMaskMCursor->operator()(0,1)) - outMaskMPtr;;;
+      };
+      const Bool *succeedPtr = &succeed(0,0);;;
+      const Int dsi = &succeed(1,0) - succeedPtr;;;
+      const Int dsj = &succeed(0,1) - succeedPtr;;;
+      const Bool *succeedp = 0;;;
+      const T *inData2DPtr = &inDataChunk2D(0,0);;;
+      Int dinData2Di = &inDataChunk2D(1,0) - inData2DPtr;;;
+      Int dinData2Dj = &inDataChunk2D(0,1) - inData2DPtr;;;
+      const T *leData = 0;;;
+      const Double *pix2DPtr = &pix2DPos(0,0,0);;;
+      Int dpix2Di = &pix2DPos(1,0,0) - pix2DPtr;;;
+      Int dpix2Dj = &pix2DPos(0,1,0) - pix2DPtr;;;
+      Int dpix2Dk = &pix2DPos(0,0,1) - pix2DPtr;;;
+      const Double *pix2Dp = 0;;;
+      uInt si = uInt(inDataChunk2D.shape()[0] - 1);;;
+      uInt sj = uInt(inDataChunk2D.shape()[1] - 1);;;
+      uInt jp, ip;;;
+      Bool *inMask = 0;;;
+      Int dj = 0;;;
+      Int di = 0;;;
+      Bool *leMask = 0;;;
+      if (inIsMasked) {
+	*inMask = &((*inMaskChunk2DPtr)(0,0));;;
+	dj = &((*inMaskChunk2DPtr)(0,1)) - inMask;;;
+	di = &((*inMaskChunk2DPtr)(1,0)) - inMask;;;
+      };
+
       for (uInt j=0; j<nCol; j++) {
-         for (uInt i=0; i<nRow; i++) {
-            if (!succeed(i,j)) {
-               outMCursor(i,j) = 0.0;
-               if (outIsMasked) {
-                  outMaskMCursor->operator()(i,j) = False;
-               }
-            } else {
+	outMp = outMPtr + j*doutMj - doutMi;;;
+	if (outIsMasked) {
+	  outMaskMp = outMaskMPtr + j*doutMaskMj - doutMaskMi;;;
+	};
+	succeedp = succeedPtr + j*dsj - dsi;;;
+	for (uInt i=0; i<nRow; i++) {
+	outMp += doutMi;;;
+	if (outIsMasked) outMaskMp += doutMaskMi;;;
+	  succeedp += dsi;;;
+	  if (! *succeedp) {
+	    *outMp = 0.0;
+	    if (outIsMasked) *outMaskMp = False;
+	  } else {
 
 // Now do the interpolation. pix2DPos(i,j,) is the absolute input pixel 
 // coordinate in the input lattice for the current output pixel.
 
-               ii = outPos3(xOutAxis) + i;
-               jj = outPos3(yOutAxis) + j;
-               pix2DPos2[0] = pix2DPos(ii,jj,0) - inChunkBlc(xInAxis);
-               pix2DPos2[1] = pix2DPos(ii,jj,1) - inChunkBlc(yInAxis);
-/*
-               if (itsShowLevel>2) {
-                  cerr << "For output [i,j] = " << " [" << i << "," << j << "]" 
-                       << " interpolate input at " << pix2DPos2;
-               }
-*/
+	    ii = outPos3[xOutAxis] + i;
+	    jj = outPos3[yOutAxis] + j;
+	    pix2Dp = pix2DPtr + ii*dpix2Di + jj*dpix2Dj;;;
+	    pix2DPos2[0] = *pix2Dp - inChunkBlc[xInAxis];;;
+	    pix2DPos2[1] = *(pix2Dp+dpix2Dk) - inChunkBlc[yInAxis];;;
+	    ///	    pix2DPos2[0] = pix2DPos(ii,jj,0) - inChunkBlc(xInAxis);
+	    ///	    pix2DPos2[1] = pix2DPos(ii,jj,1) - inChunkBlc(yInAxis);
+	    ip = Int(pix2DPos2[0]);;;
+	    jp = Int(pix2DPos2[1]);;;
+	    if (jp==sj) --jp;;;
+	    if (ip==si) --ip;;;
 //
-               if (inIsMasked) {                     
-                  interpOK = interp.interp(result, pix2DPos2, inDataChunk2D,
-					   *inMaskChunk2DPtr);
-               } else {
-                  interpOK = interp.interp(result, pix2DPos2, inDataChunk2D);
-               }
-               if (interpOK) {
-/*
-                  if (itsShowLevel>2) {
-                     cerr  << " giving result " << result << endl;
-                  }
-*/
-                  outMCursor(i,j) = scale * result;
-                  if (outIsMasked) {
-                     outMaskMCursor->operator()(i,j) = True; 
-                  }
-               } else {
-/*
-                  if (itsShowLevel>2) {
-                      cerr  << " giving Fail" << endl;
-                  }
-*/
-                  outMCursor(i,j) = 0.0;
-                  if (outIsMasked) {
-                     outMaskMCursor->operator()(i,j) = False; 
-                  }
-               }
-            }
-         }
-      }
-//      s4 := t4.all();
-//
+	    if (ip<si && jp<sj) {
+	      interpOK = True;;;
+	      if (inIsMasked) {                     
+		leMask = inMask + ip*di + jp*dj;;;
+		if (! *leMask || ! *(leMask+di) || ! *(leMask+dj) ||
+		    ! *(leMask+di+dj)) interpOK = False;;;
+	      };
+	      if (interpOK) {
+		Double TT = pix2DPos2[0] - ip;
+		Double UU = pix2DPos2[1] - jp;
+		Double x1 = (1.0-TT);;;
+		Double y1 = (1.0-UU);;;
+		leData = inData2DPtr + ip*dinData2Di + jp*dinData2Dj;;;
+		result = x1*y1 * (*leData);;;
+		leData += dinData2Di;;;
+		result += TT*y1 * (*leData);;;
+		leData += dinData2Dj;;;
+		result += TT*UU * (*leData);;;
+		leData -= dinData2Di;;;
+		result += x1*UU * (*leData);;;
+	      };
+	    } else interpOK = False;;;
+
+
+	    ///	      interpOK = interp.interp(result, pix2DPos2, inDataChunk2D,
+	    ///				       *inMaskChunk2DPtr);
+	    ///	    } else {
+	    ///	      interpOK = interp.interp(result, pix2DPos2, inDataChunk2D);
+	    ///	    }
+	    if (interpOK) {
+	      *outMp = scale * result;
+	      if (outIsMasked) *outMaskMp = True; 
+	    } else {
+	      *outMp = 0.0;
+	      if (outIsMasked) *outMaskMp = False; 
+	    };
+	  };
+	};
+      };
+      //
       if (pProgressMeter) {
-         pProgressMeter->update(iPix); 
-         iPix += nCol*nRow;
+	pProgressMeter->update(iPix); 
+	iPix += nCol*nRow;
       }
-//
-/*
-      if (itsShowLevel>2) {
-         cerr << "output data matrix  = " << outCursorIter.matrixCursor() <<
-	 endl;
-         if (outIsMasked) {
-            cerr << "output mask matrix  = " <<
-	    outMaskCursorIterPtr->matrixCursor() << endl;
-         }
-      }
-*/
+      //
       if (outIsMasked) (*outMaskCursorIterPtr)++;
       if (inIsMasked) delete inMaskChunk2DPtr;
    }
-//
+   //
    if (inIsMasked) delete inMaskChunkPtr;
    if (outIsMasked) {
-      delete outMaskCursorIterPtr;
-      delete outMaskCursorPtr;
+     delete outMaskCursorIterPtr;
+     delete outMaskCursorPtr;
    }
-/*
-   s1 += t1.all();
-   cerr << "          Setup took " << s0 << endl;
-   cerr << "          Iterating and regridding took " << s1 << endl;
-   cerr << "             Data get took " << s3 << endl;
-   cerr << "             Inner iteration + regridding took " << s4 << endl;
-*/
 }
-
-
 
 template<class T>
 void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
@@ -1855,7 +1929,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 // Get input vector of data and mask
 
       for (uInt i=0; i<nDim; i++) {
-         inPos(i) = outPos(pixelAxisMap(i));
+         inPos[i] = outPos[pixelAxisMap[i]];
       }
       const Vector<T>& inY = inLattice.getSlice(inPos, inSubShape, True);
       const Vector<Bool>& inMask = inLattice.getMaskSlice(inPos, inSubShape,
@@ -1959,13 +2033,6 @@ void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
       for (uInt i=0; i<nLine; i++) {
 
 // Fill Coordinate pixel locations
-/*
-         if (itsShowLevel>1) {
-            cerr.setf(ios::scientific, ios::floatfield);
-            cerr.precision(12);
-            cerr << "pixel out, world out, pixel in  = " << outPixel;
-         }
-*/
 //
          outPixel2 = i;
          ok1 = outSpecCoord.toWorld(outMVF, outPixel2);
@@ -1978,13 +2045,6 @@ void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
             failed(i) = True;
             allGood = False;
          } else {
-/*
-            if (itsShowLevel>1) {
-               cerr.setf(ios::scientific, ios::floatfield);
-               cerr.precision(12);
-               cerr << ", " << world << " " << inPixel << endl;
-            }
-*/
 
 // This one ok
 
@@ -1997,14 +2057,6 @@ void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
       for (uInt i=0; i<nLine; i++) {
 
 // Fill Coordinate pixel locations
-
-/*
-         if (itsShowLevel>1) {
-            cerr.setf(ios::scientific, ios::floatfield);
-            cerr.precision(12);
-            cerr << "pixel out, world out, pixel in  = " << outPixel;
-         }
-*/
 //
          outPixel(outAxisInCoordinate) = i;
          ok1 = outCoord.toWorld(world, outPixel);
@@ -2014,13 +2066,6 @@ void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
             failed(i) = True;
             allGood = False;
          } else {
-/*
-            if (itsShowLevel>1) {
-               cerr.setf(ios::scientific, ios::floatfield);
-               cerr.precision(12);
-               cerr << ", " << world << " " << inPixel << endl;
-            }
-*/
 
 // This one ok
 
@@ -2166,7 +2211,7 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
 // pixelAxisMap1(i) says where pixel axis i in the output image
 // is in the input image
 
-      if (!foundIt && outShape(i) != inShape(pixelAxisMap1(i))) {
+      if (!foundIt && outShape(i) != inShape(pixelAxisMap1[i])) {
            os << "Any axis not being regridded must have the same "
               << "input and output shapes" << LogIO::EXCEPTION;
       }  
@@ -2208,8 +2253,8 @@ void ImageRegrid<T>::findMaps (uInt nDim,
       Int waIn = worldAxisTranspose(waOut);
       Int paIn = inCoords.worldAxisToPixelAxis(waIn);      
 //
-      pixelAxisMap1(paOut) = paIn;
-      pixelAxisMap2(paIn) = paOut;
+      pixelAxisMap1[paOut] = paIn;
+      pixelAxisMap2[paIn] = paOut;
    }
 //
    if (itsShowLevel>0) {
