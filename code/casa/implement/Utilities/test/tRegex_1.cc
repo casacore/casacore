@@ -1,5 +1,5 @@
 //# tRegex_1.cc: Regex test program
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,7 +63,8 @@ main (void)
 
     cout << "Pattern --> Regular Expression" << endl;
     cout << "------------------------------" << endl;
-    for (int i=0; i<ntests; i++) {
+    int i;
+    for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromPattern(p[i]) << endl;
     }
 

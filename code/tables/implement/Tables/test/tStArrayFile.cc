@@ -1,5 +1,5 @@
 //# tStArrayFile.cc: Test program for the StManArrayFile class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -143,7 +143,8 @@ void b (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4,
     Complex cbuf[10000];
     String sbuf[10000], sbufo[10000];
     char str[16];
-    for (uInt i=0; i<10000; i++) {
+    Int i;
+    for (i=0; i<10000; i++) {
 	sprintf (str, "str %d", i);
 	sbuf[i] = str;
     }
@@ -226,7 +227,8 @@ void c (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4)
     Complex cbuf[10000];
     String sbuf[10000], sbufo[10000];
     char str[16];
-    for (uInt i=0; i<10000; i++) {
+    uInt i;
+    for (i=0; i<10000; i++) {
 	sprintf (str, "str %d", i);
 	sbuf[i] = str;
     }
@@ -246,7 +248,7 @@ void c (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4)
     io.get (off3+l3, 0, 10000, sbufo);
     io.get (off1+l1, 0, 10000, ibuf);
     io.get (off2+l2, 0, 10000, cbuf);
-    uInt j;
+    Int j;
     for (i=0; i<10000; i++) {
 	j = i;
 	if (i>0 && i<21)

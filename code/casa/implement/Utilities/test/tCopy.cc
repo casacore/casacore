@@ -1,5 +1,5 @@
 //# tCopy.cc: This program tests the functions in Copy.h
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -48,13 +48,14 @@
 
 main()
 {
-    uInt size=100;             // should be a multiple of 4
+    Int size=100;             // should be a multiple of 4
     Int* ia = new int[size];
 
     objset(ia, 99, size);
 
     // Test setting values.
-    for (int i=0; i<size; i++)
+    Int i;
+    for (i=0; i<size; i++)
 	AlwaysAssertExit(ia[i] == 99);
     objset(ia+1,66, uInt(size/2), uInt(2));
     for (i=0; i<size; i += 2)

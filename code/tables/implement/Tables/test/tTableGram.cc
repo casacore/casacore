@@ -1,5 +1,5 @@
 //# tTableGram.cc: This program tests table commands using TableGram/Parse
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -87,7 +87,8 @@ void showtab (const Table& tab, const Vector<String>& colnam)
 {
     uInt nrcol = 0;
     PtrBlock<ROTableColumn*> tableColumns(colnam.nelements());
-    for (uInt i=0; i<colnam.nelements(); i++) {
+    uInt i;
+    for (i=0; i<colnam.nelements(); i++) {
 	if (! tab.tableDesc().isColumn (colnam(i))) {
 	    cout << "Column " << colnam(i) << " does not exist" << endl;
 	}else{

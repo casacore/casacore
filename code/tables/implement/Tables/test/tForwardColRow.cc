@@ -163,7 +163,8 @@ void c (const TableDesc& tdin)
     cout << " canRemoveRow=" << forwTab.canRemoveRow();
     cout << endl;
     ScalarColumn<uInt> rowCol (forwTab, "row");
-    for (uInt i=0; i<20; i++) {
+    uInt i;
+    for (i=0; i<20; i++) {
 	rowCol.put (i, i%10);
     }
     forwTab.addColumn (ScalarColumnDesc<Int>("ac"), "ForwardEngineRow1", True);
@@ -230,7 +231,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 	    af.get (i, afval);
 	    ag.get (i, agval);
 	    sprintf (str, "V%i", vali);
-	    if (abval != vali+abOffset  ||  acval != vali+1+acOffset
+	    if (abval != Int(vali)+abOffset  ||  acval != Int(vali)+1+acOffset
 		||  adval != vali+2  ||  aeval != vali+3
 		||  afval != str  ||  agval != DComplex(vali+2)) {
 		cout << "error in row " << i << ": " << abval

@@ -74,7 +74,8 @@ void a (uInt nrrow)
 
     ScalarColumn<uInt> ab1(tab,"ab");
     ScalarColumn<Int> ad(tab,"ad");
-    for (uInt i=0; i<nrrow; i++) {
+    uInt i;
+    for (i=0; i<nrrow; i++) {
 	ab1.put (i, i);
 	ad.put (i, i/10);
     }
