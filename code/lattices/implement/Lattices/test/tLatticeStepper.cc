@@ -53,8 +53,7 @@ int main()
       try { // test the check for an bad cursor dimension
  	LatticeStepper demented(smallLatticeShape, badCursor);
       } catch (AipsError x) {
- 	if (!x.getMesg().contains("Cursor shape has more axes than the "
- 				  "lattice")) {
+ 	if (!x.getMesg().contains("more axes than lattice")) {
  	  cout << x.getMesg() << endl << "FAIL" << endl;
 	  return 1;
  	}
@@ -64,7 +63,7 @@ int main()
 	try { // test the check for an bad cursor size (upper bound exceeded)
 	  LatticeStepper demented(latticeShape, bigCursor, stepperOrientation);
 	} catch (AipsError x) {
-	  if (!x.getMesg().contains("ok() == True")) {
+	  if (!x.getMesg().contains("> latticeShape")) {
 	    cout << x.getMesg() << endl << "FAIL" << endl;
 	    return 1;
 	  }
@@ -73,7 +72,7 @@ int main()
 	try { // test the check for an bad cursor size (lower bound exceeded)
 	  LatticeStepper demented(latticeShape, zeroCursor,stepperOrientation);
 	} catch (AipsError x) {
- 	  if (!x.getMesg().contains("Cursor shape is is zero or negative")) {
+ 	  if (!x.getMesg().contains("cursorShape <=0")) {
 	    cout << x.getMesg() << endl << "FAIL" << endl;
 	    return 1;
 	  }
