@@ -25,11 +25,13 @@ WCSLIB := $(LIBOPTD)/libwcs
 
 # Source lists.
 #--------------
-WCSIMPS := $(filter %.c,$(AIPSSRCS))
+WCSIMPS := $(filter %.c %.l,$(AIPSSRCS))
 
 ifeq "$(WCSLIBTRIG)" ""
   WCSIMPS := $(filter-out wcstrig.c,$(WCSIMPS))
 endif
+
+WCSMODS := $(patsubst %,%.o,$(basename $(WCSIMPS)))
 
 
 # Pattern rules.
@@ -38,6 +40,16 @@ $(WCSLIB).$(SFXSTAT)(%.o) : $(CODEDIR)/%.c
 	-@ echo ""
 	-@ echo "$%"
 	 @ cd $(WCSTMPD) && $(CC) $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $<
+	-@ $(TIMER)
+
+$(WCSLIB).$(SFXSTAT)(%.o) : $(CODEDIR)/%.l
+	-@ echo ""
+	-@ echo "$%"
+	 @ cd $(WCSTMPD)
+	 @ $(FLEX) $(FLFLAGS) -P$* $<
+	 @ mv -f lex.$*.c $*.c
+	 @ $(CC) $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $*.c
+	-@ $(RM) $*.c
 	-@ $(TIMER)
 
 
@@ -52,7 +64,7 @@ allsys : wcslib
 
 wcslib: $(WCSLIB).$(SFXSTAT) $(WCSLIB).$(SFXSHAR)
 
-$(WCSLIB).$(SFXSTAT) : $(WCSIMPS:%.c=$(WCSLIB).$(SFXSTAT)(%.o)) FORCE
+$(WCSLIB).$(SFXSTAT) : $(WCSMODS:%=$(WCSLIB).$(SFXSTAT)(%)) FORCE
 	-@ cd $(WCSTMPD) ; \
 	   if [ "`ls *.o 2>/dev/null`" != "" ] ; then \
 	      echo "" ; \
@@ -82,6 +94,7 @@ show_local :
 	-@ echo "WCSTMPD =$(WCSTMPD)"
 	-@ echo "WCSLIB  =$(WCSLIB).$(SFXSTAT)"
 	-@ echo "WCSIMPS =$(WCSIMPS)"
+	-@ echo "WCSMODS =$(WCSMODS)"
 
 
 # Dependency list.
@@ -115,6 +128,24 @@ $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/spx.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcs.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcstrig.h
+
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/cel.h
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/lin.h
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/prj.h
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/spc.h
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/sph.h
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/wcs.h
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/wcshdr.h
+
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/cel.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/lin.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/prj.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/spc.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/sph.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/wcs.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/wcshdr.h
 
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcstrig.h
