@@ -90,6 +90,7 @@ private:
 // MeasurementSet ms("myMS"); 
 // Block<int> sort(3);
 //        sort[0] = MS::FIELD_ID;
+//        sort[1] = MS::ARRAY_ID;
 //        sort[2] = MS::DATA_DESCRIPTION_ID;
 //        sort[3] = MS::TIME;
 // Double timeInterval = 30;
@@ -188,6 +189,12 @@ public:
   // Return true if msId has changed since last iteration
   Bool newMS() const;
 
+  // Return the current ArrayId
+  Int arrayId() const;
+
+  // Return True if ArrayId has changed since last iteration
+  Bool newArray() const;
+
   // Return the current FieldId
   Int fieldId() const;
 
@@ -259,6 +266,7 @@ protected:
   // set the iteration state
   void setState();
   void setMSInfo();
+  void setArrayInfo();
   void setFeedInfo();
   void setDataDescInfo();
   void setFieldInfo();
@@ -274,12 +282,12 @@ protected:
   Int nMS_p;
   ROMSColumns* msc_p;
   Table curTable_p;
-  Int curMS_p, lastMS_p, curSource_p;
+  Int curMS_p, lastMS_p, curArray_p, lastArray_p, curSource_p;
   String curFieldName_p, curSourceName_p;
   Int curField_p, lastField_p, curSpectralWindow_p, lastSpectralWindow_p;
   Int curPolarizationId_p, lastPolarizationId_p;
   Int curDataDescId_p, lastDataDescId_p;
-  Bool more_p, newMS_p, newField_p, newSpectralWindow_p, 
+  Bool more_p, newMS_p, newArray_p, newField_p, newSpectralWindow_p, 
     newPolarizationId_p, newDataDescId_p, preselected_p,
     timeDepFeed_p, spwDepFeed_p, checkFeed_p;
   Int startChan_p;
@@ -290,7 +298,7 @@ protected:
   Block<Int> preselectedChanStart_p,preselectednChan_p;
   
   // columns
-  ROScalarColumn<Int> colDataDesc_p, colField_p;
+  ROScalarColumn<Int> colArray_p, colDataDesc_p, colField_p;
 
   //cache for access functions
   MDirection phaseCenter_p;
@@ -309,10 +317,12 @@ inline Table MSIter::table() const {return curTable_p;}
 inline const MS& MSIter::ms() const {return bms_p[curMS_p];}
 inline const ROMSColumns& MSIter::msColumns() const { return *msc_p;}
 inline Bool MSIter::newMS() const { return newMS_p;}
+inline Bool MSIter::newArray() const {return newArray_p;}
 inline Bool MSIter::newField() const { return newField_p;}
 inline Bool MSIter::newSpectralWindow() const 
 { return newSpectralWindow_p;}
 inline Int MSIter::msId() const { return curMS_p;}
+inline Int MSIter::arrayId() const {return curArray_p;}
 inline Int MSIter::fieldId() const { return curField_p;}
 inline const String& MSIter::fieldName() const { return curFieldName_p;}
 inline const String& MSIter::sourceName() const { return curSourceName_p;}
