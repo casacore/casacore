@@ -46,6 +46,7 @@
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/TiledStepper.h>
+#include <trial/Tasking/ProgressMeter.h>
 
 #include <iomanip.h>
 #include <stdlib.h>
@@ -234,6 +235,13 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
  
       cursorAxes_p.resize(pInImage_p->ndim());
       for (Int i=0; i<pInImage_p->ndim(); i++) cursorAxes_p(i) = i;
+   } else {
+      for (Int i=0; i<cursorAxes_p.nelements(); i++) {
+         if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > pInImage_p->ndim()-1) {
+            os_p << LogIO::SEVERE << "Invalid cursor axes" << LogIO::POST;
+            return False;
+         }
+      }
    }
 
 
@@ -256,7 +264,7 @@ Bool ImageHistograms<T>::setNBins (const Int& nBinsU)
       return False;
    }
       
-   if (nBinsU <= 0) {
+   if (nBinsU <= 1) {
       os_p << LogIO::SEVERE << "Invalid number of bins" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
@@ -505,8 +513,7 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 // navigator, which will also guarentee the access pattern.  There will
 // be no overhang
   
-   IPosition cursorShape(pHistImage_p->ndim(),1);
-   cursorShape(0) = pHistImage_p->shape()(0);
+   IPosition cursorShape(1,pHistImage_p->shape()(0));
    RO_LatticeIterator<Int> histIterator(*pHistImage_p, cursorShape);
 
 
@@ -703,8 +710,7 @@ Bool ImageHistograms<T>::displayHistograms ()
 // and this will guarentee the access pattern is row based rather than tile based
 // There will be no overhang
  
-   IPosition cursorShape(pHistImage_p->ndim(),1);
-   cursorShape(0) = pHistImage_p->shape()(0);
+   IPosition cursorShape(1,pHistImage_p->shape()(0));
    RO_LatticeIterator<Int> histIterator(*pHistImage_p, cursorShape);
 
 
@@ -818,17 +824,16 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
       if (nDisplayAxes > 0) {   
          Vector<String> sWorld(1);
          Vector<Double> pixels(1);
-         const Int oPrec = 6;
 
          for (Int j=0; j<nDisplayAxes; j++) {
-            pixels(0) = Double(locHistInImage(histPos)(j+1));
-            if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
-                                        displayAxes_p(j), cursorAxes_p,
-                                        blc_p, trc_p, pixels, oPrec)) return False;
             const Int worldAxis = 
               ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
             const String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+            pixels(0) = Double(locHistInImage(histPos)(j+1));
 
+            if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
+                                        displayAxes_p(j), cursorAxes_p,
+                                        blc_p, trc_p, pixels, -1)) return False;
             os_p <<  ImageUtilities::shortAxisName(name)
                  << "=" << locHistInImage(histPos)(j+1)+1 << " (" << sWorld(0) << ")";
             if (j < nDisplayAxes-1) os_p << ", ";
@@ -1115,17 +1120,17 @@ Bool ImageHistograms<T>::generateStorageImage()
    Int nVirCursorIter;
 
    if (cursorAxes_p.nelements() == 1) {
+
+// Make profile Navigator.  There will be no overhang.
+
       TiledStepper imageNavigator (pInImage_p->shape(),
                                    pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
                                    cursorAxes_p(0));
       
 // Apply region and get shape of Lattice that we are iterating through
        
-//      imageNavigator.subSection(blc_p, trc_p);
-//      latticeShape = imageNavigator.subLatticeShape();
-      latticeShape = imageNavigator.latticeShape();
-      blc_p = 0;
-      trc_p = pInImage_p->shape() - 1;
+      imageNavigator.subSection(blc_p, trc_p);
+      latticeShape = imageNavigator.subLatticeShape();
                
 // Create the image iterator
  
@@ -1281,15 +1286,23 @@ Bool ImageHistograms<T>::generateStorageImage()
 
 // Iterate through image and accumulate histogram and statistics images
      
+   Double meterMax = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
+   ProgressMeter clock(0.0, meterMax, String("Generate Storage Image"), String(""),
+                       String(""), String(""), True, Int(meterMax/10));
+   Double meterValue = 0.0;
+
    os_p << LogIO::NORMAL << "Begin accumulating histograms" << LogIO::POST;
    for (pPixelIterator->reset(); !pPixelIterator->atEnd();(*pPixelIterator)++) {
       accumulate (pPixelIterator->position(), pPixelIterator->cursor());
+
+      clock.update(meterValue); 
+      meterValue += 1.0; 
    }
 
    delete pPixelIterator;
    return True;
 }
-
+ 
 
 template <class T> 
 void ImageHistograms<T>::getMinMax (Vector<T> &range,
@@ -1733,7 +1746,7 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
          pixels(0) = Double(locHistInImage(histPos)(j+1));
          if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
                                      displayAxes_p(j), cursorAxes_p,
-                                     blc_p, trc_p, pixels, 6)) return False;
+                                     blc_p, trc_p, pixels, -1)) return False;
          Int worldAxis = 
            ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
