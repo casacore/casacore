@@ -6233,6 +6233,7 @@ const RotMatrix &MeasTable::ICRSToJ2000() {
   if (needInit) {
     needInit = False;;
     rot = MeasTable::frameBias00();
+    rot.transpose();
   };
   return rot;
 }
