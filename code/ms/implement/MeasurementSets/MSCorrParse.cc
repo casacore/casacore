@@ -39,7 +39,6 @@
 #include <casa/BasicSL/String.h>
 #include <tables/Tables/ArrColDesc.h>
 #include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/TiledShapeStMan.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
