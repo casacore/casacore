@@ -1,5 +1,5 @@
 //# ImageInterface.cc: defines the Image base class non pure virtual stuff
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
 
+#include <aips/aips.h>
 #include <aips/Arrays/Vector.h> // Put these early to work around g++ bug
 #include <aips/Arrays/Matrix.h>
 
@@ -34,14 +34,13 @@
 
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageCoord.h>
+#include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/LatticeIterator.h>
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
-
 #include <aips/Logging/LogIO.h>
-
 #include <strstream.h>
 
 
@@ -56,7 +55,8 @@ ImageInterface<T>::ImageInterface()
 
 template <class T> 
 ImageInterface<T>::ImageInterface (const ImageInterface& other)
-: coords_p (other.coords_p),
+: MaskedLattice<T> (other),
+  coords_p (other.coords_p),
   log_p    (other.log_p)
 {
   logSink() << LogOrigin("ImageInterface<T>",
@@ -68,6 +68,7 @@ template <class T>
 ImageInterface<T>& ImageInterface<T>::operator= (const ImageInterface& other)
 {
   if (this != &other) {
+    MaskedLattice<T>::operator= (other);
     coords_p = other.coords_p;
     log_p    = other.log_p;
   }
@@ -76,8 +77,14 @@ ImageInterface<T>& ImageInterface<T>::operator= (const ImageInterface& other)
 
 template <class T> 
 ImageInterface<T>::~ImageInterface()
+{}
+
+template<class T>
+MaskedLattice<T>* ImageInterface<T>::cloneML() const
 {
+    return cloneII();
 }
+
 
 // reset coords
 template <class T> 
@@ -140,4 +147,34 @@ template <class T>
 LatticeCoordinates ImageInterface<T>::latticeCoordinates() const
 {
     return LatticeCoordinates (new ImageCoord (coords_p));
+}
+
+
+template <class T>
+void ImageInterface<T>::defineRegion (const String&, const ImageRegion&, Bool)
+{}
+template <class T>
+ImageRegion* ImageInterface<T>::getImageRegionPtr (const String&) const
+{ return 0; }
+template <class T>
+void ImageInterface<T>::removeRegion (const String& )
+{}
+template <class T>
+void ImageInterface<T>::setDefaultMask (const String&)
+{}
+template <class T>
+String ImageInterface<T>::getDefaultMask() const
+{ return ""; }
+
+template <class T>
+ImageRegion ImageInterface<T>::getRegion (const String& regionName) const
+{
+    ImageRegion* regptr = getImageRegionPtr (regionName);
+    if (regptr == 0) {
+	throw (AipsError ("ImageInterface::getRegion - region " + regionName
+			  + " is unknown in image " + name()));
+    }
+    ImageRegion reg(*regptr);
+    delete regptr;
+    return reg;
 }
