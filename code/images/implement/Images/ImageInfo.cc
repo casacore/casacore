@@ -122,6 +122,12 @@ ImageInfo& ImageInfo::setRestoringBeam(const Quantum<Double>& major,
     return *this;
 }
 
+ImageInfo& ImageInfo::removeRestoringBeam()
+{
+   itsRestoringBeam.resize(0);
+    return *this;
+}
+
 Bool ImageInfo::toRecord(String & error, RecordInterface & outRecord) const
 {
     error = "";
