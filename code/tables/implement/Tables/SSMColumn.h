@@ -35,7 +35,6 @@
 #include <aips/Tables/SSMBase.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/Compare.h>
 #include <aips/OS/Conversion.h>
 
 //# Forward declarations
@@ -47,12 +46,13 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="" date="" tests="tStandardStMan.cc">
 // </reviewed>
 
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto class=SSMBase>SSMBase</linkto>
+//   <li> <linkto class=SSMStringHandler>SSMStringHandler</linkto>
 // </prerequisite>
 
 // <etymology>
@@ -60,13 +60,34 @@
 // </etymology>
 
 // <synopsis>
-// SSMColumn handles the access to a column containing scalars of the 
-// various data types. 
+// SSMColumn is the base class for access to a column stored with
+// the Standard Storage manager. It provides some basic functionality
+// for the derived classes handling direct and indirect arrays.
+// <p>
+// The main task of SSMColumn is handling the access to a column
+// containing scalars of the various data types. The data is stored
+// in buckets. The classes <linkto class=SSMBase>SSMBase</linkto>
+// and <linkto class=SSMIndex>SSMIndex</linkto> keep track in which data
+// bucket a given row is stored and at which offset the column starts.
+// Using that information SSMColumn can access its data easily.
+// <p>
+// Almost all data types have a fixed length and can be handled easily.
+// However, strings are a special case.
+// <br>If the string is fixed length (which means it has a maximum length),
+// the string is stored directly in the data bucket. If the string is
+// shorter than the maximum length, its length is indicated by a
+// trailing 0.
+// <br>Variable strings are in principle stored in a special string bucket.
+// The data bucket contains 3 integers telling the bucketnr, offset, and
+// length of the string. However, it the string is short enough (ie. <=
+// 8 characters), the string is stored directly in data bucket using
+// the space for bucketnr and offset.
+// <p>
+// The class maintains a cache of the data in the bucket last read.
+// This cache is used by the higher level table classes to get faster
+// read access to the data.
+// The cache is not used for strings, because they are stored differently.
 // </synopsis> 
-
-// <motivation>
-// SSMColumn encapsulates all operations on an SSM Column.
-// </motivation>
 
 //# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
@@ -84,31 +105,33 @@ public:
   virtual ~SSMColumn();
   
   // Set the shape of an array in the column.
+  // It is only called (right after the constructor) if the array has
+  // a fixed shape.
   virtual void setShapeColumn (const IPosition& aShape);
 
   // Set the maximum length of a 'fixed length' string.
+  // It is only called (right after the constructor) if the string has
+  // a fixed length
   virtual void setMaxLength (uInt maxLength);
 
   // Get the dimensionality of the item in the given row.
-  // This is the same for all rows.
   virtual uInt ndim (uInt aRowNr);
   
   // Get the shape of the array in the given row.
-  // This is the same for all rows.
   virtual IPosition shape (uInt aRowNr);
   
-  // Let the Column object initialize itself for a newly created table
-  // This is meant for a derived class
-  virtual void doCreate(uInt aNrRows);
+  // Let the object initialize itself for a newly created table.
+  // It is meant for a derived class.
+  virtual void doCreate (uInt aNrRows);
 
-  // Let the Column object initialize itself for an existing table
-  virtual void getFile(uInt aNrRows);
+  // Let the column object initialize itself for an existing table
+  virtual void getFile (uInt aNrRows);
 
   // Resync the storage manager with the new file contents.
   // It resets the last rownr put.
   void resync (uInt aNrRow);
   
-  // Get a scalar value in the given row.
+  // Get the scalar value in the given row.
   // <group>
   virtual void getBoolV     (uInt aRowNr, Bool* aDataPtr);
   virtual void getuCharV    (uInt aRowNr, uChar* aDataPtr);
@@ -123,7 +146,8 @@ public:
   virtual void getStringV   (uInt aRowNr, String* aDataPtr);
   // </group>
   
-  // Put a scalar value in the given row.
+  // Put the scalar value in the given row.
+  // It updates the cache if the row is contained in the cache.
   // <group>
   virtual void putBoolV     (uInt aRowNr, const Bool* aDataPtr);
   virtual void putuCharV    (uInt aRowNr, const uChar* aDataPtr);
@@ -138,7 +162,7 @@ public:
   virtual void putStringV   (uInt aRowNr, const String* aDataPtr);
   // </group>
   
-  // Get the scalar values in the entire column
+  // Get the scalar values of the entire column.
   // <group>
   virtual void getScalarColumnBoolV     (Vector<Bool>* aDataPtr);
   virtual void getScalarColumnuCharV    (Vector<uChar>* aDataPtr);
@@ -153,7 +177,8 @@ public:
   virtual void getScalarColumnStringV   (Vector<String>* aDataPtr);
   // </group>
   
-  // put the scalar values in the entire column
+  // Put the scalar values of the entire column.
+  // It invalidates the cache.
   // <group>
   virtual void putScalarColumnBoolV     (const Vector<Bool>* aDataPtr);
   virtual void putScalarColumnuCharV    (const Vector<uChar>* aDataPtr);
@@ -171,58 +196,58 @@ public:
   // Add (NewNrRows-OldNrRows) rows to the Column and initialize
   // the new rows when needed.
   virtual void addRow (uInt aNewNrRows, uInt anOldNrRows, Bool doInit);
-  
-  virtual void deleteRow(uInt aRowNr);
 
-  // Get the function needed to read/write a uInt from/to external format.
-  // This is used by other classes to read the length of a variable
-  // data value.
-  // <group>
-  static Conversion::ValueFunction* getReadUInt  (Bool asCanonical);
-  static Conversion::ValueFunction* getWriteUInt (Bool asCanonical);
-  // </group>
-  
-  // get the size of the dataType in bytes!!
+  // Remove the given row from the data bucket and possibly string bucket.
+  // If needed, it also removes it from the cache.
+  virtual void deleteRow (uInt aRowNr);
+
+  // Get the size of the dataType in bytes!!
   uInt getExternalSizeBytes() const;
 
-  // get the size of the dataType in bits!!
+  // Get the size of the dataType in bits!!
   uInt getExternalSizeBits() const;
 
-  // get the SequenceNr of this Column
+  // get the sequence number of this column.
   uInt getColNr();
 
-  // set the SequenceNr of this Column
-  void setColNr(const uInt aColNr);
+  // set the sequence number of this column.
+  void setColNr (uInt aColNr);
 
-  // if something special has to be done before removing the Column,
-  // as is the case by Strings, it can be done here
+  // If something special has to be done before removing the Column,
+  // as is the case with Strings, it can be done here.
   void removeColumn();
 
 protected:
-  //# Declare member variables.
+  // Shift the rows in the bucket one to the left when removing the given row.
+  void shiftRows (char* aValue, uInt rowNr, uInt startRow, uInt endRow);
 
-  // Shiftrows after removing a row
-  void shiftRows(char* aValue, uInt aRowNr, uInt aSRow, uInt anERow);
-
-  //set the cache && itsData for this row
-  void getValue(uInt aRowNr);
+  // Fill the cache with data of the bucket containing the given row.
+  void getValue (uInt aRowNr);
   
-  // In case strings are used.
-  Char* getRowValue(Int* data, uInt aRowNr);
+  // Get the bucketnr, offset, and length of a variable length string.
+  // <src>data</src> must have 3 Ints to hold the values.
+  // It returns a pointer to the data in the bucket, which can be used
+  // for the case that the data bucket contains the (short) string.
+  Char* getRowValue (Int* data, uInt aRowNr);
     
-  // set the value for this row
-  // <group>
-  void putValue(uInt aRowNr, const void* aValue);
-  void putValueShortString(uInt aRowNr, const void* aValue,
-			   const String& string);
-  // </group>
+  // Put the given value for the row into the correct data bucket.
+  void putValue (uInt aRowNr, const void* aValue);
+
+  // Put the given string for the row into the correct data bucket.
+  // The argument <src>aValue></src> must be 3 Ints (for bucketnr, offset,
+  // and length). Only the length is actually used.
+  void putValueShortString (uInt aRowNr, const void* aValue,
+			    const String& string);
   
-  //get the values from the entire column
-  void getColumnValue(void* anArray,uInt aNrRows);
+  // Get the values for the entire column.
+  // The data from all buckets is copied to the array.
+  void getColumnValue (void* anArray, uInt aNrRows);
   
-  //put the values from the array in the entire column
-  void putColumnValue(const void* anArray,uInt aNrRows);
-  
+  // Put the values from the array in the entire column.
+  // Each data bucket is filled with the the appropriate part of the array.
+  void putColumnValue (const void* anArray, uInt aNrRows);
+
+
   // Pointer to the parent storage manager.
   SSMBase*          itsSSMPtr;
   // Length of column cell value in storage format (0 = variable length).
@@ -256,48 +281,43 @@ private:
   // Forbid assignment.
   SSMColumn& operator= (const SSMColumn&);
   
-  // Copy uInt values.
-  // This function is used to write the lengths, etc. when the
-  // data is kept in local format.
-  static uInt copyUInt (void* anOut, const void* anIn, uInt aNValues);
-  
   // Initialize part of the object.
-  // It is used by doCreate and getFile.
+  // It determines the nr of elements, the function to use to convert
+  // from local to file format, etc..
   void init();
 
-  // Create local cache if not available
+  // Get the pointer to the cache. It is Created if not done yet.
   char* getDataPtr();
-
 };
 
 
 inline uInt SSMColumn::getExternalSizeBytes() const
 {
-  return (itsExternalSizeBytes);
+  return itsExternalSizeBytes;
 }
 
 inline uInt SSMColumn::getExternalSizeBits() const
 {
-  return (itsExternalSizeBits);
+  return itsExternalSizeBits;
 }
 
 inline char* SSMColumn::getDataPtr()
 {
   if (itsData == 0) {
-    itsData = new char[itsSSMPtr->getRowsPerBucket(itsColNr) 
-		      * itsLocalSize];
+    itsData = new char[itsSSMPtr->getRowsPerBucket(itsColNr) * itsLocalSize];
   }
   return static_cast<char*>(itsData);
 }
 
 inline uInt SSMColumn::getColNr()
 {
-  return (itsColNr);
+  return itsColNr;
 }
 
-inline  void SSMColumn::setColNr(const uInt aColNr)
+inline void SSMColumn::setColNr (uInt aColNr)
 {
   itsColNr = aColNr;
 }
+
 
 #endif
