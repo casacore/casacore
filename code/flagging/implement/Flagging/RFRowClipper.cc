@@ -64,7 +64,7 @@ void RFRowClipper::reset ()
   sigupdated = False;
 }
 
-Float RFRowClipper::updateSigma (uInt &ifrmax,uInt &itmax)
+Float RFRowClipper::updateSigma (uInt &ifrmax,uInt &itmax,Bool flag_rows )
 {
   Vector<Float> medsigma(ntime);
   Vector<Float> diffsigma(ntime);
@@ -142,10 +142,13 @@ Float RFRowClipper::updateSigma (uInt &ifrmax,uInt &itmax)
           Float s=sigma(it);
           if( s>0 )
           {
-            if( goodsigma(it)  )   // clear flags of apparently good rows
+            // for good rows (or when not using row flagging at all)
+            // update stats and clear flags, if needed
+            if( !flag_rows || goodsigma(it) ) 
             {
-              Bool res = flag.clearRowFlag(ifr,it);
-              recalc |= res;
+              Bool res = False;
+              if( flag_rows ) // clear row flag
+                recalc |= ( res = flag.clearRowFlag(ifr,it) );
               if( debug_plot )
                 plotsym(it) = res?CIRCLE:PLUS;
               Float s0 = sig0(it,ifr),

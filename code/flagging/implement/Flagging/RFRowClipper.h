@@ -86,8 +86,8 @@ public:
   // marks a noise estimate as updated without changing it
   void  markSigma ( uInt ifr );
 
-  // recompute updated estimates and do flagging
-  Float updateSigma (uInt &ifrmax,uInt &itmax);
+  // recompute updated estimates and optionally do row flagging
+  Float updateSigma (uInt &ifrmax,uInt &itmax,Bool flagrows = True );
   
   // enables a debugging plot
   void setDebug ( const RFDebugPlot &debug );
