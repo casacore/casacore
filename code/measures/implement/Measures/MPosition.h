@@ -132,7 +132,7 @@ public:
   // <group>
   MPosition(const MPosition &);
   MPosition &operator=(const MPosition &);
-  // <group>
+  // </group>
 
 //# Destructor
     ~MPosition();
