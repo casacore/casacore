@@ -2185,7 +2185,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
            getPCFromHeader(os, rotationAxis, pc, n, header, sprefix);
        }  
     } catch (AipsError x) {
-	os << LogIO::WARN << "Error retrieving *rval, *rpix, *delt, *type "
+	os << LogIO::WARN << "Failed to retrieve *rval, *rpix, *delt, *type "
 	    "from header";
 	return False;
     } 
