@@ -148,6 +148,7 @@ class MeasFrame {
   friend Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
   friend Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
   friend Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
+  friend Bool MCFrameGetuint(void *dmf, uInt tp, uint &result);
   // </group>
 
   //# Constructors
@@ -254,6 +255,10 @@ class MeasFrame {
   Bool getApp(MVDirection &tdb);
   // Get LSR radial velocity (m/s)
   Bool getLSR(Double &tdb);
+  // Get the comet table reference type
+  Bool getCometType(uInt &tdb);
+  // Get the comet coordinates
+  Bool getComet(MVPosition &tdb);
   // </group>
 
   // Get the frame conversion data pointer (0 if none)
@@ -286,7 +291,11 @@ private:
     // Get LSR radial velocity (m/s)
     GetLSR,
     // Get the position
-    GetITRF
+    GetITRF,
+    // Get the comet type
+    GetCometType,
+    // Get comet coordinates
+    GetComet
   };
   
   //# Data
@@ -349,6 +358,8 @@ private:
   void setMCFrameGetmvdir(Bool (*in)(void *, uInt, MVDirection &));
   // Set the get MVPosition routine
   void setMCFrameGetmvpos(Bool (*in)(void *, uInt, MVPosition &));
+  // Set the get uint routine
+  void setMCFrameGetuint(Bool (*in)(void *, uInt, uint &));
   // Lock the frame to make sure deletion occurs when needed
   void lock();
   // Unlock the frame

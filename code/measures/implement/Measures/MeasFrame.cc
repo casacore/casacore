@@ -1,5 +1,5 @@
 //# MeasFrame.cc: Container for Measure frame
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,7 @@ public:
     radval(0), radset(False), radreset(False),
     comval(0), comset(False), comreset(False),
     mymcf(0), delmcf(0),
-    getdbl(0), getmvdir(0), getmvpos(0),
+    getdbl(0), getmvdir(0), getmvpos(0), getuint(0),
     cnt(1) {;};
   // Destructor
   ~FrameRep() {
@@ -91,6 +91,8 @@ public:
   Bool (*getmvdir)(void*, uInt, MVDirection &);
   // Pointer to get an MVPosition
   Bool (*getmvpos)(void*, uInt, MVPosition &);
+  // Pointer to get a uInt
+  Bool (*getuint)(void*, uInt, uInt &);
   // Usage count
   Int cnt;
 };
@@ -442,6 +444,10 @@ void MeasFrame::setMCFrameGetmvpos(Bool (*in)(void *, uInt, MVPosition &)) {
   if (rep) rep->getmvpos = in;
 }
 
+void MeasFrame::setMCFrameGetuint(Bool (*in)(void *, uInt, uInt &)) {
+  if (rep) rep->getuint = in;
+}
+
 void *MeasFrame::getMCFramePoint() const {
   if (rep) return rep->mymcf;
   return 0;
@@ -518,6 +524,18 @@ Bool MeasFrame::getApp(MVDirection &tdb) {
 Bool MeasFrame::getLSR(Double &tdb) {
   if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLSR, tdb);
   tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getCometType(uInt &tdb) {
+  if (rep && rep->mymcf) return rep->getuint(rep->mymcf, GetCometType, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getComet(MVPosition &tdb) {
+  if (rep && rep->mymcf) return rep->getmvpos(rep->mymcf, GetComet, tdb);
+  tdb = MVPosition(0.0);
   return False; 
 }
 
@@ -629,6 +647,15 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
       os << endl << "        (LSR velocity = " << 
 	Quantity(tmp,"km/s") << ")";
     };
+  };
+  if (mf.rep && mf.rep->comval) {
+    if (mf.rep && (mf.rep->epval || mf.rep->posval ||
+		   mf.rep->dirval || mf.rep->radval)) {
+      os << endl << "       ";
+    };
+    os << mf.rep->comval->getName() << " comet between MJD " <<
+      mf.rep->comval->getStart() << " and " <<
+      mf.rep->comval->getEnd();
   };
   return os;
 }

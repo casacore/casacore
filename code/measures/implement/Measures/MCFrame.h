@@ -128,6 +128,10 @@ public:
   Bool getApp(MVDirection &tdb);
   // Get LSR radial velocity (m/s)
   Bool getLSR(Double &tdb);
+  // Get Comet type
+  Bool getCometType(uInt &tdb);
+  // Get Comet position
+  Bool getComet(MVPosition &tdb);
   
 private:
   //# Data
@@ -214,6 +218,8 @@ Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
 Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
 // Get MVPosition value for MeasFrame
 Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
+// Get uint value for MeasFrame
+Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result);
 // </group>
 
 #endif

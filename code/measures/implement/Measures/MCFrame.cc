@@ -1,5 +1,5 @@
 //# MCFrame.cc: Measure frame calculations proxy
-//# Copyright (C) 1996, 1997, 1998, 1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@
 #include <aips/Measures/MCRadialVelocity.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/MeasComet.h>
 
 // MCFrame class
  
@@ -58,6 +59,7 @@ MCFrame::MCFrame(MeasFrame &inf) :
     myf.setMCFrameGetdbl(MCFrameGetdbl);
     myf.setMCFrameGetmvdir(MCFrameGetmvdir);
     myf.setMCFrameGetmvpos(MCFrameGetmvpos);
+    myf.setMCFrameGetuint(MCFrameGetuint);
     create();
     myf.unlock();
 }
@@ -295,6 +297,24 @@ Bool MCFrame::getLSR(Double &tdb) {
     return True;
   };
   tdb = (Double) 0.0;
+  return False;
+}
+
+Bool MCFrame::getCometType(uInt &tdb) {
+  if (myf.comet()) {
+    tdb = static_cast<uInt>(myf.comet()->getType());
+    return True;
+  };
+  tdb = 0;
+  return False;
+}
+
+Bool MCFrame::getComet(MVPosition &tdb) {
+  if (myf.comet()) {
+    Double x;
+    if (getTDB(x) && myf.comet()->get(tdb,x)) return True;
+  };
+  tdb = MVPosition(0.0);
   return False;
 }
 
@@ -537,6 +557,10 @@ Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result) {
     case MeasFrame::GetITRF:
       return ((MCFrame *) dmf)->getITRF(result);
       break;
+       
+    case MeasFrame::GetComet:
+      return ((MCFrame *) dmf)->getComet(result);
+      break;
       
     default:
       break;
@@ -545,5 +569,22 @@ Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result) {
   } end_try;
   MVPosition tmp;
   result = tmp;
+  return False;
+}
+
+Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result) {
+  try {
+    switch (tp) {
+      
+    case MeasFrame::GetCometType:
+      return ((MCFrame *) dmf)->getCometType(result);
+      break;
+      
+    default:
+      break;
+    };
+  } catch (AipsError x) {
+  } end_try;
+  result = 0;
   return False;
 }
