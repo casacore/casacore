@@ -33,7 +33,6 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/ArrLatticeIter.h>
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Array.h>
@@ -135,7 +134,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   IPosition chunkOrigin(naxis), elementPosition(naxis);
   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
     ArrayLattice<Float> array(chunkIter.cursor());
-    ArrLatticeIter<Float> elementIter(array, elementShape);
+    LatticeIterator<Float> elementIter(array, elementShape);
     chunkOrigin = chunkIter.position();
     for (elementIter.reset(); !elementIter.atEnd(); elementIter++) {
       elementPosition = elementIter.position();
@@ -195,8 +194,10 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	    break;
 	  }
 	}
+	elementIter.writeCursor();
       }
     }
+    chunkIter.writeCursor();
   }
 }
 
