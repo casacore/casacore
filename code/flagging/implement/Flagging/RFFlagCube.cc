@@ -578,6 +578,11 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
   Vector<uInt> row_per_ant( num(ANT),0u );
   Matrix<uInt> row_per_ant_time( num(ANT),num(TIME),0 );
   
+// get start/end times and create label for time axis
+  String timeaxis( "Time slot # (" +
+        MVTime(chunk.startMJD()).string(MVTime::TIME|MVTime::CLEAN,6) + " through " +
+        MVTime(chunk.endMJD()  ).string(MVTime::TIME|MVTime::CLEAN,6) +")" );
+  
 // SECTION 1: IFR (ANT-ANT) coverage maps  
 // draw Antenna-Antenna row flag and pixel flag density image
   Vector<uInt> rowant(num(ANT),0u),pixant(num(ANT),0u);
@@ -673,7 +678,7 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
         }
       if( sum(img) )
       {
-        plotImage(pgp,img,"Time slot","",title+": Rows flagged, by time-IFR",False,0,nval);
+        plotImage(pgp,img,timeaxis,"",title+": Rows flagged, by time-IFR",False,0,nval);
         plotAntAxis(pgp,antnums,True);
       }
       }
@@ -699,7 +704,7 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
         }
       if( sum(img) )
       {
-        plotImage(pgp,img,"Time slot","",title+": % pixels flagged, by time-IFR",True,0,nval);
+        plotImage(pgp,img,timeaxis,"",title+": % pixels flagged, by time-IFR",True,0,nval);
         plotAntAxis(pgp,antnums,True);
       }
       }
@@ -739,7 +744,7 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
             if( rowAgentFlagged(ifr,it) )
               img(it,ifr) = 1;
       if( sum(img) )
-        plotImage(pgp,img,"Time slot","IFR #",title+": Rows flagged, by time-IFR",False);
+        plotImage(pgp,img,timeaxis,"IFR #",title+": Rows flagged, by time-IFR",False);
       }
     // draw IFR-Time image
       {
@@ -750,7 +755,7 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
           for( uInt it=0; it<num(TIME); it++ )
             img(it,ifr) = chunk.nfIfrTime(ifr,it)*scale;
       if( sum(img) )
-        plotImage(pgp,img,"Time slot","IFR #",title+": % of pixels flagged, by time-IFR");
+        plotImage(pgp,img,timeaxis,"IFR #",title+": % of pixels flagged, by time-IFR");
       // draw IFR-Channel image
         if( num(CHAN)>1 )
         {
@@ -810,12 +815,12 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
     }
     if( sum(img1) )
     {
-      plotImage(pgp,img1,"Time slot","",title+": % rows flagged, by time-antenna",True,0,1);
+      plotImage(pgp,img1,timeaxis,"",title+": % rows flagged, by time-antenna",True,0,1);
       plotAntAxis(pgp,antnums,True);
     }
     if( sum(img2) )
     {
-      plotImage(pgp,img2,"Time slot","",title+": % pixels flagged, by time-antenna",True,0,1);
+      plotImage(pgp,img2,timeaxis,"",title+": % pixels flagged, by time-antenna",True,0,1);
       plotAntAxis(pgp,antnums,True);
       if( num(CHAN)>1 )
       {
