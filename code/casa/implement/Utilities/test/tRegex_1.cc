@@ -27,6 +27,7 @@
 
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/iostream.h>
 
 int main () {
     const Int ntests = 28;
