@@ -5707,3 +5707,4 @@
 16 064 src mv trial/implement/Tables/CompressComplex.cc aips/implement/Tables/CompressComplex.cc
 16 064 src mv trial/implement/Tables/test/tCompressComplex.cc aips/implement/Tables/test/tCompressComplex.cc
 16 065 src rm trial/apps/synthesistester/imager_position_test.g
+16 073 src rm trial/apps/gainfitter/gainpolyfitter.cc
