@@ -119,11 +119,72 @@ int main()
                      near(oi3.pointingCenter().get()(0),0.03) &&
                      near(oi3.pointingCenter().get()(1),0.04));
 
+// Forced errors
+
+    {
+       Record rec3;
+       Double x = 0;
+       rec3.define("telescope", x);
+       AlwaysAssertExit(!oi3.fromRecord(error, rec3));
+    }
+    {
+       Record rec3;
+       Double x = 0;
+       rec3.define("observer", x);
+       AlwaysAssertExit(!oi3.fromRecord(error, rec3));
+    }
+    {
+       Record rec3;
+       Double x = 0;
+       rec3.define("obsdate", x);
+       AlwaysAssertExit(!oi3.fromRecord(error, rec3));
+    }
+    {
+       Record rec3;
+       Record rec4;
+       Double x = 0;
+       rec4.define("doggies", x); 
+       rec3.defineRecord("obsdate", rec4);
+       AlwaysAssertExit(!oi3.fromRecord(error, rec3));
+    }
+    {
+       Record rec3;
+       Double x = 0;
+       rec3.define("pointingcenter", x);
+       AlwaysAssertExit(!oi3.fromRecord(error, rec3));
+    }
+    {
+       Record rec3;
+       Record rec4;
+       rec3.defineRecord("pointingcenter", rec4);
+       AlwaysAssertExit(!oi3.fromRecord(error, rec3));
+    }
+    {
+       Record rec3;
+       Record rec4;
+       Double x;
+       rec4.define("value", x);
+       rec3.defineRecord("pointingcenter", rec4);
+       AlwaysAssertExit(!oi3.fromRecord(error, rec3));
+    }
+    {
+       Record rec3;
+       Record rec4;
+       Vector<Double> x(2);
+       rec4.define("value", x);
+       Double y = 0.0;
+       rec4.define("initial", y);
+       rec3.defineRecord("pointingcenter", rec4);
+       AlwaysAssertExit(!oi3.fromRecord(error, rec3));
+    }
+
+
 // FITS
 
     Vector<String> error2;
     Record rec2;
     AlwaysAssertExit(oi.toFITS(error, rec2));
+    AlwaysAssertExit(oi.toFITS(error, rec2));      // Second pass removes pre-existing fields
     ObsInfo oi4;
     AlwaysAssertExit(oi4.fromFITS(error2, rec2));
     AlwaysAssertExit(oi4.telescope() == "telescope2" &&
@@ -131,6 +192,43 @@ int main()
 		     near(oi4.obsDate().get("d").getValue(), dateVal) &&
                      near(oi4.pointingCenter().get()(0),0.03) &&
                      near(oi4.pointingCenter().get()(1),0.04));
+//
+
+
+// Forced errors
+
+    {
+       Record rec3;
+       Double x = 0;
+       rec3.define("telescop", x);
+       AlwaysAssertExit(!oi4.fromFITS(error2, rec3));
+    }
+    {
+       Record rec3;
+       Double x = 0;
+       rec3.define("observer", x);
+       AlwaysAssertExit(!oi4.fromFITS(error2, rec3));
+    }
+    {
+       Record rec3;
+       String x("I like fish");
+       rec3.define("date-obs", x);
+       rec3.define("timesys", x);
+       AlwaysAssertExit(!oi4.fromFITS(error2, rec3));
+    }
+    {
+       Record rec3;
+       Double x = 0;
+       rec3.define("date-obs", x);
+       AlwaysAssertExit(!oi4.fromFITS(error2, rec3));
+    }
+    {
+       Record rec3;
+       Float x = 0;
+       rec3.define("obsra", x);
+       rec3.define("obsdec", x);
+       AlwaysAssertExit(!oi4.fromFITS(error2, rec3));
+    }
 
 // This is a fragile test, but probably better to do it than not.
 
