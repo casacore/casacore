@@ -79,7 +79,8 @@ SpectralModel::~SpectralModel() {
 
 const String& SpectralModel::ident() const {
   DebugAssert(SpectralModel::ok(), AipsError);
-  static const String typeString = ComponentType::name(type());
+  static String typeString;
+  typeString = ComponentType::name(type());
   return typeString;
 }
 

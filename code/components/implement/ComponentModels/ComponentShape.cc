@@ -76,7 +76,8 @@ ComponentShape::~ComponentShape() {
 
 const String& ComponentShape::ident() const {
   DebugAssert(ComponentShape::ok(), AipsError);
-  static const String typeString = ComponentType::name(type());
+  static String typeString;
+  typeString = ComponentType::name(type());
   return typeString;
 }
 
