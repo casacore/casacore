@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # UPdup script
 #-----------------------------------------------------------------------------
-# Copyright (C) 2001
+# Copyright (C) 2001,2004
 # Associated Universities, Inc. Washington DC, USA.
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -39,6 +39,20 @@ set hsw   = ("-s show only the system template files that can cause" \
 set huse  =  "<typ>.def"
 set hcrea =  "<typ>.dup"
 #
+# Basic package names in order
+#
+set casapack = (casa scimath tables measures fits lattices coordinates \
+	components images ms msvis calibration ionosphere flagging \
+	dish simulators synthesis graphics tasking)
+#
+# Directories to skip
+#
+set skippack = (CVS admin aips doc include install test)
+#
+# Top packages to check
+#
+set checkpack = (display trialdisplay appsglish contrib)
+#
 # Get general info
 #
 if (! $?AIPSPATH) then
@@ -67,41 +81,94 @@ if (! $ok) exit 1
 #
 # Get package specific information
 #
-touch P.$tmp
-if (1) rm -f P*.$tmp
-if (-e UPdup.packages) then
-    set x = (`awk '{print "//",$0}' UPdup.packages`)
+# Check list
+#
+foreach i (`'ls' -F $dir/code | grep '/' | sed -e 's;/;;'`)
+  set found = 0
+  foreach j ($casapack $skippack $checkpack)
+    if ("$i" == "$j") then
+      set found = 1
+      break
+    endif
+  end
+  if (! $found) then
+    set checkpack = ($checkpack $i)
+  endif
+end
+ 
+if (-e $ldir/${tp}.pak) then
+    set x = (`cat $ldir/${tp}.pak`)
     set pack = ""
     set expect = 0
+    set y = ""
     while ($#x > 0)
 	if ("$x[1]" == "//") then
 	    set expect = 1
-	    if ("$pack" != "") then
-		if (-z $ldir/P$pack.$tmp) rm -f $ldir/P$pack.$tmp
-	    endif
-	    set pack = ""
-	else if (-d $dir/code/$x[1]) then
-	    if ($expect) then
-		set expect = 0
-		set pack = "$x[1]"
-		touch $ldir/P$pack.1
-		if (-e $ldir/P$pack.1) rm -f $ldir/P$pack.*
-		touch $ldir/P$pack.$tmp
-	    else if ("$pack" != "") then
-		echo "-r $x[1]" >> $ldir/P$pack.$tmp
-	    endif
-	else if (! $upswQE) then
-	    echo "Illegal package $x[1] in UPdup.packages; discarded"
+	else if ($expect) then
+	    set pack = $x[1]
+	    set expect = 0
+	else
+	    set y = ($y $x[1])
 	endif
 	shift x
-    end
-    if ("$pack" != "") then
-	if (-z $ldir/P$pack.$tmp) rm -f $ldir/P$pack.$tmp
-    endif
+	if ($expect || $#x == 0) then
+	    if ("$y" != "") then
+	      if ("$pack" == "casapack") then
+	        set casapack = ($y)
+	      else if ("$pack" == "skippack") then
+	        set skippack = ($y)
+	      else if ("$pack" == "checkpack") then
+	        set checkpack = ($y)
+  	      endif
+	    endif
+	    set pack = ""
+	    set y = ""
+	endif
+    end 
     unset x
+    unset y
     unset pack
     unset expect
+    rm -f $ldir/${tp}.pak
 endif
+
+touch $ldir/${tp}.pak
+set x = ($casapack)
+echo '//' casapack >> $ldir/${tp}.pak
+while (1)
+  if ($#x > 8) then
+    echo $x[1-8] >> $ldir/${tp}.pak
+    set x = ($x[9-])
+  else
+    echo $x[1-] >> $ldir/${tp}.pak
+    break
+  endif
+end
+unset x
+set x = ($skippack)
+echo '//' skippack >> $ldir/${tp}.pak
+while (1)
+  if ($#x > 8) then
+    echo $x[1-8] >> $ldir/${tp}.pak
+    set x = ($x[9-])
+  else
+    echo $x[1-] >> $ldir/${tp}.pak
+    break
+  endif
+end
+unset x
+set x = ($checkpack)
+echo '//' checkpack >> $ldir/${tp}.pak
+while (1)
+  if ($#x > 8) then
+    echo $x[1-8] >> $ldir/${tp}.pak
+    set x = ($x[9-])
+  else
+    echo $x[1-] >> $ldir/${tp}.pak
+    break
+  endif
+end
+unset x
 
 if ($upswn) exit 0
 #
@@ -114,43 +181,48 @@ touch $ldir/${tp}.dup
 set smod = ""
 if ($upsws) set smod = "-s"
 
-if (! $upswQ) echo "Starting package aips..."
-echo "******* Package aips against aips repository" >> $ldir/${tp}.dup
-duplicates $smod -u aips \
-    $dir/code/aips/implement/_ReposFiller/templates  >>& $ldir/${tp}.dup
+echo "******* Package lists used" >> $ldir/${tp}.dup
+echo "******* " >> $ldir/${tp}.dup
+cat $ldir/${tp}.pak >> $ldir/${tp}.dup
+echo "************************************************ " >> $ldir/${tp}.dup
 
-if (! $upswQ) echo "Starting package trial..."
-echo "******* Package trial against aips and trial repository" >> \
-		$ldir/${tp}.dup
-duplicates $smod -u trial \
-    $dir/code/trial/implement/_ReposFiller/templates  \
-    $dir/code/aips/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
-
-
-foreach i (*)
-  if ("$i" != "aips" && "$i" != "trial" && "$i" != "doc" && \
-      "$i" != "include" && "$i" != "test" && \
-      -d $i && (-e $i/implement || -e $i/apps)) then 
-    if (! $upswQ) echo "Starting package $i..."
-    if (-e $ldir/P$i.$tmp) then
-      set x = (`cat $ldir/P$i.$tmp`)
-      set y = (`echo $x | sed -e 's#-r##'`)
-      echo "******* Package $i against $y aips trial" >> $ldir/${tp}.dup
-      duplicates $smod -p $i $x -r aips -r trial >>& $ldir/${tp}.dup
-      unset x
-    else
-      echo "******* Package $i against aips repository" >> $ldir/${tp}.dup
-      duplicates $smod -p $i \
-	 $dir/code/aips/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
-      if (! $upswQ) then
-  	echo "******* Package $i against trial repository" >> $ldir/${tp}.dup
-      endif
-      duplicates $smod -p $i \
-	 $dir/code/trial/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
-    endif
-  endif
+if (! $upswQ) echo "Starting casa base packages..."
+echo "******* " >> $ldir/${tp}.dup
+echo "******* Base casa packages repositories" >> $ldir/${tp}.dup
+echo "******* " >> $ldir/${tp}.dup
+set rtmp = ""
+foreach i ($casapack)
+  set rtmp = (-r $i $rtmp)
 end
+duplicates $smod $rtmp >>& $ldir/${tp}.dup
+
+echo "******* " >> $ldir/${tp}.dup
+echo "******* Base casa packages" >> $ldir/${tp}.dup
+echo "******* " >> $ldir/${tp}.dup
+set ptmp = ""
+foreach i ($casapack)
+  set ptmp = (-p $i $ptmp)
+end
+duplicates $smod $ptmp >>& $ldir/${tp}.dup
+
+foreach i ($checkpack)
+    if (! $upswQ) echo "Starting package $i..."
+    echo "******* " >> $ldir/${tp}.dup
+    echo "******* Package $i against casa base repositories" \
+	    >> $ldir/${tp}.dup
+    echo "******* " >> $ldir/${tp}.dup
+    duplicates $smod -p $i $rtmp >>& $ldir/${tp}.dup
+end
+
+if (! $upswQ) echo "Starting all packages..."
+echo "******* " >> $ldir/${tp}.dup
+echo "******* All packages, all templates files" >> $ldir/${tp}.dup
+echo "******* " >> $ldir/${tp}.dup
+duplicates $smod -p all >>& $ldir/${tp}.dup
+
 unset smod
+unset ptmp
+unset rtmp
 
 exit 0
 #
