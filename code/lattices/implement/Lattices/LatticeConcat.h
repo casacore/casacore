@@ -57,9 +57,14 @@ class IPosition;
 
 // <synopsis>
 // This is a class designed to concatenate lattices along a specified 
-// pre-existing axis. This means you can join them together.  E.g., 
+// axis. This means you can join them together.  E.g., 
 // join lattices of shape  [10,20,30] and [10,20,40] into a lattice 
-// of shape [10,20,70]
+// of shape [10,20,70]. 
+//
+// In addition, you can increase the dimensionality
+// and join lattices [10,20] and [10,20] to [10,20,2].  This is
+// done by specifying the concatenation axis to be higher than
+// currently exists in the input lattices
 // </synopsis>
 //
 // <example>
@@ -103,8 +108,6 @@ class IPosition;
 // </motivation>
 
 // <todo asof="1999/09/23">
-//   <li> Allow dimensionality to grow.  E.g. concatenate [10,10] 
-//        and [10,10] into [10,10,2]
 //   <li> This class is probably better to be derived from MaskedLattice
 //        like the LEL classes.  Then it can be used by a LEL concat function
 // </todo>
@@ -115,7 +118,7 @@ template <class T> class LatticeConcat
 public:
 
 // Constructor. Specify the concatenation axis (0 relative)
-// and if you want to see a progress meter
+// and if you want to see a progress meter.  
    LatticeConcat (uInt axis, Bool showProgress);
 
 // Default constructor.  Sets the concatenation axis to 0
@@ -139,7 +142,8 @@ public:
 // Exception thrown if lattices are incompatible
    void setLattice (MaskedLattice<T>& lattice);
 
-// Resets the state of the object to axis=0 and no lattices
+// Resets the state of the object to axis=0. no lattices
+// and no progress meter
    void reset();
 
 // Find the shape that the concatenated lattice will be.
@@ -178,6 +182,8 @@ private:
 //
    void copyDataAndMask(MaskedLattice<Float>& out,
                         MaskedLattice<Float>& in) const;
+   void copyDataOnly(MaskedLattice<Float>& out,
+                     MaskedLattice<Float>& in) const;
    void checkAxis(uInt axis, uInt ndim) const;
 
 };

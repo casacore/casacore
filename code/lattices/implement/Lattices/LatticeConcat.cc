@@ -23,7 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: 
+//# $Id$
+
 
 #include <trial/Lattices/LatticeConcat.h>
 
@@ -83,16 +84,17 @@ template<class T>
 LatticeConcat<T>& LatticeConcat<T>::operator= (const LatticeConcat<T>& other)
 {
   if (this != &other) {
-    itsAxis     = other.itsAxis;
-    itsShape = other.itsShape;
+    itsAxis         = other.itsAxis;
+    itsShape        = other.itsShape;
     itsShowProgress = other.itsShowProgress;
-    itsIsMasked = other.itsIsMasked;
+    itsIsMasked     = other.itsIsMasked;
 //
     uInt n = itsLattices.nelements();
     for (uInt j=0; j<n; j++) {
-            delete itsLattices[j];
-            itsLattices[j] = 0;
+       delete itsLattices[j];
+       itsLattices[j] = 0;
     }
+//
     itsLattices.resize(other.itsLattices.nelements(), True);
     n = itsLattices.nelements();
     for (uInt i=0; i<n; i++) {
@@ -114,25 +116,45 @@ void LatticeConcat<T>::setAxis(uInt axis)
    const uInt n = itsLattices.nelements();
    IPosition newShape;
    if (n>0) {
-      newShape = itsLattices[0]->shape();
-      checkAxis(axis, itsLattices[0]->ndim());
+
+// Are we raising the dimensionality by one ?
+
+      const uInt ndim = itsLattices[0]->ndim();
+      const Bool dimUpOne = (axis==ndim);
+      checkAxis(axis, ndim);
+//
+      if (dimUpOne) {
+         newShape.resize(ndim+1);
+         newShape.setFirst(itsLattices[0]->shape());
+         newShape(ndim) = 1;
+      } else {
+         newShape = itsLattices[0]->shape();
+      }
 //
       if (n>1) {
          for (uInt j=1; j<n; j++) {
-            if (newShape.nelements() != itsLattices[j]->ndim()) {
-               throw (AipsError("Lattice dimensions inconsistent"));
-            }
-//
-            const IPosition shape = itsLattices[j]->shape();
-            for (uInt i=0; i<shape.nelements(); i++) {
-               if (i!=axis && shape(i) != newShape(i)) {
+            if (dimUpOne) {
+               IPosition shape = newShape.getFirst(ndim);
+               if (!shape.isEqual(itsLattices[j]->shape())) {
                   throw (AipsError("Lattice shapes inconsistent"));
                }
-            }
+               newShape(ndim) += 1;
+            } else {
+               if (newShape.nelements() != itsLattices[j]->ndim()) {
+                  throw (AipsError("Lattice dimensions inconsistent"));
+               }
+//
+               const IPosition shape = itsLattices[j]->shape();
+               for (uInt i=0; i<shape.nelements(); i++) {
+                  if (i!=axis && shape(i) != newShape(i)) {
+                     throw (AipsError("Lattice shapes inconsistent"));
+                  }
+               }
 //
 // Update concatenation axis shape and mask indicator
 //
-            newShape(axis) += shape(axis);
+               newShape(axis) += shape(axis);
+            }
          }
       }
    }
@@ -151,27 +173,53 @@ void LatticeConcat<T>::setLattice(MaskedLattice<T>& lattice)
 {
    const uInt n = itsLattices.nelements();
    const uInt ndim = lattice.ndim();
+   const Bool dimUpOne = (itsAxis==ndim);
 //
 // Check for consistency
 //
    if (n==0) {
       checkAxis(itsAxis, ndim);
-      itsShape = lattice.shape();
-   } else {
-      if (itsShape.nelements() != lattice.ndim()) {
-         throw(AipsError("Lattice dimensions are inconsistent"));
-      }
 //
-      const IPosition shape = lattice.shape();
-      for (uInt i=0; i<shape.nelements(); i++) {
-         if (i!=itsAxis && shape(i) != itsShape(i)) {
+      if (dimUpOne) {
+
+// Increasing dimensionality by one
+
+         IPosition shape = lattice.shape();
+         itsShape = IPosition(ndim+1);
+         itsShape.setFirst(shape);
+         itsShape(ndim) = 1;
+      } else {
+         itsShape = lattice.shape();
+      }
+   } else {
+      if (dimUpOne) {
+
+// Increasing dimensionality by one
+
+         IPosition shape = itsShape.getFirst(ndim);
+         if (!shape.isEqual(lattice.shape())) {
             throw (AipsError("Lattice shapes inconsistent"));
          }
+         itsShape(ndim) += 1;
+      } else {
+
+// Dimensionality the same
+
+         if (itsShape.nelements() != ndim) {
+            throw(AipsError("Lattice dimensions are inconsistent"));
+         }
+//
+         const IPosition shape = lattice.shape();
+         for (uInt i=0; i<shape.nelements(); i++) {
+            if (i!=itsAxis && shape(i) != itsShape(i)) {
+               throw (AipsError("Lattice shapes inconsistent"));
+            }
+         }
+
+// Update concatenated shape
+
+         itsShape(itsAxis) += shape(itsAxis);
       }
-//
-// Update concatenation axis shape 
-//
-      itsShape(itsAxis) += shape(itsAxis);
    }
 //
 // Assign lattice
@@ -219,7 +267,7 @@ void LatticeConcat<T>::copyData(MaskedLattice<T>& lattice)
 
    const uInt nLattices = itsLattices.nelements();
    if (nLattices==0) {
-      throw (AipsError("No lattices to concatenate = use function setLattice"));
+      throw (AipsError("No lattices to concatenate - use function setLattice"));
    }
 //
    if (!itsShape.isEqual(lattice.shape())) {
@@ -232,10 +280,9 @@ void LatticeConcat<T>::copyData(MaskedLattice<T>& lattice)
    Double meterValue = 0.0;
    if (itsShowProgress) {
       const Double nPixels = Double(itsShape.product());
-      clockPtr = new ProgressMeter(0.0, Double(nPixels), "Image Concatenation",
+      clockPtr = new ProgressMeter(0.0, Double(nPixels), "Lattice Concatenation",
                                   "pixels copied", "", "", True, 1);
    }
-
 
 // Is the output masked and writable ?
 
@@ -255,21 +302,31 @@ void LatticeConcat<T>::copyData(MaskedLattice<T>& lattice)
    const uInt dim = itsShape.nelements();
    IPosition blcOut(dim,0);
    IPosition trcOut(dim);
+
+// See if we are increasing the dimensionality by one
+
+   const Bool dimUpOne = (itsAxis==itsLattices[0]->ndim());
+   if (dimUpOne) trcOut = itsShape - 1;
 //
    for (uInt i=0; i<nLattices; i++) {
-      trcOut = blcOut + itsLattices[i]->shape() - 1;
+      if (dimUpOne) {
+         blcOut(dim-1) = i;
+         trcOut(dim-1) = i;
+      } else {
+         trcOut = blcOut + itsLattices[i]->shape() - 1;
+      }
       LCBox regionOut(blcOut, trcOut, lattice.shape());
-      SubLattice<Float> subLatticeOut(lattice, LatticeRegion(regionOut), True);
+      SubLattice<T> subLatticeOut(lattice, LatticeRegion(regionOut), True);
 //
       if (itsIsMasked && isOutputMasked) {
-         copyDataAndMask (subLatticeOut, *(itsLattices[i]));
+         copyDataAndMask(subLatticeOut, *(itsLattices[i]));
       } else {
-         subLatticeOut.copyData(*(itsLattices[i]));
+         copyDataOnly(subLatticeOut, *(itsLattices[i]));
       }
 
 // Update
 
-      blcOut(itsAxis) += itsLattices[i]->shape()(itsAxis);
+      if (!dimUpOne) blcOut(itsAxis) += itsLattices[i]->shape()(itsAxis);
       if (itsShowProgress) {
          meterValue += itsLattices[i]->shape().product();
          clockPtr->update(meterValue);
@@ -286,39 +343,72 @@ template<class T>
 void LatticeConcat<T>::copyDataAndMask(MaskedLattice<Float>& out,
                                        MaskedLattice<Float>& in) const
 //
-// The input and output are known to have a mask. The output mask
-// must be writable
-//
+// We make slightly heavy weather of this to account for
+// the case that the output dimensionality is one more than
+// the input
 {
+
 // Get hold of the mask
 
    if (!out.hasPixelMask()) {
       throw(AipsError("Cannot gain access to pixel mask of output lattice"));
    }
    Lattice<Bool>& maskOut = out.pixelMask();
-
-// Use the same stepper for input and output.
-
-   IPosition cursorShape = out.niceCursorShape();
-   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
-   
-// Create an iterator for the output to setup the cache.
-// It is not used, because using putSlice directly is faster and as easy.
-
-   LatticeIterator<Float> dummyIter(out);
-   RO_LatticeIterator<Float> iter(in, stepper);
+//
+   LatticeStepper stepper (out.shape(), out.niceCursorShape(), LatticeStepper::RESIZE);
+   LatticeIterator<Float> iter(out, stepper);
+//
+   const uInt nDimIn = in.ndim();
+   IPosition posIn(nDimIn);
+   IPosition shapeIn(nDimIn);
+//
    for (iter.reset(); !iter.atEnd(); iter++) {
-      out.putSlice (iter.cursor(), iter.position()); 
-      maskOut.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
-                       iter.position());
+      posIn = iter.position().getFirst(nDimIn);
+      shapeIn = iter.cursorShape().getFirst(nDimIn);
+//
+      const Array<T>& pixelsIn = in.getSlice(posIn, shapeIn, False);
+      const Array<Bool>& maskIn = in.getMaskSlice(posIn, shapeIn, False);
+//
+      out.putSlice (pixelsIn, iter.position()); 
+      maskOut.putSlice(maskIn, iter.position());
    }
 }
 
 
 template<class T>
+void LatticeConcat<T>::copyDataOnly(MaskedLattice<Float>& out,
+                                    MaskedLattice<Float>& in) const
+//
+// We make slightly heavy weather of this to account for
+// the case that the output dimensionality is one more than
+// the input
+{
+   LatticeStepper stepper (out.shape(), out.niceCursorShape(), LatticeStepper::RESIZE);
+   LatticeIterator<Float> iter(out, stepper);
+//
+   const uInt nDimIn = in.ndim();
+   IPosition posIn(nDimIn);
+   IPosition shapeIn(nDimIn);
+//
+   for (iter.reset(); !iter.atEnd(); iter++) {
+      posIn = iter.position().getFirst(nDimIn);
+      shapeIn = iter.cursorShape().getFirst(nDimIn);
+//
+      const Array<T>& pixelsIn = in.getSlice(posIn, shapeIn, False);
+//
+      out.putSlice (pixelsIn, iter.position()); 
+   }
+}
+
+
+
+template<class T>
 void LatticeConcat<T>::checkAxis(uInt axis, uInt ndim) const
 {
-   if (axis >= ndim) {
+
+// Allow the possibility to add one higher dimension.
+
+   if (axis > ndim) {
       throw(AipsError("Axis number and lattice dimension are inconsistent"));
    }
 }
