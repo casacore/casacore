@@ -30,7 +30,6 @@
 #include <trial/Images/ImageExpr.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ExtendImage.h>
-#include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/LattRegionHolder.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Lattices/LatticeExpr.h>
