@@ -2774,3 +2774,4 @@
 10 098 sys rm bin/livedata.glishrc
 10 100 src rm trial/implement/Coordinates/test/templates
 10 100 src rm nfra/apps/j2convert/templates
+10 101 src rm trial/apps/numerics/numerics_meta.g
