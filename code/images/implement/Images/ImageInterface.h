@@ -245,6 +245,15 @@ public:
   ImageRegion getRegion (const String& regionName,
 			 RegionHandler::GroupType = RegionHandler::Any) const;
 
+  // Make a unique region name from the given root name, thus make it such
+  // that the name is not already in use for a region or mask.
+  // The root name is returned if it is already unique.
+  // Otherwise a number is appended to the root name to make it unique.
+  // The number starts at the given number and is incremented until the name
+  // is unique.
+  String makeUniqueRegionName (const String& rootName,
+			       uInt startNumber = 1) const;
+
   // Check class invariants. 
   virtual Bool ok() const = 0;
   

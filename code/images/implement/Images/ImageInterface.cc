@@ -200,6 +200,26 @@ ImageRegion ImageInterface<T>::getRegion (const String& regionName,
     return reg;
 }
 
+template<class T>
+String ImageInterface<T>::makeUniqueRegionName (const String& rootName,
+						uInt startNumber) const
+{
+    // Return the root name if already unique.
+    if (! hasRegion (rootName, RegionHandler::Any)) {
+        return rootName;
+    }
+    while (True) {
+        ostrstream oss;
+	oss << startNumber;
+	String name = rootName + String(oss);
+	if (! hasRegion (name, RegionHandler::Any)) {
+	    return name;
+	}
+	startNumber++;
+   }
+   return String();
+}
+
 
 template<class T>
 ImageInfo ImageInterface<T>::imageInfo() const
