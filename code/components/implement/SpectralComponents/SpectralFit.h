@@ -132,12 +132,12 @@ class SpectralFit {
     Bool fit(const Vector<MT> &sigma,
              const Vector<MT> &y,
 	     const Vector<MT> &x) {
-    return fit(w, y, x, static_cast<const Vector<Bool> *const>(0)); }
+    return fit(sigma, y, x, static_cast<const Vector<Bool> *const>(0)); }
   template <class MT> 
     Bool fit(const Vector<MT> &sigma,
              const Vector<MT> &y,
 	     const Vector<MT> &x, const Vector<Bool> &mask) {
-    return fit(w, y, x, &mask); }
+    return fit(sigma, y, x, &mask); }
   // </group>
 
   // Get the number of iterations last fit
