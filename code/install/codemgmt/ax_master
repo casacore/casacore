@@ -3808,3 +3808,4 @@
 14 065 src mv trial/implement/Display.h trialdisplay/implement/Display.h
 14 065 src mv trial/implement/DisplayDatas.h trialdisplay/implement/DisplayDatas.h
 14 065 src mv trial/implement/DisplayEvents.h trialdisplay/implement/DisplayEvents.h
+14 065 src mv trial/implement/Display/AttVal.h trialdisplay/implement/Display/AttVal.h
