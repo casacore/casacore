@@ -82,7 +82,10 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     CoordinateSystem coords;
     Record header;
 
-    Vector<String> ignore;
+    Vector<String> ignore(2); // Resize this if you add more keywords to ignore.
+    ignore(0) = "datamax"; // Don't copy these through because the image pixels
+    ignore(1) = "datamin"; // might change.
+    
     Bool ok = FITSKeywordUtil::getKeywords(header, fitsImage.kwlist(), ignore);
     if (! ok) {
 	os << LogIO::SEVERE << "Error retrieving keywords from fits header.\n"  <<
