@@ -85,6 +85,11 @@ class String;
 template<class T>
 class TabVecScaCol : public TabVecRep<T>
 {
+  //# Make members of parent class known.
+protected:
+  using TabVecRep<T>::tag_p;
+  using TabVecRep<T>::nrel_p;
+
 public:
     // Create a table vector from the given table column.
     // This constructor is for ROTableVector and does not allow

@@ -139,8 +139,16 @@ template<class T> class ROScalarColumn;
 
 template<class SourceType, class TargetType> class ScaledArrayEngine : public BaseMappedArrayEngine<SourceType, TargetType>
 {
+  //# Make members of parent class known.
 public:
+  using BaseMappedArrayEngine<SourceType,TargetType>::sourceName;
+protected:
+  using BaseMappedArrayEngine<SourceType,TargetType>::targetName;
+  using BaseMappedArrayEngine<SourceType,TargetType>::table;
+  using BaseMappedArrayEngine<SourceType,TargetType>::roColumn;
+  using BaseMappedArrayEngine<SourceType,TargetType>::rwColumn;
 
+public:
     // Construct an engine to scale all arrays in a column with
     // the given offset and scale factor.
     // TargetColumnName is the name of the column where the scaled

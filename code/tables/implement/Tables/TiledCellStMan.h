@@ -206,6 +206,12 @@ private:
     // by makeObject.
     TiledCellStMan();
 
+    // Forbid copy constructor.
+    TiledCellStMan (const TiledCellStMan&);
+
+    // Forbid assignment.
+    TiledCellStMan& operator= (const TiledCellStMan&);
+
     // Get the default tile shape.
     virtual IPosition defaultTileShape() const;
 

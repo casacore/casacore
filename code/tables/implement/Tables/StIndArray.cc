@@ -42,6 +42,12 @@ StIndArray::StIndArray (Int64 fileOffset)
   arrOffset_p  (0)
 {}
 
+StIndArray::StIndArray (const StIndArray& that)
+: fileOffset_p (that.fileOffset_p),
+  arrOffset_p  (that.arrOffset_p),
+  shape_p      (that.shape_p)
+{}
+
 StIndArray::~StIndArray()
 {}
 

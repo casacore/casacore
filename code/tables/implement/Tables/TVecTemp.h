@@ -88,6 +88,11 @@ template<class T> class Vector;
 
 template<class T> class TabVecTemp : public TabVecRep<T>
 {
+  //# Make members of parent class known.
+protected:
+  using TabVecRep<T>::tag_p;
+  using TabVecRep<T>::nrel_p;
+
 public:
     // Create table vector containing the given Vector (reference semantics).
     // It will set the origin to zero.

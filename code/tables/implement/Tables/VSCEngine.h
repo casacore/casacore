@@ -291,8 +291,11 @@ template<class T>
 class VSCEngine : public VirtualColumnEngine,
                   public VirtualScalarColumn<T>
 {
+  //# Make members of parent class known.
 public:
+  using VirtualScalarColumn<T>::dataTypeId;
 
+public:
     // The default constructor is required for reconstruction of the
     // engine when a table is read back.
     // It is also used to construct an engine, which does not check

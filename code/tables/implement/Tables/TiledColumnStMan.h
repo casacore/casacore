@@ -201,6 +201,12 @@ private:
     // by makeObject.
     TiledColumnStMan();
 
+    // Forbid copy constructor.
+    TiledColumnStMan (const TiledColumnStMan&);
+
+    // Forbid assignment.
+    TiledColumnStMan& operator= (const TiledColumnStMan&);
+
     // Add rows to the storage manager.
     // This will extend the hypercube.
     void addRow (uInt nrrow);

@@ -191,17 +191,20 @@ void addCols (Bool ask, Table& tab)
     }
   } else {
     if (cdesc.dataManagerType() == "StManAipsIO") {
-      tab.addColumn (tdn, StManAipsIO(cdesc.dataManagerGroup()));
+      StManAipsIO stman(cdesc.dataManagerGroup());
+      tab.addColumn (tdn, stman);
     } else if (cdesc.dataManagerType() == "IncrementalStMan") {
-      tab.addColumn (tdn, IncrementalStMan(cdesc.dataManagerGroup()));
+      IncrementalStMan stman(cdesc.dataManagerGroup());
+      tab.addColumn (tdn, stman);
     } else if (cdesc.dataManagerType() == "StandardStMan") {
-      tab.addColumn (tdn, StandardStMan(cdesc.dataManagerGroup()));
+      StandardStMan stman(cdesc.dataManagerGroup());
+      tab.addColumn (tdn, stman);
     } else if (cdesc.dataManagerType() == "TiledColumnStMan") {
-      tab.addColumn (tdn, TiledColumnStMan(cdesc.dataManagerGroup(),
-					   IPosition(2,10,2)));
+      TiledColumnStMan stman(cdesc.dataManagerGroup(), IPosition(2,10,2));
+      tab.addColumn (tdn, stman);
     } else {
-      tab.addColumn (tdn, TiledShapeStMan(cdesc.dataManagerGroup(),
-					  IPosition(2,10,2)));
+      TiledShapeStMan stman(cdesc.dataManagerGroup(), IPosition(2,10,2));
+      tab.addColumn (tdn, stman);
     }
   }
   putData (tab, tdn, 0, tab.nrow());

@@ -268,6 +268,11 @@ public:
 template<class T>
 class TableVector : public ROTableVector<T>
 {
+  //# Make members of parent class known.
+protected:
+  using ROTableVector<T>::checkLink;
+  using ROTableVector<T>::tabVecPtr_p;
+
 public:
     // The default constructor creates a null table vector.
     // This does not contain an actual vector and cannot be used until

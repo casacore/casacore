@@ -386,6 +386,12 @@ private:
     // by makeObject.
     TiledDataStMan();
 
+    // Forbid copy constructor.
+    TiledDataStMan (const TiledDataStMan&);
+
+    // Forbid assignment.
+    TiledDataStMan& operator= (const TiledDataStMan&);
+
     // Add rows to the storage manager.
     // This will only increase the number of rows. When a hypercube is
     // added or extended, it will be checked whether the number of rows

@@ -437,6 +437,15 @@
 
 template<class SourceType, class TargetType> class RetypedArrayEngine : public BaseMappedArrayEngine<SourceType,TargetType>
 {
+  //# Make members of parent class known.
+public:
+  using BaseMappedArrayEngine<SourceType,TargetType>::sourceName;
+protected:
+  using BaseMappedArrayEngine<SourceType,TargetType>::targetName;
+  using BaseMappedArrayEngine<SourceType,TargetType>::table;
+  using BaseMappedArrayEngine<SourceType,TargetType>::roColumn;
+  using BaseMappedArrayEngine<SourceType,TargetType>::rwColumn;
+
 public:
 
     // Construct an engine to map a source column containing arrays with

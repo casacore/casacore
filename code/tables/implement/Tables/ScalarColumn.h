@@ -255,8 +255,12 @@ protected:
 template<class T> class ScalarColumn : public ROScalarColumn<T>,
                                        public TableColumn
 {
-public:
+  //# Make members of parent class known.
+protected:
+  using ScalarColumn<T>::reaskAccessColumn_p;
+  using ScalarColumn<T>::canAccessColumn_p;
 
+public:
     // The default constructor creates a null object, i.e. it
     // does not reference a table column.
     // The sole purpose of this constructor is to allow construction

@@ -34,6 +34,7 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/Slicer.h>
 #include <casa/Containers/Record.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/ValTypeId.h>

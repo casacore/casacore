@@ -144,7 +144,10 @@ public:
     // That may be filled in later by setShape.
     StIndArray (Int64 fileOffset);
 
-    // Forbid assignment.
+    // Copy constructor.
+    StIndArray (const StIndArray&);
+
+    // Assignment.
     StIndArray& operator= (const StIndArray&);
 
     ~StIndArray();
@@ -404,9 +407,6 @@ private:
     // array (slice) are not equal.
     void checkShape (const IPosition& userArrayShape,
 		     const IPosition& tableArrayShape) const;
-
-    // Forbid copy constructor.
-    StIndArray (const StIndArray&);
 };
 
 

@@ -490,6 +490,13 @@ protected:
     IPosition fixedCellShape_p;
     // Has any data changed since the last flush?
     Bool      dataChanged_p;
+
+private:
+    // Forbid copy constructor.
+    TiledStMan (const TiledStMan&);
+
+    // Forbid assignment.
+    TiledStMan& operator= (const TiledStMan&);
 };
 
 

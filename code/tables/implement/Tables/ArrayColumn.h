@@ -354,6 +354,15 @@ template<class T>
 class ArrayColumn : public ROArrayColumn<T>,
                     public TableColumn
 {
+  //# Make members of parent class known.
+protected:
+  using ArrayColumn<T>::reaskAccessSlice_p;
+  using ArrayColumn<T>::canAccessSlice_p;
+  using ArrayColumn<T>::reaskAccessColumn_p;
+  using ArrayColumn<T>::canAccessColumn_p;
+  using ArrayColumn<T>::reaskAccessColumnSlice_p;
+  using ArrayColumn<T>::canAccessColumnSlice_p;
+
 public:
 
     // The default constructor creates a null object, i.e. it

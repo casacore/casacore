@@ -143,7 +143,7 @@ void doTest (uInt nrrow, const DataManager& stman, uInt flushnr)
   readtab();
 }
 
-main (int argc, const char* argv[])
+int main (int argc, const char* argv[])
 {
   uInt nrrow = 100000;
   uInt bucketSize = 32768;
@@ -163,11 +163,14 @@ main (int argc, const char* argv[])
 
   try {
     cout << "StManAipsIO" << endl;
-    doTest (nrrow, StManAipsIO(), flushnr);
+    StManAipsIO st1;
+    doTest (nrrow, st1, flushnr);
     cout << endl << "StandardStMan" << endl;
-    doTest (nrrow, StandardStMan (max(bucketSize,100u)), flushnr);
+    StandardStMan st2(max(bucketSize,100u));
+    doTest (nrrow, st2, flushnr);
     cout << endl << "IncrementalStMan" << endl;
-    doTest (nrrow, IncrementalStMan (max(bucketSize,1000u), False), flushnr);
+    IncrementalStMan st3(max(bucketSize,1000u), False);
+    doTest (nrrow, st3, flushnr);
   } catch (AipsError x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;

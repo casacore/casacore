@@ -613,9 +613,12 @@ main (int argc, const char* argv[])
   }
 
   try {
-    doTest (nrrow, StManAipsIO());
-    doTest (nrrow, StandardStMan (max(bucketSize,500u)));
-    doTest (nrrow, IncrementalStMan (max(bucketSize,1000u), False));
+    StManAipsIO st1;
+    doTest (nrrow, st1);
+    StandardStMan st2(max(bucketSize,500u));
+    doTest (nrrow, st2);
+    IncrementalStMan st3(max(bucketSize,1000u), False);
+    doTest (nrrow, st3);
   } catch (AipsError x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;

@@ -424,6 +424,12 @@ public:
 
 
 private:
+    // Forbid copy constructor.
+    StManAipsIO (const StManAipsIO&);
+
+    // Forbid assignment.
+    StManAipsIO& operator= (const StManAipsIO&);
+
     // Flush and optionally fsync the data.
     // It returns a True status if it had to flush (i.e. if data have changed).
     virtual Bool flush (AipsIO&, Bool fsync);
