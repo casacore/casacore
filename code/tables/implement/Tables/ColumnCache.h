@@ -104,6 +104,12 @@ public:
     // calculated offset can be added to get the proper data.
     const void* dataPtr() const;
 
+    // Give the start, end (including), and increment row number
+    // of the cached column values.
+    uInt start() const {return itsStart;}
+    uInt end() const {return itsEnd;}
+    uInt incr() const {return itsIncr;}
+
 private:
     uInt  itsStart;
     uInt  itsEnd;
@@ -133,6 +139,19 @@ inline const void* ColumnCache::dataPtr() const
     return itsData;
 }
 
-
+/*
+inline uInt ColumnCache::start() const
+{
+    return itsStart;
+}
+inline uInt ColumnCache::end() const
+{
+    return itsEnd;
+}
+inline uInt ColumnCache::incr() const
+{
+    return itsIncr;
+}
+*/
 
 #endif
