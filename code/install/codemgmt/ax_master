@@ -5516,3 +5516,6 @@
 15 211 src rm trial/apps/olddish/oldmydish_standard.gp
 15 211 sys rm libexec/olddish_standard.gp
 15 211 sys rm libexec/oldmydish_standard.gp
+15 211 src rm trial/apps/olddish/olddishdemodata.help
+15 211 src rm trial/apps/olddish/olddishenv.help
+15 211 src rm trial/apps/olddish/oldsdimager.help
