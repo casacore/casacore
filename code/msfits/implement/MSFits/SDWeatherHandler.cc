@@ -1,5 +1,5 @@
 //# SDWeatherHandler.cc: a WEATHER handler for SDFITS data  
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,8 +107,13 @@ void SDWeatherHandler::resetRow(const Record &row)
 void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time, 
 			    Vector<Double> &timeRange)
 {
-    // don't bother unless there is something there
-    if (msWeather_p) {
+    // don't bother unless there is something there and something to add
+    if (msWeather_p && 
+	(humidityId_p >= 0 || tambientId_p >= 0 || pressureId_p >= 0 ||
+	 dewpointId_p >= 0 || windspeeId_p >= 0 || winddireId_p >= 0 ||
+	 (H2OField_p.isAttached() && !isNaN(*H2OField_p) && !isInf(*H2OField_p)) ||
+	 (ionosElectronField_p.isAttached() && !isNaN(*ionosElectronField_p) && !isInf(*ionosElectronField_p)))) {
+
 	Float thisHumidity, thisTambient, thisDewpoint, thisWindspee, thisWinddire, thisPressure;
 	thisHumidity = thisTambient = thisDewpoint = thisWindspee = 
 	    thisWinddire = thisPressure = 0.0;
@@ -132,7 +137,7 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
 
 	Bool newRow = rownr_p < 0;
 	if (!newRow && !msWeatherCols_p->relHumidity().isNull()) {
-	    newRow = thisHumidity == msWeatherCols_p->relHumidity()(rownr_p);
+	    newRow = thisHumidity != msWeatherCols_p->relHumidity()(rownr_p);
 	}
 	if (!newRow && !msWeatherCols_p->temperature().isNull()) {
 	    newRow = thisTambient != msWeatherCols_p->temperature()(rownr_p);
