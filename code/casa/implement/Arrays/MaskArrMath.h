@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MASK_ARR_MATH_H)
-#define AIPS_MASK_ARR_MATH_H
+#if !defined(AIPS_MASKARRMATH_H)
+#define AIPS_MASKARRMATH_H
 
 #if defined(_AIX)
 #pragma implementation ("MaskArrMath.cc")
@@ -42,8 +42,8 @@
 #include <aips/Mathematics/Complex.h>
 
 
-// <summary>
-// Mathematical operations for MaskedArrays, and between MaskedArrays and Arrays.
+// <summary> 
+//   Mathematical operations for MaskedArrays (and with Arrays) 
 // </summary>
 // <reviewed reviewer="" date="" tests="tMaskArrMath0 tMaskArrMath1 tMaskArrMath2 tMaskArrExcp">
 //
@@ -116,70 +116,38 @@
 //    operations for MaskedArrays, and between MaskedArrays and Arrays.
 // </linkfrom>
 //
-// <group name="MaskedArray mathematical operations">
 
 
-// 
 // Element by element arithmetic modifying left in-place. left and other
 // must be conformant.
-//
+// 
 // <thrown>
 //   <li> ArrayConformanceError
 // </thrown>
 //
 // <group>
-template<class T>
-  const MaskedArray<T> & operator+= (const MaskedArray<T> &left,
-                                     const Array<T> &other);
-template<class T>
-  const MaskedArray<T> & operator-= (const MaskedArray<T> &left,
-                                     const Array<T> &other);
-template<class T>
-  const MaskedArray<T> & operator*= (const MaskedArray<T> &left,
-                                     const Array<T> &other);
-template<class T>
-  const MaskedArray<T> & operator/= (const MaskedArray<T> &left,
-                                     const Array<T> &other);
-//
-template<class T>
-  Array<T> & operator+= (Array<T> &left, const MaskedArray<T> &other);
-template<class T>
-  Array<T> & operator-= (Array<T> &left, const MaskedArray<T> &other);
-template<class T>
-  Array<T> & operator*= (Array<T> &left, const MaskedArray<T> &other);
-template<class T>
-  Array<T> & operator/= (Array<T> &left, const MaskedArray<T> &other);
-//
-template<class T>
-  const MaskedArray<T> & operator+= (const MaskedArray<T> &left,
-                                     const MaskedArray<T> &other);
-template<class T>
-  const MaskedArray<T> & operator-= (const MaskedArray<T> &left,
-                                     const MaskedArray<T> &other);
-template<class T>
-  const MaskedArray<T> & operator*= (const MaskedArray<T> &left,
-                                     const MaskedArray<T> &other);
-template<class T>
-  const MaskedArray<T> & operator/= (const MaskedArray<T> &left,
-                                     const MaskedArray<T> &other);
+template<class T> const MaskedArray<T> & operator+= (const MaskedArray<T> &left, const Array<T> &other);
+template<class T> const MaskedArray<T> & operator-= (const MaskedArray<T> &left, const Array<T> &other);
+template<class T> const MaskedArray<T> & operator*= (const MaskedArray<T> &left, const Array<T> &other);
+template<class T> const MaskedArray<T> & operator/= (const MaskedArray<T> &left, const Array<T> &other);
+template<class T> Array<T> & operator+= (Array<T> &left, const MaskedArray<T> &other);
+template<class T> Array<T> & operator-= (Array<T> &left, const MaskedArray<T> &other);
+template<class T> Array<T> & operator*= (Array<T> &left, const MaskedArray<T> &other);
+template<class T> Array<T> & operator/= (Array<T> &left, const MaskedArray<T> &other);
+template<class T> const MaskedArray<T> & operator+= (const MaskedArray<T> &left, const MaskedArray<T> &other);
+template<class T> const MaskedArray<T> & operator-= (const MaskedArray<T> &left, const MaskedArray<T> &other);
+template<class T> const MaskedArray<T> & operator*= (const MaskedArray<T> &left, const MaskedArray<T> &other);
+template<class T> const MaskedArray<T> & operator/= (const MaskedArray<T> &left,const MaskedArray<T> &other);
 // </group>
 
 // 
 // Element by element arithmetic modifying left in-place. The scalar "other"
 // behaves as if it were a conformant Array to left filled with constant values.
 // <group>
-template<class T>
-  const MaskedArray<T> & operator+= (const MaskedArray<T> &left,
-                                     const T &other);
-template<class T>
-  const MaskedArray<T> & operator-= (const MaskedArray<T> &left,
-                                     const T &other);
-template<class T>
-  const MaskedArray<T> & operator*= (const MaskedArray<T> &left,
-                                     const T &other);
-template<class T>
-  const MaskedArray<T> & operator/= (const MaskedArray<T> &left,
-                                     const T &other);
+template<class T> const MaskedArray<T> & operator+= (const MaskedArray<T> &left,const T &other);
+template<class T> const MaskedArray<T> & operator-= (const MaskedArray<T> &left,const T &other);
+template<class T> const MaskedArray<T> & operator*= (const MaskedArray<T> &left,const T &other);
+template<class T> const MaskedArray<T> & operator/= (const MaskedArray<T> &left,const T &other);
 // </group>
 
 // Unary arithmetic operation.
@@ -190,77 +158,47 @@ template<class T> MaskedArray<T> operator-(const MaskedArray<T> &a);
 // </group>
 
 // 
-// Element by element arithmetic on MaskedArrays, returning a MaskedArray.
+// Element by element arithmetic on MaskedArrays, returns a MaskedArray.
 //
 // <thrown>
 //   <li> ArrayConformanceError
 // </thrown>
 //
 // <group>
-template<class T> 
-  MaskedArray<T> operator+ (const MaskedArray<T> &left, const Array<T> &right);
-template<class T> 
-  MaskedArray<T> operator- (const MaskedArray<T> &left, const Array<T> &right);
-template<class T> 
-  MaskedArray<T> operator* (const MaskedArray<T> &left, const Array<T> &right);
-template<class T> 
-  MaskedArray<T> operator/ (const MaskedArray<T> &left, const Array<T> &right);
-//
-template<class T> 
-  MaskedArray<T> operator+ (const Array<T> &left, const MaskedArray<T> &right);
-template<class T> 
-  MaskedArray<T> operator- (const Array<T> &left, const MaskedArray<T> &right);
-template<class T> 
-  MaskedArray<T> operator* (const Array<T> &left, const MaskedArray<T> &right);
-template<class T> 
-  MaskedArray<T> operator/ (const Array<T> &left, const MaskedArray<T> &right);
-
-//
-template<class T> 
-  MaskedArray<T> operator+ (const MaskedArray<T> &left,
-                            const MaskedArray<T> &right);
-template<class T> 
-  MaskedArray<T> operator- (const MaskedArray<T> &left,
-                            const MaskedArray<T> &right);
-template<class T> 
-  MaskedArray<T> operator* (const MaskedArray<T> &left,
-                            const MaskedArray<T> &right);
-template<class T> 
-  MaskedArray<T> operator/ (const MaskedArray<T> &left,
-                            const MaskedArray<T> &right);
+template<class T> MaskedArray<T> operator+ (const MaskedArray<T> &left, const Array<T> &right);
+template<class T> MaskedArray<T> operator- (const MaskedArray<T> &left, const Array<T> &right);
+template<class T> MaskedArray<T> operator* (const MaskedArray<T> &left, const Array<T> &right);
+template<class T> MaskedArray<T> operator/ (const MaskedArray<T> &left, const Array<T> &right);
+template<class T> MaskedArray<T> operator+ (const Array<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> operator- (const Array<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> operator* (const Array<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> operator/ (const Array<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> operator+ (const MaskedArray<T> &left,const MaskedArray<T> &right);
+template<class T> MaskedArray<T> operator- (const MaskedArray<T> &left,const MaskedArray<T> &right);
+template<class T> MaskedArray<T> operator* (const MaskedArray<T> &left,const MaskedArray<T> &right);
+template<class T> MaskedArray<T> operator/ (const MaskedArray<T> &left,const MaskedArray<T> &right);
 // </group>
 
 // 
 // Element by element arithmetic between a MaskedArray and a scalar, returning
 // a MaskedArray.
 // <group>
-template<class T> 
-    MaskedArray<T> operator+ (const MaskedArray<T> &left, const T &right);
-template<class T> 
-    MaskedArray<T> operator- (const MaskedArray<T> &left, const T &right);
-template<class T> 
-    MaskedArray<T> operator* (const MaskedArray<T> &left, const T &right);
-template<class T> 
-    MaskedArray<T> operator/ (const MaskedArray<T> &left, const T &right);
-    MaskedArray<Complex> operator* (const MaskedArray<Complex> &left, 
-                                    const Float &right);
+template<class T> MaskedArray<T> operator+ (const MaskedArray<T> &left, const T &right);
+template<class T> MaskedArray<T> operator- (const MaskedArray<T> &left, const T &right);
+template<class T> MaskedArray<T> operator* (const MaskedArray<T> &left, const T &right);
+template<class T> MaskedArray<T> operator/ (const MaskedArray<T> &left, const T &right);
+                  MaskedArray<Complex> operator* (const MaskedArray<Complex> &left, const Float &right);
 // </group>
 
 // 
 // Element by element arithmetic between a scalar and a MaskedArray, returning
 // a MaskedArray.
 // <group>
-template<class T>  
-    MaskedArray<T> operator+ (const T &left, const MaskedArray<T> &right);
-template<class T>  
-    MaskedArray<T> operator- (const T &left, const MaskedArray<T> &right);
-template<class T>  
-    MaskedArray<T> operator* (const T &left, const MaskedArray<T> &right);
-template<class T>  
-    MaskedArray<T> operator/ (const T &left, const MaskedArray<T> &right);
-    MaskedArray<Complex> operator* (const Float &left, 
-                                    const MaskedArray<Complex> &right);
-//
+template<class T>  MaskedArray<T> operator+ (const T &left, const MaskedArray<T> &right);
+template<class T>  MaskedArray<T> operator- (const T &left, const MaskedArray<T> &right);
+template<class T>  MaskedArray<T> operator* (const T &left, const MaskedArray<T> &right);
+template<class T>  MaskedArray<T> operator/ (const T &left, const MaskedArray<T> &right);
+                   MaskedArray<Complex> operator* (const Float &left, const MaskedArray<Complex> &right);
 // </group>
 
 // 
@@ -285,90 +223,49 @@ template<class T> MaskedArray<T> abs(const MaskedArray<T> &left);
 template<class T> MaskedArray<T> fabs(const MaskedArray<T> &left);
 template<class T> MaskedArray<T> ceil(const MaskedArray<T> &left);
 template<class T> MaskedArray<T> floor(const MaskedArray<T> &left);
+// </group>
 
+// Transcendental functions requiring two arguments applied on an element-by-element
+// basis. Although a template function, this may not make sense for all
+// numeric types.
 // <thrown>
 //   <li> ArrayConformanceError
 // </thrown>
 //
 // <group>
-
-template<class T>
-  MaskedArray<T> atan2(const MaskedArray<T> &left, const Array<T> &right);
-template<class T>
-  MaskedArray<T> fmod(const MaskedArray<T> &left, const Array<T> &right);
-
-template<class T>
-  MaskedArray<T> atan2(const Array<T> &left, const MaskedArray<T> &right);
-template<class T>
-  MaskedArray<T> fmod(const Array<T> &left, const MaskedArray<T> &right);
-
-template<class T>
-  MaskedArray<T> atan2(const MaskedArray<T> &left,
-                       const MaskedArray<T> &right);
-template<class T>
-  MaskedArray<T> fmod(const MaskedArray<T> &left,
-                      const MaskedArray<T> &right);
-
+template<class T> MaskedArray<T> atan2(const MaskedArray<T> &left, const Array<T> &right);
+template<class T> MaskedArray<T> fmod(const MaskedArray<T> &left, const Array<T> &right);
+template<class T> MaskedArray<T> atan2(const Array<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> fmod(const Array<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> atan2(const MaskedArray<T> &left,const MaskedArray<T> &right);
+template<class T> MaskedArray<T> fmod(const MaskedArray<T> &left,const MaskedArray<T> &right);
+template<class T> MaskedArray<T> atan2(const MaskedArray<T> &left, const T &right);
+template<class T> MaskedArray<T> fmod(const MaskedArray<T> &left, const T &right);
+template<class T> MaskedArray<T> atan2(const T &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> fmod(const T &left, const MaskedArray<T> &right);
+template<class T, class U> MaskedArray<T> pow(const MaskedArray<T> &left, const Array<U> &right);
+template<class T, class U> MaskedArray<T> pow(const Array<T> &left, const MaskedArray<U> &right);
+template<class T, class U> MaskedArray<T> pow(const MaskedArray<T> &left,const MaskedArray<U> &right);
+template<class T> MaskedArray<T> pow(const MaskedArray<T> &left, const Double right);
 // </group>
-
-template<class T>
-  MaskedArray<T> atan2(const MaskedArray<T> &left, const T &right);
-template<class T>
-  MaskedArray<T> fmod(const MaskedArray<T> &left, const T &right);
-
-template<class T>
-  MaskedArray<T> atan2(const T &left, const MaskedArray<T> &right);
-template<class T>
-  MaskedArray<T> fmod(const T &left, const MaskedArray<T> &right);
-
-// <thrown>
-//   <li> ArrayConformanceError
-// </thrown>
-//
-// <group>
-
-template<class T, class U>
-  MaskedArray<T> pow(const MaskedArray<T> &left, const Array<U> &right);
-template<class T, class U>
-  MaskedArray<T> pow(const Array<T> &left, const MaskedArray<U> &right);
-template<class T, class U>
-  MaskedArray<T> pow(const MaskedArray<T> &left,
-                     const MaskedArray<U> &right);
-
-// </group>
-
-template<class T>
-  MaskedArray<T> pow(const MaskedArray<T> &left, const Double right);
-
-// </group>
-
 
 // 
 // Find the minimum and maximum values of a MaskedArray.
-// <group>
-
 // Also find the IPositions of the minimum and maximum values.
 //
 // <thrown>
 //    <li> ArrayError
 // </thrown>
 //
-template<class T>
-void minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos,
-            const MaskedArray<T> &marray);
-
-template<class T>
-void minMax(T &minVal, T &maxVal,
-            const MaskedArray<T> &marray);
-
+// <group>
+template<class T> void minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos,const MaskedArray<T> &marray);
+template<class T> void minMax(T &minVal, T &maxVal,const MaskedArray<T> &marray);
 // </group>
 
 
 // 
 // The "min" and "max" functions require that the type "T" have comparison 
 // operators.
-// <group>
-
 // The minimum element of the array.
 template<class T> T min(const MaskedArray<T> &left);
 
@@ -376,33 +273,17 @@ template<class T> T min(const MaskedArray<T> &left);
 // Return an array that contains the minimum of "left" and "right" at each
 // position.
 //
-// <group>
-
 // "left" and "right" must be conformant.
 //
 // <thrown>
 //    <li> ArrayError
 // </thrown>
-//
 // <group>
-
-template<class T>
-MaskedArray<T> min(const MaskedArray<T> &left, const Array<T> &right);
-
-template<class T>
-MaskedArray<T> min(const Array<T> &left, const MaskedArray<T> &right);
-
-template<class T>
-MaskedArray<T> min(const MaskedArray<T> &left, const MaskedArray<T> &right);
-
-// </group>
-
-template<class T>
-MaskedArray<T> min(const T &left, const MaskedArray<T> &right);
-
-template<class T>
-MaskedArray<T> min(const MaskedArray<T> &left, const T &right);
-
+template<class T> MaskedArray<T> min(const MaskedArray<T> &left, const Array<T> &right);
+template<class T> MaskedArray<T> min(const Array<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> min(const MaskedArray<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> min(const T &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> min(const MaskedArray<T> &left, const T &right);
 // </group>
 
 
@@ -413,8 +294,7 @@ MaskedArray<T> min(const MaskedArray<T> &left, const T &right);
 //   <li> ArrayConformanceError
 // </thrown>
 //
-template<class T> void min(const MaskedArray<T> &result,
-                           const Array<T> &left, const Array<T> &right);
+template<class T> void min(const MaskedArray<T> &result, const Array<T> &left, const Array<T> &right);
 
 
 // The maximum element of the array.
@@ -424,33 +304,17 @@ template<class T> T max(const MaskedArray<T> &left);
 // Return an array that contains the maximum of "left" and "right" at each
 // position.
 //
-// <group>
-
 // "left" and "right" must be conformant.
-//
 // <thrown>
 //    <li> ArrayError
 // </thrown>
 //
 // <group>
-
-template<class T>
-MaskedArray<T> max(const MaskedArray<T> &left, const Array<T> &right);
-
-template<class T>
-MaskedArray<T> max(const Array<T> &left, const MaskedArray<T> &right);
-
-template<class T>
-MaskedArray<T> max(const MaskedArray<T> &left, const MaskedArray<T> &right);
-
-// </group>
-
-template<class T>
-MaskedArray<T> max(const T &left, const MaskedArray<T> &right);
-
-template<class T>
-MaskedArray<T> max(const MaskedArray<T> &left, const T &right);
-
+template<class T> MaskedArray<T> max(const MaskedArray<T> &left, const Array<T> &right);
+template<class T> MaskedArray<T> max(const Array<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> max(const MaskedArray<T> &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> max(const T &left, const MaskedArray<T> &right);
+template<class T> MaskedArray<T> max(const MaskedArray<T> &left, const T &right);
 // </group>
 
 
@@ -461,20 +325,14 @@ MaskedArray<T> max(const MaskedArray<T> &left, const T &right);
 //   <li> ArrayConformanceError
 // </thrown>
 //
-template<class T> void max(const MaskedArray<T> &result,
-                           const Array<T> &left, const Array<T> &right);
-
-// </group>
-
-
+template<class T> void max(const MaskedArray<T> &result,const Array<T> &left, const Array<T> &right);
 
 // 
 // Fills all elements of "array" where the mask is True with a sequence
 // starting with "start" and incrementing by "inc" for each element
 // where the mask is True.
 // The first axis varies most rapidly.
-template<class T> void indgen(const MaskedArray<T> &a,
-                              const T start, const T inc);
+template<class T> void indgen(const MaskedArray<T> &a,const T start, const T inc);
 
 // 
 // Fills all elements of "array" where the mask is True with a sequence
@@ -495,9 +353,6 @@ template<class T>  void indgen(const MaskedArray<T> &a, const T start);
 //    <li> ArrayError
 // </thrown>
 //
-// <group>
-
-// 
 // Sum of every element of the MaskedArray where the Mask is True.
 template<class T> T sum(const MaskedArray<T> &a);
 
@@ -572,7 +427,5 @@ template<class T> MaskedArray<T> square(const MaskedArray<T> &val);
 // Returns a MaskedArray where every element is cubed.
 template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 
-
-// </group>
 
 #endif
