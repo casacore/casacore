@@ -551,22 +551,6 @@ Bool LatticeStepper::ok() const
  	   << " thinks things are bad" << LogIO::POST;
     return False;
   }
-  // Check if itsStart flag is correct
-  if ((itsCursorPos.isEqual(IPosition(latticeDim,0)) && (itsStart == False)) ||
-      (!itsCursorPos.isEqual(IPosition(latticeDim,0)) && (itsStart == True))) {
-    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-    logErr << LogIO::SEVERE << "cursor position"
-	   << " (=" << itsCursorPos << ")"
-	   << " is inconsistent with itsStart flag"
-	   << " (itsStart = ";
-    if (itsStart == True) {
-      logErr << "True";
-    } else {
-      logErr << "False";
-    }
-    logErr << ")" << LogIO::POST;
-    return False;
-  }
   // Check if itsNiceFit is correct.
   if (itsNiceFit != niceFit()) {
     LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
