@@ -39,7 +39,7 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/ObsInfo.h>
 
-template <class T> class ImageInterface;
+template <class T> class MaskedImage;
 template <class T> class Vector;
 class IPosition;
 class Unit;
@@ -54,7 +54,7 @@ class Coordinate;
 // </reviewed>
 // 
 // <prerequisite>
-//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <li> <linkto class=MaskedImage>ImageInterface</linkto>
 //   <li> <linkto module=Coordinates>Coordinates</linkto> 
 // </prerequisite>
 //
@@ -122,7 +122,7 @@ template <class T> class ImageSummary
 {
 public:
 // Constructor
-   ImageSummary (const ImageInterface<T>&);
+   ImageSummary (const MaskedImage<T>&);
 
 // Copy constructor
    ImageSummary (const ImageSummary<T> &other);
@@ -192,14 +192,14 @@ public:
              const Bool nativeFormat=False);
 
 // Set a new image
-   Bool setNewImage (const ImageInterface<T>& image);
+   Bool setNewImage (const MaskedImage<T>& image);
 
 
 private:
 
    CoordinateSystem cSys_p;
    ObsInfo obsInfo_p;
-   const ImageInterface<T>* pImage_p;
+   const MaskedImage<T>* pImage_p;
 
    void getFieldWidths (uInt& widthName, 
                         uInt& widthProj,

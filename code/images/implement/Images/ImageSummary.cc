@@ -29,7 +29,7 @@
 #include <aips/Arrays.h>
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Images/ImageInterface.h>
+#include <trial/Images/MaskedImage.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
@@ -51,9 +51,9 @@
 #include <trial/Images/ImageSummary.h>
 
 template <class T>
-ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
+ImageSummary<T>::ImageSummary (const MaskedImage<T>& image)
 //
-// Constructor assigns pointer.  If ImageInterface goes out of scope you
+// Constructor assigns pointer.  If MaskedImage goes out of scope you
 // will get rubbish.
 //
 {
@@ -333,7 +333,7 @@ Bool ImageSummary<T>::hasAMask () const
 // See if image has a mask
 //
 {
-   return False;
+   return pImage_p->isMasked();
 }
 
 
@@ -545,12 +545,12 @@ void ImageSummary<T>::list (LogIO& os,
 
 
 template <class T> 
-Bool ImageSummary<T>::setNewImage (const ImageInterface<T>& image)
+Bool ImageSummary<T>::setNewImage (const MaskedImage<T>& image)
 //
 // Reassign pointer.  
 //
 {
-   const ImageInterface<T>* pTemp;
+   const MaskedImage<T>* pTemp;
    pTemp = &image;
    if (pTemp == 0) {
       return False;
