@@ -1,5 +1,5 @@
 //# AipsrcBool.cc: Specialisation for AipsrcValue<Bool>
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 
 //# Constructor
 AipsrcValue<Bool>::AipsrcValue() :
-  ntlst(0), tlst(0) {}
+  tlst(0), ntlst(0) {}
 
 //# Destructor
 AipsrcValue<Bool>::~AipsrcValue() {}

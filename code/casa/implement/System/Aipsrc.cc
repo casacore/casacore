@@ -50,7 +50,7 @@ Bool Aipsrc::matchKeyword(uInt &where,  const String &keyword,
 			  uInt start) {
   if (doInit) parse();
  
-  for (Int i=start; i<keywordPattern.nelements(); i++) {
+  for (uInt i=start; i<keywordPattern.nelements(); i++) {
      if (keyword.contains(Regex(keywordPattern[i]))) {
        where = i;
        return True;
@@ -77,7 +77,7 @@ Bool Aipsrc::find(String &value,
 
 Bool Aipsrc::findNoHome(String &value,
 			const String &keyword) {
-  return find(value, fileEnd);
+  return find(value, keyword, fileEnd);
 }
 
 Bool Aipsrc::find(String &value, const String &keyword, 
@@ -96,7 +96,7 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   String res;
   if (find(res, keyword)) {
     value = MUString::minimaxNC(res, Nname, tname);
-    return (value < Nname ? True : False);
+    return ((Int)value < Nname ? True : False);
   };
   return False;
 }
@@ -372,7 +372,7 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
   keywordPattern.resize(0, True);
   Block<String> keywordFile;
   fileEnd = 0;
-  Int nkw = 0;			// # of keywords found
+  uInt nkw = 0;			// # of keywords found
   Int nfile = 0;		// # of files found
   
   // This here be the parse function. It looks through all the directories
@@ -442,7 +442,7 @@ void Aipsrc::show(ostream &oStream) {
   const String gs11(".");
   oStream << keywordValue.nelements() <<
     " keyword/value pairs found:" << endl;
-  for (Int j = 0; j<keywordValue.nelements(); j++) {
+  for (uInt j = 0; j<keywordValue.nelements(); j++) {
     nam = keywordPattern[j];
     nam.gsub(gs00, gs01);
     nam.gsub(gs10, gs11);
@@ -516,7 +516,7 @@ Bool Aipsrc::genUnSet(Vector<String> &namlst, Vector<String> &vallst,
   };
   n++;
   if (n>N) return False;
-  for (Int i=n; i<N; i++) {
+  for (uInt i=n; i<N; i++) {
     namlst(i-1) = namlst(i);
     vallst(i-1) = vallst(i);
   };

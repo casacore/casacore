@@ -1,5 +1,5 @@
 //# AipsrcVString.cc: Specialisation for AipsrcVector<String>
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 
 //# Constructor
 AipsrcVector<String>::AipsrcVector() : 
-  ntlst(0), tlst(0) {}
+  tlst(0), ntlst(0) {}
 
 //# Destructor
 AipsrcVector<String>::~AipsrcVector() {}
@@ -52,7 +52,7 @@ Bool AipsrcVector<String>::find(Vector<String> &value,
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<String>(m);
-    for (uInt i=0; i<m; i++) {
+    for (Int i=0; i<m; i++) {
       value(i) = nres[i];
     };
     delete [] nres;
