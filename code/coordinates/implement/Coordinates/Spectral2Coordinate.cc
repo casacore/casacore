@@ -1,5 +1,5 @@
 //# Spectral2Coordinate.cc: this defines Measures related SpectralCoordinate functions
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,11 @@
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
+#include <trial/Coordinates/CoordinateUtil.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/VelocityMachine.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Quanta/MVFrequency.h>
@@ -49,8 +52,11 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
   type_p(freqType),
   restfreqs_p(0),
   restfreqIdx_p(0),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
-  prefVelType_p(MDoppler::RADIO)
+  prefVelType_p(MDoppler::RADIO),
+  unit_p("Hz")
 {
    restfreqs_p.resize(1);
    restfreqs_p(0) = restFrequency;
@@ -248,5 +254,54 @@ void SpectralCoordinate::reinitializeVelocityMachine ()
    pVelocityMachine_p = new VelocityMachine(MFrequency::Ref(type_p), fU,
                                             MVFrequency(rF), MDoppler::Ref(MDoppler::RADIO), 
                                             Unit(String("km/s")));
+}
+
+
+void SpectralCoordinate::makeConversionMachines (const MEpoch& epoch, const MPosition& position,
+                                                 const MDirection& direction)
+{
+   LogIO os(LogOrigin("SpectralCoordinate", "makeConversionMachines"));
+//
+   pConversionMachineTo_p = new MFrequency::Convert();
+   Bool madeItTo = CoordinateUtil::makeFrequencyMachine (os, *pConversionMachineTo_p,
+                                                         type_p, conversionType_p,
+                                                         direction, direction, 
+                                                         epoch, epoch,
+                                                         position, position);
+   pConversionMachineFrom_p = new MFrequency::Convert();
+   Bool madeItFrom = CoordinateUtil::makeFrequencyMachine (os, *pConversionMachineFrom_p,
+                                                           conversionType_p, type_p,
+                                                           direction, direction,
+                                                           epoch, epoch,
+                                                           position, position);
+// If the machines are noOps, delete them
+   
+   if (pConversionMachineTo_p->isNOP() && pConversionMachineFrom_p->isNOP()) {
+      delete pConversionMachineTo_p;
+      delete pConversionMachineFrom_p;
+      pConversionMachineTo_p = 0;
+      pConversionMachineFrom_p = 0;
+   }
+
+}
+
+void SpectralCoordinate::convertTo (Vector<Double>& world) const
+{
+
+// SC always has world vector of length 1
+
+   if (pConversionMachineTo_p) {
+      world(0)  = (*pConversionMachineTo_p)(world(0)).get(unit_p).getValue();
+   }
+}
+
+void SpectralCoordinate::convertFrom (Vector<Double>& world) const
+{
+
+// SC always has world vector of length 1
+
+   if (pConversionMachineFrom_p) {
+      world(0) = (*pConversionMachineFrom_p)(world(0)).get(unit_p).getValue();
+   }
 }
 
