@@ -6107,3 +6107,4 @@
 17 151 src rm admin/system/aips2-reports.list
 17 151 src rm admin/system/aips2-sitemgr.list
 17 151 src rm admin/system/aips2-synthesis.list
+17 151 src rm admin/system/aips2-system.list
