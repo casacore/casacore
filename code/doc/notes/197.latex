@@ -62,7 +62,7 @@ P.O. Box O, Socorro, NM, 87801, USA
 
 \date
 {
-{Text last updated: 1996 December 10}\\
+{Text last updated: 2003 January 05}\\
 {HTML version available at:}\\
 \texttt{{\thisdocURL}} 
 }
@@ -87,14 +87,10 @@ New Mexico, U.S.A.<BR>
 </TD>
 </TR> 
 <TD>whole document as <A HREF="../197.ps.gz">Postscript</A><BR></TD> 
-<TD>HTML updated: 1996 December 10</TD> 
+<TD>HTML updated: 2003 January 05</TD> 
 </TR> 
 </TABLE>
 <HR> 
-<P><FONT COLOR="red">N.B. This document uses HTML 3 Tables, and
-in-line images to display mathematical expressions.<BR>Turn <EM>Image
-Loading</EM> <STRONG>ON</STRONG>, and set your font size in the range
-12 to 14pt for optimal browsing.</FONT></P>
 \end{rawhtml}
 
 \tableofcontents
