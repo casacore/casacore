@@ -28,10 +28,6 @@
 #if !defined(AIPS_CUBE_H)
 #define AIPS_CUBE_H
 
-#if defined(_AIX)
-#pragma implementation ("Cube.cc")
-#endif
-
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/CubeRtti.h>

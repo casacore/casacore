@@ -28,14 +28,6 @@
 #if !defined (AIPS_LOGIMATRIX_H)
 #define AIPS_LOGIMATRIX_H
 
-//# There is no source file, so this pragma is not needed.
-#if 0
-#if defined(_AIX)
-#pragma implementation ("LogiMatrix.cc")
-#endif
-#endif
-
-
 #include <aips/aips.h>
 #include <aips/Arrays/LogiArray.h>
 #include <aips/Arrays/Matrix.h>

@@ -28,10 +28,6 @@
 #if !defined(AIPS_MASKARRMATH_H)
 #define AIPS_MASKARRMATH_H
 
-#if defined(_AIX)
-#pragma implementation ("MaskArrMath.cc")
-#endif
-
 
 #include <aips/aips.h>
 #include <aips/Mathematics/Math.h>

@@ -28,10 +28,6 @@
 #if !defined(AIPS_ARRAY_LOGICAL_H)
 #define AIPS_ARRAY_LOGICAL_H
 
-#if defined(_AIX)
-#pragma implementation ("ArrayLogical.cc")
-#endif
-
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/LogiArray.h>

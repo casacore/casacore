@@ -28,11 +28,6 @@
 #if !defined (AIPS_MASKEDARRAY_IO_H)
 #define AIPS_MASKEDARRAY_IO_H
 
-#if defined(_AIX)
-#pragma implementation ("MaskArrIO.cc")
-#endif
-
-
 #include <aips/aips.h>
 
 // Forward declarations

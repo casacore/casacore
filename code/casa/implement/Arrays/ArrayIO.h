@@ -28,10 +28,6 @@
 #if !defined (AIPS_ARRAYIO_H)
 #define AIPS_ARRAYIO_H
 
-#if defined(_AIX)
-#pragma implementation ("ArrayIO.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>

@@ -28,10 +28,6 @@
 #if !defined (AIPS_ARRAYITER_H)
 #define AIPS_ARRAYITER_H
 
-#if defined(_AIX)
-#pragma implementation ("ArrayIter.cc")
-#endif
-
 #include <aips/aips.h>
 #include <aips/Arrays/ArrayPosIter.h>
 #include <aips/Arrays/Array.h>

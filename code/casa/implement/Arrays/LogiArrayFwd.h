@@ -28,13 +28,6 @@
 #if !defined (AIPS_LOGIARRAYFWD_H)
 #define AIPS_LOGIARRAYFWD_H
 
-//# There is no source file, so this pragma is not needed.
-#if 0
-#if defined(_AIX)
-#pragma implementation ("LogiArrayFwd.cc")
-#endif
-#endif
-
 
 #include <aips/aips.h>
 

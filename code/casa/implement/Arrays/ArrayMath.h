@@ -28,11 +28,6 @@
 #if !defined(AIPS_ARRAYMATH_H)
 #define AIPS_ARRAYMATH_H
 
-#if defined(_AIX)
-#pragma implementation ("ArrayMath.cc")
-#pragma implementation ("Array2Math.cc")
-#endif
-
 #include <aips/aips.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/Array.h>

@@ -28,10 +28,6 @@
 #if !defined(AIPS_MASKEDARRAY_LOGICAL_H)
 #define AIPS_MASKEDARRAY_LOGICAL_H
 
-#if defined(_AIX)
-#pragma implementation ("MaskArrLogi.cc")
-#endif
-
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
