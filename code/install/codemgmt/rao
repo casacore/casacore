@@ -128,10 +128,12 @@
   COMMAND="cd $PGMRDIR && rm -f $REMOTETAR && ao -I $* && tar cf $REMOTETAR $FILES && rm -f $FILES"
   $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
   rm -f $LOCALTAR
-  scp -qpC  $AUID@aips2.nrao.edu:$PGMRDIR/$REMOTETAR $LOCALTAR
-  tar xpvf $LOCALTAR > /dev/null 
-  COMMAND="cd $PGMRDIR && rm -f $REMOTETAR"
-  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
-  rm -f $LOCALTAR
+  if  $ARSH /aips++/weekly/.rshexec test -e $PGMRDIR/$REMOTETAR ; then
+     scp -qpC  $AUID@aips2.nrao.edu:$PGMRDIR/$REMOTETAR $LOCALTAR
+     tar xpvf $LOCALTAR > /dev/null 
+     COMMAND="cd $PGMRDIR && rm -f $REMOTETAR"
+     $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+     rm -f $LOCALTAR
+  fi
 
   exit 0
