@@ -468,13 +468,14 @@ These functions can be used on a scalar or an array argument.
   \item[ \texttt{double DAY(DateTime)}]
         Get the day number (1-31).
   \item[ \texttt{double WEEKDAY(DateTime),  double DOW(DateTime)}]
-        Get the weekday number (0=Sunday, ..., 6=Saturday).
+        Get the weekday number (1=Monday, ..., 7=Sunday).
   \item[ \texttt{string CMONTH(DateTime)}]
         Get the name of the month (Jan ... Dec).
   \item[ \texttt{string CWEEKDAY(DateTime),  string CDOW(DateTime)}]
-        Get the name of the weekday (Sun .. Sat).
+        Get the name of the weekday (Mon .. Sun).
   \item[ \texttt{double WEEK(DateTime)}]
-        Get the week number in the year (0 ... 52).
+        Get the week number in the year (1 ... 53).
+        \\Note that week 1 is the week containing Jan 4th.
   \item[ \texttt{double TIME(DateTime)}]
        Get the time part of the day. It is converted to radians to
        be compatible with the internal representation of times/positions.
