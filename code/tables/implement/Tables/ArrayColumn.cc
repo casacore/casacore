@@ -384,7 +384,7 @@ ROTableColumn* ArrayColumn<T>::clone() const
 
 template<class T>
 void ArrayColumn<T>::reference (const ArrayColumn<T>& that)
-    { ROTableColumn::reference (that); }
+    { ROArrayColumn<T>::reference (that); }
 
 template<class T>
 ArrayColumn<T>::~ArrayColumn()
