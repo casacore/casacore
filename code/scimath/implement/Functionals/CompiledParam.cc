@@ -31,11 +31,13 @@
 
 template <class T>
 CompiledParam<T>::CompiledParam() : 
-  Function<T>(), ndim_p(0), msg_p(), functionPtr_p(0) {}
+  Function<T>(), ndim_p(0), msg_p(), text_p(),
+  functionPtr_p(0) {}
 
 template <class T>
 CompiledParam<T>::CompiledParam(const CompiledParam<T> &other) :
   Function<T>(other), ndim_p(other.ndim_p), msg_p(other.msg_p),
+  text_p(other.text_p),
   functionPtr_p(new FuncExpression(*other.functionPtr_p)) {} 
 
 template <class T>
@@ -49,6 +51,7 @@ CompiledParam<T>& CompiledParam<T>::operator=(const CompiledParam<T> &other) {
     delete functionPtr_p; functionPtr_p = 0;
     ndim_p = other.ndim_p;
     msg_p = other.msg_p;
+    text_p = other.text_p;
     functionPtr_p =  new FuncExpression(*other.functionPtr_p);
   };
   return *this;
@@ -61,6 +64,7 @@ Bool CompiledParam<T>::setFunction(const String &newFunction) {
   functionPtr_p = new FuncExpression();
   ndim_p = 0;
   msg_p = "";
+  text_p = "";
   if (!functionPtr_p->create(newFunction)) {
     param_p = FunctionParam<T>(0);
     msg_p = functionPtr_p->errorMessage();
@@ -69,5 +73,6 @@ Bool CompiledParam<T>::setFunction(const String &newFunction) {
   };
   ndim_p = functionPtr_p->getNdim();
   param_p = FunctionParam<T>(functionPtr_p->getNpar());
+  text_p = newFunction;
   return True;
 }

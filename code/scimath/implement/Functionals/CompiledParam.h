@@ -133,12 +133,17 @@ template <class T> class CompiledParam : public Function<T> {
   // Returns the dimension of function
   virtual uInt ndim() const { return ndim_p; };
 
+  // Returns the text of the function string
+  const String &getText() const { return text_p; };
+
 protected:
   //# Data
   // Number of dimensions of underlying function
   uInt ndim_p;
   // Possible error message
   String msg_p;
+  // Input text string
+  String text_p;
   
   // Pointer to function
   FuncExpression *functionPtr_p;
