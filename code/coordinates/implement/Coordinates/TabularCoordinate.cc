@@ -213,20 +213,22 @@ Bool TabularCoordinate::toPixel(Double &pixel, Double world) const
 }
 
 Bool TabularCoordinate::toWorld(Vector<Double> &world, 
-		     const Vector<Double> &pixel) const
+  	                        const Vector<Double> &pixel) const
 {
-    if (world.nelements() != 1 || world.nelements() != pixel.nelements()) {
-	throw(AipsError("TabularCoordinate: world and pixel vectors must be "
+   world.resize(1);
+   if (pixel.nelements() != 1) {
+	throw(AipsError("TabularCoordinate: pixel vector must be "
 			"length 1"));
     }
     return toWorld(world(0), pixel(0));
 }
 
 Bool TabularCoordinate::toPixel(Vector<Double> &pixel, 
-		     const Vector<Double> &world) const
+                                const Vector<Double> &world) const
 {
-    if (world.nelements() != 1 || world.nelements() != pixel.nelements()) {
-	throw(AipsError("TabularCoordinate: world and pixel vectors must be "
+    pixel.resize(1);
+    if (pixel.nelements() != 1) {
+	throw(AipsError("TabularCoordinate: pixel vector must be "
 			"length 1"));
     }
     return toPixel(pixel(0), world(0));
