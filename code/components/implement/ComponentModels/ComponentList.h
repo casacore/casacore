@@ -40,6 +40,7 @@
 
 class String;
 class MDirection;
+class MFrequency;
 class MVAngle;
 class Unit;
 template <class T> class Vector;
@@ -142,8 +143,9 @@ public:
 
   // Sample all the members of the componentList at the specified
   // direction. The returned Vector containes all the polarisarions. 
-  Flux<Double> sample(const MDirection & sampleDir, const
-		      MVAngle & pixelSize) const;
+  Flux<Double> sample(const MDirection & sampleDir,
+		      const MVAngle & pixelSize,
+		      const MFrequency & centerFreq) const;
 
   // Project all the members of the componentList onto the image
   //  void project(ImageInterface<Float> & plane) const;
