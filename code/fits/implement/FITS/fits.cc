@@ -680,10 +680,6 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 			    FITS::isa_digit(p[17]) && FITS::isa_digit(p[18]) &&
 			    (p[10] == 'T') && (p[13] == ':') && 
 			    (p[16] == ':')) {
-			    Int ip11 = FITS::digit2bin(p[11]);
-			    Int ip12 = FITS::digit2bin(p[12]);
-			    Int ip14 = FITS::digit2bin(p[14]);
-			    Int ip17 = FITS::digit2bin(p[17]);
 			    if ((FITS::digit2bin(p[11]) >= 2 && 
 				 FITS::digit2bin(p[12]) >= 4) ||
 				FITS::digit2bin(p[14]) >= 6 || 
@@ -2283,8 +2279,10 @@ int FitsKeywordList::rules(FitsKeyword &x, ostream &o) {
 		    return -1;
 		} else {
 		    if (curr()->asInt() < 0) {
-			o << "Keyword BLANK not allowed when BITPIX < 0\n";
-			return 1;
+		        // Used to be an error. Make it a warning instead.
+			o << "Warning: Keyword BLANK not allowed when "
+			  "BITPIX < 0\n";
+			return 0;
 		    }
 		}
 		break;
