@@ -36,7 +36,6 @@
 #include <aips/Inputs/Input.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/MVAngle.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
@@ -45,6 +44,7 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/Lattices/CopyLattice.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
@@ -88,22 +88,29 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
    statsToPlot_p.resize(0);
    range_p.resize(0);
    device_p = "";
-   cursorShape_p.resize(0);
    minPos_p.resize(0);
    maxPos_p.resize(0);
-   nVirCursorIter_p = 0;
+   blc_p.resize(0);
+   trc_p.resize(0);
+   inc_p.resize(0);
   
    if (setNewImage(imageU)) {
-      Vector<Int> cursorAxes(pInImage_p->ndim());
 
-// Cursor axes default to entire image
+// Cursor axes defaults to all
 
-      for (Int i=0; i<pInImage_p->ndim(); i++) cursorAxes(i) = i;
+      Vector<Int> cursorAxes;
       goodParameterStatus_p = setAxes(cursorAxes);
+
+// Region defaults to entire image
+
+      IPosition blc, trc, inc;
+      goodParameterStatus_p = setRegion(blc, trc, inc, False);
+
    } else {
       goodParameterStatus_p = False;
    }
 }
+
 
 
 template <class T>
@@ -122,12 +129,13 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
                         someGoodPointsValue_p(other.someGoodPointsValue_p),
                         noInclude_p(other.noInclude_p), 
                         noExclude_p(other.noExclude_p),
-                        cursorShape_p(other.cursorShape_p),
                         minPos_p(other.minPos_p), 
                         maxPos_p(other.maxPos_p),
-                        nVirCursorIter_p(other.nVirCursorIter_p)
+                        blc_p(other.blc_p),
+                        trc_p(other.trc_p),
+                        inc_p(other.inc_p)
 //
-// Copy constructor
+// Copy constructor.  Storage image is copied.
 //
 {
 
@@ -135,22 +143,18 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
 
    pInImage_p = other.pInImage_p;
 
-// Copy storage image
+// Copy storage image and assigg storage image pointer
 
-   if (other.pStoreImage_p !=0) {
-      pStoreImage_p = new PagedArray<Double>(*(other.pStoreImage_p));
-   } else {
-      pStoreImage_p = 0;
-   }
+   copyStorageImage (other);
+
 }
-
-
 
 
 template <class T>
 ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &other)
 //
-// Assignment operator
+// Assignment operator.  Any storage image associated with the object
+// being assigned to is deleted first
 //
 {
    if (this != &other) {
@@ -159,13 +163,13 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 
       pInImage_p = other.pInImage_p;
 
-// Copy storage image
+// Copy storage image and assign storage image pointer
 
-      if (other.pStoreImage_p !=0) {
-         pStoreImage_p = new PagedArray<Double>(*(other.pStoreImage_p));
-      } else {
+      if (pStoreImage_p != 0) {
+         delete pStoreImage_p;
          pStoreImage_p = 0;
       }
+      copyStorageImage(other);
 
 // Do the rest
 
@@ -183,10 +187,11 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
       someGoodPointsValue_p = other.someGoodPointsValue_p;
       noInclude_p = other.noInclude_p; 
       noExclude_p = other.noExclude_p;
-      cursorShape_p = other.cursorShape_p;
       minPos_p = other.minPos_p; 
       maxPos_p = other.maxPos_p;
-      nVirCursorIter_p = other.nVirCursorIter_p;
+      blc_p = other.blc_p;
+      trc_p = other.trc_p;
+      inc_p = other.inc_p;
 
       return *this;
    }
@@ -199,7 +204,7 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 template <class T>
 ImageStatistics<T>::~ImageStatistics()
 //
-// Destructor.  Delete storage image.
+// Destructor.  Delete storage image memory
 //
 {
    if (pStoreImage_p != 0) delete pStoreImage_p;
@@ -217,23 +222,18 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
       return False;
    }
 
-// Set cursor arrays
+// Assign cursor axes.
 
    cursorAxes_p.resize(0);
    cursorAxes_p = axesU;
-   ostrstream os;
-   if (!ImageUtilities::setCursor(nVirCursorIter_p, cursorShape_p, 
-        cursorAxes_p, pInImage_p, True, 2, os)) {
-      os_p << LogIO::SEVERE << "Invalid cursor axes given" << LogIO::POST;
-      goodParameterStatus_p = False;
-      return False;
-   }
-   
-   
-// Set display axes array
- 
-   ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p, pInImage_p->ndim());
 
+   if (cursorAxes_p.nelements() == 0) {
+   
+// User didn't give any axes.  Set them to all.
+       
+      cursorAxes_p.resize(pInImage_p->ndim());
+      for (Int i=0; i<pInImage_p->ndim(); i++) cursorAxes_p(i) = i;
+   }
 
 // Signal that we have changed the axes and need a new accumulaiton
 // image
@@ -345,6 +345,7 @@ Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
 }
 
 
+
 template <class T>
 Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 //    
@@ -357,8 +358,6 @@ Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
    }
   
    pInImage_p = &image;
-
-//   DataType imageType = imagePixelType(pInImage_p->name());
 
    T *dummy = 0;
    DataType imageType = whatType(dummy);
@@ -376,6 +375,40 @@ Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
    needStorageImage_p = True;
    return True;
 }
+
+
+template <class T>
+Bool ImageStatistics<T>::setRegion(const IPosition& blcU,
+                                   const IPosition& trcU,
+                                   const IPosition& incU,
+                                   const Bool& listRegion)
+//
+// Select the region of interest
+//
+{     
+   if (!goodParameterStatus_p) {
+      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      return False;
+   }
+
+// Check OK
+
+   blc_p.resize(0);
+   blc_p = blcU;
+   trc_p.resize(0);
+   trc_p = trcU;
+   inc_p.resize(0);
+   inc_p = incU;
+   ImageUtilities::verifyRegion(blc_p, trc_p, inc_p, pInImage_p->shape());
+   if (listRegion) {
+      os_p << LogIO::NORMAL << "Selected region : " << blc_p+1<< " to "
+        << trc_p+1 << LogIO::POST;
+   }
+
+   return True;
+}
+
+
 
 
 
@@ -418,7 +451,9 @@ Bool ImageStatistics<T>::display()
 
 // Generate storage image if required
 
-   if (needStorageImage_p) generateStorageImage();
+   if (needStorageImage_p) {
+      if (!generateStorageImage()) return False;
+   }
 
 
 // If we don't have any display axes just summarise the image statistics
@@ -482,14 +517,15 @@ Bool ImageStatistics<T>::display()
 // Plot statistics
 
       if (!device_p.empty()) {
-        if (!plotStats (pixelIterator.position(), n1, ord)) return False;
+        if (!plotStats (pixelIterator.position(), ord)) return False;
       }
 
 
 // List statistics
 
-      if (doList_p) listStats(pixelIterator.position(), n1, ord);
-
+      if (doList_p) {
+         if (!listStats(pixelIterator.position(), ord)) return False;
+      }
     }
 
 
@@ -648,7 +684,7 @@ Bool ImageStatistics<T>::getMean(Array<T>& stats)
 
 // Do it
 
-   calculateStatistic (stats, Int(MEAN));
+   if (!calculateStatistic(stats, Int(MEAN))) return False;
 
    return True;
 }
@@ -673,7 +709,7 @@ Bool ImageStatistics<T>::getSigma(Array<T>& stats)
 
 // Do it
 
-   calculateStatistic (stats, Int(SIGMA));
+   if (!calculateStatistic(stats, Int(SIGMA))) return False;
 
    return True;
 }
@@ -698,7 +734,7 @@ Bool ImageStatistics<T>::getRms(Array<T>& stats)
 
 // Do it
 
-   calculateStatistic (stats, Int(RMS));
+   if (!calculateStatistic(stats, Int(RMS))) return False;
 
    return True;
 }
@@ -709,8 +745,9 @@ Bool ImageStatistics<T>::getRms(Array<T>& stats)
 
 template <class T>
 void ImageStatistics<T>::accumulate (Int& nIter,
+                                     const Int& nVirCursorIter,
                                      const IPosition& cursorPos,
-                                     const Array<Float>& cursor)
+                                     const Array<T>& cursor)
 //
 // Main work routine which takes the data in the current cursor and
 // accumulates it into a storage or accumulation image at the appropriate
@@ -718,7 +755,8 @@ void ImageStatistics<T>::accumulate (Int& nIter,
 // as a function of the display axes.
 //
 // Inputs:
-//   cursorPos       Location in image of BLC of cursor
+//   nVirCursorIter  NUmber of iterations to get through the virtual cursor
+//   cursorPos       Location in input image of start of cursor
 //   cursor          Cursor array
 // Input/output:
 //   nIter           The number of iterations through the image so far. It is
@@ -846,7 +884,7 @@ void ImageStatistics<T>::accumulate (Int& nIter,
 // whole image
 
    nIter++;
-   if (nIter == nVirCursorIter_p) nIter = 0;
+   if (nIter == nVirCursorIter) nIter = 0;
 
 }
 
@@ -881,7 +919,7 @@ void ImageStatistics<T>::accumulate2 (Double& sum,
 
 
 template <class T>
-void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
+Bool ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
 //
 // Calculate desired statistic from storage image and return in array
 //
@@ -898,12 +936,14 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
 
 // Generate storage image if required
 
-   if (needStorageImage_p) generateStorageImage();
+   if (needStorageImage_p) {
+      if (!generateStorageImage()) return False;
+   }
 
 
 // Return asap if no good points
 
-   if (!someGoodPoints()) return;
+   if (!someGoodPoints()) return True;
 
 
 // Retrieve nPts statistics
@@ -978,6 +1018,8 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
        os_p << LogIO::SEVERE << "Internal error" << endl << LogIO::POST;
        slice.resize(IPosition(0,0));
     }
+
+   return True;
 }
 
 
@@ -1027,12 +1069,28 @@ void ImageStatistics<T>::copyArray (Array<T>&outSlice, const Array<Double>& inSl
 }
 
 
+template <class T>
+void ImageStatistics<T>::copyStorageImage(const ImageStatistics<T> &other) 
+//
+// Copy storage image from other and assign new pointer for *this
+{
+   if (other.pStoreImage_p !=0) {   
+      IPosition shape =other.pStoreImage_p->shape();
+      IPosition tileShape = other.pStoreImage_p->tileShape();
+      Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
+                            String("ImageStatistics_Sums_"));
+      pStoreImage_p = new PagedArray<Double>(shape, myTable, tileShape);
+      CopyLattice(pStoreImage_p->lc(), other.pStoreImage_p->lc());
+   } else {
+      pStoreImage_p = 0;
+   }
+}
 
 
 template <class T>
 Bool ImageStatistics<T>::findNextDatum (Int& iFound, 
                                         const Int& n,
-                                        const float* pn, 
+                                        const float* const pn, 
                                         const Int& iStart,
                                         const Bool& findGood)
 //
@@ -1107,7 +1165,7 @@ Bool ImageStatistics<T>::findNextLabel (String& subLabel,
 
 
 template <class T>
-void ImageStatistics<T>::generateStorageImage()
+Bool ImageStatistics<T>::generateStorageImage()
 //
 // Iterate through the image and generate the accumulation image
 {
@@ -1119,24 +1177,90 @@ void ImageStatistics<T>::generateStorageImage()
 
    os_p << LogIO::NORMAL << "Creating new storage image" << endl << LogIO::POST;
 
+
+// Set up input image pixel iterator and navigator.  Do this first so we 
+// have the subLattice available to make the storage image
+
+   RO_LatticeIterator<T>* pPixelIterator;
+   IPosition latticeShape;
+   Int nVirCursorIter;
+
+   if (cursorAxes_p.nelements() == 1) {
+      TiledStepper imageNavigator (pInImage_p->shape(), 
+                                   pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
+                                   cursorAxes_p(0));
+
+// Apply region and get shape of Lattice that we are iterating through
+
+//      imageNavigator.subSection(blc_p, trc_p);
+//      latticeShape = imageNavigator.subLatticeShape();
+      latticeShape = imageNavigator.latticeShape();
+      blc_p = 0;
+      trc_p = 0;
+
+// Create the image iterator
+
+      pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, imageNavigator);
+      nVirCursorIter = 1;
+   } else {
+
+// Make Navigator with dummy cursor shape
+
+      LatticeStepper imageNavigator(pInImage_p->shape(), 
+                                    IPosition(pInImage_p->ndim(),1));
+
+// Apply region and get shape of Lattice that we are iterating through
+// Increment ignored for now.
+
+      imageNavigator.subSection(blc_p, trc_p);
+      latticeShape = imageNavigator.subLatticeShape();
+
+// Now that we know the shape of the Lattice, figure out the cursor shape
+
+      ostrstream os;
+      IPosition cursorShape;
+      if (!ImageUtilities::setCursor(nVirCursorIter, cursorShape, 
+               cursorAxes_p, latticeShape,
+               pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
+               True, 2, os)) {
+         os_p << LogIO::SEVERE << "Invalid cursor axes given" << LogIO::POST;
+         return False;
+      }
+
+// Set the cursor shape in the Navigator
+
+      imageNavigator.setCursorShape(cursorShape);
+
+// Create the image iterator
+
+      pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, imageNavigator);
+
+   }
+
+
+// Set the display axes vector.
+ 
+   ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p, 
+                                   latticeShape.nelements());
+
    {
 
 // Work out dimensions of storage image
 
       IPosition storeImageShape;
       ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NACCUM),
-                                        displayAxes_p, pInImage_p->shape());
+                                           displayAxes_p, latticeShape);
 
-// The storage image is accessed by vectors along the last axis (when filling),
-// the first axis (when plotting and listing) and N-1D slices (when retrieving
-// statistics for the user).  However, the  latter will be used less often than
-// the rest so optimize the tile shape ignoring it. Since the tile
-// size is small on the last axis, this won't impose much of a penalty when
-// accessing by first axis slices
+// The storage image is accessed by vectors along the last (statistics) axis (when 
+// filling), the first axis (first display axis; when plotting and listing) and N-1
+// dimensional slices (when retrieving statistics for the user).  However, the  
+// latter will be used less often than the rest so optimize the tile shape ignoring 
+// it. Since the tile size is small on the last axis, this won't impose much of a 
+// penalty when accessing by first axis slices
 
       IPosition tileShape(storeImageShape.nelements(),1);
       tileShape(0) = storeImageShape(0);
-      tileShape(tileShape.nelements()-1) = storeImageShape(tileShape.nelements()-1);
+      tileShape(tileShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
   
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
                                                 String("ImageStatistics_Sums_"));
@@ -1148,40 +1272,27 @@ void ImageStatistics<T>::generateStorageImage()
 
 // Set up min/max location variables
 
-   minPos_p.resize(pInImage_p->ndim());
-   maxPos_p.resize(pInImage_p->ndim());
-
-
-// Set up pixel iterator and navigator
-
-   RO_LatticeIterator<T>* pPixelIterator;
-   if (cursorAxes_p.nelements() == 1) {
-      TiledStepper imageNavigator (pInImage_p->shape(), 
-                                   pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
-                                   cursorAxes_p(0));
-      pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, imageNavigator);
-   } else {
-       pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, cursorShape_p);
-   }
+   minPos_p.resize(latticeShape.nelements());
+   maxPos_p.resize(latticeShape.nelements());
 
 
 // Iterate through image and accumulate statistical sums
 
 /*
    Double min = Double(0);
-   Double max = Double(pInImage_p->shape().product())/Double(pPixelIterator->cursor().shape().product());
+   Double max = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
    ProgressMeter clock(min, max, String("Generate Storage Image"), String(""), 
                        String(""), String(""), True, Int(max/20));
    Double value = 0.0;
 */
+   os_p << LogIO::NORMAL << "Begin accumulation" << LogIO::POST;
    Int nIter =0;
    for (pPixelIterator->reset(); !pPixelIterator->atEnd(); (*pPixelIterator)++) {
-      accumulate (nIter, pPixelIterator->position(), 
+      accumulate (nIter, nVirCursorIter, pPixelIterator->position(), 
                   pPixelIterator->cursor());
 //      clock.update(value);
 //      value += 1.0;
    }  
-
    needStorageImage_p = False;     
    doneSomeGoodPoints_p = False;
 
@@ -1195,7 +1306,7 @@ template <class T>
 void ImageStatistics<T>::lineSegments (Int& nSeg,
                                        Vector<Int>& start,
                                        Vector<Int>& nPts,
-                                       const float* pn,
+                                       const float* const pn,
                                        const Int& n)
 //
 // Examine an array and determine how many segments
@@ -1240,23 +1351,20 @@ void ImageStatistics<T>::lineSegments (Int& nSeg,
 
 typedef Matrix<Float> gpp_MatrixFloat;
 template <class T>
-void ImageStatistics<T>::listStats (const IPosition& dPos,
-                                    const Int& n1,
+Bool ImageStatistics<T>::listStats (const IPosition& dPos,
                                     const gpp_MatrixFloat& stats)
 //
-// List the statistics for this line to the standard output
+// List the statistics for this row to the logger
 //
 // Inputs:
 //   dPos    The location of the start of the cursor in the
-//           storage image for this line 
-//   n1      Number of points to list for each statistic
+//           storage image for this row
 //   stats   Statistics matrix
 // Outputs:
 //   Bool    Indicates coordinate transformations failed
 //
 {
    os_p << endl;
-
 
 // Get number of statistics and display axes
 
@@ -1267,6 +1375,7 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
 // out how big the field width needs to be.  Min of 6 so label fits.
 
    Int nMax = 0;
+   const Int n1 = stats.shape()(0);
    for (Int j=0; j<n1; j++) nMax = max(nMax, Int(stats.column(NPTS)(j)+0.1));
    const Int logNMax = Int(log10(nMax)) + 2;
    const Int oIWidth = max(5, logNMax);
@@ -1284,19 +1393,23 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
    os_p.output().setf(ios::left, ios::adjustfield);
 
 
-// Write the value of the higher order display axes to the logger
+// Write the pixel and world coordinate of the higher order display axes to the logger
 
    if (nDisplayAxes > 1) {
       Vector<String> sWorld(1);
-      Vector<Double> pixel(1);
-      for (Int j=1; j<nDisplayAxes; j++) {
-         pixel(0) = Double(dPos(j));
-         pix2World (sWorld, displayAxes_p(j), pixel, oPrec);
+      Vector<Double> pixels(1);
 
-         Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+      for (j=1; j<nDisplayAxes; j++) {
+         pixels(0) = Double(locInImage(dPos)(j));
+         if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
+                                     displayAxes_p(j), cursorAxes_p,
+                                     blc_p, trc_p, pixels, oPrec)) return False;
+         Int worldAxis = 
+            ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
          os_p <<  ImageUtilities::shortAxisName(name)
-              << " = " << dPos(j)+1 << " (" << sWorld(0) << ")";
+              << " = " << locInImage(dPos)(j)+1 << " (" << sWorld(0) << ")";
          if (j < nDisplayAxes-1) os_p << ", ";
       }
    }
@@ -1357,15 +1470,17 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
 // Convert pixel coordinates Vector of the first display axis to world coordinates
 
    Vector<String> sWorld(n1);
-   Vector<Double> pixel(n1);
-   for (Int i=0; i<n1; i++) pixel(i) = Double(i);
-   pix2World(sWorld, displayAxes_p(0), pixel, oPrec);
+   Vector<Double> pixels(n1);
+   for (j=0; j<n1; j++) pixels(j) = Double(j)+blc_p(displayAxes_p(0));
+   if (!ImageUtilities::pixToWorld(sWorld, pInImage_p->coordinates(),
+                              displayAxes_p(0), cursorAxes_p, 
+                              blc_p, trc_p, pixels, oPrec)) return False;
 
 
 // Write statistics to logger
 
    for (j=0; j<n1; j++) {
-      os_p.output() << setw(len0)     << j+1;
+      os_p.output() << setw(len0)     << j+blc_p(displayAxes_p(0))+1;
       os_p.output() << setw(width2)   << sWorld(j);
       os_p.output() << setw(oIWidth)   << Int(stats.column(NPTS)(j)+0.1);
 
@@ -1380,19 +1495,38 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
       os_p << endl;
    }
    os_p.post();
+
+   return True;
 }
 
 
 template <class T>
-inline IPosition ImageStatistics<T>::locInStats(const IPosition& imageCursorPos)
+inline IPosition ImageStatistics<T>::locInImage(const IPosition& storagePosition)
 //
-// Given a location in the input image, find the start location for a
-// statistics slice in the statsitics storage image
+// Given a location in the storage image, convert those locations on
+// the non-statistics axis (the last one) to account for the 
+// lattice subsectioning
+//
+{  
+   IPosition pos(storagePosition);
+   for (Int j=0; j<pos.nelements()-1; j++) {
+     pos(j) = storagePosition(j) + blc_p(displayAxes_p(j));
+   }
+   return pos;
+}
+
+template <class T>
+inline IPosition ImageStatistics<T>::locInStats(const IPosition& imagePosition)
+//
+// Given a location in the input image, find the corresponding start 
+// location for a statistics slice in the statistics storage image
 //
 {  
    IPosition pos(pStoreImage_p->ndim(),0);
-   for (Int j=0; j<pStoreImage_p->ndim()-1; j++) 
-     pos(j) = imageCursorPos(displayAxes_p(j));
+   for (Int j=0; j<pStoreImage_p->ndim()-1; j++) {
+     pos(j) = imagePosition(displayAxes_p(j)) - blc_p(displayAxes_p(j));
+   }
+
 
    return pos;
 }
@@ -1400,7 +1534,6 @@ inline IPosition ImageStatistics<T>::locInStats(const IPosition& imageCursorPos)
 
 template <class T>
 Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
-                                    const Int& n1,
                                     const Matrix<Float>& stats)
 //
 // Plot the desired statistics.  
@@ -1408,7 +1541,6 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 // Inputs:
 //   dPos    The location of the start of the cursor in the 
 //           storage image for this line 
-//   n1      Number of points
 //   stats   Statistics matrix
 //
 {
@@ -1416,14 +1548,14 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
 // Work out what we are plotting
 
-   const Bool doMean  = Bool(ImageUtilities::inVector(Int(MEAN), statsToPlot_p) != -1);
-   const Bool doSigma = Bool(ImageUtilities::inVector(Int(SIGMA), statsToPlot_p) != -1);
-   const Bool doRms   = Bool(ImageUtilities::inVector(Int(RMS), statsToPlot_p) != -1);
-   const Bool doSum   = Bool(ImageUtilities::inVector(Int(SUM), statsToPlot_p) != -1);
-   const Bool doSumSq = Bool(ImageUtilities::inVector(Int(SUMSQ), statsToPlot_p) != -1);
-   const Bool doMin   = Bool(ImageUtilities::inVector(Int(MIN), statsToPlot_p) != -1);
-   const Bool doMax   = Bool(ImageUtilities::inVector(Int(MAX), statsToPlot_p) != -1);
-   const Bool doNPts  = Bool(ImageUtilities::inVector(Int(NPTS), statsToPlot_p) != -1);
+   const Bool doMean  = ToBool(ImageUtilities::inVector(Int(MEAN), statsToPlot_p) != -1);
+   const Bool doSigma = ToBool(ImageUtilities::inVector(Int(SIGMA), statsToPlot_p) != -1);
+   const Bool doRms   = ToBool(ImageUtilities::inVector(Int(RMS), statsToPlot_p) != -1);
+   const Bool doSum   = ToBool(ImageUtilities::inVector(Int(SUM), statsToPlot_p) != -1);
+   const Bool doSumSq = ToBool(ImageUtilities::inVector(Int(SUMSQ), statsToPlot_p) != -1);
+   const Bool doMin   = ToBool(ImageUtilities::inVector(Int(MIN), statsToPlot_p) != -1);
+   const Bool doMax   = ToBool(ImageUtilities::inVector(Int(MAX), statsToPlot_p) != -1);
+   const Bool doNPts  = ToBool(ImageUtilities::inVector(Int(NPTS), statsToPlot_p) != -1);
 
    Bool none;
    Bool first = True;
@@ -1432,6 +1564,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
 // Generate abcissa
 
+   const Int n1 = stats.shape()(0);
    Vector<Float> abc(n1);
    for (Int j=0; j<n1; j++) abc(j) = j+1;
 
@@ -1710,17 +1843,19 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
    ostrstream oss;
    if (displayAxes_p.nelements() > 1) {
       Vector<String> sWorld(1);
-      Vector<Double> pixel(1);
+      Vector<Double> pixels(1);
 
       for (Int j=1; j<displayAxes_p.nelements(); j++) {
-         pixel(0) = Double(dPos(j));
-         pix2World (sWorld, displayAxes_p(j), pixel, 6);
-
-         Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+         pixels(0) = Double(locInImage(dPos)(j));
+         if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
+                                     displayAxes_p(j), cursorAxes_p,
+                                     blc_p, trc_p, pixels, 6)) return False;
+         Int worldAxis = 
+            ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
 
          oss << "  " << ImageUtilities::shortAxisName(name)
-             << "=" << dPos(j)+1 << " (" << sWorld(0) << ")";
+             << "=" << locInImage(dPos)(j)+1 << " (" << sWorld(0) << ")";
       }   
       oss << ends;
       char* tLabel = oss.str();
@@ -1928,167 +2063,6 @@ Int ImageStatistics<T>::niceColour (Bool& initColours)
 }
 
 
-
-
-template <class T>
-Int ImageStatistics<T>::pixelAxisToWorldAxis(const CoordinateSystem& cSys,
-                                             const Int& pixelAxis)
-//
-// Find the world axis for the given pixel axis
-// in a coordinate system
-//
-{
-   Int coordinate, axisInCoordinate;
-   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-   return cSys.worldAxes(coordinate)(axisInCoordinate);
-}
-
-
-
-template <class T>
-void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
-                                    const Int& pixelAxis,
-                                    const Vector<Double>& pixel,
-                                    const Int& prec)
-//
-// Convert the vector of pixel coordinates to a formatted Vector
-// of strings giving the world coordinate in the specified world axis.
-// 
-// Inputs
-//   pixelAxis   The pixel axis whose coordinates we are interested in
-//   pixel       Vector of pixel coordinates (0 rel) to transform
-//               for the pixel axis of interest
-//   prec        Precision to format output of scientific
-//               formatted numbers (linear axes etc)
-// Outputs
-//   sWorld      Vector of formatted strings of world coordinates
-//               for the pixel axis
-//    
-{
-   const Int n1 = pixel.nelements();
-   sWorld.resize(n1);
-   
-// Get coordinate system.
-         
-   CoordinateSystem cSys = pInImage_p->coordinates();
-
-
-// Set angular units in radians 
-
-   Vector<String> units = cSys.worldAxisUnits().ac();
-   Int coordinate, axisInCoordinate;
-   for (Int j=0; j<cSys.nWorldAxes(); j++) {
-      cSys.findWorldAxis(coordinate, axisInCoordinate, j);
-      if (cSys.type(coordinate) == Coordinate::DIRECTION) units(j) = "rad";    
-   }
-   cSys.setWorldAxisUnits(units,True);
-
-
-// Create pixel and world vectors for all pixel axes. Initialize pixel values
-// to reference pixel, but if an axis is a cursor axis (whose coordinate is 
-// essentially being averaged) set the pixel to the mean pixel.
-
-   Vector<Double> pix(cSys.nPixelAxes());
-   Vector<Double> world(cSys.nPixelAxes());
-   pix = cSys.referencePixel(); 
-   for (Int i=0; i<pix.nelements(); i++) {
-     if (ImageUtilities::inVector(i, cursorAxes_p) != -1) {
-       pix(i) = Double(pInImage_p->shape()(i)) / 2.0;
-     }
-   }
-
-
-// Find the world axis for this pixel axis
-         
-   const Int worldAxis = pixelAxisToWorldAxis (cSys, pixelAxis);
- 
-
-// Find coordinate for this pixel axis
-  
-   Int otherAxisInCoordinate;
-   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-  
-
-// Convert to world and format depending upon coordinate type
-
-   if (cSys.type(coordinate) == Coordinate::DIRECTION) {
-
-// Find name of pixel axis
-         
-      String tString = cSys.worldAxisNames()(worldAxis);
-      tString.upcase();
-         
-// Loop over list of pixel coordinates and convert to world
-   
-      for (Int i=0; i<n1; i++) {
-         pix(pixelAxis) = pixel(i);
- 
-         if (cSys.toWorld(world,pix)) {
-            MVAngle mVA(world(pixelAxis));
-         
-            if (tString.contains("RIGHT ASCENSION")) {
-               sWorld(i) = mVA.string(MVAngle::TIME,8);
-            } else if (tString.contains("DECLINATION")) {
-               sWorld(i) = mVA.string(MVAngle::DIG2,8);
-            } else {
-               ostrstream oss;
-               oss.setf(ios::scientific, ios::floatfield);
-               oss.setf(ios::left);
-               oss.precision(prec);
-               oss << mVA.degree() << ends;
-               String temp(oss.str());
-               sWorld(i) = temp;
-            }
-         } else {
-           sWorld(i) = "?";
-         }
-      }
-   } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) {
-      for (Int i=0; i<n1; i++) {
-         pix(pixelAxis) = pixel(i);
-         if (cSys.toWorld(world,pix)) {
-            ostrstream oss;
-            oss.setf(ios::scientific, ios::floatfield);
-            oss.setf(ios::left);
-            oss.precision(prec);
-            oss << world(pixelAxis) << ends;
-            String temp(oss.str());
-            sWorld(i) = temp;
-          } else {
-            sWorld(i) = "?";
-          }
-      }
-   } else if (cSys.type(coordinate) == Coordinate::LINEAR) {
-      for (Int i=0; i<n1; i++) {
-         pix(pixelAxis) = pixel(i);
-         if (cSys.toWorld(world,pix)) {
-            ostrstream oss;
-            oss.setf(ios::scientific, ios::floatfield);
-            oss.setf(ios::left);
-            oss.precision(prec);
-            oss << world(pixelAxis) << ends;
-            String temp(oss.str());
-            sWorld(i) = temp;
-          } else {
-            sWorld(i) = "?";
-          }
-      }  
-   } else if (cSys.type(coordinate) == Coordinate::STOKES) {
-      const StokesCoordinate coord = cSys.stokesCoordinate(coordinate);
-      for (Int i=0; i<n1; i++) {
-         Stokes::StokesTypes iStokes;
-         Int pix = Int(pixel(i));
-         if (coord.toWorld(iStokes, pix)) {
-            sWorld(i) = Stokes::name(Stokes::type(iStokes));
-         } else {
-            sWorld(i) = "?";
-         }
-      }
-   }
-}
-            
-
-
 template <class T>
 Bool ImageStatistics<T>::retrieveStorageStatistic(Array<Double>& slice, const Int& ISTAT)
 //
@@ -2109,7 +2083,9 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Array<Double>& slice, const In
 
 // Generate storage image if required
 
-   if (needStorageImage_p) generateStorageImage();
+   if (needStorageImage_p) {
+      if (!generateStorageImage()) return False;
+   }
 
 
 // Were there some good points ?  
@@ -2136,19 +2112,6 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Array<Double>& slice, const In
 
 }
 
-
-template <class T>
-inline IPosition ImageStatistics<T>::statsSliceShape ()
-// 
-// Return the shape of a slice from the statistics storage
-// image for a single spatial location.  The last axis
-// is the statistics axis
-{
-   IPosition shape(pStoreImage_p->ndim(),1);
-   shape(pStoreImage_p->ndim()-1) = 
-      pStoreImage_p->shape()(pStoreImage_p->ndim()-1);
-   return shape;
-}
 
 
 
@@ -2209,6 +2172,20 @@ Bool ImageStatistics<T>::someGoodPoints ()
          return someGoodPointsValue_p;
       }
    }
+}
+
+
+template <class T>
+inline IPosition ImageStatistics<T>::statsSliceShape ()
+// 
+// Return the shape of a slice from the statistics storage
+// image for a single spatial location.  The last axis
+// is the statistics axis
+{
+   IPosition shape(pStoreImage_p->ndim(),1);
+   shape(pStoreImage_p->ndim()-1) = 
+      pStoreImage_p->shape()(pStoreImage_p->ndim()-1);
+   return shape;
 }
 
 
