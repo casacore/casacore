@@ -1,5 +1,5 @@
 //# dImageStatistics.cc: image statistics program
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -120,7 +120,7 @@
 enum defaults {AXES, REGION, STATS, RANGE, PLOTTING, NDEFAULTS=5};
 
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 try {
 
@@ -166,8 +166,8 @@ try {
 
    Vector<Bool> validInputs(NDEFAULTS);
    validInputs = False;
-   LogOrigin or("dImageStatistics", "main()", WHERE);
-   LogIO os(or);
+   LogOrigin lor("dImageStatistics", "main()", WHERE);
+   LogIO os(lor);
  
 
 // Check image name and get image data type. 

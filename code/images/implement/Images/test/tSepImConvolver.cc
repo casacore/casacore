@@ -1,5 +1,5 @@
 //# tSepImConvolver.cc: 
-//# Copyright (C) 1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,7 +45,7 @@
 
 
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 
 try {
@@ -114,8 +114,8 @@ try {
    const Double sigma = fwhm / sqrt(Double(8.0) * C::ln2);
    Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
    if (!autoScale) norm = 1.0;
-   LogOrigin or("tSeparableImageConvolver", "main()", WHERE);
-   LogIO os(or);
+   LogOrigin lor("tSeparableImageConvolver", "main()", WHERE);
+   LogIO os(lor);
    VectorKernel::KernelTypes type = VectorKernel::toKernelType(kernelType);
 
 

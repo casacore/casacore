@@ -1,5 +1,5 @@
 //# dImageMoments.cc: generate image moments
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -184,7 +184,7 @@
 enum defaults {IN, MOMENTS, AXIS, REGION, METHOD, SMOOTH, RANGE, SNR, OUT, SMOUT, 
                PLOTTING, NDEFAULTS};
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 
 try {
@@ -411,8 +411,8 @@ try {
 
 // Construct moment class
 
-      LogOrigin or("imoment", "main()", WHERE);
-      LogIO os(or);
+      LogOrigin lor("imoment", "main()", WHERE);
+      LogIO os(lor);
       ImageMoments<Float> moment(*pSubImage2, os, True, True);
       delete pSubImage2;
 

@@ -1,5 +1,5 @@
 //# tImageSourceFinder.cc: test ImageSourceFinder class
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,13 +63,13 @@ Bool compareSkyComponent (const SkyComponent& in,
 void test1 (LogIO& os, ImageInterface<Float>& im, const DirectionCoordinate& dC);
 
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 try {
 
 
-   LogOrigin or("tImageSourceFind", "main()", WHERE);
-   LogIO os(or);
+   LogOrigin lor("tImageSourceFind", "main()", WHERE);
+   LogIO os(lor);
  
 // Make Coordinate SYstem
 

@@ -1,5 +1,5 @@
 //# tImageUtilities.cc: Test program for the static ImageUtilities functions
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,6 +60,7 @@ void doOpens()
       Bool ok = ImageFITSConverter::ImageToFITS(error, img, name2,
                                                 64, True, True, -32, 1, -1,
                                                 True);
+      if (ok);			// Satisfy compiler
 //
       {
          PtrHolder<ImageInterface<Float> > im;
@@ -165,8 +166,8 @@ void listPixel(const Vector<Double>& pPars)
 
 void doConversions()
 {
-   LogOrigin or("tImageUtilities", "doConversions()", WHERE);
-   LogIO os(or);
+   LogOrigin lor("tImageUtilities", "doConversions()", WHERE);
+   LogIO os(lor);
 //
    {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();

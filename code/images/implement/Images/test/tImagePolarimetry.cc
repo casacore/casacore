@@ -1,5 +1,5 @@
 //# tImagePolarimetry.cc: test ImagePolarimetry class
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,7 +63,7 @@ void traditionalRotationMeasure (Double rm, Double rmFg, Double rmMax, Double pa
                                  LogIO& os, const String& plotter);
 void fourierRotationMeasure (Double rm, const String& plotter, LogIO& os);
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 try {
 
@@ -89,8 +89,8 @@ try {
    const Double dF = inputs.getDouble("dF");            // Hz
    const Int nchan = inputs.getInt("nchan");     
 //
-   LogOrigin or("tImagePolarimetry", "main()", WHERE);
-   LogIO os(or);
+   LogOrigin lor("tImagePolarimetry", "main()", WHERE);
+   LogIO os(lor);
 
 // Stokes values
 
