@@ -177,19 +177,23 @@ public:
   // return a reference to the shape of the component. Because this is a
   // reference, manipulation of the shape of the component is performed through
   // the functions in the ComponentShape (or derived) class. eg.,
-  // <src>comp.shape().setRefDirection(newVal)</src>.
+  // <src>comp.shape().setRefDirection(newVal)</src>. To change the shape to a
+  // different type you must use the <src>setShape</src> function.
   // <group>
   virtual const ComponentShape & shape() const = 0;
   virtual ComponentShape & shape() = 0;
+  virtual void setShape(const ComponentShape & newShape) = 0;
   // </group>
   
   // return a reference to the spectrum of the component. Because this is a
   // reference, manipulation of the spectrum of the component is performed
   // through the functions in the SpectralModel (or derived) class. eg.,
-  // <src>refFreq = comp.spectrum().refFrequency()</src>.
+  // <src>refFreq = comp.spectrum().refFrequency()</src>. Touse a different
+  // spectral model you must use the <src>setSpectrum</src> function.
   // <group>
   virtual const SpectralModel & spectrum() const = 0;
   virtual SpectralModel & spectrum() = 0;
+  virtual void setSpectrum(const SpectralModel & newSpectrum) = 0;
   // </group>
   
   // return a reference to the label associated with this component. The label
