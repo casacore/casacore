@@ -1765,3 +1765,5 @@
 11 085 src rm nrao/apps/gOTF/gOTF.cc
 11 085 src rm nrao/apps/gOTF/tgOTF.g
 11 085 src rm nrao/apps/gOTF/makefile
+11 085 sys rm bin/gOTF
+11 085 sys rm libexec/tgOTF.g
