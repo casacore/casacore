@@ -92,6 +92,19 @@ CODESUBD := $(shell echo $(THISDIR)/ | sed -e '{s=^.*/code/==;s=/*$$==;}')
 
 PACKAGE  := $(word 1, $(subst /,$(space),$(CODESUBD)))
 
+# AIPS++ programmer fundamentals.
+#--------------------------------
+PGMRROOT := $(word 1, $(subst /code/,$(space),$(THISDIR)/))
+PGMRCODE  = $(PGMRROOT)/code
+PGMRARCH  = $(PGMRROOT)/$(word 2, $(AIPSPATH))
+
+# Is this a system or programmer invocation?
+ifeq "$(shell cd $(PGMRROOT) ; /bin/pwd)" "$(shell cd $(AIPSROOT) ; /bin/pwd)"
+   MAKEMODE := system
+else
+   MAKEMODE := programmer
+endif
+
 
 #=============================================================================
 #                        START OF DEFAULT DEFINITIONS
@@ -262,10 +275,14 @@ FCOPTLVL := -O
 FCOPT     = $(FCOPTLVL)
 
 # Link flags for system debug/optimized compilations; these are passed to
-# the C++ compiler.
+# the C++ compiler. We want to strip executables for system compiles only,
+# not programmer compiles.
 LDDBG    :=
-# Strip optimized executables
+ifeq "$(MAKEMODE)" "programmer"
+LDOPT    :=
+else
 LDOPT    := -s
+endif
 
 # Parser-generators.
 BISON    := bison
@@ -475,19 +492,6 @@ Q := @
 # command line then a redefinition within makedefs has no effect unless the
 # "override" directive is used.
 #-----------------------------------------------------------------------------
-# AIPS++ programmer fundamentals.
-#--------------------------------
-PGMRROOT := $(word 1, $(subst /code/,$(space),$(THISDIR)/))
-PGMRCODE  = $(PGMRROOT)/code
-PGMRARCH  = $(PGMRROOT)/$(word 2, $(AIPSPATH))
-
-# Is this a system or programmer invocation?
-ifeq "$(shell cd $(PGMRROOT) ; /bin/pwd)" "$(shell cd $(AIPSROOT) ; /bin/pwd)"
-   MAKEMODE := system
-else
-   MAKEMODE := programmer
-endif
-
 
 # Include path for programmer compilations.
 #------------------------------------------
