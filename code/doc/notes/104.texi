@@ -11,6 +11,9 @@
 @c $State$
 
 @c $Log$
+@c Revision 11.0  1998/10/03 04:52:24  aips2adm
+@c exhale: Base release 11.000.00
+@c
 @c Revision 10.0  1998/07/20 15:33:59  aips2adm
 @c exhale: Base release 10.000.00
 @c
