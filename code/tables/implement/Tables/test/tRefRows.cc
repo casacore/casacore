@@ -27,6 +27,7 @@
 
 #include <aips/Tables/RefRows.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayIO.h>
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/Assert.h>
 
@@ -61,6 +62,7 @@ void doIt()
 	AlwaysAssertExit (ref.nrows() == 18);
 	AlwaysAssertExit (!ref.isSliced());
 	RefRowsSliceIter iter1(ref);
+	cout << "unSliced,unCollapse" << endl;
 	while (!iter1.pastEnd()) {
 	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
 		 << ' ' << iter1.sliceIncr() << endl;
@@ -72,6 +74,7 @@ void doIt()
 	AlwaysAssertExit (ref.nrows() == 7);
 	AlwaysAssertExit (ref.isSliced());
 	RefRowsSliceIter iter1(ref);
+	cout << "sliced" << endl;
 	while (!iter1.pastEnd()) {
 	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
 		 << ' ' << iter1.sliceIncr() << endl;
@@ -83,6 +86,7 @@ void doIt()
 	AlwaysAssertExit (ref.nrows() == 18);
 	AlwaysAssertExit (ref.isSliced());
 	RefRowsSliceIter iter1(ref);
+	cout << "unSliced,collapse" << endl;
 	while (!iter1.pastEnd()) {
 	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
 		 << ' ' << iter1.sliceIncr() << endl;
@@ -94,11 +98,36 @@ void doIt()
 	AlwaysAssertExit (ref.nrows() == 4);
 	AlwaysAssertExit (ref.isSliced());
 	RefRowsSliceIter iter1(ref);
+	cout << "one slice" << endl;
 	while (!iter1.pastEnd()) {
 	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
 		 << ' ' << iter1.sliceIncr() << endl;
 	    iter1++;
 	}
+    }
+    {
+	Vector<uInt> rows(18);
+	indgen (rows.ac(), uInt(1));
+	rows(17) = 0;
+	RefRows ref(rows);
+	AlwaysAssertExit (ref.nrows() == 18);
+	AlwaysAssertExit (!ref.isSliced());
+	cout << ref.convert(vec).ac() << endl;
+    }
+    {
+	Vector<uInt> rows(18);
+	indgen (rows.ac(), uInt(1));
+	rows(17) = 0;
+	RefRows ref(rows, False, True);
+	AlwaysAssertExit (ref.nrows() == 18);
+	AlwaysAssertExit (ref.isSliced());
+	RefRowsSliceIter iter1(ref);
+	while (!iter1.pastEnd()) {
+	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
+		 << ' ' << iter1.sliceIncr() << endl;
+	    iter1++;
+	}
+	cout << ref.convert(vec).ac() << endl;;
     }
 }
 
