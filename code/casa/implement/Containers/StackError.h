@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 
-
+// <summary> Error class for the Stack class </summary>
 class EmptyStackError : public AipsError {
 public:
   EmptyStackError(const char *msg = 0);      // normal constructor
