@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.6 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -46,11 +46,11 @@ const int WCSSET = 137;
 int NPVMAX = 64;
 int NPSMAX =  8;
 
-/* Map error number to error message for each function. */
+/* Map status return value to message. */
 const char *wcs_errmsg[] = {
    0,
    "Null wcsprm pointer passed",
-   "Memory allocation error",
+   "Memory allocation failed",
    "Linear transformation matrix is singular",
    "Inconsistent or unrecognized coordinate axis types",
    "Invalid parameter value",
@@ -1279,7 +1279,7 @@ double world[];
 int stat[];
 
 {
-   int    face, i, iso_x, iso_y, k, nx, ny, *statp, status, statx2s, wcslat,
+   int    face, i, iso_x, iso_y, istat, k, nx, ny, *statp, status, wcslat,
           wcslng, wcspec;
    double offset, *worldlat, *worldlng;
    register double *img, *wrl;
@@ -1383,13 +1383,13 @@ int stat[];
       /* Transform projection plane coordinates to celestial coordinates. */
       worldlng = (double *)world + wcslng;
       worldlat = (double *)world + wcslat;
-      if (statx2s = celx2s(wcscel, nx, ny, nelem, nelem, imgcrd+wcslng,
-                           imgcrd+wcslat, phi, theta, worldlng, worldlat,
-                           stat)) {;
-         if (statx2s == 5) {
+      if (istat = celx2s(wcscel, nx, ny, nelem, nelem, imgcrd+wcslng,
+                         imgcrd+wcslat, phi, theta, worldlng, worldlat,
+                         stat)) {;
+         if (istat == 5) {
             status = 8;
          } else {
-            return statx2s + 3;
+            return istat + 3;
          }
       }
 
@@ -1412,12 +1412,12 @@ int stat[];
          nx = 1;
       }
 
-      if (statx2s = spcx2s(&(wcs->spc), nx, nelem, nelem, imgcrd+wcspec,
-                       world+wcspec, stat)) {
-         if (statx2s == 3) {
+      if (istat = spcx2s(&(wcs->spc), nx, nelem, nelem, imgcrd+wcspec,
+                         world+wcspec, stat)) {
+         if (istat == 3) {
             status = 8;
          } else {
-            return statx2s + 3;
+            return istat + 3;
          }
       }
 
@@ -1444,7 +1444,7 @@ double pixcrd[];
 int stat[];
 
 {
-   int    i, isolat, isolng, isospec, k, nlat, nlng, nspec, status, stats2x,
+   int    i, isolat, isolng, isospec, istat, k, nlat, nlng, nspec, status,
           wcslat, wcslng, wcspec;
    double offset;
    register double *img, *wrl;
@@ -1452,6 +1452,7 @@ int stat[];
 
 
    /* Initialize if required. */
+   status = 0;
    if (wcs == 0) return 1;
    if (wcs->flag != WCSSET) {
       if (status = wcsset(wcs)) return status;
@@ -1496,13 +1497,13 @@ int stat[];
       }
 
       /* Transform celestial coordinates to projection plane coordinates. */
-      if (stats2x = cels2x(wcscel, nlng, nlat, nelem, nelem, world+wcslng,
-                           world+wcslat, phi, theta, imgcrd+wcslng,
-                           imgcrd+wcslat, stat)) {
-         if (stats2x == 6) {
+      if (istat = cels2x(wcscel, nlng, nlat, nelem, nelem, world+wcslng,
+                         world+wcslat, phi, theta, imgcrd+wcslng,
+                         imgcrd+wcslat, stat)) {
+         if (istat == 6) {
             status = 9;
          } else {
-            return stats2x + 3;
+            return istat + 3;
          }
       }
 
@@ -1560,12 +1561,12 @@ int stat[];
          nspec = 1;
       }
 
-      if (stats2x = spcs2x(&(wcs->spc), nspec, nelem, nelem, world+wcspec,
-                       imgcrd+wcspec, stat)) {
-         if (stats2x == 4) {
+      if (istat = spcs2x(&(wcs->spc), nspec, nelem, nelem, world+wcspec,
+                         imgcrd+wcspec, stat)) {
+         if (istat == 4) {
             status = 9;
          } else {
-            return stats2x + 3;
+            return istat + 3;
          }
       }
 
@@ -1578,8 +1579,8 @@ int stat[];
 
 
    /* Apply world-to-pixel linear transformation. */
-   if (status = linx2p(&(wcs->lin), ncoord, nelem, imgcrd, pixcrd)) {
-      return status;
+   if (istat = linx2p(&(wcs->lin), ncoord, nelem, imgcrd, pixcrd)) {
+      return istat;
    }
 
    return status;
