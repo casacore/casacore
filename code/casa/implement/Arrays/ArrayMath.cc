@@ -28,13 +28,25 @@
 #include <aips/iostream.h>
 
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/ConvertScalar.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/VectorIter.h>
+#include <aips/Arrays/ArrayError.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/ConvertScalar.h>
 #include <aips/Utilities/GenSort.h>
+
+//#### CFront (3.0.2) bug. The following typedefs are needed to get the position
+//#### finding minMax functions to work (the range of types will need to be
+//#### extended if more types are instantiated). This might be true of all
+//#### functions that end up using iterators.
+
+typedef VectorIterator<Float> vif;
+typedef VectorIterator<Bool> vib;
+typedef VectorIterator<Double> vid;
+typedef VectorIterator<Int> vii;
+typedef VectorIterator<Complex> vic;
 
 
 // <thrown>
@@ -45,20 +57,23 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 	    IPosition &minPos, IPosition &maxPos,
 	    const Array<ScalarType> &array) 
 {
+    if (minPos.nelements() != array.ndim() ||
+	maxPos.nelements() != array.ndim() ) {
+      throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
+		       "IPosition &maxPos, const Array<T> &array) - "
+                       "minPos, maxPos dimensionality inconsistent with array"));
+    }
     if (array.nelements() == 0) {
         throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
 			 "IPosition &maxPos, const Array<T> &array) - "
                          "Array has no elements"));	
     }
-    minPos.resize (array.ndim());
-    maxPos.resize (array.ndim());
 
     ReadOnlyVectorIterator<ScalarType> ai(array);
     ScalarType val;
 
     // Initialize
-    minPos = 0;
-    maxPos = 0;
+    minPos = maxPos = IPosition (array.ndim(), 0);
     minVal = maxVal = array(minPos);
     uInt n = ai.vector().nelements();
 
@@ -90,6 +105,12 @@ void minMaxMasked(ScalarType &minVal, ScalarType &maxVal,
 	    IPosition &minPos, IPosition &maxPos,
 	    const Array<ScalarType> &array, const Array<ScalarType> &mask) 
 {
+    if (minPos.nelements() != array.ndim() ||
+	maxPos.nelements() != array.ndim() ) {
+      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
+		       "IPosition &maxPos, const Array<T> &array) - "
+                       "minPos, maxPos dimensionality inconsistent with array"));
+    }
     if (array.nelements() == 0) {
       throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
 		       "IPosition &maxPos, const Array<T> &array) - "
@@ -101,16 +122,13 @@ void minMaxMasked(ScalarType &minVal, ScalarType &maxVal,
 				  "const Array<T> &mask) - " 
 				  "array and mask do not have the same shape()"));
     } 
-    minPos.resize (array.ndim());
-    maxPos.resize (array.ndim());
 
     ReadOnlyVectorIterator<ScalarType> ai(array);
     ReadOnlyVectorIterator<ScalarType> mi(mask);
     ScalarType val;
 
     // Initialize
-    minPos = 0;
-    maxPos = 0;
+    minPos = maxPos = IPosition (array.ndim(), 0);
     minVal = maxVal = array(minPos) * mask(minPos);
     uInt n = ai.vector().nelements();
 
@@ -142,6 +160,13 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 	    IPosition &minPos, IPosition &maxPos,
 	    const Array<ScalarType> &array, const Array<Bool> &mask)
 {
+    if (minPos.nelements() != array.ndim() ||
+	maxPos.nelements() != array.ndim() ) {
+      throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
+		       "IPosition &maxPos, const Array<T> &array, "
+		       "const Array<Bool> &mask) - "
+                       "minPos, maxPos dimensionality inconsistent with array"));
+    }
     if (array.nelements() == 0) {
       throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
 		       "IPosition &maxPos, const Array<T> &array, "
@@ -154,9 +179,6 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 	    "const Array<Bool> &mask) - " 
 	    "array and mask do not have the same shape()"));
     } 
-    minPos.resize (array.ndim());
-    maxPos.resize (array.ndim());
-
     ReadOnlyVectorIterator<ScalarType> ai(array);
     ReadOnlyVectorIterator<Bool> mi(mask);
 
@@ -1331,7 +1353,7 @@ template<class T> T stddev(const Array<T> &a, T mean)
 template<class T> T avdev(const Array<T> &a)
 {
     if (a.nelements() < 1) {
-	throw(ArrayError("::variance(const Array<T> &,) - Need at least  "
+	throw(ArrayError("::avdev(const Array<T> &,) - Need at least  "
 			 "elements"));
     }
     return avdev(a, mean(a));
@@ -1343,7 +1365,7 @@ template<class T> T avdev(const Array<T> &a)
 template<class T> T avdev(const Array<T> &a,T mean)
 {
     if (a.nelements() < 1) {
-	throw(ArrayError("::variance(const Array<T> &,T) - Need at least 1 "
+	throw(ArrayError("::avdev(const Array<T> &,T) - Need at least 1 "
 			 "elements"));
     }
     Array<T> avdeviations(fabs(a - mean));
@@ -1474,4 +1496,636 @@ template<class T, class U> void convertArray(Array<T> &to,
     }
     to.putStorage(toptr, deleteTo);
     from.freeStorage(fromptr, deleteFrom);
+}
+
+
+template<class T> Array<T> partialSums (const Array<T>& array,
+					const IPosition& collapseAxes)
+{
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  Array<T> result (resShape);
+  result = 0;
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // no gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      T tmp = *res;
+      for (uInt i=0; i<n0; i++) {
+	tmp += *data++;
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	*res += *data++;
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialProducts (const Array<T>& array,
+					    const IPosition& collapseAxes)
+{
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  Array<T> result (resShape);
+  result = 0;
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // no gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      T tmp = *res;
+      for (uInt i=0; i<n0; i++) {
+	tmp *= *data++;
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	*res *= *data++;
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialMins (const Array<T>& array,
+					const IPosition& collapseAxes)
+{
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  Array<T> result (resShape);
+  result = 0;
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Initialize the minima with the first value of collapsed axes.
+  IPosition end(shape-1);
+  for (uInt i=0; i<collapseAxes.nelements(); i++) {
+    uInt axis = collapseAxes(i);
+    end(axis) = 0;
+  }
+  Array<T> tmp(array);           // to get a non-const array for operator()
+  result = tmp(IPosition(ndim,0), end).reform (resShape);
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // no gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      T tmp = *res;
+      for (uInt i=0; i<n0; i++) {
+	if (*data < tmp) {
+	  tmp = *data;
+	}
+	data++;
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	if (*data < *res) {
+	  *res = *data;
+	}
+	data++;
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialMaxs (const Array<T>& array,
+					const IPosition& collapseAxes)
+{
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  Array<T> result (resShape);
+  result = 0;
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Initialize the maxima with the first value of collapsed axes.
+  IPosition end(shape-1);
+  for (uInt i=0; i<collapseAxes.nelements(); i++) {
+    uInt axis = collapseAxes(i);
+    end(axis) = 0;
+  }
+  Array<T> tmp(array);           // to get a non-const array for operator()
+  result = tmp(IPosition(ndim,0), end).reform (resShape);
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // no gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      T tmp = *res;
+      for (uInt i=0; i<n0; i++) {
+	if (*data > tmp) {
+	  tmp = *data;
+	}
+	data++;
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	if (*data > *res) {
+	  *res = *data;
+	}
+	data++;
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialMeans (const Array<T>& array,
+					 const IPosition& collapseAxes)
+{
+  Array<T> result = partialSums (array, collapseAxes);
+  uInt nr = result.nelements();
+  if (nr > 0) {
+    uInt factor = array.nelements() / nr;
+    Bool deleteRes;
+    T* res = result.getStorage (deleteRes);
+    for (uInt i=0; i<nr; i++) {
+      res[i] /= 1.0 * factor;
+    }
+    result.putStorage (res, deleteRes);
+  }
+  return result;
+}
+
+template<class T> Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes)
+{
+  return partialVariances (array, collapseAxes,
+			   partialMeans (array, collapseAxes));
+}
+
+template<class T> Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes,
+					     const Array<T>& means)
+{
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  if (! resShape.isEqual (means.shape())) {
+    throw AipsError ("partialVariances: shape of means array mismatches "
+		     "shape of result array");
+  }
+  Array<T> result (resShape);
+  result = 0;
+  uInt nr = result.nelements();
+  uInt factor = array.nelements() / nr - 1;
+  if (factor == 0) {
+    return result;
+  }
+  Bool deleteData, deleteRes, deleteMean;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  const T* meanData = means.getStorage (deleteMean);
+  const T* mean = meanData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // no gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      T tmp = *res;
+      T tmpm = *mean;
+      for (uInt i=0; i<n0; i++) {
+	T var = *data++ - tmpm;
+	tmp += var*var;
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	T var = *data++ - *mean;
+	*res += var*var;
+	res += incr0;
+	mean += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      mean += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  res = resData;
+  for (uInt i=0; i<nr; i++) {
+    res[i] /= 1.0 * factor;
+  }
+  array.freeStorage (arrData, deleteData);
+  means.freeStorage (meanData, deleteMean);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialStddevs (const Array<T>& array,
+					   const IPosition& collapseAxes)
+{
+  return sqrt (partialVariances (array, collapseAxes));
+}
+
+template<class T> Array<T> partialStddevs (const Array<T>& array,
+					   const IPosition& collapseAxes,
+					   const Array<T>& means)
+{
+  return sqrt (partialVariances (array, collapseAxes, means));
+}
+
+template<class T> Array<T> partialAvdevs (const Array<T>& array,
+					  const IPosition& collapseAxes)
+{
+  return partialAvdevs (array, collapseAxes,
+			partialMeans (array, collapseAxes));
+}
+
+template<class T> Array<T> partialAvdevs (const Array<T>& array,
+					  const IPosition& collapseAxes,
+					  const Array<T>& means)
+{
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  if (! resShape.isEqual (means.shape())) {
+    throw AipsError ("partialAvdevs: shape of means array mismatches "
+		     "shape of result array");
+  }
+  Array<T> result (resShape);
+  result = 0;
+  uInt nr = result.nelements();
+  uInt factor = array.nelements() / nr;
+  Bool deleteData, deleteRes, deleteMean;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  const T* meanData = means.getStorage (deleteMean);
+  const T* mean = meanData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // no gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      T tmp = *res;
+      T tmpm = *mean;
+      for (uInt i=0; i<n0; i++) {
+	tmp += fabs(*data++ - tmpm);
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	*res += fabs(*data++ - *mean);
+	res += incr0;
+	mean += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      mean += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  res = resData;
+  for (uInt i=0; i<nr; i++) {
+    res[i] /= 1.0 * factor;
+  }
+  array.freeStorage (arrData, deleteData);
+  means.freeStorage (meanData, deleteMean);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialMedians (const Array<T>& array,
+					   const IPosition& collapseAxes,
+					   Bool takeEvenMean,
+					   Bool inPlace)
+{
+  // Is there anything to collapse?
+  uInt ndimColl = collapseAxes.nelements();
+  if (ndimColl == 0) {
+    return array.copy();
+  }
+  // Reorder the array such that the collapse axes are the first axes.
+  Array<T> newArr = reorderArray (array, collapseAxes, !inPlace);
+  // Find the shape of the result and the nr of elements to collapse.
+  const IPosition& newShape = newArr.shape();
+  IPosition resShape(1,1);
+  uInt ndimRes = newShape.nelements() - ndimColl;
+  if (ndimRes > 0) {
+    resShape.resize (ndimRes);
+    resShape = newShape.getLast (ndimRes);
+  }
+  uInt nrcoll = newShape.getFirst(ndimColl).product();
+  Array<T> result(resShape);
+  Bool deleteData, deleteRes;
+  // Now determine the median for each slice.
+  // Note that the sorts are done in place, so we need a non-const pointer.
+  const T* arrData = newArr.getStorage (deleteData);
+  T* data = const_cast<T*>(arrData);
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // If the array is small, it is faster to fully sort it.
+  Bool nosort = (nrcoll > 50);
+  // Determine the middle element.
+  uInt n2 = (nrcoll - 1)/2;
+  //# Mean does not have to be taken for odd number of elements.
+  if (nrcoll%2 != 0) {
+    takeEvenMean = False;
+  }
+  // Loop through all data.
+  IPosition pos(ndimRes, 0);
+  while (True) {
+    // If needed take the mean for an even number of elements.
+    if (nosort) {
+      *res = GenSort<T>::kthLargest (data, nrcoll, n2);
+      if (takeEvenMean) {
+	*res = T(0.5 * (*res +
+			GenSort<T>::kthLargest (data, nrcoll, n2+1)));
+      }
+    } else {
+      GenSort<T>::sort (data, nrcoll);
+      if (takeEvenMean) {
+	*res = T(0.5 * (data[n2] + data[n2+1]));
+      } else {
+	*res = data[n2];
+      }
+    }
+    data += nrcoll;
+    res++;
+    uInt ax;
+    for (ax=0; ax<ndimRes; ax++) {
+      if (++pos(ax) < resShape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndimRes) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialFractiles (const Array<T>& array,
+					     const IPosition& collapseAxes,
+					     Float fraction,
+					     Bool inPlace=False)
+{
+  if (fraction < 0  ||  fraction > 1) {
+    throw(ArrayError("::fractile(const Array<T>&) - fraction <0 or >1 "));
+  }    
+  // Is there anything to collapse?
+  uInt ndimColl = collapseAxes.nelements();
+  if (ndimColl == 0) {
+    return array.copy();
+  }
+  // Reorder the array such that the collapse axes are the first axes.
+  Array<T> newArr = reorderArray (array, collapseAxes, !inPlace);
+  // Find the shape of the result and the nr of elements to collapse.
+  const IPosition& newShape = newArr.shape();
+  IPosition resShape(1,1);
+  uInt ndimRes = newShape.nelements() - ndimColl;
+  if (ndimRes > 0) {
+    resShape.resize (ndimRes);
+    resShape = newShape.getLast (ndimRes);
+  }
+  uInt nrcoll = newShape.getFirst(ndimColl).product();
+  Array<T> result(resShape);
+  Bool deleteData, deleteRes;
+  // Now determine the fractile for each slice.
+  // Note that the sorts are done in place, so we need a non-const pointer.
+  const T* arrData = newArr.getStorage (deleteData);
+  T* data = const_cast<T*>(arrData);
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // If the array is small, it is faster to fully sort it.
+  Bool nosort = (nrcoll > 50);
+  // Determine the fractile element.
+  uInt n2 = uInt((nrcoll - 1) * fraction);
+  // Loop through all data.
+  IPosition pos(ndimRes, 0);
+  while (True) {
+    if (nosort) {
+      *res = GenSort<T>::kthLargest (data, nrcoll, n2);
+    } else {
+      GenSort<T>::sort (data, nrcoll);
+      *res = data[n2];
+    }
+    data += nrcoll;
+    res++;
+    uInt ax;
+    for (ax=0; ax<ndimRes; ax++) {
+      if (++pos(ax) < resShape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndimRes) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
 }

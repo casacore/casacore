@@ -216,7 +216,6 @@ template<class T> Array<T> fabs(const Array<T> &a);
 // 
 // <group>
 // Find the minimum and maximum values of an array, including their locations.
-// The <src>minPos</src> and <src>maxPos</src> arguments are resized as needed.
 template<class ScalarType>
 void minMax(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos, 
 	    IPosition &maxPos, const Array<ScalarType> &array);
@@ -306,7 +305,7 @@ template<class T>  void indgen(Array<T> &a);
 // most rapidly.
 template<class T>  void indgen(Array<T> &a, T start);
 
-// 
+
 // Sum of every element of the array.
 template<class T> T sum(const Array<T> &a);
 // 
@@ -330,10 +329,10 @@ template<class T> T variance(const Array<T> &a);
 template<class T> T variance(const Array<T> &a, T mean);
 
 // 
-// The standard deviation of "a" is the sqare root of its variance.
+// The standard deviation of "a" is the square root of its variance.
 template<class T> T stddev(const Array<T> &a);
 // 
-// The standard deviation of "a" is the sqare root of its variance.
+// The standard deviation of "a" is the square root of its variance.
 // Rather than using a computed mean, use the supplied value.
 template<class T> T stddev(const Array<T> &a, T mean);
 
@@ -381,7 +380,52 @@ template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean,
 template<class T> T fractile(const Array<T> &a, Float fraction,
 			     Bool sorted = False, Bool inPlace = False);
 
-//
+// The same functions as above, but determine the sum, etc. for the
+// given axes only. The result is an array with a shape formed by the
+// remaining axes.
+// For example, for an array with shape [3,4,5], collapsing axis 0
+// results in an array with shape [4,5] containing, say, the sum for
+// each X line.
+// Summing for axes 0 and 2 results in an array with shape [4] containing,
+// say, the sum for each XZ plane.
+// <note>
+// ArrayLogical.h contains the functions ntrue, nfalse, partialNTrue and
+// partialNFalse to count the number of true or false elements in an array.
+// </note>
+// group>
+template<class T> Array<T> partialSums (const Array<T>& array,
+					const IPosition& collapseAxes);
+template<class T> Array<T> partialProducts (const Array<T>& array,
+					    const IPosition& collapseAxes);
+template<class T> Array<T> partialMins (const Array<T>& array,
+					const IPosition& collapseAxes);
+template<class T> Array<T> partialMaxs (const Array<T>& array,
+					const IPosition& collapseAxes);
+template<class T> Array<T> partialMeans (const Array<T>& array,
+					 const IPosition& collapseAxes);
+template<class T> Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes);
+template<class T> Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes,
+					     const Array<T>& means);
+template<class T> Array<T> partialStddevs (const Array<T>& array,
+					   const IPosition& collapseAxes);
+template<class T> Array<T> partialStddevs (const Array<T>& array,
+					   const IPosition& collapseAxes,
+					   const Array<T>& means);
+template<class T> Array<T> partialAvdevs (const Array<T>& array,
+					  const IPosition& collapseAxes);
+template<class T> Array<T> partialMedians (const Array<T>& array,
+					   const IPosition& collapseAxes,
+					   Bool takeEvenMean=False,
+					   Bool inPlace=False);
+template<class T> Array<T> partialFractiles (const Array<T>& array,
+					     const IPosition& collapseAxes,
+					     Float fraction,
+					     Bool inPlace=False);
+// </group>
+
+
 // Returns the complex conjugate of a complex array.
 //<group>
 Array<Complex> conj(const Array<Complex> &carray);
@@ -488,4 +532,23 @@ template<class T> inline Array<T> cube(const Array<T> &val)
 
 // </group>
 
+
+// This is a specialized helper function for functions like partialSums.
+// It determines the shape of the resulting array and calculates the
+// result increments when iterating linearly through the source array.
+// It returns the first result axis which indicates the number of the first
+// contiguous collapse axes. The number of contiguous data points is
+// returned in nelemCont.
+// <group name=partialFuncHelper>
+uInt partialFuncHelper (Int& nelemCont,
+			IPosition& resultShape, IPosition& incr,
+			const IPosition& sourceShape,
+			const IPosition& collapseAxes);
+// </group>
+
+
 #endif
+
+
+
+
