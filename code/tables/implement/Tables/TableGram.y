@@ -1,6 +1,6 @@
 /*
     TableGram.y: Parser for table commands
-    Copyright (C) 1994,1995,1997
+    Copyright (C) 1994,1995,1997,1998
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -53,7 +53,8 @@ TableParseSelect* select;
 %token <val> TABNAME        /* table name */
 %token <val> LITERAL
 %token <val> STRINGLITERAL
-%token INTOKEN
+%token AS
+%token IN
 %token LPAREN
 %token RPAREN
 %token COMMA
@@ -161,6 +162,16 @@ table:     NAME {                            /* table is shorthand */
 	       delete $1;
 	       delete $2;
 	   }
+	 | tabname AS NAME {
+	       TableParseSelect::currentSelect()->addTable ($1, $3->str);
+	       delete $1;
+	       delete $3;
+	   }
+	 | NAME IN tabname {
+	       TableParseSelect::currentSelect()->addTable ($3, $1->str);
+	       delete $1;
+	       delete $3;
+	   }
          | table COMMA NAME {
 	       TableParseSelect::currentSelect()->addTable ($3, $3->str);
 	       delete $3;
@@ -173,6 +184,16 @@ table:     NAME {                            /* table is shorthand */
 	       TableParseSelect::currentSelect()->addTable ($3, $4->str);
 	       delete $3;
 	       delete $4;
+	   }
+	 | table COMMA tabname AS NAME {
+	       TableParseSelect::currentSelect()->addTable ($3, $5->str);
+	       delete $3;
+	       delete $5;
+	   }
+	 | table COMMA NAME IN tabname {
+	       TableParseSelect::currentSelect()->addTable ($5, $3->str);
+	       delete $3;
+	       delete $5;
 	   }
          ;
 
@@ -243,7 +264,7 @@ relexpr:   arithexpr
 	       delete $1;
 	       delete $3;
 	   }
-         | arithexpr INTOKEN arithexpr {
+         | arithexpr IN arithexpr {
                $$ = new TableExprNode ($1->in (*$3));
                delete $1;
                delete $3;
