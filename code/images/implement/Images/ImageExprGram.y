@@ -1,5 +1,5 @@
 /*
-    LatticeGram.y: Parser for lattice expressions
+    ImageExprGram.y: Parser for image expressions
     Copyright (C) 1998
     Associated Universities, Inc. Washington DC, USA.
 
@@ -31,16 +31,15 @@
 
 %union {
 LatticeExprNode* node;
-LatticeParse* val;
+ImageExprParse* val;
 }
 
-%token <val> NAME           /* name of function or shorthand for lattice */
+%token <val> NAME           /* name of constant, function, or lattice */
 %token <val> LATNAME        /* lattice name */
 %token <val> LITERAL
 %token LPAREN
 %token RPAREN
 %token COMMA
-%type <val> latname
 %type <node> orexpr
 %type <node> andexpr
 %type <node> relexpr
@@ -58,12 +57,12 @@ LatticeParse* val;
 %right NOT
 
 %{
-int LatticeGramlex (YYSTYPE*);
+int ImageExprGramlex (YYSTYPE*);
 %}
 
 %%
 command:   orexpr {
-               LatticeParse::setNode (*$1);
+               ImageExprParse::setNode (*$1);
 	       delete $1;
            }
          ;
@@ -185,20 +184,18 @@ simexpr:   LPAREN orexpr RPAREN
 	       delete $3;	
 	       delete $5;
 	   }
-         | latname {
+         | LATNAME {
 	       $$ = new LatticeExprNode ($1->makeLatticeNode());
+	       delete $1;
+	   }
+         | NAME {
+	       $$ = new LatticeExprNode ($1->makeLitLattNode());
 	       delete $1;
 	   }
          | LITERAL {
 	       $$ = new LatticeExprNode ($1->makeLiteralNode());
 	       delete $1;
 	   }
-         ;
-
-latname:   NAME
-               { $$ = $1; }
-         | LATNAME
-               { $$ = $1; }
          ;
 
 %%
