@@ -4923,3 +4923,4 @@
 14 316 src rm trial/apps/newdishplot/dishplot_state.g
 14 316 src rm trial/apps/newdishplot/dishplot_zoom.g
 14 316 sys rm libexec/dishplot_zoom.g
+14 316 sys rm libexec/dishplot_state.g
