@@ -101,6 +101,7 @@ public:
   MeasBase(const Quantity &dt, const Mr &rf);
   MeasBase(const Quantity &dt, uInt rf);
   MeasBase(const Measure *dt);
+  MeasBase(const Mr &rf);
   // </group>
   
   //# Destructor

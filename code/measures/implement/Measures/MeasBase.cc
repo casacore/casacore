@@ -75,6 +75,10 @@ MeasBase<Mv,Mr>::MeasBase(const Measure *dt) :
   data(*(Mv*)(dt->getData())), ref(*(Mr*)(dt->getRefPtr())),
   unit(dt->getUnit()) {} 
 
+template <class Mv, class Mr>
+MeasBase<Mv,Mr>::MeasBase(const Mr &rf) : 
+  data(), ref(rf), unit() {}
+
 //# Destructor
 template <class Mv, class Mr>
 MeasBase<Mv,Mr>::~MeasBase() {}
