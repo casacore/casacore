@@ -1,5 +1,5 @@
 //# FileLocker.cc: Class to handle file locking
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,13 +54,13 @@ FileLocker::FileLocker (int fd, uInt start, uInt length)
 FileLocker::~FileLocker()
 {}
 
-Bool FileLocker::acquire (Bool write, uInt nattempts)
+Bool FileLocker::acquire (LockType type, uInt nattempts)
 {
     itsReadLocked  = False;
     itsWriteLocked = False;
     itsError = 0;
     flock ls;
-    if (write) {
+    if (type == Write) {
 	ls.l_type = F_WRLCK;
     }else{
 	ls.l_type = F_RDLCK;
@@ -84,7 +84,7 @@ Bool FileLocker::acquire (Bool write, uInt nattempts)
     for (uInt i=0; i<nattempts; i++) {
 	if (fcntl (itsFD, F_SETLK, &ls) != -1) {
 	    itsReadLocked = True;
-	    if (write) {
+	    if (type == Write) {
 		itsWriteLocked = True;
 	    }
 	    return True;
@@ -118,11 +118,11 @@ Bool FileLocker::release()
     return False;
 }
 
-Bool FileLocker::canLock (Bool write)
+Bool FileLocker::canLock (LockType type)
 {
     itsError = 0;
     flock ls;
-    if (write) {
+    if (type == Write) {
 	ls.l_type = F_WRLCK;
     }else{
 	ls.l_type = F_RDLCK;

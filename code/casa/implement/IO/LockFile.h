@@ -1,5 +1,5 @@
 //# LockFile.h: Class to handle file locking and synchronization
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_LOCKFILE_H)
 #define AIPS_LOCKFILE_H
 
-#if defined (_AIX)
-#pragma implementation ("LockFile.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -57,6 +54,7 @@ class CanonicalIO;
 
 // <prerequisite> 
 //    <li> class <linkto class=FileLocker>FileLocker</linkto>
+//    <li> class <linkto class=MemoryIO>MemoryIO</linkto>
 // </prerequisite>
 
 // <synopsis> 
@@ -69,37 +67,62 @@ class CanonicalIO;
 // process accessing the main file can write information in it.
 // The lock file contains the following information (in canonical format):
 // <ul>
-// <li> A request list indicating which processes wants access.
-//      The locking process can inspect this list to decide if it
+// <li> A request list indicating which processes wants to acquire a lock.
+//      The process holding the lock can inspect this list to decide if it
 //      should release its lock. An interval can be defined to be sure
 //      that the list is not inspected too often.
 //      A user can choose not to add to this list, because it incurs some
 //      overhead to write the list. However, that should only be done when
 //      one is sure that another process cannot keep a lock forever.
-// <li> Other information telling if the state of the main file has changed.
-//      A table could store one or more counters in it, which can be used to
-//      determine if the table has to refresh its caches.
+// <li> Some information telling if the state of the main file has changed.
+//      The information can be used by a process to synchronize its
+//      internal buffers with the new contents of the file(s).
+//      E.g. a table could store one or more counters in it, which can be
+//      used to determine if the table has to refresh its caches.
+//      This information is passed as a MemoryIO object and is opaque
+//      for the <src>LockFile</src> class. It is simply handled as a
+//      stream of bytes.
 // </ul>
+// <p>
+// Acquiring a lock works as follows:
+// <ul>
+//  <li> Class <linkto class=FileLocker>FileLocker</linkto> is used
+//   to do one attempt to acquire a read or write lock.
+//  <li> If it fails and multiple attempts have to be done, the
+//   request is added to the request list in the lock file to tell
+//   the process holding the lock that another process needs a lock.
+//  <li> Other attempts (with 1 second intervals) will be done until the
+//   lock is acquired or until the maximum number of attempts is reached.
+//  <li> The lock request is removed from the request list.
+//  <li> When the lock was acquired, the synchronization info is read
+//   from the lock file.
+// </ul>
+// Releasing a lock writes the synchronization info into the lock file
+// and tells <src>FileLocker</src> to release the lock.
+// <p>
 // When the lock file cannot be opened as read/write, it is opened as
 // readonly. It means that the request list cannot be stored in it,
 // so the process has no way to tell the other processes it wants
 // access to the file. It has to wait until the lock is released.
 // <br> In principle a lock file should always be there. However, it
-// is allowed (with a constructor option) there is no lock file. In
-// that case each lock request succeeds without doing actual locking.
-// This mode was needed to be able to handle readonly tables containing
+// is possible (with a constructor option) that there is no lock file.
+// In that case each lock request succeeds without doing actual locking.
+// This mode is needed to be able to handle readonly tables containing
 // no lock file.
 // <p>
 // After each write the <src>fsync</src> function is called to make
 // sure that the contents of the file are written to disk. This is
 // necessary for correct file synchronization in NFS.
+// However, at the moment this feature is switched off, because it
+// degraded performance severely.
 // <p>
 // Apart from the read/write lock handling, the <src>LockFile</src>
 // also contains a mechanism to detect if a file is opened by another
 // process. This can be used to test if a process can safely delete the file.
 // For this purpose it sets another read lock when the file gets opened.
-// The function <src>isInUse</src> tests this lock to see if the file is
-// in use.
+// The function <src>isMultiUsed</src> tests this lock to see if the file is
+// used in other processes.
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -149,7 +172,9 @@ public:
     // <br>When addToRequestList=False, function <src>acquire</src> does not
     // add the request to the lock file when a lock cannot be acquired.
     // This may result in better performance, but should be used with care.
-    // <br> When mustExist=False, it is allowed that the LockFile
+    // <br> If <src>create==True</src>, a new lock file will always be created.
+    // Otherwise it will be created if it does not exist yet.
+    // <br> If <src>mustExist==False</src>, it is allowed that the LockFile
     // does not exist and cannot be created either.
     explicit LockFile (const String& fileName, double inspectInterval = 0,
 		       Bool create = False, Bool addToRequestList = True,
@@ -166,14 +191,21 @@ public:
     // another process?
     Bool isMultiUsed();
 
-    // Acquire a read or write lock..
-    // It reads the information (if argument is given) from the lock file.
-    // The user is responsible for interpreting the information (e.g.
-    // converting from canonical to local format).
-    // The seek pointer in the <src>MemoryIO</src> object is set to 0.
+    // Acquire a read or write lock.
+    // It reads the information (if the <src>info</src> argument is given)
+    // from the lock file. The user is responsible for interpreting the
+    // information (e.g. converting from canonical to local format).
+    // The seek pointer in the <src>MemoryIO</src> object is set to 0,
+    // so the user can simply start reading the pointer.
+    // <br>The argument <src>nattempts</src> tells how often it is
+    // attempted (with 1 second intervals) to acquire the lock if
+    // it does not succeed.
+    // 0 means forever, while 1 means do not retry.
     // <group>
-    Bool acquire (Bool write = True, uInt nattempts = 0);
-    Bool acquire (MemoryIO& info, Bool write = True, uInt nattempts = 0);
+    Bool acquire (FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
+    Bool acquire (MemoryIO& info, FileLocker::LockType = FileLocker::Write,
+		  uInt nattempts = 0);
+    Bool acquire (MemoryIO* info, FileLocker::LockType type, uInt nattempts);
     // </group>
 
     // Release a lock and write the information (if given) into the lock file.
@@ -182,17 +214,19 @@ public:
     // <group>
     Bool release();
     Bool release (const MemoryIO& info);
+    Bool release (const MemoryIO* info);
     // </group>
 
     // Inspect if another process wants to access the file (i.e. if the
     // request list is not empty).
     // It only inspects if the time passed since the last inspection
     // exceeds the inspection interval as given in the constructor.
-    // If the time passed is too short, a "no access needed" state is returned.
+    // If the time passed is too short, False is returned (indicating
+    // that no access is needed).
     Bool inspect();
 
     // Test if the file can be locked for read or write.
-    Bool canLock (Bool write = True);
+    Bool canLock (FileLocker::LockType = FileLocker::Write);
 
     // Get the last error.
     int lastError() const;
@@ -202,12 +236,6 @@ public:
 
     // Get the name of the lock file.
     const String& name() const;
-
-    // Acquire the lock (service function for the public functions).
-    Bool doAcquire (MemoryIO* info, Bool write, uInt nattempts);
-
-    // Release the lock (service function for the public functions).
-    Bool doRelease (const MemoryIO* info);
 
     // Get the block of request id's.
     const Block<Int>& reqIds() const;
@@ -269,25 +297,26 @@ private:
 };
 
 
-inline Bool LockFile::acquire (Bool write, uInt nattempts)
+inline Bool LockFile::acquire (FileLocker::LockType type, uInt nattempts)
 {
-    return doAcquire (0, write, nattempts);
+    return acquire (0, type, nattempts);
 }
-inline Bool LockFile::acquire (MemoryIO& info, Bool write, uInt nattempts)
+inline Bool LockFile::acquire (MemoryIO& info, FileLocker::LockType type,
+			       uInt nattempts)
 {
-    return doAcquire (&info, write, nattempts);
+    return acquire (&info, type, nattempts);
 }
 inline Bool LockFile::release()
 {
-    return doRelease (0);
+    return release (0);
 }
 inline Bool LockFile::release (const MemoryIO& info)
 {
-    return doRelease (&info);
+    return release (&info);
 }
-inline Bool LockFile::canLock (Bool write)
+inline Bool LockFile::canLock (FileLocker::LockType type)
 {
-    return (itsFileIO == 0  ?  True : itsLocker.canLock (write));
+    return (itsFileIO == 0  ?  True : itsLocker.canLock (type));
 }
 inline int LockFile::lastError() const
 {

@@ -33,20 +33,17 @@
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/Path.h>
 #include <aips/OS/CanonicalConversion.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <iostream.h>
 #include <strstream.h>
 
-
-static const uInt sizeInt   = CanonicalConversion::canonicalSize ((Int*)0);
-static const uInt nrReqId   = 32;
-// The ntv compiler cannot handle the expression below in a statement
-// like:   uChar buffer[sizeReqId];
-// Therefore the fixed value 4 is used instead.
-//static const uInt sizeReqId = (1 + 2*nrReqId) * sizeInt;
-static const uInt sizeReqId = (1 + 2*nrReqId) * 4;
+//# canonical size of an Int (checked in constructor).
+#define SIZEINT 4u
+#define NRREQID 32u
+#define SIZEREQID ((1 + 2*NRREQID) * SIZEINT)
 
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
@@ -57,10 +54,12 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
   itsAddToList (setRequestFlag),
   itsInterval  (inspectInterval),
   itsPid       (getpid()),
-//  itsHostId    (gethostid()),     gethostid is not declared in unistd.h
+///  itsHostId    (gethostid()),     gethostid is not declared in unistd.h
   itsHostId    (0),
-  itsReqId     (1 + nrReqId*2, (Int)0)
+  itsReqId     (SIZEREQID/SIZEINT, (Int)0)
 {
+    AlwaysAssert (SIZEINT == CanonicalConversion::canonicalSize ((Int*)0),
+		  AipsError);
     itsName = Path(fileName).expandedName();
     //# Create the file if it does not exist yet.
     //# When the flag is set, it is allowed that the file does not
@@ -100,7 +99,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     itsFileIO = new FiledesIO (fd);
     itsCanIO  = new CanonicalIO (itsFileIO);
     // Set the file to in use by acquiring a read lock.
-    itsUseLocker.acquire (False, 1);
+    itsUseLocker.acquire (FileLocker::Read, 1);
 }
 
 LockFile::~LockFile()
@@ -116,10 +115,12 @@ LockFile::~LockFile()
 Bool LockFile::isMultiUsed()
 {
     //# If a write lock cannot be obtained, the file is in use.
-    return (ToBool (itsUseLocker.fd() >= 0  &&  !itsUseLocker.canLock (True)));
+    return (ToBool (itsUseLocker.fd() >= 0
+                &&  !itsUseLocker.canLock (FileLocker::Write)));
 }
 
-Bool LockFile::doAcquire (MemoryIO* info, Bool write, uInt nattempts)
+Bool LockFile::acquire (MemoryIO* info, FileLocker::LockType type,
+			uInt nattempts)
 {
     //# When no lock file, lock requests always succeed,
     //# but we cannot return any info.
@@ -130,7 +131,7 @@ Bool LockFile::doAcquire (MemoryIO* info, Bool write, uInt nattempts)
 	return True;
     }
     //# Try to set a lock without waiting.
-    Bool succ = itsLocker.acquire (write, 1);
+    Bool succ = itsLocker.acquire (type, 1);
     Bool added = False;
     //# When unsuccessful and multiple attempts have to be done,
     //# add the process to the request list (if needed) and try to acquire.
@@ -139,7 +140,7 @@ Bool LockFile::doAcquire (MemoryIO* info, Bool write, uInt nattempts)
 	    addReqId();
 	    added = True;
 	}
-	succ = itsLocker.acquire (write, nattempts);
+	succ = itsLocker.acquire (type, nattempts);
     }
     //# Do not read info if we did not acquire the lock.
     if (!succ) {
@@ -164,7 +165,7 @@ Bool LockFile::doAcquire (MemoryIO* info, Bool write, uInt nattempts)
     return succ;
 }
 
-Bool LockFile::doRelease (const MemoryIO* info)
+Bool LockFile::release (const MemoryIO* info)
 {
     //# When no lock file, lock requests are not really handled.
     if (itsFileIO == 0) {
@@ -194,21 +195,32 @@ Bool LockFile::inspect()
 
 void LockFile::getInfo (MemoryIO& info)
 {
+    // The lock file contains:
+    // - the fixed length request list in the first bytes
+    // - thereafter the length of the info (as a uInt)
+    // - thereafter the entire info
     uChar buffer[2048];
+    // Read the first part of the file.
     lseek (itsLocker.fd(), 0, SEEK_SET);
     uInt leng = read (itsLocker.fd(), buffer, sizeof(buffer));
+    // Extract the request list from it.
     convReqId (buffer, leng);
-    uInt infoLeng = getInt (buffer, leng, sizeReqId);
+    // Get the length of the info.
+    uInt infoLeng = getInt (buffer, leng, SIZEREQID);
+    // Clear the MemoryIO object.
     info.clear();
     if (infoLeng == 0) {
 	return;
     }
-    leng -= sizeReqId+sizeInt;
+    // Get the length of the info in the part already read.
+    // (subtract length of request list and the info-length uInt)
+    leng -= SIZEREQID+SIZEINT;
     if (leng > infoLeng) {
 	leng = infoLeng;
     }
     info.seek (0);
-    info.write (leng, buffer + sizeReqId + sizeInt);
+    info.write (leng, buffer + SIZEREQID + SIZEINT);
+    // Read the remaining info parts.
     if (infoLeng > leng) {
 	infoLeng -= leng;
 	uChar* buf = new uChar[infoLeng];
@@ -227,7 +239,7 @@ void LockFile::putInfo (const MemoryIO& info) const
     }
     uChar buffer[1024];
     uInt leng = CanonicalConversion::fromLocal (buffer, infoLeng);
-    lseek (itsLocker.fd(), sizeReqId, SEEK_SET);
+    lseek (itsLocker.fd(), SIZEREQID, SEEK_SET);
     if (infoLeng > 1024 - leng) {
 	write (itsLocker.fd(), buffer, leng);
 	write (itsLocker.fd(), info.getBuffer(), infoLeng);
@@ -242,13 +254,13 @@ Int LockFile::getNrReqId() const
 {
     uChar buffer[8];
     lseek (itsLocker.fd(), 0, SEEK_SET);
-    uInt leng = read (itsLocker.fd(), buffer, sizeInt);
+    uInt leng = read (itsLocker.fd(), buffer, SIZEINT);
     return getInt (buffer, leng, 0);
 }
 
 Int LockFile::getInt (const uChar* buffer, uInt leng, uInt offset) const
 {
-    if (leng < offset + sizeInt) {
+    if (leng < offset + SIZEINT) {
 	return 0;
     }
     Int value;
@@ -258,9 +270,9 @@ Int LockFile::getInt (const uChar* buffer, uInt leng, uInt offset) const
 
 void LockFile::convReqId (const uChar* buffer, uInt leng)
 {
-    if (leng >= sizeReqId) {
+    if (leng >= SIZEREQID) {
 	CanonicalConversion::toLocal (itsReqId.storage(), buffer,
-				      sizeReqId/sizeInt);
+				      SIZEREQID/SIZEINT);
     }
 }
 
@@ -304,7 +316,7 @@ void LockFile::removeReqId()
 void LockFile::putReqId (int fd) const
 {
     if (itsAddToList) {
-	uChar buffer[sizeReqId];
+	uChar buffer[SIZEREQID];
 	uInt leng = CanonicalConversion::fromLocal (buffer,
 						    itsReqId.storage(),
 						    itsReqId.nelements());
@@ -317,9 +329,9 @@ void LockFile::putReqId (int fd) const
 void LockFile::getReqId()
 {
     int fd = itsLocker.fd();
-    uChar buffer[sizeReqId];
+    uChar buffer[SIZEREQID];
     lseek (fd, 0, SEEK_SET);
-    if (read (fd, buffer, sizeReqId) > 0) {
+    if (read (fd, buffer, SIZEREQID) > 0) {
 	CanonicalConversion::fromLocal (buffer,
 					itsReqId.storage(),
 					itsReqId.nelements());
