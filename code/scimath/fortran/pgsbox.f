@@ -579,7 +579,7 @@
          IF (K.EQ.0) THEN
 *           No valid coordinates found within the frame.
             IERR = 2
-            RETURN
+            GO TO 999
          END IF
 
 *        Check for cycles in angle.
@@ -1183,7 +1183,7 @@
 
 *  Clean up.
 *     Restore the original viewport, window and pen colour.
-      CALL PGSVP (XVP1, XVP2, YVP1, YVP2)
+ 999  CALL PGSVP (XVP1, XVP2, YVP1, YVP2)
       CALL PGSWIN (WXY(1), WXY(2), WXY(3), WXY(4))
       CALL PGSCI (CI0)
 
