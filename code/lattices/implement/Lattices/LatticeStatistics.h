@@ -1,5 +1,5 @@
 //# LatticeStatistics.h: generate statistics from a Lattice
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,8 @@
 #include <aips/Arrays/Vector.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <trial/Lattices/TiledCollapser.h>
+#include <trial/Lattices/TiledCollapser.h>
+#include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Utilities/DataType.h>
@@ -181,8 +183,6 @@ class ostream;
 // <todo asof="1996/11/26">
 //   <li> Implement plotting for complex lattices
 //   <li> Retrieve statistics at specified location of display axes
-//   <li> Median, other more exotic statistics. Life made difficult by
-//        accumulation lattice approach
 // </todo>
 
 
@@ -309,6 +309,10 @@ public:
    Bool getMinMaxPos(IPosition& minPos, IPosition& maxPos);
 // </group>   
 
+// Get LEL statistic
+   Bool getLELNode (Array<T>& out, const LatticeExprNode& node, 
+                    Bool newExpr, Bool dropDeg=True);
+
 // This function gets a vector containing all the statistics
 // for a given location.  If <src>posInLattice=True</src> then
 // the location is a location in the input lattice.  Any
@@ -340,20 +344,18 @@ public:
 protected:
 
    LogIO os_p;
-   const MaskedLattice<T>* pInLattice_p;
-   TempLattice<T>* pStoreLattice_p;
    Vector<Int> cursorAxes_p, displayAxes_p;
-   Vector<Int> nxy_p, statsToPlot_p;
-   Vector<T> range_p;
-   PGPlotter plotter_p;
-   Bool doList_p, noInclude_p, noExclude_p, goodParameterStatus_p;
-   Bool needStorageLattice_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
-   Bool haveLogger_p, showProgress_p, fixedMinMax_p, forceDisk_p;
-   Bool doRobust_p;
+   Bool goodParameterStatus_p;
+   Bool haveLogger_p, fixedMinMax_p;
+
+// doRobust means that when the storage lattice is generated, the
+// robust statistics are generated as well
+
+   Bool doRobust_p;        
+   Bool doneLEL_p;
    IPosition minPos_p, maxPos_p, blcParent_p;
    String error_p;
-
-
+//
 // Virtual Functions.  See implementation to figure it all out !
 //
 // Get beam volume if possible.  Your lattice needs to be
@@ -388,14 +390,32 @@ protected:
    virtual void getLabels(String& higherOrderLabel, String& xAxisLabel,
                           const IPosition& dPos) const;
 
+// Given a location in the storage lattice, convert those locations on the   
+// non-statistics axis (the last one) and optionally account for the 
+// lattice subsectioning
+   IPosition locInLattice (const IPosition& storagePosition,
+                           Bool relativeToParent=True) const;
+ 
+// Non-virtual functions
+//
+// set stream manipulators
+   void setStream (ostream& os, Int oPrec);
+
+private:
+
+   const MaskedLattice<T>* pInLattice_p;
+   TempLattice<T>* pStoreLattice_p;
+   Vector<Int> nxy_p, statsToPlot_p;
+   Vector<T> range_p;
+   PGPlotter plotter_p;
+   Bool doList_p, noInclude_p, noExclude_p;
+   Bool needStorageLattice_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
+   Bool showProgress_p, forceDisk_p;
 
 // Summarize the statistics found over the entire lattice
    virtual void summStats(); 
 
-
-// Non-virtual functions
-//
-// Calculate statistic from accumulation lattice and return in an array
+// Calculate statistic from storage lattice and return in an array
    Bool calculateStatistic (Array<T>& slice, const Int& ISTAT, Bool dropDeg);
 
 // Convert a <T> to a <Float> for plotting
@@ -416,6 +436,9 @@ protected:
                            Int& iLab,
                            String& label) const;
 
+// Find the LEL statistics per cursorAxes chunk
+   void generateLEL(const LatticeExprNode& node); 
+
 // Find the median per cursorAxes chunk
    void generateRobust (); 
 
@@ -429,24 +452,17 @@ protected:
                       Vector<uInt>& nPts,
                       const Vector<T>& mask) const;
 
-// Given a location in the storage lattice, convert those locations on the   
-// non-statistics axis (the last one) and optionally account for the 
-// lattice subsectioning
-   IPosition locInLattice (const IPosition& storagePosition,
-                           Bool relativeToParent=True) const;
-
 // Given a location in the lattice and a statistic type, work
 // out where to put it in the storage lattice
    IPosition locInStorageLattice(const IPosition& latticePosition,
                                  LatticeStatsBase::StatisticsTypes type) const;
- 
+
 // Draw each Y-axis sublabel in a string with a different colour
    void multiColourYLabel (String& label,
                            PGPlotter& plotter,
                            const String& LRLoc,
                            const Vector<uInt>& colours,
                            const Int& nLabs) const;
-
 
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments         
@@ -470,28 +486,25 @@ protected:
                            const Matrix<T>& ord,
                            PGPlotter& plotter);
 
-// Retrieve a statistic from the accumulation lattice and return in an array
+// Retrieve a statistic from the storage lattice and return in an array
    Bool retrieveStorageStatistic
                           (Array<T>& slice, 
                            const Int& ISTAT, Bool dropDeg);
 
-// Retrieve a statistic from the accumulation lattice at the specified
+// Retrieve a statistic from the storage lattice at the specified
 // location and return in an array
    Bool retrieveStorageStatistic
                           (Vector<T>& slice, 
                            const IPosition& pos,
                            const Bool posInLattice);
 
-// set stream manipulators
-   void setStream (ostream& os, Int oPrec);
-
-
 // Find the shape of slice from the statistics lattice at one
 // spatial pixel
    IPosition statsSliceShape () const; 
 
-// See if there were some valid points found in the accumulation
+// See if there were some valid points found in the storage lattice
    Bool someGoodPoints ();  
+
 
 // Stretch min and max by 5%
    void stretchMinMax (T& dMin, T& dMax) const;
