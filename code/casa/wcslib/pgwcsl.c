@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   PGSBOX 3.3 - a non-linear coordinate axis plotter for PGPLOT.
-*   Copyright (C) 1997-2003, Mark Calabretta
+*   PGSBOX 3.4 - a non-linear coordinate axis plotter for PGPLOT.
+*   Copyright (C) 1997-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
