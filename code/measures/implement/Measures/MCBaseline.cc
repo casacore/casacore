@@ -49,8 +49,7 @@ MCBaseline::MCBaseline() :
   EULER1(0),
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   NUTATFROM(0), NUTATTO(0),
-  PRECESFROM(0), PRECESTO(0),
-  VEC61(0), VEC62(0), VEC63(0) {}
+  PRECESFROM(0), PRECESTO(0) {}
 
 //# Destructor
 MCBaseline::~MCBaseline() {
@@ -77,9 +76,9 @@ void MCBaseline::getConvert(MConvertBase &mc,
 	MCBaseline::ITRF_JNAT,
 	MCBaseline::ITRF_JNAT,
 	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
+	MCBaseline::ITRF_HADEC,
+	MCBaseline::ITRF_HADEC,
+	MCBaseline::ITRF_HADEC,
 	MCBaseline::ITRF_JNAT,
 	MCBaseline::ITRF_JNAT,
 	MCBaseline::ITRF_JNAT,
@@ -221,7 +220,7 @@ void MCBaseline::getConvert(MConvertBase &mc,
 	MCBaseline::GAL_J2000,
 	MCBaseline::GAL_J2000,
 	MCBaseline::GAL_SUPERGAL },
-      { MCBaseline::HADEC_APP,   
+      { MCBaseline::HADEC_ITRF,   
 	MCBaseline::HADEC_APP,   
 	MCBaseline::HADEC_APP, 
 	MCBaseline::HADEC_APP,   
@@ -378,7 +377,8 @@ void MCBaseline::getConvert(MConvertBase &mc,
       MBaseline::ECLIPTIC,	MBaseline::J2000,
       MBaseline::MECLIPTIC,	MBaseline::JMEAN,
       MBaseline::TECLIPTIC,	MBaseline::JTRUE,
-      MBaseline::SUPERGAL,	MBaseline::GALACTIC
+      MBaseline::SUPERGAL,	MBaseline::GALACTIC,
+      MBaseline::HADEC,		MBaseline::ITRF
     };
     
     Int iin  = inref.getType();
@@ -404,9 +404,6 @@ void MCBaseline::clearConvert() {
   delete NUTATTO;    NUTATTO = 0;
   delete PRECESFROM; PRECESFROM = 0;
   delete PRECESTO;   PRECESTO = 0;
-  delete VEC61;	     VEC61 = 0;
-  delete VEC62;	     VEC62 = 0;
-  delete VEC63;	     VEC63 = 0;
 }
 
 //# Conversion routines
@@ -417,9 +414,6 @@ void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
   if (!MVPOS2)  MVPOS2 = new MVPosition();
   if (!MVPOS3)  MVPOS3 = new MVPosition();
   if (!EULER1)  EULER1 = new Euler();
-  if (!VEC61)   VEC61 = new Vector<Double>(6);
-  if (!VEC62)   VEC62 = new Vector<Double>(6);
-  if (!VEC63)   VEC63 = new Vector<Double>(6);
   
   switch (which) {
     
@@ -627,6 +621,25 @@ void MCBaseline::doConvert(MVBaseline &in,
       in(1) = -in(1);
     };
     break;
+
+    case HADEC_ITRF: {
+      ((MCFrame *)(MBaseline::Ref::framePosition(inref, outref).
+		   getMCFramePoint()))->
+	getLong(g3);
+      *ROTMAT1 = RotMatrix(Euler(g3, 3, 0, 0));
+      in *= *ROTMAT1;
+    };
+    break;
+    
+    case ITRF_HADEC: {
+      ((MCFrame *)(MBaseline::Ref::framePosition(inref, outref).
+		   getMCFramePoint()))->
+	getLong(g3);
+      *ROTMAT1 = RotMatrix(Euler(g3, 3, 0, 0));
+      in = *ROTMAT1 * in;
+    };
+    break;
+
 
     case GAL_J2000:
       in = MeasData::GALtoJ2000() * in;

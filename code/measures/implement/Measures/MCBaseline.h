@@ -140,6 +140,8 @@ private:
     TECLIP_JTRUE,
     GAL_SUPERGAL,
     SUPERGAL_GAL,
+    ITRF_HADEC,
+    HADEC_ITRF,
     N_Routes
   };
   
@@ -157,7 +159,6 @@ private:
   MVPosition *MVPOS1, *MVPOS2, *MVPOS3;
   Nutation *NUTATFROM, *NUTATTO;
   Precession *PRECESFROM, *PRECESTO;
-  Vector<Double> *VEC61, *VEC62, *VEC63;
 
   //# Constructors
   // Copy constructor (not implemented)
