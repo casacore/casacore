@@ -1,5 +1,5 @@
 //# Fit2D.cc: Class to fit 2D objects to a Lattice or Array
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,6 +41,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>
@@ -606,21 +607,15 @@ Vector<Double> Fit2D::getParams(uInt which) const
    return params;
 }
 
-void Fit2D::setParams(const Vector<Double>& params, uInt which)
+void Fit2D::setParams(const Vector<Double> &params, uInt which)
 //
 // Set the available parameters for this model
 // from the SumFunction
 //
 {
-   Vector<AutoDiff<Double> > params2(params.nelements());
-   for (uInt i=0; i<params2.nelements(); i++) {
-     params2[i] =  AutoDiff<Double>(params[i]);
-   };
-   // Make sure the general and sub-function parameters are the same
-   itsFunction.consolidate();;;
-   itsFunction.function(which).parameters().setParameters(params2);
-   itsFunction.consolidate();;;
-   ///itsFunction.parameters().setParameters(params2);
+  for (uInt i=0; i<params.nelements(); i++) {
+    itsFunction[itsFunction.parameterOffset(which)+i].value() = params[i];
+  };
 }
 
 
@@ -895,7 +890,7 @@ Bool Fit2D::normalizeData (Matrix<Double>& pos, Vector<Double>& values,
 //
 // Normalize the data
 //
-      Double dummyWidth;
+      Double dummyWidth(0);
       for (uInt k=0; k<itsNumberPoints; k++) {
          pos(k,0) = locX(k);
          pos(k,1) = locY(k);
