@@ -248,7 +248,7 @@
   do
 #    Find all class implementation files which include this header.
      CHFILES="`grep $HFILE _list | \
-                  sed -e 's/^\$(AIPSLIBS:%=%(\(.*\)\.o)) .*/\1/'`"
+                  sed -e 's/^\${AIPSLIBS:%=%(\(.*\)\.o)} .*/\1/'`"
 
 #    Remove duplicate entries.
      ELEMENTS="`for ELEMENT in $ELEMENTS $CHFILES
@@ -293,7 +293,7 @@
      then
 #       Now actually produce the dependency list.
         echo "	$ELEMENT.cc"
-        TARGET='$(AIPSLIBS:%=%('$ELEMENT'.o)) : $(CODEINCD)/'
+        TARGET='${AIPSLIBS:%=%('$ELEMENT'.o)} : $(CODEINCD)/'
 
 #       Filter out 'lex' and 'bison' includes.
         grep -v '^[ 	]*#include[ 	]*["<].*\.[ly]cc[">]' \
@@ -375,7 +375,7 @@
 # Add the dependencies for each class file into the list.
   for ELEMENT in $ELEMENTS
   do
-     TARGET='$(AIPSLIBS:%=%('$ELEMENT'.o)) : $(CODEINCD)/'
+     TARGET='${AIPSLIBS:%=%('$ELEMENT'.o)} : $(CODEINCD)/'
 
      if [ ! -f "$ELEMENT" ]
      then
