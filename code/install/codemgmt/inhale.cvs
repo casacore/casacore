@@ -334,7 +334,7 @@
   cd $AIPSROOT
   cd code
   chmod -R u+rw .
-  cvs update -d -C  $RELEASE
+  cvs update -P -d -C  $RELEASE
 
 
 
