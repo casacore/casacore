@@ -672,19 +672,27 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     timeSlot(0)=time(0); ddSlot(0)=dd(0); slot(0)=0;
     for (Int i=1; i<nRow; i++) {
       if (time(i)!=timeSlot(nSlot)) {
+	// new time - add new slot
 	nSlot++;
 	timeSlot(nSlot)=time(i); ddSlot(nSlot)=dd(i);
+	slot(i)=nSlot;
       } else if (dd(i)!=ddSlot(nSlot)) {
 	// check if we've seen this dd before
 	Int j=nSlot-1;
-	while (j>0 && timeSlot(j)==timeSlot(nSlot) && 
-	       ddSlot(j)!=ddSlot(nSlot)) j--;
-	if (nSlot==0 || (j>0 && timeSlot(j)!=timeSlot(nSlot))) {
+	while (j>=0 && timeSlot(j)==timeSlot(nSlot) && 
+	       ddSlot(j)!=dd(i)) j--;
+	if (j<0 || (j>=0 && timeSlot(j)!=timeSlot(nSlot))) {
+	  // new data_desc_id for current time - add new slot
 	  nSlot++;
 	  timeSlot(nSlot)=time(i); ddSlot(nSlot)=dd(i);
+	  slot(i)=nSlot;
+	} else {
+	  // we've seen this one before - reuse it
+	  slot(i)=j;
 	}
+      } else {
+	slot(i)=nSlot;
       }
-      slot(i)=nSlot;
     }
     nSlot++;
     // resize to true size, copying values
