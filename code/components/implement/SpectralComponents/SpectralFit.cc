@@ -69,8 +69,6 @@ Bool SpectralFit::fit(const Vector<Double> &y,
 		      const Vector<Double> &x) {
   // The fitter
   NonLinearFitLM<Double> fitter;
-  // Force (as interim solution) all values in solution
-  fitter.setFullSolution();
   // The functions to fit
   const Gaussian1D<AutoDiff<Double> > gauss; 
   const Polynomial<AutoDiff<Double> > poly; 
@@ -107,7 +105,8 @@ Bool SpectralFit::fit(const Vector<Double> &y,
       };
     };
   };
-  fitter.fittedFunction()->setAvailableParamMasks(vb);
+  // Force (as interim solution) all values in solution
+  fitter.setFullSolution(vb);
   fitter.setFittedFuncParams(v);
   // Max. number of iterations
   fitter.setMaxIter(50+ slist_p.nelements()*10);
@@ -140,8 +139,6 @@ Bool SpectralFit::fit(const Vector<Float> &y,
 		      const Vector<Float> &x) {
   // The fitter
   NonLinearFitLM<Float> fitter;
-  // Force (as interim solution) all values in solution
-  fitter.setFullSolution();
   // The functions to fit
   const Gaussian1D<AutoDiff<Float> > gauss; 
   const Polynomial<AutoDiff<Float> > poly; 
@@ -178,7 +175,8 @@ Bool SpectralFit::fit(const Vector<Float> &y,
       };
     };
   };
-  fitter.fittedFunction()->setAvailableParamMasks(vb);
+  // Force (as interim solution) all values in solution
+  fitter.setFullSolution(vb);
   fitter.setFittedFuncParams(v);
   // Max. number of iterations
   fitter.setMaxIter(50+ slist_p.nelements()*10);
