@@ -227,7 +227,7 @@ void b()
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	ROArrayColumn<float> data (table, "Data");
 	Array<float> result;
-	ArrayPositionIterator iter (cellShape, origin, 1);
+	ArrayPositionIterator iter (cellShape, origin, 1u);
 	timer.mark();
 	uInt nr = 0;
 	while (! iter.pastEnd()) {
@@ -245,7 +245,7 @@ void b()
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	ROArrayColumn<float> data (table, "Data");
 	Array<float> result;
-	ArrayPositionIterator iter (cellShape, origin, 0);
+	ArrayPositionIterator iter (cellShape, origin, 0u);
 	length(0) = 1;
 	uInt nr = 0;
 	timer.mark();

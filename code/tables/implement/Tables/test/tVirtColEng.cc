@@ -37,8 +37,8 @@
 
 
 //# Includes
-#include <tables/Tables/test/dVirtColEng.h>
-#include <tables/Tables/test/dVirtColEng.cc>
+#include "dVirtColEng.h"
+#include "dVirtColEng.cc"
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/SetupNewTab.h>
 #include <tables/Tables/Table.h>

@@ -34,7 +34,7 @@ int main()
 
 
 //# Includes
-#include <tables/Tables/test/dVirtColEng.h>
+#include "dVirtColEng.h"
 #include <tables/Tables/Table.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ArrayColumn.h>

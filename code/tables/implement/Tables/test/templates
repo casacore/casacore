@@ -23,8 +23,7 @@
      template LogicalArray operator<=(Array<String> const &, Array<String> const &) 
      template LogicalArray operator<=(Array<String> const &, String const &) 
      template LogicalArray operator<=(String const &, Array<String> const &) 
-     template Bool allNear(Array<DComplex> const &, Array<DComplex>
-const &, Double) 
+     template Bool allNear(Array<DComplex> const &, Array<DComplex> const &, Double) 
 1000 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
      template void indgen(Array<Complex> &) 
      template void indgen(Array<Complex> &, Complex, Complex) 

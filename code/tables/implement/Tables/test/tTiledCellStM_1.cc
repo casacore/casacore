@@ -47,10 +47,11 @@
 #ifdef PABLO_IO
 #include "IOTrace.h"
 #include "PabloTrace.h"
-#include <casa/namespace.h>
 extern "C" Int setTraceFileName(char *);
 extern "C" Int endTracing(void);
 #endif // PABLO_IO
+
+#include <casa/namespace.h>
 
 // <summary>
 // Test program for performance of TiledCellStMan class.

@@ -27,7 +27,8 @@
 
 
 //# Includes
-#include <tables/Tables/test/dRetypedArrayEngine.h>
+//#include <tables/Tables/test/dRetypedArrayEngine.h>
+#include "dRetypedArrayEngine.h"
 #include <tables/Tables/RetypedArrayEngine.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/SetupNewTab.h>
@@ -458,12 +459,13 @@ void c()
 #include <casa/Utilities/ValTypeId.h>
 
 #include <casa/namespace.h>
+namespace casa {
 template class ArrayColumnData<RetypedArrayEx1>;
 template class ArrayColumnDesc<RetypedArrayEx1>;
 template class Array<RetypedArrayEx1>;
 template class ArrayIterator<RetypedArrayEx1>;
 template class ReadOnlyArrayIterator<RetypedArrayEx1>;
-template Bool allEQ(Array<RetypedArrayEx1> const &, Array<RetypedArrayEx1> const &);
+template Bool allEQ<RetypedArrayEx1>(Array<RetypedArrayEx1> const &, Array<RetypedArrayEx1> const &);
 template class ArrayColumn<RetypedArrayEx1>;
 template class ROArrayColumn<RetypedArrayEx1>;
 template class BaseMappedArrayEngine<RetypedArrayEx1, Float>;
@@ -472,14 +474,14 @@ template class Matrix<RetypedArrayEx1>;
 template class Vector<RetypedArrayEx1>;
 template class Block<RetypedArrayEx1>;
 template class RetypedArrayEngine<RetypedArrayEx1, Float>;
-template void retypedArrayEngineGet(Array<Float> &, Array<RetypedArrayEx1> const &);
-template void retypedArrayEngineSet(Array<RetypedArrayEx1> &, Array<Float> const &);
+template void retypedArrayEngineGet<RetypedArrayEx1, Float>(Array<Float> &, Array<RetypedArrayEx1> const &);
+template void retypedArrayEngineSet<RetypedArrayEx1, Float>(Array<RetypedArrayEx1> &, Array<Float> const &);
 template class VirtualArrayColumn<RetypedArrayEx1>;
-template void objcopy(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt);
-template void objcopy(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt, uInt, uInt);
-template void objset(RetypedArrayEx1 *, RetypedArrayEx1, uInt);
-template void objset(RetypedArrayEx1 *, RetypedArrayEx1, uInt, uInt);
-template void objmove(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt);
+template void objcopy<RetypedArrayEx1>(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt);
+template void objcopy<RetypedArrayEx1>(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt, uInt, uInt);
+template void objset<RetypedArrayEx1>(RetypedArrayEx1 *, RetypedArrayEx1, uInt);
+template void objset<RetypedArrayEx1>(RetypedArrayEx1 *, RetypedArrayEx1, uInt, uInt);
+template void objmove<RetypedArrayEx1>(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt);
 template class CountedPtr<Block<RetypedArrayEx1> >;
 template class PtrRep<Block<RetypedArrayEx1> >;
 template class SimpleCountedConstPtr<Block<RetypedArrayEx1> >;
@@ -517,3 +519,5 @@ template class SimpleCountedConstPtr<Block<RetypedArrayEx2> >;
 template class SimpleCountedPtr<Block<RetypedArrayEx2> >;
 template class CountedConstPtr<Block<RetypedArrayEx2> >;
 template String valDataTypeId(RetypedArrayEx2 const *);
+
+}

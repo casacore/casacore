@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <tables/Tables/test/dVSCEngine.h>
-#include <tables/Tables/test/dVSCEngine.cc>
+#include "dVSCEngine.h"
+#include "dVSCEngine.cc"
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/SetupNewTab.h>
 #include <tables/Tables/Table.h>

@@ -37,10 +37,11 @@
 
 #include <casa/namespace.h>
 //# Forward Declarations
+namespace casa {
 class TableRecord;
 template<class T> class Array;
 template<class T> class Vector;
-
+}
 
 // <summary>
 // Example virtual column engines to handle an arbitrary data type.
@@ -83,11 +84,11 @@ public:
     // Therefore we have to declare it as a void*.
 //#    static void set (void* copyInfo, Array<RetypedArrayEx1>& out,
     static void set (void* copyInfo, void* out,
-		     const Array<float>& in,
-		     const IPosition& shape);
-    static void get (void* copyInfo, Array<float>& out,
+		     const casa::Array<casa::Float>& in,
+		     const casa::IPosition& shape);
+    static void get (void* copyInfo, casa::Array<casa::Float>& out,
 		     const void* in,
-		     const IPosition& shape);
+		     const casa::IPosition& shape);
 
     float x() const
 	{ return x_p; }

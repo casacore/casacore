@@ -143,6 +143,7 @@ void VSCExampleVSCEngine::registerClass()
 #include <casa/Utilities/ValTypeId.h>
 
 #include <casa/namespace.h>
+namespace casa {
 template class Array<VSCExample>;
 template class MaskedArray<VSCExample>;
 template class Vector<VSCExample>;
@@ -154,14 +155,15 @@ template class ScalarColumn<VSCExample>;
 template class VSCEngine<VSCExample>;
 template class VirtualScalarColumn<VSCExample>;
 template class ObjCompare<VSCExample>;
-template void objcopy(VSCExample *, VSCExample const *, uInt);
-template void objcopy(VSCExample *, VSCExample const *, uInt, uInt, uInt);
-template void objset(VSCExample *, VSCExample, uInt);
-template void objset(VSCExample *, VSCExample, uInt, uInt);
-template void objmove(VSCExample *, VSCExample const *, uInt);
+template void objcopy<VSCExample>(VSCExample *, VSCExample const *, uInt);
+template void objcopy<VSCExample>(VSCExample *, VSCExample const *, uInt, uInt, uInt);
+template void objset<VSCExample>(VSCExample *, VSCExample, uInt);
+template void objset<VSCExample>(VSCExample *, VSCExample, uInt, uInt);
+template void objmove<VSCExample>(VSCExample *, VSCExample const *, uInt);
 template class CountedConstPtr<Block<VSCExample> >;
 template class CountedPtr<Block<VSCExample> >;
 template class PtrRep<Block<VSCExample> >;
 template class SimpleCountedConstPtr<Block<VSCExample> >;
 template class SimpleCountedPtr<Block<VSCExample> >;
 template String valDataTypeId(VSCExample const *);
+}

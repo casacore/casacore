@@ -36,10 +36,12 @@
 #include <casa/namespace.h>
 //# Forward Declarations
 class DummyVirtualEngine;
+namespace casa {
 template<class T> class ROScalarColumn;
 template<class T> class ScalarColumn;
 template<class T> class ROArrayColumn;
 template<class T> class ArrayColumn;
+}
 
 
 // <category lib=aips module="Tables" sect="Virtual Columns">
