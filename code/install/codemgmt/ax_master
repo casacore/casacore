@@ -4788,3 +4788,4 @@
 14 316 sys rm libexec/dish_gauman.g
 14 316 src rm trial/apps/dish/dish_gaussapp.g
 14 316 sys rm libexec/dish_gaussapp.g
+14 316 src rm trial/apps/dish/dish_granges.g
