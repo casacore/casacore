@@ -31,23 +31,56 @@
 //# Constructors
 
 //# Operators
-template<class T>
+template <class T>
 AutoDiff<T> NQCompoundFunction<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   if (parset_p) fromParam_p();
-  AutoDiff<T> tmp(0);
-  for (uInt i=0; i<nFunctions(); ++i) {
-    for (uInt j=0; j<function(i).nparameters(); ++j) {
-      if (function(i)[j].nDerivatives() > 0) {
-	tmp = function(i)[j];
-	break;
-      };
-    };
-    if (tmp.nDerivatives() > 0) break;
-  };
+  AutoDiff<T> tmp(T(0), nparameters());
+  ///  for (uInt i=0; i<nFunctions(); ++i) {
+  ///    for (uInt j=0; j<function(i).nparameters(); ++j) {
+  ///      if (function(i)[j].nDerivatives() > 0) {
+  ///	tmp = function(i)[j];
+  ///	break;
+  ///      };
+  ///    };
+  ///    if (tmp.nDerivatives() > 0) break;
+  ///  };
   tmp.value() = 0;
   for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
   // function value
-  for (uInt i = 0; i< nFunctions(); ++i) tmp += function(i)(x);
+  for (uInt i = 0; i< nFunctions(); ++i) {
+    AutoDiff<T> t = function(i)(x);
+    tmp.value() += t.value();
+    for (uInt j=0; j<t.nDerivatives(); ++j) {
+      tmp.deriv(paroff_p[i]+j) += t.deriv(j);
+    };
+  };
   return tmp;
+}
+
+//# Member functions
+/// Note not correct
+template <class T>
+void NQCompoundFunction<AutoDiff<T> >::toParam_p() const {
+  for (uInt i=0; i<nparameters(); ++i) {
+    const_cast<FunctionParam<AutoDiff<T> > &>(param_p)[i] =
+      (*functionPtr_p[funpar_p[i]])[locpar_p[i]];
+  };
+}
+
+template <class T>
+void NQCompoundFunction<AutoDiff<T> >::fromParam_p() const {
+  if (parset_p) {
+    parset_p = False;
+    for (uInt i=0; i<nparameters(); ++i) {
+      (*functionPtr_p[funpar_p[i]])[locpar_p[i]] =
+	AutoDiff<T>(param_p[i].value(),
+		    functionPtr_p[funpar_p[i]]->nparameters());
+      uInt k = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
+      for (uInt j=0; j<k; ++j) {
+	(*functionPtr_p[funpar_p[i]])[locpar_p[i]].deriv(j) =
+	  param_p[i].deriv(j);
+      };
+    };
+  };
 }

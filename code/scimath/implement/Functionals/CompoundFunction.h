@@ -128,6 +128,12 @@ template <class T> class NQCompoundFunction : public NQCompoundParam<T> {
   virtual Function<T> *clone() const { return new NQCompoundFunction<T>(*this); };
   
 private:
+  //# Member functions
+  // Copy the local parameters to/from general block
+  // <group>
+  void toParam_p() const;
+  void fromParam_p() const;
+  // </group>
 
 };
 
@@ -171,6 +177,14 @@ public NQCompoundParam<AutoDiff<T> > {
   // deleting the pointer.
   virtual Function<AutoDiff<T> > *clone() const {
     return new NQCompoundFunction<AutoDiff<T> >(*this); };
+
+ private:
+  //# Member functions
+  // Copy the local parameters to/from general block
+  // <group>
+  void toParam_p() const;
+  void fromParam_p() const;
+  // </group>
 
 };
 
