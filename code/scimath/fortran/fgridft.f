@@ -182,7 +182,7 @@ C
      $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)
                            end do
                         end do
-                        values(ipol,ichan,irow)=(nvalue*phasor)
+                        values(ipol,ichan,irow)=(nvalue*conjg(phasor))
      $                       /norm
                      end if
                   end do
