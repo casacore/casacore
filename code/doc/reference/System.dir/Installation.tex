@@ -361,138 +361,16 @@ that a programmer doesn't have ready access to.  You should also add the email
 address of a local person who will monitor the \aipsexe{inhale} logs
 (\acct{aips2mgr} in the above example).
 
-\subsection*{Step 4. Create the NFS automount}
+\subsection*{Step 4. Update the SSH keys}
 \index{nfs@\textsc{nfs}}
 \index{automount, \textsc{nfs}}
 
-You should now have a living breathing \aipspp\ installation, but as yet won't
-be able to check code in to, or out of, the master source code repositories
-from your local machine.  Note, however, that a perfectly acceptable although
-somewhat tedious alternative if you have an account on a machine in Socorro is
-to log in remotely using either \unixexe{rlogin} or \unixexe{telnet} and check
-the files in and out of the master directly.  There are also a set of
-utilities which automate this mechanism somewhat (see \sref{rai}).
-
-The usual mechanism for local checkin and checkout of \aipspp\ source files
-from the master \rcs\ repository is that of an \textsc{nfs} mount on the local
-\aipspp\ machine of the master directories from \host{aips2.nrao.edu}, the
-host on which the master resides.
-
-Note that the only traffic flowing via the \textsc{nfs} mount is that
-associated with sources being checked in and out and is quite modest.  Source
-code updates fetched by \exeref{inhale} do not travel by this mount but rather
-via \unixexe{ftp} as compressed tar files.
-
-At \aipspp\ sites other than Socorro itself the \textsc{nfs} mount runs
-across the internet.  This is not particularly difficult to configure.
-However, the \textsc{nfs} mount must be set up on every machine on which
-checkins and checkouts are to be enabled, and \acct{root} privilege is
-required to do this.  Therefore, your system administrator's assistance will
-again be required.
-
-The preferred way of implementing the \textsc{nfs} mount involves using the
-\unixexe{automount} mechanism.  Permanent \textsc{nfs} mounts (implemented as
-entries in \file{/etc/fstab} or \file{/etc/vfstab}) are not recommended since
-they may hang if the server doesn't respond, whereas automounts timeout within
-a reasonable period.
-
-Permission to mount the \aipspp\ master \rcs\ repositories can be obtained by
-sending a request via email to \acct{aips2adm@nrao.edu}.  You should specify
-the full internet address, both symbolic and numerical, of the machines which
-are to have access.  For example,
-
-\begin{verbatim}
-   grus.atnf.csiro.au     130.155.194.37
-   bootes.atnf.csiro.au   130.155.194.40
-\end{verbatim}
-
-\noindent
-These should be strictly limited to machines assigned for \aipspp\ programmer
-use.
-
-There are several ways in which the automount may be implemented.  The
-recommended method is a ``direct'' automount local to the \aipspp\ programmer
-machines; that is, one that is not distributed via the \textsc{nis}
-\file{auto.master} and \file{auto.direct} maps.
-
-In Solaris 2.x, the automounter is multi-threaded and no special precautions
-need be taken.  Simply add the following line to \file{/etc/auto\_direct}:
-
-\begin{verbatim}
-   /aips++_master -rw,grpid,hard,intr aips2.nrao.edu:/export/aips++/master
-\end{verbatim}
-
-On the other hand, the automounter supplied with SunOS 4.x is single-threaded.
-Since the \aipspp\ master may sometimes be inaccessible due to internet
-connectivity problems, the best strategy is to invoke a separate instance of
-the \unixexe{automount} daemon which deals exclusively with it.
-
-Do the following for each of your \aipspp\ programmer machines (the directory
-and file names are provided for illustration only; for example, you may prefer
-to put the files in \file{/etc} instead of \file{/usr/local/etc}).  Create a
-file \file{/usr/local/etc/auto.master\_aips++} containing the following single
-entry:
-
-\begin{verbatim}
-   /-  /usr/local/etc/auto.direct_aips++  -rw,grpid,hard,intr
-\end{verbatim}
-
-\noindent
-Now create \file{/usr/local/etc/auto.direct\_aips++} containing:
-
-\begin{verbatim}
-   /aips++_master  aips2.nrao.edu:/export/aips++/master
-\end{verbatim}
-
-\noindent
-and create an additional invokation of the \unixexe{automount} daemon by
-adding the following command to \file{/etc/rc.local} at the appropriate point
-(near the end):
-
-\begin{verbatim}
-   automount -m -f /usr/local/etc/auto.master_aips++
-\end{verbatim}
-
-You should be able to adapt these strategies to other operating systems and
-automounters without too much trouble.
-
-\noindent
-If you are not running the domain nameserver you will need to add an entry to
-your \textsc{nis} \file{hosts} map for \host{aips2.nrao.edu} (or to
-\file{/etc/hosts} if you're not running \textsc{nis}):
-
-\begin{verbatim}
-   146.88.10.7   aips2.nrao.edu
-\end{verbatim}
-
-\noindent
-Note that this internet address may change in future.  Start the
-\unixexe{automount} daemon by issuing the \unixexe{automount} command above as
-\acct{root}, or alternatively reboot the machine.
-
-Finally, as \acct{aips2mgr}, create a symbolic link to the master repositories
-
-\begin{verbatim}
-   yourhost% ln -s /aips++_master /aips++/master
-\end{verbatim}
-
-\noindent
-To test whether the mount is working try doing
-
-\begin{verbatim}
-   yourhost% ls /aips++/master
-\end{verbatim}
-
-\noindent
-After a little while you should get a listing of the master directory.  You
-should also be able to run \exeref{ao} and \exeref{ai}, the \aipspp\ checkout
-and checkin utilities.
-
-If once you have the mount set up you encounter problems relating to
-\textsc{nfs} operations timing out, for example as indicated by messages such
-as "\code{NFS getattr failed for server aips2.nrao.edu: RPC: Timed out}", then
-you may need to increment the \textsc{nfs} retransmission and timeout
-parameters via the \code{retrans} and \code{timeo} mount options in the
-automounter map.
-
-Check the man page for \unixexe{mount} for further information.
+In the past, sites would NFS mount the master directories from \host{aips2.nrao.edu}.
+This was a best problematical considering the vaguarities of NFS.
+The current scheme is to use \sref{rai}, \sref{rao}, and \sref{rau} source code into the master
+develoment tree.  Developers should use
+rai and rao to check in and out files and directories.  For these utilities
+to work, developers must have an account on \host{aips2.nrao.edu}.  These accounts 
+may be created by contacting NRAO in Socorro. Note: you will need to send your aips2mgr ssh key file
+(identity.pub or id\_dsa.pub) to aips2mgr@aoc.nrao.edu for rau to work. Please refer to the
+\htmladdnormallink{Open SSH web page}{http://www.openssh.org} for more details on ssh.
