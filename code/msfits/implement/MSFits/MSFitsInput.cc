@@ -1,5 +1,5 @@
 //# MSFitsInput:  uvfits (random group) to MeasurementSet filler
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -1360,17 +1360,20 @@ void MSFitsInput::fillPointingTable()
 	  msc_p->pointing().interval().put(np-j-1,interval);
 	}
       }
+      // The ISMStMan is used for all but antennaId, so only put once
       for (Int j=0; j<nAnt; j++) {
 	ms_p.pointing().addRow();
-	msc_p->pointing().time().put(np+j,time);
-	msc_p->pointing().timeOrigin().put(np+j,time);
-	msc_p->pointing().interval().put(np+j,0);
 	msc_p->pointing().antennaId().put(np+j, j);
-	msc_p->pointing().name().put(np+j, name);
-	msc_p->pointing().numPoly().put(np+j, numPoly);
-	msc_p->pointing().direction().put(np+j,pointingDir);
-	msc_p->pointing().target().put(np+j,pointingDir);
-	msc_p->pointing().tracking().put(np+j,True);
+	if (j==0) {
+	  msc_p->pointing().time().put(np+j,time);
+	  msc_p->pointing().timeOrigin().put(np+j,time);
+	  msc_p->pointing().interval().put(np+j,0);
+	  msc_p->pointing().name().put(np+j, name);
+	  msc_p->pointing().numPoly().put(np+j, numPoly);
+	  msc_p->pointing().direction().put(np+j,pointingDir);
+	  msc_p->pointing().target().put(np+j,pointingDir);
+	  msc_p->pointing().tracking().put(np+j,True);
+	}
       }
     }
   }
