@@ -28,29 +28,162 @@
 
 //# Includes
 #include <aips/Measures/MeasComet.h>
-#include <aips/Utilities/String.h>
-#include <aips/Quanta/MVEpoch.h>
+#include <aips/Measures/MeasIERS.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Quanta/MVRadialVelocity.h>
+#include <aips/Quanta/MVDirection.h>
+#include <aips/Logging.h>
+#include <aips/Tasking/Aipsrc.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Tables/TableRecord.h>
 
 //# Constructors
-MeasComet::MeasComet(const String &path) {
-  tab_p = Table(path);
+MeasComet::MeasComet(const String &path) :
+  tab_p(), measFlag_p(True), measured_p(False),
+  row_p(),
+  mjd0_p(0), mjdl_p(0), dmjd_p(0), nrow_p(0), name_p(), topo_p(),
+  mtype_p(MDirection::APP),
+  msgDone_p(False), tp_p(path) {
+  initMeas(path);
+  for (uInt i=0; i<2; i++) lnr_p[i] = -1;
 }
 
+MeasComet::~MeasComet() {}
+
 //# Member functions
-Bool get(Vector<Double> &returnValue,
-	 const MVEpoch &date) {
-  if (date == MVEpoch(0)) {
-    returnValue(0) = returnValue(0);
-  };
+const String &MeasComet::getName() const {
+  return name_p;
+};
+
+const MVPosition &MeasComet::getTopo() const {
+  return topo_p;
+};
+
+MDirection::Types MeasComet::getType() const {
+  return mtype_p;
+};
+
+Double MeasComet::getStart() const {
+  return mjd0_p + dmjd_p;
+}
+
+Double MeasComet::getEnd() const {
+  return mjdl_p;
+}
+
+Int MeasComet::nelements() const {
+  return nrow_p;
+};
+
+Bool MeasComet::get(MVPosition &returnValue, Double date) {
+  returnValue = MVPosition();
+  if (!fillMeas(date)) return False;
+  Double f = (date - ldat_p[0][0])/dmjd_p;
+  returnValue =
+    MVPosition(Quantity(ldat_p[1][MeasComet::RHO], "AU"),
+	       Quantity(ldat_p[1][MeasComet::RA], "deg"),
+	       Quantity(ldat_p[1][MeasComet::DEC], "deg"))*f -
+    MVPosition(Quantity(ldat_p[0][MeasComet::RHO], "AU"),
+	       Quantity(ldat_p[0][MeasComet::RA], "deg"),
+	       Quantity(ldat_p[0][MeasComet::DEC], "deg"))*(f-1);
   return True;
 }
 
-Bool get(Double &res, MeasComet::Types which,
-	 const MVEpoch &date) {
-  if (which == MeasComet::RA) {
-    res = 0;
-    if (date == MVEpoch(0)) {};
+Bool MeasComet::getDisk(MVDirection &returnValue, Double date) {
+  returnValue = MVDirection();
+  if (!fillMeas(date)) return False;
+  Double f = (date - ldat_p[0][0])/dmjd_p;
+  returnValue =
+    MVDirection(Quantity(ldat_p[1][MeasComet::DISKLONG], "deg"),
+	       Quantity(ldat_p[1][MeasComet::DISKLAT], "deg"))*f -
+    MVDirection(Quantity(ldat_p[0][MeasComet::DISKLONG], "deg"),
+	       Quantity(ldat_p[0][MeasComet::DISKLAT], "deg"))*(f-1);
+  return True;
+}
+
+Bool MeasComet::getRadVel(MVRadialVelocity &returnValue, Double date) {
+  returnValue = 0.0;
+  if (!fillMeas(date)) return False;
+  Double f = (date - ldat_p[0][0])/dmjd_p;
+  returnValue =
+    MVRadialVelocity(Quantity(ldat_p[1][MeasComet::RADVEL]*f -
+			      ldat_p[0][MeasComet::RADVEL]*(f-1.0),
+			      "AU/d"));
+  return True;
+}
+
+Bool MeasComet::initMeas(const String &which) {
+  static const String names[MeasComet::N_Columns] = {
+    "MJD",
+    "RA", "DEC",
+    "Rho", "RadVel", "DiskLong", "DiskLat" };
+  static const String tplc = "measures.comet.directory";
+
+  if (!measured_p && measFlag_p) {
+    measFlag_p = False;
+    TableRecord kws;
+    Double dt;
+    String vs;
+    Bool ok = True;
+    if (!MeasIERS::getTable(tab_p, kws, row_p,
+			    rfp_p, vs, dt, 
+			    MeasComet::N_Columns, names, tp_p,
+			    tplc,
+			    String("aips/Measures"))) {
+      return False;
+    };
+    if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
+	!kws.isDefined("dMJD") || kws.asDouble("dMJD") <= 0 ||
+	!kws.isDefined("NAME")) ok = False;
+    if (ok) {
+      name_p = kws.asString("NAME");
+      topo_p = MVPosition(Quantity(kws.asDouble("GeoDist"), "km"),
+			  Quantity(kws.asDouble("GeoLong"), "deg"),
+			  Quantity(kws.asDouble("GeoLat"), "deg"));
+      if (kws.asDouble("GeoDist") != 0.0) mtype_p = MDirection::TOPO;
+      mjd0_p = kws.asDouble("MJD0");
+      dmjd_p = kws.asDouble("dMJD");
+      nrow_p = tab_p.nrow();
+      row_p.get(nrow_p-1);
+      if (!nearAbs(*(rfp_p[0]), mjd0_p + nrow_p*dmjd_p, 0.1*dmjd_p)) { 
+	ok = False;
+      } else {
+	mjdl_p = mjd0_p + nrow_p*dmjd_p;
+      };
+    };
+    if (!ok) {
+      LogIO os(LogOrigin("MeasComet",
+			 String("initMeas(String)"),
+			 WHERE));
+      os << String("Corrupted Comet table ") + tp_p << LogIO::EXCEPTION;
+    };
+    measured_p = True;
+  };
+  return ToBool(measured_p);
+}
+
+Bool MeasComet::fillMeas(Double utf) {
+  Int ut = ifloor((utf-mjd0_p)/dmjd_p)-1;
+  if (ut<0 || ut >= nrow_p-1) return False;
+  if (ut != lnr_p[0]) {
+    if (ut == lnr_p[1]) { 
+      // Shift one
+      for (Int i=0; i<MeasComet::N_Columns; i++) ldat_p[0][i] = ldat_p[1][i];
+      lnr_p[0] = lnr_p[1];
+    } else {
+      // Read first line
+      row_p.get(ut);
+      for (Int i=0; i<MeasComet::N_Columns; i++) {
+	ldat_p[0][i] = *(rfp_p[i]);
+      };
+      lnr_p[0] = ut;
+    };
+    // Read second line
+    row_p.get(ut+1);
+    for (Int i=0; i<MeasComet::N_Columns; i++) {
+      ldat_p[1][i] = *(rfp_p[i]);
+    };
+    lnr_p[1] = ut+1;
   };
   return True;
 }
