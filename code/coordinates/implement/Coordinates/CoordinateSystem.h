@@ -63,13 +63,13 @@ class IPosition;
 // The fundamental operations available to the user of a 
 // <src>CoordinateSystem</src> are:
 // <ol>
-//   <li> Transform a world coordinate system to a pixel coordinate or vice versa
-//        via <src>toWorld()</src> and <src>toPixel()</src>.
+//   <li> Transform a world (physical) coordinate system to a pixel coordinate or 
+//        vice versa via <src>toWorld()</src> and <src>toPixel()</src>.
 //   <li> Compose a coordinate system from one or more independent groups,
 //        typically the sky-plane transformation will be one group, and the
 //        spectral axis will be another group. Each group consists of a linear
 //        transformation (in FITS terms, apply <src>CRPIX, PC, CDELT</src>)
-//        to turn the pixel coordinates into a relative physical coordinates, 
+//        to turn the pixel coordinates into relative physical coordinates, 
 //        followed by a (possibly) nonlinear projection to world coordinates 
 //        (i.e. apply <src>CTYPE and CRVAL</src>), typically a sky projection
 //        or a frequency to velocity conversion. Note that an arbitrary rotation
@@ -81,6 +81,11 @@ class IPosition;
 //   <li> Calculate the coordinate system that results from a subimage operation.
 //   <li> Various convenience functions to create "standard" coordinate systems.
 // </ol>
+//
+// Note that all the knowledge to do with removing and transposing axes is
+// maintained by the CoordinateSystem.  The individual Coordinates, of which it
+// is made, no nothing about this.
+//
 // </synopsis>
 //
 // <example>
