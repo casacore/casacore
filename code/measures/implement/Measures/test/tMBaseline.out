@@ -10,9 +10,9 @@ Test Baseline conversion ...
 --------------------------------------
 Converted Baseline: [100, 10, 0]
  to Reference for an Baseline with Type: J2000
- as Baseline: [-100.459, -2.80949, -0.018054]
-Back      Baseline: [-100.459, -2.80949, -0.018054]
- as Baseline: [100, 10, -8.93112e-18]
+ as Baseline: [-51.3123, 86.4121, -0.00571938]
+Back      Baseline: [-51.3123, 86.4121, -0.00571938]
+ as Baseline: [100, 10, 1.76942e-16]
 --------------------------------------
 Testing all conversions forward/backward
 All forward/backward conversions: ok
