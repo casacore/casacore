@@ -127,13 +127,16 @@ public:
     Bool toWorld(MFrequency &world,
 		 Double pixel) const;
 
-    // Retrieve/set the rest frequency in the cuurent units.
+    // Retrieve/set the rest frequency in the current units.
     // <group>
     Double restFrequency() const;
     Bool setRestFrequency(Double newFrequency);
     // </group>
   
-    // Retrieve/set the frequency system
+    // Retrieve/set the frequency system.  Note that setting the
+    // frequency system just changes the internal value of the
+    // frequency system, it does not cause any recomputation
+    // or cause the result of <src>toWorld</src> to change.
     // <group>
     MFrequency::Types frequencySystem() const;
     void  setFrequencySystem(MFrequency::Types type);
@@ -149,7 +152,8 @@ public:
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
-    // Set the value of the requested attributed.
+    // Set the value of the requested attributed. Note that these just
+    // change the internal values, they do not cause any recomputation.
     // <group>
     virtual Bool setWorldAxisNames(const Vector<String> &names);
     virtual Bool setReferencePixel(const Vector<Double> &refPix);
