@@ -5,11 +5,12 @@
 #=============================================================================
 
 # Use table tTable_2.data_v0 as the input by creating a link to its directory.
-  rm -rf tTableGram_tmp.tab
+  rm -rf tTableGram_tmp.tab*
   mkdir tTableGram_tmp.tab
   AIPSCODE=`echo $AIPSPATH | awk '{printf("%s/code",$1)}'`
   cp -r $AIPSCODE/aips/implement/Tables/test/tTable_2.data_v0/table.* tTableGram_tmp.tab
   chmod 644 tTableGram_tmp.tab/*
+  cp -r tTableGram_tmp.tab tTableGram_tmp.tabc
 
 # Whitespace around * had to be removed to avoid file name expansion by shell.
 
@@ -46,9 +47,11 @@ tTableGram 'select ab,ac from tTableGram_tmp.tab orderby round(2*sin(ab)),ac des
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])'
 
-tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [select ac from tTableGram_tmp.tab where ab>4]'
+tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.tab where ab>4)'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]'
+
+tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>4 giving [ac=:=ac+0.5]]'
 
@@ -89,3 +92,24 @@ tTableGram 'select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5
 
 tTableGram 'update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 where ac>3'
 tTableGram 'select ab from tTableGram_tmp.tab'
+tTableGram 'update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 from tTableGram_tmp.tabc where ac>3 orderby ac limit 5'
+
+tTableGram 'update tTableGram_tmp.tab set arr1=2, ab=sum(arr1) limit 1 offset 3'
+tTableGram 'update tTableGram_tmp.tab set arr1[1,1,1]=3, arr1[2,2,2]=arr1[1,1,1], ab=sum(arr1) limit 1 offset 3'
+tTableGram 'update tTableGram_tmp.tab set arr1[1,,]=4, ab=sum(arr1) limit 1 offset 3'
+
+tTableGram 'delete from tTableGram_tmp.tab limit 3 offset 2'
+tTableGram 'delete from tTableGram_tmp.tab orderby desc ab limit 1 offset 2'
+tTableGram 'select ab from tTableGram_tmp.tab'
+
+tTableGram 'delete from tTableGram_tmp.tab'
+tTableGram 'select ab from tTableGram_tmp.tab'
+
+tTableGram 'insert into tTableGram_tmp.tab select from tTableGram_tmp.tabc'
+tTableGram 'select ab from tTableGram_tmp.tab'
+
+tTableGram 'delete from tTableGram_tmp.tab where ab%2==0'
+tTableGram 'select ab from tTableGram_tmp.tab'
+
+tTableGram 'insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTableGram_tmp.tab]))'
+tTableGram 'select ab,ac from tTableGram_tmp.tab'

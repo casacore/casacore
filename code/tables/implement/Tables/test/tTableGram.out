@@ -131,7 +131,7 @@ select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])
  2 3
  3 4
  4 5
-select ab,ac from tTableGram_tmp.tab where ab IN [select ac from tTableGram_tmp.tab where ab>4]
+select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.tab where ab>4)
     has been executed
     select of 4 rows
 2 selected columns:  ab ac
@@ -150,6 +150,12 @@ select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]
  5 6
  8 9
  9 10
+select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))
+    has been executed
+    select of 2 rows
+2 selected columns:  ab ac
+ 2 3
+ 3 4
 select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>4 giving [ac=:=ac+0.5]]
     has been executed
     select of 4 rows
@@ -315,3 +321,109 @@ select ab from tTableGram_tmp.tab
  4324
  4902
  5480
+update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 from tTableGram_tmp.tabc where ac>3 orderby ac limit 5
+    has been executed
+    update of 5 rows
+2 selected columns:  ab arr1
+ 2060 [2, 3, 4]
+ 2638 [2, 3, 4]
+ 3216 [2, 3, 4]
+ 3794 [2, 3, 4]
+ 4372 [2, 3, 4]
+update tTableGram_tmp.tab set arr1=2, ab=sum(arr1) limit 1 offset 3
+    has been executed
+    update of 1 rows
+2 selected columns:  arr1 ab
+ [2, 3, 4] 48
+update tTableGram_tmp.tab set arr1[1,1,1]=3, arr1[2,2,2]=arr1[1,1,1], ab=sum(arr1) limit 1 offset 3
+    has been executed
+    update of 1 rows
+3 selected columns:  arr1 arr1 ab
+ [2, 3, 4] [2, 3, 4] 50
+update tTableGram_tmp.tab set arr1[1,,]=4, ab=sum(arr1) limit 1 offset 3
+    has been executed
+    update of 1 rows
+2 selected columns:  arr1 ab
+ [2, 3, 4] 73
+delete from tTableGram_tmp.tab limit 3 offset 2
+    has been executed
+    delete of 3 rows
+0 selected columns: 
+delete from tTableGram_tmp.tab orderby desc ab limit 1 offset 2
+    has been executed
+    delete of 1 rows
+0 selected columns: 
+select ab from tTableGram_tmp.tab
+    has been executed
+    select of 6 rows
+1 selected columns:  ab
+ 0
+ 1
+ 3216
+ 3794
+ 4902
+ 5480
+delete from tTableGram_tmp.tab
+    has been executed
+    delete of 0 rows
+0 selected columns: 
+select ab from tTableGram_tmp.tab
+    has been executed
+    select of 0 rows
+1 selected columns:  ab
+insert into tTableGram_tmp.tab select from tTableGram_tmp.tabc
+    has been executed
+    insert of 10 rows
+9 selected columns:  ab ad ag arr1 arr2 arr3 ac ae af
+ 0 2 (2,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 1 3 V0
+ 1 3 (3,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 2 4 V1
+ 2 4 (4,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 3 5 V2
+ 3 5 (5,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 4 6 V3
+ 4 6 (6,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 5 7 V4
+ 5 7 (7,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 6 8 V5
+ 6 8 (8,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 7 9 V6
+ 7 9 (9,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 8 10 V7
+ 8 10 (10,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 9 11 V8
+ 9 11 (11,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 10 12 V9
+select ab from tTableGram_tmp.tab
+    has been executed
+    select of 10 rows
+1 selected columns:  ab
+ 0
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+delete from tTableGram_tmp.tab where ab%2==0
+    has been executed
+    delete of 5 rows
+0 selected columns: 
+select ab from tTableGram_tmp.tab
+    has been executed
+    select of 5 rows
+1 selected columns:  ab
+ 1
+ 3
+ 5
+ 7
+ 9
+insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTableGram_tmp.tab]))
+    has been executed
+    insert of 1 rows
+2 selected columns:  ab ac
+ 3 34
+select ab,ac from tTableGram_tmp.tab
+    has been executed
+    select of 6 rows
+2 selected columns:  ab ac
+ 1 2
+ 3 4
+ 5 6
+ 7 8
+ 9 10
+ 3 34
