@@ -1,5 +1,5 @@
 //# SDSpWindowFiller.h: fills the SPECTRAL_WINDOW table for the SDFITS filler
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #if !defined(AIPS_SDSPWINDOWHANDLER_H)
 #define AIPS_SDSPWINDOWHANDLER_H
 
+#include <aips/Arrays/Vector.h>
 #include <aips/Containers/RecordField.h>
 #include <aips/Tables/TableColumn.h>
 
@@ -39,8 +40,6 @@ class MSSpectralWindow;
 class MSSpWindowColumns;
 class Record;
 class Table;
-
-template <class T> class Vector;
 
 // <summary>
 // </summary>
@@ -116,7 +115,9 @@ public:
 private:
     RecordFieldPtr<Int> nchanKey_p, freqRefTypeKey_p, ifConvChainKey_p,
 	freqGroupKey_p, netSidebandKey_p;
-    RecordFieldPtr<Double> freqresKey_p, bwKey_p, f0Key_p, fdeltKey_p;
+    Vector<Double> fNCache_p, f0Cache_p, bwCache_p;
+    Double *fNCachePtr_p, *f0CachePtr_p, *bwCachePtr_p;
+    Bool deleteItFN_p, deleteItF0_p, deleteItBw_p;
     RecordFieldPtr<Bool> flagRowKey_p;
     // the cache table is the one that is indexed
     ColumnsIndex *index_p;
@@ -127,7 +128,7 @@ private:
 
     // the columns in the cache table
     TableColumn idCol_p, nchanCol_p, freqRefTypeCol_p, 
-	bwCol_p, f0Col_p, fdeltCol_p, freqresCol_p, ifConvChainCol_p,
+	freqresCol_p, ifConvChainCol_p,
 	freqGroupCol_p, netSidebandCol_p, flagRowCol_p;
 
     // the next row number to use in the cached
