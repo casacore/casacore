@@ -5858,3 +5858,4 @@
 16 229 src mv ./trial/implement/Functionals/Gaussian2D2.h ./aips/implement/Functionals/Gaussian2D2.h
 16 235 src rm trial/implement/Functionals/Function.cc
 16 245 src mv atnf/apps/atca.help atnf/apps/atcafiller/atca.help
+16 273 src rm trial/apps/dish/dishplot_buttons.g
