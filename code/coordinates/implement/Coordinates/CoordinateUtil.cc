@@ -49,6 +49,7 @@
 #include <casa/Quanta/MVPosition.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/OS/Time.h>
+#include <casa/Quanta/Unit.h>
 #include <casa/Quanta/QC.h>
 #include <casa/Quanta/MVTime.h>
 #include <casa/Quanta/MVEpoch.h>
@@ -699,7 +700,8 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
 Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
                                           Int coordinateTo, Int coordinateFrom,
                                           const CoordinateSystem& coordsTo,
-                                          const CoordinateSystem& coordsFrom)
+                                          const CoordinateSystem& coordsFrom, 
+                                          const Unit& unit)
 {
    MDirection dirTo, dirFrom;
    {
@@ -773,7 +775,7 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
                                dirTo, dirFrom, 
                                obsInfoTo.obsDate(), 
                                obsInfoFrom.obsDate(), 
-                               posTo, posFrom);
+                               posTo, posFrom, unit);
 }
 
 
@@ -781,7 +783,8 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
                                           MFrequency::Types typeTo, MFrequency::Types typeFrom,
                                           const MDirection& dirTo, const MDirection& dirFrom,
                                           const MEpoch& epochTo, const MEpoch& epochFrom,
-                                          const MPosition& posTo, const MPosition& posFrom)
+                                          const MPosition& posTo, const MPosition& posFrom,
+                                          const Unit& unit)
 
 {
 
@@ -819,7 +822,7 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 
    MFrequency::Ref refFrom(typeFrom, frameFrom);
    MFrequency::Ref refTo(typeTo, frameTo);
-   machine = MFrequency::Convert(refFrom, refTo);
+   machine = MFrequency::Convert(unit, refFrom, refTo);
 
 // Test a conversion
 

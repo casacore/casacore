@@ -48,6 +48,7 @@ class String;
 class LogIO;
 class MEpoch;
 class MPosition;
+class Unit;
 
 
 // <summary>Functions for creating default CoordinateSystems</summary>
@@ -360,7 +361,8 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
    static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, 
                                     Int coordinateTo, Int coordinateFrom, 
                                     const CoordinateSystem& coordsTo, 
-				    const CoordinateSystem& coordsFrom);
+				    const CoordinateSystem& coordsFrom,
+                                    const Unit& unit=Unit(String("Hz")));
 
 // Setup Measures conversion machines for MFrequencies.
 // Returns False if a trial conversion failed, else returns True.
@@ -368,7 +370,8 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
                                     MFrequency::Types typeTo, MFrequency::Types typeFrom,
                                     const MDirection& dirTo, const MDirection& dirFrom,
                                     const MEpoch& epochTo, const MEpoch& epochFrom,
-                                    const MPosition& posTo, const MPosition& posFrom);
+                                    const MPosition& posTo, const MPosition& posFrom,
+                                    const Unit& unit=Unit(String("Hz")));
 
 // Find the Sky in the CoordinateSystem. Assumes only one DirectionCoordinate.
 // <src>pixelAxes</src> and <src>worldAxes</src>  say where
