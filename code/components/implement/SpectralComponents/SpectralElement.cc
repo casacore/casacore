@@ -34,18 +34,22 @@
 
 //# Constructors
 SpectralElement::SpectralElement() :
-  tp_p(SpectralElement::GAUSSIAN),
+  tp_p(SpectralElement::GAUSSIAN), n_p(0),
   ampl_p(1.0), center_p(0.0), sigma_p(1.0) {}
 
 SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
 				 const Double center, const Double sigma) :
-  tp_p(tp),
+  tp_p(tp), n_p(0),
   ampl_p(ampl), center_p(center), sigma_p(sigma) {
   check();
 }
 
+SpectralElement::SpectralElement(const uInt n) :
+  tp_p(SpectralElement::POLYNOMIAL), n_p(n),
+  ampl_p(1.0), center_p(0.0), sigma_p(1.0) {}
+
 SpectralElement::SpectralElement(const SpectralElement &other) :
-  tp_p(other.tp_p),
+  tp_p(other.tp_p), n_p(other.n_p),
   ampl_p(other.ampl_p), center_p(other.center_p), sigma_p(other.sigma_p) {
   check();
 }
@@ -55,6 +59,7 @@ SpectralElement::~SpectralElement() {};
 SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
   if (this != &other) {
     tp_p = other.tp_p;
+    n_p = other.n_p;
     ampl_p = other.ampl_p;
     center_p = other.center_p;
     sigma_p = other.sigma_p;
@@ -67,10 +72,12 @@ const String *const SpectralElement::allTypes(Int &nall,
 					      const SpectralElement::Types
 					      *&typ) {
   static const String tname[SpectralElement::N_Types] = {
-    "GAUSSIAN" };
+    "GAUSSIAN",
+    "POLYNOMIAL" };
 
   static const SpectralElement::Types oname[SpectralElement::N_Types] = {
-    SpectralElement::GAUSSIAN };
+    SpectralElement::GAUSSIAN,
+    SpectralElement::POLYNOMIAL };
 
   nall = SpectralElement::N_Types;
   typ    = oname;
@@ -124,9 +131,13 @@ void SpectralElement::setSigma(Double sigma) {
   sigma_p = sigma;
   check();
 }
-    
+
+void SpectralElement::setDegree(uInt n) {
+  n_p = n;
+}
+
 void SpectralElement::check() {
-  if (sigma_p == 0.0) {
+  if (tp_p == GAUSSIAN && sigma_p == 0.0) {
     throw(AipsError("An illegal sigma of zero was specified for a"
 		    " gaussian SpectralElement"));
   };

@@ -86,7 +86,10 @@ class SpectralElement {
   //# Enumerations
   // Types of spectral lines known
   enum Types {
+    // A gaussian profile
     GAUSSIAN,
+    // A polynomial baseline
+    POLYNOMIAL,
     N_Types
   };
 
@@ -102,6 +105,8 @@ class SpectralElement {
   // </thrown>
   SpectralElement(SpectralElement::Types tp, const Double ampl,
 		  const Double center, const Double sigma);
+  // Construct an n-degree polynomial
+  explicit SpectralElement(const uInt n);
   // Copy constructor (deep copy)
   // <thrown>
   //   <li> AipsError if sigma == 0.0
@@ -135,6 +140,8 @@ class SpectralElement {
   Double getCenter() const { return center_p; }
   // Get the width
   Double getSigma() const { return sigma_p; }
+  // Get the degree of e.g. polynomial
+  uInt getDegree() const { return n_p; }
   // </group>
 
   // Set data for element
@@ -157,6 +164,8 @@ class SpectralElement {
   // </thrown>
   void setSigma(Double sigma);
   // </group>
+  // Set degree
+  void setDegree(uInt n);
 
   //#Destructor
   // Destructor
@@ -166,6 +175,8 @@ class SpectralElement {
   //#Data
   // type of element
   SpectralElement::Types tp_p;
+  // A number (like polynomial degree or number of doublet lines
+  uInt n_p;
   // Amplitude
   Double ampl_p;
   // Center frequency
