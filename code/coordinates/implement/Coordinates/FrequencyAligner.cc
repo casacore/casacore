@@ -120,7 +120,7 @@ template<class T>
 Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
                                 const Vector<T>& yIn, const Vector<Bool>& maskIn,
                                 const MEpoch& epoch, Bool useCachedAbcissa,
-                                FrequencyAligner<T>::Method method,
+                                typename InterpolateArray1D<Double,T>::InterpolationMethod method,
                                 Bool extrapolate)
 {
    const uInt nPixels = itsRefFreqX.nelements();
@@ -155,7 +155,7 @@ template<class T>
 Bool FrequencyAligner<T>::alignMany (Array<T>& yOut, Array<Bool>& maskOut,
                                     const Array<T>& yIn, const Array<Bool>& maskIn,
                                     uInt axis, const MEpoch& epoch, 
-                                    FrequencyAligner<T>::Method method,
+                                    typename InterpolateArray1D<Double,T>::InterpolationMethod method,
                                     Bool extrapolate)
 {
 
@@ -237,12 +237,12 @@ Bool FrequencyAligner<T>::regrid (Vector<T>& yOut, Vector<Bool>& maskOut,
                                  const Vector<Double>& xOut, 
                                  const Vector<Double>& xIn,
                                  const Vector<T>& yIn, const Vector<Bool>& maskIn,
-                                 FrequencyAligner<T>::Method method,
+                                 typename InterpolateArray1D<Double,T>::InterpolationMethod method,
                                  Bool extrapolate, Double maxDiff) const
 {
    Bool ok = False;
    if (maxDiff > itsDiffTol) {
-      Int methodInt = setMethod(method);
+      Int methodInt = static_cast<Int>(method);
       InterpolateArray1D<Double,T>::interpolate (yOut, maskOut, xOut, xIn, yIn, maskIn,
                                                  methodInt, True, extrapolate);
       ok = True;
@@ -325,24 +325,6 @@ void FrequencyAligner<T>::copyOther(const FrequencyAligner<T>& other)
    itsDiffTol = other.itsDiffTol;
 }
 
-template<class T>
-Int FrequencyAligner<T>::setMethod(FrequencyAligner<T>::Method method) const
-{
-   typename InterpolateArray1D<Double,T>::InterpolationMethod 
-      m = InterpolateArray1D<Double,T>::nearestNeighbour;
-   if (method==NEAREST) {
-      m = InterpolateArray1D<Double,T>::nearestNeighbour;
-   } else if (method==LINEAR) {
-      m = InterpolateArray1D<Double,T>::linear;
-   } else if (method==CUBIC) {
-      m = InterpolateArray1D<Double,T>::cubic;
-   } else if (method==SPLINE) {
-      m = InterpolateArray1D<Double,T>::spline;
-   }
-//
-   Int mI = static_cast<Int>(m);
-   return mI;
-}
 
 
 template<class T> 

@@ -34,6 +34,7 @@
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MeasRef.h>
 #include <measures/Measures/MeasConvert.h>
+#include <scimath/Mathematics/InterpolateArray1D.h>
 
 namespace casa {
 
@@ -51,13 +52,13 @@ class String;
 //
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="tVelocityAligner.cc">
+// <reviewed reviewer="" date="" tests="tFrequencyAligner.cc">
 // </reviewed>
 //
 // <prerequisite>
 // <list>
-//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <item> <linkto class=SubLattice>SubLattice</linkto>
+//   <item> <linkto class=InterpolateArray1D>InterpoateArray1D</linkto>
+//   <item> <linkto class=Array>Array</linkto>
 // </list>
 // </prerequisite>
 //
@@ -82,18 +83,6 @@ class String;
 template <class T> class FrequencyAligner
 {
 public: 
-
-  // Regridding ex/interpolation methods
-  enum Method {
-    // nearest neighbour
-    NEAREST,
-    // linear
-    LINEAR,
-    // cubic
-    CUBIC,
-    // cubic spline
-    SPLINE
-  };
 
 // Default constructor (object not viable)
    FrequencyAligner();
@@ -143,8 +132,8 @@ public:
 // <src>setTolerance</src>. 
   Bool align (Vector<T>& yOut, Vector<Bool>& maskOut,
               const Vector<T>& yIn, const Vector<Bool>& maskIn,
-              const MEpoch& epoch, Bool useCachedAbcissa=False,
-              FrequencyAligner<T>::Method method=LINEAR,
+              const MEpoch& epoch, Bool useCachedAbcissa,
+              typename InterpolateArray1D<Double,T>::InterpolationMethod method,
               Bool extrapolate=False);              
 
 // Align many spectra stored in an Array along the specified axis.  All spectra are aligned
@@ -153,7 +142,7 @@ public:
   Bool alignMany (Array<T>& yOut, Array<Bool>& maskOut,
                   const Array<T>& yIn, const Array<Bool>& maskIn,
                   uInt axis, const MEpoch& epoch, 
-                  FrequencyAligner<T>::Method method=LINEAR,
+                  typename InterpolateArray1D<Double,T>::InterpolationMethod method,
                   Bool extrapolate=False);              
 
 // Get the reference abcissa (as a frequency in the axis units set in the SpectralCoordinate) at the reference epoch 
@@ -196,11 +185,8 @@ private:
                 const Vector<Double>& xOut,
                 const Vector<Double>& xIn,
                 const Vector<T>& yIn, const Vector<Bool>& maskIn,
-                FrequencyAligner<T>::Method method,
+                typename InterpolateArray1D<Double,T>::InterpolationMethod method,
                 Bool extrapolate, Double maxDiff) const;
-
-// Set Method to form needed by InterpolatedArray1D
-   Int setMethod (FrequencyAligner<T>::Method method) const;
 };
 
 
