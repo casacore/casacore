@@ -1,5 +1,5 @@
 //# fitsio.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -364,7 +364,8 @@ void FitsInput::read_header_rec() {
 	    // convey that are the ones returned by determine_type, the ones returned
 	    // by parse are useless and needlessly confusing, so don't show them
 	    for (uInt i=parseErrs; i<nerrs_;i++) {
-		errfn(messages_[i], FITSError::ErrorLevel(errLevels_[i]));
+		errfn(messages_[i].chars(),
+		      FITSError::ErrorLevel(errLevels_[i]));
 	    }
 	    nerrs_ = 0;
 	    rec_type = FITS::SpecialRecord;
@@ -372,7 +373,7 @@ void FitsInput::read_header_rec() {
 	}
 	// spit out all of the cached error messages
 	for (uInt i=0;i<nerrs_;i++) {
-	    errfn(messages_[i], FITSError::ErrorLevel(errLevels_[i]));
+	    errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
 	}
 	nerrs_ = 0;
 	if (hdu_type == FITS::PrimaryArrayHDU || hdu_type == FITS::PrimaryGroupHDU) 
