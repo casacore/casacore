@@ -37,8 +37,10 @@ DataType imagePixelType(const String &fileName)
     if (Table::isReadable(fileName)) {
 	try {
 	    TableDesc desc;
+	    uInt nrow = Table::getLayout(desc, fileName);
 	    ColumnDesc cdesc = desc["map"];
 	    retval = cdesc.dataType();
+            nrow = 0;                   // Shut compiler up
 	} catch (AipsError x) {
 	    // Nothing
 	} end_try;
