@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
-typedef Quantum<Double> gpp_direction_bug1;
-#endif
 #include <aips/Exceptions.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Measures/Quantum.h>
+#ifdef __GNUG__
+typedef Quantum<Double> gpp_direction_bug1;
+#endif
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Measures/RotMatrix.h>
@@ -583,6 +583,8 @@ void MCDirection::doConvert(MVDirection &in,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
   Double g1, g2, g3, lengthE, tdbTime;
+  // Planetary aberration factor
+  Double lengthP = 0;
   MeasTable::Types planID;
   
   MCFrame::make(inref.getFrame());
@@ -983,10 +985,46 @@ void MCDirection::doConvert(MVDirection &in,
     break;
     
     case APP_TOPO: {
+      if (lengthP != 0) {
+	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
+		     getMCFramePoint()))->
+	  getLASTr(g1);
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getLong(g3);
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getLat(g2);
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getRadius(lengthE);
+	*ROTMAT1 = RotMatrix(Euler(g1-g3, (uInt) 3));
+	*MVPOS1 = MVPosition(Quantity(lengthE, "m"), g3, g2);
+	in -= (*ROTMAT1 * *MVPOS1) * (1.0/lengthP);
+	in.adjust();
+      };
     }
     break;
     
     case TOPO_APP: {
+      if (lengthP != 0) {
+	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
+		     getMCFramePoint()))->
+	  getLASTr(g1);
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getLong(g3);
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getLat(g2);
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getRadius(lengthE);
+	*ROTMAT1 = RotMatrix(Euler(g1-g3, (uInt) 3));
+	*MVPOS1 = MVPosition(Quantity(lengthE, "m"), g3, g2);
+	in += (*ROTMAT1 * *MVPOS1) * (1.0/lengthP);
+	in.adjust();
+      };
     }
     break;
 
@@ -1079,6 +1117,7 @@ void MCDirection::doConvert(MVDirection &in,
 	  (*MVPOS2)(i) = (*VEC61)(i) - (*VEC63)(i);		// Q
 	};
 	MVPOS1->adjust(lengthE);
+	lengthP = Quantity(lengthE, "AU").getBaseValue();
 	MVPOS2->adjust(g1);
 	if (planID != MeasTable::SUN)
 	  lengthE += 2*MeasTable::Planetary(MeasTable::GMS) *
