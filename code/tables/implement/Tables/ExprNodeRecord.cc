@@ -27,6 +27,7 @@
 
 
 #include <aips/Tables/ExprNodeRecord.h>
+#include <aips/Tables/TableExprData.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordDesc.h>
 #include <aips/Arrays/Array.h>
@@ -80,20 +81,25 @@ const IPosition& TableExprNodeRecordField::getShape (const TableExprId&)
 
 Bool TableExprNodeRecordField::isDefined (const TableExprId& id)
 {
-  const RecordInterface* recPtr = &(id.record());
-  for (uInt i=0; i<lastEntry_p; i++) {
+  DataType dtype;
+  if (id.byData()) {
+    dtype = id.data().dataType (fieldNrs_p);
+  } else {
+    const RecordInterface* recPtr = &(id.record());
+    for (uInt i=0; i<lastEntry_p; i++) {
+      RecordDesc desc = recPtr->description();
+      if (fieldNrs_p[i] >= Int(desc.nfields())
+      ||  !desc.isSubRecord(fieldNrs_p[i])) {
+	return False;
+      }
+      recPtr = &(recPtr->asRecord (fieldNrs_p[i]));
+    }
     RecordDesc desc = recPtr->description();
-    if (fieldNrs_p[i] >= Int(desc.nfields())
-    ||  !desc.isSubRecord(fieldNrs_p[i])) {
+    if (fieldNrs_p[lastEntry_p] >= Int(desc.nfields())) {
       return False;
     }
-    recPtr = &(recPtr->asRecord (fieldNrs_p[i]));
+    dtype = desc.type(fieldNrs_p[lastEntry_p]);
   }
-  RecordDesc desc = recPtr->description();
-  if (fieldNrs_p[lastEntry_p] >= Int(desc.nfields())) {
-    return False;
-  }
-  DataType dtype = desc.type(fieldNrs_p[lastEntry_p]);
   switch (dtype_p) {
   case NTBool:
     return dtype == TpBool;
@@ -114,18 +120,30 @@ Bool TableExprNodeRecordField::isDefined (const TableExprId& id)
 
 Bool     TableExprNodeRecordField::getBool     (const TableExprId& id)
 {
+  if (id.byData()) {
+    return id.data().getBool (fieldNrs_p);
+  }
   return getRecord(id).asBool (fieldNrs_p[lastEntry_p]);
 }
 Double   TableExprNodeRecordField::getDouble   (const TableExprId& id)
 {
+  if (id.byData()) {
+    return id.data().getDouble (fieldNrs_p);
+  }
   return getRecord(id).asDouble (fieldNrs_p[lastEntry_p]);
 }
 DComplex TableExprNodeRecordField::getDComplex (const TableExprId& id)
 {
+  if (id.byData()) {
+    return id.data().getDComplex (fieldNrs_p);
+  }
   return getRecord(id).asDComplex (fieldNrs_p[lastEntry_p]);
 }
 String   TableExprNodeRecordField::getString   (const TableExprId& id)
 {
+  if (id.byData()) {
+    return id.data().getString (fieldNrs_p);
+  }
   return getRecord(id).asString (fieldNrs_p[lastEntry_p]);
 }
 
@@ -182,26 +200,35 @@ const IPosition& TableExprNodeRecordFieldArray::getShape
                                                    (const TableExprId& id)
 {
     varShape_p.resize (0);
-    varShape_p = getRecord(id).shape (fieldNrs_p[lastEntry_p]);
+    if (id.byData()) {
+      varShape_p = id.data().shape (fieldNrs_p);
+    } else {
+      varShape_p = getRecord(id).shape (fieldNrs_p[lastEntry_p]);
+    }
     return varShape_p;
 }
 
 Bool TableExprNodeRecordFieldArray::isDefined (const TableExprId& id)
 {
-  const RecordInterface* recPtr = &(id.record());
-  for (uInt i=0; i<lastEntry_p; i++) {
+  DataType dtype;
+  if (id.byData()) {
+    dtype = id.data().dataType (fieldNrs_p);
+  } else {
+    const RecordInterface* recPtr = &(id.record());
+    for (uInt i=0; i<lastEntry_p; i++) {
+      RecordDesc desc = recPtr->description();
+      if (fieldNrs_p[i] >= Int(desc.nfields())
+      ||  !desc.isSubRecord(fieldNrs_p[i])) {
+	return False;
+      }
+      recPtr = &(recPtr->asRecord (fieldNrs_p[i]));
+    }
     RecordDesc desc = recPtr->description();
-    if (fieldNrs_p[i] >= Int(desc.nfields())
-    ||  !desc.isSubRecord(fieldNrs_p[i])) {
+    if (fieldNrs_p[lastEntry_p] >= Int(desc.nfields())) {
       return False;
     }
-    recPtr = &(recPtr->asRecord (fieldNrs_p[i]));
+    dtype = desc.type(fieldNrs_p[lastEntry_p]);
   }
-  RecordDesc desc = recPtr->description();
-  if (fieldNrs_p[lastEntry_p] >= Int(desc.nfields())) {
-    return False;
-  }
-  DataType dtype = desc.type(fieldNrs_p[lastEntry_p]);
   switch (dtype_p) {
   case NTBool:
     return dtype == TpArrayBool;
@@ -225,12 +252,18 @@ Bool TableExprNodeRecordFieldArray::isDefined (const TableExprId& id)
 Array<Bool> TableExprNodeRecordFieldArray::getArrayBool
                                                    (const TableExprId& id)
 {
+  if (id.byData()) {
+    return id.data().getArrayBool (fieldNrs_p);
+  }
   return getRecord(id).asArrayBool (fieldNrs_p[lastEntry_p]);
 }
 
 Array<Double> TableExprNodeRecordFieldArray::getArrayDouble
                                                    (const TableExprId& id)
 {
+  if (id.byData()) {
+    return id.data().getArrayDouble (fieldNrs_p);
+  }
   const RecordInterface& record = getRecord(id);
   DataType dtype = record.type(fieldNrs_p[lastEntry_p]);
   if (dtype == TpArrayDouble) {
@@ -262,6 +295,9 @@ Array<Double> TableExprNodeRecordFieldArray::getArrayDouble
 Array<DComplex> TableExprNodeRecordFieldArray::getArrayDComplex
                                                    (const TableExprId& id)
 {
+  if (id.byData()) {
+    return id.data().getArrayDComplex (fieldNrs_p);
+  }
   const RecordInterface& record = getRecord(id);
   DataType dtype = record.type(fieldNrs_p[lastEntry_p]);
   if (dtype == TpArrayDComplex) {
@@ -281,6 +317,9 @@ Array<DComplex> TableExprNodeRecordFieldArray::getArrayDComplex
 Array<String> TableExprNodeRecordFieldArray::getArrayString
                                                    (const TableExprId& id)
 {
+  if (id.byData()) {
+    return id.data().getArrayString (fieldNrs_p);
+  }
   return getRecord(id).asArrayString (fieldNrs_p[lastEntry_p]);
 }
 

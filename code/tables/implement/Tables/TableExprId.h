@@ -35,10 +35,10 @@
 
 //# Forward Declarations
 class RecordInterface;
-
+class TableExprData;
 
 // <summary>
-// The identification of a record field.
+// The identification of a TaQL selection subject.
 // </summary>
 
 // <use visibility=export>
@@ -50,36 +50,40 @@ class RecordInterface;
 //   <li> <linkto class="TableExprNode">TableExprNode</linkto>.
 // </prerequisite>
 
-// <etymology>
-// TableExprId gives the identification of a field in a record.
-// </etymology>
-
 // <synopsis>
-// This class provides the user to identify a field in a record.
-// Identification can be done by means of the field name or by means
-// of its field number.
-// <br>For the programmer the most convenient way is probably the name,
-// because that is the natural identification.
-// However, identification by means of field number is much faster
-// and could be used when it is known.
+// This class provides the user the ability to identify the data objects
+// to test in a TaQL expression. In this way a TaQL expression is not
+// limited to tables, but can be used for any set of data.
+// Three types are available:
+// <ol>
+//  <li> A row number giving the row to test in a table.
+//  <li> A <linkto class=RecordInterface>RecordInterface</linkto>
+//       object giving the record to test.
+//  <li> A <linkto class=TableExprData>TableExprData</linkto>
+//       object giving the abstract base class of an object holding
+//       the data to test. In this way any data can be used.
+// </ol>
+// The TaQL expression must be setup with this in mind by constructing
+// the appropriate <linkto class=TableExprNode>TableExprNode</linkto>
+// leaf objects.
+// <br>
+// When used for tables, the function <linkto class=Table>Table::col</linkto>
+// should be used to create the <src>TableExprNode</src> objects for the
+// table columns to be used in the expression.
+// <br>
+// For the other cases class
+// <linkto class=TableNodeExprRecord>TableExprNodeRecord</linkto>
+// has to be used to know the index of the fields in the expression.
+// It uses a record (description) for this purpose.
 // </synopsis>
 
 // <example>
 // <srcblock>
-// void someFunc (const Record& record)
-// {
-//     float value1 = record.asfloat ("name");     // identify by name
-//     float value2 = record.asfloat (0);          // identify by number
-// }
 // </srcBlock>
 // </example>
 
 // <motivation>
-// This class makes it possible that many functions in Record classes
-// have to be defined only once. The constructors of TableExprId
-// make it possible that a number and a string are automatically
-// converted, so the user does not have to instantiate a TableExprId
-// object explicitly.
+// This class makes it possible that TaQL can be used in a very versatile way.
 // </motivation>
 
 //# <todo asof="1996/03/12">
@@ -95,14 +99,26 @@ public:
     // Construct it from a Record object.
     TableExprId (const RecordInterface&);
 
-    // Is the id given by row number (or by record)?
+    // Construct it from pointers to data.
+    TableExprId (const TableExprData& data);
+
+    // Is the id given by row number?
     Bool byRow() const;
+
+    // Is the id given as a RecordInterface?
+    Bool byRecord() const;
+
+    // Is the id given as a TableExprData?
+    Bool byData() const;
 
     // Get the row number.
     uInt rownr() const;
 
     // Get the Record reference.
     const RecordInterface& record() const;
+
+    // Get the data reference.
+    const TableExprData& data() const;
 
     // Set the row number.
     void setRownr (uInt rownr);
@@ -111,20 +127,29 @@ public:
     void setRecord (const RecordInterface&);
 
 private:
-    uInt    row_p;
+    uInt                   row_p;
     const RecordInterface* record_p;
+    const TableExprData*   data_p;
 };
 
 
 
 inline TableExprId::TableExprId (uInt rowNumber)
 : row_p    (rowNumber),
-  record_p (0)
+  record_p (0),
+  data_p   (0)
 {}
 
 inline TableExprId::TableExprId (const RecordInterface& record)
 : row_p    (32768*32768),
-  record_p (&record)
+  record_p (&record),
+  data_p   (0)
+{}
+
+inline TableExprId::TableExprId (const TableExprData& data)
+: row_p    (32768*32768),
+  record_p (0),
+  data_p   (&data)
 {}
 
 inline uInt TableExprId::rownr() const
@@ -135,6 +160,11 @@ inline uInt TableExprId::rownr() const
 inline const RecordInterface& TableExprId::record() const
 {
     return *record_p;
+}
+
+inline const TableExprData& TableExprId::data() const
+{
+    return *data_p;
 }
 
 inline void TableExprId::setRownr (uInt rownr)
@@ -149,7 +179,17 @@ inline void TableExprId::setRecord (const RecordInterface& record)
 
 inline Bool TableExprId::byRow() const
 {
-    return record_p == 0;
+    return record_p == 0  &&  data_p == 0;
+}
+
+inline Bool TableExprId::byRecord() const
+{
+    return record_p != 0;
+}
+
+inline Bool TableExprId::byData() const
+{
+    return data_p != 0;
 }
 
 
