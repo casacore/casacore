@@ -808,7 +808,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // pixel to an input pixel
 
    Cube<Double> pix2DPosFull(outShape(xOutAxis), outShape(yOutAxis), 2);
-   Matrix<Bool> failedFull(outShape(xOutAxis), outShape(yOutAxis));
+   Matrix<Bool> succeedFull(outShape(xOutAxis), outShape(yOutAxis));
    Bool allFailedFull = False;
    Bool missedItFull = True;
    IPosition outPosFull(outLattice.ndim(),0);
@@ -820,10 +820,10 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                             outPosFull, outShape);
       missedItFull = False;
       allFailedFull = False;
-      failedFull.set(False);
+      succeedFull.set(True);
    } else {
       make2DCoordinateGrid (allFailedFull, missedItFull, minInX, minInY, maxInX, maxInY,
-                            pix2DPosFull, failedFull, machine, inCoord, outCoord, 
+                            pix2DPosFull, succeedFull, machine, inCoord, outCoord, 
                             xInAxis, yInAxis, xOutAxis, yOutAxis,
                             inPixelAxes, outPixelAxes, inShape, outPosFull, 
                             outShape, useMachine, decimate);
@@ -875,7 +875,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       Bool missedIt = True;
       Bool allFailed = True;
       findXYExtent (missedIt, allFailed, minInX, minInY, maxInX, maxInY,  pix2DPosFull,
-                    failedFull, xInAxis, yInAxis, xOutAxis, yOutAxis, outPos, 
+                    succeedFull, xInAxis, yInAxis, xOutAxis, yOutAxis, outPos, 
                     outCursorShape, inShape);
       if (itsShowLevel>0) {
          cerr << "missedIt, allFailed, minInX, maxInX, minInY, maxInY = " << 
@@ -938,14 +938,10 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
             os << "Cannot yet handle DirectionCoordinate plane with one degenerate axis" << LogIO::EXCEPTION;
 //          regrid2DVector();
          } else {
-            regrid2DMatrix(outCursor, outMaskIterPtr, interp,
-                           pProgressMeter, iPix, nDim, 
-                           xInAxis, yInAxis, xOutAxis, yOutAxis, 
-                           scale, inIsMasked, outIsMasked,
-                           outPos, outCursorShape, inChunkShape,
-                           inChunkBlc, pixelAxisMap2,
-                           inDataChunk, inMaskChunkPtr,
-                           pix2DPosFull, failedFull);
+            regrid2DMatrix(outCursor, outMaskIterPtr, interp, pProgressMeter, iPix, nDim, 
+                           xInAxis, yInAxis, xOutAxis, yOutAxis, scale, inIsMasked, outIsMasked,
+                           outPos, outCursorShape, inChunkShape, inChunkBlc, pixelAxisMap2,
+                           inDataChunk, inMaskChunkPtr, pix2DPosFull, succeedFull);
    
          }
       }
@@ -967,7 +963,7 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
                                            Double& minInX, Double& minInY, 
                                            Double& maxInX, Double& maxInY,  
                                            Cube<Double>& in2DPos,
-                                           Matrix<Bool>& failed,
+                                           Matrix<Bool>& succeed,
                                            MDirection::Convert& machine,
                                            const DirectionCoordinate& inCoord,
                                            const DirectionCoordinate& outCoord,
@@ -1097,7 +1093,7 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
          }
 //
          if (!ok1 || !ok2) {
-            failed(i,j) = True;
+            succeed(i,j) = False;
             if (decimate>1) ijInMask2D(ii,jj) = False;
          } else {
 
@@ -1107,7 +1103,7 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
             in2DPos(i,j,0) = inPixel(inXIdx);
             in2DPos(i,j,1) = inPixel(inYIdx);
             allFailed = False;
-            failed(i,j) = False;
+            succeed(i,j) = True;
 //
             if (decimate<=1) {
                minInX = min(minInX,inPixel(inXIdx));
@@ -1157,7 +1153,7 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
             if (ok1 && ok2) {
                in2DPos(i,j,0) = resultI;
                in2DPos(i,j,1) = resultJ;
-               failed(i,j) = False;
+               succeed(i,j) = True;
                allFailed = False;
 //
                minInX = min(minInX,resultI);
@@ -1165,7 +1161,7 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
                maxInX = max(maxInX,resultI);
                maxInY = max(maxInY,resultJ);
             } else {
-               failed(i,j) = True;
+               succeed(i,j) = False;
             }
          }
       }
@@ -1189,7 +1185,7 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
       cerr << "allFailed, missedIt  = " << allFailed << ", " << missedIt << endl;
    }
    if (itsShowLevel>1) {
-      cerr << "failed  = " << failed << endl;
+      cerr << "succeed = " << succeed << endl;
    }
 }
 
@@ -1254,52 +1250,62 @@ template<class T>
 void ImageRegrid<T>::findXYExtent (Bool& missedIt, Bool& allFailed,
                                    Double& minInX, Double& minInY, 
                                    Double& maxInX, Double& maxInY,  
-                                   const Cube<Double>& in2DPos,
-                                   const Matrix<Bool>& failed,
+                                   Cube<Double>& in2DPos,
+                                   Matrix<Bool>& succeed,
                                    uInt xInAxis, uInt yInAxis,
                                    uInt xOutAxis, uInt yOutAxis,
                                    const IPosition& outPos,
                                    const IPosition& outCursorShape,
-                                   const IPosition& inShape) const
-
+                                   const IPosition& inShape) 
+//
+// Finds the blc and trc (absolute pixel coordinates) of the INPUT image 
+// for the OUTPUT chunk being regridded.
+//
 {
-   minInX =  100000000.0;
-   minInY =  100000000.0;
-   maxInX = -100000000.0;
-   maxInY = -100000000.0;
    uInt ni = outCursorShape(xOutAxis);
    uInt nj = outCursorShape(yOutAxis);
-
+               
 // outPos is the BLC of this chunk in the output lattice
-
+ 
    uInt iOff = outPos(xOutAxis);
    uInt jOff = outPos(yOutAxis);
 //
-   allFailed = True;
-   uInt ii = 0;
-   uInt jj = 0;
-   for (uInt j=0; j<nj; j++) {
-      jj = j + jOff;
-      for (uInt i=0; i<ni; i++) {
-         ii = i + iOff;
+   IPosition blc(2);
+   blc(0) = iOff;
+   blc(1) = jOff;
+   IPosition trc(2);
+   trc(0) = iOff + ni - 1;
+   trc(1) = jOff + nj - 1;
+   IPosition minPos, maxPos;
 //
-         if (!failed(ii,jj)) {
-           minInX = min(minInX,in2DPos(ii,jj,0));
-           minInY = min(minInY,in2DPos(ii,jj,1));
-           maxInX = max(maxInX,in2DPos(ii,jj,0));
-           maxInY = max(maxInY,in2DPos(ii,jj,1));
-         }
-      }
+   IPosition s = succeed.shape();
+   if (blc(0)==0 && blc(1)==0 && trc(0)==(s(0)-1) && trc(1)==(s(1)-1)) {
+
+// Short cut if we are going to use the full matrix
+
+       allFailed = minmax (minInX, maxInX, minInY, maxInY, 
+                           in2DPos.xyPlane(0), in2DPos.xyPlane(1), succeed);
+
+   } else {
+
+// Pull out the relevant piece
+
+      allFailed = minmax (minInX, maxInX, minInY, maxInY, 
+                          in2DPos.xyPlane(0)(blc,trc), 
+                          in2DPos.xyPlane(1)(blc,trc), succeed(blc,trc));
    }
-   if (maxInX > minInX) allFailed = False;
 //
-   Double ijMin = -0.5;
-   Double iMax = inShape(xInAxis) - 0.5;
-   Double jMax = inShape(yInAxis) - 0.5;
-   missedIt  = (minInX<ijMin && maxInX<ijMin)  ||
-               (minInX>iMax && maxInX>iMax) ||
-               (minInY<ijMin && maxInY<ijMin)  ||
-               (minInY>jMax && maxInY>jMax);
+   if (!allFailed) {
+      Double ijMin = -0.5;
+      Double iMax = inShape(xInAxis) - 0.5;
+      Double jMax = inShape(yInAxis) - 0.5;
+      missedIt  = (minInX<ijMin && maxInX<ijMin)  ||
+                  (minInX>iMax && maxInX>iMax) ||
+                  (minInY<ijMin && maxInY<ijMin)  ||
+                  (minInY>jMax && maxInY>jMax);
+   } else {
+      missedIt = True;
+   }
 }
 
 
@@ -1323,7 +1329,7 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
                                     Array<T>& inDataChunk,
                                     Array<Bool>*& inMaskChunkPtr,
                                     const Cube<Double>& pix2DPos,
-                                    const Matrix<Bool>& failed)
+                                    const Matrix<Bool>& succeed)
 // 
 // Iterate through a stack of DirectionCoordinate planes and interpolate them
 //
@@ -1405,21 +1411,20 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
       uInt jj = 0;
       for (uInt j=0; j<nCol; j++) {
          for (uInt i=0; i<nRow; i++) {
-            if (failed(i,j)) {
+            if (!succeed(i,j)) {
                outCursorIter.rwMatrixCursor()(i,j) = 0.0;
                if (outIsMasked) {
                   outMaskCursorIterPtr->rwMatrixCursor()(i,j) = False;
                }
             } else {
 
-// Now do the interpolation if all points are unmasked in the input grid
-// pix2DPos(i,j,) is the absolute input pixel coordinate in the input lattice
-// for the current output pixel.
+// Now do the interpolation. pix2DPos(i,j,) is the absolute input pixel 
+// coordinate in the input lattice for the current output pixel.
 
                ii = outPos3(xOutAxis) + i;
                jj = outPos3(yOutAxis) + j;
-               pix2DPos2(0) = pix2DPos(ii,jj,0) - inChunkBlc(xInAxis);
-               pix2DPos2(1) = pix2DPos(ii,jj,1) - inChunkBlc(yInAxis);
+               pix2DPos2[0] = pix2DPos(ii,jj,0) - inChunkBlc(xInAxis);
+               pix2DPos2[1] = pix2DPos(ii,jj,1) - inChunkBlc(yInAxis);
 /*
                if (itsShowLevel>2) {
                   cerr << "For output [i,j] = " << " [" << i << "," << j << "]" 
@@ -1454,11 +1459,12 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
                   }
                }
             }
-            if (pProgressMeter) {
-               pProgressMeter->update(iPix); 
-               iPix++;
-            }
-        }
+         }
+      }
+//
+      if (pProgressMeter) {
+         pProgressMeter->update(iPix); 
+         iPix += nCol*nRow;
       }
 //
 /*
@@ -1501,7 +1507,7 @@ void ImageRegrid<T>::regrid2DVector (Lattice<T>& outCursor,
                                     Array<T>& inDataChunk,
                                     Array<Bool>*& inMaskChunkPtr,
                                     const Cube<Double>& pix2DPos,
-                                    const Matrix<Bool>& failed)
+                                    const Matrix<Bool>& succeed)
 // 
 // Iterate through a stack of DirectionCoordinate planes and
 // interpolate them.  Now in this case, one or more of the DirectionCoordinate
@@ -1579,7 +1585,7 @@ void ImageRegrid<T>::regrid2DVector (Lattice<T>& outCursor,
       uInt nRow = outCursorIter.matrixCursor().nrow();
       for (uInt j=0; j<nCol; j++) {
          for (uInt i=0; i<nRow; i++) {
-            if (failed(i,j)) {
+            if (!succeed(i,j)) {
                outCursorIter.rwMatrixCursor()(i,j) = 0.0;
                if (outIsMasked) {
                   outMaskCursorIterPtr->rwMatrixCursor()(i,j) = False;
@@ -1590,8 +1596,8 @@ void ImageRegrid<T>::regrid2DVector (Lattice<T>& outCursor,
 // pix2DPos(i,j,) is the absolute input pixel coordinate in the input lattice
 // for the current output pixel.
 
-               pix2DPos2(0) = pix2DPos(i,j,0) - inChunkBlc(xInAxis);
-               pix2DPos2(1) = pix2DPos(i,j,1) - inChunkBlc(yInAxis);
+               pix2DPos2[0] = pix2DPos(i,j,0) - inChunkBlc(xInAxis);
+               pix2DPos2[1] = pix2DPos(i,j,1) - inChunkBlc(yInAxis);
                if (itsShowLevel>1) {
                   cerr << "For output [i,j] = " << " [" << i << "," << j << "]" 
                        << " interpolate input at " << pix2DPos2;
@@ -2210,3 +2216,34 @@ Double ImageRegrid<T>::findScaleFactor(const Unit& units,
    return fac;
 }
 
+
+template<class T>
+Bool ImageRegrid<T>::minmax(Double &minX, Double &maxX, Double& minY, Double& maxY,
+                            const Array<Double> &xData, 
+                            const Array<Double> &yData, 
+                            const Array<Bool>& mask)
+{                                 
+   Bool deleteDataX, deleteDataY, deleteMask;
+   const Double* pX = xData.getStorage(deleteDataX);
+   const Double* pY = yData.getStorage(deleteDataY);
+   const Bool* pMask = mask.getStorage(deleteMask);
+//
+   minX = 1.0e30;
+   maxX = -1.0e30;
+   minY = 1.0e30;
+   maxY = -1.0e30;
+   for (uInt i=0; i<mask.nelements(); i++) {
+      if (pMask[i]) {
+         minX = min(minX, pX[i]);
+         maxX = max(maxX, pX[i]);
+         minY = min(minY, pY[i]);
+         maxY = max(maxY, pY[i]);
+      }
+   }
+//
+   xData.freeStorage(pX, deleteDataX);
+   yData.freeStorage(pY, deleteDataY);
+   mask.freeStorage(pMask, deleteMask);
+//
+   return (maxX < minX);
+}
