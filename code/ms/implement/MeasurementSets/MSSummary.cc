@@ -450,6 +450,12 @@ void NewMSSummary::listObsLog (LogIO& os, Bool verbose) const
 
 void NewMSSummary::listSource (LogIO& os, Bool verbose) const 
 {
+  // Check if optional SOURCE table is present:
+  if (pMS->source().isNull()) {
+    os << "The SOURCE table is absent: see the FIELD table" << endl;
+    return;
+  }
+
   // Create a MS-source-columns object
   RONewMSSourceColumns msSC(pMS->source());
 
@@ -628,6 +634,12 @@ void NewMSSummary::listPolarization (LogIO& os, Bool verbose) const
 
 void NewMSSummary::listSysCal (LogIO& os, Bool verbose) const 
 {
+  // Check for existence of optional SYSCAL table:
+  if (pMS->sysCal().isNull()) {
+    os << "The SYSCAL table is absent" << endl;
+    return;
+  }
+
   // Do nothing in terse mode
   if (verbose) {
 
@@ -649,6 +661,12 @@ void NewMSSummary::listSysCal (LogIO& os, Bool verbose) const
 
 void NewMSSummary::listWeather (LogIO& os, Bool verbose) const 
 {
+  // Check for existence of optional WEATHER table:
+  if (pMS->weather().isNull()) {
+    os << "The WEATHER table is absent" << endl;
+    return;
+  }
+
   // Do nothing in terse mode
   if (verbose) {
 
@@ -671,26 +689,26 @@ void NewMSSummary::listWeather (LogIO& os, Bool verbose) const
 
 void NewMSSummary::listTables (LogIO& os, Bool verbose) const 
 {
-
+  // Get nrows for each table (=-1 if table absent)
   Vector<Int> tableRows(18);
   tableRows(0) = nrow();
   tableRows(1) = pMS->antenna().nrow();
   tableRows(2) = pMS->dataDescription().nrow();
-  tableRows(3) = (pMS->doppler().isNull() ? 0 : pMS->doppler().nrow());
+  tableRows(3) = (pMS->doppler().isNull() ? -1 : (Int)pMS->doppler().nrow());
   tableRows(4) = pMS->feed().nrow();
   tableRows(5) = pMS->field().nrow();
   tableRows(6) = pMS->flagCmd().nrow();
-  tableRows(7) = (pMS->freqOffset().isNull() ? 0 : pMS->freqOffset().nrow());
+  tableRows(7) = (pMS->freqOffset().isNull() ? -1 : (Int)pMS->freqOffset().nrow());
   tableRows(8) = pMS->history().nrow();
   tableRows(9) = pMS->observation().nrow();
   tableRows(10) = pMS->pointing().nrow();
   tableRows(11) = pMS->polarization().nrow();
   tableRows(12) = pMS->processor().nrow();
-  tableRows(13) = pMS->source().nrow();
+  tableRows(13) = (pMS->source().isNull() ? -1 : (Int)pMS->source().nrow());
   tableRows(14) = pMS->spectralWindow().nrow();
   tableRows(15) = pMS->state().nrow();
-  tableRows(16) = (pMS->sysCal().isNull() ? 0 : pMS->sysCal().nrow());
-  tableRows(17) = (pMS->weather().isNull() ? 0 : pMS->weather().nrow());
+  tableRows(16) = (pMS->sysCal().isNull() ? -1 : (Int)pMS->sysCal().nrow());
+  tableRows(17) = (pMS->weather().isNull() ? -1 : (Int)pMS->weather().nrow());
 
   Vector<String> rowStrings(18), tableStrings(18);
   rowStrings = " rows";
@@ -716,10 +734,16 @@ void NewMSSummary::listTables (LogIO& os, Bool verbose) const
   // Just to make things read better
   for (uInt i=0; i<18; i++) {
     if (tableRows(i)==1) rowStrings(i) = " row";
-    if (tableRows(i)<=0) {
-      rowStrings(i) = "   <empty>";
+    // if table exists, but empty:
+    if (tableRows(i)==0) {
+      rowStrings(i) = " <empty>";
       if (tableStrings(i)=="SOURCE") rowStrings(i) += " (see FIELD)";
       if (tableStrings(i)=="SPECTRAL_WINDOW") rowStrings(i) += " (see FEED)";
+    }
+    // if table absent:
+    if (tableRows(i)==-1) {
+      rowStrings(i) = "<absent>";
+      if (tableStrings(i)=="SOURCE") rowStrings(i) += " (see FIELD)";
     }
   }
 
@@ -728,7 +752,9 @@ void NewMSSummary::listTables (LogIO& os, Bool verbose) const
 						// Do things on this side
 						// whether verbose or not
 						os << "Tables";
-  if (!verbose) os << "(rows)";			os << ":" << endl;
+  if (!verbose) os << "(rows)";			os << ":";
+  if (!verbose) os << "   (-1 = table absent)";
+                                                os << endl;
   for (uInt i=0; i<18; i++) {
     if (verbose) {
       os.output().setf(ios::left, ios::adjustfield);
