@@ -775,7 +775,8 @@ Int Time::timeZoneSeconds () {
   // most other "reasonable" UNIX-like OS's.  Note: Linux *had* an
   // altzone varialbe before the release of libc6 (glibc), but it's gone
   // now.
-  return Int (-timezone + (C::hour * isDST ()));
+  Int dst = isDST ();
+  return Int (-timezone + (C::hour * dst));
 }
 #endif
 
