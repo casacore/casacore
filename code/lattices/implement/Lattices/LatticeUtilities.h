@@ -63,10 +63,17 @@ class LogIO;
 class LatticeUtilities 
 {
    public:
-//    Copy pixels and mask from input to output.  Zero output pixels
-//    where mask is False (bad)
-      template <class T>
-      static void copyAndZero(LogIO& os, MaskedLattice<T>& out, MaskedLattice<T>& in);
+
+// Copy pixels and mask from input to output.  Zero output pixels
+// where mask is False (bad)
+   template <class T>
+   static void copyAndZero(LogIO& os, MaskedLattice<T>& out, MaskedLattice<T>& in);
+
+// Copy data and mask from input to output.
+   template <class T>
+   static void copyDataAndMask (LogIO& os, MaskedLattice<T>& out,
+                                MaskedLattice<T>& in);
+
 };
 
 // <summary>Global functions on Lattices</summary>

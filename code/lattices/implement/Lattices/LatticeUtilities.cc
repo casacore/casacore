@@ -136,3 +136,46 @@ void LatticeUtilities::copyAndZero(LogIO& os,
       out.copyData(in);
    }
 }
+
+template <class T>
+void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
+                                       MaskedLattice<T>& in)
+//
+// Copy the data and mask from an input ML to the output ML.
+// If the input is masked, the output must already be masked
+// and ready
+//
+{  
+// Do we need to stuff about with masks ?
+   
+   Bool doMask = in.isMasked() && out.hasPixelMask();
+   Lattice<Bool>* pMaskOut = 0;
+   if (doMask) {
+      pMaskOut = &out.pixelMask();
+      if (!pMaskOut->isWritable()) {
+         doMask = False;
+         os << LogIO::WARN << "The output image has a mask but it is not writable" << endl;
+         os << LogIO::WARN << "So the mask will not be transferred to the output" << LogIO::POST;
+      }
+   }                        
+
+// Use the same stepper for input and output.
+                      
+   IPosition cursorShape = out.niceCursorShape(); 
+   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
+
+// Create an iterator for the output to setup the cache.
+// It is not used, because using putSlice directly is faster and as easy.
+
+   LatticeIterator<T> dummyIter(out);
+   RO_LatticeIterator<T> iter(in, stepper);
+   for (iter.reset(); !iter.atEnd(); iter++) {
+      out.putSlice(in.getSlice(iter.position(),
+                   iter.cursorShape()), iter.position());
+      if (doMask) {
+         pMaskOut->putSlice(in.getMaskSlice(iter.position(),
+                            iter.cursorShape()), iter.position());
+      }
+   }
+}
+
