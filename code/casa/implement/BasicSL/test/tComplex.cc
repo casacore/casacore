@@ -87,13 +87,6 @@ main() {
   cout << endl;
 
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  cout << f1 << " + " << i1 << " = " << f1 + Complex(i1) << endl;
-  cout << f1 << " * " << i1 << " = " << f1 * Complex(i1) << endl;
-  cout << f1 << " - " << i1 << " = " << f1 - Complex(i1) << endl;
-  cout << f1 << " / " << i1 << " = " << f1 / Complex(i1) << endl;
-  cout << endl;
-
-  cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
   cout << f1 << " +=  4 -> "; cout << (f1 += 4) << endl;
   cout << f1 << " *=  4 -> "; cout << (f1 *= 4) << endl;
   cout << f1 << " -=  4 -> "; cout << (f1 -= 4) << endl;
@@ -129,13 +122,6 @@ main() {
   cout << f1 << " /=  " << d3 << " -> "; cout << (f1 /= d3) << endl;
   cout << endl;
 
-  cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  cout << f1 << " +=  " << i1 << " -> "; cout << (f1 += Complex(i1)) << endl;
-  cout << f1 << " *=  " << i1 << " -> "; cout << (f1 *= Complex(i1)) << endl;
-  cout << f1 << " -=  " << i1 << " -> "; cout << (f1 -= Complex(i1)) << endl;
-  cout << f1 << " /=  " << i1 << " -> "; cout << (f1 /= Complex(i1)) << endl;
-  cout << endl;
-
   i1 = IComplex(36, 14);
 
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
@@ -158,7 +144,8 @@ main() {
   cout << "pow(" << f1 << ",3) = " << pow(f1,3) << endl;
   cout << "pow(" << f1 << ",-8) = " << pow(f1,-8) << endl;
   cout << "pow(" << f1 << ",0.214) = " << pow(f1,0.214f) << endl;
-  cout << "pow(" << f1 << "," << i1 << " = " << pow(f1,Complex(i1)) << endl;
+  cout << "pow(" << f1 << "," << i1 << " = " <<
+    pow(f1,Complex(i1.real(), i1.imag())) << endl;
   cout << "pow(" << f1 << "," << f2 << " = " << pow(f1,f2) << endl;
   cout << endl;
 
@@ -193,40 +180,12 @@ main() {
   cout << f1 << " < " << f1 << " -> " << (f1 < f1) << endl;
   cout << endl;
 
-  cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  cout << f1 << " == " << i1 << " -> " << (f1 == Complex(i1)) << endl;
-  cout << f1 << " != " << i1 << " -> " << (f1 != Complex(i1)) << endl;
-  cout << f1 << " >= " << i1 << " -> " << (f1 >= Complex(i1)) << endl;
-  cout << f1 << " > " << i1 << " -> " << (f1 > Complex(i1)) << endl;
-  cout << f1 << " <= " << i1 << " -> " << (f1 <= Complex(i1)) << endl;
-  cout << f1 << " < " << i1 << " -> " << (f1 < Complex(i1)) << endl;
-
   f1 = Complex(33.0, 6.0);
-  cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  cout << f1 << " == " << i2 << " -> " << (f1 == Complex(i2)) << endl;
-  cout << f1 << " != " << i2 << " -> " << (f1 != Complex(i2)) << endl;
-  cout << f1 << " >= " << i2 << " -> " << (f1 >= Complex(i2)) << endl;
-  cout << f1 << " > " << i2 << " -> " << (f1 > Complex(i2)) << endl;
-  cout << f1 << " <= " << i2 << " -> " << (f1 <= Complex(i2)) << endl;
-  cout << f1 << " < " << i2 << " -> " << (f1 < Complex(i2)) << endl;
 
   f1 = 33.021;
-  cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  cout << f1 << " == " << i2 << " -> " << (f1 == Complex(i2)) << endl;
-  cout << f1 << " != " << i2 << " -> " << (f1 != Complex(i2)) << endl;
-  cout << f1 << " >= " << i2 << " -> " << (f1 >= Complex(i2)) << endl;
-  cout << f1 << " > " << i2 << " -> " << (f1 > Complex(i2)) << endl;
-  cout << f1 << " <= " << i2 << " -> " << (f1 <= Complex(i2)) << endl;
-  cout << f1 << " < " << i2 << " -> " << (f1 < Complex(i2)) << endl;
 
   f1 = 0;
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  cout << f1 << " == " << i2 << " -> " << (f1 == Complex(i2)) << endl;
-  cout << f1 << " != " << i2 << " -> " << (f1 != Complex(i2)) << endl;
-  cout << f1 << " >= " << i2 << " -> " << (f1 >= Complex(i2)) << endl;
-  cout << f1 << " > " << i2 << " -> " << (f1 > Complex(i2)) << endl;
-  cout << f1 << " <= " << i2 << " -> " << (f1 <= Complex(i2)) << endl;
-  cout << f1 << " < " << i2 << " -> " << (f1 < Complex(i2)) << endl;
 
   assert(near(Complex(0,10000), Complex(0,10001), 1.01e-4));
   assert(!near(Complex(0,10000), Complex(0,10001), 0.99e-4));
