@@ -2670,3 +2670,4 @@
 11 403 src rm doc/html/navpages/firstpage6.html
 11 403 src rm doc/html/navpages/secondpage6.html
 11 403 src rm doc/html/navpages/time.html
+11 403 src mv doc/html/navpages/install.html doc/reference/install.html
