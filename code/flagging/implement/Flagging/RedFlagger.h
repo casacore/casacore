@@ -102,14 +102,16 @@ protected:
   void cleanupPlotters   ();
 // plots flagging reports from individual agents
   void plotAgentReports  ( PGPlotterInterface &pgp);
+  void printAgentReports  ( );
 // plots a flagging summary
   void plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk,const RecordInterface &opt );
+  void printSummaryReport ( RFChunkStats &chunk,const RecordInterface &opt );
  
   MeasurementSet   ms;
   Block<RFABase*> acc;
   
   uInt nant,nifr,ntime;
-  Vector<uInt> ifr2ant1,ifr2ant2;
+  Vector<Int> ifr2ant1,ifr2ant2;
   Vector<String> antnames;
   
   PGPlotter pgp_report,pgp_screen;
@@ -125,10 +127,10 @@ public:
 // construct and attach to a measurement set
   RedFlagger  ( const MeasurementSet &ms );
   
-  ~RedFlagger () {};
+  ~RedFlagger ();
   
 // Change or set the MS this RedFlagger refers to.
-  void attach( const MeasurementSet &ms );
+  void attach( const MeasurementSet &ms, Bool setupAgentDefaults=True );
   
 // Detaches from the MS  
   void detach();
@@ -138,6 +140,7 @@ public:
 // Set indexing_base to 1 if agent options use 1-based indexing.  usually,
 // this is only necessary if options are being passed from Glish.
   void run ( const RecordInterface &agents,const RecordInterface &opt,uInt indexing_base=0 );    
+  void summary ( const RecordInterface &agents,const RecordInterface &opt,uInt indexing_base=0 );    
   
 // returns current MS
   const MeasurementSet & measSet() const { return ms; }
@@ -180,6 +183,7 @@ private:
     
   RedFlagger( const RedFlagger & )          {};
   RedFlagger& operator=(const RedFlagger &)  { return *this; };
+  void printAgentRecord(String &, const RecordInterface &);
 };
 
 #endif

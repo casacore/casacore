@@ -135,6 +135,7 @@ public:
   virtual String getStats () { return ""; }
 // called (before endChunk()) to plots a graphical flagging report  
   virtual void plotFlaggingReport ( PGPlotterInterface & ) {};
+  virtual void printFlaggingReport ( ) {};
   
 // returns the name of this RFA (set in myname)
   const String & name ();

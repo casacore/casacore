@@ -57,7 +57,7 @@
 RedFlagger::RedFlagger ()
 {
   nant=0;
-  setupAgentDefaults();
+  // setupAgentDefaults();
   pgprep_nx=pgprep_ny=1;
 }
 
@@ -68,9 +68,17 @@ RedFlagger::RedFlagger ()
 RedFlagger::RedFlagger ( const MeasurementSet &mset )
 {
   nant=0;
-  setupAgentDefaults();
   attach(mset);
   pgprep_nx=pgprep_ny=1;
+}
+RedFlagger::~RedFlagger ()
+{
+  if( !ms.tableName().length() ){
+    os << "Flagger closing out "<<ms.tableName()<<LogIO::POST;
+    ms.flush();
+    ms.relinquishAutoLocks(True);
+    ms.unlock();
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -105,8 +113,10 @@ const RecordInterface & RedFlagger::defaultOptions ()
 // RedFlagger::attach
 // attaches to MS
 // -----------------------------------------------------------------------
-void RedFlagger::attach( const MeasurementSet &mset )
+void RedFlagger::attach( const MeasurementSet &mset, Bool setAgentDefaults )
 {
+  if(setAgentDefaults)
+     setupAgentDefaults();
   ms = mset;
 // extract various interesting info from the MS
 // obtain number of distinct time slots
@@ -124,6 +134,7 @@ void RedFlagger::attach( const MeasurementSet &mset )
   nant = msant.nrow();
   nifr = nant*(nant+1)/2; // cheap & dirty
   ROScalarColumn<String> names(msant,"NAME");
+  antnames.resize();
   antnames = names.getColumn();
   antnames.apply(stringUpper);
 //  cerr<<"Antenna names: "<<antnames<<endl;
@@ -149,11 +160,15 @@ void RedFlagger::attach( const MeasurementSet &mset )
 // -----------------------------------------------------------------------
 void RedFlagger::detach()
 {
-  if( !ms.tableName().length() )
+  if( !ms.tableName().length() ){
     os<<"no measurement set was attached"<<LogIO::POST;
-  else
+  }else{
     os<<"detaching from MS "<<ms.tableName()<<LogIO::POST;
-  ms = MeasurementSet();
+    ms.flush();
+    ms.relinquishAutoLocks(True);
+    ms.unlock();
+    ms = MeasurementSet();
+  }
 }
 
 // computes IFR index, given two antennas
@@ -199,6 +214,7 @@ const RecordInterface & RedFlagger::setupAgentDefaults ()
 // -----------------------------------------------------------------------
 RFABase * RedFlagger::createAgent ( const String &id,RFChunkStats &chunk,const RecordInterface &parms )
 {
+	// cerr << "Agent id: " << id << endl;
   if( id == "timemed" )
     return new RFATimeMedian(chunk,parms);
   else if( id == "freqmed" )
@@ -227,6 +243,100 @@ void RedFlagger::setReportPanels ( Int nx,Int ny )
 //    dprintf(os,"pgp_report.subp(%d,%d)\n",nx,ny);
     pgp_report.subp(pgprep_nx=nx,pgprep_ny=ny);
   }
+}
+void RedFlagger::summary( const RecordInterface &agents,const RecordInterface &opt,uInt ind_base ) 
+{
+	os << "Autoflag summary will report results here" << endl;
+	for(uInt i=0;i<agents.nfields(); i++){
+
+		if(agents.dataType(i) != TpRecord){
+		   os << "Unrecognized field: " << agents.name(i) << LogIO::EXCEPTION;
+		}
+                String agent_id(downcase(agents.name(i)));
+		// cerr << i << " " << agent_id << endl;
+		printAgentRecord(agent_id, agents.asRecord(i));
+	}
+}
+void RedFlagger::printAgentRecord(String &agent_id,
+	                          const RecordInterface &agent_rec){
+   // but if an id field is set in the sub-record, use that instead
+   if( agent_rec.isDefined("id") && agent_rec.dataType("id") == TpString ){
+      agent_id = agent_rec.asString("id");
+   }
+   for(uInt i=0; i<agent_rec.nfields(); i++){
+       os << agent_id << ": ";
+       String myName(agent_rec.name(i));
+       os << myName << ": ";
+       switch(agent_rec.type(i)){
+              case TpRecord :
+                     printAgentRecord(myName, agent_rec.asRecord(i));
+                     break;
+              case TpArrayBool :
+                 os << agent_rec.asArrayBool(i);
+                 break;
+              case TpArrayUChar :
+                 os << agent_rec.asArrayuChar(i);
+                 break;
+              case TpArrayShort:
+                 os << agent_rec.asArrayShort(i);
+                 break;
+              case TpArrayInt:
+                 os << agent_rec.asArrayInt(i);
+                 break;
+              case TpArrayUInt:
+                 os << agent_rec.asArrayuInt(i);
+                 break;
+              case TpArrayFloat:
+                 os << agent_rec.asArrayFloat(i);
+                 break;
+              case TpArrayDouble:
+                 os << agent_rec.asArrayDouble(i);
+                 break;
+              case TpArrayComplex:
+                 os << agent_rec.asArrayComplex(i);
+                 break;
+              case TpArrayDComplex:
+                 os << agent_rec.asArrayDComplex(i);
+                 break;
+              case TpArrayString:
+                 os << agent_rec.asArrayString(i);
+                 break;
+              case TpBool:
+                 os << agent_rec.asBool(i);
+                 break;
+              case TpUChar:
+                 os << agent_rec.asuChar(i);
+                 break;
+              case TpShort:
+                 os << agent_rec.asShort(i);
+                 break;
+              case TpInt:
+                 os << agent_rec.asInt(i);
+                 break;
+              case TpUInt:
+                 os << agent_rec.asuInt(i);
+                 break;
+              case TpFloat:
+                 os << agent_rec.asFloat(i);
+                 break;
+              case TpDouble:
+                 os << agent_rec.asDouble(i);
+                 break;
+              case TpComplex:
+                 os << agent_rec.asComplex(i);
+                 break;
+              case TpDComplex:
+                 os << agent_rec.asDComplex(i);
+                 break;
+              case TpString:
+                 os << agent_rec.asString(i);
+                 break;
+              default :
+                     break;
+       }
+       os << endl << LogIO::POST;
+   }
+//
 }
 
 // -----------------------------------------------------------------------
@@ -285,11 +395,13 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     // normally, the field name itself is the agent ID
     String agent_id( downcase(agents.name(i)) );
     // but if an id field is set in the sub-record, use that instead
-    if( agent_rec.isDefined("id") && agent_rec.dataType("id") == TpString )
-      agent_id = agents.asRecord(i).asString("id");
+    if( agent_rec.isDefined("id") && agent_rec.dataType("id") == TpString ){
+      agent_id = agent_rec.asString("id");
+    }
     // check that this is agent really exists
-    if( !agent_defaults.isDefined(agent_id) )
+    if( !agent_defaults.isDefined(agent_id) ){
       os<<"Unknown flagging method '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
+     }
     // create parameter record by taking agent defaults, and merging in global
     // and specified options
     const RecordInterface & defparms(agent_defaults.asRecord(agent_id));
@@ -404,7 +516,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       if( data_pass )
       {
         sprintf(subtitle,"pass %d (data)",npass+1);
-        ProgressMeter progmeter(1,chunk.num(TIME),title+subtitle,"","","",True,pm_update_freq);
+        ProgressMeter progmeter(1.0,static_cast<Double>(chunk.num(TIME)+0.001),title+subtitle,"","","",True,pm_update_freq);
         // start pass for all active agents
         for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
           if( active(ival) )
@@ -415,7 +527,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
         // iterate over visbuffers
         for( vi.origin(); vi.more() && nactive; vi++,itime++ )
         {
-          progmeter.update(itime+1);
+          progmeter.update(itime);
           chunk.newTime();
           // now, call individual VisBuffer iterators
           for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
@@ -467,14 +579,14 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       else  // dry pass only
       {
         sprintf(subtitle,"pass %d (dry)",npass+1);
-        ProgressMeter progmeter(1,chunk.num(TIME),title+subtitle,"","","",True,pm_update_freq);
+        ProgressMeter progmeter(1.0,static_cast<Double>(chunk.num(TIME)+0.001),title+subtitle,"","","",True,pm_update_freq);
         // start pass for all active agents
         for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
           if( iter_mode(ival) == RFA::DRY )
             acc[ival]->startDry();
         for( uInt itime=0; itime<chunk.num(TIME) && ndry; itime++ )
         {
-          progmeter.update(itime+1);
+          progmeter.update(itime);
           // now, call individual VisBuffer iterators
           for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
             if( iter_mode(ival) == RFA::DRY )
@@ -527,11 +639,14 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       setReportPanels(subp(0),subp(1));
       plotSummaryReport(pgp_report,chunk,opt);
       plotAgentReports(pgp_report);
+    } else {
+      printSummaryReport(chunk,opt);
+      printAgentReports();
     }
 // now, do a single flag-transfer pass to transfer flags into MS
     if( !isFieldSet(opt,RF_TRIAL) && anyNE(active_init,False) )
     {
-      ProgressMeter progmeter(1,chunk.num(TIME),title+"storing flags","","","",True,pm_update_freq);
+      ProgressMeter progmeter(1.0,static_cast<Double>(chunk.num(TIME)+0.001),title+"storing flags","","","",True,pm_update_freq);
       for( uInt i = 0; i<acc.nelements(); i++ ) 
         if( active_init(i) )
           acc[i]->startFlag();
@@ -648,6 +763,45 @@ void RedFlagger::cleanupPlotters ()
 }
 
 // -----------------------------------------------------------------------
+// printSummaryReport
+// Generates a summary flagging report for current chunk
+// -----------------------------------------------------------------------
+void RedFlagger::printSummaryReport (RFChunkStats &chunk,const RecordInterface &opt )
+{
+// generate a short text report in the first pane
+  char s[128];
+  sprintf(s,"Flagging MS '%s' chunk %d (field %s, spw %d)",ms.tableName().chars(),
+        chunk.nchunk(),chunk.visIter().fieldName().chars(),chunk.visIter().spectralWindow());
+  os<<s<<LogIO::POST;
+
+// print chunk field, etc.
+
+  // print overall flagging stats
+  uInt n=0,n0;
+
+  sprintf(s,"%s, %d channels, %d time slots, %d baselines, %d rows\n",
+      chunk.getCorrString().chars(),chunk.num(CHAN),chunk.num(TIME),
+      chunk.num(IFR),chunk.num(ROW));
+  
+  n  = sum(chunk.nrfIfr());
+  n0 = chunk.num(ROW);
+  sprintf(s,"%d (%0.2f%%) rows have been flagged.",n,n*100.0/n0);
+  os<<s<<LogIO::POST;
+  n  = sum(chunk.nfIfrTime());
+  n0 = chunk.num(ROW)*chunk.num(CHAN)*chunk.num(CORR);
+  sprintf(s,"%d of %d (%0.2f%%) pixels have been flagged.",n,n0,n*100.0/n0);
+  os<<s<<LogIO::POST;
+
+  // print per-agent flagging summary
+  for( uInt i=0; i<acc.nelements(); i++ )
+  {
+    String name(acc[i]->name() + ": ");
+    String stats( acc[i]->isActive() ? acc[i]->getStats() : String("can't process this chunk") );
+    os<<name+stats<<LogIO::POST;
+  }
+}
+
+// -----------------------------------------------------------------------
 // plotSummaryReport
 // Generates a summary flagging report for current chunk
 // -----------------------------------------------------------------------
@@ -723,6 +877,18 @@ void RedFlagger::plotAgentReports( PGPlotterInterface &pgp )
 // call each agent to produce summary plots
   for( uInt i=0; i<acc.nelements(); i++ )
     acc[i]->plotFlaggingReport(pgp);
+}
+// -----------------------------------------------------------------------
+// printAgentReport
+// Generates per-agent reports for current chunk of data
+// Meant to be called before doing endChunk() on all the flagging 
+// agents.
+// -----------------------------------------------------------------------
+void RedFlagger::printAgentReports( )
+{
+// call each agent to produce summary plots
+  for( uInt i=0; i<acc.nelements(); i++ )
+    acc[i]->printFlaggingReport();
 }
 
 
