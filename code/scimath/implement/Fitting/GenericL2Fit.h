@@ -63,7 +63,7 @@ template <class T> class Function;
 // <synopsis>
 // The class acts as a base class for L2-type (least-squares) fitting. 
 // Actual classes (se e.g. <linkto class=LQLinearFit>LinearFit</linkto> and
-// <linkto class=NonLinearFit>NonLinearFit</linkto>.
+// <linkto class=LQNonLinearFit>LQNonLinearFit</linkto>.
 //
 // The following is a brief summary of the linear least-squares fit problem.
 // See module header, <linkto module="Fitting">Fitting</linkto>,
