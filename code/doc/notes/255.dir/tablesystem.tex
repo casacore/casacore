@@ -4,18 +4,19 @@ by Allen Farris in the beginning of 1992. At the start of the AIPS++
 project it was decided to develop the Table System as no other package
 seemed to support the flexibility wanted.
 
-See this \htmladdnormallink{document}{../../reference/Database.ps}
+See the old AIPS++
+\htmladdnormallink{data base document}{../../reference/Database.ps}
 for a description of the very first version of the Table System.
 Since then the system has been changed and enhanced considerably.
 The description of the
-\htmladdnormallink{Table}{../../aips/implement/Tables.html}
+\htmladdnormallink{Tables}{../../aips/implement/Tables.html}
 module gives a good overview of the current capabilities.
 
 The Table System is used throughout the AIPS++ project to offer
 uniform access to all data. The table browser can be used to view
 all kind of tables.
 Particular examples of AIPS++ data stored
-as tables are the MeasurementSets and the Images.
+in tables are the MeasurementSets and the Images.
 
 In the remainder of this document the most important properties of the
 Table System are given. Thereafter the strong and weak points are
@@ -25,31 +26,37 @@ discussed.
 \begin{itemize}
 \item
 The Table System resembles a data base system. It consists of tables
-containing columns of data of various types. Support for keywords
+containing columns with data of any basic AIPS++ data type
+(integer, floating point, complex, string). Support for keywords
 (a la FITS) is provided. Furthermore it supports arrays of all data
-types (thus not only as blobs). It makes it possible to get only a
-specific part of a single array or multiple arrays in a column.
-Arrays can be fixed or variable length.
+types (thus not only as blobs). It is, for example, possible
+to get a slice of an array in the table.
+The shapes of arrays in a column can be fixed or variable.
+\\A column or keyword data type can also be a record making it possible
+to store AIPS++ \texttt{Record} objects into the keywords or column
+cells.
+\\Finally a keyword can contain a reference to another table which is
+used for subtables of a table (as extensively used in the
+MeasurementSet). 
 \item
-Meta data descibe the table layout and help to quickly find data.
-Unlike data base systems the Table System access is not based on keys.
-Instead the row number is used as an implicit key.
+Meta data describe the table layout and help to quickly find data.
+Table System access is based on row number.
 \\Persistent indices on table data are not supported, but
 temporary memory based indices make it possible to quickly find
 the row numbers containing the required data.
 \item
 All I/O is done by means of a storage manager layer, so
 the logical and physical view of a table is well separated.
-Multiple storage managers are supported, so each column
+A table can have multiple storage managers, so each column
 can be stored in the way most suited for the data in that column.
 Furthermore the Table System supports so-called virtual columns. The
 data in those columns are not stored but derived on-the-fly from
 other data. This feature is mainly used to compress columns
 containing complex data to short integers.
-\\The tiled storage manager (TSM) sets the table system apart.
+\\The tiled storage manager (TSM) is a unique feature of the Table System.
 It makes it possible to store array data in a tiled way to achieve that
 access along all axes is about equally fast.
-\\The data are stored in a canonical format to make access from
+\\All storage managers store the data in a canonical format to make access from
 multiple platforms possible. Boolean values are stored as bits.
 \item
 Concurrent access is fully supported. However, only table locks are
@@ -71,18 +78,20 @@ select arbitrary subsets of a table. TaQL resembles SQL, but lacks joins.
 However, it supports subqueries and moreover all its functions
 work on arrays as well.
 \\It is important to note that the result of a selection and sort is a table
-in itself referencing the original data. So changing the data in a
-selection changes the original data. This is regarded as very useful.
-There is a function available to turn a selection into a true copy.
+in itself which references the original data (i.e. shallow copy).
+So changing the data in a
+selection changes the original data. This is regarded as being very useful.
+There is a function available to turn a selection into a deep copy.
 
-Note that TaQL is also used for doing queries on in-memory objects.
+Note that TaQL can also be used for doing queries on in-memory objects.
 This is used in the ACSIS system to make a selection from a set of
 \texttt{Record} objects.
 
 \item
 The \htmladdnormallink{TableMeasures}{../../aips/implement/TableMeasures.html}
 module makes it possible to store and retrieve
-Measures transparantly in and from a table.
+\htmladdnormallink{Measures }{../../aips/implement/Measures.html}
+transparantly in and from a table.
 \end{itemize}
 
 \section{Where are Tables used}
@@ -112,7 +121,7 @@ Images are using the so-called lattices which are memory-based or
 disk-based arrays. Lattices can easily be traversed in any order.
 The \htmladdnormallink{Lattice Expression Language}{../223/223.html}
 makes it possible to define expressions from lattices.
-Lattices are used commonly in AIPS++. For instance, the autoflagger
+Lattices are commonly used in AIPS++. For instance, the autoflagger
 uses lattices to assemble statistical information for automatically
 flagging MeasurementSet data.
 
@@ -135,10 +144,12 @@ Other places where tables are used are:
 
 \section{Benefits}
 \subsection{Data types and arrays}
-All standard data types are supported (char, int float, string, etc.).
+All standard data types are supported (char, short, integer, float,
+double, string).
 Also single and double precision complex data types are supported.
-A big advantage of the table system is that it can handle scalars as well
-as arrays of all data types.
+A big advantage of the Table System is that it can handle scalars as well
+as arrays of all thosetypes.
+\\Another benefit is that Measures can be stored in tables.
 
 \subsection{Storage Managers}
 The Table System has some specific data (storage) managers:
@@ -162,7 +173,8 @@ The Table System has some specific data (storage) managers:
 
 \subsection{Concurrent access}
 The ability of safe concurrent access is very nice. Despite its
-shortcomings, autolocking makes life very easy.
+shortcomings, autolocking makes life very easy, since it frees the
+user from all locking issues.
 
 \subsection{TaQL}
 TaQL is a very versatile query language with full support of arrays.
@@ -171,7 +183,7 @@ of a table. Since these subsets are also tables (referencing the
 original data), one can easily change the data in a subset of a table.
 TaQL can also be used to sort a table or to sort it uniquely.
 \\The support of arrays makes TaQL in a way superior to SQL. Some
-selections can be expressed very elagantly in TaQL, while being
+selections can be expressed very elegantly in TaQL, while being
 tedious in SQL. E.g. selecting baselines 0-1, 1-2, 2-3, 3-5 can be
 done in TaQL as
 \begin{verbatim}
@@ -181,9 +193,9 @@ TaQL can operate on data arrays in a table, while SQL can only
 deal with scalar data.
 
 \subsection{Glish access}
-Users greatly appreciate the ease of access via glish. Together with
+Users greatly appreciate the ease of access via glish. Using
 the glish functions and tools like TaQL and the table browser it is
-very easy to examine and inspect the data and change it when needed.
+very easy to examine and inspect the data and change them when needed.
 \\Many users have written scripts to process the data in glish using 
 TaQL and the table access functions in glish.
 
@@ -191,15 +203,15 @@ A widget (\texttt{taqlwidget}) exists to form TaQL
 commands in a query-by-example style.
 
 
-\section{Possible Shortcomings}
+\section{Known Shortcomings}
 
 \subsection{Access times}
 Retrieving data from a table is slower than retrieving it from a flat
 file. It depends on the type and the shape of the data and on the
 storage manager used. Tests show that retrieving an array from a Table
-using a Tiled Storage Manager is about 50\% slower than reading it
+using a Tiled Storage Manager can be about 50\% slower than reading it
 from a raw file when accessing the data sequentially.
-This degradation in performance has to be weighed to the properties
+This degradation in performance has to be weighed against the benefits
 supported by the Table System as described in the previous section.
 
 Note that measuring IO performance is not as easy as it looks because
@@ -209,8 +221,8 @@ data are flushed to disk.
 
 The main problem seems to be accessing the data in the MeasurentSet
 in the calibrater or imager. Apart from the 50\% degradation discussed
-above, there can be important reasons for this. One is that the data
-is usually sorted in a different order than it was stored.
+above, there can be other reasons for it. One is that the data
+is usually accessed in a different order than it was stored.
 Maybe this could be solved partially by storing the data per spectral
 window. Another thing that might be useful is to use another storage
 manager than the tiled one.
@@ -218,23 +230,26 @@ manager than the tiled one.
 It is important to note that the TMS system for Westerbork started
 with use of Sybase for its data bases. They decided, however, to
 switch to the AIPS++ Table System because it performed much better
-than Sybase.
+than Sybase for their particular application.
 \\No comparisons have been made between the Table System and a
-data base system like MySQL or PostgreSQL.
+data base system like MySQL or PostgreSQL. Doing comparisons may be hard
+because performance will usually be highly application dependent.
 
 \subsection{Non-blocking IO}
-The storage managers only use simple synchronous I/O, but they use a
+The storage managers only use simple synchronous I/O, though they use a
 cache to buffer often used data.
 Non-blocking I/O nor file mapping is used. Especially non-blocking I/O
 might improve performance, but it requires extra buffer space.
-It might also be needed to provide functionality for giving hints
+It might also be needed to provide more functionality for giving hints
 about access patterns.
 
 \subsection{Robustness}
+In the early days the Table System was not very robust, but it has
+improved over the years.
 In occasional circumstances the data in a table can be corrupted.
 This could be the case when the system crashes while a critical data
 portion is written into the table. However, in practice it
-virtually ever happens because especially in the commonly used
+hardly ever happens because especially in the now commonly used
 StandardStMan storage manager quite some attention has been paid to
 robustness.
 
@@ -253,8 +268,9 @@ as long as possible.
 \\The AutoLocking mode was invented to solve this problem. However,
 it has the drawback that it may take a few seconds before the system
 detects that the AutoLock should be released. This is especially the
-case in a glish client which might be idle for some time. It is
-possible now to define the AutoLock inspect time in aipsrc.
+case in a glish client which might be idle for some time. It is now
+possible to define the AutoLock inspect time in aipsrc, so one can set
+it as short as needed.
 
 \subsection{TaQL}
 Although TaQL supersedes SQL with its array capabilities, it lacks
@@ -277,7 +293,7 @@ should in principle be possible to enhance it with other forms of
 I/O like parallel and networked I/O. However, other high
 performance data I/O libraries
 exist and it should be studied if it is better to use such a library.
-\htmladdnormallink{HDF5}{http://hdf.ncsa.uiuc.edu/HDF5}) is such a
+\htmladdnormallink{HDF5}{http://hdf.ncsa.uiuc.edu/HDF5} is such a
 library. It has an C++ and Java interface and a viewer written in
 Java. It supports array tiling (chunking in their terminology).
 
@@ -293,7 +309,7 @@ on the host where the data are. Thus a client should only ask for the
 result and not for the data themselves. Of course, this is not always
 possible. It should also be possible for a client to get file data
 from another node, thus parallel and networked I/O is needed.
-Parallel modes will be very important when data are stored in a SAN.
+Parallel I/O will be very important when data are stored in a SAN.
 
 An example might be an image of 4000*4000*4000 float pixels.
 Such an image might be tiled and spread over several nodes.
@@ -309,7 +325,8 @@ Data bases are not useful for such data. They lack the ability to deal
 with large arrays of data or to access chunks of them.
 
 \subsection{Administrative tables}
-Several other tables (log tables, observation catalogs) are suited
+Several other tables (log tables, observation catalogs) can be handled
+with standard
 data base technology. Public domain packages like MySQL or PostgreSQL
 should be evaluated. It might be needed to add special indices
 to deal with queries like a conus in the sky, although it is expected
@@ -323,5 +340,5 @@ used to have support for data arrays in queries.
 \subsection {Archived Data}
 Some institutes (e.g. Westerbork) have archived MeasurementSets.
 They are archived in \texttt{ms2archive} format. When support of the
-table system is stopped, it is needed to provide a tool to retrieve
+Table System is stopped, a tool should be provided to retrieve
 these archived MeasurementSets in the new data format.

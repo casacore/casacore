@@ -15,7 +15,7 @@ AIPS++ Table System Revisited}
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A (gzipped) postscript version of this note is available (30kB).}{../255.ps.gz}
+\htmladdnormallink{A (gzipped) postscript version of this note is available (40kB).}{../255.ps.gz}
 \end{htmlonly}
 \input{tablesystem}
 \end{document}
