@@ -29,15 +29,13 @@
 #define AIPS_LATTICES_H
 
 
-#include <aips/Lattices/IPosition.h>
-#include <aips/Lattices/Slice.h>
-#include <aips/Lattices/Slicer.h>
-
 // #include <aips/Lattices/ArrayLattice.h>
 // #include <aips/Lattices/PagedArray.h>
 // #include <aips/Lattices/TempLattice.h>
 // #include <aips/Lattices/LatticeLocker.h>
 // #include <aips/Lattices/TiledShape.h>
+
+// #include <aips/Lattices/LatticeApply.h>
 // #include <aips/Lattices/LatticeIterator.h>
 // #include <aips/Lattices/LatticeStepper.h>
 // #include <aips/Lattices/TileStepper.h>
@@ -71,7 +69,7 @@
 //   <li> class <linkto name=IPosition>IPosition</linkto>
 // </prerequisite>
 
-// <reviewed reviewer="" date="" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" demos="">
 // </reviewed>
 
 // <etymology>
@@ -83,7 +81,7 @@
 // In AIPS++, we have used the ability to call many things by one generic
 // name (Lattice) to create a number of classes which have different storage
 // techniques (e.g. core memory, disk, etc...).  The name Lattice should
-// make the user think of class interface (or member functions) which all
+// make the user think of a class interface (or member functions) which all
 // Lattice objects have in common.  If functions require a Lattice
 // argument, the classes described here may be used interchangeably, even
 // though their actual internal workings are very different.
@@ -103,10 +101,11 @@
 //   essentially a vector of integers.  The IPosition vector may point to
 //   the "top right corner" of some shape, or it may be an indicator of a
 //   specific position in n-space.  The interpretation is context dependent.
-//   The constructor consists of an intial argument which specifies the
+//   The constructor consists of an initial argument which specifies the
 //   number of axes, followed by the appropriate number of respective axis
-//   lengths.  IPositions have the standard integer math relationships
-//   defined, but the dimensionality of the operator arguments must be the
+//   lengths.  Thus the constructor needs N+1 arguments for an IPosition
+//   of length N. IPositions have the standard integer math relationships
+//   defined. The dimensionality of the operator arguments must be the
 //   same.
 //<srcblock>
 // // Make a shape with three axes, x = 24, y = 48, z = 16;
@@ -129,11 +128,12 @@
 //   This object is used to bundle into one place all the information
 //   necessary to specify a regular subregion within an Array or Lattice.
 //   In other words, Slicer holds the location of a "slice" of a
-//   greater whole.  Construction is with 3 up to IPositions: the location of
-//   the subspace within the greater space; the shape or end location of the
-//   subspace within the greater space; and the stride, or multiplier to be
-//   used for each axis.  The stride gives the user the chance to use every
-//   ith piece of data, rather than every position on the axis.
+//   greater whole.  Construction is with up to 3 IPositions: the start 
+//   location of the subspace within the greater space; the shape or end
+//   location of the subspace within the greater space; and the stride,
+//   or multiplier to be used for each axis.  The stride gives the user
+//   the chance to use every i-th piece of data, rather than every
+//   position on the axis.
 //   <br>
 //   It is possible to leave some values in the given start or end/length
 //   unspecified. Such unspecified values default to the boundaries of the
@@ -148,7 +148,7 @@
 // // Also define an origin.
 // IPosition origin(2,-5,15);
 //
-// // Now define some Slicer's, initially only specify the start
+// // Now define some Slicers, initially only specify the start
 // // Its length and stride will be 1.
 // Slicer ns0(IPosition(2,0,24));
 //
@@ -164,16 +164,16 @@
 //
 // // Build a slicer with temporaries for arguments. The arguments are:
 // // start position, end position and step increment. The Slicer::endIsLast
-// // argument specifies that the end position is the trc. The alternatice
+// // argument specifies that the end position is the trc. The alternative
 // // is Slicer::endIsLength which specifies that the end argument is the
 // // shape of the resulting subregion.
 // //
 // Slicer ns1(IPosition(2,3,5), IPosition(2,13,21), IPosition(2,3,2),
 //            Slicer::endIsLast);
-// ns1.inferShapeFromSource (shape, origin, blc,trc,inc);
+// IPosition shp = ns1.inferShapeFromSource (shape, blc,trc,inc);
 // //
-// // print out the new info ie. blc=[2,5],trc=[17,15],inc=[3,2]
-// cout << blc << trc << inc << endl;
+// // print out the new info ie. shp=[4,9],blc=[3,5],trc=[12,21],inc=[3,2]
+// cout << shp << blc << trc << inc << endl;
 // </srcblock>
 //   </ul>
 //
@@ -191,7 +191,10 @@
 //   previously instantiated Array object that may already contain data. In
 //   the former case, some Lattice operation must be done to fill the data.
 //   The ArrayLattice, like all Lattices, may be iterated through with a
-//   LatticeIterator (see below).
+//   <linkto class=LatticeIterator>LatticeIterator</linkto> (see below).
+//   <br>Iteration can also be done using
+//   <linkto class=LatticeApply>LatticeApply</linkto> and some helper
+//   classes. It makes it possible to concentrate on the algorithm.
 // <srcblock>
 // // Make an Array of shape 3x4x5
 // 
@@ -199,9 +202,9 @@
 //
 // // fill it with a gradient
 //
-// for (Int k=0; k<5; i++)
-//   for (Int j=0; j<4; k++)
-//     for (Int i=0; i<3; j++) 
+// for (Int k=0; k<5; k++)
+//   for (Int j=0; j<4; j++)
+//     for (Int i=0; i<3; i++) 
 //       simpleArray(IPosition(3,i,j,k)) = i+j+k;
 //
 // // use the array to create an ArrayLattice.
@@ -226,7 +229,8 @@
 //   <br>
 //   A PagedArray constructor allows previously created PagedArrays to be
 //   recalled from disk.  Much of the time, the PagedArray will be
-//   constructed with an IPosition argument which describes the array shape
+//   constructed with a <linkto class=TiledShape>TiledShape</linkto>
+//   argument which describes the array and tile shape
 //   and a Table argument for use as the place of storage.  Then the
 //   PagedArray may be filled using any of the access functions of Lattices
 //   (like the LatticeIterator.)
@@ -256,7 +260,10 @@
 // object which allows iteration through any Lattice's data. This comes in
 // two types: the <src>RO_LatticeIterator</src> which should be used if you
 // are not going to change the Lattice's data, and the
-// <src>LatticeIterator</src> if you need to change the data in the Lattice
+// <src>LatticeIterator</src> if you need to change the data in the Lattice.
+// <br>Note that iteration can also be done using
+// <linkto class=LatticeApply>LatticeApply</linkto> and some helper
+// classes. It makes it possible to concentrate on the algorithm.
 //  <ul>
 //  <li> The <linkto class="RO_LatticeIterator">RO_LatticeIterator</linkto>
 //  class name reflects its role as a means of iterating a "Read-Only" array
@@ -338,7 +345,7 @@
 //   treat the elements, in order, of the IPosition as the designators of
 //   the appropriate axis.  The zeroth element indicates which axis is the
 //   fastest moving, the first element indicates which axis is the second
-//   fastes moving etc. eg. The IPosition(3,2,0,1) says the LatticeIterator
+//   fastest moving etc. eg. The IPosition(3,2,0,1) says the LatticeIterator
 //   should start with the z-axis, next follow the x-axis, and finish with
 //   the y-axis.  A single element cursor would thus move through a cube of
 //   dimension(x,y,z) from (0,0,0) up the z-axis until reaching the maximum
@@ -396,12 +403,14 @@
 // can always ask for the mask. The function <src>isMasked()</src>
 // tells if there is really a mask. If not, users could take
 // advantage by shortcutting some code for better performance.
+// I.e. a function can test if a the MaskedLattice is really masked
+// and can take a special route if not.
 // Of course, doing that requires more coding, so it should only
 // be done where performance is a real issue.
 //  <ul>
 //  <li> A <linkto class="SubLattice">SubLattice</linkto> represents
 //  a rectangular subset of a Lattice. The SubLattice can be a simple
-//  box, but it can also be a circle, polygon, etc..
+//  box, but it can also be a circle, polygon, etc.
 //  In the latter case the SubLattice contains a mask
 //  telling which pixels in the bounding box actually belong to the
 //  circle or polygon. In the case of a box there is no mask, because
@@ -428,7 +437,7 @@
 //  <linkto class=LCComplement>complement</linkto>, or
 //  <linkto class=LCExtension>extension</linkto>
 //  from one or more regions.
-//  <br>Apart from these region classes class
+//  <br>Apart from these region classes, class
 //  <linkto class=LCSlicer>LCSlicer</linkto> can be used to define
 //  a box with optional strides. It also offers the opportunity to
 //  define the box in fractions or to define it relative to the
@@ -443,10 +452,10 @@
 //  a mathematical expression of lattices. All standard operators, regions,
 //  and many, many <linkto class=LatticeExprNode>functions</linkto>
 //  can be used in an expression.
-//  <br> An expression is calculated on-the-fly, thus only when
-//  the user gets a part of the lattice, the expression is calculated
+//  <br> An expression is calculated on-the-fly. Thus only when
+//  the user gets a part of the lattice, is the expression calculated
 //  for that part. Subexpressions resulting in a scalar are calculated
-//  only once on a get of the first part of the lattice expression.
+//  only once, on a get of the first part of the lattice expression.
 //  <br> Note that a lattice expression is not writable, thus using
 //  the put function on such a lattice results in an exception.
 //  <br> <a href="../../notes/223/223.html">Note 223</a> gives a more detailed
@@ -458,7 +467,18 @@
 //  <linkto class=ImageExprParse>ImageExprParse</linkto> it is possible
 //  to parse and execute a LEL expression given as as a string.
 //  </ul>
-
+//
+// <li> <linkto class=LatticeLocker>LatticeLocker</linkto> 
+// can be used to acquire a (user) lock on a lattice.
+// The lock can be a read or write lock.
+// The destructor releases the lock when needed.
+// <br>Lattices on disk can be used (read and write) by multiple processes.
+// The Table locking/synchronization mechanism takes care that sharing
+// such a lattice is done in an orderly way.
+// Usually the default locking mechanism is sufficient.
+// LatticeLocker is useful when finer locking control is needed for a
+// disk-based lattice.
+// 
 // </ol>
 //
 // <note role=warning> The following are listed for low-level programmers.  
@@ -466,7 +486,11 @@
 // contains several files relevant only to implementation.
 //
 // <ul>
-//   <li> <linkto class="Lattice">Lattice</linkto> - an abstract base class
+//   <li> <linkto class="LatticeBase">LatticeBase</linkto> - a non-templated
+//   abstract base class defining the type-independent interface to classes
+//   which must act as Lattices do.
+//   <li> <linkto class="Lattice">Lattice</linkto> - a templated
+//   abstract base class (derived from LatticeBase)
 //   defining the interface to classes which must act as Lattices do.
 //   The user simply publicly inherits from Lattice and defines the member
 //   functions declared as pure abstract in the Lattice header file.
