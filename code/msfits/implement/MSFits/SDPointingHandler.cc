@@ -70,7 +70,7 @@ SDPointingHandler &SDPointingHandler::operator=(const SDPointingHandler &other)
 	clearAll();
 	msPointing_p = new NewMSPointing(*(other.msPointing_p));
 	AlwaysAssert(msPointing_p, AipsError);
-	msPointingCols_p = new NewMSPointingColumns(*(other.msPointingCols_p));
+	msPointingCols_p = new NewMSPointingColumns(*msPointing_p);
 	AlwaysAssert(msPointingCols_p, AipsError);
 	antId_p = other.antId_p;
 	time_p = other.time_p;
