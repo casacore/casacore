@@ -78,6 +78,8 @@
 RedFlagger::RedFlagger ():mssel_p(0), vs_p(0)
 {
   nant=0;
+  setdata_p = False;
+
   // setupAgentDefaults();
   pgprep_nx=pgprep_ny=1;
 }
@@ -89,6 +91,7 @@ RedFlagger::RedFlagger ():mssel_p(0), vs_p(0)
 RedFlagger::RedFlagger ( const MeasurementSet &mset ) : mssel_p(0), vs_p(0)
 {
   nant=0;
+  setdata_p = False;
   attach(mset);
   pgprep_nx=pgprep_ny=1;
 }
@@ -201,6 +204,7 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
 			 const String& msSelect)
 {
  
+  setdata_p = True;
   LogIO os(LogOrigin("autuflag", "setdata()", WHERE));
   if (ms.isNull()) {
     os << LogIO::SEVERE << "NO MeasurementSet attached"
@@ -230,6 +234,7 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     cout << "No data selection applied" << endl;
 
     vs_p = new VisSet(ms,sort,noselection,timeInterval,compress);
+    //    nullSelect_p=True;
     return True;
   }
 
@@ -693,6 +698,13 @@ void RedFlagger::printAgentRecord(String &agent_id, uInt agentCount,
 // -----------------------------------------------------------------------
 void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,uInt ind_base ) 
 {
+
+  if (!setdata_p) {
+    os << LogIO::SEVERE << "Please run setdata with/without arguments before any setmethod"
+       << LogIO::POST;
+    return;
+  }
+
   if( !nant )
     os<<"No Measurement Set has been attached\n"<<LogIO::EXCEPTION;
   RFABase::setIndexingBase(ind_base);  
@@ -703,7 +715,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   
 // reset existing flags?
   Bool reset_flags = isFieldSet(opt,RF_RESET);
-  
+
   try { // all exceptions to be caught below
     
 // setup plotting devices
@@ -802,7 +814,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     acc[nacc++] = agent;
   }
   acc.resize(nacc);
-  
+
 // begin iterating over chunks
   uInt nchunk=0;
 // process just the first chunk because something's screwy  
