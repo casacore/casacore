@@ -66,9 +66,8 @@ int main ()
     if (ev0.number () != ev0Count + 3)
        throw (AipsError ("sets, unsets, and ctor-implicit-sets do not tally"));
   } catch   (AipsError x) {
-    cerr << "----------------------- exception! -------------------" << endl;
-    cerr << x.getMesg () << endl;
-    cerr << "at line " << x.thrownLine () << " in " << x.thrownFile () << endl;
+    cerr << "Caught an exception: " << x.getMesg() << endl;
+    return 1;
   } 
   
   cout << "OK" << endl;

@@ -174,14 +174,12 @@ void doIt (Bool doExcp)
 }
 
 
-main (int argc)
+int main (int argc)
 {
     try {
 	doIt (ToBool (argc<2));
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
-	cout << "at line " << x.thrownLine() 
-	     << " in " << x.thrownFile() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

@@ -160,9 +160,7 @@ int main()
 	readTables ("main4data", False);
 	readFromOtherDir();
     } catch (AipsError x) {
-	cout << "Caught an exception : " << x.getMesg() << endl << 
-	    "thrown from line: "<< x.thrownLine() << " in file: "<< 
-		x.thrownFile() <<endl;
+        cout << "Caught an exception : " << x.getMesg() << endl;
 	return 1;
     } 
     cout << "OK" << endl;

@@ -128,8 +128,7 @@ main()
     cout << "OK" << endl;
 
   } catch(AipsError x) {
-    cout << "Caught exception at line " << x.thrownLine()
-      << " from file " << x.thrownFile() << endl;
+    cout << "Caught exception" << endl;
     cout << "Message is: " << x.getMesg() << endl;
   }    
 };
