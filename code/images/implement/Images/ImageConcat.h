@@ -29,17 +29,22 @@
 #define AIPS_IMAGECONCAT_H
 
 
+//# Includes
 #include <aips/aips.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Containers/Block.h>
+#include <aips/Containers/Record.h>
 #include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeConcat.h>
 #include <trial/Images/ImageInterface.h>
-#include <aips/Tables/TableRecord.h>
+
+
+//# Forward Declarations
 class Unit;
 class CoordinateSystem;
 
 template <class T> class ImageSummary;
 template <class T> class MaskedLattice;
-template <class T> class Vector;
 
 
 // <summary>
@@ -70,10 +75,8 @@ template <class T> class Vector;
 // just references them.  You can use the Lattice<T>::copyData(Lattice<T>)
 // function to fill an output image with the concatenated input images
 //
-// If you use the putSlice function, be aware that it will change the underlying
-// images if they are writable.
-// If you use the putMaskSlice function, be aware that it will change the underlying
-// images if their masks are writable.
+// If you use the putSlice function, be aware that it will change the
+// underlying images if they are writable.
 //
 // You can also concatenate  a lattice to an image.  
 // </synopsis>
@@ -126,19 +129,22 @@ template <class T> class ImageConcat : public ImageInterface<T>
 public:
 
 // Constructor. Specify the pixel axis for concatenation
-   ImageConcat (uInt axis);
+   ImageConcat (uInt axis, Bool tempClose=True);
 
 // Default constructor, Sets the concatenation axis to 0
-   ImageConcat ();
+   ImageConcat();
 
 // Copy constructor (reference semantics)
-   ImageConcat(const ImageConcat<T> &other);
+   ImageConcat (const ImageConcat<T> &other);
 
 // Destructor
-   virtual ~ImageConcat ();
+   virtual ~ImageConcat();
 
 // Assignment operator (reference semantics)
-   ImageConcat<T> &operator=(const ImageConcat<T> &other);
+   ImageConcat<T> &operator= (const ImageConcat<T> &other);
+
+// Make a copy of the object (reference semantics).
+   virtual ImageInterface<T>* cloneII() const;
 
 // Sets a new image into the list to be concatenated.  
 // If relax is False, throws an exception if the images
@@ -155,61 +161,58 @@ public:
    void setLattice (MaskedLattice<T>& lattice);
 
 // Return the number of images/lattices set so far
-   uInt nimages() const {return latticeConcat_p.nlattices();};
+   uInt nimages() const
+     { return latticeConcat_p.nlattices(); }
 
 // Returns the current concatenation axis (0 relative)
-   uInt axis () const {return latticeConcat_p.axis();};
+   uInt axis () const
+     { return latticeConcat_p.axis(); }
 
 // Returns the number of dimensions of the *input* images/lattices
 // Returns 0 if none yet set. 
-   uInt imageDim() const {return latticeConcat_p.latticeDim();};
+   uInt imageDim() const
+     { return latticeConcat_p.latticeDim(); }
 
-// Acquire or release locks.
-// These functions operate on all of the underlying lattices
+// Handle the (un)locking and syncing, etc..
 // <group>
-  virtual Bool lock (FileLocker::LockType type, uInt nattempts) 
-    {return latticeConcat_p.lock(type, nattempts);};
-  virtual void unlock() {latticeConcat_p.unlock();};
-  virtual Bool hasLock (FileLocker::LockType type) const
-    {return latticeConcat_p.hasLock(type);};
+   virtual Bool lock (FileLocker::LockType, uInt nattempts);
+   virtual void unlock();
+   virtual Bool hasLock (FileLocker::LockType) const;
+   virtual void resync();
+   virtual void flush();
+   virtual void tempClose();
+   virtual void reopen();
 // </group>
 
 // Return the name of the current ImageInterface object.
 // Since many images may be concatenated, there is no
 // sensible name.  So returns the string "Concatenation :"
-   virtual String name(const Bool stripPath=False) const {return String("Concatenation :");};
-
-// Make a copy of the object (reference semantics).
-   virtual ImageInterface<T>* cloneII() const {return new ImageConcat(*this);};
+   virtual String name (Bool stripPath=False) const;
 
 // Has the object really a mask?
-   virtual Bool isMasked() const {return latticeConcat_p.isMasked();};
+   virtual Bool isMasked() const;
 
 // Does the image have a pixelmask?
-   virtual Bool hasPixelMask() const {return latticeConcat_p.hasPixelMask();};
+   virtual Bool hasPixelMask() const;
 
 // Get access to the pixelmask.
 // An exception is thrown if the image does not have a pixelmask
 // <group>
-   virtual const Lattice<Bool>& pixelMask() const {return latticeConcat_p.pixelMask();};
-   virtual Lattice<Bool>& pixelMask() {return latticeConcat_p.pixelMask();};
+   virtual const Lattice<Bool>& pixelMask() const;
+   virtual Lattice<Bool>& pixelMask();
   // </group>
   
 // Get the region used (always returns 0)
-   virtual const LatticeRegion* getRegionPtr() const {return latticeConcat_p.getRegionPtr();};
+   virtual const LatticeRegion* getRegionPtr() const;
 
 // If all of the underlying lattices are writable returns True
-   virtual Bool isWritable() const {return latticeConcat_p.isWritable();};
+   virtual Bool isWritable() const;
    
-// Is the mask writable?
-// If all of the undcontributing lattice masks are writable returns True
-   virtual Bool isMaskWritable() const {return latticeConcat_p.isMaskWritable();};
-  
 // Return the shape of the concatenated image
-   virtual IPosition shape() const {return latticeConcat_p.shape();};
+   virtual IPosition shape() const;
 
   
-// Return the best cursor shape.  This isn't very meaningful  for an ImageConcat
+// Return the best cursor shape.  This isn't very meaningful for an ImageConcat
 // Image since it isn't on disk !  But if you do copy it out, this is
 // what you should use.  The maxPixels aregument is ignored.   
    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
@@ -224,21 +227,13 @@ public:
 // another array. Generally the user should use function getMaskSlice
    virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
 
-// Do the actual put of the data into the Lattice.  This will change the underlying
-// images (if they are writable) that were used to create the
+// Do the actual put of the data into the Lattice.  This will change the
+// underlying images (if they are writable) that were used to create the
 // ImageConcat object. It throws an exception if not writable.
 // Generally the user should use function putSlice
    virtual void doPutSlice (const Array<T>& sourceBuffer,
                             const IPosition& where,
                             const IPosition& stride);      
-
-// Do the actual put of a section of the mask into the Lattice.   This will change
-// the underlying images (if they are writable) that were used to create the
-// ImageConcat object. It throws an exception if not writable.
-// Generally the user should use function putMaskSlice
-   virtual void doPutMaskSlice (const Array<Bool>& buffer,
-                                const IPosition& where,
-                                const IPosition& stride);
 
 // Throws an excpetion as you cannot reshape an ImageConcat object
    virtual void resize(const TiledShape&);
@@ -252,21 +247,13 @@ public:
   virtual Unit units() const;
 // </group>
 
-// Functions to set or replace the coordinate information.  
-// Although the ImageConcat is not writable, you can change the
-// CoordinateSystem (as long as it is consistent with the old one)
-  virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
-
-// Function to get a LELCoordinate object containing the coordinates.
-  virtual LELCoordinates lelCoordinates() const;
-
 // Often we have miscellaneous information we want to attach to an image.
 // <src>setMiscInfo</src> throws an exception as ImageConcat is not
 // writable.  <src>miscInfo</src> returns a record with all of the
 // miscInfo records from each image in it, one per numbered field
 // <group>
   virtual const RecordInterface &miscInfo() const;
-  virtual Bool setMiscInfo(const RecordInterface &newInfo);
+  virtual Bool setMiscInfo (const RecordInterface &newInfo);
 // </group>
 
 // Check class invariants.
@@ -274,18 +261,20 @@ public:
   
 // These are the implementations of the LatticeIterator letters.
 // <note> not for public use </note>
-  virtual LatticeIterInterface<T> *makeIter(const LatticeNavigator &navigator) const;
+  virtual LatticeIterInterface<T> *makeIter
+                               (const LatticeNavigator &navigator) const;
 
 
 private:
-
    LatticeConcat<T> latticeConcat_p;
    Unit unit_p;
    Bool warnAxisNames_p, warnAxisUnits_p, warnImageUnits_p;
-   Bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p;
+   Bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p, warnTab_p;
    Bool isContig_p;
-   mutable TableRecord rec_p;
+   mutable Record rec_p;
    Vector<Bool> isImage_p;
+   Vector<Double> pixelValues_p;
+   Vector<Double> worldValues_p;
 //
    Double coordConvert(Int& worldAxis, LogIO& os,
                        const CoordinateSystem& cSys,
@@ -294,14 +283,14 @@ private:
                          const CoordinateSystem& cSys1,
                          const CoordinateSystem& cSys2,
                          LogIO& os, uInt axis, Bool relax);
-   void checkCoordinates (Bool& warnRefPix, Bool& warnRefVal,
-                          Bool& warnInc, LogIO& os,
-                          const ImageSummary<T>& sum1,
-                          const ImageSummary<T>& sum2,
-                          uInt axis, Bool relax);
+   void checkNonConcatAxisCoordinates (Bool& warnRefPix, Bool& warnRefVal,
+                                       Bool& warnInc, LogIO& os,
+                                       const ImageInterface<T>& image,
+                                       Bool relax);
    Vector<Int> makeNewStokes(const Vector<Int>& stokes1,
                              const Vector<Int>& stokes2);
    void setCoordinates();
-
 };
+
+
 #endif
