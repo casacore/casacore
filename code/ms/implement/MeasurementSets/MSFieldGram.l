@@ -54,7 +54,6 @@ USTRING   ({UQSTRING}|{UASTRING})+
 
 NAME      [A-Za-z0-9]*|[A-Za-z0-9]*"*"
 CODE      ([A-Za-z])*
-FIELD     [Ff][Ii][Ee][Ll][Dd]
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -126,10 +125,6 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 
  /* Literals */
 
-{FIELD} {
-            msFieldGramPosition() += yyleng;
-	    return FIELD;
-	  }
 {INT}     {
             msFieldGramPosition() += yyleng;
             lvalp->ival = atoi(MSFieldGramtext);

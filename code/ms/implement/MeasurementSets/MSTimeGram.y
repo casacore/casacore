@@ -74,7 +74,7 @@ int MSTimeGramlex (YYSTYPE*);
 %}
 
 %%
-statement: EQASS SQUOTE SQUOTE {
+statement: SQUOTE SQUOTE {
                   cout << "selection" << endl;}
                ;
 

@@ -52,7 +52,6 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-UVDIST     [Uu][Vv][Dd][Ii][Ss][Tt]
 DISTANCEUNIT [Kk][Mm]
 ML           [Mm][Ll]
 KL           [Kk][Ll]
@@ -128,9 +127,6 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
           }
 
  /* Literals */
-{UVDIST}  { msUvDistGramPosition() += yyleng;
-            return UVDIST;
-          }
 {INT}     { msUvDistGramPosition() += yyleng;
             lvalp->ival = atoi(MSUvDistGramtext);
             return NUMBER;

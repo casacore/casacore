@@ -48,7 +48,6 @@ using namespace casa;
 
 %token <str> NAME
 %token CODE
-%token FIELD
 %token EQASS
 %token <ival> INDEX
 %token <dval> FNUMBER
@@ -85,8 +84,8 @@ int MSFieldGramlex (YYSTYPE*);
 %}
 
 %%
-fieldstatement: FIELD EQASS SQUOTE fieldexpr SQUOTE {
-                  $$ = $4 ;
+fieldstatement: SQUOTE fieldexpr SQUOTE {
+                  $$ = $2 ;
                   cout << "field selection" << endl;}
                ;
 fieldexpr:  namelist

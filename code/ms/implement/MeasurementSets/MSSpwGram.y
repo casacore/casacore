@@ -43,7 +43,6 @@ using namespace casa;
   Double dval;
 }
 
-%token SPW
 %token FREQUENCYUNIT
 %token VELOCITYUNIT
 %token <str> SPWNAME
@@ -83,12 +82,12 @@ int MSSpwGramlex (YYSTYPE*);
 %}
 
 %%
-spwstatement: SPW EQASS SQUOTE spwexpr SQUOTE {
-                $$ = $4;
+spwstatement: SQUOTE spwexpr SQUOTE {
+                $$ = $2;
                 cout << "Spw selection "<< endl;}
-            | SPW EQASS INDEX {
+            | INDEX {
                    Vector<Int> spwids(1);
-		   spwids[0] = $3;
+		   spwids[0] = $1;
 		   cout << ("spw index\n") << spwids[0] << endl;;
                    $$ = MSSpwParse().selectSpwIds(spwids);}
             ;

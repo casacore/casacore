@@ -50,7 +50,6 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-SPW        [Ss][Pp][Ww]
 FREQUENCYUNIT    [Mm][Hh][Zz]
 VELOCITYUNIT     [Kk][Mm]"/"[Ss]
 SPWNAME    [A-Za-z]([A-Za-z0-9])*
@@ -122,9 +121,6 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
           }
 
   /* Literals */
-{SPW}     { msSpwGramPosition() += yyleng;
-	    return SPW;
-	  }
 {FREQUENCYUNIT}  { msSpwGramPosition() += yyleng;
                    return FREQUENCYUNIT;
                  }

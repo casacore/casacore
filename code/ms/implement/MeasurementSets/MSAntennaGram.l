@@ -52,7 +52,6 @@ STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
 IDENTIFIER     [A-Za-z_0-9]+
-ANTENNA        [Aa][Nn][Tt][Ee][Nn][Nn][Aa]
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -125,9 +124,6 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
           }
 
   /* Literals */
-{ANTENNA}  { msAntennaGramPosition() += yyleng;
-             return ANTENNA;
-	   }
 
 {IDENTIFIER} { msAntennaGramPosition() += yyleng;
                cout << "scan " << MSAntennaGramtext << endl;

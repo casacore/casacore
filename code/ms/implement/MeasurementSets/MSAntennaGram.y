@@ -43,7 +43,6 @@ using namespace casa;
   char* str;
 }
 
-%token ANTENNA
 %token <str> IDENTIFIER
 %token <ival> INDEX
 %token <dval> FNUMBER
@@ -82,12 +81,12 @@ int MSAntennaGramlex (YYSTYPE*);
 %}
 
 %%
-antennastatement: ANTENNA EQASS SQUOTE antennaexpr SQUOTE {
+antennastatement: SQUOTE antennaexpr SQUOTE {
                     cout << "Antenna selection " << endl;
-                    $$ = $4;
+                    $$ = $2;
                   }
-                | ANTENNA EQASS antennalistexpr {
-                  $$ = $3; }
+                | antennalistexpr {
+                  $$ = $1; }
                 ;
 
 antennaexpr: IDENTIFIER {

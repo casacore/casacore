@@ -52,7 +52,6 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-UVDIST     [Uu][Vv][Dd][Ii][Ss][Tt]
 DISTANCEUNIT [Kk][Mm]
 ML           [Mm][Ll]
 KL           [Kk][Ll]

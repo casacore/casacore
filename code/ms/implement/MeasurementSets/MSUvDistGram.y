@@ -42,7 +42,6 @@ using namespace casa;
   Double dval[2];
 }
 
-%token UVDIST
 %token EQASS
 %token SQUOTE
 %token <ival> NUMBER
@@ -85,8 +84,8 @@ int MSUvDistGramlex (YYSTYPE*);
 %}
 
 %%
-uvdiststatement : UVDIST EQASS SQUOTE uvdistexpr SQUOTE {
-                    $$ = $4 ;
+uvdiststatement : SQUOTE uvdistexpr SQUOTE {
+                    $$ = $2 ;
                     cout << "Start statement" << endl;}
                 ;
 
