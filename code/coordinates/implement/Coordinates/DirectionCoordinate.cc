@@ -401,9 +401,10 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
                                 const Vector<Bool>& worldAxes,
                                 const Vector<Bool>& pixelAxes,
                                 const Vector<Double>& worldMin,
-                                const Vector<Double>& worldMax,
-                                Bool useConversionType) const
+                                const Vector<Double>& worldMax) const
 {
+   Bool useConversionType = False;
+
 // Temporaries
 
    static Vector<Double> in_tmp;
