@@ -1,5 +1,5 @@
 //# MCuvw.cc:  Muvw conversion routines 
-//# Copyright (C) 1998,1999,2000,2002
+//# Copyright (C) 1998,1999,2000,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,7 +78,9 @@ uInt MCuvw::ToRef_p[N_Routes][3] = {
   {Muvw::ITRF,			Muvw::HADEC,	0},
   {Muvw::HADEC,			Muvw::ITRF,	0},
   {Muvw::TOPO,			Muvw::HADEC,	0},
-  {Muvw::TOPO,			Muvw::APP,	0} };
+  {Muvw::TOPO,			Muvw::APP,	0},
+  {Muvw::ICRS,			Muvw::J2000,	0},
+  {Muvw::J2000,			Muvw::ICRS,	0} };
 uInt MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
 
 //# Constructors
@@ -595,6 +597,22 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.deapplyGALtoSUPERGAL(in);
       measMath.deapplyGALtoSUPERGAL(MVDIR1);
      break;
+ 
+    case ICRS_J2000:
+      getJ2000();
+      measMath.deapplyICRStoJ2000(MVDIR1);
+      toPole(in);
+      measMath.applyICRStoJ2000(in);
+      measMath.applyICRStoJ2000(MVDIR1);
+      break;
+      
+    case J2000_ICRS:
+      getJ2000();
+      measMath.applyICRStoJ2000(MVDIR1);
+      toPole(in);
+      measMath.deapplyICRStoJ2000(in);
+      measMath.deapplyICRStoJ2000(MVDIR1);
+      break;
     
     default:
       break;

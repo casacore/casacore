@@ -1,5 +1,5 @@
 //# Muvw.cc:  A Measure: uvw on Earth
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -118,7 +118,8 @@ const String &Muvw::showType(Muvw::Types tp) {
     "TECLIPTIC",
     "SUPERGAL",
     "ITRF",
-    "TOPO" };
+    "TOPO",
+    "ICRS" };
 
   Muvw::checkMyTypes();
   return tname[tp];
@@ -130,7 +131,7 @@ const String &Muvw::showType(uInt tp) {
 
 const String *const Muvw::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 22;
+  static const Int N_name  = 23;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
     "J2000",
@@ -154,7 +155,8 @@ const String *const Muvw::allMyTypes(Int &nall, Int &nextra,
     "TECLIPTIC",
     "SUPERGAL",
     "ITRF",
-    "TOPO" };
+    "TOPO",
+    "ICRS" };
   
   static const uInt oname[N_name] = {
     Muvw::J2000,
@@ -178,7 +180,8 @@ const String *const Muvw::allMyTypes(Int &nall, Int &nextra,
     Muvw::TECLIPTIC,
     Muvw::SUPERGAL,
     Muvw::ITRF,
-    Muvw::TOPO };
+    Muvw::TOPO,
+    Muvw::ICRS };
 
   Muvw::checkMyTypes();
   nall   = N_name;

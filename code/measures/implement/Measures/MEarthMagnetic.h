@@ -1,5 +1,5 @@
 //# MEarthMagnetic.h: A Measure: Magnetic field on Earth
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1995-1999,2000,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -151,6 +151,7 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
     SUPERGAL,
     ITRF,
     TOPO,
+    ICRS,
     N_Types,
     // Models. First one should be IGRF
     IGRF = 32,

@@ -1,5 +1,5 @@
 //# MCBaseline.cc:  MBaseline conversion routines 
-//# Copyright (C) 1998,1999,2000,2002
+//# Copyright (C) 1998,1999,2000,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,7 +78,9 @@ uInt MCBaseline::ToRef_p[N_Routes][3] = {
   {MBaseline::ITRF,		MBaseline::HADEC,	0},
   {MBaseline::HADEC,		MBaseline::ITRF,	0},
   {MBaseline::TOPO,		MBaseline::HADEC,	0},
-  {MBaseline::TOPO,		MBaseline::APP,		0} };
+  {MBaseline::TOPO,		MBaseline::APP,		0},
+  {MBaseline::ICRS,		MBaseline::J2000,	0},
+  {MBaseline::J2000,		MBaseline::ICRS,	0} };
 uInt MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
 
 //# Constructors
@@ -397,6 +399,14 @@ void MCBaseline::doConvert(MVBaseline &in,
       
     case SUPERGAL_GAL:
       measMath.deapplyGALtoSUPERGAL(in);
+      break;
+ 
+    case ICRS_J2000:
+      measMath.applyICRStoJ2000(in);
+      break;
+      
+    case J2000_ICRS:
+      measMath.deapplyICRStoJ2000(in);
       break;
     
     default:

@@ -1,5 +1,5 @@
 //# MCEarthMagnetic.cc:  MEarthMagnetic conversion routines 
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,7 +80,9 @@ uInt MCEarthMagnetic::ToRef_p[N_Routes][3] = {
   {MEarthMagnetic::ITRF,		MEarthMagnetic::HADEC,		0},
   {MEarthMagnetic::HADEC,		MEarthMagnetic::ITRF,		0},
   {MEarthMagnetic::TOPO,		MEarthMagnetic::HADEC,		0},
-  {MEarthMagnetic::TOPO,		MEarthMagnetic::APP,		0} };
+  {MEarthMagnetic::TOPO,		MEarthMagnetic::APP,		0},
+  {MEarthMagnetic::ICRS,		MEarthMagnetic::J2000,		0},
+  {MEarthMagnetic::J2000,		MEarthMagnetic::ICRS,		0} };
 uInt MCEarthMagnetic::
 FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
 
@@ -452,6 +454,14 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
       
     case SUPERGAL_GAL:
       measMath.deapplyGALtoSUPERGAL(in);
+      break;
+ 
+    case ICRS_J2000:
+      measMath.applyICRStoJ2000(in);
+      break;
+      
+    case J2000_ICRS:
+      measMath.deapplyICRStoJ2000(in);
       break;
     
     case R_MODEL0:

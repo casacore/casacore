@@ -1,5 +1,5 @@
 //# MBaseline.cc:  A Measure: Baseline on Earth
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -120,7 +120,8 @@ const String &MBaseline::showType(MBaseline::Types tp) {
     "TECLIPTIC",
     "SUPERGAL",
     "ITRF",
-    "TOPO" };
+    "TOPO",
+    "ICRS" };
 
   MBaseline::checkMyTypes();
   return tname[tp];
@@ -132,7 +133,7 @@ const String &MBaseline::showType(uInt tp) {
 
 const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 22;
+  static const Int N_name  = 23;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
     "J2000",
@@ -156,7 +157,8 @@ const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
     "TECLIPTIC",
     "SUPERGAL",
     "ITRF",
-    "TOPO" };
+    "TOPO",
+    "ICRS" };
   
   static const uInt oname[N_name] = {
     MBaseline::J2000,
@@ -180,7 +182,8 @@ const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
     MBaseline::TECLIPTIC,
     MBaseline::SUPERGAL,
     MBaseline::ITRF,
-    MBaseline::TOPO };
+    MBaseline::TOPO,
+    MBaseline::ICRS };
 
   MBaseline::checkMyTypes();
   nall   = N_name;

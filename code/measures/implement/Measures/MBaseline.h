@@ -1,5 +1,5 @@
 //# MBaseline.h: A Measure: Baseline on Earth
-//# Copyright (C) 1998,1999,2000,2002
+//# Copyright (C) 1998,1999,2000,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -118,6 +118,7 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
     SUPERGAL,
     ITRF,
     TOPO,
+    ICRS,
     N_Types,
     // Defaults
     DEFAULT=ITRF,
