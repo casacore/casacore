@@ -2112,3 +2112,4 @@
 08 334 src rm doc/user/Refman.dir/sdcalc_tkpg.ps
 08 339 src rm install/codedevl/reident
 08 352 src mv trial/apps/duplicates/reident.cc trial/apps/reident/reident.cc
+08 353 src rm trial/apps/gfitgauss/templates
