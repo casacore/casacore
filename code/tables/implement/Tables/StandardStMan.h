@@ -1,5 +1,5 @@
 //# StandardStMan.h: The Standard Storage Manager
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,9 +77,9 @@
 // <p>
 // The file size is at least the size of a bucket, even if only the table
 // contains only a few rows, thus uses only a fraction of a bucket.
-// The default bucketsize is 32768 bytes. This means that if it is known
-// in advance that the table will contain only a few rows, it might make
-// sense to construct the StandardStMan with a small bucketsize.
+// The default bucketsize is 32 rows. This means that if it is known
+// in advance that the table will contain many more rows, it might make
+// sense to construct the StandardStMan with a larger bucketsize.
 // <p>
 // StandardStMan is a robust storage manager. Care has been taken
 // that its index cannot be corrupted in case of exceptions like
@@ -161,7 +161,7 @@ public:
     // <br>- A negative number gives the number of rows per bucket.
     // The bucket size in bytes will be calculated from it.
     // Note that in this way the maximum bucketsize is 32768 (minimum is 128).
-    // <br>- The default 0 means that 32 rows fill be stored in a bucket.
+    // <br>- The default 0 means that 32 rows will be stored in a bucket.
     // <br>Note that the default is only suitable for small tables.
     // In general it makes sense to give the expected number of table rows.
     // In that way the buckets will be small enough for small tables
