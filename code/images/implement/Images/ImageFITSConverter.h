@@ -1,5 +1,5 @@
 //# ImageFITSConverter.h: Interconvert between AIPS++ Images and FITS files
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,11 @@ template<class T> class ImageInterface;
 class IPosition;
 class String;
 class File;
+class ImageInfo;
+class CoordinateSystem;
+class RecordInterface;
+class LogIO;
+class Unit;
 
 // <summary>
 // Interconvert between AIPS++ Images and FITS files.
@@ -198,6 +203,17 @@ public:
 				     uInt imagePixelSize,
 				     uInt fitsPixelSize,
 				     uInt memoryInMB);
+
+// Recover CoordinateSystem from header.  Used keywords are removed from header
+// Degenerate axes may be added to shape if needed
+    static CoordinateSystem getCoordinateSystem (RecordInterface& header,
+                                                 LogIO& os, IPosition& shape);
+
+// Recover ImageInfo from header. Used keywords are removed from header
+    static ImageInfo getImageInfo (RecordInterface& header);
+
+// Recover brightness unit from header. Used keywords are removed from header
+    static Unit getBrightnessUnit (RecordInterface& header, LogIO& os);
 
 private:
    static Bool removeFile (String& error, const File& outFile,
