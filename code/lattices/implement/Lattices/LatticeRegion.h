@@ -1,5 +1,5 @@
 //# LatticeRegion.h: An optionally strided region in a lattice
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -164,7 +164,6 @@ public:
     IPosition convert (const IPosition& position) const;
     // </group>
 
-protected:
     // Do the actual getting of the mask.
     virtual Bool doGetSlice (Array<Bool>& buffer, const Slicer& section);
 
