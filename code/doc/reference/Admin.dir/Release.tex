@@ -1,10 +1,129 @@
 \chapter{Preparing the Release}
 \section{General timeline}
 \section{Doing the uprev}
+\begin{itemize}
+\item Send a early morning/late night [to give Oz a chance to respond] notice
+   to aips2-workers telling them that the uprev and check-in freeze will happen
+      later today/tomorrow. 
+
+\item Notify aips2-workers so that check-ins will be disabled in 30 minutes to
+         allow any in progress check-ins to be completed.
+
+\item (adm) Freeze check-ins on the development master repository by running:
+\begin{verbatim}
+ /export/aips++/scripts/do_disable develop
+\end{verbatim}
+
+\item (adm) Stop the regular exhales in the (aips2adm) crontab; if the misery
+	drags on, the regular exhale can gum up the works
+
+\item (adm) Do an initial exhale to ensure that everything is up to date:
+\begin{verbatim}
+ ksh
+ . $HOME/.profile
+ exhale 2>&1 | mailx -s "AIPS++ (initial) uprev exhale" aips2-inhale
+\end{verbatim}
+
+\item (mgr) Update the data repository in release installation, e.g.
+\begin{verbatim}
+  cvsup /usr/local/aips++/data/supfile
+\end{verbatim}
+
+\item (mgr) Run cumulative inhale (after exhale completes) on local installation
+\item (user) run "stable" tests
+
+\item (adm) Back up release master (/export/aips++/repository/release), if desired.
+
+\item (adm) Delete the release master and copy development to release:
+\begin{verbatim}
+ cd /export/aips++/repository
+ rm -rf release
+ mkdir release
+ cd release
+ (cd ../develop; tar cf - .) | tar xf -
+\end{verbatim}
+
+\item (adm) In /export/aips++/repository/release, edit:
+\begin{verbatim}										
+ .cshrc  .login  .profile  aipsinit.csh
+ aipsinit.es  aipsinit.rc  aipsinit.sh
+ replacing each occurrence of /develop with /release remove editor backups
+\end{verbatim}
+												
+\item (adm) Update ftp link, VERSION, and base release tar file (where <REL> is the (last) base
+release upon which the release master is based):
+\begin{verbatim}
+ cd /export/aips++/repository/release
+ rm pub
+ ln -s /export/aips++/pub/versions/release pub
+ rm -f pub/master/VERSION
+ cp master/VERSION pub/master
+ cp ../develop/pub/master/master-<REL>.000.tar.gz pub/master
+ /opt/local/gnu/bin/touch --file ../develop/pub/master/master-<REL>.000.tar.gz pub/master/master-<REL>.000.tar.gz
+\end{verbatim}
+\item (adm) Run exhale on the release master:
+\begin{verbatim}
+ ksh
+ . /export/aips++/repository/release/.profile
+ exhale 2>&1 | tee $HOME/master/etc/rexhale.log | mailx -s "AIPS++ release exhale" aips2-inhale &
+\end{verbatim}
+
+\item(adm) Do uprev (note, backup of VERSION is kept in VERSION.<REL>):
+\begin{verbatim}										
+ /export/aips++/scripts/do_uprev
+\end{verbatim}
+\item (mgr) Run test inhales for both the release and develop masters to ensure
+that they work properly.
+\item (adm) Enable regular exhales in the (aips2adm) crontab
+\item (adm) Unfreeze check-ins on the development master repository by running:
+\begin{verbatim}
+  /export/aips++/scripts/do_enable develop
+\end{verbatim}
+\item (adm) Unlock any locked files in the release RCS tree
+\begin{verbatim}
+/export/aips++/scripts/do_unlock.sh
+\end{verbatim}
+\end{itemize}
+
 \subsection{The freezes}
 \subsection{Update the Docs}
 \section{Testing the build}
 \section{Patching the release candidate}
+Once the release master has been updated, patches for defect resolution and documentation will be
+sent.  These patches are suppose to be sent a binary shar files (shar -B dir/thefile > myfile.shar).
+In general only defects fixes are allowed for .cc, .h and .g files. Documentation is always welcomed.
+Steps for patching always done as a user:
+\begin{itemize}
+\item Make a seperate code tree
+\item Save the shar files into a directory, i.e. /home/tarzan5/wyoung/patches/jun21.
+\item Edit the files to remove non-shar file text
+\item Unpack the shar files into a clean code tree,
+\begin{verbatim}
+cd /home/tarzan5/wyoung/patches
+./unpack.sh jun21 2&>1 | tee patch.log
+\end{verbatim}
+Check the log to make sure everything unpacked cleanly.  If there are problems notify the sender.
+\item Patch the release master
+\begin{itemize}
+\item (adm) Enable checkins in the release master; /export/aips++/scripts/do\_enable release
+\item (user) Apply the patches
+\begin{verbatim}
+cd /home/tarzan5/wyoung/aips++
+../patches/do_patch.sh
+\end{verbatim}
+\item (adm) Disable checkins in the release master; /export/aips++/scripts/do\_disable release
+\item (adm) Exhale the release
+\item (mgr) inhale -R release -c
+\item (mgr) check the build log for problems
+\item (user) Notify aips2-workers of accepted patches
+\begin{verbatim}
+ cd /home/tarzan5/wyoung/patches
+ awk -f okpatch.awk jun21/* > patch.mailing
+ mailx -s "Accepted patches for release" aips2-workers@aoc.nrao.edu < patch.mailing
+\end{verbatim}
+Note the okpatch.awk script will need to be modified with each new version.
+\end{itemize}
+\end{itemize}
 \section{Preparing the binary}
 \subsection{The pnultimate build}
 \subsection{Preproduction}
