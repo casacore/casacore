@@ -344,7 +344,7 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (record.asuInt("TpUInt2") == 10);
     AlwaysAssertExit (allEQ (record.asArrayuInt("TpUInt2"), uInt(10)));
     record.define ("TpInt2", 3);
-    record.define ("TpUInt2", Vector<uInt>(1,4));
+    record.define ("TpUInt2", Vector<uInt>(1,4u));
     AlwaysAssertExit (record.asInt("TpInt2") == 3);
     AlwaysAssertExit (allEQ (record.asArrayInt("TpInt2"), 3));
     AlwaysAssertExit (record.asuInt("TpUInt2") == 4);
