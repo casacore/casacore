@@ -26,12 +26,7 @@
 //# $Id$
 
 //# Includes
-///#ifdef __GNUG__
-///#include <aips/Quanta/Quantum.h>
-///typedef Quantum<Double> gpp_MCDoppler_bug1;
-///#endif
 #include <aips/Measures/MCDoppler.h>
-///#include <aips/Quanta/QMath.h>
 
 //# Statics
 Bool MCDoppler::stateMade_p = False;

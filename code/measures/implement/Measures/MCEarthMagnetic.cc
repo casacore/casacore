@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-///#ifdef __GNUG__
-///#include <aips/Quanta/Quantum.h>
-///typedef Quantum<Double> gpp_EarthMagnetic_bug1;
-///#endif
 #include <aips/Exceptions.h>
 #include <aips/Measures/MCEarthMagnetic.h>
 #include <aips/Measures/EarthField.h>
