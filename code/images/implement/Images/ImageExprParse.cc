@@ -203,6 +203,8 @@ LatticeExprNode LatticeParse::makeFuncNode (const LatticeExprNode& arg1,
 	return max(arg1, arg2);
     } else if (itsSval == "amp") {
 	return amp(arg1, arg2);
+    } else if (itsSval == "pa") {
+	return pa(arg1, arg2);
     } else {
 	throw (AipsError ("2-argument function " + itsSval + " is unknown"));
     }
