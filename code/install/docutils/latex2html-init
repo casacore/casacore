@@ -141,7 +141,7 @@ sub aips2script {
 "img7off.src = \"DOCSROOT/html/navpages/images/topglishoff.gif\";\n" .
 #"\n" .
 #"\n" .
-"}\n" .
+#}\n" .
 #"\n" .
 "function imgOn(imgName) {\n" .
 "        if (document.images) {\n" .
@@ -155,7 +155,7 @@ sub aips2script {
 #"\n" .
 "</SCRIPT>\n" .
 "\n"
-"}
+}
 sub aips2topbar {
 #"\n" .
 "<FONT FACE=\"Arial,Helvetica\">\n" .
