@@ -1,5 +1,5 @@
 //# ArrColData.h: Access to a table column containing arrays
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -124,6 +124,9 @@ public:
     // Ask if the data manager can handle a column.
     virtual Bool canAccessArrayColumn (Bool& reask) const;
 
+    // Ask if the data manager can handle some cells in a column.
+    virtual Bool canAccessArrayColumnCells (Bool& reask) const;
+
     // Ask if the data manager can handle a column slice.
     virtual Bool canAccessColumnSlice (Bool& reask) const;
 
@@ -182,7 +185,7 @@ public:
     // The arrays in the column have to have the same shape in all cells.
     // The length of the buffer pointed to by arrayPtr must match
     // the actual length. This is checked by ArrayColumn.
-    void getColumn (const Vector<uInt>& rownrs, void* arrayPtr) const;
+    void getArrayColumnCells (const Vector<uInt>& rownrs, void* arrayPtr) const;
 
     // Get subsections from all arrays in the column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
@@ -196,8 +199,8 @@ public:
     // The arrays in the column have to have the same shape in all cells.
     // The length of the buffer pointed to by arrayPtr must match
     // the actual length. This is checked by ArrayColumn.
-    void getSliceColumn (const Vector<uInt>& rownrs, const Slicer&,
-			 void* arrayPtr) const;
+    void getColumnSliceCells (const Vector<uInt>& rownrs, const Slicer&,
+			      void* arrayPtr) const;
 
     // Put the value in a particular cell.
     // The length of the buffer pointed to by arrayPtr must match
@@ -221,7 +224,7 @@ public:
     // The arrays in the column have to have the same shape in all cells.
     // The length of the buffer pointed to by arrayPtr must match
     // the actual length. This is checked by ArrayColumn.
-    void putColumn (const Vector<uInt>& rownrs, const void* arrayPtr);
+    void putArrayColumnCells (const Vector<uInt>& rownrs, const void* arrayPtr);
 
     // Put into subsections of all table arrays in the column.
     // If the column contains n-dim arrays, the source array is (n+1)-dim.
@@ -235,8 +238,8 @@ public:
     // The arrays in the column have to have the same shape in all cells.
     // The length of the buffer pointed to by arrayPtr must match
     // the actual length. This is checked by ArrayColumn.
-    void putSliceColumn (const Vector<uInt>& rownrs, const Slicer&,
-			 const void* arrayPtr);
+    void putColumnSliceCells (const Vector<uInt>& rownrs, const Slicer&,
+			      const void* arrayPtr);
 
     // Create a data manager column object for this column.
     void createDataManagerColumn();

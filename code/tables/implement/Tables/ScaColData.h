@@ -1,5 +1,5 @@
 //# ScaColData.h: Access to a table column containing scalars
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,6 +108,9 @@ public:
     // Ask if the data manager can handle a column.
     Bool canAccessScalarColumn (Bool& reask) const;
 
+    // Ask if the data manager can handle some cells in a column.
+    Bool canAccessScalarColumnCells (Bool& reask) const;
+
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description.
     void initialize (uInt startRownr, uInt endRownr);
@@ -126,7 +129,7 @@ public:
     // Get the array of some values in the column (on behalf of RefColumn).
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void getColumn (const Vector<uInt>& rownrs, void* dataPtr) const;
+    void getScalarColumnCells (const Vector<uInt>& rownrs, void* dataPtr) const;
 
     // Put the value in a particular cell.
     // The length of the buffer pointed to by dataPtr must match
@@ -141,7 +144,7 @@ public:
     // Put the array of some values in the column (on behalf on RefColumn).
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void putColumn (const Vector<uInt>& rownrs, const void* dataPtr);
+    void putScalarColumnCells (const Vector<uInt>& rownrs, const void* dataPtr);
 
     // Add this column and its data to the Sort object.
     // It may allocate some storage on the heap, which will be saved

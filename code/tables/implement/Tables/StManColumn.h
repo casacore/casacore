@@ -1,5 +1,5 @@
 //# StManColumn.h: Base storage manager column class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_STMANCOLUMN_H)
 #define AIPS_STMANCOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("StManColumn.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -119,6 +116,14 @@ public:
     // By default the storage manager can handle access to a scalar column.
     Bool canAccessScalarColumn (Bool& reask) const;
 
+    // All storage managers can handle access to scalar column cells, because
+    // this class contains a default implementation of getScalarColumnCellsV.
+    Bool canAccessScalarColumnCells (Bool& reask) const;
+
+    // All storage managers can handle access to array column cells, because
+    // this class contains a default implementation of getArrayColumnCellsV.
+    Bool canAccessArrayColumnCells (Bool& reask) const;
+
     // Get all scalar values in the column.
     // The argument dataPtr is in fact a Vector<T>*, but a void*
     // is needed to be generic.
@@ -134,6 +139,24 @@ public:
     // (which is guaranteed by the ScalarColumn putColumn function).
     // The default implementation calls the appropriate putScalarColumnXXV.
     void putScalarColumnV (const void* dataPtr);
+
+    // Get some scalar values in the column.
+    // The argument dataPtr is in fact a Vector<T>*, but a void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ScalarColumn getColumn function).
+    // The default implementation calls the appropriate getScalarColumnCellsXXV.
+    void getScalarColumnCellsV (const Vector<uInt>& rownrs,
+				void* dataPtr);
+
+    // Put some scalar values in the column.
+    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ScalarColumn getColumn function).
+    // The default implementation calls the appropriate putScalarColumnCellsXXV.
+    void putScalarColumnCellsV (const Vector<uInt>& rownrs,
+				const void* dataPtr);
 
     // Get scalars from the given row on with a maximum of nrmax values.
     // It returns the actual number of values got.
@@ -158,7 +181,7 @@ public:
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn get function).
-    // The default implementation throws an "invalid operation" exception.
+    // The default implementation calls the appropriate getArrayXXV.
     void getArrayV (uInt rownr, void* dataPtr);
 
     // Put the array value into the given row.
@@ -166,7 +189,7 @@ public:
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn put function).
-    // The default implementation throws an "invalid operation" exception.
+    // The default implementation calls the appropriate putArrayXXV.
     void putArrayV (uInt rownr, const void* dataPtr);
 
     // Get all array values in the column.
@@ -174,7 +197,7 @@ public:
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
+    // The default implementation calls the appropriate getArrayColumnXXV.
     void getArrayColumnV (void* dataPtr);
 
     // Put all array values in the column.
@@ -182,15 +205,31 @@ public:
     // is needed to be generic.
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn putColumn function).
-    // The default implementation throws an "invalid operation" exception.
+    // The default implementation calls the appropriate putArrayColumnXXV.
     void putArrayColumnV (const void* dataPtr);
+
+    // Get some array values in the column.
+    // The argument dataPtr is in fact an Array<T>*, but a void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    // The default implementation calls the appropriate getArrayColumnCellsXXV.
+    void getArrayColumnCellsV (const Vector<uInt>& rownrs, void* dataPtr);
+
+    // Put some array values in the column.
+    // The argument dataPtr is in fact an const Array<T>*, but a const void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    // The default implementation calls the appropriate putArrayColumnCellsXXV.
+    void putArrayColumnCellsV (const Vector<uInt>& rownrs, const void* dataPtr);
 
     // Get a section of the array in the given row.
     // The argument dataPtr is in fact an Array<T>*, but a void*
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn getSlice function).
-    // The default implementation throws an "invalid operation" exception.
+    // The default implementation calls the appropriate getSliceXXV.
     void getSliceV (uInt rownr, const Slicer& slicer, void* dataPtr);
 
     // Put into a section of the array in the given row.
@@ -198,7 +237,7 @@ public:
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn putSlice function).
-    // The default implementation throws an "invalid operation" exception.
+    // The default implementation calls the appropriate putSliceXXV.
     void putSliceV (uInt rownr, const Slicer& slicer, const void* dataPtr);
 
     // Get a section of all arrays in the column.
@@ -206,7 +245,7 @@ public:
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn getColumn function).
-    // The default implementation throws an "invalid operation" exception.
+    // The default implementation calls the appropriate getColumnSliceXXV.
     void getColumnSliceV (const Slicer& slicer, void* dataPtr);
 
     // Put into a section of all arrays in the column.
@@ -214,8 +253,27 @@ public:
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn putColumn function).
-    // The default implementation throws an "invalid operation" exception.
+    // The default implementation calls the appropriate putColumnSliceXXV.
     void putColumnSliceV (const Slicer& slicer, const void* dataPtr);
+
+    // Get a section of some arrays in the column.
+    // The argument dataPtr is in fact an Array<T>*, but a void*
+    // is needed to be generic.
+    // The array pointed to by dataPtr has to have the correct shape
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    // The default implementation calls the appropriate getColumnSliceCellsXXV.
+    virtual void getColumnSliceCellsV (const Vector<uInt>& rownrs,
+				       const Slicer& slicer, void* dataPtr);
+
+    // Put into a section of some arrays in the column.
+    // The argument dataPtr is in fact a const Array<T>*, but a const void*
+    // is needed to be generic.
+    // The array pointed to by dataPtr has to have the correct shape
+    // (which is guaranteed by the ArrayColumn putColumn function).
+    // The default implementation calls the appropriate putColumnSliceCellsXXV.
+    virtual void putColumnSliceCellsV (const Vector<uInt>& rownrs,
+				       const Slicer& slicer,
+				       const void* dataPtr);
 
 
 private:
@@ -267,6 +325,64 @@ private:
     virtual void putScalarColumnComplexV  (const Vector<Complex>* dataPtr);
     virtual void putScalarColumnDComplexV (const Vector<DComplex>* dataPtr);
     virtual void putScalarColumnStringV   (const Vector<String>* dataPtr);
+    // </group>
+
+    // Get the scalar values in some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ScalarColumn getColumnCells function).
+    // The default implementation loops through all rows.
+    // <group>
+    virtual void getScalarColumnCellsBoolV     (const Vector<uInt>& rownrs,
+						Vector<Bool>* dataPtr);
+    virtual void getScalarColumnCellsuCharV    (const Vector<uInt>& rownrs,
+						Vector<uChar>* dataPtr);
+    virtual void getScalarColumnCellsShortV    (const Vector<uInt>& rownrs,
+						Vector<Short>* dataPtr);
+    virtual void getScalarColumnCellsuShortV   (const Vector<uInt>& rownrs,
+						Vector<uShort>* dataPtr);
+    virtual void getScalarColumnCellsIntV      (const Vector<uInt>& rownrs,
+						Vector<Int>* dataPtr);
+    virtual void getScalarColumnCellsuIntV     (const Vector<uInt>& rownrs,
+						Vector<uInt>* dataPtr);
+    virtual void getScalarColumnCellsfloatV    (const Vector<uInt>& rownrs,
+						Vector<float>* dataPtr);
+    virtual void getScalarColumnCellsdoubleV   (const Vector<uInt>& rownrs,
+						Vector<double>* dataPtr);
+    virtual void getScalarColumnCellsComplexV  (const Vector<uInt>& rownrs,
+						Vector<Complex>* dataPtr);
+    virtual void getScalarColumnCellsDComplexV (const Vector<uInt>& rownrs,
+						Vector<DComplex>* dataPtr);
+    virtual void getScalarColumnCellsStringV   (const Vector<uInt>& rownrs,
+						Vector<String>* dataPtr);
+    // </group>
+
+    // Put the scalar values into some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ScalarColumn putColumnCells function).
+    // The default implementation loops through all rows.
+    // <group>
+    virtual void putScalarColumnCellsBoolV     (const Vector<uInt>& rownrs,
+						const Vector<Bool>* dataPtr);
+    virtual void putScalarColumnCellsuCharV    (const Vector<uInt>& rownrs,
+						const Vector<uChar>* dataPtr);
+    virtual void putScalarColumnCellsShortV    (const Vector<uInt>& rownrs,
+						const Vector<Short>* dataPtr);
+    virtual void putScalarColumnCellsuShortV   (const Vector<uInt>& rownrs,
+						const Vector<uShort>* dataPtr);
+    virtual void putScalarColumnCellsIntV      (const Vector<uInt>& rownrs,
+						const Vector<Int>* dataPtr);
+    virtual void putScalarColumnCellsuIntV     (const Vector<uInt>& rownrs,
+						const Vector<uInt>* dataPtr);
+    virtual void putScalarColumnCellsfloatV    (const Vector<uInt>& rownrs,
+						const Vector<float>* dataPtr);
+    virtual void putScalarColumnCellsdoubleV   (const Vector<uInt>& rownrs,
+						const Vector<double>* dataPtr);
+    virtual void putScalarColumnCellsComplexV  (const Vector<uInt>& rownrs,
+						const Vector<Complex>* dataPtr);
+    virtual void putScalarColumnCellsDComplexV (const Vector<uInt>& rownrs,
+					       const Vector<DComplex>* dataPtr);
+    virtual void putScalarColumnCellsStringV   (const Vector<uInt>& rownrs,
+						const Vector<String>* dataPtr);
     // </group>
 
     // Get scalars from the given row on with a maximum of nrmax values.
@@ -333,7 +449,7 @@ private:
     // Get the array value in the given row.
     // The array pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn get function).
-    // The default implementation thrown an "invalid operation exception".
+    // The default implementation loops through all rows.
     // <group>
     virtual void getArrayBoolV     (uInt rownr, Array<Bool>* dataPtr);
     virtual void getArrayuCharV    (uInt rownr, Array<uChar>* dataPtr);
@@ -351,7 +467,7 @@ private:
     // Put the array value into the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn put function).
-    // The default implementation thrown an "invalid operation exception".
+    // The default implementation loops through all rows.
     // <group>
     virtual void putArrayBoolV     (uInt rownr,
 				    const Array<Bool>* dataPtr);
@@ -413,10 +529,68 @@ private:
     virtual void putArrayColumnStringV   (const Array<String>* dataPtr);
     // </group>
 
+    // Get the array values in some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ArrayColumn getColumnCells function).
+    // The default implementation throws an "invalid operation exception".
+    // <group>
+    virtual void getArrayColumnCellsBoolV     (const Vector<uInt>& rownrs,
+					       Array<Bool>* dataPtr);
+    virtual void getArrayColumnCellsuCharV    (const Vector<uInt>& rownrs,
+					       Array<uChar>* dataPtr);
+    virtual void getArrayColumnCellsShortV    (const Vector<uInt>& rownrs,
+					       Array<Short>* dataPtr);
+    virtual void getArrayColumnCellsuShortV   (const Vector<uInt>& rownrs,
+					       Array<uShort>* dataPtr);
+    virtual void getArrayColumnCellsIntV      (const Vector<uInt>& rownrs,
+					       Array<Int>* dataPtr);
+    virtual void getArrayColumnCellsuIntV     (const Vector<uInt>& rownrs,
+					       Array<uInt>* dataPtr);
+    virtual void getArrayColumnCellsfloatV    (const Vector<uInt>& rownrs,
+					       Array<float>* dataPtr);
+    virtual void getArrayColumnCellsdoubleV   (const Vector<uInt>& rownrs,
+					       Array<double>* dataPtr);
+    virtual void getArrayColumnCellsComplexV  (const Vector<uInt>& rownrs,
+					       Array<Complex>* dataPtr);
+    virtual void getArrayColumnCellsDComplexV (const Vector<uInt>& rownrs,
+					       Array<DComplex>* dataPtr);
+    virtual void getArrayColumnCellsStringV   (const Vector<uInt>& rownrs,
+					       Array<String>* dataPtr);
+    // </group>
+
+    // Put the array values into some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ArrayColumn putColumnCells function).
+    // The default implementation throws an "invalid operation exception".
+    // <group>
+    virtual void putArrayColumnCellsBoolV     (const Vector<uInt>& rownrs,
+					       const Array<Bool>* dataPtr);
+    virtual void putArrayColumnCellsuCharV    (const Vector<uInt>& rownrs,
+					       const Array<uChar>* dataPtr);
+    virtual void putArrayColumnCellsShortV    (const Vector<uInt>& rownrs,
+					       const Array<Short>* dataPtr);
+    virtual void putArrayColumnCellsuShortV   (const Vector<uInt>& rownrs,
+					       const Array<uShort>* dataPtr);
+    virtual void putArrayColumnCellsIntV      (const Vector<uInt>& rownrs,
+					       const Array<Int>* dataPtr);
+    virtual void putArrayColumnCellsuIntV     (const Vector<uInt>& rownrs,
+					       const Array<uInt>* dataPtr);
+    virtual void putArrayColumnCellsfloatV    (const Vector<uInt>& rownrs,
+					       const Array<float>* dataPtr);
+    virtual void putArrayColumnCellsdoubleV   (const Vector<uInt>& rownrs,
+					       const Array<double>* dataPtr);
+    virtual void putArrayColumnCellsComplexV  (const Vector<uInt>& rownrs,
+					       const Array<Complex>* dataPtr);
+    virtual void putArrayColumnCellsDComplexV (const Vector<uInt>& rownrs,
+					       const Array<DComplex>* dataPtr);
+    virtual void putArrayColumnCellsStringV   (const Vector<uInt>& rownrs,
+					       const Array<String>* dataPtr);
+    // </group>
+
     // Get the array value in the given row.
     // The array pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getSlice function).
-    // The default implementation thrown an "invalid operation exception".
+    // The default implementation throws an "invalid operation exception".
     // <group>
     virtual void getSliceBoolV     (uInt rownr, const Slicer& ns,
 				    Array<Bool>* dataPtr);
@@ -445,7 +619,7 @@ private:
     // Put the array value into the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn putSlice function).
-    // The default implementation thrown an "invalid operation exception".
+    // The default implementation throws an "invalid operation exception".
     // <group>
     virtual void putSliceBoolV     (uInt rownr, const Slicer& ns,
 				    const Array<Bool>* dataPtr);
@@ -527,6 +701,86 @@ private:
 					  const Array<DComplex>* dataPtr);
     virtual void putColumnSliceStringV   (const Slicer& ns,
 					  const Array<String>* dataPtr);
+    // </group>
+
+    // Get the array values in some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ArrayColumn getColumnCells function).
+    // The default implementation throws an "invalid operation exception".
+    // <group>
+    virtual void getColumnSliceCellsBoolV     (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<Bool>* dataPtr);
+    virtual void getColumnSliceCellsuCharV    (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<uChar>* dataPtr);
+    virtual void getColumnSliceCellsShortV    (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<Short>* dataPtr);
+    virtual void getColumnSliceCellsuShortV   (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<uShort>* dataPtr);
+    virtual void getColumnSliceCellsIntV      (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<Int>* dataPtr);
+    virtual void getColumnSliceCellsuIntV     (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<uInt>* dataPtr);
+    virtual void getColumnSliceCellsfloatV    (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<float>* dataPtr);
+    virtual void getColumnSliceCellsdoubleV   (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<double>* dataPtr);
+    virtual void getColumnSliceCellsComplexV  (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<Complex>* dataPtr);
+    virtual void getColumnSliceCellsDComplexV (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<DComplex>* dataPtr);
+    virtual void getColumnSliceCellsStringV   (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       Array<String>* dataPtr);
+    // </group>
+
+    // Put the array values into some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ArrayColumn putColumnSlice function).
+    // The default implementation throws an "invalid operation exception".
+    // <group>
+    virtual void putColumnSliceCellsBoolV     (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<Bool>* dataPtr);
+    virtual void putColumnSliceCellsuCharV    (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<uChar>* dataPtr);
+    virtual void putColumnSliceCellsShortV    (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<Short>* dataPtr);
+    virtual void putColumnSliceCellsuShortV   (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<uShort>* dataPtr);
+    virtual void putColumnSliceCellsIntV      (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<Int>* dataPtr);
+    virtual void putColumnSliceCellsuIntV     (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<uInt>* dataPtr);
+    virtual void putColumnSliceCellsfloatV    (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<float>* dataPtr);
+    virtual void putColumnSliceCellsdoubleV   (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<double>* dataPtr);
+    virtual void putColumnSliceCellsComplexV  (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<Complex>* dataPtr);
+    virtual void putColumnSliceCellsDComplexV (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<DComplex>* dataPtr);
+    virtual void putColumnSliceCellsStringV   (const Vector<uInt>& rownrs,
+					       const Slicer& ns,
+					       const Array<String>* dataPtr);
     // </group>
 
 

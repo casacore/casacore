@@ -1,5 +1,5 @@
 //# ArrColData.cc: Access to a table column containing arrays
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -175,6 +175,11 @@ Bool ArrayColumnData<T>::canAccessArrayColumn (Bool& reask) const
     return dataColPtr_p->canAccessArrayColumn (reask);
 }
 template<class T>
+Bool ArrayColumnData<T>::canAccessArrayColumnCells (Bool& reask) const
+{
+    return dataColPtr_p->canAccessArrayColumnCells (reask);
+}
+template<class T>
 Bool ArrayColumnData<T>::canAccessColumnSlice (Bool& reask) const
 {
     return dataColPtr_p->canAccessColumnSlice (reask);
@@ -232,20 +237,14 @@ void ArrayColumnData<T>::getArrayColumn (void* arrayPtr) const
 }
 
 // Needed for g++
-typedef Vector<uInt> forgpp;
+typedef Vector<uInt> gppbug_arrcoldata;
 
 template<class T>
-void ArrayColumnData<T>::getColumn (const Vector<uInt>& rownrs,
-				    void *arrayPtr) const
+void ArrayColumnData<T>::getArrayColumnCells (const Vector<uInt>& rownrs,
+					      void *arrayPtr) const
 {
-    uInt nr = rownrs.nelements();
-    Array<T>* arr = (Array<T>*)arrayPtr;
-    ArrayIterator<T> iter(*arr, arr->ndim()-1);
     checkLock (False, True);
-    for (uInt i=0; i<nr; i++) {
-	dataColPtr_p->getArrayV (rownrs(i), &(iter.array()));
-	iter.next();
-    }
+    dataColPtr_p->getArrayColumnCellsV (rownrs, arrayPtr);
     autoReleaseLock();
 }
 
@@ -253,22 +252,18 @@ template<class T>
 void ArrayColumnData<T>::getColumnSlice (const Slicer& ns,
 					 void* arrayPtr) const
 {
+    checkLock (False, True);
     dataColPtr_p->getColumnSliceV (ns, (Array<T>*)arrayPtr);
+    autoReleaseLock();
 }
 
 template<class T>
-void ArrayColumnData<T>::getSliceColumn (const Vector<uInt>& rownrs,
-					 const Slicer& ns,
-					 void* arrayPtr) const
+void ArrayColumnData<T>::getColumnSliceCells (const Vector<uInt>& rownrs,
+					      const Slicer& ns,
+					      void* arrayPtr) const
 {
-    uInt nr = rownrs.nelements();
-    Array<T>* arr = (Array<T>*)arrayPtr;
-    ArrayIterator<T> iter(*arr, arr->ndim()-1);
     checkLock (False, True);
-    for (uInt i=0; i<nr; i++) {
-	dataColPtr_p->getSliceV (rownrs(i), ns, &(iter.array()));
-	iter.next();
-    }
+    dataColPtr_p->getColumnSliceCellsV (rownrs, ns, arrayPtr);
     autoReleaseLock();
 }
 
@@ -282,18 +277,12 @@ void ArrayColumnData<T>::putArrayColumn (const void* arrayPtr)
 }
 
 template<class T>
-void ArrayColumnData<T>::putColumn (const Vector<uInt>& rownrs,
-				    const void* arrayPtr)
+void ArrayColumnData<T>::putArrayColumnCells (const Vector<uInt>& rownrs,
+					      const void* arrayPtr)
 {
-    uInt nr = rownrs.nelements();
-    const Array<T>* arr = (const Array<T>*)arrayPtr;
-    checkValueLength (arr);
-    ReadOnlyArrayIterator<T> iter(*arr, arr->ndim()-1);
+    checkValueLength ((const Array<T>*)arrayPtr);
     checkLock (True, True);
-    for (uInt i=0; i<nr; i++) {
-	dataColPtr_p->putArrayV (rownrs(i), &(iter.array()));
-	iter.next();
-    }
+    dataColPtr_p->putArrayColumnCellsV (rownrs, arrayPtr);
     autoReleaseLock();
 }
 
@@ -308,19 +297,13 @@ void ArrayColumnData<T>::putColumnSlice (const Slicer& ns,
 }
 
 template<class T>
-void ArrayColumnData<T>::putSliceColumn (const Vector<uInt>& rownrs,
-					 const Slicer& ns,
-					 const void* arrayPtr)
+void ArrayColumnData<T>::putColumnSliceCells (const Vector<uInt>& rownrs,
+					      const Slicer& ns,
+					      const void* arrayPtr)
 {
-    uInt nr = rownrs.nelements();
-    const Array<T>* arr = (const Array<T>*)arrayPtr;
-    checkValueLength (arr);
-    ReadOnlyArrayIterator<T> iter(*arr, arr->ndim()-1);
+    checkValueLength ((const Array<T>*)arrayPtr);
     checkLock (True, True);
-    for (uInt i=0; i<nr; i++) {
-	dataColPtr_p->putSliceV (rownrs(i), ns, &(iter.array()));
-	iter.next();
-    }
+    dataColPtr_p->putColumnSliceCellsV (rownrs, ns, arrayPtr);
     autoReleaseLock();
 }
 

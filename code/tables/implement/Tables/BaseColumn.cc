@@ -1,5 +1,5 @@
 //# BaseColumn.cc: Abstract base class for a table column
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,6 +89,16 @@ Bool BaseColumn::canAccessArrayColumn (Bool& reask) const
     reask = False;                     // By default an entire column
     return False;                      // can never be accessed
 }
+Bool BaseColumn::canAccessScalarColumnCells (Bool& reask) const
+{
+    reask = False;                     // By default cells in a column
+    return False;                      // can never be accessed
+}
+Bool BaseColumn::canAccessArrayColumnCells (Bool& reask) const
+{
+    reask = False;                     // By default cells in a column
+    return False;                      // can never be accessed
+}
 Bool BaseColumn::canAccessSlice (Bool& reask) const
 {
     reask = False;                     // By default a cell slice
@@ -110,6 +120,16 @@ void BaseColumn::getScalarColumn (void*) const
 void BaseColumn::getArrayColumn (void*) const
     { throw (TableInvOper ("getArrayColumn() not implemented")); }
 
+void BaseColumn::getScalarColumnCells (const Vector<uInt>&, void*) const
+    { throw (TableInvOper ("getScalarColumnCells() not implemented")); }
+
+void BaseColumn::getArrayColumnCells (const Vector<uInt>&, void*) const
+    { throw (TableInvOper ("getArrayColumnCells() not implemented")); }
+
+void BaseColumn::getColumnSliceCells (const Vector<uInt>&,
+				      const Slicer&, void*) const
+    { throw (TableInvOper ("getColumnCells(Slicer&) only valid for an array")); }
+
 void BaseColumn::getColumnSlice (const Slicer&, void*) const
     { throw (TableInvOper ("getColumn(Slicer&) only valid for an array")); }
 
@@ -122,8 +142,18 @@ void BaseColumn::putScalarColumn (const void*)
 void BaseColumn::putArrayColumn (const void*)
     { throw (TableInvOper ("putArrayColumn() not implemented")); }
 
+void BaseColumn::putScalarColumnCells (const Vector<uInt>&, const void*)
+    { throw (TableInvOper ("putScalarColumnCells() not implemented")); }
+
+void BaseColumn::putArrayColumnCells (const Vector<uInt>&, const void*)
+    { throw (TableInvOper ("putArrayColumnCells() not implemented")); }
+
 void BaseColumn::putColumnSlice (const Slicer&, const void*)
     { throw (TableInvOper ("putColumn(Slicer&) only valid for an array")); }
+
+void BaseColumn::putColumnSliceCells (const Vector<uInt>&,
+				      const Slicer&, const void*)
+    { throw (TableInvOper ("putColumnCells(Slicer&) only valid for an array")); }
 
 
 void BaseColumn::makeSortKey (Sort&, ObjCompareFunc*, Int, const void*&)

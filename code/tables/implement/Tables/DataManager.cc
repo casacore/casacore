@@ -294,6 +294,16 @@ Bool DataManagerColumn::canAccessArrayColumn (Bool& reask) const
     reask = False;
     return False;
 }
+Bool DataManagerColumn::canAccessScalarColumnCells (Bool& reask) const
+{
+    reask = False;
+    return False;
+}
+Bool DataManagerColumn::canAccessArrayColumnCells (Bool& reask) const
+{
+    reask = False;
+    return False;
+}
 Bool DataManagerColumn::canAccessSlice (Bool& reask) const
 {
     reask = False;
@@ -346,6 +356,10 @@ void DataManagerColumn::getScalarColumnV (void*)
   { throw (DataManInvOper("DataManagerColumn::getScalarColumn not allowed")); }
 void DataManagerColumn::putScalarColumnV (const void*)
   { throw (DataManInvOper("DataManagerColumn::putScalarColumn not allowed")); }
+void DataManagerColumn::getScalarColumnCellsV (const Vector<uInt>&, void*)
+  { throw (DataManInvOper("DataManagerColumn::getScalarColumnCells not allowed")); }
+void DataManagerColumn::putScalarColumnCellsV (const Vector<uInt>&, const void*)
+  { throw (DataManInvOper("DataManagerColumn::putScalarColumnCells not allowed")); }
 uInt DataManagerColumn::getBlockV (uInt, uInt, void*)
 {
     throw (DataManInvOper("DataManagerColumn::getBlock not allowed"));
@@ -361,6 +375,10 @@ void DataManagerColumn::getArrayColumnV (void*)
   { throw (DataManInvOper("DataManagerColumn::getArrayColumn not allowed")); }
 void DataManagerColumn::putArrayColumnV (const void*)
   { throw (DataManInvOper("DataManagerColumn::putArrayColumn not allowed")); }
+void DataManagerColumn::getArrayColumnCellsV (const Vector<uInt>&, void*)
+  { throw (DataManInvOper("DataManagerColumn::getArrayColumnCells not allowed")); }
+void DataManagerColumn::putArrayColumnCellsV (const Vector<uInt>&, const void*)
+  { throw (DataManInvOper("DataManagerColumn::putArrayColumnCells not allowed")); }
 void DataManagerColumn::getSliceV (uInt, const Slicer&, void*)
   { throw (DataManInvOper("DataManagerColumn::getSlice not allowed")); }
 void DataManagerColumn::putSliceV (uInt, const Slicer&, const void*)
@@ -369,6 +387,12 @@ void DataManagerColumn::getColumnSliceV (const Slicer&, void*)
   { throw (DataManInvOper("DataManagerColumn::getColumnSlice not allowed")); }
 void DataManagerColumn::putColumnSliceV (const Slicer&, const void*)
   { throw (DataManInvOper("DataManagerColumn::putColumnSlice not allowed")); }
+void DataManagerColumn::getColumnSliceCellsV (const Vector<uInt>&,
+					      const Slicer&, void*)
+  { throw (DataManInvOper("DataManagerColumn::getColumnSliceCells not allowed")); }
+void DataManagerColumn::putColumnSliceCellsV (const Vector<uInt>&,
+					      const Slicer&, const void*)
+  { throw (DataManInvOper("DataManagerColumn::putColumnSliceCells not allowed")); }
 
 
 

@@ -1,5 +1,5 @@
 //# RefColumn.h: A column in a reference table
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -135,12 +135,31 @@ public:
     // Get the shape of an array in a particular cell.
     virtual IPosition shape (uInt rownr) const;
 
-    // Ask the data manager if the shape of an existing array can be changed.
-    // Default is no.
+    // It can change shape if the underlying column can.
     virtual Bool canChangeShape() const;
+
+    // It can handle a scalar column if the underlying column
+    // can handle cells in a scalar column.
+    virtual Bool canAccessScalarColumn (Bool& reask) const;
+
+    // It can handle an array column if the underlying column
+    // can handle cells in an array column.
+    virtual Bool canAccessArrayColumn (Bool& reask) const;
 
     // It can handle a cell slice if the underlying column can do it.
     virtual Bool canAccessSlice (Bool& reask) const;
+
+    // It can handle a column slice if the underlying column
+    // can handle a collection of cells in a column and a column slice.
+    virtual Bool canAccessColumnSlice (Bool& reask) const;
+
+    // It can handle cells in a scalar column if the underlying column
+    // can do it.
+    virtual Bool canAccessScalarColumnCells (Bool& reask) const;
+
+    // It can handle cells in an array column if the underlying column
+    // can do it.
+    virtual Bool canAccessArrayColumnCells (Bool& reask) const;
 
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description (if defined).
@@ -153,12 +172,70 @@ public:
     // Get a slice of an N-dimensional array in a particular cell.
     virtual void getSlice (uInt rownr, const Slicer&, void* dataPtr) const;
 
+    // Get the vector of all scalar values in a column.
+    virtual void getScalarColumn (void* dataPtr) const;
+
+    // Get the array of all array values in a column.
+    // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
+    // The arrays in the column have to have the same shape in all cells.
+    virtual void getArrayColumn (void* dataPtr) const;
+
+    // Get subsections from all arrays in the column.
+    // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
+    // The arrays in the column have to have the same shape in all cells.
+    virtual void getColumnSlice (const Slicer&, void* dataPtr) const;
+
+    // Get the vector of some scalar values in a column.
+    virtual void getScalarColumnCells (const Vector<uInt>& rownrs,
+				       void* dataPtr) const;
+
+    // Get the array of some array values in a column.
+    // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
+    // The arrays in the column have to have the same shape in all cells.
+    virtual void getArrayColumnCells (const Vector<uInt>& rownrs,
+				      void* dataPtr) const;
+
+    // Get subsections from some arrays in the column.
+    // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
+    // The arrays in the column have to have the same shape in all cells.
+    virtual void getColumnSliceCells (const Vector<uInt>& rownrs,
+				      const Slicer&, void* dataPtr) const;
+
     // Put the value in a particular cell.
     // This can be a scalar or an array.
     virtual void put (uInt rownr, const void* dataPtr);
 
     // Put a slice of an N-dimensional array in a particular cell.
     virtual void putSlice (uInt rownr, const Slicer&, const void* dataPtr);
+
+    // Put the vector of all scalar values in the column.
+    virtual void putScalarColumn (const void* dataPtr);
+
+    // Put the array of all array values in the column.
+    // If the column contains n-dim arrays, the source array is (n+1)-dim.
+    // The arrays in the column have to have the same shape in all cells.
+    virtual void putArrayColumn (const void* dataPtr);
+
+    // Put into subsections of all table arrays in the column.
+    // If the column contains n-dim arrays, the source array is (n+1)-dim.
+    // The arrays in the column have to have the same shape in all cells.
+    virtual void putColumnSlice (const Slicer&, const void* dataPtr);
+
+    // Get the vector of some scalar values in a column.
+    virtual void putScalarColumnCells (const Vector<uInt>& rownrs,
+				       const void* dataPtr);
+
+    // Get the array of some array values in a column.
+    // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
+    // The arrays in the column have to have the same shape in all cells.
+    virtual void putArrayColumnCells (const Vector<uInt>& rownrs,
+				      const void* dataPtr);
+
+    // Put subsections of some arrays in the column.
+    // If the column contains n-dim arrays, the source array is (n+1)-dim.
+    // The arrays in the column have to have the same shape in all cells.
+    virtual void putColumnSliceCells (const Vector<uInt>& rownrs,
+				      const Slicer&, const void* dataPtr);
 
     // Get the underlying column cache.
     virtual ColumnCache& columnCache();

@@ -1,5 +1,5 @@
 //# StManAipsIO.cc: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/StArrAipsIO.h>
 #include <aips/Tables/StIndArrAIO.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Mathematics/Complex.h>
@@ -177,6 +178,35 @@ void StManColumnAipsIO::aips_name2(putBlock,NM) (uInt rownr, uInt nrmax, const T
 	extnr++; \
     } \
     stmanPtr_p->setHasPut(); \
+} \
+void StManColumnAipsIO::aips_name2(getScalarColumnCells,NM) \
+                                             (const Vector<uInt>& rownrs, \
+					      Vector<T>* values) \
+{ \
+    Bool delV, delR; \
+    T* value = values->getStorage (delV); \
+    const uInt* rows = rownrs.getStorage (delR); \
+    const ColumnCache& cache = columnCache(); \
+    uInt nr = rownrs.nelements(); \
+    if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
+        findExt(rows[0]); \
+    } \
+    const T* cacheValue = (T*)(cache.dataPtr()); \
+    uInt strow = cache.start(); \
+    uInt endrow = cache.end(); \
+    for (uInt i=0; i<nr; i++) { \
+	uInt rownr = rows[i]; \
+        if (rownr >= strow  &&  rownr <= endrow) { \
+	    value[i] = cacheValue[rownr-strow]; \
+	} else { \
+	    aips_name2(get,NM) (rownr, &(value[i])); \
+            cacheValue = (T*)(cache.dataPtr()); \
+            strow = cache.start(); \
+            endrow = cache.end(); \
+	} \
+    } \
+    values->putStorage (value, delV); \
+    rownrs.freeStorage (rows, delR); \
 }
 
 STMANCOLUMNAIPSIO_GETPUT(Bool,BoolV)

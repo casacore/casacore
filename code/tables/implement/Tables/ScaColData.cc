@@ -71,6 +71,11 @@ Bool ScalarColumnData<T>::canAccessScalarColumn (Bool& reask) const
 {
     return dataColPtr_p->canAccessScalarColumn (reask);
 }
+template<class T>
+Bool ScalarColumnData<T>::canAccessScalarColumnCells (Bool& reask) const
+{
+    return dataColPtr_p->canAccessScalarColumnCells (reask);
+}
 
 
 template<class T>
@@ -108,7 +113,7 @@ void ScalarColumnData<T>::getScalarColumn (void* val) const
 {
     Vector<T>* vecPtr = (Vector<T>*)val;
     if (vecPtr->nelements() != nrow()) {
-	throw (TableArrayConformanceError("ScalarColumnData::getColumn"));
+	throw (TableArrayConformanceError("ScalarColumnData::getScalarColumn"));
     }
     checkLock (False, True);
     dataColPtr_p->getScalarColumnV (vecPtr);
@@ -119,17 +124,16 @@ void ScalarColumnData<T>::getScalarColumn (void* val) const
 typedef Vector<uInt> forgnugpp_scacoldata;
 
 template<class T>
-void ScalarColumnData<T>::getColumn (const Vector<uInt>& rownrs,
-				     void* val) const
+void ScalarColumnData<T>::getScalarColumnCells (const Vector<uInt>& rownrs,
+						void* val) const
 {
     Vector<T>& vec = *(Vector<T>*)val;
-    if (vec.nelements() != rownrs.nelements()) {
-	throw (TableArrayConformanceError("ScalarColumnData::getColumn"));
+    uInt nr = rownrs.nelements();
+    if (vec.nelements() != nr) {
+	throw (TableArrayConformanceError("ScalarColumnData::getColumnCells"));
     }
     checkLock (False, True);
-    for (uInt i=0; i<rownrs.nelements(); i++) {
-	dataColPtr_p->get (rownrs(i), &(vec(i)));
-    }
+    dataColPtr_p->getScalarColumnCellsV (rownrs, &vec);
     autoReleaseLock();
 }
 
@@ -157,8 +161,8 @@ void ScalarColumnData<T>::putScalarColumn (const void* val)
 }
 
 template<class T>
-void ScalarColumnData<T>::putColumn (const Vector<uInt>& rownrs,
-				     const void* val)
+void ScalarColumnData<T>::putScalarColumnCells (const Vector<uInt>& rownrs,
+						const void* val)
 {
     const Vector<T>& vec = *(const Vector<T>*)val;
     if (vec.nelements() != rownrs.nelements()) {
@@ -166,9 +170,7 @@ void ScalarColumnData<T>::putColumn (const Vector<uInt>& rownrs,
     }
     checkValueLength (&vec);
     checkLock (True, True);
-    for (uInt i=0; i<rownrs.nelements(); i++) {
-	dataColPtr_p->put (rownrs(i), &(vec(i)));
-    }
+    dataColPtr_p->putScalarColumnCellsV (rownrs, &vec);
     autoReleaseLock();
 }
 
@@ -214,11 +216,21 @@ void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
     //#// the consecutive data. Often this may succeed.
     //# Get the data as a column.
     dataSave = 0;
-    Vector<T>* vecPtr = new Vector<T>(rownrs.nelements());
+    uInt nrrow = rownrs.nelements();;
+    Vector<T>* vecPtr = new Vector<T>(nrrow);
     if (vecPtr == 0) {
 	throw (AllocError ("ScalarColumnData::makeRefSortKey", 1));
     }
-    getColumn (rownrs, vecPtr);
+    Bool reask;
+    if (canAccessScalarColumnCells (reask)) {
+	getScalarColumnCells (rownrs, vecPtr);
+    }else{
+	checkLock (False, True);
+	for (uInt i=0; i<nrrow; i++) {
+	    dataColPtr_p->get (rownrs(i),  &(*vecPtr)(i));
+	}
+	autoReleaseLock();
+    }
     dataSave = vecPtr;
     fillSortKey (vecPtr, sortobj, cmpFunc, order);
 }

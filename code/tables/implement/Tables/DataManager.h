@@ -1,5 +1,5 @@
 //# DataManager.h: Abstract base classes for a data manager
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,6 +45,7 @@ class Table;
 class IPosition;
 class Slicer;
 template<class T> class Array;
+template<class T> class Vector;
 class AipsIO;
 
 
@@ -562,7 +563,7 @@ public:
     // Default is no.
     virtual Bool canChangeShape() const;
 
-    // Can the column storage manager handle access to a scalar column?
+    // Can the column data manager handle access to a scalar column?
     // If not, the caller should access the column by looping through
     // all cells in the column.
     // Default is no.
@@ -573,7 +574,19 @@ public:
     // By default reask is set to False.
     virtual Bool canAccessScalarColumn (Bool& reask) const;
 
-    // Can the column storage manager handle access to a scalar column?
+    // Can the column data manager handle access to a clooection of cells
+    // in a scalar column?
+    // If not, the caller should access the column cells by looping through
+    // the cells in the column.
+    // Default is no.
+    // <br>
+    // The returned reask switch determines if the information is
+    // permanent. False indicates it is permanent; True indicates it
+    // will be reasked for the next get/putColumn.
+    // By default reask is set to False.
+    virtual Bool canAccessScalarColumnCells (Bool& reask) const;
+
+    // Can the column data manager handle access to a scalar column?
     // If not, the caller should access the column by looping through
     // all cells in the column.
     // Default is no.
@@ -584,7 +597,19 @@ public:
     // By default reask is set to False.
     virtual Bool canAccessArrayColumn (Bool& reask) const;
 
-    // Can the column storage manager handle access to a cell slice?
+    // Can the column data manager handle access to a collection of cells
+    // in an array column?
+    // If not, the caller should access the column cells by looping through
+    // the cells in the column.
+    // Default is no.
+    // <br>
+    // The returned reask switch determines if the information is
+    // permanent. False indicates it is permanent; True indicates it
+    // will be reasked for the next get/putColumn.
+    // By default reask is set to False.
+    virtual Bool canAccessArrayColumnCells (Bool& reask) const;
+
+    // Can the column data manager handle access to a cell slice?
     // If not, the caller should do slicing itself (by accessing the
     // entire array and slicing it).
     // Default is no.
@@ -595,7 +620,7 @@ public:
     // By default reask is set to False.
     virtual Bool canAccessSlice (Bool& reask) const;
 
-    // Can the column storage manager handle access to a column slice?
+    // Can the column data manager handle access to a column slice?
     // If not, the caller should access the column slice by looping through
     // all cell slices in the column.
     // Default is no.
@@ -700,6 +725,24 @@ public:
     // The default implementation throws an "invalid operation" exception.
     virtual void putScalarColumnV (const void* dataPtr);
 
+    // Get some scalar values in the column.
+    // The argument dataPtr is in fact a Vector<T>*, but a void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ScalarColumn getColumn function).
+    // The default implementation throws an "invalid operation" exception.
+    virtual void getScalarColumnCellsV (const Vector<uInt>& rownrs,
+					void* dataPtr);
+
+    // Put some scalar values in the column.
+    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ScalarColumn getColumn function).
+    // The default implementation throws an "invalid operation" exception.
+    virtual void putScalarColumnCellsV (const Vector<uInt>& rownrs,
+					const void* dataPtr);
+
     // Get scalars from the given row on with a maximum of nrmax values.
     // It returns the actual number of values got.
     // This can be used to get an entire column of scalars or to get
@@ -750,6 +793,24 @@ public:
     // The default implementation throws an "invalid operation" exception.
     virtual void putArrayColumnV (const void* dataPtr);
 
+    // Get some array values in the column.
+    // The argument dataPtr is in fact an Array<T>*, but a void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    // The default implementation throws an "invalid operation" exception.
+    virtual void getArrayColumnCellsV (const Vector<uInt>& rownrs,
+				       void* dataPtr);
+
+    // Put some array values in the column.
+    // The argument dataPtr is in fact an const Array<T>*, but a const void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    // The default implementation throws an "invalid operation" exception.
+    virtual void putArrayColumnCellsV (const Vector<uInt>& rownrs,
+				       const void* dataPtr);
+
     // Get a section of the array in the given row.
     // The argument dataPtr is in fact an Array<T>*, but a void*
     // is needed to be generic.
@@ -782,6 +843,25 @@ public:
     // (which is guaranteed by the ArrayColumn putColumn function).
     // The default implementation throws an "invalid operation" exception.
     virtual void putColumnSliceV (const Slicer& slicer, const void* dataPtr);
+
+    // Get a section of some arrays in the column.
+    // The argument dataPtr is in fact an Array<T>*, but a void*
+    // is needed to be generic.
+    // The array pointed to by dataPtr has to have the correct shape
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    // The default implementation throws an "invalid operation" exception.
+    virtual void getColumnSliceCellsV (const Vector<uInt>& rownrs,
+				       const Slicer& slicer, void* dataPtr);
+
+    // Put into a section of some arrays in the column.
+    // The argument dataPtr is in fact a const Array<T>*, but a const void*
+    // is needed to be generic.
+    // The array pointed to by dataPtr has to have the correct shape
+    // (which is guaranteed by the ArrayColumn putColumn function).
+    // The default implementation throws an "invalid operation" exception.
+    virtual void putColumnSliceCellsV (const Vector<uInt>& rownrs,
+				       const Slicer& slicer,
+				       const void* dataPtr);
 
     // Throw an "invalid operation" exception for the default
     // implementation of get.

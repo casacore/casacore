@@ -1,5 +1,5 @@
 //# RefColumn.cc: Abstract base class for a table column
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,8 +89,26 @@ Bool RefColumn::isDefined (uInt rownr) const
     { return colPtr_p->isDefined (refTabPtr_p->rootRownr(rownr)); }
 
 
+Bool RefColumn::canAccessScalarColumn (Bool& reask) const
+    { return colPtr_p->canAccessScalarColumnCells (reask); }
+Bool RefColumn::canAccessScalarColumnCells (Bool& reask) const
+    { return colPtr_p->canAccessScalarColumnCells (reask); }
+Bool RefColumn::canAccessArrayColumn (Bool& reask) const
+    { return colPtr_p->canAccessArrayColumnCells (reask); }
+Bool RefColumn::canAccessArrayColumnCells (Bool& reask) const
+    { return colPtr_p->canAccessArrayColumnCells (reask); }
 Bool RefColumn::canAccessSlice (Bool& reask) const
     { return colPtr_p->canAccessSlice (reask); }
+Bool RefColumn::canAccessColumnSlice (Bool& reask) const
+{
+    Bool reask1;
+    Bool acc1 = colPtr_p->canAccessColumnSlice (reask1);
+    Bool acc2 = colPtr_p->canAccessArrayColumnCells (reask);
+    if (reask1) {
+	reask = reask1;
+    }
+    return ToBool (acc1 && acc2);
+}
 
 Bool RefColumn::canChangeShape() const
     { return colPtr_p->canChangeShape(); }
@@ -107,6 +125,65 @@ void RefColumn::put (uInt rownr, const void* dataPtr)
 
 void RefColumn::putSlice (uInt rownr, const Slicer& ns, const void* dataPtr)
     { colPtr_p->putSlice (refTabPtr_p->rootRownr(rownr), ns, dataPtr); }
+
+void RefColumn::getScalarColumn (void* dataPtr) const
+{
+    colPtr_p->getScalarColumnCells (refTabPtr_p->rowNumbers(), dataPtr);
+}
+void RefColumn::getArrayColumn (void* dataPtr) const
+{
+    colPtr_p->getArrayColumnCells (refTabPtr_p->rowNumbers(), dataPtr);
+}
+void RefColumn::getColumnSlice (const Slicer& ns,
+				void* dataPtr) const
+{
+    colPtr_p->getColumnSliceCells (refTabPtr_p->rowNumbers(), ns, dataPtr); 
+}
+void RefColumn::getScalarColumnCells (const Vector<uInt>& rownrs,
+				      void* dataPtr) const
+{
+    colPtr_p->getScalarColumnCells (refTabPtr_p->rootRownr(rownrs), dataPtr);
+}
+void RefColumn::getArrayColumnCells (const Vector<uInt>& rownrs,
+				     void* dataPtr) const
+{
+    colPtr_p->getArrayColumnCells (refTabPtr_p->rootRownr(rownrs), dataPtr);
+}
+void RefColumn::getColumnSliceCells (const Vector<uInt>& rownrs,
+				     const Slicer& ns,
+				     void* dataPtr) const
+{
+    colPtr_p->getColumnSliceCells (refTabPtr_p->rootRownr(rownrs), ns, dataPtr);
+}
+void RefColumn::putScalarColumn (const void* dataPtr)
+{
+    colPtr_p->putScalarColumnCells (refTabPtr_p->rowNumbers(), dataPtr);
+}
+void RefColumn::putArrayColumn (const void* dataPtr)
+{
+    colPtr_p->putArrayColumnCells (refTabPtr_p->rowNumbers(), dataPtr);
+}
+void RefColumn::putColumnSlice (const Slicer& ns,
+				const void* dataPtr)
+{
+    colPtr_p->putColumnSliceCells (refTabPtr_p->rowNumbers(), ns, dataPtr); 
+}
+void RefColumn::putScalarColumnCells (const Vector<uInt>& rownrs,
+				const void* dataPtr)
+{
+    colPtr_p->putScalarColumnCells (refTabPtr_p->rootRownr(rownrs), dataPtr);
+}
+void RefColumn::putArrayColumnCells (const Vector<uInt>& rownrs,
+				const void* dataPtr)
+{
+    colPtr_p->putArrayColumnCells (refTabPtr_p->rootRownr(rownrs), dataPtr);
+}
+void RefColumn::putColumnSliceCells (const Vector<uInt>& rownrs,
+				     const Slicer& ns,
+				     const void* dataPtr)
+{
+    colPtr_p->putColumnSliceCells (refTabPtr_p->rootRownr(rownrs), ns, dataPtr);
+}
 
 
 ColumnCache& RefColumn::columnCache()

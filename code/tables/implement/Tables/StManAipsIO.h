@@ -1,5 +1,5 @@
 //# StManAipsIO.h: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -183,6 +183,35 @@ public:
     void putBlockComplexV  (uInt rownr, uInt nrmax, const Complex* dataPtr);
     void putBlockDComplexV (uInt rownr, uInt nrmax, const DComplex* dataPtr);
     void putBlockStringV   (uInt rownr, uInt nrmax, const String* dataPtr);
+    // </group>
+
+    // Get the scalar values in some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ScalarColumn getColumnCells function).
+    // The default implementation loops through all rows.
+    // <group>
+    virtual void getScalarColumnCellsBoolV     (const Vector<uInt>& rownrs,
+						Vector<Bool>* dataPtr);
+    virtual void getScalarColumnCellsuCharV    (const Vector<uInt>& rownrs,
+						Vector<uChar>* dataPtr);
+    virtual void getScalarColumnCellsShortV    (const Vector<uInt>& rownrs,
+						Vector<Short>* dataPtr);
+    virtual void getScalarColumnCellsuShortV   (const Vector<uInt>& rownrs,
+						Vector<uShort>* dataPtr);
+    virtual void getScalarColumnCellsIntV      (const Vector<uInt>& rownrs,
+						Vector<Int>* dataPtr);
+    virtual void getScalarColumnCellsuIntV     (const Vector<uInt>& rownrs,
+						Vector<uInt>* dataPtr);
+    virtual void getScalarColumnCellsfloatV    (const Vector<uInt>& rownrs,
+						Vector<float>* dataPtr);
+    virtual void getScalarColumnCellsdoubleV   (const Vector<uInt>& rownrs,
+						Vector<double>* dataPtr);
+    virtual void getScalarColumnCellsComplexV  (const Vector<uInt>& rownrs,
+						Vector<Complex>* dataPtr);
+    virtual void getScalarColumnCellsDComplexV (const Vector<uInt>& rownrs,
+						Vector<DComplex>* dataPtr);
+    virtual void getScalarColumnCellsStringV   (const Vector<uInt>& rownrs,
+						Vector<String>* dataPtr);
     // </group>
 
     // Add (newNrrow-oldNrrow) rows to the column.
