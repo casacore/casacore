@@ -278,7 +278,11 @@ void Directory::move (const Path& target, Bool overwrite)
     }
     // The rename failed for one reason or another.
     // Remove the target if it already exists.
+#if defined(ENOTEMPTY)
+    if (errno == EEXIST || errno == ENOTEMPTY) {
+#else
     if (errno == EEXIST) {
+#endif
 	Directory(targetPath).removeRecursive();
     } else if (errno == ENOTDIR) {
 	unlink (targetPath.expandedName().chars());
