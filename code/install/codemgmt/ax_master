@@ -3528,3 +3528,4 @@
 13 297 src rm trial/implement/MeasurementComponents/PBSkyJones.h
 13 297 src rm trial/implement/MeasurementComponents/PBSkyJones.cc
 13 300 src mv trial/implement/MeasurementSets/test/templates aips/implement/MeasurementSets/test/templates
+13 300 src mv trial/implement/MeasurementSets/test/tNewMeasurementSet.cc aips/implement/MeasurementSets/test/tNewMeasurementSet.cc
