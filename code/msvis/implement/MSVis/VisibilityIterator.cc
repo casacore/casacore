@@ -27,12 +27,12 @@
 
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/Mathematics/InterpolateArray1D.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/Functionals/Interpolate1D.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Measures/MVTime.h>
 #include <aips/Tables/TableDesc.h>
@@ -47,7 +47,7 @@ ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 					   const Block<Int>& sortColumns,
 					   Double timeInterval)
 : nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
-initialized_p(False),velSelection_p(False)
+initialized_p(False),velSelection_p(False),msIterAtOrigin_p(False)
 {
   Block<MeasurementSet> mss(1); mss[0]=ms;
   msIter_p=MSIter(mss,sortColumns,timeInterval);
@@ -59,7 +59,7 @@ ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
 					   Double timeInterval)
 : nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
 initialized_p(False),msIter_p(mss,sortColumns,timeInterval),
-velSelection_p(False)
+velSelection_p(False),msIterAtOrigin_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -89,6 +89,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   more_p=other.more_p;
   newChanGroup_p=other.newChanGroup_p;
   initialized_p=other.initialized_p;
+  msIterAtOrigin_p=other.msIterAtOrigin_p;
   numChanGroup_p=other.numChanGroup_p;
   chanStart_p=other.chanStart_p;
   chanWidth_p=other.chanWidth_p;
@@ -162,7 +163,10 @@ void ROVisibilityIterator::origin()
 void ROVisibilityIterator::originChunks()
 {
   initialized_p=True;
-  msIter_p.origin();
+  if (!msIterAtOrigin_p) {
+    msIter_p.origin();
+    msIterAtOrigin_p=True;
+  }
   setState();
   origin();
 }
@@ -193,7 +197,10 @@ void ROVisibilityIterator::advance()
 
 ROVisibilityIterator& ROVisibilityIterator::nextChunk()
 {
-  if (msIter_p.more()) msIter_p++;
+  if (msIter_p.more()) {
+    msIter_p++;
+    msIterAtOrigin_p=False;
+  }
   if (msIter_p.more()) {
     setState();
     getTopoFreqs();
@@ -237,7 +244,7 @@ void ROVisibilityIterator::getTopoFreqs()
     // Now compute corresponding TOPO freqs
     selFreq_p.resize(nVelChan_p);
     Double v0 = vStart_p.getValue(), dv=vInc_p.getValue();
-    cout << "obsVel="<<obsVel<<endl;
+    if (aips_debug) cout << "obsVel="<<obsVel<<endl;
     for (Int i=0; i<nVelChan_p; i++) {
       Double vTopo = v0 + i*dv - obsVel;
       MDoppler dTopo(Quantity(vTopo,"m/s"), vDef_p);
@@ -455,6 +462,60 @@ ROVisibilityIterator::visibility(Cube<Complex>& vis) const
   return vis;
 }
 
+// helper function to swap the y and z axes of a Cube
+void swapyz(Cube<Complex>& out, const Cube<Complex>& in)
+{
+  IPosition inShape=in.shape();
+  uInt nx=inShape(0),ny=inShape(2),nz=inShape(1);
+  out.resize(nx,ny,nz);
+  Bool deleteIn,deleteOut;
+  const Complex* pin = in.getStorage(deleteIn);
+  Complex* pout = out.getStorage(deleteOut);
+  uInt i=0, zOffset=0;
+  for (uInt iz=0; iz<nz; iz++, zOffset+=nx) {
+    Int yOffset=zOffset;
+    for (uInt iy=0; iy<ny; iy++, yOffset+=nx*nz) {
+      for (uInt ix=0; ix<nx; ix++) pout[i++] = pin[ix+yOffset];
+    }
+  }
+  out.putStorage(pout,deleteOut);
+  in.freeStorage(pin,deleteIn);
+}
+
+// helper function to swap the y and z axes of a Cube
+void swapyz(Cube<Bool>& out, const Cube<Bool>& in)
+{
+  IPosition inShape=in.shape();
+  uInt nx=inShape(0),ny=inShape(2),nz=inShape(1);
+  out.resize(nx,ny,nz);
+  Bool deleteIn,deleteOut;
+  const Bool* pin = in.getStorage(deleteIn);
+  Bool* pout = out.getStorage(deleteOut);
+  uInt i=0, zOffset=0;
+  for (uInt iz=0; iz<nz; iz++, zOffset+=nx) {
+    Int yOffset=zOffset;
+    for (uInt iy=0; iy<ny; iy++, yOffset+=nx*nz) {
+      for (uInt ix=0; ix<nx; ix++) pout[i++] = pin[ix+yOffset];
+    }
+  }
+}
+
+// transpose a matrix
+void transpose(Matrix<Float>& out, const Matrix<Float>& in)
+{
+  uInt ny=in.nrow(), nx=in.ncolumn();
+  out.resize(nx,ny);
+  Bool deleteIn,deleteOut;
+  const Float* pin = in.getStorage(deleteIn);
+  Float* pout = out.getStorage(deleteOut);
+  uInt i=0, yOffset=0;
+  for (uInt iy=0; iy<ny; iy++) {
+    uInt yOffset=0;
+    for (uInt ix=0; ix<nx; ix++, yOffset+=ny) pout[i++] = pin[iy+yOffset];
+  }
+  out.putStorage(pout,deleteOut);
+  in.freeStorage(pin,deleteIn);
+}
 void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
 {
   // get vis, flags & weights
@@ -472,45 +533,32 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
   // any flagged inputs or interpolating across flagged data.
   // Convert frequencies to float (removing offset to keep accuracy) 
   // so we can multiply them with Complex numbers to do the interpolation.
-  Vector<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
-  for (Int i=0; i<channelGroupSize_p; i++) xfreq(i)=freq(i)-freq(0);
-  for (i=0; i<nVelChan_p; i++) sfreq(i)=selFreq_p(i)-freq(0);
-  // set up the Functionals for the interpolation
-  ScalarSampledFunctional<Float> x(xfreq);
-  Vector<MaskedArray<Complex> > visPlanes(channelGroupSize_p);
+  Block<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
+  for (Int i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
+  for (i=0; i<nVelChan_p; i++) sfreq[i]=selFreq_p(i)-freq(0);
   // we should probably be using the flags for weight interpolation as well
   // but it's not clear how to combine the 4 pol flags into one.
   // (AND the flags-> weight flagged if all flagged?)
-  Vector<Array<Float> > wtVectors(channelGroupSize_p);
-  for (i=0; i<channelGroupSize_p; i++) {
-    visPlanes(i).
-      setData(This->visCube_p(Slice(),Slice(i,1),Slice()),
-	      (This->flagCube_p(Slice(),Slice(i,1),Slice()).ac()==False));
-    Array<Float> wtrow(This->weightSpectrum_p.row(i));
-    wtVectors(i).reference(wtrow);
-  }
-  ScalarSampledFunctional<MaskedArray<Complex> > yVis(visPlanes);
-  ScalarSampledFunctional<Array<Float> > yWt(wtVectors);
-  Interpolate1D<Float,MaskedArray<Complex> > intVis(x,yVis,True,True);
-  Interpolate1D<Float,Array<Float> > intWt(x,yWt,True,True);
-  // set the interpolation method: nearest, linear, cubic, (cubic) spline
+  Cube<Complex> vis,intVis;
+  swapyz(vis,visCube_p);
+  Cube<Bool> flag,intFlag;
+  swapyz(flag,flagCube_p);
+  Matrix<Float> wt,intWt;
+  transpose(wt,weightSpectrum_p);
+  InterpolateArray1D<Float,Complex>::InterpolationMethod method1=
+    InterpolateArray1D<Float,Complex>::linear;
+  InterpolateArray1D<Float,Float>::InterpolationMethod method2=
+    InterpolateArray1D<Float,Float>::linear;
   if (vInterpolation_p=="nearest") {
-    intVis.setMethod(Interpolate1D<Float,MaskedArray<Complex> >::nearestNeighbour);
-    intWt.setMethod(Interpolate1D<Float,Array<Float> >::nearestNeighbour);
-  } // anything else uses linear
-  IPosition shape(3,nPol_p,nVelChan_p,curNumRow_p);
-  This->visCube_p.resize(shape);
-  This->flagCube_p.resize(shape);
-  This->visCube_p=Complex(0.); // to make masked values come out as zero.
-  This->weightSpectrum_p.resize(nVelChan_p,curNumRow_p);
-  // now do the actual interpolation
-  for (i=0; i<nVelChan_p; i++) {
-    MaskedArray<Complex> maskedVis(intVis(sfreq(i)));
-    This->visCube_p(Slice(),Slice(i,1),Slice())=maskedVis;
-    Array<Bool> flags=(maskedVis.getMask()==False);
-    This->flagCube_p(Slice(),Slice(i,1),Slice())=flags;
-    This->weightSpectrum_p.row(i)=intWt(sfreq(i));
+    method1=InterpolateArray1D<Float,Complex>::nearestNeighbour;
+    method2= InterpolateArray1D<Float,Float>::nearestNeighbour;
   }
+  InterpolateArray1D<Float,Complex>::
+    interpolate(intVis,intFlag,sfreq,xfreq,vis,flag,method1);
+  InterpolateArray1D<Float,Float>::interpolate(intWt,sfreq,xfreq,wt,method2);
+  swapyz(This->visCube_p,intVis);
+  swapyz(This->flagCube_p,intFlag);
+  transpose(This->weightSpectrum_p,intWt);
 }
 
 Matrix<CStokesVector>& 
@@ -767,28 +815,22 @@ void VisibilityIterator::attachColumns()
 void VisibilityIterator::setFlag(const Matrix<Bool>& flag)
 {
   // use same value for all polarizations
-  //#flagCube_p.resize(nPol_p,channelGroupSize_p,curNumRow_p);
+  flagCube_p.resize(nPol_p,channelGroupSize_p,curNumRow_p);
   Bool deleteIt;
   Bool* p=flagCube_p.getStorage(deleteIt);
-  //Matrix<Bool> flagmat(nPol_p,channelGroupSize_p);
-  //Bool* pflagmat=flagmat.getStorage(deleteIt);
   const Bool* pflag=flag.getStorage(deleteIt);
   if (flag.nrow()!=channelGroupSize_p) {
     throw(AipsError("VisIter::setFlag(flag) - inconsistent number of channels"));
   }
   
   for (Int row=0; row<curNumRow_p; row++) {
-    //    Bool* p=pflagmat;
     for (Int chn=0; chn<channelGroupSize_p; chn++) {
       for (Int pol=0; pol<nPol_p; pol++) {
 	*p++=*pflag;
       }
       pflag++;
     }
-    //    if (useSlicer_p) RWcolFlag.putSlice(row,slicer_p,flagmat);
-    //    else RWcolFlag.put(row,flagmat);
   }
-  //#putColumn fails
   if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flagCube_p);
   else RWcolFlag.putColumn(flagCube_p);
 }
@@ -815,15 +857,10 @@ void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis)
   }
   // we need to reform the vis matrix to a cube before we can use
   // putColumn to a Matrix column
-  //# putColumn fails at present, use row by row put instead
-  //# putColumn now claimed to work, try it out 1997/05/25
   visCube_p.resize(nPol_p,channelGroupSize_p,curNumRow_p);
-  //Matrix<Complex> visMat(nPol_p,channelGroupSize_p);
   Bool deleteIt;
   Complex* p=visCube_p.getStorage(deleteIt);
-  //Complex* pvisMat=visMat.getStorage(deleteIt);
   for (Int row=0; row<curNumRow_p; row++) {
-    //    Complex* p=pvisMat;
     for (Int chn=0; chn<channelGroupSize_p; chn++) {
       const CStokesVector& v=vis(chn,row);
       switch (nPol_p) {
@@ -832,8 +869,6 @@ void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis)
       case 1: *p++=(v(0)+v(3))/2; break;
       }
     }
-    //    if (useSlicer_p) RWcolVis.putSlice(row,slicer_p,visMat);
-    //    else RWcolVis.put(row,visMat);
   }
   if (useSlicer_p) RWcolVis.putColumn(slicer_p,visCube_p);
   else RWcolVis.putColumn(visCube_p);
@@ -888,37 +923,23 @@ void VisibilityIterator::setInterpolatedVisFlag(const Cube<Complex>& vis,
   // any flagged inputs or interpolating across flagged data.
   // Convert frequencies to float (removing offset to keep accuracy) 
   // so we can multiply them with Complex numbers to do the interpolation.
-  Vector<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
-  for (Int i=0; i<channelGroupSize_p; i++) xfreq(i)=freq(i)-freq(0);
-  for (i=0; i<nVelChan_p; i++) sfreq(i)=selFreq_p(i)-freq(0);
+  Block<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
+  for (Int i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
+  for (i=0; i<nVelChan_p; i++) sfreq[i]=selFreq_p(i)-freq(0);
   // set up the Functionals for the interpolation
-  ScalarSampledFunctional<Float> x(sfreq);
-  Vector<MaskedArray<Complex> > visPlanes(nVelChan_p);
-  for (i=0; i<nVelChan_p; i++) {
-    // we need to cast away the const of vis and flag to be able to use
-    // slice indexing, but we won't actually change them.
-    visPlanes(i).
-      setData(((Cube<Complex>&)vis)(Slice(),Slice(i,1),Slice()),
-	      (((Cube<Bool>&)flag)(Slice(),Slice(i,1),Slice()).ac()==False));
-  }
-  ScalarSampledFunctional<MaskedArray<Complex> > yVis(visPlanes);
-  Interpolate1D<Float,MaskedArray<Complex> > intVis(x,yVis,True,True);
-  // set the interpolation method: nearest, linear, cubic, (cubic) spline
+  Cube<Complex> swapVis,intVis;
+  swapyz(swapVis,vis);
+  Cube<Bool> swapFlag,intFlag;
+  swapyz(swapFlag,flag);
+  InterpolateArray1D<Float,Complex>::InterpolationMethod method1=
+    InterpolateArray1D<Float,Complex>::linear;
   if (vInterpolation_p=="nearest") {
-    intVis.setMethod(Interpolate1D<Float,MaskedArray<Complex> >::nearestNeighbour);
-  } // anything else uses linear
-  IPosition shape(3,nPol_p,channelGroupSize_p,curNumRow_p);
-  visCube_p.resize(shape);
-  flagCube_p.resize(shape);
-  visCube_p=Complex(0.); // to make masked values come out as zero.
-  weightSpectrum_p.resize(nVelChan_p,curNumRow_p);
-  // now do the actual interpolation
-  for (i=0; i<channelGroupSize_p; i++) {
-    MaskedArray<Complex> maskedVis(intVis(xfreq(i)));
-    visCube_p(Slice(),Slice(i,1),Slice())=maskedVis;
-    Array<Bool> flags=(maskedVis.getMask()==False);
-    flagCube_p(Slice(),Slice(i,1),Slice())=flags;
+    method1=InterpolateArray1D<Float,Complex>::nearestNeighbour;
   }
+  InterpolateArray1D<Float,Complex>::
+    interpolate(intVis,intFlag,xfreq,sfreq,swapVis,swapFlag,method1);
+  swapyz(visCube_p,intVis);
+  swapyz(flagCube_p,intFlag);
 }
 
 
@@ -935,28 +956,20 @@ void VisibilityIterator::setInterpolatedWeight(const Matrix<Float>& wt)
   // any flagged inputs or interpolating across flagged data.
   // Convert frequencies to float (removing offset to keep accuracy) 
   // so we can multiply them with Complex numbers to do the interpolation.
-  Vector<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
-  for (Int i=0; i<channelGroupSize_p; i++) xfreq(i)=freq(i)-freq(0);
-  for (i=0; i<nVelChan_p; i++) sfreq(i)=selFreq_p(i)-freq(0);
+  Block<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
+  for (Int i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
+  for (i=0; i<nVelChan_p; i++) sfreq[i]=selFreq_p(i)-freq(0);
   // set up the Functionals for the interpolation
-  ScalarSampledFunctional<Float> x(sfreq);
-  Vector<Array<Float> > wtVectors(nVelChan_p);
-  for (i=0; i<nVelChan_p; i++) {
-    Array<Float> wtrow(wt.row(i));
-    wtVectors(i).reference(wtrow);
-  }
-  ScalarSampledFunctional<Array<Float> > yWt(wtVectors);
-  Interpolate1D<Float,Array<Float> > intWt(x,yWt,True,True);
-  // set the interpolation method: nearest, linear, cubic, (cubic) spline
+  Matrix<Float> twt,intWt;
+  transpose(twt,wt);
+  InterpolateArray1D<Float,Float>::InterpolationMethod method2=
+    InterpolateArray1D<Float,Float>::linear;
   if (vInterpolation_p=="nearest") {
-    intWt.setMethod(Interpolate1D<Float,Array<Float> >::nearestNeighbour);
-  } // anything else uses linear
-  IPosition shape(2,channelGroupSize_p,curNumRow_p);
-  weightSpectrum_p.resize(shape);
-  // now do the actual interpolation
-  for (i=0; i<channelGroupSize_p; i++) {
-    weightSpectrum_p.row(i)=intWt(xfreq(i));
+    method2= InterpolateArray1D<Float,Float>::nearestNeighbour;
   }
+  InterpolateArray1D<Float,Float>::
+    interpolate(intWt,xfreq,sfreq,twt,method2);
+  transpose(weightSpectrum_p,intWt);
 }
 
 
