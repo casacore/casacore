@@ -27,12 +27,12 @@ As epoch:      Epoch: 30456::00:00:00.0000
 Input value:              Doppler: 0.00010159 (RADIO)
 Record output value:      Doppler: 0.00010159 (RADIO)
 As Doppler:      Doppler: 0.00010159
-Input value:              Frequency: 3.0456e+10 (LSR)
-Record output value:      Frequency: 3.0456e+10 (LSR)
+Input value:              Frequency: 3.0456e+10 (LSRK)
+Record output value:      Frequency: 3.0456e+10 (LSRK)
 As Frequency:      Frequency: 3.0456e+10
 Input value:              Position: [4.88279e+06, 1.77719e+06, 3e+06] (ITRF)
 Record output value:      Position: [4.88279e+06, 1.77719e+06, 3e+06] (ITRF)
 As Position:      Position: [4.88279e+06, 1.77719e+06, 3e+06]
-Input value:              Radialvelocity: 30456 (LSR)
-Record output value:      Radialvelocity: 30456 (LSR)
+Input value:              Radialvelocity: 30456 (LSRK)
+Record output value:      Radialvelocity: 30456 (LSRK)
 As RadialVelocity:      Radialvelocity: 30456
