@@ -561,18 +561,19 @@ void MSFitsInput::fillObsTables() {
   msObsCol.project().put(0, "");
 
   String date;
-  date = (kwp=priGroup_p.kw(FITS::DATE)) ? kwp->asString() : "";
+  date = (kwp=priGroup_p.kw(FITS::DATE_OBS)) ? kwp->asString() : "";
   if (date=="") {
-    // try date-obs instead
-    date = (kwp=priGroup_p.kw(FITS::DATE_OBS)) ? kwp->asString() : "";
+    // try FITS::DATE instead 
+    //  (but this will find DATE-MAP which may not be correct...)
+    date = (kwp=priGroup_p.kw(FITS::DATE)) ? kwp->asString() : "";
   }
   if (date=="") date = "2000-01-01";
   MVTime timeVal;
   MEpoch::Types epochRef;
   FITSDateUtil::fromFITS(timeVal,epochRef,date,"UTC");
   Vector<Double> times(2);
-  times(0)=timeVal.get().getValue();
-  times(1)=timeVal.get().getValue(); // change this to last time in input
+  times(0)=timeVal.second();
+  times(1)=timeVal.second(); // change this to last time in input
   msObsCol.timeRange().put(0,times);
   Double time=timeVal.second();
   msObsCol.flagRow().put(0,False);
