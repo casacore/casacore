@@ -394,6 +394,65 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
 
 
 
+Bool CoordinateUtil::removePixelAxes(CoordinateSystem& cSys,
+                                     Vector<Double>& pixelReplacement,
+                                     const Vector<uInt>& pixelAxes,
+                                     const Bool removeThem)
+{
+// Bug out if nothing to do
+
+   if (pixelAxes.nelements() == 0) return True;
+
+// Make sure the pixel axes are valid
+
+   uInt i,j;
+   for (i=0; i<pixelAxes.nelements(); i++) {
+      if (pixelAxes(i) >= cSys.nPixelAxes()) return False;         
+   }
+
+// Make a list of the axes to remove in ascending order
+// with no duplicates
+
+   Vector<uInt> remove(cSys.nPixelAxes());
+   if (removeThem) {
+      remove.resize(pixelAxes.nelements());
+      remove = pixelAxes;
+      GenSort<uInt>::sort(remove, Sort::Ascending, Sort::NoDuplicates);
+   } else {
+      for (i=0,j=0; i<cSys.nPixelAxes(); i++) {
+         if (!anyEQ(pixelAxes, i)) remove(j++) = i;
+      }
+      remove.resize(j,True);
+   }
+   const uInt nRemove = remove.nelements();
+   if (nRemove==0) return True;
+
+// Set the replacement values for the removed pixel axes
+// if the user didn't give any or got it wrong
+
+   if (pixelReplacement.nelements() != nRemove) {
+      pixelReplacement.resize(nRemove);
+      for (i=0; i<nRemove; i++) {
+         pixelReplacement(i) = cSys.referencePixel()(remove(i));
+      }
+   }
+
+
+// Now for each pixel axis in the list, get rid of it
+ 
+   uInt pixelAxis = remove(0);
+   for (i=0; i<nRemove; i++) {
+
+// Remove the axis
+
+      if (!cSys.removePixelAxis(pixelAxis, pixelReplacement(i))) return False;
+
+// Find the next world axis to eradicate
+
+      if (i+1<remove.nelements()) pixelAxis = remove(i+1) - 1;
+   }
+   return True;
+}      
 
 
 

@@ -126,13 +126,13 @@ class LogIO;
 // CoordinateSystem contains two or more of the specified coordinateType then
 // an exception (AipsError) is thrown.
 //
-// Finally a function is provided for removing a list of world axes,
-// and their associated pixel axes from a CoordinateSystem.  
+// Finally functions are provided for removing lists of pixel/world axes
+// from a CoordinateSystem.
 // This process is made a little awkward by the fact that when you
-// remove one world axis, all the rest shuffle down one, so it is
+// remove one axis, all the rest shuffle down one, so it is
 // provided here.  Generally, one only needs to remove one axis
 // (in which case you should use the CoordinateSystem::removeWorldAxis and
-// CoordiunateSystem::removcePixelAxis functions), but on occaision,
+// CoordinateSystem::removcePixelAxis functions), but on occaision,
 // the multiple need is there.
 // </synopsis>
 //
@@ -297,17 +297,33 @@ static void findStokesAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
 // axes to be removed is derived from a list giving either axes to remove, 
 // or axes to keep (controlled by whether <src>remove</src> 
 // is <src>True</src> or <src>False</src>.  The replacement values (see functions 
-// <src>CoordinateSYstem::removeWorldAxis</src>) for the world axes
+// <src>CoordinateSystem::removeWorldAxis</src>) for the world axes
 // can be given.  For the associated pixel axes, the pixel replacement
 // coordinate is found by converting the world coordinate 
 // to a pixel coordinate. If the length of the replacement value 
-// vector is not the number world axes to be removed then
+// vector is not the number of world axes to be removed then
 // the reference values will be used (e.g. use zero length
 // vectors).
 static Bool removeAxes(CoordinateSystem& cSys,
                        Vector<Double>& worldReplacement,
                        const Vector<uInt>& worldAxes,
                        const Bool remove);
+
+// Remove a list of pixel axes but not their associated
+// world axes from a <src>CoordinateSystem</src>. 
+// The list of pixel axes to be removed is derived from a 
+// list giving either axes to remove, 
+// or axes to keep (controlled by whether <src>remove</src> 
+// is <src>True</src> or <src>False</src>.  The replacement values (see functions 
+// <src>CoordinateSystem::removePixelAxis</src>) for the pixel axes
+// can be given.  If the length of the replacement value 
+// vector is not the number of pixel axes to be removed then
+// the reference pixel will be used (e.g. use zero length
+// vectors).
+static Bool removePixelAxes(CoordinateSystem& cSys,
+                            Vector<Double>& pixelReplacement,
+                            const Vector<uInt>& pixelAxes,
+                            const Bool remove);
 
 // Setup Measures conversion machines for Directions and Frequencies.
 // Returns True if the machine was needed and set.  Returns False
