@@ -262,7 +262,7 @@ TableExprNodeRandom::TableExprNodeRandom (const BaseTable* tabptr)
 : TableExprNodeBinary (NTDouble, VTScalar, OtRandom, tabptr),
   generator_p         (Int (fmod (Time().modifiedJulianDay(), 1.) * 86400000),
 		       Int (Time().modifiedJulianDay())),
-  random_p            (0, 1, &generator_p)
+  random_p            (&generator_p, 0 1)
 {}
 TableExprNodeRandom::~TableExprNodeRandom ()
 {}
