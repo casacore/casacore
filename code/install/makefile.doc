@@ -269,7 +269,7 @@ ifdef AIPSRCS
 	   done
 endif
 
-docsys : $(CHKDIR) $(DOCSAREA) \
+docsys : $(HELPSYS) $(CHKDIR) $(DOCSAREA) \
     $(addprefix $(DOCSAREA)/,$(subst .latex,.ps,$(LATEXDCS))) \
     $(addprefix $(DOCSAREA)/,$(subst .texi,.ps,$(TEXIDOCS))) \
     $(addprefix $(DOCSAREA)/,$(subst .tex,.ps,$(TEXDOCS))) \
