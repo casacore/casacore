@@ -524,7 +524,7 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 
     // Work out what we can about the velocity axis and reference frame
     String fitsFrame;
-    Int fitsCode = 256 * Int(opticalVelDef==True);
+    Int fitsCode = 256 * Int(opticalVelDef==False);
     switch (type_p) {
     case MFrequency::LSR:
 	fitsFrame = "LSR";
@@ -787,7 +787,6 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &error,
 	    cdeltfreq =                  -cdelt*altrval / (
 			 ( cdelt*(crpix - altrpix) + (C::c - crval) ) );
 	}
-	cerr << "cdeltfreq " << cdeltfreq << endl;
 
 	out = SpectralCoordinate(type, altrval, cdeltfreq, altrpix-offset, 
 				 restfreq);
