@@ -41,7 +41,7 @@ template <class T> class Vector;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tConstantSpectrum" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tConstantSpectrum" demos="dConstantSpectrum">
 // </reviewed>
 
 // <prerequisite>
@@ -49,17 +49,21 @@ template <class T> class Vector;
 // </prerequisite>
 //
 // <synopsis>
+
 // This class models the spectral variation of a component as constant,
 // ie. unchanging with frequency. It is the simplest possible model for
 // spectral variation. 
 
+// This class like the other spectral models becomes more useful when used
+// through the <linkto class=SkyComponent>SkyComponent</linkto> class, which
+// incorperates the flux and spatial variation of the emission, or through the
+// <linkto class=ComponentList>ComponentList</linkto> class, which handles
+// groups of SkyComponent objects.
+
 // Because the flux is constant with frequency the concept of a reference
 // frequency is meaningless with this class. But it can still be accessed using
 // the <src>refFrequency</src> and <src>setRefFrequency</src>. However changing
-// its value will not affect the behaviour of this class. For this reason the
-// <src>fromRecord</src> function will not parse the frequency field of the
-// supplied record and the <src>toRecord</src> function will not add a
-// frequency field to the generated Record.
+// its value will not affect the behaviour of this class.
 
 // This class does not have any parameters and the <src>nParameters</src>
 // function will return zero. It is an error that will generate an exception
@@ -67,18 +71,32 @@ template <class T> class Vector;
 // <src>parameters</src> functions with anything other than a zero length
 // vector.
 
-// The <src>sample</src> function always scales the supplied flux by 1. In
-// other words the input flux is always the same as the returned value for all
-// frequencies and polarisations.
+// The <src>sample</src> functions always return 1.0.
 
+// This class also contains functions (<src>toRecord</src> &
+// <src>fromRecord</src>) which perform the conversion between Records and
+// ConstantSpectrum objects. These functions define how a ConstantSpectrum
+// object is represented in glish. The format of the record that is generated
+// and accepted by these functions is:
+// <srcblock>
+// c := [type = 'constant',
+//       frequency = [type = 'frequency',
+//                    refer = 'lsr',
+//                    m0 = [value = 1, unit = 'GHz']
+//                   ]
+//      ]
+// </srcblock>
+// The frequency field contains a record representation of a frequency measure
+// and its format is defined in the Measures module. Its refer field defines
+// the reference frame for the direction and the m0 field defines the value of
+// the reference frequency. The parsing of the type field is case
+// insensitive.
 // </synopsis>
-//
+
 // <example>
 // Its hard to think of a good example for this class as it is basically does
-// nothing! This example is coded in the file tConstantSpectrum.cc
-// <h4>Example 1:</h4>
-// In this example the spectral variation of a component is set to
-// to a constant value.
+// nothing! In this example the spectral variation of a component is set to to
+// a constant value.
 // <srcblock>
 // SkyComponent myComp(...);
 // ...
@@ -90,10 +108,10 @@ template <class T> class Vector;
 //
 // <motivation>
 // A ConstantSpectrum class is needed for users who are not interested in
-// modelling any spectral variation in there components.
+// modelling any spectral variation in their components.
 // </motivation>
 //
-// <todo asof="1998/05/18">
+// <todo asof="1999/11/23">
 //   <li> Nothing I hope!
 // </todo>
 
@@ -117,12 +135,13 @@ public:
   // The assignment operator uses copy semantics.
   ConstantSpectrum& operator=(const ConstantSpectrum& other);
 
-  // return the actual spectral type.
+  // return the actual spectral type. This function always returns
+  // ComponentType::CONSTANT_SPECTRUM
   virtual ComponentType::SpectralShape type() const;
 
-  // Return the scaling factor that indicates what proportion of the flux is at
-  // the specified frequency. This function always returns one, as the spectrun
-  // is constant.
+  // Return the scaling factor that indicates the flux is at the specified
+  // frequency assuming the flux at the reference frequency is one. This
+  // function always returns one, as the spectrum is constant.
   virtual Double sample(const MFrequency& centerFrequency) const;
 
   // Same as the previous function except that many frequencies can be sampled
@@ -137,36 +156,35 @@ public:
   // pointer. This is used to implement a virtual copy constructor.
   virtual SpectralModel* clone() const;
 
-  // return the number of parameters. There are no parameters for this
-  // spectral model.
+  // return the number of parameters. There are no parameters for this spectral
+  // model. So calling <src>setParameters</src> or <src>parameters</src> with
+  // anything other than a zero length Vector will throw an exception (when
+  // compiled in debug mode).
   // <group>
   virtual uInt nParameters() const;
   virtual void setParameters(const Vector<Double>& newSpectralParms);
   virtual void parameters(Vector<Double>& spectralParms) const;
   // </group>
 
-  // These functions convert between a record and a ConstantSpectrum. These
-  // functions define how a ConstantSpectrum object is represented in glish.
-  // All ConstantSpectrum object's are defined by the record:
-  // <src>[type='Constant']</src>. No reference frequency field is
-  // necessary.  These functions return False if the record is malformed and
-  // append an error message to the supplied string giving the reason.
+  // These functions convert between a Record and a ConstantSpectrum. These
+  // functions define how a ConstantSpectrum object is represented in glish and
+  // this is detailed in the synopsis above. These functions return False if
+  // the record is malformed and append an error message to the supplied string
+  // giving the reason.
   // <group>
   virtual Bool fromRecord(String& errorMessage,
 			  const RecordInterface& record);
   virtual Bool toRecord(String& errorMessage, RecordInterface& record) const;
   // </group>
 
-  // Convert the parameters of the constant spectrum to the specified units. As
-  // a constant spectrum has no parameters this function does nothing and
-  // always returns True.
+  // Convert the parameters of the spectrum to the specified units. As a
+  // constant spectrum has no parameters this function does nothing and always
+  // returns True.
   virtual Bool convertUnit(String& errorMessage,
                            const RecordInterface& record);
  
-  // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. Returns True if everything is fine
-  // otherwise returns False.
+  // Function which checks the internal data of this class for consistant
+  // values. Returns True if everything is fine otherwise returns False.
   virtual Bool ok() const;
-
 };
 #endif
