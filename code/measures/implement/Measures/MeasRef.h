@@ -99,7 +99,8 @@ public:
   // <group>
   // <note role=caution> The following should really be (and should 
   // still be called as), but
-  // compiler does not accept it: </note>
+  // compiler does not accept it, due to incomplete definition when
+  // called in MeasBase: </note>
   //   <src> MeasRef(Ms::Types tp); </src>
   // Furthermore, default arguments are not supported with templated classes:
   MeasRef(uInt tp);
@@ -127,7 +128,7 @@ public:
   // Return the type of the reference
   // <note role=caution> the following should really be 
   // (and should be interpreted as), but
-  // compiler does not accept it:</note>
+  // cannot create a virtual function:</note>
   //   <src> Ms::Types getType();</src>
   virtual uInt getType() const;
   // Return the frame of reference
@@ -157,7 +158,7 @@ public:
   // </thrown>
   // <note role=caution> the following should really be 
   // (and should be called as), but
-  // compiler does not accept it:</note>
+  // compiler does not accept it, since a virtual function:</note>
   //   <src> void set(Ms::Types tp);</src>
   // <group>
   virtual void setType(uInt tp);
@@ -180,14 +181,14 @@ private:
   public:
     // Constructor
     // <note role=warning> Next one must be in-line for (some?) compilers </note>
-    RefRep() : type(0), offmp(0), frame(), cnt(1) {};
+    RefRep() : type(Ms::DEFAULT), offmp(0), frame(), cnt(1) {};
     // Destructor
     // <note role=warning> Next one must be in-line for (some?) compilers </note>
     ~RefRep() {delete offmp;}; 
     // The actual data
     // <group>
     // Type of reference
-    uInt type;
+    typename Ms::Types type;
     // Pointer to main Measure, defining an offset
     Measure *offmp;
     // Reference frame

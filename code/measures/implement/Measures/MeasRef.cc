@@ -57,14 +57,14 @@ template<class Ms>
 MeasRef<Ms>::MeasRef(uInt tp) :
   rep(0) {
     create();
-    rep->type = tp;
+    rep->type = Ms::castType(tp);
   }
 
 template<class Ms>
 MeasRef<Ms>::MeasRef(uInt tp, const Ms &ep) :
   rep(0) {
     create();
-    rep->type = tp;
+    rep->type = Ms::castType(tp);
     rep->offmp = new Ms(ep);
   }
 
@@ -72,7 +72,7 @@ template<class Ms>
 MeasRef<Ms>::MeasRef(uInt tp, const MeasFrame &mf) :
   rep(0) {
     create();
-    rep->type = tp;
+    rep->type = Ms::castType(tp);
     rep->frame = mf;
   }
 
@@ -80,7 +80,7 @@ template<class Ms>
 MeasRef<Ms>::MeasRef(uInt tp, const MeasFrame &mf, const Ms &ep) :
   rep(0) {
     create();
-    rep->type = tp;
+    rep->type = Ms::castType(tp);
     rep->offmp = new Ms(ep);
     rep->frame = mf;
   }
@@ -209,7 +209,7 @@ void MeasRef<Ms>::setType(uInt tp) {
 template<class Ms>
 void MeasRef<Ms>::set(uInt tp) {
   create();
-  rep->type = tp;
+  rep->type = Ms::castType(tp);
 }
 
 template<class Ms>
