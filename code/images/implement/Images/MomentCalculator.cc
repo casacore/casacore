@@ -61,8 +61,8 @@ template <class T>
 uInt MomentCalcBase<T>::allNoise (T& dMean, 
                                   const Vector<T>& data,
                                   const Vector<Bool>& mask,
-                                  const Double peakSNR,
-                                  const Double stdDeviation) const
+                                  const T peakSNR,
+                                  const T stdDeviation) const
 //
 // Try and work out whether this spectrum is all noise
 // or not.  We don't bother with it if it is noise.
@@ -208,8 +208,8 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
                                       const Vector<T>& y,
                                       const Vector<Bool>& mask,
                                       const Bool fixedYLimits,
-                                      const Float yMinAuto,
-                                      const Float yMaxAuto,
+                                      const T yMinAuto,
+                                      const T yMaxAuto,
                                       const String xLabel,
                                       const String yLabel,
                                       const String title,
@@ -248,7 +248,6 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
    T yMin, yMax, yMean;
    Float yMinF, yMaxF;
    if (!fixedYLimits) {
-
       if (mask.nelements() == 0) {
          minMax (yMin, yMax, y.ac());
       } else {
@@ -259,6 +258,9 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
       yMinF = Float(real(yMin));
       yMaxF = Float(real(yMax));
       ImageUtilities::stretchMinMax (yMinF, yMaxF);
+   } else {
+      yMinF = Float(real(yMinAuto));
+      yMaxF = Float(real(yMaxAuto));
    }
 
    const uInt nPts = x.nelements();
@@ -268,13 +270,9 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
 
 
 // Draw box and label
- 
+
    if (advance) plotter.page();
-   if (fixedYLimits) {
-      plotter.swin (xMin, xMax, yMinAuto, yMaxAuto);
-   } else {  
-      plotter.swin (xMin, xMax, yMinF, yMaxF);
-   }
+   plotter.swin (xMin, xMax, yMinF, yMaxF);
    plotter.box ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
    plotter.lab (xLabel.chars(), yLabel.chars(), "");
    plotter.mtxt ("T", 1.0, 0.5, 0.5, title.chars());
@@ -498,12 +496,12 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (uInt& nFailed,
                                             const Vector<T>& x,
                                             const Vector<T>& y,
                                             const Vector<Bool>& mask,
-                                            const Double peakSNR,
-                                            const Double stdDeviation,
+                                            const T peakSNR,
+                                            const T stdDeviation,
                                             PGPlotter& plotter,
                                             const Bool fixedYLimits,
-                                            const Float yMinAuto,
-                                            const Float yMaxAuto,
+                                            const T yMinAuto,
+                                            const T yMaxAuto,
                                             const String xLabel,
                                             const String yLabel,
                                             const String title) const
@@ -544,9 +542,8 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (uInt& nFailed,
  
 // Draw on mean and sigma
   
-   const T sigma = stdDeviation;
    if (plotter.isAttached()) {
-      drawMeanSigma (dMean, sigma, plotter);
+      drawMeanSigma (dMean, stdDeviation, plotter);
       if (iNoise==1) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
    }  
    if (iNoise==1) {
@@ -664,8 +661,8 @@ Bool MomentCalcBase<T>::getInterGaussianFit (uInt& nFailed,
                                              const Vector<T>& y,
                                              const Vector<Bool>& mask,
                                              const Bool fixedYLimits,
-                                             const Float yMinAuto,
-                                             const Float yMaxAuto,
+                                             const T yMinAuto,
+                                             const T yMaxAuto,
                                              const String xLabel,
                                              const String yLabel,
                                              const String title,
@@ -1101,7 +1098,7 @@ uInt MomentCalcBase<T>::nMaxMoments() const
 
 
 template <class T>
-Double& MomentCalcBase<T>::peakSNR(ImageMoments<T>& iMom) const
+T& MomentCalcBase<T>::peakSNR(ImageMoments<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -1109,16 +1106,15 @@ Double& MomentCalcBase<T>::peakSNR(ImageMoments<T>& iMom) const
 }
 
 
-typedef Vector<Float> gpp_VectorFloat;
 template <class T>
-void MomentCalcBase<T>::range(gpp_VectorFloat& pixelRange,
-                              Bool& doInclude,
-                              Bool& doExclude, 
-                              ImageMoments<T>& iMom) const
+void MomentCalcBase<T>::selectRange(Vector<T>& pixelRange,
+                                    Bool& doInclude,
+                                    Bool& doExclude, 
+                                    ImageMoments<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
-   pixelRange = iMom.range_p;
+   pixelRange = iMom.selectRange_p;
    doInclude = ToBool(!(iMom.noInclude_p));
    doExclude = ToBool(!(iMom.noExclude_p));
 }
@@ -1352,15 +1348,15 @@ Bool MomentCalcBase<T>::stats(T& dMin,
 
 
 template <class T>
-Double& MomentCalcBase<T>::stdDeviation(ImageMoments<T>& iMom) const
+T& MomentCalcBase<T>::stdDeviation(ImageMoments<T>& iMom) const
 {
    return iMom.stdDeviation_p;
 }
       
 
 template <class T>
-void MomentCalcBase<T>::yAutoMinMax(Float& yMin, 
-                                    Float& yMax, 
+void MomentCalcBase<T>::yAutoMinMax(T& yMin, 
+                                    T& yMax, 
                                     ImageMoments<T>& iMom) const
 {
    yMin = iMom.yMin_p;
@@ -1410,7 +1406,7 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
 
 // Fish out pixel selection range
 
-   range(range_p, doInclude_p, doExclude_p, iMom_p);
+   selectRange(range_p, doInclude_p, doExclude_p, iMom_p);
 
 // Are we computing the expensive moments ?
 
@@ -1519,25 +1515,28 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
             profileIn.freeStorage(pProfileSelect, deleteIt);
          }
          return;
-     }
+      }
 
 
 // Draw on clip levels and arrows
 
       if (doInclude_p || doExclude_p) {
          plotter_p.sci (5);
-         drawHorizontal(T(range_p(0)), plotter_p);
-         drawHorizontal(T(range_p(1)), plotter_p);
+         drawHorizontal(range_p(0), plotter_p);
+         drawHorizontal(range_p(1), plotter_p);
       
          Vector<Float> minMax(4);
+         Float y1 = Float(real(range_p(0)));
+         Float y2 = Float(real(range_p(1)));
+
          minMax = plotter_p.qwin();
          Float x = minMax(0) + 0.05*(minMax(1)-minMax(0));
-         Float y = range_p(1) - 0.2*range_p(1);
-         plotter_p.arro (x, range_p(1), x, y);
-         y = range_p(0) + 0.2*range_p(0);
-         plotter_p.arro (x, y, x, range_p(0));
+         Float y = y2 - 0.2*y1;
+         plotter_p.arro (x, y2, x, y);
+         y = y1 + 0.2*y2;
+         plotter_p.arro (x, y, x, y1);
          plotter_p.sci(1);
-      }
+      } 
    }
 
 
@@ -2118,13 +2117,13 @@ Bool MomentWindow<T>::getAutoWindow (uInt& nFailed,
                                      const Vector<T>& x,
                                      const Vector<T>& y,
                                      const Vector<Bool>& mask,
-                                     const Double peakSNR,
-                                     const Double stdDeviation,
+                                     const T peakSNR,
+                                     const T stdDeviation,
                                      const Bool doFit,
                                      PGPlotter& plotter,
                                      const Bool fixedYLimits,                 
-                                     const Float yMinAuto,                 
-                                     const Float yMaxAuto,                 
+                                     const T yMinAuto,                 
+                                     const T yMaxAuto,                 
                                      const String xLabel,
                                      const String yLabel,
                                      const String title) const
@@ -2190,13 +2189,12 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
                                             const Vector<T>& y,
                                             const Vector<Bool>& mask,
                                             const Bool fixedYLimits,   
-                                            const Float yMinAuto,   
-                                            const Float yMaxAuto,
+                                            const T yMinAuto,   
+                                            const T yMaxAuto,
                                             const String xLabel,
                                             const String yLabel,
                                             const String title,
                                             PGPlotter& plotter) const
-
 //
 // With the cursor, mark the range for the window method
 //
@@ -2295,8 +2293,8 @@ Bool MomentWindow<T>::getInterWindow(uInt& nFailed,
                                      const Vector<T>& y,
                                      const Vector<Bool>& mask,
                                      const Bool fixedYLimits,
-                                     const Float yMinAuto,
-                                     const Float yMaxAuto,
+                                     const T yMinAuto,
+                                     const T yMaxAuto,
                                      const String xLabel,
                                      const String yLabel,
                                      const String title,
@@ -2366,12 +2364,12 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
                                       const Vector<T>& x,
                                       const Vector<T>& y,
                                       const Vector<Bool>& mask,
-                                      const Double peakSNR,
-                                      const Double stdDeviation,
+                                      const T peakSNR,
+                                      const T stdDeviation,
                                       PGPlotter& plotter,
                                       const Bool fixedYLimits,
-                                      const Float yMinAuto,
-                                      const Float yMaxAuto,
+                                      const T yMinAuto,
+                                      const T yMaxAuto,
                                       const String xLabel,
                                       const String yLabel,
                                       const String title) const
@@ -2409,9 +2407,8 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
 
 // Draw on mean and sigma
  
-   const T sigma = stdDeviation;
    if (plotter.isAttached()) {
-      drawMeanSigma (dMean, sigma, plotter);
+      drawMeanSigma (dMean, stdDeviation, plotter);
       if (iNoise==1) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
    }
    if (iNoise==1) {
@@ -2421,7 +2418,6 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
 
 
 // Find peak
-   
 
    uInt minPos, maxPos;
    T yMin, yMax, yMean;
@@ -2430,7 +2426,7 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
    const Int nPts = y.nelements(); 
    Int iMin = max(0,Int(maxPos)-2);   
    Int iMax = min(nPts-1,Int(maxPos)+2);
-   T tol = sigma / (nPts - (iMax-iMin-1));
+   T tol = stdDeviation / (nPts - (iMax-iMin-1));
           
        
 // Iterate to convergence
@@ -2470,7 +2466,7 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
          oldYMean = yMean;
          iMin = max(0,iMin - 2);
          iMax = min(nPts-1,iMax+2); 
-         tol = sigma / (nPts - (iMax-iMin-1));
+         tol = stdDeviation / (nPts - (iMax-iMin-1));
       }
       first = False;
    }   

@@ -182,7 +182,7 @@ protected:
 
 // When we are plotting, if we have asked to all profiles with the same 
 // Y min and max, these are the values to use
-   Float yMinAuto_p, yMaxAuto_p;
+   T yMinAuto_p, yMaxAuto_p;
 
 // This vector is used to hold the abcissa values when plotting profiles
    Vector<T> abcissa_p;
@@ -242,8 +242,8 @@ protected:
    uInt allNoise(T& dMean,
                  const Vector<T>& data,
                  const Vector<Bool>& mask,
-                 const Double peakSNR,
-                 const Double stdDeviation) const;
+                 const T peakSNR,
+                 const T stdDeviation) const;
 
 // Check validity of constructor inputs
    void constructorCheck(Vector<T>& calcMoments,
@@ -285,8 +285,8 @@ protected:
                       const Vector<T>& y,
                       const Vector<Bool>& mask,
                       const Bool fixedYLimits,
-                      const Float yMinAuto,
-                      const Float yMaxAuto,
+                      const T yMinAuto,
+                      const T yMaxAuto,
                       const String xLabel, 
                       const String yLabel, 
                       const String title,
@@ -337,12 +337,12 @@ protected:
                            const Vector<T>& x,
                            const Vector<T>& y,
                            const Vector<Bool>& mask,
-                           const Double peakSNR,
-                           const Double stdDeviation,
+                           const T peakSNR,
+                           const T stdDeviation,
                            PGPlotter& plotter,
                            const Bool fixedYLimits,
-                           const Float yMinAuto,
-                           const Float yMaxAuto,
+                           const T yMinAuto,
+                           const T yMaxAuto,
                            const String xLabel,
                            const String yLabel,
                            const String title) const;
@@ -372,8 +372,8 @@ protected:
                             const Vector<T>& y,  
                             const Vector<Bool>& mask,
                             const Bool fixedYLimits,
-                            const Float yMinAuto,
-                            const Float yMaxAuto,
+                            const T yMinAuto,
+                            const T yMaxAuto,
                             const String xLabel,
                             const String yLabel,
                             const String title,
@@ -446,14 +446,14 @@ protected:
 
 // Return the peak SNR for determination of all noise spectra from
 // the ImageMoments object
-   Double& peakSNR(ImageMoments<T>& iMom) const;
+   T& peakSNR(ImageMoments<T>& iMom) const;
 
 // Return the selected pixel intensity range from the ImageMoments 
 // object and the Bools describing whether it is inclusion or exclusion
-   void range(Vector<Float>& pixelRange,                
-              Bool& doInclude,
-              Bool& doExlude,
-              ImageMoments<T>& iMom) const;
+   void selectRange(Vector<T>& pixelRange,                
+                    Bool& doInclude,
+                    Bool& doExlude,
+                    ImageMoments<T>& iMom) const;
 
 // The MomentCalculators compute a vector of all possible moments.
 // This function returns a vector which selects the desired moments from that
@@ -582,11 +582,11 @@ protected:
               const Vector<Bool>& mask) const;
                  
 // Return standard deviation of image from ImageMoments object
-   Double& stdDeviation(ImageMoments<T>& iMom) const;
+   T& stdDeviation(ImageMoments<T>& iMom) const;
  
 // Return the auto y min and max from the ImageMoments object
-   void yAutoMinMax(Float& yMin, 
-                    Float& yMax, 
+   void yAutoMinMax(T& yMin, 
+                    T& yMax, 
                     ImageMoments<T>& iMom) const;
 
 protected:
@@ -715,14 +715,14 @@ private:
 
    Lattice<T>* pAncilliaryLattice_p; 
    ImageMoments<T>& iMom_p;
-   LogIO& os_p;
+   LogIO os_p;
 
    const Vector<T>* pProfileSelect_p;
    Vector<T> ancilliarySliceRef_p;
    Vector<T> selectedData_p;
    Vector<Int> selectedDataIndex_p;
    Bool doInclude_p, doExclude_p;
-   Vector<Float> range_p;
+   Vector<T> range_p;
    IPosition sliceShape_p;
 
 };
@@ -853,12 +853,12 @@ private:
 
    Lattice<T>* pAncilliaryLattice_p; 
    ImageMoments<T>& iMom_p;
-   LogIO& os_p;
+   LogIO os_p;
 
    const Vector<T>* pProfileSelect_p;
    Vector<T> ancilliarySliceRef_p;
    Vector<T> selectedData_p;
-   Double stdDeviation_p, peakSNR_p;
+   T stdDeviation_p, peakSNR_p;
    Bool doAuto_p, doFit_p;
    IPosition sliceShape_p;
 
@@ -874,13 +874,13 @@ private:
                       const Vector<T>& x,
                       const Vector<T>& y,
                       const Vector<Bool>& mask,
-                      const Double peakSNR,
-                      const Double stdDeviation,
+                      const T peakSNR,
+                      const T stdDeviation,
                       const Bool doFit,
                       PGPlotter& plotter,
                       const Bool fixedYLimits,                 
-                      const Float yMinAuto,                 
-                      const Float yMaxAuto,                 
+                      const T yMinAuto,                 
+                      const T yMaxAuto,                 
                       const String xLabel,
                       const String yLabel,
                       const String title) const;
@@ -890,12 +890,12 @@ private:
                         const Vector<T>& x,
                         const Vector<T>& y,
                         const Vector<Bool>& mask,
-                        const Double peakSNR,
-                        const Double stdDeviation,
+                        const T peakSNR,
+                        const T stdDeviation,
                         PGPlotter& plotter,
                         const Bool fixedYLimits,
-                        const Float yMinAuto,
-                        const Float yMaxAuto,
+                        const T yMinAuto,
+                        const T yMaxAuto,
                         const String xLabel,
                         const String yLabel,
                         const String title) const;
@@ -908,8 +908,8 @@ private:
                              const Vector<T>& y,
                              const Vector<Bool>& mask,
                              const Bool fixedYLimits,   
-                             const Float yMinAuto,   
-                             const Float yMaxAuto,
+                             const T yMinAuto,   
+                             const T yMaxAuto,
                              const String xLabel,
                              const String yLabel,
                              const String title,
@@ -926,8 +926,8 @@ private:
                         const Vector<T>& y,
                         const Vector<Bool>& mask,
                         const Bool fixedYLimits,
-                        const Float yMinAuto,
-                        const Float yMaxAuto,
+                        const T yMinAuto,
+                        const T yMaxAuto,
                         const String xLabel,
                         const String yLabel,
                         const String title,
@@ -1049,8 +1049,8 @@ public:
 private:
 
    ImageMoments<T>& iMom_p;
-   LogIO& os_p;
-   Double stdDeviation_p, peakSNR_p;
+   LogIO os_p;
+   T stdDeviation_p, peakSNR_p;
    Bool doAuto_p, doFit_p;
    Gaussian1D<T> gauss_p;
 
