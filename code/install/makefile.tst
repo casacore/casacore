@@ -351,9 +351,9 @@ $(BINTESTD)/%.gp : $(CODEDIR)/%.gp
 	@ cp $< $@
 
 $(LIBEXECD)/% : $(CODEDIR)/%
-        @ $(RM) $@
-          cp $< $@
-        @ chmod 664 $@
+	@ $(RM) $@
+	cp $< $@
+	@ chmod 664 $@
 
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
