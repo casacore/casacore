@@ -701,25 +701,80 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   ProgressMeter meter(0.0, nGroups*1.0, "UVFITS Filler", "Groups copied", "",
  		      "", True,  nGroups/100);
 
-  Vector<Double> uvw(3); // Move this temporary out of the loop
-  Int lastArray, lastSourceId;
-  lastArray=-1; lastSourceId=-1;
-  Double lastTime=0;
+  Vector<Double> uvw(3);
+
+  // Remember last-filled values for TSM use
+  Int lastFillArrayId, lastFillFieldId, lastFillScanNumber;
+  lastFillArrayId=-1; lastFillFieldId=-1, lastFillScanNumber=-1;
+  Double lastFillTime=0;
+
+  // Keep track of array-specific scanNumbers, FieldIds and FreqIds
+  Vector<Int> scanNumber(1);
+  Vector<Int> lastFieldId(1), lastFreqId(1);
+  scanNumber=-1; lastFieldId=-1, lastFreqId=-1;
+
   Int fixToRow=-1;
   Bool lastRowFlag=False;
+
+  // Loop over groups
   for (Int group=0; group<nGroups; group++) {
+
     // Read next group and
-    // get time in MJD seconds
-    const Double JDofMJD0=2400000.5;
     priGroup_p.read();
+
+    // Extract time in MJD seconds
+    const Double JDofMJD0=2400000.5;
     Double time = priGroup_p.parm(iTime0); 
     time -= JDofMJD0;
     if (iTime1>=0) time += priGroup_p.parm(iTime1);
-    Float baseline = priGroup_p.parm(iBsln); 
+    time  *= C::day; 
+
+    // Extract fqid 
+    Int freqId = Int(priGroup_p.parm(iFreq));
+
+    // Extract field Id
+    Int fieldId = 0;
+    if (iSource>=0) {
+      // make 0-based
+      fieldId = (Int)priGroup_p.parm(iSource) - 1; 
+    }
+
+    // Extract uvw
     uvw(0) = priGroup_p.parm(iU);
     uvw(1) = priGroup_p.parm(iV);
     uvw(2) = priGroup_p.parm(iW);
-    time  *= C::day; 
+    // Convert from units of seconds to meters
+    uvw *= C::c;
+
+    // Extract array/baseline/antenna info
+    Float baseline = priGroup_p.parm(iBsln); 
+    Int arrayId = Int(100.0*(baseline - Int(baseline)+0.001));
+    nArray_p = max(nArray_p,arrayId+1);
+
+    Int ant1 = Int(baseline)/256; 
+    nAnt_p = max(nAnt_p,ant1);
+    Int ant2 = Int(baseline) - ant1*256; 
+    nAnt_p = max(nAnt_p,ant2);
+    ant1--; ant2--; // make 0-based
+
+    // Ensure arrayId-specific params are of correct length:
+    if (scanNumber.shape()<nArray_p) {
+      scanNumber.resize(nArray_p,True);
+      lastFieldId.resize(nArray_p,True);
+      lastFreqId.resize(nArray_p,True);
+      scanNumber(nArray_p-1)=-1;
+      lastFieldId(nArray_p-1)=-1;
+      lastFreqId(nArray_p-1)=-1;
+    }
+
+    // Detect new scan (field or freqid change) for each arrayId
+    if (fieldId!=lastFieldId(arrayId) || 
+	freqId!=lastFreqId(arrayId) ||
+        time-lastFillTime > 300.0 ) {
+      scanNumber(arrayId)++;
+      lastFieldId(arrayId)=fieldId;
+      lastFreqId(arrayId)=freqId;
+    }
 
     // If integration time is a RP, use it:
     if (iInttim > -1) {
@@ -728,7 +783,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
     } else {
       // keep track of minimum which is the only one
       Double tempint;
-      tempint=time-lastTime;
+      tempint=time-lastFillTime;
       // if interval larger than UVFITS precision (and zero):
       if (tempint > 0.01) {
 	interval=tempint;
@@ -745,18 +800,6 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       }
     }
 
-    Int array = Int(100.0*(baseline - Int(baseline)+0.001));
-    Int ant1 = Int(baseline)/256; 
-    nAnt_p = max(nAnt_p,ant1);
-    Int ant2 = Int(baseline) - ant1*256; 
-    nAnt_p = max(nAnt_p,ant2);
-    ant1--; ant2--; // make 0-based
-    
-    // Convert U,V,W from units of seconds to meters
-    uvw *= C::c;
-
-    Int count = 0;
-
     // Work out which axis increments fastests, pol or channel
     // The COMPLEX axis is assumed to be first, and the IF axis is assumed
     // to be after STOKES and FREQ.
@@ -765,6 +808,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
     const Int nx = (polFastest ? nChan : nCorr);
     const Int ny = (polFastest ? nCorr : nChan);
 
+    Int count = 0;
     for (Int ifno=0; ifno<max(1,nIF_p); ifno++) {
       // IFs go to separate rows in the MS
       ms_p.addRow(); 
@@ -776,10 +820,14 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
  	msc.feed2().put(row,0);
  	msc.flagRow().put(row,False);
  	lastRowFlag=False;
- 	msc.scanNumber().put(row,0);
  	msc.processorId().put(row,-1);
  	msc.observationId().put(row,0);
  	msc.stateId().put(row,-1);
+      }
+
+      // Fill scanNumber if changed since last row
+      if (scanNumber(arrayId)!=lastFillScanNumber) {
+ 	msc.scanNumber().put(row,scanNumber(arrayId));
       }
 
       weight=0.0;
@@ -830,22 +878,22 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
  	lastRowFlag=rowFlag;
       }
 
-      if (array!=lastArray) {
- 	msc.arrayId().put(row,array);
- 	lastArray=array;
+      if (arrayId!=lastFillArrayId) {
+ 	msc.arrayId().put(row,arrayId);
+ 	lastFillArrayId=arrayId;
       }
       // Always put antenna1 & antenna2 since it is bound to the
       // aipsStMan and is assumed to change every row
       msc.antenna1().put(row,ant1);
       msc.antenna2().put(row,ant2);
-      if (time!=lastTime) {
+      if (time!=lastFillTime) {
  	msc.time().put(row,time);
  	msc.timeCentroid().put(row,time);
 	// the second integration: record row number
 	if (fixToRow==-2) fixToRow=row-1;
 	// the first integration: get ready to record row number 
-	if (lastTime==0) fixToRow=-2;
- 	lastTime=time;
+	if (lastFillTime==0) fixToRow=-2;
+ 	lastFillTime=time;
       }
       msc.uvw().put(row,uvw);
       
@@ -863,16 +911,11 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       // Always put DDI (SSM) since it might change rapidly
       msc.dataDescId().put(row,spW);
     
-      // store the sourceId 
-      Int sourceId = 0;
-      if (iSource>=0) {
- 	// make 0-based
- 	sourceId = (Int)priGroup_p.parm(iSource) - 1; 
-      }
-      if (sourceId!=lastSourceId) {
- 	msc.fieldId().put(row,sourceId);
- 	nField = max(nField, sourceId+1);
- 	lastSourceId=sourceId;
+      // store the fieldId 
+      if (fieldId!=lastFillFieldId) {
+ 	msc.fieldId().put(row,fieldId);
+ 	nField = max(nField, fieldId+1);
+ 	lastFillFieldId=fieldId;
       }
     }
     meter.update((group+1)*1.0);
