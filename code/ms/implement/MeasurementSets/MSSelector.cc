@@ -604,11 +604,11 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
        << LogIO::POST;
     return out;
   }
-  if (ifrAxis && dataDescId_p<0) {
-    os << LogIO::WARN << " Need to select one data_desc_id only"
-      " when ifrAxis==True" << LogIO::POST;
-    return out;
-  }
+  //  if (ifrAxis && dataDescId_p<0) {
+  //    os << LogIO::WARN << " Need to select one data_desc_id only"
+  //      " when ifrAxis==True" << LogIO::POST;
+  //    return out;
+  //  }
 
   Bool wantAmp, wantPhase, wantReal, wantImag, wantData, wantFloat,
     wantCAmp, wantCPhase, wantCReal, wantCImag, wantCData,
@@ -1171,18 +1171,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   Array<Bool> flags,dataflags;
   Array<Float> weights;
   if (wantWeight || average) {
-    Matrix<Float> wt;
-    if (wantedOne_p>=0) { 
-      wt = msc.weight().getColumn(Slicer(Slice(wantedOne_p,1)));
-    } else {
-      wt = msc.weight().getColumn();
-    }
-    // apply the stokes conversion/selection to the weights
-    if (convert_p) {
-      Matrix<Float> outwt;
-      stokesConverter_p.convert(outwt,wt);
-      wt.reference(outwt);
-    }
+    Matrix<Float> wt = getWeight(msc.weight());
     Int nCorr=wt.shape()(0);
     IPosition wtsidx(3,nCorr,nIfr,nTime);
     if (doIfrAxis) {
@@ -1948,6 +1937,23 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
   }
   if (useSlicer_p) col.putColumn(slicer_p, flag);
   else col.putColumn(flag);
+}
+
+Array<Float> MSSelector::getWeight(const ROArrayColumn<Float>& wtCol) const
+{
+  Array<Float> wt;
+  if (wantedOne_p>=0) { 
+    wt = wtCol.getColumn(Slicer(Slice(wantedOne_p,1)));
+  } else {
+    wt = wtCol.getColumn();
+  }
+  // apply the stokes conversion/selection to the weights
+  if (convert_p) {
+    Matrix<Float> outwt;
+    stokesConverter_p.convert(outwt,wt);
+    wt.reference(outwt);
+  }
+  return wt;
 }
 
 void MSSelector::makeSlicer(Int start, Int nCorr) const

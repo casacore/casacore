@@ -447,7 +447,10 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
     case MSS::WEIGHT:
       {
 	Vector<Float> range(2); 
-	::minMax(range(0),range(1),msc.weight().getColumn());
+	Array<Float> wt;
+	if (sel_p) wt=sel_p->getWeight(msc.weight());
+	else wt=msc.weight().getColumn();
+	::minMax(range(0),range(1),wt);
 	out.add(keyword,range);
       }
       break;
