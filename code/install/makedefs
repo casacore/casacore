@@ -265,6 +265,7 @@ XLIBLIST_shared_trialdisplay := $(XLIBLIST_shared_trial)
 XLIBLIST_shared_nrao  := $(XLIBLIST_shared_trial)
 XLIBLIST_shared_atnf  := RPFITS $(XLIBLIST_shared_trial)
 XLIBLIST_shared_nfra  := $(XLIBLIST_shared_trial)
+XLIBLIST_shared_alma  := $(XLIBLIST_shared_trial)
 
 # The shared library list may be defined in the including makefile either
 # before or after makedefs is included.
@@ -419,6 +420,7 @@ LIBcontrib    = defeat defeat defeat defeat defeat defeat
 LIBtrial      = defeat static defeat defeat defeat static
 LIBtrialdisplay = defeat static defeat defeat defeat defeat
 #                                                          Consortia
+LIBalma       = defeat defeat defeat defeat defeat defeat
 LIBatnf       = defeat defeat defeat defeat defeat defeat
 LIBbima       = defeat defeat defeat defeat defeat defeat
 LIBhia        = defeat defeat defeat defeat defeat defeat
@@ -444,6 +446,7 @@ LINKcontrib   := contrib vlbi synthesis dish aips
 LINKtrial     := trial aips
 LINKtrialdisplay := trialdisplay trial display aips
 
+LINKalma      := alma trial aips
 LINKatnf      := atnf trial aips
 LINKbima      := bima trial aips
 LINKhia       := hia  trial aips
@@ -912,6 +915,7 @@ export LIBvlbi      := $(LIBvlbi)
 export LIBcontrib   := $(LIBcontrib)
 export LIBtrial     := $(LIBtrial)
 export LIBtrialdisplay := $(LIBtrialdisplay)
+export LIBalma      := $(LIBalma)
 export LIBatnf      := $(LIBatnf)
 export LIBbima      := $(LIBbima)
 export LIBhia       := $(LIBhia)
