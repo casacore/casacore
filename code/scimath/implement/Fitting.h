@@ -1,5 +1,5 @@
 //# Fitting.h: Module for various forms of mathematical fitting
-//# Copyright (C) 1995,1999,2000,2001,2002
+//# Copyright (C) 1995,1999-2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 #define SCIMATH_FITTING_H
 
 #include <casa/aips.h>
-#include <scimath/Fitting/FitLSQ.h>
+#include <scimath/Fitting/LSQFit.h>
 #include <scimath/Fitting/LinearFit.h>
 #include <scimath/Fitting/LinearFitSVD.h>
 #include <scimath/Fitting/NonLinearFit.h>
@@ -45,7 +45,8 @@
 //      <a href="../../notes/224/">Note 224</a>.
 // </prerequisite>
 //
-// <reviewed reviewer="Neil Killeen" date="2000/06/01" demos="dLSQBase">
+// <reviewed reviewer="Neil Killeen" date="2000/06/01"
+//	 demos="dLSQFit,dConstraints">
 // </reviewed>
 //
 // <synopsis> 
@@ -84,10 +85,11 @@
 //
 // <H3>Linear Least-Squares Fits</H3>
 //
-// The <em>linear least squares</em> solution assumes that the fit function is a
-// linear combination of M basis functions.
+// The <em>linear least squares</em> solution assumes that the fit function
+// is a linear combination of M linear condition equations.
 // It is important to note that <em>linear</em> refers to the dependence on
-// the parameters; the basis functions themselves may be very non-linear.
+// the parameters; the condition equations may be very non-linear in the
+// dependent arguments.
 //
 // The linear least squares problem is solved by explicitly
 // forming and inverting the normal equations.
@@ -95,7 +97,6 @@
 // singular, the <em>singular value decomposition</em> (SVD) method may be 
 // used. <em>Numerical Recipes</em> suggests the SVD be always used, however 
 // this advice is not universally accepted.
-//
 //
 // <H3>Linear Least-Squares Fits with Known Linear Constraints</H3>
 //
@@ -135,21 +136,15 @@
 //
 // <H3>What Is Available?</H3>
 //
-// The basic classes are <linkto class=LSQBase>LSQBase</linkto>, 
-//  <linkto class=LSQ>LSQ</linkto>, and <linkto class=FitLSQ>FitLSQ</linkto>.
-// They provide the basic  framework for normal equations generation, solving 
-// and iterating in the case of non-linear equations. 
+// The basic classes are <linkto class=LSQFit>LSQFit</linkto> and 
+//  <linkto class=LSQaips>LSQaips</linkto>.
+// They provide the basic  framework for normal equation generation, solving 
+// the normal equations and iterating in the case of non-linear equations. 
 //
-// The classes <em>LSQBase</em> and <em>LSQ</em> use a native C++ interface.
-// They handle real data (<em>LSQBase</em>), and real and complex
-// (<em>LSQ</em>).  There is an additional
-// class, <em>FitLSQ</em> which offers the functionality of <em>LSQ</em>,
+// The <em>LSQFit</em> class uses a native C++ interface (pointers and 
+// iterators). They handle real data and complex data.
+// The <em>LSQaips</em> class offers the functionality of <em>LSQFit</em>,
 // but with an additional aips++ Array interface.<br>
-// Note that <em>LSQBase</em> and <em>LSQ</em> will be merged into a single
-// class (<em>LSQ</em>) once
-// aips++ uses the standard library complex classes.
-//
-// The inheritance tree is FitLSQ : LSQ : LSQBase
 //
 // Functionality is
 // <ol>
@@ -162,8 +157,8 @@
 // <li> Solve (as opposed to fit to a set of data), a set of equations
 // </ol> 
 //
-// In addition to the basic Least Squares routines in the <src>LSQ</src> and
-// <src>FitLSQ</src> classes, this module contains also a set of direct
+// In addition to the basic Least Squares routines in the <src>LSQFit</src> and
+// <src>LSQaips</src> classes, this module contains also a set of direct
 // data fitters:
 // <ul>
 // <li> <src>Fit2D</src>
@@ -171,13 +166,11 @@
 // <li> <src>LinearFitSVD</src>
 // <li> <src>NonLinearFit</src>
 // <li> <src>NonLinearFitLM</src>
-// <li> <src>LinearFitConstraint</src>
 // </ul>
 // Furthermore class <src>LatticeFit</src> can do fitting on lattices.
 //
 // Note that the basic functions have <em>LSQ</em> in their title; the
-// one-step fitting functions <em>Fit</em>, and the solution with more
-// freedom <em>Solve</em> (none available yet).
+// one-step fitting functions <em>Fit</em>.
 //
 // The above fitting problems can usually be solved by directly 
 // calling the <src>fit()</src> member function provided by one of the
@@ -196,8 +189,9 @@
 // first instance.
 // </motivation>
 //
-// <todo asof="1999/11/12">
-//	<li> extend the makeNorm() interface and the number of Fitting routines
+// <todo asof="2004/09/22">
+//	<li> extend the Fit interface classes to cater for building the
+//		normal equations in parts.
 // </todo>
 //
 // </module>
