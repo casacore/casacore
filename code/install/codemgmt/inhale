@@ -669,7 +669,7 @@
               if [ -f "$FILE" ]
               then
                  SUM0=`grep $FILE CHKSUM | awk '{print $1}'`
-                 SUM1=`sum $FILE | awk '{print $1}'`
+                 SUM1=`cksum $FILE | awk '{print $1}'`
                  [ "$SUM1" = "$SUM0" ] && continue
                  rm -f $FILE
               fi
