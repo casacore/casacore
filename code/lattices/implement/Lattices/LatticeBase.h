@@ -1,5 +1,5 @@
 //# LatticeBase.h: A non-templated, abstract base class for array-like classes
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -92,6 +92,12 @@ public:
   // Is the lattice paged to disk?
   // <br>The default implementation returns False.
   virtual Bool isPaged() const;
+
+  // Can the lattice data be referenced as an array section?
+  // That is the case for an ArrayLattice or a Temp/SubLattice using it.
+  // It is used by LatticeIterInterface.
+  // <br>The default implementation returns False.
+  virtual Bool canReferenceArray() const;
 
   // Is the lattice writable?
   // <br>The default implementation returns True.

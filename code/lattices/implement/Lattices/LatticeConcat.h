@@ -1,5 +1,5 @@
 //# LatticeConcat.h: concatenate lattices along an axis
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -144,6 +144,9 @@ public:
 // Sets a new lattice into the list to be concatenated.  
 // Exception thrown if lattices are incompatible
    void setLattice (MaskedLattice<T>& lattice);
+
+// Pop the first lattice from the list and add the other to the bottom.
+   void popAndAdd (MaskedLattice<T>& lattice);
 
 // Return the number of lattices set so far
    uInt nlattices() const

@@ -1,5 +1,5 @@
 //# PagedArrIter.h: A concrete iterator for use with PagedArray's.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -92,7 +92,8 @@ friend class PagedArray<T>;
 
 protected:
   // Construct the Iterator with the supplied data, and iteration strategy
-  PagedArrIter (const PagedArray<T>& data, const LatticeNavigator& method);
+  PagedArrIter (const PagedArray<T>& data, const LatticeNavigator& method,
+		Bool useRef);
 
   // The copy constructor uses reference sematics for the PagedArray and
   // copy semantics for the cursor and Navigator. This way the newly

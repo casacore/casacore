@@ -1,5 +1,5 @@
 //# PagedArray.h: templated Lattice, paged from disk to memory on demand
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -527,8 +527,8 @@ public:
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use. 
-  virtual LatticeIterInterface<T>* makeIter(
-                                   const LatticeNavigator& navigator) const;
+  virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
+					     Bool useRef) const;
 
   // Do the actual getting of an array of values.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);

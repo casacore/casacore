@@ -1,5 +1,5 @@
 //# ImageExpr.h: contains expressions involving images
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -168,8 +168,9 @@ public:
   
   // These are the implementations of the LatticeIterator letters.
   // <note> not for public use </note>
-  virtual LatticeIterInterface<T> *makeIter(
-                                 const LatticeNavigator &navigator) const;
+  virtual LatticeIterInterface<T>* makeIter(
+                                 const LatticeNavigator& navigator,
+				 Bool useRef) const;
 
   // Returns False, as the ImageExpr is not writable.
    virtual Bool isWritable() const;

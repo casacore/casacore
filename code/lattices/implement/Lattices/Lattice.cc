@@ -1,5 +1,5 @@
 //# Lattice.cc:  this defines Lattice.cc, a base for array-related classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -290,10 +290,10 @@ void Lattice<T>::copyDataTo (Lattice<T>& to) const
 }
 
 template<class T>
-LatticeIterInterface<T>* Lattice<T>::makeIter
-                                       (const LatticeNavigator& nav) const
+LatticeIterInterface<T>* Lattice<T>::makeIter (const LatticeNavigator& nav,
+					       Bool useRef) const
 {
-  return new LatticeIterInterface<T>(*this, nav);
+  return new LatticeIterInterface<T>(*this, nav, useRef);
 }
 
 template<class T>

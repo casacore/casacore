@@ -1,5 +1,5 @@
 //# SubLattice.cc: A subset of a Lattice
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -289,6 +289,12 @@ Bool SubLattice<T>::isPaged() const
 }
 
 template<class T>
+Bool SubLattice<T>::canReferenceArray() const
+{
+  return itsLatticePtr->canReferenceArray();
+}
+
+template<class T>
 Bool SubLattice<T>::isWritable() const
 {
   return itsWritable;
@@ -551,10 +557,10 @@ Bool SubLattice<T>::ok() const
 }
 
 template<class T>
-LatticeIterInterface<T>* SubLattice<T>::makeIter
-                               (const LatticeNavigator& navigator) const
+LatticeIterInterface<T>* SubLattice<T>::makeIter (const LatticeNavigator& nav,
+						  Bool useRef) const
 {
-  return new LatticeIterInterface<T> (*this, navigator);
+  return new LatticeIterInterface<T> (*this, nav, useRef);
   // Make a clone of the navigator to be able to apply our region.
 ///  LatticeNavigator* navPtr = navigator.clone();
 ///  const Slicer& section = itsRegionPtr->box();

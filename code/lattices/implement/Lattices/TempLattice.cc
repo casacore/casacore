@@ -1,5 +1,5 @@
 //# TempLattice.cc: A Lattice that can be used for temporary storage
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -170,6 +170,12 @@ Bool TempLattice<T>::isPaged() const
   return  (! itsTableName.empty());
 }
 
+template <class T>
+Bool TempLattice<T>::canReferenceArray() const
+{
+  return  (itsTableName.empty());
+}
+
 template<class T>
 Bool TempLattice<T>::isWritable() const
 {
@@ -319,9 +325,9 @@ Bool TempLattice<T>::ok() const
 }
 
 template<class T>
-LatticeIterInterface<T>* TempLattice<T>::makeIter
-                                   (const LatticeNavigator& navigator) const
+LatticeIterInterface<T>* TempLattice<T>::makeIter (const LatticeNavigator& nav,
+						   Bool useRef) const
 {
   doReopen();
-  return itsLatticePtr->makeIter (navigator);
+  return itsLatticePtr->makeIter (nav, useRef);
 }

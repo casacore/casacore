@@ -1,5 +1,5 @@
 //# ArrayLattice: Object which converts an Array to a Lattice.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -171,6 +171,9 @@ public:
   // Make a copy of the object (reference semantics).
   virtual Lattice<T>* clone() const;
 
+  // The lattice data can be referenced as an array section.
+  virtual Bool canReferenceArray() const;
+
   // Is the lattice writable?
   virtual Bool isWritable() const;
 
@@ -201,12 +204,6 @@ public:
   // Returns the maximum recommended number of pixels for a cursor.
   // For this class this is equal to the number of pixels in the lattice.
   virtual uInt advisedMaxPixels() const;
-
-  // This function is used by the LatticeIterator class to generate an
-  // iterator of the correct type for a specified Lattice. Not recommended
-  // for general use. 
-  virtual LatticeIterInterface<T>* makeIter(
-				   const LatticeNavigator& navigator) const;
 
   // Get a slice in an optimized way (specifically for ArrLatticeIter).
   // It returns in <src>buffer</src> a reference to the lattice array.

@@ -1,5 +1,5 @@
 //# LCRegionSingle.h: Abstract base class to define a single region
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,7 +131,8 @@ protected:
     // When the underlying region has a mask, an iterator for that region
     // is returned. Otherwise the standard iterator is returned.
     virtual LatticeIterInterface<Bool>* makeIter
-				(const LatticeNavigator& navigator) const;
+				(const LatticeNavigator& navigator,
+				 Bool useRef) const;
 
 private:
     Bool           itsHasMask;

@@ -1,5 +1,5 @@
 //# LCMask.cc: Class to define a rectangular mask of interest
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -177,9 +177,10 @@ void LCMask::showCacheStatistics (ostream& os) const
 }
 
 LatticeIterInterface<Bool>* LCMask::makeIter
-                                   (const LatticeNavigator& navigator) const
+                                   (const LatticeNavigator& navigator,
+				    Bool useRef) const
 {
-  return itsMask->makeIter (navigator);
+  return itsMask->makeIter (navigator, useRef);
 }
 
 

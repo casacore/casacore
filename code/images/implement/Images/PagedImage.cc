@@ -1,5 +1,5 @@
 //# PagedImage.cc: defines the PagedImage class
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -584,9 +584,10 @@ Bool PagedImage<T>::setMiscInfo (const RecordInterface& newInfo)
 
 template <class T> 
 LatticeIterInterface<T>* PagedImage<T>::makeIter
-                                   (const LatticeNavigator& navigator) const
+                                   (const LatticeNavigator& navigator,
+				    Bool useRef) const
 {
-  return map_p.makeIter (navigator);
+  return map_p.makeIter (navigator, useRef);
 }
 
 template <class T> 

@@ -1,5 +1,5 @@
 //# Lattice.h:  Lattice is an abstract base class for array-like classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -366,8 +366,8 @@ public:
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use.
   // <br>The default implementation creates a LatticeIterInterface object.
-  virtual LatticeIterInterface<T>* makeIter
-				(const LatticeNavigator& navigator) const;
+  virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
+					     Bool useRef) const;
 
   // The functions (in the derived classes) doing the actual work.
   // These functions are public, so they can be used internally in the

@@ -1,5 +1,5 @@
 //# ImageConcat.cc: concatenate images
-//# Copyright (C) 1995,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -359,9 +359,10 @@ Bool ImageConcat<T>::ok() const
  
 
 template <class T>
-LatticeIterInterface<T>* ImageConcat<T>::makeIter(const LatticeNavigator &navigator) const
+LatticeIterInterface<T>* ImageConcat<T>::makeIter (const LatticeNavigator& nav,
+						   Bool useRef) const
 {
-  return latticeConcat_p.makeIter(navigator);
+  return latticeConcat_p.makeIter(nav, useRef);
 } 
 
 

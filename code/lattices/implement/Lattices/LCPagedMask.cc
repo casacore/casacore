@@ -1,5 +1,5 @@
 //# LCPagedMask.cc: Class to define a rectangular mask of interest
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -164,9 +164,10 @@ void LCPagedMask::showCacheStatistics (ostream& os) const
 }
 
 LatticeIterInterface<Bool>* LCPagedMask::makeIter
-                                   (const LatticeNavigator& navigator) const
+                                   (const LatticeNavigator& navigator,
+				    Bool useRef) const
 {
-  return itsMask.makeIter (navigator);
+    return itsMask.makeIter (navigator, useRef);
 }
 
 

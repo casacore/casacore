@@ -1,5 +1,5 @@
 //# PagedArrIter.cc: a concrete iterator for use with PagedArray's.
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,8 +39,9 @@
 
 template<class T>
 PagedArrIter<T>::PagedArrIter (const PagedArray<T>& data,
-			       const LatticeNavigator& nav)
-: LatticeIterInterface<T> (data, nav),
+			       const LatticeNavigator& nav,
+			       Bool useRef)
+: LatticeIterInterface<T> (data, nav, useRef),
   itsData (data)
 {
   setupTileCache();

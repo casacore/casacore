@@ -1,5 +1,5 @@
 //# ImageConcat.h: concatenate images along an axis
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -243,7 +243,8 @@ public:
 // These are the implementations of the LatticeIterator letters.
 // <note> not for public use </note>
   virtual LatticeIterInterface<T> *makeIter
-                               (const LatticeNavigator &navigator) const;
+                               (const LatticeNavigator &navigator,
+				Bool useRef) const;
 
 
 private:

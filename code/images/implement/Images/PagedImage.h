@@ -1,5 +1,5 @@
 //# PagedImage.h: read, store and manipulate astronomical images
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -320,7 +320,8 @@ public:
   // This is the implementation of the letter for the envelope Iterator
   // class. <note> Not for public use </note>.
   virtual LatticeIterInterface<T>* makeIter
-                                 (const LatticeNavigator& navigator) const;
+                                 (const LatticeNavigator& navigator,
+				  Bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile. 

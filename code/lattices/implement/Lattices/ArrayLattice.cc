@@ -1,5 +1,5 @@
 //# ArrayLattice.cc: this defines the Lattice wrapper class for Arrays.
-//# Copyright (C) 1995,1997,1998,1999,2000
+//# Copyright (C) 1995,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,6 +89,12 @@ Lattice<T>* ArrayLattice<T>::clone() const
 }
 
 template <class T>
+Bool ArrayLattice<T>::canReferenceArray() const
+{
+  return True;
+}
+
+template <class T>
 Bool ArrayLattice<T>::isWritable() const
 {
   return itsWritable;
@@ -169,13 +175,6 @@ template<class T>
 uInt ArrayLattice<T>::advisedMaxPixels() const
 {
   return itsData.nelements();
-}
-
-template<class T>
-LatticeIterInterface<T>* ArrayLattice<T>::makeIter
-                                       (const LatticeNavigator& nav) const
-{
-  return new ArrLatticeIter<T>(*this, nav);
 }
 
 template<class T>

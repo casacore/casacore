@@ -1,5 +1,5 @@
 //# SubImage.cc: A subset of a Image
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -352,9 +352,10 @@ void SubImage<T>::putAt (const T& value, const IPosition& where)
 
 template<class T>
 LatticeIterInterface<T>* SubImage<T>::makeIter
-                               (const LatticeNavigator& navigator) const
+                               (const LatticeNavigator& navigator,
+				Bool useRef) const
 {
-  return itsSubLatPtr->makeIter (navigator);
+  return itsSubLatPtr->makeIter (navigator, useRef);
 }
 
 template<class T>

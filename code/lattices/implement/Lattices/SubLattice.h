@@ -1,5 +1,5 @@
 //# SubLattice.h: A subset of a Lattice or MaskedLattice
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -165,6 +165,9 @@ public:
   // Is the SubLattice paged to disk?
   virtual Bool isPaged() const;
 
+  // Can the lattice data be referenced as an array section?
+  virtual Bool canReferenceArray() const;
+
   // Is the SubLattice writable?
   virtual Bool isWritable() const;
 
@@ -233,8 +236,8 @@ public:
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
-  virtual LatticeIterInterface<T>*
-                      makeIter (const LatticeNavigator& navigator) const;
+  virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
+					     Bool useRef) const;
 
   // Do the actual getting of an array of values.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);

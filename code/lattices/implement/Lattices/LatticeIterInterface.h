@@ -1,5 +1,5 @@
 //# LatticeIterInterface.h: A base class for Lattice iterators
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -120,7 +120,8 @@ friend class RO_LatticeIterator<T>;
 public:
   // Construct with the given navigator.
   LatticeIterInterface (const Lattice<T>& lattice,
-			const LatticeNavigator& navigator);
+			const LatticeNavigator& navigator,
+			Bool useRef);
 
   // A virtual destructor. A virtual is needed to ensure that derived
   // classes declared as pointers to a LatticeIterInterface will scope their
@@ -225,12 +226,14 @@ protected:
   // Update the cursor for the next chunk of data (resize if needed).
   virtual void cursorUpdate();
 
-  // Allocate the internal cursor to be a pointer to the correct type.
-  // Returns False if the memory could not be allocated.
-  Bool allocateCursor();
+  // Allocate the internal buffer.
+  void allocateBuffer();
 
-  // Synchronise the storage of itsCursor with itsCurPtr.
-  void relinkArray();
+  // Allocate the nondegenerate array with the correct type.
+  void allocateCurPtr();
+
+  // Synchronise the storage of itsCurPtr with itsCursor.
+  void setCurPtr2Cursor();
 
   // Copy the base data of the other object.
   void copyBase (const LatticeIterInterface<T>& other);
@@ -240,12 +243,20 @@ protected:
   LatticeNavigator* itsNavPtr;
   // Pointer to the Lattice
   Lattice<T>*       itsLattPtr;
-  // Polymorphic pointer to a subpart of the Lattice
+  // A buffer to hold the data. Usually itsCursor shares the data
+  // with this buffer, but for an ArrayLattice itsCursor might reference
+  // the lattice directly instead of making a copy in the buffer.
+  Array<T>          itsBuffer;
+  // Polymorphic pointer to the data in itsCursor.
   Array<T>*         itsCurPtr;
   // An Array which references the same data as the itsCurPtr, but has all
-  // the degenerate axes. This is an optimisation to avoid the overhead of
+  // the degenerate axes. This is an optimization to avoid the overhead of
   // having to add the degenerate axes for each iteration.
   Array<T>          itsCursor;
+  // Keep a reference to the data (if possible).
+  Bool              itsUseRef;
+  // Is the cursor a reference to the lattice?
+  Bool              itsIsRef;
   // Have the data been read after a cursor update? (False=not read)
   Bool              itsHaveRead;
   // Rewrite the cursor data before moving or destructing?

@@ -1,5 +1,5 @@
 //# LatticeRegion.cc: An optionally strided region in a lattice
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -200,9 +200,10 @@ uInt LatticeRegion::nelements() const
 }
   
 LatticeIterInterface<Bool>* LatticeRegion::makeIter
-                        (const LatticeNavigator& navigator) const
+                        (const LatticeNavigator& navigator,
+			 Bool useRef) const
 {
-    return itsRegion->makeIter (navigator);
+    return itsRegion->makeIter (navigator, useRef);
 }
 
 

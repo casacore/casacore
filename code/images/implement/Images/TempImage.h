@@ -1,5 +1,5 @@
 //# TempImage.h: Temporary astronomical images
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,6 +131,9 @@ public:
   // Is the TempImage paged to disk?
   virtual Bool isPaged() const;
 
+  // Can the lattice data be referenced as an array section?
+  virtual Bool canReferenceArray() const;
+
   // Is the TempImage writable?
   virtual Bool isWritable() const;
 
@@ -234,7 +237,8 @@ public:
   // This is the implementations of the letters for the envelope Iterator
   // class <note> Not for public use </note>
   virtual LatticeIterInterface<T>* makeIter
-                           (const LatticeNavigator& navigator) const;
+                           (const LatticeNavigator& navigator,
+			    Bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile. 

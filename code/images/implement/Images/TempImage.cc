@@ -1,5 +1,5 @@
 //# TempImage.cc: defines the TempImage class
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -414,8 +414,9 @@ Bool TempImage<T>::ok() const
 
 template <class T>
 LatticeIterInterface<T>* TempImage<T>::makeIter
-                                (const LatticeNavigator& navigator) const
+                                (const LatticeNavigator& navigator,
+				 Bool useRef) const
 {
-  return mapPtr_p->makeIter (navigator);
+  return mapPtr_p->makeIter (navigator, useRef);
 }
 

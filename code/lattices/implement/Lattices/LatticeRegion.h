@@ -1,5 +1,5 @@
 //# LatticeRegion.h: An optionally strided region in a lattice
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,7 +159,8 @@ public:
     // iterator of the correct type for this Lattice. Not recommended
     // for general use. 
     virtual LatticeIterInterface<Bool>*  makeIter
-                           (const LatticeNavigator& navigator) const;
+                           (const LatticeNavigator& navigator,
+			    Bool useRef) const;
 
     // Returns the maximum recommended number of pixels for a cursor.
     // This is the number of pixels in a tile. 

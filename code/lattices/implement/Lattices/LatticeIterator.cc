@@ -1,5 +1,5 @@
 //# LatticeIter.cc: defines the RO_LatticeIterator and LatticeIterator classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,25 +47,30 @@ RO_LatticeIterator<T>::RO_LatticeIterator()
 }
 
 template <class T>
-RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice)
+RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
+					   Bool useRef)
 : itsIterPtr (lattice.makeIter (TileStepper (lattice.shape(),
-					     lattice.niceCursorShape())))
+					     lattice.niceCursorShape()),
+				useRef))
 {
   DebugAssert(ok(), AipsError);
 }
 
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
-					   const LatticeNavigator& method)
-: itsIterPtr (lattice.makeIter (method))
+					   const LatticeNavigator& method,
+					   Bool useRef)
+: itsIterPtr (lattice.makeIter (method, useRef))
 {
   DebugAssert(ok(), AipsError);
 }
 
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
-					   const IPosition& cursorShape)
-: itsIterPtr (lattice.makeIter (LatticeStepper(lattice.shape(), cursorShape)))
+					   const IPosition& cursorShape,
+					   Bool useRef)
+: itsIterPtr (lattice.makeIter (LatticeStepper(lattice.shape(), cursorShape),
+				useRef))
 {
   DebugAssert(ok(), AipsError);
 }
@@ -220,8 +225,8 @@ LatticeIterator<T>::LatticeIterator()
 {}
 
 template <class T>
-LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice)
-: RO_LatticeIterator<T> (lattice)
+LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice, Bool useRef)
+: RO_LatticeIterator<T> (lattice, useRef)
 {
   if (! lattice.isWritable()) {
     throw (AipsError ("LatticeIterator cannot be constructed; "
@@ -231,8 +236,9 @@ LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice)
 
 template <class T>
 LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
-				     const LatticeNavigator& method)   
-: RO_LatticeIterator<T> (lattice, method)
+				     const LatticeNavigator& method,
+				     Bool useRef)   
+: RO_LatticeIterator<T> (lattice, method, useRef)
 {
   if (! lattice.isWritable()) {
     throw (AipsError ("LatticeIterator cannot be constructed; "
@@ -242,8 +248,10 @@ LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
 
 template <class T>
 LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
-				     const IPosition& cursorShape)   
-: RO_LatticeIterator<T> (lattice, cursorShape)
+				     const IPosition& cursorShape,
+				     Bool useRef)
+ 
+: RO_LatticeIterator<T> (lattice, cursorShape, useRef)
 {
   if (! lattice.isWritable()) {
     throw (AipsError ("LatticeIterator cannot be constructed; "

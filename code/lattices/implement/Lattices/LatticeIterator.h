@@ -1,5 +1,5 @@
 //# LatticeIterator.h: Iterators for Lattices: readonly or read/write
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -218,15 +218,20 @@ public:
 
   // Construct the Iterator with the supplied data.
   // It uses a TileStepper as the default iteration strategy.
-  explicit RO_LatticeIterator (const Lattice<T>& data);
+  // useRef=True means that if possible the cursor arrays returned
+  // reference the data in the underlying lattice. This is only possible
+  // for ArrayLattice objects (or e.g. a SubLattice using it).
+  explicit RO_LatticeIterator (const Lattice<T>& data, Bool useRef=True);
 
   // Construct the Iterator with the supplied data, and iteration strategy
-  RO_LatticeIterator (const Lattice<T>& data, const LatticeNavigator& method);
+  RO_LatticeIterator (const Lattice<T>& data, const LatticeNavigator& method,
+		      Bool useRef=True);
 
   // Construct the Iterator with the supplied data.
   // It uses a LatticeStepper with the supplied cursor shape as the
   // iteration strategy.
-  RO_LatticeIterator (const Lattice<T>& data, const IPosition& cursorShape);  
+  RO_LatticeIterator (const Lattice<T>& data, const IPosition& cursorShape,
+		      Bool useRef=True);
 
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
@@ -429,14 +434,19 @@ public:
 
   // Construct the Iterator with the supplied data.
   // It uses a TileStepper as the default iteration strategy.
-  explicit LatticeIterator (Lattice<T>& data);
+  // useRef=True means that if possible the cursor arrays returned
+  // reference the data in the underlying lattice. This is only possible
+  // for ArrayLattice objects (or e.g. a SubLattice using it).
+  explicit LatticeIterator (Lattice<T>& data, Bool useRef=True);
 
   // Construct the Iterator with the supplied data, and iteration strategy
-  LatticeIterator (Lattice<T>& data, const LatticeNavigator& method);
+  LatticeIterator (Lattice<T>& data, const LatticeNavigator& method,
+		   Bool useRef=True);
   
   // Iterate through the data with a LatticeStepper that has uses the
   // supplied cursorShape.
-  LatticeIterator (Lattice<T>& data, const IPosition& cursorShape);
+  LatticeIterator (Lattice<T>& data, const IPosition& cursorShape,
+		   Bool useRef=True);
   
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.

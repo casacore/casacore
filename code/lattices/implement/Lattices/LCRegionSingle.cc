@@ -1,5 +1,5 @@
 //# LCRegionSingle.cc: Abstract base class to define a single region
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,12 +141,13 @@ IPosition LCRegionSingle::doNiceCursorShape (uInt maxPixels) const
 }
 
 LatticeIterInterface<Bool>* LCRegionSingle::makeIter
-				(const LatticeNavigator& navigator) const
+                                (const LatticeNavigator& navigator,
+				 Bool useRef) const
 {
     if (itsHasMask != 0) {
-        return itsMaskPtr->makeIter (navigator);
+        return itsMaskPtr->makeIter (navigator, useRef);
     }
-    return Lattice<Bool>::makeIter (navigator);
+    return Lattice<Bool>::makeIter (navigator, useRef);
 }
 
 

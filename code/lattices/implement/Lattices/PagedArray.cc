@@ -1,5 +1,5 @@
 //# PagedArray.cc: this defines the PagedArray class
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -411,10 +411,10 @@ Bool PagedArray<T>::ok() const
 
 
 template<class T>
-LatticeIterInterface<T>* PagedArray<T>::makeIter
-                                (const LatticeNavigator& navigator) const
+LatticeIterInterface<T>* PagedArray<T>::makeIter (const LatticeNavigator& nav,
+						  Bool useRef) const
 {
-  return new PagedArrIter<T>(*this, navigator);
+  return new PagedArrIter<T>(*this, nav, useRef);
 }
 
 

@@ -1,5 +1,5 @@
 //# SubImage.h: A (masked) subset of an ImageInterface object
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,6 +159,9 @@ public:
   // Is the SubImage paged to disk?
   virtual Bool isPaged() const;
 
+  // Can the lattice data be referenced as an array section?
+  virtual Bool canReferenceArray() const;
+
   // Is the SubImage writable?
   virtual Bool isWritable() const;
 
@@ -214,8 +217,9 @@ public:
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
-  virtual LatticeIterInterface<T>*
-                      makeIter (const LatticeNavigator& navigator) const;
+  virtual LatticeIterInterface<T>* makeIter
+                               (const LatticeNavigator& navigator,
+				Bool useRef) const;
 
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
