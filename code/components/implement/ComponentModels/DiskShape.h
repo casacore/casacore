@@ -44,7 +44,7 @@ template <class T> class Vector;
 
 // <use visibility=export> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tGaussianShape" demos="dTwoSidedShape">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tDiskShape" demos="dTwoSidedShape">
 // </reviewed>
 
 // <prerequisite>
@@ -71,33 +71,31 @@ template <class T> class Vector;
 // The width of the disk is defined as the angular diameter along the specified
 // axis. The major axis has the larger width and is aligned North-South when
 // the position angle is zero. A positive position angle moves the Northern
-// side of the component to the East.  The axial ratio is the ratio of the
+// side of the disk to the East.  The axial ratio is the ratio of the
 // minor to major axis widths. The major axis MUST not be smaller than the
 // minor axis otherwise an AipsError is thrown.
 
-// These parameters of the Gaussian (width, position angle, direction etc.) can
-// be specified at construction time, using the <src>*inRad</src> functions or
-// through functions in the base classes (TwoSidedShape & ComponentShape). The
-// base classes also implement functions for inter-converting this object into
-// a record representation. 
+// These parameters of the disk (width, position angle, direction etc.) can be
+// specified at construction time, using the <src>*inRad</src> functions or
+// through functions, in the base classes. The base classes also implement
+// functions for inter-converting this object into a record representation.
 
 // The flux, or integrated intensity, is always normalised to one. This class
 // does not model the actual flux or its variation with frequency. It solely
 // models the way the emission varies with position on the sky.
 
-// The <src>scale</src> member function is used to sample the component at any
+// The <src>sample</src> member function is used to sample the component at any
 // point on the sky. The scale factor calculated by this function is the
 // proportion of the flux that is within a specified pixel size centered on the
 // specified direction. This is not accurate for pixels which are partially
-// covered by the disk. Ultimatly this function will integrate the emission
+// covered by the disk. Ultimately this function will integrate the emission
 // from the disk over the entire pixel but currently the returned flux will be
-// either zero or 1/(pixelSizeInRad^2) with the returned value depending on
-// whether the centre of the pixel in within the disk or not. This innacuracy
-// becomes more important when the pixel size become large compared to the disk
-// width.
+// either zero or a constant value with the returned value depending on whether
+// the centre of the pixel in within the disk or not. This inaccuracy becomes
+// more important when the pixel size become large compared to the disk width.
 
 // This class contains functions that return the Fourier transform of the
-// component at a specified spatial frequency. There are described more fully
+// disk at a specified spatial frequency. There are described more fully
 // in the description of the <src>visibility</src> functions below.
 // </synopsis>
 
@@ -105,7 +103,7 @@ template <class T> class Vector;
 // Shown below is code to construct a disk shaped model whose direction is
 // always centred on the disk of Jupiter. Note that it is necessary to specify
 // the observation time in order for the DiskShape class to be able to do the
-// copnversion into J2000 coordinates. This example is also available in the
+// conversion into J2000 coordinates. This example is also available in the
 // <src>dTwoSidedShape.cc</src> file. 
 // <srcblock>
 // { // construct a model for Jupiter.
@@ -132,7 +130,9 @@ template <class T> class Vector;
 // <todo asof="1999/11/12">
 //   <li> Use Measures & Quanta in the interface to the visibility functions.
 //   <li> Use a better way of integrating over the pixel area in the sample
-//   function. 
+//        function. 
+//   <li> Ensure that the position angle is always between zero and 180
+//        degrees, and that the widths are always positive.
 // </todo>
 
 // <linkfrom anchor="GaussianShape" classes="ComponentShape TwoSidedShape PointShape GaussianShape">
@@ -172,10 +172,9 @@ public:
   // ComponentType::DISK.
   virtual ComponentType::Shape type() const;
 
-  // set/get the width and orientation of the Disk. The position angle is
-  // measured North through East ie a position angle of zero degrees means
-  // that the major axis is North-South and a position angle of 10 degrees
-  // moves the Northern edge to the East.
+  // set or return the width and orientation of the disk. All numerical
+  // values are in radians. There are also functions in the base class for
+  // doing this with other angular units.
   // <group>
   virtual void setWidthInRad(const Double majorAxis,
 			     const Double minorAxis, 
@@ -188,20 +187,12 @@ public:
   // Calculate the proportion of the flux that is in a pixel of specified size
   // centered in the specified direction. The returned value will always be
   // between zero and one (inclusive).
-  //
-  // Currently this function does <em>NOT<\em> integrate the Disk over the area
-  // of the sky subtended by the pixel. Instead it simply samples the disk at
-  // the centre of the pixel and scales by the pixel area. This is satisfactory
-  // for pixels which are not near the edge of the disk. However if the disk
-  // edge passes through the pixel there will be an error in the value returned
-  // by this function.
   virtual Double sample(const MDirection& direction, 
 			const MVAngle& pixelSize) const;
 
-  // Calculate the amount of flux that is in the pixels of specified, constant
-  // size centered on the specified directions. The returned values will always
-  // be between zero and one (inclusive). All the supplied directions must have
-  // the same reference frame (that is specified in the refFrame argument). 
+  // Same as the previous function except that many directions can be sampled
+  // at once. The reference frame and pixel size must be the same for all the
+  // specified directions.
   virtual void sample(Vector<Double>& scale, 
 		      const Vector<MDirection::MVType>& directions, 
 		      const MDirection::Ref& refFrame,
@@ -217,15 +208,13 @@ public:
   // The reference position for the transform is the direction of the
   // component. As this component is symmetric about this point the transform
   // is always a real value.
-
   virtual DComplex visibility(const Vector<Double>& uvw,
 			      const Double& frequency) const;
 
   // Same as the previous function except that many (u,v,w) points can be
-  // sampled at once. As with the previous function the returned value is
-  // always a constant real vector of one.  The input arguments are ignored
-  // except in debug mode where the shape of the uvw Matrix and the scale
-  // Vector are checked as is the  sign of the frequency variable.
+  // sampled at once. The uvw Matrix must have a first dimension of three, and
+  // a second dimension that is the same as the length of the scale
+  // Vector. Otherwise and exception is thrown (when compiled in debug mode).
   virtual void visibility(Vector<DComplex>& scale, const Matrix<Double>& uvw,
 			  const Double& frequency) const;
 

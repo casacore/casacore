@@ -45,7 +45,7 @@ template <class T> class Vector;
 
 // <use visibility=export> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tDiskShape" demos="dTwoSidedShape">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tGaussianShape" demos="dTwoSidedShape">
 // </reviewed>
 
 // <prerequisite>
@@ -74,7 +74,8 @@ template <class T> class Vector;
 // and is aligned North-South when the position angle is zero. A positive
 // position angle moves the Northern side of the component to the East.  The
 // axial ratio is the ratio of the minor to major axis widths. The major axis
-// MUST not be smaller than the minor axis otherwise an AipsError is thrown.
+// MUST not be smaller than the minor axis otherwise an exception (AipsError)
+// is thrown.
 
 // These parameters of the Gaussian (width, position angle, direction etc.) can
 // be specified at construction time, using the <src>*inRad</src> functions or
@@ -179,13 +180,9 @@ public:
   // ComponentType::GAUSSIAN.
   virtual ComponentType::Shape type() const;
 
-  // set or return the width and orientation of the Gaussian. The width of the
-  // major and minor axes is the full width at half maximum. The position
-  // angle is measured North through East ie a position angle of zero degrees
-  // means that the major axis is North-South and a position angle of 10
-  // degrees moves the Northern edge to the East.  The axial ratio is the ratio
-  // of the minor to major axes widths. Hence it is always between zero and
-  // one. All numerical values are in radians.
+  // set or return the width and orientation of the Gaussian. All numerical
+  // values are in radians. There are also functions in the base class for
+  // doing this with other angular units.
   // <group>
   virtual void setWidthInRad(const Double majorAxis,
 			     const Double minorAxis, 
@@ -199,12 +196,6 @@ public:
   // Calculate the proportion of the flux that is in a pixel of specified size
   // centered in the specified direction. The returned value will always be
   // between zero and one (inclusive).
-  //
-  // Currently this function does <em>NOT</em> integrate the Gaussian over the
-  // area of the sky subtended by the pixel. Instead it simply samples the
-  // Gaussian at the centre of the pixel and scales by the pixel area. This is
-  // satisfactory for Gaussians that are large compared with the size of the
-  // pixel.
   virtual Double sample(const MDirection& direction, 
 			const MVAngle& pixelSize) const;
 
@@ -230,10 +221,9 @@ public:
 			      const Double& frequency) const;
 
   // Same as the previous function except that many (u,v,w) points can be
-  // sampled at once. As with the previous function the returned value is
-  // always a constant real vector of one.  The input arguments are ignored
-  // except in debug mode where the shape of the uvw Matrix and the scale
-  // Vector are checked as is the  sign of the frequency variable.
+  // sampled at once. The uvw Matrix must have a first dimension of three, and
+  // a second dimension that is the same as the length of the scale
+  // Vector. Otherwise and exception is thrown (when compiled in debug mode).
   virtual void visibility(Vector<DComplex>& scale, const Matrix<Double>& uvw,
 			  const Double& frequency) const;
 

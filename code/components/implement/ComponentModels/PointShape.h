@@ -73,7 +73,7 @@ template <class T> class Vector;
 // either zero or one depending on whether the specified pixel contains the
 // point source or not.
 
-// The <src>visibility</src> functions that return the Fourier transform of the
+// The <src>visibility</src> functions treturn the Fourier transform of the
 // component at a specified spatial frequency. For a point shape the Fourier
 // transform is a constant value. Hence these functions return one, regardless
 // of the input parameters.
