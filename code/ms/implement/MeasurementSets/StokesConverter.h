@@ -57,7 +57,6 @@
 // another.
 // First the conversion wanted is specified and then large blocks of data
 // can be converted.
-// StokesConverter StokesConverter(myMS);
 // <example>
 // <srcblock>
 // // create converter
@@ -118,6 +117,9 @@ public:
   // (CORR_TYPE column in SPECTRAL_WINDOW table contains this info)
   StokesConverter(const Vector<Int>& out, const Vector<Int>& in);
   
+  // desctructor
+  ~StokesConverter();
+
   // Copy constructor
   StokesConverter(const StokesConverter& other);
   
@@ -129,9 +131,22 @@ public:
   void setConversion(const Vector<Int>& out, const Vector<Int>& in);
   
   // convert data, first dimension of input must match
-  // that of the conversion vector used to set up the conversion.
+  // that of the input conversion vector used to set up the conversion.
   // Output is resized as needed.
   void convert(Array<Complex>& out, const Array<Complex>& in);
+
+  // convert flags, first dimension of input must match
+  // that of the input conversion vector used to set up the conversion.
+  // Output is resized as needed. All output depending on a flagged input
+  // will be flagged. 
+  void convert(Array<Bool>& out, const Array<Bool>& in);
+
+  // invert flags, first dimension of input must match
+  // that of the output conversion vector used to set up the conversion.
+  // Output is resized as needed. All output depending on a flagged input
+  // will be flagged. This does the inverse operation of convert, allowing
+  // flagging of converted data to be tranferred back to the original data.
+  void invert(Array<Bool>& out, const Array<Bool>& in);
 
 protected:
 
@@ -141,8 +156,9 @@ protected:
 private:
   Vector<Int> in_p,out_p;
   Matrix<Complex> conv_p;
-  Matrix<Complex> iquvconv_p;
+  Matrix<Complex> iquvConv_p;
   Bool doIQUV_p;
+  Matrix<Bool> flagConv_p;
   Matrix<Complex> polConv_p;
 };
 
