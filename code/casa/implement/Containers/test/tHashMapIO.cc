@@ -31,10 +31,10 @@
 #include <casa/iostream.h>
 #include <casa/stdlib.h>
 
-#if defined(AIPS_STUPID_SUN)
+//#if defined(AIPS_STUPID_SUN)
 #include <casa/namespace.h>
-#undef AIPS_STUPID_SUN
-#endif
+//#undef AIPS_STUPID_SUN
+//#endif
 
 //# for GNU compile in trial:
 //#
@@ -45,13 +45,13 @@ const char *word_file = "./tHashMap_tmp.words";  // "/usr/dict/words";
 
 int main() {
 
-    ifstream inFile( word_file );
-    ofstream hmos1( "tHashMapIO_tmp.1st" );
-    ofstream hmos2( "tHashMapIO_tmp.2nd" );
-    ofstream hmos3( "tHashMapIO_tmp.3rd" );
+    std::ifstream inFile( word_file );
+    std::ofstream hmos1( "tHashMapIO_tmp.1st" );
+    std::ofstream hmos2( "tHashMapIO_tmp.2nd" );
+    std::ofstream hmos3( "tHashMapIO_tmp.3rd" );
 
     if ( !inFile ) {
-	cerr << "Can't open \"" << word_file << "\"." << endl;
+	std::cerr << "Can't open \"" << word_file << "\"." << std::endl;
 	exit(1);
     }
 
@@ -64,7 +64,7 @@ int main() {
 	hash.define(str,x++);
     }
 
-    hmos1 << hash << endl;
-    hmos2 << hash << endl;
-    hmos3 << hash << endl;
+    hmos1 << hash << std::endl;
+    hmos2 << hash << std::endl;
+    hmos3 << hash << std::endl;
 }
