@@ -63,7 +63,7 @@ ostream &operator<<(ostream &s, const Array<T> &a)
 	// Vector
 	IPosition ipos(1);
 	s << "[";
-	Int iend = a.end()(0);
+	Int iend = a.shape()(0) - 1;
 	for (Int i=0; i < iend; i++) {
 	    ipos(0) = i;
 	    s << a(ipos) << ", ";
@@ -74,8 +74,8 @@ ostream &operator<<(ostream &s, const Array<T> &a)
 	// Matrix
 	s << " (NB: Matrix in Row/Column order)" << endl;
 	IPosition index(2);
-	Int row_end = a.end()(0);
-	Int col_end = a.end()(1);
+	Int row_end = a.shape()(0) - 1;
+	Int col_end = a.shape()(1) - 1;
 	for (Int i=0; i <= row_end; i++) {
 	    index(0) = i;
 	    if (i == 0) {
