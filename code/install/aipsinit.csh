@@ -317,6 +317,12 @@
      alias aipsinit "set aips_ext = (\!*) ; set a_root = $a_root ; source $a_root/aipsinit.csh"
   endif
 
+# Increase number of available file descriptor
+  set a_fds = `limit descriptors | sed 's/[^0-9]*\([0-9][0-9]*\).*/\1/'`
+  if ("$a_fds" < 1024) then
+     limit descriptors 1024
+  endif
+
 # Source possible local AIPS++ initialization files.
   if (-r $a_root/.aipsinit.csh) then
     source $a_root/.aipsinit.csh
@@ -339,4 +345,4 @@
   endif
 
 # Clean up.
-  unset a_arch a_host a_new a_nonomatch a_och a_old a_root a_site a_temp a_arch_t a_root_t
+  unset a_arch a_host a_new a_nonomatch a_och a_old a_root a_site a_temp a_arch_t a_root_t a_fds

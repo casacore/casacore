@@ -326,6 +326,12 @@
      }
   }
 
+# Increase number of available file descriptor
+  a_fds=`{limit descriptors | sed 's/[^0-9]*\([0-9][0-9]*\).*/\1/'}
+  if {test $a_fds -lt 1024} {
+     limit descriptors 1024
+  }
+
 # Source possible local AIPS++ initialization files.
   if {test -r $a_root/.aipsinit.es} {
      . $a_root/.aipsinit.es
@@ -358,3 +364,4 @@
   a_temp=()
   a_arch_t=()
   a_root_t=()
+  a_fds=()

@@ -368,6 +368,18 @@
      fi
   fi
 
+# Increase number of available file descriptor
+  a_fds=`ulimit -Sn`
+  if [ $a_fds -lt 1024 ]
+  then
+     a_fds=`ulimit -Hn`
+     if [ $a_fds -gt 1024 ]
+     then
+        a_fds=1024
+     fi
+     ulimit -Sn $a_fds
+  fi
+
 # Source possible local AIPS++ initialization files.
   if [ -r $a_root/.aipsinit.sh ]
   then
@@ -396,4 +408,4 @@
   fi
 
 # Clean up.
-  unset a_arch a_host a_new a_och a_old a_root a_shell a_site a_temp a_arch_t a_root_t
+  unset a_arch a_host a_new a_och a_old a_root a_shell a_site a_temp a_arch_t a_root_t a_fds
