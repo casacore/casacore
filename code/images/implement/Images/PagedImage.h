@@ -47,6 +47,7 @@ class ImageRegion;
 template <class T> class Array;
 template <class T> class LatticeIterInterface;
 class String;
+class ImageInfo;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -292,9 +293,8 @@ public:
   // </group>
 
   // Often we have miscellaneous information we want to attach to an image.
-  // This is how it is done. Eventually we will want to register that some
-  // of the information is to be destroyed if the image changes so that, e.g.
-  // data max/min values can be removed if the image changes.
+  // This is where it goes.
+  // 
   // <br>
   // Note that setMiscInfo REPLACES the information with the new information.
   // It can fail if, e.g., the underlying table is not writable.
@@ -302,6 +302,15 @@ public:
   virtual const RecordInterface& miscInfo() const;
   virtual Bool setMiscInfo (const RecordInterface& newInfo);
   // </group>
+
+  // The ImageInfo object contains some miscellaneous information about the image
+  // which unlike that stored in MiscInfo, has a standard list of things,
+  // such as the restoring beam.
+  //
+  // Note that setImageInfo REPLACES the information with the new information.
+  // It can fail if, e.g., the underlying table is not writable.
+  // 
+   virtual Bool setImageInfo(const ImageInfo& info);
 
   // Define a region/mask belonging to the image.
   // The group type determines if it stored as a region or mask.
@@ -383,6 +392,7 @@ public:
   virtual void unlock();
   virtual Bool hasLock (FileLocker::LockType) const;
   // </group>
+
 
 private:  
   // the default constructor -- useless.
