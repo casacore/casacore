@@ -266,21 +266,23 @@ Int TSMCube::getObject (AipsIO& ios)
     return fileSeqnr;
 }
 
+void TSMCube::resync (AipsIO& ios)
+{
+    getObject (ios);
+    setupNrTiles();
+    if (cache_p != 0) {
+        cache_p->resync (nrTiles_p, 0, -1);
+    }
+}
+
 
 void TSMCube::setup()
 {
     // Determine the nr of tiles in all but the last dimension.
     // This is needed when extending the last dimension.
     // Also determine the nr of tiles needed (total and per dimension).
+    setupNrTiles();
     expandedTileShape_p = TSMShape (tileShape_p);
-    tilesPerDim_p.resize (nrdim_p);
-    nrTiles_p = 1;
-    for (uInt i=0; i<nrdim_p; i++) {
-        nrTilesSubCube_p = nrTiles_p;
-        tilesPerDim_p(i) = (cubeShape_p(i) + tileShape_p(i) - 1)
-                           / tileShape_p(i);
-        nrTiles_p *= tilesPerDim_p(i);
-    }
     expandedTilesPerDim_p = TSMShape (tilesPerDim_p);
     // Determine the bucket size for the cache.
     // Also determine the start offset for each data column
@@ -289,6 +291,21 @@ void TSMCube::setup()
     bucketSize_p = stmanPtr_p->getLengthOffset (tileSize_p, externalOffset_p,
 						localOffset_p,
 						localTileLength_p);
+}
+
+void TSMCube::setupNrTiles()
+{
+    // Determine the nr of tiles in all but the last dimension.
+    // This is needed when extending the last dimension.
+    // Also determine the nr of tiles needed (total and per dimension).
+    tilesPerDim_p.resize (nrdim_p);
+    nrTiles_p = 1;
+    for (uInt i=0; i<nrdim_p; i++) {
+        nrTilesSubCube_p = nrTiles_p;
+        tilesPerDim_p(i) = (cubeShape_p(i) + tileShape_p(i) - 1)
+                           / tileShape_p(i);
+        nrTiles_p *= tilesPerDim_p(i);
+    }
 }
 
 void TSMCube::makeCache()
