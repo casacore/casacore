@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_Baseline_bug1;
-#endif
 #include <aips/Exceptions.h>
 #include <aips/Measures/MCBaseline.h>
 #include <aips/Mathematics/Constants.h>
@@ -43,355 +39,85 @@ typedef Quantum<Double> gpp_Baseline_bug1;
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
 
+//# Statics
+Bool MCBaseline::stateMade_p = False;
+uInt MCBaseline::ToRef_p[N_Routes][3] = {
+  {MBaseline::ITRF,	MBaseline::JNAT,	0},
+  {MBaseline::JNAT,	MBaseline::ITRF,	0},
+  {MBaseline::GALACTIC,	MBaseline::J2000,	0},
+  {MBaseline::GALACTIC,	MBaseline::B1950,	2},
+  {MBaseline::J2000,	MBaseline::GALACTIC,	0},
+  {MBaseline::B1950,	MBaseline::GALACTIC,	2},
+  {MBaseline::J2000,	MBaseline::B1950,	2},
+  {MBaseline::B1950,	MBaseline::J2000,	2},
+  {MBaseline::J2000,	MBaseline::JMEAN,	0},
+  {MBaseline::B1950,	MBaseline::BMEAN,	2},
+  {MBaseline::JMEAN,	MBaseline::J2000,	0},
+  {MBaseline::JMEAN,	MBaseline::JTRUE,	0},
+  {MBaseline::BMEAN,	MBaseline::B1950,	2},
+  {MBaseline::BMEAN,	MBaseline::BTRUE,	2},
+  {MBaseline::JTRUE,	MBaseline::JMEAN,	0},
+  {MBaseline::BTRUE,	MBaseline::BMEAN,	2},
+  {MBaseline::J2000,	MBaseline::JNAT,	0},
+  {MBaseline::JNAT,	MBaseline::J2000,	0},
+  {MBaseline::B1950,	MBaseline::APP,		2},
+  {MBaseline::APP,	MBaseline::B1950,	2},
+  {MBaseline::APP,	MBaseline::HADEC,	0},
+  {MBaseline::HADEC,	MBaseline::AZEL,	0},
+  {MBaseline::AZEL,	MBaseline::HADEC,	0},
+  {MBaseline::HADEC,	MBaseline::APP,		0},
+  {MBaseline::AZEL,	MBaseline::AZELSW,	0},
+  {MBaseline::AZELSW,	MBaseline::AZEL,	0},
+  {MBaseline::APP,	MBaseline::JNAT,	0},
+  {MBaseline::JNAT,	MBaseline::APP,		0},
+  {MBaseline::J2000,	MBaseline::ECLIPTIC,	0},
+  {MBaseline::ECLIPTIC,	MBaseline::J2000,	0},
+  {MBaseline::JMEAN,	MBaseline::MECLIPTIC,	0},
+  {MBaseline::MECLIPTIC,MBaseline::JMEAN,	0},
+  {MBaseline::JTRUE,	MBaseline::TECLIPTIC,	0},
+  {MBaseline::TECLIPTIC,MBaseline::JTRUE,	0},
+  {MBaseline::GALACTIC,	MBaseline::SUPERGAL,	0},
+  {MBaseline::SUPERGAL,	MBaseline::GALACTIC,	0},
+  {MBaseline::ITRF,	MBaseline::HADEC,	0},
+  {MBaseline::HADEC,	MBaseline::ITRF,	0} };
+uInt MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
+
 //# Constructors
 MCBaseline::MCBaseline() :
   ROTMAT1(0),
   EULER1(0),
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   NUTATFROM(0), NUTATTO(0),
-  PRECESFROM(0), PRECESTO(0) {}
+  PRECESFROM(0), PRECESTO(0) {
+  if (!stateMade_p) {
+    MCBase::makeState(MCBaseline::stateMade_p, MCBaseline::FromTo_p[0],
+		      MBaseline::N_Types, MCBaseline::N_Routes,
+		      MCBaseline::ToRef_p);
+  };
+}
 
 //# Destructor
 MCBaseline::~MCBaseline() {
   clearConvert();
 }
 
-//# Operators
-
 //# Member functions
 
 void MCBaseline::getConvert(MConvertBase &mc,
-			     const MRBase &inref, 
-			     const MRBase &outref) {
-  
-  // Array of conversion routines to call
-  static const MCBaseline::Routes 
-    FromTo[MBaseline::N_Types][MBaseline::N_Types] = {
-      { MCBaseline::N_Routes,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_HADEC,
-	MCBaseline::ITRF_HADEC,
-	MCBaseline::ITRF_HADEC,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT,
-	MCBaseline::ITRF_JNAT },
-      { MCBaseline::J2000_JNAT,
-	MCBaseline::N_Routes,
-	MCBaseline::J2000_JMEAN,
-	MCBaseline::J2000_JMEAN,
-	MCBaseline::J2000_JNAT, 
-	MCBaseline::J2000_B1950,
-	MCBaseline::J2000_B1950, 
-	MCBaseline::J2000_B1950,
-	MCBaseline::J2000_GAL,
-	MCBaseline::J2000_JNAT,
-	MCBaseline::J2000_JNAT,
-	MCBaseline::J2000_JNAT,
-	MCBaseline::J2000_JNAT,
-	MCBaseline::J2000_ECLIP,
-	MCBaseline::J2000_JMEAN,
-	MCBaseline::J2000_JMEAN,
-	MCBaseline::J2000_GAL },
-      { MCBaseline::JMEAN_J2000, 
-	MCBaseline::JMEAN_J2000, 
-	MCBaseline::N_Routes,    
-	MCBaseline::JMEAN_JTRUE,
-	MCBaseline::JMEAN_J2000, 
-	MCBaseline::JMEAN_J2000, 
-	MCBaseline::JMEAN_J2000, 
-	MCBaseline::JMEAN_J2000,
-	MCBaseline::JMEAN_J2000,
-	MCBaseline::JMEAN_J2000, 
-	MCBaseline::JMEAN_J2000, 
-	MCBaseline::JMEAN_J2000, 
-	MCBaseline::JMEAN_J2000,
-	MCBaseline::JMEAN_J2000,
-	MCBaseline::JMEAN_MECLIP,
-	MCBaseline::JMEAN_JTRUE,
-	MCBaseline::JMEAN_J2000 },
-      { MCBaseline::JTRUE_JMEAN, 
-	MCBaseline::JTRUE_JMEAN, 
-	MCBaseline::JTRUE_JMEAN, 
-	MCBaseline::N_Routes,
-	MCBaseline::JTRUE_JMEAN,  
-	MCBaseline::JTRUE_JMEAN, 
-	MCBaseline::JTRUE_JMEAN, 
-	MCBaseline::JTRUE_JMEAN,
-	MCBaseline::JTRUE_JMEAN,
-	MCBaseline::JTRUE_JMEAN,  
-	MCBaseline::JTRUE_JMEAN,  
-	MCBaseline::JTRUE_JMEAN,  
-	MCBaseline::JTRUE_JMEAN,
-	MCBaseline::JTRUE_JMEAN,
-	MCBaseline::JTRUE_JMEAN,
-	MCBaseline::JTRUE_TECLIP,
-	MCBaseline::JTRUE_JMEAN },
-      { MCBaseline::APP_JNAT,  
-	MCBaseline::APP_JNAT,  
-	MCBaseline::APP_JNAT,  
-	MCBaseline::APP_JNAT,  
-	MCBaseline::N_Routes,    
-	MCBaseline::APP_B1950,  
-	MCBaseline::APP_B1950,  
-	MCBaseline::APP_B1950,
-	MCBaseline::APP_JNAT,
-	MCBaseline::APP_HADEC, 
-	MCBaseline::APP_HADEC, 
-	MCBaseline::APP_HADEC,
-	MCBaseline::APP_JNAT,
-	MCBaseline::APP_JNAT,
-	MCBaseline::APP_JNAT,
-	MCBaseline::APP_JNAT,
-	MCBaseline::APP_JNAT },
-      { MCBaseline::B1950_J2000, 
-	MCBaseline::B1950_J2000, 
-	MCBaseline::B1950_J2000, 
-	MCBaseline::B1950_J2000, 
-	MCBaseline::B1950_APP, 
-	MCBaseline::N_Routes,    
-	MCBaseline::B1950_BMEAN,
-	MCBaseline::B1950_BMEAN,
-	MCBaseline::B1950_GAL,
-	MCBaseline::B1950_APP, 
-	MCBaseline::B1950_APP, 
-	MCBaseline::B1950_APP,
-	MCBaseline::B1950_J2000,
-	MCBaseline::B1950_J2000,
-	MCBaseline::B1950_J2000,
-	MCBaseline::B1950_J2000,
-	MCBaseline::B1950_GAL },
-      { MCBaseline::BMEAN_B1950, 
-	MCBaseline::BMEAN_B1950, 
-	MCBaseline::BMEAN_B1950,
-	MCBaseline::BMEAN_B1950,
-	MCBaseline::BMEAN_B1950, 
-	MCBaseline::BMEAN_B1950, 
-	MCBaseline::N_Routes,
-	MCBaseline::BMEAN_BTRUE,
-	MCBaseline::BMEAN_B1950,
-	MCBaseline::BMEAN_B1950, 
-	MCBaseline::BMEAN_B1950, 
-	MCBaseline::BMEAN_B1950, 
-	MCBaseline::BMEAN_B1950,
-	MCBaseline::BMEAN_B1950,
-	MCBaseline::BMEAN_B1950,
-	MCBaseline::BMEAN_B1950,
-	MCBaseline::BMEAN_B1950 },
-      { MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::BTRUE_BMEAN,
-	MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::N_Routes,   
-	MCBaseline::BTRUE_BMEAN,
-	MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::BTRUE_BMEAN, 
-	MCBaseline::BTRUE_BMEAN,
-	MCBaseline::BTRUE_BMEAN,
-	MCBaseline::BTRUE_BMEAN,
-	MCBaseline::BTRUE_BMEAN,
-	MCBaseline::BTRUE_BMEAN },
-      { MCBaseline::GAL_J2000,   
-	MCBaseline::GAL_J2000,   
-	MCBaseline::GAL_J2000, 
-	MCBaseline::GAL_J2000,   
-	MCBaseline::GAL_J2000,   
-	MCBaseline::GAL_B1950,   
-	MCBaseline::GAL_B1950,
-	MCBaseline::GAL_B1950,
-	MCBaseline::N_Routes,
-	MCBaseline::GAL_J2000,   
-	MCBaseline::GAL_J2000,   
-	MCBaseline::GAL_J2000,   
-	MCBaseline::GAL_J2000,
-	MCBaseline::GAL_J2000,
-	MCBaseline::GAL_J2000,
-	MCBaseline::GAL_J2000,
-	MCBaseline::GAL_SUPERGAL },
-      { MCBaseline::HADEC_ITRF,   
-	MCBaseline::HADEC_APP,   
-	MCBaseline::HADEC_APP, 
-	MCBaseline::HADEC_APP,   
-	MCBaseline::HADEC_APP,   
-	MCBaseline::HADEC_APP,   
-	MCBaseline::HADEC_APP,
-	MCBaseline::HADEC_APP,
-	MCBaseline::HADEC_APP,
-	MCBaseline::N_Routes,    
-	MCBaseline::HADEC_AZEL,
-	MCBaseline::HADEC_AZEL,
-	MCBaseline::HADEC_APP,
-	MCBaseline::HADEC_APP,
-	MCBaseline::HADEC_APP,
-	MCBaseline::HADEC_APP,
-	MCBaseline::HADEC_APP },
-      { MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::AZEL_HADEC,  
-	MCBaseline::N_Routes,
-	MCBaseline::AZEL_AZELSW,
-	MCBaseline::AZEL_HADEC,
-	MCBaseline::AZEL_HADEC,
-	MCBaseline::AZEL_HADEC,
-	MCBaseline::AZEL_HADEC,
-	MCBaseline::AZEL_HADEC },  
-      { MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::N_Routes,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL,
-	MCBaseline::AZELSW_AZEL },
-      { MCBaseline::JNAT_ITRF,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_APP,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_APP,
-	MCBaseline::JNAT_APP,
-	MCBaseline::JNAT_APP,
-	MCBaseline::N_Routes,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_J2000,
-	MCBaseline::JNAT_J2000 },
-      { MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::N_Routes,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000,
-	MCBaseline::ECLIP_J2000 },
-      { MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::N_Routes,
-	MCBaseline::MECLIP_JMEAN,
-	MCBaseline::MECLIP_JMEAN },
-      { MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::TECLIP_JTRUE,
-	MCBaseline::N_Routes,
-	MCBaseline::TECLIP_JTRUE },
-      { MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::SUPERGAL_GAL,
-	MCBaseline::N_Routes }
-    };
+			    const MRBase &inref, 
+			    const MRBase &outref) {
     
-    // List of codes converted to
-    static const MBaseline::Types ToRef[MCBaseline::N_Routes] = {
-      MBaseline::JNAT,    	MBaseline::ITRF,
-      MBaseline::J2000,    	MBaseline::B1950,
-      MBaseline::GALACTIC, 	MBaseline::GALACTIC,
-      MBaseline::B1950,    	MBaseline::J2000,
-      MBaseline::JMEAN,    	MBaseline::BMEAN,
-      MBaseline::J2000,    	MBaseline::JTRUE,
-      MBaseline::B1950,    	MBaseline::BTRUE,
-      MBaseline::JMEAN,		MBaseline::BMEAN,    	
-      MBaseline::JNAT,      	MBaseline::J2000,
-      MBaseline::APP,      	MBaseline::B1950,
-      MBaseline::HADEC,    	MBaseline::AZEL,
-      MBaseline::HADEC,    	MBaseline::APP,
-      MBaseline::AZELSW,    	MBaseline::AZEL,
-      MBaseline::JNAT,		MBaseline::APP,
-      MBaseline::ECLIPTIC,	MBaseline::J2000,
-      MBaseline::MECLIPTIC,	MBaseline::JMEAN,
-      MBaseline::TECLIPTIC,	MBaseline::JTRUE,
-      MBaseline::SUPERGAL,	MBaseline::GALACTIC,
-      MBaseline::HADEC,		MBaseline::ITRF
+  Int iin  = inref.getType();
+  Int iout = outref.getType();
+  if (iin != iout) {
+    Int tmp;
+    while (iin != iout) {
+      tmp = FromTo_p[iin][iout];
+      iin = ToRef_p[tmp][1];
+      mc.addMethod(tmp);
+      initConvert(tmp, mc);
     };
-    
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    if (iin != iout) {
-      Int tmp;
-      while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-      };
-    };
+  };
 }
 
 void MCBaseline::clearConvert() {
@@ -429,24 +155,6 @@ void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
     NUTATFROM = new Nutation(Nutation::STANDARD);
     if (PRECESFROM) delete PRECESFROM;
     PRECESFROM = new Precession(Precession::STANDARD);
-    break;
-
-  case GAL_J2000:
-    break;
-    
-  case GAL_B1950:
-    break;
-    
-  case J2000_GAL:
-    break;
-    
-  case B1950_GAL:
-    break;
-    
-  case J2000_B1950:
-    break;
-    
-  case B1950_J2000:
     break;
     
   case J2000_JMEAN:
@@ -489,17 +197,11 @@ void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
     NUTATTO = new Nutation(Nutation::B1950);
     break;
     
-  case J2000_JNAT:
-    break;
-    
   case JNAT_APP:
     if (NUTATFROM) delete NUTATFROM;
     NUTATFROM = new Nutation(Nutation::STANDARD);
     if (PRECESFROM) delete PRECESFROM;
     PRECESFROM = new Precession(Precession::STANDARD);
-    break;
-    
-  case JNAT_J2000:
     break;
     
   case APP_JNAT:
@@ -521,30 +223,6 @@ void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
     NUTATTO = new Nutation(Nutation::B1950);
     if (PRECESTO) delete PRECESTO;
     PRECESTO = new Precession(Precession::B1950);
-    break;
-    
-  case APP_HADEC:
-    break;
-    
-  case HADEC_AZEL:
-    break;
-    
-  case AZEL_HADEC:
-    break;
-    
-  case HADEC_APP:
-    break;
-    
-  case AZEL_AZELSW:
-    break;
-    
-  case AZELSW_AZEL:
-    break;
-    
-  case GAL_SUPERGAL:
-    break;
-
-  case SUPERGAL_GAL:
     break;
     
   default:
