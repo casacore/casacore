@@ -56,9 +56,15 @@ template <class T> class Vector;
 // <linkto class=ConstantSpectrum>ConstantSpectrum</linkto> class but the
 // <linkto class=SpectralIndex>SpectralIndex</linkto> class is also
 // available. These classes model the spectral shape of emission from the
-// sky. Classes derived from the 
+// sky. 
+
+// Classes derived from the 
 // <linkto class=ComponentShape>ComponentShape</linkto> class are used to model
-// the spatial characteristics.
+// the shape and the <linkto class=Flux>Flux</linkto> class is used to model
+// the flux. The <linkto class=SkyComponent>SkyComponent</linkto> class
+// incorporates these three characteristics (flux, shape & spectrum) and the
+// <linkto class=ComponentList>ComponentList</linkto> class handles groups of
+// SkyComponent objects.
 
 // This class parameterises spectral models with two quantities.
 // <dl>
@@ -73,66 +79,75 @@ template <class T> class Vector;
 //      different spectral models.
 // </dl>
 // 
+
 // The basic operation of classes using this interface is to model the flux as
-// a function of frequency. Classes derived from this one do not know
-// what the flux is at the reference frequency, this must be supplied as an
-// argument to the <src>sample</src> function. These classes will scale the
-// supplied flux to a value at the user specified frequency.  In general this
-// scaling may be different for different polarisations.
+// a function of frequency. Classes derived from this one do not know what the
+// flux is at the reference frequency. Instead the sample functions return
+// factors that are used to scale the flux and calculate the amount of flux at
+// a specified frequency.
+
+// Any allowed frequency reference frame can be used. However the reference
+// frame must be adequately specified in order to allow conversions to other
+// reference frames. For example if the reference frame code for the frequency
+// is MFrequency::TOPO then the reference frame must also contain the time,
+// position on the earth, and direction of the observation that corresponds to
+// the specified frequency. This way the sample functions can convert the
+// frequency to a value in the LSR reference frame (if you specify the sample
+// frequency in the LSR frame).
+
 // </synopsis>
 //
 // <example>
-// Because SpectralModel is an abstract base class, an actual instance of this
-// class cannot be constructed. However the interface it defines can be used
-// inside a function. This is always recommended as it allows functions which
-// have SpectralModel's as arguments to work for any derived class.
-// <h4>Example 1:</h4>
+// Because this is an abstract base class, an actual instance of this class
+// cannot be constructed. However the interface it defines can be used inside a
+// function. This is always recommended as it allows functions which have
+// SpectralModels as arguments to work for any derived class.
+
 // In this example the plotSpectrum function prints out the type of spectral
 // model it is working with and the reference frequency of that model. It then
-// uses the model to calculate the flux at other frequencies. This example is
-// coded in the tSpectralModel.h file.
+// uses the model to calculate the proportion of the flux at other
+// frequencies. This example is coded in the dSpectralModel.cc file.
+
 // <srcblock>
-// void plotSpectrum(const Flux<Double>& refFlux,
-//                   const SpectralModel& modelSpectrum) {
+// void plotSpectrum(const SpectralModel& modelSpectrum) {
 //   cout << "This is a "
 //        << ComponentType::name(modelSpectrum.type())
 //        << " spectrum with a reference frequency of: "
-//        << modelSpectrum.refFrequency().get("GHz") << endl
-//        << modelSpectrum.refFrequency().getRef()
+//        << setprecision(4) << modelSpectrum.refFrequency().get("GHz") << " ("
+//        << modelSpectrum.refFrequency().getRefString() << ")"
 //        << endl;
-//   Vector<Double> parms(modelSpectrum.nParameters());
-//   modelSpectrum.parameters(parms);
-//   cout << "The parameters are: " << parms << endl;
 //   const MVFrequency step(Quantity(100.0, "MHz"));
-//   MVFrequency sampleFreq = modelSpectrum.refFrequency().getValue();
-//   Flux<Double> modelFlux;
-//   cout << "Frequency\t I-Flux\t Q-Flux\t U-Flux\t V-Flux\n";
+//   MVFrequency sampleFreq(Quantity(1, "GHz"));
+//   MeasFrame obsFrame;
+//   {
+//     Quantity obsRa; MVAngle::read(obsRa, "19:39:");
+//     Quantity obsDec; MVAngle::read(obsDec, "-63.43.");
+//     Quantity obsDay; MVTime::read(obsDay, "1996/11/20/5:20");
+//     obsFrame.set(MEpoch(obsDay, MEpoch::UTC),
+// 		    MDirection(obsRa, obsDec, MDirection::J2000));
+//   }
+//   MFrequency::Ref obsRef(MFrequency::GEO, obsFrame);
+//   cout << "Frequency\t scale\n";
 //   for (uInt i = 0; i < 11; i++) {
-//     modelFlux = refFlux.copy();
-//     modelSpectrum.sample(modelFlux,
-// 			 MFrequency(sampleFreq,
-// 				    modelSpectrum.refFrequency().getRef()));
-//     modelFlux.convertPol(ComponentType::STOKES);
-//     cout << setprecision(3) << sampleFreq.get("GHz")
-//  	 << "\t\t " << modelFlux.value(0u).re
-//  	 << "\t " << modelFlux.value(1u).re
-//  	 << "\t " << modelFlux.value(2u).re
-//  	 << "\t " << modelFlux.value(3u).re
-//  	 << " " << modelFlux.unit().getName() << endl;
-//     sampleFreq += step;
+//      cout << setprecision(7) << sampleFreq.get("GHz")
+// 	  << "\t\t " << modelSpectrum.sample(MFrequency(sampleFreq, obsRef))
+// 	  << endl;
+//      sampleFreq += step;
 //   }
 // }
 // </srcblock>
 // </example>
 //
 // <motivation>
-// There are many different spectral variations possible and the SkyCompRep
-// class needed to be able to handle all of them. Hence a base class is
-// needed.
+// The SpectralModel base class was seperated from the ComponentShape base
+// class so that mixing components with different spatial and spectral shapes
+// did not result in a combinatorial explosion in the number of classes
+// required.
 // </motivation>
 //
-// <todo asof="1998/04/04">
-//   <li> Nothing I hope!
+// <todo asof="1999/11/23">
+//   <li> I would not be surprised if the base class will need to be updated
+//        when classes modelling spectral lines are written.
 // </todo>
 
 class SpectralModel: public RecordTransformable
@@ -153,14 +168,15 @@ public:
   // </group>
 
   // get the frequency unit, and change the default frequency unit to the
-  // specified one.
+  // specified one. This will only affect the units used in the Record returned
+  // by the toRecord function.
   // <group>
   virtual const Unit& frequencyUnit() const;
   virtual void convertFrequencyUnit(const Unit& freqUnit);
   // </group>
 
   // Return the scaling factor that indicates what proportion of the flux is at
-  // the specified frequency. ie. if the centreFrequency arguement is the
+  // the specified frequency. ie. if the centreFrequency argument is the
   // reference frequency then this function will always return one. At other
   // frequencies it will return a non-negative number.
   virtual Double sample(const MFrequency& centerFrequency) const = 0;

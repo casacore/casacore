@@ -29,22 +29,19 @@
 #define AIPS_SPECTRALINDEX_H
 
 #include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Quanta/Unit.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SpectralModel.h>
 
-//template <class T> class Flux;
+class MFrequency;
 class RecordInterface;
 class String;
+template <class T> class Vector;
 
 // <summary>Models the spectral variation with a spectral index</summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tSpectralIndex" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tSpectralIndex" demos="dSpectralModel">
 // </reviewed>
 
 // <prerequisite>
@@ -52,36 +49,60 @@ class String;
 // </prerequisite>
 //
 // <synopsis>
+
 // This class models the spectral variation of a component with a spectral
-// index. A spectral index is is the exponent for a power law model that
-// mathematically is defined as:
+// index.
+
+// This class like the other spectral models becomes more useful when used
+// through the <linkto class=SkyComponent>SkyComponent</linkto> class, which
+// incorperates the flux and spatial variation of the emission, or through the
+// <linkto class=ComponentList>ComponentList</linkto> class, which handles
+// groups of SkyComponent objects.
+
+// A spectral index is the exponent in a power law model for the variation flux
+// with frequency. It is mathematically is defined as:
 // <srcblock>
-// I = I_0 * (nu / nu_0)^alpha
+//  (nu / nu_0)^alpha
 // </srcblock>
 // Where:
 // <dl compact>
 // <dt><src>nu_0</src><dd> is the reference frequency
-// <dt><src>I_0</src><dd> is the flux, in the I polarisation, 
-//                        at the reference frequency
 // <dt><src>alpha</src><dd> is the spectral index
 // <dt><src>nu</src><dd> is the user specified frequency
-// <dt><src>I</src><dd> is the flux, in the I polarisation, 
-//                      at the specified frequency
 // </dl>
-// In general the flux has four polarisation components and this class has
-// seperate indicies for each of the four Stokes parameters, I, Q, U, & V.
 
 // As with all classes derived from SpectralModel the basic operation of this
 // class is to model the flux as a function of frequency. This class does not
-// know what the flux is at the reference frequency and this must be supplied
-// as an argument to the <src>sample</src> function. This classes will scale
-// the supplied flux using the formula shown above after converting the flux to
-// a Stokes representation. The returned flux is always in the Stokes
-// representation.
+// know what the flux is at the reference frequency. Instead the sample
+// functions return factors that are used to scale the flux and calculate the
+// amount of flux at a specified frequency. 
 
-// Besides the reference frequency this class has four parameters; the
-// spectral indices in the I, Q, U, & V polarisations
+// Besides the reference frequency this class has one parameter; the spectral
+// index. This parameter can be set & queried using the general purpose
+// <src>parameters</src> functions or the class specific <src>index</src>
+// functions.
+
+// This class also contains functions (<src>toRecord</src> &
+// <src>fromRecord</src>) which perform the conversion between Records and
+// SpectralIndex objects. These functions define how a SpectralIndex
+// object is represented in glish. The format of the record that is generated
+// and accepted by these functions is:
+// <srcblock>
+// c := [type = 'spectral index',
+//       frequency = [type = 'frequency',
+//                    refer = 'lsr',
+//                    m0 = [value = 1, unit = 'GHz']
+//                   ],
+//       index = 0.7
+//      ]
+// </srcblock>
+// The frequency field contains a record representation of a frequency measure
+// and its format is defined in the Measures module. Its refer field defines
+// the reference frame for the direction and the m0 field defines the value of
+// the reference frequency. The parsing of the type field is case
+// insensitive. The index field contains the spectral index.
 // </synopsis>
+
 //
 // <example>
 // These examples are coded in the tSpectralModel.h file.
@@ -122,7 +143,7 @@ class String;
 // extensively.
 // </motivation>
 //
-// <todo asof="1998/05/18">
+// <todo asof="1999/11/23">
 //   <li> Nothing I hope
 // </todo>
 
@@ -133,8 +154,8 @@ class String;
 class SpectralIndex: public SpectralModel
 {
 public:
-  // The default SpectralIndex has all indices set to zero and a reference
-  // frequency of 1 GHz in the LSR frame. As such it is no different from the
+  // The default SpectralIndex has a reference frequency of 1 GHz in the LSR
+  // frame and a spectral index of zero. As such it is no different from the
   // ConstantSpectrum class (except slower).
   SpectralIndex();
 
@@ -145,7 +166,7 @@ public:
   // The copy constructor uses copy semantics
   SpectralIndex(const SpectralIndex& other);
 
-  // The destructor does nothing.
+  // The destructor does nothing special.
   virtual ~SpectralIndex();
 
   // The assignment operator uses copy semantics.
@@ -177,25 +198,20 @@ public:
   // pointer. This is used to implement a virtual copy constructor.
   virtual SpectralModel* clone() const;
 
-  // return the number of parameters. There are four parameters for this
-  // spectral model. They are the spectral index on each of the I, Q, U and V
-  // polarisations.
+  // return the number of parameters. There is one parameter for this spectral
+  // model, namely the spectral index. So you supply a unit length vector when
+  // using these functions. Otherwise an exception (AipsError) may be thrown.
   // <group>
   virtual uInt nParameters() const;
   virtual void setParameters(const Vector<Double>& newSpectralParms);
   virtual void parameters(Vector<Double>& spectralParms) const;
   // </group>
 
-  // These functions convert between a record and a SpectralIndex. These
-  // functions define how a spectralindex object is represented in glish.  A
-  // typical SpectralIndex object is defined by the record:
-  // <srcblock>
-  // [type = 'Spectral Index',
-  //  frequency = frequency record (see the measures module),
-  //  index = -0.2]
-  // </srcblock>.
-  // These functions return False if the record is malformed and append an
-  // error message to the supplied string giving the reason.
+  // These functions convert between a Record and a SpectralIndex. These
+  // functions define how a SpectralIndex object is represented in glish and
+  // this is detailed in the synopsis above. These functions return False if
+  // the record is malformed and append an error message to the supplied string
+  // giving the reason.
   // <group>
   virtual Bool fromRecord(String& errorMessage, const RecordInterface& record);
   virtual Bool toRecord(String& errorMessage, RecordInterface& record) const;
@@ -203,16 +219,15 @@ public:
 
   // Convert the parameters of the spectral index object to the specified
   // units. Only one field of the supplied record is used, namely 'index'. This
-  // filed is optional as the spectral index is a unitless quantity. If the
+  // field is optional as the spectral index is a unitless quantity. If the
   // index field is specified it must have the empty string as its value.  This
   // function always returns True unless the index field is specified and does
   // not contain an empty string.
   virtual Bool convertUnit(String& errorMessage,
 			   const RecordInterface& record);
 
-  // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. Returns True if everything is fine
-  // otherwise returns False.
+  // Function which checks the internal data of this class for consistant
+  // values. Returns True if everything is fine otherwise returns False.
   virtual Bool ok() const;
 
 private:
