@@ -37,6 +37,7 @@
 //# Forward Declarations
 template <class T> class ImageInterface;
 template <class T> class Lattice;
+class CoordinateSystem;
 class String;
 
 
@@ -115,12 +116,16 @@ enum ScaleTypes {
 // Assignment operator. Uses reference semantics.
    ImageConvolver &operator=(const ImageConvolver<T> &other);
 
-// Convolve.   If the output image needs a mask and doesn't have one,
+// Convolve by an Image, Lattice or Array.  If convolving by an image
+// some rudimentary coordinate checks are made and warnings optionally issued
+// (<src>warnOnly</src>) if things are not commensurate.
+// If the output image needs a mask and doesn't have one,
 // it will be given one if possible. The input mask is transferred to
 // the output. The miscInfo, imageInfo, units and logger will be copied 
 // from the input to the output unless you indicate not 
 // to (copyMiscellaneous).  Any restoring beam is deleted from the
-// output image ImageInfo object.  Degenerate  axes are added 
+// output image ImageInfo object.  The input CoordinateSystem
+// is transferred to the output image.  Degenerate  axes are added 
 // to the kernel if it does not have enough dimensions.   If <src>autoScale</src>
 // is true, the kernel is normalized to have unit sum.  Otherwise,
 // the kernel is scaled (multiplied) by the value <src>scale</src>
@@ -128,23 +133,34 @@ enum ScaleTypes {
    void convolve(LogIO& os, 
                  ImageInterface<T>& imageOut, 
                  ImageInterface<T>& imageIn, 
-                 const Array<T>& kernel,
-                 ScaleTypes scaleType,
-                 Double scale,
-                 Bool copyMiscellaneous=True);
+                 const ImageInterface<T>& kernel,
+                 ScaleTypes scaleType, Double scale,
+                 Bool copyMiscellaneous, Bool warnOnly);
    void convolve(LogIO& os, 
                  ImageInterface<T>& imageOut, 
                  ImageInterface<T>& imageIn, 
                  const Lattice<T>& kernel,
                  ScaleTypes scaleType,
                  Double scale,
-                 Bool copyMiscellaneous=True);
+                 Bool copyMiscellaneous);
+   void convolve(LogIO& os, 
+                 ImageInterface<T>& imageOut, 
+                 ImageInterface<T>& imageIn, 
+                 const Array<T>& kernel,
+                 ScaleTypes scaleType,
+                 Double scale,
+                 Bool copyMiscellaneous);
 // </group>
 
 private:
 
 // Make mask for image
    void makeMask(ImageInterface<T>& out, LogIO& os) const;
+
+// Check Coordinates of kernel and image
+   void checkCoordinates (LogIO& os, const CoordinateSystem& cSysImage,
+                          const CoordinateSystem& cSysKernel,
+                          Bool warnOnly) const;
 };
 
 

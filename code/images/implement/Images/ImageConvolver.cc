@@ -28,8 +28,10 @@
 #include <trial/Images/ImageConvolver.h>
 //
 #include <aips/aips.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/TempImage.h>
@@ -71,15 +73,32 @@ ImageConvolver<T> &ImageConvolver<T>::operator=(const ImageConvolver<T> &other)
 }
 
 
+template <class T>
+void ImageConvolver<T>::convolve(LogIO& os,  
+                                 ImageInterface<T>& imageOut,
+                                 ImageInterface<T>& imageIn,
+                                 const ImageInterface<T>& kernel,
+                                 ScaleTypes scaleType, Double scale,
+                                 Bool copyMiscellaneous, Bool warnOnly)
+{
+// Check Coordinates
 
+    checkCoordinates (os, imageIn.coordinates(), kernel.coordinates(),
+                      warnOnly);
+
+// Convolve
+
+    convolve (os, imageOut, imageIn, kernel,
+              scaleType, scale, copyMiscellaneous);
+}
 
 template <class T>
 void ImageConvolver<T>::convolve(LogIO& os,  
-                                      ImageInterface<T>& imageOut,
-                                      ImageInterface<T>& imageIn,
-                                      const Array<T>& kernel,
-                                      ScaleTypes scaleType, Double scale,
-                                      Bool copyMiscellaneous)
+                                 ImageInterface<T>& imageOut,
+                                 ImageInterface<T>& imageIn,
+                                 const Array<T>& kernel,
+                                 ScaleTypes scaleType, Double scale,
+                                 Bool copyMiscellaneous)
 {
     ArrayLattice<T> kernelLattice(kernel);
     convolve (os, imageOut, imageIn, kernelLattice, 
@@ -151,6 +170,10 @@ void ImageConvolver<T>::convolve(LogIO& os,
       lc.convolve(imageOut, imageIn);
     }
 
+// Overwrite output CoordinateSystem 
+
+   imageOut.setCoordinateInfo (imageIn.coordinates());
+
 // Copy miscellaneous things across as required
 
     if (copyMiscellaneous) ImageUtilities::copyMiscellaneous(imageOut, imageIn);
@@ -184,5 +207,69 @@ void ImageConvolver<T>::makeMask(ImageInterface<T>& out, LogIO& os)  const
       }
    } else {
       os << LogIO::WARN << "Cannot make requested mask for this type of image" << endl;
+   }
+}
+
+
+template <class T>
+void ImageConvolver<T>::checkCoordinates (LogIO& os, const CoordinateSystem& cSysImage,
+                                          const CoordinateSystem& cSysKernel,
+                                          Bool warnOnly) const
+{
+   const uInt nPixelAxesK = cSysKernel.nPixelAxes();
+   const uInt nPixelAxesI = cSysImage.nPixelAxes();
+   if (nPixelAxesK > nPixelAxesI) {
+        os << "Kernel has more pixel axes than the image" << LogIO::EXCEPTION;
+    }
+//
+   const uInt nWorldAxesK = cSysKernel.nWorldAxes();
+   const uInt nWorldAxesI = cSysImage.nWorldAxes();
+   if (nWorldAxesK > nWorldAxesI) {
+        os << "Kernel has more world axes than the image" << LogIO::EXCEPTION;
+    }
+//
+   const Vector<Double>& incrI = cSysImage.increment();
+   const Vector<Double>& incrK = cSysKernel.increment();
+   const Vector<String>& unitI = cSysImage.worldAxisUnits();
+   const Vector<String>& unitK = cSysKernel.worldAxisUnits();
+//
+   for (uInt i=0; i<nWorldAxesK; i++) {
+
+// Compare Coordinate types and reference
+
+      if (CoordinateUtil::findWorldAxis(cSysImage, i) != 
+          CoordinateUtil::findWorldAxis(cSysKernel, i)) {
+         if (warnOnly) {
+            os << LogIO::WARN << "Coordinate types are not the same for axis " << i+1 << LogIO::POST;
+         } else {
+            os << "Coordinate types are not the same for axis " << i+1 << LogIO::EXCEPTION;
+         }
+      }
+
+// Compare units 
+
+      Unit u1(unitI[i]);
+      Unit u2(unitK[i]);
+      if (u1 != u2) {
+         if (warnOnly) {
+            os << LogIO::WARN << "Axis units are not consistent for axis " << i+1 << LogIO::POST;
+         } else {
+            os << "Axis units are not consistent for axis " << i+1 << LogIO::EXCEPTION;
+         }
+      }
+
+// Compare increments ; this is not a very correct test as there may be
+// values in the LinearTransform inside the coordinate.  Should really
+// convert some values...  See how we go.
+
+      Quantum<Double> q2(incrK[i], u2);
+      Double val2 = q2.getValue(u1);
+      if (!near(incrI[i], val2, 1.0e-6)) {
+         if (warnOnly) {
+            os << LogIO::WARN << "Axis increments are not consistent for axis " << i+1 << LogIO::POST;
+         } else {
+            os << "Axis increments are not consistent for axis " << i+1 << LogIO::EXCEPTION;
+         } 
+     }
    }
 }
