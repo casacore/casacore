@@ -1,5 +1,5 @@
 //# NewFile: Constrain a string to be a new (non-existent) file
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,12 +54,21 @@
 // NewFile is a parameter constraint that is intended to be used for String
 // parameters which are interpreted as output file names. If the file exists,
 // then the user is asked via ApplicationEnvironment::choice whether or not
-// he wants to delete the file before using it.
+// he or she wants to delete the file before using it.
 // </synopsis>
 //
 // <example>
 // Parameter<String> outfile(inputRecord, "outfile", ParameterSet::In);
 // outfile.setConstraint(NewFile());
+// </example>
+//
+// <example>
+// NewFile validFile;
+// String newFileName("bigone"), error;
+// Bool ok = validFile.valueOK(newFileName, error);
+// if (!ok) {
+//    cout << error << endl;
+// }
 // </example>
 //
 // <motivation>
@@ -74,12 +83,24 @@
 class NewFile : public ParameterConstraint<String>
 {
 public:
+//  Currently the deleteIfExists argument has no affect
     NewFile(Bool deleteIfExists = True);
+
+//  Copy constructor (copy semantics)
     NewFile(const NewFile &other);
+
+//  Assignment (copy semantics)
     NewFile &operator=(const NewFile &other);
+
+// Destructor
     ~NewFile();
 
+// Indicates whether the specified string is a valid new file,
+// invoking the choice GUI.  If it returns False, an error 
+// message is returned.
     virtual Bool valueOK(const String &value, String &error) const;
+
+// Set the constraint
     virtual ParameterConstraint<String> *clone() const;
 public:
     Bool delete_p;
