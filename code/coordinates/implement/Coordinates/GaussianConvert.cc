@@ -126,9 +126,9 @@ Bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& mi
 // axes.  We checked in the constructor that they were dimensionally equivalent, 
 // so this is OK
 
-   Vector<String> units(2);
-   units(0) = unitAxes;
-   units(1) = units(0);
+   Vector<String> units(itsCSys.worldAxisUnits().copy());
+   units(itsWorldAxes(0)) = unitAxes;
+   units(itsWorldAxes(1)) = unitAxes;
    if (!itsCSys.setWorldAxisUnits(units, True)) {
       itsErrorMessage = "failed to set axis units because" + itsCSys.errorMessage();
       return False;
@@ -178,9 +178,9 @@ Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
 // axes.  We checked in the constructor that they were dimensionally equivalent, 
 // so this is OK
 
-   Vector<String> units(2);
-   units(0) = unitAxes;
-   units(1) = units(0);
+   Vector<String> units(itsCSys.worldAxisUnits().copy());
+   units(itsWorldAxes(0)) = unitAxes;
+   units(itsWorldAxes(1)) = unitAxes;
    if (!itsCSys.setWorldAxisUnits(units, True)) {
       itsErrorMessage = "failed to set axis units because" + itsCSys.errorMessage();
       return False;
