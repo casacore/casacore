@@ -491,11 +491,14 @@ SubString &SubString::operator=(const Char c) {
   return *this;
 }
 
+} //# NAMESPACE CASA - END
+
+
 // Create some needed templates
 #if !defined(AIPS_AUTO_STL)
 
 #if defined(__GNUG__)
- template void std::__reverse<Char*>(Char *, Char *, std::random_access_iterator_tag);
+ template void std::__reverse<char*>(char *, char *, std::random_access_iterator_tag);
 #endif
 
 #if defined(AIPS_SUN_NATIVE)
@@ -504,13 +507,12 @@ SubString &SubString::operator=(const Char c) {
 #endif
 
 
-template Char *std::transform<Char *>(Char *, Char *, Char *, Int (*)(Int));
+template char *std::transform<char *>(char *, char *, char *, int (*)(int));
 #if defined(AIPS_GCC3)
 template void std::__reverse<string::iterator>(string::iterator, string::iterator, std::random_access_iterator_tag);
-template string::iterator std::transform<string::iterator>(string::iterator, string::iterator, string::iterator, Int (*)(Int));
+template string::iterator std::transform<string::iterator>(string::iterator, string::iterator, string::iterator, int (*)(int));
 #endif
 
 #endif
 
-} //# NAMESPACE CASA - END
 
