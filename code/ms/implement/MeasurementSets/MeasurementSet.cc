@@ -206,7 +206,7 @@ MeasurementSet& MeasurementSet::operator=(const MeasurementSet &other)
 	// initRefs needs to be called even if the MS is null to ensure that
 	// the subtable references, which may have contained non-null
 	// subtables, are replaced with references to null-subtables.
-	initRefs();
+	initRefs(True);
     }
     return *this;
 }
@@ -560,9 +560,9 @@ String MeasurementSet::weatherTableName() const
   return weather_p.tableName();
 }
 
-void MeasurementSet::initRefs()
+void MeasurementSet::initRefs(Bool clear)
 {
-  if (isNull()) {
+  if (isNull()||clear) {
     // clear subtable references
     antenna_p=MSAntenna();
     dataDesc_p=MSDataDescription();
@@ -581,7 +581,8 @@ void MeasurementSet::initRefs()
     state_p=MSState();
     sysCal_p=MSSysCal();
     weather_p=MSWeather();
-  } else {
+  }
+  if (!isNull()) {
     // write the table info if needed
     if (this->tableInfo().type()=="") {
       String reqdType=this->tableInfo().type(TableInfo::MEASUREMENTSET);
