@@ -1,5 +1,5 @@
-//# tLatticeGram.cc: Test program for lattice expression parser
-//# Copyright (C) 1997
+//# tImageExprGram.cc: Test program for image expression parser
+//# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeParse.h>
+#include <trial/Images/ImageExprParse.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <aips/Arrays/Array.h>
@@ -91,7 +91,7 @@ main (int argc, char *argv[])
   {
     cout << endl;
     cout << "Expr:  a = 1" << endl;
-    a.copyData(LatticeParse::command ("1.0"));
+    a.copyData(ImageExprParse::command ("1.0"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = 1.0;
@@ -103,7 +103,7 @@ main (int argc, char *argv[])
   }
   {
     cout << "Expr:  a = b" << endl;
-    a.copyData(LatticeParse::command ("b"));
+    a.copyData(ImageExprParse::command ("b"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = bVal;
@@ -114,8 +114,8 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = sin(c)" << endl;
-    a.copyData(LatticeParse::command ("sin(c)"));
+    cout << "Expr:  a = sin(\\c)" << endl;
+    a.copyData(ImageExprParse::command ("sin(\\c)"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = sin(cVal);
@@ -127,8 +127,8 @@ main (int argc, char *argv[])
   }
 
   {
-    cout << "Expr:  a = c+2" << endl;
-    a.copyData(LatticeParse::command ("c+2"));
+    cout << "Expr:  a = 'c'+2" << endl;
+    a.copyData(ImageExprParse::command ("'c'+2"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = cVal+2;
@@ -139,8 +139,8 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = b+(c+d)" << endl;
-    a.copyData(LatticeParse::command ("b+(c+d)"));
+    cout << "Expr:  a = b+('c'+d)" << endl;
+    a.copyData(ImageExprParse::command ("b+('c'+d)"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = bVal + cVal + dVal;
@@ -151,10 +151,10 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = 3.5*b + cos(c)-10/min(c,d)*-e*log(b)-pi()" << endl;
+    cout << "Expr:  a = 3.5*b + cos('c')-10/min('c',d)*-e*log(b)-pi()" << endl;
 
-    a.copyData( LatticeParse::command
-               ("(3.5*b) + (cos(c)) - (10/min(c,d)*(-e)*log(b)) - (pi()) "));
+    a.copyData( ImageExprParse::command
+               ("(3.5*b) + (cos('c')) - (10/min('c',d)*(-e)*log(b)) - (pi()) "));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = 3.5*bVal + cos(cVal) -
@@ -166,9 +166,9 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = (b+c-d/2.0*-b) + pi()" << endl;
+    cout << "Expr:  a = (b+'c'-d/2.0*-b) + pi()" << endl;
 
-    a.copyData(LatticeParse::command ("(b+c-d/2.0*-b)+pi()"));
+    a.copyData(ImageExprParse::command ("(b+'c'-d/2.0*-b)+pi()"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = (bVal + cVal - dVal / 2*-bVal) + C::pi;
@@ -179,9 +179,9 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = pow(c,d)" << endl;
+    cout << "Expr:  a = pow('c',d)" << endl;
 
-    a.copyData(LatticeParse::command ("pow(c,d)"));
+    a.copyData(ImageExprParse::command ("pow('c',d)"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = pow(cVal,dVal);
@@ -192,9 +192,9 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = fmod(c*2,d)" << endl;
+    cout << "Expr:  a = fmod('c'*2,d)" << endl;
 
-    a.copyData(LatticeParse::command ("fmod(c*2,d)"));
+    a.copyData(ImageExprParse::command ("fmod('c'*2,d)"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = fmod(cVal*2,dVal);
@@ -205,9 +205,9 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = pow(c,2.3)" << endl;
+    cout << "Expr:  a = pow('c',2.3)" << endl;
 
-    a.copyData(LatticeParse::command ("pow(c,2.3)"));
+    a.copyData(ImageExprParse::command ("pow('c',2.3)"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = pow(cVal,2.3);
@@ -220,7 +220,7 @@ main (int argc, char *argv[])
   {
     cout << "Expr:  a = cos(b)" << endl;
 
-    a.copyData(LatticeParse::command ("cos(b)"));
+    a.copyData(ImageExprParse::command ("cos(b)"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = cos(bVal);
@@ -233,7 +233,7 @@ main (int argc, char *argv[])
   {
     cout << "Expr:  a = cos(sin(b))" << endl;
 
-    a.copyData (LatticeParse::command ("cos(sin(b))"));
+    a.copyData (ImageExprParse::command ("cos(sin(b))"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = cos(sin(bVal));
@@ -246,7 +246,7 @@ main (int argc, char *argv[])
   {
     cout << "Expr:  a = ntrue(b>=1)" << endl;
 
-    a.copyData(LatticeParse::command ("ntrue(b>=1)"));
+    a.copyData(ImageExprParse::command ("ntrue(b>=1)"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = a.shape().product();
@@ -257,9 +257,22 @@ main (int argc, char *argv[])
     }
   }
   {
+    cout << "Expr:  aBool = T||F" << endl;
+
+    aBool.copyData(ImageExprParse::command ("T||F"));
+    aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(),0), 
+		   aBoolArr.shape(), IPosition(aBoolArr.ndim(),1));
+    Bool result = ToBool(True||False);
+    if (! allEQ (aBoolArr, result)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aBoolArr.ac() << endl;
+	foundError = True;
+    }
+  }
+  {
     cout << "Expr:  aBool = !bBool" << endl;
 
-    aBool.copyData(LatticeParse::command ("!bBool"));
+    aBool.copyData(ImageExprParse::command ("!bBool"));
     aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(),0), 
 		   aBoolArr.shape(), IPosition(aBoolArr.ndim(),1));
     Bool result = ToBool(!bBoolVal);
@@ -270,10 +283,10 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = sum(e)/nelements(b) + min(c) + max(c, mean(c+d))" << endl;
+    cout << "Expr:  a = sum(e)/nelements(b) + min('c') + max('c', mean('c'+d))" << endl;
 
-    a.copyData(LatticeParse::command
-	              ("sum(e)/nelements(b) + min(c) + max(c, mean(c+d))"));
+    a.copyData(ImageExprParse::command
+	          ("sum(e)/nelements(b) + min('c') + max('c', mean('c'+d))"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = eVal+cVal+(cVal+dVal);
@@ -290,7 +303,7 @@ main (int argc, char *argv[])
     }
     cout << "Expr:  a = min(a+10,5)" << endl;
 
-    a.copyData(LatticeParse::command ("min(a+10,5)"));
+    a.copyData(ImageExprParse::command ("min(a+10,5)"));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = 5;
