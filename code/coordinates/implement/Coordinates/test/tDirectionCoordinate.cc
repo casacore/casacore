@@ -56,11 +56,7 @@ void doit2 (DirectionCoordinate& lc,
             Vector<Double>& cdelt,
             Matrix<Double>& xform);
 
-void doit3 (DirectionCoordinate& lc, 
-            Vector<Double>& crval,
-            Vector<Double>& crpix,
-            Vector<Double>& cdelt,
-            Matrix<Double>& xform);
+void doit3 (DirectionCoordinate& lc);
 
 
 int main()
@@ -124,7 +120,7 @@ int main()
          DirectionCoordinate lc  = makeCoordinate(MDirection::J2000,
                                                  proj, crval, crpix,
                                                  cdelt, xform);
-         doit3(lc, crval, crpix, cdelt, xform);
+         doit3(lc);
       }
       {
          DirectionCoordinate lc  = makeCoordinate(MDirection::GALACTIC,
@@ -146,7 +142,7 @@ int main()
          DirectionCoordinate lc  = makeCoordinate(MDirection::GALACTIC,
                                                  proj, crval, crpix,
                                                  cdelt, xform);
-         doit3(lc, crval, crpix, cdelt, xform);
+         doit3(lc);
       }
 
 
@@ -331,11 +327,7 @@ void doit2 (DirectionCoordinate& lc,
    }
 }
 
-void doit3 (DirectionCoordinate& lc,
-            Vector<Double>& crval, 
-            Vector<Double>& crpix, 
-            Vector<Double>& cdelt, 
-            Matrix<Double>& xform)
+void doit3 (DirectionCoordinate& lc)
 {
 //
 // Test conversion
