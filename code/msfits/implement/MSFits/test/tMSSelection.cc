@@ -29,16 +29,10 @@
 void convert(String fitsName, String msName)
 {
     if (!Table::isReadable(msName)) {
-        if (fitsName.length() == 0) {
-            cout << "Assuming MS " << msName << " already exist" << endl
-                 << " since no FITS file is specified";
-        }
-        else {
-            cout << "Converting FITS file called " << fitsName
-                 << " to and MS called " << msName << endl;
-            MSFitsInput msfitsin(msName, fitsName);
-            msfitsin.readFitsFile();
-        }
+        cout << "Converting FITS file called " << fitsName
+             << " to and MS called " << msName << endl;
+        MSFitsInput msfitsin(msName, fitsName);
+        msfitsin.readFitsFile();
     }
 }
 
@@ -51,10 +45,10 @@ int main(int argc, char **argv)
     inputs.readArguments (argc, argv);
 
     const String fitsName = inputs.getString("fits");
-    const String msName = inputs.getString("ms");
+    String msName = inputs.getString("ms");
 
-    // Convert fits format to ms
-    convert(fitsName, msName);
+    if(msName.length() == 0) msName = "3C273XC1_tmp.ms";
+    if(fitsName.length() != 0) convert(fitsName, msName);
 
     // Do selection over newly created ms
     try {
