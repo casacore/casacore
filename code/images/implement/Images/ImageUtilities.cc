@@ -46,6 +46,7 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/IO/RegularFileIO.h>
 
@@ -374,7 +375,6 @@ void ImageUtilities::worldWidthsToPixel (LogIO& os,
     
 // Find major and minor axes in pixels
 
-
       dParameters(0) = worldWidthToPixel (os, dParameters(2), parameters(0), 
                                           cSys, pixelAxes);
       dParameters(1) = worldWidthToPixel (os, dParameters(2), parameters(1), 
@@ -384,11 +384,12 @@ void ImageUtilities::worldWidthsToPixel (LogIO& os,
 }   
 
 
-Bool ImageUtilities::skyPixelWidthsToWorld (LogIO& os, 
-                                            Vector<Quantum<Double> >& wParameters,
-                                            const CoordinateSystem& cSys, 
-                                            const Vector<Double>& pParameters,
-                                            const IPosition& pixelAxes) 
+
+Bool ImageUtilities::pixelWidthsToWorld (LogIO& os, 
+                                         Vector<Quantum<Double> >& wParameters,
+                                         const Vector<Double>& pParameters,
+                                         const CoordinateSystem& cSys, 
+                                         const IPosition& pixelAxes) 
 {
    if (pixelAxes.nelements()!=2) {
       os << "You must give two pixel axes" << LogIO::EXCEPTION;
@@ -396,6 +397,52 @@ Bool ImageUtilities::skyPixelWidthsToWorld (LogIO& os,
    if (pParameters.nelements()!=3) {
       os << "The parameters vector must be of length 3" << LogIO::EXCEPTION;
    }
+//
+   Int c0, axis0, c1, axis1;
+   cSys.findPixelAxis(c0, axis0, pixelAxes(0));
+   cSys.findPixelAxis(c1, axis1, pixelAxes(1));
+   Bool flipped = False;
+   if (cSys.type(c1)==Coordinate::DIRECTION  && cSys.type(c0)==Coordinate::DIRECTION) {
+      if (c0==c1) {
+         flipped = skyPixelWidthsToWorld(os, wParameters, cSys, pParameters, pixelAxes);
+      } else {
+         os << "Cannot yet handle axes from different DirectionCoordinates" << LogIO::EXCEPTION;
+      }
+   } else {
+      wParameters.resize(3);
+
+// Major/minor 
+
+      Quantum<Double> q0 = pixelWidthToWorld (os, pParameters(2), pParameters(0),
+                                              cSys, pixelAxes);
+      Quantum<Double> q1 = pixelWidthToWorld (os, pParameters(2), pParameters(1),
+                                              cSys, pixelAxes);
+//
+      if (q0.getValue() < q1.getValue(q0.getFullUnit())) {
+         flipped = True;
+         wParameters(0) = q1;
+         wParameters(1) = q0;
+      } else {
+         wParameters(0) = q0;
+         wParameters(1) = q1;
+      }
+
+// Position angle; radians; +x -> +y
+
+      wParameters(2).setValue(pParameters(2));
+      wParameters(2).setUnit(Unit("rad"));
+   }
+   return flipped;
+}  
+   
+
+
+Bool ImageUtilities::skyPixelWidthsToWorld (LogIO& os, 
+                                            Vector<Quantum<Double> >& wParameters,
+                                            const CoordinateSystem& cSys, 
+                                            const Vector<Double>& pParameters,
+                                            const IPosition& pixelAxes) 
+{
 
 // What coordinates are these axes ?
 
@@ -465,10 +512,10 @@ Double ImageUtilities::worldWidthToPixel (LogIO& os, Double positionAngle,
 // I will be able to relax this criterion when I get the time
 
    Vector<String> units = cSys.worldAxisUnits();
-   String unit0 = units(worldAxis0);   
-   String unit1 = units(worldAxis1);
+   Unit unit0(units(worldAxis0));
+   Unit unit1(units(worldAxis1));
    if (unit0 != unit1) {
-      os << "Units of the convolution axes must be conformant" << LogIO::EXCEPTION;
+      os << "Units of the two axes must be conformant" << LogIO::EXCEPTION;
    }
    Unit unit(unit0);
 
@@ -483,22 +530,68 @@ Double ImageUtilities::worldWidthToPixel (LogIO& os, Double positionAngle,
       os << s << LogIO::EXCEPTION;
    }
 //
-   Double w0 = cos(positionAngle) * length.getValue(unit) / 2.0;
-   Double w1 = sin(positionAngle) * length.getValue(unit) / 2.0;
+   Double w0 = cos(positionAngle) * length.getValue(unit);
+   Double w1 = sin(positionAngle) * length.getValue(unit);
 
 // Find pixel coordinate of tip of axis  relative to reference pixel
 
    Vector<Double> world = cSys.referenceValue().copy();
-   world(worldAxis0) = world(worldAxis0) + w0;
-   world(worldAxis1) = world(worldAxis1) + w1;
+   world(worldAxis0) += w0;
+   world(worldAxis1) += w1;
 // 
    Vector<Double> pixel;
    if (!cSys.toPixel (pixel, world)) {
       os << cSys.errorMessage() << LogIO::EXCEPTION;
    }
 //  
-   pixel -= cSys.referencePixel();
-   Double lengthInPixels = 2.0 * hypot(pixel(pixelAxes(0)), pixel(pixelAxes(1)));
+   Double lengthInPixels = hypot(pixel(pixelAxes(0)), pixel(pixelAxes(1)));
    return lengthInPixels;
 }
 
+
+Quantum<Double> ImageUtilities::pixelWidthToWorld (LogIO& os, 
+                                                   Double positionAngle, 
+                                                   Double length,
+                                                   const CoordinateSystem& cSys2,
+                                                   const IPosition& pixelAxes)
+{
+   CoordinateSystem cSys(cSys2);
+   Int worldAxis0 = cSys.pixelAxisToWorldAxis(pixelAxes(0));
+   Int worldAxis1 = cSys.pixelAxisToWorldAxis(pixelAxes(1));
+
+// Units of the axes must be consistent for now.
+// I will be able to relax this criterion when I get the time
+
+   Vector<String> units = cSys.worldAxisUnits().copy();
+   Unit unit0(units(worldAxis0));
+   Unit unit1(units(worldAxis1));
+   if (unit0 != unit1) {
+      os << "Units of the axes must be conformant" << LogIO::EXCEPTION;
+   }
+
+// Set units to be the same for both axes
+ 
+   units(worldAxis1) = units(worldAxis0);
+   if (!cSys.setWorldAxisUnits(units)) {
+      os << cSys.errorMessage() << LogIO::EXCEPTION;
+   } 
+// 
+   Double p0 = cos(positionAngle) * length;
+   Double p1 = sin(positionAngle) * length;
+
+// Find world coordinate of tip of length relative to reference pixel
+
+   Vector<Double> pixel= cSys.referencePixel().copy();
+   pixel(pixelAxes(0)) += p0;
+   pixel(pixelAxes(1)) += p1;
+// 
+   Vector<Double> world;
+   if (!cSys.toWorld(world, pixel)) {
+      os << cSys.errorMessage() << LogIO::EXCEPTION;
+   }
+//  
+   Double lengthInWorld = hypot(world(worldAxis0), world(worldAxis1));
+   Quantum<Double> q(lengthInWorld, Unit(units(worldAxis0)));
+//
+   return q;
+}

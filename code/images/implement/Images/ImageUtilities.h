@@ -150,19 +150,6 @@ public:
                                           const Vector<Double>& parameters,
                                           Stokes::StokesTypes stokes,
                                           Bool xIsLong);
-
-// Convert 2d sky shape (parameters=major axis, minor axis, position angle) 
-// from pixels to world at reference pixel. pixelAxes describes which
-// 2 pixel axes of the coordinate system our 2D shape is in.
-// On input pa is positive for +x -> +y in pixel frame
-// On output pa is positive N->E
-// Returns True if major/minor exchanged themselves on conversion to world.
-   static Bool skyPixelWidthsToWorld (LogIO& os,
-                                      Vector<Quantum<Double> >& wParameters,
-                                      const CoordinateSystem& cSys,
-                                      const Vector<Double>& pParameters,
-                                      const IPosition& pixelAxes);
-
 //
 // Convert 2d shape (parameters=major axis, minor axis, position angle)
 // from world to pixel.  Can handle quantum units 'pix'.  If one width is 
@@ -178,7 +165,31 @@ public:
                                    const CoordinateSystem& cSys,
                                    const IPosition& pixelAxes);
 
+// Convert 2d shape (parameters=major axis, minor axis, position angle) 
+// from pixels to world at reference pixel. pixelAxes describes which
+// 2 pixel axes of the coordinate system our 2D shape is in.
+// On input pa is positive for +x -> +y in pixel frame
+// On output pa is positive N->E
+// Returns True if major/minor exchanged themselves on conversion to world.
+   static Bool pixelWidthsToWorld (LogIO& os,
+                                   Vector<Quantum<Double> >& wParameters,
+                                   const Vector<Double>& pParameters,
+                                   const CoordinateSystem& cSys,
+                                   const IPosition& pixelAxes);
+
    private:
+
+// Convert 2d sky shape (parameters=major axis, minor axis, position angle) 
+// from pixels to world at reference pixel. pixelAxes describes which
+// 2 pixel axes of the coordinate system our 2D shape is in.
+// On input pa is positive for +x -> +y in pixel frame
+// On output pa is positive N->E
+// Returns True if major/minor exchanged themselves on conversion to world.
+   static Bool skyPixelWidthsToWorld (LogIO& os,
+                                      Vector<Quantum<Double> >& wParameters,
+                                      const CoordinateSystem& cSys,
+                                      const Vector<Double>& pParameters,
+                                      const IPosition& pixelAxes);
 
 // Convert a length and position angle in world units (for a non-coupled 
 // coordinate) to pixels. The length is in some 2D plane in the 
@@ -187,8 +198,12 @@ public:
                                     const Quantum<Double>& length,
                                     const CoordinateSystem& cSys,
                                     const IPosition& pixelAxes);
+//
+   static Quantum<Double> pixelWidthToWorld (LogIO& os, Double positionAngle,
+                                             Double length,
+                                             const CoordinateSystem& cSys,
+                                             const IPosition& pixelAxes);
 };
 
 
 #endif
-
