@@ -1,5 +1,5 @@
 //# LockFile.h: Class to handle file locking and synchronization
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,6 +122,12 @@ class CanonicalIO;
 // For this purpose it sets another read lock when the file gets opened.
 // The function <src>isMultiUsed</src> tests this lock to see if the file is
 // used in other processes.
+// <p>
+// When in the same process multiple LockFile objects are created for the same
+// file, deleting one object releases all locks on the file, thus also the
+// locks held by the other LockFile objects. This behaviour is due to the way
+// file locking is working on UNIX machines (certainly on Solaris 2.6).
+// One can use the test program tLockFile to test for this behaviour.
 // </synopsis>
 
 // <example>
@@ -176,9 +182,12 @@ public:
     // Otherwise it will be created if it does not exist yet.
     // <br> If <src>mustExist==False</src>, it is allowed that the LockFile
     // does not exist and cannot be created either.
+    // <br> The seqnr is used to set the offset where LockFile will use 2 bytes
+    // to set the locks on. Only in special cases it should be other than 0.
+    // At the moment the offset is 2*seqnr.
     explicit LockFile (const String& fileName, double inspectInterval = 0,
 		       Bool create = False, Bool addToRequestList = True,
-		       Bool mustExist = True);
+		       Bool mustExist = True, uInt seqnr = 0);
 
     // The destructor does not delete the file, because it is not known
     // when the last process using the lock file will stop.
@@ -227,6 +236,9 @@ public:
 
     // Test if the file can be locked for read or write.
     Bool canLock (FileLocker::LockType = FileLocker::Write);
+
+    // Test if the process has a lock for read or write on the file.
+    Bool hasLock (FileLocker::LockType = FileLocker::Write) const;
 
     // Get the last error.
     int lastError() const;
@@ -317,6 +329,10 @@ inline Bool LockFile::release (const MemoryIO& info)
 inline Bool LockFile::canLock (FileLocker::LockType type)
 {
     return (itsFileIO == 0  ?  True : itsLocker.canLock (type));
+}
+inline Bool LockFile::hasLock (FileLocker::LockType type) const
+{
+    return (itsFileIO == 0  ?  False : itsLocker.hasLock (type));
 }
 inline int LockFile::lastError() const
 {
