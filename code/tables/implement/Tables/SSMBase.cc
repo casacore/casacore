@@ -149,18 +149,22 @@ SSMBase::SSMBase (const String& aDataManName,
   // Determine the data format (local or canonical).
   // For the moment it is always canonical (until Table supports it).
   isCanonical = True;
+  // Get buxketrows if defined.
   if (spec.isDefined ("BUCKETROWS")) {
-    itsBucketRows = spec.asuInt ("BUCKETROWS");
+    itsBucketRows = spec.asInt ("BUCKETROWS");
   }
+  // If no bucketrows, get bucketsize if defined.
+  // Otherwise set bucketrows to default value.
   if (itsBucketRows == 0) {
     if (spec.isDefined ("BUCKETSIZE")) {
-      itsBucketSize = spec.asuInt ("BUCKETSIZE");
-    } else {
+      itsBucketSize = spec.asInt ("BUCKETSIZE");
+    }
+    if (itsBucketSize == 0) {
       itsBucketRows = 32;
     }
   }
   if (spec.isDefined ("CACHESIZE")) {
-    itsPersCacheSize = max(2u, spec.asuInt ("CACHESIZE"));
+    itsPersCacheSize = max(2, spec.asInt ("CACHESIZE"));
   }
 }
 
@@ -220,9 +224,11 @@ String SSMBase::dataManagerName() const
 
 Record SSMBase::dataManagerSpec() const
 {
+  // Make sure the cache is initialized, so the header is certainly read.
+  const_cast<SSMBase*>(this)->getCache();
   Record rec;
-  rec.define ("BUCKETSIZE", itsBucketSize);
-  rec.define ("CACHESIZE", itsPersCacheSize);
+  rec.define ("BUCKETSIZE", Int(itsBucketSize));
+  rec.define ("CACHESIZE", Int(itsPersCacheSize));
   return rec;
 }
 
