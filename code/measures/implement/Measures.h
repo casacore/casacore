@@ -32,7 +32,7 @@
 #include <aips/Quanta.h>
 #include <aips/Measures/Measure.h>
 #include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasValue.h>
+#include <aips/Quanta/MeasValue.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Measures/MeasConvert.h>
 

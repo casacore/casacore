@@ -31,7 +31,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MVDirection.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>

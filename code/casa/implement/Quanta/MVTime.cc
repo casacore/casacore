@@ -32,7 +32,7 @@ typedef Quantum<Double> gpp_mvtime_bug1;
 #endif
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/MVAngle.h>
-#include <aips/Measures/MVEpoch.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MUString.h>
 #include <strstream.h>
 #include <iomanip.h>

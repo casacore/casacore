@@ -45,7 +45,7 @@
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/MVAngle.h>
-#include <aips/Measures/MVDirection.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Tables/Table.h>

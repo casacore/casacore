@@ -33,7 +33,7 @@
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Measures/MVDirection.h>
+#include <aips/Quanta/MVDirection.h>
 
 class MVAngle;
 class RecordInterface;
