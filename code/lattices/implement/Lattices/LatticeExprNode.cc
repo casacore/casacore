@@ -1,5 +1,5 @@
 //# LatticeExprNode.cc:  this defines LatticeExprNode.cc
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,10 @@
 #include <trial/Lattices/LELConvert.h>
 #include <trial/Lattices/LELBinary.h>
 #include <trial/Lattices/LELUnary.h>
+#include <trial/Lattices/LELCondition.h>
 #include <trial/Lattices/LELFunction.h>
+#include <trial/Lattices/LELArray.h>
+#include <trial/Lattices/LELScalar.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/Assert.h>
@@ -46,7 +49,9 @@
 
 // Default constructor
 LatticeExprNode::LatticeExprNode()
-: donePrepare_p (False)
+: donePrepare_p   (False),
+  isInvalid_p     (True),
+  pAttr_p         (0)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode::default constructor; pExpr_p.nrefs() = "
@@ -65,10 +70,11 @@ LatticeExprNode::~LatticeExprNode()
 
 
 LatticeExprNode::LatticeExprNode(const CountedPtr<LELInterface<Float> >& pExpr)
-: donePrepare_p (False),
-  dtype_p       (TpFloat),
-  pAttr_p       (&pExpr->getAttribute()),
-  pExprFloat_p  (pExpr)
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (True),
+  pAttr_p         (&pExpr->getAttribute()),
+  pExprFloat_p    (pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (CountedPtr<LELInterface<T>>&); pExpr_p.nrefs() = "
@@ -77,10 +83,11 @@ LatticeExprNode::LatticeExprNode(const CountedPtr<LELInterface<Float> >& pExpr)
 }
 
 LatticeExprNode::LatticeExprNode(const CountedPtr<LELInterface<Double> >& pExpr)
-: donePrepare_p (False),
-  dtype_p       (TpDouble),
-  pAttr_p       (&pExpr->getAttribute()),
-  pExprDouble_p (pExpr)
+: donePrepare_p   (False),
+  dtype_p         (TpDouble),
+  isInvalid_p     (True),
+  pAttr_p         (&pExpr->getAttribute()),
+  pExprDouble_p   (pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (CountedPtr<LELInterface<T>>&); pExpr_p.nrefs() = "
@@ -90,10 +97,11 @@ LatticeExprNode::LatticeExprNode(const CountedPtr<LELInterface<Double> >& pExpr)
 
 LatticeExprNode::LatticeExprNode
                              (const CountedPtr<LELInterface<Complex> >& pExpr)
-: donePrepare_p  (False),
-  dtype_p        (TpComplex),
-  pAttr_p        (&pExpr->getAttribute()),
-  pExprComplex_p (pExpr)
+: donePrepare_p   (False),
+  dtype_p         (TpComplex),
+  isInvalid_p     (True),
+  pAttr_p         (&pExpr->getAttribute()),
+  pExprComplex_p  (pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (CountedPtr<LELInterface<T>>&); pExpr_p.nrefs() = "
@@ -105,6 +113,7 @@ LatticeExprNode::LatticeExprNode
                              (const CountedPtr<LELInterface<DComplex> >& pExpr)
 : donePrepare_p   (False),
   dtype_p         (TpDComplex),
+  isInvalid_p     (True),
   pAttr_p         (&pExpr->getAttribute()),
   pExprDComplex_p (pExpr)
 {
@@ -115,10 +124,11 @@ LatticeExprNode::LatticeExprNode
 }
 
 LatticeExprNode::LatticeExprNode(const CountedPtr<LELInterface<Bool> >& pExpr)
-: donePrepare_p (False),
-  dtype_p       (TpBool),
-  pAttr_p       (&pExpr->getAttribute()),
-  pExprBool_p   (pExpr)
+: donePrepare_p   (False),
+  dtype_p         (TpBool),
+  isInvalid_p     (True),
+  pAttr_p         (&pExpr->getAttribute()),
+  pExprBool_p     (pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (CountedPtr<LELInterface<T>>&); pExpr_p.nrefs() = "
@@ -128,10 +138,11 @@ LatticeExprNode::LatticeExprNode(const CountedPtr<LELInterface<Bool> >& pExpr)
 
 
 LatticeExprNode::LatticeExprNode(LELInterface<Float>* pExpr)
-: donePrepare_p (False),
-  dtype_p       (TpFloat),
-  pAttr_p       (&pExpr->getAttribute()),
-  pExprFloat_p  (pExpr)
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (True),
+  pAttr_p         (&pExpr->getAttribute()),
+  pExprFloat_p    (pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (LELInterface<T>*); pExpr_p.nrefs() = "
@@ -140,10 +151,11 @@ LatticeExprNode::LatticeExprNode(LELInterface<Float>* pExpr)
 }
 
 LatticeExprNode::LatticeExprNode(LELInterface<Double>* pExpr)
-: donePrepare_p (False),
-  dtype_p       (TpDouble),
-  pAttr_p       (&pExpr->getAttribute()),
-  pExprDouble_p (pExpr)
+: donePrepare_p   (False),
+  dtype_p         (TpDouble),
+  isInvalid_p     (True),
+  pAttr_p         (&pExpr->getAttribute()),
+  pExprDouble_p   (pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (LELInterface<T>*); pExpr_p.nrefs() = "
@@ -152,10 +164,11 @@ LatticeExprNode::LatticeExprNode(LELInterface<Double>* pExpr)
 }
 
 LatticeExprNode::LatticeExprNode(LELInterface<Complex>* pExpr)
-: donePrepare_p  (False),
-  dtype_p        (TpComplex),
-  pAttr_p        (&pExpr->getAttribute()),
-  pExprComplex_p (pExpr)
+: donePrepare_p   (False),
+  dtype_p         (TpComplex),
+  isInvalid_p     (True),
+  pAttr_p         (&pExpr->getAttribute()),
+  pExprComplex_p  (pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (LELInterface<T>*); pExpr_p.nrefs() = "
@@ -166,6 +179,7 @@ LatticeExprNode::LatticeExprNode(LELInterface<Complex>* pExpr)
 LatticeExprNode::LatticeExprNode(LELInterface<DComplex>* pExpr)
 : donePrepare_p   (False),
   dtype_p         (TpDComplex),
+  isInvalid_p     (True),
   pAttr_p         (&pExpr->getAttribute()),
   pExprDComplex_p (pExpr)
 {
@@ -176,10 +190,11 @@ LatticeExprNode::LatticeExprNode(LELInterface<DComplex>* pExpr)
 }
 
 LatticeExprNode::LatticeExprNode(LELInterface<Bool>* pExpr)
-: donePrepare_p (False),
-  dtype_p       (TpBool),
-  pAttr_p       (&pExpr->getAttribute()),
-  pExprBool_p   (pExpr)
+: donePrepare_p   (False),
+  dtype_p         (TpBool),
+  isInvalid_p     (True),
+  pAttr_p         (&pExpr->getAttribute()),
+  pExprBool_p     (pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (LELInterface<T>*); pExpr_p.nrefs() = "
@@ -189,9 +204,10 @@ LatticeExprNode::LatticeExprNode(LELInterface<Bool>* pExpr)
 
 
 LatticeExprNode::LatticeExprNode (Int constant) 
-: donePrepare_p (False),
-  dtype_p       (TpFloat),
-  pExprFloat_p  (new LELUnaryConst<Float> (constant))
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (False),
+  pExprFloat_p    (new LELUnaryConst<Float> (constant))
 { 
    pAttr_p = &pExprFloat_p->getAttribute();
 
@@ -202,9 +218,10 @@ LatticeExprNode::LatticeExprNode (Int constant)
 }
 
 LatticeExprNode::LatticeExprNode (Float constant) 
-: donePrepare_p (False),
-  dtype_p       (TpFloat),
-  pExprFloat_p  (new LELUnaryConst<Float> (constant))
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (False),
+  pExprFloat_p    (new LELUnaryConst<Float> (constant))
 { 
    pAttr_p = &pExprFloat_p->getAttribute();
 
@@ -215,9 +232,10 @@ LatticeExprNode::LatticeExprNode (Float constant)
 }
 
 LatticeExprNode::LatticeExprNode (Double constant) 
-: donePrepare_p (False),
-  dtype_p       (TpDouble),
-  pExprDouble_p (new LELUnaryConst<Double> (constant))
+: donePrepare_p   (False),
+  dtype_p         (TpDouble),
+  isInvalid_p     (False),
+  pExprDouble_p   (new LELUnaryConst<Double> (constant))
 { 
    pAttr_p = &pExprDouble_p->getAttribute();
 
@@ -228,9 +246,10 @@ LatticeExprNode::LatticeExprNode (Double constant)
 }
 
 LatticeExprNode::LatticeExprNode (const Complex& constant) 
-: donePrepare_p  (False),
-  dtype_p        (TpComplex),
-  pExprComplex_p (new LELUnaryConst<Complex> (constant))
+: donePrepare_p   (False),
+  dtype_p         (TpComplex),
+  isInvalid_p     (False),
+  pExprComplex_p  (new LELUnaryConst<Complex> (constant))
 { 
    pAttr_p = &pExprComplex_p->getAttribute();
 
@@ -243,6 +262,7 @@ LatticeExprNode::LatticeExprNode (const Complex& constant)
 LatticeExprNode::LatticeExprNode (const DComplex& constant) 
 : donePrepare_p   (False),
   dtype_p         (TpDComplex),
+  isInvalid_p     (False),
   pExprDComplex_p (new LELUnaryConst<DComplex> (constant))
 { 
    pAttr_p = &pExprDComplex_p->getAttribute();
@@ -254,9 +274,10 @@ LatticeExprNode::LatticeExprNode (const DComplex& constant)
 }
 
 LatticeExprNode::LatticeExprNode (Bool constant) 
-: donePrepare_p (False),
-  dtype_p       (TpBool),
-  pExprBool_p   (new LELUnaryConst<Bool> (constant))
+: donePrepare_p   (False),
+  dtype_p         (TpBool),
+  isInvalid_p     (False),
+  pExprBool_p     (new LELUnaryConst<Bool> (constant))
 { 
    pAttr_p = &pExprBool_p->getAttribute();
 
@@ -268,9 +289,10 @@ LatticeExprNode::LatticeExprNode (Bool constant)
 
 
 LatticeExprNode::LatticeExprNode (const Lattice<Float>& lattice) 
-: donePrepare_p (False),
-  dtype_p       (TpFloat),
-  pExprFloat_p  (new LELLattice<Float> (lattice))
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (False),
+  pExprFloat_p    (new LELLattice<Float> (lattice))
 {
    pAttr_p = &pExprFloat_p->getAttribute();
 
@@ -281,9 +303,10 @@ LatticeExprNode::LatticeExprNode (const Lattice<Float>& lattice)
 }
 
 LatticeExprNode::LatticeExprNode (const Lattice<Double>& lattice) 
-: donePrepare_p (False),
-  dtype_p       (TpDouble),
-  pExprDouble_p (new LELLattice<Double> (lattice))
+: donePrepare_p   (False),
+  dtype_p         (TpDouble),
+  isInvalid_p     (False),
+  pExprDouble_p   (new LELLattice<Double> (lattice))
 {
    pAttr_p = &pExprDouble_p->getAttribute();
 
@@ -294,9 +317,10 @@ LatticeExprNode::LatticeExprNode (const Lattice<Double>& lattice)
 }
 
 LatticeExprNode::LatticeExprNode (const Lattice<Complex>& lattice) 
-: donePrepare_p  (False),
-  dtype_p        (TpComplex),
-  pExprComplex_p (new LELLattice<Complex> (lattice))
+: donePrepare_p   (False),
+  dtype_p         (TpComplex),
+  isInvalid_p     (False),
+  pExprComplex_p  (new LELLattice<Complex> (lattice))
 {
    pAttr_p = &pExprComplex_p->getAttribute();
 
@@ -309,6 +333,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<Complex>& lattice)
 LatticeExprNode::LatticeExprNode (const Lattice<DComplex>& lattice) 
 : donePrepare_p   (False),
   dtype_p         (TpDComplex),
+  isInvalid_p     (False),
   pExprDComplex_p (new LELLattice<DComplex> (lattice))
 {
    pAttr_p = &pExprDComplex_p->getAttribute();
@@ -320,9 +345,10 @@ LatticeExprNode::LatticeExprNode (const Lattice<DComplex>& lattice)
 }
 
 LatticeExprNode::LatticeExprNode (const Lattice<Bool>& lattice) 
-: donePrepare_p (False),
-  dtype_p       (TpBool),
-  pExprBool_p   (new LELLattice<Bool> (lattice))
+: donePrepare_p   (False),
+  dtype_p         (TpBool),
+  isInvalid_p     (False),
+  pExprBool_p     (new LELLattice<Bool> (lattice))
 {
    pAttr_p = &pExprBool_p->getAttribute();
 
@@ -334,9 +360,10 @@ LatticeExprNode::LatticeExprNode (const Lattice<Bool>& lattice)
 
 
 LatticeExprNode::LatticeExprNode (const MaskedLattice<Float>& lattice) 
-: donePrepare_p (False),
-  dtype_p       (TpFloat),
-  pExprFloat_p  (new LELLattice<Float> (lattice))
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (False),
+  pExprFloat_p    (new LELLattice<Float> (lattice))
 {
    pAttr_p = &pExprFloat_p->getAttribute();
 
@@ -347,9 +374,10 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Float>& lattice)
 }
 
 LatticeExprNode::LatticeExprNode (const MaskedLattice<Double>& lattice) 
-: donePrepare_p (False),
-  dtype_p       (TpDouble),
-  pExprDouble_p (new LELLattice<Double> (lattice))
+: donePrepare_p   (False),
+  dtype_p         (TpDouble),
+  isInvalid_p     (False),
+  pExprDouble_p   (new LELLattice<Double> (lattice))
 {
    pAttr_p = &pExprDouble_p->getAttribute();
 
@@ -360,9 +388,10 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Double>& lattice)
 }
 
 LatticeExprNode::LatticeExprNode (const MaskedLattice<Complex>& lattice) 
-: donePrepare_p  (False),
-  dtype_p        (TpComplex),
-  pExprComplex_p (new LELLattice<Complex> (lattice))
+: donePrepare_p   (False),
+  dtype_p         (TpComplex),
+  isInvalid_p     (False),
+  pExprComplex_p  (new LELLattice<Complex> (lattice))
 {
    pAttr_p = &pExprComplex_p->getAttribute();
 
@@ -375,6 +404,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Complex>& lattice)
 LatticeExprNode::LatticeExprNode (const MaskedLattice<DComplex>& lattice) 
 : donePrepare_p   (False),
   dtype_p         (TpDComplex),
+  isInvalid_p     (False),
   pExprDComplex_p (new LELLattice<DComplex> (lattice))
 {
    pAttr_p = &pExprDComplex_p->getAttribute();
@@ -386,9 +416,10 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<DComplex>& lattice)
 }
 
 LatticeExprNode::LatticeExprNode (const MaskedLattice<Bool>& lattice) 
-: donePrepare_p (False),
-  dtype_p       (TpBool),
-  pExprBool_p   (new LELLattice<Bool> (lattice))
+: donePrepare_p   (False),
+  dtype_p         (TpBool),
+  isInvalid_p     (False),
+  pExprBool_p     (new LELLattice<Bool> (lattice))
 {
    pAttr_p = &pExprBool_p->getAttribute();
 
@@ -402,6 +433,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Bool>& lattice)
 LatticeExprNode::LatticeExprNode(const LatticeExprNode& other)
 : donePrepare_p   (other.donePrepare_p),
   dtype_p         (other.dtype_p),
+  isInvalid_p     (other.isInvalid_p),
   pAttr_p         (other.pAttr_p),
   pExprFloat_p    (other.pExprFloat_p),
   pExprDouble_p   (other.pExprDouble_p),
@@ -421,6 +453,7 @@ LatticeExprNode& LatticeExprNode::operator=(const LatticeExprNode& other)
    if (this != &other) {
       donePrepare_p   = other.donePrepare_p;
       dtype_p         = other.dtype_p;
+      isInvalid_p     = other.isInvalid_p;
       pAttr_p         = other.pAttr_p;
       pExprFloat_p    = other.pExprFloat_p;
       pExprDouble_p   = other.pExprDouble_p;
@@ -436,7 +469,7 @@ LatticeExprNode& LatticeExprNode::operator=(const LatticeExprNode& other)
 }
 
 
-void LatticeExprNode::replaceScalarExpr()
+Bool LatticeExprNode::replaceScalarExpr()
 // 
 // If the current expression evaluates to a scalar, then it can 
 // be optimized in the tree by replacement by a scalar constant 
@@ -445,141 +478,190 @@ void LatticeExprNode::replaceScalarExpr()
 {
    switch (dataType()) {
    case TpFloat:
-      LELInterface<Float>::replaceScalarExpr (pExprFloat_p);
+      isInvalid_p = LELInterface<Float>::replaceScalarExpr (pExprFloat_p);
       pAttr_p = &pExprFloat_p->getAttribute();
       break;
    case TpDouble:
-      LELInterface<Double>::replaceScalarExpr (pExprDouble_p);
+      isInvalid_p = LELInterface<Double>::replaceScalarExpr (pExprDouble_p);
       pAttr_p = &pExprDouble_p->getAttribute();
       break;
    case TpComplex:
-      LELInterface<Complex>::replaceScalarExpr (pExprComplex_p);
+      isInvalid_p = LELInterface<Complex>::replaceScalarExpr (pExprComplex_p);
       pAttr_p = &pExprComplex_p->getAttribute();
       break;
    case TpDComplex:
-      LELInterface<DComplex>::replaceScalarExpr (pExprDComplex_p);
+      isInvalid_p = LELInterface<DComplex>::replaceScalarExpr (pExprDComplex_p);
       pAttr_p = &pExprDComplex_p->getAttribute();
       break;
    case TpBool:
-      LELInterface<Bool>::replaceScalarExpr (pExprBool_p);
+      isInvalid_p = LELInterface<Bool>::replaceScalarExpr (pExprBool_p);
       pAttr_p = &pExprBool_p->getAttribute();
       break;
    default:
       throw (AipsError ("LatticeExprNode::replaceScalarExpr - "
 			"unknown data type"));
    }
+   return isInvalid_p;
 }
 
-
-void LatticeExprNode::evalMask (Array<Bool>& result,
-				const Slicer& section) const
-{
-   // Set to True for the time being.
-   result = True;
-}
-
+/*
 void LatticeExprNode::eval (Array<Float>& result,
 			    const Slicer& section) const
 {
+   if (isScalar()) {
+      result = pExprFloat_p->getScalar().value();
+   } else {
+      LELArray<Float> temp(result.shape());
+      eval (temp, section);
+      result = temp.value();
+   }
+}
+*/
+
+void LatticeExprNode::doPrepare() const
+{
+   if (!donePrepare_p) {
+      LatticeExprNode* This = (LatticeExprNode*)this;
+      This->replaceScalarExpr();
+      This->donePrepare_p = True;
+   }
+}
+
+void LatticeExprNode::eval (LELArray<Float>& result,
+			    const Slicer& section) const
+{
+// If first time, try to do optimization.
    DebugAssert (dataType() == TpFloat, AipsError);
    if (!donePrepare_p) {
-
-// If first time, try to do optimization.
-
-      LatticeExprNode* This = (LatticeExprNode*)this;
-      This->replaceScalarExpr();
-      This->donePrepare_p = True;
+      doPrepare();
    }
+// If scalar, remove mask if scalar is valid. Otherwise set False mask.
+// If array, evaluate for this section.
    if (isScalar()) {
-      result = pExprFloat_p->getScalar();
+      LELScalar<Float> value = pExprFloat_p->getScalar();
+      if (value.mask()) {
+	 result.value() = value.value();
+	 result.removeMask();
+      } else {
+	 result.value() = 0;
+	 Array<Bool> mask (result.shape());
+	 mask = False;
+	 result.setMask (mask);
+      }
    } else {
-      Array<Float> temp(result.shape());
-      pExprFloat_p->eval(temp, section);
-      result = temp;
+      pExprFloat_p->eval (result, section);
    }
 }
 
-void LatticeExprNode::eval (Array<Double>& result,
+void LatticeExprNode::eval (LELArray<Double>& result,
 			    const Slicer& section) const
 {
+// If first time, try to do optimization.
    DebugAssert (dataType() == TpDouble, AipsError);
    if (!donePrepare_p) {
-
-// If first time, try to do optimization.
-
       LatticeExprNode* This = (LatticeExprNode*)this;
       This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
+// If scalar, remove mask if scalar is valid. Otherwise set False mask.
+// If array, evaluate for this section.
    if (isScalar()) {
-      result = pExprDouble_p->getScalar();
+      LELScalar<Double> value = pExprDouble_p->getScalar();
+      if (value.mask()) {
+	 result.value() = value.value();
+	 result.removeMask();
+      } else {
+	 result.value() = 0;
+	 Array<Bool> mask (result.shape());
+	 mask = False;
+	 result.setMask (mask);
+      }
    } else {
-      Array<Double> temp(result.shape());
-      pExprDouble_p->eval(temp, section);
-      result = temp;
+      pExprDouble_p->eval (result, section);
    }
 }
 
-void LatticeExprNode::eval (Array<Complex>& result,
+void LatticeExprNode::eval (LELArray<Complex>& result,
 			    const Slicer& section) const
 {
+// If first time, try to do optimization.
    DebugAssert (dataType() == TpComplex, AipsError);
    if (!donePrepare_p) {
-
-// If first time, try to do optimization.
-
       LatticeExprNode* This = (LatticeExprNode*)this;
       This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
+// If scalar, remove mask if scalar is valid. Otherwise set False mask.
+// If array, evaluate for this section.
    if (isScalar()) {
-      result = pExprComplex_p->getScalar();
+      LELScalar<Complex> value = pExprComplex_p->getScalar();
+      if (value.mask()) {
+	 result.value() = value.value();
+	 result.removeMask();
+      } else {
+	 result.value() = 0;
+	 Array<Bool> mask (result.shape());
+	 mask = False;
+	 result.setMask (mask);
+      }
    } else {
-      Array<Complex> temp(result.shape());
-      pExprComplex_p->eval(temp, section);
-      result = temp;
+      pExprComplex_p->eval (result, section);
    }
 }
 
-void LatticeExprNode::eval (Array<DComplex>& result,
+void LatticeExprNode::eval (LELArray<DComplex>& result,
 			    const Slicer& section) const
 {
+// If first time, try to do optimization.
    DebugAssert (dataType() == TpDComplex, AipsError);
    if (!donePrepare_p) {
-
-// If first time, try to do optimization.
-
       LatticeExprNode* This = (LatticeExprNode*)this;
       This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
+// If scalar, remove mask if scalar is valid. Otherwise set False mask.
+// If array, evaluate for this section.
    if (isScalar()) {
-      result = pExprDComplex_p->getScalar();
+      LELScalar<DComplex> value = pExprDComplex_p->getScalar();
+      if (value.mask()) {
+	 result.value() = value.value();
+	 result.removeMask();
+      } else {
+	 result.value() = 0;
+	 Array<Bool> mask (result.shape());
+	 mask = False;
+	 result.setMask (mask);
+      }
    } else {
-      Array<DComplex> temp(result.shape());
-      pExprDComplex_p->eval(temp, section);
-      result = temp;
+      pExprDComplex_p->eval (result, section);
    }
 }
 
-void LatticeExprNode::eval (Array<Bool>& result,
+void LatticeExprNode::eval (LELArray<Bool>& result,
 			    const Slicer& section) const
 {
+// If first time, try to do optimization.
    DebugAssert (dataType() == TpBool, AipsError);
    if (!donePrepare_p) {
-
-// If first time, try to do optimization.
-
       LatticeExprNode* This = (LatticeExprNode*)this;
       This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
+// If scalar, remove mask if scalar is valid. Otherwise set False mask.
+// If array, evaluate for this section.
    if (isScalar()) {
-      result = pExprBool_p->getScalar();
+      LELScalar<Bool> value = pExprBool_p->getScalar();
+      if (value.mask()) {
+	 result.value() = value.value();
+	 result.removeMask();
+      } else {
+	 result.value() = False;
+	 Array<Bool> mask (result.shape());
+	 mask = False;
+	 result.setMask (mask);
+      }
    } else {
-      Array<Bool> temp(result.shape());
-      pExprBool_p->eval(temp, section);
-      result = temp;
+      pExprBool_p->eval (result, section);
    }
 }
 
@@ -587,61 +669,61 @@ void LatticeExprNode::eval (Array<Bool>& result,
 void LatticeExprNode::eval (Float& result) const
 {
    DebugAssert (dataType() == TpFloat, AipsError);
-   result = pExprFloat_p->getScalar();
+   result = pExprFloat_p->getScalar().value();
 }
 
 void LatticeExprNode::eval (Double& result) const
 {
    DebugAssert (dataType() == TpDouble, AipsError);
-   result = pExprDouble_p->getScalar();
+   result = pExprDouble_p->getScalar().value();
 }
 
 void LatticeExprNode::eval (Complex& result) const
 {
    DebugAssert (dataType() == TpComplex, AipsError);
-   result = pExprComplex_p->getScalar();
+   result = pExprComplex_p->getScalar().value();
 }
 
 void LatticeExprNode::eval (DComplex& result) const
 {
    DebugAssert (dataType() == TpDComplex, AipsError);
-   result = pExprDComplex_p->getScalar();
+   result = pExprDComplex_p->getScalar().value();
 }
 
 void LatticeExprNode::eval (Bool& result) const
 {
    DebugAssert (dataType() == TpBool, AipsError);
-   result = pExprBool_p->getScalar();
+   result = pExprBool_p->getScalar().value();
 }
 
 Float LatticeExprNode::getFloat() const
 {
    DebugAssert (dataType() == TpFloat, AipsError);
-   return pExprFloat_p->getScalar();
+   return pExprFloat_p->getScalar().value();
 }
 
 Double LatticeExprNode::getDouble() const
 {
    DebugAssert (dataType() == TpDouble, AipsError);
-   return pExprDouble_p->getScalar();
+   return pExprDouble_p->getScalar().value();
 }
 
 Complex LatticeExprNode::getComplex() const
 {
    DebugAssert (dataType() == TpComplex, AipsError);
-   return pExprComplex_p->getScalar();
+   return pExprComplex_p->getScalar().value();
 }
 
 DComplex LatticeExprNode::getDComplex() const
 {
    DebugAssert (dataType() == TpDComplex, AipsError);
-   return pExprDComplex_p->getScalar();
+   return pExprDComplex_p->getScalar().value();
 }
 
 Bool LatticeExprNode::getBool() const
 {
    DebugAssert (dataType() == TpBool, AipsError);
-   return pExprBool_p->getScalar();
+   return pExprBool_p->getScalar().value();
 }
 
 
@@ -906,6 +988,26 @@ LatticeExprNode conj(const LatticeExprNode& expr)
    return LatticeExprNode::newComplexFunc1D (LELFunctionEnums::CONJ, expr);
 }
 
+LatticeExprNode complex(const LatticeExprNode& left,
+			const LatticeExprNode& right)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function complex" << endl;
+#endif
+   AlwaysAssert ((left.dataType()==TpFloat || left.dataType()==TpDouble)
+              && (right.dataType()==TpFloat || right.dataType()==TpDouble),
+		 AipsError);
+   Block<LatticeExprNode> arg(2);
+   if (left.dataType()==TpFloat && right.dataType()==TpFloat) {
+      arg[0] = left.makeFloat();
+      arg[1] = right.makeFloat();
+      return new LELFunctionComplex (LELFunctionEnums::COMPLEX, arg);
+   }
+   arg[0] = left.makeDouble();
+   arg[1] = right.makeDouble();
+   return new LELFunctionDComplex (LELFunctionEnums::COMPLEX, arg);
+}
+
 
 LatticeExprNode mean(const LatticeExprNode& expr)
 { 
@@ -921,15 +1023,6 @@ LatticeExprNode sum(const LatticeExprNode& expr)
    cout << "LatticeExprNode:: 1d function sum" << endl;
 #endif
    return LatticeExprNode::newNumFunc1D (LELFunctionEnums::SUM, expr);
-}
-
-LatticeExprNode nelements(const LatticeExprNode& expr)
-{ 
-#if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: 1d function nelements" << endl;
-#endif
-   Block<LatticeExprNode> arg(1, expr);
-   return new LELFunctionDouble (LELFunctionEnums::NELEM, arg);
 }
 
 
@@ -984,47 +1077,11 @@ LatticeExprNode amp (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 2d function amp" << endl;
 #endif
-
-// There is no way in the system to convert "2" to
-// a given DataType
-
-   LatticeExprNode leftExpr;
-   switch (left.dataType()) {
-   case TpFloat:
-      leftExpr = pow(left,Float(2.0));
-      break;
-   case TpDouble:
-      leftExpr = pow(left,Double(2.0));
-      break;
-   case TpComplex:
-      leftExpr = pow(left,Complex(2.0,0.0));
-      break;
-   case TpDComplex:
-      leftExpr = pow(left,DComplex(2.0,0.0));
-      break;
-   default:
-      throw (AipsError ("LatticeExprNode::amp - Unknown data type"));
-   }
-   LatticeExprNode rightExpr;
-   switch (right.dataType()) {
-   case TpFloat:
-      rightExpr = pow(right,Float(2.0));
-      break;
-   case TpDouble:
-      rightExpr = pow(right,Double(2.0));
-      break;
-   case TpComplex:
-      rightExpr = pow(right,Complex(2.0,0.0));
-      break;
-   case TpDComplex:
-      rightExpr = pow(right,DComplex(2.0,0.0));
-      break;
-   default:
-      throw (AipsError ("LatticeExprNode::amp - Unknown data type"));
-   }
-
-   return sqrt(leftExpr+rightExpr);
+   AlwaysAssert (left.dataType()!=TpBool && right.dataType()!=TpBool,
+		 AipsError);
+   return sqrt(pow(left,2) + pow(right,2));
 }
+
 LatticeExprNode pa (const LatticeExprNode& left,
                     const LatticeExprNode& right)
 { 
@@ -1036,9 +1093,7 @@ LatticeExprNode pa (const LatticeExprNode& left,
 		 && left.dataType()!=TpBool, AipsError);
    AlwaysAssert (right.dataType()!=TpComplex && right.dataType()!=TpDComplex 
 		 && right.dataType()!=TpBool, AipsError);
-
    LatticeExprNode expr(atan2(left,right));
-
    switch (expr.dataType()) {
    case TpFloat:
       return Float(90.0/C::pi) * expr;
@@ -1049,7 +1104,6 @@ LatticeExprNode pa (const LatticeExprNode& left,
    default:
       throw (AipsError ("LatticeExprNode::pa - Unknown data type"));
    }
-
    return LatticeExprNode();         // shut compiler up
 }
 
@@ -1196,6 +1250,30 @@ LatticeExprNode operator! (const LatticeExprNode& expr)
    return new LELUnaryBool(LELUnaryEnums::NOT, expr.pExprBool_p);
 }
 
+LatticeExprNode LatticeExprNode::operator[] (const LatticeExprNode& cond) const
+{
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: operator()" << endl;
+#endif
+   AlwaysAssert (cond.dataType() == TpBool, AipsError);
+   switch (dataType()) {
+   case TpBool:
+      return new LELCondition<Bool> (pExprBool_p, cond.pExprBool_p);
+   case TpFloat:
+      return new LELCondition<Float> (pExprFloat_p, cond.pExprBool_p);
+   case TpDouble:
+      return new LELCondition<Double> (pExprDouble_p, cond.pExprBool_p);
+   case TpComplex:
+      return new LELCondition<Complex> (pExprComplex_p, cond.pExprBool_p);
+   case TpDComplex:
+      return new LELCondition<DComplex> (pExprDComplex_p, cond.pExprBool_p);
+   default:
+       throw (AipsError ("LatticeExprNode::makeDComplex - "
+			 "conversion to DComplex not possible"));
+   }
+   return 0;
+}
+
 LatticeExprNode all (const LatticeExprNode& expr)
 { 
 #if defined(AIPS_TRACE)
@@ -1234,6 +1312,27 @@ LatticeExprNode nfalse (const LatticeExprNode& expr)
    AlwaysAssert (expr.dataType() == TpBool, AipsError);
    Block<LatticeExprNode> arg(1, expr);
    return new LELFunctionDouble(LELFunctionEnums::NFALSE, arg);
+}
+
+LatticeExprNode nelements(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function nelements" << endl;
+#endif
+   Block<LatticeExprNode> arg(1, expr);
+   return new LELFunctionDouble (LELFunctionEnums::NELEM, arg);
+}
+
+LatticeExprNode length (const LatticeExprNode& expr,
+			const LatticeExprNode& axis)
+{  
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function length" << endl;
+#endif
+   Block<LatticeExprNode> arg(2);
+   arg[0] = expr;
+   arg[1] = axis;
+   return new LELFunctionFloat(LELFunctionEnums::LENGTH, arg);
 }
 
 LatticeExprNode iif (const LatticeExprNode& condition,
