@@ -1,5 +1,5 @@
 //# ScaColData.cc: Access to a table column containing scalars
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,7 +105,7 @@ Bool ScalarColumnData<T>::isDefined (uInt rownr) const
 template<class T>
 void ScalarColumnData<T>::get (uInt rownr, void* val) const
 {
-    checkLock (FileLocker::Read, True);
+    checkReadLock (True);
     dataColPtr_p->get (rownr, (T*)val);
     autoReleaseLock();
 }
@@ -118,7 +118,7 @@ void ScalarColumnData<T>::getScalarColumn (void* val) const
     if (vecPtr->nelements() != nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::getScalarColumn"));
     }
-    checkLock (FileLocker::Read, True);
+    checkReadLock (True);
     dataColPtr_p->getScalarColumnV (vecPtr);
     autoReleaseLock();
 }
@@ -135,7 +135,7 @@ void ScalarColumnData<T>::getScalarColumnCells (const RefRows& rownrs,
     if (vec.nelements() != nr) {
 	throw (TableArrayConformanceError("ScalarColumnData::getColumnCells"));
     }
-    checkLock (FileLocker::Read, True);
+    checkReadLock (True);
     dataColPtr_p->getScalarColumnCellsV (rownrs, &vec);
     autoReleaseLock();
 }
@@ -145,7 +145,7 @@ template<class T>
 void ScalarColumnData<T>::put (uInt rownr, const void* val)
 {
     checkValueLength ((const T*)val);
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     dataColPtr_p->put (rownr, (const T*)val);
     autoReleaseLock();
 }
@@ -158,7 +158,7 @@ void ScalarColumnData<T>::putScalarColumn (const void* val)
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
     checkValueLength (vecPtr);
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     dataColPtr_p->putScalarColumnV (vecPtr);
     autoReleaseLock();
 }
@@ -172,7 +172,7 @@ void ScalarColumnData<T>::putScalarColumnCells (const RefRows& rownrs,
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
     checkValueLength (&vec);
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     dataColPtr_p->putScalarColumnCellsV (rownrs, &vec);
     autoReleaseLock();
 }
@@ -198,7 +198,7 @@ void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
     if (canAccessScalarColumn (reask)) {
 	getScalarColumn (vecPtr);
     }else{
-	checkLock (FileLocker::Read, True);
+	checkReadLock (True);
 	for (uInt i=0; i<nrrow; i++) {
 	    dataColPtr_p->get (i,  &(*vecPtr)(i));
 	}
@@ -228,7 +228,7 @@ void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
     if (canAccessScalarColumnCells (reask)) {
 	getScalarColumnCells (rownrs, vecPtr);
     }else{
-	checkLock (FileLocker::Read, True);
+	checkReadLock (True);
 	for (uInt i=0; i<nrrow; i++) {
 	    dataColPtr_p->get (rownrs(i),  &(*vecPtr)(i));
 	}

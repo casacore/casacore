@@ -1,5 +1,5 @@
 //# PlainColumn.cc: Base class for a column in a plain table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,7 +55,7 @@ uInt PlainColumn:: nrow() const
 TableRecord& PlainColumn::rwKeywordSet()
 {
     Bool hasLocked = colSetPtr_p->userLock (FileLocker::Write, True);
-    colSetPtr_p->checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     TableRecord& rec = colDesc_p.rwKeywordSet();
     colSetPtr_p->setTableChanged();
     colSetPtr_p->userUnlock (hasLocked);
@@ -64,7 +64,7 @@ TableRecord& PlainColumn::rwKeywordSet()
 TableRecord& PlainColumn::keywordSet()
 {
     Bool hasLocked = colSetPtr_p->userLock (FileLocker::Read, True);
-    colSetPtr_p->checkLock (FileLocker::Read, True);
+    checkReadLock (True);
     TableRecord& rec = colDesc_p.rwKeywordSet();
     colSetPtr_p->userUnlock (hasLocked);
     return rec;

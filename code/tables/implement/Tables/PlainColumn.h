@@ -1,5 +1,5 @@
 //# PlainColumn.h: Base class for a column in a plain table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -163,7 +163,10 @@ protected:
     // Lock the table before reading or writing.
     // If manual or permanent locking is in effect, it checks if
     // the table is locked.
-    void checkLock (FileLocker::LockType, Bool wait) const;
+    // <group>
+    void checkReadLock (Bool wait) const;
+    void checkWriteLock (Bool wait) const;
+    // </group>
 
     // Inspect the auto lock when the inspection interval has expired and
     // release it when another process needs the lock.
@@ -179,8 +182,10 @@ inline DataManagerColumn*& PlainColumn::dataManagerColumn()
 inline void PlainColumn::checkValueLength (const void*) const
     {}
 
-inline void PlainColumn::checkLock (FileLocker::LockType type, Bool wait) const
-    { colSetPtr_p->checkLock (type, wait); }
+inline void PlainColumn::checkReadLock (Bool wait) const
+    { colSetPtr_p->checkReadLock (wait); }
+inline void PlainColumn::checkWriteLock (Bool wait) const
+    { colSetPtr_p->checkWriteLock (wait); }
 inline void PlainColumn::autoReleaseLock() const
     { colSetPtr_p->autoReleaseLock(); }
 

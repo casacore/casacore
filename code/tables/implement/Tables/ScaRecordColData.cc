@@ -1,5 +1,5 @@
 //# ScaRecordColData.cc: Access to a table column containing scalar records
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -83,7 +83,7 @@ Bool ScalarRecordColumnData::isDefined (uInt) const
 
 void ScalarRecordColumnData::get (uInt rownr, void* val) const
 {
-    checkLock (FileLocker::Read, True);
+    checkReadLock (True);
     getRecord (rownr, *(TableRecord*)val);
     autoReleaseLock();
 }
@@ -96,7 +96,7 @@ void ScalarRecordColumnData::getScalarColumn (void* val) const
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::getScalarColumn"));
     }
-    checkLock (FileLocker::Read, True);
+    checkReadLock (True);
     for (uInt i=0; i<nr; i++) {
 	getRecord (i, vec(i));
     }
@@ -111,7 +111,7 @@ void ScalarRecordColumnData::getScalarColumnCells (const RefRows& rownrs,
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::getColumnCells"));
     }
-    checkLock (FileLocker::Read, True);
+    checkReadLock (True);
     RefRowsSliceIter iter(rownrs);
     uInt i=0;
     while (! iter.pastEnd()) {
@@ -130,7 +130,7 @@ void ScalarRecordColumnData::getScalarColumnCells (const RefRows& rownrs,
 
 void ScalarRecordColumnData::put (uInt rownr, const void* val)
 {
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     putRecord (rownr, *(const TableRecord*)val);
     autoReleaseLock();
 }
@@ -143,7 +143,7 @@ void ScalarRecordColumnData::putScalarColumn (const void* val)
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::putScalarColumn"));
     }
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     for (uInt i=0; i<nr; i++) {
 	putRecord (i, vec(i));
     }
@@ -158,7 +158,7 @@ void ScalarRecordColumnData::putScalarColumnCells (const RefRows& rownrs,
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::putColumnCells"));
     }
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     RefRowsSliceIter iter(rownrs);
     uInt i=0;
     while (! iter.pastEnd()) {
