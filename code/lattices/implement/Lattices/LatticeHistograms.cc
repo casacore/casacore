@@ -1,5 +1,5 @@
 //# LatticeHistograms.cc: generate histograms from a Lattice
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1027,7 +1027,7 @@ Bool LatticeHistograms<T>::makeStatistics()
 // Create LatticeStatistics object.  Show progress meter.
 
    if (pStats_p != 0) delete pStats_p;
-   pStats_p = new LatticeStatistics<T>(*pInLattice_p, os_p, True, forceDisk_p);
+   pStats_p = new LatticeStatistics<T>(*pInLattice_p, os_p, showProgress_p, forceDisk_p);
 
 // Set state.  Make sure that the min/max is set to the
 // user's include range if there is one.  LatticeHistograms
