@@ -34,6 +34,7 @@
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/MaskSpecifier.h>
 #include <trial/Images/ImageLogger.h>
+#include <trial/Images/ImageUtilities.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/FITSMask.h>
@@ -345,7 +346,8 @@ void FITSImage::setup()
    if (name_p.empty()) {
       throw AipsError("FITSImage: given file name is empty");
    }
-   if (! maskSpec_p.name().empty()) {
+//
+   if (!maskSpec_p.name().empty()) {
       throw AipsError("FITSImage " + name_p + " has no named masks");
    }
    Path path(name_p);
@@ -445,8 +447,13 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     LogIO os(LogOrigin("FITSImage", "getImageAttributes", WHERE));
     File fitsfile(name);
     if (!fitsfile.exists() || !fitsfile.isReadable() || !fitsfile.isRegular()) {
-        throw (AipsError(name + " does not exist or is not readable"));
+       throw (AipsError(name + " does not exist or is not readable"));
     }
+//
+   ImageUtilities::ImageTypes type = ImageUtilities::imageType(name_p);
+   if (type != ImageUtilities::FITS) {
+       throw (AipsError(name + " is not a FITS image"));
+   }
 //
     FitsInput infile(fitsfile.path().expandedName(), FITS::Disk);
     if (infile.err()) {
