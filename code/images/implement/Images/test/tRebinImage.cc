@@ -91,7 +91,7 @@ try {
       shapeIn = pIm->shape();
    }
 //
-   Vector<uInt> factors(pIm->ndim(), 1);
+   IPosition factors(pIm->ndim(), 1);
    if (factorsU.nelements()>0) {
       if (factorsU.nelements()==1 && factorsU[0]==-10) {
          factors = 2;
