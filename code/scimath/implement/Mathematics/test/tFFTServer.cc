@@ -1,5 +1,5 @@
 //# tFFTServer: This program tests the FFTServer and FourierTool classes
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -215,8 +215,8 @@ int main() {
       expectedResult = Complex(0,0);
       expectedResult(0,0,0) = Complex(3*5*7,0);
       server.fft0(result.ac(), input.ac());
-      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),50*FLT_EPSILON),
-		   AipsError);
+      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(), 
+			      100*FLT_EPSILON), AipsError);
     }
     { // 4-D real->complex FFT's on an odd/odd/odd/even length
       Array<Float> input(IPosition(4,3,5,7,4));
@@ -232,7 +232,7 @@ int main() {
       expectedResult(IPosition(4,0)) = Complex(3*5*7*4,0);
       server.fft0(result.ac(), input.ac());
       AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),
-			      200*FLT_EPSILON), AipsError);
+			      500*FLT_EPSILON), AipsError);
     }
     { // 1-D complex->real FFT's on an even length
       Vector<Complex> input(5);
@@ -704,8 +704,8 @@ int main() {
       expectedResult = Complex(0,0);
       expectedResult(0,0,0) = Complex(3*5*7,0);
       server.fft0(result.ac(), input.ac());
-      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),50*FLT_EPSILON),
-		   AipsError);
+      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(), 
+			      100*FLT_EPSILON), AipsError);
       expectedResult = input;
       server.fft0(input.ac(), result.ac(), False);
       AlwaysAssert(allNearAbs(input.ac(), expectedResult.ac(), 2*FLT_EPSILON),
@@ -730,7 +730,7 @@ int main() {
       expectedResult(IPosition(4,0)) = Complex(3*5*7*4,0);
       server.fft0(result.ac(), input.ac());
       AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),
-			      200*FLT_EPSILON), AipsError);
+			      500*FLT_EPSILON), AipsError);
       expectedResult = input;
       server.fft0(input.ac(), result.ac(), False);
       AlwaysAssert(allNearAbs(input.ac(), expectedResult.ac(), 2*FLT_EPSILON),
@@ -977,8 +977,8 @@ int main() {
       expectedResult = Complex(0,0);
       expectedResult(1,2,3) = Complex(3*5*7,0);
       server.fft(result.ac(), input.ac());
-      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),50*FLT_EPSILON),
-		   AipsError);
+      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),
+			      100*FLT_EPSILON), AipsError);
       expectedResult = input;
       server.fft(input.ac(), result.ac(), False);
       AlwaysAssert(allNearAbs(input.ac(), expectedResult.ac(), 2*FLT_EPSILON),
@@ -1003,7 +1003,7 @@ int main() {
       expectedResult(IPosition(4,1,2,3,2)) = Complex(3*5*7*4,0);
       server.fft(result.ac(), input.ac());
       AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),
-			      200*FLT_EPSILON), AipsError);
+			      500*FLT_EPSILON), AipsError);
       expectedResult = input;
       server.fft(input.ac(), result.ac(), False);
       AlwaysAssert(allNearAbs(input.ac(), expectedResult.ac(), 2*FLT_EPSILON),
@@ -1255,8 +1255,8 @@ int main() {
       expectedResult = Complex(0,0);
       expectedResult(0,2,3) = Complex(3*5*7,0);
       server.fft(result.ac(), input.ac());
-      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),50*FLT_EPSILON),
-		   AipsError);
+      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),
+			      100*FLT_EPSILON), AipsError);
       server.fft(reverseTransform.ac(), result.ac());
       AlwaysAssert(allNearAbs(input.ac(), reverseTransform.ac(),
 			      5*FLT_EPSILON), AipsError);
@@ -1280,7 +1280,7 @@ int main() {
       expectedResult(IPosition(4,0,2,3,2)) = Complex(3*5*7*4,0);
       server.fft(result.ac(), input.ac());
       AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(),
-			      200*FLT_EPSILON), AipsError);
+			      500*FLT_EPSILON), AipsError);
       server.fft(reverseTransform.ac(), result.ac());
       AlwaysAssert(allNearAbs(input.ac(), reverseTransform.ac(), 
 			      5*FLT_EPSILON), AipsError);
