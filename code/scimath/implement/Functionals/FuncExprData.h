@@ -137,6 +137,13 @@ public:
     SPEC, FUNC,
     // Number
     NopCategories };
+  // Special categories
+  enum specAction {
+    NONE,
+    // Save environment while compiling
+    SAVENV,
+    // Final expression codes
+    FINAL };
 
   // The operator description: code; priority; # of arguments; # of arguments
   // used up (or produced for functions)
@@ -153,6 +160,8 @@ public:
     uInt narg;
     // # of results produced/used
     Int nresult;
+    // special action
+    specAction special;
   };
 
   //# Constructors
@@ -162,6 +171,7 @@ public:
   // Destructor
   ~FuncExprData() {};
 
+  //# Member functions
   // Accessors of the various maps
   // <group>
   map<String, ExprOperator> &unary2() { return una2_p; };
@@ -172,13 +182,17 @@ public:
   const map<String, ExprOperator> &binary2() const { return bin2_p; };
   map<String, ExprOperator> &binary1() { return bin1_p; };
   const map<String, ExprOperator> &binary1() const { return bin1_p; };
-  map<opTypes, ExprOperator> &special() { return spop_p; };
-  const map<opTypes, ExprOperator> &special() const { return spop_p; };
+  map<String, ExprOperator> &special() { return spop_p; };
+  const map<String, ExprOperator> &special() const { return spop_p; };
   map<String, ExprOperator> &function() { return func_p; };
   const map<String, ExprOperator> &function() const { return func_p; };
   // </group>
-
-protected:
+  // Print an operator map
+  void FuncExprData::print(ostream &os, const
+			   map<String, FuncExprData::ExprOperator> &m) const;
+  // Print an operation
+  void FuncExprData::print(ostream &os, const
+			   FuncExprData::ExprOperator &pos) const;
 
 private:
   //# Data
@@ -191,10 +205,11 @@ private:
   // Binary operators of 1 character
   map<String, ExprOperator> bin1_p;
   // Special operators
-  map<opTypes, ExprOperator> spop_p;
+  map<String, ExprOperator> spop_p;
   // Function names
   map<String, ExprOperator> func_p;
-
+  // All operators
+  map<opTypes, ExprOperator> allop_p;
 };
 
 //# Global Functions
@@ -203,7 +218,7 @@ private:
 
 // <group name=output>
 // Show a list of all defined operators and functions
-ostream &operator<<(ostream &os, FuncExprData &ed);
+ostream &operator<<(ostream &os, const FuncExprData &ed);
 // </group>
 
 #endif

@@ -36,57 +36,57 @@ FuncExprData::FuncExprData() :
   una2_p(), una1_p(), bin2_p(), bin1_p(),
   spop_p(), func_p() {
   static const ExprOperator olist[] = {
-    {UNAMIN, 	"-",		UNA1,	48, 1, 0},
-    {UNAPLUS, 	"+",	   	UNA1,	48, 1, 0},
-    {NON, 	"!",		UNA1,	28, 1, 0},
-    {POW, 	"**",		BIN2,	44, 2, 1},
-    {GTE, 	">=",		BIN2,	32, 2, 1},
-    {LTE, 	"<=",		BIN2,	32, 2, 1},
-    {EQ, 	"==",		BIN2,	32, 2, 1},
-    {NEQ, 	"!=",		BIN2,	32, 2, 1},
-    {OR, 	"||",		BIN2,	20, 2, 1},
-    {AND, 	"&&",		BIN2,	20, 2, 1},
-    {ADD, 	"+",		BIN1,	36, 2, 1},
-    {SUB, 	"-",		BIN1,	36, 2, 1},
-    {MUL, 	"*",		BIN1,	40, 2, 1},
-    {DIV, 	"/",		BIN1,	40, 2, 1},
-    {POW, 	"^",		BIN1,	44, 2, 1},
-    {GT, 	">",		BIN1,	32, 2, 1},
-    {LT, 	"<",		BIN1,	32, 2, 1},
-    {CONST, 	"const",	SPEC,	00, 0,-1},
-    {LBRACE, 	"{",		SPEC,	60, 0, 0},
-    {RBRACE, 	"}",		SPEC,	00, 0, 0},
-    {LPAREN, 	"(",		SPEC,	60, 0, 0},
-    {RPAREN, 	")",		SPEC,	00, 0, 0},
-    {LBR, 	"[",		SPEC,	60, 0, 0},
-    {RBR, 	"]",		SPEC,	00, 0, 0},
-    {COMMA, 	",",		SPEC,	00, 0, 0},
-    {FINISH, 	"finish",	SPEC,	00, 0, 0},
-    {SIN, 	"sin",		FUNC,	60, 1, 1},
-    {COS, 	"cos",		FUNC,	60, 1, 1},
-    {ATAN, 	"atan",		FUNC,	60, 1, 1},
-    {ASIN, 	"asin",		FUNC,	60, 1, 1},
-    {ACOS, 	"acos",		FUNC,	60, 1, 1},
-    {EXP, 	"exp",		FUNC,	60, 1, 1},
-    {EXP2, 	"exp2",		FUNC,	60, 1, 1},
-    {EXP10, 	"exp10",	FUNC,	60, 1, 1},
-    {LOG, 	"ln",		FUNC,	60, 1, 1},
-    {LOG2, 	"log2",		FUNC,	60, 1, 1},
-    {LOG10, 	"log",		FUNC,	60, 1, 1},
-    {PI, 	"pi",		FUNC,	60, 0, 1},
-    {EE, 	"ee",		FUNC,	60, 0, 1},
-    {ABS, 	"abs",		FUNC,	60, 1, 1},
-    {FLOOR, 	"floor",	FUNC,	60, 1, 1},
-    {CEIL, 	"ceil",		FUNC,	60, 1, 1},
-    {ROUND, 	"round",	FUNC,	60, 1, 1},
-    {INT, 	"int",		FUNC,	60, 1, 1},
-    {FRACT, 	"fract",	FUNC,	60, 1, 1},
-    {SQRT, 	"sqrt",		FUNC,	60, 1, 1},
-    {COMPLEX, 	"complex",	FUNC,	60, 1, 1},
-    {REAL, 	"real",		FUNC,	60, 1, 1},
-    {IMAG, 	"imag",		FUNC,	60, 1, 1},
-    {AMPL, 	"ampl",		FUNC,	60, 1, 1},
-    {PHASE, 	"phase",	FUNC,	60, 1, 1},
+    {UNAMIN, 	"-",		UNA1,	48, 1, 0, NONE},
+    {UNAPLUS, 	"+",	   	UNA1,	48, 1, 0, NONE},
+    {NON, 	"!",		UNA1,	28, 1, 0, NONE},
+    {POW, 	"**",		BIN2,	44, 2, 1, NONE},
+    {GTE, 	">=",		BIN2,	32, 2, 1, NONE},
+    {LTE, 	"<=",		BIN2,	32, 2, 1, NONE},
+    {EQ, 	"==",		BIN2,	32, 2, 1, NONE},
+    {NEQ, 	"!=",		BIN2,	32, 2, 1, NONE},
+    {OR, 	"||",		BIN2,	20, 2, 1, NONE},
+    {AND, 	"&&",		BIN2,	20, 2, 1, NONE},
+    {ADD, 	"+",		BIN1,	36, 2, 1, NONE},
+    {SUB, 	"-",		BIN1,	36, 2, 1, NONE},
+    {MUL, 	"*",		BIN1,	40, 2, 1, NONE},
+    {DIV, 	"/",		BIN1,	40, 2, 1, NONE},
+    {POW, 	"^",		BIN1,	44, 2, 1, NONE},
+    {GT, 	">",		BIN1,	32, 2, 1, NONE},
+    {LT, 	"<",		BIN1,	32, 2, 1, NONE},
+    {CONST, 	"CONST",	SPEC,	00, 0,-1, NONE},
+    {LBRACE, 	"{",		SPEC,	60, 0, 0, NONE},
+    {RBRACE, 	"}",		SPEC,	00, 0, 0, NONE},
+    {LPAREN, 	"(",		SPEC,	60, 0, 0, SAVENV},
+    {RPAREN, 	")",		SPEC,	00, 0, 0, FINAL},
+    {LBR, 	"[",		SPEC,	60, 0, 0, SAVENV},
+    {RBR, 	"]",		SPEC,	00, 0, 0, FINAL},
+    {COMMA, 	",",		SPEC,	00, 0, 0, FINAL},
+    {FINISH, 	"FINISH",	SPEC,	00, 0, 0, FINAL},
+    {SIN, 	"sin",		FUNC,	60, 1, 1, SAVENV},
+    {COS, 	"cos",		FUNC,	60, 1, 1, SAVENV},
+    {ATAN, 	"atan",		FUNC,	60, 1, 1, SAVENV},
+    {ASIN, 	"asin",		FUNC,	60, 1, 1, SAVENV},
+    {ACOS, 	"acos",		FUNC,	60, 1, 1, SAVENV},
+    {EXP, 	"exp",		FUNC,	60, 1, 1, SAVENV},
+    {EXP2, 	"exp2",		FUNC,	60, 1, 1, SAVENV},
+    {EXP10, 	"exp10",	FUNC,	60, 1, 1, SAVENV},
+    {LOG, 	"ln",		FUNC,	60, 1, 1, SAVENV},
+    {LOG2, 	"log2",		FUNC,	60, 1, 1, SAVENV},
+    {LOG10, 	"log",		FUNC,	60, 1, 1, SAVENV},
+    {PI, 	"pi",		FUNC,	60, 0, 1, SAVENV},
+    {EE, 	"ee",		FUNC,	60, 0, 1, SAVENV},
+    {ABS, 	"abs",		FUNC,	60, 1, 1, SAVENV},
+    {FLOOR, 	"floor",	FUNC,	60, 1, 1, SAVENV},
+    {CEIL, 	"ceil",		FUNC,	60, 1, 1, SAVENV},
+    {ROUND, 	"round",	FUNC,	60, 1, 1, SAVENV},
+    {INT, 	"int",		FUNC,	60, 1, 1, SAVENV},
+    {FRACT, 	"fract",	FUNC,	60, 1, 1, SAVENV},
+    {SQRT, 	"sqrt",		FUNC,	60, 1, 1, SAVENV},
+    {COMPLEX, 	"complex",	FUNC,	60, 1, 1, SAVENV},
+    {REAL, 	"real",		FUNC,	60, 1, 1, SAVENV},
+    {IMAG, 	"imag",		FUNC,	60, 1, 1, SAVENV},
+    {AMPL, 	"ampl",		FUNC,	60, 1, 1, SAVENV},
+    {PHASE, 	"phase",	FUNC,	60, 1, 1, SAVENV},
 
     // End of list
     {NOP,	"NOP",	SPEC,	00, 0, 0}
@@ -106,7 +106,7 @@ FuncExprData::FuncExprData() :
       bin1_p[olist[i].name] = olist[i];
       break;
     case SPEC:
-      spop_p[olist[i].code] = olist[i];
+      spop_p[olist[i].name] = olist[i];
       break;
     case FUNC:
       func_p[olist[i].name] = olist[i];
@@ -114,84 +114,49 @@ FuncExprData::FuncExprData() :
     default:
       break;
     }
+
+    allop_p[olist[i].code] = olist[i];
   };
 }
 
+//# Operators
+
+//# Member functions
+void FuncExprData::print(ostream &os, const
+			 map<String, FuncExprData::ExprOperator> &m) const {
+  for (map<String, FuncExprData::ExprOperator>::const_iterator 
+	 pos = m.begin(); pos != m.end(); pos++) print(os, pos->second);
+}
+
+void FuncExprData::print(ostream &os, const 
+			 FuncExprData::ExprOperator &pos) const {
+  os << setfill('0') << setw(2) << pos.code << ": " <<
+    pos.name << setfill(' ') << setw(9-pos.name.length()) << ":" <<
+    pos.category << ":" <<
+    setfill('0') << setw(2) << pos.priority << ":" <<
+    pos.narg << ":" <<
+    setfill('0') << setw(2) << pos.nresult << ":" << endl;
+}
+
 //# Global functions
-ostream &operator<<(ostream &os, FuncExprData &ed) {
+ostream &operator<<(ostream &os, const FuncExprData &ed) {
   os << "Unary operators with 2 characters:" << endl;
-  for (map<String, FuncExprData::ExprOperator>::iterator 
-	 pos=ed.unary2().begin(); pos != ed.unary2().end(); pos++) {
-    os << setfill('0') << setw(2) << pos->second.code << ": " <<
-      pos->second.name << setfill(' ') << setw(9-pos->second.name.length()) <<
-      ":" <<
-      pos->second.category << ":" <<
-      setfill('0') << setw(2) << pos->second.priority << ":" <<
-      pos->second.narg << ":" <<
-      setfill('0') << setw(2) << pos->second.nresult << ":" << endl;
-  };
+  ed.print(os, ed.unary2());
   os << "Unary operators with 1 character:" << endl;
-  for (map<String, FuncExprData::ExprOperator>::iterator 
-	 pos=ed.unary1().begin(); pos != ed.unary1().end(); pos++) {
-    os << setfill('0') << setw(2) << pos->second.code << ": " <<
-      pos->second.name << setfill(' ') << setw(9-pos->second.name.length()) <<
-      ":" <<
-      pos->second.category << ":" <<
-      setfill('0') << setw(2) << pos->second.priority << ":" <<
-      pos->second.narg << ":" <<
-      setfill('0') << setw(2) << pos->second.nresult << ":" << endl;
-  };
+  ed.print(os, ed.unary1());
   os << "Binary operators with 2 characters:" << endl;
-  for (map<String, FuncExprData::ExprOperator>::iterator 
-	 pos=ed.binary2().begin(); pos != ed.binary2().end(); pos++) {
-    os << setfill('0') << setw(2) << pos->second.code << ": " <<
-      pos->second.name << setfill(' ') << setw(9-pos->second.name.length()) <<
-      ":" <<
-      pos->second.category << ":" <<
-      setfill('0') << setw(2) << pos->second.priority << ":" <<
-      pos->second.narg << ":" <<
-      setfill('0') << setw(2) << pos->second.nresult << ":" << endl;
-  };
+  ed.print(os, ed.binary2());
   os << "Binary operators with 1 character:" << endl;
-  for (map<String, FuncExprData::ExprOperator>::iterator 
-	 pos=ed.binary1().begin(); pos != ed.binary1().end(); pos++) {
-    os << setfill('0') << setw(2) << pos->second.code << ": " <<
-      pos->second.name << setfill(' ') << setw(9-pos->second.name.length()) <<
-      ":" <<
-      pos->second.category << ":" <<
-      setfill('0') << setw(2) << pos->second.priority << ":" <<
-      pos->second.narg << ":" <<
-      setfill('0') << setw(2) << pos->second.nresult << ":" << endl;
-  };
+  ed.print(os, ed.binary1());
   os << "Special operations:" << endl;
-  for (map<FuncExprData::opTypes, FuncExprData::ExprOperator>::iterator 
-	 pos=ed.special().begin(); pos != ed.special().end(); pos++) {
-    os << setfill('0') << setw(2) << pos->second.code << ": " <<
-      pos->second.name << setfill(' ') << setw(9-pos->second.name.length()) <<
-      ":" <<
-      pos->second.category << ":" <<
-      setfill('0') << setw(2) << pos->second.priority << ":" <<
-      pos->second.narg << ":" <<
-      setfill('0') << setw(2) << pos->second.nresult << ":" << endl;
-  };
+  ed.print(os, ed.special());
   os << "Functions:" << endl;
-  for (map<String, FuncExprData::ExprOperator>::iterator 
-	 pos=ed.function().begin(); pos != ed.function().end(); pos++) {
-    os << setfill('0') << setw(2) << pos->second.code << ": " <<
-      pos->second.name << setfill(' ') << setw(9-pos->second.name.length()) <<
-      ":" <<
-      pos->second.category << ":" <<
-      setfill('0') << setw(2) << pos->second.priority << ":" <<
-      pos->second.narg << ":" <<
-      setfill('0') << setw(2) << pos->second.nresult << ":" << endl;
-  };
+  ed.print(os, ed.function());
   return os;
 }
 
 //# Templates (for test purposes)
-///template void _M_erase(_Rb_tree_node<pair<String const,
-///		       FuncExprData::ExprOperator> > *);
-template class  map<String, FuncExprData::ExprOperator>;
+template class map<String, FuncExprData::ExprOperator>;
 template class map<FuncExprData::opTypes, FuncExprData::ExprOperator>;
 template class
 _Rb_tree<FuncExprData::opTypes,
@@ -209,5 +174,3 @@ _Rb_tree<String,
   FuncExprData::ExprOperator> >, 
   less<String>,
   allocator<FuncExprData::ExprOperator> >;
-
-
