@@ -33,10 +33,9 @@
 #include <casa/Logging/LogMessage.h>
 
 #include <casa/sstream.h>
-
-#if !defined(NEED_FORTRAN_UNDERSCORES)
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+#if !defined(NEED_FORTRAN_UNDERSCORES)
 #define NEED_FORTRAN_UNDERSCORES 1
 #endif
 
