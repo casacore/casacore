@@ -45,7 +45,7 @@ int main() {
     cout << base << endl;
 
     cout << "--- Check expression syntax ----" << endl;
-    const uInt n=16;
+    const uInt n=20;
     String exprlist[n] = {
       String("+-(25*30+2)--(75+2)"),
       String("1+2-3"),
@@ -62,7 +62,11 @@ int main() {
       String("2*p"),
       String("2*p1"),
       String("2*p[1]"),
-      String("2*x0")
+      String("2*x0"),
+      String("sin(sin(2))"),
+      String("x==0"),
+      String("(x==0)+1"),
+      String("((x==0) * 1)+((x!=0) * sin(x+(x==0)*1)/(x+(x==0)*1))")
     };
     for (uInt i=0; i<n; ++i) {
       FuncExpression expr;
@@ -88,8 +92,8 @@ int main() {
       if (expr.nparameters() > 0) expr[0] = 1.5;
       if (expr.nparameters() > 1) expr[1] = 2.5;
       ///      cout << expr;
-      cout << "Value: ";
-      cout << expr(3.5) << endl;
+      cout << "Value(3.5, 0): ";
+      cout << expr(3.5) << ", " << expr(0.0) << endl;
       cout << "----------------------------------------------------" << endl;
     };
   }  catch (AipsError x) {
