@@ -1,5 +1,5 @@
 //# Fitting.h: Module for various forms of mathematical fitting
-//# Copyright (C) 1995,1999,2000
+//# Copyright (C) 1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,8 +31,8 @@
 #include <aips/Fitting/FitLSQ.h>
 #include <trial/Fitting/LinearFit.h>
 #include <trial/Fitting/LinearFitSVD.h>
-#include <trial/Fitting/NonLinearFit.h>
-#include <trial/Fitting/NonLinearFitLM.h>
+#include <trial/Fitting/LQNonLinearFit.h>
+#include <trial/Fitting/LQNonLinearFitLM.h>
 #include <trial/Fitting/LatticeFit.h>
 
 // <module>
