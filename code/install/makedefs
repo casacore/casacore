@@ -2,7 +2,7 @@
 # makedefs: Default values of variables required by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-2000
+#   Copyright (C) 1992-2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -1318,15 +1318,15 @@ help ::
 megalink:
 	cd $(AIPSARCH)/bin;          \
 	if [ -f megaserver ]; then   \
-	    rm -f measures quanta image ms misc imager calibrater componentlist deconvolver; \
-	    for i in measures quanta image ms misc imager calibrater componentlist deconvolver; do \
+	    rm -f measures quanta app_image ms misc imager calibrater componentlist deconvolver; \
+	    for i in measures quanta app_image ms misc imager calibrater componentlist deconvolver; do \
 	        ln -s megaserver $$i; \
 	    done;                    \
 	fi
 
 megaunlink:
 	cd $(AIPSARCH)/bin;          \
-	for i in measures quanta image ms misc imager calibrater componentlist deconvolver; do \
+	for i in measures quanta app_image ms misc imager calibrater componentlist deconvolver; do \
 		if [ -h $$i ]; then rm -f $$i; fi \
 	done;                    \
 
