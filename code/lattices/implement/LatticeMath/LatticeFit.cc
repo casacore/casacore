@@ -1,5 +1,5 @@
 //# LatticeFit.cc: Fit every line of pixels parallel to any axis in a Lattice.
-//# Copyright (C) 1994,1995,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -239,7 +239,13 @@ uInt LatticeFit::fitProfiles (MaskedLattice<Float>* pFit,
             pFitMaskIter->rwVectorCursor() = inMask;
          }
          if (pResid) {   
-            pResidIter->rwVectorCursor() = data - pFitIter->rwVectorCursor();
+            if (pFit) {
+               pResidIter->rwVectorCursor() = data - pFitIter->rwVectorCursor();
+            } else {
+               for (uInt i=0; i<n;  i++) {
+                  pResidIter->rwVectorCursor()[i] = data[i] - (*pFunc)(x(i)).value();
+               }
+            }
          }
          if (pResidMaskIter) {
             pResidMaskIter->rwVectorCursor() = inMask;
