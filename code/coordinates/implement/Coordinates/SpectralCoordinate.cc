@@ -1223,7 +1223,7 @@ String SpectralCoordinate::formatRestFrequencies () const
          oss << "]";
       }
 //
-      oss << " " << unit << ends;
+      oss << " " << unit;
    }   
 //
    return String(oss);

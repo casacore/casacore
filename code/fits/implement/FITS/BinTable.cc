@@ -232,7 +232,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        if (td.isColumn(colname)) {
 	   //		issue a warning, append column number to this name
 	   ostringstream newname;
-	   newname << colname << "." << i << ends;
+	   newname << colname << "." << i;
 	   //		str gives the space to cptr, which must be deleted
 	   colname = newname.str();
 	   cout << "Duplicate column name : " << ttype(i)

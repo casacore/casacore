@@ -955,7 +955,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
          ostringstream oss;
          if (y1 != y2) {
            oss << "The Coordinates have differing axis units for axis "
-               << i << ends;
+               << i;
            set_error(String(oss));
            return False;
          }
@@ -964,7 +964,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 
          if (!::near(thisRefVal(i), otherRefVal(i), tol)) {
             oss << "The Coordinates have differing reference values for axis "
-                 << i << ends;
+                 << i;
             set_error(String(oss));
             return False;
          }
@@ -973,7 +973,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 
          if (!::near(thisInc(i), otherInc(i), tol)) {
             oss << "The Coordinates have differing increments for axis "
-                 << i << ends;
+                 << i;
             set_error(String(oss));
             return False;
          }
@@ -982,7 +982,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
  
          if (!::near(thisRefPix(i), otherRefPix(i), tol)) {
             oss << "The Coordinates have differing reference pixels for axis "
-                 << i << ends;
+                 << i;
             set_error(String(oss));
             return False;        
          }

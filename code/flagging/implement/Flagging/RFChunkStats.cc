@@ -156,7 +156,7 @@ template<class T> RFlagWord RFChunkStats::getCorrMask ( const Vector<T> &corrspe
     Stokes::StokesTypes type = Stokes::type( corrspec(i) );
     if( type == Stokes::Undefined ){
       ostringstream oss;
-      oss << corrspec(i) << ends;
+      oss << corrspec(i);
       throw(AipsError( String("Unknown correlation type: ")+ String(oss)));
     }
     // find this type in current corrarizations

@@ -2210,7 +2210,7 @@ Bool CoordinateSystem::near(const Coordinate& other,
 // some time by checking here too
 
       if (coordinate(i).type() != cSys.coordinate(i).type()) {
-         oss << "The coordinate types differ for coordinate number " << i << ends;
+         oss << "The coordinate types differ for coordinate number " << i;
          set_error(String(oss));
          return False;
       }
@@ -2221,12 +2221,12 @@ Bool CoordinateSystem::near(const Coordinate& other,
 // actually comparing the axis descriptor values on certain axes
 
       if (pixelAxes(i).nelements() != cSys.pixelAxes(i).nelements()) {
-         oss << "The number of pixel axes differs for coordinate number " << i << ends;
+         oss << "The number of pixel axes differs for coordinate number " << i;
          set_error(String(oss));
          return False;
       }
       if (!allEQ(pixelAxes(i), cSys.pixelAxes(i))) {
-         oss << "The pixel axes differ for coordinate number " << i << ends;
+         oss << "The pixel axes differ for coordinate number " << i;
          set_error(String(oss));
          return False;
       }
@@ -2235,12 +2235,12 @@ Bool CoordinateSystem::near(const Coordinate& other,
 // coordinate inhabits and compare the vectors
 
       if (worldAxes(i).nelements() != cSys.worldAxes(i).nelements()) {
-         oss << "The number of world axes differs for coordinate number " << i << ends;
+         oss << "The number of world axes differs for coordinate number " << i;
          set_error(String(oss));
          return False;
       }
       if (!allEQ(worldAxes(i), cSys.worldAxes(i))) {
-         oss << "The world axes differ for coordinate number " << i << ends;
+         oss << "The world axes differ for coordinate number " << i;
          set_error(String(oss));
          return False;
       }
@@ -2310,7 +2310,7 @@ Bool CoordinateSystem::near(const Coordinate& other,
 
                if (coord1 != coord2) {
                   oss << "The coordinate numbers differ (!!) for coordinate number "
-                      << i << ends;
+                      << i;
                   set_error(String(oss));
                   return False;
                }
@@ -2319,7 +2319,7 @@ Bool CoordinateSystem::near(const Coordinate& other,
                if (axisInCoord1 != axisInCoord2) {
                   oss << "World axis " << j << " in the CoordinateSystems"
                       << "has a different axis number in coordinate number "
-                      << i << ends;
+                      << i;
                   set_error(String(oss));
                   return False;
                }
@@ -2372,7 +2372,7 @@ Bool CoordinateSystem::nearPixel  (const CoordinateSystem& other,
       const Coordinate& c2 = cSys2.coordinate(coord2);
       if (c1.type() != c2.type()) {
          ostringstream oss;
-         oss << "The coordinate types differ for pixel axis number " << i << ends;
+         oss << "The coordinate types differ for pixel axis number " << i;
          set_error(String(oss));
          return False;
       }
@@ -3075,7 +3075,7 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
        if (n > n2) {
          for (Int i=n2; i<n; i++) {
             ostringstream oss;
-            oss << String("Dummy") << (i+1) << ends;
+            oss << String("Dummy") << (i+1);
             ctype(i) = String(oss);
          }
          os << LogIO::WARN << "Padding missing ctype values with 'Dummy'" << LogIO::POST;
@@ -4922,7 +4922,7 @@ void CoordinateSystem::listPointingCenter (LogIO& os) const
                                                         1, True, True, prec);
 //
          ostringstream oss;
-         oss << "Pointing center     :  " << lon << "  " << lat << ends;
+         oss << "Pointing center     :  " << lon << "  " << lat;
          os << String(oss) << endl;
       }
    }

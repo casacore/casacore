@@ -441,7 +441,7 @@ Bool LinearCoordinate::near(const Coordinate& other,
 //
            if (y1 != y2) {
               oss << "The LinearCoordinates have differing axis names for axis "
-                  << i << ends;
+                  << i;
               set_error(String(oss));
               return False;
            }
@@ -470,7 +470,7 @@ Bool LinearCoordinate::near(const Coordinate& other,
            String y2 = String(x2.before(i2));
            if (y1 != y2) {
              oss << "The LinearCoordinates have differing axis units for axis "
-                 << i << ends;
+                 << i;
              set_error(String(oss));
              return False;
            }
@@ -481,7 +481,7 @@ Bool LinearCoordinate::near(const Coordinate& other,
       if (!exclude(i)) {
          if (!::near(crval_p[i],lCoord.crval_p[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
-                << i << ends;
+                << i;
             set_error(String(oss));
             return False;
          }
