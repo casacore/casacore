@@ -30,8 +30,8 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLock.h>
-#include <aips/Arrays/Vector.h>
 #include <aips/Containers/SimOrdMapIO.h>
+#include <aips/Lattices/Slice.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Path.h>
@@ -40,11 +40,11 @@
 
 RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 		    const TableLock& lockOptions)
-: BaseTable(name, opt, nrrow),
-  nameMap_p(""),
-  colMap_p ((RefColumn*)0),
-  rows_p   (0),              // initially empty block for rownrs
-  changed_p(False)
+: BaseTable    (name, opt, nrrow),
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
+  rowStorage_p (0),              // initially empty vector of rownrs
+  changed_p    (False)
 {
     //# Read the file in.
     //# Disable the default mark for deletion.
@@ -59,14 +59,15 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 
 
 RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
-: BaseTable   ("", Table::Scratch, nrall),
-  nameMap_p   (""),
-  colMap_p    ((RefColumn*)0),
-  baseTabPtr_p(btp->root()),
-  rowOrd_p    (order),
-  rows_p      (nrall),       // allocate block for rownrs
-  changed_p   (True)
+: BaseTable    ("", Table::Scratch, nrall),
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
+  baseTabPtr_p (btp->root()),
+  rowOrd_p     (order),
+  rowStorage_p (nrall),       // allocate vector of rownrs
+  changed_p    (True)
 {
+    rows_p = getStorage (rowStorage_p);
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), "", "", TableDesc::Scratch);
     if (tdescPtr_p == 0) {
@@ -79,13 +80,13 @@ RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
-: BaseTable   ("", Table::Scratch, rownrs.nelements()),
-  nameMap_p   (""),
-  colMap_p    ((RefColumn*)0),
-  baseTabPtr_p(btp->root()),
-  rowOrd_p    (True),
-  rows_p      (rownrs.nelements()),   // allocate block for rownrs
-  changed_p   (True)
+: BaseTable    ("", Table::Scratch, rownrs.nelements()),
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
+  baseTabPtr_p (btp->root()),
+  rowOrd_p     (True),
+  rowStorage_p (0),
+  changed_p    (True)
 {
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), "", "", TableDesc::Scratch);
@@ -93,28 +94,29 @@ RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
 	throw (AllocError ("RefTable::RefTable", 1));
     }
     setup (btp);
-    //# Store the rownrs as such.
-    //# Check if they do not exceed #rows.
+    rowStorage_p = rownrs;
+    rows_p = getStorage (rowStorage_p);
+    //# Check if the row numbers do not exceed #rows.
+    uInt nmax = btp->nrow();
     for (uInt i=0; i<nrrow_p; i++) {
-	if (rownrs(i) >= btp->nrow()) {
-	    throw (indexError<Int> ((Int)rownrs(i), "RefTable Row vector"));
+	if (rows_p[i] >= nmax) {
+	    throw (indexError<Int> ((Int)rows_p[i], "RefTable Row vector"));
 	}
-	rows_p[i] = rownrs(i);
     }
     //# Adjust rownrs in case input table is a reference table.
     //# Link to the root table.
-    rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage(), True);
+    rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, True);
     baseTabPtr_p->link();
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
-: BaseTable   ("", Table::Scratch, 0),
-  nameMap_p   (""),
-  colMap_p    ((RefColumn*)0),
-  baseTabPtr_p(btp->root()),
-  rowOrd_p    (btp->rowOrder()),
-  rows_p      (0),              // initially empty block for rownrs
-  changed_p   (True)
+: BaseTable    ("", Table::Scratch, 0),
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
+  baseTabPtr_p (btp->root()),
+  rowOrd_p     (btp->rowOrder()),
+  rowStorage_p (0),              // initially empty vector of rownrs
+  changed_p    (True)
 {
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), "", "", TableDesc::Scratch);
@@ -131,18 +133,18 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
     }
     //# Adjust rownrs in case input table is a reference table.
     //# Link to the root table.
-    rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage(), True);
+    rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, True);
     baseTabPtr_p->link();
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
-: BaseTable   ("", Table::Scratch, btp->nrow()),
-  nameMap_p   (""),
-  colMap_p    ((RefColumn*)0),
-  baseTabPtr_p(btp->root()),
-  rowOrd_p    (btp->rowOrder()),
-  rows_p      (0),
-  changed_p   (True)
+: BaseTable    ("", Table::Scratch, btp->nrow()),
+  nameMap_p    (""),
+  colMap_p     ((RefColumn*)0),
+  baseTabPtr_p (btp->root()),
+  rowOrd_p     (btp->rowOrder()),
+  rowStorage_p (0),
+  changed_p    (True)
 {
     //# Create table description by copying the selected columns.
     //# Create the columns.
@@ -157,14 +159,8 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
     setup (btp);
     //# Get the row numbers from the input table.
     //# Copy them to this table.
-    Vector<uInt> rownrs(btp->rowNumbers());
-    if (nrrow_p > 0) {
-	rows_p.resize (nrrow_p);
-	Bool deleteIt;
-	const uInt* rowptr = rownrs.getStorage (deleteIt);
-	objcopy (rows_p.storage(), rowptr, nrrow_p);
-	rownrs.freeStorage (rowptr, deleteIt);
-    }
+    rowStorage_p = btp->rowNumbers();
+    rows_p = getStorage (rowStorage_p);
     //# Link to the root table.
     baseTabPtr_p->link();
 }
@@ -184,6 +180,15 @@ RefTable::~RefTable()
     }
     //# Unlink from root.
     BaseTable::unlink (baseTabPtr_p);
+}
+
+
+uInt* RefTable::getStorage (Vector<uInt>& rownrs)
+{
+    Bool deleteIt;
+    uInt* p = rownrs.getStorage (deleteIt);
+    AlwaysAssert (deleteIt == False, AipsError);
+    return p;
 }
 
 void RefTable::reopenRW()
@@ -232,8 +237,10 @@ uInt RefTable::getModifyCounter() const
 
 
 //# Adjust the input rownrs to the actual rownrs in the root table.
-Bool RefTable::adjustRownrs (uInt nr, uInt* rownrs, Bool determineOrder) const
+Bool RefTable::adjustRownrs (uInt nr, Vector<uInt>& rowStorage,
+			     Bool determineOrder) const
 {
+    uInt* rownrs = getStorage (rowStorage);
     Bool rowOrder = True;
     for (uInt i=0; i<nr; i++) {
 	rownrs[i] = rows_p[rownrs[i]];
@@ -266,7 +273,7 @@ void RefTable::writeRefTable (Bool sync)
 	ios << nameMap_p;
 	ios << baseTabPtr_p->nrow();
 	ios << rowOrd_p;
-	ios.put (nrrow_p, rows_p.storage());
+	ios.put (nrrow_p, rows_p);
 	ios.putend();
 	writeEnd (ios);
 	changed_p = False;
@@ -292,8 +299,9 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
     ios >> nrrow;
     DebugAssert (nrrow == nrrow_p, AipsError);
     //# Resize the block of rownrs and read them in.
-    rows_p.resize (nrrow);
-    ios.get (nrrow, rows_p.storage());
+    rowStorage_p.resize (nrrow);
+    rows_p = getStorage (rowStorage_p);
+    ios.get (nrrow, rows_p);
     ios.getend();
     //# Now read in the root table referenced to.
     //# Check if #rows has not decreased, which is about the only thing
@@ -396,10 +404,22 @@ void RefTable::makeRefCol()
 //# Add a row number of the root table.
 void RefTable::addRownr (uInt rnr)
 {
-    if (nrrow_p >= rows_p.nelements()) {
-	rows_p.resize (rows_p.nelements() + 1024);
+    if (nrrow_p >= rowStorage_p.nelements()) {
+	rowStorage_p.resize (rowStorage_p.nelements() + 1024, True);
+	rows_p = getStorage (rowStorage_p);
     }
     rows_p[nrrow_p++] = rnr;
+    changed_p = True;
+}
+
+//# Set exact number of rows.
+void RefTable::setNrrow (uInt nrrow)
+{
+    if (nrrow > nrrow_p) {
+	throw (TableError ("RefTable::setNrrow: exceeds current nrrow"));
+    }
+    rows_p = getStorage (rowStorage_p);
+    nrrow_p = nrrow;
     changed_p = True;
 }
 
@@ -425,6 +445,9 @@ BaseColumn* RefTable::getColumn (uInt columnIndex) const
     { return colMap_p.getVal (columnIndex); }
     
 
+Vector<uInt>* RefTable::rowStorage()
+    { return &rowStorage_p; }
+
 //# Convert a vector of row numbers to row numbers in this table.
 Vector<uInt> RefTable::rootRownr (const Vector<uInt>& rownrs) const
 {
@@ -441,11 +464,15 @@ BaseTable* RefTable::root()
     { return baseTabPtr_p; }
 Bool RefTable::rowOrder() const
     { return rowOrd_p; }
-uInt* RefTable::rowStorage()
-    { return rows_p.storage(); }
 
 Vector<uInt> RefTable::rowNumbers () const
-    { return Vector<uInt>(rows_p, nrrow_p); }
+{
+    if (nrrow_p == rowStorage_p.nelements()) {
+	return rowStorage_p;
+    }
+    Vector<uInt> vec (rowStorage_p);
+    return vec(Slice(0, nrrow_p));
+}
 
 
 //# Rows and columns can be removed and renamed.
@@ -462,7 +489,7 @@ void RefTable::removeRow (uInt rownr)
 	throw (TableInvOper ("removeRow: rownr out of bounds"));
     }
     if (rownr < nrrow_p - 1) {
-	objmove (&rows_p[rownr], &rows_p[rownr+1], nrrow_p-rownr-1);
+	objmove (rows_p+rownr, rows_p+rownr+1, nrrow_p-rownr-1);
     }
     nrrow_p--;
     changed_p = True;
@@ -487,7 +514,8 @@ void RefTable::refAnd (uInt nr1, const uInt* inx1,
 		       uInt nr2, const uInt* inx2)
 {
     uInt allrow = (nr1 < nr2  ?  nr1 : nr2);  // max #output rows
-    rows_p.resize (allrow);                   // allocate output storage
+    rowStorage_p.resize (allrow);             // allocate output storage
+    rows_p = getStorage (rowStorage_p);
     uInt i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
@@ -522,7 +550,8 @@ void RefTable::refOr (uInt nr1, const uInt* inx1,
 		      uInt nr2, const uInt* inx2)
 {
     uInt allrow = nr1 + nr2;                  // max #output rows
-    rows_p.resize (allrow);                   // allocate output storage
+    rowStorage_p.resize (allrow);             // allocate output storage
+    rows_p = getStorage (rowStorage_p);
     uInt i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
@@ -559,7 +588,8 @@ void RefTable::refSub (uInt nr1, const uInt* inx1,
 		       uInt nr2, const uInt* inx2)
 {
     uInt allrow = nr1;                        // max #output rows
-    rows_p.resize (allrow);                   // allocate output storage
+    rowStorage_p.resize (allrow);             // allocate output storage
+    rows_p = getStorage (rowStorage_p);
     uInt i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
@@ -594,7 +624,8 @@ void RefTable::refXor (uInt nr1, const uInt* inx1,
 		       uInt nr2, const uInt* inx2)
 {
     uInt allrow = nr1 + nr2;                  // max #output rows
-    rows_p.resize (allrow);                   // allocate output storage
+    rowStorage_p.resize (allrow);             // allocate output storage
+    rows_p = getStorage (rowStorage_p);
     uInt i1, i2, row1, row2;
     i1 = i2 = 0;
     while (True) {
@@ -632,7 +663,8 @@ void RefTable::refNot (uInt nr, const uInt* inx, uInt nrtot)
     // The original table has NRTOT rows.
     // So loop through the inx-array and store all rownrs not in the array.
     uInt allrow = nrtot - nr;                 // #output rows
-    rows_p.resize(allrow);                    // allocate storage
+    rowStorage_p.resize (allrow);             // allocate output storage
+    rows_p = getStorage (rowStorage_p);
     uInt start = 0;
     uInt i, j;
     for (i=0; i<nr; i++) {                    // loop through inx-array
