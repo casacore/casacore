@@ -373,7 +373,7 @@ uInt genSort (Block<T>& data, Sort::Order order, int options)
     { return GenSort<T>::sort (data, data.nelements(), order, options); }
 template<class T>
 inline
-uInt genSort (Block<T>& data, uInt nr, Sort::Order, int options)
+uInt genSort (Block<T>& data, uInt nr, Sort::Order order, int options)
     { return GenSort<T>::sort (data, nr, order, options); }
 // </group>
 
@@ -511,7 +511,7 @@ uInt genSort (Vector<uInt>& indexVector, const Block<T>& data,
 template<class T>
 inline
 uInt genSort (Vector<uInt>& indexVector, const Block<T>& data, uInt nr,
-	      Sort::Order, int options)
+	      Sort::Order order, int options)
     { return GenSortIndirect<T>::sort (indexVector, data, nr,
 				       order, options); }
 // </group>
