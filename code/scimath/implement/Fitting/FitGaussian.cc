@@ -122,8 +122,8 @@ const Bool &FitGaussian<T>::mask(uInt gaussian, uInt parameter) const
 
 template <class T>
 Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
-                               T chisqcriteria = 5e-5, uInt maxiter = 1024, 
-                               T convcriteria = 0.0001)
+                               T chisqcriteria, uInt maxiter, 
+                               T convcriteria)
 {
   //Same as below, with all sigma = 1.
 
@@ -134,8 +134,8 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
 
 template <class T>
 Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
-                              const Vector<T>& sigma,T chisqcriteria = 5e-5,
-                              uInt maxiter = 1024, T convcriteria = 0.0001)
+                              const Vector<T>& sigma,T chisqcriteria,
+                              uInt maxiter, T convcriteria)
 {
   //Perform the fitting to the data.  Sets up NonLinearFitLM with the specified
   //number of gaussians and starts fitting.  If the fit fails or converges
