@@ -177,6 +177,9 @@ public:
   RFlagWord flagMask ();      
 // returns correlations mask for this agent
   RFlagWord corrMask ();
+// returns the checked-correlations mask for this agent
+// (=0 for RESET/IGNORE policies, or =corrMask() for HONOR policy).
+  RFlagWord checkCorrMask ();
 // returns mask of all correlations
   static RFlagWord fullCorrMask ();
 // returns combination of flag masks corresponding to agents that operate
@@ -216,15 +219,20 @@ protected:
   
   static uInt npol,nchan;
   
-// flag mask used by this instance. Each instance has a unique 1-bit mask.
+// Flag mask used by this instance. Each instance has a unique 1-bit mask.
 // This is assigned automatically in the constructor, by updating the 
 // instance count and the nextmask member.
+// Note that the low N bits of a mask are assigned to pre-flags (one per
+// each correlation in the MS); so the agents start at bit N+1.
   RFlagWord flagmask,       // flagmask of this instance
-            corrmask,        // corrmask of this instance
+            corrmask,        // corrmask of this instance (corrs used/flagged by it)
+            check_corrmask,  // mask checked by preFlagged() & co. Set to 0 for
+                             // RESET or IGNORE policy, or to corrmask for HONOR
+            check_rowmask,   // same for row flags: 0 or RowFlagged
             my_corrflagmask; // my corrFlagMask(), see above
   static Int agent_count;    // # of agents instantiated
   static RFlagWord base_flagmask, // flagmask of first agent instance
-      full_corrmask;          // bitmask for all correlations
+      full_corrmask;          // bitmask for all correlations in MS (low N bits)
 // agent_corrmasks is an array of correlation masks for every object instance
   static RFlagWord agent_corrmasks[sizeof(RFlagWord)*8];
 // corr_flagmask is a mapping from corrmasks into masks of agents that flag the
@@ -263,6 +271,9 @@ inline RFlagWord RFFlagCube::flagMask ()
 inline RFlagWord RFFlagCube::corrMask ()
 { return corrmask; }
 
+inline RFlagWord RFFlagCube::checkCorrMask ()
+{ return check_corrmask; }
+
 inline RFlagWord RFFlagCube::fullCorrMask ()
 { return full_corrmask; }
 
@@ -292,26 +303,26 @@ inline const FlagMatrix & RFFlagCube::rowFlagMatrix ()
 { return flagrow; }
 
 inline Bool RFFlagCube::preFlagged ( uInt ich,uInt ifr )
-{ return getFlag(ich,ifr)&corrmask != 0; }    
+{ return getFlag(ich,ifr)&check_corrmask != 0; }    
 
 inline Bool RFFlagCube::agentFlagged ( uInt ich,uInt ifr )
 { return getFlag(ich,ifr)&my_corrflagmask != 0; }    
 
 inline Bool RFFlagCube::anyFlagged ( uInt ich,uInt ifr )
-{ return getFlag(ich,ifr)&(corrmask|my_corrflagmask) != 0; }    
+{ return getFlag(ich,ifr)&(check_corrmask|my_corrflagmask) != 0; }
 
 // Gets full row flag word
 inline RFlagWord RFFlagCube::getRowFlag ( uInt ifr,uInt itime )
 { return flagrow(ifr,itime); }
 // tells if a row is pre-flagged in the MS (or does not exist)
 inline Bool RFFlagCube::rowPreFlagged   ( uInt ifr,uInt itime )
-{ return getRowFlag(ifr,itime)&RowFlagged; }
+{ return getRowFlag(ifr,itime)&check_rowmask; }
 // tells if a row is flagged by any agent
 inline Bool RFFlagCube::rowAgentFlagged ( uInt ifr,uInt itime )
 { return getRowFlag(ifr,itime)&~(RowFlagged|RowAbsent); }
 // preFlagged OR agentFlagged  
 inline Bool RFFlagCube::rowFlagged      ( uInt ifr,uInt itime )
-{ return getRowFlag(ifr,itime); }
+{ return getRowFlag(ifr,itime)&(check_rowmask?~0:~RowFlagged); }
 
 inline FlagCubeIterator & RFFlagCube::iterator ()
 { return flag.iterator(); }

@@ -67,8 +67,7 @@ RFFlagCube::RFFlagCube ( RFChunkStats &ch,Bool ignore,Bool reset,LogIO &sink )
     if( ignore )
     {
       pfpolicy = FL_IGNORE;
-      os<<"Existing flags will be ignored, but added to\n";
-      os<<"But this option is not implemented yet, sorry\n"<<LogIO::EXCEPTION;
+      os<<"Existing flags will be ignored, but added to\n"<<LogIO::POST;
     }
     else
     {
@@ -91,7 +90,11 @@ uInt RFFlagCube::estimateMemoryUse ( const RFChunkStats &ch )
 // creates flag cube for a given visibility chunk
 void RFFlagCube::init ( RFlagWord corrmsk,const String &name ) 
 {
+// setup some masks
   corrmask = corrmsk;
+  check_corrmask = pfpolicy==FL_HONOR ? corrmsk : 0;
+  check_rowmask = pfpolicy==FL_HONOR ? RowFlagged : 0;
+// clear stats  
   tot_fl_raised=tot_row_fl_raised=fl_raised=fl_cleared=
       row_fl_raised=row_fl_cleared=0;
 // init flag cube if it is empty
@@ -347,7 +350,7 @@ void RFFlagCube::setMSFlags()
     Matrix<Bool> out_fl( out_flagcube.xyPlane(ir) ); 
     // Row flag set? Much as I hate do do this, dump all over
     // the data flags
-    if( rowAgentFlagged(ifr,flag.position()) )
+    if( getRowFlag(ifr,flag.position()) )
     {
       out_flagrow(ir) = True;
       out_fl = True;
@@ -359,13 +362,14 @@ void RFFlagCube::setMSFlags()
       // set output flags
       for( uInt ich=0; ich<num(CHAN); ich++ )
       {
-        RFlagWord fw = fwv(ich)&~full_corrmask; // fw: flags raised by agents
+        RFlagWord fw = fwv(ich); // fw: flags raised by agents
         if( fw ) // if anything was raised for this channel
         {
-  // loop over correlations and see which have been flagged by agents
+  // loop over correlations and see which are (a) preflagged
+  // (b) been flagged by agents. 
           RFlagWord cmask = 1;
           for( uInt  icorr=0; icorr<num(CORR); icorr++,cmask<<=1 )
-            if( fw&corr_flagmask(cmask) )
+            if( fw&cmask || fw&corr_flagmask(cmask) )
               out_fl(icorr,ich) = True;
         }
       }
