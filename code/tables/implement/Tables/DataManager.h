@@ -1,5 +1,5 @@
 //# DataManager.h: Abstract base classes for a data manager
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -295,8 +295,7 @@ public:
     virtual void setMaximumCacheSize (uInt nbytes);
     
     // Create a column in the data manager on behalf of a table column.
-    //# Should be private, but has to be public because friend
-    //# declaration gave internal CFront error.
+    // It calls makeXColumn and checks the data type.
     // <group>
     // Create a scalar column.
     // The <src>dataTypeId</src> argument is gives the id (i.e. name)
@@ -525,10 +524,18 @@ public:
 
     // Create a column.
     DataManagerColumn()
-	{;}
+	: isFixedShape_p(False) {;}
 
     // Frees up the storage.
     virtual ~DataManagerColumn();
+
+    // Set the isFixedShape flag.
+    void setIsFixedShape (Bool isFixedShape)
+        { isFixedShape_p = isFixedShape; }
+
+    // Is this a fixed shape column?
+    Bool isFixedShape() const
+        { return isFixedShape_p; }
 
     // Get the data type of the column as defined in DataType.h.
     virtual int dataType() const = 0;
@@ -551,8 +558,10 @@ public:
     virtual void setMaxLength (uInt maxLength);
 
     // Set the shape of all (fixed-shaped) arrays in the column.
-    // By default it throws a "not possible" exception.
-    virtual void setShapeColumn (const IPosition& shape);
+    // Effectively it is the same as setShapeColumn, but it also sets
+    // the isFixedShape_p flag.
+    void setFixedShapeColumn (const IPosition& shape)
+        { setShapeColumn (shape); isFixedShape_p = True; }
 
     // Set the shape of an (variable-shaped) array in the given row.
     // By default it throws a "not possible" exception.
@@ -926,7 +935,12 @@ protected:
     // </group>
 
 private:
+    Bool        isFixedShape_p;
     ColumnCache colCache_p;
+
+    // Set the shape of all (fixed-shaped) arrays in the column.
+    // By default it throws a "not possible" exception.
+    virtual void setShapeColumn (const IPosition& shape);
 
     // The copy constructor cannot be used for this base class.
     // The private declaration of this constructor makes it unusable.
