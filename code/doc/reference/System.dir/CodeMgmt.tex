@@ -948,7 +948,7 @@ Execute a command with the effective uid set to the real uid.
  
 \exe{asme} executes a command with the effective uid set to the real uid.  The
 requirement for such a utility arises because Bourne shell offers no mechanism
-within a \code{setuid} script to allow a command can be executed with the real
+within a \code{setuid} script to allow a command to be executed with the real
 uid.
  
 \subsection*{Options}
@@ -972,8 +972,8 @@ Status return values
 \subsection*{Examples}
  
 \exeref{ai} runs \code{setuid} to \acct{aips2mgr}.  It uses the following
-construct if necessary within to ensure that the file to be checked in is
-readable by user and group:
+construct to ensure that the file to be checked in is readable by user and
+group:
 
 \begin{verbatim}
    asme "chmod ug+r $i"
@@ -1315,12 +1315,12 @@ General users can delete directories at or below the third level below
 module and application subdirectories.  Deletion of higher-level directories
 is only allowed for members of the \acct{aips2mgr} group.
 
-\exe{ax\_master} does not actually delete any anything from the \aipspp\ 
-master \rcs\ repositories but instead ``rescinds'' them by renaming them so as
-to hide them from the code distribution system, see \exeref{exhale}.  
-Rescinded files and directories are given names of the form
-\file{.MM.NNN.filename}, where \file{MM.NNN} is the \aipspp\ version number at
-the time the file is rescinded (see \exeref{avers}).
+\exe{ax\_master} does not actually delete anything from the \aipspp\ master
+\rcs\ repositories but instead ``rescinds'' them by renaming them so as to
+hide them from the code distribution system, see \exeref{exhale}.  Rescinded
+files and directories are given names of the form \file{.MM.NNN.filename},
+where \file{MM.NNN} is the \aipspp\ version number at the time the file is
+rescinded (see \exeref{avers}).
 
 \subsection*{Options}
 
@@ -2287,10 +2287,10 @@ Concatenate two \rcs\ version files.
  
 \subsection*{Description}
  
-\exe{rcscat} is a special-purpose utility which concatenates the archived \rcs
-version file to the current \rcs\ version file for an \aipspp\ source.  It is
-used by \exeref{exhale} to update the \aipspp\ \rcs\ archive when creating a
-new base release.
+\exe{rcscat} is a special-purpose utility which concatenates the archived
+\rcs\ version file to the current \rcs\ version file for an \aipspp\ source.
+It is used by \exeref{exhale} to update the \aipspp\ \rcs\ archive when
+creating a new base release.
 
 The first file argument specifies the master \rcs\ file which \exeref{exhale}
 has just ``upreved'' to the new base release, \code{\textit{m}.0}.  It
