@@ -1,5 +1,5 @@
 //# ComponentType.cc:  this defines ComponentType.cc
-//# Copyright (C) 1997,1998,1999,2001
+//# Copyright (C) 1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@ ComponentType::Shape ComponentType::shape(const String & shapeName) {
   for (uInt i = 0; i < NUMBER_SHAPES; i++) {
     s = static_cast<ComponentType::Shape>(i);
     s2 = ComponentType::name(s);
-    if (s2.matches(canonicalCase)) {
+    if (s2.contains(canonicalCase)) {
       return s;
     }
   }
