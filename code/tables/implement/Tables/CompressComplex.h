@@ -1,5 +1,5 @@
 //# CompressComplex.h: Virtual column engine to scale a table Complex array
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -215,7 +215,7 @@ private:
   // Add rows to the table.
   // If auto-scaling, it initializes the scale column with 0
   // to indicate that no data has been processed yet.
-  virtual void addRow (uInt nrrow);
+  virtual void addRowInit (uInt startRow, uInt nrrow);
 
   // Get an array in the given row.
   // This will scale and offset from the underlying array.

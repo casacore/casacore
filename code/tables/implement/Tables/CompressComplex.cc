@@ -1,5 +1,5 @@
 //# CompressComplex.cc: Virtual column engine to scale a table Complex array
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -219,13 +219,12 @@ void CompressComplex::reopenRW()
   }
 }
 
-void CompressComplex::addRow (uInt nrrow)
+void CompressComplex::addRowInit (uInt startRow, uInt nrrow)
 {
-  BaseMappedArrayEngine<Complex,Int>::addRow (nrrow);
+  BaseMappedArrayEngine<Complex,Int>::addRowInit (startRow, nrrow);
   if (autoScale_p) {
-    uInt rownr = table().nrow();
     for (uInt i=0; i<nrrow; i++) {
-      rwScaleColumn_p->put (rownr++, 0.);
+      rwScaleColumn_p->put (startRow++, 0.);
     }
   }
 }

@@ -1,5 +1,5 @@
 //# BaseMappedArrayEngine.h: Abstract virtual column engine for source->target mapping
-//# Copyright (C) 1995,1996,1997,1999,2001
+//# Copyright (C) 1995,1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -344,7 +344,13 @@ protected:
     // the shape in each target row will be set.
     // This assures that the arrays are properly defined in each row,
     // so putSlice can be used without problems.
+    // <br>The second version is used by prepare2, because in case a column is
+    // added to an already existing table, table.nrow() gives the existing
+    // number of columns instead of 0.
+    // <group>
     virtual void addRow (uInt nrrow);
+    virtual void addRowInit (uInt startRow, uInt nrrow);
+    // </group>
 
     // Deleting rows is possible and is a no-op for this engine.
     virtual void removeRow (uInt rownr);

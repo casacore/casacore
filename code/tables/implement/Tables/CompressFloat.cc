@@ -1,5 +1,5 @@
 //# CompressFloat.cc: Virtual column engine to scale a table float array
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -218,13 +218,12 @@ void CompressFloat::reopenRW()
   }
 }
 
-void CompressFloat::addRow (uInt nrrow)
+void CompressFloat::addRowInit (uInt startRow, uInt nrrow)
 {
-  BaseMappedArrayEngine<Float,Short>::addRow (nrrow);
+  BaseMappedArrayEngine<Float,Short>::addRowInit (startRow, nrrow);
   if (autoScale_p) {
-    uInt rownr = table().nrow();
     for (uInt i=0; i<nrrow; i++) {
-      rwScaleColumn_p->put (rownr++, 0.);
+      rwScaleColumn_p->put (startRow++, 0.);
     }
   }
 }

@@ -1,5 +1,5 @@
 //# BaseMappedArrayEngine.cc: Abstract virtual column engine for source->target mapping
-//# Copyright (C) 1995,1996,2001
+//# Copyright (C) 1995,1996,2001,2002
 //# Associated Universitie Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -179,7 +179,7 @@ void BaseMappedArrayEngine<SourceType, TargetType>::prepare2()
     //# Add the initial number of rows (thus only done after create).
     //# This will set the shape of the target arrays when needed.
     if (initialNrrow_p > 0) {
-	addRow (initialNrrow_p);
+	addRowInit (0, initialNrrow_p);
     }
 }
 
@@ -214,12 +214,17 @@ void BaseMappedArrayEngine<SourceType, TargetType>::removeRow (uInt)
 template<class SourceType, class TargetType>
 void BaseMappedArrayEngine<SourceType, TargetType>::addRow (uInt nrrow)
 {
+  addRowInit (table().nrow(), nrrow);
+}
+template<class SourceType, class TargetType>
+void BaseMappedArrayEngine<SourceType, TargetType>::addRowInit (uInt startRow,
+								uInt nrrow)
+{
     if (arrayIsFixed_p  &&
               ((column_p->columnDesc().options() & ColumnDesc::FixedShape)
 	                                        != ColumnDesc::FixedShape)) {
-	uInt rownr = table().nrow();
 	for (uInt i=0; i<nrrow; i++) {
-	    column_p->setShape (rownr++, shapeFixed_p);
+	    column_p->setShape (startRow++, shapeFixed_p);
 	}
     }
 }
