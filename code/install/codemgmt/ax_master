@@ -2415,3 +2415,4 @@
 09 351 src rm aips/implement/Functionals/test/tBinaryOperation.cc
 09 351 src rm aips/implement/Functionals/test/tBinaryOperation.out
 09 351 src rm aips/implement/Functionals/BinaryTranEnums.h
+09 351 src rm aips/implement/Functionals/BinaryTranscendental.cc
