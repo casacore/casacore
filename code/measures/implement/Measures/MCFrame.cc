@@ -1,5 +1,5 @@
 //# MCFrame.cc: Measure frame calculations proxy
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -393,16 +393,28 @@ void MCFrame::makePosition() {
 }
 
 void MCFrame::makeDirection() {
-  static const MDirection::Ref REFJ2000 
-    = MDirection::Ref(MDirection::J2000);
-  delete (MDirection::Convert *) dirConvJ2000;
+  static MDirection::Ref REFJ2000(MDirection::J2000);
+  if (dirConvJ2000) {
+    myf.lock();
+    delete (MDirection::Convert *) dirConvJ2000;
+    dirConvJ2000 = 0;
+  };
+  REFJ2000.set(this->myf);
   dirConvJ2000 = new MDirection::Convert(*(myf.direction()),
 					 REFJ2000);
-  static const MDirection::Ref REFB1950 
-    = MDirection::Ref(MDirection::B1950);
-  delete (MDirection::Convert *) dirConvB1950;
+  if (dirConvJ2000) myf.unlock();
+
+  static MDirection::Ref REFB1950(MDirection::B1950);
+  if (dirConvB1950) {
+    myf.lock();
+    delete (MDirection::Convert *) dirConvB1950;
+    dirConvB1950 = 0;
+  };
+  REFB1950.set(this->myf);
   dirConvB1950 = new MDirection::Convert(*(myf.direction()),
 					 REFB1950);
+  if (dirConvB1950) myf.unlock();
+
   if (dirConvApp) {
     myf.lock();
     delete (MDirection::Convert *) dirConvApp;
