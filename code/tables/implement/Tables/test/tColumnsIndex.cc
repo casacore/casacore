@@ -1,5 +1,5 @@
 //# tColumnsIndex.cc: Test program for the ColumnsIndex class
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -88,7 +88,7 @@ void a()
 	afloat.put (i, i);
 	adouble.put (i, i);
 	acomplex.put (i, Complex(i,0));
-	adcomplex.put (i, DComplex(i,i));
+	adcomplex.put (i, DComplex(0,i));
 	sprintf (str, "V%i", i);
 	astring.put (i, str);
     }
@@ -137,7 +137,7 @@ void b()
         *afloat = i;
         *adouble = i;
         *acomplex = Complex(i,0);
-        *adcomplex = DComplex(i,i);
+        *adcomplex = DComplex(0,i);
 	sprintf (str, "V%i", i);
         *astring = str;
         AlwaysAssertExit ( (colInx1.getRowNumber(found) == i  && found));
