@@ -1340,8 +1340,8 @@ Bool CoordinateSystem::convert (Matrix<Double>& coordsOut,
 
    IPosition velAxesIn(n);
    IPosition velAxesOut(n);
-   PtrBlock<SpectralCoordinate*> specCoordsIn(n, 0);
-   PtrBlock<SpectralCoordinate*> specCoordsOut(n, 0);
+   PtrBlock<SpectralCoordinate*> specCoordsIn(n, (SpectralCoordinate*)0);
+   PtrBlock<SpectralCoordinate*> specCoordsOut(n, (SpectralCoordinate*)0);
 //
    Vector<String> unitsIn2(cSysIn.worldAxisUnits().copy());
    Vector<String> unitsOut2(cSysOut.worldAxisUnits().copy());
