@@ -69,47 +69,48 @@
 #=============================================================================
 
 #-----------------------------------------------------------------------------
-# This file should work on RedHat Linux 6.1 systems without
-# modification and with a bit of tweaking on RedHat-6.x systems
-# assuming that the additional software (lapack, pgplot etc.)
-# available on the AIPS++ ftp site has been installed. It uses egcs as
-# the compiler for C,C++ and Fortran (ie g77).
+# This file should work on RedHat Linux 7.0 systems without modification 
+# assuming that the following additional software has been installed. 
+# It uses egcs as the compiler for C, C++ and Fortran.
+# If you have a standard RedHat-7.0 installation you need to install the
+# following rpms.
+# compat-egcs-g77-6.2-1.1.2.9	(RedHat-7.0)
+# lapack-3.0-8			(RedHat-7.0 powertools)
+# blas-3.0-8			(RedHat-7.0 powertools)
+# lesstif-1.2-devel-0.91.0-4	(RedHat-7.0 powertools)
+# lesstif-0.91.0-4		(RedHat-7.0 powertools)
+# pgplot-5.2.0-8u		(NRAO RedHat-6.1)
+# pgplot-devel-5.2.0-8u		(NRAO RedHat-6.1)
+# pgplot-motif-5.2.0-8u		(NRAO RedHat-6.1)
+# The location of these rpms is
+# RedHat-7.0: The standard RedHat-7.0 distribution (but normally not installed)
+# RedHat-7.0 Powertools: The RedHat-7.0 powertools CD
+# NRAO RedHat-6.1: Is in the NRAO distribition of RedHat-6.1
+# Finally when installing pgplot-motif-5.2.0-8u you need to disable the
+# dependency check using the --nodeps flag.
 #-----------------------------------------------------------------------------
 
 # Libraries and include paths.
 #-----------------------------------------------------------------------------
 
-# The C++ compiler.
-#------------------
-C++ROOT := /usr
-
 # General external libraries. 
 #---------------------------- 
-
-# TCL (version 7.6 or later).
-TCLLIB  += -ldl
 
 # X11.
 X11ROOT := /usr/X11R6
 
-# Motif.
-MotifROOT := $(X11ROOT)
+# Motif (lesstif is fine).
+MotifROOT := $(X11ROOT)/LessTif/Motif1.2
 
 # XPM (X Pixmap) library
 XPMROOT  := $(X11ROOT)
 
-# FORTRAN compiler (using g77)
-F77ROOT  := /usr
-F77LIBD  := /usr/lib/gcc-lib/i386-redhat-linux/egcs-2.91.66
-F77LIB   := -lg2c
+# TCL (version 7.6 or later).
+TCLROOT  := /usr
+TCLLIB   += -ldl
 
-# Platform-specific libraries - always added.
-ARCHLIBS := -lm
-
-# External libraries required by particular AIPS++ packages.
-#-----------------------------------------------------------
-# RPFITS (required by ATNF).
-RPFITSLIB :=
+# PGPLOT (FORTRAN plotting package).
+PGPLOTROOT := /usr
 
 #-----------------------------------------------------------------------------
 # Compilation and linkage variables
@@ -119,21 +120,25 @@ RPFITSLIB :=
 CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN
 
 # C compiler flags for system debug/optimized compilations.
-CC       := $(C++ROOT)/bin/gcc
+CC      := /usr/bin/egcs
 CSTD    += -DHAVE_LINUX_GLIBC -Wall
 
+# The C++ compiler.
+C++ROOT := /usr
 # C++ compiler flags for system debug/optimized compilations.
-C++      := $(C++ROOT)/bin/g++
-C++STD   += -pipe -fno-implicit-templates -Wall
+C++       := $(C++ROOT)/bin/egcs++
+C++STD    += -pipe -fno-implicit-templates -Wall
 
+# FORTRAN compiler.
+F77ROOT  := /usr
+F77LIB   := $(F77ROOT)/lib/gcc-lib/i386-glibc21-linux/egcs-2.91.66/libg2c.a
 # FORTRAN compiler flags for system debug/optimized compilations.
-FC       := $(F77ROOT)/bin/g77
+FC       := $(F77ROOT)/bin/i386-glibc21-linux-g77
 FCOPTLVL := -O2
 FCOPT    += -fPIC
 
 # Link flags for system debug/optimized compilations; these are passed to
 # the C++ compiler.
-# Link flags for system debug/optimized compilations; passed to g++.
 LDSTD := -Xlinker -rpath -Xlinker $(AIPSARCH)/lib
 
 # Control table for building AIPS++ libraries.  Four keywords are recognized:
@@ -145,24 +150,16 @@ LDSTD := -Xlinker -rpath -Xlinker $(AIPSARCH)/lib
 #    shared:  The static and shared libraries are built and the shared library
 #             is the one linked to.
 #
-#                       C++            C          FORTRAN
-#                    dbg    opt    dbg    opt    dbg    opt
-#                  ------------- ------------- -------------
-LIBnrao      :=    defeat static defeat defeat defeat defeat
+#                    C++            C          FORTRAN
+#                 dbg    opt    dbg    opt    dbg    opt
+#               ------------- ------------- -------------
+LIBnrao      := defeat static defeat defeat defeat defeat
 
 # What consortium packages to build (atnf bima hia nfra nral nrao tifr).
 CONSORTIA += nrao
-
-# Absolute pathnames of perl-4 and perl-5 executables (if available).
-PERL5 := /usr/bin/perl
-
-# Document compilers.
-TEXBINROOT := /usr/bin
-TEXROOT    := /usr/share/texmf
 
 # Unset this to defeat document compilation.
 DOCSYS :=
 
 # Unset this to defeat document extraction from C++ sources.
 DOCEXTR :=
-
