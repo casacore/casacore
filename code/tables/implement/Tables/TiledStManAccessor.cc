@@ -1,5 +1,5 @@
 //# TiledStManAccessor.cc: Gives access to some TiledStMan functions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@ ROTiledStManAccessor::ROTiledStManAccessor (const Table& table,
     DataManager* dmptr = findDataManager (table, dataManagerName);
     String type = dmptr->dataManagerType();
     if (type != "TiledDataStMan"  &&  type != "TiledCellStMan"
-    &&  type != "TiledColumnStMan") {
+    &&  type != "TiledColumnStMan"  &&  type != "TiledShapeStMan") {
 	throw (DataManError ("Data manager " + dataManagerName + " has type "
 			     + dmptr->dataManagerType() +
 			     "; expected Tiled*StMan"));
