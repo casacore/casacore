@@ -1720,6 +1720,7 @@
      template class Gaussian3D<DComplex> 
      template class Gaussian3D<Complex> 
 1010 scimath/Functionals/Gaussian3D.cc 
+     template class Gaussian3D<Float> 
      template class Gaussian3D<Double> 
 1000 scimath/Functionals/Gaussian3D2.cc 
      = scimath/Mathematics/AutoDiff.h 
