@@ -319,15 +319,19 @@ template<class T> void PagedArray<T>::putSlice(const Array<T> &sourceArray,
     buildColumn(overloadhelper, table_p, columnname_p, COLUMNCOMMENT, 
 		rownumber_p, indirectArray_p, sourceArray.shape());
   }
-  IPosition shape(where.nelements(),1),origin(where.nelements(),0);
-  if (where.nelements()<sourceArray.ndim()) {
+  uInt arrDim = sourceArray.ndim();
+  uInt latDim = ndim();
+  if (arrDim > latDim) {
     throw(AipsError("PagedArray<T>::putSlice: "
 		    "where.nelements()<sourceArray.ndim()"));
+  } else if (arrDim < latDim) {
+    Array<T> degenerateArr(sourceArray.addDegenerate(latDim-arrDim));
+    Slicer theSlice(where, degenerateArr.shape(), stride, Slicer::endIsLength); 
+    indirectArray_p.putSlice(rownumber_p, theSlice, degenerateArr);
+  } else {
+    Slicer theSlice(where, sourceArray.shape(), stride, Slicer::endIsLength); 
+    indirectArray_p.putSlice(rownumber_p, theSlice, sourceArray);
   }
-  for (Int i=0; i<sourceArray.ndim(); i++) shape(i)=sourceArray.shape()(i);
-  Slicer theSlice(where, shape, stride, Slicer::endIsLength); 
-  indirectArray_p.putSlice(rownumber_p, theSlice, sourceArray.reform(shape,
-								     origin));
 };
 
 
