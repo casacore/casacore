@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Mathematics/InterpolateArray1D.h>
-#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
@@ -36,8 +36,8 @@
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout, 
-						   const Block<Domain>& xout,
-						   const Block<Domain>& xin, 
+						   const Vector<Domain>& xout,
+						   const Vector<Domain>& xin, 
 						   const Array<Range>& yin,
 						   Int method)
 {
@@ -68,9 +68,21 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout, 
-						   Array<Bool>& youtFlags,
 						   const Block<Domain>& xout,
 						   const Block<Domain>& xin, 
+						   const Array<Range>& yin,
+						   Int method)
+{
+  Vector<Domain> vxout(xout);
+  Vector<Domain> vxin(xin);
+  interpolate(yout,vxout,vxin,yin,method);
+}
+
+template <class Domain, class Range>
+void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout, 
+						   Array<Bool>& youtFlags,
+						   const Vector<Domain>& xout,
+						   const Vector<Domain>& xin, 
 						   const Array<Range>& yin,
 						   const Array<Bool>& yinFlags,
 						   Int method,
@@ -118,10 +130,27 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
 }
 
 template <class Domain, class Range>
+void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout, 
+						   Array<Bool>& youtFlags,
+						   const Block<Domain>& xout,
+						   const Block<Domain>& xin, 
+						   const Array<Range>& yin,
+						   const Array<Bool>& yinFlags,
+						   Int method,
+                                                   Bool goodIsTrue,
+						   Bool extrapolate)
+{
+  Vector<Domain> vxout(xout);
+  Vector<Domain> vxin(xin);
+  interpolate(yout,youtFlags,vxout,vxin,yin,yinFlags,
+	      method,goodIsTrue,extrapolate);
+}
+
+template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout, 
                                                       Int ny, 
-  					              const Block<Domain>& xout, 
-						      const Block<Domain>& xin,
+  					              const Vector<Domain>& xout, 
+						      const Vector<Domain>& xin,
 						      const PtrBlock<const Range*>& yin, 
                                                       Int method)
 {
@@ -270,8 +299,8 @@ template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout, 
 						      PtrBlock<Bool*>& youtFlags, 
 						      Int ny, 
- 						      const Block<Domain>& xout, 
-						      const Block<Domain>& xin,
+ 						      const Vector<Domain>& xout, 
+						      const Vector<Domain>& xin,
 						      const PtrBlock<const Range*>& yin, 
 						      const PtrBlock<const Bool*>& yinFlags, 
 						      Int method,
@@ -493,8 +522,8 @@ template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::polynomialInterpolation
 (PtrBlock<Range*>& yout,
  Int ny, 
- const Block<Domain>& xout, 
- const Block<Domain>& xin,
+ const Vector<Domain>& xout, 
+ const Vector<Domain>& xin,
  const PtrBlock<const Range*>& yin, 
  Int order)
 {

@@ -30,6 +30,7 @@
 template <class T> class PtrBlock;
 template <class T> class Block;
 template <class T> class Array;
+template <class T> class Vector;
 
 // <summary> Interpolate in one dimension </summary>
  
@@ -40,7 +41,7 @@ template <class T> class Array;
  
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto> 
-//   <li> <linkto class=Block>Block</linkto> 
+//   <li> <linkto class=Vector>Vector</linkto> 
 // </prerequisite>
  
 // <etymology>
@@ -98,7 +99,7 @@ template <class T> class Array;
 // </example>
  
 // <motivation>
-// This class is motivated by the need to interpolate visibilities
+// This class was motivated by the need to interpolate visibilities
 // in frequency to allow selection and gridding in velocity space
 // with on-the-fly doppler correction.
 // </motivation>
@@ -146,6 +147,14 @@ public:
   // values in the pol-chan plane are interpolated to produce the output
   // pol-chan plane.
   static void interpolate(Array<Range>& yout, 
+			  const Vector<Domain>& xout,
+			  const Vector<Domain>& xin, 
+			  const Array<Range>& yin,
+			  Int method);
+
+  // deprecated version of previous function using Blocks - no longer needed
+  // now that Vector has a fast index operator [].
+  static void interpolate(Array<Range>& yout, 
 			  const Block<Domain>& xout,
 			  const Block<Domain>& xin, 
 			  const Array<Range>& yin,
@@ -156,10 +165,25 @@ public:
   // Output array yout has interpolated values for x coordinates xout.
   // This version handles flagged data in a simple way: all outputs
   // depending on a flagged input are flagged.
-  // TODO: implement flags for cubic and spline (presently input flags
-  // are copied to output).  If goodIsTrue==True, then that means
+  // If goodIsTrue==True, then that means
   // a good data point has a flag value of True (usually for 
   // visibilities, good is False and for images good is True)
+  // If extrapolate==False, then xout points outside the range of xin
+  // will always be marked as flagged.
+  // TODO: implement flags for cubic and spline (presently input flags
+  // are copied to output).  
+  static void interpolate(Array<Range>& yout, 
+			  Array<Bool>& youtFlags,
+			  const Vector<Domain>& xout,
+			  const Vector<Domain>& xin, 
+			  const Array<Range>& yin,
+			  const Array<Bool>& yinFlags,
+			  Int method,
+                          Bool goodIsTrue=False,
+			  Bool extrapolate=False);
+
+  // deprecated version of previous function using Blocks - no longer needed
+  // now that Vector has a fast index operator [].
   static void interpolate(Array<Range>& yout, 
 			  Array<Bool>& youtFlags,
 			  const Block<Domain>& xout,
@@ -170,12 +194,13 @@ public:
                           Bool goodIsTrue=False,
 			  Bool extrapolate=False);
 
+
 private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
   static void interpolatePtr(PtrBlock<Range*>& yout, 
 			     Int ny, 
-			     const Block<Domain>& xout, 
-			     const Block<Domain>& xin,
+			     const Vector<Domain>& xout, 
+			     const Vector<Domain>& xin,
 			     const PtrBlock<const Range*>& yin, 
 			     Int method);
 
@@ -184,8 +209,8 @@ private:
   static void interpolatePtr(PtrBlock<Range*>& yout, 
 			     PtrBlock<Bool*>& youtFlags,
 			     Int ny, 
-			     const Block<Domain>& xout, 
-			     const Block<Domain>& xin,
+			     const Vector<Domain>& xout, 
+			     const Vector<Domain>& xin,
 			     const PtrBlock<const Range*>& yin, 
 			     const PtrBlock<const Bool*>& yinFlags, 
 			     Int method, Bool goodIsTrue,
@@ -195,11 +220,8 @@ private:
   // using polynomial interpolation with specified order.
   static void polynomialInterpolation(PtrBlock<Range*>& yout, 
 				      Int ny, 
-				      const Block<Domain>& xout, 
-				      const Block<Domain>& xin,
+				      const Vector<Domain>& xout, 
+				      const Vector<Domain>& xin,
 				      const PtrBlock<const Range*>& yin, 
 				      Int order);
 };
-
-
-
