@@ -81,6 +81,7 @@ public:
   //# Constructors
   // Constructs the GNoise, Defaults:
   // mean=0, var=1.0
+  // <group>
   GNoiseFunction() : GNoiseParam<T>() {};
   GNoiseFunction(const Double &mean, const Double &var) :
     GNoiseParam<T>(mean, var) {};
