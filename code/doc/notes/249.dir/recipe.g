@@ -1,3 +1,4 @@
+# AIPS++ Recipes Repository script recipe template
 #
 #RECIPE: <insert one-line descriptive title for recipe here>
 #
