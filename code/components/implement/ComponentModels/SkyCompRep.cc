@@ -388,73 +388,91 @@ Bool SkyCompRep::addLabel(String & errorMessage, GlishRecord & record) const {
   return True;
 }
 
-// void SkyCompRep::setFluxLinear(const Quantum<Vector<DComplex> > & compFlux) {
-//   AlwaysAssert(compFlux.isConform("Jy") == True, AipsError);
-//   const Vector<DComplex> & fluxLinear = compFlux.getValue();
-//   AlwaysAssert(fluxLinear.nelements() == 4, AipsError);
-//   // NOTE: Precision is LOST here because we do not yet have double precision
-//   // version of the conversions available.
-//   StokesConverter sc;
-//   {
-//     Vector<Int> stokes(4), linear(4);
-//     stokes(0) = Stokes::I;
-//     stokes(1) = Stokes::Q;
-//     stokes(2) = Stokes::U;
-//     stokes(3) = Stokes::V;
-//     linear(0) = Stokes::XX;
-//     linear(1) = Stokes::XY;
-//     linear(2) = Stokes::YX;
-//     linear(3) = Stokes::YY;
-//     sc.setConversion(stokes, linear);
-//   }
-//   Vector<Complex> singleLinear(4), complexStokes(4);
-//   for (uInt s = 0; s < 4; s++) {
-//     singleLinear(s) = fluxLinear(s);
-//   }
-//   sc.convert(complexStokes, singleLinear);
-  
-//   Vector<Double> fluxStokes(4);
-//   for (uInt i = 0; i < 4; i++) {
-//     fluxStokes(i) = real(complexStokes(i));
-//   }
-//   SkyCompRep::setFlux(Quantum<Vector<Double> >(fluxStokes, 
-// 					       compFlux.getFullUnit()));
-// }
+void SkyCompRep::setFluxLinear(const Quantum<Vector<DComplex> > & compFlux) {
+  AlwaysAssert(compFlux.isConform("Jy") == True, AipsError);
+  const Vector<DComplex> & fluxLinear = compFlux.getValue();
+  AlwaysAssert(fluxLinear.nelements() == 4, AipsError);
+  // NOTE: Precision is LOST here because we do not yet have double precision
+  // version of the conversions available.
+  StokesConverter sc;
+  {
+    Vector<Int> stokes(4), linear(4);
+    stokes(0) = Stokes::I;
+    stokes(1) = Stokes::Q;
+    stokes(2) = Stokes::U;
+    stokes(3) = Stokes::V;
+    linear(0) = Stokes::XX;
+    linear(1) = Stokes::XY;
+    linear(2) = Stokes::YX;
+    linear(3) = Stokes::YY;
+    sc.setConversion(stokes, linear);
+  }
+  Vector<Complex> singleLinear(4), complexStokes(4);
+  for (uInt s = 0; s < 4; s++) {
+    singleLinear(s) = fluxLinear(s);
+  }
+  sc.convert(complexStokes, singleLinear);
 
-// void SkyCompRep::fluxLinear(Quantum<Vector<DComplex> > & compFlux) const {
-//   // NOTE: Precision is LOST here because we do not yet have double precision
-//   // version of the conversions available.
-//   StokesConverter sc;
-//   {
-//     Vector<Int> stokes(4), linear(4);
-//     stokes(0) = Stokes::I;
-//     stokes(1) = Stokes::Q;
-//     stokes(2) = Stokes::U;
-//     stokes(3) = Stokes::V;
-//     linear(0) = Stokes::XX;
-//     linear(1) = Stokes::XY;
-//     linear(2) = Stokes::YX;
-//     linear(3) = Stokes::YY;
-//     sc.setConversion(linear, stokes);
-//   }
-//   Quantum<Vector<Double> > fluxStokes;
-//   SkyCompRep::flux(fluxStokes);
+  Vector<Double> fluxStokes(4);
+  for (uInt i = 0; i < 4; i++) {
+    fluxStokes(i) = real(complexStokes(i));
+  }
+  setFlux(Quantum<Vector<Double> >(fluxStokes, compFlux.getFullUnit()));
+}
 
-//   Vector<Complex> complexStokes(4), singleLinear(4);
-//   for (uInt i = 0; i < 4; i++) {
-//     complexStokes(i) = Complex(fluxStokes.getValue()(i), 0.0f);
-//   }
+void SkyCompRep::fluxLinear(Quantum<Vector<DComplex> > & compFlux) const {
+  // NOTE: Precision is LOST here because we do not yet have double precision
+  // version of the conversions available.
+  StokesConverter sc;
+  {
+    Vector<Int> stokes(4), linear(4);
+    stokes(0) = Stokes::I;
+    stokes(1) = Stokes::Q;
+    stokes(2) = Stokes::U;
+    stokes(3) = Stokes::V;
+    linear(0) = Stokes::XX;
+    linear(1) = Stokes::XY;
+    linear(2) = Stokes::YX;
+    linear(3) = Stokes::YY;
+    sc.setConversion(linear, stokes);
+  }
+  Quantum<Vector<Double> > fluxStokes;
+  flux(fluxStokes);
 
-//   sc.convert(singleLinear, complexStokes);
+  Vector<Complex> complexStokes(4), singleLinear(4);
+  for (uInt i = 0; i < 4; i++) {
+    complexStokes(i) = Complex(fluxStokes.getValue()(i), 0.0f);
+  }
 
-//   Vector<DComplex> doubleLinear(4);
-//   for (uInt s = 0; s < 4; s++) {
-//     doubleLinear(s) = singleLinear(s);
-//   }
-//   compFlux.setValue(doubleLinear);
-//   compFlux.setUnit(fluxStokes.getFullUnit());
-  
-// }
+  sc.convert(singleLinear, complexStokes);
+
+  Vector<DComplex> doubleLinear(4);
+  for (uInt s = 0; s < 4; s++) {
+    doubleLinear(s) = singleLinear(s);
+  }
+  compFlux.setValue(doubleLinear);
+  compFlux.setUnit(fluxStokes.getFullUnit());
+}
+
+void SkyCompRep::setFluxCircular(const Quantum<Vector<DComplex> > & compFlux) {
+  // just a stub
+}
+
+void SkyCompRep::fluxCircular(Quantum<Vector<DComplex> > & compFlux) const {
+  // just a stub
+}
+
+void SkyCompRep::visibilityLinear(Vector<DComplex> & vis, 
+ 				  const Vector<Double> & uvw,
+ 				  const Double & frequency) const {
+  // just a stub
+}
+
+void SkyCompRep::visibilityCircular(Vector<DComplex> & vis, 
+ 				    const Vector<Double> & uvw,
+ 				    const Double & frequency) const {
+  // just a stub
+}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
 // End: 
