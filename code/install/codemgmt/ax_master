@@ -3426,3 +3426,4 @@
 13 264 src mv trial/implement/TableMeasures/TableMeasType.h aips/implement/TableMeasures/TableMeasType.h
 13 264 src mv trial/implement/TableMeasures/TableMeasType.cc aips/implement/TableMeasures/TableMeasType.cc
 13 264 src mv trial/implement/TableMeasures/TableMeasValueDesc.h aips/implement/TableMeasures/TableMeasValueDesc.h
+13 264 src mv trial/implement/TableMeasures/TableMeasValueDesc.cc aips/implement/TableMeasures/TableMeasValueDesc.cc
