@@ -187,6 +187,7 @@
      case $1 in
      -b)
         BLESSED=1
+	RELEASE="stable"
         ;;
      binary)
         BINARY=1
