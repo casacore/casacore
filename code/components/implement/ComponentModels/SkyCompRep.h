@@ -149,23 +149,21 @@ public:
   virtual void parameters(Vector<Double> & compParms) const = 0;
   // </group>
 
-  // get the spectral type of the component. The default version of this
-  // function returns ComponentType::CONSTANT_SPECTRUM
-  virtual ComponentType::SpectralShape spectralShape() const;
+  // get the spectral type of the component.
+  virtual ComponentType::SpectralShape spectralShape() const = 0;
 
   // set/get the reference frequency. Default versions of these functions
   // do nothing.
   // <group>
-  virtual void setRefFrequency(const MFrequency & newRefFreq);
-  virtual const MFrequency & refFrequency() const;
-  //  virtual void refFrequency(MFrequency & refFreq) const;
+  virtual void setRefFrequency(const MFrequency & newRefFreq) = 0;
+  virtual const MFrequency & refFrequency() const = 0;
   // </group>
 
   // Return the scaling factor used to scale the flux of the component at the
   // specified frequency. The scaling factor is always 1 at the reference
   // frequency. The default version of this function ignores the sampleFreq
   // argument and always returns 1.
-  virtual Double scale(const MFrequency & sampleFreq) const;
+  virtual Double scale(const MFrequency & sampleFreq) const = 0;
 
   // Return the flux (in dimensions of W/m^2/Hz) of the component at the
   // specified frequency. The default version of this function returns the Flux
@@ -174,9 +172,9 @@ public:
 
   // return the number of parameters in the spectral shape and set/get them.
   // <group>
-  virtual uInt nSpectralParameters() const;
-  virtual void setSpectralParameters(const Vector<Double> & newParms);
-  virtual void spectralParameters(Vector<Double> & compParms) const;
+  virtual uInt nSpectralParameters() const = 0;
+  virtual void setSpectralParameters(const Vector<Double> & newParms) = 0;
+  virtual void spectralParameters(Vector<Double> & compParms) const = 0;
   // </group>
 
   // set/get the label associated with this component. Default versions of
