@@ -54,9 +54,68 @@ Fit2D::Fit2D(LogIO& logger)
 {
 }
 
+Fit2D::Fit2D(const Fit2D& other)
+: itsLogger(other.itsLogger),                  // Reference semantics
+  itsValid(other.itsValid),
+  itsValidSolution(other.itsValidSolution),
+  itsIsNormalized(other.itsIsNormalized),
+  itsHasSigma(other.itsHasSigma),
+  itsInclude(other.itsInclude),
+  itsPixelRange(other.itsPixelRange.copy()),   // Copy semantics
+  itsFunction(other.itsFunction),              // Copy semantics
+  itsSolution(other.itsSolution.copy()),       // Copy semantics
+  itsChiSquared(other.itsChiSquared),
+  itsErrorMessage(other.itsErrorMessage),
+  itsNumberPoints(other.itsNumberPoints),
+  itsTypeList(other.itsTypeList.copy()),       // Copy semantics
+  itsNormVal(other.itsNormVal),
+  itsNormPos(other.itsNormPos)
+{
+// 
+// Note that the variable itsFitter is not copied.
+// This is because the fitting classes have no 
+// assignment operator or copy constructor.  However,
+// it doesn't matter, because the fitter is always
+// set as needed by the "fit" function.  The fact that it
+// is private is just to avoid creating it over and over
+}
+
+
 Fit2D::~Fit2D()
 {
 }
+
+Fit2D& Fit2D::operator=(const Fit2D& other)
+// 
+// Note that the variable itsFitter is not copied.
+// This is because the fitting classes have no 
+// assignment operator or copy constructor.  However,
+// it doesn't matter, because the fitter is always
+// set as needed by the "fit" function.  The fact that it
+// is private is just to avoid creating it over and over
+//
+{
+   if (this != &other) {
+      itsLogger = other.itsLogger;                  // Reference semantics
+      itsValid = other.itsValid;
+      itsValidSolution = other.itsValidSolution;
+      itsIsNormalized = other.itsIsNormalized;
+      itsHasSigma = other.itsHasSigma;
+      itsInclude = other.itsInclude;
+      itsPixelRange = other.itsPixelRange.copy();   // Copy semantics
+      itsFunction = other.itsFunction;              // Copy semantics
+      itsSolution = other.itsSolution.copy();       // Copy semantics
+      itsChiSquared = other.itsChiSquared;
+      itsErrorMessage = other.itsErrorMessage;
+      itsNumberPoints = other.itsNumberPoints;
+      itsTypeList = other.itsTypeList.copy();       // Copy semantics
+      itsNormVal = other.itsNormVal;
+      itsNormPos = other.itsNormPos;
+   }
+   return *this;
+}
+
+
 
 
 uInt Fit2D::addModel (Fit2D::Types type,
@@ -268,19 +327,18 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
       }
    }
 //
-// Set the functional with the solution
+// Create a functional with the solution
 //
+   SumFunction<AutoDiff<Double>,AutoDiff<Double> > sumFunction(itsFunction);
    Vector<Double> sol = availableSolution();
-   Vector<AutoDiff<Double> > saveParams(itsFunction.nAvailableParams());
-   for (uInt i=0; i<saveParams.nelements(); i++) {
-      saveParams(i) = itsFunction.getAvailableParam(i);
-      itsFunction.setAvailableParam(i, AutoDiff<Double>(sol(i)));
+   for (uInt i=0; i<sol.nelements(); i++) {
+      sumFunction.setAvailableParam(i, AutoDiff<Double>(sol(i)));
    }
 //
    IPosition loc(2);
    Vector<AutoDiff<Double> > pos(2);
    AutoDiff<Double> t1, t2;
-
+//
    for (Int j=0; j<shape(1); j++) {
       for (Int i=0; i<shape(0); i++) {
          loc(0) = i;
@@ -289,16 +347,9 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
          t2.value() = Double(j);
          pos(0) = t1;
          pos(1) = t2;
-         resid(loc) = data(loc) - itsFunction(pos).value();
+         resid(loc) = data(loc) - sumFunction(pos).value();
       }
    }
-//
-// Put the functional back the way it was
-//
-   for (uInt i=0; i<saveParams.nelements(); i++) {
-     itsFunction.setAvailableParam(i, saveParams(i));
-   }
-//
    return Fit2D::OK;
 }
 
