@@ -28,9 +28,8 @@
 
 //# Includes
 #include <trial/Lattices/LatticeCleanProgress.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Tasking/ApplicationEnvironment.h>
 #include <trial/Tasking/PGPlotter.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 
@@ -53,8 +52,7 @@ LatticeCleanProgress::LatticeCleanProgress(PGPlotter* pgplotter)
     xMax(1),
     fluxScaleJump(1.8),
     residScaleJump(3.0),
-    forbidden(99999999.0),
-    baseFluxes(0.0)
+    forbidden(99999999.0)
 {
 }
 
