@@ -36,7 +36,9 @@
 
 #if !defined(AIPS_SGI)
 #include <vector>
+#if !defined(AIPS_INTELCC)
 using std::vector;
+#endif
 #else
 #include <vector.h>
 #endif
