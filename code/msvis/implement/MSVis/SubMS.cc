@@ -135,7 +135,10 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
   msOut_p= *outpointer;
   msc_p=new MSColumns(msOut_p);
   // fill or update
-  fillDDTables();
+  if(!fillDDTables()){
+    return False;
+    
+  }
   fillFieldTable();
   copyAntenna();
   copyFeed();
@@ -369,8 +372,10 @@ Bool SubMS::fillDDTables(){
     if(nchan_p[k] != numChan(spw_p[k])){
       Int totchan=nchan_p[k]*chanStep_p[k]+chanStart_p[k];
       if(totchan >  numChan(spw_p[k])){
-	os << " Channel settings wrong; exceeding number of channels in spw "
-	   << spw_p[k]+1 << LogIO::EXCEPTION;
+	os << LogIO::SEVERE
+	   << " Channel settings wrong; exceeding number of channels in spw "
+	   << spw_p[k]+1 << LogIO::POST;
+	return False;
       }
       doChanAver_p=True; 
       Vector<Double> chanFreqOut(nchan_p[k]);
