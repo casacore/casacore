@@ -68,28 +68,7 @@ TableLogSink::TableLogSink (const LogFilter& filter, const String& fileName,
         makeTable (setup, useSSM);
     }
 
-    // Attach the columns
-    time_p.attach     (log_table_p, columnName(TIME));
-    priority_p.attach (log_table_p, columnName(PRIORITY));
-    message_p.attach  (log_table_p, columnName(MESSAGE));
-    location_p.attach (log_table_p, columnName(LOCATION));
-    id_p.attach       (log_table_p, columnName(OBJECT_ID));
-    roTime_p.attach     (log_table_p, columnName(TIME));
-    roPriority_p.attach (log_table_p, columnName(PRIORITY));
-    roMessage_p.attach  (log_table_p, columnName(MESSAGE));
-    roLocation_p.attach (log_table_p, columnName(LOCATION));
-    roId_p.attach       (log_table_p, columnName(OBJECT_ID));
-
-    // Define the time keywords when not defined yet.
-    // In this way the table browser can interpret the times.
-    if (log_table_p.isWritable()) {
-        TableRecord& keySet = time_p.rwKeywordSet();
-	if (! keySet.isDefined ("UNIT")) {
-	    keySet.define ("UNIT", "s");
-	    keySet.define ("MEASURE_TYPE", "EPOCH");
-	    keySet.define ("MEASURE_REFERENCE", "UTC");
-	}
-    }
+    attachCols();
 }
 
 TableLogSink::TableLogSink (const String& fileName)
@@ -164,6 +143,32 @@ void TableLogSink::makeTable (SetupNewTable& setup, Bool useSSM)
     log_table_p.tableInfo() = TableInfo(TableInfo::LOG);
     log_table_p.tableInfo().
 	  readmeAddLine("Repository for software-generated logging messages");
+}
+
+void TableLogSink::attachCols()
+{
+    // Attach the columns
+    time_p.attach     (log_table_p, columnName(TIME));
+    priority_p.attach (log_table_p, columnName(PRIORITY));
+    message_p.attach  (log_table_p, columnName(MESSAGE));
+    location_p.attach (log_table_p, columnName(LOCATION));
+    id_p.attach       (log_table_p, columnName(OBJECT_ID));
+    roTime_p.attach     (log_table_p, columnName(TIME));
+    roPriority_p.attach (log_table_p, columnName(PRIORITY));
+    roMessage_p.attach  (log_table_p, columnName(MESSAGE));
+    roLocation_p.attach (log_table_p, columnName(LOCATION));
+    roId_p.attach       (log_table_p, columnName(OBJECT_ID));
+
+    // Define the time keywords when not defined yet.
+    // In this way the table browser can interpret the times.
+    if (log_table_p.isWritable()) {
+        TableRecord& keySet = time_p.rwKeywordSet();
+	if (! keySet.isDefined ("UNIT")) {
+	    keySet.define ("UNIT", "s");
+	    keySet.define ("MEASURE_TYPE", "EPOCH");
+	    keySet.define ("MEASURE_REFERENCE", "UTC");
+	}
+    }
 }
 
 void TableLogSink::reopenRW (const LogFilter& aFilter)
@@ -280,4 +285,16 @@ void TableLogSink::writeLocally (Double mtime,
   priority().put (offset, mpriority);
   location().put (offset, mlocation);
   objectID().put (offset, mobjectID);
+}
+
+void TableLogSink::clearLocally()
+{
+  String fileName = log_table_p.tableName();
+  // Delete current log table.
+  log_table_p.markForDelete();
+  log_table_p = Table();
+  // Create new log table.
+  SetupNewTable setup (fileName, logTableDescription(), Table::New);
+  makeTable (setup, True);
+  attachCols();
 }

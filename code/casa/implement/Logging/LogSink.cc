@@ -227,6 +227,11 @@ void LogSink::writeLocally (Double time, const String& message,
     local_sink_p->writeLocally (time, message, priority, location, objectID);
 }
 
+void LogSink::clearLocally()
+{
+    local_sink_p->clearLocally();
+}
+
 void LogSink::flush()
 {
     if (!local_sink_p.null()) {

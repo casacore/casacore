@@ -207,6 +207,9 @@ public:
 			     const String& priority, const String& location,
 			     const String& objectID);
 
+  // Clear the local sink (i.e. remove all messages from it).
+  virtual void clearLocally();
+
   //# Bring out of LogSinkInterface only for documentation purposes
   // Get or set the filter of this particular <src>LogSink</src>.
   // <group>

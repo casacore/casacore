@@ -135,15 +135,26 @@ void MemoryLogSink::writeLocally (Double time,
   nmsg_p++;
 }
 
+void MemoryLogSink::clearLocally()
+{
+  // Resize the block to 0 elements.
+  time_p.resize     (0, True, True);
+  priority_p.resize (0, True, True);
+  message_p.resize  (0, True, True);
+  location_p.resize (0, True, True);
+  objectID_p.resize (0, True, True);
+  nmsg_p = 0;
+}
+
 void MemoryLogSink::resize (uInt nrnew)
 {
   // Increase with at least 64 elements.
   if (nrnew < time_p.nelements()+64) {
     nrnew = time_p.nelements()+64;
   }
-  time_p.resize (nrnew);
+  time_p.resize     (nrnew);
   priority_p.resize (nrnew);
-  message_p.resize (nrnew);
+  message_p.resize  (nrnew);
   location_p.resize (nrnew);
   objectID_p.resize (nrnew);
 }

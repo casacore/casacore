@@ -110,6 +110,9 @@ public:
 			     const String& priority, const String& location,
 			     const String& objectID);
 
+  // Clear the local sink (i.e. remove all messages from it).
+  virtual void clearLocally();
+
 private:
   // Avoid duplicating code in copy ctor and assignment operator
   void copy_other (const MemoryLogSink& other);

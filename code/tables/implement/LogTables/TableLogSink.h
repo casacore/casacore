@@ -194,6 +194,9 @@ public:
 			     const String& priority, const String& location,
 			     const String& objectID);
 
+  // Clear the local sink (i.e. remove all messages from it).
+  virtual void clearLocally();
+
 private:
   // Undefined and inaccessible
   TableLogSink();
@@ -201,6 +204,8 @@ private:
   void copy_other(const TableLogSink& other);
   // Make a new log table.
   void makeTable (SetupNewTable&, Bool useSSM);
+  // Attach the column objects and create unit keywor if needed.
+  void attachCols();
 
   Table log_table_p;
   // Message

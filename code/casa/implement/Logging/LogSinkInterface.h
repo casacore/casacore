@@ -152,6 +152,10 @@ public:
 			     const String& priority, const String& location,
 			     const String& objectID);
 
+  // Clear the local sink (i.e. remove all messages from it).
+  // The default implementation does nothing.
+  virtual void clearLocally();
+
 private:
   LogFilter filter_p;
 };

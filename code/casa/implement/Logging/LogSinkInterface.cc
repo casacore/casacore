@@ -118,3 +118,6 @@ void LogSinkInterface::writeLocally (Double,
 				     const String&,
 				     const String&)
 {}
+
+void LogSinkInterface::clearLocally ()
+{}
