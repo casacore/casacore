@@ -485,9 +485,12 @@ enum KernelTypes {
 // <src>nxy</src> then the latter is set to [1,1].   A return value
 // of <src>False</src> indicates that you gave roo many values in the
 // <src>nxy</src> vector.
-   Bool setPlotting(const PGPlotter& device,
+   Bool setPlotting(PGPlotter& device,
                     const Vector<Int>& nxy,
                     const Bool yInd=False);
+
+// CLose plotter
+   void closePlotting();
 
 // Reset argument error condition.  If you specify invalid arguments to
 // one of the above functions, an internal flag will be set which will
