@@ -198,15 +198,11 @@ void MCEpoch::doConvert(MVEpoch &in,
       
       case UT1_GMST1: {
 	ut = in.get();
-	cout << "ut**: " << ut << ", " <<
-	  MeasTable::GMST0(ut)/MeasData::SECinDAY << endl;;;
 	if (MeasTable::useIAU2000()) {
 	  in -= MeasTable::dUT1(in.get())/MeasData::SECinDAY;
 	  in += MeasTable::dUTC(in.get())/MeasData::SECinDAY;
 	  in += MeasTable::dTAI(in.get())/MeasData::SECinDAY;
 	  tt = in.get();
-	  cout << "tt**: " << tt-ut << ", " <<
-	    MeasTable::GMST00(ut, tt)/C::_2pi << endl;;;
 	  in += MeasTable::GMST00(ut, tt)/C::_2pi;
 	} else {
 	  in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
