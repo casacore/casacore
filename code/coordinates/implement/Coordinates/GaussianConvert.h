@@ -50,7 +50,11 @@ template<class T> class Quantum;
 // </prerequisite>
 
 // <synopsis> 
-// Converts Gaussian parameters between world and pixel
+// Converts Gaussian parameters between world and pixel. 
+// In the pixel coordinate system ([0,0] in center of image)
+// the position angle is positive +y to -x. This is consistent
+// with Gaussian2D.  In the world coordinate system the pa
+// is positive N through E
 // </synopsis> 
 
 // <example>
