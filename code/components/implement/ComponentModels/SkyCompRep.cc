@@ -95,7 +95,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   IPosition chunckShape = imageShape;
   uInt axis;
   {
-    const IPosition tileShape(image.niceCursorShape(image.maxPixels()));
+    const IPosition tileShape(image.niceCursorShape());
     for (uInt k = 0; k < nPixAxes; k++) {
       axis = dirAxes(k);
       elementShape(axis) = 1;
@@ -133,7 +133,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   Vector<Double> pixelVal(4);
   IPosition chunkOrigin(naxis), elementPosition(naxis);
   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
-    ArrayLattice<Float> array(chunkIter.cursor());
+    ArrayLattice<Float> array(chunkIter.rwCursor());
     LatticeIterator<Float> elementIter(array, elementShape);
     chunkOrigin = chunkIter.position();
     for (elementIter.reset(); !elementIter.atEnd(); elementIter++) {
@@ -155,49 +155,47 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	if (nStokes == 1) {
 	  switch (stokes(0)) {
 	  case Stokes::I:
-	    elementIter.cursor() += Float(pixelVal(0)); break;
+	    elementIter.rwCursor() += Float(pixelVal(0)); break;
 	  case Stokes::Q:
-	    elementIter.cursor() += Float(pixelVal(1)); break;
+	    elementIter.rwCursor() += Float(pixelVal(1)); break;
 	  case Stokes::U:
-	    elementIter.cursor() += Float(pixelVal(2)); break;
+	    elementIter.rwCursor() += Float(pixelVal(2)); break;
 	  case Stokes::V:
-	    elementIter.cursor() += Float(pixelVal(3)); break;
+	    elementIter.rwCursor() += Float(pixelVal(3)); break;
 	  }
 	}
 	else if (elementShape.product() == Int(nStokes))
 	  for (uInt p = 0; p < nStokes; p++) {
 	    switch (stokes(p)) {
 	    case Stokes::I:
-	      elementIter.cursor()(blc[p]) += Float(pixelVal(0)); break;
+	      elementIter.rwCursor()(blc[p]) += Float(pixelVal(0)); break;
 	    case Stokes::Q:
-	      elementIter.cursor()(blc[p]) += Float(pixelVal(1)); break;
+	      elementIter.rwCursor()(blc[p]) += Float(pixelVal(1)); break;
 	    case Stokes::U:
-	      elementIter.cursor()(blc[p]) += Float(pixelVal(2)); break;
+	      elementIter.rwCursor()(blc[p]) += Float(pixelVal(2)); break;
 	    case Stokes::V:
-	      elementIter.cursor()(blc[p]) += Float(pixelVal(3)); break;
+	      elementIter.rwCursor()(blc[p]) += Float(pixelVal(3)); break;
 	    }
 	  }
 	else
 	for (uInt p = 0; p < nStokes; p++) {
 	  switch (stokes(p)) {
 	  case Stokes::I:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(0));
+	    elementIter.rwCursor()(blc[p], trc[p]).ac() += Float(pixelVal(0));
 	    break;
 	  case Stokes::Q:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(1));
+	    elementIter.rwCursor()(blc[p], trc[p]).ac() += Float(pixelVal(1));
 	    break;
 	  case Stokes::U:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(2));
+	    elementIter.rwCursor()(blc[p], trc[p]).ac() += Float(pixelVal(2));
 	    break;
 	  case Stokes::V:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(3));
+	    elementIter.rwCursor()(blc[p], trc[p]).ac() += Float(pixelVal(3));
 	    break;
 	  }
 	}
-	elementIter.writeCursor();
       }
     }
-    chunkIter.writeCursor();
   }
 }
 
