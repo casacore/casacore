@@ -1,5 +1,5 @@
 //# IPosition2.cc: A vector of integers, used to index into arrays (for Array<Int>)
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,9 +31,11 @@
 
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
+#include <aips/IO/AipsIO.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 
 IPosition::IPosition (const Array<Int> &other)
@@ -66,4 +68,37 @@ Vector<Int> IPosition::asVector() const
 	retval(i) = (*this)(i);
     }
     return retval;
+}
+
+LogIO& operator<< (LogIO& os, const IPosition& ip)
+{
+    os.output() << ip;
+    return os;
+}
+
+AipsIO& operator<< (AipsIO& aio, const IPosition& ip)
+{
+    aio.putstart("IPosition", IPosition::IPositionVersion);
+    // Write out the values
+    aio.put (ip.size_p, ip.data_p);
+    aio.putend();
+    return aio;
+}
+
+// <thrown>
+//    <item> AipsError
+// </thrown>
+AipsIO& operator>> (AipsIO& aio, IPosition& ip)
+{
+    if (aio.getstart("IPosition") != IPosition::IPositionVersion) {
+	throw(AipsError("AipsIO& operator>>(AipsIO& aio, IPosition& ip) - "
+			"version on disk and in class do not match"));
+    }
+    uInt nel;
+    aio >> nel;
+    ip.resize (nel, False);
+    aio.get (nel, ip.data_p);
+    aio.getend();
+    DebugAssert (ip.ok(), AipsError);
+    return aio;
 }
