@@ -136,7 +136,8 @@ Quantum<Qtype> root(const Quantum<Qtype> &left, Int p) {
   ostrstream oss;
   oss << vres.getDim();
   res.setUnit(String(oss));
-  return res * Qtype(vres.getFac());
+  res.setValue(res.getValue() * vres.getFac());
+  return res;
 }
 
 template <class Qtype>
