@@ -30,6 +30,7 @@
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
+#include <trial/Images/ImageInfo.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LCPagedMask.h>
@@ -185,9 +186,38 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
     ignore(19) = "^.delt";
     ignore(20) = "^bunit$";
     FITSKeywordUtil::removeKeywords(header, ignore);
-    // Remove any that might have been in ObsInfo of coordinates.
+
+// Remove any that might have been in ObsInfo of coordinates.
+
     FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
 
+// Store restoring beam, if any, in ImageInfo
+
+    if (header.isDefined("bmaj") && header.isDefined("bmin") &&
+        header.isDefined("bpa")) {
+       if (header.dataType("bmaj")==TpDouble &&
+           header.dataType("bmin")==TpDouble &&
+           header.dataType("bpa")==TpFloat) {
+
+          Double bmaj = header.asDouble("bmaj");
+          Double bmin = header.asDouble("bmin");
+          Double bpa = Double(header.asFloat("bpa"));
+//
+          ImageInfo imageInfo;
+          Quantum<Double> bmajq(max(bmaj,bmin), "deg");
+          Quantum<Double> bminq(min(bmaj,bmin), "deg");
+          bmajq.convert(Unit("arcsec")); 
+          bminq.convert(Unit("arcsec"));
+          imageInfo.setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
+          newImage->setImageInfo(imageInfo);
+//
+          header.removeField("bmaj");
+          header.removeField("bmin");
+          header.removeField("bpa");
+       }
+    }
+
+// Put whatever is left in the header into the MiscInfo bucket
     newImage->setMiscInfo(header);
 
     // Restore the logtable from HISTORY (this could be moved to non-templated
@@ -278,8 +308,6 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
                Bool* mPtr = maskCursor.getStorage(deleteMaskPtr);   
                for (uInt i=0; i<maskCursor.nelements(); i++) {
                   if (isNaN(ptr[i])) {
-//                  if (isnanf(ptr[i])) {
-//                  if (ptr[i] != ptr[i]) {
                      mPtr[i] = False; 
                      hasBlanks = True;
                   } else {
