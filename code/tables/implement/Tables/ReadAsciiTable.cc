@@ -493,79 +493,84 @@ Bool ReadAsciiTable::getValue (char* string1, Int lineSize, char* first,
     first[0] = '\0';
   }
   if(more){
+  String dum(first, done1);
   switch (type) {
   case RATBool:
-    *(Bool*)value = makeBool(first);
+    *(Bool*)value = makeBool(String(first, done1));
     break;
   case RATShort:
     if (done1 > 0) {
-      istringstream(first) >> *(Short*)value;
+      istringstream(dum) >> *(Short*)value;
     } else {
       *(Short*)value = 0;
     }
     break;
   case RATInt:
     if (done1 > 0) {
-      istringstream(first) >> *(Int*)value;
+      istringstream(dum) >> *(Int*)value;
     } else {
       *(Int*)value = 0;
     }
     break;
   case RATFloat:
     if (done1 > 0) {
-      istringstream(first) >> *(Float*)value;
+      istringstream(dum) >> *(Float*)value;
     } else {
       *(Float*)value = 0;
     }
     break;
   case RATDouble:
     if (done1 > 0) {
-      istringstream(first) >> *(Double*)value;
+      istringstream(dum) >> *(Double*)value;
     } else {
       *(Double*)value = 0;
     }
     break;
   case RATString:
-    *(String*)value = String(first);
+    *(String*)value = String(first, done1);
     break;
   case RATComX:
     if (done1 > 0) {
-      istringstream(first) >> f1;
+      istringstream(dum) >> f1;
     }
     done1 = getNext (string1, lineSize, first, at1, separator);
     if (done1 > 0) {
-      istringstream(first) >> f2;
+      String dum2(first, done1);
+      istringstream(dum2) >> f2;
     }
     *(Complex*)value = Complex(f1, f2);
     break;
   case RATDComX:
     if (done1 > 0) {
-      istringstream(first) >> d1;
+      istringstream(dum) >> d1;
     }
     done1 = getNext (string1, lineSize, first, at1, separator);
     if (done1 > 0) {
-      istringstream(first) >> d2;
+      String dum2(first, done1);
+      istringstream(dum2) >> d2;
     }
     *(DComplex*)value = DComplex(d1, d2);
     break;
   case RATComZ:
     if (done1 > 0) {
-      istringstream(first) >> f1;
+      istringstream(dum) >> f1;
     }
     done1 = getNext (string1, lineSize, first, at1, separator);
     if (done1 > 0) {
-      istringstream(first) >> f2;
+      String dum2(first, done1);
+      istringstream(dum2) >> f2;
     }
     f2 *= 3.14159265/180.0; 
     *(Complex*)value = Complex(f1*cos(f2), f1*sin(f2));
     break;
   case RATDComZ:
     if (done1 > 0) {
-      istringstream(first) >> d1;
+      istringstream(dum) >> d1;
     }
     done1 = getNext (string1, lineSize, first, at1, separator);
     if (done1 > 0) {
-      istringstream(first) >> d2;
+      String dum2(first, done1);
+      istringstream(dum2) >> d2;
     }
     d2 *= 3.14159265/180.0; 
     *(DComplex*)value = DComplex(d1*cos(d2), d1*sin(d2));
