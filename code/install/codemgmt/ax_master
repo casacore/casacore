@@ -4751,3 +4751,4 @@
 14 316 sys rm libexec/dishpg.g
 14 316 src rm trial/apps/dishplot/dishplot.g
 14 316 sys rm libexec/dishplot.g
+14 316 src rm trial/apps/dishplot/dishplot_buttons.g
