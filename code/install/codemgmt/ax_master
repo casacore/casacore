@@ -6531,3 +6531,4 @@
 18 594 src mv trial/implement/MeasurementComponents/VisJonesDesc.h trial/implement/CalTables/VisJonesDesc.h
 18 594 src mv trial/implement/MeasurementComponents/VisJonesDesc.cc trial/implement/CalTables/VisJonesDesc.cc
 18 594 src mv trial/implement/MeasurementComponents/MJonesDesc.h trial/implement/CalTables/MJonesDesc.h
+18 594 src mv trial/implement/MeasurementComponents/MJonesDesc.cc trial/implement/CalTables/MJonesDesc.cc
