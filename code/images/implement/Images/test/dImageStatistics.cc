@@ -1,5 +1,5 @@
 //# dImageStatistics.cc: image statistics program
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,7 +127,7 @@ try {
 
 // Get inputs
 
-   inputs.Create("in", "", "Input file name");
+   inputs.Create("in", "test_image", "Input file name");
    inputs.Create("axes", "-10", "Cursor axes");
    inputs.Create("blc", "-10", "blc");
    inputs.Create("trc", "-10", "trc");
