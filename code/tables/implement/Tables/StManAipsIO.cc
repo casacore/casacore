@@ -92,7 +92,7 @@ void StManColumnAipsIO::resize (uInt nr)
 }
 
 
-uInt StManColumnAipsIO::findExt (uInt index)
+uInt StManColumnAipsIO::findExt (uInt index, Bool setCache)
 {
     //# Use a binary search to get the block containing the index.
     Int st = 0;
@@ -116,7 +116,9 @@ uInt StManColumnAipsIO::findExt (uInt index)
 	throw (indexError<uInt>(index, "StManColumnAipsIO::findExt - "
 				"rownr out of range"));
     }
-    columnCache().set (ncum_p[i-1], ncum_p[i]-1, data_p[i]);
+    if (setCache) {
+	columnCache().set (ncum_p[i-1], ncum_p[i]-1, data_p[i]);
+    }
     return i;
 }
 
@@ -140,19 +142,19 @@ uInt StManColumnAipsIO::nextExt (void*& ext, uInt& extnr, uInt nrmax) const
 #define STMANCOLUMNAIPSIO_GETPUT(T,NM) \
 void StManColumnAipsIO::aips_name2(get,NM) (uInt rownr, T* value) \
 { \
-    uInt extnr = findExt(rownr); \
+    uInt extnr = findExt(rownr, True); \
     *value = ((T*)(data_p[extnr])) [rownr-ncum_p[extnr-1]]; \
 } \
 void StManColumnAipsIO::aips_name2(put,NM) (uInt rownr, const T* value) \
 { \
-    uInt extnr = findExt(rownr); \
+    uInt extnr = findExt(rownr, True); \
     ((T*)(data_p[extnr])) [rownr-ncum_p[extnr-1]] = *value; \
     stmanPtr_p->setHasPut(); \
 } \
 uInt StManColumnAipsIO::aips_name2(getBlock,NM) (uInt rownr, uInt nrmax, T* value) \
 { \
     uInt nr; \
-    uInt extnr = findExt(rownr); \
+    uInt extnr = findExt(rownr, True); \
     nrmax = min (nrmax, nralloc_p-rownr); \
     uInt nrm = nrmax; \
     while (nrmax > 0) { \
@@ -168,7 +170,7 @@ uInt StManColumnAipsIO::aips_name2(getBlock,NM) (uInt rownr, uInt nrmax, T* valu
 void StManColumnAipsIO::aips_name2(putBlock,NM) (uInt rownr, uInt nrmax, const T* value) \
 { \
     uInt nr; \
-    uInt extnr = findExt(rownr); \
+    uInt extnr = findExt(rownr, True); \
     nrmax = min (nrmax, nralloc_p-rownr); \
     while (nrmax > 0) { \
         nr = min (nrmax, ncum_p[extnr]-rownr); \
@@ -215,7 +217,7 @@ void StManColumnAipsIO::aips_name2(getScalarColumnCells,NM) \
         const uInt* rows = rowvec.getStorage (delR); \
         uInt nr = rowvec.nelements(); \
         if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
-            findExt(rows[0]); \
+            findExt(rows[0], True); \
         } \
         const T* cacheValue = (const T*)(cache.dataPtr()); \
         uInt strow = cache.start(); \
@@ -252,7 +254,7 @@ STMANCOLUMNAIPSIO_GETPUT(String,StringV)
 void StManColumnAipsIO::remove (uInt index)
 {
     //# Find the extension.
-    uInt extnr  = findExt(index);
+    uInt extnr  = findExt(index, False);
     uInt nrval  = ncum_p[extnr] - ncum_p[extnr-1];
     void* datap = data_p[extnr];
     //# If the extension contains only this element, remove the extension.
@@ -608,12 +610,12 @@ void StManColumnAipsIO::getData (void* datap, uInt inx, uInt nrval,
 
 void* StManColumnAipsIO::getArrayPtr (uInt rownr)
 {
-    uInt extnr = findExt(rownr);
+    uInt extnr = findExt(rownr, False);
     return ((void**)(data_p[extnr])) [rownr-ncum_p[extnr-1]];
 }
 void StManColumnAipsIO::putArrayPtr (uInt rownr, void* ptr)
 {
-    uInt extnr = findExt(rownr);
+    uInt extnr = findExt(rownr, False);
     ((void**)(data_p[extnr])) [rownr-ncum_p[extnr-1]] = ptr;
     stmanPtr_p->setHasPut();
 }
