@@ -29,6 +29,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MCEpoch.h>
 #include <aips/Measures/MCFrame.h>
+#include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
 
@@ -121,6 +122,13 @@ void MCEpoch::initConvert(uInt which, MConvertBase &mc) {
   case UT1_GAST:
     if (NUTATFROM) delete NUTATFROM;
     NUTATFROM = new Nutation(Nutation::STANDARD);
+    break;
+
+  case LAST_GAST:
+  case GAST_LAST:
+  case LMST_GMST1:
+  case GMST1_LMST:
+    mc.addFrameType(MeasFrame::POSITION);
     break;
 
   default:
