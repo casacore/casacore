@@ -5902,3 +5902,4 @@
 16 304 src mv trial/implement/Functionals/test/tG1D.cc aips/implement/Functionals/test/dG1D.cc
 16 310 src rm trial/apps/dish/ssa_meta.g
 16 310 sys rm libexec/ssa_meta.g
+16 313 src mv trial/implement/Functionals/FunctionNN.cc aips/implement/Functionals/Function.cc
