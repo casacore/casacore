@@ -35,6 +35,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
+#include <aips/OS/CanonicalConversion.h>
 
 //# Forward clarations
 class BucketFile;
@@ -117,19 +118,23 @@ typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
 // <synopsis> 
 // A cache may allow more efficient quasi-random IO.
 // It can, for instance, be used when a limited number of blocks
-// in a file has to be accessed again and again.
+// in a file have to be accessed again and again.
 // <p>
-// The class BucketCache provides such a cache. It can be used on
-// a part of a file as long as that part is not simultaneously
+// The class BucketCache provides such a cache. It can be used on a
+// consecutive part of a file as long as that part is not simultaneously
 // accessed in another way (including another BucketCache object).
 // <p>
-// BucketCache stores the data in canonical format.
+// BucketCache stores the data as given.
 // It uses <linkto group=BucketCache_CallBack>callback functions</linkto>
 // to allocate/delete buffers and to convert the data to/from local format.
 // <p>
-// When a new bucket is needed and all buckets in the cache are used,
+// When a new bucket is needed and all slots in the cache are used,
 // BucketCache will remove the least recently used bucket from the
 // cache. When the dirty flag is set, it will first be written.
+// <p>
+// BucketCache maintains a list of free buckets. Initially this list is
+// empty. When a bucket is removed, it is added to the free list.
+// AddBucket will take buckets from the free list before extending the file.
 // <p>
 // Since it is possible to handle only a part of a file by a BucketCache
 // object, it is also possible to have multiple BucketCache objects on
@@ -234,7 +239,8 @@ public:
     // By default the entire cache is flushed.
     // When the entire cache is flushed, possible remaining uninitialized
     // buckets will be initialized first.
-    void flush (uInt fromSlot = 0);
+    // A True status is returned when buckets had to be written.
+    Bool flush (uInt fromSlot = 0);
 
     // Clear the cache from the given slot on.
     // By default the entire cache is cleared.
@@ -246,6 +252,11 @@ public:
     // When the cache gets smaller, the latter buckets are cached out.
     // It does not take "least recently used" into account.
     void resize (uInt cacheSize);
+
+    // Resynchronize the object (after another process updated the file).
+    // It clears the cache (so all data will be reread) and sets
+    // the new sizes.
+    void resync (uInt nrBucket, uInt nrOfFreeBucket, Int firstFreeBucket);
 
     // Get the current nr of buckets in the file.
     uInt nBucket() const;
@@ -273,18 +284,19 @@ public:
     // Add a bucket to the file and make it the current one.
     // When no more cache slots are available, the one least recently
     // used is flushed.
-    // <p>
-    // Apart from extend, addBucket is another way to extend the file.
-    // The difference is that addBucket extends with an already filled
-    // bucket, while with extend buckets get initialized when first used.
-    // <p>
+    // <br> When no free buckets are available, the file will be
+    // extended with one bucket. It returns the new bucket number.
     // The buffer must have been allocated on the heap.
     // It will get part of the cache; its contents are not copied.
     // Thus the buffer should hereafter NOT be used for other purposes.
     // It will be deleted later via the DeleteBuffer callback function.
     // The data is copied into the bucket. A pointer to the data in
     // local format is returned.
-    void addBucket (char* data);
+    uInt addBucket (char* data);
+
+    // Remove the current bucket; i.e. add it to the beginning of the
+    // free bucket list.
+    void removeBucket();
 
     // Get a part from the file outside the cached area.
     // It is checked if that part is indeed outside the cached file area.
@@ -293,6 +305,13 @@ public:
     // Put a part from the file outside the cached area.
     // It is checked if that part is indeed outside the cached file area.
     void put (const char* buf, uInt length, uInt offset);
+
+    // Get the bucket number of the first free bucket.
+    // -1 = no free buckets.
+    Int firstFreeBucket() const;
+
+    // Get the number of free buckets.
+    uInt nFreeBucket() const;
 
     // (Re)initialize the cache statistics.
     void initStatistics();
@@ -341,6 +360,10 @@ private:
     uInt         its_LRUCounter;
     // The internal buffer.
     char*        its_Buffer;
+    // The number of free buckets.
+    uInt its_NrOfFree;
+    // The first free bucket (-1 = no free buckets).
+    Int  its_FirstFree;
     // The statistics.
     uInt naccess_p;
     uInt nread_p;
@@ -379,6 +402,13 @@ private:
 
 inline uInt BucketCache::cacheSize() const
     { return its_CacheSize; }
+
+inline Int BucketCache::firstFreeBucket() const
+    { return its_FirstFree; }
+
+inline uInt BucketCache::nFreeBucket() const
+    { return its_NrOfFree; }
+
 
 
 #endif
