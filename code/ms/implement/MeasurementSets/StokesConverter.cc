@@ -419,20 +419,31 @@ void StokesConverter::convert(Array<Float>& out, const Array<Float>& in,
 void StokesConverter::invert(Array<Bool>& out, const Array<Bool>& in) const
 {
   IPosition outShape(in.shape()); outShape(0)=in_p.nelements();
-  out.resize(outShape);
+  // use input if provided, else use unflagged array
+  if (out.nelements()==0) {
+    out.resize(outShape);
+    out.set(False);
+  }
   Int nCorrIn=in.shape()(0);
+  DebugAssert(out.shape()==outShape,AipsError);
   DebugAssert(nCorrIn==Int(out_p.nelements()),AipsError);
   Matrix<Bool> inMat=in.reform(IPosition(2,nCorrIn,in.nelements()/nCorrIn));
 
   Matrix<Bool> outMat=out.reform(IPosition(2,outShape(0),
 					      out.nelements()/outShape(0)));
-  outMat.set(False);
+  Matrix<Bool> first(outMat.shape(),True);
+  // flag or unflag all data depending on the input.
+  // output is flagged if any input is flagged, unflagged if all input unflagged
+  // output is unchanged if independent of inputs.
   for (Int i=0; i<nCorrIn; i++) {
     for (uInt j=0; j<inMat.ncolumn(); j++) {
-      if (inMat(i,j)) {
-	for (Int k=0; k<outShape(0); k++) {
-	  if (flagConv_p(i,k)) {
-	    outMat(k,j)=True;
+      for (Int k=0; k<outShape(0); k++) {
+	if (flagConv_p(i,k)) {
+	  if (first(k,j)) {
+	    first(k,j)=False;
+	    outMat(k,j)=inMat(i,j);
+	  } else {
+	    outMat(k,j)|=inMat(i,j);
 	  }
 	}
       }
