@@ -2203,3 +2203,4 @@
 09 117 src rm aips/implement/Mathematics/test/tFFTServer.exec
 09 117 src rm aips/implement/Mathematics/test/tFFTServer.out
 09 122 src rm aips/implement/Mathematics/test/tProtoMap.cc
+09 124 src mv trial/implement/Tasking/AipsrcBool.cc aips/implement/Tasking/AipsrcBool.cc
