@@ -1,5 +1,5 @@
 //# MSCalEnums.cc: Implementation of MSCalEnums.h
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,11 +42,14 @@ void MSCalEnums::initMap ()
 //
   if (!theirFieldMap.ndefined()) {
     theirFieldMap.define (ANTENNA1, "ANTENNA1");
+    theirFieldMap.define (ANTENNA2, "ANTENNA2");
     theirFieldMap.define (FEED1, "FEED1");
+    theirFieldMap.define (FEED2, "FEED2");
     theirFieldMap.define (PULSAR_BIN, "PULSAR_BIN");
     theirFieldMap.define (SCAN_NUMBER, "SCAN_NUMBER");
     theirFieldMap.define (TIME, "TIME");
     theirFieldMap.define (TIME_EXTRA_PREC, "TIME_EXTRA_PREC");
+    theirFieldMap.define (INTERVAL, "INTERVAL");
     theirFieldMap.define (ARRAY_ID, "ARRAY_ID");
     theirFieldMap.define (CORRELATOR_ID, "CORRELATOR_ID");
     theirFieldMap.define (FIELD_ID, "FIELD_ID");
@@ -58,7 +61,6 @@ void MSCalEnums::initMap ()
     theirFieldMap.define (FIELD_NAME, "FIELD_NAME");
     theirFieldMap.define (SOURCE_NAME, "SOURCE_NAME");
 
-    theirFieldMap.define (SOLINT, "SOLINT");
     theirFieldMap.define (GAIN, "GAIN");
     theirFieldMap.define (REF_ANT, "REF_ANT");
     theirFieldMap.define (REF_FEED, "REF_FEED"); 
@@ -78,8 +80,10 @@ void MSCalEnums::initMap ()
     theirFieldMap.define (NUM_SPW, "NUM_SPW");
     theirFieldMap.define (NUM_CHAN, "NUM_CHAN");
     theirFieldMap.define (NUM_RECEPTORS, "NUM_RECEPTORS");
+    theirFieldMap.define (N_JONES, "N_JONES");
     theirFieldMap.define (CHAN_FREQ, "CHAN_FREQ");
     theirFieldMap.define (CHAN_WIDTH, "CHAN_WIDTH"); 
+    theirFieldMap.define (CHAN_RANGE, "CHAN_RANGE");
     theirFieldMap.define (JONES_TYPE, "JONES_TYPE");
     theirFieldMap.define (POLARIZATION_TYPE, "POLARIZATION_TYPE");
     theirFieldMap.define (MS_NAME, "MS_NAME");

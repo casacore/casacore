@@ -1,5 +1,5 @@
 //# MSCalEnums.h: Field name dictionary for MS and CAL tables
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -90,110 +90,116 @@ class MSCalEnums
   //
   // Antenna number
   ANTENNA1 = 0,
+  ANTENNA2 = 1,
   // Feed identifier
-  FEED1 = 1,
+  FEED1 = 2,
+  FEED2 = 3,
   // Pulsar bin number
-  PULSAR_BIN = 2,
+  PULSAR_BIN = 4,
   // Scan number
-  SCAN_NUMBER = 3,
+  SCAN_NUMBER = 5,
   // Time
-  TIME = 4,
+  TIME = 6,
   // Extra time precision
-  TIME_EXTRA_PREC = 5,
+  TIME_EXTRA_PREC = 7,
+  // Interval
+  INTERVAL = 8,
   // Array identifier
-  ARRAY_ID = 6,
+  ARRAY_ID = 9,
   // Correlator identifier
-  CORRELATOR_ID = 7,
+  CORRELATOR_ID = 10,
   // Field identifier
-  FIELD_ID = 8,
+  FIELD_ID = 11,
   // Observation identifier
-  OBSERVATION_ID = 9,
+  OBSERVATION_ID = 12,
   // Pulsar gate
-  PULSAR_GATE_ID = 10,
+  PULSAR_GATE_ID = 13,
   // Spectral window identifier
-  SPECTRAL_WINDOW_ID = 11,
+  SPECTRAL_WINDOW_ID = 14,
   
   // Other secondary MeasurementSet columns
   //
   // Frequency group
-  FREQ_GROUP = 12,
+  FREQ_GROUP = 15,
   // Field name
-  FIELD_NAME = 13,
+  FIELD_NAME = 16,
   // Source name
-  SOURCE_NAME = 14, 
+  SOURCE_NAME = 17, 
   
   // Other calibration table columns
   //
-  // Solution interval
-  SOLINT = 15,
   // Gain matrix values
-  GAIN = 16,
+  GAIN = 18,
   // Reference antenna
-  REF_ANT = 17,
+  REF_ANT = 19,
   // Reference feed
-  REF_FEED = 18,
+  REF_FEED = 20,
   // Reference receptor
-  REF_RECEPTOR = 19,
+  REF_RECEPTOR = 21,
   // Reference frequency
-  REF_FREQUENCY = 20,
+  REF_FREQUENCY = 22,
   // Reference direction
-  REF_DIRECTION = 21,
+  REF_DIRECTION = 23,
   // Calibration format descriptor
-  CAL_DESC_ID = 22, 
+  CAL_DESC_ID = 24, 
   // Calibration history identifier
-  CAL_HISTORY_ID = 23,
+  CAL_HISTORY_ID = 25,
 
   // Solution statistics and weights
   //
   // Solution validity flag
-  TOTAL_SOLUTION_OK = 24,
+  TOTAL_SOLUTION_OK = 26,
   // RMS of fit
-  TOTAL_FIT = 25,
+  TOTAL_FIT = 27,
   // Sum of fit weights
-  TOTAL_FIT_WEIGHT = 26,
+  TOTAL_FIT_WEIGHT = 28,
   // Solution validity flag (per solution)
-  SOLUTION_OK = 27,
+  SOLUTION_OK = 29,
   // RMS of fit (per solution)
-  FIT = 28,
+  FIT = 30,
   // Sum of fit weights (per solution)
-  FIT_WEIGHT = 29,
+  FIT_WEIGHT = 31,
   
   // Calibration description columns
   //
   // Number of spectral windows
-  NUM_SPW = 30,
+  NUM_SPW = 32,
   // Number of frequency channels
-  NUM_CHAN = 31,
+  NUM_CHAN = 33,
   // Number of receptors
-  NUM_RECEPTORS = 32,
+  NUM_RECEPTORS = 34,
+  // Jones matrix dimension
+  N_JONES = 35,
   // Midpoint of frequency channels
-  CHAN_FREQ = 33,
+  CHAN_FREQ = 36,
   // Frequency channel width
-  CHAN_WIDTH = 34,
+  CHAN_WIDTH = 37,
+  // Channel range
+  CHAN_RANGE = 38,
   // Jones matrix type
-  JONES_TYPE = 35, 
+  JONES_TYPE = 39, 
   // Polarization enumerations
-  POLARIZATION_TYPE = 36,
+  POLARIZATION_TYPE = 40,
   // MeasurementSet name
-  MS_NAME = 37,
+  MS_NAME = 41,
   
   // Calibration history columns
   //
   // Application parameter values
-  CAL_PARMS = 38,
+  CAL_PARMS = 42,
   // Associated calibration tables
-  CAL_TABLES = 39,
+  CAL_TABLES = 43,
   // Calibration selection
-  CAL_SELECT = 40,
+  CAL_SELECT = 44,
   // Calibration notes
-  CAL_NOTES = 41,
+  CAL_NOTES = 45,
 
   // Keywords
   //
   // Cal Desc sub-table
-  CAL_DESC = 42,
+  CAL_DESC = 46,
   // Cal History sub-table
-  CAL_HISTORY = 43};
+  CAL_HISTORY = 47};
 
   // Access functions for column/keyword description data
   static String fieldName (Int enumField);
