@@ -37,6 +37,7 @@
 #include <trial/TableMeasures/TableMeasValueDesc.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
@@ -181,6 +182,18 @@ void ComponentList::remove(const uInt & index) {
     if (itsOrder[i] > realIndex) {
       itsOrder[i]--;
     }
+  }
+}
+
+void ComponentList::remove(const Vector<Int> & indices) {
+  AlwaysAssert(allGE(indices.ac(), 0), AipsError);
+  Vector<uInt> uIndices;
+  convertArray(uIndices.ac(), indices.ac());
+  GenSort<uInt>::sort(uIndices);
+  uInt c = uIndices.nelements();
+  while (c != 0) {
+    c--;
+    remove(uIndices(c));
   }
 }
 

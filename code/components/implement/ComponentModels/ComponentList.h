@@ -183,16 +183,22 @@ public:
   // </thrown>
   void add(SkyComponent component);
 
-  // Remove the specified SkyComponent from the ComponentList. After removing a
-  // component all the components with an index greater than this one will be
-  // reduced by one.
+  // Remove the specified SkyComponent(s) from the ComponentList. After
+  // removing a component all the components with an indices greater than this
+  // one will be reduced by one. For example in a five element list removing
+  // elements [0,2,4] will result in a two element list, now indexed as
+  // elements zero and one, containing what was previously the second and
+  // fourth components.
   // <thrown>
   // <li> AipsError - If the list is associated with a table that was opened
   //                  readonly.
   // <li> AipsError - If the index is equal to or larger than the number of
-  //                  elements in the list.
+  //                  elements in the list or is negative.
   // </thrown>
+  // <group>
   void remove(const uInt & index);
+  void remove(const Vector<Int> & indices);
+  // </group>
 
   // returns how many components are in the list.
   uInt nelements() const;
