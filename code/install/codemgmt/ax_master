@@ -2498,3 +2498,5 @@
 11 342 src mv atnf/apps/rpfitsfiller/ATLoad.h atnf/apps/rpfitsfiller/DOrpfitsfiller.h
 11 342 src mv atnf/apps/rpfitsfiller/atload.cc atnf/apps/rpfitsfiller/rpfitsfiller.cc
 11 350 sys rm bin/sdimaging
+11 350 sys rm bin/sky
+11 350 sys rm bin/cal
