@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # UPfind script
 #-----------------------------------------------------------------------------
-# Copyright (C) 2000,2001,2002,2003
+# Copyright (C) 2000,2001,2002,2003,2004
 # Associated Universities, Inc. Washington DC, USA.
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -74,25 +74,25 @@ if (! $ok) exit 1
 #
 if ($upswp01 || $upswp02) then
     cat >! $ldir/${tp}.spat <<EOF
-/casa/
-/scimath/
-/tables/
-/measures/
-/fits/
-/lattices/
-/coordinates/
-/components/
-/images/
-/ms/
-/msvis/
-/calibration/
-/ionosphere/
-/flagging/
-/dish/
-/simulators/
-/synthesis/
-/graphics/
-/tasking/
+/casa/implement/
+/scimath/implement/
+/tables/implement/
+/measures/implement/
+/fits/implement/
+/lattices/implement/
+/coordinates/implement/
+/components/implement/
+/images/implement/
+/ms/implement/
+/msvis/implement/
+/calibration/implement/
+/ionosphere/implement/
+/flagging/implement/
+/dish/implement/
+/simulators/implement/
+/synthesis/implement/
+/graphics/implement/
+/tasking/implement/
 EOF
     echo '[/]tmplinst[/]' >! $ldir/${tp}.rmpat
 endif
