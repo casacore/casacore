@@ -839,7 +839,7 @@ inline const char *FitsKeywordList::parse_err(int n) const {
 
 // FitsKeyword constructors for non-indexed Reserved keywords
 inline void FitsKeywordList::mk(FITS::ReservedName k, Bool v, const char *c) {
-	int tmp; tmp = v; insert(make(k,FITS::LOGICAL,&tmp,c)); }
+	insert(make(k,FITS::LOGICAL,&v,c)); }
 inline void FitsKeywordList::mk(FITS::ReservedName k, const char *v, 
 	const char *c) { insert(make(k,FITS::STRING,v,c)); }
 inline void FitsKeywordList::mk(FITS::ReservedName k, Int v, const char *c) {
