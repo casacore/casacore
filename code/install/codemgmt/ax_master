@@ -5690,3 +5690,4 @@
 15 337 src rm trial/apps/megaserver/logtable_mega.h
 15 337 src rm trial/apps/megaserver/msFactory_mega.h
 15 337 src rm trial/apps/megaserver/os_mega.h
+15 337 src rm trial/apps/megaserver/sysinfo_mega.h
