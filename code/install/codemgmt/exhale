@@ -3,7 +3,7 @@
 # exhale: Update the AIPS++ source distribution files
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999,2000
+#   Copyright (C) 1992-1997,1999,2000,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -1177,7 +1177,7 @@
 
 # Produce a new checksum file.
   rm -f CHKSUM
-  cksum master-* > CHKSUM
+  cksum .*binary* master-* > CHKSUM
   chmod 444 CHKSUM
 
 # Update the version files.
@@ -1195,10 +1195,6 @@
 
   chmod 444 VERSION LOGFILE
   rm -f VERSION_ LOGFILE_
-
-  rm -f $AIPSMSTR/VERSION $AIPSMSTR/LOGFILE
-  cp -p $MSTRTMPD/NEWVERSN $AIPSMSTR/VERSION
-  cp -p LOGFILE $AIPSMSTR
 
   if [ "$MODE" = base ]
   then
@@ -1230,6 +1226,20 @@
   mv -f $MSTRTMPD/MANIFEST .
   chmod 444 MANIFEST
 
+# master repository bookkeeping
+  cd $AIPSMSTR
+  rm -f VERSION LOGFILE
+  [ -f VERSION,v ] && co -q -l -p VERSION > /dev/null
+  cp -p $MSTRTMPD/NEWVERSN VERSION
+  [ -f VERSION,v ] && ci -q -mupdated VERSION
+  cp -p $MSTRTMPD/NEWVERSN VERSION
+  cp -p $MSTRFTPD/LOGFILE LOGFILE
+
+# tag rcs files for this exhale version
+  echo ""
+  echo "exhale: tagging repository files..."
+  echo "exhale: `adate`"
+  atag  -T "ex$NEWMINOR" -T exhale .
 
 # Clean up.
   cd $AIPSROOT
