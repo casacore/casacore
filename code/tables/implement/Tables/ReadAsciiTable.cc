@@ -323,7 +323,6 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     SetupNewTable newtab(tablename, td, Table::New);
     Table tab(newtab);
     Float tempR; Short tempSH; Int tempI; Double tempD;
-    Complex tempC;
     Float temp1, temp2, temp3, temp4;
     Double temp1d, temp2d, temp3d, temp4d;
  
@@ -474,8 +473,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 						   second, at3);
 		    istrstream(first, done3) >> temp1;
 		    istrstream(second, done2) >> temp2;
-		    tempC = Complex(temp1, temp2);
-		    vectCX(i20) = tempC;
+		    vectCX(i20) = Complex(temp1, temp2);
 		}
 		if (nVals > 1)
 		    keyset.define (keyName, vectCX);
@@ -497,8 +495,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 						   second, at3);
 		    istrstream(first, done3) >> temp1d;
 		    istrstream(second, done2) >> temp2d;
-		    tempC = DComplex(temp1d, temp2d);
-		    vectCX(i20) = tempC;
+		    vectCX(i20) = DComplex(temp1d, temp2d);
 		}
 		if (nVals > 1)
 		    keyset.define (keyName, vectCX);
@@ -524,8 +521,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 		    temp2 *= 3.14159265/180.0; 
 		    temp3 = temp1 * cos(temp2);
 		    temp4 = temp1 * sin(temp2);
-		    tempC = Complex(temp3, temp4);
-		    vectCX(i20) = tempC;
+		    vectCX(i20) = Complex(temp3, temp4);
 		}
 		if (nVals > 1)
 		    keyset.define (keyName, vectCX);
@@ -550,8 +546,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 		    temp2d *= 3.14159265/180.0; 
 		    temp3d = temp1d * cos(temp2d);
 		    temp4d = temp1d * sin(temp2d);
-		    tempC = DComplex(temp3d, temp4d);
-		    vectCX(i20) = tempC;
+		    vectCX(i20) = DComplex(temp3d, temp4d);
 		}
 		if (nVals > 1)
 		    keyset.define (keyName, vectCX);
@@ -633,14 +628,12 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 	    if (typeOfColumn[i6] == "X") {
 		istrstream(first, done1) >> temp1;
 		istrstream(second, done2) >> temp2;
-		tempC = Complex(temp1, temp2);
-		tabcol[i6].putScalar (rownr, tempC);
+		tabcol[i6].putScalar (rownr, Complex(temp1, temp2));
 	    }
 	    if (typeOfColumn[i6] == "DX") {
 		istrstream(first, done1) >> temp1d;
 		istrstream(second, done2) >> temp2d;
-		tempC = DComplex(temp1d, temp2d);
-		tabcol[i6].putScalar (rownr, tempC);
+		tabcol[i6].putScalar (rownr, DComplex(temp1d, temp2d));
 	    }
 	    if (typeOfColumn[i6] == "Z") {
 		istrstream(first, done1) >> temp1;
@@ -648,8 +641,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 		temp2 *= 3.14159265/180.0; 
 		temp3 = temp1 * cos(temp2);
 		temp4 = temp1 * sin(temp2);
-		tempC = Complex(temp3, temp4);
-		tabcol[i6].putScalar (rownr, tempC);
+		tabcol[i6].putScalar (rownr, Complex(temp3, temp4));
 	    }
 	    if (typeOfColumn[i6] == "DZ") {
 		istrstream(first, done1) >> temp1d;
@@ -657,8 +649,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 		temp2d *= 3.14159265/180.0; 
 		temp3d = temp1d * cos(temp2d);
 		temp4d = temp1d * sin(temp2d);
-		tempC = DComplex(temp3d, temp4d);
-		tabcol[i6].putScalar (rownr, tempC);
+		tabcol[i6].putScalar (rownr, DComplex(temp3d, temp4d));
 	    }
 	    if (typeOfColumn[i6] == "A") {
 		tabcol[i6].putScalar (rownr, String(first));

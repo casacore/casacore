@@ -1,5 +1,5 @@
 //# BaseColumn.cc: Abstract base class for a table column
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -408,7 +408,8 @@ void BaseColumn::getScalar (uInt rownr, Complex& value) const
     case TpDComplex:
 	{ DComplex valdc;
 	  get (rownr, &valdc);
-	  value = valdc; }
+	  value = Complex(valdc.real(), valdc.imag());
+	}
 	return;
     default:
 	throw (TableInvDT ("invalid type promotion in getScalar(Complex)"));
