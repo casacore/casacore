@@ -82,6 +82,8 @@ public:
     virtual const TableRecord &keywords() const;
     virtual const RecordDesc &description() const;
     virtual const Record &units() const;
+    virtual const Record &displayFormats() const;
+    virtual const Record &nulls() const;
 
     virtual const String &name() const { return table_p->name(); }
 

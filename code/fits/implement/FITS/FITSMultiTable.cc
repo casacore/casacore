@@ -94,6 +94,16 @@ const Record &FITSMultiTable::units() const
     return table_p->units();
 }
 
+const Record &FITSMultiTable::displayFormats() const
+{
+    return table_p->displayFormats();
+}
+
+const Record &FITSMultiTable::nulls() const
+{
+    return table_p->nulls();
+}
+
 Bool FITSMultiTable::pastEnd() const
 {
     return ToBool(which_file_p >= nfiles_p);
