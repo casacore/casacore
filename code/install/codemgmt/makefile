@@ -45,11 +45,13 @@ include $(AIPSARCH)/makedefs
 AISCRIPT := ai ae amv am ao au ax rau
 SUIDWRAP := sau sai
 DISTSCRP := inhale sneeze
-SCRIPTS  := alog av ih_log_info.pl inhold mktree rai rao runtests squiz testsuite xrcs testsum.sh checkin checkout
+SCRIPTS  := alog av ih_log_info.pl inhold mktree rai rao runtests squiz testsuite xrcs testsum.sh
 
 AIPSEXES := $(basename $(filter-out %_master.c,$(filter %.c,$(AIPSSRCS))))
 PGMREXES := $(basename $(filter-out %_master.c,$(wildcard *.c)))
 ALLEXES  := $(sort $(AIPSEXES) $(PGMREXES))
+
+PERL5EXE := checkin checkout
 
 SUIDEXES := $(filter $(SUIDWRAP),$(PGMREXES))
 WRAPPED  := $(SUIDWRAP:%=%.sh)
@@ -121,6 +123,20 @@ else
 	@ chmod 764 $@
 endif
 
+# Perl scripts
+ifneq "$(PERL5)" ""
+   allsys : $(PERL5EXE)
+
+   $(PERL5EXE) : % : $(ARCHBIND)/% ;
+
+   $(PERL5EXE:%=$(ARCHBIND)/%) : $(ARCHBIND)/% : $(CODEDIR)/%
+	  sed -e '1s#/usr/local/bin/perl5#$(PERL5)#' \
+	      -e '1s#\$$ARCHBIND#$(ARCHBIND)#' $< > $@
+	@ chmod 775 $@
+
+endif
+
+
 # Utility programs.
 bin    : $(foreach BINARY,$(AIPSEXES),$(ARCHBIND)/$(BINARY)) ;
 
@@ -156,6 +172,7 @@ show_local :
 	-@ echo "PGMREXES=$(PGMREXES)"
 	-@ echo "SUIDEXES=$(SUIDEXES)"
 	-@ echo "ALLEXES =$(ALLEXES)"
+	-@ echo "PERL5EXE=$(PERL5EXE)"
 
 help ::
 	-@ echo ""
