@@ -15,6 +15,8 @@
 \date {1997 March 26}
 \maketitle
 %%---------------------------------------------------------------------------
+\begin{htmlonly}
 \htmladdnormallink{A postscript version of this note is available.}{../204.ps}
+\end{htmlonly}
 \input{observeupdate.tex}
 \end{document}
