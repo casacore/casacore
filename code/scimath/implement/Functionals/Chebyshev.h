@@ -237,7 +237,8 @@ class NQChebyshev : public NQChebyshevParam<T> {
   //   defval is the value returned when the function is evaluated outside
   //      the NQChebyshev interval and mode=CONSTANT.
   NQChebyshev(const T &min, const T &max,
-	      const OutOfIntervalMode mode=CONSTANT,
+	      const typename NQChebyshevParam<T>::
+	      OutOfIntervalMode mode=CONSTANT,
 	      const T &defval=T(0)) :
     NQChebyshevParam<T>(min, max, mode, defval) {};
   
@@ -252,7 +253,8 @@ class NQChebyshev : public NQChebyshevParam<T> {
   //   defval is the value returned when the function is evaluated outside
   //      the canonical range and mode=CONSTANT.
   NQChebyshev(const Vector<T> &coeffs, const T &min, const T &max, 
-	      const OutOfIntervalMode mode=CONSTANT, const T &defval=T(0)) :
+	      const typename NQChebyshevParam<T>::
+	      OutOfIntervalMode mode=CONSTANT, const T &defval=T(0)) :
     NQChebyshevParam<T>(coeffs, min, max, mode, defval) {};
   
   // create a deep copy of another NQChebyshev polynomial
