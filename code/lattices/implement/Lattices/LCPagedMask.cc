@@ -1,5 +1,5 @@
 //# LCPagedMask.cc: Class to define a rectangular mask of interest
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/OS/Path.h>
 #include <aips/Exceptions/Error.h>
@@ -259,7 +260,8 @@ TableRecord LCPagedMask::toRecord (const String& tableName) const
 LCPagedMask* LCPagedMask::fromRecord (const TableRecord& rec,
 				      const String& tableName)
 {
-    Table table (rec.asTable ("mask"));
+    const TableLock& lockOptions = rec.tableAttributes("mask").lockOptions();
+    Table table (rec.asTable ("mask", lockOptions));
     PagedArray<Bool> mask(table);
     LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
 						   tableName));
