@@ -83,6 +83,10 @@ class Unit;
 template <class T> class AipsrcVector : public Aipsrc {
 
 public:
+  //# Constructors
+  // Default constructor
+  // See a note in <linkto class=AipsrcValue>AipsrcValue</linkto>.
+  AipsrcVector();
   //# Destructor
   ~AipsrcVector();
 
@@ -140,8 +144,6 @@ private:
   // </group>
   
   //# Constructors
-  // Default constructor
-  AipsrcVector();
   // Copy constructor (not implemented)
   AipsrcVector<T> &operator=(const AipsrcVector<T> &other);
   
