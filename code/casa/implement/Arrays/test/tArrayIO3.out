@@ -32,4 +32,7 @@ Axis Lengths: [2, 3]  (NB: Matrix in Row/Column order)
 Input Vector [1s 5.4Jy 92pc/a ] 
 --------------------------------------
 [1 s, 5.4 Jy, 92 pc/a]
+Input Array [x,y,x] 
+--------------------------------------
+[x, y, x]
 end
