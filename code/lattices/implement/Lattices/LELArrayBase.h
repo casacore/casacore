@@ -80,6 +80,7 @@ public:
       { return ToBool (itsMaskPtr != 0); }
 
 // Get mask.
+// <group>
    const Array<Bool>& mask() const
       { return *itsMaskPtr; }
    Array<Bool>& mask()
@@ -128,7 +129,7 @@ public:
 // The mask is set to false if the temp mask is False.
    void combineOrAnd (Bool desiredValue, Array<Bool>& value,
 		      const Array<Bool>& temp, const Array<Bool>& tempMask);
-// <group>
+// </group>
 
 private:
    Array<Bool>* itsMaskPtr;
