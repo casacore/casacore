@@ -1,5 +1,5 @@
 //# LatticeExprNode.h:  LatticeExprNode.h
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -201,6 +201,12 @@ class LatticeExprNode
                                      const LatticeExprNode& right);
    friend LatticeExprNode operator/ (const LatticeExprNode& left,
                                      const LatticeExprNode& right);
+   friend LatticeExprNode operator% (const LatticeExprNode& left,
+                                     const LatticeExprNode& right)
+    { return fmod (left, right); }
+   friend LatticeExprNode operator^ (const LatticeExprNode& left,
+                                     const LatticeExprNode& right)
+    { return pow (left, right); }
 // </group>
 
 // Relational binary operators
@@ -250,7 +256,7 @@ class LatticeExprNode
 // Numerical 2-argument functions
 // <group>
    friend LatticeExprNode atan2 (const LatticeExprNode& left,
-				const LatticeExprNode& right);
+				 const LatticeExprNode& right);
    friend LatticeExprNode pow  (const LatticeExprNode& left,
 				const LatticeExprNode& right);
    friend LatticeExprNode fmod (const LatticeExprNode& left,
@@ -261,6 +267,9 @@ class LatticeExprNode
 				const LatticeExprNode& right);
 // </group>
 
+// Form a complex number from two real numbers.
+   friend LatticeExprNode complex (const LatticeExprNode& left,
+				   const LatticeExprNode& right);
 
 // Numerical 1-argument functions which result in a real number
 // regardless of input expression type
@@ -280,9 +289,21 @@ class LatticeExprNode
    friend LatticeExprNode sum   (const LatticeExprNode& expr);
 // </group>
 
-// 1-argument function to get the number of elements in a lattice
-// Results in a scalar Double
+// 1-argument function to get the number of elements in a lattice.
+// If the lattice is masked, only the True elements are counted.
+// Results in a scalar Double.
    friend LatticeExprNode nelements (const LatticeExprNode& expr);
+
+// 2-argument function to get the length of an axis.
+// Results in a scalar Float.
+// The 2nd expression (giving the axis number) has to be a real scalar.
+// <note role=caution>
+// Axes start counting at 1.
+// If the axis is a number < 1, an exception is thrown.
+// If the axis is a number exceeding the dimensionality, 1 is returned.
+// </note>
+   friend LatticeExprNode length (const LatticeExprNode& expr,
+				  const LatticeExprNode& axis);
 
 // Functions operating on a logical expression resulting in a scalar;
 // Functions "any" (are any pixels "True") and "all" (are all pixels
@@ -356,6 +377,10 @@ public:
    LatticeExprNode (const MaskedLattice<Bool>& lattice);
 // </group>
 
+// Masking operator using a condition.
+// The given boolean expression forms a mask for this expression node.
+   LatticeExprNode operator[] (const LatticeExprNode& cond) const;
+
 // Copy constructor (reference semantics)
    LatticeExprNode(const LatticeExprNode& other);
 
@@ -375,15 +400,21 @@ public:
 
 // Evaluate the expression
 // <group>
-   void eval (Array<Float>& result, const Slicer& section) const;
-   void eval (Array<Double>& result, const Slicer& section) const;
-   void eval (Array<Complex>& result, const Slicer& section) const;
-   void eval (Array<DComplex>& result, const Slicer& section) const;
-   void eval (Array<Bool>& result, const Slicer& section) const;
+//   void eval (Array<Float>& result, const Slicer& section) const;
+//   void eval (Array<Double>& result, const Slicer& section) const;
+//   void eval (Array<Complex>& result, const Slicer& section) const;
+//   void eval (Array<DComplex>& result, const Slicer& section) const;
+//   void eval (Array<Bool>& result, const Slicer& section) const;
 // </group>
 
-// Evaluate the expression mask
-   void evalMask (Array<Bool>& result, const Slicer& section) const;
+// Evaluate the expression
+// <group>
+   void eval (LELArray<Float>& result, const Slicer& section) const;
+   void eval (LELArray<Double>& result, const Slicer& section) const;
+   void eval (LELArray<Complex>& result, const Slicer& section) const;
+   void eval (LELArray<DComplex>& result, const Slicer& section) const;
+   void eval (LELArray<Bool>& result, const Slicer& section) const;
+// </group>
 
 // Evaluate the expression (in case it is a scalar).  The "eval"
 // and "get*" functions do the same thing, they just have
@@ -413,6 +444,13 @@ public:
    Bool isMasked() const
       {return pAttr_p->isMasked();}
 
+// Holds the node an invalid scalar?
+   Bool isInvalidScalar() const
+    {
+      if (!donePrepare_p) doPrepare();
+      return isInvalid_p;
+    }
+
 // Return the shape of the Lattice including all degenerate axes
 // (ie. axes with a length of one)
    const IPosition& shape() const
@@ -423,7 +461,7 @@ public:
       {return *pAttr_p;}
 
 // Replace a scalar subexpression by its result.
-   void replaceScalarExpr();
+   Bool replaceScalarExpr();
   
 // Make the object from a Counted<LELInterface> pointer.
 // Ideally this function is private, but alas it is needed in LELFunction1D,
@@ -510,11 +548,15 @@ private:
 					const LatticeExprNode& left,
 					const LatticeExprNode& right);
 
+// Do the preparation for the evaluation.
+   void doPrepare() const;
+
    
 // Member variables.  
 
    Bool                donePrepare_p;
    DataType            dtype_p;
+   Bool                isInvalid_p;
    const LELAttribute* pAttr_p;
    CountedPtr<LELInterface<Float> >    pExprFloat_p;
    CountedPtr<LELInterface<Double> >   pExprDouble_p;
