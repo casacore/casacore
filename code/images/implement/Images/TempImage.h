@@ -183,7 +183,7 @@ public:
   virtual void resize (const TiledShape& newShape);
   
   // Return the name of the current TempImage object.
-  // It is always a null string.
+  // It is always "Temporary_Image"
   virtual String name (const Bool stripPath=False) const;
 
   // Return the shape of the image

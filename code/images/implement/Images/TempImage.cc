@@ -241,7 +241,7 @@ Unit TempImage<T>::units() const
 template <class T> 
 String TempImage<T>::name (const Bool) const
 {
-  return "";
+  return String("Temporary_Image");
 }
 
 
