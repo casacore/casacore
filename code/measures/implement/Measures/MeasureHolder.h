@@ -1,5 +1,5 @@
 //# MeasureHolder.h: A holder for Measures to enable record conversions
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -191,15 +191,20 @@ public:
   virtual Bool toRecord(String &error, RecordInterface &out) const;
   Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
+  // Create a dummy Measure or a record with only a type from a Measure
+  // <group>
+  Bool toType(String &error, RecordInterface &out) const;
+  Bool fromType(String &error, const RecordInterface &in);
+  // </group>
   // Get identification of record
   virtual const String &ident() const;
-
+  
 private:
-
-//# Data Members
+  
+  //# Data Members
   // Pointer to a Measure
   PtrHolder<Measure> hold_p;
-
+  
 };
 
 #endif

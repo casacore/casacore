@@ -315,6 +315,51 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
   return False;
 }
 
+Bool MeasureHolder::toType(String &error, RecordInterface &out) const {
+  if (hold_p.ptr()) {
+    out.define(RecordFieldId("type"),
+	       downcase(String(hold_p.ptr()->tellMe())));
+    return True;
+  };
+  error += String("No Measure specified in MeasureHolder::toType\n");
+  return False;    
+}
+
+Bool MeasureHolder::fromType(String &error, const RecordInterface &in) {
+  if (in.isDefined(String("type")) &&
+      in.type(in.idToNumber(RecordFieldId("type"))) == TpString) {
+    String tp;
+    in.get(RecordFieldId("type"), tp);
+    tp.downcase();
+    hold_p.clear();
+    if (tp == downcase(MDirection::showMe())) {
+      hold_p.set(new MDirection());
+    } else if (tp == downcase(MDoppler::showMe())) {
+      hold_p.set(new MDoppler());
+    } else if (tp == downcase(MEpoch::showMe())) {
+      hold_p.set(new MEpoch());
+    } else if (tp == downcase(MFrequency::showMe())) {
+      hold_p.set(new MFrequency());
+    } else if (tp == downcase(MPosition::showMe())) {
+      hold_p.set(new MPosition());
+    } else if (tp == downcase(MRadialVelocity::showMe())) {
+      hold_p.set(new MRadialVelocity());
+    } else if (tp == downcase(MBaseline::showMe())) {
+      hold_p.set(new MBaseline());
+    } else if (tp == downcase(Muvw::showMe())) {
+      hold_p.set(new Muvw());
+    } else if (tp == downcase(MEarthMagnetic::showMe())) {
+      hold_p.set(new MEarthMagnetic());
+    } else {
+      error += String("Unknown Measure record in MeasureHolder::fromRecord\n");
+      return False;
+    };
+    return True;
+  };
+  error += String("Illegal Measure record in MeasureHolder::fromType\n");
+  return False;
+}
+
 const String &MeasureHolder::ident() const {
   static String myid = "meas";
   return myid;
