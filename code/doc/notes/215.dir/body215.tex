@@ -39,7 +39,7 @@ code/doc/notes/notes.dir needs to be edited to include the new note or memo.
 HTML documents are not automatically generated from LaTeX source.  The author
 needs to add a line to the directory's makefile similar to:
 \begin{verbatim}
-documentroot := -split 2
+documentroot := -split +2
 \end{verbatim}
 
 where documentroot is the file's name less the .latex extension.  After
@@ -47,7 +47,7 @@ specifying this line
 latex2html will be run on that document during a sneeze.  Most \aips documents
 should use
 \begin{verbatim}
--split 1 or 2.
+-split +1 or +2.
 \end{verbatim}
 
 
@@ -75,11 +75,15 @@ found at\\
 \htmladdnormallink{http://www-dsed.llnl.gov/files/programs/unix/latex2html/manual/manual.html}{http://www-dsed.llnl.gov/files/programs/unix/latex2html/manual/manual.html}.
 
 Latex2html should be found in the system area (/opt/local/bin/latex2html at the
-AOC).  \aips  uses version 96.1h (1997-Nov-6).  Version 97.1 is available but
-does not generate html tables from tabular environments.  The 96.1h version
-has a %\htmladdnormallink{local patch}{path-to-patch file}
-local patch applied to it to
-enable longtables.  
+AOC).  \aips  uses version 98.2beta5 (1998-Jul-28).  Latex2html requires several utilities
+\begin{itemize}
+\item Perl (5.003 or later).
+\item dvips (5.516 or later, preferably 5.62 or later)
+\item gs (4.03 or later).
+\item netpbm (1 March 1994 version)
+\end{itemize}
+
+Please consult the README distributed with latex2html for more details.
 
 \subsubsection{HTML Links to Other Documents}
 There are several methods for producing links to other documents.  To
