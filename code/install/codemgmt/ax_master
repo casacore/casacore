@@ -2604,3 +2604,5 @@
 11 382 src rm aips/implement/LinearAlgebra
 11 382 src rm /trial/implement/ComponentModels/csm_func.g
 11 382 src rm /trial/implement/ComponentModels/csm_gui.g
+11 382 sys rm libexec/csm_func.g
+11 382 sys rm libexec/csm_gui.g
