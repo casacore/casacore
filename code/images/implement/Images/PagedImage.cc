@@ -318,7 +318,6 @@ PagedImage<T>::PagedImage(const PagedImage<T>& other)
   regionPtr_p   (0)
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
-  attach_logtable();
   if (other.regionPtr_p != 0) {
     regionPtr_p = new LatticeRegion (*other.regionPtr_p);
   }
@@ -691,8 +690,8 @@ void PagedImage<T>::attach_logtable()
   }
   LogSinkInterface* interface = logTablePtr_p;
   AlwaysAssert(logTablePtr_p != 0, AipsError);
-  // Insert the keyword if it does not exist yet.
-  if (! table_p.keywordSet().isDefined ("logtable")) {
+  // Insert the keyword if possible and if it does not exist yet.
+  if (table_p.isWritable()  &&  ! table_p.keywordSet().isDefined ("logtable")) {
     table_p.rwKeywordSet().defineTable("logtable", logTablePtr_p->table());
   }
   LogSink tmp;
@@ -891,6 +890,10 @@ template<class T>
 void PagedImage<T>::unlock()
 {
   table_p.unlock();
+  logTablePtr_p->table().unlock();
+  if (regionPtr_p != 0) {
+    regionPtr_p->unlock();
+  }
 }
 template<class T>
 Bool PagedImage<T>::hasLock (FileLocker::LockType type) const
