@@ -44,7 +44,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeProgress.h>
-#include <trial/Lattices/PixelBox.h>
+#include <trial/Lattices/LatticeRegion.h>
 #include <trial/Tasking/ProgressMeter.h>
 #include <iostream.h>
 
@@ -432,7 +432,7 @@ void doIt (int argc, char *argv[])
 	Table paTable(paSetup);
 	PagedArray<Int> latout(l3Shape, paTable);
 	MyLineCollapser collapser;
-	PixelBox region (slicer3, lat.shape());
+	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
 	LatticeApply<Int>::lineApply (latout, lat, region, collapser, 1);
 	tim.show("lsliced 1  ");
@@ -452,7 +452,7 @@ void doIt (int argc, char *argv[])
 	blat[0] = &latout0;
 	blat[1] = &latout1;
 	MyLineCollapser collapser;
-	PixelBox region (slicer3, lat.shape());
+	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
 	LatticeApply<Int>::lineMultiApply (blat, lat, region, collapser, 1);
 	tim.show("msliced 1  ");
@@ -469,7 +469,7 @@ void doIt (int argc, char *argv[])
 	Table paTable(paSetup);
 	PagedArray<Int> latout(l5Shape, paTable);
 	MyTiledCollapser collapser;
-	PixelBox region (slicer3, lat.shape());
+	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
 	LatticeApply<Int>::tiledApply (latout, lat, region, collapser,
 				       IPosition(1,1));

@@ -1,5 +1,5 @@
 //# LatticeApply.h: Optimally iterate through a Lattice and apply provided function object
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@ template <class T> class LineCollapser;
 template <class T> class Lattice;
 class LatticeProgress;
 class IPosition;
-class PixelRegion;
+class LatticeRegion;
 
 
 // <summary>
@@ -141,7 +141,7 @@ public:
 			   LatticeProgress* tellProgress = 0);
     static void lineApply (Lattice<T>& latticeOut, 
 			   const Lattice<T>& latticeIn,
-			   const PixelRegion& region,
+			   const LatticeRegion& region,
 			   LineCollapser<T>& collapser,
 			   uInt collapseAxis,
 			   LatticeProgress* tellProgress = 0);
@@ -162,7 +162,7 @@ public:
 				LatticeProgress* tellProgress = 0);
     static void lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
 				const Lattice<T>& latticeIn,
-				const PixelRegion& region,
+				const LatticeRegion& region,
 				LineCollapser<T>& collapser,
 				uInt collapseAxis,
 				LatticeProgress* tellProgress = 0);
@@ -186,7 +186,7 @@ public:
 			    LatticeProgress* tellProgress = 0);
     static void tiledApply (Lattice<T>& latticeOut,
 			    const Lattice<T>& latticeIn,
-			    const PixelRegion& region,
+			    const LatticeRegion& region,
 			    TiledCollapser<T>& collapser,
 			    const IPosition& collapseAxes,
 			    LatticeProgress* tellProgress = 0);

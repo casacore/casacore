@@ -1,5 +1,5 @@
 //# LatticeApply.cc: Optimally iterate through lattices and apply supplied function
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,8 +41,8 @@
 #include <trial/Lattices/TileStepper.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/PixelBox.h>
-#include <trial/Lattices/PixelRegion.h>
+#include <aips/Lattices/Slicer.h>
+#include <trial/Lattices/LatticeRegion.h>
 #include <iostream.h>
 
 
@@ -54,9 +54,9 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
 				 LatticeProgress* tellProgress)
 {
     lineApply (latticeOut, latticeIn,
-	       PixelBox(IPosition(latticeIn.ndim(), 0),
-			latticeIn.shape() - 1,
-			latticeIn.shape()),
+	       LatticeRegion (Slicer(IPosition(latticeIn.ndim(), 0),
+				     latticeIn.shape()),
+			      latticeIn.shape()),
 	       collapser, collapseAxis, tellProgress);
 }
 
@@ -68,9 +68,9 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 				      LatticeProgress* tellProgress)
 {
     lineMultiApply (latticeOut, latticeIn,
-		    PixelBox(IPosition(latticeIn.ndim(), 0),
-			     latticeIn.shape() - 1,
-			     latticeIn.shape()),
+		    LatticeRegion (Slicer(IPosition(latticeIn.ndim(), 0),
+					  latticeIn.shape()),
+				   latticeIn.shape()),
 		    collapser, collapseAxis, tellProgress);
 }
 
@@ -82,9 +82,9 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 				  LatticeProgress* tellProgress)
 {
     tiledApply (latticeOut, latticeIn,
-		PixelBox(IPosition(latticeIn.ndim(), 0),
-			 latticeIn.shape() - 1,
-			 latticeIn.shape()),
+		LatticeRegion (Slicer(IPosition(latticeIn.ndim(), 0),
+				      latticeIn.shape()),
+			       latticeIn.shape()),
 		collapser, collapseAxes, tellProgress);
 }
 
@@ -93,7 +93,7 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 template <class T>
 void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
 				 const Lattice<T>& latticeIn,
-				 const PixelRegion& region,
+				 const LatticeRegion& region,
 				 LineCollapser<T>& collapser,
 				 uInt collapseAxis,
 				 LatticeProgress* tellProgress)
@@ -101,7 +101,7 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
 // Make veracity check on input and output lattice
 // and work out map to translate input and output axes.
 
-    IPosition ioMap = prepare (region.box().length(), latticeOut.shape(),
+    IPosition ioMap = prepare (region.slicer().length(), latticeOut.shape(),
 			       IPosition(1,collapseAxis));
 
 // Input lines are extracted with the TiledLineStepper.
@@ -109,14 +109,14 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
     const IPosition& inShape = latticeIn.shape();
     IPosition inTileShape = latticeIn.niceCursorShape();
     TiledLineStepper inNav(inShape, inTileShape, collapseAxis);
-    inNav.subSection (region.box().start(), region.box().end(),
-		      region.box().stride());
+    inNav.subSection (region.slicer().start(), region.slicer().end(),
+		      region.slicer().stride());
     RO_LatticeIterator<T> inIter(latticeIn, inNav);
 
-    const IPosition& blc = region.box().start();
-    const IPosition& trc = region.box().end();
-    const IPosition& inc = region.box().stride();
-    const IPosition& len = region.box().length();
+    const IPosition& blc = region.slicer().start();
+    const IPosition& trc = region.slicer().end();
+    const IPosition& inc = region.slicer().stride();
+    const IPosition& len = region.slicer().length();
     const uInt outDim = latticeOut.ndim();
     IPosition outPos(outDim, 0);
     IPosition outShape(outDim, 1);
@@ -188,7 +188,7 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
 template <class T>
 void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 				      const Lattice<T>& latticeIn,
-				      const PixelRegion& region,
+				      const LatticeRegion& region,
 				      LineCollapser<T>& collapser,
 				      uInt collapseAxis,
 				      LatticeProgress* tellProgress)
@@ -207,7 +207,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 // Make veracity check on input and first output lattice
 // and work out map to translate input and output axes.
 
-    IPosition ioMap = prepare (region.box().length(), shape,
+    IPosition ioMap = prepare (region.slicer().length(), shape,
 			       IPosition(1,collapseAxis));
 
 // Input lines are extracted with the TiledLineStepper.
@@ -215,14 +215,14 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
     const IPosition& inShape = latticeIn.shape();
     IPosition inTileShape = latticeIn.niceCursorShape();
     TiledLineStepper inNav(inShape, inTileShape, collapseAxis);
-    inNav.subSection (region.box().start(), region.box().end(),
-		      region.box().stride());
+    inNav.subSection (region.slicer().start(), region.slicer().end(),
+		      region.slicer().stride());
     RO_LatticeIterator<T> inIter(latticeIn, inNav);
 
-    const IPosition& blc = region.box().start();
-    const IPosition& trc = region.box().end();
-    const IPosition& inc = region.box().stride();
-    const IPosition& len = region.box().length();
+    const IPosition& blc = region.slicer().start();
+    const IPosition& trc = region.slicer().end();
+    const IPosition& inc = region.slicer().stride();
+    const IPosition& len = region.slicer().length();
     IPosition outPos(outDim, 0);
     IPosition outShape(outDim, 1);
     for (i=0; i<outDim; i++) {
@@ -303,7 +303,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 template <class T>
 void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 				  const Lattice<T>& latticeIn,
-				  const PixelRegion& region,
+				  const LatticeRegion& region,
 				  TiledCollapser<T>& collapser,
 				  const IPosition& collapseAxes,
 				  LatticeProgress* tellProgress)
@@ -312,7 +312,7 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 // and work out map to translate input and output axes.
 
     uInt i,j;
-    IPosition ioMap = prepare (region.box().length(), latticeOut.shape(),
+    IPosition ioMap = prepare (region.slicer().length(), latticeOut.shape(),
 			       collapseAxes);
 
 // The input is traversed using a TileStepper.
@@ -321,15 +321,15 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
     const uInt inDim = inShape.nelements();
     IPosition inTileShape = latticeIn.niceCursorShape();
     TileStepper inNav(inShape, inTileShape, collapseAxes);
-    inNav.subSection (region.box().start(), region.box().end(),
-		      region.box().stride());
+    inNav.subSection (region.slicer().start(), region.slicer().end(),
+		      region.slicer().stride());
     RO_LatticeIterator<T> inIter(latticeIn, inNav);
 
 // Precalculate various variables.
 
-    const IPosition& blc = region.box().start();
-    const IPosition& trc = region.box().end();
-    const IPosition& inc = region.box().stride();
+    const IPosition& blc = region.slicer().start();
+    const IPosition& trc = region.slicer().end();
+    const IPosition& inc = region.slicer().stride();
     const uInt collDim = collapseAxes.nelements();
     const uInt iterDim = inDim - collDim;
     IPosition iterAxes(iterDim);
