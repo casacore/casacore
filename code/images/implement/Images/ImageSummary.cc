@@ -37,6 +37,7 @@
 #include <trial/Coordinates.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageSummary.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 
 #include <iomanip.h>
 #include <iostream.h>
@@ -259,18 +260,32 @@ void ImageSummary<T>::list (LogIO& os,
 
    os << "Image name  : " << this->name() << endl;
    if (this->hasAMask()) {
-      os << "Image mask  : Present" << endl;
+      os << "Image mask     : Present" << endl;
    } else {
-      os << "Image mask  : Absent" << endl;
+      os << "Image mask     : Absent" << endl;
    }
    if (!this->units().getName().empty()) 
-      os << "Image units : " << this->units().getName() << endl;
+      os << "Image units    : " << this->units().getName() << endl;
    os << endl;
-
 
 // Obtain CoordinateSystem
 
-   CoordinateSystem cSys = pImage_p->coordinates();
+   const CoordinateSystem cSys = pImage_p->coordinates();
+
+
+// List rest frequency if we can find a spectral axis
+
+   Int spectralAxis = findSpectralAxis(cSys);
+   if (spectralAxis >= 0) {
+      Int coordinate, axisInCoordinate;
+      cSys.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
+      const Double restFreq = cSys.spectralCoordinate(coordinate).restFrequency();
+      if (restFreq > 0) {
+         os << "Rest Frequency : " << restFreq << " " 
+            << cSys.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate) << endl;
+      }
+   }
+      
 
 
 // Determine the widths for all the fields that we want to list
