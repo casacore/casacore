@@ -1,5 +1,5 @@
 //# MCDirection.cc:  MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,11 +114,18 @@ void MCDirection::getConvert(MConvertBase &mc,
       Bool iplan = ToBool(iin & MDirection::EXTRA);
       Bool oplan = ToBool(iout & MDirection::EXTRA);
       if (iplan) {
-	mc.addMethod(MCDirection::R_PLANET0);
-	mc.addMethod((iin & ~MDirection::EXTRA) + MCDirection::R_MERCURY);
-	mc.addMethod(MCDirection::R_PLANET);
-	initConvert(MCDirection::R_PLANET, mc);
-	iin = MDirection::JNAT;
+	if (iin != MDirection::COMET) {
+	  mc.addMethod(MCDirection::R_PLANET0);
+	  mc.addMethod((iin & ~MDirection::EXTRA) + MCDirection::R_MERCURY);
+	  mc.addMethod(MCDirection::R_PLANET);
+	  initConvert(MCDirection::R_PLANET, mc);
+	  iin = MDirection::JNAT;
+	} else {
+	  mc.addMethod(MCDirection::R_COMET0);
+	  mc.addMethod(MCDirection::R_COMET);
+	  initConvert(MCDirection::R_COMET, mc);
+	  iin = MDirection::APP;
+	};
       };
       if (oplan) iout = MDirection::J2000;
       Int tmp;
@@ -239,7 +246,7 @@ void MCDirection::doConvert(MVDirection &in,
   // Planetary aberration factor
   Double lengthP = 0;
   MeasTable::Types planID = MeasTable::MERCURY; // to stop warning
-  
+  uInt comID = static_cast<uInt>(MDirection::APP);
   measMath.initFrame(inref, outref);
   
   for (Int i=0; i<mc.nMethod(); i++) {
@@ -430,6 +437,8 @@ void MCDirection::doConvert(MVDirection &in,
     }
     break;
     
+    case R_COMET:
+      if (comID == MDirection::APP) break;
     case TOPO_APP: {
       if (lengthP != 0) {
 	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
@@ -603,6 +612,18 @@ void MCDirection::doConvert(MVDirection &in,
       planID = MeasTable::MOON;
       break;
     
+    case R_COMET0: {
+      ((MCFrame *)(MDirection::Ref::frameComet(inref, outref).
+		   getMCFramePoint()))->
+	getCometType(comID);
+      ((MCFrame *)(MDirection::Ref::frameComet(inref, outref).
+		   getMCFramePoint()))->
+	getComet(*MVPOS1);
+      MVPOS1->adjust(lengthP);
+      in = *MVPOS1;
+    }
+    break;
+
     default:
       break;
       

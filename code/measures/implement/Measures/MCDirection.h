@@ -1,5 +1,5 @@
 //# MCDirection.h: MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -149,6 +149,8 @@ private:
     // General for Planets
     R_PLANET0,
     R_PLANET,
+    R_COMET0,
+    R_COMET,
     // Individual planets. Order should be the same as in MDirection.h
     R_MERCURY,
     R_VENUS,
@@ -159,8 +161,7 @@ private:
     R_NEPTUNE,
     R_PLUTO,
     R_SUN,
-    R_MOON
-  };
+    R_MOON };
   
   //# Typedefs
   
