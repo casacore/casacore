@@ -638,6 +638,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 
     Int row=0;
     Int pointrow=0;
+    Double pointtime=Tstart_p;
     for (Int i=0; i<nSources_p; i++) {
       if(nAnt_p==1) row=i;
 	Double lambda = C::c / startFreq_p(0);
@@ -672,7 +673,13 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	      }
 	      char* pName=name.str();
 	      fieldc.name().put(row,String(pName));
+	      pointtime=pointtime+
+		nIntFld_p(i)*qIntegrationTime_p.getValue("s")
+		+qGapTime_p.getValue("s");
+	      Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
 	      for (Int m=0; m < nAnt_p ; m++){
+		pointingc.time().put(pointrow, pointtime);
+		pointingc.interval().put(pointrow, pinterval);
 		pointingc.antennaId().put(pointrow, m);
 		pointingc.name().put(pointrow, String(pName));
 		pointingc.directionMeasCol().put(pointrow,direction);
@@ -1121,6 +1128,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 
     Int row=numField;
     Int pointrow=numPointing;
+    Double pointtime=Tstart_p;
     for (Int i=0; i<nSources_p; i++) {
       if(nAnt_p==1) row=numField+i;
 	Double lambda = C::c / startFreq_p(0);
@@ -1155,7 +1163,13 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	      }
 	      char* pName=name.str();
 	      fieldc.name().put(row,String(pName));
+	      pointtime=pointtime+
+		nIntFld_p(i)*qIntegrationTime_p.getValue("s")
+		+qGapTime_p.getValue("s");
+	      Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
 	      for (Int m=0; m < nAnt_p ; m++){
+		pointingc.time().put(pointrow, pointtime);
+		pointingc.interval().put(pointrow, pinterval);
 		pointingc.antennaId().put(pointrow, m+numOfAnt);
 		pointingc.name().put(pointrow, String(pName));
 		pointingc.directionMeasCol().put(pointrow,direction);
