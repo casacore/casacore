@@ -41,6 +41,21 @@
 #include <time.h>                   // needed for asctime/localtime on linux
 
 
+//# The ifdef's below are similar to those in IO/LargeIOFuncDef.h.
+#if !defined(AIPS_NOLARGEFILE)
+# ifdef AIPS_LINUX
+#  if !defined(_LARGEFILE64_SOURCE)
+#   define _LARGEFILE64_SOURCE
+#  endif
+# endif
+# define fileLSTAT lstat64
+# define fileSTAT  stat64
+#else
+# define fileLSTAT lstat
+# define fileSTAT  stat
+#endif
+
+
 File::File () 
 {
     // Sets itsPath on the current working directory
@@ -207,6 +222,15 @@ long File::groupID() const
     return buf.st_gid;
 }
 
+Int64 File::size() const
+{
+    // The struct buf is filled in by mylstat, and the size 
+    // of the file is extracted from buf.
+    struct fileSTAT buf;
+    getstat (&buf);
+    return buf.st_size;
+}
+    
 uInt File::readPermissions() const
 {
     // Returns the permissions as a decimal value. The value 
@@ -336,12 +360,13 @@ void File::removeSymLinks ()
     }
 }
 
-int File::mylstat(const char* path, struct fileSTAT* buf) const
+int File::mylstat(const char* path, void* buf) const
 {
-    return fileLSTAT ((char*)path, buf);
+    return fileLSTAT (const_cast<char*>(path),
+		      static_cast<struct fileSTAT*>(buf));
 }
 
-void File::getstat (const File& file, struct fileSTAT* buf) const
+void File::getstat (const File& file, void* buf) const
 {
     if (mylstat (file.path().expandedName().chars(), buf) < 0) {
 	throw (AipsError ("File::getstat error on " +

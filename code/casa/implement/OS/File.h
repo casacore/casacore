@@ -33,19 +33,6 @@
 #include <aips/OS/Path.h>
 #include <aips/Utilities/String.h>
 
-#if !defined(AIPS_NOLARGEFILE)
-# ifdef AIPS_LINUX
-#  if !defined(_LARGEFILE64_SOURCE)
-#   define _LARGEFILE64_SOURCE
-#  endif
-# endif
-# define fileLSTAT lstat64
-# define fileSTAT  stat64
-#else
-# define fileLSTAT lstat
-# define fileSTAT  stat
-#endif
-
 
 // <summary> 
 // Class to get file information and a base for other file classes.
@@ -124,7 +111,7 @@ public:
     // Copy constructor (copy semantics).
     File (const File& that);
 
-    ~File();
+    virtual ~File();
     
     // Assignment (copy semantics).
     File& operator= (const File& that);
@@ -176,6 +163,10 @@ public:
     // Return the groupID of the file.
     long groupID() const;
     
+    // Return the size of the file. If the file
+    // does not exist, an exception will be thrown.
+    virtual Int64 size() const;
+
     // Return the permissions as a decimal value.
     uInt readPermissions() const;
 
@@ -245,23 +236,6 @@ protected:
     // that function uses removeLinks() to remove A, B, C and D.
     void removeSymLinks();
 
-    // Define a function for lstat.
-    // This is necessary since SunOS4.1.x prototypes lstat() with a first
-    // argument of type (char*), while Solaris (and presumably all other
-    // reasonable OS's) prototype it with a first argument of type
-    // (const char*).  Since lstat() does not change its first argument,
-    // it is safe to convert our const variable to a non-const one so that
-    // we can call lstat() successfully.
-    int mylstat (const char* path, struct fileSTAT* buf) const;
-
-    // Get the lstat of this file.
-    // Throw an exception when it fails.
-    void getstat (struct fileSTAT* buf) const;
-
-    // Get the lstat of a file.
-    // Throw an exception when it fails.
-    void getstat (const File& file, struct fileSTAT* buf) const;
-
     // Check if the new path for a copy or move is valid.
     // An exception is thrown if:
     // <br>- the target directory is not writable
@@ -277,9 +251,28 @@ protected:
 		      Bool forDirectory = False) const;
 
 private:
+    // Define a function for lstat.
+    // This is necessary since SunOS4.1.x prototypes lstat() with a first
+    // argument of type (char*), while Solaris (and presumably all other
+    // reasonable OS's) prototype it with a first argument of type
+    // (const char*).  Since lstat() does not change its first argument,
+    // it is safe to convert our const variable to a non-const one so that
+    // we can call lstat() successfully.
+    // <br>It is also useful to be able to pass the buffer as void*. In that
+    // way the 32-bit or 64-bit file details are only needed in the cc file.
+    int mylstat (const char* path, void* buf) const;
+
+    // Get the lstat of this file.
+    // Throw an exception when it fails.
+    void getstat (void* buf) const;
+
+    // Get the lstat of a file.
+    // Throw an exception when it fails.
+    void getstat (const File& file, void* buf) const;
+
+
     // A sequence number to generate unique file names.
     static uInt uniqueSeqnr_p;
-
     // Full pathname of the file.
     Path itsPath;
 };
@@ -290,7 +283,7 @@ inline const Path& File::path() const
     return itsPath;
 }
 
-inline void File::getstat (struct fileSTAT* buf) const
+inline void File::getstat (void* buf) const
 {
     getstat (*this, buf);
 }

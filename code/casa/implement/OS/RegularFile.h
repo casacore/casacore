@@ -1,5 +1,5 @@
 //# RegularFile.h: Manipulate and get information about regular files
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -167,10 +167,7 @@ public:
 
     // Return the size of the file. If the file
     // does not exist, an exception will be thrown.
-    uInt size() const;
-
-    // Return the maximum size of a file
-    static uInt maxSize();
+    virtual Int64 size() const;
 
 private:
     // Check if the path of the file is valid.

@@ -30,16 +30,11 @@
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/SymLink.h>
 
-#include <sys/stat.h>             // needed for stat
-#include <sys/resource.h>         // needed for rlimit, etc.
 #include <fcntl.h>                // needed for creat
 #include <unistd.h>               // needed for unlink, etc.
 #include <errno.h>                // needed for errno
 #include <aips/string.h>               // needed for strerror
 #include <aips/stdlib.h>               // needed for system
-#if defined(__hpux__)
-#include <limits.h>               // needed for MAX__UINT
-#endif
 
 
 RegularFile::RegularFile ()
@@ -169,25 +164,7 @@ void RegularFile::move (const Path& target, Bool overwrite)
     system (call.chars());
 }
 
-uInt RegularFile::size() const
+Int64 RegularFile::size() const
 {
-    // The struct buf is filled in by mylstat, and the size 
-    // of the file is extracted from buf.
-    struct fileSTAT buf;
-    getstat (itsFile.path().expandedName(), &buf);
-    return buf.st_size;
-}
-    
-uInt RegularFile::maxSize()
-{
-    // Return the maximum size of a file  by using getrlimit.
-    // HP RLIMIT_FSIZE is not defined on HPUX.
-    // Return maxuint in that case.
-#if defined(__hpux__)
-    return UINT_MAX;
-#else
-    struct rlimit limit;
-    getrlimit(RLIMIT_FSIZE, &limit);
-    return limit.rlim_max;
-#endif
+  return itsFile.size();
 }
