@@ -2,6 +2,11 @@
 \usepackage{epsfig,makeidx}
 \usepackage{html}
 \usepackage[sectionbib]{chapterbib}
+
+%% This command is necessary when including body167.latex.  For the actual
+%% note 167, the command is defined in 167.latex, which is not included here.
+\providecommand{\bmar}{\marginpar{$\|$}}
+
 \makeindex
 \begin{document}
 \title{ The AIPS++ Programming Manual\\
@@ -15,7 +20,7 @@
 \renewcommand{\appendix}{}
 \tableofcontents
 
-Copyright copyright 1992,1993,1994,1995,1996,1997,1999 Associated Universities Inc., Washington, D.C.
+Copyright copyright 1992,1993,1994,1995,1996,1997,1999,2000 Associated Universities Inc., Washington, D.C.
 
 AIPS++ programming manual.\\
 
