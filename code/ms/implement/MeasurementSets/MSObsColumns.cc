@@ -1,4 +1,4 @@
-//# NewMSObservationColumns.cc:  provides easy access to NewMeasurementSet columns
+//# NewMSObsColumns.cc:  provides easy access to NewMeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -136,6 +136,12 @@ NewMSObservationColumns(NewMSObservation& msObservation):
 {}
 
 NewMSObservationColumns::~NewMSObservationColumns() {}
+
+
+void NewMSObservationColumns::setEpochRef(MEpoch::Types ref) {
+  timeRangeMeas_p.setDescRefCode(ref);
+  releaseDateMeas_p.setDescRefCode(ref);
+}
 
 NewMSObservationColumns::NewMSObservationColumns():
   RONewMSObservationColumns(),

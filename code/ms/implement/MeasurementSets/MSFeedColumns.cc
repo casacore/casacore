@@ -169,16 +169,18 @@ NewMSFeedColumns::NewMSFeedColumns(NewMSFeed& msFeed):
 
 NewMSFeedColumns::~NewMSFeedColumns() {}
 
+void NewMSFeedColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+}
+
 void NewMSFeedColumns::setDirectionRef(MDirection::Types ref) 
 {
-  beamOffset_p.rwKeywordSet().rwSubRecord("MEASINFO").
-    define("Ref", MDirection::showType(ref));
+  beamOffsetMeas_p.setDescRefCode(ref);
 }
 
 void NewMSFeedColumns::setPositionRef(MPosition::Types ref) 
 {
-  position_p.rwKeywordSet().rwSubRecord("MEASINFO").
-    define("Ref", MPosition::showType(ref));
+  positionMeas_p.setDescRefCode(ref);
 }
 
 NewMSFeedColumns::NewMSFeedColumns():

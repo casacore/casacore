@@ -308,10 +308,18 @@ public:
     return RONewMSFeedColumns::phasedFeedId();}
   // </group>
 
-  // set the Direction reference for the beam offset column.
+  // set the epoch type for the TIME column. This can only be done when the
+  // table has no rows. Trying to do so at other times will throw an exception.
+  void setEpochRef(MEpoch::Types ref);
+
+  // set the direction type for the BEAM_OFFSET column. This can only be done
+  // when the table has no rows. Trying to do so at other times will throw an
+  // exception.
   void setDirectionRef(MDirection::Types ref);
 
-  // Set the POSITION reference for the position column.
+  // set the position type for the POSITION column. This can only be done when
+  // the table has no rows. Trying to do so at other times will throw an
+  // exception.
   void setPositionRef(MPosition::Types ref);
 
 protected:

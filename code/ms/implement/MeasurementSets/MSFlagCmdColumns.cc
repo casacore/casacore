@@ -93,6 +93,11 @@ NewMSFlagCmdColumns::NewMSFlagCmdColumns(NewMSFlagCmd& msFlagCmd):
 
 NewMSFlagCmdColumns::~NewMSFlagCmdColumns() {}
 
+
+void NewMSFlagCmdColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+}
+
 NewMSFlagCmdColumns::NewMSFlagCmdColumns():
   RONewMSFlagCmdColumns(),
   applied_p(),

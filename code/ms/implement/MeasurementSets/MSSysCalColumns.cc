@@ -277,6 +277,10 @@ NewMSSysCalColumns::NewMSSysCalColumns(NewMSSysCal& msSysCal):
 
 NewMSSysCalColumns::~NewMSSysCalColumns() {}
 
+void NewMSSysCalColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+}
+
 NewMSSysCalColumns::NewMSSysCalColumns():
   RONewMSSysCalColumns(),
   antennaId_p(),

@@ -100,6 +100,10 @@ NewMSHistoryColumns::NewMSHistoryColumns(NewMSHistory& msHistory):
 
 NewMSHistoryColumns::~NewMSHistoryColumns() {}
 
+void NewMSHistoryColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+}
+
 NewMSHistoryColumns::NewMSHistoryColumns():
   RONewMSHistoryColumns(),
   application_p(),

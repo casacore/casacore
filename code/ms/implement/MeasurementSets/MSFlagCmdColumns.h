@@ -211,6 +211,10 @@ public:
     return RONewMSFlagCmdColumns::type();}
   // </group>
 
+  // set the epoch type for the FLAG_CMD column. This can only be done when the
+  // table has no rows. Trying to do so at other times will throw an exception.
+  void setEpochRef(MEpoch::Types ref);
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

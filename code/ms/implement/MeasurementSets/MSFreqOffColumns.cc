@@ -112,6 +112,11 @@ NewMSFreqOffsetColumns::NewMSFreqOffsetColumns(NewMSFreqOffset& msFreqOffset):
 
 NewMSFreqOffsetColumns::~NewMSFreqOffsetColumns() {}
 
+
+void NewMSFreqOffsetColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+}
+
 NewMSFreqOffsetColumns::NewMSFreqOffsetColumns():
   RONewMSFreqOffsetColumns(),
   antenna1_p(),
