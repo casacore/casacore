@@ -124,8 +124,15 @@ RecordInterface* TableRecord::clone() const
 
 void TableRecord::assign (const RecordInterface& that)
 {
-    TableRecord tmp (that);
-    *this = that;
+    // We want the subrecords to be variable if the main record
+    // is variable and empty.
+    // Operator= does not always preserve the type of subrecords,
+    // so we do a hack by setting the type explicitly.
+    Bool var = (nfields() == 0  &&  !isFixed());
+    *this = TableRecord (that);
+    if (var) {
+	setRecordType (Variable);
+    }
 }
 
 
