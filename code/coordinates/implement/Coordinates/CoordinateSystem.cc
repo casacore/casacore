@@ -1,3 +1,4 @@
+
 //# CoordinateSystem.h: Interconvert pixel and image coordinates. 
 //# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
@@ -263,15 +264,11 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 //
 // Make a map from "*this" to "other"
 //
-// . Returns True only if *all* of the world axes in "other"
-//   can be matched in "*this".  ALl other conditions return False.
-// . If either "*this" or "other" has no world axes, return False.  
+// . Returns False if either "*this" or "other" have no valid
+//   world axes.   Otherwise true.
 // . The coordinate systems can have arbitrary numbers of coordinates
 //   in any relative order.
 // . Removed world and pixel axes are handled.
-// . If a coordinate is completely removed in "other", we don't
-//   look for it in "*this"
-//
 // . The value of worldAxisMap(i2) is the world axis of "*this" matching 
 //   world axis i2 in "other".  A value of -1 indicates that 
 //   a world axis could not be matched.  
@@ -279,24 +276,21 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 // . The value of worldAxisTranspose(i1) is the world axis of "other"
 //   matching world axis i1 of "*this"  It tells you how to transpose
 //   "other" to be in the order of "*this".  A value of -1 indicates
-//   that a world axis could not be matched.  Note that True may be returned
-//   even though a -1 is found in worldAxisTranspose.  The primary
-//   target is "other" and it is considered a success if a worldAxisMap
-//   can be found for it. 
+//   that a world axis could not be matched. 
 //
 {
 
-// Resize the maps
+// Resize the maps and initialize
 
    worldAxisMap.resize(other.nWorldAxes());
    worldAxisMap = -1;
+   worldAxisTranspose.resize(nWorldAxes());
+   worldAxisTranspose = -1;
+
    if (other.nWorldAxes() ==0) {
       set_error(String("The supplied CoordinateSystem has no valid world axes"));
       return False;
    }
-
-   worldAxisTranspose.resize(nWorldAxes());
-   worldAxisTranspose = -1;
    if (nWorldAxes() ==0) {
       set_error(String("The current CoordinateSystem has no valid world axes"));
       return False;
@@ -338,13 +332,6 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 // break jumps here
 
       }
-   }
-   if (allEQ(worldAxisMap.ac(), -1)) {
-       set_error(String("None of the coordinates could be matched"));
-       return False;
-   } else if (anyEQ(worldAxisMap.ac(), -1)) {
-      set_error(String("Not the all coordinates could be matched"));
-      return False;
    }
 
    return True;
