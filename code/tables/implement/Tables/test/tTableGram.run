@@ -1,0 +1,36 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the TableGram and TableParse class.  All files generated will
+# be deleted on exit.
+#=============================================================================
+
+# Use table tTable_2.data_v0 as the input by creating a link to its directory.
+  rm -f tTableGram_tmp.link
+  AIPSCODE=`echo $AIPSPATH | awk '{printf("%s/code",$1)}'`
+  ln -s "$AIPSCODE/aips/implement/Tables/test" tTableGram_tmp.link
+
+# Whitespace around * had to be removed to avoid file name expansion by shell.
+
+
+tTableGram 'select ab,ac,ad,ae,af,ag from tTableGram_tmp.link/tTable_2.data_v0 sh where ab>2 && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab giving tTableGram_tmp.data2'
+tTableGram 'select ab,ac,ad,ae,af,ag from tTableGram_tmp.data2'
+tTableGram 'select ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af'
+tTableGram 'select ab from tTableGram_tmp.link/tTable_2.data_v0 where ab==2^1^2 || ab==-2^-1*8/-2*3'
+tTableGram 'select ab,ac,af from tTableGram_tmp.link/tTable_2.data_v0 where lower(af) == regex("v[01279]")'
+tTableGram 'select ab,ac,af from tTableGram_tmp.link/tTable_2.data_v0 where af == pattern("?{3,5,8}")'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab%1.5==0'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
+tTableGram 'select from tTableGram_tmp.link/tTable_2.data_v0 where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where arr1[1,1,1+ab%1]>=192 orderby ad desc'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where cos(2d0m) <= sin(-2d)*sin(-ab/180*pi()) + cos(-2deg)*cos(-ab/180*pi())*cos(3d - ac/180*pi())'
+tTableGram 'select ab,ac,ad,ae,af,ag from tTableGram_tmp.link/tTable_2.data_v0 where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910'
+tTableGram 'select ab,ac,af from tTableGram_tmp.link/tTable_2.data_v0 where ab>5 orderby af desc, ac'
+tTableGram 'select ab,ac,af from tTableGram_tmp.link/tTable_2.data_v0 orderby arr1[1,1,1]'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 orderby round(2*sin(ab)),ac desc'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab < mean([3:6,ab])'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [select ac from tTableGram_tmp.link/tTable_2.data_v0 where ab>4]'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [:=2,4=:<6,7<:]'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [select from tTableGram_tmp.link/tTable_2.data_v0 where ab>4 giving [ac=:=ac+0.5]]'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN arr1'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where any(arr1 > 100  &&  arr1<200)'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where count(shape(arr1))==3 && count(ab)==1 && ndim(ac)==0 && isdefined(arr2)'
