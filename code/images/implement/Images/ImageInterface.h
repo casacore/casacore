@@ -1,5 +1,5 @@
 //# ImageInterface.h: a base class for astronomical images
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,10 @@
 #if !defined(AIPS_IMAGEINTERFACE_H)
 #define AIPS_IMAGEINTERFACE_H
 
+
 //# Includes
 #include <aips/aips.h>
-#include <trial/Lattices/Lattice.h>
+#include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeCoordinates.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Logging/LogIO.h>
@@ -39,14 +40,16 @@
 template <class T> class LatticeIterInterface;
 template <class T> class Vector;
 template <class T> class COWPtr;
+class ImageRegion;
 class IPosition;
 class TiledShape;
 class LogIO;
 class RecordInterface;
 class Unit;
 
+
 // <summary>
-// a base class for astronomical images
+// A base class for astronomical images.
 // </summary>
 
 // <use visibility=export>
@@ -115,7 +118,7 @@ class Unit;
 //   IPosition shape() const;
 //   
 //   // doGetSlice is another function required of all Lattice objects.
-//   Bool doGetSlice(<Array<T> &buffer, const Slicer &section);
+//   Bool doGetSlice(<Array<T>& buffer, const Slicer& section);
 //
 //  // etc...
 // private:
@@ -136,7 +139,7 @@ class Unit;
 // </todo>
 
 
-template <class T> class ImageInterface: virtual public Lattice<T>
+template <class T> class ImageInterface: public MaskedLattice<T>
 {
 public: 
   ImageInterface();
@@ -148,35 +151,35 @@ public:
 
   // Make a copy of the derived object (reference semantics).
   // <group>
-  virtual Lattice<T>* clone() const = 0;
+  virtual MaskedLattice<T>* cloneML() const;
   virtual ImageInterface<T>* cloneII() const = 0;
   // </group>
 
   // Function which changes the shape of the image (N.B. the data is thrown 
   // away - the Image will be filled with nonsense afterwards)
-  virtual void resize(const TiledShape &newShape) = 0;
+  virtual void resize (const TiledShape& newShape) = 0;
   
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
   // False if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
   // <group>
-  virtual Bool setUnits(const Unit &newUnits) = 0;
+  virtual Bool setUnits (const Unit& newUnits) = 0;
   virtual Unit units() const = 0;
   // </group>
 
   // Return the name of the current ImageInterface object. This will generally 
   // be a file name for images that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
-  virtual String name(const Bool stripPath=False) const = 0;
+  virtual String name (const Bool stripPath=False) const = 0;
 
   // Functions to set or replace the coordinate information in the Image
   // Returns False on failure, e.g. if the number of axes do not match.
   //# NOTE. setCoordinateInfo should be pure virtual with a partial 
   //# implementation however SGI ntv will not generate it with -no_prelink.
   // <group>
-  virtual Bool setCoordinateInfo(const CoordinateSystem &coords);
-  const CoordinateSystem &coordinates() const;
+  virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
+  const CoordinateSystem& coordinates() const;
   // </group>
 
   // Function to get a LatticeCoordinate object containing the coordinates.
@@ -184,8 +187,8 @@ public:
   
   // Allow messages to be logged to this ImageInterface.
   // <group>
-  LogIO &logSink() {return log_p;}
-  const LogIO &logSink() const {return log_p;}
+  LogIO& logSink() {return log_p;}
+  const LogIO& logSink() const {return log_p;}
   // </group>
   
   // Often we have miscellaneous information we want to attach to an image.
@@ -196,10 +199,27 @@ public:
   // Note that setMiscInfo REPLACES the information with the new information.
   // If can fail if, e.g., the underlying table is not writable.
   // <group>
-  virtual const RecordInterface &miscInfo() const = 0;
-  virtual Bool setMiscInfo(const RecordInterface &newInfo) = 0;
+  virtual const RecordInterface& miscInfo() const = 0;
+  virtual Bool setMiscInfo (const RecordInterface& newInfo) = 0;
   // </group>
-  
+
+  // The "region/mask" functions are only implemented in PagedImage.
+  // All other Image classes ignore these operations (they are no-op's).
+  // See <linkto class=PagedImage>PagedImage</linkto> for a description
+  // of the functions.
+  // <group>
+  virtual void defineRegion (const String& name, const ImageRegion& region,
+			     Bool overwrite = True);
+  virtual ImageRegion* getImageRegionPtr (const String& name) const;
+  virtual void removeRegion (const String& name);
+  virtual void setDefaultMask (const String& regionName);
+  virtual String getDefaultMask() const;
+  // </group>
+
+  // Get a region belonging to the image.
+  // An exception is thrown if the region does not exist.
+  ImageRegion getRegion (const String& regionName) const;
+
   // Check class invariants. 
   virtual Bool ok() const = 0;
   

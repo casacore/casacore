@@ -1,4 +1,4 @@
-//# PagedImage.h: reading, storing and manipulating astronomical images
+//# PagedImage.h: read, store and manipulate astronomical images
 //# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -43,6 +43,7 @@ class IPosition;
 class LatticeNavigator;
 class Slicer;
 class LogTable;
+class ImageRegion;
 template <class T> class Array;
 template <class T> class LatticeIterInterface;
 class String;
@@ -54,21 +55,21 @@ class ostream;
 
 
 // <summary>
-// read, store, and manipulate astronomical images
+// Read, store, and manipulate astronomical images.
 // </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tPagedmage.cc" demos="dPagedImage.cc>
+// <reviewed reviewer="" date="" tests="tPagedmage.cc" demos="dPagedImage.cc">
 // </reviewed>
 
 // <prerequisite>
 // <list>
-//   <item> CoordinateSystem
-//   <item> ImageInterface
-//   <item> Lattice
-//   <item> LatticeIterator
-//   <item> LatticeNavigator
+//   <item> <linkto class=CoordinateSystem>CoordinateSystem</linkto>
+//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <item> <linkto class=Lattice>Lattice</linkto>
+//   <item> <linkto class=LatticeIterator>LatticeIterator</linkto>
+//   <item> <linkto class=LatticeNavigator>LatticeNavigator</linkto>
 // </list>
 // </prerequisite>
 
@@ -106,54 +107,70 @@ class ostream;
 //   <li> The CoordinateSystem::store() function returns a TableRecord.  That
 // TableRecord should be stored in the same row as our image.  This will 
 // allow ImageStack members to have their own coordinate frames.
-//   <li> Create a proper table log sink, not just the null sink.
 // </todo>
 
 
 template <class T> class PagedImage: public ImageInterface<T>
 {
 public: 
-  // construct a new Image from shape and coordinate information. Data
-  // will be stored in the argument table.
-  PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
-	     Table &table, uInt rowNumber = 0);
+  // Construct a new Image from shape and coordinate information.
+  // Data will be stored in the argument table.
+  PagedImage (const TiledShape& mapShape,
+	      const CoordinateSystem& coordinateInfo,
+	      Table& table,
+	      uInt rowNumber = 0);
   
-  // construct a new Image from shape and coordinate information. Table
+  // Construct a new Image from shape and coordinate information. Table
   // will be stored in the named file.
-  PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
-	     const String &nameOfNewFile, uInt rowNumber = 0);
+  PagedImage (const TiledShape& mapShape,
+	      const CoordinateSystem& coordinateInfo,
+	      const String& nameOfNewFile,
+	      uInt rowNumber = 0);
   
-  // construct a new Image from shape and coordinate information. Table
+  // Construct a new Image from shape and coordinate information. Table
   // will be stored in the named file.
   // The lock options may be specified
-  PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
-	     const String &nameOfNewFile, const TableLock& lockOptions,
-             uInt rowNumber = 0);
+  // <group>
+  PagedImage (const TiledShape& mapShape,
+	      const CoordinateSystem& coordinateInfo,
+	      const String& nameOfNewFile,
+	      TableLock::LockOption,
+	      uInt rowNumber = 0);
+  PagedImage (const TiledShape& mapShape,
+	      const CoordinateSystem& coordinateInfo,
+	      const String& nameOfNewFile,
+	      const TableLock& lockOptions,
+	      uInt rowNumber = 0);
+  // <group>
   
-  // reconstruct an image from a pre-existing file
-  PagedImage(Table &table, uInt rowNumber = 0);
+  // Reconstruct an image from a pre-existing file.
+  // Use the default mask if the flag is True.
+  PagedImage (Table& table, Bool useDefaultMask = True, uInt rowNumber = 0);
   
-  // reconstruct an image from a pre-existing file
-  PagedImage(const String &filename, uInt rowNumber = 0);
+  // Reconstruct an image from a pre-existing file.
+  // Use the default mask if the flag is True.
+  PagedImage (const String& filename, Bool useDefaultMask = True,
+	      uInt rowNumber = 0);
   
-  // reconstruct an image from a pre-existing file with Locking
-  PagedImage(const String &filename, const TableLock& lockOptions,
-	     uInt rowNumber = 0);
+  // Reconstruct an image from a pre-existing file with Locking.
+  // Use the default mask if the flag is True.
+  // <group>
+  PagedImage (const String& filename, TableLock::LockOption,
+	      Bool useDefaultMask = True, uInt rowNumber = 0);
+  PagedImage (const String& filename, const TableLock& lockOptions,
+	      Bool useDefaultMask = True, uInt rowNumber = 0);
+  // </group>
   
-  // the copy constructor (reference semantics).
-  PagedImage(const PagedImage<T> &other);
+  // Copy constructor (reference semantics).
+  PagedImage (const PagedImage<T>& other);
 
-  // destructor
   ~PagedImage();
   
-  // assignment operator (reference semantics).
-  PagedImage<T> &operator=(const PagedImage<T> &other);
+  // Assignment operator (reference semantics).
+  PagedImage<T>& operator= (const PagedImage<T>& other);
   
   // Make a copy of the object (reference semantics).
-  // <group>
-  virtual Lattice<T>* clone() const;
   virtual ImageInterface<T>* cloneII() const;
-  // </group>
 
   // A PagedImage is always paged to disk.
   virtual Bool isPaged() const;
@@ -161,35 +178,50 @@ public:
   // Is the PagedImage writable?
   virtual Bool isWritable() const;
 
+  // Get a pointer the default region/mask object used with this image.
+  // It returns 0 if no default mask is used.
+  virtual const LatticeRegion* getRegionPtr() const;
+
+  // Set the default mask to the region/mask with the given name.
+  // If the image table is writable, the setting is persistent by writing
+  // the name as a keyword.
+  // If the given regionName is the empty string, the default mask is unset.
+  virtual void setDefaultMask (const String& regionName);
+
+  // Get the name of the default mask.
+  // An empty string is returned if no default mask.
+  virtual String getDefaultMask() const;
+
   // Function to change the name of the Table file on disk.
   // PagedImage is given a file name at construction time.  You may change
   // that name here.
-  void rename(const String &newName);
+  void rename (const String& newName);
 
-  // Returns the current Table name. By default this includes the full path. 
+  // Return the current Table name. By default this includes the full path. 
   // the path preceding the file name can be stripped off on request.
-  virtual String name(const Bool stripPath=False) const;
+  virtual String name (const Bool stripPath=False) const;
 
-  // returns the current TableColumn row number 
+  // Return the current TableColumn row number.
   uInt rowNumber() const;
 
-  // return the shape of the image
+  // Return the shape of the image.
   virtual IPosition shape() const;
 
-  // change the shape of the image (N.B. the data is thrown away)
-  virtual void resize(const TiledShape &newShape);
+  // Change the shape of the image (N.B. the data is thrown away).
+  virtual void resize (const TiledShape& newShape);
 
-  // function which extracts an array from the map.
-  virtual Bool doGetSlice(Array<T> &buffer, const Slicer &theSlice);
+  // Function which extracts an array from the map.
+  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
   
-  // function to replace the values in the map with soureBuffer.
-  virtual void doPutSlice(const Array<T> &sourceBuffer, const IPosition &where,
-			  const IPosition &stride);
+  // Function to replace the values in the map with soureBuffer.
+  virtual void doPutSlice (const Array<T>& sourceBuffer,
+			   const IPosition& where,
+			   const IPosition& stride);
 
-  // replace every element, x, of the lattice with the result  of f (x).
+  // Replace every element, x, of the lattice with the result of f(x).
   // you must pass in the address of the function -- so the function
   // must be declared and defined in the scope of your program.  
-  // both versions of apply require a function that accepts a single 
+  // Both versions of apply require a function that accepts a single 
   // argument of type T (the Lattice template actual type) and returns
   // a result of the same type.  The first apply expects a function with
   // an argument passed by value; the second expects the argument to
@@ -197,85 +229,96 @@ public:
   // for the built-in types, which may be an issue for large Lattices
   // stored in memory, where disk access is not an issue.
   // <group>
-  virtual void apply(T (*function)(T));
-  virtual void apply(T (*function)(const T &));
-  virtual void apply(const Functional<T,T> &function);
+  virtual void apply (T (*function)(T));
+  virtual void apply (T (*function)(const T& ));
+  virtual void apply (const Functional<T,T>& function);
   // </group>
 
-  // addition operator. Lattice.
-  PagedImage<T> &operator+=(const Lattice<T> &other);
-
-  // addition operator. Constant
-///  PagedImage<T> &operator+=(const T &val);
+  // Add a lattice to this image.
+  PagedImage<T>& operator+= (const Lattice<T>& other);
 
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
   // False if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
   // <group>
-  virtual Bool setUnits(const Unit &newUnits);
+  virtual Bool setUnits (const Unit& newUnits);
   virtual Unit units() const;
   // </group>
 
-  // return the table holding the data
+  // Return the table holding the data.
   Table table();
 
   // Flushes the new coordinate system to disk if the table is writable.
-  virtual Bool setCoordinateInfo(const CoordinateSystem &coords);
+  virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
 
-  // check for symmetry in data members
+  // Check for symmetry in data members.
   virtual Bool ok() const;
 
   // These are the true implementations of the paran operator.
   // <note> Not for public use </note>
   // <group>
-  virtual T getAt(const IPosition &where) const;
-  virtual void putAt(const T &value, const IPosition &where);
+  virtual T getAt (const IPosition& where) const;
+  virtual void putAt (const T& value, const IPosition& where);
   // </group>
 
   // Often we have miscellaneous information we want to attach to an image.
   // This is how it is done. Eventually we will want to register that some
   // of the information is to be destroyed if the image changes so that, e.g.
   // data max/min values can be removed if the image changes.
-  //
+  // <br>
   // Note that setMiscInfo REPLACES the information with the new information.
-  // If can fail if, e.g., the underlying table is not writable.
+  // It can fail if, e.g., the underlying table is not writable.
   // <group>
-  virtual const RecordInterface &miscInfo() const;
-  virtual Bool setMiscInfo(const RecordInterface &newInfo);
+  virtual const RecordInterface& miscInfo() const;
+  virtual Bool setMiscInfo (const RecordInterface& newInfo);
   // </group>
 
+  // Define a region belonging to the image.
+  // If overwrite=False, an exception will be thrown if the region
+  // already exists.
+  virtual void defineRegion (const String& name, const ImageRegion& region,
+			     Bool overwrite = False);
+
+  // Get a region belonging to the image.
+  // A zero pointer is returned if the region does not exist.
+  // The caller has to delete the <src>ImageRegion</src> object created.
+  virtual ImageRegion* getImageRegionPtr (const String& name) const;
+
+  // Remove a region belonging to the image.
+  // No exception is thrown if the region does not exist.
+  virtual void removeRegion (const String& name);
   
-  // these are the implementations of the letters for the envelope Iterator
-  // class <note> Not for public use </note>
-  virtual LatticeIterInterface<T> *makeIter
-                                 (const LatticeNavigator &navigator) const;
+  // This is the implementation of the letter for the envelope Iterator
+  // class. <note> Not for public use </note>.
+  virtual LatticeIterInterface<T>* makeIter
+                                 (const LatticeNavigator& navigator) const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile. 
   virtual uInt maxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
   uInt maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  void setMaximumCacheSize(uInt howManyPixels);
+  void setMaximumCacheSize (uInt howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
-  void setCacheSizeFromPath(const IPosition& sliceShape,
-			    const IPosition& windowStart,
-			    const IPosition& windowLength,
-			    const IPosition& axisPath);
-
+  void setCacheSizeFromPath (const IPosition& sliceShape,
+			     const IPosition& windowStart,
+			     const IPosition& windowLength,
+			     const IPosition& axisPath);
+    
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
   void clearCache();
 
-  // Report on cache success
-  void showCacheStatistics(ostream &os) const;
+  // Report on cache success.
+  void showCacheStatistics (ostream& os) const;
 
   // Handle the (un)locking.
   // <group>
@@ -292,14 +335,24 @@ private:
   void attach_logtable();
   void restore_units();
   void save_units();
-  void check_conformance(const Lattice<T> &other);
+  void check_conformance (const Lattice<T>& other);
   void reopenRW();
   void doReopenRW();
   void setTableType();
+  void applyDefaultMask();
+  void makeRegion (const String& regionName);
+  void makePagedImage (const TiledShape& mapShape,
+		       const CoordinateSystem& coordinateInfo,
+		       const String& nameOfNewFile,
+		       const TableLock& lockOptions,
+		       uInt rowNumber);
+  void makePagedImage (const String& filename, const TableLock& lockOptions,
+		       Bool useDefaultMask, uInt rowNumber);
 
   Table table_p;
   PagedArray<T> map_p;
   TableLogSink* logTablePtr_p;
+  LatticeRegion* regionPtr_p;
 };
 
 
@@ -312,7 +365,7 @@ private:
 // <src>fileName</src>.  If the file doesn't appear to be a Table or cannot
 // be opened, TpOther is returned.
 // <group name="pixeltype")
-    DataType imagePixelType(const String &fileName);
+    DataType imagePixelType(const String& fileName);
 // </group>
 
 
