@@ -31,6 +31,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/IncrementalStMan.h>
+#include <aips/Tables/MemoryStMan.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ScaColDesc.h>
@@ -465,7 +466,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
    }
 
    //		and finally create the Table
-   currRowTab = new Table(newtab, 1);
+   currRowTab = new Table(newtab, Table::Memory, 1);
 
    //		OK, fill the one row of CurrRowTab
    if (nrows() > 0) {
@@ -991,6 +992,29 @@ Table BinaryTable::fullTable(const String& tabname,
     }		// end of loop over rows
     return full;
 }
+
+Table BinaryTable::fullTable()
+{
+   SetupNewTable newtab("", getDescriptor(), Table::Scratch);
+   MemoryStMan stman ("MemSM");
+       newtab.bindAll(stman);
+    //		and actually create the table
+    Table *full= new Table(newtab,Table::Memory, nrows());
+    RowCopier rowcop(*full, *currRowTab);
+    //			loop over all rows remaining
+    for (Int outrow = 0, infitsrow = currrow(); infitsrow < nrows(); 
+	 outrow++, infitsrow++) {
+	rowcop.copy(outrow, 0);
+	//		don't read past the end of the table
+	if ((infitsrow+1) < nrows()) {
+	    if (!theheap_p) read(1);
+	    else ++(*this);
+	    fillRow();
+	}
+    }		// end of loop over rows
+    return *full;
+}
+
 
 const TableDesc& BinaryTable::getDescriptor()
 {
