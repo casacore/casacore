@@ -135,6 +135,10 @@ IPosition RecordInterface::shape (const RecordFieldId& id) const
     switch (type (whichField)) {
     case TpArrayBool:
 	return asArrayBool(whichField).shape();
+    case TpArrayUChar:
+	return asArrayuChar(whichField).shape();
+    case TpArrayShort:
+	return asArrayShort(whichField).shape();
     case TpArrayInt:
 	return asArrayInt(whichField).shape();
     case TpArrayUInt:
