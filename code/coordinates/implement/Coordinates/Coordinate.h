@@ -35,6 +35,7 @@
 #include <aips/Measures/MDirection.h>
 
 template<class T> class Matrix;
+template<class T> class Quantum;
 class RecordInterface;
 class Projection;
 
@@ -327,6 +328,8 @@ public:
     // Some derived classes will format in units different from that which
     // currently reflect the state of the CoordinateSystem.  The units of
     // the formatted number are returned in <src>units</src>.
+    // You can also use the Quantum interface.  The units can then be anything 
+    // consistent with the Coordinate.
     //
     // The default implementation here in this base class is to format only
     // with scientific or fixed formats.  absolute is ignored.
@@ -342,6 +345,12 @@ public:
     virtual String format(String& units,
                           const Coordinate::formatType format, 
                           const Double worldValue, 
+                          const uInt worldAxis, 
+                          const Bool absolute,
+ 			  const Int precision = -1) const;
+    virtual String format(String& units,
+                          const Coordinate::formatType format, 
+                          const Quantum<Double>& worldValue, 
                           const uInt worldAxis, 
                           const Bool absolute,
  			  const Int precision = -1) const;

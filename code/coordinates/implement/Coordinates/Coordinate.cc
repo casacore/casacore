@@ -340,6 +340,7 @@ void Coordinate::getPrecision(Int &precision,
    }
 }
 
+
 String Coordinate::format(String& units,
                           const Coordinate::formatType format, 
                           const Double worldValue, 
@@ -376,6 +377,23 @@ String Coordinate::format(String& units,
    units = worldAxisUnits()(worldAxis);
  
    return String(oss);
+}
+
+
+String Coordinate::format(String& units,
+                          const Coordinate::formatType format2, 
+                          const Quantum<Double>& worldValue, 
+                          const uInt worldAxis, 
+                          const Bool absolute, 
+                          const Int precision) const
+{
+   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
+
+// Use derived class formatter
+
+   String unit = worldAxisUnits()(worldAxis);
+   return format(units, format2, worldValue.getValue(Unit(unit)),
+                 worldAxis, absolute, precision);
 }
 
 
