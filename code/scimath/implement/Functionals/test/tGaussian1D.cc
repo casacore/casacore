@@ -1,5 +1,5 @@
 //# tGaussian1D: Test the Gaussian1D class
-//# Copyright (C) 1995,1996,1997,1999,2001,2002
+//# Copyright (C) 1995,1996,1997,1999,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -46,7 +46,9 @@ int main() {
   AlwaysAssertExit(null.height() == 1.0 && 
 		   null.center() == 0.0 && null.width() == 1.0);
   AlwaysAssertExit(near(null(0.5), 0.5) && near(null(0.0), 1.0));
-  
+
+  cout << "Name of function: " << null.name() << endl; 
+  AlwaysAssertExit(null.name() == "gaussian1d");
   //     Gaussian1D(const T& h, const T& c, const T& w);
   //     T height() const
   //     void setHeight(const T & height)
