@@ -247,7 +247,7 @@ ifeq "$(XLIBLIST_shared_aips)" ""
 XLIBLIST_shared_aips:=GLISH X11 LAPACK F77
 endif
 ifeq "$(XLIBLIST_shared_trial)" ""
-XLIBLIST_shared_trial:=GLISH XmPGPLOT Motif X11 WCSLIB LAPACK F77
+XLIBLIST_shared_trial:=GLISH XmPGPLOT XPM Motif X11 WCSLIB LAPACK F77
 endif
 
 ###
