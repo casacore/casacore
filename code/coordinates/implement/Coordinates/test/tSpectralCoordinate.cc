@@ -579,25 +579,40 @@ int main()
          f0 = restFreq;
          SpectralCoordinate lc(MFrequency::TOPO, f0, finc, refchan, restFreq);
          Double dVel = velInc(finc, f0, velType);
-//
-         Quantum<Double> vel;
+
+// Pixel <-> Velocity
+
+         Double vel;
          Double pix = 0.0;
+         Double pix2;
          if (!lc.pixelToVelocity(vel, pix, velUnit, velType)) {
             throw(AipsError(String("pixelToVelocity 1 conversion failed because ") + lc.errorMessage()));
          }
-         if (!near(vel.getValue(), 0.0)) {
+         if (!near(vel, 0.0)) {
             throw(AipsError(String("pixelToVelocity 1 gave wrong answer")));
+         }
+         if (!lc.velocityToPixel(pix2, vel, velUnit, velType)) {
+            throw(AipsError(String("velocityToPixel 1 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(pix2, pix)) {
+            throw(AipsError(String("velocityToPixel 1 gave wrong answer")));
          }
 //
          pix = 1.0;
          if (!lc.pixelToVelocity(vel, pix, velUnit, velType)) {
             throw(AipsError(String("pixelToVelocity 2 conversion failed because ") + lc.errorMessage()));
          }
-         if (!near(vel.getValue(), dVel)) {
+         if (!near(vel, dVel)) {
             throw(AipsError(String("pixelToVelocity 2 gave wrong answer")));
          }
+         if (!lc.velocityToPixel(pix2, vel, velUnit, velType)) {
+            throw(AipsError(String("velocityToPixel 2 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(pix2, pix)) {
+            throw(AipsError(String("velocityToPixel 2 gave wrong answer")));
+         }
 //
-         Vector<Double>pixels(2);
+         Vector<Double> pixels(2), pixels2;
          Vector<Double> velocities;
          pixels(0) = 0.0; pixels(1) = 1.0;
          if (!lc.pixelToVelocity(velocities, pixels, velUnit, velType)) {
@@ -606,8 +621,67 @@ int main()
          if (!near(velocities(0), 0.0) || !near(velocities(1), dVel)) {
             throw(AipsError(String("pixelToVelocity 3 gave wrong answer")));
          }
+         if (!lc.velocityToPixel(pixels2, velocities, velUnit, velType)) {
+            throw(AipsError(String("velocityToPixel 3 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(pixels2(0), pixels(0)) || !near(pixels2(1), pixels(1))) {
+            throw(AipsError(String("pixelToVelocity 3 gave wrong answer")));
+         }
 //
          Quantum<Double> velQ;
+         pix = 0.0;
+         if (!lc.pixelToVelocity(velQ, pix, velUnit, velType)) {
+            throw(AipsError(String("pixelToVelocity 4 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velQ.getValue(), 0.0)) {
+            throw(AipsError(String("pixelToVelocity 4 gave wrong answer")));
+         }
+         if (!lc.velocityToPixel(pix2, velQ.getValue(), velUnit, velType)) {
+            throw(AipsError(String("velocityToPixel 4 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(pix2, pix)) {
+            throw(AipsError(String("velocityToPixel 4 gave wrong answer")));
+         }
+
+// Frequency <-> Velocity
+
+         Double freq;
+         if (!lc.frequencyToVelocity(vel, f0, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 1 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(vel, 0.0)) {
+            throw(AipsError(String("frequencyToVelocity 1 gave wrong answer")));
+         }
+         if (!lc.velocityToFrequency (freq, vel, velUnit, velType)) {
+            throw(AipsError(String("velocityToFrequency 1 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(freq, f0)) {
+            throw(AipsError(String("velocityToFrequency 1 gave wrong answer")));
+         }
+//
+         Vector<Double> frequencies(2), frequencies2;
+         frequencies(0) = f0;
+         frequencies(1) = f0 + finc;
+         if (!lc.frequencyToVelocity(velocities, frequencies, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 2 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velocities(0), 0.0) || !near(velocities(1), dVel)) {
+            throw(AipsError(String("frequencyToVelocity 2 gave wrong answer")));
+         }
+         if (!lc.velocityToFrequency (frequencies2, velocities, velUnit, velType)) {
+            throw(AipsError(String("velocityToFrequency 2 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(frequencies2(0), frequencies(0)) || !near(frequencies2(1), frequencies(1))) {
+            throw(AipsError(String("velocityToFrequency 2 gave wrong answer")));
+         }
+//
+         if (!lc.frequencyToVelocity(velQ, f0+finc, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 5 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velQ.getValue(), dVel)) {
+            throw(AipsError(String("frequencyToVelocity 5 gave wrong answer")));
+         }
+//
          if (!lc.frequencyToVelocity(velQ, f0, velUnit, velType)) {
             throw(AipsError(String("frequencyToVelocity 4 conversion failed because ") + lc.errorMessage()));
          }
@@ -619,16 +693,6 @@ int main()
          }
          if (!near(velQ.getValue(), dVel)) {
             throw(AipsError(String("frequencyToVelocity 5 gave wrong answer")));
-         }
-//       
-         Vector<Double> frequencies(2);
-         frequencies(0) = f0;
-         frequencies(1) = f0 + finc;
-         if (!lc.frequencyToVelocity(velocities, frequencies, velUnit, velType)) {
-            throw(AipsError(String("frequencyToVelocity 6 conversion failed because ") + lc.errorMessage()));
-         }
-         if (!near(velocities(0), 0.0) || !near(velocities(1), dVel)) {
-            throw(AipsError(String("frequencyToVelocity 6 gave wrong answer")));
          }
 //
          MVFrequency mvf(f0);
