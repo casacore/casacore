@@ -31,6 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <trial/Wnbt/SpectralList.h>
 
 //# Forward Declarations
 class SpectralElement;
@@ -79,8 +80,8 @@ class SpectralFit {
   //# Constructors
   // Default constructor creates a default fitter without elements
   SpectralFit();
-  // Construct for the given number fo elements
-  explicit SpectralFit(uInt n);
+  // Construct for the given elements
+  explicit SpectralFit(const SpectralList &in);
   // Copy constructor (deep copy)
   SpectralFit(const SpectralFit &other);
   // Destructor
@@ -97,53 +98,31 @@ class SpectralFit {
   // </thrown>
   void setFitElement(uInt index, const SpectralElement &elem);
 
-  // Add an element to be fitted
+  // Add elements to be fitted
+  // <group>
   void addFitElement(const SpectralElement &elem);
+  void addFitElement(const SpectralList &elem);
+  // </group>
 
-  // Get number of elements being fitted
-  uInt getNElements() const { return n_p; }
+  // Get the list being fitted
+  const SpectralList &list() const { return slist_p; };
 
-  // Get a fitted element
-  // <thrown>
-  //   <li> AipsError if index too large
-  // </thrown>
-  const SpectralElement &getElement(uInt index) const;
-  // Fit the (gaussian) elements as given by the specified spectral elements
+  // Fit the elements as given by the specified spectral elements
   // at the frequencies x with values y. Weights of all points are equal.
-  // Fitting of polynomial possible
   // <group>
-  Bool fit(const Vector<Double> &x,
-	   const Vector<Double> &y);
-  Bool fit(const Vector<Float> &x,
-   	   const Vector<Float> &y);
-  // </group>
-
-  // Evaluate the fit at the given points x. The result returned in y.
-  // <group>
-  void evaluate(Vector<Float> &y, const Vector<Float> &x) const;
-  void evaluate(Vector<Double> &y, const Vector<Double> &x) const;
-  // </group>
-  // Calculate ther residuals at the points x; by subtracting the model from y
-  // <thrown>
-  //  <li> AipsError if y and x have different lengths
-  // </thrown>
-  // <group>
-  void residual(Vector<Float> &y, const Vector<Float> &x) const;
-  void residual(Vector<Double> &y, const Vector<Double> &x) const;
+  Bool fit(const Vector<Double> &y,
+	   const Vector<Double> &x);
+  Bool fit(const Vector<Float> &y,
+   	   const Vector<Float> &x);
   // </group>
 
  private:
   //#Data
-  // Number of elements to fit
-  uInt n_p;
-  // Capacity of fit list
-  uInt cap_p;
   // Elements to be fitted
-  SpectralElement *el_p;
+  SpectralList slist_p;
 
   //# Member functions
-  // Increase capacity
-  void capacity();
+
 };
 
 #endif

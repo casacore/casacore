@@ -38,51 +38,35 @@
 
 //# Constructors
 SpectralFit::SpectralFit() :
-  n_p(0), cap_p(0), el_p(0) {}
+  slist_p(0) {}
 
-SpectralFit::SpectralFit(uInt n) :
-  n_p(n), cap_p(0), el_p(0) {
-  capacity();
-}
+SpectralFit::SpectralFit(const SpectralList &in) :
+  slist_p(in) {}
 
 SpectralFit::SpectralFit(const SpectralFit &other) :
-  n_p(other.n_p), cap_p(0), el_p(0) {
-  capacity();
-  for (uInt i=0; i<n_p; i++) el_p[i] = other.el_p[i];
-}
+  slist_p(other.slist_p) {}
 
-SpectralFit::~SpectralFit() {
-  delete [] el_p;
-};
+SpectralFit::~SpectralFit() {}
 
 SpectralFit &SpectralFit::operator=(const SpectralFit &other) {
-  if (this != &other) {
-    n_p = other.n_p;
-    cap_p = 0;
-    el_p = 0;
-    capacity();
-    for (uInt i=0; i<n_p; i++) el_p[i] = other.el_p[i];
-  };
+  if (this != &other) slist_p = other.slist_p;
   return *this;
 }
 
 void SpectralFit::setFitElement(uInt index, const SpectralElement &elem) {
-  if (index >= n_p) throw(AipsError("setFitElement illegal index"));
-  el_p[index] = elem;
+  slist_p.set(elem, index);
 }
 
 void SpectralFit::addFitElement(const SpectralElement &elem) {
-  capacity();
-  el_p[n_p++] = elem;
+  slist_p.add(elem);
 }
 
-const SpectralElement &SpectralFit::getElement(uInt index) const {
-  if (index >= n_p) throw(AipsError("getElement illegal index"));
-  return el_p[index];
+void SpectralFit::addFitElement(const SpectralList &elem) {
+  slist_p.add(elem);
 }
 
-Bool SpectralFit::fit(const Vector<Double> &x,
-		      const Vector<Double> &y) {
+Bool SpectralFit::fit(const Vector<Double> &y,
+		      const Vector<Double> &x) {
   // The fitter
   NonLinearFitLM<Double> fitter;
   // The functions to fit
@@ -90,13 +74,13 @@ Bool SpectralFit::fit(const Vector<Double> &x,
   const Polynomial<AutoDiff<Double> > poly; 
   SumFunction<AutoDiff<Double>,AutoDiff<Double> > func;
   Int npar(0);
-  for (uInt i=0; i<n_p; i++) {
-    if (el_p[i].getType() == SpectralElement::GAUSSIAN) {
+  for (uInt i=0; i<slist_p.nelements(); i++) {
+    if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
       func.addFunction(gauss);
       npar += 3;
-    } else if (el_p[i].getType() == SpectralElement::POLYNOMIAL) {
-      npar += el_p[i].getDegree()+1;
-      const Polynomial<AutoDiff<Double> > poly(el_p[i].getDegree());
+    } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
+      npar += slist_p[i].getDegree()+1;
+      const Polynomial<AutoDiff<Double> > poly(slist_p[i].getDegree());
       func.addFunction(poly);
     };
   };
@@ -105,18 +89,18 @@ Bool SpectralFit::fit(const Vector<Double> &x,
   // Initial guess
   Vector<Double> v(npar);
   uInt j(0);
-  for (uInt i=0; i<n_p; i++) {
-    if (el_p[i].getType() == SpectralElement::GAUSSIAN) {
-      v(j++) = el_p[i].getAmpl();
-      v(j++) = el_p[i].getCenter();
-      v(j++) = el_p[i].getSigma();
-    } else if (el_p[i].getType() == SpectralElement::POLYNOMIAL) {
-      for (uInt k=0; k<el_p[i].getDegree()+1; k++) v(j++) = 0;
+  for (uInt i=0; i<slist_p.nelements(); i++) {
+    if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
+      v(j++) = slist_p[i].getAmpl();
+      v(j++) = slist_p[i].getCenter();
+      v(j++) = slist_p[i].getSigma();
+    } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
+      for (uInt k=0; k<slist_p[i].getDegree()+1; k++) v(j++) = 0;
     };
   };
   fitter.setFittedFuncParams(v);
   // Max. number of iterations
-  fitter.setMaxIter(50+ n_p*10);
+  fitter.setMaxIter(50+ slist_p.nelements()*10);
   // Convergence criterium
   fitter.setCriteria(0.001);
   // Fit
@@ -124,34 +108,34 @@ Bool SpectralFit::fit(const Vector<Double> &x,
   Vector<Double> sigma(x.nelements());
   sigma = 1.0;
   sol = fitter.fit(x, y, sigma);
-  for (uInt i=0; i<n_p; i++) {
-    el_p[i].setAmpl(  sol(3*i +0));
-    el_p[i].setCenter(sol(3*i +1));
-    el_p[i].setSigma( abs(sol(3*i +2)));
+  for (uInt i=0; i<slist_p.nelements(); i++) {
+    slist_p[i].setAmpl(  sol(3*i +0));
+    slist_p[i].setCenter(sol(3*i +1));
+    slist_p[i].setSigma( abs(sol(3*i +2)));
   };
   return fitter.converged();
 }
 
-Bool SpectralFit::fit(const Vector<Float> &x,
-		      const Vector<Float> &y) {
+Bool SpectralFit::fit(const Vector<Float> &y,
+		      const Vector<Float> &x) {
   // The fitter
   NonLinearFitLM<Float> fitter;
   // The functions to fit
   const Gaussian1D<AutoDiff<Float> > gauss; 
   SumFunction<AutoDiff<Float>,AutoDiff<Float> > func;
-  for (uInt i=0; i<n_p; i++) func.addFunction(gauss);
+  for (uInt i=0; i<slist_p.nelements(); i++) func.addFunction(gauss);
   FuncWithAutoDerivs<Float,Float> autoFunc(func);
   fitter.setFunction(autoFunc);
   // Initial guess
-  Vector<Float> v(3*n_p);
-  for (uInt i=0; i<n_p; i++) {
-    v(3*i +0) = el_p[i].getAmpl();
-    v(3*i +1) = el_p[i].getCenter();
-    v(3*i +2) = el_p[i].getSigma();
+  Vector<Float> v(3*slist_p.nelements());
+  for (uInt i=0; i<slist_p.nelements(); i++) {
+    v(3*i +0) = slist_p[i].getAmpl();
+    v(3*i +1) = slist_p[i].getCenter();
+    v(3*i +2) = slist_p[i].getSigma();
   };
   fitter.setFittedFuncParams(v);
   // Max. number of iterations
-  fitter.setMaxIter(50+ n_p*10);
+  fitter.setMaxIter(50+ slist_p.nelements()*10);
   // Convergence criterium
   fitter.setCriteria(0.001);
   // Fit
@@ -159,64 +143,10 @@ Bool SpectralFit::fit(const Vector<Float> &x,
   Vector<Float> sigma(x.nelements());
   sigma = 1.0;
   sol = fitter.fit(x, y, sigma);
-  for (uInt i=0; i<n_p; i++) {
-    el_p[i].setAmpl(  sol(3*i +0));
-    el_p[i].setCenter(sol(3*i +1));
-    el_p[i].setSigma( abs(sol(3*i +2)));
+  for (uInt i=0; i<slist_p.nelements(); i++) {
+    slist_p[i].setAmpl(  sol(3*i +0));
+    slist_p[i].setCenter(sol(3*i +1));
+    slist_p[i].setSigma( abs(sol(3*i +2)));
   };
   return fitter.converged();
-}
-
-void SpectralFit::evaluate(Vector<Float> &y, const Vector<Float> &x) const {
-  y.resize(x.nelements());
-  for (uInt j=0; j<x.nelements(); j++) {
-    if (n_p > 0) y(j) = el_p[0](j);
-    else y(j) = 0;
-  };
-  for (uInt i=1; i<n_p; i++) {
-    for (uInt j=0; j<x.nelements(); j++) y(j) += el_p[i](x(j));
-  };
-}
-
-void SpectralFit::evaluate(Vector<Double> &y, const Vector<Double> &x) const {
-  y.resize(x.nelements());
-  for (uInt j=0; j<x.nelements(); j++) {
-    if (n_p > 0) y(j) = el_p[0](j);
-    else y(j) = 0;
-  };
-  for (uInt i=1; i<n_p; i++) {
-    for (uInt j=0; j<x.nelements(); j++) y(j) += el_p[i](x(j));
-  };
-}
-
-void SpectralFit::residual(Vector<Float> &y, const Vector<Float> &x) const {
-  if (x.nelements() != y.nelements()) {
-    throw(AipsError("Unequal lengths in arguments SpectralFit::residual"));
-  };
-  for (uInt i=0; i<n_p; i++) {
-    for (uInt j=0; j<x.nelements(); j++) y(j) -= el_p[i](x(j));
-  };
-}
-
-void SpectralFit::residual(Vector<Double> &y, const Vector<Double> &x) const {
-  if (x.nelements() != y.nelements()) {
-    throw(AipsError("Unequal lengths in arguments SpectralFit::residual"));
-  };
-  for (uInt i=0; i<n_p; i++) {
-    for (uInt j=0; j<x.nelements(); j++) y(j) -= el_p[i](x(j));
-  };
-}
-
-void SpectralFit::capacity() {
-  if (cap_p == 0) {
-    cap_p = 10;
-    el_p = new SpectralElement[cap_p];
-  };
-  if (cap_p-n_p < 1) {
-    while (cap_p-n_p < 1) cap_p += 10;
-    SpectralElement *tmp = new SpectralElement[cap_p];
-    for (uInt i=0; i<n_p; i++) tmp[i] = el_p[i];
-    delete [] el_p;
-    el_p = tmp;
-  };
 }
