@@ -40,14 +40,16 @@
 MSTableIndex::MSTableIndex()
     : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
       lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
-      hasChanged_p(True), index_p(0), hasTime_p(False), hasInterval_p(False)
+      hasChanged_p(True), hasZeroIntervals_p(False), index_p(0), zeroIntervalIndex_p(0),
+      hasTime_p(False), hasInterval_p(False)
 {;}
 
 MSTableIndex::MSTableIndex(const Table &subTable,
 				 const Vector<String> &indexCols)
     : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
       lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
-      hasChanged_p(True), index_p(0), hasTime_p(False), hasInterval_p(False)
+      hasChanged_p(True), hasZeroIntervals_p(False), index_p(0), zeroIntervalIndex_p(0),
+      hasTime_p(False), hasInterval_p(False)
 {
     attach(subTable, indexCols);
 }
@@ -55,7 +57,8 @@ MSTableIndex::MSTableIndex(const Table &subTable,
 MSTableIndex::MSTableIndex(const MSTableIndex &other)
     : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
       lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
-      hasChanged_p(True), index_p(0), hasTime_p(False), hasInterval_p(False)
+      hasChanged_p(True), hasZeroIntervals_p(False), index_p(0), zeroIntervalIndex_p(0),
+      hasTime_p(False), hasInterval_p(False)
 {
     *this = other;
 }
@@ -74,6 +77,8 @@ MSTableIndex &MSTableIndex::operator=(const MSTableIndex &other)
 	AlwaysAssert(key_p, AipsError);
 	index_p = new ColumnsIndex(*other.index_p);
 	AlwaysAssert(index_p, AipsError);
+	zeroIntervalIndex_p = new ColumnsIndex(*other.zeroIntervalIndex_p);
+	AlwaysAssert(zeroIntervalIndex_p, AipsError);
 	hasTime_p = other.hasTime_p;
 	hasInterval_p = other.hasInterval_p;
 	makeKeys();
@@ -88,6 +93,7 @@ MSTableIndex &MSTableIndex::operator=(const MSTableIndex &other)
 	nearestReady_p = other.nearestReady_p;
 	nrows_p = other.nrows_p;
 	hasChanged_p = other.hasChanged_p;
+	hasZeroIntervals_p = other.hasZeroIntervals_p;
     }
     return *this;
 }
@@ -101,23 +107,37 @@ void MSTableIndex::attach(const Table &subTable,
     hasTime_p = tab_p.tableDesc().isColumn("TIME");
     // is there an INTERVAL column, there must also be a TIME
     hasInterval_p = hasTime_p && tab_p.tableDesc().isColumn("INTERVAL");
+    // this is reset to false following each attach
+    hasZeroIntervals_p = False;
     uInt nkeys = indexCols.nelements();
-    uInt nextraKeys = 0;
-    if (hasInterval_p) nextraKeys = 2;
-    else if (hasTime_p) nextraKeys = 1;
+    uInt nintervalKey, ntimeKey;
+    nintervalKey = ntimeKey = 0;
+    if (hasTime_p) ntimeKey = 1;
+    if (hasInterval_p) nintervalKey = 1;
 
-    Vector<String> fullIndexCols(nkeys + nextraKeys);
-    if (nkeys > 0) fullIndexCols(Slice(0,nkeys)) = indexCols;
+    Vector<String> fullIndexCols(nkeys + ntimeKey + nintervalKey);
+    Vector<String> limitedIndexCols(nkeys + nintervalKey);
+    if (nkeys > 0) {
+	fullIndexCols(Slice(0,nkeys)) = indexCols;
+	limitedIndexCols(Slice(0,nkeys)) = indexCols;
+    }
     if (hasTime_p) {
 	fullIndexCols(nkeys) = "TIME";
 	// attach the time column here
 	timeColumn_p.attach(tab_p, "TIME");
     }
-    if (hasInterval_p) fullIndexCols(nkeys+1) = "INTERVAL";
+    if (hasInterval_p) {
+	fullIndexCols(nkeys+1) = "INTERVAL";
+	limitedIndexCols(nkeys) = "INTERVAL";
+    }
 
     if (fullIndexCols.nelements() > 0) {    
 	index_p = new ColumnsIndex(tab_p, fullIndexCols, MSTableIndex::compare);
 	AlwaysAssert(index_p, AipsError);
+
+	// the standard compare function works just fine here
+	zeroIntervalIndex_p = new ColumnsIndex(tab_p, limitedIndexCols);
+	AlwaysAssert(zeroIntervalIndex_p, AipsError);
 
 	RecordDesc keyDesc;
 	for (uInt i=0;i<nkeys;i++) keyDesc.addField(indexCols(i), TpInt);
@@ -203,6 +223,7 @@ void MSTableIndex::makeKeys()
 	upperIndexKeys_p.resize(index_p->accessKey().nfields());
     }
     lowerIndexKeys_p.resize(index_p->accessKey().nfields());
+    limitedKeys_p.resize(zeroIntervalIndex_p->accessKey().nfields());
 
     for (uInt i=0;i<nKeys;i++) {
 	intKeys_p[i].attachToRecord(*key_p, i);
@@ -212,6 +233,7 @@ void MSTableIndex::makeKeys()
 	} else {
 	    lowerIndexKeys_p[i].attachToRecord(index_p->accessKey(), i);
 	}
+	limitedKeys_p[i].attachToRecord(zeroIntervalIndex_p->accessKey(), i);
     }
 
     lastKeys_p = -1;
@@ -219,6 +241,9 @@ void MSTableIndex::makeKeys()
 	if (hasInterval_p) {
 	    upperTimeKey_p.attachToRecord(index_p->accessUpperKey(), "TIME");
 	    lowerTimeKey_p.attachToRecord(index_p->accessLowerKey(), "TIME");
+	    limitedIntervalKey_p.attachToRecord(zeroIntervalIndex_p->accessKey(), "INTERVAL");
+	    // this is always true, this key never changes value
+	    *limitedIntervalKey_p = 0.0;
 	} else {
 	    lowerTimeKey_p.attachToRecord(index_p->accessKey(), "TIME");
 	}
@@ -227,11 +252,14 @@ void MSTableIndex::makeKeys()
 
 void MSTableIndex::clear() 
 {
-    hasTime_p = hasInterval_p = nearestFound_p = nearestReady_p = False;
+    hasTime_p = hasInterval_p = nearestFound_p = nearestReady_p = hasZeroIntervals_p = False;
     delete index_p;
     index_p = 0;
+    zeroIntervalIndex_p = 0;
     upperIndexKeys_p.resize(0);
     lowerIndexKeys_p.resize(0);
+    limitedKeys_p.resize(0);
+    hasZeroIntervals_p = False;
 
     delete key_p;
     key_p = 0;
@@ -263,6 +291,7 @@ void MSTableIndex::getInternals()
 	    if (hasInterval_p) {
 		*(upperIndexKeys_p[i]) = thisKey;
 	    }
+	    *(limitedKeys_p[i]) = thisKey;
 	    lastKeys_p(i) = thisKey;
 	}
 	if (hasTime_p) {
@@ -274,10 +303,28 @@ void MSTableIndex::getInternals()
 	    }
 	}
 	lastSearch_p.resize(0);
-	if (hasInterval_p) {
-	    lastSearch_p = index_p->getRowNumbers(True, True);
+	// if we already know that there are INTERVAL=0 columns, try that first
+	if (hasZeroIntervals_p) {
+	    lastSearch_p = zeroIntervalIndex_p->getRowNumbers();
+	    if (lastSearch_p.nelements() == 0) {
+		// try the other search, too
+		if (hasInterval_p) {
+		    lastSearch_p = index_p->getRowNumbers(True, True);
+		} else {
+		    lastSearch_p = index_p->getRowNumbers();
+		}
+	    }		
 	} else {
-	    lastSearch_p = index_p->getRowNumbers();
+	    if (hasInterval_p) {
+		lastSearch_p = index_p->getRowNumbers(True, True);
+	    } else {
+		lastSearch_p = index_p->getRowNumbers();
+	    }
+	    if (lastSearch_p.nelements() == 0 && hasInterval_p) {
+		// look for INTERVAL=0 columns
+		lastSearch_p = zeroIntervalIndex_p->getRowNumbers();
+		if (lastSearch_p.nelements() != 0) hasZeroIntervals_p = True;
+	    }
 	}
 	lastTime_p = time_p;
 	lastInterval_p = interval_p;
