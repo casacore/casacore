@@ -2668,3 +2668,4 @@
 10 014 src mv trial/implement/Measures/test/tMuvw.cc aips/implement/Measures/test/tMuvw.cc
 10 014 src mv trial/implement/Measures/test/tMuvw.out aips/implement/Measures/test/tMuvw.out
 10 014 src mv trial/implement/Measures/Muvw.h aips/implement/Measures/Muvw.h
+10 014 src mv trial/implement/Measures/MBaseline.cc aips/implement/Measures/MBaseline.cc
