@@ -357,9 +357,7 @@ void LatticeIterInterface<T>::allocateCurPtr()
 template<class T>
 void LatticeIterInterface<T>::setCurPtr2Cursor()
 {
-  Bool isACopy;
-  T* data = itsCursor.getStorage(isACopy);
-  if (data != 0) {
+  if (itsCursor.data() != 0) {
     if (itsCurPtr->ndim() == itsCursor.ndim()) {
       itsCurPtr->reference (itsCursor);
     } else {
