@@ -155,6 +155,15 @@ public:
   // negative in the largest scale.
   void stopAtLargeScaleNegative() {itsStopAtLargeScaleNegative = True; }
 
+  // Some algorithms require that the cycles be terminated when the image
+  // is dominated by point sources; if we get nStopPointMode of the
+  // smallest scale components in a row, we terminate the cycles
+  void stopPointMode(Int nStopPointMode) {itsStopPointMode = nStopPointMode; }
+
+  // After completion of cycle, querry this to find out if we stopped because
+  // of stopPointMode
+  Bool queryStopPointMode() {return itsDidStopPointMode; }
+
   // speedup() will speed the clean iteration by raising the
   // threshold.  This may be required if the threshold is
   // accidentally set too low (ie, lower than can be achieved
@@ -237,10 +246,11 @@ private:
   Bool validatePsf(const Lattice<T> & psf);
 
   Bool makeScaleMasks();
-  Bool oldMakeScaleMasks();
   Bool itsIgnoreCenterBox;
   Float itsSmallScaleBias;
   Bool itsStopAtLargeScaleNegative;
-  
+  Int itsStopPointMode;
+  Bool itsDidStopPointMode;
+
 };
 #endif
