@@ -3444,3 +3444,11 @@
 13 265 src rm nrao/apps/oldgbtmsfiller/OldGBTMSFillerInputs.cc
 13 265 sys rm bin/oldgbtmsfiller
 13 265 top rm code/nrao/apps/oldgbtmsfiller
+13 265 src rm nrao/implement/FITS/OldGBTAzEl.h
+13 265 src rm nrao/implement/FITS/OldGBTAzEl.cc
+13 265 src rm nrao/implement/FITS/OldGBTBackend.h
+13 265 src rm nrao/implement/FITS/OldGBTBackend.cc
+13 265 src rm nrao/implement/FITS/OldGBTRaDec.h
+13 265 src rm nrao/implement/FITS/OldGBTRaDec.cc
+13 265 src rm nrao/implement/FITS/OldGBTWeather.h
+13 265 src rm nrao/implement/FITS/OldGBTWeather.cc
