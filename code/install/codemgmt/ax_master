@@ -2348,3 +2348,10 @@
 09 329 sys rm libexec/hubutil.g
 09 329 src rm trial/implement/Tasking/hub.g
 09 329 src rm trial/implement/Tasking/hubutil.g
+09 329 src rm trial/implement/Tasking/object_interface.cc
+09 329 src rm trial/implement/Tasking/object_interface.g
+09 329 src rm trial/implement/Tasking/object_interface.h
+09 329 src rm trial/implement/Tasking/object_server.cc
+09 329 src rm trial/implement/Tasking/object_server.g
+09 329 src rm trial/implement/Tasking/object_server.h
+09 329 src rm trial/implement/Tasking/polymorphic.g
