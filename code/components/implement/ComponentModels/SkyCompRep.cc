@@ -39,6 +39,9 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
+#include <aips/Glish/GlishArray.h>
+#include <aips/Glish/GlishRecord.h>
+#include <aips/Glish/GlishValue.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Math.h>
@@ -49,11 +52,12 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
 //#include <iostream.h>
 
 SkyCompRep::~SkyCompRep()
 {
-};
+}
 
 void SkyCompRep::project(ImageInterface<Float> & image) const {
   const CoordinateSystem coords = image.coordinates();
@@ -102,7 +106,8 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   // Check if there is a Stokes Axes and if so which polarizations. Otherwise
   // only grid the I polarisation.
   Vector<Int> stokes; // Vector stating which polarisations is on each plane
-  const Int polAxis = CoordinateUtil::findStokesAxis(stokes, coords);  // The stokes pixel axis
+  // Find which axis is the stokes pixel axis
+  const Int polAxis = CoordinateUtil::findStokesAxis(stokes, coords);  
   const uInt nStokes = stokes.nelements(); 
   if (polAxis >= 0)
     AlwaysAssert(imageShape(polAxis) == nStokes, AipsError);
@@ -176,23 +181,266 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	for (uInt p = 0; p < nStokes; p++) {
 	  switch (stokes(p)) {
 	  case Stokes::I:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(0)); break;
+	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(0));
+	    break;
 	  case Stokes::Q:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(1)); break;
+	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(1));
+	    break;
 	  case Stokes::U:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(2)); break;
+	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(2));
+	    break;
 	  case Stokes::V:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(3)); break;
+	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(3));
+	    break;
 	  }
 	}
       }
     }
   }
-};
+}
 
 Bool SkyCompRep::ok() const {
   return True;
-};
+}
+
+void SkyCompRep::fromRecord(Quantum<Double> & quantity, String & errorMessage, 
+			    const GlishRecord & record) {
+  // First extract the value for this quantum.
+  if (!record.exists("value"))
+    errorMessage += "\nThe record does not have a 'value' field";
+  else {
+    if (record.get("value").type() != GlishValue::ARRAY)
+      errorMessage += "\nThe 'value' field cannot be a record";
+    else {
+      GlishArray valField(record.get("value"));
+      if (valField.elementType() == GlishArray::STRING)
+ 	errorMessage += "\nThe 'value' field cannot be a string";
+      else {
+	const IPosition shape = valField.shape();
+	if (shape.product() != 1)
+ 	  errorMessage += "\nThe 'value' field can only have one element";
+	else {
+	  Double val;
+	  if (valField.get(val) == False)
+	    errorMessage += "\nCould not read the 'value' field "
+	      "for an unknown reason";
+	  else
+	    quantity.setValue(val);
+	}
+      }
+    }
+  }
+  // Now extract the corresponding unit
+  if (!record.exists("unit"))
+    errorMessage += "\nThe record does not have a 'unit' field";
+  else {
+    if (record.get("unit").type() != GlishValue::ARRAY)
+      errorMessage += "\nThe 'unit' field cannot be a record";
+    else {
+      GlishArray unitField(record.get("unit"));
+      if (unitField.elementType() != GlishArray::STRING)
+ 	errorMessage += "\nThe 'unit' field must be a string";
+      else {
+	const IPosition shape = unitField.shape();
+	if (shape.product() > 1)
+ 	  errorMessage += "\nThe 'unit' field"
+	    " can only have at most one element";
+	else {
+	  if (shape.product() == 0) 
+	    quantity.setUnit("");
+	  else { // shape.product() == 1
+	    String unit;
+	    if (unitField.get(unit) == False)
+	      errorMessage += "\nCould not read the 'unit' field"
+		" for an unknown reason";
+	    else
+	      quantity.setUnit(unit);
+	  }
+	}
+      }
+    }
+  }
+}
+
+void SkyCompRep::fromRecord(MDirection & direction, String & errorMessage, 
+			    const GlishRecord & record) {
+// MDirection DO_componentlist::
+// makeMDirection(String & errorMessage, const GlishRecord & posRec) {
+  if (!record.exists("type"))
+    errorMessage += "\nThe record does not have a 'type' field";
+  else {
+    if (record.get("type").type() != GlishValue::ARRAY)
+      errorMessage += "\nThe 'type' field cannot be a record";
+    else {
+      GlishArray typeField(record.get("type"));
+      if (typeField.elementType() != GlishArray::STRING)
+	errorMessage += "\nThe 'type' field must be a string";
+      else {
+	if (typeField.shape().product() != 1)
+	  errorMessage += "\nThe 'type' field can only have one element";
+	else {
+	  String measureType;
+	  if (typeField.get(measureType) == False)
+	    errorMessage += "\nCould not read the 'type' field "
+	      "for an unknown reason";
+	  else {
+	    measureType.downcase();
+	    if (measureType != "direction")
+	      errorMessage += "\nThe 'type' field MUST be of type direction."
+		" The actual value is "+ measureType;
+	  }
+	}
+      }
+    }
+  }
+  if (!record.exists("refer"))
+    errorMessage += "\nThe record does not have a 'refer' field";
+  else {
+    if (record.get("refer").type() != GlishValue::ARRAY)
+      errorMessage += "\nThe 'refer' field cannot be a record";
+    else {
+      GlishArray referField(record.get("refer"));
+      if (referField.elementType() != GlishArray::STRING)
+	errorMessage += "\nThe 'refer' field must be a string";
+      else {
+	if (referField.shape().product() != 1)
+	  errorMessage += "\nThe 'refer' field can only have one element";
+	else {
+	  String referType;
+	  if (referField.get(referType) == False)
+	    errorMessage += "\nCould not read the 'refer' field"
+	      " for an unknown reason";
+	  else {
+	    referType.downcase();
+	    MDirection::Ref refEnum;
+	    if (direction.giveMe(referType, refEnum) == False)
+	    errorMessage += "\nCould not translate the 'refer' field value"
+	      " of " + referType + " into a known reference frame";
+	    else
+	      direction.set(refEnum);
+	  }
+	}
+      }
+    }
+  }
+  String dirErrors = "";
+  if (!(record.exists("m0") && record.exists("m1")))
+    dirErrors += "\nThe record does not have 'm0' and 'm1' fields";
+  else {
+    if (record.get("m0").type() != GlishValue::RECORD || 
+	record.get("m1").type() != GlishValue::RECORD)
+      dirErrors += "\nBoth the 'm0' and 'm1' fields"
+	", in the position record, must be a records";
+    else {
+      GlishRecord mRec = record.get("m0");
+      String qErrors = "";
+      Quantum<Double> ra;
+      fromRecord(ra, qErrors, mRec);
+      if (qErrors != "") {
+	dirErrors += "\nThe following errors occured in reading the m0 record";
+	dirErrors += qErrors;
+	dirErrors += "\n";
+	qErrors = "";
+      }
+      mRec = record.get("m1");
+      Quantum<Double> dec;
+      fromRecord(dec, qErrors, mRec);
+      if (qErrors != "") {
+	dirErrors += "\nThe following errors occured in reading the m1 record";
+	dirErrors += qErrors;
+	dirErrors += "\n";
+      }
+      if (ra.check(UnitVal::ANGLE) == True &&
+	  dec.check(UnitVal::ANGLE) == True)
+	direction.set(MVDirection(ra, dec));
+      else 
+	dirErrors += "\nAt least one of the 'm0' and 'm1' fields"
+	  ", does not have angular units";
+    }
+  }
+  if (dirErrors != "") {
+    if (!(record.exists("ev0") && 
+	  record.exists("ev1") && record.exists("ev2"))) {
+      dirErrors += "\nThe record does not have 'ev0', 'ev1' and 'ev2' fields";
+    }
+    else {
+      if (record.get("ev0").type() != GlishValue::RECORD || 
+	  record.get("ev1").type() != GlishValue::RECORD ||
+	  record.get("ev1").type() != GlishValue::RECORD)
+	dirErrors += "\nAll of the 'ev0', 'ev1' and 'ev2' fields"
+	  " must be a records";
+      else {
+	GlishRecord evRec(record.get("ev0"));
+	String qErrors = "";
+	Vector<Quantum<Double> > lmn(3);
+	fromRecord(lmn(0), qErrors, evRec);
+	if (qErrors != "") {
+	  dirErrors += "\nThe following errors occured in reading the"
+	    " ev0 record";
+	  dirErrors += qErrors;
+	  dirErrors += "\n";
+	  qErrors = "";
+	}
+	evRec = record.get("ev1");
+	fromRecord(lmn(1), qErrors, evRec);
+	if (qErrors != "") {
+	  dirErrors += "\nThe following errors occured in reading the"
+	    " ev1 record";
+	  dirErrors += qErrors;
+	  dirErrors += "\n";
+	  qErrors = "";
+	}
+	evRec = record.get("ev2");
+	fromRecord(lmn(2), qErrors, evRec);
+	if (qErrors != "") {
+	  dirErrors += "\nThe following errors occured in reading the"
+	    " ev2 record";
+	  dirErrors += qErrors;
+	  dirErrors += "\n";
+	  qErrors = "";
+	}
+ 	if (lmn(0).check(UnitVal::NODIM) &&
+ 	    lmn(1).check(UnitVal::NODIM) &&
+ 	    lmn(2).check(UnitVal::NODIM)) {
+ 	  direction.set(MVDirection(lmn));
+	  dirErrors = "";
+	}
+ 	else
+ 	  dirErrors += "\nAt least one of the 'ev0', 'ev1' or 'ev2' fields"
+ 	    ", is not dimensionless";
+      }
+    }
+  }
+  if (dirErrors != "")
+    errorMessage += dirErrors;
+}
+
+void SkyCompRep::fromRecord(Vector<Double> & flux, String & errorMessage,
+			    const GlishRecord & record) {
+  DebugAssert(flux.nelements() == 4, AipsError);
+  if (!record.exists("flux"))
+    errorMessage += "\nThe record does not have a 'flux' field";
+  else {
+    if (record.get("flux").type() != GlishValue::ARRAY)
+      errorMessage += "\nThe 'flux' field cannot be a record";
+    else {
+      const GlishArray fluxField = record.get("flux");
+      if (fluxField.elementType() == GlishArray::STRING)
+	errorMessage += "\nThe 'flux' field cannot be a string";
+      else {
+	const IPosition shape = fluxField.shape();
+	if (shape.nelements() != 1 || shape.product() != 4)
+	  errorMessage += "\nThe 'flux' field"
+	    " must be a vector with 4 elements";
+	else {
+	  if (fluxField.get(flux.ac()) == False)
+	    errorMessage += "\nCould not read the 'flux' field"
+	      " for an unknown reason";
+	}
+      }
+    }
+  }
+}
 
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"

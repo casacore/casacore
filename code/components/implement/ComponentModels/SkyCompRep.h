@@ -36,10 +36,12 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 
+class GlishRecord;
 class MDirection;
 class MVAngle;
 class String;
 template<class T> class ImageInterface;
+template<class T> class Quantum;
 template<class T> class Vector;
 
 // <summary>A component of a model of the sky</summary>
@@ -60,7 +62,7 @@ template<class T> class Vector;
 // commonality between different components of a model like GaussianCompRep,
 // PointCompRep, and perhaps in the future DiskCompRep & SpheroidCompRep. In
 // particular it allows the user to sample the component at any specified
-// position in the sky as well as grid the component onto a specified image.
+// direction in the sky as well as grid the component onto a specified image.
 
 // The functions in this class allow the user to sample the intensity of the
 // component by specifying either a direction, or an image onto which the
@@ -78,11 +80,11 @@ template<class T> class Vector;
 //   Vector<Double> compFlux;
 //   component.flux(compFlux);
 //   cout << "Component has a total flux of " << compFlux;
-//   MDirection compPos;
-//   component.position(compPos);
-//   cout << ", is centred at " << compPos;
+//   MDirection compDir;
+//   component.direction(compDir);
+//   cout << ", is centred at " << compDir;
 //   Vector<Double> peak;
-//   component.sample(peak, compPos);
+//   component.sample(peak, compDir);
 //   cout << " and an peak intensity of " << peak << " Jy/pixel" << endl;
 // }
 // </srcblock>
@@ -114,7 +116,7 @@ public:
   // direction. The returned Vector contains the different polarizations of the
   // radiation and the pixel size is assumed to be square.
   virtual void sample(Vector<Double> & result,
-		      const MDirection & samplePos,
+		      const MDirection & sampleDir,
 		      const MVAngle & pixelSize) const = 0;
 
   // Project the component onto an Image. The default implementation calls the
@@ -132,10 +134,10 @@ public:
   virtual void flux(Vector<Double> & compflux) const = 0;
   // </group>
 
-  // set/get the position (usually the centre) of the component.
+  // set/get the direction (usually the centre) of the component.
   // <group>
-  virtual void setPosition(const MDirection & newPos) = 0;
-  virtual void position(MDirection & compPos) const = 0;
+  virtual void setDirection(const MDirection & newDirection) = 0;
+  virtual void direction(MDirection & compDirection) const = 0;
   // </group>
 
   // return the number of parameters in the component and set/get them.
@@ -149,6 +151,17 @@ public:
   // (as an ComponentTypes::ComponentTypes enum)
   virtual ComponentType::Type type() const = 0;
 
+  // This functions convert between a glish record and a SkyCompRep. This way
+  // derived classes can interpret fields in the record in a class specific
+  // way. These functions define how a component is represented in glish. The
+  // fromRecord function appends a message to the errorMessage string if the
+  // conversion failed for any reason.
+  // <group>
+  virtual void fromRecord(String & errorMessage, 
+			  const GlishRecord & record) = 0;
+  virtual void toRecord(GlishRecord & record) const = 0;
+  // </group>
+
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
@@ -158,6 +171,28 @@ public:
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
   virtual SkyCompRep * clone() const = 0;
+
+protected:
+  // These functions will at a later stage be moved into the Measures
+  // module. But for now they are used by derived classes implementing concrete
+  // versions of the toRecord and fromRecord member functions.
+  // <group>
+  static void fromRecord(Quantum<Double> & quantity, String & errorMessage,
+			 const GlishRecord & record);
+  static void fromRecord(MDirection & direction, String & errorMessage, 
+			 const GlishRecord & record);
+  static void toRecord(GlishRecord & record, const Quantum<Double> & quantity);
+  static void toRecord(GlishRecord & record, const MDirection & direction);
+  // </group>
+
+  // These functions are also used by derived classes implementing concrete
+  // versions of the toRecord and fromRecord member functions. But they will
+  // always remain here as they are quite specific to the components module.
+  // <group>
+  static void fromRecord(Vector<Double> & flux, String & errorMessage,
+			 const GlishRecord & record);
+  static void toRecord(GlishRecord & record, const Vector<Double> & flux);
+  // </group>
 };
 
 #endif
