@@ -250,6 +250,20 @@ void ISMBase::readIndex()
     }
     AipsIO os (tio);
     uInt version = os.getstart ("IncrementalStMan");
+    //# ISMBase.cc version 11.1 contained a little error.
+    //# It used the version of putstart("IncrementalStMan") instead of
+    //# the version from putstart("ISM").
+    //# The incorrect one used "IncrementalStMan",3 and "ISM",1.
+    //# The fixed one uses     "IncrementalStMan",2 and "ISM",3.
+    //# This newest one uses   "IncrementalStMan",4 and "ISM",3.
+    //# It was fixed immediately after a weekly inhale, but unfortunately
+    //# the TMS system in Westerbork used that version for a while
+    //# without applying the fix.
+    //# Therefore this hack (together with one in function open) is needed
+    //# to make these MSs accessible.
+    if (version == 3) {
+        version_p = 3;
+    }
     os >> bucketSize_p;
     os >> nbucketInit_p;
     os >> persCacheSize_p;
@@ -284,7 +298,7 @@ void ISMBase::writeIndex()
 	tio = new RawIO (&fio);
     }
     AipsIO os (tio);
-    os.putstart ("IncrementalStMan", 2);
+    os.putstart ("IncrementalStMan", 4);
     os << bucketSize_p;
     os << nbuckets;
     os << persCacheSize_p;
@@ -518,6 +532,13 @@ void ISMBase::open (uInt tabNrrow, AipsIO& ios)
     init();
     file_p = new BucketFile (fileName(), table().isWritable());
     AlwaysAssert (file_p != 0, AipsError);
+    //# Westerbork MSs have a problem, because TMS used for a while
+    //# the erronous version of ISMBase.cc.
+    //# So if we have an old ISM version, do a makeIndex to get
+    //# the version from the index. That was 3.
+    if (version_p == 1) {
+        makeIndex();
+    }
     //# Let the column objects initialize themselves (if needed).
     uInt nrcol = ncolumn();
     for (uInt i=0; i<nrcol; i++) {
