@@ -1,10 +1,11 @@
 \documentclass[11pt]{article}
 \usepackage{html}
+\externallabels{../215}{../215/labels.pl}
 
 \begin{document}
 \label{Top}
 \title{AIPS++ Notes Series}
-\author{}
+\author{\htmlref{Note to Authors}{215:addnotes}}
 \maketitle
 
 \input{nindex}
