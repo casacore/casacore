@@ -32,3 +32,16 @@ The Automatic differentiation classes AutoDiff<> have been reworked, especially 
 Most of the time was spent in memory allocation. By the use of special Container classes ObjectPool and PoolStack memory allocation use is limited, resulting in automatic differentiation being of same order of magnitude timing as normal handcoding.
 
 A separate class AutoDiffA<> is provided for internal differntiation in details (see e.g. FunctionTraits)
+
+change id: 0118
+ author:   Wim Brouw
+ date:     2002/02/18
+ avers:    1.7
+ area:     Library
+ package:  aips
+ module:   Containers
+ type:     Code
+ category: New
+ summary:  Pool classes to minimize memory allocation times
+A set of classes ObjectPool and PoolStack are provided, parameterized on e.g. a vector length, are provided. They create a pre-allocated stack of e.g. vectors of a certain length, greatly reducing memmory allocation overhead.
+These classes are used e.g. in the automatic differntiation.
