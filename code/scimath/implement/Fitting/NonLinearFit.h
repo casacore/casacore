@@ -38,7 +38,7 @@
 // <summary> Class for non-linear least-squares fit.
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tNonLinearFitLM.cc">
+// <reviewed reviewer="wbrouw" date="2006/06/15" tests="tNonLinearFitLM.cc">
 // </reviewed>
 //
 // <prerequisite>
@@ -54,6 +54,9 @@
 // </etymology>
 //
 // <synopsis>
+// NOTE: Constraints added. Documentation out of date at moment, check
+// the tLinearFitSVD and tNonLinearFirLM programs for examples.
+//
 // The following is a brief summary of the non-linear least-squares fit
 // problem.
 // See module header, <linkto module="Fitting">Fitting</linkto>,
