@@ -2339,3 +2339,5 @@
 09 326 src rm trial/apps/sky/templates
 09 328 src rm trial/scripts/tkpgplot.help
 09 329 sys rm bin/gcontour
+09 329 src rm aips/implement/Graphics/Visualize.cc
+09 329 src rm aips/implement/Graphics/Visualize.h
