@@ -345,6 +345,9 @@ private:
   //  remove this and the calls next MS update
   void addCat();
 
+  // check that the MS is the latest version (2.0)
+  void checkVersion();
+
   // keep references to the subtables
   MSAntenna antenna_p;
   MSDataDescription dataDesc_p;
