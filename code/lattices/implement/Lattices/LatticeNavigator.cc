@@ -81,10 +81,18 @@ Bool LatticeNavigator::ok() const {
   return True;
 };
 
-LatticeStepper *LatticeNavigator::castToStepper() {
+LatticeStepper * LatticeNavigator::castToStepper() {
     return 0;
 };
 
-const LatticeStepper *LatticeNavigator::castToConstStepper() const {
+const LatticeStepper * LatticeNavigator::castToConstStepper() const {
+    return 0;
+};
+
+LatticeTiler * LatticeNavigator::castToTiler() {
+    return 0;
+};
+
+const LatticeTiler * LatticeNavigator::castToConstTiler() const {
     return 0;
 };

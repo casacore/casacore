@@ -35,6 +35,7 @@
 #include <aips/aips.h>
 
 class LatticeStepper;
+class TiledStepper;
 class IPosition;
 
 // <summary> an abstract base class to steer lattice iterators </summary>
@@ -71,14 +72,22 @@ class IPosition;
 // its shape.
 
 // There may eventually be a large collection of tools for traversing
-// Lattices.  At this writing (January 1997) there is only one concrete
-// class derived from LatticeNavigator: 
-// <linkto class="LatticeStepper">LatticeStepper</linkto>. This moves
-// through a Lattice in fixed steps defined by the user specified cursor,
-// incrementing to the next portion of the Lattice with each step, and
-// wrapping around axes as needed.  Other position generators might follow
-// the brightest pixel, traverse a number of predefined subregions, or
-// change size automatically when near the edges.
+// Lattices.  At this writing (Marck 1997) there are two concrete
+// classes derived from LatticeNavigator: 
+// <linkto class="LatticeStepper">LatticeStepper</linkto> and
+// <linkto class="TiledStepper">TiledStepper</linkto>. 
+
+// The <src>LatticeStepper</src> class moves through a Lattice in fixed
+// steps defined by the user specified cursor, incrementing to the next
+// portion of the Lattice with each step, and wrapping around axes as
+// needed.  Other position generators might follow the brightest pixel,
+// traverse a number of predefined subregions, or change size automatically
+// when near the edges.
+
+// The <src>TiledStepper</src> class moves a Vector cursor through a
+// Lattice, until all the Vectors in the set of tiles along the specified
+// axis have been exhausted. It then moves to the next set of tiles. This a
+// a memory effecient way to move a Vector cursor through a Lattice.
 
 // The most important member functions of this class are those which move
 // the cursor to the next position. These are the <src>operator++</src> and
@@ -86,7 +95,8 @@ class IPosition;
 
 // The cursor shape need not be constant as it moves through the Lattice,
 // but may change depending on its current position. For the LatticeStepper
-// class the cursor shape is constant as it steps through the Lattice.
+// and TiledStepper classes the cursor shape is constant as it steps through
+// the Lattice.
 
 // It is not possible to randomly move the cursor to an arbitrary place in
 // the Lattice, although the cursor can be moved to the starting position at
@@ -103,9 +113,10 @@ class IPosition;
 // "hang over" the edge of the Lattice. When this occurs the
 // <src>hangOver</src> member function will return True. This will occur
 // with a LatticeStepper if the Lattice shape is not a multiple of the
-// cursor shape.
+// cursor shape. Hangover cannot occur with the TiledStepper as the length
+// of the Vector cursor is defined by the Lattice Shape.
 
-// It may be possible (depending on the concrete Lattice Navigator actually
+// It may be possible (depending on the concrete LatticeNavigator actually
 // used) to specify that only a region of the Lattice (defined by a top
 // right hand corner, bottom left hand corner, and step increment) be
 // traversed by the LatticeNavigator. This is done using the
@@ -141,7 +152,8 @@ class IPosition;
 //
 // <example>
 // See the example in the 
-// <linkto class="LatticeStepper">LatticeStepper</linkto> class
+// <linkto class="LatticeStepper">LatticeStepper</linkto> class and the 
+// <linkto class="TiledStepper">TiledStepper</linkto> class
 // </example>
 //
 // <motivation>
@@ -156,7 +168,7 @@ class IPosition;
 // </motivation>
 //
 // <todo asof="1997/31/01">
-//  <li> Wonder about how to implement Navigators which can traverse
+//  <li> Think about how to implement Navigators which can traverse
 //  arbitrary shaped regions.
 // </todo>
 
@@ -283,19 +295,27 @@ public:
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this LatticeNavigator. It is the responsibility of the caller to
   // release this memory. 
-  virtual LatticeNavigator *clone() const = 0;
+  virtual LatticeNavigator * clone() const = 0;
 
   // Function which checks the internals of the class for consistency.
   // Returns True if everything is fine otherwise returns False. The default
   // implementation always returns True.
   virtual Bool ok() const;
 
-  // Use until RTTI is widely available. Returns 0 if the actual object is
-  // not a stepper. Does not make a copy, merely returns a cast pointer.
-  // Only implementers need to worry about this function.
+  // Use until RTTI is available in g++. Returns 0 if the actual object is
+  // not a LatticeStepper. Does not make a copy, merely returns a cast
+  // pointer.  Only implementers need to worry about this function.
   // <group>
-  virtual LatticeStepper *castToStepper();
-  virtual const LatticeStepper *castToConstStepper() const;
+  virtual LatticeStepper * castToStepper();
+  virtual const LatticeStepper * castToConstStepper() const;
+  // </group>
+
+  // Use until RTTI is available in g++. Returns 0 if the actual object is
+  // not a LatticeTiler. Does not make a copy, merely returns a cast
+  // pointer.  Only implementers need to worry about this function.
+  // <group>
+  virtual TiledStepper * castToTiler();
+  virtual const TiledStepper * castToConstTiler() const;
   // </group>
 };
 
