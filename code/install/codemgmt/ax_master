@@ -3237,3 +3237,4 @@
 13 116 src rm trial/apps/gDisplay/GTkWCPolygonDrawer.h
 13 116 src rm trial/apps/gDisplay/GTkWCPolygonDrawer.cc
 13 117 src rm trial/implement/Images/Image2Histograms.cc
+13 117 src rm trial/implement/Lattices/Lattice2Statistics.cc
