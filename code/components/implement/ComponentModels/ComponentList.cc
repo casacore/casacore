@@ -41,6 +41,7 @@
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/Quantum.h>
+#include <aips/Measures/Unit.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ColumnDesc.h>
@@ -58,6 +59,7 @@
 #ifdef __GNUG__
 typedef MeasConvert<MDirection,MVDirection,MCDirection> 
   gpp_measconvert_mdirection_mvdirection_mcdirection;
+typedef Flux<Double> gpp_flux_double;
 #endif
 
 ComponentList::ComponentList()
@@ -112,20 +114,19 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
     dirKeywords.get("Unit", angleUnit);
     qdir.setUnit(angleUnit);
   }
-  Quantum<Vector<Double> > qFlux;
+  SkyComponent currentComp;
   {
-    String fluxUnit;
-    fluxKeywords.get("Unit", fluxUnit);
-    qFlux.setUnit(fluxUnit);
+    String fluxString;
+    fluxKeywords.get("Unit", fluxString);
+    currentComp.flux().setUnit(Unit(fluxString));
   }
   const uInt nComp = typeCol.nrow();
   Vector<Double> flux(4), dir(2), parameters;
   String componentName, compLabel;
-  SkyComponent currentComp;
   for (uInt i = 0; i < nComp; i++) {
     typeCol.get(i, componentName);
     currentComp = SkyComponent(ComponentType::shape(componentName));
-    fluxCol.get(i, flux); qFlux.setValue(flux); currentComp.setFlux(qFlux);
+    fluxCol.get(i, flux); currentComp.flux().setValue(flux);
     dirCol.get(i, dir); qdir.setValue(dir); compDir.set(qdir);
     currentComp.setDirection(compDir);
     labelCol.get(i, compLabel);
@@ -354,10 +355,10 @@ void ComponentList::sort(ComponentList::SortCriteria criteria) {
   Bool doSort = True;
   switch (criteria) {
   case ComponentList::FLUX: {
-    Quantum<Vector<Double> > compFlux;
+    Vector<Double> compFlux;
     for (uInt i = 0; i < nelements(); i++) {
-      itsList[i].flux(compFlux);
-      val[i] = abs(compFlux.getValue("Jy")(0));
+      itsList[i].flux().value(compFlux);
+      val[i] = abs(compFlux(0));
     }
     order = Sort::Descending;
     break;
@@ -374,11 +375,9 @@ void ComponentList::sort(ComponentList::SortCriteria criteria) {
     break;
   }
   case ComponentList::POLARISATION: {
-    Quantum<Vector<Double> > compFlux;
     Vector<Double> f;
     for (uInt i = 0; i < nelements(); i++) {
-      itsList[i].flux(compFlux);
-      f = compFlux.getValue("Jy");
+      itsList[i].flux().value(f);
       if (!nearAbs(f(0), 0.0, DBL_MIN)) {
 	val[i] = sqrt(f(1)*f(1)+f(2)*f(2)+f(3)*f(3))/f(0);
       }
@@ -512,7 +511,8 @@ void ComponentList::writeTable() {
   String compLabel;
   for (uInt i = 0; i < nelements(); i++) {
     typeCol.put(i, ComponentType::name(component(i).shape()));
-    component(i).flux(compFlux);fluxCol.put(i, compFlux.getValue(fluxUnits));
+    component(i).flux().value(compFlux);
+    fluxCol.put(i, compFlux.getValue(fluxUnits));
     component(i).direction(compDir);
     if (compDir.getRef().getType() != refNum)
       compDir = MDirection::Convert(compDir, refNum)();

@@ -37,6 +37,7 @@
 #include <trial/ComponentModels/SkyComponent.h>
 #include <aips/Containers/Block.h>
 #include <aips/Tables/Table.h>
+#include <trial/ComponentModels/Flux.h>
 
 class String;
 class MDirection;
