@@ -3781,8 +3781,8 @@ Bool CoordinateSystem::pixelToVelocity(Double& velocity, Double pixel, const Spe
 // Create velocity machine
 
    MDoppler::Ref ref;
-   ref = velocityType;
-   VelocityMachine m(sc->frequencySystem(), Unit("Hz"),
+   ref = MDoppler::Ref(velocityType);
+   VelocityMachine m(MFrequency::Ref(sc->frequencySystem()), Unit("Hz"),
                      MVFrequency(restFreq),
    		     ref, Unit(velUnits));
    velocity = m(frequency.get("Hz")).getValue();

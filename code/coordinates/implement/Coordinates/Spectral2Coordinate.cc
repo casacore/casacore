@@ -40,7 +40,7 @@ Bool SpectralCoordinate::toWorld(MFrequency& world,
     static MVFrequency world_tmp;
     Bool ok = toWorld(world_tmp, pixel);
     if (ok) {
-       world.set(world_tmp, type_p);
+       world.set(world_tmp, MFrequency::Ref(type_p));
     }
     return ok;
 }

@@ -43,7 +43,7 @@ Bool DirectionCoordinate::toWorld(MDirection &world,
     static MVDirection world_tmp;
     Bool ok = toWorld(world_tmp, pixel);
     if (ok) {
-       world.set(world_tmp, type_p);
+       world.set(world_tmp, MDirection::Ref(type_p));
     }
     return ok;
 }
