@@ -2401,14 +2401,14 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     for (i=0; i<n; i++) {
         String subRA(ctype(i).at(0,2));
         String subDEC(ctype(i).at(0,3));
-	if (subRA==String("RA") || ctype(i).contains("LON")) {
+	if (subRA==String("RA") || ctype(i).contains("LON") || subRA==String("LL")) {
 	    if (longAxis >= 0) {
 		os << LogIO::SEVERE << "More than one longitude axis is "
 		    "present in header!";
 		return False;
 	    }
 	    longAxis = i;
-	} else if (subDEC==String("DEC") || ctype(i).contains("LAT")) {
+	} else if (subDEC==String("DEC") || ctype(i).contains("LAT") || subDEC.contains("MM")) {
 	    if (latAxis >= 0) {
 		os << LogIO::SEVERE << "More than one latitude axis is "
 		    "present in header!";
@@ -2891,6 +2891,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
            } else if (longAxis >= 0) {
               order(i) = 2; // dir only
            } else if (stokesAxis >= 0) {
+              order(i) = 1;  // stokes but no dir
+           } else {
               order(i) = 0; // neither stokes or dir
            }
 	} else {
