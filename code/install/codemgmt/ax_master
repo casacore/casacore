@@ -3463,3 +3463,4 @@
 13 283 src mv trial/implement/Display/WCPowerScaleHandler.h trial/implement/DisplayCanvas/WCPowerScaleHandler.h
 13 283 src mv trial/implement/Display/WCPowerScaleHandler.cc trial/implement/DisplayCanvas/WCPowerScaleHandler.cc
 13 283 src mv trial/implement/Display/WCResampleHandler.cc trial/implement/DisplayCanvas/WCResampleHandler.cc
+13 283 src mv trial/implement/Display/WCResampleHandler.h trial/implement/DisplayCanvas/WCResampleHandler.h
