@@ -92,6 +92,7 @@ Bool SpectralFit::fit(const Vector<MT> &sigma,
   err = fitter.errors();
   // Number of iterations
   iter_p = fitter.currentIteration();
+  chiSq_p = fitter.getChi2();
   uInt j = 0;
   Vector<Double> tmp, terr;
   for (uInt i=0; i<slist_p.nelements(); i++) {

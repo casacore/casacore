@@ -143,12 +143,17 @@ class SpectralFit {
   // Get the number of iterations last fit
   uInt nIterations() { return iter_p; }
 
+  // Get ChiSq of the last fit
+  Double chiSq () const { return chiSq_p; }
+
  private:
   //#Data
   // Elements to be fitted
   SpectralList slist_p;
   // Number of iterations last fit
   uInt iter_p;
+  // ChiSq of last fit
+  Double chiSq_p;
 
   //# Member functions
   // Real fitters

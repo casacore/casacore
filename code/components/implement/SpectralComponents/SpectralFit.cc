@@ -37,7 +37,7 @@ SpectralFit::SpectralFit(const SpectralList &in) :
   slist_p(in), iter_p(0) {}
 
 SpectralFit::SpectralFit(const SpectralFit &other) :
-  slist_p(other.slist_p), iter_p(other.iter_p) {}
+  slist_p(other.slist_p), iter_p(other.iter_p), chiSq_p(other.chiSq_p) {}
 
 SpectralFit::~SpectralFit() {}
 
@@ -45,6 +45,7 @@ SpectralFit &SpectralFit::operator=(const SpectralFit &other) {
   if (this != &other) {
     slist_p = other.slist_p;
     iter_p = other.iter_p;
+    chiSq_p = other.chiSq_p;
   };
   return *this;
 }
