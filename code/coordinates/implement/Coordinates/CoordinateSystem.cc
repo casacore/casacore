@@ -2294,7 +2294,6 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
        }
     }
 //
-
     PtrBlock<Coordinate *> tmp;
     Int nc = 0;                         // num coordinates
     PtrBlock<Coordinate *> coords;
@@ -2311,23 +2310,23 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 	nc++;
 	if (subrec.isDefined(linear + num)) {
 	    coords.resize(nc);
-	    coords[nc - 1] = LinearCoordinate::restore(subrec, linear+num);
+	    coords[nc-1] = LinearCoordinate::restore(subrec, linear+num);
 	} else if (subrec.isDefined(direction + num)) {
 	    coords.resize(nc);
-	    coords[nc - 1] = 
+	    coords[nc-1] = 
 		DirectionCoordinate::restore(subrec, direction+num);
 	} else if (subrec.isDefined(spectral + num)) {
 	    coords.resize(nc);
-	    coords[nc - 1] = SpectralCoordinate::restore(subrec, spectral+num);
+	    coords[nc-1] = SpectralCoordinate::restore(subrec, spectral+num);
 	} else if (subrec.isDefined(stokes + num)) {
 	    coords.resize(nc);
-	    coords[nc - 1] = StokesCoordinate::restore(subrec, stokes+num);
+	    coords[nc-1] = StokesCoordinate::restore(subrec, stokes+num);
 	} else if (subrec.isDefined(tabular + num)) {
 	    coords.resize(nc);
-	    coords[nc - 1] = TabularCoordinate::restore(subrec, tabular+num);
+	    coords[nc-1] = TabularCoordinate::restore(subrec, tabular+num);
 	} else if (subrec.isDefined(coordsys + num)) {
 	    coords.resize(nc);
-	    coords[nc - 1] = CoordinateSystem::restore(subrec, coordsys+num);
+	    coords[nc-1] = CoordinateSystem::restore(subrec, coordsys+num);
 	} else {
 	    break;
 	}
@@ -2367,7 +2366,7 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
     String error;
     Bool ok = retval->obsinfo_p.fromRecord(error, subrec);
     AlwaysAssert(ok, AipsError); // Should never happen
-
+//
     return retval;
 }
 
@@ -4380,18 +4379,14 @@ void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types doppler) c
       os << "Spectral  reference : " << MFrequency::showType(freqType) << endl;
       os << "Velocity  type      : " << MDoppler::showType(doppler) << endl;
 //
-      Double rf = specCoord.restFrequency();
-      if (rf > 0.0) {
-         Quantum<Double> restFreq;
-         restFreq.setValue(rf);
-         restFreq.setUnit(specCoord.worldAxisUnits()(0));
-//
-         ostrstream oss;
-         oss << "Rest frequency      : " << restFreq << ends;
-         os << String(oss) << endl;
-      }
+      String str = specCoord.formatRestFrequencies();
+      if (!str.empty()) os << str << endl;
    }
 }
+
+
+
+
 
 
 void CoordinateSystem::listPointingCenter (LogIO& os) const
@@ -4577,9 +4572,11 @@ void CoordinateSystem::cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
          delete in[i];
          in[i] = 0;
       }
+   }
+   for (uInt i=0; i<out.nelements(); i++) {
       if (out[i]) {
          delete out[i];
-          out[i] = 0;
+         out[i] = 0;
       }
    }
 }
@@ -4637,5 +4634,3 @@ CoordinateSystem CoordinateSystem::stripRemovedAxes (const CoordinateSystem& cSy
 //
    return cSysOut;
 }
-
-
