@@ -35,17 +35,16 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
-// This should really be forward declared but I cannot make it work!
-#include <aips/Mathematics/Complex.h>
 
 class GlishRecord;
 class MDirection;
 class MVAngle;
 class String;
 template<class T> class ImageInterface;
-template<class T> class Quantum;
+template <class Qtype> class Quantum;
 template<class T> class Vector;
-// class DComplex;
+class doubleG_COMPLEX;
+typedef doubleG_COMPLEX DComplex;
 
 // <summary>A component of a model of the sky</summary>
 
