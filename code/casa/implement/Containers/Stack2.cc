@@ -1,5 +1,5 @@
 //# Stack2.cc: Implementation of a stack using the singly linked list class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 
 // Throw an error indicating operation error occured on an empty
 // stack. This function must be out-of-line because of the dependence
-// of the Cleanup (really CanDelete) objects on Stack<void *>
+// of the Cleanup (really CanDelete) objects on Stack<void *>.
 void throw_empty_Stack_error(const char *msg) {
   throw(EmptyStackError(msg));   //# will enventually be more informative
 }
