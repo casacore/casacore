@@ -139,12 +139,6 @@ public:
   // write the specified number of filemarks.
   virtual void mark(uInt howMany=1);
   
-  // Reset the position pointer to the given value. It returns the new
-  // position. May not work on all Tape devices use the isSeekable(0 member
-  // function to see if this function is usuable. Otherwise an Exception
-  // (AipsError) is thrown. 
-  virtual Int64 seek(Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
-  
   // Get the length of the tape device.  Not a meaningful function in for this
   // class and this function always returns -1.
   virtual Int64 length();
@@ -172,15 +166,21 @@ public:
 
 
 protected:
-    // Detach the FILE. Close it when it is owned.
-    void detach();
+  // Detach the FILE. Close it when it is owned.
+  void detach();
 
-    // Determine if the file is readable and/or writable.
-    void fillRWFlags();
+  // Determine if the file is readable and/or writable.
+  void fillRWFlags();
 
-    // Determine if the file is seekable.
-    void fillSeekable();
+  // Determine if the file is seekable.
+  void fillSeekable();
 
+  // Reset the position pointer to the given value. It returns the new
+  // position. May not work on all Tape devices use the isSeekable(0 member
+  // function to see if this function is usuable. Otherwise an Exception
+  // (AipsError) is thrown. 
+  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
+  
 private:
   // The following functions are made private so that the compiler does not
   // generate default ones. They cannot be used and are not defined.

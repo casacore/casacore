@@ -151,7 +151,7 @@ void TapeIO::mark(uInt howMany) {
   }
 }
 
-Int64 TapeIO::seek (Int64 offset, ByteIO::SeekOption dir) {
+Int64 TapeIO::doSeek (Int64 offset, ByteIO::SeekOption dir) {
   switch (dir) {
   case ByteIO::Begin:
     return ::lseek (itsDevice, offset, SEEK_SET);
