@@ -3530,3 +3530,4 @@
 13 300 src mv trial/implement/MeasurementSets/test/templates aips/implement/MeasurementSets/test/templates
 13 300 src mv trial/implement/MeasurementSets/test/tNewMeasurementSet.cc aips/implement/MeasurementSets/test/tNewMeasurementSet.cc
 13 300 src mv trial/implement/MeasurementSets/test/tNewMSColumns.cc aips/implement/MeasurementSets/test/tNewMSColumns.cc
+13 307 src mv trial/implement/Display/DefaultWCCoordinateHandler.cc trial/implement/DisplayCanvas/DefaultWCCoordinateHandler.cc
