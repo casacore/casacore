@@ -28,6 +28,7 @@
 #define AIPS_RFA_SELECTOR_H
 
 #include <trial/Flagging/RFAFlagCubeBase.h> 
+#include <trial/Flagging/RFDataMapper.h>
 #include <aips/Arrays/LogiVector.h>
     
 // <summary>
@@ -65,24 +66,33 @@ class RFASelector : public RFAFlagCubeBase
 public:
 // constructor. 
   RFASelector ( RFChunkStats &ch,const RecordInterface &parm ); 
-  virtual ~RFASelector () {};
+  virtual ~RFASelector ();
   
   virtual uInt estimateMemoryUse () { return RFAFlagCubeBase::estimateMemoryUse()+2; }
-  virtual Bool newChunk (Int &maxmem);
-  virtual IterMode iterTime (uInt it);
+  virtual Bool newChunk ( Int &maxmem );
+  virtual IterMode iterTime ( uInt it );
+  virtual IterMode iterRow  ( uInt ir );
 
   virtual String getDesc ();
   static const RecordInterface & getDefaults ();
-  
+
 protected:
+  typedef struct ClipInfo {
+      RFDataMapper *mapper; Float vmin,vmax; Bool clip; 
+  } ClipInfo;
+    
   template<class T> Bool reformRange( Matrix<T> &rng,const Array<T> &arr );
   template<class T> Bool parseRange( Matrix<T> &rng,const RecordInterface &parm,const String &id );
   template<class T> Bool find( uInt &index,const T &obj,const Vector<T> &arr );
   
-  Bool parseTimes ( Array<Double> &times,const RecordInterface &parm,const String &id,Bool secs=False );
-  void addString  ( String &str,const String &s1,const char *sep=" " );
-  void processRow ( uInt ifr,uInt it );
-  
+  Bool parseTimes  ( Array<Double> &times,const RecordInterface &parm,const String &id,Bool secs=False );
+  void addString   ( String &str,const String &s1,const char *sep=" " );
+  void processRow  ( uInt ifr,uInt it );
+  Bool parseMinMax ( Float &vmin,Float &vmax,const RecordInterface &spec,uInt f0 );
+  void addClipInfo ( const Vector<String> &expr,Float vmin,Float vmax,Bool clip );
+  void parseClipField  ( const RecordInterface &spec,Bool clip );
+  void addClipInfoDesc ( const Block<ClipInfo> &clip );
+
 // description of agent
   String desc_str;
 // selection arguments
@@ -92,9 +102,13 @@ protected:
   Vector<String>  sel_fieldnames;
   LogicalVector  sel_ifr,flagchan;
   Bool          sel_autocorr,unflag;
+  Block<ClipInfo> sel_clip,sel_clip_row;
+  LogicalVector  sel_clip_active;
+  Bool            sum_sel_clip_active;
   Double        quack_si,quack_dt,scan_start,scan_end;
   
   Bool select_fullrow,flag_everything;
+  
 };
 
     
