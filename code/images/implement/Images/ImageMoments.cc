@@ -57,6 +57,9 @@
 #include <aips/Utilities/PtrHolder.h>
 
 #include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/Coordinates/DirectionCoordinate.h>
+#include <trial/Coordinates/LinearCoordinate.h>
+#include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageMomentsProgress.h>
@@ -790,16 +793,12 @@ Bool ImageMoments<T>::createMoments()
    IPosition outImageShape(outDim);
    for (j=0; j<outDim; j++) outImageShape(j) = pInImage_p->shape()(ioMap(j));
 
-
 // Account for removal of the collapsed moment axis in the coordinate system.  
+// For some moment types it makes sense to remove just the pixel axis
+// leaving the world axis (e.g. the zeroth moment).  For other moment
+// types it makes no sense.
 
-   CoordinateSystem cSysOut = cSys;
-   Bool ok = cSysOut.removeWorldAxis(worldMomentAxis_p, cSysOut.referenceValue()(worldMomentAxis_p));
-   if (!ok) {
-      os_p << String("Failed to remove moment axis because ") 
-           << cSysOut.errorMessage() << LogIO::EXCEPTION;
-   }     
-
+   CoordinateSystem cSysOut = makeOutputCoordinates (cSys, pInImage_p->shape());
 
 // Create a vector of pointers for output images 
 
@@ -1758,33 +1757,66 @@ Bool ImageMoments<T>::readCursor (PGPlotter& plotter, Float& x,
 }
  
 
-/*
 template <class T> 
-Bool ImageMoments<T>::velocityIncrement(Double& velocityInc, const SpectralCoordinate* sc,
-                                        MDoppler::Types velocityType, const String& velUnits) const
-{  
-   if (sc->nWorldAxes() != 1) return False;
-   Double refPix = sc->referencePixel()(0);
-   
-// Find world values at refPix +/- 0.5 and take difference
-                     
-   Double pixel;
-   pixel = refPix + 0.5;
-   Double velocity1;   
-   if (!pixelToVelocity(velocity1, pixel, sc, velocityType, velUnits)) return False;
-   
+CoordinateSystem ImageMoments<T>::makeOutputCoordinates (const CoordinateSystem& cSys,
+                                                         const IPosition& shape) 
+{
+   CoordinateSystem cSysOut;
+   uInt worldAxis = cSys.pixelAxisToWorldAxis(momentAxis_p);
 //
+   Int coord, axisInCoord;
+   cSys.findWorldAxis(coord, axisInCoord, worldAxis);
+   Coordinate::Type type = cSys.type(coord);
+//
+   if (type==Coordinate::DIRECTION) {
+      os_p << "The moment axis is one axis of a coupled DirectionCoordinate" << endl;
+      os_p << "Linearizing the remaining DirectionCoordinate axis" << LogIO::POST;
+//
+      const DirectionCoordinate& dirCoord = cSys.directionCoordinate(coord);
+      Vector<Int> pixelAxes = cSys.pixelAxes(coord);
+//
+      Vector<Double> world0(2), world1(2), pixel(2);      
+      pixel(0) = 0.0;
+      pixel(1) = 0.0;
+      dirCoord.toWorld(world0, pixel);
 
-   pixel = refPix - 0.5;
-   Double velocity2;
-   if (!pixelToVelocity(velocity2, pixel, sc, velocityType, velUnits)) return False;
-   
+// Find out where the other Direction axis we are not collapsing is
 
-// Return increment
- 
-   velocityInc = velocity1 - velocity2;
-
-   return True;  
+      uInt otherAxisInCoord = 0;
+      if (axisInCoord==0) otherAxisInCoord = 1;
+      uInt otherAxisInImage = pixelAxes(otherAxisInCoord);
+//
+      pixel(otherAxisInCoord) = shape(otherAxisInImage) - 1.0;
+      dirCoord.toWorld(world1, pixel);      
+//
+      Vector<String> names(1), units(1);
+      names(0)  = dirCoord.worldAxisNames()(otherAxisInCoord);
+      units(0)  = dirCoord.worldAxisUnits()(otherAxisInCoord);
+//
+      Vector<Double> refVal(1), inc(1), refPix(1);
+      refPix(0) = 0.0;
+      refVal(0) = world0(otherAxisInCoord);
+      inc(0) = (world1(otherAxisInCoord) - world0(otherAxisInCoord)) / Double(shape(otherAxisInImage) - 1);
+      Matrix<Double> pc(1,1);
+      pc.set(1.0);
+//
+      LinearCoordinate linCoord(names, units, refVal, inc, pc, refPix);
+//
+      for (Int i=0; i<cSys.nCoordinates(); i++) {
+         if (i==coord) {
+            cSysOut.addCoordinate(linCoord);
+         } else {
+            cSysOut.addCoordinate(cSys.coordinate(i));
+         }
+      }
+   } else {
+      cSysOut = cSys;
+      Bool ok = cSysOut.removeWorldAxis(worldAxis, cSysOut.referenceValue()(worldAxis));
+      if (!ok) {
+         os_p << String("Failed to remove moment axis because ") 
+              << cSysOut.errorMessage() << LogIO::EXCEPTION;
+      }     
+   }
+//
+   return cSysOut;
 }
-*/      
-
