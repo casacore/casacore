@@ -126,3 +126,21 @@ aa
 xx
  </description>
 </change>
+
+<change id=165>
+ <author> Ger van Diepen </author>
+ <date> 2004/12/23 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> casa </package>
+ <module> Arrays </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+test
+ </summary>
+ <description>
+test
+ </description>
+</change>
