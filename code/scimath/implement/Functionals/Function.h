@@ -203,6 +203,8 @@ template<class T> class Function : public Functional<T, T>,
   
   // Returns the number of dimensions of function
   virtual uInt ndim() const = 0;
+  // Returns the number of parameters
+  uInt nparameters() const { return param_p.nelements(); };
 
   //# Operators
   // Manipulate the nth parameter (0-based) with no index check
