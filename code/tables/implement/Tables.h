@@ -1,5 +1,5 @@
 //# Tables.h: The Tables module - AIPS++ data storage
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,6 +47,7 @@
 #include <aips/Tables/TiledCellStMan.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledShapeStMan.h>
+#include <aips/Tables/MemoryStMan.h>
 
 //#   virtual column engines
 #include <aips/Tables/RetypedArrayEngine.h>
@@ -54,6 +55,8 @@
 #include <aips/Tables/ScaledArrayEngine.h>
 #include <aips/Tables/ForwardCol.h>
 #include <aips/Tables/ForwardColRow.h>
+#include <aips/Tables/CompressComplex.h>
+#include <aips/Tables/CompressFloat.h>
 
 //#   table access
 #include <aips/Tables/Table.h>
@@ -73,6 +76,7 @@
 
 //#   table lookup
 #include <aips/Tables/ColumnsIndex.h>
+#include <aips/Tables/ColumnsIndexArray.h>
 
 //#   table expressions (for selection of rows)
 #include <aips/Tables/ExprNode.h>
@@ -987,6 +991,17 @@
 //   <br>It should not be used anymore, because it uses a lot of memory
 //   for larger tables and because it is not very robust in case an
 //   application or system crashes.
+// </ol>
+//
+//  <li>
+//   <linkto class="MemoryStMan:description">MemoryStMan</linkto>
+//   holds the data in memory. It means that data 'stored' with this
+//   storage manager are NOT persistent.
+//   <br>This storage manager is primarily meant for tables held in\
+//   memory, but it can also be useful for temporary columns in
+//   normal tables. Note, however, that when a table is accessed
+//   concurrently from multiple processes, MemoryStMan data cannot be
+//   synchronized.
 // </ol>
 //
 // The storage manager framework makes it possible to support arbitrary files
