@@ -1,5 +1,5 @@
 //# MCBase.h: Base for specific measure conversions
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 #if !defined(AIPS_MCBASE_H)
 #define AIPS_MCBASE_H
 
-#if defined(_AIX)
-#pragma implementation ("MCBase.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 
@@ -44,9 +40,7 @@ class MConvertBase;
 
 //# Typedefs
 
-// <summary>
-// Base for specific measure conversions
-// </summary>
+// <summary>  Base for specific measure conversions </summary>
 
 // <use visibility=local>
 
@@ -66,8 +60,10 @@ class MConvertBase;
 // MCBase forms the base for the individual state machines doing actual
 // conversions between frames. (see e.g. <linkto class=MCEpoch>MCEpoch</linkto>)
 //
-// It also is a cache for information that is time-consuming to calculate over
-// and over again (e.g. Nutation).<br> 
+// It also has a static routine to calculate the state transition table based
+// on a list of transitions. The makeState() method find the shortest route
+// (weighted if necessary) for a given list of state transitions. 
+//
 // The user of the Measure classes has no direct interaction with this class.
 // </synopsis>
 //
@@ -75,21 +71,45 @@ class MConvertBase;
 // Convert (with all steps explicit) a UTC to an IAT time.
 // <srcblock>
 //      #include <aips/Measures.h>
-//      #include <aips/Measures/MEpoch.h>
+//      #include <aips/Measures/MCEpoch.h>
 //	cout << "TAI for UTC = MJD(50237.29): " <<
 //		MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),
 //			               MEpoch::Ref(MEpoch::UTC)),
 //		                MEpoch::Ref(MEpoch::TAI))() <<
 //		endl;
 // </srcblock>
-// This example will interact with MCEpoch.
+// To get a static state transition matrix:
+// <srcblock>
+//	static Bool made = False;		// set not yet done
+//	enum types {				// states
+//		A=0, B, C, D, E, ntyp };
+//	enum routes {				// routes
+//		A_B, B_C, B_D, C_D, C_E,
+//		D_C, C_B, B_A, D_B, E_C, nrout };
+//	static uInt list [nrout][3] = {		// description. The third number
+//		{A, B, 0},			// is a penalty hop to weight
+//		{B, C, 0},			// against using this route
+//		{B, D, 0},
+//		{C, D, 0},
+//		{C, E, 0},
+//		{D, C, 0},
+//		{C, B, 0},
+//		{B, A, 0},
+//		{D, B, 0},
+//		{E, C, 0} };
+//	static uInt state[ntyp][ntyp];	// the resultant transition matrix
+//					// diagonal == nrout
+//	// Make the state machine
+//	MCBase::makeState(made, state[0], ntyp, nrout, routes);
+// </srcblock>
 // </example>
 //
 // <motivation>
+//	To have specific conversion bases
 // </motivation>
 //
-// <todo asof="1997/04/15">
-//	<li>
+// <todo asof="1998/09/21">
+//	<li> Nothing I know
 // </todo>
 
 class MCBase {
@@ -130,6 +150,33 @@ public:
 			 MRBase &outref,
 			 const MConvertBase &mc) = 0;
   // </group>
+
+protected:
+  // The following routines create a state transition matrix from a list
+  // of all defined transitions. It uses the following information:
+  // <ul>
+  //  <li> made : has the matrix been made?
+  //  <li> nrout: the number of transitions; numbered 0, ...
+  //  <li> ntyp: the number of states
+  //  <li> list: a [nrout][3] list of input and output transition type of
+  //		transition and a penalty hop number
+  //  <li> state: a [ntyp][ntyp] transition matrix with diagonal elements set
+  //		to nrout.
+  // </ul>
+  // <group>
+  // Routine to make the transition table if necessary
+  static void makeState(Bool &made, uInt *state,
+			const uInt ntyp, const uInt nrout,
+			const uInt list[][3]);
+private:
+  // Routine to find the shortest route between two points 
+  static Bool findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
+			Bool *visit, const uInt *tcnt, const uInt *tree,
+			const uInt &in, const uInt &out,
+			const uInt ntyp, const uInt nrout,
+			const uInt list[][3]);
+  // </group>
+
 };
 
 #endif
