@@ -140,9 +140,8 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 	      for (inIter.reset(), outIter.reset();
 		   !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
 		if (doShift) {
-		  // ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor);
 		  if(doFast){
-		    ffts.flip(inIter.rwVectorCursor(), True, False);
+		    // ffts.flip(inIter.rwVectorCursor(), True, False);
 		    ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
 		  }
 		  else{
@@ -164,9 +163,12 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 							     tileShape, dim));
 	      for (iter.reset(); !iter.atEnd(); iter++) {
 		if (doShift) {
-		  //		  ffts.fft(iter.rwVectorCursor(), 1, True);
-		  ffts.flip(iter.rwVectorCursor(),True,False);
-		  ffts.fft(iter.rwVectorCursor(),True);
+		  if(doFast){
+		    ffts.fft0(iter.rwVectorCursor(),True);
+		  }
+		  else{
+		    ffts.fft(iter.rwVectorCursor(),True);
+		  }
 		} else {
 		  ffts.fft0(iter.rwVectorCursor(), True);
 		}
@@ -333,10 +335,14 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 	  for (inIter.reset(), outIter.reset(); 
 	       !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
 	    if (doShift) {
-	      ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
+	      if(doFast){
+	       ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
+	       ffts.flip(outIter.rwVectorCursor(), False, False);
+	      }else{
+		ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
+	      }
 	    } else {
 	      ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
-	      ffts.flip(outIter.rwVectorCursor(), False, False);
 	    }
 	  }
 	} else { // just copy the data truncating the imaginary parts.
