@@ -34,6 +34,8 @@
 
 #include <aips/Exceptions/Excp.h>
 
+class TableLogSink;
+
 // <summary>
 //Accepts LogMessages and posts them to some destination
 // </summary>
@@ -122,11 +124,30 @@ public:
     // Write any pending output.
     virtual void flush();
 
+    // Returns false for every derived class except TableLogSink. This is
+    // useful so you can safely cast a LogSinkInterface to a Table if you
+    // need to, e.g., merge log tables.
+    virtual Bool isTableLogSink() const;
+
+    // It is only valid to call these functions if isTableLogSink() is True.
+    TableLogSink &castToTableLogSink();
+    const TableLogSink &castToTableLogSink() const;
+
     // This will no longer be needed when "real" exceptions are available
     // in all compilers.
     virtual void cleanup();
 private:
     LogFilter filter_p;
 };
+
+inline TableLogSink &LogSinkInterface::castToTableLogSink()
+{
+    return (TableLogSink &)(*this);
+}
+
+inline const TableLogSink &LogSinkInterface::castToTableLogSink() const
+{
+    return (const TableLogSink &)(*this);
+}
 
 #endif
