@@ -1,5 +1,5 @@
 //# tByteIO.cc: Test program for class ByteIO and derived classes
-//# Copyright (C) 1996,1997,2000,2001
+//# Copyright (C) 1996,1997,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -256,6 +256,12 @@ int main()
 	    doIt (file1);
 	}
 	checkReopen();
+	// Do regular io for various buffer sizes.
+	for (uInt bs=1; bs<100; bs++) {
+	    RegularFileIO file1(RegularFile("tByteIO_tmp.data"), ByteIO::New,
+				bs);
+	    doIt (file1);
+	}
 
 	int fd = open ("tByteIO_tmp.data2", O_CREAT|O_TRUNC|O_RDWR, 0644);
 	int flags = fcntl (fd, F_GETFL);
