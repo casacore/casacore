@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates.
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -376,10 +376,16 @@ public:
 
     // Replace one Coordinate with another. The mapping of the coordinate axes
     // to the CoordinateSystem axes is unchanged, therefore the number of world
-    // and pixel axes must not be changed. You can change the type of the
-    // coordinate however. For example, replace a SpectralCoordinate with a 1-D
-    // Linearcoordinate.
-    void replaceCoordinate(const Coordinate &newCoordinate, uInt whichCoordinate);
+    // and pixel axes must not be changed. You can, somewhat dangerously,
+    // change the type of the coordinate however. For example, replace a 
+    // SpectralCoordinate with a 1-D Linearcoordinate.  It is dangerous because
+    // the world replacement values (see removeWorldAxis) have to be scaled.
+    // The algorithm tries to find a scale factor between the old and new
+    // units and applies it to the replacement values.  If it can't find
+    // a scale factor (non-conformant units) then the reference value is
+    // used for any world replacement values.  If the latter occurs,
+    // it returns False, else True is returned.
+    Bool replaceCoordinate(const Coordinate &newCoordinate, uInt whichCoordinate);
 
     // Find the Coordinate number that corresponds to the given type.
     // Since there might be more than one Coordinate of a given type you
@@ -618,18 +624,6 @@ public:
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
-    // Set and recover the preferred world axis units.  These can be used to specify
-    // a favoured unit for conversions for example.  The given units must be empty
-    // or dimensionally consistent with the native world axis units, else
-    // False is returned and <src>errorMessage()</src>
-    // has an error message for you.  The preferred units are empty strings
-    // until you explicitly set them.  The only functions in the Coordinates classes
-    // which uses the preferred unit are <src>format, save, and restore</src>.
-    // <group>
-    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
-    virtual Vector<String> preferredWorldAxisUnits() const;
-    // </group>
-
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 
     // pixel axes in the CoordinateSystem.  If the comparison returns
@@ -819,10 +813,12 @@ private:
                                    uInt axis) const;
 */
 
-   // Dlete some pointer blocks
+   // Delete some pointer blocks
    void cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
                           PtrBlock<SpectralCoordinate*>&  out);
 
+   // Delete temporary maps
+   void deleteTemps (const uInt which);
 
     // Decode CD cards from FITS file header
     static Bool getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header);
