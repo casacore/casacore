@@ -1834,3 +1834,4 @@
 08 003 sys rm bin/inputs.atoms
 08 003 sys rm bin/make_helpsystem.sh
 08 003 sys rm bin/plotter.atoms
+08 003 sys rm bin/sdcalc
