@@ -31,6 +31,7 @@
 #include <aips/Exceptions.h>
 #include <aips/OS/EnvVar.h>
 #include <aips/OS/File.h>
+#include <aips/OS/Time.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -130,6 +131,10 @@ void Aipsrc::reRead() {
   parse();
 }
 
+Double Aipsrc::lastRead() {
+  return lastParse;
+}
+
 const Block<String> &Aipsrc::values() {
   if (doInit) parse();
   return keywordValue;
@@ -145,7 +150,6 @@ const String &Aipsrc::fillAips(const String &nam) {
     if (uhome.empty())
       throw(AipsError(String("The HOME environment variable has not been set") +
 		      "\n\t(see system administrator)"));
-    home = uhome + "/aips++";
     String aipsPath = EnvironmentVariables::value("AIPSPATH");
     if (aipsPath.empty())
       throw(AipsError(String("The AIPSPATH environment variable has not been set") +
@@ -180,6 +184,7 @@ const String &Aipsrc::aipsHost() {
 }
 
 const String &Aipsrc::aipsHome() {
+  if (doInit) parse();
   return fillAips(home);
 }
 
@@ -250,17 +255,27 @@ void Aipsrc::set(uInt keyword,
 }
   
 uInt Aipsrc::parse() {
+  // Refill basic data
+  filled = False;
   // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
   String filelist = fillAips(uhome) + String("/.aipsrc:");
   filelist += (root + String("/.aipsrc:"));
   filelist += (host + String("/aipsrc:"));
   filelist += (site + String("/aipsrc:"));
   filelist += (arch + String("/aipsrc:"));
-  return parse(filelist);
+  uInt i = parse(filelist);
+  String x;
+  if (find(x, String("user.aipsdir"), String("/aips++")))
+    home = x;
+  else
+    home = uhome + x;
+  return i;
 }
 
 uInt Aipsrc::parse(String &fileList) {
   doInit = False;		 // Indicate parse done
+  Time x;
+  lastParse = x.modifiedJulianDay();	// Save time of parse
   keywordValue.resize(0, True);  // Clear the old values if any
   keywordPattern.resize(0, True);
   Block<String> keywordFile;
@@ -354,6 +369,7 @@ void Aipsrc::show(ostream &oStream) {
 // Static Initializations -- Only really want to read the files once
 
 Bool Aipsrc::doInit = True;
+Double Aipsrc::lastParse = 0;
 Block<String> Aipsrc::keywordPattern(0);
 Block<String> Aipsrc::keywordValue(0);
 uInt Aipsrc::fileEnd = 0;

@@ -282,8 +282,11 @@ public:
   
   // The <src>reRead()</src> function, will reinitialise the static maps and read the
   // aipsrc files again. It could be useful in some interactive or multi-processor 
-  // circumstances.
+  // circumstances. <src>lastRead()</src> returns the time last reRead.
+  // <group>
   static void reRead();
+  static Double lastRead();
+  // </group>
   
   // The following functions return the full lists of available data. They could
   // be useful for debugging purposes.
@@ -308,7 +311,9 @@ protected:
 private:
   //# Data
   // Indicate files read
-  static Bool          doInit;
+  static Bool doInit;
+  // Last time data was (re)read
+  static Double lastParse; 
   // List of values belonging to keywords found
   static Block<String> keywordValue;
   // List of patterns deducted from names
