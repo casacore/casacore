@@ -1,5 +1,5 @@
 //# Lattice.cc:  this defines Lattice.cc, a base for array-related classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,9 +31,11 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Functional.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/COWPtr.h>
+#include <aips/Utilities/Assert.h>
 
 
 // destructor
