@@ -997,8 +997,7 @@ Bool DirectionCoordinate::save(RecordInterface &container,
     return ok;
 }
 
-DirectionCoordinate *DirectionCoordinate::restore(const 
-						  RecordInterface &container,
+DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &container,
 						  const String &fieldName)
 {
     if (! container.isDefined(fieldName)) {
@@ -1069,8 +1068,12 @@ DirectionCoordinate *DirectionCoordinate::restore(const
     Vector<String> units;
     subrec.get("units", units);
 
+// Dummy DC which we overwrite.  Use refVal [0.0, 0.5] rather than [0.0, 0.0]
+// to avoid divide by zero in Coordinate::make_Direction_FITS_ctype() function.
+// See that function for further comments
+// 
     DirectionCoordinate *retval = 
-	new DirectionCoordinate(sys, proj, 0, 0, 1, 1, pc, 0, 0);
+	new DirectionCoordinate(sys, proj, 0.0, 0.5, 1, 1, pc, 0, 0);
     AlwaysAssert(retval, AipsError);
 
     // We have to do the units first since they will change the
