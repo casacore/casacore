@@ -1,5 +1,5 @@
 //# WCBox.h: Class to define a box shaped WC region
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -294,7 +294,8 @@ public:
 
    // Construct from vectors of world coordinates 
    // defining the box corners.  It is assumed that the
-   // order of the values is in the order of the pixel axes.
+   // order of the values is in the order of the pixel axes
+   // in the given coordinate system.
    // <group>
    WCBox(const Vector<Quantum<Double> >& blc,
          const Vector<Quantum<Double> >& trc,
@@ -335,6 +336,8 @@ public:
    // WCBox can extend a region.
    virtual Bool canExtend() const;
 
+   // Make a new box from the given axesin this box.
+   WCBox splitBox (const IPosition& axes) const;
 
    // Convert to an LCRegion using the supplied <src>CoordinateSystem</src> 
    // and shape.  

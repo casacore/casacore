@@ -1,5 +1,5 @@
 //# WCBox.cc: Class to define a world coordinate box region of interest in an image
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -391,6 +391,23 @@ WCRegion* WCBox::cloneRegion() const
    return new WCBox(*this);
 }
 
+WCBox WCBox::splitBox (const IPosition& axes) const
+{
+   uInt nAxes = axes.nelements();
+   Vector<Quantum<Double> > blc(nAxes);
+   Vector<Quantum<Double> > trc(nAxes);
+   IPosition pixelAxes(nAxes);
+   Vector<Int> absRel(nAxes);
+   for (uInt i=0; i<nAxes; i++) {
+      uInt axis = axes(i);
+      AlwaysAssert (axis < itsBlc.nelements(), AipsError);
+      blc(i) = itsBlc(axis);
+      trc(i) = itsTrc(axis);
+      absRel(i) = itsAbsRel(axis);
+      pixelAxes(i) = itsPixelAxes(axis);
+   }
+   return WCBox (blc, trc, pixelAxes, itsCSys, absRel);
+}
 
 TableRecord WCBox::toRecord(const String&) const
 //
