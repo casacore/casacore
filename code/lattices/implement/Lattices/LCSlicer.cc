@@ -444,6 +444,7 @@ Slicer LCSlicer::toSlicer (const Vector<Float>& referencePixel,
 	} else {
 	    if (itsFracTrc(i)) {
 		v *= newLatticeShape(i);
+		v -= 1;
 	    }
 	    if (itsAbsRelTrc(i) == RegionType::RelRef) {
 		v += referencePixel(i);
