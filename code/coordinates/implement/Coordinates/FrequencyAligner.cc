@@ -34,6 +34,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Logging/LogOrigin.h>
+#include <casa/Quanta/Quantum.h>
 
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <coordinates/Coordinates/SpectralCoordinate.h>
@@ -61,6 +62,7 @@ FrequencyAligner<T>::FrequencyAligner(const SpectralCoordinate& specCoord,
                                     const MPosition& pos,
                                     MFrequency::Types freqSystem)
  : itsSpecCoord(specCoord),
+   itsFreqSystem(freqSystem),
    itsRefFreqX(0),
    itsFreqX(0),
    itsDiffTol(0.0)
@@ -76,7 +78,7 @@ FrequencyAligner<T>::FrequencyAligner(const SpectralCoordinate& specCoord,
 // Generate the Frequency Machine and set the epoch to the reference epoch
 
    Unit unit(specCoord.worldAxisUnits()(0));
-   makeMachine (refEpoch, dir, pos, freqSystem, unit);
+   makeMachine (refEpoch, dir, pos, itsFreqSystem, unit);
 
 // Generate the frequency abcissa at the reference epoch.  The frequency 
 // spectrum is of the MFrequency::Types of the SC. 
@@ -312,6 +314,8 @@ void FrequencyAligner<T>::copyOther(const FrequencyAligner<T>& other)
 {
    itsMachine = other.itsMachine;
 //
+   itsFreqSystem = other.itsFreqSystem;
+//
    itsRefFreqX.resize(other.itsRefFreqX.nelements());
    itsRefFreqX = other.itsRefFreqX;
 //
@@ -340,4 +344,59 @@ Int FrequencyAligner<T>::setMethod(FrequencyAligner<T>::Method method) const
    return mI;
 }
 
+
+template<class T> 
+SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate (Bool doLinear) const
+{
+   const uInt n = itsRefFreqX.nelements();
+   AlwaysAssert(n>0,AipsError);
+
+// Get SpectralCoordinate 
+
+   const Vector<String>& units = itsSpecCoord.worldAxisUnits();
+   Unit unit(units(0));
+   Quantum<Double> restFreq(itsSpecCoord.restFrequency(), unit);
+
+// Create SC. Units will be Hz
+
+   SpectralCoordinate sC;
+   if (doLinear) {
+      Double crpix = 0.0;
+      Quantum<Double> crval(itsRefFreqX[0], unit);
+      Quantum<Double> cdelt((itsRefFreqX[n-1]-itsRefFreqX[0])/Double(n-1), unit);
+//
+      sC = SpectralCoordinate(itsFreqSystem, crval, cdelt, crpix, restFreq);
+   } else {
+      Quantum<Vector<Double> > freqs(itsRefFreqX, unit);
+      sC = SpectralCoordinate(itsFreqSystem, freqs, restFreq);
+   }
+
+// Set back to original unit
+
+   sC.setWorldAxisUnits(units);
+
+// Set rest freq state
+
+   sC.setRestFrequencies(itsSpecCoord.restFrequencies(), False);
+   sC.selectRestFrequency(restFreq.getValue());
+
+// We don't want to set the frame conversion state (although possibly
+// the user might like to be able to access the reference pos/dir/epoch ?)
+// We can set the velocity state though
+
+   MDoppler::Types doppler = itsSpecCoord.velocityDoppler();
+   String velUnit = itsSpecCoord.velocityUnit();
+   Bool ok = sC.setVelocity (velUnit, doppler);
+  
+// Axis names
+
+   ok = sC.setWorldAxisNames(itsSpecCoord.worldAxisNames());
+//
+   return sC;
+}
+
 } //# End namespace casa
+
+
+
+   

@@ -162,11 +162,16 @@ public:
 // Get the abcissa (as a frequency in the axis units set in the SpectralCoordinate) last cached by function <src>align</src>
   void getAbcissa (Vector<Double>& xOut) const;
 
+// Get new aligned SpectralCoordinate.  It is probably non-linear, but if you would
+// like a linear approximation, use the doLinear argument.
+  SpectralCoordinate alignedSpectralCoordinate (Bool doLinear=True) const;
+
 private:
   SpectralCoordinate itsSpecCoord;
   MFrequency::Convert itsMachine;
   MFrequency::Ref itsRefOut;                      // Need this as there is no easy way to update
                                                   // the conversion machines epoch otherwise
+  MFrequency::Types itsFreqSystem;
 //
   Vector<Double> itsRefFreqX;                     // Reference frequency abcissa
   Vector<Double> itsFreqX;                        // Frequency abcissa
