@@ -121,6 +121,10 @@
   # MGRACCNT=`echo $AIPS2MGR | sed -e 's/\..*//'`
   MGRACCNT=$AIPS2MGR
   MGRGROUP=`echo $AIPS2MGR | sed -e 's/.*\.//'`
+  if [ $LOGNAME = "root" ]
+  then
+	  MGRACCNT=""
+  fi
 
 # Check that this script is being run from the right account.
   if [ "$MGRACCNT" != "$LOGNAME" -a "$MGRACCNT" != "" ]
