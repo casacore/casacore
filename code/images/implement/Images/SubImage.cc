@@ -77,7 +77,8 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
 				    axesSpec);
   const Slicer& slicer = itsSubLatPtr->getRegionPtr()->slicer();
   setCoords (image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector()));
+					   slicer.stride().asVector(),
+                                           slicer.length().asVector()));
   setLogMember (image.logSink());
   setImageInfoMember (image.imageInfo());
 }
@@ -96,7 +97,8 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
 				    axesSpec);
   const Slicer& slicer = itsSubLatPtr->getRegionPtr()->slicer();
   setCoords (image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector()));
+					   slicer.stride().asVector(),
+                                           slicer.length().asVector()));
   setLogMember (image.logSink());
   setImageInfoMember (image.imageInfo());
 }
@@ -110,7 +112,8 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
   itsSubLatPtr = new SubLattice<T> (image, slicer, axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
   setCoords (image.coordinates().subImage (refslicer.start().asVector(),
-					   refslicer.stride().asVector()));
+					   refslicer.stride().asVector(),
+                                           refslicer.length().asVector()));
   setLogMember (image.logSink());
   setImageInfoMember (image.imageInfo());
 }
@@ -126,7 +129,8 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
 				    axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
   setCoords (image.coordinates().subImage (refslicer.start().asVector(),
-					   refslicer.stride().asVector()));
+					   refslicer.stride().asVector(),
+                                           refslicer.length().asVector()));
   setLogMember (image.logSink());
   setImageInfoMember (image.imageInfo());
 }
