@@ -28,6 +28,8 @@
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/Flux.h>
+#include <trial/ComponentModels/ComponentShape.h>
+#include <trial/ComponentModels/SpectralModel.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/TableMeasures/ScalarMeasColumn.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
@@ -126,14 +128,15 @@ ComponentList & ComponentList::operator=(const ComponentList & other){
 }
 
 Flux<Double> ComponentList::sample(const MDirection & sampleDir,
-				   const MVAngle & pixelSize) const {
+				   const MVAngle & pixelSize,
+				   const MFrequency & centerFreq) const {
   DebugAssert(ok(), AipsError);
   const Unit retUnit("Jy");
   const ComponentType::Polarisation retPol(ComponentType::STOKES);
   Vector<DComplex> result(4, DComplex(0,0));
   Flux<Double> compFlux;
   for (uInt i = 0; i < nelements(); i++) {
-    compFlux = component(i).sample(sampleDir, pixelSize);
+    compFlux = component(i).sample(sampleDir, pixelSize, centerFreq);
     compFlux.convertUnit(retUnit);
     compFlux.convertPol(retPol);
     result.ac() += compFlux.value().ac();
@@ -321,7 +324,7 @@ void ComponentList::sort(ComponentList::SortCriteria criteria) {
     MVDirection refDir(0.0, 0.0);
     Vector<Double> position(2);
     for (uInt i = 0; i < nelements(); i++) {
-      val[i] = refDir.separation(itsList[i].refDirection().getValue());
+      val[i] = refDir.separation(itsList[i].shape().refDirection().getValue());
     }
     order = Sort::Ascending;
     break;
@@ -534,18 +537,20 @@ void ComponentList::writeTable() {
       fluxPolCol.put(i, ComponentType::name(component(i).flux().pol()));
     }
     {
-      shapeCol.put(i, ComponentType::name(component(i).shape()));
-      compDir = component(i).refDirection();
+      const ComponentShape & compShape = component(i).shape();
+      shapeCol.put(i, ComponentType::name(compShape.type()));
+      compDir = compShape.refDirection();
       dirCol.put(i, compDir);
-      shapeParms.resize(component(i).nShapeParameters());
-      component(i).shapeParameters(shapeParms);
+      shapeParms.resize(compShape.nParameters());
+      compShape.parameters(shapeParms);
       shapeParmCol.put(i, shapeParms);
     }
     {
-      specShapeCol.put(i, ComponentType::name(component(i).spectralShape()));
-      freqCol.put(i, component(i).refFrequency());
-      spectralParms.resize(component(i).nSpectralParameters());
-      component(i).spectralParameters(spectralParms);
+      const SpectralModel & compSpectrum = component(i).spectrum();
+      specShapeCol.put(i, ComponentType::name(compSpectrum.type()));
+      freqCol.put(i, compSpectrum.refFrequency());
+      spectralParms.resize(compSpectrum.nParameters());
+      compSpectrum.parameters(spectralParms);
       specShapeParmCol.put(i, spectralParms);
     }
     {
@@ -604,17 +609,19 @@ void ComponentList::readTable(const String & fileName, const Bool readOnly) {
     }
     {
       dirCol.get(i, compDir);
-      currentComp.setRefDirection(compDir);
+      ComponentShape & compShape = currentComp.shape();
+      compShape.setRefDirection(compDir);
       shapeParms.resize(0);
       shapeParmCol.get(i, shapeParms);
-      currentComp.setShapeParameters(shapeParms);
+      compShape.setParameters(shapeParms);
     }
     {
       freqCol.get(i, compFreq);
-      currentComp.setRefFrequency(compFreq);
+      SpectralModel & compSpectrum = currentComp.spectrum();
+      compSpectrum.setRefFrequency(compFreq);
       spectralParms.resize(0);
       specShapeParmCol.get(i, spectralParms);
-      currentComp.setSpectralParameters(spectralParms);
+      compSpectrum.setParameters(spectralParms);
     }
     {
       labelCol.get(i, compLabel);
