@@ -1,5 +1,5 @@
 //# VisTimeAverager.cc: Implementation of VisTimeAverager.h
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: 
+//# $Id$
 //----------------------------------------------------------------------------
 
 #include <trial/MeasurementEquations/VisTimeAverager.h>
@@ -31,16 +31,19 @@
 
 //----------------------------------------------------------------------------
 
-VisTimeAverager::VisTimeAverager(const Int& nAnt, const Double& interval) 
-  : nAnt_p(nAnt), interval_p(interval)
+VisTimeAverager::VisTimeAverager(const Int& nAnt, const Double& interval,
+				 const Bool& prenorm) 
+  : nAnt_p(nAnt), interval_p(interval), prenorm_p(prenorm)
 {
 // Construct from the number of antennas and the averaging interval
 // Input:
 //    nAnt                 const Int&       No. of antennas
 //    interval             const Double&    Time interval (in seconds).
+//    prenorm              const Bool&      Pre-normalization flag
 // Output to private data:
 //    nAnt_p               Int              No. of antennas
 //    interval_p           Double           Time interval (in seconds).
+//    prenorm_p            Bool             Pre-normalization flag
 //
   // Reset the averager
   reset();
@@ -145,11 +148,28 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
       // Subtract offset to avoid roundoff problems with float weights
       avBuf_p.time()(outrow) += (vb.time()(row)-tStart_p) * wt;
       avBuf_p.weight()(outrow) += wt;
+
+      // Compute the pre-normalization (if requested)
+      CStokesVector preNormFact = Complex(0,0);
+      Int nPreNorm = 0;
+      if (prenorm_p) {
+	for (Int chn=0; chn<vb.nChannel(); chn++) {
+	  if (!vb.flag()(chn,row)) {
+	    preNormFact += vb.visibility()(chn,row);
+	    nPreNorm++;
+	  };
+	};
+	for (uInt k=0; k < 4; k++) {
+	  preNormFact(k) = static_cast<Float>(nPreNorm) / preNormFact(k);
+	};
+      };
+
       CStokesVector tmp;
       for (Int chn=0; chn<vb.nChannel(); chn++) {
 	if (!vb.flag()(chn,row)) {
 	  avBuf_p.flag()(chn,outrow) = False;
 	  tmp = vb.visibility()(chn,row);
+	  if (prenorm_p) tmp *= preNormFact;
 	  tmp *= wt;
 	  avBuf_p.visibility()(chn,outrow) += tmp;
 	}

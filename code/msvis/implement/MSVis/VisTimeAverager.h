@@ -1,5 +1,5 @@
 //# VisTimeAverager.h: class to average VisBuffers in time
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,8 +71,10 @@
 class VisTimeAverager
 {
 public:
-  // Construct from the number of antennas and the averaging interval
-  VisTimeAverager (const Int& nAnt, const Double& interval);
+  // Construct from the number of antennas, the averaging interval and
+  // the pre-normalization flag
+  VisTimeAverager (const Int& nAnt, const Double& interval, 
+		   const Bool& prenorm);
 
   // Null destructor
   ~VisTimeAverager();
@@ -106,6 +108,9 @@ private:
 
   // Averaging interval
   Double interval_p;
+
+  // Pre-normalization flag
+  Bool prenorm_p;
 
   // Start time and row of current accumulation
   Double tStart_p;
