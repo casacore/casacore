@@ -5667,3 +5667,4 @@
 15 304 src mv ./trial/implement/Wnbt/SpectralFit2.cc ./trial/implement/SpectralComponents/SpectralFit2.cc
 15 304 src mv ./trial/implement/Wnbt/SpectralList.cc ./trial/implement/SpectralComponents/SpectralList.cc
 15 304 src mv ./trial/implement/Wnbt/SpectralList.h ./trial/implement/SpectralComponents/SpectralList.h
+15 304 src mv ./trial/implement/Wnbt/SpectralList2.cc ./trial/implement/SpectralComponents/SpectralList2.cc
