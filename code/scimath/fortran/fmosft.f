@@ -288,10 +288,7 @@ C
       end
 C
 C Calculate gridded coordinates and the phasor needed for
-C phase rotation. If we are gridding in w, then we can
-C correct for the finite grid size in w by rescaling
-C using an approximation for the function (sin(pi*q**2/(2w))/2w)
-C We kick this term in for high w only.
+C phase rotation. 
 C
       subroutine smosft (uvw, dphase, freq, c, scale, offset, 
      $     sampling, pos, loc, off, phasor)
@@ -305,16 +302,16 @@ C
       double precision pi
       data pi/3.14159265358979323846/
 
+      pos(3)=abs(scale(3)*uvw(3)*freq/c)+offset(3)+1.0;
+      loc(3)=nint(pos(3))
+      off(3)=0
+
       do idim=1,2
          pos(idim)=scale(idim)*uvw(idim)*freq/c+
      $        (offset(idim)+1.0)
          loc(idim)=nint(pos(idim))
          off(idim)=nint((loc(idim)-pos(idim))*sampling)
       end do
-
-      pos(3)=abs(scale(3)*uvw(3)*freq/c)+offset(3)+1.0;
-      loc(3)=nint(pos(3))
-      off(3)=0
 
       phase=-2.0D0*pi*dphase*freq/c
       phasor=cmplx(cos(phase), sin(phase))
