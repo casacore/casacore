@@ -2398,3 +2398,4 @@
 09 344 src mv nfra/apps/csm/csm_gui.help trial/implement/ComponentModels/csm_gui.help
 09 346 src mv trial/scripts/matrix.g trial/implement/Mathematics/matrix.g
 09 346 src mv trial/scripts/matrix.help trial/implement/Mathematics/matrix.help
+09 346 src mv trial/scripts/lsfit.help trial/implement/Mathematics/lsfit.help
