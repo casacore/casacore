@@ -85,7 +85,7 @@ String LCDifference::className()
 TableRecord LCDifference::toRecord (const String& tableName) const
 {
     TableRecord rec;
-    rec.define ("name", className());
+    defineRecordFields (rec, className());
     rec.defineRecord ("regions", makeRecord(tableName));
     return rec;
 }

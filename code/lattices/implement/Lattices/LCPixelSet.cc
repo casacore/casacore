@@ -95,7 +95,7 @@ String LCMask::className()
 TableRecord LCMask::toRecord (const String&) const
 {
     TableRecord rec;
-    rec.define ("name", className());
+    defineRecordFields (rec, className());
     rec.define ("blc", box().start().asVector());
     rec.define ("mask", maskArray());
     rec.define ("shape", latticeShape().asVector());

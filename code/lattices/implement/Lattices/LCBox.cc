@@ -145,7 +145,7 @@ String LCBox::className()
 TableRecord LCBox::toRecord (const String&) const
 {
     TableRecord rec;
-    rec.define ("name", className());
+    defineRecordFields (rec, className());
     rec.define ("blc", itsBlc);
     rec.define ("trc", itsTrc);
     rec.define ("shape", latticeShape().asVector());

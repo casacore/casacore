@@ -138,7 +138,7 @@ String LCExtension::className()
 TableRecord LCExtension::toRecord (const String& tableName) const
 {
     TableRecord rec;
-    rec.define ("name", className());
+    defineRecordFields (rec, className());
     rec.defineRecord ("region", region().toRecord(tableName));
     rec.define ("axes", itsExtendAxes.asVector());
     rec.define ("blc", itsBlc.asVector());

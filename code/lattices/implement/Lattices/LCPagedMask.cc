@@ -101,7 +101,7 @@ String LCPagedMask::className()
 TableRecord LCPagedMask::toRecord (const String&) const
 {
     TableRecord rec;
-    rec.define ("name", className());
+    defineRecordFields (rec, className());
     rec.define ("blc", box().start().asVector());
     rec.defineTable ("mask", Table(itsMask.tableName()));
     rec.define ("shape", latticeShape().asVector());

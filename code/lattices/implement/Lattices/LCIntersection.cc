@@ -103,7 +103,7 @@ String LCIntersection::className()
 TableRecord LCIntersection::toRecord (const String& tableName) const
 {
     TableRecord rec;
-    rec.define ("name", className());
+    defineRecordFields (rec, className());
     rec.defineRecord ("regions", makeRecord(tableName));
     return rec;
 }

@@ -153,7 +153,7 @@ String LCEllipsoid::className()
 TableRecord LCEllipsoid::toRecord (const String&) const
 {
     TableRecord rec;
-    rec.define ("name", className());
+    defineRecordFields (rec, className());
     rec.define ("center", itsCenter);
     rec.define ("radii", itsRadii);
     rec.define ("shape", latticeShape().asVector());

@@ -120,7 +120,7 @@ String LCPolygon::className()
 TableRecord LCPolygon::toRecord (const String&) const
 {
     TableRecord rec;
-    rec.define ("name", className());
+    defineRecordFields (rec, className());
     rec.define ("x", itsX);
     rec.define ("y", itsY);
     rec.define ("shape", latticeShape().asVector());
