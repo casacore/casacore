@@ -1,5 +1,5 @@
 //# DataManager.cc: Storage manager for tables
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,7 +46,8 @@
 
 DataManager::DataManager()
 : nrcol_p (0),
-  seqnr_p (0)
+  seqnr_p (0),
+  clone_p (0)
 {
     table_p = new Table;
     if (table_p == 0) {
