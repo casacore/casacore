@@ -97,6 +97,48 @@ Vector<Int> MSDataDescIndex::matchSpwId(const Vector<Int>& spwIds)
 
 //-------------------------------------------------------------------------
 
+Vector<Int> MSDataDescIndex::matchPolId(const Int& polId)
+{
+// Match a polarization id to a set of data desc id's
+// Input:
+//    polId               const Int&               pol id to match
+// Output:
+//    matchPolId          Vector<Int>              Matching data desc id's
+//
+  LogicalArray maskArray = 
+    (msDataDescCols_p.polarizationId().getColumn()==polId &&
+     !msDataDescCols_p.flagRow().getColumn());
+  MaskedArray<Int> maskDataDescId(dataDescIds_p, maskArray);
+  return maskDataDescId.getCompressedArray();
+}; 
+
+//-------------------------------------------------------------------------
+
+Vector<Int> MSDataDescIndex::matchPolId(const Vector<Int>& polIds)
+{
+// Match a set of polarization id's to a set of data desc id's
+// Input:
+//    polIds              const Vector<Int>&       pol id's to match
+// Output:
+//    matchPolId          Vector<Int>              Matching data desc id's
+//
+  Vector<Int> matchedDataDescIds;
+  // Match each pol id individually
+  for (uInt polid=0; polid < polIds.nelements(); polid++) {
+    // Add to list of datadesc id's
+    Vector<Int> currentMatch = matchPolId(polIds(polid));
+    if (currentMatch.nelements() > 0) {
+      Vector<Int> temp(matchedDataDescIds);
+      matchedDataDescIds.resize(matchedDataDescIds.nelements() +
+				currentMatch.nelements(), True);
+      matchedDataDescIds = concatenateArray(temp, currentMatch);
+    };
+  };
+  return matchedDataDescIds;
+};
+
+//-------------------------------------------------------------------------
+
 Vector<Int> MSDataDescIndex::matchSpwIdAndPolznId(const Int& spwId,
 						  const Int& polznId)
 {
