@@ -36,7 +36,8 @@
 // Linear least-squares fit using Singular Value Decomposition method. 
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tLinearFitSVD.cc" demos="">
+// <reviewed reviewer="wbrouw" date="2004/06/15" tests="tLinearFitSVD.cc"
+//	 demos="">
 // </reviewed>
 //
 // <prerequisite>

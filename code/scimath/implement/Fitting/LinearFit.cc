@@ -61,7 +61,6 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
       const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
       const Vector<Bool> *const mask) {
   // Initialise fitter
-  Double mu, me;
   sol.resize(pCount_p);
   for (uInt i=0, k=0; i<pCount_p; ++i) {
     sol[i] = (*ptr_derive_p)[i].value();
@@ -69,14 +68,14 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   };
   // Build normal equations
   buildMatrix(x, y, sigma, mask);
+  // Build constraint equations
+  buildConstraint();
   // Invert normal equations
   solved_p = invert(nr_p, svd_p);
   // Get solution and errors
   if (solved_p) {
     solve(condEq_p);
     sol_p += condEq_p;
-    mu = getSD();
-    me = getWeightedSD();
     getErrors(err_p);
     errors_p = True;
     for (uInt i=0, k=0; i<pCount_p; i++) {

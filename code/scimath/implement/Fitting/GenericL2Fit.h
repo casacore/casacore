@@ -45,7 +45,8 @@ template <class T, class U> class Function;
 // <summary> Generic base lass for least-squares fit.
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tLinearFitSVD.cc" demos="">
+// <reviewed reviewer="wbrouw" date="2004/06/14" tests="tLinearFitSVD.cc"
+// 	 demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -62,6 +63,9 @@ template <class T, class U> class Function;
 // </etymology>
 //
 // <synopsis>
+// NOTE: Constraints added. Documentation out of date at moment, check
+// the tLinearFitSVD and tNonLinearFirLM programs for examples.
+//
 // The class acts as a base class for L2-type (least-squares) fitting. 
 // Actual classes (se e.g. <linkto class=LinearFit>LinearFit</linkto> and
 // <linkto class=NonLinearFit>NonLinearFit</linkto>.
@@ -233,17 +237,38 @@ template<class T> class GenericL2Fit : public LSQaips {
   // so that derivatives with respect to the adjustable parameters
   // can be calculated.  The current values of the "available" parameters
   // of the function are taken as the initial guess for the non-linear fitting.
-  void setFunction(Function<typename FunctionTraits<T>::DiffType,
+  void setFunction(const Function<typename FunctionTraits<T>::DiffType,
 		   typename FunctionTraits<T>::DiffType> &function);
   // Set the possible constraint functions. The <src>addConstraint</src>
   // will add one; the <src>setConstraint</src> will [re-]set the
-  // <src>n</src>th constraint. If unsucessful, False returned.
+  // <src>n</src>th constraint. If unsucessful, False returned.<br>
+  // Constraint functional can only be set when the function to be fitted
+  // has been set. It should have the same number of parameters as the function
+  // to be fitted. The <src>x</src> should have the correct dimension.
   // <group>
   Bool setConstraint(const uInt n,
-		     Function<typename FunctionTraits<T>::DiffType,
-		     typename FunctionTraits<T>::DiffType> &function);
-  Bool addConstraint(Function<typename FunctionTraits<T>::DiffType,
-		     typename FunctionTraits<T>::DiffType> &function);
+		     const Function<typename FunctionTraits<T>::DiffType,
+		     typename FunctionTraits<T>::DiffType> &function,
+		     const Vector<typename FunctionTraits<T>::BaseType> &x,
+		     const typename FunctionTraits<T>::BaseType y=
+		     typename FunctionTraits<T>::BaseType(0));
+  Bool setConstraint(const uInt n,
+		     const Vector<typename FunctionTraits<T>::BaseType> &x,
+		     const typename FunctionTraits<T>::BaseType y=
+		     typename FunctionTraits<T>::BaseType(0));
+  Bool setConstraint(const uInt n,
+		     const typename FunctionTraits<T>::BaseType y=
+		     typename FunctionTraits<T>::BaseType(0));
+  Bool addConstraint(const Function<typename FunctionTraits<T>::DiffType,
+		     typename FunctionTraits<T>::DiffType> &function,
+		     const Vector<typename FunctionTraits<T>::BaseType> &x,
+		     const typename FunctionTraits<T>::BaseType y=
+		     typename FunctionTraits<T>::BaseType(0));
+  Bool addConstraint(const Vector<typename FunctionTraits<T>::BaseType> &x,
+		     const typename FunctionTraits<T>::BaseType y=
+		     typename FunctionTraits<T>::BaseType(0));
+  Bool addConstraint(const typename FunctionTraits<T>::BaseType y=
+		     typename FunctionTraits<T>::BaseType(0));
   // </group>
   // Set the collinearity factor as the square of the sine of the
   // minimum angle allowed between input vectors (default zero for non-SVD,
@@ -276,10 +301,10 @@ template<class T> class GenericL2Fit : public LSQaips {
   // A <src>0-pointer</src> will be returned if no such constraint present.
   // This pointer should never be destroyed.
   // <group>
-  uInt NConstraints() { return constrList_p.nelements(); };
+  uInt NConstraints() { return constrFun_p.nelements(); };
   Function<typename FunctionTraits<T>::DiffType,
     typename FunctionTraits<T>::DiffType> *getConstraint(const uInt n) {
-    return (n >= constrList_p.nelements() ? 0 : constrList_p[n]); };
+    return (n >= constrFun_p.nelements() ? 0 : constrFun_p[n]); };
   // </group>
 
   // Set the parameter values. The input is a vector of parameters; all
@@ -423,8 +448,18 @@ template<class T> class GenericL2Fit : public LSQaips {
   Function<typename FunctionTraits<T>::DiffType,
     typename FunctionTraits<T>::DiffType> *ptr_derive_p;
   // List of functions describing the possible constraint equations
+  // e.g. The sum of 3 angles w`could be described by a
+  // <src>HyperPlane(3)</src> function with <src>[1,1,1]</src>
+  // as parameters; giving <src>[1,1,1]</src> as argument vector and
+  // <src>3.1415</src> as value.
+  // <group>
   PtrBlock<Function<typename FunctionTraits<T>::DiffType,
-    typename FunctionTraits<T>::DiffType>*> constrList_p;
+    typename FunctionTraits<T>::DiffType>*> constrFun_p;
+  // List of vectors describing the constraint equations' arguments
+  PtrBlock<Vector<typename FunctionTraits<T>::BaseType>*> constrArg_p;
+  // List of values describing the constraint equations' value
+  PtrBlock<typename FunctionTraits<T>::BaseType *> constrVal_p;
+  // </group>
   // Number of available parameters
   uInt pCount_p;
   // Number of dimensions of input data
@@ -473,12 +508,14 @@ template<class T> class GenericL2Fit : public LSQaips {
 		   const Vector<typename FunctionTraits<T>::BaseType>
 		   *const sigma,
 		   const Vector<Bool> *const mask=0);
+  // Build the constraint equations
+  void buildConstraint();
   // Calculate residuals
   Bool buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
 		     const Array<typename FunctionTraits<T>::BaseType> &x,
 		     const Vector<typename FunctionTraits<T>::BaseType>
 		     *const sol);
-  // Function to get functional evaluation
+  // Function to get evaluated functional value
   typename FunctionTraits<T>::BaseType
     getVal_p(const Array<typename FunctionTraits<T>::BaseType> &x,
 	     uInt j, uInt i) const;
