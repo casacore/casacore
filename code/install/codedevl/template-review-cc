@@ -94,14 +94,21 @@ Coding
 *** is the use of '#if' limited to the include guard (and used there?), or
     use discussed with QAG?
 
-(The following three items can be found using purify and purecov, either at the
-     author's or the reviewer's site)
+===========================================================================
+Test programs
+-------------
 
-*** Memory Access Errors
+*** do test programs follow the standard rules of programs to be run
+    by assay? See the system manual, 'System verification'.
+  
+(The following three items can be found using purify and purecov,
+either at the author's or the reviewer's site) 
+
+*** test program coverage of class (should be at least 80%)
 
 *** Memory Leaks
 
-*** test program coverage of class (should be at least 80%)
+*** Memory Access Errors
 ===========================================================================
 Other comments
 --------------
