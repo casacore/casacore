@@ -93,8 +93,7 @@ int main() {
       LatticeIterator<Int> li(scratch, IPosition(3,1,1,9));
       Int i = 0;
       for (li.reset(); !li.atEnd(); li++, i++) {
-	li.cursor() = i;
-	li.writeCursor();
+	li.woCursor() = i;
       }
       COWPtr<Array<Int> > ptrM;
       scratch.getSlice(ptrM, IPosition(3,0), IPosition(3,9,9,1), 
