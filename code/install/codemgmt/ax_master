@@ -4041,3 +4041,4 @@
 14 065 src mv trial/implement/DisplayCanvas/DefaultWCCoordinateHandler.cc trialdisplay/implement/DisplayCanvas/DefaultWCCoordinateHandler.cc
 14 065 src mv trial/implement/DisplayCanvas/DefaultWCSizeControlHandler.cc trialdisplay/implement/DisplayCanvas/DefaultWCSizeControlHandler.cc
 14 065 src mv trial/implement/DisplayCanvas/WCAxisLabeller.cc trialdisplay/implement/DisplayCanvas/WCAxisLabeller.cc
+14 065 src mv trial/implement/DisplayCanvas/WCBilinearResampleHandler.cc trialdisplay/implement/DisplayCanvas/WCBilinearResampleHandler.cc
