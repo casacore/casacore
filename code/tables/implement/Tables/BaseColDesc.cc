@@ -168,12 +168,17 @@ void BaseColumnDesc::setNdim (uInt ndim)
 	throw (TableInvOper ("setNdim: column "
 			     + colName_p + " is no array"));
     }
-    if (nrdim_p > 0) {
+    if (ndim > 0  &&  nrdim_p > 0) {
 	throw (TableInvOper ("setNdim(): dimensionality of column "
 			     + colName_p + " already defined"));
     }
     nrdim_p = ndim;
+    if (nrdim_p <= 0) {
+        nrdim_p = -1;
+        shape_p.resize (0);
+    }
 }
+
 void BaseColumnDesc::setShape (const IPosition& shape)
 {
     if (!isArray()) {
@@ -190,7 +195,40 @@ void BaseColumnDesc::setShape (const IPosition& shape)
     }
     shape_p = shape;
     nrdim_p = shape.nelements();
+    if (nrdim_p <= 0) {
+        nrdim_p = -1;
+    }
     option_p |= ColumnDesc::FixedShape;
+}
+
+void BaseColumnDesc::setShape (const IPosition& shape, Bool directOption)
+{
+    setShape (shape);
+    if (directOption) {
+        option_p |= ColumnDesc::Direct;
+    } else {
+        option_p &= ~ColumnDesc::Direct;
+    }
+}
+
+void BaseColumnDesc::setOptions (int options)
+{
+    option_p = options;
+    //# Option Direct forces FixedShape.
+    if ((option_p & ColumnDesc::Direct)  ==  ColumnDesc::Direct) {
+	option_p |= ColumnDesc::FixedShape;
+    }
+    // Option Undefined can only be set for standard types.
+    if (dtype_p == TpOther) {
+	if ((option_p & ColumnDesc::Undefined)  ==  ColumnDesc::Undefined) {
+	    throw (TableInvColumnDesc (colName_p,
+	       "setOptions: Undefined only allowed for standard data types"));
+	}
+    }
+    if ((option_p & ColumnDesc::FixedShape)  !=  ColumnDesc::FixedShape) {
+        nrdim_p = -1;
+        shape_p.resize (0);
+    }
 }
 
 void BaseColumnDesc::setMaxLength (uInt maxLength)
