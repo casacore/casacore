@@ -726,9 +726,9 @@ setup_tile_cache() {
     // So calculate the start and end tile for the window.
     IPosition tileShape = tilerPtr->tileShape();
     Int tilesz = tileShape(axis);
-    Int stTile = (theNavPtr->blc()(axis) + tilesz - 1) / tilesz;
-    Int endTile = (theNavPtr->trc()(axis) + tilesz) / tilesz;
-    theData.setCacheSize ((endTile - stTile) * tileShape.product());
+    Int stTile = theNavPtr->blc()(axis) / tilesz;
+    Int endTile = theNavPtr->trc()(axis) / tilesz;
+    theData.setCacheSize ((endTile - stTile + 1) * tileShape.product());
 //    IPosition cursorShape = tilerPtr->cursorShape();
 //    cursorShape(axis) = theNavPtr->trc()(axis) - theNavPtr->blc()(axis) + 1;
 //    theData.setCacheSizeFromPath(cursorShape, IPosition(),
