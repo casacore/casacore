@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 
 // Make fit
 
-   Fit2D::ErrorTypes status = fitter.fit(pixels, sigma, norm);
+   Fit2D::ErrorTypes status = fitter.fit(pixels, sigma);
    if (status==Fit2D::OK) {
       cout << "Chi squared = " << fitter.chiSquared() << endl << endl;
       cout << "Number of iterations = " << fitter.numberIterations() << endl;
@@ -243,7 +243,7 @@ int main(int argc, char **argv)
    {
       cout << endl << endl << "Test copy constructor" << endl;
       Fit2D fitter2(fitter);
-      fitter2.fit(pixels, sigma, norm);      
+      fitter2.fit(pixels, sigma);
       if (!allEQ(fitter.availableSolution(),fitter2.availableSolution()) ||
          fitter.numberIterations() != fitter2.numberIterations() ||
          fitter.chiSquared() != fitter2.chiSquared() ||
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
       cout << endl << endl << "Test assignment operator" << endl;
       Fit2D fitter2(logger);
       fitter2 = fitter;
-      fitter2.fit(pixels, sigma, norm);
+      fitter2.fit(pixels, sigma);
       if (!allEQ(fitter.availableSolution(),fitter2.availableSolution()) ||
          fitter.numberIterations() != fitter2.numberIterations() ||
          fitter.chiSquared() != fitter2.chiSquared() ||

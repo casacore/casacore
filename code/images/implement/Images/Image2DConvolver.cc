@@ -401,7 +401,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
          fitter.addModel (Fit2D::GAUSSIAN, bParameters, bParameterMask);
          Array<Float> sigma;
          fitter.setIncludeRange(maxValOut/10.0, maxValOut+0.1);
-         Fit2D::ErrorTypes error = fitter.fit (beamMatrixOut, sigma, False);
+         Fit2D::ErrorTypes error = fitter.fit (beamMatrixOut, sigma);
          if (error==Fit2D::NOCONVERGE ||
              error==Fit2D::FAILED ||
              error==Fit2D::NOGOOD) {
