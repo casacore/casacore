@@ -1,5 +1,5 @@
 //# MUString.cc: Pointed String class to ais analysis of quantity strings
-//# Copyright (C) 1996,1997,1998,1999,2001,2002,2003
+//# Copyright (C) 1996,1997,1998,1999,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -174,7 +174,8 @@ void MUString::skipuInt() {
 }
 
 Bool MUString::testDouble() const {
-  static Regex ex("[-+]*[0-9\\.]");
+  static Regex ex
+    ("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
   return testString(ex);
 }
 
@@ -187,18 +188,13 @@ Bool MUString::tSkipDouble() {
 }
 
 Double MUString::getDouble() {
-  Double res = 0.0; Int p = initLast();
-  if (ptr < len) {
-    istringstream instr(str.chars() + ptr);
-    streampos tmp(instr.tellg());
+  static Regex ex
+    ("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
+  Double res = 0.0;
+  if (ptr < len && testDouble()) {
+    istringstream instr(str.at(ex, ptr));
     instr >> res;
-    if (instr.tellg() == streampos(-1)) {		// if eof seen (at least for sgi)
-      adjustPtr(len);
-    } else {
-      adjustPtr(ptr + (instr.tellg()-tmp));
-    };
-    if ((ios::failbit & instr.rdstate()) == 0) setLast(p);
-    instr.clear(~ios::failbit & instr.rdstate());	// for non-existing
+    skipString(ex);
   };
   return res;
 }
@@ -305,7 +301,7 @@ String MUString::getAlphaNum() {
 
 Bool MUString::testString(const Regex &ex) const {
   return (ptr < len &&
-		String(String(str).from(Int(ptr))).index(ex) == 0);
+	  String(String(str).from(Int(ptr))).index(ex) == 0);
 }
 
 Bool MUString::testString(const String &ex) const {
