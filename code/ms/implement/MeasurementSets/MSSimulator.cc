@@ -56,6 +56,7 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/MeasData.h>
 #include <aips/Measures.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/Assert.h>
@@ -200,19 +201,18 @@ void MSSimulator::initFields(const uInt nSources,
   nIntFld_p.resize(nSources_p);  
   nMos_p.resize(2,nSources_p);
 
-  //  Can't get this to work!
+  // This gives us ! MECLIPTIC !
   //  radecRefFrame_p = MDirection::showType(sourceDirection(0).myType());
-
-  os << "Warning: we are using all B1950, no matter what you want" << LogIO::POST;
+  //  os << "Warning: we are using all B1950, no matter what you want" << LogIO::POST;
   radecRefFrame_p="B1950";
 
   String refFrame_check;
   for (Int i=0; i< nSources_p; i++) {
-    //    refFrame_check =  MDirection::showType(sourceDirection(i).myType()) ;
-    //    if ( refFrame_check != radecRefFrame_p ) {
-    //      os << "Inconsistent source position reference frames, assuming all are " 
-    //	 << radecRefFrame_p << LogIO::POST;
-    //    }
+    refFrame_check =  MDirection::showType(sourceDirection(i).myType()) ;
+    if ( refFrame_check != radecRefFrame_p ) {
+      os << "Inconsistent source position reference frames, assuming all are " 
+	 << radecRefFrame_p << LogIO::POST;
+    }
 
     srcName_p(i) = sourceName(i);
     radec_p(0,i) = sourceDirection(i).getAngle().getValue("rad")(0);
@@ -484,8 +484,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	Quantity d1(radec_p(1,0), "rad");
 	MDirection fc(d0, d1, MDirection::Ref(MDirection::B1950) );
 	msd.setFieldCenter( fc );
-	Double ha0 = msd.hourAngle() * 3600.0 * 180.0/C::pi / 15.0; // in seconds
-	t_offset = qStartTime_p.getValue("s") - ha0;
+	t_offset = - msd.hourAngle() * 3600.0 * 180.0/C::pi / 15.0; // in seconds
       }
 
       MEpoch::Ref tref(MEpoch::TAI);
@@ -863,7 +862,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	    firstTime = False;
 	    Double az1 = msd.azel().getAngle("deg").getValue("deg")(0);
 	    Double el1 = msd.azel().getAngle("deg").getValue("deg")(1);
-	    Double ha1 = msd.hourAngle() *  57.29 / 15.0;
+	    Double ha1 = msd.hourAngle() *  180.0/C::pi / 15.0;
 	    Double timeDays = Time / C::day;
 	    os << "Starting conditions: " << LogIO::POST;
 	    os << "     az = " << az1 << LogIO::POST;
@@ -891,7 +890,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 
     Double az1 = msd.azel().getAngle("deg").getValue("deg")(0);
     Double el1 = msd.azel().getAngle("deg").getValue("deg")(1);
-    Double ha1 = msd.hourAngle()  *  57.29 / 15.0 ;
+    Double ha1 = msd.hourAngle()  *  180.0/C::pi / 15.0 ;
     Double timeDays = Time / C::day;
     os << "Stopping conditions: " << LogIO::POST;
     os << "     az = " << az1 << LogIO::POST;
