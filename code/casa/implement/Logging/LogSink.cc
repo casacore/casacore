@@ -1,5 +1,5 @@
 //# LogSink.cc: Distribute LogMessages to their destination(s)
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,13 +38,13 @@
 #include <iostream.h>
 
 CountedPtr<LogSinkInterface> 
-  LogSink::global_sink_p(new StreamLogSink(LogMessage::NORMAL));
+  LogSink::global_sink_p(new StreamLogSink(LogMessage::NORMAL, &cerr));
 
 LogSink::LogSink()
-: LogSinkInterface(LogFilter(LogMessage::NORMAL)),
-  local_sink_p(new NullLogSink(LogMessage::DEBUGGING)),
-  local_ref_to_global_p(global_sink_p)
+: LogSinkInterface(LogFilter(LogMessage::NORMAL))
 {
+    local_sink_p = new NullLogSink(LogMessage::DEBUGGING);
+    local_ref_to_global_p = LogSink::global_sink_p;
     AlwaysAssert(! local_sink_p.null(), AipsError);
 }
 
