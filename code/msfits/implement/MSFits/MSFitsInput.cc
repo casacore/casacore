@@ -1016,7 +1016,7 @@ void NewMSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     "Input Source id's not sequential, adding empty rows in output"
 				   << LogIO::POST;
   Int outRow=-1;
-  Int epochRef;
+  MDirection::Types epochRef;
   for (Int inRow=0; inRow<(Int)suTab.nrow(); inRow++) {
     Int fld = id(inRow)-1;
     // add empty rows until the row number in the output matches the source id
@@ -1090,7 +1090,7 @@ void NewMSFitsInput::fillFieldTable(Int nField)
   msField.referenceDirMeasCol().put(fld,radecMeas);
 
   // Need to convert epoch in years to MJD time
-  Int epochRef;
+  MDirection::Types epochRef;
   if (nearAbs(epoch_p,2000.0,0.01)) {
     msField.time().put(fld, MeasData::MJD2000*C::day);
     // assume UTC epoch
