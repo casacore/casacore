@@ -543,17 +543,84 @@ char* TSMCube::initCallBack (void* owner)
     return buffer;
 }
 
+uInt TSMCube::cacheSize() const
+{
+    if (cache_p == 0) {
+	return 0;
+    }
+    return cache_p->cacheSize();
+}
+
+Bool TSMCube::sizeCache (const IPosition& start, const IPosition& end,
+                         const IPosition& stride, Bool forceSmaller)
+{
+    // Determine the nr of tiles needed.
+    uInt cacheSize = 1;
+    for (uInt i=0; i<nrdim_p; i++) {
+        uInt startTile = start(i) / tileShape_p(i);
+        uInt endTile   = end(i) / tileShape_p(i);
+        cacheSize     *= 1 + endTile - startTile;
+        uInt factor = stride(i) / tileShape_p(i);
+        if (factor > 1) {
+            cacheSize /= factor;
+        }
+    }
+    if (cacheSize != validateCacheSize (cacheSize)) {
+        return False;
+    }
+    setCacheSize (cacheSize, forceSmaller);
+    return True;
+}
+
+uInt TSMCube::validateCacheSize (uInt cacheSize) const
+{
+    // An overdraft of 10% is allowed.
+    uInt maxSize = stmanPtr_p->maximumCacheSize();
+    if (maxSize > 0  &&  cacheSize * bucketSize_p > maxSize) {
+        uInt size = maxSize / bucketSize_p;
+        if (10 * cacheSize  >  11 * size) {
+            return size;
+        }
+    }
+    return cacheSize;
+}
+
+void TSMCube::setCacheSize (uInt cacheSize, Bool forceSmaller)
+{
+    // Resize the cache in the expectation that this access is
+    // the first of a bunch of accesses at the same tiles.
+    // However, don't let the cache exceed the maximum,
+    // unless it is only 10% more.
+    BucketCache* cachePtr = getCache();
+    cacheSize = validateCacheSize (cacheSize);
+    if (forceSmaller  ||  cacheSize > cachePtr->cacheSize()) {
+        cachePtr->resize (cacheSize);
+    }
+////    cout << "cachesize=" << cacheSize << endl;
+}
+
 // Set the cache size for the given slice and access path.
 void TSMCube::setCacheSize (const IPosition& sliceShape,
                             const IPosition& windowStart,
                             const IPosition& windowLength,
                             const IPosition& axisPath, Bool forceSmaller)
 {
+    setCacheSize (calcCacheSize (sliceShape, windowStart,
+				 windowLength, axisPath),
+		  forceSmaller);
+}
+
+// Calculate the cache size for the given slice and access path.
+uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
+			     const IPosition& windowStart,
+			     const IPosition& windowLength,
+			     const IPosition& axisPath) const
+{
     if (sliceShape.nelements() > nrdim_p
     ||  windowStart.nelements() > nrdim_p
     ||  windowLength.nelements() > nrdim_p
     ||  axisPath.nelements() > nrdim_p) {
-        throw (TSMError ("setCacheSize: invalid arguments"));
+        throw (TSMError ("calcCacheSize: invalid arguments"));
     }
     uInt i;
     // The unspecified sliceShape dimensions are 1.
@@ -581,22 +648,8 @@ void TSMCube::setCacheSize (const IPosition& sliceShape,
 	end(i) += tileShape_p(i) * (1 + start(i) / tileShape_p(i));
     }
     end -= 1;
-    // Check if the specified traversal axes are correct and unique.
-    IPosition path(nrdim_p);
-    IPosition done(nrdim_p, 0);
-    for (i=0; i<axisPath.nelements(); i++) {
-        path(i) = axisPath(i);
-        if (path(i) >= nrdim_p  ||  done(path(i)) != 0) {
-            throw (TSMError ("setCacheSize: axisPath has invalid axes"));
-        }
-        done(path(i)) = 1;
-    }
-    // Fill unspecified axes with the natural order.
-    for (uInt j=0; j<nrdim_p; j++) {
-        if (done(j) == 0) {
-            path(i++) = j;
-        }
-    }
+    // Make the full axes path.
+    IPosition path = IPosition::makeAxisPath (nrdim_p, axisPath);
     // Determine per dimension the number of tiles needed for the window.
     // Determine per dimension how many tiles are needed for a slice.
     // Determine per dimension how often a tile will be reused.
@@ -654,59 +707,11 @@ void TSMCube::setCacheSize (const IPosition& sliceShape,
 	    }
 	}
         if (cacheSize == validateCacheSize (cacheSize)) {
-            setCacheSize (cacheSize, forceSmaller);
-            break;
+	    return cacheSize;
         }
 	nrd = nr;
     }
-}
-
-Bool TSMCube::sizeCache (const IPosition& start, const IPosition& end,
-                         const IPosition& stride, Bool forceSmaller)
-{
-    // Determine the nr of tiles needed.
-    uInt cacheSize = 1;
-    for (uInt i=0; i<nrdim_p; i++) {
-        uInt startTile = start(i) / tileShape_p(i);
-        uInt endTile   = end(i) / tileShape_p(i);
-        cacheSize     *= 1 + endTile - startTile;
-        uInt factor = stride(i) / tileShape_p(i);
-        if (factor > 1) {
-            cacheSize /= factor;
-        }
-    }
-    if (cacheSize != validateCacheSize (cacheSize)) {
-        return False;
-    }
-    setCacheSize (cacheSize, forceSmaller);
-    return True;
-}
-
-uInt TSMCube::validateCacheSize (uInt cacheSize) const
-{
-    // An overdraft of 10% is allowed.
-    uInt maxSize = stmanPtr_p->maximumCacheSize();
-    if (maxSize > 0  &&  cacheSize * bucketSize_p > maxSize) {
-        uInt size = maxSize / bucketSize_p;
-        if (10 * cacheSize  >  11 * size) {
-            return size;
-        }
-    }
-    return cacheSize;
-}
-
-void TSMCube::setCacheSize (uInt cacheSize, Bool forceSmaller)
-{
-    // Resize the cache in the expectation that this access is
-    // the first of a bunch of accesses at the same tiles.
-    // However, don't let the cache exceed the maximum,
-    // unless it is only 10% more.
-    BucketCache* cachePtr = getCache();
-    cacheSize = validateCacheSize (cacheSize);
-    if (forceSmaller  ||  cacheSize > cachePtr->cacheSize()) {
-        cachePtr->resize (cacheSize);
-    }
-////    cout << "cachesize=" << cacheSize << endl;
+    return 1;
 }
 
 void TSMCube::accessSection (const IPosition& start, const IPosition& end,
