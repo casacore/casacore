@@ -45,7 +45,7 @@
 
 int main()
 {
-  // Test for a Float array written in canonical format starting
+  // Test for a Float array written in big endian canonical format starting
   // at offset 0.
   {
     IPosition shape(2,16,32);
@@ -61,7 +61,7 @@ int main()
     }
     try {
       TiledFileAccess tfa ("tTiledFileAccess_tmp.dat", 0, shape,
-			   IPosition(2,16,1), TpFloat);
+			   IPosition(2,16,1), TpFloat, 0, False, True);
       AlwaysAssertExit (tfa.shape() == shape);
       AlwaysAssertExit (tfa.tileShape() == IPosition(2,16,1));
       AlwaysAssertExit (! tfa.isWritable());
@@ -82,6 +82,8 @@ int main()
 
   // Test for a Float array written in local format starting
   // at offset 1. The tile size is half the length of the first axis.
+  // This assumes local format is the same as local canonical format
+  // which is true for all data types except long.
   {
     IPosition shape(2,32,16);
     Array<Float> arr(shape);
@@ -100,7 +102,7 @@ int main()
     try {
       // The array starts at offset off2.
       TiledFileAccess tfa ("tTiledFileAccess_tmp.dat", off2, shape,
-			   IPosition(2,16,1), TpFloat, 100, False, False);
+			   IPosition(2,16,1), TpFloat, 100);
       AlwaysAssertExit (tfa.shape() == shape);
       AlwaysAssertExit (tfa.tileShape() == IPosition(2,16,1));
       AlwaysAssertExit (! tfa.isWritable());
@@ -140,12 +142,12 @@ int main()
     try {
       Slicer slicer (IPosition(2,0,0), shape);
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
-			    IPosition(2,17,1), TpDComplex, 0, True);
+			    IPosition(2,17,1), TpDComplex, 0, True, True);
       AlwaysAssertExit (allEQ (arr, tfac.getDComplex (slicer)));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,1));
       TiledFileAccess tfal ("tTiledFileAccess_tmp.dat", off2, shape,
-			    IPosition(2,17,1), TpDComplex, 0, True, False);
+			    IPosition(2,17,1), TpDComplex, 0, True);
       AlwaysAssertExit (allEQ (arr, tfal.getDComplex (slicer)));
       tfac.put (tfac.getDComplex(slicer) + DComplex(1,2), slicer);
       tfal.put (tfal.getDComplex(slicer) + DComplex(3,5), slicer);
@@ -155,11 +157,11 @@ int main()
     }
     try {
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
-			    IPosition(2,17,1), TpDComplex, 0, True);
+			    IPosition(2,17,1), TpDComplex, 0, True, True);
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,1));
       TiledFileAccess tfal ("tTiledFileAccess_tmp.dat", off2, shape,
-			    IPosition(2,17,1), TpDComplex, 0, True, False);
+			    IPosition(2,17,1), TpDComplex, 0, True);
       IPosition st(2,0,0);
       IPosition end(2,15,0);
       IPosition leng(2,16,1);
@@ -199,7 +201,7 @@ int main()
     try {
       Slicer slicer (IPosition(2,0,0), shape);
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
-			    IPosition(2,17,4), TpShort, 0, True);
+			    IPosition(2,17,4), TpShort, 0, True, True);
       AlwaysAssertExit (allEQ (arrs, tfac.getShort (slicer)));
       AlwaysAssertExit (allEQ (arrf, tfac.getFloat (slicer, scale, offset,
 						    short(-32768))));
