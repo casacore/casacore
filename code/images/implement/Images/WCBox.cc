@@ -151,36 +151,66 @@ WCBox::~WCBox()
 {}
 
    
-WCBox::WCBox (const WCBox& that)
+WCBox::WCBox (const WCBox& other)
 //
 // Copy constructor (reference semantics).  We don't use
 // copy semantics for consistency with other region classes.
 // Because the constructor does make a copy of the input vectors
 // this is ok because they can't be changed
 //
-: itsBlcWC(that.itsBlcWC),
-  itsTrcWC(that.itsTrcWC),
-  itsCSys(that.itsCSys),            // This one makes a copy
-  itsIsOffset(that.itsIsOffset)
+: itsBlcWC(other.itsBlcWC),
+  itsTrcWC(other.itsTrcWC),
+  itsCSys(other.itsCSys),            // This one makes a copy
+  itsIsOffset(other.itsIsOffset)
 {}
  
-WCBox& WCBox::operator= (const WCBox& that)
+WCBox& WCBox::operator= (const WCBox& other)
 // 
 // Assignment (copy semantics)
 //
 {
-   if (this != &that) {
-      itsBlcWC.resize(that.itsBlcWC.nelements());
-      itsTrcWC.resize(that.itsTrcWC.nelements());
+   if (this != &other) {
+      itsBlcWC.resize(other.itsBlcWC.nelements());
+      itsTrcWC.resize(other.itsTrcWC.nelements());
 
-      itsBlcWC = that.itsBlcWC;
-      itsTrcWC = that.itsTrcWC;
-      itsCSys = that.itsCSys;
-      itsIsOffset = that.itsIsOffset;
+      itsBlcWC = other.itsBlcWC;
+      itsTrcWC = other.itsTrcWC;
+      itsCSys = other.itsCSys;
+      itsIsOffset = other.itsIsOffset;
     }
     return *this;
 }
 
+Bool WCBox::operator== (const WCRegion& other) const
+{
+
+// Type check
+
+   if (type() != other.type()) return False;
+
+// Caste
+  
+   const WCBox& that = (const WCBox&)other;
+
+// Check private data
+
+   if (itsIsOffset != that.itsIsOffset) return False;
+   if (itsBlcWC.nelements() != that.itsBlcWC.nelements()) return False;
+   if (itsTrcWC.nelements() != that.itsTrcWC.nelements()) return False;
+   for (uInt i=0; i<itsBlcWC.nelements(); i++) {
+      if (!near(itsBlcWC(i),that.itsBlcWC(i))) return False;
+      if (!near(itsTrcWC(i),that.itsTrcWC(i))) return False;
+   }
+   if (!itsCSys.near(&(that.itsCSys))) return False;
+
+   return True;
+}
+
+Bool WCBox::operator!= (const WCRegion& other)  const
+{
+   if (WCBox::operator==(other)) return False;
+   return True;
+}
 
 
 WCBox* WCBox::cloneRegion() const
@@ -196,8 +226,8 @@ TableRecord WCBox::toRecord(const String&) const
    rec.define ("blc", itsBlcWC);
    rec.define ("trc", itsTrcWC);
    rec.define ("offset", itsIsOffset);
-   if (!itsCSys.save(rec, "CoordinateSystem")) {
-      throw (AipsError ("WCBox::toRecord: could not save CoordinateSystem"));
+   if (!itsCSys.save(rec, "coordinates")) {
+      throw (AipsError ("WCBox::toRecord: could not save Coordinate System"));
    }
 
    return rec;
@@ -208,10 +238,11 @@ WCBox* WCBox::fromRecord (const TableRecord& rec,
                           const String&)
 
 {
+   CoordinateSystem* pCSys = CoordinateSystem::restore(rec,"coordinates");
    return new WCBox(Vector<Double>(rec.asArrayDouble ("blc")),
                     Vector<Double>(rec.asArrayDouble ("trc")),
-                    *(CoordinateSystem::restore(rec,"CoordinateSystem")),
-                    rec.asBool("offset"));
+                    *pCSys, rec.asBool("offset"));
+   delete pCSys;
 }
 
 
@@ -321,6 +352,11 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
 String WCBox::className() 
 {
    return "WCBox";
+}
+
+String WCBox::type() const
+{
+   return className();
 }
 
 // Private functions
