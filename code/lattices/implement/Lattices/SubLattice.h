@@ -141,6 +141,16 @@ public:
   // Is the SubLattice writable?
   virtual Bool isWritable() const;
 
+  // Does the SubLattice have a pixelmask?
+  virtual Bool hasPixelMask() const;
+
+  // Get access to the pixelmask.
+  // An exception is thrown if the SubLattice does not have a pixelmask.
+  // <group>
+  virtual const Lattice<Bool>& pixelMask() const;
+  virtual Lattice<Bool>& pixelMask();
+  // </group>
+
   // Get a pointer the region/mask object describing this sublattice.
   virtual const LatticeRegion* getRegionPtr() const;
 
@@ -219,6 +229,8 @@ private:
   MaskedLattice<T>* itsMaskLatPtr;
   LatticeRegion     itsRegion;
   Bool              itsWritable;
+  Bool              itsHasPixelMask;
+  SubLattice<Bool>* itsPixelMask;
 };
 
 

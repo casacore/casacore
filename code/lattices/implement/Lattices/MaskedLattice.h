@@ -235,6 +235,17 @@ public:
   // a writable region with a mask.
   virtual Bool isMaskWritable() const;
 
+  // Does the lattice have a pixelmask?
+  // The default implementation returns False.
+  virtual Bool hasPixelMask() const;
+
+  // Get access to the pixelmask.
+  // An exception is thrown if the lattice does not have a pixelmask.
+  // <group>
+  virtual const Lattice<Bool>& pixelMask() const;
+  virtual Lattice<Bool>& pixelMask();
+  // </group>
+
   // Get a pointer to the region used.
   // It can return 0 meaning that the MaskedLattice is the full lattice.
   virtual const LatticeRegion* getRegionPtr() const = 0;
@@ -246,6 +257,8 @@ public:
   LatticeRegion region() const;
 
   // Get the mask or a slice from the mask.
+  // This is the mask formed by combination of the possible pixelmask of the
+  // lattice and the possible mask of the region taken from the lattice.
   // If there is no mask, it still works fine.
   // In that case it sizes the buffer correctly and sets it to True.
   // <group>   

@@ -185,6 +185,23 @@ Bool SubImage<T>::isWritable() const
 }
 
 template<class T>
+Bool SubImage<T>::hasPixelMask() const
+{
+  return itsSubLatPtr->hasPixelMask();
+}
+
+template<class T>
+const Lattice<Bool>& SubImage<T>::pixelMask() const
+{
+  return itsSubLatPtr->pixelMask();
+}
+template<class T>
+Lattice<Bool>& SubImage<T>::pixelMask()
+{
+  return itsSubLatPtr->pixelMask();
+}
+
+template<class T>
 const LatticeRegion* SubImage<T>::getRegionPtr() const
 {
     return itsSubLatPtr->getRegionPtr();

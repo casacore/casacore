@@ -382,6 +382,31 @@ void PagedImage<T>::doReopenRW()
 }
 
 template<class T>
+Bool PagedImage<T>::hasPixelMask() const
+{
+  return isMasked();
+}
+
+template<class T>
+const Lattice<Bool>& PagedImage<T>::pixelMask() const
+{
+  const LatticeRegion* ptr = getRegionPtr();
+  if (ptr == 0) {
+    throw (AipsError ("PagedImage::pixelMask - no pixelmask used"));
+  }
+  return *ptr;
+}
+template<class T>
+Lattice<Bool>& PagedImage<T>::pixelMask()
+{
+  LatticeRegion* ptr = rwRegionPtr();
+  if (ptr == 0) {
+    throw (AipsError ("PagedImage::pixelMask - no pixelmask used"));
+  }
+  return *ptr;
+}
+
+template<class T>
 const LatticeRegion* PagedImage<T>::getRegionPtr() const
 {
   return regionPtr_p;

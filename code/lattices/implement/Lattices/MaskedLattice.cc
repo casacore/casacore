@@ -70,6 +70,27 @@ Bool MaskedLattice<T>::isMaskWritable() const
 }
 
 template<class T>
+Bool MaskedLattice<T>::hasPixelMask() const
+{
+  return False;
+}
+
+template<class T>
+const Lattice<Bool>& MaskedLattice<T>::pixelMask() const
+{
+  throw (AipsError ("MaskedLattice::pixelMask - no pixelmask available"));
+  //# Make the compiler happy.
+  return *getRegionPtr();
+}
+template<class T>
+Lattice<Bool>& MaskedLattice<T>::pixelMask()
+{
+  throw (AipsError ("MaskedLattice::pixelMask - no pixelmask available"));
+  //# Make the compiler happy.
+  return *rwRegionPtr();
+}
+
+template<class T>
 LatticeRegion MaskedLattice<T>::region() const
 {
   const LatticeRegion* ptr = getRegionPtr();

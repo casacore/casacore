@@ -129,6 +129,17 @@ public:
   // It is if its parent image or its region is masked.
   virtual Bool isMasked() const;
 
+  // Does the image object have a pixelmask?
+  // It does if its parent has a pixelmask.
+  virtual Bool hasPixelMask() const;
+
+  // Get access to the pixelmask in use (thus to the pixelmask of the parent).
+  // An exception is thrown if the parent does not have a pixelmask.
+  // <group>
+  virtual const Lattice<Bool>& pixelMask() const;
+  virtual Lattice<Bool>& pixelMask();
+  // </group>
+
   // Is the SubImage paged to disk?
   virtual Bool isPaged() const;
 

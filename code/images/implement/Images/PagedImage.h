@@ -172,17 +172,17 @@ public:
   // </group>
   
   // Reconstruct an image from a pre-existing file.
-  // By default the default mask (if available) is used.
+  // By default the default pixelmask (if available) is used.
   PagedImage (Table& table, MaskSpecifier = MaskSpecifier(),
 	      uInt rowNumber = 0);
   
   // Reconstruct an image from a pre-existing file.
-  // By default the default mask (if available) is used.
+  // By default the default pixelmask (if available) is used.
   PagedImage (const String& filename, MaskSpecifier = MaskSpecifier(),
 	      uInt rowNumber = 0);
   
   // Reconstruct an image from a pre-existing file with Locking.
-  // By default the default mask (if available) is used.
+  // By default the default pixelmask (if available) is used.
   // <group>
   PagedImage (const String& filename, TableLock::LockOption,
 	      MaskSpecifier = MaskSpecifier(), uInt rowNumber = 0);
@@ -207,19 +207,30 @@ public:
   // Is the PagedImage writable?
   virtual Bool isWritable() const;
 
-  // Get a pointer the default region/mask object used with this image.
-  // It returns 0 if no default mask is used.
+  // Does the image object use a pixelmask?
+  virtual Bool hasPixelMask() const;
+
+  // Get access to the pixelmask used.
+  // An exception is thrown if the image does not use a pixelmask.
+  // <group>
+  virtual const Lattice<Bool>& pixelMask() const;
+  virtual Lattice<Bool>& pixelMask();
+  // </group>
+
+  // Get a pointer the default pixelmask object used with this image.
+  // It returns 0 if no default pixelmask is used.
   virtual const LatticeRegion* getRegionPtr() const;
 
-  // Set the default mask to the region/mask with the given name
+  // Set the default pixelmask to the mask with the given name
   // (which has to exist in the "masks" group).
   // If the image table is writable, the setting is persistent by writing
   // the name as a keyword.
-  // If the given regionName is the empty string, the default mask is unset.
+  // If the given regionName is the empty string,
+  // the default pixelmask is unset.
   virtual void setDefaultMask (const String& maskName);
 
-  // Get the name of the default mask.
-  // An empty string is returned if no default mask.
+  // Get the name of the default pixelmask.
+  // An empty string is returned if no default pixelmask.
   virtual String getDefaultMask() const;
 
   // Function to change the name of the Table file on disk.

@@ -38,9 +38,11 @@ typedef Array<Bool> sublattice_gppbug1;
 
 template<class T>
 SubLattice<T>::SubLattice()
-: itsLatticePtr (0),
-  itsMaskLatPtr (0),
-  itsWritable   (False)
+: itsLatticePtr   (0),
+  itsMaskLatPtr   (0),
+  itsWritable     (False),
+  itsHasPixelMask (False),
+  itsPixelMask    (0)
 {}
 
 template<class T>
@@ -129,7 +131,8 @@ SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
 template<class T>
 SubLattice<T>::SubLattice (const SubLattice<T>& other)
 : itsLatticePtr (0),
-  itsMaskLatPtr (0)
+  itsMaskLatPtr (0),
+  itsPixelMask  (0)
 {
   operator= (other);
 }
@@ -140,6 +143,7 @@ SubLattice<T>::~SubLattice()
   // Note that itsMaskLatPtr (if filled in) always points to the same
   // object as itsLatticePtr, so it does not need to be deleted.
   delete itsLatticePtr;
+  delete itsPixelMask;
 }
 
 template<class T>
@@ -157,6 +161,8 @@ SubLattice<T>& SubLattice<T>::operator= (const SubLattice<T>& other)
       itsLatticePtr = itsLatticePtr->clone();
     }
     itsWritable = other.itsWritable;
+    delete itsPixelMask;
+    itsHasPixelMask = other.itsHasPixelMask;
   }
   return *this;
 }
@@ -172,6 +178,8 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
 			    MaskedLattice<T>* maskLatPtr,
 			    Bool writableIfPossible)
 {
+  itsHasPixelMask = False;
+  itsPixelMask = 0;
   if (maskLatPtr == 0) {
     itsLatticePtr = latticePtr;
     itsMaskLatPtr = 0;
@@ -181,6 +189,7 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
       itsMaskLatPtr = 0;
     } else {
       itsMaskLatPtr = maskLatPtr;
+      itsHasPixelMask = itsMaskLatPtr->hasPixelMask();
     }
   }
   itsWritable = writableIfPossible;
@@ -228,6 +237,33 @@ Bool SubLattice<T>::isWritable() const
 {
   return itsWritable;
 }
+
+template<class T>
+Bool SubLattice<T>::hasPixelMask() const
+{
+  return itsHasPixelMask;
+}
+
+template<class T>
+const Lattice<Bool>& SubLattice<T>::pixelMask() const
+{
+  return ((const SubLattice<T>*)this)->pixelMask();
+}
+template<class T>
+Lattice<Bool>& SubLattice<T>::pixelMask()
+{
+  if (!itsHasPixelMask) {
+    throw (AipsError ("SubLattice::pixelMask - no pixelmask available"));
+  }
+  // Construct the pixelmask (as a subset of the parent pixelmask)
+  // if that is not done yet.
+  if (itsPixelMask == 0) {
+    Lattice<Bool>& fullMask = itsMaskLatPtr->pixelMask();
+    itsPixelMask = new SubLattice<Bool> (fullMask, itsRegion, itsWritable);
+  }
+  return *itsPixelMask;
+}
+
 
 template<class T>
 const LatticeRegion* SubLattice<T>::getRegionPtr() const
