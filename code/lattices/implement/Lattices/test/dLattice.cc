@@ -1,5 +1,5 @@
 //# dLattice.cc:  illustrates the functions discused in the docs of Lattice.h
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,13 +46,9 @@
 #include <trial/Lattices/LatticeStepper.h>
 
 Complex latMean(const Lattice<Complex> & lat) {
-  const uInt cursorSize = lat.maxPixels();
-  const IPosition cursorShape = lat.niceCursorShape(cursorSize);
-  const IPosition latticeShape = lat.shape();
   Complex currentSum = 0.0f;
   uInt nPixels = 0u;
-  RO_LatticeIterator<Complex> iter(lat, 
-				   LatticeStepper(latticeShape, cursorShape));
+  RO_LatticeIterator<Complex> iter(lat);
   for (iter.reset(); !iter.atEnd(); iter++){
     currentSum += sum(iter.cursor());    // 
     nPixels += iter.cursor().nelements();

@@ -121,7 +121,7 @@ int main() {
       Table arrayTable(arraySetup);
       const IPosition latticeShape(4, 128, 128, 4, 32);
       PagedArray<Float> pa(latticeShape, arrayTable);
-      AlwaysAssert(pa.tileShape().isEqual(pa.niceCursorShape(pa.maxPixels())),
+      AlwaysAssert(pa.tileShape().isEqual(pa.niceCursorShape()),
 		   AipsError);
       Array<Float> arr(IPosition(4,1,1,4,32));
       Slicer sl(IPosition(4,0), IPosition(4,1,1,4,32));

@@ -39,7 +39,7 @@
 #include <trial/Lattices/PagedArray.h>
 #include <iostream.h>
 
-Int main() {
+int main() {
   try {
     {
       const uInt nz = 3;
@@ -61,8 +61,7 @@ Int main() {
 	  cArr.putAt(Complex(0,0), centre);
 	}
 	
-	RO_LatticeIterator<Complex> iter(cArr, 
-				       cArr.niceCursorShape(cArr.maxPixels()));
+	RO_LatticeIterator<Complex> iter(cArr);
 	for (iter.reset(); !iter.atEnd(); iter++) {
 	  AlwaysAssert(allNearAbs(iter.cursor(), Complex(0,0), 1E-5),
 		       AipsError);
@@ -84,7 +83,7 @@ Int main() {
  	AlwaysAssert(near(cArr.getAt(centre), Complex(nx*ny*nz,0), 1E-5),
  		     AipsError);
  	cArr.putAt(Complex(0,0), centre);
-	const IPosition tileShape(cArr.niceCursorShape(cArr.maxPixels()));
+	const IPosition tileShape(cArr.niceCursorShape());
 	{
 	  RO_LatticeIterator<Complex> iter(cArr, tileShape);
 	  for (iter.reset(); !iter.atEnd(); iter++) {
@@ -121,8 +120,7 @@ Int main() {
 		       AipsError);
 	cArr.putAt(Complex(0,0), centre);
 	{
-	  RO_LatticeIterator<Complex> iter(cArr, 
-				       cArr.niceCursorShape(cArr.maxPixels()));
+	  RO_LatticeIterator<Complex> iter(cArr);
 	  for (iter.reset(); !iter.atEnd(); iter++) {
 	    AlwaysAssert(allNearAbs(iter.cursor(), Complex(0,0), 1E-5),
 			 AipsError);
@@ -140,8 +138,7 @@ Int main() {
 	  cArr.putAt(Complex(0,0), centre);
 	}
 	{
-	  RO_LatticeIterator<Complex> iter(cArr, 
-				       cArr.niceCursorShape(cArr.maxPixels()));
+	  RO_LatticeIterator<Complex> iter(cArr);
 	  for (iter.reset(); !iter.atEnd(); iter++) {
 	    AlwaysAssert(allNearAbs(iter.cursor(), Complex(0,0), 1E-5),
 			 AipsError);
@@ -155,8 +152,7 @@ Int main() {
 	AlwaysAssert(near(rArr.getAt(centre), 1.0f, 1E-5), AipsError);
 	rArr.putAt(0.0f, centre);
 	{
-	  RO_LatticeIterator<Float> iter(rArr, 
-				       rArr.niceCursorShape(rArr.maxPixels()));
+	  RO_LatticeIterator<Float> iter(rArr);
 	  for (iter.reset(); !iter.atEnd(); iter++) {
 	    AlwaysAssert(allNearAbs(iter.cursor(), 0.0f, 1E-5), AipsError);
 	  }
@@ -173,8 +169,7 @@ Int main() {
 	  rArr.putAt(0.0f, centre);
 	}
  	{
- 	  RO_LatticeIterator<Float> iter(rArr, 
- 				       rArr.niceCursorShape(rArr.maxPixels()));
+ 	  RO_LatticeIterator<Float> iter(rArr);
  	  for (iter.reset(); !iter.atEnd(); iter++) {
  	    AlwaysAssert(allNearAbs(iter.cursor(), 0.0f, 1E-5), AipsError);
  	  }
