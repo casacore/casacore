@@ -108,7 +108,7 @@ a limited number of areas. In particular, you should be in
 {\em \verb+~+/aips++/code/aips/test}
 
 
-	Assuming the source code was named {\em sample1}
+        Assuming the source code was named {\em sample1}
 the command would simply be 
 
 {\em gmake NODEP=1 sample1} where the string {\em NODEP=1} merely tells the
@@ -120,14 +120,14 @@ module name. However that suffix must be {\em cc}.
 The program is started simply by typing its name: {\em sample1}.  
 The output is as follows (note the default format):
 \begin{verbatim}
-0	0
-1	0.0998334
-2	0.397339
-3	0.886561
-4	1.55767
-5	2.39713
-6	3.38785
-7	4.50952
+0       0
+1       0.0998334
+2       0.397339
+3       0.886561
+4       1.55767
+5       2.39713
+6       3.38785
+7       4.50952
 \end{verbatim}
  
 \newpage
@@ -302,11 +302,11 @@ and {\em vectorsize} parameters. When we start it by typing
 
 \begin{verbatim}
 sample2: Version $@w{Revision}$
-0	0
-1	0.0998334
-2	0.397339
-3	0.886561
-4	1.55767
+0       0
+1       0.0998334
+2       0.397339
+3       0.886561
+4       1.55767
 \end{verbatim}
 
 The version number has NOT been inserted for the string {\em $@w{Revision}$}
@@ -337,14 +337,14 @@ square parentheses.
 \newpage
 \section{An advanced example}
 
-	The following program is meant to illustrate some further features of
+        The following program is meant to illustrate some further features of
 the AIPS++ system.  In particular, we will show a program that was used to test
 the development of two functions which read and write an ASCII file.
 The file is expected to contain a 2-dimensional array (of any rectangular 
 dimensions) of numbers and place the values it contains (regardless of type) 
 into a matrix.
 
-	The work will be described in three parts - which correspond to the
+        The work will be described in three parts - which correspond to the
 three directories that should be used for this type of work. They are:
 
 \begin{enumerate}
@@ -424,7 +424,6 @@ for this program is found in
 54          return 1;
 55         }
 56
-57   end_try;
 58  }
 \end{verbatim}
 
@@ -477,7 +476,7 @@ or not they were all zeroes) by using the statement
 \newpage
 \subsection{The {\bf include} file}
 
-	This file containd the {\bf .h} module. 	The working part of
+        This file containd the {\bf .h} module.         The working part of
 this file is really only two lines long but the required
 "boiler-plate" takes up the first 25 lines (approximately). This text
 must be included with every file that is intended for the AIPS++
@@ -491,7 +490,7 @@ This \htmladdnormallink{include file}{../../../code/trial/implement/test/FileIO.
 may be found in \$AIPSROOT/code/trial/implememnt/test/FileIO.h.
 \begin{verbatim}
   1  //# FileIO.h: this defines ileIO functions, which ...
-  2  //# Copyright (C) 1996,1999
+  2  //# Copyright (C) 1996,1999,2001
   3  //# Associated Universities, Inc. Washington DC, USA.
   4  //#
   5  //# This library is free software; you can redistribute it and/or modify it
@@ -601,7 +600,7 @@ may be found in \$AIPSROOT/code/trial/implememnt/test/FileIO.h.
 \begin{description}
 \item[1-27-] Boilerplate which is to be included in each module.
 
-\item[29-30-]	The code begins with a label that identifies this file. The macros
+\item[29-30-]   The code begins with a label that identifies this file. The macros
 {\bf if ! defined} and {\bf define} prevent the code from being
 loaded more than once in a given program. (Note the {\bf endif} macro at the
 end.)
@@ -642,7 +641,7 @@ time a module is used it must be compiled at that time!
 \newpage
 \section{The functions}
 
-	The following code defines the two functions.
+        The following code defines the two functions.
 (The \htmladdnormallink{source code}{../../../code/trial/implement/test/tExample1.cc}
 for this program is found in 
 \$AIPSROOT/code/trial/implement/test/tExample1.cc). 
@@ -861,7 +860,7 @@ is 6 digits.)
 
 \section{Sample Application}
 
-	The previously described program was used to read from (and write to)
+        The previously described program was used to read from (and write to)
 an ASCII file.  The input consisted of the following three matrices:
 
 
@@ -882,7 +881,7 @@ an ASCII file.  The input consisted of the following three matrices:
 567.89   567.99   345.65  12.3435
 \end{verbatim}
 
-	The output produced by the program was:
+        The output produced by the program was:
 
 \begin{verbatim}
 The first Matrix is 3 by 7
@@ -908,7 +907,7 @@ Axis Lengths: [4, 4]  (NB: Matrix in Row/Column order)
 \end{verbatim}
 
 
-	The file written by the program looked like this (the first line is 
+        The file written by the program looked like this (the first line is 
 shown on two lines because of page-width limitations):
 
 \begin{verbatim}
@@ -918,12 +917,12 @@ shown on two lines because of page-width limitations):
 0  1  2  3  4  5  6  
 \end{verbatim}
 
-	
+        
 
 \newpage
 \section{The Vector modules}
  
-	The previous sections of this example demonstrated the use of
+        The previous sections of this example demonstrated the use of
 {\bf templates}. The next two, briefer, sections will demonstrate 
 {\bf polymorphism}, namely the ability to define a function with two or more
 sets of different argument types.  In particular, we will add to the definition
@@ -998,7 +997,7 @@ be defined for the full variety of data types.
 \newpage
 \section{The expanded {\bf include} modules}
 
-	In this module we placed the boiler-plate that was discussed in the 
+        In this module we placed the boiler-plate that was discussed in the 
 earlier example but we do not show it merely to save space.
 
 \begin{verbatim}
