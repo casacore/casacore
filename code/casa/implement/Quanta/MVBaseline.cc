@@ -162,26 +162,7 @@ MVBaseline MVBaseline::operator-(const MVBaseline &right) const{
   tmp -= right;
   return tmp;
 }
-/*///
-MVBaseline &MVBaseline::operator*=(const RotMatrix &right) {
-  MVBaseline result;
-  for (Int i=0; i<3; i++) {
-    result(i) = 0;
-    for (Int j=0; j<3; j++) {
-      result(i) += xyz(j) * right(j,i);
-    }
-  }
-  *this = result;
-  return *this;
-}
 
-MVBaseline &MVBaseline::operator*=(Double right) {
-  for (Int j=0; j<3; j++) {
-    xyz(j) *= right;
-  }
-  return *this;
-}
-*///
 //# Member functions
 
 uInt MVBaseline::type() const {
