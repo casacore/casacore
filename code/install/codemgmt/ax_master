@@ -6019,3 +6019,7 @@
 17 069 src rm trial/implement/Functionals/SimButterworthBandpass.h
 17 069 src rm trial/implement/Functionals/test/tSimButterworthBandpass.cc
 17 069 src rm trial/implement/Functionals/test/tChebyshev.cc
+17 069 src rm aips/implement/Functionals/GaussianND.cc
+17 069 src rm aips/implement/Functionals/GaussianND.h
+17 069 src rm aips/implement/Functionals/GaussianNDParam.cc
+17 069 src rm aips/implement/Functionals/GaussianNDParam.h
