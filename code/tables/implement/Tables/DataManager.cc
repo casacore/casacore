@@ -1,5 +1,5 @@
 //# DataManager.cc: Storage manager for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 //# Includes
 #include <aips/Tables/DataManager.h>
 #include <aips/Tables/StManAipsIO.h>
+#include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/TiledDataStMan.h>
 #include <aips/Tables/TiledCellStMan.h>
@@ -406,6 +407,7 @@ void DataManagerColumn::putColumnSliceCellsV (const RefRows&,
 void DataManager::registerAllCtor ()
 {
     registerCtor ("StManAipsIO", StManAipsIO::makeObject);
+    registerCtor ("StandardStMan", StandardStMan::makeObject);
     registerCtor ("IncrementalStMan", IncrementalStMan::makeObject);
     registerCtor ("TiledDataStMan", TiledDataStMan::makeObject);
     registerCtor ("TiledCellStMan", TiledCellStMan::makeObject);
