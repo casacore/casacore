@@ -256,7 +256,7 @@ public:
                       const Vector<Int>& excludeAxes,
                       Double tol=1e-6) const;
     // </group>
- 
+
     // Save the StokesCoordinate into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
@@ -271,6 +271,13 @@ public:
     // Make a copy of the StokesCoordinate using new. The caller is responsible for calling
     // delete.
     virtual Coordinate *clone() const;
+
+
+    // Comparison only made for specified axes in this and other Coordinate
+    virtual Bool doNearPixel (const Coordinate& other,
+                              const Vector<Bool>&  thisAxes,
+                              const Vector<Bool>& otherAxes,
+                              Double tol=1.0e-6) const; 
 
 private:
 
