@@ -4292,3 +4292,4 @@
 14 179 sys rm libexec/pksmscalstats.g
 14 179 src mv atnf/apps/pksstats/pksmscalstats.cc atnf/apps/pksstats/pksstats.cc
 14 183 src mv atnf/apps/pksmswriter atnf/apps/pkswriter
+14 183 src mv atnf/apps/pkswriter/pksmswriter.cc atnf/apps/pkswriter/pkswriter.cc
