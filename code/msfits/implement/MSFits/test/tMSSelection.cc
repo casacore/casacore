@@ -55,8 +55,8 @@ int main(int argc, char **argv)
         MeasurementSet ms(msName);
 
         MSSelection select;
-        select.setUvDistExpr("'3727km:5%'");
-        select.setFieldExpr("'>0'");
+        select.setFieldExpr("0,1");
+        select.setSpwExpr("0,1");
 
         cout << "Original table has rows " << ms.nrow() << endl;
 
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
         cout << "TableExprNode has rows = " << node.nrow() << endl;
 
         Table tablesel(ms.tableName(), Table::Update);
-        MeasurementSet mssel(tablesel(&node, node.nrow() ));
+        MeasurementSet mssel(tablesel(node, node.nrow() ));
 
         cout << "After mssel constructor called " << endl;
         mssel.rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
