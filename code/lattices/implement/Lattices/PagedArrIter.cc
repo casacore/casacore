@@ -176,7 +176,7 @@ vectorCursor() const {
   DebugAssert(ok() == True, AipsError);
   if (theCurPtr->ndim() != 1)
     throw(AipsError("RO_PagedArrIter<T>::vectorCursor()"
-                    " - check the cursor shape is 1-dimensional"));
+		    " - check the cursor has only one non-degenerate axis"));
   return *(const Vector<T> *) theCurPtr;
 };
 
@@ -185,7 +185,7 @@ matrixCursor() const {
   DebugAssert(ok() == True, AipsError);
   if (theCurPtr->ndim() != 2)
     throw(AipsError("RO_PagedArrIter<T>::matrixCursor()"
-                    " - check the cursor shape is 2-dimensional"));
+		    " - check the cursor has only two non-degenerate axes"));
   return *(const Matrix<T> *) theCurPtr;
 };
 
@@ -194,7 +194,7 @@ cubeCursor() const {
   DebugAssert(ok() == True, AipsError);
   if (theCurPtr->ndim() != 3)
     throw(AipsError("RO_PagedArrIter<T>::cubeCursor()"
-                    " - check the cursor shape is 3-dimensional"));
+		    " - check the cursor has only three non-degenerate axes"));
   return *(const Cube<T> *) theCurPtr;
 };
 
@@ -305,7 +305,6 @@ ok() const {
 
 template<class T> void RO_PagedArrIter<T>::
 cursorUpdate() {
-  DebugAssert(ok() == True, AipsError);
   // Check if the cursor shape has changed.
   {
     const IPosition oldShape(theCurPtr->shape());
@@ -403,15 +402,9 @@ setup_tile_cache() {
   }
   TiledStepper * tilerPtr = theNavPtr->castToTiler();
   if (tilerPtr != 0){
-    IPosition cursorShape = tilerPtr->cursorShape();
-    Int whichLongest = 0;
-    for (uInt i=1; i < cursorShape.nelements(); i++)
-      if (cursorShape(i) > cursorShape(whichLongest))
-        whichLongest = i;
-    axisPath = IPosition(1,whichLongest);
-    theData.setCacheSizeFromPath(cursorShape, tilerPtr->blc(), 
-                                 tilerPtr->blc() + tilerPtr->tileShape(),
-                                 axisPath);
+    theData.setCacheSizeFromPath(tilerPtr->cursorShape(), tilerPtr->blc(), 
+                                 tilerPtr->trc() - tilerPtr->blc() + 1,
+                                 tilerPtr->axisPath());
     return;
   }
   // Because the current stepper is not a LatticeStepper or TiledStepper
@@ -575,7 +568,7 @@ vectorCursor() {
   DebugAssert(ok() == True, AipsError);
   if (theCurPtr->ndim() != 1)
     throw(AipsError("PagedArrIter<T>::vectorCursor()"
-                    " - check the cursor shape is 1-dimensional"));
+		    " - check the cursor has only one non-degenerate axis"));
   return *(Vector<T> *) theCurPtr;
 };
 
@@ -584,7 +577,7 @@ matrixCursor() {
   DebugAssert(ok() == True, AipsError);
   if (theCurPtr->ndim() != 2)
     throw(AipsError("PagedArrIter<T>::matrixCursor()"
-                    " - check the cursor shape is 2-dimensional"));
+		    " - check the cursor has only two non-degenerate axes"));
   return *(Matrix<T> *) theCurPtr;
 };
 
@@ -593,7 +586,7 @@ cubeCursor() {
   DebugAssert(ok() == True, AipsError);
   if (theCurPtr->ndim() != 3)
     throw(AipsError("PagedArrIter<T>::cubeCursor()"
-                    " - check the cursor shape is 3-dimensional"));
+		    " - check the cursor has only three non-degenerate axes"));
   return *(Cube<T> *) theCurPtr;
 };
 
@@ -689,8 +682,7 @@ ok() const {
              << LogIO::POST;
       return False;
     }
-  }
-  else
+  } else {
     if (!(theNavPtr->cursorShape().nonDegenerate())
         .isEqual(theCurPtr->shape())) {
       LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
@@ -699,6 +691,7 @@ ok() const {
              << LogIO::POST;
       return False;
     }
+  }
   return True;
 };
 
