@@ -1,6 +1,6 @@
 /*
     TableGram.l: Lexical analyzer for table commands
-    Copyright (C) 1994,1995,1996,1997,1998,2001
+    Copyright (C) 1994,1995,1996,1997,1998,2001,2003
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -89,8 +89,15 @@ SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 FROM      [Ff][Rr][Oo][Mm]
 WHERE     [Ww][Hh][Ee][Rr][Ee]
 ORDERBY   [Oo][Rr][Dd][Ee][Rr]{WHITE}[Bb][Yy]
-NODUPL    [Nn][Oo][Dd][Uu][Pp][Ll][Ii][Cc][Aa][Tt][Ee][Ss]
-GIVING    [Gg][Ii][Vv][Ii][Nn][Gg]
+NODUPL1   [Nn][Oo][Dd][Uu][Pp][Ll][Ii][Cc][Aa][Tt][Ee][Ss] 
+DISTINCT  [Dd][Ii][Ss][Tt][Ii][Nn][Cc][Tt]
+UNIQUE    [Uu][Nn][Ii][Qq][Uu][Ee]
+NODUPL    {NODUPL1}|{DISTINCT}|{UNIQUE}
+GIVING1   [Gg][Ii][Vv][Ii][Nn][Gg]
+SAVETO    [Ss][Aa][Vv][Ee]{WHITE}[Tt][Oo]
+GIVING    {GIVING1}|{SAVETO}
+GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]
+HAVING    [Hh][Aa][Vv][Ii][Nn][Gg]
 ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
 IN        [Ii][Nn]
@@ -98,6 +105,7 @@ AS        [Aa][Ss]
 AND       [Aa][Nn][Dd]
 OR        [Oo][Rr]
 NOT       [Nn][Oo][Tt]
+ALL       [Aa][Ll][Ll]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   {NAME}?"."?{NAME}?("::")?{NAME}("."{NAME})*
 TEMPTAB   [$]{INT}
@@ -160,6 +168,14 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
             tableGramPosition() += yyleng;
 	    BEGIN(GIVINGstate);
 	    return GIVING;
+          }
+{GROUPBY} {
+            tableGramPosition() += yyleng;
+            throw (TableInvExpr ("GROUPBY is not supported yet"));
+          }
+{HAVING}  {
+            tableGramPosition() += yyleng;
+            throw (TableInvExpr ("HAVING is not supported yet"));
           }
 
 {AS}      {
@@ -294,7 +310,13 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
     In the WHERE and ORDERBY clause a function name can be given.
     Note that this rule could also be done by NAMEFLD. However, in the
     future :: and . will be operators instead of parts of the name.
+    ALL is a special name, because it can also be used instead of DISTINCT
+    in the SELECT clause (note that ALL is also a function name).
  */
+{ALL}     {
+            tableGramPosition() += yyleng;
+	    return ALL;
+	  }
 {NAME}    {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();

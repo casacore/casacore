@@ -1,6 +1,6 @@
 /*
     TableGram.y: Parser for table commands
-    Copyright (C) 1994,1995,1997,1998,1999,2001,2002
+    Copyright (C) 1994,1995,1997,1998,1999,2001,2002,2003
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -48,6 +48,7 @@ TableParseSelect* select;
 %token GIVING
 %token SORTASC
 %token SORTDESC
+%token ALL                  /* ALL (in SELECT ALL) or name of function */
 %token <val> NAME           /* name of function or shorthand for table */
 %token <val> FLDNAME        /* name of field or shorthand for table */
 %token <val> TABNAME        /* table name */
@@ -117,8 +118,20 @@ selrow:    selwh order given
          ;
 
 selwh:     columns FROM table whexpr {
-	       TableParseSelect::currentSelect()->handleSelect ($4);
+	       TableParseSelect::currentSelect()->handleSelect ($4, False);
 	       delete $4;
+	   }
+         | TIMES FROM table whexpr {      /* SELECT * FROM ... */
+	       TableParseSelect::currentSelect()->handleSelect ($4, False);
+	       delete $4;
+	   }
+         | ALL columns FROM table whexpr {
+	       TableParseSelect::currentSelect()->handleSelect ($5, False);
+	       delete $5;
+	   }
+         | NODUPL columns FROM table whexpr {
+	       TableParseSelect::currentSelect()->handleSelect ($5, True);
+	       delete $5;
 	   }
          ;
 
@@ -365,6 +378,11 @@ simexpr:   LPAREN orexpr RPAREN
                $$ = new TableExprNode (TableParseSelect::currentSelect()->
                                                  handleFunc ($1->str, *$3));
 	       delete $1;
+	       delete $3;
+	   }
+         | ALL LPAREN elemlist RPAREN {
+               $$ = new TableExprNode (TableParseSelect::currentSelect()->
+                                                 handleFunc ("ALL", *$3));
 	       delete $3;
 	   }
          | NAME {
