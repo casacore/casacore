@@ -43,7 +43,6 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEpoch.h>
-#include <aips/Measures/VelocityMachine.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/Quantum.h>
@@ -3639,9 +3638,10 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
    }
 
 
-// Caste the coordinate to a spectral coordinate
+// Caste the coordinate to a spectral coordinate and get a non-const version
 
-   SpectralCoordinate* sc = dynamic_cast<SpectralCoordinate*>(pc);
+   SpectralCoordinate* sc0 = dynamic_cast<SpectralCoordinate*>(pc);
+   SpectralCoordinate sc(*sc0);
 
 // Remember units
 
@@ -3652,11 +3652,10 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
 
 // Convert reference pixel it to a velocity and format 
 
-   Double velocity;
+   Quantum<Double> velocity;
    String velUnits("km/s");
-   Bool ok = pixelToVelocity(velocity, sc->referencePixel()(axisInCoordinate),
-                             sc, velocityType, velUnits);
-   if (!ok) {
+   if (!sc.pixelToVelocity(velocity, sc.referencePixel()(axisInCoordinate),
+                           velUnits, velocityType)) {
       string = "Fail";
    } else {
       Coordinate::formatType form;
@@ -3666,7 +3665,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
       form = Coordinate::DEFAULT;
       pc->getPrecision(prec, form, absolute, precRefValSci, 
                        precRefValFloat, precRefValRADEC);
-      string = sc->format(listUnits, form, velocity,
+      string = sc.format(listUnits, form, velocity.getValue(),
                           axisInCoordinate, absolute, prec);
    }
    if (findWidths) {
@@ -3683,7 +3682,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
       ostrstream oss;
       oss.setf(ios::fixed, ios::floatfield);
       oss.precision(precRefPixFloat);
-      oss << sc->referencePixel()(axisInCoordinate) + 1.0;
+      oss << sc.referencePixel()(axisInCoordinate) + 1.0;
       string = String(oss);
    } else {
       string = " ";
@@ -3759,64 +3758,32 @@ void CoordinateSystem::clearFlags(LogIO& os) const
 
 
 
-Bool CoordinateSystem::pixelToVelocity(Double& velocity, Double pixel, const SpectralCoordinate* sc,
-                                       MDoppler::Types velocityType, const String& velUnits) const
-{
-
-// Find rest frequency.  Assumes only one axis in SpectralCoordinate
-
-   if (sc->nWorldAxes() != 1) return False;
-   if (sc->restFrequency() <= 0) return False;
-
-   Quantum<Double> restFreq;
-   restFreq.setValue(sc->restFrequency());
-   restFreq.setUnit(sc->worldAxisUnits()(0));
-
-// Convert pixel to MFrequency
-
-   MFrequency frequency;
-   if (!sc->toWorld(frequency, pixel)) return False;
-
-
-// Create velocity machine
-
-   MDoppler::Ref ref;
-   ref = MDoppler::Ref(velocityType);
-   VelocityMachine m(MFrequency::Ref(sc->frequencySystem()), Unit("Hz"),
-                     MVFrequency(restFreq),
-   		     ref, Unit(velUnits));
-   velocity = m(frequency.get("Hz")).getValue();
-
-   return True;
-}
-
-         
-Bool CoordinateSystem::velocityIncrement(Double& velocityInc, const SpectralCoordinate* sc,
+Bool CoordinateSystem::velocityIncrement(Double& velocityInc, SpectralCoordinate& sc,
                                          MDoppler::Types velocityType, const String& velUnits) const
 {
 
 // DO this the hard way for now until Wim gives me spectralMachine
 
-   if (sc->nWorldAxes() != 1) return False;
-   Double refPix = sc->referencePixel()(0);
+   if (sc.nWorldAxes() != 1) return False;
+   Double refPix = sc.referencePixel()(0);
 
 // Find world values at refPix +/- 0.5 and take difference
 
    Double pixel;
    pixel = refPix + 0.5;
-   Double velocity1;
-   if (!pixelToVelocity(velocity1, pixel, sc, velocityType, velUnits)) return False;
+   Quantum<Double> velocity1;
+   if (!sc.pixelToVelocity(velocity1, pixel, velUnits, velocityType)) return False;
 
 //
 
    pixel = refPix - 0.5;
-   Double velocity2;
-   if (!pixelToVelocity(velocity2, pixel, sc, velocityType, velUnits)) return False;
+   Quantum<Double> velocity2;
+   if (!sc.pixelToVelocity(velocity2, pixel, velUnits, velocityType)) return False;
 
 
 // Return increment
    
-   velocityInc = velocity1 - velocity2;
+   velocityInc = velocity1.getValue() - velocity2.getValue();
 
    return True;
 }
