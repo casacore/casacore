@@ -97,6 +97,15 @@ code/doc/texinputs.dir/aips2defs.tex</a>.
 <li> Default arguments in .cc files are not allowed.  Please only put default
 arguments in you .h files.
 <li> Forward declarations in header files are valid only if they forward declare pointers or references.
+<li> Please use const expressions when declaring an array like:
+<pre>
+Double eh[n];
+</pre>
+n must be a const expression, if it's non-const you must do:
+<pre>
+Double *eh = new Double[n];
+</pre>
+The egcs/gnu compiler is notorious for allowing non-const array declarations.
 </ul>
 <B>Known SGI compiler gotchas</b>
 <P>
