@@ -4836,3 +4836,4 @@
 14 316 sys rm libexec/gaussoper.g
 14 316 src rm trial/apps/dish/makefile
 14 316 src rm trial/apps/dish/mydish_standard.gp
+14 316 sys rm libexec/mydish_standard.gp
