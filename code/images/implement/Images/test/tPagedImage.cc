@@ -211,7 +211,7 @@ int main()
 //
        AlwaysAssert(pIm.rowNumber()==0, AipsError);
        AlwaysAssert(pIm.shape()==shape, AipsError);
-       IPosition niceCursorShape = pIm.doNiceCursorShape(pIm.maxPixels());
+       IPosition niceCursorShape = pIm.niceCursorShape();
 //       cout << "niceCursorShape=" << niceCursorShape << endl;
 
 // Only true for small images
