@@ -53,6 +53,18 @@ PGPlotter::~PGPlotter()
     // Nothing
 }
 
+
+void PGPlotter::detach()
+{
+    CountedPtr<PGPlotterInterface> empty;
+    worker_p = empty;
+}
+
+Bool PGPlotter::isAttached() const
+{
+    return ToBool(!worker_p.null());
+}
+
 void PGPlotter::message(const String &text)
 {
     ok();

@@ -65,6 +65,11 @@ template<class T> class Vector;
 // plotting on the old and new objects will result in the plot commands 
 // appearing on the same device. The device is closed only when the last 
 // reference is destructed.
+//
+// You can detach a plotter from a device with the <src>detach()</src> call.
+// If there are no other references to the plotter, this will close the device.
+// (What it actually does is call the destructor on the object. For a local
+// PGPPLOT device this will close it).
 // </synopsis>
 //
 // <example>
@@ -125,6 +130,10 @@ public:
 
     // True if it is OK to plot to this object.
     virtual Bool isAttached() const;
+
+    // Detach from the object. If this is the last reference to the object,
+    // call its destructor (this will call pgclos on a local device).
+    void detach();
 
     // This is not a standard PGPLOT command. In the Glish/PGPLOT window, it
     // puts a message in the message line. By default it sends it to the logger.
@@ -277,11 +286,5 @@ public:
     // Throws an exception if !isAttached()
     void ok() const;
 };
-
-//# Inlines
-inline Bool PGPlotter::isAttached() const
-{
-    return ToBool(!worker_p.null());
-}
 
 #endif
