@@ -1731,15 +1731,20 @@ CoordinateSystem ImageMoments<T>::makeOutputCoordinates (IPosition& outShape,
                                                          Int momentAxis, Bool removeAxis)
 {
 
+// Create
+
+   CoordinateSystem cSysOut;
+   cSysOut.setObsInfo(cSysIn.obsInfo());
+
 // Find the Coordinate corresponding to the moment axis
 
    Int coord, axisInCoord;
    cSysIn.findPixelAxis(coord, axisInCoord, momentAxis);
    const Coordinate& c = cSysIn.coordinate(coord);
 
+
 // Find the number of axes
 
-   CoordinateSystem cSysOut;
    if (removeAxis) {
 
 // Shape with moment axis removed
