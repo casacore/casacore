@@ -62,10 +62,17 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const String& name)
 // Output:
 //    matchAntennaName   Vector<Int>              Matching antenna id's
 //
-  LogicalArray maskArray = (msAntennaCols_p.name().getColumn()==name &&
-			    !msAntennaCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
-  return maskAntennaId.getCompressedArray();
+  if(name == "*") {
+    LogicalArray maskArray = (True &&
+			      !msAntennaCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+    return maskAntennaId.getCompressedArray();
+  } else {
+    LogicalArray maskArray = (msAntennaCols_p.name().getColumn()==name &&
+			      !msAntennaCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+    return maskAntennaId.getCompressedArray();
+  }
 }; 
 
 //-------------------------------------------------------------------------
