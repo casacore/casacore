@@ -1,5 +1,5 @@
 //# tStArrayFile.cc: Test program for the StManArrayFile class
-//# Copyright (C) 1994,1995,1996,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 #include <aips/strstream.h>
+#include <aips/stdio.h>                           // for sprintf
 
 // <summary> Test program for the StManArrayFile class </summary>
 

@@ -1,5 +1,5 @@
 //# ISMIndColumn.cc: Column of Incremental storage manager for indirect arrays
-//# Copyright (C) 1996,1997,1998,1999,2001
+//# Copyright (C) 1996,1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/Tables/DataManError.h>
-
+#include <aips/stdio.h>                           // for sprintf
 
 ISMIndColumn::ISMIndColumn (ISMBase* smptr, int dataType, uInt colnr)
 : ISMColumn     (smptr, dataType, colnr),
