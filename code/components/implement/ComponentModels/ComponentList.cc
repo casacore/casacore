@@ -663,6 +663,13 @@ void ComponentList::createTable(const String & fileName,
   }
   SetupNewTable newTable(fileName, td, option);
   itsTable = Table(newTable, TableLock::PermanentLocking, nelements(), False);
+  {
+    TableInfo& info(itsTable.tableInfo());
+    info.setType(TableInfo::type(TableInfo::COMPONENTLIST));
+    info.readmeAddLine(String(
+    "This is a ComponentList Table containing parameterised representations"));
+    info.readmeAddLine(String("of the sky brightness."));
+  }
 }
 
 void ComponentList::writeTable() {
