@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Utilities/RecordTransformable.h>
+#include <aips/Utilities/RecordTransformable.h>
 
 RecordTransformable::~RecordTransformable() {
   // Nothing
