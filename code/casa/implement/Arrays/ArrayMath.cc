@@ -2070,7 +2070,7 @@ template<class T> Array<T> partialMedians (const Array<T>& array,
 template<class T> Array<T> partialFractiles (const Array<T>& array,
 					     const IPosition& collapseAxes,
 					     Float fraction,
-					     Bool inPlace=False)
+					     Bool inPlace)
 {
   if (fraction < 0  ||  fraction > 1) {
     throw(ArrayError("::fractile(const Array<T>&) - fraction <0 or >1 "));
