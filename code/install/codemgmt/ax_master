@@ -4759,3 +4759,4 @@
 14 316 sys rm libexec/dishplot_printing.g
 14 316 src rm trial/apps/dishplot/dishplot_range_cursor.g
 14 316 sys rm libexec/dishplot_range_cursor.g
+14 316 src rm trial/apps/dishplot/dishplot_state.g
