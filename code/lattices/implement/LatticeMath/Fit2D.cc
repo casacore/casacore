@@ -406,6 +406,7 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
          resid(loc) = data(loc) - (*sumFunction)(Double(i), Double(j)).value();
       }
    }
+   delete sumFunction;
    return Fit2D::OK;
 }
 
