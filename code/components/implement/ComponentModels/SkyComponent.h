@@ -37,13 +37,15 @@
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
 
-class SkyCompRep;
+class GlishRecord;
+template<class T> class ImageInterface;
 class MDirection;
 class MVAngle;
+class SkyCompRep;
+class String;
 template<class T> class Vector;
-template<class T> class ImageInterface;
 
-// <summary> A component of a model of the sky </summary>
+// <summary>A component of a model of the sky </summary>
 
 // <use visibility=export>
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
@@ -61,41 +63,19 @@ template<class T> class ImageInterface;
 // commonality between different components of a model like
 // GaussianComponent, PointComponent, and perhaps in the future
 // DiskComponent & SpheroidComponent. In particular it allows the user to
-// sample the component at any specified position in the sky as well as grid
+// sample the component at any specified direction in the sky as well as grid
 // the component onto a specified image.
 
-// The functions in this class basically allow the user to sample the
-// intensity of the component in by specifying either a direction (or a
-// Vector of directions), or an image onto which the component should be
-// projected (with the possibility of convolving with a specified point
-// spread function). While all of these functions are pure virtual (see
-// below for why) a default implementation is provided in which these
-// functions are defined in terms of the operator()(MDirection)
-// function. This is the only function which does not have a default
-// implementation.
-
-// Because of function hiding (Meyer, "Effective C++", Item 50) the default
-// versions of the operator() functions provided in this class cannot be
-// called directly. Hence the writer of a derived class MUST define these
-// functions even though they have a default implementation. To enforce this
-// at compile time these functions purely abstract (=0). The default
-// implementation which can be accessed by function forwarding as is done in
-// the GaussianComponent class.
+// The functions in this class basically allow the user to sample the intensity
+// of the component by specifying either a direction or an image onto which the
+// component should be projected. 
 
 // The type function returns a string stating the actual type of component
 // that is used.
 // </synopsis>
 
 // <example>
-// Because this is a virtual base class this example will be inside a
-// function. 
 // <srcblock>
-// void printComponent(const SkyComponent & component){
-// cout << "Component has a total flux of " << component.flux()
-//      << ", is centred at " << component.position() 
-//      << " and an peak intensity of " 
-//      << component(component.position()) << endl;
-// }
 // </srcblock>
 // </example>
 //
@@ -117,13 +97,13 @@ template<class T> class ImageInterface;
 class SkyComponent
 {
 public:
-  // The default is a Point Component at the J2000 north pole with a flux of
+  // The default is a PointComponent at the J2000 north pole with a flux of
   // 1Jy in the I polarization only. 
   SkyComponent();
 
-  // Construct a SkyComponent of the specified type. The default position is
+  // Construct a SkyComponent of the specified type. The default direction is
   // the J2000 north pole and the default flux is 1 Jy in the I polarisation
-  // only. Use the setFlux and SetPosition functions to change this after
+  // only. Use the setFlux and SetDirection functions to change this after
   // construction. 
   SkyComponent(ComponentType::Type type);
   
@@ -143,7 +123,7 @@ public:
   // different polarizations of the radiation and the pixel size is assumed to
   // be square.
   virtual void sample(Vector<Double> & result, 
-		      const MDirection & samplePos,
+		      const MDirection & sampleDir,
 		      const MVAngle & pixelSize) const;
 
   // Project the component onto an Image. The default implementation calls the
@@ -161,10 +141,10 @@ public:
   virtual void flux(Vector<Double> & compflux) const;
   // </group>
 
-  // set/get the position (usually the centre) of the component.
+  // set/get the direction of (usually the centre) of the component.
   // <group>
-  virtual void setPosition(const MDirection & newPos);
-  virtual void position(MDirection & compPos) const;
+  virtual void setDirection(const MDirection & newPos);
+  virtual void direction(MDirection & compDir) const;
   // </group>
 
   // return the number of parameters in the component and set/get them.
@@ -177,6 +157,22 @@ public:
   // get the actual type of the component 
   // (as an ComponentTypes::ComponentTypes enum)
   virtual ComponentType::Type type() const;
+
+  // This functions convert between a glish record and a SkyComponent. This way
+  // derived classes can interpret fields in the record in a class specific
+  // way. These functions define how a component is represented in glish. The
+  // fromRecord function appends a message to the errorMessage string if the
+  // conversion failed for any reason.
+  // <group>
+  virtual void fromRecord(String & errorMessage, const GlishRecord & record);
+  virtual void toRecord(GlishRecord & record) const;
+  // </group>
+  
+  // return the type of component that the supplied record represents. Returns 
+  // ComponentType::UNKNOWN if the record could not be parsed correctly and the
+  // appropriate error message is appended to the errorMessage String.
+  static ComponentType::Type getType(String & errorMessage,
+				     const GlishRecord & record);
 
   // Return a distinct copy of this component. As both the assignment operator
   // and the copy constructor use reference semantics this is the only way to
@@ -196,7 +192,11 @@ protected:
   // Return the polymorphic pointer that is being reference counted. This is
   // used by derived classes to cache an downcast pointer.
   SkyCompRep * rawPtr(); 
-  const SkyCompRep * rawPtr() const; 
+  const SkyCompRep * rawPtr() const;
+
+  // Check that the type in the glishRecord matches the type of this
+  // component. If not return the errors in the errorMessage String
+  void checkType(String & errorMessage, const GlishRecord & record) const;
 
 private:
   CountedPtr<SkyCompRep> theCompPtr;

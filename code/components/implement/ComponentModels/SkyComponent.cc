@@ -32,17 +32,21 @@
 #include <trial/Images/ImageInterface.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Glish/GlishArray.h>
+#include <aips/Glish/GlishRecord.h>
+#include <aips/Glish/GlishValue.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
 
 SkyComponent::SkyComponent()
   :theCompPtr(new PointCompRep) 
 {
   AlwaysAssert(ok(), AipsError);
-};
+}
 
 SkyComponent::SkyComponent(ComponentType::Type type) {
   switch (type){
@@ -55,17 +59,17 @@ SkyComponent::SkyComponent(ComponentType::Type type) {
 		    "UNKNOWN type"));
   };    
   AlwaysAssert(ok(), AipsError);
-};
+}
 
 SkyComponent::SkyComponent(const SkyComponent & other) 
   :theCompPtr(other.theCompPtr)
 { 
   AlwaysAssert(ok(), AipsError);
-};
+}
 
 SkyComponent::~SkyComponent() {
   DebugAssert(ok(), AipsError);
-};
+}
 
 SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
   if (this != &other)
@@ -75,61 +79,104 @@ SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
   // constructed.
   DebugAssert(SkyComponent::ok(), AipsError);
   return *this;
-};
+}
 
 void SkyComponent::sample(Vector<Double> & result, 
-			  const MDirection & samplePos, 
+			  const MDirection & sampleDir, 
 			  const MVAngle & pixelSize) const {
-  theCompPtr->sample(result, samplePos, pixelSize);
+  theCompPtr->sample(result, sampleDir, pixelSize);
   DebugAssert(ok(), AipsError);
-};
+}
 
 void SkyComponent::project(ImageInterface<Float> & plane) const {
   theCompPtr->project(plane);
   DebugAssert(ok(), AipsError);
-};
+}
 
 void SkyComponent::setFlux(const Vector<Double> & newFlux) {
   theCompPtr->setFlux(newFlux);
   DebugAssert(ok(), AipsError);
-};
+}
 
 void SkyComponent::flux(Vector<Double> & compFlux) const {
   theCompPtr->flux(compFlux);
   DebugAssert(ok(), AipsError);
-};
+}
 
-void SkyComponent::setPosition(const MDirection & newPos) {
-  theCompPtr->setPosition(newPos);
+void SkyComponent::setDirection(const MDirection & newDir) {
+  theCompPtr->setDirection(newDir);
   DebugAssert(ok(), AipsError);
-};
+}
 
-void SkyComponent::position(MDirection & compPos) const {
-  theCompPtr->position(compPos);
+void SkyComponent::direction(MDirection & compDir) const {
+  theCompPtr->direction(compDir);
   DebugAssert(ok(), AipsError);
-};
+}
 
 uInt SkyComponent::nParameters() const {
   DebugAssert(ok(), AipsError);
   return theCompPtr->nParameters();
-};
+}
 
 void SkyComponent::setParameters(const Vector<Double> & newParms) {
   theCompPtr->setParameters(newParms);
   DebugAssert(ok(), AipsError);
-};
+}
 
 void SkyComponent::parameters(Vector<Double> & compParms) const {
   theCompPtr->parameters(compParms);
   DebugAssert(ok(), AipsError);
-};
+}
 
 ComponentType::Type SkyComponent::type() const {
   // This call to ok is restricted to the base class as the type() function is
   // called by derived classes before the derived object is fully constructed.
   DebugAssert(SkyComponent::ok(), AipsError);
   return theCompPtr->type();
-};
+}
+
+void SkyComponent::fromRecord(String & errorMessage, 
+			      const GlishRecord & record) {
+  String componentErrors = "";
+  // First check that the types match;
+  checkType(componentErrors, record);
+  if (componentErrors != "")
+    theCompPtr->fromRecord(errorMessage, record);
+  else
+    errorMessage += componentErrors;
+  DebugAssert(ok(), AipsError);
+}
+
+ComponentType::Type SkyComponent::getType(String & errorMessage,
+						 const GlishRecord & record) {
+  if (!record.exists("type"))
+    errorMessage += "\nThe record does not have a 'type' field";
+  else {
+    if (record.get("type").type() != GlishValue::ARRAY)
+      errorMessage += "\nThe 'type' field cannot be a record";
+    else {
+      const GlishArray typeField = record.get("type");
+      if (typeField.elementType() != GlishArray::STRING)
+ 	errorMessage += "\nThe 'type' field must be a string";
+      else {
+	const IPosition shape = typeField.shape();
+	if (shape.nelements() != 1 || shape.product() != 1)
+ 	  errorMessage += "\nThe 'type' field can only have one element";
+	else {
+	  String typeString;
+	  if (typeField.get(typeString) == False)
+	    errorMessage += "\nCould not read the 'type' field "
+	      "for an unknown reason";
+	  else {
+	    typeString.upcase();
+	    return ComponentType::type(typeString);
+	  }
+	}
+      }
+    }
+  }
+  return ComponentType::UNKNOWN;
+}
 
 SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
@@ -140,9 +187,9 @@ SkyComponent SkyComponent::copy() const {
     newComp.setFlux(thisFlux);
   }
   {
-    MDirection thisPosition;
-    position(thisPosition);
-    newComp.setPosition(thisPosition);
+    MDirection thisDirection;
+    direction(thisDirection);
+    newComp.setDirection(thisDirection);
   }
   {
     Vector<Double> thisParameters(nParameters());
@@ -150,7 +197,7 @@ SkyComponent SkyComponent::copy() const {
     newComp.setParameters(thisParameters);
   }
   return newComp;
-};
+}
 
 Bool SkyComponent::ok() const {
   if (theCompPtr.null() == True) {
@@ -166,20 +213,34 @@ Bool SkyComponent::ok() const {
     return False;
   }
   return True;
-};
+}
 
 SkyComponent::SkyComponent(SkyCompRep * rawPtr)
   :theCompPtr(rawPtr) {
-};
+}
 
 SkyCompRep * SkyComponent::rawPtr() {
   return &(*theCompPtr);
-};
+}
 
 const SkyCompRep * SkyComponent::rawPtr() const {
   return &(*theCompPtr);
-};
+}
 
+void SkyComponent::checkType(String & errorMessage, 
+			     const GlishRecord & record) const {
+  String typeMessage = "";
+  ComponentType::Type recordType = getType(typeMessage, record);
+  if (typeMessage != "")
+    errorMessage += typeMessage;
+  else
+    if (recordType != type())
+      errorMessage += 
+	String("\nThe record is for a component of type") 
+	+ ComponentType::name(recordType)
+	+ String(" and cannot be assigned to a SkyComponent of type ")
+	+ ComponentType::name(type());
+}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyComponent"
 // End: 
