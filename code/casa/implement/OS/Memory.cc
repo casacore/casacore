@@ -49,7 +49,7 @@ size_t Memory::assignedMemoryInBytes()
     size_t total = 0;
 
     struct mallinfo m = mallinfo();
-    total = m.arena;
+    total = m.arena + m.hblkhd;
 
     return total;
 }
