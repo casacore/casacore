@@ -1,5 +1,5 @@
 //# VelocityMachine.cc: Converts between velocities and frequencies
-//# Copyright (C) 1998,2000,2001
+//# Copyright (C) 1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
