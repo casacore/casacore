@@ -1,5 +1,5 @@
 //# tListMap.cc: This program tests the ListMap class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -42,35 +42,21 @@ main() {
 
   map(2) = 90;
   map(15) = 79;
-
-#if ! defined(__GNUG__)
-  map(21) = map(27) = 104;
-#else
   map(27) = 104;
   map(21) = map(27);
-#endif
 
   map.setOrder(ListMap<int,int>::Append);
   map(81) = 4;
-
-#if ! defined(__GNUG__)
-  map(28) = map(29) = map(21) = 109;
-#else
   map(21) = 109;
   map(29) = map(21);
   map(28) = map(29);
-#endif
-
   map(4) = 9;
   map.setOrder(ListMap<int,int>::Prepend);
   map(30) = 4;
   map(6) = 92;
 
-#if ! defined(__GNUG__)
   cout << map << endl;
-#else
-  cout << *((Map<int,int>*) &map) << endl;
-#endif
+
 //print(map);
 
   smap("fred") = OrderedPair<String,uInt>("wilma",30);
@@ -78,21 +64,14 @@ main() {
   smap("homer")  = OrderedPair<String,uInt>("marge",40);
   smap("bambam") = OrderedPair<String,uInt>("pebbles",8);
 
-#if ! defined(__GNUG__)
   cout << smap << endl;
-#else
-  cout << *((Map<String,OrderedPair<String,uInt> >*) &smap) << endl;
-#endif
+
 //print(smap);
 
   smap("barney") = OrderedPair<String,uInt>("madona",25);
   smap("fred") = OrderedPair<String,uInt>("anne",12);
  
-#if ! defined(__GNUG__)
   cout << smap << endl;
-#else
-  cout << *((Map<String,OrderedPair<String,uInt> >*) &smap) << endl;
-#endif
 
 //print(smap);
 //print(smap);
@@ -108,11 +87,8 @@ main() {
   amap("e") = 101;
   amap("f") = 102;
 
-#if ! defined(__GNUG__)
   cout << amap << endl;
-#else
-  cout << *((Map<String,int>*) &amap) << endl;
-#endif
+
 //print(amap);
 
   return(0);

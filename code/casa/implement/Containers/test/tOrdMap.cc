@@ -1,5 +1,5 @@
 //# tOrdMap.cc: This program tests the Ordered Map class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -47,11 +47,8 @@ main() {
   map(15) = 79;
   map(21) = map(27) = map(24) = 104;
 
-#if ! defined(__GNUG__)
   cout << map << endl;
-#else
-  cout << *((Map<int,int>*) &map) << endl;
-#endif
+
 //print(map);
 
   smap("fred") = OrderedPair<String,uInt>("wilma",30);
@@ -59,21 +56,15 @@ main() {
   smap("homer")  = OrderedPair<String,uInt>("marge",40);
   smap("bambam") = OrderedPair<String,uInt>("pebbles",8);
 
-#if ! defined(__GNUG__)
   cout << smap << endl;
-#else
-  cout << *((Map<String,OrderedPair<String,uInt> >*) &smap) << endl;
-#endif
+
 //print(smap);
 
   smap("barney") = OrderedPair<String,uInt>("madona",25);
   smap("fred") = OrderedPair<String,uInt>("anne",12);
 
-#if ! defined(__GNUG__) 
   cout << smap << endl;
-#else
-  cout << *((Map<String,OrderedPair<String,uInt> >*) &smap) << endl;
-#endif
+
 //print(smap);
 //print(smap);
 

@@ -1,5 +1,5 @@
 //# tOrdMap2.cc: Test program for class OrderedMap
-//# Copyright (C) 1992,1993,1994,1995,1996,1998
+//# Copyright (C) 1992,1993,1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -67,11 +67,7 @@ main () {
     cout << 37 << " " << i << "\n";
     i = name(100);
     cout << 100 << " " << i << "\n";
-#if ! defined(__GNUG__)
     cout << Name << endl;
-#else
-    cout << *((Map<Int,Int>*) &Name) << endl;
-#endif
     i = name(33);
     cout << 33 << " " << i << "\n";
     i = name(101);
@@ -91,93 +87,29 @@ main () {
     nams.define("Brian",2);
     nams.define("Darrell",3);
     cout << "Ger " << nams("Ger") << " Darrell " << nams("Darrell") << " Zomaar " << nams("Zomaar") << " Brian " << nams("Brian") << endl;
-#if ! defined(__GNUG__)
     cout << Nams << endl;
-#else
-    cout << *((Map<String,Int>*) &Nams) << endl;
-#endif
-#if ! defined(__GNUG__)
     io << Nams;                             // write the map
-#else
-    io << *((Map<String,Int>*) &Nams);
-#endif
     OrderedMap<String,Int> Nam2 = Nams;     // copy the map
     MapIter<String,Int> nam2 = Nam2;
-#if ! defined(__GNUG__)
     cout << Nam2 << endl;                           // and show it
-#else
-    cout << *((Map<String,Int>*) &Nam2) << endl;
-#endif
     nam2.remove("Ger");
-#if ! defined(__GNUG__)
     cout << Nam2 << endl;
-#else
-    cout << *((Map<String,Int>*) &Nam2) << endl;
-#endif
     nam2.define("ger",100);
-#if ! defined(__GNUG__)
     cout << Nam2 << endl;
-#else
-    cout << *((Map<String,Int>*) &Nam2) << endl;
-#endif
-#if ! defined(__GNUG__)
     cout << Nams << endl;
-#else
-    cout << *((Map<String,Int>*) &Nams) << endl;
-#endif
     nam1.define("A",1);
     nam1.define("B",2);
-#if ! defined(__GNUG__)
     cout << Nam1 << endl;
-#else
-    cout << *((Map<String,Int>*) &Nam1) << endl;
-#endif
-#if ! defined(__GNUG__)
     io << Nam1;                             // write the changed map
-#else
-    io << *((Map<String,Int>*) &Nam1);
-#endif
     Nam1 = Nams;                            // get original again
-#if ! defined(__GNUG__)
     io << Nam1;                             // and write that
-#else
-    io << *((Map<String,Int>*) &Nam1);
-#endif
     io.setpos (0);                          // reposition to BOF
-#if ! defined(__GNUG__)
     cout << Nam1 << endl;
-#else
-    cout << *((Map<String,Int>*) &Nam1) << endl;
-#endif
-#if ! defined(__GNUG__)
     io >> Nam1;                             // read first map
-#else
-    io >> *((Map<String,Int>*) &Nam1);
-#endif
-#if ! defined(__GNUG__)
     cout << Nam1 << endl;
-#else
-    cout << *((Map<String,Int>*) &Nam1) << endl;
-#endif
-#if ! defined(__GNUG__)
     io >> Nam1;                             // read 2nd map
-#else
-    io >> *((Map<String,Int>*) &Nam1);
-#endif
-#if ! defined(__GNUG__)
     cout << Nam1 << endl;
-#else
-    cout << *((Map<String,Int>*) &Nam1) << endl;
-#endif
-#if ! defined(__GNUG__)
     io >> Nam1;                             // read 3rd map
-#else
-    io >> *((Map<String,Int>*) &Nam1);
-#endif
-#if ! defined(__GNUG__)
     cout << Nam1 << endl;
-#else
-    cout << *((Map<String,Int>*) &Nam1) << endl;
-#endif
     return 0;                               // exit with success status
 }
