@@ -37,7 +37,9 @@
 template <class T> class ImageInterface;
 template <class T> class Vector;
 template <class T> class Quantum;
+template <class T> class MaskedArray;
 class CoordinateSystem;
+class Coordinate;
 class SkyComponent;
 class ImageInfo;
 class String;
@@ -228,6 +230,19 @@ public:
                                    const CoordinateSystem& cSys,
                                    const IPosition& pixelAxes,
                                    Bool doRef=False); 
+
+// Function to bin up one axis of an N-D MaskedArray. The interface
+// is pretty specific to a particular application. It's here because
+// its implemented with ImageRebin.  On input, the output MA *must*
+// have zero shape.   The input and output Coordinates must have the
+// same type and have only one axis (Linear,Spectral & Tabular).
+// The output coordinate is adjusted for the binning.   The binning
+// factor does not have to fit integrally into the shape of the specified
+// axis.
+   template <typename T>
+   static void bin (MaskedArray<T>& out, Coordinate& coordIn,
+                    const MaskedArray<T>& in, const Coordinate& coordIn,
+                    uInt axis, uInt bin);
 
 private:
 

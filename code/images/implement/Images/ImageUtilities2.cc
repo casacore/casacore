@@ -28,10 +28,22 @@
 
 #include <trial/Images/ImageUtilities.h>
 
+#include <aips/Arrays/MaskedArray.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/LinearCoordinate.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
+#include <trial/Coordinates/TabularCoordinate.h>
+#include <aips/Exceptions/Error.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/Images/TempImage.h>
+#include <trial/Images/RebinImage.h>
+#include <aips/Lattices/TiledShape.h>
+#include <aips/Lattices/TempLattice.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Utilities/Assert.h>
+
 
 template <typename T, typename U> 
 void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
@@ -44,3 +56,77 @@ void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
 }
 
 
+template <typename T> 
+void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
+                          const MaskedArray<T>& in, const Coordinate& coordIn,
+                          uInt axis, uInt bin)
+{
+
+// Check
+
+   AlwaysAssert(coordIn.nPixelAxes()==1 && coordIn.nWorldAxes()==1, AipsError);
+   AlwaysAssert(coordOut.nPixelAxes()==1 && coordOut.nWorldAxes()==1, AipsError);
+//
+   AlwaysAssert(coordIn.type()==coordOut.type(),AipsError);
+   Coordinate::Type type = coordIn.type();
+   AlwaysAssert(type==Coordinate::LINEAR || type==Coordinate::SPECTRAL ||
+                type==Coordinate::TABULAR, AipsError);
+//  
+   const IPosition shapeIn = in.shape();
+   const uInt nDim = shapeIn.nelements();
+   AlwaysAssert(axis<nDim, AipsError);
+
+// Create CS
+
+   CoordinateSystem cSysIn;
+   LinearCoordinate linCoord;
+   for (uInt i=0; i<nDim; i++) {
+
+      if (i==axis) {
+         cSysIn.addCoordinate(coordIn);
+      } else {
+         cSysIn.addCoordinate(linCoord);
+      }
+   }
+
+// Make Image
+
+   TiledShape tShapeIn(shapeIn);
+   TempImage<T> im(tShapeIn, cSysIn);
+
+// Set data
+
+   im.put(in.getArray());
+   TempLattice<Bool> pixelMask(shapeIn);
+   pixelMask.put(in.getMask());
+   im.attachMask(pixelMask);
+
+// Create binner
+
+   IPosition factors(nDim,1);
+   factors(axis) = bin;
+   RebinImage<T> binIm(im, factors);
+
+// Assign output MA
+
+   MaskedArray<T> tmp(binIm.get(), binIm.getMask());
+   out = tmp;
+
+// Handle coordinate.  
+
+   const CoordinateSystem cSysOut = binIm.coordinates();
+   if (type==Coordinate::LINEAR) {
+      const LinearCoordinate& cIn = cSysOut.linearCoordinate(axis);
+      LinearCoordinate& cOut = dynamic_cast<LinearCoordinate&>(coordOut);
+      cOut = cIn;
+   } else if (type==Coordinate::SPECTRAL) { 
+      const SpectralCoordinate& cIn = cSysOut.spectralCoordinate(axis);
+      SpectralCoordinate& cOut = dynamic_cast<SpectralCoordinate&>(coordOut);
+      cOut = cIn;
+   } else if (type=Coordinate::TABULAR) {
+      const TabularCoordinate& cIn = cSysOut.tabularCoordinate(axis);
+      TabularCoordinate& cOut = dynamic_cast<TabularCoordinate&>(coordOut);
+      cOut = cIn;
+   }
+}
+   
