@@ -155,10 +155,12 @@ void SSMColumn::deleteRow(uInt aRowNr)
       uInt aLength = (anEndRow - aRowNr) * itsLocalSize;
       memmove(aToPtr,aFromPtr,aLength);
     }
-    anEndRow--;
-
     // Fill cache again with actual itsData.
-    columnCache().set (aStartRow, anEndRow, getDataPtr());
+    if (aStartRow == anEndRow) {
+      columnCache().invalidate();
+    } else {
+      columnCache().set (aStartRow, anEndRow-1, getDataPtr());
+    }
   }
   
   if (aRowNr < anERow) {
@@ -184,6 +186,7 @@ void SSMColumn::shiftRows(char* aValue, uInt aRowNr, uInt aSRow, uInt anERow)
   // decrement anEndrow
   uInt aLength = (anERow - aRowNr) * itsExternalSizeBytes;
   memmove(aToPtr,aFromPtr,aLength);
+  memset (aFromPtr, 0, itsExternalSizeBytes);
 }
 
 
