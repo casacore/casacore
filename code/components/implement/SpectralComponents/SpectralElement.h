@@ -34,6 +34,7 @@
 
 //# Forward Declarations
 class String;
+class RecordInterface;
 #include <aips/iosfwd.h>
 
 // <summary>
@@ -105,6 +106,7 @@ class SpectralElement {
   // </thrown>
   SpectralElement(SpectralElement::Types tp, const Double ampl,
 		  const Double center, const Double sigma);
+
   // Construct an n-degree polynomial
   explicit SpectralElement(const uInt n);
   // Copy constructor (deep copy)
@@ -169,6 +171,16 @@ class SpectralElement {
   // </group>
   // Set degree
   void setDegree(uInt n);
+
+  // Construct from record.  Must hold fields "type" (String) and 
+  // "parameters" (Vector<Double>).  For type=GAUSSIAN, parameters
+  // holds amplitude, center and sigma. For type=POLYNOMIAL,
+  // parameters(0) holds the degree.
+  static SpectralElement* fromRecord(const RecordInterface &container);
+
+  // Save to a record.  Only returns False if the field is already defined.
+  Bool toRecord (RecordInterface& container, const String& fieldName);
+
 
   //#Destructor
   // Destructor
