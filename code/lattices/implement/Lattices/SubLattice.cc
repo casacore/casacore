@@ -43,101 +43,125 @@ SubLattice<T>::SubLattice()
 {}
 
 template<class T>
-SubLattice<T>::SubLattice (const Lattice<T>& lattice)
+SubLattice<T>::SubLattice (const Lattice<T>& lattice,
+			   AxesSpecifier axesSpec)
 {
   setPtr (lattice.clone(), 0, False);
   setRegion();
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (Lattice<T>& lattice,
-			   Bool writableIfPossible)
+			   Bool writableIfPossible,
+			   AxesSpecifier axesSpec)
 {
   setPtr (lattice.clone(), 0, writableIfPossible);
   setRegion();
+  setAxesMap (axesSpec);
 }
 
 template<class T>
-SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice)
+SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice,
+			   AxesSpecifier axesSpec)
 {
   setPtr (0, lattice.cloneML(), False);
   setRegion();
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
-			   Bool writableIfPossible)
+			   Bool writableIfPossible,
+			   AxesSpecifier axesSpec)
 {
   setPtr (0, lattice.cloneML(), writableIfPossible);
   setRegion();
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (const Lattice<T>& lattice,
-			   const LatticeRegion& region)
+			   const LatticeRegion& region,
+			   AxesSpecifier axesSpec)
 {
   setPtr (lattice.clone(), 0, False);
   setRegion (region);
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (Lattice<T>& lattice,
 			   const LatticeRegion& region,
-			   Bool writableIfPossible)
+			   Bool writableIfPossible,
+			   AxesSpecifier axesSpec)
 {
   setPtr (lattice.clone(), 0, writableIfPossible);
   setRegion (region);
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice,
-			   const LatticeRegion& region)
+			   const LatticeRegion& region,
+			   AxesSpecifier axesSpec)
 {
   setPtr (0, lattice.cloneML(), False);
   setRegion (region);
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
 			   const LatticeRegion& region,
-			   Bool writableIfPossible)
+			   Bool writableIfPossible,
+			   AxesSpecifier axesSpec)
 {
   setPtr (0, lattice.cloneML(), writableIfPossible);
   setRegion (region);
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (const Lattice<T>& lattice,
-			   const Slicer& slicer)
+			   const Slicer& slicer,
+			   AxesSpecifier axesSpec)
 {
   setPtr (lattice.clone(), 0, False);
   setRegion (slicer);
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (Lattice<T>& lattice,
 			   const Slicer& slicer,
-			   Bool writableIfPossible)
+			   Bool writableIfPossible,
+			   AxesSpecifier axesSpec)
 {
   setPtr (lattice.clone(), 0, writableIfPossible);
   setRegion (slicer);
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice,
-			   const Slicer& slicer)
+			   const Slicer& slicer,
+			   AxesSpecifier axesSpec)
 {
   setPtr (0, lattice.cloneML(), False);
   setRegion (slicer);
+  setAxesMap (axesSpec);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
 			   const Slicer& slicer,
-			   Bool writableIfPossible)
+			   Bool writableIfPossible,
+			   AxesSpecifier axesSpec)
 {
   setPtr (0, lattice.cloneML(), writableIfPossible);
   setRegion (slicer);
+  setAxesMap (axesSpec);
 }
 
 template<class T>
@@ -175,6 +199,7 @@ SubLattice<T>& SubLattice<T>::operator= (const SubLattice<T>& other)
     itsWritable = other.itsWritable;
     delete itsPixelMask;
     itsHasPixelMask = other.itsHasPixelMask;
+    itsAxesMap = other.itsAxesMap;
   }
   return *this;
 }
@@ -233,6 +258,16 @@ void SubLattice<T>::setRegion()
 }
 
 template<class T>
+void SubLattice<T>::setAxesMap (const AxesSpecifier& axesSpec)
+{
+  itsAxesMap = axesSpec.apply (itsRegion.slicer().length());
+  if (itsAxesMap.isReordered()) {
+    throw AipsError ("SubLattice does not support axes reordering");
+  }
+  itsAxesSpec = axesSpec;
+}
+
+template<class T>
 Bool SubLattice<T>::isMasked() const
 {
   return ToBool (itsMaskLatPtr != 0  ||  itsRegion.hasMask());
@@ -243,6 +278,7 @@ Bool SubLattice<T>::isPersistent() const
 {
   return itsLatticePtr->isPersistent()
      &&  !isMasked()
+     &&  !itsAxesMap.isRemoved()
      &&  shape().isEqual (itsLatticePtr->shape());
 }
 
@@ -280,6 +316,24 @@ void SubLattice<T>::resync()
 }
 
 template<class T>
+void SubLattice<T>::flush()
+{
+  itsLatticePtr->flush();
+}
+
+template<class T>
+void SubLattice<T>::tempClose()
+{
+  itsLatticePtr->tempClose();
+}
+
+template<class T>
+void SubLattice<T>::reopen()
+{
+  itsLatticePtr->reopen();
+}
+
+template<class T>
 Bool SubLattice<T>::hasPixelMask() const
 {
   return itsHasPixelMask;
@@ -300,7 +354,8 @@ Lattice<Bool>& SubLattice<T>::pixelMask()
   // if that is not done yet.
   if (itsPixelMask == 0) {
     Lattice<Bool>& fullMask = itsMaskLatPtr->pixelMask();
-    itsPixelMask = new SubLattice<Bool> (fullMask, itsRegion, itsWritable);
+    itsPixelMask = new SubLattice<Bool> (fullMask, itsRegion, itsWritable,
+					 itsAxesSpec);
   }
   return *itsPixelMask;
 }
@@ -315,7 +370,7 @@ const LatticeRegion* SubLattice<T>::getRegionPtr() const
 template<class T>
 IPosition SubLattice<T>::shape() const
 {
-  return itsRegion.slicer().length();
+  return itsAxesMap.shapeToNew (itsRegion.slicer().length());
 }
 
 template<class T>
@@ -328,7 +383,14 @@ template<class T>
 Bool SubLattice<T>::doGetSlice (Array<T>& buffer,
 				const Slicer& section)
 {
-  return itsLatticePtr->getSlice (buffer, itsRegion.convert (section));
+  if (! itsAxesMap.isRemoved()) {
+    return itsLatticePtr->getSlice (buffer, itsRegion.convert (section));
+  }
+  Bool ref = itsLatticePtr->getSlice (buffer, itsRegion.convert
+                                           (itsAxesMap.slicerToOld (section)));
+  Array<T> tmp = buffer.reform (section.length());
+  buffer.reference (tmp);
+  return ref;
 }
 
 template<class T>
@@ -339,14 +401,16 @@ void SubLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
   if (!itsWritable) {
       throw (AipsError ("SubLattice::putSlice - non-writable lattice"));
   }
-  if (itsMaskLatPtr != 0) {
-    itsMaskLatPtr->putSlice (sourceBuffer,
-			     itsRegion.convert (where),
+  if (! itsAxesMap.isRemoved()) {
+    itsLatticePtr->putSlice (sourceBuffer, itsRegion.convert (where),
 			     stride * itsRegion.slicer().stride());
   } else {
-    itsLatticePtr->putSlice (sourceBuffer,
-			     itsRegion.convert (where),
-			     stride * itsRegion.slicer().stride());
+    Array<T> tmp = sourceBuffer.reform
+                            (itsAxesMap.shapeToOld (sourceBuffer.shape()));
+    itsLatticePtr->putSlice (tmp, 
+			     itsRegion.convert (itsAxesMap.posToOld (where)),
+			     itsAxesMap.shapeToOld (stride) *
+                                                itsRegion.slicer().stride());
   }
 }
 
@@ -367,13 +431,16 @@ IPosition SubLattice<T>::doNiceCursorShape (uInt maxPixels) const
       cursorShape(i) = shape(i);
     }
   }
-  return cursorShape;
+  return itsAxesMap.shapeToNew (cursorShape);
 }
 
 template<class T>
 T SubLattice<T>::getAt (const IPosition& where) const
 {
-  return itsLatticePtr->getAt (itsRegion.convert (where));
+  if (! itsAxesMap.isRemoved()) {
+    return itsLatticePtr->getAt (itsRegion.convert (where));
+  }
+  return itsLatticePtr->getAt (itsRegion.convert(itsAxesMap.posToOld (where)));
 }
 
 template<class T>
@@ -382,10 +449,11 @@ void SubLattice<T>::putAt (const T& value, const IPosition& where)
   if (!itsWritable) {
       throw (AipsError ("SubLattice::putAt - non-writable lattice"));
   }
-  if (itsMaskLatPtr != 0) {
-    itsMaskLatPtr->putAt (value, itsRegion.convert (where));
-  } else {
+  if (! itsAxesMap.isRemoved()) {
     itsLatticePtr->putAt (value, itsRegion.convert (where));
+  } else {
+    itsLatticePtr->putAt (value, itsRegion.convert (itsAxesMap.posToOld
+						                 (where)));
   }
 }
 
@@ -395,18 +463,17 @@ Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
 {
   // When lattice has no mask, we can return the region's mask.
   if (itsMaskLatPtr == 0) {
-    return itsRegion.getSlice (buffer, section);
+    return getRegionDataSlice (buffer, section);
   }
   // The lattice has a mask.
   // If the region has no mask, we can return the lattice's mask.
   if (! itsRegion.hasMask()) {
-    return itsMaskLatPtr->doGetMaskSlice (buffer, itsRegion.convert(section));
+    return getMaskDataSlice (buffer, section);
   }
   // They have both a mask, so they have to be ANDed.
   // Get the lattice's mask.
   // Make a copy if it references the original mask (because it'll change).
-  Bool ref = itsMaskLatPtr->doGetMaskSlice (buffer,
-					    itsRegion.convert(section));
+  Bool ref = getMaskDataSlice (buffer, section);
   if (ref) {
     Array<Bool> mask;
     mask = buffer;
@@ -414,7 +481,7 @@ Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
   }
   // Get the region's mask.
   Array<Bool> tmpbuf;
-  itsRegion.getSlice (tmpbuf, section);
+  getRegionDataSlice (tmpbuf, section);
   // And the masks.
   Bool deleteBuf, deleteTmp;
   const Bool* tmpptr = tmpbuf.getStorage (deleteTmp);
@@ -428,6 +495,34 @@ Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
   tmpbuf.freeStorage (tmpptr, deleteTmp);
   buffer.putStorage (bufptr, deleteBuf);
   return False;
+}
+
+
+template<class T>
+Bool SubLattice<T>::getRegionDataSlice (Array<Bool>& buffer,
+					const Slicer& section)
+{
+  if (! itsAxesMap.isRemoved()) {
+    return itsRegion.getSlice (buffer, section);
+  }
+  Bool ref = itsRegion.getSlice (buffer, itsAxesMap.slicerToOld (section));
+  Array<Bool> tmp = buffer.reform (section.length());
+  buffer.reference (tmp);
+  return ref;
+}
+
+template<class T>
+Bool SubLattice<T>::getMaskDataSlice (Array<Bool>& buffer,
+				      const Slicer& section)
+{
+  if (! itsAxesMap.isRemoved()) {
+    return itsMaskLatPtr->doGetMaskSlice (buffer, itsRegion.convert (section));
+  }
+  Bool ref = itsMaskLatPtr->doGetMaskSlice (buffer, itsRegion.convert
+                                          (itsAxesMap.slicerToOld (section)));
+  Array<Bool> tmp = buffer.reform (section.length());
+  buffer.reference (tmp);
+  return ref;
 }
 
 
