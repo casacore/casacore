@@ -118,8 +118,6 @@ public:
 //# Operators
   // Assignment (copy semantics)
   MeasureHolder &operator=(const MeasureHolder &other);
-  // Get value (will have lifetime only as long as MeasHolder exists)
-  const Measure &operator()() const;
 
 //# Member Functions
   // Check the the MeasureHolder holds the specified Measure type. Return
@@ -143,12 +141,12 @@ public:
   // </thrown>
   // <group>
   const Measure &asMeasure() const;
-  const MDirection &asMDirection();
-  const MDoppler &asMDoppler();
-  const MEpoch &asMEpoch();
-  const MFrequency &asMFrequency();
-  const MPosition &asMPosition();
-  const MRadialVelocity &asMRadialVelocity();
+  const MDirection &asMDirection() const;
+  const MDoppler &asMDoppler() const;
+  const MEpoch &asMEpoch() const;
+  const MFrequency &asMFrequency() const;
+  const MPosition &asMPosition() const;
+  const MRadialVelocity &asMRadialVelocity() const;
   // </group>
   // Create a Measure from a record. An error message is generated, and False
   // returned if an invalid record is given. A valid record will return True.
@@ -168,7 +166,7 @@ public:
   //	  Measure of the same type as the main Measure (e.g. an MEpoch for an
   //	   MEpoch)
   // </ul>
-  // Error messages are prefixed to error.
+  // Error messages are postfixed to error.
   // <group>
   virtual Bool fromRecord(String &error,
 			  const RecordInterface &in);
@@ -177,7 +175,7 @@ public:
   // </group>
   // Create a record from a Measure. The return will be False and an error
   // message generated only if the MeasureHolder does not contain a Measure.
-  // Error messages are prefixed to error.
+  // Error messages are postfixed to error.
   // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
   Bool toRecord(String &error, GlishRecord &out) const;

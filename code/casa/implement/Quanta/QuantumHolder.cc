@@ -55,10 +55,6 @@ QuantumHolder &QuantumHolder::operator=(const QuantumHolder &other) {
   return *this;
 }
 
-const QBase &QuantumHolder::operator()() const {
-  return *hold_p.ptr();
-}
-
 //# Member Functions
 Bool QuantumHolder::isEmpty() const {
   return ToBool(!hold_p.ptr());
@@ -375,15 +371,13 @@ Bool QuantumHolder::fromRecord(String &error,
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Vector<DComplex> >(vl, un));
     } else {
-      error =
-	String("Illegal Quantum datatype in QuantumHolder::fromRecord\n") +
-	error;
+      error +=
+	String("Illegal Quantum datatype in QuantumHolder::fromRecord\n");
       return False;
     };
     return True;
   };
-  error = String("Illegal Quantum record in QuantumHolder::fromRecord\n") +
-    error;
+  error += String("Illegal Quantum record in QuantumHolder::fromRecord\n");
   return False;
 }
 
@@ -425,8 +419,7 @@ Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
 	       String(hold_p.ptr()->getFullUnit().getName()));
     return True;
   };
-  error = String("No Quantum specified in QuantumHolder::toRecord\n") +
-    error;
+  error += String("No Quantum specified in QuantumHolder::toRecord\n");
   return False;
 }
 

@@ -126,8 +126,6 @@ public:
 //# Operators
   // Assignment (copy semantics)
   QuantumHolder &operator=(const QuantumHolder &other);
-  // Get value (will have lifetime only as long as MeasHolder exists)
-  const QBase &operator()() const;
 
 //# Member Functions
   // Check if it holds a Quantity. Note that a Vector of length 1 will give

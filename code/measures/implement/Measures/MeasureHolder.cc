@@ -62,10 +62,6 @@ MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
   return *this;
 }
 
-const Measure &MeasureHolder::operator()() const {
-  return *hold_p.ptr();
-}
-
 //# Member Functions
 Bool MeasureHolder::isEmpty() const {
   return ToBool(!hold_p.ptr());
@@ -106,42 +102,42 @@ const Measure &MeasureHolder::asMeasure() const {
   return *hold_p.ptr();
 }
 
-const MDirection &MeasureHolder::asMDirection() {
+const MDirection &MeasureHolder::asMDirection() const {
   if (!hold_p.ptr() || !isMDirection()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDirection"));
   };
   return (const MDirection &) *hold_p.ptr();
 }
 
-const MDoppler &MeasureHolder::asMDoppler() {
+const MDoppler &MeasureHolder::asMDoppler() const {
   if (!hold_p.ptr() || !isMDoppler()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDoppler"));
   };
   return (const MDoppler &) *hold_p.ptr();
 }
 
-const MEpoch &MeasureHolder::asMEpoch() {
+const MEpoch &MeasureHolder::asMEpoch() const {
   if (!hold_p.ptr() || !isMEpoch()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMEpoch"));
   };
   return (const MEpoch &) *hold_p.ptr();
 }
 
-const MFrequency &MeasureHolder::asMFrequency() {
+const MFrequency &MeasureHolder::asMFrequency() const {
   if (!hold_p.ptr() || !isMFrequency()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMFrequency"));
   };
   return (const MFrequency &) *hold_p.ptr();
 }
 
-const MPosition &MeasureHolder::asMPosition() {
+const MPosition &MeasureHolder::asMPosition() const {
   if (!hold_p.ptr() || !isMPosition()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMPosition"));
   };
   return (const MPosition &) *hold_p.ptr();
 }
 
-const MRadialVelocity &MeasureHolder::asMRadialVelocity() {
+const MRadialVelocity &MeasureHolder::asMRadialVelocity() const {
   if (!hold_p.ptr() || !isMRadialVelocity()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMRadialVelocity"));
   };
@@ -171,8 +167,7 @@ Bool MeasureHolder::fromRecord(String &error,
     } else if (tp == downcase(MRadialVelocity::showMe())) {
       hold_p.set(new MRadialVelocity());
     } else {
-      error = String("Unknown Measure record in MeasureHolder::fromRecord\n") +
-	error;
+      error += String("Unknown Measure record in MeasureHolder::fromRecord\n");
       return False;
     };
     String rf;
@@ -194,8 +189,7 @@ Bool MeasureHolder::fromRecord(String &error,
 	return False;
       };
       if (!hold_p.ptr()->setOffset(x.asMeasure())) {
-	error = String("Unmatched offset type in MeasureHolder::fromRecord\n") +
-	  error;
+	error += String("Unmatched offset type in MeasureHolder::fromRecord\n");
 	return False;
       };
     };
@@ -227,14 +221,12 @@ Bool MeasureHolder::fromRecord(String &error,
     if (n > 1) vq(1) = q1.asQuantity();
     if (n > 2) vq(2) = q2.asQuantity();
     if (!hold_p.ptr()->putValue(vq)) {
-      error = String("Illegal quantity in MeasureHolder::fromRecord\n") +
-	error;
+      error += String("Illegal quantity in MeasureHolder::fromRecord\n");
       return False;
     };
     return True;
   };
-  error = String("Illegal Measure record in MeasureHolder::fromRecord\n") +
-    error;
+  error += String("Illegal Measure record in MeasureHolder::fromRecord\n");
   return False;
 }
 
@@ -282,7 +274,6 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
     };
     return True;
   };
-  error = String("No Measure specified in MeasureHolder::toRecord\n") +
-    error;
+  error += String("No Measure specified in MeasureHolder::toRecord\n");
   return False;
 }
