@@ -93,6 +93,16 @@ public:
   SubLattice (Lattice<T>& lattice, Bool writableIfPossible);
   // </group>
 
+  // Create a SubLattice from a MaskedLattice.
+  // <br>The "const MaskedLattice" version yields a non-writable SubLattice,
+  // while for the non-const version one has to specify if the SubLattice
+  // should be writable (if the original lattice is non-writable, the
+  // SubLattice is always set to non-writable).
+  // <group>
+  SubLattice (const MaskedLattice<T>& lattice);
+  SubLattice (MaskedLattice<T>& lattice, Bool writableIfPossible);
+  // </group>
+
   // Create a SubLattice from the given MaskedLattice and region.
   // Note that the region can be constructed from an
   // <linkto class=LCRegion>LCRegion</linkto> object or 
