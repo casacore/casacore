@@ -128,7 +128,20 @@ void TempImage<T>::attachMask (const Lattice<Bool>& mask)
     throw (AipsError ("TempImage::attachMask - "
 		      "shapes of lattice and mask mismatch"));
   }
+  if (maskPtr_p) {
+     delete maskPtr_p;
+     maskPtr_p = 0;
+  }
   maskPtr_p = mask.clone();
+}
+
+template<class T>
+void TempImage<T>::removeMask()
+{
+  if (maskPtr_p) {
+     delete maskPtr_p;
+     maskPtr_p = 0;
+  }
 }
 
 template<class T>
