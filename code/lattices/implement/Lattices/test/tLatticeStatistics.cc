@@ -179,7 +179,6 @@ void do2DFloat (const Vector<Float>& results,
 
 // Test
 
-cerr << "Call test2" << endl;
    test2DFloat (stats, results, hasResult, shape);
 
 // Test copy constructor - feeble test
