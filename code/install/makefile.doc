@@ -70,6 +70,10 @@ TXTDOCS  := $(filter %.txt,$(AIPSSRCS))
 HTMLDOCS := $(filter %.html,$(AIPSSRCS))
 HTMDOCS  := $(filter %.htm,$(AIPSSRCS))
 CSSDOCS  := $(filter %.css,$(AIPSSRCS))
+XMLDOCS  := $(filter %.xml,$(AIPSSRCS))
+WMFDOCS  := $(filter %.wmf,$(AIPSSRCS))
+MSODOCS  := $(filter %.mso,$(AIPSSRCS))
+WAVDOCS  := $(filter %.wav,$(AIPSSRCS))
 GIFDOCS  := $(filter %.gif,$(AIPSSRCS))
 BGIFDOCS  := $(filter %.GIF,$(AIPSSRCS))
 JPGDOCS  := $(filter %.jpg,$(AIPSSRCS))
@@ -183,6 +187,30 @@ $(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.ps.gz
 	 @ chmod 664 $@
 
 $(DOCSAREA)/%.text : $(CODEDIR)/%.text
+	-@ echo ""
+	 @ $(RM) $@
+	 cp $< $@
+	 @ chmod 664 $@
+
+$(DOCSAREA)/%.xml : $(CODEDIR)/%.xml
+	-@ echo ""
+	 @ $(RM) $@
+	 cp $< $@
+	 @ chmod 664 $@
+
+$(DOCSAREA)/%.wmf : $(CODEDIR)/%.wmf
+	-@ echo ""
+	 @ $(RM) $@
+	 cp $< $@
+	 @ chmod 664 $@
+
+$(DOCSAREA)/%.mso : $(CODEDIR)/%.mso
+	-@ echo ""
+	 @ $(RM) $@
+	 cp $< $@
+	 @ chmod 664 $@
+
+$(DOCSAREA)/%.wav : $(CODEDIR)/%.wav
 	-@ echo ""
 	 @ $(RM) $@
 	 cp $< $@
@@ -346,6 +374,10 @@ docsys : $(HELPSYS) $(CHKDIR) $(DOCSAREA) \
     $(addprefix $(DOCSAREA)/,$(HTMLDOCS)) \
     $(addprefix $(DOCSAREA)/,$(HTMDOCS)) \
     $(addprefix $(DOCSAREA)/,$(CSSDOCS)) \
+    $(addprefix $(DOCSAREA)/,$(WMFDOCS)) \
+    $(addprefix $(DOCSAREA)/,$(MSODOCS)) \
+    $(addprefix $(DOCSAREA)/,$(XMLDOCS)) \
+    $(addprefix $(DOCSAREA)/,$(WAVDOCS)) \
     $(addprefix $(DOCSAREA)/,$(GIFDOCS)) \
     $(addprefix $(DOCSAREA)/,$(BGIFDOCS)) \
     $(addprefix $(DOCSAREA)/,$(PNGDOCS)) \
