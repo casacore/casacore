@@ -162,6 +162,20 @@ try {
       cout << endl << endl;
    }
 
+   {
+      cout << "3D [ra, dec, spec] & 4D [ra, dec, stokes, spec]" << endl;
+ 
+      CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
+      CoordinateSystem cSys2;
+      CoordinateUtil::addDirAxes(cSys2);
+      CoordinateUtil::addIQUVAxis(cSys2);
+      CoordinateUtil::addFreqAxis(cSys2);
+ 
+      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      list (ok, map, transpose, cSys1, cSys2);
+      cout << endl << endl;
+   }
+ 
 
 
 }
