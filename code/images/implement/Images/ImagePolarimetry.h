@@ -128,6 +128,10 @@ public:
 // to summarize the header of the construction image
    void summary(LogIO& os) const;
 
+// Get the ImageInterface pointer of the construction image
+// Don't delete it !
+   const ImageInterface<Float>* imageInterface() const {return itsInImagePtr;};
+
 // Get the CoordinateSystem of the construction image
    CoordinateSystem coordinates() const {return itsInImagePtr->coordinates();};
 
@@ -143,6 +147,9 @@ public:
 // would return [10,10,1,20]    Specify the type of Stokes pixel
 // you want.  
    IPosition singleStokesShape(CoordinateSystem& cSys, Stokes::StokesTypes type) const;
+
+// Complex linear polarization
+   ImageExpr<Complex> complexLinearPolarization ();
 
 // <group>
 // Get the Stokes I image and the standard deviation of the
@@ -362,6 +369,9 @@ private:
 // FInd frequency axis
    void findFrequencyAxis (Int& spectralCoord, Int& fAxis,
                            const CoordinateSystem& cSys, Int spectralAxis) const;
+// So we have Q and U ?  Excpetion if not
+   void hasQU () const;
+
 // Make a LEN for the give types of polarized intensity
    LatticeExprNode makePolIntNode(LogIO& os, Bool debias, Float clip, Float sigma,
                                   Bool doLin, Bool doCirc);

@@ -141,13 +141,21 @@ ImagePolarimetry::~ImagePolarimetry()
 
 // Public methods
 
+ImageExpr<Complex> ImagePolarimetry::complexLinearPolarization()
+{
+   hasQU();
+   LatticeExprNode node(formComplex(*itsStokesPtr[ImagePolarimetry::Q], 
+                        *itsStokesPtr[ImagePolarimetry::U]));
+   LatticeExpr<Complex> le(node);
+   ImageExpr<Complex> ie(le, String("ComplexLinearPolarization"));
+   fiddleStokesCoordinate(ie, Stokes::Plinear);    // Need a Complex Linear Polarization type
+   return ie;
+}
 
 ImageExpr<Float> ImagePolarimetry::fracLinPol(Bool debias, Float clip, Float sigma) 
 {
    LogIO os(LogOrigin("ImagePolarimetry", "fracLinPol(...)", WHERE));
-   if (itsStokesPtr[ImagePolarimetry::Q]==0 && itsStokesPtr[ImagePolarimetry::U]==0) {
-      os << "This image does not have Stokes Q and U so cannot provide linear polarization" << LogIO::EXCEPTION;
-   }
+   hasQU();
    if (itsStokesPtr[ImagePolarimetry::I]==0) {
       os << "This image does not have Stokes I so cannot provide fractional linear polarization" << LogIO::EXCEPTION;
    }
@@ -178,9 +186,7 @@ ImageExpr<Float> ImagePolarimetry::sigmaFracLinPol(Float clip, Float sigma)
 //
 {
    LogIO os(LogOrigin("ImagePolarimetry", "sigmaFracLinPol(...)", WHERE));
-   if (itsStokesPtr[ImagePolarimetry::Q]==0 && itsStokesPtr[ImagePolarimetry::U]==0) {
-      os << "This image does not have Stokes Q and U so cannot provide linear polarization" << LogIO::EXCEPTION;
-   }
+   hasQU();
    if (itsStokesPtr[ImagePolarimetry::I]==0) {
       os << "This image does not have Stokes I so cannot provide fractional linear polarization" << LogIO::EXCEPTION;
    }
@@ -287,6 +293,7 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
                                               Bool zeroZeroLag)
 {
    LogIO os(LogOrigin("ImagePolarimetry", "fourierRotationMeasure(...)", WHERE));
+   hasQU();
 
 // Check image shape
 
@@ -503,6 +510,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
                                        Float sigma, Float rmFg, Bool showProgress)
 {
    LogIO os(LogOrigin("ImagePolarimetry", "rotationMeasure(...)", WHERE));
+   hasQU();
 
 // Do we have anything to do ?
 
@@ -1466,6 +1474,15 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
    return ok;
 }
 
+void ImagePolarimetry::hasQU () const
+{
+   Bool has = itsStokesPtr[ImagePolarimetry::Q]!=0 && 
+              itsStokesPtr[ImagePolarimetry::U]!=0;
+   if (!has) {
+      LogIO os(LogOrigin("ImagePolarimetry", "hasQU(...)", WHERE));
+      os << "This image does not have Stokes Q and U which are required for this function" << LogIO::EXCEPTION;
+   }
+}
 
 
 ImageExpr<Float> ImagePolarimetry::makeStokesExpr(ImageInterface<Float>* imPtr,
