@@ -31,3 +31,15 @@ The glish interpreter no longer attempts to auto-insert semicolons within open p
         }
 
 no longer causes a syntax error when parsing the 'if' statement conditional.
+
+change id: 0017
+ author:   Darrell Schiebel
+ date:     2000/07/10
+ avers:    1.4
+ area:     Glish
+ package:  Glish
+ module:   glish interpreter
+ type:     Code
+ category: Change
+ summary:  the colon is no longer a valid regular expression delimiter
+The colon (:) has been removed as a possible regular expression delimiter to avoid conflicts with the attribute operator, i.e. m::
