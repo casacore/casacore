@@ -222,32 +222,32 @@ GAUSSIAN element:
 Execute the fitter again with a fixed ampl, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.918402, 0.310557
-  Center:    1402.5, 0.00348469
-  Sigma:     0.00881809, 0.00343954
+  Amplitude: 0.918402, 0.310404
+  Center:    1402.5, 0.00348297
+  Sigma:     0.00881809, 0.00343784
 Parameters: [0.918402, 1402.5, 0.00881809]
-Errors:     [0.310557, 0.00348469, 0.00343954]
+Errors:     [0.310404, 0.00348297, 0.00343784]
 
 GAUSSIAN element: 
-  Amplitude: 2.76117, 0.238299
-  Center:    1405, 0.00151239
-  Sigma:     0.0151761, 0.00151239
+  Amplitude: 2.76117, 0.238181
+  Center:    1405, 0.00151164
+  Sigma:     0.0151761, 0.00151164
 Parameters: [2.76117, 1405, 0.0151761]
-Errors:     [0.238299, 0.00151239, 0.00151239]
+Errors:     [0.238181, 0.00151164, 0.00151164]
 
 GAUSSIAN element: 
-  Amplitude: 0.602535, 0.178985
-  Center:    1407.48, 0.00969123
-  Sigma:     0.0244648, 0.00969123
+  Amplitude: 0.602535, 0.178896
+  Center:    1407.48, 0.00968644
+  Sigma:     0.0244648, 0.00968644
 Parameters: [0.602535, 1407.48, 0.0244648]
-Errors:     [0.178985, 0.00969123, 0.00969123]
+Errors:     [0.178896, 0.00968644, 0.00968644]
 
 GAUSSIAN element: 
   Amplitude: 5, 0 (fixed)
-  Center:    1403, 0.00074176
-  Sigma:     0.0119707, 0.000605635
+  Center:    1403, 0.000741394
+  Sigma:     0.0119707, 0.000605336
 Parameters: [5, 1403, 0.0119707]
-Errors:     [0, 0.00074176, 0.000605635]
+Errors:     [0, 0.000741394, 0.000605336]
 
 >>>
 Number of iterations: 13
