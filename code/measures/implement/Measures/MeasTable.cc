@@ -137,10 +137,11 @@ void MeasTable::calcPrecesCoef(Double T, Polynomial<Double> result[3],
 
 void MeasTable::calcPrecesCoef2000(Polynomial<Double> result[3],
 				   const Double coef[3][6]) {
+  Int m=1;
   for (uInt i=0; i<3; i++) {
-    result[i] = Polynomial<Double>(5);
+    m = -m;
     for (uInt j=0; j<6; j++) {
-      result[i].setCoefficient(j, coef[i][j]);
+      result[i].setCoefficient(j, m*coef[i][j] * C::arcsec);
     };
   };
 }
