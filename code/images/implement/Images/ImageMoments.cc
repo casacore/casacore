@@ -40,6 +40,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Convolver.h>
+#include <aips/Measures/Unit.h>
 #include <aips/OS/Directory.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
@@ -48,19 +49,19 @@
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/ArrayPosIter.h>
 
-#include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Images/ImageMomentsProgress.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageHistograms.h>
 #include <trial/Images/ImageUtilities.h>
+#include <trial/Images/MomentCalculator.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/SubImage.h>
+#include <trial/Images/MaskedImage.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/MomentCalculator.h>
 #include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/PGPlotter.h>
 
@@ -71,7 +72,7 @@
 
 
 template <class T> 
-ImageMoments<T>::ImageMoments (SubImage<T>& image, 
+ImageMoments<T>::ImageMoments (MaskedImage<T>& image, 
                                LogIO &os) : os_p(os)
 //
 // Constructor. 
@@ -233,7 +234,7 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
 
 
 template <class T> 
-Bool ImageMoments<T>::setNewImage(SubImage<T>& image)
+Bool ImageMoments<T>::setNewImage(MaskedImage<T>& image)
 
 //
 // Assign pointer to image
@@ -795,10 +796,11 @@ Bool ImageMoments<T>::createMoments()
 // routines can only handle convolution when the image fits fully in core
 // at present.
    
-   PagedImage<T>* pSmoothedImage = 0;
+   MaskedImage<T>* pSmoothedImage = 0;
    String smoothName;
    if (doSmooth_p) {
-      if (!smoothImage(smoothName, pSmoothedImage)) {
+      pSmoothedImage = smoothImage(smoothName);
+      if (pSmoothedImage != 0) {
          os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
          return False;
       }
@@ -921,8 +923,8 @@ Bool ImageMoments<T>::createMoments()
    if ( stdDeviation_p <=0 && ( (doWindow_p && doAuto_p) || (doFit_p && !doWindow_p && doAuto_p) ) ) {
       if (pSmoothedImage) {
          os_p << LogIO::NORMAL << "Evaluating noise level from smoothed image" << LogIO::POST;
-         SubImage<T> image(*pSmoothedImage);
-         if (!whatIsTheNoise (noise, image)) return False;
+//         SubImage<T> image(*pSmoothedImage);
+         if (!whatIsTheNoise (noise, *pSmoothedImage)) return False;
       } else {
          os_p << LogIO::NORMAL << "Evaluating noise level from input image" << LogIO::POST;
          if (!whatIsTheNoise (noise, *pInImage_p)) return False;
@@ -1437,55 +1439,55 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
    Bool goodAxisUnits = ToBool(!momentAxisUnits.empty());
 
    if (moment == AVERAGE) {
-      suffix = "_MAverage";
+      suffix = ".MAverage";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == INTEGRATED) {
-      suffix = "_MIntegrated";
+      suffix = ".MIntegrated";
       temp = imageUnits.getName() + "." + momentAxisUnits;
       goodUnits = ToBool(goodImageUnits && goodAxisUnits);
    } else if (moment == WEIGHTED_MEAN_COORDINATE) {
-      suffix = "_MWeighted_Mean_Coord";
+      suffix = ".MWeighted_Mean_Coord";
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    } else if (moment == WEIGHTED_DISPERSION_COORDINATE) {
-      suffix = "_MWeighted_Dispersion_Coord";
+      suffix = ".MWeighted_Dispersion_Coord";
       temp = momentAxisUnits + "." + momentAxisUnits;
       goodUnits = goodAxisUnits;
    } else if (moment == MEDIAN) {
-      suffix = "_MMedian";
+      suffix = ".MMedian";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == STANDARD_DEVIATION) {
-      suffix = "_MStandard_Deviation";
+      suffix = ".MStandard_Deviation";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == RMS) {
-      suffix = "_MRms";
+      suffix = ".MRms";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == ABS_MEAN_DEVIATION) {
-      suffix = "_MAbs_Mean_Dev";
+      suffix = ".MAbs_Mean_Dev";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == MAXIMUM) {
-      suffix = "_MMaximum";
+      suffix = ".MMaximum";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == MAXIMUM_COORDINATE) {
-      suffix = "_MMaximum_Coord";
+      suffix = ".MMaximum_Coord";
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    } else if (moment == MINIMUM) {
-      suffix = "_MMinimum";
+      suffix = ".MMinimum";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == MINIMUM_COORDINATE) {
-      suffix = "_MMinimum_Coord";
+      suffix = ".MMinimum_Coord";
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    } else if (moment == MEDIAN_COORDINATE) {
-      suffix = "_MMedian_Coord";
+      suffix = ".MMedian_Coord";
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    }
@@ -1494,8 +1496,8 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
 }
 
 template <class T> 
-Bool ImageMoments<T>::smoothImage (String& smoothName, 
-                                   PagedImage<T>*& pSmoothedImage)
+
+MaskedImage<T>* ImageMoments<T>::smoothImage (String& smoothName)
 //
 // Smooth image.  
 //
@@ -1511,31 +1513,9 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
    if (axMax > Int(pInImage_p->ndim())) {
       os_p << LogIO::SEVERE << "You have specified a smoothing axis larger" << endl;
       os_p <<                  "than the number of axes in the image" << LogIO::POST;
-      return False;
+      return 0;
    }
       
-
-// Create smoothed image as a PagedImage.  We delete it later
-// if the user doesn't want to save it
-
-   if (smoothOut_p.empty()) {
-      File inputImageName(pInImage_p->name());
-      const String path = inputImageName.path().dirName() + "/";
-      Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
-      smoothName = fileName.absoluteName();
-   } else {
-      smoothName = smoothOut_p;
-   }
-
-// Create smoothed image
-
-   pSmoothedImage = new PagedImage<T>(pInImage_p->shape(), 
-                                      pInImage_p->coordinates(), smoothName);
-   pSmoothedImage->setMiscInfo(pInImage_p->miscInfo());
-   pSmoothedImage->set(0.0);
-   if (!smoothOut_p.empty()) {
-      os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
-   }
 
 
 // Generate convolving function
@@ -1582,26 +1562,57 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
       delete pPSF;
    }
 
-// Convolve.  PSF is separable so convolve by rows for each axis.  
-// First copy input to output then smooth in situ.  
 
-   pSmoothedImage->copyData(*pInImage_p);
+// Create smoothed image as a PagedImage.  We delete it later
+// if the user doesn't want to save it
+
+   if (smoothOut_p.empty()) {
+      File inputImageName(pInImage_p->name());
+      const String path = inputImageName.path().dirName() + "/";
+      Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
+      smoothName = fileName.absoluteName();
+   } else {
+      smoothName = smoothOut_p;
+   }
+
+   PagedImage<T> smoothedImage(pInImage_p->shape(), 
+                               pInImage_p->coordinates(), smoothName);
+   smoothedImage.setMiscInfo(pInImage_p->miscInfo());
+   if (!smoothOut_p.empty()) {
+      os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
+   }
+
+// First copy input to output 
+
+   smoothedImage.copyData(*pInImage_p);
+
+// Create SubImage which can handle masks
+
+   SubImage<T> smoothedSubImage(smoothedImage, True);
+
+
+// Smooth in situ.  PSF is separable so convolve by rows for each axis.  
+
    for (uInt i=0; i<psf.ndim(); i++) {
       if (psf.shape()(i) > 1) {
          os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
          Vector<T> psfRow = psfSep.column(i);
          psfRow.resize(psf.shape()(i),True);
-         smoothProfiles (pSmoothedImage, i, psfRow);
+         smoothProfiles (smoothedSubImage, i, psfRow);
       }
    }
 
-   return True;
+// Reurn pointer to masked smoothed image.  This is ok because 
+// underneath the tables are reference counted.  Although 
+// "smoothedSubImage" is destructed, its storage isn't.
+
+   return smoothedSubImage.cloneMI();
 }
 
 
 
 template <class T> 
-void ImageMoments<T>::smoothProfiles (Lattice<T>* pIn,
+void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
                                       const Int& axis,
                                       const Vector<T>& psf)
 //
@@ -1609,13 +1620,13 @@ void ImageMoments<T>::smoothProfiles (Lattice<T>* pIn,
 // one axis of the input image
 //
 {
-  TiledLineStepper navIn(pIn->shape(),
-			 pIn->niceCursorShape(pIn->maxPixels()),
+  TiledLineStepper navIn(in.shape(),
+			 in.niceCursorShape(in.maxPixels()),
 			 axis);
-  LatticeIterator<T> inIt(*pIn, navIn);
-  Vector<T> result(pIn->shape()(axis));
+  LatticeIterator<T> inIt(in, navIn);
+  Vector<T> result(in.shape()(axis));
 
-  IPosition sh(pIn->shape()(axis));  
+  IPosition sh(in.shape()(axis));  
   Convolver<T> conv(psf, sh);
 
   uInt i = 0;
@@ -1631,7 +1642,7 @@ void ImageMoments<T>::smoothProfiles (Lattice<T>* pIn,
 
 template <class T> 
 Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
-                                      SubImage<T>& image)
+                                      MaskedImage<T>& image)
 //
 // Determine the noise level in the image by first making a histogram of 
 // the image, then fitting a Gaussian between the 25% levels to give sigma
