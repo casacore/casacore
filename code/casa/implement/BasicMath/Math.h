@@ -29,15 +29,7 @@
 #define AIPS_MATH_H
 
 #include <aips/aips.h>
-#if defined(AIPS_IRIX)
-#include <math.h>
-// Get the abs value for floats. Can be removed as soon as sgi system uses
-// the standard switch.
-inline Float abs(Float Val) {if (Val >= 0) return Val; else return -Val;}
-inline Double abs(Double Val) {return fabs(Val);}
-#else
-#include <cmath>
-#endif
+#include <aips/math.h>
 //# The following is to get abs(int)
 #include <stdlib.h>
 
@@ -134,8 +126,6 @@ inline Double abs(Double Val) {return fabs(Val);}
 // library. But many compilers are not good enough to automatically do the type
 // promotion. Hence these functions are explicitly defined.
 // <group>
-inline Float pow(Float f1, Float f2) 
-{return Float(pow(Double(f1), Double(f2)));}
 inline Float pow(Float f1, Double f2) {return Float(pow(Double(f1), f2));}
 inline Float pow(Double f1, Float f2) {return Float(pow(f1, Double(f2)));}
 inline Int pow(Int f1, Int f2) {return Int(pow(Double(f1), Double(f2)));}
@@ -188,12 +178,6 @@ inline Double square(Double val) {return val*val;}
 inline Int cube(Int val) {return val*val*val;}
 inline Float cube(Float val) {return val*val*val;}
 inline Double cube(Double val) {return val*val*val;}
-// </group>
-
-// The square/cube root for non-Double data types.
-// <group>
-inline Float sqrt(Float val) {return Float(sqrt(Double(val)));}
-inline Float cbrt(Float val) {return Float(cbrt(Double(val)));}
 // </group>
 
 // Functions to return whether a value is "relatively" near another. Returns
