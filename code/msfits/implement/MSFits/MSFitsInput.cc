@@ -704,8 +704,8 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
  		      "", True,  nGroups/100);
 
   Vector<Double> uvw(3); // Move this temporary out of the loop
-  Int lastAnt1, lastAnt2, lastArray, lastSpW, lastSourceId;
-  lastAnt1=-1; lastAnt2=-1; lastArray=-1; lastSpW=-1; lastSourceId=-1;
+  Int lastArray, lastSourceId;
+  lastArray=-1; lastSourceId=-1;
   Double lastTime=0;
   Int fixToRow=-1;
   Bool lastRowFlag=False;
@@ -832,17 +832,13 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
  	lastRowFlag=rowFlag;
       }
 
-      if (ant1!=lastAnt1) {
- 	msc.antenna1().put(row,ant1);
- 	lastAnt1=ant1;
-      }
       if (array!=lastArray) {
  	msc.arrayId().put(row,array);
  	lastArray=array;
       }
-      // Always put antenna2 since it is bound to the
-      // aipsStMan and is assumed to change every
-      // row
+      // Always put antenna1 & antenna2 since it is bound to the
+      // aipsStMan and is assumed to change every row
+      msc.antenna1().put(row,ant1);
       msc.antenna2().put(row,ant2);
       if (time!=lastTime) {
  	msc.time().put(row,time);
@@ -864,11 +860,10 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
  	  spW+=ifno;
  	}
       }
-      if (spW!=lastSpW) {
- 	msc.dataDescId().put(row,spW);
- 	nSpW = max(nSpW, spW+1);
- 	lastSpW=spW;
-      }
+      nSpW = max(nSpW, spW+1);
+
+      // Always put DDI (SSM) since it might change rapidly
+      msc.dataDescId().put(row,spW);
     
       // store the sourceId 
       Int sourceId = 0;
