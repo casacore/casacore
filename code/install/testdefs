@@ -346,6 +346,24 @@ system :
 	-@ set WARNING $(PGPLOTLIBD) $(PGPLOTLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
+	-@ echo "XmPGPLOTROOT=$(XmPGPLOTROOT)"
+    ifdef DO_TEST
+	-@ set WARNING $(XmPGPLOTROOT) ; $(CheckDir)
+    endif
+	-@ echo "XmPGPLOTDEFS=$(XmPGPLOTDEFS)"
+	-@ echo "XmPGPLOTINCD=$(XmPGPLOTINCD)"
+    ifdef DO_TEST
+	-@ set WARNING $(XmPGPLOTINCD) ; $(CheckDir)
+    endif
+	-@ echo "XmPGPLOTLIBD=$(XmPGPLOTLIBD)"
+    ifdef DO_TEST
+	-@ set WARNING $(XmPGPLOTLIBD) ; $(CheckDir)
+    endif
+	-@ echo "XmPGPLOTLIB =$(XmPGPLOTLIB)"
+    ifdef DO_TEST
+	-@ set WARNING $(XmPGPLOTLIBD) $(XmPGPLOTLIB) ; $(CheckLibs)
+    endif
+	-@ echo ""
 	-@ echo "TCLROOT =$(TCLROOT)"
     ifdef DO_TEST
 	-@ set WARNING $(TCLROOT) ; $(CheckDir)
