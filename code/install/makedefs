@@ -143,7 +143,14 @@ PGPLOTROOT := /usr/local
 PGPLOTDEFS :=
 PGPLOTINCD  = $(PGPLOTROOT)/include
 PGPLOTLIBD  = $(PGPLOTROOT)/lib
-PGPLOTLIB  := -lXmPgplot -lcpgplot -lpgplot
+PGPLOTLIB  := -lcpgplot -lpgplot
+
+# PGPLOT/Motif library (libXmPgplot.a); includes standard PGPLOT.
+XmPGPLOTROOT  = $(PGPLOTROOT)
+XmPGPLOTDEFS :=
+XmPGPLOTINCD  = $(PGPLOTROOT)/include
+XmPGPLOTLIBD  = $(PGPLOTROOT)/lib
+XmPGPLOTLIB  := -lXmPgplot -lcpgplot -lpgplot
 
 # TCL (version 7.6 or later).
 TCLROOT  := /usr/local
