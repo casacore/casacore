@@ -1,5 +1,5 @@
 //# RegionHandler.h: Abstract base class for handling regions in images
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,7 +66,7 @@ template<class T> class Vector;
 // true regions in an image.
 // <p>
 // This class handles defining, getting and removing such regions.
-// It is used by class <linkto class=PagedImage</linkto>, but it can also
+// It is used by class <linkto class=PagedImage>PagedImage</linkto>, but it can also
 // be used by other code to handle regions in other tables.
 // <p>
 // Another function performed by this class for PagedImage is the
