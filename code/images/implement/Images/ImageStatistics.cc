@@ -66,13 +66,14 @@
 // Public functions
 
 template <class T>
-ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
-                                     LogIO& osU, 
-                                     Bool showProgressU)
+ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
+                                     LogIO& os, 
+                                     Bool showProgress,
+                                     Bool forceDisk)
 // 
 // Constructor
 //
-: os_p(osU),
+: os_p(os),
   pInImage_p(0), 
   pStoreImage_p(0),
   doList_p(False),
@@ -83,8 +84,9 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
   doneSomeGoodPoints_p(False),
   someGoodPointsValue_p(False),
   haveLogger_p(True),
-  showProgress_p(showProgressU),
-  fixedMinMax_p(False)
+  showProgress_p(showProgress),
+  fixedMinMax_p(False),
+  forceDisk_p(forceDisk)
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
@@ -93,7 +95,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
    maxPos_p.resize(0);
    blcParent_p.resize(0);
 
-   if (setNewImage(imageU)) {
+   if (setNewImage(image)) {
 
 // Cursor axes defaults to all
 
@@ -106,8 +108,9 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
 
 
 template <class T>
-ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
-                                     Bool showProgressU)  
+ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
+                                     Bool showProgress,
+                                     Bool forceDisk)
 // 
 // Constructor
 //
@@ -121,8 +124,9 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
   doneSomeGoodPoints_p(False),
   someGoodPointsValue_p(False),
   haveLogger_p(False),
-  showProgress_p(showProgressU),
-  fixedMinMax_p(False)
+  showProgress_p(showProgress),
+  fixedMinMax_p(False),
+  forceDisk_p(forceDisk)
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
@@ -131,7 +135,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
    maxPos_p.resize(0);
    blcParent_p.resize(0);
 
-   if (setNewImage(imageU)) {
+   if (setNewImage(image)) {
 
 // Cursor axes defaults to all
 
@@ -145,8 +149,8 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
 
 template <class T>
 ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other) 
-                      : pInImage_p(0),
-                        pStoreImage_p(0)
+: pInImage_p(0),
+  pStoreImage_p(0)
 //
 // Copy constructor.  Storage image is not copied.
 //
@@ -199,6 +203,7 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
       minPos_p = other.minPos_p; 
       maxPos_p = other.maxPos_p;
       blcParent_p = other.blcParent_p;
+      forceDisk_p = other.forceDisk_p;
    }
    return *this;
 }
@@ -222,7 +227,7 @@ ImageStatistics<T>::~ImageStatistics()
 
 
 template <class T>
-Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
+Bool ImageStatistics<T>::setAxes (const Vector<Int>& axes)
 //
 // This function sets the cursor axes and the display axes
 //
@@ -239,7 +244,7 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
 // Assign cursor axes.
 
    cursorAxes_p.resize(0);
-   cursorAxes_p = axesU;
+   cursorAxes_p = axes;
 
    if (cursorAxes_p.nelements() == 0) {
    
@@ -278,9 +283,9 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
 
 
 template <class T>
-Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& includeU,
-                                           const Vector<T>& excludeU,
-                                           Bool setMinMaxToIncludeU)
+Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& include,
+                                           const Vector<T>& exclude,
+                                           Bool setMinMaxToInclude)
 //
 // Assign the desired exclude range
 //
@@ -299,7 +304,7 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& includeU,
       
    ostrstream os;
    if (!setIncludeExclude(range_p, noInclude_p, noExclude_p,
-                          includeU, excludeU, os)) {
+                          include, exclude, os)) {
       if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid pixel in/exclusion range" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
@@ -307,7 +312,7 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& includeU,
 
 // Can't have fixed min and max with an exclusion range
 
-   fixedMinMax_p = setMinMaxToIncludeU;
+   fixedMinMax_p = setMinMaxToInclude;
    if (!noExclude_p && fixedMinMax_p) {
       if (haveLogger_p) {
          os_p << LogIO::SEVERE 
@@ -353,8 +358,8 @@ Bool ImageStatistics<T>::setList (const Bool& doList)
 
 template <class T>
 Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
-                                     const Vector<Int>& statsToPlotU,
-                                     const Vector<Int>& nxyU)
+                                     const Vector<Int>& statsToPlot,
+                                     const Vector<Int>& nxy)
 //
 // Assign the desired PGPLOT device name and number
 // of subplots
@@ -388,7 +393,7 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
 // Make sure requested statistics are valid
 
    statsToPlot_p.resize(0);
-   statsToPlot_p = statsToPlotU;
+   statsToPlot_p = statsToPlot;
    for (uInt i=0; i<statsToPlot_p.nelements(); i++) {
       if (statsToPlot_p(i) < 0 || statsToPlot_p(i) > NSTATS-1) {
          if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid statistic requested for display" 
@@ -402,7 +407,7 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
 // Plotting device and subplots.  nxy_p is set to [1,1] if zero length
  
    nxy_p.resize(0);
-   nxy_p = nxyU;
+   nxy_p = nxy;
    ostrstream os;
    if (!ImageUtilities::setNxy(nxy_p, os)) {
       if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid number of subplots" << LogIO::POST;
@@ -1133,6 +1138,7 @@ Bool ImageStatistics<T>::generateStorageImage()
 
     uInt memory = AppInfo::memoryInMB();
     Double useMemory = Double(memory)/10.0;
+    if (forceDisk_p) useMemory = 0.0;
     pStoreImage_p = new TempLattice<T>(TiledShape(storeImageShape,
                                        tileShape), useMemory);
 

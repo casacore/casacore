@@ -178,16 +178,22 @@ template <class T> class ImageStatistics : public ImageStatsBase
 public:
 
 // Constructor takes the image and a <src>LogIO</src> object for logging.
-// You can also specify whether you want to see progress meters or not.
+// You can specify whether you want to see progress meters or not.
+// You can force the storage image to be disk based, otherwise
+// the decision for core or disk is taken for you.
    ImageStatistics (const ImageInterface<T>& image, 
                     LogIO& os,
-                    Bool showProgress=True);
+                    Bool showProgress=True,
+                    Bool forceDisk=False);
 
 // Constructor takes the image only. In the absence of a logger you get no messages.
 // This includes error messages and potential listing of the statistics.
-// You can also specify whether you want to see progress meters or not.
+// You can specify whether you want to see progress meters or not.
+// You can force the storage image to be disk based, otherwise
+// the decision for core or disk is taken for you.
    ImageStatistics (const ImageInterface<T>& image,
-                    Bool showProgress=True);
+                    Bool showProgress=True,
+                    Bool forceDisk=False);
 
 // Copy constructor.  Copy semantics are followed.  Therefore any storage image 
 // that has already been created for <src>other</src> is copied to <src>*this</src>
@@ -320,7 +326,7 @@ private:
    PGPlotter plotter_p;
    Bool doList_p, noInclude_p, noExclude_p, goodParameterStatus_p;
    Bool needStorageImage_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
-   Bool haveLogger_p, showProgress_p, fixedMinMax_p;
+   Bool haveLogger_p, showProgress_p, fixedMinMax_p, forceDisk_p;
    IPosition minPos_p, maxPos_p, blcParent_p;
 
 
