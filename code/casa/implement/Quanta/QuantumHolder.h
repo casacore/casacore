@@ -72,10 +72,11 @@ template <class T> class Vector;
 //	 <src>Quantum<Vector<Double> ></src>
 //  <li> <src>Quantum<Vector<Complex> >, Quantum<Vector<DComplex> ></src>
 // </ul>
-// Quantums in the same group can be converted to any in the same group (e.g.
+// Scalars in the same group can be converted to any in the same group (e.g.
 // Int to Double); Vectors of length 1 can be converted to scalars in the 
 // corresponding group; Scalars can always be converted to Vectors in the 
-// corresponding group. Real values can be converted to Complex values.
+// corresponding group. Real scalar values can be converted to Complex values.
+// Vectors cannot be converted to other type vectors.
 //
 // Checks on the contents can be made with functions like
 // <src>isQuantity</src> and the contents can be obtained with
