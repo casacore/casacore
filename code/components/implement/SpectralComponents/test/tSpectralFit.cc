@@ -250,8 +250,13 @@ int main(int argc, char **argv) {
       cout << "Execute the fitter, can do (1:Y): " <<
 	fitter.fit(dat,freq) << endl;
       cout << "The results: " << endl;
+      Vector<Double> tmp;
       for (uInt i=0; i<fitter.list().nelements(); i++) {
 	cout << fitter.list()[i] << endl;
+	fitter.list()[i].get(tmp);
+	cout << "Parameters: " << tmp << endl;
+	fitter.list()[i].getError(tmp);
+	cout << "Errors:     " << tmp << endl;
       };
       cout << "---------------------------------------------------" << endl;
       

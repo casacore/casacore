@@ -167,25 +167,33 @@ GAUSSIAN element:
 Execute the fitter, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.891865
+  Amplitude: 0.930178
   Center:    1402.5
-  Sigma:     0.0217849
+  Sigma:     0.0200996
 
+Parameters: [0.930178, 1402.5, 0.0200996]
+Errors:     [0.304406, 0.00365678, 0.00856158]
 GAUSSIAN element: 
-  Amplitude: 2.7614
+  Amplitude: 2.76114
   Center:    1405
-  Sigma:     0.0357307
+  Sigma:     0.0357375
 
+Parameters: [2.76114, 1405, 0.0357375]
+Errors:     [0.238205, 0.00151138, 0.00355904]
 GAUSSIAN element: 
-  Amplitude: 0.584119
+  Amplitude: 0.570195
   Center:    1407.48
-  Sigma:     0.0563517
+  Sigma:     0.0632673
 
+Parameters: [0.570195, 1407.48, 0.0632673]
+Errors:     [0.189678, 0.00897295, 0.0211297]
 GAUSSIAN element: 
-  Amplitude: 5.248
+  Amplitude: 5.24744
   Center:    1403
-  Sigma:     0.0273529
+  Sigma:     0.0273588
 
+Parameters: [5.24744, 1403, 0.0273588]
+Errors:     [0.272246, 0.000695814, 0.00163844]
 ---------------------------------------------------
 Different start values: 
 GAUSSIAN element: 
@@ -211,28 +219,28 @@ GAUSSIAN element:
 Execute the fitter, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.933802
+  Amplitude: 0.89636
   Center:    1402.5
-  Sigma:     0.0197866
+  Sigma:     0.0216188
 
 GAUSSIAN element: 
-  Amplitude: 2.76115
+  Amplitude: 2.76117
   Center:    1405
-  Sigma:     0.0357373
+  Sigma:     0.0357369
 
 GAUSSIAN element: 
-  Amplitude: 0.549819
+  Amplitude: 0.60332
   Center:    1407.48
-  Sigma:     0.0661861
+  Sigma:     0.0562638
 
 GAUSSIAN element: 
-  Amplitude: 5.24751
+  Amplitude: 5.24752
   Center:    1403
-  Sigma:     0.0273581
+  Sigma:     0.027358
 
 ---------------------------------------------------
 Differences: 
-Min difference: -1.09994, max: 1.01271, average: 0.00965063, sigma: 0.0100337
+Min difference: -1.09994, max: 1.01271, average: 0.00981503, sigma: 0.010033
 ---------------------------------------------------
 ---------------------------------------------------
 Estimates: 
