@@ -34,10 +34,12 @@
 
 #include <trial/MeasurementSets/MSDataDescBuffer.h>
 
+#include <aips/Arrays/Vector.h>
+
 int main() {
   try {
     // Check the default constructor
-    MSDataDescriptionBuffer newBuffer;
+    MSDataDescBuffer newBuffer;
     // test the ok function.
     AlwaysAssert(newBuffer.ok(), AipsError);
     // test the addRow & nrow functions.
@@ -46,45 +48,54 @@ int main() {
     AlwaysAssert(newBuffer.ok(), AipsError);
     AlwaysAssert(newBuffer.nrow() == 20, AipsError);
     {
-      MSDataDescriptionBuffer fieldBuffer(1);
+      MSDataDescBuffer buffer(1);
       { // test the addRow & nrow functions.
- 	AlwaysAssert(fieldBuffer.nrow() == 1, AipsError);
- 	fieldBuffer.addRow(4);
- 	AlwaysAssert(fieldBuffer.nrow() == 5, AipsError);
+  	AlwaysAssert(buffer.nrow() == 1, AipsError);
+  	buffer.addRow(4);
+  	AlwaysAssert(buffer.nrow() == 5, AipsError);
       }
       { // test the spectralWindowId functions.
- 	AlwaysAssert(fieldBuffer.spectralWindowId(0) == -1, AipsError);
- 	AlwaysAssert(fieldBuffer.spectralWindowId(4) == -1, AipsError);
- 	fieldBuffer.spectralWindowId(0, 0);
- 	fieldBuffer.spectralWindowId(4, 1);
+  	AlwaysAssert(buffer.spectralWindowId()(0) == -1, AipsError);
+  	AlwaysAssert(buffer.spectralWindowId()(4) == -1, AipsError);
+  	buffer.spectralWindowId().put(0, 0);
+  	buffer.spectralWindowId().put(4, 1);
       }
       { // test the polarizationId functions.
- 	AlwaysAssert(fieldBuffer.polarizationId(0) == -1, AipsError);
- 	AlwaysAssert(fieldBuffer.polarizationId(4) == -1, AipsError);
- 	fieldBuffer.polarizationId(0, 1);
- 	fieldBuffer.polarizationId(4, 3);
+ 	AlwaysAssert(buffer.polarizationId()(0) == -1, AipsError);
+ 	AlwaysAssert(buffer.polarizationId()(4) == -1, AipsError);
+ 	buffer.polarizationId().put(0, 1);
+ 	buffer.polarizationId().put(4, 3);
       }
       { // test the flagRow functions.
- 	AlwaysAssert(fieldBuffer.flagRow(0) == False, AipsError);
- 	AlwaysAssert(fieldBuffer.flagRow(4) == False, AipsError);
- 	fieldBuffer.flagRow(4, True);
+  	AlwaysAssert(buffer.flagRow()(0) == False, AipsError);
+  	AlwaysAssert(buffer.flagRow()(4) == False, AipsError);
+  	buffer.flagRow().put(4, True);
       }
       { // Check the assignment operator & copy constructor
- 	MSDataDescriptionBuffer otherBuffer(fieldBuffer);
- 	AlwaysAssert(otherBuffer.ok(), AipsError);
- 	AlwaysAssert(otherBuffer.nrow() == 5, AipsError);
- 	newBuffer = otherBuffer;
- 	AlwaysAssert(newBuffer.ok(), AipsError);
+   	MSDataDescBuffer otherBuffer(buffer);
+   	AlwaysAssert(otherBuffer.ok(), AipsError);
+   	AlwaysAssert(otherBuffer.nrow() == 5, AipsError);
+	newBuffer = otherBuffer;
+   	AlwaysAssert(newBuffer.ok(), AipsError);
+	// Check the reference semantics by adding data here and seeing if it
+	// is mirrored into the newBuffer object.
+	buffer.spectralWindowId().put(1, 100);
+	buffer.polarizationId().put(1, 101);
+	buffer.flagRow().put(1, True);
       }
     }
     { // check the data has not been lost.
       AlwaysAssert(newBuffer.nrow() == 5, AipsError);
-      AlwaysAssert(newBuffer.spectralWindowId(0) ==  0, AipsError);
-      AlwaysAssert(newBuffer.spectralWindowId(4) ==  1, AipsError);
-      AlwaysAssert(newBuffer.polarizationId(0) ==  1, AipsError);
-      AlwaysAssert(newBuffer.polarizationId(4) ==  3, AipsError);
-      AlwaysAssert(newBuffer.flagRow(0) == False, AipsError);
-      AlwaysAssert(newBuffer.flagRow(4) == True, AipsError);
+      AlwaysAssert(newBuffer.spectralWindowId()(0) ==  0, AipsError);
+      AlwaysAssert(newBuffer.spectralWindowId()(4) ==  1, AipsError);
+      AlwaysAssert(newBuffer.polarizationId()(0) ==  1, AipsError);
+      AlwaysAssert(newBuffer.polarizationId()(4) ==  3, AipsError);
+      AlwaysAssert(newBuffer.flagRow()(0) == False, AipsError);
+      AlwaysAssert(newBuffer.flagRow()(4) == True, AipsError);
+      // check the reference semantics
+      AlwaysAssert(newBuffer.spectralWindowId()(1) ==  100, AipsError);
+      AlwaysAssert(newBuffer.polarizationId()(1) ==  101, AipsError);
+      AlwaysAssert(newBuffer.flagRow()(1) == True, AipsError);
     }
     { // Check the isValid functions
       AlwaysAssert(newBuffer.isValid(True) == False, AipsError);
@@ -100,7 +111,7 @@ int main() {
     cout << "FAIL" << endl;
     return 1;
   }
-  cout << "OK" << endl;
+    cout << "OK" << endl;
 }
 
 // Local Variables: 
