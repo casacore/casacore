@@ -142,14 +142,16 @@ void Sort::sortKey (const void* dat, ObjCompareFunc* cmp, uInt inc, Order ord)
 void Sort::sortKey (uInt off, DataType dt, Order ord)
 {
     if (data_p == 0) {
-	throw (SortNoData());
+        SortNoData tmp;
+	throw (tmp);
     }
     addKey ((char*)data_p+off, dt, size_p, ord);
 }
 void Sort::sortKey (uInt off, ObjCompareFunc* cmp, Order ord)
 {
     if (data_p == 0) {
-	throw (SortNoData());
+        SortNoData tmp;
+	throw (tmp);
     }
     addKey ((char*)data_p+off, cmp, size_p, ord);
 }
@@ -160,7 +162,8 @@ void Sort::addKey (const void* dat, DataType dt, uInt inc, int ord)
     uInt sz = ValType::getTypeSize (dt);
     if (inc != 0) {
 	if (sz > inc) {
-	    throw (SortInvIncr());
+            SortInvIncr tmp;
+	    throw (tmp);
 	}
 	sz = inc;
     }
@@ -223,7 +226,10 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 	}
 	break;
     default:
-	throw (SortInvOpt());
+      {
+	SortInvOpt tmp;
+	throw (tmp);
+      }
     }
     indexVector.putStorage (inx, del);
     // If n < nrrec, some duplicates have been deleted.

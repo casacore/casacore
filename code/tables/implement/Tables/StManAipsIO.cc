@@ -300,7 +300,10 @@ void StManColumnAipsIO::deleteData (void* datap, Bool byPtr)
 	    delete [] (String*)datap;
 	    break;
 	default:
-	    throw (DataManInvDT());
+	  {
+	    DataManInvDT tmp;
+	    throw (tmp);
+	  }
 	}
     }
     datap = 0;
@@ -354,7 +357,10 @@ void* StManColumnAipsIO::allocData (uInt nrval, Bool byPtr)
 	    datap = new String[nrval];
 	    break;
 	default:
-	    throw (DataManInvDT());
+	  {
+	    DataManInvDT tmp;
+	    throw (tmp);
+	  }
 	}
     }
     if (datap == 0) {
@@ -408,7 +414,10 @@ void StManColumnAipsIO::removeData (void* dp, uInt inx, uInt nrvalAfter)
 	objmove (((String*)dp) + inx, ((String*)dp) + inx+1,nrvalAfter-inx);
 	break;
     default:
-	throw (DataManInvDT());
+      {
+	DataManInvDT tmp;
+	throw (tmp);
+      }
     }
 }
 

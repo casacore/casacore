@@ -146,7 +146,8 @@ void TableDesc::init (const TabPath& tdpath)
 	dir_p = "**SCRATCH**";
     }else{
 	if (name_p.empty()) {
-	    throw (TableDescNoName());
+	    TableDescNoName tmp;
+	    throw (tmp);
 	}
         Bool exsw = tdpath.found (name_p + ".tabdsc", dir_p);
         if (option_p == NewNoReplace) {

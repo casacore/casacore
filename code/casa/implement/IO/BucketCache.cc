@@ -194,7 +194,7 @@ void BucketCache::setDirty()
 void BucketCache::setLRU()
 {
     // When the LRU counter would wrap, clear all LRU info in the cache.
-    if (its_LRUCounter == 4294967295) {
+    if (its_LRUCounter == 4294967295u) {
 	its_LRUCounter = 0;
 	for (uInt i=0; i<its_CacheSizeUsed; i++) {
 	    its_LRU[i] = 0;
@@ -206,7 +206,8 @@ void BucketCache::setLRU()
 char* BucketCache::getBucket (uInt bucketNr)
 {
     if (bucketNr >= its_NewNrOfBuckets) {
-	throw (indexError<Int> (Int(bucketNr)));
+        indexError<Int> tmp(bucketNr);
+	throw (tmp);
     }
     naccess_p++;
     // Test if it is already in the cache.
@@ -309,7 +310,8 @@ void BucketCache::checkOffset (uInt length, uInt offset) const
     // Check if not before or after cached area.
     if (offset + length > its_StartOffset
     &&  offset < its_StartOffset + its_CurNrOfBuckets * its_BucketSize) {
-	throw (indexError<Int> (Int(offset)));
+        indexError<Int> tmp(offset);
+	throw (tmp);
     }
 }
 

@@ -53,7 +53,8 @@ template<class T>
 void TabVecRep<T>::validateConformance (uInt leng) const
 {
     if (nelements() != leng) {
-	throw (TableVectorNonConform());
+        TableVectorNonConform tmp;
+	throw (tmp);
     }
 }
 
