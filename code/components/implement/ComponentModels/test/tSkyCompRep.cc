@@ -27,8 +27,6 @@
 
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <aips/aips.h>
-
-
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
@@ -195,6 +193,80 @@ int main() {
     // test the ok function
     {
       AlwaysAssert(skyPtr -> SkyCompRep::ok() == True, AipsError);
+    }
+    // test the setFluxLinear & fluxLinear functions
+    {
+      Quantum<Vector<DComplex> > fluxLinear;
+      {
+	Vector<DComplex> valLinear(4);
+	valLinear(0) = DComplex(1.5,0.0);
+	valLinear(1) = DComplex(0.1,0.05);
+	valLinear(2) = DComplex(0.1,-0.05);
+	valLinear(3) = DComplex(0.5,0.0);
+	fluxLinear.setValue(valLinear);
+	fluxLinear.setUnit("WU");
+      }
+      skyPtr -> setFluxLinear(fluxLinear);
+
+      Quantum<Vector<Double> > fluxStokes;
+      skyPtr -> flux(fluxStokes);
+      // The tolerances should be increased when the conversions are done in
+      // double precision
+      AlwaysAssert(near(fluxStokes.getValue("Jy")(0), 0.01, C::flt_epsilon), 
+		   AipsError); 
+      AlwaysAssert(near(fluxStokes.getValue("Jy")(1), 0.005, C::flt_epsilon), 
+		   AipsError); 
+      AlwaysAssert(near(fluxStokes.getValue("Jy")(2), 0.001, C::flt_epsilon),
+		   AipsError); 
+      AlwaysAssert(near(fluxStokes.getValue("Jy")(3), 0.0005, C::flt_epsilon),
+		   AipsError); 
+
+      skyPtr -> fluxLinear(fluxLinear);
+      AlwaysAssert(near(fluxLinear.getValue("WU")(0), DComplex(1.5, 0.0), 
+			C::flt_epsilon), AipsError); 
+      AlwaysAssert(near(fluxLinear.getValue("WU")(1), DComplex(0.1, 0.05),
+			C::flt_epsilon), AipsError); 
+      AlwaysAssert(near(fluxLinear.getValue("WU")(2), DComplex(0.1, -0.05), 
+			C::flt_epsilon), AipsError); 
+      AlwaysAssert(near(fluxLinear.getValue("WU")(3), DComplex(0.5, 0.0),
+			C::flt_epsilon), AipsError); 
+    }
+    // test the setFluxCircular & fluxCircular functions
+    {
+      Quantum<Vector<DComplex> > fluxCircular;
+      {
+	Vector<DComplex> valCircular(4);
+	valCircular(0) = DComplex(1.5,0.0);
+	valCircular(1) = DComplex(0.1,0.05);
+	valCircular(2) = DComplex(0.1,-0.05);
+	valCircular(3) = DComplex(0.5,0.0);
+	fluxCircular.setValue(valCircular);
+	fluxCircular.setUnit("WU");
+      }
+      skyPtr -> setFluxCircular(fluxCircular);
+
+      Quantum<Vector<Double> > fluxStokes;
+      skyPtr -> flux(fluxStokes);
+      // The tolerances should be increased when the conversions are done in
+      // double precision
+      AlwaysAssert(near(fluxStokes.getValue("Jy")(0), 0.01, C::flt_epsilon), 
+		   AipsError); 
+      AlwaysAssert(near(fluxStokes.getValue("Jy")(1), 0.001, C::flt_epsilon), 
+		   AipsError); 
+      AlwaysAssert(near(fluxStokes.getValue("Jy")(2), 0.0005, C::flt_epsilon),
+		   AipsError); 
+      AlwaysAssert(near(fluxStokes.getValue("Jy")(3), 0.005, C::flt_epsilon),
+		   AipsError); 
+
+      skyPtr -> fluxCircular(fluxCircular);
+      AlwaysAssert(near(fluxCircular.getValue("WU")(0), DComplex(1.5, 0.0), 
+			C::flt_epsilon), AipsError); 
+      AlwaysAssert(near(fluxCircular.getValue("WU")(1), DComplex(0.1, 0.05),
+			C::flt_epsilon), AipsError); 
+      AlwaysAssert(near(fluxCircular.getValue("WU")(2), DComplex(0.1, -0.05), 
+			C::flt_epsilon), AipsError); 
+      AlwaysAssert(near(fluxCircular.getValue("WU")(3), DComplex(0.5, 0.0),
+			C::flt_epsilon), AipsError); 
     }
     delete skyPtr;
   }
