@@ -174,8 +174,8 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
 	    DebugAssert (! inIter.atEnd(), AipsError);
 	    data[i] = collapser.process (inIter.vectorCursor(),
 					 inIter.position());
-	    if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
 	    inIter++;
+	    if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
 	}
 	array.putStorage (data, deleteIt);
 	latticeOut.putSlice (array, outPos);
@@ -285,8 +285,8 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 		*datap = result(j);
 		datap += n;
 	    }
-	    if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
 	    inIter++;
+	    if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
 	}
 
 // Write the arrays (one in each output lattice).
@@ -478,8 +478,8 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 		break;
 	    }
 	}
-	if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
 	inIter++;
+	if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
     }
 
 // Write out the last output array.
