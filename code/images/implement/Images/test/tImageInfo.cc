@@ -74,8 +74,12 @@ try {
     mii.setRestoringBeam(beam(0), beam(1), beam(2));
     equalBeams(mii.restoringBeam(), beam);
 //
+    mii.removeRestoringBeam();
+    AlwaysAssertExit(mii.restoringBeam().nelements()==0);
+//
 // Copy constructor and assignemnt
 //
+    mii.setRestoringBeam(beam(0), beam(1), beam(2));
     ImageInfo mii2(mii);
     equalBeams(mii2.restoringBeam(), beam);
     Vector<Quantum<Double> > beam2(3);
