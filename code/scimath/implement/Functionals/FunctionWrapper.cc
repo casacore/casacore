@@ -74,13 +74,13 @@ NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const T&, const Vector<T>&),
 
 template <class T>
 NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const Vector<T>&),
-					const Int dim=1) :
+					const Int dim) :
   NQWrapperParam<T>(0),
   doit_p(new NQWrapperData<T,Vector<T>,T,True,False>(f,dim)) {};
 
 template <class T>
 NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const Vector<T>&, const T&),
-					const T &par, const uInt dim=1) :
+					const T &par, const uInt dim) :
   NQWrapperParam<T>(1),
   doit_p(new NQWrapperData<T,Vector<T>,T,True,True>(f,dim)) {
   param_p[0] = par;
@@ -90,7 +90,7 @@ template <class T>
 NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const Vector<T>&,
 					      const Vector<T>&),
 					const Vector<T> &par,
-					const uInt dim=1) :
+					const uInt dim) :
   NQWrapperParam<T>(par),
   doit_p(new NQWrapperData<T,Vector<T>,Vector<T>,True,True>(f,dim)) {};
 
