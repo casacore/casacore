@@ -481,7 +481,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
     }
 }
 
-Bool TSMCube::matches (const PtrBlock<TSMColumn*> idColSet,
+Bool TSMCube::matches (const PtrBlock<TSMColumn*>& idColSet,
                        const Record& idValues)
 {
     for (uInt i=0; i<idColSet.nelements(); i++) {
