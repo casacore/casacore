@@ -26,23 +26,23 @@ To summarize, the following functionality is supported:
 The first section explains the syntax.  The last sections show the
 interface to LEL using Glish or C++.  The Glish interface makes it
 possible to embed Glish variables and expressions in a LEL command. 
-At the end some \htmlref{examples}{LEL:EXAMPLES} are given.
+At the end some \htmlref{examples}{LEL:EXAMPLES} are given.  If 
+you like, you can go straight to the examples and hopefully immediately
+be able to do some basic things.
 
 \medskip\noindent LEL operates on lattices, which are a generalization
-of arrays.  As said
-above a particular type of lattice is an image; they will be used most
-often.  Because lattices can be very large, an expression is only
-evaluated when a chunk of its data is requested.  This is similar to
-reading only the requested chunk of data from a disk file. 
+of arrays.  As said above a particular type of lattice is an image; they
+will be used most often.  Because lattices can be very large, an
+expression is only evaluated when a chunk of its data is requested. 
+This is similar to reading only the requested chunk of data from a disk
+file. 
 
-\medskip\noindent LEL is quite efficient and can therefore be used
-well in C++ and glish
-code.  However, it can never be as efficient as carefully constructed
-C++ code. 
+\medskip\noindent LEL is quite efficient and can therefore be used well
+in C++ and glish code.  However, it can never be as efficient as
+carefully constructed C++ code. 
 
-\medskip\noindent \htmladdnormallink{Note 216}{../216/216.html} gives
-a detailed
-description how LEL is implemented using various C++ classes.
+\medskip\noindent \htmladdnormallink{Note 216}{../216/216.html} gives a
+detailed description how LEL is implemented using various C++ classes. 
 
 
 \section{\label{LEL:EXPRESSIONS}Expressions}
@@ -887,7 +887,7 @@ Otherwise it behaves like a normal image.  It is evaluated when actions
 (like \htmlref{statistics}{images:image.statistics}) are done on it. 
 
 \begin{verbatim}
-  im := calc('outimage','inimage1+inimage2');
+  im := calc(outfile='outimage',expr='inimage1+inimage2');
   im.statistics();
 \end{verbatim}
 
@@ -897,7 +897,7 @@ statistics on that new image.
 
 \medskip\noindent Writing it as
 \begin{verbatim}
-    im := expr('inimage1+inimage2');
+    im := calc(expr='inimage1+inimage2');
     im.statistics();
 \end{verbatim}
 would do the same with the exception of creating the output image.
@@ -1006,7 +1006,9 @@ creates another image on disk, which may or may not be desirable.
 \end{itemize}
 
 \section{\label{LEL:EXAMPLES}{Examples}}
-The following examples show some LEL expressions.
+The following examples show some LEL expressions (equally valid 
+in C\+\+ or \Glish.
+
 \\Note that LEL is readonly; i.e. it does not change any value in
 the images given. A function in the \texttt{image} client has to
 be used to do something with the result (e.g. storing in another image).
@@ -1055,7 +1057,7 @@ duw01> glish -l image.g
 - mask[3,4] := F
 - im1.putregion(mask=mask);          # put new mask back
 - global reg:=drm.box([1,1],[4,4]);  # a box region
-- im2 := expr('$im1[$reg]')          # read-only image applying region
+- im2 := calc(expr='$im1[$reg]')     # read-only image applying region
 - local pixels2, mask2
 - im2.getregion(pixels2, mask2);     # get the pixels and mask
 - print pixels2
