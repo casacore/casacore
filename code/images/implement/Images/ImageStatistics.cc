@@ -479,7 +479,7 @@ Bool ImageStatistics<T>::display()
 
 // List statistics
 
-      if (!doPlot || (doPlot && doList_p)) {
+      if (doList_p) {
         if (!listStats(pixelIterator.position(), n1, ord)) return False;
       }
 
@@ -517,6 +517,7 @@ Bool ImageStatistics<T>::getNPts(Array<T>& stats)
 // Do it
 
    retrieveStorageStatistic (stats, Int(NPTS));
+
    return True;
 }
 
@@ -545,6 +546,7 @@ Bool ImageStatistics<T>::getSum(Array<T>& stats)
 // Do it
 
    retrieveStorageStatistic (stats, Int(SUM));
+
    return True;
 }
 
@@ -573,6 +575,7 @@ Bool ImageStatistics<T>::getSumSquared (Array<T>& stats)
 // Do it
 
    retrieveStorageStatistic (stats, Int(SUMSQ));
+
    return True;
 }
 
@@ -600,6 +603,7 @@ Bool ImageStatistics<T>::getMin(Array<T>& stats)
 // Do it
 
    retrieveStorageStatistic (stats, Int(MIN));
+
    return True;
 }
 
@@ -943,7 +947,7 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
       }
    } else {
 
-// Some display axes present.  First resize image
+// Some display axes present.  First resize output slice
 
       IPosition shape(nDim);
       for (Int i=0; i<nDim; i++) shape(i) = pStoreImage_p->shape()(i);
@@ -1264,12 +1268,14 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
    if (nDisplayAxes > 1) {
       Vector<String> sWorld(1);
       Vector<Double> pixel(1);
-
       for (Int j=1; j<nDisplayAxes; j++) {
          pixel(0) = Double(dPos(j));
-         if (!pix2World (sWorld, displayAxes_p(j), pixel, oPrec, True)) return False;
- 
-         os_p <<  ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(j)))
+         if (!pix2World (sWorld, displayAxes_p(j), pixel, oPrec)) return False;
+
+      
+         Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+         String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+         os_p <<  ImageUtilities::shortAxisName(name)
               << " = " << dPos(j)+1 << " (" << sWorld(0) << ")";
          if (j < nDisplayAxes-1) os_p << ", ";
       }
@@ -1313,7 +1319,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
    Vector<String> sWorld(n1);
    Vector<Double> pixel(n1);
    for (Int i=0; i<n1; i++) pixel(i) = Double(i);
-   if (!pix2World(sWorld, displayAxes_p(0), pixel, oPrec, True)) return False;
+   if (!pix2World(sWorld, displayAxes_p(0), pixel, oPrec)) return False;
 
 
 // Write statistics to logger
@@ -1653,10 +1659,12 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
       for (Int j=1; j<displayAxes_p.nelements(); j++) {
          pixel(0) = Double(dPos(j));
-         if (!pix2World (sWorld, displayAxes_p(j), pixel, 6, True)) return False;
+         if (!pix2World (sWorld, displayAxes_p(j), pixel, 6)) return False;
 
-         oss << "  " 
-             << ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(j)))
+         Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+         String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+
+         oss << "  " << ImageUtilities::shortAxisName(name)
              << "=" << dPos(j)+1 << " (" << sWorld(0) << ")";
       }   
       oss << ends;
@@ -1785,7 +1793,7 @@ void ImageStatistics<T>::multiPlot (const Int& n1,
    const float* py = y.getStorage(deleteY);
    const float* pn = n.getStorage(deleteN);
 
-// Find number of segments in this array
+// Find number of segments in th<is array
 
    Int nSeg = 0;
    Vector<Int> start;
@@ -1867,99 +1875,100 @@ Int ImageStatistics<T>::niceColour (Bool& initColours)
 
 
 
+template <class T>
+Int ImageStatistics<T>::pixelAxisToWorldAxis(const CoordinateSystem& cSys,
+                                             const Int& pixelAxis)
+//
+// Find the world axis for the given pixel axis
+// in a coordinate system
+//
+{
+   Int coordinate, axisInCoordinate;
+   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+   return cSys.worldAxes(coordinate)(axisInCoordinate);
+}
+
+
 
 template <class T>
 Bool ImageStatistics<T>::pix2World (Vector<String>& sWorld,
-                                    const Int& worldAxis,
+                                    const Int& pixelAxis,
                                     const Vector<Double>& pixel,
-                                    const Int& prec,
-                                    const Bool& meanOther)
+                                    const Int& prec)
 //
 // Convert the vector of pixel coordinates to a formatted Vector
-// of strings giving the world coordinate in the specified world axis.   
-//
-// Inputs
-//   worldAxis   The world axis we are interested in
-//   pixel       Vector of pixel coordinates to transform
-//   prec        Precision to format output of scientific 
-//               formatted numbers (linear axes etc)
-//   meanOther   If the world axis is part of a coupled coordinate 
-//               such as DirectionCoordinate, this tells whether 
-//               to set the pixel coordinate of the other coupled 
-//               axis to the mean pixel of that axis (True) or the
-//               reference pixel (Fals)
-// Outputs
-//   sWorld      Vector of formatted strings of world coordinate
+// of strings giving the world coordinate in the specified world axis.
 // 
+// Inputs
+//   pixelAxis   The pixel axis whose coordinates we are interested in
+//   pixel       Vector of pixel coordinates (0 rel) to transform
+//               for the pixel axis of interest
+//   prec        Precision to format output of scientific
+//               formatted numbers (linear axes etc)
+// Outputs
+//   sWorld      Vector of formatted strings of world coordinates
+//               for the pixel axis
+//    
 {
    Int n1 = pixel.nelements();
    sWorld.resize(n1);
-
+   
 // Get coordinate system.
-
+         
    CoordinateSystem cSys = pInImage_p->coordinates();
+ 
+         
+// Create pixel and world vectors for all pixel axes. Initialize pixel values
+// to reference pixel, but if an axis is a cursor axis (whose coordinate is 
+// essentially being averaged) set the pixel to the mean pixel.
+
+   Vector<Double> pix(cSys.nPixelAxes());
+   Vector<Double> world(cSys.nPixelAxes());
+   pix = cSys.referencePixel(); 
+   for (Int i=0; i<pix.nelements(); i++) {
+     if (ImageUtilities::inVector(i, cursorAxes_p)) {
+       pix(i) = Double(pInImage_p->shape()(i)) / 2.0;
+     }
+   }
 
 
-// Find coordinate axis for first display world axis
+// Find the world axis for this pixel axis
+         
+   Int worldAxis = pixelAxisToWorldAxis (cSys, pixelAxis);
+ 
 
+// Find coordinate for this pixel axis
+  
    Int coordinate, axisInCoordinate, otherAxisInCoordinate;
-   cSys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+  
+
+// Convert to world and format depending upon coordinate type
 
    if (cSys.type(coordinate) == Coordinate::DIRECTION) {
+ 
 
-
-// Now find the other world axis that is the rest of the direction coordinate
-
-      Bool bad = True;
-      for (uInt otherWorldAxis=0; otherWorldAxis<cSys.nWorldAxes(); otherWorldAxis++) {
-         if (otherWorldAxis != worldAxis) {
-            cSys.findWorldAxis(coordinate, otherAxisInCoordinate, otherWorldAxis);
-            if (cSys.type(coordinate) == Coordinate::DIRECTION) {
-               bad = False;
-               break;
-            }
-         }
-      }
-      if (bad) return False;
-
-
-// Construct the direction coordinate
-
-      const DirectionCoordinate coord = cSys.directionCoordinate(coordinate);
-
-
-// Find mean or reference pixel coordinate for the other direction 
-// coordinate world axis
-
-      Double otherPixel;
-      if (meanOther) {
-         otherPixel = Double(pInImage_p->shape()(otherWorldAxis)) / 2.0;
-      } else {
-         otherPixel = coord.referencePixel()(0);
-      }
-
-
-// Convert pixels to world
-
-      Vector<Double> pix(2);
-      Vector<Double> world(2);
-      String tString = coord.worldAxisNames()(axisInCoordinate);
+// Find name of pixel axis
+         
+      String tString = cSys.worldAxisNames()(worldAxis);
       tString.upcase();
-
+         
+         
+// Loop over list of pixel coordinates and convert to world
+   
       for (Int i=0; i<n1; i++) {
-         pix(axisInCoordinate) = pixel(i);
-         pix(otherAxisInCoordinate) = otherPixel;
-
-         if (!coord.toWorld(world,pix)) return False;
-         MVAngle mVA(world(axisInCoordinate));
-
+         pix(pixelAxis) = pixel(i);
+ 
+         if (!cSys.toWorld(world,pix)) return False;
+         MVAngle mVA(world(pixelAxis));
+         
          if (tString.contains("RIGHT ASCENSION")) {
             sWorld(i) = mVA.string(MVAngle::TIME,8);
          } else if (tString.contains("DECLINATION")) {
             sWorld(i) = mVA.string(MVAngle::DIG2,8);
          } else {
             ostrstream oss;
-            oss.setf(ios::scientific, ios::floatfield);            
+            oss.setf(ios::scientific, ios::floatfield);
             oss.setf(ios::left);
             oss.precision(prec);
             oss << mVA.degree() << ends;
@@ -1968,37 +1977,32 @@ Bool ImageStatistics<T>::pix2World (Vector<String>& sWorld,
          }
       }
    } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) {
-      const SpectralCoordinate coord = cSys.spectralCoordinate(coordinate);
-      Vector<Double> pix(1), world(1);
-
+ 
       for (Int i=0; i<n1; i++) {
-         pix(0) = pixel(i);
-         if (!coord.toWorld(world,pix)) return False;
-
+         pix(pixelAxis) = pixel(i);
+         if (!cSys.toWorld(world,pix)) return False;
+ 
          ostrstream oss;
          oss.setf(ios::scientific, ios::floatfield);
          oss.setf(ios::left);
          oss.precision(prec);
-         oss << world(0) << ends;
+         oss << world(pixelAxis) << ends;
          String temp(oss.str());
          sWorld(i) = temp;
       }
    } else if (cSys.type(coordinate) == Coordinate::LINEAR) {
-      const LinearCoordinate coord = cSys.linearCoordinate(coordinate);
-      Vector<Double> pix(1), world(1);
-
       for (Int i=0; i<n1; i++) {
-         pix(0) = pixel(i);
-         if (!coord.toWorld(world,pix)) return False;
-
+         pix(pixelAxis) = pixel(i);
+         if (!cSys.toWorld(world,pix)) return False;
+      
          ostrstream oss;
          oss.setf(ios::scientific, ios::floatfield);
          oss.setf(ios::left);
          oss.precision(prec);
-	 oss << world(0) << ends;
+         oss << world(pixelAxis) << ends;
          String temp(oss.str());
          sWorld(i) = temp;
-      }
+      }  
    } else if (cSys.type(coordinate) == Coordinate::STOKES) {
       const StokesCoordinate coord = cSys.stokesCoordinate(coordinate);
       for (Int i=0; i<n1; i++) {
@@ -2010,7 +2014,7 @@ Bool ImageStatistics<T>::pix2World (Vector<String>& sWorld,
    }
    return True;
 }
-
+            
 
 
 template <class T>
@@ -2078,8 +2082,9 @@ void ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
 
       }
 
-// Copy to output template type
+// Copy to output template type; drop the length=1 last axis on copy
 
+      sliceShape.resize(sDim-1,True);      
       slice.resize(sliceShape);
       copyCursor (slice, doubleSlice);
    }
@@ -2164,3 +2169,6 @@ void ImageStatistics<T>::summStats ()
    os_p << endl << endl;
    os_p.post();
 }
+
+ 
+
