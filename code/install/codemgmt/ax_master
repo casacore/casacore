@@ -2791,3 +2791,4 @@
 10 101 src mv trial/apps/numerics/fftserver_meta.g trial/implement/Mathematics/fftserver_meta.g
 10 102 src rm trial/apps/imager/templates
 10 102 src rm trial/apps/cal
+10 104 src rm nrao/apps/gbtutils/gbt.g
