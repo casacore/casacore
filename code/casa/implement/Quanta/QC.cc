@@ -30,22 +30,22 @@
 #include <aips/Quanta/UnitMap.h>
 
 Quantum<Double> QC::c(C::c,"m/s");
-Quantum<Double> QC::G(C::Gravity,"N.m2/kg2");
-Quantum<Double> QC::h(C::Planck,"J.s");
+Quantum<Double> QC::G(6.67259e-11,"N.m2/kg2");
+Quantum<Double> QC::h(6.6260755e-34,"J.s");
 Quantum<Double> QC::HI(1420.405751786, "MHz");
-Quantum<Double> QC::R(C::GasConst,"J/K/mol");
-Quantum<Double> QC::NA(C::Avogadro,"mol-1");
-Quantum<Double> QC::e(C::qe,"C");
-Quantum<Double> QC::mp(C::mp,"kg");
-Quantum<Double> QC::mp_me(C::mp_me,"");
-Quantum<Double> QC::mu0(C::mu0,"H/m");
-Quantum<Double> QC::epsilon0(C::epsilon0,"F/m");
-Quantum<Double> QC::k(C::Boltzmann,"J/K");
-Quantum<Double> QC::F(C::Faraday,"C/mol");
-Quantum<Double> QC::me(C::me,"kg");
-Quantum<Double> QC::re(C::re,"m");
-Quantum<Double> QC::a0(C::a0,"m");
-Quantum<Double> QC::R0(C::R0,"m");
+Quantum<Double> QC::R(8.314510,"J/K/mol");
+Quantum<Double> QC::NA(6.0221367e+23,"mol-1");
+Quantum<Double> QC::e(1.60217733e-19,"C");
+Quantum<Double> QC::mp(1.6726231e-27,"kg");
+Quantum<Double> QC::mp_me(1836.152701,"");
+Quantum<Double> QC::mu0(4.0e-7*C::pi,"H/m");
+Quantum<Double> QC::epsilon0(1.0/(4.0e-7*C::pi*C::c*C::c),"F/m");
+Quantum<Double> QC::k(8.314510/6.0221367e+23,"J/K");
+Quantum<Double> QC::F(6.0221367e+23*1.60217733e-19,"C/mol");
+Quantum<Double> QC::me(1.6726231e-27/1836.152701,"kg");
+Quantum<Double> QC::re(2.8179e-15,"m");
+Quantum<Double> QC::a0(5.2918e-11,"m");
+Quantum<Double> QC::R0(6.9599e+08,"m");
 Quantum<Double> QC::k2(IAU_k*IAU_k,"AU3/d2/S0");
 
 uShort QC_init::count;

@@ -204,12 +204,12 @@ void UnitMap::initUM() {
 						 UnitVal(24.*3600.*365.25,"s"),
 						 "year"));
   UnitMap::mapSI->define("t",   	UnitName("t",
-						 UnitVal(C::tonne,"kg"),
+						 UnitVal(1000.,"kg"),
 						 "tonne"));
   
   // Astronomical SI units
   UnitMap::mapSI->define("Jy",   	UnitName("Jy",
-						 UnitVal(C::Jansky,"W/m2/Hz"),
+						 UnitVal(1.0e-26,"W/m2/Hz"),
 						 "jansky"));
   UnitMap::mapSI->define("AU",   	UnitName("AU",
 						 UnitVal(C::c * IAU_tauA,"m"),
@@ -221,7 +221,7 @@ void UnitMap::initUM() {
 						 UnitVal(1.,"AU"),
 						 "astronomical unit"));
   UnitMap::mapSI->define("S0",   	UnitName("S0",
-						 UnitVal(IAU_k*IAU_k/C::Gravity,
+						 UnitVal(IAU_k*IAU_k/6.67259e-11,
 							 "AU3/d2/(m3/kg/s2)"),
 						 "solar mass"));
   UnitMap::mapSI->define("M0",   	UnitName("M0",
@@ -290,61 +290,61 @@ void UnitMap::initUM() {
 						 UnitVal(5.,"mJy"),
 						 "WSRT flux unit"));
   UnitMap::mapCust->define("abA",   	UnitName("abA",
-						 UnitVal(C::abAmpere,"A"),
+						 UnitVal(10.0,"A"),
 						 "abampere"));
   UnitMap::mapCust->define("abC",   	UnitName("abC",
-						 UnitVal(C::abCoulomb,"C"),
+						 UnitVal(10.0,"C"),
 						 "abcoulomb"));
   UnitMap::mapCust->define("abF",   	UnitName("abF",
-						 UnitVal(C::abFarad,"F"),
+						 UnitVal(1.0e+9,"F"),
 						 "abfarad"));
   UnitMap::mapCust->define("abH",   	UnitName("abH",
-						 UnitVal(C::abHenry,"H"),
+						 UnitVal(1.0e-9,"H"),
 						 "abhenry"));
   UnitMap::mapCust->define("abOhm", 	UnitName("abOhm",
-						 UnitVal(C::abOhm,"Ohm"),
+						 UnitVal(1.0e-9,"Ohm"),
 						 "abohm"));
   UnitMap::mapCust->define("abV",   	UnitName("abV",
-						 UnitVal(C::abVolt,"V"),
+						 UnitVal(1.0e-8,"V"),
 						 "abvolt"));
   UnitMap::mapCust->define("statA", 	UnitName("statA",
-						 UnitVal(C::statAmpere,"A"),
+						 UnitVal((0.1/C::c),"A"),
 						 "statampere"));
   UnitMap::mapCust->define("statC", 	UnitName("statC",
-						 UnitVal(C::statCoulomb,"C"),
+						 UnitVal((0.1/C::c),"C"),
 						 "statcoulomb"));
   UnitMap::mapCust->define("statF", 	UnitName("statF",
-						 UnitVal(C::statFarad,"F"),
+						 UnitVal(1.0/(3.0e+3*C::c),"F"),
 						 "statfarad"));
   UnitMap::mapCust->define("statH", 	UnitName("statH",
-						 UnitVal(C::statHenry,"H"),
+						 UnitVal((3.0e+3*C::c),"H"),
 						 "stathenry"));
   UnitMap::mapCust->define("statOhm", 	UnitName("statOhm",
-						 UnitVal(C::statOhm,"Ohm"),
+						 UnitVal((3.0e+3*C::c),"Ohm"),
 						 "statohm"));
   UnitMap::mapCust->define("statV",   	UnitName("statV",
-						 UnitVal(C::statVolt,"V"),
+						 UnitVal((C::c*1.0e-6),"V"),
 						 "statvolt"));
   UnitMap::mapCust->define("ac",   	UnitName("ac",
-						 UnitVal(C::acre,"m2"),
+						 UnitVal(4.0*40*16.5*12*2.54e-2*16.5*12*2.54e-2,"m2"),
 						 "acre"));
   UnitMap::mapCust->define("Ah",   	UnitName("Ah",
 						 UnitVal(1.,"A.h"),
 						 "ampere hour"));
   UnitMap::mapCust->define("Angstrom", 	UnitName("Angstrom",
-						 UnitVal(C::Angstrom,"m"),
+						 UnitVal(1.0e-10,"m"),
 						 "angstrom"));
   UnitMap::mapCust->define("atm",   	UnitName("atm",
-						 UnitVal(C::atmosphere,"Pa"),
+						 UnitVal(1.01325e+5,"Pa"),
 						 "standard atmosphere"));
   UnitMap::mapCust->define("ata",   	UnitName("ata",
-						 UnitVal(C::g,"N.cm-2"),
+						 UnitVal(9.80665,"N.cm-2"),
 						 "technical atmosphere"));
   UnitMap::mapCust->define("u",   	UnitName("u",
 						 UnitVal(1.661e-27,"kg"),
 						 "atomic mass unit"));
   UnitMap::mapCust->define("bar",   	UnitName("bar",
-						 UnitVal(C::bar,"Pa"),
+						 UnitVal(1.0e+5,"Pa"),
 						 "bar"));
   UnitMap::mapCust->define("Btu",   	UnitName("Btu",
 						 UnitVal(1055.056,"J"),
@@ -356,82 +356,82 @@ void UnitMap::initUM() {
 						 UnitVal(1.,"kcal"),
 						 "large calorie (Int)"));
   UnitMap::mapCust->define("CM",   	UnitName("CM",
-						 UnitVal(C::carat,"kg"),
+						 UnitVal((1e-3/5.0),"kg"),
 						 "metric carat"));
   UnitMap::mapCust->define("mHg",   	UnitName("mHg",
-						 UnitVal(C::mmHg,"kPa"),
+						 UnitVal(13.5951*9.80665,"kPa"),
 						 "metre of mercury"));
   UnitMap::mapCust->define("dyn",   	UnitName("dyn",
-						 UnitVal(C::dyne,"N"),
+						 UnitVal(1.0e-5,"N"),
 						 "dyne"));
   UnitMap::mapCust->define("eV",   	UnitName("eV",
-						 UnitVal(C::qe,"J"),
+						 UnitVal(1.60217733e-19,"J"),
 						 "electron volt"));
   UnitMap::mapCust->define("erg",   	UnitName("erg",
 						 UnitVal(1.,"dyn/cm"),
 						 "erg"));
   UnitMap::mapCust->define("fl_oz", 	UnitName("fl_oz",
-						 UnitVal(C::fluid_ounce,"m3"),
+						 UnitVal(277.4193*2.54*2.54*2.54/5/4/2/4,"cm3"),
 						 "fluid ounce (Imp)"));
   UnitMap::mapCust->define("USfl_oz", 	UnitName("USfl_oz",
-						 UnitVal(C::USfluid_ounce,"m3"),
+						 UnitVal(231*2.54*2.54*2.54/4/4/2/4,"cm3"),
 						 "fluid ounce (US)"));
   UnitMap::mapCust->define("ft",   	UnitName("ft",
-						 UnitVal(C::foot,"m"),
+						 UnitVal(12*2.54e-2,"m"),
 						 "foot"));
   UnitMap::mapCust->define("fur",   	UnitName("fur",
-						 UnitVal(C::furlong,"m"),
+						 UnitVal(220*3*12*2.54,"cm"),
 						 "furlong"));
   UnitMap::mapCust->define("Gal",   	UnitName("Gal",
 						 UnitVal(1.,"cm/s2"),
 						 "gal"));
   UnitMap::mapCust->define("gal",   	UnitName("gal",
-						 UnitVal(C::gallon,"m3"),
+						 UnitVal(277.4193*2.54*2.54*2.54,"cm3"),
 						 "gallon (Imp)"));
   UnitMap::mapCust->define("USgal", 	UnitName("USgal",
-						 UnitVal(C::USgallon,"m3"),
+						 UnitVal(231*2.54*2.54*2.54,"cm3"),
 						 "gallon (US)"));
   UnitMap::mapCust->define("G",   	UnitName("G",
-						 UnitVal(C::Gauss,"T"),
+						 UnitVal(1.0e-4,"T"),
 						 "gauss"));
   UnitMap::mapCust->define("Gb",   	UnitName("Gb",
-						 UnitVal(C::Gilbert,"A"),
+						 UnitVal(10.0/(4.0 * C::pi),"A"),
 						 "gilbert"));
   UnitMap::mapCust->define("ha",   	UnitName("ha",
 						 UnitVal(1.,"hm2"),
 						 "hectare"));
   UnitMap::mapCust->define("hp",   	UnitName("hp",
-						 UnitVal(C::horsepower,"W"),
+						 UnitVal(745.7,"W"),
 						 "horsepower"));
   UnitMap::mapCust->define("cwt",   	UnitName("cwt",
-						 UnitVal(C::hundredweight,"kg"),
+						 UnitVal(4*2*14*0.45359237,"kg"),
 						 "hundredweight"));
   UnitMap::mapCust->define("in",   	UnitName("in",
-						 UnitVal(C::inch,"m"),
+						 UnitVal(2.54,"cm"),
 						 "inch"));
   UnitMap::mapCust->define("kn",   	UnitName("kn",
-						 UnitVal(C::knot,"m/s"),
+						 UnitVal(6080*12*2.54,"cm/h"),
 						 "knot (Imp)"));
   UnitMap::mapCust->define("ly",   	UnitName("ly",
-						 UnitVal(C::light_year,"m"),
+						 UnitVal(9.46073047e+15,"m"),
 						 "light year"));
   UnitMap::mapCust->define("Mx",   	UnitName("Mx",
-						 UnitVal(C::Maxwell,"Wb"),
+						 UnitVal(1.0e-8,"Wb"),
 						 "maxwell"));
   UnitMap::mapCust->define("mile",  	UnitName("mile",
-						 UnitVal(C::mile,"m"),
+						 UnitVal(5280*12*2.54e-2,"m"),
 						 "mile"));
   UnitMap::mapCust->define("n_mile", 	UnitName("n_mile",
-						 UnitVal(C::nautical_mile,"m"),
+						 UnitVal(6080*12*2.54,"cm"),
 						 "nautical mile (Imp)"));
   UnitMap::mapCust->define("Oe",   	UnitName("Oe",
-						 UnitVal(C::Oersted,"A/m"),
+						 UnitVal(1000.0/(4.0*C::pi),"A/m"),
 						 "oersted"));
   UnitMap::mapCust->define("oz",   	UnitName("oz",
-						 UnitVal(C::ounce,"kg"),
+						 UnitVal(1./16.*0.45359237,"kg"),
 						 "ounce (avoirdupois)"));
   UnitMap::mapCust->define("lb",   	UnitName("lb",
-						 UnitVal(C::pound,"kg"),
+						 UnitVal(0.45359237,"kg"),
 						 "pound (avoirdupois)"));
   UnitMap::mapCust->define("R",   	UnitName("R",
 						 UnitVal(2.58e-4,"C/kg"),
@@ -443,10 +443,10 @@ void UnitMap::initUM() {
 						 UnitVal(1.,"cm2/s"),
 						 "stokes"));
   UnitMap::mapCust->define("Torr",  	UnitName("Torr",
-						 UnitVal(C::torr,"Pa"),
+						 UnitVal((1.0/760.0)*1.01325e+5,"Pa"),
 						 "torr"));
   UnitMap::mapCust->define("yd",   	UnitName("yd",
-						 UnitVal(C::yard,"m"),
+						 UnitVal(3*12*2.54,"cm"),
 						 "yard"));
   UnitMap::mapCust->define("yr",   	UnitName("yr",
 						 UnitVal(24.*3600.*365.25,"s"),
