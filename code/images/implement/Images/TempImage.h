@@ -1,5 +1,5 @@
 //# TempImage.h: Temporary astronomical images
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -97,139 +97,173 @@
 template<class T> class TempImage: public ImageInterface<T>
 {
 public: 
-    // The default constructor creates an empty image.
-    TempImage();
+  // The default constructor creates an empty image.
+  TempImage();
 
-    // Construct a temporary Image from shape and coordinate information.
-    // If the image is sufficiently small, it is kept in memory.
-    // Otherwise it is kept in a temporary table.
-    // The algorithm is the same as in class
-    // <linkto class=TempLattice>TempLattice</linkto>.
-    TempImage (const TiledShape& mapShape,
-	       const CoordinateSystem& coordinateInfo,
-	       Int maxMemoryInMB=-1);
+  // Construct a temporary Image from shape and coordinate information.
+  // If the image is sufficiently small, it is kept in memory.
+  // Otherwise it is kept in a temporary table.
+  // The algorithm is the same as in class
+  // <linkto class=TempLattice>TempLattice</linkto>.
+  TempImage (const TiledShape& mapShape,
+	     const CoordinateSystem& coordinateInfo,
+	     Int maxMemoryInMB=-1);
+
+  TempImage (const TiledShape& mapShape,
+	     const CoordinateSystem& coordinateInfo,
+	     Double maxMemoryInMB);
+
+  // Copy constructor (reference semantics).
+  TempImage (const TempImage<T>& other);
+
+  // Destructor
+  ~TempImage();
+
+  // Assignment operator (reference semantics).
+  TempImage<T>& operator= (const TempImage<T>& other);
+
+  // Make a copy of the object (reference semantics).
+  virtual ImageInterface<T>* cloneII() const;
+
+  // Is the TempImage paged to disk?
+  virtual Bool isPaged() const;
+
+  // Is the TempImage writable?
+  virtual Bool isWritable() const;
+
+  // Attach a mask to the TempImage.
+  // It replaces a probably already attached mask.
+  // It has to have the same shape as the image.
+  void attachMask (const Lattice<Bool>& mask);
+
+  // It a mask attached to the image?
+  virtual Bool isMasked() const;
+
+  // Is the mask writable?
+  virtual Bool isMaskWritable() const;
+
+  // Does the image object use a pixelmask?
+  // This is similar to <src>isMasked()</src>.
+  virtual Bool hasPixelMask() const;
+
+  // Get access to the pixelmask used.
+  // An exception is thrown if the image does not use a pixelmask.
+  // <group>
+  virtual const Lattice<Bool>& pixelMask() const;
+  virtual Lattice<Bool>& pixelMask();
+  // </group>
+
+  // Get a section of the mask.
+  // It throws an exception if there is no mask.
+  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+
+  // Put a section of the mask.
+  // It throws an exception if there is no writable mask.
+  virtual void doPutMaskSlice (const Array<Bool>& buffer,
+			       const IPosition& where,
+			       const IPosition& stride);
+
+  // Get the region used (it always returns 0).
+  virtual const LatticeRegion* getRegionPtr() const;
+
+  // Close the TempImage temporarily (if it is paged to disk).
+  // Note that a possible mask is not closed.
+  // It'll be reopened automatically when needed or when
+  // <src>reopen</src> is called explicitly.
+  void tempClose()
+    { mapPtr_p->tempClose(); }
+
+  // If needed, reopen a temporarily closed TempLattice.
+  void reopen()
+    { mapPtr_p->reopen(); }
+
+  // Function which changes the shape of the image (N.B. the data is thrown 
+  // away - the Image will be filled with nonsense afterwards)
+  virtual void resize (const TiledShape& newShape);
   
-    TempImage (const TiledShape& mapShape,
-	       const CoordinateSystem& coordinateInfo,
-	       Double maxMemoryInMB);
-  
-    // Copy constructor (reference semantics).
-    TempImage (const TempImage<T>& other);
+  // Return the name of the current TempImage object.
+  // It is always a null string.
+  virtual String name (const Bool stripPath=False) const;
 
-    // Destructor
-    ~TempImage();
-  
-    // Assignment operator (reference semantics).
-    TempImage<T>& operator= (const TempImage<T>& other);
-  
-    // Make a copy of the object (reference semantics).
-    virtual ImageInterface<T>* cloneII() const;
+  // Return the shape of the image
+  virtual IPosition shape() const;
 
-    // Is the TempImage paged to disk?
-    virtual Bool isPaged() const;
+  // Function which get and set the units associated with the image
+  // pixels (i.e. the "brightness" unit).
+  // <src>setUnits()</src> always returns True.
+  // <group>
+  virtual Bool setUnits (const Unit& newUnits);
+  virtual Unit units() const;
+  // </group>
 
-    // Is the TempImage writable?
-    virtual Bool isWritable() const;
+  // Often we have miscellaneous information we want to attach to an image.
+  // This is how it is done. Eventually we will want to register that some
+  // of the information is to be destroyed if the image changes so that, e.g.
+  // data max/min values can be removed if the image changes.
+  //
+  // Note that setMiscInfo REPLACES the information with the new information.
+  // If can fail if, e.g., the underlying table is not writable.
+  // <group>
+  virtual const RecordInterface& miscInfo() const;
+  virtual Bool setMiscInfo (const RecordInterface& newInfo);
+  // </group>
 
-    // Get the region used (it always returns 0).
-    virtual const LatticeRegion* getRegionPtr() const;
+  // Function which sets all of the elements in the Lattice to a value.
+  virtual void set (const T& value);
 
-    // Close the TempImage temporarily (if it is paged to disk).
-    // It'll be reopened automatically when needed or when
-    // <src>reopen</src> is called explicitly.
-    void tempClose()
-        { mapPtr_p->tempClose(); }
-
-    // If needed, reopen a temporarily closed TempLattice.
-    void reopen()
-        { mapPtr_p->reopen(); }
-
-    // Function which changes the shape of the image (N.B. the data is thrown 
-    // away - the Image will be filled with nonsense afterwards)
-    virtual void resize (const TiledShape& newShape);
-  
-    // Return the name of the current TempImage object.
-    // It is always a null string.
-    virtual String name (const Bool stripPath=False) const;
-
-    // Return the shape of the image
-    virtual IPosition shape() const;
-
-    // Function which get and set the units associated with the image
-    // pixels (i.e. the "brightness" unit).
-    // <src>setUnits()</src> always returns True.
-    // <group>
-    virtual Bool setUnits (const Unit& newUnits);
-    virtual Unit units() const;
-    // </group>
-
-    // Often we have miscellaneous information we want to attach to an image.
-    // This is how it is done. Eventually we will want to register that some
-    // of the information is to be destroyed if the image changes so that, e.g.
-    // data max/min values can be removed if the image changes.
-    //
-    // Note that setMiscInfo REPLACES the information with the new information.
-    // If can fail if, e.g., the underlying table is not writable.
-    // <group>
-    virtual const RecordInterface& miscInfo() const;
-    virtual Bool setMiscInfo (const RecordInterface& newInfo);
-    // </group>
-
-    // Function which sets all of the elements in the Lattice to a value.
-    virtual void set (const T& value);
-
-    // Replace every element, x, of the lattice with the result of f(x).
-    // You must pass in the address of the function -- so the function
-    // must be declared and defined in the scope of your program.  
-    // Both versions of apply require a function that accepts a single 
-    // argument of type T (the Lattice template actual type) and returns
-    // a result of the same type.  The first apply expects a function with
-    // an argument passed by value; the second expects the argument to
-    // be passed by const reference.  The first form ought to run faster
-    // for the built-in types, which may be an issue for large images
-    // stored in memory, where disk access is not an issue.
-    // <group>
-    virtual void apply (T (*function)(T));
-    virtual void apply (T (*function)(const T&));
-    virtual void apply (const Functional<T,T>& function);
-    // </group>
+  // Replace every element, x, of the lattice with the result of f(x).
+  // You must pass in the address of the function -- so the function
+  // must be declared and defined in the scope of your program.  
+  // Both versions of apply require a function that accepts a single 
+  // argument of type T (the Lattice template actual type) and returns
+  // a result of the same type.  The first apply expects a function with
+  // an argument passed by value; the second expects the argument to
+  // be passed by const reference.  The first form ought to run faster
+  // for the built-in types, which may be an issue for large images
+  // stored in memory, where disk access is not an issue.
+  // <group>
+  virtual void apply (T (*function)(T));
+  virtual void apply (T (*function)(const T&));
+  virtual void apply (const Functional<T,T>& function);
+  // </group>
     
-    // Get or put a single pixel.
-    // Note that the function operator () can also be used to get a pixel.
-    // <group>
-    virtual T getAt (const IPosition& where) const;
-    virtual void putAt (const T& value, const IPosition& where);
-    // </group>
+  // Get or put a single pixel.
+  // Note that the function operator () can also be used to get a pixel.
+  // <group>
+  virtual T getAt (const IPosition& where) const;
+  virtual void putAt (const T& value, const IPosition& where);
+  // </group>
 
-    // This is the implementations of the letters for the envelope Iterator
-    // class <note> Not for public use </note>
-    virtual LatticeIterInterface<T>* makeIter
-                                 (const LatticeNavigator& navigator) const;
+  // This is the implementations of the letters for the envelope Iterator
+  // class <note> Not for public use </note>
+  virtual LatticeIterInterface<T>* makeIter
+                           (const LatticeNavigator& navigator) const;
 
-    // Returns the maximum recommended number of pixels for a cursor.
-    // This is the number of pixels in a tile. 
-    virtual uInt advisedMaxPixels() const;
+  // Returns the maximum recommended number of pixels for a cursor.
+  // This is the number of pixels in a tile. 
+  virtual uInt advisedMaxPixels() const;
 
-    // Check for symmetry in data members.
-    virtual Bool ok() const;
+  // Check for symmetry in data members.
+  virtual Bool ok() const;
 
 protected:
-    // Function which extracts an array from the map.
-    virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
+  // Function which extracts an array from the map.
+  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
   
-    // Function to replace the values in the map with soureBuffer.
-    virtual void doPutSlice (const Array<T>& sourceBuffer,
-			     const IPosition& where,
-			     const IPosition& stride);
+  // Function to replace the values in the map with soureBuffer.
+  virtual void doPutSlice (const Array<T>& sourceBuffer,
+			   const IPosition& where,
+			   const IPosition& stride);
 
-    // Help the user pick a cursor for most efficient access.
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  // Help the user pick a cursor for most efficient access.
+  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 
 private:  
-    TempLattice<T>* mapPtr_p;
-    Unit            unit_p;
-    TableRecord     misc_p;
+  TempLattice<T>* mapPtr_p;
+  Lattice<Bool>*  maskPtr_p;
+  Unit            unit_p;
+  TableRecord     misc_p;
 };
 
 

@@ -1,5 +1,5 @@
 //# TempImage.cc: defines the TempImage class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,14 +38,16 @@
 
 template <class T>
 TempImage<T>::TempImage()
-: mapPtr_p (new TempLattice<T>)
+: mapPtr_p  (new TempLattice<T>),
+  maskPtr_p (0)
 {} 
  
 template <class T>
 TempImage<T>::TempImage (const TiledShape& mapShape,
 			 const CoordinateSystem& coordinateInfo,
 			 Double maxMemoryInMb)
-: mapPtr_p (new TempLattice<T> (mapShape, maxMemoryInMb))
+: mapPtr_p  (new TempLattice<T> (mapShape, maxMemoryInMb)),
+  maskPtr_p (0)
 {
     setCoordinateInfo (coordinateInfo);
 }
@@ -54,7 +56,8 @@ template <class T>
 TempImage<T>::TempImage (const TiledShape& mapShape,
 			 const CoordinateSystem& coordinateInfo,
 			 Int maxMemoryInMb)
-: mapPtr_p (new TempLattice<T> (mapShape, maxMemoryInMb))
+: mapPtr_p  (new TempLattice<T> (mapShape, maxMemoryInMb)),
+  maskPtr_p (0)
 {
     setCoordinateInfo (coordinateInfo);
 }
@@ -63,74 +66,153 @@ template <class T>
 TempImage<T>::TempImage (const TempImage<T>& other)
 : ImageInterface<T> (other),
   mapPtr_p          (new TempLattice<T> (*other.mapPtr_p)),
+  maskPtr_p         (0),
   unit_p            (other.unit_p),
   misc_p            (other.misc_p)
-{}
+{
+  if (other.maskPtr_p != 0) {
+    maskPtr_p = other.maskPtr_p->clone();
+  }
+}
  
 template <class T>
-TempImage<T>& TempImage<T>::operator=(const TempImage<T>& other)
+TempImage<T>& TempImage<T>::operator= (const TempImage<T>& other)
 {
-    if (this != &other) {
-	delete mapPtr_p;
-	mapPtr_p = 0;
-	ImageInterface<T>::operator= (other);
-	mapPtr_p = new TempLattice<T> (*other.mapPtr_p);
-	unit_p   = other.unit_p;
-	misc_p   = other.misc_p;
+  if (this != &other) {
+    delete mapPtr_p;
+    mapPtr_p = 0;
+    delete maskPtr_p;
+    maskPtr_p = 0;
+    ImageInterface<T>::operator= (other);
+    mapPtr_p = new TempLattice<T> (*other.mapPtr_p);
+    if (other.maskPtr_p != 0) {
+      maskPtr_p = other.maskPtr_p->clone();
     }
-    return *this;
+    unit_p   = other.unit_p;
+    misc_p   = other.misc_p;
+  }
+  return *this;
 } 
  
 template <class T>
 TempImage<T>::~TempImage()
 {
-    delete mapPtr_p;
+  delete mapPtr_p;
+  delete maskPtr_p;
 }
 
 
 template <class T>
 ImageInterface<T>* TempImage<T>::cloneII() const
 {
-    return new TempImage (*this);
+  return new TempImage (*this);
 }
 
 
 template <class T>
 Bool TempImage<T>::isPaged() const
 {
-    return mapPtr_p->isPaged();
+  return mapPtr_p->isPaged();
 }
 
 template <class T>
 Bool TempImage<T>::isWritable() const
 {  
-    return mapPtr_p->isWritable();
+  return mapPtr_p->isWritable();
+}
+
+template<class T>
+void TempImage<T>::attachMask (const Lattice<Bool>& mask)
+{
+  if (! shape().isEqual (mask.shape())) {
+    throw (AipsError ("TempImage::attachMask - "
+		      "shapes of lattice and mask mismatch"));
+  }
+  maskPtr_p = mask.clone();
+}
+
+template<class T>
+Bool TempImage<T>::isMasked() const
+{
+  return (maskPtr_p != 0);
+}
+
+template<class T>
+Bool TempImage<T>::isMaskWritable() const
+{
+  return (maskPtr_p != 0  &&  maskPtr_p->isWritable());
+}
+
+template<class T>
+Bool TempImage<T>::hasPixelMask() const
+{
+  return (maskPtr_p != 0);
+}
+
+template<class T>
+const Lattice<Bool>& TempImage<T>::pixelMask() const
+{
+  if (maskPtr_p == 0) {
+    throw (AipsError ("TempImage::pixelMask - no mask attached"));
+  }
+  return *maskPtr_p;
+}
+
+template<class T>
+Lattice<Bool>& TempImage<T>::pixelMask()
+{
+  if (maskPtr_p == 0) {
+    throw (AipsError ("TempImage::pixelMask - no mask attached"));
+  }
+  return *maskPtr_p;
+}
+
+
+template<class T>
+Bool TempImage<T>::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
+{
+  // If no mask, base implementation returns a True mask.
+  if (maskPtr_p == 0) {
+    return MaskedLattice<T>::doGetMaskSlice (buffer, section);
+  }
+  return maskPtr_p->doGetSlice (buffer, section);
+}
+
+template<class T>
+void TempImage<T>::doPutMaskSlice (const Array<Bool>& buffer,
+				   const IPosition& where,
+				   const IPosition& stride)
+{
+  if (maskPtr_p == 0) {
+    throw (AipsError ("TempImage::putMaskSlice - no writable mask attached"));
+  }
+  maskPtr_p->doPutSlice (buffer, where, stride);
 }
 
 template<class T>
 const LatticeRegion* TempImage<T>::getRegionPtr() const
 {
-    return 0;
+  return 0;
 }
 
 template <class T>
 IPosition TempImage<T>::shape() const  
 { 
-    return mapPtr_p->shape();
+  return mapPtr_p->shape();
 }
 
 template <class T>
 void TempImage<T>::resize (const TiledShape& newShape)
 {
-    delete mapPtr_p;
-    mapPtr_p = new TempLattice<T> (newShape);
+  delete mapPtr_p;
+  mapPtr_p = new TempLattice<T> (newShape);
 }
 
 template <class T>
 Bool TempImage<T>::doGetSlice (Array<T>& buffer,
 			       const Slicer& section)
 {
-    return mapPtr_p->doGetSlice (buffer, section);
+  return mapPtr_p->doGetSlice (buffer, section);
 } 
    
 
@@ -139,97 +221,97 @@ void TempImage<T>::doPutSlice (const Array<T>& buffer,
 			       const IPosition& where,
 			       const IPosition& stride)
 {
-    mapPtr_p->doPutSlice (buffer, where, stride);
+  mapPtr_p->doPutSlice (buffer, where, stride);
 }
 
 template<class T> 
 Bool TempImage<T>::setUnits (const Unit& unit)
 {
-    unit_p = unit;
-    return True;
+  unit_p = unit;
+  return True;
 }
    
 template<class T>
 Unit TempImage<T>::units() const
 {  
-    return unit_p;
+  return unit_p;
 }
 
 
 template <class T> 
 String TempImage<T>::name (const Bool) const
 {
-    return "";
+  return "";
 }
 
 
 template<class T> 
 const RecordInterface& TempImage<T>::miscInfo() const
 {
-    return misc_p;
+  return misc_p;
 }
  
 template<class T> 
 Bool TempImage<T>::setMiscInfo (const RecordInterface& info)
 {
-    misc_p = info;
-    return True;
+  misc_p = info;
+  return True;
 }
  
 
 template<class T>
 void TempImage<T>::set (const T& value)
 {
-    mapPtr_p->set (value);
+  mapPtr_p->set (value);
 }
 
 template<class T>
 void TempImage<T>::apply (T (*function)(T))
 {
-    mapPtr_p->apply (function);
+  mapPtr_p->apply (function);
 }
 
 template<class T>
 void TempImage<T>::apply (T (*function)(const T&))
 {
-    mapPtr_p->apply (function);
+  mapPtr_p->apply (function);
 }
 
 template<class T>
 void TempImage<T>::apply (const Functional<T,T>& function)
 {
-    mapPtr_p->apply (function);
+  mapPtr_p->apply (function);
 }
 
 template<class T>
 uInt TempImage<T>::advisedMaxPixels() const
 {
-    return mapPtr_p->advisedMaxPixels();
+  return mapPtr_p->advisedMaxPixels();
 }
 
 template<class T>
 IPosition TempImage<T>::doNiceCursorShape (uInt maxPixels) const
 {
-    return mapPtr_p->niceCursorShape (maxPixels);
+  return mapPtr_p->niceCursorShape (maxPixels);
 }
 
 template<class T>
 T TempImage<T>::getAt (const IPosition& where) const
 {
-    return mapPtr_p->getAt (where);
+  return mapPtr_p->getAt (where);
 }
 
 template<class T>
 void TempImage<T>::putAt (const T& value, const IPosition& where)
 {
-    mapPtr_p->putAt (value, where);
+  mapPtr_p->putAt (value, where);
 }
 
 
 template <class T>
 Bool TempImage<T>::ok() const
 {
-    return mapPtr_p->ok();
+  return mapPtr_p->ok();
 }  
 
 
@@ -237,6 +319,6 @@ template <class T>
 LatticeIterInterface<T>* TempImage<T>::makeIter
                                 (const LatticeNavigator& navigator) const
 {
-    return mapPtr_p->makeIter (navigator);
+  return mapPtr_p->makeIter (navigator);
 }
 
