@@ -32,6 +32,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableIter.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/GenSort.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Measures.h>
@@ -461,7 +462,23 @@ void MSIter::setFeedInfo()
   Bool first=False;
   if (checkFeed_p) {
     Vector<Double> feedTimes=msc_p->feed().time().getColumn();
-    timeDepFeed_p= (min(feedTimes) != max(feedTimes)); 
+    Vector<Double> interval=msc_p->feed().interval().getColumn();
+    // Assume time dependence
+    timeDepFeed_p=True;
+    // if all interval values are zero or very large, 
+    // there is no time dependence
+    if (allEQ(interval,0.0)||allGE(interval,1.e10)) timeDepFeed_p=False;
+    else { 
+      // check if any antennas appear more than once
+      Vector<Int> antennas=msc_p->feed().antennaId().getColumn();
+      Int nRow=antennas.nelements();
+      Int nUniq=GenSort<Int>::sort(antennas,Sort::Ascending,
+				   Sort::HeapSort | Sort::NoDuplicates);
+      if (nUniq==nRow) timeDepFeed_p=False;
+      else {
+	// check for each antenna in turn..
+      }
+    }
     Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
     spwDepFeed_p = !(allEQ(spwId,-1));
     first=True;
