@@ -232,21 +232,24 @@ class MSCalEnums
   SB_DELAY = 901,
   DELAY_RATE = 902,
 
-  // BJonesPoly additions
+  // General polynomial calibration additions
   POLY_TYPE = 1000,
-  N_POLY_AMP = 1001,
-  N_POLY_PHASE = 1002,
-  POLY_COEFF_AMP = 1003,
-  POLY_COEFF_PHASE = 1004,
-  SIDEBAND_REF = 1005,
+  POLY_MODE = 1001,
+  SCALE_FACTOR = 1002,
+  N_POLY_AMP = 1003,
+  N_POLY_PHASE = 1004,
+  POLY_COEFF_AMP = 1005,
+  POLY_COEFF_PHASE = 1006,
+  PHASE_UNITS = 1007,
 
-  // GJonesSpline additions
-  N_KNOTS_AMP = 1100,
-  N_KNOTS_PHASE = 1101,
-  SPLINE_KNOTS_AMP = 1102,
-  SPLINE_KNOTS_PHASE = 1103,
-  SCALE_FACTOR_AMP = 1104,
-  SCALE_FACTOR_PHASE = 1105
+  // BJonesPoly additions
+  SIDEBAND_REF = 1100,
+
+  // Spline polynomial calibration additions
+  N_KNOTS_AMP = 1200,
+  N_KNOTS_PHASE = 1201,
+  SPLINE_KNOTS_AMP = 1202,
+  SPLINE_KNOTS_PHASE = 1203
 
   };
 
