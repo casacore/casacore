@@ -603,8 +603,8 @@ DOCSYS    := doc resolvedocs
 # changelog files.
 DOCEXTR   := docscan docextr changelogs
 
-# What standard packages to build (default is all).
-PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msvis calibration ionosphere flagging dish simulators synthesis graphics
+# What standard packages to build (default is all including demo).
+PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msvis calibration ionosphere flagging dish simulators synthesis graphics demo
 
 # What auxiliary packages to build
 AUXILIARY := tasking display trialdisplay appsglish
