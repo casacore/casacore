@@ -1359,3 +1359,4 @@
 11 027 src mv atnf/apps/pksmeasurementset/pksmeasurementset.g atnf/apps/livedata/pkswriter.g
 11 027 sys rm libexec/pksmbfits.g
 11 027 sys rm libexec/pksmeasurementset.g
+11 028 src mv trial/apps/psky trial/apps/pimager
