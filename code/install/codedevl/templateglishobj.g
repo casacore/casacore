@@ -1,5 +1,5 @@
 # templateglishobj: template for a glish closure object
-# Copyright (C) 1999
+# Copyright (C) 2000
 # Associated Universities, Inc. Washington DC, USA.
 #
 # This library is free software; you can redistribute it and/or modify it
