@@ -39,32 +39,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-TwoSidedShape::TwoSidedShape()
-  :ComponentShape(),
-   itsMajUnit("arcmin"),
-   itsMinUnit("arcmin"),
-   itsPaUnit("deg")
-{
-  DebugAssert(ok(), AipsError);
-}
-
-TwoSidedShape::TwoSidedShape(const MDirection& direction) 
-  :ComponentShape(direction),
-   itsMajUnit("arcmin"),
-   itsMinUnit("arcmin"),
-   itsPaUnit("deg")
-{
-}
-
-TwoSidedShape::TwoSidedShape(const TwoSidedShape& other) 
-  :ComponentShape(other),
-   itsMajUnit(other.itsMajUnit),
-   itsMinUnit(other.itsMinUnit),
-   itsPaUnit(other.itsPaUnit)
-{
-  DebugAssert(ok(), AipsError);
-}
-
 TwoSidedShape::~TwoSidedShape() {
   DebugAssert(ok(), AipsError);
 }
@@ -83,66 +57,46 @@ TwoSidedShape& TwoSidedShape::operator=(const TwoSidedShape& other) {
 void TwoSidedShape::setWidth(const Quantum<Double>& majorAxis,
 			     const Quantum<Double>& minorAxis, 
 			     const Quantum<Double>& positionAngle) {
-  setWidth(majorAxis.getValue("rad"), minorAxis.getValue("rad"), 
-	   positionAngle.getValue("rad"));
   itsMajUnit = majorAxis.getFullUnit();
   itsMinUnit = minorAxis.getFullUnit();
   itsPaUnit = positionAngle.getFullUnit();
+  const Unit rad("rad");
+  setWidthInRad(majorAxis.getValue(rad), minorAxis.getValue(rad), 
+		positionAngle.getValue(rad));
   DebugAssert(ok(), AipsError);
 }
 
 void TwoSidedShape::setWidth(const Quantum<Double>& majorAxis,
 			     const Double axialRatio, 
 			     const Quantum<Double>& positionAngle) {
-  const Double majWidth = majorAxis.getValue("rad");
-  setWidth(majWidth, majWidth*axialRatio, positionAngle.getValue("rad"));
   itsMinUnit = itsMajUnit = majorAxis.getFullUnit();
   itsPaUnit = positionAngle.getFullUnit();
+  const Unit rad("rad");
+  const Double majWidth = majorAxis.getValue(rad);
+  setWidthInRad(majWidth, majWidth*axialRatio, positionAngle.getValue(rad));
   DebugAssert(ok(), AipsError);
 }
 
-void TwoSidedShape::majorAxis(Quantum<Double>& majAxis) const {
-  DebugAssert(ok(), AipsError);
-  majAxis.setValue(majorAxis());
-  majAxis.setUnit("rad");
-  majAxis.convert(itsMajUnit);
+Quantum<Double> TwoSidedShape::majorAxis() const {
+  Quantum<Double> retVal(majorAxisInRad(), "rad");
+  retVal.convert(itsMajUnit);
+  return retVal;
 }
 
-// Quantum<Double> GaussianShape::majorAxis() const {
-//   DebugAssert(ok(), AipsError);
-//   Quantum<Double> retVal(itsShape.majorAxis(), "rad");
-//   retVal.convert(itsMajUnit);
-//   return retVal;
-// }
-
-void TwoSidedShape::majorAxisUnit(const Unit& majorAxisUnit) {
-  DebugAssert(majorAxisUnit == Unit("deg"), AipsError);
-  itsMajUnit = majorAxisUnit;
-  DebugAssert(ok(), AipsError);
+Quantum<Double> TwoSidedShape::minorAxis() const {
+  Quantum<Double> retVal(minorAxisInRad(), "rad");
+  retVal.convert(itsMinUnit);
+  return retVal;
 }
 
-const Unit& TwoSidedShape::majorAxisUnit() {
-  return itsMajUnit;
+Quantum<Double> TwoSidedShape::positionAngle() const {
+  Quantum<Double> retVal(positionAngleInRad(), "rad");
+  retVal.convert(itsPaUnit);
+  return retVal;
 }
 
-void TwoSidedShape::minorAxisUnit(const Unit& minorAxisUnit) {
-  DebugAssert(minorAxisUnit == Unit("deg"), AipsError);
-  itsMinUnit = minorAxisUnit;
-  DebugAssert(ok(), AipsError);
-}
-
-const Unit& TwoSidedShape::minorAxisUnit() {
-  return itsMinUnit;
-}
-
-void TwoSidedShape::paUnit(const Unit& paUnit) {
-  DebugAssert(paUnit == Unit("deg"), AipsError);
-  itsPaUnit = paUnit;
-  DebugAssert(ok(), AipsError);
-}
-
-const Unit& TwoSidedShape::paUnit() {
-  return itsPaUnit;
+Double TwoSidedShape::axialRatio() const {
+  return minorAxisInRad()/majorAxisInRad();
 }
 
 uInt TwoSidedShape::nParameters() const {
@@ -151,27 +105,25 @@ uInt TwoSidedShape::nParameters() const {
 }
 
 void TwoSidedShape::setParameters(const Vector<Double>& newParms) {
-  AlwaysAssert(newParms.nelements() == nParameters(), AipsError);
+  DebugAssert(newParms.nelements() == nParameters(), AipsError);
   DebugAssert(newParms(0) >= newParms(1), AipsError);
   DebugAssert(abs(newParms(2)) <= C::_2pi, AipsError);
-  const Unit rad("rad");
-  setWidth(Quantum<Double>(newParms(0), rad), 
-	   Quantum<Double>(newParms(1), rad),
-	   Quantum<Double>(newParms(1), Unit("deg")));
+  setWidthInRad(newParms(0), newParms(1), newParms(2));
   DebugAssert(ok(), AipsError);
 }
 
 void TwoSidedShape::parameters(Vector<Double>& compParms) const {
-  AlwaysAssert(compParms.nelements() == nParameters(), AipsError);
-  compParms(0) = majorAxis();
-  compParms(1) = minorAxis().getValue("rad");
-  compParms(2) = positionAngle().getValue("rad");;
+  DebugAssert(compParms.nelements() == nParameters(), AipsError);
   DebugAssert(ok(), AipsError);
+  compParms(0) = majorAxisInRad();
+  compParms(1) = minorAxisInRad();
+  compParms(2) = positionAngleInRad();
 }
 
 Bool TwoSidedShape::fromRecord(String& errorMessage,
 			       const RecordInterface& record) {
   if (!ComponentShape::fromRecord(errorMessage, record)) return False;
+  const Unit rad("rad");
   Quantum<Double> majorAxis;
   {
     const String fieldString("majoraxis");
@@ -202,7 +154,7 @@ Bool TwoSidedShape::fromRecord(String& errorMessage,
       return False;
     }
     majorAxis = qHolder.asQuantumDouble();
-    if (majorAxis.getFullUnit() != Unit("deg")) {
+    if (majorAxis.getFullUnit() != rad) {
       errorMessage += "The 'majoraxis' field must have angular units\n";
       return False;
     }
@@ -237,7 +189,7 @@ Bool TwoSidedShape::fromRecord(String& errorMessage,
       return False;
     }
     minorAxis = qHolder.asQuantumDouble();
-    if (minorAxis.getFullUnit() != Unit("deg")) {
+    if (minorAxis.getFullUnit() != rad) {
       errorMessage += "The 'minoraxis' field must have angular units\n";
       return False;
     }
@@ -272,12 +224,11 @@ Bool TwoSidedShape::fromRecord(String& errorMessage,
       return False;
     }
     pa = qHolder.asQuantumDouble();
-    if (pa.getFullUnit() != Unit("deg")) {
+    if (pa.getFullUnit() != rad) {
       errorMessage += "The 'positionangle' field must have angular units\n";
       return False;
     }
   }
-  const Unit rad("rad");
   const Double minorRad = minorAxis.getValue(rad);
   const Double majorRad = majorAxis.getValue(rad);
   if (majorRad < minorRad) {
@@ -299,10 +250,7 @@ Bool TwoSidedShape::toRecord(String& errorMessage,
   DebugAssert(ok(), AipsError);
   if (!ComponentShape::toRecord(errorMessage, record)) return False;
   {
-    Quantum<Double> temp(majorAxis(itsMajUnit), itsMajUnit);
-    const QuantumHolder qHolder(temp);
-//     const QuantumHolder qHolder(Quantum<Double>(majorAxis(itsMajUnit), 
-// 						itsMajUnit));
+    const QuantumHolder qHolder(majorAxis());
     Record qRecord;
     if (!qHolder.toRecord(errorMessage, qRecord)) {
       errorMessage += "Cannot convert the major axis to a record\n";
@@ -428,16 +376,65 @@ Bool TwoSidedShape::ok() const {
   return True;
 }
 
-// void TwoSidedShape::updateFT() {
-//   const Double factor = 4.0*C::ln2/C::pi;
-//   Vector<Double> width(2);
-//   width(0) = factor/itsShape.minorAxis();
-//   width(1) = factor/itsShape.majorAxis();
-//   itsFT.setWidth(width);
-//   Double pa = itsShape.PA();
-//   pa += C::pi_2;
-//   itsFT.setPA(pa);
-// }
+TwoSidedShape::TwoSidedShape()
+  :ComponentShape(),
+   itsMajUnit("arcmin"),
+   itsMinUnit("arcmin"),
+   itsPaUnit("deg")
+{
+  DebugAssert(ok(), AipsError);
+}
+
+TwoSidedShape::TwoSidedShape(const MDirection& direction, 
+			     const Unit& majorAxisUnit,
+			     const Unit& minorAxisUnit, 
+			     const Unit& paUnit) 
+  :ComponentShape(direction),
+   itsMajUnit(majorAxisUnit),
+   itsMinUnit(minorAxisUnit),
+   itsPaUnit(paUnit)
+{
+}
+
+TwoSidedShape::TwoSidedShape(const TwoSidedShape& other) 
+  :ComponentShape(other),
+   itsMajUnit(other.itsMajUnit),
+   itsMinUnit(other.itsMinUnit),
+   itsPaUnit(other.itsPaUnit)
+{
+  DebugAssert(ok(), AipsError);
+}
+
+void TwoSidedShape::majorAxisUnit(const Unit& majorAxisUnit) {
+  DebugAssert(majorAxisUnit == Unit("rad"), AipsError);
+  itsMajUnit = majorAxisUnit;
+  DebugAssert(ok(), AipsError);
+}
+
+const Unit& TwoSidedShape::majorAxisUnit() {
+  return itsMajUnit;
+}
+
+void TwoSidedShape::minorAxisUnit(const Unit& minorAxisUnit) {
+  DebugAssert(minorAxisUnit == Unit("rad"), AipsError);
+  itsMinUnit = minorAxisUnit;
+  DebugAssert(ok(), AipsError);
+}
+
+const Unit& TwoSidedShape::minorAxisUnit() {
+  return itsMinUnit;
+}
+
+void TwoSidedShape::paUnit(const Unit& paUnit) {
+  DebugAssert(paUnit == Unit("rad"), AipsError);
+  itsPaUnit = paUnit;
+  DebugAssert(ok(), AipsError);
+}
+
+const Unit& TwoSidedShape::paUnit() {
+  return itsPaUnit;
+}
+
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 TwoSidedShape"
 // End: 

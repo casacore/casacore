@@ -93,29 +93,21 @@ public:
   virtual void setWidth(const Quantum<Double>& majorAxis,
 			const Double axialRatio, 
 			const Quantum<Double>& positionAngle);
-  virtual void width(Quantum<Double>& majorAxis, Quantum<Double>& minorAxis,
-		     Quantum<Double>& positionAngle) const = 0;
-  virtual void width(Quantum<Double>& majorAxis, Double& axialRatio,
-		     Quantum<Double>& positionAngle) const = 0;
-
-  virtual void majorAxis(Quantum<Double>& majAxis) const;
-  virtual Double majorAxis(const Unit& angleUnit) const;
-
-  virtual void minorAxis(Quantum<Double>& minorAxis) const = 0;
-  virtual Quantum<Double> minorAxis() const = 0;
-  virtual void axialRatio(Double& axialRatio) const = 0;
-  virtual Double axialRatio() const = 0;
-  virtual void positionAngle(Quantum<Double>& positionAngle) const = 0;
-  virtual Quantum<Double> positionAngle() const = 0;
+  virtual Quantum<Double> majorAxis() const;
+  virtual Quantum<Double> minorAxis() const;
+  virtual Quantum<Double> positionAngle() const;
+  virtual Double axialRatio() const;
   // </group>
 
   // set/get the width and orientation of the Shape. These are the same as the
   // above functions except that all widths are in radians.
   // <group>
-  virtual void setWidth(const Double majorAxis,
-			const Double minorAxis, 
-			const Double positionAngle) = 0;
-  virtual Double majorAxis() const = 0;
+  virtual void setWidthInRad(const Double majorAxis,
+			     const Double minorAxis, 
+			     const Double positionAngle) = 0;
+  virtual Double majorAxisInRad() const = 0;
+  virtual Double minorAxisInRad() const = 0;
+  virtual Double positionAngleInRad() const = 0;
   // </group>
 
   // Calculate the flux at the specified direction, in a pixel of specified
@@ -200,7 +192,8 @@ protected:
   TwoSidedShape();
 
   // Construct a TwoSidedShape at the specified direction.
-  TwoSidedShape(const MDirection& direction);
+  TwoSidedShape(const MDirection& direction, const Unit& majorAxisUnit, const
+		Unit& minorAxisUnit, const Unit& paUnit);
 
   // The copy constructor uses copy semantics.
   TwoSidedShape(const TwoSidedShape& other);
