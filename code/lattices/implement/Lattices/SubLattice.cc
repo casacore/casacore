@@ -424,6 +424,7 @@ template<class T>
 void SubLattice<T>::unlock()
 {
   itsLatticePtr->unlock();
+  itsRegion.unlock();
 }
 template<class T>
 Bool SubLattice<T>::hasLock (FileLocker::LockType type) const
