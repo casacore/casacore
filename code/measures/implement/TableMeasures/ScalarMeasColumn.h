@@ -50,6 +50,7 @@ class MVFrequency;
 class Table;
 class TableMeasRefDesc;
 template <class T> class ScalarColumn;
+template <class T> class ROScalarColumn;
 template <class M, class MV> class ROScalarMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
 
@@ -168,7 +169,7 @@ public:
     Bool isDefined(uInt rownr) const { return itsDataCol->isDefined(rownr); }
           
     // Do the MeasRefs vary by row?
-    Bool isRefVariable() const { return itsVarRefFlag; }
+    Bool isRefVariable() const { return itsVarRefs; }
     
     // Returns the column's static reference or the last used reference if
     // refrences are variable.
@@ -184,8 +185,8 @@ protected:
     // Resets itsMeasRef. Needed when the MeasRef varies from row to row.
     void setMeasRef(uInt rownr=0) const;
 
-    //# Measure reference could be constant or vary per row.
-    Bool itsVarRefFlag;
+    //# Are references variable? (If variable they're in a column too.)
+    Bool itsVarRefs;
     
     //# Its measure reference when the MeasRef is constant per row.
     mutable MeasRef<M> itsMeasRef;
@@ -199,7 +200,8 @@ private:
     ROArrayColumn<Double>* itsDataCol;
     
     //# Its MeasRef code column when references are variable.
-    ROScalarColumn<Int>* itsRefCodeCol;
+    ROScalarColumn<Int>* itsRefIntCol;
+    ROScalarColumn<String>* itsRefStrCol;
     
     //# Column containing its variable offsets.  Only applicable if the 
     //# measure references have offsets and they are variable.
@@ -250,11 +252,18 @@ public:
     void put(uInt rownr, const M& meas);
         
 private:
+    // See class <linkto class="ScalarColumn">ScalarColumn</linkto> for an
+    // explanation as to why this operation is disallowed.  Use the reference
+    // function instead.
+    // Declaring this operator private makes it unusable.
+    ScalarMeasColumn& operator= (const ScalarMeasColumn& that);  
+
     //# Column which contains the Measure's actual data
     ArrayColumn<Double>* itsDataCol;
     
     //# Its MeasRef code column when references are variable.
-    ScalarColumn<Int>* itsRefCodeCol;
+    ScalarColumn<Int>* itsRefIntCol;
+    ScalarColumn<String>* itsRefStrCol;
     
     //# Column containing its variable offsets.  Only applicable if the 
     //# measure references have offsets and they are variable.

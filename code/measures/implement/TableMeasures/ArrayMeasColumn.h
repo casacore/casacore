@@ -37,7 +37,6 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Tables/ArrayColumn.h>
-//#include <aips/TableMeasures/TableMeasDesc.h>
 
 //# Forward Declarations
 class MEpoch;
@@ -152,8 +151,12 @@ private:
     ROArrayColumn<Double>* itsDataCol;
     
     // Its MeasRef code column when references are variable.
-    ROScalarColumn<Int>* itsRefCodeCol;
-    ROArrayColumn<Int>* itsArrRefCodeCol;
+    ROScalarColumn<Int>* itsRefIntCol;
+    ROArrayColumn<Int>* itsArrRefIntCol;
+    
+    // Its MeasRef column when references are variable and stored as Strings.
+    ROScalarColumn<String>* itsRefStrCol;
+    ROArrayColumn<String>* itsArrRefStrCol;
     
     // Column containing its variable offsets.  Only applicable if the 
     // measure references have offsets and they are variable.
@@ -207,12 +210,22 @@ public:
     // Add a measure to the table
     void put(uInt rownr, const Array<M>&);    
 private:
+    // See class <linkto class="ArrayColumn">ArrayColumn</linkto> for an
+    // explanation as to why this operation is disallowed.  Use the reference
+    // function instead.
+    // Declaring this operator private makes it unusable.
+    ArrayMeasColumn& operator= (const ArrayMeasColumn& that); 
+
     // Column which contains the Measure's actual data
     ArrayColumn<Double>* itsDataCol;
     
-    // Its MeasRef code column when references are variable.
-    ScalarColumn<Int>* itsRefCodeCol;
-    ArrayColumn<Int>* itsArrRefCodeCol;
+    // Its MeasRef column when references are variable and stored as RefCodes.
+    ScalarColumn<Int>* itsRefIntCol;
+    ArrayColumn<Int>* itsArrRefIntCol;
+    
+    // Its MeasRef column when references are variable and stored as Strings.
+    ScalarColumn<String>* itsRefStrCol;
+    ArrayColumn<String>* itsArrRefStrCol;
     
     // Column containing its variable offsets.  Only applicable if the 
     // measure references have offsets and they are variable.

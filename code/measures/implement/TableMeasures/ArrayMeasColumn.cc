@@ -46,14 +46,17 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Utilities/Assert.h>
 
 template<class M, class MV>
 ROArrayMeasColumn<M, MV>::ROArrayMeasColumn()
 : itsDataCol(0),
-  itsRefCodeCol(0),
-  itsArrRefCodeCol(0),
+  itsRefIntCol(0),
+  itsArrRefIntCol(0),
+  itsRefStrCol(0),
+  itsArrRefStrCol(0),
   itsOffsetCol(0),
   itsArrOffsetCol(0)
 {}
@@ -62,8 +65,10 @@ template<class M, class MV>
 ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(const Table& tab,
 					    const String& columnName)
 : itsDataCol(0),
-  itsRefCodeCol(0),
-  itsArrRefCodeCol(0),
+  itsRefIntCol(0),
+  itsArrRefIntCol(0),
+  itsRefStrCol(0),
+  itsArrRefStrCol(0),
   itsOffsetCol(0),
   itsArrOffsetCol(0)
 {
@@ -73,13 +78,25 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(const Table& tab,
     AlwaysAssert(M::showMe() == tmDesc->type(), AipsError);
     itsDataCol = new ROArrayColumn<Double>(tab, columnName);
     
-    // Set up the reference code component of the MeasRef
+    // Set up the reference code component of the MeasRef. It can be variable
+    // and therefore stored in a column which may be either an array or scalar
+    // column. Additionally, the references may be stored as strings or
+    // refcodes.
     if (tmDesc->isRefCodeVariable()) {
-	const String varColName = tmDesc->refColumnName();
-	if (tab.tableDesc().columnDesc(varColName).isScalar()) {
-	    itsRefCodeCol = new ROScalarColumn<Int>(tab, varColName);	
+	const String &rcName = tmDesc->refColumnName();
+	const ColumnDesc &cd = tab.tableDesc().columnDesc(rcName);
+	if (cd.isScalar()) {
+	    if (cd.dataType() == TpString) {
+		itsRefStrCol = new ROScalarColumn<String>(tab, rcName);
+	    } else {
+		itsRefIntCol = new ROScalarColumn<Int>(tab, rcName);
+	    }
 	} else {
-	    itsArrRefCodeCol = new ROArrayColumn<Int>(tab, varColName);
+	    if (cd.dataType() == TpString) {
+		itsArrRefStrCol = new ROArrayColumn<String>(tab, rcName);
+	    } else {
+		itsArrRefIntCol = new ROArrayColumn<Int>(tab, rcName);
+	    }
     	}
 	itsVarRefFlag = True;
     } else {
@@ -90,12 +107,12 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(const Table& tab,
     // Set up the offset component of the MeasRef
     if (tmDesc->hasOffset()) {
 	if (tmDesc->isOffsetVariable()) {
-	    const String varColName = tmDesc->offsetColumnName();
-	    if (tab.tableDesc().columnDesc(varColName).isScalar()) {
-		itsOffsetCol = new ROScalarMeasColumn<M, MV>(tab, varColName);
+	    const String refColName = tmDesc->offsetColumnName();
+	    if (tab.tableDesc().columnDesc(refColName).isScalar()) {
+		itsOffsetCol = new ROScalarMeasColumn<M, MV>(tab, refColName);
 	    } else {
 		itsArrOffsetCol = 
-		  new ROArrayMeasColumn<M, MV>(tab, varColName);
+		  new ROArrayMeasColumn<M, MV>(tab, refColName);
     	    }
 	    itsVarOffsetFlag = True;
 	} else {
@@ -112,8 +129,10 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(
 : itsVarRefFlag(that.itsVarRefFlag),
   itsVarOffsetFlag(that.itsVarOffsetFlag),
   itsDataCol(that.itsDataCol),
-  itsRefCodeCol(that.itsRefCodeCol),
-  itsArrRefCodeCol(that.itsArrRefCodeCol),
+  itsRefIntCol(that.itsRefIntCol),
+  itsArrRefIntCol(that.itsArrRefIntCol),
+  itsRefStrCol(that.itsRefStrCol),
+  itsArrRefStrCol(that.itsArrRefStrCol),
   itsOffsetCol(that.itsOffsetCol),
   itsArrOffsetCol(that.itsArrOffsetCol),
   itsMeasRef(that.itsMeasRef)
@@ -121,11 +140,17 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(
     if (itsDataCol != 0) {
 	itsDataCol = new ROArrayColumn<Double>(*itsDataCol);
     }
-    if (itsRefCodeCol != 0) {
-	itsRefCodeCol = new ROScalarColumn<Int>(*itsRefCodeCol);
+    if (itsRefIntCol != 0) {
+	itsRefIntCol = new ROScalarColumn<Int>(*itsRefIntCol);
     }
-    if (itsArrRefCodeCol != 0) {
-	itsArrRefCodeCol = new ROArrayColumn<Int>(*itsArrRefCodeCol);
+    if (itsArrRefIntCol != 0) {
+	itsArrRefIntCol = new ROArrayColumn<Int>(*itsArrRefIntCol);
+    }
+    if (itsRefStrCol != 0) {
+	itsRefStrCol = new ROScalarColumn<String>(*itsRefStrCol);
+    }
+    if (itsArrRefStrCol != 0) {
+	itsArrRefStrCol = new ROArrayColumn<String>(*itsArrRefStrCol);
     }
     if (itsArrOffsetCol != 0) {
 	itsArrOffsetCol = new ROArrayMeasColumn<M, MV>(*itsArrOffsetCol);
@@ -142,8 +167,10 @@ template<class M, class MV>
 void ROArrayMeasColumn<M, MV>::cleanUp()
 {
     delete itsDataCol;
-    delete itsRefCodeCol;
-    delete itsArrRefCodeCol;
+    delete itsRefIntCol;
+    delete itsArrRefIntCol;
+    delete itsRefStrCol;
+    delete itsArrRefStrCol;
     delete itsOffsetCol;
     delete itsArrOffsetCol;
 }
@@ -154,19 +181,27 @@ void ROArrayMeasColumn<M, MV>::reference(const ROArrayMeasColumn<M, MV>& that)
     cleanUp();
     itsDataCol = that.itsDataCol;
     itsVarRefFlag = that.itsVarRefFlag;
-    itsRefCodeCol = that.itsRefCodeCol;
-    itsArrRefCodeCol = that.itsArrRefCodeCol;
+    itsRefIntCol = that.itsRefIntCol;
+    itsArrRefIntCol = that.itsArrRefIntCol;
+    itsRefStrCol = that.itsRefStrCol;
+    itsArrRefStrCol = that.itsArrRefStrCol;
     itsOffsetCol = that.itsOffsetCol;
     itsArrOffsetCol = that.itsArrOffsetCol;
     itsMeasRef = that.itsMeasRef;
     if (itsDataCol != 0) {
 	itsDataCol = new ROArrayColumn<Double>(*itsDataCol);
     }
-    if (itsRefCodeCol != 0) {
-	itsRefCodeCol = new ROScalarColumn<Int>(*itsRefCodeCol);
+    if (itsRefIntCol != 0) {
+	itsRefIntCol = new ROScalarColumn<Int>(*itsRefIntCol);
     }
-    if (itsArrRefCodeCol != 0) {
-	itsArrRefCodeCol = new ROArrayColumn<Int>(*itsArrRefCodeCol);
+    if (itsArrRefIntCol != 0) {
+	itsArrRefIntCol = new ROArrayColumn<Int>(*itsArrRefIntCol);
+    }
+    if (itsRefStrCol != 0) {
+	itsRefStrCol = new ROScalarColumn<String>(*itsRefStrCol);
+    }
+    if (itsArrRefStrCol != 0) {
+	itsArrRefStrCol = new ROArrayColumn<String>(*itsArrRefStrCol);
     }
     if (itsOffsetCol != 0) {
 	itsOffsetCol = new ROScalarMeasColumn<M, MV>(*itsOffsetCol);
@@ -211,27 +246,46 @@ void ROArrayMeasColumn<M, MV>::get(uInt rownr, Array<M>& meas,
     Bool deleteMeas;
     M* meas_p = meas.getStorage(deleteMeas);
 
+    // Set up get for reference component of measure.  Three possibilities:
+    //   1. A column reference is used.
+    //   2. The reference varies per row and is stored in a ScalarColumn.
+    //   3. Ref varies per element of array (hence stored in an ArrayColumn).
+    // With options 2 and 3 the reference could be either stored as a string 
+    // or int.
+    
     MeasRef<M> locMRef = itsMeasRef;
-    Bool refPerElem = (itsArrRefCodeCol != 0) ? True : False;
-    Array<Int> refArr;
+    Bool refPerElem = (itsArrRefIntCol != 0) || (itsArrRefStrCol != 0)
+	? True : False;
+    Bool strRefs = (itsArrRefStrCol != 0) ? True : False;
+    Array<Int> intRefArr;
+    Array<String> strRefArr;
     const Int *r_p;
+    const String *sr_p;
     Bool deleteRef;
     if (refPerElem) {
-	refArr((*itsArrRefCodeCol)(rownr));
-	r_p = refArr.getStorage(deleteRef);
+	if (strRefs) {
+	    Array<String> tmp((*itsArrRefStrCol)(rownr));
+	    strRefArr.reference(tmp);
+	    sr_p = strRefArr.getStorage(deleteRef);
+	} else {
+	    Array<Int> tmp((*itsArrRefIntCol)(rownr));
+	    intRefArr.reference(tmp);
+	    r_p = intRefArr.getStorage(deleteRef);
+	}
     } else {
-	if (itsRefCodeCol != 0) {
-	    locMRef.set((*itsRefCodeCol)(rownr));
+	if (itsRefIntCol != 0) {
+	    locMRef.set((*itsRefIntCol)(rownr));
+	} else if (itsRefStrCol != 0) {
+	    meas_p->giveMe(locMRef, (*itsRefStrCol)(rownr));
 	}
     }
     
-    // same for the offset component of the MeasRef
+    // Setup for offset component of MeasRef.
     Bool offsetPerElem = (itsArrOffsetCol != 0) ? True : False;
     Array<M> offsetArr;
     const M *os_p;
     Bool deleteOffset;
     if (offsetPerElem) {
-//	offsetArr.reference((*itsArrOffsetCol)(rownr));
 	itsArrOffsetCol->get(rownr, offsetArr, True);
 	os_p = offsetArr.getStorage(deleteOffset);
     } else {
@@ -244,15 +298,20 @@ void ROArrayMeasColumn<M, MV>::get(uInt rownr, Array<M>& meas,
     Vector<Double> tmpVec(mvlen);
     MV measVal;
     for (uInt i=0; i<n; i++) {
-	// first the data component of the measure
+	// get the data component of the measure
 	for (uInt j=0; j<mvlen; j++) {
 	    tmpVec(j) = *(d_p + j);
 	}
 	measVal.putVector(tmpVec);
-	// now the reference and offset
+	// the reference
 	if (refPerElem) {
-	    locMRef.set(*(r_p+i));
+	    if (strRefs) {
+		(meas_p+1)->giveMe(locMRef, *(sr_p+i));
+	    } else {
+		locMRef.set(*(r_p+i));
+	    }
 	}
+	// the offset
 	if (offsetPerElem) {
 	    locMRef.set(*(os_p+i));
 	}
@@ -264,37 +323,15 @@ void ROArrayMeasColumn<M, MV>::get(uInt rownr, Array<M>& meas,
     tmpDataCol.freeStorage(d_p, deleteData);
     meas.putStorage(meas_p, deleteMeas);
     if (refPerElem) {
-    	refArr.freeStorage(r_p, deleteRef);
+	if (strRefs) {
+	    strRefArr.freeStorage(sr_p, deleteRef);
+	} else {
+	    intRefArr.freeStorage(r_p, deleteRef);
+	}
     }
     if (offsetPerElem) {
     	offsetArr.freeStorage(os_p, deleteOffset);
     }
-    
-#ifdef COMMENT        
-    String* u_p;
-    Bool deleteUnits;
-    Array<String> tmpUnitsCol;
-    Unit localUnit;
-    if (itsArrUnitsCol != 0) {
-	tmpUnitsCol = (*itsArrUnitsCol)(rownr);
-	u_p = tmpUnitsCol.getStorage(deleteUnits);
-    } else if (itsScaUnitsCol != 0) {
-	localUnit.setName((*itsScaUnitsCol)(rownr));
-    } else {
-	localUnit = itsUnit;
-    }
-    
-    uInt n = tmpDataCol.nelements();
-    for (uInt i=0; i<n; i++) {
-    	(q_p+i)->setValue(*(d_p+i));
-	
-	if (itsArrUnitsCol != 0) {
-	    (q_p+i)->setUnit(*(u_p+i));
-	} else {
-	    (q_p+i)->setUnit(localUnit);
-	}
-    }
-#endif
 }
     	
 template<class M, class MV> 
@@ -323,8 +360,10 @@ template<class M, class MV>
 ArrayMeasColumn<M, MV>::ArrayMeasColumn()
 : ROArrayMeasColumn<M, MV>(),
   itsDataCol(0),
-  itsRefCodeCol(0),
-  itsArrRefCodeCol(0),
+  itsRefIntCol(0),
+  itsArrRefIntCol(0),
+  itsRefStrCol(0),
+  itsArrRefStrCol(0),
   itsOffsetCol(0),
   itsArrOffsetCol(0)
 {}
@@ -334,8 +373,10 @@ ArrayMeasColumn<M, MV>::ArrayMeasColumn(const Table& tab,
 					const String& columnName)
 : ROArrayMeasColumn<M, MV>(tab, columnName),
   itsDataCol(0),
-  itsRefCodeCol(0),
-  itsArrRefCodeCol(0),
+  itsRefIntCol(0),
+  itsArrRefIntCol(0),
+  itsRefStrCol(0),
+  itsArrRefStrCol(0),
   itsOffsetCol(0),
   itsArrOffsetCol(0)
 {
@@ -347,25 +388,32 @@ ArrayMeasColumn<M, MV>::ArrayMeasColumn(const Table& tab,
     
     // Set up the reference code component of the MeasRef
     if (tmDesc->isRefCodeVariable()) {
-	const String varColName = tmDesc->refColumnName();
-	if (tab.tableDesc().columnDesc(varColName).isScalar()) {
-	    itsRefCodeCol = new ScalarColumn<Int>(tab, varColName);	
+	const String rcName = tmDesc->refColumnName();
+	const ColumnDesc &cd = tab.tableDesc().columnDesc(rcName);
+	if (cd.isScalar()) {
+	    if (cd.dataType() == TpString) {
+		itsRefStrCol = new ScalarColumn<String>(tab, rcName);
+	    } else {
+		itsRefIntCol = new ScalarColumn<Int>(tab, rcName);
+	    }
 	} else {
-	    itsArrRefCodeCol = new ArrayColumn<Int>(tab, varColName);
+	    if (cd.dataType() == TpString) {
+		itsArrRefStrCol = new ArrayColumn<String>(tab, rcName);
+	    } else {
+		itsArrRefIntCol = new ArrayColumn<Int>(tab, rcName);
+	    }
     	}
-    } else {
-	itsMeasRef.set(tmDesc->getRefCode());
-    }
+    } 
     
     // Set up the offset component of the MeasRef
     if (tmDesc->hasOffset()) {
 	if (tmDesc->isOffsetVariable()) {
-	    const String varColName = tmDesc->offsetColumnName();
-	    if (tab.tableDesc().columnDesc(varColName).isScalar()) {
-		itsOffsetCol = new ScalarMeasColumn<M, MV>(tab, varColName);
+	    const String refColName = tmDesc->offsetColumnName();
+	    if (tab.tableDesc().columnDesc(refColName).isScalar()) {
+		itsOffsetCol = new ScalarMeasColumn<M, MV>(tab, refColName);
 	    } else {
 		itsArrOffsetCol = 
-		  new ArrayMeasColumn<M, MV>(tab, varColName);
+		  new ArrayMeasColumn<M, MV>(tab, refColName);
     	    }
 	} else {
 	    itsMeasRef.set(tmDesc->getOffset());
@@ -378,8 +426,10 @@ template<class M, class MV>
 ArrayMeasColumn<M, MV>::ArrayMeasColumn(const ArrayMeasColumn<M, MV>& that)
 : ROArrayMeasColumn<M, MV>(that),
   itsDataCol(that.itsDataCol),
-  itsRefCodeCol(that.itsRefCodeCol),
-  itsArrRefCodeCol(that.itsArrRefCodeCol),
+  itsRefIntCol(that.itsRefIntCol),
+  itsArrRefIntCol(that.itsArrRefIntCol),
+  itsRefStrCol(that.itsRefStrCol),
+  itsArrRefStrCol(that.itsArrRefStrCol),
   itsOffsetCol(that.itsOffsetCol),
   itsArrOffsetCol(that.itsArrOffsetCol),
   itsMeasRef(that.itsMeasRef)
@@ -387,11 +437,17 @@ ArrayMeasColumn<M, MV>::ArrayMeasColumn(const ArrayMeasColumn<M, MV>& that)
     if (itsDataCol != 0) {
 	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
     }
-    if (itsRefCodeCol != 0) {
-	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+    if (itsRefIntCol != 0) {
+	itsRefIntCol = new ScalarColumn<Int>(*itsRefIntCol);
     }
-    if (itsArrRefCodeCol != 0) {
-	itsArrRefCodeCol = new ArrayColumn<Int>(*itsArrRefCodeCol);
+    if (itsArrRefIntCol != 0) {
+	itsArrRefIntCol = new ArrayColumn<Int>(*itsArrRefIntCol);
+    }
+    if (itsRefStrCol != 0) {
+	itsRefStrCol = new ScalarColumn<String>(*itsRefStrCol);
+    }
+    if (itsArrRefStrCol != 0) {
+	itsArrRefStrCol = new ArrayColumn<String>(*itsArrRefStrCol);
     }
     if (itsArrOffsetCol != 0) {
 	itsArrOffsetCol = new ArrayMeasColumn<M, MV>(*itsArrOffsetCol);
@@ -400,14 +456,18 @@ ArrayMeasColumn<M, MV>::ArrayMeasColumn(const ArrayMeasColumn<M, MV>& that)
 
 template<class M, class MV>
 ArrayMeasColumn<M, MV>::~ArrayMeasColumn()
-{}
+{
+    cleanUp();
+}
 
 template<class M, class MV>
 void ArrayMeasColumn<M, MV>::cleanUp()
 {
     delete itsDataCol;
-    delete itsRefCodeCol;
-    delete itsArrRefCodeCol;
+    delete itsRefIntCol;
+    delete itsArrRefIntCol;
+    delete itsRefStrCol;
+    delete itsArrRefStrCol;
     delete itsOffsetCol;
     delete itsArrOffsetCol;
 }
@@ -417,19 +477,27 @@ void ArrayMeasColumn<M, MV>::reference(const ArrayMeasColumn<M, MV>& that)
 {
     ROArrayMeasColumn<M, MV>::reference(that);
     itsDataCol = that.itsDataCol;
-    itsRefCodeCol = that.itsRefCodeCol;
-    itsArrRefCodeCol = that.itsArrRefCodeCol;
+    itsRefIntCol = that.itsRefIntCol;
+    itsArrRefIntCol = that.itsArrRefIntCol;
+    itsRefStrCol = that.itsRefStrCol;
+    itsArrRefStrCol = that.itsArrRefStrCol;
     itsOffsetCol = that.itsOffsetCol;
     itsArrOffsetCol = that.itsArrOffsetCol;
     itsMeasRef = that.itsMeasRef;
     if (itsDataCol != 0) {
 	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
     }
-    if (itsRefCodeCol != 0) {
-	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+    if (itsRefIntCol != 0) {
+	itsRefIntCol = new ScalarColumn<Int>(*itsRefIntCol);
     }
-    if (itsArrRefCodeCol != 0) {
-	itsArrRefCodeCol = new ArrayColumn<Int>(*itsArrRefCodeCol);
+    if (itsArrRefIntCol != 0) {
+	itsArrRefIntCol = new ArrayColumn<Int>(*itsArrRefIntCol);
+    }
+    if (itsRefStrCol != 0) {
+	itsRefStrCol = new ScalarColumn<String>(*itsRefStrCol);
+    }
+    if (itsArrRefStrCol != 0) {
+	itsArrRefStrCol = new ArrayColumn<String>(*itsArrRefStrCol);
     }
     if (itsArrOffsetCol != 0) {
 	itsArrOffsetCol = new ArrayMeasColumn<M, MV>(*itsArrOffsetCol);
@@ -446,71 +514,60 @@ void ArrayMeasColumn<M, MV>::attach(const Table& tab,
 template<class M, class MV>
 void ArrayMeasColumn<M, MV>::put(uInt rownr, const Array<M>& meas)
 {
-#ifdef COMMENT
-    // probably need to check type etc for this measure
-    // break the M up into its value and reference
-    Vector<Double> val = meas.getValue().get();
-    itsDataCol->put(rownr, val);
-    cout << "Val to write is: " << val << endl; 
-      
-    // Each quantum in q is separated out into its Qtype component and
-    // Unit component which are stored in itsDataCol and, if Units are
-    // variable, itsArrUnitsCol repsectively.  If units are not variable
-    // each quantum is first converted into local units before it is
-    // saved.  
-    // getStorage() is used to create pointers (to be used as iterators)
-    // into the respective arrays.
-    // if q is empty we don't want to do anything
-#endif
-    
     // If meas has entries then need to resize the dataColArr to conform
     // to meas.Shape() + one dimension for storing the measure's values.
     
     const uInt n = meas.nelements();
-    cout << "elements: " << n << endl;
     if (n == 0) {
 	return;
     }
     IPosition mIndx(meas.shape());
     mIndx = 0;
-    cout << "ndim(): " << meas.ndim() << endl;
     const uInt mvlen = meas(mIndx).getValue().getVector().nelements();
     
     IPosition ms(meas.shape());
     ms.append(IPosition(1, mvlen));
-    cout << "new ms shape: " << ms << endl;
     Bool deleteData;
     Array<Double> dataArr(ms);
     Double *d_p = dataArr.getStorage(deleteData);
-    
-    cout << "array.nelements(): " << dataArr.nelements() << endl;
-    
+        
     Bool deleteMeas;
     const M* meas_p = meas.getStorage(deleteMeas);
 
     // Set up put for reference component of measure.  Three possibilities:
-    //     1. The reference is non-variable so ignore references.
-    //     2. The reference varies per row so write reference once using
-    //        ref from first meas in the array.
-    //     3. Ref varies per element of array.  This requires a reference
-    //        array which is eventually put into itsArrRefCodeCol.
+    //   1. The reference is non-variable so ignore reference component.
+    //   2. The reference varies per row so write reference once using
+    //      reference from first measure in the array.  No check is done
+    //	    on the reference component of other measures.
+    //   3. Ref varies per element of array. An array of references is written.
+    // With 2 and 3 references are stored as either Strings or Ints.
     
-    Bool refPerElem = (itsArrRefCodeCol != 0) ? True : False;
-    Array<Int> refArr;
+    Bool refPerElem = (itsArrRefIntCol != 0) || (itsArrRefStrCol != 0)
+	? True : False;
+    Bool strRefs = (itsArrRefStrCol != 0) ? True : False;
+    Array<Int> intRefArr;
+    Array<String> strRefArr;
     Int *r_p;
+    String *sr_p;
     Bool deleteRef;
     if (refPerElem) {
-	refArr(meas.shape());
-	r_p = refArr.getStorage(deleteRef);
+	if (strRefs) {
+	    strRefArr(meas.shape());
+	    sr_p = strRefArr.getStorage(deleteRef);
+	} else {
+	    intRefArr(meas.shape());
+	    r_p = intRefArr.getStorage(deleteRef);
+	}
     } else {
-	if (itsRefCodeCol != 0) {
-	    // references are variable but only per row.
-	    itsRefCodeCol->put(rownr, meas_p->getRef().getType());
+	// references are variable but only per row.
+	if (itsRefIntCol != 0) {
+	    itsRefIntCol->put(rownr, meas_p->getRef().getType());
+	} else if (itsRefStrCol != 0) {
+	    itsRefStrCol->put(rownr, M::showType(meas_p->getRef().getType()));
 	}
     }
     
-    // Same again for offset.
-    
+    // Setup for offset.   
     Bool offsetPerElem = (itsArrOffsetCol != 0) ? True : False;
     Array<M> offsetArr;
     M *os_p;
@@ -528,13 +585,20 @@ void ArrayMeasColumn<M, MV>::put(uInt rownr, const Array<M>& meas)
     Vector<Double> tmpVec;
     M offset;
     for (uInt i=0; i<n; i++) {
+	// put the value component
 	tmpVec = (meas_p+i)->getValue().getVector();
 	for (uInt j=0; j<mvlen; j++)
 	    *(d_p+j) = tmpVec(j);
 	d_p += mvlen;
+	// put the reference
 	if (refPerElem) {
-	    *(r_p+i) = (meas_p+i)->getRef().getType();
+	    if (strRefs) {
+		*(sr_p+i) = M::showType((meas_p+i)->getRef().getType());
+	    } else {
+		*(r_p+i) = (meas_p+i)->getRef().getType();
+	    }
 	}
+	// put the offset
 	if (offsetPerElem) {
 	    offset = (meas_p+i)->getRef().offset();
 	    *(os_p+i) = offset;
@@ -547,56 +611,17 @@ void ArrayMeasColumn<M, MV>::put(uInt rownr, const Array<M>& meas)
     itsDataCol->put(rownr, dataArr);
     meas.freeStorage(meas_p, deleteMeas);
     if (refPerElem) {
-    	refArr.putStorage(r_p, deleteRef);
-    	itsArrRefCodeCol->put(rownr, refArr);
+	if (strRefs) {
+	    strRefArr.putStorage(sr_p, deleteRef);
+	    itsArrRefStrCol->put(rownr, strRefArr);
+	} else {
+	    intRefArr.putStorage(r_p, deleteRef);
+	    itsArrRefIntCol->put(rownr, intRefArr);
+	}
     }
     if (offsetPerElem) {
 	offsetArr.putStorage(os_p, deleteOffset);
 	itsArrOffsetCol->put(rownr, offsetArr);
-    }
-    
-#ifdef COMMENT
-    
-    // If units are variable they could vary per element of the quantum
-    // array (i.e., the units column is also an array) or they could vary
-    // by row (i.e., the units column is a Scalar Column where each row 
-    // contains a single unit entry).  When variable by row, the unit of the
-    // first quantum in q is used.
-    Bool deleteUnits;
-    String* u_p;
-    Array<String> unitsArr;
-    Unit localUnit;
-    if (itsArrUnitsCol != 0) {
-	unitsArr.resize(meas.shape());
-	u_p = unitsArr.getStorage(deleteUnits);
-    } else if (itsScaUnitsCol != 0) {
-	// just takes the value for unit from the first entry in q.  This
-	// is safe because we know here that q contains at least 1 entry.
-	localUnit = q_p->getFullUnit();
-	itsScaUnitsCol->put(rownr, localUnit.getName());
-    } else {
-	localUnit = itsUnit;
-    }
-            
-    for (uInt i=0; i<n; i++) {
-//	if (itsArrUnitsCol != 0) {
-//	    *(u_p+i) = (meas_p+i)->getFullUnit().getName();
-	    *(d_p+i) = (meas_p+i)->getValue().getVector();
-//	} else {
-	    // ensure quantum's value is consistent with column's units
-	    // before storing.
-//	    itsQuantum = *(meas_p+i);
-//	    itsQuantum.convert(localUnit);
-//	    *(d_p+i) = itsQuantum.getValue();
-//	}
-    }
-#endif
-
-//#ifdef COMMENT    
-//    if (itsArrUnitsCol != 0) {
-//	unitsArr.putStorage(u_p, deleteUnits);
-//	itsArrUnitsCol->put(rownr, unitsArr);
-//    }
-    
+    }    
 }
     	
