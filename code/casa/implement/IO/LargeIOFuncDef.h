@@ -38,7 +38,9 @@
 
 #ifdef AIPS_LARGEFILE
 # ifdef AIPS_LINUX
-#  define _LARGEFILE64_SOURCE
+#  if !defined(_LARGEFILE64_SOURCE)
+#   define _LARGEFILE64_SOURCE
+#  endif
 # endif
 # define traceFOPEN fopen64
 # define traceFCLOSE fclose
