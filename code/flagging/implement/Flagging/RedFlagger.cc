@@ -103,8 +103,12 @@ RedFlagger::~RedFlagger ()
     ms.relinquishAutoLocks(True);
     ms.unlock();
   }
-  delete vs_p;
-  delete mssel_p;
+  if(vs_p) 
+    delete vs_p;
+  vs_p = 0;
+  if(mssel_p)
+    delete mssel_p;
+  mssel_p = 0;
 }
 
 // -----------------------------------------------------------------------
@@ -708,6 +712,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     return;
   }
 
+  
   if( !nant )
     os<<"No Measurement Set has been attached\n"<<LogIO::EXCEPTION;
   RFABase::setIndexingBase(ind_base);  
@@ -743,15 +748,11 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     cout << "vi created " << endl;
   }
   */
-
-  
-
   VisibilityIterator &vi(vs_p->iter()); 
-
   //VisibilityIterator vi(ms, sortCol, 1000000000);
-
   VisBuffer vb(vi);
   RFChunkStats chunk(vi,vb,*this,&pgp_screen,&pgp_report);
+
 
 // setup global options for flagging agents
   Record globopt(Record::Variable);
@@ -769,10 +770,10 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 // generate new array of agents by iterating through agents record
   Record agcounts; // record of agent instance counts
   acc.resize(agents.nfields());
+
   acc.set(NULL);
   uInt nacc = 0;
-  for( uInt i=0; i<agents.nfields(); i++ ) 
-  {
+  for( uInt i=0; i<agents.nfields(); i++ ) {
     if(  agents.dataType(i) != TpRecord )
       os<<"Unrecognized field '"<<agents.name(i)<<"' in agents\n"<<LogIO::EXCEPTION;
     const RecordInterface & agent_rec( agents.asRecord(i) );
@@ -785,7 +786,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     // check that this is agent really exists
     if( !agent_defaults.isDefined(agent_id) ){
       os<<"Unknown flagging method '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
-     }
+    }
     // create parameter record by taking agent defaults, and merging in global
     // and specified options
     const RecordInterface & defparms(agent_defaults.asRecord(agent_id));
@@ -796,15 +797,15 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     parms.define(RF_RESET,reset_flags);
     // see if this is a different instance of an already activated agent
     if( agcounts.isDefined(agent_id) )
-    {
-      // increment the instance counter
-      Int count = agcounts.asInt(agent_id)+1;
-      agcounts.define(agent_id,count);
-      // modify the agent name to include an instance count
-      char s[128];
-      sprintf(s,"%s#%d",defparms.asString(RF_NAME).chars(),count);
-      parms.define(RF_NAME,s);
-    }
+      {
+	// increment the instance counter
+	Int count = agcounts.asInt(agent_id)+1;
+	agcounts.define(agent_id,count);
+	// modify the agent name to include an instance count
+	char s[128];
+	sprintf(s,"%s#%d",defparms.asString(RF_NAME).chars(),count);
+	parms.define(RF_NAME,s);
+      }
     else
       agcounts.define(agent_id,1);
     // create agent based on name
@@ -813,12 +814,11 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       os<<"Unrecognized method name '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
     agent->init();
     String inp,st;
-//    agent->logSink()<<agent->getDesc()<<endl<<LogIO::POST;
+    //    agent->logSink()<<agent->getDesc()<<endl<<LogIO::POST;
     acc[nacc++] = agent;
   }
-  acc.resize(nacc);
-
-// begin iterating over chunks
+  acc.resize(nacc, True);
+  // begin iterating over chunks
   uInt nchunk=0;
 // process just the first chunk because something's screwy  
 //  vi.originChunks(); 
@@ -826,6 +826,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   for( vi.originChunks(); vi.moreChunks(); vi.nextChunk(),nchunk++ ) 
   {
     chunk.newChunk();
+
 // limit frequency of progmeter updates (duh!)
     Int pm_update_freq = chunk.num(TIME)/200;
 // How much memory do we have?
@@ -853,29 +854,32 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
         availmem -= flagmem;
       }
     }
-// call newChunk() for all accumulators; determine which ones are active
+    // call newChunk() for all accumulators; determine which ones are active
     Vector<Int> iter_mode(acc.nelements(),RFA::DATA);
     Vector<Bool> active(acc.nelements());
+
     for( uInt i = 0; i<acc.nelements(); i++ ) 
     {
       Int maxmem;
       maxmem = availmem;
       if( ! (active(i) = acc[i]->newChunk(maxmem))  ) // refused this chunk?
-        iter_mode(i) = RFA::STOP;  // skip over it
+	{
+	  iter_mode(i) = RFA::STOP;  // skip over it
+	}
       else
-      { // active, so reserve its memory 
-        if( debug_level>0 )
-          dprintf(os,"%s reserving %d MB of memory, %d left in pool\n",
-              acc[i]->name().chars(),availmem-maxmem,maxmem);
-        availmem = maxmem>0 ? maxmem : 0;
-      }
+	{ // active, so reserve its memory 
+	  if( debug_level>0 )
+	    dprintf(os,"%s reserving %d MB of memory, %d left in pool\n",
+		    acc[i]->name().chars(),availmem-maxmem,maxmem);
+	  availmem = maxmem>0 ? maxmem : 0;
+	}
     }
     if( !sum(active) )
-    {
-      os<<LogIO::WARN<<"Unable to process this chunk with any active method.\n"<<LogIO::POST;
-      continue;
-    }
-// initially active agents
+      {
+	os<<LogIO::WARN<<"Unable to process this chunk with any active method.\n"<<LogIO::POST;
+	continue;
+      }
+    // initially active agents
     Vector<Bool> active_init = active;
 // start executing passes    
     char subtitle[128];
