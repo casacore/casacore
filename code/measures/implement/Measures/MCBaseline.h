@@ -48,9 +48,7 @@ template <class T> class Vector;
 
 //# Typedefs
 
-// <summary>
-//  MBaseline conversion routines 
-// </summary>
+// <summary> MBaseline conversion routines  </summary>
 
 // <use visibility=local>
 
