@@ -37,6 +37,7 @@
 #include <aips/Arrays/LogiArray.h>
 #include <aips/Arrays/MaskLogiArrFwd.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/ostream.h>
 
 //# Forward Declarations
 class AipsIO;
@@ -587,6 +588,9 @@ public:
 
       void setPos (T* const pos)
         { itsPos = pos; }
+
+      friend ostream& operator<< (ostream& os, const ConstIteratorSTL& iter)
+        { os << iter.itsPos; return os; }
 
     protected:
       // Increment iterator for a non-contiguous array.
