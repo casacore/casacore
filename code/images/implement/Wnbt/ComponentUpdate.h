@@ -1,5 +1,5 @@
 //# ComponentUpdate.h: This class updates components in UV plane
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 //# Includes
 
 #include <casa/aips.h>
-#include <scimath/Fitting/FitLSQ.h>
+#include <scimath/Fitting/LSQaips.h>
 #include <casa/Containers/Block.h>
 #include <components/ComponentModels/ComponentList.h>
 #include <casa/BasicSL/Complexfwd.h>
@@ -178,8 +178,6 @@ private:
   //# Data
   // List of number of unknowns for solvables
   static const Int N_unknown[N_Solve];
-  // Type of solution list
-  static const LSQ::normType solveType[N_Solve];
   // Type of solution
   ComponentUpdate::Type soltp_p;
   // Solvable parameters
@@ -191,7 +189,7 @@ private:
   // Component list to solve (note: a pointer to it)
   ComponentList complist_p;
   // List of solution fitting areas
-  PtrBlock<FitLSQ *> fit_p;
+  PtrBlock<LSQaips *> fit_p;
   //# Standard constructors/destructors
   // Copy constructor (not implemented)
   ComponentUpdate(const ComponentUpdate &other);

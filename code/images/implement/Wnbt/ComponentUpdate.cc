@@ -1,5 +1,5 @@
 //# ComponentUpdate.cc: This class updates components in UV plane
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,9 +40,6 @@
 // Statics
 const Int ComponentUpdate::N_unknown[N_Solve] = {
   3 
-};
-const LSQ::normType ComponentUpdate::solveType[N_Solve] = {
-  LSQ::REAL
 };
 
 // Constructors
@@ -114,7 +111,6 @@ void ComponentUpdate::makeEquations(const Array<DComplex> &deriv,
 
 Bool ComponentUpdate::solve(Matrix<Double> &sol,
 			    Matrix<Double> &err) {
-  Double mu, sd;
   uInt rank;
   IPosition rs(2, N_unknown[solve_p], nmodel_p);
   if (sol.shape() != rs) {
@@ -129,7 +125,7 @@ Bool ComponentUpdate::solve(Matrix<Double> &sol,
   VectorIterator<Double> ierr(err);  
   for (Int i=0; i<nmodel_p; i++) {
     fit_p[i]->invert(rank, True);
-    fit_p[i]->solve(isol.vector(), sd, mu);
+    fit_p[i]->solve(isol.vector());
     fit_p[i]->getErrors(ierr.vector());
     isol.next();
     ierr.next();
@@ -148,7 +144,7 @@ void ComponentUpdate::init() {
   // Fill new fitters
   fit_p.resize(nmodel_p);
   for (Int i=0; i<nmodel_p; i++) {
-    fit_p[i] = new FitLSQ(N_unknown[solve_p], solveType[solve_p]);
+    fit_p[i] = new LSQaips(N_unknown[solve_p]);
   }; 
   dt_p = new Double[N_unknown[solve_p]];
 }
