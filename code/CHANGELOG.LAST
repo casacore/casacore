@@ -13,3 +13,17 @@ I replaced the regionmanagergui entry box internals
 with standard services offered by guientry.g.  
 I improved some of the context sensitive popuphelp
 as well.
+
+change id: 0010
+ author:   Neil Killeen
+ date:     2000/06/14
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   deleteregions,restoreregions,saveregions
+ type:     Code
+ category: Change
+ summary:  Integrated with standard guientry.g services
+I replaced the entry box internals with standard
+guientry.g entry services.  These tools are invoked 
+by regionmanagergui.g which has also been integrated
