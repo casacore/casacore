@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.5 - C routines that implement the spherical map projections
-*   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
+*   WCSLIB 3.7 - C routines that implement the spherical map projections
+*   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -42,12 +42,31 @@
 *
 *   Summary of routines
 *   -------------------
-*   Each map projection is implemented via separate functions for the
-*   spherical projection, *s2x(), and deprojection, *x2s().
+*   These routines implement the spherical map projections defined by the FITS
+*   WCS standard.  They are based on the prjprm struct, described in detail
+*   below, which contains all information needed for the computations.  The
+*   struct contains some members that must be set by the caller, and others
+*   that are maintained by these routines, somewhat like a C++ class but with
+*   no encapsulation.
 *
-*   Initialization routines, *set(), compute intermediate values from the
-*   projection parameters but need not be called explicitly - see the
-*   explanation of the flag member of the prjprm struct below.
+*   A service routine, prjini(), is provided to initialize the prjprm struct,
+*   and another, prjprt(), to print its contents.
+*
+*   Setup routines for each projection with names of the form ???set(), where
+*   "???" is the three-letter projection code, compute intermediate values in
+*   the prjprm struct from parameters in it that were supplied by the caller.
+*   The struct always needs to be set by the projection's setup routine but it
+*   need not be called explicitly - see the explanation of prj.flag below.
+*
+*   Each map projection is implemented via separate functions for the
+*   spherical projection, ???s2x(), and deprojection, ???x2s().
+*
+*   A set of generic driver routines, prjset(), prjx2s(), and prjs2x(),
+*   provide a generic interface to the projection routines.  These these
+*   invoke the specific projection routines via a pointer-to-funcation they
+*   are slightly less efficient than calling the specific routines directly.
+*
+*   In summary, the routines are:
 *
 *      prjini                 Initialization routine for the prjprm struct.
 *      prjprt                 Service routine to print the prjprm struct.
@@ -92,7 +111,7 @@
 *                        Projection parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *
@@ -106,7 +125,7 @@
 *                        Projection parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *
@@ -139,7 +158,7 @@
 *                        Projection parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -163,12 +182,12 @@
 *   Returned:
 *      phi,     double[] Longitude and latitude of the projected point in
 *      theta             native spherical coordinates, in degrees.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of (x,y).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -195,12 +214,12 @@
 *
 *   Returned:
 *      x,y      double[] Projected coordinates.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of (phi,theta).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -379,9 +398,9 @@
 *      within the ranges [-180,180] for phi, and [-90,90] for theta.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   encoded in the prj_errmsg character array.
 *
 *
@@ -393,8 +412,8 @@
 *   least 1E-10 degree of longitude and latitude has been verified for typical
 *   projection parameters on the 1 degree graticule of native longitude and
 *   latitude (to within 5 degrees of any latitude where the projection may
-*   diverge).  Refer to the tproj1.c and tproj2.c test routines which
-*   accompany this software.
+*   diverge).  Refer to the tprj1.c and tprj2.c test routines that accompany
+*   this software.
 *
 *===========================================================================*/
 
@@ -405,15 +424,9 @@
 extern "C" {
 #endif
 
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
-#endif
 
 /* Total number of projection parameters; 0 to PVN-1. */
 #define PVN 30
-
 
 extern const char *prj_errmsg[];
 #define prjini_errmsg prj_errmsg
@@ -451,7 +464,6 @@ extern const char prj_codes[26][4];
 #undef PRJS2X
 #endif
 
-#if __STDC__ || defined(__cplusplus)
 #define PRJINI struct prjprm *
 #define PRJPRT const struct prjprm *
 #define PRJSET struct prjprm *
@@ -461,13 +473,6 @@ extern const char prj_codes[26][4];
 #define PRJS2X struct prjprm *, int, int, int, int, \
                const double[], const double[],      \
                double[], double[], int[]
-#else
-#define PRJINI
-#define PRJPRT
-#define PRJSET
-#define PRJX2S
-#define PRJS2X
-#endif
 
 
 struct prjprm {
@@ -685,6 +690,7 @@ extern int prj_stat;
         qscx2s(prj, 1, 1, 1, 1, &(x), &(y), phi, theta, &prj_stat)
 #define qscfwd(phi, theta, prj, x, y) \
         qscs2x(prj, 1, 1, 1, 1, &(phi), &(theta), x, y, &prj_stat)
+
 
 #ifdef __cplusplus
 };

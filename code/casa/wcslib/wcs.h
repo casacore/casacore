@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.6 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.6 - C routines that implement the FITS World Coordinate System
-*   (WCS) convention.  Refer to
+*   WCSLIB 3.7 - C routines that implement the FITS World Coordinate System
+*   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -46,17 +46,29 @@
 *
 *   Summary of routines
 *   -------------------
+*   These routines implement the FITS World Coordinate System (WCS) standard
+*   which defines methods to be used for computing world coordinates from
+*   image pixel coordinates, and vice versa.  They are based on the wcsprm
+*   struct, described in detail below, which contains all information needed
+*   for the computations.  The struct contains some members that must be set
+*   by the caller, and others that are maintained by these routines, somewhat
+*   like a C++ class but with no encapsulation.
+*
 *   Three service routines, wcsini(), wcssub(), and wcsfree() are provided to
 *   manage the wcsprm struct (see "Memory allocation and deallocation" below).
 *   Another, wcsprt(), prints its contents.  See "Coordinate transformation
 *   parameters" below for an explanation of the anticipated usage of these
 *   routines.
 *
-*   A setup routine, wcsset(), computes indices from the ctype array but need
-*   not be called explicitly - see the explanation of wcs.flag below.
+*   A setup routine, wcsset(), computes intermediate values in the wcsprm
+*   struct from parameters in it that were supplied by the caller.  The
+*   struct always needs to be set up by wcsset() but it need not be called
+*   explicitly - see the explanation of wcs.flag below.
 *
-*   wcsp2s() and wcss2p() are high level driver routines for the WCS linear,
-*   celestial, and spectral transformation routines.
+*   wcsp2s() and wcss2p() implement the WCS world coordinate transformations.
+*   In fact, they are high level driver routines for the WCS linear,
+*   celestial, and spectral transformation routines described in lin.h, cel.h
+*   and spc.h.
 *
 *   Given either the celestial longitude or latitude plus an element of the
 *   pixel coordinate a hybrid routine, wcsmix(), iteratively solves for the
@@ -900,22 +912,16 @@
 #include "cel.h"
 #include "spc.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define WCSSUB_LONGITUDE 0x1001
 #define WCSSUB_LATITUDE  0x1002
 #define WCSSUB_CUBEFACE  0x1004
 #define WCSSUB_CELESTIAL 0x1007
 #define WCSSUB_SPECTRAL  0x1008
 #define WCSSUB_STOKES    0x1010
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
-#endif
 
 
 extern const char *wcs_errmsg[];
@@ -1024,43 +1030,37 @@ struct wcsprm {
    int    padding1;		/* (Dummy inserted for alignment purposes.) */
 };
 
-#if __STDC__ || defined(__cplusplus)
-   int wcsnpv(int);
-   int wcsnps(int);
-
-   int wcsini(int, int, struct wcsprm *);
-
-   int wcssub(int, const struct wcsprm *, int *, int[], struct wcsprm *);
-
-   int wcsfree(struct wcsprm *);
-
-   int wcsprt(const struct wcsprm *);
-
-   int wcsset(struct wcsprm *);
-
-   int wcsp2s(struct wcsprm *, int, int, const double[],
-              double[], double[], double[], double[], int[]);
-
-   int wcss2p(struct wcsprm *, int, int, const double[],
-              double[], double[], double[], double[], int[]);
-
-   int wcsmix(struct wcsprm *, int, int, const double[], double, int,
-              double[], double[], double[], double[], double[]);
-
-   int wcs_allEq(int, int, const double *);
-   void wcs_setAll(int, int, double *);
-   void wcs_setAli(int, int, int *);
-#else
-   int wcsnpv(), wcsnps();
-   int wcsini(), wcssub(), wcsfree(), wcsprt(), wcsset(), wcsp2s(), wcss2p(),
-       wcsmix();
-   int wcs_allEq();
-   void wcs_setAll(), wcs_setAli();
-#endif
-
 #define WCSLEN (sizeof(struct wcsprm)/sizeof(int))
 
+
+int wcsnpv(int);
+int wcsnps(int);
+
+int wcsini(int, int, struct wcsprm *);
+
+int wcssub(int, const struct wcsprm *, int *, int[], struct wcsprm *);
+
+int wcsfree(struct wcsprm *);
+
+int wcsprt(const struct wcsprm *);
+
+int wcsset(struct wcsprm *);
+
+int wcsp2s(struct wcsprm *, int, int, const double[],
+           double[], double[], double[], double[], int[]);
+
+int wcss2p(struct wcsprm *, int, int, const double[],
+           double[], double[], double[], double[], int[]);
+
+int wcsmix(struct wcsprm *, int, int, const double[], double, int,
+           double[], double[], double[], double[], double[]);
+
+int wcs_allEq(int, int, const double *);
+void wcs_setAll(int, int, double *);
+void wcs_setAli(int, int, int *);
+
 #define wcscopy(alloc, wcssrc, wcsdst) wcssub(alloc, wcssrc, 0, 0, wcsdst)
+
 
 #ifdef __cplusplus
 };

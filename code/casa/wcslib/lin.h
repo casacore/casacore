@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.5 - C routines that implement the FITS World Coordinate System
-*   (WCS) convention.  Refer to
+*   WCSLIB 3.7 - C routines that implement the FITS World Coordinate System
+*   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -39,16 +39,22 @@
 *
 *   Summary of routines
 *   -------------------
-*   These routines apply the linear transformation defined by the WCS FITS
-*   header cards.  There are separate routines for the pixel-to-image,
-*   linp2x(), and image-to-pixel, linx2p(), transformations.
-*
-*   An initialization routine, linset(), computes intermediate values from
-*   the transformation parameters but need not be called explicitly - see the
-*   explanation of lin.flag below.
+*   These routines apply the linear transformation defined by the FITS WCS
+*   standard.  They are based on the linprm struct, described in detail
+*   below, which contains all information needed for the computations.  The
+*   struct contains some members that must be set by the caller, and others
+*   that are maintained by these routines, somewhat like a C++ class but with
+*   no encapsulation.
 *
 *   Three service routines, linini(), lincpy(), and linfree() are provided to
 *   manage the linprm struct.  A third, linprt(), prints its contents.
+*
+*   A setup routine, linset(), computes intermediate values in the linprm
+*   struct from parameters in it that were supplied by the caller.  The struct
+*   always needs to be set up by linset() but need not be called explicitly -
+*   see the explanation of lin.flag below.
+*
+*   linp2s() and lins2p() implement the WCS linear transformations.
 *
 *   An auxiliary matrix inversion routine, matinv(), is included.  It uses
 *   LU-triangular factorization with scaled partial pivoting.
@@ -82,10 +88,10 @@
 *                        already been initialized).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *
 *
 *   lincpy() does a deep copy of one linprm struct to another, using linini()
@@ -109,10 +115,10 @@
 *                        leaks may result if it was previously initialized).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *
 *
 *   linfree() frees memory allocated for the linprm arrays by linini() and/or
@@ -124,7 +130,7 @@
 *                        Linear transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
 *
@@ -138,7 +144,7 @@
 *                        Linear transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
 *
@@ -158,10 +164,10 @@
 *                        Linear transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *                           3: PCi_ja matrix is singular.
 *
 *
@@ -186,10 +192,10 @@
 *                        Array of image (world) coordinates.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *                           3: PCi_ja matrix is singular.
 *
 *
@@ -214,16 +220,17 @@
 *                        Array of pixel coordinates.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *                           3: PCi_ja matrix is singular.
 *
 *
 *   Linear transformation parameters
 *   --------------------------------
-*   The linprm struct consists of the following:
+*   The linprm struct consists of the following elements that must be
+*   supplied:
 *
 *      int flag
 *         This flag must be set to zero whenever any of the following members
@@ -332,9 +339,9 @@
 *   unallocated memory.  Use lincpy() instead to make a deep copy.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   encoded in the lin_errmsg character array.
 *
 *===========================================================================*/
@@ -344,12 +351,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
 #endif
 
 
@@ -386,26 +387,24 @@ struct linprm {
    int i_naxis;
 };
 
-#if __STDC__  || defined(__cplusplus)
-   int linini(int, int, struct linprm *);
+#define LINLEN (sizeof(struct linprm)/sizeof(int))
 
-   int lincpy(int, const struct linprm *, struct linprm *);
 
-   int linfree(struct linprm *);
+int linini(int, int, struct linprm *);
 
-   int linprt(const struct linprm *);
+int lincpy(int, const struct linprm *, struct linprm *);
 
-   int linset(struct linprm *);
+int linfree(struct linprm *);
 
-   int linp2x(struct linprm *, int, int, const double[], double[]);
+int linprt(const struct linprm *);
 
-   int linx2p(struct linprm *, int, int, const double[], double[]);
+int linset(struct linprm *);
 
-   int matinv(int, const double [], double []);
-#else
-   int linini(), lincpy(), linfree(), linprt(), linset(), linp2x(), linx2p(),
-       matinv();
-#endif
+int linp2x(struct linprm *, int, int, const double[], double[]);
+
+int linx2p(struct linprm *, int, int, const double[], double[]);
+
+int matinv(int, const double [], double []);
 
 
 /* Define macros for scalar invokation for compatibility with WCSLIB 2.x. */
@@ -414,7 +413,6 @@ struct linprm {
 #define linrev(pixcrd, lin, imgcrd) linp2x(lin, 1, 1, pixcrd, imgcrd)
 #define linfwd(imgcrd, lin, pixcrd) linx2p(lin, 1, 1, imgcrd, pixcrd)
 
-#define LINLEN (sizeof(struct linprm)/sizeof(int))
 
 #ifdef __cplusplus
 };

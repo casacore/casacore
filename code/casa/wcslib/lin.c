@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -37,11 +37,11 @@
 
 const int LINSET = 137;
 
-/* Map error number to error message for each function. */
+/* Map status return value to message. */
 const char *lin_errmsg[] = {
    0,
    "Null linprm pointer passed",
-   "Memory allocation error",
+   "Memory allocation failed",
    "PCi_ja matrix is singular"};
 
 
@@ -389,7 +389,7 @@ struct linprm *lin;
 
    if (lin->unity) {
       if (lin->flag == LINSET) {
-         /* Free memory which may have been allocated previously. */
+         /* Free memory that may have been allocated previously. */
          if (lin->piximg) free(lin->piximg);
          if (lin->imgpix) free(lin->imgpix);
       }
@@ -401,7 +401,7 @@ struct linprm *lin;
    } else {
       if (lin->flag != LINSET || lin->i_naxis < n) {
          if (lin->flag == LINSET) {
-            /* Free memory which may have been allocated previously. */
+            /* Free memory that may have been allocated previously. */
             if (lin->piximg) free(lin->piximg);
             if (lin->imgpix) free(lin->imgpix);
          }
@@ -598,7 +598,7 @@ double inv[];
 
    /* Initialize arrays. */
    for (i = 0, ij = 0; i < n; i++) {
-      /* Vector which records row interchanges. */
+      /* Vector that records row interchanges. */
       mxl[i] = i;
 
       rowmax[i] = 0.0;

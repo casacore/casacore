@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,11 @@
 #ifndef WCSLIB_TRIG
 #define WCSLIB_TRIG
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #ifdef WCSTRIG_MACRO
 
 /* Macro implementation of the trigd functions. */
@@ -50,36 +55,22 @@
 
 /* Use WCSLIB wrappers or native trigd functions. */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-#if __STDC__ || defined(__cplusplus)
-   double cosd(double);
-   double sind(double);
-   double tand(double);
-   double acosd(double);
-   double asind(double);
-   double atand(double);
-   double atan2d(double, double);
-#else
-   double cosd();
-   double sind();
-   double tand();
-   double acosd();
-   double asind();
-   double atand();
-   double atan2d();
-#endif
+double cosd(double);
+double sind(double);
+double tand(double);
+double acosd(double);
+double asind(double);
+double atand(double);
+double atan2d(double, double);
 
 /* Domain tolerance for asin and acos functions. */
 #define WCSTRIG_TOL 1e-10
 
+#endif /* WCSTRIG_MACRO */
+
+
 #ifdef __cplusplus
 };
 #endif
-
-#endif /* WCSTRIG_MACRO */
 
 #endif /* WCSLIB_TRIG */

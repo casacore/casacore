@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.5 - C routines that implement the spherical coordinate
-*   transformations used by the FITS World Coordinate System (WCS) convention.
+*   WCSLIB 3.7 - C routines that implement the spherical coordinate
+*   transformations used by the FITS World Coordinate System (WCS) standard.
 *   Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -43,12 +43,12 @@
 *
 *   Summary of routines
 *   -------------------
-*   The spherical coordinate transformations are implemented via separate
+*   The WCS spherical coordinate transformations are implemented via separate
 *   functions for the transformation in each direction.
 *
 *
-*   Pixel-to-world transformation; sphx2s()
-*   ---------------------------------------
+*   Rotation in the pixel-to-world direction; sphx2s()
+*   --------------------------------------------------
 *   Transform native coordinates of a projection to celestial coordinates.
 *
 *   Given:
@@ -74,12 +74,12 @@
 *      lng,lat  double[] Celestial longitude and latitude, in degrees.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *
 *
-*   World-to-pixel transformation; sphs2x()
-*   ---------------------------------------
+*   Rotation in the world-to-pixel direction; sphx2s()
+*   --------------------------------------------------
 *   Transform celestial coordinates to the native coordinates of a projection.
 *
 *   Given:
@@ -105,7 +105,7 @@
 *      theta             system of the projection, in degrees.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *
 *
@@ -185,28 +185,14 @@
 extern "C" {
 #endif
 
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
-#endif
 
+int sphx2s(const double[], int, int, int, int,
+           const double[], const double [],
+           double[], double[]);
 
-#if __STDC__  || defined(__cplusplus)
-   int sphx2s(const double[], int, int, int, int,
-              const double[], const double [],
-              double[], double[]);
-
-   int sphs2x(const double[], int, int, int, int,
-              const double[], const double [],
-              double[], double[]);
-#else
-   int sphx2s(), sphs2x();
-#endif
-
-#ifdef __cplusplus
-}
-#endif
+int sphs2x(const double[], int, int, int, int,
+           const double[], const double [],
+           double[], double[]);
 
 
 /* Define macros for scalar invokation for compatibility with WCSLIB 2.x. */
@@ -214,5 +200,10 @@ extern "C" {
         sphx2s(eul, 1, 1, 1, 1, &(phi), &(theta), lng, lat)
 #define sphfwd(lng, lat, eul, phi, theta) \
         sphs2x(eul, 1, 1, 1, 1, &(lng), &(lat), phi, theta)
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* WCSLIB_SPH */

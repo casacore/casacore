@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.6 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -39,9 +39,9 @@
 *
 *   The flawed definition of WCSAXESa and its nullifying effect on NAXIS
 *   forces the scanner to be implemented in two passes.  A first pass is
-*   required to determine the number coordinate representations (up to 27) and
-*   the number of coordinate axes in each; it also counts the number of PVi_ma
-*   and PSi_ma cards in each representation.
+*   required to determine the number of coordinate representations (up to 27)
+*   and the number of coordinate axes in each; it also counts the number of
+*   PVi_ma and PSi_ma cards in each representation.
 *
 *   On completion of the first pass, memory is allocated for an array of the
 *   required number of wcsprm structs and each of these is initialized

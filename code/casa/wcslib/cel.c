@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 
 const int CELSET = 137;
 
-/* Map error number to error message for each function. */
+/* Map status return value to message. */
 const char *cel_errmsg[] = {
    0,
    "Null celprm pointer passed",

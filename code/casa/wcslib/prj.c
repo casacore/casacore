@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -88,7 +88,7 @@ const int CSC = 702;
 const int QSC = 703;
 
 
-/* Map error number to error message for each function. */
+/* Map status return value to message. */
 const char *prj_errmsg[] = {
    0,
    "Null prjprm pointer passed",

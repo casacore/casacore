@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.6 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.6 - C routines that implement the FITS World Coordinate System
-*   (WCS) convention.  Refer to
+*   WCSLIB 3.7 - C routines that implement the FITS World Coordinate System
+*   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -226,6 +226,11 @@
 
 #include "wcs.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #define WCSHDR_all      0x001
 #define WCSHDR_reject   0x002
 #define WCSHDR_CROTAia  0x004
@@ -236,16 +241,10 @@
 #define WCSHDR_PROJPn   0x080
 #define WCSHDR_VSOURCEa 0x100
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-#if __STDC__ || defined(__cplusplus)
-   int wcspih(char *, int, int, int, int *, int *, struct wcsprm **);
-   int wcsvfree(int *, struct wcsprm **);
-#else
-   int wcspih(), wcsvfree();
-#endif
+int wcspih(char *, int, int, int, int *, int *, struct wcsprm **);
+int wcsvfree(int *, struct wcsprm **);
+
 
 #ifdef __cplusplus
 };

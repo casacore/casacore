@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.5 - C routines that implement the spectral coordinate systems
-*   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
+*   WCSLIB 3.7 - C routines that implement the spectral coordinate systems
+*   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -43,16 +43,31 @@
 *
 *   Summary of routines
 *   -------------------
-*   These routines are provided as drivers for the lower level spectral
-*   transformation routines.  Separate routines, spcx2s() and spcs2x(),
-*   perform the transformation in either direction.
-*
-*   An initialization routine, spcset(), computes intermediate values from
-*   the transformation parameters but need not be called explicitly - see the
-*   explanation of spc.flag below.
+*   These routines implement the part of the FITS WCS standard that deals
+*   with spectral coordinates.  They define methods to be used for computing
+*   spectral world coordinates from intermediate world coordinates (a linear
+*   transformation of image pixel coordinates), and vice versa.  They are
+*   based on the spcprm struct, described in detail below, which contains all
+*   information needed for the computations.  The struct contains some
+*   members that must be set by the caller, and others that are maintained by
+*   these routines, somewhat like a C++ class but with no encapsulation.
 *
 *   A service routine, spcini(), is provided to initialize the spcprm struct,
 *   and another, spcprt(), to print its contents.
+*
+*   A setup routine, spcset(), computes intermediate values in the spcprm
+*   struct from parameters in it that were supplied by the caller.  The
+*   struct always needs to be set up by spcset() but it need not be called
+*   explicitly - see the explanation of spc.flag below.
+*
+*   spcx2s() and spcs2x() implement the WCS spectral coordinate
+*   transformations.  In fact, they are high level driver routines for the
+*   lower level spectral coordinate transformation routines described in
+*   spc.h
+*
+*   Given a set of FITS spectral coordinate keywords, a translation routine,
+*   spctrn(), produces the corresponding set for the specified spectral
+*   coordinate.
 *
 *
 *   Initialization routine for the spcprm struct; spcini()
@@ -65,7 +80,7 @@
 *                        Spectral transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null spcprm pointer passed.
 *
@@ -79,7 +94,7 @@
 *                        Spectral transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null spcprm pointer passed.
 *
@@ -98,7 +113,7 @@
 *                        Spectral transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null spcprm pointer passed.
 *                           2: Invalid spectral parameters.
@@ -120,12 +135,12 @@
 *
 *   Returned:
 *      spec     double[] Spectral coordinate, in SI units.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value status for each vector element:
 *                           0: Success.
 *                           1: Invalid value of x.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null spcprm pointer passed.
 *                           2: Invalid spectral parameters.
@@ -150,17 +165,65 @@
 *
 *   Returned:
 *      x        double[] Intermediate world coordinates, in SI units.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value status for each vector element:
 *                           0: Success.
 *                           1: Invalid value of spec.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null spcprm pointer passed.
 *                           2: Invalid spectral parameters.
 *                           4: One or more of the spec coordinates were
 *                              invalid, as indicated by the stat vector.
+*
+*
+*   Spectral keyword translation; spctrn()
+*   --------------------------------------
+*   Translate a set of FITS spectral coordinate keywords into the
+*   corresponding set for the specified spectral coordinate type.  For
+*   example, a 'FREQ' axis may be translated into 'ZOPT-F2W'.
+*
+*   Given:
+*      restfrq  double   Rest frequency (Hz) and rest wavelength in vacuo (m),
+*      restwav  double   only one of which need be given, the other should be
+*                        set to zero.  Neither are required if the translation
+*                        is between wave-characteristic, or velocity-
+*                        characteristic, types.  For example, required for
+*                        'VELO-F2V' -> 'ZOPT-F2W', but not required for
+*                        'FREQ'     -> 'ZOPT-F2W'.
+*      cdeltS1  double   Spectral coordinate increment, SI units.
+*      crvalS1  double   Spectral coordinate reference value, SI units.
+*      ctypeS1  const char[9]
+*                        Spectral coordinate type.
+*
+*   Given and returned:
+*      ctypeS2  char[9]  Required spectral coordinate type.  The first four
+*                        characters are given, the remainder will be returned.
+*
+*   Returned:
+*      cdeltS2  double*  Translated spectral coordinate increment, SI units.
+*      crvalS2  double*  Translated spectral coordinate reference value, SI
+*                        units.
+*
+*   Function return value:
+*               int      Status return value:
+*                           0: Success.
+*
+*
+*   Spectral keyword analysis; spcspx()
+*   -----------------------------------
+*   ...
+*
+*
+*   Spectral keyword analysis; spcxps()
+*   -----------------------------------
+*   ...
+*
+*
+*   Spectral keyword parsing; spchek()
+*   ----------------------------------
+*   ...
 *
 *
 *   Spectral transformation parameters
@@ -185,11 +248,12 @@
 *      double crval
 *         Reference value (CRVALia), SI units.
 *
-*      double restfrq
-*         Rest frequency, Hz.
-*
-*      double restwav
-*         Rest wavelength, m.
+*      double restfrq, restwav
+*         Rest frequency (Hz) and rest wavelength in vacuo (m), only one of
+*                        which need be given, the other should be set to zero.
+*                        Neither are required if the X and S spectral
+*                        variables are both wave-characteristic, or both
+*                        velocity-characteristic, types.
 *
 *      double pv[7]
 *         Grism parameters for "-GRI" and "-GRA" algorithm codes:
@@ -214,15 +278,15 @@
 *      int isGrism
 *         Grism coordinates?  1: vacuum, 2: air.
 *
-*      int (*spxx2q)(SPX_ARGS)
-*      int (*spxq2s)(SPX_ARGS)
+*      int (*spxX2P)(SPX_ARGS)
+*      int (*spxP2S)(SPX_ARGS)
 *         Pointers to the transformation functions in the two-step algorithm
-*         chain X -> Q -> S in the pixel-to-spectral direction.
+*         chain X -> P -> S in the pixel-to-spectral direction.
 *
-*      int (*spxs2q)(SPX_ARGS)
-*      int (*spxq2x)(SPX_ARGS)
+*      int (*spxS2P)(SPX_ARGS)
+*      int (*spxP2X)(SPX_ARGS)
 *         Pointers to the transformation functions in the two-step algorithm
-*         chain S -> Q -> X in the spectral-to-pixel direction.
+*         chain S -> P -> X in the spectral-to-pixel direction.
 *
 *
 *   Vector length and strides
@@ -249,9 +313,9 @@
 *   If the vector length is 1 then the stride is ignored and may be set to 0.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   are encoded in the spc_errmsg character array.
 *
 *
@@ -281,12 +345,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
 #endif
 
 
@@ -334,12 +392,12 @@ struct spcprm {
 
    int isGrism;			/* Grism coordinates?  1: vacuum, 2: air.   */
 
-   int (*spxx2q)(SPX_ARGS);	/* Pointers to the transformation functions */
-   int (*spxq2s)(SPX_ARGS);	/* in the two-step algorithm chain in the   */
+   int (*spxX2P)(SPX_ARGS);	/* Pointers to the transformation functions */
+   int (*spxP2S)(SPX_ARGS);	/* in the two-step algorithm chain in the   */
 				/* pixel-to-spectral direction.             */
 
-   int (*spxs2q)(SPX_ARGS);	/* Pointers to the transformation functions */
-   int (*spxq2x)(SPX_ARGS);	/* in the two-step algorithm chain in the   */
+   int (*spxS2P)(SPX_ARGS);	/* Pointers to the transformation functions */
+   int (*spxP2X)(SPX_ARGS);	/* in the two-step algorithm chain in the   */
 				/* spectral-to-pixel direction.             */
    int padding;			/* (Dummy inserted for alignment purposes.) */
 };
@@ -347,46 +405,19 @@ struct spcprm {
 #define SPCLEN (sizeof(struct spcprm)/sizeof(int))
 
 
-/* Use the preprocessor to define function prototypes. */
-#ifdef SPCINI
-#undef SPCINI
-#endif
+int spcini(struct spcprm *);
+int spcprt(const struct spcprm *);
+int spcset(struct spcprm *);
+int spcx2s(struct spcprm *, int, int, int, const double[], double[], int[]);
+int spcs2x(struct spcprm *, int, int, int, const double[], double[], int[]);
+int spctrn(double, double, const char[], double, double, char[], double *,
+           double *);
+int spcspx(double, double, double, double, const char[], char[], char[],
+           char *, char *, double *, double *, double *, double *);
+int spcxps(double, double, double, double, const char[], char[], char[],
+           char *, char *, double *, double *, double *, double *);
+int spchek(const char[], char[], char[], char *, char *, int *);
 
-#ifdef SPCPRT
-#undef SPCPRT
-#endif
-
-#ifdef SPCSET
-#undef SPCSET
-#endif
-
-#ifdef SPCX2S
-#undef SPCX2S
-#endif
-
-#ifdef SPCS2X
-#undef SPCS2X
-#endif
-
-#if __STDC__ || defined(__cplusplus)
-#define SPCINI struct spcprm *
-#define SPCPRT const struct spcprm *
-#define SPCSET struct spcprm *
-#define SPCX2S struct spcprm *, int, int, int, const double[], double[], int[]
-#define SPCS2X struct spcprm *, int, int, int, const double[], double[], int[]
-#else
-#define SPCINI
-#define SPCPRT
-#define SPCSET
-#define SPCX2S
-#define SPCS2X
-#endif
-
-int spcini(SPCINI);
-int spcprt(SPCPRT);
-int spcset(SPCSET);
-int spcx2s(SPCX2S);
-int spcs2x(SPCS2X);
 
 #ifdef __cplusplus
 };

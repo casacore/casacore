@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.5 - C routines that implement the FITS World Coordinate System
-*   (WCS) convention.  Refer to
+*   WCSLIB 3.7 - C routines that implement the FITS World Coordinate System
+*   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -42,17 +42,28 @@
 *
 *   Summary of routines
 *   -------------------
-*   These routines are provided as drivers for the lower level spherical
-*   coordinate transformation and projection routines.  There are separate
-*   driver routines for the pixel-to-world, celx2s(), and world-to-pixel,
-*   cels2x(), transformations.
-*
-*   An initialization routine, celset(), computes intermediate values from
-*   the transformation parameters but need not be called explicitly - see the
-*   explanation of cel.flag below.
+*   These routines implement the part of the FITS World Coordinate System
+*   (WCS) standard that deals with celestial coordinates.  They define
+*   methods to be used for computing celestial world coordinates from
+*   intermediate world coordinates (a linear transformation of image pixel
+*   coordinates), and vice versa.  They are based on the celprm struct,
+*   described in detail below, which contains all information needed for the
+*   computations.  It contains some elements that must be set by the caller,
+*   and others that are maintained by these routines, somewhat like a C++
+*   class but with no encapsulation.
 *
 *   A service routine, celini(), is provided to initialize the celprm struct,
 *   and another, celprt(), to print its contents.
+*
+*   A setup routine, celset(), computes intermediate values in the celprm
+*   struct from parameters in it that were supplied by the caller.  The
+*   struct always needs to be set up by celset() but it need not be called
+*   explicitly - see the explanation of cel.flag below.
+*
+*   celx2s() and cels2x() implement the WCS celestial coordinate
+*   transformations.  In fact, they are high level driver routines for the
+*   lower level spherical coordinate rotation and projection routines
+*   described in sph.h and prj.h.
 *
 *
 *   Initialization routine for the celprm struct; celini()
@@ -65,7 +76,7 @@
 *                        Celestial transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *
@@ -79,7 +90,7 @@
 *                        Celestial transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *
@@ -98,7 +109,7 @@
 *                        Celestial transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -127,12 +138,12 @@
 *      theta             system of the projection, in degrees.
 *      lng,lat  double[] Celestial longitude and latitude of the projected
 *                        point, in degrees.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of (x,y).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -164,12 +175,12 @@
 *      phi,     double[] Longitude and latitude in the native coordinate
 *      theta             system of the projection, in degrees.
 *      x,y      double[] Projected coordinates, "degrees".
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of (lng,lat).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -319,9 +330,9 @@
 *   If the vector length is 1 then the stride is ignored and may be set to 0.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   encoded in the cel_errmsg character array.
 *
 *===========================================================================*/
@@ -333,12 +344,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
 #endif
 
 
@@ -372,25 +377,23 @@ struct celprm {
    int    padding;		/* (Dummy inserted for alignment purposes.) */
 };
 
-#if __STDC__  || defined(__cplusplus)
-   int celini(struct celprm *);
-
-   int celprt(const struct celprm *);
-
-   int celset(struct celprm *);
-
-   int celx2s(struct celprm *, int, int, int, int,
-              const double[], const double[],
-              double[], double[], double[], double[], int[]);
-
-   int cels2x(struct celprm *, int, int, int, int,
-              const double[], const double[],
-              double[], double[], double[], double[], int[]);
-#else
-   int celini(), celprt(), celset(), celx2s(), cels2x();
-#endif
-
 #define CELLEN (sizeof(struct celprm)/sizeof(int))
+
+
+int celini(struct celprm *);
+
+int celprt(const struct celprm *);
+
+int celset(struct celprm *);
+
+int celx2s(struct celprm *, int, int, int, int,
+           const double[], const double[],
+           double[], double[], double[], double[], int[]);
+
+int cels2x(struct celprm *, int, int, int, int,
+           const double[], const double[],
+           double[], double[], double[], double[], int[]);
+
 
 #ifdef __cplusplus
 }

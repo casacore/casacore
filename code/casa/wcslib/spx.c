@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include "spx.h"
 
 
-/* Map error number to error message for each function. */
+/* Map status return value to message. */
 const char *spx_errmsg[] = {
    0,
    "Null spxprm pointer passed",
@@ -58,7 +58,7 @@ const char *spx_errmsg[] = {
 int specx(type, spec, restfrq, restwav, spx)
 
 const char *type;
-double spec, restfrq, restwav;
+const double spec, restfrq, restwav;
 struct spxprm *spx;
 
 {

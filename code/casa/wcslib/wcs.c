@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.6 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -504,7 +504,7 @@ int *nsub, axes[];
 struct wcsprm *wcsdst;
 
 {
-   char *ctypei;
+   char *c, ctypei[16];
    int  axis, cubeface, dealloc, dummy, i, j, k, latitude, longitude,
         *map = 0, msub, naxis, npv, nps, other, spectral, status, stokes;
    const double *srcp;
@@ -562,12 +562,20 @@ struct wcsprm *wcsdst;
          }
 
          for (i = 0; i < naxis; i++) {
-            ctypei = (char *)(wcssrc->ctype + i);
+            strncpy (ctypei, (char *)(wcssrc->ctype + i), 8);
+            ctypei[8] = '\0';
+
+            /* Find the last non-blank character. */
+            c = ctypei + 8;
+            while (c-- > ctypei) {
+               if (*c == ' ') *c = '\0';
+               if (*c != '\0') break;
+            }
 
             if (
-               strncmp(ctypei,   "RA      ", 8) == 0 ||
-               strncmp(ctypei+1, "LON    ", 7) == 0 ||
-               strncmp(ctypei+2, "LN    ", 6) == 0 ||
+               strcmp(ctypei,   "RA")  == 0 ||
+               strcmp(ctypei+1, "LON") == 0 ||
+               strcmp(ctypei+2, "LN")  == 0 ||
                strncmp(ctypei,   "RA---", 5) == 0 ||
                strncmp(ctypei+1, "LON-", 4) == 0 ||
                strncmp(ctypei+2, "LN-", 3) == 0) {
@@ -576,9 +584,9 @@ struct wcsprm *wcsdst;
                }
 
             } else if (
-               strncmp(ctypei,   "DEC     ", 8) == 0 ||
-               strncmp(ctypei+1, "LAT    ", 7) == 0 ||
-               strncmp(ctypei+2, "LT    ", 6) == 0 ||
+               strcmp(ctypei,   "DEC") == 0 ||
+               strcmp(ctypei+1, "LAT") == 0 ||
+               strcmp(ctypei+2, "LT")  == 0 ||
                strncmp(ctypei,   "DEC--", 5) == 0 ||
                strncmp(ctypei+1, "LAT-", 4) == 0 ||
                strncmp(ctypei+2, "LT-", 3) == 0) {
@@ -586,7 +594,7 @@ struct wcsprm *wcsdst;
                   continue;
                }
 
-            } else if (strncmp(ctypei, "CUBEFACE", 8) == 0) {
+            } else if (strcmp(ctypei, "CUBEFACE") == 0) {
                if (!cubeface) {
                   continue;
                }
@@ -602,12 +610,12 @@ struct wcsprm *wcsdst;
                strncmp(ctypei, "AWAV", 4) == 0 ||
                strncmp(ctypei, "VELO", 4) == 0 ||
                strncmp(ctypei, "BETA", 4) == 0) &&
-               (ctypei[4] == '-' || strncmp(ctypei+4, "    ", 4) == 0)) {
+               (ctypei[4] == '\0' || ctypei[4] == '-')) {
                if (!spectral) {
                   continue;
                }
 
-            } else if (strncmp(ctypei, "STOKES  ", 8) == 0) {
+            } else if (strcmp(ctypei, "STOKES") == 0) {
                if (!stokes) {
                   continue;
                }
@@ -681,14 +689,16 @@ struct wcsprm *wcsdst;
 
    NPVMAX = 0;
    for (k = 0; k < wcssrc->npv; k++) {
-      if (map[wcssrc->pv[k].i-1]) {
+      i = wcssrc->pv[k].i;
+      if (i == 0 || (i > 0 && map[i-1])) {
          NPVMAX++;
       }
    }
 
    NPSMAX = 0;
    for (k = 0; k < wcssrc->nps; k++) {
-      if (map[wcssrc->ps[k].i-1]) {
+      i = wcssrc->ps[k].i;
+      if (i > 0 && map[i-1]) {
          NPSMAX++;
       }
    }
@@ -751,7 +761,9 @@ struct wcsprm *wcsdst;
    /* Parameter values. */
    npv = 0;
    for (k = 0; k < wcssrc->npv; k++) {
-      if (i = map[wcssrc->pv[k].i-1]) {
+      i = wcssrc->pv[k].i;
+      if (i == 0 || (i > 0 && (i = map[i-1]))) {
+         /* i == 0 is a special code for the latitude axis. */
          wcsdst->pv[npv] = wcssrc->pv[k];
          wcsdst->pv[npv].i = i;
          npv++;
@@ -761,7 +773,8 @@ struct wcsprm *wcsdst;
 
    nps = 0;
    for (k = 0; k < wcssrc->nps; k++) {
-      if (i = map[wcssrc->ps[k].i-1]) {
+      i = wcssrc->ps[k].i;
+      if (i > 0 && (i = map[i-1])) {
          wcsdst->ps[nps] = wcssrc->ps[k];
          wcsdst->ps[nps].i = i;
          nps++;
