@@ -39,8 +39,18 @@
 //# Member functions 
 Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {
   out.define(RecordFieldId("type"), fromType(tp_p));
-  out.define(RecordFieldId("parameters"), par_p);  
-  out.define(RecordFieldId("errors"), err_p);
+//
+  Vector<Double> ptmp(par_p.copy());
+  Vector<Double> etmp(err_p.copy());
+//
+  if (tp_p == GAUSSIAN) {
+     ptmp(2) = sigmaToFWHM(par_p(2));
+     etmp(2) = sigmaToFWHM(err_p(2));
+  }
+//
+  out.define(RecordFieldId("parameters"), ptmp);  
+  out.define(RecordFieldId("errors"), etmp);
+//
   return True;
 }
 
@@ -85,6 +95,8 @@ Bool SpectralElement::fromRecord(String &error, const RecordInterface &in) {
 	error += String("The width of a gaussian element must be positive\n");
 	return False;
       };
+      param(2) = sigmaFromFWHM (param(2));
+//
       par_p.resize(3);
     } else if (tp_p == POLYNOMIAL) {
       if (param.nelements() == 0) {
