@@ -26,8 +26,15 @@
 //#
 //# $Id$
 
+#include <aips/Exceptions/Error.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Tasking/AppInfo.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Arrays/ArrayIO.cc>
+#include <aips/Utilities/String.h>
+#include <aips/Tasking/AipsrcVector.h>
+#include <aips/Utilities/Regex.h>
 
 #include <aips/OS/Memory.h>
 
@@ -46,15 +53,70 @@ int main()
     cout << " (should be 5+ MB less than memory)" << endl;
     cout << "# of processors         : " << ncpu << endl;
     cout << "Timezone offset (hours) : " << tz*24.0 << endl;
-
+    delete [] cp;
 
     AlwaysAssertExit(mem == AppInfo::memoryInMB() && mem >= 64);
-    AlwaysAssertExit(available <= mem && available > 0 && 
-		     (mem-available==5 || mem-available==6));
+    // Some OS/library combinations might not be able to track memory
+    // use.
+    if (available != Int(mem)) {
+	AlwaysAssertExit(available <= Int(mem) && available > 0 && 
+			 (mem-available==5 || mem-available==6));
+    }
     AlwaysAssertExit(ncpu == AppInfo::nProcessors() && ncpu >= 1);
     AlwaysAssertExit(tz == AppInfo::timeZone() && tz >= -1.0 && tz <= 1.0);
 
-    delete [] cp;
+    { // Test the work directory stuff
+	// First set the work directory list to a known state
 
+	// We have to initialize the work directories first before
+	// we register the directories we really want.
+	Vector<String> tmp = AppInfo::workDirectories();
+	tmp.resize(0);
+
+	Vector<String> dirs(3);
+	dirs(0) = "."; dirs(1) = "/tmp"; dirs(2) = "/doesnotexist";
+	uInt index = AipsrcVector<String>::registerRC(
+				      "user.directories.work", dirs);
+	AipsrcVector<String>::set(index, dirs);
+	cerr << "\n\n=====Expect a single WARN level log message\n" << endl;
+	tmp = AppInfo::workDirectories();
+	AlwaysAssertExit(tmp.nelements()==2 && tmp(0) == dirs(0) && 
+			 tmp(1) == dirs(1));
+	// OK, now only have valid directories so we don't get all kinds
+	// of log WARNings.
+	AipsrcVector<String>::set(index, tmp);
+	tmp.resize(0);
+	// Someday this test will fail!
+	tmp = AppInfo::workDirectories(1000000);
+	AlwaysAssertExit(tmp.nelements() == 0);
+
+	// Check that we cycle through the valid directories
+	tmp = AppInfo::workDirectories();
+	String dir1 = AppInfo::workDirectory();
+	String dir2 = AppInfo::workDirectory();
+	AlwaysAssertExit(dir1 != dir2 &&
+			 (dir1 == tmp(0) || dir2 == tmp(1)) &&
+			 (dir2 == tmp(0) || dir2 == tmp(1)));
+
+
+	String file = AppInfo::workFileName();
+	AlwaysAssertExit(file.contains(dir1) || file.contains(dir2));
+	AlwaysAssertExit(file.contains(Regex("/aipstmp_")));
+	file = AppInfo::workFileName(0, "foo_");
+	AlwaysAssertExit(file.contains(dir1) || file.contains(dir2));
+	AlwaysAssertExit(file.contains(Regex("/foo_")));
+
+	Bool caught = False;
+	try {
+	    cerr << "=====Expect a single SEVERE level message\n";
+	    file = AppInfo::workFileName(1000000);
+	} catch (AipsError x) {
+	    caught = True;
+	} end_try;
+	cerr << "=====There should be no more messages\n\n";
+	AlwaysAssertExit(caught);
+    }
+
+    cerr << "OK" << endl;
     return 0;
 }
