@@ -143,7 +143,7 @@ public:
               const IPosition& whichOutPixelAxes,
 	      const ImageInterface<T>& inImage,
               Bool replicate=False, uInt decimate=0,
-              Bool showProgress=False);
+              Bool showProgress=False, Bool forceRegrid=False);
 
   // Inserts inImage into outImage.  The alignment is done by
   // placing the reference pixel of inImage at the specified reference
@@ -215,13 +215,12 @@ public:
                              MaskedLattice<T>* &outPtr,  
                              CoordinateSystem& outCoords,
                              const CoordinateSystem& inCoords,
-                             const Vector<Int>& pixelAxisMap1,
-                             const Vector<Int>& pixelAxisMap2,
                              Int outPixelAxis,
                              const ImageInterface<T>& inImage,
                              const IPosition& outShape,
                              Bool replicate, uInt decimate,
                              Bool outIsMasked, Bool showProgress,
+                             Bool forceRegrid, 
                              typename Interpolate2D::Method method);
 
   // Regrid, via coordinates, 2 coupled axes
