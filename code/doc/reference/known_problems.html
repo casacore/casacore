@@ -60,6 +60,8 @@ Known Problems</font><p>
 <hr>
 <a href="#libxm">1.  Missing libXm</a>
 <p> 
+<a href="#keys">1.  Cannot run from laptop if not connected to a network</a>
+<p> 
 <hr>
 <a name="libxm">1.  Missing libXm</a>
 Some users have reported that on their system the RH 6.0 and SuSE 6.2
@@ -77,9 +79,9 @@ and lesstif-devel-0.85-1.i386.rpm.
 </p>
 <p>
 These rpms are widely available.  A copy is available on our
-server aips2.nrao.edu.  To install, do the following as root:
-<blockquote>
-<font face=courier size="+2">
+server aips2.nrao.edu.  To install, do the following as root:<p>
+
+<font face=fixed size="+1">
 ftp aips2.nrao.edu<p>
 binary<p>
 cd pub/misc<p>
@@ -87,20 +89,29 @@ get lesstif-0.85-1.i386.rpm<nobr> lesstif-devel-0.85-1.i386.rpm<p>
 quit<p>
 rpm -i lesstif-0.85-1.i386.rpm<nobr> lesstif-devel-0.85-1.i386.rpm<p>
 </font>
-</blockquote>
+
 <p>
 <font face=helvetica>AIPS++</font> should then run correctly.
 You should not have to reinstall <font face=helvetica>AIPS++</font>
 if you have already done so.<p>
-Tim Cornwell, <font face=helvetica>AIPS++</font> Project Manager<br>
-10/26/99
-
-
+<hr>
+<a name="keys">2.  Cannot run from laptop if not connected to a
+      network.</a>
 </p>
 
+This is a known defect. A workaround is to change the permissions of
+the keys file in the <font face=helvetica>AIPS++</font> home
+directory. In the directory where <font face=helvetica>AIPS++</font>
+is installed:<p>
+
+<font face=fixed size="+1">
+rm -rf keys<p>
+mkdir keys<p>
+chmod a-rwx keys<p>
+</font>
 <hr>
 
-Copyright &#169; 1995-1999 Associated Universities Inc.,
+Copyright &#169; 1995-1999,2000 Associated Universities Inc.,
 Washington, D.C.</i>
 </td></tr></table>
 
