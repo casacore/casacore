@@ -84,6 +84,7 @@ public:
 
 protected:
   MedianSlider & slider (uInt ich,uInt ifr);
+  MedianSlider globalmed;
   void makePlot ( PGPlotterInterface &pgp,uInt ich );
 
   FlagCubeIterator * pflagiter; 
@@ -97,6 +98,7 @@ protected:
   // matrix of standard deviation [NCH,NIFR]
   Matrix<Float> stdev;
   Bool stdeved;
+  Double globalsigma;
 };
 
 
