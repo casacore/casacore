@@ -105,4 +105,5 @@ private:
     ArrayLattice<Bool> itsMask;
 };
 
+
 #endif
