@@ -2048,3 +2048,4 @@
 08 222 src rm trial/scripts/image.help
 08 223 sys rm libexec/Gnuplot.g
 08 223 src rm trial/scripts/Gnuplot.g
+08 223 src rm trial/scripts/README
