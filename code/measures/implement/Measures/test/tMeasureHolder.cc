@@ -1,5 +1,5 @@
 //# tMeasureHolder.cc: This program tests MeasureHolder
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -138,7 +138,8 @@ Int main() {
     } else {
       cout << "To error: " << error << endl;
     };
-    cout << "As epoch:      " << q00.asMEpoch() << endl;
+    cout << "As epoch:      ";
+    cout << q00.asMEpoch() << endl;
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
