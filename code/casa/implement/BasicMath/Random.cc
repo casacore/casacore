@@ -1,5 +1,5 @@
 //# Random.cc: Random number classes
-//# Copyright (C) 1992,1993,1994,1995,1998
+//# Copyright (C) 1992,1993,1994,1995,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -195,7 +195,7 @@ static unsigned long seedTable[SEED_TABLE_SIZE] = {
 //
 
 static const unsigned long LC_A = 66049;
-static const unsigned long LC_C = 3907864577;
+static const unsigned long LC_C = 3907864577u;
 static inline unsigned long LCG(unsigned long x)
 {
     return( x * LC_A + LC_C );
