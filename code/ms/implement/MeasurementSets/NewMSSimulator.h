@@ -91,6 +91,9 @@ public:
   // Constructor from name only
   NewMSSimulator(const String&);
 
+  // Constructor from existing MS
+  NewMSSimulator(MeasurementSet&);
+
   // Copy constructor - for completeness only
   NewMSSimulator(const NewMSSimulator & mss);
   
@@ -169,6 +172,7 @@ private:
   Double t_offset_p;
   Double dataWritten_p;
   Int hyperCubeID_p;
+  Bool hasHyperCubes_p;
   Int lastSpWID_p;
 
   MeasurementSet* ms_p;

@@ -255,6 +255,45 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
   dataWritten_p=0.0;
   hyperCubeID_p=-1;
   lastSpWID_p=-1;
+  hasHyperCubes_p=True;
+}
+
+NewMSSimulator::NewMSSimulator(MeasurementSet& theMS) :
+  ms_p(0), dataAcc_p(), scratchDataAcc_p(), sigmaAcc_p(), flagAcc_p(), imweightAcc_p(),
+  maxData_p(2e9)
+{
+  LogIO os(LogOrigin("NewMSSimulator", "NewMSSimulator(MeasurementSet& theMS)", WHERE));
+
+  defaults();
+
+  ms_p = new MeasurementSet(theMS);
+
+  os << "Opening MeasurementSet " << ms_p->tableName() << " with " << ms_p->nrow() << " rows" << LogIO::POST;
+  dataWritten_p=ms_p->nrow();
+  
+  TableDesc td(ms_p->tableDesc());
+  if(td.isColumn(dataTileId)) {
+    hasHyperCubes_p=True;
+    // Now we can make the accessors to be used when adding hypercolumns
+    dataAcc_p = TiledDataStManAccessor(*ms_p, dataCol);
+    scratchDataAcc_p = TiledDataStManAccessor(*ms_p, scratchDataCol);
+    sigmaAcc_p = TiledDataStManAccessor(*ms_p, sigmaCol);
+    flagAcc_p = TiledDataStManAccessor(*ms_p, flagCol);
+    imweightAcc_p = TiledDataStManAccessor(*ms_p, imweightCol);
+    
+    ScalarColumn<Int> hyperCubeIDColumn(*ms_p, dataTileId);
+    hyperCubeID_p=max(hyperCubeIDColumn.getColumn());
+    os << "   last hyper cube ID = " << hyperCubeID_p << LogIO::POST;
+  }
+  else {
+    hasHyperCubes_p=False;
+  }
+  {
+    MSColumns msc(*ms_p);
+    MSSpWindowColumns& spwc=msc.spectralWindow();
+    lastSpWID_p=spwc.nrow();
+    os << "   last spectral window ID = " << lastSpWID_p << LogIO::POST;
+  }
 }
 
 // Add new hypercubes as the shape changes
@@ -862,17 +901,18 @@ void NewMSSimulator::observe(const String& sourceName,
 
   // Various conditions for new hypercube
   Bool needNewHyperCube=False;
-  if(hyperCubeID_p<0) needNewHyperCube=True;
-  if(lastSpWID_p<0) {
-    needNewHyperCube=True;
+  if(hasHyperCubes_p) {
+    if(hyperCubeID_p<0) needNewHyperCube=True;
+    if(lastSpWID_p<0) {
+      needNewHyperCube=True;
+    }
+    else if(baseSpWID!=lastSpWID_p) {
+      needNewHyperCube=True;
+    }
+    if((maxData_p>0)&&(dataWritten_p>maxData_p)) {
+      needNewHyperCube=True;
+    }
   }
-  else if(baseSpWID!=lastSpWID_p) {
-    needNewHyperCube=True;
-  }
-  if((maxData_p>0)&&(dataWritten_p>maxData_p)) {
-    needNewHyperCube=True;
-  }
-
   if(needNewHyperCube) {
     hyperCubeID_p++;
     os << "Creating new hypercube " << hyperCubeID_p+1 << LogIO::POST;
@@ -884,7 +924,7 @@ void NewMSSimulator::observe(const String& sourceName,
   ms_p->addRow(nNewRows);
 
   // ... Finally extend the hypercubes
-  {
+  if(hasHyperCubes_p) {
     Record tileId;
     tileId.define(sigmaTileId, static_cast<Int>(10*hyperCubeID_p));
     sigmaAcc_p.extendHypercube(nNewRows, tileId);
