@@ -1392,3 +1392,4 @@
 11 071 src mv doc/html/navpages/recipes doc/recipes
 11 074 src rm trial/apps/deconvolver/templates
 11 074 src rm trial/implement/MeasurementEquations/DOpimager.h
+11 074 src rm trial/implement/MeasurementEquations/DOpimager.cc
