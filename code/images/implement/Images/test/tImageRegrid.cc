@@ -37,12 +37,14 @@ try {
    inputs.create("axes", "-10", "axes");
    inputs.create("method", "linear", "Method");
    inputs.create("save", "False", "Save output ?");
-   inputs.create("shape", "100,100", "Shape");
+   inputs.create("shape", "-10", "Shape");
    inputs.create("replicate", "False", "Replicate ?");
    inputs.create("decimate", "0", "Decimation factor");
    inputs.create("disk", "False", "Image on disk");
+   inputs.create("reuse", "False", "Reuse coordinate grid");
    inputs.create("dbg", "0", "Debug level");
    inputs.create("double", "0", "Double size ?");
+   inputs.create("force", "False", "Force regridding ?");
    inputs.readArguments(argc, argv);
    const String in = inputs.getString("in");
    const Bool save = inputs.getBool("save");
@@ -54,11 +56,14 @@ try {
    const Bool onDisk = inputs.getBool("disk");
    const Bool dbl = inputs.getBool("double");
    const Int dbg = inputs.getInt("dbg");
+   const Bool force = inputs.getBool("force");
+   const Bool reuse = inputs.getBool("reuse");
 //
    Int maxMBInMemory = -1;
    if (onDisk) maxMBInMemory = 0;
 //
    ImageInterface<Float>* pIm = 0;
+
    IPosition shapeIn;
    if (in.empty()) {
       if (shapeU.nelements()>0) {
@@ -93,7 +98,6 @@ try {
          for (uInt i=0; i<axes.nelements(); i++) axes(i) = axesU[i];
       }
    }
-   cerr << "axes = " << axes << endl;
 //
    CoordinateSystem cSysOut = pIm->coordinates();
    if (dbl) {
@@ -104,29 +108,63 @@ try {
          uInt j = axes(i);
          shapeOut(j) = 2 * shapeIn(j);
          incr(j) = incr(j) / 2.0;
-//         refp(j) = shapeOut(j) / 2.0;              // Center
+         refp(j) = shapeOut(j) / 2.0;              // Center
       }
       cSysOut.setReferencePixel(refp);
       cSysOut.setIncrement(incr);
+   } else {
+      if (shapeU.nelements()==1 && shapeU[0]==-10) {
+      } else if (shapeU.nelements() > 0) {
+         for (uInt i=0; i<shapeU.nelements(); i++) {
+            shapeOut(i) = shapeU[i];
+         }
+      }
    }
    cerr << "shapeIn, shapeOut = " << shapeIn << shapeOut << endl;
 //
-   ImageInterface<Float>* pImOut = 0;
-   if (save) {
-      pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFile"));
-   } else {
-      pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
-   }
-   String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
-   pImOut->makeMask(maskName, True, True, True, True);
-//
-   Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
    ImageRegrid<Float> regridder;
-   regridder.showDebugInfo(dbg);
-   regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate);
+   {
+      ImageInterface<Float>* pImOut = 0;
+      if (save) {
+         pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFile"));
+      } else {
+         pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
+      }
+      String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
+      pImOut->makeMask(maskName, True, True, True, True);
 //
-   delete pIm;
-   delete pImOut;
+      Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
+      regridder.showDebugInfo(dbg);
+      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
+      delete pImOut;
+    }
+//
+    if (reuse) {
+      ImageInterface<Float>* pImOut = 0;
+      if (save) {
+         pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFileReused"));
+      } else {
+         pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
+      }
+      String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
+      pImOut->makeMask(maskName, True, True, True, True);
+//
+      Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
+      Cube<Double> grid;
+      Matrix<Bool> gridMask;
+      regridder.get2DCoordinateGrid(grid, gridMask);
+      regridder.set2DCoordinateGrid(grid, gridMask);
+      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
+//
+      grid.resize();
+      gridMask.resize();
+      regridder.set2DCoordinateGrid(grid, gridMask);
+      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
+//
+      delete pImOut;
+    }
+//
+    delete pIm;
 
 } catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
