@@ -4377,3 +4377,4 @@
 14 265 src rm atnf/apps/pksreader
 14 265 src mv atnf/apps/pksmbfits atnf/apps/pksreader
 14 265 src mv atnf/apps/pksreader/pksmbfits.cc atnf/apps/pksreader/pksreader.cc
+14 265 src mv atnf/apps/pksmeasurementset atnf/apps/pkswriter
