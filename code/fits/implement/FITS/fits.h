@@ -660,9 +660,39 @@ inline Bool FitsKeyword::asBool() const { return bval; }
 inline const char *FitsKeyword::asString() const {
 	return vallen ? (const char *)val : ""; }
 inline int FitsKeyword::valStrlen() const { return vallen; }
-inline Int FitsKeyword::asInt() const { return ival; }
-inline float FitsKeyword::asFloat() const { return fval; }
-inline double FitsKeyword::asDouble() const { return dval; }
+inline Int FitsKeyword::asInt() const { 
+	if( type() != FITS::LONG ) {
+		cerr << "Unexpected keyword type in FitsKeyword::asInt()\n";
+		exit(1);
+	}
+	return ival;
+}
+inline float FitsKeyword::asFloat() const { 
+	switch( type() ) { 
+		case FITS::BYTE:
+		case FITS::SHORT:
+		case FITS::LONG: return (float)ival;
+		case FITS::FLOAT: return fval;
+		case FITS::DOUBLE: return (float)dval;
+		default:
+			cerr << "Unexpected keyword type in asFloat()\n";
+			exit(1);
+	}
+	return 0.0;
+}
+inline double FitsKeyword::asDouble() const { 
+	switch( type() ) { 
+		case FITS::BYTE:
+		case FITS::SHORT:
+		case FITS::LONG: return (double)ival;
+		case FITS::FLOAT: return (double)fval;
+		case FITS::DOUBLE: return dval;
+		default:
+			cerr << "Unexpected keyword type in asDouble()\n";
+			exit(1);
+	}
+	return 0.0;
+}
 inline IComplex FitsKeyword::asIComplex() const {
 	return *((IComplex *)val); }
 inline Complex FitsKeyword::asComplex() const {
