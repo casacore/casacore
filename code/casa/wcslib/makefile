@@ -84,18 +84,24 @@ show_local :
 
 # Dependency list.
 #-----------------
+$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/cel.h
+$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/proj.h
+
+$(WCSLIB).$(SFXSTAT)(lin.o)  : $(CODEDIR)/lin.h
+
+$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/wcsmath.h
+$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/proj.h
+
+$(WCSLIB).$(SFXSTAT)(sph.o)  : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(sph.o)  : $(CODEDIR)/sph.h
+
 $(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/wcsmath.h
+$(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/wcstrig.h
 $(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/wcs.h
 $(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/cel.h
 $(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/proj.h
-$(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/wcstrig.h
 $(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/lin.h
-$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/cel.h
-$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/proj.h
-$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/wcstrig.h
-$(WCSLIB).$(SFXSTAT)(sph.o)  : $(CODEDIR)/wcstrig.h
-$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/wcsmath.h
-$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/proj.h
-$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/wcstrig.h
-$(WCSLIB).$(SFXSTAT)(lin.o)  : $(CODEDIR)/lin.h
+
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcstrig.h
