@@ -85,6 +85,7 @@ DirectionCoordinate::DirectionCoordinate()
                            celprm_p, prjprm_p, wcs_p, 
                            c_ctype_p, c_crval_p, projection_p, type_p, 
                            crval(0), crval(1), 999.0, 999.0);
+
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -123,7 +124,6 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
     toDegrees(crval);
     toDegrees(cdelt);
     linear_p = LinearXform(crpix, cdelt, xform);
-
     make_celprm_and_prjprm(canDoToMix_p, canDoToMixErrorMsg_p, celprm_p, 
                            prjprm_p, wcs_p, c_ctype_p, c_crval_p, 
                            projection_p, type_p, crval(0), crval(1),  
@@ -240,21 +240,21 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 	if (ok) {
 	    world(0) = d_lng;
 	    world(1) = d_lat;
-	} else {
-	    errorMsg = "wcslib celrev error: ";
-	    errorMsg += celrev_errmsg[errnum];
-	}
 
 // Convert to appropriate units from degrees.  phi and theta
 // may be returned in a different interface somewhen.
 
-//       phi = d_phi / to_degrees_p[0];
-//       theta = d_theta / to_degrees_p[1];
+//          phi = d_phi / to_degrees_p[0];
+//          theta = d_theta / to_degrees_p[1];
+           toOther(world);
+	} else {
+           errorMsg = "wcslib celrev error: ";
+           errorMsg += celrev_errmsg[errnum];
+	}
+    } 
+//
+    if (!ok) set_error(errorMsg);
 
-        toOther(world);
-    } else {
-       set_error(errorMsg);
-    }
 //
     return ok;
 }
@@ -282,22 +282,23 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
     int errnum = celfwd(pcodes[projection_p.type()], d_lng, d_lat,
 			celprm_p, &d_phi, &d_theta, prjprm_p, 
                         &d_x, &d_y);
-//
-    world_tmp(0) = d_x; 
-    world_tmp(1) = d_y;
     Bool ok = ToBool(errnum == 0);
-    if (ok) {
+    if (!ok) {
+       errorMsg = "wcslib celfwd error: ";
+       errorMsg += celfwd_errmsg[errnum];
+    } else {
+        world_tmp(0) = d_x; 
+        world_tmp(1) = d_y;
+//
 	ok = linear_p.forward(world_tmp, pixel, errorMsg);
 
 // phi and theta may be returned in a different interface somewhen
 
 //        phi = d_phi;
 //        theta = d_theta;
-    } else {
-        errorMsg = "wcslib celfwd error: ";
-        errorMsg += celfwd_errmsg[errnum];
-	set_error(errorMsg);
     }
+//
+    if (!ok) set_error(errorMsg);
     return ok;
 }
 
@@ -484,7 +485,6 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units,
 	}
     }
     if (ok) units_p = units;
-
     return ok;
 }
 
