@@ -2367,3 +2367,6 @@
 09 329 src rm trial/implement/Tasking/ObjectRef.cc
 09 329 src rm trial/implement/Tasking/ObjectRef.h
 09 329 src rm trial/implement/Tasking/ObjectRef2.cc
+09 329 src rm trial/implement/Tasking/Marshall.cc
+09 329 src rm trial/implement/Tasking/Marshall.h
+09 329 src rm trial/implement/Tasking/Marshall2.cc
