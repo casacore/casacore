@@ -34,14 +34,10 @@
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Functionals/Gaussian2D.h>
-#include <aips/Functionals/SumFunction.h>
-#include <trial/Functionals/FuncWithAutoDerivs.h>
+#include <aips/Functionals/NQGaussian2D.h>
 #include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Mathematics/AutoDiff.h>
@@ -131,42 +127,47 @@ uInt Fit2D::addModel (Fit2D::Types type,
    itsTypeList.resize(nModels,True);
 //
    if (type==Fit2D::LEVEL) {
-      itsLogger <<  "Fit2D - Level fitting not yet implemented" << LogIO::EXCEPTION;
+      itsLogger <<  "Fit2D - Level fitting not yet implemented" <<
+	LogIO::EXCEPTION;
    } else if (type==Fit2D::DISK) {
-      itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D - Disk fitting not yet implemented" <<
+	LogIO::EXCEPTION;
    } else if (type==Fit2D::GAUSSIAN) {
 // 
 // Create functional
 //
-      Gaussian2D<AutoDiff<Double> > gauss2d;
-      if (parameters.nelements() != gauss2d.nAvailableParams()) {
-         itsLogger << "Fit2D - illegal number of parameters in addModel" << LogIO::EXCEPTION;
+      NQGaussian2D<AutoDiff<Double> > gauss2d;
+      if (parameters.nelements() != gauss2d.nparameters()) {
+         itsLogger << "Fit2D - illegal number of parameters in addModel" <<
+	   LogIO::EXCEPTION;
       }
-      if (parameterMask.nelements() != gauss2d.nAvailableParams()) {
-         itsLogger << "Fit2D - illegal number of mask parameters in addModel" << LogIO::EXCEPTION;
+      if (parameterMask.nelements() != gauss2d.nparameters()) {
+         itsLogger <<
+	   "Fit2D - illegal number of mask parameters in addModel" <<
+	   LogIO::EXCEPTION;
       }
 //
 // Set parameters.  0 (flux), 1 (x), 2 (y), 3 (FWHM major), 4 (FWHM minor), 
 // 5 (pa - in radians).  Convert p.a. from positive +x -> +y
-// to +y -> -x for Gaussian2D
+// to +y -> -x for NQGaussian2D
 //
-      for (uInt i=0; i<gauss2d.nAvailableParams(); i++) {
-         if (i==4) {
+      for (uInt i=0; i<gauss2d.nparameters(); i++) {
+         if (i==NQGaussian2D<AutoDiff<Double> >::RATIO) {
 //
 // Convert minor axis specification to an axial ratio.
 //
-            Double ratio = parameters(4) / parameters(3);
-            gauss2d.setAvailableParam(i, AutoDiff<Double>(ratio));
-         } else {
-            if (i==5) {
-               Double pa = paToGauss2D(parameters(5));       // +y -> -x for Gaussian2D
-               piRange(pa);
-               gauss2d.setAvailableParam(i, AutoDiff<Double>(pa));
-            } else {
-               gauss2d.setAvailableParam(i, AutoDiff<Double>(parameters(i)));
-            }
-         }
-         gauss2d.setAvailableParamMask(i, parameterMask(i));
+            Double ratio =
+	      parameters(NQGaussian2D<AutoDiff<Double> >::RATIO) /
+	      parameters(NQGaussian2D<AutoDiff<Double> >::YWIDTH);
+            gauss2d[i] = AutoDiff<Double>(ratio, gauss2d.nparameters(), i);
+         } else if (i==NQGaussian2D<AutoDiff<Double> >::PANGLE) {
+	   // +y -> -x for NQGaussian2D
+	   Double pa = paToGauss2D(parameters(i));
+	   piRange(pa);
+	   gauss2d[i] = AutoDiff<Double>(pa, gauss2d.nparameters(), i);
+	 } else gauss2d[i] = AutoDiff<Double>(parameters(i),
+					      gauss2d.nparameters(), i);
+         gauss2d.mask(i) = parameterMask(i);
       }
 //
 // Add it to function we are going to fit
@@ -191,7 +192,7 @@ uInt Fit2D::addModel (Fit2D::Types type,
 
 uInt Fit2D::nModels() const
 {
-   return itsFunction.nFunctions();
+  return itsFunction.nFunctions();
 }
 
 
@@ -241,7 +242,8 @@ Fit2D::ErrorTypes Fit2D::fit(const MaskedLattice<Float>& data,
    Array<Float> pixels = data.get(True);
    IPosition shape = pixels.shape();
    if (shape.nelements() !=2) {
-      itsLogger << "Fit2D::fit - Region must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::fit - Region must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    Array<Bool> mask = data.getMask(True);
 //
@@ -271,7 +273,8 @@ Fit2D::ErrorTypes Fit2D::fit(const Lattice<Float>& data,
    Array<Float> pixels = data.get(True);
    IPosition shape = pixels.shape();
    if (shape.nelements() !=2) {
-      itsLogger << "Fit2D::fit - Region must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::fit - Region must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    Array<Bool> mask;
 //
@@ -294,11 +297,13 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
       return Fit2D::NOMODELS;
    }
    if (data.ndim() !=2) {
-      itsLogger << "Fit2D::fit - Array must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::fit - Array must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    if (sigma.nelements() !=0) {
       if (!data.shape().isEqual(sigma.shape())) {
-         itsLogger << "Fit2D::fit - Sigma and pixel arrays must have the same shape" << LogIO::EXCEPTION;
+         itsLogger << "Fit2D::fit - Sigma and pixel arrays must "
+	   "have the same shape" << LogIO::EXCEPTION;
       }
    }
 //
@@ -328,16 +333,19 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
       return Fit2D::NOMODELS;
    }
    if (data.ndim() !=2) {
-      itsLogger << "Fit2D::fit - Array must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::fit - Array must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    if (mask.nelements() !=0) {
       if (!data.shape().isEqual(mask.shape())) {
-         itsLogger << "Fit2D::fit - Mask and pixel arrays must have the same shape" << LogIO::EXCEPTION;
+         itsLogger << "Fit2D::fit - Mask and pixel arrays must "
+	   "have the same shape" << LogIO::EXCEPTION;
       }
    }
    if (sigma.nelements() !=0) {
       if (!data.shape().isEqual(sigma.shape())) {
-         itsLogger << "Fit2D::fit - Sigma and pixel arrays must have the same shape" << LogIO::EXCEPTION;
+         itsLogger << "Fit2D::fit - Sigma and pixel arrays must "
+	   "have the same shape" << LogIO::EXCEPTION;
       }
    }
 //
@@ -356,7 +364,6 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
 
 }
 
-
 Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
                                   const Array<Float>& data)
 {
@@ -369,7 +376,8 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
    }
 //
    if (data.ndim() !=2) {
-      itsLogger << "Fit2D::fit - Array must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::fit - Array must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    IPosition shape = data.shape();
 //
@@ -377,37 +385,29 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
       resid.resize(shape);
    } else {
       if (!shape.isEqual(resid.shape())) {
-         itsLogger << "Fit2D::fit - Residual and pixel arrays must have the same shape" << LogIO::EXCEPTION;
+         itsLogger << "Fit2D::fit - Residual and pixel arrays must "
+	   "have the same shape" << LogIO::EXCEPTION;
       }
    }
 //
 // Create a functional with the solution (no axis conversion
-// necesary because functional interface takes axial ratio)
+// necessary because functional interface takes axial ratio)
 //
-   SumFunction<AutoDiff<Double>,AutoDiff<Double> > sumFunction(itsFunction);
+   Function<AutoDiff<Double> > *sumFunction(itsFunction.clone());
    Vector<Double> sol = getAvailableSolution();
-   for (uInt i=0; i<sol.nelements(); i++) {
-      sumFunction.setAvailableParam(i, AutoDiff<Double>(sol(i)));
-   }
+   for (uInt i=0; i<sol.nelements(); i++) (*sumFunction)[i] = sol[i];
 //
    IPosition loc(2);
-   Vector<AutoDiff<Double> > pos(2);
-   AutoDiff<Double> t1, t2;
 //
    for (Int j=0; j<shape(1); j++) {
+     loc(1) = j;
       for (Int i=0; i<shape(0); i++) {
          loc(0) = i;
-         loc(1) = j;
-         t1.value() = Double(i);
-         t2.value() = Double(j);
-         pos(0) = t1;
-         pos(1) = t2;
-         resid(loc) = data(loc) - sumFunction(pos).value();
+         resid(loc) = data(loc) - (*sumFunction)(Double(i), Double(j)).value();
       }
    }
    return Fit2D::OK;
 }
-
 
 Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
                                   const MaskedLattice<Float>& data)
@@ -477,7 +477,7 @@ Fit2D::Types Fit2D::type(const String& type)
 
 Fit2D::Types Fit2D::type(uInt which) 
 {
-   if (which+1 > itsFunction.nFunctions()) {
+   if (which >= itsFunction.nFunctions()) {
       itsLogger << "Fit2D::type - illegal model index" << LogIO::EXCEPTION;
    }
    return (Fit2D::Types)itsTypeList(which);
@@ -492,15 +492,10 @@ Vector<Double> Fit2D::availableSolution ()
 //
 {
    const uInt nF = itsFunction.nFunctions();
-   Vector<Double> sol;
-   uInt l = 0;
-   for (uInt i=0; i<nF; i++) {
+   Vector<Double> sol(itsFunction.nparameters());
+   for (uInt i=0, l=0; i<nF; i++) {
       Vector<Double> sol2 = availableSolution(i);
-      sol.resize(l+sol2.nelements(),True);
-      for (uInt j=0; j<sol2.nelements(); j++) {
-         sol(l+j) = sol2(j);
-      }
-      l = sol.nelements();
+      for (uInt j=0; j<sol2.nelements(); j++) sol(l++) = sol2(j);
    }
    return sol;
 } 
@@ -517,8 +512,9 @@ Vector<Double> Fit2D::availableSolution (uInt which)
       return tmp;
    }
 //
-   if (which+1 > itsFunction.nFunctions()) {
-      itsLogger << "Fit2D::solution - illegal model index" << LogIO::EXCEPTION;
+   if (which >= itsFunction.nFunctions()) {
+      itsLogger << "Fit2D::solution - illegal model index" <<
+	LogIO::EXCEPTION;
    }
 //
 // Find the mask and parameters for this model. Recover these when the 
@@ -526,18 +522,8 @@ Vector<Double> Fit2D::availableSolution (uInt which)
 //
    uInt iStart;
    Vector<Double> sol = getSolution(iStart, which);
-   Vector<Bool> mask = itsFunction.function(which)->getAvailableParamMasks();
-   Vector<Double> params = getParams(which);
-   Vector<Double> sol2(params.nelements());
-   uInt idx = 0;
-   for (uInt i=0; i<sol2.nelements(); i++) {
-      if (mask(i)) {
-         sol2(i) = sol(idx);
-         idx++;
-      } else {
-         sol2(i) = params(i);
-      }
-   }
+   Vector<Double> sol2(sol.nelements());
+   for (uInt i=0; i<sol2.nelements(); i++) sol2(i) = sol(i);
 //
 // Convert Gaussian solution axial ratio to major/minor axis.
 // sol2(3) may be the major or minor axis after fitting.
@@ -567,8 +553,6 @@ Vector<Double> Fit2D::availableSolution (uInt which)
 //
    return sol2;
 }
-
-
 
 String Fit2D::errorMessage () const
 {
@@ -613,9 +597,10 @@ Vector<Double> Fit2D::getParams(uInt which) const
 // from the SumFunction
 //
 {
-   Vector<Double> params(itsFunction.function(which)->nAvailableParams());
+   Vector<Double> params(itsFunction.function(which).nparameters());
    for (uInt i=0; i<params.nelements(); i++) {
-     params(i) = itsFunction.function(which)->getAvailableParams()(i).value();
+     params(i) =
+       itsFunction.function(which).parameters().getParameters()(i).value();
    }
    return params;
 }
@@ -628,9 +613,8 @@ void Fit2D::setParams(const Vector<Double>& params, uInt which)
 {
    Vector<AutoDiff<Double> > params2(params.nelements());
    for (uInt i=0; i<params2.nelements(); i++) {
-     params2(i) = AutoDiff<Double>(params(i));
    }
-   itsFunction.function(which)->setAvailableParams(params2);
+   itsFunction.function(which).parameters().setParameters(params2);
 }
 
 
@@ -638,7 +622,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                                const MaskedLattice<Float>& data) 
 {
    if (data.shape().nelements() !=2) {
-      itsLogger << "Fit2D::estimate - Lattice must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::estimate - Lattice must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    Array<Float> pixels = data.get(True);
    Array<Bool> mask = data.getMask(True);
@@ -649,7 +634,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                                const Lattice<Float>& data) 
 {
    if (data.shape().nelements() !=2) {
-      itsLogger << "Fit2D::estimate - Lattice must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::estimate - Lattice must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    Array<Float> pixels = data.get(True);
    Array<Bool> mask(pixels.shape(),True);
@@ -660,7 +646,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                                const Array<Float>& data)
 {
    if (data.shape().nelements() !=2) {
-      itsLogger << "Fit2D::estimate - Array must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::estimate - Array must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    Array<Bool> mask(data.shape(),True);
    return estimate(type, data, mask);
@@ -679,16 +666,19 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 //
 {
    if (type!=Fit2D::GAUSSIAN  && type==Fit2D::DISK) {
-      itsLogger << "Only Gaussian and disk models are currently supported" << LogIO::EXCEPTION;
+      itsLogger << "Only Gaussian and disk models are currently supported" <<
+	LogIO::EXCEPTION;
    }
 //
    Vector<Double> parameters;
    IPosition shape = data.shape();
    if (shape.nelements() !=2) {
-      itsLogger << "Fit2D::estimate - Array must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::estimate - Array must be 2-dimensional" <<
+	LogIO::EXCEPTION;
    }
    if (mask.shape().nelements() !=2) {
-      itsLogger << "Fit2D::estimate - Mask must be 2-dimensional" << LogIO::EXCEPTION;
+      itsLogger << "Fit2D::estimate - Mask must be 2-dimensional" << 
+	LogIO::EXCEPTION;
    }
 // 
 // Find min and max
@@ -728,7 +718,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 //
         const Float& val = data(pos);
         t = abs(val);
-        if (mask(pos) && includeIt(val, itsPixelRange, includeThem) && t>clip) {
+        if (mask(pos) && includeIt(val, itsPixelRange,
+				   includeThem) && t>clip) {
            ri = i; rj = j;
 //
            SP += val;
@@ -743,7 +734,9 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
       }
    }
    if (nPts==0) {
-      itsLogger << LogIO::WARN << "There are not enough good points in the array for a good estimate" << LogIO::POST;
+      itsLogger << LogIO::WARN <<
+	"There are not enough good points in the array for a good estimate" <<
+	LogIO::POST;
       return parameters;
    }
 //
@@ -774,7 +767,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
       if (SP<0) sn = -1.0;
       parameters(0) = sn * fac * P / ( C::pi * parameters(3) * parameters(4));
    } else if (type==Fit2D::LEVEL) {
-      itsLogger << "Level models are not currently supported" << LogIO::EXCEPTION;
+      itsLogger << "Level models are not currently supported" <<
+	LogIO::EXCEPTION;
    }
 // 
    parameters(3) *= 0.95;   // In case estimate is circular
@@ -786,8 +780,10 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 // Private functions
 
 Bool Fit2D::normalizeData (Matrix<Double>& pos, Vector<Double>& values, 
-                           Vector<Double>& weights, const Array<Float>& pixels,
-                           const Array<Bool>& mask, const Array<Float>& sigma)
+			     Vector<Double>& weights,
+			     const Array<Float>& pixels,
+			     const Array<Bool>& mask,
+			     const Array<Float>& sigma)
 //
 // Fish out the unmasked data, and optionally normalize it.
 // They may help rounding problems for many parameter fits.
@@ -936,26 +932,21 @@ void Fit2D::normalizeModels (uInt direction)
       Vector<Double> params = getParams(i);
       Fit2D::Types type = (Fit2D::Types)itsTypeList(i);
 //
-      if (direction==0) {
-         if (type==Fit2D::LEVEL) {
-            itsLogger << "Fit2D - Level fitting not yet implemented" << LogIO::EXCEPTION;
-         } else if (type==Fit2D::DISK) {
-            itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
-         } else if (type==Fit2D::GAUSSIAN) {
-            normalize (params(0), params(1), params(2), params(3),
-                       itsNormPos, itsNormVal);
-            setParams(params, i);
-         }
-      } else {
-         if (type==Fit2D::LEVEL) {
-            itsLogger << "Fit2D - Level fitting not yet implemented" << LogIO::EXCEPTION;
-         } else if (type==Fit2D::DISK) {
-            itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
-         } else if (type==Fit2D::GAUSSIAN) {
-            unNormalize (params(0), params(1), params(2), params(3),
-                         itsNormPos, itsNormVal);
-            setParams(params, i);
-         }
+      if (type==Fit2D::LEVEL) {
+	itsLogger << "Fit2D - Level fitting not yet implemented" <<
+	  LogIO::EXCEPTION;
+      } else if (type==Fit2D::DISK) {
+	itsLogger << "Fit2D - Disk fitting not yet implemented" <<
+	  LogIO::EXCEPTION;
+      } else if (type==Fit2D::GAUSSIAN) {
+	if (direction==0) {
+	  normalize (params(0), params(1), params(2), params(3),
+		     itsNormPos, itsNormVal);
+	} else {
+	  unNormalize (params(0), params(1), params(2), params(3),
+		       itsNormPos, itsNormVal);
+	};
+	setParams(params, i);
       }
    }
 }
@@ -979,8 +970,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Vector<Double>& values,
    
 // Set the function and initial values
 
-   FuncWithAutoDerivs<Double,Double> func(itsFunction); 
-   itsFitter.setFunction(func);
+   itsFitter.setFunction(itsFunction);
    
 // Find the solution
 
@@ -997,7 +987,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Vector<Double>& values,
 //
 // Find chi-squared.  Account for normalization factors
 //
-      itsChiSquared = itsFitter.chiSquare(pos, values, weights, itsSolution);
+      itsChiSquared = itsFitter.chiSquare();
       if (itsIsNormalized && !itsHasSigma) {
          itsChiSquared = itsChiSquared * itsNormVal * itsNormVal;
       }    
@@ -1028,44 +1018,26 @@ void Fit2D::normalizeSolution()
    uInt iStart;
 //
    for (uInt i=0; i<nModels; i++) {
-//
-// The solution vector contains only adjustable parameters
-//
       Vector<Double> sol = getSolution(iStart, i);
-//
-// The mask shows which parameters were fixed and which adjustable
-//
-      Vector<Bool> mask = itsFunction.function(i)->getAvailableParamMasks();
 
       Fit2D::Types type = (Fit2D::Types)itsTypeList(i);
 //
       if (type==Fit2D::LEVEL) {
-         itsLogger << "Fit2D - Level fitting not yet implemented" << LogIO::EXCEPTION;
+         itsLogger << "Fit2D - Level fitting not yet implemented" <<
+	   LogIO::EXCEPTION;
       } else if (type==Fit2D::DISK) {
-         itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
+         itsLogger << "Fit2D - Disk fitting not yet implemented" <<
+	   LogIO::EXCEPTION;
       } else if (type==Fit2D::GAUSSIAN) {
-         uInt idx = 0;
-         if (mask(0)) {                         // Value
-            sol(idx) = sol(idx) * itsNormVal;
-            idx ++;
-         }
-         if (mask(1)) {                         // x cen
-            sol(idx) = sol(idx) * itsNormPos;
-            idx++;
-         }
-         if (mask(2)) {                         // y cen
-            sol(idx) = sol(idx) * itsNormPos;
-            idx++;
-         }
-         if (mask(3)) {                         // axis width
-            sol(idx) = sol(idx) * itsNormPos;
-            idx++;
-         }
+	sol(NQGaussian2D<AutoDiff<Double> >::HEIGHT) *= itsNormVal;
+	sol(NQGaussian2D<AutoDiff<Double> >::XCENTER) *= itsNormPos;
+	sol(NQGaussian2D<AutoDiff<Double> >::YCENTER) *= itsNormPos;
+	sol(NQGaussian2D<AutoDiff<Double> >::YWIDTH) *= itsNormPos;
 // 
 // Replace in main solution vector
 //
          for (uInt j=0; j<sol.nelements(); j++) {
-            itsSolution(iStart+j) = sol(j);
+	   itsSolution(iStart+j) = sol(j);
          }
       }
    }
@@ -1079,28 +1051,20 @@ Vector<Double> Fit2D::getSolution(uInt& iStart, uInt which)
 // interest starts in the solution vector. Returns
 // only adjustable parameters
 //
-   iStart = 0;
-   for (uInt i=0; i<which; i++) {
-//
-// See how many adjustable parameters this model has
-//
-      uInt nP = itsFunction.function(i)->getAdjustParameters().nelements();
-      iStart += nP;
-   }
+   iStart = itsFunction.parameterOffset(which);
 //
 // Find the number of available parameters for the model of interest
 //
-   uInt nP = itsFunction.function(which)->getAdjustParameters().nelements();
+   uInt nP = itsFunction.function(which).nparameters();
    if (itsSolution.nelements() < iStart+nP) {
-      itsLogger << LogIO::SEVERE 
-                << "Fit2D::getSolution - solution vector is not long enough; did you call function fit ?"
-                << LogIO::POST;
+     itsLogger << LogIO::SEVERE 
+	       << "Fit2D::getSolution - "
+       "solution vector is not long enough; did you call function fit ?"
+	       << LogIO::POST;
    }
 //
    Vector<Double> sol(nP);
-   for (uInt i=0; i<nP; i++) {
-      sol(i) = itsSolution(iStart+i);
-   }
+   for (uInt i=0; i<nP; i++) sol(i) = itsSolution(iStart+i);
    return sol;
 }
 
@@ -1121,17 +1085,9 @@ Vector<Double> Fit2D::getAvailableSolution()  const
 // Recover these when the mask is False (fixed)
 // otherwise recover the solution
 //
-   const uInt nParams = itsFunction.nAvailableParams(); 
+   const uInt nParams = itsFunction.nparameters(); 
    Vector<Double> sol2(nParams);
-   uInt idx = 0;
-   for (uInt i=0; i<nParams; i++) {
-      if (itsFunction.getAvailableParamMask(i)) {
-         sol2(i) = itsSolution(idx);
-         idx++;
-      } else {
-         sol2(i) = itsFunction.getAvailableParam(i).value();
-      }
-   }
+   for (uInt i=0; i<nParams; i++) sol2(i) = itsSolution(i);
    return sol2;
 } 
 

@@ -1,4 +1,4 @@
-//# tFit2D.cc: Test nonlinear least squares classes
+//# tFit2D.cc: Test nonlinear least squares classes for 2D Gaussian
 //# Copyright (C) 1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,7 +28,7 @@
 #include <aips/Fitting.h>
 #include <trial/Fitting/Fit2D.h>
 #include <trial/Tasking/PGPlotter.h>
-#include <aips/Functionals/Gaussian2D.h>
+#include <aips/Functionals/NQGaussian2D.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Mathematics/Math.h>
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
    MLCG generator; 
    Normal noiseGen(&generator, 0.0, noise);  
 //
-   Gaussian2D<Double> gauss2d;
+   NQGaussian2D<Double> gauss2d;
    gauss2d.setHeight(height);
    gauss2d.setMajorAxis(major);
    gauss2d.setMinorAxis(minor);
@@ -160,11 +160,11 @@ int main(int argc, char **argv)
 //
 // Set mask
 //
-   Vector<Double> parameters(gauss2d.nAvailableParams());
+   Vector<Double> parameters(gauss2d.nparameters());
    Vector<Bool> parameterMask(parameters.nelements(), True);
    Vector<Int> iMask(parameters.nelements(), 1);
    for (uInt i=0; i<parameters.nelements(); i++) {
-      parameters(i) = gauss2d.getAvailableParam(i);
+      parameters(i) = gauss2d[i];
       if (mask[i]==0) {
          parameterMask(i) = False;
          iMask(i) = 0;
