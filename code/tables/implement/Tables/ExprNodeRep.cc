@@ -788,7 +788,7 @@ void TableExprNodeBinary::convertConstChild()
     cout << "constant converted from Double to DComplex" << endl;
 #endif
     TableExprNodeRep* newNode;
-    if (valueType() == VTScalar) {
+    if (vtype == VTScalar) {
 	newNode = new TableExprNodeConstDComplex ((**constNode).getDouble(0));
     }else{
 	newNode = new TableExprNodeArrayConstDComplex
@@ -867,8 +867,16 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
     uInt nelem = nodes.nelements();
     dtypeOper.resize (nelem);
     dtypeOper.set (dtIn);
+    // NTAny means that it can be any type.
+    // An output of NTAny means that the types have to match.
     if (dtIn == NTAny) {
-	return dtOut;
+        if (dtOut != NTAny) {
+	    return dtOut;
+	}
+	dtIn = nodes[0]->dataType();
+	if (dtIn == NTDouble  ||  dtIn == NTComplex) {
+	    dtIn = NTNumeric;
+	}
     }
     uInt i;
     NodeDataType resultType = dtIn;
@@ -894,7 +902,7 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
 	    }
 	}
     }
-    if (dtOut == NTNumeric) {
+    if (dtOut == NTNumeric  ||  dtOut == NTAny) {
 	return resultType;
     }
     return dtOut;
