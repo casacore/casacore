@@ -77,7 +77,7 @@ SDObservationHandler &SDObservationHandler::operator=(const SDObservationHandler
 	}
 	msObs_p = new NewMSObservation(*(other.msObs_p));
 	AlwaysAssert(msObs_p, AipsError);
-	msObsCols_p = new NewMSObservationColumns(*(other.msObsCols_p));
+	msObsCols_p = new NewMSObservationColumns(*msObs_p);
 	AlwaysAssert(msObsCols_p, AipsError);
 	if (ns_obsidKey_p.isAttached()) {
 	    nsObsIdCol_p.attach(*msObs_p, "NS_OBSID");
