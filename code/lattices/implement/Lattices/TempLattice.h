@@ -248,10 +248,18 @@ public:
   // include in the cursor of an iterator.
   virtual uInt maxPixels() const;
 
-  // Returns a recommended cursor shape for iterating through all the pixels in
-  // the Lattice.  Usually, this function will be called with
-  // <src>maxPixels()</src> as its argument.
+  // Help the user pick a cursor for most efficient access if they only want
+  // pixel values and don't care about the order or dimension of the
+  // cursor. Usually the tile shape is the best cursor shape, and this can
+  // be obtained using:<br>
+  // <src>IPosition shape = pa.niceCursorShape()</src> where
+  // <src>pa</src> is a PagedArray object.
+  // <br>The default argument is the result of <src>maxPixels()</src>.
+  // <group>
   virtual IPosition niceCursorShape (uInt maxPixels) const;
+  IPosition niceCursorShape() const
+    { return niceCursorShape (maxPixels()); }
+  // </group>
 
   // These are the true implementations of the parentheses operator.
   // <group>
