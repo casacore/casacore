@@ -1586,7 +1586,7 @@ void ImageStatistics<T>::minMax (Bool& none,
 template <class T>
 Int ImageStatistics<T>::niceColour (Bool& initColours) const
 {
-   static colourIndex = 1;
+   static Int colourIndex = 1;
    if (initColours) {
       colourIndex = 1;
       initColours = False;
