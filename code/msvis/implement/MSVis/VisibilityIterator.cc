@@ -48,7 +48,8 @@ ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 					   Double timeInterval)
 : msIter_p(ms,sortColumns,timeInterval),
 curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
-msIterAtOrigin_p(False),freqCacheOK_p(False),lastUT_p(0),velSelection_p(False)
+msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
+lastUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -58,7 +59,8 @@ ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
 					   Double timeInterval)
 : msIter_p(mss,sortColumns,timeInterval),
 curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
-msIterAtOrigin_p(False),freqCacheOK_p(False),lastUT_p(0),velSelection_p(False)
+msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
+lastUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -91,6 +93,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   newChanGroup_p=other.newChanGroup_p;
   initialized_p=other.initialized_p;
   msIterAtOrigin_p=other.msIterAtOrigin_p;
+  stateOk_p=other.stateOk_p;
   numChanGroup_p=other.numChanGroup_p;
   chanStart_p=other.chanStart_p;
   chanWidth_p=other.chanWidth_p;
@@ -180,6 +183,7 @@ void ROVisibilityIterator::originChunks()
   if (!msIterAtOrigin_p) {
     msIter_p.origin();
     msIterAtOrigin_p=True;
+    stateOk_p=False;
   }
   setState();
   origin();
@@ -214,6 +218,7 @@ ROVisibilityIterator& ROVisibilityIterator::nextChunk()
   if (msIter_p.more()) {
     msIter_p++;
     msIterAtOrigin_p=False;
+    stateOk_p=False;
   }
   if (msIter_p.more()) {
     setState();
@@ -283,11 +288,13 @@ void ROVisibilityIterator::getTopoFreqs()
 
 void ROVisibilityIterator::setState()
 {
+  if (stateOk_p) return;
   curTableNumRow_p = msIter_p.table().nrow();
-  // get the times for this iteration
-  // Don't understand why this next line was here: TJC 1997/8/7
+  // get the times for this (major) iteration, so we can do (minor) 
+  // iteration by constant time (needed for VisBuffer averaging).
   ScalarColumn<Double> lcolTime(msIter_p.table(),MS::columnName(MS::TIME));
-  time_p.resize(curTableNumRow_p); lcolTime.getColumn(time_p);
+  time_p.resize(curTableNumRow_p); 
+  lcolTime.getColumn(time_p);
   curStartRow_p=0;
   setSelTable();
   // If this is a new array then set up the antenna locations
@@ -313,6 +320,7 @@ void ROVisibilityIterator::setState()
     curNumChanGroup_p=numChanGroup_p[spw];
     freqCacheOK_p=False;
   }
+  stateOk_p=True;
 }
 
 void ROVisibilityIterator::updateSlicer()
@@ -772,7 +780,14 @@ ROVisibilityIterator&
 ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width, 
 				    Int increment, Int spectralWindow)
 {
-  if (!initialized_p) origin();
+  if (!initialized_p) {
+    // initialize the base iterator only (avoid recursive call to originChunks)
+    if (!msIterAtOrigin_p) {
+      msIter_p.origin();
+      msIterAtOrigin_p=True;
+      stateOk_p=False;
+    }
+  }    
   Int spw=spectralWindow;
   if (spw<0) spw = msIter_p.spectralWindowId();
   Int n = numChanGroup_p.nelements();
@@ -789,7 +804,8 @@ ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width,
   chanWidth_p[spw] = width;
   chanInc_p[spw] = increment;
   numChanGroup_p[spw] = nGroup;
-  // have to reset the iterator so all caches get filled
+  // have to reset the iterator so all caches get filled & slicer sizes
+  // get updated
   originChunks();
   return *this;
 }
