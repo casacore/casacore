@@ -1,5 +1,5 @@
 //# CoordinateUtils.cc: 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,6 +38,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MPosition.h>
@@ -323,7 +324,7 @@ void CoordinateUtil::findStokesAxis(Int& pixelAxis, Int& worldAxis,
 
 Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
                                 Vector<Double>& worldReplacement,
-                                const Vector<uInt>& worldAxes,
+                                const Vector<Int>& worldAxes,
                                 const Bool removeThem)
 //
 // Remove all the world axes and associated pixel axes
@@ -344,20 +345,20 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
 
    uInt i,j;
    for (i=0; i<worldAxes.nelements(); i++) {
-      if (worldAxes(i) >= cSys.nWorldAxes()) return False;         
+      if (worldAxes(i) >= Int(cSys.nWorldAxes())) return False;         
    }
 
 // Make a list of the axes to remove in ascending order
 // with no duplicates
 
-   Vector<uInt> remove(cSys.nWorldAxes());
+   Vector<Int> remove(cSys.nWorldAxes());
    if (removeThem) {
       remove.resize(worldAxes.nelements());
       remove = worldAxes;
-      GenSort<uInt>::sort(remove, Sort::Ascending, Sort::NoDuplicates);
+      GenSort<Int>::sort(remove, Sort::Ascending, Sort::NoDuplicates);
    } else {
       for (i=0,j=0; i<cSys.nWorldAxes(); i++) {
-         if (!anyEQ(worldAxes, i)) remove(j++) = i;
+         if (!anyEQ(worldAxes, Int(i))) remove(j++) = i;
       }
       remove.resize(j,True);
    }
@@ -388,7 +389,7 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
 
 Bool CoordinateUtil::removePixelAxes(CoordinateSystem& cSys,
                                      Vector<Double>& pixelReplacement,
-                                     const Vector<uInt>& pixelAxes,
+                                     const Vector<Int>& pixelAxes,
                                      const Bool removeThem)
 {
 // Bug out if nothing to do
@@ -399,20 +400,20 @@ Bool CoordinateUtil::removePixelAxes(CoordinateSystem& cSys,
 
    uInt i,j;
    for (i=0; i<pixelAxes.nelements(); i++) {
-      if (pixelAxes(i) >= cSys.nPixelAxes()) return False;         
+      if (pixelAxes(i) >= Int(cSys.nPixelAxes())) return False;         
    }
 
 // Make a list of the axes to remove in ascending order
 // with no duplicates
 
-   Vector<uInt> remove(cSys.nPixelAxes());
+   Vector<Int> remove(cSys.nPixelAxes());
    if (removeThem) {
       remove.resize(pixelAxes.nelements());
       remove = pixelAxes;
-      GenSort<uInt>::sort(remove, Sort::Ascending, Sort::NoDuplicates);
+      GenSort<Int>::sort(remove, Sort::Ascending, Sort::NoDuplicates);
    } else {
       for (i=0,j=0; i<cSys.nPixelAxes(); i++) {
-         if (!anyEQ(pixelAxes, i)) remove(j++) = i;
+         if (!anyEQ(pixelAxes, Int(i))) remove(j++) = i;
       }
       remove.resize(j,True);
    }
@@ -893,23 +894,18 @@ Bool CoordinateUtil::holdsSky (Bool& holdsOneSkyAxis, const CoordinateSystem& cS
 }
 
 
-void CoordinateUtil::setNicePreferredAxisLabelUnits(CoordinateSystem& cSys)
+void CoordinateUtil::setNiceAxisLabelUnits(CoordinateSystem& cSys)
 {  
-   cSys.setPreferredWorldAxisUnits(cSys.worldAxisUnits());
-//
    for (uInt i = 0; i < cSys.nCoordinates(); i++) {
      Coordinate::Type type = cSys.type(i);
      if (type==Coordinate::DIRECTION) {
-        DirectionCoordinate coord(cSys.directionCoordinate(i));
-        Vector<String> str(coord.nWorldAxes());
-        for (uInt j = 0; j < str.nelements(); j++) str(j) = "deg";
-        coord.setPreferredWorldAxisUnits(str);
-        cSys.replaceCoordinate(coord, i);
+        setDirectionUnit (cSys, String("deg"), i);
      } else if (type==Coordinate::SPECTRAL) {
         SpectralCoordinate coord(cSys.spectralCoordinate(i));
         Vector<String> str(coord.nWorldAxes());
         for (uInt j = 0; j < str.nelements(); j++) str(j) = "km/s";
-        coord.setPreferredWorldAxisUnits(str);
+        MDoppler::Types oldDoppler = coord.velocityDoppler();
+        coord.setVelocity (String("km/s"), oldDoppler);
         cSys.replaceCoordinate(coord, i);
      }
    }
@@ -1164,3 +1160,342 @@ Bool CoordinateUtil::cylindricalFix (CoordinateSystem& cSys, String& errorMessag
    cSys.replaceCoordinate (dirCoord, coord);
    return True;
 }
+
+Bool CoordinateUtil::setVelocityState (String& errorMsg, CoordinateSystem& cSys,
+                                       const String& unit,
+                                       const String& doppler)
+{
+   static Unit kms(String("km/s"));
+//
+   Int after = -1;
+   Int iS = cSys.findCoordinate(Coordinate::SPECTRAL, after);
+   if (iS>=0) {
+      SpectralCoordinate sCoord = cSys.spectralCoordinate(iS);
+
+// Get current state
+
+      MDoppler::Types oldDoppler = sCoord.velocityDoppler();
+      String oldVelUnit = sCoord.velocityUnit();
+
+// Prepare new state
+
+      MDoppler::Types newDoppler(oldDoppler);
+      String newVelUnit(oldVelUnit);
+
+// Find new Doppler, if any
+
+      if (!doppler.empty()) {
+         if (!MDoppler::getType(newDoppler, doppler)) {
+            errorMsg = String("Illegal velocity Doppler");
+            return False;
+         }
+      }
+
+// Find new spectral unit if any
+
+     if (!unit.empty()) {
+        newVelUnit = unit;
+     }
+
+// Set new state.  
+
+     if (!sCoord.setVelocity (newVelUnit, newDoppler)) {
+        errorMsg = sCoord.errorMessage();
+        return False;
+     }
+
+// Replace in CS
+
+      cSys.replaceCoordinate(sCoord, iS);
+   }
+   return True;
+}
+   
+
+Bool CoordinateUtil::setSpectralState (String& errorMsg, CoordinateSystem& cSys,
+                                       const String& unit,
+                                       const String& doppler)
+{
+   static Unit KMS(String("km/s"));
+   static Unit HZ(String("Hz"));
+//
+   Int after = -1;
+   Int iS = cSys.findCoordinate(Coordinate::SPECTRAL, after);
+   if (iS>=0) {
+      SpectralCoordinate sCoord = cSys.spectralCoordinate(iS);
+
+// Prepare new state
+
+      MDoppler::Types newDoppler(sCoord.velocityDoppler());
+      String newVelUnit(sCoord.velocityUnit());
+      Vector<String> newWorldAxisUnits(sCoord.worldAxisUnits().copy());
+
+// Find new Doppler, if any
+
+      if (!doppler.empty()) {
+         if (!MDoppler::getType(newDoppler, doppler)) {
+            errorMsg = String("Illegal velocity Doppler");
+            return False;
+         }
+      }
+
+// If the spectral unit is consistent with Hz, we update the world
+// axis units.  If it is consistent with km/s we update the 
+// velocity state
+
+
+     if (!unit.empty()) {
+        Unit t(unit);
+        if (t == HZ) {
+           newWorldAxisUnits[0] = unit;         
+        } else if (t == KMS) {
+           newVelUnit = unit;
+        } else {
+           errorMsg = String("Illegal spectral unit");
+           return False;
+        }
+     }
+
+// Set new state.  
+
+     if (!sCoord.setVelocity (newVelUnit, newDoppler)) {
+        errorMsg = sCoord.errorMessage();
+        return False;
+     }
+//
+     if (!sCoord.setWorldAxisUnits(newWorldAxisUnits)) {
+        errorMsg = sCoord.errorMessage();
+        return False;
+     }
+
+// Replace in CS
+
+      cSys.replaceCoordinate(sCoord, iS);
+   }
+   return True;
+}
+
+
+Bool CoordinateUtil::setSpectralFormatting (String& errorMsg, 
+                                            CoordinateSystem& cSys,
+                                            const String& unit,
+                                            const String& doppler)
+//
+// This function sets the default formatting unit of the SpectralCoordinate in a
+// CoordinateSystem to that given.  It also updates the internal state
+// of the velocity machine in that SC to reflect the given Doppler.  This
+// is because SC::format used the SC::frequencytovelocity functions to convert
+// to velocity and the Doppler is embedded in this.  To get this dependency out,
+// the formatter would need its own velocity machine and interface to set
+// the frame and Doppler.
+//
+{
+   Int after = -1;
+   Int iS = cSys.findCoordinate(Coordinate::SPECTRAL, after);
+      if (iS>=0) {
+      SpectralCoordinate sCoord = cSys.spectralCoordinate(iS);
+     
+// Set format Unit
+           
+      Bool ok = sCoord.setFormatUnit (unit);
+      
+// Velocity State
+
+      MDoppler::Types oldDoppler = sCoord.velocityDoppler();
+      String oldVelUnit = sCoord.velocityUnit();
+//  
+      MDoppler::Types newDoppler(oldDoppler);
+      String newVelUnit(oldVelUnit);
+
+// Find new Doppler, if any
+                                        
+      if (!doppler.empty()) {
+         if (!MDoppler::getType(newDoppler, doppler)) {
+            errorMsg = String("Illegal velocity Doppler - nochange");
+            newDoppler = oldDoppler;
+            return False;
+         }
+      }
+//
+     if (oldDoppler != newDoppler) {
+        if (!sCoord.setVelocity (newVelUnit, newDoppler)) {
+           errorMsg = sCoord.errorMessage();
+           return False;
+        }
+     }
+ 
+// Replace in CS
+  
+      cSys.replaceCoordinate(sCoord, iS);
+   }
+//
+   return True;
+}
+   
+
+
+
+Bool CoordinateUtil::setSpectralConversion (String& errorMsg, 
+                                            CoordinateSystem& cSys,
+                                            const String frequencySystem)
+{
+
+// Set conversion type.  This lets the SC convert to other frequency systems  
+// We need some extra info from the ObsInfo for the Spectral conversion layer
+// We avoid trying to fish it out unless we have to, because it might
+// not be present and we would get unecessary failures.
+             
+   Int after = -1;
+   Int iS = cSys.findCoordinate(Coordinate::SPECTRAL, after);
+   if (iS>=0) {
+      SpectralCoordinate coord(cSys.spectralCoordinate(iS));
+      MFrequency::Types oldctype;
+      MEpoch epoch;
+      MPosition position;
+      MDirection direction;
+      coord.getReferenceConversion(oldctype, epoch, position, direction);
+//
+      MFrequency::Types ctype;
+      if (!MFrequency::getType(ctype, frequencySystem)) {
+         errorMsg = String("invalid frequency system");
+         return False;
+      }
+// 
+      if (ctype!=oldctype) {
+
+// We also need a direction. Use the reference if we can find one
+
+         after = -1;
+         Int cD = cSys.findCoordinate(Coordinate::DIRECTION, after);
+         if (cD<0) {
+            errorMsg = String("No DirectionCoordinate; cannot set Spectral conversion layer");
+            return False;
+         } else {
+            const DirectionCoordinate& dCoord = cSys.directionCoordinate(cD);
+            const Vector<Double>& rp = dCoord.referencePixel();
+            if (!dCoord.toWorld(direction, rp)) {
+               errorMsg = dCoord.errorMessage();
+               return False;
+            }   
+       
+// Now find the epoch and position
+
+            const ObsInfo& oi = cSys.obsInfo();
+            String telescope = oi.telescope();
+            if (!MeasTable::Observatory(position, telescope)) {
+               errorMsg = String("Cannot find observatory; cannot set Spectral conversion layer");
+               return False;
+            } else {
+               epoch = oi.obsDate();
+               Double t = epoch.getValue().get();
+               if (t <= 0.0) {
+                  errorMsg = String("Epoch not valid; cannot set Spectral conversion layer");
+                  return False;
+               } else {
+                  coord.setReferenceConversion(ctype, epoch, position, direction);
+               }
+            }
+         }
+      }
+// 
+      cSys.replaceCoordinate(coord, iS);
+   }
+   return True;
+} 
+
+
+Bool CoordinateUtil::setDirectionUnit (CoordinateSystem& cSys, const String& unit, Int which)
+{
+
+// FInd DC
+
+   Vector<Int> pixelAxes, worldAxes;
+   Int iC = which;
+   if (iC < 0) {
+      CoordinateUtil::findDirectionAxes (pixelAxes, worldAxes, iC, cSys);
+   } else {
+      worldAxes = cSys.worldAxes (iC);      
+   }
+//
+   if (iC >= 0) {
+
+// Fill  a vector of units for the unremoved DC axes
+
+      uInt nWorldAxes = 0;
+      for (uInt i=0; i<worldAxes.nelements(); i++) {
+        if (worldAxes[i] >= 0) nWorldAxes++;
+      }
+      Vector<String> units(nWorldAxes);
+      units = unit;
+
+// Now set them
+
+      return CoordinateUtil::setCoordinateUnits (cSys, units, iC);
+   }
+   return True;
+}
+
+ 
+Bool CoordinateUtil::setDirectionConversion (String& errorMsg, 
+                                             CoordinateSystem& cSys,
+                                             const String directionSystem)
+{
+   Int after = -1;
+   Int iS = cSys.findCoordinate(Coordinate::DIRECTION, after);
+   if (iS>=0) {
+
+// Convert code from String
+
+      String code = directionSystem;
+      code.upcase();
+      MDirection::Types type;
+      if (!MDirection::getType(type, code)) {
+         errorMsg = String("Invalid direction reference system");
+         return False;
+      }
+
+// Update and replace
+
+      DirectionCoordinate coord = cSys.directionCoordinate (iS);
+      coord.setReferenceConversion(type);
+      cSys.replaceCoordinate(coord, iS);
+   }
+   return True;
+} 
+
+
+Bool CoordinateUtil::setCoordinateUnits (CoordinateSystem& cSys, const Vector<String>& units, uInt which)
+{
+  AlwaysAssert(which<cSys.nCoordinates(), AipsError);
+  AlwaysAssert(which>=0, AipsError);
+
+// Find the world axes for this coordinate
+
+  Vector<Int> worldAxes = cSys.worldAxes(which);
+  uInt nWorldAxes = 0;
+  for (uInt i=0; i<worldAxes.nelements(); i++) {
+     if (worldAxes[i] >=0) nWorldAxes++;
+  }
+
+// Make sure we have the right number
+
+  AlwaysAssert(nWorldAxes==units.nelements(), AipsError);
+
+// Find the world units vector for this CS
+
+  Vector<String> tUnits = cSys.worldAxisUnits().copy();
+
+// Now slot in the new units.  For the removed axes, their units
+// are unchanged.  They can never be brought back so it doesn't matter.
+
+  uInt j = 0;
+  for (uInt i=0; i<worldAxes.nelements(); i++) {
+     if (worldAxes[i] >= 0) {
+        tUnits[worldAxes[i]] = units[j];
+        j++;
+     }
+  }
+//
+  return cSys.setWorldAxisUnits (tUnits);
+}
+
