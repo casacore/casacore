@@ -249,7 +249,7 @@ class LatticeExprNode
 
 // Numerical 2-argument functions
 // <group>
-   friend LatticeExprNode atan2(const LatticeExprNode& left,
+   friend LatticeExprNode atan2 (const LatticeExprNode& left,
 				const LatticeExprNode& right);
    friend LatticeExprNode pow  (const LatticeExprNode& left,
 				const LatticeExprNode& right);
@@ -295,13 +295,17 @@ class LatticeExprNode
    friend LatticeExprNode nfalse(const LatticeExprNode& expr);
 // </group>
 
-// Specialized astronomical numerical 2-argument functions 
-// <group>
-// sqrt(a^2+b^2)
+// This function finds <src>sqrt(left^2+right^2)</src>.  This
+// could be used to find the (biased) polarized intensity if
+// left and right are images of Stokes Q and U.
    friend LatticeExprNode amp (const LatticeExprNode& left,
                                const LatticeExprNode& right);
-// </group>   
 
+// This function finds <src>180/pi*atan2(left,right)/2</src>.  This could be 
+// used to find the position of linear polarization if left 
+// and right are images of Stokes U and Q, respectively.
+   friend LatticeExprNode pa (const LatticeExprNode& left,
+                              const LatticeExprNode& right);
 
 // Functions to convert to the given data type.  These are mostly 
 // meaningful for down-conversions (e.g. double to float),

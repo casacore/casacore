@@ -26,16 +26,18 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeExprNode.h>
+
+#include <aips/Arrays/Array.h>
+#include <aips/Containers/Block.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/Lattice.h>
-#include <trial/Lattices/PixelRegion.h>
 #include <trial/Lattices/LELLattice.h>
 #include <trial/Lattices/LELConvert.h>
 #include <trial/Lattices/LELBinary.h>
 #include <trial/Lattices/LELUnary.h>
 #include <trial/Lattices/LELFunction.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Containers/Block.h>
+#include <trial/Lattices/PixelRegion.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/Assert.h>
@@ -950,6 +952,34 @@ LatticeExprNode amp (const LatticeExprNode& left,
    }
 
    return sqrt(leftExpr+rightExpr);
+}
+LatticeExprNode pa (const LatticeExprNode& left,
+                    const LatticeExprNode& right)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function pa" << endl;
+#endif
+
+   AlwaysAssert (left.dataType() != TpComplex &&  left.dataType() != TpDComplex 
+		 && left.dataType() != TpBool,  AipsError);
+   AlwaysAssert (right.dataType() != TpComplex &&  right.dataType() != TpDComplex 
+		 && right.dataType() != TpBool,  AipsError);
+
+   LatticeExprNode expr(atan2(left,right));
+
+   switch (expr.dataType()) {
+   case TpFloat:
+      return Float(90.0/C::pi) * expr;
+      break;
+   case TpDouble:
+      return Double(90.0/C::pi) * expr;
+      break;
+   default:
+      throw (AipsError
+            ("LatticeExprNode::pa - Unknown data type"));
+   }
+
+   return LatticeExprNode();         // shut compiler up
 }
 
 
