@@ -31,7 +31,6 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 
-//#
 rtti_dcl_init(EmptyStackError);
 class EmptyStackError : public AipsError {
 public:

@@ -30,7 +30,6 @@
 rtti_imp_init(EmptyStackError);
 rtti_imp_mbrf(EmptyStackError);
 
-// ABCDEFGH
 // The normal constructor when throwing the exception.
 EmptyStackError::EmptyStackError (const char *msg) : 
           AipsError(msg ? msg : "Invalid operation on an empty Stack.") {}
