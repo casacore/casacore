@@ -3893,3 +3893,4 @@
 14 065 src mv trial/implement/Display/DParameterColorChoice.cc trialdisplay/implement/Display/DParameterColorChoice.cc
 14 065 src mv trial/implement/Display/DParameterRange.cc trialdisplay/implement/Display/DParameterRange.cc
 14 065 src mv trial/implement/Display/DParameterString.cc trialdisplay/implement/Display/DParameterString.cc
+14 065 src mv trial/implement/Display/DisplayEnums.cc trialdisplay/implement/Display/DisplayEnums.cc
