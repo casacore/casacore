@@ -2,11 +2,11 @@
 <head>
 <title>AIPS++ Developers' Notes</title>
 
-<SCRIPT LANGUAGE = "JavaScript1.2"
+<SCRIPT LANGUAGE = "JavaScript"
 src="../javascripts/menu.js"></script>
-<SCRIPT LANGUAGE = "JavaScript1.2"
+<SCRIPT LANGUAGE = "JavaScript"
 src="../javascripts/aipsmenu.js"></script>
-<SCRIPT LANGUAGE = "JavaScript1.2">
+<SCRIPT LANGUAGE = "JavaScript">
 <!--
  // Function need to place directory relative to docs tree.
  aMenu = new aipsMenu("..", "#61B6FF");
@@ -82,6 +82,15 @@ src="../gif/tri2.gif" border=0>  <b>Home</a></font></b><P>
 <a name="developersnotes"><font face=helvetica size="+3"><b>Developers' Notes</b></font></a><p>
 
 </H2>
+<B>Documentation Issues</b>
+<ul>
+<li> Please avoid the use of \newcommand in your .help files.  The better
+option is to use \renewcommand.  A <a href="../html/shorts.html">standard set
+of AIPS++ definitions</a> maybe found in
+<a href="../../code/install/doctutils/aips2defs.tex">
+code/install/doctutils/aips2defs.tex</a>.
+
+</ul>
 <B>General Problems</b>
 <P>
 <ul>
