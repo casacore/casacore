@@ -1,5 +1,5 @@
 //# fitsio.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,6 +54,25 @@ FitsTape9Input::~FitsTape9Input() {
 
 FitsTape9Output::~FitsTape9Output() {
 }
+
+//# Cache used to hold errors from read_header_rec, messages and accompanying error levels
+Block<String> messages_(32);
+Block<Int> errLevels_(32);
+uInt nerrs_ = 0;
+
+// special error handler function used by read_header_rec
+void readHeaderRecErrHandler(const char *errMessage, FITSError::ErrorLevel severity)
+{
+    if (nerrs_ >= messages_.nelements()) {
+	uInt newSize = messages_.nelements()*2;
+	messages_.resize(newSize, True, True);
+	errLevels_.resize(newSize, True, True);
+    }
+    messages_[nerrs_] = String(errMessage);
+    errLevels_[nerrs_] = Int(severity);
+    nerrs_++;
+}
+
 
 void FitsInput::errmsg(FitsErrs e, char *s) {
     ostrstream msgline;
@@ -333,12 +352,27 @@ void FitsInput::read_header_rec() {
 	    return;
 	}
 	kw.delete_all();
-	kc.parse(curr,kw,0,errfn,True);
+	// reset the cache counter nevertheless
+	nerrs_ = 0;
+	kc.parse(curr,kw,0,readHeaderRecErrHandler,True);
+	uInt parseErrs = nerrs_;
 	HeaderDataUnit::HDUErrs n;
-	if (!HeaderDataUnit::determine_type(kw,hdu_type,data_type,errfn,n)) {
+	if (!HeaderDataUnit::determine_type(kw,hdu_type,data_type,readHeaderRecErrHandler,n)) {
+	    // in this case, the header is completely bogus, the error messages which
+	    // convey that are the ones returned by determine_type, the ones returned
+	    // by parse are useless and needlessly confusing, so don't show them
+	    for (uInt i=parseErrs; i<nerrs_;i++) {
+		errfn(messages_[i], FITSError::ErrorLevel(errLevels_[i]));
+	    }
+	    nerrs_ = 0;
 	    rec_type = FITS::SpecialRecord;
 	    return;
 	}
+	// spit out all of the cached error messages
+	for (uInt i=0;i<nerrs_;i++) {
+	    errfn(messages_[i], FITSError::ErrorLevel(errLevels_[i]));
+	}
+	nerrs_ = 0;
 	if (hdu_type == FITS::PrimaryArrayHDU || hdu_type == FITS::PrimaryGroupHDU) 
 	    errmsg(BADPRIMARY,"Misplaced primary header-data unit.");
 	rec_type = FITS::HDURecord;
@@ -903,13 +937,13 @@ FitsIO::FitsIO(FITSErrorHandler errhandler) :
 
 FitsInput::FitsInput(const char *n, const FITS::FitsDevice &d, int b, 
 		     FITSErrorHandler errhandler) : 
-    FitsIO(errhandler), fin(make_input(n,d,b,errhandler)), got_rec(False) {
+    FitsIO(errhandler), fin(make_input(n,d,b,errhandler)), got_rec(False)
+{
     init();
 }
 
 FitsInput::FitsInput(FITSErrorHandler errhandler) : FitsIO(errhandler), 
-	fin(*(BlockInput *)(new FitsStdInput(FitsRecSize,errhandler))),
-	got_rec(False) {
-	init();
+	fin(*(BlockInput *)(new FitsStdInput(FitsRecSize,errhandler)))
+{
+    init();
 }
-
