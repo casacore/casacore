@@ -42,7 +42,7 @@ main() {
     cout << "----------------------------------------------------" << endl;
 
     String error;
-    QuantumHolder q00;
+    QuantumHolder q00, q01;
     Quantity x00(12.5, "km/s");
     Quantum<Float> x01(30.3, "Jy/a");
     Quantum<Int> x02(2, "pc3/d");
@@ -71,7 +71,43 @@ main() {
 
     cout << "Is quantity:                 " << q00.isQuantity() << endl;
     cout << "Is empty:                    " << q00.isEmpty() << endl;
+    cout << "Is scalar:                   " << q00.isScalar() << endl;
+    cout << "Is array:                    " << q00.isArray() << endl;
+    cout << "Is real:                     " << q00.isReal() << endl;
+    cout << "Is complex:                  " << q00.isComplex() << endl;
+    cout << "Is Double:                   " << q00.isQuantumDouble() << endl;
+    cout << "Is Float:                    " << q00.isQuantumFloat() << endl;
+    cout << "Is Int:                      " << q00.isQuantumInt() << endl;
+    cout << "Is Complex:                  " << q00.isQuantumComplex() << endl;
+    cout << "Is DComplex:                 " << q00.isQuantumDComplex() << endl;
+    cout << "Is Vector Double:            " <<
+      q00.isQuantumVectorDouble() << endl;
+    cout << "Is Vector Float:             " <<
+      q00.isQuantumVectorFloat() << endl;
+    cout << "Is Vector Int:               " <<
+      q00.isQuantumVectorInt() << endl;
+    cout << "Is Vector Complex:           " <<
+      q00.isQuantumVectorComplex() << endl;
+    cout << "Is Vector DComplex:          " <<
+      q00.isQuantumVectorDComplex() << endl;
+    q01 = q00;
     cout << "As quantity:                 " << q00.asQuantity() << endl;
+    cout << "As Double:                   " << q00.asQuantumDouble() << endl;
+    cout << "As Vector Double:            " <<
+      q00.asQuantumVectorDouble() << endl;
+    cout << "As Float:                    " << q00.asQuantumFloat() << endl;
+    cout << "As Vector Float:             " <<
+      q00.asQuantumVectorFloat() << endl;
+    cout << "As Int:                      " << q00.asQuantumInt() << endl;
+    cout << "As Vector Int:               " <<
+      q00.asQuantumVectorInt() << endl;
+    q00 = q01;
+    cout << "As Complex:                  " << q00.asQuantumComplex() << endl;
+    cout << "As Vector Complex:           " <<
+      q00.asQuantumVectorComplex() << endl;
+    cout << "As DComplex:                 " << q00.asQuantumDComplex() << endl;
+    cout << "As Vector DComplex:          " <<
+      q00.asQuantumVectorDComplex() << endl;
 
     cout << "Input quantity:              " << (QBase &)x01 << endl;
     if (QuantumHolder(x01).toRecord(error, y00)) {
