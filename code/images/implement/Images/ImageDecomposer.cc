@@ -190,15 +190,15 @@ void ImageDecomposer<T>::setImage(ImageInterface<T>& image)
 
 
 template <class T>
-void ImageDecomposer<T>::setDeblend(Bool deblendIt=True)
+void ImageDecomposer<T>::setDeblend(Bool deblendIt)
 {
   itsDeblendIt = deblendIt;
   return;
 }
 
 template <class T>
-void ImageDecomposer<T>::setDeblendOptions(T thresholdVal=0.1,uInt nContour=11,
-                                           Int minRange=2, Int nAxis=2)
+void ImageDecomposer<T>::setDeblendOptions(T thresholdVal,uInt nContour,
+                                           Int minRange, Int nAxis)
 {
   itsThresholdVal = thresholdVal;
   itsNContour = nContour;
@@ -208,15 +208,15 @@ void ImageDecomposer<T>::setDeblendOptions(T thresholdVal=0.1,uInt nContour=11,
 }
 
 template <class T>
-void ImageDecomposer<T>::setFit(Bool fitIt=True)
+void ImageDecomposer<T>::setFit(Bool fitIt)
 {
   itsFitIt = fitIt;
   return;
 }   
 
 template <class T>
-void ImageDecomposer<T>::setFitOptions(T maximumRMS=0.1, Int maxRetries=-1, 
-                                       uInt maxIter=256, T convCriteria=0.0001)
+void ImageDecomposer<T>::setFitOptions(T maximumRMS, Int maxRetries, 
+                                       uInt maxIter, T convCriteria)
 {
   itsMaximumRMS = maximumRMS;
   itsMaxRetries = maxRetries;
@@ -1334,7 +1334,7 @@ uInt ImageDecomposer<T>::identifyRegions(T thrval, Int naxis)
 
 template <class T>
 void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours, 
-                                        Int minRange=1, Int naxis=2)
+                                        Int minRange, Int naxis)
 {
 
 // Performs the contour decomposition on a blended image to generate a 
