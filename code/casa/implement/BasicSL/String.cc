@@ -1,5 +1,5 @@
 //# String.cc: String class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,10 +31,15 @@
 #include <algorithm>
 #include <aips/string.h>
 #include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // Special constructors
 String::String(ostrstream &os) {
   os << ends;
+  *this = os.str();
+}
+
+String::String(ostringstream &os) {
   *this = os.str();
 }
 

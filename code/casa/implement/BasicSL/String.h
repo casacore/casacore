@@ -1,5 +1,5 @@
 //# String.h: String class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -279,6 +279,7 @@ class String : public string {
   // <note role=warning> This implementation will be superseded once the
   // stringstream (sstream include) is part of the standard system. </note>
   String(ostrstream &os);
+  String(ostringstream &os);
 
   //# Destructor
   // Destructor
