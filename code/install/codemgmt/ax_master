@@ -6336,3 +6336,4 @@
 18 148 src rm hia/implement/QtGlishEvent/moc_QtGlishEvent.cc
 18 184 src rm nrao/apps/makegbtscanlog
 18 214 src mv doc/project/r1.51.eps doc/project/dev15report.dir/r1.51.eps
+18 214 src mv doc/project/r1.51.gif doc/project/dev15report.dir/r1.51.gif
