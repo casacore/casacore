@@ -26,8 +26,10 @@
 //# $Id$
 
 #include <trial/ComponentModels/ComponentShape.h>
+#include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/ConstantSpectrum.h>
 #include <trial/ComponentModels/PointShape.h>
+#include <trial/ComponentModels/GaussianShape.h>
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Cube.h>
@@ -35,6 +37,9 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/DirectionCoordinate.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
@@ -42,9 +47,11 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/Stokes.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <trial/ComponentModels/SpectralModel.h>
@@ -450,6 +457,436 @@ Bool SkyCompRep::ok() const {
   }
   return True;
 }
+
+void SkyCompRep::fromPixel (const Vector<Double>& parameters,
+                            const Unit& brightnessUnitIn,
+                            const Vector<Quantum<Double> >& restoringBeam,
+                            const CoordinateSystem& cSys,
+                            ComponentType::Shape componentShape,
+                            Stokes::StokesTypes stokes,
+                            Bool xIsLong)
+// 
+// pars(0) = Flux    Jy
+// pars(1) = x cen   abs pix
+// pars(2) = y cen   abs pix
+// pars(3) = major   pix
+// pars(4) = minor   pix
+// pars(5) = pa radians
+//
+{
+
+// Check number of parameters
+  
+   LogIO os(LogOrigin("SkyCompRep", "fromPixel()"));
+   if (componentShape==ComponentType::GAUSSIAN) {
+      if (parameters.nelements()!=6) {
+         os << "Wrong number of parameters for Gaussian model" << LogIO::EXCEPTION;
+      }
+   } else if (componentShape==ComponentType::DISK) {
+      if (parameters.nelements()!=6) {
+         os << "Wrong number of parameters for Disk model" << LogIO::EXCEPTION;
+      }
+   } else if (componentShape==ComponentType::POINT) {
+      if (parameters.nelements()!=3) {
+         os << "Wrong number of parameters for Point model" << LogIO::EXCEPTION;
+      }
+   } else {
+      os << "Unknown Component shape" << LogIO::EXCEPTION;
+   }
+
+      
+// Find DirectionCoordinate
+
+   Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+   if (dirCoordinate==-1) {
+      os << "CoordinateSystem does not contain a DirectionCoordinate" << LogIO::EXCEPTION;
+   }
+   DirectionCoordinate dirCoord = cSys.directionCoordinate(dirCoordinate);
+   Vector<String> axisUnits(2);
+   axisUnits.set("rad");
+   if (!dirCoord.setWorldAxisUnits(axisUnits)) {
+      os << "Failed to set DirectionCoordinate axis units to radians" << LogIO::EXCEPTION;
+   }
+   Vector<Int> dirPixelAxes = cSys.pixelAxes(dirCoordinate);
+//  
+   uInt whereIsX = 0;
+   uInt whereIsY = 1;
+   if (!xIsLong) {
+      whereIsX = 1;
+      whereIsY = 0;
+   }
+      
+// Position; absolute pixels in image are converted to an MDirection
+
+   Vector<Double> world;
+   Vector<Double> pixelRef(2);
+   MDirection directionRef;
+   pixelRef(whereIsX) = parameters(1);
+   pixelRef(whereIsY) = parameters(2);
+   if (!dirCoord.toWorld(directionRef, pixelRef)) {
+      os << "DirectionCoordinate conversion failed because "
+         << dirCoord.errorMessage() << LogIO::EXCEPTION;
+   }
+         
+// Spectrum   
+         
+   ConstantSpectrum constSpec;
+   Int specCoordinate = cSys.findCoordinate(Coordinate::SPECTRAL);
+   if (specCoordinate!=-1) {
+      Vector<Int> specAxes = cSys.pixelAxes(specCoordinate);
+      if (specAxes.nelements() > 1) {
+         os << LogIO::WARN
+            << "This image has a SpectralCoordinate with > 1 axes.  I cannot handle that"
+            << endl;
+         os << "The image will be treated as if it had no SpectralCorodinate" << LogIO::POST;
+      } else {
+   
+// If the subImage has a SpectralCoordinate, there is only one Spectral pixel (with
+// pixel coordinate 0.0) in that subImage (because region is 2D in DirectionCoordinate).
+// Find its frequency.
+      
+         SpectralCoordinate specCoord = cSys.spectralCoordinate(specCoordinate);
+         MFrequency mFreq;
+         if (!specCoord.toWorld(mFreq, 0.0)) {
+            os << "SpectralCoordinate conversion failed because "
+               << specCoord.errorMessage() << LogIO::EXCEPTION;
+         } else {
+            constSpec.setRefFrequency(mFreq);
+         }
+      }
+   }
+   setSpectrum(constSpec);
+
+//
+
+   Unit unitIn = brightnessUnitIn;
+   if (componentShape==ComponentType::POINT) {
+      
+// Direction
+
+      PointShape pointShape(directionRef);
+      setShape(pointShape);
+
+// Flux. Define /beam and /pixel units to be dimensionless
+
+      UnitMap::putUser("pixel", UnitVal(1.0,String("")));
+      UnitMap::putUser("beam",  UnitVal(1.0,String("")));
+      unitIn = Unit(unitIn.getName());                // Tell system to update this unit
+//
+      itsFlux.setUnit(Unit("Jy"));
+      Quantum<Double> peak2(parameters(0), unitIn);
+      Quantum<Double> value(1.0,Unit("Jy"));
+      if (peak2.isConform(Unit("Jy"))) {
+         Double valIn = peak2.getValue();
+         peak2.convert("Jy");   
+         Double fac = peak2.getValue() / valIn;
+         value.setValue(parameters(0) * fac);
+      } else {
+         os << LogIO::SEVERE << "Cannot convert units of brightness to Jy - will assume Jy"
+            << LogIO::POST;
+         value.setValue(parameters(0));
+      }
+      itsFlux.setValue (value, stokes);
+      
+// Undefine /beam and /pixel
+
+      SkyCompRep::undefineBrightnessUnits();
+   } else if (componentShape==ComponentType::GAUSSIAN || componentShape==ComponentType::DISK) {
+
+// Define /beam and /pixel units.
+
+      Bool integralIsJy = True;
+      Unit brightnessUnit = SkyCompRep::defineBrightnessUnits(os, brightnessUnitIn, cSys, restoringBeam, integralIsJy);
+
+// Shape.  First get position angle relative to the coordinate frame
+// (i.e. not relative to the vertical/horizontal pixel coordinate frame)
+// Find tip of major and minor axes
+   
+      Double cospa = cos(parameters(5));
+      Double sinpa = sin(parameters(5));
+      Double z = parameters(3) / 2.0;
+      Double x = -z * sinpa;
+      Double y =  z * cospa;  
+//
+      MDirection directionMajor;
+      Vector<Double> pixelMajor(2);
+      pixelMajor(whereIsX) = parameters(1) + x;
+      pixelMajor(whereIsY) = parameters(2) + y;
+      if (!dirCoord.toWorld(directionMajor, pixelMajor)) {
+         os << "DirectionCoordinate conversion failed because "
+            << dirCoord.errorMessage() << LogIO::EXCEPTION;
+      }
+//
+      z = parameters(4) / 2.0;
+      x = z * cospa;
+      y = z * sinpa;
+      MDirection directionMinor;
+      Vector<Double> pixelMinor(2);
+      pixelMinor(whereIsX) = parameters(1) + x;
+      pixelMinor(whereIsY) = parameters(2) + y;
+      if (!dirCoord.toWorld(directionMinor, pixelMinor)) {
+         os << "DirectionCoordinate conversion failed because "
+            << dirCoord.errorMessage() << LogIO::EXCEPTION;
+      }
+
+// Find position angle between centre and major axis tip
+      
+      MVDirection mvdRef = directionRef.getValue();
+      MVDirection mvdMajor = directionMajor.getValue();
+      MVDirection mvdMinor = directionMinor.getValue();
+
+// Separations
+
+      Double tmp1 = 2 * mvdRef.separation(mvdMajor) * 3600 * 180.0 / C::pi;
+      Double tmp2 = 2 * mvdRef.separation(mvdMinor) * 3600 * 180.0 / C::pi;
+      Quantum<Double> fitMajorAxis(max(tmp1,tmp2), Unit("arcsec"));
+      Quantum<Double> fitMinorAxis(min(tmp1,tmp2), Unit("arcsec"));
+// 
+      Double pa;
+      if (tmp1 >= tmp2) {
+         pa = mvdRef.positionAngle(mvdMajor);
+      } else {
+         pa = mvdRef.positionAngle(mvdMinor);  
+      } 
+      Quantum<Double> fitPA(pa, Unit("rad"));
+
+// Note that the major and minor axes in pixels may have swapped when
+// converted to world coordinates.  Function decodeSkyComponent must
+// also take this into account when going the other way.
+      
+      GaussianShape gaussShape(directionRef, fitMajorAxis,
+                               fitMinorAxis, fitPA);
+      setShape(gaussShape);
+      
+// Component needs integrated flux.
+   
+      Quantum<Double> fitPeak(parameters(0), brightnessUnit);
+      if (componentShape==ComponentType::GAUSSIAN) {  
+         fitPeak.scale(C::pi / 4.0 / log(2.0));
+      } else if (componentShape==ComponentType::DISK) { 
+         fitPeak.scale(C::pi);
+      }
+      Quantum<Double> fitIntegral;
+      fitMajorAxis.convert(Unit("rad"));
+      fitMinorAxis.convert(Unit("rad"));
+      fitIntegral = fitPeak * fitMajorAxis * fitMinorAxis;  
+      if (fitIntegral.isConform(Unit("Jy"))) {
+         fitIntegral.convert("Jy");
+      } else {
+         os << LogIO::SEVERE << "Cannot convert units of Flux integral to Jy - will assume Jy"
+            << LogIO::POST;
+         fitIntegral.setUnit(Unit("Jy"));
+      }   
+         
+// Set flux
+
+      itsFlux.setUnit(fitIntegral.getFullUnit());   
+      itsFlux.setValue (fitIntegral, stokes);
+
+
+// Undefine /beam and /pixel units
+
+      SkyCompRep::undefineBrightnessUnits();
+   }
+}
+
+
+
+Vector<Double> SkyCompRep::toPixel (const Unit& brightnessUnitIn,
+                                    const Vector<Quantum<Double> >& restoringBeam,
+                                    const CoordinateSystem& cSys,
+                                    Stokes::StokesTypes stokes,
+                                    Bool xIsLong) const
+//  
+// pars(0) = FLux     Jy
+// pars(1) = x cen    abs pix
+// pars(2) = y cen    abs pix
+// pars(3) = major    pix
+// pars(4) = minor    pix
+// pars(5) = pa radians
+//
+{
+   LogIO os(LogOrigin("SkyCompRep", "toPixel()"));
+//
+   const ComponentShape& componentShape = shape();
+   ComponentType::Shape type = componentShape.type();
+   Vector<Double> parameters(3);
+
+// Get DirectionCoordinate for CS
+      
+   Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+   if (dirCoordinate==-1) {
+      os << "There is no DirectionCoordinate in thie CoordinateSystem" << LogIO::EXCEPTION;
+   }
+   const DirectionCoordinate& dirCoord = cSys.directionCoordinate(dirCoordinate);
+      
+// Convert centre from an MDirection to absolute pixels
+
+   const MDirection dirRef = componentShape.refDirection();
+   Vector<Double> pixelCen(2);
+   if (!dirCoord.toPixel(pixelCen, dirRef)) {
+      os << "DirectionCoordinate conversion to pixel failed because "
+         << dirCoord.errorMessage() << LogIO::EXCEPTION;
+   }
+   if (xIsLong) {
+      parameters(1) = pixelCen(0);      // xcen
+      parameters(2) = pixelCen(1);      // ycen
+   } else {
+      parameters(1) = pixelCen(1);
+      parameters(2) = pixelCen(0);
+   }
+
+// Do the rest of the shape if there is any
+      
+   if (type==ComponentType::POINT) {
+      Flux<Double> f = flux();
+      Quantum<Double> fluxPeak = f.value (stokes, True);
+      parameters(0) = fluxPeak.getValue();                    // Jy
+   } else if (type==ComponentType::GAUSSIAN || type==ComponentType::DISK) {
+      parameters.resize(6,True);
+      
+// Caste to get at actual shape
+      
+      const TwoSidedShape& ts = dynamic_cast<const TwoSidedShape&>(componentShape);
+    
+// Fish out major/minor axes and p.a.   
+      
+      Vector<Double> p = ts.toPixel (dirCoord);
+      parameters(3) = p(0);
+      parameters(4) = p(1);
+      parameters(5) = p(2);
+    
+// Define /beam and /pixel units.
+
+      Bool integralInJy = True;
+      Unit brightnessUnits = SkyCompRep::defineBrightnessUnits(os, brightnessUnitIn, cSys, 
+                                                               restoringBeam, integralInJy);
+                                              
+// Get Flux for particular Stokes. It is currently not possible to extract the appropriate
+// Stokes Value with the Flux class.
+
+      Flux<Double> f = flux();
+      Quantum<Double> fluxIntegral = f.value (stokes, True);
+   
+// Convert to peak
+
+      Double fac;
+      if (type==ComponentType::GAUSSIAN) { 
+         fac = C::pi / 4.0 / log(2.0);
+      } else if (type==ComponentType::DISK) {
+         fac = C::pi;
+      } else {
+         fac = 1.0;
+      }
+//
+      Quantum<Double> major2 = ts.majorAxis();
+      major2.convert(Unit("rad"));
+      Quantum<Double> minor2 = ts.minorAxis();
+      minor2.convert(Unit("rad"));
+//
+      Quantum<Double> tmp = major2 * minor2;
+      tmp.scale(fac);
+      Quantum<Double> fluxPeak = fluxIntegral / tmp;
+      fluxPeak.convert(brightnessUnits);
+      parameters(0) = fluxPeak.getValue();
+      
+// Undefine /beam and /pixel units
+
+      SkyCompRep::undefineBrightnessUnits();
+   }
+   return parameters;
+}   
+   
+
+
+Unit SkyCompRep::defineBrightnessUnits (LogIO& os, 
+                                        const Unit& brightnessUnitIn,
+                                        const CoordinateSystem& cSys,
+                                        const Vector<Quantum<Double> >& restoringBeam,
+                                        Bool integralIsJy)
+{
+   Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+   Unit unitOut = brightnessUnitIn;
+              
+// Define "pixel" units if we can
+                  
+   Vector<Double> inc;
+   if (dirCoordinate>=0) {
+      DirectionCoordinate dirCoord = cSys.directionCoordinate(dirCoordinate);
+      Vector<String> units(2); 
+      units.set("rad");
+      dirCoord.setWorldAxisUnits(units);
+      inc = dirCoord.increment();
+      UnitMap::putUser("pixel", UnitVal(abs(inc(0)*inc(1)), String("rad2")));
+   } 
+
+// Define "beam" units if needed
+
+   if (unitOut.getName().contains("beam")) {
+      if (restoringBeam.nelements()==3) {
+         Vector<Quantum<Double> > rB = restoringBeam.copy();
+         rB(0).convert(Unit("rad"));
+         rB(1).convert(Unit("rad"));
+         Double fac = C::pi / 4.0 / log(2.0) * rB(0).getValue() * rB(1).getValue();
+         UnitMap::putUser("beam", UnitVal(fac,String("rad2")));
+      } else {
+         if (dirCoordinate>=0) {
+            os << LogIO::WARN
+               << "No restoring beam defined even though the image brightness units contain a beam"
+               << endl << "Assuming the restoring beam is one pixel" << LogIO::POST;
+            UnitMap::putUser("beam", UnitVal(abs(inc(0)*inc(1)), String("rad2")));
+         } else {
+            os << "The image units contain a beam.  However, there is no restoring beam" << endl;
+            os << "defined, and no DirectionCoordinate in the image" << LogIO::EXCEPTION;
+         }
+      }
+   }
+
+// We must tell the old unit that it has been redefined
+        
+   unitOut = Unit(unitOut.getName());
+     
+// Check integral units
+
+   if (integralIsJy) {
+     if (unitOut.empty()) {
+        unitOut = Unit("Jy/pixel"); 
+        if (dirCoordinate>=0) { 
+           os << LogIO::WARN << "There are no image brightness units, assuming Jy/pixel" << LogIO::POST;
+           unitOut = Unit("Jy/pixel");
+        } else {
+           os << "There are no image brightness units, we would like to assume Jy/pixel" << endl;
+           os << "However, there is no DirectionCoordinate in the image either" << LogIO::EXCEPTION;
+        }
+     } else {
+        Quantum<Double> t0(1.0, unitOut);
+        Quantum<Double> t1(1.0, Unit("rad2"));
+        Quantum<Double> t2 = t0 * t1;
+        if (!t2.isConform(Unit("Jy"))) {
+           if (dirCoordinate>=0) {
+              os << LogIO::WARN << "The image units '" << unitOut.getName() << "' are not consistent " << endl;
+              os << "with Jy when integrated over the sky.  Assuming Jy/pixel" << LogIO::POST;
+              unitOut = Unit("Jy/pixel");
+           } else {
+              os << "The image units '" << unitOut.getName() << "' are not consistent " << endl;
+              os << "with Jy when integrated over the sky.  We would like to assume Jy/pixel" << endl;
+              os << "However, there is no DirectionCoordinate in the image either" << LogIO::EXCEPTION;
+           }
+        }
+     }
+   }
+//
+   return unitOut;
+}  
+
+void SkyCompRep::undefineBrightnessUnits()
+{          
+   UnitMap::removeUser("beam");
+   UnitMap::removeUser("pixel");
+   UnitMap::clearCache();
+}          
+
+
 
 // Local Variables: 
 // compile-command: "gmake SkyCompRep"

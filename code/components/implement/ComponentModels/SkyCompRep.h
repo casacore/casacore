@@ -35,8 +35,12 @@
 #include <trial/ComponentModels/SkyCompBase.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/String.h>
+#include <aips/Measures/Stokes.h>
 
 class ComponentShape;
+class CoordinateSystem;
+class DirectionCoordinate;
+class LogIO;
 class MDirection;
 class MFrequency;
 class MVAngle;
@@ -44,9 +48,14 @@ class MVDirection;
 class MVFrequency;
 class RecordInterface;
 class SpectralModel;
+class TwoSidedShape;
+class Unit;
 template <class Ms> class MeasRef;
 template <class T> class Cube;
 template <class T> class Vector;
+template <class T> class Quantum;
+
+
 
 // <summary>A model component of the sky brightness</summary>
 
@@ -239,10 +248,46 @@ public:
 			RecordInterface& record) const;
   // </group>
 
+  // Inter convert the SkyComponent and a vector of Doubles in pixel coordinates
+  // for the specified Stokes type.
+  // The elements are: flux for given Stokes (Jy), x location (absolute pixels),
+  // y location (absolute pixels), major axis (absolute pixels)
+  // minor axis (absolute pixels), position angle (radians).
+  // For Point shapes, just the first three elements are given/returned.
+  // The restoring beam can be obtained from the ImageInfo class.  It
+  // should be of length 3 or 0.  The Bool xIsLong says whether the
+  // x axis is longitude or latitude.  A constant spectrum is used.
+  // <group>
+  Vector<Double> toPixel (const Unit& brightnessUnitIn,
+                          const Vector<Quantum<Double> >& restoringBeam,
+                          const CoordinateSystem& cSys,
+                          Stokes::StokesTypes stokes,
+                          Bool xIsLong) const;
+  void fromPixel (const Vector<Double>& parameters,
+                  const Unit& brightnessUnitIn,
+                  const Vector<Quantum<Double> >& restoringBeam,
+                  const CoordinateSystem& cSys,
+                  ComponentType::Shape componentShape,
+                  Stokes::StokesTypes stokes,
+                  Bool xIsLong);
+  // </group>
+
   // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
   virtual Bool ok() const;
+
+// Make definitions to handle "/beam" and "/pixel" units.   The restoring beam
+// is provided in a vector of quanta (major, minor, position angle).  Should
+// be length 0 or 3. It can be obtained from class ImageInfo
+   static Unit defineBrightnessUnits (LogIO& os, 
+                                      const Unit& brightnessUnitIn,
+                                      const CoordinateSystem& cSys,
+                                      const Vector<Quantum<Double> >& restoringBeam,
+                                      Bool integralIsJy);
+
+// Remove the user defined "/beam" and "/pixel" definitions
+   static void undefineBrightnessUnits ();
 
 private:
   CountedPtr<ComponentShape> itsShapePtr;
