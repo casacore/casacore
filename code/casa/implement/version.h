@@ -29,11 +29,11 @@
 #if !defined(AIPS_VERSION_H)
 #define AIPS_VERSION_H
 
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+//# Includes
+#include <aips/aips.h>
+
+//# Forward declarations
+#include <aips/aipsiosfwd.h>
 
 // <summary>
 // Version information for AIPS++

@@ -28,8 +28,8 @@
 
 #include <aips/version.h>
 
-#include <iostream.h>
-#include <iomanip.h>
+#include <aips/iostream.h>
+#include <aips/iomanip.h>
 
 void VersionInfo::report(ostream &os)
 {
