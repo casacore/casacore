@@ -2279,3 +2279,4 @@
 09 193 src rm trial/scripts/pgtkdemo26.g
 09 199 src rm trial/implement/Lattices/test/tArrLatticeIter.cc
 09 199 src mv trial/implement/Lattices/test/tPagedArrIter.cc trial/implement/Lattices/test/tLatticeIterator.cc
+09 199 src mv trial/implement/Lattices/test/tArrayLatticeOld.cc trial/implement/Lattices/test/tArrayLattice.cc
