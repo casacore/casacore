@@ -279,7 +279,8 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
     const uInt nw = newWorldOrder.nelements();
     const uInt np = newPixelOrder.nelements();
 
-    // Verify that all axes are in new*Order once (only)
+// Verify that all axes are in new*Order once (only)
+
     Vector<Bool> found(nw);
     found = False;
     uInt i;
@@ -2694,11 +2695,13 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     Int specCoord = coordsys.findCoordinate(Coordinate::SPECTRAL);
     Int specAxis = -1;
     
-// Find the axes.  If any axes have been removed from a coordinate, you
-// find it out here.  
+// Find the Stokes axis if any. 
 
     Int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
     Int stokesAxis = -1;
+
+// If any axes have been removed from a coordinate, you find it out here.  
+
     Int i;
     for (i=0; i<n ; i++) {
 	Int c, a;
@@ -2731,7 +2734,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     if (stokesAxis >= 0) units(stokesAxis) = "";
     coordsys.setWorldAxisUnits(units);
 
-// Generate keywords
+// Generate keywords.  If we find we have a DC with one of the
+// axes removed, it will be linearized here.
 
     Double longPole, latPole;
     Vector<Double> crval, crpix, cdelt, projp, crota;
@@ -2740,7 +2744,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     Bool isNCP = False;
     if (!toFITSHeaderGenerateKeywords (os, isNCP, longPole, latPole, crval, crpix, 
                                        cdelt, crota, projp, 
-                                       ctype, cunit, pc, coordsys, skyCoord, 
+                                       ctype, cunit, pc, coordsys, skyCoord,
                                        longAxis, latAxis, specAxis, stokesAxis,
                                        writeWCS, offset, sprefix)) {
        return False;
@@ -2752,7 +2756,6 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
         if (!toFITSHeaderStokes (crval, crpix, cdelt, os, coordsys,
                                  stokesAxis, stokesCoord)) return False;
     }
-
 
 // If there are more world than pixel axes, we will need to add
 // degenerate pixel axes and modify the shape.
@@ -2814,6 +2817,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 
 // Actually write the header
 
+
     if (writeWCS && Int(coordsys.nPixelAxes()) == n) {
 	header.define("pc", pc);
     } else if (writeWCS) {
@@ -2827,7 +2831,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     header.define(sprefix + "rota", crota);
     header.define(sprefix + "rpix", crpix);
     header.define(sprefix + "unit", cunit);
-    if (!isNCP && projp.nelements() > 0) {
+    if (skyCoord >=0 && !isNCP && projp.nelements() > 0) {
 	if (!writeWCS) {
 	    for (uInt k=0; k<projp.nelements(); k++) {
 		if (!::nearAbs(projp(k), 0.0)) {
@@ -2924,7 +2928,7 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
                                                      Vector<String>& cunit,
                                                      Matrix<Double>& pc,
 						     const CoordinateSystem& coordsys,
-                                                     Int skyCoord, 
+                                                     Int skyCoord,
                                                      Int longAxis, Int latAxis,
                                                      Int specAxis, Int stokesAxis,
                                                      Bool writeWCS, Double offset,
@@ -2934,7 +2938,9 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
    crval = coordsys.referenceValue();
    crpix = coordsys.referencePixel() + offset;
    cdelt = coordsys.increment();
-//
+
+// Generate FITS ctypes from DirectionCoordinate
+
    Vector<String> cctype(2);
    if (skyCoord >= 0) {
       const DirectionCoordinate dCoord = coordsys.directionCoordinate(skyCoord);
@@ -2942,51 +2948,36 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
       longPole = dCoord.longLatPoles()(2);
       latPole =  dCoord.longLatPoles()(3);
 //
-      if (!writeWCS) {
-         if (latAxis>=0) {
-            const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
-            cctype = make_Direction_FITS_ctype (isNCP, dc.projection(), 
-                                                DirectionCoordinate::axisNames(dc.directionType(),
-                                                True),
-                                                C::pi/180.0*crval(latAxis), True);
-         } else {
-            os << LogIO::SEVERE 
-               << "Cannot handle conversion to WCS for DirectionCoordinate with  lat axis removed"
-               << LogIO::POST;
-            return False;
-         }
-      }
+      const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
+      cctype = make_Direction_FITS_ctype (isNCP, dc.projection(), 
+                                          DirectionCoordinate::axisNames(dc.directionType(),
+                                          True),
+                                          C::pi/180.0*crval(latAxis), True);
    }
 //
    ctype = coordsys.worldAxisNames();
    for (Int i=0; i < n; i++) {
-      if ((i == longAxis || i == latAxis) && writeWCS) {
-         const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
-         String name = dc.axisNames(dc.directionType(), True)(i==latAxis);
-         while (name.length() < 4) name += "-";
-         name = name + "-" + dc.projection().name();
-         ctype(i) = name.chars();
-      } else if (i == longAxis || i == latAxis) { // && !writeWCS
+     if (i == longAxis || i == latAxis) { 
          if (i==longAxis) {
-            ctype(i) = cctype(0);
+            ctype[i] = cctype[0];
          } else {
-            ctype(i) = cctype(1);
+            ctype[i] = cctype[1];
          }
       } else if (i == specAxis) {
 
-// Nothing - will be handled in SpectralCoordinate
+// Nothing - will be handled by SpectralCoordinate
 
       } else if (i == stokesAxis) {
-         ctype(i) = "STOKES";
+         ctype[i] = "STOKES";
       } else {
 
 // Linear and Tabular
 
-         ctype(i).upcase();
-         if (ctype(i).length() > 8) {
-            ctype(i) = ctype(i).at(0,8);
+         ctype[i].upcase();
+         if (ctype[i].length() > 8) {
+            ctype[i] = ctype[i].at(0,8);
          }
-         while (ctype(i).length() < 8) ctype(i) += " ";
+         while (ctype[i].length() < 8) ctype[i] += " ";
       }
    }
 
@@ -3011,7 +3002,7 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
 			pc(longAxis, longAxis)*C::pi/180.0)*180.0/C::pi;
       Double rholat = atan2(-pc(longAxis, latAxis)*C::pi/180.0,
 			pc(latAxis, latAxis)*C::pi/180.0)*180.0/C::pi;
-      crota(latAxis) = (rholong + rholat)/2.0;
+      crota[latAxis] = (rholong + rholat)/2.0;
       if (!::near(rholong, rholat)) {
          os << LogIO::WARN << sprefix + "rota is not very accurate." 
             <<  " PC matrix is not a pure rotation.";
@@ -3194,12 +3185,12 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 // We must have longitude AND latitude
 
     if (longAxis >= 0 && latAxis < 0) {
-	os << LogIO::SEVERE << "We have a longitude axis but no latitude axis!";
-	return False; 
+	os << LogIO::WARN << "We have a longitude axis but no latitude axis - making a Linear axis" << LogIO::POST;
+        longAxis = -1;
     }
     if (latAxis >= 0 && longAxis < 0) {
-	os << LogIO::SEVERE << "We have a latitude axis but no longitude axis!";
-	return False; 
+	os << LogIO::WARN << "We have a latitude axis but no longitude axis - making a Linear axis" << LogIO::POST;
+        latAxis = -1;
     }
 
 // Sanity check that PC is only non-diagonal for the longitude and
