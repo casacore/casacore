@@ -1,5 +1,5 @@
 //# FilebufIO.cc: Class for IO on a file using a filebuf object.
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <fcntl.h>
+#include <errno.h>                // needed for errno
+#include <string.h>               // needed for strerror
 
 
 FilebufIO::FilebufIO()
@@ -114,7 +116,8 @@ void FilebufIO::attach (int fd, uInt bufferSize)
     }
     FILE* file = fdopen (fd, opt.chars());
     if (file == 0) {
-	throw (AipsError ("FilebufIO: error in fdopen"));
+	throw (AipsError ("FilebufIO: error in fdopen: " +
+			  String(strerror(errno))));
     }
     attach (file, bufferSize, itsReadable, itsWritable);
     fillSeekable();
