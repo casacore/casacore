@@ -1,5 +1,5 @@
 //# PlainTable.cc: Class defining a regular table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -399,6 +399,11 @@ void PlainTable::unlock()
 void PlainTable::autoReleaseLock (Bool always)
 {
     lockPtr_p->autoRelease (always);
+}
+
+void PlainTable::setTableChanged()
+{
+    tableChanged_p = True;
 }
 
 uInt PlainTable::getModifyCounter() const
