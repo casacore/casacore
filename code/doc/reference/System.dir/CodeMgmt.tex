@@ -104,6 +104,15 @@ The command
 \noindent
 would delete the \rcs\ semaphore file for \file{Foo.cc} if it existed.
 
+\subsection*{Bugs}
+
+\begin{itemize}
+\item
+   \exe{ae} requires that the host operating system support setuid shell
+   scripts.  Some operating systems, most notably Linux and Digital
+   UNIX, do not support setuid shell scripts for security reasons.
+\end{itemize}
+
 \subsection*{See also}
 
 The manual page for \unixexe{ci}(1), the \rcs\ checkin command.\\
@@ -313,6 +322,11 @@ read-only copies behind.
    slow internet link.  A checkin involves reading the \rcs\ version file from
    the master, inserting the new revision, then writing it back.  These file
    transactions are handled more efficiently by \exeref{rai}.
+
+\item
+   \exe{ai} requires that the host operating system support setuid shell
+   scripts.  Some operating systems, most notably Linux and Digital
+   UNIX, do not support setuid shell scripts for security reasons.
 \end{itemize}
 
 \subsection*{See also}
@@ -478,6 +492,11 @@ directory will be checked out of the master).
    slow internet link.  A checkout involves reading the \rcs\ version file from
    the master, inserting the locker's name, then writing it back.  These file
    transfers are handled more efficiently by \exeref{rao}.
+
+\item
+   \exe{ao} requires that the host operating system support setuid shell
+   scripts.  Some operating systems, most notably Linux and Digital
+   UNIX, do not support setuid shell scripts for security reasons.
 \end{itemize}
 
 \subsection*{See also}
@@ -724,6 +743,15 @@ The command
 \noindent
 would allow the descriptive text for \exe{am} to be changed interactively.
 
+\subsection*{Bugs}
+
+\begin{itemize}
+\item
+   \exe{am} requires that the host operating system support setuid shell
+   scripts.  Some operating systems, most notably Linux and Digital
+   UNIX, do not support setuid shell scripts for security reasons.
+\end{itemize}
+
 \subsection*{See also}
 
 The unix manual page for \unixexe{chmod}(1).\\
@@ -915,6 +943,16 @@ The shell would expand this to
 \noindent
 Refer also to the examples provided in the ``Options'' section above.
 
+\subsection*{Bugs}
+
+\begin{itemize}
+\item
+   \exe{amv} requires that the host operating system support setuid
+   shell scripts.  Some operating systems, most notably Linux and
+   Digital UNIX, do not support setuid shell scripts for security
+   reasons.
+\end{itemize}
+
 \subsection*{See also}
 
 \aipspp\ code management configuration (\sref{RCS directories}).\\
@@ -1035,6 +1073,11 @@ Programmers who have an account on the \aipspp\ master host,
 \host{aips2.nrao.edu}, may instead use a related utility, \exeref{rau}, which
 uses \unixexe{rsh} to transfer the \rcs\ version files in compressed form.
 
+Programmers on a Linux or Digital UNIX platform, or on any other
+platform that does not support setuid shell scripts, should instead use
+a related utility, \exeref{sau}.  \exe{sau} runs a non-setuid copy of
+\exe{au}, \exe{sau.sh}, via a C-based setuid wrapper program.
+
 \subsection*{Options}
 
 None.
@@ -1069,6 +1112,11 @@ in the \aipspp\ \file{bin} area.
    repository, which may be \textsc{nfs} mounted from a machine on the other
    side of a slow internet link.  The copy is handled more efficiently by
    \exeref{rau} which compresses the files for transfer.
+
+\item
+   \exe{au} requires that the host operating system support setuid shell
+   scripts.  Some operating systems, most notably Linux and Digital
+   UNIX, do not support setuid shell scripts for security reasons.
 \end{itemize}
 
 \subsection*{See also}
@@ -1080,6 +1128,7 @@ The unix manual page for \unixexe{chmod}(1).\\
 \exeref{ao}, \aipspp\ code checkout utility.\\
 \exeref{ax}, \aipspp\ code deletion utility.\\
 \exeref{rau}, update \aipspp\ sources from the master via \unixexe{rsh}(1).\\
+\exeref{sau}, \aipspp\ code update utility.\\
 \exeref{mktree}, create \aipspp\ directory hierarchy.
 
 \subsection*{Author}
@@ -1555,6 +1604,15 @@ Note that the '\code{cd /aips++/code}' provided the context for the shell's
 wildcarding mechanism.
 
 Refer also to the examples provided in the ``Options'' section above.
+
+\subsection*{Bugs}
+
+\begin{itemize}
+\item
+   \exe{ax} requires that the host operating system support setuid shell
+   scripts.  Some operating systems, most notably Linux and Digital
+   UNIX, do not support setuid shell scripts for security reasons.
+\end{itemize}
 
 \subsection*{See also}
 
@@ -2177,6 +2235,11 @@ subdirectory.
  
 Newly created directories on the master may also be propagated to the local
 installation.
+
+Programmers on a Linux or Digital UNIX platform, or on any other
+platform that does not support setuid shell scripts, should instead use
+a related utility, \exeref{sau}.  \exe{sau} runs a non-setuid copy of
+\exe{au}, \exe{sau.sh}, via a C-based setuid wrapper program.
  
 \subsection*{Options}
  
@@ -2251,6 +2314,15 @@ The command
 would update the slave and plain-text copies of \exe{rau}, but not the script
 in the \aipspp\ \file{bin} area.
 
+\subsection*{Bugs}
+\begin{itemize}
+\item
+   \exe{rau} requires that the host operating system support setuid
+   shell scripts.  Some operating systems, most notably Linux and
+   Digital UNIX, do not support setuid shell scripts for security
+   reasons.
+\end{itemize}
+
 \subsection*{See also}
 
 The manual page for \unixexe{co}(1), the \rcs\ checkout command.\\
@@ -2263,7 +2335,8 @@ The unix manual page for \unixexe{rsh}(1).\\
 \exeref{au}, \aipspp\ code update utility.\\
 \exeref{mktree} create \aipspp\ directory hierarchy.\\
 \exeref{rai}, invoke \exe{ai} remotely via \unixexe{rsh}(1).\\
-\exeref{rao}, invoke \exe{ao} remotely via \unixexe{rsh}(1).
+\exeref{rao}, invoke \exe{ao} remotely via \unixexe{rsh}(1).\\
+\exeref{sau}, \aipspp\ code update utility.
  
 \subsection*{Author}
 
@@ -2344,6 +2417,67 @@ The manual page for \unixexe{rcsfile}(5), \rcs\ version file format.\\
 \subsection*{Author}
  
 Original: 1995/07/20 by Mark Calabretta, ATNF
+
+% ----------------------------------------------------------------------------
+
+\newpage
+\section{\exe{sau}}
+\label{sau}
+\index{sau@\exe{sau}}
+\index{master host}
+\index{code!management!update|see{\exe{sau}}}
+
+\aipspp\ source code update utility.
+
+\subsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{sau} file1 [file2 ...]}
+\end{synopsis}
+
+\subsection*{Description}
+
+\exe{sau} updates the \aipspp\ \file{slave} and \file{code} areas with the
+lastest version of a file in \file{\$AIPSMSTR}.
+
+\exe{sau} is a replacement for \exeref{au} (and \exeref{rau})
+on operating systems, most notably Linux and Digital UNIX, that do not
+support setuid shell scripts.  \exe{sau} is a C-based setuid wrapper
+that runs a non-setuid copy of \exeref{au}, \exe{sau.sh}.
+
+Refer to the \exeref{au} documentation for further information.
+
+\subsection*{Options}
+
+None.
+
+\subsection*{Diagnostics}
+
+Status return values
+\\ \verb+   0+: success
+\\ \verb+  -1+: exec of \exe{sau.sh} failed.
+\\ \verb+     +Refer to the \exeref{au} documentation for other return values.
+
+\subsection*{Examples}
+
+The command
+
+\begin{verbatim}
+   cd $HOME/aips++/code/install
+   sau au
+\end{verbatim}
+
+\noindent
+would update the slave and plain-text copies of \exe{au}, but not the
+script in the \aipspp\ \file{bin} area.
+
+\subsection*{See also}
+
+\exeref{au}, \aipspp\ code update utility.
+
+\subsection*{Author}
+
+Original: 1997/09/08 by Jeff Uphoff, NRAO
 
 % ----------------------------------------------------------------------------
 
