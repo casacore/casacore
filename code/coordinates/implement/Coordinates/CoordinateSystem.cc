@@ -2088,8 +2088,11 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     return ok;
 }
 
+
+
 Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys, 
 				      const RecordInterface &header,
+                                      const IPosition& shape,
 				      Bool oneRelative,
 				      char prefix)
 {
@@ -2107,6 +2110,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     }
 
     Vector<Double> cdelt, crval, crpix;
+    Vector<Int> naxes;
     Vector<String> ctype, cunit;
     Matrix<Double> pc;
     Bool haveUnit = False;
@@ -2390,13 +2394,19 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	coordsys.addCoordinate(dir);
     }
 
-    // STOKES
-    if (stokesAxis >= 0) {
-	Vector<Int> stokes(4); // at most 4 stokes
-	// Must be stokes.nelements() since the default switch might resize
-	// the vector.
-	for (uInt k=0; k<stokes.nelements(); k++) {
+// STOKES.   shape is used only here as the StokesCoordinate
+// is a bit peculiar, and not really separable from the shape
 
+    if (stokesAxis >= 0) {
+        if (shape(stokesAxis)>4) {
+          os << "Stokes axis longer than 4 pixels.  This is not acceptable" 
+             << LogIO::EXCEPTION;       
+          return False;
+        }
+	Vector<Int> stokes(shape(stokesAxis)); 
+//
+        Bool foundI = False;
+	for (Int k=0; k<shape(stokesAxis); k++) {
 	    Double tmp = crval(stokesAxis) + 
 		(k - crpix(stokesAxis))*cdelt(stokesAxis);
 	    if (tmp >= 0) {
@@ -2404,35 +2414,78 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    } else {
 		stokes(k) = Int(floor(tmp - 0.01));
 	    }
-	    switch (stokes(k)) {
-	    case 1: stokes(k) = Stokes::I; 
-                    break;
-	    case 2: stokes(k) = Stokes::Q; 
-                    break;
-	    case 3: stokes(k) = Stokes::U; 
-                    break;
-	    case 4: stokes(k) = Stokes::V; 
-                    break;
-	    case -1: stokes(k) = Stokes::RR; 
-                     break;
-	    case -2: stokes(k) = Stokes::LL; 
-                     break;
-	    case -3: stokes(k) = Stokes::RL; 
-                     break;
-	    case -4: stokes(k) = Stokes::LR; 
-                     break;
-	    case -5: stokes(k) = Stokes::XX; 
-                     break;
-	    case -6: stokes(k) = Stokes::YY; 
-                     break;
-	    case -7: stokes(k) = Stokes::XY; 
-                     break;
-	    case -8: stokes(k) = Stokes::YX; 
-                     break;
+//
+   	    switch (stokes(k)) {
+            case 1:  
+             {
+                if (foundI) {
+                   os << LogIO::SEVERE
+                      << "Stokes I already used for this image, possibly for a beam" << endl;
+                   os << "Cannot continue building the StokesCoordinate" << LogIO::POST;
+                   return False;
+                }
+//
+                stokes(k) = Stokes::I; 
+                foundI = True;
+                break;
+             }
+	    case 2: 
+              stokes(k) = Stokes::Q; 
+              break;
+	    case 3: 
+              stokes(k) = Stokes::U; 
+              break;
+	    case 4: 
+              stokes(k) = Stokes::V; 
+              break;
+	    case -1: 
+              stokes(k) = Stokes::RR; 
+              break;
+	    case -2: 
+              stokes(k) = Stokes::LL; 
+              break;
+	    case -3: 
+              stokes(k) = Stokes::RL; 
+              break;
+	    case -4: 
+              stokes(k) = Stokes::LR; 
+              break;
+	    case -5: 
+              stokes(k) = Stokes::XX; 
+              break;
+	    case -6: 
+              stokes(k) = Stokes::YY; 
+              break;
+	    case -7: 
+              stokes(k) = Stokes::XY; 
+              break;
+	    case -8: 
+              stokes(k) = Stokes::YX; 
+              break;
+            case 0:
+             {
+              if (!foundI) {
+                 stokes(k) = Stokes::I;
+                 os << LogIO::WARN 
+                    << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
+                 os << "Convention for an image containing a beam.  Assuming Stokes=I" << endl;
+                 os << "Better would be to write your FITS image with the correct Stokes" << LogIO::POST;
+                 foundI = True;
+              } else {
+                 os << LogIO::SEVERE
+                    << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
+                 os << "Convention for an image containing a beam.  Cannot assume Stokes=I" << endl;
+                 os << "for it because Stokes I has already been used for this image" << endl;
+                 os << "Cannot continue building the StokesCoordinate" << LogIO::POST;
+                 return False;
+              }
+              break;
+             }
 	    default:
-		os << LogIO::NORMAL << "There are at most " << k << " known "
-		    "Stokes values on the Stokes axis" << LogIO::POST;
-		stokes.resize(k, True);
+              os << LogIO::SEVERE << "A Stokes coordinate of " << stokes(k) 
+                 << " was detected; this is not valid." << endl;
+              os << "Cannot continue building the StokesCoordinate" << LogIO::POST;
+              return False;
 	    }
 	}
 	try {
