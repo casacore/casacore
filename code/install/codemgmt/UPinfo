@@ -94,6 +94,17 @@ end
 if ($hlp) then
   cat << '_EOF_'
 The following UP scripts are available (-h gives this text):
+    UPmove [-c] [-r] [-i] [-t] [-n] [-d] <typ>
+	   Move specified files, and change references to them in system files.
+	   The script uses UPfind and UPchange (see there for details)
+           -c  will clear all relevant information
+	   -r  only restart the general definitions for given <typ>
+	   -i  will calculate all information, but no execution
+           -t  will not execute for real, but only for test
+           -d  will show some debug information
+           -n  will only generate the specific data, without executing
+           <typ>.done and <typ>.error give lists of files successfully
+           done or not.
     UPfind [-c] [-r] [-g] [-f] [-d] [-n] <typ>	    
 	   find files according to egrep patterns in files .cc, .h and
 	   templates, or generate it from a set of file patterns.
@@ -106,13 +117,6 @@ The following UP scripts are available (-h gives this text):
 	   -d    debug mode
            -n    will only generate the specific data, without executing
 	   <typ> the code belonging to this set of usage (e.g. mx)
-    UPlock [-c] [-r] [-d] [-n] <typ>
-	   check if files found with UPfind are locked in the master. The
-           resulting list will be in <typ>.locked
-           -c  will clear all relevant information
-	   -r  only restart the general definitions for given <typ>
-           -d  will show some debug information
-           -n  will only generate the specific data, without executing
     UPchange [-c] [-r] [-t] [-n] [-d] <typ>
  	   update all files (ao change ai) as given in <typ>.found created by
            UPfind.
@@ -124,18 +128,24 @@ The following UP scripts are available (-h gives this text):
            -n  will only generate the specific data, without executing
            <typ>.done and <typ>.error give lists of files successfully
            done or not.
-    UPmove [-c] [-r] [-i] [-t] [-n] [-d] <typ>
-	   Move specified files, and change references to them in system files.
-	   The script uses UPfind and UPchange (see there for details)
+    UPlist [-c] [-r] [-l] [-d] [-n] <typ>	    
+	   List all lines that have been found according to an egrep rule,
+	    using the <typ>.found file list.
+	   The list will be in <typ>.list
+	   -c	 start afresh for the given <typ>
+	   -r	 only restart the general definitions for given <typ>
+	   -l	 give line numbers on each line found
+	   -d    debug mode
+           -n    will only generate the specific data, without executing
+	   <typ> the code belonging to this set of usage (e.g. mx)
+    UPlock [-c] [-r] [-d] [-n] <typ>
+	   check if files found with UPfind are locked in the master. The
+           resulting list will be in <typ>.locked
            -c  will clear all relevant information
 	   -r  only restart the general definitions for given <typ>
-	   -i  will calculate all information, but no execution
-           -t  will not execute for real, but only for test
            -d  will show some debug information
            -n  will only generate the specific data, without executing
-           <typ>.done and <typ>.error give lists of files successfully
-           done or not.
-     UPtmpl [-c] [-r] [-d] [-n] <typ>
+    UPtmpl [-c] [-r] [-d] [-n] <typ>
  	   get all files in the tmplinst directories. 
 	   The file list will be in <typ>.tmpinst
            -c  will clear all relevant information
@@ -192,6 +202,11 @@ if ($clr) then
     if (-e $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
     if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
   endif 
+  if ("$script" == "UPlist") then 
+    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
+    if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
+    if (-e $ldir/${tp}.rm)  rm -f $ldir/${tp}.rm
+  endif
   if ("$script" == "UPtmpl" || "$script" == "UPlock") then
     if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
   endif 
