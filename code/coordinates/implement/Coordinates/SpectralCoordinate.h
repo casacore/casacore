@@ -366,7 +366,6 @@ public:
                           Bool isAbsolute=True,
                           Bool showAsAbsolute=True,
                           Int precision=-1);
-    // </group>
 
     // Save the SpectralCoordinate into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
