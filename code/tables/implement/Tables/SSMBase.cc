@@ -1,5 +1,5 @@
 //# SSMBase.cc: Base class of the Standard Storage Manager
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@
 #include <aips/IO/RawIO.h>
 #include <aips/IO/MemoryIO.h>
 #include <aips/IO/CanonicalIO.h>
-#include <aips/IO/FiledesIO.h>
+#include <aips/IO/FilebufIO.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/OS/DOos.h>
 #include <aips/Mathematics/Math.h>
@@ -389,8 +389,10 @@ void SSMBase::readHeader()
 {
   itsFile->seek(0);
   
-  // Use the file indicated by the fd from the BucketFile object
-  FiledesIO aFio (itsFile->fd());
+  // Use the file indicated by the fd from the BucketFile object.
+  // Use a buffer size (512) equal to start of buckets in the file,
+  // so the IO buffers in the different objects do not overlap.
+  FilebufIO aFio (itsFile->fd(), 512);
   TypeIO*   aTio;
   
   // It is stored in canonical or local format.
@@ -501,7 +503,9 @@ void SSMBase::writeIndex()
   MemoryIO  aMemBuf;
 
   // Use the file indicated by the fd from the BucketFile object
-  FiledesIO aFio (itsFile->fd());
+  // Use a buffer size (512) equal to start of buckets in the file,
+  // so the IO buffers in the different objects do not overlap.
+  FilebufIO aFio (itsFile->fd(), 512);
   uInt aCLength = 2*CanonicalConversion::canonicalSize(&itsFirstIdxBucket);
 
   // store it in canonical or local format.
@@ -532,7 +536,6 @@ void SSMBase::writeIndex()
   } else {
     aRestSize = idxBucketSize;
   }
-
 
   // If index is currently written in a single half of a bucket,
   // see if this fits in the other half.
@@ -616,6 +619,7 @@ void SSMBase::writeIndex()
   anOs.putend();  
   anOs.close();
   delete aTio;
+  aFio.flush();
   // Synchronize to make sure it gets written to disk.
   // This is needed for NFS-files under Linux (to resolve defect 2752).
   itsFile->fsync();
