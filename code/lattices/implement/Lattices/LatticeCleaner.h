@@ -1,5 +1,5 @@
 //# Cleaner.h: this defines Cleaner a class for doing convolution
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -92,7 +92,8 @@ public:
 // </thrown>
 //
 // <todo asof="yyyy/mm/dd">
-//   <li> Allow the psf to be specified with a FunctionND. 
+//   <li> Allow the psf to be specified with a
+//   	 <linkto class=Function>Function</linkto>. 
 // </todo>
 
 template<class T> class LatticeCleaner

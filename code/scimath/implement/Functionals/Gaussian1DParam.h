@@ -1,5 +1,5 @@
 //# NQGaussian1DParam.h:  Parameter handling for one-dimensional Gaussian class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 
 // <prerequisite>
 //   <li> <linkto class="FunctionParam">FunctionParam</linkto> class
-//   <li> <linkto class="NQFunction1D">Function1D</linkto> class
+//   <li> <linkto class="NQFunction1D">NQFunction1D</linkto> class
 // </prerequisite>
 
 // <etymology> 

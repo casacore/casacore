@@ -1,5 +1,5 @@
 //# Convolver.h: this defines Convolver a class for doing convolution
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -220,7 +220,8 @@ typedef Convolver<Double> DoubleConvolver;
 //   <li> the class should detect if the psf or image is small and do the
 //        convolution directly rather than use the Fourier domain
 //   <li> Add a lattice interface, and more flexible iteration scheme
-//   <li> Allow the psf to be specified with a FunctionND. 
+//   <li> Allow the psf to be specified with a
+//   	 <linkto class=Function>Function</linkto>. 
 // </todo>
 
 template<class FType> class Convolver

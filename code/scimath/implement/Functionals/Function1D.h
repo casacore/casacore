@@ -48,13 +48,13 @@
 // </prerequisite>
 //
 // <synopsis>
-// A <src>Function1D</src> is used for classes which map a
+// A <src>NQFunction1D</src> is used for classes which map a
 // scalar or n-dimensional Vector of type <src>T</src> into a <src>T</src>.
 // The object also has one parameter which can be masked
 // if necessary, and be used in the <src>Fitting</src> module, and, implicitly,
 // in the <linkto class=AutoDiff>AutoDiff</linkto> differentiation module.
 //
-// The only method implemented in <src>Function1D</src> is the
+// The only method implemented in <src>NQFunction1D</src> is the
 // <src>ndim()</src> method. The rest is inhereted from
 // <linkto class="Function">Function</linkto>.
 // </synopsis>
