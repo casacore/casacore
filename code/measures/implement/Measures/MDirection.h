@@ -109,7 +109,7 @@ template <class M, class F, class MC> class MeasConvert;
 // to the other standard (the correct route will be followed).<br>
 // Another problem can arise if the source has proper motion and/or radial
 // velocities. These should be taken into account. An
-// <linkto class=MCatalog>MCatalog</linkto> class will maybe take care of that.
+// MCatalog class will maybe take care of that.
 // </synopsis>
 //
 // <example>
