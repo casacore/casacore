@@ -137,7 +137,8 @@ sub term_module{
           delete $objs{$key};
        }
        s/\\ahobjs{}/
-\\subsubsection*{Objects}
+\\flushleft
+\\textbf{Objects}\\
 \\begin{longtable}{ll}
 $objItems
 \\end{longtable}/g;
@@ -190,12 +191,14 @@ sub term_object{
         $methodItems .= "\\htmlref{$key}{$mname:$oname.$key} & $methods{$oname}{$key}\\\\\n";
      }
      s/\\ahmethods{}/
-   \\subsubsection*{Functions}
+   \\flushleft
+   \\textbf{Functions}\\
    \\begin{longtable}{ll}
    $methodItems
    \\end{longtable}/g;
      s/\\ahfuncs{}/
-   \\subsubsection*{Functions}
+   \\flushleft
+   \\textbf{Functions}\\
    \\begin{longtable}{ll}
    $methodItems
    \\end{longtable}/;
@@ -357,13 +360,15 @@ sub make_tex_file{
    
       if($isObj == 1){
          s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
-   \\subsectionM{$oname.$1\\index{$1}\\index{$mname.$oname.$1}}{$pack}{$mname}{$oname}
+   \\subsubsection{$1 -- Function\\label{$mname.$oname.$1}\\index{$mname.$oname.$1}\\index{$1}}
+   \\subsectionM{$oname.$1}{$pack}{$mname}{$oname}
    $2\\\\
    \\ahsynopsis{$1}
    /sg;
       } else {
          s/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/
-   \\subsectionF{$1\\index{$1}\\index{$mname.$1}}{$pack}{$mname}
+   \\subsection{$1 -- Function\\index{$1}\\index{$mname.$1}}
+   \\subsectionF{$1}{$pack}{$mname}
    $2\\\\
    \\ahsynopsis{$1}
    /sg;
@@ -375,13 +380,15 @@ sub make_tex_file{
       s/\\end{ahobject}/$end_section/g;
    
       s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
-   \\subsectionO{$1\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}{$pack}{$mname}
+   \\subsection{$1 -- Object\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionO{$1}{$pack}{$mname}
    $2\\\\
    /g;
    
       s/\\end{ahconstructor}/$end_section/g;
       s/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/
-   \\subsectionC{$1\\index{$1}\\index{$mname.$1}}{$pack}{$mname}{$oname}
+   \\subsubsection{$1 -- Constructor\\index{$1}\\index{$mname.$1}}
+   \\subsectionC{$1}{$pack}{$mname}{$oname}
    $2\\\\
    \\ahsynopsis{$1}
    /g;
