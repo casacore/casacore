@@ -158,6 +158,9 @@ public:
 // mean; mean(x) (is a scalar)
    MEAN1D,
 
+// median; median(x) (is a scalar)
+   MEDIAN1D,
+
 // sum; sum(x) (is a scalar)
    SUM,
 
