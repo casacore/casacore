@@ -1972,3 +1972,4 @@
 08 068 src rm nrao/unreliable
 08 069 src mv trial/apps/bimafiller/bimafiller.cc bima/apps/bimafiller/bimafiller.cc
 08 069 src mv trial/apps/bimafiller/makefile bima/apps/bimafiller/makefile
+08 069 src rm trial/apps/bimafiller
