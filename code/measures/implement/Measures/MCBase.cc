@@ -27,6 +27,9 @@
 
 //# Includes
 #include <aips/Measures/MCBase.h>
+#include <aips/Utilities/String.h>
+#include <strstream.h>
+#include <iomanip.h>
 
 //# Constructors
 
@@ -121,4 +124,35 @@ Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
   };
   len += minlen;
   return True;
+}
+
+String MCBase::showState(Bool &made, uInt *state,
+			 const uInt ntyp, const uInt,
+			 const uInt list[][3]) {
+  if (!made) return String("No state made yet");
+  ostrstream oss;
+  oss << "   |";
+  {
+    for (uInt i=0; i<ntyp; i++) oss << setw(3) << i;;
+    oss << "\n";
+    for (uInt j=0; j<3*ntyp+4; j++) oss << '-'; 
+    oss << "\n";
+  }
+  {
+    for (uInt i=0; i<ntyp; i++) {
+      oss << setw(3) << i << '|';
+      for (uInt j=0; j<ntyp; j++) {
+	if (i == j) oss << " --"; 
+	else oss << setw(3) << state[i*ntyp+j];
+      };
+      oss << "\n";
+      oss << "   |";
+      for (uInt k=0; k<ntyp; k++) {
+	if (i == k) oss << "   ";
+	else oss << setw(3) << list[state[i*ntyp+k]][1];
+      };
+      oss << "\n";
+    };
+  }
+  return String(oss);
 }

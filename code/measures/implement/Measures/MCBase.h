@@ -37,6 +37,7 @@ class MeasValue;
 class MCBase;
 class MRBase;
 class MConvertBase;
+class String;
 
 //# Typedefs
 
@@ -168,6 +169,10 @@ protected:
   static void makeState(Bool &made, uInt *state,
 			const uInt ntyp, const uInt nrout,
 			const uInt list[][3]);
+  // Return a fromatted String with matrix information (based on < 100 types)
+  static String showState(Bool &made, uInt *state,
+			  const uInt ntyp, const uInt nrout,
+			  const uInt list[][3]);
 private:
   // Routine to find the shortest route between two points 
   static Bool findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
