@@ -1,5 +1,5 @@
 //# TableParse.cc: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1034,9 +1034,11 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 void TableParseSelect::execute (Bool setInGiving)
 {
     //# Give an error if no command part has been given.
-    if (node_p == 0  &&  sort_p == 0  &&  columnNames_p.nelements() == 0) {
+    if (node_p == 0  &&  sort_p == 0  &&  columnNames_p.nelements() == 0
+    &&  resultSet_p == 0) {
 	throw (TableError
-	    ("TableParse error: no projection, selection or sorting given"));
+	    ("TableParse error: no projection, selection, sorting. "
+	     "or giving-set given"));
     }
     // Test if a "giving set" is possible.
     if (resultSet_p != 0  &&  !setInGiving) {
