@@ -31,24 +31,13 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Vector.h>
-#include <trial/Images/ImageStatsBase.h>
-#include <trial/Lattices/LatticeProgress.h>
-#include <trial/Lattices/TiledCollapser.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <aips/Quanta/QMath.h>
-#include <trial/Tasking/PGPlotter.h>
-#include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/String.h>
 #include <aips/Logging/LogIO.h>
+#include <trial/Lattices/LatticeStatistics.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;
-template <class T> class TempLattice;
 class IPosition;
-class CoordinateSystem;
 
 
 // <summary>
@@ -61,7 +50,7 @@ class CoordinateSystem;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=ImageStatsBase>ImageStatsBase</linkto> (base class)
+//   <li> <linkto class=LatticeStatistics>LatticeStatistics</linkto> (base class)
 //   <li> <linkto class=ImageInterface>ImageInterface</linkto>
 // </prerequisite>
 
@@ -77,88 +66,17 @@ class CoordinateSystem;
 // used to evaluate the statistics over.  The axes which you evaluate the statistics
 // over are called the cursor axes, the others are called the display axes.
 //
-// For example, consider an image cube (call the axes xyz or [0,1,2]).  You could 
-// display statistics from xy planes (cursor axes [0,1]) as a function of z (display
-// axes [2]).   Or  you could retrieve statistics from the z axis (cursor axes [2])
-// for each [x,y] location (display axes [0,1]).
+// This class is derived from the class LatticeStatistics which does all
+// the work.  This class only adds some extra capability in terms of
+// logging world (rather than pixel) coordinates and computing the
+// synthesized beam area, if there is one.  There are just a few virtual
+// functions for you to over-ride.  These are rather specialized, they
+// are not part of a general polymorphic interface, just a way to
+// separate the Lattice and Image functionality out.
 //
-// This class inherits from  <linkto class="ImageStatsBase">ImageStatsBase</linkto> 
-// This base class provides an <src>enum</src> defining allowed statistics types and a 
-// helper function to convert between a <src>String</src> and a <src>Vector<Int></src> describing 
-// the desired statistics to plot.  An example is shown below.
-//
-// This class can list, plot and retrieve statistics.  When it lists statistics,
-// it always lists all the available statistics.  When you plot statistics,
-// you must specify which ones you would like to see.
-//
-// Note that this class cannot handle complex images yet.
-//
-// This class generates a "storage image" into which it writes the accumulated
-// statistical sums.  It is from this storage image that the plotting and retrieval
-// arrays are drawn.  The storage image is either in core or on disk 
-// depending upon its size (if > 10% of memory given by .aipsrc system.resources.memory
-// then it goes into a disk-based PagedArray).  If on disk,  the
-// storage image is deleted when the <src>ImageInterface</src> class 
-// object destructs.    However, currently, if the process is terminated ungracefully,
-// the storage image will be left over.  
-//
-// <note role=tip>
-// If you ignore return error statuses from the functions that set the
-// state of the class, the internal status of the class is set to bad.
-// This means it will just  keep on returning error conditions until you
-// explicitly recover the situation.  A message describing the last
-// error condition can be recovered with function errorMessage.
-// </note>
+// See LatticeStatistics for details and examples.
 // </synopsis>
-
-// <example>
-// <srcBlock>
-//// Construct PagedImage from file name
 //
-//      PagedImage<Float> inImage(inName);
-//   
-//// Construct statistics object
-//      
-//      LogOrigin or("myClass", "myFunction(...)", WHERE);
-//      LogIO os(or);
-//      ImageStatistics<Float> stats(SubImage<FLoat>(inImage), os);
-//      
-//// Set cursor axes to see statistics of yz planes (0 relative)
-//
-//      Vector<Int> cursorAxes(2)
-//      cursorAxes(0) = 1;
-//      cursorAxes(1) = 2;
-//      if (!stats.setAxes(cursorAxes)) return 1;
-//
-//// Set to list and plot mean, sigma and rms
-//
-//      if (!stats.setList(True)) return 1;
-//      String device = "/xs";
-//      Vector<Int> nxy(2);
-//      nxy(0) = 1;
-//      nxy(1) = 1;
-//      Vector<Int> statsToPlot = ImageStatsBase::toStatisticTypes("mean,rms,sigma");
-//      if (!stats.setPlotting(statsToPlot, device, nxy)) return 1;
-// 
-//// Now activate actual listing and plotting
-// 
-//      if (!stats.display ()) return 1;
-//
-//// Retrieve statistics into array
-//
-//      Array<Float> sum;
-//      if (!stats.getSum()) return 1;
-//
-// </srcBlock>
-// In this example, a <src>PagedImage</src> is constructed.  We set the cursor axes 
-// to be the y and z axes, we specify to list the statistics if we plot them,
-// and we ask to plot the mean, standard deviation, and root mean square of each 
-// yz plane as a function of x location on the PGPLOT device "/xs" with
-// 1 subplot per page (there will be only one in this case).  After the
-// plotting and listing, we also retrieve the sum of the selected pixels
-// as a function of x location into an array.
-// </example>
-
 // <motivation>
 // The generation of statistical information from an image is a basic 
 // and necessary capability.
@@ -174,7 +92,7 @@ class CoordinateSystem;
 // </todo>
 
 
-template <class T> class ImageStatistics : public ImageStatsBase
+template <class T> class ImageStatistics : public LatticeStatistics<T>
 {
 public:
 
@@ -201,117 +119,12 @@ public:
    ImageStatistics(const ImageStatistics<T> &other);
 
 // Destructor
-  ~ImageStatistics ();
+  virtual ~ImageStatistics ();
 
 // Assignment operator.  Deletes any storage image associated with
 // the object being assigned to and copies any storage image that has
 // already been created for "other".
    ImageStatistics<T> &operator=(const ImageStatistics<T> &other);
-
-// Set the cursor axes (0 relative).  A return value of <src>False</src>
-// indicates you have asked for an invalid axis.  The default state of the class
-// is to set the cursor axes to all axes in the image.
-   Bool setAxes (const Vector<Int>& cursorAxes);
-
-// You may specify a pixel intensity range as either one for which 
-// all pixels in that range are included or one for which all pixels 
-// in that range are excluded.   One or the other of <src>include</src> 
-// and <src>exclude</src> must therefore be a zero length vector if you 
-// call this function.    If you are setting an <src>include</src>
-// range, then if you set <src>setMinMaxToInclude=True</src>, the
-// minimum and maximum values that this class returns will always be 
-// the minimum and maximum of the <src>include</src> range, respectively.
-// A return value of <src>False</src> indicates that 
-// you have given both an <src>include</src> and an <src>exclude</src> 
-// range.  A vector of length 1 for <src>include</src> and/or <src>exclude</src>
-// means that the range will be set to (say for <src>include</src>)
-// <src>-abs(include(0))<src> to <src>abs(include(0))</src>.  A return value
-// of <src>False</src> indicates that both an inclusion and exclusion 
-// range were given or that the internal state of the class is bad.   If you don't
-// call this function, the default state of the class  is to include all pixels.
-   Bool setInExCludeRange(const Vector<T>& include,
-                          const Vector<T>& exclude,
-                          Bool setMinMaxToInclude=False);
-
-// This function allows you to control whether the statistics are written to
-// the output stream if you are also making a plot.  A return value of 
-// <src>False</src> indicates that the internal state of the class is bad.
-// If you have created the <src>ImageStatistics</src> object without
-// a <src>LogIO</src> object, you won't see any listings, but no error
-// conditions will be generated.  The default state of the class is to 
-// not list the output when making a plot. 
-   Bool setList(const Bool& doList);
-
-// This functions enable you to specify which statistics you would like to
-// plot, sets the name of the PGPLOT plotting device and the number of
-// subplots in x and y per page.   If you set <src>device</src> 
-// but offer a zero length array for <src>nxy</src> then <src>nxy</src> is 
-// set to [1,1].  Similarly, the default for <src>statsToPlot</src> is
-// to plot the mean and standard deviation. Use the helper function
-// <src>ImageStatsBase::toStatisticTypes(String& stats)</src> to convert 
-// a <src>String</src> to the desired <src>Vector<Int> statsToPlot</src>.  
-// A return value of <src>False</src> indicates invalid plotting arguments
-// or that the internal state of the class is bad.  If you don't call this function,
-// the default state of the class is to not make plots.
-   Bool setPlotting(PGPlotter& plotter,
-                    const Vector<Int>& statsToPlot,
-                    const Vector<Int>& nxy);
-
-// Display the statistics by listing and/or plotting them.  If you don't call
-// this function then you won't see anything !  A return value of <src>False</src>
-// indicates an invalid plotting device, or that the internal state of the class is bad.
-   Bool display ();
-
-// CLose plotter
-   void closePlotting();
-
-
-// Return the display axes.  The returned vector will be valid only if <src>setAxes</src>
-// has been called, or if one of the active "display" or "get*" methods has been called. 
-   Vector<Int> displayAxes() const {return displayAxes_p;} 
-
-// These functions retrieve the designated statistics into an array.  The shape of the
-// array is the shape of the display axes (e.g. if the shape of the image is
-// [nx,ny,nz] and you ask for the mean of the y axis the shape of the returned
-// array would be [nx,nz].    A returned array of zero shape indicates that there 
-// were no good values. A return  value of <src>False</src> indicates that the 
-// internal state of the class is bad.
-// <group>
-   Bool getNPts (Array<T>&);
-   Bool getSum (Array<T>&);
-   Bool getFluxDensity (Array<T>&);
-   Bool getSumSquared (Array<T>&);
-   Bool getMin (Array<T>&);
-   Bool getMax (Array<T>&);
-   Bool getMean (Array<T>&);
-   Bool getVariance (Array<T>&);
-   Bool getSigma (Array<T>&);
-   Bool getRms (Array<T>&);
-// </group>   
-
-// This function gets a vector containing all the statistics
-// for a given location.  If <src>posInImage=True<src> then
-// the location is a location in the input image.  Any
-// positions on the display axes are ignored.  Otherwise, you
-// should just give locations for the display axes only.
-// Use can use the enum in class ImageStatsBase to find out
-// which locations in the vector contain which statistics.
-// A returned vector of zero shape indicates that there 
-// were no good values. A return  value of <src>False</src> 
-// indicates that the  internal state of the class is bad.
-   Bool getStats (Vector<T>&,
-                  const IPosition& pos,
-                  const Bool posInImage=False);
-
-// Reset argument error condition.  If you specify invalid arguments to
-// one of the above <src>set</src> functions, an internal flag will be set which will
-// prevent the work functions from doing anything (should you have chosen 
-// to ignore the Boolean return values of the <src>set</src> functions).
-// This function allows you to reset that internal state to good.
-   void resetError () {goodParameterStatus_p = True;};
-
-// Recover last error message
-   String errorMessage() const {return error_p;};
 
 // Set a new ImageInterface object.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal state of the class is bad.
@@ -319,376 +132,25 @@ public:
 
 private:
 
-
 // Data
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
-   TempLattice<T>* pStoreImage_p;
-   Vector<Int> cursorAxes_p, displayAxes_p;
-   Vector<Int> nxy_p, statsToPlot_p;
-   Vector<T> range_p;
-   PGPlotter plotter_p;
-   Bool doList_p, noInclude_p, noExclude_p, goodParameterStatus_p;
-   Bool needStorageImage_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
-   Bool haveLogger_p, showProgress_p, fixedMinMax_p, forceDisk_p;
-   IPosition minPos_p, maxPos_p, blcParent_p;
-   String error_p;
 
+// Virtual functions.  See LatticeStatistics for more information
+// about these, or see the implementation.
 
-// Functions
-
-// Calculate statistic from accumulation image and return in an array
-   Bool calculateStatistic (Array<T>& slice, const Int& ISTAT);
-
-// Convert a <T> to a <Float> for plotting
-   static Float convertT (const T value) {return Float(real(value));};
- 
-// Convert a <Float> (from plotting) to a <T>
-   static T convertF (const Float value) {return T(value);};
-
-// Find the next good or bad point in an array
-   Bool findNextDatum     (uInt& iFound,
-                           const uInt& n,
-                           const Vector<T>& mask,
-                           const uInt& iStart,
-                           const Bool& findGood) const;
-
-// Find the next label in a list of comma delimitered labels
-   Bool findNextLabel     (String& subLabel,
-                           Int& iLab,
-                           String& label) const;
-
-// Create a new storage image
-   Bool generateStorageImage (); 
+// Get label for higher order axes
+   virtual void getLabels(String& higherOrder, String& xAxis, const IPosition& dPos) const;
 
 // Get beam volume if possible
-   Bool getBeamArea (Double& beamArea) const;
-
-// Examine an array and determine how many segments of good points it consists 
-// of.    A good point occurs if the array value is greater than zero.
-   void lineSegments (uInt& nSeg,
-                      Vector<uInt>& start,
-                      Vector<uInt>& nPts,
-                      const Vector<T>& mask) const;
+   virtual Bool getBeamArea (Double& beamArea) const;
 
 // List the statistics
-   Bool listStats         (Bool hasBeam, const IPosition& dPos,
+   virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
                            const Matrix<T>& ord);
-
-// Given a location in the storage image, convert those locations on the   
-// non-statistics axis (the last one) to account for the lattice subsectioning
-   IPosition locInImage (const IPosition& storagePosition) const;
- 
-// Draw each Y-axis sublabel in a string with a different colour
-   void multiColourYLabel (String& label,
-                           PGPlotter& plotter,
-                           const String& LRLoc,
-                           const Vector<uInt>& colours,
-                           const Int& nLabs) const;
-
-
-// Plot an array which may have some blanked points.
-// Thus we plot it in segments         
-   void multiPlot        (PGPlotter& plotter,
-                          const Vector<T>& x,
-                          const Vector<T>& y,
-                          const Vector<T>& n) const;
-
-// Find min and max of good data in arrays specified by pointers
-   void minMax            (Bool& none,   
-                           T& dMin,
-                           T& dMax,
-                           const Vector<T>& d,
-                           const Vector<T>& n) const;
-
-// Find the next nice PGPLOT colour index 
-   Int niceColour         (Bool& initColours) const; 
-
-// Convert pixel coordinate to world coordinate string
-   void pix2World         (Vector<String>& sWorld,
-                           const Int& worldAxis,
-                           const Vector<Double>& pixel,
-                           const Int& prec);
-
-// Plot the statistics
-   Bool plotStats         (Bool hasBeam, const IPosition& dPos, 
-                           const Matrix<T>& ord,
-                           PGPlotter& plotter);
-
-// Retrieve a statistic from the accumulation image and return in an array
-   Bool retrieveStorageStatistic
-                          (Array<T>& slice, 
-                           const Int& ISTAT);
-
-// Retrieve a statistic from the accumulation image at the specified
-// location and return in an array
-   Bool retrieveStorageStatistic
-                          (Vector<T>& slice, 
-                           const IPosition& pos,
-                           const Bool posInImage);
-
-// Check/set include and exclude pixel ranges
-   Bool setIncludeExclude (Vector<T>& range,
-                           Bool& noInclude,
-                           Bool& noExclude,
-                           const Vector<T>& include,
-                           const Vector<T>& exclude,
-                           ostream& os);
-
-// Find the shape of slice from the statistics image at one
-// spatial pixel
-   IPosition statsSliceShape () const; 
-
-// See if there were some valid points found in the accumulation
-   Bool someGoodPoints ();  
-
-// Stretch min and max by 5%
-   void stretchMinMax (T& dMin, T& dMax) const;
-
-
-// Summarize the statistics found over the entire image
-   void summStats(); 
-
 };
 
-
-
-
-// <summary> Generate statistics, tile by tile, from a masked lattice </summary>
-//
-// <use visibility=export>
-//
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
-// </reviewed>
-//
-// <prerequisite>
-//   <li> <linkto class=LatticeApply>LatticeApply</linkto>
-//   <li> <linkto class=TiledCollapser>TiledCollapser</linkto>
-// </prerequisite>
-//
-// <etymology>
-// This class is used by <src>ImageStatistics</src> to generate
-// statistical sum from an input <src>MaskedLattice</src>.
-// The input lattice is iterated through in tile-sized chunks
-// and fed to an object of this class.
-// </etymology>
-//
-// <synopsis>
-// <src>StatsTiledCollapser</src> is derived from <src>TiledCollapser</src> which
-// is a base class used to define methods.  Objects of this base class are
-// used by <src>LatticeApply</src> functions.  In this particular case,
-// we are interested in <src>LatticeApply::tiledApply</src>.  This  function iterates
-// through a <src>MaskedLattice</src> and allows you to collapse one or more
-// axes, computing some values from it, and placing those values into
-// an output <src>MaskedLattice</src>.  It iterates through the input
-// lattice in optimal tile-sized chunks.    <src>ImageStatistics</src> 
-// uses a <src>StatsTiledCollapser</src> object which it gives to 
-// <src>LatticeApply::tiledApply</src> for digestion.  After it has
-// done its work, <src>ImageStatistics</src> then accesses the output
-// <src>Lattice</src> that it made.
-// </synopsis>
-//
-// <example>
-// <srcblock>
-//// Create collapser. Control information is passed in via the constructor
-//
-//   StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,   
-//                                    fixedMinMax_p, blcParent_p);
-// 
-//// This is the first output axis getting  collapsed values. In ImageStatistics
-//// this is the last axis of the output lattice
-// 
-//   Int newOutAxis = outLattice.ndim()-1;
-//
-//// tiledApply does the work by passing the collapser data in chunks
-//// and by writing the results into the output lattice 
-//
-//   LatticeApply<T>::tiledApply(outLattice, inLattice,
-//                               collapser, collapseAxes,
-//                               newOutAxis);
-//
-// </srcblock>
-// In this example, a collapser is made and passed to LatticeApply.
-// Afterwards, the output Lattice is available for use.
-// The Lattices must all be the correct shapes on input to tiledApply
-// </example>
-//
-// <motivation>
-// The LatticeApply classes enable the ugly details of optimal
-// Lattice iteration to be hidden from the user.
-// </motivation>
-//
-// <todo asof="1998/05/10">   
-//   <li> 
-// </todo>
-
-template <class T>
-class StatsTiledCollapser : public TiledCollapser<T>
-
-{
-
-public:
-// Constructor provides pixel selection range and whether that
-// range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
-// and an inclusion range is given, the min and max is set to
-// that inclusion range.  It also takes the location of the start 
-// of the SubImage in the parent image
-    StatsTiledCollapser(const Vector<T>& pixelRange, 
-                        Bool noInclude, 
-                        Bool noExclude,
-                        Bool fixedMinMax,
-                        const IPosition& blcParent);
-
-// Initialize process, making some checks
-    virtual void init (uInt nOutPixelsPerCollapse);
-
-// Initialiaze the accumulator
-    virtual void initAccumulator (uInt n1, uInt n3);
-
-// Process the data in the current chunk. 
-    virtual void process (uInt accumIndex1, 
-                          uInt accumIndex3, 
-                          const T* inData, 
-                          const Bool* inMask,
-                          uInt inIncr, 
-                          uInt nrval,
-                          const IPosition& startPos, 
-                          const IPosition& shape);
-
-// End the accumulation process and return the result arrays
-    virtual void endAccumulator(Array<T>& result,
-                                Array<Bool>& resultMask,
-                                const IPosition& shape);
-
-// Can handle null mask
-   virtual Bool canHandleNullMask() const {return True;};
-
-// Find the location of the minimum and maximum data values
-// in the input image.
-    void minMaxPos(IPosition& minPos, IPosition& maxPos);
-
-
-private:
-    Vector<T> range_p;
-    Bool noInclude_p, noExclude_p, fixedMinMax_p;
-    IPosition minPos_p, maxPos_p, blcParent_p;
-
-// Accumulators for sum, sum squared, number of points
-// minimum, and maximum
-
-    Block<NumericTraits<T>::PrecisionType>* pSum_p;
-    Block<NumericTraits<T>::PrecisionType>* pSumSq_p;
-    Block<uInt>* pNPts_p;
-    Block<T>* pMin_p;
-    Block<T>* pMax_p;
-    Block<Bool>* pInitMinMax_p;
-
-    uInt n1_p;
-    uInt n3_p;
-
-// Has to be implemented here because of g++ bug not allowing
-// the NumericTraits in the call sequence if in .cc
-    void accumulate(uInt& nPts,
-                    NumericTraits<T>::PrecisionType& sum,
-                    NumericTraits<T>::PrecisionType& sumSq,
-                    T& dataMin,
-                    T& dataMax,
-                    Int& minPos,
-                    Int& maxPos,
-                    Bool& minMaxInit,
-                    Bool fixedMinMax,
-                    T datum,
-                    uInt& pos)
-{
-   nPts++;
-   sum += NumericTraits<T>::PrecisionType(datum);
-   sumSq += NumericTraits<T>::PrecisionType(datum*datum);
-
-// If fixedMinMax, then the min and max will always
-// be given by the inclusion range that the user specified.
-// This will be set outside of here.  We have no
-// more work to do if so.
-
-   if (fixedMinMax) return;
-
-// Set min and max
-   
-   if (minMaxInit) {
-      dataMin = datum;
-      dataMax = datum;
-      minPos = pos;
-      maxPos = pos;
-      minMaxInit = False;
-   } else {
-      if (datum < dataMin) {
-         dataMin = datum;
-         minPos = pos;
-      }
-      if (datum > dataMax) {
-         dataMax = datum;
-         maxPos = pos;
-      }
-   }
-}
-
-};
-
-
-// <summary> Provides a progress meter for the <src>ImageStatistics</src> class </summary>
-// <use visibility=export>
-//
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
-// </reviewed>
-//
-// <prerequisite>
-//   <li> <linkto module=Lattices>LatticeProgress</linkto>
-// </prerequisite>
-//
-// <etymology>
-// Display a progress meter for the class  <src>ImageStatistics</src>
-// </etymology>
-//
-// <synopsis>
-//   Progress meters can be displayed by the <src>LatticeApply</src> class
-//   which is used by <src>ImageStatistics</src> in order to optimally iterate
-//   through the image.  To do this,  one must derive a
-//   class from <src>LatticeProgress</src>. <src>LatticeApply</src> calls 
-//   methods declared in <src>LatticeProgress</src> and  implemented in 
-//   the derived class.
-// </synopsis>
-// 
-// <motivation>
-//  I like progress meters !
-// </motivation>
-// 
-// <todo asof="1998/01/10">
-// </todo>
- 
-
-class ImageStatisticsProgress : public LatticeProgress
-{
-public:
-
-// Constructor makes a null object
-    ImageStatisticsProgress() : itsMeter(0) {};
-
-// Destructor deletes the ProgressMeter pointer
-    virtual ~ImageStatisticsProgress();
-
-// Initialize this object.  Here we create the ProgressMeter
-// This function is called by the <src>init</src> in LatticeProgress
-    virtual void initDerived();
-
-// Tell the number of steps done so far.
-    virtual void nstepsDone (uInt nsteps);
-
-// The process has ended so clean things up.
-    virtual void done();
-
-private:
-    ProgressMeter* itsMeter;
-};
 
 #endif
 
