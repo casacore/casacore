@@ -34,7 +34,6 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Containers/Record.h>
-#include <aips/Functionals/Interpolate1D.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MFrequency.h>
