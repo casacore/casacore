@@ -3783,3 +3783,5 @@
 14 047 src mv npoi/implement/Cuttlefish/gdc1.g npoi/implement/GDC/gdc1.g
 14 047 src mv npoi/implement/Cuttlefish/gdc1token.g npoi/implement/GDC/gdc1token.g
 14 047 src mv npoi/implement/Cuttlefish/rgb.g npoi/implement/GDC/rgb.g
+14 052 src rm trial/implement/Display/X11PCDLRoundedRectangle.cc
+14 052 src rm trial/implement/Display/X11PCDLRoundedRectangle.h
