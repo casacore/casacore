@@ -1,0 +1,338 @@
+\newcommand{\aips}{\textit{AIPS++}}
+\section{Overview}
+The \aips documentation is a combination of standards and tools.
+The standards are HTML, LaTeX, and \htmladdnormallink{\aips guidelines}{}. 
+The tools are cxx2html, help2tex, and
+latex2html, with a dash of shell programming thrown in.
+All \aips documentation is available via a web interface.  
+Most of the user and system
+documentation and \aips Notes and Memos are written using the LaTeX
+mark up language. Some older documents may be in texinfo which was abandoned
+in favor of LaTeX. C++ classes are documented in header files using 
+special cxx2html tags.
+
+Cxx2html, help2tex, and latex2html are all perl scripts. 
+A working knowledge of perl is helpful to understand them and essential for 
+debugging.
+
+All documentation source is found in the "code" tree.  The make system's docsys
+target generates and moves postscript/html files into the "docs" tree.
+
+\section{LaTeX based documents}
+\subsection{General Documentation}
+\subsubsection{General Notes}
+Documents in the \aips Notes and Memo series are mostly written using LaTeX.
+All new documents should be written in LaTeX.
+There are a few notes that are plain ASCII (.txt) files.  The make system
+generates postscript
+files from files with .latex and .tex extensions.  Makefile.doc located in
+code/install contains all the rules for generating postscript and html files
+and moving them into the "docs" tree.
+
+\subsubsection{Generating HTML}
+HTML documents are not automatically generated from LaTeX source.  The author
+needs to add a line to the directory's makefile similar to:
+\begin{verbatim}
+documentroot := -split 2
+\end{verbatim}
+
+where documentroot is the file's name less the .latex extension.  After
+specifying this line 
+latex2html will be run on that document during a sneeze.  Most \aips documents
+should use
+\begin{verbatim}
+-split 1 or 2.
+\end{verbatim}
+
+
+The default behavior of latex2html may altered using at .latex2html-init
+file.  Typically the default split level, and appearance of the HTML pager
+header and footer will be customized.
+
+Latex2html uses absolute path names to its icons, the shell script
+redoicons.sh (code/install/docutils) turns the absolute paths into relative
+ones.  Using relative icons avoids have latex2html generated HTML pages
+use NRAO as an icon server.
+
+For more details about the html commands available from latex2html please 
+consult the
+ \htmladdnormallink{latex2html documentation}{ 
+http://www-dsed.llnl.gov/files/programs/unix/latex2html/manual/manual.html}
+found at\\ 
+\htmladdnormallink{http://www-dsed.llnl.gov/files/programs/unix/latex2html/manual/manual.html}{http://www-dsed.llnl.gov/files/programs/unix/latex2html/manual/manual.html}.
+
+Latex2html should be found in the system area (/opt/local/bin/latex2html at the
+AOC).  \aips  uses version 96.1h (1997-Nov-6).  Version 97.1 is available but
+does not generate html tables from tabular environments.  The 96.1h version
+has a \htmladdnormallink{local patch}{path-to-patch file} applied to it to
+enable longtables.  
+
+\subsubsection{HTML Links to Other Documents}
+There are several methods for producing links to other documents.  To
+reference an HTML document, use:\\
+\verb!\htmladdnormallink{text}{link to html page}!.\\
+Provided an author uses
+\verb!\label! commands you may reference other 
+LaTeX based document using 
+\verb!\externallabels! command and \verb!\htmlref!.
+
+To make a link to the \htmlref{copy}{catalog:catalog.copy} command of the
+catalog object in the catalog module use \verb!\htmlref!
+\begin{verbatim}
+\htmlref{copy}{catalog:catalog.copy}
+\end{verbatim}
+
+The \verb!\externallabels{URL to document}{path to labels file}! command
+needs to appear at the top of the document before the \verb!\begin{document}!. 
+The URL and path to labels file need to be relative paths.  So for Note 215
+\begin{verbatim}
+\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
+\end{verbatim}
+
+Help files auto-generate some labels based on the following scheme:
+\begin{itemize}
+\item module
+\item module:function
+\item module:object
+\item module:object.method
+\end{itemize}
+Additional labels may be put in the .help file by the author using the 
+\verb!\label! command.
+
+The order of when documents are run through latex2html is important
+for external cross referencing. All released 
+documentation needs two passes through latex2html to resolve all 
+external references (insures the use of the proper labels.pl file).  
+
+Funny things can happen if labels are multiply defined.
+
+
+Cross referencing into HTML files created by cxx2html is possible using
+\verb!\htmladdnormallink!.  To make a reference to the array class from
+a note or memo use:
+\begin{verbatim}
+\htmladdnormallink{Array Class}{../../aips/implement/Arrays/Array.html#Array}
+\end{verbatim}
+
+Please consult the \htmladdnormallink{cxx2html documentation}
+{../../html/cxx2html.html} to see how anchors are created.
+
+Cross referencing from an HTML document to something in the User's
+Reference Manual or another LaTeX based document is possible.
+The link must be identified 
+in the generated HTML.  This is not recommended since latex2html generated
+file names and anchors will likely change.
+
+A word of caution, relative links in the docs tree may be different than those
+found in a programmer's code tree.  Within the code/doc tree relative links
+should be OK (i.e. builds of LaTeX documents should cross reference properly
+amongst themselves for programmer and system builds).  Relative links to html
+pages generated by cxx2html will not be the same for programmer and system
+builds!  The implement directory is missing in the docs tree.
+
+\subsection{Help System}
+The help system is a special type of LaTeX document.  User documentation for
+packages, modules, objects, and functions are written in .help files.
+Authors use the \htmlref{aips2help.sty}{197.aips2help} package to format their
+help text.  The perl script \htmlref{help2tex}{system:help2tex} is run on the
+.help file to produce "standard" LaTeX so no special modules are needed by
+latex2html.
+Help2tex provides a generate consistent looking documentation if the
+aips2help.sty commands and environments are used.
+
+The .help files are usually found in same directory as the "code".
+The docsys target for code/doc/Refman has been enhanced to do the following:
+\begin{enumerate}
+\item Collect all the .help files into a temporary directory.
+\item run help2tex (a perl script, code/install/docutils) on each package in
+the system. Help2tex is run run twice on each package first to to generate
+a .htex file (found in docs/user/helpfiles) and then to generate an atoms.g
+file used for glish command-line help.
+\item run latex to generate the postscript file in docs/user/Refman.ps.
+\item run latex2html to generate the html files in docs/user/Refman.
+\end{enumerate}
+
+
+\section{HTML based documents}
+\subsection{Top-level WWW pages}
+Several WWW pages are found in code/doc/html.  These pages are "straight" HTML
+and copied directly into the docs tree.  The \aips home page uses frames because
+of the rather complex nature of the documentation tree.  Frames provide a rather
+convenient way to navigate the rather large amount of \aips documentation.
+
+Here is a list of some \aips web pages found in code/doc/html:
+
+\begin{description}
+\item[aips++.html] Frame based \aips home page.
+\item[frameonline.html] Content based html page (left side frame).
+\item[homepage.html] Body of \aips home page (right side frame).
+\item[online.html] \aips documentation matrix.
+\item[betasearch.html and aips2search.html] Search pages for beta and daily documentation.
+\item[homepages.html] Page containing links to \aips worker's home pages.
+\item[reportbug.html] Problem report page.
+\item[whatsnew.html] What's new with \aips
+\item[ftp.html] The ftp page (not used currently).
+\item[cxx2html.html] How to run cxx2html.
+\item[design.html] Alan Bridle's, "\aips Information System Design" document. 
+\end{description}
+
+
+\subsection{Cxx2html generated documents}
+C++ class documentation is contained in the C++ header files. \aips uses 
+the perl script
+\htmladdnormallink{cxx2html}{../../html/cxx2html} (code/install/docutils) to
+extract and assemble the class documentation.
+
+\section{Searching \aips Documentation}
+\aips uses the htdig system \htmladdnormallink{(http://htdig.sdsu.edu)}{http://htdig.sdsu.edu} to perform searches.
+Htdig traverses the web from a specified starting point (\aips home
+page) and creates a database of words and documents.  A daily cron job
+(/aips++/local/htdig/bin/rundig) is run
+to recreate the databases.  The configuration file
+(/aips++/local/htdig/conf/htdig.conf)
+offers many ways to tune the database.  The search page supplied with
+htdig has been customized for \aips and checked into the system
+(code/doc/html/aips2search.html). 
+
+Root privileges are needed to install/modify htsearch in the httpd/cgi-bin
+directory and add the htdig icons (/tarzan/httpd/icons).
+
+All document searching is currently done on tarzan.aoc.nrao.edu.  Distributing
+the search database with the system is not contemplated until there is a
+demand for searching local documentation.
+
+\section{\aips Problem Reporting System}
+The \aips problem reporting system uses GNATS 3.100-beta as the underlying
+system for managing and tracking problems. There are four ways to submit
+"a gnat":
+\begin{enumerate}
+\item send-pr,
+\item inside emacs with send-pr.el, 
+\item using the modified CERN wwwgnats, or
+\item bug() (from glish).
+\end{enumerate} 
+Most \aips2 users will use bug or the cern-wwwgnats interface to submit problem
+reports.
+\subsection{GNATS}
+\aips uses GNATS 3.100-Beta.  The current version of
+GNATS is 3.104-beta and is available from
+\htmladdnormallink{ftp://ftp.cygnus.com/pub/gnats/gnats-3.104-beta.tar.gz}{ftp://ftp.cygnus.com/pub/gnats/}.
+A \htmladdnormallink{postscript file}{http://aips2.nrao.edu/wyoung/gnats.ps} of
+the gnats documentation is available (at the AOC http://tarzan/wyoung/gnats.ps).
+
+For those not wanting to wade through the documentation a brief
+description follows.
+\begin{itemize}
+\item An email is sent to aips2bugs@nrao.edu,
+\item a cron job puts the email into the system (run by gnats on tarzan every
+10 minutes),
+\item The "appropriate" folks are notified (initial reports are sent to Tim
+Cornwell, Brian Glendenning,
+and Wes Young). Tim then reassigns the the bug to the appropriate category and
+individual.
+\item All responses to a bug report are logged with that report.
+\item Unrecognized responses are sent to the gnats administrator (Wes Young)
+who figures out what to do
+with them.
+\end{itemize}
+Currently, the gnats, executables, and configuration files are found in 
+/aips++/local/lib/gnats.  The configuration files are found in
+gnats-db/gnats-adm.
+The directories found gnats-db will be the category directories which hold the
+actual bug reports.
+\subsection{WWWGNATS}
+The standard distribution of GNATS comes with two web front ends to the GNATS
+system, wwwgnats and cern-wwwgnats. \aips has chosen to use the cern-wwwgnats
+because its interface was deemed "a better fit" to \aips needs than the standard
+wwwgnats.
+Cern-wwwgnats is found in the gnats source tree at
+gnats/contrib/cern-wwwgnats.  The files in
+3.100-B\_src-mods are just copied into the gnats src tree and the gnats is
+built.  Alan Lovell (\htmladdnormallink{Alan.Lovell@cern.ch}
+{mailto:Alan.Lovell@cern.ch}) at CERN reports he'll eventually update his
+modifications to gnats but he's not sure when.
+
+Cern-wwwgnats imposes a domain directory on top of the standard gnats category
+files. The domains chosen for \aips are aips, allbugs, atnf, bima, glish,
+nfra, nrao, synthesis, and unassigned.  Except for allbugs and unassigned these
+correspond to \aips packages.  Inside domains there are categories, i.e.
+the aips domain has the following categories arrays, graphics, logging, 
+images, lattices, mathematics, measures, tables, utilities, and design.
+A category may belong to more than one domain, i.e. all categories belong to
+the allbugs domain.
+
+Gnats uses three master
+files, categories, editors, and responsible.  Cern-wwwgnats has a categories, 
+editors and responsible file for each domain.
+These files are found in gnats/gnats-db/gnats-adm.  A brief summary of the
+files follows:
+\begin{itemize}
+\item The domains file contains a list of \aips domains (packages for the
+most part).
+
+\item The categories file
+contains the category name, a short description, the primary responsible
+person, and a list of others to be notified about problems for that category.
+Each domain has a categories-"domain" file.
+
+\item The editors file contains a list of who can edit
+particular categories. Each domain has an editors-"domain" file.
+
+\item The responsible file contains who is responsible
+for addressing problems for that category and who should be notified.
+Each domain has an responsible-"domain" file.
+
+\item The config file contains default configuration settings for submitting a "pr".
+
+\item The current file contains the number of the most current bug report.
+
+\item The index file contains a list of all bug reports.
+Gnatsd.conf configuration file for a gnats daemon (not used).
+\end{itemize}
+
+Several files need to be in the cgi-bin directory (need root access) , libgnats.pl,
+mailto.sh, sendmailto.pl, and wwwgnats.pl.  Wwwgnats.pl is the main program.
+Some small changes need to be made to these files, customize email addresses
+and document titles for \aips2 use..
+
+\subsection{W3C HTTPD}
+The perl scripts used by cern-wwwgnats need the
+\htmladdnormallink{W3C httpd}{http://www.w3.org/Daemon/}.  Even
+though the httpd.conf files says it's NCSA it isn't. Several commands
+(MAP, EXEC, and PASS) at the end of the configuration file are necessary for
+cern-wwwgnats.
+Testing is best done using a different port number
+on another machine before installation on the \aips server.  
+See \htmladdnormallink
+{http://www.w3.org/Daemon/User/Installation/Installation.html}
+{http://www.w3.org/Daemon/User/Installation/Installation.html} for more details
+on installing and testing the W3C httpd daemon.
+\section{Mailing list setup}
+From time-to-time new mailing lists are need.  The process is as follows
+\begin{enumerate}
+
+\item Check-in the new mailing list in code/admin/system.
+\item Supply the mail alias to NRAO-CV (\htmladdnormallink{Jeff Uphoff}{mailto:juphoff@nrao.edu}), they put the alias into the master
+alias table.  \aips
+mailing lists have the form aips2-mailinglist, where mailinglist is the name
+of the mailing list.
+\item On tarzan as aips2mgr,
+edit the /etc/mail/tarzan.aliases-tail file and put in three lines like
+\begin{verbatim}
+#A comment about the new mailinglist
+aips2-newlist: :include:/export/aips++/master/etc/aips2-newlist.list
+aips2-newlist-log: "| /export/aips++/master/etc/aipsmail aips2-newlist"
+\end{verbatim}
+\item A daily cron job run by root appends the tarzan.aliases-tail file to
+tarzan's alias list.
+\item Send a test message.  Put a symbolic link to the list recipients.
+On tarzan, cd /export/aips++/Mail/aips2-newlist, ln -s ../../master/etc/aips2-newlist list
+\end{enumerate}
+More details on \aips2 mailing lists may be found in the
+\htmlref{\aips2 System Manual} {email exploders}.
+% LocalWords:  init dsed llnl unix longtables Refman htex helpfiles glish htdig
+% LocalWords:  sdsu cron rundig conf htsearch httpd tarzan nrao wwwgnats cern
+% LocalWords:  cygnus wyoung Cornwell Glendenning contrib Lovell allbugs atnf
+% LocalWords:  bima nfra config Gnatsd libgnats mailto sendmailto NCSA admin
+% LocalWords:  Uphoff juphoff mailinglist newlist aipsmail frameonline homepage
+% LocalWords:  betasearch homepages reportbug whatsnew Bridle's
