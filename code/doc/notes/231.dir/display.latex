@@ -1,6 +1,43 @@
 
 \section{Overview}
 
+The \aipspp\ Display Library, or more properly the display package of
+\aipspp, is a sophisticated class library for static and interactive
+display of scientific -- predominantly astronomical -- data.  The
+display package also includes an interface to \glish\ which is loaded
+on-demand into the {\tt glishtk} client.\footnote{The {\tt glishtk}
+client is a \glish\ proxy client which provides the Tk widgets to
+\glish.}  The highest-level component of the package -- the {\tt
+Viewer tool} -- is implemented as a set of \glish\ scripts, and is a
+genuine \aipspp\ tool providing display services within the
+\aipspp\ environment for many kinds of data.
+
+The purpose of this document is firstly to give the reader a
+high-level outline of the Library -- an outline not possible in the
+framework of the \aipspp\ class documentation -- and secondly to give
+practical advice on extending the package in a number of ways, for
+example to work with new display devices, or to display a new type of
+data.
+
+\subsection{Design Principles}
+
+The initial design of the Display Library was made in 1996, taking
+ideas from the existing \aipspp\ display application {\tt AipsView},
+and the ATNF's suite of visualisation tools.  The objective was to
+adopt an object-oriented approach to visualisation so that:
+\begin{itemize}
+\item{the many technical and esoteric aspects of data display could be
+encapsulated and therefore hidden from the application ({\tt tool})
+programmer,}
+\item{the support of new data types and display paradigms could be 
+implemented in very high-level classes, maximising code re-use and
+minimising the burden of in-depth knowledge on the part of the
+application programmer, and}
+\item{visualisation applications could be built up in a modular fashion, 
+consistent with the \aipspp\ way.}
+\end{itemize}
+
+
 \section{Display Library Components}
 
 \subsection{PixelCanvasColorTables and Colormaps}
@@ -13,7 +50,7 @@
 
 \subsection{DisplayDatas}
 
-\section{The GlishTk Connection}
+\section{The Glish Connection}
 
 \section{Programming Practicalities}
 
