@@ -6091,3 +6091,4 @@
 17 151 src rm admin/system/aips2-dish.list
 17 151 src rm admin/system/aips2-doc.list
 17 151 src rm admin/system/aips2-gbt.list
+17 151 src rm admin/system/aips2-glish.list
