@@ -223,6 +223,12 @@ Bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
       in.get(RecordFieldId("params"), params);
       setParameters(fn, params);
     };
+    if (in.isDefined(String("masks")) &&
+	in.type(in.idToNumber(RecordFieldId("masks"))) == TpArrayBool) {
+      Vector<Bool> masks;
+      in.get(RecordFieldId("masks"), masks);
+      for (uInt i=0; i<fn->nparameters(); ++i) fn->mask(i) = masks[i];
+    };
     return True;
   };
   error += String("Illegal Function record in "
@@ -257,6 +263,8 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
 	       static_cast<Int>(hold_p.ptr()->nparameters()));
     out.define(RecordFieldId("params"),
     	       hold_p.ptr()->parameters().getParameters());
+    out.define(RecordFieldId("masks"),
+    	       hold_p.ptr()->parameters().getParamMasks());
     if (nf_p == COMBINE || nf_p == COMPOUND) {
       Int x(0);
       if (nf_p == COMBINE) {
