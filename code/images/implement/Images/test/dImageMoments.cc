@@ -190,51 +190,51 @@ main (int argc, char **argv)
 try {
 
    Input inputs(1);
-   inputs.Version ("$Revision$");
+   inputs.version ("$Revision$");
 
 
 // Get inputs
 
    String root = Aipsrc::aipsRoot();
    String name = root + "/code/trial/implement/Images/test/test_image";
-   inputs.Create("in", name, "Input image name");
-   inputs.Create("moments", "0", "Moments to output");
-   inputs.Create("axis", "2", "Moment axis");
-   inputs.Create("blc", "-10", "blc");
-   inputs.Create("trc", "-10", "trc");
-   inputs.Create("inc", "-10", "inc");
-   inputs.Create("method","","Method (window,fit,inter)");
-   inputs.Create("smoothaxes","-100","Smoothing axes");
-   inputs.Create("smoothwidths", "-100.0", "Smoothing width along axes");
-   inputs.Create("smoothtypes","","Smoothing kernel types");
-   inputs.Create("include", "0.0", "Pixel range to include");
-   inputs.Create("exclude", "0.0", "Pixel range to exclude");
-   inputs.Create("snr", "3.0,0.0", "SNR cutoff and sigma for automatic window method");
-   inputs.Create("out", "dImageMoments.output_file", "Output root image name");
-   inputs.Create("smout", "", "Output smoothed image name");
-   inputs.Create("plotter", "none", "PGPLOT device");
-   inputs.Create("nxy", "-1", "Number of subplots in x and y");
-   inputs.Create("yind","False","Y scale independent ?");
-   inputs.ReadArguments(argc, argv);
+   inputs.create("in", name, "Input image name");
+   inputs.create("moments", "0", "Moments to output");
+   inputs.create("axis", "2", "Moment axis");
+   inputs.create("blc", "-10", "blc");
+   inputs.create("trc", "-10", "trc");
+   inputs.create("inc", "-10", "inc");
+   inputs.create("method","","Method (window,fit,inter)");
+   inputs.create("smoothaxes","-100","Smoothing axes");
+   inputs.create("smoothwidths", "-100.0", "Smoothing width along axes");
+   inputs.create("smoothtypes","","Smoothing kernel types");
+   inputs.create("include", "0.0", "Pixel range to include");
+   inputs.create("exclude", "0.0", "Pixel range to exclude");
+   inputs.create("snr", "3.0,0.0", "SNR cutoff and sigma for automatic window method");
+   inputs.create("out", "dImageMoments.output_file", "Output root image name");
+   inputs.create("smout", "", "Output smoothed image name");
+   inputs.create("plotter", "none", "PGPLOT device");
+   inputs.create("nxy", "-1", "Number of subplots in x and y");
+   inputs.create("yind","False","Y scale independent ?");
+   inputs.readArguments(argc, argv);
 
-   const String in = inputs.GetString("in");
-   const Block<Int> momentsB = inputs.GetIntArray("moments");
-   Int momentAxis = inputs.GetInt("axis");
-   const Block<Int> blcB(inputs.GetIntArray("blc"));
-   const Block<Int> trcB(inputs.GetIntArray("trc"));
-   const Block<Int> incB(inputs.GetIntArray("inc"));
-   const String method = inputs.GetString("method");
-   const Block<Int> smoothAxesB = inputs.GetIntArray("smoothaxes");
-   const String kernels = inputs.GetString("smoothtypes");
-   const Block<Double> kernelWidthsB = inputs.GetDoubleArray("smoothwidths");
-   const Block<Double> includeB = inputs.GetDoubleArray("include");
-   const Block<Double> excludeB = inputs.GetDoubleArray("exclude");
-   const Block<Double> snrB = inputs.GetDoubleArray("snr");
-   const String out = inputs.GetString("out");
-   const String smOut = inputs.GetString("smout");
-   String device = inputs.GetString("plotter");
-   const Block<Int> nxyB = inputs.GetIntArray("nxy");
-   const Bool yInd = inputs.GetBool("yind");
+   const String in = inputs.getString("in");
+   const Block<Int> momentsB = inputs.getIntArray("moments");
+   Int momentAxis = inputs.getInt("axis");
+   const Block<Int> blcB(inputs.getIntArray("blc"));
+   const Block<Int> trcB(inputs.getIntArray("trc"));
+   const Block<Int> incB(inputs.getIntArray("inc"));
+   const String method = inputs.getString("method");
+   const Block<Int> smoothAxesB = inputs.getIntArray("smoothaxes");
+   const String kernels = inputs.getString("smoothtypes");
+   const Block<Double> kernelWidthsB = inputs.getDoubleArray("smoothwidths");
+   const Block<Double> includeB = inputs.getDoubleArray("include");
+   const Block<Double> excludeB = inputs.getDoubleArray("exclude");
+   const Block<Double> snrB = inputs.getDoubleArray("snr");
+   const String out = inputs.getString("out");
+   const String smOut = inputs.getString("smout");
+   String device = inputs.getString("plotter");
+   const Block<Int> nxyB = inputs.getIntArray("nxy");
+   const Bool yInd = inputs.getBool("yind");
 
 // Create defaults array
 

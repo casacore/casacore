@@ -56,22 +56,22 @@ try {
 
    String root = Aipsrc::aipsRoot();
    String name = root + "/code/trial/implement/Images/test/test_image";
-   inputs.Create("in", name, "Input file name");
-   inputs.Create("out", "tSepImageConv_image", "Output root image name");
-   inputs.Create("axis", "-1", "axis to convolve (default is all)");
-   inputs.Create("width", "3", "Width in pixels");
-   inputs.Create("type", "gauss", "Kernel type (box, gauss, hann");
-   inputs.Create("peakone", "F", "Normalize so peak is unity");
-   inputs.Create("show", "F", "Show kernel");
-   inputs.ReadArguments(argc, argv);
+   inputs.create("in", name, "Input file name");
+   inputs.create("out", "tSepImageConv_image", "Output root image name");
+   inputs.create("axis", "-1", "axis to convolve (default is all)");
+   inputs.create("width", "3", "Width in pixels");
+   inputs.create("type", "gauss", "Kernel type (box, gauss, hann");
+   inputs.create("peakone", "F", "Normalize so peak is unity");
+   inputs.create("show", "F", "Show kernel");
+   inputs.readArguments(argc, argv);
 
-   const String in = inputs.GetString("in");
-   const String out = inputs.GetString("out");
-   const String kernelType = inputs.GetString("type");
-   Int axis = inputs.GetInt("axis");
-   Double fwhm = inputs.GetDouble("width");
-   Bool peak = inputs.GetBool("peakone");
-   Bool show = inputs.GetBool("show");
+   const String in = inputs.getString("in");
+   const String out = inputs.getString("out");
+   const String kernelType = inputs.getString("type");
+   Int axis = inputs.getInt("axis");
+   Double fwhm = inputs.getDouble("width");
+   Bool peak = inputs.getBool("peakone");
+   Bool show = inputs.getBool("show");
 //
    if (in.empty()) {
       cout << "You must give an input image name" << endl;

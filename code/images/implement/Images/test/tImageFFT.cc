@@ -69,19 +69,19 @@ main (int argc, char **argv)
 try {
 
    Input inputs(1);
-   inputs.Version ("$Revision$");
+   inputs.version ("$Revision$");
 
 
 // Get inputs
 
    String root = Aipsrc::aipsRoot();
    String name = root + "/code/trial/implement/Images/test/test_image";
-   inputs.Create("in", name, "Input file name");
-   inputs.Create("axes", "-10", "axes");
-   inputs.ReadArguments(argc, argv);
+   inputs.create("in", name, "Input file name");
+   inputs.create("axes", "-10", "axes");
+   inputs.readArguments(argc, argv);
 
-   const String in = inputs.GetString("in");
-   const Block<Int> axes = inputs.GetIntArray("axes");
+   const String in = inputs.getString("in");
+   const Block<Int> axes = inputs.getIntArray("axes");
    LogOrigin or("tImageFFT", "main()", WHERE);
    LogIO os(or);
  
@@ -186,7 +186,7 @@ try {
             for (uInt i=0; i<inImage.ndim(); i++) {
                Bool found = False;
                for (uInt j=0; j<axes.nelements(); j++) {
-                 if (axes[j]==i) found = True;
+                 if (axes[j]==Int(i)) found = True;
                }
                which(i) = found;
             }
@@ -206,7 +206,8 @@ try {
 
       }
    } else {
-      os << LogIO::NORMAL << "images of type " << imageType << " not yet supported" << LogIO::POST;
+      os << LogIO::NORMAL << "images of type " << Int(imageType)
+	 << " not yet supported" << LogIO::POST;
       exit(1);
    }
 }

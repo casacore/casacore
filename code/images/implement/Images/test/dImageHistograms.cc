@@ -122,43 +122,43 @@ main (int argc, char **argv)
 try {
 
    Input inputs(1);
-   inputs.Version ("$Revision$");
+   inputs.version ("$Revision$");
 
 
 // Get inputs
 
    String root = Aipsrc::aipsRoot();
    String name = root + "/code/trial/implement/Images/test/test_image";
-   inputs.Create("in", name, "Input image name");
-   inputs.Create("axes", "-10", "Cursor axes");
-   inputs.Create("blc", "-10", "blc");
-   inputs.Create("trc", "-10", "trc");
-   inputs.Create("inc", "-10", "inc");
-   inputs.Create("nbins", "25", "Number of bins");
-   inputs.Create("include", "0.0", "Pixel range to include");
-   inputs.Create("gauss", "True", "Plot Gaussian equivalent ?");
-   inputs.Create("cumu", "False", "Plot cumulative histogram ?");
-   inputs.Create("log", "False", "Take log of y axis ?");
-   inputs.Create("list", "False", "List statistics for each histogram");
-   inputs.Create("plotter", "/null", "Plot device");
-   inputs.Create("nxy", "1,1", "Number of subplots in x & y");
-   inputs.Create("disk", "False", "Force storage image to be disk based");
-   inputs.ReadArguments(argc, argv);
+   inputs.create("in", name, "Input image name");
+   inputs.create("axes", "-10", "Cursor axes");
+   inputs.create("blc", "-10", "blc");
+   inputs.create("trc", "-10", "trc");
+   inputs.create("inc", "-10", "inc");
+   inputs.create("nbins", "25", "Number of bins");
+   inputs.create("include", "0.0", "Pixel range to include");
+   inputs.create("gauss", "True", "Plot Gaussian equivalent ?");
+   inputs.create("cumu", "False", "Plot cumulative histogram ?");
+   inputs.create("log", "False", "Take log of y axis ?");
+   inputs.create("list", "False", "List statistics for each histogram");
+   inputs.create("plotter", "/null", "Plot device");
+   inputs.create("nxy", "1,1", "Number of subplots in x & y");
+   inputs.create("disk", "False", "Force storage image to be disk based");
+   inputs.readArguments(argc, argv);
 
-   const String in = inputs.GetString("in");
-   const Block<Int> cursorAxesB(inputs.GetIntArray("axes"));
-   const Block<Int> blcB(inputs.GetIntArray("blc"));
-   const Block<Int> trcB(inputs.GetIntArray("trc"));
-   const Block<Int> incB(inputs.GetIntArray("inc"));
-   const Int nBins = inputs.GetInt("nbins");
-   const Bool doGauss = inputs.GetBool("gauss");
-   const Bool doCumu = inputs.GetBool("cumu");
-   const Bool doLog = inputs.GetBool("log");
-   const Block<Double> includeB = inputs.GetDoubleArray("include");
-   const Bool doList = inputs.GetBool("list");
-   const Block<Int> nxyB(inputs.GetIntArray("nxy"));
-   const String device = inputs.GetString("plotter");
-   const Bool force = inputs.GetBool("disk");
+   const String in = inputs.getString("in");
+   const Block<Int> cursorAxesB(inputs.getIntArray("axes"));
+   const Block<Int> blcB(inputs.getIntArray("blc"));
+   const Block<Int> trcB(inputs.getIntArray("trc"));
+   const Block<Int> incB(inputs.getIntArray("inc"));
+   const Int nBins = inputs.getInt("nbins");
+   const Bool doGauss = inputs.getBool("gauss");
+   const Bool doCumu = inputs.getBool("cumu");
+   const Bool doLog = inputs.getBool("log");
+   const Block<Double> includeB = inputs.getDoubleArray("include");
+   const Bool doList = inputs.getBool("list");
+   const Block<Int> nxyB(inputs.getIntArray("nxy"));
+   const String device = inputs.getString("plotter");
+   const Bool force = inputs.getBool("disk");
 
 
 // Create defaults array
@@ -375,7 +375,8 @@ try {
      }
 
    } else {
-      os << "images of type " << imageType << " not yet supported" << endl;
+      os << "images of type " << Int(imageType)
+	 << " not yet supported" << endl;
       exit(1);
    }
 }

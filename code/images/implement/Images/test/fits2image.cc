@@ -44,21 +44,21 @@ int main(int argc, char **argv)
   try {
     // Inputs
     Input inp(1);
-    inp.Version("2.0: PagedImage with coordinate conversion");
+    inp.version("2.0: PagedImage with coordinate conversion");
 
     String root = Aipsrc::aipsRoot();
     String name = root + "/code/trial/implement/Images/test/test_image.FITS";
-    inp.Create("in", name, "Input FITS file name", "string");
-    inp.Create("out", "out.image", "Output AIPS++ Image name", "string");
-    inp.Create("overwrite", "True", "Allow output to be overwritten?",
+    inp.create("in", name, "Input FITS file name", "string");
+    inp.create("out", "out.image", "Output AIPS++ Image name", "string");
+    inp.create("overwrite", "True", "Allow output to be overwritten?",
                 "Bool");
-    inp.Create("zero", "False", "Zero blanks?", "Bool");
-    inp.ReadArguments(argc, argv);
+    inp.create("zero", "False", "Zero blanks?", "Bool");
+    inp.readArguments(argc, argv);
 
-    Bool overwrite=inp.GetBool("overwrite");
-    Bool zero =inp.GetBool("zero");
-    String fitsFile = inp.GetString("in");
-    String outFile = inp.GetString("out");
+    Bool overwrite=inp.getBool("overwrite");
+    Bool zero =inp.getBool("zero");
+    String fitsFile = inp.getString("in");
+    String outFile = inp.getString("out");
     if(outFile.empty() ) {
        File inFile(fitsFile);
        outFile=inFile.path().expandedName()+".image";

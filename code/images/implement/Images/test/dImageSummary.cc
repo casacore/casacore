@@ -42,15 +42,15 @@ main (int argc, char **argv)
 try {
 
    Input inputs(1);
-   inputs.Version ("$Revision$");
+   inputs.version ("$Revision$");
 
    String root = Aipsrc::aipsRoot();
    String name = root + "/code/trial/implement/Images/test/test_image";
-   inputs.Create("in", name, "Input image name?");
-   inputs.Create("type", "RADIO","Velocity type ?");
-   inputs.ReadArguments(argc, argv);
-   const String in = inputs.GetString("in");
-   const String velocityType = inputs.GetString("type");
+   inputs.create("in", name, "Input image name?");
+   inputs.create("type", "RADIO","Velocity type ?");
+   inputs.readArguments(argc, argv);
+   const String in = inputs.getString("in");
+   const String velocityType = inputs.getString("type");
 
 
 // Open image, construct helper class object and list header

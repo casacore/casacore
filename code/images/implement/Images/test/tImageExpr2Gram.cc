@@ -51,13 +51,13 @@ main (int argc, char *argv[])
 
   try {
     Input inp(1);
-    inp.Version(" ");
-    inp.Create("nx", "10", "Number of pixels along the x-axis", "int");
-    inp.Create("ny", "10", "Number of pixels along the y-axis", "int");
-    inp.ReadArguments(argc, argv);
+    inp.version(" ");
+    inp.create("nx", "10", "Number of pixels along the x-axis", "int");
+    inp.create("ny", "10", "Number of pixels along the y-axis", "int");
+    inp.readArguments(argc, argv);
     
-    const uInt nx=inp.GetInt("nx");
-    const uInt ny=inp.GetInt("ny");
+    const uInt nx=inp.getInt("nx");
+    const uInt ny=inp.getInt("ny");
     IPosition shape(2, nx, ny);
     Slicer section(IPosition(2,0), shape);
     Array<Float> arr(shape);

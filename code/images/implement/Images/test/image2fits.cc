@@ -50,37 +50,37 @@
 #include <iostream.h>
 
 
-Int main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     try {
 	// Inputs
 	Input inp(1);
-	inp.Version(""); // By setting to null, we turn of the announcement
+	inp.version(""); // By setting to null, we turn of the announcement
 
         String root = Aipsrc::aipsRoot();
         String name = root + "/code/trial/implement/Images/test/test_image";
-	inp.Create("in", name, "Input AIPS++ Image name", "string");
-	inp.Create("mask", "default", "Mask to apply", "string");
-	inp.Create("out", "image2fits_tmp.out", "Output FITS file name",
+	inp.create("in", name, "Input AIPS++ Image name", "string");
+	inp.create("mask", "default", "Mask to apply", "string");
+	inp.create("out", "image2fits_tmp.out", "Output FITS file name",
 		   "string");
-	inp.Create("overwrite", "True", "Allow output to be overwritten?",
+	inp.create("overwrite", "True", "Allow output to be overwritten?",
 		   "Bool");
-	inp.Create("verbose", "False", "Verbose?", "Bool");
-	inp.Create("do16", "False", "16 bit integer or 32 bit floating point?", "Bool");
-	inp.ReadArguments(argc, argv);
+	inp.create("verbose", "False", "Verbose?", "Bool");
+	inp.create("do16", "False", "16 bit integer or 32 bit floating point?", "Bool");
+	inp.readArguments(argc, argv);
     
-	Bool verbose=inp.GetBool("verbose");
-	Bool overwrite=inp.GetBool("overwrite");
-	Bool do16=inp.GetBool("do16");
+	Bool verbose=inp.getBool("verbose");
+	Bool overwrite=inp.getBool("overwrite");
+	Bool do16=inp.getBool("do16");
     
-	File inputFile(inp.GetString("in"));
+	File inputFile(inp.getString("in"));
 	if (!inputFile.isReadable()) 
 	    throw (AipsError ("input file unreadable"));
     
-	String out(inp.GetString("out"));
+	String out(inp.getString("out"));
 	if (out == "") out = "out.fits";
     
-        String mask = inp.GetString("mask");
+        String mask = inp.getString("mask");
 
 	// Get the image from disk
 	PagedImage<Float> image(inputFile.path().originalName(), True);
