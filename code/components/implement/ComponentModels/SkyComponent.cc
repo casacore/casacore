@@ -147,6 +147,11 @@ void SkyComponent::fromRecord(String & errorMessage,
   DebugAssert(ok(), AipsError);
 }
 
+void SkyComponent::toRecord(GlishRecord & record) const {
+  theCompPtr->toRecord(record);
+  DebugAssert(ok(), AipsError);
+}
+
 ComponentType::Type SkyComponent::getType(String & errorMessage,
 						 const GlishRecord & record) {
   if (!record.exists("type"))
