@@ -91,6 +91,9 @@ public:
   Vector<Int> matchFreqGrp(const Int& freqGrp);
   Vector<Int> matchFreqGrp(const Vector<Int>& freqGrps);
 
+  // Look up SPECTRAL_WINDOW_ID's for a given frequency group name
+  Vector<Int> matchFreqGrpName(const String& freqGrpName);
+
   // Look up SPECTRAL_WINDOW_ID's for a given frequency axis sampling
   Vector<Int> matchFreq(const Vector<MFrequency>& chanFreq,
 			const Vector<MVFrequency>& chanWidth,

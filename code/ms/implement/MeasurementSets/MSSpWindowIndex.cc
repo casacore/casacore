@@ -59,7 +59,7 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Int& freqGrp)
 // Input:
 //    freqGrp             const Int&               Freq group to match
 // Output:
-//    matchFreqGrp        Vector<Int>              Matching freq groups
+//    matchFreqGrp        Vector<Int>              Matching spw. id.'s
 //
   LogicalArray maskArray = 
     (msSpWindowCols_p.freqGroup().getColumn()==freqGrp &&
@@ -76,7 +76,7 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Vector<Int>& freqGrps)
 // Input:
 //    freqGrps            const Vector<Int>&       Freq groups to match
 // Output:
-//    matchFreqGrp        Vector<Int>              Matching freq groups
+//    matchFreqGrp        Vector<Int>              Matching spw. id.'s
 //
   Vector<Int> matchedSpWindowIds;
   // Match each spw id individually
@@ -92,6 +92,23 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Vector<Int>& freqGrps)
   };
   return matchedSpWindowIds;
 };
+
+//-------------------------------------------------------------------------
+
+Vector<Int> MSSpWindowIndex::matchFreqGrpName(const String& freqGrpName)
+{
+// Match a frequency goup name to a set of spectral window id's
+// Input:
+//    freqGrpName         const String&            Freq group name to match
+// Output:
+//    matchFreqGrpName    Vector<Int>              Matching spw. id.'s
+//
+  LogicalArray maskArray = 
+    (msSpWindowCols_p.freqGroupName().getColumn()==freqGrpName &&
+     !msSpWindowCols_p.flagRow().getColumn());
+  MaskedArray<Int> maskSpWindowId(spWindowIds_p, maskArray);
+  return maskSpWindowId.getCompressedArray();
+}; 
 
 //-------------------------------------------------------------------------
 
