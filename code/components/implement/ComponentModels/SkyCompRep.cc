@@ -282,35 +282,36 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
 //      errorMessage += "\nThe 'flux' record must have a 'polarisation' field";
 //      return False;
       thisFlux.setPol(ComponentType::STOKES);
+    } else {
+      if (fluxRec.get("polarisation").type() != GlishValue::ARRAY) {
+	errorMessage += "\nThe 'polarisation' field cannot be a record";
+	return False;
+      }
+      const GlishArray polField = fluxRec.get("polarisation");
+      if (polField.elementType() != GlishArray::STRING) {
+	errorMessage += "\nThe 'polarisation' field must be a string";
+	return False;
+      }
+      // Maybe the polarisation field should contain ["I", "Q", "U", "V"]. This
+      // is harder to parse but more flexible for the future.
+      if (polField.shape().product() != 1) {
+	errorMessage += String("\nThe 'polarisation' field cannot be an array ");
+	return False;
+      }
+      String polVal;
+      if (!polField.get(polVal)) {
+	errorMessage += String("\nCould not read the 'polarisation' field ") + 
+	  String("in the flux record for an unknown reason");
+	return False;
+      }
+      const ComponentType::Polarisation pol(ComponentType::polarisation(polVal));
+      if (pol == ComponentType::UNKNOWN_POLARISATION) {
+	errorMessage += String("\nThe polarisation type is not known. ") +
+	  String("\nCommon values are 'Stokes', 'Linear' & 'Circular'");
+	return False;
+      }
+      thisFlux.setPol(pol);
     }
-    if (fluxRec.get("polarisation").type() != GlishValue::ARRAY) {
-      errorMessage += "\nThe 'polarisation' field cannot be a record";
-      return False;
-    }
-    const GlishArray polField = fluxRec.get("polarisation");
-    if (polField.elementType() != GlishArray::STRING) {
-      errorMessage += "\nThe 'polarisation' field must be a string";
-      return False;
-    }
-    // Maybe the polarisation field should contain ["I", "Q", "U", "V"]. This
-    // is harder to parse but more flexible for the future.
-    if (polField.shape().product() != 1) {
-      errorMessage += String("\nThe 'polarisation' field cannot be an array ");
-      return False;
-    }
-    String polVal;
-    if (!polField.get(polVal)) {
-      errorMessage += String("\nCould not read the 'polarisation' field ") + 
-	String("in the flux record for an unknown reason");
-      return False;
-    }
-    const ComponentType::Polarisation pol(ComponentType::polarisation(polVal));
-    if (pol == ComponentType::UNKNOWN_POLARISATION) {
-      errorMessage += String("\nThe polarisation type is not known. ") +
-	String("\nCommon values are 'Stokes', 'Linear' & 'Circular'");
-      return False;
-    }
-    thisFlux.setPol(pol);
   }
   {
     if (!fluxRec.exists("value")) {
