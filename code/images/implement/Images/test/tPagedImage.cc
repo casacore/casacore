@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageInfo.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Lattices/ArrayLattice.h>
@@ -40,6 +41,7 @@
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
+#include <aips/Quanta/QLogical.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
@@ -47,6 +49,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
+
 
 #include <stdlib.h>
 #include <iostream.h>
@@ -263,8 +266,20 @@ int main()
        pIm.setCoordinateInfo(cSys2);
        CoordinateSystem cSys3 = pIm.coordinates();
        AlwaysAssert(cSys2.near(&cSys3,1e-6), AipsError);
+//
+       ImageInfo info = pIm.imageInfo();
+       AlwaysAssert(info.restoringBeam().nelements()==0, AipsError);
+       Quantum<Double> a1(10.0,Unit("arcsec"));
+       Quantum<Double> a2(8.0,Unit("arcsec"));
+       Quantum<Double> a3(-45.0,Unit("deg"));
+       info.setRestoringBeam(a1, a2, a3);
+       pIm.setImageInfo(info);
+       info = pIm.imageInfo();
+       AlwaysAssert(info.restoringBeam()(0)==a1, AipsError);
+       AlwaysAssert(info.restoringBeam()(1)==a2, AipsError);
+       AlwaysAssert(info.restoringBeam()(2)==a3, AipsError);
      }
-    Table::deleteTable(String("temp_tPagedImage.img5"));
+     Table::deleteTable(String("temp_tPagedImage.img5"));
 //
 // do{Put,Get}Slice tests
 //
