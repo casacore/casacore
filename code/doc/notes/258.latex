@@ -1,0 +1,21 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+\usepackage[dvips]{graphicx, color}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 258: Benchmarking in AIPS++}
+\author{Sanjay Bhatnagar}
+\date{February 04, 2003}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A (gzipped) postscript version of this note is available.}{../258.ps.gz}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{benchmarking.tex}
+\end{document}
