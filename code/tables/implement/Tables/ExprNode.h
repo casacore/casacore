@@ -312,8 +312,8 @@ class TableExprNode
     friend TableExprNode arg (const TableExprNode& node);
 
     // Form a complex number from two Doubles.
-    friend TableExprNode complex (const TableExprNode& real,
-				  const TableExprNode& imag);
+    friend TableExprNode dcomplex (const TableExprNode& real,
+				   const TableExprNode& imag);
 
     // Functions operating on a Double or Complex array.
     // <group>
@@ -847,8 +847,8 @@ inline TableExprNode phase (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::argFUNC, node);
 }
-inline TableExprNode complex (const TableExprNode& real,
-			      const TableExprNode& imag)
+inline TableExprNode dcomplex (const TableExprNode& real,
+			       const TableExprNode& imag)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::complexFUNC,
 					   real, imag);
