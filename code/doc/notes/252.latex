@@ -1,0 +1,141 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsfig, longtable, aips2help}
+\input{aips2defs.tex}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{Updating AIPS++}
+
+
+\author{Wesley Young\\
+   NRAO}
+
+   \date{7 Nov, 2002}
+
+   \maketitle
+   %%---------------------------------------------------------------------------
+   \begin{htmlonly}
+   \htmladdnormallink{A postscript version of this note is available (170kB).}{../251.ps.gz}
+   \end{htmlonly}
+
+   \tableofcontents
+\section{Introduction}
+
+The current mode of applying patches to AIPS++ is spotty at best for addressing user requests for defect
+resolutions and enhancements.  More frequent patches would be helpful but they are difficult to apply
+and are often
+precluded by the project's desire to only apply bug fixes to release.  A possibly more useful model is 
+to allow users access to the project's stable builds. 
+
+\section{Non-consortium User Updates}
+
+In our current scheme, consortium sites and those sites that build from source have access to daily
+changes in the code tree.  Available to these sites, is a stable build mechanism inhale -b.  Users who
+install from CD don't readily have this option (although linux users can use the inhale binary option
+provided they make adjustments to their systems).
+
+\subsection{A New Update Scheme}
+\begin{description}
+\item[stable - base] Our current stable. 
+\item[stable - updated] An updated stable with 
+new features, enhancements, or bug fixes, stuff is plugged in but must pass
+all stable tests to be moved into updated stable tree.
+\item[beta]  First stable after slushy code freeze
+\item[released]  Beta that meets all release criteria.
+
+\item [additional explanation]  We continue to test for stables in our current mode, this produces our
+    stable-base.  The stable-base is copied to stable-updated.  Stable-updated contains apps
+    and scripts that are tested to work with the current stable but are not in the current
+    stable.  Essentially we replace the app and/or scripts with new ones and run an assay on
+    the "updated stable" to make sure it still passes, if so the stable is then updated.
+\end{description}
+
+\subsection{ISO images}
+We'll have ISO release images 
+available for base stables, betas, and releases.  This will require us 
+to move these ISO images to ATNF, UIUC, and ASTRON.
+
+\subsection{Use cvs/cvsup}
+Put stable bin files (base and updated), libexec files, and shared libraries under cvs/cvsup.
+
+\subsection{Create a new script, aupdate}
+\begin{description}
+\item[Options]
+\item[stable] - get updated stable version, with a noupdate option to get only the base stable.
+\item[beta] - get beta version
+\item[release] -only get released version (includes patches)
+\item[(no)bin] - get updated bin files
+\item[(no)libexec] - get updated libexec files
+\item[(no)lib] - get updated shared libraries
+\item[(no)docs] - get  updated docs
+\item[(no)basedata] - get  updated base data
+\item[(no)auxdata] - get  updated aux data (not aux could be telescope specific)
+\item[(no)code] - get updated code tree
+\item[usefile(s)] - update from a local tar file.
+\item[default] - is stable binary libexec lib basedata docs
+\item[silent (-q)] - Just do it don't ask for confirmation.
+\end{description}
+
+Aupdate would normally use cvsup to update various directory trees. The usefile option would allow 
+downloading a tar file and updating the system for those machines that don't support cvsup.
+
+
+\subsection{What the user does}
+
+\begin{enumerate}
+\item Install release
+\item Choose one of three update options
+   \begin{enumerate}
+   \item To update to the latest alpha release (stable):
+   aupdate
+   \item To update to the lastest beta release (post slushy freeze):
+   aupdate beta
+   \item To get the latest release (including patches)
+   aupdate release
+   \end{enumerate}
+
+\item aupdate will tell the user something like
+
+\begin{verbatim}
+    $aupdate
+    NOTICE - NOTICE - NOTICE
+
+    AIPS++ binary files tend to be big, you should really be on a
+    decent network link to down load the updates
+
+    AIPS++update ->
+       Updating the following linux/bin linux/lib linux/libexec docs from stable
+    Is this correct?
+
+    If y then do the update, else if n then
+    AIPS++update ->
+       Please specify stable|beta|release (no)bin (no)lib (no)libexec (no)docs
+       (no)code (no)basedata
+    update?
+
+    Repeat until we get a y.  Using a -q or silent avoids all these questions,
+    and figures out what to do from the installation.
+\end{verbatim}
+\end{enumerate}
+
+\subsection{Notes}
+
+\begin{enumerate}
+\item An alternative would be for the user to download the update files and 
+use the usefile(s) option.
+
+\item The user who owns the AIPS++ installation must run the aupdate script.
+\end{enumerate}
+\section{Action Items}
+\begin{enumerate}
+\item Create the stable - update tree.
+\item Put stable base/update under cvs/cvsup.
+\item Write the aupdate script.
+\item Create the tar files for systems that don't support cvsup.
+\item Set the test procedures for adding files/apps to the updated stable.
+\item Generate additional ISO images for the base stable.
+\end{enumerate}
+
+
+\end{document}
