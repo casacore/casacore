@@ -286,7 +286,7 @@ void ScalarColumnData<T>::allocIterBuf (void*& lastVal, void*& curVal,
 template<class T>
 void ScalarColumnData<T>::freeIterBuf (void*& lastVal, void*& curVal)
 {
-    delete [] lastVal;
+    delete [] static_cast<T*>(lastVal);
     lastVal = 0;
     curVal  = 0;
 }
