@@ -489,7 +489,9 @@ uInt ImageProfileFit::nElements ()
 Bool ImageProfileFit::fit()
 {
    itsFitDone = True;
-   return itsSpectralFitPtr->fit(itsY.getValue(), itsX.getValue());
+   return itsSpectralFitPtr->fit(itsY.getValue(), 
+                                 itsX.getValue(), 
+                                 itsMask);
 }
 
 
@@ -832,7 +834,6 @@ void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
       if (pResid->hasPixelMask()) {
          pResidMaskIter = new LatticeIterator<Bool>(pResid->pixelMask(), stepper);
       }
-
    }
 //
    Int nProfiles = itsImagePtr->shape().product()/inIter.vectorCursor().nelements();
@@ -854,10 +855,10 @@ void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
       est = True;
    }
 //   
+   Vector<Bool> inMask;
    Bool ok = False;
    uInt nFail = 0;
    while (!inIter.atEnd()) {
-//os << "Iter " << inIter.nsteps() << endl;
 
 // Use user give or auto estimate for first profile. Else use last fit
 // as starting place
@@ -868,23 +869,17 @@ void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
             fit.addFitElement(se.estimate(inIter.vectorCursor()));
          }
       }
-/*
-os << "Before fit" << endl;
-   const SpectralList& l3 = fit.list();
-   listElements(os, l3);
-*/
+
+// Get mask (reflects pixelMask and region mask of SubImage)
+
+      inMask = itsImagePtr->getMaskSlice(inIter.position(), inIter.cursorShape(), True);
+
 //
       try {
-         ok = fit.fit(inIter.vectorCursor(), x);
+         ok = fit.fit(inIter.vectorCursor(), x, inMask);
       } catch (AipsError x) {
          ok = False;
       }
-//
-/*
-os << "After fit" << LogIO::POST;
-   const SpectralList& l4 = fit.list();
-   listElements(os, l4);
-*/
 
 // If the fit fails, the state of the fit object is the failed
 // fit, not the estimate it started with...
@@ -894,8 +889,14 @@ os << "After fit" << LogIO::POST;
          if (pFit) {
             list.evaluate(pFitIter->rwVectorCursor());   
          }
+         if (pFitMaskIter) {
+            pFitMaskIter->rwVectorCursor() = inMask;
+         }
          if (pResid) {
             list.residual(pResidIter->rwVectorCursor());   
+         }
+         if (pResidMaskIter) {
+            pResidMaskIter->rwVectorCursor() = inMask;
          }
       } else {
          nFail++;
@@ -923,6 +924,7 @@ os << "After fit" << LogIO::POST;
        clock.update(meterValue);
     }
 //
+    os << "Number of    profiles = " << nProfiles << LogIO::POST;
     os << "Number of   good fits = " << nProfiles - nFail << LogIO::POST;
     os << "Number of failed fits = " << nFail << LogIO::POST;
 //
