@@ -418,12 +418,11 @@ void MeasMath::getInfo(FrameInfo i) {
     // Make sure there has not been an epoch added
     getFrame(InfoType[i]);
     if (frameOK_p[InfoType[i]]) {
-      (((MCFrame *)(applyFrame_p[InfoType[i]].getMCFramePoint()))->
-*InfoFrame[i])
-	(info_p[i]);
+      (((MCFrame *)(applyFrame_p[InfoType[i]].
+		    getMCFramePoint()))->*InfoFrame[i])(info_p[i]);
     } else {
-      throw(AipsError("Missing information in Frame specified for 
-conversion"));
+      throw(AipsError("Missing information in Frame " +
+		      "specified for conversion"));
     };
     infoOK_p[i] = True;
   };
