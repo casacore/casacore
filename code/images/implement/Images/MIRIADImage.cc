@@ -57,7 +57,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSSpectralUtil.h>
 
 #include <aips/iostream.h>
 
