@@ -66,7 +66,6 @@
 #include <aips/iostream.h>
 #include <aips/fstream.h>
 #include <aips/strstream.h>
-#include <aips/Exceptions/Error.h>
 
 uInt MSSimFeedRec::write(MSFeed& msf, MSFeedColumns &msfc, 
 			 uInt row, uInt nant) const 
