@@ -1,5 +1,5 @@
 //# PlainTable.cc: Class defining a regular table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -548,11 +548,13 @@ void PlainTable::addRow (uInt nrrw, Bool initialize)
 	}
 	//# Locking has to be done here, otherwise nrrow_p is not up-to-date
 	//# when autoReleaseLock releases the lock and writes the data.
+	nrrowToAdd_p = nrrw;
 	colSetPtr_p->checkWriteLock (True);
 	colSetPtr_p->addRow (nrrw);
 	if (initialize) {
 	    colSetPtr_p->initialize (nrrow_p, nrrow_p+nrrw-1);
 	}
+	nrrowToAdd_p = 0;
 	nrrow_p += nrrw;
 	colSetPtr_p->autoReleaseLock();
     }
