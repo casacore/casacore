@@ -2567,3 +2567,4 @@
 09 462 src rm trial/implement/Lattices/LatticeMath.h
 09 462 src rm trial/implement/Lattices/LatticeMath.cc
 09 462 src mv trial/implement/Utilities/RecordTransformable.h aips/implement/Utilities/RecordTransformable.h
+09 462 src mv trial/implement/Utilities/RecordTransformable.cc aips/implement/Utilities/RecordTransformable.cc
