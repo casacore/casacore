@@ -84,9 +84,11 @@ void FFT2DReal2Complex(Lattice<Complex> & result,
   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
   
   IPosition start(4,0);
+  Bool isARef;
   for (uInt c = 0; c < nchan; c++){
     for (uInt p = 0; p < npol; p++){
-      input.getSlice(inputArrPtr, Slicer(start,inputSliceShape), True);
+      isARef = input.getSlice(inputArrPtr,
+                              Slicer(start,inputSliceShape), True);
       resultArray = FFT2D.rcnyfft(*inputArrPtr);
       result.putSlice(resultArray, start);
       start(2) += 1;
@@ -112,14 +114,13 @@ int main() {
     makePsf(psf);
     IPosition xfrShape(psfShape);
     xfrShape(0) = psfShape(0)/2 + 1;
-    SetupNewTable xfrSetup("dLattice_xfr_tmp.array", 
-			   TableDesc(), Table::Scratch);
+    SetupNewTable xfrSetup("dLattice_xfr_tmp.array", TableDesc(), 
+			   Table::Scratch);
     Table xfrTable(xfrSetup);
     PagedArray<Complex> xfr(xfrShape, xfrTable);
     FFT2DReal2Complex(xfr, psf);
     AlwaysAssert(near(latMean(xfr), 
-		      Complex(1.0)/Float(psfShape(2)*psfShape(3)), 
-		      1E-6), 
+		      Complex(1.0)/Float(psfShape(2)*psfShape(3)), 1E-6), 
 		 AipsError);
   } catch (AipsError x) {
     cout << x.getMesg() << endl << "FAIL" << endl;		
@@ -128,3 +129,6 @@ int main() {
   cout << "OK" << endl;
   return 0;
 }
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 dLattice"
+// End: 
