@@ -4394,3 +4394,7 @@
 14 287 src rm trial/apps/measures/VGEO/table.f0
 14 287 src rm trial/apps/measures/VGEO/table.info
 14 287 src rm trial/apps/measures/VGEO/table.lock
+14 287 src rm trial/apps/measures/VTOP/table.dat
+14 287 src rm trial/apps/measures/VTOP/table.f0
+14 287 src rm trial/apps/measures/VTOP/table.info
+14 287 src rm trial/apps/measures/VTOP/table.lock
