@@ -3902,3 +3902,4 @@
 14 065 src mv trial/implement/Display/PSWorldCanvasApp.cc trialdisplay/implement/Display/PSWorldCanvasApp.cc
 14 065 src mv trial/implement/Display/PixelCanvas.cc trialdisplay/implement/Display/PixelCanvas.cc
 14 065 src mv trial/implement/Display/PixelCanvasColorTable.cc trialdisplay/implement/Display/PixelCanvasColorTable.cc
+14 065 src mv trial/implement/Display/SimplePixelCanvasApp.cc trialdisplay/implement/Display/SimplePixelCanvasApp.cc
