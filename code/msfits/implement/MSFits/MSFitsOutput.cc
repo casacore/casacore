@@ -759,7 +759,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 	  Int offset = indptr[j] + k*numcorr0;
 	  if(!fptr[offset]){
 	    realcorr[j] += iptr[offset].real()*wptr[k];
-	    imagcorr[j] += iptr[offset].real()*wptr[k];
+	    imagcorr[j] += iptr[offset].imag()*wptr[k];
 	    wgtaver[j] += wptr[k];
 	  }
 
