@@ -76,12 +76,11 @@ template<class T> class MaskedLattice;
 // 
 // For Gaussians, the parameter Vector consists, in order, of
 // the peak, x location, y location, major axis, minor axis,
-// and position angle of the major axis (in radians). Consistent
-// with Gaussian2D class, the position angle is positive +y to -x 
+// and position angle of the major axis (in radians). The 
+// position angle is positive +x to +y 
 // in the pixel coordinate system ([0,0] in center of image) and 
 // in the range -2pi to 2pi.  When the solution is recovered, the
-// position angle will be in the range 0 to pi (this is consistent
-// behaviour with the Gaussian2D functional).
+// position angle will be in the range 0 to pi.
 //
 // </synopsis> 
 // <example>
@@ -164,6 +163,7 @@ public:
     //<group>
     void setIncludeRange (Double minVal, Double maxVal);
     void setExcludeRange (Double minVal, Double maxVal);
+    void resetRange();
     //</group>
 
     // Return number of parameters for this type of model
@@ -191,6 +191,7 @@ public:
     // an enum value to tell you what happened if the fit failed
     // for some reasons.  A message can also be found with 
     // function errorMessage if the fit was not successful.
+    // For Array(i,j) i is x and j is y
     //<group>
     Fit2D::ErrorTypes fit(const MaskedLattice<Float>& data, 
                           const Lattice<Float>& sigma ,
@@ -293,6 +294,7 @@ private:
    void normalize (Double& value, Double& x, Double& y, 
                    Double& width, Double posNorm,
                    Double valNorm) const;
+   void piRange (Double& pa) const;
 
    void unNormalize (Double& value, Double& x, Double& y, 
                      Double& width, Double posNorm,
