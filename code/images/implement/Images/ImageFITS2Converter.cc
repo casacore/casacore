@@ -391,9 +391,13 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.define("bscale", bscale);
     header.setComment("bscale", "PHYSICAL = PIXEL*BSCALE + BZERO");
     header.define("bzero", bzero);
-    if (BITPIX > 0 && hasBlanks) {
+    if (BITPIX>0 && hasBlanks) {
 	header.define("blank", minshort);
 	header.setComment("blank", "Pixels with this value are blank");
+    }
+    if (BITPIX>0) {
+        header.define("datamin", minPix);
+        header.define("datamax", maxPix);
     }
 
     header.define("COMMENT1", ""); // inserts spaces
