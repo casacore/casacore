@@ -32,11 +32,12 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
+#include <aips/Utilities/String.h>
 #include <aips/Measures.h>
 
 
 // This test program tests the ArrayIO istream extract functions.
-// It read from stdin (the test version from tArraIO3.in) and prints
+// It reads from stdin (the test version from tArraIO3.in) and prints
 // the result.
 
 main (int argc)
@@ -45,6 +46,7 @@ main (int argc)
 	Array<Double> a;
 	Matrix<Double> m;
 	Array<Quantity> q;
+	Array<String> as;
 	cout << "Input Array [1 2 3 4 5 6] " << endl;
 	cout << "--------------------------------------" << endl;
 	cin >> a;
@@ -69,6 +71,10 @@ main (int argc)
 	cout << "--------------------------------------" << endl;
 	cin >> q;
 	cout << q << endl;
+	cout << "Input Array [x,y,x] " << endl;
+	cout << "--------------------------------------" << endl;
+	cin >> as;
+	cout << as << endl;
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
