@@ -36,9 +36,7 @@
 #include <trial/Lattices/LELBinary.h>
 #include <trial/Lattices/LELUnary.h>
 #include <trial/Lattices/LELFunction.h>
-#include <trial/Lattices/PixelRegion.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
@@ -335,6 +333,72 @@ LatticeExprNode::LatticeExprNode (const Lattice<Bool>& lattice)
 }
 
 
+LatticeExprNode::LatticeExprNode (const MaskedLattice<Float>& lattice) 
+: donePrepare_p (False),
+  dtype_p       (TpFloat),
+  pExprFloat_p  (new LELLattice<Float> (lattice))
+{
+   pAttr_p = &pExprFloat_p->getAttribute();
+
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>>&); pExpr_p.nrefs() = "
+	<< pExprDouble_p.nrefs() << endl;
+#endif
+}
+
+LatticeExprNode::LatticeExprNode (const MaskedLattice<Double>& lattice) 
+: donePrepare_p (False),
+  dtype_p       (TpDouble),
+  pExprDouble_p (new LELLattice<Double> (lattice))
+{
+   pAttr_p = &pExprDouble_p->getAttribute();
+
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>>&); pExpr_p.nrefs() = "
+	<< pExprDouble_p.nrefs() << endl;
+#endif
+}
+
+LatticeExprNode::LatticeExprNode (const MaskedLattice<Complex>& lattice) 
+: donePrepare_p  (False),
+  dtype_p        (TpComplex),
+  pExprComplex_p (new LELLattice<Complex> (lattice))
+{
+   pAttr_p = &pExprComplex_p->getAttribute();
+
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>>&); pExpr_p.nrefs() = "
+	<< pExprDouble_p.nrefs() << endl;
+#endif
+}
+
+LatticeExprNode::LatticeExprNode (const MaskedLattice<DComplex>& lattice) 
+: donePrepare_p   (False),
+  dtype_p         (TpDComplex),
+  pExprDComplex_p (new LELLattice<DComplex> (lattice))
+{
+   pAttr_p = &pExprDComplex_p->getAttribute();
+
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>>&); pExpr_p.nrefs() = "
+	<< pExprDouble_p.nrefs() << endl;
+#endif
+}
+
+LatticeExprNode::LatticeExprNode (const MaskedLattice<Bool>& lattice) 
+: donePrepare_p (False),
+  dtype_p       (TpBool),
+  pExprBool_p   (new LELLattice<Bool> (lattice))
+{
+   pAttr_p = &pExprBool_p->getAttribute();
+
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: constructor (MaskedLattice<T>); pExpr_p.nrefs() = "
+	<< pExprDouble_p.nrefs() << endl;
+#endif
+}
+
+
 LatticeExprNode::LatticeExprNode(const LatticeExprNode& other)
 : donePrepare_p   (other.donePrepare_p),
   dtype_p         (other.dtype_p),
@@ -407,8 +471,15 @@ void LatticeExprNode::replaceScalarExpr()
 }
 
 
+void LatticeExprNode::evalMask (Array<Bool>& result,
+				const Slicer& section) const
+{
+   // Set to True for the time being.
+   result = True;
+}
+
 void LatticeExprNode::eval (Array<Float>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
    DebugAssert (dataType() == TpFloat, AipsError);
    if (!donePrepare_p) {
@@ -423,13 +494,13 @@ void LatticeExprNode::eval (Array<Float>& result,
       result = pExprFloat_p->getScalar();
    } else {
       Array<Float> temp(result.shape());
-      pExprFloat_p->eval(temp, region);
+      pExprFloat_p->eval(temp, section);
       result = temp;
    }
 }
 
 void LatticeExprNode::eval (Array<Double>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
    DebugAssert (dataType() == TpDouble, AipsError);
    if (!donePrepare_p) {
@@ -444,13 +515,13 @@ void LatticeExprNode::eval (Array<Double>& result,
       result = pExprDouble_p->getScalar();
    } else {
       Array<Double> temp(result.shape());
-      pExprDouble_p->eval(temp, region);
+      pExprDouble_p->eval(temp, section);
       result = temp;
    }
 }
 
 void LatticeExprNode::eval (Array<Complex>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
    DebugAssert (dataType() == TpComplex, AipsError);
    if (!donePrepare_p) {
@@ -465,13 +536,13 @@ void LatticeExprNode::eval (Array<Complex>& result,
       result = pExprComplex_p->getScalar();
    } else {
       Array<Complex> temp(result.shape());
-      pExprComplex_p->eval(temp, region);
+      pExprComplex_p->eval(temp, section);
       result = temp;
    }
 }
 
 void LatticeExprNode::eval (Array<DComplex>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
    DebugAssert (dataType() == TpDComplex, AipsError);
    if (!donePrepare_p) {
@@ -486,13 +557,13 @@ void LatticeExprNode::eval (Array<DComplex>& result,
       result = pExprDComplex_p->getScalar();
    } else {
       Array<DComplex> temp(result.shape());
-      pExprDComplex_p->eval(temp, region);
+      pExprDComplex_p->eval(temp, section);
       result = temp;
    }
 }
 
 void LatticeExprNode::eval (Array<Bool>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
    DebugAssert (dataType() == TpBool, AipsError);
    if (!donePrepare_p) {
@@ -507,7 +578,7 @@ void LatticeExprNode::eval (Array<Bool>& result,
       result = pExprBool_p->getScalar();
    } else {
       Array<Bool> temp(result.shape());
-      pExprBool_p->eval(temp, region);
+      pExprBool_p->eval(temp, section);
       result = temp;
    }
 }
