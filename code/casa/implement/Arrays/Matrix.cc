@@ -252,6 +252,7 @@ template<class T> Vector<T> Matrix<T>::row(uInt n)
     tmp.inc_p.resize (1);
     tmp.originalLength_p.resize (1);
     tmp.nels_p = tmp.length_p(0);
+    tmp.contiguous_p = tmp.isStorageContiguous();
     return tmp; // should match Vector<T>(const Array<T> &)
 }
 
@@ -270,6 +271,7 @@ template<class T> Vector<T> Matrix<T>::column(uInt n)
     tmp.inc_p.resize (1);
     tmp.originalLength_p.resize (1);
     tmp.nels_p = tmp.length_p(0);
+    tmp.contiguous_p = tmp.isStorageContiguous();
     return tmp; // should match Vector<T>(const Array<T> &)
 
 }
