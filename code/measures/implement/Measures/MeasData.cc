@@ -28,6 +28,8 @@
 //# Includes
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/MeasData.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 //# Constants
 const Double MeasData::MJD2000 =   51544.5;
