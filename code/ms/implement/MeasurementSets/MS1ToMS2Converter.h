@@ -56,6 +56,7 @@ public:
 
 private:
   // Forbid copy constrcutor and assignment.
+  // <group>
   MS1ToMS2Converter (const MS1ToMS2Converter&);
   MS1ToMS2Converter& operator= (const MS1ToMS2Converter&);
   // </group>
