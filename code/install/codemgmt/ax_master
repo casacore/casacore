@@ -2216,3 +2216,8 @@
 11 152 src rm trial/implement/Widgets/measurewidget.g
 11 152 src rm trial/implement/Widgets/rangewidget.help
 11 152 src rm trial/implement/Widgets/rangewidget.g
+11 152 sys rm libexec/filewidget.g
+11 152 sys rm libexec/scalarwidget.g
+11 152 sys rm libexec/quantitywidget.g
+11 152 sys rm libexec/measurewidget.g
+11 152 sys rm libexec/rangewidget.g
