@@ -2201,3 +2201,4 @@
 11 149 src rm atnf/apps/atload/atload.help
 11 149 src rm atnf/apps/atload/atload.g
 11 149 src rm atnf/apps/atload/atload_meta.g
+11 150 src rm aips/glish/rivet/harv
