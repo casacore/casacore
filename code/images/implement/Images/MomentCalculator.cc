@@ -122,7 +122,11 @@ void MomentCalcBase<T>::costlyMoments(ImageMoments<T>& iMom,
                                       Bool& doMedianV,
                                       Bool& doAbsDev) const
 {
+   doMedianI = False;
+   doMedianV = False;
+   doAbsDev = False;
    typedef ImageMoments<Float> IM;
+//
    for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
       if (iMom.moments_p(i) == IM::MEDIAN) doMedianI = True;
       if (iMom.moments_p(i) == IM::MEDIAN_COORDINATE) doMedianV = True;
@@ -157,17 +161,32 @@ PGPlotter& MomentCalcBase<T>::device(ImageMoments<T>& iMom) const
 
 
 template <class T>
-Bool MomentCalcBase<T>::doCoordCalc(ImageMoments<T>& iMom) const
+void MomentCalcBase<T>::doCoordCalc(Bool& doCoordProfile,
+                                    Bool& doCoordRandom,
+                                    ImageMoments<T>& iMom) const
+//
+// doCoordProfile - we need the coordinate for each pixel of the profile
+// doCoordRandom  - we need the coordinate for occaisional use
+//
 {
 // Figure out if we need to compute the coordinate of each profile pixel index
 // for each profile.  This is very expensive for non-separable axes.
 
+   doCoordProfile = False;
+   doCoordRandom  = False;
    typedef ImageMoments<Float> IM;
+//
    for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
       if (iMom.moments_p(i) == IM::WEIGHTED_MEAN_COORDINATE ||
-          iMom.moments_p(i) == IM::WEIGHTED_DISPERSION_COORDINATE) return True;
+          iMom.moments_p(i) == IM::WEIGHTED_DISPERSION_COORDINATE) {
+         doCoordProfile = True;
+      }
+      if (iMom.moments_p(i) == IM::MAXIMUM_COORDINATE ||
+          iMom.moments_p(i) == IM::MINIMUM_COORDINATE ||
+          iMom.moments_p(i) == IM::MEDIAN_COORDINATE) {
+         doCoordRandom = True;
+      }
    }
-   return False;
 }
 
 
@@ -466,7 +485,7 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
 // Return values of fit
    
 //   cout << "SOlution = " << solution.ac() << LogIO::POST;
-   
+
    peak  = solution(0);
    pos   = solution(1);
    width = abs(solution(2));
@@ -1192,7 +1211,8 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
                                      Vector<Double>& pixelIn,
                                      Vector<Double>& worldOut,
                                      Vector<Double>& sepWorldCoord,
-                                     LogIO& os) const
+                                     LogIO& os, Bool doCoordProfile, 
+                                     Bool doCoordRandom) const
 // 
 // This function does two things.  It sets up the pixelIn
 // and worldOut vectors needed by getMomentCoord. It also
@@ -1200,18 +1220,20 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
 // profile if it is separable
 //
 {
+   sepWorldCoord.resize(0);
+   if (!doCoordProfile && !doCoordRandom) return;
 
-// Resize these vectors used for coordinate tarnsformations
+// Resize these vectors used for coordinate transformations
 
-   pixelIn.resize(iMom.pInImage_p->ndim());
-   worldOut.resize(iMom.pInImage_p->ndim());
-   
-  
+   pixelIn.resize(iMom.pInImage_p->coordinates().nPixelAxes());
+   worldOut.resize(iMom.pInImage_p->coordinates().nWorldAxes());
+   if (!doCoordProfile) return;
+
 // Find the coordinate for the moment axis
    
    Int coordinate, axisInCoordinate;
    iMom.pInImage_p->coordinates().findPixelAxis(coordinate, 
-       axisInCoordinate,  iMom.momentAxis_p);  
+           axisInCoordinate,  iMom.momentAxis_p);  
   
 // Find out whether this coordinate is separable or not
   
@@ -1427,12 +1449,12 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
 
    momAxisType_p = momentAxisName(iMom_p);
 
-// Are we computing coordinate-dependent moments.  If
-// so precompute coordinate vector is momebt axis separable
+// Are we computing coordinate-dependent moments.  If so
+// precompute coordinate vector if moment axis separable
 
-   doCoordCalc_p = doCoordCalc(iMom_p);
-   if (doCoordCalc_p) setUpCoords(iMom_p, pixelIn_p, worldOut_p,
-                                  sepWorldCoord_p, os_p);
+   doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
+   setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
+               doCoordProfile_p, doCoordRandom_p);
 
 // Number of failed Gaussian fits 
    nFailed_p = 0;
@@ -1559,6 +1581,17 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
       
    Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
 
+// 
+// We must fill in the input pixel coordinate if we need
+// coordinates, but did not pre compute them
+//
+   if (!preComp) {
+      if (doCoordRandom_p || doCoordProfile_p) {
+         for (uInt i=0; i<inPos.nelements(); i++) {
+            pixelIn_p(i) = Double(inPos(i));
+         }
+      }
+   }
 
 // Compute moments.  The actual moment computation always done with 
 // the original data, regardless of whether the pixel selection is 
@@ -1575,7 +1608,6 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
    Double coord = 0.0;
    Int i, j;
 
-
    if (profileInMask.nelements() == 0) {
 
 // No mask included.
@@ -1587,7 +1619,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 
                if (preComp) {
                   coord = sepWorldCoord_p(i);              
-               } else if (doCoordCalc_p) {
+               } else if (doCoordProfile_p) {
                   coord = getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));       
                }
@@ -1605,7 +1637,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 
                if (preComp) {
                   coord = sepWorldCoord_p(i); 
-               } else if (doCoordCalc_p) {
+               } else if (doCoordProfile_p) {
                   coord = getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));
                }
@@ -1620,7 +1652,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
          for (i=0; i<nPts; i++) {
             if (preComp) {
                coord = sepWorldCoord_p(i);
-            } else if (doCoordCalc_p) {
+            } else if (doCoordProfile_p) {
                coord = getMomentCoord(iMom_p, pixelIn_p,
                                       worldOut_p, Double(i));
             }
@@ -1646,7 +1678,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 
                if (preComp) {
                   coord = sepWorldCoord_p(i);              
-               } else if (doCoordCalc_p) {
+               } else if (doCoordProfile_p) {
                   coord = getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));       
                }
@@ -1665,7 +1697,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 
                if (preComp) {
                   coord = sepWorldCoord_p(i); 
-               } else if (doCoordCalc_p) {
+               } else if (doCoordProfile_p) {
                   coord = getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));
                }
@@ -1681,7 +1713,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
             if (pProfileInMask[i]) {
                if (preComp) {
                   coord = sepWorldCoord_p(i);
-               } else if (doCoordCalc_p) {
+               } else if (doCoordProfile_p) {
                   coord = getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));
                }
@@ -1776,25 +1808,26 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
          }
  
 // Find world coordinate of that pixel on the moment axis
- 
-        vMedian = getMomentCoord(iMom_p, pixelIn_p,
-                                 worldOut_p, interpPixel);
+
+         vMedian = getMomentCoord(iMom_p, pixelIn_p,
+                                  worldOut_p, interpPixel);
       }   
    }
  
 // Fill all moments array
    
-   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, doCoordCalc_p,
+   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, 
+                  doCoordRandom_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq, 
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
 // Fill vector of selected moments 
 
+
    for (i=0; i<Int(selectMoments_p.nelements()); i++) {
       moments(i) = calcMoments_p(selectMoments_p(i));
       momentsMask(i) = True;
    }
-
 }
 
 
@@ -1852,9 +1885,9 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
 // Are we computing coordinate-dependent moments.  If
 // so precompute coordinate vector is momebt axis separable
 
-   doCoordCalc_p = doCoordCalc(iMom_p);
-   if (doCoordCalc_p) setUpCoords(iMom_p, pixelIn_p, worldOut_p, 
-                                  sepWorldCoord_p, os_p);
+   doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
+   setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
+               doCoordProfile_p, doCoordRandom_p);
 
 // Are we fitting, automatically or interactively ?
 
@@ -2016,6 +2049,18 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
       
    Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
 
+// 
+// We must fill in the input pixel coordinate if we need
+// coordinates, but did not pre compute them
+//
+   if (!preComp) {
+      if (doCoordRandom_p || doCoordProfile_p) {
+         for (uInt i=0; i<inPos.nelements(); i++) {
+            pixelIn_p(i) = Double(inPos(i));
+         }
+      }
+   }
+
 
 // Set up a pointer for fast access to the profile mask
 // if it exists.
@@ -2041,7 +2086,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
       if (pProfileInMask[i]) {
          if (preComp) {
             coord = sepWorldCoord_p(i);
-         } else if (doCoordCalc_p) {
+         } else if (doCoordProfile_p) {
             coord = getMomentCoord(iMom_p, pixelIn_p,
                                    worldOut_p, Double(i));
          }
@@ -2085,7 +2130,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
 // Fill all moments array
    
    T vMedian = 0;   
-   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, doCoordCalc_p,
+   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, doCoordRandom_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq, 
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
@@ -2561,9 +2606,9 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 // Are we computing coordinate-dependent moments.  If so
 // precompute coordinate vector if moment axis is separable
  
-   doCoordCalc_p = doCoordCalc(iMom_p);
-   if (doCoordCalc_p) setUpCoords(iMom_p, pixelIn_p, worldOut_p, 
-                                  sepWorldCoord_p, os_p);
+   doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
+   setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
+               doCoordProfile_p, doCoordRandom_p);
 
 // Are we fitting, automatically or interactively ?
    
@@ -2656,7 +2701,17 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
 // Were the profile coordinates precomputed ?
       
    Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
-
+// 
+// We must fill in the input pixel coordinate if we need
+// coordinates, but did not pre compute them
+//
+   if (!preComp) {
+      if (doCoordRandom_p || doCoordProfile_p) {
+         for (uInt i=0; i<inPos.nelements(); i++) {
+            pixelIn_p(i) = Double(inPos(i));
+         }
+      }
+   }
 
 // Set Gaussian functional values.  We reuse the same functional that
 // was used in the interactive fitting display process.
@@ -2688,7 +2743,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
       
          if (preComp) {
             coord = sepWorldCoord_p(i);
-         } else if (doCoordCalc_p) {
+         } else if (doCoordProfile_p) {
             coord = getMomentCoord(iMom_p, pixelIn_p, 
                                    worldOut_p, Double(i));
          }
@@ -2707,7 +2762,6 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
       momentsMask = False;
       return;
    }
-   
 
 
 // Absolute deviations of I from mean needs an extra pass.
@@ -2730,7 +2784,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
        
 // Fill all moments array
    
-   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, doCoordCalc_p,
+   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, doCoordRandom_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq,
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
@@ -2742,8 +2796,4 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
       momentsMask(i) = True;
    }
 }
-
-
-
-
 
