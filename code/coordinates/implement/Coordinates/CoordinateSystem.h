@@ -466,8 +466,8 @@ public:
     //
     // The Matrix interface lets you do many conversions efficiently.
     // Use <src>Matrix(nAxes, nConversions) </src> and 
-    // <src>Matrix.column()=coordinate</src> to get the order
-    // right.  
+    // <src>Matrix.column()=coordinate</src> or
+    // <src>Matrix(axis, iConversion)</src> to get the order right.  
     //
     // These functions invoke <src>toMix</src>
     // so make sure you call <src>setWorldMixRanges</src>
