@@ -6242,3 +6242,4 @@
 17 191 src mv ./aips/implement/Functionals/test/tNQFunctionWrapper.cc ./aips/implement/Functionals/test/tFunctionWrapper.cc
 17 191 src mv ./aips/implement/Functionals/test/tNQGaussian1D.cc ./aips/implement/Functionals/test/tGaussian1D.cc
 17 191 src mv ./aips/implement/Functionals/test/tNQGaussian2D.cc ./aips/implement/Functionals/test/tGaussian2D.cc
+17 191 src mv ./aips/implement/Functionals/test/tNQGaussianND.cc ./aips/implement/Functionals/test/tGaussianND.cc
