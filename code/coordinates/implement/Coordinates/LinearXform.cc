@@ -412,7 +412,7 @@ LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes,
       pc0.diagonal() = d;
    } else {
       if (!allEQ(axes, True)) {
-         throw(AipsError("Cannot invert PC matrix when some axes not being transformed"));
+         throw(AipsError("Cannot invert non-diagonal PC matrix (probably a rotated CoordinateSystem) when some axes not being transformed"));
       }
 //
       pc0 = invert(pc());
@@ -428,5 +428,3 @@ LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes,
    }
    return LinearXform(crpix0, cdelt0, pc0);
 }
-
-
