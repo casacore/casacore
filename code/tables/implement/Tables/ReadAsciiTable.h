@@ -155,7 +155,8 @@
 // <br>It returns a string containing the format of the columns in
 // the form COL1=R, COL2=D, ...
 String readAsciiTable (const String& filein, const String& tableDescName,
-		       const String& tableName, Bool autoHeader = False);
+		       const String& tableName, Bool autoHeader = False,
+		       Char separator = ' ');
 
 // This form reads TWO Ascii files. The first file may contain 
 // keywords and their values as well as the two lines described above for
@@ -167,9 +168,11 @@ String readAsciiTable (const String& filein, const String& tableDescName,
 // the form COL1=R, COL2=D, ...
 // <group>
 String readAsciiTable (const String& headerFile, const String& dataFile, 
-		       const String& tableDescName, const String& tablename);
+		       const String& tableDescName, const String& tablename,
+		       Char separator = ' ');
 String readAsciiTable (const String& headerFile, const String& dataFile, 
-		       const String& tableDescName, const char* tablename);
+		       const String& tableDescName, const char* tablename,
+		       Char separator = ' ');
 // </group>
 
 // </group>

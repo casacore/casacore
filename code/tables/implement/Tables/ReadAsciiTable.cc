@@ -54,19 +54,22 @@
 //# Quotes around strings are removed
 //# -1 is returned if no more values are found.
 Int readAsciiTableGetNext (const Char* string, Int strlen, Char* result,
-			   Int& at)
+			   Int& at, Char separator)
 {
     Int i = 0;
     Bool found  = False;
     Bool quoted = False;
     Char ihave;
-
-    if (string[at] == '\0') {
-        return -1;
+    // The next few lines are needed to treat e.g. a trailing comma as
+    // a value.
+    Bool hasNext = False;
+    if (at < 0) {
+        at = -at;
+	hasNext = True;
     }
     for (; at<strlen; at++) {
 	ihave = string[at];
-	if (ihave == '\'' || ihave == '\"') {
+	if (ihave == '\'' || ihave == '"') {
 	    if (quoted) {
 		quoted = False;
 		continue;
@@ -78,7 +81,7 @@ Int readAsciiTableGetNext (const Char* string, Int strlen, Char* result,
 	}
 	if (ihave == '\0') {
 	    result[i] = '\0';
-	    return (found  ?  i : -1);
+	    return (found||hasNext  ?  i : -1);
 	}
 	if (quoted) {
 	    result[i++] = ihave;
@@ -87,9 +90,16 @@ Int readAsciiTableGetNext (const Char* string, Int strlen, Char* result,
 	if (ihave == '\t') {
 	    ihave = ' ';
 	}
-	if (ihave == ' '  &&  found) {
-	    result[i] = '\0';
-	    return i;
+	if (ihave == separator) {
+	    if (separator != ' ') {
+	        found = True;
+	        at++;
+		at = -at;      // needed to recognize trailing comma
+	    }
+	    if (found) {
+	        result[i] = '\0';
+		return i;
+	    }
 	}
 	if (ihave != ' ') {
 	    found = True;
@@ -104,7 +114,7 @@ Int readAsciiTableGetNext (const Char* string, Int strlen, Char* result,
 
 
 void getTypesAsciiTable (const Char* in, Int leng,
-			 Char* string1, Char* string2)
+			 Char* string1, Char* string2, Char separator)
 {
     Int at = 0;
     Int i = 0;
@@ -112,7 +122,7 @@ void getTypesAsciiTable (const Char* in, Int leng,
     //# a compiler bug appeared on RH systems.
     //# Therefore assignment is used instead.
     String str;
-    while (readAsciiTableGetNext (in, leng, string2, at) >= 0) {
+    while (readAsciiTableGetNext (in, leng, string2, at, separator) >= 0) {
         if (string2[0] == '\0') {
 	    string1[0] = 'A';
 	} else {
@@ -158,7 +168,8 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 				 LogIO& logger,
 				 const String& fileName,
 				 ifstream& jFile,
-				 Int& lineNumber)
+				 Int& lineNumber,
+				 Char separator)
 {
   Float tempR; Short tempSH; Int tempI; Double tempD;
   Float temp1, temp2, temp3, temp4;
@@ -168,8 +179,8 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
   // Get the column name in case it is a column keywordset.
   String colName;
   Int atl = 0;
-  readAsciiTableGetNext (string1, lineSize, first, atl); 
-  Int d4 = readAsciiTableGetNext (string1, lineSize, second, atl); 
+  readAsciiTableGetNext (string1, lineSize, first, atl, ' '); 
+  Int d4 = readAsciiTableGetNext (string1, lineSize, second, atl, ' '); 
   if (d4 > 0) {
     colName = second;
   }
@@ -196,8 +207,8 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 
 // Read the first two fields of a KEYWORD line
     Int done3, done4, at3=0;
-    done3 = readAsciiTableGetNext (string1, lineSize, first, at3); 
-    done4 = readAsciiTableGetNext (string1, lineSize, second, at3); 
+    done3 = readAsciiTableGetNext (string1, lineSize, first, at3, ' '); 
+    done4 = readAsciiTableGetNext (string1, lineSize, second, at3, ' '); 
     if (done3<=0 || done4<=0) {
       throw (AipsError ("No keyword name and type in line " +
 			String::toString(lineNumber)
@@ -217,7 +228,7 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
       Int savat3 = at3;
       Int nVals = 0;
       while (readAsciiTableGetNext (string1, lineSize,
-				    first, at3) >= 0) {
+				    first, at3, separator) >= 0) {
 	nVals++;
       }
       if (nVals == 0) {
@@ -232,8 +243,12 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<Short> vectShort(nVals); 
 	for (Int i21=0; i21<nVals; i21++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
-	  istrstream(first, done3) >> tempSH;
+					 first, at3, separator);
+	  if (done3 > 0) {
+	    istrstream(first, done3) >> tempSH;
+	  } else {
+	    tempSH = 0;
+	  }
 	  vectShort(i21) = tempSH;
 	}
 	if (nVals > 1) {
@@ -245,8 +260,12 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<Int> vectInt(nVals); 
 	for (Int i21=0; i21<nVals; i21++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
-	  istrstream(first, done3) >> tempI;
+					 first, at3, separator);
+	  if (done3 > 0) {
+	    istrstream(first, done3) >> tempI;
+	  } else {
+	    tempI = 0;
+	  }
 	  vectInt(i21) = tempI;
 	}
 	if (nVals > 1) {
@@ -258,8 +277,12 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<Float> vectFloat(nVals); 
 	for (Int i20=0; i20<nVals; i20++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
-	  istrstream(first, done3) >> tempR;
+					 first, at3, separator);
+	  if (done3 > 0) {
+	    istrstream(first, done3) >> tempR;
+	  } else {
+	    tempR = 0;
+	  }
 	  vectFloat(i20) = tempR;
 	}
 	if (nVals > 1) {
@@ -271,8 +294,12 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<Double> vectDbl(nVals); 
 	for (Int i20=0; i20<nVals; i20++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
-	  istrstream(first, done3) >> tempD;
+					 first, at3, separator);
+	  if (done3 > 0) {
+	    istrstream(first, done3) >> tempD;
+	  } else {
+	    tempD = 0;
+	  }
 	  vectDbl(i20) = tempD;
 	}
 	if (nVals > 1) {
@@ -284,7 +311,7 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<String> vectStr(nVals); 
 	for (Int i20=0; i20<nVals; i20++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
+					 first, at3, separator);
 	  vectStr(i20) = first;
 	}
 	if (nVals > 1) {
@@ -296,7 +323,7 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<Bool> vectStr(nVals); 
 	for (Int i20=0; i20<nVals; i20++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
+					 first, at3, separator);
 	  vectStr(i20) = toBoolAsciiTable (first);
 	}
 	if (nVals > 1) {
@@ -314,11 +341,19 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<Complex> vectCX(nVals); 
 	for (Int i20=0; i20<nVals; i20++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
+					 first, at3, separator);
 	  done4 = readAsciiTableGetNext (string1, lineSize,
-					 second, at3);
-	  istrstream(first, done3) >> temp1;
-	  istrstream(second, done4) >> temp2;
+					 second, at3, separator);
+	  if (done3 > 0) {
+	    istrstream(first, done3) >> temp1;
+	  } else {
+	    temp1 = 0;
+	  }
+	  if (done4 > 0) {
+	    istrstream(second, done4) >> temp2;
+	  } else {
+	    temp2 = 0;
+	  }
 	  vectCX(i20) = Complex(temp1, temp2);
 	}
 	if (nVals > 1) {
@@ -336,11 +371,19 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<DComplex> vectCX(nVals); 
 	for (Int i20=0; i20<nVals; i20++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
+					 first, at3, separator);
 	  done4 = readAsciiTableGetNext (string1, lineSize,
-					 second, at3);
-	  istrstream(first, done3) >> temp1d;
-	  istrstream(second, done4) >> temp2d;
+					 second, at3, separator);
+	  if (done3 > 0) {
+	    istrstream(first, done3) >> temp1d;
+	  } else {
+	    temp1d = 0;
+	  }
+	  if (done4 > 0) {
+	    istrstream(second, done4) >> temp2d;
+	  } else {
+	    temp2d = 0;
+	  }
 	  vectCX(i20) = DComplex(temp1d, temp2d);
 	}
 	if (nVals > 1) {
@@ -358,11 +401,19 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<Complex> vectCX(nVals); 
 	for (Int i20=0; i20<nVals; i20++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
+					 first, at3, separator);
 	  done4 = readAsciiTableGetNext (string1, lineSize,
-					 second, at3);
-	  istrstream(first, done3) >> temp1;
-	  istrstream(second, done4) >> temp2;
+					 second, at3, separator);
+	  if (done3 > 0) {
+	    istrstream(first, done3) >> temp1;
+	  } else {
+	    temp1 = 0;
+	  }
+	  if (done4 > 0) {
+	    istrstream(second, done4) >> temp2;
+	  } else {
+	    temp2 = 0;
+	  }
 	  temp2 *= 3.14159265/180.0; 
 	  temp3 = temp1 * cos(temp2);
 	  temp4 = temp1 * sin(temp2);
@@ -383,11 +434,19 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 	Vector<DComplex> vectCX(nVals); 
 	for (Int i20=0; i20<nVals; i20++) {
 	  done3 = readAsciiTableGetNext (string1, lineSize,
-					 first, at3);
+					 first, at3, separator);
 	  done4 = readAsciiTableGetNext (string1, lineSize,
-					 second, at3);
-	  istrstream(first, done3) >> temp1d;
-	  istrstream(second, done4) >> temp2d;
+					 second, at3, separator);
+	  if (done3 > 0) {
+	    istrstream(first, done3) >> temp1d;
+	  } else {
+	    temp1d = 0;
+	  }
+	  if (done4 > 0) {
+	    istrstream(second, done4) >> temp2d;
+	  } else {
+	    temp2d = 0;
+	  }
 	  temp2d *= 3.14159265/180.0; 
 	  temp3d = temp1d * cos(temp2d);
 	  temp4d = temp1d * sin(temp2d);
@@ -415,7 +474,7 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 
 String doReadAsciiTable (const String& headerfile, const String& filein, 
 			 const String& tableproto, const String& tablename,
-			 Bool autoHeader)
+			 Bool autoHeader, Char separator)
 {
     const Int   lineSize = 32768;
           char  string1[lineSize], string2[lineSize], stringsav[lineSize];
@@ -457,7 +516,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     while (strncmp(string1, ".key", 4) == 0) {
         readAsciiTableHandleKeyset (lineSize, string1, first, second,
 				    keysets, logger,
-				    headerfile, jFile, lineNumber);
+				    headerfile, jFile, lineNumber, separator);
     }
 
 // Okay, all keywords have been read.
@@ -493,7 +552,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     stringsav[0] = '\0';
     if (autoHeader) {
         strcpy (stringsav, string1);
-        getTypesAsciiTable (string1, lineSize, string2, first);
+        getTypesAsciiTable (string1, lineSize, string2, first, separator);
 	strcpy (string1, first);
     }
 
@@ -504,8 +563,10 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     String formStr;
     Int done1 = 0, done2 = 0, at1 = 0, at2 = 0, nrcol = 0;
     while (done1 >= 0) {
-	done1 = readAsciiTableGetNext (string1, lineSize, first, at1);
-	done2 = readAsciiTableGetNext (string2, lineSize, second, at2);
+	done1 = readAsciiTableGetNext (string1, lineSize, first,
+				       at1, ' ');
+	done2 = readAsciiTableGetNext (string2, lineSize, second,
+				       at2, ' ');
 	if (done1>0 && done2>0) {
 	    nameOfColumn[nrcol] = String(first);
 	    typeOfColumn[nrcol] = String(second);
@@ -599,62 +660,111 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 	at1 = 0; 
 	tab.addRow();
 	for (Int i6=0; i6<nrcol; i6++) {
-	    done1 = readAsciiTableGetNext (string1, lineSize, first, at1);
-	    done2 = 1;
+	    done1 = readAsciiTableGetNext (string1, lineSize, first,
+					   at1, separator);
+	    if (done1 < 0) {
+	        done1 = 0;
+	        first[0] = '\0';
+	    }
+	    done2 = 0;
 	    if (typeOfColumn[i6] == "X"  ||  typeOfColumn[i6] == "DX"
 	    ||  typeOfColumn[i6] == "Z"  ||  typeOfColumn[i6] == "DZ") {
-		done2 = readAsciiTableGetNext (string1, lineSize, second, at1);
-	    }
-	    if (done1<0  || done2<0) {
-	        tab.flush();
-	        throw (AipsError ("Confused about input in " + filein
-				  + "\nLast text seen: " + string1
-				  + "\nThis occurred at about row "
-				  + String::toString(tab.nrow())
-				  + " (excluding headers). "
-				  + "The rest of the file is ignored."));
+		done2 = readAsciiTableGetNext (string1, lineSize, second,
+					       at1, separator);
+		if (done2 < 0) {
+		    done2 = 0;
+		    second[0] = '\0';
+		}
 	    }
 	    if (typeOfColumn[i6] == "S") {
+	      if (done1 > 0) {
 		istrstream(first, done1) >> tempSH;
-		tabcol[i6].putScalar (rownr, tempSH);
+	      } else {
+		tempSH = 0;
+	      }
+	      tabcol[i6].putScalar (rownr, tempSH);
 	    }
 	    if (typeOfColumn[i6] == "I") {
+	      if (done1 > 0) {
 		istrstream(first, done1) >> tempI;
-		tabcol[i6].putScalar (rownr, tempI);
+	      } else {
+		tempI = 0;
+	      }
+	      tabcol[i6].putScalar (rownr, tempI);
 	    }
 	    if (typeOfColumn[i6] == "R") {
+	      if (done1 > 0) {
 		istrstream(first, done1) >> tempR;
-		tabcol[i6].putScalar (rownr, tempR);
+	      } else {
+		tempR = 0;
+	      }
+	      tabcol[i6].putScalar (rownr, tempR);
 	    }
 	    if (typeOfColumn[i6] == "D") {
+	      if (done1 > 0) {
 		istrstream(first, done1) >> tempD;
-		tabcol[i6].putScalar (rownr, tempD);
+	      } else {
+		tempD = 0;
+	      }
+	      tabcol[i6].putScalar (rownr, tempD);
 	    }
 	    if (typeOfColumn[i6] == "X") {
+	      if (done1 > 0) {
 		istrstream(first, done1) >> temp1;
+	      } else {
+		temp1 = 0;
+	      }
+	      if (done2 > 0) {
 		istrstream(second, done2) >> temp2;
-		tabcol[i6].putScalar (rownr, Complex(temp1, temp2));
+	      } else {
+		temp2 = 0;
+	      }
+	      tabcol[i6].putScalar (rownr, Complex(temp1, temp2));
 	    }
 	    if (typeOfColumn[i6] == "DX") {
+	      if (done1 > 0) {
 		istrstream(first, done1) >> temp1d;
+	      } else {
+		temp1d = 0;
+	      }
+	      if (done2 > 0) {
 		istrstream(second, done2) >> temp2d;
-		tabcol[i6].putScalar (rownr, DComplex(temp1d, temp2d));
+	      } else {
+		temp2d = 0;
+	      }
+	      tabcol[i6].putScalar (rownr, DComplex(temp1d, temp2d));
 	    }
 	    if (typeOfColumn[i6] == "Z") {
+	      if (done1 > 0) {
 		istrstream(first, done1) >> temp1;
+	      } else {
+		temp1 = 0;
+	      }
+	      if (done2 > 0) {
 		istrstream(second, done2) >> temp2;
-		temp2 *= 3.14159265/180.0; 
-		temp3 = temp1 * cos(temp2);
-		temp4 = temp1 * sin(temp2);
-		tabcol[i6].putScalar (rownr, Complex(temp3, temp4));
+	      } else {
+		temp2 = 0;
+	      }
+	      temp2 *= 3.14159265/180.0; 
+	      temp3 = temp1 * cos(temp2);
+	      temp4 = temp1 * sin(temp2);
+	      tabcol[i6].putScalar (rownr, Complex(temp3, temp4));
 	    }
 	    if (typeOfColumn[i6] == "DZ") {
+	      if (done1 > 0) {		
 		istrstream(first, done1) >> temp1d;
+	      } else {
+		temp1d = 0;
+	      }
+	      if (done2 > 0) {
 		istrstream(second, done2) >> temp2d;
-		temp2d *= 3.14159265/180.0; 
-		temp3d = temp1d * cos(temp2d);
-		temp4d = temp1d * sin(temp2d);
-		tabcol[i6].putScalar (rownr, DComplex(temp3d, temp4d));
+	      } else {
+		temp2d = 0;
+	      }
+	      temp2d *= 3.14159265/180.0; 
+	      temp3d = temp1d * cos(temp2d);
+	      temp4d = temp1d * sin(temp2d);
+	      tabcol[i6].putScalar (rownr, DComplex(temp3d, temp4d));
 	    }
 	    if (typeOfColumn[i6] == "A") {
 		tabcol[i6].putScalar (rownr, String(first));
@@ -674,20 +784,25 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 
 
 String readAsciiTable (const String& headerfile, const String& filein, 
-		       const String& tableproto, const char* tablename)
+		       const String& tableproto, const char* tablename,
+		       Char separator)
 {
   return doReadAsciiTable (headerfile, filein, tableproto, String(tablename),
-			   False);
+			   False, separator);
 }
 
 String readAsciiTable (const String& headerfile, const String& filein, 
-		       const String& tableproto, const String& tablename)
+		       const String& tableproto, const String& tablename,
+		       Char separator)
 {
-  return doReadAsciiTable (headerfile, filein, tableproto, tablename, False);
+  return doReadAsciiTable (headerfile, filein, tableproto, tablename,
+			   False, separator);
 }
 
 String readAsciiTable (const String& filein, const String& tableproto,
-		       const String& tablename, Bool autoHeader)
+		       const String& tablename, Bool autoHeader,
+		       Char separator)
 {
-  return doReadAsciiTable (filein, filein, tableproto, tablename, autoHeader);
+  return doReadAsciiTable (filein, filein, tableproto, tablename,
+			   autoHeader, separator);
 }
