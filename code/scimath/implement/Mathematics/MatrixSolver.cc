@@ -1,5 +1,5 @@
 //# MatrixSolver.cc: Abstract base class for solvers of AX=B
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $ID: $
+//# $Id$
 
 #include <aips/aips.h>
 #include <aips/Exceptions.h>
