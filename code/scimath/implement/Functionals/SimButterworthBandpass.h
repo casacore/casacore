@@ -1,5 +1,5 @@
 //# SimButterworthBandpass.h: Declares a Butterworth function
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -136,97 +136,123 @@ template<class T>
 class SimButterworthBandpass : public Function1D<T> {
 
 public:
-  //# Enumerations
-  // Enumeration of the function parameters
-  enum { CENTER, MINCUTOFF, MAXCUTOFF, PEAK };
+    //# Enumerations
+    // Enumeration of the function parameters
+    enum { CENTER, MINCUTOFF, MAXCUTOFF, PEAK };
 
   //# Constructors
   // create a zero-th order (all-pass) Butterworth bandpass function.
-  SimButterworthBandpass();
+    SimButterworthBandpass();
   
-  // create a Butterworth bandpass function.
-  SimButterworthBandpass(const uInt minord, const uInt maxord, 
+    // create a Butterworth bandpass function.
+    SimButterworthBandpass(const uInt minord, const uInt maxord, 
 			   const T &mincut=T(-1), const T &maxcut=T(1), 
 			   const T &center=T(0), const T &peak=T(1));
   
-  // create a copy of another Butterworth bandpass function
-  SimButterworthBandpass(const SimButterworthBandpass &other);
+    // create a fully specified Butterworth bandpass in which the 
+    // low and high pass orders are stored in a Record
+    explicit SimButterworthBandpass(const RecordInterface& gr,
+				    T mincut=T(-1), T maxcut=T(1), 
+				    T center=T(0), T peak=T(1));
+
+    // create a copy of another Butterworth bandpass function
+    SimButterworthBandpass(const SimButterworthBandpass &other);
   
-  // copy(deep) another Butterworth function
-  SimButterworthBandpass<T> &
+    // copy(deep) another Butterworth function
+    SimButterworthBandpass<T> &
     operator=(const SimButterworthBandpass<T> &other);
   
   // Destructor
-  virtual ~SimButterworthBandpass();
+    virtual ~SimButterworthBandpass();
 
 
-  //# Operators    
-  // Evaluate the bandpass at "x".
-  virtual T eval(const typename FunctionTraits<T>::ArgType *x) const;
+    //# Operators    
+    // Evaluate the bandpass at "x".
+    virtual T eval(const typename FunctionTraits<T>::ArgType *x) const;
 
   //# Member functions
   // set the center of the bandpass.  This is the x-ordinate value that 
   // evaluates to the peak of the function.  
-  void setCenter(const T &x) { param_p[CENTER] = x; } 
+    void setCenter(const T &x) { param_p[CENTER] = x; } 
 
-  // return the center of the bandpass.  This is the x-ordinate value that 
-  // evaluates to the peak of the function.  
-  const T &getCenter() const { return param_p[CENTER]; }
+    // return the center of the bandpass.  This is the x-ordinate value that 
+    // evaluates to the peak of the function.  
+    const T &getCenter() const { return param_p[CENTER]; }
 
-  // set the characteristic minimum (high-pass) cutoff value.  At this 
-  // x-ordinate value, the function has a value reduced 30 dB from its 
-  // peak.  
-  void setMinCutoff(const T &x) { param_p[MINCUTOFF] = x; } 
+    // set the characteristic minimum (high-pass) cutoff value.  At this 
+    // x-ordinate value, the function has a value reduced 30 dB from its 
+    // peak.  
+    void setMinCutoff(const T &x) { param_p[MINCUTOFF] = x; } 
 
-  // set the characteristic maximum (low-pass) cutoff value.  At this 
-  // x-ordinate value, the function has a value reduced 30 dB from its 
-  // peak.  
-  void setMaxCutoff(const T &x) { param_p[MAXCUTOFF] = x; } 
+    // set the characteristic maximum (low-pass) cutoff value.  At this 
+    // x-ordinate value, the function has a value reduced 30 dB from its 
+    // peak.  
+    void setMaxCutoff(const T &x) { param_p[MAXCUTOFF] = x; } 
 
-  // set the order of the Butterworth function for the minimum (high-pass)
-  // portion of the bandpass
-  void setMinOrder(uInt order) { nl_p = order; }
+    // set the order of the Butterworth function for the minimum (high-pass)
+    // portion of the bandpass
+    void setMinOrder(uInt order) { nl_p = order; }
 
-  // set the order of the Butterworth function for the maximum (low-pass)
-  // portion of the bandpass
-  void setMaxOrder(uInt order) { nh_p = order; }
+    // set the order of the Butterworth function for the maximum (low-pass)
+    // portion of the bandpass
+    void setMaxOrder(uInt order) { nh_p = order; }
 
-  // return the characteristic minimum (high-pass) cutoff value.  At this 
-  // x-ordinate value, the function has a value reduced 30 dB from its 
-  // peak.  
-  const T &getMinCutoff() const { return param_p[MINCUTOFF]; }
+    // return the characteristic minimum (high-pass) cutoff value.  At this 
+    // x-ordinate value, the function has a value reduced 30 dB from its 
+    // peak.  
+    const T &getMinCutoff() const { return param_p[MINCUTOFF]; }
 
-  // return the characteristic maximum (low-pass) cutoff value.  At this 
-  // x-ordinate value, the function has a value reduced 30 dB from its 
-  // peak.  
-  const T &getMaxCutoff() const { return param_p[MAXCUTOFF]; }
+    // return the characteristic maximum (low-pass) cutoff value.  At this 
+    // x-ordinate value, the function has a value reduced 30 dB from its 
+    // peak.  
+    const T &getMaxCutoff() const { return param_p[MAXCUTOFF]; }
 
-  // return the order of the Butterworth function for the minimum (high-pass)
-  // portion of the bandpass
-  uInt getMinOrder() const { return nl_p; }
+    // return the order of the Butterworth function for the minimum (high-pass)
+    // portion of the bandpass
+    uInt getMinOrder() const { return nl_p; }
 
-  // return the order of the Butterworth function for the maximum (low-pass)
-  // portion of the bandpass
-  uInt getMaxOrder() const { return nh_p; }
+    // return the order of the Butterworth function for the maximum (low-pass)
+    // portion of the bandpass
+    uInt getMaxOrder() const { return nh_p; }
 
-  // set the scale of the function by setting its peak value.  By default,
-  // the peak value is T(1);
-  void setPeak(T val) { param_p[PEAK] = val; } 
+    // set the scale of the function by setting its peak value.  By default,
+    // the peak value is T(1);
+    void setPeak(T val) { param_p[PEAK] = val; } 
 
-  // return the scale of the function
-  const T &getPeak() const { return param_p[PEAK]; }
+    // return the scale of the function
+    const T &getPeak() const { return param_p[PEAK]; }
   
-  // clone this function
-  virtual Function<T> *clone() const {
-    return new SimButterworthBandpass<T>(*this); };
+    // get/set the function mode.  This is an alternate way to get/set the 
+    // non-coefficient data for this function.  The supported record fields 
+    // are as follows:
+    // <pre>
+    // Field Name     Type            Role
+    // -------------------------------------------------------------------
+    // minOrder   TpInt   the order of the Butterworth function for the 
+    //                    minimum (high-pass) portion of the bandpass
+    // maxOrder   TpInt   the order of the Butterworth function for the 
+    //                    maximum (low-pass) portion of the bandpass
+    // An exception is thrown if either value is less than zero
+    // <group>
+    virtual void setMode(const RecordInterface& mode);
+    virtual void getMode(RecordInterface& mode) const;
+    // </group>
 
- private:
-  //# Data
-  // Minimum order
-  uInt nl_p;
-  // Maximum order
-  uInt nh_p;
+    // return True if the implementing function supports a mode.  This
+    // implementation always returns True.
+    virtual Bool hasMode() const;
 
+    // clone this function
+    virtual Function<T> *clone() const {
+	return new SimButterworthBandpass<T>(*this); 
+    }
+
+private:
+    //# Non-parameter Data
+    // Minimum order
+    uInt nl_p;
+    // Maximum order
+    uInt nh_p;
 };
 
 #endif

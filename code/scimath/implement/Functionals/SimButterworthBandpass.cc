@@ -1,5 +1,5 @@
 //# SimButterworthBandpass.cc: Defines a Butterworth function
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Containers/RecordInterface.h>
 
 //# Constructors
 template <class T>
@@ -53,6 +54,20 @@ SimButterworthBandpass<T>::SimButterworthBandpass(const uInt minord,
   param_p[CENTER] = center;
   param_p[PEAK] = peak;
 }
+
+template <class T>
+SimButterworthBandpass<T>::
+SimButterworthBandpass(const RecordInterface& gr, T mincut, T maxcut, 
+		       T center, T peak) :
+  Function1D<T>(4), nl_p(0), nh_p(0) 
+{
+    setMode(gr);
+    param_p[MINCUTOFF] = mincut;
+    param_p[MAXCUTOFF] = maxcut;
+    param_p[CENTER] = center;
+    param_p[PEAK] = peak;
+}
+
 
 template <class T>
 SimButterworthBandpass<T>::
@@ -80,20 +95,60 @@ T SimButterworthBandpass<T>::
 eval(const typename  FunctionTraits<T>::ArgType *x) const {
   // this does not reflect the true responses of Butterworth filters
   // calculate the low-pass portion
-  T hp = 1;
-  if (nh_p == 0) hp = T(1);
-  else if (x[0] > param_p[CENTER]) {
+  T hp = T(1);
+  if (x[0] > param_p[CENTER]) {
     hp = T(1) / sqrt(T(1) + pow((x[0] - param_p[CENTER])/
 				(param_p[MAXCUTOFF] - param_p[CENTER]),
 				T(2*nh_p)));
   };
   // calculate the high-pass portion
-  if (nl_p == 0) ;
-  else if (x[0] < param_p[CENTER]) { 
+  if (x[0] < param_p[CENTER]) { 
     hp *= T(1) / sqrt(T(1) + pow((param_p[CENTER] - x[0])/
 				(param_p[MINCUTOFF] - param_p[CENTER]),
 				T(2*nl_p)));
   };  
   return param_p[PEAK]*hp;
+}
+
+template <class T>
+Bool SimButterworthBandpass<T>::hasMode() const { return True; }
+
+template <class T>
+void SimButterworthBandpass<T>::setMode(const RecordInterface& in) {
+    uInt order;
+
+    // min order
+    if (in.isDefined(String("minOrder"))) {
+	RecordFieldId fld("minOrder");
+	if (in.type(in.idToNumber(fld)) == TpInt) {
+	    Int tmp;
+	    in.get(fld, tmp);
+	    order = static_cast<uInt>(abs(tmp));
+	}
+	else if (in.type(in.idToNumber(fld)) == TpUInt) {
+	    in.get(fld, order);
+	}
+	setMinOrder(order);
+    }
+
+    // max order
+    if (in.isDefined(String("maxOrder"))) {
+	RecordFieldId fld("maxOrder");
+	if (in.type(in.idToNumber(fld)) == TpInt) {
+	    Int tmp;
+	    in.get(fld, tmp);
+	    order = static_cast<uInt>(abs(tmp));
+	}
+	else if (in.type(in.idToNumber(fld)) == TpUInt) {
+	    in.get(fld, order);
+	}
+	setMaxOrder(order);
+    }
+}
+
+template <class T>
+void SimButterworthBandpass<T>::getMode(RecordInterface& out) const {
+    out.define(RecordFieldId("minOrder"), getMinOrder());
+    out.define(RecordFieldId("maxOrder"), getMaxOrder());
 }
 
