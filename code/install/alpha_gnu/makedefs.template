@@ -97,7 +97,7 @@ ARCHLIBS :=
 # Compilation and linkage variables
 #-----------------------------------------------------------------------------
 # Preprocessor flags for system debug/optimized compilations.
-CPPDBG   += -DAIPS_OSF -DAIPS_LITTLE_ENDIAN
+CPPDBG   += -DAIPS_OSF -DAIPS_LITTLE_ENDIAN -DAIPS_ARRAY_INDEX_CHECK -DAIPS_DEBUG
 CPPOPT   += -DAIPS_OSF -DAIPS_LITTLE_ENDIAN
 
 # C compiler flags for system debug/optimized compilations.
@@ -108,9 +108,9 @@ COPT     += -DAIPS_SVID3
 # C++ compiler flags for system debug/optimized compilations.
 C++      := $(C++ROOT)/bin/c++
 C++DBGLVL:= -g
-C++DBG   := $(C++DBGLVL) -fno-for-scope -fno-implicit-templates
+C++DBG   := $(C++DBGLVL) -fno-implicit-templates -Wreturn-type
 C++OPTLVL:= -O2
-C++OPT   := $(C++OPTLVL) -fno-for-scope -fno-implicit-templates
+C++OPT   := $(C++OPTLVL) -fno-implicit-templates -Wreturn-type
 
 # Use do-it-yourself template instantiation.
 TEMPLATES := diy
@@ -140,9 +140,9 @@ ifeq "$(MAKEMODE)" "programmer"
 
    # C++ compiler flags for programmer compilations.
    ifdef OPT
-      C++FLAGS := -O$(OPT) -fno-for-scope -fno-implicit-templates
+      C++FLAGS := $(C++OPT) -Wall
    else
-      C++FLAGS := -g -fno-for-scope -fno-implicit-templates
+      C++FLAGS := $(C++DBG) -Wall
    endif
  
    # Where to put binaries for programmer compilations.

@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1997
+#   Copyright (C) 1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -119,7 +119,7 @@ RPFITSLIB :=
 #-----------------------------------------------------------------------------
 
 # Preprocessor flags for system debug/optimized compilations.
-CPPDBG   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DNATIVE_EXCP -DAIPS_ARRAY_INDEX_CHECK
+CPPDBG   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DNATIVE_EXCP -DAIPS_ARRAY_INDEX_CHECK -DAIPS_DEBUG
 CPPOPT   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DNATIVE_EXCP
 
 # C compiler flags for system debug/optimized compilations.
@@ -130,9 +130,9 @@ COPT    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type
 
 # C++ compiler flags for system debug/optimized compilations.
 C++       := c++
-C++DBG    += -pipe -fno-for-scope -fno-implicit-templates -Wreturn-type -fguiding-decls
+C++DBG    += -pipe -fno-implicit-templates -Wreturn-type -fguiding-decls
 C++OPTLVL := -O2
-C++OPT    += -pipe -fno-for-scope -fno-implicit-templates -Wreturn-type -fguiding-decls
+C++OPT    += -pipe -fno-implicit-templates -Wreturn-type -fguiding-decls
 
 # Use do-it-yourself template instantiation.
 TEMPLATES := diy
@@ -211,7 +211,7 @@ ifeq "$(MAKEMODE)" "programmer"
    ifdef OPT
       C++FLAGS := $(C++OPT) -Wall
    else
-      C++FLAGS := $(C++DBG) -Wall -DAIPS_ARRAY_INDEX_CHECK
+      C++FLAGS := $(C++DBG) -Wall
    endif
 
    # Where to put binaries for programmer compilations.

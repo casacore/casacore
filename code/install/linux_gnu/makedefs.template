@@ -133,8 +133,8 @@ RPFITSLIB :=
 #-----------------------------------------------------------------------------
 
 # Preprocessor flags for system debug/optimized compilations.
-CPPDBG += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DF2C
-CPPOPT += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DF2C
+CPPDBG += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_ARRAY_INDEX_CHECK -DAIPS_DEBUG
+CPPOPT += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN
 
 # C compiler flags for system debug/optimized compilations.
 CDBG    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type
@@ -143,9 +143,9 @@ COPT    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type
 
 # C++ compiler flags for system debug/optimized compilations.
 C++       := c++
-C++DBG    += -pipe -fno-for-scope -fno-implicit-templates -Wreturn-type $(C++EGCS)
+C++DBG    += -pipe -fno-implicit-templates -Wreturn-type $(C++EGCS)
 C++OPTLVL := -O2
-C++OPT    += -pipe -fno-for-scope -fno-implicit-templates -Wreturn-type $(C++EGCS)
+C++OPT    += -pipe -fno-implicit-templates -Wreturn-type $(C++EGCS)
 
 # Set to "diy" to enable do-it-yourself template instantiation, e.g. for g++.
 TEMPLATES := diy
@@ -228,7 +228,7 @@ ifeq "$(MAKEMODE)" "programmer"
    ifdef OPT
       C++FLAGS := $(C++OPT) -Wall
    else
-      C++FLAGS := $(C++DBG) -Wall -DAIPS_ARRAY_INDEX_CHECK
+      C++FLAGS := $(C++DBG) -Wall
    endif
 
    # Where to put binaries for programmer compilations.

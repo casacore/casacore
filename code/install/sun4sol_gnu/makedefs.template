@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996,1997
+#   Copyright (C) 1996,1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -97,7 +97,7 @@ ARCHLIBS := -lsocket -lnsl -ldl -lm -L/opt/SUNWspro/lib -lsunmath -lmalloc
 # Compilation and linkage variables
 #-----------------------------------------------------------------------------
 # Preprocessor flags for system debug/optimized compilations.
-CPPDBG   += -DAIPS_SOLARIS
+CPPDBG   += -DAIPS_SOLARIS -DAIPS_ARRAY_INDEX_CHECK -DAIPS_DEBUG
 CPPOPT   += -DAIPS_SOLARIS
 
 # C compiler flags for system debug/optimized compilations.
@@ -108,9 +108,9 @@ COPT     += -DAIPS_SVID3
 # C++ compiler flags for system debug/optimized compilations.
 C++      := $(C++ROOT)/bin/c++
 C++DBGLVL:= -g
-C++DBG   += -pipe -fno-for-scope -fno-implicit-templates
+C++DBG   += -pipe -fno-implicit-templates -Wreturn-type
 C++OPTLVL:= -O2
-C++OPT   += -pipe -fno-for-scope -fno-implicit-templates
+C++OPT   += -pipe -fno-implicit-templates -Wreturn-type
 
 # Add lib to the runpath. Needed for DEBUG as well because glish can build
 # shared libraries.
@@ -148,9 +148,9 @@ ifeq "$(MAKEMODE)" "programmer"
 
    # C++ compiler flags for programmer compilations.
    ifdef OPT
-      C++FLAGS := -O$(OPT) -pipe -fno-for-scope -fno-implicit-templates
+      C++FLAGS := $(C++OPT) -Wall
    else
-      C++FLAGS := -g -pipe -fno-for-scope -fno-implicit-templates
+      C++FLAGS := $(C++DBG) -Wall
    endif
  
    # Where to put binaries for programmer compilations.

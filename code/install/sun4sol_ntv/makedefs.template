@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1995,1996,1997
+#   Copyright (C) 1995,1996,1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -97,7 +97,7 @@ ARCHLIBS := -lsocket -lnsl -ldl -lm
 # Compilation and linkage variables
 #-----------------------------------------------------------------------------
 # Preprocessor flags for system debug/optimized compilations.
-CPPDBG   += -DAIPS_SOLARIS -DAIPS_SUN_NATIVE -DNATIVE_EXCP
+CPPDBG   += -DAIPS_SOLARIS -DAIPS_SUN_NATIVE -DNATIVE_EXCP -DAIPS_ARRAY_INDEX_CHECK -DAIPS_DEBUG
 CPPOPT   += -DAIPS_SOLARIS -DAIPS_SUN_NATIVE -DNATIVE_EXCP
 
 # C compiler flags for system debug/optimized compilations.
