@@ -293,15 +293,16 @@ uInt DirectionCoordinate::nWorldAxes() const
     return 2;
 }
 
-void DirectionCoordinate::setConversion (MDirection::Types directionType)
-//
-// The type_p and conversionType_p are initialized to be the
-// same unless this function is called.  The machines are not
-// made or invoked unless the types are different.
-//
+void DirectionCoordinate::setReferenceConversion (MDirection::Types type)
 {
-   conversionType_p = directionType;
-//
+// See if something to do
+
+   if (conversionType_p==type) return;
+
+// If conversion type the same as the native type, just 
+// remove the machines
+
+   conversionType_p = type;
    if (pConversionMachineTo_p) {
       delete pConversionMachineTo_p;      
       pConversionMachineTo_p = 0;
@@ -310,7 +311,10 @@ void DirectionCoordinate::setConversion (MDirection::Types directionType)
       delete pConversionMachineFrom_p;
       pConversionMachineFrom_p = 0;
    }
-//
+   if (conversionType_p == type_p) return;
+
+// Now make new machines as needed
+
    makeConversionMachines();
 }
 
@@ -1409,7 +1413,7 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
        MDirection::Types cSystem;
        Bool ok = MDirection::getType(cSystem, conversionSystem);
        if (ok) {
-          retval->setConversion(cSystem);
+          retval->setReferenceConversion(cSystem);
        }
     }
 //

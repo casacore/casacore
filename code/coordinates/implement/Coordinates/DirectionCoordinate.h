@@ -310,7 +310,11 @@ public:
     // In the mixed pixel/world conversion routine <src>toMix</src>
     // the implementation is only partial.  See the comments for this
     // function below.
-    void setConversion (MDirection::Types conversionDirectionType);
+    // <group>
+    void setReferenceConversion (MDirection::Types type);
+    void getReferenceConversion (MDirection::Types& type) const
+       {type=conversionType_p;};
+    // </group>
 
     // Convert a pixel position to a world position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
@@ -360,7 +364,7 @@ public:
     // If you actually request a pure pixel to world or world to pixel
     // via <src>toMix</src>, then the functions <src>toWorld</src> or <src>toPixel</src>
     // will be invoked directly (see above) and the extra conversion layer
-    // invoked through function <src>setConversionDirectionType</src> will be active.  
+    // invoked through function <src>setReferenceConversion</src> will be active.  
     // However, if you request a true mixed pixel/world conversion,
     // the extra conversion layer is not activated (because of the nature of mixed
     // conversions).  This situation may change in the future
@@ -414,7 +418,7 @@ public:
     // Make absolute coordinates relative and vice-versa.  Note that
     // these functions are independent of the MDirection::Types 
     // (set either at construction or by function
-    // <src>setConversionDirectionType</src>).
+    // <src>setReferenceConversion</src>).
     //<group>
     virtual void makeWorldRelative (Vector<Double>& world) const;
     virtual void makeWorldRelative (MDirection& world) const;
