@@ -35,6 +35,17 @@
 #include <string.h>               // needed for strerror
 
 
+// This ifdef lets us instruments the IO system using PABLO
+// see www-pablo.cs.uiuc.edu for more about pablo, also peek in
+// FilebufIO.cc for the other bits of pablo used in the system.
+
+#ifdef PABLO_IO
+#include "IOTrace.h"
+#else
+#define traceFOPEN fopen
+#endif PABLO_IO
+
+
 RegularFileIO::RegularFileIO (const RegularFile& regularFile,
 			      ByteIO::OpenOption option, uInt bufferSize)
 : itsOption      (option),
@@ -71,7 +82,7 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
 	throw (AipsError ("RegularFileIO: unknown open option"));
     }
     // Open the file.
-    FILE* file = fopen (name.chars(), stropt.chars());
+    FILE* file = traceFOPEN (name.chars(), stropt.chars());
     if (file == 0) {
 	throw (AipsError ("RegularFileIO: error in open or create of file " +
 			  name + ": " + strerror(errno)));
@@ -96,7 +107,7 @@ void RegularFileIO::reopenRW()
     }
     // First try if the file can be opened as read/write.
     const String& name = itsRegularFile.path().expandedName();
-    FILE* file = fopen (name.chars(), "rb+");
+    FILE* file = traceFOPEN (name.chars(), "rb+");
     if (file == 0) {
 	throw (AipsError ("RegularFileIO: reopenRW not possible for file " +
 			  name + ": " + strerror(errno)));
