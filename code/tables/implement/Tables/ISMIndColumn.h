@@ -1,5 +1,5 @@
 //# ISMIndColumn.h: A column in Incremental storage manager for indirect arrays
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -228,6 +228,9 @@ public:
 
     // Flush and optionally fsync the data.
     virtual Bool flush (uInt nrrow, Bool fsync);
+
+    // Resync the storage manager with the new file contents.
+    virtual void resync (uInt nrrow);
 
     // Let the column reopen its data files for read/write access.
     virtual void reopenRW();

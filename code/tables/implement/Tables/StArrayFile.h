@@ -146,6 +146,9 @@ public:
     // Reopen the file for read/write access.
     void reopenRW();
 
+    // Resync the file (i.e. clear possible cache information).
+    void resync();
+
     // Return the current file length (merely a debug tool).
     Int64 length()
 	{ return leng_p; }

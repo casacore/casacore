@@ -64,13 +64,7 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
     swput_p = iofil_p->isWritable();
     //# Get the version and length for an existing file.
     //# Otherwise set put-flag.
-    if (iofil_p->seek (0, ByteIO::End) > 0) {
-	setpos (0);
-	get (version_p);
-	iofil_p->read (1, &leng_p);
-    }else{
-	hasPut_p = True;
-    }
+    resync();
     sizeChar_p   = ValType::getCanonicalSize (TpChar,   bigEndian);
     sizeuChar_p  = ValType::getCanonicalSize (TpUChar,  bigEndian);
     sizeShort_p  = ValType::getCanonicalSize (TpShort,  bigEndian);
@@ -116,6 +110,19 @@ Bool StManArrayFile::flush (Bool)
 	return True;
     }
     return False;
+}
+
+    // Resync the file (i.e. clear possible cache information).
+void StManArrayFile::resync()
+{
+    file_p->resync();
+    if (iofil_p->seek (0, ByteIO::End) > 0) {
+        setpos (0);
+	get (version_p);
+	iofil_p->read (1, &leng_p);
+    }else{
+        hasPut_p = True;
+    }
 }
 
 void StManArrayFile::setpos (Int64 pos)
