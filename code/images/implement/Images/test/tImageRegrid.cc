@@ -96,6 +96,7 @@ try {
    if (in.empty()) {
       if (shapeU.nelements()>0) {
          if (shapeU.nelements()==1 && shapeU[0]==-10) {
+            shapeIn = IPosition(2, 256, 256);
          } else {
             shapeIn.resize(shapeU.nelements());
             for (uInt i=0; i<shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
@@ -116,7 +117,6 @@ try {
       pIm = new PagedImage<Float>(in);
       shapeIn = pIm->shape();
    }
-   IPosition shapeOut = pIm->shape();
 //
    IPosition axes = IPosition::makeAxisPath(pIm->ndim());
    if (axesU.nelements()>0) {
@@ -127,11 +127,14 @@ try {
       }
    }
 //
+   IPosition shapeOut;
    CoordinateSystem cSysOut = pIm->coordinates();
    if (dbl) {
       Vector<Double> incr = cSysOut.increment().copy();
       Vector<Double> refp  = cSysOut.referencePixel().copy();
       Vector<Double> refv  = cSysOut.referenceValue().copy();
+//
+      shapeOut = shapeIn;
       for (uInt i=0; i<axes.nelements(); i++) {
          uInt j = axes(i);
          shapeOut(j) = 2 * shapeIn(j);
@@ -142,6 +145,7 @@ try {
       cSysOut.setIncrement(incr);
    } else {
       if (shapeU.nelements()==1 && shapeU[0]==-10) {
+         shapeOut = 2*shapeIn;
       } else if (shapeU.nelements() > 0) {
          for (uInt i=0; i<shapeU.nelements(); i++) {
             shapeOut(i) = shapeU[i];
