@@ -732,19 +732,24 @@ void MSSummary::listHistory (LogIO& os, Bool verbose) const
     // Create a MS-history object
     ROMSHistoryColumns msHis(pMS->history());
 
-    if (msHis.time().nrow()<=0) {
+    if (msHis.nrow()<=0) {
       os << "The HISTORY table is empty" << endl;
     }
     else {
       uInt nmessages = msHis.time().nrow();
       os << "History table entries: " << nmessages << endl;
       for (uInt i=0 ; i < nmessages; i++) {
-      	os << i+1 << ": " //<< ((msHis.time()).getColumn())(i) << " | "
+	os << i+1 << ": "
 	   << ((msHis.application()).getColumn())(i) << " | "
-	  //<< ((msHis.appParams()).getColumn())(i) << " | "
-	  //<< ((msHis.cliCommand()).getColumn())(i) << " | "
+	  //<< (msHis.appParams())(i) << " | "
+	  //<< (msHis.cliCommand())(i) << " | "
 	   << ((msHis.message()).getColumn())(i) << " | "
-	   << ((msHis.origin()).getColumn())(i) << endl;
+	   << ((msHis.origin()).getColumn())(i) << " | "
+	  //<< ((msHis.priority()).getColumn())(i) << " | "
+	  //<< ((msHis.time()).getColumn())(i) << " | "
+	  //<< (msHis.timeQuant())(i) << " | "
+	  //<< (msHis.timeMeas())(i)
+	   << endl;
       }
       /* The following code is incredibilty CPU and memory intensive!
       #include <casa/Arrays/ArrayIter.h>
