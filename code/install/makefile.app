@@ -69,6 +69,9 @@ LIBEXECS := $(filter %.g %.gp, $(AIPSSRCS))
 # Glish script icons.
 LIBICONS := $(filter %.xbm, $(AIPSSRCS))
 
+# Lex & yacc
+LEXYACC := $(filter %.l %.y, $(AIPSSRCS))
+
 # Programmer path to include files for this application.
 PRGAPINC := -I. -I$(CODEDIR)
 
@@ -276,40 +279,40 @@ endif
 
 # Pattern rules.
 #---------------
-$(PCKGOPTD)/%.lcc : $(CODEDIR)/%.l
+$(TMPPCKGD)/%.lcc : $(CODEDIR)/%.l
 	-@ echo ""
 	$(FLEX) -t -P$(<F:.l=) $< > $@
 
-$(PCKGOPTD)/%.lcc : ;
+$(TMPPCKGD)/%.lcc : ;
 
-$(PCKGOPTD)/%.ycc : $(CODEDIR)/%.y
+$(TMPPCKGD)/%.ycc : $(CODEDIR)/%.y
 	-@ echo ""
 	$(BISON) -p $(<F:.y=) -o $@ $<
 
-$(PCKGOPTD)/%.ycc : ;
+$(TMPPCKGD)/%.ycc : ;
 
-$(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
+$(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
     $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS)
 	-@ echo ""
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (dbg) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPDBG) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o)) $(patsubst $(LIBDBGD)/lib%.$(SFXSHAR), -l%, $(DBGLIBS)) $(MODULIBS) $(XTRNLIBS)
+	   $(C++) $(CPPDBG) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o)) $(patsubst $(LIBDBGD)/lib%.$(SFXSHAR), -l%, $(DBGLIBS)) $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
-	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS))
+	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
 	-@ chmod 775 $@
 
-$(BINOPTD)/% : $(CODEDIR)/%.cc $(CODEDIR)/%.lcc $(CODEDIR)/%.ycc $(AIPSINST) \
+$(BINOPTD)/% : $(CODEDIR)/%.cc $(AIPSINST) $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
     $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS)
 	-@ echo ""
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (opt) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPOPT) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o)) $(patsubst $(LIBOPTD)/lib%.$(SFXSHAR), -l%, $(OPTLIBS)) $(MODULIBS) $(XTRNLIBS)
+	   $(C++) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o)) $(patsubst $(LIBOPTD)/lib%.$(SFXSHAR), -l%, $(OPTLIBS)) $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
-	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS))
+	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
 	-@ chmod 775 $@
 
 $(LIBDBGD)/%.$(SFXSTAT) : ;
