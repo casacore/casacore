@@ -212,6 +212,10 @@ public:
   Int fieldId() const
     { return msIter_p.fieldId(); }
 
+  // Return the current ArrayId
+  Int arrayId() const
+    { return msIter_p.arrayId(); }
+
   // Return the current Field Name
   String fieldName() const
     { return msIter_p.fieldName(); }
@@ -287,6 +291,10 @@ public:
   // Return True if FieldId/Source has changed since last iteration
   Bool newFieldId() const
   { return (curStartRow_p==0 && msIter_p.newField()); }
+
+  // Return True if arrayID has changed since last iteration
+  Bool newArrayId() const
+  { return (curStartRow_p==0 && msIter_p.newArray()); }
 
   // Return True if SpectralWindow has changed since last iteration
   Bool newSpectralWindow() const

@@ -74,6 +74,7 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       channelOK_p=other.channelOK_p;
       ant1OK_p=other.ant1OK_p;
       ant2OK_p=other.ant2OK_p;
+      arrayIdOK_p=other.arrayIdOK_p;
       corrTypeOK_p=other.corrTypeOK_p;
       cjonesOK_p=other.cjonesOK_p;
       fieldIdOK_p=other.fieldIdOK_p;
@@ -123,6 +124,7 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
 	cjones_p=other.cjones_p;
       }
       if (fieldIdOK_p) fieldId_p=other.fieldId_p;
+      if (arrayIdOK_p) arrayId_p=other.arrayId_p;
       if (flagOK_p) {
 	flag_p.resize(other.flag_p.shape()); 
 	flag_p=other.flag_p;
@@ -235,7 +237,7 @@ void VisBuffer::attachToVisIter(ROVisibilityIterator& iter)
 
 void VisBuffer::invalidate()
 {
-  nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
+  nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=arrayIdOK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=
     sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p= False;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=False;
@@ -244,7 +246,7 @@ void VisBuffer::invalidate()
 
 void VisBuffer::validate()
 {
-  nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
+  nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=arrayIdOK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=
     sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = corrTypeOK_p=True;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=True;  
@@ -421,6 +423,7 @@ void VisBuffer::updateCoordInfo()
 {
   antenna1();
   antenna2();
+  arrayId();
   fieldId();
   spectralWindow();
   time();
@@ -496,6 +499,13 @@ Int& VisBuffer::fillFieldId()
   fieldIdOK_p=True; 
   fieldId_p=visIter_p->fieldId(); 
   return fieldId_p; 
+}
+
+Int& VisBuffer::fillArrayId()
+{ 
+  arrayIdOK_p=True; 
+  arrayId_p=visIter_p->arrayId(); 
+  return arrayId_p; 
 }
 
 Matrix<Bool>& VisBuffer::fillFlag()

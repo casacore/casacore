@@ -141,6 +141,8 @@ public:
 
   Int fieldId() const {return fieldIdOK_p ? fieldId_p : This->fillFieldId();}
 
+  Int arrayId() const {return arrayIdOK_p ? arrayId_p : This->fillArrayId();}
+
   Matrix<Bool>& flag() { return flagOK_p ? flag_p : fillFlag();}
   const Matrix<Bool>& flag() const { return This->flag();}
 
@@ -278,6 +280,7 @@ private:
   Vector<Int>& fillAnt2();
   Vector<SquareMatrix<Complex,2> >& fillCjones();
   Int& fillFieldId();
+  Int& fillArrayId();
   Matrix<Bool>& fillFlag();
   Cube<Bool>& fillFlagCube();
   Vector<Bool> & fillFlagRow();
@@ -304,7 +307,7 @@ private:
   VisBuffer* This;
   // variables to track validity of cache
   Bool nChannelOK_p, channelOK_p, nRowOK_p, ant1OK_p, ant2OK_p, cjonesOK_p,
-    fieldIdOK_p, flagOK_p, flagRowOK_p, freqOK_p, lsrFreqOK_p,
+    fieldIdOK_p, arrayIdOK_p, flagOK_p, flagRowOK_p, freqOK_p, lsrFreqOK_p,
     phaseCenterOK_p, polFrameOK_p,
     sigmaOK_p, spwOK_p, timeOK_p, uvwOK_p, visOK_p, weightOK_p;
   Bool corrTypeOK_p, flagCubeOK_p, visCubeOK_p, weightMatOK_p,
@@ -315,6 +318,7 @@ private:
   Vector<Int> channel_p, antenna1_p, antenna2_p;
   Vector<SquareMatrix<Complex,2> > cjones_p;
   Int fieldId_p;
+  Int arrayId_p;
   Matrix<Bool> flag_p;
   Vector<Bool> flagRow_p;
   Vector<Double> frequency_p, lsrFrequency_p;
