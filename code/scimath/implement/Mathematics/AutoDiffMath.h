@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AUTO_DIFF__MATH_H)
-#define AIPS_AUTO_DIFF__MATH_H
+#if !defined(AIPS_AUTODIFFMATH_H)
+#define AIPS_AUTODIFFMATH_H
 
 
 #include <aips/aips.h>
@@ -53,6 +53,8 @@
 // <todo asof="yyyy/mm/dd">
 // </todo>
  
+// <group name="AutoDiff mathematical operations">
+
 // Unary arithmetic operators.
 // <group>
 template<class T> AutoDiff<T> operator+(const AutoDiff<T> &ad);
@@ -157,9 +159,6 @@ template<class T> Bool near(const T& right,const AutoDiff<T>& left);
 
 
 // </group>
-
-
+// </group>
 
 #endif
-
-
