@@ -1,4 +1,4 @@
-//# LatticeGram.h: Grammar for lattice expressions
+//# ImageExprGram.h: Grammar for image expressions
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICEGRAM_H)
-#define AIPS_LATTICEGRAM_H
+#if !defined(AIPS_IMAGEEXPRGRAM_H)
+#define AIPS_IMAGEEXPRGRAM_H
 
 
 //# Includes
@@ -36,7 +36,7 @@
 
 
 // <summary>
-// Global functions for flex/bison scanner/parser for LatticeGram
+// Global functions for flex/bison scanner/parser for ImageExprGram
 // </summary>
 
 // <use visibility=local>
@@ -46,7 +46,7 @@
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//  <li> LatticeGram.l and .y  (flex and bison grammar)
+//  <li> ImageExprGram.l and .y  (flex and bison grammar)
 // </prerequisite>
 
 // <synopsis> 
@@ -56,7 +56,7 @@
 // </synopsis> 
 
 // <motivation>
-// It is necessary to be able to give a lattice expression in ASCII.
+// It is necessary to be able to give an image expression in ASCII.
 // This can be used in glish.
 // </motivation>
 
@@ -65,24 +65,27 @@
 // </todo>
 
 
-// <group name=LatticeGramFunctions>
+// <group name=ImageExprGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-int latticeGramParseCommand (const String& command);
+int imageExprGramParseCommand (const String& command);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
-void LatticeGramerror (char*);
+void ImageExprGramerror (char*);
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& latticeGramPosition();
+Int& imageExprGramPosition();
 
 // Declare the input routine for flex/bison.
-int latticeGramInput (char* buf, int max_size);
+int imageExprGramInput (char* buf, int max_size);
 
 // A function to remove escaped characters.
-String latticeGramRemoveEscapes (const String& in);
+String imageExprGramRemoveEscapes (const String& in);
+
+// A function to remove quotes from a quoted string.
+String imageExprGramRemoveQuotes (const String& in);
 
 // </group>
 
