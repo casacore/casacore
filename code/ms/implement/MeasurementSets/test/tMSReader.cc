@@ -58,14 +58,6 @@ int main(int argc, char **argv)
 
 	timer.mark();
 
-	Record tdims;
-	for (uInt i=0;i<tables.nelements();i++) {
-	    Record maxSizes = MSReader::scanTable(reader.table(tables(i)), tdims);
-	    cout << "\n" << tables(i) << endl;
-	    SDRecord::showRecord(cout, maxSizes);
-	    SDRecord::showRecord(cout, tdims);
-	}
-
 	for (uInt i=0;i<ms.nrow();i++) {
 	    reader.gotoRow(i);
 	    cout << i << " : ";
