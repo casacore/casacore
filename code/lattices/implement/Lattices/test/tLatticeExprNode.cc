@@ -33,7 +33,7 @@
 #include <trial/Lattices/LELLattice.h>
 #include <trial/Lattices/LELUnary.h>
 #include <trial/Lattices/LELArray.h>
-
+#include <trial/Lattices/RebinLattice.h>
 #include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCPixelSet.h>
@@ -2146,7 +2146,88 @@ Bool doIt (const MaskedLattice<Float>& aF,
                                                            ok = False;
       if (!checkMask (expr3, bB.isMasked(), bB.getMask())) ok = False;
    }
-
+   {
+      cout << "Rebin" << endl;
+      IPosition shapeIn(2, 10, 20);
+      Vector<Float> bin(shapeIn.nelements());
+      bin = 2.0;
+      LatticeExprNode nodeBin((ArrayLattice<Float>(bin)));
+//
+      Vector<uInt> binI(shapeIn.nelements());
+      binI = 2;
+//
+      {
+         cerr << "  Float" << endl;
+         ArrayLattice<Float> lat(shapeIn);
+         lat.set(1.0);
+         SubLattice<Float> mLat(lat);
+         RebinLattice<Float> rL(mLat, binI);
+         IPosition shapeBin = rL.shape();
+//
+         LatticeExprNode expr = rebin(mLat,nodeBin);
+         const Array<Float>& data = expr.getArrayFloat();
+         AlwaysAssert(data.shape().isEqual(shapeBin), AipsError);
+         AlwaysAssert(allNear(data, Float(1.0), Float(1.0e-6)), AipsError);
+         AlwaysAssert(allNear(data, rL.get(), 1.0e-6), AipsError);
+//
+         Bool hasMask = rL.isMasked();
+         checkMask (expr, hasMask, rL.getMask());
+      }
+      {
+         cerr << "  Double" << endl;
+         ArrayLattice<Double> lat(shapeIn);
+         lat.set(1.0);
+         SubLattice<Double> mLat(lat);
+         RebinLattice<Double> rL(mLat, binI);
+         IPosition shapeBin = rL.shape();
+//
+         LatticeExprNode expr = rebin(mLat,nodeBin);
+         const Array<Double>& data = expr.getArrayDouble();
+         AlwaysAssert(data.shape().isEqual(shapeBin), AipsError);
+         AlwaysAssert(allNear(data, Double(1.0), Double(1.0e-6)), AipsError);
+         AlwaysAssert(allNear(data, rL.get(), 1.0e-6), AipsError);
+//
+         Bool hasMask = rL.isMasked();
+         checkMask (expr, hasMask, rL.getMask());
+      }
+      {
+         cerr << "  Complex" << endl;
+         ArrayLattice<Complex> lat(shapeIn);
+         Complex val(1.0, 1.0);
+         lat.set(val);
+         SubLattice<Complex> mLat(lat);
+         RebinLattice<Complex> rL(mLat, binI);
+         IPosition shapeBin = rL.shape();
+//
+         LatticeExprNode expr = rebin(mLat,nodeBin);
+         const Array<Complex>& data = expr.getArrayComplex();
+         AlwaysAssert(data.shape().isEqual(shapeBin), AipsError);
+         AlwaysAssert(allNear(data, val, 1.0e-6), AipsError);
+         AlwaysAssert(allNear(data, rL.get(), 1.0e-6), AipsError);
+//
+         Bool hasMask = rL.isMasked();
+         checkMask (expr, hasMask, rL.getMask());
+      }
+      {
+         cerr << "  DComplex" << endl;
+         ArrayLattice<DComplex> lat(shapeIn);
+         DComplex val(1.0, 1.0);
+         lat.set(val);
+         SubLattice<DComplex> mLat(lat);
+         RebinLattice<DComplex> rL(mLat, binI);
+         IPosition shapeBin = rL.shape();
+//
+         LatticeExprNode expr = rebin(mLat,nodeBin);
+         const Array<DComplex>& data = expr.getArrayDComplex();
+         AlwaysAssert(data.shape().isEqual(shapeBin), AipsError);
+         AlwaysAssert(allNear(data, val, 1.0e-6), AipsError);
+         AlwaysAssert(allNear(data, rL.get(), 1.0e-6), AipsError);
+//
+         Bool hasMask = rL.isMasked();
+         checkMask (expr, hasMask, rL.getMask());
+      }
+   }        
+      
 
 //
 //************************************************************************
