@@ -136,10 +136,10 @@ void MSIter::construct(const Block<Int>& sortColumns,
   for (uInt i=0; i<cols.nelements(); i++) {
     if (cols[i]>0 && 
 	cols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
-      if (cols[i]==MS::ARRAY_ID) { arraySeen=True; nCol++; }
-      if (cols[i]==MS::FIELD_ID) { fieldSeen=True; nCol++; }
-      if (cols[i]==MS::DATA_DESC_ID) { ddSeen=True; nCol++; }
-      if (cols[i]==MS::TIME) { timeSeen=True; nCol++; }
+      if (cols[i]==MS::ARRAY_ID && !arraySeen) { arraySeen=True; nCol++; }
+      if (cols[i]==MS::FIELD_ID && !fieldSeen) { fieldSeen=True; nCol++; }
+      if (cols[i]==MS::DATA_DESC_ID && !ddSeen) { ddSeen=True; nCol++; }
+      if (cols[i]==MS::TIME && !timeSeen) { timeSeen=True; nCol++; }
     } else {
       throw(AipsError("MSIter() - invalid sort column"));
     }
@@ -164,6 +164,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
     if (!timeSeen) {
       // add time if it's not there
       columns[iCol++]=MS::columnName(MS::TIME);
+      timeSeen = True;
     }
   } else {
     columns.resize(cols.nelements());
