@@ -4281,3 +4281,4 @@
 14 131 src mv ./aips/implement/Measures/MCuvw.h ./trial/implement/Measures/MCuvw.h
 14 131 src mv trial/implement/Measures/MCuvw.h aips/implement/Measures/MCuvw.h
 14 131 src mv trial/implement/Measures/UPlist install/codemgmt/UPlist
+14 133 src mv trial/implement/wnbt/ trial/implement/Wnbt
