@@ -5,7 +5,7 @@
 #   This utility, cxx2html, is part of AIPS++, a software project
 #   centered at the National Radio Astronomy Observatory.
 #
-#   Copyright (C) 1995
+#   Copyright (C) 1995,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #  
 #   This library is free software; you can redistribute it and/or modify it
@@ -148,9 +148,9 @@ sub skipto {
 #    my $num = @_[0];
 #    my @comment = ();
 
- $self = shift;
- $num = @_[0];
- @comment = ();
+    $self = shift;
+    $num = @_[0];
+    @comment = ();
 
     while ( $self->{'line num'}<$num && 
 	   ! $self->eof() && 
@@ -161,7 +161,13 @@ sub skipto {
 	} elsif ( /^\s*$/ ) {
 	    push(@comment,"");
 	} else {
-	    @comment = ();
+# Don't start again if within 5 lines of the class name.
+# This is to avoid problems when the class name declaration is
+# given in more than one line (e.g. when using template).
+# This is a hack; a better solution should be implemented one time.
+	    if ($self->{'line num'} < $num-5) {
+	        @comment = ();
+	    }
 	}
     }
 
