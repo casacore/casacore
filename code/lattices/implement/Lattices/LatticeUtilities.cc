@@ -1,4 +1,4 @@
-//# LatticeUtilities.cc: defines the Lattice Utilities global functions//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002
+//# LatticeUtilities.cc: defines the Lattice Utilities global functions//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/aips.h>
 #include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
+#include <trial/Lattices/MaskedLatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeStatistics.h>
@@ -169,7 +169,7 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
 
    Bool deletePixels, deleteMask;
    LatticeIterator<T> dummyIter(out);
-   RO_LatticeIterator<T> iter(in, stepper);
+   RO_MaskedLatticeIterator<T> iter(in, stepper);
    for (iter.reset(); !iter.atEnd(); iter++) {
 
 // Put the pixels
@@ -177,7 +177,7 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
       IPosition cursorShape = iter.cursorShape();
       if (zeroMasked) {
          Array<T> pixels = iter.cursor().copy();
-         Array<Bool> mask = in.getMaskSlice(iter.position(), cursorShape);
+         Array<Bool> mask = in.getMask();
 //
          T* pPixels = pixels.getStorage(deletePixels);
          const Bool* pMask = mask.getStorage(deleteMask);
