@@ -1,5 +1,5 @@
 //# TableRecordRep.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -205,20 +205,20 @@ Bool TableRecordRep::conform (const TableRecordRep& other) const
     for (Int i=0; i<Int(nused_p); i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    const TableRecord& thisRecord =
-	      *static_cast<TableRecord*>(data_p[i]);
+	      *static_cast<TableRecord*>(const_cast<void*>(data_p[i]));
 	    if (thisRecord.isFixed()) {
 		const TableRecord& thatRecord =
-		  *static_cast<TableRecord*>(other.data_p[i]);
+		  *static_cast<TableRecord*>(const_cast<void*>(other.data_p[i]));
 		if (! thisRecord.conform (thatRecord)) {
 		    return False;
 		}
 	    }
 	} else if (desc_p.type(i) == TpTable) {
 	    const TableKeyword& thisKey =
-	      *static_cast<TableKeyword*>(data_p[i]);
+	      *static_cast<TableKeyword*>(const_cast<void*>(data_p[i]));
 	    if (thisKey.isFixed()) {
 		const TableKeyword& thatKey =
-		  *static_cast<TableKeyword*>(other.data_p[i]);
+		  *static_cast<TableKeyword*>(const_cast<void*>(other.data_p[i]));
 		if (! thisKey.conform (thatKey)) {
 		    return False;
 		}
@@ -240,10 +240,10 @@ void TableRecordRep::copy_other (const TableRecordRep& other)
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    *static_cast<TableRecord*>(data_p[i]) =
-	      *static_cast<TableRecord*>(other.data_p[i]);
+	      *static_cast<TableRecord*>(const_cast<void*>(other.data_p[i]));
 	} else if (desc_p.type(i) == TpTable) {
 	    *static_cast<TableKeyword*>(data_p[i]) =
-	      *static_cast<TableKeyword*>(other.data_p[i]);
+	      *static_cast<TableKeyword*>(const_cast<void*>(other.data_p[i]));
 	}else{
 	    copyDataField (desc_p.type(i), data_p[i], other.data_p[i]);
 	}
@@ -284,7 +284,7 @@ void TableRecordRep::closeTable (Int whichField) const
 {
     AlwaysAssert (whichField >= 0  &&  whichField < Int(desc_p.nfields())
 		  &&  desc_p.type(whichField) == TpTable, AipsError);
-    static_cast<TableKeyword*>(data_p[whichField])->close();
+    static_cast<TableKeyword*>(const_cast<void*>(data_p[whichField]))->close();
 }
 
 
@@ -347,7 +347,7 @@ Bool TableRecordRep::areTablesMultiUsed() const
 {
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpTable) {
-	    if (static_cast<TableKeyword*>(data_p[i])->isMultiUsed(True)) {
+	    if (static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->isMultiUsed(True)) {
 	        return True;
 	    }
 	}
@@ -372,13 +372,13 @@ void TableRecordRep::putData (AipsIO& os, const TableAttr& parentAttr) const
 	if (desc_p.type(i) == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
-		static_cast<TableRecord*>(data_p[i])->putRecord (os,
+		static_cast<TableRecord*>(const_cast<void*>(data_p[i]))->putRecord (os,
 								 parentAttr);
 	    }else{
-		static_cast<TableRecord*>(data_p[i])->putData (os, parentAttr);
+		static_cast<TableRecord*>(const_cast<void*>(data_p[i]))->putData (os, parentAttr);
 	    }
 	} else if (desc_p.type(i) == TpTable) {
-	  os << static_cast<TableKeyword*>(data_p[i])->tableName (parentAttr);
+	  os << static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->tableName (parentAttr);
 	}else{
 	    putDataField (os, desc_p.type(i), data_p[i]);
 	}

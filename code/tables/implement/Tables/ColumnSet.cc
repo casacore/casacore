@@ -43,6 +43,8 @@
 #define COLMAPVAL(I)       ((PlainColumn*)(colMap_p.getVal(I)))
 #define COLMAPNAME(NAME)   ((PlainColumn*)(colMap_p(NAME)))
 
+// Tweaked for SUN NTV compiler, used const_cast<void *> trick
+
 ColumnSet::ColumnSet (TableDesc* tdesc)
 : tdescPtr_p      (tdesc),
   plainTablePtr_p (0),
@@ -439,7 +441,7 @@ void ColumnSet::removeColumn (const Vector<String>& columnNames)
     // Remove all data managers possible.
     for (uInt i=0; i<dmCounts.ndefined(); i++) {
         if (dmCounts.getVal(i) < 0) {
-	    DataManager* dmPtr = static_cast<DataManager*>(dmCounts.getKey(i));
+	    DataManager* dmPtr = static_cast<DataManager *>(const_cast<void *>(dmCounts.getKey(i)));
 	    dmPtr->deleteManager();
 	    Bool found = False;
 	    for (uInt j=0; j<blockDataMan_p.nelements(); j++) {
@@ -495,7 +497,7 @@ SimpleOrderedMap<void*,Int> ColumnSet::checkRemoveColumn
     }
     // If all columns in a data manager are to be deleted, set count to -1.
     for (uInt i=0; i<dmCounts.ndefined(); i++) {
-        DataManager* dmPtr = static_cast<DataManager*>(dmCounts.getKey(i));
+        DataManager* dmPtr = static_cast<DataManager*>(const_cast<void*>(dmCounts.getKey(i)));
 	if (dmCounts.getVal(i) == Int(dmPtr->ncolumn())) {
 	    dmCounts.getVal(i) = -1;
 	}
