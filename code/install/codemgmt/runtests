@@ -63,7 +63,8 @@
      echo ""
      cat $BINTESTD/runtests.log
      echo $PATH
-     testsum.sh $AIPSARCH aips > $BINTESTD/runtests.summary 2>&1
+     testsum.sh $AIPSARCH aips > $BINTESTD/runtests_aips.summary 2>&1
+     testsum.sh $AIPSARCH trial > $BINTESTD/runtests_trial.summary 2>&1
   } > $BINTESTD/runtests.rptNlog
 
   exit 0
