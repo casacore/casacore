@@ -63,6 +63,30 @@ LCComplement& LCComplement::operator= (const LCComplement& other)
     return *this;
 }
 
+Bool LCComplement::operator== (const LCRegion& other) const
+//
+// See if this region is the same as the other region
+// 
+{
+
+// Check below us
+
+   if (LCRegionMulti::operator!=(other)) return False;
+ 
+   return True;
+}
+
+Bool LCComplement::operator!= (const LCRegion& other) const
+//
+// See if this region is different from the other region
+//
+{
+   if (LCComplement::operator==(other)) return False;
+   return True;
+}   
+
+
+
 LCRegion* LCComplement::cloneRegion() const
 {
     return new LCComplement (*this);
@@ -80,6 +104,12 @@ String LCComplement::className()
 {
     return "LCComplement";
 }
+
+String LCComplement::type() const
+{   
+   return className();
+}
+ 
 
 TableRecord LCComplement::toRecord (const String& tableName) const
 {
