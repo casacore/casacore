@@ -31,6 +31,7 @@
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageInfo.h>
+#include <trial/Images/ImageLogger.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/FITS/fitsio.h>
@@ -597,28 +598,23 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
 // HISTORY
 //
-  if (image.logSink().localSink().isTableLogSink()) {
-	const TableLogSink &logTable = 
-	    image.logSink().localSink().castToTableLogSink();
-	Vector<String> historyChunk;
-	uInt nstrings;
-	Bool aipsppFormat;
-	uInt firstLine = 0;
-	while (1) {
-	    firstLine = FITSHistoryUtil::toHISTORY(historyChunk, aipsppFormat, 
-						   nstrings, firstLine,
-						   logTable);
-	    if (nstrings == 0) {
-		break;
-	    }
-	    String groupType;
-	    if (aipsppFormat) {
-		groupType = "LOGTABLE";
-	    }
-	    FITSHistoryUtil::addHistoryGroup(kw, historyChunk, nstrings,
-					     groupType);
-	}
-    }    
+  ImageLogger& logger = image.logger();
+  LogSink& logSink = logger.sink();
+//
+  Vector<String> historyChunk;
+  uInt nstrings;
+  Bool aipsppFormat;
+  uInt firstLine = 0;
+  while (1) {
+     firstLine = FITSHistoryUtil::toHISTORY(historyChunk, aipsppFormat, 
+                                            nstrings, firstLine, logSink);
+     if (nstrings == 0) {
+        break;
+     }
+     String groupType;
+     if (aipsppFormat) groupType = "LOGTABLE";
+     FITSHistoryUtil::addHistoryGroup(kw, historyChunk, nstrings, groupType);
+  }    
 //
 // END
 //
@@ -1070,3 +1066,21 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
    }
    return u;
 }
+
+void ImageFITSConverter::restoreHistory (ImageLogger& logger,
+                                         ConstFitsKeywordList& kw) 
+{
+    LogSink& sink = logger.sink();
+    Vector<String> lines;
+    String groupType;
+    kw.first();
+    uInt n;
+    while ((n=FITSHistoryUtil::getHistoryGroup(lines, groupType, kw))!=0) {
+       if (groupType == "LOGTABLE") {
+          FITSHistoryUtil::fromHISTORY(sink, lines, n, True);
+        } else if (groupType == "") {
+          FITSHistoryUtil::fromHISTORY(sink, lines, n, False);
+        }
+    }
+}
+ 
