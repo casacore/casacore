@@ -1,4 +1,4 @@
-//# SkyCompBase.h: this defines SkyCompBase.h
+//# SkyCompBase.h: Base class for model components of the sky brightness
 //# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -44,35 +44,116 @@ template <class T> class Flux;
 template <class T> class Vector;
 template <class T> class ImageInterface;
 
-// <summary>A model component of the sky brightness</summary>
+// <summary>Base class for model components of the sky brightness</summary>
 
 // <use visibility=export>
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
 // <prerequisite> 
-// <li> <linkto class=MDirection>MDirection</linkto>
+// <li> <linkto class=Flux>Flux</linkto>
+// <li> <linkto class=ComponentShape>ComponentShape</linkto>
+// <li> <linkto class=SpectralModel>SpectralModel</linkto>
 // </prerequisite>
 //
 
 // <synopsis> 
+// This abstract base class defines the interface for classes that model the
+// sky brightness.
 
+// A model of the sky brightness is defined by three properties.
+// <dl>
+// <dt><em>A Flux</em>
+// <dt> This is the integrated brightness of the component.
+// <dt><em>A Shape</em>
+// <dd> This defines how the sky brightness varies as a function of position on
+//      the sky. Currently two shapes are supported, 
+//      <linkto class=PointShape>points</linkto> and
+//      <linkto class=GaussianShape>Gaussians</linkto>.
+// <dt><em>A Spectrum</em>
+// <dd> This defines how the component flux varies as a function of frequency
+//      Currently two spectral models are supported. The simplest assumes the
+//      spectrum is <linkto class=ConstantSpectrum>constant</linkto> with 
+//      frequency. Alternatively a
+//      <linkto class=SpectralIndex>spectral index</linkto> model can be used. 
+// </dl>
+
+// These three properties of a component can be obtained using the
+// <src>flux</src>, <src>shape</src> or <src>spectrum</src>functions defined in
+// this interface. Each of these properties is represented by an object that
+// contains functions for manipulating the parameters associated with that
+// property. eg. to set the direction of the component you would use:
+// <srcblock>
+// SkyComponent comp;
+// comp.shape().setRefDirection(newDirection);
+// <srcblock>
+// See the <linkto class=Flux>Flux</linkto>, 
+// <linkto class=ComponentShape>ComponentShape</linkto> or
+// <linkto class=SpectralModel>SpectralModel</linkto> classes for more
+// information on these properties and how to manipulate them.
+
+// Besides these three properties the <src>label</src> functions are provided
+// to associate a text string with the component.
+
+// A model of the sky brightness is by itself not very useful unless you can do
+// something with it. This class contains functions for deriving information
+// from the components. These functions are:
+// <dl>
+// <dt><src>sample</src>
+// <dt> This function will return the the flux in an specified pixel, at a
+//      specified direction at a specified frequency.
+// <dt><src>project</src>
+// <dd> This function will generate an image of the component, given a user
+//      specified ImageInterface object.
+// <dt><src>visibility</src>
+// <dd> This function will return the visibility (spatial coherence) that would
+//      be measured if the component was at the field centre of an
+//      interferometer with a specified (u,v,w) coordinates and observation
+//      frequency. 
+// </dl>
+
+// The <src>toRecord</src> & <src>fromRecord</src> functions are used to
+// convert between a SkyCompBase object and a record representation. This is
+// primarily so that a component can be represented in Glish. 
 
 // </synopsis>
 
 // <example>
+// Because SpectralModel is an abstract base class, an actual instance of this
+// class cannot be constructed. However the interface it defines can be used
+// inside a function. This is always recommended as it allows functions which
+// have SkyCompBase's as arguments to work for any derived class.
+// These examples are coded in the dSkyCompBase.cc file.
+// <h4>Example 1:</h4>
+// In this example the printComp function prints out the some basic information
+// on the spatial, spectral and flux properties of the component.
 // <srcblock>
+// void printComponent(const SkyCompBase & comp) {
+//  cout << "This component has a flux of " 
+//       << comp.flux().value().ac() 
+//       << " " << comp.flux().unit().getName() << endl;
+//  cout << "and a " << ComponentType::name(comp.flux().pol()) 
+//       << " polarisation" << endl;
+//  cout << "This component has a " 
+//       << ComponentType::name(comp.shape().type()) << " shape" << endl;
+//  cout << "with a reference direction of " 
+//       << comp.shape().refDirection().getAngle("deg") << endl;
+//  cout << "This component has a " 
+//       << ComponentType::name(comp.spectrum().type()) << " spectrum" << endl;
+//  cout << "with a reference frequency of " 
+//       << comp.spectrum().refFrequency().get("GHz") << endl;
+// }
 // </srcblock>
 // </example>
 //
 // <motivation>
+// I wanted to force the interfaces of the SkyCompRep and the SkyComponent
+// classes to be the same. The best way I found was the introduction of a
+// base class that these other classes would derive from. 
 // </motivation>
 
-// <thrown>
-// </thrown>
-//
-// <todo asof="yyyy/mm/dd">
-//   <li> 
+// <todo asof="1998/05/20">
+//   <li> Nothing I hope!
 // </todo>
 
 class SkyCompBase: public RecordTransformable
@@ -111,6 +192,13 @@ public:
   virtual SpectralModel & spectrum() = 0;
   // </group>
   
+  // return a reference to the label associated with this component. The label
+  // is a text string for general use.
+  // <group>
+  virtual String & label() = 0;
+  virtual const String & label() const = 0;
+  // </group>
+
   // Calculate the flux at the specified direction & frequency, in a pixel of
   // specified size.
   virtual Flux<Double> sample(const MDirection & direction, 
@@ -138,13 +226,6 @@ public:
   // real.
   virtual Flux<Double> visibility(const Vector<Double> & uvw,
 				  const Double & frequency) const = 0;
-
-  // set/get the label associated with this component. The label is a simple
-  // string for general use.
-  // <group>
-  virtual void setLabel(const String & newLabel) = 0;
-  virtual const String & label() const = 0;
-  // </group>
 
   // This functions convert between a record and a component.  Derived classes
   // can interpret fields in the record in a class specific way. These
