@@ -1,5 +1,5 @@
 //# RigidVector2.cc: explicit instantiations for RigidVector
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,15 +37,15 @@ RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 	    v1=v.v_p[1]*m.a_p[0][0];
 	    v2=v.v_p[2]*m.a_p[0][0];
 	    v3=v.v_p[3]*m.a_p[0][0];
-	    return RigidVector<Complex,4>(v0,v1,v2,v3);
 	}
+        break;
 	case SquareMatrix<Float,4>::Diagonal: {
 	    v0=v.v_p[0]*m.a_p[0][0];
 	    v1=v.v_p[1]*m.a_p[1][1];
 	    v2=v.v_p[2]*m.a_p[2][2];
 	    v3=v.v_p[3]*m.a_p[3][3];
-	    return RigidVector<Complex,4>(v0,v1,v2,v3);
 	}
+        break;
         case SquareMatrix<Float,4>::General: {
 	    v0=m.a_p[0][0]*v.v_p[0]+m.a_p[0][1]*v.v_p[1]+m.a_p[0][2]*v.v_p[2]+
 		m.a_p[0][3]*v.v_p[3];
@@ -55,11 +55,8 @@ RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 		m.a_p[2][3]*v.v_p[3];
 	    v3=m.a_p[3][0]*v.v_p[0]+m.a_p[3][1]*v.v_p[1]+m.a_p[3][2]*v.v_p[2]+
 		m.a_p[3][3]*v.v_p[3];
-	    return RigidVector<Complex,4>(v0,v1,v2,v3);
 	}
     }
-    // NOTREACHED
-    RigidVector<Complex,4> tmp;
-    return tmp;
+    return RigidVector<Complex,4>(v0,v1,v2,v3);
 }
 
