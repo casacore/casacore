@@ -1,5 +1,5 @@
 //# ColumnSet.h: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/TableLockData.h>
+#include <aips/Tables/BaseTable.h>
 #include <aips/Containers/SimOrdMap.h>
 #include <aips/Utilities/String.h>
 
@@ -39,7 +40,7 @@
 class SetupNewTable;
 class Table;
 class TableDesc;
-class PlainTable;
+class BaseTable;
 class TableAttr;
 class ColumnDesc;
 class PlainColumn;
@@ -120,11 +121,10 @@ public:
     // Table object and to initialize themselves.
     void initDataManagers (uInt nrrow, Bool bigEndian, Table& tab);
 
-    // Link the ColumnSet object to the PlainTable object.
-    void linkToTable (PlainTable* plainTableObject);
+    // Link the ColumnSet object to the BaseTable object.
+    void linkToTable (BaseTable* baseTableObject);
 
     // Link the ColumnSet object to the TableLockData object.
-    // PlainTable object.
     void linkToLockObject (TableLockData* lockObject);
 
     // Check if the table is locked for read or write.
@@ -195,7 +195,8 @@ public:
     TableDesc actualTableDesc() const;
 
     // Get the data manager info.
-    Record dataManagerInfo() const;
+    // Optionally only the virtual engines are retrieved.
+    Record dataManagerInfo (Bool virtualOnly=False) const;
 
     // Initialize rows startRownr till endRownr (inclusive).
     void initialize (uInt startRownr, uInt endRownr);
@@ -287,7 +288,7 @@ private:
     //# Declare the variables.
     TableDesc*                      tdescPtr_p;
     uInt                            nrrow_p;        //# #rows
-    PlainTable*                     plainTablePtr_p;
+    BaseTable*                      baseTablePtr_p;
     TableLockData*                  lockPtr_p;      //# lock object
     SimpleOrderedMap<String,void*>  colMap_p;       //# list of PlainColumns
     uInt                            seqCount_p;     //# sequence number count
@@ -302,9 +303,13 @@ inline uInt ColumnSet::nrow() const
 {
     return nrrow_p;
 }
-inline void ColumnSet::linkToTable (PlainTable* plainTableObject)
+inline void ColumnSet::linkToTable (BaseTable* baseTableObject)
 {
-    plainTablePtr_p = plainTableObject;
+    baseTablePtr_p = baseTableObject;
+}
+inline void ColumnSet::setTableChanged()
+{
+    baseTablePtr_p->setTableChanged();
 }
 inline void ColumnSet::linkToLockObject (TableLockData* lockObject)
 {
