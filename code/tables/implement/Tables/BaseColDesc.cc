@@ -1,5 +1,5 @@
 //# BaseColDesc.cc: Abstract base class for table column descriptions
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -74,17 +74,17 @@ BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 		    "Option Undefined only allowed for standard data types"));
 	}
     }
-    // The default data manager for standard types is StManAipsIO.
+    // The default data manager for standard types is StandardStMan.
     // For other types it is the virtual scalar column engine handling
     // that type.
     if (dataManType_p.empty()) {
 	if (dtype_p == TpOther) {
 	    dataManType_p = dtypeId_p + "VSCEngine";
 	}else{
-	    dataManType_p = "StManAipsIO";
+	    dataManType_p = "StandardStMan";
 	}
     }
-    // The default data manager group for standard types is StManAipsIO.
+    // The default data manager group for standard types is data manager type.
     // For other types it is the column name to make the group unique.
     if (dataManGroup_p.empty()) {
 	if (dtype_p == TpOther) {
