@@ -111,7 +111,6 @@ if (-e $ldir/${tp}.list) rm -f $ldir/${tp}.list
 set cnt = 1000
 set x = ""
 if ($upswl) set x = '-n'
-set tmp = $$
 if (-e $ldir/$tmp.tmp) rm -f $ldir/$tmp.tmp
 touch $ldir/$tmp.tmp
 
@@ -126,7 +125,6 @@ unset x
 cd $ldir
 cat $ldir/$tmp.tmp | sort +1 -2 >! $ldir/${tp}.list
 if (-e $ldir/$tmp.tmp) rm -f $ldir/$tmp.tmp
-unset tmp
 
 if (! $upswQ) then
   set a = ( `wc $ldir/${tp}.list` )

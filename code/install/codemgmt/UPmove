@@ -114,7 +114,6 @@ cd $ldir
 if (! -e $ldir/${tp}_MV.spat || ! -e $ldir/${tp}.todo) then
    if (-e $ldir/${tp}_MV.spat) rm -f $ldir/${tp}_MV.spat
    if (-e $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
-   set tmp = $$
    if (-e $tmp.tmp) rm -f $tmp.tmp
    touch $tmp.tmp
    foreach i (`cat $ldir/${tp}.sel`)
@@ -122,7 +121,6 @@ if (! -e $ldir/${tp}_MV.spat || ! -e $ldir/${tp}.todo) then
       echo `echo $i | sed -e 's#[.]/##g' -e 's#/implement##g'` >> $tmp.tmp 
    end
    cat $tmp.tmp | sort | uniq >! $ldir/${tp}_MV.spat 
-   unset tmp
    cat >! $ldir/${tp}_MV.rmpat <<EOF
 [/]tmplinst[/]
 [/]glish[/]
