@@ -1,5 +1,5 @@
 //# OrdPairIO.cc: Functions to perform IO for ordered pair classes
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,15 +28,15 @@
 #include <aips/Containers/OrdPairIO.h>
 
 template<class key, class value> AipsIO& operator<< (AipsIO& ios, const OrderedPair<key,value>& op) {
-    ios << op.Key << op.Val;
+    ios << op.x() << op.y();
     return ios;
   }
 template<class key, class value> AipsIO& operator>> (AipsIO& ios, OrderedPair<key,value>& op) {
-    ios >> op.Key >> op.Val;
+    ios >> op.x() >> op.y();
     return ios;
   }
 
 template<class key, class value> ostream& operator<< (ostream& ios, const OrderedPair<key,value>& op) {
-  ios << "(" << op.Key << "," << op.Val << ")";
+  ios << "(" << op.x() << "," << op.y() << ")";
   return ios;
 }
