@@ -279,6 +279,8 @@ void ImageSummary<T>::list (LogIO& os,
       cSys.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
       const Double restFreq = cSys.spectralCoordinate(coordinate).restFrequency();
       if (restFreq > 0) {
+         os.output().setf(ios::scientific, ios::floatfield);
+         os.output().precision(8);
          os << "Rest Frequency : " << restFreq << " " 
             << cSys.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate) << endl;
       }
