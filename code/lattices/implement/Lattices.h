@@ -320,18 +320,20 @@
 // LatticeStepper nav(latticeShape, cursorShape, order);
 // LatticeIterator<Float> iter(image, nav);
 // </srcblock>
-// <li> Another Navigator is the <linkto class="TiledStepper">TiledStepper</linkto> 
+// <li> Another Navigator is the
+// <linkto class="TileStepper">TileStepper</linkto> 
 // class.  This Navigator allows you to iterate through a Lattice with a Vector
 // cursor.  However, it steps through the Lattice in an order which is
-// optimum with regards the I/O of the tiles with which the Table is constructed.
+// optimum with regards the I/O of the tiles with which the Table is
+// constructed.
 //
 // <srcblock>
 //
-// // Set up a TiledStepper to return profiles along the specified
+// // Set up a TileStepper to return profiles along the specified
 // // axis from a PagedArray (not all Lattices have the tileShape member
 // // function).  Then create the iterator as well.
 // 
-// TiledStepper nav(lattice.shape(), lattice.tileShape(), axis);
+// TileStepper nav(lattice.shape(), lattice.tileShape(), axis);
 // LatticeIterator<Complex> nav(lattice, nav);
 // </srcblock>
 //
@@ -359,7 +361,7 @@
 //   by iteration.  This class is an abstract base.  Classes derived from
 //   this (currently 
 //   <linkto class="LatticeStepper">LatticeStepper</linkto> and
-//   <linkto class="TiledStepper">TiledStepper</linkto>) must
+//   <linkto class="TileStepper">TileStepper</linkto>) must
 //   define the path the iterator cursor follows, the size of the movement
 //   of the cursor with each iteration, and the behavior of that cursor
 //   shape as it moves through a Lattice.
