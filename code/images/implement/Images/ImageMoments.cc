@@ -1529,8 +1529,9 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
    Double dMin =  1.0e30;
    Double dMax = -1.0e30;
    Double coord = 0.0;
+   Int i,j;
    if (doInclude) {
-      for (Int i=0,j=0; i<nPts; i++) {
+      for (i=0,j=0; i<nPts; i++) {
          if (data(i) >= range_p(0) && data(i) <= range_p(1)) {
             if (preComp) {
                coord = sepWorldCoord(i);
@@ -1546,7 +1547,7 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
       }
       nPts = j;
    } else if (doExclude) {
-      for (Int i=0,j=0; i<nPts; i++) {
+      for (i=0,j=0; i<nPts; i++) {
          if (data(i) <= range_p(0) || data(i) >= range_p(1)) {
             if (preComp) {
                coord = sepWorldCoord(i);
@@ -1562,7 +1563,7 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
       }
       nPts = j;
    } else {
-      for (Int i=0; i<nPts; i++) {
+      for (i=0; i<nPts; i++) {
          if (preComp) {
             coord = sepWorldCoord(i);
          } else if (doCoordCalc) {
@@ -1589,7 +1590,7 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
    Double sumAbsDev = 0.0;
    if (doAbsDev) {
       Double iMean = s0 / nPts;
-      for (Int i=0; i<nPts; i++) sumAbsDev += abs(selectedData(i) - iMean);
+      for (i=0; i<nPts; i++) sumAbsDev += abs(selectedData(i) - iMean);
    }
 
  
@@ -1616,7 +1617,7 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
          selectedData.resize(nPts,True);
          selectedData(0) = abs(selectedData(0));
          T dataMax = selectedData(0);
-         for (Int i=1; i<nPts; i++) {
+         for (i=1; i<nPts; i++) {
             selectedData(i) += abs(selectedData(i-1));
             dataMax = max(dataMax,selectedData(i));
          }
@@ -1934,7 +1935,7 @@ void ImageMoments<T>::doMomSm(Vector<T>& calcMoments,
    Double sumAbsDev = 0.0;
    if (doAbsDev) {
       Double iMean = s0 / nPts;
-      for (Int i=0; i<nPts; i++) sumAbsDev += abs(Double(selectedData(i) - iMean));
+      for (i=0; i<nPts; i++) sumAbsDev += abs(Double(selectedData(i) - iMean));
    }
 
 
