@@ -287,6 +287,13 @@ void FitsInput::init() {
 		        m_extend = True;
 	    }
 	    m_rec_type = FITS::HDURecord;
+		// get the total number of hdu in this fits file
+		int l_status = 0;
+		if( ffthdu(m_fptr, &m_thdunum, &l_status)>0){
+	      fits_report_error(stderr, l_status); // print error report
+		   errmsg(IOERR,"[FitsInput::init()] Error when getting total number of HDU.");
+         return;
+	   }
 	}
 }
 //===============================================================================================
@@ -294,7 +301,7 @@ void FitsInput::init() {
 Vector<String> FitsInput::kwlist_str(Bool length80){  
    Vector<String> cards;
    if( !m_header_done ){
-  		cout<< "[FitsInput::kwlist_str()] This method should be called before reading data."<<endl;
+  		cout<< "[FitsInput::kwlist_str()] If you need call this method, you should do so before reading any data from CHDU."<<endl;
 		return cards;	
    }else{
 	   // remember the cfitsio bytepos before calling any cfitsio function
@@ -326,7 +333,7 @@ Vector<String> FitsInput::kwlist_str(Bool length80){
 	   }else{
 		   (m_fptr->Fptr)->bytepos = l_bytepos;
 	   }
-//
+// The next block is added by Neil Killeen
            if (length80) {
               String tmp("                                                                                ");
               for (uInt i=0; i<cards.nelements(); i++) {
@@ -433,18 +440,12 @@ char * FitsInput::read_sp() {
 // implement read_head_rec() with CFITSIO of NASA
 void FitsInput::read_header_rec() {
    // make the next hdu be the chdu of cfitsio and set the file position pointer at the begining of the hdu.	
-	int l_status = 0, l_hdutype = 0, l_hdunum = 0, l_chdunum = 0;
-	// get the total number of the hdu in fits file
-	if( ffthdu(m_fptr, &l_hdunum, &l_status)>0){
-	   fits_report_error(stderr, l_status); // print error report
-		errmsg(IOERR,"[FitsInput::read_header_rec()] Error when getting total number of HDU.");
-      return;
-	}
+	int l_status = 0, l_hdutype = 0, l_chdunum = 0;
 	// get the number of the current hdu. This function returns the number of
 	// chdu, not an error code. So we do not check the return.         
 	ffghdn(m_fptr, &l_chdunum);
 	// if there is more hdu, make the next hdu be the current hdu
-	if( l_chdunum < l_hdunum ){ 
+	if( l_chdunum < m_thdunum ){ 
 	   if( ffmrhd(m_fptr,  1, &l_hdutype, &l_status)>0){
 	      fits_report_error(stderr, l_status); // print error report
 		   errmsg(IOERR,"[FitsInput::read_header_rec()] Error moving CHDU.");
