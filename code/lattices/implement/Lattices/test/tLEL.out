@@ -1,5 +1,5 @@
 >>>
-tLEL: Version  
+/home/rzmws0/gvd/aips++/sun4sol_gnu/bin/tLEL: Version  
 <<<
 LELAttribute
 
@@ -151,6 +151,8 @@ LELFunction1D<Float>
       Caught expected exception; message is: LELFunction1D::eval - unknown function
    Function max
       Caught expected exception; message is: LELFunction1D::eval - unknown function
+   Function median
+      Caught expected exception; message is: LELFunctionReal1D::eval - unknown function
    Function mean
       Caught expected exception; message is: LELFunction1D::eval - unknown function
    Function sum
@@ -177,6 +179,8 @@ LELFunction1D<Double>
       Caught expected exception; message is: LELFunction1D::eval - unknown function
    Function max
       Caught expected exception; message is: LELFunction1D::eval - unknown function
+   Function median
+      Caught expected exception; message is: LELFunctionReal1D::eval - unknown function
    Function mean
       Caught expected exception; message is: LELFunction1D::eval - unknown function
    Function sum
