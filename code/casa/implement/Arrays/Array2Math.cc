@@ -1,5 +1,5 @@
 //# Array2Math.cc: Arithmetic functions defined on Arrays
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,6 @@
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/VectorIter.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Mathematics/Math.h>
 
@@ -105,10 +104,6 @@ Matrix<DComplex> conj(const Matrix<DComplex> &carray)
   return retval;
 };
 
-// <thrown>
-//    <item> ArrayConformanceError
-// </thrown>
-//+grp
 void  real(Array<Float> &rarray, const Array<Complex> &carray)
 {
     if (rarray.shape() != carray.shape()) {
@@ -116,16 +111,13 @@ void  real(Array<Float> &rarray, const Array<Complex> &carray)
 				    "const Array<Complex> &carray) "
 				    " - shapes not identical"));
     }
-    ReadOnlyVectorIterator<Complex> ci(carray);
-    VectorIterator<Float> ri(rarray);
-    uInt len = ri.vector().nelements();
-    uInt i;
-    while (! ri.pastEnd()) {
-	for (i=0; i<len; i++) {
-	    ri.vector()(i) = ci.vector()(i).real();
-	}
-	ri.next(); ci.next();
-    }
+    Bool delc, delr;
+    const Complex* cptr = carray.getStorage (delc);
+    Float* rptr = rarray.getStorage (delr);
+    uInt n = rarray.nelements();
+    for (uInt i=0; i<n; i++) rptr[i] = cptr[i].real();
+    carray.freeStorage (cptr, delc);
+    rarray.putStorage (rptr, delr);
 }
 
 void  real(Array<Double> &rarray, const Array<DComplex> &carray)
@@ -135,16 +127,13 @@ void  real(Array<Double> &rarray, const Array<DComplex> &carray)
 				    "const Array<DComplex> &carray) "
 				    " - shapes not identical"));
     }
-    ReadOnlyVectorIterator<DComplex> ci(carray);
-    VectorIterator<Double> ri(rarray);
-    uInt len = ri.vector().nelements();
-    uInt i;
-    while (! ri.pastEnd()) {
-	for (i=0; i<len; i++) {
-	    ri.vector()(i) = ci.vector()(i).real();
-	}
-	ri.next(); ci.next();
-    }
+    Bool delc, delr;
+    const DComplex* cptr = carray.getStorage (delc);
+    Double* rptr = rarray.getStorage (delr);
+    uInt n = rarray.nelements();
+    for (uInt i=0; i<n; i++) rptr[i] = cptr[i].real();
+    carray.freeStorage (cptr, delc);
+    rarray.putStorage (rptr, delr);
 }
 
 void  imag(Array<Float> &rarray, const Array<Complex> &carray)
@@ -154,16 +143,13 @@ void  imag(Array<Float> &rarray, const Array<Complex> &carray)
 				    "const Array<Complex> &carray) "
 				    " - shapes not identical"));
     }
-    ReadOnlyVectorIterator<Complex> ci(carray);
-    VectorIterator<Float> ri(rarray);
-    uInt len = ri.vector().nelements();
-    uInt i;
-    while (! ri.pastEnd()) {
-	for (i=0; i<len; i++) {
-	    ri.vector()(i) = ci.vector()(i).imag();
-	}
-	ri.next(); ci.next();
-    }
+    Bool delc, delr;
+    const Complex* cptr = carray.getStorage (delc);
+    Float* rptr = rarray.getStorage (delr);
+    uInt n = rarray.nelements();
+    for (uInt i=0; i<n; i++) rptr[i] = cptr[i].imag();
+    carray.freeStorage (cptr, delc);
+    rarray.putStorage (rptr, delr);
 }
 
 void  imag(Array<Double> &rarray, const Array<DComplex> &carray)
@@ -173,16 +159,13 @@ void  imag(Array<Double> &rarray, const Array<DComplex> &carray)
 				    "const Array<DComplex> &carray) "
 				    " - shapes not identical"));
     }
-    ReadOnlyVectorIterator<DComplex> ci(carray);
-    VectorIterator<Double> ri(rarray);
-    uInt len = ri.vector().nelements();
-    uInt i;
-    while (! ri.pastEnd()) {
-	for (i=0; i<len; i++) {
-	    ri.vector()(i) = ci.vector()(i).imag();
-	}
-	ri.next(); ci.next();
-    }
+    Bool delc, delr;
+    const DComplex* cptr = carray.getStorage (delc);
+    Double* rptr = rarray.getStorage (delr);
+    uInt n = rarray.nelements();
+    for (uInt i=0; i<n; i++) rptr[i] = cptr[i].imag();
+    carray.freeStorage (cptr, delc);
+    rarray.putStorage (rptr, delr);
 }
 
 void  amplitude(Array<Float> &rarray, const Array<Complex> &carray)
@@ -192,16 +175,13 @@ void  amplitude(Array<Float> &rarray, const Array<Complex> &carray)
 				    "const Array<Complex> &carray) "
 				    " - shapes not identical"));
     }
-    ReadOnlyVectorIterator<Complex> ci(carray);
-    VectorIterator<Float> ri(rarray);
-    uInt len = ri.vector().nelements();
-    uInt i;
-    while (! ri.pastEnd()) {
-	for (i=0; i<len; i++) {
-	    ri.vector()(i) = fabs(ci.vector()(i));
-	}
-	ri.next(); ci.next();
-    }
+    Bool delc, delr;
+    const Complex* cptr = carray.getStorage (delc);
+    Float* rptr = rarray.getStorage (delr);
+    uInt n = rarray.nelements();
+    for (uInt i=0; i<n; i++) rptr[i] = fabs(cptr[i]);
+    carray.freeStorage (cptr, delc);
+    rarray.putStorage (rptr, delr);
 }
 
 void  amplitude(Array<Double> &rarray, const Array<DComplex> &carray)
@@ -211,16 +191,13 @@ void  amplitude(Array<Double> &rarray, const Array<DComplex> &carray)
 				    "const Array<DComplex> &carray) "
 				    " - shapes not identical"));
     }
-    ReadOnlyVectorIterator<DComplex> ci(carray);
-    VectorIterator<Double> ri(rarray);
-    uInt len = ri.vector().nelements();
-    uInt i;
-    while (! ri.pastEnd()) {
-	for (i=0; i<len; i++) {
-	    ri.vector()(i) = fabs(ci.vector()(i));
-	}
-	ri.next(); ci.next();
-    }
+    Bool delc, delr;
+    const DComplex* cptr = carray.getStorage (delc);
+    Double* rptr = rarray.getStorage (delr);
+    uInt n = rarray.nelements();
+    for (uInt i=0; i<n; i++) rptr[i] = fabs(cptr[i]);
+    carray.freeStorage (cptr, delc);
+    rarray.putStorage (rptr, delr);
 }
 
 void  phase(Array<Float> &rarray, const Array<Complex> &carray)
@@ -230,16 +207,13 @@ void  phase(Array<Float> &rarray, const Array<Complex> &carray)
 				    "const Array<Complex> &carray) "
 				    " - shapes not identical"));
     }
-    ReadOnlyVectorIterator<Complex> ci(carray);
-    VectorIterator<Float> ri(rarray);
-    uInt len = ri.vector().nelements();
-    uInt i;
-    while (! ri.pastEnd()) {
-	for (i=0; i<len; i++) {
-	    ri.vector()(i) = arg(ci.vector()(i));
-	}
-	ri.next(); ci.next();
-    }
+    Bool delc, delr;
+    const Complex* cptr = carray.getStorage (delc);
+    Float* rptr = rarray.getStorage (delr);
+    uInt n = rarray.nelements();
+    for (uInt i=0; i<n; i++) rptr[i] = arg(cptr[i]);
+    carray.freeStorage (cptr, delc);
+    rarray.putStorage (rptr, delr);
 }
 
 void  phase(Array<Double> &rarray, const Array<DComplex> &carray)
@@ -249,18 +223,15 @@ void  phase(Array<Double> &rarray, const Array<DComplex> &carray)
 				    "const Array<DComplex> &carray) "
 				    " - shapes not identical"));
     }
-    ReadOnlyVectorIterator<DComplex> ci(carray);
-    VectorIterator<Double> ri(rarray);
-    uInt len = ri.vector().nelements();
-    uInt i;
-    while (! ri.pastEnd()) {
-	for (i=0; i<len; i++) {
-	    ri.vector()(i) = arg(ci.vector()(i));
-	}
-	ri.next(); ci.next();
-    }
+    Bool delc, delr;
+    const DComplex* cptr = carray.getStorage (delc);
+    Double* rptr = rarray.getStorage (delr);
+    uInt n = rarray.nelements();
+    for (uInt i=0; i<n; i++) rptr[i] = arg(cptr[i]);
+    carray.freeStorage (cptr, delc);
+    rarray.putStorage (rptr, delr);
 }
-//-grp
+
 
 Array<Float> real(const Array<Complex> &carray)
 {
