@@ -251,15 +251,14 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval)  = 0;
     // </group>
 
-    // Change the units. If adjust is True, adjust the increment and
+    // Change the units. Adjust the increment and
     // reference value by the ratio of the old and new units. This implies that
     // the units must be known <linkto class=Unit>Unit</linkto> strings, and that
     // they must be compatible, e.g. they can't change from time to length.
     //
     // A default implementation is available which does everything except set
     // the units vector, which must be done in the derived class.
-    virtual Bool setWorldAxisUnits(const Vector<String> &units,
-				   Bool adjust = True) = 0;
+    virtual Bool setWorldAxisUnits(const Vector<String> &units) = 0;
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer 
     // must be deleted by the caller. Axes specifies which axes of the coordinate

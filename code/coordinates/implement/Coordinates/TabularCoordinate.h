@@ -150,10 +150,9 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Set the axis unit. If adjust is True, the unit must be compatible with
+    // Set the axis unit. The unit must be compatible with
     // frequency.
-    virtual Bool setWorldAxisUnits(const Vector<String> &units,
-				   Bool adjust = True);
+    virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Get the table, i.e. the pixel and world values. The length of these
     // Vectors will be zero if this axis is pure linear.

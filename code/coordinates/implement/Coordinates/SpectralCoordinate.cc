@@ -176,12 +176,11 @@ Bool SpectralCoordinate::setWorldAxisNames(const Vector<String> &names)
     return worker_p.setWorldAxisNames(names);
 }
 
-Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units,
-					   Bool adjust)
+Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     Double before = increment()(0);
-    Bool ok = worker_p.setWorldAxisUnits(units, adjust);
-    if (ok && adjust) {
+    Bool ok = worker_p.setWorldAxisUnits(units);
+    if (ok) {
 	Double after = increment()(0);
 	restfreq_p *= after / before;
     }

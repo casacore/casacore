@@ -206,10 +206,9 @@ public:
 			 uInt whichAxis,
 			 LogIO &logger, Bool oneRelative=True);
 
-    // Set the unit. If adjust is True, the unit must be compatible with
+    // Set the unit. The unit must be compatible with
     // frequency.
-    virtual Bool setWorldAxisUnits(const Vector<String> &units,
-				   Bool adjust = True);
+    virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 

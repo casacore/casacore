@@ -266,8 +266,7 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
 
 
 // Does everything except set the units vector, which must be done in the derived class.
-Bool Coordinate::setWorldAxisUnits(const Vector<String> &units, 
-					  Bool adjust)
+Bool Coordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     if (units.nelements() != nWorldAxes()) {
 	set_error("Wrong number of elements in units vector");
@@ -282,18 +281,16 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units,
 
     Bool ok = True;
 
-    if (adjust) {
-	String error;
-	Vector<Double> factor;
-	ok = find_scale_factor(error, factor, units, worldAxisUnits());
-	if (ok) {
-	    ok = setIncrement(increment() * factor);
-	    if (ok) {
-		ok = setReferenceValue(referenceValue() * factor);
-	    }
-	} else {
-	    set_error(error);
-	}
+    String error;
+    Vector<Double> factor;
+    ok = find_scale_factor(error, factor, units, worldAxisUnits());
+    if (ok) {
+      ok = setIncrement(increment() * factor);
+      if (ok) {
+         ok = setReferenceValue(referenceValue() * factor);
+      }
+    } else {
+      set_error(error);
     }
 
     return ok;

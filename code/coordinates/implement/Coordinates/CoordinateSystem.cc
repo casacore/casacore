@@ -1202,8 +1202,7 @@ Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
     return ok;
 }
 
-Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units,
-					 Bool adjust)
+Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 {
     Bool ok = ToBool(units.nelements()==nWorldAxes());
     if (!ok) {
@@ -1221,7 +1220,7 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units,
 		tmp(j) = units(which);
 	    }
 	}
-	ok = ToBool(coordinates_p[i]->setWorldAxisUnits(tmp,adjust) && ok);
+	ok = ToBool(coordinates_p[i]->setWorldAxisUnits(tmp) && ok);
     }
 
     return ok;

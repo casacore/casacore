@@ -461,8 +461,7 @@ Bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
     return True;
 }
 
-Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units, 
-                                            Bool adjust)
+Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     Bool ok = ToBool(units.nelements()==nWorldAxes());
     if (!ok) {
@@ -470,19 +469,17 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units,
        return False;
     }
 //
-    if (adjust) {
-	String error;
-	Vector<Double> factor;
-	ok = find_scale_factor(error, factor, units, worldAxisUnits());
-	if (ok) {
-	    to_degrees_p[0] /= factor(0);
-	    to_degrees_p[1] /= factor(1);
+    String error;
+    Vector<Double> factor;
+    ok = find_scale_factor(error, factor, units, worldAxisUnits());
+    if (ok) {
+      to_degrees_p[0] /= factor(0);
+      to_degrees_p[1] /= factor(1);
 //
-            to_radians_p[0] = to_degrees_p[0] * C::pi / 180.0;
-            to_radians_p[1] = to_degrees_p[1] * C::pi / 180.0;
-	} else {
-	    set_error(error);
-	}
+      to_radians_p[0] = to_degrees_p[0] * C::pi / 180.0;
+      to_radians_p[1] = to_degrees_p[1] * C::pi / 180.0;
+    } else {
+      set_error(error);
     }
     if (ok) units_p = units;
     return ok;
@@ -1432,7 +1429,7 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
 // Make a copy of ourselves and set the new units
 
    DirectionCoordinate dc = *this;
-   if (!dc.setWorldAxisUnits(unitsCanon, True)) {
+   if (!dc.setWorldAxisUnits(unitsCanon)) {
       throw(AipsError("Could not set world axis units"));
    }
 

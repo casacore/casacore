@@ -227,10 +227,9 @@ public:
     // </group>
 
     // Change the world axis units.
-    // If adjust is True, the units must be compatible with
+    // The units must be compatible with
     // angle. The units are initially "rad" (radians).
-    virtual Bool setWorldAxisUnits(const Vector<String> &units,
-				   Bool adjust = True);
+    virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Return canonical axis names for the given MDirection type,
     // giving FITS names if desired.

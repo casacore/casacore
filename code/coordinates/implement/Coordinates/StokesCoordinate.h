@@ -177,11 +177,9 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval) ;
     // </group>
 
-    // You can only set the units if adjust is False (or if the units are
-    // the empty string).
-    virtual Bool setWorldAxisUnits(const Vector<String> &units,
-				   Bool adjust = True);
-
+    // The units must be an empty string as there is no actual unit
+    // for the Stokes axis.
+    virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Format a StokesCoordinate world value with the common format 
     // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>

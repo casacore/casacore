@@ -197,10 +197,9 @@ Bool LinearCoordinate::setWorldAxisNames(const Vector<String> &names)
     return ok;
 }
 
-Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units, 
-					  Bool adjust)
+Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
-    Bool ok = Coordinate::setWorldAxisUnits(units, adjust);
+    Bool ok = Coordinate::setWorldAxisUnits(units);
     if (ok) {
 	ok = ToBool(units.nelements() == nWorldAxes());
 	if (ok) {

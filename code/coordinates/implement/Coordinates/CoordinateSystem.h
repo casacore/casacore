@@ -421,13 +421,12 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Change the units. If adjust is True, adjust the increment and
+    // Change the units. Adjust the increment and
     // reference value by the ratio of the old and new units. This implies that
     // the units must be known <linkto class=Unit>Unit</linkto> strings, and
     // that they must be compatible, e.g. they can't change from time to
     // length.
-    virtual Bool setWorldAxisUnits(const Vector<String> &units,
-				   Bool adjust = True);
+    virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 

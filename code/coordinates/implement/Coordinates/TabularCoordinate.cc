@@ -287,14 +287,13 @@ Bool TabularCoordinate::setWorldAxisNames(const Vector<String> &names)
     return ok;
 }
 
-Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units,
-					   Bool adjust)
+Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     Bool ok = ToBool(units.nelements()==1);
     if (!ok) {
        set_error ("units vector must be of length 1");
     } else {
-       ok = Coordinate::setWorldAxisUnits(units, adjust);
+       ok = Coordinate::setWorldAxisUnits(units);
        if (ok) {
           unit_p = units(0);
        }

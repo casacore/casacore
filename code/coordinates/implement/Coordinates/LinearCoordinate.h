@@ -152,11 +152,10 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Set the world axis units. If adjust is True, 
-    // the units must be compatible with
+    // Set the world axis units. 
+    // The units must be compatible with
     // angle. The units are initially "rad" (radians).
-    virtual Bool setWorldAxisUnits(const Vector<String> &units,
-				   Bool adjust = True);
+    virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't 
