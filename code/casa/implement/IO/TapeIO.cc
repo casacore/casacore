@@ -35,7 +35,7 @@
 #include <errno.h>                // needed for errno
 #include <aips/string.h>          // needed for strerror
 #include <sys/mtio.h>             // needed for ioctl
-#if defined(AIPS_SOLARIS)
+#if defined(AIPS_SOLARIS) || defined(AIPS_DARWIN)
 #include <sys/ioctl.h>            // needed for ioctl
 #include <sys/types.h>            // needed for ioctl
 #endif
