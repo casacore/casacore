@@ -1,5 +1,5 @@
 //# LELFunction.cc:  this defines non-templated classes in LELFunction.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,8 +27,10 @@
 
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/PagedArray.h>
+#include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/TiledShape.h>
+#include <trial/Lattices/LCPagedMask.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -113,6 +115,17 @@ main(int argc, char *argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
+      LatticeExpr<Float> expr(amp(lat,lat));
+      latout.copyData (expr);
+      timer.show ("amp(lat,lat)    ");
+    }
+    {
+      Table t("tLatticeExpr2_tmp.tab");
+      PagedArray<Float> lat(t);
+      SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
+      Table paTable(paSetup);
+      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      Timer timer;
       LatticeExpr<Float> expr(lat+lat);
       latout.copyData (expr);
       timer.show ("lat+lat         ");
@@ -145,6 +158,30 @@ main(int argc, char *argv[])
 	arr += Float(tileShape.product());
       }
       timer.show ("checking        ");
+    }
+    {
+      Table t("tLatticeExpr2_tmp.tab");
+      PagedArray<Float> lat(t);
+      SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
+      Table paTable(paSetup);
+      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      Timer timer;
+      LCPagedMask mask (lat.shape(), lat.tableName() + "/mask");
+      mask.set (True);
+      timer.show ("filling mask    ");
+      SubLattice<Float> sublat (lat, mask);
+      timer.mark();
+      LatticeExpr<Float> expr(sublat+sublat);
+      latout.copyData (expr);
+      timer.show ("sublat+sublat   ");
+      timer.mark();
+      LatticeExpr<Float> expr2((mean(sublat)-lat.shape().product()/3)*lat);
+      latout.copyData (expr2);
+      timer.show ("mean(sublat)*lat");
+      timer.mark();
+      LatticeExpr<Float> expr3(amp(sublat,lat));
+      latout.copyData (expr3);
+      timer.show ("amp(sublat,lat) ");
     }
 
   } catch (AipsError x) {
