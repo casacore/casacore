@@ -76,7 +76,7 @@ void ImageTwoPtCorr<T>::autoCorrelation (ImageInterface<T>& imOut,
 
 // Deal with axes
 
-   CoordinateSystem cSysIn;   
+   CoordinateSystem cSysIn = imIn.coordinates();
    IPosition axes2 = setUpAxes (axes, cSysIn);
 
 // Compute
