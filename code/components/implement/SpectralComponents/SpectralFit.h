@@ -46,8 +46,8 @@ template <class T> class Vector;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <ahlink module=Functionals>Functionals</ahlink> module
-//   <li> <ahlink class=SpectralElement>SpectralElement</ahlink> class
+//   <li> <linkto module=Functionals>Functionals</linkto> module
+//   <li> <linkto class=SpectralElement>SpectralElement</linkto> class
 // </prerequisite>
 //
 // <etymology>
