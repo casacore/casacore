@@ -32,14 +32,25 @@ of AIPS++.
 \item Use a stable version of AIPS++, {\em e.g.} /aips++/beta
 \item Ensure that the netscape is local to the machine being used or
 can see the same disks
-\item Work in a clean directory
+\item Work in a clean directory. Know what is in the active .aipsrc
+and .glishrc files. I recommend that you put the following in your
+.aipsrc file:
+\begin{verbatim}
+objectcatalog.default:	gui
+\end{verbatim}
 \item Do a trial run!
 \end{itemize}
 
 \section{General capabilities}
 
 \begin{itemize}
-\item Say what AIPS++ is: {\bf Data, Tools, Tasks}
+\item Say what AIPS++ is:
+\begin{itemize}
+\item Astronomical Information Processing System
+\item C++, Scripting, GUIs, libraries, toolkits, and applications
+\item Designed by a team of astronomers and programmers
+\item Developed by an international consortium of radio observatories
+\end{itemize}
 \item Start aips++
 \item Talk about logger windows, clients. 
 \begin{itemize}
@@ -53,8 +64,9 @@ web()
 \end{verbatim}
 \item Show {\em about AIPS++} window, talk about configuration of
 AIPS++ (aipsrc variables)
+\item Show Object Catalog GUI. Talk about objects in AIPS++.
 \end{itemize}
-\item Show capabilities of Glish
+\item Talk about Glish. Show capabilities of Glish:
 \begin{itemize}
 \item Simple vectors: 
 \begin{verbatim}
@@ -64,7 +76,8 @@ print a[1:10] , b[1:10]
 \end{verbatim}
 \item Plotting: 
 \begin{verbatim}
-dp.plotxy(a, b, "Chirp")
+mypg:=pgplotter()
+mypg.plotxy(a, b, "Chirp")
 \end{verbatim}
 \item Servers and FFTs. Do a help first:
 \begin{verbatim}
@@ -108,19 +121,20 @@ F
 \end{verbatim}
 Now use it:
 \begin{verbatim}
-fft:=fftserver()
-c:=fft.realtocomplexfft(b)
-dp.clear()
-dp.ploty(abs(c), "FT of Chirp")
+myfft:=fftserver()
+c:=myfft.realtocomplexfft(b)
+mypg.clear()
+mypg.plotxy(a, abs(c), "FT of Chirp")
 \end{verbatim}
+\item Point out that {\tt myfft} and {\tt mypg} show up in the Object
+Catalog. Use the Object Catalog to delete {\tt myfft}, since we no longer
+need it.
 Zoom on plot to show detail.
-\item tkPGPLOT. Show the plotting capabilities given by the
+\item Talk about the plotter. Show the plotting capabilities given by the
 PGPLOT tk widget (courtesy of Martin Shepherd and Tim Pearson!)
-as bound to Glish. 
-\begin{verbatim}
-include "pgdemo.g"
-pgdemo()
-\end{verbatim}
+as bound to Glish. To do this, go to the menu of the plotter and
+under Options, use the Add Commands option. Scroll until you find
+demo, then select it and go.
 \item Aipsview. Make and display an array:
 \begin{verbatim}
 a:=array(1:1000, 100, 100)
@@ -133,80 +147,25 @@ dd.array(a)
 \section{Synthesis}
 
 \begin{itemize}
-\item Start a catalog browser to see the files as they are generated
+\item Start the File Catalog to see the files as they are generated:
+either use the Object Catalog to Show dc or enter by hand:
 \begin{verbatim}
 dc.gui()
 \end{verbatim}
-\item Set up a MeasurementSet by using imagerdemo to set the inputs.
+\item Set up an {\tt imager} using the {\tt imagertester} constructor. This will
+create a table 3C273XC1.ms and set the state correspondingly.
+\item Refresh the File Catalog and Browse 3C273XC1.ms. Remember to close the table. Talk about
+data access in AIPS++: you can always get at it and edit it if you like.
+\item First deconvolve an an image using the {\tt clean} method. The
+default inputs should be ok.
+\item Second, restore the image using the {\tt restore} method.
+\item Refresh the File catalog and View the image clean.restored
+\item Set levels on aipsview (-0.03, 0.05 works). Go through all
+planes. Show the axes.
+\item An option is to use {\tt simpleimage} to show wizard-like
+processing. You'll be prompted for answers to a few questions.
 \begin{verbatim}
-imagerdemo(T)
-di.init_ms()
-\end{verbatim}
-\item Browse the MS. Remember to close the table. Talk about
-locking of files.
-\begin{verbatim}
-t:=table('MS')
-t.browse()
-t.close()
-\end{verbatim}
-\item To demonstrate ad hoc processing, rescale the length
-of all base-lines to antenna 4:
-\begin{verbatim}
-t:=table('MS', read_only=F)
-t.colnames()
-st:=t.query('ANTENNA1==4 || ANTENNA2==4')
-st.nrows()
-t.nrows()
-uvw:=st.getcol('UVW')
-uvw*:=0.95
-st.putcol('UVW', uvw)
-st.flush()
-t.close();
-\end{verbatim}
-\item Now demonstrate the synthesis processing: first deconvolve an an image
-(after re-initializing the MS).
-\begin{verbatim}
-di.init_ms()
-di.inputs()
-di.npix:=[256,256]            # Could be greater
-di.npol:=4                    # I,Q,U,V images
-di.weight_ms()                # Robust weighting
-di.solve_clean()              # Does CLEAN only deconvolution
-\end{verbatim}
-\item Display it:
-\begin{verbatim}
-di.display()
-\end{verbatim}
-\item Set levels on aipsview (-0.03, 0.05 works). Go through all planes. Show the axes.
-\item Now, do a selfcal.
-\begin{itemize}
-\item Set a threshold: 
-\begin{verbatim}
-di.model.threshold:=0.035
-\end{verbatim}
-\item Derive the model: 
-\begin{verbatim}
-di.derive_model()
-di.derive_ft()
-\end{verbatim}
-\item Do the solution, setting the timescale for polarization leakage
-terms to 300s (highly unfair)
-\begin{verbatim}
-di.D.t:=300
-di.solve_cal()
-\end{verbatim}
-\item Repeat the deconvolution after changing the name of the output
-image: 
-\begin{verbatim}
-di.images.restored:='restored.1'
-di.solve_clean()              # Does CLEAN only deconvolution
-\end{verbatim}
-\item Display the image again.
-\end{itemize}
-\item Show a gaintable:
-\begin{verbatim}
-gt:=gaintable('tcal')
-gt.plot()
+simpleimage()
 \end{verbatim}
 \end{itemize}
 
@@ -214,11 +173,7 @@ gt.plot()
 
 \begin{itemize}
 \item Find Local Apparent Sidereal Time from Greenwich Mean Time. First start 
-measures gui:
-\begin{verbatim}
-include "measures.g"
-dm.gui()
-\end{verbatim}
+measures gui by using the Object Catalog Show button after selecting dm.
 \begin{itemize}
 \item Select Position gui
 \item Under OBS, select your observatory e.g. GB
@@ -231,23 +186,6 @@ the left
 \item Select output as LAST
 \item Press $->$Convert to convert to LAST (presto)
 \end{itemize}
-\end{itemize}
-
-\section{Utilities}
-
-\begin{itemize}
-\item Show system information:
-\begin{verbatim}
-sysinfo()
-sysinfo().numcpu()
-sysinfo().host()
-\end{verbatim}
-\item GUI stuff: each one of these lines does something interesting:
-\begin{verbatim}
-f:=infowindow('Eat at Bodos', 'Dining recommendations') # Informative only
-choicewin('Type of bagel',"plain wheat sourdough")      # Choice returned to Glish
-g:=guiframework()					# Framework of GUIs
-\end{verbatim}
 \end{itemize}
 
 \section{Single Dish}
@@ -404,3 +342,21 @@ set up that DISH will be often ``driven'' from this multi-operation
 operation menu.
 \end{itemize}
 \end{itemize}
+
+\section{Utilities}
+
+\begin{itemize}
+\item Show system information:
+\begin{verbatim}
+sysinfo()
+sysinfo().numcpu()
+sysinfo().host()
+\end{verbatim}
+\item GUI stuff: each one of these lines does something interesting:
+\begin{verbatim}
+f:=infowindow('Eat at Bodos', 'Dining recommendations') # Informative only
+choicewin('Type of bagel',"plain wheat sourdough")      # Choice returned to Glish
+g:=guiframework()					# Framework of GUIs
+\end{verbatim}
+\end{itemize}
+
