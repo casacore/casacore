@@ -3,7 +3,7 @@
 # aipsinit.rc: Define the AIPS++ environment for the "rc" shell
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999
+#   Copyright (C) 1992-1997,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -157,11 +157,6 @@
               a_arch=hpux
            } else {
               if (~ `{uname -s} Linux) {
-                 if (~ `{uname -r} 2.2.*) {
-                    a_arch=linux22
-                 } else {
-                    a_arch=linux
-                 } 
                  a_arch=linux
               } else {
                  if (~ `{uname -s} IRIX*) {

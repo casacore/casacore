@@ -3,7 +3,7 @@
 # aipsinit.es: Define the AIPS++ environment for the "es" shell
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994-1997,1999
+#   Copyright (C) 1994-1997,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -157,11 +157,7 @@
               a_arch=hpux
            } {
               if {~ `{uname -s} Linux} {
-                  if {~ `{uname -r} 2.2.*} {
-        	      a_arch=linux22
-                   } {	
-                      a_arch=linux
-	           }
+                   a_arch=linux
               } {
                  if {~ `{uname -s} IRIX*} {
                     a_arch=sgi

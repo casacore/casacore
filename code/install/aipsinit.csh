@@ -3,7 +3,7 @@
 # aipsinit.csh: Define the AIPS++ environment for C-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1999
+#   Copyright (C) 1992-1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -169,11 +169,7 @@
            endif
            breaksw
         case Linux:
-           if (`uname -r` =~ 2.2.*) then
-              set a_arch = linux22
-           else
-              set a_arch = linux
-           endif
+           set a_arch = linux
            breaksw
         IRIX*:
            set a_arch = sgi

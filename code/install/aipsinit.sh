@@ -3,7 +3,7 @@
 # aipsinit.sh: Define the AIPS++ environment for Bourne-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1999
+#   Copyright (C) 1992-1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -180,14 +180,7 @@
            a_arch=hpux
            ;;
         Linux)
-           case `uname -r` in
-           2.2.*)
-              a_arch=linux22
-              ;;
-           *)
-              a_arch=linux
-              ;;
-           esac
+           a_arch=linux
            ;;
         IRIX*)
            a_arch=sgi
