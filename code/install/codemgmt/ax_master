@@ -2993,3 +2993,4 @@
 12 009 src rm doc/html/navpages/images/trialon6.gif
 12 009 src rm doc/html/navpages/images/useron6.gif
 12 009 src rm doc/html/navpages/images/useroff6.gif
+12 009 sys rm libexec/vlatoms_meta.g
