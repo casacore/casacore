@@ -368,7 +368,7 @@ private:
 
 // Make an IE for the specified Stokes
    ImageExpr<Float> makeStokesExpr(ImageInterface<Float>* imPtr,
-                                   const String& s, const String& name) const;
+                                   Stokes::StokesTypes type, const String& name) const;
 
 // Make a SubImage from the construction image for the specified pixel
 // along the specified pixel axis
@@ -395,6 +395,9 @@ private:
 
 // Return I, Q, U or V for specified integer index (0-3)
    String stokesName (ImagePolarimetry::StokesTypes index) const;
+
+// Return I, Q, U or V for specified integer index (0-3)
+   Stokes::StokesTypes stokesType (ImagePolarimetry::StokesTypes index) const;
 
 // Find the standard deviation for the Stokes image specified by the integer index
    Float sigma (ImagePolarimetry::StokesTypes index, Float clip);
