@@ -1182,7 +1182,7 @@ Bool ImageHistograms<T>::makeStatistics()
 // Create ImageStatistics object.  Show progress meter.
 
    if (pStats_p != 0) delete pStats_p;
-   pStats_p = new ImageStatistics<T>(*pInImage_p, os_p, True);
+   pStats_p = new ImageStatistics<T>(*pInImage_p, os_p, True, forceDisk_p);
 
 // Set state.  Make sure that the min/max is set to the
 // user's include range if there is one.  ImageHistograms
