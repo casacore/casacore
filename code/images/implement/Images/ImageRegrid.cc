@@ -63,6 +63,8 @@
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/Assert.h>
 
+#include <aips/OS/Timer.h>
+
 #include <aips/strstream.h>
 #include <aips/fstream.h>
 
@@ -134,6 +136,9 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 
    checkAxes(outPixelAxes, inShape, outShape, pixelAxisMap2, outCoords);
    const uInt nOutPixelAxes = outPixelAxes.nelements();
+   if (itsShowLevel>0) {
+      cerr << "outPixelAxes = " << outPixelAxes << endl;
+   }
 
 // Set output shape.  This shape is incremental, for each regridding 
 // pass it incrementally changes from the input shape to the output shape
@@ -164,7 +169,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 
 // Find pixel axis in output coordinates if not yet done
 
-      if (!doneOutPixelAxes(i)) {
+      if (!doneOutPixelAxes(outPixelAxes(i))) {
          outCoords.findPixelAxis(outCoordinate, outAxisInCoordinate, 
                                  outPixelAxes(i));
          Coordinate::Type type = outCoords.type(outCoordinate);
