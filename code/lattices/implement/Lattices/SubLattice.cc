@@ -26,69 +26,135 @@
 //# $Id$
 
 #include <trial/Lattices/SubLattice.h>
+#include <trial/Lattices/LatticeIterInterface.h>
+#include <trial/Lattices/LCBox.h>
 #include <aips/Lattices/IPosition.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
 
 template<class T>
 SubLattice<T>::SubLattice()
 : itsLatticePtr (0),
-  itsRegionPtr  (0),
+  itsMaskLatPtr (0),
   itsWritable   (False)
 {}
 
 template<class T>
-SubLattice<T>::SubLattice (const Lattice<T>& lattice,
-			   const PixelRegion& region)
-: itsLatticePtr (lattice.clone()),
-  itsRegionPtr  (region.clone()),
-  itsWritable   (False)
+SubLattice<T>::SubLattice (const Lattice<T>& lattice)
 {
-  if (region.latticeShape() != lattice.shape()) {
-    throw (AipsError ("SubLattice::SubLattice - "
-		      "lattice shape in region mismatches lattice"));
-  }
+  setPtr (lattice.clone(), 0, False);
+  setRegion();
 }
 
 template<class T>
 SubLattice<T>::SubLattice (Lattice<T>& lattice,
-			   const PixelRegion& region,
 			   Bool writableIfPossible)
-: itsLatticePtr (lattice.clone()),
-  itsRegionPtr  (region.clone()),
-  itsWritable   (writableIfPossible)
 {
-  if (itsWritable) {
-    itsWritable = lattice.isWritable();
-  }
-  if (region.latticeShape() != lattice.shape()) {
-    throw (AipsError ("SubLattice::SubLattice - "
-		      "lattice shape in region mismatches lattice"));
-  }
+  setPtr (lattice.clone(), 0, writableIfPossible);
+  setRegion();
+}
+
+template<class T>
+SubLattice<T>::SubLattice (const Lattice<T>& lattice,
+			   const LCRegion& region)
+{
+  setPtr (lattice.clone(), 0, False);
+  setRegion (region);
+}
+
+template<class T>
+SubLattice<T>::SubLattice (Lattice<T>& lattice,
+			   const LCRegion& region,
+			   Bool writableIfPossible)
+{
+  setPtr (lattice.clone(), 0, writableIfPossible);
+  setRegion (region);
+}
+
+template<class T>
+SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice,
+			   const LCRegion& region)
+{
+  setPtr (0, lattice.cloneML(), False);
+  setRegion (region);
+}
+
+template<class T>
+SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
+			   const LCRegion& region,
+			   Bool writableIfPossible)
+{
+  setPtr (0, lattice.cloneML(), writableIfPossible);
+  setRegion (region);
+}
+
+template<class T>
+SubLattice<T>::SubLattice (const Lattice<T>& lattice,
+			   const Slicer& slicer)
+{
+  setPtr (lattice.clone(), 0, False);
+  setRegion (slicer);
+}
+
+template<class T>
+SubLattice<T>::SubLattice (Lattice<T>& lattice,
+			   const Slicer& slicer,
+			   Bool writableIfPossible)
+{
+  setPtr (lattice.clone(), 0, writableIfPossible);
+  setRegion (slicer);
+}
+
+template<class T>
+SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice,
+			   const Slicer& slicer)
+{
+  setPtr (0, lattice.cloneML(), False);
+  setRegion (slicer);
+}
+
+template<class T>
+SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
+			   const Slicer& slicer,
+			   Bool writableIfPossible)
+{
+  setPtr (0, lattice.cloneML(), writableIfPossible);
+  setRegion (slicer);
 }
 
 template<class T>
 SubLattice<T>::SubLattice (const SubLattice<T>& other)
-: itsLatticePtr (other.itsLatticePtr->clone()),
-  itsRegionPtr  (other.itsRegionPtr->clone()),
-  itsWritable   (other.itsWritable)
-{}
+: itsLatticePtr (0),
+  itsMaskLatPtr (0)
+{
+  operator= (other);
+}
 
 template<class T>
 SubLattice<T>::~SubLattice()
 {
+  // Note that itsMaskLatPtr (if filled in) always points to the same
+  // object as itsLatticePtr.
   delete itsLatticePtr;
-  delete itsRegionPtr;
 }
 
 template<class T>
 SubLattice<T>& SubLattice<T>::operator= (const SubLattice<T>& other)
 {
   if (this != &other) {
-    itsLatticePtr = other.itsLatticePtr->clone();
-    itsRegionPtr  = other.itsRegionPtr->clone();
-    itsWritable   = other.itsWritable;
+    itsRegion = other.itsRegion;
+    delete itsLatticePtr;
+    itsLatticePtr = other.itsLatticePtr;
+    itsMaskLatPtr = other.itsMaskLatPtr;
+    if (itsMaskLatPtr != 0) {
+      itsMaskLatPtr = itsMaskLatPtr->cloneML();
+      itsLatticePtr = itsMaskLatPtr;
+      itsRegion.setParent (&itsMaskLatPtr->region());
+    } else if (itsLatticePtr != 0) {
+      itsLatticePtr = itsLatticePtr->clone();
+    }
+    itsWritable = other.itsWritable;
   }
   return *this;
 }
@@ -98,6 +164,59 @@ Lattice<T>* SubLattice<T>::clone() const
 {
   return new SubLattice<T> (*this);
 }
+template<class T>
+MaskedLattice<T>* SubLattice<T>::cloneML() const
+{
+  return new SubLattice<T> (*this);
+}
+
+template<class T>
+void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
+			    MaskedLattice<T>* maskLatPtr,
+			    Bool writableIfPossible)
+{
+  if (maskLatPtr == 0) {
+    itsLatticePtr = latticePtr;
+    itsMaskLatPtr = 0;
+  } else {
+    itsLatticePtr = maskLatPtr;
+    itsMaskLatPtr = maskLatPtr;
+  }
+  itsWritable = writableIfPossible;
+  if (itsWritable  &&  latticePtr->isWritable()) {
+    itsWritable = True;
+  }
+}
+
+template<class T>
+void SubLattice<T>::setRegion (const LatticeRegion& region)
+{
+  itsRegion = region;
+  if (itsMaskLatPtr != 0) {
+    itsRegion.setParent (&itsMaskLatPtr->region());
+  }
+}
+template<class T>
+void SubLattice<T>::setRegion (const LCRegion& region)
+{
+  if (itsLatticePtr->shape() != region.latticeShape()) {
+    throw (AipsError ("SubLattice::SubLattice - "
+		      "shape of lattice mismatches lattice shape in region"));
+  }
+  setRegion (LatticeRegion (region));
+}
+template<class T>
+void SubLattice<T>::setRegion (const Slicer& slicer)
+{
+  setRegion (LatticeRegion (slicer, itsLatticePtr->shape()));
+}
+template<class T>
+void SubLattice<T>::setRegion()
+{
+  IPosition shape = itsLatticePtr->shape();
+  setRegion (LatticeRegion (Slicer(IPosition(shape.nelements(),0), shape),
+			    shape));
+}
 
 template<class T>
 Bool SubLattice<T>::isWritable() const
@@ -106,21 +225,33 @@ Bool SubLattice<T>::isWritable() const
 }
 
 template<class T>
+Bool SubLattice<T>::isMasked() const
+{
+  return itsRegion.hasMask();
+}
+
+template<class T>
+const LatticeRegion& SubLattice<T>::region() const
+{
+    return itsRegion;
+}
+
+template<class T>
 IPosition SubLattice<T>::shape() const
 {
-  return itsRegionPtr->box().length();
+  return itsRegion.slicer().length();
 }
 
 template<class T>
 uInt SubLattice<T>::ndim() const
 {
-  return itsLatticePtr->ndim();
+  return itsRegion.slicer().ndim();
 }
 
 template<class T>
 uInt SubLattice<T>::nelements() const
 {
-  return itsRegionPtr->box().length().product();
+  return itsRegion.nelements();
 }
 
 template<class T>
@@ -130,69 +261,38 @@ Bool SubLattice<T>::conform (const Lattice<T>& other) const
 }
 
 template<class T>
-Bool SubLattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start,
-			      const IPosition& shape, const IPosition& stride,
-			      Bool removeDegenerateAxes) const
+Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
+				    const Slicer& section)
 {
-
-  return itsLatticePtr->getSlice (buffer,
-				  itsRegionPtr->expand (Slicer(start, shape,
-							       stride)),
-				  removeDegenerateAxes);
+  return itsRegion.getSlice (buffer, section);
 }
 
 template<class T>
-Bool SubLattice<T>::getSlice (COWPtr<Array<T> >& buffer, const Slicer& section,
-			      Bool removeDegenerateAxes) const
+Bool SubLattice<T>::doGetSlice (Array<T>& buffer,
+				const Slicer& section)
 {
-  return itsLatticePtr->getSlice (buffer,
-				  itsRegionPtr->expand (section),
-				  removeDegenerateAxes);
+  return itsLatticePtr->getSlice (buffer, itsRegion.convert (section));
 }
 
 template<class T>
-Bool SubLattice<T>::getSlice (Array<T>& buffer, const IPosition& start, 
-			      const IPosition& shape, const IPosition& stride, 
-			      Bool removeDegenerateAxes)
-{
-  return itsLatticePtr->getSlice (buffer,
-				  itsRegionPtr->expand (Slicer(start, shape,
-							       stride)),
-				  removeDegenerateAxes);
-}
-
-template<class T>
-Bool SubLattice<T>::getSlice (Array<T>& buffer, const Slicer& section,
-			      Bool removeDegenerateAxes)
-{
-  return itsLatticePtr->getSlice (buffer,
-				  itsRegionPtr->expand (section),
-				  removeDegenerateAxes);
-}
-
-template<class T>
-void SubLattice<T>::putSlice (const Array<T>& sourceBuffer,
-			      const IPosition& where, 
-			      const IPosition& stride)
+void SubLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
+				const IPosition& where, 
+				const IPosition& stride)
 {
   if (!itsWritable) {
       throw (AipsError ("SubLattice::putSlice - non-writable lattice"));
   }
-  itsLatticePtr->putSlice (sourceBuffer,
-			   itsRegionPtr->expand (where),
-			   stride * itsRegionPtr->box().stride());
+  if (itsMaskLatPtr != 0) {
+    itsMaskLatPtr->putSlice (sourceBuffer,
+			     itsRegion.convert (where),
+			     stride * itsRegion.slicer().stride());
+  } else {
+    itsLatticePtr->putSlice (sourceBuffer,
+			     itsRegion.convert (where),
+			     stride * itsRegion.slicer().stride());
+  }
 }
 
-template<class T>
-void SubLattice<T>::putSlice (const Array<T>& sourceBuffer,
-			      const IPosition& where)
-{
-  if (!itsWritable) {
-      throw (AipsError ("SubLattice::putSlice - non-writable lattice"));
-  }
-  itsLatticePtr->putSlice (sourceBuffer,
-			   itsRegionPtr->expand (where));
-}
 
 template<class T>
 uInt SubLattice<T>::maxPixels() const
@@ -201,7 +301,7 @@ uInt SubLattice<T>::maxPixels() const
 }
 
 template<class T>
-IPosition SubLattice<T>::niceCursorShape (uInt maxPixels) const
+IPosition SubLattice<T>::doNiceCursorShape (uInt maxPixels) const
 {
   return itsLatticePtr->niceCursorShape (maxPixels);
 }
@@ -209,7 +309,7 @@ IPosition SubLattice<T>::niceCursorShape (uInt maxPixels) const
 template<class T>
 T SubLattice<T>::getAt (const IPosition& where) const
 {
-  return itsLatticePtr->getAt (itsRegionPtr->expand (where));
+  return itsLatticePtr->getAt (itsRegion.convert (where));
 }
 
 template<class T>
@@ -218,7 +318,11 @@ void SubLattice<T>::putAt (const T& value, const IPosition& where)
   if (!itsWritable) {
       throw (AipsError ("SubLattice::putSlice - non-writable lattice"));
   }
-  itsLatticePtr->putAt (value, itsRegionPtr->expand (where));
+  if (itsMaskLatPtr != 0) {
+    itsMaskLatPtr->putAt (value, itsRegion.convert (where));
+  } else {
+    itsLatticePtr->putAt (value, itsRegion.convert (where));
+  }
 }
 
 template <class T>
@@ -231,7 +335,7 @@ template<class T>
 LatticeIterInterface<T>* SubLattice<T>::makeIter
                                (const LatticeNavigator& navigator) const
 {
-  return new LatticeIterInterface<T> (navigator);
+  return new LatticeIterInterface<T> (*this, navigator);
   // Make a clone of the navigator to be able to apply our region.
 ///  LatticeNavigator* navPtr = navigator.clone();
 ///  const Slicer& section = itsRegionPtr->box();
