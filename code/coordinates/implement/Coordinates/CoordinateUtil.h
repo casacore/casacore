@@ -354,7 +354,7 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
                                     MFrequency::Types typeTo, MFrequency::Types typeFrom,
                                     const MDirection& dirTo, const MDirection& dirFrom,
                                     const MEpoch& epochTo, const MEpoch& epochFrom,
-                                    const MPosition& posTo, const MPosition& posTo);
+                                    const MPosition& posTo, const MPosition& posFrom);
 
 // Find the Sky in the CoordinateSystem. Assumes only one DirectionCoordinate.
 // <src>pixelAxes</src> and <src>worldAxes</src>  say where
