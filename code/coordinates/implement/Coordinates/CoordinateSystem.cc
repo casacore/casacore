@@ -629,7 +629,7 @@ void CoordinateSystem::subImageInSitu(const Vector<Float> &originShift,
                                                 Int(pixincFac(i)+0.5), s);
            replaceCoordinate(sc, coordinate);
         } else {
-           AlwaysAssert(pixincFac(i) >= 1, AipsError);
+           AlwaysAssert(pixincFac(i) > 0, AipsError);
            crpix(i) -= originShift(i);
            crpix(i) /= pixincFac(i);
            cdelt(i) *= pixincFac(i);
