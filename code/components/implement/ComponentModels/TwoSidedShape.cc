@@ -429,9 +429,26 @@ TwoSidedShape::TwoSidedShape(const TwoSidedShape& other)
 
 
 Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  const
+//
+// pars(0) = long cen   abs pix
+// pars(1) = lat  cen   abs pix
+// pars(2) = major   pix
+// pars(3) = minor   pix
+// pars(4) = pa radians;  pos +x (long) -> +y (lat)
+//
 {
    LogIO os(LogOrigin("TwoSidedShape", "toPixel"));
-//
+   Vector<Double> parameters(5);
+
+// Do locations
+
+   Vector<Double> pars1 = ComponentShape::toPixel (dirCoord);
+   parameters(0) = pars1(0);
+   parameters(1) = pars1(1);
+
+
+// Now the axes and p.a.
+
    Quantum<Double> major = majorAxis();
    major.scale(0.5);
    Quantum<Double> minor = minorAxis();
@@ -439,9 +456,7 @@ Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  con
    Quantum<Double> paMajor = positionAngle();
    Quantum<Double> paMinor = paMajor + Quantum<Double>(C::pi/2.0, Unit("rad"));
   
-// cerr << "pa Major = " << paMajor.getValue(Unit("deg")) << endl;
-// cerr << "pa Minor = " << paMinor.getValue(Unit("deg")) << endl;
-   
+
 // Find MDirection of tip of major and minor axes and convert to pixel coordinates
   
    const MDirection dirRef = refDirection();
@@ -459,7 +474,6 @@ Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  con
       os << "DirectionCoordinate conversion to pixel failed because "
          << dirCoord.errorMessage() << LogIO::EXCEPTION;
     }
-// cerr << "major, minor tip pixels = " << pixelMajor << pixelMinor << endl;
 
 // Find major and minor axes in pixels
    
@@ -472,29 +486,101 @@ Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  con
    Double y1 = pixelCen(1) - pixelMajor(1);
    Double x2 = pixelCen(0) - pixelMinor(0);
    Double y2 = pixelCen(1) - pixelMinor(1);
-// 
-// cerr << "major, minor lengths = " << parameters(3) << ", " << parameters(4) << endl;
 
-// Put position angle into range +/-pi. Defined pos +y -> -x for Fit2D.
-// atan2 gives pos +x -> +y
+// atan2 gives pos +x (long) -> +y (lat).   put in range +/- pi
                                         
-   MVAngle pa(atan2(y1, x1) - C::pi_2);
-// cerr << "Basic pixel based pa = " << pa * 180.0 / C::pi << endl;
+   MVAngle pa(atan2(y1, x1));
    pa();
-// cerr << "pixel based pa after fiddling = " << pa.radian() * 180.0 / C::pi << endl;
-
+//
    Double tmp1 =  2.0 * hypot(x1, y1);
    Double tmp2 =  2.0 * hypot(x2, y2);
 //
-   Vector<Double> parameters(3);
-   parameters(0) = max(tmp1,tmp2);
-   parameters(1) = min(tmp1,tmp2);
-   parameters(2) = pa.radian();
+   parameters(2) = max(tmp1,tmp2);
+   parameters(3) = min(tmp1,tmp2);
+   parameters(4) = pa.radian();
 //
    return parameters;
 }
  
 
+void TwoSidedShape::fromPixel (const Vector<Double>& parameters,
+                               const DirectionCoordinate& dirCoord)
+//
+// pars(0) = long cen   abs pix
+// pars(1) = lat  cen   abs pix
+// pars(2) = major   pix
+// pars(3) = minor   pix
+// pars(4) = pa radians; pos +x (long) -> +y (lat)
+//
+{
+   LogIO os(LogOrigin("TwoSidedShape", "fromPixel"));
+
+// Direction first
+
+   Vector<Double> pars(2);
+   pars(0) = parameters(0);
+   pars(1) = parameters(1);
+   ComponentShape::fromPixel (pars, dirCoord);
+
+// Shape.  First get position angle relative to the coordinate frame
+// (i.e. not relative to the vertical/horizontal pixel coordinate frame)
+// Find tip of major and minor axes
+
+   Double pa0 = parameters(4) + C::pi_2;         // +y -> -x      
+   Double cospa = cos(pa0);
+   Double sinpa = sin(pa0);
+   Double z = parameters(2) / 2.0;
+   Double x = -z * sinpa;
+   Double y =  z * cospa;
+//
+   MDirection directionMajor;
+   Vector<Double> pixelMajor(2);
+   pixelMajor(0) = parameters(0) + x;
+   pixelMajor(1) = parameters(1) + y;
+   if (!dirCoord.toWorld(directionMajor, pixelMajor)) {
+      os << "DirectionCoordinate conversion failed because "
+         << dirCoord.errorMessage() << LogIO::EXCEPTION;
+   }
+//
+   z = parameters(3) / 2.0;
+   x = z * cospa;
+   y = z * sinpa;
+   MDirection directionMinor;
+   Vector<Double> pixelMinor(2);
+   pixelMinor(0) = parameters(0) + x;
+   pixelMinor(1) = parameters(1) + y;
+   if (!dirCoord.toWorld(directionMinor, pixelMinor)) {
+      os << "DirectionCoordinate conversion failed because "
+         << dirCoord.errorMessage() << LogIO::EXCEPTION;
+   }
+
+// Find position angle between centre and major axis tip
+
+   const MDirection& directionRef = refDirection();       
+   MVDirection mvdRef = directionRef.getValue();
+   MVDirection mvdMajor = directionMajor.getValue();
+   MVDirection mvdMinor = directionMinor.getValue();
+
+// Separations
+      
+   Double tmp1 = 2 * mvdRef.separation(mvdMajor) * 3600 * 180.0 / C::pi;
+   Double tmp2 = 2 * mvdRef.separation(mvdMinor) * 3600 * 180.0 / C::pi;
+   Quantum<Double> majorAxis(max(tmp1,tmp2), Unit("arcsec"));
+   Quantum<Double> minorAxis(min(tmp1,tmp2), Unit("arcsec"));
+//
+   Quantum<Double> pa;
+   if (tmp1 >= tmp2) {
+      pa = mvdRef.positionAngle(mvdMajor, Unit("deg"));
+   } else {
+      pa = mvdRef.positionAngle(mvdMinor, Unit("deg"));
+   }
+
+// Set them      
+      
+   setWidth (majorAxis, minorAxis, pa);
+}
+
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 TwoSidedShape"
 // End: 
+
