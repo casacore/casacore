@@ -54,6 +54,9 @@ int main() {
       data = Complex(0.5, 1.1);
       AlwaysAssert(allNear(mainBuffer.data(),Complex(0.5,1.1), C::flt_epsilon),
 		  AipsError);
+      mainBuffer.data(0,0,0) = Complex(1.2,1.3);
+      AlwaysAssert(allNear(mainBuffer.data(0,0,0),Complex(1.2,1.3), 
+ 			   C::flt_epsilon), AipsError);
     }
   }
   catch (AipsError x) {
