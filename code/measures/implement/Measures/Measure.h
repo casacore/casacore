@@ -29,10 +29,6 @@
 #if !defined(AIPS_MEASURE_H)
 #define AIPS_MEASURE_H
 
-#if defined(_AIX)
-#pragma implementation ("Measure.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 
@@ -41,7 +37,12 @@ class String;
 class Unit;
 class MeasValue;
 class MRBase;
+//# g++ 2.7.2.1.f.1 needs Quantum's to be included even though it shouldn't!
+#ifdef __GNUG__
+#include <aips/Measures/Quantum.h>
+#else
 template <class T> class Quantum;
+#endif
 template <class T> class Vector;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
