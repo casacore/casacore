@@ -803,6 +803,10 @@ String DirectionCoordinate::format(String& units,
    oss << ends;
    String string(oss);
 
+// Only return actual units if not TIME formatting
+
+   if (form==Coordinate::TIME) units = String("");
+//
    return string;
 }
 

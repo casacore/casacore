@@ -356,7 +356,6 @@ String Coordinate::format(String& units,
    Coordinate::formatType form = format;
    checkFormat (form, absolute);
    
-   
 // Set default precision
  
    Int prec = precision;
@@ -376,8 +375,10 @@ String Coordinate::format(String& units,
       oss.precision(prec);
       oss << worldValue;        
    }                            
-   units = worldAxisUnits()(worldAxis);
- 
+//
+   units = String("");
+   if (form!=Coordinate::TIME) units = worldAxisUnits()(worldAxis);
+//
    return String(oss);
 }
 
