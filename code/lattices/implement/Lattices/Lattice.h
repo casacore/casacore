@@ -1,5 +1,5 @@
 //# Lattice.h:  Lattice is an abstract base class for array-like classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -234,10 +234,6 @@ public:
 
   // Make a copy of the derived object (reference semantics).
   virtual Lattice<T>* clone() const = 0;
-
-  // Make a copy of the derived object (reference semantics)
-  // on behalf of the base class.
-  virtual LatticeBase* cloneBase() const;
 
     // Return the value of the single element located at the argument
   // IPosition.  
