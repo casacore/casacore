@@ -1824,3 +1824,4 @@
 08 003 sys rm bin/image.atoms
 08 003 sys rm bin/image2fits
 08 003 sys rm bin/imagemodeler
+08 003 sys rm bin/imager.atoms
