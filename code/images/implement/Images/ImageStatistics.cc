@@ -131,8 +131,13 @@ Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 
    if (pInImage_p!=0) delete pInImage_p;
    pInImage_p = image.cloneII();
+
+
+// Pass it on to LatticeStatistics
+
+   goodParameterStatus_p = setNewLattice(image);
 //
-   return True;
+   return goodParameterStatus_p;
 }
 
 
