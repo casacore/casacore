@@ -153,9 +153,8 @@ public:
   // (which 0=dpsi (long) and 1=deps (obliquity) and 2 =0)
   static Double precRate00(const uInt which);
 
-  // Get the frame bias components for IAU2000 model. (which=0,1,2 for
-  // dpsi(long), desp(obl), dra(ICRS RA of J2000 mean equinox))
-  static Double frameBias00(const uInt which);
+  // Get the frame bias matrix for IAU2000 model.
+  static RotMatrix frameBias00();
 
   // Generate the precession calculation polynomials for a fixed Epoch T
   // in the result area specified.

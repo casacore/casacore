@@ -101,13 +101,15 @@ precRate00(const uInt which) {
   return preoblcor[which];
 }
 
-Double MeasTable::
-frameBias00(const uInt which) {
+RotMatrix MeasTable::
+frameBias00() {
   static Double bias[3] = { -0.041775*C::arcsec,
 			    -0.0068192*C::arcsec,
 			    -0.0146*C::arcsec};
-  DebugAssert(which < 3, AipsError);
-  return bias[which];
+  static RotMatrix rbias = RotMatrix(Euler(bias[2], 3,
+					   bias[0]*sin(MeasData::eps0J2000()),
+					   2, -bias[1], 1));
+  return rbias;
 }
 
 void MeasTable::
