@@ -6221,3 +6221,4 @@
 17 191 src mv ./aips/implement/Functionals/NQHyperPlaneParam.h ./aips/implement/Functionals/HyperPlaneParam.h
 17 191 src mv ./aips/implement/Functionals/NQPolynomial.cc ./aips/implement/Functionals/Polynomial.cc
 17 191 src mv ./aips/implement/Functionals/NQPolynomial.h ./aips/implement/Functionals/Polynomial.h
+17 191 src mv ./aips/implement/Functionals/NQPolynomial2.cc ./aips/implement/Functionals/Polynomial2.cc
