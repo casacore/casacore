@@ -1,4 +1,4 @@
-//# SpectralModel.h:
+//# SpectralModel.h: Base class for Spectral Models
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -31,17 +31,17 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/Utilities/RecordTransformable.h>
 
-template <class T> class Vector;
-template <class T> class Flux;
 class MFrequency;
 class RecordInterface;
 class String;
+template <class T> class Flux;
+template <class T> class Vector;
 
 // <summary>Base class for Spectral Models</summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tSpectralModel" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -63,7 +63,7 @@ class String;
 // <dl>
 // <dt><em> A reference frequency.</em>
 // <dd> This is specified using an <linkto class=MFrequency>MFrequency</linkto>
-//      object and defines a frequency near the where the model
+//      object and defines a frequency where the model
 //      is interesting. See the description of derived classes for the
 //      specific interpretation of the reference frequency.
 // <dt> <em>A Vector of parameters.</em>
@@ -73,7 +73,7 @@ class String;
 // </dl>
 // 
 // The basic operation of classes using this interface is to model the flux as
-// a function of frequency. Classes derived from this one assume do not know
+// a function of frequency. Classes derived from this one do not know
 // what the flux is at the reference frequency, this must be supplied as an
 // argument to the <src>sample</src> function. These classes will scale the
 // supplied flux to a value at the user specified frequency.  In general this
@@ -88,26 +88,36 @@ class String;
 // <h4>Example 1:</h4>
 // In this example the plotSpectrum function prints out the type of spectral
 // model it is working with and the reference frequency of that model. It then
-// uses the model to calculate the flux at other frequencies.
+// uses the model to calculate the flux at other frequencies. This example is
+// coded in the tSpectralModel.h file.
 // <srcblock>
 // void plotSpectrum(const Flux<Double> & refFlux,
 //                   const SpectralModel & modelSpectrum) {
-//   cout << "This is a " 
-//        << ComponentType::name(modelSpectrum.spectralShape())
-//        << " spectrum with a reference frequency of "
-//        << modelSpectrum.refFrequency().get("GHz")) << endl
-//        << modelSpectrum.refFrequency().getRef() 
+//   cout << "This is a "
+//        << ComponentType::name(modelSpectrum.type())
+//        << " spectrum with a reference frequency of: "
+//        << modelSpectrum.refFrequency().get("GHz") << endl
+//        << modelSpectrum.refFrequency().getRef()
 //        << endl;
-//   cout << "Frequency\t Flux\n";
-//   const Quantum<Double> step(100.0, "MHz");
-//   Quantum<Double> sampleFreq = modelSpectrum.refFrequency().get("GHz");
+//   Vector<Double> parms(modelSpectrum.nParameters());
+//   modelSpectrum.parameters(parms);
+//   cout << "The parameters are: " << parms.ac() << endl;
+//   const MVFrequency step(Quantity(100.0, "MHz"));
+//   MVFrequency sampleFreq = modelSpectrum.refFrequency().getValue();
 //   Flux<Double> modelFlux;
+//   cout << "Frequency\t I-Flux\t Q-Flux\t U-Flux\t V-Flux\n";
 //   for (uInt i = 0; i < 11; i++) {
 //     modelFlux = refFlux.copy();
-//     modelSpectrum.sample(modelFlux, MFrequency(sampleFreq));
-//     cout << sampleFreq.get("GHz")
-// 	 << "\t\t " << modelFlux.value(0).re << " " 
-// 	 << modelFlux.unit().getName() << endl;
+//     modelSpectrum.sample(modelFlux,
+// 			 MFrequency(sampleFreq,
+// 				    modelSpectrum.refFrequency().getRef()));
+//     modelFlux.convertPol(ComponentType::STOKES);
+//     cout << setprecision(3) << sampleFreq.get("GHz")
+//  	 << "\t\t " << modelFlux.value(0u).re
+//  	 << "\t " << modelFlux.value(1u).re
+//  	 << "\t " << modelFlux.value(2u).re
+//  	 << "\t " << modelFlux.value(3u).re
+//  	 << " " << modelFlux.unit().getName() << endl;
 //     sampleFreq += step;
 //   }
 // }
@@ -171,10 +181,12 @@ public:
 			RecordInterface & record) const = 0;
   // </group>
 
-  // Return the spectral shape that the supplied record represents. Returns
-  // ComponentType::UNKNOWN_SPECTRAL_SHAPE if the record could not be parsed
-  // correctly (it then appends an appropriate error message to the
-  // errorMessage String).
+  // Return the spectral shape that the supplied record represents. The
+  // spectral shape is determined by parsing a 'type' field in the supplied
+  // record. Returns ComponentType::UNKNOWN_SPECTRAL_SHAPE if the type field
+  // (which contains a string) could not be translated into a known spectral
+  // shape. It then appends an appropriate error message to the errorMessage
+  // String.
   static ComponentType::SpectralShape getType(String & errorMessage,
 					      const RecordInterface & record);
 
