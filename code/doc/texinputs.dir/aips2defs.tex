@@ -1,110 +1,51 @@
+\newlength{\labellen}
+
 \newcommand{\subsectionC}[4]{
-  \refstepcounter{subsection}
-  \addcontentsline{toc}{subsection}{#1 -- Constructor}
-   %{\protect\numberline{\subsectionname~\thesubsection} #1}
-  {\flushleft\large\bfseries
-  \begin{tabular}{r@{}r@{}l}
-  
-  \thesubsection ~ Constructor #1 -- & Package &~#2\\
-                 & Module &~#3\\
-                 & Object &~#4\\
-  \end{tabular}
-  }
-  \subsectionmark{#1}\flushleft\vspace{\baselineskip}
-}
-
-\newcommand{\subsectionF}[3]{
-  \refstepcounter{subsection}
-  \addcontentsline{toc}{subsection}{#1 -- Function}
-   %{\protect\numberline{\subsectionname~\thesubsection} #1}
-  {\flushleft\large\bfseries
-  \begin{tabular}{r@{}r@{}l}
-  \thesubsection ~ Function #1 -- & Package &~#2\\
-              & Module &~#3\\
-  \end{tabular}
-  }
-  \subsectionmark{#1}\flushleft\vspace{\baselineskip}
-}
-
-\newcommand{\subsectionM}[4]{
-  \refstepcounter{subsection}
-  \addcontentsline{toc}{subsection}{#1 -- Function}
-   %{\protect\numberline{\subsectionname~\thesubsection} #1}
-  {\flushleft\large\bfseries
-  \begin{tabular}{r@{}r@{}l}
-  \thesubsection ~ Function #1 -- & Package &~#2\\
-              & Module &~#3\\
-              & Object &~#4\\
-  \end{tabular}
-  }
-  \subsectionmark{#1}\flushleft\vspace{\baselineskip}
-}
-
-\newcommand{\subsectionO}[3]{
-  \refstepcounter{subsection}
-  \addcontentsline{toc}{subsection}{#1 -- Object}
-   %{\protect\numberline{\subsectionname~\thesubsection} #1}
-  {\flushleft\large\bfseries
-  \begin{tabular}{r@{}r@{}l}
-  \thesubsection ~ Object #1 -- & Package &~#2\\
-            & Module &~#3\\
-  \end{tabular}
-  }
-  \subsectionmark{#1}\flushleft\vspace{\baselineskip}
-}
-\begin{htmlonly}
-\newcommand{\subsectionC}[4]{
-  \refstepcounter{subsection}
-  \addcontentsline{toc}{subsection}{#1 -- Constructor}
-   %{\protect\numberline{\subsectionname~\thesubsection} #1}
-  {\flushleft\large\bfseries
-  \begin{tabular}{rrl}
-  
-  Constructor #1 -- & Package & #2\\
-                 & Module & #3\\
-                 & Object & #4\\
-  \end{tabular}
+  {\bfseries
+   \settowidth{\labellen}{\thesubsubsection #1 --}
+   \hspace{\the\labellen}
+   \begin{tabular}{rl}
+          Package & #2\\
+          Module & #3\\
+          Object & #4\\
+    \end{tabular}
   }
   \flushleft\vspace{\baselineskip}
 }
 
 \newcommand{\subsectionF}[3]{
-  \refstepcounter{subsection}
-  \addcontentsline{toc}{subsection}{#1 -- Function}
-   %{\protect\numberline{\subsectionname~\thesubsection} #1}
-  {\flushleft\large\bfseries
-  \begin{tabular}{rrl}
-  Function #1 -- & Package & #2\\
-              & Module & #3\\
-  \end{tabular}
+  {\bfseries
+   \settowidth{\labellen}{\thesubsubsection #1 --}
+   \hspace{\the\labellen}
+   \begin{tabular}{rl}
+      Package & #2\\
+      Module  &#3\\
+   \end{tabular}
   }
   \flushleft\vspace{\baselineskip}
 }
 
 \newcommand{\subsectionM}[4]{
-  \refstepcounter{subsection}
-  \addcontentsline{toc}{subsection}{#1 -- Function}
-   %{\protect\numberline{\subsectionname~\thesubsection} #1}
-  {\flushleft\large\bfseries
-  \begin{tabular}{rrl}
-  Function #1 -- & Package & #2\\
-              & Module & #3\\
-              & Object & #4\\
+  {\bfseries
+   \settowidth{\labellen}{\thesubsubsection #1 --}
+   \hspace{\the\labellen}
+   \begin{tabular}{rl}
+     Package  &#2\\
+     Module  &#3\\
+     Object  &#4\\
   \end{tabular}
   }
   \flushleft\vspace{\baselineskip}
 }
 
 \newcommand{\subsectionO}[3]{
-  \refstepcounter{subsection}
-  \addcontentsline{toc}{subsection}{#1 -- Object}
-   %{\protect\numberline{\subsectionname~\thesubsection} #1}
-  {\flushleft\large\bfseries
-  \begin{tabular}{rrl}
-  Object #1 -- & Package & #2\\
-            & Module & #3\\
-  \end{tabular}
+  {\bfseries
+   \settowidth{\labellen}{\thesubsubsection #1 --}
+   \hspace{\the\labellen}
+   \begin{tabular}{rl}
+     Package & #2\\
+     Module  &#3\\
+   \end{tabular}
   }
   \flushleft\vspace{\baselineskip}
 }
-\end{htmlonly}
