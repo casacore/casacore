@@ -1,4 +1,4 @@
-//# TiledStepper.h:  Steps a Vector cursor optimally through a tiled Lattice
+//# TiledLineStepper.h: Steps a Vector cursor optimally through a tiled Lattice
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILED_STEPPER_H)
-#define AIPS_TILED_STEPPER_H
+#if !defined(AIPS_TILEDLINESTEPPER_H)
+#define AIPS_TILEDLINESTEPPER_H
 
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeNavigator.h>
@@ -34,10 +34,12 @@
 #include <aips/Lattices/IPosition.h>
 
 #if defined(_AIX)
-#pragma implementation ("TiledStepper.cc")
+#pragma implementation ("TiledLineStepper.cc")
 #endif 
 
-// <summary> traverse a Tiled Lattice optimally with a Vector cursor </summary>
+// <summary>
+// Traverse a Tiled Lattice optimally with a Vector cursor
+// </summary>
 // <use visibility=export>
 
 // <reviewed reviewer="" date="" tests="">
@@ -49,14 +51,14 @@
 // </prerequisite>
 
 // <etymology>
-// TiledStepper is used to step a Vector cursor optimally through a Lattice
-// that is tiled.
+// TiledLineStepper is used to step a Vector cursor optimally through
+// a Lattice that is tiled.
 // </etymology>
 
 // <synopsis> 
 // When you wish to traverse a Lattice (say, a PagedArray or an Image) you
 // will usually create a LatticeIterator.  Once created, you may attach a
-// LatticeNavigator to the iterator. A TiledStepper, is a concrete class
+// LatticeNavigator to the iterator. A TiledLineStepper, is a concrete class
 // derived from the abstract LatticeNavigator that allows you to move
 // a Vector cursor through the Lattice in a way that will minimise the
 // amount of cache memory consumed.
@@ -97,10 +99,10 @@
 // used. But this cache is 64MBytes in size, and consumes too much memory
 // for many computers.
 //
-// This where a tiledStepper is useful. Because it knows the shape of the
+// This where a TiledLineStepper is useful. Because it knows the shape of the
 // tiles in the underlying Lattice it moves the cursor to return all the
 // Vectors in the smallest possible cache of tiles before moving on to the
-// next set of tiles. Using the above example again, the tiledStepper will
+// next set of tiles. Using the above example again, the TiledLineStepper will
 // move the beginning of the Vector cursor in the following pattern.
 // <srcblock>
 // [0,0,0,0], [0,1,0,0], [0,2,0,0], ... [0,15,0,0]
@@ -113,11 +115,11 @@
 // the cache size need only be 2MBytes in size. Further once all 1024
 // vectors have been returned it is not necessary to read these 16 tiles
 // back into memory. All the data in those tiles has already been
-// accessed. Using a TiledStepper rather than a LatticeStepper has, in this
-// example, resulted in a drop in the required cache size from 64MBytes down
-// to 2MBytes. 
+// accessed. Using a TiledLineStepper rather than a LatticeStepper has,
+// in this example, resulted in a drop in the required cache size from
+// 64MBytes down to 2MBytes. 
 //
-// In constructing a TiledStepper, you specify the Lattice shape, the
+// In constructing a TiledLineStepper, you specify the Lattice shape, the
 // tile shape and the axis the Vector cursor will be aligned with. Specifying
 // an axis=0 will align the cursor with the x-axis and axis=2 will produce a
 // cursor that is along the z-axis. The length of the cursor is always the
@@ -132,9 +134,6 @@
 // dimensions will be exhausted (within a tile) before moving the cursor
 // through higher dimensions. This intra-tile behaviour for cursor movement
 // extends to the inter-tile movement of the cursor between tiles. 
-//
-// This navigator does not currently support sub-sectioning.
-//
 // </synopsis> 
 
 // <example>
@@ -150,7 +149,7 @@
 //
 // <srcblock>
 // void FFT2DComplex(Lattice<Complex>& cArray,
-// 		  const Int direction)
+// 		     const Bool direction)
 // {
 //   const uInt ndim = cArray.ndim();
 //   AlwaysAssert(ndim > 1, AipsError);
@@ -160,18 +159,18 @@
 //   const IPosition tileShape = cArray.niceCursorShape(cArray.maxPixels());
 //
 //   {
-//     TiledStepper tsx(latticeShape, tileShape, 0);
+//     TiledLineStepper tsx(latticeShape, tileShape, 0);
 //     LatticeIterator<Complex> lix(cArray, tsx);
 //     FFTServer<Float,Complex> fftx(IPosition(1, nx));
 //     for (lix.reset();!lix.atEnd();lix++)
-//       fftx.cxfft(lix.vectorCursor(), direction);
+//       fftx.fft(lix.vectorCursor(), direction);
 //   }
 //   {
-//     TiledStepper tsy(latticeShape, tileShape, 1);
+//     TiledLineStepper tsy(latticeShape, tileShape, 1);
 //     LatticeIterator<Complex> liy(cArray, tsy);
 //     FFTServer<Float,Complex> ffty(IPosition(1, ny));
 //     for (liy.reset();!liy.atEnd();liy++)
-//       ffty.cxfft(liy.vectorCursor(), direction);
+//       ffty.fft(liy.vectorCursor(), direction);
 //   }
 // };
 // </srcblock>
@@ -185,46 +184,41 @@
 // <todo asof="1997/03/28">
 //  <li> Provide support for Matrix and higher dimensional cursors
 //       can be used.
-//  <li> Provide support for Lattice subsectioning.
 // </todo>
 
-class TiledStepper: public LatticeNavigator {
+class TiledLineStepper : public LatticeNavigator
+{
 public:
 
-  // Construct a TiledStepper by specifying the Lattice shape, a tile shape
-  // and the axis along which the Vector cursor will lie (0 means the
-  // x-axis). Is is nearly always advisable to make the tileShape identical
-  // to the Lattice tileShape. This can be obtained by
+  // Construct a TiledLineStepper by specifying the Lattice shape,
+  // a tile shape and the axis along which the Vector cursor will lie
+  // (0 means the x-axis). Is is nearly always advisable to make the
+  // tileShape identical to the Lattice tileShape. This can be obtained by
   // <src>lat.niceCursorShape(lat.maxPixels())</src> where <src>lat</src> is
   // a Lattice object.
-  TiledStepper(const IPosition & latticeShape, 
-	       const IPosition & tileShape, 
-	       const uInt axis);
+  TiledLineStepper (const IPosition& latticeShape, 
+		    const IPosition& tileShape, 
+		    const uInt axis);
 
   // the copy constructor which uses copy semantics.
-  TiledStepper(const TiledStepper &other);
+  TiledLineStepper (const TiledLineStepper& other);
     
   // destructor (does nothing)
-  ~TiledStepper();
+  ~TiledLineStepper();
 
   // The assignment operator which uses copy semantics.
-  TiledStepper &operator=(const TiledStepper &other);
+  TiledLineStepper& operator= (const TiledLineStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor
   // forward one step. Returns True if the cursor was moved.  Both functions
   // do the same thing.
-  // <group>
-  virtual Bool operator++(); 
   virtual Bool operator++(Int);
-  // </group>
 
   // Decrement operator (postfix or prefix version) - move the cursor
   // backwards one step. Returns True if the cursor was moved. Both
   // functions do the same thing.
   // <group>
-  virtual Bool operator--();
   virtual Bool operator--(Int);
-  // </group>
 
   // Function to move the cursor to the beginning of the Lattice. Also
   // resets the number of steps (<src>nsteps</src> function) to zero. 
@@ -253,7 +247,7 @@ public:
   // </group>
 
   // Functions which returns the current position of the end of the
-  // cursor. The <src>endPosition</src> function is relative the origins
+  // cursor. The <src>endPosition</src> function is relative to the origin
   // in the main Lattice.
   // <group>
   virtual IPosition endPosition() const;
@@ -295,9 +289,9 @@ public:
   // (trc), and step size (inc), on ALL of its axes, including degenerate
   // axes. The step size defaults to one if not specified.
   // <group>
-  virtual void subSection(const IPosition & blc, const IPosition & trc);
-  virtual void subSection(const IPosition & blc, const IPosition & trc, 
-			  const IPosition & inc);
+  virtual void subSection (const IPosition& blc, const IPosition& trc);
+  virtual void subSection (const IPosition& blc, const IPosition& trc, 
+			   const IPosition& inc);
   // </group>
 
   // Return the bottom left hand corner (blc), top right corner (trc) or
@@ -312,7 +306,7 @@ public:
   // </group>
 
   // Return the axis path.
-  const IPosition & axisPath() const;
+  const IPosition& axisPath() const;
 
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this instance.  The pointer returned by this function must
@@ -324,17 +318,15 @@ public:
   // Returns True if everything is fine otherwise returns False
   virtual Bool ok() const;
 
-  // Use until RTTI is available in g++. Does not make a copy, merely
-  // returns a cast pointer.  Only implementers need to worry about this
-  // function.
-  // <group>
-  virtual TiledStepper* castToTiler();
-  virtual const TiledStepper* castToConstTiler() const;
-  // </group>
+protected:
+  // Calculate the cache size (in tiles) for this type of access to a lattice
+  // in the given row of the tiled hypercube.
+  virtual uInt calcCacheSize (const ROTiledStManAccessor&,
+			      uInt rowNumber) const;
 
 private:
-  // prevent the default constructor from being used externally
-  TiledStepper();
+  // prevent the default constructor from being used externally.
+  TiledLineStepper();
 
   IPosition theBlc;              //# Bottom Left Corner
   IPosition theTrc;              //# Top Right Corner
