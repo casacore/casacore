@@ -237,12 +237,24 @@ Bool SpectralCoordinate::near(const Coordinate* pOther,
                               const Vector<Int>& excludeAxes,
                               Double tol) const
 {
-   if (this->type() != pOther->type()) return False;
+   if (this->type() != pOther->type()) {
+      set_error("Comparison is not with another SpectralCoordinate");
+      return False;
+   }
 
    SpectralCoordinate* sCoord = (SpectralCoordinate*)pOther;   
  
-   if (type_p != sCoord->frequencySystem()) return False;
-   if (!::near(restfreq_p,sCoord->restFrequency(),tol)) return False;
+   if (type_p != sCoord->frequencySystem()) {
+      set_error("The SpectralCoordinates have differing frequency systems");
+      return False;
+   }
+
+   if (!::near(restfreq_p,sCoord->restFrequency(),tol)) {
+      set_error("The SpectralCoordinates have differing rest frequencies");
+      return False;
+   }
+
+// Leave it to TabularCoordinate to report errors
 
    TabularCoordinate* tmp = &(sCoord->worker_p);
    return worker_p.near(tmp,excludeAxes,tol);
