@@ -1,5 +1,5 @@
 //# dImageInterface.cc:  Illustrates the use of the ImageInterface base class
-//# Copyright (C) 1996,1998,1999,2000,2001
+//# Copyright (C) 1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/iostream.h>
 
 Float sumPixels(const ImageInterface<Float>& image){
   uInt rowLength = image.shape()(0);

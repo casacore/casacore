@@ -1,5 +1,5 @@
 //# tMSReader.cc: This program tests the MSReader class
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <trial/MeasurementSets/MSReader.h>
 #include <trial/SDIterators/SDRecord.h>
-
+#include <aips/iostream.h>
 #include <aips/OS/Timer.h>
 
 int main(int argc, char **argv) 

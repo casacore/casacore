@@ -1,5 +1,5 @@
  //# tImageInfo.cc: Miscellaneous information related to an image
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QLogical.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/iostream.h>
 
 void equalBeams(const Vector<Quantum<Double> >& b1, const Vector<Quantum<Double> >& b2)
 {

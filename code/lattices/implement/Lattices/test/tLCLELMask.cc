@@ -1,5 +1,5 @@
 //# tLCLELMask.cc:  mechanical test of the LCLELMask class
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/iostream.h>
 
 
 void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
