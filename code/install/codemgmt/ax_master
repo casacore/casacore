@@ -5995,3 +5995,4 @@
 17 012 src mv trial/implement/Functionals/test/tNQGaussianND.cc aips/implement/Functionals/test/tNQGaussianND.cc
 17 030 src rm npoi/implement/HDS/test/templates
 17 030 src rm trial/apps/dish/dishgauss.g
+17 030 sys rm libexec/dishgauss.g
