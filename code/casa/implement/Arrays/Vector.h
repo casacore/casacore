@@ -166,7 +166,7 @@ public:
     T &operator()(const IPosition &i) {return Array<T>::operator()(i);}
     const T &operator()(const IPosition &i) const 
                                       {return Array<T>::operator()(i);}
-    T &operator()(Int index) {
+    T &operator()(uInt index) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	//# It would be better performance wise for this to be static, but
 	//# CFront 3.0.1 doesn't like that.
@@ -177,7 +177,7 @@ public:
         return *(begin_p + index*inc_p(0));
     }
 
-    const T &operator()(Int index) const {
+    const T &operator()(uInt index) const {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	//# It would be better performance wise for this to be static, but
 	//# CFront 3.0.1 doesn't like that.

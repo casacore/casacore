@@ -246,7 +246,7 @@ template<class T> void Cube<T>::makeIndexingConstants()
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> Matrix<T> Cube<T>::xyPlane(Int which)
+template<class T> Matrix<T> Cube<T>::xyPlane(uInt which)
 {
     DebugAssert(ok(), ArrayError);
     if (which < 0 || which >= length_p(2)) {
@@ -261,7 +261,7 @@ template<class T> Matrix<T> Cube<T>::xyPlane(Int which)
     return tmp; // should match Matrix<T>(const Array<T> &)
 }
 
-template<class T> const Matrix<T> Cube<T>::xyPlane(Int which) const
+template<class T> const Matrix<T> Cube<T>::xyPlane(uInt which) const
 {
     Cube<T> *This = (Cube<T> *)this;
     // Cast away constness, but the return type is a const Matrix<T>, so

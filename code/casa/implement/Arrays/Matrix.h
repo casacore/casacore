@@ -159,7 +159,7 @@ public:
     T &operator()(const IPosition &i) {return Array<T>::operator()(i);}
     const T &operator()(const IPosition &i) const 
                                       {return Array<T>::operator()(i);}
-    T &operator()(Int i1, Int i2) {
+    T &operator()(uInt i1, uInt i2) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	// It would be better performance wise for this to be static, but
 	// CFront 3.0.1 doesn't like that.
@@ -171,7 +171,7 @@ public:
         return *(begin_p + i1*xinc_p + i2*yinc_p);
     }
 
-    const T &operator()(Int i1, Int i2) const {
+    const T &operator()(uInt i1, uInt i2) const {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	// It would be better performance wise for this to be static, but
 	// CFront 3.0.1 doesn't like that.
@@ -219,21 +219,21 @@ public:
 
     // Returns a reference to the i'th row.
     // <group>
-    Vector<T> row(Int i);
+    Vector<T> row(uInt i);
 #if defined (AIPS_IRIX)
-    Vector<T> row(Int i) const;
+    Vector<T> row(uInt i) const;
 #else
-    const Vector<T> row(Int i) const;
+    const Vector<T> row(uInt i) const;
 #endif
     // </group>
 
     // Returns a reference to the j'th column
     // <group>
-    Vector<T> column(Int j);
+    Vector<T> column(uInt j);
 #if defined (AIPS_IRIX)
-    Vector<T> column(Int j) const;
+    Vector<T> column(uInt j) const;
 #else
-    const Vector<T> column(Int j) const;
+    const Vector<T> column(uInt j) const;
 #endif
     // </group>
 

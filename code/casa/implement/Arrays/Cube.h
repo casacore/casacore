@@ -161,7 +161,7 @@ public:
     T &operator()(const IPosition &i) {return Array<T>::operator()(i);}
     const T &operator()(const IPosition &i) const 
                                       {return Array<T>::operator()(i);}
-    T &operator()(Int i1, Int i2, Int i3) {
+    T &operator()(uInt i1, uInt i2, uInt i3) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	// It would be better performance wise for this to be static, but
 	// CFront 3.0.1 doesn't like that.
@@ -172,7 +172,7 @@ public:
         return *(begin_p + i1*xinc_p + i2*yinc_p + i3*zinc_p);
     }
 
-    const T &operator()(Int i1, Int i2, Int i3) const {
+    const T &operator()(uInt i1, uInt i2, uInt i3) const {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	// It would be better performance wise for this to be static, but
 	// CFront 3.0.1 doesn't like that.
@@ -242,8 +242,8 @@ public:
     // would be of use to anyone. Of course you could also use a Matrix
     // iterator on the cube.
     // <group>
-    Matrix<T> xyPlane(Int zplane); 
-    const  Matrix<T> xyPlane(Int zplane) const; 
+    Matrix<T> xyPlane(uInt zplane); 
+    const  Matrix<T> xyPlane(uInt zplane) const; 
     // </group>
 
     // The length of each axis of the cube.

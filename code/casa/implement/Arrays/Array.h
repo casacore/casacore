@@ -510,7 +510,7 @@ protected:
     uInt nels_p;
 
     // Dimensionality of the array.
-    Int ndimen_p;
+    uInt ndimen_p;
 
     // Used to hold the shape, increment into the underlying storage
     // and originalLength of the array.

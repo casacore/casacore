@@ -235,7 +235,7 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> Vector<T> Matrix<T>::row(Int n)
+template<class T> Vector<T> Matrix<T>::row(uInt n)
 {
     DebugAssert(ok(), ArrayError);
     if (n < 0 || n >= length_p(0))
@@ -258,7 +258,7 @@ template<class T> Vector<T> Matrix<T>::row(Int n)
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> Vector<T> Matrix<T>::column(Int n)
+template<class T> Vector<T> Matrix<T>::column(uInt n)
 {
     DebugAssert(ok(), ArrayError);
     if (n < 0 || n >= length_p(1))
@@ -313,9 +313,9 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
 }
 
 #if defined (AIPS_IRIX)
-template<class T> Vector<T> Matrix<T>::row(Int n) const
+template<class T> Vector<T> Matrix<T>::row(uInt n) const
 #else
-template<class T> const Vector<T> Matrix<T>::row(Int n) const
+template<class T> const Vector<T> Matrix<T>::row(uInt n) const
 #endif
 {
     DebugAssert(ok(), ArrayError);
@@ -327,9 +327,9 @@ template<class T> const Vector<T> Matrix<T>::row(Int n) const
 }
 
 #if defined (AIPS_IRIX)
-template<class T> Vector<T> Matrix<T>::column(Int n) const
+template<class T> Vector<T> Matrix<T>::column(uInt n) const
 #else
-template<class T> const Vector<T> Matrix<T>::column(Int n) const
+template<class T> const Vector<T> Matrix<T>::column(uInt n) const
 #endif
 {
     DebugAssert(ok(), ArrayError);
