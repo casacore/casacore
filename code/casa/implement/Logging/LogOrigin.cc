@@ -1,5 +1,5 @@
 //# LogOrigin.cc: The source code location of the originator of a LogMessage.
-//# Copyright (C) 1996,1997,2001
+//# Copyright (C) 1996,1997,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 #include <aips/Logging/LogOrigin.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 LogOrigin::LogOrigin()
   : function_p(""), class_p(""), id_p(True), line_p(0), file_p("")
@@ -165,7 +165,7 @@ String LogOrigin::fullName() const
 
 String LogOrigin::location() const
 {
-    ostrstream os;
+    ostringstream os;
     String nullString;
     os << fullName();
     if (fileName() != nullString) {
@@ -182,7 +182,7 @@ String LogOrigin::toString() const
 {
     String retval = location();
     if (! objectID().isNull()) {
-	ostrstream os;
+	ostringstream os;
         os << " ObjectID=" << objectID();
 	retval += String(os);
     }

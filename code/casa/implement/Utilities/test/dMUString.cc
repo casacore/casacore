@@ -1,5 +1,5 @@
 //# dMUString.cc: test of MUString class
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/iostream.h>
+#include <aips/sstream.h>
 
 int main()
 {
@@ -97,7 +98,7 @@ int main()
 	 p = (p<0) ? l : p;
 	 String loc = loc0.at(ptr,p-ptr);
 	 ptr = p;
-	 istrstream instr(loc.chars());
+	 istringstream instr(loc);
 	 streampos stt(instr.tellg());
 	 cout << "Pos0: " << instr.tellg()-stt << instr.rdstate() << endl;
 	 instr >> res;

@@ -1,5 +1,5 @@
 //# MVTime.cc: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MUString.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iomanip.h>
 #include <aips/OS/Time.h>
 #include <aips/Mathematics/Math.h>
@@ -317,7 +317,7 @@ String MVTime::string(uInt intyp, uInt inprec) const {
 }
 
 String MVTime::string(const MVTime::Format &form) const {
-    ostrstream oss;
+    ostringstream oss;
     print (oss, form);
     return oss;
 }

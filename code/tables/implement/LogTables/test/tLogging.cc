@@ -1,5 +1,5 @@
 //# tLogging.cc: Test the logging classes
-//# Copyright (C) 1996,1997,1998,2000,2001
+//# Copyright (C) 1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@
 #include <aips/OS/Directory.h>
 #include <aips/Utilities/Assert.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iostream.h>
 
 void testLogFilter()
@@ -171,7 +171,7 @@ void testLogMessage()
 	AlwaysAssertExit(message.contains(String("hello")) &&
 			 message.contains(String("test")) &&
 			 message.contains(String("SEVERE")));
-	ostrstream os;
+	ostringstream os;
 	os << m;
 	String cached(os);
 	cached = cached(0, cached.length()-1); // get rid of trailing nl
@@ -269,7 +269,7 @@ void testLogOrigin()
 	AlwaysAssertExit(s.contains(String("class")) &&
 			 s.contains(String("member")) &&
 			 s.contains(String("file")));
-	ostrstream buffer;
+	ostringstream buffer;
 	buffer << t3;
 	String s2(buffer);
 	s2 = s2(0, s2.length()-1);
@@ -299,7 +299,7 @@ void testLogSink()
 
     // LogSink(const LogFilter &filter);
     LogSink sink1(LogMessage::SEVERE);
-    ostrstream os;
+    ostringstream os;
     // LogSink(const LogFilter &filter, ostream *os);
     LogSink sink2(LogMessage::SEVERE, &os);
     // LogSink(const LogFilter &filter, const String &fileName);
@@ -405,7 +405,7 @@ void testLogSink()
 void testLogIO()
 {
     {
-	ostrstream ostr;
+	ostringstream ostr;
 	LogSink sls(LogMessage::NORMAL, &ostr);
 	//     LogIO(LogSink &sink);
 	LogIO os(sls);
@@ -417,7 +417,7 @@ void testLogIO()
 	//     ~LogIO();
     }
     {
-	ostrstream ostr;
+	ostringstream ostr;
 	LogSink sls(LogMessage::NORMAL, &ostr);
 	//     LogIO(const LogOrigin &or, LogSink &sink);
 	LogIO os(LogOrigin("HELLO"), sls);
@@ -426,7 +426,7 @@ void testLogIO()
 	AlwaysAssert(s.contains("HELLO"), AipsError);
     }
     {
-	ostrstream ostr;
+	ostringstream ostr;
 	LogSink sls(LogMessage::NORMAL, &ostr);
 	LogIO os(sls);
 	//     void priority(LogMessage::Priority which);
@@ -435,7 +435,7 @@ void testLogIO()
 	AlwaysAssert(s == "", AipsError);
     }
     {
-	ostrstream ostr;
+	ostringstream ostr;
 	LogSinkInterface *sls = new StreamLogSink(LogMessage::NORMAL, &ostr);
 	LogSink::globalSink(sls);
 	//     LogIO();
@@ -448,7 +448,7 @@ void testLogIO()
 	LogSink::globalSink(sls);
     }
     {
-	ostrstream ostr;
+	ostringstream ostr;
 	LogSink sls(LogMessage::NORMAL, &ostr);
 	LogIO os(sls);
 	Bool caught = False;

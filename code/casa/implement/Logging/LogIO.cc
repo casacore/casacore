@@ -1,5 +1,5 @@
 //# LogIO.cc: this defines LogIO which provides a stream like interface for logging
-//# Copyright (C) 1997,1999,2000,2001
+//# Copyright (C) 1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 
 #include <aips/Utilities/Assert.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 LogIO::LogIO()
     : sink_p(), text_p(0)
@@ -127,7 +127,7 @@ void LogIO::origin(const LogOrigin &OR)
 ostream &LogIO::output()
 {
     if (!text_p) {
-	text_p = new ostrstream;
+	text_p = new ostringstream;
 	AlwaysAssert(text_p != 0, AipsError);
     }
     return *text_p;

@@ -1,5 +1,5 @@
 //# dLogging.cc: This program demonstrates the logging system.
-//# Copyright (C) 1996,2001
+//# Copyright (C) 1996,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 #include <aips/Logging.h>
 #include <aips/Arrays.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iostream.h>
 
 class DataClass
@@ -67,7 +67,7 @@ DataClass::DataClass(const IPosition &shape, const LogSink &sink)
   }                                                                      // 12
                                                                          // 13
   data_p.resize(shape(0));                                               // 14
-  ostrstream buffer;                                                     // 15
+  ostringstream buffer;                                                     // 15
   buffer << "Inital shape " << shape << "and value 2";                   // 16
   log_sink_p.post(                                                       // 17
   logMessage.priority(LogMessage::NORMAL).line(__LINE__).                // 19
@@ -81,14 +81,14 @@ void DataClass::set(Int toWhat)
 {
   LogOrigin  where("DataClass", "set(Int toWhat)", WHERE);                 // 1
   LogMessage logMessage(where);                                            // 2
-  ostrstream buffer;                                                       // 3
+  ostringstream buffer;                                                       // 3
   buffer << "Setting data values to " << toWhat;                           // 4
   log_sink_p.post(logMessage.priority(LogMessage::NORMAL).line(__LINE__).  // 5
 		  message(buffer));                                        // 6
   uInt n = data_p.nelements();                                             // 7
   for (uInt i=0; i < n; i++) {                                             // 8
 #ifdef AIPS_DEBUG                                                          // 9
-    ostrstream buffer;                                                     // 10
+    ostringstream buffer;                                                     // 10
     buffer << "Setting element  " << i << " to " << toWhat;                // 11
     logMessage.priority(LogMessage::DEBUGGING).line(__LINE__).             // 12
                message(buffer);                                            // 13
@@ -109,7 +109,7 @@ void square(DataClass &object)
 float sum(const DataClass &object)
 {
   float theSum = sum(object.data());                                 // 1
-  ostrstream buffer;                                                 // 2
+  ostringstream buffer;                                                 // 2
   buffer << "Sum of object is: " << theSum;                          // 3
   LogSink::postGlobally(LogMessage(buffer,                           // 4
 	   LogOrigin("sum(const DataClass &object)", WHERE)));       // 5

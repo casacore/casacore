@@ -1,5 +1,5 @@
 //# MUString.cc: Pointed String class to ais analysis of quantity strings
-//# Copyright (C) 1996,1997,1998,1999,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Quanta/MUString.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iostream.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Regex.h>
@@ -189,7 +189,7 @@ Bool MUString::tSkipDouble() {
 Double MUString::getDouble() {
   Double res = 0.0; Int p = initLast();
   if (ptr < len) {
-    istrstream instr(str.chars() + ptr);
+    istringstream instr(str.chars() + ptr);
     streampos tmp(instr.tellg());
     instr >> res;
     if (instr.tellg() == streampos(-1)) {		// if eof seen (at least for sgi)

@@ -1,5 +1,5 @@
 //# ReadAsciiTable.cc: Filling a table from an Ascii file
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@
 #include <aips/string.h>
 #include <aips/iostream.h>
 #include <aips/fstream.h>             // needed for file IO
-#include <aips/strstream.h>           // needed for internal IO
+#include <aips/sstream.h>           // needed for internal IO
 
 
 const Int lineSize = 32768;
@@ -179,14 +179,16 @@ void ReadAsciiTable::getTypes (const IPosition& shape,
 	string2 += strlen(name);
 	string2[0] = '\0';
 	if (shape.nelements() > 0) {
-	    ostrstream ostr(string1, lineSize-3);
+	    ostringstream ostr;
 	    for (uInt i=0; i<shape.nelements(); i++) {
 	        if (i > 0) {
 		    ostr << ',';
 		}
 	        ostr << shape(i);
 	    }
-	    ostr << ends;
+	// There is probably a way to attach the char * to the ostringstream
+	// but I'm not going to worry about it. wky 2003/02/27
+	    strcpy(string1, ostr.str().data());
 	    break;
 	}
 	string1[0] = ' ';
@@ -439,7 +441,7 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
       throw AipsError ("Invalid shape value '" + vec(i) +
 		       "' in type string '" + typestr + "'");
     }
-    istrstream istr(vec(i).chars());
+    istringstream istr(vec(i));
     istr >> shape(i);
     if (shape(i) <= 0) {
       if (varAxis >= 0) {
@@ -490,34 +492,35 @@ Bool ReadAsciiTable::getValue (char* string1, Int lineSize, char* first,
     done1 = 0;
     first[0] = '\0';
   }
+  if(more){
   switch (type) {
   case RATBool:
     *(Bool*)value = makeBool(first);
     break;
   case RATShort:
     if (done1 > 0) {
-      istrstream(first, done1) >> *(Short*)value;
+      istringstream(first) >> *(Short*)value;
     } else {
       *(Short*)value = 0;
     }
     break;
   case RATInt:
     if (done1 > 0) {
-      istrstream(first, done1) >> *(Int*)value;
+      istringstream(first) >> *(Int*)value;
     } else {
       *(Int*)value = 0;
     }
     break;
   case RATFloat:
     if (done1 > 0) {
-      istrstream(first, done1) >> *(Float*)value;
+      istringstream(first) >> *(Float*)value;
     } else {
       *(Float*)value = 0;
     }
     break;
   case RATDouble:
     if (done1 > 0) {
-      istrstream(first, done1) >> *(Double*)value;
+      istringstream(first) >> *(Double*)value;
     } else {
       *(Double*)value = 0;
     }
@@ -527,46 +530,47 @@ Bool ReadAsciiTable::getValue (char* string1, Int lineSize, char* first,
     break;
   case RATComX:
     if (done1 > 0) {
-      istrstream(first, done1) >> f1;
+      istringstream(first) >> f1;
     }
     done1 = getNext (string1, lineSize, first, at1, separator);
     if (done1 > 0) {
-      istrstream(first, done1) >> f2;
+      istringstream(first) >> f2;
     }
     *(Complex*)value = Complex(f1, f2);
     break;
   case RATDComX:
     if (done1 > 0) {
-      istrstream(first, done1) >> d1;
+      istringstream(first) >> d1;
     }
     done1 = getNext (string1, lineSize, first, at1, separator);
     if (done1 > 0) {
-      istrstream(first, done1) >> d2;
+      istringstream(first) >> d2;
     }
     *(DComplex*)value = DComplex(d1, d2);
     break;
   case RATComZ:
     if (done1 > 0) {
-      istrstream(first, done1) >> f1;
+      istringstream(first) >> f1;
     }
     done1 = getNext (string1, lineSize, first, at1, separator);
     if (done1 > 0) {
-      istrstream(first, done1) >> f2;
+      istringstream(first) >> f2;
     }
     f2 *= 3.14159265/180.0; 
     *(Complex*)value = Complex(f1*cos(f2), f1*sin(f2));
     break;
   case RATDComZ:
     if (done1 > 0) {
-      istrstream(first, done1) >> d1;
+      istringstream(first) >> d1;
     }
     done1 = getNext (string1, lineSize, first, at1, separator);
     if (done1 > 0) {
-      istrstream(first, done1) >> d2;
+      istringstream(first) >> d2;
     }
     d2 *= 3.14159265/180.0; 
     *(DComplex*)value = DComplex(d1*cos(d2), d1*sin(d2));
     break;
+  }
   }
   return more;
 }

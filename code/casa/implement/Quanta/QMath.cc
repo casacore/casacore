@@ -1,5 +1,5 @@
 //# QMath.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Quanta/QMath.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 template <class Qtype>
 Quantum<Qtype> operator+(const Quantum<Qtype> &left,
@@ -133,7 +133,7 @@ Quantum<Qtype> root(const Quantum<Qtype> &left, Int p) {
   Quantum<Qtype> res;
   res.setValue(::pow(left.getValue(), 1.0/Double(p)));
   UnitVal vres(left.getFullUnit().getValue().root(p));
-  ostrstream oss;
+  ostringstream oss;
   oss << vres.getDim();
   res.setUnit(String(oss));
   res.setValue(res.getValue() * vres.getFac());

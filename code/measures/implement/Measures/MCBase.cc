@@ -1,5 +1,5 @@
 //# MCBase.cc: Base for specific measure conversions
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Measures/MCBase.h>
 #include <aips/Utilities/String.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iomanip.h>
 
 //# Constructors
@@ -126,7 +126,7 @@ String MCBase::showState(Bool &made, uInt *state,
 			 const uInt ntyp, const uInt,
 			 const uInt list[][3]) {
   if (!made) return String("No state made yet");
-  ostrstream oss;
+  ostringstream oss;
   oss << "   |";
   for (uInt i=0; i<ntyp; i++) oss << setw(3) << i;;
   oss << "\n";

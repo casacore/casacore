@@ -1,5 +1,5 @@
 //# LogMessage.cc: Informational log messages with with time,priority,and origin
-//# Copyright (C) 1996,1997,2001,2002
+//# Copyright (C) 1996,1997,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 #include <aips/Logging/LogMessage.h>
 #include <aips/Utilities/Assert.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 LogMessage::LogMessage(Priority prio)
   : priority_p(prio)
@@ -164,7 +164,7 @@ String LogMessage::toString() const
 {
     const String &ref = message();
 
-    ostrstream os;
+    ostringstream os;
     os << messageTime() << " ";
     os.width(9); // Width of DEBUGGING
     os << toString(priority()) << " ";

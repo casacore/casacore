@@ -1,5 +1,5 @@
 //# Quantum.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -333,7 +333,7 @@ void Quantum<Qtype>::convert(const Unit &s) {
 	qUnit = s;
       } else {
 	qUnit.setValue(qUnit.getValue() / s.getValue());
-	ostrstream oss;
+	ostringstream oss;
 	oss << qUnit.getValue().getDim();
 	// Suppress (gcc) warnings:
 	qVal = (Qtype) (qVal * qUnit.getValue().getFac());
