@@ -133,18 +133,18 @@ void doIt (TempImage<Int>& scratch)
   AlwaysAssertExit (info.restoringBeam()(2)==a3);
 }
 
-main()
+int main()
 {
   try {
     {
-      TempImage<Int> scratch(TiledShape(IPosition(3,64,64,257)),
+      TempImage<Int> scratch((TiledShape(IPosition(3,64,64,257))),
 			     CoordinateUtil::defaultCoords3D(),
 			     1);
       AlwaysAssertExit (scratch.isPaged());
       doIt (scratch);
     }
     {
-      TempImage<Int> small(TiledShape(IPosition(3,64,64,16)),
+      TempImage<Int> small((TiledShape(IPosition(3,64,64,16))),
 			   CoordinateUtil::defaultCoords3D(),
 			   1);
       AlwaysAssertExit (small.ok());

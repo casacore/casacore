@@ -91,7 +91,7 @@ int main() {
     }
     {
       PagedImage<Float> 
-	image2D(TiledShape(IPosition(2,nx,ny)), coords2D,
+	image2D((TiledShape(IPosition(2,nx,ny))), coords2D,
 		File::newUniqueName("./", "tComponentImager_tmp_")
 		.absoluteName());
       image2D.setUnits(Unit("Jy/pixel"));
@@ -117,7 +117,7 @@ int main() {
 	coords3D.replaceCoordinate(specCoord, 0);
       }
       PagedImage<Float> 
-	image3D(TiledShape(IPosition(3, nFreq, nx, ny)),
+	image3D((TiledShape(IPosition(3, nFreq, nx, ny))),
 		coords3D,
 		File::newUniqueName("./", "tComponentImager_tmp_")
 		.absoluteName());
