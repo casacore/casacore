@@ -606,11 +606,10 @@ private:
                         ImageInterface<T>& image);
 
 // Make output Coordinates
-   CoordinateSystem makeOutputCoordinates (const CoordinateSystem& cSys,
-                                           const IPosition& shape);
+   CoordinateSystem makeOutputCoordinates (IPosition& outShape,
+                                           const CoordinateSystem& cSysIn,
+                                           const IPosition& inShape,
+                                           Int momentAxis);
 };
-
-
-
 
 #endif

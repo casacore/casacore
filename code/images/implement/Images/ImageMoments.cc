@@ -729,20 +729,6 @@ Bool ImageMoments<T>::createMoments()
       clipMethod = True;
    }     
 
-
-// Create table to map input to output axes
-         
-   uInt i, j;
-   uInt  inDim = pInImage_p->ndim();
-   uInt outDim = pInImage_p->ndim() - 1;
-   IPosition ioMap(outDim);
-   for (i=0,j=0; i<inDim; i++) {
-      if (Int(i) != momentAxis_p) {
-         ioMap(j) = i;
-         j++;
-      }
-   }            
-
 // We only smooth the image if we are doing the smooth/clip method
 // or possibly the interactive window method.  Note that the convolution
 // routines can only handle convolution when the image fits fully in core
@@ -788,22 +774,17 @@ Bool ImageMoments<T>::createMoments()
    }
 
 
-// Set output images shape
+// Set output images shape and coordinates.
    
-   IPosition outImageShape(outDim);
-   for (j=0; j<outDim; j++) outImageShape(j) = pInImage_p->shape()(ioMap(j));
-
-// Account for removal of the collapsed moment axis in the coordinate system.  
-// For some moment types it makes sense to remove just the pixel axis
-// leaving the world axis (e.g. the zeroth moment).  For other moment
-// types it makes no sense.
-
-   CoordinateSystem cSysOut = makeOutputCoordinates (cSys, pInImage_p->shape());
+   IPosition outImageShape;
+   CoordinateSystem cSysOut = makeOutputCoordinates (outImageShape, cSys, 
+                                                     pInImage_p->shape(),
+                                                     momentAxis_p);
 
 // Create a vector of pointers for output images 
 
    PtrBlock<MaskedLattice<T> *> outPt(moments_p.nelements());
-   for (i=0; i<outPt.nelements(); i++) outPt[i] = 0;
+   for (uInt i=0; i<outPt.nelements(); i++) outPt[i] = 0;
 
 // Loop over desired output moments
 
@@ -812,7 +793,7 @@ Bool ImageMoments<T>::createMoments()
    Bool giveMessage = True;
    Unit imageUnits = pInImage_p->units();
    
-   for (i=0; i<moments_p.nelements(); i++) {
+   for (uInt i=0; i<moments_p.nelements(); i++) {
 
 // Set moment image units and assign pointer to output moments array
 // Value of goodUnits is the same for each output moment image
@@ -927,7 +908,7 @@ Bool ImageMoments<T>::createMoments()
 // Try and clean up so if we are called by DO, images dont get stuck open in cache
 // If an exception is generated.  Can't use PtrHolder here
 
-      for (i=0; i<outPt.nelements(); i++) delete outPt[i];
+      for (uInt i=0; i<outPt.nelements(); i++) delete outPt[i];
    }
 
 
@@ -943,7 +924,7 @@ Bool ImageMoments<T>::createMoments()
 // Try and clean up so if we are called by DO, images dont get stuck open in cache
 // If an exception is generated.  Can't use PtrHolder here
 
-      for (i=0; i<outPt.nelements(); i++) delete outPt[i];
+      for (uInt i=0; i<outPt.nelements(); i++) delete outPt[i];
    }
 
 
@@ -955,7 +936,7 @@ Bool ImageMoments<T>::createMoments()
       }
    }
    if (pProgressMeter != 0) delete pProgressMeter;
-   for (i=0; i<moments_p.nelements(); i++) delete outPt[i];
+   for (uInt i=0; i<moments_p.nelements(); i++) delete outPt[i];
 
    if (pSmoothedImage) {
        
@@ -1753,65 +1734,55 @@ Bool ImageMoments<T>::readCursor (PGPlotter& plotter, Float& x,
  
 
 template <class T> 
-CoordinateSystem ImageMoments<T>::makeOutputCoordinates (const CoordinateSystem& cSys,
-                                                         const IPosition& shape) 
+CoordinateSystem ImageMoments<T>::makeOutputCoordinates (IPosition& outShape,
+                                                         const CoordinateSystem& cSysIn,
+                                                         const IPosition& inShape,
+                                                         Int momentAxis)
+//
+// This function asssumes no axes have been removed/transposed etc
+// in the input CS.  Should really check for this...
+//
 {
-   CoordinateSystem cSysOut;
-   uInt worldAxis = cSys.pixelAxisToWorldAxis(momentAxis_p);
-//
+
+// Find the Coordinate corresponding to the moment axis
+
    Int coord, axisInCoord;
-   cSys.findWorldAxis(coord, axisInCoord, worldAxis);
-   Coordinate::Type type = cSys.type(coord);
-//
-   if (type==Coordinate::DIRECTION) {
-      os_p << "The moment axis is one axis of a coupled DirectionCoordinate" << endl;
-      os_p << "Linearizing the remaining DirectionCoordinate axis" << LogIO::POST;
-//
-      const DirectionCoordinate& dirCoord = cSys.directionCoordinate(coord);
-      Vector<Int> pixelAxes = cSys.pixelAxes(coord);
-//
-      Vector<Double> world0(2), world1(2), pixel(2);      
-      pixel(0) = 0.0;
-      pixel(1) = 0.0;
-      dirCoord.toWorld(world0, pixel);
+   cSysIn.findPixelAxis(coord, axisInCoord, momentAxis);
+   const Coordinate& c = cSysIn.coordinate(coord);
 
-// Find out where the other Direction axis we are not collapsing is
+// Find the number of axes
 
-      uInt otherAxisInCoord = 0;
-      if (axisInCoord==0) otherAxisInCoord = 1;
-      uInt otherAxisInImage = pixelAxes(otherAxisInCoord);
+   CoordinateSystem cSysOut;
+   if (c.nPixelAxes()==1 && c.nWorldAxes()==1) {
+
+// OK we can remove the whole thing
+
+      for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
+         if (Int(i) != coord) {
+            cSysOut.addCoordinate(cSysIn.coordinate(i));
+         }
+      }
 //
-      pixel(otherAxisInCoord) = shape(otherAxisInImage) - 1.0;
-      dirCoord.toWorld(world1, pixel);      
-//
-      Vector<String> names(1), units(1);
-      names(0)  = dirCoord.worldAxisNames()(otherAxisInCoord);
-      units(0)  = dirCoord.worldAxisUnits()(otherAxisInCoord);
-//
-      Vector<Double> refVal(1), inc(1), refPix(1);
-      refPix(0) = 0.0;
-      refVal(0) = world0(otherAxisInCoord);
-      inc(0) = (world1(otherAxisInCoord) - world0(otherAxisInCoord)) / Double(shape(otherAxisInImage) - 1);
-      Matrix<Double> pc(1,1);
-      pc.set(1.0);
-//
-      LinearCoordinate linCoord(names, units, refVal, inc, pc, refPix);
-//
-      for (Int i=0; i<Int(cSys.nCoordinates()); i++) {
-         if (i==coord) {
-            cSysOut.addCoordinate(linCoord);
-         } else {
-            cSysOut.addCoordinate(cSys.coordinate(i));
+      uInt dimIn = inShape.nelements();
+      uInt dimOut = dimIn - 1;
+      outShape.resize(dimOut);
+      uInt k = 0;
+      for (uInt i=0; i<dimIn; i++) {
+         if (Int(i) != momentAxis) {
+            outShape(k) = inShape(i);
+            k++;
          }
       }
    } else {
-      cSysOut = cSys;
-      Bool ok = cSysOut.removeWorldAxis(worldAxis, cSysOut.referenceValue()(worldAxis));
-      if (!ok) {
-         os_p << String("Failed to remove moment axis because ") 
-              << cSysOut.errorMessage() << LogIO::EXCEPTION;
-      }     
-   }
+
+// The best we can do is just retain the Coordinate and give it
+// shape 1. I don't want to get into the removing axes game...
+
+      outShape.resize(0);
+      outShape = inShape;
+      outShape(momentAxis) = 1;
+      cSysOut = cSysIn;
+   }   
 //
    return cSysOut;
 }
