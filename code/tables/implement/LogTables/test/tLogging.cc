@@ -27,6 +27,7 @@
 
 
 #include <aips/Logging/LogFilter.h>
+#include <aips/Logging/LogFilterTaql.h>
 #include <aips/Logging/LogMessage.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogSink.h>
@@ -83,11 +84,11 @@ void testLogFilter()
 		     warn.pass(message) && !severe.pass(message));
 
     // LogFilter(const String& expr);
-    LogFilter expr1
+    LogFilterTaql expr1
                ("LOCATION=='::abc' && !(PRIORITY in ['NORMAL','DEBUGGING'])");
-    LogFilter expr2
+    LogFilterTaql expr2
                ("LOCATION=='::abc' && PRIORITY in ['NORMAL','DEBUGGING']");
-    LogFilter expr(expr2);
+    LogFilterTaql expr(expr2);
     expr = expr1;
     AlwaysAssertExit (!expr.pass(LogMessage(String("abc"),
 					    LogMessage::NORMAL)));
@@ -303,9 +304,9 @@ void testLogSink()
     // LogSink(const LogFilter &filter, ostream *os);
     LogSink sink2(LogMessage::SEVERE, &os);
     // LogSink(const LogFilter &filter, const String &fileName);
-    LogSink sink3(LogMessage::SEVERE, tableNames[0]);
+    LogSink sink3 = TableLogSink::makeSink (LogMessage::SEVERE, tableNames[0]);
     LogSinkInterface *newGlobal = new TableLogSink(LogMessage::SEVERE, 
-						   tableNames[1]);
+    						   tableNames[1]);
     LogSinkInterface *copy = newGlobal;
     AlwaysAssertExit(newGlobal);
     // static void globalSink(LogSinkInterface *&fromNew);
@@ -354,10 +355,12 @@ void testLogSink()
     // const LogSinkInterface &localSink() const;
     AlwaysAssertExit(&sink3.localSink() == &sink4.localSink());
     // virtual const LogFilter &filter() const;
-    AlwaysAssertExit(sink3.filter().lowestPriority() == LogMessage::SEVERE);
+    AlwaysAssertExit(dynamic_cast<const LogFilter&>(sink3.filter()).
+		     lowestPriority() == LogMessage::SEVERE);
     // virtual LogSinkInterface &filter(const LogFilter &filter);
-    sink3.filter(LogMessage::NORMAL);
-    AlwaysAssertExit(sink3.filter().lowestPriority() == LogMessage::NORMAL);
+    sink3.filter(LogFilter(LogMessage::NORMAL));
+    AlwaysAssertExit(dynamic_cast<const LogFilter&>(sink3.filter()).
+		     lowestPriority() == LogMessage::NORMAL);
 
     // void postThenThrow(const LogMessage &message);
     Bool caught = False;
@@ -505,7 +508,7 @@ void testLogTable()
 {
   LogFilter tmp;
   cleanup();
-  LogSink sink(tmp, tableNames[0]);
+  LogSink sink = TableLogSink::makeSink (tmp, tableNames[0]);
   testLogAny (sink);
 }
 
