@@ -1950,3 +1950,4 @@
 08 066 src rm trial/gImage.cc
 08 066 src rm trial/gImageDisplay.cc
 08 066 src rm trial/gXYPlot.cc
+08 066 src rm doc/aips/implement
