@@ -25,27 +25,118 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/MeasurementSets/NewMSAntennaColumns.h>
+#include <aips/MeasurementSets/NewMSAntenna.h>
+#include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Measures/MPosition.h>
+#include <aips/Utilities/String.h>
+
+RONewMSAntennaColumns::RONewMSAntennaColumns(const NewMSAntenna& msAntenna):
+  dishDiameter_p(msAntenna, NewMSAntenna::
+		 columnName(NewMSAntenna::DISH_DIAMETER)),
+  flagRow_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::FLAG_ROW)),
+  mount_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::MOUNT)),
+  name_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::NAME)),
+  offset_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
+  position_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::POSITION)),
+  station_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::STATION)),
+  type_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::TYPE)),
+  meanOrbit_p(),
+  orbitId_p(),
+  phasedArrayId_p(),
+  offsetMeas_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
+  positionMeas_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::POSITION)),
+  dishDiameterQuant_p(msAntenna, NewMSAntenna::
+		      columnName(NewMSAntenna::DISH_DIAMETER)),
+  offsetQuant_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
+  positionQuant_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::POSITION))
+{
+  attachOptionalCols(msAntenna);
+}
+
+RONewMSAntennaColumns::~RONewMSAntennaColumns() {}
+
+RONewMSAntennaColumns::RONewMSAntennaColumns():
+  dishDiameter_p(),
+  flagRow_p(),
+  mount_p(),
+  name_p(),
+  offset_p(),
+  position_p(),
+  station_p(),
+  type_p(),
+  meanOrbit_p(),
+  orbitId_p(),
+  phasedArrayId_p(),
+  offsetMeas_p(),
+  positionMeas_p(),
+  dishDiameterQuant_p(),
+  offsetQuant_p(),
+  positionQuant_p()
+{
+}
+
+void RONewMSAntennaColumns::attach(const NewMSAntenna& msAntenna)
+{
+  dishDiameter_p.attach(msAntenna, NewMSAntenna::
+			columnName(NewMSAntenna::DISH_DIAMETER));
+  flagRow_p.attach(msAntenna, NewMSAntenna::
+		   columnName(NewMSAntenna::FLAG_ROW));
+  mount_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::MOUNT));
+  name_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::NAME));
+  offset_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::OFFSET));
+  position_p.attach(msAntenna, NewMSAntenna::
+		    columnName(NewMSAntenna::POSITION));
+  station_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::STATION));
+  type_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::TYPE));
+  offsetMeas_p.attach(msAntenna, NewMSAntenna::
+		      columnName(NewMSAntenna::OFFSET));
+  positionMeas_p.attach(msAntenna, NewMSAntenna::
+			columnName(NewMSAntenna::POSITION));
+  dishDiameterQuant_p.attach(msAntenna, NewMSAntenna::
+			     columnName(NewMSAntenna::DISH_DIAMETER));
+  offsetQuant_p.attach(msAntenna, NewMSAntenna::
+		       columnName(NewMSAntenna::OFFSET));
+  positionQuant_p.attach(msAntenna, NewMSAntenna::
+			 columnName(NewMSAntenna::POSITION));
+  attachOptionalCols(msAntenna);
+}
+
+void RONewMSAntennaColumns::attachOptionalCols(const NewMSAntenna& msAntenna)
+{
+  const ColumnDescSet& cds=msAntenna.tableDesc().columnDescSet();
+  const String& meanOrbit=NewMSAntenna::columnName(NewMSAntenna::MEAN_ORBIT);
+  if (cds.isDefined(meanOrbit)) meanOrbit_p.attach(msAntenna,meanOrbit);
+  const String& orbitId=NewMSAntenna::columnName(NewMSAntenna::ORBIT_ID);
+  if (cds.isDefined(orbitId)) orbitId_p.attach(msAntenna,orbitId);
+  const String& phasedArrayId=NewMSAntenna::
+    columnName(NewMSAntenna::PHASED_ARRAY_ID);
+  if (cds.isDefined(phasedArrayId)) {
+    phasedArrayId_p.attach(msAntenna, phasedArrayId);
+  }
+}
 
 NewMSAntennaColumns::NewMSAntennaColumns(NewMSAntenna& msAntenna):
-  dishDiameter_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::DISH_DIAMETER)),
-  flagRow_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::FLAG_ROW)),
-  mount_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::MOUNT)),
-  name_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::NAME)),
-  offset_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
-  position_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::POSITION)),
-  station_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::STATION)),
-  type_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::TYPE)),
-  offsetMeas_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
-  positionMeas_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::POSITION)),
-  dishDiameterQuant_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::DISH_DIAMETER)),
-  offsetQuant_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
-  positionQuant_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::POSITION))
+  RONewMSAntennaColumns(msAntenna),
+  dishDiameter_p(msAntenna, NewMSAntenna::
+		 columnName(NewMSAntenna::DISH_DIAMETER)),
+  flagRow_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::FLAG_ROW)),
+  mount_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::MOUNT)),
+  name_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::NAME)),
+  offset_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
+  position_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::POSITION)),
+  station_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::STATION)),
+  type_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::TYPE)),
+  meanOrbit_p(),
+  orbitId_p(),
+  phasedArrayId_p(),
+  offsetMeas_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
+  positionMeas_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::POSITION)),
+  dishDiameterQuant_p(msAntenna, NewMSAntenna::
+		      columnName(NewMSAntenna::DISH_DIAMETER)),
+  offsetQuant_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
+  positionQuant_p(msAntenna, NewMSAntenna::columnName(NewMSAntenna::POSITION))
 {
   const ColumnDescSet& cds=msAntenna.tableDesc().columnDescSet();
   const String& meanOrbit=NewMSAntenna::columnName(NewMSAntenna::MEAN_ORBIT);
@@ -58,44 +149,79 @@ NewMSAntennaColumns::NewMSAntennaColumns(NewMSAntenna& msAntenna):
 
 NewMSAntennaColumns::~NewMSAntennaColumns() {}
 
-void NewMSAntennaColumns::setPositionRef(Int ref) 
+NewMSAntennaColumns::NewMSAntennaColumns():
+  RONewMSAntennaColumns(),
+  dishDiameter_p(),
+  flagRow_p(),
+  mount_p(),
+  name_p(),
+  offset_p(),
+  position_p(),
+  station_p(),
+  type_p(),
+  meanOrbit_p(),
+  orbitId_p(),
+  phasedArrayId_p(),
+  offsetMeas_p(),
+  positionMeas_p(),
+  dishDiameterQuant_p(),
+  offsetQuant_p(),
+  positionQuant_p()
 {
-  position_p.rwKeywordSet().rwSubRecord("MEASINFO").
-    define("Ref",MPosition::showType(ref));
 }
 
-void NewMSAntennaColumns::setOffsetRef(Int ref) 
+void NewMSAntennaColumns::attach(NewMSAntenna& msAntenna)
 {
-  offset_p.rwKeywordSet().rwSubRecord("MEASINFO").
-    define("Ref",MPosition::showType(ref));
+  RONewMSAntennaColumns::attach(msAntenna);
+  dishDiameter_p.attach(msAntenna, NewMSAntenna::
+			columnName(NewMSAntenna::DISH_DIAMETER));
+  flagRow_p.attach(msAntenna, NewMSAntenna::
+		   columnName(NewMSAntenna::FLAG_ROW));
+  mount_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::MOUNT));
+  name_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::NAME));
+  offset_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::OFFSET));
+  position_p.attach(msAntenna, NewMSAntenna::
+		    columnName(NewMSAntenna::POSITION));
+  station_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::STATION));
+  type_p.attach(msAntenna, NewMSAntenna::columnName(NewMSAntenna::TYPE));
+  offsetMeas_p.attach(msAntenna, NewMSAntenna::
+		      columnName(NewMSAntenna::OFFSET));
+  positionMeas_p.attach(msAntenna, NewMSAntenna::
+			columnName(NewMSAntenna::POSITION));
+  dishDiameterQuant_p.attach(msAntenna, NewMSAntenna::
+			     columnName(NewMSAntenna::DISH_DIAMETER));
+  offsetQuant_p.attach(msAntenna, NewMSAntenna::
+		       columnName(NewMSAntenna::OFFSET));
+  positionQuant_p.attach(msAntenna, NewMSAntenna::
+			 columnName(NewMSAntenna::POSITION));
+  attachOptionalCols(msAntenna);
 }
 
-
-
-RONewMSAntennaColumns::RONewMSAntennaColumns(const NewMSAntenna& msAntenna):
-  dishDiameter_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::DISH_DIAMETER)),
-  flagRow_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::FLAG_ROW)),
-  mount_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::MOUNT)),
-  name_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::NAME)),
-  offset_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
-  position_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::POSITION)),
-  station_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::STATION)),
-  type_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::TYPE)),
-  offsetMeas_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
-  positionMeas_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::POSITION)),
-  dishDiameterQuant_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::DISH_DIAMETER)),
-  offsetQuant_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::OFFSET)),
-  positionQuant_p(msAntenna,NewMSAntenna::columnName(NewMSAntenna::POSITION))
+void NewMSAntennaColumns::attachOptionalCols(NewMSAntenna& msAntenna)
 {
   const ColumnDescSet& cds=msAntenna.tableDesc().columnDescSet();
   const String& meanOrbit=NewMSAntenna::columnName(NewMSAntenna::MEAN_ORBIT);
   if (cds.isDefined(meanOrbit)) meanOrbit_p.attach(msAntenna,meanOrbit);
   const String& orbitId=NewMSAntenna::columnName(NewMSAntenna::ORBIT_ID);
   if (cds.isDefined(orbitId)) orbitId_p.attach(msAntenna,orbitId);
-  const String& phasedArrayId=NewMSAntenna::columnName(NewMSAntenna::PHASED_ARRAY_ID);
-  if (cds.isDefined(phasedArrayId)) phasedArrayId_p.attach(msAntenna,
-							   phasedArrayId);
+  const String& phasedArrayId=NewMSAntenna::
+    columnName(NewMSAntenna::PHASED_ARRAY_ID);
+  if (cds.isDefined(phasedArrayId)) {
+    phasedArrayId_p.attach(msAntenna, phasedArrayId);
+  }
 }
 
-RONewMSAntennaColumns::~RONewMSAntennaColumns() {}
+void NewMSAntennaColumns::setPositionRef(MPosition::Types ref) 
+{
+  position_p.rwKeywordSet().rwSubRecord("MEASINFO").
+    define("Ref", MPosition::showType(ref));
+}
+
+void NewMSAntennaColumns::setOffsetRef(MPosition::Types ref) 
+{
+  offset_p.rwKeywordSet().rwSubRecord("MEASINFO").
+    define("Ref", MPosition::showType(ref));
+}
+
+
 
