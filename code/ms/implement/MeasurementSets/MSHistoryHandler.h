@@ -66,7 +66,7 @@ class MSHistoryHandler
 
   // This method does not need construction ...can be called explicitly 
   //
-  void addMessage(MeasurementSet& ms, String message,
+  static void addMessage(MeasurementSet& ms, String message,
 	     String app="",
 	     String cliComm="", 
 	     String origin="");

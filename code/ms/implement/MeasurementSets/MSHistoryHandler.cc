@@ -63,7 +63,7 @@ void MSHistoryHandler::addMessage(MeasurementSet& ms, String message,
 				  String origin){
 
   MSHistory histTable=ms.history();
-  Int row = histTable_p.nrow();
+  Int row = histTable.nrow();
   MSHistoryColumns msHistCol(histTable);
   histTable.addRow();
   Time date;
