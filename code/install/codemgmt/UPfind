@@ -83,10 +83,12 @@ endif
 if (! -r $ldir/${tp}.spat) then
  touch $ldir/${tp}.spat
  if (! $upswf) then
-   echo "Specify egrep expression(s) to find files"
-   echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
-   echo '      or: [(][^(]*[*] *[)][ \t]*0'
-   echo 'Multi-line expressions will be ORed'
+   if (! $upswQ) then
+     echo "Specify egrep expression(s) to find files"
+     echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
+     echo '      or: [(][^(]*[*] *[)][ \t]*0'
+     echo 'Multi-line expressions will be ORed'
+   endif
    while (1)
 	echo -n "Find expression: "
 	set x = "$<"
@@ -95,8 +97,10 @@ if (! -r $ldir/${tp}.spat) then
    end
    unset x
  else
-   echo "Specify file pattern(s) rooted in AIPSROOT/code to find files"
-   echo 'Example: trial/implement/Measures/M*.h'
+   if (! $upswQ) then
+     echo "Specify file pattern(s) rooted in AIPSROOT/code to find files"
+     echo 'Example: trial/implement/Measures/M*.h'
+   endif
    while (1)
 	echo -n "File pattern: "
 	set x = "$<"
@@ -107,15 +111,17 @@ if (! -r $ldir/${tp}.spat) then
  endif
 endif
 if (-z $ldir/${tp}.spat) then
-    echo "An empty or no ${tp}.spat file created"
+   echo "An empty or no ${tp}.spat file created"
    if (-e $ldir/${tp}.spat)  rm -f $ldir/${tp}.spat
    exit 1
 endif
 
 if (! -r $ldir/${tp}.rmpat) then
-   echo "Specify egrep pattern for files to be removed from raw list found."
-   echo "Example: [/]aipsview[/]"
-   echo "tmplinst files will always be removed"
+   if (! $upswQ) then
+     echo "Specify egrep pattern for files to be removed from raw list found."
+     echo "Example: [/]aipsview[/]"
+     echo "tmplinst files will always be removed"
+   endif
    echo '[/]tmplinst[/]' >! $ldir/${tp}.rmpat
    echo -n "Remove glish files? (y|n) [y]: "
    set x = "$<"
@@ -136,7 +142,7 @@ if ($upswn) exit 0
 # Execute
 #
 cd $dir/code
-echo "Starting find..."
+if (! $upswQ) echo "Starting find..."
 if ($upswp01) then
     find . -name 'templates' -print  >! $ldir/${tp}.raw
 else if ($upswp02) then
@@ -171,16 +177,20 @@ endif
 
 cd $ldir
 
-set a = ( `wc $ldir/${tp}.raw` )
-echo $a[1] files found in ${tp}.raw
-unset a
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.raw` )
+  echo $a[1] files found in ${tp}.raw
+  unset a
+  echo "Starting selected removal..."
+endif
 
-echo "Starting selected removal..."
 egrep -v -f $ldir/${tp}.rmpat $ldir/${tp}.raw >! $ldir/${tp}.found
 
-set a = ( `wc $ldir/${tp}.found` )
-echo $a[1] files left in ${tp}.found
-unset a
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.found` )
+  echo $a[1] files left in ${tp}.found
+  unset a
+endif
 
 exit 0
 #
