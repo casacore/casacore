@@ -33,13 +33,15 @@
 
 #include <aips/aips.h>
 
-template <class T> class ImageInterface;
-template <class T> class PagedImage;
+
 template <class T> class Array;
 template <class T> class Matrix;
 template <class T> class Vector;
-template <class T> class Lattice;
+template <class T> class MaskedLattice;
 template <class T> class MomentCalcBase;
+template <class T> class SubImage;
+template <class T> class PagedImage;
+template <class T> class ImageInterface;
 class CoordinateSystem;
 class IPosition;
 class LogIO;
@@ -56,6 +58,7 @@ class Unit;
 // 
 // <prerequisite>
 //   <li> <linkto class="ImageInterface">ImageInterface</linkto>
+//   <li> <linkto class="SubImage">SubImage</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>   
 //   <li> <linkto class="MomentCalculator">MomentCalculator</linkto>
 // </prerequisite>
@@ -247,7 +250,7 @@ public:
    friend MomentCalcBase<T>;
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
-   ImageMoments (ImageInterface<T>& image, LogIO &os);
+   ImageMoments (SubImage<T>& image, LogIO &os);
 
 // Copy constructor.  Uses copy semantics.
    ImageMoments(const ImageMoments<T> &other);
@@ -328,16 +331,6 @@ enum MomentTypes {
 // moment axis to the spectral axis if it can find one.  Otherwise 
 // an error will result.
    Bool setMomentAxis (const Int& momentAxis);
-
-// Set the region of interest of the image.    Currently, just a blc and trc
-// are available (the increment is always set to unity at present).        
-// Illegal or unspecified values are given 0 (blc) or the image shape (trc).
-// If <src>listRegion</src> is <src>True</src> then the selected region is listed 
-// to the logger.  The default state of the class is to use the entire image.
-   Bool setRegion (const IPosition &blc,
-                   const IPosition &trc,
-                   const IPosition &inc,
-                   const Bool& listRegion=True);
 
 // The <src>enum MethodTypes</src> is provided for use with the
 // <src>setWinFitMethod</src> function.  It gives the allowed moment
@@ -506,7 +499,7 @@ enum KernelTypes {
 
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type (this class only accepts Float or Double images).
-   Bool setNewImage (ImageInterface<T>& image);
+   Bool setNewImage (SubImage<T>& image);
 
 // Helper function to convert a string containing a list of desired methods to
 // the correct <src>Vector<Int></src> required for the <src>setWinFitMethod</src> function.
@@ -528,7 +521,7 @@ enum KernelTypes {
 private:
 
    LogIO& os_p;
-   ImageInterface<T>* pInImage_p;
+   SubImage<T>* pInImage_p;
 
    Int momentAxis_p;
    Int momentAxisDefault_p;
@@ -539,8 +532,6 @@ private:
    Vector<Int> moments_p;
    Vector<Float> range_p;
    Vector<Int> smoothAxes_p;
-
-   IPosition blc_p, trc_p, inc_p;
 
    Double peakSNR_p;
    Double stdDeviation_p;
@@ -564,10 +555,8 @@ private:
    Bool checkMethod    ();
 
 // Plot a histogram                     
-   static void drawHistogram  (const T& dMin,
-                               const Int& nBins,
-                               const T& binWidth,
-                               const Vector<T>& counts,
+   static void drawHistogram  (const Vector<Float>& values,
+                               const Vector<Float>& counts,
                                PGPlotter& plotter);
 
 // Plot a line 
@@ -584,8 +573,7 @@ private:
 // Read the cursor and return its coordinates 
    static Bool getLoc (T& x,
                        T& y,
-                       PGPlotter& plotter,
-                       LogIO& os);
+                       PGPlotter& plotter);
 
 // Increase an integer to the next odd integer
    Bool makeOdd        (Int& i);
@@ -597,13 +585,6 @@ private:
 // Fish out cursor values
    static Bool readCursor (PGPlotter& plotter, Float& x,
                            Float& y, String& ch);
-
-// Save a lattice to disk as a PagedImage
-   void saveLattice (const Lattice<T>* const pLattice,
-                     const CoordinateSystem& coordinate,
-                     const IPosition& blc,
-                     const IPosition& trc,
-                     const String& fileName);
 
 // Set the output image suffixes and units
    Bool setOutThings(String& suffix,
@@ -617,15 +598,15 @@ private:
                     PagedImage<T>*& pSmoothedImage);
 
 // Smooth one row
-  void smoothRow (Lattice<T>* pIn,
-                  const Int& row,
-                  const Vector<T>& psf);
+  void smoothProfiles (Lattice<T>* pIn,
+                       const Int& row,
+                       const Vector<T>& psf);
 
 // Determine the noise by fitting a Gaussian to a histogram 
 // of the entire image above the 25% levels.  If a plotting
 // device is set, the user can interact with this process.
    Bool whatIsTheNoise (Double& noise,
-                        const Lattice<T>* pI);
+                        SubImage<T>& image);
 
 };
 

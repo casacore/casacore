@@ -30,15 +30,14 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Record.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Functionals/SumFunction.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
-#include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageMoments.h>
 #include <trial/Images/ImageUtilities.h>
-#include <trial/Lattices/Lattice.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Measures/QMath.h>
 #include <aips/Logging/LogIO.h> 
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -59,19 +58,25 @@ void MomentCalcBase<T>::init (uInt nOutPixelsPerCollapse)
 
 
 template <class T>
-Bool MomentCalcBase<T>::allNoise (T& dMean, 
+uInt MomentCalcBase<T>::allNoise (T& dMean, 
                                   const Vector<T>& data,
+                                  const Vector<Bool>& mask,
                                   const Double peakSNR,
-                                  const Double stdDeviation)
+                                  const Double stdDeviation) const
 //
 // Try and work out whether this spectrum is all noise
 // or not.  We don't bother with it if it is noise.
 // We compare the peak with sigma and a cutoff SNR
 //
+// Returns 1 if all noise
+// Returns 2 if all masked
+// Returns 0 otherwise
+//
 {
    T dMin, dMax;
-   minMax (dMin, dMax, data.ac());
-   dMean = mean(data.ac());
+   uInt minPos, maxPos;
+   if (!stats(dMin, dMax, minPos, maxPos, dMean, data, mask)) return 2;
+
 
 // Assume we are continuum subtracted so outside of line mean=0
 
@@ -80,57 +85,17 @@ Bool MomentCalcBase<T>::allNoise (T& dMean,
 //   cout << "min,max,mean,sigma,peakSNR,SNR=" << dMin << " " << dMax << " " << dMean
 //        << stdDeviation_p << " " << peakSNR << " " << rat << LogIO::POST;
    if (rat < peakSNR) {
-      return True;
+      return 1;
    } else {
-      return False;
+      return 0;
    }
 }
 
-
-
-template <class T>
-IPosition& MomentCalcBase<T>::blc(ImageMoments<T>& iMom)
-{
-// Get it from ImageMoments private data
-
-   return iMom.blc_p;
-}
-
-
-template <class T>
-IPosition& MomentCalcBase<T>::trc(ImageMoments<T>& iMom)
-{
-// Get it from ImageMoments private data
-
-   return iMom.trc_p;
-}
-
-
-template <class T>
-Bool& MomentCalcBase<T>::doAuto(ImageMoments<T>& iMom)
-{
-// Get it from ImageMoments private data
-
-   return iMom.doAuto_p;
-}
-
-
-template <class T>
-Bool& MomentCalcBase<T>::doFit(ImageMoments<T>& iMom)
-{
-// Get it from ImageMoments private data
-
-   return iMom.doFit_p;
-}
-
-
-
 typedef Vector<Int> gpp_VectorInt;
 template <class T>
-void MomentCalcBase<T>::constructorCheck(Vector<T>& retMoments,
-                                         Vector<T>& calcMoments, 
+void MomentCalcBase<T>::constructorCheck(Vector<T>& calcMoments, 
                                          const gpp_VectorInt& selectMoments,
-                                         const Int nLatticeOut)
+                                         const uInt nLatticeOut) const
  {
 // Number of output lattices must equal the number of moments
 // the user asked to calculate
@@ -142,46 +107,63 @@ void MomentCalcBase<T>::constructorCheck(Vector<T>& retMoments,
    AlwaysAssert(selectMoments.nelements() <= nMaxMoments(), AipsError);
    AlwaysAssert(selectMoments.nelements() > 0, AipsError);
 
-// Resize the vector that will hold the values for the desired moments
-
-   retMoments.resize(selectMoments.nelements());
-
 // Resize the vector that will hold ALL possible moments
    
    calcMoments.resize(nMaxMoments());
 }
 
 
+
+
+
 template <class T>
 void MomentCalcBase<T>::costlyMoments(ImageMoments<T>& iMom,
                                       Bool& doMedianI,
                                       Bool& doMedianV,
-                                      Bool& doAbsDev)
+                                      Bool& doAbsDev) const
 {
    typedef ImageMoments<Float> IM;
-   for (Int i=0; i<iMom.moments_p.nelements(); i++) {
+   for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
       if (iMom.moments_p(i) == IM::MEDIAN) doMedianI = True;
       if (iMom.moments_p(i) == IM::MEDIAN_COORDINATE) doMedianV = True;
       if (iMom.moments_p(i) == IM::ABS_MEAN_DEVIATION) doAbsDev = True;
    }      
 }
 
+template <class T>
+Bool& MomentCalcBase<T>::doAuto(ImageMoments<T>& iMom) const
+{
+// Get it from ImageMoments private data
+
+   return iMom.doAuto_p;
+}
+
 
 template <class T>
-PGPlotter& MomentCalcBase<T>::device(ImageMoments<T>& iMom)
+Bool& MomentCalcBase<T>::doFit(ImageMoments<T>& iMom) const
+{
+// Get it from ImageMoments private data
+
+   return iMom.doFit_p;
+}
+
+
+
+template <class T>
+PGPlotter& MomentCalcBase<T>::device(ImageMoments<T>& iMom) const
 {
    return iMom.plotter_p;
 }
 
 
 template <class T>
-Bool MomentCalcBase<T>::doCoordCalc(ImageMoments<T>& iMom)
+Bool MomentCalcBase<T>::doCoordCalc(ImageMoments<T>& iMom) const
 {
 // Figure out if we need to compute the coordinate of each profile pixel index
 // for each profile.  This is very expensive for non-separable axes.
 
    typedef ImageMoments<Float> IM;
-   for (Int i=0; i<iMom.moments_p.nelements(); i++) {
+   for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
       if (iMom.moments_p(i) == IM::WEIGHTED_MEAN_COORDINATE ||
           iMom.moments_p(i) == IM::WEIGHTED_DISPERSION_COORDINATE) return True;
    }
@@ -192,7 +174,7 @@ Bool MomentCalcBase<T>::doCoordCalc(ImageMoments<T>& iMom)
 
 template <class T>
 void MomentCalcBase<T>::drawHorizontal(const T& y,
-                                       PGPlotter& plotter) 
+                                       PGPlotter& plotter) const
 
 //
 // Draw a horizontal line across the full x range of the plot
@@ -200,15 +182,16 @@ void MomentCalcBase<T>::drawHorizontal(const T& y,
 {
    Vector<Float> minMax(4);
    minMax = plotter.qwin();
+   Float yy = Float(real(y));
 
-   plotter.move (minMax(0), Float(y));
-   plotter.draw (minMax(1), Float(y));
+   plotter.move (minMax(0), yy);
+   plotter.draw (minMax(1), yy);
 }
 
 template <class T>
 void MomentCalcBase<T>::drawLine (const Vector<T>& x,
                                   const Vector<T>& y,
-                                  PGPlotter& plotter) 
+                                  PGPlotter& plotter) const
 //
 // Draw  a spectrum on the current panel
 // with the box already drawn
@@ -221,53 +204,112 @@ void MomentCalcBase<T>::drawLine (const Vector<T>& x,
 
 
 template <class T>
-void MomentCalcBase<T>::drawLine (const Vector<T>& x,
-                                  const Vector<T>& y,
-                                  const Bool fixedYLimits,
-                                  const Float yMinAuto,
-                                  const Float yMaxAuto,
-                                  const String xLabel,
-                                  const String yLabel,
-                                  const String title,
-                                  PGPlotter& plotter) 
+Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
+                                      const Vector<T>& y,
+                                      const Vector<Bool>& mask,
+                                      const Bool fixedYLimits,
+                                      const Float yMinAuto,
+                                      const Float yMaxAuto,
+                                      const String xLabel,
+                                      const String yLabel,
+                                      const String title,
+                                      const Bool advance,
+                                      PGPlotter& plotter) const
 //
-// Draw and label a spectrum on the current panel
+// Draw and label a spectrum on the next panel
+// Some of the spectrum may be masked, so we draw it
+// in chunks
+//
+// If the mask is all good, there are no elements in it.
+//
+// Returns false if all pixels are masked.
 //
 {
-// Find extrema
-      
-   const Int nPts = x.nelements();
-   Float xMin = 0.0;
-   Float xMax = Float(nPts);
-   ImageUtilities::stretchMinMax (xMin, xMax); 
+// Find number of segments in this vector. Bug out if none.
+
+
+   Vector<uInt> start;
+   Vector<uInt> nPtsPerSeg;
+   uInt nSeg;
+   if (mask.nelements() == 0) {
+      nSeg = 1;
+      start.resize(1);
+      start(0) = 0;
+      nPtsPerSeg.resize(1);
+      nPtsPerSeg(0) = y.nelements();
+   } else {
+      lineSegments (nSeg, start, nPtsPerSeg, mask);
+      if (nSeg == 0) return False;
+   }
    
-   T yMin, yMax;
+
+// Find extrema.
+ 
+   T yMin, yMax, yMean;
    Float yMinF, yMaxF;
    if (!fixedYLimits) {
-      minMax(yMin, yMax, y.ac());
-      yMinF = Float(yMin);
-      yMaxF = Float(yMax);
+
+      if (mask.nelements() == 0) {
+         minMax (yMin, yMax, y.ac());
+      } else {
+         uInt minPos, maxPos;       
+         if(!stats(yMin, yMax, minPos, maxPos, yMean, y, mask)) return False;
+      }
+
+      yMinF = Float(real(yMin));
+      yMaxF = Float(real(yMax));
       ImageUtilities::stretchMinMax (yMinF, yMaxF);
    }
 
+   const uInt nPts = x.nelements();
+   Float xMin = 0.0;
+   Float xMax = Float(nPts);
+   ImageUtilities::stretchMinMax (xMin, xMax); 
 
-// Plot
+
+// Draw box and label
  
+   if (advance) plotter.page();
    if (fixedYLimits) {
       plotter.swin (xMin, xMax, yMinAuto, yMaxAuto);
    } else {  
       plotter.swin (xMin, xMax, yMinF, yMaxF);
    }
    plotter.box ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-   drawLine (x, y, plotter);
    plotter.lab (xLabel.chars(), yLabel.chars(), "");
    plotter.mtxt ("T", 1.0, 0.5, 0.5, title.chars());
+
+
+// Loop over segments and plot them
+                                 
+   Vector<Float> xtmp, ytmp;
+   for (uInt i=0; i<nSeg; i++) {
+      const uInt ip = start(i);
+      if (nPtsPerSeg(i) == 1) {
+          xtmp.resize(1);
+          ytmp.resize(1);
+          xtmp(0) = real(x(ip));
+          ytmp(0) = real(y(ip));
+          plotter.pt (xtmp, ytmp, 1);
+      } else {
+          xtmp.resize(nPtsPerSeg(i));
+          ytmp.resize(nPtsPerSeg(i));
+          for (uInt j=0; j<nPtsPerSeg(i); j++) {
+             xtmp(j) = real(x(start(i)+j));
+             ytmp(j) = real(y(start(i)+j));
+          }
+          plotter.line (xtmp, ytmp);
+      }
+   }
+   return True;
 }
+
+
 
 template <class T>
 void MomentCalcBase<T>::drawMeanSigma (const T dMean,
                                        const T dSigma,
-                                       PGPlotter& plotter) 
+                                       PGPlotter& plotter) const
 
 //
 // Draw a horizontal line on the spectrum plot at
@@ -288,7 +330,7 @@ template <class T>
 void MomentCalcBase<T>::drawVertical (const T loc,
                                       const T yMin,
                                       const T yMax,
-                                      PGPlotter& plotter) 
+                                      PGPlotter& plotter) const
 {  
 // Pass it on to ImageMoments
 
@@ -297,36 +339,77 @@ void MomentCalcBase<T>::drawVertical (const T loc,
   
 
 
+
 template <class T>
-void MomentCalcBase<T>::drawWindow(const Vector<Int>& window,
-                                   PGPlotter& plotter) 
+Bool MomentCalcBase<T>::findNextDatum (uInt& iFound,
+                                       const uInt& n,
+                                       const Vector<Bool>& mask,
+                                       const uInt& iStart,
+                                       const Bool& findGood) const
 //
-// Mark the current window on the plot
+// Find the next good (or bad) point in an array.
+// A good point in the array has a non-zero value.
 //
-{  
-   Vector<Float> minMax(4);
-   minMax = plotter.qwin();
-   drawVertical (window(0), minMax(2), minMax(3), plotter);
-   drawVertical (window(1), minMax(2), minMax(3), plotter);
+// Inputs:
+//  n        Number of points in array
+//  mask     Vector containing counts.  
+//  iStart   The index of the first point to consider
+//  findGood If True look for next good point.
+//           If False look for next bad point
+// Outputs:
+//  iFound   Index of found point
+//  Bool     False if didn't find another valid datum
+{
+   for (uInt i=iStart; i<n; i++) {
+      if ( (findGood && mask(i)) ||
+           (!findGood && !mask(i)) ) {
+        iFound = i;
+        return True;
+      }
+   }
+   return False;
 }
 
 
 template <class T>
-Bool MomentCalcBase<T>::fitGaussian (T& peak,
+Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed, 
+                                     T& peak,
                                      T& pos,
                                      T& width,
                                      T& level,
                                      const Vector<T>& x,
                                      const Vector<T>& y,
+                                     const Vector<Bool>& mask,
                                      const T peakGuess,
                                      const T posGuess,
                                      const T widthGuess,
-                                     const T levelGuess)
+                                     const T levelGuess) const
 // 
 // Fit Gaussian pos * exp(-4ln2*(x-pos)**2/width**2)
 // width = fwhm
 // 
+// Returns false if fit fails or all masked
+//
 {
+
+// Select unmasked pixels
+
+   uInt j = 0;
+   Vector<T> xSel(y.nelements());
+   Vector<T> ySel(y.nelements());
+   for (uInt i=0; i<y.nelements(); i++) {
+     if (mask(i)) {
+       xSel(j) = x(i);
+       ySel(j) = y(i);
+       j++;
+     }
+   }
+   uInt nPts = j;
+   if (nPts == 0) return False;
+
+   xSel.resize(nPts,True);
+   ySel.resize(nPts,True);
+
       
 // Create fitter
 
@@ -349,9 +432,7 @@ Bool MomentCalcBase<T>::fitGaussian (T& peak,
    
 // Initial guess
 
-
    Vector<T> v(4);
-                                   
    v(0) = peakGuess;             // peak
    v(1) = posGuess;              // position
    v(2) = widthGuess;            // width
@@ -371,11 +452,18 @@ Bool MomentCalcBase<T>::fitGaussian (T& peak,
    fitter.setCriteria(tol);
                                    
 
-// perform fit
-   
-   Vector<T> resultSigma(x.nelements()); 
+// Perform fit on unmasked data
+
+   Vector<T> resultSigma(nPts);
+   Vector<T> solution;
    resultSigma = 1;
-   Vector<T> solution = fitter.fit(x, y, resultSigma);
+   try {
+     solution = fitter.fit(xSel, ySel, resultSigma);
+   } catch (AipsError x) {
+      nFailed++;
+      return False;
+   } end_try;
+
 
 // Return values of fit
    
@@ -389,6 +477,7 @@ Bool MomentCalcBase<T>::fitGaussian (T& peak,
 
 // Return status
 
+   if (!fitter.converged()) nFailed++;
    return fitter.converged();
                                    
 }
@@ -396,7 +485,7 @@ Bool MomentCalcBase<T>::fitGaussian (T& peak,
 
 
 template <class T>
-Bool& MomentCalcBase<T>::fixedYLimits(ImageMoments<T>& iMom) 
+Bool& MomentCalcBase<T>::fixedYLimits(ImageMoments<T>& iMom) const
 {
    return iMom.fixedYLimits_p;
 }
@@ -404,9 +493,11 @@ Bool& MomentCalcBase<T>::fixedYLimits(ImageMoments<T>& iMom)
 
 
 template <class T>
-Bool MomentCalcBase<T>::getAutoGaussianFit (Vector<T>& gaussPars,
+Bool MomentCalcBase<T>::getAutoGaussianFit (uInt& nFailed,
+                                            Vector<T>& gaussPars,
                                             const Vector<T>& x,
                                             const Vector<T>& y,
+                                            const Vector<Bool>& mask,
                                             const Double peakSNR,
                                             const Double stdDeviation,
                                             PGPlotter& plotter,
@@ -415,45 +506,50 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (Vector<T>& gaussPars,
                                             const Float yMaxAuto,
                                             const String xLabel,
                                             const String yLabel,
-                                            const String title)
+                                            const String title) const
 //
 // Automatically fit a Gaussian and return the Gaussian parameters.
 // If a plotting device is active, we also plot the spectra and fits
 //
 // Inputs:
 //   x,y        Vector containing the data
+//   mask       True is good
 //   plotter    Plot spectrum and optionally the  window
 //   x,yLabel   Labels
 //   title
+// Input/output
+//   nFailed    Cumulative number of failed fits
 // Output:
 //   gaussPars  The gaussian parameters, peak, pos, fwhm
 //   Bool       If False then this spectrum has been rejected (all
-//              noise, failed fit)
+//              masked, all noise, failed fit)
 //
 {
     
    
-// Plot spectrum if desired
+// Plot spectrum if desired. If all masked, bug out.
       
    if (plotter.isAttached()) {
-      plotter.page();
-      drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                xLabel, yLabel, title, plotter);
+      if (!drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+           xLabel, yLabel, title, True, plotter)) return False;
    }
 
-// See if this spectrum is all noise first.  If so, forget it.
+
+// See if this spectrum is all noise.  If so, forget it.
+// Return straight away if all masked
    
    T dMean;
-   const Bool noisy = allNoise(dMean, y.ac(), peakSNR, stdDeviation);
-
+   uInt iNoise = allNoise(dMean, y, mask, peakSNR, stdDeviation);
+   if (iNoise == 2) return False;
+ 
 // Draw on mean and sigma
   
    const T sigma = stdDeviation;
    if (plotter.isAttached()) {
       drawMeanSigma (dMean, sigma, plotter);
-      if (noisy) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
+      if (iNoise==1) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
    }  
-   if (noisy) {
+   if (iNoise==1) {
       gaussPars = 0;  
       return False;
    }
@@ -462,14 +558,15 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (Vector<T>& gaussPars,
 
    T peakGuess, posGuess, widthGuess, levelGuess;
    T pos, width, peak, level;
-   getAutoGaussianGuess(peakGuess, posGuess, widthGuess, x, y);
-   levelGuess = mean(y.ac());
+   if (!getAutoGaussianGuess(peakGuess, posGuess, widthGuess, 
+                             levelGuess, x, y, mask)) return False;
    peakGuess = peakGuess - levelGuess;
+
 
 // Fit gaussian. Do it twice.
   
-   if (!fitGaussian (peak, pos, width, level, x, y, peakGuess, posGuess,
-                     widthGuess, levelGuess)) {
+   if (!fitGaussian (nFailed, peak, pos, width, level, x, y, mask, peakGuess, 
+                     posGuess, widthGuess, levelGuess)) {
       gaussPars = 0;
       return False;
    }  
@@ -481,7 +578,8 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (Vector<T>& gaussPars,
    
 // Plot the fit
    
-   if (plotter.isAttached()) showGaussFit (peak, pos, width, level, x, y, plotter);
+   if (plotter.isAttached()) showGaussFit (peak, pos, width, level, x, 
+                                           y, mask, plotter);
    
    return True;
 }
@@ -489,26 +587,29 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (Vector<T>& gaussPars,
 
 
 template <class T>
-void MomentCalcBase<T>::getAutoGaussianGuess (T& peakGuess,
+Bool MomentCalcBase<T>::getAutoGaussianGuess (T& peakGuess,
                                               T& posGuess,
                                               T& widthGuess,
+                                              T& levelGuess,
                                               const Vector<T>& x,
-                                              const Vector<T>& y)
+                                              const Vector<T>& y,
+                                              const Vector<Bool>& mask) const
 //
 // Make a wild stab in the dark as to what the Gaussian
 // parameters of this spectrum might be
 //    
+// Returns False if all masked
 {
 
 // Find peak and position of peak
 
-   IPosition minPos(1);
-   IPosition maxPos(1);
-   T dMin, dMax;
-   minMax(dMin, dMax, minPos, maxPos, y.ac());
+   uInt minPos, maxPos;
+   T dMin, dMax, dMean;
+   if (!stats(dMin, dMax, minPos, maxPos, dMean, y, mask)) return False;
 
-   posGuess = x(maxPos(0));
+   posGuess = x(maxPos);
    peakGuess = dMax;
+   levelGuess = dMean;
 
 // Nothing much is very robust.  Assume the line is reasonably
 // sampled and set its width to a few pixels.  Totally ridiculous.
@@ -518,197 +619,16 @@ void MomentCalcBase<T>::getAutoGaussianGuess (T& peakGuess,
 //   cout << "Guess: peak,pos,width=" << peakGuess << ", " << posGuess << "," <<
 //           widthGuess << LogIO::POST;
 
+   return True;
 }
 
 
-template <class T>
-void MomentCalcBase<T>::getAutoWindow (Vector<Int>& window,
-                                       const Vector<T>& x,
-                                       const Vector<T>& y,
-                                       const Double peakSNR,
-                                       const Double stdDeviation,
-                                       const Bool doFit,
-                                       PGPlotter& plotter,
-                                       const Bool fixedYLimits,                 
-                                       const Float yMinAuto,                 
-                                       const Float yMaxAuto,                 
-                                       const String xLabel,
-                                       const String yLabel,
-                                       const String title)
-//
-// Automatically fit a Gaussian and return the +/- 3-sigma window or
-// invoke Bosma's method to set a window.  If a plotting device is
-// active, we also plot the spectra and fits
-//
-// Inputs:
-//   x,y        Spectrum
-//   plotter    Plot spectrum and optionally the  window
-//   x,yLabel   x label for plots
-//   title 
-// Output:
-//   window     The window (pixels).  If both 0,  then discard this spectrum
-//              and blank moments    
-//
-{
-   if (doFit) {
-      Vector<T> gaussPars(4);
-      if (!getAutoGaussianFit (gaussPars, x, y, peakSNR, stdDeviation, 
-                               plotter, fixedYLimits, yMinAuto, yMaxAuto, 
-                               xLabel, yLabel, title)) {
-         window = 0;
-         return;
-      } else {
-   
-// Set 3-sigma limits.
- 
-         if (!setNSigmaWindow (window, gaussPars(1), gaussPars(2),
-                               y.nelements(), 3)) {
-            window = 0;
-            return;
-         }
-      }
-   } else {
-// Invoke Albert's method (see AJ, 86, 1791)
-
-      if (!getBosmaWindow (window, x, y, peakSNR, stdDeviation, 
-                           plotter, fixedYLimits, yMinAuto, yMaxAuto, 
-                           xLabel, yLabel, title)) {
-         window = 0;
-         return;
-      }
-   }
-   
-// Plot window if desired
- 
-   if (plotter.isAttached()) drawWindow (window, plotter);
-                               
-}
-
-
-template <class T>
-Bool MomentCalcBase<T>::getBosmaWindow (Vector<Int>& window,
-                                        const Vector<T>& x,
-                                        const Vector<T>& y,
-                                        const Double peakSNR,
-                                        const Double stdDeviation,
-                                        PGPlotter& plotter,
-                                        const Bool fixedYLimits,
-                                        const Float yMinAuto,
-                                        const Float yMaxAuto,
-                                        const String xLabel,
-                                        const String yLabel,
-                                        const String title)
-//
-// Automatically work out the spectral window
-// with Albert Bosma's algorithm.
-//    
-// Inputs: 
-//   x,y       Spectrum
-//   plotter   Plot device active if True
-//   x,yLabel  Labels for plots
-// Output:
-//   window    The window
-//   Bool      False if we reject this spectrum
-//
-{
-      
-   if (plotter.isAttached()) {
-   
-// Plot spectrum 
-      
-      plotter.page();
-      drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                xLabel, yLabel, title, plotter);
-   }
-
-
-// See if this spectrum is all noise first.  If so, forget it.
-   
-   T dMean;
-   const Bool noisy1 = allNoise(dMean, y.ac(), peakSNR, stdDeviation);
-
-// Draw on mean and sigma
- 
-   const T sigma = stdDeviation;
-   if (plotter.isAttached()) {
-      drawMeanSigma (dMean, sigma, plotter);
-      if (noisy1) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
-   }
-   if (noisy1) {
-      window = 0;
-      return False;   
-   }
-
-// Find peak
-   
-   const Int nPts = y.nelements(); 
-   IPosition minPos(1), maxPos(1);
-   T yMin, yMax;
-   minMax(yMin, yMax, minPos, maxPos, y.ac());
-   Int iMin = max(0,maxPos(0)-2);   
-   Int iMax = min(nPts-1,maxPos(0)+2);
-   Double tol = sigma / (nPts - (iMax-iMin-1));
-          
-       
-// Iterate to convergence
-   
-   Bool first = True;
-   Bool converged = False;
-   Bool more = True;
-   Double mean;
-   Double oldMean = 0;
-   while (more) {
-
-//     cout << LogIO::NORMAL << "iMin,iMax,oldmean,tol=" << iMin << "," << iMax << $
-   
-// Find mean outside of peak region
-
-      Double sum = 0.0;
-      for (Int i=0,j=0; i<nPts; i++) {
-         if (i < iMin || i > iMax) {
-            sum += Double(y(i));
-            j++;
-         }
-      }
-      if (j>0) mean = sum / Double(j);
-   
-
-// Interpret result
-
-      if (!first && j>0 && abs(mean-oldMean) < tol) {
-         converged = True;
-         more = False;
-      } else if (iMin==0 && iMax==nPts-1)
-         more = False;
-      else {
-   
-// Widen window and redetermine tolerance
-
-         oldMean = mean;
-         iMin = max(0,iMin - 2);
-         iMax = min(nPts-1,iMax+2); 
-         tol = sigma / (nPts - (iMax-iMin-1));
-      }
-      first = False;
-   }   
-      
-// Return window
-
-   if (converged) {
-      window(0) = iMin;
-      window(1) = iMax;
-      return True;
-   } else {
-      window = 0;
-      return False;   
-   }
-}  
 
 
 template <class T>
 void MomentCalcBase<T>::getButton(Bool& ditch,
                                   Bool& redo,
-                                  PGPlotter& plotter) 
+                                  PGPlotter& plotter) const
 //
 // Read the PGPLOT cursor and interpret the button
 // pushed
@@ -736,121 +656,20 @@ void MomentCalcBase<T>::getButton(Bool& ditch,
 }
 
 
-
-
 template <class T>
-void MomentCalcBase<T>::getInterDirectWindow (Bool& allSubsequent,
-                                              LogIO& os,
-                                              Vector<Int>& window,
-                                              const Vector<T>& x,
-                                              const Vector<T>& y,
-                                              const Bool fixedYLimits,   
-                                              const Float yMinAuto,   
-                                              const Float yMaxAuto,
-                                              const String xLabel,
-                                              const String yLabel,
-                                              const String title,
-                                              PGPlotter& plotter) 
-
-//
-// With the cursor, mark the range for the window method
-//
-// Outputs:
-//  window    The window (pixels)
-//
-{
- 
-// First plot the spectrum
-   
-   plotter.page();
-   drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
-             xLabel, yLabel, title, plotter);
-
-
-// Try and get a decent range_p from user   
-      
-   Vector<Float> minMax(4);
-   minMax = plotter.qwin();
-   Bool more = True;
-   Bool ditch, redo;
-   const Int nPts = y.nelements();   
-   T tX, tY1, tY2;
-
-   while (more) {
-  
-// Get and draw first location   
-
-      Bool final = False;
-      T x1 = nPts/2;
-      allSubsequent = True;
-      while (!getLoc(x1, allSubsequent, ditch, redo, os, final, plotter)) {};
-      if (ditch) {
-         window = 0;
-         return;
-      }
-
-      if (!redo) {
-         window(0) = max(0,Int(x1+0.5));
-         tX = window(0);
-         tY1 = minMax(2);
-         tY2 = minMax(3);
-         drawVertical (tX, tY1, tY2, plotter);
-  
-
-// Get and draw second location
-  
-         T x2 = Float(window(0));
-         final = True;
-         allSubsequent = True;
-         while (!getLoc(x2, allSubsequent, ditch, redo, os, final, plotter)) {};
-         if (ditch) {
-            window = 0;
-            return;
-         } else if (redo) {
-            plotter.eras();
-            drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                      xLabel, yLabel, title, plotter);
-         } else {
-            window(1) = min(nPts-1,Int(x2+0.5));
-            tX = window(1);
-            drawVertical (tX, tY1, tY2, plotter);
-         
-// Set window
-         
-            Int iTemp = window(0);
-            window(0) = min(iTemp, window(1));
-            window(1) = max(iTemp, window(1));
-         
-// If they stuffed it up, have another go.  Erase the line and redraw
-// the spectrum segment
-         
-            if (window(0) == window(1)) {
-               os << LogIO::NORMAL << "Degenerate window, try again" << LogIO::POST;
-               plotter.eras();
-               drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                         xLabel, yLabel, title, plotter);
-
-            } else
-               more = False;
-         } 
-      }
-   }
-}
-
-
-
-template <class T>
-Bool MomentCalcBase<T>::getInterGaussianFit (Vector<T>& gaussPars,
+Bool MomentCalcBase<T>::getInterGaussianFit (uInt& nFailed,
+                                             Vector<T>& gaussPars,
                                              LogIO& os,
                                              const Vector<T>& x,
                                              const Vector<T>& y,
+                                             const Vector<Bool>& mask,
                                              const Bool fixedYLimits,
                                              const Float yMinAuto,
                                              const Float yMaxAuto,
                                              const String xLabel,
                                              const String yLabel,
                                              const String title,
-                                             PGPlotter& plotter)
+                                             PGPlotter& plotter) const
 //
 // With the cursor, define a guess for a Gaussian fit,
 // and do the fit over and over until they are happy.
@@ -858,21 +677,24 @@ Bool MomentCalcBase<T>::getInterGaussianFit (Vector<T>& gaussPars,
 //
 // Inputs:
 //   x,y       The abcissa and spectrum
+//   mask      Mask.  True is good.
 //   x,yLabel  Labels
 //   title     Title of plot
+// Input/output
+//   nFailed   Cumualtive number of failures in fitting
 // Outputs:
 //   gaussPars The gaussian parameters (peak, pos, width, level)
 //   Bool      True if all successful, False if spectrum rejected
+//             because all noise or all masked
 //
 {
    
 // First draw the spectrum
          
-   plotter.page();
-   drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
-             xLabel, yLabel, title, plotter);
+   if (!drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+                      xLabel, yLabel, title, True, plotter)) return False;
 
-// Get users guess and fit until satisfied
+// Get user's guess and fit until satisfied
 
    Bool more = True;
    Bool ditch, redo;
@@ -896,7 +718,10 @@ Bool MomentCalcBase<T>::getInterGaussianFit (Vector<T>& gaussPars,
 
 // Get guess for level and adjust peak
 
-      levelGuess = mean(y.ac());
+      T dMin, dMax, dMean;
+      uInt minPos, maxPos;
+      stats (dMin, dMax, minPos, maxPos, dMean, y, mask);
+      levelGuess = dMean;
       peakGuess = peakGuess - levelGuess;
 
    
@@ -904,20 +729,22 @@ Bool MomentCalcBase<T>::getInterGaussianFit (Vector<T>& gaussPars,
    
       Int n = window(1) - window(0) + 1;
       Vector<T> xFit(n);
-      Vector<T> yFit(n);
+      Vector<T> yFit(n); 
+      Vector<Bool> maskFit(n);
       for (Int i=0; i<n; i++) {
          xFit(i) = x(i+window(0));
          yFit(i) = y(i+window(0));
+         maskFit(i) = mask(i+window(0));
       }
       T pos, width, peak;
-      if (fitGaussian (peak, pos, width, level, xFit, yFit, peakGuess,
-                       posGuess, widthGuess, levelGuess)) {
+      if (fitGaussian (nFailed, peak, pos, width, level, xFit, yFit, maskFit,
+                       peakGuess, posGuess, widthGuess, levelGuess)) {
        
 // Show fit
 
-         showGaussFit (peak, pos, width, level, x, y, plotter);
+         showGaussFit (peak, pos, width, level, x, y, mask, plotter);
       } else {
-         os << LogIO::NORMAL << "Fit did not converge" << LogIO::POST;
+         os << LogIO::NORMAL << "Fit failed" << LogIO::POST;
       }
 
 
@@ -935,8 +762,8 @@ Bool MomentCalcBase<T>::getInterGaussianFit (Vector<T>& gaussPars,
 // Redraw spectrum
                        
          plotter.eras();
-         drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                   xLabel, yLabel, title, plotter);
+         drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+                       xLabel, yLabel, title, False, plotter);
       } else {
          
 // OK, set parameters of fit
@@ -962,7 +789,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
                                               Bool& reject,
                                               LogIO& os,
                                               const Int nPts,
-                                              PGPlotter& plotter) 
+                                              PGPlotter& plotter) const
 
 //
 // Use the cursor to get the user's guess for the
@@ -1001,7 +828,8 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    }
    plotter.sci(3);
    Vector<Float> xData(1), yData(1);
-   xData(0) = x; yData(0) = y;
+   xData(0) = x; 
+   yData(0) = y;
    plotter.pt (xData, yData, 2);
    plotter.updt ();
    plotter.sci (1);
@@ -1032,7 +860,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    xData(0) = x; yData(0) = y;
    plotter.pt (xData, yData, 2);
    plotter.sci (1);
-   y = float(peakGuess)/2;
+   y = Float(peakGuess)/2;
    plotter.updt (); 
    widthGuess = 2*abs(posGuess-x);
   
@@ -1106,88 +934,13 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
 }
    
 
-
-
-
-template <class T>
-void MomentCalcBase<T>::getInterWindow(Bool& allSubsequent, 
-                                       LogIO& os,
-                                       Vector<Int>& window,
-                                       const Bool doFit,
-                                       const Vector<T>& x,
-                                       const Vector<T>& y,
-                                       const Bool fixedYLimits,
-                                       const Float yMinAuto,
-                                       const Float yMaxAuto,
-                                       const String xLabel,
-                                       const String yLabel,
-                                       const String title,
-                                       PGPlotter& plotter) 
-//
-// Interactively select the moment window by fitting a Gaussian
-// or directly setting the window with the cursor.
-//
-// Inputs:
-//   x,y        Spectrum
-//   x,yLabel   Labels for plots
-//   title
-// Output:
-//   window     Include pixels in this range of indices.  If both 0,
-//              then discard this spectrum and blank moments
-//   allSubsequent 
-//              If True, then the user has instructed that
-//              all subsequent spectra are to use this window
-//              and we are to stop the interactive plotting
-{                                     
-   if (doFit) {   
-         
-         
-// We interactively fit a Gaussian and choose +/- 3 sigma limits as the range
-      
-      Vector<T> gaussPars(4);
-      if (!getInterGaussianFit (gaussPars, os, x, y, fixedYLimits, yMinAuto, 
-                                yMaxAuto, xLabel, yLabel, title, plotter)) {
-         window = 0;
-         return;
-      } else {
-    
-// Set 3-sigma range
-   
-         if (!setNSigmaWindow (window, gaussPars(1), gaussPars(2), y.nelements(), 3)) {
-            os << LogIO::NORMAL << "Window too small for this spectrum" << LogIO::POST;
-            window = 0;
-            return;
-         }
-
-// Mark window on plot
-         
-         plotter.eras ();
-         drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto, 
-                   xLabel, yLabel, title, plotter);
-         drawWindow (window, plotter);
-      }
-      allSubsequent = False;
-   } else {
-
-// The user just marks the range with the cursor
-
-      getInterDirectWindow (allSubsequent, os, window, x, y, fixedYLimits, 
-                            yMinAuto, yMaxAuto, xLabel, yLabel, title, plotter);
-   }
-  
-   return;
-}
-
-
-
 template <class T>
 Bool MomentCalcBase<T>::getLoc (T& x,
                                 Bool& allSubsequent,
                                 Bool& ditch,
                                 Bool& redo,
-                                LogIO& os,
                                 const Bool final,
-                                PGPlotter& plotter) 
+                                PGPlotter& plotter) const
 //
 // Read the PGPLOT cursor and return its coordinates if not off the plot
 // Also interpret which button was pressed
@@ -1214,7 +967,7 @@ Bool MomentCalcBase<T>::getLoc (T& x,
       
 // Position and read cursor
       
-   Float xx = float(x);
+   Float xx = Float(x);
    static Float yy = 0.0;
    String str;
    ImageMoments<T>::readCursor(plotter, xx, yy, str);
@@ -1242,13 +995,6 @@ Bool MomentCalcBase<T>::getLoc (T& x,
 
       if (str == "S") {
          if (!final) {
-/*
-            os << LogIO::NORMAL <<
-                      "You must define both ends of the range before it can be" << endl;
-            os   << "applied to all subsequent spectra. Enter S to define the" << endl;
-            os   << "second extremum and indicate it will be used for all " << endl;
-            os   << "subsequent spectra" << LogIO::POST;
-*/
             plotter.message("You must define both ends of the range before it can be\n");
             plotter.message("applied to all subsequent spectra. Enter S to define the\n");
             plotter.message("second extremum and indicate it will be used for all\n ");
@@ -1264,11 +1010,58 @@ Bool MomentCalcBase<T>::getLoc (T& x,
    return True;
 }
 
-      
+
+typedef Vector<Bool> gpp_Vector_Bool;
+typedef Vector<uInt> gpp_Vector_uInt;
+template <class T>
+void MomentCalcBase<T>::lineSegments (uInt& nSeg,
+                                      gpp_Vector_uInt& start, 
+                                      gpp_Vector_uInt& nPts,
+                                      const gpp_Vector_Bool& mask) const
+//
+// Examine an array and determine how many segments
+// of good points it consists of.    A good point
+// occurs if the array value is greater than zero.
+//
+// Inputs:
+//   mask  The array mask. True is good.
+// Outputs:
+//   nSeg  Number of segments  
+//   start Indices of start of each segment
+//   nPts  Number of points in segment
+//
+{ 
+   Bool finish = False;
+   nSeg = 0;
+   uInt iGood, iBad;
+   const uInt n = mask.nelements();
+   start.resize(n);
+   nPts.resize(n);
+ 
+   for (uInt i=0; !finish;) {
+      if (!findNextDatum (iGood, n, mask, i, True)) {
+         finish = True;
+      } else {
+         nSeg++;
+         start(nSeg-1) = iGood;        
+   
+         if (!findNextDatum (iBad, n, mask, iGood, False)) {
+            nPts(nSeg-1) = n - start(nSeg-1);
+            finish = True;
+         } else {
+            nPts(nSeg-1) = iBad - start(nSeg-1);
+            i = iBad + 1;
+         }
+      }
+   }
+   start.resize(nSeg,True);
+   nPts.resize(nSeg,True);
+}
+
 
 template <class T>      
 void MomentCalcBase<T>::makeAbcissa (Vector<T>& x,
-                                     const Int& n)
+                                     const Int& n) const
 {
    x.resize(n);
    for (Int i=0; i<n; i++) x(i) = i;
@@ -1277,7 +1070,7 @@ void MomentCalcBase<T>::makeAbcissa (Vector<T>& x,
 
 
 template <class T>
-Int& MomentCalcBase<T>::momentAxis(ImageMoments<T>& iMom) 
+Int& MomentCalcBase<T>::momentAxis(ImageMoments<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -1285,7 +1078,7 @@ Int& MomentCalcBase<T>::momentAxis(ImageMoments<T>& iMom)
 }
 
 template <class T>
-String MomentCalcBase<T>::momentAxisName(ImageMoments<T>& iMom) 
+String MomentCalcBase<T>::momentAxisName(ImageMoments<T>& iMom) const 
 {
 // Return the name of the moment/profile axis
 
@@ -1297,18 +1090,18 @@ String MomentCalcBase<T>::momentAxisName(ImageMoments<T>& iMom)
 
 
 template <class T>
-Int MomentCalcBase<T>::nMaxMoments() const
+uInt MomentCalcBase<T>::nMaxMoments() const
 {
 
 // Get it from ImageMoments enum
 
-   Int i = ImageMoments<T>::NMOMENTS;
+   uInt i = ImageMoments<T>::NMOMENTS;
    return i;
 }
 
 
 template <class T>
-Double& MomentCalcBase<T>::peakSNR(ImageMoments<T>& iMom)
+Double& MomentCalcBase<T>::peakSNR(ImageMoments<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -1321,7 +1114,7 @@ template <class T>
 void MomentCalcBase<T>::range(gpp_VectorFloat& pixelRange,
                               Bool& doInclude,
                               Bool& doExclude, 
-                              ImageMoments<T>& iMom)
+                              ImageMoments<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -1332,7 +1125,7 @@ void MomentCalcBase<T>::range(gpp_VectorFloat& pixelRange,
 
 
 template <class T>
-Vector<Int> MomentCalcBase<T>::selectMoments(ImageMoments<T>& iMom)
+Vector<Int> MomentCalcBase<T>::selectMoments(ImageMoments<T>& iMom) const
 //
 // Fill the moment selection vector according to what the user requests
 //
@@ -1340,8 +1133,8 @@ Vector<Int> MomentCalcBase<T>::selectMoments(ImageMoments<T>& iMom)
    typedef ImageMoments<Float> IM;
    Vector<Int> sel(IM::NMOMENTS);
 
-   Int j = 0;
-   for (Int i=0; i<iMom.moments_p.nelements(); i++) {
+   uInt j = 0;
+   for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
       if (iMom.moments_p(i) == IM::AVERAGE) {
          sel(j++) = IM::AVERAGE;
       } else if (iMom.moments_p(i) == IM::INTEGRATED) {
@@ -1376,140 +1169,11 @@ Vector<Int> MomentCalcBase<T>::selectMoments(ImageMoments<T>& iMom)
 
 
 
-template <class T>
-void MomentCalcBase<T>::setCalcMoments (ImageMoments<T>& iMom,
-                                        Vector<T>& calcMoments,
-                                        Vector<Double>& pixelIn,
-                                        Vector<Double>& worldOut,
-                                        const Bool doCoordCalc,
-                                        const T dMedian,
-                                        const T vMedian,
-                                        const Int nPts,
-                                        const Double s0,
-                                        const Double s1,
-                                        const Double s2,
-                                        const Double s0Sq,
-                                        const Double sumAbsDev,
-                                        const Double dMin,
-                                        const Double dMax,
-                                        const Int iMin,
-                                        const Int iMax) 
-//
-// Fill the moments array
-//
-// Outputs:
-//   calcMoments The moments
-//
-{
-
-// Short hand to fish ImageMoments enum values out
-// Despite being our friend, we cannot refer to the
-// enum values as just, say, "AVERAGE"
-
-   typedef ImageMoments<Float> IM;
-
-
-// Normalize and fill moments
-    
-   calcMoments(IM::AVERAGE) = s0 / nPts;
-   calcMoments(IM::INTEGRATED) = s0;
-   calcMoments(IM::WEIGHTED_MEAN_COORDINATE) = s1 / s0;
-   calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
-     (s2 / s0) - calcMoments(IM::WEIGHTED_MEAN_COORDINATE) *
-                 calcMoments(IM::WEIGHTED_MEAN_COORDINATE);
-   calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
-      abs(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
-   if (calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) > 0.0) {
-     calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
-        sqrt(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
-   }
-   else {
-     calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 0.0;
-   }
-                 
-// Standard deviation about mean of I
-      
-   if (Float((s0Sq - s0*s0/nPts)/(nPts-1)) > 0) {
-      calcMoments(IM::STANDARD_DEVIATION) = sqrt((s0Sq - s0*s0/nPts)/(nPts-1));
-   } else {
-      calcMoments(IM::STANDARD_DEVIATION) = 0;
-   }
-
-// Rms of I
-    
-   calcMoments(IM::RMS) = sqrt(s0Sq/nPts);
-
-      
-// Absolute mean deviation
-      
-   calcMoments(IM::ABS_MEAN_DEVIATION) = sumAbsDev / nPts;
-      
-   
-// Maximum value
-
-   calcMoments(IM::MAXIMUM) = dMax;
-   
-
-// Coordinate of maximum value
-
-   if (doCoordCalc) calcMoments(IM::MAXIMUM_COORDINATE) = 
-      getMomentCoord(iMom, pixelIn, worldOut, Double(iMax));
-  
-      
-// Minimum value
-   calcMoments(IM::MINIMUM) = dMin;
-   
-   
-// Coordinate of minimum value
-
-   if (doCoordCalc) calcMoments(IM::MINIMUM_COORDINATE) = 
-      getMomentCoord(iMom, pixelIn, worldOut, Double(iMin));
-
-   
-// Medians
-
-   calcMoments(IM::MEDIAN) = dMedian;
-   calcMoments(IM::MEDIAN_COORDINATE) = vMedian;
-}
-
-
-
-template <class T> 
-Bool MomentCalcBase<T>::setNSigmaWindow (Vector<Int>& window,
-                                         const T pos,
-                                         const T width,
-                                         const Int nPts,
-                                         const Int N)
-// 
-// Take the fitted Gaussian position and width and
-// set an N-sigma window.  If the window is too small
-// return a Fail condition.
-//
-// Inputs:
-//   pos,width   The position and width in pixels
-//   nPts        The number of points in the spectrum that was fit
-//   N           The N-sigma
-// Outputs:
-//   window      The window in pixels
-//   Bool        False if window too small to be sensible
-//
-{
-   window(0) = Int((pos-N*width)+0.5);
-   window(0) = min(nPts-1,max(0,window(0)));
-   window(1) = Int((pos+N*width)+0.5);
-   window(1) = min(nPts-1,max(0,window(1)));
-                                      
-   if ( abs(window(1)-window(0)) < 3) return False;
-   return True;
-} 
-
-
-
 
 
 template <class T> 
 void MomentCalcBase<T>::setPosLabel (String& title,
-                                     const IPosition& pos)
+                                     const IPosition& pos) const
 {  
    ostrstream oss;
 
@@ -1525,7 +1189,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
                                      Vector<Double>& pixelIn,
                                      Vector<Double>& worldOut,
                                      Vector<Double>& sepWorldCoord,
-                                     LogIO& os)
+                                     LogIO& os) const
 // 
 // This function does two things.  It sets up the pixelIn
 // and worldOut vectors needed by getMomentCoord. It also
@@ -1556,8 +1220,8 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
       
    if (nPixelAxes == 1 && nWorldAxes == 1) {
       pixelIn = iMom.pInImage_p->coordinates().referencePixel();
-      sepWorldCoord.resize(iMom.trc_p(iMom.momentAxis_p)-iMom.blc_p(iMom.momentAxis_p)+1);
-      for (Int i=0; i<sepWorldCoord.nelements(); i++) {
+      sepWorldCoord.resize(iMom.pInImage_p->shape()(iMom.momentAxis_p));
+      for (uInt i=0; i<sepWorldCoord.nelements(); i++) {
          sepWorldCoord(i) = getMomentCoord(iMom, pixelIn, worldOut, Double(i));
       }
    } else {
@@ -1577,15 +1241,16 @@ void MomentCalcBase<T>::showGaussFit(const T peak,
                                      const T level,
                                      const Vector<T>& x,
                                      const Vector<T>& y,
-                                     PGPlotter& plotter)
+                                     const Vector<Bool>& mask,
+                                     PGPlotter& plotter) const
 // 
 // Plot the Gaussian fit and residual
 //
 {
-   const Int nDPts = x.nelements();
+   const uInt nDPts = x.nelements();
    T xMin = x(0);
    T xMax = x(nDPts-1);
-   Int nGPts = 100;
+   uInt nGPts = 100;
    T dx = (xMax - xMin)/nGPts;
 
 // Setup functional
@@ -1601,7 +1266,7 @@ void MomentCalcBase<T>::showGaussFit(const T peak,
    
 // Generate plot values
  
-   int i = 0;
+   uInt i;
    Float xx;
    for (i=0,xx=xMin; i<nGPts; xx+=dx,i++) {
       xG(i) = xx;
@@ -1613,19 +1278,81 @@ void MomentCalcBase<T>::showGaussFit(const T peak,
 
 // Now difference
    
+   Vector<T> xd(nDPts);
    Vector<T> d(nDPts);
+   uInt j = 0;
    for (i=0; i<nDPts; i++) {
-      d(i) = y(i) - gauss(x(i));
+      if (mask(i)) {
+         xd(j) = x(i);
+         d(j) = y(i) - gauss(x(i));
+         j++;
+      }
    }
-   plotter.sci (2);
-   drawLine (x, d, plotter);
-   plotter.sci (1);
+   if (j > 0) {
+     xd.resize(j,True);
+     d.resize(j,True);
+     plotter.sci (2);
+     drawLine (xd, d, plotter);
+  }
+  plotter.sci (1);
 }
 
 
+template <class T>      
+Bool MomentCalcBase<T>::stats(T& dMin, 
+                              T& dMax,  
+                              uInt& minPos,
+                              uInt& maxPos,
+                              T& dMean,
+                              const Vector<T>& profile,
+                              const Vector<Bool>& mask) const
+//
+// Returns False if no unmasked points
+//
+{
+   Bool deleteIt1, deleteIt2;
+   const T* pProfile = profile.getStorage(deleteIt1);
+   const Bool* pMask = mask.getStorage(deleteIt2);
+
+   Int iStart = -1;
+   uInt i = 0;
+   uInt nPts = 0;
+   NumericTraits<T>::PrecisionType sum = 0;
+
+   while (i<profile.nelements() && iStart==-1) {
+      if (pMask[i]) {
+        dMax = pProfile[i];
+        dMin = dMax;
+        minPos = i;
+        maxPos = i;
+        sum = pProfile[i];
+        nPts++;
+        iStart = i+1;
+      }
+      i++;
+   }
+   if (iStart == -1) return False;
+
+   for (i=iStart; i<profile.nelements(); i++) {
+      if (pMask[i]) {
+         dMin = min(dMin,pProfile[i]);
+         dMax = max(dMax,pProfile[i]);
+         minPos = i;
+         maxPos = i;
+         sum += pProfile[i];
+         nPts++;
+      }
+   }
+   dMean = sum / nPts;
+   profile.freeStorage(pProfile, deleteIt1);
+   mask.freeStorage(pMask, deleteIt2);
+
+   return True;  
+}
+
 
 template <class T>
-Double& MomentCalcBase<T>::stdDeviation(ImageMoments<T>& iMom)
+Double& MomentCalcBase<T>::stdDeviation(ImageMoments<T>& iMom) const
 {
    return iMom.stdDeviation_p;
 }
@@ -1634,7 +1361,7 @@ Double& MomentCalcBase<T>::stdDeviation(ImageMoments<T>& iMom)
 template <class T>
 void MomentCalcBase<T>::yAutoMinMax(Float& yMin, 
                                     Float& yMax, 
-                                    ImageMoments<T>& iMom)
+                                    ImageMoments<T>& iMom) const
 {
    yMin = iMom.yMin_p;
    yMax = iMom.yMax_p;
@@ -1647,11 +1374,11 @@ void MomentCalcBase<T>::yAutoMinMax(Float& yMin,
 // Derived class MomentClip
 
 template <class T>
-MomentClip<T>::MomentClip(Lattice<T>* pMaskLattice,
+MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
                           ImageMoments<T>& iMom,
                           LogIO& os,
-                          const Int nLatticeOut)
-: pMaskLattice_p(pMaskLattice),
+                          const uInt nLatticeOut)
+: pAncilliaryLattice_p(pAncilliaryLattice),
   iMom_p(iMom),
   os_p(os)
 {
@@ -1662,13 +1389,7 @@ MomentClip<T>::MomentClip(Lattice<T>* pMaskLattice,
 
 // Set/check some dimensionality
 
-   constructorCheck(retMoments_p, calcMoments_p,
-                    selectMoments_p, nLatticeOut);
-
-// Fish out region
-
-   blc_p = blc(iMom_p);
-   trc_p = trc(iMom_p);
+   constructorCheck(calcMoments_p, selectMoments_p, nLatticeOut);
 
 // Fish out moment axis
 
@@ -1676,13 +1397,10 @@ MomentClip<T>::MomentClip(Lattice<T>* pMaskLattice,
 
 // Set up slice shape for extraction from masking lattice
 
-   if (pMaskLattice_p != 0) {
-      stride_p.resize(pMaskLattice_p->ndim());
-      stride_p = 1;
-
-      sliceShape_p.resize(pMaskLattice_p->ndim());
+   if (pAncilliaryLattice_p != 0) {
+      sliceShape_p.resize(pAncilliaryLattice_p->ndim());
       sliceShape_p = 1;
-      sliceShape_p(momAxis) = pMaskLattice_p->shape()(momAxis);
+      sliceShape_p(momAxis) = pAncilliaryLattice_p->shape()(momAxis);
    }
 
 // Make all plots with same y range ?
@@ -1712,6 +1430,9 @@ MomentClip<T>::MomentClip(Lattice<T>* pMaskLattice,
    doCoordCalc_p = doCoordCalc(iMom_p);
    if (doCoordCalc_p) setUpCoords(iMom_p, pixelIn_p, worldOut_p,
                                   sepWorldCoord_p, os_p);
+
+// Number of failed Gaussian fits 
+   nFailed_p = 0;
 }
 
 
@@ -1719,56 +1440,60 @@ template <class T>
 MomentClip<T>::~MomentClip()
 {;}
 
-template <class T> 
-T MomentClip<T>::process(const Vector<T>& vector,
-			 const IPosition& pos)
+template <class T>
+void MomentClip<T>::process(T&,
+                            Bool&,
+                            const Vector<T>&,
+                            const Vector<Bool>&,
+                            const IPosition&)
 {
    throw(AipsError("MomentClip<T>::process(Vector<T>&, IPosition&): not implemented"));
-   T tmp = 0;
-   return tmp;
 }
 
 
 template <class T> 
-Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
-				       const IPosition& inPos)
+void MomentClip<T>::multiProcess(Vector<T>& moments,
+                                 Vector<Bool>& momentsMask,
+                                 const Vector<T>& profileIn,
+                                 const Vector<Bool>& profileInMask,
+                                 const IPosition& inPos)
 //
-// Generate masked moments of this profile where the mask is
-// generated from the primary lattice or an ancilliary lattice
+// The profile comes with its own mask (or a null mask
+// which means all good).  In addition, we create
+// a further mask by applying the clip range to either
+// the primary lattice, or the ancilliary lattice (e.g. 
+// the smoothed lattice)
 //
 {
 
-// Fish out the masking image slice if needed.  Stupid slice functions require
-// me to create the maskSlice empty every time so degenerate axes can be 
-// chucked out.  The masking Lattice is only as big as the region that was 
-// requested in ImageMoments, so we have to subtract of the blc in dealing with positions.
-
-   if (pMaskLattice_p && (doInclude_p || doExclude_p)) {
-      Array<T> maskSlice;
-      pMaskLattice_p->getSlice(maskSlice, inPos-blc_p,
-                               sliceShape_p, stride_p, True);
-      maskSliceRef_p.reference(maskSlice);
-   }
+// Fish out the ancilliary image slice if needed.  Stupid slice functions 
+// require me to create the slice empty every time so degenerate
+// axes can be chucked out.  We set up a pointer to the primary or 
+// ancilliary vector object  that we can use for fast access 
 
 
-// Set up a pointer to the primary or ancilliary vector object
-// Also make a pointer that we can use for fast access to the Vector
- 
-   const T* pMask = 0;      
+   const T* pProfileSelect = 0;      
    Bool deleteIt;
-   if (pMaskLattice_p  && (doInclude_p || doExclude_p)) {
-      pMaskProfile_p = &maskSliceRef_p;
-      pMask = maskSliceRef_p.getStorage(deleteIt);
+   if (pAncilliaryLattice_p && (doInclude_p || doExclude_p)) {
+      Array<T> ancilliarySlice;
+      IPosition stride(pAncilliaryLattice_p->ndim(),1);
+
+      pAncilliaryLattice_p->getSlice(ancilliarySlice, inPos,
+                               sliceShape_p, stride, True);
+      ancilliarySliceRef_p.reference(ancilliarySlice);
+ 
+      pProfileSelect_p = &ancilliarySliceRef_p;
+      pProfileSelect = ancilliarySliceRef_p.getStorage(deleteIt);
    } else {
-      pMaskProfile_p = &profile;
-      pMask = profile.getStorage(deleteIt);
+      pProfileSelect_p = &profileIn;
+      pProfileSelect = profileIn.getStorage(deleteIt);
    }
 
 
 // Plot spectrum if asked
-   
+
    if (plotter_p.isAttached()) {
-      makeAbcissa(abcissa_p, pMaskProfile_p->nelements());
+      makeAbcissa(abcissa_p, pProfileSelect_p->nelements());
       String xLabel;
       if (momAxisType_p.empty()) {
          xLabel = "x (pixels)";
@@ -1779,9 +1504,22 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
       String title;
       setPosLabel (title, inPos);
 
-      plotter_p.page();
-      drawLine (abcissa_p, *pMaskProfile_p, fixedYLimits_p, 
-                yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title, plotter_p);
+      if (!drawSpectrum (abcissa_p, *pProfileSelect_p, profileInMask, 
+                         fixedYLimits_p, yMinAuto_p, yMaxAuto_p, xLabel, 
+                         yLabel, title, True, plotter_p)) {
+
+// If all points were masked, it's over for this profile.
+
+         moments = 0.0;
+         momentsMask = False;
+
+         if (pAncilliaryLattice_p && (doInclude_p || doExclude_p)) {
+            ancilliarySliceRef_p.freeStorage(pProfileSelect, deleteIt);
+         } else {
+            profileIn.freeStorage(pProfileSelect, deleteIt);
+         }
+         return;
+     }
 
 
 // Draw on clip levels and arrows
@@ -1805,7 +1543,7 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
 
 // Resize array for median.  Is resized correctly later
  
-   Int nPts = profile.nelements();
+   Int nPts = profileIn.nelements();
    selectedData_p.resize(nPts);
    selectedDataIndex_p.resize(nPts);
 
@@ -1815,96 +1553,167 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
    Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
 
 
-// Compute moments
+// Compute moments.  The actual moment computation always done with 
+// the original data, regardless of whether the pixel selection is 
+// done with the primary or ancilliary data.
 
-   Double s0  = 0.0;
-   Double s0Sq = 0.0;
-   Double s1  = 0.0;
-   Double s2  = 0.0;
+   NumericTraits<T>::PrecisionType s0  = 0.0;
+   NumericTraits<T>::PrecisionType s0Sq = 0.0;
+   NumericTraits<T>::PrecisionType s1  = 0.0;
+   NumericTraits<T>::PrecisionType s2  = 0.0;
    Int iMin = -1;
    Int iMax = -1;
-   Double dMin =  1.0e30;
-   Double dMax = -1.0e30;
+   T dMin =  1.0e30;
+   T dMax = -1.0e30;
    Double coord = 0.0;
    Int i, j;
 
-   if (doInclude_p) {
-      for (i=0,j=0; i<nPts; i++) {
-         if (pMask[i] >= range_p(0) && pMask[i] <= range_p(1)) {
-            if (preComp) {
-               coord = sepWorldCoord_p(i);              
-            } else if (doCoordCalc_p) {
-               coord = getMomentCoord(iMom_p, pixelIn_p,
-                                      worldOut_p, Double(i));       
+
+   if (profileInMask.nelements() == 0) {
+
+// No mask included.
+
+      if (doInclude_p) {
+         for (i=0,j=0; i<nPts; i++) {
+            if (pProfileSelect[i] >= range_p(0) && 
+                pProfileSelect[i] <= range_p(1)) {
+
+               if (preComp) {
+                  coord = sepWorldCoord_p(i);              
+               } else if (doCoordCalc_p) {
+                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                                         worldOut_p, Double(i));       
+               }
+               accumSums(s0, s0Sq, s1, s2, iMin, iMax,     
+                         dMin, dMax, i, profileIn(i), coord);
+               selectedData_p(j) = profileIn(i);
+               selectedDataIndex_p(j) = i;
+               j++;
             }
-            accumSums(s0, s0Sq, s1, s2, iMin, iMax,     
-                      dMin, dMax, i, profile(i), coord);
-            selectedData_p(j) = profile(i);
-            selectedDataIndex_p(j) = i;
-            j++;
          }
-      }
-      nPts = j;
-   } else if (doExclude_p) {
-      for (i=0,j=0; i<nPts; i++) {
-         if (pMask[i] <= range_p(0) || pMask[i] >= range_p(1)) {
+      } else if (doExclude_p) {
+         for (i=0,j=0; i<nPts; i++) {
+            if (pProfileSelect[i] <= range_p(0) || 
+                pProfileSelect[i] >= range_p(1)) {
+
+               if (preComp) {
+                  coord = sepWorldCoord_p(i); 
+               } else if (doCoordCalc_p) {
+                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                                         worldOut_p, Double(i));
+               }
+               accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+                         dMin, dMax, i, profileIn(i), coord);
+               selectedData_p(j) = profileIn(i);
+               selectedDataIndex_p(j) = i;
+               j++;
+            }
+         }
+      } else {    
+         for (i=0; i<nPts; i++) {
             if (preComp) {
-               coord = sepWorldCoord_p(i); 
+               coord = sepWorldCoord_p(i);
             } else if (doCoordCalc_p) {
                coord = getMomentCoord(iMom_p, pixelIn_p,
                                       worldOut_p, Double(i));
             }
             accumSums(s0, s0Sq, s1, s2, iMin, iMax,
-                      dMin, dMax, i, profile(i), coord);
-            selectedData_p(j) = profile(i);
-            selectedDataIndex_p(j) = i;
-            j++;
+                      dMin, dMax, i, profileIn(i), coord);
+            selectedData_p(i) = profileIn(i);
+            selectedDataIndex_p(i) = i;
+         }
+      }
+
+   } else {
+
+// Set up a pointer for faster access to the profile mask
+
+      Bool deleteIt2;
+      const Bool* pProfileInMask = profileInMask.getStorage(deleteIt2);
+
+      if (doInclude_p) {
+         for (i=0,j=0; i<nPts; i++) {
+            if (pProfileInMask[i] &&
+                pProfileSelect[i] >= range_p(0) && 
+                pProfileSelect[i] <= range_p(1)) {
+
+               if (preComp) {
+                  coord = sepWorldCoord_p(i);              
+               } else if (doCoordCalc_p) {
+                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                                         worldOut_p, Double(i));       
+               }
+               accumSums(s0, s0Sq, s1, s2, iMin, iMax,     
+                         dMin, dMax, i, profileIn(i), coord);
+               selectedData_p(j) = profileIn(i);
+               selectedDataIndex_p(j) = i;
+               j++;
+            }
+         }
+      } else if (doExclude_p) {
+         for (i=0,j=0; i<nPts; i++) {
+            if (pProfileInMask[i] &&
+               (pProfileSelect[i] <= range_p(0) || 
+                pProfileSelect[i] >= range_p(1))) {
+
+               if (preComp) {
+                  coord = sepWorldCoord_p(i); 
+               } else if (doCoordCalc_p) {
+                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                                         worldOut_p, Double(i));
+               }
+               accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+                         dMin, dMax, i, profileIn(i), coord);
+               selectedData_p(j) = profileIn(i);
+               selectedDataIndex_p(j) = i;
+               j++;
+            }
+         }
+      } else {    
+         for (i=0,j=0; i<nPts; i++) {
+            if (pProfileInMask[i]) {
+               if (preComp) {
+                  coord = sepWorldCoord_p(i);
+               } else if (doCoordCalc_p) {
+                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                                         worldOut_p, Double(i));
+               }
+               accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+                         dMin, dMax, i, profileIn(i), coord);
+               selectedData_p(j) = profileIn(i);
+               selectedDataIndex_p(j) = i;
+               j++;
+            }
          }
       }
       nPts = j;
-   } else {    
-
-// No clip range, so ancilliary profile will not have been computed
-// by ImageMoments
-
-      for (i=0; i<nPts; i++) {
-         if (preComp) {
-            coord = sepWorldCoord_p(i);
-         } else if (doCoordCalc_p) {
-            coord = getMomentCoord(iMom_p, pixelIn_p,
-                                   worldOut_p, Double(i));
-         }
-         accumSums(s0, s0Sq, s1, s2, iMin, iMax,
-                   dMin, dMax, i, profile(i), coord);
-         selectedData_p(i) = profile(i);
-         selectedDataIndex_p(i) = i;
-      }
+      profileInMask.freeStorage(pProfileInMask, deleteIt2);
    }
- 
+
 
 // Delete pointer memory
 
-   if (pMaskLattice_p  && (doInclude_p || doExclude_p)) {
-      maskSliceRef_p.freeStorage(pMask, deleteIt);
+   if (pAncilliaryLattice_p  && (doInclude_p || doExclude_p)) {
+      ancilliarySliceRef_p.freeStorage(pProfileSelect, deleteIt);
    } else {
-      profile.freeStorage(pMask, deleteIt);
+      profileIn.freeStorage(pProfileSelect, deleteIt);
    }
 
-
    
-// If no points make moments zero. Blank at a later date.
+// If no points make moments zero and mask
                
    if (nPts==0) {
-      retMoments_p = 0.0;
-      return retMoments_p;
+      moments = 0.0;
+      momentsMask = False;
+      return;
    }        
    
          
 // Absolute deviations of I from mean needs an extra pass.
          
-   Double sumAbsDev = 0.0;
+   NumericTraits<T>::PrecisionType sumAbsDev = 0;
    if (doAbsDev_p) {
-      Double iMean = s0 / nPts;
+      T iMean = s0 / nPts;
       for (i=0; i<nPts; i++) sumAbsDev += abs(selectedData_p(i) - iMean);
    }
  
@@ -1918,8 +1727,8 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
        
  
 // Median coordinate.  ImageMoments will only be allowing this if
-// we are not offering the ancilliary lattice, and with an include or exclude range.
-// Pretty dodgy   
+// we are not offering the ancilliary lattice, and with an include 
+// or exclude range.   Pretty dodgy   
          
    T vMedian = 0.0;
    if (doMedianV_p) {
@@ -1939,7 +1748,7 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
 // Find 1/2 way value (well, the first one that occurs)
  
          T halfMax = dataMax/2.0;
-         Int iVal;
+         Int iVal = 0;
          for (i=0; i<nPts; i++) {
             if (selectedData_p(i) >= halfMax) {
                iVal = i;
@@ -1972,14 +1781,13 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq, 
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
-// Return vector of selected moments by reference
+// Fill vector of selected moments 
 
-   for (i=0; i<selectMoments_p.nelements(); i++) {
-      retMoments_p(i) = calcMoments_p(selectMoments_p(i));
+   for (i=0; i<Int(selectMoments_p.nelements()); i++) {
+      moments(i) = calcMoments_p(selectMoments_p(i));
+      momentsMask(i) = True;
    }
 
-
-   return retMoments_p;
 }
 
 
@@ -1989,11 +1797,11 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
 // Derived class MomentWindow
 
 template <class T>
-MomentWindow<T>::MomentWindow(Lattice<T>* pMaskLattice,
+MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
                               ImageMoments<T>& iMom,
                               LogIO& os,
-                              const Int nLatticeOut)
-: pMaskLattice_p(pMaskLattice),
+                              const uInt nLatticeOut)
+: pAncilliaryLattice_p(pAncilliaryLattice),
   iMom_p(iMom),
   os_p(os)
 {
@@ -2003,13 +1811,7 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pMaskLattice,
 
 // Set/check some dimensionality
 
-   constructorCheck(retMoments_p, calcMoments_p,
-                    selectMoments_p, nLatticeOut);
-
-// Fish out region
-
-   blc_p = blc(iMom_p);
-   trc_p = trc(iMom_p);
+   constructorCheck(calcMoments_p, selectMoments_p, nLatticeOut);
 
 // Fish out moment axis
 
@@ -2017,13 +1819,10 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pMaskLattice,
 
 // Set up slice shape for extraction from masking lattice
 
-   if (pMaskLattice_p != 0) {
-      stride_p.resize(pMaskLattice_p->ndim());
-      stride_p = 1;
-
-      sliceShape_p.resize(pMaskLattice_p->ndim());
+   if (pAncilliaryLattice_p != 0) {
+      sliceShape_p.resize(pAncilliaryLattice_p->ndim());
       sliceShape_p = 1;
-      sliceShape_p(momAxis) = pMaskLattice_p->shape()(momAxis);
+      sliceShape_p(momAxis) = pAncilliaryLattice_p->shape()(momAxis);
    }
 
 // Make all plots with same y range ?
@@ -2059,6 +1858,10 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pMaskLattice,
 
    peakSNR_p = peakSNR(iMom_p);
    stdDeviation_p = stdDeviation(iMom_p);
+
+// Number of failed Gaussian fits 
+
+   nFailed_p = 0;
 }
 
 
@@ -2066,53 +1869,53 @@ template <class T>
 MomentWindow<T>::~MomentWindow()
 {;}
 
-
-template <class T> 
-T MomentWindow<T>::process(const Vector<T>& vector,
-			   const IPosition& pos)
+template <class T>
+void MomentWindow<T>::process(T&,
+                              Bool&,
+                              const Vector<T>&,
+                              const Vector<Bool>&,
+                              const IPosition&)
 {
-   throw(AipsError("MomentWindow<T>::process(Vector<T>&, IPosition&): not implemented"));
-   T tmp = 0;
-   return tmp;
+   throw(AipsError("MomentWindow<T>::process not implemented"));
 }
 
 
 template <class T> 
-Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
-					 const IPosition& inPos)
+void MomentWindow<T>::multiProcess(Vector<T>& moments,
+                                   Vector<Bool>& momentsMask,
+                                   const Vector<T>& profileIn,
+                                   const Vector<Bool>& profileInMask,
+                                   const IPosition& inPos)
 //
-// Generate windowed moments of this profile 
+// Generate windowed moments of this profile.
+// The profile comes with its own mask (or a null mask
+// which means all good).  In addition, we create
+// a further mask by applying the clip range to either
+// the primary lattice, or the ancilliary lattice (e.g. 
+// the smoothed lattice)
 //
 {
 
-// Fish out masking image slice if needed.  Stupid slice functions require
-// me to create the slice empty every time so degenerate axes can 
-// be chucked out.  The masking Lattice is only as big as the region that 
-// was requested in ImageMoments, so we have to subtract off the blc in 
-// dealing with positions.
+// Fish out the ancilliary image slice if needed.  Stupid slice functions 
+// require me to create the slice empty every time so degenerate
+// axes can be chucked out.  We set up a pointer to the primary or 
+// ancilliary vector object  that we can use for fast access 
 
-
-   if (pMaskLattice_p) {
-      Array<T> maskSlice;
-      pMaskLattice_p->getSlice(maskSlice, inPos-blc_p,
-                               sliceShape_p, stride_p, True);
-      maskSliceRef_p.reference(maskSlice);
-   }
-
-
-// Set up a pointer to the primary or ancilliary profile Vector object
-// Also make a pointer that we can use for fast access to the Vector
- 
-   const T* pProfile = 0;      
+   const T* pProfileSelect = 0;      
    Bool deleteIt;
-   if (pMaskLattice_p) {
-      pProfile_p = &maskSliceRef_p;
-      pProfile = maskSliceRef_p.getStorage(deleteIt);
-   } else {
-      pProfile_p = &profile;
-      pProfile = profile.getStorage(deleteIt);
-   }
+   if (pAncilliaryLattice_p != 0) {
+      Array<T> ancilliarySlice;
+      IPosition stride(pAncilliaryLattice_p->ndim(),1);
+      pAncilliaryLattice_p->getSlice(ancilliarySlice, inPos,
+                               sliceShape_p, stride, True);
+      ancilliarySliceRef_p.reference(ancilliarySlice);
 
+      pProfileSelect_p = &ancilliarySliceRef_p;
+      pProfileSelect = ancilliarySliceRef_p.getStorage(deleteIt);
+   } else {
+      pProfileSelect_p = &profileIn;
+      pProfileSelect = profileIn.getStorage(deleteIt);
+   }
 
 
 // Make abcissa and labels
@@ -2121,7 +1924,7 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
    static Vector<Int> window(2);  
    static Int nPts = 0;
       
-   makeAbcissa (abcissa_p, pProfile_p->nelements());
+   makeAbcissa (abcissa_p, pProfileSelect_p->nelements());
    String xLabel;
    if (momAxisType_p.empty()) {
       xLabel = "x (pixels)";
@@ -2133,7 +1936,6 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
    setPosLabel(title, inPos);
 
 
-
 // Do the window selection
 
    if (doAuto_p) {
@@ -2141,9 +1943,14 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
 // Define the window automatically
 
       Vector<T> gaussPars;
-      getAutoWindow (window,  abcissa_p, *pProfile_p, peakSNR_p, 
-                     stdDeviation_p, doFit_p, plotter_p, fixedYLimits_p, 
-                     yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title);
+      if (getAutoWindow(nFailed_p, window,  abcissa_p, *pProfileSelect_p, profileInMask,
+                        peakSNR_p, stdDeviation_p, doFit_p, plotter_p, 
+                        fixedYLimits_p, yMinAuto_p, yMaxAuto_p, xLabel,
+                        yLabel, title)) {
+         nPts = window(1) - window(0) + 1;
+      } else {
+         nPts = 0;
+      }
    } else {
 
 // Define the window interactively, unless the user has told us when
@@ -2157,24 +1964,39 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
       }
 
       if (!allSubsequent) {
-         getInterWindow (allSubsequent, os_p, window, doFit_p, abcissa_p, 
-                         *pProfile_p, fixedYLimits_p, yMinAuto_p, yMaxAuto_p, 
-                         xLabel, yLabel, title, plotter_p);
+         if (getInterWindow (nFailed_p, allSubsequent, os_p, window, doFit_p, abcissa_p, 
+                             *pProfileSelect_p, profileInMask, fixedYLimits_p, 
+                             yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title, 
+                             plotter_p)) {
+            nPts = window(1) - window(0) + 1;
+         } else {
+            nPts = 0;
+         }
       } else if (nPts != 0) {
-         plotter_p.page();
-         drawLine (abcissa_p, *pProfile_p, fixedYLimits_p, yMinAuto_p, 
-                   yMaxAuto_p, xLabel, yLabel, title, plotter_p);
-         drawWindow (window, plotter_p);
+         if (drawSpectrum (abcissa_p, *pProfileSelect_p, profileInMask,
+                           fixedYLimits_p, yMinAuto_p, yMaxAuto_p, xLabel, 
+                           yLabel, title, True, plotter_p)) {
+            drawWindow (window, plotter_p);
+            nPts = window(1) - window(0) + 1;
+         } else {
+            nPts = 0;
+         }
       }
    }
-   nPts = window(1) - window(0) + 1;
 
 
-// If no points make moments zero. Blank at a later date.
+// If no points make moments zero and mask
                
    if (nPts==0) {
-      retMoments_p = 0.0;
-      return retMoments_p;
+      moments = 0.0;
+      momentsMask = False;
+
+      if (pAncilliaryLattice_p) {
+         ancilliarySliceRef_p.freeStorage(pProfileSelect, deleteIt);
+      } else {
+         profileIn.freeStorage(pProfileSelect, deleteIt);
+      }
+      return;
    }        
 
 
@@ -2188,49 +2010,61 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
    Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
 
 
-// Compute moments
+// Set up a pointer for fast access to the profile mask
+// if it exists.
+
+   Bool deleteIt2;
+   const Bool* pProfileInMask = profileInMask.getStorage(deleteIt2);
+
+
+// Accumulate sums and acquire selected data from primary lattice 
             
-   Double s0  = 0.0;
-   Double s0Sq = 0.0;
-   Double s1  = 0.0;
-   Double s2  = 0.0;
+   NumericTraits<T>::PrecisionType s0  = 0.0;
+   NumericTraits<T>::PrecisionType s0Sq = 0.0;
+   NumericTraits<T>::PrecisionType s1  = 0.0;
+   NumericTraits<T>::PrecisionType s2  = 0.0;
    Int iMin = -1;
    Int iMax = -1;
-   Double dMin =  1.0e30;
-   Double dMax = -1.0e30;
+   T dMin =  1.0e30;
+   T dMax = -1.0e30;
    Double coord = 0.0;
 
-   for (Int i=window(0); i<=window(1); i++) {
-      if (preComp) {
-         coord = sepWorldCoord_p(i);
-      } else if (doCoordCalc_p) {
-         coord = getMomentCoord(iMom_p, pixelIn_p,
-                                worldOut_p, Double(i));
+   Int i,j;
+   for (i=window(0),j=0; i<=window(1); i++) {
+      if (pProfileInMask[i]) {
+         if (preComp) {
+            coord = sepWorldCoord_p(i);
+         } else if (doCoordCalc_p) {
+            coord = getMomentCoord(iMom_p, pixelIn_p,
+                                   worldOut_p, Double(i));
+         }
+         accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+                   dMin, dMax, i, profileIn(i), coord);
+         selectedData_p(j) = profileIn(i);
+         j++;
       }
-      accumSums(s0, s0Sq, s1, s2, iMin, iMax,
-                dMin, dMax, i, pProfile[i], coord);
-      selectedData_p(i-window(0)) = pProfile[i];
    }
+   nPts = j;
 
          
 // Absolute deviations of I from mean needs an extra pass.
-         
-   Double sumAbsDev = 0.0;
+   
+   NumericTraits<T>::PrecisionType sumAbsDev = 0.0;
    if (doAbsDev_p) {
-      Double iMean = s0 / nPts;
-      for (Int i=window(0); i<=window(1); i++) {
-         sumAbsDev += abs(Double(pProfile[i] - iMean));
-      }
+      T iMean = s0 / nPts;
+      for (Int i=0; i<nPts; i++) sumAbsDev += abs(selectedData_p(i) - iMean);
    }
 
 
-// Delete memory associated with pointer
 
-   if (pMaskLattice_p) {
-      maskSliceRef_p.freeStorage(pProfile, deleteIt);
+// Delete memory associated with pointers
+
+   if (pAncilliaryLattice_p) {
+      ancilliarySliceRef_p.freeStorage(pProfileSelect, deleteIt);
    } else {
-      profile.freeStorage(pProfile, deleteIt);
+      profileIn.freeStorage(pProfileSelect, deleteIt);
    }
+   profileInMask.freeStorage(pProfileInMask, deleteIt2);
 
  
 // Median of I
@@ -2249,15 +2083,439 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
 
-// Return vector of selected moments by reference
+// Fill selected moments 
 
-   for (i=0; i<selectMoments_p.nelements(); i++) {
-      retMoments_p(i) = calcMoments_p(selectMoments_p(i));
+   for (i=0; i<Int(selectMoments_p.nelements()); i++) {
+      moments(i) = calcMoments_p(selectMoments_p(i));
+      momentsMask(i) = True;
+   }
+}
+
+
+
+template <class T>
+void MomentWindow<T>::drawWindow(const Vector<Int>& window,
+                                 PGPlotter& plotter) const
+//
+// Mark the current window on the plot
+//
+{  
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
+   T yMin = minMax(2);
+   T yMax = minMax(3);
+
+   T x = window(0);
+   drawVertical (x, yMin, yMax, plotter);
+   x = window(1);
+   drawVertical (x, yMin, yMax, plotter);
+}
+
+
+template <class T>
+Bool MomentWindow<T>::getAutoWindow (uInt& nFailed,
+                                     Vector<Int>& window,
+                                     const Vector<T>& x,
+                                     const Vector<T>& y,
+                                     const Vector<Bool>& mask,
+                                     const Double peakSNR,
+                                     const Double stdDeviation,
+                                     const Bool doFit,
+                                     PGPlotter& plotter,
+                                     const Bool fixedYLimits,                 
+                                     const Float yMinAuto,                 
+                                     const Float yMaxAuto,                 
+                                     const String xLabel,
+                                     const String yLabel,
+                                     const String title) const
+//
+// Automatically fit a Gaussian and return the +/- 3-sigma window or
+// invoke Bosma's method to set a window.  If a plotting device is
+// active, we also plot the spectra and fits
+//
+// Inputs:
+//   x,y        Spectrum
+//   mask       Mask associated with spectrum. True is good.
+//   plotter    Plot spectrum and optionally the  window
+//   x,yLabel   x label for plots
+//   title 
+// Input/output
+//   nFailed    Cumulative number of failed fits
+// Output:
+//   window     The window (pixels).  If both 0,  then discard this spectrum
+//              and mask moments    
+//
+{
+   if (doFit) {
+      Vector<T> gaussPars(4);
+      if (!getAutoGaussianFit (nFailed, gaussPars, x, y, mask, peakSNR, stdDeviation, 
+                               plotter, fixedYLimits, yMinAuto, yMaxAuto, 
+                               xLabel, yLabel, title)) {
+         window = 0;
+         return False;
+      } else {
+   
+// Set 3-sigma limits.  This assumes that there are some unmasked
+// points in the window !
+ 
+         if (!setNSigmaWindow (window, gaussPars(1), gaussPars(2),
+                               y.nelements(), 3)) {
+            window = 0;
+            return False;
+         }
+      }
+   } else {
+// Invoke Albert's method (see AJ, 86, 1791)
+
+      if (!getBosmaWindow (window, x, y, mask, peakSNR, stdDeviation, 
+                           plotter, fixedYLimits, yMinAuto, yMaxAuto, 
+                           xLabel, yLabel, title)) {
+         window = 0;
+         return False;
+      }
+   }
+   
+// Plot window if desired
+ 
+   if (plotter.isAttached()) drawWindow (window, plotter);
+
+   return True;
+}
+
+template <class T>
+Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
+                                            LogIO& os,
+                                            Vector<Int>& window,
+                                            const Vector<T>& x,
+                                            const Vector<T>& y,
+                                            const Vector<Bool>& mask,
+                                            const Bool fixedYLimits,   
+                                            const Float yMinAuto,   
+                                            const Float yMaxAuto,
+                                            const String xLabel,
+                                            const String yLabel,
+                                            const String title,
+                                            PGPlotter& plotter) const
+
+//
+// With the cursor, mark the range for the window method
+//
+// Outputs:
+//  window    The window (pixels)
+//
+// Returns false if couldn't set window becasue spectrum
+// was all masked
+{
+ 
+// First plot the spectrum
+   
+   if (!drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+                      xLabel, yLabel, title, True, plotter)) return False;
+
+
+// Try and get a decent range from user   
+      
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
+   Bool more = True;
+   Bool ditch, redo;
+   const Int nPts = y.nelements();   
+   T tX, tY1, tY2;
+
+   while (more) {
+  
+// Get and draw first location   
+
+      Bool final = False;
+      T x1 = nPts/2;
+      allSubsequent = True;
+      while (!getLoc(x1, allSubsequent, ditch, redo, final, plotter)) {};
+      if (ditch) {
+         window = 0;
+         return False;
+      }
+
+      if (!redo) {
+         window(0) = max(0,Int(x1+0.5));
+         tX = window(0);
+         tY1 = minMax(2);
+         tY2 = minMax(3);
+         drawVertical (tX, tY1, tY2, plotter);
+  
+
+// Get and draw second location
+  
+         T x2 = window(0);
+         final = True;
+         allSubsequent = True;
+         while (!getLoc(x2, allSubsequent, ditch, redo, final, plotter)) {};
+         if (ditch) {
+            window = 0;
+            return False;
+         } else if (redo) {
+            plotter.eras();
+            drawSpectrum  (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+                          xLabel, yLabel, title, False, plotter);
+         } else {
+            window(1) = min(nPts-1,Int(x2+0.5));
+            tX = window(1);
+            drawVertical (tX, tY1, tY2, plotter);
+         
+// Set window
+         
+            Int iTemp = window(0);
+            window(0) = min(iTemp, window(1));
+            window(1) = max(iTemp, window(1));
+         
+// If they stuffed it up, have another go.  Erase the line and redraw
+// the spectrum segment
+         
+            if (window(0) == window(1)) {
+               os << LogIO::NORMAL << "Degenerate window, try again" << LogIO::POST;
+               plotter.eras();
+               drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+                            xLabel, yLabel, title, False, plotter);
+
+            } else
+               more = False;
+         } 
+      }
+   }
+   return True;
+}
+
+
+template <class T>
+Bool MomentWindow<T>::getInterWindow(uInt& nFailed, 
+                                     Bool& allSubsequent, 
+                                     LogIO& os,
+                                     Vector<Int>& window,
+                                     const Bool doFit,
+                                     const Vector<T>& x,
+                                     const Vector<T>& y,
+                                     const Vector<Bool>& mask,
+                                     const Bool fixedYLimits,
+                                     const Float yMinAuto,
+                                     const Float yMaxAuto,
+                                     const String xLabel,
+                                     const String yLabel,
+                                     const String title,
+                                     PGPlotter& plotter) const
+//
+// Interactively select the moment window by fitting a Gaussian
+// or directly setting the window with the cursor.
+//
+// Inputs:
+//   x,y        Spectrum
+//   mask       Mask associated with spectrum. True is good.
+//   x,yLabel   Labels for plots
+//   title
+// Output:
+//   window     Include pixels in this range of indices.  If both 0,
+//              then discard this spectrum and mask moments
+//   allSubsequent 
+//              If True, then the user has instructed that
+//              all subsequent spectra are to use this window
+//              and we are to stop the interactive plotting
+{                                     
+   if (doFit) {   
+         
+         
+// We interactively fit a Gaussian and choose +/- 3 sigma limits as the range
+      
+      Vector<T> gaussPars(4);
+      if (!getInterGaussianFit (nFailed, gaussPars, os, x, y, mask, fixedYLimits, 
+                                yMinAuto, yMaxAuto, xLabel, yLabel, 
+                                title, plotter)) {
+         window = 0;
+         return False;
+      } else {
+    
+// Set 3-sigma range
+   
+         if (!setNSigmaWindow (window, gaussPars(1), gaussPars(2), 
+                               y.nelements(), 3)) {
+            os << LogIO::NORMAL << "Window too small for this spectrum" << LogIO::POST;
+            window = 0;
+            return False;
+         }
+
+// Mark window on plot
+         
+         plotter.eras ();
+         drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto, 
+                       xLabel, yLabel, title, False, plotter);
+         drawWindow (window, plotter);
+      }
+      allSubsequent = False;
+   } else {
+
+// The user just marks the range with the cursor
+
+      if (!getInterDirectWindow (allSubsequent, os, window, x, y, mask, 
+                                 fixedYLimits, yMinAuto, yMaxAuto, xLabel,
+                                 yLabel, title, plotter)) return False;
+   }
+  
+   return True;
+}
+
+
+template <class T>
+Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
+                                      const Vector<T>& x,
+                                      const Vector<T>& y,
+                                      const Vector<Bool>& mask,
+                                      const Double peakSNR,
+                                      const Double stdDeviation,
+                                      PGPlotter& plotter,
+                                      const Bool fixedYLimits,
+                                      const Float yMinAuto,
+                                      const Float yMaxAuto,
+                                      const String xLabel,
+                                      const String yLabel,
+                                      const String title) const
+//
+// Automatically work out the spectral window
+// with Albert Bosma's algorithm.
+//    
+// Inputs: 
+//   x,y       Spectrum
+//   plotter   Plot device active if True
+//   x,yLabel  Labels for plots
+// Output:
+//   window    The window
+//   Bool      False if we reject this spectrum.  This may
+//             be because it is all noise, or all masked
+//
+{
+      
+   if (plotter.isAttached()) {
+   
+// Plot spectrum 
+      
+      if (!drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+                        xLabel, yLabel, title, True, plotter)) return False;
    }
 
 
-   return retMoments_p;
-}
+// See if this spectrum is all noise first.  If so, forget it.
+// Return straight away if all maske
+
+   T dMean;
+   uInt iNoise = allNoise(dMean, y, mask, peakSNR, stdDeviation);
+   if (iNoise == 2) return False;
+
+
+// Draw on mean and sigma
+ 
+   const T sigma = stdDeviation;
+   if (plotter.isAttached()) {
+      drawMeanSigma (dMean, sigma, plotter);
+      if (iNoise==1) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
+   }
+   if (iNoise==1) {
+      window = 0;
+      return False;   
+   }
+
+
+// Find peak
+   
+
+   uInt minPos, maxPos;
+   T yMin, yMax, yMean;
+   stats(yMin, yMax, minPos, maxPos, yMean, y, mask);
+
+   const Int nPts = y.nelements(); 
+   Int iMin = max(0,Int(maxPos)-2);   
+   Int iMax = min(nPts-1,Int(maxPos)+2);
+   T tol = sigma / (nPts - (iMax-iMin-1));
+          
+       
+// Iterate to convergence
+   
+   Bool first = True;
+   Bool converged = False;
+   Bool more = True;
+   yMean = 0;
+   T oldYMean = 0;
+   while (more) {
+
+//     cout << LogIO::NORMAL << "iMin,iMax,oldmean,tol=" << iMin << "," << iMax << $
+   
+// Find mean outside of peak region
+
+      NumericTraits<T>::PrecisionType sum = 0;
+      for (Int i=0,j=0; i<nPts; i++) {
+         if (mask(i) && (i < iMin || i > iMax)) {
+            sum += y(i);
+            j++;
+         }
+      }
+      if (j>0) yMean = sum / j;
+   
+
+// Interpret result
+
+      if (!first && j>0 && abs(yMean-oldYMean) < tol) {
+         converged = True;
+         more = False;
+      } else if (iMin==0 && iMax==nPts-1)
+         more = False;
+      else {
+   
+// Widen window and redetermine tolerance
+
+         oldYMean = yMean;
+         iMin = max(0,iMin - 2);
+         iMax = min(nPts-1,iMax+2); 
+         tol = sigma / (nPts - (iMax-iMin-1));
+      }
+      first = False;
+   }   
+      
+// Return window
+
+   if (converged) {
+      window(0) = iMin;
+      window(1) = iMax;
+      return True;
+   } else {
+      window = 0;
+      return False;   
+   }
+}  
+
+
+template <class T> 
+Bool MomentWindow<T>::setNSigmaWindow (Vector<Int>& window,
+                                       const T pos,
+                                       const T width,
+                                       const Int nPts,
+                                       const Int N) const
+// 
+// Take the fitted Gaussian position and width and
+// set an N-sigma window.  If the window is too small
+// return a Fail condition.
+//
+// Inputs:
+//   pos,width   The position and width in pixels
+//   nPts        The number of points in the spectrum that was fit
+//   N           The N-sigma
+// Outputs:
+//   window      The window in pixels
+//   Bool        False if window too small to be sensible
+//
+{
+   window(0) = Int((pos-N*width)+0.5);
+   window(0) = min(nPts-1,max(0,window(0)));
+   window(1) = Int((pos+N*width)+0.5);
+   window(1) = min(nPts-1,max(0,window(1)));
+                                      
+   if ( abs(window(1)-window(0)) < 3) return False;
+   return True;
+} 
 
 
 
@@ -2267,7 +2525,7 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
 template <class T>
 MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
                         LogIO& os,
-                        const Int nLatticeOut)
+                        const uInt nLatticeOut)
 : iMom_p(iMom),
   os_p(os)
 {
@@ -2277,12 +2535,7 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 
 // Set/check some dimensionality
 
-   constructorCheck(retMoments_p, calcMoments_p,
-                    selectMoments_p, nLatticeOut);
-
-// Fish out moment axis
-
-   Int momAxis = momentAxis(iMom_p);
+   constructorCheck(calcMoments_p, selectMoments_p, nLatticeOut);
 
 // Make all plots with same y range ?
 
@@ -2316,6 +2569,10 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 
    peakSNR_p = peakSNR(iMom_p);
    stdDeviation_p = stdDeviation(iMom_p);
+
+// Number of failed Gaussian fits 
+
+   nFailed_p = 0;
 }
 
 
@@ -2325,20 +2582,23 @@ MomentFit<T>::~MomentFit()
 
 
 template <class T> 
-T MomentFit<T>::process(const Vector<T>& vector,
-			const IPosition& inPos)
+void MomentFit<T>::process(T&,
+                            Bool&,
+                            const Vector<T>&,
+                            const Vector<Bool>&,
+                            const IPosition&)
 {
-   throw(AipsError("MomentFit<T>::process(Vector<T>&, IPosition&): not implemented"));
-   T tmp = 0;
-   return tmp;
+   throw(AipsError("MomentFit<T>::process not implemented"));
 }
 
 
 
-
 template <class T> 
-Vector<T>& MomentFit<T>::multiProcess(const Vector<T>& profile,
-				      const IPosition& inPos)
+void MomentFit<T>::multiProcess(Vector<T>& moments,
+                                Vector<Bool>& momentsMask,
+                                const Vector<T>& profileIn,
+                                const Vector<Bool>& profileInMask,
+                                const IPosition& inPos)
 //
 // Generate moments from a Gaussian fit of this profile
 //
@@ -2346,7 +2606,7 @@ Vector<T>& MomentFit<T>::multiProcess(const Vector<T>& profile,
 
 // Create the abcissa array and some labels
        
-   const Int nPts = profile.nelements();
+   Int nPts = profileIn.nelements();
    Vector<T> gaussPars(4);
    makeAbcissa (abcissa_p, nPts);
    String xLabel;
@@ -2365,22 +2625,24 @@ Vector<T>& MomentFit<T>::multiProcess(const Vector<T>& profile,
 
 // Automatic
 
-      if (!getAutoGaussianFit (gaussPars, abcissa_p, profile, peakSNR_p, 
-                               stdDeviation_p, plotter_p, fixedYLimits_p,
+      if (!getAutoGaussianFit (nFailed_p, gaussPars, abcissa_p, profileIn, profileInMask, 
+                               peakSNR_p, stdDeviation_p, plotter_p, fixedYLimits_p,
                                yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title)) {
-         retMoments_p = 0;   
-         return retMoments_p;
+         moments = 0;   
+         momentsMask = False;
+         return;
       }
 
    } else {
 
 // Interactive
    
-       if (!getInterGaussianFit(gaussPars, os_p, abcissa_p, profile, 
+       if (!getInterGaussianFit(nFailed_p, gaussPars, os_p, abcissa_p, profileIn, profileInMask,
                                 fixedYLimits_p, yMinAuto_p, yMaxAuto_p,
                                 xLabel, yLabel, title, plotter_p)) {
-         retMoments_p = 0;   
-         return retMoments_p;
+         moments = 0;   
+         momentsMask = False;
+         return;
       }
    }
    
@@ -2398,51 +2660,66 @@ Vector<T>& MomentFit<T>::multiProcess(const Vector<T>& profile,
    gauss_p.setWidth(gaussPars(2));
 
 
-// Compute moments
+// Compute moments from the fitted Gaussian
             
-   Double s0  = 0.0;
-   Double s0Sq = 0.0;
-   Double s1  = 0.0;
-   Double s2  = 0.0;
+   NumericTraits<T>::PrecisionType s0  = 0.0;
+   NumericTraits<T>::PrecisionType s0Sq = 0.0;
+   NumericTraits<T>::PrecisionType s1  = 0.0;
+   NumericTraits<T>::PrecisionType s2  = 0.0;
    Int iMin = -1;
    Int iMax = -1;
-   Double dMin =  1.0e30;
-   Double dMax = -1.0e30;
+   T dMin =  1.0e30;
+   T dMax = -1.0e30;
    Double coord = 0.0;
    T xx;
    Vector<T> gData(nPts);
    
-   for (Int i=0; i<nPts; i++) {
-      xx = i;
-      gData(i) = gauss_p(xx) + gaussPars(3);
+   for (Int i=0,j=0; i<nPts; i++) {
+      if (profileInMask(i)) {
+         xx = i;
+         gData(j) = gauss_p(xx) + gaussPars(3);
       
-      if (preComp) {
-         coord = sepWorldCoord_p(i);
-      } else if (doCoordCalc_p) {
-         coord = getMomentCoord(iMom_p, pixelIn_p, 
-                                worldOut_p, Double(i));
+         if (preComp) {
+            coord = sepWorldCoord_p(i);
+         } else if (doCoordCalc_p) {
+            coord = getMomentCoord(iMom_p, pixelIn_p, 
+                                   worldOut_p, Double(i));
+         }
+         accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+                   dMin, dMax, i, gData(j), coord);
+         j++;
       }
-      accumSums(s0, s0Sq, s1, s2, iMin, iMax,
-                dMin, dMax, i, gData(i), coord);
    }
+
+// If no unmasked points go home.  This shouldn't happen
+// as we can't have done a fit under these conditions.
+
+   nPts = j;
+   if (nPts == 0) {
+      moments = 0;   
+      momentsMask = False;
+      return;
+   }
+
    
 
 
 // Absolute deviations of I from mean needs an extra pass.
          
-   Double sumAbsDev = 0.0;
+   NumericTraits<T>::PrecisionType sumAbsDev = 0.0;
    if (doAbsDev_p) {
-      Double iMean = s0 / nPts;
-      for (Int i=0; i<nPts; i++) {
-         sumAbsDev += abs(Double(gData(i) - iMean));
-      }
+      T iMean = s0 / nPts;
+      for (Int i=0; i<nPts; i++) sumAbsDev += abs(gData(i) - iMean);
    }
 
 
 // Median of I
          
    T dMedian = 0.0;
-   if (doMedianI_p) dMedian = median(gData.ac());
+   if (doMedianI_p) {
+      gData.resize(nPts, True);
+      dMedian = median(gData.ac());
+   }
    T vMedian = 0.0;
        
 // Fill all moments array
@@ -2452,14 +2729,12 @@ Vector<T>& MomentFit<T>::multiProcess(const Vector<T>& profile,
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
 
-// Return vector of selected moments by reference
+// Fill vector of selected moments 
 
-   for (i=0; i<selectMoments_p.nelements(); i++) {
-      retMoments_p(i) = calcMoments_p(selectMoments_p(i));
+   for (i=0; i<Int(selectMoments_p.nelements()); i++) {
+      moments(i) = calcMoments_p(selectMoments_p(i));
+      momentsMask(i) = True;
    }
-
-
-   return retMoments_p;
 }
 
 
