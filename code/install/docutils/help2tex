@@ -44,11 +44,11 @@ if($opt_noheaders == 0 && $opt_glish == 0){
    print "\\usepackage{html, longtable, epsfig}\n";
    print "\\begin{document}\n";   
    print "\\newcommand{\\helptab}{\n";
-   print "\\begin{tabular*}{4.70in}{|p{1in}p{0.36in}p{2.79in}|}\n";
+   print "\\begin{tabular}{|l p{0.36in}p{2.79in}|}\n";
    print "}\n";
    print "\\begin{htmlonly}\n";
    print "\\renewcommand{\\helptab}{\n";
-   print "\\begin{tabular*}{4.70in}{|p{1in}p{0.75in}p{2.38in}|}\n";
+   print "\\begin{tabular}{|l p{0.75in}p{2.38in}|}\n";
    print "}\n";
    print "\\end{htmlonly}\n";
 }
@@ -400,7 +400,7 @@ sub make_tex_file{
           \& Allowed: $4\\\\
           \& Default: $3\\\\/g;
 
-     s/\\end{ahaipsrc}/\\end{tabular*}/g;
+     s/\\end{ahaipsrc}/\\end{tabular}/g;
    
      s/\\begin{ahaipsrc}/$wlabel*{Aipsrc Variables}
    \\hfill \\\\
@@ -408,7 +408,7 @@ sub make_tex_file{
    \\hline/g;
    
 #
-     s/\\end{ahargs}/\\end{tabular*}/g;
+     s/\\end{ahargs}/\\end{tabular}/g;
    
      s/\\begin{ahargs}/$wlabel*{Arguments}
    \\hfill \\\\
@@ -421,7 +421,6 @@ sub make_tex_file{
    \\hfill \\\\
    \\begin{longtable}{|p{1in}p{0.39in}p{2.79in}|}
    \\hline/g;
-   #\\begin{tabular*}{4.70in}{|p{1in}|p{3.29in}|}
    
      s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{\s*}\s*{\s*}/
    $1 \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\ \\hline/g;
