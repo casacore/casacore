@@ -41,7 +41,9 @@
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/SkyComponent.h>
-#include <aips/Fitting/FitLSQ.h>
+#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <trial/Fitting/Fit2D.h>
+#include <aips/Functionals/NQGaussian2D.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageUtilities.h>
@@ -49,6 +51,7 @@
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LCBox.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/AutoDiff.h> 
 #include <aips/Mathematics/NumericTraits.h> 
 #include <aips/Measures/Stokes.h>
 #include <aips/Quanta/Quantum.h>
@@ -105,15 +108,17 @@ Bool ImageSourceFinder<T>::setNewImage (const ImageInterface<T>& image)
 template <class T>
 ComponentList ImageSourceFinder<T>::findSources (LogIO& os, Int nMax, 
                                                  Double cutoff, Bool absFind,
-                                                 Bool doPoint)
+                                                 Bool doPoint, Int width)
 {
-   return findSources(os, *pImage_p, nMax, cutoff, absFind, doPoint);
+   return findSources(os, *pImage_p, nMax, cutoff, absFind, doPoint, width);
 }
+
 
 
 template <class T>
 SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& absPixel,
-                                                    Double cutoff, Bool absFind, Bool doPoint)
+                                                    Double cutoff, Bool absFind, 
+                                                    Bool doPoint, Int width)
 {
 
 // Find sky
@@ -135,7 +140,7 @@ SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& a
       os << stats.errorMessage() << LogIO::EXCEPTION;
    }
       
-// Make new little SubImage around location in plane of sky
+// Make SubImage of plane of sky holding maximum or minimum
          
    IPosition shape = pImage_p->shape();
    const uInt nDim = pImage_p->ndim();
@@ -168,10 +173,10 @@ SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& a
       }
    }
 // 
-   blc(pixelAxes(0)) -= 5;
-   blc(pixelAxes(1)) -= 5;
-   trc(pixelAxes(0)) += 5;
-   trc(pixelAxes(1)) += 5;
+   blc(pixelAxes(0)) = 0;
+   blc(pixelAxes(1)) = 0;
+   trc(pixelAxes(0)) = shape(pixelAxes(0))-1;
+   trc(pixelAxes(1)) = shape(pixelAxes(1))-1;
 //
    IPosition inc(nDim,1);
    LCBox::verify (blc, trc, inc, shape);
@@ -182,7 +187,8 @@ SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& a
 // Find one source
 
    const uInt nMax = 1;
-   ComponentList list = findSources (os, subImage, nMax, cutoff, absFind, doPoint);
+   ComponentList list = findSources (os, subImage, nMax, cutoff, absFind, 
+                                     doPoint, width);
 //
    SkyComponent sky = list.component(0);
 //
@@ -207,37 +213,29 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                                                  const ImageInterface<T>& image,
                                                  Int nMax, 
                                                  Double cutoff, Bool absFind,
-                                                 Bool doPoint)
+                                                 Bool doPoint, Int width)
 {
+// Output
+
+   ComponentList listOut;
 
 // Make sure the Image is 2D and that it holds the sky.  Exception if not.
 
    const CoordinateSystem& cSys = image.coordinates();
    Bool xIsLong = CoordinateUtil::isSky(os, cSys);
 
-// Width support
+// Width support for fast source finder.
+// Can go to w/off/off2 = 5/2/1 but craps out if bigger.
 
-   Int w = 5;
-   Int off = 2;
-   Int off2 = 1;
-   if (doPoint) {
-      w = 3;
-      off = 1;
-      off2 = 0;
-   }
-
-   NumericTraits<T>::PrecisionType **mat = 0;
-   mat = new NumericTraits<T>::PrecisionType*[w];
-   for(Int i=0;i<w;i++){
-      mat[i] = new NumericTraits<T>::PrecisionType[w];
-   }
+   Int w = 3;
+   Int off = 1;
+   Int off2 = 0;
 
 // Results matrix
 
+   Matrix<NumericTraits<T>::PrecisionType> mat(w,w);
    Matrix<NumericTraits<T>::PrecisionType> rs(nMax, 3);    // flux, x, y
-   Matrix<NumericTraits<T>::PrecisionType> ss(nMax, 3);    // maj, min, pa
    rs = 0.0;
-   ss = 0.0;
     
 // Assume only positive
     
@@ -327,20 +325,21 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                }
 //
                pos(0) = i+ii;
-               mat[jj+off][ii+off] = inPtr[(inp+jj+w)%w].ref()(pos);
-               mat[jj+off][ii+off] *= asign;            // make abs
+               mat(jj+off,ii+off) = inPtr[(inp+jj+w)%w].ref()(pos);
+               mat(jj+off,ii+off) *= asign;            // make abs
             }
             if (xt) break;
          }
          if (xt) continue;
                      
 // Test if a local peak
-                
-         if (v<=abs(mat[0+off2][1+off2]) || v<=abs(mat[2+off2][1+off2]) ||
-             v<=abs(mat[1+off2][0+off2]) || v<=abs(mat[1+off2][2+off2])) continue;
+
+         if (v<=abs(mat(0+off2,1+off2)) || v<=abs(mat(2+off2,1+off2)) ||
+             v<=abs(mat(1+off2,0+off2)) || v<=abs(mat(1+off2,2+off2))) continue;
 
 // Solve general ellipsoid
     
+         Int k = 0;
          fit.set(6);
          for (Int jj=-off; jj<(off+1); jj++) {
             for (Int ii=-off; ii<(off+1); ii++) {
@@ -351,7 +350,8 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                gel(4) = ii*ii;
                gel(5) = jj*ii;
                fit.makeNorm(gel, 1.0 - 0.5*(abs(ii)+abs(jj)) + 0.25*abs(jj*ii),
-                            mat[jj+off][ii+off]);
+                            mat(jj+off,ii+off));
+               k++;
             }
          }
 //
@@ -381,19 +381,12 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                for (Int l=nMax-1; l>k; l--) {
                   for (uInt i0=0; i0<3; i0++) {
                      rs(l,i0) = rs(l-1,i0);
-                     ss(l,i0) = ss(l-1,i0);
                   }
                }
 //
                rs(k,0) = sol(0);                      // Peak
-               rs(k,1) = j+r1-1;                      // Y
-               rs(k,2) = i+r0;                        // X
-
-// Wim will fill in these three numbers.
-
-               ss(k,0) = 3.01;                        // major
-               ss(k,1) = 3.0;                         // minor
-               ss(k,2) = 0.0;                         // pa
+               rs(k,1) = i+r0;                        // X
+               rs(k,2) = j+r1-1;                      // Y
 //
                for (Int jj=-off; jj<(off+1); jj++) {
                   for (Int ii=-off; ii<(off+1); ii++) {
@@ -414,50 +407,120 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
      if (abs(rs(k,0)) < x || rs(k,0) == 0) break;
      nFound++;   
    }      
-   
+//
+   if (nFound==0) {
+      os << LogIO::WARN << "No sources were found" << LogIO::POST;
+      return listOut;
+   }
+
+// Generate more accurate fit if required giveing shape information
+
+   Matrix<NumericTraits<T>::PrecisionType> ss(nFound, 3);    // major, minor, pa
+   if (!doPoint) {
+
+// Loop over found sources
+
+      for (Int k=0; k<nFound; k++) {
+         if (width <= 0) {
+
+// This means we want just the default shape estimates only
+
+            ss(k,0) = width;
+            ss(k,1) = width;
+            ss(k,2) = 0.0;
+         } else {
+
+// See if we can do this source
+
+            Int iCen = Int(rs(k,1));
+            Int jCen = Int(rs(k,2));
+            IPosition blc0(image.ndim(),0);
+            IPosition trc0(image.ndim(),0);
+            blc0(0) = iCen - width;
+            blc0(1) = jCen - width;
+            trc0(0) = iCen + width;
+            trc0(1) = jCen + width;
+//
+            if (blc0(0)<0 || trc0(0)>=inShape(0) ||
+                blc0(1)<0 || trc0(1)>=inShape(1)) {
+               os << LogIO::WARN << "Component " << k << " is too close to the image edge for" << endl;
+               os << "  shape-fitting - resorting to default shape estimates" << LogIO::POST;
+               ss(k,0) = width;
+               ss(k,1) = width;
+               ss(k,2) = 0.0;
+            } else {
+
+// Fish out data to fit
+
+               IPosition shp = trc0 - blc0 + 1;
+               Array<T> dataIn = image.getSlice(blc0, shp, False);               
+               Array<Bool> maskIn = image.getMaskSlice(blc0, shp, False);
+               Array<T> sigmaIn(dataIn.shape(),1.0);
+
+// Make fitter, add model and fit
+
+               Fit2D fit2d(os);
+               Vector<NumericTraits<T>::PrecisionType> model = 
+                  fit2d.estimate(Fit2D::GAUSSIAN, dataIn, maskIn);
+               model(0) = rs(k,0);
+               fit2d.addModel(Fit2D::GAUSSIAN, model);
+               Fit2D::ErrorTypes ret = fit2d.fit(dataIn, maskIn, sigmaIn, False);
+//              
+               if (ret==Fit2D::OK) {
+                  Vector<NumericTraits<T>::PrecisionType> solution = 
+                     fit2d.availableSolution();
+//
+                  rs(k,0) = solution(0);
+                  rs(k,1) = solution(1) + blc0(0);
+                  rs(k,2) = solution(2) + blc0(1);
+//
+                  ss(k,0) = solution(3);
+                  ss(k,1) = solution(4);
+                  ss(k,2) = solution(5);
+               } else {
+                  os << LogIO::WARN << "Fit did not converge, resorting to default shape estimates" << LogIO::POST;
+                  ss(k,0) = width;
+                  ss(k,1) = width;
+                  ss(k,2) = 0.0;
+               }
+            }
+         }
+      }
+   }
+
+// Fill SkyComponents
+
+   os << LogIO::NORMAL << "Found " << nFound << " sources" << LogIO::POST;
+   const ImageInfo& info = image.imageInfo();
+   const Unit& bU = image.units();
+   Double rat;
+
 // What Stokes is the plane we are finding in ?
       
    Stokes::StokesTypes stokes(Stokes::Undefined);
    stokes = CoordinateUtil::findSingleStokes (os, cSys, 0);
-  
-// Fill SkyComponents
-
-   ComponentList listOut;
-   if (nFound==0) {
-      os << LogIO::WARN << "No sources were found" << LogIO::POST;
-   } else {
-      os << LogIO::NORMAL << "Found " << nFound << " sources" << LogIO::POST;
-      const ImageInfo& info = image.imageInfo();
-      const Unit& bU = image.units();
-      Double rat;
 //
-      Vector<Double> pars;
-      ComponentType::Shape cType;
-      if (doPoint) {
-        cType = ComponentType::POINT;
-        pars.resize(3);
-      } else {
-        cType = ComponentType::GAUSSIAN;
-        pars.resize(6);
+   Vector<Double> pars;
+   ComponentType::Shape cType(ComponentType::POINT);
+   pars.resize(3);
+   if (!doPoint) {
+      cType = ComponentType::GAUSSIAN;
+      pars.resize(6, True);
+   }
+//
+   for (Int k=0; k<nFound; k++) {
+      pars(0) = rs(k,0);
+      pars(1) = rs(k,1); 
+      pars(2) = rs(k,2);
+//
+      if (!doPoint) {
+         pars(3) = ss(k,0);
+         pars(4) = ss(k,1);
+         pars(5) = ss(k,2);
       }
-//
-      for (Int k=0; k<nFound; k++) {
-         pars(0) = rs(k,0);
-         pars(1) = rs(k,2);            // x & y flipped
-         pars(2) = rs(k,1);
-
-//
-         if (!doPoint) {
-            pars(3) = ss(k,0);
-            pars(4) = ss(k,1);
-            pars(5) = ss(k,2);
-         }
-// 
-         listOut.add(ImageUtilities::encodeSkyComponent (os, rat, info, cSys, bU,
-                                                         cType, pars, stokes, xIsLong));
-      }
+//   
+      listOut.add(ImageUtilities::encodeSkyComponent (os, rat, info, cSys, bU,
+                                                      cType, pars, stokes, xIsLong));
    } 
-//
-   delete [] mat;
    return listOut;
 }
