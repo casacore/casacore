@@ -1,6 +1,6 @@
 # $Id$
 
-XLIBLIST := WCSLIB MIRLIB
+XLIBLIST := WCSLIB MIRLIB CFITSIO
 
 # Use the generic AIPS++ class implementation makefile.
 #------------------------------------------------------
