@@ -1,0 +1,15 @@
+
+change id: 0048
+ author:   Athol Kemball
+ date:     2000/09/06
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   map
+ type:     Code
+ category: New
+ summary:  New tool map.g
+
+Added new tool map.g, which resides one level higher than
+calibrater and imager. Includes associated data item
+managers for the composite data item types required.
