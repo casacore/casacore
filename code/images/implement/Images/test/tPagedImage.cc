@@ -61,6 +61,21 @@ Float func(Float val)
   return 2.0*val*val;
 };
 
+Table makeScrTable(const String& name)
+{
+   SetupNewTable setup(name, TableDesc(), Table::Scratch);
+   Table table(setup);
+   return table;
+}
+
+Table makeNewTable(const String& name)
+{
+   SetupNewTable setup(name, TableDesc(), Table::New);
+   Table table(setup);
+   return table;
+}
+
+
 int main()
 {
   try {
@@ -74,9 +89,7 @@ int main()
 // Test constructors
 
     {
-       SetupNewTable setup(String("temp_tPagedImage.img1"), TableDesc(), 
-                           Table::Scratch);
-       Table table(setup);
+       Table table = makeScrTable(String("temp_tPagedImage.img1"));
        PagedImage<Float> pIm(tiledShape, cSys, table);
     }
     {
@@ -91,17 +104,12 @@ int main()
     }
     Table::deleteTable(String("temp_tPagedImage.img3"));
     {
-       SetupNewTable setup(String("temp_tPagedImage.img4"), TableDesc(), 
-                           Table::New);
-       Table table(setup);
+       Table table = makeScrTable(String("temp_tPagedImage.img4"));
        PagedImage<Float> pIm(tiledShape, cSys, table);
        PagedImage<Float> pIm2(table);
     }
-    Table::deleteTable(String("temp_tPagedImage.img4"));
     {
-       SetupNewTable setup(String("temp_tPagedImage.img5"), TableDesc(), 
-                           Table::New);
-       Table table(setup);
+       Table table = makeNewTable(String("temp_tPagedImage.img5"));
        PagedImage<Float> pIm(tiledShape, cSys, table);
     }
     {
@@ -261,9 +269,7 @@ int main()
 // do{Put,Get}Slice tests
 //
     {
-       SetupNewTable setup(String("temp_tPagedImage.img7"), TableDesc(), 
-                           Table::Scratch);
-       Table table(setup);
+       Table table = makeScrTable(String("temp_tPagedImage.img7"));
        IPosition shape2(2,5, 10);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
@@ -324,9 +330,7 @@ int main()
 // Silly Lattice addition operator
 //
     {
-       SetupNewTable setup(String("temp_tPagedImage.img8"), TableDesc(), 
-                           Table::Scratch);
-       Table table(setup);
+       Table table = makeScrTable(String("temp_tPagedImage.img8"));
        IPosition shape2(2,5, 10);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
@@ -359,9 +363,7 @@ int main()
 // apply functions
 //
    {
-       SetupNewTable setup(String("temp_tPagedImage.img9"), TableDesc(), 
-                           Table::Scratch);
-       Table table(setup);
+       Table table = makeScrTable(String("temp_tPagedImage.img9"));
        IPosition shape2(2,5, 10);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
@@ -397,9 +399,7 @@ int main()
 // test table function.  I don't really know what else to do with it.
 //
    {
-       SetupNewTable setup(String("temp_tPagedImage.img11"), TableDesc(), 
-                           Table::Scratch);
-       Table table(setup);
+       Table table = makeScrTable(String("temp_tPagedImage.img11"));
        IPosition shape2(2, 5, 10);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
@@ -415,9 +415,7 @@ int main()
 // Do some iterating to test the makeIter function (indirectly)
 //
    {
-       SetupNewTable setup(String("temp_tPagedImage.img10"), TableDesc(), 
-                           Table::Scratch);
-       Table table(setup);
+       Table table = makeScrTable(String("temp_tPagedImage.img10"));
        IPosition shape2(2, 128, 256);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
