@@ -1,5 +1,5 @@
 //# QuantumHolder.cc: A holder for Quantum to enable record conversions
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,12 +37,14 @@
 #include <aips/Arrays/Vector.h>
 
 //# Constructors
-QuantumHolder::QuantumHolder() : hold_p() {};
+QuantumHolder::QuantumHolder() 
+  : hold_p() {};
 
-QuantumHolder::QuantumHolder(const QBase &in) :
-  hold_p(in.clone()) {}
+QuantumHolder::QuantumHolder(const QBase &in) 
+  : hold_p(in.clone()) {}
 
-QuantumHolder::QuantumHolder(const QuantumHolder &other) : hold_p() {
+QuantumHolder::QuantumHolder(const QuantumHolder &other) 
+  : hold_p() {
   if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
 }
 
@@ -51,7 +53,13 @@ QuantumHolder::~QuantumHolder() {}
 
 //# Operators
 QuantumHolder &QuantumHolder::operator=(const QuantumHolder &other) {
-  if (this != &other) hold_p.set(other.hold_p.ptr()->clone());
+  if (this != &other) {
+    if (other.hold_p.ptr()) {
+      hold_p.set(other.hold_p.ptr()->clone());
+    } else {
+      hold_p.clear();
+    };
+  };
   return *this;
 }
 

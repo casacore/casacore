@@ -48,20 +48,29 @@
 #include <aips/Logging/LogOrigin.h>
 
 //# Constructors
-MeasureHolder::MeasureHolder() : hold_p() {};
+MeasureHolder::MeasureHolder() 
+  : hold_p() {};
 
-MeasureHolder::MeasureHolder(const Measure &in) : hold_p(in.clone()) {}
+MeasureHolder::MeasureHolder(const Measure &in) 
+  : hold_p(in.clone()) {}
 
-MeasureHolder::MeasureHolder(const MeasureHolder &other) : hold_p() {
-	if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
-      }
+MeasureHolder::MeasureHolder(const MeasureHolder &other) 
+  : hold_p() {
+  if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
+}
 
 //# Destructor
 MeasureHolder::~MeasureHolder() {}
 
 //# Operators
 MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
-  if (this != &other) hold_p.set(other.hold_p.ptr()->clone());
+  if (this != &other) {
+    if (other.hold_p.ptr()) {
+      hold_p.set(other.hold_p.ptr()->clone());
+    } else {
+      hold_p.clear();
+    };
+  };
   return *this;
 }
 
