@@ -42,6 +42,7 @@
 #
 #   -l     Latchkey mode; the update produced will be invisible to
 #          'inhale' unless it is also invoked with the "-l" option.
+#          (This mode is now pretty much obsolete.)
 #
 #   -F     Force mode; turn off all sanity checks for things like
 #          running under the correct account, the proper site, etc.
@@ -1019,10 +1020,11 @@
 #    Count our blessings.
      if [ -f "BLESSED" ]
      then
-        BLESSED=`cat BLESSED | sed 's/#.*//'| cut -f1 -d:`
+        BLESSED=`cat BLESSED | sed 's/#.*//'| awk '{print $1}'`
 
         for BLESSING in $BLESSED
         do
+           # Need to prevent attempting duplicate links here.
            [ -f "master-$BLESSING.tar.gz" ] && \
             echo "exhale: Blessing incremental $BLESSING" && \
             ln "master-$BLESSING.tar.gz" "blessed-master-$BLESSING.tar.gz"
