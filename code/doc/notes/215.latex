@@ -1,0 +1,28 @@
+\documentclass[11pt]{article}
+\usepackage{html, longtable, epsfig}
+%%---------------------------------------------------------------------------
+ 
+\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
+\externallabels{../../reference/System}{../../reference/System/labels.pl}
+\externallabels{../197}{../197/labels.pl}
+\begin{document}
+ 
+\title{NOTE 215 -- AIPS++ Documentation}
+  
+ 
+\author{W. Young}
+ 
+\date{Nov 12, 1997}
+ 
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (??kB).}{
+215.ps}
+\end{htmlonly}
+ 
+\tableofcontents
+      
+\input{body215.tex}
+\end{document}
+
