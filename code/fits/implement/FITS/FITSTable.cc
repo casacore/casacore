@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,8 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
+
+#include <aips/Utilities/ValType.h>
 
 #include <aips/Arrays/Array.h>
 
@@ -202,19 +204,14 @@ RecordDesc FITSTabular::descriptionFromHDU(
 	    // TpString is the only known special case
 	    // is this a substring convention
 	    if (subStringInfo.isDefined(colname)) {
-		cout << "Sub string convention on column : " << colname << endl;
 		const Record info(subStringInfo.asRecord(colname));
 		Int nelem = info.asInt("NELEM");
 		if (nelem > 0) {
 		    // fixed shape
 		    description.addField(colname, type, IPosition(1,nelem));
-		    cout << "   fixed shape : " << nelem << endl;
-		    cout << "   nchar = " << info.asInt("NCHAR") << endl;
 		} else {
 		    // variable shape
 		    description.addField(colname, asArray(type));
-		    cout << "   variable shape, max length = " << info.asInt("NCHAR") << endl;
-		    cout << "   delimiter = " << info.asString("DELIM") << endl;
 		}
 	    } else {
 		// Scalar
@@ -352,36 +349,88 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular)
 
     for (uInt i=0;i<desc.nfields();i++) {
 	if (!desc.isArray(i)) {
+	    // it shouldn't be necessary to set the default value here
+	    // but it seem to be 
 	    switch (desc.type(i)) {
 	    case TpBool:
-		td.addColumn(ScalarColumnDesc<Bool>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<Bool> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefBool());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<Bool>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpChar:
-		td.addColumn(ScalarColumnDesc<Char>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<Char> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefChar());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<Char>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpUChar:
-		td.addColumn(ScalarColumnDesc<uChar>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<uChar> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefUChar());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<uChar>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpShort:
-		td.addColumn(ScalarColumnDesc<Short>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<Short> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefShort());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<Short>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpInt:
-		td.addColumn(ScalarColumnDesc<Int>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<Int> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefInt());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<Int>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpFloat:
-		td.addColumn(ScalarColumnDesc<Float>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<Float> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefFloat());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<Float>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpDouble:
-		td.addColumn(ScalarColumnDesc<Double>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<Double> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefDouble());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<Double>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpComplex:
-		td.addColumn(ScalarColumnDesc<Complex>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<Complex> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefComplex());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<Complex>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpDComplex:
-		td.addColumn(ScalarColumnDesc<DComplex>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<DComplex> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefDComplex());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<DComplex>(desc.name(i), desc.comment(i)));
 		break;
 	    case TpString:
-		td.addColumn(ScalarColumnDesc<String>(desc.name(i), desc.comment(i)));
+		{ 
+		    ScalarColumnDesc<String> scd(desc.name(i), desc.comment(i));
+		    scd.setDefault(ValType::undefString());
+		    td.addColumn(scd);
+		}
+		// td.addColumn(ScalarColumnDesc<String>(desc.name(i), desc.comment(i)));
 		break;
 	    default:
 		cerr << "Unrecognized scalar column data type in column " <<
