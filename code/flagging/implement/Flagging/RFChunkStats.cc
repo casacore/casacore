@@ -37,7 +37,7 @@
 // use a null (unattached plotter)
 static class PGPlotter nullPGPlotter;
         
-RFChunkStats::RFChunkStats( VisibilityIterator &vi,VisBuffer &vb,const RedFlagger &rf,
+RFChunkStats::RFChunkStats( VisibilityIterator &vi,VisBuffer &vb,RedFlagger &rf,
     PGPlotterInterface *pgp_scr=NULL,PGPlotterInterface *pgp_rep=NULL )
   : visiter(vi),
     visbuf(vb),
@@ -55,6 +55,11 @@ const MeasurementSet & RFChunkStats::measSet () const
   return flagger.measSet(); 
 } 
 
+const String RFChunkStats::msName () const 
+{ 
+  return flagger.measSet().tableName(); 
+} 
+
 const Vector<String> & RFChunkStats::antNames () const 
 { 
   return flagger.antNames(); 
@@ -65,6 +70,13 @@ const Vector<Double> & RFChunkStats::frequency ()
   return visiter.frequency(freq); 
 }
 
+PGPlotterInterface & RFChunkStats::pgpscr() const  
+{ return flagger.pgpscr(); }
+PGPlotterInterface & RFChunkStats::pgprep() const  
+{ return flagger.pgprep(); }
+void RFChunkStats::setReportPanels (Int nx,Int ny) const 
+{ flagger.setReportPanels(nx,ny); }
+
 void RFChunkStats::newChunk ()
 {
   itime=-1;
@@ -73,11 +85,11 @@ void RFChunkStats::newChunk ()
   visshape = visiter.visibilityShape();
   counts[POLZN] = visshape(0);
   counts[CHAN] = visshape(1);
-//  counts[TIME] = visiter.nSubInterval();
-  counts[TIME] = flagger.numTime();
-  RedFlagger::logSink()<<LogIO::WARN<< 
-    "RFChunkStats::newChunk(): "
-    "VisIter::nSubInterval() not yet implemented. Using global NTIME instead\n"<<LogIO::NORMAL;
+  counts[TIME] = visiter.nSubInterval();
+//  counts[TIME] = flagger.numTime();
+//  RedFlagger::logSink()<<LogIO::WARN<< 
+//    "RFChunkStats::newChunk(): "
+//    "VisIter::nSubInterval() not yet implemented. Using global NTIME instead\n"<<LogIO::NORMAL;
   counts[ROW]  = visiter.nRowChunk();
 // get correlation types
   visiter.corrType(corrtypes);
