@@ -106,8 +106,14 @@ Bool LCRegionSingle::masksEqual (const LCRegion& other) const
 
 const Array<Bool> LCRegionSingle::maskArray() const
 {
-   COWPtr<Array<Bool> > pMask(new Array<Bool>(itsMaskPtr->shape()));
-   itsMaskPtr->get(pMask);
+
+// Return a [] shaped array if there is no mask
+
+   IPosition shape;
+   if (hasMask()) shape = itsMaskPtr->shape();
+   COWPtr<Array<Bool> > pMask(new Array<Bool>(shape));
+   if (hasMask()) itsMaskPtr->get(pMask);
+
    return *pMask;
 }
 
