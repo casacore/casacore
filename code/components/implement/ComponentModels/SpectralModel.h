@@ -29,7 +29,7 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
-#include <trial/Utilities/RecordTransformable.h>
+#include <aips/Utilities/RecordTransformable.h>
 
 class MFrequency;
 class RecordInterface;
