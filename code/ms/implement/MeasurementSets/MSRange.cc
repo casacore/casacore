@@ -42,26 +42,23 @@
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Tables/RefRows.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Assert.h>
 
 
-MSRange::MSRange():blockSize_p(10),ddId_p(UNCHECKED),
-		   checked_p(False),sel_p(0)
+MSRange::MSRange():blockSize_p(10),ddId_p(0),constantShape_p(False),sel_p(0)
 {}
 
-MSRange::MSRange(const MeasurementSet& ms, Int dataDescriptionId)
-:ms_p(ms),blockSize_p(10),ddId_p(dataDescriptionId),
- checked_p(False),sel_p(0)
-{
-}
+MSRange::MSRange(const MeasurementSet& ms)
+:ms_p(ms),blockSize_p(10),constantShape_p(False),sel_p(0)
+{}
 
 MSRange::MSRange(const MSSelector& msSel)
-  :ms_p(msSel.selectedTable()),blockSize_p(10),
-	ddId_p(msSel.dataDescId()),checked_p(False),sel_p(&msSel)
-{
-}
+  :ms_p(msSel.selectedTable()),blockSize_p(10),constantShape_p(False),
+   sel_p(&msSel)
+{ddId_p=msSel.dataDescId();}
 
 MSRange::MSRange(const MSRange& other)
 { operator=(other); }
@@ -72,54 +69,47 @@ MSRange& MSRange::operator=(const MSRange& other)
   if (this==&other) return *this;
   ms_p=other.ms_p;
   blockSize_p=other.blockSize_p;
-  ddId_p=other.ddId_p;
-  checked_p=other.checked_p;
+  ddId_p.resize(0); ddId_p=other.ddId_p;
+  spwId_p.resize(0); spwId_p=other.spwId_p;
+  polId_p.resize(0); polId_p=other.polId_p;
+  constantShape_p=other.constantShape_p;
   sel_p=other.sel_p;
   return *this;
 }
 
-void MSRange::setMS(const MeasurementSet& ms, Int dataDescriptionId)
+Bool MSRange::checkShapes()
 {
-  ms_p=ms;
-  ddId_p=dataDescriptionId;
-  checked_p=False;
-  sel_p=0;
-}
-
-Bool MSRange::checkSelection()
-{
-  if (!checked_p) {
-    if (ddId_p<0) {
-      // check dd
-      ROScalarColumn<Int> dd(ms_p,MS::columnName(MS::DATA_DESC_ID));
-      Vector<Int> ddId=scalarRange(dd);
-      Int ndd=ddId.nelements();
-      if (ndd==1) {
-	ddId_p=dd(0);
-      }
-      if (ddId_p<0) {
-	// check if the shape is the same for all spectral windows that occur
-	// in the main table
-	Bool constantShape=True;
-	ROMSDataDescColumns ddc(ms_p.dataDescription());
-	ROMSSpWindowColumns spwc(ms_p.spectralWindow());
-	ROMSPolarizationColumns polc(ms_p.polarization());
-	for (Int i=1; i<ndd; i++) {
-	  if (spwc.numChan()(ddc.spectralWindowId()(i)) != 
-	      spwc.numChan()(ddc.spectralWindowId()(i-1)) ||
-	      polc.numCorr()(ddc.polarizationId()(i)) != 
-	      polc.numCorr()(ddc.polarizationId()(i-1))) {
-	    constantShape = False;
-	    break;
-	  }
-	}
-	if (constantShape) ddId_p=ALL; 
-	else ddId_p=UNSELECTED; // unselected, not all items available
-      }
-    }
-    checked_p=True;
+  Int n=ddId_p.nelements();
+  // check already done
+  if (n>0 && spwId_p.nelements()>0) return constantShape_p; 
+  constantShape_p=True;
+  if (n==0) {
+    ROScalarColumn<Int> dd(ms_p,MS::columnName(MS::DATA_DESC_ID));
+    Vector<Int> ddId=scalarRange(dd);
+    ddId_p=ddId;
   }
-  return (ddId_p>=ALL);
+  Int n2=ddId_p.nelements();
+  ROMSDataDescColumns ddc(ms_p.dataDescription());
+  spwId_p.resize(n2);
+  polId_p.resize(n2);
+  for (Int i=0; i<n2; i++) {
+    spwId_p(i)=ddc.spectralWindowId()(ddId_p(i));
+    polId_p(i)=ddc.polarizationId()(ddId_p(i));
+  }
+  if (n>0) return constantShape_p; // no need to check, done by MSSelector
+
+  // check if the shape is the same for all spectral windows that occur
+  // in the main table
+  ROMSSpWindowColumns spwc(ms_p.spectralWindow());
+  ROMSPolarizationColumns polc(ms_p.polarization());
+  for (Int i=1; i<n2; i++) {
+    if (spwc.numChan()(spwId_p(i)) != spwc.numChan()(spwId_p(i-1)) ||
+	polc.numCorr()(polId_p(i)) != polc.numCorr()(polId_p(i-1))) {
+      constantShape_p = False;
+      break;
+    }
+  }
+  return constantShape_p;
 }
 
 GlishRecord MSRange::range(const Vector<String>& items, 
@@ -151,13 +141,12 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 			   Bool oneBased)
 {
   LogIO os;
-
   const Int option=Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order=Sort::Ascending;
 
   GlishRecord out;
   if (ms_p.nrow()==0) {
-    os<< LogIO::WARN << "Table is empty - use setMS"<<LogIO::POST;
+    os<< LogIO::WARN << "Table is empty - nothing to do"<<LogIO::POST;
     return out;
   }
   ROMSColumns msc(ms_p);
@@ -170,7 +159,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
   // use HeapSort as it's performance is guaranteed, quicksort is often
   // extremely slow (O(n*n)) for inputs with many successive duplicates
   Matrix<Double> uvw;
-  Bool unselectedWarning=False;
+  Bool shapeChangesWarning=False;
   Int n=keys.nelements();
   String keyword;
   for (Int i=0; i<n; i++) {
@@ -201,28 +190,20 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       break;
     case MSS::CHAN_FREQ:
       {
-	Array<Double> chanFreq;
-	Bool selected=checkSelection();
-	if (ddId_p == ALL) {
-	  chanFreq=msc.spectralWindow().chanFreq().getColumn();
-	  out.add(keyword,chanFreq);
-	} else if (selected) {
-	  if (Int(ms_p.dataDescription().nrow()) > ddId_p);
-	  chanFreq=msc.spectralWindow().chanFreq()(msc.dataDescription().
-						   spectralWindowId()(ddId_p));
-	  out.add(keyword,chanFreq);
+	if (checkShapes()) {
+	  out.add(keyword,
+		  msc.spectralWindow().chanFreq().getColumnCells(spwId_p));
 	} else {
-	  unselectedWarning=True;
+	  shapeChangesWarning=True;
 	}
       }
       break;
     case MSS::CORR_NAMES:
     case MSS::CORR_TYPES:
       {
-	Bool selected=checkSelection();
-	if (ddId_p == ALL) {
+	if (checkShapes()) {
 	  Matrix<Int> corrTypes=
-	    msc.polarization().corrType().getColumn();
+	    msc.polarization().corrType().getColumnCells(polId_p);
 	  if (fld==MSS::CORR_NAMES) {
 	    Matrix<String> names(corrTypes.shape());
 	    for (uInt k=0; k<names.nrow(); k++) {
@@ -234,23 +215,8 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	  } else {
 	    out.add(keyword,corrTypes);
 	  }
-	} else if (selected) {
-	  if (ddId_p<Int(ms_p.dataDescription().nrow())) {
-	    Vector<Int> corrTypes=
-	      msc.polarization().corrType()
-	      (msc.dataDescription().polarizationId()(ddId_p));
-	    if (fld==MSS::CORR_NAMES) {
-	      Vector<String> names(corrTypes.nelements());
-	      for (uInt k=0; k<names.nelements(); k++) {
-		names(k)=Stokes::name(Stokes::type(corrTypes(k)));
-	      }
-	      out.add(keyword,names);
-	    } else {
-	      out.add(keyword,corrTypes);
-	    }
-	  }
 	} else {
-	  unselectedWarning=True;
+	  shapeChangesWarning=True;
 	}
       }
       break;
@@ -299,8 +265,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       break;
     case MSS::IMAGING_WEIGHT:
       {
-	Bool selected=checkSelection();
-	if (selected) {
+	if (checkShapes()) {
 	  if (!msc.imagingWeight().isNull()) {
 	    Vector<Float> range(2);
 	    ::minMax(range(0),range(1),msc.imagingWeight().getColumn());
@@ -310,32 +275,20 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	      LogIO::POST;
 	  }
 	} else {
-	  unselectedWarning=True;
+	  shapeChangesWarning=True;
 	}
       }
       break;
     case MSS::NUM_CORR:
       {
-	Bool selected=checkSelection();
-	if (selected) {
-	  Int polId=msc.dataDescription().polarizationId()
-	    (msc.dataDescId()(0));
-	  out.add(keyword,msc.polarization().numCorr()(polId));
-	} else {
-	  unselectedWarning=True;
-	}
+	checkShapes();
+	out.add(keyword,msc.polarization().numCorr().getColumnCells(polId_p));
       }
       break;
     case MSS::NUM_CHAN:
       {
-	Bool selected=checkSelection();
-	if (selected) {
-	  Int spwId=msc.dataDescription().spectralWindowId()
-	    (msc.dataDescId()(0));
-	  out.add(keyword,msc.spectralWindow().numChan()(spwId));
-	} else {
-	  unselectedWarning=True;
-	}
+	checkShapes();
+	out.add(keyword,msc.spectralWindow().numChan().getColumnCells(spwId_p));
       }
       break;
     case MSS::PHASE:
@@ -375,19 +328,9 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       break;
     case MSS::REF_FREQUENCY:
       {
-	Bool selected=checkSelection();
-	if (ddId_p==ALL) {
-	  // return all values
-	  out.add(keyword,msc.spectralWindow().refFrequency().getColumn());
-	} else if (selected) {
-	  if (Int(ms_p.dataDescription().nrow())>ddId_p) {
-	    out.add(keyword,
-		    msc.spectralWindow().refFrequency()
-		    (msc.dataDescription().spectralWindowId()(ddId_p)));
-	  }
-	} else {
-	  unselectedWarning=True;
-	}
+	checkShapes();
+	out.add(keyword,msc.spectralWindow().refFrequency().
+		getColumnCells(spwId_p));
       }
       break;
     case MSS::ROWS:
@@ -403,6 +346,18 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       break;
     case MSS::SCAN_NUMBER:
       scalarRange(out,keyword,msc.scanNumber(),oneBased);
+      break;
+    case MSS::SIGMA:
+      if (checkShapes()) {
+	Vector<Float> range(2); 
+	Array<Float> sig;
+	if (sel_p) sig=sel_p->getWeight(msc.sigma(),True);
+	else sig=msc.sigma().getColumn();
+	::minMax(range(0),range(1),sig);
+	out.add(keyword,range);
+      } else {
+	shapeChangesWarning = True;
+      }
       break;
     case MSS::TIME:
       {
@@ -445,13 +400,15 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       }
       break;
     case MSS::WEIGHT:
-      {
+      if (checkShapes()) {
 	Vector<Float> range(2); 
 	Array<Float> wt;
 	if (sel_p) wt=sel_p->getWeight(msc.weight());
 	else wt=msc.weight().getColumn();
 	::minMax(range(0),range(1),wt);
 	out.add(keyword,range);
+      } else {
+	shapeChangesWarning = True;
       }
       break;
     case MSS::UNDEFINED:
@@ -464,7 +421,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
   uvw.resize(0,0);
   if (wantAmp || wantPhase || wantReal || wantImag || wantData) {
     if (!msc.data().isNull()) {
-      if (checkSelection()) {
+      if (checkShapes()) {
 	// this now gets the data in smaller chunks (8MB) with getColumnRange
 	// but it no longer caches the data read if more than one item is
 	// requested. Maybe we need to make a 4-fold minMax that can do
@@ -494,7 +451,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	     <<LogIO::POST;
 	}
       } else {
-	unselectedWarning=True;
+	shapeChangesWarning=True;
       }
     } else {
       os << LogIO::WARN << "DATA column doesn't exist"<<LogIO::POST;
@@ -503,7 +460,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 
   if (wantFloat) {
     if (!msc.floatData().isNull()) {
-      if (checkSelection()) {
+      if (checkShapes()) {
 	Vector<Float> amp(2);
 	minMax(amp(0),amp(1),msc.floatData(),msc.flag(),useFlags);
 	out.add("float_data",amp);
@@ -513,7 +470,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 
   if (wantCAmp || wantCPhase || wantCReal || wantCImag || wantCData) {
     if (!msc.correctedData().isNull()) {
-      if (checkSelection()) {
+      if (checkShapes()) {
 	// get the data
 	if (wantCAmp) {
 	  Vector<Float> amp(2);
@@ -540,7 +497,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	     <<LogIO::POST;
 	}
       } else {
-	unselectedWarning=True;
+	shapeChangesWarning=True;
       }
     } else {
 	os << LogIO::WARN << "CORRECTED_DATA column doesn't exist"<<LogIO::POST;
@@ -548,7 +505,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
   }
   if (wantMAmp || wantMPhase || wantMReal || wantMImag || wantMData) {
     if (!msc.modelData().isNull()) {
-      if (checkSelection()) {
+      if (checkShapes()) {
 	// get the data
 	if (wantMAmp) {
 	  Vector<Float> amp(2);
@@ -575,15 +532,16 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	     <<LogIO::POST;
 	}
       } else { 
-	unselectedWarning=True;
+	shapeChangesWarning=True;
       }
     } else {
       os << LogIO::WARN << "MODEL_DATA column doesn't exist"<<LogIO::POST;
     }
   }
-  if (unselectedWarning) {
+  if (shapeChangesWarning) {
     os << LogIO::WARN << "Not all requested items were returned because "
-       << "of multiple spectral windows in the input"<<LogIO::POST;
+       <<"the input contains "<< endl 
+       <<"multiple data descriptions with varying data shape"<<LogIO::POST;
   }
   return out;
 }
