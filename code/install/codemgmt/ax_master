@@ -3982,3 +3982,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCMotionEvent.h trialdisplay/implement/DisplayEvents/WCMotionEvent.h
 14 065 src mv trial/implement/DisplayEvents/WCPTRegion.h trialdisplay/implement/DisplayEvents/WCPTRegion.h
 14 065 src mv trial/implement/DisplayEvents/WCPolyTool.h trialdisplay/implement/DisplayEvents/WCPolyTool.h
+14 065 src mv trial/implement/DisplayEvents/WCPositionEH.h trialdisplay/implement/DisplayEvents/WCPositionEH.h
