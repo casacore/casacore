@@ -1,5 +1,5 @@
 //# ColumnsIndexArray.cc: Index to a table
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Tables/ColumnsIndexArray.h>
+#include <aips/Tables/ColumnsIndexArray.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/ArrayColumn.h>
