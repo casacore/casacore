@@ -111,28 +111,34 @@ template<class T> class Interpolate2D
   Interpolate2D& operator=(const Interpolate2D& other);
 
   // Interpolation methods return status of interpolation
-  // <group>
   // do one interpolation, supply Matrix, pixel coordinate
   // and method
-  Bool  interp(T& result, const Vector<Double>& where, 
+  // <group>
+  Bool  interp(T& result, 
+               const Vector<Double>& where,
                const Matrix<T>& data, 
                Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
 
   // do one interpolation, supply Matrix and mask (True is good),
   // pixel coordinate and method
-  Bool  interp(T& result, const Vector<Double>& where,
-               const Matrix<T>& data, const Matrix<Bool>& mask,
+  Bool  interp(T& result, 
+               const Vector<Double>& where,
+               const Matrix<T>& data, 
+               const Matrix<Bool>& mask,
                Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
 
   // do one interpolation, supply Array, pixel coordinate and method
-  Bool interp(T& result, const Vector<Double>& where, 
+  Bool interp(T& result, 
+              const Vector<Double>& where, 
               const Array<T>& data, 
               Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
 
   // do one interpolation, supply Array and mask (True is good), pixel
   // coordinate and method
-  Bool interp(T& result, const Vector<Double>& where, 
-              const Array<T>& data, const Array<Bool>& mask,
+  Bool interp(T& result, 
+              const Vector<Double>& where, 
+              const Array<T>& data, 
+              const Array<Bool>& mask,
               Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
   //</group>
 
