@@ -182,6 +182,8 @@ public:
     uInt nmaxarg;
     // # of results produced/used
     Int nresult;
+    // code info (like par/x index; jump distance
+    Int info;
     // special action
     specAction special;
     // state

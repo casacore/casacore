@@ -148,7 +148,7 @@ Value: Unknown execution code 'PARAM': programming error
 ----------------------------------------------------
 Expression: '2*p1'
 17: CONST   :4:60:0:-1:
-18: PARAM   :4:60:1:-1:
+18: PARAM   :4:60:0:-1:
 13: *       :3:40:2:01:
 Value: Unknown execution code 'PARAM': programming error
 ----------------------------------------------------
