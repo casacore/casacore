@@ -26,6 +26,9 @@
 //# $Id$
 
 #include <aips/aips.h>
+
+#include <trial/Coordinates/StokesCoordinate.h>
+
 #include <aips/Arrays/Vector.h> // Put these early to work around g++ bug
 #include <aips/Arrays/Matrix.h>
 
@@ -60,7 +63,34 @@ template <class T> const Unit &ImageInterface<T>::units() const
 template <class T> 
 Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 {
+    ostrstream errmsg;
+    errmsg << "Cannot set coordinate system: ";
+
     Bool ok = ToBool(coords.nPixelAxes() == shape().nelements());
+    if (!ok) {
+	errmsg << "coords.nPixelAxes() == " << coords.nPixelAxes() << 
+	    ", image.ndim() == " << shape().nelements();
+    } else {
+	// Check that the shape is compatible with the stokes coordinates
+	Int stkcrd = -1;
+	while (ok && (stkcrd = coords.findCoordinate(Coordinate::STOKES, 
+							  stkcrd)) >= 0) {
+	    ok = True;
+	    Int axis = coords.pixelAxes(stkcrd)(0);
+	    const StokesCoordinate &stokes = coords.stokesCoordinate(stkcrd);
+	    if (axis >= 0) {
+		Int nstokes = stokes.stokes().nelements();
+		Int axislength = shape()(axis);
+		if (axislength > nstokes) {
+		    ok = False;
+		    errmsg << "Stokes axis is length " << axislength <<
+			" but we only have " << nstokes << " stokes values"
+			   << endl;
+		}
+	    }
+	}
+    }
+
     if (ok) {
 	coords_p = coords;
 	logSink() << LogIO::DEBUGGING << 
@@ -75,10 +105,7 @@ Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 	    LogIO::POST;
     } else {
 	// !ok
-	logSink() << LogIO::SEVERE << 
-	    "Cannot set coordinate system. coords.nPixelAxes() == " <<
-	    coords.nPixelAxes() << ", image.ndim == " << shape().nelements() <<
-	    LogIO::POST;
+	logSink() << LogIO::SEVERE << String(errmsg) << LogIO::POST;
     }
     return ok;
 }
