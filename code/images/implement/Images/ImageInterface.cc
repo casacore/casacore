@@ -362,7 +362,8 @@ Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
    setCoordinateInfo(tempcoord);
    putSlice(imageArray,IPosition(4,0,0,0,0));
    Record imageInfoRecord(inRec.asRecord("imageinfo"));
-   restoreImageInfo(imageInfoRecord);
+   String errorString; 
+   imageInfo_p.fromRecord(errorString, imageInfoRecord); 
 
    error = "";
    return True;
