@@ -1,5 +1,5 @@
 //# tComponentList.cc:  this defines tComponentList.cc
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,6 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 // #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
