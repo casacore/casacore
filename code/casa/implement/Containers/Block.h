@@ -1,5 +1,5 @@
 //# Block.h: Simple templated array classes
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -207,23 +207,28 @@ public:
     void resize(uInt n, Bool forceSmaller)   { resize(n, forceSmaller, True); }
     // </group>
 
-    // Remove a single element from the Block. This forces a new allocations
-    // and copy, so it is relatively expensive.
-    void remove(uInt whichOne)
+    // Remove a single element from the Block. This may force a new allocations
+    // and copies and hence may be relatively expensive.
+    void remove(uInt whichOne, Bool forceSmaller)
       {
 	ThrowBlockError::raise(whichOne >= npts, ThrowBlockError::pastend1, 999);
-	T *tp = new T[npts - 1];
-	ThrowBlockError::raise(tp == 0, ThrowBlockError::alloc5, npts-1);
-	objcopy(tp, array, whichOne);
-	objcopy(tp+whichOne, array + whichOne + 1, npts - whichOne - 1);
-	if (array && destroyPointer) {
-	  delete [] array;
-	  array = 0;
+	if (forceSmaller == True) {
+	  T *tp = new T[npts - 1];
+	  ThrowBlockError::raise(tp == 0, ThrowBlockError::alloc5, npts-1);
+	  objcopy(tp, array, whichOne);
+	  objcopy(tp+whichOne, array + whichOne + 1, npts - whichOne - 1);
+	  if (array && destroyPointer) {
+	    delete [] array;
+	    array = 0;
+	  }
+	  npts--;
+	  array = tp;
+	  destroyPointer = True;
 	}
-	npts--;
-	array = tp;
-	destroyPointer = True;
+	else
+	  objmove(array+whichOne, array + whichOne + 1, npts - whichOne - 1);
       }
+  void remove(uInt whichOne) { remove(whichOne, True); }
 
 
 
@@ -352,6 +357,7 @@ public:
       { block_p.resize(n,forceSmaller, copyElements); }
     void resize(uInt n) {block_p.resize(n);}
     void resize(uInt n, Bool forceSmaller) {block_p.resize(n, forceSmaller);}
+    void remove(uInt whichOne, Bool forceSmaller) {block_p.remove(whichOne, forceSmaller);}
     void remove(uInt whichOne) {block_p.remove(whichOne);}
     void replaceStorage(uInt n, T *&storagePointer, 
 			       Bool takeOverStorage=True)
