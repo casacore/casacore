@@ -130,6 +130,17 @@ Bool SpectralCoordinate::toPixel(Vector<Double> &pixel,
 }
 
 
+Bool SpectralCoordinate::toWorld(Double& world, const Double& pixel) const
+{
+  return worker_p.toWorld(world, pixel);
+}
+
+Bool SpectralCoordinate::toPixel(Double& pixel, const Double& world) const
+{
+  return worker_p.toPixel(pixel, world);
+}
+
+
 Vector<String> SpectralCoordinate::worldAxisNames() const
 {
     return worker_p.worldAxisNames();
