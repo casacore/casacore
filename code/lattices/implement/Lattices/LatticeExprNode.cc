@@ -989,6 +989,10 @@ LatticeExprNode operator< (const LatticeExprNode& left,
 #endif
    AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
 		 AipsError);
+
+// Note we use GT for LT by reversing the order of the arguments
+// requiring less code in LELBinaryCmp
+
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GT, right, left);
 }
 
@@ -1000,6 +1004,10 @@ LatticeExprNode operator<= (const LatticeExprNode& left,
 #endif
    AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
 		 AipsError);
+
+// Note we use GE for LE by reversing the order of the arguments
+// requiring less code in LELBinaryCmp
+
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GE, right, left);
 }
 
