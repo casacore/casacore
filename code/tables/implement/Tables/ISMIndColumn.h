@@ -249,6 +249,9 @@ private:
     // It is used by doCreate and getFile.
     void init (ByteIO::OpenOption fileOption);
 
+    // Clear the object (used by destructor and init).
+    void clear();
+
     // Compare the values to check if a value to be put matches the
     // value in the previous or next row.
     // It always return False, because comparing large arrays is
