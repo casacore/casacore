@@ -4282,3 +4282,5 @@
 14 131 src mv trial/implement/Measures/MCuvw.h aips/implement/Measures/MCuvw.h
 14 131 src mv trial/implement/Measures/UPlist install/codemgmt/UPlist
 14 133 src mv trial/implement/wnbt/ trial/implement/Wnbt
+14 159 src rm nrao/implement/VLA/VLABuffer.h
+14 159 src rm nrao/implement/VLA/VLABuffer.cc
