@@ -1281,7 +1281,7 @@ Bool ImageHistograms<T>::generateStorageImage()
 // extra pass through the data.  
 
    fillMinMax(pPixelIterator, nVirCursorIter);
-   
+     
 
 // Iterate through image and accumulate histogram and statistics images
      
@@ -1766,6 +1766,6 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
       cpgstbg(tbg);
    }
 
-   return False;
+   return True;
 }
 
