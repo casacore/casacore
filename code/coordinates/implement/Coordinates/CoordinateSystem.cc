@@ -420,14 +420,29 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
 
 
 
-void CoordinateSystem::removeWorldAxis(uInt axis, Double replacement) 
+Bool CoordinateSystem::removeWorldAxis(uInt axis, Double replacement) 
 {
-    AlwaysAssert(axis < nWorldAxes(), AipsError);
+    if (axis >= nWorldAxes()) {
+       ostrstream oss;
+       oss << "Illegal removal world axis number (" << axis << "), max is ("
+           << nWorldAxes() << ")" << endl;
+       set_error (String(oss));
+       return False;
+    }
 
-    // Remove the corresponding pixel axis (if there)..
+// Remove the corresponding pixel axis (if there)..
+
     Int pixAxis = worldAxisToPixelAxis (axis);
     if (pixAxis >= 0) {
-	removePixelAxis (pixAxis, replacement);
+
+// Find pixel coordinate corresponding to world replacement value
+
+       Vector<Double> world(referenceValue());
+       world(axis) = replacement;
+       Vector<Double> pixel(nPixelAxes());
+       if (!toPixel(pixel, world)) return False;
+//
+       removePixelAxis (pixAxis, pixel(pixAxis));
     }
 
     const uInt nc = nCoordinates();
@@ -444,11 +459,19 @@ void CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
 	    }
 	}
     }
+   return True;
 }
 
-void CoordinateSystem::removePixelAxis(uInt axis, Double replacement) 
+Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement) 
 {
-    AlwaysAssert(axis < nPixelAxes(), AipsError);
+    if (axis >= nPixelAxes()) {
+       ostrstream oss;
+       oss << "Illegal removal pixel axis number (" << axis << "), max is ("
+           << nPixelAxes() << ")" << endl;
+       set_error (String(oss));
+       return False;
+    }
+
 
     const uInt nc = nCoordinates();
 
@@ -464,6 +487,7 @@ void CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
 	    }
 	}
     }
+   return True;
 }
 
 
