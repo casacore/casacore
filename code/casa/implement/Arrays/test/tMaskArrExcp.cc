@@ -55,2294 +55,1548 @@
 
 int main ()
 {
-    try {
-        cout << endl << "\n\nTesting MaskedArray Exceptions." << endl;
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,11));
-            a = 0;
-            b = True;
-
-            try {
-
-            cout << "\nTest conformance, MaskedArray (Array, LogicalArray)";
-            MaskedArray<Int> ma (a,b);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            LogicalArray b(IPosition(1,11));
-            a = 0;
-            ab = True;
-            b = True;
-
-            MaskedArray<Int> mab (a,ab);
-
-            try {
-
-            cout << "\nTest conformance, MaskedArray (MaskedArray,"
-                 << " LogicalArray)";
-
-            MaskedArray<Int> ma (mab,b);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            a = 0;
-            ba = 1;
-            b = True;
-
-            try {
-
-            cout << "\nTest conformance, MaskedArray::operator= (Array)";
-            ba(b) = a;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            a = 0;
-            ab = True;
-            ba = 1;
-            b = True;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, MaskedArray::operator= (MaskedArray)";
-            a(ab) = mbab;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            a = 0;
-            ba = 1;
-            b = True;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, Array::operator= (MaskedArray)";
-            a = mbab;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            a = 0;
-            b = True;
-
-            try {
-
-            cout << "\nTest readonly MaskedArray, operator=(value)";
-            MaskedArray<Int> ma (a,b,True);
-            ma = 1;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> aa(10);
-            aa = 0;
-            const Vector<Int> a(aa);
-            LogicalArray b(IPosition(1,10));
-            b = True;
-
-            try {
-
-            cout << "\nTest readonly MaskedArray, operator=(Array)";
-            MaskedArray<Int> ma (a,b,True);
-            a(b) = a;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            a = 0;
-            b = True;
-
-            try {
-
-            cout << "\nTest readonly MaskedArray, operator=(MaskedArray)";
-            MaskedArray<Int> ma (a,b);
-            MaskedArray<Int> mma (a,b);
-            ma.setReadOnly();
-            ma = mma;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            a = 0;
-            b = True;
-
-            try {
-
-            cout << "\nTest readonly MaskedArray, getRWArray()";
-            MaskedArray<Int> ma (a,b,True);
-            Vector<Int> aa (ma.getRWArray());
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            a = 0;
-            b = True;
-
-            try {
-
-            cout << "\nTest readonly MaskedArray, getRWArrayStorage()";
-            MaskedArray<Int> ma (a,b,True);
-            Bool deleteIt;
-            Int *arrS (ma.getRWArrayStorage(deleteIt));
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            a = 0;
-            b = True;
-
-            try {
-
-            cout << "\nTest readonly MaskedArray, putArrayStorage()";
-            MaskedArray<Int> ma (a,b,True);
-            Bool deleteIt;
-            const Int *arrS (ma.getArrayStorage(deleteIt));
-            Int *arrRWS ((Int *) arrS);
-            ma.putArrayStorage (arrRWS, deleteIt);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalVector b(10);
-            a = 0;
-            b = True;
-            b(5) = False;
-
-            try {
-
-            cout << "\nTest getCompressedArray (shape)";
-            MaskedArray<Int> ma (a,b,True);
-            IPosition shape (2,2,5);
-            Matrix<Int> c (ma.getCompressedArray(shape));
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalVector b(10);
-            a = 0;
-            b = True;
-            b(5) = False;
-
-            try {
-
-            cout << "\nTest getCompressedArray (Array)";
-            MaskedArray<Int> ma (a,b,True);
-            Matrix<Int> c (IPosition (2,2,5));
-            ma.getCompressedArray(c);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalVector b(10);
-            a = 0;
-            b = True;
-            b(5) = False;
-
-            try {
-
-            cout << "\nTest setCompressedArray (Array)";
-            MaskedArray<Int> ma (a,b,True);
-            Matrix<Int> c (IPosition (2,2,5));
-            c = 1;
-            ma.setCompressedArray(c);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-
-        }
-
-    } catch (AipsError x) {
-        cout << "\nERROR.  Caught an uncaught exception:\n";
-        cout << x.getMesg() << "\n";
-#if defined (THROWNLINE)
-        cout << x.thrownLine() << " "
-             << x.thrownFile() << "\n"
-             << rtti_decode(x.idv()) << " " << x.GetThrowingType();
-        cout << endl;
-#endif
-    } 
-
-
-
-    try {
-        cout << endl << "\n\nTesting MaskArrMath Exceptions." << endl;
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            a = 0;
-            ba = 1;
-            b = True;
-
-            try {
-
-            cout << "\nTest conformance, ::operator+= (MaskedArray, Array)";
-            ba(b) += a;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(10);
-            LogicalArray b(IPosition(1,10));
-            a = 0;
-            ba = 1;
-            b = True;
-
-            try {
-
-            cout << "\nTest readonly, ::operator+= (MaskedArray, Array)";
-            MaskedArray<Int> bab (ba,b,True);
-            bab += a;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            a = 0;
-            ba = 1;
-            b = True;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::operator+= (Array, MaskedArray)";
-            a += mbab;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            a = 0;
-            ab = True;
-            ba = 1;
-            b = True;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::operator+= (MaskedArray,"
-                 << " MaskedArray)";
-            a(ab) += mbab;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(10);
-            LogicalArray b(IPosition(1,10));
-            a = 0;
-            ba = 1;
-            b = True;
-
-            try {
-
-            cout << "\nTest readonly, ::operator+= (MaskedArray, MaskedArray)";
-            MaskedArray<Int> bab (ba,b,True);
-            bab += bab;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::operator+ (MaskedArray, Array)";
-            c = mbab + a;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::operator+ (Array, MaskedArray)";
-            c = a + mbab;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ab = True;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> maab (a,ab);
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::operator+ (MaskedArray,"
-                 << " MaskedArray)";
-            c = maab + mbab;
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::pow (MaskedArray, Array)";
-            c = pow (mbab, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::pow (Array, MaskedArray)";
-            c = pow (a, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ab = True;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> maab (a,ab);
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::pow (MaskedArray,"
-                 << " MaskedArray)";
-            c = pow (maab, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::atan2 (MaskedArray, Array)";
-            c = atan2 (mbab, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::atan2 (Array, MaskedArray)";
-            c = atan2 (a, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ab = True;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> maab (a,ab);
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::atan2 (MaskedArray,"
-                 << " MaskedArray)";
-            c = atan2 (maab, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            indgen (a);
-            b = False;
-
-            MaskedArray<Int> ma (a,b);
-            Int minVal, maxVal;
-            IPosition minPos (1,1), maxPos (1,1);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                 << " ::minMax (T &minVal, T &maxVal,"
-                 << " IPosition &minPos, IPosition &maxPos,"
-                 << " const MaskedArray &)";
-
-            minMax (minVal, maxVal, minPos, maxPos, ma);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Int result (0);
-            indgen (ba);
-            b = False;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest insufficient elements, ::min (MaskedArray)";
-            result = min (mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance,"
-                 << " ::min (MaskedArray, Array)";
-            c = min (mbab, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::min (Array, MaskedArray)";
-            c = min (a, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Vector<Int> c(10);
-            a = 0;
-            ab = True;
-            ba = 1;
-            b = True;
-            c = 0;
-
-            MaskedArray<Int> maab (a,ab);
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::min (MaskedArray,"
-                 << " MaskedArray)";
-            c = min (maab, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            Vector<Int> c(10);
-            LogicalArray cb(IPosition(1,10));
-            a = 0;
-            ba = 1;
-            c = 0;
-            cb = True;
-
-            try {
-
-            cout << "\nTest conformance, ::min (Array, Array,"
-                 << " MaskedArray)";
-            min (a, ba, c);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            Vector<Int> c(10);
-            LogicalArray cb(IPosition(1,10));
-            a = 0;
-            ba = 1;
-            c = 0;
-            cb = True;
-
-            try {
-
-            cout << "\nTest conformance, ::min (Array, Array,"
-                 << " MaskedArray)";
-            min (ba, a, c);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            Int result (0);
-            indgen (a);
-            b = False;
-
-            MaskedArray<Int> ma (a,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                 << " ::sum (const MaskedArray &)";
-
-            result = sum (ma);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            Int result (0);
-            indgen (a);
-            b = False;
-
-            MaskedArray<Int> ma (a,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                 << " ::sumsquares (const MaskedArray &)";
-
-            result = sumsquares (ma);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            Int result (0);
-            indgen (a);
-            b = False;
-
-            MaskedArray<Int> ma (a,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                 << " ::product (const MaskedArray &)";
-
-            result = product (ma);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            Int result (0);
-            indgen (a);
-            b = False;
-
-            MaskedArray<Int> ma (a,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                 << " ::mean (const MaskedArray &)";
-
-            result = mean (ma);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            Int mean (0);
-            Int result (0);
-            indgen (a);
-            b = False;
-            b(IPosition(1,0)) = True;
-
-            MaskedArray<Int> ma (a,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                 << " ::variance (const MaskedArray &, T)";
-
-            result = variance (ma, mean);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            Int mean (0);
-            Int result (0);
-            indgen (a);
-            b = False;
-
-            MaskedArray<Int> ma (a,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                 << " ::avdev (const MaskedArray &, T)";
-
-            result = avdev (ma, mean);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray b(IPosition(1,10));
-            Int result (0);
-            indgen (a);
-            b = False;
-
-            MaskedArray<Int> ma (a,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                 << " ::median (const MaskedArray &, Bool)";
-
-            result = median (ma, False);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-    } catch (AipsError x) {
-        cout << "\nERROR.  Caught an uncaught exception:\n";
-        cout << x.getMesg() << "\n";
-#if defined (THROWNLINE)
-        cout << x.thrownLine() << " "
-             << x.thrownFile() << "\n"
-             << rtti_decode(x.idv()) << " " << x.GetThrowingType();
-        cout << endl;
-#endif
-    } 
-
-
-
-    try {
-        cout << endl << "\n\nTesting MaskArrLogi Exceptions." << endl;
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = 0;
-            ba = 1;
-            b = True;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::allLE (MaskedArray, Array)";
-            result = allLE (mbab, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(10);
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = 0;
-            ba = 1;
-            b = False;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::allLE (MaskedArray, Array)";
-            result = allLE (mbab, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = 0;
-            ba = 1;
-            b = True;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::allLE (Array, MaskedArray)";
-            result = allLE (a, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(10);
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = 0;
-            ba = 1;
-            b = False;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest insuficient elements,"
-                    " ::allLE (Array, MaskedArray)";
-            result = allLE (a, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = 0;
-            ab = True;
-            ba = 1;
-            b = True;
-
-            MaskedArray<Int> maab (a,ab);
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::allLE (MaskedArray,"
-                 << " MaskedArray)";
-            result = allLE (maab, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(10);
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = 0;
-            ab = False;
-            ba = 1;
-            b = True;
-
-            MaskedArray<Int> maab (a,ab);
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::allLE (MaskedArray, MaskedArray)";
-            result = allLE (maab, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray c(IPosition(1,11));
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = True;
-            c = False;
-            b = True;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest conformance, ::anyAND (MaskedArray, Array)";
-            result = anyAND (mcb, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = True;
-            c = False;
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyAND (MaskedArray, Array)";
-            result = anyAND (mcb, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray c(IPosition(1,11));
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = True;
-            c = False;
-            b = True;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest conformance, ::anyAND (Array, MaskedArray)";
-            result = anyAND (a, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = False;
-            c = True;
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyAND (Array, MaskedArray)";
-            result = anyAND (a, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray ab(IPosition(1,10));
-            LogicalArray c(IPosition(1,11));
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = False;
-            ab = True;
-            c = True;
-            b = True;
-
-            MaskedLogicalArray maab (a,ab);
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest conformance, ::anyAND (MaskedArray,"
-                 << " MaskedArray)";
-            result = anyAND (maab, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray ab(IPosition(1,10));
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = False;
-            ab = True;
-            c = True;
-            b = False;
-
-            MaskedLogicalArray maab (a,ab);
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyAND (MaskedArray, MaskedArray)";
-            result = anyAND (maab, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray c(IPosition(1,11));
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = False;
-            c = True;
-            b = True;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest conformance, ::anyOR (MaskedArray, Array)";
-            result = anyOR (mcb, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = False;
-            c = True;
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyOR (MaskedArray, Array)";
-            result = anyOR (mcb, a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray c(IPosition(1,11));
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = False;
-            c = True;
-            b = True;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest conformance, ::anyOR (Array, MaskedArray)";
-            result = anyOR (a, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = False;
-            c = True;
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyOR (Array, MaskedArray)";
-            result = anyOR (a, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray ab(IPosition(1,10));
-            LogicalArray c(IPosition(1,11));
-            LogicalArray b(IPosition(1,11));
-            Bool result;
-            a = False;
-            ab = True;
-            c = True;
-            b = True;
-
-            MaskedLogicalArray maab (a,ab);
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest conformance, ::anyOR (MaskedArray,"
-                 << " MaskedArray)";
-            result = anyOR (maab, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            LogicalArray a(IPosition(1,10));
-            LogicalArray ab(IPosition(1,10));
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = False;
-            ab = False;
-            c = True;
-            b = True;
-
-            MaskedLogicalArray maab (a,ab);
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements"
-                    " ::anyOR (MaskedArray, MaskedArray)";
-            result = anyOR (maab, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            LogicalArray cb(IPosition(1,10));
-            a = 0;
-            ba = 1;
-            b = True;
-            cb = False;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::operator<= (MaskedArray, Array)";
-            cb = (mbab <= a);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            LogicalArray cb(IPosition(1,10));
-            a = 0;
-            ba = 1;
-            b = True;
-            cb = False;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::operator<= (Array, MaskedArray)";
-            cb = (a <= mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray ab(IPosition(1,10));
-            Vector<Int> ba(11);
-            LogicalArray b(IPosition(1,11));
-            LogicalArray cb(IPosition(1,10));
-            a = 0;
-            ab = True;
-            ba = 1;
-            b = True;
-            cb = False;
-
-            MaskedArray<Int> maab (a,ab);
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest conformance, ::operator<= (MaskedArray,"
-                 << " MaskedArray)";
-            cb = (maab <= mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayConformanceError e) {
-                cout << "\nCaught an ArrayConformanceError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            indgen (a);
-            c = (a<5);
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::allAND (MaskedArray, scalar)";
-            result = allAND (mcb, True);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            indgen (a);
-            c = (a<5);
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::allAND (scalar, MaskedArray)";
-            result = allAND (True, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            indgen (a);
-            c = (a<5);
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::allOR (MaskedArray, scalar)";
-            result = allOR (mcb, False);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            indgen (a);
-            c = (a<5);
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::allOR (scalar, MaskedArray)";
-            result = allOR (False, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(10);
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = 0;
-            ba = 1;
-            b = False;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::allLE (MaskedArray, scalar)";
-            result = allLE (mbab, 7);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            Vector<Int> ba(10);
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            a = 0;
-            ba = 1;
-            b = False;
-
-            MaskedArray<Int> mbab (ba,b);
-
-            try {
-
-            cout << "\nTest insuficient elements,"
-                    " ::allLE (scalar, MaskedArray)";
-            result = allLE (7, mbab);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            indgen (a);
-            c = (a<5);
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyAND (MaskedArray, scalar)";
-            result = anyAND (mcb, True);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            indgen (a);
-            c = (a<5);
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyAND (scalar, MaskedArray)";
-            result = anyAND (True, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            indgen (a);
-            c = (a<5);
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyOR (MaskedArray, scalar)";
-            result = anyOR (mcb, False);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-        {
-            Vector<Int> a(10);
-            LogicalArray c(IPosition(1,10));
-            LogicalArray b(IPosition(1,10));
-            Bool result;
-            indgen (a);
-            c = (a<5);
-            b = False;
-
-            MaskedLogicalArray mcb (c,b);
-
-            try {
-
-            cout << "\nTest insufficient elements,"
-                    " ::anyOR (scalar, MaskedArray)";
-            result = anyOR (False, mcb);
-            cout << "\nFAILED" << endl;
-
-            } catch (ArrayError e) {
-                cout << "\nCaught an ArrayError:\n";
-                cout << e.getMesg() << "\n";
-#if defined (THROWNLINE)
-                cout
-                     << e.thrownLine() << " "
-                     << e.thrownFile() << "\n"
-                     << rtti_decode(e.idv()) << " " << e.GetThrowingType();
-                cout << endl;
-#endif
-            } 
-        }
-
-
-    } catch (AipsError x) {
-        cout << "\nERROR.  Caught an uncaught exception:\n";
-        cout << x.getMesg() << "\n";
-#if defined (THROWNLINE)
-        cout << x.thrownLine() << " "
-             << x.thrownFile() << "\n"
-             << rtti_decode(x.idv()) << " " << x.GetThrowingType();
-        cout << endl;
-#endif
-    } 
-
-
-    cout << endl << "OK" << endl;
-    return 0;
+  try {
+    cout << endl << "\n\nTesting MaskedArray Exceptions." << endl;
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,11));
+      a = 0;
+      b = True;
+
+      try {
+	cout << "\nTest conformance, MaskedArray (Array, LogicalArray)";
+	MaskedArray<Int> ma (a,b);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      LogicalArray b(IPosition(1,11));
+      a = 0;
+      ab = True;
+      b = True;
+      MaskedArray<Int> mab (a,ab);
+
+      try {
+	cout << "\nTest conformance, MaskedArray (MaskedArray,"
+	     << " LogicalArray)";
+	MaskedArray<Int> ma (mab,b);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      a = 0;
+      ba = 1;
+      b = True;
+
+      try {
+	cout << "\nTest conformance, MaskedArray::operator= (Array)";
+	ba(b) = a;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      a = 0;
+      ab = True;
+      ba = 1;
+      b = True;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, MaskedArray::operator= (MaskedArray)";
+	a(ab) = mbab;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      a = 0;
+      ba = 1;
+      b = True;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, Array::operator= (MaskedArray)";
+	a = mbab;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      a = 0;
+      b = True;
+
+      try {
+	cout << "\nTest readonly MaskedArray, operator=(value)";
+	MaskedArray<Int> ma (a,b,True);
+	ma = 1;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> aa(10);
+      aa = 0;
+      const Vector<Int> a(aa);
+      LogicalArray b(IPosition(1,10));
+      b = True;
+
+      try {
+	cout << "\nTest readonly MaskedArray, operator=(Array)";
+	MaskedArray<Int> ma (a,b,True);
+	a(b) = a;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      a = 0;
+      b = True;
+
+      try {
+	cout << "\nTest readonly MaskedArray, operator=(MaskedArray)";
+	MaskedArray<Int> ma (a,b);
+	MaskedArray<Int> mma (a,b);
+	ma.setReadOnly();
+	ma = mma;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      a = 0;
+      b = True;
+
+      try {
+	cout << "\nTest readonly MaskedArray, getRWArray()";
+	MaskedArray<Int> ma (a,b,True);
+	Vector<Int> aa (ma.getRWArray());
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      a = 0;
+      b = True;
+
+      try {
+	cout << "\nTest readonly MaskedArray, getRWArrayStorage()";
+	MaskedArray<Int> ma (a,b,True);
+	Bool deleteIt;
+	ma.getRWArrayStorage(deleteIt);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      a = 0;
+      b = True;
+
+      try {
+	cout << "\nTest readonly MaskedArray, putArrayStorage()";
+	MaskedArray<Int> ma (a,b,True);
+	Bool deleteIt;
+	const Int *arrS (ma.getArrayStorage(deleteIt));
+	Int *arrRWS ((Int *) arrS);
+	ma.putArrayStorage (arrRWS, deleteIt);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalVector b(10);
+      a = 0;
+      b = True;
+      b(5) = False;
+
+      try {
+	cout << "\nTest getCompressedArray (shape)";
+	MaskedArray<Int> ma (a,b,True);
+	IPosition shape (2,2,5);
+	Matrix<Int> c (ma.getCompressedArray(shape));
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalVector b(10);
+      a = 0;
+      b = True;
+      b(5) = False;
+
+      try {
+	cout << "\nTest getCompressedArray (Array)";
+	MaskedArray<Int> ma (a,b,True);
+	Matrix<Int> c (IPosition (2,2,5));
+	ma.getCompressedArray(c);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalVector b(10);
+      a = 0;
+      b = True;
+      b(5) = False;
+
+      try {
+	cout << "\nTest setCompressedArray (Array)";
+	MaskedArray<Int> ma (a,b,True);
+	Matrix<Int> c (IPosition (2,2,5));
+	c = 1;
+	ma.setCompressedArray(c);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+  } catch (AipsError x) {
+    cout << "\nERROR.  Caught an uncaught exception:\n";
+    cout << x.getMesg() << "\n";
+  } 
+
+
+
+  try {
+    cout << endl << "\n\nTesting MaskArrMath Exceptions." << endl;
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      a = 0;
+      ba = 1;
+      b = True;
+
+      try {
+	cout << "\nTest conformance, ::operator+= (MaskedArray, Array)";
+	ba(b) += a;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(10);
+      LogicalArray b(IPosition(1,10));
+      a = 0;
+      ba = 1;
+      b = True;
+
+      try {
+	cout << "\nTest readonly, ::operator+= (MaskedArray, Array)";
+	MaskedArray<Int> bab (ba,b,True);
+	bab += a;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      a = 0;
+      ba = 1;
+      b = True;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::operator+= (Array, MaskedArray)";
+	a += mbab;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      a = 0;
+      ab = True;
+      ba = 1;
+      b = True;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::operator+= (MaskedArray,"
+	     << " MaskedArray)";
+	a(ab) += mbab;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(10);
+      LogicalArray b(IPosition(1,10));
+      a = 0;
+      ba = 1;
+      b = True;
+
+      try {
+	cout << "\nTest readonly, ::operator+= (MaskedArray, MaskedArray)";
+	MaskedArray<Int> bab (ba,b,True);
+	bab += bab;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::operator+ (MaskedArray, Array)";
+	c = mbab + a;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::operator+ (Array, MaskedArray)";
+	c = a + mbab;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ab = True;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> maab (a,ab);
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::operator+ (MaskedArray,"
+	     << " MaskedArray)";
+	c = maab + mbab;
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::pow (MaskedArray, Array)";
+	c = pow (mbab, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::pow (Array, MaskedArray)";
+	c = pow (a, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ab = True;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> maab (a,ab);
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::pow (MaskedArray,"
+	     << " MaskedArray)";
+	c = pow (maab, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::atan2 (MaskedArray, Array)";
+	c = atan2 (mbab, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::atan2 (Array, MaskedArray)";
+	c = atan2 (a, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ab = True;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> maab (a,ab);
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::atan2 (MaskedArray,"
+	     << " MaskedArray)";
+	c = atan2 (maab, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      indgen (a);
+      b = False;
+      MaskedArray<Int> ma (a,b);
+      Int minVal, maxVal;
+      IPosition minPos (1,1), maxPos (1,1);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	     << " ::minMax (T &minVal, T &maxVal,"
+	     << " IPosition &minPos, IPosition &maxPos,"
+	     << " const MaskedArray &)";
+	minMax (minVal, maxVal, minPos, maxPos, ma);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Int result (0);
+      indgen (ba);
+      b = False;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest insufficient elements, ::min (MaskedArray)";
+	result = min (mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance,"
+	     << " ::min (MaskedArray, Array)";
+	c = min (mbab, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::min (Array, MaskedArray)";
+	c = min (a, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Vector<Int> c(10);
+      a = 0;
+      ab = True;
+      ba = 1;
+      b = True;
+      c = 0;
+      MaskedArray<Int> maab (a,ab);
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::min (MaskedArray,"
+	     << " MaskedArray)";
+	c = min (maab, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      Vector<Int> c(10);
+      LogicalArray cb(IPosition(1,10));
+      a = 0;
+      ba = 1;
+      c = 0;
+      cb = True;
+
+      try {
+	cout << "\nTest conformance, ::min (Array, Array,"
+	     << " MaskedArray)";
+	min (a, ba, c);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      Vector<Int> c(10);
+      LogicalArray cb(IPosition(1,10));
+      a = 0;
+      ba = 1;
+      c = 0;
+      cb = True;
+
+      try {
+	cout << "\nTest conformance, ::min (Array, Array,"
+	     << " MaskedArray)";
+	min (ba, a, c);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      Int result (0);
+      indgen (a);
+      b = False;
+      MaskedArray<Int> ma (a,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	     << " ::sum (const MaskedArray &)";
+	result = sum (ma);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      Int result (0);
+      indgen (a);
+      b = False;
+      MaskedArray<Int> ma (a,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	     << " ::sumsquares (const MaskedArray &)";
+	result = sumsquares (ma);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      Int result (0);
+      indgen (a);
+      b = False;
+      MaskedArray<Int> ma (a,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	     << " ::product (const MaskedArray &)";
+	result = product (ma);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      Int result (0);
+      indgen (a);
+      b = False;
+      MaskedArray<Int> ma (a,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	     << " ::mean (const MaskedArray &)";
+	result = mean (ma);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      Int mean (0);
+      Int result (0);
+      indgen (a);
+      b = False;
+      b(IPosition(1,0)) = True;
+      MaskedArray<Int> ma (a,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	     << " ::variance (const MaskedArray &, T)";
+	result = variance (ma, mean);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      Int mean (0);
+      Int result (0);
+      indgen (a);
+      b = False;
+      MaskedArray<Int> ma (a,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	     << " ::avdev (const MaskedArray &, T)";
+	result = avdev (ma, mean);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray b(IPosition(1,10));
+      Int result (0);
+      indgen (a);
+      b = False;
+      MaskedArray<Int> ma (a,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	     << " ::median (const MaskedArray &, Bool)";
+	result = median (ma, False);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+  } catch (AipsError x) {
+    cout << "\nERROR.  Caught an uncaught exception:\n";
+    cout << x.getMesg() << "\n";
+  }
+
+
+
+  try {
+    cout << endl << "\n\nTesting MaskArrLogi Exceptions." << endl;
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = 0;
+      ba = 1;
+      b = True;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::allLE (MaskedArray, Array)";
+	result = allLE (mbab, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(10);
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = 0;
+      ba = 1;
+      b = False;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::allLE (MaskedArray, Array)";
+	result = allLE (mbab, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = 0;
+      ba = 1;
+      b = True;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::allLE (Array, MaskedArray)";
+	result = allLE (a, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(10);
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = 0;
+      ba = 1;
+      b = False;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest insuficient elements,"
+	  " ::allLE (Array, MaskedArray)";
+	result = allLE (a, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = 0;
+      ab = True;
+      ba = 1;
+      b = True;
+      MaskedArray<Int> maab (a,ab);
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::allLE (MaskedArray,"
+	     << " MaskedArray)";
+	result = allLE (maab, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(10);
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = 0;
+      ab = False;
+      ba = 1;
+      b = True;
+      MaskedArray<Int> maab (a,ab);
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::allLE (MaskedArray, MaskedArray)";
+	result = allLE (maab, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray c(IPosition(1,11));
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = True;
+      c = False;
+      b = True;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest conformance, ::anyAND (MaskedArray, Array)";
+	result = anyAND (mcb, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = True;
+      c = False;
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyAND (MaskedArray, Array)";
+	result = anyAND (mcb, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray c(IPosition(1,11));
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = True;
+      c = False;
+      b = True;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest conformance, ::anyAND (Array, MaskedArray)";
+	result = anyAND (a, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = False;
+      c = True;
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyAND (Array, MaskedArray)";
+	result = anyAND (a, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray ab(IPosition(1,10));
+      LogicalArray c(IPosition(1,11));
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = False;
+      ab = True;
+      c = True;
+      b = True;
+      MaskedLogicalArray maab (a,ab);
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest conformance, ::anyAND (MaskedArray,"
+	     << " MaskedArray)";
+	result = anyAND (maab, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray ab(IPosition(1,10));
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = False;
+      ab = True;
+      c = True;
+      b = False;
+      MaskedLogicalArray maab (a,ab);
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyAND (MaskedArray, MaskedArray)";
+	result = anyAND (maab, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray c(IPosition(1,11));
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = False;
+      c = True;
+      b = True;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest conformance, ::anyOR (MaskedArray, Array)";
+	result = anyOR (mcb, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = False;
+      c = True;
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyOR (MaskedArray, Array)";
+	result = anyOR (mcb, a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray c(IPosition(1,11));
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = False;
+      c = True;
+      b = True;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest conformance, ::anyOR (Array, MaskedArray)";
+	result = anyOR (a, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = False;
+      c = True;
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyOR (Array, MaskedArray)";
+	result = anyOR (a, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray ab(IPosition(1,10));
+      LogicalArray c(IPosition(1,11));
+      LogicalArray b(IPosition(1,11));
+      Bool result;
+      a = False;
+      ab = True;
+      c = True;
+      b = True;
+      MaskedLogicalArray maab (a,ab);
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest conformance, ::anyOR (MaskedArray,"
+	     << " MaskedArray)";
+	result = anyOR (maab, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      LogicalArray a(IPosition(1,10));
+      LogicalArray ab(IPosition(1,10));
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = False;
+      ab = False;
+      c = True;
+      b = True;
+      MaskedLogicalArray maab (a,ab);
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements"
+	  " ::anyOR (MaskedArray, MaskedArray)";
+	result = anyOR (maab, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      LogicalArray cb(IPosition(1,10));
+      a = 0;
+      ba = 1;
+      b = True;
+      cb = False;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::operator<= (MaskedArray, Array)";
+	cb = (mbab <= a);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      LogicalArray cb(IPosition(1,10));
+      a = 0;
+      ba = 1;
+      b = True;
+      cb = False;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::operator<= (Array, MaskedArray)";
+	cb = (a <= mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray ab(IPosition(1,10));
+      Vector<Int> ba(11);
+      LogicalArray b(IPosition(1,11));
+      LogicalArray cb(IPosition(1,10));
+      a = 0;
+      ab = True;
+      ba = 1;
+      b = True;
+      cb = False;
+      MaskedArray<Int> maab (a,ab);
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest conformance, ::operator<= (MaskedArray,"
+	     << " MaskedArray)";
+	cb = (maab <= mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayConformanceError e) {
+	cout << "\nCaught an ArrayConformanceError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      indgen (a);
+      c = (a<5);
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::allAND (MaskedArray, scalar)";
+	result = allAND (mcb, True);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      indgen (a);
+      c = (a<5);
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::allAND (scalar, MaskedArray)";
+	result = allAND (True, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+      
+    {
+      Vector<Int> a(10);
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      indgen (a);
+      c = (a<5);
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::allOR (MaskedArray, scalar)";
+	result = allOR (mcb, False);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      indgen (a);
+      c = (a<5);
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::allOR (scalar, MaskedArray)";
+	result = allOR (False, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(10);
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = 0;
+      ba = 1;
+      b = False;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::allLE (MaskedArray, scalar)";
+	result = allLE (mbab, 7);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      Vector<Int> ba(10);
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      a = 0;
+      ba = 1;
+      b = False;
+      MaskedArray<Int> mbab (ba,b);
+
+      try {
+	cout << "\nTest insuficient elements,"
+	  " ::allLE (scalar, MaskedArray)";
+	result = allLE (7, mbab);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      indgen (a);
+      c = (a<5);
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyAND (MaskedArray, scalar)";
+	result = anyAND (mcb, True);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      indgen (a);
+      c = (a<5);
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyAND (scalar, MaskedArray)";
+	result = anyAND (True, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      indgen (a);
+      c = (a<5);
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyOR (MaskedArray, scalar)";
+	result = anyOR (mcb, False);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+    {
+      Vector<Int> a(10);
+      LogicalArray c(IPosition(1,10));
+      LogicalArray b(IPosition(1,10));
+      Bool result;
+      indgen (a);
+      c = (a<5);
+      b = False;
+      MaskedLogicalArray mcb (c,b);
+
+      try {
+	cout << "\nTest insufficient elements,"
+	  " ::anyOR (scalar, MaskedArray)";
+	result = anyOR (False, mcb);
+	cout << "\nFAILED" << endl;
+      } catch (ArrayError e) {
+	cout << "\nCaught an ArrayError:\n";
+	cout << e.getMesg() << "\n";
+      } 
+    }
+
+  } catch (AipsError x) {
+    cout << "\nERROR.  Caught an uncaught exception:\n";
+    cout << x.getMesg() << "\n";
+  } 
+
+
+  cout << endl << "OK" << endl;
+  return 0;
 }
