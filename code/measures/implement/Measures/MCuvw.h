@@ -160,6 +160,14 @@ private:
   Nutation *NUTATFROM, *NUTATTO;
   Precession *PRECESFROM, *PRECESTO;
 
+  //# State machine data
+  // Has state matrix been made
+  static Bool stateMade_p;
+  // Transition list
+  static uInt ToRef_p[N_Routes][3];
+  // Transition matrix
+  static uInt FromTo_p[Muvw::N_Types][Muvw::N_Types];
+
   //# Constructors
   // Copy constructor (not implemented)
   MCuvw(const MCuvw &other);

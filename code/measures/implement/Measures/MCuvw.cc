@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_uvw_bug1;
-#endif
 #include <aips/Exceptions.h>
 #include <aips/Measures/MCuvw.h>
 #include <aips/Mathematics/Constants.h>
@@ -43,13 +39,62 @@ typedef Quantum<Double> gpp_uvw_bug1;
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
 
+//# Statics
+Bool MCuvw::stateMade_p = False;
+uInt MCuvw::ToRef_p[N_Routes][3] = {
+    {Muvw::ITRF,	Muvw::JNAT,		0},
+    {Muvw::JNAT,	Muvw::ITRF,		0},
+    {Muvw::GALACTIC,	Muvw::J2000,		0},
+    {Muvw::GALACTIC,	Muvw::B1950,		3},
+    {Muvw::J2000,	Muvw::GALACTIC,		0},
+    {Muvw::B1950,	Muvw::GALACTIC,		3},
+    {Muvw::J2000,	Muvw::B1950,		3},
+    {Muvw::B1950,	Muvw::J2000,		3},
+    {Muvw::J2000,	Muvw::JMEAN,		0},
+    {Muvw::B1950,	Muvw::BMEAN,		3},
+    {Muvw::JMEAN,	Muvw::J2000,		0},
+    {Muvw::JMEAN,	Muvw::JTRUE,		0},
+    {Muvw::BMEAN,	Muvw::B1950,		3},
+    {Muvw::BMEAN,	Muvw::BTRUE,		3},
+    {Muvw::JTRUE,	Muvw::JMEAN,		0},
+    {Muvw::BTRUE,	Muvw::BMEAN,		3},
+    {Muvw::J2000,	Muvw::JNAT,		0},
+    {Muvw::JNAT,	Muvw::J2000,		0},
+    {Muvw::B1950,	Muvw::APP,		3},
+    {Muvw::APP,	 	Muvw::B1950,		3},
+    {Muvw::APP,		Muvw::HADEC,		2},
+    {Muvw::HADEC,	Muvw::AZEL,		2},
+    {Muvw::AZEL,	Muvw::HADEC,		2},
+    {Muvw::HADEC,	Muvw::APP,		2},
+    {Muvw::AZEL,	Muvw::AZELSW,		0},
+    {Muvw::AZELSW,	Muvw::AZEL,		0},
+    {Muvw::APP,		Muvw::JNAT,		1},
+    {Muvw::JNAT,	Muvw::APP,		1},
+    {Muvw::J2000,	Muvw::ECLIPTIC,		0},
+    {Muvw::ECLIPTIC,	Muvw::J2000,		0},
+    {Muvw::JMEAN,	Muvw::MECLIPTIC,	0},
+    {Muvw::MECLIPTIC,	Muvw::JMEAN,		0},
+    {Muvw::JTRUE,	Muvw::TECLIPTIC,	0},
+    {Muvw::TECLIPTIC,	Muvw::JTRUE,		0},
+    {Muvw::GALACTIC,	Muvw::SUPERGAL,		0},
+    {Muvw::SUPERGAL,	Muvw::GALACTIC,		0},
+    {Muvw::ITRF,	Muvw::HADEC,		2},
+    {Muvw::HADEC,	Muvw::ITRF,		2} };
+uInt MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
+
 //# Constructors
 MCuvw::MCuvw() :
   ROTMAT1(0),
   EULER1(0),
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   NUTATFROM(0), NUTATTO(0),
-  PRECESFROM(0), PRECESTO(0) {}
+  PRECESFROM(0), PRECESTO(0) {
+  if (!stateMade_p) {
+    MCBase::makeState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
+		      Muvw::N_Types, MCuvw::N_Routes,
+		      MCuvw::ToRef_p);
+  };
+}
 
 //# Destructor
 MCuvw::~MCuvw() {
@@ -61,337 +106,20 @@ MCuvw::~MCuvw() {
 //# Member functions
 
 void MCuvw::getConvert(MConvertBase &mc,
-			     const MRBase &inref, 
-			     const MRBase &outref) {
-  
-  // Array of conversion routines to call
-  static const MCuvw::Routes 
-    FromTo[Muvw::N_Types][Muvw::N_Types] = {
-      { MCuvw::N_Routes,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_HADEC,
-	MCuvw::ITRF_HADEC,
-	MCuvw::ITRF_HADEC,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT,
-	MCuvw::ITRF_JNAT },
-      { MCuvw::J2000_JNAT,
-	MCuvw::N_Routes,
-	MCuvw::J2000_JMEAN,
-	MCuvw::J2000_JMEAN,
-	MCuvw::J2000_JNAT, 
-	MCuvw::J2000_B1950,
-	MCuvw::J2000_B1950, 
-	MCuvw::J2000_B1950,
-	MCuvw::J2000_GAL,
-	MCuvw::J2000_JNAT,
-	MCuvw::J2000_JNAT,
-	MCuvw::J2000_JNAT,
-	MCuvw::J2000_JNAT,
-	MCuvw::J2000_ECLIP,
-	MCuvw::J2000_JMEAN,
-	MCuvw::J2000_JMEAN,
-	MCuvw::J2000_GAL },
-      { MCuvw::JMEAN_J2000, 
-	MCuvw::JMEAN_J2000, 
-	MCuvw::N_Routes,    
-	MCuvw::JMEAN_JTRUE,
-	MCuvw::JMEAN_J2000, 
-	MCuvw::JMEAN_J2000, 
-	MCuvw::JMEAN_J2000, 
-	MCuvw::JMEAN_J2000,
-	MCuvw::JMEAN_J2000,
-	MCuvw::JMEAN_J2000, 
-	MCuvw::JMEAN_J2000, 
-	MCuvw::JMEAN_J2000, 
-	MCuvw::JMEAN_J2000,
-	MCuvw::JMEAN_J2000,
-	MCuvw::JMEAN_MECLIP,
-	MCuvw::JMEAN_JTRUE,
-	MCuvw::JMEAN_J2000 },
-      { MCuvw::JTRUE_JMEAN, 
-	MCuvw::JTRUE_JMEAN, 
-	MCuvw::JTRUE_JMEAN, 
-	MCuvw::N_Routes,
-	MCuvw::JTRUE_JMEAN,  
-	MCuvw::JTRUE_JMEAN, 
-	MCuvw::JTRUE_JMEAN, 
-	MCuvw::JTRUE_JMEAN,
-	MCuvw::JTRUE_JMEAN,
-	MCuvw::JTRUE_JMEAN,  
-	MCuvw::JTRUE_JMEAN,  
-	MCuvw::JTRUE_JMEAN,  
-	MCuvw::JTRUE_JMEAN,
-	MCuvw::JTRUE_JMEAN,
-	MCuvw::JTRUE_JMEAN,
-	MCuvw::JTRUE_TECLIP,
-	MCuvw::JTRUE_JMEAN },
-      { MCuvw::APP_JNAT,  
-	MCuvw::APP_JNAT,  
-	MCuvw::APP_JNAT,  
-	MCuvw::APP_JNAT,  
-	MCuvw::N_Routes,    
-	MCuvw::APP_B1950,  
-	MCuvw::APP_B1950,  
-	MCuvw::APP_B1950,
-	MCuvw::APP_JNAT,
-	MCuvw::APP_HADEC, 
-	MCuvw::APP_HADEC, 
-	MCuvw::APP_HADEC,
-	MCuvw::APP_JNAT,
-	MCuvw::APP_JNAT,
-	MCuvw::APP_JNAT,
-	MCuvw::APP_JNAT,
-	MCuvw::APP_JNAT },
-      { MCuvw::B1950_J2000, 
-	MCuvw::B1950_J2000, 
-	MCuvw::B1950_J2000, 
-	MCuvw::B1950_J2000, 
-	MCuvw::B1950_APP, 
-	MCuvw::N_Routes,    
-	MCuvw::B1950_BMEAN,
-	MCuvw::B1950_BMEAN,
-	MCuvw::B1950_GAL,
-	MCuvw::B1950_APP, 
-	MCuvw::B1950_APP, 
-	MCuvw::B1950_APP,
-	MCuvw::B1950_J2000,
-	MCuvw::B1950_J2000,
-	MCuvw::B1950_J2000,
-	MCuvw::B1950_J2000,
-	MCuvw::B1950_GAL },
-      { MCuvw::BMEAN_B1950, 
-	MCuvw::BMEAN_B1950, 
-	MCuvw::BMEAN_B1950,
-	MCuvw::BMEAN_B1950,
-	MCuvw::BMEAN_B1950, 
-	MCuvw::BMEAN_B1950, 
-	MCuvw::N_Routes,
-	MCuvw::BMEAN_BTRUE,
-	MCuvw::BMEAN_B1950,
-	MCuvw::BMEAN_B1950, 
-	MCuvw::BMEAN_B1950, 
-	MCuvw::BMEAN_B1950, 
-	MCuvw::BMEAN_B1950,
-	MCuvw::BMEAN_B1950,
-	MCuvw::BMEAN_B1950,
-	MCuvw::BMEAN_B1950,
-	MCuvw::BMEAN_B1950 },
-      { MCuvw::BTRUE_BMEAN, 
-	MCuvw::BTRUE_BMEAN, 
-	MCuvw::BTRUE_BMEAN,
-	MCuvw::BTRUE_BMEAN, 
-	MCuvw::BTRUE_BMEAN, 
-	MCuvw::BTRUE_BMEAN, 
-	MCuvw::BTRUE_BMEAN, 
-	MCuvw::N_Routes,   
-	MCuvw::BTRUE_BMEAN,
-	MCuvw::BTRUE_BMEAN, 
-	MCuvw::BTRUE_BMEAN, 
-	MCuvw::BTRUE_BMEAN, 
-	MCuvw::BTRUE_BMEAN,
-	MCuvw::BTRUE_BMEAN,
-	MCuvw::BTRUE_BMEAN,
-	MCuvw::BTRUE_BMEAN,
-	MCuvw::BTRUE_BMEAN },
-      { MCuvw::GAL_J2000,   
-	MCuvw::GAL_J2000,   
-	MCuvw::GAL_J2000, 
-	MCuvw::GAL_J2000,   
-	MCuvw::GAL_J2000,   
-	MCuvw::GAL_B1950,   
-	MCuvw::GAL_B1950,
-	MCuvw::GAL_B1950,
-	MCuvw::N_Routes,
-	MCuvw::GAL_J2000,   
-	MCuvw::GAL_J2000,   
-	MCuvw::GAL_J2000,   
-	MCuvw::GAL_J2000,
-	MCuvw::GAL_J2000,
-	MCuvw::GAL_J2000,
-	MCuvw::GAL_J2000,
-	MCuvw::GAL_SUPERGAL },
-      { MCuvw::HADEC_ITRF,   
-	MCuvw::HADEC_APP,   
-	MCuvw::HADEC_APP, 
-	MCuvw::HADEC_APP,   
-	MCuvw::HADEC_APP,   
-	MCuvw::HADEC_APP,   
-	MCuvw::HADEC_APP,
-	MCuvw::HADEC_APP,
-	MCuvw::HADEC_APP,
-	MCuvw::N_Routes,    
-	MCuvw::HADEC_AZEL,
-	MCuvw::HADEC_AZEL,
-	MCuvw::HADEC_APP,
-	MCuvw::HADEC_APP,
-	MCuvw::HADEC_APP,
-	MCuvw::HADEC_APP,
-	MCuvw::HADEC_APP },
-      { MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::AZEL_HADEC,  
-	MCuvw::N_Routes,
-	MCuvw::AZEL_AZELSW,
-	MCuvw::AZEL_HADEC,
-	MCuvw::AZEL_HADEC,
-	MCuvw::AZEL_HADEC,
-	MCuvw::AZEL_HADEC,
-	MCuvw::AZEL_HADEC },  
-      { MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::N_Routes,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL,
-	MCuvw::AZELSW_AZEL },
-      { MCuvw::JNAT_ITRF,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_APP,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_APP,
-	MCuvw::JNAT_APP,
-	MCuvw::JNAT_APP,
-	MCuvw::N_Routes,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_J2000,
-	MCuvw::JNAT_J2000 },
-      { MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::N_Routes,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000,
-	MCuvw::ECLIP_J2000 },
-      { MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::N_Routes,
-	MCuvw::MECLIP_JMEAN,
-	MCuvw::MECLIP_JMEAN },
-      { MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::TECLIP_JTRUE,
-	MCuvw::N_Routes,
-	MCuvw::TECLIP_JTRUE },
-      { MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::SUPERGAL_GAL,
-	MCuvw::N_Routes }
-    };
+		       const MRBase &inref, 
+		       const MRBase &outref) {
     
-    // List of codes converted to
-    static const Muvw::Types ToRef[MCuvw::N_Routes] = {
-      Muvw::JNAT,    	Muvw::ITRF,
-      Muvw::J2000,    	Muvw::B1950,
-      Muvw::GALACTIC, 	Muvw::GALACTIC,
-      Muvw::B1950,    	Muvw::J2000,
-      Muvw::JMEAN,    	Muvw::BMEAN,
-      Muvw::J2000,    	Muvw::JTRUE,
-      Muvw::B1950,    	Muvw::BTRUE,
-      Muvw::JMEAN,	Muvw::BMEAN,    	
-      Muvw::JNAT,      	Muvw::J2000,
-      Muvw::APP,      	Muvw::B1950,
-      Muvw::HADEC,    	Muvw::AZEL,
-      Muvw::HADEC,    	Muvw::APP,
-      Muvw::AZELSW,    	Muvw::AZEL,
-      Muvw::JNAT,	Muvw::APP,
-      Muvw::ECLIPTIC,	Muvw::J2000,
-      Muvw::MECLIPTIC,	Muvw::JMEAN,
-      Muvw::TECLIPTIC,	Muvw::JTRUE,
-      Muvw::SUPERGAL,	Muvw::GALACTIC,
-      Muvw::HADEC,	Muvw::ITRF
+  Int iin  = inref.getType();
+  Int iout = outref.getType();
+  if (iin != iout) {
+    Int tmp;
+    while (iin != iout) {
+      tmp = FromTo_p[iin][iout];
+      iin = ToRef_p[tmp][1];
+      mc.addMethod(tmp);
+      initConvert(tmp, mc);
     };
-    
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    if (iin != iout) {
-      Int tmp;
-      while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-      };
-    };
+  };
 }
 
 void MCuvw::clearConvert() {
@@ -429,24 +157,6 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
     NUTATFROM = new Nutation(Nutation::STANDARD);
     if (PRECESFROM) delete PRECESFROM;
     PRECESFROM = new Precession(Precession::STANDARD);
-    break;
-
-  case GAL_J2000:
-    break;
-    
-  case GAL_B1950:
-    break;
-    
-  case J2000_GAL:
-    break;
-    
-  case B1950_GAL:
-    break;
-    
-  case J2000_B1950:
-    break;
-    
-  case B1950_J2000:
     break;
     
   case J2000_JMEAN:
@@ -489,17 +199,11 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
     NUTATTO = new Nutation(Nutation::B1950);
     break;
     
-  case J2000_JNAT:
-    break;
-    
   case JNAT_APP:
     if (NUTATFROM) delete NUTATFROM;
     NUTATFROM = new Nutation(Nutation::STANDARD);
     if (PRECESFROM) delete PRECESFROM;
     PRECESFROM = new Precession(Precession::STANDARD);
-    break;
-    
-  case JNAT_J2000:
     break;
     
   case APP_JNAT:
@@ -523,34 +227,10 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
     PRECESTO = new Precession(Precession::B1950);
     break;
     
-  case APP_HADEC:
-    break;
-    
-  case HADEC_AZEL:
-    break;
-    
-  case AZEL_HADEC:
-    break;
-    
-  case HADEC_APP:
-    break;
-    
-  case AZEL_AZELSW:
-    break;
-    
-  case AZELSW_AZEL:
-    break;
-    
-  case GAL_SUPERGAL:
-    break;
-
-  case SUPERGAL_GAL:
-    break;
-    
   default:
     break;
     
-  }
+  };
 }
 
 void MCuvw::doConvert(MeasValue &in,
