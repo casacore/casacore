@@ -83,7 +83,7 @@ ImageUtilities::ImageTypes ImageUtilities::imageType (const String& name)
     Int nread = fio.read (2880, buf, False);
     if (nread == 2880) {
       String str(buf, 80);
-      if (str.matches (Regex("^SIMPLE *= *T"))) {
+      if (str.matches (Regex("^SIMPLE *= *T.*"))) {
 	return FITS;
       }
     }
