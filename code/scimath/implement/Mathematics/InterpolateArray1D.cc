@@ -1,5 +1,5 @@
 //# Interpolate1DArray.cc:  implements Interpolation in one dimension
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -135,21 +135,18 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	uInt where = binarySearchBrackets(found, xin, x_req, nElements);
 	if (where == nElements) {
 	  for (Int j=0; j<ny; j++) yout[i][j]=yin[nElements-1][j];
-	  return;
 	}
 	else if (where == 0) {
 	  for (Int j=0; j<ny; j++) yout[i][j]=yin[0][j];
-	  return;
 	}
 	else if (xin[where] - x_req < .5) {
 	  for (Int j=0; j<ny; j++) yout[i][j]=yin[where][j];
-	  return;
 	}
 	else {
 	  for (Int j=0; j<ny; j++) yout[i][j]=yin[where-1][j];
-	  return;
 	}
       }
+      return;
     }
   case linear: // Linear interpolation is the default
     {
@@ -291,30 +288,27 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	    yout[i][j]=yin[nElements-1][j];
 	    youtFlags[i][j]=yinFlags[nElements-1][j];
 	  }
-	  return;
 	}
 	else if (where == 0) {
 	  for (Int j=0; j<ny; j++) {
 	    yout[i][j]=yin[0][j];
 	    youtFlags[i][j]=yinFlags[0][j];
 	  }
-	  return;
 	}
 	else if (xin[where] - x_req < .5) {
 	  for (Int j=0; j<ny; j++) {
 	    yout[i][j]=yin[where][j];
 	    youtFlags[i][j]=yinFlags[where][j];
 	  }
-	  return;
 	}
 	else {
 	  for (Int j=0; j<ny; j++) {
 	    yout[i][j]=yin[where-1][j];
 	    youtFlags[i][j]=yinFlags[where-1][j];
 	  }
-	  return;
 	}
       }
+      return;
     }
   case linear: // Linear interpolation is the default
     {
