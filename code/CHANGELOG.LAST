@@ -1,0 +1,12 @@
+
+change id: 0120
+ author:   Wim Brouw
+ date:     2002/02/25
+ avers:    1.7
+ area:     Library
+ package:  trial
+ module:   Functionals
+ type:     Code
+ category: New
+ summary:  Added odd and even polynomials
+Added the specialised OddPolynomial and EvenPolynomial classes
