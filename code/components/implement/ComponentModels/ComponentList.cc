@@ -126,55 +126,15 @@ ComponentList::ComponentList(const ComponentList & other)
 }
 
 ComponentList::~ComponentList() {
-  if ((theROFlag == False) && (theTable.isNull() == False)) {
-    AlwaysAssert(theTable.isWritable(), AipsError);
-    const uInt nComps = nelements();
-    {
-      const uInt nRows = theTable.nrow();
-      if (nRows < nComps)
-	theTable.addRow(nComps-nRows);
-      else if (nRows > nComps)
-	for (uInt r = nRows-1; r >= nComps; r--)
-	  theTable.removeRow(r);
-    }
-      
-    ScalarColumn<String> typeCol(theTable, "Type");
-    ArrayColumn<Double> fluxCol(theTable, "Flux");
-    ArrayColumn<Double> dirCol(theTable, "Direction");
-    TableRecord dirKeywords(dirCol.keywordSet());
-    ArrayColumn<Double> parmCol(theTable, "Parameters");
-    
-    MDirection compDir;
-    uInt refNum;
-    {
-      MDirection::Ref refType;
-      String refFrame;
-      dirKeywords.get("Frame", refFrame);
-      AlwaysAssert(compDir.giveMe(refFrame, refType), AipsError);
-      refNum = refType.getType();
-    }
-    String angleUnits;
-    dirKeywords.get("Unit", angleUnits);
-    Vector<Double> dirn;
-    Vector<Double> compFlux(4), compParms;
-    for (uInt i = 0; i < nComps; i++) {
-      typeCol.put(i, ComponentType::name(component(i).type()));
-      component(i).flux(compFlux); fluxCol.put(i, compFlux);
-      component(i).direction(compDir);
-      if (compDir.getRef().getType() != refNum)
-	compDir = MDirection::Convert(compDir, refNum)();
-      dirn = compDir.getAngle().getValue(angleUnits);
-      dirCol.put(i, dirn);
-      compParms.resize(component(i).nParameters());
-      component(i).parameters(compParms);
-      parmCol.put(i, compParms);
-    }
-  }
+  if ((theROFlag == False) && (theTable.isNull() == False))
+    writeTable();
   AlwaysAssert(ok(), AipsError);
 }
 
 ComponentList & ComponentList::operator=(const ComponentList & other){
   if (this != &other) {
+    if ((theROFlag == False) && (theTable.isNull() == False))
+      writeTable();
     theList = other.theList;
     theNelements = other.theNelements;
     theTable = other.theTable;
@@ -294,6 +254,49 @@ Bool ComponentList::ok() const {
   return True;
 }
 
+void ComponentList::writeTable() {
+  AlwaysAssert(theTable.isWritable(), AipsError);
+  const uInt nComps = nelements();
+  {
+    const uInt nRows = theTable.nrow();
+    if (nRows < nComps)
+      theTable.addRow(nComps-nRows);
+    else if (nRows > nComps)
+      for (uInt r = nRows-1; r >= nComps; r--)
+	theTable.removeRow(r);
+  }
+  ScalarColumn<String> typeCol(theTable, "Type");
+  ArrayColumn<Double> fluxCol(theTable, "Flux");
+  ArrayColumn<Double> dirCol(theTable, "Direction");
+  TableRecord dirKeywords(dirCol.keywordSet());
+  ArrayColumn<Double> parmCol(theTable, "Parameters");
+  
+  MDirection compDir;
+  uInt refNum;
+  {
+    MDirection::Ref refType;
+    String refFrame;
+    dirKeywords.get("Frame", refFrame);
+    AlwaysAssert(compDir.giveMe(refFrame, refType), AipsError);
+    refNum = refType.getType();
+  }
+  String angleUnits;
+  dirKeywords.get("Unit", angleUnits);
+  Vector<Double> dirn;
+  Vector<Double> compFlux(4), compParms;
+  for (uInt i = 0; i < nComps; i++) {
+    typeCol.put(i, ComponentType::name(component(i).type()));
+    component(i).flux(compFlux); fluxCol.put(i, compFlux);
+    component(i).direction(compDir);
+    if (compDir.getRef().getType() != refNum)
+      compDir = MDirection::Convert(compDir, refNum)();
+    dirn = compDir.getAngle().getValue(angleUnits);
+    dirCol.put(i, dirn);
+    compParms.resize(component(i).nParameters());
+    component(i).parameters(compParms);
+    parmCol.put(i, compParms);
+  }
+}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentList"
 // End: 
