@@ -77,7 +77,7 @@ class ROTiledStManAccessor;
 // Lattices.  At this writing (October 1997) there are three concrete
 // classes derived from LatticeNavigator: 
 // <linkto class="LatticeStepper">LatticeStepper</linkto> and
-// <linkto class="TiledVectorStepper">TiledVectorStepper</linkto>. 
+// <linkto class="TiledLineStepper">TiledLineStepper</linkto>. 
 // <linkto class="TileStepper">TileStepper</linkto>. 
 
 // The <src>LatticeStepper</src> class moves through a Lattice in fixed
@@ -87,10 +87,10 @@ class ROTiledStManAccessor;
 // traverse a number of predefined subregions, or change size automatically
 // when near the edges.
 
-// The <src>TiledVectorStepper</src> class moves a Vector cursor through a
-// Lattice, until all the Vectors in the set of tiles along the specified
+// The <src>TiledLineStepper</src> class moves a Vector cursor through a
+// Lattice, until all the lines in the set of tiles along the specified
 // axis have been exhausted. It then moves to the next set of tiles. This a
-// a memory effecient way to move a Vector cursor through a Lattice.
+// a memory efficient way to move a Vector cursor through a Lattice.
 
 // The most important member functions of this class are those which move
 // the cursor to the next position. These are the <src>operator++</src> and
@@ -98,7 +98,7 @@ class ROTiledStManAccessor;
 
 // The cursor shape need not be constant as it moves through the Lattice,
 // but may change depending on its current position. For the LatticeStepper
-// and TiledVectorStepper classes the cursor shape is constant as it steps
+// and TiledLineStepper classes the cursor shape is constant as it steps
 // through the Lattice.
 
 // It is not possible to randomly move the cursor to an arbitrary place in
@@ -117,7 +117,7 @@ class ROTiledStManAccessor;
 // "hang over" the edge of the Lattice. When this occurs the
 // <src>hangOver</src> member function will return True. This will occur
 // with a LatticeStepper if the Lattice shape is not a multiple of the
-// cursor shape. Hangover cannot occur with the TiledVectorStepper as the length
+// cursor shape. Hangover cannot occur with the TiledLineStepper as the length
 // of the Vector cursor is defined by the Lattice Shape.
 
 // It may be possible (depending on the concrete LatticeNavigator actually
@@ -156,8 +156,9 @@ class ROTiledStManAccessor;
 //
 // <example>
 // See the example in the 
-// <linkto class="LatticeStepper">LatticeStepper</linkto> class and the 
-// <linkto class="TiledVectorStepper">TiledVectorStepper</linkto> class
+// <linkto class="LatticeStepper">LatticeStepper</linkto> class, the 
+// <linkto class="TiledLineStepper">TiledLineStepper</linkto> class, and the
+// <linkto class="TileStepper">TileStepper</linkto> class.
 // </example>
 //
 // <motivation>
