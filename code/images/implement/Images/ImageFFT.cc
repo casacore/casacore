@@ -1,5 +1,5 @@
 //# ImageFFT.cc: FFT an image
-//# Copyright (C) 1995,1997,1998,1999,2000
+//# Copyright (C) 1995,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -685,28 +685,15 @@ void ImageFFT::setCoordinates (LogIO& os,
 Bool ImageFFT::findSky(LogIO& os, Int& dC, Vector<Int>& pixelAxes, 
                        Vector<Int>& worldAxes, const CoordinateSystem& cSys,
                        Bool throwIt)
-//
-// Assumes only one DirectionCoordinate .   {pixel,world}Axes says where 
-// in the CS the DirectionCoordinate axes are
 {
-   CoordinateUtil::findDirectionAxes (pixelAxes, worldAxes, dC, cSys);
-   if (dC<0 || pixelAxes.nelements()!=2 || worldAxes.nelements()!=2) {
+   String error;
+   Bool ok = CoordinateUtil::findSky(error, dC, pixelAxes, worldAxes, cSys);
+   if (!ok) {
       if (throwIt) {
-         os << "Image does not have 2 sky coordinate axes" << LogIO::EXCEPTION;
+         os << error << LogIO::EXCEPTION;
       } else {
          return False;
       }
    }
-//
-   for (uInt i=0; i<2; i++) {
-      if (pixelAxes(i)==-1 || worldAxes(i)==-1) {
-        if (throwIt) {
-           os << "Image does not have 2 sky coordinate axes" << LogIO::EXCEPTION;
-        } else {
-           return False;
-        }
-      }
-   }
-//
-   return True;
+   return ok;
 }
