@@ -48,7 +48,7 @@
 #include <iostream.h>
 
 
-SSMBase::SSMBase (uInt aBucketSize,uInt aCacheSize)
+SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
   itsDataManName       ("SSM"),
   itsVersion           (1),
@@ -66,17 +66,24 @@ SSMBase::SSMBase (uInt aBucketSize,uInt aCacheSize)
   itsIndexLength       (0),
   itsFreeBucketsNr     (0),
   itsFirstFreeBucket   (-1),
-  itsBucketSize        (aBucketSize),
+  itsBucketSize        (0),
+  itsBucketRows        (0),
   isDataChanged        (False)
-{
+{ 
   // Determine the data format (local or canonical).
   // For the moment it is always canonical (until Table supports it).
   isCanonical = True;
+  if (aBucketSize < 0) {
+    itsBucketRows = -aBucketSize;
+  } else if (aBucketSize == 0) {
+    itsBucketRows = 32;
+  } else {
+    itsBucketSize = aBucketSize;
+  }
 }
 
 SSMBase::SSMBase (const String& aDataManName,
-		  uInt aBucketSize,
-                  uInt aCacheSize)
+		  Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
   itsDataManName       (aDataManName),
   itsVersion           (1),
@@ -94,12 +101,20 @@ SSMBase::SSMBase (const String& aDataManName,
   itsIndexLength       (0),
   itsFreeBucketsNr     (0),
   itsFirstFreeBucket   (-1),
-  itsBucketSize        (aBucketSize),
+  itsBucketSize        (0),
+  itsBucketRows        (0),
   isDataChanged        (False)
 {
   // Determine the data format (local or canonical).
   // For the moment it is always canonical (until Table supports it).
   isCanonical = True;
+  if (aBucketSize < 0) {
+    itsBucketRows = -aBucketSize;
+  } else if (aBucketSize == 0) {
+    itsBucketRows = 32;
+  } else {
+    itsBucketSize = aBucketSize;
+  }
 }
 
 SSMBase::SSMBase (const SSMBase& that)
@@ -121,6 +136,7 @@ SSMBase::SSMBase (const SSMBase& that)
     itsFreeBucketsNr     (0),
     itsFirstFreeBucket   (-1),
     itsBucketSize        (that.itsBucketSize),
+    itsBucketRows        (that.itsBucketRows),
     isDataChanged        (False)
 {
   // Determine the data format (local or canonical).
@@ -325,6 +341,7 @@ void SSMBase::readHeader()
   }
   AipsIO anOs (aTio);
   itsVersion = anOs.getstart("StandardStMan");
+  itsBucketRows = 0;
   anOs >> itsBucketSize;                // Size of the bucket
   anOs >> itsNrBuckets;                 // Initial Nr of Buckets
   anOs >> itsPersCacheSize;             // Size of Persistent cache
@@ -649,7 +666,7 @@ void SSMBase::addColumn (DataManagerColumn* aColumn)
     itsColumnOffset[nCol]=saveOffset;
   } else {
 
-    // calculate rowsperbuket for new index
+    // calculate rowsperbucket for new index
     AlwaysAssert (aSearchLength !=0, AipsError);
     uInt rowsPerBucket = itsBucketSize*8 / aSearchLength;
 
@@ -925,7 +942,7 @@ void SSMBase::reopenRW()
 
 void SSMBase::init (Bool doMakeIndex)
 {
-  // Determine the size of a uInt in external format.
+  // If the index has to be made, determine the nr of rows in the bucket.
   if (doMakeIndex) {
     uInt aNrCol = ncolumn();
     itsColumnOffset.resize(aNrCol,True);                            
@@ -935,25 +952,33 @@ void SSMBase::init (Bool doMakeIndex)
     // Bool values are stored as bits. Therefore we have to iterate.
     // First find the nr of full bytes needed (ignoring possible remainders).
     uInt aTotalSize = 0;
-    for (uInt i=0; i<aNrCol; i++) {
-      aTotalSize += itsPtrColumn[i]->getExternalSizeBytes();
-    }
-    uInt rowsPerBucket = itsBucketSize/aTotalSize;
-    while (True) {
-      uInt bucketRest = itsBucketSize - rowsPerBucket*aTotalSize;
-      uInt aRestSize = 0;
+    uInt rowsPerBucket = itsBucketRows;
+    if (itsBucketRows == 0) {
       for (uInt i=0; i<aNrCol; i++) {
-	uInt rest = itsPtrColumn[i]->getExternalSizeBits() % 8;
-	// Add total nr of bytes needed for the remainder.
-	aRestSize += (rowsPerBucket * rest + 7) / 8;
+	aTotalSize += itsPtrColumn[i]->getExternalSizeBytes();
       }
-      if (aRestSize <= bucketRest) {
+      rowsPerBucket = itsBucketSize/aTotalSize;
+    }
+    while (True) {
+      aTotalSize = 0;
+      uInt aNextSize = 0;
+      for (uInt i=0; i<aNrCol; i++) {
+	aTotalSize += (rowsPerBucket *
+		       itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
+	aNextSize  += ((rowsPerBucket+1) *
+		       itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
+      }
+      if (itsBucketRows > 0) {
+	itsBucketSize = min (65536u, max(256u, aTotalSize));
 	break;
       }
-      rowsPerBucket--;
+      if (aNextSize > itsBucketSize) {
+	  break;
+      }
+      rowsPerBucket++;
     }
 
-    if (itsBucketSize < 16 || rowsPerBucket < 1) {
+    if (itsBucketSize < 32 || rowsPerBucket < 1) {
       // The BucketSize is too small to contain data.
       throw (DataManError ("StandardStMan::init  bucketsize too small"));
     }
@@ -962,8 +987,8 @@ void SSMBase::init (Bool doMakeIndex)
     aTotalSize = 0;
     for (uInt i=0; i<aNrCol; i++) {
       itsColumnOffset[i] = aTotalSize;
-      aTotalSize +=
-                (rowsPerBucket*itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
+      aTotalSize += (rowsPerBucket *
+		     itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
     }
 
     // All columns are in the same bucket list, thus only one SSMIndex needed.
