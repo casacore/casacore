@@ -1,5 +1,5 @@
 //# CoordinateUtils.h: static functions dealing with coordinates
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -164,7 +164,7 @@ class MPosition;
 //     
 // <srcblock>
 //   CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-//   Vector<uInt> worldAxes(2);
+//   Vector<Int> worldAxes(2);
 //   worldAxes(0) = 0; worldAxes(1) = cSys.nWorldAxes()-1;
 //   Vector<Double> worldRep;
 //   Bool ok = CoordinateUtil::removeAxes(cSys, worldRep, worldAxes, True);
@@ -309,7 +309,7 @@ static void findStokesAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
 // vectors).
 static Bool removeAxes(CoordinateSystem& cSys,
                        Vector<Double>& worldReplacement,
-                       const Vector<uInt>& worldAxes,
+                       const Vector<Int>& worldAxes,
                        const Bool remove);
 
 // Remove a list of pixel axes but not their associated
@@ -325,7 +325,7 @@ static Bool removeAxes(CoordinateSystem& cSys,
 // vectors).
 static Bool removePixelAxes(CoordinateSystem& cSys,
                             Vector<Double>& pixelReplacement,
-                            const Vector<uInt>& pixelAxes,
+                            const Vector<Int>& pixelAxes,
                             const Bool remove);
 
 // Setup Measures conversion machine for MDirections.
@@ -357,7 +357,8 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 
 // Find the Sky in the CoordinateSystem. Assumes only one DirectionCoordinate.
 // <src>pixelAxes</src> and <src>worldAxes</src>  say where
-// in the CS the DirectionCoordinate axes are (long then lat)
+// in the CS the DirectionCoordinate axes are (long then lat).
+// Returns False and an error message if it can't find the sky.
    static Bool findSky(String& errorMessage, Int& dirCoord, Vector<Int>& pixelAxes,
                        Vector<Int>& worldAxes, const CoordinateSystem& cSys);
 //
@@ -379,9 +380,51 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
    static Stokes::StokesTypes findSingleStokes (LogIO& os, const CoordinateSystem& cSys,
                                                 uInt pixel=0);
 
-// Set the preferred units in the CS to 'deg' for Direction, 'km/s'
-// for Spectral and the native unit otherwise
-   static void setNicePreferredAxisLabelUnits(CoordinateSystem& cSys);
+// Set the world axis units in the CS to 'deg' for Direction. For Spectral
+// set the velocity handling to use 'km/s' units.  Other coordinates
+// are not touched.
+   static void setNiceAxisLabelUnits(CoordinateSystem& cSys);
+
+// Set world axis units for specific Coordinate.  Returnd False if fails to set units
+// with error in cSys.errorMessage().  
+   static Bool setCoordinateUnits (CoordinateSystem& cSys, const Vector<String>& units,
+                                   uInt which);
+
+// Set a unit for all unremoved world axes in the DirectionCoordinate in the
+// CS.  Returns False if fails to set unit with error in cSys.  If no DC
+// returns True
+   static Bool setDirectionUnit (CoordinateSystem& cSys, const String& unit, Int which=-1);
+
+// Set Direction conversion layer of DirectionCoordinate in CoordinateSystem
+// so that pixel<->world go to the specified direction system (a valid
+// MDirection::Types string)
+   static Bool setDirectionConversion (String& errorMsg, CoordinateSystem& cSys,
+                                      const String directionSystem);
+
+// Set spectral state of SpectralCoordinate in CoordinateSystem.
+// Unit must be consistent with Hz or m/s and the doppler a valid MDoppler string.
+// Returns False if invalid inputs (and CS not changed) and an error message. 
+   static Bool setSpectralState (String& errorMsg, CoordinateSystem& cSys, 
+                                 const String& unit, const String& doppler);
+
+
+// Set velocity state of SpectralCoordinate in CoordinateSystem.
+// Unit must be consistent m/s and the doppler a valid MDoppler string.
+// Returns False if invalid inputs (and CS not changed) and an error message. 
+   static Bool setVelocityState (String& errorMsg, CoordinateSystem& cSys, 
+                                 const String& unit, const String& doppler);
+
+// Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
+// so that pixel<->world go to the specified frequency system (a valid
+// MFrequency::Types string)
+   static Bool setSpectralConversion (String& errorMsg, CoordinateSystem& cSys,
+                                      const String frequencySystem);
+
+// Set default format unit and doppler velocity state of SpectralCoordinate in CoordinateSystem.
+// Unit can be consistent with Hz or m/s
+// Returns False if invalid inputs (and CS not changed) and an error message. 
+   static Bool setSpectralFormatting (String& errorMsg, CoordinateSystem& cSys, 
+                                      const String& unit, const String& doppler);
 
 // Convert an absolute pixel coordinate to world and format with 
 // default Coordinate formatting
