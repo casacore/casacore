@@ -295,7 +295,7 @@ void ROVisibilityIterator::setState()
   // If this is a new array then set up the antenna locations
   if (msIter_p.newArray()) {
     This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna(),
-				     msIter_p.arrayId());
+				     msIter_p.arrayId()) + 1;
     This->pa_p.resize(nAnt_p);
   }	
   if (msIter_p.newField()) { 
