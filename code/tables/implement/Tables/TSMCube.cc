@@ -91,6 +91,25 @@ TSMCube::TSMCube (TiledStMan* stman, AipsIO& ios)
     setup();
 }
 
+TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
+                  const IPosition& cubeShape,
+                  const IPosition& tileShape,
+                  Int64 fileOffset)
+: stmanPtr_p     (stman),
+  extensible_p   (False),
+  nrdim_p        (cubeShape.nelements()),
+  cubeShape_p    (cubeShape),
+  tileShape_p    (tileShape),
+  filePtr_p      (file),
+  fileOffset_p   (fileOffset),
+  cache_p        (0),
+  userSetCache_p (False),
+  lastColAccess_p(NoAccess)
+{
+    // Calculate the various variables.
+    setup();
+}
+
 TSMCube::~TSMCube()
 {
     delete cache_p;

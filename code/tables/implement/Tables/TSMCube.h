@@ -135,6 +135,13 @@ public:
     // must have been reconstructed in advance.
     TSMCube (TiledStMan* stman, AipsIO& ios);
 
+    // Construct a TSMCube object for an existing array in a file.
+    // It is meant to be used by
+    // <linkto>class=TiledFileAccess>TiledFileAccess</linkto>.
+    TSMCube (TiledStMan* stman, TSMFile* file,
+	     const IPosition& cubeShape, const IPosition& tileShape,
+	     Int64 fileOffset);
+
     ~TSMCube();
 
     // Flush the data in the cache.

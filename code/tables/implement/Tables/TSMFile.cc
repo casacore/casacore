@@ -35,25 +35,29 @@
 #include <aips/Utilities/String.h>
 
 
-TSMFile::TSMFile (TiledStMan* stman, uInt fileSequenceNr)
-: stmanPtr_p  (stman),
-  fileSeqnr_p (fileSequenceNr),
+TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr)
+: fileSeqnr_p (fileSequenceNr),
   file_p      (0),
   length_p    (0)
 {
     // Create the file.
     char strc[8];
     sprintf (strc, "_TSM%i", fileSeqnr_p);
-    String fileName = stmanPtr_p->fileName() + strc;
+    String fileName = stman->fileName() + strc;
     file_p = new BucketFile (fileName);
-    if (file_p == 0) {
-	throw (TSMError ("Creation of file " + fileName + " failed"));
-    }
 }
 
-TSMFile::TSMFile (TiledStMan* stman, AipsIO& ios, uInt seqnr)
-: stmanPtr_p (stman),
-  file_p     (0)
+TSMFile::TSMFile (const String& fileName, Bool writable)
+: fileSeqnr_p (0),
+  file_p      (0),
+  length_p    (0)
+{
+    // Create the file.
+    file_p = new BucketFile (fileName, writable);
+}
+
+TSMFile::TSMFile (const TiledStMan* stman, AipsIO& ios, uInt seqnr)
+: file_p (0)
 {
     getObject (ios);
     if (seqnr != fileSeqnr_p) {
@@ -61,11 +65,8 @@ TSMFile::TSMFile (TiledStMan* stman, AipsIO& ios, uInt seqnr)
     }
     char strc[8];
     sprintf (strc, "_TSM%i", fileSeqnr_p);
-    String fileName = stmanPtr_p->fileName() + strc;
-    file_p = new BucketFile (fileName, stmanPtr_p->table().isWritable());
-    if (file_p == 0) {
-	throw (TSMError ("Creation of file " + fileName + " failed"));
-    }
+    String fileName = stman->fileName() + strc;
+    file_p = new BucketFile (fileName, stman->table().isWritable());
 }
 
 TSMFile::~TSMFile()
