@@ -149,18 +149,6 @@ Int ImageUtilities::inVector (const Int& target,
    return -1;
 }
 
-Int ImageUtilities::pixelAxisToWorldAxis(const CoordinateSystem& cSys, 
-                                         const Int& pixelAxis)
-// 
-// Find the world axis for the given pixel axis
-// in a coordinate system
-//
-{
-   Int coordinate, axisInCoordinate;
-   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-   return cSys.worldAxes(coordinate)(axisInCoordinate);
-}
-
 Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
                                  const CoordinateSystem& cSysIn,
                                  const Int& pixelAxis,
@@ -238,7 +226,7 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
 // Find the world axis for this pixel axis and then find
 // the coordinate for this pixel axis
             
-   const Int worldAxis = ImageUtilities::pixelAxisToWorldAxis(cSys, pixelAxis);
+   const Int worldAxis = cSys.pixelAxisToWorldAxis(pixelAxis);
    cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
 
           

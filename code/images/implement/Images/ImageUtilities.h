@@ -257,10 +257,6 @@ public:
    static Int inVector (const Int& target, 
                         const Vector<Int>& vector);
 
-// Find the world axis for the given pixel axis in a coordinate system
-   static Int pixelAxisToWorldAxis(const CoordinateSystem& cSys, 
-                                   const Int& pixelAxis);
-
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
 // axis, the <src>pixelAxis</src>.    For the other pixel axes in the
