@@ -425,7 +425,7 @@ ostream &operator<<(ostream &os, const MVTime::Format &form);
 // </group>
 
 // is equal operator, uses operator Double which returns days
-Bool operator==(const MVTime &lh, const MVTime &rh) 
+inline Bool operator==(const MVTime &lh, const MVTime &rh) 
 { return ToBool(lh.operator Double() == rh.operator Double());}
 
 
