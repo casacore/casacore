@@ -68,6 +68,11 @@ Stokes::StokesTypes Stokes::type(const String &stokesName)
    else if (stokesName == "RCircular") val = RCircular;
    else if (stokesName == "LCircular") val = LCircular;
    else if (stokesName == "Linear") val = Linear;
+   else if (stokesName == "Ptotal") val = Ptotal;
+   else if (stokesName == "Plinear") val = Plinear;
+   else if (stokesName == "PFtotal") val = PFtotal;
+   else if (stokesName == "PFlinear") val = PFlinear;
+   else if (stokesName == "Pangle") val = Pangle;
    return val;
 }
 
@@ -103,6 +108,11 @@ String Stokes::name(StokesTypes stokesType)
    case RCircular: stokesName="RCircular"; break;
    case LCircular: stokesName="LCircular"; break;
    case Linear: stokesName="Linear"; break;
+   case Ptotal: stokesName="Ptotal"; break;
+   case Plinear: stokesName="Plinear"; break;
+   case PFtotal: stokesName="PFtotal"; break;
+   case PFlinear: stokesName="PFlinear"; break;
+   case Pangle: stokesName="Pangle"; break;
    }
    return stokesName;
 }
