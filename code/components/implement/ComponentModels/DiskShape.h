@@ -44,7 +44,7 @@ template <class T> class Vector;
 
 // <use visibility=export> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tGaussianShape" demos="dGaussianShape">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tGaussianShape" demos="dTwoSidedShape">
 // </reviewed>
 
 // <prerequisite>
@@ -102,37 +102,29 @@ template <class T> class Vector;
 // </synopsis>
 
 // <example>
-// Suppose I had an image of a region of the sky and we wanted to subtract
-// a extended source from it. This could be done as follows:
-// <li> Construct a SkyComponent with a disk of width that is similar to
-//      the extended source.
-// <li> Project the component onto an image
-// <li> Convolve the image by the point spread function
-// <li> subtract the convolved model from the dirty image.
-// </li>
-// Shown below is the code to perform the first step in this process, ie
-// construct the SkyComponent. This example is also available in the
-// <src>dDIskShape.cc</src> file.  Note that it is more accurate to do
-// subtraction of components in the (u,v) domain.
+// Shown below is code to construct a disk shaped model whose direction is
+// always centred on the disk of Jupiter. Note that it is necessary to specify
+// the observation time in order for the DiskShape class to be able to do the
+// copnversion into J2000 coordinates. This example is also available in the
+// <src>dTwoSidedShape.cc</src> file. 
 // <srcblock>
-//  MDirection jupiter_dir;
-//  { // get the right direction into jupiter_dir
-//    Quantity clk_time; MVTime::read(clk_time, "01-10-2000/12:59");
-//    MEpoch obs_epoch(clk_time, MEpoch::UTC);
-//    MeasFrame obs_frame(obs_epoch);
-//    jupiter_dir = MDirection(MVDirection(0), 
-//	                       MDirection::Ref(MDirection::JUPITER,obs_frame));
-//  }
-//  {
-//    const Flux<Double> flux(6.28, 0.1, 0.15, 0.01);
-//    DiskShape jupiter_shape;
-//    jupiter_shape.setRefDirection(jupiter_dir);
-//    jupiter_shape.setWidth(Quantity(4,"arcmin"), Quantity(3.9,"arcmin"),
-//	                     Quantity(0, "deg"));
-//    const ConstantSpectrum spectrum;
-//    SkyComponent jupiter_model(flux, jupiter_shape, spectrum);
-//    printShape(jupiter_shape);
-//  }
+// { // construct a model for Jupiter.
+//   Quantity clk_time; MVTime::read(clk_time, "01-10-2000/12:59");
+//   MEpoch obs_epoch(clk_time, MEpoch::UTC);
+//   MeasFrame obs_frame(obs_epoch);
+//   MDirection jupiter_dir(MVDirection(0), 
+//                          MDirection::Ref(MDirection::JUPITER, obs_frame));
+//   DiskShape jupiter_shape;
+//   jupiter_shape.setRefDirection(jupiter_dir);
+//   jupiter_shape.setWidth(Quantity(4,"arcmin"), Quantity(3.9,"arcmin"),
+//                          Quantity(3, "deg"));
+//   printShape(jupiter_shape);
+//   MDirection sample_dir(MVDirection(1.218, 0.37), MDirection::J2000);
+//   if (jupiter_shape.sample(sample_dir, MVAngle(0.1)) > 0.0) {
+//     cout << "The position in J2000 coordinates is near: " 
+//          << sample_dir.getAngle("deg") << endl;
+//   }
+// }
 // </srcblock>
 // The printShape function is the example shown for the TwoSidedShape class.
 // </example>
