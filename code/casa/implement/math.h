@@ -1,5 +1,5 @@
 //# math.h: Interim solution for standard/nonstandard system cmath
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,14 +35,26 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 
-#if defined(__sgi)
-#include <math.h>
+#if defined(AIPS_SGI) || defined(AIPS_SUN_NATIVE)
+# include <math.h>
 #else
-#include <cmath>
+# include <cmath>
+# if !defined(AIPS_KCC)
+#define NEEDS_POWFLOATFLOAT
+# endif
+#endif
+
+#if defined(AIPS_SUN_NATIVE)
+using std::pow;
+using std::abs;
+#define NEEDS_POWFLOATFLOAT
+#endif
+
 // The following is not yet part of some of the cmath include file. Should be
 // removed at some stage
-inline Float pow(Float f1, Float f2) {
-  return Float(pow(Double(f1), Double(f2))); };
-#endif
+# if defined(NEEDS_POWFLOATFLOAT)
+   inline Float pow(Float f1, Float f2) {
+    return Float(pow(Double(f1), Double(f2))); };
+# endif
 
 #endif
