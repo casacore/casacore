@@ -1,5 +1,5 @@
 //# ImageProfileFit.h: Class to fit profiles in images
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -196,8 +196,10 @@ public:
     //</group>
 
     // Fit all profiles with shapes + optional polynomial in the region and write out images.
+    // If fillRecord is True, the output record is filled with the
+    // the parameters of every fit.  This can get VERY large so use with care.
     //<group>
-    void fit (RecordInterface& rec,  
+    void fit (Bool fillRecord, RecordInterface& rec,  
               Bool xAbsRec,
               const String& xUnitRec,
               const String& dopplerRec,
