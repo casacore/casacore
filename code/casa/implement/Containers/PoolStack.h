@@ -1,5 +1,5 @@
 //# PoolStack.h: A parameterized stack of re-usable objects
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,7 +110,8 @@ template <class T, class Key> class PoolStack {
   // Get a pointer to an object in the stack. The stack will be extended if
   // no objects left. Extension is done with the NDEF number of elements.
   // Different extension can be done manually with the addElements() method.
-  T *get() { if (!top_p) addElements(NDEF); return stack_p[--top_p]; };
+  T *get() { if (!top_p) addElements(NDEF); T *tmp = stack_p[--top_p];
+  stack_p[top_p] = 0; return tmp; };
 
   // Return an object to the stack for re-use
   void release(T *obj) {if (obj) stack_p[top_p++] = obj; };

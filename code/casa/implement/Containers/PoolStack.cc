@@ -1,5 +1,5 @@
 //# PoolStack.cc: A parameterized stack of re-usable objects
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,10 @@ PoolStack<T, Key>::~PoolStack() {
 template <class T, class Key>
 void PoolStack<T, Key>::addElements(const uInt n) {
   stack_p.resize(stack_p.nelements() + n);
-  for (uInt i=0; i<n; i++) release(new T(key_p));
+  for (uInt i=0; i<n; i++) {
+    stack_p[stack_p.nelements()-n+i] = 0;
+    release(new T(key_p));
+  };
 }
 
 template <class T, class Key>
