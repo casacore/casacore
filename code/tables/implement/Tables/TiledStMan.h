@@ -149,7 +149,7 @@ public:
     // </group>
 
     // Set the maximum cache size (in bytes) in a non-persistent way.
-    void setMaximumCacheSize (uInt maxSize);
+    virtual void setMaximumCacheSize (uInt nbytes);
 
     // Get the current maximum cache size (in bytes).
     uInt maximumCacheSize() const;
@@ -454,9 +454,6 @@ protected:
     Bool      dataChanged_p;
 };
 
-
-inline void TiledStMan::setMaximumCacheSize (uInt maxSize)
-    { maxCacheSize_p = maxSize; }
 
 inline uInt TiledStMan::maximumCacheSize() const
     { return maxCacheSize_p; }
