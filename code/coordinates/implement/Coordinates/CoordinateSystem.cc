@@ -871,11 +871,11 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 	}
 	// cout << "world pixel map: " << *(world_maps_p[i]) << " " <<
 	// *(pixel_maps_p[i]) << endl;
-	// cout << "toWorld # " << i << "pix=" << pixel_tmps_p[i]->ac() << endl;
+	// cout << "toWorld # " << i << "pix=" << pixel_tmps_p[i] << endl;
 	Bool oldok = ok;
 	ok = coordinates_p[i]->toWorld(
 		       *(world_tmps_p[i]), *(pixel_tmps_p[i]));
-	// cout << "toWorld # " << i << "wld=" << world_tmps_p[i]->ac() << endl;
+	// cout << "toWorld # " << i << "wld=" << world_tmps_p[i] << endl;
 	if (!ok) {
 	    // Transfer the error message. Note that if there is more than
 	    // one error message this transfers the last one. I suppose this
