@@ -45,6 +45,13 @@
 /* Get the RE_DUP_MAX value */
 #include <limits.h>
 
+// The Intel compiler buggers up limits.h so RE_DUP_MAX doesn't get defined so 
+// if it's not defined we will do it here via the regex.h include.
+
+#ifndef RE_DUP_MAX
+#include <regex.h>
+#endif
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Hack to avoid requiring alloca. Define an instance of this at the beginning
