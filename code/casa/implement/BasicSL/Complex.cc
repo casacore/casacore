@@ -1,5 +1,5 @@
 //# Complex.cc: Implement Complex, DComplex
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,8 @@
 
 // Math functions
 /// Should be in stl
+
+#if defined(NEEDS_LOG10_COMPLEX)
 DComplex log10(const DComplex &val)
 {
   return DComplex(log(val)*C::log10e);
@@ -45,6 +47,7 @@ Complex log10(const Complex &val)
   // with picky compilers
   return Complex(log(val)*Float(C::log10e));
 }
+#endif
 
 // Near functions
 // Note: max() cannot be used from Math.h until it is derived from <math>
