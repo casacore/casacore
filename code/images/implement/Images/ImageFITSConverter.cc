@@ -179,6 +179,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     ignore(19) = "^.delt";
     ignore(20) = "^bunit$";
     FITSKeywordUtil::removeKeywords(header, ignore);
+    // Remove any that might have been in ObsInfo of coordinates.
+    FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
 
     newImage->setMiscInfo(header);
 
