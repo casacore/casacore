@@ -44,6 +44,7 @@ class String;
 class IPosition;
 class LogIO;
 class Unit;
+class AxesSpecifier;
 
 
 //
@@ -114,6 +115,22 @@ public:
 // SHould template this function.
    static void copyMiscellaneous (ImageInterface<Float>& out,
                                   const ImageInterface<Float>& in);
+
+// Copy a mask from one image to another
+   static void copyMask (ImageInterface<Float>& out,
+                         const ImageInterface<Float>& in,
+                         const String& maskOut, const String& maskIn,
+                         AxesSpecifier axesSpecifier);
+
+// Add one degenerate axis for each of the specified coordinate types.
+// If the outfile string is given the new image is a PagedImage.
+// If the outfile string is empty, the new image is a TempImage.
+   static void addDegenerateAxes (LogIO& os,
+                                  PtrHolder<ImageInterface<Float> >& outImage,
+                                  ImageInterface<Float>& inImage,
+                                  const String& outFile, Bool direction, 
+                                  Bool spectral, const String& stokes, 
+                                  Bool linear, Bool overwrite);
 
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
