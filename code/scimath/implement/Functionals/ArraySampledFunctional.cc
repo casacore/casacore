@@ -1,5 +1,5 @@
 //# ArraySampledFunctional.cc:  
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@ ArraySampledFunctional()
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional(const T & data) 
   :theRefData(data),
-   theEnd(data.end()),
+   theEnd(data.endPosition()),
    theLastAxis(0),
    theNelements(0)
 {
