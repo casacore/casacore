@@ -1,5 +1,5 @@
 //# QBase.cc: base class for Quantum
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,4 +60,11 @@ Bool QBase::isConform(const Unit &s) const {
 
 Bool QBase::isConform(const QBase &other) const {
     return ToBool(qUnit.getValue() == other.qUnit.getValue());
+}
+
+
+//# Global functions
+ostream &operator<<(ostream &os, const QBase &meas) {
+  meas.print(os);
+  return os;
 }

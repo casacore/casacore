@@ -1,5 +1,5 @@
 //# QBase.h: base class for Quantum
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -94,12 +94,13 @@ public:
 // </grp>
 
 // Destructor
-    ~QBase();
+  virtual ~QBase();
 
 //# Operators
 // Assignment (copy)
     QBase &operator=(const QBase &other);
 
+//# Member functions
 // Get units of QBase
 // <group name="get">
 // Return the current units attached to QBase
@@ -122,11 +123,29 @@ public:
     Bool isConform(const QBase &other) const;
 // </group>
 
+  // Get a copy of Quantum
+  virtual QBase *clone() const = 0;
+  // Get the full unit specification
+  virtual const Unit &getFullUnit() const = 0;
+  // Print a Quantum
+  virtual void print(ostream &os) const = 0;
+  // Get the type (== Register() of derived Quantum (faster than Strings)
+  // All should have:
+  // static uInt myType();
+  virtual uInt type() const = 0;
+
 protected:
 //# Data members
     Unit qUnit;
 };
 
 //# Inline Implementations
+
+//# Global functions
+// <summary> Global functions </summary>
+// <group name=Output>
+// Output declaration
+ostream &operator<<(ostream &os, const QBase &meas);
+// </group>
 
 #endif
