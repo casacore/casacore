@@ -31,7 +31,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/Table.h>
-#include <trial/Tasking.h>
 #include <aips/Logging/LogIO.h>
 
 //# Forward declarations
