@@ -2143,3 +2143,4 @@
 09 021 src mv trial/implement/Lattices/ExprNodeSet.h aips/implement/Tables/ExprNodeSet.h
 09 021 src mv trial/implement/Lattices/ExprNodeSet.cc aips/implement/Tables/ExprNodeSet.cc
 09 021 src mv trial/implement/Lattices/ExprDerNodeArray.cc aips/implement/Tables/ExprDerNodeArray.cc
+09 021 src mv trial/implement/Lattices/ExprDerNodeArray.h aips/implement/Tables/ExprDerNodeArray.h
