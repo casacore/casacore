@@ -1,0 +1,25 @@
+\documentclass[11pt]{article}
+\include{aips2defs}
+\usepackage{html,epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 233 -- Guide to Measures in C++}
+  
+
+\author{Wim Brouw}
+
+\date{20 May 2000}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available 
+(124kB).}{../233.ps.gz}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{mguide.latex}
+\end{document}
