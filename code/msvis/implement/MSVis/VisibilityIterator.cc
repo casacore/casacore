@@ -1008,16 +1008,18 @@ void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq){
     return;
   }
 
-
+  if (!freqCacheOK_p) {
+    frequency(freq);   
+  }
   Vector<Double> chanFreq(0);
   chanFreq=msIter_p.msColumns().spectralWindow().chanFreq()(spw);
   //      Int start=chanStart_p[spw]-msIter_p.startChan();
   //Assuming that the spectral windows selected is not a reference ms from 
   //visset ...as this will have a start chan offseted may be.
+
+  
   Int start=chanStart_p[spw]; 
-  freq.resize(chanWidth_p[spw]);
-  
-  
+  freq.resize(chanWidth_p[spw]);  
   MFrequency::Types obsMFreqType=(MFrequency::Types)(msIter_p.msColumns().spectralWindow().measFreqRef()(spw));
   // Setting epoch to the first in this iteration
   MEpoch ep=msIter_p.msColumns().timeMeas()(0);
@@ -1030,8 +1032,8 @@ void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq){
 
 
   for (Int i=0; i<chanWidth_p[spw]; i++) {
-    freq[i]=chanFreq(start+
-			  numChanGroup_p[spw]*chanInc_p[spw]+i);
+    freq[i]=tolsr(chanFreq(start+
+			   (numChanGroup_p[spw]-1)*chanInc_p[spw]+i)).getValue().getValue();
   }
 
 }
