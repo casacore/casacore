@@ -3792,3 +3792,4 @@
 14 053 src rm npoi/apps/chatoms/makefile
 14 053 src rm npoi/apps/chatoms/newms.g
 14 053 src mv npoi/apps/chatoms/newms.g npoi/implement/Chatoms/newms.g
+14 056 src rm npoi/apps/chatoms
