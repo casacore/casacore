@@ -332,12 +332,24 @@ TableRecord WCBox::toRecord(const String&) const
 // the record
 //
 {
+// Convert blc/trcAxes to Int from uInt because Glish
+// can't handle uInt
+
+   Vector<Int> blcAxes(itsBlcWorldAxes.nelements());
+   Vector<Int> trcAxes(itsTrcWorldAxes.nelements());
+   for (uInt i=0; i<blcAxes.nelements(); i++) {
+      blcAxes(i) = Int(itsBlcWorldAxes(i));
+   }
+   for (i=0; i<trcAxes.nelements(); i++) {
+      trcAxes(i) = Int(itsTrcWorldAxes(i));
+   }
+
    TableRecord rec;
    defineRecordFields(rec, className());
    rec.define ("blc", itsBlcWC);
    rec.define ("trc", itsTrcWC);
-   rec.define ("blcAxes", itsBlcWorldAxes);
-   rec.define ("trcAxes", itsTrcWorldAxes);
+   rec.define ("blcAxes", blcAxes);
+   rec.define ("trcAxes", trcAxes);
    rec.define ("isOffset", itsIsOffset);
    if (!itsCSys.save(rec, "coordinates")) {
       throw (AipsError ("WCBox::toRecord - could not save Coordinate System"));
@@ -351,11 +363,26 @@ WCBox* WCBox::fromRecord (const TableRecord& rec,
 
 {
    CoordinateSystem* pCSys = CoordinateSystem::restore(rec,"coordinates");
+
+// Convert blc/trcAxes to uInt from Int because Glish
+// can't handle uInt.  SInce they started life as uInt,
+// by definition, the conversion is safe
+
+   Vector<Int> blcAxes = Vector<Int>(rec.asArrayInt("blcAxes"));
+   Vector<Int> trcAxes = Vector<Int>(rec.asArrayInt("trcAxes"));
+   Vector<uInt> blcAxes2(blcAxes.nelements());
+   Vector<uInt> trcAxes2(trcAxes.nelements());
+   for (uInt i=0; i<blcAxes.nelements(); i++) {
+      blcAxes2(i) = uInt(blcAxes(i));
+   }
+   for (i=0; i<trcAxes.nelements(); i++) {
+      trcAxes2(i) = uInt(trcAxes(i));
+   }
+
    return new WCBox(Vector<Double>(rec.asArrayDouble ("blc")),
                     Vector<Double>(rec.asArrayDouble ("trc")),
-                    Vector<uInt>(rec.asArrayuInt("blcAxes")),
-                    Vector<uInt>(rec.asArrayuInt("trcAxes")),
-                    *pCSys, rec.asBool("isOffset"));
+                    blcAxes2, trcAxes2, *pCSys,
+                    rec.asBool("isOffset"));
    delete pCSys;
 }
 
