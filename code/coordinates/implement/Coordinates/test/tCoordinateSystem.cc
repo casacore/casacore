@@ -32,6 +32,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Unit.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
@@ -44,7 +45,8 @@
 
 #include <iostream.h>
 
-DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True);
+DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True,
+                                            MDirection::Types type=MDirection::J2000);
 SpectralCoordinate makeSpectralCoordinate ();
 StokesCoordinate makeStokesCoordinate(Bool silly=True);
 LinearCoordinate makeLinearCoordinate(uInt nAxes=2);
@@ -102,7 +104,6 @@ int main()
       uInt iTC;
       uInt iStC;
       uInt iLC;
-
 
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
@@ -852,12 +853,14 @@ void doit3 (CoordinateSystem& cSys)
    {
       CoordinateSystem cSys2;
       cSys2.addCoordinate(makeStokesCoordinate(False));
-      cSys2.addCoordinate(makeDirectionCoordinate());
+      cSys2.addCoordinate(makeDirectionCoordinate(False, MDirection::B1950));
       cSys2.addCoordinate(makeLinearCoordinate());
       CoordinateSystem cSys3 = cSys2;
+      cSys3.replaceCoordinate(makeDirectionCoordinate(False, MDirection::J2000),1);
 //
       Vector<Int> worldAxisMap, worldAxisTranspose;
-      if (!cSys2.worldMap(worldAxisMap, worldAxisTranspose, cSys3)) {
+      Vector<Bool> refChange;
+      if (!cSys2.worldMap(worldAxisMap, worldAxisTranspose, refChange, cSys3)) {
          throw(AipsError("Failed to make world map 1"));
       }
       Vector<Int> wMap(cSys2.nWorldAxes()), wTranspose(cSys2.nWorldAxes());
@@ -867,7 +870,11 @@ void doit3 (CoordinateSystem& cSys)
       }
       if (!allEQ(wMap, worldAxisMap) ||
           !allEQ(wTranspose, worldAxisTranspose)) {
-         throw(AipsError("Failed worldMap test 1"));
+         throw(AipsError("Failed worldMap test 1a"));
+      }
+      if (refChange(0)!=False || refChange(1)!=True ||
+          refChange(2)!=True || refChange(3)!=False) {
+         throw(AipsError("Failed worldMap test 1b"));
       }
 //
       Vector<Int> newWorldOrder(cSys2.nWorldAxes());
@@ -885,7 +892,7 @@ void doit3 (CoordinateSystem& cSys)
 //
       cSys2.transpose(newWorldOrder, newPixelOrder);
 //
-      if (!cSys2.worldMap(worldAxisMap, worldAxisTranspose, cSys3)) {
+      if (!cSys2.worldMap(worldAxisMap, worldAxisTranspose, refChange, cSys3)) {
          throw(AipsError("Failed to make world map 2"));
       }
       Vector<Int> newMap(wMap.copy());
@@ -897,7 +904,11 @@ void doit3 (CoordinateSystem& cSys)
 //
       if (!allEQ(newMap, worldAxisMap) ||
           !allEQ(newTranspose, worldAxisTranspose)) {
-         throw(AipsError("Failed worldMap test 2"));
+         throw(AipsError("Failed worldMap test 2a"));
+      }
+      if (refChange(0)!=False || refChange(1)!=True ||
+          refChange(2)!=True || refChange(3)!=False) {
+         throw(AipsError("Failed worldMap test 2b"));
       }
    }
 }
@@ -1485,9 +1496,9 @@ void doit5()
 }
 
 
-DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees)
+DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees,
+                                            MDirection::Types type)
 {
-   MDirection::Types type = MDirection::J2000;
    Projection proj = Projection::SIN;
    Vector<Double> crval(2);
    Vector<Double> crpix(2);
