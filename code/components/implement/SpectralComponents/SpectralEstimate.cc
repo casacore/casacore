@@ -245,7 +245,7 @@ void SpectralEstimate::findga(const Vector<Float> &prof) {
 	  if (pg > cutoff_p) {
 	    tspel.setAmpl(pg);
 	    tspel.setCenter(xm);
-	    tspel.setSigma(sg*sqrt(2*log(16.0)));
+	    tspel.setSigma(sg);
 	    slist_p.insert(tspel);
 	  };
 	};

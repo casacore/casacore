@@ -96,8 +96,8 @@ Bool SpectralFit::fit(const Vector<Double> &y,
       v(j++) = slist_p[i].getAmpl();
       vb(j)  = !slist_p[i].fixedCenter();
       v(j++) = slist_p[i].getCenter();
-      vb(j)  = !slist_p[i].fixedSigma();
-      v(j++) = slist_p[i].getSigma();
+      vb(j)  = !slist_p[i].fixedFWHM();
+      v(j++) = slist_p[i].getFWHM();
     } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
       for (uInt k=0; k<slist_p[i].getDegree()+1; k++) {
 	vb(j)  = !slist_p[i].fixed()(k);
@@ -127,7 +127,14 @@ Bool SpectralFit::fit(const Vector<Double> &y,
     terr.resize(slist_p[i].getOrder());
     for (uInt k=0; k<slist_p[i].getOrder(); k++) {
       tmp(k) = sol(j);
-      terr(k) = err(j++);
+      terr(k) = err(j);
+      if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
+         if (k==2) {
+           tmp(k) = sol(j) / sqrt(8 * log(2.0));      // FWHM -> SIGMA
+           terr(k) = err(j) / sqrt(8 * log(2.0));
+         }
+      }
+      j++;
     };
     slist_p[i].set(slist_p[i].getType(), tmp);
     slist_p[i].setError(terr);
@@ -166,8 +173,8 @@ Bool SpectralFit::fit(const Vector<Float> &y,
       v(j++) = slist_p[i].getAmpl();
       vb(j)  = !slist_p[i].fixedCenter();
       v(j++) = slist_p[i].getCenter();
-      vb(j)  = !slist_p[i].fixedSigma();
-      v(j++) = slist_p[i].getSigma();
+      vb(j)  = !slist_p[i].fixedFWHM();
+      v(j++) = slist_p[i].getFWHM();
     } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
       for (uInt k=0; k<slist_p[i].getDegree()+1; k++) {
 	vb(j)  = !slist_p[i].fixed()(k);
@@ -196,7 +203,14 @@ Bool SpectralFit::fit(const Vector<Float> &y,
     terr.resize(slist_p[i].getOrder());
     for (uInt k=0; k<slist_p[i].getOrder(); k++) {
       tmp(k) = sol(j);
-      terr(k) = err(j++);
+      terr(k) = err(j);
+      if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
+         if (k==2) {
+           tmp(k) = sol(j) / sqrt(8 * log(2.0));      // FWHM -> SIGMA
+           terr(k) = err(j) / sqrt(8 * log(2.0));
+         }
+      }
+      j++;
     };
     slist_p[i].set(slist_p[i].getType(), tmp);
     slist_p[i].setError(terr);
