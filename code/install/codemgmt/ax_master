@@ -4519,3 +4519,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSObsEnums.h aips/implement/MeasurementSets/MSObsEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSObservation.cc aips/implement/MeasurementSets/MSObservation.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSObservation.h aips/implement/MeasurementSets/MSObservation.h
+14 296 src mv aips/implement/MeasurementSets/NewMSPointing.cc aips/implement/MeasurementSets/MSPointing.cc
