@@ -5,7 +5,7 @@
 #   This utility, cxx2html, is part of AIPS++, a software project
 #   centered at the National Radio Astronomy Observatory.
 #
-#   Copyright (C) 1995,1997
+#   Copyright (C) 1995,1997,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #  
 #   This library is free software; you can redistribute it and/or modify it
@@ -62,6 +62,7 @@ sub new {
     $self->{'AIPS++ extensions'} = 1;
     $self->{'File Extensions'} = [];
     $self->{'HTML Extension'} = 'html';
+    $self->{'Max Summary Length'} = 80;
     $self->{'Copyright Notice'} = [];
 
     $self->set(@_);
@@ -129,22 +130,26 @@ sub set {
     $self->{'output'}{'root'} = $params{'root'} if defined $params{'root'};
 
     ##### Use absolute paths to non generated files 	#####
-    $self->{'output'}{'absolute'} = $params{'absolute'} if defined $params{'absolute'};
+    $self->{'output'}{'absolute'} = $params{'absolute'}
+                                      if defined $params{'absolute'};
 
     ##### Add AIPS++ specific features 	#####
     $self->{'AIPS++ extensions'} = $params{'AIPS++ extensions'} 
-					if defined $params{'AIPS++ extensions'};
+				      if defined $params{'AIPS++ extensions'};
 
     ##### Add File Extensions 	#####
     $self->{'File Extensions'} = $params{'File Extensions'} 
-					if defined $params{'File Extensions'};
+				      if defined $params{'File Extensions'};
 
-    ##### Add File Extensions 	#####
+    ##### Add HTML Extensions 	#####
     $self->{'HTML Extension'} = $params{'HTML Extension'} 
-					if defined $params{'HTML Extension'};
+				      if defined $params{'HTML Extension'};
+
+    $self->{'Max Summary Length'} = $params{'Max Summary Length'} 
+				      if defined $params{'Max Summary Length'};
 
     $self->{'Copyright Notice'} = $params{'Copyright Notice'}
-					if defined $params{'Copyright Notice'};
+				      if defined $params{'Copyright Notice'};
 
 }
 
@@ -309,9 +314,14 @@ sub maketree {
 sub getsummary {
     my $self = shift;
     my $doc = @_[0];
+    my $name = @_[1];
     my $summary = "";
     my $getting = 0;
     my $cnt = 0;
+    my @remline = ();
+    my $foundsum = 0;
+    my $maxlen = $self->{'Max Summary Length'};
+    my $DOAIPS = $self->{'AIPS++ extensions'};
 
     foreach (@$doc) {
 	if ( $getting ) {
@@ -320,32 +330,34 @@ sub getsummary {
 		$summary .= $1;
 		$_ = $2;
 		if ( /^\s*$/ ) {
-		    splice(@$doc,$cnt--,1);
+		    unshift(@remline,$cnt);
 		} else {
 		    splice(@$doc,$cnt,1,$_);
 		}
 		next;
 	    } else {
 		$summary .= $_;
-		splice(@$doc,$cnt--,1);
+		unshift(@remline,$cnt);
 		next;
 	    }
 	}
 	if ( m@^(.*?)<summary>(.*?)</summary>(.*)$@i ) {
+	    $foundsum++;
 	    $summary = $2;
 	    $_ = $1 . $3;
 	    if ( /^\s*$/ ) {
-		splice(@$doc,$cnt--,1);
+		unshift(@remline,$cnt);
 	    } else {
 		splice(@$doc,$cnt,1,$_);
 	    }		
 	    next;
 	}
 	if ( m@^(.*?)<summary>(.*)$@i ) {
+	    $foundsum++;
 	    $summary = $2;
 	    $_ = $1;
 	    if ( /^\s*$/ ) {
-		splice(@$doc,$cnt--,1);
+		unshift(@remline,$cnt);
 	    } else {
 		splice(@$doc,$cnt,1,$_);
 	    }
@@ -353,6 +365,27 @@ sub getsummary {
 	    next;
 	}
     } continue { ++$cnt; }
+# Remove the empty lines.
+    foreach (@remline) {
+        splice(@$doc,$_,1);
+    }
+# Check if summary is given correctly.
+    if ( $DOAIPS  &&  $foundsum == 0 ) {
+        print STDERR "Error: no <summary> given in " . $name . " of \"";
+	print STDERR $self->{'file'} . "\"! \n" ;
+    }
+    if ( $foundsum > 1 ) {
+        print STDERR "Error: <summary> multiply used in " . $name . " of \"";
+	print STDERR $self->{'file'} . "\"! \n" ;
+    }
+    if ( $getting ) {
+        print STDERR "Error: <summary>/</summary> mismatch in " . $name . " of \"";
+	print STDERR $self->{'file'} . "\"! \n" ;
+    }
+    if ( $maxlen > 0  &&  length($summary) > $maxlen ) {
+        print STDERR "Error: summary > " . $maxlen . " characters in " . $name . " of \"";
+	print STDERR $self->{'file'} . "\"! \n" ;
+    }
     return $summary;
 }
 
