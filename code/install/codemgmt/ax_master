@@ -4866,3 +4866,4 @@
 14 316 sys rm libexec/dishgauss.g
 14 316 src rm trial/apps/newdish/dishgaussgui.g
 14 316 sys rm libexec/dishgaussgui.g
+14 316 src rm trial/apps/newdish/dishgenericop.g
