@@ -242,6 +242,9 @@ protected:
   LatticeBase& operator= (const LatticeBase&)
     { return *this; }
   // </group>
+
+  // Throw an exception for arithmetic on a Bool Lattice.
+  void throwBoolMath() const;
 };
 
 
