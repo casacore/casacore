@@ -1576,11 +1576,25 @@ Bool CoordinateSystem::save(RecordInterface &container,
        return False;
     }
 
-    uInt nc = coordinates_p.nelements();
-    if (nc==0) {
-       set_error(String("The CoordinateSystem is empty"));
+// Write the obsinfo
+
+    String error;
+    Bool ok = obsinfo_p.toRecord(error, subrec);
+    if (!ok) {
+       set_error (error);
        return False;
     }
+
+
+// If no coordinates, just run away with the ObsInfo
+// in place
+
+    uInt nc = coordinates_p.nelements();
+    if (nc==0) {
+       container.defineRecord(fieldName, subrec);
+       return True;
+    }
+
 //
     for (uInt i=0; i<nc; i++)
     {
@@ -1608,13 +1622,6 @@ Bool CoordinateSystem::save(RecordInterface &container,
 	subrec.define(name, Vector<Int>(*pixel_maps_p[i]));
 	name = String("pixelreplace") + num;
 	subrec.define(name, Vector<Double>(*pixel_replacement_values_p[i]));
-    }
-    // Write the obsinfo
-    String error;
-    Bool ok = obsinfo_p.toRecord(error, subrec);
-    if (!ok) {
-       set_error (error);
-       return False;
     }
 
     // Write some of the info out again in a different order in a 
