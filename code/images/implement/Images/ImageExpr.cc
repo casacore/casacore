@@ -105,6 +105,12 @@ ImageInterface<T>* ImageExpr<T>::cloneII() const
 }
 
 
+template<class T>
+String ImageExpr<T>::imageType() const
+{
+  return "ImageExpr";
+}
+
 template <class T>
 Bool ImageExpr<T>::isMasked() const
 {

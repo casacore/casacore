@@ -146,6 +146,9 @@ public:
 // Make a copy of the object (reference semantics).
    virtual ImageInterface<T>* cloneII() const;
 
+// Get the image type (returns name of derived class).
+   virtual String imageType() const;
+
 // Sets a new image into the list to be concatenated.  
 // If relax is False, throws an exception if the images
 // are not contiguous along the concatenation axis.

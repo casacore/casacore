@@ -133,6 +133,9 @@ public:
   virtual ImageInterface<T>* cloneII() const;
   // </group>
 
+  // Get the image type (returns name of derived class).
+  virtual String imageType() const;
+
   // Is the SubImage masked?
   // It is if its parent image or its region is masked.
   virtual Bool isMasked() const;

@@ -116,6 +116,12 @@ ImageInterface<T>* TempImage<T>::cloneII() const
 
 
 template <class T>
+String TempImage<T>::imageType() const
+{
+  return "TempImage";
+}
+
+template<class T>
 Bool TempImage<T>::isPaged() const
 {
   return mapPtr_p->isPaged();

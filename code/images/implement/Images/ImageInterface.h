@@ -160,6 +160,9 @@ public:
   virtual ImageInterface<T>* cloneII() const = 0;
   // </group>
 
+  // Get the image type (returns name of derived class).
+  virtual String imageType() const = 0;
+
   // Function which changes the shape of the image (N.B. the data is thrown 
   // away - the Image will be filled with nonsense afterwards)
   virtual void resize (const TiledShape& newShape) = 0;

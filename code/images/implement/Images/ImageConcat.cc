@@ -139,6 +139,12 @@ ImageInterface<T>* ImageConcat<T>::cloneII() const
   return new ImageConcat(*this);
 }
 
+template<class T>
+String ImageConcat<T>::imageType() const
+{
+  return "ImageConcat";
+}
+
 
 // Public functions
 template<class T>

@@ -166,6 +166,12 @@ ImageInterface<T>* SubImage<T>::cloneII() const
 }
 
 template<class T>
+String SubImage<T>::imageType() const
+{
+  return "SubImage";
+}
+
+template<class T>
 void SubImage<T>::setCoords (const CoordinateSystem& coords)
 {
   const AxesMapping& axesMap = itsSubLatPtr->getAxesMap();

@@ -208,6 +208,9 @@ public:
   // Make a copy of the object (reference semantics).
   virtual ImageInterface<T>* cloneII() const;
 
+  // Get the image type (returns name of derived class).
+  virtual String imageType() const;
+
   // Add the TableLogSink from other to this one.
   // This is where the history is kept.
   virtual void mergeTableLogSink (const LogIO& other);

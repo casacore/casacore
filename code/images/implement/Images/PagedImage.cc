@@ -334,6 +334,12 @@ ImageInterface<T>* PagedImage<T>::cloneII() const
 }
 
 template<class T>
+String PagedImage<T>::imageType() const
+{
+  return "PagedImage";
+}
+
+template<class T>
 Bool PagedImage<T>::isPersistent() const
 {
   return True;
