@@ -314,12 +314,22 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
    ostrstream oss;
    for (i=0; i<names_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (names_p(i) != lCoord->names_p(i)) {
+//
+// the to/from FITS header conversion will convert linear axis
+// names to upper case.  So to prevent that reflection failing,
+// test on upper case only.
+//
+         String x1 = names_p(i);
+         x1.upcase();
+         String x2 = lCoord->names_p(i);
+         x2.upcase();
+         if (x1 != x2) {
             oss << "The LinearCoordinates have differing axis names for axis "
                 << i << ends;
             set_error(String(oss));
             return False;
          }
+
       }
    }
    for (i=0; i<units_p.nelements(); i++) {
