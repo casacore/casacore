@@ -31,6 +31,9 @@
 
 #include <trial/Mathematics/Gridder.h>
 
+#ifdef __GNUG__
+typedef Vector<Double> gppbug3;
+#endif
 
 template <class Domain, class Range>
 class ConvolveGridder : public Gridder<Domain, Range>{
@@ -50,6 +53,12 @@ public:
   virtual Bool degrid(const Array<Range>& gridded,
 		      const Vector<Domain>& position,
 		      Range& value);
+
+  Vector<Double>& cFunction();
+
+  Vector<Int>& cSupport();
+
+  Int& cSampling();
 
 protected:
 

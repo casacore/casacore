@@ -29,6 +29,7 @@
 #include <trial/Mathematics/ConvolveGridder.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Vector.h>
 
 #define NEED_UNDERSCORES
 #if defined(NEED_UNDERSCORES)
@@ -418,4 +419,20 @@ void ConvolveGridder<Domain, Range>::setConvolutionFunction(const String& type) 
     }
   }
 }
+
+template <class Domain, class Range>
+Vector<Double>& ConvolveGridder<Domain, Range>::cFunction() {
+  return convFunc;
+}
+
+template <class Domain, class Range>
+Vector<Int>& ConvolveGridder<Domain, Range>::cSupport() {
+  return supportVec;
+}
+
+template <class Domain, class Range>
+Int& ConvolveGridder<Domain, Range>::cSampling() {
+  return sampling;
+}
+
 
