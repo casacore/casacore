@@ -171,6 +171,20 @@ public:
     // Recover number of models
     uInt nModels() const;
 
+    // Determine an initial estimate for the solution of the specified
+    // model type to the given data - no compound models are allowable
+    // in this function.   If you have specified an include
+    // or exclude pixel range to the fitter, that will be honoured.
+    // This function does not interact with the addModel function.
+    // Returns a zero length vector if it fails to make an estimate.
+    //<group>
+    Vector<Double> estimate(Fit2D::Types type, const MaskedLattice<Float>& data);
+    Vector<Double> estimate(Fit2D::Types type, const Lattice<Float>& data);
+    Vector<Double> estimate(Fit2D::Types type, const Array<Float>& data);
+    Vector<Double> estimate(Fit2D::Types type, const Array<Float>& data,
+                            const Array<Bool>& mask);
+    //</group>
+
     // Do the fit.  The internal normalization, if invoked,
     // may help round off for many parameter fits. Returns
     // an enum value to tell you what happened if the fit failed
@@ -235,7 +249,6 @@ public:
 private:
 
    LogIO itsLogger;
-
    Bool itsValid, itsValidSolution, itsIsNormalized, itsHasSigma;
    Bool itsInclude;
    Vector<Float> itsPixelRange;

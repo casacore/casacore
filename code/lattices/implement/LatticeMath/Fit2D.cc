@@ -31,6 +31,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MaskedArray.h>
+#include <aips/Arrays/MaskArrMath.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Functionals/Gaussian2D.h>
@@ -208,7 +210,7 @@ Vector<Bool> Fit2D::convertMask (const String mask,
 
 uInt Fit2D::nParameters(Fit2D::Types type)
 {
-    uInt n = 0;
+   uInt n = 0;
    if (type==Fit2D::LEVEL) {
       throw (AipsError("Fit2D - Level fitting not yet implemented"));
    } else if (type==Fit2D::DISK) {
@@ -606,6 +608,143 @@ void Fit2D::setParams(const Vector<Double>& params, uInt which)
 }
 
 
+Vector<Double> Fit2D::estimate(Fit2D::Types type,
+                               const MaskedLattice<Float>& data) 
+{
+   if (data.shape().nelements() !=2) {
+      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Lattice must be 2-dimensional" << LogIO::POST;
+   }
+   Array<Float> pixels = data.get(True);
+   Array<Bool> mask = data.getMask(True);
+   return estimate(type, pixels, mask);
+}
+
+Vector<Double> Fit2D::estimate(Fit2D::Types type, 
+                               const Lattice<Float>& data) 
+{
+   if (data.shape().nelements() !=2) {
+      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Lattice must be 2-dimensional" << LogIO::POST;
+   }
+   Array<Float> pixels = data.get(True);
+   Array<Bool> mask(pixels.shape(),True);
+   return estimate(type, pixels, mask);
+}
+
+Vector<Double> Fit2D::estimate(Fit2D::Types type,
+                               const Array<Float>& data)
+{
+   if (data.shape().nelements() !=2) {
+      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Array must be 2-dimensional" << LogIO::POST;
+   }
+   Array<Bool> mask(data.shape(),True);
+   return estimate(type, data, mask);
+}
+
+
+Vector<Double> Fit2D::estimate(Fit2D::Types type,
+                               const Array<Float>& data,
+                               const Array<Bool>& mask) 
+// 
+// Work out an initial estimate to the solution using Bob Sault's 
+// probabilistic approach from Miriad imfit.for   Only works
+// for single models.  Honours and inclusion/exclusion pixel range
+//
+{
+   Vector<Double> parameters;
+   IPosition shape = data.shape();
+   if (shape.nelements() !=2) {
+      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Array must be 2-dimensional" << LogIO::POST;
+      return parameters;
+   }
+   if (mask.shape().nelements() !=2) {
+      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Mask must be 2-dimensional" << LogIO::POST;
+      return parameters;
+   }
+// 
+// Find min and max
+//
+   MaskedArray<Float> pixels(data, mask);
+   Float minVal, maxVal;   
+   IPosition minPos(2), maxPos(2);
+   minMax(minVal, maxVal, minPos, maxPos, pixels);
+//
+// For the purposed of the estimate, chuck away pixels
+// below abs(5%) of the peak
+//
+   Float clip = 0.05 * max(abs(minVal), abs(maxVal));
+//
+// Accumulate sums.  Array indexing is not fast.
+//
+   Int includeThem = 0;
+   if (itsPixelRange.nelements()==2) {
+     if (itsInclude) {
+        includeThem = 1;
+     } else {
+        includeThem = 2;
+     }
+   }
+//
+   Double P, XP, YP, XYP, XXP, YYP;
+   Float t, fac, SP;
+   P = XP = YP = XYP = XXP = YYP = 0.0;
+   SP = 0.0;
+//
+   IPosition pos(2);
+   Float ri, rj;
+   uInt nPts = 0;
+   for (Int j=0; j<shape(1); j++) {
+     for (Int i=0; i<shape(0); i++) {
+        pos(0) = i; pos(1) = j;
+//
+        const Float& val = data(pos);
+        t = abs(val);
+        if (mask(pos) && includeIt(val, itsPixelRange, includeThem) && t>clip) {
+           ri = i; rj = j;
+//
+           SP += val;
+           P  += t;                        
+           XP += t*ri;
+           YP += t*rj;
+           XYP += t*ri*rj;
+           XXP += t*ri*ri;
+           YYP += t*rj*rj;
+           nPts++;
+         }
+      }
+   }
+   if (nPts==0) {
+      itsLogger << LogIO::WARN << "There are not enough good points in the array for a good estimate" << LogIO::POST;
+      return parameters;
+   }
+//
+   if (type==Fit2D::GAUSSIAN) {
+      parameters.resize(6);
+//
+      fac = 4*log(2.0);
+      XP  = XP / P;
+      YP  = YP / P;
+      XYP = XYP / P - XP*YP;
+      XXP = XXP / P - XP*XP;
+      YYP = YYP / P - YP*YP;
+//
+      parameters(1) = XP;
+      parameters(2) = YP;
+//    
+      parameters(3)  = sqrt(fac*(XXP + YYP +
+                        sqrt( square(XXP-YYP) + 4*square(XYP) )));
+      parameters(4) = sqrt(fac*(XXP + YYP -
+                       sqrt( square(XXP-YYP) + 4*square(XYP) )));
+      parameters(5) = 0.5*atan2(2*XYP,YYP-XXP);
+//
+      Float sn = 1.0;
+      if (SP<0) sn = -1.0;
+      parameters(0) = sn * fac * P / ( C::pi * parameters(3) * parameters(4));
+   } else {
+      itsLogger << LogIO::SEVERE << "Only Gaussian models are currently implemented" << LogIO::POST;
+   }
+   return parameters;
+}
+
 
 // Private functions
 
@@ -645,7 +784,7 @@ Bool Fit2D::normalizeData (Matrix<Double>& pos, Vector<Double>& values,
    itsHasSigma = False;
    if (sigma.nelements() != 0) itsHasSigma = True;
 //
-// Find first unmasked oint
+// Find first unmasked point
 //
    Bool hasMask = True;
    if (mask.nelements()==0) hasMask = False;
@@ -963,4 +1102,6 @@ Vector<Double> Fit2D::getAvailableSolution()  const
    }
    return sol2;
 } 
+
+
 
