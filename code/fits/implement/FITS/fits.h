@@ -1,5 +1,5 @@
 //# fits.h:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 # include <iostream.h>
 # include <aips/aips.h>
 # include <aips/Mathematics/Complex.h>
+# include <aips/Mathematics/IComplex.h>
 # include <aips/FITS/FITSError.h>
 
 //#  Automatically configure for known LITTLE ENDIAN systems
