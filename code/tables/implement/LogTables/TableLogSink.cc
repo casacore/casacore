@@ -80,6 +80,40 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
     message_p.attach(log_table_p, columnName(MESSAGE));
     location_p.attach(log_table_p, columnName(LOCATION));
     id_p.attach(log_table_p, columnName(OBJECT_ID));
+    roTime_p.attach(log_table_p, columnName(TIME));
+    roPriority_p.attach(log_table_p, columnName(PRIORITY));
+    roMessage_p.attach(log_table_p, columnName(MESSAGE));
+    roLocation_p.attach(log_table_p, columnName(LOCATION));
+    roId_p.attach(log_table_p, columnName(OBJECT_ID));
+}
+
+TableLogSink::TableLogSink(const String &fileName)
+  : LogSinkInterface(LogFilter())
+{
+    LogMessage logMessage(
+	      LogOrigin("TableLogSink", "TableLogSink", WHERE));
+
+    if (! Table::isReadable(fileName)) {
+        // Table does not exist.
+        logMessage.priority(LogMessage::SEVERE).line(__LINE__).message(
+	   fileName + " does not exist or is not readable");
+	LogSink::postGloballyThenThrow(logMessage);
+    } else {
+	log_table_p = Table(fileName);
+	logMessage.priority(LogMessage::DEBUGGING).line(__LINE__).message(
+	  String("Opening readonly ") + fileName);
+	LogSink::postGlobally(logMessage);
+    }
+
+    // Avoid double deletion by Cleanup.
+    log_table_p.makePermanent();
+
+    // Attach the columns
+    roTime_p.attach(log_table_p, columnName(TIME));
+    roPriority_p.attach(log_table_p, columnName(PRIORITY));
+    roMessage_p.attach(log_table_p, columnName(MESSAGE));
+    roLocation_p.attach(log_table_p, columnName(LOCATION));
+    roId_p.attach(log_table_p, columnName(OBJECT_ID));
 }
 
 TableLogSink::TableLogSink(const TableLogSink &other)
@@ -103,6 +137,11 @@ void TableLogSink::copy_other(const TableLogSink &other)
     message_p.reference(other.message_p);
     location_p.reference(other.location_p);
     id_p.reference(other.id_p);
+    roTime_p.reference(other.roTime_p);
+    roPriority_p.reference(other.roPriority_p);
+    roMessage_p.reference(other.roMessage_p);
+    roLocation_p.reference(other.roLocation_p);
+    roId_p.reference(other.roId_p);
 
     // Avoid double deletion by Cleanup.
     log_table_p.makePermanent();
@@ -111,6 +150,12 @@ void TableLogSink::copy_other(const TableLogSink &other)
 TableLogSink::~TableLogSink()
 {
     flush();
+}
+
+void TableLogSink::reopenRW (const LogFilter& aFilter)
+{
+    log_table_p.reopenRW();
+    filter (aFilter);
 }
 
 Bool TableLogSink::postLocally(const LogMessage &message)
@@ -177,11 +222,11 @@ void TableLogSink::concatenate(const TableLogSink &other)
     table().addRow(n);
 
     for (uInt i=0; i<n; i++) {
-	time().put(offset+i, other.time()(i));
-	priority().put(offset+i, other.priority()(i));
-	message().put(offset+i, other.message()(i));
-	location().put(offset+i, other.location()(i));
-	objectID().put(offset+i, other.objectID()(i));
+	time().put(offset+i, other.roTime()(i));
+	priority().put(offset+i, other.roPriority()(i));
+	message().put(offset+i, other.roMessage()(i));
+	location().put(offset+i, other.roLocation()(i));
+	objectID().put(offset+i, other.roObjectID()(i));
     }
 }
 
