@@ -14,12 +14,11 @@ NORMAL: dowait variable is T
 NORMAL: Starting server timer
 NORMAL: Starting server misc
 NORMAL: Starting server quanta
-in autoflag
 NORMAL: Starting server autoflag
-NORMAL: Server started: /dop07_0/oms/aips++/code/trial/implement/Flagging/test/autoflag (AIPS++ version: 1.6 (build #346))
-NORMAL: Server started: misc (AIPS++ version: 1.6 (build #346))
-NORMAL: Server started: quanta (AIPS++ version: 1.6 (build #346))
-NORMAL: attached MS tAutoflag.MS2: 6656 rows, 104 times, 105 IFRs
+NORMAL: Server started: /dop07_0/oms/aips++/code/trial/implement/Flagging/test/autoflag (AIPS++ version: 1.7 (build #44))
+NORMAL: Server started: misc (AIPS++ version: 1.7 (build #44))
+NORMAL: Server started: quanta (AIPS++ version: 1.7 (build #44))
+NORMAL: attached MS tAutoflag.MS2: 6656 rows, 104 times, 105 baselines
 <<<
 Added method 1: timemed (TimeMedian)
     thr         = 5
@@ -96,21 +95,23 @@ Added method 6: select (Selector)
     unflag      = F
 NORMAL: Starting flagger::run
 NORMAL: Existing flags will be reset
-NORMAL: (DATA)ABS(I); thr=5.0 rowthr=10.0  hw=10
+NORMAL: TimeMedian: (DATA)ABS(I); thr=5.0 rowthr=10.0  hw=10
 NORMAL: Existing flags will be reset
-NORMAL: (DATA)ABS(I); thr=5.0 rowthr=10.0  hw=10
+NORMAL: FreqMedian: (DATA)ABS(I); thr=5.0 rowthr=10.0  hw=10
 NORMAL: Existing flags will be reset
-NORMAL: (DATA)ABS(I); #4-29; ndeg=2 rowthr=5.0 rowhw=6 
+NORMAL: SpectralRej: (DATA)ABS(I); #4-29; ndeg=2 rowthr=5.0 rowhw=6 
 NORMAL: Existing flags will be reset
-NORMAL: (DATA)ABS(I); thr=0.04 nbins=50,50 
+NORMAL: UVBinner: (DATA)ABS(I); thr=0.04 nbins=50,50 
 NORMAL: Existing flags will be reset
-NORMAL: fq=806.00-808.00MHz ant=RT6; flag all 
+NORMAL: Selector: fq=806.00-808.00MHz ant=RT6; flag all 
 NORMAL: Existing flags will be reset
-NORMAL: flag ABS(I)>10 
-NORMAL: Chunk 1: correlations XX YY, 256 chans, 104 times, 6656 rows
+NORMAL: Selector#2: flag ABS(I)>10 
+NORMAL: Chunk 1:  XX YY, 256 channels, 104 time slots, 105 baselines, 6656 rows
 NORMAL: 26 channels will be fitted in this chunk
 NORMAL: defaultaipsrc (aipsrc()) ready
 NORMAL: defaultwidgetserver (dws) ready
+NORMAL: 4824 (72.48%) rows have been flagged.
+NORMAL: 150366 of 3407872 (4.41%) pixels have been flagged.
 NORMAL: TimeMedian: 16057 pixel flags, 1438 row flags
 NORMAL: FreqMedian: 25742 pixel flags, 954 row flags
 NORMAL: SpectralRej: 0 pixel flags, 4790 row flags
@@ -121,5 +122,5 @@ NORMAL: Flagging complete
 NORMAL: 
 >>>
 NORMAL: Finished flagger::run
-      92.63 real       69.11 user        0.85 system
+      99.63 real       71.49 user        0.97 system
 <<<
