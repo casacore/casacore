@@ -85,7 +85,7 @@
 //
 //            Default is True.
 //
-//   device   The PGPLOT device.
+//   plotter  The PGPLOT device.
 //
 //            The default is /xs
 //
@@ -136,7 +136,7 @@ try {
    inputs.Create("include", "0.0", "Pixel range to include");
    inputs.Create("exclude", "0.0", "Pixel range to exclude");
    inputs.Create("list", "True", "List statistics as well as plot ?");
-   inputs.Create("device", "none", "PGPlot device");
+   inputs.Create("plotter", "none", "PGPlot device");
    inputs.Create("nxy", "-1", "Number of subplots in x & y");
    inputs.ReadArguments(argc, argv);
 
@@ -150,7 +150,7 @@ try {
    const Block<Double> excludeB = inputs.GetDoubleArray("exclude");
    const Bool doList = inputs.GetBool("list");
    const Block<Int> nxyB(inputs.GetIntArray("nxy"));
-   String device = inputs.GetString("device");
+   String device = inputs.GetString("plotter");
 
 
 // Create defaults array
@@ -321,6 +321,10 @@ try {
      ok = stats.getSigma(data);
      if (!ok) os << "Error recovering sigma array" << endl;
 
+     os << "Recovering variance array " << endl;
+     ok = stats.getVariance(data);
+     if (!ok) os << "Error recovering variance array" << endl;
+     
      os << "Recovering rms array" << endl;
      ok = stats.getRms(data);
      if (!ok) os << "Error recovering rms array" << endl;
