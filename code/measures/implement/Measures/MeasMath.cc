@@ -651,3 +651,18 @@ void MeasMath::rotateShift(MVPosition &in, const MVPosition &shft,
 	   ROTMAT1) * in) * ROTMAT1;
   };
 }
+
+void MeasMath::getAPP(MVPosition &out) {
+  getInfo(APPDIR);
+  out = infomvd_p[APPDIR-N_FrameDInfo];
+}
+
+void MeasMath::getJ2000(MVPosition &out) {
+  getInfo(J2000DIR);
+  out = infomvd_p[J2000DIR-N_FrameDInfo];
+}
+
+void MeasMath::getB1950(MVPosition &out) {
+  getInfo(B1950DIR);
+  out = infomvd_p[B1950DIR-N_FrameDInfo];
+}

@@ -196,6 +196,13 @@ public:
   // </group>
   // </group>
 
+  // Transfer some information
+  // <group>
+  void getAPP(MVPosition &out);
+  void getJ2000(MVPosition &out);
+  void getB1950(MVPosition &out);
+  // </group>
+
 private: 
   //# Enum
   // Types of frame information groups
