@@ -1,5 +1,5 @@
 //# MVuvw.cc: A 3D vector on Earth
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,11 +93,14 @@ MVuvw::MVuvw(const Vector<Quantity> &other) :
 
 MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew) :
   MVPosition() {
-    RotMatrix x(Euler(-(C::pi_2 - dr.get()(1)), 1,
-		      (dr.get()(0) - C::pi_2), 3));
-    if (ew) {};
-    xyz = (x * pos).getValue();
-  }
+  // Next for sgi_ntv to get it working properly
+  MVDirection dr1(dr);
+  dr1.adjust();
+  RotMatrix x(Euler(-(C::pi_2 - dr1.get()(1)), 1,
+		    (dr1.get()(0) - C::pi_2), 3));
+  if (ew) {};
+  xyz = (x * pos).getValue();
+}
 
 MVuvw::MVuvw(const MVPosition &other) :
   MVPosition(other) {}
