@@ -39,7 +39,7 @@ C
       integer nx, ny, npol, nchan, nvispol, nvischan, nrow
       complex values(nvispol, nvischan, nrow)
       complex grid(nx, ny, npol, nchan)
-      double precision xy(2)
+      double precision xy(2,nrow)
       integer flag(nvispol, nvischan, nrow)
       real weight(nvischan, nrow), sumwt(npol, nchan)
       integer irow
@@ -69,9 +69,9 @@ C
          rend=nrow
       end if
 
-      call sgridsd(xy, sampling, pos, loc, off)
-      if (ogridsd(nx, ny, loc, support)) then
-         do irow=rbeg, rend
+      do irow=rbeg, rend
+         call sgridsd(xy(1,irow), sampling, pos, loc, off)
+         if (ogridsd(nx, ny, loc, support)) then
             do ichan=1, nvischan
                achan=chanmap(ichan)+1
                if((achan.ge.1).and.(achan.le.nchan).and.
@@ -105,8 +105,8 @@ C
                   end do
                end if
             end do
-         end do
-      end if
+         end if
+      end do
       return
       end
 C
@@ -120,7 +120,7 @@ C
       integer nx, ny, npol, nchan, nvispol, nvischan, nrow
       complex values(nvispol, nvischan, nrow)
       complex grid(nx, ny, npol, nchan)
-      double precision xy(2)
+      double precision xy(2, nrow)
       integer flag(nvispol, nvischan, nrow)
       integer irow
       integer support, sampling
@@ -148,9 +148,9 @@ C
          rend=nrow
       end if
 
-      call sgridsd(xy, sampling, pos, loc, off)
-      if (ogridsd(nx, ny, loc, support)) then
-         do irow=rbeg, rend
+      do irow=rbeg, rend
+         call sgridsd(xy(1, irow), sampling, pos, loc, off)
+         if (ogridsd(nx, ny, loc, support)) then
             do ichan=1, nvischan
                achan=chanmap(ichan)+1
                if((achan.ge.1).and.(achan.le.nchan)) then
@@ -177,8 +177,8 @@ C
                   end do
                end if
             end do
-         end do
-      end if
+         end if
+      end do
       return
       end
 C
