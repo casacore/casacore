@@ -103,7 +103,7 @@ SDSpWindowHandler &SDSpWindowHandler::operator=(const SDSpWindowHandler &other)
 
 	msSpWin_p = new NewMSSpectralWindow(*(other.msSpWin_p));
 	AlwaysAssert(msSpWin_p, AipsError);
-	msSpWinCols_p = new NewMSSpWindowColumns(*(other.msSpWinCols_p));
+	msSpWinCols_p = new NewMSSpWindowColumns(*msSpWin_p);
 	AlwaysAssert(msSpWinCols_p, AipsError);
 
 	nextCacheRow_p = other.nextCacheRow_p;
