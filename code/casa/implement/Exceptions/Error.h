@@ -1,5 +1,5 @@
 //# Error.h: Base class for all AIPS++ errors
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -83,8 +83,9 @@ public:
   // Creates an AipsError and initializes the error message from
   // the parameter
   // <group>
-  AipsError (const Char *str=0);
+  AipsError (const Char *str);
   AipsError (const String &str);
+  AipsError () : message() {};
   // </group>
 
   //
@@ -171,8 +172,9 @@ public:
   // Creates an GeneralIndexError and initializes the error message from
   // the parameter
   // <group>
-  IndexError(const Char *str=0) : AipsError(str) {}
+  IndexError(const Char *str) : AipsError(str) {}
   IndexError(const String &str) : AipsError(str) {}
+  IndexError() : AipsError() {}
   // </group>
 
   //
@@ -212,8 +214,9 @@ public:
   // which cause the error to occur.
   //
   // <group>
-  indexError(t oI, const Char *str=0);
+  indexError(t oI, const Char *str);
   indexError(t oI, const String &str);
+  indexError(t oI) : IndexError(), oIndex(oI) {};
   // </group>
 
   //
@@ -251,7 +254,8 @@ public:
   // Creates an DuplError and initializes the error message from
   // the parameter
   // <group>
-  DuplError(const Char *str=0) : AipsError(str) {}
+  DuplError() : AipsError() {}
+  DuplError(const Char *str) : AipsError(str) {}
   DuplError(const String &str) : AipsError(str) {}
   // </group>
 
@@ -293,8 +297,9 @@ public:
   // optional character string.
   //
   // <group>
-  duplError(t oI, const Char *str=0);
+  duplError(t oI, const Char *str);
   duplError(t oI, const String &str);
+  duplError(t oI) : DuplError(), oKey(oI) {};
   // </group>
 
   //
