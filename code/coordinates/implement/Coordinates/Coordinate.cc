@@ -69,9 +69,8 @@ uInt Coordinate::toWorldMany(Matrix<Double> &world,
 {
     uInt nworld = nWorldAxes();
     uInt npixel = nPixelAxes();
-
-    AlwaysAssert(nworld == world.nrow() && npixel == pixel.nrow(), AipsError);
-
+    world.resize(pixel.shape());
+//
     uInt ntransforms = world.ncolumn();
     AlwaysAssert(ntransforms == pixel.ncolumn(), AipsError);
 
@@ -129,9 +128,8 @@ uInt Coordinate::toPixelMany(Matrix<Double> &pixel,
 {
     uInt nworld = nWorldAxes();
     uInt npixel = nPixelAxes();
-
-    AlwaysAssert(nworld == world.nrow() && npixel == pixel.nrow(), AipsError);
-
+    pixel.resize(world.shape());
+//
     uInt ntransforms = world.ncolumn();
     AlwaysAssert(ntransforms == pixel.ncolumn(), AipsError);
 
@@ -696,6 +694,54 @@ void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
    AlwaysAssert(world.nelements()==nWorldAxes(),AipsError);
    world += referenceValue();
 }
+
+void Coordinate::makePixelRelativeMany (Matrix<Double>& value) const
+{
+    uInt n = value.ncolumn();
+    Vector<Double> col(value.nrow());
+    for (uInt i=0; i<n; i++) {
+        col = value.column(i);
+	makePixelRelative(col);
+        value.column(i) = col;
+    }
+}
+
+void Coordinate::makeWorldRelativeMany (Matrix<Double>& value) const
+{
+    uInt n = value.ncolumn();
+    Vector<Double> col(value.nrow());
+    for (uInt i=0; i<n; i++) {
+        col = value.column(i);
+	makeWorldRelative(col);
+        value.column(i) = col;
+    }
+
+}
+
+void Coordinate::makePixelAbsoluteMany (Matrix<Double>& value) const
+{
+    uInt n = value.ncolumn();
+    Vector<Double> col(value.nrow());
+    for (uInt i=0; i<n; i++) {
+        col = value.column(i);
+	makePixelAbsolute(col);
+        value.column(i) = col;
+    }
+}
+
+void Coordinate::makeWorldAbsoluteMany (Matrix<Double>& value) const
+{
+    uInt n = value.ncolumn();
+    Vector<Double> col(value.nrow());
+    for (uInt i=0; i<n; i++) {
+        col = value.column(i);
+	makeWorldAbsolute(col);
+        value.column(i) = col;
+    }
+}
+
+
+
 
 Bool Coordinate::setWorldMixRanges (Vector<Double>& worldMin,
                                     Vector<Double>& worldMax,
