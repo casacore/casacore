@@ -300,7 +300,8 @@ template<class M, class F, class MC>
 void MeasConvert<M,F,MC>::copy(const MeasConvert<M,F,MC> &other) {
   clear();
   init();
-  model = new M(other.model);
+  if (other.model)
+    model = new M(other.model);
   unit = other.unit;
   outref = other.outref;
   create();
