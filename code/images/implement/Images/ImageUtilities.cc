@@ -384,7 +384,7 @@ void ImageUtilities::worldWidthsToPixel (LogIO& os,
 }   
 
 
-Bool ImageUtilities::skyWidthsPixelToWorld (LogIO& os, 
+Bool ImageUtilities::skyPixelWidthsToWorld (LogIO& os, 
                                             Vector<Quantum<Double> >& wParameters,
                                             const CoordinateSystem& cSys, 
                                             const Vector<Double>& pParameters,

@@ -157,7 +157,7 @@ public:
 // On input pa is positive for +x -> +y in pixel frame
 // On output pa is positive N->E
 // Returns True if major/minor exchanged themselves on conversion to world.
-   static Bool skyWidthsPixelToWorld (LogIO& os,
+   static Bool skyPixelWidthsToWorld (LogIO& os,
                                       Vector<Quantum<Double> >& wParameters,
                                       const CoordinateSystem& cSys,
                                       const Vector<Double>& pParameters,
