@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Quanta/QMath.h>
+#include <aips/Measures/MDoppler.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Vector.h>
@@ -42,11 +43,12 @@ template <class T> class MomentCalcBase;
 template <class T> class SubImage;
 template <class T> class ImageInterface;
 template <class T> class Lattice;
+template <class T> class PtrHolder;
 class CoordinateSystem;
 class IPosition;
 class String;
 class Unit;
-class LCPagedMask;
+
 
 #if defined(AIPS_STDLIB)
 #include <iosfwd>
@@ -467,6 +469,12 @@ enum MethodTypes {
                     const Vector<Int>& nxy,
                     const Bool yInd=False);
 
+// Set Velocity type.  This is used for moments for which the moment axis is
+// a spectral axis for which the coordinate is traditionally presented in
+// km/s   You can select the velocity definition. The default state of the
+// class is to use the radio definition.
+   void setVelocityType (MDoppler::Types type);
+
 // CLose plotter
    void closePlotting();
 
@@ -490,6 +498,9 @@ enum MethodTypes {
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type (this class only accepts Float or Double images).
    Bool setNewImage (ImageInterface<T>& image);
+
+// Get CoordinateSystem
+   CoordinateSystem coordinates() const {return pInImage_p->coordinates();};
 
 // Helper function to convert a string containing a list of desired methods to
 // the correct <src>Vector<Int></src> required for the <src>setWinFitMethod</src> function.
@@ -526,16 +537,12 @@ private:
    PGPlotter plotter_p;
    Bool overWriteOutput_p;
    String error_p;
-
+   Bool convertToVelocity_p;
+   MDoppler::Types velocityType_p;
 
 // Check that the combination of methods that the user has requested is valid
 // List a handy dandy table if not.
    Bool checkMethod();
-
-// Copy an image and zero its masked values
-   void copyAndZero(ImageInterface<T>& out, 
-                    LCPagedMask& maskOut,
-                    ImageInterface<T>& in);
 
 // Plot a histogram                     
    static void drawHistogram  (const Vector<T>& values,
@@ -584,10 +591,11 @@ private:
                      Unit& momentUnits,
                      const Unit& imageUnits,
                      const String& momentAxisUnits,
-                     const Int moment);
+                     const Int moment, Bool convertToVelocity);
 
 // Smooth an image   
-  ImageInterface<T>* smoothImage (String& smoothName);
+   Bool smoothImage (PtrHolder<ImageInterface<T> >& pSmoothedImage,
+                     String& smoothName);
 
 // Determine the noise by fitting a Gaussian to a histogram 
 // of the entire image above the 25% levels.  If a plotting
