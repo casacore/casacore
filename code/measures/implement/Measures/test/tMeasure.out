@@ -225,7 +225,7 @@ LSR (J2000): [0.0145021, -0.865863, 0.500071]
 Radial velocity (BARY): Radialvelocity: 1e+06
                  (GEO): 1.02688e+06
 and back: 1e+06
-and 0 (GEO) to TOPO: 1.35506e-11
+and 0 (GEO) to TOPO: 1.3625e-11
 and back: 0
 and 0 (BARY) to LSR: 5251.89
 and back: 0
@@ -239,10 +239,10 @@ Frame: Epoch: 50217::15:00:00.0000 (TDB = 50217.6)
 [-173.993, 31.5433] deg
 [-0.847565, -0.0891916, 0.523143]
 56927::06:56:56.6228
-15476.4
+15475.1
 [-0.847565, -0.0891916, 0.523143]
 Aberration: [7.87739e-05, -5.38236e-05, -2.33309e-05]
-22015.2
+22013.9
 Converted Epoch: 50272::09:44:30.0000
  to Reference for an Epoch with Type: GMST1
  as Epoch: 56982::04:50:59.8613
