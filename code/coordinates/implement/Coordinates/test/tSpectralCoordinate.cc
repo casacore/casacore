@@ -957,7 +957,10 @@ void refConv ()
    Quantum<Double> lon(0.0,Unit(String("rad")));
    Quantum<Double> lat(-35.0,Unit(String("deg")));
    MDirection dir(lon, lat, MDirection::J2000);
-   lc.setReferenceConversion(MFrequency::BARY, epoch, pos, dir);
+   MFrequency::Types type = MFrequency::BARY;
+   if (!lc.setReferenceConversion(type, epoch, pos, dir)) {
+      throw(AipsError("setReferenceConversion failed"));
+   }
 //
    if (!lc.toWorld(world, pixel)) {
       throw(AipsError(String("toWorld + reference conversion (1) failed because ") + lc.errorMessage()));
@@ -971,4 +974,15 @@ void refConv ()
    if (!allNear(pixel2, pixel, 1e-6)) {
       throw(AipsError("Coordinate + reference conversion reflection 1 failed"));
    }                                       
+//
+   MFrequency::Types type2;
+   MEpoch epoch2;
+   MPosition pos2;
+   MDirection dir2;
+   lc.getReferenceConversion(type2, epoch2, pos2, dir2);
+//
+   AlwaysAssert(type2==MFrequency::BARY, AipsError);
+   AlwaysAssert(near(epoch.getValue().get(), epoch2.getValue().get()), AipsError);
+   AlwaysAssert(allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
+   AlwaysAssert(allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
 }
