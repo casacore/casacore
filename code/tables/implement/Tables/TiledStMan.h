@@ -124,17 +124,27 @@ public:
     // Set the flag to "data has changed since last flush".
     void setDataChanged();
 
-    // Derive the tile shape from the hypercube shape for the given maximum
+    // Derive the tile shape from the hypercube shape for the given
     // number of pixels per tile. It is tried to get the same number
     // of tiles for each dimension.
-    // It tries to make the tile
     // When a weight vector is given, the number of tiles for a dimension
     // is proportional to the weight.
+    // <br>After the initial guess it tries to optimize it by trying
+    // to waste as little space as possible, while trying to keep as close
+    // to the initial guess. The given tolerance (possibly per axis)
+    // gives the minimum and maximum possible length of a tile axis
+    // (minimum = initial_guess*tolerance; maximum = initial_guess/tolerance).
+    // The heuristic is such that a tile axis length dividing the cube length
+    // exactly is always favoured.
+    // The test program <src>tTiledStMan</src> can be used to see how
+    // the algorithm works out for a given tile size and cube shape.
     // <group>
     static IPosition makeTileShape (const IPosition& hypercubeShape,
+				    Double tolerance = 0.5,
 				    uInt maxNrPixelsPerTile = 32768);
     static IPosition makeTileShape (const IPosition& hypercubeShape,
 				    const Vector<double>& weight,
+				    const Vector<double>& tolerance,
 				    uInt maxNrPixelsPerTile = 32768);
     // </group>
 
