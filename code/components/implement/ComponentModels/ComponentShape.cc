@@ -196,7 +196,7 @@ Bool ComponentShape::fromRecord(String& errorMessage,
   const Record& errRecord = dirRecord.asRecord(error);
 
   Quantum<Double> longErr, latErr;
-  if (!fromAngQRecord(longErr, errorMessage, "longitude", errRecord) &&
+  if (!fromAngQRecord(longErr, errorMessage, "longitude", errRecord) ||
       !fromAngQRecord(latErr, errorMessage, "latitude", errRecord)) {
     errorMessage += "Direction error not changed\n";
     return False;
