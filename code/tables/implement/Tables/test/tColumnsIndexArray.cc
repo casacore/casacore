@@ -1,5 +1,5 @@
 //# tColumnsIndexArray.cc: Test program for the ColumnsIndexArray class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Tables/ColumnsIndexArray.h>
+#include <aips/Tables/ColumnsIndexArray.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
