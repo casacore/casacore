@@ -1,5 +1,5 @@
 //# ReadAsciiTable.h: Filling a table from an Ascii file
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,38 +67,31 @@
 //                              if it contains one or more blanks)
 //      </ul>
 // </ol>
-//
+// If the <src>autoHeader</src> argument is True, the column definition
+// lines should not be given. It recognizes the types from the first data
+// line. It gives the names 'column0', etc. to the columns.
+// It can recognize integer, double, and string types.
+// <p>
 // There are two forms of the readAsciiTable function:
 // <ol>
-//  <li> The simplest form has one input file. The first two lines
-//       define the columns as described above. The remaining lines contain
-//       the data. For example:
-//       <srcblock>
-//        COLI   COLF   COLD       COLX        COLZ       COLS
-//         I      R      D          X           Z          A
-//        1      1.1    1.11       1.12 1.13   1.14 1.15  Str1
-//        10     11     12         13   14     15   16    String17
-//       </srcblock>
-//       results in a table with 6 columns and 2 rows.
-//
-//       If the autoHeader argument is True, the column types are
-//       derived from the values in the first line. It can recognize
-//       integer, double, and string types. The column names are column1, etc..
-//  <li> The other form has two input files allowing the definition of
-//       table keywords as well. The second input file contains the
-//       column data. The first input file contains the keywords (if any)
+//  <li> The simplest form has two input files.
+//       The second input file contains the column data.
+//       The first input file contains the keywords (if any)
 //       and the column definitions.
 //       The keywords in the first file, if there are any, must be enclosed
-//       between a line that contains ".keywords" and a line that contains
-//       ".endkeywords". Between these two lines each line should contain
-//       the following:
+//       between a line that starts with ".keywords" and a line that starts
+//       with ".endkeywords". To define column keywords, .keywords should be
+//       followed by whitespace and the column name. 
+//       Between these two lines each line should contain the following:
 //       <ul>
 //        <li> The keyword name, e.g., ANYKEY
 //        <li> The datatype of the keyword (cf. list of valid types above)
 //        <li> The value or values for the keyword (the keyword may contain a
 //             scalar or a vector of values).  e.g., 3.14159  21.78945
 //      </ul>
-//      For example:
+//      After the keywords definitions, the two column definition lines
+//      should follow (unless <src>autoHeader=True</src> is given).
+//      <br>For example:
 //      <srcblock>
 //       .keywords
 //       KEYI  I  10
@@ -114,12 +107,20 @@
 //       KEYS  A  "1 2 3 4 5"
 //       KEYSV A  " 1 2 " "AAA" BBB bbb CCc C "@#$%^&*()"
 //       .endkeywords
+//       .keywords  COLDX
+//       IKEYS   A "coldx ikey"
+//       DKEYS   A "coldx dkey"
+//       .endkeywords
 //       COLI   COLF   COLD       COLX        COLZ       COLS
 //        I      R      D          X           Z          A
 //      </srcblock>
-//      defines a table with 12 keywords (of which 6 contain vector values)
-//      and 6 columns. The number of rows is determined by the number of
+//      defines a table with 12 table keywords (of which 6 contain vector
+//      values), 2 keywords for column COLDX, and and 6 columns.
+//      The number of rows is determined by the number of
 //      lines in the second input file.
+//  <li> The other form is to combine the two files in one file.
+//       In that case the data lines must be preceeded by the optional
+//       keyword and column definitions (without an intermediate blank line).
 // </ol>
 // </synopsis>
 
@@ -142,7 +143,7 @@
 
 
 // Create a table with name as given by tableName.
-// If auotHeader==True, the format is automatically derived from the
+// If autoHeader==True, the format is automatically derived from the
 // first lines. It can recognize integer, double, and String types.
 // The columns will be named column1, column2, etc..
 // If autoHeader==False, the layout of the table has to be defined in
