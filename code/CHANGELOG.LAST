@@ -1,0 +1,20 @@
+
+change id: 0061
+ author:   Ger van Diepen
+ date:     2000/12/04
+ avers:    1.5
+ area:     Library
+ package:  aips
+ module:   RTTI
+ type:     Code
+ category: Removed
+ summary:  AIPS++ RTTI has been removed
+All home-brew AIPS++ RTTI (TypeInfo.h) has been removed from the system.
+It was used in several classes (Array, String, Regex, List, Map).
+Effectively it was only used in ArrayIO to write a unique string for
+each template instantiation. This is now replaced by a simple string
+"Array", which is sufficient for the purposes it was used for.
+
+RTTI was also used for the home-brew exception mechanism, which was
+already removed several months ago. Now the class ExcpError (with
+its thrownFile and thrownLine functions) is also removed.
