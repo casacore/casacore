@@ -140,23 +140,8 @@ public:
   // Throws an exception as resizing an ExtendImage is not possible.
   virtual void resize(const TiledShape& newShape);
 
-  // Functions which get and set the units associated with the image
-  // pixels (i.e. the "brightness" unit). 
-  // It operates on the parent object.
-  // <group>   
-  virtual Bool setUnits(const Unit& newUnits);
-  virtual Unit units() const;
-  // </group>
-
   // Return the name of the parent ImageInterface object. 
   virtual String name (Bool stripPath=False) const;
-  
-  // Often we have miscellaneous information we want to attach to an image.
-  // It operates on the info of the parent object.
-  // <group>
-  virtual const RecordInterface &miscInfo() const;
-  virtual Bool setMiscInfo(const RecordInterface &newInfo);
-  // </group>
   
   // Check class invariants.
   virtual Bool ok() const;

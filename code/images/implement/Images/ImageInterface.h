@@ -1,5 +1,5 @@
 //# ImageInterface.h: a base class for astronomical images
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,8 @@
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Tables/TableRecord.h>
+#include <aips/Quanta/Unit.h>
 
 //# Forward Declarations
 template <class T> class LatticeIterInterface;
@@ -46,8 +48,6 @@ class ImageRegion;
 class IPosition;
 class TiledShape;
 class LogIO;
-class RecordInterface;
-class Unit;
 
 
 // <summary>
@@ -172,8 +172,9 @@ public:
   // False if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
   // <group>
-  virtual Bool setUnits (const Unit& newUnits) = 0;
-  virtual Unit units() const = 0;
+  virtual Bool setUnits (const Unit& newUnits);
+  virtual const Unit& units() const
+    { return unit_p; }
   // </group>
 
   // Return the name of the current ImageInterface object. This will generally 
@@ -187,7 +188,8 @@ public:
   //# implementation however SGI ntv will not generate it with -no_prelink.
   // <group>
   virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
-  const CoordinateSystem& coordinates() const;
+  const CoordinateSystem& coordinates() const
+    { return coords_p; }
   // </group>
 
   // Function to get a LELCoordinate object containing the coordinates.
@@ -215,8 +217,9 @@ public:
   // Note that setMiscInfo REPLACES the information with the new information.
   // It can fail if, e.g., the underlying table is not writable.
   // <group>
-  virtual const RecordInterface& miscInfo() const = 0;
-  virtual Bool setMiscInfo (const RecordInterface& newInfo) = 0;
+  const TableRecord& miscInfo() const
+    { return miscInfo_p; }
+  virtual Bool setMiscInfo (const RecordInterface& newInfo);
   // </group>
 
   // The ImageInfo object contains some miscellaneous information about the image
@@ -353,15 +356,22 @@ protected:
   void setCoordsMember (const CoordinateSystem& coords)
     { coords_p = coords; }
 
-private:
-  // It is the job of the derived class to make the coordinate system valid.
-  CoordinateSystem coords_p;
-  // The same is true for the log table.
-  LogIO log_p;
-  Bool  logClosed_p;
+  // Set the unit variable.
+  void setUnitMember (const Unit& unit)
+    { unit_p = unit; }
 
-  // It is the job of the derived class to make the ImageInfo valid
-  ImageInfo imageInfo_p;
+  // Set the miscinfo variable.
+  void setMiscInfoMember (const RecordInterface& rec)
+    { miscInfo_p.assign (rec); }
+
+private:
+  // It is the job of the derived class to make these variables valid.
+  CoordinateSystem coords_p;
+  LogIO            log_p;
+  Bool             logClosed_p;
+  ImageInfo        imageInfo_p;
+  Unit             unit_p;
+  TableRecord      miscInfo_p;
 
   // The region handling object.
   RegionHandler* regHandPtr_p;

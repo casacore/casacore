@@ -1,5 +1,5 @@
 //# SubImage.cc: A subset of a Image
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,6 @@
 #include <trial/Lattices/LatticeRegion.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
@@ -49,8 +48,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
 {
   itsSubLatPtr = new SubLattice<T> (image, axesSpec);
   setCoords (image.coordinates());
-  setLogMember (image.logSink());
-  setImageInfoMember (image.imageInfo());
+  setMembers (image);
 }
 
 template<class T>
@@ -61,8 +59,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
 {
   itsSubLatPtr = new SubLattice<T> (image, writableIfPossible, axesSpec);
   setCoords (image.coordinates());
-  setLogMember (image.logSink());
-  setImageInfoMember (image.imageInfo());
+  setMembers (image);
 }
 
 template<class T>
@@ -79,8 +76,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
   setCoords (image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector(),
                                            slicer.length().asVector()));
-  setLogMember (image.logSink());
-  setImageInfoMember (image.imageInfo());
+  setMembers (image);
 }
 
 template<class T>
@@ -99,8 +95,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   setCoords (image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector(),
                                            slicer.length().asVector()));
-  setLogMember (image.logSink());
-  setImageInfoMember (image.imageInfo());
+  setMembers (image);
 }
 
 template<class T>
@@ -114,8 +109,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
   setCoords (image.coordinates().subImage (refslicer.start().asVector(),
 					   refslicer.stride().asVector(),
                                            refslicer.length().asVector()));
-  setLogMember (image.logSink());
-  setImageInfoMember (image.imageInfo());
+  setMembers (image);
 }
 
 template<class T>
@@ -131,8 +125,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   setCoords (image.coordinates().subImage (refslicer.start().asVector(),
 					   refslicer.stride().asVector(),
                                            refslicer.length().asVector()));
-  setLogMember (image.logSink());
-  setImageInfoMember (image.imageInfo());
+  setMembers (image);
 }
 
 template<class T>
@@ -167,6 +160,15 @@ template<class T>
 ImageInterface<T>* SubImage<T>::cloneII() const
 {
   return new SubImage<T> (*this);
+}
+
+template<class T>
+void SubImage<T>::setMembers (const ImageInterface<T>& image)
+{
+  setLogMember (image.logSink());
+  setImageInfoMember (image.imageInfo());
+  setMiscInfoMember (image.miscInfo());
+  setUnitMember (image.units());
 }
 
 template<class T>
@@ -285,35 +287,11 @@ void SubImage<T>::resize (const TiledShape&)
 }
 
 template<class T>
-Bool SubImage<T>::setUnits(const Unit&)
-{
-  return False;
-}
-
-template<class T>
-Unit SubImage<T>::units() const
-{
-  return itsImagePtr->units();
-}
-
-template<class T>
 String SubImage<T>::name (Bool stripPath) const
 {
   return itsImagePtr->name (stripPath);
 }
   
-template<class T>
-const RecordInterface& SubImage<T>::miscInfo() const
-{
-  return itsImagePtr->miscInfo();
-}
-
-template<class T>
-Bool SubImage<T>::setMiscInfo (const RecordInterface&)
-{
-  return False;
-}
-
 template<class T>
 Bool SubImage<T>::doGetSlice (Array<T>& buffer,
 			      const Slicer& section)

@@ -31,7 +31,6 @@
 #include <trial/Lattices/LatticeRegion.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
@@ -59,6 +58,8 @@ ExtendImage<T>::ExtendImage (const ImageInterface<T>& image,
   setCoordsMember (newCsys);
   setLogMember (image.logSink());
   setImageInfoMember (image.imageInfo());
+  setMiscInfoMember (image.miscInfo());
+  setUnitMember (image.units());
 }
 
 template<class T>
@@ -168,35 +169,11 @@ void ExtendImage<T>::resize (const TiledShape&)
 }
 
 template<class T>
-Bool ExtendImage<T>::setUnits(const Unit&)
-{
-  return False;
-}
-
-template<class T>
-Unit ExtendImage<T>::units() const
-{
-  return itsImagePtr->units();
-}
-
-template<class T>
 String ExtendImage<T>::name (Bool stripPath) const
 {
   return itsImagePtr->name (stripPath);
 }
   
-template<class T>
-const RecordInterface& ExtendImage<T>::miscInfo() const
-{
-  return itsImagePtr->miscInfo();
-}
-
-template<class T>
-Bool ExtendImage<T>::setMiscInfo (const RecordInterface&)
-{
-  return False;
-}
-
 template<class T>
 Bool ExtendImage<T>::doGetSlice (Array<T>& buffer,
 			      const Slicer& section)

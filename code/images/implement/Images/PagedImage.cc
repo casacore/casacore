@@ -191,15 +191,8 @@ PagedImage<T>::PagedImage (Table& table, MaskSpecifier spec, uInt rowNumber)
 	    << " '" << name() << "'" << endl
 	    << "The image shape is " << map_p.shape() << endl;
 
-  TableRecord rec = table.keywordSet();
-//
-  CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
-  AlwaysAssert(restoredCoords != 0, AipsError);
-  setCoordsMember (*restoredCoords);
-  delete restoredCoords;
+  restoreAll (table.keywordSet());
   applyMaskSpecifier (spec);
-//
-  restoreImageInfo(rec);
 }
 
 template <class T> 
@@ -223,15 +216,8 @@ PagedImage<T>::PagedImage (const String& filename, MaskSpecifier spec,
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
 //
-  TableRecord rec = table().keywordSet();
-//
-  CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
-  AlwaysAssert(restoredCoords != 0, AipsError);
-  setCoordsMember (*restoredCoords);
-  delete restoredCoords;
+  restoreAll (tab.keywordSet());
   applyMaskSpecifier (spec);
-//
-  restoreImageInfo(rec);
 }
 
 template <class T> 
@@ -277,15 +263,8 @@ void PagedImage<T>::makePagedImage (const String& filename,
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
 //
-  TableRecord rec = table().keywordSet();
-//
-  CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
-  AlwaysAssert(restoredCoords != 0, AipsError);
-  setCoordsMember (*restoredCoords);
-  delete restoredCoords;
+  restoreAll (tab.keywordSet());
   applyMaskSpecifier (spec);
-//
-  restoreImageInfo(rec);
 }
 
 template <class T> 
@@ -331,6 +310,22 @@ template <class T>
 ImageInterface<T>* PagedImage<T>::cloneII() const
 {
   return new PagedImage<T> (*this);
+}
+
+template <class T>
+void PagedImage<T>::restoreAll (const TableRecord& rec)
+{
+  // Restore the coordinates.
+  CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
+  AlwaysAssert(restoredCoords != 0, AipsError);
+  setCoordsMember (*restoredCoords);
+  delete restoredCoords;
+  // Restore the image info.
+  restoreImageInfo (rec);
+  // Restore the units.
+  restoreUnits (rec);
+  // Restore the miscinfo.
+  restoreMiscInfo (rec);
 }
 
 template<class T>
@@ -577,24 +572,18 @@ void PagedImage<T>::putAt(const T& value, const IPosition& where) {
 }
 
 template<class T> 
-const RecordInterface& PagedImage<T>::miscInfo() const
+void PagedImage<T>::restoreMiscInfo (const TableRecord& rec)
 {
-  static TableRecord* use_if_none_in_table = 0; // A small leak if set
-  const Table& tab = table();
-  if (!tab.keywordSet().isDefined("miscinfo") ||
-      tab.keywordSet().dataType("miscinfo") != TpRecord) {
-    if (!use_if_none_in_table) {
-      use_if_none_in_table = new TableRecord; // leak
-      AlwaysAssert(use_if_none_in_table, AipsError);
-    }
-    return *use_if_none_in_table;
+  if (rec.isDefined("miscinfo")  &&
+      rec.dataType("miscinfo") != TpRecord) {
+    setMiscInfoMember (rec.asRecord ("miscinfo"));
   }
-  return tab.keywordSet().asRecord("miscinfo");
 }
 
 template<class T> 
-Bool PagedImage<T>::setMiscInfo(const RecordInterface& newInfo)
+Bool PagedImage<T>::setMiscInfo (const RecordInterface& newInfo)
 {
+  setMiscInfoMember (newInfo);
   Table& tab = table();
   reopenRW();
   if (! tab.isWritable()) {
@@ -688,6 +677,7 @@ void PagedImage<T>::open_logtable()
 template<class T> 
 Bool PagedImage<T>::setUnits(const Unit& newUnits) 
 {
+  setUnitMember (newUnits);
   reopenRW();
   Table& tab = table();
   if (! tab.isWritable()) {
@@ -701,23 +691,21 @@ Bool PagedImage<T>::setUnits(const Unit& newUnits)
 }
 
 template<class T> 
-Unit PagedImage<T>::units() const
+void PagedImage<T>::restoreUnits (const TableRecord& rec)
 {
-  const Table& tab = table();
   Unit retval;
   String unitName;
-  if (tab.keywordSet().isDefined("units")) {
-    if (tab.keywordSet().dataType("units") != TpString) {
+  if (rec.isDefined("units")) {
+    if (rec.dataType("units") != TpString) {
       LogIO os;
       os << LogOrigin("PagedImage<T>", "units()", WHERE) <<
 	"'units' keyword in image table is not a string! Units not restored." 
 		<< LogIO::SEVERE << LogIO::POST;
-      return retval;
     } else {
-      tab.keywordSet().get("units", unitName);
+      rec.get("units", unitName);
     }
   }
-  if (unitName != "") {
+  if (! unitName.empty()) {
     // OK, non-empty unit, see if it's valid, if not try some known things to
     // make a valid unit out of it.
     if (! UnitVal::check(unitName)) {
@@ -739,7 +727,7 @@ Unit PagedImage<T>::units() const
       retval = Unit(unitName);
     }
   }
-  return retval;
+  setUnitMember (retval);
 }
 
 
@@ -964,6 +952,21 @@ Bool PagedImage<T>::setImageInfo (const ImageInfo& info)
   return ok;
 }
 
+template<class T>
+void PagedImage<T>::restoreImageInfo (const TableRecord& rec)
+{
+  if (rec.isDefined("imageinfo")) {
+    String error;
+    ImageInfo info;
+    Bool ok = info.fromRecord (error, rec.asRecord("imageinfo"));
+    if (!ok) {
+      logSink() << LogIO::WARN << "Failed to restore the ImageInfo because " 
+	+ error << LogIO::POST;
+    } else {
+      setImageInfoMember (info);
+    }
+  }
+}
 
 template<class T>
 void PagedImage<T>::mergeTableLogSink (const LogIO& other)

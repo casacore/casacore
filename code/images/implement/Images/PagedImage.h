@@ -290,14 +290,11 @@ public:
   // Add a lattice to this image.
   PagedImage<T>& operator+= (const Lattice<T>& other);
 
-  // Function which get and set the units associated with the image
+  // Function which sets the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
   // False if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
-  // <group>
   virtual Bool setUnits (const Unit& newUnits);
-  virtual Unit units() const;
-  // </group>
 
   // Return the table holding the data.
   Table& table();
@@ -315,20 +312,13 @@ public:
   virtual void putAt (const T& value, const IPosition& where);
   // </group>
 
-  // Often we have miscellaneous information we want to attach to an image.
-  // This is where it goes.
-  // 
-  // <br>
-  // Note that setMiscInfo REPLACES the information with the new information.
+  // Replace the miscinfo in the PagedImage.
   // It can fail if, e.g., the underlying table is not writable.
-  // <group>
-  virtual const RecordInterface& miscInfo() const;
   virtual Bool setMiscInfo (const RecordInterface& newInfo);
-  // </group>
 
   // The ImageInfo object contains some miscellaneous information about the
-  // image, which unlike that stored in MiscInfo, has a standard list of things,
-  // such as the restoring beam.
+  // image, which unlike that stored in MiscInfo, has a standard list of
+  // things, such as the restoring beam.
   // Note that setImageInfo REPLACES the information with the new information.
   // It can fail if, e.g., the underlying table is not writable.
   virtual Bool setImageInfo(const ImageInfo& info);
@@ -425,8 +415,11 @@ private:
   // is attached to a new image.
   void attach_logtable();
   void open_logtable();
-  void restore_units();
-  void save_units();
+  void restoreUnits (const TableRecord& rec);
+  void restoreMiscInfo (const TableRecord& rec);
+  void restoreImageInfo (const TableRecord& rec);
+  void restoreAll (const TableRecord& rec);
+
   void check_conformance (const Lattice<T>& other);
   void reopenRW();
   void doReopenRW();

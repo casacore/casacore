@@ -34,7 +34,6 @@
 #include <trial/Images/MaskSpecifier.h>
 #include <trial/Tables/TiledFileAccess.h>
 #include <aips/Lattices/TiledShape.h>
-#include <aips/Containers/Record.h>
 #include <aips/FITS/fits.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
@@ -131,24 +130,6 @@ public:
   // Function which changes the shape of the FITSImage.
   // Throws an exception as FITSImage is not writable.
   virtual void resize(const TiledShape& newShape);
-
-  // Functions which get and set the units associated with the image
-  // pixels (i.e. the "brightness" unit). Initially the unit is empty.
-  // Although the FITSimage is not writable, you can change the
-  // unit in the FITSImage object, but it will not be changed 
-  // in the FITS disk file.
-  // <group>   
-  virtual Bool setUnits(const Unit& newUnits);
-  virtual Unit units() const;
-  // </group>
-
-  // Often we have miscellaneous information we want to attach to an image.
-  // Although FITSImage is not writable, you can set a new
-  // MiscInfo record, but it will not be stored with the FITS file
-  // <group>
-  virtual const RecordInterface &miscInfo() const;
-  virtual Bool setMiscInfo(const RecordInterface &newInfo);
-  // </group>
 
   //# MaskedLattice virtual functions
 
@@ -254,8 +235,6 @@ public:
 private:  
   String         name_p;
   MaskSpecifier  maskSpec_p;
-  Unit           unit_p;
-  Record         rec_p;
   CountedPtr<TiledFileAccess> pTiledFile_p;
   Lattice<Bool>* pPixelMask_p;
   TiledShape     shape_p;
@@ -280,7 +259,7 @@ private:
 // Fish things out of the FITS file
    void getImageAttributes (CoordinateSystem& cSys,
                             IPosition& shape, ImageInfo& info,
-                            Unit& brightnessUnit, Record& miscInfo, 
+                            Unit& brightnessUnit, TableRecord& miscInfo, 
                             Int& recsize, Int& recno,
 			    FITS::ValueType& dataType, 
                             Float& scale, Float& offset, Short& magic, 
@@ -290,12 +269,12 @@ private:
 // <group>
    void crackHeaderFloat (CoordinateSystem& cSys,
                           IPosition& shape, ImageInfo& imageInfo,
-                          Unit& brightnessUnit, Record& miscInfo,
+                          Unit& brightnessUnit, TableRecord& miscInfo,
                           LogIO&os, FitsInput& infile);
 
    void crackHeaderShort (CoordinateSystem& cSys,
                           IPosition& shape, ImageInfo& imageInfo,
-                          Unit& brightnessUnit, Record& miscInfo,
+                          Unit& brightnessUnit, TableRecord& miscInfo,
                           Float& scale, Float& offset, Short& magic,
                           Bool& hasBlanks, LogIO& os, FitsInput& infile);
 // </group>

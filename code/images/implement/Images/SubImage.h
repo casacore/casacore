@@ -194,27 +194,8 @@ public:
   // Throws an exception as resizing a SubImage is not possible.
   virtual void resize(const TiledShape& newShape);
 
-  // Function which get and set the units associated with the image
-  // pixels (i.e. the "brightness" unit). 
-  // It returns the unit of the parent object.
-  // The set function returns False as the units of a SubImage
-  // cannot be changed.
-  // <group>   
-  virtual Bool setUnits(const Unit& newUnits);
-  virtual Unit units() const;
-  // </group>
-
   // Return the name of the parent ImageInterface object. 
   virtual String name (Bool stripPath=False) const;
-  
-  // Often we have miscellaneous information we want to attach to an image.
-  // It returns the info of the parent object.
-  // The set function returns False as the miscInfo of a SubImage
-  // cannot be changed.
-  // <group>
-  virtual const RecordInterface &miscInfo() const;
-  virtual Bool setMiscInfo(const RecordInterface &newInfo);
-  // </group>
   
   // Check class invariants.
   virtual Bool ok() const;
@@ -258,6 +239,10 @@ private:
   // Set the coordinates.
   // It removes world axes if the subimage has axes removed.
   void setCoords (const CoordinateSystem& coords);
+
+  // Set the other members in the parent.
+  void setMembers (const ImageInterface<T>& image);
+
 
   //# itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;

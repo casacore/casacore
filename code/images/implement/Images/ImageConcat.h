@@ -1,5 +1,5 @@
 //# ImageConcat.h: concatenate images along an axis
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,16 +33,12 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
 #include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeConcat.h>
 #include <trial/Images/ImageInterface.h>
 
-
 //# Forward Declarations
-class Unit;
 class CoordinateSystem;
-
 template <class T> class ImageSummary;
 template <class T> class MaskedLattice;
 
@@ -241,24 +237,6 @@ public:
 // Throws an excpetion as you cannot reshape an ImageConcat object
    virtual void resize(const TiledShape&);
 
-// Function which get and set the units associated with the image
-// pixels (i.e. the "brightness" unit). <src>units</src>
-// returns the Unit of the first image set (or whatever you set
-// with <src>setUnits</src> (which always returns True)
-// <group>
-  virtual Bool setUnits(const Unit& newUnits);
-  virtual Unit units() const;
-// </group>
-
-// Often we have miscellaneous information we want to attach to an image.
-// <src>setMiscInfo</src> throws an exception as ImageConcat is not
-// writable.  <src>miscInfo</src> returns a record with all of the
-// miscInfo records from each image in it, one per numbered field
-// <group>
-  virtual const RecordInterface &miscInfo() const;
-  virtual Bool setMiscInfo (const RecordInterface &newInfo);
-// </group>
-
 // Check class invariants.
   virtual Bool ok() const;
   
@@ -270,11 +248,9 @@ public:
 
 private:
    LatticeConcat<T> latticeConcat_p;
-   Unit unit_p;
    Bool warnAxisNames_p, warnAxisUnits_p, warnImageUnits_p;
    Bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p, warnTab_p;
    Bool isContig_p;
-   mutable Record rec_p;
    Vector<Bool> isImage_p;
    Vector<Double> pixelValues_p;
    Vector<Double> worldValues_p;

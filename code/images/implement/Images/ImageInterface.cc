@@ -40,10 +40,9 @@
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordInterface.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/TableLogSink.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/strstream.h>
 
 
@@ -169,16 +168,12 @@ Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
     return ok;
 }
 
-template <class T> 
-const CoordinateSystem &ImageInterface<T>::coordinates() const 
-{
-    return coords_p;
-}
 
 template <class T> 
 LELCoordinates ImageInterface<T>::lelCoordinates() const
 {
-    return LELCoordinates (new LELImageCoord (coords_p));
+    return LELCoordinates (new LELImageCoord (coords_p, imageInfo_p,
+					      units(), miscInfo_p));
 }
 
 
@@ -294,21 +289,27 @@ Bool ImageInterface<T>::setImageInfo(const ImageInfo& info)
 }    
    
 template<class T>
-Bool ImageInterface<T>::restoreImageInfo(const RecordInterface& rec)
-{
-  Bool ok = True;
-  if (rec.isDefined("imageinfo")) {
-     String error;
-     ok = imageInfo_p.fromRecord(error, rec.asRecord("imageinfo"));
-     if (!ok) {
-        logSink() << LogIO::WARN << "Failed to restore the ImageInfo because " 
-          + error << LogIO::POST;
-     }
-  }
-  return ok;
-}
-
-
+Bool ImageInterface<T>::setMiscInfo(const RecordInterface& miscInfo)
+//
+// Derived classes like PagedImage have to put this in the
+// permanent table keywordSet
+// 
+{ 
+   miscInfo_p = miscInfo;
+   return True;
+}    
+   
+template<class T>
+Bool ImageInterface<T>::setUnits(const Unit& unit)
+//
+// Derived classes like PagedImage have to put this in the
+// permanent table keywordSet
+// 
+{ 
+   unit_p = unit;
+   return True;
+}    
+   
 template<class T>
 void ImageInterface<T>::mergeTableLogSink (const LogIO&)
 {}

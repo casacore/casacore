@@ -92,8 +92,6 @@ FITSImage::FITSImage (const FITSImage& other)
 : ImageInterface<Float>(other),
   name_p      (other.name_p),
   maskSpec_p  (other.maskSpec_p),
-  unit_p      (other.unit_p),
-  rec_p       (other.rec_p),
   pTiledFile_p(other.pTiledFile_p),
   pPixelMask_p(0),
   shape_p     (other.shape_p),
@@ -129,8 +127,6 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
       shape_p     = other.shape_p;
       name_p      = other.name_p;
       maskSpec_p  = other.maskSpec_p;
-      unit_p      = other.unit_p;
-      rec_p       = other.rec_p;
       scale_p     = other.scale_p;
       offset_p    = other.offset_p;
       magic_p     = other.magic_p;
@@ -210,17 +206,6 @@ void FITSImage::doPutSlice (const Array<Float>&, const IPosition&,
 		     "is not possible as FITSImage is not writable"));
 }
 
-Bool FITSImage::setUnits (const Unit& unit)
-{  
-   unit_p = unit;
-   return True;
-}
-   
-Unit FITSImage::units() const
-{  
-   return unit_p;
-}
-
 
 String FITSImage::name (Bool stripPath) const
 {
@@ -233,18 +218,6 @@ String FITSImage::name (Bool stripPath) const
 }
 
 
-const RecordInterface& FITSImage::miscInfo() const
-{
-   return rec_p;
-}
- 
-
-Bool FITSImage::setMiscInfo(const RecordInterface& rec)
-{ 
-   rec_p = rec;
-   return True;
-}
- 
 Bool FITSImage::isPersistent() const
 {
   return True;
@@ -386,9 +359,11 @@ void FITSImage::setup()
    Int recno;
    Int recsize;          // Should be 2880 bytes (unless blocking used)
    FITS::ValueType dataType;
-   getImageAttributes(cSys, shape, imageInfo, brightnessUnit, rec_p, 
+   TableRecord miscInfo;
+   getImageAttributes(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
                       recsize, recno, dataType, scale_p, offset_p, magic_p,
                       hasBlanks_p, fullName);
+   setMiscInfoMember (miscInfo);
 
 // set ImageInterface data
 
@@ -400,7 +375,7 @@ void FITSImage::setup()
 
 // Set FITSImage data
 
-   unit_p = brightnessUnit;
+   setUnitMember (brightnessUnit);
 
 // I don't understand why I have to subtract one, as the
 // data should begin in the NEXT record. BobG surmises
@@ -457,7 +432,8 @@ void FITSImage::open()
 
 void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     IPosition& shape, ImageInfo& imageInfo,
-                                    Unit& brightnessUnit, Record& miscInfo, 
+                                    Unit& brightnessUnit,
+				    TableRecord& miscInfo, 
                                     Int& recordsize, Int& recordnumber, 
                                     FITS::ValueType& dataType, 
                                     Float& scale, Float& offset, Short& magic,
@@ -527,7 +503,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 
 void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
                                   IPosition& shape, ImageInfo& imageInfo,
-                                  Unit& brightnessUnit, Record& miscInfo,
+                                  Unit& brightnessUnit, TableRecord& miscInfo,
                                   LogIO& os, FitsInput& infile)
 {
    
@@ -610,7 +586,7 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
 
 void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
                                   IPosition& shape, ImageInfo& imageInfo,
-                                  Unit& brightnessUnit, Record& miscInfo,
+                                  Unit& brightnessUnit, TableRecord& miscInfo,
                                   Float& scale, Float& offset, Short& magic,
                                   Bool& hasBlanks, LogIO& os, FitsInput& infile)
 {

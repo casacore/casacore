@@ -1,5 +1,5 @@
 //# ImageConcat.cc: concatenate images
-//# Copyright (C) 1995,1997,1998,1999,2000
+//# Copyright (C) 1995,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,7 +85,6 @@ template<class T>
 ImageConcat<T>::ImageConcat (const ImageConcat<T>& other) 
 : ImageInterface<T>(other),
   latticeConcat_p(other.latticeConcat_p),
-  unit_p(other.unit_p),
   warnAxisNames_p(other.warnAxisNames_p),
   warnAxisUnits_p(other.warnAxisUnits_p),
   warnImageUnits_p(other.warnImageUnits_p),
@@ -95,7 +94,6 @@ ImageConcat<T>::ImageConcat (const ImageConcat<T>& other)
   warnInc_p(other.warnInc_p),
   warnTab_p(other.warnTab_p),
   isContig_p(other.isContig_p),
-  rec_p(other.rec_p),
   pixelValues_p(other.pixelValues_p.copy()),
   worldValues_p(other.worldValues_p.copy())
 {
@@ -114,7 +112,6 @@ ImageConcat<T>& ImageConcat<T>::operator= (const ImageConcat<T>& other)
   if (this != &other) {
      ImageInterface<T>::operator= (other);
      latticeConcat_p = other.latticeConcat_p;
-     unit_p = other.unit_p;
      warnAxisNames_p  = other.warnAxisNames_p;
      warnAxisUnits_p  = other.warnAxisUnits_p;
      warnImageUnits_p = other.warnImageUnits_p;
@@ -124,7 +121,6 @@ ImageConcat<T>& ImageConcat<T>::operator= (const ImageConcat<T>& other)
      warnInc_p = other.warnInc_p;
      warnTab_p = other.warnTab_p;
      isContig_p = other.isContig_p;
-     rec_p = other.rec_p;
      isImage_p.resize(other.isImage_p.nelements());
      isImage_p = other.isImage_p;
      pixelValues_p = other.pixelValues_p.copy();
@@ -171,15 +167,20 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
 
 // Do the extra image stuff.  Most of it is coordinate rubbish.
 // The ImageInfo comes from the first image only. 
+// The miscInfo is merged from all images.
 
    isImage_p.resize(nIm+1,True);
    isImage_p(nIm) = True;
    if (nIm==0) {
       ImageInterface<T>::setCoordinateInfo(image.coordinates());
-      unit_p = image.units();
+      setUnitMember (image.units());
       setImageInfoMember (image.imageInfo());
+      setMiscInfoMember (image.miscInfo());
       setCoordinates();
    } else {
+      TableRecord rec = miscInfo();
+      rec.merge (image.miscInfo(), RecordInterface::RenameDuplicates);
+      setMiscInfoMember (rec);
 
 // Compare the coordinates of this image with the current private coordinates
 
@@ -231,7 +232,7 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
          }  
       }
 //
-      if (image.units() != unit_p && warnImageUnits_p) {
+      if (image.units() != units() && warnImageUnits_p) {
          os << LogIO::WARN
             << "Image units differ" << LogIO::POST;
          warnImageUnits_p = False;
@@ -333,52 +334,6 @@ Bool ImageConcat<T>::doGetMaskSlice (Array<Bool>& buffer,
 				     const Slicer& section)
 {
    return latticeConcat_p.doGetMaskSlice (buffer, section);
-}
-
-
-template<class T> 
-Bool ImageConcat<T>::setUnits(const Unit& unit)
-{
-   unit_p = unit;
-   return True;
-}
-
-template<class T> 
-Unit ImageConcat<T>::units() const
-{
-  return unit_p;
-}
-
-
-
-
-template<class T> 
-const RecordInterface& ImageConcat<T>::miscInfo() const
-{
-   const uInt n = latticeConcat_p.nlattices();
-   Record x;
-   for (uInt i=0; i<n; i++) {
-      if (isImage_p(i)) {
-// This and the tempClose will give compiler discards const
-// warnings. Don't know how to avoid presently
-
-         LatticeConcat<T>& tmp = const_cast<LatticeConcat<T>&>(latticeConcat_p);
-         if (latticeConcat_p.isTempClose()) tmp.reopen(i);
-         const ImageInterface<T>* pIm = dynamic_cast<const ImageInterface<T>*>(latticeConcat_p.lattice(i));
-         x.merge(pIm->miscInfo(), RecordInterface::RenameDuplicates);
-         if (latticeConcat_p.isTempClose()) tmp.tempClose(i);
-      }
-   }
-   rec_p.defineRecord(0,x);
-   return rec_p.asRecord(0);
-}
-   
-template <class T>
-Bool ImageConcat<T>::setMiscInfo(const RecordInterface&)
-{
-   LogIO os(LogOrigin("ImageConcat", "setMiscInfo(...)", WHERE));
-   os << LogIO::WARN << "Cannot set MiscInfo in ImageConcat objects" << LogIO::POST;
-   return False;
 }
 
 

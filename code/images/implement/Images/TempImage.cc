@@ -1,5 +1,5 @@
 //# TempImage.cc: defines the TempImage class
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,6 @@
 #include <trial/Images/ImageRegion.h>
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeRegion.h>
-#include <aips/Quanta/Unit.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
@@ -72,9 +71,7 @@ template <class T>
 TempImage<T>::TempImage (const TempImage<T>& other)
 : ImageInterface<T> (other),
   mapPtr_p          (new TempLattice<T> (*other.mapPtr_p)),
-  maskPtr_p         (0),
-  unit_p            (other.unit_p),
-  misc_p            (other.misc_p)
+  maskPtr_p         (0)
 {
   if (other.maskPtr_p != 0) {
     maskPtr_p = other.maskPtr_p->clone();
@@ -94,8 +91,6 @@ TempImage<T>& TempImage<T>::operator= (const TempImage<T>& other)
     if (other.maskPtr_p != 0) {
       maskPtr_p = other.maskPtr_p->clone();
     }
-    unit_p = other.unit_p;
-    misc_p = other.misc_p;
   }
   return *this;
 } 
@@ -312,19 +307,6 @@ void TempImage<T>::doPutSlice (const Array<T>& buffer,
   mapPtr_p->doPutSlice (buffer, where, stride);
 }
 
-template<class T> 
-Bool TempImage<T>::setUnits (const Unit& unit)
-{
-  unit_p = unit;
-  return True;
-}
-   
-template<class T>
-Unit TempImage<T>::units() const
-{  
-  return unit_p;
-}
-
 
 template <class T> 
 String TempImage<T>::name (Bool) const
@@ -332,20 +314,6 @@ String TempImage<T>::name (Bool) const
   return String ("Temporary_Image");
 }
 
-
-template<class T> 
-const RecordInterface& TempImage<T>::miscInfo() const
-{
-  return misc_p;
-}
- 
-template<class T> 
-Bool TempImage<T>::setMiscInfo (const RecordInterface& info)
-{
-  misc_p = info;
-  return True;
-}
- 
 
 template<class T>
 void TempImage<T>::set (const T& value)

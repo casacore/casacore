@@ -1,5 +1,5 @@
 //# ImageExpr.h: contains expressions involving images
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,8 +34,6 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <aips/Containers/Record.h>
 #include <aips/Quanta/Unit.h>
-
-
 
 //# Forward Declarations
 class IPosition;
@@ -161,25 +159,9 @@ public:
 			   const IPosition& where,
 			   const IPosition& stride);
 
-  // Functions which get and set the units associated with the image
-  // pixels (i.e. the "brightness" unit).
-  // Initially the unit is empty.
-  // <group>   
-  virtual Bool setUnits(const Unit& newUnits);
-  virtual Unit units() const;
-  // </group>
-
   // Return the name of the current ImageInterface object. 
   // Returns the expression string given in the constructor.
   virtual String name (Bool stripPath=False) const;
-  
-  // Often we have miscellaneous information we want to attach to an image.
-  // <src>setMiscInfo</src> throws an exception as ImageExpr is not
-  // writable
-  // <group>
-  virtual const RecordInterface &miscInfo() const;
-  virtual Bool setMiscInfo(const RecordInterface &newInfo);
-  // </group>
   
   // Check class invariants.
   virtual Bool ok() const;

@@ -1,5 +1,5 @@
 //# TempImage.h: Temporary astronomical images
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,8 +33,7 @@
 #include <trial/Images/ImageInterface.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Lattices/TempLattice.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Tables/TableRecord.h>
+
 
 // <summary>
 // Temporary astronomical images.
@@ -206,26 +205,6 @@ public:
   // Return the shape of the image
   virtual IPosition shape() const;
 
-  // Function which get and set the units associated with the image
-  // pixels (i.e. the "brightness" unit).
-  // <src>setUnits()</src> always returns True.
-  // <group>
-  virtual Bool setUnits (const Unit& newUnits);
-  virtual Unit units() const;
-  // </group>
-
-  // Often we have miscellaneous information we want to attach to an image.
-  // This is how it is done. Eventually we will want to register that some
-  // of the information is to be destroyed if the image changes so that, e.g.
-  // data max/min values can be removed if the image changes.
-  //
-  // Note that setMiscInfo REPLACES the information with the new information.
-  // If can fail if, e.g., the underlying table is not writable.
-  // <group>
-  virtual const RecordInterface& miscInfo() const;
-  virtual Bool setMiscInfo (const RecordInterface& newInfo);
-  // </group>
-
   // Function which sets all of the elements in the Lattice to a value.
   virtual void set (const T& value);
 
@@ -312,8 +291,6 @@ private:
 
   TempLattice<T>* mapPtr_p;
   Lattice<Bool>*  maskPtr_p;
-  Unit            unit_p;
-  TableRecord     misc_p;
 };
 
 
