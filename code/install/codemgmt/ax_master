@@ -2140,3 +2140,4 @@
 08 406 src rm trial/scripts/TkPGPLOT_demo_scripts/
 09 006 src rm doc/notes/206.ps
 09 006 src rm doc/notes/207.ps
+09 021 src mv trial/implement/Lattices/ExprNodeSet.h aips/implement/Tables/ExprNodeSet.h
