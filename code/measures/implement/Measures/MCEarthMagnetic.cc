@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_EarthMagnetic_bug1;
-#endif
+///#ifdef __GNUG__
+///#include <aips/Quanta/Quantum.h>
+///typedef Quantum<Double> gpp_EarthMagnetic_bug1;
+///#endif
 #include <aips/Exceptions.h>
 #include <aips/Measures/MCEarthMagnetic.h>
 #include <aips/Measures/EarthField.h>
@@ -44,13 +44,64 @@ typedef Quantum<Double> gpp_EarthMagnetic_bug1;
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
 
+//# Statics
+Bool MCEarthMagnetic::stateMade_p = False;
+uInt MCEarthMagnetic::ToRef_p[N_Routes][3] = {
+    {MEarthMagnetic::ITRF,	MEarthMagnetic::JNAT,		0},
+    {MEarthMagnetic::JNAT,	MEarthMagnetic::ITRF,		0},
+    {MEarthMagnetic::GALACTIC,	MEarthMagnetic::J2000,		0},
+    {MEarthMagnetic::GALACTIC,	MEarthMagnetic::B1950,		3},
+    {MEarthMagnetic::J2000,	MEarthMagnetic::GALACTIC,	0},
+    {MEarthMagnetic::B1950,	MEarthMagnetic::GALACTIC,	3},
+    {MEarthMagnetic::J2000,	MEarthMagnetic::B1950,		3},
+    {MEarthMagnetic::B1950,	MEarthMagnetic::J2000,		3},
+    {MEarthMagnetic::J2000,	MEarthMagnetic::JMEAN,		0},
+    {MEarthMagnetic::B1950,	MEarthMagnetic::BMEAN,		3},
+    {MEarthMagnetic::JMEAN,	MEarthMagnetic::J2000,		0},
+    {MEarthMagnetic::JMEAN,	MEarthMagnetic::JTRUE,		0},
+    {MEarthMagnetic::BMEAN,	MEarthMagnetic::B1950,		3},
+    {MEarthMagnetic::BMEAN,	MEarthMagnetic::BTRUE,		3},
+    {MEarthMagnetic::JTRUE,	MEarthMagnetic::JMEAN,		0},
+    {MEarthMagnetic::BTRUE,	MEarthMagnetic::BMEAN,		3},
+    {MEarthMagnetic::J2000,	MEarthMagnetic::JNAT,		0},
+    {MEarthMagnetic::JNAT,	MEarthMagnetic::J2000,		0},
+    {MEarthMagnetic::B1950,	MEarthMagnetic::APP,		3},
+    {MEarthMagnetic::APP,	MEarthMagnetic::B1950,		3},
+    {MEarthMagnetic::APP,	MEarthMagnetic::HADEC,		2},
+    {MEarthMagnetic::HADEC,	MEarthMagnetic::AZEL,		2},
+    {MEarthMagnetic::AZEL,	MEarthMagnetic::HADEC,		2},
+    {MEarthMagnetic::HADEC,	MEarthMagnetic::APP,		2},
+    {MEarthMagnetic::AZEL,	MEarthMagnetic::AZELSW,		0},
+    {MEarthMagnetic::AZELSW,	MEarthMagnetic::AZEL,		0},
+    {MEarthMagnetic::APP,	MEarthMagnetic::JNAT,		1},
+    {MEarthMagnetic::JNAT,	MEarthMagnetic::APP,		1},
+    {MEarthMagnetic::J2000,	MEarthMagnetic::ECLIPTIC,	0},
+    {MEarthMagnetic::ECLIPTIC,	MEarthMagnetic::J2000,		0},
+    {MEarthMagnetic::JMEAN,	MEarthMagnetic::MECLIPTIC,	0},
+    {MEarthMagnetic::MECLIPTIC,	MEarthMagnetic::JMEAN,		0},
+    {MEarthMagnetic::JTRUE,	MEarthMagnetic::TECLIPTIC,	0},
+    {MEarthMagnetic::TECLIPTIC,	MEarthMagnetic::JTRUE,		0},
+    {MEarthMagnetic::GALACTIC,	MEarthMagnetic::SUPERGAL,	0},
+    {MEarthMagnetic::SUPERGAL,	MEarthMagnetic::GALACTIC,	0},
+    {MEarthMagnetic::ITRF,	MEarthMagnetic::HADEC,		2},
+    {MEarthMagnetic::HADEC,	MEarthMagnetic::ITRF,		2} };
+uInt MCEarthMagnetic::
+FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
+
 //# Constructors
 MCEarthMagnetic::MCEarthMagnetic() :
   ROTMAT1(0),
   EULER1(0),
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   NUTATFROM(0), NUTATTO(0),
-  PRECESFROM(0), PRECESTO(0), EFIELD(0) {}
+  PRECESFROM(0), PRECESTO(0), EFIELD(0) {
+  if (!stateMade_p) {
+    MCBase::makeState(MCEarthMagnetic::stateMade_p,
+		      MCEarthMagnetic::FromTo_p[0],
+		      MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,
+		      MCEarthMagnetic::ToRef_p);
+  };
+}
 
 //# Destructor
 MCEarthMagnetic::~MCEarthMagnetic() {
@@ -64,346 +115,29 @@ MCEarthMagnetic::~MCEarthMagnetic() {
 void MCEarthMagnetic::getConvert(MConvertBase &mc,
 			     const MRBase &inref, 
 			     const MRBase &outref) {
-  
-  // Array of conversion routines to call
-  static const MCEarthMagnetic::Routes 
-    FromTo[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types] = {
-      { MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_HADEC,
-	MCEarthMagnetic::ITRF_HADEC,
-	MCEarthMagnetic::ITRF_HADEC,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT,
-	MCEarthMagnetic::ITRF_JNAT },
-      { MCEarthMagnetic::J2000_JNAT,
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::J2000_JMEAN,
-	MCEarthMagnetic::J2000_JMEAN,
-	MCEarthMagnetic::J2000_JNAT, 
-	MCEarthMagnetic::J2000_B1950,
-	MCEarthMagnetic::J2000_B1950, 
-	MCEarthMagnetic::J2000_B1950,
-	MCEarthMagnetic::J2000_GAL,
-	MCEarthMagnetic::J2000_JNAT,
-	MCEarthMagnetic::J2000_JNAT,
-	MCEarthMagnetic::J2000_JNAT,
-	MCEarthMagnetic::J2000_JNAT,
-	MCEarthMagnetic::J2000_ECLIP,
-	MCEarthMagnetic::J2000_JMEAN,
-	MCEarthMagnetic::J2000_JMEAN,
-	MCEarthMagnetic::J2000_GAL },
-      { MCEarthMagnetic::JMEAN_J2000, 
-	MCEarthMagnetic::JMEAN_J2000, 
-	MCEarthMagnetic::N_Routes,    
-	MCEarthMagnetic::JMEAN_JTRUE,
-	MCEarthMagnetic::JMEAN_J2000, 
-	MCEarthMagnetic::JMEAN_J2000, 
-	MCEarthMagnetic::JMEAN_J2000, 
-	MCEarthMagnetic::JMEAN_J2000,
-	MCEarthMagnetic::JMEAN_J2000,
-	MCEarthMagnetic::JMEAN_J2000, 
-	MCEarthMagnetic::JMEAN_J2000, 
-	MCEarthMagnetic::JMEAN_J2000, 
-	MCEarthMagnetic::JMEAN_J2000,
-	MCEarthMagnetic::JMEAN_J2000,
-	MCEarthMagnetic::JMEAN_MECLIP,
-	MCEarthMagnetic::JMEAN_JTRUE,
-	MCEarthMagnetic::JMEAN_J2000 },
-      { MCEarthMagnetic::JTRUE_JMEAN, 
-	MCEarthMagnetic::JTRUE_JMEAN, 
-	MCEarthMagnetic::JTRUE_JMEAN, 
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::JTRUE_JMEAN,  
-	MCEarthMagnetic::JTRUE_JMEAN, 
-	MCEarthMagnetic::JTRUE_JMEAN, 
-	MCEarthMagnetic::JTRUE_JMEAN,
-	MCEarthMagnetic::JTRUE_JMEAN,
-	MCEarthMagnetic::JTRUE_JMEAN,  
-	MCEarthMagnetic::JTRUE_JMEAN,  
-	MCEarthMagnetic::JTRUE_JMEAN,  
-	MCEarthMagnetic::JTRUE_JMEAN,
-	MCEarthMagnetic::JTRUE_JMEAN,
-	MCEarthMagnetic::JTRUE_JMEAN,
-	MCEarthMagnetic::JTRUE_TECLIP,
-	MCEarthMagnetic::JTRUE_JMEAN },
-      { MCEarthMagnetic::APP_JNAT,  
-	MCEarthMagnetic::APP_JNAT,  
-	MCEarthMagnetic::APP_JNAT,  
-	MCEarthMagnetic::APP_JNAT,  
-	MCEarthMagnetic::N_Routes,    
-	MCEarthMagnetic::APP_B1950,  
-	MCEarthMagnetic::APP_B1950,  
-	MCEarthMagnetic::APP_B1950,
-	MCEarthMagnetic::APP_JNAT,
-	MCEarthMagnetic::APP_HADEC, 
-	MCEarthMagnetic::APP_HADEC, 
-	MCEarthMagnetic::APP_HADEC,
-	MCEarthMagnetic::APP_JNAT,
-	MCEarthMagnetic::APP_JNAT,
-	MCEarthMagnetic::APP_JNAT,
-	MCEarthMagnetic::APP_JNAT,
-	MCEarthMagnetic::APP_JNAT },
-      { MCEarthMagnetic::B1950_J2000, 
-	MCEarthMagnetic::B1950_J2000, 
-	MCEarthMagnetic::B1950_J2000, 
-	MCEarthMagnetic::B1950_J2000, 
-	MCEarthMagnetic::B1950_APP, 
-	MCEarthMagnetic::N_Routes,    
-	MCEarthMagnetic::B1950_BMEAN,
-	MCEarthMagnetic::B1950_BMEAN,
-	MCEarthMagnetic::B1950_GAL,
-	MCEarthMagnetic::B1950_APP, 
-	MCEarthMagnetic::B1950_APP, 
-	MCEarthMagnetic::B1950_APP,
-	MCEarthMagnetic::B1950_J2000,
-	MCEarthMagnetic::B1950_J2000,
-	MCEarthMagnetic::B1950_J2000,
-	MCEarthMagnetic::B1950_J2000,
-	MCEarthMagnetic::B1950_GAL },
-      { MCEarthMagnetic::BMEAN_B1950, 
-	MCEarthMagnetic::BMEAN_B1950, 
-	MCEarthMagnetic::BMEAN_B1950,
-	MCEarthMagnetic::BMEAN_B1950,
-	MCEarthMagnetic::BMEAN_B1950, 
-	MCEarthMagnetic::BMEAN_B1950, 
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::BMEAN_BTRUE,
-	MCEarthMagnetic::BMEAN_B1950,
-	MCEarthMagnetic::BMEAN_B1950, 
-	MCEarthMagnetic::BMEAN_B1950, 
-	MCEarthMagnetic::BMEAN_B1950, 
-	MCEarthMagnetic::BMEAN_B1950,
-	MCEarthMagnetic::BMEAN_B1950,
-	MCEarthMagnetic::BMEAN_B1950,
-	MCEarthMagnetic::BMEAN_B1950,
-	MCEarthMagnetic::BMEAN_B1950 },
-      { MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::BTRUE_BMEAN,
-	MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::N_Routes,   
-	MCEarthMagnetic::BTRUE_BMEAN,
-	MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::BTRUE_BMEAN, 
-	MCEarthMagnetic::BTRUE_BMEAN,
-	MCEarthMagnetic::BTRUE_BMEAN,
-	MCEarthMagnetic::BTRUE_BMEAN,
-	MCEarthMagnetic::BTRUE_BMEAN,
-	MCEarthMagnetic::BTRUE_BMEAN },
-      { MCEarthMagnetic::GAL_J2000,   
-	MCEarthMagnetic::GAL_J2000,   
-	MCEarthMagnetic::GAL_J2000, 
-	MCEarthMagnetic::GAL_J2000,   
-	MCEarthMagnetic::GAL_J2000,   
-	MCEarthMagnetic::GAL_B1950,   
-	MCEarthMagnetic::GAL_B1950,
-	MCEarthMagnetic::GAL_B1950,
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::GAL_J2000,   
-	MCEarthMagnetic::GAL_J2000,   
-	MCEarthMagnetic::GAL_J2000,   
-	MCEarthMagnetic::GAL_J2000,
-	MCEarthMagnetic::GAL_J2000,
-	MCEarthMagnetic::GAL_J2000,
-	MCEarthMagnetic::GAL_J2000,
-	MCEarthMagnetic::GAL_SUPERGAL },
-      { MCEarthMagnetic::HADEC_ITRF,   
-	MCEarthMagnetic::HADEC_APP,   
-	MCEarthMagnetic::HADEC_APP, 
-	MCEarthMagnetic::HADEC_APP,   
-	MCEarthMagnetic::HADEC_APP,   
-	MCEarthMagnetic::HADEC_APP,   
-	MCEarthMagnetic::HADEC_APP,
-	MCEarthMagnetic::HADEC_APP,
-	MCEarthMagnetic::HADEC_APP,
-	MCEarthMagnetic::N_Routes,    
-	MCEarthMagnetic::HADEC_AZEL,
-	MCEarthMagnetic::HADEC_AZEL,
-	MCEarthMagnetic::HADEC_APP,
-	MCEarthMagnetic::HADEC_APP,
-	MCEarthMagnetic::HADEC_APP,
-	MCEarthMagnetic::HADEC_APP,
-	MCEarthMagnetic::HADEC_APP },
-      { MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::AZEL_HADEC,  
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::AZEL_AZELSW,
-	MCEarthMagnetic::AZEL_HADEC,
-	MCEarthMagnetic::AZEL_HADEC,
-	MCEarthMagnetic::AZEL_HADEC,
-	MCEarthMagnetic::AZEL_HADEC,
-	MCEarthMagnetic::AZEL_HADEC },  
-      { MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL,
-	MCEarthMagnetic::AZELSW_AZEL },
-      { MCEarthMagnetic::JNAT_ITRF,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_APP,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_APP,
-	MCEarthMagnetic::JNAT_APP,
-	MCEarthMagnetic::JNAT_APP,
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_J2000,
-	MCEarthMagnetic::JNAT_J2000 },
-      { MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000,
-	MCEarthMagnetic::ECLIP_J2000 },
-      { MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::MECLIP_JMEAN,
-	MCEarthMagnetic::MECLIP_JMEAN },
-      { MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::TECLIP_JTRUE,
-	MCEarthMagnetic::N_Routes,
-	MCEarthMagnetic::TECLIP_JTRUE },
-      { MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::SUPERGAL_GAL,
-	MCEarthMagnetic::N_Routes }
-    };
     
-    // List of codes converted to
-    static const MEarthMagnetic::Types ToRef[MCEarthMagnetic::N_Routes] = {
-      MEarthMagnetic::JNAT,    		MEarthMagnetic::ITRF,
-      MEarthMagnetic::J2000,    	MEarthMagnetic::B1950,
-      MEarthMagnetic::GALACTIC, 	MEarthMagnetic::GALACTIC,
-      MEarthMagnetic::B1950,    	MEarthMagnetic::J2000,
-      MEarthMagnetic::JMEAN,    	MEarthMagnetic::BMEAN,
-      MEarthMagnetic::J2000,    	MEarthMagnetic::JTRUE,
-      MEarthMagnetic::B1950,    	MEarthMagnetic::BTRUE,
-      MEarthMagnetic::JMEAN,		MEarthMagnetic::BMEAN,    	
-      MEarthMagnetic::JNAT,      	MEarthMagnetic::J2000,
-      MEarthMagnetic::APP,      	MEarthMagnetic::B1950,
-      MEarthMagnetic::HADEC,    	MEarthMagnetic::AZEL,
-      MEarthMagnetic::HADEC,    	MEarthMagnetic::APP,
-      MEarthMagnetic::AZELSW,    	MEarthMagnetic::AZEL,
-      MEarthMagnetic::JNAT,		MEarthMagnetic::APP,
-      MEarthMagnetic::ECLIPTIC,		MEarthMagnetic::J2000,
-      MEarthMagnetic::MECLIPTIC,	MEarthMagnetic::JMEAN,
-      MEarthMagnetic::TECLIPTIC,	MEarthMagnetic::JTRUE,
-      MEarthMagnetic::SUPERGAL,		MEarthMagnetic::GALACTIC,
-      MEarthMagnetic::HADEC,		MEarthMagnetic::ITRF
+  Int iin  = inref.getType();
+  Int iout = outref.getType();
+  if (iin != iout) {
+    Bool iplan = ToBool(iin & MEarthMagnetic::EXTRA);
+    Bool oplan = ToBool(iout & MEarthMagnetic::EXTRA);
+    if (iplan) {
+      mc.addMethod(MCEarthMagnetic::R_MODEL0);
+      mc.addMethod((iin & ~MEarthMagnetic::EXTRA) + 
+		   MCEarthMagnetic::R_IGRF);
+      mc.addMethod(MCEarthMagnetic::R_MODEL);
+      initConvert(MCEarthMagnetic::R_MODEL, mc);
+      iin = MEarthMagnetic::ITRF;
     };
-    
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    if (iin != iout) {
-      Bool iplan = ToBool(iin & MEarthMagnetic::EXTRA);
-      Bool oplan = ToBool(iout & MEarthMagnetic::EXTRA);
-      if (iplan) {
-	mc.addMethod(MCEarthMagnetic::R_MODEL0);
-	mc.addMethod((iin & ~MEarthMagnetic::EXTRA) + 
-		     MCEarthMagnetic::R_IGRF);
-	mc.addMethod(MCEarthMagnetic::R_MODEL);
-	initConvert(MCEarthMagnetic::R_MODEL, mc);
-	iin = MEarthMagnetic::ITRF;
-      };
-      if (oplan) iout = MEarthMagnetic::ITRF;
-      Int tmp;
-      while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-      };
+    if (oplan) iout = MEarthMagnetic::ITRF;
+    Int tmp;
+    while (iin != iout) {
+      tmp = FromTo_p[iin][iout];
+      iin = ToRef_p[tmp][1];
+      mc.addMethod(tmp);
+      initConvert(tmp, mc);
     };
+  };
 }
 
 void MCEarthMagnetic::clearConvert() {

@@ -167,6 +167,14 @@ private:
   Precession *PRECESFROM, *PRECESTO;
   EarthField *EFIELD;
 
+  //# State machine data
+  // Has state matrix been made
+  static Bool stateMade_p;
+  // Transition list
+  static uInt ToRef_p[N_Routes][3];
+  // Transition matrix
+  static uInt FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
+
   //# Constructors
   // Copy constructor (not implemented)
   MCEarthMagnetic(const MCEarthMagnetic &other);
