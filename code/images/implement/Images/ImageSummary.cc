@@ -120,9 +120,7 @@ IPosition ImageSummary<T>::tileShape () const
 
 
 
-//typedef Vector<String> gpp_VS;
 template <class T> 
-//gpp_VS ImageSummary<T>::axisNames () const
 Vector<String> ImageSummary<T>::axisNames (Bool pixelOrder) const
 {
    Vector<String> tmp(cSys_p.worldAxisNames());
@@ -420,7 +418,11 @@ String ImageSummary<T>::makeMasksString() const
    const Vector<String> masks = maskNames();
    const uInt nMasks = masks.nelements();
    if (nMasks==0) {
-      return String("None");
+      if (hasAMask()) {
+         return String("Parent is masked");
+      } else {
+         return String("None");
+      }
    }
 //
    ostrstream oss;
