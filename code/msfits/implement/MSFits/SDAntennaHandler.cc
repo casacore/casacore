@@ -187,7 +187,7 @@ void SDAntennaHandler::fill(const Record &row)
 			allEQ(offset,msAntCols_p->offset()(foundRows(whichOne)))) {
 			found = True;
 		    }
-		    whichOne++;
+		    if (!found) whichOne++;
 		}
 	    }
 	    if (found) {
