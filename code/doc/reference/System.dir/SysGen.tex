@@ -2002,16 +2002,28 @@ example, the instantiation file for the first entry above would be
 Comments in the \file{templates} file are signalled by a ``\code{\#}'' in the
 first field.  Blank lines are also allowed.
 
-Each entry in the \file{templates} must have at least one template
-declaration. More are allowed (each starting with the word
-\code{template}). They can be specified all on one line, or on separate lines
-per template declaration. Template declarations can be bracketed by \#if
+Each entry in the \file{templates} can be split over several lines. The first
+line must have the \code{ident} and one or more of the necessary include
+files (.cc or .h). Subsequent lines can be in any order, and have one of the
+following formats:
+\begin{verbatim}
+    = file.h				additional include files
+    template class Name<...>		class specialisation
+    template <...> ...			templated class forward declaration
+    template <> ...			non-templated forward declaration
+    template ret-val function(....)	function specialisation
+\end{verbatim}
+
+Template declarations can be bracketed by \#if
 \#else \#endif. For example:
 
 \begin{verbatim}
-   1040 aips/Set/Set.cc aips/Cube/Cube.h template class Set<Cube>
+   1040 aips/Set/Set.cc aips/Cube/Cube.h
+	template class Set<Cube>
    1050 aips/Set/Set.cc 
 	template class Set<Int>
+	template <> class ostream
+	template <class T> class Vector
 	#if !defined(STD_LIB)
     	  template Set<Int> operator+(Set<Int> const &, Set<Int> const &)
       	  template void union(Set<Int> const &, Set<Int> const &)
