@@ -31,14 +31,11 @@
 //# For size_t
 #include <stdlib.h>
 
-// Defined the "aips_" macro which is used for name space management, and
-// the "aips_name2" macro which is used to join two tokens.
+// Defined the "aips_name2" macro which is used to join two tokens.
 
 #if defined(__STDC__) || defined(__ANSI_CPP__) || defined(__hpux)
-#define aips_(x)  aips##x
 #define aips_name2(a,b) a##b
 #else
-#define aips_(x)  aips/**/x
 #define aips_name2(a,b) a/**/b
 #endif
 
