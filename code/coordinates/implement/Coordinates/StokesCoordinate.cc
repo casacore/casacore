@@ -109,9 +109,9 @@ uInt StokesCoordinate::nWorldAxes() const
 Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 {
     // Avoid going to the Vector version for eficciency reasons.
-    Double index = floor((pixel - crpix_p)*cdelt_p*matrix_p + crval_p + 0.5);
+    Double index = floor((pixel - crpix_p)*cdelt_p*matrix_p + 0.5);
     if (index >= 0 && index < values_p.nelements()) {
-	stokes = Stokes::type(values_p[pixel]);
+	stokes = Stokes::type(values_p[Int(index)]);
 	return True;
     } else {
 	ostrstream os;
@@ -140,7 +140,7 @@ Bool StokesCoordinate::toPixel(Int &pixel, Stokes::StokesTypes stokes) const
 	return False;
     }
     
-    pixel = Int(floor((Double(index) - crval_p)/cdelt_p/matrix_p + 
+    pixel = Int(floor((Double(index))/cdelt_p/matrix_p + 
 		      crpix_p + 0.5));
     return True;
 }
