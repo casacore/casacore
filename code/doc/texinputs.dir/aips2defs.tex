@@ -1,51 +1,50 @@
-\newlength{\labellen}
-
 \newcommand{\subsectionC}[4]{
-  {\bfseries
-   \settowidth{\labellen}{\thesubsubsection #1 --}
-   \hspace{\the\labellen}
-   \begin{tabular}{rl}
-          Package & #2\\
-          Module & #3\\
-          Object & #4\\
-    \end{tabular}
+  {\bfseries \vspace{-\baselineskip} \vspace{-\baselineskip}
+
+   \begin{longtable}[l]{lrl}
+    #1 -- &Constructor & \kill\\
+          & Package & #2\\
+          & Module & #3\\
+          & Object & #4\\
+    \end{longtable}
+
   }
   \flushleft\vspace{\baselineskip}
 }
 
 \newcommand{\subsectionF}[3]{
-  {\bfseries
-   \settowidth{\labellen}{\thesubsubsection #1 --}
-   \hspace{\the\labellen}
-   \begin{tabular}{rl}
-      Package & #2\\
-      Module  &#3\\
-   \end{tabular}
+  {\bfseries\large \vspace{-\baselineskip} \vspace{-\baselineskip}
+   \begin{longtable}[l]{lrl}
+    #1 -- &Function & \kill\\
+      & Package & #2\\
+      & Module  &#3\\
+   \end{longtable}
+
   }
   \flushleft\vspace{\baselineskip}
 }
 
 \newcommand{\subsectionM}[4]{
-  {\bfseries
-   \settowidth{\labellen}{\thesubsubsection #1 --}
-   \hspace{\the\labellen}
-   \begin{tabular}{rl}
-     Package  &#2\\
-     Module  &#3\\
-     Object  &#4\\
-  \end{tabular}
+  {\bfseries \vspace{-\baselineskip} \vspace{-\baselineskip}
+   \begin{longtable}[l]{lrl}
+     \thesubsection #1 -- & Object & \kill\\
+     &Package  &#2\\
+     &Module  &#3\\
+     &Object  &#4\\
+  \end{longtable}
+
   }
   \flushleft\vspace{\baselineskip}
 }
 
 \newcommand{\subsectionO}[3]{
-  {\bfseries
-   \settowidth{\labellen}{\thesubsubsection #1 --}
-   \hspace{\the\labellen}
-   \begin{tabular}{rl}
-     Package & #2\\
-     Module  &#3\\
-   \end{tabular}
+  {\bfseries \large \vspace{-\baselineskip} \vspace{-\baselineskip}
+
+   \begin{longtable}[l]{lrl}
+     \thesubsection #1 -- & Object & \kill\\
+     & Package & #2\\
+     & Module  &#3\\
+   \end{longtable}
   }
   \flushleft\vspace{\baselineskip}
 }
