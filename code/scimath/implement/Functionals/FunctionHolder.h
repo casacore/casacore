@@ -1,5 +1,5 @@
 //# FunctionHolder.h: A holder for Functions to enable record conversions
-//# Copyright (C) 2002,2003
+//# Copyright (C) 2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,7 +152,7 @@ template <class T> class FunctionHolder : public RecordTransformable {
   // Add a function
   Bool addFunction(const Function<T> &fnc); 
   // Get the type of currently filled holder
-  const FunctionHolder<T>::Types type() const;
+  FunctionHolder<T>::Types type() const;
   // Create a Function from a record. An error message is generated, and False
   // returned if an invalid record is given. A valid record will return True.
   // A valid record contains at least the following fields (any additional fields are

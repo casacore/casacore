@@ -129,7 +129,7 @@ Bool FunctionHolder<T>::addFunction(const Function<T> &fnc) {
 } 
 
 template <class T>
-const FunctionHolder<T>::Types FunctionHolder<T>::type() const {
+typename FunctionHolder<T>::Types FunctionHolder<T>::type() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty FunctionHolder argument for type()"));
   };
