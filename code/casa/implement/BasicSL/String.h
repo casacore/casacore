@@ -653,9 +653,11 @@ class String : public string {
 
   // Matches entire string. ** aips++ addition
   // <group name=matches>
-  Bool matches(Char c, Int pos = 0) const;
   Bool matches(const string &str, Int pos = 0) const;
-  Bool matches(const Char *s, Int pos = 0) const;
+  Bool matches(Char c, Int pos = 0) const {
+    return matches(String(c), pos); };
+  Bool matches(const Char *s, Int pos = 0) const {
+    return matches(String(s), pos); };
   Bool matches(const Regex &r, Int pos = 0) const;
   // </group>
 
@@ -965,15 +967,12 @@ inline Bool String::contains(const Char *s, Int pos) const {
 inline Bool String::contains(const Regex &r, Int pos) const {
   return (index(r, pos) != npos); }
 
-inline Bool String::matches(Char c, Int pos) const {
-  return ((pos < 0) ? index(c, pos) != 0 :
-	  index(c, pos) == static_cast<size_type>(pos)) ; }
 inline Bool String::matches(const string &str, Int pos) const {
-  return ((pos < 0) ? index(str, pos) != 0 :
+  return ((pos < 0) ? index(str, pos) == 0 :
+	  length() != 0 && str.length() != 0 &&
+	  length() == pos+str.length() &&
+	  static_cast<size_type>(pos) < length() &&
 	  index(str, pos) == static_cast<size_type>(pos)) ; }
-inline Bool String::matches(const Char *s, Int pos) const {
-  return ((pos < 0) ? index(s, pos) != 0 :
-	  index(s, pos) == static_cast<size_type>(pos)) ; }
 inline ostream &operator<<(ostream &s, const String &x) {
   s << x.c_str(); return s; }
 
