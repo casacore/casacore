@@ -2595,3 +2595,4 @@
 11 378 src mv trial/scripts/uvbrick_plot.g nfra/apps/uvbrick/uvbrick_plot.g
 11 378 src rm nfra/apps/uvc
 11 378 src rm nfra/apps/uvf
+11 378 src rm nfra/scripts/TMS_GUI.g
