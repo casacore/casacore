@@ -252,7 +252,7 @@
      affect anything.
   WIN32                     (default: undefined)
      Define this on MS win (95, nt) platforms to compile in sbrk emulation.
-  LACKS_UNISTD_H            (default: undefined)
+  LACKS_UNISTD              (default: undefined)
      Define this if your system does not have a <unistd.h>.
   MORECORE                  (default: sbrk)
      The name of the routine to call to obtain more memory from the system.
@@ -545,7 +545,7 @@ do {                                                                          \
   bsd/gnu getpagesize.h 
 */
 
-#ifndef LACKS_UNISTD_H
+#ifndef LACKS_UNISTD
 #  include <unistd.h>
 #endif
 
