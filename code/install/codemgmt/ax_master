@@ -4268,3 +4268,4 @@
 14 127 src mv trial/implement/Fitting/LSQ.cc aips/implement/Fitting/LSQ.cc
 14 127 src mv trial/implement/Fitting/LSQ.h aips/implement/Fitting/LSQ.h
 14 127 src mv trial/implement/Fitting/LSQBase.cc aips/implement/Fitting/LSQBase.cc
+14 127 src mv trial/implement/Fitting/LSQBase.h aips/implement/Fitting/LSQBase.h
