@@ -142,12 +142,12 @@
   if ("$a_arch" == NONE) then
 #    Remove aips_bin, aips_lib, and aips_doc from PATH, LD_LIBRARY_PATH,
 #    and MANPATH.
-     setenv PATH `echo ":${PATH}:" | sed -e '{s#:aips_bin:#:#g;s#^:##;s#:$##;}'`
+     setenv PATH `/bin/echo ":${PATH}:" | sed -e '{s#:aips_bin:#:#g;s#^:##;s#:$##;}'`
      if ($?LD_LIBRARY_PATH) then
-        setenv LD_LIBRARY_PATH `echo ":${LD_LIBRARY_PATH}:" | sed -e '{s#:aips_lib:#:#g;s#^:##;s#:$##;}'`
+        setenv LD_LIBRARY_PATH `/bin/echo ":${LD_LIBRARY_PATH}:" | sed -e '{s#:aips_lib:#:#g;s#^:##;s#:$##;}'`
      endif
      if ($?MANPATH) then
-        setenv MANPATH `echo ":${MANPATH}:" | sed -e '{s#:aips_doc:#:#g;s#^:##;s#:$##;}'`
+        setenv MANPATH `/bin/echo ":${MANPATH}:" | sed -e '{s#:aips_doc:#:#g;s#^:##;s#:$##;}'`
      endif
 
   else
@@ -204,7 +204,7 @@
         endif
 
         set noglob
-        set a_site = `echo "$a_temp[1]" | awk -F/ '{ print $(NF-1) }'`
+        set a_site = `/bin/echo "$a_temp[1]" | awk -F/ '{ print $(NF-1) }'`
         unset noglob
         if ("$a_site" == "*") set a_site = UNKNOWN_SITE
      endif
@@ -212,19 +212,19 @@
 #    Reset the architecture extension if required.
      if ($?aips_ext) then
         if ("$aips_ext" == "_" || "$aips_ext" == " ") then
-           set a_arch=`echo $a_arch | sed -e 's/_.*//'`
+           set a_arch=`/bin/echo $a_arch | sed -e 's/_.*//'`
 	else
-           set a_arch=`echo ${a_arch}_$aips_ext | sed -e '{s/ .*//;s/_.*_/_/;}'`
+           set a_arch=`/bin/echo ${a_arch}_$aips_ext | sed -e '{s/ .*//;s/_.*_/_/;}'`
         endif
         unset aips_ext
         unsetenv aips_ext
      else
-        set a_ext = `echo $a_arch | sed -e 's/.*_//'`
+        set a_ext = `/bin/echo $a_arch | sed -e 's/.*_//'`
         if ("$a_ext" == "$a_arch") then
            set a_temp = $a_root/${a_arch}_*/bin
            set noglob
-           set a_temp = `echo $a_temp[1] | awk '{ print $1 }' | awk -F/ '{ print $(NF-1) }'`
-           set a_ext = `echo $a_temp | sed -e 's/.*_//'`
+           set a_temp = `/bin/echo $a_temp[1] | awk '{ print $1 }' | awk -F/ '{ print $(NF-1) }'`
+           set a_ext = `/bin/echo $a_temp | sed -e 's/.*_//'`
            unset noglob
            if ("$a_ext" != "*") set a_arch = ${a_arch}_$a_ext
         endif
@@ -234,8 +234,8 @@
 
 #    Is AIPSPATH already defined?
      if ($?AIPSPATH) then
-        set a_och = `echo $AIPSPATH | awk '{print $2}'`
-        set a_old = `echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'`
+        set a_och = `/bin/echo $AIPSPATH | awk '{print $2}'`
+        set a_old = `/bin/echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'`
      else
         set a_och = "$a_arch"
         set a_old = "$a_root/$a_arch"
@@ -254,16 +254,16 @@
      cd .
 
 #    Escape pound sign
-     set a_old = `echo $a_old | sed -e 's/#/\\#/g'`
-     set a_och = `echo $a_och | sed -e 's/#/\\#/g'`
-     set a_arch_t = `echo $a_arch | sed -e 's/#/\\#/g'`
-     set a_root_t = `echo $a_root | sed -e 's/#/\\#/g'`
+     set a_old = `/bin/echo $a_old | sed -e 's/#/\\#/g'`
+     set a_och = `/bin/echo $a_och | sed -e 's/#/\\#/g'`
+     set a_arch_t = `/bin/echo $a_arch | sed -e 's/#/\\#/g'`
+     set a_root_t = `/bin/echo $a_root | sed -e 's/#/\\#/g'`
 
 #    Reset PATH.
-     set a_new = `echo " $PATH " | sed -e 's#::*# #g' -e "s# $a_old/bin # aips_bin #g" -e "s#/aips++/$a_och/#/aips++/$a_arch_t/#g" -e "s# aips_bin # $a_root_t/$a_arch_t/bin #g"`
+     set a_new = `/bin/echo " $PATH " | sed -e 's#::*# #g' -e "s# $a_old/bin # aips_bin #g" -e "s#/aips++/$a_och/#/aips++/$a_arch_t/#g" -e "s# aips_bin # $a_root_t/$a_arch_t/bin #g"`
 
 #    Ensure that some AIPS++ bin area got into PATH.
-     echo " $a_new " | grep " $a_root/$a_arch/bin " >& /dev/null
+     /bin/echo " $a_new " | grep " $a_root/$a_arch/bin " >& /dev/null
      if ("$status" != 0) then
 #       Leave "." first, and put the AIPS++ areas next.
         if ("$a_new[1]" == ".") then
@@ -274,20 +274,20 @@
      endif
 
 #    Reset it, with sanity check!
-     set a_new = `echo $a_new | sed -e 's# #:#g'`
+     set a_new = `/bin/echo $a_new | sed -e 's# #:#g'`
      if ("$a_new" != "") setenv PATH "$a_new"
 
 
 #    Reset LD_LIBRARY_PATH.
      if ("$?LD_LIBRARY_PATH") then
-        set a_new = `echo " $LD_LIBRARY_PATH " | sed -e 's#::*# #g' -e "s# $a_old/lib # aips_lib #g" -e "s# aips_lib # $a_root_t/$a_arch_t/lib #g"`
+        set a_new = `/bin/echo " $LD_LIBRARY_PATH " | sed -e 's#::*# #g' -e "s# $a_old/lib # aips_lib #g" -e "s# aips_lib # $a_root_t/$a_arch_t/lib #g"`
 
 #       Ensure that some AIPS++ lib area got into LD_LIBRARY_PATH.
-        echo " $a_new " | grep " $a_root/$a_arch/lib " >& /dev/null
+        /bin/echo " $a_new " | grep " $a_root/$a_arch/lib " >& /dev/null
         if ("$status" != 0) set a_new = "$a_root/$a_arch/lib $a_new"
 
 #       Reset it, with sanity check!
-        set a_new = `echo $a_new | sed -e 's# #:#g'`
+        set a_new = `/bin/echo $a_new | sed -e 's# #:#g'`
         if ("$a_new" != "") setenv LD_LIBRARY_PATH "$a_new"
      else
         setenv LD_LIBRARY_PATH "$a_root/$a_arch/lib"
@@ -296,14 +296,14 @@
 
 #    Reset MANPATH.
      if ("$?MANPATH") then
-        set a_new = `echo " $MANPATH " | sed -e 's#::*# #g' -e "s# $a_old/doc # aips_doc #g" -e "s# aips_doc # $a_root_t/$a_arch_t/doc #g"`
+        set a_new = `/bin/echo " $MANPATH " | sed -e 's#::*# #g' -e "s# $a_old/doc # aips_doc #g" -e "s# aips_doc # $a_root_t/$a_arch_t/doc #g"`
 
 #       Ensure that some AIPS++ man area got into MANPATH.
-        echo " $a_new " | grep " $a_root/$a_arch/doc " >& /dev/null
+        /bin/echo " $a_new " | grep " $a_root/$a_arch/doc " >& /dev/null
         if ("$status" != 0) set a_new = "$a_root/$a_arch/doc $a_new"
 
 #       Reset it, with sanity check!
-        set a_new = `echo $a_new | sed -e 's# #:#g'`
+        set a_new = `/bin/echo $a_new | sed -e 's# #:#g'`
         if ("$a_new" != "") setenv MANPATH "$a_new"
      endif
 
