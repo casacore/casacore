@@ -29,8 +29,19 @@
 #include <aips/Functionals/Function.h>
 
 template<class T>
+T Function<T>::operator()(const Vector<ArgType> &x) const {
+  DebugAssert(ndim()<=x.nelements(), AipsError);
+  if (x.contiguousStorage()) return this->eval(&(x[0]));
+  uInt j=ndim();
+  arg_p.resize(j);
+  for (uInt i=0; i<j; ++i) arg_p[i] = x[i];
+  return this->eval(&(arg_p[0]));
+};
+
+template<class T>
 T Function<T>::operator()(const ArgType &x, const ArgType &y) const {
-  static Vector<ArgType> lv(2);
-  lv[0] = x; lv[1] = y;
-  return this->eval(&(lv[0]));
+  DebugAssert(ndim()==2, AipsError);
+  arg_p.resize(ndim());
+  arg_p[0] = x; arg_p[1] = y;
+  return this->eval(&(arg_p[0]));
 }

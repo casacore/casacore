@@ -222,9 +222,7 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
     DebugAssert(ndim()==0, AipsError); return this->eval(FunctionArg(0)); };
   virtual T operator()(const ArgType &x) const {
     DebugAssert(ndim()<=1, AipsError); return this->eval(&x); };
-  virtual T operator()(const Vector<ArgType> &x) const {
-    DebugAssert(x.contiguousStorage() && ndim()<=x.nelements(), AipsError);
-    return this->eval(&(x[0])); };
+  virtual T operator()(const Vector<ArgType> &x) const;
   virtual T operator()(FunctionArg x) const { return this->eval(x); };
   virtual T operator()(const ArgType &x, const ArgType &y) const;
   // </group>
@@ -254,6 +252,8 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   //# Data
   // The parameters and masks
   FunctionParam<T> param_p;
+  // Aid for non-contiguous argument storage
+  mutable Vector<typename FunctionTraits<T>::ArgType> arg_p;
 
 };
 
