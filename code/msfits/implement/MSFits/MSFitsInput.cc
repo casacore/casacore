@@ -55,6 +55,7 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MeasData.h>
 #include <aips/Measures/Stokes.h>
+#include <aips/Measures/MeasTable.h>
 #include <aips/OS/File.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -575,6 +576,7 @@ void MSFitsInput::fillObsTables() {
   times(0)=timeVal.second();
   times(1)=timeVal.second(); // change this to last time in input
   msObsCol.timeRange().put(0,times);
+  msObsCol.releaseDate().put(0,times(0));  // just use TIME_RANGE for now
   Double time=timeVal.second();
   msObsCol.flagRow().put(0,False);
 
@@ -833,6 +835,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    arrayXYZ(0)=bt.getKeywords().asdouble("ARRAYX");
    arrayXYZ(1)=bt.getKeywords().asdouble("ARRAYY");
    arrayXYZ(2)=bt.getKeywords().asdouble("ARRAYZ");
+
    // itsLog << LogIO::NORMAL << "number of antennas ="<<nAnt<<LogIO::POST;
    // itsLog << LogIO::NORMAL << "array ref pos:"<<arrayXYZ<<LogIO::POST;
 
@@ -893,14 +896,19 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    // initialize rotation matrix with zero rotation
    Matrix<Double> posRot=Rot3D(0,0.0);  
    if ( doVLARot ) {
-     // Form rotation around Z axis by VLA longitude=atan(refy/refx)
+     // Array position for VLA from aips may be wrong, so use
+     //  authoritative position from measures (station positions
+     //  are from on-line system and are relative to this)
+     MPosition vlaCentre;
+     AlwaysAssert(MeasTable::Observatory(vlaCentre, "VLA"), AipsError);
+     arrayXYZ = vlaCentre.getValue().getValue();
+     // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
      Double vlaLong=atan2(arrayXYZ(1),arrayXYZ(0));
      posRot=Rot3D(2,vlaLong);  // Applied to each ant position below
    }
    // All "VLBI" (==arrayXYZ<1000) requires y-axis reflection: 
    //  (ATCA looks like "VLBI" in UVFITS, but is already correct)
    Bool doVLBIRefl= ((array_p!="ATCA") && allLE(abs(arrayXYZ),1000.0));
-
 
    // add antenna info to table
    ant.setPositionRef(MPosition::ITRF);
@@ -930,6 +938,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
      Vector<Double> corXYZ=antXYZ(i);
      // If nec, rotate coordinates out of local VLA frame to ITRF
      if ( doVLARot ) corXYZ=product(posRot,corXYZ);
+
      // If nec, reflect y-coord to yield right-handed geocentric:
      if ( doVLBIRefl ) corXYZ(1)=-corXYZ(1);
 
@@ -1165,6 +1174,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     // Get the time from the observation subtable. I have assumed that this bit
     // of the observation table has been filled by now.
     const Vector<Double> obsTimes = msc_p->observation().timeRange()(0);
+
     msField.time().put(fld, obsTimes(0));
     msField.numPoly().put(fld,numPoly);
     msField.delayDirMeasCol().put(fld,radecMeas);
@@ -1205,15 +1215,10 @@ void MSFitsInput::fillFieldTable(Int nField)
   msField.phaseDirMeasCol().put(fld,radecMeas);
   msField.referenceDirMeasCol().put(fld,radecMeas);
 
-  // Need to convert epoch in years to MJD time
-  if (nearAbs(epoch_p,2000.0,0.01)) {
-    msField.time().put(fld, MeasData::MJD2000*C::day);
-    // assume UTC epoch
-  } else if (nearAbs(epoch_p,1950.0,0.01)) {
-    msField.time().put(fld, MeasData::MJDB1950*C::day);
-  } else {
-    itsLog << LogIO::SEVERE  << " Cannot handle epoch in Pr Group header: "<< epoch_p <<LogIO::POST;
-  }
+  // Use TIME_RANGE in OBSERVATION table to set TIME here.
+  const Vector<Double> obsTimes = msc_p->observation().timeRange()(0);
+  msField.time().put(fld, obsTimes(0));
+
 }
 
 void MSFitsInput::fillFeedTable() {
