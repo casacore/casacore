@@ -886,8 +886,12 @@ Bool ImageMoments<T>::createMoments()
 // Account for removal of the collapsed moment axis in the coordinate system.  
 
    CoordinateSystem outImageCoord = pInImage_p->coordinates();
-   outImageCoord.removePixelAxis(momentAxis_p, Double(0.0));
-   outImageCoord.removeWorldAxis(worldMomentAxis, Double(0.0));
+   Bool ok = outImageCoord.removeWorldAxis(worldMomentAxis,
+                 outImageCoord.referenceValue()(worldMomentAxis));
+   if (!ok) {
+      os_p << String("Failed to remove moment axis because ") 
+           << outImageCoord.errorMessage() << LogIO::EXCEPTION;
+   }     
 
 
 // Create a vector of pointers for output images 
