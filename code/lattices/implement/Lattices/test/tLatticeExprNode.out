@@ -284,6 +284,9 @@ pa
  Float Array
  Double Scalar
  Double Array
+replace
+ Float Scalar
+ Float Array
 
 3-argument functions 
 iif
@@ -630,6 +633,9 @@ pa
  Float Array
  Double Scalar
  Double Array
+replace
+ Float Scalar
+ Float Array
 
 3-argument functions 
 iif
@@ -976,6 +982,9 @@ pa
  Float Array
  Double Scalar
  Double Array
+replace
+ Float Scalar
+ Float Array
 
 3-argument functions 
 iif
