@@ -1,5 +1,5 @@
 //# Table.h: Main interface classes to tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -242,6 +242,9 @@ public:
 
     // Assignment (reference semantics).
     Table& operator= (const Table&);
+
+    // Is the root table of this table the same as that of the other one?
+    Bool isSameRoot (const Table& other) const;
 
     // Can the table be deleted?
     // If true, function deleteTable can safely be called.
@@ -842,6 +845,9 @@ private:
 };
 
 
+
+inline Bool Table::isSameRoot (const Table& other) const
+    { return baseTabPtr_p->root() == other.baseTabPtr_p->root(); }
 
 inline void Table::reopenRW()
     { baseTabPtr_p->reopenRW(); }
