@@ -3478,3 +3478,4 @@
 13 285 src mv trial/implement/Lattices/PagedArrIter.cc aips/implement/Lattices/PagedArrIter.cc
 13 285 src mv trial/implement/Lattices/LatticeIterator.h aips/implement/Lattices/LatticeIterator.h
 13 285 src mv trial/implement/Lattices/LatticeIterator.cc aips/implement/Lattices/LatticeIterator.cc
+13 285 src mv trial/implement/Lattices/LatticeIterInterface.h aips/implement/Lattices/LatticeIterInterface.h
