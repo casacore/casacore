@@ -30,14 +30,13 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/IO/RegularFileIO.h>
+#include <aips/IO/LargeRegularFileIO.h>
 #include <aips/IO/TypeIO.h>
 #include <aips/Utilities/String.h>
 #include <aips/Mathematics/Complex.h>
 
 //# Forward Declarations
 class IPosition;
-class RegularFileIO;
 
 
 // <summary>
@@ -269,7 +268,7 @@ public:
     // </group>
 
 private:
-    RegularFileIO*  file_p;                //# File object
+    LargeRegularFileIO* file_p;            //# File object
     TypeIO*         iofil_p;               //# IO object
     Int64           leng_p;                //# File length
     uInt            version_p;             //# Version of StArrayFile file

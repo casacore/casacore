@@ -27,7 +27,6 @@
 
 #include <aips/Tables/StArrayFile.h>
 #include <aips/OS/RegularFile.h>
-#include <aips/IO/RegularFileIO.h>
 #include <aips/IO/CanonicalIO.h>
 #include <aips/IO/LECanonicalIO.h>
 #include <aips/OS/CanonicalConversion.h>
@@ -54,7 +53,7 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
 	version_p = 1;
     }
     //# Open file name as input and/or output; throw exception if it fails.
-    file_p = new RegularFileIO (RegularFile(fname), fop, bufferSize);
+    file_p = new LargeRegularFileIO (RegularFile(fname), fop, bufferSize);
     AlwaysAssert (file_p != 0, AipsError);
     if (bigEndian) {
 	iofil_p = new CanonicalIO (file_p);
