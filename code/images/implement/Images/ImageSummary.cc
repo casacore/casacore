@@ -30,6 +30,7 @@
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/Images/ImageInfo.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
@@ -52,33 +53,27 @@
 
 template <class T>
 ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
-//
-// Constructor assigns pointer.  If ImageInterface goes out of scope you
-// will get rubbish.
-//
 {
+   pImage_p = image.cloneII();
    cSys_p = image.coordinates();
    obsInfo_p = cSys_p.obsInfo();
-   pImage_p = &image;
+   imageInfo_p = pImage_p->imageInfo();
 }
 
 template <class T> 
 ImageSummary<T>::ImageSummary (const ImageSummary<T> &other)
-//
-// Copy constructor
-//
 {
    cSys_p = other.cSys_p;
    obsInfo_p = other.obsInfo_p;
-   pImage_p = other.pImage_p;
+   imageInfo_p = other.imageInfo_p;
+   pImage_p = other.pImage_p->cloneII();
 }
 
 template <class T> 
 ImageSummary<T>::~ImageSummary ()
-//
-// Destructor does nothing
-//
-{}
+{ 
+   delete pImage_p;
+}
 
 template <class T>
 ImageSummary<T> &ImageSummary<T>::operator=(const ImageSummary<T> &other)
@@ -89,7 +84,9 @@ ImageSummary<T> &ImageSummary<T>::operator=(const ImageSummary<T> &other)
    if (this != &other) {
       cSys_p = other.cSys_p;
       obsInfo_p = other.obsInfo_p;
-      pImage_p = other.pImage_p;
+      imageInfo_p = other.imageInfo_p;
+      delete pImage_p;
+      pImage_p = other.pImage_p->cloneII();
    }
    return *this;
 }
@@ -349,6 +346,12 @@ String ImageSummary<T>::defaultMaskName() const
    return pImage_p->getDefaultMask();
 }
 
+template <class T> 
+Vector<Quantum<Double> > ImageSummary<T>::restoringBeam () const
+{
+   return imageInfo_p.restoringBeam();
+}
+
 
 
 template <class T> 
@@ -416,8 +419,16 @@ void ImageSummary<T>::list (LogIO& os,
    } else {
       os << "Rest Frequency   : Absent" << endl;
    }
+
+
+// Restoring beam
+
+   Vector<Quantum<Double> > rb = imageInfo_p.restoringBeam();
+   if (rb.nelements()>0) {
+      os.output() << "Restoring Beam   : " << rb(0) << ", " << rb(1) << ", " << rb(2) << endl;
+   }
    os << endl;
-      
+
 
 
 // Determine the widths for all the fields that we want to list
