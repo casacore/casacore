@@ -1,5 +1,5 @@
 //# MomentCalculator.h: 
-//# Copyright (C) 1996
+//# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,33 +24,37 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 #if !defined(AIPS_MOMENTCALCULATOR_H)
 #define AIPS_MOMENTCALCULATOR_H
 
-#if defined(_AIX)
-#pragma implementation ("MomentCalculator.cc")
-#endif
+//# Includes
 #include <aips/aips.h>
-#include <trial/Lattices/VectorCollapser.h>
+#include <trial/Lattices/LineCollapser.h>
 #include <aips/Functionals/Gaussian1D.h>
 
+//# Forward Declarations
 template <class T> class Vector;
 template <class T> class ImageMoments;
 
-// <summary> Abstract base class for moment calculator classes</summary>
+
+// <summary>
+// Abstract base class for moment calculator classes
+// </summary>
+
 // <use visibility=export>
-// 
+
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-// 
+
 // <prerequisite>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
-//   <li> <linkto class="VectorCollapser">VectorCollapser</linkto>
+//   <li> <linkto class="LineCollapser">LineCollapser</linkto>
 // </prerequisite>
-//
+
 // <synopsis>
-//  This class, its concrete derived classes, and the classes VectorCollapser,
+//  This class, its concrete derived classes, and the classes LineCollapser,
 //  ImageMoments and LatticeApply are connected as follows.   LatticeApply offers 
 //  functions so that the application programmer does not need to worry about how 
 //  to optimally iterate through a Lattice; it deals with tiling and to a 
@@ -58,7 +62,7 @@ template <class T> class ImageMoments;
 //  object to them that has a member function with a name and signature 
 //  specified by an abstract base class that LatticeApply uses and the 
 //  offered class inherits from.   Specifically, in this case, MomentCalcBase
-//  inherits from VectorCollapser and LatticeApply uses objects and methods of this
+//  inherits from LineCollapser and LatticeApply uses objects and methods of this
 //  class (bit does not inherit from it).  This defines the functions
 //  <src>collapse</src> and <src>multiCollapse</src> which operate on a vector
 //  extracted from a Lattice.  The former returns one number, the latter a vector
@@ -104,12 +108,12 @@ template <class T> class ImageMoments;
 //  discussion in <linkto class="ImageMoments">ImageMoments</linkto> and also in
 //  the derived classes documentation.
 // </synopsis>
-//
+
 // <example>
 //  Since MomentCalcBase is an abstract class, we defer code examples to
 //  the derived classes.
 // </example>
-//
+
 // <motivation>
 // We were desirous of writing functions to optimally iterate through Lattices
 // so that the application programmer did not have to know anything about tiling
@@ -117,13 +121,13 @@ template <class T> class ImageMoments;
 // ImageMoments into this scheme required some of it to be shifted into 
 // MomentCalcBase and its derived classes.
 // </motivation>
-//
+
 // <todo asof="yyyy/mm/dd">
 //  Derive more classes !
 // </todo>
 
 
-template <class T> class MomentCalcBase : public VectorCollapser<T>
+template <class T> class MomentCalcBase : public LineCollapser<T>
 {
 public:
    virtual ~MomentCalcBase();
@@ -153,7 +157,7 @@ protected:
 // some of them are too expensive to calculate unless they are
 // really wanted.  These are the median moments and those that
 // require a second pass.  These control Bools tell us whether
-// we really want to compute the expesnive ones.
+// we really want to compute the expensive ones.
    Bool doMedianI_p, doMedianV_p, doAbsDev_p;
 
 
@@ -182,8 +186,7 @@ protected:
 // Y min and max, these are the values to use
    Float yMinAuto_p, yMaxAuto_p;
 
-// This vector is used to hold the abcissa values when plotting
-// profiles
+// This vector is used to hold the abcissa values when plotting profiles
    Vector<T> abcissa_p;
 
 // This string tells us the name of the moment axis (VELO or FREQ etc)
@@ -428,7 +431,7 @@ protected:
    Int& momentAxis(ImageMoments<T>& iMom);
 
 // Return the name of the moment/profile axis
-   String& momentAxisName(ImageMoments<T>& iMom);
+   String momentAxisName(ImageMoments<T>& iMom);
 
 // Return the number of moments that the ImageMoments class can calculate
    Int nMaxMoments() const;
@@ -504,6 +507,10 @@ protected:
    void yAutoMinMax(Float& yMin, 
                     Float& yMax, 
                     ImageMoments<T>& iMom);
+
+protected:
+   // Check if #pixels is indeed 1.
+   virtual void init (uInt nOutPixelsPerCollapse);
 };
 
 
@@ -591,14 +598,14 @@ inline Double MomentCalcBase<T>::getMomentCoord(ImageMoments<T>& iMom,
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
-//   <li> <linkto class="VectorCollapser">VectorCollapser</linkto>
+//   <li> <linkto class="LineCollapser">LineCollapser</linkto>
 // </prerequisite>
 //
 // <synopsis>
 //  This concrete class is derived from the abstract base class MomentCalcBase
 //  which provides an interface layer to the ImageMoments driver class.
 //  ImageMoments creates a MomentClip object and passes it to the LatticeApply
-//  function, vectorMultiApply. This function iterates through a given lattice, 
+//  function, lineMultiApply. This function iterates through a given lattice, 
 //  and invokes the multiCollapse member function of MomentClip on each vector 
 //  of pixels that it extracts from the input lattice.  The multiCollapse 
 //  function returns a vector of moments which are inserted into the output 
@@ -647,9 +654,9 @@ inline Double MomentCalcBase<T>::getMomentCoord(ImageMoments<T>& iMom,
 //
 //// Iterate optimally through the image, compute the moments, fill the output lattices
 //
-//   LatticeApply<T>::vectorMultiApply(outPt, *pInImage_p, *pMomentCalculator,
-//                                     momentAxis_p, blc_p, trc_p, True,
-//                                     True, "Compute Moments");
+//   LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, *pMomentCalculator,
+//                                   momentAxis_p, blc_p, trc_p, True,
+//                                   True, "Compute Moments");
 //   delete pMomentCalculator;
 //
 // </srcBlock>
@@ -678,14 +685,14 @@ public:
   ~MomentClip();
 
 // This function is not implemented and throws an exception.
-   virtual T collapse(const Vector<T>& vector,
-                      const IPosition& pos);
+   virtual T process(const Vector<T>& vector,
+		     const IPosition& pos);
 
 // This function returns a vector of numbers from each input vector.
 // the output vector contains the moments known to the ImageMoments
 // object passed into the constructor.
-   virtual Vector<T>& multiCollapse(const Vector<T>& vector,
-                                    const IPosition& pos);
+   virtual Vector<T>& multiProcess(const Vector<T>& vector,
+				   const IPosition& pos);
 
 
 private:
@@ -715,14 +722,14 @@ private:
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
-//   <li> <linkto class="VectorCollapser">VectorCollapser</linkto>
+//   <li> <linkto class="LineCollapser">LineCollapser</linkto>
 // </prerequisite>
 //
 // <synopsis>
 //  This concrete class is derived from the abstract base class MomentCalcBase
 //  which provides an interface layer to the ImageMoments driver class.
 //  ImageMoments creates a MomentWindow object and passes it to the LatticeApply
-//  function vectorMultiApply.  This function iterates through a given lattice, 
+//  function lineMultiApply.  This function iterates through a given lattice, 
 //  and invokes the multiCollapse member function of MomentWindow on each profile
 //  of pixels that it extracts from the input lattice.  The multiCollapse function 
 //  returns a vector of moments which are inserted into the output lattices also
@@ -778,9 +785,9 @@ private:
 //  
 //// Iterate optimally through the image, compute the moments, fill the output lattices
 //  
-//   LatticeApply<T>::vectorMultiApply(outPt, *pInImage_p, *pMomentCalculator,  
-//                                     momentAxis_p, blc_p, trc_p, True,
-//                                     True, "Compute Moments");
+//   LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, *pMomentCalculator,  
+//                                   momentAxis_p, blc_p, trc_p, True,
+//                                   True, "Compute Moments");
 //   delete pMomentCalculator;
 //  
 // </srcBlock>
@@ -811,14 +818,14 @@ public:
   ~MomentWindow();
 
 // This function is not implemented and throws an exception.
-   virtual T collapse(const Vector<T>& vector,
-                      const IPosition& pos);
+   virtual T process(const Vector<T>& vector,
+		     const IPosition& pos);
 
 // This function returns a vector of numbers from each input vector.
 // the output vector contains the moments known to the ImageMoments
 // object passed into the constructor.
-   virtual Vector<T>& multiCollapse(const Vector<T>& vector,
-                                    const IPosition& pos);
+   virtual Vector<T>& multiProcess(const Vector<T>& vector,
+				   const IPosition& pos);
 
 private:
 
@@ -846,14 +853,14 @@ private:
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
-//   <li> <linkto class="VectorCollapser">VectorCollapser</linkto>
+//   <li> <linkto class="LineCollapser">LineCollapser</linkto>
 // </prerequisite>
 //
 // <synopsis>
 //  This concrete class is derived from the abstract base class MomentCalcBase
 //  which provides an interface layer to the ImageMoments driver class.  
 //  ImageMoments creates a MomentFit object and passes it to the LatticeApply
-//  function, vectorMultiApply. This function iterates through a given lattice,
+//  function, lineMultiApply. This function iterates through a given lattice,
 //  and invokes the multiCollapse member function of MomentFit on each vector
 //  of pixels that it extracts from the input lattice.  The multiCollapse
 //  function returns a vector of moments which are inserted into the output
@@ -894,9 +901,9 @@ private:
 //
 //// Iterate optimally through the image, compute the moments, fill the output lattices
 //
-//   LatticeApply<T>::vectorMultiApply(outPt, *pInImage_p, *pMomentCalculator,
-//                                     momentAxis_p, blc_p, trc_p, True,
-//                                     True, "Compute Moments"); 
+//   LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, *pMomentCalculator,
+//                                   momentAxis_p, blc_p, trc_p, True,
+//                                   True, "Compute Moments"); 
 //   delete pMomentCalculator;
 // </srcBlock>
 // </example>
@@ -923,14 +930,14 @@ public:
   ~MomentFit();
 
 // This function is not implemented and throws an exception.
-   virtual T collapse(const Vector<T>& vector,
-                      const IPosition& pos);
+   virtual T process(const Vector<T>& vector,
+		     const IPosition& pos);
 
 // This function returns a vector of numbers from each input vector.
 // the output vector contains the moments known to the ImageMoments
 // object passed into the constructor.
-   virtual Vector<T>& multiCollapse(const Vector<T>& vector,
-                                    const IPosition& pos);
+   virtual Vector<T>& multiProcess(const Vector<T>& vector,
+				   const IPosition& pos);
 
 private:
 
