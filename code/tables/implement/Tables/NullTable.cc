@@ -27,7 +27,6 @@
 
 #include <aips/Tables/NullTable.h>
 #include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
 
@@ -35,8 +34,7 @@
 NullTable::NullTable()
 : BaseTable ("Null table object", Table::Old, 0)
 {
-  tdescPtr_p = new TableDesc();
-  delete_p   = False;
+  delete_p = False;
 }
 
 NullTable::~NullTable()
