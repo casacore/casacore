@@ -79,8 +79,9 @@
 //   <li> Nothing I know of
 // </todo>
 
-template<class T> class EvenPolynomial: public EvenPolynomialParam<T> {
- public:
+template<class T> class EvenPolynomial: public EvenPolynomialParam<T>
+{
+public:
   //# Enumerations
   
   //# Constructors
@@ -111,6 +112,11 @@ template<class T> class EvenPolynomial: public EvenPolynomialParam<T> {
   virtual Function<T> *clone() const { return new EvenPolynomial<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using EvenPolynomialParam<T>::param_p;
+public:
+  using EvenPolynomialParam<T>::nparameters;
 };
 
 #define EvenPolynomial_PS EvenPolynomial
@@ -124,8 +130,9 @@ template<class T> class EvenPolynomial: public EvenPolynomialParam<T> {
 // </synopsis>
 
 template <class T> class EvenPolynomial_PS<AutoDiff<T> > : 
-public EvenPolynomialParam<AutoDiff<T> > {
- public:
+public EvenPolynomialParam<AutoDiff<T> >
+{
+public:
   //# Constructors
   // Constructs one dimensional EvenPolynomials.
   // <group>
@@ -161,6 +168,11 @@ public EvenPolynomialParam<AutoDiff<T> > {
     return new EvenPolynomial<AutoDiff<T> >(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using EvenPolynomialParam<AutoDiff<T> >::param_p;
+public:
+  using EvenPolynomialParam<AutoDiff<T> >::nparameters;
 };
 
 #undef EvenPolynomial_PS

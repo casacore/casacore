@@ -130,8 +130,9 @@
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class Gaussian1D : public Gaussian1DParam<T> {
- public:
+template<class T> class Gaussian1D : public Gaussian1DParam<T>
+{
+public:
   //# Enumerations
   
   //# Constructors
@@ -171,7 +172,16 @@ template<class T> class Gaussian1D : public Gaussian1DParam<T> {
   virtual Function<T> *clone() const { return new Gaussian1D<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using Gaussian1DParam<T>::param_p;
+public:
+  using Gaussian1DParam<T>::HEIGHT;
+  using Gaussian1DParam<T>::CENTER;
+  using Gaussian1DParam<T>::WIDTH;
+  using Gaussian1DParam<T>::fwhm2int;
 };
+
 
 #define Gaussian1D_PS Gaussian1D
 
@@ -184,8 +194,9 @@ template<class T> class Gaussian1D : public Gaussian1DParam<T> {
 // </synopsis>
 
 template <class T> class Gaussian1D_PS<AutoDiff<T> > : 
-public Gaussian1DParam<AutoDiff<T> > {
- public:
+public Gaussian1DParam<AutoDiff<T> >
+{
+public:
   //# Constructors
   // Constructs one dimensional Gaussians.
   // <group>
@@ -225,6 +236,14 @@ public Gaussian1DParam<AutoDiff<T> > {
     return new Gaussian1D<AutoDiff<T> >(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using Gaussian1DParam<AutoDiff<T> >::param_p;
+public:
+  using Gaussian1DParam<AutoDiff<T> >::HEIGHT;
+  using Gaussian1DParam<AutoDiff<T> >::CENTER;
+  using Gaussian1DParam<AutoDiff<T> >::WIDTH;
+  using Gaussian1DParam<AutoDiff<T> >::fwhm2int;
 };
 
 #undef Gaussian1D_PS

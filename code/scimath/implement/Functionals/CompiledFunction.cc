@@ -41,17 +41,17 @@ template<class T>
 T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   String error_p = "";
   T res(0);
-  if (!functionPtr_p) {
+  if (!this->functionPtr_p) {
     error_p = "No CompiledFunction specified";
     return res;
   };
   vector<T> exec_p;
   exec_p.resize(0);
   vector<Double>::const_iterator
-    constp = functionPtr_p->getConst().begin();
+    constp = this->functionPtr_p->getConst().begin();
   for (vector<FuncExprData::ExprOperator>::const_iterator
-	 pos=functionPtr_p->getCode().begin();
-       pos != functionPtr_p->getCode().end(); pos++) {
+	 pos = this->functionPtr_p->getCode().begin();
+       pos != this->functionPtr_p->getCode().end(); pos++) {
     T t(0);
     if (pos->narg == 2 ||
 	(pos->code == FuncExprData::ATAN && pos->state.argcnt == 2)) {
@@ -106,7 +106,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       exec_p.push_back(T(constp[pos->info]));
       break;
     case FuncExprData::PARAM:
-      exec_p.push_back(T(param_p[pos->info]));
+      exec_p.push_back(T(this->param_p[pos->info]));
       break;
     case FuncExprData::ARG:
       exec_p.push_back(T(x[pos->info]));
@@ -123,18 +123,18 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       break;
     case FuncExprData::GOTO:
       pos += pos->info -
-	(static_cast<uInt>(pos-functionPtr_p->getCode().begin())+1);
+	(static_cast<uInt>(pos-this->functionPtr_p->getCode().begin())+1);
       break;
     case FuncExprData::GOTOF:
       if (exec_p.back() == T(0.0)) {
 	pos += pos->info -
-	  (static_cast<uInt>(pos-functionPtr_p->getCode().begin())+1);
+	  (static_cast<uInt>(pos-this->functionPtr_p->getCode().begin())+1);
       };
       break;
     case FuncExprData::GOTOT:
       if (exec_p.back() != T(0.0)) {
 	pos += pos->info -
-	  (static_cast<uInt>(pos-functionPtr_p->getCode().begin())+1);
+	  (static_cast<uInt>(pos-this->functionPtr_p->getCode().begin())+1);
       };
       break;
 

@@ -81,8 +81,9 @@
 // </thrown>
 //
 
-template<class T> class UnaryFunction : public UnaryParam<T> {
- public:
+template<class T> class UnaryFunction : public UnaryParam<T>
+{
+public:
   //# Constructors
   // Constructs the UnaryFunction, Defaults:
   // height=1, center=0, width=1.
@@ -122,6 +123,14 @@ template<class T> class UnaryFunction : public UnaryParam<T> {
   virtual Function<T> *clone() const { return new UnaryFunction<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using UnaryParam<T>::param_p;
+public:
+  using UnaryParam<T>::nparameters;
+  using UnaryParam<T>::CENTER;
+  using UnaryParam<T>::WIDTH;
+  using UnaryParam<T>::HEIGHT;
 };
 
 #endif

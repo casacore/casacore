@@ -125,14 +125,14 @@ int main() {
     cheb.setDefault(5);
     AlwaysAssertExit(5 == cheb.getDefault());
     AlwaysAssertExit(cheb(xmin-1) == cheb.getDefault());
-    cheb.setOutOfIntervalMode(Chebyshev<Double>::EXTRAPOLATE);
+    cheb.setOutOfIntervalMode(ChebyshevEnums::EXTRAPOLATE);
     AlwaysAssertExit(cheb(xmin-0.2) != cheb.getDefault());
     xp = (2*(xmin-0.2)-xmin-xmax)/(xmax-xmin);
 #ifdef DIAGNOSTICS
     cout << xmin-0.2 << ": cheb-poly=" << cheb(xmin-0.2)-poly(xp) << endl;
 #endif
     AlwaysAssertExit(nearAbs(cheb(xmin-0.2), poly(xp), 1.0e-14));
-    cheb.setOutOfIntervalMode(Chebyshev<Double>::CYCLIC);
+    cheb.setOutOfIntervalMode(ChebyshevEnums::CYCLIC);
 #ifdef DIAGNOSTICS
     cout << xmin-1.3 << ": cheb(-1.3)-cheb(2.7)=" 
 	 << cheb(xmin-1.3)-cheb(xmin-1.3+(xmax-xmin)) << endl;
@@ -145,7 +145,7 @@ int main() {
 #endif
     AlwaysAssertExit(nearAbs(cheb(xmax+1.3),
 			     cheb(xmax+1.3-(xmax-xmin)), 1.0e-15));
-    cheb.setOutOfIntervalMode(Chebyshev<Double>::ZEROTH);
+    cheb.setOutOfIntervalMode(ChebyshevEnums::ZEROTH);
     cheb.setCoefficient(0, 1);
     AlwaysAssertExit(cheb(xmax+1) == cheb.getCoefficient(0));
 
@@ -169,7 +169,7 @@ int main() {
 	 << "  Default: " << cheb.getDefault() << endl;
 #endif
     AlwaysAssertExit(cheb.getOutOfIntervalMode() == 
-		         Chebyshev<Double>::CYCLIC  &&
+		         ChebyshevEnums::CYCLIC  &&
                      cheb.getIntervalMin() == -10.0 &&
 		     cheb.getIntervalMax() ==  10.0 &&
 	             cheb.getDefault() == 80.0);
@@ -177,7 +177,7 @@ int main() {
     // test setMode() via constructor
     Chebyshev<Double> cheb2(2, rec);
     AlwaysAssertExit(cheb2.getOutOfIntervalMode() == 
-		         Chebyshev<Double>::CYCLIC  &&
+		         ChebyshevEnums::CYCLIC  &&
                      cheb2.getIntervalMin() == -10.0 &&
 		     cheb2.getIntervalMax() ==  10.0 &&
 	             cheb2.getDefault() == 80.0);
@@ -186,7 +186,7 @@ int main() {
     Record rec2;
     cheb.setInterval(-15.0, 15.0);
     cheb.setDefault(70.0);
-    cheb.setOutOfIntervalMode(Chebyshev<Double>::ZEROTH);
+    cheb.setOutOfIntervalMode(ChebyshevEnums::ZEROTH);
     cheb.getMode(rec2);
 
     try {

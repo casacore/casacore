@@ -72,13 +72,13 @@ Bool CompiledParam<T>::setFunction(const String &newFunction) {
   msg_p = "";
   text_p = "";
   if (!functionPtr_p->create(newFunction)) {
-    param_p = FunctionParam<T>(0);
+    this->param_p = FunctionParam<T>(0);
     msg_p = functionPtr_p->errorMessage();
     delete functionPtr_p; functionPtr_p=0;
     return False;
   };
   ndim_p = functionPtr_p->getNdim();
-  param_p = FunctionParam<T>(functionPtr_p->getNpar());
+  this->param_p = FunctionParam<T>(functionPtr_p->getNpar());
   text_p = newFunction;
   return True;
 }

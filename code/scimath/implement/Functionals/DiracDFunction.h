@@ -80,8 +80,9 @@
 // </thrown>
 //
 
-template<class T> class DiracDFunction : public DiracDParam<T> {
- public:
+template<class T> class DiracDFunction : public DiracDParam<T>
+{
+public:
   //# Constructors
   // Constructs the DiracDFunction, Defaults:
   // height=1, center=0.
@@ -119,6 +120,13 @@ template<class T> class DiracDFunction : public DiracDParam<T> {
   virtual Function<T> *clone() const { return new DiracDFunction<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using DiracDParam<T>::param_p;
+public:
+  using DiracDParam<T>::nparameters;
+  using DiracDParam<T>::HEIGHT;
+  using DiracDParam<T>::CENTER;
 };
 
 #endif

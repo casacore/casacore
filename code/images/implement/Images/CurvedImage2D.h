@@ -231,6 +231,12 @@ private:
   //# itsImagePtr points to the parent image.
   ImageInterface<T>*  itsImagePtr;
   CurvedLattice2D<T>* itsCurLatPtr;
+
+  //# Make members of parent class known.
+public:
+  using ImageInterface<T>::logger;
+protected:
+  using ImageInterface<T>::setCoordsMember;
 };
 
 

@@ -173,8 +173,9 @@
 //  <li> Nothing I know off, apart from possible optimization
 // </todo>
 
-template<class T> class GaussianND : public GaussianNDParam<T> {
-  public:
+template<class T> class GaussianND : public GaussianNDParam<T>
+{
+public:
   //# Constructors
   // Makes a Gaussian using the indicated height, mean, variance &
   // covariance.
@@ -220,6 +221,13 @@ template<class T> class GaussianND : public GaussianNDParam<T> {
   // deleting this pointer.
   virtual Function<T> *clone() const { return new GaussianND<T>(*this); };
 
+  //# Make members of parent classes known.
+protected:
+  using GaussianNDParam<T>::param_p;
+  using GaussianNDParam<T>::itsDim;
+public:
+  using GaussianNDParam<T>::HEIGHT;
+  using GaussianNDParam<T>::CENTER;
 };
 
 #endif

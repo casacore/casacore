@@ -176,8 +176,9 @@
 //  <li> Nothing I know off, apart from possible optimization
 // </todo>
 
-template<class T> class GaussianNDParam : public Function<T> {
- public:
+template<class T> class GaussianNDParam : public Function<T>
+{
+public:
   //# Enumerations
   enum { HEIGHT=0, CENTER};
 
@@ -262,6 +263,12 @@ protected:
   void repack(Matrix<T> &covar) const;
   void unpack(const Matrix<T> &covar);
   // </group>
+
+  //# Make members of parent classes known.
+protected:
+  using Function<T>::param_p;
+public:
+  using Function<T>::nparameters;
 };
 
 #endif

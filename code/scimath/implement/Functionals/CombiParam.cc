@@ -76,7 +76,7 @@ uInt CombiParam<T>::addFunction(const Function<T> &newFunction) {
   functionPtr_p[i] = newFunction.clone();
   ndim_p = (*(functionPtr_p[i])).ndim();
   // Set parameters
-  param_p = FunctionParam<T>(i+1);
-  for (uInt j=0; j<i+1; ++j) param_p[j] = T(1.0);
+  this->param_p = FunctionParam<T>(i+1);
+  for (uInt j=0; j<i+1; ++j) this->param_p[j] = T(1.0);
   return i;
 }

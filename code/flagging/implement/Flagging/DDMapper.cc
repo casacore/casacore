@@ -50,6 +50,16 @@ Float DDFunc::map ( const Cube<Complex> &vis,uInt ich,uInt irow ) const
   return (*func)( vis(icorr,ich,irow) ); 
 }
 
+Float DDFunc::real ( const Complex &val)
+{
+  return val.real();
+}
+
+Float DDFunc::imag ( const Complex &val)
+{
+  return val.imag();
+}
+
 DDSumFunc::DDSumFunc( FuncSignature fsig,const String &corr1,const String &corr2 )
   : DDFunc(fsig,corr1),icorr2(-1)
 {
@@ -131,9 +141,9 @@ DDFunc::FuncSignature DDFunc::getFunction ( const String &func )
   const struct { const char *name; DDFunc::FuncSignature func; } func_map[] = 
   { { "ABS", std::abs },
     { "ARG", std::arg },
-    { "RE" , std::real },
-    { "IM" , std::imag },
-    { "RE" , std::real },
+    { "RE" , DDFunc::real },
+    { "IM" , DDFunc::imag },
+    { "RE" , DDFunc::real },
     { "NORM" , std::norm }
   };
   const uInt num_func_map = sizeof(func_map)/sizeof(func_map[0]);

@@ -9,4 +9,4 @@
 ################################################################################
 # tFitGaussian
 1000 scimath/Fitting/FitGaussian.cc 
-     template FitGaussian<Double> 
+     template class FitGaussian<Double> 

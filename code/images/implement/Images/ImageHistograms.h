@@ -190,12 +190,19 @@ public:
    Bool setNewImage (const ImageInterface<T>& image);
 
 private:
-
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
 
    // Make a string with pixel and world coordinates of display axes
    virtual String writeCoordinates(const IPosition& histPos) const;
+
+  //# Make members of parent class known.
+protected:
+  using LatticeHistograms<T>::locHistInLattice;
+  using LatticeHistograms<T>::error_p;
+  using LatticeHistograms<T>::goodParameterStatus_p;
+  using LatticeHistograms<T>::displayAxes_p;
+  using LatticeHistograms<T>::cursorAxes_p;
 };
 
 

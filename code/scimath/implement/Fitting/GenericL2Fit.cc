@@ -165,7 +165,7 @@ setConstraint(const uInt n,
   delete constrVal_p[n]; constrVal_p[n] = 0;
   constrVal_p[n] = new typename FunctionTraits<T>::BaseType(y);
   for (uInt i=0; i<pCount_p; ++i) {
-    (*constrFun_p[n])[i] = FunctionTraits<T>::DiffType
+    (*constrFun_p[n])[i] = typename FunctionTraits<T>::DiffType
       ((*constrFun_p[n])[i].value(), pCount_p, i);
   };
   return True;
@@ -494,10 +494,10 @@ void GenericL2Fit<T>::initfit_p(uInt parcnt) {
     fsol_p.resize(pCount_p);
     err_p.resize(aCount_ai);
     ferr_p.resize(pCount_p);
-    valder_p = FunctionTraits<T>::DiffType(0, pCount_p);
+    valder_p = typename FunctionTraits<T>::DiffType(0, pCount_p);
     if (ptr_derive_p) {
       for (uInt i=0; i<pCount_p; ++i) {
-	(*ptr_derive_p)[i] = FunctionTraits<T>::DiffType
+	(*ptr_derive_p)[i] = typename FunctionTraits<T>::DiffType
 	  ((*ptr_derive_p)[i].value(), pCount_p, i);
       };
     };
@@ -577,8 +577,8 @@ buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
   for (uInt i=0; i<nrows; i++) {
     if (mask && !((*mask)[i])) continue;
     if (sigma) {
-      if ((*sigma)[i] == FunctionTraits<T>::BaseType(0) ||
-	  (*sigma)[i] == FunctionTraits<T>::BaseType(-1)) continue;
+      if ((*sigma)[i] == typename FunctionTraits<T>::BaseType(0) ||
+	  (*sigma)[i] == typename FunctionTraits<T>::BaseType(-1)) continue;
       sig = (*sigma)[i];
       if (!asweight_p) {
 	sig = abs(typename FunctionTraits<T>::BaseType(1.0)/sig); 

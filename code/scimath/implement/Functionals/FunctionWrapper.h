@@ -79,8 +79,9 @@ template <class T> class WrapperBase;
 //
 
 template <class T>
-class FunctionWrapper : public WrapperParam<T> {
- public:
+class FunctionWrapper : public WrapperParam<T>
+{
+public:
   //# Constructors
   // Default constructor, to enable arrays
   FunctionWrapper();
@@ -131,10 +132,14 @@ class FunctionWrapper : public WrapperParam<T> {
     return new FunctionWrapper<T>(*this); };
   // </group>
 
- protected:
+protected:
   //# Data
   // The function aid object
   WrapperBase<T> *doit_p;
+
+  //# Make members of parent classes known.
+protected:
+  using WrapperParam<T>::param_p;
 };
 
 #endif

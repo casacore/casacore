@@ -36,10 +36,10 @@
 #include <scimath/Functionals/Gaussian1D.h>
 #include <scimath/Mathematics/NumericTraits.h>
 #include <casa/System/PGPlotter.h>
-#include <images/Images/SubImage.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Logging/LogIO.h>
 
 //# Forward Declarations
-template <class T> class Vector;
 template <class T> class ImageMoments;
 
 // <summary>
@@ -140,7 +140,7 @@ public:
    virtual ~MomentCalcBase();
 
 // Returns the number of failed fits if doing fitting
-   virtual uInt nFailedFits() const {return nFailed_p;};
+   virtual uInt nFailedFits() const;
 
 protected:
 
@@ -221,38 +221,7 @@ protected:
                   T& dMax,   
                   const Int i,  
                   const T datum,
-                  const Double coord) const
-//
-// Accumulate statistical sums from this datum
-//
-// Input:
-//  i              Index
-//  datum          Pixel value
-//  coord          Coordinate value on moment axis
-// Input/output:  
-//  iMin,max       index of dMin and dMax
-//  dMin,dMax      minimum and maximum value
-// Output:
-//  s0             sum (I)
-//  s0Sq           sum (I*I)
-//  s1             sum (I*v)
-//  s2             sum (I*v*v)
-{
-   typename NumericTraits<T>::PrecisionType dDatum = datum;
-   s0 += dDatum;
-   s0Sq += dDatum*dDatum;
-   s1 += dDatum*coord;
-   s2 += dDatum*coord*coord;
-   if (datum < dMin) {
-     iMin = i;
-     dMin = datum;
-   }
-   if (datum > dMax) {
-     iMax = i;
-     dMax = datum;
-   }
-};
-
+                  const Double coord) const;
 
 // Determine if the spectrum is pure noise 
    uInt allNoise(T& dMean,
@@ -268,11 +237,10 @@ protected:
                          const uInt nLatticeOut) const;
 
 // Convert from <T> to <Float> for plotting
-   static Float convertT(const T value) {return ImageMoments<T>::convertT(value);};
-
+   static Float convertT(const T value);
 
 // Convert from <Float> (from plotting) to a <T> 
-   static T convertF(const Float value) {return ImageMoments<T>::convertF(value);};
+   static T convertF(const Float value);
 
 // Find out from the selectMoments array whether we want
 // to compute the more expensive moments
@@ -323,7 +291,6 @@ protected:
    void drawMeanSigma  (const T dMean,
                         const T dSigma,
                         PGPlotter& plotter) const;
-
 
 // Draw a vertical line of the given length at a given abcissa
    void drawVertical(const T x,
@@ -428,30 +395,7 @@ protected:
    Double getMomentCoord(ImageMoments<T>& iMom,
                          Vector<Double>& pixelIn,
                          Vector<Double>& worldOut,
-                         const Double momentPixel) const
-// 
-// Find the value of the world coordinate on the moment axis
-// for the given moment axis pixel value. 
-//
-// Input
-//   momentPixel   is the index in the profile extracted from the data
-// Input/output
-//   pixelIn       Pixels to convert.  Must all be filled in except for
-//                 pixelIn(momentPixel).
-//   worldOut      Vector to hold result
-//
-// Should really return a Fallible as I don't check and see
-// if the coordinate transformation fails or not
-//
-{
-   pixelIn(iMom.momentAxis_p) = momentPixel;
-// 
-// Should really check the result is True, but for speed ...
-//
-   cSys_p.toWorld(worldOut, pixelIn);
-   return worldOut(iMom.worldMomentAxis_p);
-};
-
+                         const Double momentPixel) const;
 
 // Examine a mask and determine how many segments of unmasked points
 // it consists of.    
@@ -509,95 +453,7 @@ protected:
                         T dMin,
                         T dMax,
                         Int iMin,
-                        Int iMax) const
-//
-// Fill the moments vector
-//
-// Inputs
-//   integratedScaleFactor  width of a channel in km/s or Hz or whatever
-// Outputs:
-//   calcMoments The moments
-//
-{
-	
-// Short hand to fish ImageMoments enum values out   
-// Despite being our friend, we cannot refer to the
-// enum values as just, say, "AVERAGE"
-     
-   typedef ImageMoments<Float> IM;
-           
-             
-// Normalize and fill moments
-
-   calcMomentsMask = True;
-   calcMoments(IM::AVERAGE) = s0 / nPts;
-   calcMoments(IM::INTEGRATED) = s0 * integratedScaleFactor; 
-   if (abs(s0) > 0.0) {
-      calcMoments(IM::WEIGHTED_MEAN_COORDINATE) = s1 / s0;
-//
-      calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 
-        (s2 / s0) - calcMoments(IM::WEIGHTED_MEAN_COORDINATE) *
-                    calcMoments(IM::WEIGHTED_MEAN_COORDINATE);
-      calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
-         abs(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
-      if (calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) > 0.0) {
-         calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
-            sqrt(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
-      } else {
-         calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 0.0;
-         calcMomentsMask(IM::WEIGHTED_DISPERSION_COORDINATE) = False;
-      }
-   } else {
-      calcMomentsMask(IM::WEIGHTED_MEAN_COORDINATE) = False;
-      calcMomentsMask(IM::WEIGHTED_DISPERSION_COORDINATE) = False;
-   }
-
-
-// Standard deviation about mean of I
-                 
-   if (nPts>1 && Float((s0Sq - s0*s0/nPts)/(nPts-1)) > 0) {
-      calcMoments(IM::STANDARD_DEVIATION) = sqrt((s0Sq - s0*s0/nPts)/(nPts-1));
-   } else {
-      calcMoments(IM::STANDARD_DEVIATION) = 0;
-      calcMomentsMask(IM::STANDARD_DEVIATION) = False;
-   }
-
-// Rms of I
-
-   calcMoments(IM::RMS) = sqrt(s0Sq/nPts);
-     
-// Absolute mean deviation
-
-   calcMoments(IM::ABS_MEAN_DEVIATION) = sumAbsDev / nPts;
-
-// Maximum value
-
-   calcMoments(IM::MAXIMUM) = dMax;
-                                      
-// Coordinate of min/max value
-
-   if (doCoord) {
-      calcMoments(IM::MAXIMUM_COORDINATE) =
-           getMomentCoord(iMom, pixelIn, worldOut, Double(iMax));                                     
-      calcMoments(IM::MINIMUM_COORDINATE) =
-           getMomentCoord(iMom, pixelIn, worldOut, Double(iMin));
-   } else {
-      calcMoments(IM::MAXIMUM_COORDINATE) = 0.0;
-      calcMoments(IM::MINIMUM_COORDINATE) = 0.0;
-      calcMomentsMask(IM::MAXIMUM_COORDINATE) = False;
-      calcMomentsMask(IM::MINIMUM_COORDINATE) = False;
-   }
-
-// Minimum value
-   calcMoments(IM::MINIMUM) = dMin;
-
-// Medians
-
-   calcMoments(IM::MEDIAN) = dMedian;
-   calcMoments(IM::MEDIAN_COORDINATE) = vMedian;
-};
-
-
+                        Int iMax) const;
 
 // Fill a string with the position of the cursor
    void setPosLabel(String& title,
@@ -785,6 +641,31 @@ private:
    Vector<T> range_p;
    IPosition sliceShape_p;
 
+
+  //# Make members of parent class known.
+protected:
+  using MomentCalcBase<T>::constructorCheck;
+  using MomentCalcBase<T>::setPosLabel;
+  using MomentCalcBase<T>::selectMoments_p;
+  using MomentCalcBase<T>::calcMoments_p;
+  using MomentCalcBase<T>::calcMomentsMask_p;
+  using MomentCalcBase<T>::fixedYLimits_p;
+  using MomentCalcBase<T>::yMinAuto_p;
+  using MomentCalcBase<T>::yMaxAuto_p;
+  using MomentCalcBase<T>::doMedianI_p;
+  using MomentCalcBase<T>::doMedianV_p;
+  using MomentCalcBase<T>::doAbsDev_p;
+  using MomentCalcBase<T>::plotter_p;
+  using MomentCalcBase<T>::cSys_p;
+  using MomentCalcBase<T>::doCoordProfile_p;
+  using MomentCalcBase<T>::doCoordRandom_p;
+  using MomentCalcBase<T>::pixelIn_p;
+  using MomentCalcBase<T>::worldOut_p;
+  using MomentCalcBase<T>::sepWorldCoord_p;
+  using MomentCalcBase<T>::integratedScaleFactor_p;
+  using MomentCalcBase<T>::momAxisType_p;
+  using MomentCalcBase<T>::nFailed_p;
+  using MomentCalcBase<T>::abcissa_p;
 };
 
 
@@ -1006,6 +887,32 @@ private:
                         const Int nPts,
                         const Int N) const;
 
+
+  //# Make members of parent class known.
+protected:
+  using MomentCalcBase<T>::constructorCheck;
+  using MomentCalcBase<T>::setPosLabel;
+  using MomentCalcBase<T>::convertF;
+  using MomentCalcBase<T>::selectMoments_p;
+  using MomentCalcBase<T>::calcMoments_p;
+  using MomentCalcBase<T>::calcMomentsMask_p;
+  using MomentCalcBase<T>::fixedYLimits_p;
+  using MomentCalcBase<T>::yMinAuto_p;
+  using MomentCalcBase<T>::yMaxAuto_p;
+  using MomentCalcBase<T>::doMedianI_p;
+  using MomentCalcBase<T>::doMedianV_p;
+  using MomentCalcBase<T>::doAbsDev_p;
+  using MomentCalcBase<T>::plotter_p;
+  using MomentCalcBase<T>::cSys_p;
+  using MomentCalcBase<T>::doCoordProfile_p;
+  using MomentCalcBase<T>::doCoordRandom_p;
+  using MomentCalcBase<T>::pixelIn_p;
+  using MomentCalcBase<T>::worldOut_p;
+  using MomentCalcBase<T>::sepWorldCoord_p;
+  using MomentCalcBase<T>::integratedScaleFactor_p;
+  using MomentCalcBase<T>::momAxisType_p;
+  using MomentCalcBase<T>::nFailed_p;
+  using MomentCalcBase<T>::abcissa_p;
 };
 
 
@@ -1123,6 +1030,126 @@ private:
    Bool doAuto_p, doFit_p;
    Gaussian1D<T> gauss_p;
 
+
+  //# Make members of parent class known.
+protected:
+  using MomentCalcBase<T>::constructorCheck;
+  using MomentCalcBase<T>::setPosLabel;
+  using MomentCalcBase<T>::convertF;
+  using MomentCalcBase<T>::selectMoments_p;
+  using MomentCalcBase<T>::calcMoments_p;
+  using MomentCalcBase<T>::calcMomentsMask_p;
+  using MomentCalcBase<T>::fixedYLimits_p;
+  using MomentCalcBase<T>::yMinAuto_p;
+  using MomentCalcBase<T>::yMaxAuto_p;
+  using MomentCalcBase<T>::doMedianI_p;
+  using MomentCalcBase<T>::doMedianV_p;
+  using MomentCalcBase<T>::doAbsDev_p;
+  using MomentCalcBase<T>::plotter_p;
+  using MomentCalcBase<T>::cSys_p;
+  using MomentCalcBase<T>::doCoordProfile_p;
+  using MomentCalcBase<T>::doCoordRandom_p;
+  using MomentCalcBase<T>::pixelIn_p;
+  using MomentCalcBase<T>::worldOut_p;
+  using MomentCalcBase<T>::sepWorldCoord_p;
+  using MomentCalcBase<T>::integratedScaleFactor_p;
+  using MomentCalcBase<T>::momAxisType_p;
+  using MomentCalcBase<T>::nFailed_p;
+  using MomentCalcBase<T>::abcissa_p;
 };
+
+
+template<class T>
+inline uInt MomentCalcBase<T>::nFailedFits() const
+{
+  return nFailed_p;
+}
+
+// Accumulate statistical sums from a vector
+template<class T>
+inline void MomentCalcBase<T>::accumSums
+                 (typename NumericTraits<T>::PrecisionType& s0,
+                  typename NumericTraits<T>::PrecisionType& s0Sq,
+                  typename NumericTraits<T>::PrecisionType& s1,
+                  typename NumericTraits<T>::PrecisionType& s2,
+                  Int& iMin,
+                  Int& iMax,
+                  T& dMin,
+                  T& dMax,   
+                  const Int i,  
+                  const T datum,
+                  const Double coord) const
+//
+// Accumulate statistical sums from this datum
+//
+// Input:
+//  i              Index
+//  datum          Pixel value
+//  coord          Coordinate value on moment axis
+// Input/output:  
+//  iMin,max       index of dMin and dMax
+//  dMin,dMax      minimum and maximum value
+// Output:
+//  s0             sum (I)
+//  s0Sq           sum (I*I)
+//  s1             sum (I*v)
+//  s2             sum (I*v*v)
+{
+   typename NumericTraits<T>::PrecisionType dDatum = datum;
+   s0 += dDatum;
+   s0Sq += dDatum*dDatum;
+   s1 += dDatum*coord;
+   s2 += dDatum*coord*coord;
+   if (datum < dMin) {
+     iMin = i;
+     dMin = datum;
+   }
+   if (datum > dMax) {
+     iMax = i;
+     dMax = datum;
+   }
+}
+
+template<class T>
+inline Float MomentCalcBase<T>::convertT(const T value)
+{
+  return ImageMoments<T>::convertT(value);
+}
+
+template<class T>
+inline T MomentCalcBase<T>::convertF(const Float value)
+{
+  return ImageMoments<T>::convertF(value);
+}
+
+// Compute the world coordinate for the given moment axis pixel   
+template<class T>
+inline Double MomentCalcBase<T>::getMomentCoord(ImageMoments<T>& iMom,
+						Vector<Double>& pixelIn,
+						Vector<Double>& worldOut,
+						const Double momentPixel) const
+// 
+// Find the value of the world coordinate on the moment axis
+// for the given moment axis pixel value. 
+//
+// Input
+//   momentPixel   is the index in the profile extracted from the data
+// Input/output
+//   pixelIn       Pixels to convert.  Must all be filled in except for
+//                 pixelIn(momentPixel).
+//   worldOut      Vector to hold result
+//
+// Should really return a Fallible as I don't check and see
+// if the coordinate transformation fails or not
+//
+{
+   pixelIn(iMom.momentAxis_p) = momentPixel;
+// 
+// Should really check the result is True, but for speed ...
+//
+   cSys_p.toWorld(worldOut, pixelIn);
+   return worldOut(iMom.worldMomentAxis_p);
+}
+
 
 #endif

@@ -46,9 +46,9 @@
 //
 //
 // Define static members of MathFunc<T>
-// (for g++ they are defined in MathFunc2.cc)
+// (for g++ 3.3 and lower they are defined in MathFunc2.cc)
 //
-#if !defined(__GNUG__)
+#if !defined(__GNUC__) || __GNUC__>3 || (__GNUC__==3 && __GNUC_MINOR__>3)
 template<class T>
 T MathFunc<T>::defcutoff_p = T(2.0);
 template<class T>

@@ -109,8 +109,9 @@
 //    <li> Assertion in debug mode if operator(Vector<>) with empty Vector
 // </thrown>
 
-template<class T> class Sinusoid1D : public Sinusoid1DParam<T> {
- public:
+template<class T> class Sinusoid1D : public Sinusoid1DParam<T>
+{
+public:
   //# Enumerations
   
   //# Constructors
@@ -152,7 +153,16 @@ template<class T> class Sinusoid1D : public Sinusoid1DParam<T> {
   virtual Function<T> *clone() const { return new Sinusoid1D<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using Sinusoid1DParam<T>::param_p;
+public:
+  using Sinusoid1DParam<T>::nparameters;
+  using Sinusoid1DParam<T>::AMPLITUDE;
+  using Sinusoid1DParam<T>::PERIOD;
+  using Sinusoid1DParam<T>::X0;
 };
+
 
 #define Sinusoid1D_PS Sinusoid1D
 // <summary> Partial specialization of Sinusoid1D for <src>AutoDiff</src>
@@ -164,8 +174,9 @@ template<class T> class Sinusoid1D : public Sinusoid1DParam<T> {
 // </synopsis>
 
 template <class T> class Sinusoid1D_PS<AutoDiff<T> > :
-public Sinusoid1DParam<AutoDiff<T> > {
- public:
+public Sinusoid1DParam<AutoDiff<T> >
+{
+public:
   //# Constructors
   // Constructs one dimensional Sinusoids.
   // <group>
@@ -206,8 +217,16 @@ public Sinusoid1DParam<AutoDiff<T> > {
     return new Sinusoid1D<AutoDiff<T> >(*this); };
   // </group>
 
+protected:
+  //# Make members of parent classes known.
+  using Sinusoid1DParam<AutoDiff<T> >::param_p;
+  using Sinusoid1DParam<AutoDiff<T> >::nparameters;
+  using Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE;
+  using Sinusoid1DParam<AutoDiff<T> >::PERIOD;
+  using Sinusoid1DParam<AutoDiff<T> >::X0;
 };
 
 #undef Sinusoid1D_PS
+
 
 #endif

@@ -262,11 +262,11 @@ template <class T> class AutoDiff;
 template <class T> class AutoDiff {
  public:
   //# Typedefs
-  typedef T 					value_type;
-  typedef AutoDiff<T>::value_type&		reference;
-  typedef const AutoDiff<T>::value_type&	const_reference;
-  typedef AutoDiff<T>::value_type*		iterator;
-  typedef const AutoDiff<T>::value_type*	const_iterator;
+  typedef T 			value_type;
+  typedef value_type&		reference;
+  typedef const value_type&	const_reference;
+  typedef value_type*		iterator;
+  typedef const value_type*	const_iterator;
 
   //# Constructors
   // Construct a constant with a value of zero.  Zero derivatives.

@@ -36,9 +36,9 @@
 // </summary>
 
 template <class Domain, class Range>
-class NNGridder : public Gridder<Domain, Range> {
+class NNGridder : public Gridder<Domain, Range>
+{
 public:
-
   NNGridder(const IPosition& shape, const Vector<Domain>& scale,
 	    const Vector<Domain>& offset);
 
@@ -53,9 +53,15 @@ public:
 		      Range& value);
 
 protected:
-
   virtual Range correctionFactor1D(Int loc, Int len);
 
   Vector<Int> loc;
+
+protected:
+  //# Make members of parent classes known.
+  using Gridder<Domain,Range>::ndim;
+  using Gridder<Domain,Range>::offsetVec;
+  using Gridder<Domain,Range>::fillCorrectionVectors;
+  using Gridder<Domain,Range>::onGrid;
 };
 #endif

@@ -189,8 +189,9 @@ template<class T> class Vector;
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class Gaussian2DParam : public Function<T> {
- public:
+template<class T> class Gaussian2DParam : public Function<T>
+{
+public:
   //# Enumerations
   enum { HEIGHT=0, XCENTER, YCENTER, YWIDTH, RATIO, PANGLE};
   
@@ -276,6 +277,12 @@ protected:
   // </group>
   // cached vale of the Xwidth = ratio*theYwidth;
   mutable T theXwidth;
+
+  //# Make members of parent classes known.
+protected:
+  using Function<T>::param_p;
+public:
+  using Function<T>::nparameters;
 };
 
 #endif

@@ -138,7 +138,7 @@ typename FunctionHolder<T>::Types FunctionHolder<T>::type() const {
 
 template <class T>
 void FunctionHolder<T>::init() const {
-  static FunctionHolder<T>::FuncStat fnc[N_Types] = {
+  static FuncStat fnc[N_Types] = {
     { String("gaussian1d"), GAUSSIAN1D,
 	False},
       { String("gaussian2d"), GAUSSIAN2D,
@@ -263,7 +263,7 @@ Bool FunctionHolder<T>::fromString(String &error,
   Int nf;
   init();
   nf = MUString::minimaxNC(in, nam_p);
-  nf_p = static_cast<FunctionHolder<T>::Types>(nf);
+  nf_p = static_cast<Types>(nf);
   Function<T> *fn(0);
   if (getType(error, fn)) {
     hold_p.set(fn);
@@ -405,7 +405,7 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
   } else {
     in.get(RecordFieldId("type"), nf);
   };
-  nf_p = static_cast<FunctionHolder<T>::Types>(nf);
+  nf_p = static_cast<Types>(nf);
   return getType(error, fn);
 }
 

@@ -174,8 +174,9 @@ template<class T> class Vector;
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class Gaussian2D : public Gaussian2DParam<T> {
- public:
+template<class T> class Gaussian2D : public Gaussian2DParam<T>
+{
+public:
   //# Enumerations
   
   //# Constructors
@@ -218,6 +219,21 @@ template<class T> class Gaussian2D : public Gaussian2DParam<T> {
   virtual Function<T> *clone() const { return new Gaussian2D<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using Gaussian2DParam<T>::param_p;
+  using Gaussian2DParam<T>::thePA;
+  using Gaussian2DParam<T>::theCpa;
+  using Gaussian2DParam<T>::theSpa;
+  using Gaussian2DParam<T>::theXwidth;
+public:
+  using Gaussian2DParam<T>::HEIGHT;
+  using Gaussian2DParam<T>::XCENTER;
+  using Gaussian2DParam<T>::YCENTER;
+  using Gaussian2DParam<T>::YWIDTH;
+  using Gaussian2DParam<T>::RATIO;
+  using Gaussian2DParam<T>::PANGLE;
+  using Gaussian2DParam<T>::fwhm2int;
 };
 
 #define Gaussian2D_PS Gaussian2D
@@ -231,8 +247,9 @@ template<class T> class Gaussian2D : public Gaussian2DParam<T> {
 // </synopsis>
 
 template <class T> class Gaussian2D_PS<AutoDiff<T> > : 
-public Gaussian2DParam<AutoDiff<T> > {
- public:
+public Gaussian2DParam<AutoDiff<T> >
+{
+public:
   //# Constructors
   // Constructs two dimensional Gaussians.
   // <group>
@@ -275,6 +292,21 @@ public Gaussian2DParam<AutoDiff<T> > {
     return new Gaussian2D<AutoDiff<T> >(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using Gaussian2DParam<AutoDiff<T> >::param_p;
+  using Gaussian2DParam<AutoDiff<T> >::thePA;
+  using Gaussian2DParam<AutoDiff<T> >::theCpa;
+  using Gaussian2DParam<AutoDiff<T> >::theSpa;
+  using Gaussian2DParam<AutoDiff<T> >::theXwidth;
+public:
+  using Gaussian2DParam<AutoDiff<T> >::HEIGHT;
+  using Gaussian2DParam<AutoDiff<T> >::XCENTER;
+  using Gaussian2DParam<AutoDiff<T> >::YCENTER;
+  using Gaussian2DParam<AutoDiff<T> >::YWIDTH;
+  using Gaussian2DParam<AutoDiff<T> >::RATIO;
+  using Gaussian2DParam<AutoDiff<T> >::PANGLE;
+  using Gaussian2DParam<AutoDiff<T> >::fwhm2int;
 };
 
 #undef Gaussian2D_PS

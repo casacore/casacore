@@ -28,7 +28,6 @@
 //# Includes
 #include <scimath/Functionals/CompoundFunction.h>
 
-//# Constructors
 
 //# Operators
 template <class T>

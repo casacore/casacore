@@ -253,6 +253,11 @@ protected:
   mutable Type sinTcosP_p;
   mutable Type sinTsinP_p;
 
+  //# Make members of parent classes known.
+protected:
+  using Function<Type>::param_p;
+public:
+  using Function<Type>::nparameters;
 };
 
 #endif

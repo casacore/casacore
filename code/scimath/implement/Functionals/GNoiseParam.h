@@ -74,8 +74,9 @@
 //    <li> AipsError if incorrect parameter number specified.
 // </thrown>
 
-template<class T> class GNoiseParam : public Function<T> {
- public:
+template<class T> class GNoiseParam : public Function<T>
+{
+public:
   //# Enumerations
   
   //# Constructors
@@ -100,13 +101,16 @@ template<class T> class GNoiseParam : public Function<T> {
 
   //# Member functions
 
- protected:
+protected:
   //# Data
   // Random generator
   ACG genit_p;
   // Normal noise
   mutable Normal noise_p;
 
+  //# Make members of parent classes known.
+protected:
+  using Function<T>::param_p;
 };
 
 #endif

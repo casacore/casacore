@@ -121,6 +121,11 @@ public:
   virtual Bool  reset ( const Vector<Int> &corr );
   virtual Float map   ( const Cube<Complex> &vis,uInt ich,uInt irow ) const;
 
+// Define these functions, because using std::real/imag in getFunction
+// matches multiple functions.
+  static Float real (const Complex&);
+  static Float imag (const Complex&);
+
 // Static function to map a function name into a function pointer
 // Functions currently recognized: ABS ARG NORM RE IM 
   static FuncSignature getFunction( const String &name );

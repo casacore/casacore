@@ -406,6 +406,12 @@ private:
   // Deletes allocated memory etc. Called by destructor and any member 
   // which needs to reallocate data.
   void cleanUp();
+
+  //# Make members of parent class known.
+protected:
+  using ArrayQuantColumn<T>::arrUnitsCol;
+  using ArrayQuantColumn<T>::scaUnitsCol;
+  using ArrayQuantColumn<T>::itsUnit;
 };
 
 

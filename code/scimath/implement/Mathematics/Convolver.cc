@@ -223,7 +223,7 @@ doConvolution(Array<FType>& result,
 	      Bool fullSize) {
   validate();
   IPosition modelSize = model.shape();
-  Array<NumericTraits<FType>::ConjugateType> fftModel;
+  Array<typename NumericTraits<FType>::ConjugateType> fftModel;
   if (theFFTSize != modelSize){
     // Pad the model
     Array<FType> paddedModel(theFFTSize);

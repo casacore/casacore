@@ -79,8 +79,9 @@
 //   <li> Nothing I know of
 // </todo>
 
-template<class T> class SPolynomial: public SPolynomialParam<T> {
- public:
+template<class T> class SPolynomial: public SPolynomialParam<T>
+{
+public:
   //# Enumerations
   
   //# Constructors
@@ -111,6 +112,12 @@ template<class T> class SPolynomial: public SPolynomialParam<T> {
   virtual Function<T> *clone() const { return new SPolynomial<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using SPolynomialParam<T>::param_p;
+public:
+  using SPolynomialParam<T>::nparameters;
+  using SPolynomialParam<T>::mask;
 };
 
 #endif

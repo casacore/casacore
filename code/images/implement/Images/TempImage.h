@@ -295,6 +295,17 @@ private:
 
   TempLattice<T>* mapPtr_p;
   Lattice<Bool>*  maskPtr_p;
+
+  //# Make members of parent class known.
+public:
+  using ImageInterface<T>::logger;
+  using ImageInterface<T>::coordinates;
+  using ImageInterface<T>::getDefaultMask;
+  using ImageInterface<T>::hasRegion;
+  using ImageInterface<T>::getImageRegionPtr;
+  using ImageInterface<T>::setCoordinateInfo;
+protected:
+  using ImageInterface<T>::setCoordsMember;
 };
 
 

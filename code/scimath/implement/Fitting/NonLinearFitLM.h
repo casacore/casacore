@@ -88,7 +88,8 @@
 // <example>
 // </example>
 
-template<class T> class NonLinearFitLM : public NonLinearFit<T> {
+template<class T> class NonLinearFitLM : public NonLinearFit<T>
+{
 public:
   //# Constructors
   // Create a fitter: the normal way to generate a fitter object. Necessary
@@ -104,7 +105,7 @@ public:
   // Destructor
   virtual ~NonLinearFitLM();
 
- protected:
+protected:
   //# Member functions
   // Generalised fitter
   virtual Bool fitIt
@@ -114,12 +115,31 @@ public:
      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
      const Vector<Bool> *const mask=0);
   
- private:
+private:
   //# Data
   // The parameter that makes this the Levenberg-Marquardt method.  
   Double lamda_p;
   // The current fit state
   Double fitit_p;
+
+protected:
+  //# Make members of parent classes known.
+  using NonLinearFit<T>::curiter_p;
+  using NonLinearFit<T>::maxiter_p;
+  using NonLinearFit<T>::converge_p;
+  using NonLinearFit<T>::pCount_p;
+  using NonLinearFit<T>::ptr_derive_p;
+  using NonLinearFit<T>::sol_p;
+  using NonLinearFit<T>::solved_p;
+  using NonLinearFit<T>::nr_p;
+  using NonLinearFit<T>::svd_p;
+  using NonLinearFit<T>::condEq_p;
+  using NonLinearFit<T>::err_p;
+  using NonLinearFit<T>::errors_p;
+  using NonLinearFit<T>::valder_p;
+  using NonLinearFit<T>::buildConstraint;
+  using NonLinearFit<T>::setMaskedParameterValues;
+  using NonLinearFit<T>::fillSVDConstraints;
 
 };
 

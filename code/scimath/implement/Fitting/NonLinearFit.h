@@ -154,8 +154,9 @@
 // <example>
 // </example>
 
-template<class T> class NonLinearFit : public GenericL2Fit<T> {
- public: 
+template<class T> class NonLinearFit : public GenericL2Fit<T>
+{
+public: 
   //# Constants
   // Default maximum number of iterations (30)
   static const uInt MAXITER = 30;
@@ -197,7 +198,7 @@ template<class T> class NonLinearFit : public GenericL2Fit<T> {
   // Check to see if the fit has converged
   Bool converged() const { return converge_p; };
 
- protected:
+protected:
   //#Data
   // Maximum number of iterations
   uInt maxiter_p;
@@ -217,11 +218,30 @@ template<class T> class NonLinearFit : public GenericL2Fit<T> {
      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
      const Vector<Bool> *const mask=0) = 0;
   
- private: 
+private: 
   //# Data
   
   //# Member functions
   
+protected:
+  //# Make members of parent classes known.
+  using GenericL2Fit<T>::pCount_p;
+  using GenericL2Fit<T>::ptr_derive_p;
+  using GenericL2Fit<T>::arg_p;
+  using GenericL2Fit<T>::sol_p;
+  using GenericL2Fit<T>::fsol_p;
+  using GenericL2Fit<T>::solved_p;
+  using GenericL2Fit<T>::nr_p;
+  using GenericL2Fit<T>::svd_p;
+  using GenericL2Fit<T>::condEq_p;
+  using GenericL2Fit<T>::fullEq_p;
+  using GenericL2Fit<T>::err_p;
+  using GenericL2Fit<T>::ferr_p;
+  using GenericL2Fit<T>::errors_p;
+  using GenericL2Fit<T>::valder_p;
+  using GenericL2Fit<T>::set;
+  using GenericL2Fit<T>::buildConstraint;
+  using GenericL2Fit<T>::fillSVDConstraints;
 };
 
 #endif

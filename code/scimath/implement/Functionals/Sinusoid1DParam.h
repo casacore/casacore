@@ -103,8 +103,9 @@
 //    <li> AipsError if incorrect parameter number specified.
 // </thrown>
 
-template<class T> class Sinusoid1DParam : public Function1D<T> {
- public:
+template<class T> class Sinusoid1DParam : public Function1D<T>
+{
+public:
   //# Enumerations
   // Parameter numbers
   enum { AMPLITUDE=0, PERIOD, X0 };
@@ -152,8 +153,11 @@ template<class T> class Sinusoid1DParam : public Function1D<T> {
   void setPeriod(const T &period) { param_p[PERIOD] = period; };
   // </group>
 
+  //# Make members of parent classes known.
 protected:
-
+  using Function1D<T>::param_p;
+public:
+  using Function1D<T>::nparameters;
 };
 
 #endif

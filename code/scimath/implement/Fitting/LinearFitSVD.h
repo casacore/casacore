@@ -69,7 +69,8 @@
 // Not everybody agrees with this.
 // </motivation>
 
-template<class T> class LinearFitSVD: public LinearFit<T> {
+template<class T> class LinearFitSVD: public LinearFit<T>
+{
 public: 
   //# Constructors
   // Create a fitter: the normal way to generate a fitter object. Necessary
@@ -84,8 +85,10 @@ public:
   // Destructor
   virtual ~LinearFitSVD();
 
- private:
-
+protected:
+  //# Make members of parent classes known.
+  using LinearFit<T>::svd_p;
+  using LinearFit<T>::COLLINEARITY;
 };
 
 #endif

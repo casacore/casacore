@@ -253,8 +253,8 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the Chebyshev interval and mode=CONSTANT.
     Chebyshev(const T &min, const T &max,
-	      const typename ChebyshevParam<T>::
-	      OutOfIntervalMode mode=CONSTANT,
+	      const typename ChebyshevEnums::
+	      OutOfIntervalMode mode=ChebyshevEnums::CONSTANT,
 	      const T &defval=T(0)) :
 	ChebyshevParamModeImpl<T>(min, max, mode, defval) {}
   
@@ -269,8 +269,9 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the canonical range and mode=CONSTANT.
     Chebyshev(const Vector<T> &coeffs, const T &min, const T &max, 
-	      const typename ChebyshevParam<T>::
-	      OutOfIntervalMode mode=CONSTANT, const T &defval=T(0)) :
+	      const typename ChebyshevEnums::
+	      OutOfIntervalMode mode=ChebyshevEnums::CONSTANT,
+	      const T &defval=T(0)) :
 	ChebyshevParamModeImpl<T>(coeffs, min, max, mode, defval) {}
 
     // create a fully specified Chebyshev polynomial.
@@ -327,5 +328,3 @@ public:
 };
 
 #endif
-
-

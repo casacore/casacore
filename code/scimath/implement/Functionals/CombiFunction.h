@@ -136,6 +136,9 @@ template <class T> class CombiFunction : public CombiParam<T> {
   virtual Function<T> *clone() const { return new CombiFunction<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+public:
+  using CombiParam<T>::nparameters;
 };
 
 #define CombiFunction_PS CombiFunction
@@ -179,6 +182,9 @@ public CombiParam<AutoDiff<T> > {
     return new CombiFunction_PS<AutoDiff<T> >(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+public:
+  using CombiParam<AutoDiff<T> >::nparameters;
 };
 
 #undef CombiFunction_PS

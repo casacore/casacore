@@ -122,7 +122,8 @@
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class Gaussian1DParam : public Function1D<T> {
+template<class T> class Gaussian1DParam : public Function1D<T>
+{
 public:
   //# Enumerations
   enum { HEIGHT=0, CENTER, WIDTH };
@@ -180,6 +181,12 @@ protected:
   // Constant to scale halfwidth at 1/e to FWHM
   ///  static const T fwhm2int;
   T fwhm2int; 
+
+  //# Make members of parent classes known.
+protected:
+  using Function1D<T>::param_p;
+public:
+  using Function1D<T>::nparameters;
 };
 
 #endif

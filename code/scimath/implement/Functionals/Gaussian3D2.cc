@@ -86,46 +86,49 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
   AutoDiff<T> tmp;
 //  
 
-  if (stoT_p != param_p[THETA] || stoP_p != param_p[PHI]) settrigvals();
+  if (this->stoT_p != this->param_p[Gaussian3DParam<AutoDiff<T> >::THETA]
+   || this->stoP_p != this->param_p[Gaussian3DParam<AutoDiff<T> >::PHI]) {
+    this->settrigvals();
+  }
 
-  const T cosTV = cosT_p.value();
-  const T cosPV = cosP_p.value();
-  const T sinTV = sinT_p.value();
-  const T sinPV = sinP_p.value();
-  const T cosTcosPV = cosTcosP_p.value();
-  const T cosTsinPV = cosTsinP_p.value();
-  const T sinTcosPV = sinTcosP_p.value();
-  const T sinTsinPV = sinTsinP_p.value();
+  const T cosTV = this->cosT_p.value();
+  const T cosPV = this->cosP_p.value();
+  const T sinTV = this->sinT_p.value();
+  const T sinPV = this->sinP_p.value();
+  const T cosTcosPV = this->cosTcosP_p.value();
+  const T cosTsinPV = this->cosTsinP_p.value();
+  const T sinTcosPV = this->sinTcosP_p.value();
+  const T sinTsinPV = this->sinTsinP_p.value();
 
-  if (param_p[H].nDerivatives() > 0) {
-     tmp = param_p[H];
-  } else if (param_p[CX].nDerivatives() > 0) {
-     tmp = param_p[CX];
-  } else if (param_p[CY].nDerivatives() > 0) {
-     tmp = param_p[CY];
-  } else if (param_p[CZ].nDerivatives() > 0) {
-     tmp = param_p[CZ];
-  } else if (param_p[AX].nDerivatives() > 0) {
-     tmp = param_p[AX];
-  } else if (param_p[AY].nDerivatives() > 0) {
-     tmp = param_p[AY];
-  } else if (param_p[AZ].nDerivatives() > 0) {
-     tmp = param_p[AZ];
-  } else if (param_p[THETA].nDerivatives() > 0) {
-     tmp = param_p[THETA];
-  } else if (param_p[PHI].nDerivatives() > 0) {
-     tmp = param_p[PHI];
+  if (this->param_p[Gaussian3DParam<AutoDiff<T> >::H].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::H];
+  } else if (this->param_p[Gaussian3DParam<AutoDiff<T> >::CX].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::CX];
+  } else if (this->param_p[Gaussian3DParam<AutoDiff<T> >::CY].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::CY];
+  } else if (this->param_p[Gaussian3DParam<AutoDiff<T> >::CZ].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::CZ];
+  } else if (this->param_p[Gaussian3DParam<AutoDiff<T> >::AX].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::AX];
+  } else if (this->param_p[Gaussian3DParam<AutoDiff<T> >::AY].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::AY];
+  } else if (this->param_p[Gaussian3DParam<AutoDiff<T> >::AZ].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::AZ];
+  } else if (this->param_p[Gaussian3DParam<AutoDiff<T> >::THETA].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::THETA];
+  } else if (this->param_p[Gaussian3DParam<AutoDiff<T> >::PHI].nDerivatives() > 0) {
+     tmp = this->param_p[Gaussian3DParam<AutoDiff<T> >::PHI];
   }
 
   T value;
 
   ///
-  const T Ax = param_p[AX].value() * fwhm2int.value();
-  const T Ay = param_p[AY].value() * fwhm2int.value();
-  const T Az = param_p[AZ].value() * fwhm2int.value();
-  const T Nx = x[0] - param_p[CX].value();
-  const T Ny = x[1] - param_p[CY].value();
-  const T Nz = x[2] - param_p[CZ].value();
+  const T Ax = this->param_p[Gaussian3DParam<AutoDiff<T> >::AX].value() * this->fwhm2int.value();
+  const T Ay = this->param_p[Gaussian3DParam<AutoDiff<T> >::AY].value() * this->fwhm2int.value();
+  const T Az = this->param_p[Gaussian3DParam<AutoDiff<T> >::AZ].value() * this->fwhm2int.value();
+  const T Nx = x[0] - this->param_p[Gaussian3DParam<AutoDiff<T> >::CX].value();
+  const T Ny = x[1] - this->param_p[Gaussian3DParam<AutoDiff<T> >::CY].value();
+  const T Nz = x[2] - this->param_p[Gaussian3DParam<AutoDiff<T> >::CZ].value();
   const T Ax2 = Ax * Ax;
   const T Ay2 = Ay * Ay;
   const T Az2 = Az * Az;
@@ -141,7 +144,7 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
 
   const T expterm = exp(-xwidthterm2 - ywidthterm2 - zwidthterm2);
 
-  value = expterm * param_p[H].value();
+  value = expterm * this->param_p[Gaussian3DParam<AutoDiff<T> >::H].value();
   const T tvalue = value * 2.0;
 
   //function value
@@ -152,46 +155,46 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
     for (k = 0; k < tmp.nDerivatives(); k++) tmp.deriv(k) = 0.0;
 
     // derivative wrt height
-    if (param_p.mask(H))
-      tmp.deriv(H) = expterm;
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::H))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::H) = expterm;
 
     // derivative wrt Cx (mean)
-    if (param_p.mask(CX))
-      tmp.deriv(CX) = tvalue * (  cosTcosPV * xrowterm / Ax2
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::CX))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::CX) = tvalue * (  cosTcosPV * xrowterm / Ax2
 	 	                - sinTcosPV * yrowterm / Ay2  
 		                +     sinPV * zrowterm / Az2);
 
     // derivative wrt Cy (mean)
-    if (param_p.mask(CY))
-      tmp.deriv(CY) = tvalue * (  sinTV * xrowterm / Ax2 
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::CY))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::CY) = tvalue * (  sinTV * xrowterm / Ax2 
                                 + cosTV * yrowterm / Ay2);
 
     // derivative wrt Cz (mean)
-    if (param_p.mask(CZ))
-      tmp.deriv(CZ) = tvalue * (- cosTsinPV * xrowterm / Ax2 
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::CZ))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::CZ) = tvalue * (- cosTsinPV * xrowterm / Ax2 
                                 + sinTsinPV * yrowterm / Ay2
 	                        +     cosPV * zrowterm / Az2);
 
     // derivative wrt Ax
-    if (param_p.mask(AX))
-      tmp.deriv(AX) = tvalue * xwidthterm2/param_p[AX].value();
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::AX))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::AX) = tvalue * xwidthterm2/this->param_p[Gaussian3DParam<AutoDiff<T> >::AX].value();
 
     // derivative wrt Ay
-    if (param_p.mask(AY))
-      tmp.deriv(AY) = tvalue * ywidthterm2/param_p[AY].value();
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::AY))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::AY) = tvalue * ywidthterm2/this->param_p[Gaussian3DParam<AutoDiff<T> >::AY].value();
 
     // derivative wrt Az
-    if (param_p.mask(AZ))
-      tmp.deriv(AZ) = tvalue * zwidthterm2/param_p[AZ].value();
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::AZ))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::AZ) = tvalue * zwidthterm2/this->param_p[Gaussian3DParam<AutoDiff<T> >::AZ].value();
 
     // derivative wrt theta
-    if (param_p.mask(THETA))
-      tmp.deriv(THETA) = tvalue * (  xrowterm * yrowterm / Ay2
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::THETA))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::THETA) = tvalue * (  xrowterm * yrowterm / Ay2
 	 		           - xrowterm * yrowterm / Ax2);
 
     // derivative wrt phi
-    if (param_p.mask(PHI))
-      tmp.deriv(PHI) = -tvalue *(xrowterm * (-Nx*cosTsinPV - Nz*cosTcosPV)/ Ax2
+    if (this->param_p.mask(Gaussian3DParam<AutoDiff<T> >::PHI))
+      tmp.deriv(Gaussian3DParam<AutoDiff<T> >::PHI) = -tvalue *(xrowterm * (-Nx*cosTsinPV - Nz*cosTcosPV)/ Ax2
 			       + yrowterm * (Nx*sinTsinPV + Nz*sinTcosPV) / Ay2
                                + zrowterm * (Nx*cosPV - Nz*sinPV) / Az2);
   }

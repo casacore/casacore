@@ -339,6 +339,11 @@ private:
   // Deletes allocated memory etc. Called by destructor and any member
   // which needs to reallocate data.
   void cleanUp();
+
+  //# Make members of parent class known.
+protected:
+  using ScalarQuantColumn<T>::unitsCol;
+  using ScalarQuantColumn<T>::itsUnit;
 };
 
 

@@ -182,6 +182,12 @@ private:
   //# itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;
   ExtendLattice<T>*  itsExtLatPtr;
+
+  //# Make members of parent class known.
+public:
+  using ImageInterface<T>::logger;
+protected:
+  using ImageInterface<T>::setCoordsMember;
 };
 
 

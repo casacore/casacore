@@ -37,30 +37,30 @@ template<class T>
 AutoDiff<T> Sinusoid1D<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp;
-  if (param_p[AMPLITUDE].nDerivatives() > 0) tmp = param_p[AMPLITUDE];
-  else if (param_p[PERIOD].nDerivatives() > 0) tmp = param_p[PERIOD];
-  else if (param_p[X0].nDerivatives() > 0) tmp = param_p[X0];
+  if (this->param_p[Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE].nDerivatives() > 0) tmp = this->param_p[Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE];
+  else if (this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD].nDerivatives() > 0) tmp = this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD];
+  else if (this->param_p[Sinusoid1DParam<AutoDiff<T> >::X0].nDerivatives() > 0) tmp = this->param_p[Sinusoid1DParam<AutoDiff<T> >::X0];
   typename AutoDiff<T>::value_type arg =
     static_cast<typename AutoDiff<T>::value_type>(C::_2pi) *
-    (x[0] - param_p[X0].value())/param_p[PERIOD].value();
+    (x[0] - this->param_p[Sinusoid1DParam<AutoDiff<T> >::X0].value())/this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD].value();
   typename AutoDiff<T>::value_type cosarg = cos(arg);
   typename AutoDiff<T>::value_type sinarg = sin(arg);
   // Function value
-  tmp.value() = param_p[AMPLITUDE].value() * cosarg;
+  tmp.value() = this->param_p[Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE].value() * cosarg;
   // get derivatives (assuming either all or none)
   if (tmp.nDerivatives()>0) {
     for (uInt j = 0; j < tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
     // derivative wrt amplitude
     typename AutoDiff<T>::value_type dev = cosarg;
-    if (param_p.mask(AMPLITUDE)) tmp.deriv(AMPLITUDE) = dev;
+    if (this->param_p.mask(Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE)) tmp.deriv(Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE) = dev;
     // derivative wrt period
-    dev = param_p[AMPLITUDE].value() * arg * sinarg / param_p[PERIOD].value();
-    if (param_p.mask(PERIOD)) tmp.deriv(PERIOD) = dev;
+    dev = this->param_p[Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE].value() * arg * sinarg / this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD].value();
+    if (this->param_p.mask(Sinusoid1DParam<AutoDiff<T> >::PERIOD)) tmp.deriv(Sinusoid1DParam<AutoDiff<T> >::PERIOD) = dev;
     // derivative wrt x0
-    dev = param_p[AMPLITUDE].value() *
+    dev = this->param_p[Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE].value() *
       static_cast<typename AutoDiff<T>::value_type>(C::_2pi) *
-      sinarg / param_p[PERIOD].value();
-    if (param_p.mask(X0)) tmp.deriv(X0) = dev;
+      sinarg / this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD].value();
+    if (this->param_p.mask(Sinusoid1DParam<AutoDiff<T> >::X0)) tmp.deriv(Sinusoid1DParam<AutoDiff<T> >::X0) = dev;
   };
   return tmp;
 }

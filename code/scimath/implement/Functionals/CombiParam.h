@@ -105,8 +105,9 @@
 // <li> Nothing I know of
 // </todo>
 
-template <class T> class CombiParam : public Function<T> {
- public:
+template <class T> class CombiParam : public Function<T>
+{
+public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
@@ -154,6 +155,9 @@ protected:
   // Pointer to each added function
   PtrBlock<Function<T> *> functionPtr_p;
 
+  //# Make members of parent classes known.
+public:
+  using Function<T>::nparameters;
 };
 
 #endif

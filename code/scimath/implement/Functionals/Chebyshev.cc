@@ -35,29 +35,29 @@ template <class T>
 T Chebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
     T xp = x[0];
     // handle out-of-interval values
-    if (xp < minx_p || xp > maxx_p) {
-	switch (mode_p) {
+    if (xp < this->minx_p || xp > this->maxx_p) {
+	switch (this->mode_p) {
 
-	case CONSTANT:
-	    return def_p;
+	case ChebyshevEnums::CONSTANT:
+	    return this->def_p;
 
-	case ZEROTH:
-	    return param_p[0];
+	case ChebyshevEnums::ZEROTH:
+	    return this->param_p[0];
 
-	case CYCLIC: {
-	    T period = (maxx_p-minx_p);
-	    while (xp < minx_p) xp += period;
-	    while (xp > maxx_p) xp -= period;
+	case ChebyshevEnums::CYCLIC: {
+	    T period = (this->maxx_p-this->minx_p);
+	    while (xp < this->minx_p) xp += period;
+	    while (xp > this->maxx_p) xp -= period;
 	}
 	break;
 
-	case EDGE: {
+	case ChebyshevEnums::EDGE: {
 	    T tmp(0);
-	    if (xp<minx_p) {
-		for (uInt i=0; i<nparameters(); i+=2) tmp += param_p[i];
-		for (uInt i=1; i<nparameters(); i+=2) tmp -= param_p[i];
+	    if (xp<this->minx_p) {
+		for (uInt i=0; i<this->nparameters(); i+=2) tmp += this->param_p[i];
+		for (uInt i=1; i<this->nparameters(); i+=2) tmp -= this->param_p[i];
 	    } else {
-		for (uInt i=0; i<nparameters(); ++i) tmp += param_p[i];
+		for (uInt i=0; i<this->nparameters(); ++i) tmp += this->param_p[i];
 	    };
 	    return tmp;
 	}
@@ -72,25 +72,25 @@ T Chebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
     T yi2=T(0);
     T tmp;
 
-    // map Chebeshev range [minx_p, maxx_p] into [-1, 1]
-    xp = (T(2)*xp-minx_p-maxx_p)/(maxx_p-minx_p);
+    // map Chebeshev range [this->minx_p, this->maxx_p] into [-1, 1]
+    xp = (T(2)*xp-this->minx_p-this->maxx_p)/(this->maxx_p-this->minx_p);
 
     // evaluate using Clenshaw recursion relation
-    for (Int i=nparameters()-1; i>0; i--) {
-	tmp = T(2)*xp*yi1 - yi2 + param_p[i];
+    for (Int i=this->nparameters()-1; i>0; i--) {
+	tmp = T(2)*xp*yi1 - yi2 + this->param_p[i];
 	yi2 = yi1;
 	yi1 = tmp;
     };
 
-    return xp*yi1 - yi2 + param_p[0];
+    return xp*yi1 - yi2 + this->param_p[0];
 }
 
 template <class T>
 Chebyshev<T> Chebyshev<T>::derivative() const {
-    Vector<T> ce(nparameters());
-    ce = parameters().getParameters();
-    derivativeCoeffs(ce, minx_p, maxx_p);
-    return Chebyshev<T>(ce, minx_p, maxx_p, mode_p, T(0));
+    Vector<T> ce(this->nparameters());
+    ce = this->parameters().getParameters();
+    derivativeCoeffs(ce, this->minx_p, this->maxx_p);
+    return Chebyshev<T>(ce, this->minx_p, this->maxx_p, this->mode_p, T(0));
 }
 
 //# Member functions

@@ -213,9 +213,9 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
     IPosition cursorShape(ndim), cursorOrder(ndim);
     String report;
     cursorShape = 
-      ImageFITSConverter::copyCursorShape(report, shape, sizeof(Float),
-                                          sizeof(HDUType::ElementType),
-                                          memoryInMB);
+     ImageFITSConverter::copyCursorShape(report, shape, sizeof(Float),
+					 sizeof(typename HDUType::ElementType),
+					 memoryInMB);
 
     os << LogIO::NORMAL << "Copy FITS file to '" << pNewImage->name() << "' " <<
 	report << LogIO::POST;

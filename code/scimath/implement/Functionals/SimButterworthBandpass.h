@@ -133,8 +133,8 @@ template<class T> class Vector;
 // </todo>
 
 template<class T>
-class SimButterworthBandpass : public Function1D<T> {
-
+class SimButterworthBandpass : public Function1D<T>
+{
 public:
     //# Enumerations
     // Enumeration of the function parameters
@@ -253,6 +253,12 @@ private:
     uInt nl_p;
     // Maximum order
     uInt nh_p;
+
+  //# Make members of parent classes known.
+protected:
+  using Function<T>::param_p;
+public:
+  using Function<T>::nparameters;
 };
 
 #endif

@@ -41,17 +41,17 @@ void MarshButterworthBandpass<T>::store(Record& out) const {
     loadFuncType(out);
 
     Vector<Double> bpass(3);
-    bpass(0) = getMinCutoff();
-    bpass(1) = getCenter();
-    bpass(2) = getMaxCutoff();
+    bpass(0) = this->getMinCutoff();
+    bpass(1) = this->getCenter();
+    bpass(2) = this->getMaxCutoff();
     out.define(FUNCFIELDS[BPASS], bpass);
 
     Vector<Double> order(2);
-    order(0) = getMinOrder();
-    order(1) = getMaxOrder();
+    order(0) = this->getMinOrder();
+    order(1) = this->getMaxOrder();
     out.define(FUNCFIELDS[ORDER], order);
 
-    out.define(FUNCFIELDS[PEAK], getPeak());
+    out.define(FUNCFIELDS[PEAK], this->getPeak());
 }
 
 template<class T> 
@@ -68,9 +68,9 @@ MarshButterworthBandpass<T>::MarshButterworthBandpass(const Record& gr)
 	if (bpass.nelements() < 3)
 	    throw InvalidSerializationError(FUNCFIELDS[BPASS] + 
 				 " field contains fewer than three elements");
-	setMinCutoff(bpass(0));
-	setCenter(bpass(1));
-	setMaxCutoff(bpass(2));
+	this->setMinCutoff(bpass(0));
+	this->setCenter(bpass(1));
+	this->setMaxCutoff(bpass(2));
     }
     if (input.exists(FUNCFIELDS[ORDER])) {
 	Vector<T> order;
@@ -78,12 +78,12 @@ MarshButterworthBandpass<T>::MarshButterworthBandpass(const Record& gr)
 	if (order.nelements() < 2)
 	    throw InvalidSerializationError(FUNCFIELDS[ORDER] + 
 				 " field contains fewer than two elements");
-	setMinOrder(order(0));
-	setMaxOrder(order(1));
+	this->setMinOrder(order(0));
+	this->setMaxOrder(order(1));
     }
     if (input.exists(FUNCFIELDS[PEAK])) {
 	T peak(0);
 	input.get(peak, FUNCFIELDS[PEAK]);
-	setPeak(peak);
+	this->setPeak(peak);
     }
 }

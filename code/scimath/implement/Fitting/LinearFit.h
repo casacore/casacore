@@ -206,8 +206,9 @@
 // information, and other examples.
 // </example>
 
-template<class T> class LinearFit : public GenericL2Fit<T> {
- public: 
+template<class T> class LinearFit : public GenericL2Fit<T>
+{
+public: 
   //# Constructors
   // Create a fitter: the normal way to generate a fitter object. Necessary
   // data will be deduced from the Functional provided with
@@ -223,7 +224,7 @@ template<class T> class LinearFit : public GenericL2Fit<T> {
   
   //# Member functions
 
- protected:
+protected:
   //#Data
 
   //# Member functions
@@ -235,11 +236,25 @@ template<class T> class LinearFit : public GenericL2Fit<T> {
      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
      const Vector<Bool> *const mask=0);
 
- private:
+private:
   //# Data
 
   //# Member functions
 
+protected:
+  //# Make members of parent classes known.
+  using GenericL2Fit<T>::pCount_p;
+  using GenericL2Fit<T>::ptr_derive_p;
+  using GenericL2Fit<T>::sol_p;
+  using GenericL2Fit<T>::solved_p;
+  using GenericL2Fit<T>::nr_p;
+  using GenericL2Fit<T>::svd_p;
+  using GenericL2Fit<T>::condEq_p;
+  using GenericL2Fit<T>::err_p;
+  using GenericL2Fit<T>::errors_p;
+  using GenericL2Fit<T>::COLLINEARITY;
+  using GenericL2Fit<T>::buildConstraint;
+  using GenericL2Fit<T>::fillSVDConstraints;
 };
 
 #endif

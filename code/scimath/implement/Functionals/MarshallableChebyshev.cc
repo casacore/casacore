@@ -44,13 +44,13 @@ template<class T>
 void MarshallableChebyshev<T>::store(Record& out) const {
     loadFuncType(out);
 
-    out.define(FUNCFIELDS[COEFFS], getCoefficients());
-    out.define(FUNCFIELDS[MODE], modenames[getOutOfIntervalMode()]);
-    out.define(FUNCFIELDS[DEF], getDefault());
+    out.define(FUNCFIELDS[COEFFS], this->getCoefficients());
+    out.define(FUNCFIELDS[MODE], modenames[this->getOutOfIntervalMode()]);
+    out.define(FUNCFIELDS[DEF], this->getDefault());
 
     Vector<Double> intv(2);
-    intv(0) = getIntervalMin();
-    intv(1) = getIntervalMax();
+    intv(0) = this->getIntervalMin();
+    intv(1) = this->getIntervalMax();
     out.define(FUNCFIELDS[INTERVAL], intv);
 }
 
@@ -65,30 +65,30 @@ MarshallableChebyshev<T>::MarshallableChebyshev(const Record& gr)
     if (input.exists(FUNCFIELDS[COEFFS])) {
 	Vector<T> coeffs;
 	input.get(coeffs, FUNCFIELDS[COEFFS]);
-	setCoefficients(coeffs);
+	this->setCoefficients(coeffs);
     }
     if (input.exists(FUNCFIELDS[MODE])) {
 	String modename;
 	uInt i=0;
 	input.get(modename, FUNCFIELDS[MODE]);
-	for(i=0; i < Chebyshev<T>::NOutOfIntervalModes; i++) {
+	for(i=0; i < ChebyshevEnums::NOutOfIntervalModes; i++) {
 	    if (modename == modenames[i]) break;
 	}
-	if (i == Chebyshev<T>::NOutOfIntervalModes) 
+	if (i == ChebyshevEnums::NOutOfIntervalModes) 
 	    throw InvalidSerializationError(String("Unrecognized mode: ")
 						 + modename);
-	setOutOfIntervalMode(
-	    static_cast<Chebyshev<T>::OutOfIntervalMode>(i));
+	this->setOutOfIntervalMode(
+	    static_cast<ChebyshevEnums::OutOfIntervalMode>(i));
     }
     if (input.exists(FUNCFIELDS[DEF])) {
 	T defval(0);
 	input.get(defval, FUNCFIELDS[DEF]);
-	setDefault(defval);
+	this->setDefault(defval);
     }
     if (input.exists(FUNCFIELDS[INTERVAL])) {
 	T mn, mx;
 	input.get(mn, FUNCFIELDS[INTERVAL], 0);
 	input.get(mx, FUNCFIELDS[INTERVAL], 1);
-	setInterval(mn, mx);
+	this->setInterval(mn, mx);
     }
 }

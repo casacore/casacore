@@ -109,8 +109,9 @@
 //   <li> Nothing I know of
 // </todo>
 
-template <class T> class CompoundFunction : public CompoundParam<T> {
- public:
+template <class T> class CompoundFunction : public CompoundParam<T>
+{
+public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
@@ -152,6 +153,19 @@ private:
   void fromParam_p() const;
   // Make the general block from local parameters
   void toParam_p();
+
+  //# Make members of parent classes known.
+protected:
+  using CompoundParam<T>::parset_p;
+  using CompoundParam<T>::param_p;
+  using CompoundParam<T>::funpar_p;
+  using CompoundParam<T>::locpar_p;
+  using CompoundParam<T>::paroff_p;
+  using CompoundParam<T>::functionPtr_p;
+public:
+  using CompoundParam<T>::nparameters;
+  using CompoundParam<T>::nFunctions;
+  using CompoundParam<T>::function;
 };
 
 #define CompoundFunction_PS CompoundFunction
@@ -166,7 +180,8 @@ private:
 // </synopsis>
 
 template <class T> class CompoundFunction_PS<AutoDiff<T> > :
-public CompoundParam<AutoDiff<T> > {
+public CompoundParam<AutoDiff<T> >
+{
  public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
@@ -210,13 +225,25 @@ public CompoundParam<AutoDiff<T> > {
     return new CompoundFunction<AutoDiff<T> >(*this); };
   // </group>
 
- private:
+private:
   //# Member functions
   // Copy the local parameters to/from general block
   void fromParam_p() const;
   // Make the general block from local parameters
   void toParam_p();
 
+  //# Make members of parent classes known.
+protected:
+  using CompoundParam<AutoDiff<T> >::parset_p;
+  using CompoundParam<AutoDiff<T> >::param_p;
+  using CompoundParam<AutoDiff<T> >::funpar_p;
+  using CompoundParam<AutoDiff<T> >::locpar_p;
+  using CompoundParam<AutoDiff<T> >::paroff_p;
+  using CompoundParam<AutoDiff<T> >::functionPtr_p;
+public:
+  using CompoundParam<AutoDiff<T> >::nparameters;
+  using CompoundParam<AutoDiff<T> >::nFunctions;
+  using CompoundParam<AutoDiff<T> >::function;
 };
 
 #undef CompoundFunction_PS

@@ -31,7 +31,7 @@
 //
 // Define static members of MathFunc<T> for g++
 //
-#if defined(__GNUG__)
+#if defined(__GNUC__) && (__GNUC__<3 || (__GNUC__==3 && __GNUC_MINOR__<4))
 Float MathFunc<Float>::defcutoff_p = (2.0);
 Float MathFunc<Float>::defwidth_p = (1.3);
 Float MathFunc<Float>::defKBwidth_p = (2.0);

@@ -1452,6 +1452,115 @@ void MomentCalcBase<T>::yAutoMinMax(T& yMin,
 }
  
 
+
+
+// Fill the ouput moments array
+template<class T>
+void MomentCalcBase<T>::setCalcMoments
+                       (ImageMoments<T>& iMom,
+                        Vector<T>& calcMoments,
+                        Vector<Bool>& calcMomentsMask,
+                        Vector<Double>& pixelIn,
+                        Vector<Double>& worldOut,
+                        Bool doCoord,
+                        Double integratedScaleFactor,
+                        T dMedian,
+                        T vMedian,
+                        Int nPts,
+                        typename NumericTraits<T>::PrecisionType s0,
+                        typename NumericTraits<T>::PrecisionType s1,
+                        typename NumericTraits<T>::PrecisionType s2,
+                        typename NumericTraits<T>::PrecisionType s0Sq,
+                        typename NumericTraits<T>::PrecisionType sumAbsDev,
+                        T dMin,
+                        T dMax,
+                        Int iMin,
+                        Int iMax) const
+//
+// Fill the moments vector
+//
+// Inputs
+//   integratedScaleFactor  width of a channel in km/s or Hz or whatever
+// Outputs:
+//   calcMoments The moments
+//
+{
+	
+// Short hand to fish ImageMoments enum values out   
+// Despite being our friend, we cannot refer to the
+// enum values as just, say, "AVERAGE"
+     
+   typedef ImageMoments<Float> IM;
+           
+// Normalize and fill moments
+
+   calcMomentsMask = True;
+   calcMoments(IM::AVERAGE) = s0 / nPts;
+   calcMoments(IM::INTEGRATED) = s0 * integratedScaleFactor; 
+   if (abs(s0) > 0.0) {
+      calcMoments(IM::WEIGHTED_MEAN_COORDINATE) = s1 / s0;
+//
+      calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 
+        (s2 / s0) - calcMoments(IM::WEIGHTED_MEAN_COORDINATE) *
+                    calcMoments(IM::WEIGHTED_MEAN_COORDINATE);
+      calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
+         abs(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
+      if (calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) > 0.0) {
+         calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
+            sqrt(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
+      } else {
+         calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 0.0;
+         calcMomentsMask(IM::WEIGHTED_DISPERSION_COORDINATE) = False;
+      }
+   } else {
+      calcMomentsMask(IM::WEIGHTED_MEAN_COORDINATE) = False;
+      calcMomentsMask(IM::WEIGHTED_DISPERSION_COORDINATE) = False;
+   }
+
+// Standard deviation about mean of I
+                 
+   if (nPts>1 && Float((s0Sq - s0*s0/nPts)/(nPts-1)) > 0) {
+      calcMoments(IM::STANDARD_DEVIATION) = sqrt((s0Sq - s0*s0/nPts)/(nPts-1));
+   } else {
+      calcMoments(IM::STANDARD_DEVIATION) = 0;
+      calcMomentsMask(IM::STANDARD_DEVIATION) = False;
+   }
+
+// Rms of I
+
+   calcMoments(IM::RMS) = sqrt(s0Sq/nPts);
+     
+// Absolute mean deviation
+
+   calcMoments(IM::ABS_MEAN_DEVIATION) = sumAbsDev / nPts;
+
+// Maximum value
+
+   calcMoments(IM::MAXIMUM) = dMax;
+                                      
+// Coordinate of min/max value
+
+   if (doCoord) {
+      calcMoments(IM::MAXIMUM_COORDINATE) =
+           getMomentCoord(iMom, pixelIn, worldOut, Double(iMax));                                     
+      calcMoments(IM::MINIMUM_COORDINATE) =
+           getMomentCoord(iMom, pixelIn, worldOut, Double(iMin));
+   } else {
+      calcMoments(IM::MAXIMUM_COORDINATE) = 0.0;
+      calcMoments(IM::MINIMUM_COORDINATE) = 0.0;
+      calcMomentsMask(IM::MAXIMUM_COORDINATE) = False;
+      calcMomentsMask(IM::MINIMUM_COORDINATE) = False;
+   }
+
+// Minimum value
+   calcMoments(IM::MINIMUM) = dMin;
+
+// Medians
+
+   calcMoments(IM::MEDIAN) = dMedian;
+   calcMoments(IM::MEDIAN_COORDINATE) = vMedian;
+}
+
    
 
 

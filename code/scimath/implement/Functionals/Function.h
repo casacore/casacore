@@ -220,6 +220,9 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   // Returns the number of parameters
   uInt nparameters() const { return param_p.nelements(); };
   
+  // Evaluate the function object
+  virtual U eval(FunctionArg x) const = 0;
+
   //# Operators
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
@@ -231,11 +234,11 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   // <src>ndim()</src>.
   // <group>
   virtual U operator()() const {
-    DebugAssert(ndim()==0, AipsError); return this->eval(FunctionArg(0)); };
+    DebugAssert(ndim()==0, AipsError); return eval(FunctionArg(0)); };
   virtual U operator()(const ArgType &x) const {
-    DebugAssert(ndim()<=1, AipsError); return this->eval(&x); };
+    DebugAssert(ndim()<=1, AipsError); return eval(&x); };
   virtual U operator()(const Vector<ArgType> &x) const;
-  virtual U operator()(FunctionArg x) const { return this->eval(x); };
+  virtual U operator()(FunctionArg x) const { return eval(x); };
   virtual U operator()(const ArgType &x, const ArgType &y) const;
   virtual U operator()(const ArgType &x, const ArgType &y,
 		       const ArgType &z) const;
@@ -287,8 +290,6 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   // implementation returns False.
   virtual Bool hasMode() const;
   
-  // Evaluate the function object
-  virtual U eval(FunctionArg x) const = 0;
   // Print the function (i.e. the parameters)
   ostream &print(ostream &os) const { return param_p.print(os); };
   // Return a copy of this object from the heap. The caller is responsible 
@@ -297,7 +298,7 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   virtual Function<T,U> *clone() const = 0;
   // </group>
   
-  protected:
+protected:
   //# Data
   // The parameters and masks
   FunctionParam<T> param_p;

@@ -39,23 +39,23 @@
 template <class T>
 ChebyshevParam<T>::ChebyshevParam() :
   Function1D<T>(1), def_p(T(0)), 
-  minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) {} 
+  minx_p(T(-1)), maxx_p(T(1)), mode_p(ChebyshevEnums::CONSTANT) {} 
 
 template <class T>
 ChebyshevParam<T>::ChebyshevParam(const uInt n) :
   Function1D<T>(n+1), def_p(T(0)), 
-  minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) {} 
+  minx_p(T(-1)), maxx_p(T(1)), mode_p(ChebyshevEnums::CONSTANT) {} 
 
 template <class T>
 ChebyshevParam<T>::ChebyshevParam(const uInt n, const RecordInterface& mode) :
   Function1D<T>(n+1), def_p(T(0)), 
-  minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) 
+  minx_p(T(-1)), maxx_p(T(1)), mode_p(ChebyshevEnums::CONSTANT) 
 { } 
 
 template <class T>
 ChebyshevParam<T>::ChebyshevParam(const T &min, const T &max,
-				      const OutOfIntervalMode mode,
-				      const T &defval) :
+				  ChebyshevEnums::OutOfIntervalMode mode,
+				  const T &defval) :
   Function1D<T>(1), def_p(defval), mode_p(mode) {
   param_p[0] = 1;
   setInterval(min, max);
@@ -64,10 +64,10 @@ ChebyshevParam<T>::ChebyshevParam(const T &min, const T &max,
 template <class T>
 ChebyshevParam<T>::ChebyshevParam(const Vector<T> &coeffs,
 				  const T &min, const T &max, 
-				  const OutOfIntervalMode mode,
+				  ChebyshevEnums::OutOfIntervalMode mode,
 				  const T &defval) :
   Function1D<T>(coeffs.nelements()), def_p(defval), 
-    minx_p(min), maxx_p(max), mode_p(CONSTANT) 
+    minx_p(min), maxx_p(max), mode_p(ChebyshevEnums::CONSTANT) 
 { 
     setCoefficients(coeffs);
 }
@@ -76,7 +76,7 @@ template <class T>
 ChebyshevParam<T>::ChebyshevParam(const Vector<T> &coeffs,
 				  const RecordInterface& mode) :
   Function1D<T>(coeffs.nelements()), def_p(T(0)), 
-    minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) 
+    minx_p(T(-1)), maxx_p(T(1)), mode_p(ChebyshevEnums::CONSTANT) 
 { 
     setMode(mode);
     setCoefficients(coeffs);
@@ -246,7 +246,7 @@ void ChebyshevParamModeImpl<T>::setMode(const RecordInterface& in) {
 	    in.get(fld, mode);
 	    uInt match = MUString::minimaxNC(mode, modes_s);
 	    if (mode.length() > 0 && match < modes_s.nelements()) 
-		setOutOfIntervalMode(static_cast<OutOfIntervalMode>(match));
+		setOutOfIntervalMode(static_cast<ChebyshevEnums::OutOfIntervalMode>(match));
 	    else 
 		throw AipsError(String("Unrecognized intervalMode: ") + mode);
 	}
@@ -308,9 +308,9 @@ void ChebyshevParamModeImpl<AutoDiff<T> >::setMode(const RecordInterface& in) {
 	if (in.type(in.idToNumber(fld)) == TpString) {
 	    String mode;
 	    in.get(fld, mode);
-	    uInt match = MUString::minimaxNC(mode, modes_s);
-	    if (mode.length() > 0 && match < modes_s.nelements()) 
-		setOutOfIntervalMode(static_cast<OutOfIntervalMode>(match));
+	    uInt match = MUString::minimaxNC(mode, this->modes_s);
+	    if (mode.length() > 0 && match < this->modes_s.nelements()) 
+		this->setOutOfIntervalMode(static_cast<ChebyshevEnums::OutOfIntervalMode>(match));
 	    else 
 		throw AipsError(String("Unrecognized intervalMode: ") + mode);
 	}
@@ -321,12 +321,12 @@ template <class T>
 void ChebyshevParamModeImpl<AutoDiff<T> >::getMode(RecordInterface& out) const 
 {
     Vector<T> intv(2);
-    intv(0) = getIntervalMin().value();
-    intv(1) = getIntervalMax().value();
+    intv(0) = this->getIntervalMin().value();
+    intv(1) = this->getIntervalMax().value();
 
     out.define(RecordFieldId("interval"), intv);
-    out.define(RecordFieldId("default"), getDefault().value());
-    out.define(RecordFieldId("intervalMode"), modes_s(getOutOfIntervalMode()));
+    out.define(RecordFieldId("default"), this->getDefault().value());
+    out.define(RecordFieldId("intervalMode"), this->modes_s(this->getOutOfIntervalMode()));
 }
 
 // specialization for AutoDiffA
@@ -373,9 +373,9 @@ void ChebyshevParamModeImpl<AutoDiffA<T> >::setMode(const RecordInterface& in) {
 	if (in.type(in.idToNumber(fld)) == TpString) {
 	    String mode;
 	    in.get(fld, mode);
-	    uInt match = MUString::minimaxNC(mode, modes_s);
-	    if (mode.length() > 0 && match < modes_s.nelements()) 
-		setOutOfIntervalMode(static_cast<OutOfIntervalMode>(match));
+	    uInt match = MUString::minimaxNC(mode, this->modes_s);
+	    if (mode.length() > 0 && match < this->modes_s.nelements()) 
+		this->setOutOfIntervalMode(static_cast<ChebyshevEnums::OutOfIntervalMode>(match));
 	    else 
 		throw AipsError(String("Unrecognized intervalMode: ") + mode);
 	}
@@ -386,11 +386,11 @@ template <class T>
 void ChebyshevParamModeImpl<AutoDiffA<T> >::getMode(RecordInterface& out) const
 {
     Vector<T> intv(2);
-    intv(0) = getIntervalMin().value();
-    intv(1) = getIntervalMax().value();
+    intv(0) = this->getIntervalMin().value();
+    intv(1) = this->getIntervalMax().value();
 
     out.define(RecordFieldId("interval"), intv);
-    out.define(RecordFieldId("default"), getDefault().value());
-    out.define(RecordFieldId("intervalMode"), modes_s(getOutOfIntervalMode()));
+    out.define(RecordFieldId("default"), this->getDefault().value());
+    out.define(RecordFieldId("intervalMode"), this->modes_s(this->getOutOfIntervalMode()));
 }
 

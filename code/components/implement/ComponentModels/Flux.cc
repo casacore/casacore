@@ -45,10 +45,10 @@
 
 template<class T> FluxRep<T>::
 FluxRep()
-  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, typename NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit("Jy"),
-   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
+   itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = 1;
   DebugAssert(ok(), AipsError);
@@ -56,10 +56,10 @@ FluxRep()
 
 template<class T> FluxRep<T>::
 FluxRep(T i) 
-  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, typename NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit("Jy"),
-   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
+   itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = i;
   DebugAssert(ok(), AipsError);
@@ -67,10 +67,10 @@ FluxRep(T i)
 
 template<class T> FluxRep<T>::
 FluxRep(T i, T q, T u, T v)
-  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, typename NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit("Jy"),
-   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
+   itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = i;
   itsVal(1) = q;
@@ -88,7 +88,7 @@ FluxRep(typename NumericTraits<T>::ConjugateType xx,
   :itsVal(4),
    itsPol(pol),
    itsUnit("Jy"),
-   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
+   itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = xx;
   itsVal(1) = xy;
@@ -99,10 +99,10 @@ FluxRep(typename NumericTraits<T>::ConjugateType xx,
 
 template<class T> FluxRep<T>::
 FluxRep(const Vector<T>& flux)
-  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, typename NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit("Jy"),
-   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
+   itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   DebugAssert(flux.nelements() == 4, AipsError);
   for (uInt i = 0 ; i < 4; i++) {
@@ -117,17 +117,17 @@ FluxRep(const Vector<typename NumericTraits<T>::ConjugateType>& flux,
   :itsVal(flux.copy()),
    itsPol(pol),
    itsUnit("Jy"),
-   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
+   itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
 FluxRep(const Quantum<Vector<T> >& flux)
-  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, typename NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit(flux.getFullUnit()),
-   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
+   itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   const Vector<T>& fluxVal(flux.getValue());
   DebugAssert(fluxVal.nelements() == 4, AipsError);
@@ -141,7 +141,7 @@ FluxRep(const Quantum<Vector<typename NumericTraits<T>::ConjugateType> >& flux,
   :itsVal(flux.getValue().copy()),
    itsPol(pol),
    itsUnit(flux.getFullUnit()),
-   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
+   itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   DebugAssert(ok(), AipsError);
 }
@@ -253,7 +253,7 @@ convertPol(ComponentType::Polarisation pol) {
 
     setPol(pol);                     // New pol rep label
 
-    if (!allNearAbs(itsErr, NumericTraits<T>::ConjugateType(0,0), 
+    if (!allNearAbs(itsErr, typename NumericTraits<T>::ConjugateType(0,0), 
 		    C::dbl_epsilon)) {
       LogIO logErr(LogOrigin("FluxRep", "convertPol()"));
       logErr << LogIO::WARN 
@@ -368,7 +368,7 @@ value(Quantum<Vector<typename NumericTraits<T>::ConjugateType> >&
   if (curUnit != itsUnit) {
     value.setUnit(itsUnit);
   }
-  Vector<NumericTraits<T>::ConjugateType>& newValue = value.getValue();
+  Vector<typename NumericTraits<T>::ConjugateType>& newValue = value.getValue();
   if (newValue.nelements() != 4) newValue.resize(4);
   for (uInt s = 0 ; s < 4; s++) {
     newValue(s) = itsVal(s);
@@ -568,31 +568,31 @@ fromRecord(String& errorMessage, const RecordInterface& record) {
       if (qh.isQuantumVectorDouble()) {
 	const Quantum<Vector<Double> > qVal = qh.asQuantumVectorDouble();
 	setUnit(qVal.getFullUnit());
-	Vector<NumericTraits<T>::ConjugateType> val(4);
+	Vector<typename NumericTraits<T>::ConjugateType> val(4);
 	convertArray(val, qVal.getValue());
 	setValue(val);
       } else if (qh.isQuantumVectorDComplex()) {
 	const Quantum<Vector<DComplex> >& qVal = qh.asQuantumVectorDComplex();
 	setUnit(qVal.getFullUnit());
-	Vector<NumericTraits<T>::ConjugateType> val(4);
+	Vector<typename NumericTraits<T>::ConjugateType> val(4);
 	convertArray(val, qVal.getValue());
 	setValue(val);
       } else if (qh.isQuantumVectorComplex()) {
 	const Quantum<Vector<Complex> >& qVal = qh.asQuantumVectorComplex();
 	setUnit(qVal.getFullUnit());
-	Vector<NumericTraits<T>::ConjugateType> val(4);
+	Vector<typename NumericTraits<T>::ConjugateType> val(4);
 	convertArray(val, qVal.getValue());
 	setValue(val);
       } else if (qh.isQuantumVectorFloat()) {
 	const Quantum<Vector<Float> >& qVal = qh.asQuantumVectorFloat();
 	setUnit(qVal.getFullUnit());
-	Vector<NumericTraits<T>::ConjugateType> val(4);
+	Vector<typename NumericTraits<T>::ConjugateType> val(4);
 	convertArray(val, qVal.getValue());
 	setValue(val);
       } else if (qh.isQuantumVectorInt()) {
 	const Quantum<Vector<Int> >& qVal = qh.asQuantumVectorInt();
 	setUnit(qVal.getFullUnit());
-	Vector<NumericTraits<T>::ConjugateType> val(4);
+	Vector<typename NumericTraits<T>::ConjugateType> val(4);
 	convertArray(val, qVal.getValue());
 	setValue(val);
       } else {
@@ -648,7 +648,7 @@ toRecord(String& errorMessage, RecordInterface& record) const {
     fluxCopy.value(qVal);
     qh = QuantumHolder(qVal);
   } else {
-    Quantum<Vector<NumericTraits<T>::ConjugateType> > qVal;
+    Quantum<Vector<typename NumericTraits<T>::ConjugateType> > qVal;
     value(qVal);
     qh = QuantumHolder(qVal);
   }
@@ -986,10 +986,10 @@ stokesToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out,
   const T q = in(1);
   const T u = in(2);
   const T v = in(3);
-  out(0) = NumericTraits<T>::ConjugateType(i + v);
-  out(1) = NumericTraits<T>::ConjugateType(q, u);
-  out(2) = NumericTraits<T>::ConjugateType(q, -u);
-  out(3) = NumericTraits<T>::ConjugateType(i - v);
+  out(0) = typename NumericTraits<T>::ConjugateType(i + v);
+  out(1) = typename NumericTraits<T>::ConjugateType(q, u);
+  out(2) = typename NumericTraits<T>::ConjugateType(q, -u);
+  out(3) = typename NumericTraits<T>::ConjugateType(i - v);
 }
 
 template<class T> void Flux<T>::
@@ -997,11 +997,11 @@ stokesToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out,
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
   DebugAssert(in.nelements() == 4, AipsError);
   DebugAssert(out.nelements() == 4, AipsError);
-  const NumericTraits<T>::ConjugateType i = in(0);
-  const NumericTraits<T>::ConjugateType q = in(1);
-  const NumericTraits<T>::ConjugateType& u = in(2);
-  const NumericTraits<T>::ConjugateType ju(-u.imag(), u.real());
-  const NumericTraits<T>::ConjugateType v = in(3);
+  const typename NumericTraits<T>::ConjugateType i = in(0);
+  const typename NumericTraits<T>::ConjugateType q = in(1);
+  const typename NumericTraits<T>::ConjugateType& u = in(2);
+  const typename NumericTraits<T>::ConjugateType ju(-u.imag(), u.real());
+  const typename NumericTraits<T>::ConjugateType v = in(3);
   out(0) = i + v;
   out(1) = q + ju;
   out(2) = q - ju;
@@ -1014,8 +1014,8 @@ circularToStokes(Vector<T>& out,
   DebugAssert(in.nelements() == 4, AipsError);
   DebugAssert(out.nelements() == 4, AipsError);
   const T rr = in(0).real();
-  const NumericTraits<T>::ConjugateType rl = in(1);
-  const NumericTraits<T>::ConjugateType lr = in(2);
+  const typename NumericTraits<T>::ConjugateType rl = in(1);
+  const typename NumericTraits<T>::ConjugateType lr = in(2);
   const T ll = in(3).real();
   const T two(2);
   out(0) = (rr + ll)/two;
@@ -1029,14 +1029,14 @@ circularToStokes(Vector<typename NumericTraits<T>::ConjugateType>& out,
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
   DebugAssert(in.nelements() == 4, AipsError);
   DebugAssert(out.nelements() == 4, AipsError);
-  const NumericTraits<T>::ConjugateType rr = in(0);
-  const NumericTraits<T>::ConjugateType rl = in(1);
-  const NumericTraits<T>::ConjugateType lr = in(2);
-  const NumericTraits<T>::ConjugateType ll = in(3);
+  const typename NumericTraits<T>::ConjugateType rr = in(0);
+  const typename NumericTraits<T>::ConjugateType rl = in(1);
+  const typename NumericTraits<T>::ConjugateType lr = in(2);
+  const typename NumericTraits<T>::ConjugateType ll = in(3);
   const T two(2);
   out(0) = (rr + ll)/two;
   out(1) = (rl + lr)/two;
-  out(2) = NumericTraits<T>::ConjugateType((rl.imag()-lr.imag())/two,
+  out(2) = typename NumericTraits<T>::ConjugateType((rl.imag()-lr.imag())/two,
 					   (lr.real()-rl.real())/two);
   out(3) = (rr - ll)/two;
 }
@@ -1050,10 +1050,10 @@ stokesToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out,
   const T q = in(1);
   const T u = in(2);
   const T v = in(3);
-  out(0) = NumericTraits<T>::ConjugateType(i + q);
-  out(1) = NumericTraits<T>::ConjugateType(u, v);
-  out(2) = NumericTraits<T>::ConjugateType(u, -v);
-  out(3) = NumericTraits<T>::ConjugateType(i - q);
+  out(0) = typename NumericTraits<T>::ConjugateType(i + q);
+  out(1) = typename NumericTraits<T>::ConjugateType(u, v);
+  out(2) = typename NumericTraits<T>::ConjugateType(u, -v);
+  out(3) = typename NumericTraits<T>::ConjugateType(i - q);
 }
 
 template<class T> void Flux<T>::
@@ -1061,11 +1061,11 @@ stokesToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out,
 	       const Vector<typename NumericTraits<T>::ConjugateType>& in) {
   DebugAssert(in.nelements() == 4, AipsError);
   DebugAssert(out.nelements() == 4, AipsError);
-  const NumericTraits<T>::ConjugateType i = in(0);
-  const NumericTraits<T>::ConjugateType q = in(1);
-  const NumericTraits<T>::ConjugateType u = in(2);
-  const NumericTraits<T>::ConjugateType& v = in(3);
-  const NumericTraits<T>::ConjugateType jv(-v.imag(), v.real());
+  const typename NumericTraits<T>::ConjugateType i = in(0);
+  const typename NumericTraits<T>::ConjugateType q = in(1);
+  const typename NumericTraits<T>::ConjugateType u = in(2);
+  const typename NumericTraits<T>::ConjugateType& v = in(3);
+  const typename NumericTraits<T>::ConjugateType jv(-v.imag(), v.real());
   out(0) = i + q;
   out(1) = u + jv;
   out(2) = u - jv;
@@ -1078,8 +1078,8 @@ linearToStokes(Vector<T>& out,
   DebugAssert(in.nelements() == 4, AipsError);
   DebugAssert(out.nelements() == 4, AipsError);
   const T xx = in(0).real();
-  const NumericTraits<T>::ConjugateType xy = in(1);
-  const NumericTraits<T>::ConjugateType yx = in(2);
+  const typename NumericTraits<T>::ConjugateType xy = in(1);
+  const typename NumericTraits<T>::ConjugateType yx = in(2);
   const T yy = in(3).real();
   const T two(2);
   out(0) = (xx + yy)/two;
@@ -1093,15 +1093,15 @@ linearToStokes(Vector<typename NumericTraits<T>::ConjugateType>& out,
 	       const Vector<typename NumericTraits<T>::ConjugateType>& in) {
   DebugAssert(in.nelements() == 4, AipsError);
   DebugAssert(out.nelements() == 4, AipsError);
-  const NumericTraits<T>::ConjugateType xx = in(0);
-  const NumericTraits<T>::ConjugateType xy = in(1);
-  const NumericTraits<T>::ConjugateType yx = in(2);
-  const NumericTraits<T>::ConjugateType yy = in(3);
+  const typename NumericTraits<T>::ConjugateType xx = in(0);
+  const typename NumericTraits<T>::ConjugateType xy = in(1);
+  const typename NumericTraits<T>::ConjugateType yx = in(2);
+  const typename NumericTraits<T>::ConjugateType yy = in(3);
   const T two(2);
   out(0) = (xx + yy)/two;
   out(1) = (xx - yy)/two;
   out(2) = (xy + yx)/two;
-  out(3) = NumericTraits<T>::ConjugateType((xy.imag()-yx.imag())/two,
+  out(3) = typename NumericTraits<T>::ConjugateType((xy.imag()-yx.imag())/two,
 					   (yx.real()-xy.real())/two);
 }
 
@@ -1110,12 +1110,12 @@ linearToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out,
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
   DebugAssert(in.nelements() == 4, AipsError);
   DebugAssert(out.nelements() == 4, AipsError);
-  const NumericTraits<T>::ConjugateType xx = in(0);
-  const NumericTraits<T>::ConjugateType& xy = in(1);
-  const NumericTraits<T>::ConjugateType jxy(-xy.imag(), xy.real());
-  const NumericTraits<T>::ConjugateType& yx = in(2);
-  const NumericTraits<T>::ConjugateType jyx(-yx.imag(), yx.real());
-  const NumericTraits<T>::ConjugateType yy = in(3);
+  const typename NumericTraits<T>::ConjugateType xx = in(0);
+  const typename NumericTraits<T>::ConjugateType& xy = in(1);
+  const typename NumericTraits<T>::ConjugateType jxy(-xy.imag(), xy.real());
+  const typename NumericTraits<T>::ConjugateType& yx = in(2);
+  const typename NumericTraits<T>::ConjugateType jyx(-yx.imag(), yx.real());
+  const typename NumericTraits<T>::ConjugateType yy = in(3);
   const T two(2);
   out(0) = (xx - jxy + jyx + yy)/two;
   out(1) = (xx + jxy + jyx - yy)/two;
@@ -1128,16 +1128,16 @@ circularToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out,
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
   DebugAssert(in.nelements() == 4, AipsError);
   DebugAssert(out.nelements() == 4, AipsError);
-  const NumericTraits<T>::ConjugateType rr = in(0);
-  const NumericTraits<T>::ConjugateType rl = in(1);
-  const NumericTraits<T>::ConjugateType lr = in(2);
-  const NumericTraits<T>::ConjugateType ll = in(3);
+  const typename NumericTraits<T>::ConjugateType rr = in(0);
+  const typename NumericTraits<T>::ConjugateType rl = in(1);
+  const typename NumericTraits<T>::ConjugateType lr = in(2);
+  const typename NumericTraits<T>::ConjugateType ll = in(3);
   const T two(2);
   out(0) = (rr + rl + lr + ll)/two;
-  out(1) = NumericTraits<T>::ConjugateType(
+  out(1) = typename NumericTraits<T>::ConjugateType(
 		     (-rr.imag() + rl.imag() - lr.imag() + ll.imag())/two,
                      ( rr.real() - rl.real() + lr.real() - ll.real())/two);
-  out(2) = NumericTraits<T>::ConjugateType(
+  out(2) = typename NumericTraits<T>::ConjugateType(
 		     ( rr.imag() + rl.imag() - lr.imag() - ll.imag())/two,
                      (-rr.real() - rl.real() + lr.real() + ll.real())/two);
   out(3) = (rr - rl - lr + ll)/two;

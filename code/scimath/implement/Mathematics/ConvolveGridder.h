@@ -36,7 +36,8 @@
 // </summary>
 
 template <class Domain, class Range>
-class ConvolveGridder : public Gridder<Domain, Range>{
+class ConvolveGridder : public Gridder<Domain, Range>
+{
 public:
 
   ConvolveGridder(const IPosition& shape, const Vector<Domain>& scale,
@@ -61,7 +62,6 @@ public:
   Int& cSampling();
 
 protected:
-
   virtual Range correctionFactor1D(Int loc, Int len);
 
 private:
@@ -71,5 +71,21 @@ private:
   Int sampling;
   Int support;
   String cType;
+
+public:
+  using Gridder<Domain,Range>::onGrid;
+protected:
+  //# Make members of parent classes known.
+  using Gridder<Domain,Range>::ndim;
+  using Gridder<Domain,Range>::shape;
+  using Gridder<Domain,Range>::scale;
+  using Gridder<Domain,Range>::offset;
+  using Gridder<Domain,Range>::posVec;
+  using Gridder<Domain,Range>::locVec;
+  using Gridder<Domain,Range>::shapeVec;
+  using Gridder<Domain,Range>::zeroShapeVec;
+  using Gridder<Domain,Range>::offsetVec;
+  using Gridder<Domain,Range>::centerVec;
+  using Gridder<Domain,Range>::fillCorrectionVectors;
 };
 #endif

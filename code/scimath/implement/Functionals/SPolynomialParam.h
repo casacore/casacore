@@ -95,8 +95,9 @@ template<class T> class Vector;
 //   <li> Nothing I know of
 // </todo>
 
-template<class T> class SPolynomialParam: public Function<T> {
- public:
+template<class T> class SPolynomialParam: public Function<T>
+{
+public:
   //# Constructors
   // Constructs a zero'th order polynomial, with a coeficcient of 0.0.
   SPolynomialParam();
@@ -146,8 +147,12 @@ template<class T> class SPolynomialParam: public Function<T> {
   // Returns the dimension of function
   virtual uInt ndim() const { return 1; };
 
+  //# Make members of parent classes known.
 protected:
-
+  using Function<T>::param_p;
+public:
+  using Function<T>::nparameters;
+  using Function<T>::mask;
 };
 
 #endif

@@ -418,6 +418,22 @@ private:
 
   PagedArray<T>  map_p;
   LatticeRegion* regionPtr_p;
+
+  //# Make members of parent class known.
+public:
+  using ImageInterface<T>::logSink;
+  using ImageInterface<T>::logger;
+  using ImageInterface<T>::imageInfo;
+  using ImageInterface<T>::coordinates;
+  using ImageInterface<T>::getDefaultMask;
+  using ImageInterface<T>::hasRegion;
+  using ImageInterface<T>::getImageRegionPtr;
+protected:
+  using ImageInterface<T>::setCoordsMember;
+  using ImageInterface<T>::setMiscInfoMember;
+  using ImageInterface<T>::setLogMember;
+  using ImageInterface<T>::setUnitMember;
+  using ImageInterface<T>::setImageInfoMember;
 };
 
 

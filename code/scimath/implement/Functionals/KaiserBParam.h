@@ -74,8 +74,9 @@
 //    <li> AipsError if incorrect parameter number specified.
 // </thrown>
 
-template<class T> class KaiserBParam : public Function<T> {
- public:
+template<class T> class KaiserBParam : public Function<T>
+{
+public:
   //# Enumerations
   // Parameter numbers
   enum { HEIGHT=0, CENTER, WIDTH, KBPAR };
@@ -104,6 +105,9 @@ template<class T> class KaiserBParam : public Function<T> {
 
   //# Member functions
 
+  //# Make members of parent classes known.
+protected:
+  using Function<T>::param_p;
 };
 
 #endif

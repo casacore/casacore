@@ -341,6 +341,17 @@ private:
   // Deletes allocated memory etc. Called by ~tor and any member which needs
   // to reallocate data.
   void cleanUp();
+
+  //# Make members of parent class known.
+public:
+  using ArrayMeasColumn<M>::measDesc;
+  using ArrayMeasColumn<M>::table;
+protected:
+  using ArrayMeasColumn<M>::itsDescPtr;
+  using ArrayMeasColumn<M>::itsMeasRef;
+  using ArrayMeasColumn<M>::itsNvals;
+  using ArrayMeasColumn<M>::itsVarRefFlag;
+  using ArrayMeasColumn<M>::itsVarOffFlag;
 };
 
 

@@ -102,8 +102,9 @@
 //  <li> Nothing I know of
 // </todo>
 
-template<class T> class HyperPlaneParam : public Function<T> {
- public:
+template<class T> class HyperPlaneParam : public Function<T>
+{
+public:
   //# Constructors
   // Construct an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialized to zero. The default plane has
@@ -127,14 +128,20 @@ template<class T> class HyperPlaneParam : public Function<T> {
   // parameters
   // <group>
   Bool operator==(const HyperPlaneParam<T> &other) const {
-    return (param_p == other.param_p); };
+    return (this->param_p == other.param_p); };
   Bool operator!=(const HyperPlaneParam<T> &other) const {
-    return (param_p != other.param_p); };
+    return (this->param_p != other.param_p); };
   // </group>
     
   //# Member functions
   // What is the dimension of the parameter list
-  virtual uInt ndim() const { return param_p.nelements(); };
+  virtual uInt ndim() const { return this->param_p.nelements(); };
+
+  //# Make members of parent classes known.
+protected:
+  using Function<T>::param_p;
+public:
+  using Function<T>::nparameters;
 };
 
 #endif

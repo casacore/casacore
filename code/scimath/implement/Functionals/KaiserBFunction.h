@@ -76,8 +76,9 @@
 // </thrown>
 //
 
-template<class T> class KaiserBFunction : public KaiserBParam<T> {
- public:
+template<class T> class KaiserBFunction : public KaiserBParam<T>
+{
+public:
   //# Constructors
   // Constructs the KaiserBFunction, Defaults:
   // height=1, center=0, width=1, kbpar=2.5.
@@ -113,6 +114,14 @@ template<class T> class KaiserBFunction : public KaiserBParam<T> {
   virtual Function<T> *clone() const { return new KaiserBFunction<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using KaiserBParam<T>::param_p;
+public:
+  using KaiserBParam<T>::KBPAR;
+  using KaiserBParam<T>::CENTER;
+  using KaiserBParam<T>::WIDTH;
+  using KaiserBParam<T>::HEIGHT;
 };
 
 #endif

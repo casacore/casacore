@@ -271,6 +271,16 @@ private:
    Vector<Int> makeNewStokes(const Vector<Int>& stokes1,
                              const Vector<Int>& stokes2);
    void setCoordinates();
+
+  //# Make members of parent class known.
+public:
+  using ImageInterface<T>::logger;
+  using ImageInterface<T>::coordinates;
+  using ImageInterface<T>::units;
+  using ImageInterface<T>::miscInfo;
+protected:
+  using ImageInterface<T>::setCoordsMember;
+  using ImageInterface<T>::setMiscInfoMember;
 };
 
 

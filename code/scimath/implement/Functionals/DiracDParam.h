@@ -78,8 +78,9 @@
 //    <li> AipsError if incorrect parameter number specified.
 // </thrown>
 
-template<class T> class DiracDParam : public Function<T> {
- public:
+template<class T> class DiracDParam : public Function<T>
+{
+public:
   //# Enumerations
   // Parameter numbers
   enum { HEIGHT=0, CENTER};
@@ -109,6 +110,11 @@ template<class T> class DiracDParam : public Function<T> {
 
   //# Member functions
 
+  //# Make members of parent classes known.
+protected:
+  using Function<T>::param_p;
+public:
+  using Function<T>::nparameters;
 };
 
 #endif

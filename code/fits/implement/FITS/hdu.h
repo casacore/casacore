@@ -167,24 +167,24 @@ class HeaderDataUnit {
 	Bool notnull(Int l) const { return Int_null < l ? True : False; }
 
     protected:
-    //	For input -- ~ should delete the keyword list: kwflag = 1
-    HeaderDataUnit(FitsInput &, FITS::HDUType, 
-		   FITSErrorHandler errhandler = FITSError::defaultHandler);
-    //	For output -- ~ should not delete keyword list: kwflag = 0
-    // 07/21/98 AKH Clarification: HeaderDataUnit has a copy of the
-    //              FitsKeywordList, and should delete it.  The kwflag
-    //              comments above are not important now.
-    HeaderDataUnit(FitsKeywordList &, FITS::HDUType, 
-		   FITSErrorHandler errhandler = FITSError::defaultHandler,
-		   FitsInput * = 0);
-	 // constructor for objects that write only required keyword to fits file.
-	 // the write method to call by these object should be those for the specific
-	 // hdu, such as write_bintbl_hdr().
-	 HeaderDataUnit(FITS::HDUType, 
-		   FITSErrorHandler errhandler = FITSError::defaultHandler,
-		   FitsInput * = 0);
-	 // for write required keywords only to use.
-    bool init_data_unit( FITS::HDUType t );
+	//	For input -- ~ should delete the keyword list: kwflag = 1
+	HeaderDataUnit(FitsInput &, FITS::HDUType, 
+		       FITSErrorHandler errhandler = FITSError::defaultHandler);
+	//	For output -- ~ should not delete keyword list: kwflag = 0
+	// 07/21/98 AKH Clarification: HeaderDataUnit has a copy of the
+	//              FitsKeywordList, and should delete it.  The kwflag
+	//              comments above are not important now.
+	HeaderDataUnit(FitsKeywordList &, FITS::HDUType, 
+		       FITSErrorHandler errhandler = FITSError::defaultHandler,
+		       FitsInput * = 0);
+	// constructor for objects that write only required keyword to fits file.
+	// the write method to call by these object should be those for the specific
+	// hdu, such as write_bintbl_hdr().
+	HeaderDataUnit(FITS::HDUType, 
+		       FITSErrorHandler errhandler = FITSError::defaultHandler,
+		       FitsInput * = 0);
+	// for write required keywords only to use.
+	bool init_data_unit( FITS::HDUType t );
 
 	FitsKeywordList &kwlist_;
 	ConstFitsKeywordList constkwlist_;
@@ -360,10 +360,10 @@ class PrimaryArray : public HeaderDataUnit {
 	// constructor from a FitsInput
 	PrimaryArray(FitsInput &, FITSErrorHandler= FITSError::defaultHandler);
 	// constructor from a FitsKeywordList
-   PrimaryArray(FitsKeywordList &, 
+	PrimaryArray(FitsKeywordList &, 
 		     FITSErrorHandler= FITSError::defaultHandler);
 	// constructor does not require a FitsKeywordList. call write_priArr_hdr() after construction.
-   PrimaryArray(FITSErrorHandler= FITSError::defaultHandler);
+	PrimaryArray(FITSErrorHandler= FITSError::defaultHandler);
 
 	// destructor
 	virtual ~PrimaryArray();
@@ -438,9 +438,9 @@ class PrimaryArray : public HeaderDataUnit {
         //     </group>
 	// </group>
 	//<group>
-   int write_priArr_hdr( FitsOutput &fout, int simple, int bitpix,     
-            int naxis, long naxes[], int extend );            
-   //</group>
+	int write_priArr_hdr( FitsOutput &fout, int simple, int bitpix,     
+			      int naxis, long naxes[], int extend );            
+	//</group>
 	// The `read()' and `write()' functions control reading and writing data
 	// from the external FITS I/O medium into the FITS array.  Appropriate
 	// conversions are made between FITS and local data representations.  One
@@ -509,7 +509,6 @@ class PrimaryArray : public HeaderDataUnit {
 	TYPE *array;
 
 	void pa_assign();
-
 };
 
 typedef PrimaryArray<unsigned char> BytePrimaryArray;
@@ -562,6 +561,22 @@ class ImageExtension : public PrimaryArray<TYPE> {
 
     private:
 	void ie_assign();
+
+	//# Make members in parent known
+    protected:
+	using PrimaryArray<TYPE>::assign;
+	using PrimaryArray<TYPE>::errmsg;
+	using PrimaryArray<TYPE>::init_data_unit;
+	using PrimaryArray<TYPE>::pa_assign;
+	using PrimaryArray<TYPE>::char_null;
+	using PrimaryArray<TYPE>::kwlist_;
+	using PrimaryArray<TYPE>::errfn;
+	using PrimaryArray<TYPE>::hdu_type;
+	using PrimaryArray<TYPE>::data_type;
+	using PrimaryArray<TYPE>::fits_data_size;
+	using PrimaryArray<TYPE>::fits_item_size;
+	using PrimaryArray<TYPE>::array;
+	using PrimaryArray<TYPE>::BADOPER;
 };
 
 typedef ImageExtension<unsigned char> ByteImageExtension;
@@ -655,6 +670,41 @@ class PrimaryGroup : public PrimaryArray<TYPE> {
 
     private:
 	void pg_assign();
+
+	//# Make members in parent known
+    protected:
+	using PrimaryArray<TYPE>::assign;
+	using PrimaryArray<TYPE>::errmsg;
+	using PrimaryArray<TYPE>::init_data_unit;
+	using PrimaryArray<TYPE>::pa_assign;
+	using PrimaryArray<TYPE>::asgdbl;
+	using PrimaryArray<TYPE>::nelements;
+	using PrimaryArray<TYPE>::localitemsize;
+	using PrimaryArray<TYPE>::fitsitemsize;
+	using PrimaryArray<TYPE>::read_data;
+	using PrimaryArray<TYPE>::write_data;
+	using PrimaryArray<TYPE>::char_null;
+	using PrimaryArray<TYPE>::kwlist_;
+	using PrimaryArray<TYPE>::errfn;
+	using PrimaryArray<TYPE>::err_status;
+	using PrimaryArray<TYPE>::hdu_type;
+	using PrimaryArray<TYPE>::data_type;
+	using PrimaryArray<TYPE>::fits_data_size;
+	using PrimaryArray<TYPE>::fits_item_size;
+	using PrimaryArray<TYPE>::array;
+	using PrimaryArray<TYPE>::totsize;
+	using PrimaryArray<TYPE>::dimn;
+	using PrimaryArray<TYPE>::no_dims;
+	using PrimaryArray<TYPE>::factor;
+	using PrimaryArray<TYPE>::ctype_x;
+	using PrimaryArray<TYPE>::crpix_x;
+	using PrimaryArray<TYPE>::crota_x;
+	using PrimaryArray<TYPE>::crval_x;
+	using PrimaryArray<TYPE>::cdelt_x;
+	using PrimaryArray<TYPE>::BADOPER;
+	using PrimaryArray<TYPE>::OK;
+	using PrimaryArray<TYPE>::NOMEM;
+	using PrimaryArray<TYPE>::BADIO;
 };
 
 typedef PrimaryGroup<unsigned char> BytePrimaryGroup;
@@ -857,6 +907,11 @@ class FitsArray : public FitsField<TYPE> {
 	int no_dims;
 	int *dimn;
 	int *factor;
+
+	//# Make members in parent known
+    protected:
+	using FitsField<TYPE>::no_elements;
+	using FitsField<TYPE>::field;
 };
 
 //<summary> FITS array of FitsBit type </summary>

@@ -104,8 +104,9 @@
 //  <li> Nothing I know of
 // </todo>
 
-template<class T> class HyperPlane : public HyperPlaneParam<T> {
- public:
+template<class T> class HyperPlane : public HyperPlaneParam<T>
+{
+public:
   //# Constructors
   // Construct an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialised to zero, and <src>m=0</src>
@@ -131,6 +132,11 @@ template<class T> class HyperPlane : public HyperPlaneParam<T> {
   virtual Function<T> *clone() const { return new HyperPlane<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using HyperPlaneParam<T>::param_p;
+public:
+  using HyperPlaneParam<T>::nparameters;
 };
 
 #define HyperPlane_PS HyperPlane
@@ -144,8 +150,9 @@ template<class T> class HyperPlane : public HyperPlaneParam<T> {
 // </synopsis>
 
 template <class T> class HyperPlane_PS<AutoDiff<T> > : 
-public HyperPlaneParam<AutoDiff<T> > {
- public:
+public HyperPlaneParam<AutoDiff<T> >
+{
+public:
   //# Construct
   // Constructors an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialized to zero, and <src>m=0</src>
@@ -175,6 +182,12 @@ public HyperPlaneParam<AutoDiff<T> > {
   virtual Function<AutoDiff<T> > *clone() const {
     return new HyperPlane_PS<AutoDiff<T> >(*this); };
   // </group>
+
+  //# Make members of parent classes known.
+protected:
+  using HyperPlaneParam<AutoDiff<T> >::param_p;
+public:
+  using HyperPlaneParam<AutoDiff<T> >::nparameters;
 };
 
 #undef HyperPlane_PS

@@ -176,6 +176,32 @@ public:
 private:
   // AutoDiff does not have a square() function, so one is provided here.
   T sq(T v) const;
+
+  //# Make members of parent classes known.
+protected:
+  using Gaussian3DParam<T>::param_p;
+  using Gaussian3DParam<T>::stoT_p;
+  using Gaussian3DParam<T>::stoP_p;
+  using Gaussian3DParam<T>::cosT_p;
+  using Gaussian3DParam<T>::cosP_p;
+  using Gaussian3DParam<T>::sinT_p;
+  using Gaussian3DParam<T>::sinP_p;
+  using Gaussian3DParam<T>::cosTcosP_p;
+  using Gaussian3DParam<T>::cosTsinP_p;
+  using Gaussian3DParam<T>::sinTcosP_p;
+  using Gaussian3DParam<T>::sinTsinP_p;
+public:
+  using Gaussian3DParam<T>::H;
+  using Gaussian3DParam<T>::CX;
+  using Gaussian3DParam<T>::CY;
+  using Gaussian3DParam<T>::CZ;
+  using Gaussian3DParam<T>::AX;
+  using Gaussian3DParam<T>::AY;
+  using Gaussian3DParam<T>::AZ;
+  using Gaussian3DParam<T>::THETA;
+  using Gaussian3DParam<T>::PHI;
+  using Gaussian3DParam<T>::fwhm2int;
+  using Gaussian3DParam<T>::settrigvals;
 };
 
 
@@ -215,6 +241,32 @@ public:
   virtual Function<AutoDiff<T> > *clone() const;
 private:
   T sq(T v) const;  
+
+  //# Make members of parent classes known.
+protected:
+  using Gaussian3DParam<AutoDiff<T> >::param_p;
+  using Gaussian3DParam<AutoDiff<T> >::stoT_p;
+  using Gaussian3DParam<AutoDiff<T> >::stoP_p;
+  using Gaussian3DParam<AutoDiff<T> >::cosT_p;
+  using Gaussian3DParam<AutoDiff<T> >::cosP_p;
+  using Gaussian3DParam<AutoDiff<T> >::sinT_p;
+  using Gaussian3DParam<AutoDiff<T> >::sinP_p;
+  using Gaussian3DParam<AutoDiff<T> >::cosTcosP_p;
+  using Gaussian3DParam<AutoDiff<T> >::cosTsinP_p;
+  using Gaussian3DParam<AutoDiff<T> >::sinTcosP_p;
+  using Gaussian3DParam<AutoDiff<T> >::sinTsinP_p;
+public:
+  using Gaussian3DParam<AutoDiff<T> >::H;
+  using Gaussian3DParam<AutoDiff<T> >::CX;
+  using Gaussian3DParam<AutoDiff<T> >::CY;
+  using Gaussian3DParam<AutoDiff<T> >::CZ;
+  using Gaussian3DParam<AutoDiff<T> >::AX;
+  using Gaussian3DParam<AutoDiff<T> >::AY;
+  using Gaussian3DParam<AutoDiff<T> >::AZ;
+  using Gaussian3DParam<AutoDiff<T> >::THETA;
+  using Gaussian3DParam<AutoDiff<T> >::PHI;
+  using Gaussian3DParam<AutoDiff<T> >::fwhm2int;
+  using Gaussian3DParam<AutoDiff<T> >::settrigvals;
 };
 
 #undef Gaussian3D_PS

@@ -95,8 +95,9 @@
 //   <li> Nothing I know of
 // </todo>
 
-template<class T> class CompoundParam : public Function<T> {
- public:
+template<class T> class CompoundParam : public Function<T>
+{
+public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
@@ -132,16 +133,18 @@ template<class T> class CompoundParam : public Function<T> {
     DebugAssert(nFunctions() > which, AipsError); return paroff_p[which]; };
   // Get the function number belonging to parameter list element which
   const uInt parameterFunction(uInt which) const {
-    DebugAssert(nparameters() > which, AipsError); return funpar_p[which]; };
+    DebugAssert(nparameters() > which, AipsError);
+    return funpar_p[which];
+  };
   // Returns the dimension of functions in the linear combination
   virtual uInt ndim() const { return ndim_p; };
 
- private:
+private:
   //# Data
   // Number of dimensions of underlying functions
   uInt ndim_p;
 
- protected:
+protected:
   //# Data
   // Pointer to each added function
   PtrBlock<Function<T> *> functionPtr_p;
@@ -152,6 +155,12 @@ template<class T> class CompoundParam : public Function<T> {
   // Index of local parameter
   Block<uInt> locpar_p;
 
+  //# Make members of parent classes known.
+protected:
+  using Function<T>::parset_p;
+  using Function<T>::param_p;
+public:
+  using Function<T>::nparameters;
 };
 
 #endif

@@ -60,6 +60,12 @@
 
 template<class T> class RFCubeLatticeIterator : public LatticeIterator<T>
 {
+//# Make members of parent class known.
+protected:
+  using LatticeIterator<T>::matrixCursor;
+  using LatticeIterator<T>::rwMatrixCursor;
+  using LatticeIterator<T>::woMatrixCursor;
+
 protected:
   Bool read,write;
   Int  iter_pos;

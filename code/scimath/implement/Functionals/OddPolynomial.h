@@ -79,8 +79,9 @@
 //   <li> Nothing I know off
 // </todo>
 
-template<class T> class OddPolynomial: public OddPolynomialParam<T> {
- public:
+template<class T> class OddPolynomial: public OddPolynomialParam<T>
+{
+public:
   //# Enumerations
   
   //# Constructors
@@ -111,6 +112,11 @@ template<class T> class OddPolynomial: public OddPolynomialParam<T> {
   virtual Function<T> *clone() const { return new OddPolynomial<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using OddPolynomialParam<T>::param_p;
+public:
+  using OddPolynomialParam<T>::nparameters;
 };
 
 #define OddPolynomial_PS OddPolynomial
@@ -124,8 +130,9 @@ template<class T> class OddPolynomial: public OddPolynomialParam<T> {
 // </synopsis>
 
 template <class T> class OddPolynomial_PS<AutoDiff<T> > : 
-public OddPolynomialParam<AutoDiff<T> > {
- public:
+public OddPolynomialParam<AutoDiff<T> >
+{
+public:
   //# Constructors
   // Constructs one dimensional OddPolynomials.
   // <group>
@@ -161,6 +168,11 @@ public OddPolynomialParam<AutoDiff<T> > {
     return new OddPolynomial<AutoDiff<T> >(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using OddPolynomialParam<AutoDiff<T> >::param_p;
+public:
+  using OddPolynomialParam<AutoDiff<T> >::nparameters;
 };
 
 #undef OddPolynomial_PS

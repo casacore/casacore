@@ -36,6 +36,47 @@
 template<class T> class Vector;
 class RecordInterface;
 
+// <summary>
+// Define enums for Chebyshev classes
+// </summary>
+class ChebyshevEnums
+{
+public:
+    // Modes that identify how this function behaves outside its Chebyshev
+    // interval (see setInterval()).
+    enum OutOfIntervalMode {
+
+	// return a constant, default value.  The value returned is 
+	// set with setDefault().
+	CONSTANT,
+
+	// return a constant value equal to the zero-th order coefficient
+	ZEROTH,
+
+	// evaluate the polynomial based on its coefficients just as it
+	// would be inside the interval.  Thus, the function's range is not
+	// guaranteed to remain within the characteristic bounds of the
+	// Chebyshev interval.  
+	EXTRAPOLATE,
+
+	// evaluate the function as if the range is cyclic, repeating the
+	// range values from its canonical domain.  The period of the cycle
+	// will be equal to getIntervalMax()-getIntervalMin().  When the 
+	// function is evaluated outside this interval, the input value will 
+	// shifted an integer number of periods until it falls within the 
+	// Chebyshev interval; the value returned is the polynomial evaluated 
+	// at the shifted (x-axis) value.  Obviously, this mode is most 
+	// expensive computationally when evaluating outside the range.
+	CYCLIC,
+
+	// evaluate the function at nearest interval edge
+	EDGE,
+
+	// number of enumerators
+	NOutOfIntervalModes };
+};
+
+
 // <summary> Parameter handling for Chebyshev polynomial parameters
 // </summary>
 
@@ -120,41 +161,9 @@ class RecordInterface;
 // </todo>
 
 template<class T>
-class  ChebyshevParam : public Function1D<T> {
+class  ChebyshevParam : public Function1D<T>
+{
 public: 
-    //# Enumerators
-    // modes that identify how this function behaves outside its Chebyshev
-    // interval (see setInterval()).
-    enum OutOfIntervalMode {
-
-	// return a constant, default value.  The value returned is 
-	// set with setDefault().
-	CONSTANT,
-
-	// return a constant value equal to the zero-th order coefficient
-	ZEROTH,
-
-	// evaluate the polynomial based on its coefficients just as it
-	// would be inside the interval.  Thus, the function's range is not
-	// guaranteed to remain within the characteristic bounds of the
-	// Chebyshev interval.  
-	EXTRAPOLATE,
-
-	// evaluate the function as if the range is cyclic, repeating the
-	// range values from its canonical domain.  The period of the cycle
-	// will be equal to getIntervalMax()-getIntervalMin().  When the 
-	// function is evaluated outside this interval, the input value will 
-	// shifted an integer number of periods until it falls within the 
-	// Chebyshev interval; the value returned is the polynomial evaluated 
-	// at the shifted (x-axis) value.  Obviously, this mode is most 
-	// expensive computationally when evaluating outside the range.
-	CYCLIC,
-
-	// evaluate the function at nearest interval edge
-	EDGE,
-
-	// number of enumerators
-	NOutOfIntervalModes };
 
     //# Constructors
     // create a zero-th order Chebyshev polynomial with the first coefficient
@@ -177,7 +186,7 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the Chebyshev interval and mode=CONSTANT.
     ChebyshevParam(const T &min, const T &max,
-		   const OutOfIntervalMode mode=ChebyshevParam<T>::CONSTANT,
+		   ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT,
 		   const T &defval=T(0));
   
     // create a fully specified Chebyshev polynomial.  
@@ -191,7 +200,7 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the canonical range and mode=CONSTANT.
     ChebyshevParam(const Vector<T> &coeffs, const T &min, const T &max, 
-		   const OutOfIntervalMode mode=ChebyshevParam<T>::CONSTANT, const T &defval=T(0));
+		   ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT, const T &defval=T(0));
   
     // create a fully specified Chebyshev polynomial.
     //   config  is a record that contains the non-coefficient data 
@@ -264,11 +273,13 @@ public:
 
     // set the behavior of this function when it is evaluated outside its
     // Chebyshev interval
-    void setOutOfIntervalMode(OutOfIntervalMode mode) { mode_p = mode; }
+    void setOutOfIntervalMode(ChebyshevEnums::OutOfIntervalMode mode)
+      { mode_p = mode; }
 
     // return the behavior of this function when it is evaluated outside of 
     // its Chebyshev interval.
-    OutOfIntervalMode getOutOfIntervalMode() const { return mode_p; }
+    ChebyshevEnums::OutOfIntervalMode getOutOfIntervalMode() const
+      { return mode_p; }
 
     // set the default value of this function.  This value is used when 
     // the getOutOfIntervalMode() returns Chebyshev::CONSTANT; it is returned
@@ -314,10 +325,18 @@ protected:
     // Highest inetrval bound
     T maxx_p;
     // Out-of-interval handling type
-    OutOfIntervalMode mode_p;
+    ChebyshevEnums::OutOfIntervalMode mode_p;
 
     static Vector<String> modes_s;
+
+  //# Make members of parent classes known.
+protected:
+  using Function1D<T>::param_p;
+public:
+  using Function1D<T>::nparameters;
+  using Function1D<T>::setMode;
 };
+
 
 // <summary> A ChebyshevParam with the get/setMode implementation </summary>
 //
@@ -327,20 +346,21 @@ protected:
 // <linkto class="ChebyshevParam">ChebyshevParam</linkto> for documentation
 // </synopsis>
 template <class T>
-class ChebyshevParamModeImpl : public ChebyshevParam<T> {
+class ChebyshevParamModeImpl : public ChebyshevParam<T>
+{
 public:
     ChebyshevParamModeImpl() : ChebyshevParam<T>() { }
 
     explicit ChebyshevParamModeImpl(const uInt n) : ChebyshevParam<T>(n) {}
 
     ChebyshevParamModeImpl(const T &min, const T &max,
-			   const typename ChebyshevParam<T>::OutOfIntervalMode mode=CONSTANT,
+			   typename ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT,
 			   const T &defval=T(0))
 	: ChebyshevParam<T>(min, max, mode, defval) {}
   
     ChebyshevParamModeImpl(const Vector<T> &coeffs, 
 			   const T &min, const T &max, 
-			   const typename ChebyshevParam<T>::OutOfIntervalMode mode=CONSTANT, 
+			   typename ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT, 
 			   const T &defval=T(0))
 	: ChebyshevParam<T>(coeffs, min, max, mode, defval) {}
   
@@ -381,6 +401,16 @@ public:
     // return True if the implementing function supports a mode.  This
     // implementation always returns True.
     virtual Bool hasMode() const;
+
+  //# Make members of parent classes known.
+protected:
+  using ChebyshevParam<T>::modes_s;
+public:
+  using ChebyshevParam<T>::setOutOfIntervalMode;
+  using ChebyshevParam<T>::getOutOfIntervalMode;
+  using ChebyshevParam<T>::getIntervalMin;
+  using ChebyshevParam<T>::getIntervalMax;
+  using ChebyshevParam<T>::getDefault;
 };
 
 #define ChebyshevParamModeImpl_PS ChebyshevParamModeImpl
@@ -403,13 +433,13 @@ public:
 	: ChebyshevParam<AutoDiff<T> >(n) {}
 
     ChebyshevParamModeImpl_PS(const AutoDiff<T> &min, const AutoDiff<T> &max,
-			      const typename ChebyshevParam<AutoDiff<T> >::OutOfIntervalMode mode=CONSTANT,
+			      typename ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT,
 			      const AutoDiff<T> &defval=AutoDiff<T>(0))
 	: ChebyshevParam<AutoDiff<T> >(min, max, mode, defval) {}
   
     ChebyshevParamModeImpl_PS(const Vector<AutoDiff<T> > &coeffs, 
 			      const AutoDiff<T> &min, const AutoDiff<T> &max, 
-			      const typename ChebyshevParam<AutoDiff<T> >::OutOfIntervalMode mode=CONSTANT, 
+			      typename ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT, 
 			      const AutoDiff<T> &defval=AutoDiff<T>(0))
 	: ChebyshevParam<AutoDiff<T> >(coeffs, min, max, mode, defval) {}
   
@@ -424,7 +454,18 @@ public:
   
     virtual void setMode(const RecordInterface& mode);
     virtual void getMode(RecordInterface& mode) const;
+
+  //# Make members of parent classes known.
+protected:
+  using ChebyshevParam<AutoDiff<T> >::modes_s;
+public:
+  using ChebyshevParam<AutoDiff<T> >::setOutOfIntervalMode;
+  using ChebyshevParam<AutoDiff<T> >::getOutOfIntervalMode;
+  using ChebyshevParam<AutoDiff<T> >::getIntervalMin;
+  using ChebyshevParam<AutoDiff<T> >::getIntervalMax;
+  using ChebyshevParam<AutoDiff<T> >::getDefault;
 };
+
 
 #define ChebyshevParamModeImpl_PSA ChebyshevParamModeImpl
 
@@ -447,14 +488,14 @@ public:
 
     ChebyshevParamModeImpl_PSA(const AutoDiffA<T> &min, 
 			       const AutoDiffA<T> &max,
-			       const typename ChebyshevParam<AutoDiffA<T> >::OutOfIntervalMode mode=CONSTANT,
+			       typename ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT,
 			       const AutoDiffA<T> &defval=AutoDiffA<T>(0))
 	: ChebyshevParam<AutoDiffA<T> >(min, max, mode, defval) {}
   
     ChebyshevParamModeImpl_PSA(const Vector<AutoDiffA<T> > &coeffs, 
 			       const AutoDiffA<T> &min, 
 			       const AutoDiffA<T> &max, 
-			       const typename ChebyshevParam<AutoDiffA<T> >::OutOfIntervalMode mode=CONSTANT, 
+			       typename ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT, 
 			       const AutoDiffA<T> &defval=AutoDiffA<T>(0))
 	: ChebyshevParam<AutoDiffA<T> >(coeffs, min, max, mode, defval) {}
   
@@ -469,6 +510,16 @@ public:
   
     virtual void setMode(const RecordInterface& mode);
     virtual void getMode(RecordInterface& mode) const;
+
+  //# Make members of parent classes known.
+protected:
+  using ChebyshevParam<AutoDiffA<T> >::modes_s;
+public:
+  using ChebyshevParam<AutoDiffA<T> >::setOutOfIntervalMode;
+  using ChebyshevParam<AutoDiffA<T> >::getOutOfIntervalMode;
+  using ChebyshevParam<AutoDiffA<T> >::getIntervalMin;
+  using ChebyshevParam<AutoDiffA<T> >::getIntervalMax;
+  using ChebyshevParam<AutoDiffA<T> >::getDefault;
 };
 
 

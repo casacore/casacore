@@ -93,8 +93,9 @@ template<class T> class Vector;
 //   <li> Nothing I know of
 // </todo>
 
-template<class T> class EvenPolynomialParam: public Function1D<T> {
- public:
+template<class T> class EvenPolynomialParam: public Function1D<T>
+{
+public:
   //# Constructors
   // Constructs a zero'th order polynomial, with a coeficcient of 0.0.
   EvenPolynomialParam();
@@ -141,8 +142,11 @@ template<class T> class EvenPolynomialParam: public Function1D<T> {
   // Set all the coefficients at once, throw away all existing coefficients.
   void setCoefficients(const Vector<T> &coefficients);
 
+  //# Make members of parent classes known.
 protected:
-
+  using Function1D<T>::param_p;
+public:
+  using Function1D<T>::nparameters;
 };
 
 #endif

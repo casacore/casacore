@@ -62,8 +62,9 @@
 //
 
 template <class T, class U, class V, Bool hasX, Bool hasParam>
-class WrapperData : public WrapperBase<T> {
- public:
+class WrapperData : public WrapperBase<T>
+{
+public:
   //# Constructors
   // Default constructor: to allow arrays of functions
   WrapperData();
@@ -79,8 +80,12 @@ class WrapperData : public WrapperBase<T> {
 
   //# Member functions
 
- protected:
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
+
 
 #define WrapperData_TT WrapperData
 
@@ -92,9 +97,11 @@ class WrapperData : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_TT<T,T,T,True,True> : public WrapperBase<T> {
+class WrapperData_TT<T,T,T,True,True> : public WrapperBase<T>
+{
   typedef WrapperData_TT<T,T,T,True,True> myData;
- public:
+
+public:
   //# Constructors
   // Standard constructor
   explicit WrapperData_TT(T(*f)(const T&, const T&), uInt dim=1) :
@@ -116,21 +123,26 @@ class WrapperData_TT<T,T,T,True,True> : public WrapperBase<T> {
 
   //# Member functions
 
- protected:
+protected:
   //# Data
   // Function to call
   T (*pf_p)(const T&, const T&);
  
- private:
+private:
   // Copy constructor and assignment (not implemented)
   // <group>
   WrapperData_TT(const myData &other);
   myData &operator=(const myData &other);
   // </group>
 
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_TT
+
 
 #define WrapperData_VT WrapperData
 
@@ -142,9 +154,11 @@ class WrapperData_TT<T,T,T,True,True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_VT<T,Vector<T>,T,True,True> : public WrapperBase<T> {
+class WrapperData_VT<T,Vector<T>,T,True,True> : public WrapperBase<T>
+{
   typedef WrapperData_VT<T,Vector<T>,T,True,True> myData;
- public:
+
+public:
   explicit WrapperData_VT(T(*f)(const Vector<T>&, const T&), uInt dim=1) :
     WrapperBase<T>(dim), pf_p(f) {};
   virtual ~WrapperData_VT() {};
@@ -154,14 +168,22 @@ class WrapperData_VT<T,Vector<T>,T,True,True> : public WrapperBase<T> {
       for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
       return pf_p(arg_p, par[0]); };
     return T(0); };
- protected:
+
+protected:
   T (*pf_p)(const Vector<T>&, const T&);
- private:
+
+private:
   WrapperData_VT(const myData &other);
   myData &operator=(const myData &other);
+
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_VT
+
 
 #define WrapperData_TV WrapperData
 
@@ -173,9 +195,11 @@ class WrapperData_VT<T,Vector<T>,T,True,True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_TV<T,T,Vector<T>,True,True> : public WrapperBase<T> {
+class WrapperData_TV<T,T,Vector<T>,True,True> : public WrapperBase<T>
+{
   typedef WrapperData_TV<T,T,Vector<T>,True,True> myData;
- public:
+
+public:
   explicit WrapperData_TV(T(*f)(const T&, const Vector<T>&), uInt dim=1) :
     WrapperBase<T>(dim), pf_p(f) {};
   virtual ~WrapperData_TV() {};
@@ -186,14 +210,22 @@ class WrapperData_TV<T,T,Vector<T>,True,True> : public WrapperBase<T> {
 		  par);
     };
     return T(0); };
- protected:
+
+protected:
   T (*pf_p)(const T&, const Vector<T>&);
- private:
+
+private:
   WrapperData_TV(const myData &other);
   myData &operator=(const myData &other);
+
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_TV
+
 
 #define WrapperData_VV WrapperData
 
@@ -206,9 +238,11 @@ class WrapperData_TV<T,T,Vector<T>,True,True> : public WrapperBase<T> {
 
 template <class T>
 class WrapperData_VV<T,Vector<T>,Vector<T>,True,True> :
-public WrapperBase<T> {
+public WrapperBase<T>
+{
   typedef WrapperData_VV<T,Vector<T>,Vector<T>,True,True> myData;
- public:
+
+public:
   explicit WrapperData_VV(T(*f)(const Vector<T>&, const Vector<T>&),
 			    uInt dim=1) :
     WrapperBase<T>(dim), pf_p(f) {};
@@ -219,14 +253,22 @@ public WrapperBase<T> {
       for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
       return pf_p(arg_p, par); };
     return T(0); };
- protected:
+
+protected:
   T (*pf_p)(const Vector<T>&, const Vector<T>&);
- private:
+
+private:
   WrapperData_VV(const myData &other);
   myData &operator=(const myData &other);
+
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_VV
+
 
 #define WrapperData_FT WrapperData
 
@@ -238,9 +280,11 @@ public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_FT<T,T,T,False,True> : public WrapperBase<T> {
+class WrapperData_FT<T,T,T,False,True> : public WrapperBase<T>
+{
   typedef WrapperData_FT<T,T,T,False,True> myData;
- public:
+
+public:
   explicit WrapperData_FT(T(*f)(const T&)) :
     WrapperBase<T>(0), pf_p(f) {};
   virtual ~WrapperData_FT() {};
@@ -248,14 +292,22 @@ class WrapperData_FT<T,T,T,False,True> : public WrapperBase<T> {
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p(par[0]);
     return T(0); };
- protected:
+
+protected:
   T (*pf_p)(const T&);
- private:
+
+private:
   WrapperData_FT(const myData &other);
   myData &operator=(const myData &other);
+
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_FT
+
 
 #define WrapperData_FV WrapperData
 
@@ -267,9 +319,11 @@ class WrapperData_FT<T,T,T,False,True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_FV<T,T,Vector<T>,False,True> : public WrapperBase<T> {
+class WrapperData_FV<T,T,Vector<T>,False,True> : public WrapperBase<T>
+{
   typedef WrapperData_FV<T,T,Vector<T>,False,True> myData;
- public:
+
+public:
   explicit WrapperData_FV(T(*f)(const Vector<T>&)) :
     WrapperBase<T>(0), pf_p(f) {};
   virtual ~WrapperData_FV() {};
@@ -277,14 +331,22 @@ class WrapperData_FV<T,T,Vector<T>,False,True> : public WrapperBase<T> {
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p(par);
     return T(0); };
- protected:
+
+protected:
   T (*pf_p)(const Vector<T>&);
- private:
+
+private:
   WrapperData_FV(const myData &other);
   myData &operator=(const myData &other);
+
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_FV
+
 
 #define WrapperData_TF WrapperData
 
@@ -296,9 +358,11 @@ class WrapperData_FV<T,T,Vector<T>,False,True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_TF<T,T,T,True,False> : public WrapperBase<T> {
+class WrapperData_TF<T,T,T,True,False> : public WrapperBase<T>
+{
   typedef WrapperData_TF<T,T,T,True,False> myData;
- public:
+
+public:
   explicit WrapperData_TF(T(*f)(const T&), uInt dim=1) :
     WrapperBase<T>(dim), pf_p(f) {};
   virtual ~WrapperData_TF() {};
@@ -308,14 +372,22 @@ class WrapperData_TF<T,T,T,True,False> : public WrapperBase<T> {
       return pf_p((*static_cast<const typename Function<T>::FunctionArg>(x)));
     };
     return T(0); };
- protected:
+
+protected:
   T (*pf_p)(const T&);
- private:
+
+private:
   WrapperData_TF(const myData &other);
   myData &operator=(const myData &other);
+
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_TF
+
 
 #define WrapperData_VF WrapperData
 
@@ -327,9 +399,11 @@ class WrapperData_TF<T,T,T,True,False> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_VF<T,Vector<T>,T,True,False> : public WrapperBase<T> {
+class WrapperData_VF<T,Vector<T>,T,True,False> : public WrapperBase<T>
+{
   typedef WrapperData_VF<T,Vector<T>,T,True,False> myData;
- public:
+
+public:
   explicit WrapperData_VF(T(*f)(const Vector<T>&), uInt dim=1) :
     WrapperBase<T>(dim), pf_p(f) {};
   virtual ~WrapperData_VF() {};
@@ -339,14 +413,22 @@ class WrapperData_VF<T,Vector<T>,T,True,False> : public WrapperBase<T> {
       for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
       return pf_p(arg_p); };
     return T(0); };
- protected:
+
+protected:
   T (*pf_p)(const Vector<T>&);
- private:
+
+private:
   WrapperData_VF(const myData &other);
   myData &operator=(const myData &other);
+
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_VF
+
 
 #define WrapperData_FF WrapperData
 
@@ -358,9 +440,11 @@ class WrapperData_VF<T,Vector<T>,T,True,False> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_FF<T,T,T,False,False> : public WrapperBase<T> {
+class WrapperData_FF<T,T,T,False,False> : public WrapperBase<T>
+{
   typedef WrapperData_FF<T,T,T,True,False> myData;
- public:
+
+public:
   explicit WrapperData_FF(T(*f)()) :
     WrapperBase<T>(0), pf_p(f) {};
   virtual ~WrapperData_FF() {};
@@ -368,13 +452,21 @@ class WrapperData_FF<T,T,T,False,False> : public WrapperBase<T> {
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p();
     return T(0); };
- protected:
+
+protected:
   T (*pf_p)();
- private:
+
+private:
   WrapperData_FF(const myData &other);
   myData &operator=(const myData &other);
+
+protected:
+  //# Make members of parent classes known.
+  using WrapperBase<T>::ndim_p;
+  using WrapperBase<T>::arg_p;
 };
 
 #undef WrapperData_FF
+
 
 #endif

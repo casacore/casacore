@@ -152,7 +152,7 @@ template <class T> class FunctionHolder : public RecordTransformable {
   // Add a function
   Bool addFunction(const Function<T> &fnc); 
   // Get the type of currently filled holder
-  FunctionHolder<T>::Types type() const;
+  Types type() const;
   // Create a Function from a record. An error message is generated, and False
   // returned if an invalid record is given. A valid record will return True.
   // A valid record contains at least the following fields (any additional fields are

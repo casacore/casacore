@@ -30,6 +30,8 @@
 #include <measures/Measures/MeasBase.h>
 #include <measures/Measures/MeasConvert.h>
 #include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/MCBase.h>
+#include <measures/Measures/MRBase.h>
 
 //# Constructors
 template<class M>

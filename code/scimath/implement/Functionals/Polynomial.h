@@ -85,8 +85,9 @@
 //   orders will be useful eventually.
 // </todo>
 
-template<class T> class Polynomial: public PolynomialParam<T> {
- public:
+template<class T> class Polynomial: public PolynomialParam<T>
+{
+public:
   //# Enumerations
   
   //# Constructors
@@ -120,6 +121,13 @@ template<class T> class Polynomial: public PolynomialParam<T> {
   virtual Function<T> *clone() const { return new Polynomial<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using PolynomialParam<T>::param_p;
+public:
+  using PolynomialParam<T>::nparameters;
+  using PolynomialParam<T>::order;
+
 };
 
 #define Polynomial_PS Polynomial
@@ -133,8 +141,9 @@ template<class T> class Polynomial: public PolynomialParam<T> {
 // </synopsis>
 
 template <class T> class Polynomial_PS<AutoDiff<T> > : 
-public PolynomialParam<AutoDiff<T> > {
- public:
+public PolynomialParam<AutoDiff<T> >
+{
+public:
   //# Constructors
   // Constructs one dimensional Polynomials.
   // <group>
@@ -170,6 +179,12 @@ public PolynomialParam<AutoDiff<T> > {
     return new Polynomial<AutoDiff<T> >(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using PolynomialParam<AutoDiff<T> >::param_p;
+public:
+  using PolynomialParam<AutoDiff<T> >::nparameters;
+  using PolynomialParam<AutoDiff<T> >::order;
 };
 
 #undef Polynomial_PS

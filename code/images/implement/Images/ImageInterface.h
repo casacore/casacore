@@ -142,6 +142,10 @@ class TiledShape;
 
 template <class T> class ImageInterface: public MaskedLattice<T>
 {
+  //# Make members of parent class known.
+public:
+  using MaskedLattice<T>::shape;
+
 public: 
   ImageInterface();
 

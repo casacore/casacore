@@ -75,8 +75,9 @@
 // </thrown>
 //
 
-template<class T> class GNoiseFunction : public GNoiseParam<T> {
- public:
+template<class T> class GNoiseFunction : public GNoiseParam<T>
+{
+public:
   //# Constructors
   // Constructs the GNoise, Defaults:
   // mean=0, var=1.0
@@ -109,6 +110,11 @@ template<class T> class GNoiseFunction : public GNoiseParam<T> {
   virtual Function<T> *clone() const { return new GNoiseFunction<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using GNoiseParam<T>::param_p;
+public:
+  using GNoiseParam<T>::noise_p;
 };
 
 #endif

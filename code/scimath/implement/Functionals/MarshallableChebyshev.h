@@ -128,8 +128,8 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the Chebyshev interval and mode=CONSTANT.
     MarshallableChebyshev(const T &min, const T &max,
-			    const typename ChebyshevParam<T>::
-			    OutOfIntervalMode mode=CONSTANT,
+			    const typename ChebyshevEnums::
+			    OutOfIntervalMode mode=ChebyshevEnums::CONSTANT,
 			    const T &defval=T(0)) :
 	Chebyshev<T>(min, max, mode, defval), FunctionMarshallable(FUNCTYPE) 
     {}
@@ -146,8 +146,8 @@ public:
     //      the canonical range and mode=CONSTANT.
     MarshallableChebyshev(const Vector<T> &coeffs, 
 			    const T &min, const T &max, 
-			    const typename ChebyshevParam<T>::
-			    OutOfIntervalMode mode=CONSTANT, 
+			    const typename ChebyshevEnums::
+			    OutOfIntervalMode mode=ChebyshevEnums::CONSTANT, 
 			    const T &defval=T(0)) :
 	Chebyshev<T>(coeffs, min, max, mode, defval), 
 	FunctionMarshallable(FUNCTYPE)  

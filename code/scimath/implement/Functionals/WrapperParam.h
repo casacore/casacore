@@ -75,8 +75,9 @@
 // </todo>
 
 
-template <class T> class WrapperParam : public Function<T> {
- public:
+template <class T> class WrapperParam : public Function<T>
+{
+public:
   //# Constructors
   // Construct with the given parameters
   // <group>
@@ -98,8 +99,9 @@ template <class T> class WrapperParam : public Function<T> {
 
   //# Member functions
 
- protected:
-
+protected:
+  //# Make members of parent classes known.
+  using Function<T>::param_p;
 };
 
 #endif

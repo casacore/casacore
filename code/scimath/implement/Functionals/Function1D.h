@@ -70,9 +70,9 @@
 // </templating>
 
 
-template<class T, class U=T> class Function1D : public Function<T,U> {
-
- public:
+template<class T, class U=T> class Function1D : public Function<T,U>
+{
+public:
   //# Typedefs
   typedef const T* FunctionArg;
 
@@ -91,6 +91,12 @@ template<class T, class U=T> class Function1D : public Function<T,U> {
   // Returns the number of dimensions of function
   virtual uInt ndim() const { return 1; }
 
+  //# Make members of parent classes known.
+protected:
+  using Function<T,U>::param_p;
+public:
+  using Function<T,U>::nparameters;
+  using Function<T,U>::setMode;
 };
 
 #endif

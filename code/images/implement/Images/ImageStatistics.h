@@ -157,6 +157,32 @@ private:
    typedef typename NumericTraits<T>::PrecisionType AccumType;
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
                            const Matrix<AccumType>& ord);
+
+
+  //# Make members of parent class known.
+protected:
+  using LatticeStatistics<T>::locInLattice;
+  using LatticeStatistics<T>::setStream;
+  using LatticeStatistics<T>::error_p;
+  using LatticeStatistics<T>::goodParameterStatus_p;
+  using LatticeStatistics<T>::haveLogger_p;
+  using LatticeStatistics<T>::displayAxes_p;
+  using LatticeStatistics<T>::cursorAxes_p;
+  using LatticeStatistics<T>::doRobust_p;
+  using LatticeStatistics<T>::fixedMinMax_p;
+  using LatticeStatistics<T>::minPos_p;
+  using LatticeStatistics<T>::maxPos_p;
+  using LatticeStatistics<T>::blcParent_p;
+public:
+  using LatticeStatistics<T>::NPTS;
+  using LatticeStatistics<T>::SUM;
+  using LatticeStatistics<T>::FLUX;
+  using LatticeStatistics<T>::MEAN;
+  using LatticeStatistics<T>::MEDIAN;
+  using LatticeStatistics<T>::RMS;
+  using LatticeStatistics<T>::SIGMA;
+  using LatticeStatistics<T>::MIN;
+  using LatticeStatistics<T>::MAX;
 };
 
 

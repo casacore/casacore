@@ -81,8 +81,9 @@
 // </thrown>
 //
 
-template<class T> class SincFunction : public SincParam<T> {
- public:
+template<class T> class SincFunction : public SincParam<T>
+{
+public:
   //# Constructors
   // Constructs the SincFunction, Defaults:
   // height=1, center=0, width=1.
@@ -122,6 +123,14 @@ template<class T> class SincFunction : public SincParam<T> {
   virtual Function<T> *clone() const { return new SincFunction<T>(*this); };
   // </group>
 
+  //# Make members of parent classes known.
+protected:
+  using SincParam<T>::param_p;
+public:
+  using SincParam<T>::nparameters;
+  using SincParam<T>::CENTER;
+  using SincParam<T>::WIDTH;
+  using SincParam<T>::HEIGHT;
 };
 
 #endif

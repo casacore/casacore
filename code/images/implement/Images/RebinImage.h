@@ -192,6 +192,12 @@ private:
                                            const CoordinateSystem& cSysIn, 
                                            const IPosition& shapeIn, 
                                            const IPosition& shapeOut);
+
+  //# Make members of parent class known.
+public:
+  using ImageInterface<T>::logger;
+protected:
+  using ImageInterface<T>::setCoordsMember;
 };
 
 
