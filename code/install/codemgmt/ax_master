@@ -4241,3 +4241,20 @@
 14 103 src mv trial/apps/aips2help/CHANGELOG.LAST CHANGELOG.LAST
 14 104 src rm atnf/fortran/fftsubs.f
 14 111 sys rm libexec/pgplotwidget_meta.g
+14 123 src rm trial/implement/MeasurementSets/MSSpWindowBuffer.h
+14 123 src rm trial/implement/MeasurementSets/MSSpWindowBuffer.cc
+14 123 src rm trial/implement/MeasurementSets/MSFeedBuffer.h
+14 123 src rm trial/implement/MeasurementSets/MSFeedBuffer.cc
+14 123 src rm trial/implement/MeasurementSets/MSFieldBuffer.h
+14 123 src rm trial/implement/MeasurementSets/MSFieldBuffer.cc
+14 123 src rm trial/implement/MeasurementSets/MSMainBuffer.h
+14 123 src rm trial/implement/MeasurementSets/MSMainBuffer.cc
+14 123 src rm trial/implement/MeasurementSets/MSSourceBuffer.h
+14 123 src rm trial/implement/MeasurementSets/MSSourceBuffer.cc
+14 123 src rm trial/implement/MeasurementSets/MSDataDescBuffer.h
+14 123 src rm trial/implement/MeasurementSets/MSDataDescBuffer.cc
+14 123 src rm trial/implement/MeasurementSets/MSPolBuffer.h
+14 123 src rm trial/implement/MeasurementSets/MSPolBuffer.cc
+14 123 src rm trial/implement/MeasurementSets/MSAntennaBuffer.h
+14 123 src rm trial/implement/MeasurementSets/MSAntennaBuffer.cc
+14 123 src rm trial/implement/MeasurementSets/MSBuffer.h
