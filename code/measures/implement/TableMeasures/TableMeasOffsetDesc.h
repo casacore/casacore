@@ -1,5 +1,5 @@
 //# TableMeasOffseDesc.h: Definition of an Offset measure in a Table.
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -188,7 +188,10 @@ public:
   void resetOffset (const Measure& offset);
 
   // Write the information into the record.
-  void write (TableDesc& td, TableRecord& measInfo, const String& prefix);
+  // <group>
+  void write (TableDesc&, TableRecord& measInfo, const String& prefix);
+  void write (Table&, TableRecord& measInfo, const String& prefix);
+  // </group>
 
 private:
   TableMeasDescBase* itsTMDesc;      //# Stores variable offset if applicable
@@ -200,6 +203,9 @@ private:
   // Constructor which uses the measInfo TableRecord.
   TableMeasOffsetDesc (const TableRecord& measInfo, const String& prefix,
 		       const Table&);
+
+  // Write the actual keywords.
+  void writeKeys (TableRecord& measInfo, const String& prefix);
 };
 
 
