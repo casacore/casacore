@@ -1016,6 +1016,22 @@ stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out,
 }
 
 template<class T> void Flux<T>::
+stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out, 
+	       const Vector<NumericTraits<T>::ConjugateType>& in) {
+  DebugAssert(in.nelements() == 4, AipsError);
+  DebugAssert(out.nelements() == 4, AipsError);
+  const NumericTraits<T>::ConjugateType i = in(0);
+  const NumericTraits<T>::ConjugateType q = in(1);
+  const NumericTraits<T>::ConjugateType u = in(2);
+  const NumericTraits<T>::ConjugateType& v = in(3);
+  const NumericTraits<T>::ConjugateType jv(-v.im, v.re);
+  out(0) = i + q;
+  out(1) = u + jv;
+  out(2) = u - jv;
+  out(3) = i - q;
+}
+
+template<class T> void Flux<T>::
 linearToStokes(Vector<T>& out, 
 	       const Vector<NumericTraits<T>::ConjugateType>& in) {
   DebugAssert(in.nelements() == 4, AipsError);
