@@ -1,5 +1,5 @@
 //# MVDouble.cc: to disticguish between internal and external Measure values
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -74,13 +74,8 @@ MVDouble::MVDouble(const Vector<Double> &other) {
 }
 
 MVDouble::MVDouble(const Vector<Quantity> &other) {
-  uInt i = other.nelements();
-  if (i == 0) {
-    val = 0.0;
-  } else if (i == 1) {
-    val = (other(0)).get().getValue();
-  } else {
-    throw (AipsError("Illegal vector length in MVDouble constructor"));
+  if (!putValue(other)) {
+    throw (AipsError("Illegal quantity vector in MVDouble constructor"));
   };
 }
 
@@ -158,4 +153,22 @@ void MVDouble::putVector(const Vector<Double> &in) {
   } else {
     val = in(0);
   };
+}
+
+Vector<Quantum<Double> > MVDouble::getRecordValue() const {
+  Vector<Quantum<Double> > tmp(1);
+  tmp(0) = Quantity(val, "");
+  return tmp;
+}
+
+Bool MVDouble::putValue(const Vector<Quantum<Double> > &in) {
+  uInt i = in.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = (in(0)).get().getValue();
+  } else {
+    return False;
+  };
+  return True;
 }

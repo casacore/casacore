@@ -1,5 +1,5 @@
 //# MVRadialVelocity.h: Internal value for MRadialvelocity
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -166,6 +166,14 @@ public:
   virtual Vector<Double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
   virtual void putVector(const Vector<Double> &in);
+  // Get the internal value as a <src>Vector<Quantity></src>. Usable in
+  // records. The getXRecordValue() gets additional information for records.
+  // Note that the Vectors could be empty.
+  // <group>
+  virtual Vector<Quantum<Double> > getRecordValue() const;
+  // </group>
+  // Set the internal value if correct values and dimensions
+  virtual Bool putValue(const Vector<Quantum<Double> > &in);
   
 private:
   //# Data

@@ -77,13 +77,8 @@ MVDoppler::MVDoppler(const Vector<Double> &other) {
 }
 
 MVDoppler::MVDoppler(const Vector<Quantity> &other) {
-  uInt i = other.nelements();
-  if (i == 0) {
-    val = 0.0;
-  } else if (i == 1) {
-    val = makeD(other(0).getValue(), other(0).getFullUnit());
-  } else {
-    throw (AipsError("Illegal vector length in MVDoppler constructor"));
+  if (!putValue(other)) {
+    throw (AipsError("Illegal quantity vector in MVDoppler constructor"));
   };
 }
 
@@ -172,6 +167,38 @@ void MVDoppler::putVector(const Vector<Double> &in) {
   } else {
     val = in(0);
   };
+}
+
+Vector<Quantum<Double> > MVDoppler::getRecordValue() const {
+  Vector<Quantum<Double> > tmp(1);
+  tmp(0) = get();
+  return tmp;
+}
+
+Bool MVDoppler::putValue(const Vector<Quantum<Double> > &in) {
+  static Bool needInit = True;
+  static UnitVal Velocity;
+  static Double LVel;
+  if (needInit) {
+    needInit = False;
+    Velocity = UnitVal::LENGTH/UnitVal::TIME;
+    LVel = (QC::c).getBaseValue();
+  };
+  uInt i = in.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    UnitVal dt = in(0).getFullUnit().getValue();
+    if (dt == UnitVal::NODIM ||
+	dt == Velocity) {
+      val = makeD(in(0).getValue(), in(0).getFullUnit());
+    } else {
+      return False;
+    };
+  } else {
+    return False;
+  };
+  return True;
 }
 
 Double MVDoppler::makeD(Double v, const Unit &dt, Bool rev) const{

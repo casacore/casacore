@@ -1,5 +1,5 @@
 //# MVEarthMagnetic.cc: A 3D Earth magnetic field vector
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -190,32 +190,8 @@ xyz(3) {
 
 MVEarthMagnetic::MVEarthMagnetic(const Vector<Quantity> &other) :
   xyz(3) {
-    static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
-      UnitVal::CURRENT;
-    uInt i; i = other.nelements();
-    if (i != 3 ) {
-      throw (AipsError("Illegal vector length in MVEarthMagnetic constructor"));
-    } else {
-      other(0).assert(testUnit);
-      if (other(1).check(testUnit) &&
-	  other(2).check(testUnit)) {
-	Int j;
-	for (j = 0; j<i; j++) {
-	  xyz(j) = other(j).getBaseValue();
-	};
-      } else {
-	Vector<Double> tsin(2), tcos(2);
-	Int j;
-	for (j=1; j < i; j++) {
-	  tsin(j-1) = (sin(other(j))).getValue(); 
-	  tcos(j-1) = (cos(other(j))).getValue(); 
-	};
-	xyz = Double(0.0);
-	xyz(0) = tcos(0) * tcos(1);
-	xyz(1) = tsin(0) * tcos(1);
-	xyz(2) = tsin(1);
-	readjust(other(0).getBaseValue());
-      };
+    if (!putValue(other)) {
+      throw (AipsError("Illegal quantity vector in MVEarthMagnetic constructor"));
     };
   }
 
@@ -440,6 +416,46 @@ void MVEarthMagnetic::putVector(const Vector<Double> &in) {
     xyz = 0.0;
     for (Int i=0; i<in.nelements(); i++) xyz(i) = in(i);
   };
+}
+
+Vector<Quantum<Double> > MVEarthMagnetic::getRecordValue() const {
+  Vector<Quantum<Double> > tmp(3);
+  tmp(0) = Quantity(xyz(0), "T");
+  tmp(1) = Quantity(xyz(1), "T");
+  tmp(2) = Quantity(xyz(2), "T");
+  return tmp;
+}
+
+Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double> > &in) {
+  static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
+    UnitVal::CURRENT;
+  uInt i; i = in.nelements();
+  if (i != 3 ) return False;
+  if (in(0).check(testUnit)) {
+    if (in(1).check(testUnit) &&
+	in(2).check(testUnit)) {
+      for (Int j = 0; j<i; j++) {
+	xyz(j) = in(j).getBaseValue();
+      };
+    } else if (in(1).check(UnitVal::ANGLE) &&
+	       in(2).check(UnitVal::ANGLE)) {
+      Vector<Double> tsin(2), tcos(2);
+      for (Int j=1; j < i; j++) {
+	tsin(j-1) = (sin(in(j))).getValue(); 
+	tcos(j-1) = (cos(in(j))).getValue(); 
+      };
+      xyz = Double(0.0);
+      xyz(0) = tcos(0) * tcos(1);
+      xyz(1) = tsin(0) * tcos(1);
+      xyz(2) = tsin(1);
+      readjust(in(0).getBaseValue());
+    } else {
+      return False;
+    };
+  } else {
+    return False;
+  };
+  return True;
 }
 
 MVEarthMagnetic operator*(const RotMatrix &left, const MVEarthMagnetic &right) {

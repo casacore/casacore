@@ -1,5 +1,5 @@
 //# MVRadialVelocity.cc: Internal value for MRadialvelocity
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,13 +77,8 @@ MVRadialVelocity::MVRadialVelocity(const Vector<Double> &other) {
 }
 
 MVRadialVelocity::MVRadialVelocity(const Vector<Quantity> &other) {
-  uInt i = other.nelements();
-  if (i == 0) {
-    val = 0.0;
-  } else if (i == 1) {
-    val = other(0).getValue() * makeF(other(0).getFullUnit());
-  } else {
-    throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
+  if (!putValue(other)) {
+    throw (AipsError("Illegal quantity vector in MVRadialVelocity constructor"));
   };
 }
 
@@ -172,6 +167,35 @@ void MVRadialVelocity::putVector(const Vector<Double> &in) {
   } else {
     val = in(0);
   };
+}
+
+Vector<Quantum<Double> > MVRadialVelocity::getRecordValue() const {
+  Vector<Quantum<Double> > tmp(1);
+  tmp(0) = get();
+  return tmp;
+}
+
+Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
+  static Bool needInit = True;
+  static UnitVal Velocity;
+  if (needInit) {
+    needInit = False;
+    Velocity = UnitVal::LENGTH/UnitVal::TIME;
+  };
+  uInt i = in.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    UnitVal dt = in(0).getFullUnit().getValue();
+    if (dt == Velocity) {
+      val = in(0).getValue() * makeF(in(0).getFullUnit());
+    } else {
+      return False;
+    };
+  } else {
+    return False;
+  };
+  return True;
 }
 
 Double MVRadialVelocity::makeF(const Unit &dt) const{
