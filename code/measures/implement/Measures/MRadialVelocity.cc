@@ -1,5 +1,5 @@
 //# MRadialVelocity.cc: A Measure: radial velocity
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -326,7 +326,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getJ2000(*respos);
 	g1 = *solpos * *respos;
 	g2 = in.getValue()/C::c;
-	in = (g2 + g1)/(1 + g2 * g1) * C::c;
+	in = (g2 - g1)/(1 - g2 * g1) * C::c;
       }	
       break;
 
@@ -348,7 +348,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getApp(*respos);
 	g1 = *solpos * *respos;
 	g2 = in.getValue()/C::c;
-	in = (g2 + g1)/(1 + g2 * g1) * C::c;
+	in = (g2 - g1)/(1 - g2 * g1) * C::c;
       }
       break;
 
@@ -364,7 +364,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getApp(*respos);
 	g1 = *solpos * *respos;
 	g2 = in.getValue()/C::c;
-	in = (g2 - g1)/(1 - g2 * g1) * C::c;
+	in = (g2 + g1)/(1 + g2 * g1) * C::c;
       }	
       break;
 
@@ -386,7 +386,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getApp(*respos);
 	g1 = *solpos * *respos;
 	g2 = in.getValue()/C::c;
-	in = (g2 - g1)/(1 - g2 * g1) * C::c;
+	in = (g2 + g1)/(1 + g2 * g1) * C::c;
       }
       break;
 

@@ -356,7 +356,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
       }	
       break;
 
@@ -379,7 +379,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
       }
       break;
 
@@ -396,7 +396,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
       }	
       break;
 
@@ -419,7 +419,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
       }
       break;
 
