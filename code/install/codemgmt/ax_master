@@ -2446,3 +2446,4 @@
 11 265 src mv trial/implement/Lattices/test/tLCMask.cc trial/implement/Lattices/test/tLCPixelSet.cc
 11 265 src mv trial/implement/Lattices/test/tLCMask.out trial/implement/Lattices/test/tLCPixelSet.out
 11 276 src rm trial/implement/Lattices/test/tf.cc
+11 278 src mv trial/apps/plotter/plotter.g nfra/apps/gplot1d/plotter.g
