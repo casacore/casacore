@@ -149,7 +149,7 @@ template<class key, class value> MapRep<key,value>::~MapRep() {}
 
 template<class key, class value> value &MapRep<key,value>::operator()(const key &ky) {
   value *vptr;
-  if (vptr = isDefined(ky))
+  if ((vptr = isDefined(ky)))
     return *vptr;
   else
     return define(ky,DefaultVal);
