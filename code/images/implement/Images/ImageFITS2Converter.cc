@@ -996,7 +996,7 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& heade
 
 // Remove keywords
 
-    Vector<String> ignore(15); 
+    Vector<String> ignore(14); 
     ignore(0) = "^date-map$";
     ignore(1) = "^simple$";   
     ignore(2) = "^naxis";
@@ -1005,13 +1005,12 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& heade
     ignore(5) = "^equinox$";
     ignore(6) = "^epoch$";
     ignore(7) = "^.type";
-    ignore(8) = "^.unit";
-    ignore(9) = "^.rpix";
-    ignore(10) = "^.rval";
-    ignore(11) = "^.rota";
-    ignore(12) = "^.delt"; 
-    ignore(13) = "bscale";
-    ignore(14) = "bzero";
+    ignore(8) = "^.rpix";
+    ignore(9) = "^.rval";
+    ignore(10) = "^.rota";
+    ignore(11) = "^.delt"; 
+    ignore(12) = "bscale";
+    ignore(13) = "bzero";
     FITSKeywordUtil::removeKeywords(header, ignore);
 
 // Remove any ObsInfo keywords
