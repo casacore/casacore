@@ -2091,3 +2091,4 @@
 08 298 src rm nrao/apps/gbt_utscr/gbt_pul_utils.g
 08 298 src rm nrao/apps/gbt_utscr/gbt_dcr_utils.g
 08 298 src rm nrao/apps/gbt_utscr/gbt_dcr.g
+08 298 src rm nrao/apps/gbt_utscr/gbt_pul.g
