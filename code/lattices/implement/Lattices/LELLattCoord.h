@@ -39,37 +39,39 @@ class ImageCoord;
 // <summary>
 // The base letter class for lattice coordinates.
 // </summary>
-
+//
 // <use visibility=export>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
-//   <li> Abstract Base class Inheritance - try "Advanced C++" by James
-//        O. Coplien, Ch. 5.
+//   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeCoordinates"> LatticeCoordinates</linkto>
 // </prerequisite>
-
+//
 // <synopsis>
 // This base class is the basic letter for the envelope class
 // <linkto class=LatticeCoordinates>LatticeCoordinates</linkto>.
 // It does not do anything, but makes it possible that derived classes
-// (like ImageCoord) implement their own behaviour.
+// (like ImageCoord) implement their own behaviour.  LattCoord is
+// not an abstract base class.  Thus it can be constructed and
+// used to return null LatticeCoordinate objects for Lattices that 
+// don't have Coordinates (e.g. ArrayLattice, PagedArray)
 // </synopsis> 
-
+//
 // <example>
 // <srcblock>
 // </srcblock>
 // </example>
-
+//
 // <motivation>
 // It must be possible to handle image coordinates in a lattice
-// expression.
+// expression.   
 // </motivation>
-
-//# <todo asof="1996/07/01">
-//#   <li>
-//# </todo>
+//
+// <todo asof="1998/01/31">
+// </todo>
 
 
 class LattCoord
