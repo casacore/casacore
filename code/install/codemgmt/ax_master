@@ -3331,3 +3331,4 @@
 13 222 src mv npoi/implement/Cuttlefish/HDSName.h npoi/implement/HDS/HDSName.h
 13 222 src mv npoi/implement/Cuttlefish/HDSStatus.cc npoi/implement/HDS/HDSStatus.cc
 13 222 src mv npoi/implement/Cuttlefish/HDSStatus.h npoi/implement/HDS/HDSStatus.h
+13 222 src mv npoi/implement/Cuttlefish/HDSType.cc npoi/implement/HDS/HDSType.cc
