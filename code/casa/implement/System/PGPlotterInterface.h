@@ -115,7 +115,10 @@ public:
     // [ok=Bool, x=Float, y=Float, ch=String];
     // If the remote device cannot do cursor feedback, ok==F.
     // </srcblock>
-    virtual Record curs() = 0;
+    // The input x,y values is the "guess" for the location the user will want
+    // to pick. On some devices, the cursor will be positioned at (world
+    // coordinates) x,y.
+    virtual Record curs(Float x, Float y) = 0;
 
     // Standard PGPLOT commands. Documentation for the individual commands
     // can be found in the Glish manual and in the standard PGPLOT documentation

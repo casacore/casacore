@@ -130,7 +130,7 @@ public:
     // [ok=Bool, x=Float, y=Float, ch=String];
     // If the remote device cannot do cursor feedback, ok==F.
     // </srcblock>
-    virtual Record curs();
+    virtual Record curs(Float x, Float y);
 
     // Standard PGPLOT commands. Documentation for the individual commands
     // can be found in the Glish manual and in the standard PGPLOT documentation

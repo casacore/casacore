@@ -59,10 +59,10 @@ void PGPlotter::message(const String &text)
     worker_p->message(text);
 }
 
-Record PGPlotter::curs()
+Record PGPlotter::curs(Float x, Float y)
 {
     ok();
-    return worker_p->curs();
+    return worker_p->curs(x, y);
 }
 
 void PGPlotter::arro(Float x1, Float y1, Float x2, Float y2)
