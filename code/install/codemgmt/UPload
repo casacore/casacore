@@ -35,7 +35,7 @@ set script = "UPload"
 set usage = 'UPload [-c] [-r] [-u] [-d] [-n] <typ>'
 set htxt  = ("Upload the information specified by <typ> to the aips++ " \
 	     "master site. This enables to run relevant scripts that" \
-	     "were tested locally there.")
+	     "were tested locally, at the master.")
 set huse  =  "<typ>.*"
 set hcrea =  "<typ>.scp"
 #
@@ -65,23 +65,6 @@ if (! $ok) exit 1
 #
 # Get specific data 
 #
-set lscp = ""
-if (-e $ldir/.UpScP) then
-    source .UpScP
-endif
-if ("$lscp" == "") then
-    set lscp = "${USER}@aips2.nrao.edu:aips++/test/found"
-endif
-echo -n "Remote directory [$lscp]: "
-set x = "$<"
-if ("$x" != "") set lscp = $x
-if ("$lscp" == "") then
-    echo "No remote directory given"
-    exit 1
-endif
-unset x
-echo "set lscp = $lscp" >! $ldir/.UpScP
-
 if (-e $ldir/${tpb}.scp) rm -f $ldir/${tpb}.scp
 cd $ldir
 touch $ldir/${tpb}.scp
@@ -107,17 +90,13 @@ if ($upswn) exit 0
 #
 if (! $upswQ) then
   set a = ( `wc $ldir/${tpb}.scp` )
-  echo "Uploading $a[1] files ...."
+  echo "Uploading $a[1] files to ${rpath}:$pdir ...."
   unset a
 endif
 #
 # Copy files
 #
-if (! $upswQ) then
-    scp `cat $ldir/${tpb}.scp` "$lscp"
-else
-    scp `cat $ldir/${tpb}.scp` "$lscp" >! /dev/null
-endif
+$rscp `cat $ldir/${tpb}.scp` ${rpath}:$pdir
 
 exit 0
 #
