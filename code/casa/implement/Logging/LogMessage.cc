@@ -91,7 +91,7 @@ LogMessage &LogMessage::message(const String &message, Bool keepLastTime)
     while (--n >= 0 && message_p[n] == '\n') {
 	; // Nothing
     }
-    if (n+1 < message_p.length()) {
+    if (n+1 < Int(message_p.length())) {
 	message_p = message_p.before(n+1);
     }
 

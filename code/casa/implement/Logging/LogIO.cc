@@ -46,13 +46,13 @@ LogIO::LogIO(LogSink &sink)
 }
 
 LogIO::LogIO(const LogOrigin &or)
-    : sink_p(), text_p(0), msg_p(or)
+    : sink_p(), msg_p(or), text_p(0)
 {
     // Nothign
 }
 
 LogIO::LogIO(const LogOrigin &or, LogSink &sink)
-    : sink_p(sink), text_p(0), msg_p(or)
+    : sink_p(sink),  msg_p(or), text_p(0)
 {
     // Nothing
 }
