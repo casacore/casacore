@@ -324,7 +324,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       if (nrVal == 0) {
 	  return LELScalar<T>();           // no element found
       }
-      return T(sumVal / nrVal);
+      return T(sumVal / Double(nrVal));
    }
    case LELFunctionEnums::SUM :
    {
