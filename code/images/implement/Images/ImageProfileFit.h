@@ -114,26 +114,38 @@ public:
 
     // Set data via an image. <src>profileAxis</src> specifies the profile pixel
     // axis. You can either average the data over all other axes in the
-    // image/region (<src>average=True</src>) or fit all profiles in the 
-    // image/region.
+    // image (<src>average=True</src>) or fit all profiles in the 
+    // image.
     //<group>
     void setData (const ImageInterface<Float>& image,
                   const ImageRegion& region,
                   uInt profileAxis, Bool average=True);
     void setData (const ImageInterface<Float>& image,
+                  const ImageInterface<Float>& sigma,
+                  const ImageRegion& region,
                   uInt profileAxis, Bool average=True);
+//
+    void setData (const ImageInterface<Float>& image,
+                  uInt profileAxis, Bool average=True);
+    void setData (const ImageInterface<Float>& image,
+                  const ImageInterface<Float>& sigma,
+                  uInt profileAxis, Bool average=True);
+
     //</group>
 
     // Set the data directly, and provide a coordinate system 
     // and specify the profile axis in the coordinate system.
     // The x-units can be 'pix'. If absolute
-    // they must be 0-rel pixels. <src>isBas</src> specifies whether
+    // they must be 0-rel pixels. <src>isAbs</src> specifies whether
     // the coordinates are absolute or relative to the reference pixel.
+    // If the weights vector, <src>sigma</src> is of zero length, 
+    // it is treated as all unity.
     //<group>
     void setData (const CoordinateSystem& cSys,
                   uInt ProfileAxis,
                   const Quantum<Vector<Float> >& x, 
                   const Quantum<Vector<Float> >& y,
+                  const Vector<Float>& sigma,
                   Bool isAbs, const String& doppler);
 
     void setData (const CoordinateSystem& cSys,
@@ -141,6 +153,7 @@ public:
                   const Quantum<Vector<Float> >& x, 
                   const Quantum<Vector<Float> >& y,
                   const Vector<Bool>& mask,
+                  const Vector<Float>& sigma,
                   Bool isAbs, const String& doppler);
     //</group>
 
@@ -184,7 +197,6 @@ public:
 
     // Fit all profiles in the region and write out images.
     // Specify the order of the baseline you would also like to fit for.
-
     //<group>
     void fit (RecordInterface& rec,  
               Bool xAbsRec,
@@ -207,12 +219,12 @@ public:
     void model (Vector<Float>& model) const;
     //</group>
 
-
 private:
 
-// Image holding data.  Only will be set if fitting all profiles in region
+// Images holding data and weights.  Will be set only if fitting all profiles in region
 
    ImageInterface<Float>* itsImagePtr;
+   ImageInterface<Float>* itsSigmaImagePtr;
 //
    Bool itsFitDone;
 
@@ -221,6 +233,7 @@ private:
 
    Quantum<Vector<Float> > itsX, itsY;
    Vector<Bool> itsMask;
+   Vector<Float> itsSigma;
 
 // The fitters.  The first one does not have a polynomial in it
 // The second one may.
@@ -244,8 +257,7 @@ private:
    Bool itsFitRegion;                 // True to fit all profiles in region
 //
    void collapse (Vector<Float>& profile, Vector<Bool>& mask,
-                  uInt profileAxis,  const MaskedLattice<Float>& lat) const;
-
+                         uInt profileAxis,  const MaskedLattice<Float>& lat) const;
 
 // Convert SE
    SpectralElement convertSpectralElement (const SpectralElement& elIn,
@@ -280,7 +292,8 @@ private:
                      const String& dopplerOut,
                      const SpectralList& list);
 //
-   void setData (const ImageInterface<Float>& image,
+   void setData (const ImageInterface<Float>*& pSigma,
+                 const ImageInterface<Float>& image,
                  const Slicer& sl, Bool average);
 };
 
