@@ -3988,3 +3988,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCRTZoomer.h trialdisplay/implement/DisplayEvents/WCRTZoomer.h
 14 065 src mv trial/implement/DisplayEvents/WCRectTool.h trialdisplay/implement/DisplayEvents/WCRectTool.h
 14 065 src mv trial/implement/DisplayEvents/WCRefreshEH.h trialdisplay/implement/DisplayEvents/WCRefreshEH.h
+14 065 src mv trial/implement/DisplayEvents/WCRefreshEvent.h trialdisplay/implement/DisplayEvents/WCRefreshEvent.h
