@@ -48,9 +48,15 @@ ISMIndColumn::ISMIndColumn (ISMBase* smptr, int dataType, uInt colnr)
 
 ISMIndColumn::~ISMIndColumn()
 {
+    clear();
+}
+
+void ISMIndColumn::clear()
+{
     delete (uLong*)lastValue_p;
     lastValue_p = 0;
     delete iosfile_p;
+    iosfile_p = 0;
 }
 
 
@@ -274,6 +280,7 @@ Bool ISMIndColumn::compareValue (const void*, const void*) const
 
 void ISMIndColumn::init (ByteIO::OpenOption fileOption)
 {
+    clear();
     DebugAssert (nrelem_p==1, AipsError);
     Bool asCanonical = stmanPtr_p->asCanonical();
     if (asCanonical) {
@@ -289,8 +296,6 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
     //# Open or create the type 1 file to hold the arrays in the column.
     char strc[8];
     sprintf (strc, "i%i", seqnr_p);
-    delete iosfile_p;
-    iosfile_p = 0;
     iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
 				    fileOption, 1, asCanonical);
     if (iosfile_p == 0) {

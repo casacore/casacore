@@ -1,5 +1,5 @@
 //# ISMColumn.cc: The Column of the Incremental Storage Manager
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,6 +54,11 @@ ISMColumn::ISMColumn (ISMBase* parent, int dataType, uInt colnr)
 
 ISMColumn::~ISMColumn()
 {
+    clear();
+}
+
+void ISMColumn::clear()
+{
     switch (dataType()) {
     case TpBool:
 	delete [] (Bool*)lastValue_p;
@@ -89,6 +94,7 @@ ISMColumn::~ISMColumn()
 	delete [] (String*)lastValue_p;
 	break;
     }
+    lastValue_p = 0;
 }
 
 void ISMColumn::setShapeColumn (const IPosition& shape)
@@ -1075,6 +1081,7 @@ Bool ISMColumn::compareValue (const void* val1, const void* val2) const
 
 void ISMColumn::init()
 {
+    clear();
     DataType dt = (DataType)dataType();
     typeSize_p = ValType::getTypeSize (dt);
     Bool asCanonical = stmanPtr_p->asCanonical();
