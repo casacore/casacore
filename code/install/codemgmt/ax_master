@@ -1906,3 +1906,4 @@
 08 004 top rm docs/html/newonline.html
 08 004 src rm doc/html/newonline.html
 08 004 src rm doc/html/VirtTable
+08 004 top rm docs/html/wgindex.html
