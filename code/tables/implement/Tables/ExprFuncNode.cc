@@ -272,6 +272,10 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 			 operands_p[1]->getDouble(rownr));
     case strlengthFUNC:
 	return operands_p[0]->getString (rownr).length();
+    case datetimeFUNC:
+    case mjdtodateFUNC:
+    case dateFUNC:
+        return Double (getDate(rownr));
     case mjdFUNC:
 	return operands_p[0]->getDate(rownr).day();
     case yearFUNC:
