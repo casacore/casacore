@@ -44,7 +44,10 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/strstream.h>
-
+#include <aips/Containers/Record.h>
+#include <trial/Lattices/LCBox.h>
+#include <trial/Lattices/SubLattice.h>
+#include <aips/Lattices/TiledShape.h>
 
 template <class T> 
 ImageInterface<T>::ImageInterface()
@@ -316,7 +319,9 @@ Bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec)
 //
 // Save the current ImageInterface object to an output state record
 // 
-   outRec.define("shape", shape().asVector());
+   Vector<Int> shape=this->shape().asVector();
+
+   outRec.define("shape", shape);
    CoordinateSystem coordsys = coordinates();
    Record coordinateRecord;
    coordsys.save(coordinateRecord, "coordsys");
