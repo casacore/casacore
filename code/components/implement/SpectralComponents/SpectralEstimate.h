@@ -105,7 +105,7 @@ class SpectralEstimate {
   // an unlimited number.
   explicit SpectralEstimate(const uInt maxpar=MAXPAR);
   // Create an estimator with the given maximum number of possible
-  // elements. A value
+  // elements. A value of zero will indicate an unlimited number.
   // Construct with a given rms in profiles, a cutoff for amplitudes
   // found, and a minimum width. Cutoff and minsigma default to 0.0, maximum
   // size of list produced to 200.
@@ -131,7 +131,7 @@ class SpectralEstimate {
   // vector must be monotonic); if the pixel-based center is out of range 
   // of the supplied abcissa vector the conversion is done via extrapolation.
   // The der pointer is meant for debugging, and can return 
-  // the derivative profile.  The second function throw an AipsError
+  // the derivative profile.  The second function throws an AipsError
   // if the vectors are not the same length.
   // <group>
   template <class MT>
@@ -156,8 +156,11 @@ class SpectralEstimate {
   // Set the number of points consider at each side of test point (i.e. a
   // width of 2q+1 is taken). Default internally is 2; max(1,q) taken.
   void setQ(const uInt q=2);
+  // Set a region [lo,hi] over which to estimate. Lo and hi are given as
+  // zero-based vector indices.
+  void setRegion(const Int lo, const Int hi);
   // Do you want to look in an automatically determined window with signal?
-  // Default is False, meaning the full profile.
+  // Default is False, meaning the full (possibly regioned) profile.
   void setWindowing(const Bool win=False);
   // Set the maximum number of estimates to find (forced to >=1; 200 default)
   void setMaxN(const uInt maxpar=MAXPAR);
@@ -176,6 +179,11 @@ class SpectralEstimate {
   Int windowLow_p;
   Int windowEnd_p;
   // </group>
+  // Region low and high value
+  // <group>
+  Int regionLow_p;
+  Int regionEnd_p;
+  // </group>
   // Smoothing parameter. I.e. 2q+1 points are taken
   Int q_p;
   // Internal cashing of calculated values based on q
@@ -183,7 +191,7 @@ class SpectralEstimate {
   Double a_p;
   Double b_p;
   // </group>
-  // The minimum gaussian width
+  // The minimum Gaussian width
   Double sigmin_p;
   // The second derivatives
   Double *deriv_p;

@@ -51,7 +51,7 @@ const SpectralList &SpectralEstimate::estimate(const Vector<MT> &prof,
   findc2(prof);
   // Next for debugging
   if (der) {
-    for (uInt i=0; i<lprof_p; i++) der->operator()(i) = deriv_p[i];
+    for (uInt i=0; i<lprof_p; i++) (*der)[i] = deriv_p[i];
   };
   // Find the estimates (sorted)
   findga(prof);
@@ -85,14 +85,17 @@ uInt SpectralEstimate::window(const Vector<MT> &prof) {
   windowLow_p =0;
   windowEnd_p = 0;
   if (!useWindow_p || rms_p <= 0.0 || lprof_p == 0) {
-    windowEnd_p = lprof_p;
-    return lprof_p;
+    if (regionEnd_p) {
+      windowLow_p = min(max(0,regionLow_p),Int(lprof_p));
+      windowEnd_p = min(regionEnd_p, Int(lprof_p));
+    } else windowEnd_p = lprof_p;
+    return windowEnd_p-windowLow_p;
   };
   // Total flux in profile and max position
   Double flux(0.0);
   Double pmax(prof(0));
   uInt imax(0);
-  for (uInt i=0; i<lprof_p; i++) {
+  for (Int i=windowLow_p; i<windowEnd_p; i++) {
     if (prof(i)>pmax) {
       pmax = prof(i);
       imax = i;

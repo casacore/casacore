@@ -34,6 +34,7 @@
 SpectralEstimate::SpectralEstimate(const uInt maxpar) :
   useWindow_p(False), rms_p(0), cutoff_p(0),
   windowLow_p(0), windowEnd_p(0),
+  regionLow_p(0), regionEnd_p(0),
   q_p(2), sigmin_p(0),
   deriv_p(0), slist_p(maxpar), lprof_p(0) {
   setQ();
@@ -44,6 +45,7 @@ SpectralEstimate::SpectralEstimate(const Double rms,
 				   const uInt maxpar) :
   useWindow_p(False), rms_p(rms), cutoff_p(cutoff),
   windowLow_p(0), windowEnd_p(0),
+  regionLow_p(0), regionEnd_p(0),
   q_p(2), sigmin_p(minsigma),
   deriv_p(0), slist_p(maxpar), lprof_p(0) {
   setQ();
@@ -53,6 +55,7 @@ SpectralEstimate::SpectralEstimate(const Double rms,
 SpectralEstimate::SpectralEstimate(const SpectralEstimate &other) :
   useWindow_p(other.useWindow_p), rms_p(other.rms_p), cutoff_p(other.cutoff_p),
   windowLow_p(other.windowLow_p), windowEnd_p(other.windowEnd_p),
+  regionLow_p(other.regionLow_p), regionEnd_p(other.regionEnd_p),
   q_p(other.q_p), sigmin_p(other.sigmin_p),
   deriv_p(0), slist_p(other.slist_p), lprof_p(other.lprof_p) {
   setQ(q_p);
@@ -71,6 +74,8 @@ SpectralEstimate &SpectralEstimate::operator=(const SpectralEstimate &other) {
     cutoff_p = other.cutoff_p;
     windowLow_p = other.windowLow_p;
     windowEnd_p = other.windowEnd_p;
+    regionLow_p = other.regionLow_p;
+    regionEnd_p = other.regionEnd_p;
     q_p = other.q_p;
     sigmin_p = other.sigmin_p;
     deriv_p = 0;
@@ -99,6 +104,14 @@ void SpectralEstimate::setQ(const uInt q) {
   q_p = max(1, Int(q));
   a_p = 90.0/(q_p*(q_p+1)*(4*q_p*q_p-1)*(2*q_p+3));
   b_p = (q_p*(q_p+1))/3.0;
+}
+
+void SpectralEstimate::setRegion(const Int lo, const Int hi) {
+  regionLow_p = regionEnd_p = 0;
+  if (hi > lo) {
+    regionLow_p = lo;
+    regionEnd_p = hi;
+  };
 }
 
 void SpectralEstimate::setWindowing(const Bool win) {
