@@ -159,26 +159,31 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
 	    newRow = msWeatherCols_p->ionosElectron().isNull();
 	    newRow = !newRow && msWeatherCols_p->ionosElectron()(rownr_p) != *ionosElectronField_p;
 	}
-	Double interval = timeRange(1) = timeRange(0);
-	// former MS time or the time used in this function argument?
+	newRow = newRow || antennaId != msWeatherCols_p->antennaId()(rownr_p);;
+
+	Double interval = timeRange(1) - timeRange(0);
 	Double thisTime = time;
-	if (!newRow) {
-	    if (timeField_p.isAttached()) {
-		thisTime = *timeField_p;
-		newRow = !near(msWeatherCols_p->time()(rownr_p), thisTime);
-		if (!newRow && intervalField_p.isAttached()) {
-		    interval = *intervalField_p;
-		}
-		newRow = !near(msWeatherCols_p->interval()(rownr_p), interval);
-	    } else {
-		Double rowTime = msWeatherCols_p->time()(rownr_p);
-		Double maxTime = rowTime + msWeatherCols_p->interval()(rownr_p)/2.0;
-		newRow = newRow || 
-		    (!near(rowTime,thisTime) && (!timeRange(0) < maxTime || !near(timeRange(0), maxTime)));
+	// or should former MS time and interval be used here instead
+	if (timeField_p.isAttached()) {
+	    thisTime = *timeField_p;
+	    // MS interval can't exist without MS time
+	    if (intervalField_p.isAttached()) {
+		interval = *intervalField_p;
 	    }
 	}
+	if (!newRow) {
+	    // all of the fields except TIME and INTERVAL match.
+	    // if the time falls within the row interval of the row time
+	    // or the row time falls within the interval of time, then the rows overlap and
+	    // can be reused
+	    Double rowTime = msWeatherCols_p->time()(rownr_p);
+	    Double rowInterval = msWeatherCols_p->interval()(rownr_p);
+	    Double rid2 = rowInterval/2.0;
+	    Double id2 = interval/2.0;
+	    newRow = !(((time-id2)<(rowTime+rid2)) && 
+		       ((rowTime-rid2)<(time+id2)));
+	}
 
-	newRow = newRow || antennaId != msWeatherCols_p->antennaId()(rownr_p);;
 	if (newRow) {
 	    // fill it
 	    rownr_p = msWeather_p->nrow();
