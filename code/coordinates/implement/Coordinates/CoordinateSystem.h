@@ -199,10 +199,11 @@ public:
                    const Vector<Int> &newPixelOrder);
 
     // Find the world axis mapping to the supplied <src>CoordinateSystem</src>
-    // from the current <src>CoordinateSystem</src>
-    // <src>True</src> is returned only if a valid mapping can be made; this
-    // basically means that the world axes in the supplied <src>CoordinateSystem</src>
-    // could be found somewhere (order is unimportant) in the current <src>CoordinateSystem</src>.
+    // from the current <src>CoordinateSystem</src>. <src>True</src> is 
+    // returned only if a valid mapping can be made; this means that for every
+    // world axis in the supplied <src>CoordinateSystem</src>, a corresponding
+    // world axis could be found somewhere (order is unimportant) in the 
+    // current <src>CoordinateSystem</src>.  
     // <src>worldAxisMap(i)</src> is the location of world axis <src>i</src> (from the
     // supplied <src>CoordinateSystem</src>, <src>cSys</src>,
     // in the current <src>CoordinateSystem</src>.
@@ -210,17 +211,18 @@ public:
     // <src>i</src> (from the current <src>CoordinateSystem</src>) in the supplied 
     // <src>CoordinateSystem</src>, <src>cSys</src>.  The output vectors
     // are resized appropriately by this function.  A value of  -1 
-    // in the <src>worldAxisTranspose</src> vector (which may occur even
-    // if the function returns True) indicates that this world axis is not present in the
-    // supplied <src>CoordinateSystem</src>.  Conformance (world axis names,
-    // intrinsic units, types) of the <src>CoordinateSystems</src> is checked.
-    // The primary target is the supplied <src>CoordinateSystem</src>; 
+    // in either vector means that it could not be found in the other
+    // <src>CoordinateSystem</src>.  
+    // Conformance (world axis intrinsic units, types) of 
+    // the <src>CoordinateSystems</src> is checked.
+    // The primary target of this function is the supplied <src>CoordinateSystem</src>; 
     // a valid <src>worldAxisMap</src> can sometimes be made even if the
     // <src>worldAxisTranspose</src> vector contains values of -1, and this
     // is considered a success (returns True).  For example if you supply
     // an [RA,DEC] <src>CoordinateSystem</src> to an [RA,DEC,Frequency]
-    //  <src>CoordinateSystem</src>, this will happen.  If False is returned, a  message can 
-    // be recovered with the function <src>errorMessage</src> indicating why.
+    // <src>CoordinateSystem</src>, this will happen.  If False is 
+    // returned, a  message can  be recovered with the function
+    // <src>errorMessage</src> indicating why.
        Bool worldMap (Vector<Int>& worldAxisMap,
                       Vector<Int>& worldAxisTranspose,
                       const CoordinateSystem& cSys) const;
@@ -303,6 +305,11 @@ public:
     // Returns -1 if the world axis is unavailable (e.g. if it has been
     // removed).
     Int pixelAxisToWorldAxis(uInt pixelAxis) const;
+
+    // Find the pixel axis for the given world axis in a coordinate system
+    // Returns -1 if the pixel axis is unavailable (e.g. if it has been
+    // removed).
+    Int worldAxisToPixelAxis(uInt pixelAxis) const;
 
     // Returns <src>Coordinate::COORDSYS</src>
     virtual Coordinate::Type type() const;
@@ -445,8 +452,7 @@ private:
     PtrBlock<Vector<Double> *> pixel_replacement_values_p;
 
     // Helper functions to group common code.
-    Bool mapOne(String& message, 
-                Vector<Int>& worldAxisMap, 
+    Bool mapOne(Vector<Int>& worldAxisMap, 
                 Vector<Int>& worldAxisTranspose, 
                 const CoordinateSystem& cSys,
                 const CoordinateSystem& cSys2,
