@@ -31,11 +31,17 @@
 #include<trial/Fitting/LinearFitSVD.h>
 #include <aips/Functionals/Polynomial.h>
 #include<aips/Lattices/ArrayLattice.h>
+#include<trial/Lattices/SubLattice.h>
+#include<trial/Lattices/MaskedLattice.h>
 #include<aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>
 
 int main() {
+
+    MaskedLattice<Float>* pSigma = 0;
+    MaskedLattice<Float>* pOutFit = 0;
+//
     uInt nx = 10, ny = 20, nz = 30;
     Cube<Float> cube(10, 20, 30);
 
@@ -62,18 +68,28 @@ int main() {
 	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
 	ArrayLattice<Float> outLattice(outCube);
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 0, mask,
+	LatticeFit::fitProfiles (outLattice, fittedParameters, fitter, inLattice, 0, mask,
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 7.e-3));
 
 
 	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((ny-1)*(nz-1)), 1.0e-3));
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 0, mask,
+	LatticeFit::fitProfiles (outLattice, fittedParameters, fitter, inLattice, 0, mask,
 		    False);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 7.e-3));
 	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((ny-1)*(nz-1)), 1.0e-3));
+//crashes
+/*
+        {
+           SubLattice<Float>* pOutResid = new SubLattice<Float>(outLattice);
+           SubLattice<Float> inSubLattice(inLattice);
+           LatticeFit::fitProfiles (pOutFit, pOutResid, inSubLattice, pSigma, 
+                                    fitter, 0, False);
+           delete pOutResid;
+        }
+*/
     }
 
     // y axis
@@ -90,12 +106,12 @@ int main() {
 	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
 	ArrayLattice<Float> outLattice(outCube);
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 1, mask,
+	LatticeFit::fitProfiles (outLattice, fittedParameters, fitter, inLattice, 1, mask,
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 3.e-2));
 	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((nx-1)*(nz-1)), 1.0e-3));
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 1, mask,
+	LatticeFit::fitProfiles (outLattice, fittedParameters, fitter, inLattice, 1, mask,
 		    False);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 3.e-2));
 	AlwaysAssertExit(near(fittedParameters(2),
@@ -116,12 +132,12 @@ int main() {
 	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
 	ArrayLattice<Float> outLattice(outCube);
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 2, mask,
+	LatticeFit::fitProfiles (outLattice, fittedParameters, fitter, inLattice, 2, mask,
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 2.0e-2));
 	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((nx-1)*(ny-1)), 1.0e-3));
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 2, mask,
+	LatticeFit::fitProfiles (outLattice, fittedParameters, fitter, inLattice, 2, mask,
 		    False);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 2.0e-2));
 	AlwaysAssertExit(near(fittedParameters(2),
