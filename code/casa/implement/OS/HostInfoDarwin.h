@@ -39,6 +39,12 @@
 **
 */
 
+#if ! defined(AIPS_HOSTINFO_DARWIN_H)
+#define AIPS_HOSTINFO_DARWIN_H
+
+# if defined(HOSTINFO_DO_IMPLEMENT)
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -144,3 +150,6 @@ void HostMachineInfo::update_info( ) {
 			  vmstats.wire_count + vmstats.free_count );
 }
 
+
+# endif
+#endif
