@@ -222,11 +222,6 @@ public:
   virtual Bool ok() const;
 
 private:
-  // private function to initialise the ComponentShape object
-  void initShape(ComponentType::Shape shape);
-  // private function to initialise the SpectralModel object
-  void initSpectrum(ComponentType::SpectralShape spectrum);
-
   CountedPtr<ComponentShape> itsShapePtr;
   CountedPtr<SpectralModel> itsSpectrumPtr;
   Flux<Double> itsFlux;
