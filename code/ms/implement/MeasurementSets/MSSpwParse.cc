@@ -49,11 +49,11 @@ MSSpwParse::MSSpwParse (const MeasurementSet& ms)
 TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
 {
     // Look-up in DATA_DESC sub-table
-    MSDataDescIndex msDDI(ms().dataDescription());
+    MSDataDescIndex msDDI(ms()->dataDescription());
     String colName = MS::columnName(MS::DATA_DESC_ID);
 
    TableExprNode condition =
-       (ms().col(colName).in(msDDI.matchSpwId(spwIds)));
+       (ms()->col(colName).in(msDDI.matchSpwId(spwIds)));
 
     if(node().isNull())
         node() = condition;
@@ -68,7 +68,7 @@ TableExprNode *MSSpwParse::selectSpwName(const String& name)
     const String colName = MS::columnName(MS::DATA_DESC_ID);
     bool selectName;
 
-    ROMSSpWindowColumns msSWC(ms().spectralWindow());
+    ROMSSpWindowColumns msSWC(ms()->spectralWindow());
     ROScalarColumn<String> names(msSWC.name());
 
     for (uInt i = 0; i < names.getColumn().nelements(); i++)
@@ -80,7 +80,7 @@ TableExprNode *MSSpwParse::selectSpwName(const String& name)
     TableExprNode condition;
     if(selectName)
     {
-        MSSpWindowIndex msSWI(ms().spectralWindow());
+        MSSpWindowIndex msSWI(ms()->spectralWindow());
         condition = 0;
     }
     else
