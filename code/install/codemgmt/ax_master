@@ -3,7 +3,7 @@
 # ax_master: Delete or rename AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1998,Wednes1998
+#   Copyright (C) 1992-1998,Wednes1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -2162,3 +2162,4 @@
 11 125 src rm trial/implement/Guiutils/listselector.g
 11 126 src rm trial/implement/Guiutils/listselector.help
 11 132 src mv doc/html/navpages/learnmore/newsletters.html doc/newsletters/newsletters.html
+11 136 src mv trial/scripts/nrao.help nrao/scripts/nrao.help
