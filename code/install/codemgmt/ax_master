@@ -5710,3 +5710,4 @@
 16 073 src rm trial/apps/gainfitter/gainpolyfitter.cc
 16 086 src rm aips/implement/Utilities/RegexError.h
 16 086 src rm aips/implement/Utilities/RegexError.cc
+16 100 src mv trial/implement/Tables/test/tReadAsciiTable.in_tkdc aips/implement/Tables/test/tReadAsciiTable.in_tkdc
