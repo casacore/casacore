@@ -56,9 +56,9 @@
 #include <casa/Arrays/MaskArrIO.h>
 #include <casa/Arrays/LogiCube.h>
 
-
 #include <casa/namespace.h>
-main()
+
+int main()
 {
     try {
         {
@@ -71,12 +71,16 @@ main()
             LogicalArray b(IPosition(1,5));
 
             Bool xOK = x.ok();
+	    AlwaysAssertExit(xOK);
 
             uInt xNdim = x.ndim();
+	    AlwaysAssertExit(xNdim==1);
 
             uInt xNelements = x.nelements();
+	    AlwaysAssertExit(xNelements==5);
 
             IPosition xShape = x.shape();
+	    AlwaysAssertExit(xShape==IPosition(1,5));
 
             cout << " x=1;" << endl;
             x=1;
@@ -197,6 +201,21 @@ main()
                      <<  ycc(ycc>7) << endl;
 
             }
+	    {
+                Array<Int> yc (IPosition(2,20,30));
+                indgen (yc);
+		Array<Int> ycc  (yc);
+                MaskedArray<Int> ycc1 (yc, yc<318||yc/2*2==yc);
+
+                cout << "\n";
+
+		MaskedArray<Int> ycc2 (ycc1(IPosition(2,15,14),
+					    IPosition(2,18,19)));
+                cout << "ycc2=ycc1([15,18],[14,19])=\n" << ycc2 << endl;
+                cout << "ycc2([1,3],[0,4],[1,2])=\n"
+		     << ycc2(IPosition(2,1,0), IPosition(2,3,4),
+			     IPosition(2,1,2)) << endl;
+	    }
 
 // End Array
 

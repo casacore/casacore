@@ -1,5 +1,5 @@
 //# MaskedArray.cc: A templated N-D masked array class with variable origin.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,10 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Array.h>
 #include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/ArrayError.h>
 #include <casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -535,6 +536,32 @@ MaskedArray<T> MaskedArray<T>::operator()
 
     MaskedArray<T> ret (*this, mask);
     return ret;
+}
+
+
+template<class T>
+MaskedArray<T> MaskedArray<T>::operator() (const IPosition &start,
+					   const IPosition &end)
+{
+    DebugAssert(ok(), ArrayError);
+    return MaskedArray<T> ((*pArray)(start,end), (*pMask)(start,end), isRO);
+}
+
+template<class T>
+MaskedArray<T> MaskedArray<T>::operator() (const IPosition &start,
+					   const IPosition &end,
+					   const IPosition &inc)
+{
+    DebugAssert(ok(), ArrayError);
+    return MaskedArray<T> ((*pArray)(start,end,inc), (*pMask)(start,end,inc),
+			   isRO);
+}
+
+template<class T>
+MaskedArray<T> MaskedArray<T>::operator() (const Slicer &slicer)
+{
+    DebugAssert(ok(), ArrayError);
+    return MaskedArray<T> ((*pArray)(slicer), (*pMask)(slicer), isRO);
 }
 
 

@@ -1,5 +1,5 @@
 //# MaskedArray.h: A templated N-D masked array class with zero origin.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,6 +45,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //#   included instead of LogicalArray.h .
 //# </note>
 template <class T> class Array;
+class Slicer;
 
 
 // <summary> Class for masking an Array for operations on that Array. </summary>
@@ -489,7 +490,17 @@ public:
     //
     MaskedArray<T> operator() (const MaskedLogicalArray &mask) const;
 
+    // Get a reference to an array part which extends from "start" to end."
+    // <group>
+    MaskedArray<T> operator()(const IPosition &start, const IPosition &end);
+    // Along the ith axis, every inc[i]'th element is chosen.
+    MaskedArray<T> operator()(const IPosition &start, const IPosition &end,
+			      const IPosition &inc);
+    // </group>
 
+    // Get a reference to an array using a Slicer.
+    MaskedArray<T> operator()(const Slicer&);
+  
     // Make a copy of the masked array.
     //
     // This is a deep copy.  The Array and mask components of the returned
