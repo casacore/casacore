@@ -39,12 +39,12 @@ class Table;
 class RecordInterface;
 
 // <summary>
-// Definition of a Measure column in a Table.  
+// Definition of a Measure column in a Table.
 // </summary>
 
-// <use visibility=export>
+// <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tTableMeasures.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -54,9 +54,19 @@ class RecordInterface;
 // </prerequisite>
 
 // <synopsis>
+// This class is a helper class for
+// <linkto class=TableMeasDescBase>TableMeasDescBase</linkto>
+// to know the type of measure it is dealing with.
+// <br>It eases the process of converting reference codes to their strings
+// and vice-versa. It also writes the measure type to a record to assist
+// in making table measure definitions persistent.
 // </synopsis>
 
 // <example>
+// Create the object for an epoch measure.
+// TableMeasType mtype (MEpoch());
+// // Get the code for the given string.
+// uInt code = mtype.refCode ("UTC");
 // </example>
 
 // <motivation>
@@ -64,10 +74,6 @@ class RecordInterface;
 // in a Table is somewhat complicated. This class assists in that
 // process.
 // </motivation>
-//
-// <thrown>
-//    <li>
-// </thrown>
 //
 //# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
@@ -86,23 +92,23 @@ public:
   TableMeasType (const TableMeasType& that);
 
   ~TableMeasType();
-    
+
   // Assignment operator (copy semantics)
   TableMeasType& operator= (const TableMeasType& that);
-    
+
   // Returns the descriptor's measure type as a String.
   const String& type() const;
 
-  // Translates the refCode for the descriptors measure type.    
+  // Translates the refCode for the descriptors measure type.
   const String& refType (uInt refCode) const;
-    
+
   // Returns the reference code for this object given a string.  Throws
   // an exception if the refString is invalid for this object.
   uInt refCode (const String& refString) const;
 
   // Creates a record from the MeasureHolder.
   void toRecord (RecordInterface& rec);
-    
+
 private:
   Int itsNtypes;			//# number of refcodes/strings
   const String* itsStypes;		//# refcode strings

@@ -42,7 +42,7 @@ class Unit;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableQuantum.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableQuantum.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -57,11 +57,11 @@ class Unit;
 // objects make it possible to store (and retrieve) Quanta in Tables.<br>
 //
 // TableQuantumDesc objects are analogous to ColumnDesc objects in that they
-// add information, describing the characteristics of a column, to the Table 
+// add information, describing the characteristics of a column, to the Table
 // Descriptor before the Table is created.  However, rather than
 // replacing the use of a ColumnDesc object, a
-// TableQuantumDesc is 
-// used in conjunction with a ColumnDesc in the definition of 
+// TableQuantumDesc is
+// used in conjunction with a ColumnDesc in the definition of
 // Quantum columns.<br>
 //
 //   <note role=caution>
@@ -71,13 +71,13 @@ class Unit;
 //
 // Defining a Quantum column requires the following steps:
 // <ol>
-// <li> Use a normal Scalar- or ArrayColumnDesc to define a column to use for 
+// <li> Use a normal Scalar- or ArrayColumnDesc to define a column to use for
 //	the Quanta.
-// <li> If needed (see 
+// <li> If needed (see
 //      <A HREF="#TableQuantumDesc:Quantum Units">below</A>) define a column
-//      for the Quantum Units. 
+//      for the Quantum Units.
 // <li> Add the columns to the Table Descriptor.
-// <li> Declare a TableQuantumDesc to associate the column defined in step 1 
+// <li> Declare a TableQuantumDesc to associate the column defined in step 1
 //	and the Unit column from step 2 and update the Table Descriptor.
 // <li> Setup and create the Table.
 // </ol>
@@ -85,7 +85,7 @@ class Unit;
 // The type of the quantum columns must much the type of the underlying
 // Quanta that are to be stored in the column.  Hence, for a column of
 // Quantum&lt;Complex&gt; a ScalarColumnDesc&lt;Complex&gt; must be used.<br>
-// 
+//
 // As with standard Table Columns Quanta can be stored in Scalar and Array
 // columns. This must be specified in advance by using either a
 // Scalar- or ArrayColumnDesc.<br>
@@ -101,10 +101,10 @@ class Unit;
 // <h3>Quantum Units</h3></A>
 // The treatment of the Unit component of a Quantum in the TableQuantumDesc
 // class varies depending on your needs.    The main consideration
-// is whether the Quanta to be stored in a specific column are to have the 
-// same Unit or whether their Units could differ.  In the simple case, 
-// where the 
-// Quanta have the same unit, a TableQuantumDesc is declared with the 
+// is whether the Quanta to be stored in a specific column are to have the
+// same Unit or whether their Units could differ.  In the simple case,
+// where the
+// Quanta have the same unit, a TableQuantumDesc is declared with the
 // Unit value specified as a parameter. The following defines a Quantum
 // column with units "deg":
 //
@@ -115,11 +115,11 @@ class Unit;
 //      TableQuantumDesc tqd(td, "QuantumCol", Unit("deg"));
 // </srcblock>
 //
-// This constructor stores the value for the Unit as a  
-// column keyword.  In situations, however, where it is necessary to 
+// This constructor stores the value for the Unit as a
+// column keyword.  In situations, however, where it is necessary to
 // store a distinct Unit with each Quantum, it is necessary to define
 // an additional column for storing the Unit component of each Quantum.
-// The TableQuantumDesc constructor for this takes the name of 
+// The TableQuantumDesc constructor for this takes the name of
 // the Unit column as
 // a parameter.  Hence an additional column must be defined for storing the
 // Units and its type must be string.  The following
@@ -135,12 +135,12 @@ class Unit;
 //      TableQuantumDesc tqd(td, "QuantumCol", "QuantumUnitCol");
 // </srcblock>
 //
-// One further consideration is that for Array Quantum Columns it is 
-// necessary to 
+// One further consideration is that for Array Quantum Columns it is
+// necessary to
 // decide on a level of granularity for the Unit storage you would like.
 // In Array Quantum columns it is possible to store a distinct Unit per row or
 // per array element per row.  This distinction is established when the
-// Unit column is declared.  Defining a ScalarColumn for Units specifies per 
+// Unit column is declared.  Defining a ScalarColumn for Units specifies per
 // row variability, that is, each row in an array column of Quanta will
 // have the same unit.  Alternatively, use of an ArrayColumn for the Unit
 // column
@@ -157,7 +157,7 @@ class Unit;
 //      TableQuantumDesc tqd(td, "ArrayQuantumCol", "QuantumUnitCol");
 // </srcblock>
 //
-// And finally, an array Quantum Column with an Array Unit Column: 
+// And finally, an array Quantum Column with an Array Unit Column:
 //
 // <srcblock>
 //      // for Quanta values
@@ -168,22 +168,22 @@ class Unit;
 //      TableQuantumDesc tqd(td, "ArrayQuantumCol", "ArrayUnitCol");
 // </srcblock>
 //
-
-// After constructing an TableQuantumDesc object use of the write() member updates
-// the Table Descriptor.  
+//
+// After constructing an TableQuantumDesc object use of the write() member
+// updates the Table Descriptor.
 // <linkto class="ScalarQuantColumn">(RO)ScalarQuantColumn&lt;T&gt;</linkto>
-// and 
+// and
 // <linkto class="ArrayQuantColumn">(RO)ArrayQuantColumn&lt;T&gt;</linkto>
-// are subsequently used to read-only and read/write access the Quantum 
+// are subsequently used to read-only and read/write access the Quantum
 // Columns.
 // </synopsis>
-
+//
 // <example>
 // <srcblock>
 //     // create a table descriptor as normal
 //     TableDesc td("measTD", "1", TableDesc::New);
 //     td.comment() = "A table containing measures and quantums";
-//     
+//
 //     // This example sets up a Quantum<Complex> column but any valid Quantum
 //     // type can be specified.  However, the type of the Quantums to be
 //     // stored must match the type of the underlying table column.
@@ -193,17 +193,17 @@ class Unit;
 //     ArrayColumnDesc<Double> tcdQDoub("QuantArray", "A quantum array col");
 //
 //     // The QuantumArray column has variable units.  A string is needed
-//     // for these.  This could be done in two ways depending on what is 
+//     // for these.  This could be done in two ways depending on what is
 //     // wanted.  Units can vary per element of array per row or
 //     // just per row.  In the first instance an ArrayColumn<String> would be
 //     // require.  Here we want to vary units only per row.
 //     ScalarColumnDesc<String> tcdUnits("VarQuantUnits", "Quantum units");
-//     
+//
 //     // Add the columns to the Table Descriptor
 //     td.addColumn(tcdQplx);
 //     td.addColumn(tcdQDoub);
 //     td.addColumn(tcdUnits);
-//     
+//
 //     // Create the TableQuantumDesc with units "deg" and an Array Quantum
 //     // Column with per row Unit granularity
 //     TableQuantumDesc tqdS(td, "Quant", unit("deg"));
@@ -212,12 +212,12 @@ class Unit;
 //     // Update the Table Descriptor
 //     tqdA.write(td);
 //     tqdS.write(td);
-//     
+//
 //     // Setup and create the new table as usual.
 //     SetupNewTable newtab("mtab", td, Table::New);
 //     Table qtab(newtab);
 //
-//     // Now ScalarQuantColumn and ArrayQuantColumn objects could be 
+//     // Now ScalarQuantColumn and ArrayQuantColumn objects could be
 //     // constructed to access the columns...
 // </srcblock>
 // </example>
@@ -225,16 +225,16 @@ class Unit;
 // <motivation>
 // This class assists in the definition of a Quantum Table Column.
 // </motivation>
-//
+
 // <thrown>
 //    <li>AipsError during construction if the column doesn't exist.
-//    <li>AipsError during construction if the unit's column doesn't 
+//    <li>AipsError during construction if the unit's column doesn't
 //	  exist (when variable units).
-//    <li>AipsError during construction if the type of the variable unit's 
+//    <li>AipsError during construction if the type of the variable unit's
 //	  column is not String.
 //    <li>AipsError during a reconstruct if the column doesn't have a Unit.
 // </thrown>
-//
+
 //# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 //# </todo>
@@ -243,22 +243,22 @@ class TableQuantumDesc
 {
 public:
   // Constructs a Quantum column descriptor with null units (Unit == "").
-  // The column should have already been added to the TableDesc.  An 
+  // The column should have already been added to the TableDesc.  An
   // exception is thrown if the column doesn't exist.
   TableQuantumDesc (const TableDesc& td, const String& column);
 
   // Constructs a Quantum column descriptor with the specified Quantum units.
-  // The column should have already been added to the TableDesc.  An 
+  // The column should have already been added to the TableDesc.  An
   // exception is thrown if the column doesn't exist.
   TableQuantumDesc (const TableDesc& td, const String& column, const Unit&);
 
   // Constructs a Quantum column descriptor with variable units stored in
-  // unitCol.  Both the quantum and unit column should exist in the 
+  // unitCol.  Both the quantum and unit column should exist in the
   // TableDesc.
   //<group>
-  TableQuantumDesc (const TableDesc& td, const String& column, 
+  TableQuantumDesc (const TableDesc& td, const String& column,
 		    const String& unitCol);
-  TableQuantumDesc (const TableDesc& td, const String& column, 
+  TableQuantumDesc (const TableDesc& td, const String& column,
 		    const Char* unitCol);
   //</group>
 
@@ -268,23 +268,23 @@ public:
   ~TableQuantumDesc();
 
   // Reconstructs a previously constructed TableQuantumDesc.
-  static TableQuantumDesc* reconstruct (const TableDesc& td, 
+  static TableQuantumDesc* reconstruct (const TableDesc& td,
 					const String& column);
-    
+
   // Assignment.
   TableQuantumDesc& operator= (const TableQuantumDesc& that);
-    
+
   // Returns the Quantum column descriptor's units.  "" is returned if
   // units have not been specified.  This could be because the null
   // unit constructor was used or because the units are variable.
   const String& getUnits() const
-    { return itsUnitsName; } 
-    
+    { return itsUnitsName; }
+
   // Returns True if descriptor set for variable units (one per row)
-  Bool isUnitVariable() const 
+  Bool isUnitVariable() const
     { return (itsUnitsColName != ""); }
-    
-  // Returns the name of the quantum column. 
+
+  // Returns the name of the quantum column.
   const String& columnName() const
     { return itsColName; }
 
@@ -295,21 +295,21 @@ public:
 
   // Makes the TableQuantumDesc persistent (updates the Table Descriptor).
   void write (TableDesc& td);
-    
+
 private:
-  // Throws an exception if the quantum column doesn't exist.
-  void checkColumn (const TableDesc& td) const;
-
-  // Throws an exception if the variable units column isn't a string column.
-  void checkUnitsColumn (const TableDesc& td) const;
-    
-
   // Name of column which stores the Quantum's values.
   String itsColName;
   // The Quantum's unit as a string.
   String itsUnitsName;
   // Name of units column if units are variable.
   String itsUnitsColName;
+
+
+  // Throws an exception if the quantum column doesn't exist.
+  void checkColumn (const TableDesc& td) const;
+
+  // Throws an exception if the variable units column isn't a string column.
+  void checkUnitsColumn (const TableDesc& td) const;
 };
 
 

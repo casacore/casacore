@@ -47,9 +47,9 @@ template<class T> class Quantum;
 // Definition of a Measure in a Table.
 // </summary>
 
-// <use visibility=export>
+// <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tTableMeasures.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -97,7 +97,7 @@ public:
 
   // Copy constructor.
   TableMeasDescBase (const TableMeasDescBase& that);
-    
+
   virtual ~TableMeasDescBase();
 
   // Clone the object.
@@ -105,49 +105,49 @@ public:
 
   // Assignment operator.
   TableMeasDescBase& operator= (const TableMeasDescBase& that);
-    
+
   // Makes the descriptor persistent.
   void write (TableDesc& td);
 
   // Get the name of the underlying column.
   const String& columnName() const
     { return itsValue.columnName(); }
-    
+
   // Return the reference code.
   uInt getRefCode() const
     { return itsRef.getRefCode(); }
-    
+
   // Returns True if the reference varies per row.
   Bool isRefCodeVariable() const
     { return itsRef.isRefCodeVariable(); }
-    
+
   // Returns the name of the ref code column when the ref code is variable.
   // The null string is returned if the ref code is not variable.
   const String& refColumnName() const
     { return itsRef.columnName(); }
-    
+
   // Returns a reference to its measure reference descriptor.
   const TableMeasRefDesc& getRefDesc()
     { return itsRef; }
-    
+
   // Get the name of the offset column. Empty string is returned if no
   // offset.
   const String& offsetColumnName() const
     { return itsRef.offsetColumnName(); }
-    
+
   // Returns True if an offset has been defined.
   Bool hasOffset() const
     { return itsRef.hasOffset(); }
-    
+
   // Returns True if the offset is variable.
   Bool isOffsetVariable() const
     { return itsRef.isOffsetVariable(); }
-    
+
   // Returns True if the offset is variable and is stored in an
   // ArrayMeasColumn, i.e., offsets are stored per element.
   Bool isOffsetArray() const
     { return itsRef.isOffsetArray(); }
-    
+
   // Returns a reference to the offset.
   const Measure& getOffset() const
     { return itsRef.getOffset(); }
@@ -161,7 +161,7 @@ public:
   uInt refCode (const String& refString) const
     { return itsMeasType.refCode(refString); }
 
-  // Translates the refCode for the descriptors measure type.    
+  // Translates the refCode for the descriptors measure type.
   const String& refType (uInt refCode) const
     { return itsMeasType.refType(refCode); }
 
@@ -181,7 +181,7 @@ public:
   // </group>
 
   // Reconstructs the object for the given table and column name.
-  static TableMeasDescBase* reconstruct (const Table& tab, 
+  static TableMeasDescBase* reconstruct (const Table& tab,
 					 const String& columnName);
 
 protected:
@@ -193,7 +193,6 @@ protected:
 private:
   TableMeasValueDesc itsValue;    //# The measure value column.
   TableMeasRefDesc   itsRef;	  //# The reference.
-
   //# this gives access to the columns Measure type etc
   TableMeasType itsMeasType;
   Vector<Unit>  itsUnits;

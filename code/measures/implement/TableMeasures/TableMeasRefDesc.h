@@ -46,7 +46,7 @@ class TableRecord;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableMeasure.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -58,7 +58,7 @@ class TableRecord;
 
 // <synopsis>
 // TableMeasRefDesc is a class for setting up the MeasRef
-// component of a TableMeasDesc in the TableMeasures system.   With the aid 
+// component of a TableMeasDesc in the TableMeasures system.   With the aid
 // of a
 // TableMeasRefDesc the following possibilities for defining a Measure
 // column's reference exist:
@@ -66,12 +66,12 @@ class TableRecord;
 //   <li> a fixed, non-variable, reference code, where all Measures in a
 //	column are to have the same reference code.
 //   <li> a unique (and probably different) reference code stored in each row.
-//   <li> a unique reference code stored in each array element per 
+//   <li> a unique reference code stored in each array element per
 //	(Array)column row.
 // </ul>
-// For each of the above options an offset component can be specified 
-// along with a reference code.  When a Measure offset is required a 
-// <linkto class="TableMeasOffsetDesc">TableMeasOffsetDesc</linkto> is 
+// For each of the above options an offset component can be specified
+// along with a reference code.  When a Measure offset is required a
+// <linkto class="TableMeasOffsetDesc">TableMeasOffsetDesc</linkto> is
 // supplied as an argument to the TableMeasRefDesc constructor.
 // With references containing an offset component either component can be set
 // to be variable or fixed independently of the other.
@@ -82,20 +82,20 @@ class TableRecord;
 //	will have the default reference for the type of Measure stored in the
 // 	column.
 //   </note>
-// 
+//
 // A fixed reference code is trivially stored as part of the column
-// keywords in the Measure column but a variable reference code requires 
+// keywords in the Measure column but a variable reference code requires
 // its own column.  A Scalar or Array column can be used dependent on your
-// needs but its type must always be either Int or String. Note that it is 
+// needs but its type must always be either Int or String. Note that it is
 // legal to specify a Scalar
 // reference column for use with an ArrayMeasColumn. In such cases a single
-// reference code will be stored per array (row) of Measures.  However, 
-// attempting to associate an Array column for references with a 
+// reference code will be stored per array (row) of Measures.  However,
+// attempting to associate an Array column for references with a
 // ScalarMeasColumn will generate an exception.
 //
 // <note role=caution>
 //     When storing Measures into a Measure column with a fixed reference code
-//     the reference code component of the Measures stored is 
+//     the reference code component of the Measures stored is
 //     ignored.
 // </note>
 // </synopsis>
@@ -103,10 +103,10 @@ class TableRecord;
 // <example>
 //<ol>
 // <li>Simplest kind of TableMeasRefDesc (apart from not specifying one at
-//     all) is a fixed reference code.  All Measures subsequently 
-//     retrieved from the column will have the reference MEpoch::LAST.  
+//     all) is a fixed reference code.  All Measures subsequently
+//     retrieved from the column will have the reference MEpoch::LAST.
 // <srcblock>
-//    // measure reference column 
+//    // measure reference column
 //    TableMeasRefDesc reference(MEpoch::LAST);
 // </srcblock>
 // <li>A variable reference code requires its own Int column.
@@ -127,8 +127,8 @@ class TableRecord;
 //    TableMeasRefDesc varRef(MEpoch::LAST, offsetDesc);
 // </srcblock>
 //</ol>
-// For an example of the use of a TableMeasRefDesc in the context of a full 
-// TableMeasDesc declaration see class 
+// For an example of the use of a TableMeasRefDesc in the context of a full
+// TableMeasDesc declaration see class
 // <linkto class="TableMeasDesc">TableMeasDesc</linkto>.
 // </example>
 
@@ -159,24 +159,24 @@ public:
   explicit TableMeasRefDesc (uInt refCode = 0);
   TableMeasRefDesc (uInt refCode, const TableMeasOffsetDesc&);
   // </group>
-    
-  // Define a variable reference by supplying the name of the column 
+
+  // Define a variable reference by supplying the name of the column
   // in which the reference is to be stored.  Either an <src>Int</src> or
   // <src>String</src> column can be specified.  This determines how
   // references are stored.  <src>Int</src> columns are likely to be
-  // faster but storing 
+  // faster but storing
   // references as <src>Strings</src> may be useful if there is a need to
   // browse tables manually.  Optionally supply a Measure offset.
   // The reference code and offset should not need a reference frame.
   // <group>
   TableMeasRefDesc (const TableDesc&, const String& column);
-  TableMeasRefDesc (const TableDesc&, const String& column, 
+  TableMeasRefDesc (const TableDesc&, const String& column,
 		    const TableMeasOffsetDesc&);
   // </group>
 
   // Reconstruct the object from the MEASINFO record.
   // Not useful for the public.
-  TableMeasRefDesc (const TableRecord& measInfo, 
+  TableMeasRefDesc (const TableRecord& measInfo,
 		    const Table&,
 		    const TableMeasDescBase&);
 
@@ -199,7 +199,7 @@ public:
   // Return the name of its variable reference code column.
   const String& columnName() const
     { return itsColumn; }
-    
+
   // Returns True if the reference has an offset.
   Bool hasOffset() const
     { return (itsOffset != 0); }
@@ -211,7 +211,7 @@ public:
   // Returns True is the offset is variable and it is an ArrayMeasColumn.
   Bool isOffsetArray() const
     { return (itsOffset != 0  ?  itsOffset->isArray() : False); }
-    
+
   // Return the fixed Measure offset.
   // It does not test if the offset is defined; hasOffset() should be used
   // for that purpose.
@@ -222,7 +222,7 @@ public:
   // An empty string is returned if no variable offset is used.
   const String& offsetColumnName() const
     { return itsOffset->columnName(); }
-    
+
   // Reset the refCode or offset.
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
@@ -235,18 +235,18 @@ public:
   // called by the user directly.
   void write (TableDesc& td, TableRecord& measInfo,
 	      const TableMeasDescBase&);
-    
+
 private:
-  //# Throws an exception if the column doesn't exist or is of the
-  //# wrong type.
-  void checkColumn (const TableDesc& td) const;
-
-
-  uInt itsRefCode;    
+  uInt itsRefCode;
   // The name of column containing its variable references.
   String itsColumn;
   //# Its reference offset.
   TableMeasOffsetDesc* itsOffset; 	
+
+
+  //# Throws an exception if the column doesn't exist or is of the
+  //# wrong type.
+  void checkColumn (const TableDesc& td) const;
 };
 
 

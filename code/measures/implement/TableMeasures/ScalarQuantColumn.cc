@@ -145,7 +145,7 @@ void ROScalarQuantColumn<T>::throwIfNull() const
 }
  
 template<class T>
-void ROScalarQuantColumn<T>::getData (Quantum<T>& q, uInt rownr) const
+void ROScalarQuantColumn<T>::getData (uInt rownr, Quantum<T>& q) const
 {
   // Quantums are created from Ts stored in itsDataCol and Units
   // in itsUnitsCol, if units are variable, or itsUnit if non-variable.
@@ -158,27 +158,27 @@ void ROScalarQuantColumn<T>::getData (Quantum<T>& q, uInt rownr) const
 }
 
 template<class T>
-void ROScalarQuantColumn<T>::get (Quantum<T>& q, uInt rownr) const
+void ROScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q) const
 {
-  getData (q, rownr);
+  getData (rownr, q);
   if (itsConvOut) {
     q.convert (itsUnitOut);
   }
 }
 
 template<class T>
-void ROScalarQuantColumn<T>::get (Quantum<T>& q, uInt rownr,
+void ROScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q,
 				  const Unit& u) const
 {
-  getData (q, rownr);
+  getData (rownr, q);
   q.convert (u);
 }
 
 template<class T>
-void ROScalarQuantColumn<T>::get (Quantum<T>& q, uInt rownr,
+void ROScalarQuantColumn<T>::get (uInt rownr, Quantum<T>& q,
 				  const Quantum<T>& other) const
 {
-  getData (q, rownr);
+  getData (rownr, q);
   q.convert (other);
 }
 
@@ -186,7 +186,7 @@ template<class T>
 Quantum<T> ROScalarQuantColumn<T>::operator() (uInt rownr) const
 {
   Quantum<T> q;
-  get (q, rownr);
+  get (rownr, q);
   return q;
 }
 
@@ -195,7 +195,7 @@ Quantum<T> ROScalarQuantColumn<T>::operator() (uInt rownr,
 					       const Unit& u) const
 {
   Quantum<T> q;
-  get (q, rownr, u);
+  get (rownr, q, u);
   return q;
 }
 
@@ -204,7 +204,7 @@ Quantum<T> ROScalarQuantColumn<T>::operator() (uInt rownr,
 					       const Quantum<T>& other) const
 {
   Quantum<T> q;
-  get (q, rownr, other);
+  get (rownr, q, other);
   return q;
 }
 

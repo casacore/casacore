@@ -48,7 +48,7 @@ template <class M> class ROScalarMeasColumn;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableMeasures.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -76,8 +76,10 @@ template <class M> class ROScalarMeasColumn;
 // Constructing array Measure column objects using these typedefs looks like
 // this:
 // <srcblock>
-// MEpochArrCol ec(table, "ColumnName);      // MEpoch array column
-// ROMDopplerArrCol dc(table, "DopplerCol"); // Read only MDoppler array column
+// // Read/write MEpoch array column
+// MEpoch::ArrayColumn ec(table, "ColumnName);
+// // Readonly MDoppler array column
+// MDoppler::ROArrayColumn dc(table, "DopplerCol");
 // </srcblock>
 //
 // <h3>Reading and writing Measures</h3>
@@ -100,7 +102,7 @@ template <class M> class ROScalarMeasColumn;
 // the reference component of Measures added to a column is silently
 // ignored, that is, there is no warning nor is there any sort of conversion
 // to the column's reference should the reference of the added Measure be
-// different to the column's reference.   The members
+// different from the column's reference.  The members
 // <linkto class="ROArrayMeasColumn#isRefVariable">isRefVariable()</linkto>
 // and
 // <linkto class="ROArrayMeasColumn#getMeasRef">getMeasRef()</linkto> can be
@@ -148,9 +150,9 @@ template <class M> class ROScalarMeasColumn;
 //    // need a vector to put the MEpochs into
 //    Vector<MEpoch> ew;
 //
-//    // setting the resise parameter to True automatically set ew to the
-//    // same shape as the array contain in the row
-//    arrayCol.get(0,ew, True);
+//    // setting the resize parameter to True automatically sets ew to the
+//    // same shape as the array contained in the row
+//    arrayCol.get(0, ew, True);
 // </srcblock>
 // </example>
 
@@ -224,17 +226,6 @@ protected:
   MeasRef<M> itsMeasRef;
 
 private:
-  // Assignment makes no sense in a read only class.
-  // Declaring this operator private makes it unusable.
-  ROArrayMeasColumn& operator= (const ROArrayMeasColumn<M>& that);
-
-  // Deletes allocated memory etc. Called by ~tor and any member which needs
-  // to reallocate data.
-  void cleanUp();
-
-  // Get the data and convert using conversion engine.
-  Array<M> doConvert (uInt rownr, typename M::Convert& conv) const;
-
   //# Column which contains the Measure's actual data.
   ROArrayColumn<Double>* itsDataCol;
   //# Its MeasRef code column when references are variable.
@@ -247,12 +238,30 @@ private:
   //# measure references have offsets and they are variable.
   ROScalarMeasColumn<M>* itsOffsetCol;
   ROArrayMeasColumn<M>* itsArrOffsetCol;
+
+
+  // Assignment makes no sense in a read only class.
+  // Declaring this operator private makes it unusable.
+  ROArrayMeasColumn& operator= (const ROArrayMeasColumn<M>& that);
+
+  // Deletes allocated memory etc. Called by ~tor and any member which needs
+  // to reallocate data.
+  void cleanUp();
+
+  // Get the data and convert using conversion engine.
+  Array<M> doConvert (uInt rownr, typename M::Convert& conv) const;
 };
+
 
 
 // <summary>
 // Read write access to table array Measure columns.
 // </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
+// </reviewed>
 
 // <synopsis>
 // See description for
@@ -299,17 +308,6 @@ public:
   // </group>
 
 private:
-  // Declaring this operator private makes it unusable.
-  // See class <linkto class="ArrayColumn">ArrayColumn</linkto> for an
-  // explanation as to why this operation is disallowed.  Use the reference
-  // function instead.
-  ArrayMeasColumn& operator= (const ArrayMeasColumn<M>& that);
-
-  // Deletes allocated memory etc. Called by ~tor and any member which needs
-  // to reallocate data.
-  void cleanUp();
-
-
   //# Column which contains the Measure's actual data
   ArrayColumn<Double>* itsDataCol;
   //# Its MeasRef column when references are variable and stored as RefCodes.
@@ -322,6 +320,17 @@ private:
   //# measure references have offsets and they are variable.
   ScalarMeasColumn<M>* itsOffsetCol;
   ArrayMeasColumn<M>* itsArrOffsetCol;
+
+
+  // Declaring this operator private makes it unusable.
+  // See class <linkto class="ArrayColumn">ArrayColumn</linkto> for an
+  // explanation as to why this operation is disallowed.  Use the reference
+  // function instead.
+  ArrayMeasColumn& operator= (const ArrayMeasColumn<M>& that);
+
+  // Deletes allocated memory etc. Called by ~tor and any member which needs
+  // to reallocate data.
+  void cleanUp();
 };
 
 

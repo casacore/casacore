@@ -44,7 +44,7 @@ class TableMeasDescBase;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableMeasures.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -77,7 +77,7 @@ class TableMeasDescBase;
 //     if (timeCol.measDesc().isRefCodeVariable()) {
 //        cout << "The column has variable references." << endl;
 //     } else {
-//         cout << "The fixed MeasRef for the column is: " 
+//         cout << "The fixed MeasRef for the column is: "
 //	        << timeCol.getMeasRef() << endl;
 //     }
 // </srcblock>
@@ -98,8 +98,8 @@ public:
   // The default constructor creates a null object.  Useful for creating
   // arrays of ROScalarMeasColumn objects.  Attempting to use a null object
   // will produce a segmentation fault so care needs to be taken to
-  // initialise the objects first by using attach().  A 
-  // ROScalarMeasColumn object can be tested if it is null by using the 
+  // initialise the objects first by using attach().
+  // An ROScalarMeasColumn object can be tested if it is null by using the
   // isNull() member.
   ROTableMeasColumn();
 
@@ -110,13 +110,13 @@ public:
   ROTableMeasColumn (const ROTableMeasColumn& that);
 
   virtual ~ROTableMeasColumn();
-    
+
   // Change the reference to another column.
   void reference (const ROTableMeasColumn& that);
 
   // Attach another column to the object.
-  void attach (const Table& tab, const String& columnName); 
- 
+  void attach (const Table& tab, const String& columnName);
+
   // Tests if a row contains a Measure (i.e., if the row has a defined
   // value).
   Bool isDefined (uInt rownr) const;
@@ -124,17 +124,17 @@ public:
   // Get access to the TableMeasDescBase describing the column.
   const TableMeasDescBase& measDesc() const
     { return *itsDescPtr; }
-    
+
   // Test if the object is null.
   Bool isNull() const
     { return itsDescPtr.null(); }
-    
+
   // Throw an exception if the object is null.
   void throwIfNull() const;
 
   // Get the name of the column.
   const String& columnName() const;
-    
+
   // Get the Table object this column belongs to.
   Table table() const;
 
@@ -148,11 +148,11 @@ protected:
   //# Does the measure column have a variable reference or offset?
   Bool itsVarRefFlag;
   Bool itsVarOffFlag;
-    
+
 private:
   // Assignment makes no sense in a readonly class.
   // Declaring this operator private makes it unusable.
-  ROTableMeasColumn& operator= (const ROTableMeasColumn& that);  
+  ROTableMeasColumn& operator= (const ROTableMeasColumn& that);
 };
 
 

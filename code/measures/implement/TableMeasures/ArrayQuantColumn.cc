@@ -151,8 +151,7 @@ void ROArrayQuantColumn<T>::attach (const Table& tab,
 }
  
 template<class T>
-void ROArrayQuantColumn<T>::getData (Array<Quantum<T> >& q, 
-				     uInt rownr,
+void ROArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q, 
 				     Bool resize) const
 { 
   // Quantums are created and put into q by taking T data from 
@@ -208,21 +207,21 @@ void ROArrayQuantColumn<T>::getData (Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::get (Array<Quantum<T> >& q, uInt rownr,
+void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 				 Bool resize) const
 {        
   if (itsConvOut) {
-    get (q, rownr, itsUnitOut, resize);
+    get (rownr, q, itsUnitOut, resize);
   } else {
-    getData (q, rownr, resize);
+    getData (rownr, q, resize);
   }
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::get (Array<Quantum<T> >& q, uInt rownr,
+void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 				 const Unit& u, Bool resize) const
 {        
-  getData (q, rownr, resize);
+  getData (rownr, q, resize);
   if (! u.getName().empty()) {
     Bool deleteIt;
     Quantum<T>* q_p = q.getStorage(deleteIt);
@@ -235,18 +234,18 @@ void ROArrayQuantColumn<T>::get (Array<Quantum<T> >& q, uInt rownr,
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::get (Array<Quantum<T> >& q, uInt rownr,
+void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 				 const Quantum<T>& other, 
 	    	    	    	 Bool resize) const
 {
-  get (q, rownr, other.getFullUnit(), resize);
+  get (rownr, q, other.getFullUnit(), resize);
 }
 
 template<class T> 
 Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr) const
 {
   Array<Quantum<T> > q;
-  get (q, rownr);
+  get (rownr, q);
   return q;
 }
 
@@ -255,7 +254,7 @@ Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr,
 						      const Unit& u) const
 {
   Array<Quantum<T> > q;
-  get (q, rownr, u);
+  get (rownr, q, u);
   return q;
 }
 
@@ -264,7 +263,7 @@ Array<Quantum<T> > ROArrayQuantColumn<T>::operator()
                                (uInt rownr, const Quantum<T>& other) const
 {
   Array<Quantum<T> > q;
-  get (q, rownr, other);
+  get (rownr, q, other);
   return q;
 }
 

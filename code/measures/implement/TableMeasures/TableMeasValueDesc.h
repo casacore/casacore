@@ -43,7 +43,7 @@ class TableRecord;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableMeasure.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -79,8 +79,8 @@ class TableRecord;
 //    TableMeasValueDesc valueDesc(td, "MPosColumn");
 // </srcblock>
 //</ol>
-// For an example of the use of the TableMeasValueDesc class in the context 
-// of a full TableMeasDesc declaration see class 
+// For an example of the use of the TableMeasValueDesc class in the context
+// of a full TableMeasDesc declaration see class
 // <linkto class="TableMeasDesc">TableMeasDesc</linkto>.
 // </example>
 
@@ -136,12 +136,12 @@ public:
     { return itsColumn; }
 
 private:
+  String itsColumn;	    //# MeasValue column name.
+
+
   // Throws an exception if the quantum column doesn't exist or is of the
   // wrong type.
   void checkColumn (const TableDesc& td) const;
-
-
-  String itsColumn;	    //# MeasValue column name.
 };
 
 

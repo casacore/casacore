@@ -45,7 +45,7 @@ class Unit;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableQuantum.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableQuantum.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -58,16 +58,16 @@ class Unit;
 
 // <synopsis>
 // The ROScalarQuantColumn class provides read-only access to quanta
-// stored in a scalar Quantum Table column.  The Quantum column should 
-// already exist in the table and would have been defined by means of a 
-// <linkto class=TableQuantumDesc>TableQuantumDesc object</linkto>.  
+// stored in a scalar Quantum Table column.  The Quantum column should
+// already exist in the table and would have been defined by means of a
+// <linkto class=TableQuantumDesc>TableQuantumDesc object</linkto>.
 // In addition,
 // for a ROScalarQuantColumn object to be useful the column should
 // contain Quanta.  Inserting Quanta into a column requires the use of a
-// <linkto class=ScalarQuantColumn">ScalarQuantColumn</A> 
+// <linkto class=ScalarQuantColumn">ScalarQuantColumn</A>
 // object.<br>
 //
-// A ROScalarQuantColumn object is used much in the same way as a 
+// A ROScalarQuantColumn object is used much in the same way as a
 // <linkto class=ROScalarColumn>ROScalarColumn</linkto> object.
 //
 // <h3>Quantum Units</h3></A>
@@ -132,14 +132,14 @@ public:
   ROScalarQuantColumn (const Table& tab, const String& columnName);
 
   // Create the ROScalarQuantColumn from the specified table and column name.
-  // The default unit for data retrieved is the given unit (they data is
+  // The default unit for data retrieved is the given unit (the data is
   // converted as needed).
-  ROScalarQuantColumn (const Table& tab, const String& columnName, 
+  ROScalarQuantColumn (const Table& tab, const String& columnName,
 		       const Unit&);
 
   // Copy constructor (copy semantics).
   ROScalarQuantColumn (const ROScalarQuantColumn<T>& that);
-    
+
   ~ROScalarQuantColumn();
 
   // Change the reference to another column.
@@ -148,19 +148,19 @@ public:
   // Attach a column to the object. Optionally supply a default unit
   // which has the same meaning as the constructor unit argument.
   // <group name="attach">
-  void attach (const Table& tab, const String& columnName); 
+  void attach (const Table& tab, const String& columnName);
   void attach (const Table& tab, const String& columnName, const Unit&);
   // </group>
- 
+
   // Get the quantum stored in the specified row.
   // <group name="get">
-  void get (Quantum<T>& q, uInt rownr) const;
+  void get (uInt rownr, Quantum<T>& q) const;
   // Get the quantum in the specified row, converted to the given unit.
-  void get (Quantum<T>& q, uInt rownr, const Unit&) const;
+  void get (uInt rownr, Quantum<T>& q, const Unit&) const;
   // Get the quantum in the specified row, converted to the unit in other.
-  void get (Quantum<T>& q, uInt rownr, const Quantum<T>& other) const;
+  void get (uInt rownr, Quantum<T>& q, const Quantum<T>& other) const;
   // </group>
-    
+
   // Return the quantum stored in the specified row.
   // <group>
   Quantum<T> operator() (uInt rownr) const;
@@ -171,23 +171,23 @@ public:
   // other.
   Quantum<T> operator() (uInt rownr, const Quantum<T>& other) const;
   // </group>
-      
+
   // Test whether the Quantum column has variable units
   Bool isUnitVariable() const
     { return ToBool(itsUnitsCol != 0); }
-    
+
   // Returns the column's value for Units as a string.
   // An empty string is returned if the column has variable units.
   const String& getUnits() const
     { return itsUnit.getName(); }
-    
+
   // Test if the object is null.
   Bool isNull() const
     { return ToBool(itsDataCol == 0); }
-    
+
   // Throw an exception if the object is null.
   void throwIfNull() const;
-    
+
 protected:
   //# Quantum column's units (if units not variable)
   Unit itsUnit;
@@ -205,7 +205,7 @@ private:
   Unit itsUnitOut;
   //# Convert unit when getting data?
   Bool itsConvOut;
-    
+
 
   // Assignment makes no sense in a read only class.
   // Declaring this operator private makes it unusable.
@@ -213,16 +213,16 @@ private:
 
   // Comparison is not defined, since its semantics are unclear.
   Bool operator== (const ROScalarQuantColumn<T>& that);
-    
+
   // Initialize the ROScalarQuantColumn from the specified table and column.
   void init (const Table& tab, const String& columnName);
 
-  // Deletes allocated memory etc. Called by destructor and any member 
+  // Deletes allocated memory etc. Called by destructor and any member
   // which needs to reallocate data.
   void cleanUp();
 
   // Get the data without possible conversion.
-  void getData (Quantum<T>& q, uInt rownr) const;
+  void getData (uInt rownr, Quantum<T>& q) const;
 };
 
 
@@ -233,7 +233,7 @@ private:
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableQuantum.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableQuantum.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -245,11 +245,11 @@ private:
 
 // <synopsis>
 // The ScalarQuantColumn class provides read/write access to Quanta
-// stored in a Quantum Table column.  The column should previously have 
-// been defined as a Quantum column by means of the 
+// stored in a Quantum Table column.  The column should previously have
+// been defined as a Quantum column by means of the
 // <linkto class=TableQuantumDesc>TableQuantumDesc</linkto> object.
 // In addition to the operations provided by its read-only partner,
-// <linkto class=ROScalarQuantColumn>ROScalarQuantColumn</linkto>, use 
+// <linkto class=ROScalarQuantColumn>ROScalarQuantColumn</linkto>, use
 // of a ScalarQuantColumn object allows the insertion of Quanta into a column.
 // <br>
 //
@@ -313,32 +313,32 @@ public:
 
   // Attach a column to the object.
   // <group name="attach">
-  void attach (const Table& tab, const String& columnName); 
+  void attach (const Table& tab, const String& columnName);
   // </group>
- 
+
   // Put a quantum into the table.  If the column supports variable units
   // the q's unit is stored into the unit column defined in the
   // TableQuantDesc object.  If units are fixed for the column, the
   // quantum is converted as needed.
   void put (uInt rownr, const Quantum<T>& q);
-    
+
 private:
+  //# The underlying data column stores the quantum column's data.
+  ScalarColumn<T>* itsDataCol;
+  //# Variable units column if applicable.
+  ScalarColumn<String>* itsUnitsCol;
+
+
   // Assignment facility offered via reference() member.
   // Declaring this operator private makes it unusable.
   ScalarQuantColumn& operator= (const ScalarQuantColumn<T>& that);
 
   // Comparison is not defined, since its semantics are unclear.
   Bool operator== (const ScalarQuantColumn<T>& that);
-    
-  // Deletes allocated memory etc. Called by destructor and any member 
+
+  // Deletes allocated memory etc. Called by destructor and any member
   // which needs to reallocate data.
   void cleanUp();
-
-
-  //# The underlying data column stores the quantum column's data.
-  ScalarColumn<T>* itsDataCol;
-  //# Variable units column if applicable.
-  ScalarColumn<String>* itsUnitsCol;
 };
 
 

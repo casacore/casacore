@@ -39,12 +39,12 @@ class TableMeasRefDesc;
 class TableMeasValueDesc;
 
 // <summary>
-// Definition of a Measure column in a Table.  
+// Definition of a Measure column in a Table.
 // </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableMeasures.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -55,36 +55,36 @@ class TableMeasValueDesc;
 
 // <synopsis>
 // The TableMeasures system was created to add support for Measure
-// columns to the AIPS++ Table system. 
-// Measures are not a fundamental type of the Tables system and hence 
+// columns to the AIPS++ Table system.
+// Measures are not a fundamental type of the Tables system and hence
 // cannot be represented directly.  Instead a Measure column can be created
 // with the aid of
 // the TableMeasDesc class hierarchy.  The TableMeasDesc class hierarchy
 // creates a Measure column by associating some number of fundamental data
-// type Table 
+// type Table
 // columns into a unit.  The associations between these columns
-// is represented in the column keywords of each of 
+// is represented in the column keywords of each of
 // the columns which make up a specific Measure column.
 //
-// Creating and using Measure columns 
+// Creating and using Measure columns
 // is a three step process:
 // <ol>
 // <li> For each Measure column some number of columns are defined and added
 //      to the Table descriptor.
-// <li> A TableMeasDesc object is used to define a (empty) Measure column 
+// <li> A TableMeasDesc object is used to define a (empty) Measure column
 //      from the columns created in the first step.
-// <li> <linkto class="ScalarMeasColumn">(RO)ScalarMeasColumns</linkto> or 
-//  <linkto class="ArrayMeasColumn">(RO)ArrayMeasColumns</linkto> objects 
-//   are used to access the Measure column for the reading and writing 
+// <li> <linkto class="ScalarMeasColumn">(RO)ScalarMeasColumns</linkto> or
+//  <linkto class="ArrayMeasColumn">(RO)ArrayMeasColumns</linkto> objects
+//   are used to access the Measure column for the reading and writing
 //   of Measures.
 // </ol>
-// 
-// Defining a Measure (that is, steps 1 and 2 above) is the more complex
-// operation.  However, for each Measure column it is a once only operation.  
-// After a Measure column has been created its subsequent use is not 
+//
+// Defining a Measure column (that is, steps 1 and 2 above) is the more complex
+// operation.  However, for each Measure column it is a once only operation.
+// After a Measure column has been created its subsequent use is not
 // significantly
 // different to using "ordinary" Table columns. For information
-// on how to use a Measure column see the 
+// on how to use a Measure column see the
 // <linkto class="ScalarMeasColumn">(RO)ScalarMeasColumns</linkto> and
 // <linkto class="ArrayMeasColumn">(RO)ArrayMeasColumns</linkto> classes.
 //
@@ -95,13 +95,13 @@ class TableMeasValueDesc;
 // <linkto class="TableMeasRefDesc">TableMeasRefDesc</linkto> to set up
 // the reference code component and a
 // <linkto class="TableMeasValueDesc">TableMeasValueDesc</linkto> names the
-// column is used as the main Measure column through which the 
+// column used as the main Measure column through which the
 // Measure column is subsequently accessed.
 //
-// The final step needed to create a Measure column it the creation of a
-// TableMeasDesc object whose 
+// The final step needed to create a Measure column is the creation of a
+// TableMeasDesc object whose
 // constructor takes a TableMeasValueDesc and (optionally) a
-// TableMeasRefDesc.   After construction the TableMeasDesc object's 
+// TableMeasRefDesc.   After construction the TableMeasDesc object's
 // write() member is used to make the
 // the Measure column persistent within the Table.
 //
@@ -124,10 +124,10 @@ class TableMeasValueDesc;
 //    ArrayColumnDesc<Double> cdTime("Time", "An MEpoch column");
 //    td.addColumn(cdtime);
 //
-//    // Create the Measure column.  Want an MEpoch column.  The MEpoch in 
-//    // the column are the have reference code MEpoch::TAI 
+//    // Create the Measure column for an MEpoch.  The MEpoch in
+//    // the column has reference code MEpoch::TAI
 //    TableMeasRefDesc measRef(MEpoch::TAI);
-//    TableMeasValueDesc measVal(td, "Time");    
+//    TableMeasValueDesc measVal(td, "Time");
 //    TableMeasDesc<MEpoch> mepochCol(measVal, measRef);
 //    // write makes the Measure column persistent.
 //    mepochCol.write(td);
@@ -145,11 +145,11 @@ class TableMeasValueDesc;
 //    ArrayColumnDesc<Double> cdTime("Time", "An MEpoch column");
 
 //    // Variable (i.e., per row) reference code storage needs a column.
-//    // The column type is either Int or String (Int faster but String
-//    // may be useful when browsing the table).  Either a ScalarColumn or
+//    // The column type is either Int or String (Int is faster but String
+//    // may be useful when browsing the table).  Either a Scalar column or
 //    // Array column can be used here dependent on whether a Scalar or
-//    // Array Measure column is needed and the level of granularity of 
-//    // of reference code storage is required.
+//    // Array Measure column is used and whether in case of an Array Measure
+//    // column the reference code has to be variable per array element.
 //    ScalarColumnDesc<Int> cdRef("TimeRef", "Reference column for Time");
 //
 //    // add the columns to the Table decriptor
@@ -163,7 +163,7 @@ class TableMeasValueDesc;
 //    // the reference
 //    TableMeasRefDesc measRef(td, "TimeRef", offsetDesc);
 //    // the value descriptor, create and write the column
-//    TableMeasValueDesc measVal(td, "Time");    
+//    TableMeasValueDesc measVal(td, "Time");
 //    TableMeasDesc<MEpoch> mepochCol(measVal, measRef);
 //    mepochCol.write();
 //
@@ -233,21 +233,21 @@ public:
   // column will be the default for the Measure type.
   TableMeasDesc (const TableMeasValueDesc&);
 
-  // Constructor with measure value descriptor and Vector of Units.  
-  // The Measure reference for the column will be the default reference 
-  // code for the Measure type.   Number of Units must be compatible 
+  // Constructor with measure value descriptor and Vector of Units.
+  // The Measure reference for the column will be the default reference
+  // code for the Measure type.   Number of Units must be compatible
   // with the Measure.
   TableMeasDesc (const TableMeasValueDesc&, const Vector<Unit>&);
 
-  // Constructor with value and reference descriptors. Units for the 
+  // Constructor with value and reference descriptors. Units for the
   // column will be the default for Measure type.
   TableMeasDesc (const TableMeasValueDesc&, const TableMeasRefDesc&);
-    
+
   // Constructor with value and reference descriptors and Vector of
   // Units. Number of Units must be compatible with the Measure.
   TableMeasDesc (const TableMeasValueDesc&, const TableMeasRefDesc&,
 		 const Vector<Unit>&);
-    
+
   // Clone the object.
   virtual TableMeasDescBase* clone() const;
 
@@ -255,7 +255,7 @@ public:
   TableMeasDesc (const TableMeasDesc<M>& that);
 
   ~TableMeasDesc();
-    
+
   // Assignment operator (copy semantics)
   TableMeasDesc<M>& operator= (const TableMeasDesc<M>& that);
 };

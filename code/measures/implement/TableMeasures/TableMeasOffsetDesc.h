@@ -47,7 +47,7 @@ class String;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableMeasures.cc">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -58,8 +58,8 @@ class String;
 // </prerequisite>
 
 // <synopsis>
-// This class assists in the definition of the offset component of a 
-// TableMeasDesc 
+// This class assists in the definition of the offset component of a
+// TableMeasDesc
 // in the TableMeasures system.  Four possibilities exist for specifying the
 // handling of measure offsets in a Measure column.  These are:
 //
@@ -67,7 +67,7 @@ class String;
 //   <li> an offset is not used
 //   <li> all measures in the column have the same offset
 //   <li> a unique (and probably different) offset is stored for each row
-//   <li> a unique offset is stored in each array element per (Array)column 
+//   <li> a unique offset is stored in each array element per (Array)column
 //	row
 // </ul>
 //
@@ -97,7 +97,7 @@ class String;
 //    td.addColumn(cdOffset);
 //    ...
 //    // Create the Measure column to be used as the measure offset column
-//    TableMeasValueDesc valDesc(td, "OffsetCol");    
+//    TableMeasValueDesc valDesc(td, "OffsetCol");
 //    TableMeasDesc<MEpoch> offset(valDesc);
 //    // Create the offset descriptor
 //    TableMeasOffsetDesc offsetDesc(offset);
@@ -116,8 +116,8 @@ class String;
 // </srcblock>
 // </ol>
 //
-// For an example of the use of the TableMeasOffsetDesc class in the context 
-// of a full TableMeasDesc declaration see class 
+// For an example of the use of the TableMeasOffsetDesc class in the context
+// of a full TableMeasDesc declaration see class
 // <linkto class="TableMeasDesc">TableMeasDesc</linkto>.
 // </example>
 
@@ -128,7 +128,7 @@ class String;
 // </motivation>
 //
 // <thrown>
-//    <li>AipsError during reconstruction of non-variable offset if a 
+//    <li>AipsError during reconstruction of non-variable offset if a
 // 	  component of the offset measure is missing in the column keywords or
 //	  is corrupt in some way.
 //    <li>AipsError if getOffset() called on a variable offset object.
@@ -142,14 +142,14 @@ class String;
 class TableMeasOffsetDesc
 {
 public:
-  // Constructor which defines a constant (non-variable) offset.  All 
+  // Constructor which defines a constant (non-variable) offset.  All
   // measures in the columns will have the same offset.
   TableMeasOffsetDesc (const Measure& offset);
 
   // Constructor for defining a variable offset.  If asArray is True then
-  // the offset is stored per array element.  The default is for the 
+  // the offset is stored per array element.  The default is for the
   // offset to be stored (and hence variable) per row.
-  TableMeasOffsetDesc (const TableMeasDescBase& offsetColumn, 
+  TableMeasOffsetDesc (const TableMeasDescBase& offsetColumn,
 		       Bool asArray=False);
 
   // Copy constructor (copy semantics).
@@ -159,16 +159,16 @@ public:
 
   // Assignment operator (copy semantics).
   TableMeasOffsetDesc& operator= (const TableMeasOffsetDesc& that);
-    
+
   // Reconstructs the TableMeasOffsetDesc from the measInfo TableRecord.
   static TableMeasOffsetDesc* reconstruct (const TableRecord& measInfo,
 					   const String& prefix,
 					   const Table& tab);
-    
+
   // Get the (non-variable) measure offset for this column.  If it doesn't
   // exist (thus if the offset is variable), an exception is thrown.
   const Measure& getOffset() const;
-    
+
   // Returns True if the offset varies per row.
   Bool isVariable() const
     { return (itsTMDesc != 0); }
@@ -176,12 +176,12 @@ public:
   // Returns True if the offset varies per array element.
   Bool isArray() const
     { return (isVariable() && itsVarPerArr); }
-    
+
   // Gets the name of the column which stores the variable offset.
   // "" is returned if the offset is not variable.
   const String& columnName() const
     { return itsVarColName; }
-    
+
   // Reset the offset.
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
@@ -191,15 +191,15 @@ public:
   void write (TableDesc& td, TableRecord& measInfo, const String& prefix);
 
 private:
-  // Constructor which uses the measInfo TableRecord.
-  TableMeasOffsetDesc (const TableRecord& measInfo, const String& prefix,
-		       const Table&);
-
-
   TableMeasDescBase* itsTMDesc;      //# Stores variable offset if applicable
   MeasureHolder      itsMeasure;     //# The offset if non-variable.
   String             itsVarColName;  //# "" if offset non-variable.
   Bool               itsVarPerArr;   //# Is variable per array element.
+
+
+  // Constructor which uses the measInfo TableRecord.
+  TableMeasOffsetDesc (const TableRecord& measInfo, const String& prefix,
+		       const Table&);
 };
 
 
