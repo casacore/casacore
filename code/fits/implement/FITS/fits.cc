@@ -660,16 +660,72 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 		    return 1;
 		}
 		p = (const char *)v;
-		if (!(FITS::isa_digit(p[0]) && FITS::isa_digit(p[1]) &&
-		      FITS::isa_digit(p[3]) && FITS::isa_digit(p[4]) &&
-		      FITS::isa_digit(p[6]) && FITS::isa_digit(p[7]) &&
-		      (p[2] == '/') && (p[5] == '/'))) {
+		// first, is this the new format
+ 		if ((v_len >= 10) &&
+ 		    FITS::isa_digit(p[0]) && FITS::isa_digit(p[1]) &&
+ 		    FITS::isa_digit(p[2]) && FITS::isa_digit(p[3]) &&
+ 		    FITS::isa_digit(p[5]) && FITS::isa_digit(p[6]) &&
+ 		    FITS::isa_digit(p[8]) && FITS::isa_digit(p[9]) &&
+ 		    (p[4] == '-') && (p[7] == '-')) {
+		    // must be an attempt at the new format
+		    yy = FITS::digit2bin(p[0]) * 1000 + 
+			FITS::digit2bin(p[1]) * 100 +
+			FITS::digit2bin(p[2]) * 10 + FITS::digit2bin(p[3]);
+		    mm = FITS::digit2bin(p[5]) * 10 + FITS::digit2bin(p[6]);
+		    dd = FITS::digit2bin(p[8]) * 10 + FITS::digit2bin(p[9]);
+		    if (v_len > 10) {
+			if (v_len >= 19 &&
+			    FITS::isa_digit(p[11]) && FITS::isa_digit(p[12]) &&
+			    FITS::isa_digit(p[14]) && FITS::isa_digit(p[15]) &&
+			    FITS::isa_digit(p[17]) && FITS::isa_digit(p[18]) &&
+			    (p[10] == 'T') && (p[13] == ':') && 
+			    (p[16] == ':')) {
+			    Int ip11 = FITS::digit2bin(p[11]);
+			    Int ip12 = FITS::digit2bin(p[12]);
+			    Int ip14 = FITS::digit2bin(p[14]);
+			    Int ip17 = FITS::digit2bin(p[17]);
+			    if ((FITS::digit2bin(p[11]) >= 2 && 
+				 FITS::digit2bin(p[12]) >= 4) ||
+				FITS::digit2bin(p[14]) >= 6 || 
+				FITS::digit2bin(p[17]) >= 6) {
+				msg = "Illegal time.";
+				return 1;
+			    }
+			    if (v_len > 19 && !(p[19] == '.' || 
+					       (v_len == 20 && p[19] == 'Z'))) {
+				msg = "Illegal date format.";
+				return 1;
+			    }
+			    Int lastDigit;
+			    if (p[v_len-1] == 'Z') {
+				lastDigit = v_len-2;
+			    } else {
+				lastDigit = v_len-1;
+			    }
+			    for (Int curr = 20;curr <= lastDigit; curr++) {
+				if (!FITS::isa_digit(p[curr])) {
+				    msg = "Illegal date format.";
+				    return 1;
+				}
+			    }
+			} else {
+			    msg = "Illegal date format.";
+			    return 1;
+			}
+		    }
+		} else if (FITS::isa_digit(p[0]) && FITS::isa_digit(p[1]) &&
+			   FITS::isa_digit(p[3]) && FITS::isa_digit(p[4]) &&
+			   FITS::isa_digit(p[6]) && FITS::isa_digit(p[7]) &&
+			   (p[2] == '/') && (p[5] == '/')) {
+		    // the old format
+		    dd = FITS::digit2bin(p[0]) * 10 + FITS::digit2bin(p[1]);
+		    mm = FITS::digit2bin(p[3]) * 10 + FITS::digit2bin(p[4]);
+		    yy = FITS::digit2bin(p[6]) * 10 + FITS::digit2bin(p[7]);
+		    yy += 1900;
+		} else {
 		    msg = "Illegal date format.";
 		    return 1;
 		}
-		dd = FITS::digit2bin(p[0]) * 10 + FITS::digit2bin(p[1]);
-		mm = FITS::digit2bin(p[3]) * 10 + FITS::digit2bin(p[4]);
-		yy = FITS::digit2bin(p[6]) * 10 + FITS::digit2bin(p[7]);
 		if (mm == 0 || mm > 12) {
 		    msg = "Illegal date.";
 		    return 1;
