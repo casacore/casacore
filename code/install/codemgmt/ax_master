@@ -4645,3 +4645,4 @@
 14 300 src mv trial/implement/MeasurementSets/test/tMSDerivedValues.cc trial/implement/MeasurementSets/test/tOldMSDerivedValues.cc
 14 300 src mv trial/implement/MeasurementSets/test/tMSFeedBuffer.cc trial/implement/MeasurementSets/test/tOldMSFeedBuffer.cc
 14 300 src mv trial/implement/MeasurementSets/test/tMSRange.cc trial/implement/MeasurementSets/test/tOldMSRange.cc
+14 300 src mv trial/implement/MeasurementSets/test/tMSSelector.cc trial/implement/MeasurementSets/test/tOldMSSelector.cc
