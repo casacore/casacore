@@ -2331,3 +2331,4 @@
 09 306 src mv trial/implement/Lattices/LatticeGram.y trial/implement/Images/ImageExprGram.y
 09 306 src mv trial/implement/Lattices/test/tLatticeGram.cc trial/implement/Images/test/tImageExprGram.cc
 09 310 src mv doc/newsletters/feb98/aipstopa.gif doc/newsletters/aipstopa.gif
+09 310 src mv doc/newsletters/feb98/aipstop3.gif doc/newsletters/aipstop3.gif
