@@ -73,12 +73,12 @@ endif
 #
 # Set all the switches to initial state
 #
-foreach i (a c d h n r f g l s t u z E P Q 0 1 2 3 4 5 6 7 8 9)
+foreach i (a c d h n r f g l s t u z E F P Q 0 1 2 3 4 5 6 7 8 9)
     set upsw$i = 0
 end
 #
 # Special switches:
-# P   = pattern             Q = quiet       E = embedde
+# P   = pattern             Q = quiet       E = embedded   F = force acceptance
 # 0-9 = extensions
 #
 foreach i (0 1 2 3 4 5 6 7 8 9)
@@ -93,9 +93,7 @@ while ($# > 0)
 	shift x
 	shift x
 	while ($#x > 0)
-	    if ("EPQ$upsw" =~ *"$x[1]"*) then
-		set upsw$x[1] = 1
-	    else if ("EPQ" =~ *"$x[1]"*) then
+	    if ("EFPQ$upsw" =~ *"$x[1]"*) then
 		set upsw$x[1] = 1
 	    else if ("$x[1]" == "0" && $upswP) then
 		set upsw$x[1] = 1
@@ -113,7 +111,7 @@ while ($# > 0)
 	shift x
 	shift x
 	while ($#x > 0)
-	    if ("EQ$upsw" =~ *"$x[1]"* || "$x[1]" == "Q" && $#x > 1 && \
+	    if ("EFQ$upsw" =~ *"$x[1]"* && $#x > 1 && \
 		("$x[2]" == "0" || "$x[2]" == "1")) then
 		set upsw$x[1] = $x[2]
 		shift x
@@ -170,6 +168,7 @@ if ($upswh) then
     echo "  -d give some debug information (mostly not implemented)"
     echo "  -n run script only to get defining information, without executing"
     echo "  -Q run quietly"
+    echo "  -F force acceptance of normally asked for data"
     echo "  -h this information"
   endif
   cat << '_EOF_'
@@ -228,7 +227,7 @@ if ($#arg < 1) then
 	source $ldir/.UpTyPe.$cdat
     else
         set tp = t$cdat
-	set y = 1
+	if (! $upswF) set y = 1
     endif
     if ($y || "$script" == "UPfind" || "$script" == "UPchange" || \
 	      "$script" == "UPmove" || "$script" == "UPreident") then
@@ -263,7 +262,7 @@ endif
 # Save current type for today
 #
 touch $ldir/.UpTyPe.xx
-rm -f $ldir/.UpTyPe.*
+if (1) rm -f $ldir/.UpTyPe.*
 if (! -e $ldir/.UpTyPe.$cdat) then
     echo "set tp = $tpb" >! $ldir/.UpTyPe.$cdat
 endif
@@ -282,11 +281,6 @@ set rscp = "scp -qpC"
 set rpath =  "${ruser}@${rmaster}"
 set pdir = `pwd | sed -e 's#.*/aips++/#aips++/#'`
 set tmp = $$
-#
-# Get rid of some aliase
-#
-unalias rm
-unalias cp
 #
 # Get info
 #
@@ -349,30 +343,36 @@ if (! $?dir) then
    if (! $upswQE) then
      echo "Make sure you have a proper mktree built before proceeding..."
    endif
-   while ("$x" == "" || ! -d $x/code)
+   if ($upswF && -d $dir/code) then
+     set x = $dir
+   else
+     while ("$x" == "" || ! -d $x/code)
 	echo -n "Specify code tree root to be used [$dir]: "
 	set x = ($<)
 	if ("$x" == "") then
 	    set x = "$dir"
 	endif
-   end
+     end
+   endif
    set dir = "$x"
    unset x
 endif 
 
 if (! $?mdir) then
-   set mdir = "~/aips++"
-   while (! -d $mdir/code) 
-      if (! $upswQE) then
-        echo "Path to local aips++ tree root is not $mdir"
-      endif
-      echo -n "Specify your local aips++ tree root [$mdir]: "
-      set x = "$<"
-      if ("$x" != "") then
-	set mdir = "$x"
-      endif
-      unset x
-   end
+   if ("$script" == "UPchange" || "$script" == "UPreident") then
+     set mdir = "~/aips++"
+     while (! -d $mdir/code) 
+        if (! $upswQE) then
+          echo "Path to local aips++ tree root is not $mdir"
+        endif
+        echo -n "Specify your local aips++ tree root [$mdir]: "
+        set x = "$<"
+        if ("$x" != "") then
+  	  set mdir = "$x"
+        endif
+        unset x
+     end
+   endif
 endif
 
 if ($?xao || ! $?xai) then
@@ -401,7 +401,9 @@ endif
 
 if (! -e $ldir/${tpb}.def) then
    echo "set dir = $dir" >! $ldir/${tpb}.def
-   echo "set mdir = $mdir" >> $ldir/${tpb}.def
+   if ($?mdir) then
+     echo "set mdir = $mdir" >> $ldir/${tpb}.def
+   endif
    echo "set xao = $xao" >> $ldir/${tpb}.def
    echo "set xai = $xai" >> $ldir/${tpb}.def
    echo "set hasm = $hasm" >> $ldir/${tpb}.def
