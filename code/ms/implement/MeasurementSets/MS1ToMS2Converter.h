@@ -38,6 +38,37 @@
 class String;
 
 
+// <summary> 
+// Class to convert a MeasurementSet v1 to v2.
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <synopsis>
+// This class converts a version 1 MeasurementSet to version 2.
+// The keyword MS_VERSION tells the version. If not present it is 1.
+// If it is found that the MS is already a version 2 one, nothing is done.
+// <p>
+// It is possible to do the conversion in place. If not, first a copy
+// is made which is thereafter changed in place.
+// <br>
+// The conversion process does the following steps:
+// <ul>
+//  <li> Create the newly required columns and keywords
+//       and fill them with new or existing data.
+//  <li> Convert the old way of defining measure info to the new
+//       TableMeasures way.
+//  <li> Rename obsolete columns by prefixing their names with _OBSOLETE_.
+// </ul>
+//
+// The constructor only keeps the names of the input and output MS.
+// The actual conversion is done by the <src>convert</src> function.
+// </synopsis>
+
+
 class MS1ToMS2Converter
 {
 public:
