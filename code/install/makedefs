@@ -529,7 +529,7 @@ LINKdisplay   := display casa
 LINKvlbi      := vlbi synthesis casa
 
 LINKcontrib   := contrib vlbi synthesis dish aips
-LINKtrialdisplay := trialdisplay display graphics $(LINKimages)
+LINKtrialdisplay := trialdisplay display graphics $(LINKtasking)
 
 LINKalma      := alma $(LINKtasking)
 LINKatnf      := atnf $(LINKtasking)
