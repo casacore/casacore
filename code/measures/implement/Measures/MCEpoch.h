@@ -1,5 +1,5 @@
 //# MCEpoch.h: MEpoch conversion routines 
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 #if !defined(AIPS_MCEPOCH_H)
 #define AIPS_MCEPOCH_H
 
-#if defined(_AIX)
-#pragma implementation ("MCEpoch.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
@@ -47,9 +43,7 @@ class Nutation;
 
 //# Typedefs
 
-// <summary>
-// MEpoch conversion routines
-// </summary>
+// <summary> MEpoch conversion routines </summary>
 
 // <use visibility=local>
 
@@ -86,8 +80,8 @@ class Nutation;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1996/02/21">
-//	<li>
+// <todo asof="1998/09/21">
+//	<li> Nothing I know
 // </todo>
 
 class MCEpoch : public MCBase {
@@ -135,7 +129,8 @@ private:
     TDB_TCB,
     TCB_TDB,
     N_Routes,
-    RAZING};
+    RAZING
+  };
   
   //# Typedefs
   
@@ -148,6 +143,14 @@ private:
   //# Cached Data
   Nutation *NUTATFROM;
   Nutation *NUTATTO;
+
+  //# State machine data
+  // Has state matrix been made
+  static Bool stateMade_p;
+  // Transition list
+  static uInt ToRef_p[N_Routes][3];
+  // Transition matrix
+  static uInt FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
   
   //# Constructors
   // Copy constructor (not implemented)
