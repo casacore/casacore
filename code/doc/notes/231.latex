@@ -1,0 +1,24 @@
+\documentclass[11pt]{article}
+\usepackage{html,epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 231 -- All About the AIPS++ Display Library}
+  
+
+\author{David Barnes}
+
+\date{22 May 2000}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available 
+(???kB).}{../231.ps.gz}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{display.latex}
+\end{document}
