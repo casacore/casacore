@@ -2166,3 +2166,4 @@
 11 136 src mv trial/scripts/gbt.help nrao/scripts/gbt.help
 11 137 src rm trial/implement/Images/test_image
 11 138 src rm doc/html/navpages/ref/reference.html
+11 138 src rm doc/html/navpages/ref/makefile
