@@ -45,7 +45,7 @@
 
 
 // <summary>
-// Addition in table select expression tree
+// Double addition in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -75,6 +75,29 @@ public:
     DComplex getDComplex (uInt rownr);
 };
 
+
+// <summary>
+// DComplex addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an addition in a table select expression tree.
+// Strings can also be added (ie. concatenated).
+// Numeric data types will be promoted if possible, so for instance
+// an addition of Int and Complex is possible.
+// </synopsis> 
+
 class TableExprNodePlusDComplex : public TableExprNodeBinary
 {
 public:
@@ -83,6 +106,29 @@ public:
     DComplex getDComplex (uInt rownr);
 };
 
+
+// <summary>
+// String addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an addition in a table select expression tree.
+// Strings can also be added (ie. concatenated).
+// Numeric data types will be promoted if possible, so for instance
+// an addition of Int and Complex is possible.
+// </synopsis> 
+
 class TableExprNodePlusString : public TableExprNodeBinary
 {
 public:
@@ -90,6 +136,29 @@ public:
     ~TableExprNodePlusString();
     String getString (uInt rownr);
 };
+
+
+// <summary>
+// Date addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an addition in a table select expression tree.
+// Strings can also be added (ie. concatenated).
+// Numeric data types will be promoted if possible, so for instance
+// an addition of Int and Complex is possible.
+// </synopsis> 
 
 class TableExprNodePlusDate : public TableExprNodeBinary
 {
@@ -101,8 +170,9 @@ public:
 };
 
 
+
 // <summary>
-// Subtraction in table select expression tree
+// Double subtraction in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -131,6 +201,28 @@ public:
     DComplex getDComplex (uInt rownr);
 };
 
+
+// <summary>
+// DComplex subtraction in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a subtraction in a table select expression tree.
+// Numeric data types will be promoted if possible, so for instance
+// a subtraction of Int and Complex is possible.
+// </synopsis> 
+
 class TableExprNodeMinusDComplex : public TableExprNodeBinary
 {
 public:
@@ -138,6 +230,28 @@ public:
     ~TableExprNodeMinusDComplex();
     DComplex getDComplex (uInt rownr);
 };
+
+
+// <summary>
+// Date subtraction in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a subtraction in a table select expression tree.
+// Numeric data types will be promoted if possible, so for instance
+// a subtraction of Int and Complex is possible.
+// </synopsis> 
 
 class TableExprNodeMinusDate : public TableExprNodeBinary
 {
@@ -149,8 +263,9 @@ public:
 };
 
 
+
 // <summary>
-// Multiplication in table select expression tree
+// Double multiplication in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -179,6 +294,28 @@ public:
     DComplex getDComplex (uInt rownr);
 };
 
+
+// <summary>
+// DComplex multiplication in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a multiplication in a table select expression tree.
+// Numeric data types will be promoted if possible, so for instance
+// a multiplication of Int and Complex is possible.
+// </synopsis> 
+
 class TableExprNodeTimesDComplex : public TableExprNodeBinary
 {
 public:
@@ -188,8 +325,9 @@ public:
 };
 
 
+
 // <summary>
-// Division in table select expression tree
+// Double division in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -217,6 +355,28 @@ public:
     Double   getDouble   (uInt rownr);
     DComplex getDComplex (uInt rownr);
 };
+
+
+// <summary>
+// DComplex division in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a division in a table select expression tree.
+// Numeric data types will be promoted if possible, so for instance
+// a division of Int and Complex is possible.
+// </synopsis> 
 
 class TableExprNodeDivideDComplex : public TableExprNodeBinary
 {

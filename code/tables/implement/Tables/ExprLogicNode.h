@@ -45,7 +45,7 @@
 
 
 // <summary>
-// Comparison == in table select expression tree
+// Bool comparison == in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -73,6 +73,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// Double comparison == in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an == comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeEQDouble : public TableExprNodeBinary
 {
 public:
@@ -82,6 +104,28 @@ public:
     void ranges (Block<TableExprRange>&);
 };
 
+
+// <summary>
+// DComplex comparison == in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an == comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeEQDComplex : public TableExprNodeBinary
 {
 public:
@@ -89,6 +133,28 @@ public:
     ~TableExprNodeEQDComplex();
     Bool getBool (uInt rownr);
 };
+
+
+// <summary>
+// String comparison == in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an == comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
 
 class TableExprNodeEQString : public TableExprNodeBinary
 {
@@ -98,6 +164,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// Regex comparison == in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an == comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeEQRegex : public TableExprNodeBinary
 {
 public:
@@ -105,6 +193,28 @@ public:
     ~TableExprNodeEQRegex();
     Bool getBool (uInt rownr);
 };
+
+
+// <summary>
+// Date comparison == in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an == comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
 
 class TableExprNodeEQDate : public TableExprNodeBinary
 {
@@ -115,8 +225,9 @@ public:
 };
 
 
+
 // <summary>
-// Comparison != in table select expression tree
+// Bool comparison != in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -144,6 +255,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// Double comparison != in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an != comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeNEDouble : public TableExprNodeBinary
 {
 public:
@@ -151,6 +284,28 @@ public:
     ~TableExprNodeNEDouble();
     Bool getBool (uInt rownr);
 };
+
+
+// <summary>
+// DComplex comparison != in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an != comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
 
 class TableExprNodeNEDComplex : public TableExprNodeBinary
 {
@@ -160,6 +315,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// String comparison != in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an != comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeNEString : public TableExprNodeBinary
 {
 public:
@@ -168,6 +345,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// Regex comparison != in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an != comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeNERegex : public TableExprNodeBinary
 {
 public:
@@ -175,6 +374,28 @@ public:
     ~TableExprNodeNERegex();
     Bool getBool (uInt rownr);
 };
+
+
+// <summary>
+// Date comparison != in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an != comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
 
 class TableExprNodeNEDate : public TableExprNodeBinary
 {
@@ -185,8 +406,9 @@ public:
 };
 
 
+
 // <summary>
-// Comparison > in table select expression tree
+// Double comparison > in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -215,6 +437,28 @@ public:
     void ranges (Block<TableExprRange>&);
 };
 
+
+// <summary>
+// DComplex comparison > in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an > comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeGTDComplex : public TableExprNodeBinary
 {
 public:
@@ -223,6 +467,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// String comparison > in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an > comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeGTString : public TableExprNodeBinary
 {
 public:
@@ -230,6 +496,28 @@ public:
     ~TableExprNodeGTString();
     Bool getBool (uInt rownr);
 };
+
+
+// <summary>
+// Date comparison > in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an > comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
 
 class TableExprNodeGTDate : public TableExprNodeBinary
 {
@@ -240,8 +528,9 @@ public:
 };
 
 
+
 // <summary>
-// Comparison >= in table select expression tree
+// Double comparison >= in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -270,6 +559,28 @@ public:
     void ranges (Block<TableExprRange>&);
 };
 
+
+// <summary>
+// DComplex comparison >= in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an >= comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeGEDComplex : public TableExprNodeBinary
 {
 public:
@@ -278,6 +589,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// String comparison >= in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an >= comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeGEString : public TableExprNodeBinary
 {
 public:
@@ -285,6 +618,28 @@ public:
     ~TableExprNodeGEString();
     Bool getBool (uInt rownr);
 };
+
+
+// <summary>
+// Date comparison >= in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an >= comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
 
 class TableExprNodeGEDate : public TableExprNodeBinary
 {
@@ -297,7 +652,7 @@ public:
 
 
 // <summary>
-// Comparison IN in table select expression tree
+// Double comparison IN in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -325,6 +680,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// DComplex comparison IN in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an IN comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeINDComplex : public TableExprNodeBinary
 {
 public:
@@ -333,6 +710,28 @@ public:
     Bool getBool (uInt rownr);
 };
 
+
+// <summary>
+// String comparison IN in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an IN comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
 class TableExprNodeINString : public TableExprNodeBinary
 {
 public:
@@ -340,6 +739,28 @@ public:
     ~TableExprNodeINString();
     Bool getBool (uInt rownr);
 };
+
+
+// <summary>
+// Date comparison IN in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an IN comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
 
 class TableExprNodeINDate : public TableExprNodeBinary
 {

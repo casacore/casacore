@@ -1,5 +1,5 @@
 //# ExprNodeArray.h: Classes representing an array in table select expression
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -193,7 +193,7 @@ protected:
 
 
 // <summary>
-// Typed array column in table select expression
+// Bool array column in table select expression
 // </summary>
 
 // <use visibility=local>
@@ -228,6 +228,25 @@ protected:
     ROArrayColumn<Bool> col_p;
 };
 
+
+// <summary>
+// uChar array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
+
 class TableExprNodeArrayColumnuChar : public TableExprNodeArrayColumn
 {
 public:
@@ -245,6 +264,25 @@ public:
 protected:
     ROArrayColumn<uChar> col_p;
 };
+
+
+// <summary>
+// Short array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
 
 class TableExprNodeArrayColumnShort : public TableExprNodeArrayColumn
 {
@@ -264,6 +302,25 @@ protected:
     ROArrayColumn<Short> col_p;
 };
 
+
+// <summary>
+// uShort array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
+
 class TableExprNodeArrayColumnuShort : public TableExprNodeArrayColumn
 {
 public:
@@ -281,6 +338,25 @@ public:
 protected:
     ROArrayColumn<uShort> col_p;
 };
+
+
+// <summary>
+// Int array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
 
 class TableExprNodeArrayColumnInt : public TableExprNodeArrayColumn
 {
@@ -300,6 +376,25 @@ protected:
     ROArrayColumn<Int> col_p;
 };
 
+
+// <summary>
+// uInt array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
+
 class TableExprNodeArrayColumnuInt : public TableExprNodeArrayColumn
 {
 public:
@@ -317,6 +412,25 @@ public:
 protected:
     ROArrayColumn<uInt> col_p;
 };
+
+
+// <summary>
+// Float array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
 
 class TableExprNodeArrayColumnFloat : public TableExprNodeArrayColumn
 {
@@ -336,6 +450,25 @@ protected:
     ROArrayColumn<Float> col_p;
 };
 
+
+// <summary>
+// Double array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
+
 class TableExprNodeArrayColumnDouble : public TableExprNodeArrayColumn
 {
 public:
@@ -353,6 +486,25 @@ public:
 protected:
     ROArrayColumn<Double> col_p;
 };
+
+
+// <summary>
+// Complex array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
 
 class TableExprNodeArrayColumnComplex : public TableExprNodeArrayColumn
 {
@@ -372,6 +524,25 @@ protected:
     ROArrayColumn<Complex> col_p;
 };
 
+
+// <summary>
+// DComplex array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
+
 class TableExprNodeArrayColumnDComplex : public TableExprNodeArrayColumn
 {
 public:
@@ -389,6 +560,25 @@ public:
 protected:
     ROArrayColumn<DComplex> col_p;
 };
+
+
+// <summary>
+// String array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArrayColumn
+// </prerequisite>
+
+// <synopsis> 
+// These classes store an array column of type X.
+// </synopsis> 
 
 class TableExprNodeArrayColumnString : public TableExprNodeArrayColumn
 {
