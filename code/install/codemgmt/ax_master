@@ -2430,3 +2430,4 @@
 09 376 src mv install/codedevl/template-review install/codedevl/template-review-cc
 09 385 src mv nfra/apps/ms2fits trial/apps/ms2fits
 09 385 src rm nrao/apps/dish/dishavg_viewers.g
+09 385 sys rm libexec/dishavg_viewers.g
