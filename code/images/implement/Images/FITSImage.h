@@ -266,30 +266,12 @@ private:
                             Float& scale, Float& offset, Short& shortMagic, 
                             Int& longMagic, Bool& hasBlanks, const String& name);
 
-// Should really be written as a templated function
-// <group>
-   void crackHeaderFloat (CoordinateSystem& cSys,
-                          IPosition& shape, ImageInfo& imageInfo,
-                          Unit& brightnessUnit, RecordInterface& miscInfo,
-                          LogIO&os, FitsInput& infile);
-//
-   void crackHeaderDouble (CoordinateSystem& cSys,
-                          IPosition& shape, ImageInfo& imageInfo,
-                          Unit& brightnessUnit, RecordInterface& miscInfo,
-                          LogIO&os, FitsInput& infile);
-//
-   void crackHeaderShort (CoordinateSystem& cSys,
-                        IPosition& shape, ImageInfo& imageInfo,
-                        Unit& brightnessUnit, RecordInterface& miscInfo,
-                        Float& scale, Float& offset, Short& magic,
-                        Bool& hasBlanks, LogIO& os, FitsInput& infile);
-//
-   void crackHeaderLong (CoordinateSystem& cSys,
-                        IPosition& shape, ImageInfo& imageInfo,
-                        Unit& brightnessUnit, RecordInterface& miscInfo,
-                        Float& scale, Float& offset, Int& magic,
-                        Bool& hasBlanks, LogIO& os, FitsInput& infile);
-// </group>
+// Crack the header
+   template <typename T>
+   void crackHeader (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
+                     Unit& brightnessUnit, RecordInterface& miscInfo,
+                     Float& scale, Float& offset, Short& magicShort,
+                     Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile);
 };
 
 
