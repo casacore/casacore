@@ -1,5 +1,5 @@
 //# LatticeExprNode.h:  LatticeExprNode.h
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -529,17 +529,6 @@ public:
    LatticeExprNode(const CountedPtr<LELInterface<Complex> >& expr);
    LatticeExprNode(const CountedPtr<LELInterface<DComplex> >& expr);
    LatticeExprNode(const CountedPtr<LELInterface<Bool> >& expr);
-// </group>
-
-// Convert automatically to a LatticeExpr object.
-// These casting functions are added because the g++ compiler did 
-// not use the LatticeExpr constructor for an automatic conversion.
-// <group>
-   operator LatticeExpr<Float>() const;
-   operator LatticeExpr<Double>() const;
-   operator LatticeExpr<Complex>() const;
-   operator LatticeExpr<DComplex>() const;
-   operator LatticeExpr<Bool>() const;
 // </group>
 
 // Determine the resulting data type from the given data types.

@@ -1,5 +1,5 @@
 //# LatticeExprNode.cc:  this defines LatticeExprNode.cc
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -759,33 +759,6 @@ Bool LatticeExprNode::getBool() const
    return pExprBool_p->getScalar().value();
 }
 
-
-
-LatticeExprNode::operator LatticeExpr<Float>() const
-{
-   return LatticeExpr<Float> (LatticeExprNode(makeFloat()), 0);
-}
-
-LatticeExprNode::operator LatticeExpr<Double>() const
-{
-   return LatticeExpr<Double> (LatticeExprNode(makeDouble()), 0);
-}
-
-LatticeExprNode::operator LatticeExpr<Complex>() const
-{
-   return LatticeExpr<Complex> (LatticeExprNode(makeComplex()), 0);
-}
-
-LatticeExprNode::operator LatticeExpr<DComplex>() const
-{
-   return LatticeExpr<DComplex> (LatticeExprNode(makeDComplex()), 0);
-}
-
-LatticeExprNode::operator LatticeExpr<Bool>() const
-{
-   AlwaysAssert (dataType() == TpBool, AipsError);
-   return LatticeExpr<Bool> (*this, 0);
-}
 
 
 LatticeExprNode operator+(const LatticeExprNode& expr)
