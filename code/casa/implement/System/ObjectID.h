@@ -37,7 +37,7 @@ class RecordInterface;
 #if defined(AIPS_STDLIB)
 #include <iosfwd>
 #else
-imported class ostream;
+class ostream;
 #endif
 class GlishRecord;
 template<class T> class Block;

@@ -1,5 +1,5 @@
 //# RowCopier.h: RowCopier copies part or all of a row from one table to another.
-//# Copyright (C) 1995
+//# Copyright (C) 1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 class Table;
 template<class T> class Vector;
 class String;
-imported class ColumnHolder; //# Only in the .cc file
+class ColumnHolder; //# Only in the .cc file
 
 
 // <summary> 

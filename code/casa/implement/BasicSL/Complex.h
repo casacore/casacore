@@ -144,7 +144,7 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define G_COMPLEX(type)		g_name2(type,G_COMPLEX)
 
 #define G_COMPLEXdeclare2(type,CASTS)						\
-imported class G_COMPLEX(type)								\
+class G_COMPLEX(type)								\
 {										\
 public:									\
 										\
@@ -702,9 +702,9 @@ G_COMPLEX(type)& G_COMPLEX(type)::operator /= (from y)				\
 
 
 
-imported class G_COMPLEX(double);
-imported class G_COMPLEX(float);
-imported class G_COMPLEX(int);
+class G_COMPLEX(double);
+class G_COMPLEX(float);
+class G_COMPLEX(int);
 
 g_declare2(G_COMPLEX,double,G_COMPLEX_CTOR_OP_DECL(double,int) G_COMPLEX_CTOR_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECLS(double,double) G_COMPLEX_ASSIGN_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECL(double,int) G_COMPLEX_OPEQ_DECL(double,float) G_COMPLEX_OPEQ_DECL(double,int))
 typedef G_COMPLEX(double) DComplex;

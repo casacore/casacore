@@ -38,7 +38,7 @@
 #if defined(AIPS_STDLIB)
 #include <iosfwd>
 #else
-imported class ostream;
+class ostream;
 #endif
 
 

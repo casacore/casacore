@@ -1,5 +1,5 @@
 //# File.h: Class to get file information and a base for other file classes
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations.
-imported struct stat;
+struct stat;
 
 
 // <summary> 
