@@ -50,73 +50,199 @@
 
 // Helper functions to help us interface to WCS
 
-static void make_celprm_and_prjprm(celprm *&celprm_p, prjprm *&prjprm_p,
-           Projection::Type proj, Double refLong, Double refLat, 
-           const Vector<Double> &parameters, Double longPole, Double latPole)
+
+Vector<String> DirectionCoordinate::make_FITS_ctype (MDirection::Types type,
+                                                     const Projection& proj,
+                                                     Double refLat, Bool printError)
 {
-    celprm_p = new celprm;
-    if (! celprm_p) {
+    LogIO os(LogOrigin("DirectionCoordinate", "void make_FITS_ctype", WHERE));
+    Vector<String> ctype(2);
+    Vector<String> names = DirectionCoordinate::axisNames(type, True);
+    Vector<Double> projParameters = proj.parameters();
+//
+    Bool isNCP = False;
+    for (uInt i=0; i<2; i++) {
+       String name = names(i);
+       while (name.length() < 4) {
+           name += "-";
+       }
+       switch(proj.type()) {
+          case Projection::TAN:  // Fallthrough
+          case Projection::ARC:
+              name = name + "-" + proj.name();
+              break;
+          case Projection::SIN:
+
+// This is either "real" SIN or NCP
+
+              AlwaysAssert(projParameters.nelements() == 2, AipsError);
+              if (::near(projParameters(0), 0.0) && ::near(projParameters(1), 0.0)) {
+                  // True SIN
+                  name = name + "-" + proj.name();
+              } else {
+                  // NCP?
+                  // From Greisen and Calabretta
+                  if (::near(projParameters(0), 0.0) &&
+                      ::near(projParameters(1), 1.0/tan(refLat*C::pi/180.0))) {
+                      // Is NCP
+                      isNCP = True;
+                      name = name + "-NCP";
+                  } else {
+                      // Doesn't appear to be NCP
+                      // Only print this once
+                      if (!isNCP) {
+                          os << LogIO::WARN << "SIN projection with non-zero"
+                              " projp does not appear to be NCP." << endl <<
+                              "However, assuming NCP anyway." << LogIO::POST;
+                      }
+                      name = name + "-NCP";
+                      isNCP = True;
+                  }
+              }
+              break;
+          default:
+             if (i == 0) {
+
+// Only print the message once for long/lat
+                if (printError) {
+                   os << LogIO::WARN << proj.name()
+                      << " is not known to standard FITS (it is known to WCS)."
+                      << LogIO::POST;
+                }
+             }
+             name = name + "-" + proj.name();
+             break;
+       }
+       ctype(i) = name;
+    }
+    return ctype;
+}
+
+void DirectionCoordinate::make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,  
+                                   char c_ctype[2][9], double c_crval[2],
+                                   const Projection& proj,
+                                   MDirection::Types type,
+                                   Double refLong, Double refLat, 
+                                   Double longPole, Double latPole)
+{
+    pCelPrm = new celprm;
+    if (! pCelPrm) {
         throw(AllocError("static ::make_celprm_and_prjprm()", sizeof(celprm)));
     }
-    celprm_p->flag = 0;
-    celprm_p->ref[0] = refLong;
-    celprm_p->ref[1] = refLat;
-    celprm_p->ref[2] = longPole;
-    celprm_p->ref[3] = latPole;
+    pCelPrm->flag = 0;
+    pCelPrm->ref[0] = refLong;
+    pCelPrm->ref[1] = refLat;
+    pCelPrm->ref[2] = longPole;
+    pCelPrm->ref[3] = latPole;
 
-    prjprm_p = new prjprm;
-    if (! prjprm_p) {
-        delete celprm_p;
-        celprm_p = 0;
+    pPrjPrm = new prjprm;
+    if (! pPrjPrm) {
+        delete pCelPrm;
+        pCelPrm = 0;
         throw(AllocError("static ::make_celprm_and_prjprm()", sizeof(prjprm)));
     }
-    prjprm_p->flag = 0;
-    prjprm_p->r0 = 0.0;
-    objset(prjprm_p->p, double(0.0), uInt(10));
-    uInt nRequiredParameters = Projection::nParameters(proj);
-    AlwaysAssert(parameters.nelements() >= nRequiredParameters, AipsError);
-    int startAt = ((proj == Projection::ZPN) ? 0 : 1);
+    pPrjPrm->flag = 0;
+    pPrjPrm->r0 = 0.0;
+    objset(pPrjPrm->p, double(0.0), uInt(10));
+    uInt nRequiredParameters = Projection::nParameters(proj.type());
+    Vector<Double> projParameters = proj.parameters();
+    AlwaysAssert(projParameters.nelements() >= nRequiredParameters, AipsError);
+    int startAt = ((proj.type() == Projection::ZPN) ? 0 : 1);
     for (uInt i=0; i < nRequiredParameters; i++) {
-        prjprm_p->p[i + startAt] = parameters(i);
+        pPrjPrm->p[i + startAt] = projParameters(i);
     }
-    String name = Projection::name(proj);
+    String name = Projection::name(proj.type());
     const char *nameptr = name.chars();
-    int errnum = celset(nameptr, celprm_p, prjprm_p);
+    int errnum = celset(nameptr, pCelPrm, pPrjPrm);
 
     if (errnum != 0) {
         String errmsg = "wcs celset_error: ";
         errmsg += celset_errmsg[errnum];
         throw(AipsError(errmsg));
     }
-
+// 
+// All the things we make next are needed by the toMix2 function
+// We don't want to make them every time this is called
+//
+    pWcs = new wcsprm;
+    if (!pWcs) {
+        throw(AllocError("static ::make_celprm_and_prjprm()", sizeof(wcsprm)));
+    }
+//
+// Construct FITS ctype vector
+//
+    Vector<String> ctype = DirectionCoordinate::make_FITS_ctype(type, proj, refLat, False);
+    strncpy (c_ctype[0], ctype(0).chars(), 9);
+    strncpy (c_ctype[1], ctype(1).chars(), 9);
+//
+    c_crval[0] = refLong;
+    c_crval[1] = refLat;
+//
+// Fill in the wcs structure
+//
+    int iret = wcsset(2, c_ctype, pWcs);
+    if (iret!=0) {
+        String errorMsg = "wcs wcsset_error: ";
+        errorMsg += wcsset_errmsg[iret];
+        throw(AipsError(errorMsg));
+    }
 }
 
-static void copy_celprm_and_prjprm(celprm *&tocel, prjprm *&toprj,
-				   const celprm *fromcel, const prjprm *fromprj)
+
+
+void DirectionCoordinate::copy_celprm_and_prjprm(celprm* &pToCel, prjprm* &pToPrj,
+                                   wcsprm* &pToWcs, 
+                                   char toctype[2][9], double tocrval[2],
+				   const celprm *pFromCel, const prjprm *pFromPrj,
+                                   const wcsprm *pFromWcs, 
+                                   const char fromctype[2][9], const double fromcrval[2])
+//
+// This function is used by the copy constructor (for which the
+// output pointers will be 0) and assignment, for which the
+// output pointers will be non-zero
+//
+// Note that none of these structures have pointers in them. Therefore
+// we can copy them easily.  SOme of the wcs strcutures have pointers
+// in them and deep copies must be made.
+//
 {
-    AlwaysAssert(fromcel != 0 && fromprj != 0, AipsError);
-    if (tocel == 0) tocel = new celprm;
-    if (! tocel) {
+    AlwaysAssert(pFromCel!=0 && pFromPrj!=0 && pFromWcs!=0, AipsError);
+//
+    if (pToCel==0) pToCel = new celprm;
+    if (!pToCel) {
         throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(celprm)));
     }
-    delete toprj;
-    toprj = 0;
-    toprj = new prjprm;
-    if (! toprj) {
-        delete tocel;
-        tocel = 0;
+    *pToCel = *pFromCel;
+//
+    if (pToPrj==0) pToPrj = new prjprm;
+    if (!pToPrj) {
+        delete pToCel;
+        pToCel = 0;
         throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(prjprm)));
     }
-
-    *tocel = *fromcel;
-    *toprj = *fromprj;
+    *pToPrj = *pFromPrj;
+//
+    if (pToWcs==0) pToWcs = new wcsprm;
+    if (!pToWcs) {
+        delete pToCel;
+        pToCel = 0;
+        delete pToPrj;
+        pToPrj = 0;
+        throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(wcsprm)));
+    }
+    *pToWcs = *pFromWcs;
+//
+    strncpy (toctype[0], fromctype[0], 9);
+    strncpy (toctype[1], fromctype[1], 9);
+    tocrval[0] = fromcrval[0];
+    tocrval[1] = fromcrval[1];
 }
 
 DirectionCoordinate::DirectionCoordinate()
-  : Coordinate(),
-    type_p(MDirection::J2000), projection_p(Projection(Projection::CAR)),
-    celprm_p(0), prjprm_p(0), linear_p(1),
-    names_p(2), units_p(2)
+: Coordinate(),
+  type_p(MDirection::J2000), projection_p(Projection(Projection::CAR)),
+  celprm_p(0), prjprm_p(0), wcs_p(0), linear_p(1),
+  names_p(2), units_p(2)
 {
     // Initially we are in radians
     to_degrees_p[0] = 180.0 / C::pi;
@@ -134,10 +260,10 @@ DirectionCoordinate::DirectionCoordinate()
     toDegrees(crval);
     toDegrees(cdelt);
     linear_p = LinearXform(crpix, cdelt, xform);
-    
-
-    make_celprm_and_prjprm(celprm_p, prjprm_p, projection_p.type(),
-			   crval(0), crval(1), projection_p.parameters(), 
+    DirectionCoordinate::make_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, 
+                           c_ctype_p, c_crval_p,
+                           projection_p,
+                           type_p, crval(0), crval(1), 
 			   999.0, 999.0);
 }
 
@@ -150,7 +276,7 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          Double refX, Double refY)
 : Coordinate(),
   type_p(directionType), projection_p(projection),
-  celprm_p(0), prjprm_p(0), linear_p(1),
+  celprm_p(0), prjprm_p(0), wcs_p(0), linear_p(1),
   names_p(axisNames(directionType).copy()),
   units_p(2)
 {
@@ -168,21 +294,24 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
     toDegrees(cdelt);
     linear_p = LinearXform(crpix, cdelt, xform);
 
-    make_celprm_and_prjprm(celprm_p, prjprm_p, projection.type(),
-			   crval(0), crval(1), projection.parameters(), 
+    DirectionCoordinate::make_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, 
+                           c_ctype_p, c_crval_p,
+                           projection_p,
+                           type_p, crval(0), crval(1), 
 			   999.0, 999.0);
 }
 
 DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
-    : Coordinate(other),
-      type_p(other.type_p), projection_p(other.projection_p),
-      celprm_p(0), prjprm_p(0), linear_p(other.linear_p),
-      names_p(other.names_p.copy()), units_p(other.units_p.copy())
+: Coordinate(other),
+  type_p(other.type_p), projection_p(other.projection_p),
+  celprm_p(0), prjprm_p(0), wcs_p(0), linear_p(other.linear_p),
+  names_p(other.names_p.copy()), units_p(other.units_p.copy())
 {
     to_degrees_p[0] = other.to_degrees_p[0];
     to_degrees_p[1] = other.to_degrees_p[1];
-    copy_celprm_and_prjprm(celprm_p, prjprm_p,
-			   other.celprm_p, other.prjprm_p);
+    DirectionCoordinate::copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
+                           c_crval_p, other.celprm_p, other.prjprm_p,
+                           other.wcs_p, other.c_ctype_p, other.c_crval_p);
 }
 
 
@@ -194,8 +323,11 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
 	type_p = other.type_p;
 	projection_p = other.projection_p;
 //
-	copy_celprm_and_prjprm(celprm_p, prjprm_p,
-			       other.celprm_p, other.prjprm_p);
+	DirectionCoordinate::copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, 
+                               c_ctype_p, c_crval_p,
+			       other.celprm_p, other.prjprm_p,
+                               other.wcs_p, 
+			       other.c_ctype_p, other.c_crval_p);
 	linear_p = other.linear_p;
 	names_p = other.names_p.copy();
 	units_p = other.units_p.copy();
@@ -209,8 +341,12 @@ DirectionCoordinate::~DirectionCoordinate()
 {
     delete celprm_p; 
     celprm_p = 0;
+//
     delete prjprm_p; 
     prjprm_p = 0;
+//
+    delete wcs_p;
+    wcs_p = 0;
 }
 
 Coordinate::Type DirectionCoordinate::type() const
@@ -234,7 +370,6 @@ uInt DirectionCoordinate::nWorldAxes() const
     return 2;
 }
 
-// Move out of func for exception emulation
 Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 				  const Vector<Double> &pixel) const
 {
@@ -305,7 +440,9 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
                                 const Vector<Double>& worldIn,
                                 const Vector<Double>& pixelIn,
                                 const Vector<Bool>& worldAxes,
-                                const Vector<Bool>& pixelAxes) const
+                                const Vector<Bool>& pixelAxes,
+                                const Vector<Double>& worldMin,
+                                const Vector<Double>& worldMax) const
 {
    const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
@@ -313,6 +450,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
    AlwaysAssert(nPixel==nPixelAxes(), AipsError);
    AlwaysAssert(worldIn.nelements()==nWorld, AipsError);
    AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);
+   AlwaysAssert(worldMin.nelements()==nWorld, AipsError);
+   AlwaysAssert(worldMax.nelements()==nWorld, AipsError);
 //
    for (uInt i=0; i<nPixel; i++) {   
       if (pixelAxes(i) && worldAxes(i)) {
@@ -322,66 +461,60 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       if (!pixelAxes(i) && !worldAxes(i)) {
          set_error("DirectionCoordinate::toMix - each coordinate must be either pixel or world");
          return False;
-       }
+        }
    }
 //
    if (worldOut.nelements()!=nWorldAxes()) worldOut.resize(nWorldAxes());
    if (pixelOut.nelements()!=nPixelAxes()) pixelOut.resize(nPixelAxes());
 //
-   Vector<Double> in(2);
-   Vector<Double> out(2);
    if (pixelAxes(0) && pixelAxes(1)) {
 //
 // pixel->world
 //
-      in(0) = pixelIn(0);
-      in(1) = pixelIn(1);
-      if (!toWorld(out,in)) return False;
-      pixelOut(0) = in(0);
-      pixelOut(1) = in(1);
-      worldOut(0) = out(0);
-      worldOut(1) = out(1);
+      if (!toWorld(worldOut, pixelIn)) return False;
+      pixelOut(0) = pixelIn(0);
+      pixelOut(1) = pixelIn(1);
    } else if (worldAxes(0) && worldAxes(1)) {
 //
 // world->pixel
 //
-      in(0) = worldIn(0);
-      in(1) = worldIn(1);
-      if (!toPixel(out,in)) return False;
-      pixelOut(0) = out(0);
-      pixelOut(1) = out(1);
-      worldOut(0) = in(0);
-      worldOut(1) = in(1);
+      if (!toPixel(pixelOut, worldIn)) return False;
+      worldOut(0) = worldIn(0);
+      worldOut(1) = worldIn(1);
    } else if (pixelAxes(0) && worldAxes(1)) {
 //
 // pixel,world->world,pixel
 //
-      in(0) = pixelIn(0);
-      in(1) = worldIn(1);
-      if (!toMix2(out, in, False)) return False;
+      if (in_tmp_p.nelements()!=2) in_tmp_p.resize(2);
+      if (out_tmp_p.nelements()!=2) out_tmp_p.resize(2);
 //
-      pixelOut(0) = in(0);
-      pixelOut(1) = out(1);
-      worldOut(0) = out(0);
-      worldOut(1) = in(1);  
+      in_tmp_p(0) = pixelIn(0);
+      in_tmp_p(1) = worldIn(1);
+      if (!toMix2(out_tmp_p, in_tmp_p, worldMin, worldMax, False)) return False;
+//
+      pixelOut(0) = in_tmp_p(0);
+      pixelOut(1) = out_tmp_p(1);
+      worldOut(0) = out_tmp_p(0);
+      worldOut(1) = in_tmp_p(1);  
    } else if (worldAxes(0) && pixelAxes(1)) {
 //
 // world,pixel->pixel,world
 //
-      in(0) = worldIn(0);
-      in(1) = pixelIn(1);
-      if (!toMix2(out, in, True)) return False;
+      if (in_tmp_p.nelements()!=2) in_tmp_p.resize(2);
+      if (out_tmp_p.nelements()!=2) out_tmp_p.resize(2);
 //
-      pixelOut(0) = out(0);
-      pixelOut(1) = in(1);
-      worldOut(0) = in(0);
-      worldOut(1) = out(1);
+      in_tmp_p(0) = worldIn(0);
+      in_tmp_p(1) = pixelIn(1);
+      if (!toMix2(out_tmp_p, in_tmp_p, worldMin, worldMax, True)) return False;
+//
+      pixelOut(0) = out_tmp_p(0);
+      pixelOut(1) = in_tmp_p(1);
+      worldOut(0) = in_tmp_p(0);
+      worldOut(1) = out_tmp_p(1);
    }
    return True;   
 }
  
-
-
 
 MDirection::Types DirectionCoordinate::directionType() const
 {
@@ -443,7 +576,6 @@ Bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
 
 Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units, 
 					  Bool adjust)
-
 {
     Bool ok = ToBool(units.nelements()==nWorldAxes());
     if (!ok) {
@@ -530,6 +662,12 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
        String errmsg = "wcs celset_error: ";
        errmsg += celset_errmsg[errnum];
     }
+//
+// Fill in the silly wcs private members I have to cart about
+// for toMix caching
+//
+    c_crval_p[0] = tmp(0);
+    c_crval_p[1] = tmp(1);
 //
     return ok;
 }
@@ -961,7 +1099,33 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
          return False;
       }
    }
-    
+
+// These things are needed only for toMix caching speedup
+
+   for (uInt i=0; i<2; i++) {
+      if (strcmp(c_ctype_p[i],dCoord->c_ctype_p[i])!=0) {
+         set_error("The DirectionCoordinates have differing FITS ctypes");
+         return False;
+      }
+      if (!::near(c_crval_p[i],dCoord->c_crval_p[i],tol)) {
+         set_error("The DirectionCoordinates have differing FITS crvals");
+         return False;
+      }
+   }
+// 
+// The flag variable may change with use, so don't test it.
+//   Bool ok = wcs_p->flag==dCoord->wcs_p->flag &&
+//
+   Bool ok = strcmp(wcs_p->pcode,dCoord->wcs_p->pcode)==0 &&
+        strcmp(wcs_p->lngtyp,dCoord->wcs_p->lngtyp)==0 &&
+        strcmp(wcs_p->lattyp,dCoord->wcs_p->lattyp)==0 &&
+        wcs_p->lng==dCoord->wcs_p->lng &&
+        wcs_p->lat==dCoord->wcs_p->lat &&        
+        wcs_p->cubeface==dCoord->wcs_p->cubeface;
+   if (!ok) {
+      set_error("The DirectionCoordinates have differing wcs structures");
+      return False;
+   }
    return True;
 }
 
@@ -1086,149 +1250,69 @@ void DirectionCoordinate::toOther(Vector<Double> &degrees) const
     degrees(1) /= to_degrees_p[1];
 }
 
-
 Bool DirectionCoordinate::toMix2(Vector<Double>& out,
                                  const Vector<Double>& in,
+                                 const Vector<Double>& minWorld,
+                                 const Vector<Double>& maxWorld,
                                  Bool longIsWorld) const
+//
+// vectors must be of length 2. no checking
+//
 {
-    AlwaysAssert(in.nelements() == 2, AipsError);
-    out.resize(2);
-//
-    LogIO os(LogOrigin("DirectionCoordinate", "toMix", WHERE));
-//
-    Vector<String> saveUnits = worldAxisUnits();
-    DirectionCoordinate dC(*this);
-    Vector<String> units(saveUnits.copy());
-    units(0) = "deg";
-    units(1) = "deg";
-    dC.setWorldAxisUnits(units);
-//
-    Vector<Double> crval = dC.referenceValue();
-    Vector<Double> crpix = dC.referencePixel().ac();
-    Projection proj = dC.projection();
-    Vector<Double> projp = proj.parameters();
-    Vector<String> names = DirectionCoordinate::axisNames(directionType(), True);
-//
-// Construct FITS ctype vector
-//
-    Vector<String> ctype(2);
-    Bool isNCP = False;
-    for (uInt i=0; i<2; i++) {
-       String name = names(i);
-       while (name.length() < 4) {
-           name += "-";
-       }
-       switch(proj.type()) {
-          case Projection::TAN:  // Fallthrough
-          case Projection::ARC:
-              name = name + "-" + proj.name();
-              break;
-          case Projection::SIN:
-
-// This is either "real" SIN or NCP
-
-              AlwaysAssert(projp.nelements() == 2, AipsError);
-              if (::near(projp(0), 0.0) && ::near(projp(1), 0.0)) {
-                  // True SIN
-                  name = name + "-" + proj.name();
-              } else {
-                  // NCP?
-                  // From Greisen and Calabretta
-                  if (::near(projp(0), 0.0) &&
-                      ::near(projp(1), 1.0/tan(crval(1)*C::pi/180.0))) {
-                      // Is NCP
-                      isNCP = True;
-                      name = name + "-NCP";
-                  } else {
-                      // Doesn't appear to be NCP
-                      // Only print this once
-                      if (!isNCP) {
-                          os << LogIO::WARN << "SIN projection with non-zero"
-                              " projp does not appear to be NCP." << endl <<
-                              "However, assuming NCP anyway." << LogIO::POST;
-                      }
-                      name = name + "-NCP";
-                      isNCP = True;
-                  }
-              }
-              break;
-          default:
-             if (i == 0) {
-
-// Only print the message once for long/lat
-
-                os << LogIO::WARN <<proj.name()
-                   << " is not known to standard FITS (it is known to WCS)."
-                   << LogIO::POST;
-             }
-             name = name + "-" + proj.name();
-             break;
-       }
-       ctype(i) = name;
-    }
-//
-// Initialize
-//
-    char c_ctype[2][9];
-    strncpy (c_ctype[0], ctype(0).chars(), 9);
-    strncpy (c_ctype[1], ctype(1).chars(), 9);
-    struct wcsprm wcs;
-    int iret = wcsset(2, c_ctype, &wcs);
-    if (iret!=0) {
-        errorMsg_p = "wcs wcsset_error: ";
-        errorMsg_p += wcsset_errmsg[iret];
-        set_error(errorMsg_p);
-        return False;
-    }
 //
 // Set input world/pixel arrays
 //
-    int mixpix, mixcel;
-    double vspan[2];
-    double world[2];
-    double pixcrd[2];
+    Unit degrees("deg");
     if (longIsWorld) {
-       mixcel = 1;          // 1 or 2 (a code, not an index)
-       mixpix = 1;          // index into pixcrd array
+       mixcel_p = 1;          // 1 or 2 (a code, not an index)
+       mixpix_p = 1;          // index into pixcrd array
+//
+       mix_quant_tmp.setValue(in(0));
+       mix_quant_tmp.setUnit(Unit(units_p(0)));
+       mix_world_p[wcs_p->lng] = mix_quant_tmp.getValue(degrees);
+       mix_pixcrd_p[mixpix_p] = in(1);
 //
 // Latitude span
 //
-       vspan[0] = -90.0;
-       vspan[1] =  90.0;
+       mix_quant_tmp.setUnit(Unit(units_p(1)));
+       mix_quant_tmp.setValue(minWorld(1));
+       mix_vspan_p[0] = mix_quant_tmp.getValue(degrees);
 //
-       Quantum<Double> tmp(in(0), Unit(saveUnits(0)));
-       Double tmp2 = tmp.getValue(Unit("deg"));
-       world[wcs.lng] = (double)tmp2;
-       pixcrd[mixpix] = in(1);
+       mix_quant_tmp.setValue(maxWorld(1));
+       mix_vspan_p[1] = mix_quant_tmp.getValue(degrees);
     } else {
-       mixcel = 2;          // 1 or 2 (a code, not an index)
-       mixpix = 0;          // index into pixcrd array
+       mixcel_p = 2;          // 1 or 2 (a code, not an index)
+       mixpix_p = 0;          // index into pixcrd array
+//
+       mix_quant_tmp.setValue(in(1));
+       mix_quant_tmp.setUnit(Unit(units_p(1)));
+       mix_world_p[wcs_p->lat] = mix_quant_tmp.getValue(degrees);
+       mix_pixcrd_p[mixpix_p] = in(0);
 //
 // Longitude span
 //
-       vspan[0] = -180.0;
-       vspan[1] =  180.0;
+       mix_quant_tmp.setUnit(Unit(units_p(0)));
+       mix_quant_tmp.setValue(minWorld(0));
+       mix_vspan_p[0] = mix_quant_tmp.getValue(degrees);
 //
-       Quantum<Double> tmp(in(1), Unit(saveUnits(1)));
-       Double tmp2 = tmp.getValue(Unit("deg"));
-       world[wcs.lat] = (double)tmp2;
-       pixcrd[mixpix] = in(0);
+       mix_quant_tmp.setValue(maxWorld(0));
+       mix_vspan_p[1] = mix_quant_tmp.getValue(degrees);
     }
 //
-    double vstep = 1.0;
-    int viter = 2;
-    double c_crval[2];
-    c_crval[0] = crval(0);
-    c_crval[1] = crval(1);
-    double phi, theta;
-    double imgcrd[2];
-// 
 // Do it
 //
-    linprm lprm = linear_p.linprmWCS();
-    iret = wcsmix(c_ctype, &wcs, mixpix, mixcel, vspan, vstep, 
-                  viter, world, c_crval, celprm_p, &phi, &theta, 
-                  prjprm_p, imgcrd, &lprm, pixcrd);
+//cout << "doMix2: mixpix_p = " << mixpix_p << endl;
+//cout << "doMix2: mixcel_p = " << mixcel_p << endl;
+//cout << "doMix2: input world = " << mix_world_p[0] << ", " << mix_world_p[1] << endl;
+//cout << "doMix2: input pixel = " << mix_pixcrd_p[0] << ", " << mix_pixcrd_p[1] << endl;
+//cout << "doMix2: input vspan_p = " << mix_vspan_p[0] << ", " << mix_vspan_p[1] << endl;
+//cout << "doMix2: c_crval= " << c_crval_p[0] << " " << c_crval_p[1] << endl;
+    mix_vstep_p = 1.0;
+    mix_viter_p = 2;
+    int iret = wcsmix(c_ctype_p, wcs_p, mixpix_p, mixcel_p, mix_vspan_p, 
+                      mix_vstep_p, mix_viter_p, 
+                      mix_world_p, c_crval_p, celprm_p, &mix_phi_p, &mix_theta_p, 
+                      prjprm_p, mix_imgcrd_p, linear_p.linprmWCS(), mix_pixcrd_p);
     if (iret!=0) {
         errorMsg_p= "wcs wcsmix_error: ";
         errorMsg_p += wcsmix_errmsg[iret];
@@ -1238,18 +1322,21 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
 // Fish out the results
 //
+//cout << "doMix2: output world = " << mix_world_p[0] << ", " << mix_world_p[1] << endl;
+//cout << "doMix2: output pixel = " << mix_pixcrd_p[0] << ", " << mix_pixcrd_p[1] << endl;
+//cout << "doMix2: phi, theta=" << phi << ", " << theta << endl;
+
     if (longIsWorld) {
-       out(0) = pixcrd[0];
-       Double tmp1 = Double(world[wcs.lat]);
-       Quantum<Double> tmp(tmp1, Unit(units(1)));
-       out(1) = tmp.getValue(Unit(saveUnits(1)));
+       out(0) = mix_pixcrd_p[0];
+       Double tmp1 = Double(mix_world_p[wcs_p->lat]);
+       Quantum<Double> tmp(tmp1, Unit("deg"));
+       out(1) = tmp.getValue(Unit(units_p(1)));
     } else {
-       Double tmp1 = Double(world[wcs.lng]);
-       Quantum<Double> tmp(tmp1, Unit(units(0)));
-       out(0) = tmp.getValue(Unit(saveUnits(0)));
-       out(1) = pixcrd[1];
+       Double tmp1 = Double(mix_world_p[wcs_p->lng]);
+       Quantum<Double> tmp(tmp1, Unit("deg"));
+       out(0) = tmp.getValue(Unit(units_p(0)));
+       out(1) = mix_pixcrd_p[1];
     } 
 //
     return True;
 }
-
