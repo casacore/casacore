@@ -1,5 +1,5 @@
 //# MeasIERS.cc: Interface to IERS tables
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,8 +89,8 @@ Bool MeasIERS::get(Double &returnValue,
 			   String("fillMeas(MeasIERS::Files, Double)"),
 			   WHERE));
 	os << LogIO::WARN <<
-	  String("A request has been "
-		 "made for a time outside IERS tables"
+	  String("Requested JD") << date << String(" is outside "
+		 "the IERS table data range"
 		 "\nCalculations will proceed with less precision") << 
 	  LogIO::POST;
       };
