@@ -2,7 +2,7 @@
 *     MAXABS: find the maximum absolute value in an array
 *-----------------------------------------------------------------------
 *
-*     Copyright (C) 1997,1998
+*     Copyright (C) 1997,1998,2000
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -105,7 +105,7 @@
 *          function of all the polarizations at that pixel. For the 4
 *          polarization case this is the maximum eigenvalue 
 *          (=ABS(I+SQRT(Q*Q+U*U+V*V))), and for the two polarisation 
-*          case it is ABS(I + ABS(V))
+*          case it is MAX(ABS(I+V), ABS(I-V))
 *
 *     For the last three subroutines the general form of the subroutine
 *     call is (x is replaced by a character indicating the type: F for
@@ -160,17 +160,19 @@
 
       INTEGER NPIX
       REAL MAXVAL, ARR(NPIX, 2)
+      REAL THISVAL
 
       INTEGER N
       REAL I, V
 *-----------------------------------------------------------------------
       I = ARR(1,1)
       V = ARR(1,2)
-      MAXVAL = ABS(I + ABS(V))
+      MAXVAL = MAX(ABS(I+V), ABS(I-V))
       DO 10 N = 2, NPIX
          I = ARR(N,1)
          V = ARR(N,2)
-         MAXVAL = MAX(MAXVAL, ABS(I + ABS(V)))
+         THISVAL = MAX(ABS(I+V), ABS(I-V))
+         MAXVAL = MAX(MAXVAL, THISVAL)
  10   CONTINUE
       RETURN
       END
@@ -233,15 +235,16 @@
       REAL MAXVAL, ARR(NPIX, 2), MASK(NPIX)
 
       INTEGER N
-      REAL I, V
+      REAL I, V, THISVAL
 *-----------------------------------------------------------------------
       I = ARR(1,1)
       V = ARR(1,2)
-      MAXVAL = MASK(1) * ABS(I + ABS(V))
+      MAXVAL = MASK(1) * MAX(ABS(I+V), ABS(I-V))
       DO 10 N = 1, NPIX
          I = ARR(N,1)
          V = ARR(N,2)
-         MAXVAL = MAX(MAXVAL, MASK(N) * ABS(I + ABS(V)))
+         THISVAL = MASK(N) * MAX(ABS(I+V), ABS(I-V)) 
+         MAXVAL = MAX(MAXVAL, THISVAL)
  10   CONTINUE
       RETURN
       END
