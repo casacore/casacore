@@ -1,5 +1,5 @@
 //# TVec.cc: Template table column or memory vectors
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,23 +53,16 @@ template<class T>
 void TabVecRep<T>::validateConformance (uInt leng) const
 {
     if (nelements() != leng) {
-        // Sort of roundabout to make both g++ and edg happy
-	throw (TableVectorNonConform(new TableVectorNonConform));
+	throw TableVectorNonConform();
     }
 }
 
-// <thrown>
-//   <li> AllocError
-// </thrown>
 //# Create a new vector (in memory).
 template<class T>
 void* TabVecRep<T>::newVec() const
 {
     uInt nr = nelements();
     TabVecTemp<T>* tmvp = new TabVecTemp<T>(nr);
-    if (tmvp == 0) {
-	throw (AllocError ("TabVecRep::newVec", nr));
-    }
     return tmvp;
 }
 

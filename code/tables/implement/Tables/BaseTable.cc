@@ -736,8 +736,7 @@ BaseTable* BaseTable::tabNot()
 void BaseTable::logicCheck (BaseTable* that)
 {
     if (root() != that->root()) {
-        // Sort of roundabout to make both g++ and edg happy
-	throw (TableInvLogic(new TableInvLogic));
+	throw TableInvLogic();
     }
 }
 

@@ -1,5 +1,5 @@
 //# StManAipsIO.cc: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -362,8 +362,7 @@ void StManColumnAipsIO::deleteData (void* datap, Bool byPtr)
 	    delete [] (String*)datap;
 	    break;
 	default:
-	    // Sort of roundabout to make both g++ and edg happy
-	    throw (DataManInvDT(new DataManInvDT));
+	    throw DataManInvDT();
 	}
     }
     datap = 0;
@@ -417,8 +416,7 @@ void* StManColumnAipsIO::allocData (uInt nrval, Bool byPtr)
 	    datap = new String[nrval];
 	    break;
 	default:
-	    // Sort of roundabout to make both g++ and edg happy
-	    throw (DataManInvDT(new DataManInvDT));
+	    throw DataManInvDT();
 	}
     }
     if (datap == 0) {
@@ -472,8 +470,7 @@ void StManColumnAipsIO::removeData (void* dp, uInt inx, uInt nrvalAfter)
 	objmove (((String*)dp) + inx, ((String*)dp) + inx+1,nrvalAfter-inx);
 	break;
     default:
-        // Sort of roundabout to make both g++ and edg happy
-	throw (DataManInvDT(new DataManInvDT));
+	throw DataManInvDT();
     }
 }
 

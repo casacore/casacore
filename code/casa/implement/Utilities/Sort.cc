@@ -1,5 +1,5 @@
 //# Sort.cc: Sort on one or more keys, ascending and/or descending
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -167,16 +167,14 @@ void Sort::sortKey (const void* dat, ObjCompareFunc* cmp, uInt inc, Order ord)
 void Sort::sortKey (uInt off, DataType dt, Order ord)
 {
     if (data_p == 0) {
-        // Sort of roundabout to make both g++ and edg happy
-	throw (SortNoData(new SortNoData));
+	throw SortNoData();
     }
     addKey ((char*)data_p+off, dt, size_p, ord);
 }
 void Sort::sortKey (uInt off, ObjCompareFunc* cmp, Order ord)
 {
     if (data_p == 0) {
-        // Sort of roundabout to make both g++ and edg happy
-	throw (SortNoData(new SortNoData));
+	throw SortNoData();
     }
     addKey ((char*)data_p+off, cmp, size_p, ord);
 }
@@ -187,8 +185,7 @@ void Sort::addKey (const void* dat, DataType dt, uInt inc, int ord)
     uInt sz = ValType::getTypeSize (dt);
     if (inc != 0) {
 	if (sz > inc) {
-	    // Sort of roundabout to make both g++ and edg happy
-	    throw (SortInvIncr(new SortInvIncr));
+	    throw SortInvIncr();
 	}
 	sz = inc;
     }
@@ -288,8 +285,7 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 	}
 	break;
     default:
-        // Sort of roundabout to make both g++ and edg happy
-	throw (SortInvOpt(new SortInvOpt));
+	throw SortInvOpt();
     }
     indexVector.putStorage (inx, del);
     // If n < nrrec, some duplicates have been deleted.
