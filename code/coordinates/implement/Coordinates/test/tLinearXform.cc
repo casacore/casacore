@@ -268,7 +268,7 @@ int main()
          Vector<Double> world(crpix.copy());
          Vector<Double> pixel(3);
          String error;
-         Bool ok = lxf.forward(world, pixel, error);
+         Bool ok = lxf.forward(pixel, world, error);
          if (!ok) {
             throw(AipsError(String("Forwards conversion failed because ") +
                             error));
@@ -280,7 +280,7 @@ int main()
          }
 //
          world(0) = 1.123; world(1) = 232.121; world(2) = -10.2;
-         ok = lxf.forward(world, pixel, error);
+         ok = lxf.forward(pixel, world, error);
          if (!ok) {
             throw(AipsError(String("Forwards conversion failed because ") +
                             error));
