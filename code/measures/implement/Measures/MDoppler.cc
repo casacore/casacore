@@ -1,5 +1,5 @@
 //# MDoppler.cc: A Measure: Doppler shift
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,9 +26,12 @@
 //# $Id$
 
 //# Includes
+#include <aips/Measures/MDoppler.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Quanta/MVFrequency.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Register.h>
-#include <aips/Measures/MDoppler.h>
 
 //# Constructors
 MDoppler::MDoppler() :
@@ -222,4 +225,26 @@ Quantity MDoppler::get(const Unit &un) const {
     
 Measure *MDoppler::clone() const {
   return (new MDoppler(*this));
+}
+
+Vector<Double> MDoppler::shiftFrequency(const Vector<Double> &freq) const {
+  Vector<Double> tmp(freq.nelements());
+  Double factor = sqrt((1-data.getValue())/(1+data.getValue()));
+  for (uInt i=0; i<freq.nelements(); ++i) tmp[i] = freq[i] * factor;
+  return tmp;
+}
+
+Quantum<Vector<Double> >
+MDoppler::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
+  Vector<Double> tmp(freq.getValue().nelements());
+  tmp = freq.getValue();
+  Double factor = sqrt((1-data.getValue())/(1+data.getValue()));
+  for (uInt i=0; i<tmp.nelements(); ++i) {
+    tmp[i] = MVFrequency(Quantity(tmp[i],freq.getFullUnit())).getValue() *
+			 factor;
+  };
+  for (uInt i=0; i<tmp.nelements(); ++i) {
+    tmp[i] = MVFrequency(tmp[i]).get(freq.getFullUnit()).getValue();
+  };
+  return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
 }

@@ -1,5 +1,5 @@
 //# MVRadialVelocity.h: Internal value for MRadialvelocity
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,8 @@
 
 //# Forward Declarations
 #include <aips/iosfwd.h>
+template <class T> class Vector;
+template <class T> class Quantum;
 
 // <summary> Internal value for MRadialVelocity </summary>
 
@@ -72,6 +74,8 @@
 // </ul>
 // <br> The velocity is returned in m/s with getValue(); or as a Quantity
 // in m/s with get(); or in the specified units with get(unit).
+//
+// A <em>shiftFrequency()</em> method can shift frequencies.
 // </synopsis>
 //
 // <example>
@@ -164,6 +168,14 @@ public:
   // </group>
   // Set the internal value if correct values and dimensions
   virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  // Shift the input frequencies to the output frequencies. In the case of
+  // simple Double inputs, it is assumed that the values are linearly dependent
+  // on frequency. I.e. frequencies given as wavelength or time cannot be used.
+  // <group>
+  Vector<Double> shiftFrequency(const Vector<Double> &freq) const;
+  Quantum<Vector<Double> >
+    shiftFrequency(const Quantum<Vector<Double> > &freq) const;
+  // </group>
   
 private:
   //# Data

@@ -1,5 +1,5 @@
 //# MVRadialVelocity.cc: Internal value for MRadialvelocity
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,11 +26,14 @@
 //# $Id$
 
 //# Includes
+#include <aips/Quanta/MVRadialVelocity.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Quanta/MVFrequency.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Register.h>
-#include <aips/Quanta/MVRadialVelocity.h>
-#include <aips/Mathematics/Math.h>
 
 // MVRadialVelocity class
 
@@ -192,6 +195,31 @@ Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
     return False;
   };
   return True;
+}
+
+Vector<Double>
+MVRadialVelocity::shiftFrequency(const Vector<Double> &freq) const {
+  Vector<Double> tmp(freq.nelements());
+  Double factor = val/C::c;
+  factor = sqrt((1-factor)/(1+factor));
+  for (uInt i=0; i<freq.nelements(); ++i) tmp[i] = freq[i] * factor;
+  return tmp;
+}
+
+Quantum<Vector<Double> >
+MVRadialVelocity::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
+  Vector<Double> tmp(freq.getValue().nelements());
+  tmp = freq.getValue();
+  Double factor = val/C::c;
+  factor = sqrt((1-factor)/(1+factor));
+  for (uInt i=0; i<tmp.nelements(); ++i) {
+    tmp[i] = MVFrequency(Quantity(tmp[i],freq.getFullUnit())).getValue() *
+			 factor;
+  };
+  for (uInt i=0; i<tmp.nelements(); ++i) {
+    tmp[i] = MVFrequency(tmp[i]).get(freq.getFullUnit()).getValue();
+  };
+  return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
 }
 
 Double MVRadialVelocity::makeF(const Unit &dt) const{

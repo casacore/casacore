@@ -1,5 +1,5 @@
 //# MDoppler.h: A Measure: Doppler shift
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,8 @@ template <class M> class ArrayMeasColumn;
 template <class M> class ROArrayMeasColumn;
 template <class M> class ScalarMeasColumn;
 template <class M> class ROScalarMeasColumn;
+template <class T> class Vector;
+template <class T> class Quantum;
 
 //# Typedefs
 
@@ -99,6 +101,8 @@ template <class M> class ROScalarMeasColumn;
 // object, or from an <linkto class=MRadialVelocity>MRadialVelocity</linkto>
 // object.<br>
 //
+// A <em>shiftFrequency()</em> method can shift frequencies.
+//
 // Dopplers do not need a reference frame.
 //
 // </synopsis>
@@ -133,7 +137,7 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   //# Friends
   // Conversion of data
   friend class MeasConvert<MDoppler>;
-
+  
   //# Enumerations
   // Types of known MDopplers
   // <note role=warning> The order defines the order in the translation
@@ -152,7 +156,7 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
     OPTICAL=Z,
     RELATIVISTIC=BETA,
     DEFAULT=RADIO };
-
+  
   //# Typedefs
   // Measure value container for this class (i.e. MDoppler::MVType)
   typedef MVDoppler MVType;
@@ -170,38 +174,38 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   // Reference enum Types (included originally for gcc 2.95)  
   typedef WHATEVER_SUN_TYPEDEF(MDoppler) Types Types;
 
-//# Constructors
-// <note role=tip> In the following constructors and other functions, all 
-// <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. </note>
-// Default constructor; generates a zero rest Doppler
-    MDoppler();
-// Create from data and reference
-// <group>
-    MDoppler(const MVDoppler &dt);
-    MDoppler(const MVDoppler &dt, const MDoppler::Ref &rf);
-    MDoppler(const MVDoppler &dt, MDoppler::Types rf);
-    MDoppler(const Quantity &dt);
-    MDoppler(const Quantity &dt, const MDoppler::Ref &rf);
-    MDoppler(const Quantity &dt, MDoppler::Types rf);
-    MDoppler(const Measure *dt);
-    MDoppler(const MeasValue *dt);
-// </group>
+  //# Constructors
+  // <note role=tip> In the following constructors and other functions, all 
+  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  // where no offsets or frames are needed in the reference. </note>
+  // Default constructor; generates a zero rest Doppler
+  MDoppler();
+  // Create from data and reference
+  // <group>
+  MDoppler(const MVDoppler &dt);
+  MDoppler(const MVDoppler &dt, const MDoppler::Ref &rf);
+  MDoppler(const MVDoppler &dt, MDoppler::Types rf);
+  MDoppler(const Quantity &dt);
+  MDoppler(const Quantity &dt, const MDoppler::Ref &rf);
+  MDoppler(const Quantity &dt, MDoppler::Types rf);
+  MDoppler(const Measure *dt);
+  MDoppler(const MeasValue *dt);
+  // </group>
 
-//# Destructor
-    virtual ~MDoppler();
-
-//# Operators
-
-//# General Member Functions
-// Tell me your type
-// <group>
-    virtual const String &tellMe() const;
-    static const String &showMe();
-    virtual uInt type() const;
-    static void assure(const Measure &in);
-// </group>
-// Translate reference code. The uInt version has a check for valid codes
+  //# Destructor
+  virtual ~MDoppler();
+  
+  //# Operators
+  
+  //# General Member Functions
+  // Tell me your type
+  // <group>
+  virtual const String &tellMe() const;
+  static const String &showMe();
+  virtual uInt type() const;
+  static void assure(const Measure &in);
+  // </group>
+  // Translate reference code. The uInt version has a check for valid codes
   // (i.e. it is a safe cast).
   // <thrown>
   //   <li> AipsError in the uInt interface if illegal code given
@@ -211,11 +215,11 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   static const String &showType(MDoppler::Types tp);
   static const String &showType(uInt tp);
   // </group>
-// Translate string to reference code
-// <group>
+  // Translate string to reference code
+  // <group>
   static Bool getType(MDoppler::Types &tp, const String &in);
   Bool giveMe(MDoppler::Ref &mr, const String &in);
-// </group>
+  // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);
   // Set the reference type to the specified String. False if illegal
@@ -247,20 +251,29 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   // Get my type (as Register)
   static uInt myType();
 
-// Get in specified units
-    Quantity get(const Unit &un) const;
+  // Get in specified units
+  Quantity get(const Unit &un) const;
 
-// Make a copy
-// <group>
-    virtual Measure *clone() const;
-// </group>
+  // Shift the input frequencies to the output frequencies. In the case of
+  // simple Double inputs, it is assumed that the values are linearly dependent
+  // on frequency. I.e. frequencies given as wavelength or time cannot be used.
+  // <group>
+  Vector<Double> shiftFrequency(const Vector<Double> &freq) const;
+  Quantum<Vector<Double> >
+    shiftFrequency(const Quantum<Vector<Double> > &freq) const;
+  // </group>
 
-private:
-//# Enumerations
-
-//# Data
-
-//# Member functions
+  // Make a copy
+  // <group>
+  virtual Measure *clone() const;
+  // </group>
+  
+ private:
+  //# Enumerations
+  
+  //# Data
+  
+  //# Member functions
 
 
 };
