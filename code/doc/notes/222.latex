@@ -1,0 +1,23 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 222 -- AIPS++ RELEASE PLAN}
+  
+
+\author{Tim Cornwell}
+
+\date{15 November 1998}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (72kB).}{../222.ps}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{releaseplan.latex}
+\end{document}
