@@ -2228,3 +2228,7 @@
 11 154 src mv trial/implement/Widgets/recbrowserwidget.g trial/implement/Widgets/recordbrowserwidget.g
 11 155 src rm trial/apps/misc/aipsrcedit_meta.g
 11 155 sys rm libexec/aipsrcedit_meta.g
+11 158 src rm trial/implement/Fitting/test/tLatticeFit.exec
+11 158 src rm trial/implement/Fitting/test/tLinearFitSVD.exec
+11 158 src rm trial/implement/Fitting/test/tNonLinearFitLM.exec
+11 158 src rm trial/implement/Fitting/test/tFit2D.exec
