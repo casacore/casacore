@@ -46,7 +46,7 @@ int main() {
   AlwaysAssertExit(null.height() == 1.0 && 
 		   null.center() == 0.0 && null.width() == 1.0);
   AlwaysAssertExit(near(null(0.5), 0.5) && near(null(0.0), 1.0));
-
+  // name()
   cout << "Name of function: " << null.name() << endl; 
   AlwaysAssertExit(null.name() == "gaussian1d");
   //     Gaussian1D(const T& h, const T& c, const T& w);
@@ -81,7 +81,19 @@ int main() {
   Vector<Double> xvec(1);
   xvec = 5.0;
   cout << "Value at 5:      " << gauss1(xvec(0)) << endl;
+  ///
+  // Copy constructor
+  Gaussian1D<Double> g1c(gauss1);
+  cout << "Copy: " << g1c << "; f(5) = " << g1c(xvec(0)) << endl;
+  Gaussian1D<AutoDiff<Double> > g1adc(gauss1);
+  cout << "AD: " << g1adc << endl <<
+    "f(5) = " << g1adc(xvec(0)) << endl;
+  Gaussian1D<Double> g1cb(g1adc);
+  cout << "Copy back: " << g1cb << endl <<
+    "f(5) = " << g1cb(xvec(0)) << endl;
   AlwaysAssertExit(near(gauss1(xvec(0)), 2.0 / 2.0));
+  AlwaysAssertExit(near(g1c(xvec(0)), 2.0 / 2.0));
+  AlwaysAssertExit(near(g1cb(xvec(0)), 2.0 / 2.0));
   xvec = -1.0;
   AlwaysAssertExit(near(gauss1(xvec(0)), 2.0/2.0/2.0/2.0/2.0));
   
