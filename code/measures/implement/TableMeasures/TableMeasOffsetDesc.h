@@ -106,7 +106,7 @@ public:
     const String& columnName() const;
     
     // Write the information into the record.
-    void write(TableRecord& measInfo, const String& prefix);
+    void write(TableDesc& td, TableRecord& measInfo, const String& prefix);
 
 private:
     // Constructor which uses the measInfo TableRecord.
