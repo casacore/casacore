@@ -1,5 +1,5 @@
 //# Table.cc: Main interface class to table data
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -467,7 +467,7 @@ Vector<uInt> Table::rowNumbers (const Table& that) const
         Bool deleteThat;
         const uInt* thatRowData = thatRows.getStorage (deleteThat);
 	for (uInt i=0; i<nrthat; i++) {
-	    rownrsData[rownrsData[i]] = i;
+	    rownrsData[thatRowData[i]] = i;
 	}
 	thatRows.freeStorage (thatRowData, deleteThat);
 	thatRows.resize();
@@ -475,7 +475,7 @@ Vector<uInt> Table::rowNumbers (const Table& that) const
     // Use the first mapping to map the rownrs in this to rownrs in that.
     // First get the rownrs of this in root to achieve it.
     // Use a very high value if the rownr is too high.
-    Vector<uInt> thisRows = rowNumbers();
+    Vector<uInt> thisRows = rowNumbers().copy();
     Bool deleteThis;
     uInt* thisRowData = thisRows.getStorage (deleteThis);
     uInt nrthis = thisRows.nelements();
