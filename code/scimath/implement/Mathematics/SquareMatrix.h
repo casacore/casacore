@@ -1,5 +1,5 @@
 //# SquareMatrix.h: Fast Square Matrix class with fixed (templated) size
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -174,20 +174,24 @@ public:
     // Indexing, only const indexing is allowed. You cannot change the
     // matrix via indexing. No bounds checking.
     T operator()(Int i, Int j) const { 
-	switch (type_p) {
-	    case ScalarId: return (i==j) ? a_p[0][0] : T();
-	    case Diagonal: return (i==j) ? a_p[i][i] : T();
-	    case General:  return a_p[i][j];
-        }
+      switch (type_p) {
+      case ScalarId: return (i==j) ? a_p[0][0] : T();
+	break;
+      case Diagonal: return (i==j) ? a_p[i][i] : T();
+	break;
+      }
+      return a_p[i][j];
     }
     // Non const indexing, throws exception if you try to change an element
     // which would require a type change of the matrix
     T& operator()(Int i, Int j) {
-	switch (type_p) {
-	    case ScalarId: return (i==j) ? a_p[0][0] : throwInvAccess();
-	    case Diagonal: return (i==j) ? a_p[i][i] : throwInvAccess();
-	    case General:  return a_p[i][j];
-        }
+      switch (type_p) {
+      case ScalarId: return (i==j) ? a_p[0][0] : throwInvAccess();
+	break;
+      case Diagonal: return (i==j) ? a_p[i][i] : throwInvAccess();
+	break;
+      }
+      return a_p[i][j];
     }
 
     //# The following does not compile with Sun native, replaced by explicit
