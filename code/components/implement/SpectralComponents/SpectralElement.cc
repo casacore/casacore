@@ -30,7 +30,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 #include <aips/Quanta/MUString.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 //# Constructors
 SpectralElement::SpectralElement() :
