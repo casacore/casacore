@@ -61,6 +61,21 @@ SubLattice<T>::SubLattice (Lattice<T>& lattice,
 }
 
 template<class T>
+SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice)
+{
+  setPtr (0, lattice.cloneML(), False);
+  setRegion();
+}
+
+template<class T>
+SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
+			   Bool writableIfPossible)
+{
+  setPtr (0, lattice.cloneML(), writableIfPossible);
+  setRegion();
+}
+
+template<class T>
 SubLattice<T>::SubLattice (const Lattice<T>& lattice,
 			   const LatticeRegion& region)
 {
