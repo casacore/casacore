@@ -1,5 +1,5 @@
 //# TSMCube.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -142,8 +142,20 @@ IPosition TSMCube::adjustTileShape (const IPosition& cubeShape,
     // Make this function independent of the length of tileShape,
     // so it can be shorter or longer than the cube shape.
     // The returned tile shape always has the length of the cube shape.
-    IPosition tileShp (cubeShape.nelements(), 1);          // initialize to 1
-    for (uInt i=0; i<cubeShape.nelements(); i++) {
+    uInt nrdim = cubeShape.nelements();
+    IPosition tileShp (nrdim, 1);                   // initialize to 1
+    // If no tile shape given, calculate a default one.
+    if (tileShape.nelements() == 0) {
+        // If the last axis is extendible, discard that axis
+        // (so its tile axis length remains 1).
+        if (cubeShape(nrdim-1) == 0) {
+	    tileShp.setFirst (TiledStMan::makeTileShape
+                                                (cubeShape.getFirst(nrdim-1)));
+	} else {
+	    tileShp = TiledStMan::makeTileShape (cubeShape);
+	}
+    }
+    for (uInt i=0; i<nrdim; i++) {
         if (i < tileShape.nelements()) {
             if (tileShape(i) != 0) {
                 tileShp(i) = tileShape(i);
