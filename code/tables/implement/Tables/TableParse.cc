@@ -324,7 +324,9 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 	fldNam = stringToVector (restName, '.');
 	// The part before the :: can be empty, an optional shorthand,
 	// and an optional column name (separated by a dot).
-	if (j > 0) {
+	if (j == 0) {
+	    columnName = "";
+	} else {
 	    Vector<String> scNames = stringToVector(columnName.before(j), '.');
 	    switch (scNames.nelements()) {
 	    case 2:
