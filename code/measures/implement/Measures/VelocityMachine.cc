@@ -1,5 +1,5 @@
 //# VelocityMachine.cc: Converts between velocities and frequencies
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -143,10 +143,10 @@ const Quantum<Vector<Double> > &VelocityMachine::
 makeVelocity(const Vector<Double> &in) {
   uInt n = in.nelements();
   vresv_p.getValue().resize(n);
-  for (uInt i=0; i<n; i++) {
-    vresv_p.getValue()(i) = cvvo_p(cvfv_p(in(i)).
+  for (uInt i=0; i<n; ++i) {
+    vresv_p.getValue()[i] = cvvo_p(cvfv_p(in[i]).
 				   toDoppler(rest_p).getValue()).
-      getValue().get().getValue() / vfac_p;
+      getValue().getValue()* C::c / vfac_p;
   };
   return vresv_p;
 }
