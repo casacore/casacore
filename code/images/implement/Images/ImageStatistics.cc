@@ -34,6 +34,7 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/LatticeStatistics.h>
+#include <trial/Lattices/LattStatsSpecialize.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
@@ -60,7 +61,9 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 : LatticeStatistics<T>(image, os, showProgress, forceDisk),
   pInImage_p(0)
 {
-   goodParameterStatus_p = setNewImage(image);
+   if (!setNewImage(image)) {
+      os_p << error_p << LogIO::EXCEPTION;
+   }
 }
 
 
@@ -74,7 +77,9 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 : LatticeStatistics<T>(image, showProgress, forceDisk),
   pInImage_p(0)
 {
-   goodParameterStatus_p = setNewImage(image);
+   if (!setNewImage(image)) {
+      os_p << error_p << LogIO::EXCEPTION;
+   }
 }
 
 
@@ -202,20 +207,11 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 // Set up the manipulators. We list the number of points as an integer so find
 // out how big the field width needs to be.  Min of 6 so label fits.
 
-   Int nMax = 0;
-   const uInt n1 = stats.shape()(0);
-   uInt j;
-   for (j=0; j<n1; j++) nMax = max(nMax, Int(real(stats.column(NPTS)(j))+0.1));
-   const Int logNMax = Int(log10(Double(nMax))) + 2;
-   const uInt oIWidth = max(5, logNMax);
-//
    T* dummy(0);
    DataType type = whatType(dummy);
-   Int oDWidth;
-   if (type==TpFloat) {
-      oDWidth = 14; 
-   } else if (type==TpComplex) {
-      oDWidth = 32; 
+   Int oDWidth = 14;
+   if (type==TpComplex) {
+      oDWidth = 2*oDWidth + 3;    // (x,y)
    }
 
 
@@ -272,7 +268,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    }
 
    os_p.output() << setw(oCWidth) << cName;
-   os_p.output() << setw(oIWidth) << "Npts";
+   os_p.output() << setw(oDWidth) << "Npts";
    os_p.output() << setw(oDWidth) << "Sum";
    if (hasBeam) os_p.output() << setw(oDWidth) << "FluxDensity";
    os_p.output() << setw(oDWidth) << "Mean"; 
@@ -284,10 +280,11 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // Convert pixel coordinates Vector of the first display axis to world coordinates
 
+   const uInt n1 = stats.shape()(0);
    sWorld.resize(n1);
    pixels.resize(n1);
-
-   for (j=0; j<n1; j++) pixels(j) = Double(j);
+//
+   for (uInt j=0; j<n1; j++) pixels(j) = Double(j);
    if (!ImageUtilities::pixToWorld(sWorld, pInImage_p->coordinates(),
                               displayAxes_p(0), cursorAxes_p, 
                               blc, trc, pixels, -1)) return False;
@@ -296,13 +293,16 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 // Write statistics to logger.  We write the pixel location
 // relative to the parent image
 
-   T small(0.01);
-   for (j=0; j<n1; j++) {
+   for (uInt j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+blcParent_p(displayAxes_p(0))+1;
       os_p.output() << setw(oCWidth)   << sWorld(j);
-      os_p.output() << setw(oIWidth)   << Int(real(stats.column(NPTS)(j))+0.1);
-
-      if (stats.column(NPTS)(j) > small) {
+//
+      ostrstream os00; setStream(os00, oPrec);
+      os00 << stats.column(NPTS)(j);   
+//
+      os_p.output() << setw(oDWidth)   << String(os00);   
+//
+      if (LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))) {
 
 // I hate ostrstreams.  The bloody things are one shot.
    
