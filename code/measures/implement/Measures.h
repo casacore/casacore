@@ -42,7 +42,6 @@
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasData.h>
-#include <aips/Measures/MeasDetail.h>
 
 // <module>
 // 
@@ -695,18 +694,15 @@
 // default interval; some time calculations will want to use the predicted
 // IERS values rather than the actual determined; some Nutation will maybe
 // use the IERS updates, some maybe the IAU analytic extensions).<br>
-// The <linkto class=MeasDetail>MeasDetail</linkto> class
-// is a general container, in which very specific parameters can be put to
-// steer the conversion process beyond what is possible with just a list
+// The <linkto class=AipsrcValue>AipsrcValue</linkto> class can be used to
+// specify very specific parameters that are used to steer
+// the conversion process beyond what is possible with just a list
 // of measure reference types (that list is already long for some cases).
 // Values, switches can be <src>set()</src> (and removed) to change the
 // default behaviour of the conversions. In general the user will only need
 // to use the details in very specific cases. The details that can be used
 // are described in the classes that provide calculations (e.g.
 // <linkto class=Nutation>Nutation</linkto>).<br>
-// Some of the MeasDetail parameters can be set in the <src>aipsrc</src>
-// resources files (either the system, site, or user (<src>.aipsrc</src>) ones.
-// The method is described in <linkto class=MeasDetail>MeasDetail</linkto>.
 // <p>
 // Some details about the different classes follows. In the examples often
 // a specific measure value (e.g. MVEpoch, the MeasValue for MEpoch), or a
@@ -976,30 +972,6 @@
 // <src>String showMe()</src> will return the type of measure (e.g. "Epoch") the
 // MeasRef can be used for.
 //<p>
-// <h4> MeasDetail</h4>
-// The MeasDetail class is a global, static container class.
-// It is filled with a series of values, associated with enumerated names.
-// The values can be <src>Bool</src>, <src>Double</src>, 
-// <src>Vector<Double></src>, <src>Quantity</src> or 
-// <src>Quantum<Vector<Double> ></src>; the names are dependent on the using
-// class (e.g. <src>Precession::D_Interval</src> if used in a program by the
-// <src>MeasDetail::set(name, value)</src> method, (or 
-// <src>measures.precession.d_interval</src> if used in an aipsrc resource file), 
-// which is a Double value giving a non-default interval
-// over which the precession calculation is averaged).<br>
-// The details are filled with <src>MeasDetail::set(code, value)</src>, and examined
-// with <src>Bool MeasDetail::get(code, value&)</src>, or in the aipsrc files.
-// Note that any program setting/removing will overwrite the external input.
-// A <src>MeasDetail::remove(code)</src> can empty
-// a field.<br>
-// In normal operations the MeasDetail class will not be used (system knows best),
-// but it can be used to overwrite default behaviour (like the approximation
-// intervals used; type of IERS or the user's own data etc).<br>
-// Some of the details can be set by the user in any one of the aipsrc (or
-// .aipsrc if in the home directory) resource files. See the individual classes
-// (Nutation etc, MeasIERS, MeasData) for the details that can be set, and
-// <linkto class=MeasDetail>MeasDetail</linkto> about the use of aipsrc.
-// <p> 
 // <h4>MeasConvert</h4>
 // The MeasConvert class converts Measures from one reference type and frame
 // to another.
@@ -1096,11 +1068,10 @@
 // For specific purposes it would be very easy to set up a series of simple
 // classes, that would do standard conversions. 
 // <p>
-// <h4> MeasData, MeasBase, other help classes</h4>
+// <h4> MeasData, MeasTable, MeasBase, other help classes</h4>
 // A series of help classes are present to aid in the conversion, especially
 // caching information. They are of no direct use for the end user (except
-// maybe a few constants in MeasData, and some steering of details for
-// advanced usage in them by the use of the MeasDetail class).<br>
+// maybe a few constants in MeasData).<br>
 // The classes are:
 // <ul>
 //  <li> <linkto class=MeasBase>MeasBase</linkto>:
@@ -1110,9 +1081,13 @@
 //	database etc. which are not stored in Tables. (MeasTable looks after 
 //	these). Mn short it provides all the actual data values necessary
 //	for the conversions (and the other help classes)
+//  <li> <linkto class=MeasTable>MeasTable</linkto>:
+//	interface for all data that comes from Tables rather than
+//	the program
 //  <li> <linkto class=MeasIERS>MeasIERS</linkto>:
 //	(static) class to converse with the IERS database(s)
-//	(see <linkto class=MeasureReferenceData>MeasureReferenceData</linkto>).
+//  <li> <linkto class=MeasJPL>MeasJPL</linkto>:
+//	(static) class to converse with the JPL DE database(s)
 //  <li> <linkto class=Precession>Precession</linkto>:
 //	 all precession related calculations
 //  <li> <linkto class=Nutation>Nutation</linkto>
@@ -1122,8 +1097,6 @@
 //  <li> <linkto class=Euler>Euler</linkto>:
 //	 representation of Euler rotation angles
 //  <li> <linkto class=RotMatrix>RotMatrix</linkto>: a 3-D rotation matrix
-//  <li> <linkto class=MeasDetail>MeasDetail</linkto>:
-//	fine scale steering details
 // </ul>
 // <p>
 
