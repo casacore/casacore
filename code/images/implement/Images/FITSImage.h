@@ -240,7 +240,8 @@ private:
   TiledShape     shape_p;
   Float          scale_p;
   Float          offset_p;
-  Short          magic_p;
+  Short          shortMagic_p;
+  Int            longMagic_p;
   Bool           hasBlanks_p;
   DataType       dataType_p;
   Int64          fileOffset_p;
@@ -262,8 +263,8 @@ private:
                             Unit& brightnessUnit, RecordInterface& miscInfo, 
                             Int& recsize, Int& recno,
 			    FITS::ValueType& dataType, 
-                            Float& scale, Float& offset, Short& magic, 
-                            Bool& hasBlanks, const String& name);
+                            Float& scale, Float& offset, Short& shortMagic, 
+                            Int& longMagic, Bool& hasBlanks, const String& name);
 
 // Should really be written as a templated function
 // <group>
@@ -271,12 +272,18 @@ private:
                           IPosition& shape, ImageInfo& imageInfo,
                           Unit& brightnessUnit, RecordInterface& miscInfo,
                           LogIO&os, FitsInput& infile);
-
+//
    void crackHeaderShort (CoordinateSystem& cSys,
-                          IPosition& shape, ImageInfo& imageInfo,
-                          Unit& brightnessUnit, RecordInterface& miscInfo,
-                          Float& scale, Float& offset, Short& magic,
-                          Bool& hasBlanks, LogIO& os, FitsInput& infile);
+                        IPosition& shape, ImageInfo& imageInfo,
+                        Unit& brightnessUnit, RecordInterface& miscInfo,
+                        Float& scale, Float& offset, Short& magic,
+                        Bool& hasBlanks, LogIO& os, FitsInput& infile);
+//
+   void crackHeaderLong (CoordinateSystem& cSys,
+                        IPosition& shape, ImageInfo& imageInfo,
+                        Unit& brightnessUnit, RecordInterface& miscInfo,
+                        Float& scale, Float& offset, Int& magic,
+                        Bool& hasBlanks, LogIO& os, FitsInput& infile);
 // </group>
 };
 

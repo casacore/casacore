@@ -64,7 +64,8 @@ FITSImage::FITSImage (const String& name)
   pPixelMask_p(0),
   scale_p     (1.0),
   offset_p    (0.0),
-  magic_p     (0),
+  shortMagic_p (0),
+  longMagic_p (0),
   hasBlanks_p (False),
   dataType_p  (TpOther),
   fileOffset_p(0),
@@ -81,7 +82,8 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec)
   pPixelMask_p(0),
   scale_p     (1.0),
   offset_p    (0.0),
-  magic_p     (0),
+  shortMagic_p (0),
+  longMagic_p (0),
   hasBlanks_p (False),
   dataType_p  (TpOther),
   fileOffset_p(0),
@@ -99,7 +101,8 @@ FITSImage::FITSImage (const FITSImage& other)
   shape_p     (other.shape_p),
   scale_p     (other.scale_p),
   offset_p    (other.offset_p),
-  magic_p     (other.magic_p),
+  shortMagic_p (other.shortMagic_p),
+  longMagic_p (other.longMagic_p),
   hasBlanks_p (other.hasBlanks_p),
   dataType_p  (other.dataType_p),
   fileOffset_p(other.fileOffset_p),
@@ -131,7 +134,8 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
       maskSpec_p  = other.maskSpec_p;
       scale_p     = other.scale_p;
       offset_p    = other.offset_p;
-      magic_p     = other.magic_p;
+      shortMagic_p = other.shortMagic_p;
+      longMagic_p = other.longMagic_p;
       hasBlanks_p = other.hasBlanks_p;
       dataType_p  = other.dataType_p;
       fileOffset_p= other.fileOffset_p;
@@ -193,9 +197,12 @@ Bool FITSImage::doGetSlice(Array<Float>& buffer,
    reopenIfNeeded();
    if (pTiledFile_p->dataType() == TpFloat) {
       pTiledFile_p->get (buffer, section);
-   } else {
+   } else if (pTiledFile_p->dataType() == TpInt) {
       pTiledFile_p->get (buffer, section, scale_p, offset_p,
-			 magic_p, hasBlanks_p);
+			 longMagic_p, hasBlanks_p);
+   } else if (pTiledFile_p->dataType() == TpShort) {
+      pTiledFile_p->get (buffer, section, scale_p, offset_p,
+			 shortMagic_p, hasBlanks_p);
    }
    return False;                            // Not a reference
 } 
@@ -365,9 +372,12 @@ void FITSImage::setup()
    Int recsize;          // Should be 2880 bytes (unless blocking used)
    FITS::ValueType dataType;
    Record miscInfo;
+
+// hasBlanks only relevant to Integer images.  Says if 'blank' value defined in header
+
    getImageAttributes(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                      recsize, recno, dataType, scale_p, offset_p, magic_p,
-                      hasBlanks_p, fullName);
+                      recsize, recno, dataType, scale_p, offset_p, shortMagic_p,
+                      longMagic_p, hasBlanks_p, fullName);
    setMiscInfoMember (miscInfo);
 
 // set ImageInterface data
@@ -391,17 +401,29 @@ void FITSImage::setup()
    dataType_p = TpFloat;
    if (dataType == FITS::SHORT) {
       dataType_p = TpShort;
+   } else if (dataType == FITS::LONG) {
+      dataType_p = TpInt;
    }
 
-// See if there is a mask.
+// See if there is a mask specifier.  Defaults to apply mask.
 
-   if (!maskSpec_p.useDefault()) {
-      hasBlanks_p = False;
+   if (maskSpec_p.useDefault()) {
+
+// We would like to use any mask.  For 32 f.p. bit we don't know if there
+// are masked pixels (they are NaNs).  For Integer types we do know if there
+// the magic value has been set (suggests there are masked pixels) and 
+// hasBlanks_p was set to T or F by getImageAttributes
+
+      if (dataType_p == TpFloat) hasBlanks_p = True;
    } else {
-      hasBlanks_p = True;
+
+// We don't want to use the mask
+
+      hasBlanks_p = False;
    }
 
 // Form the tile shape.
+
    shape_p = TiledShape (shape, TiledFileAccess::makeTileShape(shape));
 
 // Open the image.
@@ -422,11 +444,18 @@ void FITSImage::open()
                                       dataType_p, maxCacheSize,
 				      writable, canonical);
 
-// Shares the pTiledFile_p pointer. Scale factors for 16bit integers
+// Shares the pTiledFile_p pointer. Scale factors for 16bit and 32 bit integers
 
    if (hasBlanks_p) {
-      pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
-				  magic_p, hasBlanks_p);
+      if (dataType_p == TpFloat) {
+         pPixelMask_p = new FITSMask(&(*pTiledFile_p));
+      } else if (dataType_p == TpShort) {
+         pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
+   				      shortMagic_p, hasBlanks_p);
+      } else if (dataType_p == TpInt) {
+         pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
+   				      longMagic_p, hasBlanks_p);
+      }
    }
 
 // Okay, it is open now.
@@ -441,8 +470,8 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 				    RecordInterface& miscInfo, 
                                     Int& recordsize, Int& recordnumber, 
                                     FITS::ValueType& dataType, 
-                                    Float& scale, Float& offset, Short& magic,
-                                    Bool& hasBlanks, const String& name)
+                                    Float& scale, Float& offset, Short& shortMagic,
+                                    Int& longMagic, Bool& hasBlanks, const String& name)
 {
 // Open sesame
 
@@ -467,7 +496,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 // We only handle FLOAT or SHORT
 
     dataType = infile.datatype();
-    if (dataType != FITS::FLOAT && dataType != FITS::SHORT) {
+    if (dataType != FITS::FLOAT && dataType != FITS::SHORT && dataType != FITS::LONG) {
        throw AipsError("FITS file " + name +
 		       " should contain floating point or short integer data");
     }
@@ -500,9 +529,12 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 //
     if (dataType==FITS::FLOAT) {
        crackHeaderFloat (cSys, shape, imageInfo, brightnessUnit, miscInfo, os, infile);
-    } else {
+    } else if (dataType==FITS::LONG) {
+       crackHeaderLong (cSys, shape, imageInfo, brightnessUnit, miscInfo, 
+                       scale, offset, longMagic, hasBlanks, os, infile);
+    } if (dataType==FITS::SHORT) {
        crackHeaderShort (cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                         scale, offset, magic, hasBlanks, os, infile);
+                         scale, offset, shortMagic, hasBlanks, os, infile);
     }
 
 // Get recordnumber 
@@ -636,6 +668,7 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
     Int bitpix;   
     header.get("bitpix", bitpix);
     header.removeField("bitpix");   
+//
     if (bitpix != 16) {
        throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 16"));
     }  
@@ -728,3 +761,127 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
        imageInfo.getRestoringBeam(log);
     }
 }
+
+
+
+void FITSImage::crackHeaderLong (CoordinateSystem& cSys,
+                                  IPosition& shape, ImageInfo& imageInfo,
+                                  Unit& brightnessUnit, RecordInterface& miscInfo,
+                                  Float& scale, Float& offset, Int& magic,
+                                  Bool& hasBlanks, LogIO& os, FitsInput& infile)
+{
+// Shape
+
+    PrimaryArray<Int> fitsImage(infile);
+    Int ndim = fitsImage.dims();
+    shape.resize(ndim);
+    for (Int i=0; i<ndim; i++) {
+       shape(i) = fitsImage.dim(i);
+    }
+
+// Get header
+
+    Vector<String> ignore(0); 
+    Record header;
+    if (!FITSKeywordUtil::getKeywords(header, fitsImage.kwlist(), ignore)) {
+       throw (AipsError("Error retrieving keywords from fits header"));
+    }
+
+// BITPIX
+
+    Int bitpix;   
+    header.get("bitpix", bitpix);
+    header.removeField("bitpix");   
+    if (bitpix != 32) {
+       throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 32"));
+    }  
+
+// Add naxis into header (not in the keyword list).  People
+// provide headers with funny mixtures of CTYPEi and  naxis so
+// we need to do this
+
+   header.define("naxis", shape.asVector());
+
+// Scale and blank
+
+    Double s = 1.0;
+    Double o = 0.0;
+    if (header.isDefined("bscale")) {
+       header.get("bscale", s);
+       header.removeField("bscale");
+    }
+    if (header.isDefined("bzero")) {
+       header.get("bzero", o);
+       header.removeField("bzero");
+    }
+    scale = s; 
+    offset = o;
+//
+    hasBlanks = False;
+    if (header.isDefined("blank")) {
+       Int m;
+       header.get("blank", m);
+       header.removeField("blank");
+       magic = m;
+       hasBlanks = True;
+    }
+
+// CoordinateSystem
+
+    Bool dropStokes = True;
+    Int stokesFITSValue = 1;
+    cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, header, os, shape, dropStokes);
+    ndim = shape.nelements();
+
+// Brightness Unit
+
+    brightnessUnit = ImageFITSConverter::getBrightnessUnit(header, os);
+
+// ImageInfo
+
+    imageInfo = ImageFITSConverter::getImageInfo(header);
+
+// If we had one of those unofficial pseudo-Stokes on the Stokes axis, store it in the imageInfo
+
+    if (stokesFITSValue != -1) {
+       ImageInfo::ImageTypes type = ImageInfo::imageTypeFromFITS(stokesFITSValue);
+       if (type!= ImageInfo::Undefined) {
+          imageInfo.setImageType(type);
+       }
+    }
+
+// Get rid of anything else
+        
+    ignore.resize(6);
+    ignore(0) = "^datamax$";
+    ignore(1) = "^datamin$";
+    ignore(2) = "^origin$";
+    ignore(3) = "^extend$";
+    ignore(4) = "^blocked$";
+    ignore(5) = "^blank$";
+    FITSKeywordUtil::removeKeywords(header, ignore);
+
+// MiscInfo is whats left
+
+    miscInfo = header;
+
+// Get and store history.
+
+    Vector<String> lines;
+    String groupType;
+    ConstFitsKeywordList kw = fitsImage.kwlist();
+    kw.first();
+
+// Set the contents of the ImageInterface logger object (history)
+
+    LoggerHolder& log = logger();
+    ImageFITSConverter::restoreHistory(log, kw);
+
+// Try and find the restoring beam in the history cards if
+// its not in the header
+
+    if (imageInfo.restoringBeam().nelements() != 3) {
+       imageInfo.getRestoringBeam(log);
+    }
+}
+
