@@ -32,12 +32,15 @@
 #include <aips/aips.h>
 #include <aips/Utilities/PtrHolder.h>
 #include <trial/Utilities/RecordTransformable.h>
+#include <aips/Mathematics/Complex.h>
 
 //# Forward Declarations
-template <class Qtype> class Quantum;
+class QBase;
 class GlishRecord;
+template <class Qtype> class Quantum;
+template <class T> class Vector;
 
-// <summary> A holder for Quantities to enable record conversions </summary>
+// <summary> A holder for Quantums to enable record conversions </summary>
 
 // <use visibility=export>
 
@@ -51,15 +54,28 @@ class GlishRecord;
 // </prerequisite>
 //
 // <etymology>
-// A Holder of general Quantities
+// A Holder of general Quantums
 // </etymology>
 //
 // <synopsis>
-// This class can be used to handle a heterogeneous list of Quantities, and
-// can handle torecord() and fromrecord() conversions.
+// This class can be used to handle a heterogeneous list of Quantums, and
+// can handle toRecord() and fromRecord() conversions.
 // A QuantumHolder
-// is created empty, from a Quantity (<src>Quantum<Double></src>), a
-// <src>Quantum<Float></src> or a <src>Quantum<Int></src>.
+// is created empty, from a Quantum (e.g. a <src>Quantum<Double></src>) or a
+// <src>Quantum<Vector<Float> ></src>).
+//
+// The accepted range of Quantums is:
+// <ul>
+//  <li> <src>Quantum<Int>, Quantum<Float>, Quantum<Double> == Quantity</src>
+//  <li> <src>Quantum<Complex>, Quantum<DComplex></src>
+//  <li> <src>Quantum<Vector<Int> >, Quantum<Vector<Float> ></src>, 
+//	 <src>Quantum<Vector<Double> ></src>
+//  <li> <src>Quantum<Vector<Complex> >, Quantum<Vector<DComplex> ></src>
+// </ul>
+// Quantums in the same group can be converted to any in the same group (e.g.
+// Int to Double); Vectors of length 1 can be converted to scalars in the 
+// corresponding group; Scalars can always be converted to Vectors in the 
+// corresponding group. Real values can be converted to Complex values.
 //
 // Checks on the contents can be made with functions like
 // <src>isQuantity</src> and the contents can be obtained with
@@ -73,15 +89,15 @@ class GlishRecord;
 //	TableRecord rec;		// an empty record
 //	Quantity x(12.5, "km/s");	// a Quantity
 //	String error;			// an error message
-//	if (!QuantumHolder(x).torecord(error, rec)) {  // make record
+//	if (!QuantumHolder(x).toRecord(error, rec)) {  // make record
 //		cout << error << endl;
 //	};
 // </srcblock>
 // </example>
 //
 // <motivation>
-// To make general conversions between Quantities and records, without knowing
-// the actual Quantity being converted.
+// To make general conversions between Quantums and records, without knowing
+// the actual Quantum being converted.
 // </motivation>
 //
 // <todo asof="1998/04/14">
@@ -99,12 +115,8 @@ public:
 //# Constructors
   // Creates an empty holder
   QuantumHolder();
-  // Create from a Quantity (copy semantics)
-  // <group>
-  QuantumHolder(const Quantum<Double> &in);
-  QuantumHolder(const Quantum<Float> &in);
-  QuantumHolder(const Quantum<Int> &in);
-  // </group>
+  // Create from a Quantum (copy semantics)
+  QuantumHolder(const QBase &in);
   // Copy a holder (copy semantics)
   QuantumHolder(const QuantumHolder &other);
 //# Destructor
@@ -114,32 +126,71 @@ public:
   // Assignment (copy semantics)
   QuantumHolder &operator=(const QuantumHolder &other);
   // Get value (will have lifetime only as long as MeasHolder exists)
-  const Quantum<Double> &operator()() const;
+  const QBase &operator()() const;
 
 //# Member Functions
-  // Check if it holds a Quantity
+  // Check if it holds a Quantity. Note that a Vector of length 1 will give
+  // True to scalar questions.
   // <group>
-  Bool isQuantity() const;
   Bool isEmpty() const;
+  Bool isQuantum() const;
+  Bool isScalar() const;
+  Bool isArray() const;
+  Bool isReal() const;
+  Bool isComplex() const;
+  Bool isQuantity() const;
+  Bool isQuantumDouble() const;
+  Bool isQuantumFloat() const;
+  Bool isQuantumInt() const;
+  Bool isQuantumComplex() const;
+  Bool isQuantumDComplex() const;
+  Bool isQuantumVectorDouble() const;
+  Bool isQuantumVectorFloat() const;
+  Bool isQuantumVectorInt() const;
+  Bool isQuantumVectorComplex() const;
+  Bool isQuantumVectorDComplex() const;
   // </group>
+  // Get number of numeric elements (0 if holder empty, 1 if scalar, else
+  // vector length)
+  Int nelements() const;
 
-  // Get a Quantity from the holder (with lifetime as long 
-  // as holder exists).
+  // Get a Quantum from the holder (with lifetime as long 
+  // as holder exists). Conversions done if necessary and as described in
+  // introduction.
   // <thrown>
-  // <li> AipsError if holder empty
+  // <li> AipsError if holder empty or no conversion possible
   // </thrown>
   // <group>
-  const Quantum<Double> &asQuantity() const;
+  const QBase &asQuantum() const;
+  const Quantum<Double> &asQuantity() ;
+  const Quantum<Double> &asQuantumDouble() ;
+  const Quantum<Float> &asQuantumFloat() ;
+  const Quantum<Int> &asQuantumInt() ;
+  const Quantum<Complex> &asQuantumComplex() ;
+  const Quantum<DComplex> &asQuantumDComplex() ;
+  const Quantum<Vector<Double> > &asQuantumVectorDouble() ;
+  ///  const Quantum<Vector<Float> > &asQuantumVectorFloat() ;
+  ///  const Quantum<Vector<Int> > &asQuantumVectorInt() ;
+  ///  const Quantum<Vector<Complex> > &asQuantumVectorComplex() ;
+  ///  const Quantum<Vector<DComplex> > &asQuantumVectorDComplex() ;
   // </group>
 
-  // Create a Quantity from a record
+  // Create a Quantum from a record
+  // A valid record will contain the following fields:
+  // <ul>
+  //  <li> value: contains a numeric value of Int, Float, Double, Complex,
+  //		DComplex or a vector thereof
+  //  <li> unit: a string with a unit valid.
+  // </ul>
+  // Illegal values or units will return False and write an error message.
   // <group>
   virtual Bool fromRecord(String &error,
 			  const RecordInterface &in);
   Bool fromRecord(String &error,
 		  const GlishRecord &in);
   // </group>
-  // Create a record from a Quantity
+  // Create a record from a Quantum. A False return and an error message is
+  // only generated if there is no valid Quantum in the holder.
   // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
   Bool toRecord(String &error, GlishRecord &out) const;
@@ -149,8 +200,11 @@ private:
 
 //# Data Members
   // Pointer to a Quantity
-  PtrHolder<Quantum<Double> > hold;
+  PtrHolder<QBase> hold_;
 
+//# General member functions
+  // Convert to a different real scalar quantum
+  void toReal(const Int &tp);
 };
 
 #endif
