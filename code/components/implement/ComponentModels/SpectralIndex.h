@@ -74,7 +74,7 @@ class String;
 //   <li> start discussion of this possible extension
 // </todo>
 
-class SpectralIndex: virtual public SpectralModel
+class SpectralIndex: public SpectralModel
 {
 public:
   // The default SpectralIndex has all exponents set to zero and a reference
