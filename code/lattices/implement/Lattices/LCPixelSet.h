@@ -1,5 +1,5 @@
-//# LCMask.h: Class to define a rectangular mask as a region
-//# Copyright (C) 1998
+//# LCPixelSet.h: Class to define a rectangular set of pixels as a region
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCMASK_H)
-#define AIPS_LCMASK_H
+#if !defined(AIPS_LCPIXELSET_H)
+#define AIPS_LCPIXELSET_H
 
 //# Includes
 #include <trial/Lattices/LCBox.h>
@@ -47,7 +47,7 @@
 // </prerequisite>
 
 // <synopsis> 
-// The LCMask class is a specialization of class
+// The LCPixelSet class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
 // It makes it possible to define a rectangular region of interest.
 // </synopsis> 
@@ -60,22 +60,22 @@
 // <todo asof="1997/11/11">
 // </todo>
 
-class LCMask: public LCRegionFixed
+class LCPixelSet: public LCRegionFixed
 {
 public:
-    LCMask();
+    LCPixelSet();
 
     // Construct from the box defining the position of the mask.
     // The shape of the region and mask must be the same.
-    LCMask (const Array<Bool>& mask, const LCBox& region);
+    LCPixelSet (const Array<Bool>& mask, const LCBox& region);
 
     // Copy constructor (copy semantics).
-    LCMask (const LCMask& other);
+    LCPixelSet (const LCPixelSet& other);
 
-    virtual ~LCMask();
+    virtual ~LCPixelSet();
 
     // Assignment (copy semantics).
-    LCMask& operator= (const LCMask& other);
+    LCPixelSet& operator= (const LCPixelSet& other);
 
     // Comparison
     virtual Bool operator== (const LCRegion& other) const;
@@ -93,11 +93,11 @@ public:
     virtual TableRecord toRecord (const String& tableName) const;
 
     // Convert correct object from a record.
-    static LCMask* fromRecord (const TableRecord&,
-			       const String& tablename);
+    static LCPixelSet* fromRecord (const TableRecord&,
+				   const String& tablename);
 
 protected:
-    // Construct another LCMask (for e.g. another lattice) by moving
+    // Construct another LCPixelSet (for e.g. another lattice) by moving
     // this one. It recalculates the bounding mask.
     // A positive translation value indicates "to right".
     virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
