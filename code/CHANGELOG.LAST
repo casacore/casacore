@@ -1,0 +1,13 @@
+
+change id: 0085
+ author:   Wim Brouw
+ date:     2001/03/21
+ avers:    1.5
+ area:     Library
+ package:  trial
+ module:   Utilities
+ type:     Code
+ category: New
+ summary:  Added Template class
+To aid in an improved detection of duplicate templates, I moved the actual code that made template entries canonical to this class.
+reident and duplicates now use identical code. In addition, even if a templates file has not been passed through reident before checkin-in (a non-advisable status), duplicates will first run a reident like process.
