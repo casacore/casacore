@@ -740,15 +740,17 @@ Vector<Float>& ROVisibilityIterator::weight(Vector<Float>& wt) const
 
 Matrix<Float>& ROVisibilityIterator::imagingWeight(Matrix<Float>& wt) const
 {
-  if (velSelection_p) {
-    if (!weightSpOK_p) {
-      getInterpolatedVisFlagWeight(Corrected);
-      This->weightSpOK_p=This->visOK_p[Corrected]=This->flagOK_p=True;
+  if (!colImagingWeight.isNull()) {
+    if (velSelection_p) {
+      if (!weightSpOK_p) {
+	getInterpolatedVisFlagWeight(Corrected);
+	This->weightSpOK_p=This->visOK_p[Corrected]=This->flagOK_p=True;
+      }
+      wt.resize(imagingWeight_p.shape()); wt=imagingWeight_p; 
+    } else {
+      if (useSlicer_p) colImagingWeight.getColumn(weightSlicer_p,wt,True);
+      else colImagingWeight.getColumn(wt,True);
     }
-    wt.resize(imagingWeight_p.shape()); wt=imagingWeight_p; 
-  } else {
-    if (useSlicer_p) colImagingWeight.getColumn(weightSlicer_p,wt,True);
-    else colImagingWeight.getColumn(wt,True);
   }
   return wt;
 }
@@ -758,6 +760,14 @@ ROVisibilityIterator::selectVelocity
 (Int nChan, const MVRadialVelocity& vStart, const MVRadialVelocity& vInc,
  MRadialVelocity::Types rvType, MDoppler::Types dType, Bool precise)
 {
+  if (!initialized_p) {
+    // initialize the base iterator only (avoid recursive call to originChunks)
+    if (!msIterAtOrigin_p) {
+      msIter_p.origin();
+      msIterAtOrigin_p=True;
+      stateOk_p=False;
+    }
+  }    
   velSelection_p=True;
   nVelChan_p=nChan;
   vStart_p=vStart;
@@ -802,8 +812,10 @@ ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width,
   }
   chanStart_p[spw] = start;
   chanWidth_p[spw] = width;
+  channelGroupSize_p = width;
   chanInc_p[spw] = increment;
   numChanGroup_p[spw] = nGroup;
+  curNumChanGroup_p = nGroup;
   // have to reset the iterator so all caches get filled & slicer sizes
   // get updated
   originChunks();
