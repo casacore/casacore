@@ -104,6 +104,7 @@
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
   
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/PagedImage.h>
@@ -238,7 +239,8 @@ try {
 
 // Plotting things
 
-   Vector<Int> statisticTypes = ImageStatsBase::toStatisticTypes(statsToPlot, ",");
+   Regex re("[ \n\t\r\v\f,]+", 1);
+   Vector<Int> statisticTypes = ImageStatsBase::toStatisticTypes(statsToPlot, re);
    Vector<Int> nxy(nxyB);
    if (nxy.nelements() == 1 && nxy(0) == -1) nxy.resize(0);
     if (device != "none" && 
