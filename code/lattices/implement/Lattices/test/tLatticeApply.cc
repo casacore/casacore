@@ -39,7 +39,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/String.h>
 #include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/PagedArrIter.h>
+#include <trial/Lattices/LatticeIterator.h>
 #include <iostream.h>
 
 
@@ -87,7 +87,7 @@ main (int argc, char *argv[])
     IPosition latticeShape(3, nx, ny, nz);
     IPosition tileShape(3, tx, ty, tz);
     if (tileShape.product() == 0) {
-	tileShape = PagedArray<Int>::defaultTileShape(latticeShape);
+	tileShape = TiledShape(latticeShape).tileShape();
     }
     cout << "Data Type: Int";
     cout << "  Lattice shape:" << latticeShape;
@@ -96,25 +96,26 @@ main (int argc, char *argv[])
 	SetupNewTable paSetup("tLatticeApply_tmp.array",
 			      TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> lat(latticeShape, paTable, tileShape);      
+	PagedArray<Int> lat(TiledShape(latticeShape, tileShape), paTable);      
 	Array<Int> arr(tileShape);
 	indgen(arr);
-	PagedArrIter<Int> iter(lat, tileShape);
+	LatticeIterator<Int> iter(lat, tileShape);
 	Timer tim;
 	for (iter.reset(); !iter.atEnd(); iter++, arr += tileShape.product()) {
 	    iter.cursor() = arr;
+	    iter.writeCursor();
 	}
 	tim.show();
     }
     {
-	Table t("tLatticeApply_tmp.array", Table::Update);
+	Table t("tLatticeApply_tmp.array");
 	PagedArray<Int> lat(t);
 	latticeShape(2) = 1;
 	tileShape(2) = 1;
 	SetupNewTable paSetup2("tLatticeApply_tmp.array1",
 			       TableDesc(), Table::New);
 	Table paTable2(paSetup2);
-	PagedArray<Int> latout(latticeShape, paTable2, tileShape);      
+	PagedArray<Int> latout(TiledShape(latticeShape,tileShape), paTable2);      
 	MyCollapser collapser;
 	Timer tim;
 	LatticeApply<Int>::vectorApply (latout, lat, collapser,
@@ -123,18 +124,18 @@ main (int argc, char *argv[])
 	tim.show();
     }
     {
-	Table t("tLatticeApply_tmp.array", Table::Update);
+	Table t("tLatticeApply_tmp.array");
 	PagedArray<Int> lat(t);
 	latticeShape(2) = 1;
 	tileShape(2) = 1;
 	SetupNewTable paSetup0("tLatticeApply_tmp.array2a",
 			       TableDesc(), Table::New);
 	Table paTable0(paSetup0);
-	PagedArray<Int> latout0(latticeShape, paTable0, tileShape);      
+	PagedArray<Int> latout0(TiledShape(latticeShape, tileShape), paTable0);
 	SetupNewTable paSetup1("tLatticeApply_tmp.array2b",
 			       TableDesc(), Table::New);
 	Table paTable1(paSetup1);
-	PagedArray<Int> latout1(latticeShape, paTable1, tileShape);      
+	PagedArray<Int> latout1(TiledShape(latticeShape, tileShape), paTable1);
 	PtrBlock<Lattice<Int>*> blat(2);
 	blat[0] = &latout0;
 	blat[1] = &latout1;
