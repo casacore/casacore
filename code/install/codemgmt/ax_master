@@ -2475,3 +2475,5 @@
 09 420 src mv trial/scripts/ttimer.g aips/scripts/ttimer.g
 09 428 src rm trial/implement/Measures/test/tHolder.cc
 09 428 src rm trial/implement/Measures/test/tHolder.out
+09 428 src rm trial/implement/Measures/QuantityHolder.h
+09 428 src rm trial/implement/Measures/QuantityHolder.cc
