@@ -171,14 +171,6 @@ public:
     // table and column keywords are renamed.
     void rename (const String& newName, int tableOption);
 
-    // Test if the table needs synchronization.
-    // All data managers will be polled to determine it.
-    Bool needToSync() const;
-
-    // Synchronize the table and return the number of rows.
-    // All data managers will be polled to determine it.
-    uInt sync (Bool& moreToExpect);
-    
     // Get a column object using its index.
     BaseColumn* getColumn (uInt columnIndex) const;
 
