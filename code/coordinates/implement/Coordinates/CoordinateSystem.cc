@@ -4517,7 +4517,10 @@ void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types doppler) c
       const SpectralCoordinate& coord = spectralCoordinate(uInt(ic));
       MFrequency::Types type = coord.frequencySystem();
       MFrequency::Types conversionType;
-      coord.getReferenceConversion(conversionType);
+      MEpoch epoch;
+      MDirection direction;
+      MPosition position;
+      coord.getReferenceConversion(conversionType, epoch, position, direction);
 //
       if (type==conversionType) {
          os << "Spectral  reference : " << MFrequency::showType(type) << endl;
