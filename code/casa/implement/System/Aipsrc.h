@@ -86,11 +86,26 @@
 //   $AIPSSITE/aipsrc
 //   $AIPSARCH/aipsrc
 // </srcblock> 
-// It is not an error for any of the aipsrc files to be absent or empty.<br>
+// It is not an error for any of the aipsrc files to be absent or empty.
+// However, it is an error if either <em>HOME</em> or <em>AIPSPATH</em> has
+// not been set: an exception will occur.<br>
 // The basic interaction with the class is with the static keyword match function
 // <src>Aipsrc::find(String &result, const String &keyword)</src>.
 // <note role=caution> The search keyword (unlike the file keyword) has no
 // wildcards. The real name should, of course, be looked for.</note>
+// To aid in other places, the following (static) methods are available
+// to get the requested information:
+//  <ul>
+//   <li> const String &Aipsrc::aipsRoot()
+//   <li> const String &Aipsrc::aipsArch()
+//   <li> const String &Aipsrc::aipsSite()
+//   <li> const String &Aipsrc::aipsHost()
+//   <li> const String &Aipsrc::aipsHome() -- <src>~/aips++</src>
+//  </ul>
+// Given an AIPSPATH of 
+// <srcblock>/epp/aips++ sun4sol_gnu epping norma</srcblock>
+// aipsSite will e.g. return
+// <srcblock>/epp/aips++/sun4sol_gnu/epping</srcblock>.
 // </synopsis>
 //
 // <example>
@@ -130,6 +145,10 @@ public:
 //# Copy assignment
 
   //# Member functions
+  // <group>
+  // <thrown>
+  // <li> AipsError if HOME or AIPSPATH environment variable not set
+  // </thrown> 
 // <group>
 // The <src>find()</src> functions will, given a keyword, return the value
 // with a matched keyword found in the files. If no match found the
@@ -140,7 +159,7 @@ public:
 // </group>
 
 // This find usually saves you some lines of code, since you can supply the
-// default you want to use when no such keywords is defined. These functions
+// default you want to use when no such keywords is defined.
 // If the return value is False, the keyword was not found and the default
 // was used.
 // <group>
@@ -158,6 +177,17 @@ public:
    static Bool findNoHome(String &value, String &fileFound,
 		    String &lineFound, const String &keyword);
 // </group>
+
+  // Returns the appropiate AIPS variables
+  // <group>
+  static const String &aipsRoot();
+  static const String &aipsArch();
+  static const String &aipsSite();
+  static const String &aipsHost();
+  static const String &aipsHome();
+  // </group>
+
+  // </group>
 
 // The <src>reRead()</src> function, will reinitialise the static maps and read the
 // aipsrc files again. It could be useful in some interactive or multi-processor 
@@ -195,6 +225,18 @@ private:
   static Block<String> keywordFile;
   // The end in the keyword list for each file found
   static Block<uInt>   fileEnd;
+  // AIPSROOT
+  static String root;
+  // AIPSARCH
+  static String arch;
+  // AIPSSITE
+  static String site;
+  // AIPSHOST
+  static String host;
+  // AIPSHOME
+  static String home;
+  // Filled above
+  static Bool filled;
 
 //# General member functions
 // Read in the aipsrc files, returning the number of lines found
@@ -211,6 +253,8 @@ private:
    static Bool find(String &value, String &fileFound,
 		    String &lineFound, const String &keyword,
 		    uInt start);
+  // Fill in root, arch, site, host and home
+  static void fillAips();
 };
 
 
