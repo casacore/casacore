@@ -1,5 +1,5 @@
 //# DataType.h: data types (primarily) in the table system
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,6 +60,8 @@ ostream &operator<<(ostream &os, DataType type)
     case TpArrayString: os << "Array<String>"; break;
     case TpRecord: os << "Record"; break;
     case TpOther: os << "Other"; break;
+    case TpQuantity: os << "Quantity"; break;
+    case TpArrayQuantity: os << "Array<Quantity>"; break;
     default:
 	os << "unknown (cannot happen)'";
     }
@@ -68,12 +70,13 @@ ostream &operator<<(ostream &os, DataType type)
 
 Bool isScalar(DataType type)
 {
-    return ToBool(type <= TpString);
+    return ToBool((type <= TpString) || (type == TpQuantity));
 }
 
 Bool isArray(DataType type)
 {
-    return ToBool(type >= TpArrayBool && type <= TpArrayString);
+    return ToBool((type >= TpArrayBool && type <= TpArrayString) ||
+		  (type = TpArrayQuantity));
 }
 
 DataType asScalar(DataType type)
@@ -82,7 +85,11 @@ DataType asScalar(DataType type)
 		 AipsError);
     DataType tmp = type;
     if (isArray(tmp)) {
+      if (tmp == TpArrayQuantity) {
+	tmp = TpQuantity;
+      } else {
 	tmp = DataType(type - TpArrayBool + TpBool);
+      }
     }
     return tmp;
 }
@@ -93,7 +100,11 @@ DataType asArray(DataType type)
 		 AipsError);
     DataType tmp = type;
     if (isScalar(tmp)) {
+      if (tmp == TpQuantity) {
+	tmp = TpArrayQuantity;
+      } else {
 	tmp = DataType(type - TpBool + TpArrayBool);
+      }
     }
     return tmp;
 }
