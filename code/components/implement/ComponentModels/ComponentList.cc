@@ -642,7 +642,7 @@ void ComponentList::createTable(const String& fileName,
       const String dirValColName = "Reference_Direction";
       const ArrayColumnDesc<Double> 
 	dirValCol(dirValColName, "Reference direction values",
-		  IPosition(1,3), ColumnDesc::Direct);
+		  IPosition(1,2), ColumnDesc::Direct);
       td.addColumn(dirValCol);
       const String dirRefColName = "Direction_Frame";
       const ScalarColumnDesc<String>
@@ -651,7 +651,7 @@ void ComponentList::createTable(const String& fileName,
       td.addColumn(dirRefCol);
       const TableMeasRefDesc dirRefTMCol(td, dirRefColName);
       const TableMeasValueDesc dirValTMCol(td, dirValColName);
-      TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol, True);
+      TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol);
       dirTMCol.write(td);
       const ArrayColumnDesc<Double> 
 	shapeParmCol("Shape_Parameters",
