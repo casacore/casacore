@@ -303,18 +303,20 @@ uInt ModcompConversion::toLocal (Double* to, const void* from, uInt nr) {
   return retval;
 }
 
-uInt ModcompConversion::fromLocal(void* to, Float from) {
+uInt ModcompConversion::fromLocal(void* to, const Float* from, uInt nr) {
   // Dummy statements to suppress compiler warnings about unused variables
-  if (from == 0.0f) {}
+  if (nr == 0) {}
+  if (from == 0) {}
   if (to != 0) {}
   throw(AipsError("ModcompConversion::fromLocal(Float&, const void*) - "
 		  "Cannot convert floating point numbers to Modcomp format"));
   return 0;
 }
 
-uInt ModcompConversion::fromLocal(void* to, Double from) {
+uInt ModcompConversion::fromLocal(void* to, const Double* from, uInt nr) {
   // Dummy statements to suppress compiler warnings about unused variables
-  if (from == 0.0f) {}
+  if (nr == 0) {}
+  if (from == 0) {}
   if (to != 0) {}
   throw(AipsError("ModcompConversion::fromLocal(Double&, const void*) - "
 		  "Cannot convert floating point numbers to Modcomp format"));
