@@ -66,12 +66,12 @@ SpectralFit &SpectralFit::operator=(const SpectralFit &other) {
   return *this;
 }
 
-void SpectralFit::setFitElement(uInt index, SpectralElement &elem) {
+void SpectralFit::setFitElement(uInt index, const SpectralElement &elem) {
   if (index >= n_p) throw(AipsError("setFitElement illegal index"));
   el_p[index] = elem;
 }
 
-void SpectralFit::addFitElement(SpectralElement &elem) {
+void SpectralFit::addFitElement(const SpectralElement &elem) {
   capacity();
   el_p[n_p++] = elem;
 }
