@@ -42,6 +42,18 @@ TiledFileHelper::TiledFileHelper (const String& fileName,
 : TiledStMan ("TiledFileHelper", maximumCacheSize)
 {
   switch (dtype) {
+  case TpBool:
+    itsDesc.addColumn (ArrayColumnDesc<Bool> ("DATA", shape,
+					      ColumnDesc::FixedShape));
+    break;
+  case TpShort:
+    itsDesc.addColumn (ArrayColumnDesc<Short> ("DATA", shape,
+					       ColumnDesc::FixedShape));
+    break;
+  case TpInt:
+    itsDesc.addColumn (ArrayColumnDesc<Int> ("DATA", shape,
+					     ColumnDesc::FixedShape));
+    break;
   case TpFloat:
     itsDesc.addColumn (ArrayColumnDesc<Float> ("DATA", shape,
 					       ColumnDesc::FixedShape));
