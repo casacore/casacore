@@ -54,9 +54,12 @@
 // </synopsis>
 //
 // <todo asof="2001/04/16">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+//   <li> make UV-distance matrix static, to share between multiple instances
+//   <li> collect population statistics across all channels
+//   <li> 3D bins (ampl-UVdist-channel)?
+//   <li> think how to solve "encroaching" problem to achieve a better
+//        probability distribution. Perhaps two sets of staggered bins,
+//        and for each point use the count of the bigger bin?
 // </todo>
 
 class RFAUVBinner : public RFAFlagCubeBase, public RFDataMapper, public PGPlotEnums
@@ -81,15 +84,18 @@ public:
   
 protected:
   IPosition computeBin( Float uv,Float y,uInt ich );
-    
+  void makePlot ( PGPlotterInterface &pgp,uInt ich );
+
   Double  threshold;
-  Bool    binned;
   uInt    nbin_y,nbin_uv;
+  Bool    binned;
   
-// for flagging report
-  Bool  plot_report;
-  Int   plot_chan,report_chan;
-  PGPlotter pgp;
+// stuff for a separate flagging report
+  Bool  plot_report,econoplot;
+  Int   plot_chan,report_chan,econo_density;
+  Int   plot_thr_count;
+  uInt  plot_np;
+  Vector<Float> plot_px,plot_py,plot_prob;
   
 // current UVW column
   Vector< RigidVector<Double,3> > *puvw;
