@@ -1430,11 +1430,11 @@ void ImageHistograms<T>::getStats (Vector<Double> &stats,
 
 
 template <class T>
-inline void ImageHistograms<T>::histAccum (Vector<Int>& counts,
-                                           const T& datum,
-                                           const T& dMin,
-                                           const T& binWidth,
-                                           const Int& nBins)
+void ImageHistograms<T>::histAccum (Vector<Int>& counts,
+                                    const T& datum,
+                                    const T& dMin,
+                                    const T& binWidth,
+                                    const Int& nBins)
 //
 // Determine the histogram bin that this datum falls
 // in and increment the histogram storage vector
@@ -1446,7 +1446,7 @@ inline void ImageHistograms<T>::histAccum (Vector<Int>& counts,
 
 
 template <class T>
-inline IPosition ImageHistograms<T>::locInHist (const IPosition& imagePosition)
+IPosition ImageHistograms<T>::locInHist (const IPosition& imagePosition)
 //
 // Given a location in the input image, find the start location for a 
 // histogram slice in the histogram storage image at this location
@@ -1461,7 +1461,7 @@ inline IPosition ImageHistograms<T>::locInHist (const IPosition& imagePosition)
 
 
 template <class T>
-inline IPosition ImageHistograms<T>::locInMinMax (const IPosition& imagePosition)
+IPosition ImageHistograms<T>::locInMinMax (const IPosition& imagePosition)
 //
 // Given a location in the input image, find the start location for a 
 // min/max slice in the min/max storage image at this location
@@ -1475,7 +1475,7 @@ inline IPosition ImageHistograms<T>::locInMinMax (const IPosition& imagePosition
 }
 
 template <class T>
-inline IPosition ImageHistograms<T>::locInStats (const IPosition& imagePosition)
+IPosition ImageHistograms<T>::locInStats (const IPosition& imagePosition)
 //
 // Given a location in the input image, find the start location for a 
 // statistics slice in the statistics storage image.  The first axis
@@ -1491,7 +1491,7 @@ inline IPosition ImageHistograms<T>::locInStats (const IPosition& imagePosition)
 }
 
 template <class T>
-inline IPosition ImageHistograms<T>::locHistInImage(const IPosition& histPos)
+IPosition ImageHistograms<T>::locHistInImage(const IPosition& histPos)
 //
 // Given a location in the histogram storage image, convert those locations on
 // the non-histogram axis (the first one) to account for the
@@ -1714,7 +1714,7 @@ return ((clip(1) - clip(0)) / nBins);
 
 
 template <class T>
-inline IPosition ImageHistograms<T>::minMaxSliceShape ()
+IPosition ImageHistograms<T>::minMaxSliceShape ()
 //
 // Return the shape of a min/max storage image slice. 
 {
@@ -1729,7 +1729,7 @@ inline IPosition ImageHistograms<T>::minMaxSliceShape ()
 
 
 template <class T>
-inline IPosition ImageHistograms<T>::statsSliceShape ()
+IPosition ImageHistograms<T>::statsSliceShape ()
 //
 // Return the shape of a statistics storage image slice. 
 // The first axis is the statistics axis
@@ -1741,8 +1741,8 @@ inline IPosition ImageHistograms<T>::statsSliceShape ()
 
 
 template <class T>
-inline void ImageHistograms<T>::statsAccum (Vector<Double>& stats,
-                                            const T& datum)
+void ImageHistograms<T>::statsAccum (Vector<Double>& stats,
+                                     const T& datum)
 {
    stats(SUM) += datum;
    stats(SUMSQ) += datum*datum;
