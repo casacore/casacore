@@ -47,6 +47,12 @@
 
 #include <iostream.h>
 
+Bool checkAttribute (const LELAttribute& attr,
+                     const Bool isScalar,
+                     const IPosition& shape,
+                     const IPosition& tileShape,
+                     const LatticeCoordinates& lattCoord);
+
 Bool checkFloat (LELInterface<Float>& expr, 
                  const Float Result,
                  const String name,
@@ -186,27 +192,29 @@ main (int argc, char *argv[])
 
 //************************************************************************
 // 
-// LELAttribute; coverage 100%
+// LELAttribute
 //
   {
     cout << "LELAttribute" << endl;
-    Bool isScalar1 = True;
-    IPosition shape1 = IPosition();
-    LELAttribute attr1(isScalar1, shape1);
-    if (attr1.isScalar() != isScalar1) {
-      cout << "   isScalar function failed" << endl;
-      ok = False;
-    }
-    if (attr1.shape() != shape1) {
-      cout << "   shape function failed" << endl;
-      ok = False;
-    }    
+
+// First a scalar attribute
+
+    const IPosition nullIPos = IPosition();
+    LELAttribute attr1;
+    if (!checkAttribute(attr1, True, nullIPos, nullIPos, LatticeCoordinates())) ok = False;
+
+// Now a non-scalar one; this only tests null LatticeCoordinates
+
     Bool isScalar2 = False;
     IPosition shape2 = shape;
-    LELAttribute attr2(isScalar2, shape2);
+    IPosition tileShape2 = shape;
+    LatticeCoordinates lattCoord2;
+    LELAttribute attr2(shape2, tileShape2, lattCoord2);
+    if (!checkAttribute(attr2, isScalar2, shape2, tileShape2, lattCoord2)) ok = False;
 
     LELAttribute attr3 = attr2;
-    if (attr3.isScalar()!=attr2.isScalar() || attr3.shape() != attr2.shape()) {
+    if (!checkAttribute(attr3, attr2.isScalar(), attr2.shape(), attr2.tileShape(),
+                        attr2.coordinates())) {
       cout << "   Assignment failed" << endl;
       ok = False;
     }    
@@ -215,15 +223,16 @@ main (int argc, char *argv[])
 
     LELAttribute attr4(attr1, attr2);
     if (attr4.isScalar() || attr4.shape() != attr2.shape()) {
-      cout << "   double constructor failed" << endl;
+      cout << "   binary constructor failed" << endl;
       ok = False;
     }    
+
   }       
        
 
 //************************************************************************
 //
-// LELLattice; 100% coverage
+// LELLattice
 //
   {
     cout << endl << "LELLattice<Float> " << endl;
@@ -292,7 +301,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELUnary; 100% coverage
+// LELUnary
 //
    cout << endl << "LELUnary<Float>" << endl;
   {
@@ -346,7 +355,7 @@ main (int argc, char *argv[])
 
 //************************************************************************
 //
-// LELUnaryBool; 100% coverage
+// LELUnaryBool
 //
   {
     cout << endl << "LELUnaryBool" << endl;
@@ -361,7 +370,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinary<Float>; 100% coverage
+// LELBinary<Float>
 //
   {
     cout << endl << "LELBinary<Float>" << endl;
@@ -400,7 +409,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinary<Double>; 100% coverage
+// LELBinary<Double>
 //
   {
     cout << endl << "LELBinary<Double>" << endl;
@@ -438,7 +447,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinary<Complex>; 100% coverage
+// LELBinary<Complex>
 //
   {
     cout << endl << "LELBinary<Complex>" << endl;
@@ -476,7 +485,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinary<DComplex>; 100% coverage
+// LELBinary<DComplex>
 //
   {
     cout << endl << "LELBinary<DComplex>" << endl;
@@ -514,7 +523,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinaryCmp<Float>; 100% coverage
+// LELBinaryCmp<Float>
 //
   {
     cout << endl << "LELBinaryCmp<Float>" << endl;
@@ -553,7 +562,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinaryCmp<Double>; 100% coverage
+// LELBinaryCmp<Double>
 //
   {
     cout << endl << "LELBinaryCmp<Double>" << endl;
@@ -592,7 +601,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinaryCmp<Complex>; 100% coverage
+// LELBinaryCmp<Complex>
 //
   {
     cout << endl << "LELBinaryCmp<Complex>" << endl;
@@ -631,7 +640,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinaryCmp<DComplex>; 100% coverage
+// LELBinaryCmp<DComplex>
 //
   {
     cout << endl << "LELBinaryCmp<DComplex>" << endl;
@@ -670,7 +679,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELBinaryBool; 100% coverage
+// LELBinaryBool
 //
   {
     cout << endl << "LELBinaryBool" << endl;
@@ -702,7 +711,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunction1D<Float>; 100% coverage
+// LELFunction1D<Float>
 //
   {
     cout << endl << "LELFunction1D<Float>" << endl;
@@ -806,7 +815,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunction1D<Double>; 100% coverage
+// LELFunction1D<Double>
 //
   {
     cout << endl << "LELFunction1D<Double>" << endl;
@@ -910,7 +919,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunction1D<Complex>; 100% coverage
+// LELFunction1D<Complex>
 //
   {
     cout << endl << "LELFunction1D<Complex>" << endl;
@@ -996,7 +1005,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunction1D<DComplex>; 100% coverage
+// LELFunction1D<DComplex>
 //
   {
     cout << endl << "LELFunction1D<DComplex>" << endl;
@@ -1082,7 +1091,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunctionReal1D<Float>; 100% coverage
+// LELFunctionReal1D<Float>
 //
   {
     cout << endl << "LELFunctionReal1D<Float>" << endl;
@@ -1135,7 +1144,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunctionReal1D<Double>; 100% coverage
+// LELFunctionReal1D<Double>
 //
   {
     cout << endl << "LELFunctionReal1D<Double>" << endl;
@@ -1187,7 +1196,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunctionFloat; 100% coverage
+// LELFunctionFloat
 //
   {
     cout << endl << "LELFunctionFloat" << endl;
@@ -1268,7 +1277,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunctionDouble; 100% coverage
+// LELFunctionDouble
 //
   {
     cout << endl << "LELFunctionDouble" << endl;
@@ -1381,7 +1390,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunctionComplex; 100% coverage
+// LELFunctionComplex
 //
   {
     cout << endl << "LELFunctionComplex" << endl;
@@ -1413,7 +1422,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunctionDComplex; 100% coverage
+// LELFunctionDComplex
 //
   {
     cout << endl << "LELFunctionDComplex" << endl;
@@ -1444,7 +1453,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELFunctionBool; 100% coverage
+// LELFunctionBool
 //
   {
     cout << endl << "LELFunctionBool" << endl;
@@ -1470,7 +1479,7 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
-// LELConvert; 100% coverage
+// LELConvert
 //
   {
 
@@ -1539,7 +1548,6 @@ main (int argc, char *argv[])
     if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, False, supress)) ok = False;
     }
   }
-
 
 
   if (!ok) {
@@ -1880,3 +1888,29 @@ Bool checkBool (LELInterface<Bool>& expr,
  
     return ok;
 }
+Bool checkAttribute (const LELAttribute& attr,
+                     const Bool isScalar,
+                     const IPosition& shape,
+                     const IPosition& tileShape,
+                     const LatticeCoordinates& lattCoord)
+{
+   Bool ok = True;
+   if (attr.isScalar() != isScalar) {
+      cout << "   isScalar function failed" << endl;
+      ok = False;
+   }
+   if (attr.shape() != shape) {
+      cout << "   shape function failed" << endl;
+      ok = False;
+   }    
+   if (attr.tileShape() != tileShape) {
+      cout << "   tileShape function failed" << endl;
+      ok = False;
+   }    
+   if (!attr.coordinates().conform(lattCoord)) {
+      cout << "   coordinates function failed" << endl;
+      ok = False;
+   }
+   return ok;
+}
+
