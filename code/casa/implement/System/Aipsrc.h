@@ -1,5 +1,5 @@
 //# Aipsrc.h: Class to read the aipsrc general resource files
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,7 +141,7 @@ typedef class AipsrcVector<String> AipsrcVString;
 //   <li> const String &Aipsrc::aipsHome() -- <src>~/aips++</src>
 //  </ul>
 // Other, numeric, system information can be found in
-// <linkto class=AipsrcData>AipsrcData</linkto>.<br>
+// <linkto class=AipsrcValue>AipsrcValue</linkto>.<br>
 //
 // Given an AIPSPATH of 
 // <srcblock>/epp/aips++ sun4sol_gnu epping norma</srcblock>
