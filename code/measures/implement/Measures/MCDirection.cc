@@ -616,9 +616,11 @@ void MCDirection::doConvert(MVDirection &in,
       ((MCFrame *)(MDirection::Ref::frameComet(inref, outref).
 		   getMCFramePoint()))->
 	getCometType(comID);
-      ((MCFrame *)(MDirection::Ref::frameComet(inref, outref).
-		   getMCFramePoint()))->
-	getComet(*MVPOS1);
+      if (!((MCFrame *)(MDirection::Ref::frameComet(inref, outref).
+			getMCFramePoint()))->
+	  getComet(*MVPOS1)) {
+	throw(AipsError("No or outside range comet table specified"));
+      };
       MVPOS1->adjust(lengthP);
       in = *MVPOS1;
     }
