@@ -1,5 +1,5 @@
 //# LogMessage.cc: Informational log messages with with time,priority,and origin
-//# Copyright (C) 1996,1997,2001
+//# Copyright (C) 1996,1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -150,13 +150,11 @@ LogMessage &LogMessage::messageTime(const Time &theTime)
 }
 
 
-// Goes with the following function. Not function-static because that can
-// cause problems with our exception emulation.
+const String &LogMessage::toString(Priority which)
+{
     static String names[4] = {
         "DEBUGGING", "NORMAL", "WARN", "SEVERE"
     };
-const String &LogMessage::toString(Priority which)
-{
 
     AlwaysAssert(which >= DEBUGGING && which <= SEVERE, AipsError);
     return names[which];
