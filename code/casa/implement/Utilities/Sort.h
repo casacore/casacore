@@ -1,5 +1,5 @@
 //# Sort.h: Sort objects on one or more keys
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,13 +105,14 @@ protected:
 // Duplicates can be skipped by giving the option
 // <src>Sort::NoDuplicates</src>. Only in this case the number of output
 // elements can be different from the number of input elements.
-//
+// <br>The <src>unique</src> offers another way of getting unique values,
+// <p>
 // Class <src>Sort</src> does not sort the data themselves, but
 // returns an index to them. This gives more flexibility and
 // allows the sort to be stable; but it is slower.
 // Very fast sorting of the data themselves can be done with the
 // functions in class <linkto class=GenSort>GenSort</linkto>.
-//
+// <br>
 // Three sort algorithms are provided:
 // <DL>
 //  <DT> <src>Sort::InsSort</src>
@@ -333,9 +334,28 @@ public:
 
     // Sort the data array of <src>nrrec</src> records.
     // The result is an array of indices giving the requested order.
-    // It returns the number of resulting records.
+    // It returns the number of resulting records. The indices array
+    // is resized to that number.
     uInt sort (Vector<uInt>& indexVector, uInt nrrec,
 	       int options = HeapSort) const;
+
+    // Get all unique records in a sorted array. The array order is
+    // given in the indexVector (as possibly returned by the sort function).
+    // The default indexVector is 0..nrrec-1.
+    // The index of each first unique record is returned in the uniqueVector.
+    // They are indices in the supplied indexVector, so
+    // /src>data[indexVector(uniqueVector(i))]</src>
+    // is giving the i-th unique record.
+    // Note that the records indexed by <src>indexVector(uniqueVector(i))<src>
+    // till <src>indexVector(uniqueVector(i+1))<src> are all the same.
+    // <br>
+    // It returns the number of unique records. The unique array
+    // is resized to that number.
+    // <group>
+    uInt unique (Vector<uInt>& uniqueVector, uInt nrrec) const;
+    uInt unique (Vector<uInt>& uniqueVector,
+		 const Vector<uInt>& indexVector) const;
+    // </group>
 
 private:
     Block<void*>    keys_p;                       //# keys to sort on

@@ -184,6 +184,43 @@ void Sort::addKey (const void* dat, ObjCompareFunc* cmp, uInt inc, int ord)
 }
 
 
+uInt Sort::unique (Vector<uInt>& uniqueVector, uInt nrrec) const
+{
+    Vector<uInt> indexVector(nrrec);
+    indgen (indexVector.ac());
+    return unique (uniqueVector, indexVector);
+}
+
+uInt Sort::unique (Vector<uInt>& uniqueVector,
+		   const Vector<uInt>& indexVector) const
+{
+    uInt nrrec = indexVector.nelements();
+    uniqueVector.resize (nrrec);
+    if (nrrec == 0) {
+        return 0;
+    }
+    // Pass the sort function a C-array of indices, because indexing
+    // in there is (much) faster than in a vector.
+    Bool delInx, delUniq;
+    const uInt* inx = indexVector.getStorage (delInx);
+    uInt* uniq = uniqueVector.getStorage (delUniq);
+    uniq[0] = 0;
+    uInt nruniq = 1;
+    for (uInt i=1; i<nrrec; i++) {
+        Int cmp = compare (inx[i-1], inx[i]);
+	if (cmp != 1  &&  cmp != -1) {
+	    uniq[nruniq++] = i;
+	}
+    }
+    indexVector.freeStorage (inx, delInx);
+    uniqueVector.putStorage (uniq, delUniq);
+    if (nruniq < nrrec) {
+        uniqueVector.resize (nruniq, True);
+    }
+    return nruniq;
+}
+
+
 uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 {
     //# Try if we can use the faster GenSort when we have one key only.
