@@ -1,5 +1,5 @@
 //# SkyComponent.cc:  this defines SkyComponent
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,16 +48,16 @@ SkyComponent::SkyComponent()
   AlwaysAssert(ok(), AipsError);
 }
 
-SkyComponent::SkyComponent(ComponentType::Type type) {
-  switch (type){
+SkyComponent::SkyComponent(ComponentType::Shape shape) {
+  switch (shape){
   case ComponentType::POINT:
     theCompPtr = new PointCompRep; break;
   case ComponentType::GAUSSIAN:
     theCompPtr = new GaussianCompRep; break;
   case ComponentType::UNKNOWN:
-  case ComponentType::NUMBER_TYPES:
+  case ComponentType::NUMBER_SHAPES:
     throw(AipsError("SkyComponent::Unable to construct a component of "
-		    "UNKNOWN type"));
+		    "UNKNOWN shape"));
   };    
   AlwaysAssert(ok(), AipsError);
 }
@@ -139,18 +139,19 @@ void SkyComponent::parameters(Vector<Double> & compParms) const {
   DebugAssert(ok(), AipsError);
 }
 
-ComponentType::Type SkyComponent::type() const {
-  // This call to ok is restricted to the base class as the type() function is
-  // called by derived classes before the derived object is fully constructed.
+ComponentType::Shape SkyComponent::shapeType() const {
+  // This call to ok is restricted to the base class as the shapeType()
+  // function is called by derived classes before the derived object is fully
+  // constructed.
   DebugAssert(SkyComponent::ok(), AipsError);
-  return theCompPtr->type();
+  return theCompPtr->shapeType();
 }
 
 void SkyComponent::fromRecord(String & errorMessage, 
 			      const GlishRecord & record) {
   String componentErrors = "";
-  // First check that the types match;
-  checkType(componentErrors, record);
+  // First check that the shapes match;
+  checkShape(componentErrors, record);
   if (componentErrors != "")
     errorMessage += componentErrors;
   else
@@ -163,8 +164,8 @@ void SkyComponent::toRecord(GlishRecord & record) const {
   DebugAssert(ok(), AipsError);
 }
 
-ComponentType::Type SkyComponent::getType(String & errorMessage,
-						 const GlishRecord & record) {
+ComponentType::Shape SkyComponent::getShape(String & errorMessage,
+					    const GlishRecord & record) {
   if (!record.exists("type"))
     errorMessage += "\nThe record does not have a 'type' field";
   else {
@@ -185,7 +186,7 @@ ComponentType::Type SkyComponent::getType(String & errorMessage,
 	      "for an unknown reason";
 	  else {
 	    typeString.upcase();
-	    return ComponentType::type(typeString);
+	    return ComponentType::shape(typeString);
 	  }
 	}
       }
@@ -196,7 +197,7 @@ ComponentType::Type SkyComponent::getType(String & errorMessage,
 
 SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
-  SkyComponent newComp(type());
+  SkyComponent newComp(shapeType());
   {
     Quantum<Vector<Double> > thisFlux;
     flux(thisFlux);
@@ -248,19 +249,19 @@ const SkyCompRep * SkyComponent::rawPtr() const {
   return &(*theCompPtr);
 }
 
-void SkyComponent::checkType(String & errorMessage, 
-			     const GlishRecord & record) const {
+void SkyComponent::checkShape(String & errorMessage, 
+			      const GlishRecord & record) const {
   String typeMessage = "";
-  ComponentType::Type recordType = getType(typeMessage, record);
+  ComponentType::Shape recordType = getShape(typeMessage, record);
   if (typeMessage != "")
     errorMessage += typeMessage;
   else
-    if (recordType != type())
+    if (recordType != shapeType())
       errorMessage += 
 	String("\nThe record is for a component of type") 
 	+ ComponentType::name(recordType)
 	+ String(" and cannot be assigned to a SkyComponent of type ")
-	+ ComponentType::name(type());
+	+ ComponentType::name(shapeType());
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyComponent"

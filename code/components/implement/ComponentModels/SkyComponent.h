@@ -1,5 +1,5 @@
 //# SkyComponent.h: this defines SkyComponent.h
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,11 +102,11 @@ public:
   // 1Jy in the I polarization only. 
   SkyComponent();
 
-  // Construct a SkyComponent of the specified type. The default direction is
+  // Construct a SkyComponent of the specified shape. The default direction is
   // the J2000 north pole and the default flux is 1 Jy in the I polarisation
   // only. Use the setFlux and SetDirection functions to change this after
   // construction. 
-  SkyComponent(ComponentType::Type type);
+  SkyComponent(ComponentType::Shape type);
   
   // The copy Constructor uses reference semantics
   SkyComponent(const SkyComponent & other);
@@ -163,7 +163,7 @@ public:
 
   // get the actual type of the component 
   // (as an ComponentTypes::ComponentTypes enum)
-  virtual ComponentType::Type type() const;
+  virtual ComponentType::Shape shapeType() const;
 
   // This functions convert between a glish record and a SkyComponent. This way
   // derived classes can interpret fields in the record in a class specific
@@ -178,8 +178,8 @@ public:
   // return the type of component that the supplied record represents. Returns 
   // ComponentType::UNKNOWN if the record could not be parsed correctly and the
   // appropriate error message is appended to the errorMessage String.
-  static ComponentType::Type getType(String & errorMessage,
-				     const GlishRecord & record);
+  static ComponentType::Shape getShape(String & errorMessage,
+				       const GlishRecord & record);
 
   // Return a distinct copy of this component. As both the assignment operator
   // and the copy constructor use reference semantics this is the only way to
@@ -203,7 +203,7 @@ protected:
 
   // Check that the type in the glishRecord matches the type of this
   // component. If not return the errors in the errorMessage String
-  void checkType(String & errorMessage, const GlishRecord & record) const;
+  void checkShape(String & errorMessage, const GlishRecord & record) const;
 
 private:
   CountedPtr<SkyCompRep> theCompPtr;
