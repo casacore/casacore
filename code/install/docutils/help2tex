@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/usr/local/perl/bin/perl
 #
 #   Copyright (C) 1996,1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
@@ -355,19 +355,20 @@ sub make_tex_file{
      }
    
    # substitutions go here
+   #  labels must use iname's otherwise things get confused
 
       s/\\end{ahfunction}/$end_section/g;
    
       if($isObj == 1){
          s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
-   \\subsubsection{$1 -- Function\\label{$mname.$oname.$1}\\index{$mname.$oname.$1}\\index{$1}}
+   \\subsubsection{$1 -- Function\\label{$miname.$oiname.$iname}\\index{$mname.$oname.$1}\\index{$1}}
    \\subsectionM{$oname.$1}{$pack}{$mname}{$oname}
    $2\\\\
    \\ahsynopsis{$1}
    /sg;
       } else {
          s/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/
-   \\subsection{$1 -- Function\\index{$1}\\index{$mname.$1}}
+   \\subsection{$1 -- Function\\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    \\subsectionF{$1}{$pack}{$mname}
    $2\\\\
    \\ahsynopsis{$1}
@@ -387,7 +388,7 @@ sub make_tex_file{
    
       s/\\end{ahconstructor}/$end_section/g;
       s/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/
-   \\subsubsection{$1 -- Constructor\\index{$1}\\index{$mname.$1}}
+   \\subsubsection{$1 -- Constructor\\label{$miname:$oiname.$iname}\\index{$1}\\index{$mname.$1}}
    \\subsectionC{$1}{$pack}{$mname}{$oname}
    $2\\\\
    \\ahsynopsis{$1}
