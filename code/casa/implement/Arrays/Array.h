@@ -173,12 +173,10 @@ enum StorageInitPolicy {
 // Most of the data members and functions which are "protected" should
 // likely become "private".
 //
-// <todo asof="1995/06/19
+// <todo asof="1999/12/30"
 //   <li> Integrate into the Lattice hierarchy
 //   <li> Factor out the common functions (shape etc) into a type-independent
 //        base class.
-//   <li> Remove the arrayCast member when Sun's native compiler is 
-//        sufficiently robust.
 // </todo>
 
 template<class T> class Array
@@ -493,22 +491,6 @@ public:
     // Macro to define the typeinfo member functions.
     rtti_dcl_mbrf(Array<T>);
 
-    // This function was put in for the Sun native compiler which presently
-    // (1995/06/19) is unable to autaomatically cast a dereived class to a
-    // base class reference (or pointer) in a templated global function.
-    // (e.g. Vector does not upcast to Array). This member function is provided
-    // to do the cast "safely". Also, it can be grepped for and removed when
-    // the compiler is sufficiently mature.
-    // <group>
-    Array<T> &arrayCast() {return *this;}
-    const Array<T> &arrayCast() const {return *this;}
-    // </group>
-
-    // Short-hand for "arrayCast().
-    // <group>
-    Array<T> &ac() {return *this;}
-    const Array<T> &ac() const {return *this;}
-    // </group>
 
 protected:
     // Remove the degenerate axes from the Array object.
