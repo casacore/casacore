@@ -47,6 +47,9 @@ Int main() {
     Quantity x00(12.5, "km/s");
     Quantum<Float> x01(30.3, "Jy/a");
     Quantum<Int> x02(2, "pc3/d");
+    String s00("12:30:00");
+    String s01("-97.8 Mpc/a");
+    String s02("12.5JY");
     Record y00;
     GlishRecord z00;
     
@@ -148,6 +151,28 @@ Int main() {
     } else {
       cout << "To error: " << error << endl;
     };
+    cout << "Input String:                " << s00 << endl;
+    if (q00.fromString(error, s00)) {
+      cout << "As quantity:                 " << q00.asQuantum() << endl;
+    } else {
+      cout << "Unexpected error for String " << s00 << endl;
+    };
+    cout << "Input String:                " << s01 << endl;
+    if (q00.fromString(error, s01)) {
+      cout << "As quantity:                 " << q00.asQuantum() << endl;
+    } else {
+      cout << "Unexpected error for String " << s01 << endl;
+    };
+    cout << "Input String:                " << s02 << endl;
+    if (q00.fromString(error, s02)) {
+      cout << "As quantity:                 " << q00.asQuantum() << endl;
+    } else {
+      cout << "Expected error for String " << s02 <<
+	" (value still " << q00.asQuantum() << ")" << endl;
+      cout << "Error message now: " << error << endl;
+    };
+    cout << "----------------------------------------------------" << endl;
+
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
   } end_try;
