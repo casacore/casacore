@@ -1821,3 +1821,4 @@
 08 003 sys rm bin/gfitpoly
 08 003 sys rm bin/glog
 08 003 sys rm bin/help.atoms
+08 003 sys rm bin/image.atoms
