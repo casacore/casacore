@@ -78,9 +78,9 @@ class PixelRegion;
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(0.0);
-// ArrayLattice<Float> y(shape); y.set(1.0);
-// ArrayLattice<Float> z(shape); z.set(2.0);
+// ArrayLattice<Float> x(shape); x.set(1.0);
+// ArrayLattice<Float> y(shape); y.set(2.0);
+// ArrayLattice<Float> z(shape); 
 // z.copyData(x+y);                 // z = x + y;
 // z.copyData(x-y);                 // z = x - y;
 // z.copyData(x*y);                 // z = x * y;
