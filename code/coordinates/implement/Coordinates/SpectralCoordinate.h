@@ -1,5 +1,5 @@
 //# SpectralCoordinate.h: Map a channel number to frequency.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,7 +116,8 @@ public:
 
     // Convert a pixel position to a worl position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.
+    // <src>errorMessage()</src> contains an error message.   The output 
+    // vectors are appropriately resized.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;
@@ -173,16 +174,13 @@ public:
     Vector<Double> worldValues() const;
     // </group>
 
-    // Restore ourself from a FITS header. Returns False if axis 'axisNumber'
-    // (0-relative) does not appear to be a spectral axis.
-    Bool fromFITS(const RecordInterface &fitsHeader, Int axisNumber);
-
     // ctype, crval, crpix, and cdelt must already be created. Other header
-    // words are created as needed.
+    // words are created as needed.  Use <src>oneRelative=True</src> to
+    // convert zero-relative SpectralCoordinate pixel coordinates to 
+    // one-relative FITS coordinates, and vice-versa.
     void toFITS(RecordInterface &header, uInt whichAxis, 
 		LogIO &logger, Bool oneRelative=True,
 		Bool preferVelocity=True, Bool opticalVelDef=True) const;
-
     static Bool fromFITS(SpectralCoordinate &out, String &error,
 			 const RecordInterface &header, 
 			 uInt whichAxis,
