@@ -46,7 +46,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   };
   vector<T> exec_p;
   exec_p.resize(0);
-  vector<typename FunctionTraits<T>::BaseType>::const_iterator
+  vector<Double>::const_iterator
     constp = functionPtr_p->getConst().begin();
   for (vector<FuncExprData::ExprOperator>::const_iterator
 	 pos=functionPtr_p->getCode().begin();
@@ -98,7 +98,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       break;
 
     case  FuncExprData::CONST:
-      exec_p.push_back(*(constp++));
+      exec_p.push_back(T(*(constp++)));
       break;
     case FuncExprData::PARAM:
       exec_p.push_back(T(param_p[pos->narg]));
@@ -131,27 +131,42 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       exec_p.back() = exp(exec_p.back());
       break;
     case  FuncExprData::EXP2:
-      exec_p.back() = exp(exec_p.back()*C::ln2);
+      exec_p.back() = exp(exec_p.back()*
+			  static_cast<typename FunctionTraits<T>::BaseType>
+			  (C::ln2));
       break;
     case  FuncExprData::EXP10:
-      exec_p.back() = exp(exec_p.back()*C::ln10);
+      exec_p.back() = exp(exec_p.back()*
+			  static_cast<typename FunctionTraits<T>::BaseType>
+			  (C::ln10));
       break;
     case  FuncExprData::LOG:
       exec_p.back() = log(exec_p.back());
       break;
     case  FuncExprData::LOG2:
-      exec_p.back() = log(exec_p.back())/C::ln2;
+      exec_p.back() = log(exec_p.back())/
+	static_cast<typename FunctionTraits<T>::BaseType>(C::ln2);
       break;
     case  FuncExprData::LOG10:
       exec_p.back() = log10(exec_p.back());
       break;
     case  FuncExprData::PI: {
-      if (pos->state.argcnt == 0) exec_p.push_back(C::pi);
-      else exec_p.back() *= C::pi;
+      if (pos->state.argcnt == 0) {
+	exec_p.push_back(T(static_cast<typename FunctionTraits<T>::BaseType>
+			   (C::pi)));
+      } else {
+	exec_p.back() *= static_cast<typename FunctionTraits<T>::BaseType>
+	  (C::pi);
+      };
       break; }
     case  FuncExprData::EE: {
-      if (pos->state.argcnt == 0) exec_p.push_back(C::e);
-      else exec_p.back() *= C::e;
+      if (pos->state.argcnt == 0) {
+	exec_p.push_back(T(static_cast<typename FunctionTraits<T>::BaseType>
+			   (C::e)));
+      } else {
+	exec_p.back() *= static_cast<typename FunctionTraits<T>::BaseType>
+	  (C::e);
+      };
       break; }
     case  FuncExprData::ABS:
       exec_p.back() = abs(exec_p.back());

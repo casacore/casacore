@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Functionals/CompiledParam.h>
+#include <aips/Mathematics/Complex.h>
 
 //# Forward declarations
 
@@ -124,7 +125,8 @@ template <class T> class CompiledFunction : public CompiledParam<T> {
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new CompiledFunction<T>(*this); };
+  virtual Function<T> *clone() const {
+    return new CompiledFunction<T>(*this); };
   // </group>
 
 };
