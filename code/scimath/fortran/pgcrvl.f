@@ -4,6 +4,12 @@
 *
 *   Given:
 *      AXEN     I(2)     Number of pixels on each axis of the image.
+*                        Pixel coordinate (1,1) corresponds to the
+*                        centre of the pixel in the bottom left-hand
+*                        corner (BLC).  Thus pixel coordinates of the
+*                        BLC of the frame are (0.5,0.5) and the TRC
+*                        frame pixel coordinates are
+*                        (AXEN(1)+0.5,AXEN(2)+0.5).
 *
 *      IDENTS   C(3)*(*) Identification strings:
 *                           1: Name of the first world coordinate
