@@ -1,5 +1,5 @@
 //# ImageExprParse.cc: Classes to hold results from image expression parser
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -75,6 +75,11 @@ ImageExprParse::ImageExprParse (const Complex& value)
 ImageExprParse::ImageExprParse (const DComplex& value)
 : itsType  (TpDComplex),
   itsDCval (value)
+{}
+
+ImageExprParse::ImageExprParse (const Char* value)
+: itsType (TpString),
+  itsSval (String(value))
 {}
 
 ImageExprParse::ImageExprParse (const String& value)
@@ -219,6 +224,10 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 	return min(arg1, arg2);
     } else if (itsSval == "max") {
 	return max(arg1, arg2);
+    } else if (itsSval == "complex") {
+	return complex(arg1, arg2);
+    } else if (itsSval == "length") {
+	return length(arg1, arg2);
     } else if (itsSval == "amp") {
 	return amp(arg1, arg2);
     } else if (itsSval == "pa") {
