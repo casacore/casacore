@@ -1,5 +1,5 @@
 //# MCEarthMagnetic.cc:  MEarthMagnetic conversion routines 
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -261,7 +261,7 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
 				MRBase &outref,
 				const MConvertBase &mc) {
   Double g1, g2, g3, tdbTime;
-  EarthField::EarthFieldTypes modID;
+  EarthField::EarthFieldTypes modID(EarthField::IGRF);
 
   MCFrame::make(inref.getFrame());
   MCFrame::make(outref.getFrame());
