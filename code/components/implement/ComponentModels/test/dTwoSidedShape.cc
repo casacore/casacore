@@ -1,4 +1,4 @@
-//# dGaussianCompRep.cc:  this defines dGaussianCompRep
+//# dTwoSidedShape.cc:
 //# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,65 +27,85 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/Flux.h>
-//////#include <trial/ComponentModels/GaussianCompRep.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/Projection.h>
-#include <trial/Images/PagedImage.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
+#include <trial/ComponentModels/GaussianShape.h>
+#include <trial/ComponentModels/DiskShape.h>
+#include <trial/ComponentModels/SkyComponent.h>
+#include <trial/ComponentModels/ConstantSpectrum.h>
+#include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/TwoSidedShape.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
-#include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Quanta/MVAngle.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MeasFrame.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
+void printShape(const TwoSidedShape& theShape) {
+  cout << "This is a " << ComponentType::name(theShape.type())
+       << " shape " << endl 
+       << "with a reference direction of "
+       << theShape.refDirection().getAngle("deg") << " ("
+       << theShape.refDirection().getRefString() << ")" << endl
+       << "and a major axis of " << theShape.majorAxis() << endl
+       << "      minor axis of " << theShape.minorAxis() << endl
+       << "and   position angle of " << theShape.positionAngle() << endl;
+}
+
 int main() {
   try {
-
-/*
-    Flux<Double> J0533_flux(2.23, 0.0, 0.0, 0.0);
-    const Quantity J0533_ra = Quantity(5.0, "h").get("'") + Quantity(33, "'");
-    const Quantity J0533_dec = Quantity(-32, "deg") + Quantity(-18, "'");
-    const MDirection J0533_pos(J0533_ra, J0533_dec, MDirection::J2000);
-    const MVAngle J0533_majAxis = Quantity(1, "deg");
-    const MVAngle J0533_minAxis = Quantity(.2, "deg");
-    const MVAngle J0533_pa(Quantity(63, "deg"));
-    const GaussianCompRep J0533(J0533_flux, J0533_pos, 
-				J0533_majAxis, J0533_minAxis, J0533_pa); 
-    // This component can now be projected onto an image
-    CoordinateSystem coords;
-    {
-      const Double pixInc = Quantity(1, "'").getValue("rad");
-      Matrix<Double> xform(2,2);
-      xform = 0.0; xform.diagonal() = 1.0;
-      const Double refPixel = 32.0;
-      const DirectionCoordinate dirCoord(MDirection::J2000,
-					 Projection(Projection::SIN),
-					 J0533_ra.getValue("rad"),
-					 J0533_dec.getValue("rad"),
-					 pixInc , pixInc, xform,
-					 refPixel, refPixel);
-      coords.addCoordinate(dirCoord);
+    { // Construct a Gaussian shape
+      MDirection blob_dir;
+      { // get the right direction into blob_dir
+	Quantity blob_ra; MVAngle::read(blob_ra, "19:39:");
+	Quantity blob_dec; MVAngle::read(blob_dec, "-63.43.");
+	blob_dir = MDirection(blob_ra, blob_dec, MDirection::J2000);
+      }
+      {
+	const Flux<Double> flux(6.28, 0.1, 0.15, 0.01);
+	const GaussianShape shape(blob_dir,
+				  Quantity(30, "arcmin"), 
+				  Quantity(2000, "mas"), 
+				  Quantity(C::pi_2, "rad"));
+	const ConstantSpectrum spectrum;
+	SkyComponent component(flux, shape, spectrum);
+	printShape(shape);
+      }
     }
-    CoordinateUtil::addFreqAxis(coords);
-    PagedImage<Float> skyModel(IPosition(3,64,64,16), coords,
-			       "dGaussianCompRep_tmp.image");
-    skyModel.set(0.0f);
-    J0533.project(skyModel);
-
-*/
+    { // construct a model for Jupiter.
+      Quantity clk_time; MVTime::read(clk_time, "01-10-2000/12:59");
+      MEpoch obs_epoch(clk_time, MEpoch::UTC);
+      MeasFrame obs_frame(obs_epoch);
+      MDirection jupiter_dir(MVDirection(0), 
+			     MDirection::Ref(MDirection::JUPITER, obs_frame));
+      DiskShape jupiter_shape;
+      jupiter_shape.setRefDirection(jupiter_dir);
+      jupiter_shape.setWidth(Quantity(4,"arcmin"), Quantity(3.9,"arcmin"),
+			     Quantity(3, "deg"));
+      printShape(jupiter_shape);
+      MDirection sample_dir(MVDirection(1.218, 0.37), MDirection::J2000);
+      if (jupiter_shape.sample(sample_dir, MVAngle(0.1)) > 0.0) {
+	cout << "The position in J2000 coordinates is near: " 
+	     << sample_dir.getAngle("deg") << endl;
+      }
+    }
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
+    cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  }
+  catch (...) {
+    cerr << "Exception not derived from AipsError" << endl;
+    cout << "FAIL" << endl;
+    return 2;
+  }
+  cout << "OK" << endl;
   return 0;
 }
 // Local Variables:
-// compile-command: "gmake OPTLIB=1 dGaussianCompRep"
+// compile-command: "gmake OPTLIB=1 dTwoSidedShape"
 // End:
