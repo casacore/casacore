@@ -43,14 +43,16 @@ include $(AIPSARCH)/makedefs
 # Source lists.
 #--------------
 AISCRIPT := ai ae amv am ao au ax rau
+SUIDWRAP := sau
 DISTSCRP := inhale sneeze
-SCRIPTS  := alog av copy_installation ih_log_info.pl inhold mktree rai rao \
-            runtests squiz xrcs
+SCRIPTS  := alog av ih_log_info.pl inhold mktree rai rao runtests squiz xrcs
 
 AIPSEXES := $(basename $(filter %.c,$(AIPSSRCS)))
 PGMREXES := $(basename $(wildcard *.c))
 ALLEXES  := $(sort $(AIPSEXES) $(PGMREXES))
 
+SUIDEXES := $(filter $(SUIDWRAP),$(PGMREXES))
+WRAPPED  := $(SUIDWRAP:%=%.sh)
 
 # Pattern rules.
 #---------------
@@ -76,13 +78,26 @@ endif
 
 # Static and static pattern rules.
 #---------------------------------
-allsys : $(AISCRIPT) $(DISTSCRP) $(SCRIPTS) bin $(CODESUBS)
+allsys : $(AISCRIPT) $(WRAPPED) $(DISTSCRP) $(SCRIPTS) bin $(CODESUBS)
 
 .cleancode ::
 	-$Q cd $(CODEDIR) && $(RM) *.i *.o
 
+# Setuid C wrappers to selected source code management scripts
+# (This rule might not be quite right yet....)
+$(addprefix $(ARCHBIND)/,$(SUIDEXES)) : $(ARCHBIND)/% : $(CODEDIR)/%.c
+	-@ echo ""
+	   cd $(ARCHTMPD) && $(CC) $(COPT) -o $@ $^
+	-@ $(RM) $(ARCHTMPD)/$(@F).o
+	   chmod ug=rwx,o=r,u+s $@
+
 # Scripts.
-$(AISCRIPT) $(DISTSCRP) $(SCRIPTS) : % : $(ARCHBIND)/% ;
+$(AISCRIPT) $(WRAPPED) $(DISTSCRP) $(SCRIPTS) : % : $(ARCHBIND)/% ;
+
+# "Wrapped" source code management scripts.
+$(addprefix $(ARCHBIND)/,$(WRAPPED)) : $(ARCHBIND)/s%.sh : $(ARCHBIND)/%
+	cat $< > $@
+	@ chmod ug=rwx,o=r $@
 
 # Source code management scripts.
 ifdef AIPSRCS
@@ -131,6 +146,7 @@ show_local :
 	-@ echo "=================================================="
 	-@ echo ""
 	-@ echo "AISCRIPT=$(AISCRIPT)"
+	-@ echo "WRAPPED =$(WRAPPED)"
 	-@ echo ""
 	-@ echo "DISTSCRP=$(DISTSCRP)"
 	-@ echo ""
@@ -138,6 +154,7 @@ show_local :
 	-@ echo ""
 	-@ echo "AIPSEXES=$(AIPSEXES)"
 	-@ echo "PGMREXES=$(PGMREXES)"
+	-@ echo "SUIDEXES=$(SUIDEXES)"
 	-@ echo "ALLEXES =$(ALLEXES)"
 
 help ::
@@ -148,6 +165,7 @@ help ::
 	-@ echo "System"
 	-@ echo "------"
 	-@ echo " (AISCRIPT): install source code management scripts."
+	-@ echo "  (WRAPPED): install setuid C-wrapped source code management scripts."
 	-@ echo " (DISTSCRP): install code distribution scripts."
 	-@ echo "  (SCRIPTS): install general purpose scripts."
 	-@ echo "      bin/%: compile and install an (AIPSEXES) executable."
