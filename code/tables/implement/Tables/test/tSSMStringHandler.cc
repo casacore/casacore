@@ -26,9 +26,6 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -38,6 +35,10 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/StandardStManAccessor.h>
+#include <aips/Tables/TableError.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Utilities/String.h>
+
 
 // <summary>
 // Test program for the SSMStringHandler part of the 
