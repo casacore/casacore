@@ -66,7 +66,7 @@ template<class T> class MaskedArray;
 // <synopsis>
 // These functions write out masked arrays in ascii representation.
 // They simply write out the Array and the LogicalArray which is the mask
-// using the ascii output functions for these tools.
+// using the ascii output functions for these objects.
 // </synopsis>
 //
 // <example>
