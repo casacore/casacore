@@ -40,7 +40,7 @@
 
 
 void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
-		       Bool changes)
+		       Bool alternates)
 {
     Int nstep;
     const IPosition latticeShape(lattice.shape());
@@ -50,13 +50,12 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
     Bool value = firstValue;
     for (iter.reset(); !iter.atEnd(); iter++){
         AlwaysAssert(allEQ(iter.vectorCursor().ac(), value), AipsError);
-	if (changes) {
+	if (alternates) {
 	    value = ToBool(!value);
 	}
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0) - 1,
-		 AipsError);
+    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0), AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
@@ -108,7 +107,7 @@ main ()
       AlwaysAssertExit (copmask->shape() == latticeShape);
       testVectorROIter (*copmask, False, True);
       delete copmask;
-//
+
       LCPagedMask mask2(mask);
       AlwaysAssertExit (mask2 == mask);
       LCPagedMask mask3(latticeShape-1, "tLCPagedMask_tmp3.data");
