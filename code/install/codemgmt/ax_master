@@ -6006,3 +6006,4 @@
 17 032 src rm nrao/implement/VLA/VlaRecord.cc
 17 068 src rm trial/implement/Functionals/HyperPlane.h
 17 068 src rm trial/implement/Functionals/HyperPlane.cc
+17 068 src rm trial/implement/Functionals/test/tHyperPlane.cc
