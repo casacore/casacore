@@ -130,7 +130,7 @@ Flux<Double> ComponentList::sample(const MDirection & sampleDir,
   DebugAssert(ok(), AipsError);
   const Unit retUnit("Jy");
   const ComponentType::Polarisation retPol(ComponentType::STOKES);
-  Vector<DComplex> result(4, Complex(0,0));
+  Vector<DComplex> result(4, DComplex(0,0));
   Flux<Double> compFlux;
   for (uInt i = 0; i < nelements(); i++) {
     compFlux = component(i).sample(sampleDir, pixelSize);
