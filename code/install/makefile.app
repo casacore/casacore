@@ -122,8 +122,7 @@ DBGLIBS  := $(strip \
                $(subst .static,.$(SFXSTAT), \
                   $(subst .shatic,.$(SFXSTAT), \
                      $(subst .shared,.$(SFXSHAR), \
-                        $(filter-out %.defeat,$(DBGLIBS)))))) \
-            $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
+                        $(filter-out %.defeat,$(DBGLIBS))))))
 
 OPTLIBS  := $(foreach PCKG,$(LINK$(PACKAGE)), \
                $(subst $(LIBOPTD)/lib$(PCKG).defeat, \
@@ -139,8 +138,7 @@ OPTLIBS  := $(strip \
                $(subst .static,.$(SFXSTAT), \
                   $(subst .shatic,.$(SFXSTAT), \
                      $(subst .shared,.$(SFXSHAR), \
-                        $(filter-out %.defeat,$(OPTLIBS)))))) \
-            $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
+                        $(filter-out %.defeat,$(OPTLIBS))))))
 
 ifeq "$(MAKEMODE)" "programmer"
    # Programmer libraries.
@@ -283,7 +281,7 @@ $(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (dbg) because of $(?F)"
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPDBG) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS) $(MODULIBS) $(XTRNLIBS)
+	   $(C++) $(CPPDBG) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS) $(MODULIBS) $(XTRNLIBS) $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
 	-@ $(TIMER)
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS))
 	-@ chmod 775 $@
@@ -294,7 +292,7 @@ $(BINOPTD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (opt) because of $(?F)"
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPOPT) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS) $(MODULIBS) $(XTRNLIBS)
+	   $(C++) $(CPPOPT) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS) $(MODULIBS) $(XTRNLIBS) $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
 	-@ $(TIMER)
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS))
 	-@ chmod 775 $@

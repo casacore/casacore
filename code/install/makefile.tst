@@ -127,8 +127,7 @@ DBGLIBS  := $(strip \
                $(subst .static,.$(SFXSTAT), \
                   $(subst .shatic,.$(SFXSTAT), \
                      $(subst .shared,.$(SFXSHAR), \
-                        $(filter-out %.defeat,$(DBGLIBS)))))) \
-            $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
+                        $(filter-out %.defeat,$(DBGLIBS))))))
 
 OPTLIBS  := $(foreach PCKG,$(LINK$(PACKAGE)), \
                $(subst $(LIBOPTD)/lib$(PCKG).defeat, \
@@ -144,15 +143,16 @@ OPTLIBS  := $(strip \
                $(subst .static,.$(SFXSTAT), \
                   $(subst .shatic,.$(SFXSTAT), \
                      $(subst .shared,.$(SFXSHAR), \
-                        $(filter-out %.defeat,$(OPTLIBS)))))) \
-            $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
+                        $(filter-out %.defeat,$(OPTLIBS))))))
 
 ifeq "$(TESTOPT)" "opt"
    C++OPTS  := $(CPPOPT) $(C++OPT) $(LDOPT)
-   AIPSLIBS := $(OPTLIBS)
+   AIPSLIBS := $(OPTLIBS) \
+	$(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
 else
    C++OPTS  := $(CPPDBG) $(C++DBG) $(LDDBG)
-   AIPSLIBS := $(DBGLIBS)
+   AIPSLIBS := $(DBGLIBS) \
+	$(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
 endif
 
 
