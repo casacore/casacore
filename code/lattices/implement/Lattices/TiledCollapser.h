@@ -1,5 +1,5 @@
 //# TiledCollapser.h: Abstract base class to collapse chunks for LatticeApply
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -86,18 +86,31 @@ template <class T> class TiledCollapser
 public:
 // The init function for a derived class.
 // It can be used to check if <src>nOutPixelsPerCollapse</src>
-// corresponds with the number of pixels produced per collapsed line.
+// corresponds with the number of pixels produced per collapsed chunk.
     virtual void init (uInt nOutPixelsPerCollapse) = 0;
 
-// Initialize the accumulator.
-    virtual void initAccumulator (Array<T>& accumulator) = 0;
+// Create and initialize the accumulator.
+// The accumulator can be a cube with shape [n1,n2,n3],
+// where <src>n2</src> is equal to <src>nOutPixelsPerCollapse</src>.
+// However, one can also use several matrices as accumulator.
+// <br> The data type of the accumulator can be any. E.g. when
+// accumulating Float lattices, the accumulator could be of
+// type Double to have enough precision.
+// <br>In the <src>endAccumulator</src> function the accumulator
+// data has to be copied into an Array object with the correct
+// shape and data type.
+    virtual void initAccumulator (uInt n1, uInt n3) = 0;
 
 // Collapse the given input data (<src>nrval</src> values with an
-// increment of <src>inIncr</src> elements.
-// The result has to be stored in the <src>accumulatorData</src>.
-// It can contain several values, each <src>accIncr</src> elements apart.
-    virtual void process (T* accumulatorData, uInt accIncr,
+// increment of <src>inIncr</src> elements).
+// The result(s) have to be stored in the accumulator at the given indices.
+    virtual void process (uInt accumIndex1, uInt accumIndex3,
 			  const T* inData, uInt inIncr, uInt nrval) = 0;
+
+// End the accumulator. It should return the accumulator as an
+// Array of datatype T with the given shape.
+// The accumulator should thereafter be deleted when needed.
+    virtual Array<T> endAccumulator (const IPosition& shape) = 0;
 };
 
 
