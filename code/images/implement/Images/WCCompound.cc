@@ -1,5 +1,5 @@
 //# WCCompound.cc: Base class for compound WCRegion objects
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -154,8 +154,8 @@ void WCCompound::multiToLCRegion (PtrBlock<const LCRegion*>& regions,
 		outOrd(j++) = outOrder(k);
 	    }
 	}
-        regions[i] = itsRegions[i]->toLCRegion (cSys, shape, pixAxesMap,
-						outOrd);
+        regions[i] = itsRegions[i]->toLCRegionAxes (cSys, shape, pixAxesMap,
+						    outOrd);
     }
 }
 

@@ -1,5 +1,5 @@
 //# WCConcatenation.cc: Combine multiple ImageRegion's into a new dimension
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -146,8 +146,8 @@ LCRegion* WCConcatenation::doToLCRegion (const CoordinateSystem& cSys,
     // The extend axis is the last axis of outOrder.
     PtrBlock<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, regPixMap, regOutOrd);
-    LCRegion* boxptr = itsExtendBox.toLCRegion (cSys, shape, boxPixMap,
-						boxOutOrd);
+    LCRegion* boxptr = itsExtendBox.toLCRegionAxes (cSys, shape, boxPixMap,
+						    boxOutOrd);
     DebugAssert (boxptr->type() == LCBox::className(), AipsError);
     LCConcatenation* extptr = new LCConcatenation (True, regions,
 						   outOrder(ndreg),

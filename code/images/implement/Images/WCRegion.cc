@@ -1,5 +1,5 @@
 //# WCRegion.cc: Class to define a region of interest in an image
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -64,6 +64,11 @@ Bool WCRegion::operator== (const WCRegion& other) const
 {
     // Type check.
     return ToBool (type() == other.type());
+}
+
+uInt WCRegion::ndim() const
+{
+    return itsAxesDesc.nfields();
 }
 
 void WCRegion::defineRecordFields (RecordInterface& record,
@@ -186,7 +191,7 @@ LCRegion* WCRegion::toLCRegion (const CoordinateSystem& cSys,
     // An exception is thrown if a region axis is not used in the
     // coordinate system.
     uInt ndout = shape.nelements();
-    uInt ndreg = ndim();
+    uInt ndreg = itsAxesDesc.nfields();
     IPosition pixelAxesMap(ndout);
     IPosition axisUsed(ndout, 0);
     n = 0;
@@ -198,27 +203,27 @@ LCRegion* WCRegion::toLCRegion (const CoordinateSystem& cSys,
 			      "coordinate system"));
 	}
 	pixelAxesMap(n++) = axis;
-	axisUsed(axis) = True;
+	axisUsed(axis) = 1;
     }
     for (i=0; i<ndout; i++) {
         if (axisUsed(i) == 0) {
 	    pixelAxesMap(n++) = i;
 	}
     }
-    return toLCRegion (cSys, shape, pixelAxesMap, pixelAxesMap);
+    return toLCRegionAxes (cSys, shape, pixelAxesMap, pixelAxesMap);
 }
 
-LCRegion* WCRegion::toLCRegion (const CoordinateSystem& cSys,
-				const IPosition& shape,
-				const IPosition& pixelAxesMap,
-				const IPosition& outOrder) const
+LCRegion* WCRegion::toLCRegionAxes (const CoordinateSystem& cSys,
+				    const IPosition& shape,
+				    const IPosition& pixelAxesMap,
+				    const IPosition& outOrder) const
 {
     uInt i;
     // We have an nD region which is used for an mD image (m>=n).
     // outOrder(i) gives output axis of axis i.
     // pixelAxesMap(i) gives cSys/shape axis of axis i.
     // First determine along which axes the region has to be extended.
-    uInt ndreg = ndim();
+    uInt ndreg = itsAxesDesc.nfields();
     uInt ndout = pixelAxesMap.nelements();
     DebugAssert (ndout>=ndreg, AipsError);
     // If no extension is needed or if the region can extend itself,

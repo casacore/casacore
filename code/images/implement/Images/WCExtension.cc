@@ -1,5 +1,5 @@
 //# WCExtension.cc: Make the extension of an image region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -133,10 +133,10 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
     }
     // Great, we're almost there.
     // Convert the region and the box and combine them into an LCExtension.
-    LCRegion* regptr = regions()[0]->toLCRegion (cSys, shape, regPixMap,
-						 regOutOrd);
-    LCRegion* boxptr = regions()[1]->toLCRegion (cSys, shape, boxPixMap,
-						 boxOutOrd);
+    LCRegion* regptr = regions()[0]->toLCRegionAxes (cSys, shape, regPixMap,
+						     regOutOrd);
+    LCRegion* boxptr = regions()[1]->toLCRegionAxes (cSys, shape, boxPixMap,
+						     boxOutOrd);
     DebugAssert (boxptr->type() == LCBox::className(), AipsError);
     LCExtension* extptr = new LCExtension (True, regptr, extendAxes,
 					   *(LCBox*)boxptr);
