@@ -273,6 +273,9 @@ void MVDirection::shiftLatitude(Double &lat) {
 }
 
 void MVDirection::shift(const MVDirection &shft) {
+  Vector<Double> x(2);
+  x = get();
+  shift(x(0), x(1));
 }
 
 MeasValue *MVDirection::clone() const {
