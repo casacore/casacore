@@ -37,30 +37,30 @@
 
 
 RecordInterface::RecordInterface ()
-: type_p          (Variable),
-  checkFunction_p (0),
-  checkArgument_p (0)
+: checkFunction_p (0),
+  checkArgument_p (0),
+  type_p          (Variable)
 {}
 
 RecordInterface::RecordInterface (RecordType type,
 				  CheckFieldFunction* funcPtr,
 				  const void* checkArgument)
-: type_p          (type),
-  checkFunction_p (funcPtr),
-  checkArgument_p (checkArgument)
+: checkFunction_p (funcPtr),
+  checkArgument_p (checkArgument),
+  type_p          (type)
 {}
 
 RecordInterface::RecordInterface (const RecordInterface& other)
-: type_p          (other.type_p),
-  checkFunction_p (other.checkFunction_p),
-  checkArgument_p (other.checkArgument_p)
+: checkFunction_p (other.checkFunction_p),
+  checkArgument_p (other.checkArgument_p),
+  type_p          (other.type_p)
 {}
 
 RecordInterface& RecordInterface::operator= (const RecordInterface& other)
 {
-    type_p          = other.type_p;
     checkFunction_p = other.checkFunction_p;
     checkArgument_p = other.checkArgument_p;
+    type_p          = other.type_p;
     return *this;
 }
     

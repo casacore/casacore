@@ -36,22 +36,22 @@
 
 
 RecordRep::RecordRep ()
-: nused_p (0),
-  data_p  (0)
+: data_p  (0),
+  nused_p (0)
 {}
 	
 RecordRep::RecordRep (const RecordDesc& description)
-: nused_p (0),
+: desc_p  (description),
   data_p  (0),
-  desc_p  (description)
+  nused_p (0)
 {
     restructure (desc_p);
 }
 
 RecordRep::RecordRep (const RecordRep& other)
-: nused_p (0),
+: desc_p  (other.desc_p),
   data_p  (0),
-  desc_p  (other.desc_p)
+  nused_p (0)
 {
     restructure (desc_p);
     copy_other (other);
@@ -103,7 +103,7 @@ void RecordRep::addDataPtr (void* ptr)
 void RecordRep::removeDataPtr (Int index)
 {
     nused_p--;
-    if (index < nused_p) {
+    if (index < Int(nused_p)) {
 	memmove (&data_p[index], &data_p[index+1],
 		 (nused_p-index) * sizeof(void*));
     }
@@ -229,7 +229,7 @@ void RecordRep::checkShape (DataType type, const IPosition& shape,
 void RecordRep::defineDataField (Int whichField, DataType type,
 				 const void* value)
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < nused_p
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p)
 		  &&  desc_p.type(whichField) == type, AipsError);
     if (type == TpRecord) {
 	*(Record*)data_p[whichField] = *(const Record*)value;
@@ -440,7 +440,7 @@ Bool RecordRep::conform (const RecordRep& other) const
 	return False;
     }
     // Now check for each fixed sub-record if it conforms.
-    for (Int i=0; i<nused_p; i++) {
+    for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    const Record& thisRecord = *(const Record*)data_p[i];
 	    if (thisRecord.isFixed()) {
@@ -568,7 +568,7 @@ void* RecordRep::get_pointer (Int whichField, DataType type,
 }
 void* RecordRep::get_pointer (Int whichField, DataType type) const
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < nused_p  &&
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p)  &&
 		  type == desc_p.type(whichField), AipsError);
     return data_p[whichField];
 }
@@ -608,7 +608,7 @@ void RecordRep::mergeField (const RecordRep& other, Int whichFieldFromOther,
 void RecordRep::merge (const RecordRep& other,
 		       RecordInterface::DuplicatesFlag flag)
 {
-    uInt n = other.desc_p.nfields();
+    Int n = other.desc_p.nfields();
     for (Int i=0; i<n; i++) {
 	mergeField (other, i, flag);
     }

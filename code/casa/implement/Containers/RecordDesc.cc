@@ -36,11 +36,11 @@ ostream& RecordDesc::put (ostream &os) const
     static Int indentLevel = -1;
     indentLevel++;
     String indentation;
-    for (uInt i=0; i < indentLevel*4; i++) {
+    for (Int i=0; i < indentLevel*4; i++) {
 	indentation += " ";
     }
 
-    uInt n = nfields();
+    Int n = nfields();
     for (i=0; i < n; i++) {
 	os << indentation << i << "  "  << name(i) << " : ";
 	if (isSubRecord(i)) {
@@ -66,9 +66,9 @@ ostream& RecordDesc::put (ostream &os) const
 AipsIO& RecordDesc::put (AipsIO& os) const
 {
     os.putstart ("RecordDesc", 2);              // version 2
-    uInt n = nfields();
+    Int n = nfields();
     os << n;
-    for (uInt i=0; i<n; i++) {
+    for (Int i=0; i<n; i++) {
 	os << name(i);
 	os << Int(type(i));
 	if (isSubRecord(i)) {
@@ -89,7 +89,7 @@ AipsIO& RecordDesc::get (AipsIO& os)
     uInt version = os.getstart ("RecordDesc");
     // Clear the description.
     *this = RecordDesc();
-    uInt n;
+    Int n;
     String name, descName, comment;
     Int type;
     IPosition shape;

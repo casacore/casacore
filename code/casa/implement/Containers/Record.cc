@@ -34,41 +34,41 @@
 
 Record::Record()
 : RecordInterface (),
-  parent_p (0),
-  rep_p    (new RecordRep)
+  rep_p    (new RecordRep),
+  parent_p (0)
 {}
 
 Record::Record (RecordType type,
 		CheckFieldFunction* func, const void* checkArgument)
 : RecordInterface (type, func, checkArgument),
-  parent_p (0),
-  rep_p    (new RecordRep)
+  rep_p    (new RecordRep),
+  parent_p (0)
 {}
 	
 Record::Record (const RecordDesc& description, RecordType type,
 		CheckFieldFunction* func, const void* checkArgument)
 : RecordInterface (type, func, checkArgument),
-  parent_p (0),
-  rep_p    (new RecordRep (description))
+  rep_p    (new RecordRep (description)),
+  parent_p (0)
 {}
 
 // When description is empty, Record structure is variable.
 Record::Record (RecordRep* parent, const RecordDesc& description)
 : RecordInterface (description.nfields()==0 ? Variable : Fixed, 0, 0),
-  parent_p (parent),
-  rep_p    (new RecordRep (description))
+  rep_p    (new RecordRep (description)),
+  parent_p (parent)
 {}
 
 Record::Record (const Record& other)
 : RecordInterface (other),
-  parent_p (other.parent_p),
-  rep_p    (other.rep_p)
+  rep_p    (other.rep_p),
+  parent_p (other.parent_p)
 {}
 
 Record::Record (const RecordInterface& other)
 : RecordInterface (other),
-  parent_p (0),
-  rep_p    (new RecordRep (other.description()))
+  rep_p    (new RecordRep (other.description())),
+  parent_p (0)
 {
     uInt n = other.nfields();
     const RecordDesc& desc = description();

@@ -237,19 +237,19 @@ uInt RecordDescRep::addTable (const String& fieldName,
 
 const String& RecordDescRep::comment (Int whichField) const
 {
-    AlwaysAssert (whichField>=0 && whichField < n_p, AipsError);
+    AlwaysAssert (whichField>=0 && whichField < Int(n_p), AipsError);
     return comments_p[whichField];
 }
 
 void RecordDescRep::setComment (Int whichField, const String& comment)
 {
-    AlwaysAssert (whichField>=0 && whichField < n_p, AipsError);
+    AlwaysAssert (whichField>=0 && whichField < Int(n_p), AipsError);
     comments_p[whichField] = comment;
 }
 
 void RecordDescRep::setShape (Int whichField, const IPosition& shape)
 {
-    AlwaysAssert (whichField>=0 && whichField < n_p, AipsError);
+    AlwaysAssert (whichField>=0 && whichField < Int(n_p), AipsError);
     AlwaysAssert (isArray(whichField), AipsError);
     shapes_p[whichField] = shape;
 }
@@ -259,7 +259,8 @@ uInt RecordDescRep::mergeField (const RecordDescRep& other,
 				Int whichField,
 				int duplicateAction)
 {
-    AlwaysAssert (whichField>=0 && whichField < other.nfields(), AipsError);
+    AlwaysAssert (whichField>=0 && whichField < Int(other.nfields()),
+		  AipsError);
     String newName = other.name (whichField);
     Int duplicateNumber = fieldNumber (newName);
     if (duplicateNumber >= 0) {
@@ -320,7 +321,7 @@ uInt RecordDescRep::merge (const RecordDescRep& other, int duplicateAction)
 
 uInt RecordDescRep::removeField (Int whichField)
 {
-    AlwaysAssert (whichField>=0 && whichField < n_p, AipsError);
+    AlwaysAssert (whichField>=0 && whichField < Int(n_p), AipsError);
     if (sub_records_p[whichField]) {
 	delete sub_records_p[whichField];
 	sub_records_p[whichField] = 0;
@@ -347,14 +348,14 @@ uInt RecordDescRep::removeField (Int whichField)
 
 void RecordDescRep::renameField (const String& newName, Int whichField)
 {
-    AlwaysAssert (whichField>=0 && whichField < n_p, AipsError);
+    AlwaysAssert (whichField>=0 && whichField < Int(n_p), AipsError);
     name_map_p.rename (newName, names_p[whichField]);
     names_p[whichField] = newName;
 }
 
 void RecordDescRep::setShape (const IPosition& shape, Int whichField)
 {
-    AlwaysAssert (whichField>=0 && whichField < n_p, AipsError);
+    AlwaysAssert (whichField>=0 && whichField < Int(n_p), AipsError);
     shapes_p[whichField].resize (shape.nelements());
     shapes_p[whichField] = shape;
 }
