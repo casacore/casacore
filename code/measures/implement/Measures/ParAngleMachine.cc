@@ -1,5 +1,5 @@
 //# ParAngleMachine.cc: Converts a direction into parallactic angle
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,6 +73,28 @@ Double ParAngleMachine::posAngle(const Quantum<Double> &ep) const {
   return mvdir_p.positionAngle((*convpole_p)().getValue()); 
 }
 
+Vector<Double>
+ParAngleMachine::posAngle(const Quantum<Vector<Double> > &ep) const {
+  uInt nel(ep.getValue().nelements());
+  Vector<Double> res(nel);
+  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep.getValue()[i]);
+  return res;
+}
+
+Double ParAngleMachine::posAngle(const Double &ep) const {
+  frame_p->resetEpoch(ep);
+  if (indir_p->isModel()) mvdir_p = (*convdir_p)().getValue();
+  return mvdir_p.positionAngle((*convpole_p)().getValue()); 
+}
+
+Vector<Double>
+ParAngleMachine::posAngle(const Vector<Double> &ep) const {
+  uInt nel(ep.nelements());
+  Vector<Double> res(nel);
+  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep[i]);
+  return res;
+}
+
 Quantum<Double> ParAngleMachine::operator()(const Quantum<Double> &ep) const {
   static const Unit un("deg");
   return Quantity(posAngle(ep), un);
@@ -85,14 +107,6 @@ Quantum<Double> ParAngleMachine::operator()(const MVEpoch &ep) const {
 Quantum<Double> ParAngleMachine::operator()(const MEpoch &ep) const {
   static const Unit un("s");
   return operator()(ep.get(un));
-}
-
-Vector<Double>
-ParAngleMachine::posAngle(const Quantum<Vector<Double> > &ep) const {
-  uInt nel(ep.getValue().nelements());
-  Vector<Double> res(nel);
-  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep.getValue()[i]);
-  return res;
 }
 
 Quantum<Vector<Double> >
@@ -110,6 +124,19 @@ ParAngleMachine::operator()(const Vector<MVEpoch> &ep) const {
   return Quantum<Vector<Double> >(res, un);
 }
 
+Double
+ParAngleMachine::operator()(const Double &ep) const {
+  return posAngle(ep);
+}
+
+Vector<Double>
+ParAngleMachine::operator()(const Vector<Double> &ep) const {
+  uInt nel(ep.nelements());
+  Vector<Double> res(nel);
+  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep[i]);
+  return res;
+}
+
 Quantum<Vector<Double> >
 ParAngleMachine::operator()(const Vector<MEpoch> &ep) const {
   static const Unit un("deg");
@@ -123,5 +150,14 @@ ParAngleMachine::operator()(const Vector<MEpoch> &ep) const {
 //# Member functions
 void ParAngleMachine::set(const MDirection &in) {
   delete indir_p; indir_p = 0;
+  delete convdir_p; convdir_p = 0;
+  delete convpole_p; convpole_p = 0;
   indir_p = new MDirection(in);
+}
+
+void ParAngleMachine::set(const MeasFrame &frame) {
+  delete convdir_p; convdir_p = 0;
+  delete frame_p; frame_p = 0;
+  delete convpole_p; convpole_p = 0;
+  frame_p = new MeasFrame(frame);
 }

@@ -1,5 +1,5 @@
 //# ParAngleMachine.h: Converts a direction into parallactic angle
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,6 +130,8 @@ class ParAngleMachine {
   Quantum<Double> operator()(const Quantum<Double> &ep) const;
   Quantum<Double> operator()(const MVEpoch &ep) const;
   Quantum<Double> operator()(const MEpoch &ep) const;
+  Double operator()(const Double &ep) const;
+  Vector<Double> operator()(const Vector<Double> &ep) const;
   // </group>
 
   //# Member functions
@@ -137,6 +139,7 @@ class ParAngleMachine {
   // a reference time valid period
   // <group>
   void set(const MDirection &in);
+  void set(const MeasFrame &frame);
   // </group>
 
 private:
@@ -160,6 +163,8 @@ private:
   // <group>
   Double posAngle(const Quantum<Double> &ep) const;
   Vector<Double> posAngle(const Quantum<Vector<Double> > &ep) const;
+  Double posAngle(const Double &ep) const;
+  Vector<Double> posAngle(const Vector<Double> &ep) const;
   // </group>
   // Initialise machinery
   void init();
