@@ -36,6 +36,7 @@
 #include <trial/Coordinates/Projection.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
@@ -78,6 +79,7 @@ uInt Coordinate::toWorldMany(Matrix<Double>& world,
     world.resize(nWorldAxes(), nTransforms);
 //
     Vector<Double> pixTmp(nPixelAxes());
+    Vector<Double> lastPix(nPixelAxes());
     Vector<Double> worldTmp(nWorldAxes());
 //
     ArrayAccessor<Double, Axis<1> > jPixel(pixel);
@@ -86,27 +88,38 @@ uInt Coordinate::toWorldMany(Matrix<Double>& world,
     String errorMsg;
     uInt nError = 0;
     uInt k,l;
+    Bool same;
     ArrayAccessor<Double, Axis<0> > iPixel, iWorld;
 //
     for (jPixel.reset(),jWorld.reset(),l=0; jPixel!=jPixel.end(); ++jPixel,++jWorld,l++) {
        iPixel = jPixel;            // Partial assignment
+       same = True;
        for (iPixel.reset(),k=0; iPixel!=iPixel.end(); ++iPixel,k++) {
           pixTmp[k] = *iPixel;
+          if (l==0 || (l!=0 && !::near(pixTmp[k],lastPix[k]))) same = False;
        }
 //
-       if (!toWorld (worldTmp, pixTmp)) {
-          nError++;
-          if (nError > failures.nelements()) {
-             failures.resize(2*nError, True);
+       iWorld = jWorld;            // Partial assigment
+       if (same) {
+          for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
+             *iWorld = worldTmp[k];         // Copy last conversion
           }
-          failures(nError-1) = l;
-          if (nError == 1) errorMsg = errorMessage();    // Save the first error message
-	} else {
-           iWorld = jWorld;      // Partial assigment
-           for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
-              *iWorld = worldTmp[k];
+       } else {
+          if (!toWorld (worldTmp, pixTmp)) {
+             nError++;
+             if (nError > failures.nelements()) {
+                failures.resize(2*nError, True);
+             }
+             failures(nError-1) = l;
+             if (nError == 1) errorMsg = errorMessage();    // Save the first error message
+           } else {
+              for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
+                 *iWorld = worldTmp[k];
+              }
            }
-	}
+        }
+//
+        lastPix = pixTmp;
     }
 //
     if (nError != 0) set_error(errorMsg); // put back the first error
@@ -126,6 +139,7 @@ uInt Coordinate::toPixelMany(Matrix<Double>& pixel,
 //
     Vector<Double> pixTmp(nPixelAxes());
     Vector<Double> worldTmp(nWorldAxes());
+    Vector<Double> lastWorld(nWorldAxes());
 //
     ArrayAccessor<Double, Axis<1> > jPixel(pixel);
     ArrayAccessor<Double, Axis<1> > jWorld(world);
@@ -133,27 +147,38 @@ uInt Coordinate::toPixelMany(Matrix<Double>& pixel,
     String errorMsg;
     uInt nError = 0;
     uInt k,l;
+    Bool same;
     ArrayAccessor<Double, Axis<0> > iPixel, iWorld;
 //
     for (jWorld.reset(),jPixel.reset(),l=0; jWorld!=jWorld.end(); ++jWorld,++jPixel,l++) {
        iWorld = jWorld;           // Partial assigment
+       same = True;
        for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
           worldTmp[k] = *iWorld;
+          if (l==0 || (l!=0 && !::near(worldTmp[k],lastWorld[k]))) same = False;
        }
 //
-       if (!toPixel(pixTmp, worldTmp)) {
-          nError++;
-          if (nError > failures.nelements()) {
-             failures.resize(2*nError, True);
-          }
-          failures(nError-1) = l;
-          if (nError == 1) errorMsg = errorMessage();    // Save the first error message
-	} else {
-           iPixel = jPixel;      // Partial assignment
-           for (iPixel.reset(),k=0; iPixel!=iPixel.end(); ++iPixel,k++) {
-              *iPixel= pixTmp[k];
+       iPixel = jPixel;          // Partial assignment
+       if (same) {
+          for (iPixel.reset(),k=0; iPixel!=iPixel.end(); ++iPixel,k++) {
+             *iPixel= pixTmp[k];       // Copy last conversion
            }
-	}
+       } else {
+          if (!toPixel(pixTmp, worldTmp)) {
+             nError++;
+             if (nError > failures.nelements()) {
+                failures.resize(2*nError, True);
+             }
+             failures(nError-1) = l;
+             if (nError == 1) errorMsg = errorMessage();    // Save the first error message
+           } else {
+              for (iPixel.reset(),k=0; iPixel!=iPixel.end(); ++iPixel,k++) {
+                 *iPixel= pixTmp[k];
+              }
+           }
+        }
+//
+        lastWorld = worldTmp;
     }
 //
     if (nError != 0) set_error(errorMsg); // put back the first error
@@ -634,85 +659,106 @@ void Coordinate::fourierUnits (String& nameOut, String& unitOut, String& unitInC
 }
 
 
-void Coordinate::makeWorldAbsoluteMany (Matrix<Double>& world) const
+void Coordinate::makeWorldAbsoluteMany (Matrix<Double>& value) const
+{
+   makeWorldAbsRelMany (value, True);
+}
+
+void Coordinate::makeWorldRelativeMany (Matrix<Double>& value) const
+{
+   makeWorldAbsRelMany (value, False);
+}
+
+void Coordinate::makePixelAbsoluteMany (Matrix<Double>& value) const
+{
+   makePixelAbsRelMany (value, True);
+}
+
+void Coordinate::makePixelRelativeMany (Matrix<Double>& value) const
+{
+   makePixelAbsRelMany (value, False);
+}
+
+
+void Coordinate::makeWorldAbsRelMany (Matrix<Double>& value, Bool abs) const
 {
     Vector<Double> col(nWorldAxes());
-    uInt k;
+    Vector<Double> lastInCol(nWorldAxes());    
+    Vector<Double> lastOutCol(nWorldAxes());
+    uInt k,l;
+    Bool same;
     ArrayAccessor<Double, Axis<0> > i;
-    for (ArrayAccessor<Double, Axis<1> > j(world); j!=j.end(); ++j) {
+    ArrayAccessor<Double, Axis<1> > j(value);
+    for (j.reset(),l=0; j!=j.end(); j++,l++) {
        i = j;
-       for (i.reset(),k=0; i!=i.end(); ++i,k++) {
+       same = True;
+       for (i.reset(),k=0; i!=i.end(); i++,k++) {
           col[k] = *i;
+          if (l==0 || (l!=0 && !::near(col[k],lastInCol[k]))) same = False;
+       }
+       lastInCol = col;
+//
+       if (same) {
+          for (i.reset(),k=0; i!=i.end(); ++i,k++) {
+             *i = lastOutCol[k];
+          }
+       } else {
+          if (abs) {
+             makeWorldAbsolute(col);
+          } else {
+             makeWorldRelative(col);
+          }
+//
+          for (i.reset(),k=0; i!=i.end(); ++i,k++) {
+             *i = col[k];
+          }
        }
 //
-       makeWorldAbsolute(col);
-//
-       for (i.reset(),k=0; i!=i.end(); ++i,k++) {
-          *i = col[k];
-       }
+       lastOutCol = col;
     }
 }
 
 
-void Coordinate::makeWorldRelativeMany (Matrix<Double>& world) const
-{
-    Vector<Double> col(nWorldAxes());
-    uInt k;
-    ArrayAccessor<Double, Axis<0> > i;
-    for (ArrayAccessor<Double, Axis<1> > j(world); j!=j.end(); ++j) {
-       i = j;
-       for (i.reset(),k=0; i!=i.end(); ++i,k++) {
-          col[k] = *i;
-       }
-//
-       makeWorldRelative(col);
-//
-       for (i.reset(),k=0; i!=i.end(); ++i,k++) {
-          *i = col[k];
-       }
-    }
-}
 
-
-void Coordinate::makePixelAbsoluteMany (Matrix<Double>& pixel) const
-{
-    Vector<Double> col(nPixelAxes());
-    uInt k;
-    ArrayAccessor<Double, Axis<0> > i;
-    for (ArrayAccessor<Double, Axis<1> > j(pixel); j!=j.end(); ++j) {
-       i = j;
-       for (i.reset(),k=0; i!=i.end(); ++i,k++) {
-          col[k] = *i;
-       }
-//
-       makePixelAbsolute(col);
-//
-       for (i.reset(),k=0; i!=i.end(); ++i,k++) {
-          *i = col[k];
-       }
-    }
-
-}
-
-void Coordinate::makePixelRelativeMany (Matrix<Double>& pixel) const
+void Coordinate::makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const
 {
     Vector<Double> col(nPixelAxes());
-    uInt k;
+    Vector<Double> lastInCol(nPixelAxes());    
+    Vector<Double> lastOutCol(nPixelAxes());
+    uInt k,l;
+    Bool same;
     ArrayAccessor<Double, Axis<0> > i;
-//
-    for (ArrayAccessor<Double, Axis<1> > j(pixel); j!=j.end(); ++j) {
+    ArrayAccessor<Double, Axis<1> > j(value);
+    for (j.reset(),l=0; j!=j.end(); j++,l++) {
        i = j;
-       for (i.reset(),k=0; i!=i.end(); ++i,k++) {
+       same = True;
+       for (i.reset(),k=0; i!=i.end(); i++,k++) {
           col[k] = *i;
+          if (l==0 || (l!=0 && !::near(col[k],lastInCol[k]))) same = False;
+       }
+       lastInCol = col;
+//
+       if (same) {
+          for (i.reset(),k=0; i!=i.end(); ++i,k++) {
+             *i = lastOutCol[k];
+          }
+       } else {
+          if (abs) {
+             makePixelAbsolute(col);
+          } else {
+             makePixelRelative(col);
+          }
+//
+          for (i.reset(),k=0; i!=i.end(); ++i,k++) {
+             *i = col[k];
+          }
        }
 //
-       makePixelRelative(col);
-//
-       for (i.reset(),k=0; i!=i.end(); ++i,k++) {
-          *i = col[k];
-       }
+       lastOutCol = col;
     }
 }
+
+
 
 
 void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
@@ -723,7 +769,7 @@ void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
 
  
 void Coordinate::makeWorldAbsolute (Vector<Double>& world,
-                                           const Vector<Double>& refVal) const
+                                    const Vector<Double>& refVal) const
 {
    DebugAssert(world.nelements()==nWorldAxes(),AipsError);
    DebugAssert(refVal.nelements()==nWorldAxes(),AipsError);
