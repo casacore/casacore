@@ -1,5 +1,5 @@
 //# ComponentShape.h: Base class for component shapes
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -222,6 +222,7 @@ public:
   // return the number of parameters in this shape and set/get them. The error
   // functions provide a way to set/get the error (nominally 1-sigma in an
   // implicit Gaussian distribution) in the corresponding parameter.
+  // <group>
   virtual uInt nParameters() const = 0;
   virtual void setParameters(const Vector<Double>& newParms) = 0;
   virtual Vector<Double> parameters() const = 0;
