@@ -394,12 +394,16 @@ public:
     // Report the length of the resulting axes..
     const IPosition& length() const;
 
+    // Are all values fixed (i.e., no MimicSource given)?
+     Bool isFixed() const;
+
 private:
     LengthOrLast asEnd_p;
     IPosition    start_p;
     IPosition    end_p;
     IPosition    stride_p;
     IPosition    len_p;         // Length of input
+    Bool         fixed_p;       // no MimicSource used
 
     // Define a private constructor taking an Int.
     // This is to prevent the user from the unexpected and meaningless
@@ -413,7 +417,11 @@ private:
 
     // Fill in start, len and stride from a Slice.
     void fillSlice (const Slice&, Int& start, Int& length, Int& stride);
+
+    // Fill the fixed flag.
+    void Slicer::fillFixed();
 };
+
 // <summary>IO functions for Slicer's</summary>
 // <group name="Slicer IO">
 // Print the contents of the specified Slicer to the specified stream.
@@ -437,6 +445,9 @@ inline const IPosition& Slicer::stride() const
 
 inline const IPosition& Slicer::length() const
     { return len_p; }
+
+inline Bool Slicer::isFixed() const
+    { return fixed_p; }
 
 // </group>
 #endif
