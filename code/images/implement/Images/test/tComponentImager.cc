@@ -1,5 +1,5 @@
 //# tComponentImager.cc: Test program for the ComponentImager class
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/ComponentModels/ComponentImager.h>
+#include <trial/Images/ComponentImager.h>
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/ConstantSpectrum.h>
