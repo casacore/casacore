@@ -257,9 +257,18 @@ public:
     // newDescription</src>. Any existing RecordFieldPtr objects are
     // invalidated (their <src>isAttached()</src> members return False) after
     // this call.
+    // <br>When the new description contains subrecords, those subrecords
+    // will be variable if their description is empty (i.e. does not
+    // contain any field), otherwise it is fixed. The 2nd form of
+    // the <src>restructure</src> function will overwrite those implicit
+    // record types with the given record type. The new type will also
+    // be given to this top record.
     // <br>Restructuring is not possible and an exception is thrown
     // if the Record has a fixed structure.
+    // <group>
     virtual void restructure (const RecordDesc& newDescription);
+    virtual void restructure (const RecordDesc& newDescription, RecordType);
+    // </group>
 
     // Returns True if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the
@@ -317,6 +326,7 @@ public:
     const Record& subRecord (const RecordFieldId&) const;
     Record& rwSubRecord (const RecordFieldId&);
     virtual const RecordInterface& asRecord (const RecordFieldId&) const;
+    virtual RecordInterface& asrwRecord (const RecordFieldId&);
     // </group>
 
     // Merge a field from another record into this record.
@@ -398,7 +408,13 @@ private:
     // Create Record as a subrecord.
     // When the description is empty, the record has a variable structure.
     // Otherwise it is fixed.
+    // <group>
     Record (RecordRep* parent, const RecordDesc& description);
+    Record (RecordRep* parent, RecordType type);
+    // </group>
+
+    // Set the recordtype of this record and all its subrecords (recursively).
+    void setRecordType (RecordType type);
 
     // The Record representation.
     COWPtr<RecordRep> rep_p;
