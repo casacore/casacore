@@ -2534,3 +2534,4 @@
 11 374 src mv trial/scripts/finclude.g trial/implement/Utilities/finclude.g
 11 374 src mv trial/scripts/note.g trial/implement/Utilities/note.g
 11 374 src mv trial/scripts/plugins.g trial/implement/Utilities/plugins.g
+11 374 src mv trial/scripts/plugins.help trial/implement/Utilities/plugins.help
