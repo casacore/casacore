@@ -2648,3 +2648,4 @@
 11 401 src rm doc/learnmore
 11 402 src rm aips/implement/Tables/test/tAsciiFileIO.exec
 11 402 src mv aips/implement/Tables/AsciiFileIO.h aips/implement/Tables/ReadAsciiTable.h
+11 402 src mv aips/implement/Tables/AsciiFileIO.cc aips/implement/Tables/ReadAsciiTable.cc
