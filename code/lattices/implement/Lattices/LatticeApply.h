@@ -52,9 +52,7 @@ class IPosition;
 
 // <prerequisite>
 //   <li> Lattice
-//   <li> LatticeIterator
-//   <li> LatticeStepper
-//   <li> TiledStepper
+//   <li> TiledLineStepper
 // </prerequisite>
 
 // <synopsis>
@@ -120,12 +118,12 @@ public:
 			     const Lattice<T>& latticeIn,
 			     VectorCollapser<T>& operation,
 			     const Int profileAxis,
-			     const IPosition blc,
-			     const IPosition trc,
-////			     const IPosition inc,
+			     const IPosition& blc,
+			     const IPosition& trc,
+////			     const IPosition& inc,
 			     const Bool dropAxis,
 			     const Bool showProgress,
-			     const String progressTitle);
+			     const String& progressTitle);
     
 // This function iterates through a Lattice and applies a user given
 // function to profiles along the specified axis.  The result of the
@@ -165,16 +163,16 @@ public:
 //  latticeOut The output lattices.  They must be the correct shape to account
 //             for the desired region (i.e. shape = trc - blc + 1)
 
-    static void vectorMultiApply (PtrBlock<Lattice<T> *> &latticeOut, 
+    static void vectorMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
 				  const Lattice<T>& latticeIn,
 				  VectorCollapser<T>& collapser,
 				  const Int VectorAxis,
-				  const IPosition blc,
-				  const IPosition trc,
-////				  const IPosition inc,
+				  const IPosition& blc,
+				  const IPosition& trc,
+////				  const IPosition& inc,
 				  const Bool dropAxis,
 				  const Bool showProgress,
-				  const String progressTitle);
+				  const String& progressTitle);
     
 private:
 
