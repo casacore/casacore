@@ -347,9 +347,13 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const; 
 
-    // Set the world min and max ranges, for use in function <src>toMix</src>, 
+    // Compute and retrieve the world min and max ranges, for use in function <src>toMix</src>, 
     // for  a lattice of the given shape (for this coordinate).   Using these
     // ranges in <src>toMix</src> should speed it up and help avoid ambiguity.
+    // If the shape is negative, that indicates that the shape is unknown
+    // for that axis.  The default range is used for that axis.  This situation
+    // arises in a CoordinateSystem for which a pixel, but not a world axis
+    // has been removed.
     // The output vectors are resized.  Returns False if fails (and
     // then <src>setDefaultWorldMixRanges</src> generates the ranges)
     // with a reason in <src>errorMessage()</src>.

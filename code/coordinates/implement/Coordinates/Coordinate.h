@@ -488,6 +488,10 @@ protected:
                        const String& nameIn) const;
 
    // Default toMix ranges using toWorld.  Called by most derived coordinates
+   // If the shape is negative, that indicates that the shape is unknown
+   // for that axis.  The default range is used for that axis.  This situation
+   // arises in a CoordinateSystem for which a pixel, but not a world axis
+   // has been removed.
    Bool setWorldMixRanges (Vector<Double>& worldMin,
                            Vector<Double>& worldMax,
                            const IPosition& shape) const;

@@ -399,14 +399,15 @@ public:
     // Values in <src>worldIn</src> are converted to pixel and
     // put into <src>pixelOut</src> in the appropriate pixel axis
     // location.  Values in <src>pixelIn</src> are copied to
-    // <src>pixelOut</src>
+    // <src>pixelOut</src>.  Vectors
     // <src>worldMin</src> and <src>worldMax</src> specify the range of the world
     // coordinate (in the world axis units of that world axis
     // in the coordinate system) being solved for in a mixed calculation 
     // for each world axis. They are only actually used for DirectionCoordinates
     // and for all other coordinates the relevant elements are ignored.
-    // If you don't know, use -180 to 180
-    // degrees for longitude, and -90 to 90 for latitude.    
+    // Functions <src>setWorldMixRanges, worldMixMin, worldMixMax</src> can be
+    // used to compute and recover the world ranges.  If you don't know 
+    // the values, use  functions <src>setDefaultWorldMixRanges, worldMixMin, worldMixMax</src>.
     // Removed axes are handled (for example, a removed pixel
     // axis with remaining corresponding world axis will
     // correctly be converted to world using the replacement
@@ -423,8 +424,9 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const; 
 
-    // Set the world min and max ranges, for use in function <src>toMix</src>,
-    // for  a lattice of the given shape (for this coordinate). With
+    // Compute and recover the world min and max ranges, for use in function <src>toMix</src>,
+    // for  a lattice of the given shape (must be of length <src>nPixelAxes()</src>). 
+    // Removed pixel axes (with remaining world axes are handled).  With
     // the retrieval functions, the output vectors are resized.  They return 
     // False if they fail (and then <src>setDefaultWorldMixRanges</src> generates the ranges)
     // with a reason in <src>errorMessage()</src>.
