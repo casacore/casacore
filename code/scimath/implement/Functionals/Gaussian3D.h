@@ -104,6 +104,7 @@ template<class T> class Vector;
 // <li> The width of the Gaussian along the z-axis.
 // <li> The longitudinal position angle, theta (in radians)
 // <li> The latitudinal position angle, phi (also in radians). 
+// </ol>
 
 // An enumeration for the parameter index is provided, enabling the setting
 // and reading of parameters with the <src>[]</src> operator. The 
