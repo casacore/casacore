@@ -87,14 +87,10 @@
 // </srcblock>
 // An inclusion of the appropiate measure file, will also take care of the
 // connected measure value (in this case <src>MVDirection</src>. However,
-// if only the value suffices, it van be included on its own.<br>
+// if only the value suffices, it can be included on its own.<br>
 // When doing actual conversions (see MeasConvert later on), by using the
 // explicit Measure::Convert types, the description of the actual
 // conversions (called MCmeasure, e.g. MCEpoch.h) should be included as well.
-// Some users may want to use special directives available in the detailed
-// calculations (e.g. <src>Nutation::D_Interval</src> to set a non-default
-// nutation interpolation interval). The corresponding header file
-// should then be included.
 //
 //  <a name="Unit"><h3> Physical units </h3></a>
 // Physical units are basically used in quantities
@@ -694,7 +690,7 @@
 // interval for Nutation linear interpolation: could be different from the
 // default interval; some time calculations will want to use the predicted
 // IERS values rather than the actual determined; some Nutation will maybe
-// use the IERS updates, some maybe the IAU analytic extensions).<br>
+// use the IERS updates, some maybe the JPL DE databases).<br>
 // The <linkto class=AipsrcValue>AipsrcValue</linkto> class can be used to
 // specify very specific parameters that are used to steer
 // the conversion process beyond what is possible with just a list
@@ -703,7 +699,8 @@
 // default behaviour of the conversions. In general the user will only need
 // to use the details in very specific cases. The details that can be used
 // are described in the classes that provide calculations (e.g.
-// <linkto class=Nutation>Nutation</linkto>).<br>
+// <linkto class=Nutation>Nutation</linkto>), and in the aipsrc-data reference
+// manual entry.<br>
 // <p>
 // Some details about the different classes follows. In the examples often
 // a specific measure value (e.g. MVEpoch, the MeasValue for MEpoch), or a
@@ -1108,13 +1105,12 @@
 // different reference frames. The need for quantities to express the
 // physical values of coordinates originated this way.
 // Units were introduced in the described way to be able to handle any
-// possible physical unit
+// possible physical unit.
 // </motivation>
 //
-// <todo asof="960709">
+// <todo asof="1997/12/02">
 //   <li> inlining
 //   <li> look at the problem of rad*rad (which is, in general, not sr)
-//   <li> Quantity input
 // </todo>
 //
 // <example>
