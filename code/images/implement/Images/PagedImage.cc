@@ -1,5 +1,5 @@
 //# PagedImage.cc: defines the PagedImage class
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,7 +67,7 @@
 template <class T> PagedImage<T>::
 PagedImage()
 {
-  // does nothing
+  table_p.makePermanent();           // avoid double deletion by Cleanup
 }
 
 template <class T> PagedImage<T>::
@@ -78,6 +78,7 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
   map_p(shape, table, "map", rowNumber), 
   mask_p((PagedArray<Bool> *) 0)
 {
+  table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const TiledShape & shape,  "
@@ -121,6 +122,7 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
 	    << "The image shape is " << shape.shape() << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab, lockOptions);
+  table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
   if (masking) {
@@ -153,6 +155,7 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
 	    << "The image shape is " << shape.shape() << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab);
+  table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
   if (masking) {
@@ -174,6 +177,7 @@ PagedImage(Table & table, uInt rowNumber)
   map_p(table, "map", rowNumber),
   mask_p((PagedArray<Bool> *)0)
 {
+  table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(Table & table, "
@@ -212,6 +216,7 @@ PagedImage(const String & filename, uInt rowNumber)
 	    << " of a file called"
 	    << " '" << filename << "'" << endl;
   table_p = Table(filename);
+  table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   map_p = PagedArray<T>(table_p, "map", rowNumber);
   logSink() << "The image shape is " << map_p.shape() << endl;
@@ -246,6 +251,7 @@ PagedImage(const String & filename, const TableLock& lockOptions,
 	    << " of a file called"
 	    << " '" << filename << "'" << endl;
   table_p = Table(filename, lockOptions);
+  table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   map_p = PagedArray<T>(table_p, "map", rowNumber);
   logSink() << "The image shape is " << map_p.shape() << endl;
@@ -273,6 +279,7 @@ PagedImage(const PagedImage<T> & other)
   mask_p((PagedArray<Bool> *)0),
   defaultvalue_p(other.defaultvalue_p)
 {
+  table_p.makePermanent();           // avoid double deletion by Cleanup
   if (other.mask_p != 0) {
     mask_p = new PagedArray<Bool>(*(other.mask_p));
   }
@@ -294,6 +301,7 @@ operator=(const PagedImage<T> & other)
   if (this != &other) {
     ImageInterface<T>::operator= (other);
     table_p = other.table_p;
+    table_p.makePermanent();           // avoid double deletion by Cleanup
     map_p = other.map_p;
     delete mask_p;
     mask_p = 0;
