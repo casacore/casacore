@@ -76,13 +76,15 @@ ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
   doneSomeGoodPoints_p(False),
   someGoodPointsValue_p(False),
   haveLogger_p(True),
-  showProgress_p(showProgressU)
+  showProgress_p(showProgressU),
+  fixedMinMax_p(False)
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
    range_p.resize(0);
    minPos_p.resize(0);
    maxPos_p.resize(0);
+   blcParent_p.resize(0);
 
    if (setNewImage(imageU)) {
 
@@ -109,13 +111,15 @@ ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
   doneSomeGoodPoints_p(False),
   someGoodPointsValue_p(False),
   haveLogger_p(False),
-  showProgress_p(showProgressU)
+  showProgress_p(showProgressU),
+  fixedMinMax_p(False)
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
    range_p.resize(0);
    minPos_p.resize(0);
    maxPos_p.resize(0);
+   blcParent_p.resize(0);
 
    if (setNewImage(imageU)) {
 
@@ -147,6 +151,9 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
                         needStorageImage_p(other.needStorageImage_p),
                         doneSomeGoodPoints_p(other.doneSomeGoodPoints_p),
                         someGoodPointsValue_p(other.someGoodPointsValue_p),
+                        haveLogger_p(other.haveLogger_p),
+                        showProgress_p(other.showProgress_p),
+                        fixedMinMax_p(other.fixedMinMax_p),
                         minPos_p(other.minPos_p), 
                         maxPos_p(other.maxPos_p),
                         blcParent_p(other.blcParent_p)
@@ -192,12 +199,15 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
       range_p = other.range_p;
       plotter_p = other.plotter_p; 
       doList_p = other.doList_p;
+      noInclude_p = other.noInclude_p; 
+      noExclude_p = other.noExclude_p;
       goodParameterStatus_p = other.goodParameterStatus_p;
       needStorageImage_p = other.needStorageImage_p;
       doneSomeGoodPoints_p = other.doneSomeGoodPoints_p;
       someGoodPointsValue_p = other.someGoodPointsValue_p;
-      noInclude_p = other.noInclude_p; 
-      noExclude_p = other.noExclude_p;
+      haveLogger_p = other.haveLogger_p;
+      showProgress_p = other.showProgress_p;
+      fixedMinMax_p = other.fixedMinMax_p;
       minPos_p = other.minPos_p; 
       maxPos_p = other.maxPos_p;
       blcParent_p = other.blcParent_p;
@@ -265,7 +275,8 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
 
 template <class T>
 Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& includeU,
-                                           const Vector<T>& excludeU)
+                                           const Vector<T>& excludeU,
+                                           Bool setMinMaxToIncludeU)
 //
 // Assign the desired exclude range
 //
@@ -278,6 +289,7 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& includeU,
 // Save current ranges
 
    Vector<T> saveRange(range_p.copy());
+   Bool saveFixedMinMax = fixedMinMax_p;
 
 // Check
       
@@ -289,12 +301,30 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& includeU,
       return False;
    }
 
+// Can't have fixed min and max with an exclusion range
+
+   fixedMinMax_p = setMinMaxToIncludeU;
+   if (!noExclude_p && fixedMinMax_p) {
+      if (haveLogger_p) {
+         os_p << LogIO::SEVERE 
+              << "Can't have a fixed min and max with an exclusion range" 
+              << LogIO::POST;
+      }
+      goodParameterStatus_p = False;
+      return False;
+   }
+
+// Can only have fixed min and max range if user gives it
+
+   if (noInclude_p) fixedMinMax_p = False;
+
 
 // Signal that we have changed the pixel range and need a new accumulation
 // image
    
-   if (saveRange.nelements() != range_p.nelements() ||
-       !allEQ(saveRange.ac(), range_p.ac())) needStorageImage_p = True;    
+   if ( (saveFixedMinMax != fixedMinMax_p) ||
+        (saveRange.nelements() != range_p.nelements()) ||
+        (!allEQ(saveRange.ac(), range_p.ac())) ) needStorageImage_p = True;    
 
    return True;
 }
@@ -331,6 +361,16 @@ Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
       return False;
    }
 
+// Is plotter attached ?
+
+   plotter_p = plotter;
+   if (!plotter_p.isAttached()) {
+      if (haveLogger_p) {
+         os_p << LogIO::SEVERE << "Plotter is not attached" << LogIO::POST; 
+      }
+      goodParameterStatus_p = False;
+      return False;
+   }
 
 // Make sure requested statistics are valid
 
@@ -348,7 +388,6 @@ Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
 
 // Plotting device and subplots.  nxy_p is set to [1,1] if zero length
  
-   plotter_p = plotter;
    nxy_p.resize(0);
    nxy_p = nxyU;
    ostrstream os;
@@ -358,9 +397,10 @@ Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
       return False;
    }
 
+
 // Set mean and sigma if no statistics requested
 
-   if (plotter_p.isAttached() && statsToPlot_p.nelements()==0) {
+   if (statsToPlot_p.nelements()==0) {
       statsToPlot_p.resize(2);
       statsToPlot_p(0) = MEAN;
       statsToPlot_p(1) = SIGMA;
@@ -406,6 +446,7 @@ Bool ImageStatistics<T>::setNewImage(const MaskedImage<T>& image)
    needStorageImage_p = True;
    return True;
 }
+
 
 
 
@@ -468,6 +509,7 @@ Bool ImageStatistics<T>::display()
 
    Matrix<T> ord(n1,NSTATS);
 
+
 // Iterate through storage image by planes (first and last axis of storage image)
 // Specify which axes are the matrix  axes so that we can discard other
 // degenerate axes with the matrixCursor function.   n1 is only 
@@ -502,8 +544,7 @@ Bool ImageStatistics<T>::display()
 // that would mean that the "ord" Matrix would be an Int and we would
 // lose accuracy in working out the rms etc
 
-         const NumericTraits<T>::PrecisionType nPts = real(matrix(i,NPTS))+0.1;
-
+         Int nPts = Int(real(matrix(i,NPTS))+0.1);
          switch (templateType) {
          case TpFloat:
          case TpDouble:
@@ -607,6 +648,60 @@ Bool ImageStatistics<T>::getSum(Array<T>& stats)
 
 
 template <class T>
+Bool ImageStatistics<T>::getStats(Vector<T>& stats,
+                                  const IPosition& pos,
+                                  const Bool posInImage)
+// 
+// This function retrieves the statistics from the
+// accumulation image at the specified location.  
+//
+// Inputs
+//   posInImage   If true the location is given as image coordinates
+//                The non-display axis values will be ignored.
+//                Otherwise the position should be for the
+//                display axes only.
+//
+{
+// Check class status
+ 
+   if (!goodParameterStatus_p) {
+     if (haveLogger_p) {
+        os_p << LogIO::SEVERE << endl
+             << "The internal status of class is bad.  You have ignored errors" << endl
+             << "in setting the arguments." << endl << endl << LogIO::POST;
+     }
+     return False; 
+   }
+
+
+// Retrieve storage array statistics
+
+   stats.resize(NSTATS);
+   if (!retrieveStorageStatistic(stats, pos, posInImage)) return False;
+
+// Compute the rest
+
+   uInt n = Int(real(stats(NPTS))+0.1);
+   if (n == 0) {
+      stats.resize(0);
+      return  True;
+   }
+
+   NumericTraits<T>::PrecisionType tmp;
+   stats(MEAN) = stats(SUM) / n;
+   stats(SIGMA) = T(0.0);
+   if (n > 1) {
+      tmp = (stats(SUMSQ) - (stats(SUM)*stats(SUM)/n)) / (n-1);
+      if (tmp > 0.0) stats(SIGMA) = sqrt(tmp);
+   }
+   stats(RMS) = T(0.0);
+   if (n > 0) stats(RMS) = sqrt(stats(SUMSQ)/n);
+
+   return True;
+}
+
+
+template <class T>
 Bool ImageStatistics<T>::getSumSquared (Array<T>& stats)
 // 
 // This function retrieves the SUMSQ statistics from the
@@ -617,9 +712,11 @@ Bool ImageStatistics<T>::getSumSquared (Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl
-          << "The internal status of class is bad.  You have ignored errors" << endl 
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     if (haveLogger_p) {
+        os_p << LogIO::SEVERE << endl
+             << "The internal status of class is bad.  You have ignored errors" << endl 
+             << "in setting the arguments." << endl << endl << LogIO::POST;
+     }
      return False; 
    }
 
@@ -639,9 +736,11 @@ Bool ImageStatistics<T>::getMin(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     if (haveLogger_p) {
+        os_p << LogIO::SEVERE << endl
+             << "The internal status of class is bad.  You have ignored errors" << endl
+             << "in setting the arguments." << endl << endl << LogIO::POST;
+     }
      return False; 
     }
 
@@ -967,7 +1066,7 @@ Bool ImageStatistics<T>::generateStorageImage()
 // Set the display axes vector.
 
    ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p, 
-                                   pInImage_p->shape().nelements());
+                                   pInImage_p->ndim());
 
 
 // Work out dimensions of storage image (statistics accumulations
@@ -986,18 +1085,13 @@ Bool ImageStatistics<T>::generateStorageImage()
        tileShape(i) = pInImage_p->niceCursorShape()(displayAxes_p(i));
     }
     tileShape(tileShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
-
-
-//    cout << "input tile shape" << pInImage_p->niceCursorShape() << endl;
-//    cout << "storage tile shape" << tileShape << endl;
-
-
     Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                                              String("ImageStatistics_Sums_"));
+                        String("ImageStatistics_Sums_"));
+
+// Create storage image
+
     pStoreImage_p = new PagedArray<T>(TiledShape(storeImageShape,
                                       tileShape), myTable);
-    pStoreImage_p->set(T(0.0));
-
 
 
 // Set up min/max location variables
@@ -1009,7 +1103,7 @@ Bool ImageStatistics<T>::generateStorageImage()
 // Iterate through image and accumulate statistical sums
 
    ImageStatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,
-                                         blcParent_p);
+                                         fixedMinMax_p, blcParent_p);
 
 
    ImageStatisticsProgress* pProgressMeter = 0;
@@ -1019,10 +1113,6 @@ Bool ImageStatistics<T>::generateStorageImage()
 // collapsed values
 
    Int newOutAxis = pStoreImage_p->ndim()-1;
-   
-//   cout << "Storage shape = " << pStoreImage_p->shape() << endl;
-//   cout << "  Input shape = " << pInImage_p->shape() << endl;
-//   cout << "Collapse axes = " << cursorAxes_p.ac() << endl;
    LatticeApply<T>::tiledApply(*pStoreImage_p, *pInImage_p, 
                                collapser, IPosition(cursorAxes_p), 
                                newOutAxis, pProgressMeter);
@@ -1245,8 +1335,8 @@ IPosition ImageStatistics<T>::locInImage(const IPosition& storagePosition)
                  
 //
 // Given a location in the storage image, convert those locations on
-// the non-statistics axis (which is the last one) to account for the 
-// location of the subImage in the parent image
+// the non-statistics axis (the statistics axis is the last one) to 
+// account for the  location of the subImage in the parent image
 //
 {  
    IPosition pos(storagePosition);
@@ -1802,7 +1892,8 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
 
 template <class T>
-Bool ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& ISTAT)
+Bool ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, 
+                                                  const Int& ISTAT)
 //
 // Retrieve values from accumulation image
 //
@@ -1812,12 +1903,8 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
 // Input/output
 //   slice        The statistics; should be of zero size on input
 //
+// Returns false if internal class state is bad.
 {
-
-// Resize output array to nothing first
-
-    slice.resize(IPosition(0,0));
-
 
 // Generate storage image if required
 
@@ -1829,6 +1916,8 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
 // Were there some good points ?  
 
    const Int nDim = pStoreImage_p->ndim();
+   slice.resize(IPosition(0,0));
+
    if (someGoodPoints()) {
 
 
@@ -1843,11 +1932,98 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
 
       pStoreImage_p->getSlice(slice, pos, sliceShape, 
                               IPosition(nDim,1), True);
-      return True;
+   }
+   return True;
+}
+
+
+
+template <class T>
+Bool ImageStatistics<T>::retrieveStorageStatistic(Vector<T>& slice, 
+                                                  const IPosition& pos,
+                                                  const Bool posInImage)
+//
+// Retrieve values from accumulation image
+//
+// Input
+//   pos          Locations for the display axes in the storage image
+//   posInImage   If true the location is given as image coordinates
+//                The non-display axis values will be ignored.
+//                Otherwise the position should be for the
+//                display axes only.
+//
+// Input/output
+//   slice        The statistics; should be long enough on input
+//
+{
+
+
+// Make sure we have a correctly size position
+
+   if (posInImage) {
+      if (pos.nelements() != pInImage_p->ndim()) {
+         if (haveLogger_p) {
+            os_p << LogIO::SEVERE << "Incorrectly sized position given" << LogIO::POST;
+         }
+         slice.resize(0);
+         return False;
+      }
    } else {
-      return False;
+      if (pos.nelements() != displayAxes_p.nelements()) {
+         if (haveLogger_p) {
+            os_p << LogIO::SEVERE << "Incorrectly sized position given" << LogIO::POST;
+         }
+         slice.resize(0);
+         return False;
+      }
    }
 
+
+// Generate storage image if required
+
+   if (needStorageImage_p) {
+      if (!generateStorageImage()) return False;
+   }
+
+
+// Get accumulation sums slice from storage image.
+// Last axis is statistics axis
+
+   const uInt nDim = displayAxes_p.nelements();
+   IPosition slicePos(nDim+1,0);
+   if (posInImage) {
+
+// Discard non display axes
+
+      for (uInt i=0; i<nDim; i++) {
+         slicePos(i) = pos(displayAxes_p(i));
+      }
+   } else {
+
+// Use position as is
+
+      for (uInt i=0; i<nDim; i++) {
+         slicePos(i) = pos(i);
+      }
+   }
+
+
+// Get slice
+
+   IPosition sliceShape(nDim+1,1);
+   sliceShape(nDim) = NACCUM;
+   Array<T> tSlice;
+   pStoreImage_p->getSlice(tSlice, slicePos, sliceShape, 
+                           IPosition(nDim+1,1), False);
+
+// Copy to vector      
+
+   slicePos = 0;
+   for (uInt i=0; i<NACCUM; i++) {
+      slicePos(nDim) = i;
+      slice(i) = tSlice(slicePos);         
+   }
+   return True;
 }
 
 
@@ -2002,10 +2178,12 @@ void ImageStatistics<T>::summStats ()
       os_p << "Rms      = ";
       os_p.output() << setw(oWidth) << rms << endl;
       os_p << endl;
-      os_p << "Minimum value at " << minPos_p+1 << " = ";
-      os_p.output()  << setw(oWidth) << dMin << endl;
-      os_p << "Maximum value at " << maxPos_p+1 << " = ";
-      os_p.output()  << setw(oWidth) << dMax << endl;   
+      if (!fixedMinMax_p) {
+         os_p << "Minimum value at " << minPos_p+1 << " = ";
+         os_p.output()  << setw(oWidth) << dMin << endl;
+         os_p << "Maximum value at " << maxPos_p+1 << " = ";
+         os_p.output()  << setw(oWidth) << dMax << endl;   
+      }
    } else
       os_p << "No valid points found " << endl;
 
@@ -2124,10 +2302,12 @@ template <class T>
 ImageStatsTiledCollapser<T>::ImageStatsTiledCollapser(const Vector<T>& pixelRange, 
                                                       Bool noInclude, 
                                                       Bool noExclude,
+                                                      Bool fixedMinMax,
                                                       const IPosition& blcParent)
 : range_p(pixelRange),
   noInclude_p(noInclude),
   noExclude_p(noExclude),
+  fixedMinMax_p(fixedMinMax),
   minPos_p(0),
   maxPos_p(0),
   blcParent_p(blcParent)
@@ -2207,9 +2387,14 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
             datum = *pInData;
             if (datum >= range_p(0) && datum <= range_p(1)) {
               accumulate(nPts, sum, sumSq, dataMin, dataMax, 
-                         minLoc, maxLoc, minMaxInit, datum, i);
+                         minLoc, maxLoc, minMaxInit, 
+                         fixedMinMax_p, datum, i);
             }
             pInData += inIncr;
+         }
+         if (fixedMinMax_p) {
+            dataMin = range_p(0);
+            dataMax = range_p(1);
          }
       } else if (!noExclude_p) {
 
@@ -2220,7 +2405,7 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
             datum = *pInData;
             if (datum < range_p(0) || datum > range_p(1)) {
               accumulate(nPts, sum, sumSq, dataMin, dataMax, 
-                         minLoc, maxLoc, minMaxInit, datum, i);
+                         minLoc, maxLoc, minMaxInit, False, datum, i);
             }
             pInData += inIncr;
          }
@@ -2232,7 +2417,7 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
          for (uInt i=0; i<nrval; i++) {
             datum = *pInData;
             accumulate(nPts, sum, sumSq, dataMin, dataMax, 
-                       minLoc, maxLoc, minMaxInit, datum, i);
+                       minLoc, maxLoc, minMaxInit, False, datum, i);
             pInData += inIncr;
          }
       }
@@ -2251,10 +2436,14 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
             mask = *pInMask;
             if (mask && datum >= range_p(0) && datum <= range_p(1)) {
               accumulate(nPts, sum, sumSq, dataMin, dataMax, 
-                         minLoc, maxLoc, minMaxInit, datum, i);
+                         minLoc, maxLoc, minMaxInit, False, datum, i);
             }
             pInData += inIncr;
             pInMask += inIncr;
+         }
+         if (fixedMinMax_p) {
+            dataMin = range_p(0);
+            dataMax = range_p(1);
          }
       } else if (!noExclude_p) {
 
@@ -2267,7 +2456,7 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
             mask = *pInMask;
             if (mask && (datum < range_p(0) || datum > range_p(1))) {
               accumulate(nPts, sum, sumSq, dataMin, dataMax, 
-                         minLoc, maxLoc, minMaxInit, datum, i);
+                         minLoc, maxLoc, minMaxInit, False, datum, i);
             }
             pInData += inIncr;
             pInMask += inIncr;
@@ -2283,7 +2472,7 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
             mask = *pInMask;
             if (mask) {
                accumulate(nPts, sum, sumSq, dataMin, dataMax, 
-                          minLoc, maxLoc, minMaxInit, datum, i);
+                          minLoc, maxLoc, minMaxInit, False, datum, i);
             }
             pInData += inIncr;
             pInMask += inIncr;
@@ -2291,7 +2480,8 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
       }
    }
 
-// Update overall min and max location
+// Update overall min and max location.  These are never updated
+// if fixedMinMax is true.
 
    if (minLoc != -1) {
      minPos_p = blcParent_p + startPos + toIPositionInArray(minLoc, shape);
