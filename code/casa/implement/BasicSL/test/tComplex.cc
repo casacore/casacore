@@ -287,5 +287,14 @@ main() {
   c1 = Complex(0.0); c2 = DComplex(0.0);
   assert((!isNaN(c1)) && (!isNaN(c2)));
 
+  {
+      // Test min/max
+      Complex c1(0,1), c2(2,0);
+      Complex c3 = min(c1,c2);
+      assert(near(c1,c3));
+      Complex c4 = max(c1,c2);
+      assert(near(c2,c4));
+  }
+
   return(0);
 }
