@@ -251,8 +251,9 @@ Bool FITSTable::reopen(const String &fileName)
 		raw_table_p->rowsize()*raw_table_p->nrows();
 	    // skip to the start of the heap
 	    // I don't see any way except to read these bogus bytes
-	    char junk[heapOffset];
-	    raw_table_p->ExtensionHeaderDataUnit::read(junk, heapOffset);
+	    Block<char> junk(heapOffset);
+	    raw_table_p->ExtensionHeaderDataUnit::read(junk.storage(), 
+						       heapOffset);
 	}
 	theheap_p = new char [raw_table_p->pcount()];
 	AlwaysAssert(theheap_p, AipsError);
