@@ -35,6 +35,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h> 
 
 
@@ -1654,6 +1655,19 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
 : function_p(function)
 {
     switch (function_p) {
+    case LELFunctionEnums::ISNAN :
+    {
+        if (exp.nelements() != 1) {
+	    throw (AipsError ("LELFunctionBool::constructor - "
+			      "function can only have one argument"));
+	}
+	if (exp[0].dataType() == TpBool) {
+	    throw (AipsError ("LELFunctionBool::constructor - "
+			      "function isnan cannot have bool argument"));
+	}
+	setAttr(exp[0].getAttribute());
+	break;
+    }
     case LELFunctionEnums::ALL :
     case LELFunctionEnums::ANY :
     {
@@ -1684,9 +1698,9 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
 	throw (AipsError ("LELFunctionBool::constructor - "
 			  "unknown Bool function"));
     }
-   // Fill the node block here, so an exception does
-   // not leave the nodes undestructed.
-   arg_p = exp;
+    // Fill the node block here, so an exception does
+    // not leave the nodes undestructed.
+    arg_p = exp;
 #if defined(AIPS_TRACE)
    cout << "LELFunctionBool: constructor" << endl;
 #endif
@@ -1708,6 +1722,51 @@ void LELFunctionBool::eval(LELArray<Bool>& result,
 #endif
 
    switch (function_p) {
+   case LELFunctionEnums::ISNAN :
+   {
+      Bool deleteIn, deleteOut;
+      Bool* out = result.value().getStorage(deleteOut);
+      uInt nr = result.value().nelements();
+      if (arg_p[0].dataType() == TpFloat) {
+	 LELArrayRef<Float> tmp(result.shape());
+	 arg_p[0].evalRef(tmp, section);
+	 result.setMask(tmp);
+	 const Float* in = tmp.value().getStorage(deleteIn);
+	 for (uInt i=0; i<nr; i++) {
+	   out[i] = isNaN(in[i]);
+	 }
+	 tmp.value().freeStorage (in, deleteIn);
+      } else if (arg_p[0].dataType() == TpDouble) {
+	 LELArrayRef<Double> tmp(result.shape());
+	 arg_p[0].evalRef(tmp, section);
+	 result.setMask(tmp);
+	 const Double* in = tmp.value().getStorage(deleteIn);
+	 for (uInt i=0; i<nr; i++) {
+	   out[i] = isNaN(in[i]);
+	 }
+	 tmp.value().freeStorage (in, deleteIn);
+      } else if (arg_p[0].dataType() == TpComplex) {
+	 LELArrayRef<Complex> tmp(result.shape());
+	 arg_p[0].evalRef(tmp, section);
+	 result.setMask(tmp);
+	 const Complex* in = tmp.value().getStorage(deleteIn);
+	 for (uInt i=0; i<nr; i++) {
+	   out[i] = isNaN(in[i]);
+	 }
+	 tmp.value().freeStorage (in, deleteIn);
+      } else {
+	 LELArrayRef<DComplex> tmp(result.shape());
+	 arg_p[0].evalRef(tmp, section);
+	 result.setMask(tmp);
+	 const DComplex* in = tmp.value().getStorage(deleteIn);
+	 for (uInt i=0; i<nr; i++) {
+	   out[i] = isNaN(in[i]);
+	 }
+	 tmp.value().freeStorage (in, deleteIn);
+      }
+      result.value().putStorage (out, deleteOut);
+      break;
+   }
    case LELFunctionEnums::MASK :
    {
       result.removeMask();
@@ -1775,6 +1834,19 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
 
 // Apply the  function
    switch(function_p) {
+   case LELFunctionEnums::ISNAN :
+   {
+      if (arg_p[0].dataType() == TpFloat) {
+	 return isNaN (arg_p[0].getFloat());
+      } else if (arg_p[0].dataType() == TpDouble) {
+	 return isNaN (arg_p[0].getDouble());
+      } else if (arg_p[0].dataType() == TpComplex) {
+	 return isNaN (arg_p[0].getComplex());
+      } else {
+	 return isNaN (arg_p[0].getDComplex());
+      }
+      break;
+   }
    case LELFunctionEnums::ALL :
    {
       Bool deleteIt, deleteMask;
