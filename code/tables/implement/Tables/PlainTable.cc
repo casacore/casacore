@@ -277,10 +277,13 @@ void PlainTable::reopenRW()
     }
     // When a permanent lock is in use, turn it into a write lock.
     lockPtr_p->makeLock (name_p, False, FileLocker::Write);
+    // Set table to opened for read/write.
+    // Do this before reopening subtables, because that might cause
+    // recursion (e.g. SORTED_TABLE in the MS).
+    option_p = Table::Update;
     // Reopen the storage managers and the subtables in all keyword sets.
     colSetPtr_p->reopenRW();
     keywordSet().reopenRW();
-    option_p = Table::Update;
 }
 
 void PlainTable::renameSubTables (const String& newName,
