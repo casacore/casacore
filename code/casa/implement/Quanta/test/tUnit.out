@@ -172,8 +172,7 @@ User unit table (2):
 --------------------------
 List contents of Cache
 
-Cached unit table (2):
-    "_2       ()                           2.35044305391e-11 sr
+Cached unit table (1):
     Jy/beam   ()                           1.35425483146e-15 kg.s-2.sr-1
 
 --------------------------
