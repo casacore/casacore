@@ -67,14 +67,18 @@ class LatticeUtilities
    public:
 
 // Collapse the specified axes by averaging and recover the
-// pixel values.
+// pixel values.  If axes is empty, then the data just contains
+// all of the lattice (i.e. no collapse), 
+// but dropDegenerateAxes is stil honoured
    template <class T>
    static void collapse (Array<T>& data, const IPosition& axes,
                          const MaskedLattice<T>& in,
                          Bool dropDegenerateAxes);
 //
 // Collapse the specified axes by averaging and recover either/and
-// the pixel values and mask.
+// the pixel values and mask. If axes is empty, then the data and mask just contains
+// all of the lattice (i.e. no collapse)
+// but dropDegenerateAxes is stil honoured
    template <class T>
    static void collapse (Array<T>& data, Array<Bool>& mask,
                          const IPosition& axes, 

@@ -96,9 +96,14 @@ void LatticeUtilities::collapse (Array<T>& out, const IPosition& axes,
                                  const MaskedLattice<T>& in,
                                  Bool dropDegenerateAxes) 
 { 
-   LatticeStatistics<T> stats(in, False, False);
-   AlwaysAssert(stats.setAxes(axes.asVector()), AipsError);
-   stats.getConvertedStatistic(out, LatticeStatsBase::MEAN, dropDegenerateAxes);
+   out.resize();
+   if (axes.nelements()==0) {
+      out = in.get(dropDegenerateAxes);
+   } else {
+      LatticeStatistics<T> stats(in, False, False);
+      AlwaysAssert(stats.setAxes(axes.asVector()), AipsError);
+      stats.getConvertedStatistic(out, LatticeStatsBase::MEAN, dropDegenerateAxes);
+   }
 }
 
 template <class T>
@@ -108,7 +113,14 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
                                 Bool dropDegenerateAxes,
                                 Bool getPixels, Bool getMask)
 { 
-   
+   data.resize();
+   mask.resize();
+   if (axes.nelements()==0) {
+      if (getPixels) data = in.get(dropDegenerateAxes);
+      if (getMask) mask = in.getMask(dropDegenerateAxes);
+      return;
+   }
+
 // These lattice are all references so should be reasonably
 // fast.  I can't do it the otherway around, i.e. drop degenerate
 // axes first with an axes specifier because then the 'axes'
