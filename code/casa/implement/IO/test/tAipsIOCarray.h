@@ -39,6 +39,7 @@
 // <use visibility=local>
 
 // <reviewed reviewer="Gareth Hunt" date="95Feb24" tests="" demos="">
+// </reviewed>
 
 // <prerequisite>
 //# Classes you should understand before using this one.
