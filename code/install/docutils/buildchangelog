@@ -1,4 +1,4 @@
-#!/local/bin/perl5
+#!/usr/local/bin/perl5
 
 #   buildchangelog: build changelog html files
 #
