@@ -267,6 +267,7 @@ private:
     Record nulls_p;
     Bool allKeys_p;
     // One per field in row_p, of the right type. i.e. casting required.
+    uInt nfields_p;
     Block<void *> row_fields_p;
     Block<Int> field_types_p;
     Block<Bool> promoted_p;

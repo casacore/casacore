@@ -450,8 +450,8 @@ FITSTable::FITSTable(const String &fileName, uInt whichHDU,
 		     Bool allKeywords)
     : hdu_nr_p(whichHDU), row_nr_p(-1), raw_table_p(0), io_p(0), 
       row_p(RecordInterface::Variable), allKeys_p(allKeywords), 
-      row_fields_p(0), field_types_p(0), vatypes_p(0), vaptr_p(0),
-      va_p(0), theheap_p(0)
+      nfields_p(0), row_fields_p(0), field_types_p(0), vatypes_p(0), 
+      vaptr_p(0), va_p(0), theheap_p(0)
 {
     isValid_p = reopen(fileName);
 }
@@ -528,17 +528,17 @@ Bool FITSTable::reopen(const String &fileName)
     nulls_p = FITSTabular::nullsFromHDU(*raw_table_p);
 
     // resize some things based on the number of fields in the description
-    uInt n = description_p.nfields();
-    row_fields_p.resize(n);
-    field_types_p.resize(n);
-    promoted_p.resize(n);
-    tdims_p.resize(n);
+    nfields_p = description_p.nfields();
+    row_fields_p.resize(nfields_p);
+    field_types_p.resize(nfields_p);
+    promoted_p.resize(nfields_p);
+    tdims_p.resize(nfields_p);
     promoted_p = False;
     tdims_p = -1;
     Bool anyPromoted = False;
     Bool anyReshaped = False;
     // look for fields to promote and TDIMnnn columns, extracting (nnn-1)
-    for (i=0;i<n;i++) {
+    for (i=0;i<nfields_p;i++) {
 	DataType type = description_p.type(i);
 	if (raw_table_p->tscal(i) != 1.0 || raw_table_p->tzero(i) != 0.0
 	    && (type == TpUChar || type == TpArrayUChar ||
@@ -562,7 +562,7 @@ Bool FITSTable::reopen(const String &fileName)
     // of things in the description
     if (anyPromoted || anyReshaped) {
 	RecordDesc newDesc;
-	for (i=0;i<n;i++) {
+	for (i=0;i<nfields_p;i++) {
 	    DataType type = description_p.type(i);
 	    IPosition shape = description_p.shape(i);
 	    if (promoted_p[i] == True) {
@@ -612,7 +612,7 @@ Bool FITSTable::reopen(const String &fileName)
     row_nr_p++;
 
     // Setup the record fields (one time only)
-    for (i=0; i < n; i++) {
+    for (i=0; i < nfields_p; i++) {
 	switch( description_p.type(i)) {
 	case TpBool: 
 	    row_fields_p[i] = new RecordFieldPtr<Bool>(row_p, i);
@@ -772,8 +772,7 @@ void FITSTable::next()
 void FITSTable::fill_row()
 {
     // fill the current row into the Row object.
-    uInt n = row_fields_p.nelements();
-    for (uInt i=0; i < n; i++) {
+    for (uInt i=0; i < nfields_p; i++) {
 	// get the scaling factors
 	Double zero, scale;
 	zero = raw_table_p->tzero(i);
@@ -1497,9 +1496,8 @@ void FITSTable::clear_self()
     delete io_p;
     io_p = 0;
 
-    uInt n = row_fields_p.nelements();
     uInt i;
-    for (i=0; i < n; i++) {
+    for (i=0; i < nfields_p; i++) {
 	switch( field_types_p[i]) {
 	case TpBool: 
 	    delete (RecordFieldPtr<Bool> *)row_fields_p[i];
@@ -1573,6 +1571,7 @@ void FITSTable::clear_self()
 	    }
 	}
     }
+    nfields_p = 0;
     vatypes_p.resize(0);
     vaptr_p.resize(0);
     delete [] va_p;
