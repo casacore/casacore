@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id$
+//# $Id: ImageFITS2Converter.cc,v 8.1 1997/03/14 00:46:54 bglenden Exp nkilleen
 
 #include <aips/version.h>
 
@@ -97,7 +97,7 @@ void ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
     }
 
     // OK, now see if we can attach the FITS reading classes
-    FitsInput infile(fitsName, FITS::Disk);
+    FitsInput infile(fitsfile.path().expandedName(), FITS::Disk);
     if (infile.err()) {
         error = String("Cannot open file (or other I/O error): ") + fitsName;
 	return;
@@ -212,13 +212,13 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     }
     Directory fitsdir = fitsfile.path().dirName();
     if (!fitsdir.exists() || !fitsdir.isWritable()) {
-	error = String("Direcotry ") + fitsdir.path().originalName() + 
+	error = String("Directory ") + fitsdir.path().originalName() + 
 	    " does not exist or is not writable";
 	return False;
     }
     
     // OK, it appears to be a writable etc. file, let's try opening it.
-    FitsOutput outfile(fitsName, FITS::Disk);
+    FitsOutput outfile(fitsfile.path().expandedName(), FITS::Disk);
     if (outfile.err()) {
 	error = String("Cannot open file for writing: ") + fitsName;
 	return False;
