@@ -1,4 +1,5 @@
-\documentstyle{article}
+\documentclass[11pt]{article}
+\usepackage{html}
 \setlength{\textwidth}{6.5in}
 \setlength{\evensidemargin}{0.0in}
 \setlength{\oddsidemargin}{0.0in}
@@ -31,7 +32,15 @@
 \title{Definition of MeasurementSet \break \aipspp\ Note 191}
 \author{M.H. Wieringa, ATNF\\T.J. Cornwell, NRAO}
 \date{October 4, 1996}
+
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available.}{../191.ps.gz}
+\end{htmlonly}
+
+
 \maketitle
+
+
 
 \tableofcontents
 \section{Summary}
