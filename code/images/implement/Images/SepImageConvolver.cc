@@ -129,7 +129,7 @@ void SepImageConvolver<T>::setKernel(uInt axis, const Vector<T>& kernel)
 
 template <class T>
 void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernelType,  
-                                     const Quantum<Double>& width)
+                                     const Quantum<Double>& width, Bool peakIsUnity)
 {
    checkAxis(axis);
 //
@@ -146,18 +146,19 @@ void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernel
             << unit.getName() << LogIO::EXCEPTION;
    }
    Double width2 = width.getValue(unit)/inc;
-   setKernel(axis, kernelType, width2);
+   setKernel(axis, kernelType, width2, peakIsUnity);
 }
 
 template <class T>
 void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernelType,  
-                                     Double width)
+                                     Double width, Bool peakIsUnity)
 {
    checkAxis(axis);
 //
 // T can only be Float or Double
 //
-   Vector<T> x = VectorKernel::make(kernelType, T(width), itsImagePtr->shape()(axis));
+   Vector<T> x = VectorKernel::make(kernelType, T(width), 
+                                    itsImagePtr->shape()(axis), peakIsUnity);
    uInt n = itsVectorKernels.nelements() + 1;
    itsVectorKernels.resize(n, True);
    itsVectorKernels[n-1] = new Vector<T>(x.copy());

@@ -39,8 +39,8 @@
 
 
 
-Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, uInt shape)
-
+Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, 
+                                  uInt shape, Bool peakIsUnity)
 {
    LogIO os(LogOrigin("VectorKernel", "make(Double)"));
    if (shape <=1) {
@@ -60,32 +60,50 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, uInt sha
       nPixels = kernel.nelements();
 //
       const Double refPix = Double(nPixels)/2;
-      const Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
+      Double norm;
+      if (peakIsUnity)  {
+         norm = 1.0;
+      } else {
+         norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
+      }
       const Gaussian1D<Double> gauss(norm, refPix, Double(width));
       for (uInt j=0; j<nPixels; j++) kernel(j) = gauss(Double(j));
    } else if (kernelType == BOXCAR) {
       Int intWidth = Int(width+0.5);
       nPixels = intWidth;
       kernel.resize(min(shape,nPixels));
+      Double norm;
+      if (peakIsUnity)  {
+         norm = 1.0;
+      } else {
+         norm = Double(intWidth);
+      }
 //
       for (uInt i=0; i<nPixels; i++) {
-         kernel(i) = 1.0 / Double(intWidth);     
+         kernel(i) = 1.0 / norm;
       }
    } else if (kernelType == HANNING) {
       nPixels = min(uInt(3),shape);
       kernel.resize(nPixels);
-      kernel(0) = 0.25;
-      kernel(1) = 0.5;
-      if (shape>2) kernel(2) = 0.25;
+      if (peakIsUnity)  {
+         kernel(0) = 0.5;
+         kernel(1) = 1.0;
+         if (shape>2) kernel(2) = 0.5;
+      } else {
+         kernel(0) = 0.25;
+         kernel(1) = 0.5;
+         if (shape>2) kernel(2) = 0.25;
+      }
    }
    return kernel;
 }
 
 
 
-Vector<Float> VectorKernel::make(KernelTypes kernelType, Float width, uInt shape)
+Vector<Float> VectorKernel::make(KernelTypes kernelType, Float width, 
+                                 uInt shape, Bool peakIsUnity)
 {
-   Vector<Double> tmp = make(kernelType, Double(width), shape);
+   Vector<Double> tmp = make(kernelType, Double(width), shape, peakIsUnity);
    Vector<Float> kernel(tmp.nelements());
    for (uInt i=0; i<tmp.nelements(); i++) kernel(i) = Float(tmp(i));
    return kernel;

@@ -59,6 +59,11 @@
 // generates  a Vector holding that kernel.  It can be used
 // in conjunction with the separable image convolver,
 // SepImageConvolver
+//
+// The kernels can be normalized so that the peak of the
+// kernel is 1, or 1/area under the kernel. The latter ensures
+// conservation of integrated pixel value (the usual jargon
+// is conservation of flux for images) and is the default.
 // </synopsis>
 
 // <example>
@@ -92,10 +97,12 @@ enum KernelTypes {
    NKERNELS};
 
 // Create kernel vector for width in pixels.  For Gaussian, width is FWHM,
-// for Boxcar, width is full width.  For Hanning width is ignored.
+// for Boxcar, width is full width.  For Hanning width is ignored (always 3)
 // <group>   
-   static Vector<Double> make(KernelTypes kernelType, Double width, uInt shape);
-   static Vector<Float> make(KernelTypes kernelType, Float width, uInt shape);
+   static Vector<Double> make(KernelTypes kernelType, Double width, 
+                              uInt shape, Bool peakIsUnity=False);
+   static Vector<Float> make(KernelTypes kernelType, Float width, 
+                             uInt shape, Bool peakIsUnity=False);
 // </group>   
 
 

@@ -112,9 +112,9 @@ public:
 // by the given kernel.
 // <group>
    void setKernel(uInt axis, VectorKernel::KernelTypes kernelType,
-                  const Quantum<Double>& width);
+                  const Quantum<Double>& width, Bool peakIsUnity=False);
    void setKernel(uInt axis, VectorKernel::KernelTypes kernelType,
-                  Double width);
+                  Double width, Bool peakIsUnity=False);
 // </group>
 
 // Get the convolution kernel for the specified axis
