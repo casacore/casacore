@@ -1,5 +1,5 @@
 //# Fit2D.h: Class to fit 2-D objects to Lattices or Arrays
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,7 +71,9 @@ template<class T> class MaskedLattice;
 // during the fitting process.  This is done with the 
 // parameterMask Vector which is in the same order as the
 // parameter Vector.  A value of True indicates the parameter
-// will be fitted for.
+// will be fitted for.  Presently, when you say fix the minor axis,
+// you really end up fixing the axial ratio (internals).  I don't
+// have a solution for this presently.
 // 
 // For Gaussians, the parameter Vector (input or output) consists, in order, of
 // the peak, x location, y location, FWHM of major axis, FWHM of minor axis, 
@@ -226,8 +228,16 @@ public:
     // if there is no valid solution.    All available parameters (fixed or
     // adjustable) are included in the solution vectors.  
     //<group>
-    Vector<Double> availableSolution ();
-    Vector<Double> availableSolution (uInt which);
+    Vector<Double> availableSolution () const;
+    Vector<Double> availableSolution (uInt which) const;
+    //</group>
+
+    // The errors. All available parameters (fixed or adjustable) are 
+    // included in the solution vectors.  Unsolved for parameters will 
+    // have error 0.
+    //<group>
+    Vector<Double> availableErrors() const;
+    Vector<Double> availableErrors(uInt which) const;
     //</group>
 
     // The number of iterations that the fitter finished with
@@ -235,9 +245,6 @@ public:
 
     // The chi squared of the fit.  Returns 0 if fit has been done.
     Double chiSquared () const;
-
-    // The covariance matrix of the fit. 
-    Matrix<Double> covariance();
 
     // The number of points used for the last fit
     uInt numberPoints () const;
@@ -261,7 +268,7 @@ public:
 
 private:
 
-   LogIO itsLogger;
+   mutable LogIO itsLogger;
    Bool itsValid, itsValidSolution, itsIsNormalized, itsHasSigma;
    Bool itsInclude;
    Vector<Float> itsPixelRange;
@@ -280,8 +287,14 @@ private:
                              const Matrix<Double>& pos,
                              const Vector<Double>& sigma);
 
-   Vector<Double> getAvailableSolution() const;
-   Vector<Double> getSolution(uInt& iStart, uInt which);
+// Returns available (adjustable + fixed) solution for model of
+// interest and tells you where it began in the full solution vector
+// Does no axial ratio nor position angle conversions from direct
+// fit solution vector
+// <group>
+   Vector<Double> availableSolution (uInt& iStart, uInt which) const;
+   Vector<Double> availableErrors (uInt& iStart, uInt which) const;
+// </group>
 
    Vector<Double> getParams(uInt which) const;
    void setParams(const Vector<Double>& params, uInt which);
