@@ -28,7 +28,6 @@
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
 typedef Vector<Int> lcpagedmask_gppbug1;
@@ -37,43 +36,51 @@ typedef Vector<Int> lcpagedmask_gppbug1;
 LCPagedMask::LCPagedMask()
 {}
 
-LCPagedMask::LCPagedMask (const TiledShape& latticeShape,
+LCPagedMask::LCPagedMask (const TiledShape& latticShape,
 			  const String& tableName)
-: LCBox (IPosition(latticeShape.shape().nelements(), 0),
-	 latticeShape.shape()-1, latticeShape.shape())
-//
-// Note that LCPagedMask does not populate the itsMask
-// member variable of LCRegionFixed.  This is because
-// that is an ArrayLattice<Bool>  We do set the pointer
-// of LCRegionSingle with the address of LCPagedMask::itsMask
-// though.  
-//
+: LCRegionSingle (latticShape.shape()),
+  itsBox (IPosition(latticShape.shape().nelements(), 0),
+	  latticShape.shape()-1, latticShape.shape())
 {
-    itsMask = PagedArray<Bool> (latticeShape, tableName);
+    setBoundingBox (itsBox.boundingBox());
+    itsMask = PagedArray<Bool> (latticShape, tableName);
     setMaskPtr (itsMask);
 }
 
 LCPagedMask::LCPagedMask (const TiledShape& maskShape,
-			  const String& tableName,
-			  const IPosition& blc,
-			  const IPosition& latticeShape)
-: LCBox (blc, blc+maskShape.shape()-1, latticeShape)
+			  const LCBox& box,
+			  const String& tableName)
+: LCRegionSingle (box.latticeShape()),
+  itsBox (box)
 {
+    // Check if box shape and mask shape are equal.
+    if (itsBox.shape() != maskShape.shape()) {
+	throw (AipsError ("LCPagedMask::LCPagedMask- "
+			  "shape of mask and box differ"));
+    }
+    setBoundingBox (itsBox.boundingBox());
     itsMask = PagedArray<Bool> (maskShape, tableName);
     setMaskPtr (itsMask);
 }
 
 LCPagedMask::LCPagedMask (PagedArray<Bool>& mask,
-			  const IPosition& blc,
-			  const IPosition& latticeShape)
-: LCBox (blc, blc+mask.shape()-1, latticeShape),
-  itsMask (mask)
+			  const LCBox& box)
+: LCRegionSingle (box.latticeShape()),
+  itsBox (box)
 {
+    // Check if box shape and mask shape are equal.
+    if (itsBox.shape() != mask.shape()) {
+	throw (AipsError ("LCPagedMask::LCPagedMask- "
+			  "shape of mask and box differ"));
+    }
+    setBoundingBox (itsBox.boundingBox());
+    itsMask = mask;
     setMaskPtr (itsMask);
 }
 
 LCPagedMask::LCPagedMask (const LCPagedMask& other)
-: LCBox (other),
+: LCRegionSingle (other),
+  itsBox (other.itsBox),
   itsMask(other.itsMask)
 {
     setMaskPtr (itsMask);
@@ -85,23 +92,24 @@ LCPagedMask::~LCPagedMask()
 LCPagedMask& LCPagedMask::operator= (const LCPagedMask& that)
 {
     if (this != &that) {
-	LCBox::operator= (that);
+	LCRegionSingle::operator= (that);
+	itsBox  = that.itsBox;
+	itsMask = that.itsMask;
+	setMaskPtr (itsMask);
     }
     return *this;
 }
 
 Bool LCPagedMask::operator== (const LCRegion& other) const
 {
-
-// Check below us
-
-   if (!LCBox::operator==(other)) return False;
-
-// Check masks
-
-   if (!masksEqual(other)) return False;
-
-   return True;
+    // Check if parent class matches.
+    // If so, we can safely cast.
+    if (! LCRegionSingle::operator== (other)) {
+	return False;
+    }
+    const LCPagedMask& that = (const LCPagedMask&)other;
+    // Check the box and mask.
+    return ToBool (itsBox == that.itsBox  &&  masksEqual (that));
 }
 
 
@@ -128,24 +136,25 @@ String LCPagedMask::type() const
    return className();
 }
 
-TableRecord LCPagedMask::toRecord (const String&) const
+TableRecord LCPagedMask::toRecord (const String& tableName) const
 {
     TableRecord rec;
     defineRecordFields (rec, className());
-    rec.define ("blc", box().start().asVector());
     rec.defineTable ("mask", Table(itsMask.tableName()));
-    rec.define ("shape", latticeShape().asVector());
+    rec.defineRecord ("box", itsBox.toRecord (tableName));
     return rec;
 }
 
 LCPagedMask* LCPagedMask::fromRecord (const TableRecord& rec,
-				      const String&)
+				      const String& tableName)
 {
     Table table (rec.asTable ("mask"));
     PagedArray<Bool> mask(table);
-    return new LCPagedMask (mask,
-			    Vector<Int>(rec.asArrayInt ("blc")),
-			    Vector<Int>(rec.asArrayInt ("shape")));
+    LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
+						   tableName));
+    LCPagedMask* regPtr = new LCPagedMask (mask, *boxPtr);
+    delete boxPtr;
+    return regPtr;
 }
 
 Bool LCPagedMask::isWritable() const
