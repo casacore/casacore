@@ -70,8 +70,8 @@ The last example shows how a boolean expression can be used to form a
 mask on a lattice.  Only the pixels fulfilling the Boolean condition
 will be used when calculating the mean. 
 
-\medskip\noindent In general the result of a LEL expression is a lattice, but it
-can be a scalar too. If is is a scalar, it will be handled correctly
+\medskip\noindent In general the result of a LEL expression is a lattice,
+but it can be a scalar too. If is is a scalar, it will be handled correctly
 by C++ and glish functions using it as the source in, say, an
 assignment to another lattice.
 
@@ -191,6 +191,17 @@ precedence):
 Note that \verb+^+ has a higher precedence than the unary operators.
 \\E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{-9}.
 
+The operands of these operators can be 2 scalars, 2 lattices, or a
+lattice and a scalar. When 2 lattices are used, they should in
+principle conform; i.e. they should have the same shape and
+coordinates. However, LEL will try if it can extend
+one lattice to make it conformant with the other. It can do that
+if both lattices have coordinates and if one lattice is a true
+subset of the other (thus if one lattice has all the coordinate
+axes of the other lattice and if those axes have the same length or
+have length 1). If so, LEL will add missing axes and/or
+stretch axes with length 1
+
 \subsection{\label{LEL:FUNCTIONS}Functions}
 In the following tables the function names are shown in uppercase,
 while the result and argument types are shown in lowercase.
@@ -306,7 +317,7 @@ The result of these functions is a scalar.
 
 \subsubsection{Miscellaneous functions}
 \begin{description}
-  \item[ \texttt{real amp(real,real)}]
+  \item[ \texttt{real AMP(real,real)}]
     It returns the square root of the quadrature sum of two
     arguments.  Thus
     \begin{verbatim}
@@ -315,7 +326,7 @@ The result of these functions is a scalar.
     gives $\sqrt{(lat1^2+lat2^2)}$.  This can be used to form, for
     example, (biased) polarized intensity images when lat1 and lat2
     are Stokes Q and U images.
-  \item[ \texttt{real pa(real,real)}]
+  \item[ \texttt{real PA(real,real)}]
     It returns a ``position angle'' (in degrees) from the two lattices.  That is,
     \begin{verbatim}
        pa(lat1,lat2)
@@ -323,6 +334,15 @@ The result of these functions is a scalar.
     gives $180/\pi*atan2(lat1,lat2)/2$.  This can be used to form, for
     example, linear polarization position angle images when
     lat1 and lat2  are Stokes Q and U images, {\it respectively}.
+  \item[ \texttt{real SPECTRALINDEX(real,real)}]
+    It returns a the spectral index made from the two lattices.  That is,
+    \begin{verbatim}
+       log(s1/s2) / log(f1/f2)
+    \end{verbatim}
+    where s1 and s2 are the source fluxes in the lattices and f1 and f2
+    are the frequencies of the spectral axes of both lattices.
+    Similar to e.g. operator + the lattices do not need to have the
+    same shape. One can be extended/stretched as needed.
   \item[ \texttt{anytype VALUE(anytype)}]
     It returns the argument without its possible mask, thus it removes
     the mask from the argument.
@@ -332,6 +352,9 @@ The result of these functions is a scalar.
     It returns the mask of the argument.
     The section about \htmlref{mask handling}{LEL:HANDMASKS}
     discusses it in more detail.
+  \item[ \texttt{boolean ISNAN(anytype)}]
+    It tests lattice elements on a NaN value and sets the corresponding
+    output element to T if so; otherwise to F.
   \item[ \texttt{anytype REPLACE(anytype, anytype)}]
     The first argument has to be a lattice (expression).
     The optional second argument can be a scalar or a lattice
