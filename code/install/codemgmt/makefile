@@ -44,7 +44,7 @@ include $(AIPSARCH)/makedefs
 #--------------
 AISCRIPT := ai ae amv am ao au ax rau
 SUIDWRAP := sau sai
-DISTSCRP := inhale sneeze
+DISTSCRP := inhale sneeze aupdate
 SCRIPTS  := alog av ih_log_info.pl inhold mktree rai rao runtests squiz testsuite xrcs testsum.sh UPchange UPdup UPfind UPinfo UPlist UPload UPlock UPmove UPreident UPsed UPtmpl
 
 AIPSEXES := $(basename $(filter-out %_master.c,$(filter %.c,$(AIPSSRCS))))
