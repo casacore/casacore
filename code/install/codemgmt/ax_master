@@ -4442,3 +4442,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSSourceColumns.cc aips/implement/MeasurementSets/OldMSSourceColumns.cc
 14 296 src mv aips/implement/MeasurementSets/MSSourceColumns.h aips/implement/MeasurementSets/OldMSSourceColumns.h
 14 296 src mv aips/implement/MeasurementSets/MSSourceEnums.h aips/implement/MeasurementSets/OldMSSourceEnums.h
+14 296 src mv aips/implement/MeasurementSets/MSSpectralWindow.cc aips/implement/MeasurementSets/OldMSSpectralWindow.cc
