@@ -55,9 +55,9 @@ template <class T> class Vector;
 // <linkto class=ConstantSpectrum>ConstantSpectrum</linkto> class but the
 // <linkto class=SpectralIndex>SpectralIndex</linkto> class is also
 // available. These classes model the spectral shape of emission from the
-// sky. Classes derived from the <linkto
-// class=ComponentShape>ComponentShape</linkto> class are used to model the
-// spatial characteristics.
+// sky. Classes derived from the 
+// <linkto class=ComponentShape>ComponentShape</linkto> class are used to model
+// the spatial characteristics.
 
 // This class parameterises spectral models with two quantities.
 // <dl>

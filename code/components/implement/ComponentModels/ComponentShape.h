@@ -42,7 +42,7 @@ template <class T> class Vector;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tComponentShape" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -53,13 +53,13 @@ template <class T> class Vector;
 
 // This abstract base class defines the interface for different classes which
 // specify the shape of a component. The most fundamental derived class is the
-// <linkto class=PointShape>point</linkto> shape class but the <linkto
-// class=GaussianShape>Gaussian</linkto> shape is also available. These classes
-// model the spatial distribution of emission from the sky. Classes derived
-// from the <linkto class=SpectralModel>SpectralModel</linkto> class are used
-// to model the spectral characteristics.
+// <linkto class=PointShape>point</linkto> shape class but the 
+// <linkto class=GaussianShape>Gaussian</linkto> shape is also available. These
+// classes model the spatial distribution of emission from the sky. Classes
+// derived from the <linkto class=SpectralModel>SpectralModel</linkto> class
+// are used to model the spectral characteristics.
 
-// This class parameterises all possible shapes with two quantities.
+// This class parameterises shapes with two quantities.
 // <dl>
 // <dt><em> A reference direction.</em>
 // <dd> This is specified using an <linkto class=MDirection>MDirection</linkto>
@@ -69,13 +69,12 @@ template <class T> class Vector;
 // <dt> <em>A Vector of parameters.</em>
 // <dd> This contains other parameters that the are defined differently for
 //      different shapes. The length of the vector may vary for different
-//      parameter shapes. 
+//      component shapes. 
 // </dl>
 // 
-
 // The basic operation of classes using this interface is to model the flux as
 // a function of direction on the sky. Classes derived from this one do not
-// know what the Flux of the component is, this must be supplied as an argument
+// know what the flux of the component is, this must be supplied as an argument
 // to the <src>sample</src> function. These classes will scale the supplied
 // flux in order to calculate the proportion of the flux that is enclosed
 // within a pixel of specified size centred on a specified direction. In
