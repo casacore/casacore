@@ -211,9 +211,11 @@ public:
     // <src>CoordinateSystem</src>, <src>cSys</src>.  The output vectors
     // are resized appropriately by this function.  A value of  -1 
     // in either vector means that it could not be found in the other
-    // <src>CoordinateSystem</src>.  
-    // Conformance (world axis intrinsic units and world axis types) of 
-    // the <src>CoordinateSystems</src> is checked.
+    // <src>CoordinateSystem</src>.  Note that two world axes of the
+    // same coordinate type (e.g. <src>SpectralCoordinate</src>)
+    // will be considered to not  match if their specific types are 
+    // different (e.g. TOPO versus LSR for the <src>SpectralCoordinate</src>, 
+    // or J2000 versus GALACTIC for <src>DirectionCoordinate</src>).
        Bool worldMap (Vector<Int>& worldAxisMap,
                       Vector<Int>& worldAxisTranspose,
                       const CoordinateSystem& cSys) const;

@@ -272,7 +272,6 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 // . The value of worldAxisMap(i2) is the world axis of "*this" matching 
 //   world axis i2 in "other".  A value of -1 indicates that 
 //   a world axis could not be matched.  
-//   
 // . The value of worldAxisTranspose(i1) is the world axis of "other"
 //   matching world axis i1 of "*this"  It tells you how to transpose
 //   "other" to be in the order of "*this".  A value of -1 indicates
@@ -352,7 +351,9 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
 //
 {
 
-// Make tests on specific coordinate types here
+// Make tests on specific coordinate types here. We already
+// know that the two cSys are the same coordinate type 
+// (e.g. DIRECTION)
 
    if (cSys2.coordinate(coord2).type() == Coordinate::DIRECTION) {
       if (cSys1.directionCoordinate(coord1).directionType() != 
