@@ -80,7 +80,7 @@ Bool Unit::operator==(const Unit &other) const {
 }
 
 Bool Unit::operator!=(const Unit &other) const {
-    return ToBool(uVal == other.uVal);
+    return ToBool(uVal != other.uVal);
 }
 
 Bool Unit::empty() const{
