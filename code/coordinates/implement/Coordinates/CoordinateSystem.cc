@@ -35,12 +35,15 @@
 #include <trial/Coordinates/TabularCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 
-
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Containers/Record.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Utilities/Assert.h>
@@ -49,11 +52,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/UnitMap.h>
-
-#include <aips/Containers/Record.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/Utilities/Regex.h>
 
 #include <strstream.h>
 #include <iomanip.h>
@@ -1700,19 +1699,15 @@ String CoordinateSystem::format(String& units,
                                 uInt worldAxis,
                                 Bool absolute,
                                 Int precision,
-                                Bool native) const   
+                                Bool native) 
 {
     AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
 // 
     Int coord, axis;
     findWorldAxis(coord, axis, worldAxis);
-     
-// Should never fail  
-
     AlwaysAssert(coord>=0 && axis >= 0, AipsError);
-    
-    return coordinate(coord).format(units, format, worldValue, axis, 
-                                    absolute, precision, native);
+    return coordinates_p[coord]->format(units, format, worldValue, axis, 
+                                        absolute, precision, native);
 }
 
 ObsInfo CoordinateSystem::obsInfo() const
@@ -2905,16 +2900,25 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     }
 //
     coordsys.transpose(order, order);
+
+// Set the ObsInfo.  Errors are not regarded as fatal to the construction of the 
+// CoordinateSystem as the default ObsInfo is viable
+
     ObsInfo oi;
-    String error;
+    Vector<String> error;
     Bool ok = oi.fromFITS(error, header);
-    if (ok) {
-	coordsys.setObsInfo(oi);
-    } else {
-	os << LogIO::SEVERE << 
-	    "Error reading ObsInfo: " << error << LogIO::POST;
+    coordsys.setObsInfo(oi);
+//
+    if (!ok) {
+       os << LogIO::WARN << "The following errors occurred decoding the ObsInfo from FITS" << LogIO::POST;
+       for (uInt i=0; i<error.nelements(); i++) {
+          if (error(i).length() > 0) {
+            os << LogIO::WARN << "  " << error(i) << LogIO::POST;
+          }
+       }
     }
-    return ok;
+//
+    return True;
 }
 
 
@@ -3998,7 +4002,7 @@ void CoordinateSystem::listPointingCenter (LogIO& os) const
    if (iC >= 0) {
       MVDirection pc = obsinfo_p.pointingCenter();
       if (!obsinfo_p.isPointingCenterInitial()) {
-         const DirectionCoordinate& dC = directionCoordinate(uInt(iC));
+         const DirectionCoordinate& dC = directionCoordinate(iC);
          Vector<Double> pixel, world;
          if (!dC.toPixel(pixel, pc)) {
             os << dC.errorMessage() << LogIO::EXCEPTION;
@@ -4006,13 +4010,15 @@ void CoordinateSystem::listPointingCenter (LogIO& os) const
          if (!dC.toWorld(world, pixel)) {
             os << dC.errorMessage() << LogIO::EXCEPTION;
          }
-//
+
+// We must use coordinates_p not dC as the latter is const
+
          Int prec;
          Coordinate::formatType form(Coordinate::DEFAULT);
-         dC.getPrecision(prec, form, True, 6, 6, 6);
+         coordinates_p[iC]->getPrecision(prec, form, True, 6, 6, 6);
          String listUnits;
-         String lon = dC.format(listUnits, form, world(0), 0, True, prec);
-         String lat  = dC.format(listUnits, form, world(1), 1, True, prec);
+         String lon = coordinates_p[iC]->format(listUnits, form, world(0), 0, True, prec);
+         String lat  = coordinates_p[iC]->format(listUnits, form, world(1), 1, True, prec);
 //
          ostrstream oss;
          oss << "Pointing center     :  " << lon << "  " << lat << ends;
