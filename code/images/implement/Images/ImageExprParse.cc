@@ -46,6 +46,13 @@
 static const Block<LatticeExprNode>* theTempLattices;
 static const PtrBlock<const ImageRegion*>* theTempRegions;
 
+//# Define a block holding allocated nodes.
+//# They will be deleted when the expression is parsed.
+//# In that way they are also deleted in case of exceptions.
+static Block<void*> theNodes;
+static Block<Bool>  theNodesType;
+static uInt theNrNodes;
+
 //# Hold the last table used to lookup unqualified region names.
 static Table theLastTable;
 
@@ -94,6 +101,37 @@ ImageExprParse::ImageExprParse (const String& value)
   itsSval (value)
 {}
 
+void ImageExprParse::addNode (LatticeExprNode* node)
+{
+    if (theNrNodes >= theNodes.nelements()) {
+        theNodes.resize (theNrNodes + 32);
+        theNodesType.resize (theNrNodes + 32);
+    }
+    theNodes[theNrNodes] = node;
+    theNodesType[theNrNodes] = True;
+    theNrNodes++;
+}
+void ImageExprParse::addNode (ImageExprParse* node)
+{
+    if (theNrNodes >= theNodes.nelements()) {
+        theNodes.resize (theNrNodes + 32);
+        theNodesType.resize (theNrNodes + 32);
+    }
+    theNodes[theNrNodes] = node;
+    theNodesType[theNrNodes] = False;
+    theNrNodes++;
+}
+void ImageExprParse::deleteNodes()
+{
+    for (uInt i=0; i<theNrNodes; i++) {
+        if (theNodesType[i]) {
+	    delete (LatticeExprNode*)(theNodes[i]);
+	} else {
+	    delete (ImageExprParse*)(theNodes[i]);
+	}
+    }
+    theNrNodes = 0;
+}
 
 LatticeExprNode ImageExprParse::command (const String& str)
 {
@@ -108,7 +146,9 @@ LatticeExprNode ImageExprParse::command
 {
     theTempLattices = &tempLattices;
     theTempRegions  = &tempRegions;
+    theNrNodes = 0;
     theLastTable = Table();
+    theirNode = LatticeExprNode();
     String message;
     String command = str + '\n';
     Bool error = False;
@@ -124,9 +164,12 @@ LatticeExprNode ImageExprParse::command
     //# Save the resulting expression and clear the common node object.
     LatticeExprNode node = theirNode;
     theirNode = LatticeExprNode();
+    deleteNodes();
     theLastTable = Table();
     //# If an exception was thrown; throw it again with the message.
+    //# Get rid of the constructed node.
     if (error) {
+        node = LatticeExprNode();
 	throw (AipsError(message + '\n' + "Scanned so far: " +
 	                 command.before(imageExprGramPosition())));
     }
@@ -337,7 +380,13 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     }
     // One or three elements have been given.
     // If the first one is empty, a table must have been used already.
-    if (names.nelements() == 1  ||  names(0).empty()) {
+    if (names.nelements() == 1) {
+	if (theLastTable.isNull()) {
+	    throw (AipsError ("ImageExprParse: '" + itsSval +
+			      "' is an unknown lattice or image "
+			      "or it is an unqualified region"));
+	}
+    } else if (names(0).empty()) {
 	if (theLastTable.isNull()) {
 	    throw (AipsError ("ImageExprParse: unqualified region '" + itsSval +
 			      "' is used before any table is used"));
@@ -354,13 +403,15 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     // Now try to find the region in the table.
     ImageRegion* regPtr;
     if (names.nelements() == 1) {
-	regPtr = RegionHandler::getRegion (theLastTable, names(0));
+	regPtr = RegionHandler::getRegion (theLastTable, names(0),
+					   RegionHandler::Any, False);
 	if (regPtr == 0) {
-	    throw (AipsError ("ImageExprParse: region '" + itsSval +
-			      " is an unknown lattice, image, or region"));
+	    throw (AipsError ("ImageExprParse: '" + itsSval +
+			      "' is an unknown lattice, image, or region"));
 	}
     } else {
-	regPtr = RegionHandler::getRegion (theLastTable, names(2));
+	regPtr = RegionHandler::getRegion (theLastTable, names(2),
+					   RegionHandler::Any, False);
 	if (regPtr == 0) {
 	    throw (AipsError ("ImageExprParse: region '" + itsSval +
 			      " is an unknown region"));
