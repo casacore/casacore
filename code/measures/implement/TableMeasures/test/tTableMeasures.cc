@@ -120,7 +120,7 @@ int main(void)
         // This sets up a second MEpoch column.  Variable references are 
 	// specified by supplying the name of a reference column "TimeRef" to
 	// use.  tmMOS is used as a variable measure offset column.
-	TableMeasRefDesc tmrd("TimeRef", tmMOS);
+	TableMeasRefDesc tmrd(td, "TimeRef", tmMOS);
 	TableMeasValueDesc tmvd(td, "Time1");    
 	TableMeasDesc<MEpoch> tmdMEpoch(tmvd, tmrd);
 	tmdMEpoch.write(td);
@@ -143,7 +143,7 @@ int main(void)
 	MEpoch mjdToday(MVEpoch(51234));
 	TableMeasOffsetDesc tmodToday(mjdToday);
 	//	TableMeasRefDesc tmrdLast(MEpoch::LAST, tmodToday);
-	TableMeasRefDesc tmrdLast("TimeArrRef", tmodToday);
+	TableMeasRefDesc tmrdLast(td, "TimeArrRef", tmodToday);
 	TableMeasValueDesc tmvdLast(td, "Time1Arr");
 	// create a tmp and test if copy constructor and assignment work
 	TableMeasDesc<MEpoch> tmp(tmvdLast, tmrdLast);
