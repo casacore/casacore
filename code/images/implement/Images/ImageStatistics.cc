@@ -1149,7 +1149,7 @@ void ImageStatistics<T>::generateStorageImage()
       tileShape(tileShape.nelements()-1) = storeImageShape(tileShape.nelements()-1);
   
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                                                String("Scratch_ImageStatistics_"));
+                                                String("ImageStatistics_Sums_"));
       pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
       pStoreImage_p->set(Double(0.0));
 
