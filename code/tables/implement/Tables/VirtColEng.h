@@ -1,5 +1,5 @@
 //# VirtColEng.h: Abstract base class for virtual column handling
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,7 +70,7 @@
 //
 // Initialization of the virtual column engine is done by the
 // functions create (for new tables), open (for existing tables) and prepare.
-// The engine can be closed by the function close, which allows to
+// The engine can be flushed by the function flush, which allows to
 // write some data. The function open can read these data back.
 // VirtualColumnEngine is closely related with the table system.
 //

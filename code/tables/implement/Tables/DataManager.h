@@ -224,7 +224,7 @@ public:
     // Return the type name of the data manager (in fact its class name).
     // It has to be a unique name, thus if the class is templated
     // the template parameter has to be part of the name.
-    // This is used by the open/close mechanism to be able to reconstruct
+    // This is used by the open/flush mechanism to be able to reconstruct
     // the correct data manager.
     virtual String dataManagerType() const = 0;
 
@@ -411,7 +411,7 @@ private:
     // Let the data manager initialize itself for an existing table.
     // The AipsIO stream represents the main table file and must be
     // used by virtual column engines to retrieve the data stored
-    // in the close function.
+    // in the flush function.
     virtual void open (uInt nrrow, AipsIO& ios) = 0;
 
     // Resync the data by rereading cached data from the file.
@@ -500,7 +500,7 @@ public:
 // DataManagerColumn defines various virtual functions to get or put (slices)
 // of data in a column. These functions are called by the table column
 // classes ScalarColumnData and ArrayColumnData.
-// It does not define functions create, open, close and prepare like
+// It does not define functions create, open, flush and prepare like
 // those defined in DataManager. It is left to the derived classes to
 // define those as needed and to interact properly with their
 // data manager object.
