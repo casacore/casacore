@@ -41,6 +41,7 @@
 #include <aips/Tables/TiledDataStMan.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledDataStManAccessor.h>
+#include <aips/Tables/TableIter.h>
 #include <aips/Lattices/Slice.h>
 #include <aips/Lattices/Slicer.h>
 #include <iostream.h>
