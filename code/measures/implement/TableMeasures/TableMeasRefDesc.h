@@ -31,9 +31,9 @@
 //# Includes
 #include <trial/TableMeasures/TableMeasOffsetDesc.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/Utilities/String.h>
 
 //# Forward Declarations
-class String;
 class Table;
 class TableRecord;
 class TableDesc;
@@ -42,7 +42,7 @@ class MRBase;
 template <class T> class ScalarColumnDesc;
 
 // <summary>
-// Definition of a MeasRef in a Table.
+// Definition of a Measure Reference in a Table.
 // </summary>
 
 // <use visibility=export>
@@ -58,10 +58,23 @@ template <class T> class ScalarColumnDesc;
 // </prerequisite>
 
 // <synopsis>
+// TableMeasRefDesc is a class for setting up the Measure Reference
+// component of a TableMeasDesc for a column.   With the aid of a
+// TableMeasRefDesc the following possibilities for defining a measure
+// column's reference exist:
+// <ul>
+//   <li> a constant, non-variable reference, where all measures in a column 
+//  	are to have the same reference.
+//   <li> a variable reference, where each measure put into the column 
+//  	has its own reference.
+//   <li> for both the above options a measure offset can be specified 
+//      along with the reference.
+// </ul>
 // </synopsis>
 
 // <example>
-// See class <linkto class="TableMeasDesc">TableMeasDesc</linkto>.
+// For an example TableMeasRefDesc in the context of a full TableMeasDesc 
+// declaration see class <linkto class="TableMeasDesc">TableMeasDesc</linkto>.
 // </example>
 
 // <motivation>
@@ -86,13 +99,11 @@ public:
     // </group>
     
     // Define a variable reference by supplying the name of the column 
-    // in which the reference is to be stored. 
+    // in which the reference is to be stored.  Optionally supply
+    // a measure offset descriptor.
     // <group>
     TableMeasRefDesc(const String& column);
-    
-    // Define a variable reference by supplying the descriptor of the 
-    // column  in which the reference is to be stored. 
-    TableMeasRefDesc(const ScalarColumnDesc<Int>& column);
+    TableMeasRefDesc(const String& column, const TableMeasOffsetDesc&);
     // </group>
 
     // Reconstruct the object from the MEASINFO record.
@@ -100,17 +111,23 @@ public:
 		    	    	         const Table& tableDesc,
 				         const TableMeasDescBase& measDesc);
 				       
-    // Copy constructor.
+    // Copy constructor (copy semantics)
     TableMeasRefDesc(const TableMeasRefDesc& that);
 
     ~TableMeasRefDesc();
 
-    // Assignment operator.
+    // Assignment operator (copy semantics).
     TableMeasRefDesc& operator= (const TableMeasRefDesc& that);
 
     // Return the reference code.
     uInt getRefCode() const { return itsRefCode; }
 
+    // Is the reference variable?
+    Bool isVariable() const { return (itsVarColName.empty()) ? False : True; }
+
+    // Return the name of its variable reference code column.
+    const String& columnName() const { return itsVarColName; }
+    
     // Returns True if the reference has an offset.    
     Bool hasOffset() const { return (itsOffset != 0  ? True : False); }
 
@@ -133,12 +150,6 @@ public:
     // called by the user directly.
     void write(TableDesc& td, TableRecord& measInfo, const TableMeasDescBase&);
     
-    // Return the name of its variable reference code column.
-    const String& columnName() const { return itsVarColName; }
-    
-    // Is the reference variable?
-    Bool isVariable() const { return (itsVarColName.empty()) ? False : True; }
-
 private:
     // Contructor which uses the MEASINFO record. Not useful for the public.
     TableMeasRefDesc(const TableRecord& measInfo, 
