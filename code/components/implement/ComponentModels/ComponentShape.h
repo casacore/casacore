@@ -53,11 +53,11 @@ template <class T> class Flux;
 
 // This abstract base class defines the interface for different classes which
 // specify the shape of a component. The most fundamental derived class is the
-// <linkto class=PointShape>point</linkto> shape class but the <linkto
-// class=GaussianShape>Gaussian</linkto> shape is also available. These classes
-// model the spatial shape of emission from the sky. Classes derived from the
-// <linkto class=SpectralModel>SpectralModel</linkto> class are used to model
-// the spectral characteristics.
+// <linkto class=PointShape>point</linkto> shape class but the 
+// <linkto class=GaussianShape>Gaussian</linkto> shape is also available. These
+// classes model the spatial shape of emission from the sky. Classes derived
+// from the <linkto class=SpectralModel>SpectralModel</linkto> class are used
+// to model the spectral characteristics.
 
 // This class parameterises all possible shapes with two quantities.
 // <dl>
@@ -72,13 +72,13 @@ template <class T> class Flux;
 //      parameter shapes. 
 // </dl>
 // 
-// The basic operation of classes using this interface is to determine the
-// flux as a function of direction on the sky. Classes derived from this one
-// assume that the Flux (or integrated intensity) of the component they
-// represent is always one. The scale functions in this class then calculate
-// the proprtion of the flux that is inclosed within a pixel of specified size
-// centred in a specified direction. This scale factor can be multiplied by the
-// actual flux to determine the flux from the specified pixel.
+
+// The basic operation of classes using this interface is to determine the flux
+// as a function of direction on the sky. Classes derived from this one do not
+// know the Flux (or integrated intensity) of the component they
+// represent. This must be supplied as an argument to the sample function in
+// order to calculate the proportion of the flux that is inclosed within a
+// pixel of specified size centred in a specified direction.
 
 // The interface also defines functions which calculate the analytic Fourier
 // transform of the component at any specified spatial frequency.
@@ -92,10 +92,10 @@ template <class T> class Flux;
 // have ComponentShapes as arguments to work for any derived class.
 // <srcblock>
 // void printShape(const ComponentShape & theShape) {
-//   cout << "This is a " 
-//        << ComponentType::name(theShape.shape())
-//        << " shape with a reference direction of "
-//        << theShape.direction() << endl;
+//   cout << "This is a " << ComponentType::name(theShape.type())
+//        << " shape " << endl 
+//        << "with a reference direction of "
+//        << theShape.refDirection() << endl;
 // }
 // </srcblock>
 // </example>
@@ -131,7 +131,7 @@ public:
   // size, given the total flux of the component. The total flux of the
   // component must be supplied in the flux variable and the proportion of the
   // flux in the specified pixel is returned in the same variable.
-  virtual void sample(Flux<Double> & scaleFactor, const MDirection & direction,
+  virtual void sample(Flux<Double> & flux, const MDirection & direction,
 		      const MVAngle & pixelSize) const = 0;
 
   // Return the Fourier transform of the component at the specified point in
@@ -184,7 +184,7 @@ public:
 				      const RecordInterface & record);
 
   // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. Returns True if everything is fine
+  // dimensionality and consistent values. Returns True if everything is fine
   // otherwise returns False.
   virtual Bool ok() const = 0;
 protected:
