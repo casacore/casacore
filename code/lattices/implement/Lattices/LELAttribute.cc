@@ -73,39 +73,70 @@ LELAttribute::LELAttribute (const LELAttribute& other)
 {}
 
 LELAttribute::LELAttribute (const LELAttribute& leftAttr,
-			    const LELAttribute& rightAttr)
+			    const LELAttribute& rightAttr,
+			    Bool matchAxes)
 {
-   isScalar_p = False;
-   isRegion_p = False;
-   isMasked_p =  (leftAttr.isMasked() || rightAttr.isMasked());
-   if (leftAttr.isRegion()  ||  rightAttr.isRegion()) {
-      throw (AipsError ("LELAttribute: regions cannot be combined here"));
-   }
-   if (leftAttr.isScalar()) {
-      if (rightAttr.isScalar()) {
-         isScalar_p = True;
-	 isMasked_p = False;
+  isScalar_p = False;
+  isRegion_p = False;
+  isMasked_p =  (leftAttr.isMasked() || rightAttr.isMasked());
+  if (leftAttr.isRegion()  ||  rightAttr.isRegion()) {
+    throw (AipsError ("LELAttribute: regions cannot be combined here"));
+  }
+  if (leftAttr.isScalar()) {
+    if (rightAttr.isScalar()) {
+      isScalar_p = True;
+      isMasked_p = False;
+    } else {
+      shape_p     = rightAttr.shape();
+      tileShape_p = rightAttr.tileShape();
+      coords_p    = rightAttr.coordinates();
+    }
+  } else {
+    shape_p     = leftAttr.shape();
+    tileShape_p = leftAttr.tileShape();
+    coords_p    = leftAttr.coordinates();
+    if (!rightAttr.isScalar()) {
+      const IPosition& rShape = rightAttr.shape();
+      Bool ok = False;
+      if (matchAxes) {
+	ok = shape_p.isEqual (rShape);
+      } else if (shape_p.nelements() > rShape.nelements()) {
+	ok = shape_p.isSubSet (rShape);
       } else {
-         shape_p     = rightAttr.shape();
-	 tileShape_p = rightAttr.tileShape();
-	 coords_p    = rightAttr.coordinates();
+	ok = rShape.isSubSet (shape_p);
+	shape_p.resize(0);
+	shape_p = rShape;
+	tileShape_p.resize(0);
+	tileShape_p = rightAttr.tileShape();
       }
-   } else {
-      shape_p     = leftAttr.shape();
-      tileShape_p = leftAttr.tileShape();
-      coords_p    = leftAttr.coordinates();
-      if (!rightAttr.isScalar()) {
-         AlwaysAssert (leftAttr.shape().isEqual(rightAttr.shape()), AipsError);
-	 if (rightAttr.coordinates().hasCoordinates()) {
-	    if (coords_p.hasCoordinates()) {
-		AlwaysAssert (leftAttr.coordinates().conform
-			      (rightAttr.coordinates()), AipsError);
-	    } else {
-		coords_p = rightAttr.coordinates();
+      if (!ok) {
+	throw AipsError ("LELAttribute: "
+			 "shapes of operands mismatch");
+      }
+      if (rightAttr.coordinates().hasCoordinates()) {
+	if (coords_p.hasCoordinates()) {
+	  Int result = leftAttr.coordinates().compare
+                                                 (rightAttr.coordinates());
+	  if (matchAxes) {
+	    if (result != 0) {
+	      throw AipsError ("LELAttribute: "
+			       "coordinates of operands mismatch");
 	    }
-	 } 
-      }
-   }
+	  } else {
+	    if (result == -1) {
+	      // left is subset, so use coordinates of other operand
+	      coords_p = rightAttr.coordinates();
+	    } else if (result > 1) {
+	      throw AipsError ("LELAttribute: "
+			       "coordinates of operands incompatible");
+	    }
+	  }
+	} else {
+	  coords_p = rightAttr.coordinates();
+	}
+      } 
+    }
+  }
 }
                 
 LELAttribute::~LELAttribute()
@@ -114,15 +145,15 @@ LELAttribute::~LELAttribute()
 
 LELAttribute& LELAttribute::operator= (const LELAttribute& other)
 {
-    if (this != &other) {
-       isScalar_p  = other.isScalar_p;
-       isRegion_p  = other.isRegion_p;
-       isMasked_p  = other.isMasked_p;
-       shape_p.resize (other.shape_p.nelements());
-       tileShape_p.resize (other.tileShape_p.nelements());
-       shape_p     = other.shape_p;
-       tileShape_p = other.tileShape_p;
-       coords_p    = other.coords_p;
-    }
-    return *this;
+  if (this != &other) {
+    isScalar_p  = other.isScalar_p;
+    isRegion_p  = other.isRegion_p;
+    isMasked_p  = other.isMasked_p;
+    shape_p.resize (other.shape_p.nelements());
+    tileShape_p.resize (other.tileShape_p.nelements());
+    shape_p     = other.shape_p;
+    tileShape_p = other.tileShape_p;
+    coords_p    = other.coords_p;
+  }
+  return *this;
 }

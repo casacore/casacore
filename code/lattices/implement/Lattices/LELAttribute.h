@@ -1,5 +1,5 @@
 //# LELAttribute.h: Ancillary information for the LEL letter classes
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,7 +95,8 @@ public:
 
 // Constructor
    LELAttribute(const LELAttribute& attrLeft,
-		const LELAttribute& attrRight);
+		const LELAttribute& attrRight,
+		Bool matchAxes = True);
 
 // Destructor
    ~LELAttribute();
