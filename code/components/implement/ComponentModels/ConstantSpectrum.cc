@@ -98,7 +98,6 @@ Vector<Double> ConstantSpectrum::parameters() const {
 }
 
 void ConstantSpectrum::setErrors(const Vector<Double>& newSpectralErrs) {
-  DebugAssert(newSpectralErrs.nelements() == nParameters(), AipsError);
   DebugAssert(ok(), AipsError);
   // Suppress compiler warning about unused variable
   if (&newSpectralErrs == 0) {}; 
