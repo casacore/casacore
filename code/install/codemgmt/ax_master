@@ -1830,3 +1830,4 @@
 08 003 sys rm bin/imhead
 08 003 sys rm bin/imhist
 08 003 sys rm bin/imoment
+08 003 sys rm bin/imstat
