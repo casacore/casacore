@@ -41,12 +41,12 @@
 
 void test0 ();
 void test0Complex ();
-void test1 (LatticeAddNoise::Types type);
-void test1Complex (LatticeAddNoise::Types type);
+void test1 (Random::Types type);
+void test1Complex (Random::Types type);
 void checkStats (Float av0, const Lattice<Float>& data,
-                 LatticeAddNoise::Types type);
+                 Random::Types type);
 void checkStatsComplex (Float av0, const Lattice<Complex>& data,
-                        LatticeAddNoise::Types type);
+                        Random::Types type);
 main ()
 {
   try {
@@ -60,11 +60,12 @@ main ()
 // Bug in Geometric distribution (defected) so left out for now
 
       cerr << "Test 1" << endl;
-      const uInt n = LatticeAddNoise::NTYPES;
+      const uInt n = Random::NUMBER_TYPES;
       for (uInt i=0; i<n; i++) {
-         LatticeAddNoise::Types type = static_cast<LatticeAddNoise::Types>(i);
-         cerr << "Type = " << LatticeAddNoise::typeToString(type) << endl;
-         if (type!=LatticeAddNoise::GEOMETRIC) test1 (type);
+         Random::Types type = static_cast<Random::Types>(i);
+         cerr << "Type = " << Random::asString(type) << endl;
+         if (type!=Random::GEOMETRIC &&
+             type!=Random::UNKNOWN) test1 (type);
       }
 
 // Complex
@@ -75,9 +76,10 @@ main ()
 //
       cerr << "Test 1" << endl;
       for (uInt i=0; i<n; i++) {
-         LatticeAddNoise::Types type = static_cast<LatticeAddNoise::Types>(i);
-         cerr << "Type = " << LatticeAddNoise::typeToString(type) << endl;
-         if (type!=LatticeAddNoise::GEOMETRIC) test1Complex (type);
+         Random::Types type = static_cast<Random::Types>(i);
+         cerr << "Type = " << Random::asString(type) << endl;
+         if (type!=Random::GEOMETRIC &&
+             type!=Random::UNKNOWN) test1Complex (type);
       }
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
@@ -101,17 +103,17 @@ void test0 ()
    Vector<Double> pars(2);
    pars(0) = 0.5;
    pars(1) = 1.0;
-   LatticeAddNoise lan(LatticeAddNoise::NORMAL, pars);
+   LatticeAddNoise lan(Random::NORMAL, pars);
    lan.add(lat);
-   checkStats(pars(0), lat, LatticeAddNoise::NORMAL);
+   checkStats(pars(0), lat, Random::NORMAL);
 
 // Default constructor and set
 
-   LatticeAddNoise lan2;
-   lan2.set (LatticeAddNoise::NORMAL, pars);
    lat.set(0.0);
+   LatticeAddNoise lan2;
+   lan2.set (Random::NORMAL, pars);
    lan2.add(lat);
-   checkStats(pars(0), lat, LatticeAddNoise::NORMAL);
+   checkStats(pars(0), lat, Random::NORMAL);
 
 // Assigment
 
@@ -119,7 +121,7 @@ void test0 ()
    lan3 = lan2;
    lat.set(0.0);
    lan3.add(lat);
-   checkStats(pars(0), lat, LatticeAddNoise::NORMAL);
+   checkStats(pars(0), lat, Random::NORMAL);
 }
 
 void test0Complex ()
@@ -133,17 +135,17 @@ void test0Complex ()
    Vector<Double> pars(2);
    pars(0) = 0.5;
    pars(1) = 1.0;
-   LatticeAddNoise lan(LatticeAddNoise::NORMAL, pars);
+   LatticeAddNoise lan(Random::NORMAL, pars);
    lan.add(lat);
-   checkStatsComplex (pars(0), lat, LatticeAddNoise::NORMAL);
+   checkStatsComplex (pars(0), lat, Random::NORMAL);
 
 // Default constructor and set
 
    LatticeAddNoise lan2;
-   lan2.set(LatticeAddNoise::NORMAL, pars);
+   lan2.set(Random::NORMAL, pars);
    lat.set(Complex(0.0,0.0));
    lan2.add(lat);
-   checkStatsComplex (pars(0), lat, LatticeAddNoise::NORMAL);
+   checkStatsComplex (pars(0), lat, Random::NORMAL);
 
 // Assigment
 
@@ -151,13 +153,14 @@ void test0Complex ()
    lan3 = lan2;
    lat.set(Complex(0.0,0.0));
    lan3.add(lat);
-   checkStatsComplex (pars(0), lat, LatticeAddNoise::NORMAL);
+   checkStatsComplex (pars(0), lat, Random::NORMAL);
 }
 
-void test1 (LatticeAddNoise::Types type)
+void test1 (Random::Types type)
 {
    Vector<Double> pars;
-   pars = LatticeAddNoise::defaultParameters(type);
+   pars = Random::defaultParameters(type);
+cerr << "pars = " << pars << endl;
    LatticeAddNoise lan(type, pars);
 //
    IPosition shape(2, 1024, 1024);
@@ -166,20 +169,20 @@ void test1 (LatticeAddNoise::Types type)
    lan.add(lat);
 //
    Float av = pars(0);
-   if (type==LatticeAddNoise::DISCRETEUNIFORM ||
-       type==LatticeAddNoise::UNIFORM) {
+   if (type==Random::DISCRETEUNIFORM ||
+       type==Random::UNIFORM) {
       av = (pars(0) + pars(1)) / 2.0;
-   } else if (type==LatticeAddNoise::WEIBULL ||
-              type==LatticeAddNoise::BINOMIAL) {
+   } else if (type==Random::WEIBULL ||
+              type==Random::BINOMIAL) {
       av = -1.1e30;
    }
    checkStats(av, lat, type);
 }
 
-void test1Complex (LatticeAddNoise::Types type)
+void test1Complex (Random::Types type)
 {
    Vector<Double> pars;
-   pars = LatticeAddNoise::defaultParameters(type);
+   pars = Random::defaultParameters(type);
    LatticeAddNoise lan(type, pars);
 //
    IPosition shape(2, 1024, 1024);
@@ -188,11 +191,11 @@ void test1Complex (LatticeAddNoise::Types type)
    lan.add(lat);
 //
    Float av = pars(0);
-   if (type==LatticeAddNoise::DISCRETEUNIFORM ||
-       type==LatticeAddNoise::UNIFORM) {
+   if (type==Random::DISCRETEUNIFORM ||
+       type==Random::UNIFORM) {
       av = (pars(0) + pars(1)) / 2.0;
-   } else if (type==LatticeAddNoise::WEIBULL ||
-              type==LatticeAddNoise::BINOMIAL) {
+   } else if (type==Random::WEIBULL ||
+              type==Random::BINOMIAL) {
       av = -1.1e30;
    }
    checkStatsComplex(av, lat, type);
@@ -201,7 +204,7 @@ void test1Complex (LatticeAddNoise::Types type)
 
 
 void checkStats (Float av0,  const Lattice<Float>& data,
-                 LatticeAddNoise::Types type)
+                 Random::Types type)
 {
    Double n = data.shape().product();
    Float av = mean(data.get());
@@ -213,7 +216,7 @@ void checkStats (Float av0,  const Lattice<Float>& data,
       if (abs(av - av0) > 3*sig/sqrt(n)) {
          os << "Expected, observed and error in mean = " << av0 << ", " << av  
             << ", " << sig/sqrt(n) 
-            << " for distribution " << LatticeAddNoise::typeToString(type) << LogIO::EXCEPTION;
+            << " for distribution " << Random::asString(type) << LogIO::EXCEPTION;
       } 
    }
 }
@@ -221,7 +224,7 @@ void checkStats (Float av0,  const Lattice<Float>& data,
 
 
 void checkStatsComplex (Float av0,  const Lattice<Complex>& data,
-                        LatticeAddNoise::Types type)
+                        Random::Types type)
 {
    ArrayLattice<Float> realLattice(real(data.get()));
    ArrayLattice<Float> imagLattice(imag(data.get()));
