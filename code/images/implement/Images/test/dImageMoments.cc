@@ -162,34 +162,6 @@
 //            The default is to not save the smoothed image.
 //
 //
-// To do:
-//
-//  . Eventually decent memory management will cause me to move the
-//    smoothedImage from an ArrayLattice to something like a PagedImage.  
-//
-//  . Output masking is not handled yet.  The moments are just set to zero
-//
-//  . deal with absorption in M2
-//
-//  . input velocity field to work out moments relative to
-//    instead off just using internally generated M1
-//  
-//  . coordinates, uses linear approximation for spectral axis 
-//    coordinate value. Must replace when new image 
-//    coordinates/measures come into place
-//
-//    The coordinate descriptors for the collapsed axis
-//    are wrong as it is imposisble to change them with the
-//    mentally damaged old coordinate class
-//
-//  . The routines aips/code/fortran/fftpak.f and 
-//    aips/code/implement/Mathematics/extern_fft.cc  contain bugs that
-//    cause the convolution to go wrong unless unoptimized versions
-//    are used.  If they are built unoptimized and put in the optimized 
-//    libaips_f.a and libaips.a it works, but still s-l-o-w-l-y
-//
-//
-//
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
@@ -412,7 +384,16 @@ try {
       cout << "Selected region : " << blc+1<< " to "
            << trc+1 << endl;
 
-//         LCEllipsoid region(inImage.shape()/2, (inImage.shape()(0)/2)-1, inImage.shape());
+
+         Vector<Float> cen(inImage.ndim());
+         Vector<Float> rad(inImage.ndim());
+         for (uInt i=0;i<inImage.ndim(); i++) {
+           cen(i) = inImage.shape()(i)/2;  
+           rad(i) = cen(i);
+         }
+
+     
+//         LCEllipsoid region(cen, rad, inImage.shape());
 
          const LCBox region(blc, trc, inImage.shape());
 
