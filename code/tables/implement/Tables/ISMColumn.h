@@ -1,5 +1,5 @@
 //# ISMColumn.h: A Column in the Incremental Storage Manager
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,6 @@
 #include <aips/aips.h>
 #include <aips/Tables/StManColumn.h>
 #include <aips/Tables/ISMBase.h>
-#include <aips/Tables/BucketFile.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/Compare.h>
@@ -145,9 +144,13 @@ public:
     // Let the column object initialize itself for an existing table.
     virtual void getFile (uInt nrrow);
 
-    // Flush the data.
+    // Flush and optionally fsync the data..
     // This is meant for a derived class.
-    virtual void flush (uInt nrrow);
+    virtual Bool flush (uInt nrrow, Bool fsync);
+
+    // Resync the storage manager with the new file contents.
+    // It resets the last rownr put.
+    void resync (uInt nrrow);
 
     // Let the column reopen its data files for read/write access.
     virtual void reopenRW();
@@ -217,7 +220,8 @@ public:
     virtual void addRow (uInt newNrrow, uInt oldNrrow);
 
     // Remove the given row in the bucket from the column.
-    void remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow);
+    void remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
+		 uInt newNrrow);
 
     // Get the function needed to read/write a uInt from/to external format.
     // This is used by other classes to read the length of a variable
