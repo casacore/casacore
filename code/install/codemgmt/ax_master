@@ -6315,3 +6315,4 @@
 18 019 src mv trial/implement/Mathematics/test/tAutoDiff.cc aips/implement/Mathematics/test/tAutoDiff.cc
 18 021 src mv trial/implement/Arrays/Vector2.cc aips/implement/Arrays/Vector2.cc
 18 024 src rm doc/gettingresults/gettingresults.latex
+18 031 src rm aips/implement/Mathematics/NumericTraits2.h
