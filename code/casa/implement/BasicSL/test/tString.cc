@@ -74,8 +74,8 @@ void decltest() {
   cout << "A string initialized to dec(20):" << n << endl;
   assert(n == "20");
 
-  Int i = atoi(n);
-  Double f = atof(n);
+  Int i = atoi(n.chars());
+  Double f = atof(n.chars());
   cout << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << endl;
   assert(i == 20);
   assert(f == 20);
