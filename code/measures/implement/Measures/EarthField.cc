@@ -213,7 +213,7 @@ void EarthField::calcField(const MVPosition &pos) {
 	      sl_p(m) = sl_p(m-1) * cl_p(0) + cl_p(m-1) * sl_p(0);
 	      cl_p(m) = cl_p(m-1) * cl_p(0)-sl_p(m-1) * sl_p(0);
 	    } else {
-	      one = sqrt(fn * fn - fm * fm);
+	      one = sqrt(Double(fn * fn - fm * fm));
 	      two = sqrt((fn-1.0) * (fn-1.0) - fm * fm)/one;
 	      three = (2.0 * fn - 1.0)/one;
 	      i = k-n;
