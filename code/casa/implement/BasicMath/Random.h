@@ -441,7 +441,7 @@ public:
    // non-zero and the variance is positive.
    ERLANG, 
 
-   // 1 parameters, the mean.  It is required that 0 <= mean < 1
+   // 1 parameters, the mean.  It is required that 0 <= probability < 1
    GEOMETRIC, 
 
    // 2 parameters, mean and variance.  It is required that the variance is
@@ -804,17 +804,17 @@ inline void Erlang::variance(Double x) {
 // <summary> Discrete geometric distribution </summary>
 
 // <synopsis>
-
 // The <src>Geometric</src> class implements a discrete geometric distribution.
-// The <src>mean</src> parameter, is the mean of the distribution.  
-// The <src>operator()</src> functions returns an non-negative integral value
-// indicating the number of uniform random samples actually drawn before one is
-// obtained that is larger than the mean. To get this same value as an integer
-// using the asInt function.
-
-// It is assumed that the supplied mean is between zero and one <src>(0 <= mean
-// < 1)</src> and and AipsError exception thrown if this is not true.  The
-// remaining members allow you to read and set the parameters.
+// The <src>probability</src> is the only parameter.  The <src>operator()</src>
+// functions returns an non-negative integral value indicating the number of
+// uniform random samples actually drawn before one is obtained that is larger
+// than the given probability. To get this same value as an integer use the
+// asInt function.
+//
+// It is assumed that the probability is between zero and one 
+// <src>(0 <= probability < 1)</src> and and AipsError exception thrown if this
+// is not true.  The remaining function allow you to read and set the
+// parameters.
 // </synopsis>
 
 // <example>
@@ -836,7 +836,7 @@ public:
   // bits. This pointer is NOT taken over by this class and the user is
   // responsible for deleting it. The second argument defines the range of
   // possible return values for this distribution as described in the synopsis.
-  Geometric(RNG* gen, Double mean=0.5);
+  Geometric(RNG* gen, Double probability=0.5);
   
   // The destructor is trivial
   virtual ~Geometric();
@@ -852,11 +852,11 @@ public:
   // Functions that allow you to query and change the parameters of the
   // geometric uniform distribution.  
   // <group>
-  Double mean() const;
-  void mean(Double x);
+  Double probability() const;
+  void probability(Double x);
   // </group>
   
-  // These function allow you to manipulate the parameters (mean)
+  // These function allow you to manipulate the parameter (probability)
   // described above through the base class. The Vectors must always be of
   // length one.
   // <group>
@@ -866,11 +866,11 @@ public:
   // </group>
 
 private:
-  Double itsMean;
+  Double itsProbability;
 };
 
-inline Double Geometric::mean() const {
-  return itsMean;
+inline Double Geometric::probability() const {
+  return itsProbability;
 }
 
 // <summary> Hypergeometric distribution </summary>
