@@ -40,6 +40,7 @@
 
 class String;
 class MDirection;
+class MVAngle;
 template <class T> class Vector;
 template <class T> class ImageInterface;
 
@@ -107,8 +108,9 @@ public:
   ComponentList();
 
   // Read a componentList from an existing table. By default the Table is
-  // opened read-only.
-  ComponentList(const String & fileName, const Bool readOnly=True);
+  // opened read-write. It is recommended that you create a const ComponentList
+  // if you open the Table readOnly.
+  ComponentList(const String & fileName, const Bool readOnly=False);
 
   // The Copy constructor uses reference semantics
   ComponentList(const ComponentList & other);
@@ -122,7 +124,8 @@ public:
 
   // Sample all the members of the componentList at the specified
   // direction. The returned Vector containes all the polarisarions. 
-  void sample(Vector<Double> & result, const MDirection & samplePos) const;
+  void sample(Vector<Double> & result, const MDirection & samplePos, const
+	      MVAngle & pixelSize) const;
 
   // Project all the members of the componentList onto the image
   void project(ImageInterface<Float> & plane) const;
@@ -145,11 +148,21 @@ public:
   SkyComponent & component(uInt index);
   // </group>
 
-  // make the ComponentList persistant by supplying a filename.
-//   void void rename(const String & newName, 
-// 		   const Table::TableOption option=Table::New);
+  // Make the ComponentList persistant by supplying a filename. If the
+  // ComponentList is already associated with a Table then the Table will be
+  // renamed. Hence this function cannot be used with ComponentLists that are
+  // constructed with readonly=True.
   void rename(const String & newName, 
-	      const Table::TableOption option);
+	      const Table::TableOption option=Table::New);
+
+  // Make a real copy of this componentList. As the copy constructor and the
+  // assignment operator use reference semantics this is the only way to get a
+  // distinct version of the componentList.
+  ComponentList copy() const;
+
+  // Function which checks the internal data of this class for consistant
+  // values. Returns True if everything is fine otherwise returns False.
+  Bool ok() const;
 
 private:
   Block<SkyComponent> theList;
