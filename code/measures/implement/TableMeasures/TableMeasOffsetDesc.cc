@@ -141,7 +141,7 @@ TableMeasOffsetDesc::TableMeasOffsetDesc(const TableRecord& measInfo,
     if (fnr >= 0) {
 	itsTMDesc = TableMeasDescBase::reconstruct(tab, 
 	    	    	    	    	    	   measInfo.asString(fnr));
-	itsVarColName = itsTMDesc->columnName();
+	itsVarColName = measInfo.asString(fnr);
     }
 }
 
