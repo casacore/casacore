@@ -2781,3 +2781,4 @@
 10 101 src mv trial/apps/numerics/polyfitter.help trial/implement/Mathematics/polyfitter.help
 10 101 src mv trial/apps/numerics/interpolate1d.help trial/implement/Mathematics/interpolate1d.help
 10 101 src mv trial/apps/numerics/randomnumbers.help trial/implement/Mathematics/randomnumbers.help
+10 101 src mv trial/apps/numerics/randomnumbers.g trial/implement/Mathematics/randomnumbers.g
