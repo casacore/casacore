@@ -33,9 +33,9 @@
 #include <aips/strstream.h>
 
 // Special constructors
-String::String(ostrstream &os) :
-  string((os << ends, os.str())) {
-  delete [] os.str();
+String::String(ostrstream &os) {
+  os << ends;
+  *this = os.str();
 }
 
 // Count occurrences
