@@ -5991,3 +5991,4 @@
 17 011 src mv trial/implement/Functionals/NQGaussianND.cc aips/implement/Functionals/NQGaussianND.cc
 17 011 src mv trial/implement/Functionals/NQGaussianNDParam.h aips/implement/Functionals/NQGaussianNDParam.h
 17 011 src mv trial/implement/Functionals/NQGaussianNDParam.cc aips/implement/Functionals/NQGaussianNDParam.cc
+17 012 src mv trial/implement/Functionals/test/dNQGaussianND.cc aips/implement/Functionals/test/dNQGaussianND.cc
