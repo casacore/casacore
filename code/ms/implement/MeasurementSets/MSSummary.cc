@@ -258,6 +258,8 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os << "   Date        Timerange                 ";
 	os << "Field          DataDescIds" << endl;
 
+
+
 	// Setup iteration over timestamps within this iteration:
 	TableIterator timeiter(obsarrtab,"TIME");
 
@@ -320,11 +322,16 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	  // If not first timestamp, check if scan changed, etc.
 	  if (!firsttime) {
 
+
 	    // Has state changed?
 	    Bool samefld;
-	    samefld=!anyNE(fldids,lastfldids);
+	    samefld=fldids.conform(lastfldids) && !anyNE(fldids,lastfldids);
+	    //	    samefld=(fldids.nelements()==lastfldids.nelements()) && !anyNE(fldids,lastfldids);
+
 	    Bool sameddi;
-	    sameddi=!anyNE(ddids,lastddids);
+	    sameddi=ddids.conform(lastddids) && !anyNE(ddids,lastddids);
+	    //	    sameddi=(ddids.nelements()==lastddids.nelements()) && !anyNE(ddids,lastddids);
+	    
 	    Bool samescan;
 	    samescan= samefld & sameddi;
 
@@ -371,8 +378,8 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	  }
 
 	  // for comparison at next timestamp
-	  lastfldids=fldids;
-	  lastddids=ddids;
+	  lastfldids.resize(); lastfldids=fldids;
+	  lastddids.resize(); lastddids=ddids;
 
 	  // push iteration
 	  timeiter.next();
