@@ -35,6 +35,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Random.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
 
 int main(int argc, char **argv)
@@ -53,10 +54,10 @@ int main(int argc, char **argv)
    inputs.create("ycen", "0.0", "ycen");
    inputs.create("major", "10.0", "major");
    inputs.create("minor", "5.0", "minor");
-   inputs.create("pa", "45", "pa");
+   inputs.create("pa", "45", "pa");                  // +x -> +y
 //
-   inputs.create("nx", "20", "nx");
-   inputs.create("ny", "20", "ny");   
+   inputs.create("nx", "40", "nx");
+   inputs.create("ny", "40", "ny");   
    inputs.create("min", "0.0", "min");  
    inputs.create("max", "0.0", "max");  
    inputs.create("nbins", "20", "nbins"); 
@@ -74,7 +75,7 @@ int main(int argc, char **argv)
    const Double ycen = inputs.getDouble("ycen");
    const Double major = inputs.getDouble("major");
    const Double minor= inputs.getDouble("minor");
-   const Double pa = inputs.getDouble("pa") * 3.1415926 / 180.0;
+   const Double pa = inputs.getDouble("pa") * C::pi / 180.0;          // +x -> +y
 //
    const Int nx = inputs.getInt("nx");   
    const Int ny = inputs.getInt("ny");   
@@ -94,7 +95,7 @@ int main(int argc, char **argv)
    LogIO logger(or);
    MLCG generator; 
    Normal noiseGen(&generator, 0.0, noise);  
-
+//
    Gaussian2D<Double> gauss2d;
    gauss2d.setHeight(height);
    gauss2d.setMajorAxis(major);
@@ -106,7 +107,7 @@ int main(int argc, char **argv)
       gauss2d.setXcenter(xcen);
       gauss2d.setYcenter(ycen);
    }
-   gauss2d.setPA(pa);
+   gauss2d.setPA(pa + C::pi_2);             // +y -> -x
 //
    IPosition shape(2,nx,ny);
    Array<Float> pixels(shape);
@@ -169,15 +170,15 @@ int main(int argc, char **argv)
          iMask(i) = 0;
       }
    }
-
+   parameters(5) -= C::pi_2;                      // +x -> +y
 //
 // convert axial ratio to minor axis (availableParameter
 // interface uses axial ratio)
 //
    parameters(4) = parameters(4)*parameters(3);  
-   cout << "      mask   = " << iMask << endl;
-   cout << "True values  = " << parameters << endl;
-
+   cout << "      mask      = " << iMask << endl;
+   cout << "True values     = " << parameters << endl;
+   cout << "True pa (+x -> +y) = " << parameters(5) * 180.0 / C::pi << endl;
 //
 // Set starting guess
 //
@@ -185,7 +186,8 @@ int main(int argc, char **argv)
    for (uInt i=0; i<parameters.nelements(); i++) {
       startParameters(i) = parameters(i) * 0.9;
    }
-   cout << "Start values = " << startParameters << endl;
+   cout << "Start values    = " << startParameters << endl;
+   cout << "Start pa (+x -> +y) = " << startParameters(5) * 180.0 / C::pi << endl;
 //
 // Make fitter and set state
 //
@@ -198,10 +200,14 @@ int main(int argc, char **argv)
       fitter.setExcludeRange(excludeRange[0], excludeRange[1]);
    }
 //
-
+   Vector<Double> p = fitter.estimate(Fit2D::GAUSSIAN, pixels);
+   cout << "Estimate values = " << p << endl;
+   cout << "Estimate pa (+x -> +y) = " << p(5) * 180.0 / C::pi << endl;
    Fit2D::ErrorTypes status = fitter.fit(pixels, pixelMask, sigma, norm);
    if (status==Fit2D::OK) {
-      cout << "Solution     = " << fitter.availableSolution() << endl;
+      Vector<Double> solution = fitter.availableSolution();
+      cout << "Solution     = " << solution << endl;
+      cout << "Solution pa (+x -> +y) = " << solution(5) * 180.0 / C::pi << endl;
       Vector<Double> cv = fitter.covariance().diagonal();
       cout << "Covariance     = " << cv << endl;
 //      cout << "SNR        = " << fitter.availableSolution() / 
