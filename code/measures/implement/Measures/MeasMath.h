@@ -221,6 +221,7 @@ private:
     LONG,
     LAT,
     RADIUS,
+    LATGEO,
     J2000LONG,
     J2000LAT,
     B1950LONG,
