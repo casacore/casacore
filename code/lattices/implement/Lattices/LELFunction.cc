@@ -242,7 +242,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       if (! latExpr.isMasked()) {
 	 while (! iter.atEnd()) {
 	    T maxv = max(iter.cursor());
-	    if (firstTime  ||  maxv < maxVal) {
+	    if (firstTime  ||  maxv > maxVal) {
 	       firstTime = False;
 	       maxVal = maxv;
 	    }
