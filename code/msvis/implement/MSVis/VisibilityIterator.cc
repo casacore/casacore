@@ -948,6 +948,7 @@ ROVisibilityIterator&
 ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width, 
 				    Int increment, Int spectralWindow)
 {
+
   if (!initialized_p) {
     // initialize the base iterator only (avoid recursive call to originChunks)
     if (!msIterAtOrigin_p) {
@@ -978,6 +979,61 @@ ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width,
   // get updated
   //  originChunks();
   return *this;
+}
+
+
+void ROVisibilityIterator::allSelectedSpectralWindows(const Vector<Int>& spws, Vector<Int>& nvischan){
+
+  nvischan.resize(max(spws)+1);
+  nvischan.set(-1);
+  Int kounter=0;
+  for (Int k=0; k <= max(spws); ++k){
+      nvischan[k]=chanWidth_p[k];
+      ++kounter;
+  }
+
+}
+
+
+void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq){
+
+  // This method is not good for conversion between frames which are extremely
+  // time dependent over the course of the observation e.g topo to lsr unless
+  // the epoch is in the actual buffer
+
+
+  if (velSelection_p) {
+    getTopoFreqs();
+    lsrFrequency(freq);
+    return;
+  }
+
+
+  Vector<Double> chanFreq(0);
+  chanFreq=msIter_p.msColumns().spectralWindow().chanFreq()(spw);
+  //      Int start=chanStart_p[spw]-msIter_p.startChan();
+  //Assuming that the spectral windows selected is not a reference ms from 
+  //visset ...as this will have a start chan offseted may be.
+  Int start=chanStart_p[spw]; 
+  freq.resize(chanWidth_p[spw]);
+  
+  
+  MFrequency::Types obsMFreqType=(MFrequency::Types)(msIter_p.msColumns().spectralWindow().measFreqRef()(spw));
+  // Setting epoch to the first in this iteration
+  MEpoch ep=msIter_p.msColumns().timeMeas()(0);
+  MPosition obsPos=msIter_p.telescopePosition();
+  MDirection dir=msIter_p.phaseCenter();
+  MeasFrame frame(ep, obsPos, dir);
+  MFrequency::Convert tolsr(obsMFreqType, 
+  			    MFrequency::Ref(MFrequency::LSRK, frame));
+
+
+
+  for (Int i=0; i<chanWidth_p[spw]; i++) {
+    freq[i]=chanFreq(start+
+			  numChanGroup_p[spw]*chanInc_p[spw]+i);
+  }
+
 }
 
 void ROVisibilityIterator::attachVisBuffer(VisBuffer& vb)
