@@ -1,5 +1,5 @@
 //# SpectralList.cc: A set of SpectralElements
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ SpectralList &SpectralList::operator=(const SpectralList &other) {
   if (this != &other) {
     clear();
     nmax_p = other.nmax_p;
-    list_p.resize(other.list_p.nelements(), False);
+    list_p.resize(other.list_p.nelements());
     for (uInt i=0; i<list_p.nelements(); i++) {
       list_p[i] = new SpectralElement(*other.list_p[i]);
     };
@@ -139,7 +139,7 @@ void SpectralList::clear() {
   for (uInt i=0; i<list_p.nelements(); i++) {
     delete list_p[i]; list_p[i] = 0;
   };
-  list_p.resize(0);
+  list_p.resize(0, True);
 }
 
 void SpectralList::set(const uInt nmax) {
@@ -147,7 +147,7 @@ void SpectralList::set(const uInt nmax) {
     for (uInt i=nmax; i<list_p.nelements(); i++) {
       delete list_p[i]; list_p[i] = 0;
     };
-    list_p.resize(nmax);
+    list_p.resize(nmax, True);
   };
   nmax_p = nmax;
 }
