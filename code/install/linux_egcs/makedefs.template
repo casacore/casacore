@@ -34,7 +34,7 @@
 #
 # Installation instructions:
 #
-#    A template version of this file was copied from the "install/linux_gnu"
+#    A template version of this file was copied from the "install/linux_egcs"
 #    directory into the site-specific AIPS++ system directory for this
 #    architecture (this directory) by the 'configure' script as part of the
 #    AIPS++ installation.
@@ -70,7 +70,7 @@
 
 #-----------------------------------------------------------------------------
 # This file should work on RedHat Linux 5.2 systems without
-# modification and with a bit of tweaking on redHat-5.1 system
+# modification and with a bit of tweaking on RedHat-5.1 system
 # assuming that the additional software (lapack, pgplot etc.)
 # available on the AIPS++ ftp site has been installed. It uses egcs as
 # the compiler for C,C++ and Fortran (ie g77).
@@ -85,13 +85,8 @@ C++ROOT := /usr
 
 # General external libraries. 
 #---------------------------- 
-# WCSLIB (supplied with AIPS++).
-
-# PGPLOT (FORTRAN plotting package).
-PGPLOTROOT := /usr
 
 # TCL (version 7.6 or later).
-TCLROOT := /usr
 TCLLIB  += -ldl
 
 # X11.
@@ -99,13 +94,9 @@ X11ROOT := /usr/X11R6
 
 # Motif.
 MotifROOT := $(X11ROOT)
-MotifLIB  += -lXpm
 
 # XPM (X Pixmap) library
 XPMROOT  := $(X11ROOT)
-
-# LAPACK (FORTRAN Linear Algebra Package).
-LAPACKROOT := /usr
 
 # FORTRAN compiler.
 # using native g77
@@ -135,15 +126,15 @@ CPPOPT   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DNATIVE_EXCP
 
 # C compiler flags for system debug/optimized compilations.
 CC       := egcs
-CDBG    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type -fPIC
+CDBG    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type -Wimplicit -fPIC
 COPTLVL := -O2
-COPT    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type -fPIC
+COPT    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type -Wimplicit -fPIC
 
 # C++ compiler flags for system debug/optimized compilations.
 C++       := c++
-C++DBG    += -pipe -fno-implicit-templates -Wreturn-type -fguiding-decls -fPIC
+C++DBG    += -pipe -fno-implicit-templates -Wreturn-type -Wimplicit -fPIC
 C++OPTLVL := -O2
-C++OPT    += -pipe -fno-implicit-templates -Wreturn-type -fguiding-decls -fPIC
+C++OPT    += -pipe -fno-implicit-templates -Wreturn-type -Wimplicit -fPIC
 
 # Use do-it-yourself template instantiation.
 TEMPLATES := diy
@@ -156,7 +147,6 @@ FCOPT    += -fPIC
 
 # Link flags for system debug/optimized compilations; these are passed to
 # the C++ compiler.
-# Link flags for system debug/optimized compilations; passed to g++.
 LDDBG := -Xlinker -rpath -Xlinker $(AIPSARCH)/lib
 LDOPT := -s $(LDDBG)
 
