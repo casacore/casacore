@@ -1015,7 +1015,6 @@
      template void LSQFit::uncopy<Double>(Double *, Double const *, Double *, LSQReal) 
      template Bool LSQFit::getErrors<Double>(Double *) 
      template Bool LSQFit::getCovariance<Double>(Double *) 
-#
 1080 scimath/Fitting/LSQFit2.cc 
      typedef Float* It6 
      typedef uInt* It6Int 
@@ -1034,6 +1033,25 @@
      template void LSQFit::uncopy<Float>(Double *, Double const *, Float *, LSQReal) 
      template Bool LSQFit::getErrors<Float>(Float *) 
      template Bool LSQFit::getCovariance<Float>(Float *) 
+1090 scimath/Fitting/LSQFit2.cc 
+     typedef Float* It7 
+     typedef uInt* It7Int 
+     template void LSQFit::makeNorm<Double, It7>(It7 const &, Double const &, Double const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It7>(It7 const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It7, It7Int>(uInt nIndex, It7Int const &, It7 const &, Double const &, Double const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It7, It7Int>(uInt nIndex, It7Int const &, It7 const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Double, It7>(It7 const &, Double const &) 
+     template Bool LSQFit::addConstraint<Double, It7, It7Int>(uInt nIndex, It7Int const &, It7 const &, Double const &) 
+     template Bool LSQFit::setConstraint<Double, It7>(uInt n, It7 const &, Double const &) 
+     template Bool LSQFit::setConstraint<Double, It7, It7Int>(uInt n, uInt nIndex, It7Int const &, It7 const &, Double const &) 
+     template Bool LSQFit::getConstraint<Double>(uInt, Double *) const 
+     template void LSQFit::solve<Double>(Double *) 
+     template Bool LSQFit::solveLoop<Double>(Double &, uInt &, Double *, Bool) 
+     template void LSQFit::copy<Double>(Double const *, Double const *, Double *, LSQReal) 
+     template void LSQFit::uncopy<Double>(Double *, Double const *, Double *, LSQReal) 
+     template Bool LSQFit::getErrors<Double>(Double *) 
+     template Bool LSQFit::getCovariance<Double>(Double *) 
+#
 1000 scimath/Fitting/LSQaips.cc 
      = casa/Arrays/Array.h 
      = casa/Arrays/Vector.h 
