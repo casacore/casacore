@@ -1,5 +1,5 @@
 //# BaseTabIter.h: Base class for table iterator
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,7 +95,8 @@ public:
     // from ObjCompare<T> will be used.
     BaseTableIterator (BaseTable*, const Block<String>& columnNames,
 		       const PtrBlock<ObjCompareFunc*>&,
-		       const Block<Int>& orders);
+		       const Block<Int>& orders,
+		       int option);
 
     // Clone this iterator.
     BaseTableIterator* clone() const;
@@ -109,7 +110,7 @@ public:
     virtual BaseTable* next();
 
 protected:
-    RefTable*              sortTab_p;     //# Table sorted in iteration order
+    BaseTable*             sortTab_p;     //# Table sorted in iteration order
     uInt                   lastRow_p;     //# last row used from reftab
     uInt                   nrkeys_p;      //# nr of columns in group
     Block<void*>           lastVal_p;     //# last value per column

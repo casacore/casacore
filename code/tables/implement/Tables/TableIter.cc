@@ -1,5 +1,5 @@
 //# TableIter.cc: Iterate through a Table
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,40 +37,48 @@ TableIterator::TableIterator()
 
 TableIterator::TableIterator (const Table& tab,
 			      const String& key,
-			      Order order)
+			      Order order,
+			      Option option)
 {
     Block<String> keys(1, key);
     Block<Int> ord(1, order);
     PtrBlock<ObjCompareFunc*> cmpFunc(1, (ObjCompareFunc*)0);
-    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc, ord);
+    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
+						     ord, option);
     next();                            // get first subtable
 }
 
 TableIterator::TableIterator (const Table& tab,
 			      const Block<String>& keys,
-			      Order order)
+			      Order order,
+			      Option option)
 {
     Block<Int> ord(keys.nelements(), order);
     PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), (ObjCompareFunc*)0);
-    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc, ord);
+    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
+						     ord, option);
     next();                            // get first subtable
 }
 
 TableIterator::TableIterator (const Table& tab,
 			      const Block<String>& keys,
-			      const Block<Int>& orders)
+			      const Block<Int>& orders,
+			      Option option)
 {
     PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), (ObjCompareFunc*)0);
-    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc, orders);
+    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
+						     orders, option);
     next();                            // get first subtable
 }
 
 TableIterator::TableIterator (const Table& tab,
 			      const Block<String>& keys,
 			      const PtrBlock<ObjCompareFunc*>& cmpFuncs,
-			      const Block<Int>& orders)
+			      const Block<Int>& orders,
+			      Option option)
 {
-    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFuncs, orders);
+    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFuncs,
+						     orders, option);
     next();                            // get first subtable
 }
 

@@ -1,5 +1,5 @@
 //# BaseTabIter.cc: Base class for table iterator
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,8 @@
 BaseTableIterator::BaseTableIterator (BaseTable* btp,
 				      const Block<String>& keys,
 				      const PtrBlock<ObjCompareFunc*>& cmpFunc,
-				      const Block<Int>& order)
+				      const Block<Int>& order,
+				      int option)
 : lastVal_p (keys.nelements()),
   curVal_p  (keys.nelements()),
   lastRow_p (0),
@@ -51,21 +52,31 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
   cmpFunc_p (cmpFunc),
   nrkeys_p  (keys.nelements())
 {
-    // Sort the table in order of the iteration keys.
+    // If needed sort the table in order of the iteration keys.
     // DontCare is sorted as ascending.
     // Sort comparison functions are not used.
     // The passed in compare functions are for the iteration.
-    Block<Int> ord(nrkeys_p, Sort::Ascending);
-    for (uInt i=0; i<nrkeys_p; i++) {
-	if (order[i] == TableIterator::Descending) {
-	    ord[i] = Sort::Descending;
+    if (option == TableIterator::NoSort) {
+	sortTab_p = btp;
+    }else{
+	Sort::Option sortopt = Sort::QuickSort;
+	if (option == TableIterator::HeapSort) {
+	    sortopt = Sort::HeapSort;
+	} else if (option == TableIterator::InsSort) {
+	    sortopt = Sort::InsSort;
 	}
+	Block<Int> ord(nrkeys_p, Sort::Ascending);
+	for (uInt i=0; i<nrkeys_p; i++) {
+	    if (order[i] == TableIterator::Descending) {
+		ord[i] = Sort::Descending;
+	    }
+	}
+	sortTab_p = (RefTable*) (btp->sort (keys, cmpFunc_p, ord, sortopt));
     }
-    sortTab_p = (RefTable*) (btp->sort (keys, cmpFunc_p, ord, Sort::HeapSort));
     sortTab_p->link();
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
-    for (i=0; i<nrkeys_p; i++) {
+    for (uInt i=0; i<nrkeys_p; i++) {
 	colPtr_p[i] = sortTab_p->getColumn (keys[i]);
 	colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpFunc_p[i]);
     }
@@ -127,7 +138,7 @@ BaseTable* BaseTableIterator::next()
 	return itp;                              // the end of the table
     }
     // Add the last found rownr to this iteration group.
-    itp->addRownr (sortTab_p->rootRownr(lastRow_p));
+    itp->addRownr (lastRow_p);
     for (i=0; i<nrkeys_p; i++) {
 	colPtr_p[i]->get (lastRow_p, lastVal_p[i]);
     }
@@ -145,7 +156,10 @@ BaseTable* BaseTableIterator::next()
 	if (!match) {
 	    break;
 	}
-	itp->addRownr (sortTab_p->rootRownr(lastRow_p));
+	itp->addRownr (lastRow_p);
     }
+    //# Adjust rownrs in case source table is already a RefTable.
+    Vector<uInt>& rownrs = *(itp->rowStorage());
+    sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);
     return itp;
 }
