@@ -1,9 +1,10 @@
 \documentclass{article}
+\include{aips2defs}
+\usepackage{html,epsf}
 \setlength{\textwidth}{6.5in}
 \setlength{\evensidemargin}{0.0in}
 \setlength{\oddsidemargin}{0.0in}
 \parskip=5truept
-\newcommand{\aipspp}{AIPS++\ }
 \newcommand{\nc}{$N_c$}
 \newcommand{\nr}{$N_r$}
 \newcommand{\nf}{$N_f$}
@@ -37,6 +38,11 @@
 \author{A.J. Kemball (NRAO) and M.H. Wieringa (ATNF), eds.}
 \date{January 21, 2000}
 \maketitle
+
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available 
+(364kB).}{../229.ps.gz}
+\end{htmlonly}
 
 \tableofcontents 
 \section{Summary} 
@@ -2534,5 +2540,4 @@ SPECTRAL\_WINDOW sub-table description.}
 \noindent Wieringa, M.H., and Cornwell, T., 1996, \aipspp Note 191.
 
 \end{document}
-
 
