@@ -55,13 +55,20 @@ TableMeasDescBase* TableMeasDesc<M>::clone() const
 }
 
 template<class M>
+TableMeasDesc<M>::TableMeasDesc(const TableMeasDesc<M>& that)
+: TableMeasDescBase(that)
+{}
+
+template<class M>
 TableMeasDesc<M>::~TableMeasDesc()
 {}
 
 template<class M>
-TableMeasDesc<M>::TableMeasDesc(const TableMeasDesc<M>& that)
-: TableMeasDescBase(that)
-{}
+TableMeasDesc<M>& TableMeasDesc<M>::operator=(const TableMeasDesc<M>& that)
+{
+    TableMeasDescBase::operator=(that);
+    return *this;
+}
 
 template<class M>
 const String& TableMeasDesc<M>::type() const 

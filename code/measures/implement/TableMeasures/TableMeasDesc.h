@@ -146,9 +146,12 @@ public:
     virtual TableMeasDescBase* clone() const;
 
     // Copy constructor (copy semantics).
-    TableMeasDesc(const TableMeasDesc& that);
+    TableMeasDesc(const TableMeasDesc<M>& that);
 
     ~TableMeasDesc();
+    
+    // Assignent operator (copy semantics)
+    TableMeasDesc<M>& operator=(const TableMeasDesc<M>& that);
     
     // Returns the descriptors measure type as a String.
     virtual const String& type() const;
@@ -170,7 +173,6 @@ private:
 
     // Null object constructor. Only needed by TableMeasDescBase::reconstruct.
     TableMeasDesc();
-
 };
 
 
