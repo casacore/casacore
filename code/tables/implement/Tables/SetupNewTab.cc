@@ -1,5 +1,5 @@
 //# SetupNewTab.cc: Class to construct a new or scratch table
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -216,7 +216,7 @@ void SetupNewTableRep::bindAll (const DataManager& dataMan, Bool rebind)
 }
 
 void SetupNewTableRep::bindGroup (const String& groupName,
-			       const DataManager& dataMan, Bool rebind)
+				  const DataManager& dataMan, Bool rebind)
 {
     //# Test if object is already in use for a table.
     if (isUsed()) {
@@ -239,7 +239,7 @@ void SetupNewTableRep::bindGroup (const String& groupName,
 }
 
 void SetupNewTableRep::bindColumn (const String& columnName,
-				const DataManager& dataMan)
+				   const DataManager& dataMan)
 {
     //# Test if object is already in use for a table.
     if (isUsed()) {
@@ -252,6 +252,23 @@ void SetupNewTableRep::bindColumn (const String& columnName,
     //# Rebind if already bound.
     PlainColumn* col = colSetPtr_p->getColumn(columnName);
     col->bind (dataManPtr);
+}
+
+void SetupNewTableRep::bindColumn (const String& columnName,
+				   const String& otherColumn)
+{
+    //# Test if object is already in use for a table.
+    if (isUsed()) {
+	throw (TableInvOper
+	       ("SetupNewTable::bindColumn, object already used by Table"));
+    }
+    //# Bind if other column has a data manager.
+    //# Rebind if already bound.
+    PlainColumn* col = colSetPtr_p->getColumn(columnName);
+    PlainColumn* ocol = colSetPtr_p->getColumn(otherColumn);
+    if (ocol->isBound()) {
+	col->bind (ocol->dataManager());
+    }
 }
 
 

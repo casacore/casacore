@@ -1,5 +1,5 @@
 //# SetupNewTab.h: Create a new table - define shapes, data managers, etc.
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -126,6 +126,13 @@ public:
     // It cannot be used anymore once the SetupNewTableRep object is used to
     // construct a Table object.
     void bindColumn (const String& columnName, const DataManager&);
+
+    // Bind a column to the given data manager of the other column.
+    // If the other column is not bound, nothing will be done.
+    // If columnName is already bound, the binding will be overwritten.
+    // It cannot be used anymore once the SetupNewTableRep object is used to
+    // construct a Table object.
+    void bindColumn (const String& columnName, const String& otherColumn);
 
     // Bind a group of columns to the given data manager.
     // The flag rebind tells if the binding of an already bound column
@@ -368,6 +375,14 @@ public:
     // construct a Table object.
     void bindColumn (const String& columnName, const DataManager& dm)
 	{ newTable_p->bindColumn (columnName, dm); }
+
+    // Bind a column to the given data manager of the other column.
+    // If the other column is not bound, nothing will be done.
+    // If columnName is already bound, the binding will be overwritten.
+    // It cannot be used anymore once the SetupNewTableRep object is used to
+    // construct a Table object.
+    void bindColumn (const String& columnName, const String& otherColumn)
+	{ newTable_p->bindColumn (columnName, otherColumn); }
 
     // Bind a group of columns to the given data manager.
     // The flag rebind tells if the binding of an already bound column

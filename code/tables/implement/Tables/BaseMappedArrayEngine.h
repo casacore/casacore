@@ -261,10 +261,10 @@ template<class SourceType, class TargetType> class BaseMappedArrayEngine : publi
 {
 public:
     // Adding rows is possible for this engine.
-    Bool canAddRow() const;
+    virtual Bool canAddRow() const;
 
     // Deleting rows is possible for this engine.
-    Bool canRemoveRow() const;
+    virtual Bool canRemoveRow() const;
 
     // Give the source name.
     const String& sourceName() const;
@@ -299,15 +299,15 @@ protected:
     inline ArrayColumn<TargetType>& rwColumn();
 
     // The column is writable if the underlying target column is writable.
-    Bool isWritable() const;
+    virtual Bool isWritable() const;
 
     // Create the column object for the array column in this engine.
     // It will check if the given column name matches the source
     // column name. This assures that the engine is bound to the
     // correct column.
-    DataManagerColumn* makeIndArrColumn (const String& columnName,
-					 int dataType,
-					 const String& dataTypeId);
+    virtual DataManagerColumn* makeIndArrColumn (const String& columnName,
+						 int dataType,
+						 const String& dataTypeId);
 
     // Initialize the object for a new table.
     // It defines a source column keyword telling the target column name.
@@ -321,21 +321,27 @@ protected:
     // It reads the target column name from the source column keywords.
     // A derived class can have its own prepare function, but that should
     // always call this prepare function.
-    void prepare();
+    virtual void prepare();
+
+    // Do the 2 stages of the prepare (define columns and adding rows).
+    // <group>
+    void prepare1();
+    void prepare2();
+    // </group>
 
     // Reopen the engine for read/write access.
     // It makes the column writable if the underlying column is writable.
-    void reopenRW();
+    virtual void reopenRW();
 
     // Rows are added to the end of the table.
     // If the source column has FixedShape arrays and the target not,
     // the shape in each target row will be set.
     // This assures that the arrays are properly defined in each row,
     // so putSlice can be used without problems.
-    void addRow (uInt nrrow);
+    virtual void addRow (uInt nrrow);
 
     // Deleting rows is possible and is a no-op for this engine.
-    void removeRow (uInt rownr);
+    virtual void removeRow (uInt rownr);
 
     // Set the shape of the FixedShape arrays in the column.
     // This function only gets called if the column has FixedShape arrays.
@@ -352,7 +358,7 @@ protected:
     virtual void setShape (uInt rownr, const IPosition& shape);
 
     // Test if the (underlying) array is defined in the given row.
-    Bool isShapeDefined (uInt rownr);
+    virtual Bool isShapeDefined (uInt rownr);
 
     // Get the dimensionality of the (underlying) array in the given row.
     // This implementation assumes the dimensionality of source and
