@@ -58,7 +58,7 @@ template <class T> class ImageInterface;
 // <etymology>
 //  Because the SkyComponents were originally stored in a linked list
 //  ComponentList seemed like a good name for this class. Now the list is gone
-//  (in favour of a Block<SKyComponent>) but the name has stuck.
+//  (in favour of a Block<SkyComponent>) but the name has stuck.
 // </etymology>
 //
 // <synopsis> 
@@ -69,10 +69,19 @@ template <class T> class ImageInterface;
 // <ul>
 // <li> Functions to add and delete components
 // <li> Functions to traverse the list and extract individual components
-// <li> Functions to sample the flux of the components in any direction and
-//      grid the components onto an Image
-// <li> Functions to save the list to a table  and read them back again
+// <li> Functions to designate components as active or inactive
+// <li> Functions to sample the flux of active components in any direction and
+//      grid the active components onto an Image
+// <li> Functions to save the active components to a table and read them back 
+//      again
 // <\ul>
+
+// Components can be designated as active or inactive. Only active components
+// are used by the sample and project functions and only active components are
+// save to disk when the list is deleted. So in one sense inactive components
+// can be thought of as being deleted but still recoverable. Components that
+// are added to the list are by default considered active and newly read (from
+// disk) component lists have all the components in them marked as active.
 
 //#! What does the class do?  How?  For whom?  This should include code
 //#! fragments as appropriate to support text.  Code fragments shall be
@@ -132,21 +141,37 @@ public:
   void project(ImageInterface<Float> & plane) const;
 
   // Add a SkyComponent to the end of the ComponentList. The list length is
-  // increased by one when using this function.
-  void add(SkyComponent component);
+  // increased by one when using this function. By default the newly added
+  // component is marked as active.
+  void add(SkyComponent component, const Bool & isActive=True);
 
   // Remove the specified SkyComponent from the ComponentList. After removing a
   // component all the components with an index greater than this one will be
   // reduced by one.
-  void remove(uInt index);
+  void remove(const uInt & index);
 
   // returns how many components are in the list.
   uInt nelements() const;
 
+  // deactivate the specified component. Throws an exception (AipsError) if the
+  // index is out of range, ie. index >= nelements().
+  void deactivate(const uInt & index);
+
+  // activate the specified component. Throws an exception (AipsError) if the
+  // index is out of range, ie. index >= nelements().
+  void activate(const uInt & index);
+
+  // returns how many active components are in the list.
+  uInt nactive() const;
+
+  // Enquire where the specified component is active. Throws an exception
+  // (AipsError) if the index is out of range, ie. index >= nelements().
+  Bool isActive(const uInt & index) const;
+
   // returns a reference to the specified element in the list.
   // <group>
-  const SkyComponent & component(uInt index) const;
-  SkyComponent & component(uInt index);
+  const SkyComponent & component(const uInt & index) const;
+  SkyComponent & component(const uInt & index);
   // </group>
 
   // Make the ComponentList persistant by supplying a filename. If the
@@ -166,10 +191,11 @@ public:
   Bool ok() const;
 
 private:
-  void writeTable();
-  Block<SkyComponent> theList;
-  uInt theNelements;
-  Table theTable;
-  Bool theROFlag;
+  void writeTable(const Bool & saveActiveOnly);
+  Block<SkyComponent> itsList;
+  uInt itsNelements;
+  Table itsTable;
+  Bool itsROFlag;
+  Block<Bool> itsActiveFlags;
 };
 #endif
