@@ -69,8 +69,8 @@ void a() {
     IPosition imageTileShape(2,imageTileSize,imageTileSize);
     Vector<Float> tileOverlapVec(2);
     tileOverlapVec=tileOverlap;
-    PagedArray<Complex> pi2(map2shape, imageTileShape);
-    pi2.setCacheSize(1);
+    PagedArray<Complex> pi2(TiledShape(map2shape, imageTileShape));
+    pi2.setCacheSizeInTiles(1);
     LatticeCache<Complex> itc(pi2, cacheSize, tileShape, tileOverlapVec,
 			       ToBool(tileOverlap>0.));      
     MLCG rng(835, 05401);
@@ -141,8 +141,8 @@ void b() {
     IPosition tileShape(4,tileSize,tileSize,nPolTile,nChanTile);
     IPosition map4shape(4, arraySize, arraySize, nPol, nChannels);
     IPosition imageTileShape(4,imageTileSize,imageTileSize,1,imageTileSize);
-    PagedArray<Float> pi4(map4shape, imageTileShape);
-    pi4.setCacheSize(0);
+    PagedArray<Float> pi4(TiledShape(map4shape, imageTileShape));
+    pi4.setCacheSizeInTiles(0);
     LatticeCache<Float> itc(pi4, cacheSize, tileShape, tileOverlapVec,
 			       ToBool(tileOverlap>0.0));      
     MLCG rng(835, 05401);
