@@ -283,7 +283,9 @@ void TiledStMan::setShape (uInt, TSMCube*, const IPosition&, const IPosition&)
 void TiledStMan::reopenRW()
 {
     for (uInt i=0; i<fileSet_p.nelements(); i++) {
-	fileSet_p[i]->bucketFile()->setRW();
+	if (fileSet_p[i] != 0) {
+	    fileSet_p[i]->bucketFile()->setRW();
+	}
     }
 }
 
@@ -789,8 +791,10 @@ Int TiledStMan::getCubeIndex (const Record& idValues) const
     }
     // Look if a hypercube matches the id values.
     for (uInt i=0; i<cubeSet_p.nelements(); i++) {
-	if (cubeSet_p[i]->matches (idColSet_p, idValues)) {
-	    return i;
+	if (cubeSet_p[i] != 0) {
+	    if (cubeSet_p[i]->matches (idColSet_p, idValues)) {
+		return i;
+	    }
 	}
     }
     return -1;
@@ -878,7 +882,9 @@ Bool TiledStMan::flushCaches (Bool fsync)
     }
     if (fsync) {
 	for (i=0; i<fileSet_p.nelements(); i++) {
-	    fileSet_p[i]->bucketFile()->fsync();
+	    if (fileSet_p[i] != 0) {
+		fileSet_p[i]->bucketFile()->fsync();
+	    }
 	}
     }
     return True;
