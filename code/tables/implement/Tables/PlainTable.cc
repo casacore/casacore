@@ -47,7 +47,6 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 : BaseTable      (newtab.name(), newtab.option(), 0),
   colSetPtr_p    (0),
   tableChanged_p (True),
-  unlockChanged_p(True),
   addToCache_p   (True),
   lockPtr_p      (0)
 {
@@ -126,7 +125,6 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
 : BaseTable      (tabname, opt, nrrow),
   colSetPtr_p    (0),
   tableChanged_p (False),
-  unlockChanged_p(False),
   addToCache_p   (addToCache),
   lockPtr_p      (0)
 {
@@ -136,12 +134,17 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     noWrite_p = True;
     //# Create the lock object.
     //# When needed, it sets a permanent (read or write) lock.
-    //# Otherwise acquire a read lock to read in the table.
+    //# Otherwise acquire a read lock (when needed) to read in the table
+    //# or get the sync info.
     lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
     lockPtr_p->makeLock (name_p, False,
 		   opt == Table::Old  ?  FileLocker::Read : FileLocker::Write,
 			 locknr);
-    lockPtr_p->acquire (&(lockSync_p.memoryIO()), FileLocker::Read, 0);
+    if (lockPtr_p->readLocking()) {
+        lockPtr_p->acquire (&(lockSync_p.memoryIO()), FileLocker::Read, 0);
+    } else {
+        lockPtr_p->getInfo (lockSync_p.memoryIO());
+    }
     uInt ncolumn;
     Bool tableChanged;
     Block<Bool> dmChanged;
@@ -362,11 +365,35 @@ void PlainTable::flush (Bool)
     }
 }
 
+void PlainTable::resync()
+{
+    Bool tableChanged = True;
+    lockPtr_p->getInfo (lockSync_p.memoryIO());
+    // Older readonly table files may have empty locksync data.
+    // Skip the sync-ing in that case.
+    uInt ncolumn;
+    if (! lockSync_p.read (nrrow_p, ncolumn, tableChanged,
+			   colSetPtr_p->dataManChanged())) {
+        tableChanged = False;
+    } else {
+        if (ncolumn != tableDesc().ncolumn()) {
+	    throw (TableError ("Table::resync cannot sync; another "
+			       "process changed the number of columns"));
+	}
+	colSetPtr_p->resync (nrrow_p);
+	if (tableChanged  &&  ncolumn > 0) {
+	    syncTable();
+	}
+    }
+}
+
 
 Bool PlainTable::putFile (Bool always)
 {
     AipsIO ios;
-    if (always  ||  tableChanged_p) {
+    Bool writeTab = always || tableChanged_p;
+    Bool written = writeTab;
+    if (writeTab) {
 	writeStart (ios);
 	ios << "PlainTable";
 	tdescPtr_p->putFile (ios, tableName());         // write description
@@ -375,15 +402,23 @@ Bool PlainTable::putFile (Bool always)
 	writeEnd (ios);
 	//# Write the TableInfo.
 	flushTableInfo();
-	tableChanged_p = False;
-	//# putFile might be called by flush, so keep track for unlock
-	//# if main table has changed.
-	unlockChanged_p = True;
-	return True;
+    } else {
+        //# Tell the data managers to write their data only.
+        if (colSetPtr_p->putFile (False, ios, tableName(), False)) {
+	    written = True;
+	}
     }
-    //# Only tell the data managers to write their data.
-    colSetPtr_p->putFile (False, ios, tableName(), False);
-    return False;
+
+    // Write the change info if anything has been written.
+    if (written) {
+        lockSync_p.write (nrrow_p, tdescPtr_p->ncolumn(), tableChanged_p,
+			  colSetPtr_p->dataManChanged());
+	lockPtr_p->putInfo (lockSync_p.memoryIO());
+    }
+    // Clear the change-flags for the next round.
+    tableChanged_p = False;
+    colSetPtr_p->dataManChanged() = False;
+    return writeTab;
 }
 
 MemoryIO* PlainTable::releaseCallBack (void* plainTableObject, Bool always)
@@ -400,10 +435,7 @@ MemoryIO* PlainTable::doReleaseCallBack (Bool always)
 	return 0;
     }
     putFile (always);
-    lockSync_p.write (nrrow_p, tdescPtr_p->ncolumn(), unlockChanged_p,
-		      colSetPtr_p->dataManChanged());
-    unlockChanged_p = False;
-    return &(lockSync_p.memoryIO());
+    return 0;
 }
 
 
@@ -421,18 +453,16 @@ Bool PlainTable::isWritable() const
 TableRecord& PlainTable::keywordSet()
 {
     Bool hasLocked = colSetPtr_p->userLock (FileLocker::Read, True);
-    colSetPtr_p->checkLock (FileLocker::Read, True);
+    colSetPtr_p->checkReadLock (True);
     TableRecord& rec = tdescPtr_p->rwKeywordSet();
     colSetPtr_p->userUnlock (hasLocked);
     return rec;
 }
 TableRecord& PlainTable::rwKeywordSet()
 {
-    Bool hasLocked = colSetPtr_p->userLock (FileLocker::Write, True);
-    colSetPtr_p->checkLock (FileLocker::Write, True);
+    colSetPtr_p->checkWriteLock (True);
     TableRecord& rec = tdescPtr_p->rwKeywordSet();
     tableChanged_p = True;
-    colSetPtr_p->userUnlock (hasLocked);
     return rec;
 }
     
@@ -458,6 +488,7 @@ Bool PlainTable::canRemoveColumn (const String& columnName) const
 Bool PlainTable::canRenameColumn (const String& columnName) const
     { return colSetPtr_p->canRenameColumn (columnName); }
 
+
 //# Add rows.
 void PlainTable::addRow (uInt nrrw, Bool initialize)
 {
@@ -467,7 +498,7 @@ void PlainTable::addRow (uInt nrrw, Bool initialize)
 	}
 	//# Locking has to be done here, otherwise nrrow_p is not up-to-date
 	//# when autoReleaseLock releases the lock and writes the data.
-	colSetPtr_p->checkLock (FileLocker::Write, True);
+	colSetPtr_p->checkWriteLock (True);
 	colSetPtr_p->addRow (nrrw);
 	if (initialize) {
 	    colSetPtr_p->initialize (nrrow_p, nrrow_p+nrrw-1);
@@ -484,7 +515,7 @@ void PlainTable::removeRow (uInt rownr)
     }
     //# Locking has to be done here, otherwise nrrow_p is not up-to-date
     //# when autoReleaseLock releases the lock and writes the data.
-    colSetPtr_p->checkLock (FileLocker::Write, True);
+    colSetPtr_p->checkWriteLock (True);
     colSetPtr_p->removeRow (rownr);
     nrrow_p--;
     colSetPtr_p->autoReleaseLock();
