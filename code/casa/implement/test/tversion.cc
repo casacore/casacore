@@ -29,7 +29,7 @@
 #include <aips/aips.h>
 #include <aips/version.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 int main()
 {
