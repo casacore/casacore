@@ -1,3 +1,6 @@
+.keywords COLI
+IKEYS   A "coli key"
+.endkeywords
 .keywords
 KEYS    s  20
 KEYSV   S  10 11 12
@@ -19,6 +22,10 @@ KEYA    a  "1 2 3 4 5"
 KEYAV   A  " 1 2 " "AAA" BBB bbb CCc C "@#$%^&*()"
 KEYB    b  1
 KEYBV   B  "" 0 F false N no Y yes T true 1
+.endkeywords
+.keywords  COLDX
+IKEYS   A "coldx ikey"
+DKEYS   A "coldx dkey"
 .endkeywords
 COLS COLI   COLF   COLD   COLX   COLDX   COLZ   COLDZ    COLA  COLB
   s    i      R      d      X      dx      z      DZ       A     B

@@ -46,8 +46,10 @@
 void a (const String& dir);
 void a1 (const String& dir);
 void b (const String& dir);
+void b1 (const String& dir);
+void b2 (const String& dir);
 
-main (int argc, char** argv) {
+int main (int argc, char** argv) {
     try {
 	String dir;
 	if (argc > 1) {
@@ -56,6 +58,8 @@ main (int argc, char** argv) {
 	a (dir);
 	a1 (dir);
 	b (dir);
+	b1 (dir);
+	b2 (dir);
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -149,6 +153,19 @@ void b (const String& dir)
     cout << "KEYAV " << keys.asArrayString ("KEYAV") << endl;
     cout << "KEYBV " << keys.asArrayBool ("KEYBV") << endl;
     cout << endl;
+    {
+      ROTableColumn tabcol (tab, "COLI");
+      const TableRecord& keycol = tabcol.keywordSet();
+      cout << keycol.description();
+      cout << "IKEYS " << keycol.asString ("IKEYS") << endl;
+    }
+    {
+      ROTableColumn tabcol (tab, "COLDX");
+      const TableRecord& keycol = tabcol.keywordSet();
+      cout << keycol.description();
+      cout << "IKEYS " << keycol.asString ("IKEYS") << endl;
+      cout << "DKEYS " << keycol.asString ("DKEYS") << endl;
+    }
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
     ROScalarColumn<Short>    cols (tab,"COLS");
@@ -166,5 +183,122 @@ void b (const String& dir)
 	     << cold(i) << " " << colx(i) << " " << colz(i) << " "
 	     << coldx(i) << " " << coldz(i) << " " << cola(i) << " "
 	     << colb(i) << endl;
+    }
+}
+
+void b1 (const String& dir)
+{
+    cout << ">>>" << endl;
+    String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh", "",
+				     "tReadAsciiTable_tmp.data_tk");
+    cout << "<<<" << endl;
+    cout << "Input format: [" << formStr << ']' << endl;
+    cout << endl;
+    Table tab("tReadAsciiTable_tmp.data_tk");
+    const TableRecord& keys = tab.keywordSet();
+    cout << keys.description();
+    cout << "KEYS " << keys.asShort ("KEYS") << endl;
+    cout << "KEYI " << keys.asInt ("KEYI") << endl;
+    cout << "KEYF " << keys.asfloat ("KEYF") << endl;
+    cout << "KEYD " << keys.asdouble ("KEYD") << endl;
+    cout << "KEYX " << keys.asComplex ("KEYX") << endl;
+    cout << "KEYZ " << keys.asComplex ("KEYZ") << endl;
+    cout << "KEYDX " << keys.asDComplex ("KEYDX") << endl;
+    cout << "KEYDZ " << keys.asDComplex ("KEYDZ") << endl;
+    cout << "KEYA " << keys.asString ("KEYA") << endl;
+    cout << "KEYB " << keys.asBool ("KEYB") << endl;
+    cout << "KEYSV " << keys.asArrayShort ("KEYSV") << endl;
+    cout << "KEYIV " << keys.asArrayInt ("KEYIV") << endl;
+    cout << "KEYFV " << keys.asArrayfloat ("KEYFV") << endl;
+    cout << "KEYDV " << keys.asArraydouble ("KEYDV") << endl;
+    cout << "KEYXC " << keys.asArrayComplex ("KEYXC") << endl;
+    cout << "KEYZV " << keys.asArrayComplex ("KEYZV") << endl;
+    cout << "KEYDXC " << keys.asArrayDComplex ("KEYDXC") << endl;
+    cout << "KEYDZV " << keys.asArrayDComplex ("KEYDZV") << endl;
+    cout << "KEYAV " << keys.asArrayString ("KEYAV") << endl;
+    cout << "KEYBV " << keys.asArrayBool ("KEYBV") << endl;
+    cout << endl;
+    {
+      ROTableColumn tabcol (tab, "COLI");
+      const TableRecord& keycol = tabcol.keywordSet();
+      cout << keycol.description();
+      cout << "IKEYS " << keycol.asString ("IKEYS") << endl;
+    }
+    {
+      ROTableColumn tabcol (tab, "COLDX");
+      const TableRecord& keycol = tabcol.keywordSet();
+      cout << keycol.description();
+      cout << "IKEYS " << keycol.asString ("IKEYS") << endl;
+      cout << "DKEYS " << keycol.asString ("DKEYS") << endl;
+    }
+    cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
+	 << " columns" << endl;
+    ROScalarColumn<Short>    cols (tab,"COLS");
+    ROScalarColumn<Int>      coli (tab,"COLI");
+    ROScalarColumn<float>    colf (tab,"COLF");
+    ROScalarColumn<double>   cold (tab,"COLD");
+    ROScalarColumn<Complex>  colx (tab,"COLX");
+    ROScalarColumn<Complex>  colz (tab,"COLZ");
+    ROScalarColumn<DComplex> coldx (tab,"COLDX");
+    ROScalarColumn<DComplex> coldz (tab,"COLDZ");
+    ROScalarColumn<String>   cola (tab,"COLA");
+    ROScalarColumn<Bool>     colb (tab,"COLB");
+    for (uInt i=0; i<tab.nrow(); i++) {
+	cout << cols(i) << " " << coli(i) << " " << colf(i) << " "
+	     << cold(i) << " " << colx(i) << " " << colz(i) << " "
+	     << coldx(i) << " " << coldz(i) << " " << cola(i) << " "
+	     << colb(i) << endl;
+    }
+}
+
+void b2 (const String& dir)
+{
+    cout << ">>>" << endl;
+    String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh", "",
+				     "tReadAsciiTable_tmp.data_tk", True);
+    cout << "<<<" << endl;
+    cout << "Input format: [" << formStr << ']' << endl;
+    cout << endl;
+    Table tab("tReadAsciiTable_tmp.data_tk");
+    const TableRecord& keys = tab.keywordSet();
+    cout << keys.description();
+    cout << "KEYS " << keys.asShort ("KEYS") << endl;
+    cout << "KEYI " << keys.asInt ("KEYI") << endl;
+    cout << "KEYF " << keys.asfloat ("KEYF") << endl;
+    cout << "KEYD " << keys.asdouble ("KEYD") << endl;
+    cout << "KEYX " << keys.asComplex ("KEYX") << endl;
+    cout << "KEYZ " << keys.asComplex ("KEYZ") << endl;
+    cout << "KEYDX " << keys.asDComplex ("KEYDX") << endl;
+    cout << "KEYDZ " << keys.asDComplex ("KEYDZ") << endl;
+    cout << "KEYA " << keys.asString ("KEYA") << endl;
+    cout << "KEYB " << keys.asBool ("KEYB") << endl;
+    cout << "KEYSV " << keys.asArrayShort ("KEYSV") << endl;
+    cout << "KEYIV " << keys.asArrayInt ("KEYIV") << endl;
+    cout << "KEYFV " << keys.asArrayfloat ("KEYFV") << endl;
+    cout << "KEYDV " << keys.asArraydouble ("KEYDV") << endl;
+    cout << "KEYXC " << keys.asArrayComplex ("KEYXC") << endl;
+    cout << "KEYZV " << keys.asArrayComplex ("KEYZV") << endl;
+    cout << "KEYDXC " << keys.asArrayDComplex ("KEYDXC") << endl;
+    cout << "KEYDZV " << keys.asArrayDComplex ("KEYDZV") << endl;
+    cout << "KEYAV " << keys.asArrayString ("KEYAV") << endl;
+    cout << "KEYBV " << keys.asArrayBool ("KEYBV") << endl;
+    cout << endl;
+    cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
+	 << " columns" << endl;
+    ROScalarColumn<String> col1 (tab,"Column1");
+    ROScalarColumn<String> col2 (tab,"Column2");
+    ROScalarColumn<String> col3 (tab,"Column3");
+    ROScalarColumn<String> col4 (tab,"Column4");
+    ROScalarColumn<String> col5 (tab,"Column5");
+    ROScalarColumn<String> col6 (tab,"Column6");
+    ROScalarColumn<String> col7 (tab,"Column7");
+    ROScalarColumn<String> col8 (tab,"Column8");
+    ROScalarColumn<String> col9 (tab,"Column9");
+    ROScalarColumn<String> col10 (tab,"Column10");
+    for (uInt i=0; i<tab.nrow(); i++) {
+	cout << col1(i) << " " << col2(i) << " " << col3(i) << " "
+	     << col4(i) << " " << col5(i) << " " << col6(i) << " "
+	     << col7(i) << " " << col8(i) << " " << col9(i) << " "
+	     << col10(i) << endl;
     }
 }
