@@ -2388,3 +2388,12 @@
 11 213 src rm aips/implement/Mathematics/test/tConvVector.in
 11 213 src rm aips/implement/Mathematics/test/tConvVector.cc
 11 213 src rm aips/implement/Mathematics/test/tConvVector.out
+11 213 src rm trial/apps/sdimaging/sdimaging.cc
+11 213 src rm trial/apps/sdimaging/templates
+11 213 src rm trial/apps/sdimaging/tsdimaging.g
+11 213 src rm trial/apps/sdimaging/sdimaging.g
+11 213 src rm trial/apps/sdimaging/sdgridderDO.h
+11 213 src rm trial/apps/sdimaging/makefile
+11 213 src rm trial/apps/sdimaging/sdgridder.g
+11 213 src rm trial/apps/sdimaging/sdgridderDO.cc
+11 213 src rm trial/apps/sdimaging
