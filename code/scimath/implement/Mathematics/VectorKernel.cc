@@ -128,5 +128,26 @@ Vector<Int> VectorKernel::toKernelTypes (const String& kernels)
                
    return kernelTypes;
 }
-               
+ 
+
+
+
+
+VectorKernel::KernelTypes VectorKernel::toKernelType (const String& kernel)
+
+{
+   String tKernel = kernel;
+   tKernel.upcase();
+//               
+   if (tKernel.contains("BOX")) {
+      return VectorKernel::BOXCAR;
+   } else if (tKernel.contains("GAUSS")) {
+      return VectorKernel::GAUSSIAN;
+   } else if (tKernel.contains("HANN")) {
+      return VectorKernel::HANNING;
+   }
+   LogIO os(LogOrigin("VectorKernel", "toKernelType"));
+   os << "Illegal kernel type" << LogIO::EXCEPTION;
+   return VectorKernel::BOXCAR;
+}
 
