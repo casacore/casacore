@@ -139,8 +139,8 @@ T GenSort<T>::kthLargest (T* data, uInt nr, uInt k)
 	// Determine index of partitioning and update the start and end
 	// to take left or right part.
 	i = sf-data;
-	if (i <= k) st = i;
-	if (i >= k) end = i;
+	if (i <= Int(k)) st = i;
+	if (i >= Int(k)) end = i;
     }
     return data[k];
 }
