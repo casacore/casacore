@@ -299,10 +299,17 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
   Int numCorr=mspol.numCorr()(polId_p(0));
   Vector<Int> inputPol=mspol.corrType()(polId_p(0));
 
-  // shortcut two cases: we want 1 or all existing pols in the output
+  // shortcut two cases: we want all or 1 existing pol in the output
   convert_p=False;
   wantedOne_p=-1;
-  if (n==1) {
+  if (n==numCorr) {
+    for (Int i=0; i<numCorr; i++) {
+      if (wanted(i)!=inputPol(i)) {
+	convert_p=True;
+	break;
+      }
+    }
+  }else if (n==1) {
     Bool found=False;
     for (Int i=0; i<numCorr; i++) {
       if (wanted(0)==inputPol(i)) {
@@ -313,13 +320,6 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
       }
     }
     if (!found) convert_p=True;
-  } else if (n==numCorr) {
-    for (Int i=0; i<numCorr; i++) {
-      if (wanted(i)!=inputPol(i)) {
-	convert_p=True;
-	break;
-      }
-    }
   } else {
     convert_p=True;
   }
@@ -688,16 +688,6 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       }
     }
     nSlot = max(slotNo);
-    if (aips_debug) {
-      for (Int i=0; i<nIfr; i++) {
-	if (ifrAxis_p(i)>=0 && slotNo(i)!=nSlot) {
-	  os<<LogIO::DEBUGGING<<"Not all ifrs are present for all slots: "<<
-	    " time and index coordinates will not be aligned across ifrs"<<
-	    LogIO::POST;
-	  break;
-	}
-      }
-    }
     rowIndex_p.resize(nIfr,nSlot); rowIndex_p.set(-1);
     for (Int i=0; i<nRow; i++) rowIndex_p(ifrIndex(i),slot(i))=i;
 
