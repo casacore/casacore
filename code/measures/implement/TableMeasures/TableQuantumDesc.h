@@ -34,6 +34,7 @@
 
 //# Forward Declarations
 class TableDesc;
+class ROTableColumn;
 class Unit;
 
 
@@ -308,6 +309,9 @@ public:
 
   // Makes the TableQuantumDesc persistent (updates the Table Descriptor).
   void write (TableDesc& td);
+
+  // Does this column contain table quanta?
+  static Bool hasQuanta (const ROTableColumn& column);
 
 private:
   // Name of column which stores the Quantum's values.

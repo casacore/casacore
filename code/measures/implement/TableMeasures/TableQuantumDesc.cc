@@ -29,6 +29,7 @@
 #include <aips/TableMeasures/TableQuantumDesc.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
+#include <aips/Tables/TableColumn.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/DataType.h>
@@ -157,4 +158,10 @@ void TableQuantumDesc::checkUnitsColumn (const TableDesc& td) const
     throw (AipsError ("TableQuantum::checkUnitsColumn; Type of column "
 		      "should be String: " + itsUnitsColName));
   }
+}
+
+Bool TableQuantumDesc::hasQuanta (const ROTableColumn& column)
+{
+  return ( column.keywordSet().isDefined ("QuantumUnits")  ||
+	   column.keywordSet().isDefined ("VariableUnits"));
 }
