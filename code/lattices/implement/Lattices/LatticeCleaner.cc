@@ -288,19 +288,67 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   }
 
 
+
+
   // Define a subregion for the inner quarter
   IPosition blcDirty(model.shape().nelements(), 0);
   IPosition trcDirty(model.shape()-1);
 
-  if (itsIgnoreCenterBox) {
-    os << "Cleaning entire image as per MF/WF" << LogIO::POST;
-  } else {
+   if (itsIgnoreCenterBox) {
+     os << "Cleaning entire image as per MF/WF" << LogIO::POST;
+   }
+   else if(itsMask){
+    os << "Cleaning using given mask" << LogIO::POST;
+
+       Int nx=model.shape()(0);
+       Int ny=model.shape()(1);
+
+
+       AlwaysAssert(itsMask->shape()(0)==nx, AipsError);
+       AlwaysAssert(itsMask->shape()(1)==ny, AipsError);
+       
+       LatticeStepper mls(itsMask->shape(),
+		       IPosition(4, nx, ny, 1, 1),
+		       IPosition(4, 0, 1, 3, 2));
+       RO_LatticeIterator<Float> maskli(*itsMask, mls);
+       maskli.reset(); 
+        Int xbeg=nx-1;
+        Int ybeg=ny-1;
+        Int xend=0;
+        Int yend=0;
+	for (Int iy=0;iy<ny;iy++) {
+	  for (Int ix=0;ix<nx;ix++) {
+	    if(maskli.matrixCursor()(ix,iy)>0.000001) {
+	      xbeg=min(xbeg,ix);
+	      ybeg=min(ybeg,iy);
+	      xend=max(xend,ix);
+	      yend=max(yend,iy);
+	    }
+	  }
+	}
+
+	if((xend - xbeg)>nx/2) {
+	  xbeg=nx/4-1; //if larger than quarter take inner of mask
+	  os << LogIO::WARN << "Mask span over more than half the x-axis: Considering inner half of the x-axis"  << LogIO::POST;
+	} 
+	if((yend - ybeg)>ny/2) { 
+	  ybeg=ny/4-1;
+	  os << LogIO::WARN << "Mask span over more than half the y-axis: Considering inner half of the y-axis" << LogIO::POST;
+	}  
+	xend=min(xend,xbeg+nx/2-1);
+	yend=min(yend,ybeg+ny/2-1);
+	blcDirty(0)=xbeg;
+	blcDirty(1)=ybeg;
+	trcDirty(0)=xend;
+	trcDirty(1)=yend;
+   }
+   else {
     os << "Cleaning inner quarter of image" << LogIO::POST;
     for (Int i=0;i<Int(model.shape().nelements());i++) {
       blcDirty(i)=model.shape()(i)/4;
       trcDirty(i)=blcDirty(i)+model.shape()(i)/2-1;
       if(trcDirty(i)<0) trcDirty(i)=1;
-    }
+   }
   }
   LCBox centerBox(blcDirty, trcDirty, model.shape());
 
