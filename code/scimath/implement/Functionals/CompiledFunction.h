@@ -1,5 +1,5 @@
 //# CompiledFunction.h: Form a linear combination of Functions
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,22 +65,46 @@
 // <example>
 // In the following example a Gaussian profile with three parameters
 // (height, center and halfwidth) is specified and its value and
-// derivatives with respect to the parameters are calculated at <src>x=2</src>.
+// derivatives with respect to the parameters are calculated at
+// <src>x=[1.9,2,2.1]</src>.
 // <srcblock>
 // // the Gaussian
-// CompiledFunction<Double> prof("p0*exp(-((x-p1)/p2)^2)");
+// CompiledFunction<Double> prof;
+// prof.setFunction("p0*exp(-((x-p1)/p2)^2)");
 // prof[0] = 2;				// the height
 // prof[1] = 1.5;			// the center
 // prof[2] = 1;				// the width
 // Vector<Double> x(3);
-// X[0] = 1.9; x[1] = 2.0; x[2] = 2.1;
-// cout << "Gaussian at x=" << x << ": " << prof(x) << endl;
-// // and an automatic derivative one:
-// CompiledFunction<AutoDiff<Double> > profad("p0*exp(-((x-p1)/p2)^2)");
-// cout << "Gaussian at x=" << x << ": " << profad(x) << endl;
+// x[0] = 1.9; x[1] = 2.0; x[2] = 2.1;
+// for (uInt i=0; i<3; ++i) {
+//   cout << "Gaussian at x=" << x[i] << ": " << prof(x[i]) << endl;
+// };
+// // Calculate automatic derivatives of same function:
+// CompiledFunction<AutoDiff<Double> > profad;
+// profad.setFunction("p0*exp(-((x-p1)/p2)^2)");
+// // Set the parameters (note the specification of the number of
+// // derivatives and which derivative the parameter is)
+// profad[0] = AutoDiff<Double>(2,  3,0);	// the height
+// profad[1] = AutoDiff<Double>(1.5,3,1);	// the center
+// profad[2] = AutoDiff<Double>(1,  3,2);      	// the width
+// for (uInt i=0; i<3; ++i) {
+//   cout << "Gaussian at x=" << x[i] << ": " << profad(x[i]) << endl;
+// };
+// cout << "Value (x=2): " << profad(x[1]).value() << endl;
+// cout << "Derivatives: " << profad(x[1]).derivatives() << endl;
+// cout << "Derivative1: " << profad(x[1]).derivatives()[1] << endl;
 // </srcblock>
 // will produce the output:
 // <srcblock>
+//	Gaussian at x=1.9: 1.70429
+//	Gaussian at x=2: 1.5576
+//	Gaussian at x=2.1: 1.39535
+//	Gaussian at x=1.9: (1.70429, [0.852144, 1.36343, 0.545372])
+//	Gaussian at x=2: (1.5576, [0.778801, 1.5576, 0.778801])
+//	Gaussian at x=2.1: (1.39535, [0.697676, 1.67442, 1.00465])
+//	Value (x=2): 1.5576
+//	Derivatives: [0.778801, 1.5576, 0.778801]
+//	Derivative1: 1.5576
 // </srcblock>
 // </example>
 
