@@ -63,6 +63,7 @@ LATEXDCS := $(filter %.latex,$(AIPSSRCS))
 TEXIDOCS := $(filter %.texi,$(AIPSSRCS))
 TEXDOCS  := $(filter %.tex,$(AIPSSRCS))
 PSDOCS   := $(filter %.ps,$(AIPSSRCS))
+PSGZDOCS   := $(filter %.ps.gz,$(AIPSSRCS))
 PPTDOCS   := $(filter %.ppt,$(AIPSSRCS))
 TEXTDOCS := $(filter %.text,$(AIPSSRCS))
 TXTDOCS  := $(filter %.txt,$(AIPSSRCS))
@@ -169,6 +170,12 @@ $(DOCSAREA)/%.ps : $(CODEDIR)/%.tex $(CODEDIR)/%.dir
 	 @ chmod 664 $@
 
 $(DOCSAREA)/%.ps : $(CODEDIR)/%.ps
+	-@ echo ""
+	 @ $(RM) $@
+	 cp $< $@
+	 @ chmod 664 $@
+
+$(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.ps.gz
 	-@ echo ""
 	 @ $(RM) $@
 	 cp $< $@
@@ -325,6 +332,7 @@ docsys : $(HELPSYS) $(CHKDIR) $(DOCSAREA) \
     $(addprefix $(DOCSAREA)/,$(subst .texi,.ps,$(TEXIDOCS))) \
     $(addprefix $(DOCSAREA)/,$(subst .tex,.ps,$(TEXDOCS))) \
     $(addprefix $(DOCSAREA)/,$(PSDOCS)) \
+    $(addprefix $(DOCSAREA)/,$(PSGZDOCS)) \
     $(addprefix $(DOCSAREA)/,$(PPTDOCS)) \
     $(addprefix $(DOCSAREA)/,$(TEXTDOCS)) \
     $(addprefix $(DOCSAREA)/,$(TXTDOCS)) \
@@ -391,6 +399,7 @@ show_local :
 	-@ echo "TEXIDOCS=$(TEXIDOCS)"
 	-@ echo "TEXDOCS =$(TEXDOCS)"
 	-@ echo "PSDOCS  =$(PSDOCS)"
+	-@ echo "PSGZDOCS  =$(PSGZDOCS)"
 	-@ echo "PPTDOCS=$(PPTDOCS)"
 	-@ echo "TEXTDOCS=$(TEXTDOCS)"
 	-@ echo "TXTDOCS =$(TXTDOCS)"
