@@ -180,9 +180,30 @@ int main() {
   
   // clone();
   //     ~Gaussian1D();
+  cout << "Cloning:" << endl;
+  cout << "Original value f(1):     " << gauss1(1.0) << endl;
+  AlwaysAssertExit(nearAbs(gauss1(1.0), 1.11238, 1e-5))
   Function<Double> *gauss4ptr = gauss1.clone();
+  cout << "f.clone(1):              " << (*gauss4ptr)(1.0) << endl;
+  AlwaysAssertExit(near(gauss1(1.0), (*gauss4ptr)(1.0)))
+  Function<Double> *gauss4a = gauss1.cloneNonAD();
+  cout << "f.cloneNonAD(1):         " << (*gauss4a)(1.0) << endl;
+  AlwaysAssertExit(near(gauss1(1.0), (*gauss4a)(1.0)))
+  Function<AutoDiff<Double> > *gauss4b = gauss1.cloneAD();
+  cout << "f.cloneAD(1):            " << (*gauss4b)(1.0) << endl;
+  AlwaysAssertExit(near(gauss1(1.0), (*gauss4b)(1.0).value()))
+  Function<AutoDiff<Double> > *gauss4c = gauss1.cloneAD()->cloneAD();
+  cout << "f.cloneAD.cloneAD(1):    " << (*gauss4c)(1.0) << endl;
+  AlwaysAssertExit(near(gauss1(1.0), (*gauss4c)(1.0).value()))
+  Function<Double> *gauss4d = gauss1.cloneAD()->cloneNonAD();
+  cout << "f.cloneAD.cloneNonAD(1): " << (*gauss4d)(1.0) << endl;
+  AlwaysAssertExit(near(gauss1(1.0), (*gauss4d)(1.0)))
   AlwaysAssertExit(allEQ(gauss4ptr->parameters().getParameters(), 11.0));
   delete gauss4ptr;
+  delete gauss4a;
+  delete gauss4b;
+  delete gauss4c;
+  delete gauss4d;
 
   cout << "OK" << endl;
   return 0;
