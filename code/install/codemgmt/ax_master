@@ -2790,3 +2790,4 @@
 10 101 src mv trial/apps/numerics/randomnumbers_meta.g trial/implement/Mathematics/randomnumbers_meta.g
 10 101 src mv trial/apps/numerics/fftserver_meta.g trial/implement/Mathematics/fftserver_meta.g
 10 102 src rm trial/apps/imager/templates
+10 102 src rm trial/apps/cal
