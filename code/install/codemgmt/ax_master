@@ -2540,3 +2540,4 @@
 11 374 src mv trial/scripts/app.g trial/implement/Tasking/app.g
 11 374 src mv trial/scripts/assay.g trial/implement/Utilities/assay.g
 11 374 src mv trial/scripts/assay.help trial/implement/Utilities/assay.help
+11 374 src mv trial/scripts/assay_meta.g trial/implement/Utilities/assay_meta.g
