@@ -1,5 +1,5 @@
 //# tTiledColumnStMan.cc: Test program for the TiledColumnStMan classes
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledStManAccessor.h>
+#include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
@@ -42,6 +43,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
@@ -143,6 +145,15 @@ void writeFixed()
     }
     ROTiledStManAccessor accessor (table, "TSMExample");
     accessor.showCacheStatistics (cout);
+    AlwaysAssertExit (accessor.nhypercubes() == 1);
+    AlwaysAssertExit (accessor.hypercubeShape(2) == IPosition(3,16,20,
+							      table.nrow()));
+    AlwaysAssertExit (accessor.tileShape(2) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.getHypercubeShape(0) == IPosition(3,16,20,
+								table.nrow()));
+    AlwaysAssertExit (accessor.getTileShape(0) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.getBucketSize(0) == accessor.bucketSize(2));
+    AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
 }
 
 void readTable()
@@ -187,6 +198,12 @@ void readTable()
     }
     accessor.showCacheStatistics (cout);
     accessor.clearCaches();
+    AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Freq"),
+			     freqValues));
+    AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Pol"),
+			     polValues));
+    AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Time"),
+			     time.getColumn()));
     cout << "get's have been done" << endl;
 
     // Get the entire column.
