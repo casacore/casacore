@@ -731,19 +731,7 @@ void TableExprNodeSet::combineDoubleIntervals()
       itsStart[i] = elems[i]->start()->getDouble(id);
       itsEnd[i]   = elems[i]->end()->getDouble(id);
     }
-    if (elem.isLeftClosed()) {
-      if (elem.isRightClosed()) {
-	itsFindFunc = &TableExprNodeSet::findClosedClosed;
-      } else {
-	itsFindFunc = &TableExprNodeSet::findClosedOpen;
-      }
-    } else {
-      if (elem.isRightClosed()) {
-	itsFindFunc = &TableExprNodeSet::findOpenClosed;
-      } else {
-	itsFindFunc = &TableExprNodeSet::findOpenOpen;
-      }
-    }
+    setFindFunc (elem.isLeftClosed(), elem.isRightClosed());
     itsAllIntervals = True;
   }
   // Delete all existing intervals and replace by new ones.
@@ -839,11 +827,29 @@ void TableExprNodeSet::combineDateIntervals()
       itsStart[i] = elems[i]->start()->getDate(id);
       itsEnd[i]   = elems[i]->end()->getDate(id);
     }
+    setFindFunc (elem.isLeftClosed(), elem.isRightClosed());
     itsAllIntervals = True;
   }
   // Delete all existing intervals and replace by new ones.
   deleteElems();
   itsElems = elems;
+}
+
+void TableExprNodeSet::setFindFunc (Bool isLeftClosed, Bool isRightClosed)
+{
+  if (isLeftClosed) {
+    if (isRightClosed) {
+      itsFindFunc = &TableExprNodeSet::findClosedClosed;
+    } else {
+      itsFindFunc = &TableExprNodeSet::findClosedOpen;
+    }
+  } else {
+    if (isRightClosed) {
+      itsFindFunc = &TableExprNodeSet::findOpenClosed;
+    } else {
+      itsFindFunc = &TableExprNodeSet::findOpenOpen;
+    }
+  }
 }
 
 void TableExprNodeSet::add (const TableExprNodeSetElem& elem)
