@@ -302,6 +302,7 @@ void ROVisibilityIterator::setState()
     This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna(),
 				     msIter_p.arrayId()) + 1;
     This->pa_p.resize(nAnt_p);
+    This->pa_p.set(0);
   }	
   if (msIter_p.newField()) { 
     msd_p.setFieldCenter(msIter_p.phaseCenter());
@@ -646,10 +647,10 @@ ROVisibilityIterator::visibility(Matrix<CStokesVector>& vis,
     break;
   }
   case 2: {
+    vis.set(Complex(0.,0.));
     for (Int row=0; row<curNumRow_p; row++) {
       for (Int chn=0; chn<channelGroupSize_p; chn++,pcube+=2) {
 	CStokesVector& v=vis(chn,row);
-	v=Complex(0.,0.);
 	v(0)=*pcube; 
 	v(3)=*(pcube+1); 
       }
@@ -657,10 +658,10 @@ ROVisibilityIterator::visibility(Matrix<CStokesVector>& vis,
     break;
   }
   case 1: {
+    vis.set(Complex(0.,0.));
     for (Int row=0; row<curNumRow_p; row++) {
       for (Int chn=0; chn<channelGroupSize_p; chn++,pcube++) {
 	CStokesVector& v=vis(chn,row);
-	v=Complex(0.,0.);
 	v(0)=v(3)=*pcube; 
       }
     }
