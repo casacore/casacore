@@ -164,6 +164,30 @@ Bool MEarthMagnetic::giveMe(const String &in, MEarthMagnetic::Ref &mr) {
   return MEarthMagnetic::giveMe(mr, in);
 }
 
+Bool MEarthMagnetic::setOffset(const Measure &in) {
+  if (in.type() != Register((MEarthMagnetic *)0)) return False;
+  ref.set(in);
+  return True;
+}
+
+Bool MEarthMagnetic::setRefString(const String &in) {
+  MEarthMagnetic::Types tp;
+  if (MEarthMagnetic::getType(tp, in)) {
+    ref.setType(tp);
+    return True;
+  };
+  ref.setType(MEarthMagnetic::DEFAULT);
+  return False;
+}
+
+const String &MEarthMagnetic::getDefaultType() const {
+  return MEarthMagnetic::showType(MEarthMagnetic::DEFAULT);
+}
+
+String MEarthMagnetic::getRefString() const {
+  return MEarthMagnetic::showType(ref.getType());
+}
+
 Quantum<Vector<Double> > MEarthMagnetic::get(const Unit &inunit) const {
     return Quantum<Vector<Double> >(data.getValue(),"m").get(inunit);
 }
