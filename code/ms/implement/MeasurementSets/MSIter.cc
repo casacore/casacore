@@ -52,7 +52,7 @@ Int MSInterval::compare(const void * obj1, const void * obj2)
     Double t1, t2;
     t1 = *(const Double*)obj1 - offset_p;
     t2 = *(const Double*)obj2 - offset_p;
-    return (( trunc(t1/interval_p)==trunc(t2/interval_p) ) ? 0 : (t1 < t2) ? -1 : 1);
+    return (( floor(t1/interval_p)==floor(t2/interval_p) ) ? 0 : (t1 < t2) ? -1 : 1);
 }
  
 
