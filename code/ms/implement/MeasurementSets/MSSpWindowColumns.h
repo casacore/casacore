@@ -1,5 +1,5 @@
 //# MSSpWindowColumns.h: provides easy access to MSSpectralWindow columns
-//# Copyright (C) 1996,1999,2000
+//# Copyright (C) 1996,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -145,7 +145,12 @@ public:
   Int matchSpw(const MFrequency& refFreq, uInt nChan, 
 	       const Quantum<Double>& bandwidth, Int ifChain,
 	       const Quantum<Double>& tolerance, Int tryRow=-1) const;
-
+  // This is to check that the channels are matched individually
+  // and also if the spw is matched in reverse; 
+  Int matchSpw(const MFrequency& refFreq, uInt nChan, 
+	       const Quantum<Double>& bandwidth, Int ifChain,
+	       const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
+	       Bool& reversed, Int tryRow=-1) const;
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

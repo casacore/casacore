@@ -1,5 +1,5 @@
 //# MSSpWindowColumns.cc:  provides easy access to MeasurementSet columns
-//# Copyright (C) 1996,1999,2000
+//# Copyright (C) 1996,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -144,6 +144,44 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
   return -1;
 }
 
+
+Int ROMSSpWindowColumns::
+matchSpw(const MFrequency& refFreq, uInt nChan, 
+	 const Quantum<Double>& bandwidth, Int ifChain,
+	 const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
+	 Bool& reversed, Int tryRow) const {
+
+  reversed=False;
+  
+  Int matchedSpw=-1;
+  matchedSpw=matchSpw(refFreq, nChan, bandwidth, ifChain, tolerance, tryRow);
+
+  if((nChan >1) && (matchedSpw > -1)){
+    Double tolInHz= tolerance.get("Hz").getValue();
+    if(matchChanFreq(matchedSpw, otherFreqs, tolInHz)){ 
+      return matchedSpw;
+    }
+    else{ 
+      Vector<Double> reverseFreq(otherFreqs.shape());
+      for (uInt k=0; k < nChan ; ++k){
+	reverseFreq[k]=otherFreqs[nChan-1-k];
+      }
+      if(matchChanFreq(matchedSpw, reverseFreq, tolInHz)){
+	reversed=True;
+	return matchedSpw;
+      }
+      else{
+
+	return -1;
+      }
+
+    }
+
+  }
+ 
+
+  return matchedSpw;
+}
 ROMSSpWindowColumns::ROMSSpWindowColumns():
   chanFreq_p(),
   chanWidth_p(),
