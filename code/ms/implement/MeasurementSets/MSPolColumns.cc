@@ -85,7 +85,7 @@ match(const Vector<Stokes::StokesTypes>& polType, Int tryRow=-1) {
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
-	numCorr()(tr) != nCorr && 
+	numCorr()(tr) == nCorr && 
 	matchCorrType(tr, polInt)) {
       return tr;
     }
@@ -94,7 +94,7 @@ match(const Vector<Stokes::StokesTypes>& polType, Int tryRow=-1) {
   while (r > 0) {
     r--;
     if (!flagRow()(r) &&
-	numCorr()(r) != nCorr && 
+	numCorr()(r) == nCorr && 
 	matchCorrType(r, polInt)) {
       return r;
     }
