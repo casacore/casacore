@@ -34,8 +34,8 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Mathematics/Complexfwd.h>
 #include <complex>
-
 
 // <summary>
 // Single precision complex numbers
@@ -143,9 +143,6 @@
 //# <todo asof="2000/11/27">
 //# </todo>
 
-// <group name=DComplex definition>
-typedef std::complex<Float> Complex;
-
 // <group name=Complex NaN>
 Bool isNaN (const Complex& val);
 void setNaN(Complex& val);
@@ -176,9 +173,6 @@ inline Bool operator<  (const Complex& left, const Complex& right)
 // It is defined in a similar way as <src>Complex</src>.
 // </synopsis>
 
-// <group name=DComplex definition>
-typedef std::complex<Double> DComplex;
-
 // <group name=DComplex NaN>
 Bool isNaN (const DComplex& val);
 void setNaN(DComplex& val);
@@ -205,7 +199,7 @@ inline Double fabs(const DComplex &val) { return abs(val); };
 inline Float fabs(const Complex &val) { return abs(val); };
 // The log10 should be in stl
 // <group>
-#if !defined( AIPS_USE_NEW_SGI) 
+#if !defined(AIPS_USE_NEW_SGI) 
 DComplex log10(const DComplex &val);
 Complex log10(const Complex &val);
 #endif
