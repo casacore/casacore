@@ -1,5 +1,5 @@
 //# TiledShapeStMan.cc: Tiled Data Storage Manager using the shape as id
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/BinarySearch.h>
 #include <aips/Containers/BlockIO.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Tables/DataManError.h>
@@ -46,14 +47,16 @@ static Record emptyRecord;
 
 
 TiledShapeStMan::TiledShapeStMan ()
-: TiledStMan()
+: TiledStMan     (),
+  nrUsedRowMap_p (0)
 {}
 
 TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
 				  const IPosition& defaultTileShape,
 				  uInt maximumCacheSize)
 : TiledStMan         (hypercolumnName, maximumCacheSize),
-  defaultTileShape_p (defaultTileShape)
+  defaultTileShape_p (defaultTileShape),
+  nrUsedRowMap_p     (0)
 {}
 
 TiledShapeStMan::~TiledShapeStMan()
@@ -172,8 +175,10 @@ Bool TiledShapeStMan::flush (AipsIO&, Bool fsync)
     headerFilePut (*headerFile, cubeSet_p.nelements());
     // Write the data from this object.
     *headerFile << defaultTileShape_p;
-    putBlock (*headerFile, cubeMap_p, Int(nrrow_p));
-    putBlock (*headerFile, posMap_p,  Int(nrrow_p));
+    *headerFile << nrUsedRowMap_p;
+    putBlock (*headerFile, rowMap_p, Int(nrUsedRowMap_p));
+    putBlock (*headerFile, cubeMap_p, Int(nrUsedRowMap_p));
+    putBlock (*headerFile, posMap_p,  Int(nrUsedRowMap_p));
     headerFile->putend();
     headerFileClose (headerFile);
     return True;
@@ -188,6 +193,8 @@ void TiledShapeStMan::readHeader (uInt tabNrrow, Bool firstTime)
     headerFileGet (*headerFile, tabNrrow, firstTime);
     // Read the data for this object.
     *headerFile >> defaultTileShape_p;
+    *headerFile >> nrUsedRowMap_p;
+    getBlock (*headerFile, rowMap_p);
     getBlock (*headerFile, cubeMap_p);
     getBlock (*headerFile, posMap_p);
     headerFile->getend();
@@ -197,14 +204,13 @@ void TiledShapeStMan::readHeader (uInt tabNrrow, Bool firstTime)
 
 void TiledShapeStMan::addRow (uInt nrow)
 {
+    uInt oldnrrow = nrrow_p;
+    nrrow_p += nrow;
     if (fixedCellShape_p.nelements() > 0) {
-	for (uInt i=nrrow_p; i<nrrow_p+nrow; i++) {
+	for (uInt i=oldnrrow; i<oldnrrow+nrow; i++) {
 	    setShape (i, 0, fixedCellShape_p, defaultTileShape_p);
 	}
-    }else{
-	updateRowMap (0, 0, nrrow_p, nrow);
     }
-    nrrow_p += nrow;
     setDataChanged();
 }
 
@@ -240,25 +246,173 @@ void TiledShapeStMan::extendHypercube (uInt rownr, uInt cubeNr)
     TSMCube* hypercube = cubeSet_p[cubeNr];
     uInt pos = hypercube->cubeShape()(nrdim_p-1);
     hypercube->extend (1, emptyRecord, coordColSet_p[nrdim_p - 1]);
-    updateRowMap (cubeNr, pos, rownr, 1);
+    updateRowMap (cubeNr, pos, rownr);
     setDataChanged();
 }
 
 
-void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos,
-				    uInt rownr, uInt nrow)
+void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, uInt rownr)
 {
-    // Extend the maps when needed.
-    uInt nrend = rownr+nrow;
-    if (nrend > cubeMap_p.nelements()) {
-	uInt nrnew = max (nrend, nrrow_p+4096);
+    // Check if the row number is correct.
+    if (rownr >= nrrow_p) {
+	throw (TSMError ("TiledShapeStMan::updateRowMap: rownr is too high"));
+    }
+    // Determine the next row used and check (in debug mode) if it is right.
+    uInt nextRow = 0;
+    if (nrUsedRowMap_p > 0) {
+        nextRow = 1 + rowMap_p[nrUsedRowMap_p-1];
+    }
+    DebugAssert (nextRow <= nrrow_p, AipsError);
+    // The row can be past the end of the rowMap.
+    // In that case it is a new row which will be added.
+    // If needed, intermediate zero references will also be added for
+    // the new rows which do not have a shape yet.
+    if (rownr >= nextRow) {
+        if (cubeNr == 0) {
+	    return;                // not really a new reference
+	}
+	// If the maps need to be extended, an extra entry is needed
+	// if intermediate rows are needed.
+	uInt nrext = 2;
+	if (rownr == nextRow) {
+	    nrext = 1;
+	    // If this row is consecutive to the previous one,
+	    // only the maps need to be updated.
+	    if (nrUsedRowMap_p > 0) {
+	        uInt i = nrUsedRowMap_p-1;
+	        if (cubeNr == cubeMap_p[i]  &&  pos == 1+posMap_p[i]) {
+		    rowMap_p[i]++;
+		    posMap_p[i]++;
+		    return;
+		}
+	    }
+	}
+	// A new entry has to be inserted.
+        // Extend the maps when needed.
+        if (nrUsedRowMap_p + nrext > rowMap_p.nelements()) {
+	    uInt nrnew = rowMap_p.nelements() + 64;
+	    rowMap_p.resize (nrnew);
+	    cubeMap_p.resize (nrnew);
+	    posMap_p.resize (nrnew);
+	}
+	if (rownr > nextRow) {
+	    rowMap_p[nrUsedRowMap_p] = rownr-1;
+	    cubeMap_p[nrUsedRowMap_p] = 0;
+	    posMap_p[nrUsedRowMap_p] = 0;
+	    nrUsedRowMap_p++;
+	}
+	rowMap_p[nrUsedRowMap_p] = rownr;
+	cubeMap_p[nrUsedRowMap_p] = cubeNr;
+	posMap_p[nrUsedRowMap_p] = pos;
+        nrUsedRowMap_p++;
+	return;
+    }
+    // Some explanation about the maps.
+    // rowMap gives the last row number for which the cubeMap applies
+    // and for which the positions in the cube are consecutive.
+    // Thus rowMap gives row intervals for which cubeMap and posMap apply.
+    // cubeMap gives the index of the cube (cubenr 0 means no value).
+    // posMap gives the position of the row in rowMap in the cube.
+    // Previous rows are in the previous positions.
+    // E.g.   rowMap    5  10  15
+    //        cubeMap   1   2   1
+    //        posMap    5   4  10
+    // means: row  0-5  are in pos 0-5  of cube 1
+    //        row  6-10 are in pos 0-4  of cube 2
+    //        row 11-15 are in pos 6-10 of cube 1
+
+    // The row is not past the end.
+    // Find the closest row number in the map
+    // (returns index of entry equal or less to given one).
+    Bool found;
+    uInt index = binarySearchBrackets (found, rowMap_p, rownr, nrUsedRowMap_p);
+    // Exit immediately if the cube and pos did not change.
+    uInt diffRow = rowMap_p[index] - rownr;
+    if (cubeNr == cubeMap_p[index]  &&  pos == posMap_p[index] - diffRow) {
+        return;
+    }
+    // Determine if the new entry is at the beginning or end of a row interval.
+    // If so, determine if it matches previous or next entry.
+    // To match, the cube has to be the same and the position has to
+    // be consecutive.
+    Bool atB = (rownr == 0  ||  index > 0  &&  rownr-1 == rowMap_p[index-1]);
+    Bool atE = found;
+    Bool eqP = False;
+    Bool eqN = False;
+    if (atE  &&  index+1 < nrUsedRowMap_p) {
+        uInt fpos = posMap_p[index+1] - (rowMap_p[index+1] - rowMap_p[index]);
+	eqN = (cubeNr == cubeMap_p[index+1]  &&  pos == fpos);
+    }
+    if (atB  &&  index > 0) {
+	eqP = (cubeNr == cubeMap_p[index-1]  &&  pos == 1+posMap_p[index-1]);
+    }
+    if (atB && atE) {
+        // We have a single entry, so update the maps directly.
+        cubeMap_p[index] = cubeNr;
+	posMap_p[index] = pos;
+        // If it equals previous and/or next, combine maps by moving
+        // the entries to the left.
+        uInt nm = 0;
+	if (eqN) {
+	    nm += 1;
+	}
+	if (eqP) {
+	    nm += 1;
+	    index -= 1;
+	}
+	if (nm > 0) {
+	    uInt nr = nrUsedRowMap_p - (index+nm);
+	    if (nr > 0) {
+	        objmove (&(rowMap_p[index]),  &(rowMap_p[index+nm]),  nr);
+		objmove (&(cubeMap_p[index]), &(cubeMap_p[index+nm]), nr);
+		objmove (&(posMap_p[index]),  &(posMap_p[index+nm]),  nr);
+	    }
+	    nrUsedRowMap_p -= nm;
+	}
+	return;
+    }
+    // Not a single entry, so we may need to do more work.
+    // If equal previous or next, only the maps need to be updated.
+    if (eqP) {
+        rowMap_p[index-1]++;
+	posMap_p[index-1]++;
+	return;
+    }
+    if (eqN) {
+        rowMap_p[index]--;
+        posMap_p[index]--;
+	return;
+    }
+    // It is getting more and more complicated.
+    // A new entry has to be inserted (or 2 if in the middle).
+    // So shift to the right (after extending the maps when needed).
+    uInt nm = (atB || atE  ?  1 : 2);
+    if (nrUsedRowMap_p + nm > rowMap_p.nelements()) {
+        uInt nrnew = rowMap_p.nelements() + 64;
+	rowMap_p.resize (nrnew);
 	cubeMap_p.resize (nrnew);
 	posMap_p.resize (nrnew);
     }
-    for (uInt i=rownr; i<nrend; i++) {
-	cubeMap_p[i] = cubeNr;
-	posMap_p[i] = pos;
+    uInt nr = nrUsedRowMap_p - index;
+    if (nr > 0) {
+        objmove (&(rowMap_p[index+nm]),  &(rowMap_p[index]),  nr);
+	objmove (&(cubeMap_p[index+nm]), &(cubeMap_p[index]), nr);
+	objmove (&(posMap_p[index+nm]),  &(posMap_p[index]),  nr);
     }
+    nrUsedRowMap_p += nm;
+    if (!atB) {
+        if (atE) {
+	    rowMap_p[index]--;
+	    posMap_p[index]--;
+	} else {
+	    posMap_p[index] -= diffRow+1;
+	    rowMap_p[index] = rownr-1;
+	}
+        index++;
+    }
+    rowMap_p[index]  = rownr;
+    cubeMap_p[index] = cubeNr;
+    posMap_p[index]  = pos;
 }
 
 TSMCube* TiledShapeStMan::getHypercube (uInt rownr)
@@ -269,16 +423,23 @@ TSMCube* TiledShapeStMan::getHypercube (uInt rownr)
 TSMCube* TiledShapeStMan::getHypercube (uInt rownr, IPosition& position)
 {
     // Check if the row number is correct.
-    if (rownr >= nrrow_p ) {
+    if (rownr >= nrrow_p) {
 	throw (TSMError ("getHypercube: rownr is too high"));
     }
-    // Get the hypercube and the position in it.
-    TSMCube* hypercube = cubeSet_p[cubeMap_p[rownr]];
+    TSMCube* hypercube = 0;
     position.resize (0);
-    position = hypercube->cubeShape();
-    // Add the starting position of the hypercube chunk the row is in.
-    if (position.nelements() > 0) {
-	position(nrdim_p - 1) = posMap_p[rownr];
+    // Get the hypercube and the position in it.
+    if (nrUsedRowMap_p == 0  ||  rownr > rowMap_p[nrUsedRowMap_p-1]) {
+        hypercube = cubeSet_p[0];
+	position = hypercube->cubeShape();
+    } else {
+        Bool found;
+	Int index = binarySearchBrackets (found, rowMap_p, rownr,
+					  nrUsedRowMap_p);
+        hypercube = cubeSet_p[cubeMap_p[index]];
+	position = hypercube->cubeShape();
+	// Add the starting position of the hypercube chunk the row is in.
+	position(nrdim_p - 1) = posMap_p[index] - (rowMap_p[index] - rownr);
     }
     return hypercube;
 }
