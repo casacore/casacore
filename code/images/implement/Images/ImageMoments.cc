@@ -859,7 +859,7 @@ Bool ImageMoments<T>::createMoments()
       os_p << LogIO::NORMAL << "Created " << outFileName << LogIO::POST;
       imgp->setMiscInfo(pInImage_p->miscInfo());
       imgp->setImageInfo(pInImage_p->imageInfo());
-      imgp->mergeTableLogSink(pInImage_p->logSink());
+      imgp->appendLog(pInImage_p->logger());
       imgp->makeMask ("mask0", True, True);
 
 // Set output image units if possible
@@ -1802,7 +1802,7 @@ CoordinateSystem ImageMoments<T>::makeOutputCoordinates (const CoordinateSystem&
 //
       LinearCoordinate linCoord(names, units, refVal, inc, pc, refPix);
 //
-      for (Int i=0; i<cSys.nCoordinates(); i++) {
+      for (Int i=0; i<Int(cSys.nCoordinates()); i++) {
          if (i==coord) {
             cSysOut.addCoordinate(linCoord);
          } else {

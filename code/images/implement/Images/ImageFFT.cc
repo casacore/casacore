@@ -539,12 +539,12 @@ void ImageFFT::copyMiscellaneous (ImageInterface<Float>& out) const
       out.setMiscInfo(itsInImagePtrFloat->miscInfo());
       out.setImageInfo(itsInImagePtrFloat->imageInfo());
       out.setUnits(itsInImagePtrFloat->units());
-      out.mergeTableLogSink(itsInImagePtrFloat->logSink());
+      out.appendLog(itsInImagePtrFloat->logger());
    } else {
       out.setMiscInfo(itsInImagePtrComplex->miscInfo());
       out.setImageInfo(itsInImagePtrComplex->imageInfo());
       out.setUnits(itsInImagePtrComplex->units());
-      out.mergeTableLogSink(itsInImagePtrComplex->logSink());
+      out.appendLog(itsInImagePtrComplex->logger());
    }
 }
 
@@ -555,12 +555,12 @@ void ImageFFT::copyMiscellaneous (ImageInterface<Complex>& out) const
       out.setMiscInfo(itsInImagePtrFloat->miscInfo());
       out.setImageInfo(itsInImagePtrFloat->imageInfo());
       out.setUnits(itsInImagePtrFloat->units());
-      out.mergeTableLogSink(itsInImagePtrFloat->logSink());
+      out.appendLog(itsInImagePtrFloat->logger());
    } else {
       out.setMiscInfo(itsInImagePtrComplex->miscInfo());
       out.setImageInfo(itsInImagePtrComplex->imageInfo());
       out.setUnits(itsInImagePtrComplex->units());
-      out.mergeTableLogSink(itsInImagePtrComplex->logSink());
+      out.appendLog(itsInImagePtrComplex->logger());
    }
 }
 

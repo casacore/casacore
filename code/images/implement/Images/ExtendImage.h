@@ -177,10 +177,6 @@ public:
   virtual void reopen();
   // </group>
 
-protected:
-  // Let a derived class reopen the log.
-  virtual void doReopenLogSink();
-
 private:
   //# itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;
