@@ -254,7 +254,7 @@ Bool WCPolygon::operator== (const WCRegion& other) const
 }
  
 
-WCPolygon* WCPolygon::cloneRegion() const
+WCRegion* WCPolygon::cloneRegion() const
 {
    return new WCPolygon(*this);
 }

@@ -220,7 +220,7 @@ public:
    virtual Bool operator==(const WCRegion& other) const;
 
    // Clone a WCPolygon object.
-   virtual WCPolygon* cloneRegion() const;
+   virtual WCRegion* cloneRegion() const;
 
    // Convert to an LCRegion using the given coordinate system.
    virtual LCRegion* toLCRegion (const CoordinateSystem& cSys,
