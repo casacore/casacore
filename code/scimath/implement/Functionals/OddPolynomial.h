@@ -1,5 +1,5 @@
 //# OddPolynomial.h: A one dimensional odd polynomial class
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,6 +96,9 @@ public:
   // <group>
   OddPolynomial(const OddPolynomial<T> &other) :
     OddPolynomialParam<T>(other) {};
+  template <class W>
+    OddPolynomial(const OddPolynomial<W> &other) :
+    OddPolynomialParam<T>(other) {};
   OddPolynomial<T> &operator=(const OddPolynomial<T> &other) {
     OddPolynomialParam<T>::operator=(other); return *this; };
   // </group>
@@ -112,6 +115,10 @@ public:
   // deleting the pointer.
   // <group>
   virtual Function<T> *clone() const { return new OddPolynomial<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new OddPolynomial<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new OddPolynomial<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.
@@ -144,9 +151,13 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   OddPolynomial_PS(const OddPolynomial_PS<AutoDiff<T> > &other) :
+  OddPolynomialParam<AutoDiff<T> >(other) {};
+  template <class W>
+    OddPolynomial_PS(const OddPolynomial_PS<W> &other) :
     OddPolynomialParam<AutoDiff<T> >(other) {};
-
+  // </group>
   // Copy assignment (deep copy)
   OddPolynomial_PS<AutoDiff<T> > &
     operator=(const OddPolynomial_PS<AutoDiff<T> > &other) {
@@ -168,6 +179,14 @@ public:
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new OddPolynomial<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new OddPolynomial<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new OddPolynomial<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this); };
   // </group>
 
   //# Make members of parent classes known.

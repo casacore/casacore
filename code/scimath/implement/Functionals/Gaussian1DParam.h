@@ -125,8 +125,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class Gaussian1DParam : public Function1D<T>
-{
+template<class T> class Gaussian1DParam : public Function1D<T> {
 public:
   //# Enumerations
   enum { HEIGHT=0, CENTER, WIDTH };

@@ -132,8 +132,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class Gaussian1D : public Gaussian1DParam<T>
-{
+template<class T> class Gaussian1D : public Gaussian1DParam<T> {
 public:
   //# Enumerations
   
@@ -176,6 +175,10 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<T> *clone() const { return new Gaussian1D<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new Gaussian1D<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new Gaussian1D<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.
@@ -245,6 +248,14 @@ public:
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new Gaussian1D<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new Gaussian1D<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new Gaussian1D<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this); };
   // </group>
 
   //# Make members of parent classes known.

@@ -1,5 +1,5 @@
 //# EvenPolynomial.h: A one dimensional even polynomial class
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,6 +96,9 @@ public:
   // <group>
   EvenPolynomial(const EvenPolynomial<T> &other) :
     EvenPolynomialParam<T>(other) {};
+  template <class W>
+    EvenPolynomial(const EvenPolynomial<W> &other) :
+    EvenPolynomialParam<T>(other) {};
   EvenPolynomial<T> &operator=(const EvenPolynomial<T> &other) {
     EvenPolynomialParam<T>::operator=(other); return *this; };
   // </group>
@@ -112,6 +115,10 @@ public:
   // deleting the pointer.
   // <group>
   virtual Function<T> *clone() const { return new EvenPolynomial<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new EvenPolynomial<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new EvenPolynomial<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.
@@ -144,14 +151,18 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   EvenPolynomial_PS(const EvenPolynomial_PS<AutoDiff<T> > &other) :
     EvenPolynomialParam<AutoDiff<T> >(other) {};
-
+  template <class W>
+    EvenPolynomial_PS(const EvenPolynomial_PS<W> &other) :
+    EvenPolynomialParam<AutoDiff<T> >(other) {};
+  // </group>
   // Copy assignment (deep copy)
   EvenPolynomial_PS<AutoDiff<T> > &
     operator=(const EvenPolynomial_PS<AutoDiff<T> > &other) {
     EvenPolynomialParam<AutoDiff<T> >::operator=(other); return *this; };
-    
+
   // Destructor
   virtual ~EvenPolynomial_PS() {};
 
@@ -168,6 +179,14 @@ public:
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new EvenPolynomial<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new EvenPolynomial<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new EvenPolynomial<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this); };
   // </group>
 
   //# Make members of parent classes known.

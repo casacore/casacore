@@ -1,5 +1,5 @@
 //# Gaussian2D.h: A two-dimensional Gaussian class
-//# Copyright (C) 1995,1996,1997,2001,2002
+//# Copyright (C) 1995,1996,1997,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -199,7 +199,11 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Gaussian2D(const Gaussian2D<T> &other) : Gaussian2DParam<T>(other) {};
+  template <class W>
+    Gaussian2D(const Gaussian2D<W> &other) : Gaussian2DParam<T>(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   Gaussian2D<T> &operator=(const Gaussian2D<T> &other) {
@@ -219,6 +223,10 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<T> *clone() const { return new Gaussian2D<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new Gaussian2D<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new Gaussian2D<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.
@@ -269,8 +277,13 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Gaussian2D_PS(const Gaussian2D_PS &other) :
     Gaussian2DParam<AutoDiff<T> >(other) {};
+  template <class W>
+  Gaussian2D_PS(const Gaussian2D_PS<W> &other) :
+    Gaussian2DParam<AutoDiff<T> >(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   Gaussian2D_PS<AutoDiff<T> > &
@@ -292,6 +305,14 @@ public:
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new Gaussian2D<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new Gaussian2D<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new Gaussian2D<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this); };
   // </group>
 
   //# Make members of parent classes known.

@@ -1,5 +1,5 @@
 //# Chebyshev.h  A function class that defines a Chebyshev polynomial
-//# Copyright (C) 2000,2001,2002,2003
+//# Copyright (C) 2000,2001,2002,2003,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -290,8 +290,10 @@ public:
     // </group>
   
     // create a deep copy of another Chebyshev polynomial
+    // <group>
     Chebyshev(const Chebyshev &other) : ChebyshevParamModeImpl<T>(other) {}
-  
+    // </group>
+
     // make this instance a (deep) copy of another Chebyshev polynomial
     Chebyshev<T> &operator=(const Chebyshev<T> &other) {
 	ChebyshevParam<T>::operator=(other); return *this; }
@@ -310,22 +312,9 @@ public:
   
     // Create a new copy of this object.  The caller is responsible 
     // for deleting the pointer. 
+    // <group>
     virtual Function<T> *clone() const { return new Chebyshev<T>(*this); }
-
-    ///// Create a new copy of this object.  The caller is responsible 
-    ///// for deleting the pointer. 
-    ///// The <em>AD, Base</em> versions return an
-    ///// <src>AutoDiff</src> or <src>Base</src> version (which could be same 
-    ///// if already <src>AutoDiff</src> or <src>Base</src>).
-    ///// <group>
-    ///virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const 
-    ///{
-    ///    return new Chebyshev<typename FunctionTraits<T>::DiffType>; 
-    ///}
-    ///virtual Function<typename FunctionTraits<T>::BaseType>
-    ///    *cloneBase() const {
-    ///    return new Chebyshev<typename FunctionTraits<T>::BaseType>; };
-    ///// </group>
+  // </group>
 
 };
 

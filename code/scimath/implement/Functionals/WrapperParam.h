@@ -1,5 +1,5 @@
 //# WrapperParam.h: Parameter handling for wrapped function objects 
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -89,8 +90,9 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   WrapperParam(const WrapperParam<T> &other);
-
+  // </group>
   // Copy assignment (deep copy)
   WrapperParam<T> &operator=(const WrapperParam<T> &other);
 
@@ -100,6 +102,9 @@ public:
   //# Operators    
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("wrapper");
+    return x; };
 
 protected:
   //# Make members of parent classes known.

@@ -1,5 +1,5 @@
 //# ChebyshevParam.h: Parameter handling for Chebyshev polynomial
-//# Copyright (C) 2000,2001,2002,2003
+//# Copyright (C) 2000,2001,2002,2003,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #define SCIMATH_CHEBYSHEVPARAM_H
 
 #include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 #include <scimath/Functionals/Function1D.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -188,8 +189,8 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the Chebyshev interval and mode=CONSTANT.
     ChebyshevParam(const T &min, const T &max,
-		   ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT,
-		   const T &defval=T(0));
+		   ChebyshevEnums::OutOfIntervalMode
+		   mode=ChebyshevEnums::CONSTANT, const T &defval=T(0));
   
     // create a fully specified Chebyshev polynomial.  
     //   coeffs holds the coefficients of the Chebyshev polynomial (see 
@@ -202,7 +203,8 @@ public:
     //   defval is the value returned when the function is evaluated outside
     //      the canonical range and mode=CONSTANT.
     ChebyshevParam(const Vector<T> &coeffs, const T &min, const T &max, 
-		   ChebyshevEnums::OutOfIntervalMode mode=ChebyshevEnums::CONSTANT, const T &defval=T(0));
+		   ChebyshevEnums::OutOfIntervalMode
+		   mode=ChebyshevEnums::CONSTANT, const T &defval=T(0));
   
     // create a fully specified Chebyshev polynomial.
     //   config  is a record that contains the non-coefficient data 
@@ -215,8 +217,15 @@ public:
     // </group>
   
     // create a deep copy of another Chebyshev polynomial
+    // <group>
     ChebyshevParam(const  ChebyshevParam &other);
-  
+    template <class W>
+      ChebyshevParam(const ChebyshevParam<W> &other) :
+      Function1D<T>(other), def_p(other.getDefault()), 
+      minx_p(other.getIntervalMin()), maxx_p(other.getIntervalMax()),
+      mode_p(other.getOutOfIntervalMode()) {}
+    // </group>
+
     // make a (deep) copy of another Chebyshev polynomial
     ChebyshevParam<T> &operator=(const ChebyshevParam<T> &other);
   
@@ -317,6 +326,10 @@ public:
     // Chebyshev polynomial coefficients.  They should be ordered beginning
     // with the zero-th order coefficient.  
     static void powerToChebyshev(Vector<T> &coeffs);
+
+    // Give name of function
+    virtual const String &name() const { static String x("chebyshev");
+    return x; };
 
 protected:
 

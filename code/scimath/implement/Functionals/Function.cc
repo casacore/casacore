@@ -29,6 +29,7 @@
 #include <scimath/Functionals/Function.h>
 #include <casa/Containers/RecordInterface.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -74,6 +75,19 @@ void Function<T,U>::getMode(RecordInterface& mode) const { }
 template<class T, class U>
 Bool Function<T,U>::hasMode() const { return False; }
 
+template<class T, class U>
+Function<typename FunctionTraits<T>::DiffType> *
+Function<T,U>::cloneAD() const {
+  throw(AipsError(String("Function `") + name() +
+		  "' has no cloneAD() method"));
+}
+
+template<class T, class U>
+Function<typename FunctionTraits<T>::BaseType> *
+Function<T,U>::cloneNonAD() const {
+  throw(AipsError(String("Function `") + name() +
+		  "' has no cloneNonAD() method"));
+}
 
 } //# NAMESPACE CASA - END
 

@@ -1,5 +1,5 @@
 //# SPolynomial.h: A one dimensional scaled polynomial class
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,6 +95,8 @@ public:
   // Copy constructor/assignment (deep copy)
   // <group>
   SPolynomial(const SPolynomial<T> &other) : SPolynomialParam<T>(other) {};
+  template <class W>
+    SPolynomial(const SPolynomial<W> &other) : SPolynomialParam<T>(other) {};
   SPolynomial<T> &operator=(const SPolynomial<T> &other) {
     SPolynomialParam<T>::operator=(other); return *this; };
   // </group>
@@ -112,6 +114,10 @@ public:
   // deleting the pointer.
   // <group>
   virtual Function<T> *clone() const { return new SPolynomial<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new SPolynomial<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new SPolynomial<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.

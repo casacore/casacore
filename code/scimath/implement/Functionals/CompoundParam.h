@@ -1,5 +1,5 @@
 //# CompoundParam.h: Parameters for sum of parameterized Functions
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
+#include <casa/BasicSL/String.h>
 #include <casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -107,6 +108,53 @@ public:
   // Make this object a (deep) copy of other.
   // <group>
   CompoundParam(const CompoundParam<T> &other);
+  CompoundParam(const CompoundParam<T> &other, Bool) :
+    Function<T>(other), ndim_p(other.ndim_p),
+    functionPtr_p(other.functionPtr_p.nelements()),
+    paroff_p(other.paroff_p.nelements()),
+    funpar_p(other.funpar_p.nelements()), 
+    locpar_p(other.locpar_p.nelements()) { 
+    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+      functionPtr_p[i] = other.functionPtr_p[i]->clone();
+      paroff_p[i] = other.paroff_p[i];
+    };
+    for (uInt i=0; i<funpar_p.nelements(); ++i) {
+      funpar_p[i] = other.funpar_p[i];
+      locpar_p[i] = other.locpar_p[i];
+    };
+  }
+  template <class W>
+    CompoundParam(const CompoundParam<W> &other) :
+    Function<T>(other), ndim_p(other.ndim()),
+    functionPtr_p(other.nFunctions()),
+    paroff_p(other.nFunctions()),
+    funpar_p(other.nparameters()), 
+    locpar_p(other.nparameters()) { 
+    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+      functionPtr_p[i] = other.function(i).cloneAD();
+      paroff_p[i] = other.parameterOffset(i);
+    };
+    for (uInt i=0; i<funpar_p.nelements(); ++i) {
+      funpar_p[i] = other.parameterFunction(i);
+      locpar_p[i] = other.parameterLocation(i);
+    };
+  }
+  template <class W>
+    CompoundParam(const CompoundParam<W> &other, Bool) :
+    Function<T>(other), ndim_p(other.ndim()),
+    functionPtr_p(other.nFunctions()),
+    paroff_p(other.nFunctions()),
+    funpar_p(other.nparameters()), 
+    locpar_p(other.nparameters()) { 
+    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+      functionPtr_p[i] = other.function(i).cloneNonAD();
+      paroff_p[i] = other.parameterOffset(i);
+    };
+    for (uInt i=0; i<funpar_p.nelements(); ++i) {
+      funpar_p[i] = other.parameterFunction(i);
+      locpar_p[i] = other.parameterLocation(i);
+    };
+  }
   CompoundParam<T> &operator=(const CompoundParam<T> &other);
   // </group>
   
@@ -115,6 +163,9 @@ public:
   //# Operators
   
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("compound");
+    return x; };
   
   // Add a function to the sum. All functions must have the same 
   // <src>ndim()</src> as the first one. Returns the (zero relative) number 
@@ -137,6 +188,11 @@ public:
   const uInt parameterFunction(uInt which) const {
     DebugAssert(nparameters() > which, AipsError);
     return funpar_p[which];
+  };
+  // Return locpar
+  const uInt parameterLocation(uInt which) const {
+    DebugAssert(nparameters() > which, AipsError);
+    return locpar_p[which];
   };
   // Returns the dimension of functions in the linear combination
   virtual uInt ndim() const { return ndim_p; };

@@ -1,5 +1,5 @@
 //# GNoiseFunction.h: A one dimensional normal distribution 
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -90,7 +90,11 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   GNoiseFunction(const GNoiseFunction<T> &other) : GNoiseParam<T>(other) {};
+  template <class W>
+    GNoiseFunction(const GNoiseFunction<W> &other) : GNoiseParam<T>(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   GNoiseFunction<T> &operator=(const GNoiseFunction<T> &other) {

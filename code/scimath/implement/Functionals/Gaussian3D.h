@@ -1,5 +1,5 @@
 //# Gaussian3D.h: A three-dimensional Gaussian class
-//# Copyright (C) 1995,1996,1997,2001,2002
+//# Copyright (C) 1995,1996,1997,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -160,7 +160,11 @@ public:
   // </group>
 
   // Copy constructor
+  // <group>
   Gaussian3D(const Gaussian3D<T> &other);
+  template <class W>
+    Gaussian3D(const Gaussian3D<W> &other) : Gaussian3DParam<T>(other) {};
+  // </group>
 
   // Destructor
   virtual ~Gaussian3D();
@@ -173,7 +177,13 @@ public:
 
   // Return a copy of this object from the heap.  The caller is responsible
   // for deleting this pointer.
+  // <group>
   virtual Function<T> *clone() const;
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new Gaussian3D<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new Gaussian3D<typename FunctionTraits<T>::BaseType>(*this); };
+  // </group>
 
 private:
   // AutoDiff does not have a square() function, so one is provided here.
@@ -235,12 +245,24 @@ public:
                 AutoDiff<T>& zWidth,  AutoDiff<T>& theta,
                 AutoDiff<T>& phi);
   Gaussian3D_PS(const Gaussian3D_PS<AutoDiff<T> > &other);
-  virtual ~Gaussian3D_PS();
+  template <class W>
+  Gaussian3D_PS(const Gaussian3D_PS<W> &other) :
+    Gaussian3DParam<AutoDiff<T> >(other) {};
+   virtual ~Gaussian3D_PS();
 //
   Gaussian3D_PS<AutoDiff<T> > &operator=(const Gaussian3D_PS<AutoDiff<T> > &other);
 //
   virtual AutoDiff<T> eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   virtual Function<AutoDiff<T> > *clone() const;
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new Gaussian3D<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new Gaussian3D<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this); };
+
 private:
   T sq(T v) const;  
 

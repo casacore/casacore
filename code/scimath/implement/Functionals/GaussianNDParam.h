@@ -1,5 +1,5 @@
 //# GaussianNDParam.h: Multidimensional Gaussian class parameters
-//# Copyright (C) 2001,2002,2004
+//# Copyright (C) 2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,8 +31,9 @@
 //# Includes
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
-#include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -204,7 +205,13 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   GaussianNDParam(const GaussianNDParam &other);
+  template <class W>
+    GaussianNDParam(const GaussianNDParam<W> &other) :
+    Function<T>(other),
+    itsDim(other.itsDim), itsFlux2Hgt(other.itsFlux2Hgt) {}
+   // </group>
 
   // Copy assignment (deep copy)
   GaussianNDParam<T> &operator=(const GaussianNDParam<T> &other);
@@ -215,7 +222,11 @@ public:
   //# Operators    
 
   //# Member functions
-  // Variable dimensionality
+  // Give name of function
+  virtual const String &name() const { static String x("gaussiannd");
+  return x; };
+
+   // Variable dimensionality
   virtual uInt ndim() const { return itsDim; };
 
   // Get or set the peak height of the Gaussian

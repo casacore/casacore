@@ -1,5 +1,5 @@
 //# Gaussian3DParam.h: Parameter handling for 3 dimensional Gaussian class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 template<class Type> class Vector;
 
 #include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 #include <scimath/Functionals/Function.h>
 #include <scimath/Mathematics/AutoDiff.h>
 
@@ -181,14 +182,24 @@ public:
   // </group>
 
   // Copy construcor
+  // <group>
   Gaussian3DParam(const Gaussian3DParam<Type> &other);
+  template <class W>
+    Gaussian3DParam(const Gaussian3DParam<W> &other) :
+    Function<Type>(other),
+    fwhm2int(Type(1.0)/sqrt(log(Type(16.0)))) { settrigvals(); }
+  // </group>
 
   // Copy assignment
   Gaussian3DParam<Type> &operator=(const Gaussian3DParam<Type> &other);
 
   // Destructor
   virtual ~Gaussian3DParam();
-
+  
+  //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("gaussian3d");
+  return x; };
 
   // Return dimensionality
   virtual uInt ndim() const {return 3;};

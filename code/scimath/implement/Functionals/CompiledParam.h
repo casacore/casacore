@@ -1,5 +1,5 @@
 //# CompiledParam.h: Parameters for a compiled string function
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,8 +31,8 @@
 
 //# Includes
 #include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
 #include <casa/BasicSL/String.h>
+#include <scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -112,7 +112,14 @@ template <class T> class CompiledParam : public Function<T> {
   // function operator returns a 0.
   CompiledParam();
   // Make this object a (deep) copy of other.
+  // <group>
   CompiledParam(const CompiledParam<T> &other);
+  template <class W>
+    CompiledParam(const CompiledParam<W> &other) :
+    Function<T>(other), ndim_p(other.ndim()), msg_p(other.errorMessage()),
+    text_p(other.getText()),
+    functionPtr_p(new FuncExpression(*other.getFunctionPtr())) {}
+  // </group>
   // Make this object a (deep) copy of other.
   CompiledParam<T> &operator=(const CompiledParam<T> &other);
   // Destructor
@@ -121,6 +128,9 @@ template <class T> class CompiledParam : public Function<T> {
   //# Operators
   
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("compiled");
+    return x; };
 
   // Set a function. The return will be False (and an error message will be
   // set) if a compilation error occurs 
@@ -137,6 +147,10 @@ template <class T> class CompiledParam : public Function<T> {
 
   // Returns the text of the function string
   const String &getText() const { return text_p; };
+
+  // Returns the function pointer (for debugging)
+  const FuncExpression *const getFunctionPtr() const {
+    return functionPtr_p; };
 
 protected:
   //# Data

@@ -1,5 +1,5 @@
 //# EvenPolynomialParam.h: Parameter handling for even polynomials
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,6 +109,9 @@ public:
   // Make this a copy of other (deep copy).
   // <group>
   EvenPolynomialParam(const EvenPolynomialParam<T> &other);
+  template <class W>
+    EvenPolynomialParam(const EvenPolynomialParam<W> &other) :
+    Function1D<T>(other) {}
   EvenPolynomialParam<T> &operator=(const EvenPolynomialParam<T> &other);
   // </group>
   
@@ -126,6 +129,10 @@ public:
   // </group>
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("evenpolynomial");
+    return x; };
+
   // What is the order of the polynomial, i.e. maximum exponent of "x".
   uInt order() const { return 2*param_p.nelements() - 2; };
   

@@ -1,5 +1,5 @@
 //# Polynomial.h: A one dimensional polynomial class
-//# Copyright (C) 1994,1995,1996,2001,2002
+//# Copyright (C) 1994,1995,1996,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,8 +87,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   orders will be useful eventually.
 // </todo>
 
-template<class T> class Polynomial: public PolynomialParam<T>
-{
+template<class T> class Polynomial: public PolynomialParam<T> {
 public:
   //# Enumerations
   
@@ -101,6 +100,8 @@ public:
   // Copy constructor/assignment (deep copy)
   // <group>
   Polynomial(const Polynomial<T> &other) : PolynomialParam<T>(other) {};
+  template <class W>
+  Polynomial(const Polynomial<W> &other) : PolynomialParam<T>(other) {};
   Polynomial<T> &operator=(const Polynomial<T> &other) {
     PolynomialParam<T>::operator=(other); return *this; };
   // </group>
@@ -121,6 +122,10 @@ public:
   // deleting the pointer.
   // <group>
   virtual Function<T> *clone() const { return new Polynomial<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new Polynomial<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new Polynomial<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.
@@ -143,8 +148,7 @@ public:
 // </synopsis>
 
 template <class T> class Polynomial_PS<AutoDiff<T> > : 
-public PolynomialParam<AutoDiff<T> >
-{
+public PolynomialParam<AutoDiff<T> > {
 public:
   //# Constructors
   // Constructs one dimensional Polynomials.
@@ -155,8 +159,13 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Polynomial_PS(const Polynomial_PS<AutoDiff<T> > &other) :
     PolynomialParam<AutoDiff<T> >(other) {};
+  template <class W>
+  Polynomial_PS(const Polynomial_PS<W> &other) :
+    PolynomialParam<AutoDiff<T> >(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   Polynomial_PS<AutoDiff<T> > &
@@ -179,6 +188,14 @@ public:
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new Polynomial<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new Polynomial<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new Polynomial<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this); };
   // </group>
 
   //# Make members of parent classes known.

@@ -1,5 +1,5 @@
 //# KaiserBParam.h: A one dimensional Kaiser-Bessel function
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -98,6 +99,9 @@ public:
 
   // Copy assignment (deep copy)
   KaiserBParam<T> &operator=(const KaiserBParam<T> &other);
+  template <class W>
+    KaiserBParam(const KaiserBParam<W> &other) :
+    Function<T>(other) {}
     
   // Destructor
   virtual ~KaiserBParam();
@@ -106,6 +110,10 @@ public:
   virtual uInt ndim() const { return 1; };
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("kaiserbessel");
+    return x; };
+
 
   //# Make members of parent classes known.
 protected:

@@ -1,5 +1,5 @@
 //# SincFunction.h: A one dimensional sin(x)/x
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,7 +102,11 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   SincFunction(const SincFunction<T> &other) : SincParam<T>(other) {};
+  template <class W>
+    SincFunction(const SincFunction<W> &other) : SincParam<T>(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   SincFunction<T> &operator=(const SincFunction<T> &other) {
@@ -123,6 +127,10 @@ public:
   // for deleting this pointer. 
   // <group>
   virtual Function<T> *clone() const { return new SincFunction<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new SincFunction<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new SincFunction<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.

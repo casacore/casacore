@@ -1,5 +1,5 @@
 //# CompoundFunction.h: Sum of a collection of Functions
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -121,8 +121,18 @@ public:
   // Make this object a (deep) copy of other. If parameters have been set
   // without an intervening calculation, a <src>consolidate()</src> could
   // be necessary on <em>other</em> first.
+  // <group>
   CompoundFunction(const CompoundFunction<T> &other) :
     CompoundParam<T>(other) {};
+  CompoundFunction(const CompoundFunction<T> &other, Bool) :
+    CompoundParam<T>(other, True) {};
+  template <class W>
+    CompoundFunction(const CompoundFunction<W> &other) :
+    CompoundParam<T>(other) {};
+  template <class W>
+    CompoundFunction(const CompoundFunction<W> &other, Bool) :
+    CompoundParam<T>(other, True) {};
+  // </group>
   // Make this object a (deep) copy of other.
   CompoundFunction<T> &operator=(const CompoundFunction<T> &other) {
     other.fromParam_p();
@@ -147,6 +157,11 @@ public:
   // <group>
   virtual Function<T> *clone() const { fromParam_p();
     return new CompoundFunction<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new CompoundFunction<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new CompoundFunction<typename FunctionTraits<T>::BaseType>
+      (*this, True); };
   // </group>
   
 private:
@@ -192,8 +207,13 @@ public CompoundParam<AutoDiff<T> >
   // Make this object a (deep) copy of other. If parameters have been set
   // without an intervening calculation, a <src>consolidate()</src> could
   // be necessary on <em>other</em> first.
+  // <group>
   CompoundFunction_PS(const CompoundFunction_PS<AutoDiff<T> > &other) :
     CompoundParam<AutoDiff<T> >(other) {};
+  template <class W>
+    CompoundFunction_PS(const CompoundFunction_PS<W> &other) :
+    CompoundParam<AutoDiff<T> >(other) {};
+  // </group>
   // Make this object a (deep) copy of other.
   CompoundFunction_PS<AutoDiff<T> > &
     operator=(const CompoundFunction_PS<AutoDiff<T> > &other) {
@@ -225,6 +245,14 @@ public CompoundParam<AutoDiff<T> >
   // <group>
   virtual Function<AutoDiff<T> > *clone() const { fromParam_p();
     return new CompoundFunction<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new CompoundFunction<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new CompoundFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this, True); };
   // </group>
 
 private:

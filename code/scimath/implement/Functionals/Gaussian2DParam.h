@@ -1,5 +1,5 @@
 //# Gaussian2DParam.h: Parameter handling for 2 dimensional Gaussian class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -210,7 +211,13 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Gaussian2DParam(const Gaussian2DParam<T> &other);
+  template <class W>
+    Gaussian2DParam(const Gaussian2DParam<W> &other) :
+    Function<T>(other),
+    fwhm2int(T(1.0)/sqrt(log(T(16.0)))) { majorAxis(); setPA(PA()); };
+  // </group>
 
   // Copy assignment (deep copy)
   Gaussian2DParam<T> &operator=(const Gaussian2DParam<T> &other);
@@ -224,6 +231,10 @@ public:
   virtual uInt ndim() const { return 2; };
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("gaussian2d");
+    return x; };
+
   // Get or set the peak height of the Gaussian
   // <group>
   T height() const { return param_p[HEIGHT]; };

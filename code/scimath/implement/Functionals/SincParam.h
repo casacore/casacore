@@ -1,5 +1,5 @@
 //# SincParam.h: A one dimensional sin(x)/x
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 #include <scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -101,7 +102,12 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   SincParam(const SincParam<T> &other);
+  template <class W>
+    SincParam(const SincParam<W> &other) :
+    Function<T>(other) {}
+  // </group>
 
   // Copy assignment (deep copy)
   SincParam<T> &operator=(const SincParam<T> &other);
@@ -113,6 +119,10 @@ public:
   virtual uInt ndim() const { return 1; };
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("sinc");
+    return x; };
+
 
   //# Make members of parent classes known.
 protected:

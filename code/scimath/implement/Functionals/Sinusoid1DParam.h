@@ -1,5 +1,5 @@
 //# Sinusoid1DParam.h: Parameter handling for one dimensional Sinusoid class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <scimath/Functionals/Function1D.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -125,7 +126,12 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Sinusoid1DParam(const Sinusoid1DParam &other);
+  template <class W>
+    Sinusoid1DParam(const Sinusoid1DParam<W> &other) :
+    Function1D<T>(other) {}
+  // </group>
 
   // Copy assignment (deep copy)
   Sinusoid1DParam<T> &operator=(const Sinusoid1DParam<T> &other);
@@ -136,6 +142,9 @@ public:
   //# Operators    
     
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("sinusoid1d");
+    return x; };
 
   // Get or set the amplitude of the Sinusoid
   // <group>

@@ -1,5 +1,5 @@
 //# UnaryFunction.h: A one dimensional unary function
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,8 +102,11 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   UnaryFunction(const UnaryFunction<T> &other) : UnaryParam<T>(other) {};
-
+  template <class W>
+  UnaryFunction(const UnaryFunction<W> &other) : UnaryParam<T>(other) {};
+  // </group>
   // Copy assignment (deep copy)
   UnaryFunction<T> &operator=(const UnaryFunction<T> &other) {
     UnaryParam<T>::operator=(other); return *this; };
@@ -123,6 +126,10 @@ public:
   // for deleting this pointer. 
   // <group>
   virtual Function<T> *clone() const { return new UnaryFunction<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new UnaryFunction<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new UnaryFunction<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.

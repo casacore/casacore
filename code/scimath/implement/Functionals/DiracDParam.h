@@ -1,5 +1,5 @@
 //# DiracDParam.h: A one dimensional Dirac delta function
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -97,10 +98,14 @@ public:
   explicit DiracDParam(const T &height);
   DiracDParam(const T &height, const T &center);
   // </group>
-
+  
   // Copy constructor (deep copy)
+  // <group>
   DiracDParam(const DiracDParam<T> &other);
-
+  template <class W>
+    DiracDParam(const DiracDParam<W> &other) :
+    Function<T>(other) {}
+  // </group>
   // Copy assignment (deep copy)
   DiracDParam<T> &operator=(const DiracDParam<T> &other);
     
@@ -111,6 +116,9 @@ public:
   virtual uInt ndim() const { return 1; };
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("diracdelta");
+    return x; };
 
   //# Make members of parent classes known.
 protected:

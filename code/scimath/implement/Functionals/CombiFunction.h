@@ -1,5 +1,5 @@
 //# CombiFunction.h: Form a linear combination of Functions
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -118,8 +118,17 @@ template <class T> class CombiFunction : public CombiParam<T> {
   // function operator returns a 0.
   CombiFunction() : CombiParam<T>() {};
   // Make this object a (deep) copy of other.
+  // <group>
   CombiFunction(const CombiFunction<T> &other) :
     CombiParam<T>(other) {};
+  CombiFunction(const CombiFunction<T> &other, Bool) :
+    CombiParam<T>(other, True) {};
+  template <class W>
+    CombiFunction(const CombiFunction<W> &other) : CombiParam<T>(other) {};
+  template <class W>
+    CombiFunction(const CombiFunction<W> &other, Bool) :
+    CombiParam<T>(other, True) {};
+  // </group>
   // Make this object a (deep) copy of other.
   CombiFunction<T> &operator=(const CombiFunction<T> &other) {
     CombiParam<T>::operator=(other); return *this; };
@@ -136,6 +145,11 @@ template <class T> class CombiFunction : public CombiParam<T> {
   // deleting the pointer.
   // <group>
   virtual Function<T> *clone() const { return new CombiFunction<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new CombiFunction<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new CombiFunction<typename FunctionTraits<T>::BaseType>
+      (*this, True); };
   // </group>
 
   //# Make members of parent classes known.
@@ -161,8 +175,13 @@ public CombiParam<AutoDiff<T> > {
   // function operator returns a 0.
   CombiFunction_PS() : CombiParam<AutoDiff<T> >() {};
   // Make this object a (deep) copy of other.
+  // <group>
   CombiFunction_PS(const CombiFunction_PS<AutoDiff<T> > &other) :
     CombiParam<AutoDiff<T> >(other) {};
+  template <class W>
+    CombiFunction_PS(const CombiFunction_PS<W> &other) :
+    CombiParam<AutoDiff<T> >(other) {};
+  // </group>
   // Make this object a (deep) copy of other.
   CombiFunction_PS<AutoDiff<T> > &
     operator=(const CombiFunction_PS<AutoDiff<T> > &other) {
@@ -182,6 +201,14 @@ public CombiParam<AutoDiff<T> > {
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new CombiFunction_PS<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new CombiFunction<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new CombiFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this, True); };
   // </group>
 
   //# Make members of parent classes known.

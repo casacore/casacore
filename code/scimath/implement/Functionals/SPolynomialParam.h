@@ -1,5 +1,5 @@
 //# SPolynomialParam.h: Parameter handling for scaled 1-D polynomials
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
+#include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -111,6 +112,9 @@ public:
   // Make this a copy of other (deep copy).
   // <group>
   SPolynomialParam(const SPolynomialParam<T> &other);
+  template <class W>
+    SPolynomialParam(const SPolynomialParam<W> &other) :
+    Function<T>(other) {}
   SPolynomialParam<T> &operator=(const SPolynomialParam<T> &other);
   // </group>
   
@@ -128,6 +132,10 @@ public:
   // </group>
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("spolynomial");
+    return x; };
+
   // What is the order of the polynomial, i.e. maximum exponent of "x".
   uInt order() const { return param_p.nelements() - 4; };
   

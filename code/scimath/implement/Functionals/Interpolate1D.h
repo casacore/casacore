@@ -1,5 +1,5 @@
 //# Interpolate1D.h: Interpolate in one dimension
-//# Copyright (C) 1996,1997,1999,2002
+//# Copyright (C) 1996,1997,1999,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -174,6 +174,10 @@ public:
   ~Interpolate1D();
   // </group>
 
+  // Name of function
+  virtual const String &name() const { static String x("interpolate1d");
+    return x; };
+
   // Interpolation is done using the () operator (see example above). Actual
   // use is through the virtual <src>eval()</src> function.
   virtual Range eval(typename Function1D<Domain, Range>::FunctionArg x)
@@ -196,7 +200,9 @@ public:
   // </group>
 
   // A function to copy the Interpolate1D object
+  // <group>
   virtual Function<Domain, Range> *clone() const;
+  // </group>
 
 private:
   // A private function for doing polynomial interpolation

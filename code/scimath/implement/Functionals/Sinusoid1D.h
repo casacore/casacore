@@ -1,5 +1,5 @@
 //# Sinusoid1D.h: A one dimensional Sinusoid class
-//# Copyright (C) 1997,2001,2002
+//# Copyright (C) 1997,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -132,7 +132,11 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Sinusoid1D(const Sinusoid1D &other) : Sinusoid1DParam<T>(other) {};
+  template <class W>
+    Sinusoid1D(const Sinusoid1D<W> &other) : Sinusoid1DParam<T>(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   Sinusoid1D<T> &operator=(const Sinusoid1D<T> &other) {
@@ -153,6 +157,10 @@ public:
   // for deleting this pointer. 
   // <group>
   virtual Function<T> *clone() const { return new Sinusoid1D<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new Sinusoid1D<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new Sinusoid1D<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.
@@ -193,8 +201,13 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Sinusoid1D_PS(const Sinusoid1D_PS &other) :
     Sinusoid1DParam<AutoDiff<T> >(other) {};
+  template <class W>
+  Sinusoid1D_PS(const Sinusoid1D_PS<W> &other) :
+    Sinusoid1DParam<AutoDiff<T> >(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   Sinusoid1D_PS<AutoDiff<T> > &
@@ -217,6 +230,14 @@ public:
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new Sinusoid1D<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const {
+    return new Sinusoid1D<typename FunctionTraits<AutoDiff<T> >::DiffType>
+      (*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneNonAD() const {
+    return new Sinusoid1D<typename FunctionTraits<AutoDiff<T> >::BaseType>
+      (*this); };
   // </group>
 
 protected:

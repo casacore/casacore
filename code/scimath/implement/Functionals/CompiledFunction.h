@@ -1,5 +1,5 @@
 //# CompiledFunction.h: Form a linear combination of Functions
-//# Copyright (C) 2002,2004
+//# Copyright (C) 2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -135,8 +135,13 @@ template <class T> class CompiledFunction : public CompiledParam<T> {
   // function operator returns a 0.
   CompiledFunction() : CompiledParam<T>() {};
   // Make this object a (deep) copy of other.
+  // <group>
   CompiledFunction(const CompiledFunction<T> &other) :
     CompiledParam<T>(other) {};
+  template <class W>
+    CompiledFunction(const CompiledFunction<W> &other) :
+    CompiledParam<T>(other) {};
+  // </group>
   // Make this object a (deep) copy of other.
   CompiledFunction<T> &operator=(const CompiledFunction<T> &other) {
     CompiledParam<T>::operator=(other); return *this; };
@@ -154,6 +159,10 @@ template <class T> class CompiledFunction : public CompiledParam<T> {
   // <group>
   virtual Function<T> *clone() const {
     return new CompiledFunction<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new CompiledFunction<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new CompiledFunction<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
   
 };

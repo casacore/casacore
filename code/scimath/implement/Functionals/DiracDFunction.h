@@ -1,5 +1,5 @@
 //# DiracDFunction.h: A one dimensional Dirac delta function
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,7 +99,11 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   DiracDFunction(const DiracDFunction<T> &other) : DiracDParam<T>(other) {};
+  template <class W>
+  DiracDFunction(const DiracDFunction<W> &other) : DiracDParam<T>(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   DiracDFunction<T> &operator=(const DiracDFunction<T> &other) {
@@ -120,6 +124,10 @@ public:
   // for deleting this pointer. 
   // <group>
   virtual Function<T> *clone() const { return new DiracDFunction<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new DiracDFunction<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new DiracDFunction<typename FunctionTraits<T>::BaseType>(*this); };
   // </group>
 
   //# Make members of parent classes known.

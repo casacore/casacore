@@ -1,5 +1,5 @@
 //# GNoiseParam.h: A one dimensional normal distribution 
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
 #include <casa/BasicMath/Random.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -90,7 +91,9 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   GNoiseParam(const GNoiseParam<T> &other);
+  // </group>
 
   // Copy assignment (deep copy)
   GNoiseParam<T> &operator=(const GNoiseParam<T> &other);
@@ -102,6 +105,9 @@ public:
   virtual uInt ndim() const { return 0; };
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("gaussnoise");
+    return x; };
 
 protected:
   //# Data

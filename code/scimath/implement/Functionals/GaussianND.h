@@ -1,5 +1,5 @@
 //# GaussianND.h: A multidimensional Gaussian class
-//# Copyright (C) 1995,1996,1998,1999,2001,2002,2004
+//# Copyright (C) 1995,1996,1998,1999,2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -203,7 +203,9 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   GaussianND(const GaussianND &other) : GaussianNDParam<T>(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   GaussianND<T> &operator=(const GaussianND<T> &other) {
@@ -221,7 +223,9 @@ public:
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting this pointer.
+  // <group>
   virtual Function<T> *clone() const { return new GaussianND<T>(*this); };
+  // </group>
 
   //# Make members of parent classes known.
 protected:

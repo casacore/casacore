@@ -1,5 +1,5 @@
 //# HyperPlaneParam.h: Parameters For a hyper plane function
-//# Copyright (C) 2001,2002,2004
+//# Copyright (C) 2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -116,7 +117,12 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   HyperPlaneParam(const HyperPlaneParam &other);
+  template <class W>
+    HyperPlaneParam(const HyperPlaneParam<W> &other) :
+    Function<T>(other) {}
+  // </group>
 
   // Copy assignment (deep copy)
   HyperPlaneParam<T> &operator=(const HyperPlaneParam<T> &other);
@@ -136,6 +142,10 @@ public:
   // </group>
     
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("hyperplane");
+    return x; };
+
   // What is the dimension of the parameter list
   virtual uInt ndim() const { return this->param_p.nelements(); };
 

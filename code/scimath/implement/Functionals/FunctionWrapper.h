@@ -1,5 +1,5 @@
 //# FunctionWrapper.h: Construct function objects from C++ functions 
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -111,7 +111,9 @@ public:
   FunctionWrapper(T(*f)(const Vector<T>&, const Vector<T>&),
 		    const Vector<T> &par, const uInt dim=1);
   // Copy constructor (deep copy)
+  // <group>
   FunctionWrapper(const FunctionWrapper<T> &other);
+  // </group>
   // Copy assignment (deep copy)
   FunctionWrapper<T> &operator=(const FunctionWrapper<T> &other);
 

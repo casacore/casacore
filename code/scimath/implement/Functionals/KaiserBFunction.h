@@ -1,5 +1,5 @@
 //# KaiserBFunction.h: A one dimensional Kaiser-Bessel function
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,7 +93,11 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
-  KaiserBFunction(const KaiserBFunction<T> &other) : KaiserBParam<T>(other) {};
+  // <group>
+  KaiserBFunction(const KaiserBFunction<T> &other) : KaiserBParam<T>(other) {};  template <class W>
+  KaiserBFunction(const KaiserBFunction<W> &other) : KaiserBParam<T>(other) {};
+  // </group>
+
 
   // Copy assignment (deep copy)
   KaiserBFunction<T> &operator=(const KaiserBFunction<T> &other) {
@@ -113,7 +117,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer. 
   // <group>
-  virtual Function<T> *clone() const { return new KaiserBFunction<T>(*this); };
+  virtual Function<T> *clone() const { return new KaiserBFunction<T>(*this); };  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new KaiserBFunction<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
+    return new KaiserBFunction<typename FunctionTraits<T>::BaseType>(*this); };
+
   // </group>
 
   //# Make members of parent classes known.

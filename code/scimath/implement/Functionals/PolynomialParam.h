@@ -1,5 +1,5 @@
 //# PolynomialParam.h: Parameter handling for one-dimensional polynomials
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,9 @@
 
 //# Includes
 #include <casa/aips.h>
-#include <scimath/Functionals/Function1D.h>
+#include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
+#include <scimath/Functionals/Function1D.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -96,8 +97,7 @@ template<class T> class Vector;
 //   orders will be useful eventually.
 // </todo>
 
-template<class T> class PolynomialParam: public Function1D<T>
-{
+template<class T> class PolynomialParam: public Function1D<T> {
 public:
   //# Constructors
   // Constructs a zero'th order polynomial, with a coeficcient of 0.0.
@@ -110,6 +110,9 @@ public:
   // Make this a copy of other (deep copy).
   // <group>
   PolynomialParam(const PolynomialParam<T> &other);
+  template <class W>
+    PolynomialParam(const PolynomialParam<W> &other) :
+    Function1D<T>(other) {}
   PolynomialParam<T> &operator=(const PolynomialParam<T> &other);
   // </group>
   
@@ -127,6 +130,10 @@ public:
   // </group>
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("polynomial");
+    return x; };
+
   // What is the order of the polynomial, i.e. maximum exponent of "x".
   uInt order() const { return param_p.nelements() - 1; };
   

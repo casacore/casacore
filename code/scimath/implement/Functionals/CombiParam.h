@@ -1,5 +1,5 @@
 //# CombiParam.h: Parameters for a linear combination of Functions
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,9 +31,10 @@
 
 //# Includes
 #include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
+#include <casa/BasicSL/String.h>
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/Assert.h>
+#include <scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -115,7 +116,32 @@ public:
   // function operator returns a 0.
   CombiParam();
   // Make this object a (deep) copy of other.
+  // <group>
   CombiParam(const CombiParam<T> &other);
+  CombiParam(const CombiParam<T> &other, Bool) :
+    Function<T>(other), ndim_p(other.ndim_p),
+    functionPtr_p(other.functionPtr_p.nelements()) { 
+    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+      functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
+    };
+  }
+  template <class W>
+    CombiParam(const CombiParam<W> &other) :
+    Function<T>(other), ndim_p(other.ndim()),
+    functionPtr_p(other.nFunctions()) { 
+    for (uInt i=0; i<nFunctions(); ++i) {
+      functionPtr_p[i] = other.function(i).cloneAD();
+    };
+  }
+  template <class W>
+    CombiParam(const CombiParam<W> &other, Bool) :
+    Function<T>(other), ndim_p(other.ndim()),
+    functionPtr_p(other.nFunctions()) { 
+    for (uInt i=0; i<nFunctions(); ++i) {
+      functionPtr_p[i] = other.function(i).cloneNonAD();
+    };
+  }
+  // </group>
   // Make this object a (deep) copy of other.
   CombiParam<T> &operator=(const CombiParam<T> &other);
   // Destructor
@@ -124,6 +150,9 @@ public:
   //# Operators
   
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("combi");
+    return x; };
 
   // Add a function.  All functions must have the same <src>ndim()</src>
   // as the first one.  Returns the (zero relative) number (<src>i</src>)

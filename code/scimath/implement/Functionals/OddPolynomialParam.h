@@ -1,5 +1,5 @@
 //# OddPolynomialParam.h: Parameter handling for odd  polynomials
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <scimath/Functionals/Function1D.h>
+#include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -109,6 +110,9 @@ public:
   // Make this a copy of other (deep copy).
   // <group>
   OddPolynomialParam(const OddPolynomialParam<T> &other);
+  template <class W>
+    OddPolynomialParam(const OddPolynomialParam<W> &other) :
+    Function1D<T>(other) {}
   OddPolynomialParam<T> &operator=(const OddPolynomialParam<T> &other);
   // </group>
   
@@ -126,6 +130,10 @@ public:
   // </group>
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("oddpolynomial");
+    return x; };
+
   // What is the order of the polynomial, i.e. maximum exponent of "x".
   uInt order() const { return 2*param_p.nelements() - 1; };
   
