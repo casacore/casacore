@@ -1,5 +1,5 @@
 //# ImageSummary.cc:  list an image header
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -362,18 +362,12 @@ String ImageSummary<T>::imageType  () const
 
 template <class T> 
 void ImageSummary<T>::list (LogIO& os,
-                            const MDoppler::Types velocityType,
-                            const Bool nativeFormat) 
+                            const MDoppler::Types velocityType)
 //
 // List information about an image to the logger
 //
 // Input:
 //   velocityType  Speciy velocity definition
-//   nativeFormat  If True, reference values and axis increments
-//                 are formatted in their native format.  E.g.
-//                 RA and DEC in radians.  Otherwise, they are
-//                 possibly converted to some other unit and
-//                 formatted nicely (e.g. HH:MM:SS.S)
 //
 {
    os << LogIO::NORMAL << endl;
@@ -407,7 +401,7 @@ void ImageSummary<T>::list (LogIO& os,
 
 // List CoordinateSystem
 
-   cSys_p.list(os, velocityType, nativeFormat, shape(), tileShape());
+   cSys_p.list(os, velocityType, shape(), tileShape());
 }
 
 
