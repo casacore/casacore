@@ -34,6 +34,7 @@
 #endif
 
 #include <aips/aips.h>
+#include <aips/Measures/MFrequency.h>
 
 template <class T> class ImageInterface;
 template <class T> class Vector;
@@ -41,6 +42,9 @@ class IPosition;
 class Unit;
 class LogIO;
 class Coordinate;
+
+class MRadialVelocity;
+
 
 // <summary> Provides and lists information about the header of an image </summary>
 // <use visibility=export>
@@ -185,7 +189,6 @@ private:
                         uInt& widthRefPixel,
                         uInt& widthInc,
                         uInt& widthUnits,
-                        uInt& totWidth,
                         Int& precRefValSci,
                         Int& precRefValloat,
                         Int& precRefValRADEC,   
@@ -214,15 +217,44 @@ private:
                     uInt& widthRefPixel,
                     uInt& widthInc,
                     uInt& widthUnits,
-                    const Bool& findWidths,
-                    const Int& axisInCoordinate,
-                    const Int& pixelAxis,
-                    const Bool& nativeFormat,
-                    const Int& precRefValSci,
-                    const Int& precRefValFloat,
-                    const Int& precRefValRADEC,
-                    const Int& precRefPixFloat,
-                    const Int& precIncSci) const;
+                    const Bool findWidths,
+                    const Int axisInCoordinate,
+                    const Int pixelAxis,
+                    const Bool nativeFormat,
+                    const Int precRefValSci,
+                    const Int precRefValFloat,
+                    const Int precRefValRADEC,
+                    const Int precRefPixFloat,
+                    const Int precIncSci) const;
+
+// List axis descriptors
+   void listVelocity (LogIO& os,
+                    Coordinate* pc,
+                    uInt& widthName,
+                    uInt& widthProj,
+                    uInt& widthShape,
+                    uInt& widthTile,
+                    uInt& widthRefValue,
+                    uInt& widthRefPixel,
+                    uInt& widthInc,
+                    uInt& widthUnits,
+                    const Bool findWidths,
+                    const Int axisInCoordinate,
+                    const Int pixelAxis,
+                    const Int precRefValSci,
+                    const Int precRefValFloat,
+                    const Int precRefValRADEC,
+                    const Int precRefPixFloat,
+                    const Int precIncSci) const;
+
+Bool frequencyToVelocity(MRadialVelocity& velocity,
+                         MFrequency& frequency,
+                         const Double restFrequency,
+                         const MFrequency::Types frequencySystem) const;
+
+Bool velocityIncrement(Double& velocityInc,
+                       const Int axisInCoordinate,
+                       const SpectralCoordinate* sc) const;
 
 // Clear formatting flags
    void clearFlags (LogIO& os) const;

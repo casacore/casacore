@@ -1,4 +1,4 @@
-//# ImageSummary.cc:  Helper class for applications listing an image header
+//# ImageSummary.cc:  list an image header
 //# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -31,7 +31,12 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Measures/Unit.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MDoppler.h>
+#include <aips/Measures/MRadialVelocity.h>
 #include <aips/Measures/MVAngle.h>
+#include <aips/Measures/Quantum.h>
 #include <aips/Measures/Stokes.h>
 
 #include <trial/Coordinates.h>
@@ -154,7 +159,6 @@ Vector<Double> ImageSummary<T>::referenceValues () const
 // Get reference values for the pixel axes
 //
 {
-
    CoordinateSystem cSys = pImage_p->coordinates();
    Int coordinate, axisInCoordinate;
    Vector<Double> refVals(cSys.nPixelAxes());
@@ -288,6 +292,7 @@ void ImageSummary<T>::list (LogIO& os,
       }
       MFrequency::Types freqType = cSys.spectralCoordinate(coordinate).frequencySystem();
       os << "Frequency system : " << MFrequency::showType(freqType) << endl;
+      os << "Velocity system  : " << "True" << endl;
    }
    os << endl;
       
@@ -306,8 +311,8 @@ void ImageSummary<T>::list (LogIO& os,
 
    getFieldWidths (widthName, widthProj, widthShape, widthTile,
                    widthRefValue, widthRefPixel, widthInc,
-                   widthUnits, totWidth, precRefValSci, 
-                   precRefValFloat, precRefValRADEC, precRefPixFloat,
+                   widthUnits, precRefValSci, precRefValFloat, 
+                   precRefValRADEC, precRefPixFloat,
                    precIncSci, nameName, nameProj, nameShape, 
                    nameTile, nameRefValue, nameRefPixel, nameInc, 
                    nameUnits, nativeFormat, cSys);
@@ -367,11 +372,26 @@ void ImageSummary<T>::list (LogIO& os,
 // List it
 
       Coordinate* pc = cSys.coordinate(coordinate).clone();
+//      cout << "type = " << pc->type() << endl;
+
       listHeader(os, pc, widthName, widthProj, widthShape, widthTile, 
                  widthRefValue, widthRefPixel, widthInc, widthUnits,
                  False, axisInCoordinate, pixelAxis, nativeFormat,
                  precRefValSci, precRefValFloat, precRefValRADEC, 
                  precRefPixFloat, precIncSci);
+
+// If the axis is spectral, we might like to see it as
+// velocity as well as frequency.  Since the listing is row
+// based, we have to do it like this.  Urk.
+
+      if (pc->type() == Coordinate::SPECTRAL) {
+         listVelocity (os, pc, widthName, widthProj, widthShape, widthTile, 
+                 widthRefValue, widthRefPixel, widthInc, widthUnits,
+                 False, axisInCoordinate, pixelAxis, 
+                 precRefValSci, precRefValFloat, precRefValRADEC, 
+                 precRefPixFloat, precIncSci);
+
+      }
       delete pc;
    }
    os << endl;
@@ -440,7 +460,6 @@ void ImageSummary<T>::getFieldWidths (uInt& widthName,
                                       uInt& widthRefPixel, 
                                       uInt& widthInc,
                                       uInt& widthUnits, 
-                                      uInt& totWidth, 
                                       Int& precRefValSci, 
                                       Int& precRefValFloat, 
                                       Int& precRefValRADEC,
@@ -457,7 +476,7 @@ void ImageSummary<T>::getFieldWidths (uInt& widthName,
                                       const Bool& nativeFormat,
                                       const CoordinateSystem& cSys) const
 //
-// ALl these silly format and precision things shoudl really be
+// All these silly format and precision things should really be
 // in  a little class, but I can't be bothered !
 {
 
@@ -483,7 +502,7 @@ void ImageSummary<T>::getFieldWidths (uInt& widthName,
    nameInc = "Coord incr";
    nameUnits = " Units";
 
-// Initialize (logger will never be used)
+// Initialize (logger will never be actually used in this function)
 
    widthName = widthProj = widthShape = widthTile = widthRefValue = 0;
    widthRefPixel = widthInc = widthUnits = 0;
@@ -509,6 +528,16 @@ void ImageSummary<T>::getFieldWidths (uInt& widthName,
                   True, axisInCoordinate, pixelAxis,
                   nativeFormat, precRefValSci, precRefValFloat,
                   precRefValRADEC, precRefPixFloat, precIncSci);
+
+
+      if (pc->type() == Coordinate::SPECTRAL) {
+         listVelocity (os, pc, widthName, widthProj, widthShape, widthTile, 
+                 widthRefValue, widthRefPixel, widthInc, widthUnits,
+                 True, axisInCoordinate, pixelAxis, 
+                 precRefValSci, precRefValFloat, precRefValRADEC, 
+                 precRefPixFloat, precIncSci);
+      }
+
       delete pc;
    }
 
@@ -527,15 +556,25 @@ void ImageSummary<T>::getFieldWidths (uInt& widthName,
 
 
 template <class T> 
-void ImageSummary<T>::listHeader (LogIO& os, Coordinate* pc,
-                                  uInt& widthName, uInt& widthProj,
-                                  uInt& widthShape, uInt& widthTile,
-                                  uInt& widthRefValue, uInt& widthRefPixel, 
-                                  uInt& widthInc, uInt& widthUnits, const Bool& findWidths,
-                                  const Int& axisInCoordinate, const Int& pixelAxis,
-                                  const Bool& nativeFormat, const Int& precRefValSci, 
-                                  const Int& precRefValFloat, const Int& precRefValRADEC, 
-                                  const Int& precRefPixFloat, const Int& precIncSci) const
+void ImageSummary<T>::listHeader (LogIO& os, 
+                                  Coordinate* pc,
+                                  uInt& widthName, 
+                                  uInt& widthProj,
+                                  uInt& widthShape, 
+                                  uInt& widthTile,
+                                  uInt& widthRefValue, 
+                                  uInt& widthRefPixel, 
+                                  uInt& widthInc, 
+                                  uInt& widthUnits, 
+                                  const Bool findWidths,
+                                  const Int axisInCoordinate, 
+                                  const Int pixelAxis,
+                                  const Bool nativeFormat, 
+                                  const Int precRefValSci, 
+                                  const Int precRefValFloat, 
+                                  const Int precRefValRADEC, 
+                                  const Int precRefPixFloat, 
+                                  const Int precIncSci) const
 //
 // List all the good stuff
 //
@@ -725,11 +764,9 @@ void ImageSummary<T>::listHeader (LogIO& os, Coordinate* pc,
          } else {
             Coordinate::formatType form;
             const Bool absolute = False;
-            String listUnits;
             Int prec;
 
             form = Coordinate::DEFAULT;
- 
             pc->getPrecision(prec, form, absolute, precRefValSci, 
                              precRefValFloat, precRefValRADEC);
             string = pc->format(incUnits, form, 
@@ -752,11 +789,6 @@ void ImageSummary<T>::listHeader (LogIO& os, Coordinate* pc,
 
    if (pc->type()!= Coordinate::STOKES) {
       if (pixelAxis != -1) {
-/*
-         ostrstream oss;
-         oss << " " << pc->worldAxisUnits()(axisInCoordinate);
-         string = String(oss);
-*/
          string = " " + incUnits;
       } else {
          string = " ";
@@ -768,6 +800,187 @@ void ImageSummary<T>::listHeader (LogIO& os, Coordinate* pc,
          os << string;
       }
    }
+
+   if (!findWidths) os << endl;    
+}
+
+
+
+template <class T> 
+void ImageSummary<T>::listVelocity (LogIO& os, 
+                                    Coordinate* pc,
+                                    uInt& widthName, 
+                                    uInt& widthProj,
+                                    uInt& widthShape, 
+                                    uInt& widthTile,
+                                    uInt& widthRefValue, 
+                                    uInt& widthRefPixel, 
+                                    uInt& widthInc, 
+                                    uInt& widthUnits, 
+                                    const Bool findWidths,
+                                    const Int axisInCoordinate, 
+                                    const Int pixelAxis,
+                                    const Int precRefValSci, 
+                                    const Int precRefValFloat, 
+                                    const Int precRefValRADEC, 
+                                    const Int precRefPixFloat, 
+                                    const Int precIncSci) const
+//
+// List all the good stuff
+//
+//  Input:
+//     os               The LogIO to write to
+//     pc               Pointer to the coordinate
+//     axisIncoordinate The axis number in this coordinate 
+//     pixelAxis        The axis in the image for this axis in this coordinate
+//           
+{
+
+// Clear flags
+
+   if (!findWidths) clearFlags(os);
+
+
+// Axis name
+
+   String string("Velocity");
+   if (findWidths) {
+      widthName = max(widthName, string.length());
+   } else {
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthName);
+      os << string;
+   }
+
+// Projection
+
+   if (!findWidths) {
+     os.output().setf(ios::right, ios::adjustfield);
+      os.output().width(widthProj);
+      string = " ";
+      os << string;
+   }
+
+// Number of pixels
+   
+
+   if (!findWidths) {
+      os.output().width(widthShape);
+      os << string;
+   }
+
+// Tile shape
+
+   if (!findWidths) {   
+      os.output().width(widthTile);
+      os << string;
+   }
+
+
+// Caste the coordinate to a spectral coordinate
+
+   SpectralCoordinate* sc = (SpectralCoordinate*)pc;
+
+// Remember units
+
+   Vector<String> oldUnits(pc->nWorldAxes());
+   oldUnits = pc->worldAxisUnits();
+   Vector<String> units(pc->nWorldAxes());
+
+// Fish out the reference pixel
+
+   Double pixel = sc->referencePixel()(axisInCoordinate);
+
+
+// Convert it to a velocity and format 
+
+   MFrequency frequency;
+   MRadialVelocity velocity;
+   Bool ok = sc->toWorld(frequency, pixel);
+   if (!ok) {
+      string = "Fail";
+   } else {
+      ok = frequencyToVelocity(velocity, frequency,
+                               sc->restFrequency(),
+                               sc->frequencySystem());
+      if (!ok) {
+         string = "Fail";
+      } else {
+         Coordinate::formatType form;
+         Bool absolute = True;
+         String listUnits;
+         Int prec;
+         form = Coordinate::DEFAULT;
+         pc->getPrecision(prec, form, absolute, precRefValSci, 
+                          precRefValFloat, precRefValRADEC);
+
+         string = sc->format(listUnits, form, 
+                             velocity.get("km/s").getValue(),
+                             axisInCoordinate, absolute, prec);
+      }
+   }
+   if (findWidths) {
+      widthRefValue = max(widthRefValue,string.length());
+   } else {
+      os.output().width(widthRefValue);
+      os << string;
+   }
+
+
+// Reference pixel
+
+   if (pixelAxis != -1) {
+      ostrstream oss;
+      oss.setf(ios::fixed, ios::floatfield);
+      oss.precision(precRefPixFloat);
+      oss << sc->referencePixel()(axisInCoordinate) + 1.0;
+      string = String(oss);
+   } else {
+      string = " ";
+   }
+   if (!findWidths) {
+      os.output().width(widthRefPixel);
+      os << string;
+   }
+  
+
+// Increment
+
+   if (pixelAxis != -1) {
+     Double velocityInc;
+     if (!velocityIncrement(velocityInc, axisInCoordinate, sc)) {
+        string = "Fail";
+     } else {
+        ostrstream oss;
+        oss.setf(ios::scientific, ios::floatfield);
+        oss.precision(precIncSci);
+        oss << velocityInc;
+        string = String(oss);
+     }
+  } else {
+     string = " ";
+  }
+  if (findWidths) {
+     widthInc = max(widthInc,string.length());
+  } else {
+     os.output().width(widthInc);
+     os << string;
+  }
+ 
+
+// Increment units
+
+   if (pixelAxis != -1) {
+      string = " km/s";
+   } else {
+      string = " ";
+   }
+   if (findWidths) {
+      widthUnits = max(widthUnits,string.length());
+   } else {
+      os.output().setf(ios::left, ios::adjustfield);
+      os << string;
+   } 
 
    if (!findWidths) os << endl;    
 }
@@ -793,4 +1006,79 @@ void ImageSummary<T>::clearFlags(LogIO& os) const
    os.output().unsetf(ios::fixed);
  
 }
+
+
+template <class T> 
+Bool ImageSummary<T>::frequencyToVelocity(MRadialVelocity& velocity,
+                                          MFrequency& frequency,
+                                          const Double restFrequency,
+                                          const MFrequency::Types frequencySystem) const
+{
+   if (restFrequency <= 0) return False;
+     
+// We can only get to MRadialVelocity from MFrequency via MDoppler
+   
+   MDoppler doppler = frequency.toDoppler(MVFrequency(restFrequency));
+ 
+// Convert the rest frame type from the enum in MFrequency to
+// that in MRadialVelocity
+              
+   const String tmp = MFrequency::showType(frequencySystem);
+   MRadialVelocity::Types restTypeMRVIn;
+ 
+// Create the MRadialVelocity in the same rest frame as the MFrequency
+           
+   if (!MRadialVelocity::getType(restTypeMRVIn, tmp)) return False;
+
+// Get the velocity
+
+   velocity = MRadialVelocity::fromDoppler(doppler, restTypeMRVIn);
+
+   return True;
+}
+
+         
+template <class T> 
+Bool ImageSummary<T>::velocityIncrement(Double& velocityInc,
+                                        const Int axisInCoordinate,
+                                        const SpectralCoordinate* sc) const
+{
+
+// DO this the hard way for now until Wim gives me spectralMachine
+
+   Double refPix = sc->referencePixel()(axisInCoordinate);
+
+
+// Find world values at refPix +/- 0.5 and take difference
+
+   Double pixel;
+   MFrequency frequency;
+   pixel = refPix + 0.5;
+   Bool ok = sc->toWorld(frequency, pixel);
+   if (!ok) return False;
+   MRadialVelocity velocity;
+   ok = frequencyToVelocity(velocity, frequency,
+                            sc->restFrequency(),
+                            sc->frequencySystem());
+   if (!ok) return False;
+   Double velocity1 = velocity.get("km/s").getValue();
+
+//
+
+   pixel = refPix - 0.5;
+   ok = sc->toWorld(frequency, pixel);
+   if (!ok) return False;
+   ok = frequencyToVelocity(velocity, frequency,
+                            sc->restFrequency(),
+                            sc->frequencySystem());
+   if (!ok) return False;
+   Double velocity2 = velocity.get("km/s").getValue();
+
+// Return increment
+   
+   velocityInc = velocity1 - velocity2;
+
+   return True;
+}
+
 
