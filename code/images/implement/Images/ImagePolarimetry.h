@@ -98,7 +98,8 @@ class LogIO;
 // </motivation>
 
 // <todo asof="1999/11/01">
-//   <li> 
+//   <li> plotting for function rotationMeasure 
+//   <li> some assessment of the curvature of pa-l**2
 // </todo>
 
 
@@ -283,23 +284,23 @@ public:
                                 LogIO& os, Int spectralAxis=-1) const;
 
 // This function applies a traditional (i.e. non-Fourier) Rotation Measure 
-// algorithm (Leahy et al, A&A, 256, 234) approach.     For the RM images
+// algorithm (Leahy et al, A&A, 156, 234) approach.     For the RM images
 // you must get the shape and CoordinateSYstem from function
 // rotationMeasureShape.  For the position angle images, use function
 // singleStokesShape.  Null pointer ImageInterface objects are 
 // not accessed so you can select which output images you want.
-// The position angle is in degrees. The RM images in rad/m/m.
+// The position angles are all in degrees. The RM images in rad/m/m.
 // ImageInfo, MiscInfo, Units, and
 // history are copied to the output.
 // You specify which axis houses the frequencies, the noise level of
 // Q and U  if you  know it (by default it is worked out for you) 
 // for error images, the value of the foreground RM if you know it
 // (helps for unwinding ambiguity), the absolute maximum RM it should 
-// solve for, and the maximum error in the position angle (degrees) that should
+// solve for, and the maximum error in the position angle that should
 // be allowed.
    void rotationMeasure(ImageInterface<Float>*& rmPtr,  ImageInterface<Float>*& rmErrPtr, 
                         ImageInterface<Float>*& pa0Ptr,  ImageInterface<Float>*& pa0ErrPtr,
-                        Int spectralAxis,  Float rmMax, Float maxPaErr,
+                        Int spectralAxis,  Float rmMax, Float maxPaErr=1.0e30,
                         Float sigma=-1.0, Float rmFg=0.0);
 
 private:
