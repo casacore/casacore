@@ -5403,3 +5403,4 @@
 15 152 src rm aips/implement/RTTI.h
 15 155 src rm aips/implement/RTTI/test/makefile
 15 155 src rm aips/implement/RTTI/makefile
+15 155 src rm aips/implement/RTTI/test
