@@ -1,5 +1,5 @@
 //# MeasurementSet.cc:  the class that hold measurements from telescopes
-//# Copyright (C) 1996,1997,1998,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -438,6 +438,126 @@ MeasurementSet MeasurementSet::referenceCopy(const String& newTableName,
 {
     return MeasurementSet(MSTable<PredefinedColumns,PredefinedKeywords>::
 			  referenceCopy(newTableName,writableColumns));
+}
+
+String MeasurementSet::antennaTableName() const
+{
+  if (antenna_p.isNull()) {
+    return tableName()+"/ANTENNA";
+  }
+  return antenna_p.tableName();
+}
+String MeasurementSet::dataDescriptionTableName() const
+{
+  if (dataDesc_p.isNull()) {
+    return tableName()+"/DATA_DESCRIPTION";
+  }
+  return dataDesc_p.tableName();
+}
+String MeasurementSet::dopplerTableName() const
+{
+  if (doppler_p.isNull()) {
+    return tableName()+"/DOPPLER";
+  }
+  return doppler_p.tableName();
+}
+String MeasurementSet::feedTableName() const
+{
+  if (feed_p.isNull()) {
+    return tableName()+"/FEED";
+  }
+  return feed_p.tableName();
+}
+String MeasurementSet::fieldTableName() const
+{
+  if (field_p.isNull()) {
+    return tableName()+"/FIELD";
+  }
+  return field_p.tableName();
+}
+String MeasurementSet::flagCmdTableName() const
+{
+  if (flagCmd_p.isNull()) {
+    return tableName()+"/FLAG_CMD";
+  }
+  return flagCmd_p.tableName();
+}
+String MeasurementSet::freqOffsetTableName() const
+{
+  if (freqOffset_p.isNull()) {
+    return tableName()+"/FREQ_OFFSET";
+  }
+  return freqOffset_p.tableName();
+}
+String MeasurementSet::historyTableName() const
+{
+  if (history_p.isNull()) {
+    return tableName()+"/HISTORY";
+  }
+  return history_p.tableName();
+}
+String MeasurementSet::observationTableName() const
+{
+  if (observation_p.isNull()) {
+    return tableName()+"/OBSERVATION";
+  }
+  return observation_p.tableName();
+}
+String MeasurementSet::pointingTableName() const
+{
+  if (pointing_p.isNull()) {
+    return tableName()+"/POINTING";
+  }
+  return pointing_p.tableName();
+}
+String MeasurementSet::polarizationTableName() const
+{
+  if (polarization_p.isNull()) {
+    return tableName()+"/POLARIZATION";
+  }
+  return polarization_p.tableName();
+}
+String MeasurementSet::processorTableName() const
+{
+  if (processor_p.isNull()) {
+    return tableName()+"/PROCESSOR";
+  }
+  return processor_p.tableName();
+}
+String MeasurementSet::sourceTableName() const
+{
+  if (source_p.isNull()) {
+    return tableName()+"/SOURCE";
+  }
+  return source_p.tableName();
+}
+String MeasurementSet::spectralWindowTableName() const
+{
+  if (spectralWindow_p.isNull()) {
+    return tableName()+"/SPECTRAL_WINDOW";
+  }
+  return spectralWindow_p.tableName();
+}
+String MeasurementSet::stateTableName() const
+{
+  if (state_p.isNull()) {
+    return tableName()+"/STATE";
+  }
+  return state_p.tableName();
+}
+String MeasurementSet::sysCalTableName() const
+{
+  if (sysCal_p.isNull()) {
+    return tableName()+"/SYSCAL";
+  }
+  return sysCal_p.tableName();
+}
+String MeasurementSet::weatherTableName() const
+{
+  if (weather_p.isNull()) {
+    return tableName()+"/WEATHER";
+  }
+  return weather_p.tableName();
 }
 
 void MeasurementSet::initRefs()
