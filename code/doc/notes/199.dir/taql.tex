@@ -128,7 +128,7 @@ The various clauses have the following meaning:
        \\Use of a query in the FROM command can be useful to avoid
        multiple equal subqueries. E.g.
        \begin{verbatim}
-  select from
+  select from MS,
    [select from MS where sumsqr(UVW[1:2]) < 625]
     as TIMESEL
    where TIME in [select TIME from TIMESEL]
@@ -1076,54 +1076,56 @@ that indexing arrays should be done with care.
 \begin{description}
   \item[] \texttt{ SELECT FROM mytable WHERE column1 $>$ 0 }
     \\selects the rows in which the value of column1 $>$ 0
-    \\
+
   \item[] \texttt{ SELECT column0,column1 FROM mytable }
     \\selects 2 columns from the table.
-    \\
+
   \item[] \texttt{ SELECT column0,column1 FROM mytable WHERE column1$>$0 }
     \\is a combination of the previous selections.
-    \\
+
   \item[] \texttt{ SELECT FROM mytable WHERE column0 IN }
     \\\texttt{ [SELECT column0 FROM outtable ORDERBY column0 DESC][1:10] }
     \\selects the 10 highest values of \texttt{column0}
-    \\
+
   \item[] \texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable }
     \\\texttt{ SELECT FROM outtable WHERE rownumber()$<=$10 }
     \\is the SQL-like solution for the previous problem.
     It is less elegant, because it requires two steps.
+
   \item[] \texttt{ SELECT FROM some.MS WHERE }
     \\\texttt{ near(TIME/(24*3600),MJD(1999/03/30/17:27:15)) }
     \\selects the rows with the given time from a MeasurementSet.
     \\Note that the TIME is stored in seconds; the division converts
         it to days.
+
    \item[] \texttt{ SELECT FROM some.MS where TIME/(24*3600) in }
      \\\texttt{ [\{MJD(1999/03/30/17:27:15),MJD(1999/03/30/17:29:15)\}] }
      \\selects the rows in the given closed time interval.
-     \\
+
    \item[] \texttt{ SELECT FROM some.MS where TIME/(24*3600) in }
      \\\texttt{ [MJD(1999/03/30/17:27:15),MJD(1999/03/30/17:29:15)] }
      \\selects the rows having one of the given times.
      \\Note the difference with the previous example where an interval
      was given. Here a set of two individual time values is given.
-     \\
+
   \item[] \texttt{ SELECT FROM resource.table WHERE}
      \\\texttt{any(PValues == pattern('synth*'))}
      \\selects the rows in which an element in array
      \texttt{PValues} matches the given regular expression.
-     \\
+
   \item[] \texttt{ SELECT FROM table WHERE ntrue(flags) >= 3}
      \\selects rows where at least 3 elements of array \texttt{flags}
      are set.
-     \\
+
   \item[] \texttt{ SELECT FROM book.table WHERE nelements(author) > 1}
      \\selects books with more than 1 author.
-     \\
+
   \item[] \texttt{ SELECT FROM my.ms WHERE
          any(ANTENNA1==[0,0,1] \&\& ANTENNA2==[1,3,2])}
      \\selects the antenna pairs (baselines) 0-1, 0-3, and 1-2.
      \\Note that the two comparisons result in a boolean vector. If
        a bool in the and-ed vectors is true, that baseline matches.
-     \\
+
   \item[] \texttt{ SELECT FROM mytable WHERE}
      \\\texttt{ cos(0d1m) $<$
          sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) *
@@ -1135,30 +1137,35 @@ that indexing arrays should be done with care.
      \\Note that in the future this useful astronomical test could
      be implemented as a function of its own (with better optimization
      possibilities).
-     \\
+
   \item[] \texttt{ SELECT FROM mytable WHERE object == pattern("3C*") \&\&}
      \\\texttt{cos(0d1m) $<$ sin(52deg) * sin(DEC) + cos(52deg) *
         cos(DEC) * cos(3h30m - RA) }
      \\finds all 3C objects inside that circle.
-     \\
+
   \item[] \texttt{ select from MY.MS where DATA\_DESC\_ID in}
       \\\texttt{[select from ::DATA\_DESCRIPTION where}
       \\\texttt{SPECTRAL\_WINDOW\_ID in [0,2,4] giving [ROWID()]]}
       \\finds all rows in a measurement set matching the given
       spectral windows.
+
   \item[] \texttt{ select from MY.MS where TIME in}
       \\\texttt{[select from ::SOURCE where REST\_FREQUENCY $<$ 180000000.}
       \\\texttt{giving [TIME-INTERVAL/2 =:= TIME+INTERVAL/2]]}
       \\finds all rows in a measurement set observing sources with a
       rest frequency less than 180 Mhz.
-  \item[] \texttt{ select from}
+
+  \item[] \texttt{ select from MS,}
       \\\texttt{[select from MS where sumsqr(UVW[1:2]) < 625] as TIMESEL}
       \\\texttt{ where TIME in [select TIME from TIMESEL]}
       \\\texttt{   \&\& any([ANTENNA1,ANTENNA2] in [select from TIMESEL giving}
       \\\texttt{                      [iif(UVW[3] < 0, ANTENNA1, ANTENNA2)]])}
       \\finds all antennas which are shadowed at a given time.
       \\The query in the FROM command finds all rows where an antenna
-      is shadowed (i.e. its UV-distance less than 25 meters). Thereafter
+      is shadowed (i.e. its UV-distance less than 25 meters) and
+      creates a temporary table. This selection is done in the FROM
+      command, otherwise two 2 equal selections are needed in the main
+      WHERE command.
       
   \item[] \texttt{ select from MS}
       \\\texttt{where DATA\_DESC\_ID in [select from ::DATA\_DESCRIPTION}
