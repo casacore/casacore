@@ -36,11 +36,7 @@ class AipsIO;
 class LogIO;
 template<class T> class Array;
 template<class T> class Vector;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 
 
 // <summary> A Vector of integers, for indexing into Array<T> objects. </summary>
