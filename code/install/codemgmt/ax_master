@@ -6120,3 +6120,4 @@
 17 165 src rm aips/implement/Functionals/G1D2.cc
 17 165 src rm aips/implement/Functionals/G1DParam.cc
 17 165 src rm aips/implement/Functionals/G1DParam.h
+17 165 src rm aips/implement/Functionals/test/dG1D.cc
