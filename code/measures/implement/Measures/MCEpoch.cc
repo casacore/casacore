@@ -1,5 +1,5 @@
 //# MCEpoch.cc: MEpoch conversion routines
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -148,7 +148,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 			MRBase &inref,
 			MRBase &outref,
 			const MConvertBase &mc) {
-  Double locLong, eqox, ut;
+  Double locLong, eqox, ut, tt;
 
   MCFrame::make(inref.getFrame());
   MCFrame::make(outref.getFrame());
@@ -198,7 +198,19 @@ void MCEpoch::doConvert(MVEpoch &in,
       
       case UT1_GMST1: {
 	ut = in.get();
-	in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
+	cout << "ut**: " << ut << ", " <<
+	  MeasTable::GMST0(ut)/MeasData::SECinDAY << endl;;;
+	if (MeasTable::useIAU2000()) {
+	  in -= MeasTable::dUT1(in.get())/MeasData::SECinDAY;
+	  in += MeasTable::dUTC(in.get())/MeasData::SECinDAY;
+	  in += MeasTable::dTAI(in.get())/MeasData::SECinDAY;
+	  tt = in.get();
+	  cout << "tt**: " << tt-ut << ", " <<
+	    MeasTable::GMST00(ut, tt)/C::_2pi << endl;;;
+	  in += MeasTable::GMST00(ut, tt)/C::_2pi;
+	} else {
+	  in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
+	};
 	in += MVEpoch(6713.);
       };
       break;
