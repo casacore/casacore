@@ -341,6 +341,10 @@ private:
                            const float* pn,
                            const Int& n);
 
+// Find the location in the statistics storage image for the start
+// of a statistics slice at the given location in the input image
+   IPosition locInStats   (const IPosition& imageCursorPos);
+
 // Draw each Y-axis sublabel in a string with a different colour
    void multiColourYLabel (const String& LRLoc,
                            String& label,
@@ -378,6 +382,10 @@ private:
 // Retrieve a statistic from the accumulation image and return in an array
    Bool retrieveStorageStatistic
                           (Array<Double>& slice, const Int& ISTAT);
+
+// Find the shape of slice from the statistics image at one
+// spatial pixel
+   IPosition statsSliceShape ();
 
 // See if there were some valid points found in the accumulation
    Bool someGoodPoints ();
