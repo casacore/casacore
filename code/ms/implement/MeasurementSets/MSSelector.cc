@@ -1489,7 +1489,7 @@ Bool MSSelector::putData(const Record& items)
 	     << LogIO::POST;
 	  return False;
 	}
-	Array<Complex> data = items.asArrayComplex(RecordFieldId(i));
+	Array<Complex> data = items.toArrayComplex(RecordFieldId(i));
 	if (! col.isNull()) {
 	  if (data.ndim()==4) {
 	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
@@ -1522,7 +1522,7 @@ Bool MSSelector::putData(const Record& items)
 	     << "when writing data" << LogIO::POST;
 	  return False;
 	}
-	Array<Float> data = items.asArrayFloat(RecordFieldId(i));
+	Array<Float> data = items.toArrayFloat(RecordFieldId(i));
 	//if (GlishArray(items.get(i)).get(data)) {
 	  if (data.ndim()==4) {
 	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
@@ -1583,7 +1583,7 @@ Bool MSSelector::putData(const Record& items)
 	     << LogIO::POST;
 	  break;
 	}
-	Array<Float> weight = items.asArrayFloat(RecordFieldId(i));
+	Array<Float> weight = items.toArrayFloat(RecordFieldId(i));
 	if (weight.ndim()==2 && !msc.imagingWeight().isNull()) {
 	  if (useSlicer_p) {
 	    Slice mySlice(chanSel_p(1),chanSel_p(0),chanSel_p(3));
@@ -1597,7 +1597,7 @@ Bool MSSelector::putData(const Record& items)
     case MSS::SIGMA:
     case MSS::WEIGHT:
       {
-	Array<Float> weight = items.asArrayFloat(RecordFieldId(i));
+	Array<Float> weight = items.toArrayFloat(RecordFieldId(i));
 	// if (GlishArray(items.get(i)).get(weight)) {
 	  if (weight.ndim()==3) {
 	    reorderWeight(weight);
