@@ -1,4 +1,4 @@
-//# NQGaussian2D.h: A one-dimensional Gaussian class
+//# NQGaussian2D.h: A two-dimensional Gaussian class
 //# Copyright (C) 1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -38,7 +38,7 @@
 //# Forward declarations
 template<class T> class Vector;
 
-// <summary> A one dimensional Gaussian class.</summary>
+// <summary> A two dimensional Gaussian class.</summary>
 
 // <use visibility=export>
 
@@ -234,7 +234,7 @@ template <class T> class NQGaussian2D_PS<AutoDiff<T> > :
 public NQGaussian2DParam<AutoDiff<T> > {
  public:
   //# Constructors
-  // Constructs one dimensional Gaussians.
+  // Constructs two dimensional Gaussians.
   // <group>
   NQGaussian2D_PS() : NQGaussian2DParam<AutoDiff<T> >() {};
   NQGaussian2D_PS(const AutoDiff<T> &height,
