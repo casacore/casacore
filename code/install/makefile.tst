@@ -2,7 +2,7 @@
 # makefile.tst: Generic AIPS++ test program makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999
+#   Copyright (C) 1992-1997,1998,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -67,6 +67,8 @@ TMPPCKGD := $(ARCHTMPD)/$(PACKAGE)
 #--------------
 AIPSEXES := $(basename $(filter %.cc,$(AIPSSRCS)))
 LIBEXECS := $(basename $(filter %.g %.gp,$(AIPSSRCS)))
+GLISHEXECS := $(filter %.g %.gp,$(AIPSSRCS))
+
 
 PGMREXES := $(basename $(wildcard *.cc))
 ALLEXES  := $(sort $(AIPSEXES) $(PGMREXES))
@@ -154,7 +156,6 @@ else
    AIPSLIBS := $(DBGLIBS)
    AIPSVERS := $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
 endif
-
 
 ifeq "$(MAKEMODE)" "programmer"
    # Programmer libraries.
@@ -344,6 +345,16 @@ $(BINTESTD)/% : $(CODEDIR)/%.cc $(INSTLIBR:%=$(CODEDIR)/templates) $(AIPSLIBS)
 	@ $(RM) $(TMPPCKGD)/$(<F:cc=o)
 	@ chmod 775 $@
 
+$(LIBEXECD)/%.g : $(CODEDIR)/%.g
+	@ $(RM) $@
+	@ cp $< $@
+	@ chmod 664 $@
+
+$(LIBEXECD)/%.gp : $(CODEDIR)/%.gp
+	@ $(RM) $@
+	@ cp $< $@
+	@ chmod 664 $@
+
 $(BINTESTD)/%.g : $(CODEDIR)/%.g
 	@ cp $< $@
 
@@ -354,6 +365,11 @@ $(LIBEXECD)/% : $(CODEDIR)/%
 	@ $(RM) $@
 	cp $< $@
 	@ chmod 664 $@
+
+
+# Included scripts.
+$(GLISHEXECS) : % : $(LIBEXECD)/% ;
+
 
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
@@ -445,7 +461,7 @@ endif
 
 .PHONY : bin bintest exorcise instsys lib
 
-allsys : $(AIPSINST) $(BINTEST)
+allsys : $(GLISHEXECS) $(AIPSINST) $(BINTEST)
 
 .cleancode ::
 	-$Q cd $(CODEDIR) && $(RM) *.i *.o *.cdb *.cyi
@@ -636,6 +652,8 @@ show_local :
 	-@ echo ""
 	-@ echo "AIPSEXES=$(AIPSEXES)"
 	-@ echo "LIBEXECS=$(LIBEXECS)"
+	-@ echo "GLISHEXECS=$(GLISHEXECS)"
+	-@ echo "LIBEXECD=$(LIBEXECD)"
 	-@ echo ""
 	-@ echo "AIPSINST=$(AIPSINST)"
 	-@ echo ""
@@ -657,6 +675,7 @@ show_local :
 	-@ echo ""
 	-@ echo "PGMREXES=$(PGMREXES)"
 	-@ echo "ALLEXES =$(ALLEXES)"
+	-@ echo "MAKEMODE =$(MAKEMODE)"
 
 help ::
 	-@ echo ""
