@@ -37,7 +37,7 @@
 
 
 template<class T, class S> Int FFTServer<T,S>::
-phaseRotate(Matrix<S> & cData)
+phaseRotate(Matrix<S> & cData, Bool toZero)
 {
   //  flipTimer.mark();
   //  NoOfFlips++;
@@ -54,9 +54,19 @@ phaseRotate(Matrix<S> & cData)
 
   if (allEven)
     for (Int i=0;i<shape(1);++i){
-      for (Int j=!(i%2);j<shape(0);j+=2){
+      Int start;
+
+      if(toZero){
+	start=i%2 ;
+	
+      }
+      else{
+	start=!(i%2);
+      }
+      for (Int j=start;j<shape(0);j+=2){
 	cData(j,i) *= -1;
       }
+
     }
   //  flipTime += flipTimer.all();
   //  cerr << "##Flip timer " << flipTime << " " << flipTime/NoOfFlips << " " << NoOfFlips << endl;
@@ -241,12 +251,11 @@ fft(Array<T> & rResult, const Array<S> & cData) {
 
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<S> & cValues, const Bool toFrequency) {
-  Int doFlip;
-  doFlip = !phaseRotate((Matrix<S> &)cValues);
+  /*  Int doFlip;
+  doFlip = !phaseRotate((Matrix<S> &)cValues, True);
   if (doFlip) flip(cValues, True, False);
   
-  //  if (doFlip) cerr << "...Flipping"; 
-  //  cerr << endl;
+  //if (doFlip) cout << "...Flipping" << endl;
   
   fft0(cValues, toFrequency);
   
@@ -254,15 +263,16 @@ fft(Array<S> & cValues, const Bool toFrequency) {
     flip(cValues, False, False);
   }
   else{
-    doFlip = !phaseRotate((Matrix<S> &)cValues);
-    if (doFlip)  flip(cValues, False, False);
+    doFlip = !phaseRotate((Matrix<S> &)cValues, False);
+    //    if (doFlip)  flip(cValues, False, False);
   }
-
-  /*
+  */
+  // backed out above as it is inconsitent between imager and tFFTserver
+  
   flip(cValues, True, False);
   fft0(cValues, toFrequency);
   flip(cValues, False, False);
-  */
+  
 }
 
 template<class T, class S> void FFTServer<T,S>::
