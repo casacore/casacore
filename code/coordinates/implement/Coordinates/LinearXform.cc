@@ -1,5 +1,5 @@
 //# LinearXForm.cc: this defines LinearXForm
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -259,11 +259,9 @@ Bool LinearXform::near(const LinearXform& other,
    Vector<Bool> exclude(nWorldAxes());
    exclude = False;
    Bool found;
-   uInt j = 0;
-   uInt i;
-   for (i=0; i<nWorldAxes(); i++) {
+   for (uInt i=0; i<nWorldAxes(); i++) {
       if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0)
-        exclude(j++) = True;
+        exclude(i) = True;
    }
 
 
@@ -272,7 +270,7 @@ Bool LinearXform::near(const LinearXform& other,
    Vector<Double> d1 = this->crpix();
    Vector<Double> d2 = other.crpix();
    if (d1.nelements() != d2.nelements()) return False;
-   for (i=0; i<d1.nelements(); i++) {
+   for (uInt i=0; i<d1.nelements(); i++) {
       if (!exclude(i)) {
          if (!::near(d1(i),d2(i),tol)) return False;
       }
@@ -281,7 +279,7 @@ Bool LinearXform::near(const LinearXform& other,
    d1 = this->cdelt();
    d2 = other.cdelt();
    if (d1.nelements() != d2.nelements()) return False;
-   for (i=0; i<d1.nelements(); i++) {
+   for (uInt i=0; i<d1.nelements(); i++) {
       if (!exclude(i)) {
          if (!::near(d1(i),d2(i),tol)) return False;
       }
@@ -299,11 +297,11 @@ Bool LinearXform::near(const LinearXform& other,
 // values pertaining to axis "i" will be found in all 
 // entries of row "i" and all entries of column "i"
 
-   for (j=0; j<pc1.nrow(); j++) {
+   for (uInt j=0; j<pc1.nrow(); j++) {
       Vector<Double> r1 = pc1.row(j);
       Vector<Double> r2 = pc2.row(j);
       if (!exclude(j)) {
-         for (i=0; i<r1.nelements(); i++) {
+         for (uInt i=0; i<r1.nelements(); i++) {
             if (!exclude(i)) {
                if (!::near(r1(i),r2(i),tol)) return False;
             }
