@@ -33,18 +33,17 @@
 #include <aips/aips.h>
 #include <aips/Quanta/QMath.h>
 #include <trial/Tasking/PGPlotter.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Arrays/Vector.h>
 
 //# Forward Declarations
-template <class T> class Array;
 template <class T> class Matrix;
-template <class T> class Vector;
 template <class T> class MomentCalcBase;
 template <class T> class SubImage;
 template <class T> class ImageInterface;
 template <class T> class Lattice;
 class CoordinateSystem;
 class IPosition;
-class LogIO;
 class String;
 class Unit;
 class LCPagedMask;
