@@ -1091,6 +1091,617 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
+// LELFunctionND<Float>
+//
+  {
+    cout << endl << "LELFunctionND<Float>" << endl;
+
+
+    cout << "   Function iif" << endl;     
+    {
+
+    cout << "     Scalar, scalar, scalar" << endl;
+
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bFVal);
+    arga[2] = LatticeExprNode(cFVal);
+    LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+    FResult = bFVal;
+    if (!checkFloat (expr1, FResult, String("LELFunctionND"), shape, True, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+    FResult = cFVal;
+    if (!checkFloat (expr2, FResult, String("LELFunctionND"), shape, True, supress)) ok = False;
+
+    }
+
+    {
+
+    cout << "     Scalar, scalar, array" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bFVal);
+    arga[2] = LatticeExprNode(cF);
+    LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+    FResult = bFVal;
+
+// Although the conditional is scalar, the result is still an array
+// because one of the evaluation expressions is an array
+
+    if (!checkFloat (expr1, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+    FResult = cFVal;
+    if (!checkFloat (expr2, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Scalar, array, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bF);
+    arga[2] = LatticeExprNode(cFVal);
+    LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+    FResult = bFVal;
+    if (!checkFloat (expr1, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+    FResult = cFVal;
+    if (!checkFloat (expr2, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+
+    {
+
+    cout << "     Array, scalar, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bFVal);
+    arga[2] = LatticeExprNode(cFVal);
+    LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      FResult = bFVal;
+    } else {
+      FResult = cFVal;
+    }
+    if (!checkFloat (expr1, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      FResult = bFVal;
+    } else {
+      FResult = cFVal;
+    }
+    if (!checkFloat (expr2, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Array, Array, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bF);
+    arga[2] = LatticeExprNode(cFVal);
+    LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      FResult = bFVal;
+    } else {
+      FResult = cFVal;
+    }
+    if (!checkFloat (expr1, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      FResult = bFVal;
+    } else {
+      FResult = cFVal;
+    }
+    if (!checkFloat (expr2, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Array, scalar, array" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bFVal);
+    arga[2] = LatticeExprNode(cF);
+    LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      FResult = bFVal;
+    } else {
+      FResult = cFVal;
+    }
+    if (!checkFloat (expr1, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      FResult = bFVal;
+    } else {
+      FResult = cFVal;
+    }
+    if (!checkFloat (expr2, FResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+
+  }
+
+
+//
+//************************************************************************
+//
+// LELFunctionND<Double>
+//
+  {
+    cout << endl << "LELFunctionND<Double>" << endl;
+
+
+    cout << "   Function iif" << endl;     
+    {
+
+    cout << "     Scalar, scalar, scalar" << endl;
+
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bDVal);
+    arga[2] = LatticeExprNode(cDVal);
+    LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+    DResult = bDVal;
+    if (!checkDouble (expr1, DResult, String("LELFunctionND"), shape, True, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+    DResult = cDVal;
+    if (!checkDouble (expr2, DResult, String("LELFunctionND"), shape, True, supress)) ok = False;
+
+    }
+
+    {
+
+    cout << "     Scalar, scalar, array" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bDVal);
+    arga[2] = LatticeExprNode(cD);
+    LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+    DResult = bDVal;
+
+// Although the conditional is scalar, the result is still an array
+// because one of the evaluation expressions is an array
+
+    if (!checkDouble (expr1, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+    DResult = cDVal;
+    if (!checkDouble (expr2, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Scalar, array, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bD);
+    arga[2] = LatticeExprNode(cDVal);
+    LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+    DResult = bDVal;
+    if (!checkDouble (expr1, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+    DResult = cDVal;
+    if (!checkDouble (expr2, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+
+    {
+
+    cout << "     Array, scalar, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bDVal);
+    arga[2] = LatticeExprNode(cDVal);
+    LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      DResult = bDVal;
+    } else {
+      DResult = cDVal;
+    }
+    if (!checkDouble (expr1, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      DResult = bDVal;
+    } else {
+      DResult = cDVal;
+    }
+    if (!checkDouble (expr2, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Array, Array, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bD);
+    arga[2] = LatticeExprNode(cDVal);
+    LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      DResult = bDVal;
+    } else {
+      DResult = cDVal;
+    }
+    if (!checkDouble (expr1, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      DResult = bDVal;
+    } else {
+      DResult = cDVal;
+    }
+    if (!checkDouble (expr2, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Array, scalar, array" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bDVal);
+    arga[2] = LatticeExprNode(cD);
+    LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      DResult = bDVal;
+    } else {
+      DResult = cDVal;
+    }
+    if (!checkDouble (expr1, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      DResult = bDVal;
+    } else {
+      DResult = cDVal;
+    }
+    if (!checkDouble (expr2, DResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+  }
+
+
+//
+//************************************************************************
+//
+// LELFunctionND<Complex>
+//
+  {
+    cout << endl << "LELFunctionND<Complex>" << endl;
+
+
+    cout << "   Function iif" << endl;     
+    {
+
+    cout << "     Scalar, scalar, scalar" << endl;
+
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bCVal);
+    arga[2] = LatticeExprNode(cCVal);
+    LELFunctionND<Complex> expr1(LELFunctionEnums::IIF, arga);
+    CResult = bCVal;
+    if (!checkComplex (expr1, CResult, String("LELFunctionND"), shape, True, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Complex> expr2(LELFunctionEnums::IIF, arga);
+    CResult = cCVal;
+    if (!checkComplex (expr2, CResult, String("LELFunctionND"), shape, True, supress)) ok = False;
+
+    }
+
+    {
+
+    cout << "     Scalar, scalar, array" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bCVal);
+    arga[2] = LatticeExprNode(cC);
+    LELFunctionND<Complex> expr1(LELFunctionEnums::IIF, arga);
+    CResult = bCVal;
+
+// Although the conditional is scalar, the result is still an array
+// because one of the evaluation expressions is an array
+
+    if (!checkComplex (expr1, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Complex> expr2(LELFunctionEnums::IIF, arga);
+    CResult = cCVal;
+    if (!checkComplex (expr2, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Scalar, array, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bC);
+    arga[2] = LatticeExprNode(cCVal);
+    LELFunctionND<Complex> expr1(LELFunctionEnums::IIF, arga);
+    CResult = bCVal;
+    if (!checkComplex (expr1, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<Complex> expr2(LELFunctionEnums::IIF, arga);
+    CResult = cCVal;
+    if (!checkComplex (expr2, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+
+    {
+
+    cout << "     Array, scalar, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bCVal);
+    arga[2] = LatticeExprNode(cCVal);
+    LELFunctionND<Complex> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      CResult = bCVal;
+    } else {
+      CResult = cCVal;
+    }
+    if (!checkComplex (expr1, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Complex> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      CResult = bCVal;
+    } else {
+      CResult = cCVal;
+    }
+    if (!checkComplex (expr2, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Array, Array, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bC);
+    arga[2] = LatticeExprNode(cCVal);
+    LELFunctionND<Complex> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      CResult = bCVal;
+    } else {
+      CResult = cCVal;
+    }
+    if (!checkComplex (expr1, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Complex> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      CResult = bCVal;
+    } else {
+      CResult = cCVal;
+    }
+    if (!checkComplex (expr2, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Array, scalar, array" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bCVal);
+    arga[2] = LatticeExprNode(cC);
+    LELFunctionND<Complex> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      CResult = bCVal;
+    } else {
+      CResult = cCVal;
+    }
+    if (!checkComplex (expr1, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<Complex> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      CResult = bCVal;
+    } else {
+      CResult = cCVal;
+    }
+    if (!checkComplex (expr2, CResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+  }
+
+
+
+//
+//************************************************************************
+//
+// LELFunctionND<DComplex>
+//
+  {
+    cout << endl << "LELFunctionND<DComplex>" << endl;
+
+
+    cout << "   Function iif" << endl;     
+    {
+
+    cout << "     Scalar, scalar, scalar" << endl;
+
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bDCVal);
+    arga[2] = LatticeExprNode(cDCVal);
+    LELFunctionND<DComplex> expr1(LELFunctionEnums::IIF, arga);
+    DCResult = bDCVal;
+    if (!checkDComplex (expr1, DCResult, String("LELFunctionND"), shape, True, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<DComplex> expr2(LELFunctionEnums::IIF, arga);
+    DCResult = cDCVal;
+    if (!checkDComplex (expr2, DCResult, String("LELFunctionND"), shape, True, supress)) ok = False;
+
+    }
+
+    {
+
+    cout << "     Scalar, scalar, array" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bDCVal);
+    arga[2] = LatticeExprNode(cDC);
+    LELFunctionND<DComplex> expr1(LELFunctionEnums::IIF, arga);
+    DCResult = bDCVal;
+
+// Although the conditional is scalar, the result is still an array
+// because one of the evaluation expressions is an array
+
+    if (!checkDComplex (expr1, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<DComplex> expr2(LELFunctionEnums::IIF, arga);
+    DCResult = cDCVal;
+    if (!checkDComplex (expr2, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Scalar, array, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(True);
+    arga[1] = LatticeExprNode(bDC);
+    arga[2] = LatticeExprNode(cDCVal);
+    LELFunctionND<DComplex> expr1(LELFunctionEnums::IIF, arga);
+    DCResult = bDCVal;
+    if (!checkDComplex (expr1, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(False);
+    LELFunctionND<DComplex> expr2(LELFunctionEnums::IIF, arga);
+    DCResult = cDCVal;
+    if (!checkDComplex (expr2, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+
+    {
+
+    cout << "     Array, scalar, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bDCVal);
+    arga[2] = LatticeExprNode(cDCVal);
+    LELFunctionND<DComplex> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      DCResult = bDCVal;
+    } else {
+      DCResult = cDCVal;
+    }
+    if (!checkDComplex (expr1, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<DComplex> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      DCResult = bDCVal;
+    } else {
+      DCResult = cDCVal;
+    }
+    if (!checkDComplex (expr2, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Array, Array, scalar" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bDC);
+    arga[2] = LatticeExprNode(cDCVal);
+    LELFunctionND<DComplex> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      DCResult = bDCVal;
+    } else {
+      DCResult = cDCVal;
+    }
+    if (!checkDComplex (expr1, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<DComplex> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      DCResult = bDCVal;
+    } else {
+      DCResult = cDCVal;
+    }
+    if (!checkDComplex (expr2, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+    {
+
+    cout << "     Array, scalar, array" << endl;
+    Block<LatticeExprNode> arga(3);
+
+    arga[0] = LatticeExprNode(aB);
+    arga[1] = LatticeExprNode(bDCVal);
+    arga[2] = LatticeExprNode(cDC);
+    LELFunctionND<DComplex> expr1(LELFunctionEnums::IIF, arga);
+    if (aBVal) {
+      DCResult = bDCVal;
+    } else {
+      DCResult = cDCVal;
+    }
+    if (!checkDComplex (expr1, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    arga[0] = LatticeExprNode(bB);
+    LELFunctionND<DComplex> expr2(LELFunctionEnums::IIF, arga);
+    if (bBVal) {
+      DCResult = bDCVal;
+    } else {
+      DCResult = cDCVal;
+    }
+    if (!checkDComplex (expr2, DCResult, String("LELFunctionND"), shape, False, supress)) ok = False;
+
+    }
+  }
+
+
+
+//
+//************************************************************************
+//
 // LELFunctionReal1D<Float>
 //
   {
