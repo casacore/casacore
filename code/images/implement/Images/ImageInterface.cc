@@ -36,6 +36,8 @@
 #include <trial/Images/LELImageCoord.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/LCRegion.h>
+#include <trial/Lattices/LCBox.h>
+#include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 
 #include <aips/Arrays/ArrayMath.h>
@@ -307,3 +309,60 @@ Bool ImageInterface<T>::setUnits(const Unit& unit)
    unit_p = unit;
    return True;
 }    
+
+template<class T>
+Bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec)
+{
+//
+// Save the current ImageInterface object to an output state record
+// 
+   outRec.define("shape", shape().asVector());
+   CoordinateSystem coordsys = coordinates();
+   Record coordinateRecord;
+   coordsys.save(coordinateRecord, "coordsys");
+   outRec.defineRecord("coordsys", coordinateRecord, Record::Variable);
+   LCBox imageBox(IPosition(4,0,0,0,0), 
+		  IPosition(4,shape(0)-1,shape(1)-1,shape(2)-1,shape(3)-1),
+		  this->shape());
+   SubLattice<T> imageSubLattice(*this, imageBox, True);
+   Array<T> imageArray;
+   imageSubLattice.get(imageArray);
+   outRec.define("imagearray", static_cast<Array<T> >(imageArray), False);
+   Record imageInfoRecord;
+   String errorString;             
+   imageInfo_p.toRecord(errorString, imageInfoRecord);
+   outRec.defineRecord("imageinfo", imageInfoRecord, 
+		       RecordInterface::Variable);
+   error = "";
+   return True;
+}                        
+
+template<class T>
+Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
+{
+//
+// Restore the current ImageInterface object from an input state record
+// 
+   Vector<Int> shape;
+   inRec.get("shape", shape);
+   const Record& coordinateRecord(inRec.asRecord("coordsys"));
+   Array<T> imageArray;
+   inRec.get("imagearray",imageArray);
+   CoordinateSystem coordsystem=CoordinateSystem();
+   CoordinateSystem tempcoord;
+   tempcoord =* coordsystem.restore(coordinateRecord, "coordsys");
+   IPosition ipos(4,shape(0),shape(1),shape(2),shape(3));
+   TiledShape newShape(ipos);             
+   resize(newShape);
+   setCoordinateInfo(tempcoord);
+   putSlice(imageArray,IPosition(4,0,0,0,0));
+   Record imageInfoRecord(inRec.asRecord("imageinfo"));
+   restoreImageInfo(imageInfoRecord);
+
+   error = "";
+   return True;
+}
+
+
+
+
