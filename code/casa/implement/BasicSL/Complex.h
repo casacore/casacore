@@ -143,12 +143,13 @@
 //# <todo asof="2000/11/27">
 //# </todo>
 
-// <group name=Complex NaN>
+// <group name="Complex NaN">
 Bool isNaN (const Complex& val);
 void setNaN(Complex& val);
 // </group>
 
-// <group name=Complex comparisons>
+// <summary>Complex comparisons </summary>
+// <group name="Complex comparisons">
 //# On Linux comparing the norm does not work well in debug mode
 //# for equal values. Therefore they are compared for equality first.
 inline Bool operator>= (const Complex& left, const Complex& right)
@@ -173,13 +174,13 @@ inline Bool operator<  (const Complex& left, const Complex& right)
 // It is defined in a similar way as <src>Complex</src>.
 // </synopsis>
 
-// <group name=DComplex NaN>
+// <group name="DComplex NaN">
 Bool isNaN (const DComplex& val);
 void setNaN(DComplex& val);
 // </group>
 
-
-// <group name=DComplex comparisons>
+// <summary> DComplex comparisons </summary>
+// <group name="DComplex comparisons">
 inline Bool operator>= (const DComplex& left, const DComplex& right)
   { return norm(left) >= norm(right); }
 inline Bool operator>  (const DComplex& left, const DComplex& right)
