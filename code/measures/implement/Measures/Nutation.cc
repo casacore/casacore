@@ -168,12 +168,15 @@ void Nutation::calcNut(Double t) {
     case B1950:
       t = (t - MeasData::MJDB1900)/MeasData::JDCEN;
       break;
+    case IAU2000A:
+    case IAU2000B:
+      t = (t - MeasData::MJD2000)/MeasData::JDCEN;
+      break;
     default:
       if (AipsrcValue<Bool>::get(Nutation::useiers_reg)) {
 	dPsi = MeasTable::dPsiEps(0, t);
 	dEps = MeasTable::dPsiEps(1, t);
       };
-      // /// Still to make for IERS 2000 model
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     };
@@ -231,8 +234,6 @@ void Nutation::calcNut(Double t) {
       // Add an average for missing planetary precession terms
       nval_p[2] += 0.388e0 * C::arcsec*1e-3;
       nval_p[1] -= 0.135e0 * C::arcsec*1e-3;
-	///      nval_p[2] += dEps;
-	///      nval_p[1] += dPsi;
       break;
     case IAU2000A:
       nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
@@ -275,8 +276,6 @@ void Nutation::calcNut(Double t) {
 	dval_p[2] += MeasTable::mulPlanSC2000A(i)[2] * cos(dtmp) -
 	  MeasTable::mulPlanSC2000A(i)[3] * sin(dtmp) * ddtmp;
       };
-	///      nval_p[2] += dEps;
-	///      nval_p[1] += dPsi;
       break;
     default:
       nval_p[0] = MeasTable::fundArg(0)(t); 	//eps0
