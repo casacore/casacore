@@ -132,6 +132,7 @@ public:
               typename Interpolate2D::Method method,
               const IPosition& whichOutPixelAxes,
 	      const ImageInterface<T>& inImage,
+              Bool replicate=False,
               Bool showProgress=False);
 
   // Inserts inImage into outImage.  The alignment is done by
@@ -205,6 +206,7 @@ public:
                              Int outPixelAxis,
                              const ImageInterface<T>& inImage,
                              const IPosition& outShape,
+                             Bool replicate,
                              Bool outIsMasked, Bool showProgress,
                              typename Interpolate2D::Method method);
 
@@ -218,7 +220,7 @@ public:
                  const Vector<Int> pixelAxisMap1,
                  const Vector<Int> pixelAxisMap2,
                  typename Interpolate2D::Method method,
-                 MDirection::Convert& machine,
+                 MDirection::Convert& machine, Bool replicate,
                  Bool useMachine, Bool showProgress, Double scale);
 
   // Make regridding coordinate grid for this cursor.
@@ -239,7 +241,7 @@ public:
                              const IPosition& cursorShape,
                              Bool useMachine);
 
-  // Make resampling coordinate grid for this cursor
+  // Make replication coordinate grid for this cursor
    void make2DCoordinateGrid (Cube<Double>& in2DPos,
                               Double& minInX, Double& minInY, 
                               Double& maxInX, Double& maxInY,
@@ -249,6 +251,22 @@ public:
                               uInt xInCorrAxis, uInt yInCorrAxis,
                               uInt xOutCorrAxis, uInt yOutCorrAxis,
                               const IPosition& outPos, const IPosition& cursorShape);
+
+  // Make regridding coordinate grid for this axis
+   void make1DCoordinateGrid (Block<Float>& xOut,
+                              Vector<Bool>& failed,
+                              Bool& allFailed,
+                              Bool& allGood,
+                              const Coordinate& inCoord,
+                              const Coordinate& outCoord,
+                              Int inAxisInCoordinate,
+                              Int outAxisInCoordinate,
+                              MFrequency::Convert& machine,
+                              Bool useMachine);
+
+
+  // Make replication coordinate grid for this axis
+   void make1DCoordinateGrid (Block<Float>& xOut, Float pixelScale) const;
 
   // Regrid 1 axis
   void regrid1D (MaskedLattice<T>& outLattice,
@@ -262,6 +280,7 @@ public:
                  const Vector<Int> pixelAxisMap,
                  typename Interpolate2D::Method method,
                  MFrequency::Convert& machine,
+                 Bool replicate,
                  Bool useMachine, Bool showProgress);
 };
 
