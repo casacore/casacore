@@ -178,6 +178,13 @@ RPFITSINCD  =
 RPFITSLIBD  = $(RPFITSROOT)/lib
 RPFITSLIB  := -lrpfits
 
+# MIRLIB (required by BIMA).
+MIRLIBROOT := $(AIPSROOT)/code/bima/mirlib
+MIRLIBDEFS :=
+MIRLIBINCD  = $(AIPSROOT)/code/bima
+MIRLIBLIBD  = $(AIPSARCH)/lib
+MIRLIBLIB  := -lmir
+
 
 #-----------------------------------------------------------------------------
 # Construct library lists and include paths; XLIBLIST contains a list of all
