@@ -1,5 +1,5 @@
 //# VisBuffer.cc: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,12 @@
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/MaskedArray.h>
+#include <aips/Arrays/MaskArrMath.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/GenSort.h>
 
 VisBuffer::VisBuffer():visIter_p(static_cast<ROVisibilityIterator*>(0)),
 twoWayConnection_p(False),This(this),nChannel_p(0),nRow_p(0)
@@ -276,6 +281,142 @@ void VisBuffer::freqAverage()
   frequency_p.resize(1); frequency_p(0)=newFrequency;
 }
 
+Vector<Int> VisBuffer::vecIntRange(const MSCalEnums::colDef& calEnum) const
+{
+  // Return a column range for a generic integer column as
+  // identified by the enum specification in class MSCalEnums
+
+  // Prepare the flag column masking
+  LogicalArray mask(!flagRow());
+  MaskedArray<Int>* maskArray;
+
+  // A dummy vector for columns not yet supported (returns a value of [-1]);
+  Vector<Int> nullIndex(antenna1().shape(), -1);
+
+  switch (calEnum) {
+    // ANTENNA1
+  case MSC::ANTENNA1: {
+    maskArray = new MaskedArray<Int>(antenna1(), mask);
+    break;
+  };
+  // ANTENNA2
+  case MSC::ANTENNA2: {
+    maskArray = new MaskedArray<Int>(antenna2(), mask);
+    break;
+  };
+  // FEED1
+  case MSC::FEED1: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // FIELD_ID
+  case MSC::FIELD_ID: {
+    Vector<Int> fieldIdVec(antenna1().shape(), fieldId());
+    maskArray = new MaskedArray<Int>(fieldIdVec, mask);
+    break;
+  };
+  // ARRAY_ID
+  case MSC::ARRAY_ID: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // OBSERVATION_ID
+  case MSC::OBSERVATION_ID: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // SCAN_NUMBER
+  case MSC::SCAN_NUMBER: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // PROCESSOR_ID
+  case MSC::PROCESSOR_ID: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // PHASE_ID
+  case MSC::PHASE_ID: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // STATE_ID
+  case MSC::STATE_ID: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // PULSAR_BIN
+  case MSC::PULSAR_BIN: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // PULSAR_GATE_ID
+  case MSC::PULSAR_GATE_ID: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // FREQ_GROUP
+  case MSC::FREQ_GROUP: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+  // CALIBRATION_GROUP
+  case MSC::CALIBRATION_GROUP: {
+    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    break;
+  };
+
+  default: {
+    throw(AipsError("Request for non-existent uv-data column"));
+  };
+  };
+
+  // Return only unique indices
+  Vector<Int> retval = unique(maskArray->getCompressedArray());
+  if (maskArray) delete(maskArray);
+
+  return retval;
+};
+
+Vector<Int> VisBuffer::antIdRange() const
+{
+  // Return a column range for ANTENNA_ID, including the
+  // union of the ANTENNA1 and ANTENNA2 columns indices
+
+  Vector<Int> ant1 = vecIntRange(MSC::ANTENNA1);
+  Vector<Int> ant2 = vecIntRange(MSC::ANTENNA2);
+  Vector<Int> ant12 = concatenateArray(ant1, ant2);
+
+  // Return only unique index values
+  return unique(ant12);
+};
+
+Bool VisBuffer::timeRange(MEpoch& rTime, MVEpoch& rTimeEP, 
+			  MVEpoch& rInterval) const
+{
+  // Return the time range of data in the vis buffer
+  // (makes simplistic assumptions in the absence of
+  // interval information for now)
+  
+  // Initialization
+  Bool retval = False;
+
+  if (nRow() > 0) {
+    retval = True;
+    LogicalArray mask(!flagRow());
+    MaskedArray<Double> maskTime(time(), mask);
+    Double minTime = min(maskTime);
+    Double maxTime = max(maskTime);
+    // Mean time
+    rTime = MEpoch(Quantity((minTime+maxTime)/2, "s"));
+    // Extra precision time is always null for now
+    rTimeEP = MVEpoch(Quantity(0, "s"));
+    // Interval
+    rInterval = MVEpoch(Quantity(maxTime-minTime, "s"));
+  };
+  return retval;
+};
+
 void VisBuffer::updateCoordInfo()
 {
   antenna1();
@@ -441,3 +582,26 @@ const Vector<MDirection>& VisBuffer::azel(Double time) const
 {return visIter_p->azel(time);}
 
 
+Vector<Int> VisBuffer::unique(const Vector<Int>& indices) const
+{
+  // Filter integer index arrays for unique values
+  //
+  uInt n = indices.nelements();
+  Vector<Int> uniqIndices(n);
+  if (n > 0) {
+    // Sort temporary array in place
+    Vector<Int> sortedIndices = indices.copy();
+    GenSort<Int>::sort(sortedIndices);
+
+    // Extract unique elements
+    uniqIndices(0) = sortedIndices(0);
+    uInt nUniq = 1;
+    for (uInt i=1; i < n; i++) {
+      if (sortedIndices(i) != uniqIndices(nUniq-1)) {
+	uniqIndices(nUniq++) = sortedIndices(i);
+      };
+    };
+    uniqIndices.resize(nUniq, True);
+  };
+  return uniqIndices;
+};
