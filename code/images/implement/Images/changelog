@@ -4,7 +4,7 @@
  <date> 2000/08/31 </date>
  <avers> 1.4 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> image </module>
  <type> Code Documentation </type>
  <category> Change </category>
@@ -24,7 +24,7 @@ is more consistent.
  <date> 2000/09/04 </date>
  <avers> 1.4 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> image </module>
  <type> Code </type>
  <category> New </category>
@@ -51,7 +51,7 @@ functions that take the 'region' keyword as well.
  <date> 2001/01/10 </date>
  <avers> 1.5 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> imagepol </module>
  <type> Code </type>
  <category> New </category>
@@ -72,7 +72,7 @@ complex images from amp/phase or real/imag if needed
  <date> 2001/05/10 </date>
  <avers> 1.6 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> image </module>
  <type> Code </type>
  <category> New </category>
@@ -94,7 +94,7 @@ maxfit - find brightest source in specified region
  <date> 2001/05/10 </date>
  <avers> 1.6 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> imageprofilefitter </module>
  <type> Code </type>
  <category> New </category>
@@ -114,7 +114,7 @@ extarcted from an image
  <date> 2001/07/12 </date>
  <avers> 1.6 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> image </module>
  <type> Code </type>
  <category> New </category>
@@ -134,7 +134,7 @@ to write out an ascii file.
  <date> 2001/07/17 </date>
  <avers> 1.6 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> image </module>
  <type> Code </type>
  <category> New </category>
@@ -157,7 +157,7 @@ this control is done thorugh a new rollup, 'regions'
  <date> 2001/07/18 </date>
  <avers> 1.6 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> imagepol </module>
  <type> Code </type>
  <category> New </category>
@@ -176,7 +176,7 @@ and errors to the imagepol tool
  <date> 2001/08/20 </date>
  <avers> 1.5 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> image </module>
  <type> Code </type>
  <category> New Change </category>
@@ -208,7 +208,7 @@ Neil
  <date> 2002/01/08 </date>
  <avers> 1.7 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> imagefitter </module>
  <type> Code </type>
  <category> New </category>
@@ -236,7 +236,7 @@ The  main gui interface has been enhanced
  <date> 2002/06/13 </date>
  <avers> 1.7 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> imagepol </module>
  <type> Code Documentation </type>
  <category> New Change </category>
@@ -258,7 +258,7 @@ The constructor now handles aips++, fits and Miriad format images
  <date> 2003/11/24 </date>
  <avers> 1.9 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> image </module>
  <type> Code </type>
  <category> New </category>
@@ -282,7 +282,7 @@ Neil & Ger
  <date> 2003/12/15 </date>
  <avers> 1.9 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> images </package>
  <module> image </module>
  <type> Code Documentation </type>
  <category> New </category>
