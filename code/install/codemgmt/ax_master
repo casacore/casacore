@@ -2227,3 +2227,5 @@
 09 127 src rm atnf/implement/pks/SimNoise1D.cc
 09 127 src rm atnf/implement/pks/SimData1D.h
 09 127 src rm atnf/implement/pks/SimNoise1D.h
+09 127 src rm atnf/implement/pks/AnnealFit1D.cc
+09 127 src rm atnf/implement/pks/AnnealFit1D.h
