@@ -1,5 +1,5 @@
 //# TSMShape.cc: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,9 +38,11 @@ TSMShape::TSMShape (const IPosition& shape)
 : data_p (shape.nelements()),
   size_p (shape.nelements())
 {
-    data_p(0) = 1;
-    for (uInt i=0; i<size_p-1; i++) {
-	data_p(i+1) = data_p(i) * shape(i);
+    if (size_p > 0) {
+	data_p(0) = 1;
+	for (uInt i=1; i<size_p; i++) {
+	    data_p(i) = data_p(i-1) * shape(i-1);
+	}
     }
 }
 
@@ -66,8 +68,8 @@ uInt TSMShape::offset (const IPosition& position) const
 	throw (ArrayConformanceError(
                                "TSMShape::offset - shapes do not conform"));
     }
-    uInt off = position(0);
-    for (uInt i=1; i<size_p; i++) {
+    uInt off = 0;
+    for (uInt i=0; i<size_p; i++) {
 	off += position(i) * data_p(i);
     }
     return off;
@@ -80,8 +82,8 @@ uInt TSMShape::offset (const IPosition& position,
 	throw (ArrayConformanceError(
                                "TSMShape::offset - shapes do not conform"));
     }
-    uInt off = position(0) - origin(0);
-    for (uInt i=1; i<size_p; i++) {
+    uInt off = 0;
+    for (uInt i=0; i<size_p; i++) {
 	off += (position(i) - origin(i)) * data_p(i);
     }
     return off;
@@ -91,11 +93,13 @@ uInt TSMShape::offset (const IPosition& position,
 IPosition TSMShape::position (uInt offset) const
 {
     IPosition pos(size_p);
-    for (uInt i=size_p-1; i>0; i--) {
-	pos(i) = offset / data_p(i);
-	offset -= pos(i) * data_p(i);
+    if (size_p > 0) {
+	for (uInt i=size_p-1; i>0; i--) {
+	    pos(i) = offset / data_p(i);
+	    offset -= pos(i) * data_p(i);
+	}
+	pos(0) = offset;
     }
-    pos(0) = offset;
     return pos;
 }
 
@@ -106,12 +110,14 @@ IPosition TSMShape::position (uInt offset, const IPosition& origin) const
                                "TSMShape::position - shapes do not conform"));
     }
     IPosition pos(size_p);
-    for (uInt i=size_p-1; i>0; i--) {
-	pos(i) = offset / data_p(i);
-	offset -= pos(i) * data_p(i);
-	pos(i) += origin(i);
+    if (size_p > 0) {
+	for (uInt i=size_p-1; i>0; i--) {
+	    pos(i) = offset / data_p(i);
+	    offset -= pos(i) * data_p(i);
+	    pos(i) += origin(i);
+	}
+	pos(0) = offset + origin(0);
     }
-    pos(0) = offset + origin(0);
     return pos;
 }
 
