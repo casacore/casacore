@@ -201,7 +201,7 @@ private:
 
 //# Data Members
   // Pointer to a Quantity
-  PtrHolder<QBase> hold_;
+  PtrHolder<QBase> hold_p;
 
 //# General member functions
   // Convert to a different real scalar quantum

@@ -45,12 +45,12 @@
 #include <aips/Logging/LogOrigin.h>
 
 //# Constructors
-MeasureHolder::MeasureHolder() : hold() {};
+MeasureHolder::MeasureHolder() : hold_p() {};
 
-MeasureHolder::MeasureHolder(const Measure &in) : hold(in.clone()) {}
+MeasureHolder::MeasureHolder(const Measure &in) : hold_p(in.clone()) {}
 
-MeasureHolder::MeasureHolder(const MeasureHolder &other) : hold() {
-	if (other.hold.ptr()) hold.set(other.hold.ptr()->clone());
+MeasureHolder::MeasureHolder(const MeasureHolder &other) : hold_p() {
+	if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
       }
 
 //# Destructor
@@ -58,94 +58,94 @@ MeasureHolder::~MeasureHolder() {}
 
 //# Operators
 MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
-  if (this != &other) hold.set(other.hold.ptr()->clone());
+  if (this != &other) hold_p.set(other.hold_p.ptr()->clone());
   return *this;
 }
 
 const Measure &MeasureHolder::operator()() const {
-  return *hold.ptr();
+  return *hold_p.ptr();
 }
 
 //# Member Functions
 Bool MeasureHolder::isEmpty() const {
-  return ToBool(!hold.ptr());
+  return ToBool(!hold_p.ptr());
 }
 
 Bool MeasureHolder::isMeasure() const {
-  return ToBool(hold.ptr());
+  return ToBool(hold_p.ptr());
 }
 
 Bool MeasureHolder::isMDirection() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == MDirection::myType());
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MDirection::myType());
 }
 
 Bool MeasureHolder::isMDoppler() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == MDoppler::myType());
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MDoppler::myType());
 }
 
 Bool MeasureHolder::isMEpoch() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == MEpoch::myType());
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MEpoch::myType());
 }
 
 Bool MeasureHolder::isMFrequency() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == MFrequency::myType());
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MFrequency::myType());
 }
 
 Bool MeasureHolder::isMPosition() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == MPosition::myType());
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MPosition::myType());
 }
 
 Bool MeasureHolder::isMRadialVelocity() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == MRadialVelocity::myType());
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MRadialVelocity::myType());
 }
 
 const Measure &MeasureHolder::asMeasure() const {
-  if (!hold.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty MeasureHolder argument for asMeasure"));
   };
-  return *hold.ptr();
+  return *hold_p.ptr();
 }
 
 const MDirection &MeasureHolder::asMDirection() {
-  if (!hold.ptr() || !isMDirection()) {
+  if (!hold_p.ptr() || !isMDirection()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDirection"));
   };
-  return (const MDirection &) *hold.ptr();
+  return (const MDirection &) *hold_p.ptr();
 }
 
 const MDoppler &MeasureHolder::asMDoppler() {
-  if (!hold.ptr() || !isMDoppler()) {
+  if (!hold_p.ptr() || !isMDoppler()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDoppler"));
   };
-  return (const MDoppler &) *hold.ptr();
+  return (const MDoppler &) *hold_p.ptr();
 }
 
 const MEpoch &MeasureHolder::asMEpoch() {
-  if (!hold.ptr() || !isMEpoch()) {
+  if (!hold_p.ptr() || !isMEpoch()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMEpoch"));
   };
-  return (const MEpoch &) *hold.ptr();
+  return (const MEpoch &) *hold_p.ptr();
 }
 
 const MFrequency &MeasureHolder::asMFrequency() {
-  if (!hold.ptr() || !isMFrequency()) {
+  if (!hold_p.ptr() || !isMFrequency()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMFrequency"));
   };
-  return (const MFrequency &) *hold.ptr();
+  return (const MFrequency &) *hold_p.ptr();
 }
 
 const MPosition &MeasureHolder::asMPosition() {
-  if (!hold.ptr() || !isMPosition()) {
+  if (!hold_p.ptr() || !isMPosition()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMPosition"));
   };
-  return (const MPosition &) *hold.ptr();
+  return (const MPosition &) *hold_p.ptr();
 }
 
 const MRadialVelocity &MeasureHolder::asMRadialVelocity() {
-  if (!hold.ptr() || !isMRadialVelocity()) {
+  if (!hold_p.ptr() || !isMRadialVelocity()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMRadialVelocity"));
   };
-  return (const MRadialVelocity &) *hold.ptr();
+  return (const MRadialVelocity &) *hold_p.ptr();
 }
 
 Bool MeasureHolder::fromRecord(String &error,
@@ -157,19 +157,19 @@ Bool MeasureHolder::fromRecord(String &error,
     String tp;
     in.get(RecordFieldId("type"), tp);
     tp.downcase();
-    hold.clear();
+    hold_p.clear();
     if (tp == downcase(MDirection::showMe())) {
-      hold.set(new MDirection());
+      hold_p.set(new MDirection());
     } else if (tp == downcase(MDoppler::showMe())) {
-      hold.set(new MDoppler());
+      hold_p.set(new MDoppler());
     } else if (tp == downcase(MEpoch::showMe())) {
-      hold.set(new MEpoch());
+      hold_p.set(new MEpoch());
     } else if (tp == downcase(MFrequency::showMe())) {
-      hold.set(new MFrequency());
+      hold_p.set(new MFrequency());
     } else if (tp == downcase(MPosition::showMe())) {
-      hold.set(new MPosition());
+      hold_p.set(new MPosition());
     } else if (tp == downcase(MRadialVelocity::showMe())) {
-      hold.set(new MRadialVelocity());
+      hold_p.set(new MRadialVelocity());
     } else {
       error = String("Unknown Measure record in MeasureHolder::fromRecord\n") +
 	error;
@@ -177,14 +177,14 @@ Bool MeasureHolder::fromRecord(String &error,
     };
     String rf;
     in.get(RecordFieldId("refer"), rf);
-    if (!hold.ptr()->setRefString(rf)) {
+    if (!hold_p.ptr()->setRefString(rf)) {
       LogIO os(LogOrigin("MeasureHolder", 
 			 String("fromRecord(String, const RecordInterface"),
 			 WHERE));
       os << LogIO::WARN <<
 	String("Illegal or unknown reference type '") +
 	rf + "' for " + tp + " definition. DEFAULT (" + 
-	hold.ptr()->getDefaultType() + ") assumed." <<
+	hold_p.ptr()->getDefaultType() + ") assumed." <<
 	LogIO::POST;
     };
     if (in.isDefined(String("offset")) &&
@@ -193,7 +193,7 @@ Bool MeasureHolder::fromRecord(String &error,
       if (!x.fromRecord(error, in.asRecord(RecordFieldId("offset")))) {
 	return False;
       };
-      if (!hold.ptr()->setOffset(x.asMeasure())) {
+      if (!hold_p.ptr()->setOffset(x.asMeasure())) {
 	error = String("Unmatched offset type in MeasureHolder::fromRecord\n") +
 	  error;
 	return False;
@@ -226,7 +226,7 @@ Bool MeasureHolder::fromRecord(String &error,
     if (n > 0) vq(0) = q0.asQuantity();
     if (n > 1) vq(1) = q1.asQuantity();
     if (n > 2) vq(2) = q2.asQuantity();
-    if (!hold.ptr()->putValue(vq)) {
+    if (!hold_p.ptr()->putValue(vq)) {
       error = String("Illegal quantity in MeasureHolder::fromRecord\n") +
 	error;
       return False;
@@ -239,17 +239,17 @@ Bool MeasureHolder::fromRecord(String &error,
 }
 
 Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
-  if (hold.ptr()) {
+  if (hold_p.ptr()) {
     out.define(RecordFieldId("type"),
-	       downcase(String(hold.ptr()->tellMe())));
-    out.define(RecordFieldId("refer"), hold.ptr()->getRefString());
-    const Measure *off = hold.ptr()->getRefPtr()->offset();
+	       downcase(String(hold_p.ptr()->tellMe())));
+    out.define(RecordFieldId("refer"), hold_p.ptr()->getRefString());
+    const Measure *off = hold_p.ptr()->getRefPtr()->offset();
     if (off) {
       Record offs;
       if (!MeasureHolder(*off).toRecord(error, offs)) return False;
       out.defineRecord(RecordFieldId("offset"), offs);
     };
-    Vector<Quantum<Double> > res = hold.ptr()->getData()->getRecordValue();
+    Vector<Quantum<Double> > res = hold_p.ptr()->getData()->getRecordValue();
     Int n = res.nelements();
     Record val;
     if (n > 2) {
@@ -265,7 +265,7 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
       out.defineRecord(RecordFieldId("m0"), val);
     };
     res.resize(0);
-    res = hold.ptr()->getData()->getXRecordValue();
+    res = hold_p.ptr()->getData()->getXRecordValue();
     val = Record();
     n = res.nelements();
     if (n > 2) {

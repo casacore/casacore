@@ -37,13 +37,13 @@
 #include <aips/Arrays/Vector.h>
 
 //# Constructors
-QuantumHolder::QuantumHolder() : hold_() {};
+QuantumHolder::QuantumHolder() : hold_p() {};
 
 QuantumHolder::QuantumHolder(const QBase &in) :
-  hold_(in.clone()) {}
+  hold_p(in.clone()) {}
 
-QuantumHolder::QuantumHolder(const QuantumHolder &other) : hold_() {
-  if (other.hold_.ptr()) hold_.set(other.hold_.ptr()->clone());
+QuantumHolder::QuantumHolder(const QuantumHolder &other) : hold_p() {
+  if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
 }
 
 //# Destructor
@@ -51,30 +51,30 @@ QuantumHolder::~QuantumHolder() {}
 
 //# Operators
 QuantumHolder &QuantumHolder::operator=(const QuantumHolder &other) {
-  if (this != &other) hold_.set(other.hold_.ptr()->clone());
+  if (this != &other) hold_p.set(other.hold_p.ptr()->clone());
   return *this;
 }
 
 const QBase &QuantumHolder::operator()() const {
-  return *hold_.ptr();
+  return *hold_p.ptr();
 }
 
 //# Member Functions
 Bool QuantumHolder::isEmpty() const {
-  return ToBool(!hold_.ptr());
+  return ToBool(!hold_p.ptr());
 }
 
 Bool QuantumHolder::isQuantum() const {
-  return ToBool(hold_.ptr());
+  return ToBool(hold_p.ptr());
 }
 
 Bool QuantumHolder::isScalar() const {
-  return ToBool(hold_.ptr() &&
+  return ToBool(hold_p.ptr() &&
 		nelements() == 1);
 }
 
 Bool QuantumHolder::isArray() const {
-  return ToBool(hold_.ptr() &&
+  return ToBool(hold_p.ptr() &&
 		(isQuantumVectorDouble() ||
 		isQuantumVectorFloat() ||
 		isQuantumVectorInt() ||
@@ -83,7 +83,7 @@ Bool QuantumHolder::isArray() const {
 }
 
 Bool QuantumHolder::isReal() const {
-  return ToBool(hold_.ptr() &&
+  return ToBool(hold_p.ptr() &&
 		(isQuantumDouble() ||
 		isQuantumFloat() ||
 		isQuantumInt() ||
@@ -93,7 +93,7 @@ Bool QuantumHolder::isReal() const {
 }
 
 Bool QuantumHolder::isComplex() const {
-  return ToBool(hold_.ptr() &&
+  return ToBool(hold_p.ptr() &&
 		(isQuantumComplex() ||
 		 isQuantumDComplex() ||
 		 isQuantumVectorComplex() ||
@@ -101,93 +101,93 @@ Bool QuantumHolder::isComplex() const {
 }
 
 Bool QuantumHolder::isQuantity() const {
-  return ToBool(hold_.ptr() &&
+  return ToBool(hold_p.ptr() &&
 		isQuantumDouble());
 }
 
 Bool QuantumHolder::isQuantumDouble() const {
-  return ToBool(hold_.ptr() &&
-		hold_.ptr()->type() == Quantum<Double>::myType());
+  return ToBool(hold_p.ptr() &&
+		hold_p.ptr()->type() == Quantum<Double>::myType());
 }
 
 Bool QuantumHolder::isQuantumFloat() const {
-  return ToBool(hold_.ptr() &&
-		hold_.ptr()->type() == Quantum<Float>::myType());
+  return ToBool(hold_p.ptr() &&
+		hold_p.ptr()->type() == Quantum<Float>::myType());
 }
 
 Bool QuantumHolder::isQuantumInt() const {
-  return ToBool(hold_.ptr() &&
-		hold_.ptr()->type() == Quantum<Int>::myType());
+  return ToBool(hold_p.ptr() &&
+		hold_p.ptr()->type() == Quantum<Int>::myType());
 }
 
 Bool QuantumHolder::isQuantumComplex() const {
-  return ToBool(hold_.ptr() &&
-		hold_.ptr()->type() == Quantum<Complex>::myType());
+  return ToBool(hold_p.ptr() &&
+		hold_p.ptr()->type() == Quantum<Complex>::myType());
 }
 
 Bool QuantumHolder::isQuantumDComplex() const {
-  return ToBool(hold_.ptr() &&
-		hold_.ptr()->type() == Quantum<DComplex>::myType());
+  return ToBool(hold_p.ptr() &&
+		hold_p.ptr()->type() == Quantum<DComplex>::myType());
 }
 
 Bool QuantumHolder::isQuantumVectorDouble() const {
-  return ToBool(hold_.ptr() &&
-		hold_.ptr()->type() == Quantum<Vector<Double> >::myType());
+  return ToBool(hold_p.ptr() &&
+		hold_p.ptr()->type() == Quantum<Vector<Double> >::myType());
 }
 
 Bool QuantumHolder::isQuantumVectorFloat() const {
-  return ToBool(hold_.ptr() &&
-  		hold_.ptr()->type() == Quantum<Vector<Float> >::myType());
+  return ToBool(hold_p.ptr() &&
+  		hold_p.ptr()->type() == Quantum<Vector<Float> >::myType());
 }
 
 Bool QuantumHolder::isQuantumVectorInt() const {
-  return ToBool(hold_.ptr() &&
-  		hold_.ptr()->type() == Quantum<Vector<Int> >::myType());
+  return ToBool(hold_p.ptr() &&
+  		hold_p.ptr()->type() == Quantum<Vector<Int> >::myType());
 }
 
 Bool QuantumHolder::isQuantumVectorComplex() const {
-  return ToBool(hold_.ptr() &&
-  		hold_.ptr()->type() == Quantum<Vector<Complex> >::myType());
+  return ToBool(hold_p.ptr() &&
+  		hold_p.ptr()->type() == Quantum<Vector<Complex> >::myType());
 }
 
 Bool QuantumHolder::isQuantumVectorDComplex() const {
-  return ToBool(hold_.ptr() &&
-  		hold_.ptr()->type() == Quantum<Vector<DComplex> >::myType());
+  return ToBool(hold_p.ptr() &&
+  		hold_p.ptr()->type() == Quantum<Vector<DComplex> >::myType());
 }
 
 Int QuantumHolder::nelements() const {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     return 0;
   } else if (isQuantumVectorDouble()) {
-    return ((Quantum<Vector<Double> > *)(hold_.ptr()))->getValue().nelements();
+    return ((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumVectorFloat()) {
-    return ((Quantum<Vector<Float> > *)(hold_.ptr()))->getValue().nelements();
+    return ((Quantum<Vector<Float> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumVectorInt()) {
-    return ((Quantum<Vector<Int> > *)(hold_.ptr()))->getValue().nelements();
+    return ((Quantum<Vector<Int> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumVectorComplex()) {
-    return ((Quantum<Vector<Complex> > *)(hold_.ptr()))->getValue().nelements();
+    return ((Quantum<Vector<Complex> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumVectorDComplex()) {
-    return ((Quantum<Vector<DComplex> > *)(hold_.ptr()))->getValue().nelements();
+    return ((Quantum<Vector<DComplex> > *)(hold_p.ptr()))->getValue().nelements();
   };
   return 1;
 }
 
 const QBase &QuantumHolder::asQuantum() const {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantum"));
   };
-  return *hold_.ptr();
+  return *hold_p.ptr();
 }
 
 const Quantum<Double> &QuantumHolder::asQuantity() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumDouble"));
   };
   if (!isReal() || !isScalar()) {
     throw(AipsError("Wrong QuantumHolder to convert asQuantumDouble"));
   };
   if (!isQuantity()) toReal(Quantum<Double>::myType());
-  return (const Quantum<Double> &) *hold_.ptr();
+  return (const Quantum<Double> &) *hold_p.ptr();
 }
 
 const Quantum<Double> &QuantumHolder::asQuantumDouble() {
@@ -195,51 +195,51 @@ const Quantum<Double> &QuantumHolder::asQuantumDouble() {
 }
 
 const Quantum<Float> &QuantumHolder::asQuantumFloat() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumFloat"));
   };
   if (!isReal() || !isScalar()) {
     throw(AipsError("Wrong QuantumHolder to convert asQuantumFloat"));
   };
   if (!isQuantumFloat()) toReal(Quantum<Float>::myType());
-  return (const Quantum<Float> &) *hold_.ptr();
+  return (const Quantum<Float> &) *hold_p.ptr();
 }
 
 const Quantum<Int> &QuantumHolder::asQuantumInt() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumInt"));
   };
   if (!isReal() || !isScalar()) {
     throw(AipsError("Wrong QuantumHolder to convert asQuantumInt"));
   };
   if (!isQuantumInt()) toReal(Quantum<Int>::myType());
-  return (const Quantum<Int> &) *hold_.ptr();
+  return (const Quantum<Int> &) *hold_p.ptr();
 }
 
 const Quantum<Complex> &QuantumHolder::asQuantumComplex() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumComplex"));
   };
   if (!isScalar()) {
     throw(AipsError("Wrong QuantumHolder to convert asQuantumComplex"));
   };
   if (!isQuantumComplex()) toComplex(Quantum<Complex>::myType());
-  return (const Quantum<Complex> &) *hold_.ptr();
+  return (const Quantum<Complex> &) *hold_p.ptr();
 }
 
 const Quantum<DComplex> &QuantumHolder::asQuantumDComplex() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumDComplex"));
   };
   if (!isScalar()) {
     throw(AipsError("Wrong QuantumHolder to convert asQuantumDComplex"));
   };
   if (!isQuantumDComplex()) toComplex(Quantum<DComplex>::myType());
-  return (const Quantum<DComplex> &) *hold_.ptr();
+  return (const Quantum<DComplex> &) *hold_p.ptr();
 }
 
 const Quantum<Vector<Double> > &QuantumHolder::asQuantumVectorDouble() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumVectorDouble"));
   };
   if (isArray()) {
@@ -253,11 +253,11 @@ const Quantum<Vector<Double> > &QuantumHolder::asQuantumVectorDouble() {
     if (!isQuantumDouble()) toReal(Quantum<Double>::myType());
     toVector();
   };
-  return (const Quantum<Vector<Double> > &) *hold_.ptr();
+  return (const Quantum<Vector<Double> > &) *hold_p.ptr();
 }
 
 const Quantum<Vector<Float> > &QuantumHolder::asQuantumVectorFloat() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumVectorFloat"));
   };
   if (isArray()) {
@@ -271,11 +271,11 @@ const Quantum<Vector<Float> > &QuantumHolder::asQuantumVectorFloat() {
     if (!isQuantumFloat()) toReal(Quantum<Float>::myType());
     toVector();
   };
-  return (const Quantum<Vector<Float> > &) *hold_.ptr();
+  return (const Quantum<Vector<Float> > &) *hold_p.ptr();
 }
 
 const Quantum<Vector<Int> > &QuantumHolder::asQuantumVectorInt() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumVectorInt"));
   };
   if (isArray()) {
@@ -289,11 +289,11 @@ const Quantum<Vector<Int> > &QuantumHolder::asQuantumVectorInt() {
     if (!isQuantumInt()) toReal(Quantum<Int>::myType());
     toVector();
   };
-  return (const Quantum<Vector<Int> > &) *hold_.ptr();
+  return (const Quantum<Vector<Int> > &) *hold_p.ptr();
 }
 
 const Quantum<Vector<Complex> > &QuantumHolder::asQuantumVectorComplex() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumVectorComplex"));
   };
   if (isArray()) {
@@ -304,11 +304,11 @@ const Quantum<Vector<Complex> > &QuantumHolder::asQuantumVectorComplex() {
     if (!isQuantumComplex()) toComplex(Quantum<Complex>::myType());
     toVector();
   };
-  return (const Quantum<Vector<Complex> > &) *hold_.ptr();
+  return (const Quantum<Vector<Complex> > &) *hold_p.ptr();
 }
 
 const Quantum<Vector<DComplex> > &QuantumHolder::asQuantumVectorDComplex() {
-  if (!hold_.ptr()) {
+  if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for asQuantumVectorDComplex"));
   };
   if (isArray()) {
@@ -319,7 +319,7 @@ const Quantum<Vector<DComplex> > &QuantumHolder::asQuantumVectorDComplex() {
     if (!isQuantumDComplex()) toComplex(Quantum<DComplex>::myType());
     toVector();
   };
-  return (const Quantum<Vector<DComplex> > &) *hold_.ptr();
+  return (const Quantum<Vector<DComplex> > &) *hold_p.ptr();
 }
 
 Bool QuantumHolder::fromRecord(String &error,
@@ -332,48 +332,48 @@ Bool QuantumHolder::fromRecord(String &error,
     if (in.type(in.idToNumber(RecordFieldId("value"))) == TpDouble) {
       Double vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Double>(vl, un));
+      hold_p.set(new Quantum<Double>(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) == TpFloat) {
       Float vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Float>(vl, un));
+      hold_p.set(new Quantum<Float>(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) == TpInt) {
       Int vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Int>(vl, un));
+      hold_p.set(new Quantum<Int>(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) == TpComplex) {
       Complex vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Complex>(vl, un));
+      hold_p.set(new Quantum<Complex>(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) == TpDComplex) {
       DComplex vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<DComplex>(vl, un));
+      hold_p.set(new Quantum<DComplex>(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
 	       TpArrayDouble) {
       Vector<Double> vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Vector<Double> >(vl, un));
+      hold_p.set(new Quantum<Vector<Double> >(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
 	       TpArrayFloat) {
       Vector<Float> vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Vector<Float> >(vl, un));
+      hold_p.set(new Quantum<Vector<Float> >(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
 	       TpArrayInt) {
       Vector<Int> vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Vector<Int> >(vl, un));
+      hold_p.set(new Quantum<Vector<Int> >(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
 	       TpArrayComplex) {
       Vector<Complex> vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Vector<Complex> >(vl, un));
+      hold_p.set(new Quantum<Vector<Complex> >(vl, un));
     } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
 	       TpArrayDComplex) {
       Vector<DComplex> vl;
       in.get(RecordFieldId("value"), vl);
-      hold_.set(new Quantum<Vector<DComplex> >(vl, un));
+      hold_p.set(new Quantum<Vector<DComplex> >(vl, un));
     } else {
       error =
 	String("Illegal Quantum datatype in QuantumHolder::fromRecord\n") +
@@ -388,41 +388,41 @@ Bool QuantumHolder::fromRecord(String &error,
 }
 
 Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
-  if (hold_.ptr()) {
+  if (hold_p.ptr()) {
     if (out.isDefined("value")) out.removeField(RecordFieldId("value"));
     if (isQuantumDouble()) {
       out.define(RecordFieldId("value"),
-		 (((Quantum<Double> *)(hold_.ptr()))->getValue()));
+		 (((Quantum<Double> *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumFloat()) {
       out.define(RecordFieldId("value"),
-                 (((Quantum<Float> *)(hold_.ptr()))->getValue()));
+                 (((Quantum<Float> *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumInt()) {
       out.define(RecordFieldId("value"),
-                 (((Quantum<Int> *)(hold_.ptr()))->getValue()));
+                 (((Quantum<Int> *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumComplex()) {
       out.define(RecordFieldId("value"),
-                 (((Quantum<Complex> *)(hold_.ptr()))->getValue()));
+                 (((Quantum<Complex> *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumDComplex()) {
       out.define(RecordFieldId("value"),
-                 (((Quantum<DComplex> *)(hold_.ptr()))->getValue()));
+                 (((Quantum<DComplex> *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumVectorDouble()) {
       out.define(RecordFieldId("value"),
-		 (((Quantum<Vector<Double> > *)(hold_.ptr()))->getValue()));
+		 (((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumVectorFloat()) {
       out.define(RecordFieldId("value"),
-		 (((Quantum<Vector<Float> > *)(hold_.ptr()))->getValue()));
+		 (((Quantum<Vector<Float> > *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumVectorInt()) {
       out.define(RecordFieldId("value"),
-		 (((Quantum<Vector<Int> > *)(hold_.ptr()))->getValue()));
+		 (((Quantum<Vector<Int> > *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumVectorComplex()) {
       out.define(RecordFieldId("value"),
-		 (((Quantum<Vector<Complex> > *)(hold_.ptr()))->getValue()));
+		 (((Quantum<Vector<Complex> > *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumVectorDComplex()) {
       out.define(RecordFieldId("value"),
-		 (((Quantum<Vector<DComplex> > *)(hold_.ptr()))->getValue()));
+		 (((Quantum<Vector<DComplex> > *)(hold_p.ptr()))->getValue()));
     };
     out.define(RecordFieldId("unit"),
-	       String(hold_.ptr()->getFullUnit().getName()));
+	       String(hold_p.ptr()->getFullUnit().getName()));
     return True;
   };
   error = String("No Quantum specified in QuantumHolder::toRecord\n") +
@@ -434,28 +434,28 @@ void QuantumHolder::toReal(const uInt &tp) {
   Double d1;
   if (isArray()) {
     if (isQuantumVectorDouble()) {
-      d1 = Double(((Quantum<Vector<Double> > *)(hold_.ptr()))->getValue()(0));
+      d1 = Double(((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorFloat()) {
-      d1 = Double(((Quantum<Vector<Float> > *)(hold_.ptr()))->getValue()(0));
+      d1 = Double(((Quantum<Vector<Float> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorInt()) {
-      d1 = Double(((Quantum<Vector<Int> > *)(hold_.ptr()))->getValue()(0));
+      d1 = Double(((Quantum<Vector<Int> > *)(hold_p.ptr()))->getValue()(0));
     };
   } else {
     if (isQuantumDouble()) {
-      d1 = Double(((Quantum<Double> *)(hold_.ptr()))->getValue());
+      d1 = Double(((Quantum<Double> *)(hold_p.ptr()))->getValue());
     } else if (isQuantumFloat()) {
-      d1 = Double(((Quantum<Float> *)(hold_.ptr()))->getValue());
+      d1 = Double(((Quantum<Float> *)(hold_p.ptr()))->getValue());
     } else if (isQuantumInt()) {
-      d1 = Double(((Quantum<Int> *)(hold_.ptr()))->getValue());
+      d1 = Double(((Quantum<Int> *)(hold_p.ptr()))->getValue());
     };
   };
-  Unit x = hold_.ptr()->getFullUnit();
+  Unit x = hold_p.ptr()->getFullUnit();
   if (tp == Quantum<Double>::myType()) {
-    hold_.set(new Quantum<Double>(d1, x));
+    hold_p.set(new Quantum<Double>(d1, x));
   } else if (tp == Quantum<Float>::myType()) {
-    hold_.set(new Quantum<Float>(Float(d1), x));
+    hold_p.set(new Quantum<Float>(Float(d1), x));
   } else if (tp == Quantum<Int>::myType()) {
-    hold_.set(new Quantum<Int>(Int(d1), x));
+    hold_p.set(new Quantum<Int>(Int(d1), x));
   };
 }
 
@@ -463,58 +463,58 @@ void QuantumHolder::toComplex(const uInt &tp) {
   DComplex d1;
   if (isArray()) {
     if (isQuantumVectorDouble()) {
-      d1 = DComplex(((Quantum<Vector<Double> > *)(hold_.ptr()))->getValue()(0));
+      d1 = DComplex(((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorFloat()) {
-      d1 = DComplex(((Quantum<Vector<Float> > *)(hold_.ptr()))->getValue()(0));
+      d1 = DComplex(((Quantum<Vector<Float> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorInt()) {
-      d1 = DComplex(((Quantum<Vector<Int> > *)(hold_.ptr()))->getValue()(0));
+      d1 = DComplex(((Quantum<Vector<Int> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorComplex()) {
-      d1 = (((Quantum<Vector<Complex> > *)(hold_.ptr()))->getValue()(0));
+      d1 = (((Quantum<Vector<Complex> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorDComplex()) {
-      d1 = (((Quantum<Vector<DComplex> > *)(hold_.ptr()))->getValue()(0));
+      d1 = (((Quantum<Vector<DComplex> > *)(hold_p.ptr()))->getValue()(0));
     };
   } else {
     if (isQuantumDouble()) {
-      d1 = DComplex(((Quantum<Double> *)(hold_.ptr()))->getValue());
+      d1 = DComplex(((Quantum<Double> *)(hold_p.ptr()))->getValue());
     } else if (isQuantumFloat()) {
-      d1 = DComplex(((Quantum<Float> *)(hold_.ptr()))->getValue());
+      d1 = DComplex(((Quantum<Float> *)(hold_p.ptr()))->getValue());
     } else if (isQuantumInt()) {
-      d1 = DComplex(((Quantum<Int> *)(hold_.ptr()))->getValue());
+      d1 = DComplex(((Quantum<Int> *)(hold_p.ptr()))->getValue());
     } else if (isQuantumComplex()) {
-      d1 = (((Quantum<Complex> *)(hold_.ptr()))->getValue());
+      d1 = (((Quantum<Complex> *)(hold_p.ptr()))->getValue());
     } else if (isQuantumDComplex()) {
-      d1 = (((Quantum<DComplex> *)(hold_.ptr()))->getValue());
+      d1 = (((Quantum<DComplex> *)(hold_p.ptr()))->getValue());
     };
   };
-  Unit x = hold_.ptr()->getFullUnit();
+  Unit x = hold_p.ptr()->getFullUnit();
   if (tp == Quantum<Complex>::myType()) {
-    hold_.set(new Quantum<Complex>(Complex(d1), x));
+    hold_p.set(new Quantum<Complex>(Complex(d1), x));
   } else  if (tp == Quantum<DComplex>::myType()) {
-    hold_.set(new Quantum<DComplex>(d1, x));
+    hold_p.set(new Quantum<DComplex>(d1, x));
   };
 }
 
 void QuantumHolder::toVector() {
-  Unit x = hold_.ptr()->getFullUnit();
+  Unit x = hold_p.ptr()->getFullUnit();
   if (isQuantumDouble()) {
     Vector<Double> d1(1);
-    d1(0) = ((Quantum<Double> *)(hold_.ptr()))->getValue();
-    hold_.set(new Quantum<Vector<Double> >(d1, x));
+    d1(0) = ((Quantum<Double> *)(hold_p.ptr()))->getValue();
+    hold_p.set(new Quantum<Vector<Double> >(d1, x));
   } else if (isQuantumFloat()) {
     Vector<Float> d1(1);
-    d1(0) = ((Quantum<Float> *)(hold_.ptr()))->getValue();
-    hold_.set(new Quantum<Vector<Float> >(d1, x));
+    d1(0) = ((Quantum<Float> *)(hold_p.ptr()))->getValue();
+    hold_p.set(new Quantum<Vector<Float> >(d1, x));
   } else if (isQuantumInt()) {
     Vector<Int> d1(1);
-    d1(0) = ((Quantum<Int> *)(hold_.ptr()))->getValue();
-    hold_.set(new Quantum<Vector<Int> >(d1, x));
+    d1(0) = ((Quantum<Int> *)(hold_p.ptr()))->getValue();
+    hold_p.set(new Quantum<Vector<Int> >(d1, x));
   } else if (isQuantumComplex()) {
     Vector<Complex> d1(1);
-    d1(0) = ((Quantum<Complex> *)(hold_.ptr()))->getValue();
-    hold_.set(new Quantum<Vector<Complex> >(d1, x));
+    d1(0) = ((Quantum<Complex> *)(hold_p.ptr()))->getValue();
+    hold_p.set(new Quantum<Vector<Complex> >(d1, x));
   } else if (isQuantumDComplex()) {
     Vector<DComplex> d1(1);
-    d1(0) = ((Quantum<DComplex> *)(hold_.ptr()))->getValue();
-    hold_.set(new Quantum<Vector<DComplex> >(d1, x));
+    d1(0) = ((Quantum<DComplex> *)(hold_p.ptr()))->getValue();
+    hold_p.set(new Quantum<Vector<DComplex> >(d1, x));
   };
 }

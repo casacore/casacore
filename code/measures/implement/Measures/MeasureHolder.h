@@ -186,7 +186,7 @@ private:
 
 //# Data Members
   // Pointer to a Measure
-  PtrHolder<Measure> hold;
+  PtrHolder<Measure> hold_p;
 
 };
 
