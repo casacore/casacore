@@ -114,7 +114,6 @@ void NewMSDataDescColumns::attach(NewMSDataDescription& msDataDesc)
 void NewMSDataDescColumns::
 attachOptionalCols(NewMSDataDescription& msDataDesc)
 {
-  RONewMSDataDescColumns::attachOptionalCols(msDataDesc);
   const ColumnDescSet& cds = msDataDesc.tableDesc().columnDescSet();
   if (cds.isDefined(NewMSDataDescription::
 		    columnName(NewMSDataDescription::LAG_ID))) {
@@ -122,4 +121,6 @@ attachOptionalCols(NewMSDataDescription& msDataDesc)
 		   columnName(NewMSDataDescription::LAG_ID));
   }
 }
-
+// Local Variables: 
+// compile-command: "gmake NewMSDataDescColumns"
+// End: 
