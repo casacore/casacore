@@ -661,6 +661,7 @@ int main (int argc, char *argv[])
  if (Table::isReadable("f")) tab =  Table ("f", Table::Delete);
  if (Table::isReadable("g")) tab =  Table ("g", Table::Delete);
  if (Table::isReadable("h")) tab =  Table ("h", Table::Delete);
+ if (Table::isReadable("kpa")) tab =  Table ("kpa", Table::Delete);
  if (Table::isReadable("bBool")) tab =  Table ("bBool", Table::Delete);
  if (Table::isReadable("paa")) tab =  Table ("paa", Table::Delete);
  if (Table::isReadable("paab")) tab =  Table ("paab", Table::Delete);
