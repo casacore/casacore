@@ -5824,3 +5824,4 @@
 16 147 src mv ./trial/implement/Mathematics/test/tPoolStack.cc ./aips/implement/Containers/test/tPoolStack.cc
 16 162 src mv nrao/implement/GBTFillers/GBTGlishFiller.cc nrao/implement/GBTFillers/GBTGOFiller.cc
 16 162 src mv nrao/implement/GBTFillers/GBTGlishFiller.h nrao/implement/GBTFillers/GBTGOFiller.h
+16 162 src rm aips/implement/MeasurementSets/test/tOldMeasurementSet.cc
