@@ -91,21 +91,22 @@ void cffti(Int n, Double * work) {
   dcffti_((int *) &n, (double *) work);
 }
 
-void  cfftf(Int n, Float * rdata, Float * work) {
+void  cfftf(Int n, Complex * rdata, Float * work) {
   cfftf_((int *) &n, (float *) rdata, (float *) work);
 }
 
-void cfftf(Int n, Double * rdata, Double * work) {
+void cfftf(Int n, DComplex * rdata, Double * work) {
   dcfftf_((int *) &n, (double *) rdata, (double *) work);
 }
 
-void cfftb(Int n, Float * rdata, Float * work) {
+void cfftb(Int n, Complex * rdata, Float * work) {
   cfftb_((int *) &n, (float *) rdata, (float *) work);
 }
 
-void cfftb(Int n, Double * rdata, Double * work) {
+void cfftb(Int n, DComplex * rdata, Double * work) {
   dcfftb_((int *) &n, (double *) rdata, (double *) work);
 }
+
 void rffti(Int n, Float * work) {
   rffti_((int *) &n, (float *) work);
 }
