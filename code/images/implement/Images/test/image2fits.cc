@@ -34,6 +34,7 @@
 
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageFITSConverter.h>
+#include <trial/Images/RegionHandler.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Containers/MapIO.h>
@@ -59,15 +60,18 @@ Int main(int argc, char *argv[])
         String root = Aipsrc::aipsRoot();
         String name = root + "/code/trial/implement/Images/test/test_image";
 	inp.Create("in", name, "Input AIPS++ Image name", "string");
+	inp.Create("mask", "default", "Mask to apply", "string");
 	inp.Create("out", "image2fits_tmp.out", "Output FITS file name",
 		   "string");
 	inp.Create("overwrite", "True", "Allow output to be overwritten?",
 		   "Bool");
 	inp.Create("verbose", "False", "Verbose?", "Bool");
+	inp.Create("do16", "False", "16 bit integer or 32 bit floating point?", "Bool");
 	inp.ReadArguments(argc, argv);
     
 	Bool verbose=inp.GetBool("verbose");
 	Bool overwrite=inp.GetBool("overwrite");
+	Bool do16=inp.GetBool("do16");
     
 	File inputFile(inp.GetString("in"));
 	if (!inputFile.isReadable()) 
@@ -76,18 +80,24 @@ Int main(int argc, char *argv[])
 	String out(inp.GetString("out"));
 	if (out == "") out = "out.fits";
     
+        String mask = inp.GetString("mask");
+
 	// Get the image from disk
-	PagedImage<Float> image(inputFile.path().originalName());
+	PagedImage<Float> image(inputFile.path().originalName(), True);
+        if (mask!=String("default")) image.setDefaultMask(mask);
 	IPosition imageShape(image.shape());
 	if(verbose) {
 	    cout << "Read input image " << inputFile.path().originalName()
 		 << " successfully" << endl;
 	    cout << "Shape is " << imageShape << endl;
+	    cout << "Applying mask " << mask << endl;
 	}
 
 	String error;
+        Int bits = -32;
+        if (do16) bits = 16;
 	Bool ok = ImageFITSConverter::ImageToFITS(error, image, out,
-						  64, True, True, -32, 1, -1,
+						  64, True, True, bits, 1, -1,
 						  overwrite);
 	if (!ok) {
 	    cout << "Error writing FITS file: " << error << endl;
