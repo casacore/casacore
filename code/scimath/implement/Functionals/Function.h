@@ -228,7 +228,7 @@ template<class T> class Function : public Functional<T, T>,
   // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
   // Note no index check.
   // <group>
-  Bool &mask(const uInt n);
+  Bool &mask(const uInt n) { return param_p.mask(n); };
   const Bool &mask(const uInt n) const { return param_p.mask(n); };
   // </group>
   // Return the parameter interface
