@@ -68,7 +68,7 @@ E.g.
 \end{verbatim}
 
 The last example shows how a boolean expression can be used to form a
-mask on a lattice.  Only the pixels fulfilling the Boolean condition
+mask on a lattice.  Only the pixels fulfilling the boolean condition
 will be used when calculating the mean. 
 
 \medskip\noindent In general the result of a LEL expression is a lattice,
@@ -267,7 +267,7 @@ The result of these functions is a scalar.
     Return number of elements in a lattice (1 for a scalar).
   \item[ \texttt{double NDIM(anytype)}]
     Return dimensionality of a lattice (0 for a scalar).
-  \item[ \texttt{double LENGTH(anytype, double axis)}]
+  \item[ \texttt{double LENGTH(anytype, real axis)}]
     Return length of a lattice axis (returns 1 for a scalar or if axis
     exceeds number of axes). Axis number is 1-relative.
   \item[ \texttt{Bool ANY(Bool)}] Is any element true?
@@ -316,7 +316,7 @@ The result of these functions is a scalar.
     \\All calculations are done in double precision.
 \end{description}
 
-\subsubsection{Miscellaneous functions}
+\subsubsection{\label{LEL:MISCFUNCTIONS}Miscellaneous functions}
 \begin{description}
   \item[ \texttt{real AMP(real,real)}]
     It returns the square root of the quadrature sum of two
@@ -349,11 +349,11 @@ The result of these functions is a scalar.
     the mask from the argument.
     The section about \htmlref{mask handling}{LEL:HANDMASKS}
     discusses it in more detail.
-  \item[ \texttt{boolean MASK(anytype)}]
+  \item[ \texttt{Bool MASK(anytype)}]
     It returns the mask of the argument.
     The section about \htmlref{mask handling}{LEL:HANDMASKS}
     discusses it in more detail.
-  \item[ \texttt{boolean ISNAN(anytype)}]
+  \item[ \texttt{Bool ISNAN(anytype)}]
     It tests lattice elements on a NaN value and sets the corresponding
     output element to T if so; otherwise to F.
   \item[ \texttt{anytype REPLACE(anytype, anytype)}]
@@ -387,6 +387,38 @@ The result of these functions is a scalar.
     \\ Note that the mask of the result is formed by combining the
     mask of the arguments in an appropriate way as explained in the
     section about \htmlref{mask handling}{LEL:HANDMASKS}.
+  \item[ \texttt{Bool INDEXIN(real axis, set indices)}]
+    The first argument is a 1-relative axis number. The second
+    argument is a set of indices. It returns a Bool array telling for
+    each lattice element if the index of the given axis is contained
+    in the set of indices.
+    \\The 1-relative indices have to be given as elements with integer
+    values enclosed in square
+    brackets and separated by commas. Each element can be a single
+    index, an index range as \texttt{start:end}, or a strided index
+    range as \texttt{start:end:stride}. The elements do not need to be
+    ordered, but in a range start must be $<=$ end. For example:
+    \begin{verbatim}
+    image[indexin(2, [3,4:8,10:20:2])]
+    \end{verbatim}
+    masks \texttt{image} such that only the pixels with an index
+    3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, or 20 on the second axis
+    are set to True.
+
+    The following special syntax exists for this function.
+    \begin{verbatim}
+    INDEXi IN set
+    \end{verbatim}
+    where \texttt{i} is the axis number. So the example above can also
+    be written as:
+    \begin{verbatim}
+    image[index2 in [3,4:8,10:20:2]]
+    \end{verbatim}
+    Negated versions of this function exist as:
+    \begin{verbatim}
+    INDEXNOTIN(axis, set)
+    INDEXi NOT IN set
+    \end{verbatim}
 \end{description}
 
 \subsubsection{Conversion functions}
@@ -517,6 +549,11 @@ implementation of the first example in this subsection.  In the last
 example, the expression inside the parentheses is only evaluated
 where the condition {\tt [lat1<5]} is true and the resulting expression
 has a mask associated with it.  
+
+Please note that it is possible to select pixels on an axis by means
+of the function \texttt{INDEXIN} (or by the \texttt{INDEXi IN}
+expression) as shown in the previous section about
+\htmlref{miscellaneous functions}{LEL:MISCFUNCTIONS}.
 
 
 \subsection{\label{LEL:HANDMASKS}Mask Handling}

@@ -57,6 +57,7 @@ TRUE      T
 FALSE     F
 
 INDEXIN   [Ii][Nn][Dd][Ee][Xx][Ii][Nn]
+INDEXNOTIN [Ii][Nn][Dd][Ee][Xx][Nn][Oo][Tt][Ii][Nn]
 INDEXN    [Ii][Nn][Dd][Ee][Xx]{INT}
 IN        [Ii][Nn]
 NOT       [Nn][Oo][Tt]
@@ -133,6 +134,10 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 {INDEXIN} {
             imageExprGramPosition() += yyleng;
             return INDEXIN;
+	  }
+{INDEXNOTIN} {
+            imageExprGramPosition() += yyleng;
+            return INDEXNOTIN;
 	  }
 {INDEXN}  {
             imageExprGramPosition() += yyleng;
