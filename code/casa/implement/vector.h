@@ -91,7 +91,6 @@ T const &, __false_type); \
 template \
    void vector<T, std::allocator<T> >:: \
 _M_assign_aux(T const *, T const *, forward_iterator_tag);
-#endif
 
 #else
 #if defined(AIPS_SUN_NATIVE)
