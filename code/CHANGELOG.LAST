@@ -29,3 +29,18 @@ change id: 0067
 The ObsInfo class has been enhanced so that it now also
 holds the pointing center (as distinct from the tangent point).
 OBSRA and OBSEC are read/written from/to  FITS files
+
+change id: 0068
+ author:   Neil Killeen
+ date:     2001/01/10
+ avers:    1.5
+ area:     Tool
+ package:  trial
+ module:   imagepol
+ type:     Code
+ category: New
+ summary:  Imagepol now writes out COmplex polarization images
+As part of supporting vector fields, Imagepol now can write out
+images holding the COmplex polarization.
+There is also a new function makecomplex to generate
+complex images from amp/phase or real/imag if needed
