@@ -257,5 +257,56 @@ main() {
     cout << x.getMesg() << endl;
   } 
 
+  try {
+    cout << "----------------------------------------------------" << endl;
+    cout << "Test MeasureHolder extension  " << endl;
+    cout << "----------------------------------------------------" << endl;
+    MDirection x00(MVDirection(Quantity(1, "deg")));
+    MeasureHolder q00(x00);
+    cout << "Direction: " << x00 << endl;
+    cout << "Holder:    " << q00.asMDirection() << endl;
+    q00.makeMV(2);
+    cout << "Number of values: " << q00.nelements() << endl;
+    cout << "0: " << q00.getMV(0) << endl;
+    cout << "1: " << q00.getMV(1) << endl;
+    cout << "2: " << q00.getMV(2) << endl;
+    MVDirection mvd(Quantity(2, "deg"));
+    MVDirection mvd2(Quantity(10, "deg"));
+    cout << "Set 0: " << q00.setMV(0, *q00.asMeasure().getData()) << endl;
+    cout << "Set 1: " << q00.setMV(1, mvd2) << endl;
+    cout << "Set 2: " << q00.setMV(2, mvd) << endl;
+    cout << "Number of values: " << q00.nelements() << endl;
+    cout << "2: " << q00.getMV(2) << endl;
+    cout << "0: " << *q00.getMV(0) << endl;
+    cout << "1: " << *q00.getMV(1) << endl;
+    Record y00;
+    String error;
+    cout << "Direction:                " << q00.asMeasure() << endl;
+    if (q00.toRecord(error, y00)) {
+      QuantumHolder q0;
+      if (q0.fromRecord(error, y00.asRecord(RecordFieldId("m0")))) {
+	cout << "m0: " << q0.asQuantumVectorDouble() << endl;
+      } else {
+	cout << "Cannot read the m0 vector" << endl; 
+      };
+      if (q0.fromRecord(error, y00.asRecord(RecordFieldId("m1")))) {
+	cout << "m1: " << q0.asQuantumVectorDouble() << endl;
+      } else {
+	cout << "Cannot read the m1 vector" << endl; 
+      };
+      if (q00.fromRecord(error, y00)) {
+	cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	  q00.asMeasure().getRefString() << ")" << endl;
+      } else {
+	cout << "From error: " << error << endl;
+      };
+    } else {
+      cout << "To error: " << error << endl;
+    };
+
+  } catch (AipsError x) {
+    cout << x.getMesg() << endl;
+  } 
+
   exit(0);
 }
