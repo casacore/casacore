@@ -32,7 +32,12 @@
 #include <aips/Arrays/Array.h>
 
 //# Forward declarations
-template <class T, class U> class vector; 
+//template <class T, class U> class vector; 
+#if defined(WHATEVER_VECTOR_FORWARD_DEC)
+WHATEVER_VECTOR_FORWARD_DEC;
+#else
+#include <aips/vector.h>
+#endif
 
 // <summary> A 1-D Specialization of the Array class </summary>
 //

@@ -44,7 +44,12 @@ class Slice;
 template<class T> class ArrayIterator;
 template<class T> class MaskedArray;
 template<class Domain, class Range> class Functional;
-template <class T, class U> class vector; 
+//template <class T, class U> class vector; 
+#if defined(WHATEVER_VECTOR_FORWARD_DEC)
+WHATEVER_VECTOR_FORWARD_DEC;
+#else
+#include <aips/vector.h>
+#endif
 
 // <summary>
 // A global enum used by some Array constructors.
