@@ -308,7 +308,7 @@ public:
 
     // Find the pixel axis for the given world axis in a coordinate system
     // Returns -1 if the pixel axis is unavailable (e.g. if it has been
-    // removed).
+    // removed). 
     Int worldAxisToPixelAxis(uInt pixelAxis) const;
 
     // Returns <src>Coordinate::COORDSYS</src>
