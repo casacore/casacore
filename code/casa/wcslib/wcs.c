@@ -94,6 +94,10 @@ struct wcsprm *wcs;
       wcs->m_crota = 0;
    }
 
+   if (wcs->flag == -1) {
+      wcs->lin.flag = -1
+   }
+
 
    /* Allocate memory for arrays if required. */
    if (alloc ||
@@ -772,13 +776,15 @@ struct wcsprm *wcs;
 
    /* Celestial projection present? */
    if (wcs->lng >= 0) {
-      /* Parse the CRVALi, LONPOLE, and LATPOLE cards. */
+      celini(wcscel);
+
+      /* CRVALi, LONPOLE, and LATPOLE cards. */
       wcscel->ref[0] = wcs->crval[wcs->lng];
       wcscel->ref[1] = wcs->crval[wcs->lat];
       wcscel->ref[2] = wcs->lonpole;
       wcscel->ref[3] = wcs->latpole;
 
-      /* Parse the PVi_m cards. */
+      /* PVi_m cards. */
       for (k = 0; k < wcs->npv; k++) {
          i = wcs->pv[k].i - 1;
          m = wcs->pv[k].m;
@@ -844,12 +850,14 @@ struct wcsprm *wcs;
 
    /* Spectral axis present? */
    if (wcs->spec >= 0) {
-      /* Parse the CRVALi, RESTFRQ, and RESTWAV cards. */
+      spcini(wcsspc);
+
+      /* CRVALi, RESTFRQ, and RESTWAV cards. */
       wcsspc->crval = wcs->crval[wcs->spec];
       wcsspc->restfrq = wcs->restfrq;
       wcsspc->restwav = wcs->restwav;
 
-      /* Parse the PVi_m cards. */
+      /* PVi_m cards. */
       for (k = 0; k < wcs->npv; k++) {
          i = wcs->pv[k].i - 1;
          m = wcs->pv[k].m;
