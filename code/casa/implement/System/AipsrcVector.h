@@ -1,5 +1,5 @@
 //# AipsrcVector.h: Read multiple values from the  Aipsrc resource files
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -136,7 +136,7 @@ public:
 
 private:
   //# Data
-  static AipsrcVector<T> &init();
+  static AipsrcVector myp_p;
   // register list
   // <group>
   Block<Vector<T> > tlst;
@@ -153,5 +153,70 @@ private:
   //# General member functions
 };
 
+#define AipsrcVector_String AipsrcVector
+
+// <summary> Specialization of AipsrcVector for String </summary>
+
+// <synopsis>
+// <note role=warning>
+// The name <src>AipsrcVector_String</src> is only for cxx2html
+// documentation problems. Use <src>AipsrcVector</src> in your code.</note>
+// </synopsis>
+
+template <> class AipsrcVector_String<String> : public Aipsrc {
+ public:
+  AipsrcVector_String();
+  ~AipsrcVector_String();
+  static Bool find(Vector<String> &value, const String &keyword);
+  static Bool find(Vector<String> &value, const String &keyword, 
+		   const Vector<String> &deflt);
+  static uInt registerRC(const String &keyword, const Vector<String> &deflt);
+  static const Vector<String> &get(uInt keyword);
+  static void set(uInt keyword, const Vector<String> &deflt);
+  static void save(uInt keyword);
+
+private:
+  static AipsrcVector_String myp_p;
+  Block<Vector<String> > tlst;
+  Block<String> ntlst;
+  AipsrcVector_String<String>
+    &operator=(const AipsrcVector_String<String> &other);
+  AipsrcVector_String(const AipsrcVector_String<String> &other);
+};
+
+#undef AipsrcVector_String
+
+#define AipsrcVector_Bool AipsrcVector
+
+// <summary> Specialization of AipsrcVector for Bool </summary>
+
+// <synopsis>
+// <note role=warning>
+// The name <src>AipsrcVector_Bool</src> is only for cxx2html
+// documentation problems. Use <src>AipsrcVector</src> in your code.</note>
+// </synopsis>
+
+template <> class AipsrcVector_Bool<Bool> : public Aipsrc {
+ public:
+  AipsrcVector_Bool();
+  ~AipsrcVector_Bool();
+  static Bool find(Vector<Bool> &value, const String &keyword);
+  static Bool find(Vector<Bool> &value, const String &keyword, 
+		   const Vector<Bool> &deflt);
+  static uInt registerRC(const String &keyword, const Vector<Bool> &deflt);
+  static const Vector<Bool> &get(uInt keyword);
+  static void set(uInt keyword, const Vector<Bool> &deflt);
+  static void save(uInt keyword);
+
+private:
+  static AipsrcVector_Bool myp_p;
+  Block<Vector<Bool> > tlst;
+  Block<String> ntlst;
+  AipsrcVector_Bool<Bool>
+    &operator=(const AipsrcVector_Bool<Bool> &other);
+  AipsrcVector_Bool(const AipsrcVector_Bool<Bool> &other);
+};
+
+#undef AipsrcVector_Bool
 
 #endif
