@@ -5404,3 +5404,4 @@
 15 155 src rm aips/implement/RTTI/test/makefile
 15 155 src rm aips/implement/RTTI/makefile
 15 155 src rm aips/implement/RTTI/test
+15 162 src mv trial/implement/OS/DOos.h aips/implement/OS/DOos.h
