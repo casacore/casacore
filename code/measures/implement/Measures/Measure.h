@@ -72,11 +72,12 @@ class ostream;
 //		for all specific conversion routines (like
 //		<linkto class=MCEpoch>MCEpoch).
 //   	  <li> <linkto class=MeasData>MeasData</linkto> class, containing a set
-//		of generally usable constants, and all data necessary for
-//		conversions (like precession tables).
-//	  <li> <linkto class=MeasDetail>MeasDetail</linkto> class to fine tune
-//		 some of the conversion processes
+//		of generally usable constants, and all program data necessary for
+//		conversions.
 //	</ul>
+//   	  <li> <linkto class=MeasTable>MeasTab;e</linkto> class, containing
+//		the interface for external Tables (like leap-seconds, IERS data,
+//		JPL data).
 // </prerequisite>
 //
 // <etymology>
@@ -123,8 +124,7 @@ class ostream;
 // Some conversions can, in addition to the main type (like TAI), specify
 // details to completely describe any conversion process (e.g. the type
 // of nutation calculation) by specifying 
-// <linkto class=MeasDetail>MeasDetail</linkto> parameters to the conversion
-// process.<br>
+// <linkto class=Aipsrc>Aipsrc</linkto> keyword/value pairs. <br>
 // <p>
 // Measures can in general be constructed from a <src>MeasRef</src> and a
 // value. The value can be expressed in the internally used units (e.g.

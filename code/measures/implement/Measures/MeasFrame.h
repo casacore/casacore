@@ -117,7 +117,7 @@ class ostream;
 // <note role=caution> An explicit (or implicit) call to MCFrame::make will
 // load the whole conversion machinery (including Tables) into your
 // linked module).</note><br>
-// <linkto class=MeasDetail>Measure details</linkto> can be set for additional
+// <linkto class=Aipsrc>Aipsrc keywords</linkto> can be used for additional
 // (highly specialised) additional internal conversion parameters.
 // </synopsis>
 //

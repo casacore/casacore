@@ -90,7 +90,7 @@ class ostream;
 // places without overhead.<br>
 // Some <src>Measure::Ref</src> could need additional conversion information
 // ( example: type of Nutation calculations). They are provided by
-// the <linkto class=MeasDetail>MeasDetail</linkto> class. <br>
+// <linkto class=Aipsrc>Aipsrc</linkto> keywords. <br>
 // All constructors are related to a specific Measure, to be able to check
 // relations at compile time.
 // </synopsis>
