@@ -89,10 +89,10 @@ const LatticeStepper * LatticeNavigator::castToConstStepper() const {
     return 0;
 };
 
-LatticeTiler * LatticeNavigator::castToTiler() {
+TiledStepper * LatticeNavigator::castToTiler() {
     return 0;
 };
 
-const LatticeTiler * LatticeNavigator::castToConstTiler() const {
+const TiledStepper * LatticeNavigator::castToConstTiler() const {
     return 0;
 };
