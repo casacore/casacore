@@ -348,6 +348,11 @@ Vector<Quantum<Double> > ImageSummary<T>::restoringBeam () const
 }
 
 
+template <class T> 
+String ImageSummary<T>::imageType  () const
+{
+   return pImage_p->imageType();
+}
 
 template <class T> 
 void ImageSummary<T>::list (LogIO& os,
@@ -372,6 +377,7 @@ void ImageSummary<T>::list (LogIO& os,
 // List random things
 
    os << "Image name       : " << name() << endl;
+   os << "Image type       : " << imageType() << endl;
 //
    String list = makeMasksString();
    os << "Image mask       : " << list << endl;
