@@ -1,5 +1,5 @@
 //# LELFunction.h:  LELFunction.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,9 @@ template <class T> class Array;
 class PixelRegion;
 
 
-// <summary> This LEL class handles numerical (real and complex) 1-argument functions </summary>
+// <summary>
+// This LEL class handles numerical (real and complex) 1-argument functions
+// </summary>
 //
 // <use visibility=local>
 //
@@ -129,7 +131,9 @@ private:
 
 
 
-// <summary> This LEL class handles numerical (real only) 1-argument functions </summary>
+// <summary>
+// This LEL class handles numerical (real only) 1-argument functions
+// </summary>
 //
 // <use visibility=local>
 //
@@ -217,7 +221,101 @@ private:
 
 
 
-// <summary> This LEL class handles numerical functions whose return type is a Float </summary>
+// <summary>
+// This LEL class handles functions with a variable number of arguments.
+// </summary>
+//
+// <use visibility=local>
+//
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunctionEnums"> LELFunctionEnums</linkto>
+// </prerequisite>
+//
+// <etymology>
+//  This derived LEL letter class handles numerical functions (arbitrary
+//  number of arguments) which return any data type
+// </etymology>
+//
+// <synopsis>
+// This templated LEL letter class is derived from LELInterface.
+// It is used to construct LEL objects that apply functions of
+// arbitrary number of arguments to Lattice expressions.
+// They operate lattices with any type and return the same type.
+// The available C++ function is 
+// <src>iif</src> with equivalents in the enum of IIF.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// </synopsis> 
+//
+// <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Complex> w(shape); w.set(Complex(2.0,3.0));
+// ArrayLattice<Float> x(shape); x.set(0.05);
+// ArrayLattice<Float> y(shape); y.set(2.0);
+// ArrayLattice<Float> z(shape); y.set(2.0);
+//
+// z.copyData(iif(x==0, y, x));
+//
+// </srcblock>
+// Copy x to z, but where x==0, take the correpsonding element from y.
+// </example>b
+//
+// <motivation>
+// An "if-then-else" like construction is very useful.
+// </motivation>
+//
+// <todo asof="1998/01/21">
+// </todo>
+
+
+template<class T> class LELFunctionND : public LELInterface<T>
+{
+public: 
+   
+// Constructor takes operation and expressions to be operated upon
+   LELFunctionND(const LELFunctionEnums::Function function,
+		 const Block<LatticeExprNode>& expr);
+
+// Destructor 
+  ~LELFunctionND();
+
+// Recursively evaluate the expression 
+   virtual void eval (Array<T>& result,
+                      const PixelRegion& region) const;
+
+// Recursively evaluate the scalar expression 
+   virtual T getScalar() const;
+
+// Do further preparations (e.g. optimization) on the expression.
+   virtual void prepare();
+
+// Get class name
+   virtual String className() const;
+
+private:
+   LELFunctionEnums::Function function_p;
+   Block<LatticeExprNode> arg_p;
+};
+
+
+
+
+// <summary>
+// This LEL class handles numerical functions whose return type is a Float
+// </summary>
 //
 // <use visibility=local>
 //
@@ -311,7 +409,9 @@ private:
 
 
 
-// <summary> This LEL class handles numerical functions whose return type is a Double </summary>
+// <summary>
+// This LEL class handles numerical functions whose return type is a Double
+// </summary>
 //
 // <use visibility=local>
 //
@@ -412,7 +512,9 @@ private:
 
 
 
-// <summary> This LEL class handles complex numerical functions </summary>
+// <summary>
+// This LEL class handles complex numerical functions
+// </summary>
 //
 // <use visibility=local>
 //
@@ -500,7 +602,9 @@ private:
 
 
 
-// <summary> This LEL class handles double complex numerical functions </summary>
+// <summary>
+// This LEL class handles double complex numerical functions
+// </summary>
 //
 // <use visibility=local>
 //
@@ -584,7 +688,9 @@ private:
 };
 
 
-// <summary> This LEL class handles logical functions </summary>
+// <summary>
+// This LEL class handles logical functions
+// </summary>
 //
 // <use visibility=local>
 //
