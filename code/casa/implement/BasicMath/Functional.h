@@ -1,5 +1,5 @@
 //# Functional.h: Objects which map a domain object into a range object via operator().
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,6 @@
 #define AIPS_FUNCTIONAL_H
 
 #include <aips/aips.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
