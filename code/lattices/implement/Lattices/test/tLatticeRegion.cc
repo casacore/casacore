@@ -58,8 +58,8 @@ void doIt (const IPosition& latticeShape,
     cout << "slicer: " << reg2.get() << endl;
 
     // Take a slicer of the slicer.
-    LatticeRegion reg2a(Slicer(IPosition(ndim,0), reg2.shape()-1,
-			       IPosition(2,1,2), Slicer::endIsLast),
+    LatticeRegion reg2a((Slicer(IPosition(ndim,0), reg2.shape()-1,
+			       IPosition(2,1,2), Slicer::endIsLast)),
 			reg2.shape());
     AlwaysAssertExit (! reg2a.hasMask());
     AlwaysAssertExit (allEQ (reg2a.get(), True));
@@ -67,7 +67,7 @@ void doIt (const IPosition& latticeShape,
 }
 
 
-main()
+int main()
 {
     try {
 	doIt (IPosition (2,11,20),
