@@ -30,8 +30,8 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>
 
-VisBuffer::VisBuffer():visIter_p((ROVisibilityIterator*)0),This(this),
-  nChannel_p(0),nRow_p(0),twoWayConnection_p(False)
+VisBuffer::VisBuffer():visIter_p((ROVisibilityIterator*)0),
+twoWayConnection_p(False),This(this),nChannel_p(0),nRow_p(0)
 {validate();}
 
 VisBuffer::VisBuffer(ROVisibilityIterator& iter):visIter_p(&iter),This(this)
@@ -334,10 +334,6 @@ Matrix<CStokesVector>&
 VisBuffer::fillVis(VisibilityIterator::DataColumn whichOne)
 {
   switch (whichOne) {
-  case VisibilityIterator::Observed:
-    visOK_p=True; 
-    return visIter_p->visibility(visibility_p,whichOne);
-    break;
   case VisibilityIterator::Model:
     modelVisOK_p=True;
     return visIter_p->visibility(modelVisibility_p,whichOne);
@@ -346,16 +342,17 @@ VisBuffer::fillVis(VisibilityIterator::DataColumn whichOne)
     correctedVisOK_p=True;
     return visIter_p->visibility(correctedVisibility_p,whichOne);
     break;    
+  case VisibilityIterator::Observed:
+  default:
+    visOK_p=True; 
+    return visIter_p->visibility(visibility_p,whichOne);
+    break;
   }
 }
 
 Cube<Complex>& VisBuffer::fillVisCube(VisibilityIterator::DataColumn whichOne)
 { 
   switch(whichOne) {
-  case VisibilityIterator::Observed:
-    visCubeOK_p=True; 
-    return visIter_p->visibility(visCube_p,whichOne);
-    break;
   case VisibilityIterator::Model:
     modelVisCubeOK_p=True; 
     return visIter_p->visibility(modelVisCube_p,whichOne);
@@ -363,6 +360,11 @@ Cube<Complex>& VisBuffer::fillVisCube(VisibilityIterator::DataColumn whichOne)
   case VisibilityIterator::Corrected:
     correctedVisCubeOK_p=True; 
     return visIter_p->visibility(correctedVisCube_p,whichOne);
+    break;
+  case VisibilityIterator::Observed:
+  default:
+    visCubeOK_p=True; 
+    return visIter_p->visibility(visCube_p,whichOne);
     break;
   }
 }
