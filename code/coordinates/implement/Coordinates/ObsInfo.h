@@ -83,11 +83,12 @@ class ostream;
 // </example>
 //
 // <motivation>
-// Record in a typesafe way image summary information users are used to from
-// classic AIPS.
+// Record information to allow more full measures conversion, e.g. topo->lsr
+// requires observatory location and time. Also record in a typesafe way
+// image summary information users are used to from classic AIPS.
 // </motivation>
 //
-// <todo asof="1998/08/25">
+// <todo asof="1998/10/16">
 //   <li> Nothing known
 // </todo>
 
@@ -111,7 +112,7 @@ public:
     ObsInfo& setTelescope(const String &telescope);
     // </group>
 
-    // The name (or initialis) of the observer. Defaults to "UNKNOWN".
+    // The name (or initials) of the observer. Defaults to "UNKNOWN".
     // <group>
     String observer() const;
     ObsInfo& setObserver(const String &observer);
@@ -119,7 +120,7 @@ public:
     
     // When was the observation taken (start time)? This is somewhat
     // problematical for observations which are taken at multiple
-    // epochs. You should use the start time of the first observation.
+    // epochs. You should use the start time of the first sample.
     // The default is the MEpoch default: MJD 0 UTC
     // <group>
     MEpoch obsDate() const;
