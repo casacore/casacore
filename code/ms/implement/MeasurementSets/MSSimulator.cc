@@ -626,8 +626,14 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
       ms.field().addRow(nField); //INTERFEROMETER CASE
     }
     Double numofpointingcycle=(Tend_p-Tstart_p)/((Tgap_p+Tint_p)*nField);
-    ms.pointing().addRow(Int(numofpointingcycle*nField)*nAnt_p);
-    Int numpointrows=Int(numofpointingcycle*nField)*nAnt_p;
+    Int numpointrows=Int(numofpointingcycle*nField);
+    Double remainderpointings=(Tend_p-Tstart_p-
+			       numpointrows*(Tgap_p+Tint_p))/(Tgap_p+Tint_p);
+    numpointrows=numpointrows+Int(remainderpointings);
+    if((remainderpointings-Int(remainderpointings))*(Tgap_p+Tint_p)/Tint_p >=1.0)
+      numpointrows += 1;
+    numpointrows=numpointrows*nAnt_p;
+    ms.pointing().addRow(numpointrows);
     fieldc.code().fillColumn("");
     fieldc.time().fillColumn(Tstart_p);
     pointingc.time().fillColumn(Tstart_p);
@@ -1116,8 +1122,15 @@ void MSSimulator::extendMS(MeasurementSet & ms)
       newFieldRows=nField;
     }
     Double numofpointingcycle=(Tend_p-Tstart_p)/((Tgap_p+Tint_p)*nField);
-    ms.pointing().addRow(Int(numofpointingcycle*nField)*nAnt_p);
-    Int numpointrows=numPointing+Int(numofpointingcycle*nField)*nAnt_p;
+    Int numpointrows=Int(numofpointingcycle*nField);
+    Double remainderpointings=(Tend_p-Tstart_p-
+			       numpointrows*(Tgap_p+Tint_p))/(Tgap_p+Tint_p);
+    numpointrows=numpointrows+Int(remainderpointings);
+    if((remainderpointings-Int(remainderpointings))*(Tgap_p+Tint_p)/Tint_p >=1.0)
+      numpointrows += 1;
+    numpointrows=numpointrows*nAnt_p;
+    ms.pointing().addRow(numpointrows);
+    numpointrows += numPointing;
     fieldc.code().fillColumn("");
     for (Int m=numField; m < numField+newFieldRows; m++){
       fieldc.time().put(m, Tstart_p);
