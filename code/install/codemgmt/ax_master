@@ -5998,3 +5998,9 @@
 17 030 sys rm libexec/dishgauss.g
 17 030 src rm trial/apps/dish/dishgaussgui.g
 17 030 sys rm libexec/dishgaussgui.g
+17 032 src rm nrao/implement/VLA/VlaArchiveIO.cc
+17 032 src rm nrao/implement/VLA/VlaArchiveIO.h
+17 032 src rm nrao/implement/VLA/VlaMSSink.cc
+17 032 src rm nrao/implement/VLA/VlaMSSink.h
+17 032 src rm nrao/implement/VLA/VlaRecord.h
+17 032 src rm nrao/implement/VLA/VlaRecord.cc
