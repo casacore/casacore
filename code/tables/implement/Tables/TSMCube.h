@@ -194,7 +194,7 @@ public:
     // </group>
 
     // Test if the id values match.
-    Bool matches (const PtrBlock<TSMColumn*> idColSet,
+    Bool matches (const PtrBlock<TSMColumn*>& idColSet,
 		  const Record& idValues);
 
     // Extend the last dimension of the cube with the given number.
