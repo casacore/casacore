@@ -979,10 +979,13 @@ Vector<Double> CoordinateSystem::referenceValue() const
 
 Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 {
-    AlwaysAssert(names.nelements()==nWorldAxes(), AipsError);
+    Bool ok = ToBool(names.nelements()==nWorldAxes());
+    if (!ok) {
+      set_error("names vector must be of length nWorldAxes()");
+      return False;
+    }
+//
     const uInt nc = nCoordinates();
-    Bool ok = True;
-
     for (uInt i=0; i<nc; i++) {
 	Vector<String> tmp = coordinates_p[i]->worldAxisNames();
 	const uInt na = tmp.nelements();
@@ -1001,10 +1004,13 @@ Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units,
 					 Bool adjust)
 {
-    AlwaysAssert(units.nelements()==nWorldAxes(), AipsError);
+    Bool ok = ToBool(units.nelements()==nWorldAxes());
+    if (!ok) {
+      set_error("units vector must be of length nWorldAxes()");
+      return False;
+    }
+//
     const uInt nc = nCoordinates();
-    Bool ok = True;
-
     for (uInt i=0; i<nc; i++) {
 	Vector<String> tmp = coordinates_p[i]->worldAxisUnits();
 	uInt na = tmp.nelements();
@@ -1022,10 +1028,13 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units,
 
 Bool CoordinateSystem::setReferencePixel(const Vector<Double> &refPix)
 {
-    AlwaysAssert(refPix.nelements()==nPixelAxes(), AipsError);
+    Bool ok = ToBool(refPix.nelements()==nPixelAxes());
+    if (!ok) {
+      set_error("ref. pix vector must be of length nPixelAxes()");
+      return False;
+    }
+//
     const uInt nc = nCoordinates();
-    Bool ok = True;
-
     for (uInt i=0; i<nc; i++) {
 	Vector<Double> tmp = coordinates_p[i]->referencePixel();
 	uInt na = tmp.nelements();
@@ -1065,10 +1074,13 @@ Bool CoordinateSystem::setLinearTransform(const Matrix<Double> &xform)
 
 Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 {
-    AlwaysAssert(inc.nelements()==nWorldAxes(), AipsError);
+    Bool ok = ToBool(inc.nelements()==nWorldAxes());
+    if (!ok) {
+      set_error("increment vector must be of length nWorldAxes()");
+      return False;
+    }
+//
     const uInt nc = nCoordinates();
-    Bool ok = True;
-
     for (uInt i=0; i<nc; i++) {
 	Vector<Double> tmp = coordinates_p[i]->increment();
 	uInt na = tmp.nelements();
@@ -1086,10 +1098,13 @@ Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 
 Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
 {
-    AlwaysAssert(refval.nelements()==nWorldAxes(), AipsError);
+    Bool ok = ToBool(refval.nelements()==nWorldAxes());
+    if (!ok) {
+      set_error("ref. val vector must be of length nWorldAxes()");
+      return False;
+    }
+//
     const uInt nc = nCoordinates();
-    Bool ok = True;
-
     for (uInt i=0; i<nc; i++) {
 	Vector<Double> tmp = coordinates_p[i]->referenceValue();
 	uInt na = tmp.nelements();
