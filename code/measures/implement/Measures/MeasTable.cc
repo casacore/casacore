@@ -828,7 +828,7 @@ void MeasTable::initObservatories() {
     for (Int i=0; i<N; i++) {
       row.get(i);
       obsNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
-      if (!tmp.giveMe(*RORecordFieldPtr<String>(row.record(), "Type"), mr)) {
+      if (!tmp.giveMe(mr, *RORecordFieldPtr<String>(row.record(), "Type"))) {
 	LogIO os(LogOrigin("MeasTable",
 			   String("initObservatories()"),
 			   WHERE));
@@ -943,7 +943,7 @@ void MeasTable::initSources() {
     for (Int i=0; i<N; i++) {
       row.get(i);
       srcNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
-      if (!tmp.giveMe(*RORecordFieldPtr<String>(row.record(), "Type"), mr)) {
+      if (!tmp.giveMe(mr, *RORecordFieldPtr<String>(row.record(), "Type"))) {
 	LogIO os(LogOrigin("MeasTable",
 			   String("initSources()"),
 			   WHERE));
