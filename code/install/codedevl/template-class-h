@@ -251,6 +251,8 @@
 
 //#! Includes go here
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary>
@@ -449,6 +451,8 @@ private:
 //#!  // <group name=ostream)
 //#!  ostream &operator<< (ostream &, const Slicer &);
 //#!  // <group>
+
+} //# NAMESPACE CASA - END
 
 #endif
 

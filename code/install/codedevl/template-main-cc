@@ -26,3 +26,6 @@
 //# $Id$
 
 //# Includes
+
+#include <casa/namespace.h>
+

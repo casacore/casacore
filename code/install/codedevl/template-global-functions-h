@@ -246,6 +246,8 @@
 
 //#! Includes go here
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary>
@@ -427,5 +429,7 @@
 //#!  //    Array <here> Efficiency of binary io</here> operators.
 //#!  // </linkfrom>
 //#!
+
+} //# NAMESPACE CASA - END
 
 #endif
