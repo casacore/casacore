@@ -72,7 +72,7 @@ void Regex::create (const String& exp, int fast, int bufsize,
   if (tlen > bufsize)
     bufsize = tlen;
   buf->allocated = bufsize;
-  buf->buffer = (char *) malloc (buf->allocated);
+  buf->buffer = new char(buf->allocated);
   int orig = re_set_syntax (RE_NO_BK_PARENS+       // use () for grouping
 			    RE_NO_BK_VBAR+         // use | for OR
 			    RE_INTERVALS+          // intervals are possible
