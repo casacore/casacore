@@ -170,7 +170,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
         } else {      
 
 // If inPtr == 0, it means that in the previous pass, the coordinate
-// information for the regrid axis was identical (in==out) so we didn't
+// and shape information for the regrid axis was identical (in==out) so we didn't
 // actually need to regrid, but just swap in and out pointers.
 
            if (inPtr) delete inPtr;
@@ -299,6 +299,9 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
           os << "You cannot regrid the DirectionCoordinate as it is of shape [1,1]" 
              << LogIO::EXCEPTION;
        }
+       const IPosition inShape = inPtr->shape();
+       Bool shapeDiff = (outShape2(outPixelAxes(0)) != inShape(inPixelAxes(0))) ||
+                        (outShape2(outPixelAxes(1)) != inShape(inPixelAxes(1)));
 
 // Get DirectionCoordinates for input and output
 
@@ -307,14 +310,14 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        DirectionCoordinate inDir = inCoords.directionCoordinate(inCoordinate);
        DirectionCoordinate outDir = outCoords.directionCoordinate(outCoordinate);
 
-// See if we really need to regrid this axis.  If the coordinates are the same
-// there is nothing to do apart from swap in and out pointers or copy on last pass
+// See if we really need to regrid this axis.  If the coordinates and shape are the 
+// same there is nothing to do apart from swap in and out pointers or copy on last pass
 
-       Bool regridIt = forceRegrid || !(inDir.near(outDir));
+       Bool regridIt = shapeDiff || forceRegrid || !(inDir.near(outDir));
        Bool lastPass = allEQ(doneOutPixelAxes, True);
 //
        if (!regridIt) {
-          os << "Input and output coordinate information for these axes equal - no regridding needed" << LogIO::POST;
+          os << "Input and output shape/coordinate information for these axes equal - no regridding needed" << LogIO::POST;
           if (lastPass) {
 
 // Can't avoid this copy
@@ -327,7 +330,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
           return;
        }
 
-// Regrid
+// Deal with pointers
 
        if (lastPass) {
           outPtr = finalOutPtr;
@@ -388,6 +391,8 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
        outShape2(outPixelAxes(outAxisInCoordinate)) = 
            outShape(outPixelAxes(outAxisInCoordinate));
+       const IPosition inShape = inPtr->shape();
+       Bool shapeDiff = (outShape2(outPixelAxes(0)) != inShape(inPixelAxes(0)));
 
 // Get Coordinates.  Set world axis units for input and output coordinates for this pixel
 // axis to be the same.  We can only do this via the CoordinateSystem (or casting)
@@ -407,11 +412,11 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
        IPosition t(1, outAxisInCoordinate);
        IPosition excludeAxes = IPosition::otherAxes(outCoord.nPixelAxes(), t);
-       Bool regridIt = forceRegrid || !(inCoord.near(outCoord, excludeAxes.asVector()));
+       Bool regridIt = shapeDiff || forceRegrid || !(inCoord.near(outCoord, excludeAxes.asVector()));
        Bool lastPass = allEQ(doneOutPixelAxes, True);
 //
        if (!regridIt) {
-          os << "Input and output coordinate information for this axis equal - no regridding needed" << LogIO::POST;
+          os << "Input and output shape/coordinate information for this axis equal - no regridding needed" << LogIO::POST;
           if (lastPass) {
 
 // Can't avoid this copy
@@ -424,7 +429,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
           return;
        }
 
-// Regrid
+// Deal with pointers
 
        if (lastPass) {
           outPtr = finalOutPtr;
