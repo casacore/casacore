@@ -29,7 +29,7 @@
 #define AIPS_CANONICALCONVERSION_H
 
 //# Includes
-#include <aips/aipstype.h>
+#include <aips/aipsxtype.h>
 #include <aips/OS/Conversion.h>
 
 

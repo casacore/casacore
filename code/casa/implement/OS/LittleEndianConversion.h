@@ -29,7 +29,7 @@
 #define AIPS_LITTLEENDIANCONVERSION_H
 
 //# Includes
-#include <aips/aipstype.h>
+#include <aips/aipsxtype.h>
 #include <aips/OS/CanonicalConversion.h>
 
 
