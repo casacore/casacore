@@ -1,5 +1,5 @@
 //# TableInfo.cc: Table type, subtype and further info
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -170,6 +170,7 @@ String TableInfo::type(Type tableType)
     case WEATHER: return "Weather";
     case ME_CALIBRATION: return "Calibration";
     case LOG: return "Log message";
+    case COMPONENTLIST: return "Component List";
     default: return "";
     };
 }
@@ -192,6 +193,7 @@ String TableInfo::subType(Type tableType)
     case WEATHER: return "";
     case ME_CALIBRATION: return "";
     case LOG: return "";
+    case COMPONENTLIST: return "";
     default: return "";
     };
 }

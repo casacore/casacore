@@ -160,7 +160,10 @@ public:
 	// Measurement Equation Calibration table
 	ME_CALIBRATION,
 	// AIPS++ Log table
-	LOG
+	LOG,
+	// A ComponentList table contains parameterised representations of the
+	// sky brightness.
+	COMPONENTLIST
     };
 
     // Create an empty object.
