@@ -260,14 +260,23 @@ Bool StokesCoordinate::near(const Coordinate* pOther,
                             const Vector<Int>& excludeAxes,
                             Double tol) const
 {
-   if (pOther->type() != this->type()) return False;
+   if (pOther->type() != this->type()) {
+      set_error("Comparison is not with another StokesCoordinate");
+      return False;
+   }
 
    StokesCoordinate* sCoord = (StokesCoordinate*)pOther;
 
 // Check name and units
 
-   if (name_p != sCoord->name_p) return False;
-   if (unit_p != sCoord->unit_p) return False;
+   if (name_p != sCoord->name_p) {
+      set_error("The StokesCoordinates have differing world axis names");
+      return False;
+   }
+   if (unit_p != sCoord->unit_p) {
+      set_error("The StokesCoordinates have differing axis units");
+      return False;
+   }
 
 
 // Number of pixel and world axes is the same for a StokesCoordinate
@@ -284,7 +293,10 @@ Bool StokesCoordinate::near(const Coordinate* pOther,
 // is ever actually used.
 
    for (Int i=0; i<values_p.nelements(); i++) {
-      if (!::near(values_p[i],sCoord->values_p[i],tol)) return False;
+      if (!::near(values_p[i],sCoord->values_p[i],tol)) {
+         set_error("The StokesCoordinates have different Stokes values on the axis");
+         return False;
+      }
    }
  
    return True;
