@@ -41,6 +41,13 @@ LCPagedMask::LCPagedMask (const TiledShape& latticeShape,
 			  const String& tableName)
 : LCBox (IPosition(latticeShape.shape().nelements(), 0),
 	 latticeShape.shape()-1, latticeShape.shape())
+//
+// Note that LCPagedMask does not populate the itsMask
+// member variable of LCRegionFixed.  This is because
+// that is an ArrayLattice<Bool>  We do set the pointer
+// of LCRegionSingle with the address of LCPagedMask::itsMask
+// though.  
+//
 {
     itsMask = PagedArray<Bool> (latticeShape, tableName);
     setMaskPtr (itsMask);
@@ -65,9 +72,12 @@ LCPagedMask::LCPagedMask (PagedArray<Bool>& mask,
     setMaskPtr (itsMask);
 }
 
-LCPagedMask::LCPagedMask (const LCPagedMask& that)
-: LCBox (that)
-{}
+LCPagedMask::LCPagedMask (const LCPagedMask& other)
+: LCBox (other),
+  itsMask(other.itsMask)
+{
+    setMaskPtr (itsMask);
+}
 
 LCPagedMask::~LCPagedMask()
 {}
@@ -78,6 +88,26 @@ LCPagedMask& LCPagedMask::operator= (const LCPagedMask& that)
 	LCBox::operator= (that);
     }
     return *this;
+}
+
+Bool LCPagedMask::operator== (const LCRegion& other) const
+{
+
+// Check below us
+
+   if (LCBox::operator!=(other)) return False;
+
+// Check masks
+
+   if (!masksEqual(other)) return False;
+
+   return True;
+}
+
+Bool LCPagedMask::operator!= (const LCRegion& other) const
+{
+   if (LCPagedMask::operator==(other)) return False;
+   return True;
 }
 
 LCRegion* LCPagedMask::cloneRegion() const
@@ -96,6 +126,11 @@ LCRegion* LCPagedMask::doTranslate (const Vector<Float>&,
 String LCPagedMask::className()
 {
     return "LCPagedMask";
+}
+
+String LCPagedMask::type() const
+{
+   return className();
 }
 
 TableRecord LCPagedMask::toRecord (const String&) const
