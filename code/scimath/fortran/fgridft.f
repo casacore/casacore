@@ -19,16 +19,17 @@ C
       integer irow
       integer support, sampling
       integer chanmap(nvischan), polmap(nvischan)
-      logical dopsf
+      integer dopsf
 
       complex nvalue
 
       double precision convFunc(*)
-      double precision norm, wt
+      real norm
+      real wt, wtx, wty
 
       logical ogridft
 
-      double precision pos(2)
+      real pos(2)
       integer loc(2), off(2), iloc(2)
       integer rbeg, rend
       integer ix, iy, ipol, ichan
@@ -56,7 +57,7 @@ C
      $                    (apol.ge.1).and.(apol.le.npol)) then
 C If we are making a PSF then we don't want to phase
 C rotate but we do want to reproject uvw
-                        if(dopsf) then
+                        if(dopsf.eq.1) then
                            nvalue=cmplx(weight(ichan,irow))
                         else
                            nvalue=weight(ichan,irow)*
@@ -65,9 +66,11 @@ C rotate but we do want to reproject uvw
                         norm=0.0
                         do iy=-support,support
                            iloc(2)=abs(sampling*iy+off(2))+1
+                           wty=convFunc(iloc(2))
                            do ix=-support,support
                               iloc(1)=abs(sampling*ix+off(1))+1
-                              wt=convFunc(iloc(1))*convFunc(iloc(2))
+                              wtx=convFunc(iloc(1))
+                              wt=wtx*wty
                               grid(loc(1)+ix,loc(2)+iy,apol,achan)=
      $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)+
      $                             nvalue*wt
@@ -107,16 +110,16 @@ C
       complex nvalue
 
       double precision convFunc(*)
-      double precision norm
+      real norm
 
       logical ogridft
 
-      double precision pos(2)
+      real pos(2)
       integer loc(2), off(2), iloc(2)
       integer rbeg, rend
       integer ix, iy, ipol, ichan
       integer apol, achan
-      double precision wt
+      real wt, wtx, wty
 
       if(irow.ge.0) then
          rbeg=irow+1
@@ -141,9 +144,11 @@ C
                         norm=0.0
                         do iy=-support,support
                            iloc(2)=abs(sampling*iy+off(2))+1
+                           wty=convFunc(iloc(2))
                            do ix=-support,support
                               iloc(1)=abs(sampling*ix+off(1))+1
-                              wt=convFunc(iloc(1))*convFunc(iloc(2))
+                              wtx=convFunc(iloc(1))
+                              wt=wtx*wty
                               norm=norm+wt
                               nvalue=nvalue+wt*
      $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)
@@ -168,7 +173,8 @@ C
       implicit none
       integer sampling
       integer loc(2), off(2)
-      double precision uvw(3), freq, c, scale(2), offset(2), pos(2)
+      double precision uvw(3), freq, c, scale(2), offset(2)
+      real pos(2)
       double precision dphase, phase
       complex phasor
       integer idim
