@@ -2859,3 +2859,4 @@
 11 429 src rm atnf/apps/pksgridzilla/templates
 11 438 src mv trial/implement/ComponentModels/test/tcomponentlist.g trial/implement/ComponentModels/tcomponentlist.g
 11 438 src mv trial/scripts/aipsview.g trial/apps/aipsview/aipsview.g
+11 438 src mv trial/scripts/aipsview_meta.g trial/apps/aipsview/aipsview_meta.g
