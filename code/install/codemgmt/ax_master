@@ -4449,3 +4449,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSSpWindowEnums.h aips/implement/MeasurementSets/OldMSSpWindowEnums.h
 14 296 src mv aips/implement/MeasurementSets/MSSysCal.cc aips/implement/MeasurementSets/OldMSSysCal.cc
 14 296 src mv aips/implement/MeasurementSets/MSSysCal.h aips/implement/MeasurementSets/OldMSSysCal.h
+14 296 src mv aips/implement/MeasurementSets/MSSysCalColumns.cc aips/implement/MeasurementSets/OldMSSysCalColumns.cc
