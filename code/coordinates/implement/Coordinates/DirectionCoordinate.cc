@@ -1920,8 +1920,8 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
     world[1]= mv.getLat()  / to_radians_p[1];
 }
 
-void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world,
-                                             const Vector<Double>& refVal) const
+void DirectionCoordinate::makeWorldAbsoluteRef (Vector<Double>& world,
+                                                const Vector<Double>& refVal) const
 {
     static MVDirection mv;
     DebugAssert(world.nelements()==2, AipsError);

@@ -433,8 +433,8 @@ public:
     // to the given reference value.  Add the other functions in this grouping
     // as needed.
     //<group>
-    virtual void makeWorldAbsolute (Vector<Double>& world,
-                                    const Vector<Double>& refVal) const;
+    virtual void makeWorldAbsoluteRef (Vector<Double>& world,
+                                       const Vector<Double>& refVal) const;
     //</group>
 
     // Recover the requested attribute.

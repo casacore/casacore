@@ -1325,8 +1325,8 @@ void CoordinateSystem::makeWorldRelative (Vector<Double>& world) const
 
 
 
-void CoordinateSystem::makeWorldAbsolute (Vector<Double>& world,
-                                          const Vector<Double>& refVal) const
+void CoordinateSystem::makeWorldAbsoluteRef (Vector<Double>& world,
+                                             const Vector<Double>& refVal) const
 {
     AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
     AlwaysAssert(refVal.nelements() == nWorldAxes(), AipsError);
@@ -1355,8 +1355,8 @@ void CoordinateSystem::makeWorldAbsolute (Vector<Double>& world,
 
 // Convert for this coordinate. 
 
-	coordinates_p[i]->makeWorldAbsolute(*(world_tmps_p[i]),
-                                            *(worldOut_tmps_p[i]));
+	coordinates_p[i]->makeWorldAbsoluteRef (*(world_tmps_p[i]),
+                                                *(worldOut_tmps_p[i]));
 
 // Copy to output
 
@@ -3689,7 +3689,7 @@ void CoordinateSystem::makePixelRelativeMany (Matrix<Double>& pixel) const
 
 
 
-void CoordinateSystem::makeWorldAbsRelMany (Matrix<Double>& world, Bool abs) const
+void CoordinateSystem::makeWorldAbsRelMany (Matrix<Double>& world, Bool toAbs) const
 {
     const uInt nTransforms = world.ncolumn();
 
@@ -3716,7 +3716,7 @@ void CoordinateSystem::makeWorldAbsRelMany (Matrix<Double>& world, Bool abs) con
 
 // Do conversion using Coordinate specific implementation
 
-        if (abs) {
+        if (toAbs) {
   	   coordinates_p[k]->makeWorldAbsoluteMany(worldTmp);
         } else {
   	   coordinates_p[k]->makeWorldRelativeMany(worldTmp);
@@ -3734,7 +3734,7 @@ void CoordinateSystem::makeWorldAbsRelMany (Matrix<Double>& world, Bool abs) con
 }
 
 
-void CoordinateSystem::makePixelAbsRelMany (Matrix<Double>& pixel, Bool abs) const
+void CoordinateSystem::makePixelAbsRelMany (Matrix<Double>& pixel, Bool toAbs) const
 {
     const uInt nTransforms = pixel.ncolumn();
 
@@ -3761,7 +3761,7 @@ void CoordinateSystem::makePixelAbsRelMany (Matrix<Double>& pixel, Bool abs) con
 
 // Do conversion using Coordinate specific implementation
 
-        if (abs) {
+        if (toAbs) {
   	   coordinates_p[k]->makePixelAbsoluteMany(pixelTmp);
         } else {
   	   coordinates_p[k]->makePixelRelativeMany(pixelTmp);

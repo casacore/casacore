@@ -530,8 +530,8 @@ public:
     // as needed.    The vectors must be of length
     // <src>nPixelAxes()</src> or <src>nWorldAxes()</src>
     //<group>
-    virtual void makeWorldAbsolute (Vector<Double>& world,
-                                    const Vector<Double>& refVal) const;
+    virtual void makeWorldAbsoluteRef (Vector<Double>& world,
+                                       const Vector<Double>& refVal) const;
     //</group>
 
 
@@ -835,8 +835,8 @@ private:
 
     // Many abs/rel conversions
     // <group>
-    void makeWorldAbsRelMany (Matrix<Double>& value, Bool abs) const;
-    void makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const;
+    void makeWorldAbsRelMany (Matrix<Double>& value, Bool toAbs) const;
+    void makePixelAbsRelMany (Matrix<Double>& value, Bool toAbs) const;
     // </group>
 
     // Do subImage for Stokes
