@@ -29,7 +29,6 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/VectorIter.h>
-#include <aips/Arrays/Matrix.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
