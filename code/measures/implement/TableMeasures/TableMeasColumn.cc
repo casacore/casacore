@@ -35,9 +35,10 @@
 
 
 ROTableMeasColumn::ROTableMeasColumn()
-: itsNvals      (0),
-  itsVarRefFlag (False),
-  itsVarOffFlag (False)
+: itsNvals         (0),
+  itsStoreInternal (False),
+  itsVarRefFlag    (False),
+  itsVarOffFlag    (False)
 {}
 
 ROTableMeasColumn::ROTableMeasColumn (const Table& tab,
@@ -46,16 +47,18 @@ ROTableMeasColumn::ROTableMeasColumn (const Table& tab,
   itsTabDataCol (tab, columnName)
 {
   itsDescPtr = TableMeasDescBase::reconstruct (tab, columnName);
-  itsVarRefFlag = itsDescPtr->isRefCodeVariable();
-  itsVarOffFlag = itsDescPtr->isOffsetVariable();
+  itsStoreInternal = itsDescPtr->storeInternalValues();
+  itsVarRefFlag    = itsDescPtr->isRefCodeVariable();
+  itsVarOffFlag    = itsDescPtr->isOffsetVariable();
 }
 
 ROTableMeasColumn::ROTableMeasColumn (const ROTableMeasColumn& that)
-: itsNvals      (that.itsNvals),
-  itsDescPtr    (that.itsDescPtr),
-  itsTabDataCol (that.itsTabDataCol),
-  itsVarRefFlag (that.itsVarRefFlag),
-  itsVarOffFlag (that.itsVarOffFlag)
+: itsNvals         (that.itsNvals),
+  itsStoreInternal (that.itsStoreInternal),
+  itsDescPtr       (that.itsDescPtr),
+  itsTabDataCol    (that.itsTabDataCol),
+  itsVarRefFlag    (that.itsVarRefFlag),
+  itsVarOffFlag    (that.itsVarOffFlag)
 {}
 
 ROTableMeasColumn::~ROTableMeasColumn()
@@ -64,6 +67,7 @@ ROTableMeasColumn::~ROTableMeasColumn()
 void ROTableMeasColumn::reference (const ROTableMeasColumn& that)
 {
   itsNvals   = that.itsNvals;
+  itsStoreInternal = itsStoreInternal;
   itsDescPtr = that.itsDescPtr;
   itsTabDataCol.reference (that.itsTabDataCol);
   itsVarRefFlag = that.itsVarRefFlag;

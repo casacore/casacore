@@ -43,19 +43,23 @@
 
 
 TableMeasDescBase::TableMeasDescBase()
+: itsStoreInternal (False)
 {}
 
 TableMeasDescBase::TableMeasDescBase (const TableMeasValueDesc& value,
-				      const TableMeasRefDesc& ref)
-: itsValue(value),
-  itsRef(ref)
+				      const TableMeasRefDesc& ref,
+				      Bool storeInternalValues)
+: itsValue         (value),
+  itsRef           (ref),
+  itsStoreInternal (storeInternalValues)
 {}
 
 TableMeasDescBase::TableMeasDescBase (const TableMeasDescBase& that)
-: itsValue(that.itsValue),
-  itsRef(that.itsRef),
-  itsMeasType(that.itsMeasType),
-  itsUnits(that.itsUnits)
+: itsValue         (that.itsValue),
+  itsRef           (that.itsRef),
+  itsMeasType      (that.itsMeasType),
+  itsStoreInternal (that.itsStoreInternal),
+  itsUnits         (that.itsUnits)
 {}
 
 TableMeasDescBase::~TableMeasDescBase()
@@ -83,7 +87,14 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
     throw(AipsError("TableMeasDescBase::reconstruct; MEASINFO record not "
 		    "found for column " + columnName));
   }
-  
+
+  // get the storeInternal flag
+  Bool storeInternal = False;
+  fnr = measInfo.fieldNumber("Internal");
+  if (fnr >= 0) {
+    storeInternal = measInfo.asBool (fnr);
+  }
+
   // get the units
   fnr = measInfo.fieldNumber("NumUnits");
   uInt numUnits;
@@ -113,6 +124,7 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
   TableMeasDescBase* p = new TableMeasDescBase();
   p->itsValue = TableMeasValueDesc (tab.tableDesc(), columnName);
   p->itsMeasType = TableMeasType(measHolder.asMeasure());
+  p->itsStoreInternal = storeInternal;
   p->itsUnits = units;
   p->itsRef = TableMeasRefDesc (measInfo, tab, *p);
 
@@ -122,10 +134,11 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
 TableMeasDescBase& TableMeasDescBase::operator= (const TableMeasDescBase& that)
 {
   if (this != &that) {
-    itsValue = that.itsValue;
-    itsRef = that.itsRef;
-    itsMeasType = that.itsMeasType;
-    itsUnits = that.itsUnits;
+    itsValue         = that.itsValue;
+    itsRef           = that.itsRef;
+    itsMeasType      = that.itsMeasType;
+    itsStoreInternal = that.itsStoreInternal;
+    itsUnits         = that.itsUnits;
   }
   return *this;
 }
@@ -138,6 +151,9 @@ void TableMeasDescBase::write (TableDesc& td)
   // Create a record from the MeasType and add it to measInfo
   itsMeasType.toRecord (measType);
   measInfo.defineRecord ("Type", measType);
+  if (itsStoreInternal) {
+    measInfo.define ("Internal", itsStoreInternal);
+  }
   // Add the units
   measInfo.define ("NumUnits", itsUnits.nelements());
   for (uInt i=0; i<itsUnits.nelements(); i++) {

@@ -65,8 +65,14 @@ ROScalarMeasColumn<M>::ROScalarMeasColumn (const Table& tab,
   // Create the data column. If the underlying measure can handle a
   // single value for its data then use a ScalarColumn otherwise an
   // ArrayColumn is needed to store the data component of the Measures.
-  M tMeas;
-  itsNvals = tMeas.getValue().getRecordValue().nelements();
+  if (itsStoreInternal) {
+    typename M::MVType tmp;
+    itsNvals = tmp.getVector().nelements();
+    cout << "itsnvals=" << itsNvals << endl;
+  } else {
+    M tmp;
+    itsNvals = tmp.getValue().getRecordValue().nelements();
+  }
   if (itsNvals == 1) {
     itsScaDataCol = new ROScalarColumn<Double>(tab, columnName);
   } else {
@@ -164,21 +170,20 @@ void ROScalarMeasColumn<M>::attach (const Table& tab,
 template<class M>
 void ROScalarMeasColumn<M>::get (uInt rownr, M& meas) const
 {
-// 17/03/99 - this commented stuff replaced in full by what follows.
-// Purpose was to move from usage of put and getVector function to
-// putValue and getRecordValue
-//    MV measVal;
-//    measVal.putVector((*itsArrDataCol)(rownr));
-//    if (itsVarRefFlag) {
-//	setMeasRef(rownr);
-//    }
-//    meas.set(measVal, itsMeasRef);
+  if (itsStoreInternal) {
+    typename M::MVType measVal;
+    if (itsArrDataCol != 0) {
+      measVal.putVector ((*itsArrDataCol)(rownr));
+    } else {
+      measVal.putVector (Vector<Double>(1, (*itsScaDataCol)(rownr)));
+    }
+    meas.set (measVal, makeMeasRef(rownr));
+    return;
+  }
 
-  //  typename M::MVType measVal;
   Vector<Quantum<Double> > qvec(itsNvals);
 
 //    cerr << "ROSMC::get ITS UNITS IS: " << itsUnits.getName() << endl;
-
   const Vector<Unit>& units = measDesc().getUnits();
   if (itsScaDataCol != 0) {
     qvec(0).setValue ((*itsScaDataCol)(rownr));
@@ -468,37 +473,41 @@ void ScalarMeasColumn<M>::put (uInt rownr, const M& meas)
     locMeas = conv();
     //    cerr << " After convert: " << locMeas << locMeas.getRef() << endl;
   }
-    
+
   if (itsVarRefFlag) {
     if (itsRefStrCol != 0) {
-      itsRefStrCol->put(rownr, M::showType(locMeas.getRef().getType()));
+      itsRefStrCol->put (rownr, M::showType(locMeas.getRef().getType()));
     } else {
-      itsRefIntCol->put(rownr, locMeas.getRef().getType());
+      itsRefIntCol->put (rownr, locMeas.getRef().getType());
     }
   }
   if (itsOffsetCol != 0) {
     if (locMeas.getRef().offset() != 0) {
-      itsOffsetCol->put(rownr, M(locMeas.getRef().offset()));
+      itsOffsetCol->put (rownr, M(locMeas.getRef().offset()));
     } else {
-      itsOffsetCol->put(rownr, M());
+      itsOffsetCol->put (rownr, M());
     }
   }
 
-  // 17/03/99 - this commented stuff replaced in full by what follows.
-  // Purpose was to move from usage of put and getVector function to
-  // putValue and getRecordValue
-  //    itsArrDataCol->put(rownr, locMeas.getValue().getVector());
-
-  const Vector<Unit>& units = measDesc().getUnits();
-  Vector<Quantum<Double> > qvec = locMeas.getValue().getRecordValue();
-  if (itsScaDataCol != 0) {
-    itsScaDataCol->put (rownr, qvec(0).getValue(units(0)));
-  } else {
-    Vector<Double> d_vec(itsNvals);
-    for (uInt i=0; i<itsNvals; i++) {
-      d_vec(i) = qvec(i).getValue(units(i));
+  // Store as internal or external values.
+  if (itsStoreInternal) {
+    if (itsArrDataCol != 0) {
+      itsArrDataCol->put (rownr, locMeas.getValue().getVector());
+    } else {
+      itsScaDataCol->put (rownr, locMeas.getValue().getVector()(0));
     }
-    itsArrDataCol->put (rownr, d_vec);
+  } else {
+    const Vector<Unit>& units = measDesc().getUnits();
+    Vector<Quantum<Double> > qvec = locMeas.getValue().getRecordValue();
+    if (itsScaDataCol != 0) {
+      itsScaDataCol->put (rownr, qvec(0).getValue(units(0)));
+    } else {
+      Vector<Double> d_vec(itsNvals);
+      for (uInt i=0; i<itsNvals; i++) {
+	d_vec(i) = qvec(i).getValue(units(i));
+      }
+      itsArrDataCol->put (rownr, d_vec);
+    }
   }
 }
 

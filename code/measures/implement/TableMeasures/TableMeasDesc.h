@@ -231,7 +231,11 @@ public:
   // Constructor with measure value descriptor.  The Measure reference for
   // the column will be the default reference code for M.  Units for the
   // column will be the default for the Measure type.
-  TableMeasDesc (const TableMeasValueDesc&);
+  // <br>If <src>storeInternalValues==True</src>, the measure's internal
+  // values will be stored. E.g. for an MDirection it means that the 3
+  // direction cosines are stored instead of the 2 values RA/Dec.
+  TableMeasDesc (const TableMeasValueDesc&,
+		 Bool storeInternalValues = False);
 
   // Constructor with measure value descriptor and Vector of Units.  
   // The Measure reference for the column will be the default reference 
@@ -241,7 +245,8 @@ public:
 
   // Constructor with value and reference descriptors. Units for the 
   // column will be the default for Measure type.
-  TableMeasDesc (const TableMeasValueDesc&, const TableMeasRefDesc&);
+  TableMeasDesc (const TableMeasValueDesc&, const TableMeasRefDesc&,
+		 Bool storeInternalValues = False);
     
   // Constructor with value and reference descriptors and Vector of
   // Units. Number of Units must be compatible with the Measure.
