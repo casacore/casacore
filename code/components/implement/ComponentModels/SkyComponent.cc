@@ -29,6 +29,7 @@
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/ComponentModels/PointCompRep.h>
+#include <trial/ComponentModels/SIPointCompRep.h>
 #include <trial/ComponentModels/GaussianCompRep.h>
 #include <trial/Images/ImageInterface.h>
 #include <aips/Arrays/Vector.h>
@@ -55,14 +56,76 @@ SkyComponent::SkyComponent(ComponentType::Shape shape) {
     itsCompPtr = new PointCompRep; break;
   case ComponentType::GAUSSIAN:
     itsCompPtr = new GaussianCompRep; break;
-  case ComponentType::UNKNOWN_SHAPE:
-  case ComponentType::NUMBER_SHAPES:
-    throw(AipsError("SkyComponent::Unable to construct a component of "
-		    "UNKNOWN shape"));
+  case ComponentType::UNKNOWN_SHAPE: {
+    String errorMessage = "SkyComponent::Unable to construct a component of "
+      + ComponentType::name(ComponentType::UNKNOWN_SHAPE) + " shape";
+    throw(AipsError(errorMessage));
+    }
+    break;
+  case ComponentType::NUMBER_SHAPES: {
+    String errorMessage = "SkyComponent::Unable to construct a component of "
+      + ComponentType::name(ComponentType::NUMBER_SHAPES) + " shape";
+    throw(AipsError(errorMessage));
+    }
+    break;
   };    
   AlwaysAssert(ok(), AipsError);
 }
 
+SkyComponent::SkyComponent(ComponentType::Shape shape,
+			   ComponentType::SpectralShape spectralModel) {
+  if (spectralModel == ComponentType::SPECTRAL_INDEX) {
+    switch (shape){
+    case ComponentType::POINT:
+      itsCompPtr = new SIPointCompRep; break;
+    case ComponentType::GAUSSIAN: {
+      String errorMessage = "SkyComponent::Unable to construct a component of "
+	+ ComponentType::name(ComponentType::GAUSSIAN) + " shape with a "
+	+ ComponentType::name(ComponentType::SPECTRAL_INDEX) 
+	+ " spectral model";
+      throw(AipsError(errorMessage));
+    }
+    break;
+    case ComponentType::UNKNOWN_SHAPE: {
+      String errorMessage = "SkyComponent::Unable to construct a component of "
+	+ ComponentType::name(ComponentType::UNKNOWN_SHAPE) + " shape with a "
+	+ ComponentType::name(ComponentType::SPECTRAL_INDEX) 
+	+ " spectral model";
+      throw(AipsError(errorMessage));
+    }
+    break;
+    case ComponentType::NUMBER_SHAPES: {
+      String errorMessage = "SkyComponent::Unable to construct a component of "
+	+ ComponentType::name(ComponentType::NUMBER_SHAPES) + " shape with a "
+	+ ComponentType::name(ComponentType::SPECTRAL_INDEX) 
+	+ " spectral model";
+      throw(AipsError(errorMessage));
+    }
+    break;
+    };    
+  } else {
+    switch (shape){
+    case ComponentType::POINT:
+      itsCompPtr = new PointCompRep; break;
+    case ComponentType::GAUSSIAN:
+      itsCompPtr = new GaussianCompRep; break;
+    case ComponentType::UNKNOWN_SHAPE: {
+      String errorMessage = "SkyComponent::Unable to construct a component of "
+	+ ComponentType::name(ComponentType::UNKNOWN_SHAPE) + " shape";
+	throw(AipsError(errorMessage));
+    }
+    break;
+    case ComponentType::NUMBER_SHAPES: {
+      String errorMessage = "SkyComponent::Unable to construct a component of "
+	+ ComponentType::name(ComponentType::NUMBER_SHAPES) + " shape";
+	throw(AipsError(errorMessage));
+    }
+    break;
+    };    
+  }
+  
+  AlwaysAssert(ok(), AipsError);
+}
 SkyComponent::SkyComponent(const SkyComponent & other) 
   :itsCompPtr(other.itsCompPtr)
 { 
@@ -154,11 +217,16 @@ ComponentType::Shape SkyComponent::shape() const {
   return itsCompPtr->shape();
 }
 
+ComponentType::SpectralShape SkyComponent::spectralShape() const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->spectralShape();
+}
+
 Bool SkyComponent::fromRecord(String & errorMessage, 
 			      const GlishRecord & record) {
   DebugAssert(ok(), AipsError);
   // First check that the shapes match;
-  if (checkShape(errorMessage, record) == False) return False;
+  if (!checkShape(errorMessage, record)) return False;
   return itsCompPtr->fromRecord(errorMessage, record);
 }
 
@@ -171,8 +239,8 @@ Bool SkyComponent::toRecord(String & errorMessage,
 ComponentType::Shape SkyComponent::getShape(String & errorMessage,
 					    const GlishRecord & record) {
   if (!record.exists("shape")) {
-    errorMessage += "\nThe record does not have a 'shape' field";
-    return ComponentType::UNKNOWN_SHAPE;
+    errorMessage += "\nAssuming the component has a point shape";
+    return ComponentType::POINT;
   }
   if (record.get("shape").type() != GlishValue::RECORD) {
     errorMessage += "\nThe 'shape' field must be a record";
@@ -198,11 +266,47 @@ ComponentType::Shape SkyComponent::getShape(String & errorMessage,
     return ComponentType::UNKNOWN_SHAPE;
   }
   String typeString;
-  if (typeField.get(typeString) == False) {
+  if (!typeField.get(typeString)) {
     errorMessage += "\nCould not read the 'type' field for an unknown reason";
     return ComponentType::UNKNOWN_SHAPE;
   }
   return ComponentType::shape(typeString);
+}
+
+ComponentType::SpectralShape SkyComponent::
+getSpectralShape(String & errorMessage, const GlishRecord & record) {
+  if (!record.exists("spectrum")) {
+    errorMessage += "\nAssuming the component has a constant spectrum";
+    return ComponentType::CONSTANT_SPECTRUM;
+  } if (record.get("spectrum").type() != GlishValue::RECORD) {
+    errorMessage += "\nThe 'spectrum' field must be a record";
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }
+  const GlishRecord spectrumRec = record.get("spectrum");
+  if (!spectrumRec.exists("type")) {
+    errorMessage += "\nThe spectrum record does not have a 'type' field";
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }
+  if (spectrumRec.get("type").type() != GlishValue::ARRAY) {
+    errorMessage += "\nThe 'type' field cannot be a record";
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }
+  const GlishArray typeField = spectrumRec.get("type");
+  if (typeField.elementType() != GlishArray::STRING) {
+    errorMessage += "\nThe 'type' field must be a string";
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }
+  const IPosition shape = typeField.shape();
+  if (shape.nelements() != 1 || shape.product() != 1) {
+    errorMessage +="\nThe 'type' field must be a vector with only one element";
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }
+  String typeString;
+  if (!typeField.get(typeString)) {
+    errorMessage += "\nCould not read the 'type' field for an unknown reason";
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }
+  return ComponentType::spectralShape(typeString);
 }
 
 SkyComponent SkyComponent::copy() const {
@@ -230,13 +334,13 @@ SkyComponent SkyComponent::copy() const {
 }
 
 Bool SkyComponent::ok() const {
-  if (itsCompPtr.null() == True) {
+  if (itsCompPtr.null()) {
     LogIO logErr(LogOrigin("SkyComponent", "ok()"));
     logErr << LogIO::SEVERE << "Internal pointer is not pointing to anything"
            << LogIO::POST;
     return False;
   }
-  if (itsCompPtr->ok() == False) {
+  if (!itsCompPtr->ok()) {
     LogIO logErr(LogOrigin("SkyComponent", "ok()"));
     logErr << LogIO::SEVERE << "Component representation is not ok"
            << LogIO::POST;
@@ -259,18 +363,34 @@ const SkyCompRep * SkyComponent::rawPtr() const {
 
 Bool SkyComponent::checkShape(String & errorMessage, 
 			      const GlishRecord & record) const {
-  String typeMessage = "";
-  ComponentType::Shape recordType = getShape(typeMessage, record);
-  if (typeMessage != "") {
-    errorMessage += typeMessage;
+  ComponentType::Shape recordType = getShape(errorMessage, record);
+  if (recordType == ComponentType::UNKNOWN_SHAPE) {
     return False;
   }
   if (recordType != shape()) {
     errorMessage += 
-      String("\nThe record is for a component of type ") 
+      String("\nThe record is for a component with a ") 
       + ComponentType::name(recordType)
-      + String(" and cannot be assigned to a SkyComponent of type ")
-      + ComponentType::name(shape());
+      + String(" shape and cannot be assigned to a SkyComponent with a ")
+      + ComponentType::name(shape()) + String(" shape");
+    return False;
+  }
+  return True;
+}
+
+Bool SkyComponent::checkSpectralShape(String & errorMessage, 
+				      const GlishRecord & record) const {
+  ComponentType::SpectralShape recordType = 
+    getSpectralShape(errorMessage, record);
+  if (recordType == ComponentType::UNKNOWN_SPECTRAL_SHAPE) {
+    return False;
+  }
+  if (recordType != spectralShape()) {
+    errorMessage += 
+      String("\nThe record is for a component with a ") 
+      + ComponentType::name(recordType)
+      + String(" spectrum and cannot be assigned to a SkyComponent with a ")
+      + ComponentType::name(spectralShape()) + String(" spectrum");
     return False;
   }
   return True;
