@@ -54,7 +54,7 @@ template <class T> class ImageInterface;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class="SkyComponent">SkyComponent</linkto>
+//   <li> <linkto class="SkyCompBase">SkyCompBase</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -65,31 +65,39 @@ template <class T> class ImageInterface;
 //
 // <synopsis> 
 
-// This class is a container that allows many SkyComponents (or objects
-// derived from SkyComponent) to be grouped together and manipulated as one
-// large compound component. The major operations of this class are:
-// <ul>
-// <li> Functions to add and delete components
-// <li> Functions to traverse the list and extract individual components
-// <li> Functions to designate components as being selected or not
-// <li> Functions to sample the flux of the components in any direction and
-//      grid them onto an Image
-// <li> Functions to save the components to a table and read them back 
+// This class is a container that allows many SkyComponents to be grouped
+// together and manipulated as one large compound component. The major
+// operations of this class are:
+// <dl>
+// <dt> Functions to traverse the list and extract individual components
+// <dd> See the <src>nelements</src> & <src>component</src> functions
+// <dt> Functions to add and delete components.
+// <dd> See the <src>add</src>, <src>remove</src> & <src>copy</src> functions
+// <dt> Functions to designate components as being selected or not
+// <dd> See the <src>select</src>, <src>deselect</src> & <src>selected/src>
+//      functions
+// <dt> Functions to sample the flux of the components in any direction and
+//      frequency or to grid them onto an Image.
+// <dd> See the <src>sample</src> & <src>project</src> functions.
+// <dt> Functions to save the components to a table and read them back 
 //      again
-// </ul>
-
-
-//#! What does the class do?  How?  For whom?  This should include code
-//#! fragments as appropriate to support text.  Code fragments shall be
-//#! delimited by <srcblock> </srcblock> tags.  The synopsis section will
-//#! usually be dozens of lines long.
+// <dd> See the <src>rename</src> function and the appropriate constructor.
+// <dt> Functions to manipulate the flux of all components
+// <dd> See the <src>setFlux</src>, <src>convertFluxUnit</src> &
+//      <src>convertFluxPol</src> functions.
+// <dt> functions to sort the components
+// <dd> See the <src>sort</src>, <src>type</src> &
+//      <src>namel</src> functions.
+// </dl>
 // </synopsis>
 //
 // <example>
-// 
-//#! One or two concise (~10-20 lines) examples, with a modest amount of
-//#! text to support code fragments.  Use <srcblock> and </srcblock> to
-//#! delimit example code.
+// These examples are coded in the tComponentList.h file.
+// <h4>Example 1:</h4>
+// In this example a ComponentList object is created and used to calculate the
+// ...
+// <srcblock>
+// </srcblock>
 // </example>
 //
 // <motivation>
@@ -98,14 +106,12 @@ template <class T> class ImageInterface;
 // </motivation>
 //
 // <thrown>
-//    <li>
-//    <li>
+// <li> AipsError - If an internal inconsistancy is detected, when compiled in 
+// debug mode only.
 // </thrown>
 //
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+// <todo asof="1998/05/22">
+//   <li> Nothing I hope. But I expect users will disagree.
 // </todo>
 
 class ComponentList {
@@ -153,11 +159,21 @@ public:
   // Add a SkyComponent to the end of the ComponentList. The list length is
   // increased by one when using this function. By default the newly added
   // component is not selected.
+  // <thrown>
+  // <li> AipsError - If the list is associated with a table that was opened
+  //                  readonly.
+  // </thrown>
   void add(SkyComponent component);
 
   // Remove the specified SkyComponent from the ComponentList. After removing a
   // component all the components with an index greater than this one will be
   // reduced by one.
+  // <thrown>
+  // <li> AipsError - If the list is associated with a table that was opened
+  //                  readonly.
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list.
+  // </thrown>
   void remove(const uInt & index);
 
   // returns how many components are in the list.
@@ -165,30 +181,56 @@ public:
 
   // deselect the specified component. Throws an exception (AipsError) if any
   // element in the index is out of range, ie. index >= nelements().
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
   void deselect(const Vector<Int> & index);
 
   // select the specified component. Throws an exception (AipsError) if any
   // element in the index is out of range, ie. index >= nelements().
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
   void select(const Vector<Int> & index);
 
   // Returns a Vector whose indices indicate which components are selected
   Vector<Int> selected() const;
 
   // set the flux on the specified components to the specified flux
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
   void setFlux(const Vector<Int> & whichComponents,
 	       const Flux<Double> & newFlux);
 
   // convert the flux on the specified components to the specified units
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
   void convertFluxUnit(const Vector<Int> & whichComponents,
 		       const Unit & unit);
   
   // convert the flux on the specified components to the specified 
   // polarisation representation
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
   void convertFluxPol(const Vector<Int> & whichComponents,
 		      ComponentType::Polarisation pol);
   
  
   // returns a reference to the specified element in the list.
+  // <thrown>
+  // <li> AipsError - If the list is associated with a table that was opened
+  //                  readonly (non-const version only).
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list.
+  // </thrown>
   // <group>
   const SkyComponent & component(const uInt & index) const;
   SkyComponent & component(const uInt & index);
@@ -198,6 +240,11 @@ public:
   // ComponentList is already associated with a Table then the Table will be
   // renamed. Hence this function cannot be used with ComponentLists that are
   // constructed with readonly=True.
+  // <thrown>
+  // <li> AipsError - If the list is associated with a table that was opened
+  //                  readonly
+  // <li> AipsError - If option is Table::Old as this does not make sense
+  // </thrown>
   void rename(const String & newName, 
 	      const Table::TableOption option=Table::New);
 
@@ -220,10 +267,20 @@ public:
   Bool ok() const;
 
 private:
+  // Privarte function to create the Table which will hold the components
   void createTable(const String & fileName, const Table::TableOption option);
+  // Private function to write the components to disk
+  // <thrown>
+  // <li> AipsError - If the table is not writable
+  // </thrown>
   void writeTable();
+
+  // Private function to read the components from disk
+  // <thrown>
+  // <li> AipsError - If the table is not readable
+  // <li> AipsError - If the table is not writable (and readOnly==False)
+  // </thrown>
   void readTable(const String & fileName, const Bool readOnly);
-  //  Int compareAbsI(const void * comp1Ptr, const void * comp2Ptr);
   Block<SkyComponent> itsList;
   uInt itsNelements;
   Table itsTable;
