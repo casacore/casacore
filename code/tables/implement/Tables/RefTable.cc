@@ -303,8 +303,9 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
     if (version > 1) {
         ios >> names;
     }
-    else { cout << "no names vector" << endl;
-    }
+    // This must be Ger's debugging code: commentd out 99/12/31 TJC
+    //    else { cout << "no names vector" << endl;
+    //    }
     ios >> rootNrow;
     ios >> rowOrd_p;
     ios >> nrrow;
