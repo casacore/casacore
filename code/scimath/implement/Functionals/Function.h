@@ -265,7 +265,7 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   // <group>
   void lockParam()   { locked_p = True; };
   void unlockParam() { locked_p = False; };
-  // </group?
+  // </group>
   
   // get/set the function mode.  These provide an interface to 
   // function-specific configuration or state that controls how the 
