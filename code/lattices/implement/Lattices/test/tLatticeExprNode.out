@@ -276,6 +276,7 @@ isNaN
   Complex Scalar
   Float Array
   Complex Array
+indexin
 
 2-argument functions 
 atan2
@@ -661,6 +662,7 @@ isNaN
   Complex Scalar
   Float Array
   Complex Array
+indexin
 
 2-argument functions 
 atan2
@@ -1046,6 +1048,7 @@ isNaN
   Complex Scalar
   Float Array
   Complex Array
+indexin
 
 2-argument functions 
 atan2
