@@ -1156,20 +1156,10 @@ Bool CoordinateUtil::cylindricalFix (CoordinateSystem& cSys, String& errorMessag
 // check shape here
 
    DirectionCoordinate dirCoord (cSys.directionCoordinate(coord));
-//
-   cerr << "refVal = " << dirCoord.referenceValue() << endl;
-   cerr << "refPix = " << dirCoord.referencePixel() << endl;
-   cerr << "Call DirectionCoordinate::cylindricalFix" << endl << endl;
-
    if (!dirCoord.cylindricalFix (shape(pixelAxes[0]), shape(pixelAxes[1]))) {
       errorMessage = dirCoord.errorMessage();
       return False;      
    }
-//
-   cerr << "refVal = " << dirCoord.referenceValue() << endl;
-   cerr << "ok = " << True << endl;
-   cerr << "refVal = " << dirCoord.referenceValue() << endl;
-   cerr << "refPix = " << dirCoord.referencePixel() << endl;
 //
    cSys.replaceCoordinate (dirCoord, coord);
    return True;
