@@ -32,7 +32,6 @@
 #include <aips/aips_exit.h>
 #include <sys/types.h>
 #include <aips/aips.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Utilities/String.h>
 
 // <summary>Base class for all AIPS++ library errors</summary>
@@ -68,34 +67,32 @@
 //
 // <todo asof="">
 // </todo>
-//
-class AipsError : public ExcpError {
+
+class AipsError
+{
 protected:
   String message;
 public:
   //
   // Simply returns the stored error message.
   //
-  const String &getMesg() const {return(message);}
+  const String &getMesg() const
+    { return(message); }
+
   //
   // Creates an AipsError and initializes the error message from
   // the parameter
   // <group>
-  AipsError(const Char *str=0);
-  AipsError(const String &str);
+  AipsError (const Char *str=0);
+  AipsError (const String &str);
   // </group>
-
-  //
-  // This constructor is used by the exception mecanism to perform
-  // type checking.
-  //
-  AipsError(ExcpError *excp);
 
   //
   // Destructor which does nothing.
   //
   ~AipsError();
 };
+
 
 // <summary>Allocation errors</summary>
 // <use visibility=export>
@@ -119,7 +116,7 @@ public:
 //
 // <todo asof="">
 // </todo>
-//
+
 class AllocError : public AipsError {
 protected:
   size_t Size;
@@ -139,17 +136,12 @@ public:
   size_t size() {return(Size);}
 
   //
-  // This constructor is used by the exception mecanism to perform
-  // type checking.
-  //
-  AllocError(ExcpError *excp);
-  
-  //
   // Destructor which does nothing.
   //
   ~AllocError();
 
 };
+
 
 // <summary>Base class for all indexing errors</summary>
 // <use visibility=export>
@@ -172,10 +164,7 @@ public:
 //
 // <todo asof="">
 // </todo>
-//
-// 
-//
-//
+
 class IndexError : public AipsError {
 public:
   //
@@ -185,12 +174,6 @@ public:
   IndexError(const Char *str=0) : AipsError(str) {}
   IndexError(const String &str) : AipsError(str) {}
   // </group>
-
-  //
-  // This constructor is used by the exception mecanism to perform
-  // type checking.
-  //
-  IndexError(ExcpError *excp);
 
   //
   // Destructor which does nothing.
@@ -219,9 +202,7 @@ public:
 //
 // <todo asof="">
 // </todo>
-//
-// 
-//
+
 template<class t> class indexError : public IndexError {
 protected:
   t oIndex;                 // Offending Index
@@ -236,18 +217,10 @@ public:
   // </group>
 
   //
-  // This constructor is used by the exception mecanism to perform
-  // type checking.
-  //
-  indexError(ExcpError *excp);
-
-  //
   // Destructor which does nothing.
   //
   ~indexError();
-
 };
-
 
 
 // <summary>Duplicate key errors</summary>
@@ -271,7 +244,7 @@ public:
 //
 // <todo asof="">
 // </todo>
-//
+
 class DuplError : public AipsError {
 public:
   //
@@ -283,17 +256,11 @@ public:
   // </group>
 
   //
-  // This constructor is used by the exception mecanism to perform
-  // type checking.
-  //
-  DuplError(ExcpError *excp);
-
-  //
   // Destructor which does nothing.
   //
   ~DuplError();
-
 };
+
 
 // <summary>Duplicate key errors where the bad key is returned</summary>
 // <use visibility=export>
@@ -316,7 +283,7 @@ public:
 //
 // <todo asof="">
 // </todo>
-//
+
 template<class t> class duplError : public DuplError {
 protected:
   t oKey;                   // Offending Key
@@ -331,18 +298,10 @@ public:
   // </group>
 
   //
-  // This constructor is used by the exception mecanism to perform
-  // type checking.
-  //
-  duplError(ExcpError *excp);
-
-  //
   // Destructor which does nothing.
   //
   ~duplError();
-
 };
-
 
 
 // <summary>Exception which halts execution</summary>
@@ -364,7 +323,7 @@ public:
 //
 // <todo asof="">
 // </todo>
-//
+
 class AbortError : public AipsError {
 public:
   //
@@ -381,7 +340,5 @@ public:
   ~AbortError();
 };
 
-// To make these error files known to the system..
-#include <aips/Utilities/RegexError.h>
 
 #endif
