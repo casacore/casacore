@@ -169,7 +169,11 @@
            endif
            breaksw
         case Linux:
-           set a_arch = linux
+           if (`uname -r` =~ 2.2.*) then
+              set a_arch = linux22
+           else
+              set a_arch = linux
+           endif
            breaksw
         IRIX*:
            set a_arch = sgi

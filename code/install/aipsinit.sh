@@ -180,7 +180,14 @@
            a_arch=hpux
            ;;
         Linux)
-           a_arch=linux
+           case `uname -r` in
+           2.2.*)
+              a_arch=linux22
+              ;;
+           *)
+              a_arch=linux
+              ;;
+           esac
            ;;
         IRIX*)
            a_arch=sgi
