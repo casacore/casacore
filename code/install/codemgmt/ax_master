@@ -3498,3 +3498,4 @@
 13 285 src mv trial/implement/Lattices/test/dPagedArray.cc aips/implement/Lattices/test/dPagedArray.cc
 13 285 src mv trial/implement/Lattices/test/tArrayLattice.cc aips/implement/Lattices/test/tArrayLattice.cc
 13 285 src mv trial/implement/Lattices/test/tLatticeIndexer.cc aips/implement/Lattices/test/tLatticeIndexer.cc
+13 285 src mv trial/implement/Lattices/test/tLatticeIterator.cc aips/implement/Lattices/test/tLatticeIterator.cc
