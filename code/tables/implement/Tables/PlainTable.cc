@@ -67,7 +67,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     //# If the table already exists, exit if it is in use.
     if (Table::isReadable (name_p)) {
 	TableLockData tlock (TableLock (TableLock::UserLocking, 0));
-	tlock.makeLock (name_p, False, True);
+	tlock.makeLock (name_p, False, FileLocker::Write);
 	if (tlock.isMultiUsed()) {
 	    throw (TableError ("Table " + name_p + " cannot be created; "
 			       "it is in use in another process"));
@@ -87,8 +87,8 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     //# When needed, it sets a permanent write lock.
     //# Acquire a write lock.
     lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
-    lockPtr_p->makeLock (name_p, True, True);
-    lockPtr_p->acquire (0, True, 1);
+    lockPtr_p->makeLock (name_p, True, FileLocker::Write);
+    lockPtr_p->acquire (0, FileLocker::Write, 1);
     colSetPtr_p->linkToLockObject (this, lockPtr_p);
     //# Initialize the data managers.
     //# Set SetupNewTable object to in use.
@@ -133,8 +133,9 @@ PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
     //# When needed, it sets a permanent (read or write) lock.
     //# Otherwise acquire a read lock to read in the table.
     lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
-    lockPtr_p->makeLock (name_p, False, ToBool (opt != Table::Old));
-    lockPtr_p->acquire (&(lockSync_p.memoryIO()), False, 0);
+    lockPtr_p->makeLock (name_p, False,
+		   opt == Table::Old  ?  FileLocker::Read : FileLocker::Write);
+    lockPtr_p->acquire (&(lockSync_p.memoryIO()), FileLocker::Read, 0);
     uInt ncolumn;
     Bool tableChanged;
     Block<Bool> dmChanged;
@@ -222,7 +223,7 @@ void PlainTable::reopenRW()
 			   " cannot be opened for read/write"));
     }
     // When a permanent lock is in use, turn it into a write lock.
-    lockPtr_p->makeLock (name_p, False, True);
+    lockPtr_p->makeLock (name_p, False, FileLocker::Write);
     // Reopen the storage managers and the subtables in all keyword sets.
     colSetPtr_p->reopenRW();
     keywordSet().reopenRW();
@@ -249,16 +250,16 @@ void PlainTable::mergeLock (const TableLock& lockOptions)
 {
     lockPtr_p->merge (lockOptions);
 }
-Bool PlainTable::hasLock (Bool write) const
+Bool PlainTable::hasLock (FileLocker::LockType type) const
 {
-    return lockPtr_p->hasLock (write);
+    return lockPtr_p->hasLock (type);
 }
-Bool PlainTable::lock (Bool write, uInt nattempts)
+Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 {
     //# When the table is already locked (read locked is sufficient),
     //# no synchronization is needed (other processes could not write).
-    Bool noSync = hasLock (False);
-    if (! lockPtr_p->acquire (&(lockSync_p.memoryIO()), write, nattempts)) {
+    Bool noSync = hasLock (FileLocker::Read);
+    if (! lockPtr_p->acquire (&(lockSync_p.memoryIO()), type, nattempts)) {
 	return False;
     }
     if (!noSync) {
@@ -350,7 +351,7 @@ TableRecord& PlainTable::keywordSet()
 
 TableRecord& PlainTable::rwKeywordSet()
 {
-    colSetPtr_p->checkLock (True, True);
+    colSetPtr_p->checkLock (FileLocker::Write, True);
     tableChanged_p = True;
     return tdescPtr_p->rwKeywordSet();
 }
@@ -382,7 +383,7 @@ void PlainTable::addRow (uInt nrrw, Bool initialize)
     }
     //# Locking has to be done here, otherwise nrrow_p is not up-to-date
     //# when autoReleaseLock releases the lock and writes the data.
-    colSetPtr_p->checkLock (True, True);
+    colSetPtr_p->checkLock (FileLocker::Write, True);
     colSetPtr_p->addRow (nrrw);
     if (initialize) {
 	colSetPtr_p->initialize (nrrow_p, nrrow_p+nrrw-1);
@@ -398,7 +399,7 @@ void PlainTable::removeRow (uInt rownr)
     }
     //# Locking has to be done here, otherwise nrrow_p is not up-to-date
     //# when autoReleaseLock releases the lock and writes the data.
-    colSetPtr_p->checkLock (True, True);
+    colSetPtr_p->checkLock (FileLocker::Write, True);
     colSetPtr_p->removeRow (rownr);
     nrrow_p--;
     colSetPtr_p->autoReleaseLock();

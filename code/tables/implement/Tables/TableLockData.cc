@@ -1,5 +1,5 @@
 //# TableLockData.cc: Class to hold table lock data
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,8 @@ TableLockData::~TableLockData()
 }
 
 
-void TableLockData::makeLock (const String& name, Bool create, Bool write)
+void TableLockData::makeLock (const String& name, Bool create,
+			      FileLocker::LockType type)
 {
     //# Create lock file object only when not created yet.
     //# It is acceptable that no lock file exists for a readonly table
@@ -64,19 +65,20 @@ void TableLockData::makeLock (const String& name, Bool create, Bool write)
 	if (option() == PermanentLockingWait) {
 	    nattempts = 0;                          // wait
 	}
-	if (! itsLock->acquire (write, nattempts)) {
+	if (! itsLock->acquire (type, nattempts)) {
 	    throw (TableError ("Permanent lock on table " + name +
 			       " could not be acquired (" +
 			       itsLock->lastMessage() + ")"));
 	}
 	itsReadLocked = True;
-	if (write) {
+	if (type == FileLocker::Write) {
 	    itsWriteLocked = True;
 	}
     }
 }
 
-Bool TableLockData::acquire (MemoryIO* info, Bool write, uInt nattempts)
+Bool TableLockData::acquire (MemoryIO* info,
+			     FileLocker::LockType type, uInt nattempts)
 {
     //# Try to acquire a lock.
     //# Show a message when we have to wait for a long time.
@@ -85,10 +87,10 @@ Bool TableLockData::acquire (MemoryIO* info, Bool write, uInt nattempts)
     if (nattempts > 0  &&  nattempts < n) {
 	n = nattempts;
     }
-    Bool status = itsLock->doAcquire (info, write, n);
+    Bool status = itsLock->acquire (info, type, n);
     if (!status  &&  n != nattempts) {
 	String s = "read";
-	if (write) {
+	if (type == FileLocker::Write) {
 	    s = "write";
 	}
 	LogIO os;
@@ -98,7 +100,7 @@ Bool TableLockData::acquire (MemoryIO* info, Bool write, uInt nattempts)
 	if (nattempts > 0) {
 	    nattempts -= n;
 	}
-	status = itsLock->doAcquire (info, write, nattempts);
+	status = itsLock->acquire (info, type, nattempts);
 	if (status) {
 	    os << "Process " << uInt(getpid()) << ": acquired "
 	       << s << "-lock on file " << itsLock->name();
@@ -120,7 +122,7 @@ Bool TableLockData::acquire (MemoryIO* info, Bool write, uInt nattempts)
 	}
     }else{
 	itsReadLocked = True;
-	if (write) {
+	if (type == FileLocker::Write) {
 	    itsWriteLocked = True;
 	}
     }
@@ -137,7 +139,7 @@ void TableLockData::release (Bool always)
 		memIO = itsReleaseCallBack (itsReleaseParent, always);
 	    }
 	}
-	if (! itsLock->doRelease (memIO)) {
+	if (! itsLock->release (memIO)) {
 	    throw (TableError ("Error (" + itsLock->lastMessage() +
 			       ") when releasing lock on " + itsLock->name()));
 	}

@@ -31,14 +31,14 @@
 
 
 TableLocker::TableLocker (Table& table,
-			  TableLock::LockMode mode,
+			  FileLocker::LockType type,
 			  uInt nattempts)
 : itsTable (table)
 {
     itsTable.makePermanent();
-    if (! itsTable.lock (mode, nattempts)) {
+    if (! itsTable.lock (type, nattempts)) {
 	String str = "write";
-	if (mode == TableLock::Read) {
+	if (type == FileLocker::Read) {
 	    str = "read";
 	}
 	throw (TableError ("No " + str + " lock could be acquired on table " +

@@ -208,13 +208,13 @@ void RefTable::mergeLock (const TableLock& lockOptions)
 {
     baseTabPtr_p->mergeLock (lockOptions);
 }
-Bool RefTable::hasLock (Bool write) const
+Bool RefTable::hasLock (FileLocker::LockType type) const
 {
-    return baseTabPtr_p->hasLock (write);
+    return baseTabPtr_p->hasLock (type);
 }
-Bool RefTable::lock (Bool write, uInt nattempts)
+Bool RefTable::lock (FileLocker::LockType type, uInt nattempts)
 {
-    return baseTabPtr_p->lock (write, nattempts);
+    return baseTabPtr_p->lock (type, nattempts);
 }
 void RefTable::unlock()
 {

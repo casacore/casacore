@@ -1,5 +1,5 @@
 //# ExternalLockSync.cc: Class to hold table lock data
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,14 +39,14 @@ ExternalLockSync::~ExternalLockSync()
 {}
 
 void ExternalLockSync::makeLock (const String& tableName,
-				 Bool create, Bool write)
+				 Bool create, FileLocker::LockType type)
 {
-    itsLock.makeLock (tableName, create, write);
+    itsLock.makeLock (tableName, create, type);
 }
 
-Bool ExternalLockSync::acquire (Bool write, uInt nattempts)
+Bool ExternalLockSync::acquire (FileLocker::LockType type, uInt nattempts)
 {
-    if (! itsLock.acquire (&(itsSync.memoryIO()), write, nattempts)) {
+    if (! itsLock.acquire (&(itsSync.memoryIO()), type, nattempts)) {
 	return False;
     }
     uInt nrcol;

@@ -144,7 +144,7 @@ template<class T>
 void ArrayColumnData<T>::setShape (uInt rownr, const IPosition& shp)
 {
     checkShape (shp);
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     dataColPtr_p->setShape (rownr, shp);
     autoReleaseLock();
 }
@@ -153,7 +153,7 @@ void ArrayColumnData<T>::setShape (uInt rownr, const IPosition& shp,
 				   const IPosition& tileShp)
 {
     checkShape (shp);
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     dataColPtr_p->setShapeTiled (rownr, shp, tileShp);
     autoReleaseLock();
 }
@@ -189,7 +189,7 @@ Bool ArrayColumnData<T>::canAccessColumnSlice (Bool& reask) const
 template<class T>
 void ArrayColumnData<T>::get (uInt rownr, void* arrayPtr) const
 {
-    checkLock (False, True);
+    checkLock (FileLocker::Read, True);
     dataColPtr_p->getArrayV (rownr, (Array<T>*)arrayPtr);
     autoReleaseLock();
 }
@@ -198,7 +198,7 @@ template<class T>
 void ArrayColumnData<T>::getSlice (uInt rownr, const Slicer& ns,
 				   void* arrayPtr) const
 {
-    checkLock (False, True);
+    checkLock (FileLocker::Read, True);
     dataColPtr_p->getSliceV (rownr, ns, (Array<T>*)arrayPtr);
     autoReleaseLock();
 }
@@ -208,7 +208,7 @@ template<class T>
 void ArrayColumnData<T>::put (uInt rownr, const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     dataColPtr_p->putArrayV (rownr, (const Array<T>*)arrayPtr);
     autoReleaseLock();
 }
@@ -218,7 +218,7 @@ void ArrayColumnData<T>::putSlice (uInt rownr, const Slicer& ns,
 				   const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     dataColPtr_p->putSliceV (rownr, ns, (const Array<T>*)arrayPtr);
     autoReleaseLock();
 }
@@ -231,7 +231,7 @@ void ArrayColumnData<T>::putSlice (uInt rownr, const Slicer& ns,
 template<class T>
 void ArrayColumnData<T>::getArrayColumn (void* arrayPtr) const
 {
-    checkLock (False, True);
+    checkLock (FileLocker::Read, True);
     dataColPtr_p->getArrayColumnV ((Array<T>*)arrayPtr);
     autoReleaseLock();
 }
@@ -241,7 +241,7 @@ template<class T>
 void ArrayColumnData<T>::getArrayColumnCells (const RefRows& rownrs,
 					      void *arrayPtr) const
 {
-    checkLock (False, True);
+    checkLock (FileLocker::Read, True);
     dataColPtr_p->getArrayColumnCellsV (rownrs, arrayPtr);
     autoReleaseLock();
 }
@@ -250,7 +250,7 @@ template<class T>
 void ArrayColumnData<T>::getColumnSlice (const Slicer& ns,
 					 void* arrayPtr) const
 {
-    checkLock (False, True);
+    checkLock (FileLocker::Read, True);
     dataColPtr_p->getColumnSliceV (ns, (Array<T>*)arrayPtr);
     autoReleaseLock();
 }
@@ -260,7 +260,7 @@ void ArrayColumnData<T>::getColumnSliceCells (const RefRows& rownrs,
 					      const Slicer& ns,
 					      void* arrayPtr) const
 {
-    checkLock (False, True);
+    checkLock (FileLocker::Read, True);
     dataColPtr_p->getColumnSliceCellsV (rownrs, ns, arrayPtr);
     autoReleaseLock();
 }
@@ -269,7 +269,7 @@ template<class T>
 void ArrayColumnData<T>::putArrayColumn (const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     dataColPtr_p->putArrayColumnV ((const Array<T>*)arrayPtr);
     autoReleaseLock();
 }
@@ -279,7 +279,7 @@ void ArrayColumnData<T>::putArrayColumnCells (const RefRows& rownrs,
 					      const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     dataColPtr_p->putArrayColumnCellsV (rownrs, arrayPtr);
     autoReleaseLock();
 }
@@ -289,7 +289,7 @@ void ArrayColumnData<T>::putColumnSlice (const Slicer& ns,
 					 const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     dataColPtr_p->putColumnSliceV (ns, (const Array<T>*)arrayPtr);
     autoReleaseLock();
 }
@@ -300,7 +300,7 @@ void ArrayColumnData<T>::putColumnSliceCells (const RefRows& rownrs,
 					      const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     dataColPtr_p->putColumnSliceCellsV (rownrs, ns, arrayPtr);
     autoReleaseLock();
 }

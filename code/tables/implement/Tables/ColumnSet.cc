@@ -1,5 +1,5 @@
 //# ColumnSet.cc: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -287,7 +287,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 			     DataManager* dataManPtr)
 {
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     //# When the column already exists, TableDesc::addColumn throws
     //# an exception.
     //# The creation and binding of a column will always succeed.
@@ -344,7 +344,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 void ColumnSet::addColumn (const TableDesc& tableDesc,
 			   const DataManager& dataManager, Table& tab)
 {
-    checkLock (True, True);
+    checkLock (FileLocker::Write, True);
     // Check if the data manager name has not been used already.
     checkDataManagerName (dataManager.dataManagerName(), 0);
     // Add the new table description to the current one.
@@ -581,14 +581,14 @@ DataManager* ColumnSet::getDataManager (uInt seqnr) const
 }
 
 
-void ColumnSet::doLock (Bool write, Bool wait)
+void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
 {
     if (lockPtr_p->option() != TableLock::AutoLocking) {
 	throw (TableError ("ColumnSet::checkLock: table should be locked "
 			   "when using PermenentLocking or UserLocking"));
     }
     uInt nattempts = (wait  ?  plainTablePtr_p->lockOptions().maxWait() : 1);
-    plainTablePtr_p->lock (write, nattempts);
+    plainTablePtr_p->lock (type, nattempts);
 }
 
 void ColumnSet::setTableChanged()
