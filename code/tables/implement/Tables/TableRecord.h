@@ -210,9 +210,11 @@ public:
     // Create a copy of other using copy semantics.
     TableRecord (const TableRecord& other);
 
-     // Create a TableRecord from another type of record using copy semantics.
-     // Subrecords are also converted to a TableRecord.
-     TableRecord (const RecordInterface& other);
+    // Create a TableRecord from another type of record.
+    // It uses copy-on-write semantics if possible (i.e. if
+    // <src>other</src> is a TableRecord), otherwise each field is copied.
+    // Subrecords are also copied and converted to TableRecords if needed.
+    TableRecord (const RecordInterface& other);
 
     // Copy the data in the other record to this record.
     // It can operate in 2 ways depending on the TableRecord structure flag.
@@ -243,8 +245,8 @@ public:
     virtual RecordInterface* clone() const;
 
     // Assign that RecordInterface object to this one.
-    // Unlike <src>operator=</src> it copies all data in the derived
-    // class.
+    // If <src>that</src> is a TableRecord, copy-on-write is used.
+    // Otherwise each individual field is copied.
     virtual void assign (const RecordInterface& that);
 
     // Get the comment for this field.
