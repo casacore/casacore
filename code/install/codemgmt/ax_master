@@ -2826,3 +2826,4 @@
 11 008 src mv trial/implement/Mathematics/sinusoidfitter.cc trial/implement/Mathematics/DOsinusoidfitter.cc
 11 012 src mv trial/apps/HDS trial/apps/hds
 11 015 src rm trial/implement/Lattices/test/dPagedArrIter.cc
+11 022 src mv doc/xreference doc/reference
