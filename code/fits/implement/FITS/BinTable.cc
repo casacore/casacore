@@ -73,8 +73,8 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
 	    int heapOffset = theap() - rowsize()*nrows();
 	    // Skip to the start of the heap
 	    // I don't see any way except to read these bogus bytes
-	    char junk[heapOffset];
-	    ExtensionHeaderDataUnit::read(junk, heapOffset);
+	    Block<char> junk(heapOffset);
+	    ExtensionHeaderDataUnit::read(junk.storage(), heapOffset);
 	}
 	theheap_p = new char [pcount()];
 	AlwaysAssert(theheap_p, AipsError);
