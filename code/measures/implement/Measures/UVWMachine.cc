@@ -1,5 +1,5 @@
 //# UVWMachine.cc: Converts UVW coordinates between coordinate systems
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -169,7 +169,7 @@ void UVWMachine::convertUVW(Vector<Double> &phase,
   MVPosition tmp;
   phase.resize(uv.nelements());
   for (uInt i=0; i<uv.nelements(); i++) {
-    tmp = uv(i);
+    tmp = MVPosition(uv(i));
     tmp *= uvrot_p;
     phase(i) = phrot_p * tmp;
     if (proj_p) tmp *= rot4_p;

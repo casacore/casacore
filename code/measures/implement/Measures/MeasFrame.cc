@@ -433,7 +433,7 @@ Bool MeasFrame::getLat(Double &tdb) {
 
 Bool MeasFrame::getITRF(MVPosition &tdb) {
   if (rep && rep->mymcf) return rep->getmvpos(rep->mymcf, GetITRF, tdb);
-  tdb = 0;
+  tdb = MVPosition(0.0);
   return False; 
 }
 

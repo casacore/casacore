@@ -199,7 +199,7 @@ Bool MCFrame::getITRF(MVPosition &tdb) {
     tdb = *posITRFp;
     return True;
   };
-  tdb = (Double) 0.0;
+  tdb = MVPosition(0.0);
   return False;
 }
 
