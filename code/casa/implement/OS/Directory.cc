@@ -34,12 +34,13 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/RegexError.h>
+#include <aips/Exceptions/Error.h>
 
+#include <stdexcept>
 #include <unistd.h>                 // needed for rmdir, unlink
 #include <sys/stat.h>               // needed for mkdir
 #include <errno.h>                  // needed for errno
-#include <aips/string.h>                 // needed for strerror
+#include <aips/string.h>            // needed for strerror
 
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
 #  if defined(AIPS_OSF)
@@ -378,8 +379,8 @@ Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPa
 
       try {
          exp = Regex::fromPattern(path.baseName());            
-      } catch (RegexExpressnError x) {
-         String msg = String("Error parsing file ") + files(i);
+      } catch (invalid_argument& x) {
+         String msg = String("Error parsing file pattern ") + files(i);
          throw (AipsError(msg));
       } 
 
