@@ -26,7 +26,7 @@
 //# $Id$
 // 
 //
-// IMSTAT iterates through an image accumulating and displaying statistics
+// dImageStatistics iterates through an image accumulating and displaying statistics
 //    from data chunks specified by the axes keyword.   The statistics
 //    are displayed as a function of location of the display axes
 //    (the axes not specified by keyword axes) with line plots.
@@ -157,7 +157,7 @@ try {
 
    Vector<Bool> validInputs(NDEFAULTS);
    validInputs = False;
-   LogOrigin or("imstat", "main()", WHERE);
+   LogOrigin or("dImageStatistics", "main()", WHERE);
    LogIO os(or);
  
 
