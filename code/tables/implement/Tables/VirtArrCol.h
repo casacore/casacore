@@ -1,5 +1,5 @@
 //# VirtArrCol.h: Templated base class for virtual array column
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,7 +81,7 @@ class Slicer;
 //   to handle arbitrary data types in the non-templated base class
 //   DataManagerColumn.
 //   In this templated VirtualArrayColumn class, virtual functions
-//   get/putArray and get/putSlice have been defined. They cast
+//   get/putArray, get/putSlice, etc. have been defined. They cast
 //   the void* data argument to Array<T>&, so in a derived class no care
 //   has to be taken for that cast.
 //   Furthermore a default implementation of the get/putSlice has been made.
@@ -91,17 +91,27 @@ class Slicer;
 //   By default the get/putArray functions thrown an "invalid operation"
 //   exception, so they have to be implemented in the derived class.
 //  <li>
-//   Similarly the function get/putArrayColumnV and get/putColumnSliceV
+//   Similarly the functions get/putArrayColumnV and get/putColumnSliceV
 //   have been templated to get/putArrayColumn and get/putColumnSlice.
 //   The default implementation of these latter functions handle a
 //   column by looping through its individual cells.
 //   For this purpose the functions canAccessArrayColumn and
 //   canAccessColumnSlice have also been implemented.
+//  <li>
+//   Similarly the functions get/putArrayColumnCellsV and
+//   get/putColumnSliceCells have been templated to
+//   get/putArrayColumnCells and get/putColumnSliceCells.
+//   However, their implementations throw an exception and the function
+//   canAccessArrayColumnCells has not implemented (so defaults to False).
+//   However, it makes it possible that a derived class
+//   (like <linkto class=ScaledComplexData>ScaledComplexData</linkto>)
+//   can implement these functions.
 // </ul>
-// An example of a virtual array column class is ScaledArray. Note that
-// this class is derived from VirtualColumnEngine and VirtualArrayColumn,
-// so it combines the functionality of DataManager and DataManagerColumn.
-// This is possible, because one ScaledArray engine can handle only one
+// An example of a virtual array column class is ScaledComplexData. Note that
+// this class is (indirectly) multiple derived from VirtualColumnEngine and
+// VirtualArrayColumn, so it combines the functionality of DataManager
+// and DataManagerColumn.
+// This is possible, because one ScaledComplexData engine can handle only one
 // column.
 // </synopsis> 
 
@@ -137,24 +147,24 @@ public:
     virtual ~VirtualArrayColumn();
 
     // Return the data type of the column.
-    int dataType() const;
+    virtual int dataType() const;
 
     // Return the data type Id of the column.
-    String dataTypeId() const;
+    virtual String dataTypeId() const;
 
     // By default no data can be put in a virtual column.
     virtual Bool isWritable() const;
 
-protected:
     // The class can handle a get/putSlice.
-    Bool canAccessSlice (Bool& reask) const;
+    virtual Bool canAccessSlice (Bool& reask) const;
 
     // The class can handle a get/putArrayColumn.
-    Bool canAccessArrayColumn (Bool& reask) const;
+    virtual Bool canAccessArrayColumn (Bool& reask) const;
 
     // The class can handle a get/putColumnSlice.
-    Bool canAccessColumnSlice (Bool& reask) const;
+    virtual Bool canAccessColumnSlice (Bool& reask) const;
 
+protected:
     // Set the shape of all arrays in the column.
     // It is only called if the column contains direct arrays.
     // By default it throws a "not possible" exception.
@@ -178,62 +188,82 @@ protected:
     virtual IPosition shape (uInt rownr);
 
     // Get the array value in the given row.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn get function).
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColumn::get function).
     virtual void getArray (uInt rownr, Array<T>& data) = 0;
 
     // Put the array value into the given row.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn put function).
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColumn::put function).
     // By default it throws a "not possible" exception.
     virtual void putArray (uInt rownr, const Array<T>& data);
 
     // Get a section of the array in the given row.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getSlice function).
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColumn::getSlice function).
+    // The default implementation gets the slice by getting the full
+    // array first.
     virtual void getSlice (uInt rownr, const Slicer& slicer, Array<T>& data);
 
     // Put into a section of the array in the given row.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putSlice function).
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColumn::putSlice function).
+    // The default implementation gets the slice by accessing the full
+    // array.
     virtual void putSlice (uInt rownr, const Slicer& slicer,
 			   const Array<T>& data);
 
     // Get an entire column.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColum::getColumn function).
+    // The default implementation gets the column row by row.
     virtual void getArrayColumn (Array<T>& data);
 
     // Put an entire column.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putColumn function).
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColumn::putColumn function).
+    // The default implementation puts the column row by row.
     virtual void putArrayColumn (const Array<T>& data);
 
+    // Get some array values in the column.
+    // The data array has to have the correct length
+    // (which is guaranteed by the ArrayColumn::getColumn function).
+    // By default it throws a "not possible" exception.
+    virtual void getArrayColumnCells (const RefRows& rownrs, Array<T>& data);
+
+    // Put some array values in the column.
+    // The data array has to have the correct length
+    // (which is guaranteed by the ArrayColumn::putColumn function).
+    // By default it throws a "not possible" exception.
+    virtual void putArrayColumnCells (const RefRows& rownrs,
+				      const Array<T>& data);
+
     // Get a section of all arrays in the column.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColumn::getColumn function).
+    // The default implementation gets the column row by row.
     virtual void getColumnSlice (const Slicer& slicer, Array<T>& data);
 
     // Put a section of all arrays in the column.
-    // The argument dataPtr is in fact a const Array<T>*, but a const void*
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
+    // The data array has to have the correct shape
     // (which is guaranteed by the ArrayColumn putColumn function).
+    // The default implementation puts the column row by row.
     virtual void putColumnSlice (const Slicer& slicer, const Array<T>& data);
+
+    // Get a section of some arrays in the column.
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColumn::getColumn function).
+    // By default it throws a "not possible" exception.
+    virtual void getColumnSliceCells (const RefRows& rownrs,
+				      const Slicer& slicer, Array<T>& data);
+
+    // Put into a section of some arrays in the column.
+    // The data array has to have the correct shape
+    // (which is guaranteed by the ArrayColumn::putColumn function).
+    // By default it throws a "not possible" exception.
+    virtual void putColumnSliceCells (const RefRows& rownrs,
+				      const Slicer& slicer,
+				      const Array<T>& data);
 
 private:
     // Implement the virtual functions defined in DataManagerColumn.
@@ -243,6 +273,14 @@ private:
     // Implement the virtual functions defined in DataManagerColumn.
     // Put the array value into the given row.
     void putArrayV (uInt rownr, const void* dataPtr);
+
+    // Implement the virtual functions defined in DataManagerColumn.
+    // Get some array values in the column.
+    void getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr);
+
+    // Implement the virtual functions defined in DataManagerColumn.
+    // Put some array values in the column.
+    void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get a section of the array in the given row.
@@ -265,8 +303,19 @@ private:
     void getColumnSliceV (const Slicer& slicer, void* dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
-    // Put a section of all arrays in the column.
+    // Put into section of all arrays in the column.
     void putColumnSliceV (const Slicer& slicer, const void* dataPtr);
+
+    // Implement the virtual functions defined in DataManagerColumn.
+    // Get a section of some arrays in the column.
+    virtual void getColumnSliceCellsV (const RefRows& rownrs,
+				       const Slicer& slicer, void* dataPtr);
+
+    // Implement the virtual functions defined in DataManagerColumn.
+    // Put into a section of some arrays in the column.
+    virtual void putColumnSliceCellsV (const RefRows& rownrs,
+				       const Slicer& slicer,
+				       const void* dataPtr);
 
 
 private:

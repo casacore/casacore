@@ -1,5 +1,5 @@
 //# VirtArrCol.cc: Base virtual column data manager class
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -76,32 +76,50 @@ Bool VirtualArrayColumn<T>::canAccessColumnSlice (Bool& reask) const
 
 template<class T>
 void VirtualArrayColumn<T>::getArrayV (uInt rownr, void* dataPtr)
-    { getArray (rownr, *(Array<T>*)dataPtr); }
+    { getArray (rownr, *static_cast<Array<T>*>(dataPtr)); }
 template<class T>
 void VirtualArrayColumn<T>::putArrayV (uInt rownr, const void* dataPtr)
-    { putArray (rownr, *(const Array<T>*)dataPtr); }
+    { putArray (rownr, *static_cast<const Array<T>*>(dataPtr)); }
 template<class T>
 void VirtualArrayColumn<T>::getSliceV (uInt rownr, const Slicer& slicer,
 				       void* dataPtr)
-    { getSlice (rownr, slicer, *(Array<T>*)dataPtr); }
+    { getSlice (rownr, slicer, *static_cast<Array<T>*>(dataPtr)); }
 template<class T>
 void VirtualArrayColumn<T>::putSliceV (uInt rownr, const Slicer& slicer,
 				       const void* dataPtr)
-    { putSlice (rownr, slicer, *(const Array<T>*)dataPtr); }
+    { putSlice (rownr, slicer, *static_cast<const Array<T>*>(dataPtr)); }
 template<class T>
 void VirtualArrayColumn<T>::getArrayColumnV (void* dataPtr)
-    { getArrayColumn (*(Array<T>*)dataPtr); }
+    { getArrayColumn (*static_cast<Array<T>*>(dataPtr)); }
 template<class T>
 void VirtualArrayColumn<T>::putArrayColumnV (const void* dataPtr)
-    { putArrayColumn (*(const Array<T>*)dataPtr); }
+    { putArrayColumn (*static_cast<const Array<T>*>(dataPtr)); }
+template<class T>
+void VirtualArrayColumn<T>::getArrayColumnCellsV (const RefRows& rownrs,
+						  void* dataPtr)
+    { getArrayColumnCells (rownrs, *static_cast<Array<T>*>(dataPtr)); }
+template<class T>
+void VirtualArrayColumn<T>::putArrayColumnCellsV (const RefRows& rownrs,
+						  const void* dataPtr)
+    { putArrayColumnCells (rownrs, *static_cast<const Array<T>*>(dataPtr)); }
 template<class T>
 void VirtualArrayColumn<T>::getColumnSliceV (const Slicer& slicer,
 					     void* dataPtr)
-    { getColumnSlice (slicer, *(Array<T>*)dataPtr); }
+    { getColumnSlice (slicer, *static_cast<Array<T>*>(dataPtr)); }
 template<class T>
 void VirtualArrayColumn<T>::putColumnSliceV (const Slicer& slicer,
 					     const void* dataPtr)
-    { putColumnSlice (slicer, *(const Array<T>*)dataPtr); }
+    { putColumnSlice (slicer, *static_cast<const Array<T>*>(dataPtr)); }
+template<class T>
+void VirtualArrayColumn<T>::getColumnSliceCellsV (const RefRows& rownrs,
+						  const Slicer& slicer,
+						  void* dataPtr)
+    { getColumnSliceCells (rownrs, slicer, *static_cast<Array<T>*>(dataPtr)); }
+template<class T>
+void VirtualArrayColumn<T>::putColumnSliceCellsV (const RefRows& rownrs,
+						  const Slicer& slicer,
+						  const void* dataPtr)
+    { putColumnSliceCells (rownrs, slicer, *static_cast<const Array<T>*>(dataPtr)); }
 
 
 
@@ -186,6 +204,33 @@ void VirtualArrayColumn<T>::putColumnSlice (const Slicer& slicer,
 	rownr++;
 	iter.next();
     }
+}
+
+//# The default implementations of the Cells functions throw an exception.
+template<class T>
+void VirtualArrayColumn<T>::getArrayColumnCells (const RefRows&, Array<T>&)
+{
+    throw (DataManInvOper ("VirtualArrayColumn::getArrayColumnCells not possible"));
+}
+template<class T>
+void VirtualArrayColumn<T>::putArrayColumnCells (const RefRows&,
+						 const Array<T>&)
+{
+    throw (DataManInvOper ("VirtualArrayColumn::putArrayColumnCells not possible"));
+}
+template<class T>
+void VirtualArrayColumn<T>::getColumnSliceCells (const RefRows&,
+						 const Slicer&,
+						 Array<T>&)
+{
+    throw (DataManInvOper ("VirtualArrayColumn::getColumnSliceCells not possible"));
+}
+template<class T>
+void VirtualArrayColumn<T>::putColumnSliceCells (const RefRows&,
+						 const Slicer&,
+						 const Array<T>&)
+{
+    throw (DataManInvOper ("VirtualArrayColumn::putColumnSliceCells not possible"));
 }
 
 //# The default implementation of the put function throws
