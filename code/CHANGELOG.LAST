@@ -14,3 +14,18 @@ It can be used as any other storage manager with the difference that its data ar
 
 Based on this storage manager a table class has been made which holds its data entirely in memory. It can be created as any other table (thus using SetupNewTable). All its stored columns will be bound to MemoryStMan. Virtual columns will keep their virtual column engine (e.g. CompressComplex).
 See the documentation of the Tables module (Tables.html) for more information.
+
+change id: 0140
+ author:   Ger van Diepen
+ date:     2003/03/31
+ avers:    1.8
+ area:     Library
+ package:  aips
+ module:   Tables
+ type:     Code
+ category: Change
+ summary:  Easier use of Tiled Storage Managers
+Working with the tiled storage managers used to be somewhat difficult because of the need to have a hypercolumn definition in the table description. This constraint has been removed for all tiled storage managers with the exception of TiledDataStMan.
+If a tiled storage manager finds no hypercolumn definition, it will handle all columns bound to it as data columns. In this way the use of TiledShapeStMan, etc. is now as transparant as the use of StandardStMan.
+
+This change makes it very easy to add a column using a tiled storage manager to a table.
