@@ -142,7 +142,7 @@ Slicer& Slicer::operator= (const Slicer& that)
 
 Bool Slicer::operator==(const Slicer& that)
 {
-   return this->len_p==that.len_p &&
+   return this->len_p.isEqual(that.len_p) &&
           this->start_p.isEqual(that.start_p) &&
           this->end_p.isEqual(that.end_p) &&
           this->stride_p.isEqual(that.stride_p) &&
