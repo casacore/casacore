@@ -144,12 +144,12 @@ Flux<Double> ComponentList::sample(const MDirection & sampleDir,
   return Flux<Double>(result, retPol);
 }
 
-// void ComponentList::project(ImageInterface<Float> & plane) const {
-//   DebugAssert(ok(), AipsError);
-//   for (uInt i = 0; i < nelements(); i++) {
-//     component(i).project(plane);
-//   }
-// }
+void ComponentList::project(ImageInterface<Float> & plane) const {
+  DebugAssert(ok(), AipsError);
+  for (uInt i = 0; i < nelements(); i++) {
+    component(i).project(plane);
+  }
+}
 
 void ComponentList::add(SkyComponent component) {
   AlwaysAssert(itsROFlag == False, AipsError);
