@@ -98,7 +98,6 @@ Muvw::Types Muvw::castType(uInt tp) {
 
 const String &Muvw::showType(Muvw::Types tp) {
   static const String tname[Muvw::N_Types] = {
-    "ITRF",
     "J2000",
     "JMEAN",
     "JTRUE",
@@ -114,7 +113,9 @@ const String &Muvw::showType(Muvw::Types tp) {
     "ECLIPTIC",
     "MECLIPTIC",
     "TECLIPTIC",
-    "SUPERGAL" };
+    "SUPERGAL",
+    "ITRF",
+    "TOPO" };
   return tname[tp];
 }
 
@@ -124,10 +125,9 @@ const String &Muvw::showType(uInt tp) {
 
 const String *const Muvw::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 18;
+  static const Int N_name  = 19;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
-    "ITRF",
     "J2000",
     "JMEAN",
     "JTRUE",
@@ -144,10 +144,11 @@ const String *const Muvw::allMyTypes(Int &nall, Int &nextra,
     "ECLIPTIC",
     "MECLIPTIC",
     "TECLIPTIC",
-    "SUPERGAL" };
+    "SUPERGAL",
+    "ITRF",
+    "TOPO" };
   
   static const uInt oname[N_name] = {
-    Muvw::ITRF,
     Muvw::J2000,
     Muvw::JMEAN,
     Muvw::JTRUE,
@@ -164,7 +165,9 @@ const String *const Muvw::allMyTypes(Int &nall, Int &nextra,
     Muvw::ECLIPTIC,
     Muvw::MECLIPTIC,
     Muvw::TECLIPTIC,
-    Muvw::SUPERGAL };
+    Muvw::SUPERGAL,
+    Muvw::ITRF,
+    Muvw::TOPO };
 
   nall   = N_name;
   nextra = N_extra;
