@@ -2579,3 +2579,4 @@
 09 463 src mv trial/apps/image/imageImpl.cc trial/implement/Images/DOimage.cc
 09 464 src mv trial/implement/Measures/test/tQuantumHolder.out aips/implement/Measures/test/tQuantumHolder.out
 09 464 src mv trial/implement/Measures/test/tQuantumHolder.cc aips/implement/Measures/test/tQuantumHolder.cc
+09 464 src mv trial/implement/Measures/test/tMeasureHolder.cc aips/implement/Measures/test/tMeasureHolder.cc
