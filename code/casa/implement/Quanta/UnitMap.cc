@@ -38,23 +38,18 @@ void UnitMap::initUM() {
   needInit = False;
 
   // Initialise lists
-  // default undimensioned unit name value
-  UnitName defbu;
-  // default undimensioned unit value value
-  UnitVal defbv;
-  // Initialise lists
   UnitMap::mapPref = 
-    new SimpleOrderedMap<String, UnitName> (defbu,20);
+    new map<String, UnitName>;
   UnitMap::mapDef =
-    new SimpleOrderedMap<String, UnitName> (defbu,9);
+    new map<String, UnitName>;
   UnitMap::mapSI =
-    new SimpleOrderedMap<String, UnitName> (defbu,50);
+    new map<String, UnitName>;
   UnitMap::mapCust =
-    new SimpleOrderedMap<String, UnitName> (defbu,80);
+    new map<String, UnitName>;
   UnitMap::mapUser =
-    new SimpleOrderedMap<String, UnitName> (defbu,10);
+    new map<String, UnitName>;
   UnitMap::mapCache =
-    new SimpleOrderedMap<String, UnitVal> (defbv,100);
+    new map<String, UnitVal>;
   UnitMap::doneFITS = False;
   // Define the map
   // Known prefixes
@@ -77,44 +72,45 @@ UnitMap::~UnitMap() {}
 
 Bool UnitMap::getCache(const String& s, UnitVal &val) {
   UnitMap::initUM();
-  UnitVal *loc = mapCache->isDefined(s);
-  if (loc) { 
-    val = *loc; return (True);
-  } else {
+  map<String, UnitVal>::iterator pos = mapCache->find(s);
+  if (pos == mapCache->end()) {
     val = UnitVal();
-    return (False);
+    return False;
   };
+  val = pos->second;
+  return True;
 }
 
 Bool UnitMap::getPref(const String& s, UnitName &name) {
   UnitMap::initUM();
-  UnitName *loc;
-  if ((loc = mapPref->isDefined(s))) {}
-  else {
+  map<String, UnitName>::iterator pos = mapPref->find(s);
+  if (pos == mapPref->end()) {
     name = UnitName();
-    return (False);
+    return False;
   };
-  name = *loc; return (True);
+  name = pos->second;
+  return True;
 }
 
 Bool UnitMap::getUnit(const String& s, UnitName &name) {
   UnitMap::initUM();
-  UnitName *loc;
-  if ((loc = mapUser->isDefined(s))) {}
-  else if ((loc = mapCust->isDefined(s))) {}
-  else if ((loc = mapSI->isDefined(s))) {}
-  else {
+  map<String, UnitName>::iterator pos;
+  if ((pos = mapUser->find(s)) != mapUser->end() ||
+      (pos = mapCust->find(s)) != mapCust->end() ||
+      (pos = mapSI->find(s)) != mapSI->end()) {
+  } else {    
     name = UnitName();
-    return (False);
+    return False;
   };
-  name = *loc; return (True);
+  name = pos->second;
+  return True;
 }
 
 void UnitMap::putCache(const String& s, const UnitVal& val) {
   UnitMap::initUM();
   if (! s.empty()) {
-    if (mapCache->ndefined() > 200) clearCache();
-    mapCache->define(s,val);
+    if (mapCache->size() > 200) clearCache();
+    mapCache->insert(map<String, UnitVal>::value_type(s,val));
   };
 }
 
@@ -131,16 +127,18 @@ void UnitMap::putUser(const String& s, const UnitVal& val,
 
 void UnitMap::putUser(const UnitName& name) {
   UnitMap::initUM();
-  if (mapUser->isDefined(name.getName()) ||
-      mapCust->isDefined(name.getName()) ||
-      mapSI->isDefined(name.getName())) clearCache();
-  mapUser->define(name.getName(),name);
+  map<String, UnitName>::iterator pos;
+  if ((pos = mapUser->find(name.getName())) != mapUser->end() ||
+      (pos = mapCust->find(name.getName())) != mapCust->end() ||
+      (pos = mapSI->find(name.getName())) != mapSI->end()) clearCache();
+  mapUser->insert(map<String, UnitName>::value_type(name.getName(), name));
 }
 
 void UnitMap::removeUser(const String& s) {
   UnitMap::initUM();
-  if (mapUser->isDefined(s)) {
-    mapUser->remove(s);
+  map<String, UnitName>::iterator pos = mapUser->find(s);
+  if (pos != mapUser->end()) {
+    mapUser->erase(pos);
     clearCache();
   };
 }
@@ -286,9 +284,9 @@ void UnitMap::listPref() {
 
 void UnitMap::listPref(ostream &os) {
   UnitMap::initUM();
-  uInt i;
-  for (i=0; i < mapPref->ndefined(); i++) {
-    os << "    " << mapPref->getVal(i) << endl;
+  for (map<String, UnitName>::iterator i=mapPref->begin();
+       i != mapPref->end(); ++i) {
+    os << "    " << i->second << endl;
   };
 }
 
@@ -298,9 +296,9 @@ void UnitMap::listDef() {
 
 void UnitMap::listDef(ostream &os) {
   UnitMap::initUM();
-  uInt i;
-  for (i=0; i < mapDef->ndefined(); i++) {
-    os << "    " << mapDef->getVal(i) << endl;
+  for (map<String, UnitName>::iterator i=mapDef->begin();
+       i != mapDef->end(); ++i) {
+    os << "    " << i->second << endl;
   };
 }
 
@@ -310,9 +308,9 @@ void UnitMap::listSI() {
 
 void UnitMap::listSI(ostream &os) {
   UnitMap::initUM();
-  uInt i;
-  for (i=0; i < mapSI->ndefined(); i++) {
-    os << "    " << mapSI->getVal(i) << endl;
+  for (map<String, UnitName>::iterator i=mapSI->begin();
+       i != mapSI->end(); ++i) {
+    os << "    " << i->second << endl;
   };
 }
 
@@ -322,9 +320,9 @@ void UnitMap::listCust() {
 
 void UnitMap::listCust(ostream &os) {
   UnitMap::initUM();
-  uInt i;
-  for (i=0; i < mapCust->ndefined(); i++) {
-    os << "    " << mapCust->getVal(i) << endl;
+  for (map<String, UnitName>::iterator i=mapCust->begin();
+       i != mapCust->end(); ++i) {
+    os << "    " << i->second << endl;
   };
 }
 
@@ -334,9 +332,9 @@ void UnitMap::listUser() {
 
 void UnitMap::listUser(ostream &os) {
   UnitMap::initUM();
-  uInt i;
-  for (i=0; i < mapUser->ndefined(); i++) {
-    os << "    " << mapUser->getVal(i) << endl;
+  for (map<String, UnitName>::iterator i=mapUser->begin();
+       i != mapUser->end(); ++i) {
+    os << "    " << i->second << endl;
   };
 }
 
@@ -346,15 +344,15 @@ void UnitMap::list() {
 
 void UnitMap::list(ostream &os) {
   UnitMap::initUM();
-  os  << "Prefix table (" << mapPref->ndefined() << "):" << endl;
+  os  << "Prefix table (" << mapPref->size() << "):" << endl;
   listPref(os);
-  os  << "Defining unit table (" << mapDef->ndefined() << "):" << endl;
+  os  << "Defining unit table (" << mapDef->size() << "):" << endl;
   listDef(os);
-  os << "SI unit table (" << mapSI->ndefined() << "):" << endl;
+  os << "SI unit table (" << mapSI->size() << "):" << endl;
   listSI(os);
-  os  << "Customary unit table (" << mapCust->ndefined() << "):" << endl;
+  os  << "Customary unit table (" << mapCust->size() << "):" << endl;
   listCust(os);
-  os  << "User unit table (" << mapUser->ndefined() << "):" << endl;
+  os  << "User unit table (" << mapUser->size() << "):" << endl;
   listUser(os);
 }
 
@@ -364,47 +362,47 @@ void UnitMap::listCache() {
 
 void UnitMap::listCache(ostream &os) {
   UnitMap::initUM();
-  uInt i;
-  os  << "Cached unit table (" << mapCache->ndefined() << "):" << endl;
-  for (i=0; i < mapCache->ndefined(); i++) {
-    os << "    " << 
-      UnitName(mapCache->getKey(i),mapCache->getVal(i)) << endl;
+  os  << "Cached unit table (" << mapCache->size() << "):" << endl;
+  for (map<String, UnitVal>::iterator i=mapCache->begin();
+       i != mapCache->end(); ++i) {
+    os << "    " <<
+      UnitName(i->first, i->second) << endl;
   };
 }
 
-const SimpleOrderedMap<String, UnitName> &UnitMap::givePref() {
+const map<String, UnitName> &UnitMap::givePref() {
   UnitMap::initUM();
   return *mapPref;
 }
 
-const SimpleOrderedMap<String, UnitName> &UnitMap::giveDef() {
+const map<String, UnitName> &UnitMap::giveDef() {
   UnitMap::initUM();
   return *mapDef;
 }
-const SimpleOrderedMap<String, UnitName> &UnitMap::giveSI() {
+const map<String, UnitName> &UnitMap::giveSI() {
   UnitMap::initUM();
   return *mapSI;
 }
 
-const SimpleOrderedMap<String, UnitName> &UnitMap::giveCust() {
+const map<String, UnitName> &UnitMap::giveCust() {
   UnitMap::initUM();
   return *mapCust;
 }
 
-const SimpleOrderedMap<String, UnitName> &UnitMap::giveUser() {
+const map<String, UnitName> &UnitMap::giveUser() {
   UnitMap::initUM();
   return *mapUser;
 }
 
-const SimpleOrderedMap<String, UnitVal> &UnitMap::giveCache() {
+const map<String, UnitVal> &UnitMap::giveCache() {
   UnitMap::initUM();
   return *mapCache;
 }
 
-SimpleOrderedMap<String, UnitName> *UnitMap::mapPref;
-SimpleOrderedMap<String, UnitName> *UnitMap::mapDef;
-SimpleOrderedMap<String, UnitName> *UnitMap::mapSI;
-SimpleOrderedMap<String, UnitName> *UnitMap::mapCust;
-SimpleOrderedMap<String, UnitName> *UnitMap::mapUser;
-SimpleOrderedMap<String, UnitVal> *UnitMap::mapCache;
+map<String, UnitName> *UnitMap::mapPref;
+map<String, UnitName> *UnitMap::mapDef;
+map<String, UnitName> *UnitMap::mapSI;
+map<String, UnitName> *UnitMap::mapCust;
+map<String, UnitName> *UnitMap::mapUser;
+map<String, UnitVal> *UnitMap::mapCache;
 Bool UnitMap::doneFITS;

@@ -1,5 +1,5 @@
 //# UnitMap5.cc: Unit map custom units initialisation part 1
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,58 +31,76 @@
 
 // Initialise the maps
 void UnitMap::initUMCust1() {
-  UnitMap::mapCust->define("sq_deg", 	UnitName("sq_deg",
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("sq_deg", 	UnitName("sq_deg",
 						 UnitVal(C::square_degree,"sr"),
-						 "square degree"));
-  UnitMap::mapCust->define("sq_arcmin", UnitName("sq_arcmin",
-						 UnitVal(C::square_arcmin,"sr"),
-						 "square arcmin"));
-  UnitMap::mapCust->define("sq_arcsec", UnitName("sq_arcsec",
-						 UnitVal(C::square_arcsec,"sr"),
-						 "square arcsec"));
-  UnitMap::mapCust->define("deg_2",  	UnitName("deg_2",
+						 "square degree")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("sq_arcmin", UnitName("sq_arcmin",
+						  UnitVal(C::square_arcmin,"sr"),
+						  "square arcmin")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("sq_arcsec", UnitName("sq_arcsec",
+						  UnitVal(C::square_arcsec,"sr"),
+						  "square arcsec")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("deg_2",  	UnitName("deg_2",
 						 UnitVal(C::square_degree,"sr"),
-						 "square degree"));
-  UnitMap::mapCust->define("arcmin_2",  UnitName("arcmin_2",
-						 UnitVal(C::square_arcmin,"sr"),
-						 "square arcmin"));
-  UnitMap::mapCust->define("arcsec_2",  UnitName("arcsec_2",
-						 UnitVal(C::square_arcsec,"sr"),
-						 "square arcsec"));
-  UnitMap::mapCust->define("'",   	UnitName("'",
+						 "square degree")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("arcmin_2",  UnitName("arcmin_2",
+						  UnitVal(C::square_arcmin,"sr"),
+						  "square arcmin")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("arcsec_2",  UnitName("arcsec_2",
+						  UnitVal(C::square_arcsec,"sr"),
+						  "square arcsec")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("'",   	UnitName("'",
 						 UnitVal(C::arcmin,"rad"),
-						 "arcmin"));
-  UnitMap::mapCust->define("''",   	UnitName("''",
+						 "arcmin")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("''",   	UnitName("''",
 						 UnitVal(C::arcsec,"rad"),
-						 "arcsec"));
-  UnitMap::mapCust->define("\"",   	UnitName("\"",
+						 "arcsec")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("\"",   	UnitName("\"",
 						 UnitVal(C::arcsec,"rad"),
-						 "arcsec"));
-  UnitMap::mapCust->define("'_2",  	UnitName("'_2",
+						 "arcsec")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("'_2",  	UnitName("'_2",
 						 UnitVal(C::square_arcmin,"sr"),
-						 "square arcmin"));
-  UnitMap::mapCust->define("''_2",  	UnitName("''_2",
+						 "square arcmin")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("''_2",  	UnitName("''_2",
 						 UnitVal(C::square_arcsec,"sr"),
-						 "square arcsec"));
-  UnitMap::mapCust->define("\"_2",  	UnitName("\"_2",
+						 "square arcsec")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("\"_2",  	UnitName("\"_2",
 						 UnitVal(C::square_arcsec,"sr"),
-						 "square arcsec"));
-  UnitMap::mapCust->define(":",   	UnitName(":",
+						 "square arcsec")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   (":",   	UnitName(":",
 						 UnitVal(1.,"h"),
-						 "hour"));
-  UnitMap::mapCust->define("::",   	UnitName("::",
+						 "hour")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("::",   	UnitName("::",
 						 UnitVal(1.,"min"),
-						 "minute"));
-  UnitMap::mapCust->define(":::",   	UnitName(":::",
+						 "minute")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   (":::",   	UnitName(":::",
 						 UnitVal(1.,"s"),
-						 "second"));
-  UnitMap::mapCust->define("FU",   	UnitName("FU",
+						 "second")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("FU",   	UnitName("FU",
 						 UnitVal(1.,"Jy"),
-						 "flux unit"));
-  UnitMap::mapCust->define("fu",   	UnitName("fu",
+						 "flux unit")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("fu",   	UnitName("fu",
 						 UnitVal(1.,"FU"),
-						 "flux unit"));
-  UnitMap::mapCust->define("WU",   	UnitName("WU",
+						 "flux unit")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("WU",   	UnitName("WU",
 						 UnitVal(5.,"mJy"),
-						 "WSRT flux unit"));
+						 "WSRT flux unit")));
 }

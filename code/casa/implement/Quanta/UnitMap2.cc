@@ -1,5 +1,5 @@
 //# UnitMap2.cc: Unit map prefix initialisation
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,24 +31,44 @@
 
 // Initialise the maps
 void UnitMap::initUMPrefix() {
-  UnitMap::mapPref->define("Y", UnitName("Y", C::yotta, "yotta"));
-  UnitMap::mapPref->define("Z", UnitName("Z", C::zetta, "zetta"));
-  UnitMap::mapPref->define("E", UnitName("E", C::exa,   "exa"));
-  UnitMap::mapPref->define("P", UnitName("P", C::peta,  "peta"));
-  UnitMap::mapPref->define("T", UnitName("T", C::tera,  "tera"));
-  UnitMap::mapPref->define("G", UnitName("G", C::giga,  "giga"));
-  UnitMap::mapPref->define("M", UnitName("M", C::mega,  "mega"));
-  UnitMap::mapPref->define("k", UnitName("k", C::kilo,  "kilo"));
-  UnitMap::mapPref->define("h", UnitName("h", C::hecto, "hecto"));
-  UnitMap::mapPref->define("da",UnitName("da",C::deka,  "deka"));
-  UnitMap::mapPref->define("d", UnitName("d", C::deci,  "deci"));
-  UnitMap::mapPref->define("c", UnitName("c", C::centi, "centi"));
-  UnitMap::mapPref->define("m", UnitName("m", C::milli, "milli"));
-  UnitMap::mapPref->define("u", UnitName("u", C::micro, "micro"));
-  UnitMap::mapPref->define("n", UnitName("n", C::nano,  "nano"));
-  UnitMap::mapPref->define("p", UnitName("p", C::pico,  "pico"));
-  UnitMap::mapPref->define("f", UnitName("f", C::femto, "femto"));
-  UnitMap::mapPref->define("a", UnitName("a", C::atto,  "atto"));
-  UnitMap::mapPref->define("z", UnitName("z", C::zepto, "zepto"));
-  UnitMap::mapPref->define("y", UnitName("y", C::yocto, "yocto"));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("Y", UnitName("Y", C::yotta, "yotta")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("Z", UnitName("Z", C::zetta, "zetta")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("E", UnitName("E", C::exa,   "exa")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("P", UnitName("P", C::peta,  "peta")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("T", UnitName("T", C::tera,  "tera")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("G", UnitName("G", C::giga,  "giga")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("M", UnitName("M", C::mega,  "mega")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("k", UnitName("k", C::kilo,  "kilo")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("h", UnitName("h", C::hecto, "hecto")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("da",UnitName("da",C::deka,  "deka")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("d", UnitName("d", C::deci,  "deci")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("c", UnitName("c", C::centi, "centi")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("m", UnitName("m", C::milli, "milli")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("u", UnitName("u", C::micro, "micro")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("n", UnitName("n", C::nano,  "nano")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("p", UnitName("p", C::pico,  "pico")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("f", UnitName("f", C::femto, "femto")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("a", UnitName("a", C::atto,  "atto")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("z", UnitName("z", C::zepto, "zepto")));
+  UnitMap::mapPref->insert(map<String, UnitName>::value_type
+			   ("y", UnitName("y", C::yocto, "yocto")));
 }

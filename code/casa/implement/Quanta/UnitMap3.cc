@@ -1,5 +1,5 @@
 //# UnitMap3.cc: Unit map SI unit initialisation part 1
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,84 +34,108 @@
 // Initialise the maps
 void UnitMap::initUMSI1() {
   for (Int i=0; i<UnitDim::Dnumber; i++) {
-    UnitMap::mapDef->define(UnitDim::dimName(i),
-			    UnitName(UnitDim::dimName(i),
-				     UnitVal(1.0,i),
-				     UnitDim::dimFull(i)));
+    UnitMap::mapDef->insert(map<String, UnitName>::value_type
+			    (UnitDim::dimName(i),
+			     UnitName(UnitDim::dimName(i),
+				      UnitVal(1.0,i),
+				      UnitDim::dimFull(i))));
     
     // SI units
     if (i != UnitDim::Dkg) {
-      UnitMap::mapSI->define(UnitDim::dimName(i),
-			     UnitName(UnitDim::dimName(i),
-				      UnitVal(1.0,i),
-				      UnitDim::dimFull(i)));
+      UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			     (UnitDim::dimName(i),
+			      UnitName(UnitDim::dimName(i),
+				       UnitVal(1.0,i),
+				       UnitDim::dimFull(i))));
     };
   };
   
-  UnitMap::mapSI->define("$",	UnitName("$",
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("$",	UnitName("$",
 					 UnitVal(1.,UnitDim::Dnon),
-					 "currency"));
-  UnitMap::mapSI->define("%",	UnitName("%",
+					 "currency")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("%",	UnitName("%",
 					 UnitVal(0.01),
-					 "percent"));
-  UnitMap::mapSI->define("%%",	UnitName("%%",
+					 "percent")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("%%",	UnitName("%%",
 					 UnitVal(0.001),
-					 "permille"));
-  UnitMap::mapSI->define("g",	UnitName("g",
+					 "permille")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("g",	UnitName("g",
 					 UnitVal(0.001,UnitDim::Dkg),
-					 "gram"));
-  UnitMap::mapSI->define("Bq",  UnitName("Bq",
-					 UnitVal(1.,"s-1"),
-					 "becquerel"));
-  UnitMap::mapSI->define("Hz",  UnitName("Hz",
-					 UnitVal(1.,"s-1"),
-					 "hertz"));
-  UnitMap::mapSI->define("C",   UnitName("C",
-					 UnitVal(1.,"A.s"),
-					 "coulomb"));
-  UnitMap::mapSI->define("lm",  UnitName("lm",
-					 UnitVal(1.,"cd.sr"),
-					 "lumen"));
-  UnitMap::mapSI->define("N",	UnitName("N",
+					 "gram")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("Bq",  UnitName("Bq",
+					  UnitVal(1.,"s-1"),
+					  "becquerel")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("Hz",  UnitName("Hz",
+					  UnitVal(1.,"s-1"),
+					  "hertz")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("C",   UnitName("C",
+					  UnitVal(1.,"A.s"),
+					  "coulomb")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("lm",  UnitName("lm",
+					  UnitVal(1.,"cd.sr"),
+					  "lumen")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("N",	UnitName("N",
 					 UnitVal(1.,"kg.m.s-2"),
-					 "newton"));
-  UnitMap::mapSI->define("J",   UnitName("J",
-					 UnitVal(1.,"N.m"),
-					 "joule"));
-  UnitMap::mapSI->define("W",   UnitName("W",
-					 UnitVal(1.,"J.s-1"),
-					 "watt"));
-  UnitMap::mapSI->define("V",   UnitName("V",
-					 UnitVal(1.,"W.A-1"),
-					 "volt"));
-  UnitMap::mapSI->define("F",   UnitName("F",
-					 UnitVal(1.,"C.V-1"),
-					 "farad"));
-  UnitMap::mapSI->define("Gy",  UnitName("Gy",
-					 UnitVal(1.,"J.kg-1"),
-					 "gray"));
-  UnitMap::mapSI->define("lx",  UnitName("lx",
-					 UnitVal(1.,"lm.m-2"),
-					 "lux"));
-  UnitMap::mapSI->define("Ohm", UnitName("Ohm",
-					 UnitVal(1.,"V.A-1"),
-					 "ohm"));
-  UnitMap::mapSI->define("Pa",  UnitName("Pa",
-					 UnitVal(1.,"N.m-2"),
-					 "pascal"));
-  UnitMap::mapSI->define("S",   UnitName("S",
-					 UnitVal(1.,"Ohm-1"),
-					 "siemens"));
-  UnitMap::mapSI->define("Sv",  UnitName("Sv",
-					 UnitVal(1.,"J.kg-1"),
-					 "sievert"));
-  UnitMap::mapSI->define("Wb",  UnitName("Wb",
-					 UnitVal(1.,"V.s"),
-					 "weber"));
-  UnitMap::mapSI->define("H",   UnitName("H",
-					 UnitVal(1.,"Wb.A-1"),
-					 "henry"));
-  UnitMap::mapSI->define("T",   UnitName("T",
-					 UnitVal(1.,"Wb.m-2"),
-					 "tesla"));
+					 "newton")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("J",   UnitName("J",
+					  UnitVal(1.,"N.m"),
+					  "joule")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("W",   UnitName("W",
+					  UnitVal(1.,"J.s-1"),
+					  "watt")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("V",   UnitName("V",
+					  UnitVal(1.,"W.A-1"),
+					  "volt")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("F",   UnitName("F",
+					  UnitVal(1.,"C.V-1"),
+					  "farad")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("Gy",  UnitName("Gy",
+					  UnitVal(1.,"J.kg-1"),
+					  "gray")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("lx",  UnitName("lx",
+					  UnitVal(1.,"lm.m-2"),
+					  "lux")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("Ohm", UnitName("Ohm",
+					  UnitVal(1.,"V.A-1"),
+					  "ohm")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("Pa",  UnitName("Pa",
+					  UnitVal(1.,"N.m-2"),
+					  "pascal")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("S",   UnitName("S",
+					  UnitVal(1.,"Ohm-1"),
+					  "siemens")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("Sv",  UnitName("Sv",
+					  UnitVal(1.,"J.kg-1"),
+					  "sievert")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("Wb",  UnitName("Wb",
+					  UnitVal(1.,"V.s"),
+					  "weber")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("H",   UnitName("H",
+					  UnitVal(1.,"Wb.A-1"),
+					  "henry")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("T",   UnitName("T",
+					  UnitVal(1.,"Wb.m-2"),
+					  "tesla")));
 }  

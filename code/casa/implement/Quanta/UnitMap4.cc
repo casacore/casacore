@@ -1,5 +1,5 @@
 //# UnitMap4.cc: Unit map SI initialisation part 2
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,64 +37,83 @@ static const Double IAU_tauA=499.0047837;
 // Initialise the maps
 void UnitMap::initUMSI2() {
   // non-metric SI units
-  UnitMap::mapSI->define("deg",   	UnitName("deg",
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("deg",   	UnitName("deg",
 						 UnitVal(C::degree,"rad"),
-						 "degree"));
-  UnitMap::mapSI->define("arcmin",  	UnitName("arcmin",
+						 "degree")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("arcmin",  	UnitName("arcmin",
 						 UnitVal(C::arcmin,"rad"),
-						 "arcmin"));
-  UnitMap::mapSI->define("arcsec",  	UnitName("arcsec",
+						 "arcmin")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("arcsec",  	UnitName("arcsec",
 						 UnitVal(C::arcsec,"rad"),
-						 "arcsec"));
-  UnitMap::mapSI->define("as", 		UnitName("as",
-						 UnitVal(1.,"arcsec"),
-						 "arcsec"));
-  UnitMap::mapSI->define("L",   	UnitName("L",
+						 "arcsec")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("as", 		UnitName("as",
+							 UnitVal(1.,"arcsec"),
+							 "arcsec")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("L",   	UnitName("L",
 						 UnitVal(1.,"dm3"),
-						 "litre"));
-  UnitMap::mapSI->define("l",   	UnitName("l",
+						 "litre")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("l",   	UnitName("l",
 						 UnitVal(1.,"L"),
-						 "litre"));
-  UnitMap::mapSI->define("d",   	UnitName("d",
+						 "litre")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("d",   	UnitName("d",
 						 UnitVal(C::day,"s"),
-						 "day"));
-  UnitMap::mapSI->define("h",   	UnitName("h",
+						 "day")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("h",   	UnitName("h",
 						 UnitVal(C::hour,"s"),
-						 "hour"));
-  UnitMap::mapSI->define("min",   	UnitName("min",
+						 "hour")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("min",   	UnitName("min",
 						 UnitVal(C::minute,"s"),
-						 "minute"));
-  UnitMap::mapSI->define("a",   	UnitName("a",
+						 "minute")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("a",   	UnitName("a",
 						 UnitVal(24.*3600.*365.25,"s"),
-						 "year"));
-  UnitMap::mapSI->define("t",   	UnitName("t",
+						 "year")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("t",   	UnitName("t",
 						 UnitVal(1000.,"kg"),
-						 "tonne"));
+						 "tonne")));
   
   // Astronomical SI units
-  UnitMap::mapSI->define("Jy",   	UnitName("Jy",
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("Jy",   	UnitName("Jy",
 						 UnitVal(1.0e-26,"W/m2/Hz"),
-						 "jansky"));
-  UnitMap::mapSI->define("AU",   	UnitName("AU",
+						 "jansky")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("AU",   	UnitName("AU",
 						 UnitVal(C::c * IAU_tauA,"m"),
-						 "astronomical unit"));
-  UnitMap::mapSI->define("UA",   	UnitName("UA",
+						 "astronomical unit")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("UA",   	UnitName("UA",
 						 UnitVal(1.,"AU"),
-						 "astronomical unit"));
-  UnitMap::mapSI->define("AE",   	UnitName("AE",
+						 "astronomical unit")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("AE",   	UnitName("AE",
 						 UnitVal(1.,"AU"),
-						 "astronomical unit"));
-  UnitMap::mapSI->define("S0",   	UnitName("S0",
+						 "astronomical unit")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("S0",   	UnitName("S0",
 						 UnitVal(IAU_k*IAU_k/6.67259e-11,
 							 "AU3/d2/(m3/kg/s2)"),
-						 "solar mass"));
-  UnitMap::mapSI->define("M0",   	UnitName("M0",
+						 "solar mass")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("M0",   	UnitName("M0",
 						 UnitVal(1.,"S0"),
-						 "solar mass"));
-  UnitMap::mapSI->define("pc",   	UnitName("pc",
+						 "solar mass")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("pc",   	UnitName("pc",
 						 UnitVal(1./C::arcsec,"AU"),
-						 "parsec"));
-  UnitMap::mapSI->define("cy",   	UnitName("cy",
+						 "parsec")));
+  UnitMap::mapSI->insert(map<String, UnitName>::value_type
+			 ("cy",   	UnitName("cy",
 						 UnitVal(24.*3600.*36525,"s"),
-						 "century"));
+						 "century")));
 }
