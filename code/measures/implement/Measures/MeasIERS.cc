@@ -175,6 +175,10 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 			Int N, const String rfn[],
 			const String &name,
 			const String &rc, const String &dir) {
+  const String path[3] = {
+    "earth/",
+    "ephemerides/",
+    "sources/" };
   String ldir;
   Bool ok = True;
   if (Aipsrc::find(ldir, rc)) {
@@ -186,13 +190,28 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     if (!Table::isReadable(ldir + name)) {
       ldir = "./data/";
       if (!Table::isReadable(ldir + name)) {
-	ldir = Aipsrc::aipsHome() + "/data/" + udir;
-	if (!Table::isReadable(ldir + name)) {
-	  ldir = Aipsrc::aipsRoot() + "/data/" + udir;
+	Bool found = False;
+	for (Int i=0; i<3; i++) {
+	  ldir = Aipsrc::aipsHome() + "/data/" + path[i];
+	  if (Table::isReadable(ldir + name)) {
+	    found = True;
+	    break;
+	  };
+	  ldir = Aipsrc::aipsRoot() + "/data/" + path[i];
+	  if (Table::isReadable(ldir + name)) {
+	    found = True;
+	    break;
+	  };
+	};
+	if (!found) {
+	  ldir = Aipsrc::aipsHome() + "/data/" + udir;
 	  if (!Table::isReadable(ldir + name)) {
-	    ldir = Aipsrc::aipsHome() + "/code/trial/apps/measures/";
+	    ldir = Aipsrc::aipsRoot() + "/data/" + udir;
 	    if (!Table::isReadable(ldir + name)) {
-	      ldir = Aipsrc::aipsRoot() + "/code/trial/apps/measures/";
+	      ldir = Aipsrc::aipsHome() + "/code/trial/apps/measures/";
+	      if (!Table::isReadable(ldir + name)) {
+		ldir = Aipsrc::aipsRoot() + "/code/trial/apps/measures/";
+	      };
 	    };
 	  };
 	};
