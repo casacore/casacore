@@ -100,7 +100,7 @@
 // <p>
 // To be sure that different table types have unique names, it can be
 // useful to use enum's and to define them in one common file. For
-// AIPS++ this is done in the file TableType.h/cc.
+// AIPS++ tables this enum is defined in this file.
 
 // <example>
 // <srcblock>
@@ -132,40 +132,40 @@
 class TableInfo
 {
 public:
-  // enum for various standard Table types.
-  // Underscores in the enumerator indicate different sub-types
-  enum Type {
-    // a PagedImage is a PagedArray with coordinates and Masking (opt.)
-    PAGEDIMAGE,
-    // a PagedArray (.../Lattices/PagedArray.h)
-    PAGEDARRAY,
-    // MeasurementSet main Table
-    MEASUREMENTSET,
-    // MeasurementSet Antenna table
-    ANTENNA,
-    // MeasurementSet Array table
-    ARRAY,
-    // MeasurementSet Feed characteristics table
-    FEED,
-    // MeasurementSet Field table
-    FIELD,
-    // MeasurementSet Observation information table
-    OBSERVATION,
-    // MeasurementSet Oserving Log table
-    OBSLOG,
-    // MeasurementSet Source table
-    SOURCE,
-    // MeasurementSet Spectral Window table
-    SPECTRALWINDOW,
-    // MeasurementSet System Calibration table
-    SYSCAL,
-    // MeasurementSet Weather table
-    WEATHER,
-    // Measurement Equation Calibration table
-    ME_CALIBRATION,
-    // AIPS++ Log table
-    LOG
-   };
+    // enum for various standard Table types.
+    // Underscores in the enumerator indicate different sub-types
+    enum Type {
+	// a PagedImage is a PagedArray with coordinates and Masking (opt.)
+	PAGEDIMAGE,
+	// a PagedArray (.../Lattices/PagedArray.h)
+	PAGEDARRAY,
+	// MeasurementSet main Table
+	MEASUREMENTSET,
+	// MeasurementSet Antenna table
+	ANTENNA,
+	// MeasurementSet Array table
+	ARRAY,
+	// MeasurementSet Feed characteristics table
+	FEED,
+	// MeasurementSet Field table
+	FIELD,
+	// MeasurementSet Observation information table
+	OBSERVATION,
+	// MeasurementSet Oserving Log table
+	OBSLOG,
+	// MeasurementSet Source table
+	SOURCE,
+	// MeasurementSet Spectral Window table
+	SPECTRALWINDOW,
+	// MeasurementSet System Calibration table
+	SYSCAL,
+	// MeasurementSet Weather table
+	WEATHER,
+	// Measurement Equation Calibration table
+	ME_CALIBRATION,
+	// AIPS++ Log table
+	LOG
+    };
 
     // Create an empty object.
     TableInfo();
