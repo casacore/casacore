@@ -47,10 +47,6 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-
-// Remove eventually - needed for g++
-typedef Vector<String> forgnugpptTableDesc;
-
 // First build a description.
 void a (Bool doExcp)
 {
