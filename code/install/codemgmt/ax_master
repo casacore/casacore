@@ -2476,3 +2476,4 @@
 09 428 src rm trial/implement/Measures/QuantityHolder.cc
 09 429 src mv trial/implement/Lattices/MomentCalculator.h trial/implement/Images/MomentCalculator.h
 09 429 src mv trial/implement/Lattices/MomentCalculator.cc trial/implement/Images/MomentCalculator.cc
+09 444 src mv trial/implement/Measures/test/tBaseline.cc trial/implement/Measures/test/tMBaseline.cc
