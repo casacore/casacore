@@ -450,7 +450,7 @@ Scalar constants of the various data types can be formed as follows
               \\Function \texttt{pattern} can be used after operator = and !=.
 	      It uses many special characters. See class
               \htmladdnormallink{Regex}
-              {../../aips/implement/Utilities/Regex.html}
+              {../../casa/implement/Utilities/Regex.html}
 	      for a full description.
               \begin{verbatim}
 		name ~ m/[a-zA-Z][a-zA-Z0-9]*/
@@ -656,7 +656,7 @@ These functions can be used on a scalar or an array argument.
 
 \subsubsection{Regex functions}
 The syntax for forming a regex and pattern are explained in class
-\htmladdnormallink{Regex}{../../aips/implement/Utilities/Regex.html}.
+\htmladdnormallink{Regex}{../../casa/implement/Utilities/Regex.html}.
 These functions can only be used on a scalar argument.
 
 \begin{description}
@@ -684,7 +684,7 @@ These functions can be used on a scalar or an array argument.
   \item[ \texttt{DateTime DATETIME(string),  DateTime CTOD(string)} ]
        Parse the string and convert it to a date/time. The syntax of
        date/time is explained in class
-       \htmladdnormallink{MVTime}{../../aips/implement/Quanta/MVTime.html}.
+       \htmladdnormallink{MVTime}{../../casa/implement/Quanta/MVTime.html}.
   \item[ \texttt{DateTime MJDTODATE(double)} ]
        The double value, which has to be a MJD (ModifiedJulianDate), is
        converted to a DateTime.
@@ -1702,9 +1702,9 @@ and classes form the programmer interface.
   \item
     The function \texttt{tableCommand} in
     \htmladdnormallink{TableParse.h}
-    {../../aips/implement/Tables/TableParse.html}
+    {../../tables/implement/Tables/TableParse.html}
     can be used to execute a TaQL command. The result is a
-    \htmladdnormallink{Table}{../../aips/implement/Tables/Table.html}
+    \htmladdnormallink{Table}{../../tables/implement/Tables/Table.html}
     object. E.g.
 \begin{verbatim}
   Table seltab1 = tableCommand
@@ -1721,10 +1721,10 @@ and classes form the programmer interface.
   \item
     The other interface is a true C++ interface having the
     advantage that C++ variables can be used. Class
-    \htmladdnormallink{Table}{../../aips/implement/Tables/Table.html}
+    \htmladdnormallink{Table}{../../tables/implement/Tables/Table.html}
     contains functions to sort a table or to select columns or rows.
     When selecting rows class \htmladdnormallink{TableExprNode}
-    {../../aips/implement/Tables/ExprNode.html} (in ExprNode.h)
+    {../../tables/implement/Tables/ExprNode.html} (in ExprNode.h)
     has to be used to
     build a WHERE expression which can be executed by the overloaded
     function operator in class \texttt{Table}. E.g.
@@ -1735,11 +1735,11 @@ and classes form the programmer interface.
 \end{verbatim}
     does the same as the first example shown above.
     See classes \htmladdnormallink{Table}
-    {../../aips/implement/Tables/Table.html},
+    {../../tables/implement/Tables/Table.html},
     \htmladdnormallink{TableExprNode}
-    {../../aips/implement/Tables/ExprNode.html}, and
+    {../../tables/implement/Tables/ExprNode.html}, and
     \htmladdnormallink{TableExprNodeSet}
-    {../../aips/implement/Tables/ExprNodeSet.html} for more
+    {../../tables/implement/Tables/ExprNodeSet.html} for more
     information on how to construct a WHERE expression.
   \end{enumerate}
   

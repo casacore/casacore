@@ -742,9 +742,9 @@ has a mask, they are and-ed to form the result's mask.
 \item masks
 \end{itemize}
 The documentation in the classes
- \htmladdnormallink{LCRegion}{../../trial/implement/Lattices/LCRegion.html},
- \htmladdnormallink{LCSlicer}{../../trial/implement/Lattices/LCSlicer.html}, and
- \htmladdnormallink{WCRegion}{../../trial/implement/Images/WCRegion.html})
+ \htmladdnormallink{LCRegion}{../../lattices/implement/Lattices/LCRegion.html},
+ \htmladdnormallink{LCSlicer}{../../lattices/implement/Lattices/LCSlicer.html}, and
+ \htmladdnormallink{WCRegion}{../../images/implement/Images/WCRegion.html})
 gives you more information about the various regions.
 
 \medskip\noindent At this moment a region can not be defined in LEL itself. It is
@@ -1069,10 +1069,10 @@ This consists of 2 parts.
   \item
     The function \texttt{command} in
     \htmladdnormallink{Images/ImageExprParse.h}
-    {../../trial/implement/Images/ImageExprParse.html}
+    {../../images/implement/Images/ImageExprParse.html}
     can be used to execute a LEL command. The result is a
     \htmladdnormallink{LatticeExprNode}
-    {../../trial/implement/Lattices/LatticeExprNode.html}
+    {../../lattices/implement/Lattices/LatticeExprNode.html}
     object. E.g.
 \begin{verbatim}
   LatticeExprNode seltab1 = ImageExprParse::command
@@ -1084,7 +1084,7 @@ This consists of 2 parts.
     The other interface is a true C++ interface having the
     advantage that C++ variables can be used. Class
     \htmladdnormallink{LatticeExprNode}
-    {../../trial/implement/Lattices/LatticeExprNode.html}
+    {../../lattices/implement/Lattices/LatticeExprNode.html}
     contains functions to form an expression. The same operators
     and functions as in the command interface are available.
     E.g.
@@ -1097,7 +1097,7 @@ This consists of 2 parts.
     written as a normal C++ expression. The overloaded operators and
     functions in class 
     \htmladdnormallink{LatticeExprNode}
-    {../../trial/implement/Lattices/LatticeExprNode.html}
+    {../../lattices/implement/Lattices/LatticeExprNode.html}
     ensure that the expression is formed in the correct way.
     \\ Note that a \texttt{LatticeExprNode} object is usually
     automatically converted to a templated \texttt{LatticeExpr} object,
