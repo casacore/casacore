@@ -1,5 +1,5 @@
 //# hdu2.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,10 @@
 # include <aips/FITS/fits.h>
 # include <aips/FITS/hdu.h>
 # include <aips/FITS/fitsio.h>
-# include <string.h>
-# include <stdio.h>
+# include <aips/string.h>
+# include <aips/stdio.h>
 # include <assert.h>
-# include <strstream.h>
+# include <aips/strstream.h>
 
 //== FitsBit specializations ==================================================
 FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT,n), field(0) { }
