@@ -169,6 +169,7 @@ latex2html.
 Help2tex provides a generate consistent looking documentation if the
 aips2help.sty commands and environments are used.
 
+\subsubsection{How it works}
 The .help files are usually found in same directory as the "code".
 The docsys target for code/doc/Refman has been enhanced to do the following:
 \begin{enumerate}
@@ -181,29 +182,51 @@ file used for glish command-line help.
 \item run latex2html to generate the html files in docs/user/Refman.
 \end{enumerate}
 
+\subsubsection{Adding New Packages}
+The reference manual has been broken into several books due to pool space limitation of
+LaTeX.  Creating a new reference book requires several steps.
+\begin{enumerate}
+\item Create the top-level Package.latex file similar to General.latex. You will need to either
+include the package.help file in this new Package.latex file or write some text.
+\item edit the makefile in code/doc/user
+\begin{enumerate}
+ \item add the new package to the HELPPACKS variable
+\item define a PACKAGE.s2ps variable (will create lots of ps.gz files for package, module,
+and methods)
+\item set the split level of Package.latex file (should be := -split +4 -link 2 -short\_index)
+\item edit Refman.latex to add the new package to the top-level user reference manual.
+\item if needed add the \externallabels commands to other .latex files in the system (only
+necessary if you wish to cross reference from a .latex document to the User Reference Manual).
+\end{enumerate}
+\end{enumerate}
+
+
 
 \section{HTML based documents}
 \subsection{Top-level WWW pages}
-Several WWW pages are found in code/doc/html.  These pages are "straight" HTML
-and copied directly into the docs tree.  The \aips home page uses frames because
-of the rather complex nature of the documentation tree.  Frames provide a rather
-convenient way to navigate the rather large amount of \aips documentation.
+Several WWW pages are found in code/doc.  These pages are "straight" HTML
+and copied directly into the docs tree.  Each \aips web page has a standard header
+which contains a navigation bar for moving around the documentation tree. There are hooks in
+for javascript menus but these have proven to be problematical (i.e. unrepeatable problems with
+page display)
 
-Here is a list of some \aips web pages found in code/doc/html:
+Here are the top-level \aips web pages relative code/doc:
 
 \begin{description}
-\item[aips++.html] Frame based \aips home page.
-\item[frameonline.html] Content based html page (left side frame).
-\item[homepage.html] Body of \aips home page (right side frame).
-\item[online.html] \aips documentation matrix.
-\item[betasearch.html and aips2search.html] Search pages for beta and daily documentation.
-\item[homepages.html] Page containing links to \aips worker's home pages.
-\item[reportbug.html] Problem report page.
-\item[whatsnew.html] What's new with \aips
-\item[ftp.html] The ftp page (not used currently).
-\item[cxx2html.html] How to run cxx2html.
-\item[design.html] Alan Bridle's, "\aips Information System Design" document. 
+\item[aips++.html] \aips top-level documentation page.
+\item[gettingstarted.html]how to get \aips and use it.
+\item[user/documentation.html]user documentation material.
+\item[glish/glish.html]glish specific material.
+\item[learnmore.html]where to get more information about \aips.
+\item[programmer/programmer.html]programmer and system documentation.
+\item[contactus/contactus.html]defect status, email reflectors, personnel, and mirrors.
+\item[newsletters/index.html]latest news from \aips.
+\item[faq/faq.html]frequentyl asked questions about \aips.
+\item[search/search.html] Search pages for the documentation.
 \end{description}
+
+Specific informational HTML pages hang off of these control pages.  Please try and keep the
+web tree shallow to avoid burying it.
 
 
 \subsection{Cxx2html generated documents}
@@ -231,117 +254,24 @@ the search database with the system is not contemplated until there is a
 demand for searching local documentation.
 
 \section{\aips Problem Reporting System}
-The \aips problem reporting system uses GNATS 3.100-beta as the underlying
-system for managing and tracking problems. There are four ways to submit
-"a gnat":
+The \aips problem reporting system uses ClearDDTS as the underlying
+system for managing and tracking problems (This replaces the older GNATs system). There are
+three ways to submit
+"a defect":
 \begin{enumerate}
-\item send-pr,
-\item inside emacs with send-pr.el, 
-\item using the modified CERN wwwgnats, or
+\item using \htmladdnormallink{ClearDDTS}{http://aips2.nrao.edu/ddts/ddts_main}, or
+\item using the i\htmladdnormallink{AIPS++ bug web page}{../../contactus/reportabug.html}, or
 \item bug() (from glish).
 \end{enumerate} 
-Most \aips users will use bug or the cern-wwwgnats interface to submit problem
-reports.
-\subsection{GNATS}
-\aips uses GNATS 3.100-Beta.  The current version of
-GNATS is 3.104-beta and is available from
-\htmladdnormallink{ftp://ftp.cygnus.com/pub/gnats/gnats-3.104-beta.tar.gz}{ftp://ftp.cygnus.com/pub/gnats/}.
-A \htmladdnormallink{postscript file}{http://aips2.nrao.edu/wyoung/gnats.ps} of
-the gnats documentation is available (at the AOC http://tarzan/wyoung/gnats.ps).
+Extensive hard-copy documentation is available for ClearDDTs.
 
-For those not wanting to wade through the documentation a brief
-description follows.
-\begin{itemize}
-\item An email is sent to aips2bugs@nrao.edu,
-\item a cron job puts the email into the system (run by gnats on tarzan every
-10 minutes),
-\item The "appropriate" folks are notified (initial reports are sent to Tim
-Cornwell, Brian Glendenning,
-and Wes Young). Tim then reassigns the the bug to the appropriate category and
-individual.
-\item All responses to a bug report are logged with that report.
-\item Unrecognized responses are sent to the gnats administrator (Wes Young)
-who figures out what to do
-with them.
-\end{itemize}
-Currently, the gnats, executables, and configuration files are found in 
-/aips++/local/lib/gnats.  The configuration files are found in
-gnats-db/gnats-adm.
-The directories found gnats-db will be the category directories which hold the
-actual bug reports.
-\subsection{WWWGNATS}
-The standard distribution of GNATS comes with two web front ends to the GNATS
-system, wwwgnats and cern-wwwgnats. \aips has chosen to use the cern-wwwgnats
-because its interface was deemed "a better fit" to \aips needs than the standard
-wwwgnats.
-Cern-wwwgnats is found in the gnats source tree at
-gnats/contrib/cern-wwwgnats.  The files in
-3.100-B\_src-mods are just copied into the gnats src tree and the gnats is
-built.  Alan Lovell (\htmladdnormallink{Alan.Lovell@cern.ch}
-{mailto:Alan.Lovell@cern.ch}) at CERN reports he'll eventually update his
-modifications to gnats but he's not sure when.
 
-Cern-wwwgnats imposes a domain directory on top of the standard gnats category
-files. The domains chosen for \aips are aips, allbugs, atnf, bima, glish,
-nfra, nrao, synthesis, and unassigned.  Except for allbugs and unassigned these
-correspond to \aips packages.  Inside domains there are categories, i.e.
-the aips domain has the following categories arrays, graphics, logging, 
-images, lattices, mathematics, measures, tables, utilities, and design.
-A category may belong to more than one domain, i.e. all categories belong to
-the allbugs domain.
-
-Gnats uses three master
-files, categories, editors, and responsible.  Cern-wwwgnats has a categories, 
-editors and responsible file for each domain.
-These files are found in gnats/gnats-db/gnats-adm.  A brief summary of the
-files follows:
-\begin{itemize}
-\item The domains file contains a list of \aips domains (packages for the
-most part).
-
-\item The categories file
-contains the category name, a short description, the primary responsible
-person, and a list of others to be notified about problems for that category.
-Each domain has a categories-"domain" file.
-
-\item The editors file contains a list of who can edit
-particular categories. Each domain has an editors-"domain" file.
-
-\item The responsible file contains who is responsible
-for addressing problems for that category and who should be notified.
-Each domain has an responsible-"domain" file.
-
-\item The config file contains default configuration settings for submitting a "pr".
-
-\item The current file contains the number of the most current bug report.
-
-\item The index file contains a list of all bug reports.
-Gnatsd.conf configuration file for a gnats daemon (not used).
-\end{itemize}
-
-Several files need to be in the cgi-bin directory (need root access) , libgnats.pl,
-mailto.sh, sendmailto.pl, and wwwgnats.pl.  Wwwgnats.pl is the main program.
-Some small changes need to be made to these files, customize email addresses
-and document titles for \aips use..
-
-\subsection{W3C HTTPD}
-The perl scripts used by cern-wwwgnats need the
-\htmladdnormallink{W3C httpd}{http://www.w3.org/Daemon/}.  Even
-though the httpd.conf files says it's NCSA it isn't. Several commands
-(MAP, EXEC, and PASS) at the end of the configuration file are necessary for
-cern-wwwgnats.
-Testing is best done using a different port number
-on another machine before installation on the \aips server.  
-See \htmladdnormallink
-{http://www.w3.org/Daemon/User/Installation/Installation.html}
-{http://www.w3.org/Daemon/User/Installation/Installation.html} for more details
-on installing and testing the W3C httpd daemon.
 \section{Mailing list setup}
 From time-to-time new mailing lists are need.  The process is as follows
 \begin{enumerate}
 
 \item Check-in the new mailing list in code/admin/system.
-\item Supply the mail alias to NRAO-CV (\htmladdnormallink{Jeff Uphoff}{mailto:juphoff@nrao.edu}), they put the alias into the master
+\item Supply the mail alias to NRAO-AOC \htmladdnormallink{helpdesk}{mailto:helpdesk@aoc.nrao.edu}), they put the alias into the master
 alias table.  \aips
 mailing lists have the form aips2-mailinglist, where mailinglist is the name
 of the mailing list.
@@ -361,8 +291,8 @@ More details on \aips mailing lists may be found in the
 \htmlref{\aips System Manual} {email exploders}.
 % LocalWords:  init dsed llnl unix longtables Refman htex helpfiles glish htdig
 % LocalWords:  sdsu cron rundig conf htsearch httpd tarzan nrao wwwgnats cern
-% LocalWords:  cygnus wyoung Cornwell Glendenning contrib Lovell allbugs atnf
-% LocalWords:  bima nfra config Gnatsd libgnats mailto sendmailto NCSA admin
-% LocalWords:  Uphoff juphoff mailinglist newlist aipsmail frameonline homepage
+% LocalWords:  cygnus wyoung Cornwell Kemball contrib Lovell atnf
+% LocalWords:  bima nfra config mailto sendmailto NCSA admin
+% LocalWords:  helpdesk mailinglist newlist aipsmail frameonline homepage
 % LocalWords:  betasearch homepages reportbug whatsnew Bridle's HTML html perl
 % LocalWords:  texinfo docsys docs
