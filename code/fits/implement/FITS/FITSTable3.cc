@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -165,7 +165,7 @@ FITSGroupWriter::~FITSGroupWriter()
 
     if (nrows_written_p < nrows_total_p) {
 	LogIO log(LogOrigin("FITSGroupWriter", "~FITSGroupWriter", WHERE));
-	log << LogMessage::SEVERE <<
+	log << LogIO::SEVERE <<
 	    nrows_total_p << " rows must be written, only " << 
 	    nrows_written_p << " have been." << endl <<
 	    "Not enough rows were written, repeating the final row" << 
