@@ -30,6 +30,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/OS/File.h>
 #include <iostream.h>
 

@@ -37,6 +37,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayIO.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Containers/Block.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/File.h>
