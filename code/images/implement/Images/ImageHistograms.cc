@@ -28,6 +28,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/VectorIter.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Logging/LogIO.h>
@@ -223,6 +224,10 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
       return False;
    }
 
+// Save current cursor axes
+
+   Vector<Int> saveAxes(cursorAxes_p.copy());
+
 
 // Set cursor arrays (can't assign to potentially zero length array)
 
@@ -244,10 +249,10 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
       }
    }
 
-
-// Signal that we have changed the axes and need a new accumulation image
-
-   needStorageImage_p = True;
+// Signal that we have changed the axes and need new accumulation images
+   
+   if (saveAxes.nelements() != cursorAxes_p.nelements() ||
+       !allEQ(saveAxes.ac(), cursorAxes_p.ac())) needStorageImage_p = True;
 
    return True;
 }
@@ -264,6 +269,10 @@ Bool ImageHistograms<T>::setNBins (const Int& nBinsU)
       return False;
    }
 
+// Save number of bins
+
+   const Int saveNBins = nBins_p;
+
    if (nBinsU < 1) {
       os_p << LogIO::SEVERE << "Invalid number of bins" << LogIO::POST;
       goodParameterStatus_p = False;
@@ -274,7 +283,7 @@ Bool ImageHistograms<T>::setNBins (const Int& nBinsU)
 
 // Signal that we need a new accumulation image
 
-   needStorageImage_p = True;
+   if (saveNBins != nBins_p) needStorageImage_p = True;
 
    return True;
 }
@@ -291,6 +300,13 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<Double>& includeU)
       return False;
    }
 
+// Save current ranges   
+          
+   Vector<Float> saveRange(range_p.copy());
+   
+
+// CHeck    
+
    Vector<Double> exclude;
    Bool noInclude, noExclude;
    ostrstream os;
@@ -303,9 +319,10 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<Double>& includeU)
    binAll_p = noInclude;
 
 
-// Signal that we need a new accumulation image
-    
-   needStorageImage_p = True;
+// Signal that we need new accumulation images
+
+   if (saveRange.nelements() != range_p.nelements() ||
+       !allEQ(saveRange.ac(), range_p.ac())) needStorageImage_p = True;
 
    return True;
 }
@@ -361,7 +378,15 @@ Bool ImageHistograms<T>::setRegion(const IPosition& blcU,
       os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;   
       return False;
    }
+
+
+
+// Save current region
       
+   IPosition saveBlc(blc_p);
+   IPosition saveTrc(trc_p);
+      
+
 // Check OK
   
    blc_p.resize(0);
@@ -375,6 +400,10 @@ Bool ImageHistograms<T>::setRegion(const IPosition& blcU,
       os_p << LogIO::NORMAL << "Selected region : " << blc_p+1 << " to " 
         << trc_p+1 << LogIO::POST;
    }
+
+// Signal we need new accumulation images
+
+   if (!saveBlc.isEqual(blc_p) || !saveTrc.isEqual(trc_p)) needStorageImage_p = True;
 
    return True;
 }
@@ -1116,7 +1145,7 @@ Bool ImageHistograms<T>::generateStorageImage()
 
    os_p << LogIO::NORMAL << "Creating new storage images" << LogIO::POST;
    needStorageImage_p = False;     
-   
+      
 
 // Set up input image pixel iterator and navigator.  Do this first so we 
 // have the subLattice available to make the storage images
@@ -1310,6 +1339,7 @@ Bool ImageHistograms<T>::generateStorageImage()
    }
 
    delete pPixelIterator;
+
    return True;
 }
  
