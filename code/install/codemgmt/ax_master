@@ -6115,3 +6115,8 @@
 17 151 src rm admin/system/aips2.list
 17 152 src mv trial/apps/dish/naic trial/apps/naic
 17 154 src mv doc/recipes/General/extlab.tex doc/recipes/General/extlab.lis
+17 165 src rm aips/implement/Functionals/G1D.cc
+17 165 src rm aips/implement/Functionals/G1D.h
+17 165 src rm aips/implement/Functionals/G1D2.cc
+17 165 src rm aips/implement/Functionals/G1DParam.cc
+17 165 src rm aips/implement/Functionals/G1DParam.h
