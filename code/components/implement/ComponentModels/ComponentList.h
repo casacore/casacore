@@ -73,8 +73,8 @@ template <class T> class ImageInterface;
 // <dd> See the <src>nelements</src> & <src>component</src> functions
 // <dt> Functions to add and delete components.
 // <dd> See the <src>add</src>, <src>remove</src> & <src>copy</src> functions
-// <dt> Functions to designate components as being selected or not
-// <dd> See the <src>select</src>, <src>deselect</src> & <src>selected/src>
+// <dt> Functions to designate components as being selected or not.
+// <dd> See the <src>select</src>, <src>deselect</src> & <src>selected</src>
 //      functions
 // <dt> Functions to sample the flux of the components in any direction and
 //      frequency or to grid them onto an Image.
@@ -89,6 +89,19 @@ template <class T> class ImageInterface;
 // <dd> See the <src>sort</src>, <src>type</src> &
 //      <src>namel</src> functions.
 // </dl>
+
+// ComponentLists are memory based objects that can write their contents to and
+// from disk (ie a Table). To read a componentList from a Table the appropriate
+// constructor must be used. Alternatively an empty componentlist can be
+// created that is not associated with a Table. To save the list to disk it
+// must be given a name. This is done using the rename function. This will
+// rename the Table if the ComponentList was already associated with a Table.
+
+// The elements of a componentlist (ie., SkyComponents) are accessed via the
+// component functions. These functions return the SkyComponent by reference
+// and hence manipulating the supplied component manipulates the specified
+// element of the list.
+
 // </synopsis>
 //
 // <example>
