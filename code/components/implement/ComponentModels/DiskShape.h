@@ -193,12 +193,6 @@ public:
   // ComponentType::DISK.
   virtual ComponentType::Shape type() const;
 
-  // set/get the reference direction of the disk.
-  // <group>
-  virtual void setRefDirection(const MDirection& newRefDir);
-  virtual const MDirection& refDirection() const;
-  // </group>
-
   // set/get the width and orientation of the Disk. The position angle is
   // measured North through East ie a position angle of zero degrees means
   // that the major axis is North-South and a position angle of 10 degrees
