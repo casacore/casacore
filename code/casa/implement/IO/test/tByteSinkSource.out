@@ -30,4 +30,4 @@ A
 B
 This is a teststring
 This is a teststring
-RegularFileIO: error in open or create of file tByteSinkSource_tmp.dat
+RegularFileIO: new file tByteSinkSource_tmp.dat already exists
