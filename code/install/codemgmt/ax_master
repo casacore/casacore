@@ -5395,3 +5395,4 @@
 15 150 src mv trial/implement/Mathematics/IComplex.h aips/implement/Mathematics/IComplex.h
 15 152 src mv aips/implement/RTTI/Register.h aips/implement/Utilities/Register.h
 15 152 src mv aips/implement/RTTI/Register.cc aips/implement/Utilities/Register.cc
+15 152 src mv aips/implement/RTTI/test/tRegister.cc aips/implement/Utilities/test/tRegister.cc
