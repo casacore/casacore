@@ -43,17 +43,18 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
 						   const Array<Range>& yin,
 						   Int method)
 {
+  const uInt ndim = yin.ndim();
   Int nxin=xin.nelements(), nxout=xout.nelements();
   IPosition yinShape=yin.shape();
-  DebugAssert(nxin==yinShape(yin.ndim()-1),AipsError);
+  DebugAssert(nxin==yinShape(ndim-1),AipsError);
 
   Bool deleteYin, deleteYout;
   const Range* pyin=yin.getStorage(deleteYin);
   Int yStep=1; 
   Int i;
-  for (i=0; i<Int(yin.ndim())-1; i++) yStep*=yinShape(i);
+  for (i=0; i<Int(ndim)-1; i++) yStep*=yinShape(i);
   IPosition youtShape=yinShape;
-  youtShape(yout.ndim()-1)=nxout;
+  youtShape(ndim-1)=nxout;
   yout.resize(youtShape);
   Range* pyout=yout.getStorage(deleteYout);
 
@@ -91,9 +92,10 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
                                                    Bool goodIsTrue,
 						   Bool extrapolate)
 {
+  const uInt ndim = yin.ndim();
   Int nxin=xin.nelements(), nxout=xout.nelements();
   IPosition yinShape=yin.shape();
-  DebugAssert(nxin==yinShape(yin.ndim()-1),AipsError);
+  DebugAssert(nxin==yinShape(ndim-1),AipsError);
   DebugAssert((yinFlags.shape() == yinShape), AipsError);
 
   Bool deleteYin, deleteYout, deleteYinFlags, deleteYoutFlags;
@@ -101,9 +103,9 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
   const Bool* pyinFlags=yinFlags.getStorage(deleteYinFlags);
   Int yStep=1; 
   Int i;
-  for (i=0; i<Int(yin.ndim())-1; i++) yStep*=yinShape(i);
+  for (i=0; i<Int(ndim)-1; i++) yStep*=yinShape(i);
   IPosition youtShape=yinShape;
-  youtShape(yout.ndim()-1)=nxout;
+  youtShape(ndim-1)=nxout;
   yout.resize(youtShape);
   youtFlags.resize(youtShape);
   youtFlags.set(False);
