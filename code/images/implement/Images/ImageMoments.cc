@@ -67,6 +67,7 @@
 #include <trial/Images/ImageHistograms.h>
 #include <trial/Images/MomentCalculator.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/TempImage.h>
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
@@ -97,7 +98,6 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
   stdDeviation_p(T(0.0)),
   yMin_p(T(0.0)),
   yMax_p(T(0.0)),
-  out_p(""),
   smoothOut_p(""),
   goodParameterStatus_p(True),
   doWindow_p(False),
@@ -183,7 +183,6 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       yMin_p = other.yMin_p;
       yMax_p = other.yMax_p;
       plotter_p = other.plotter_p;
-      out_p = other.out_p;
       smoothOut_p = other.smoothOut_p;
       goodParameterStatus_p = other.goodParameterStatus_p;
       doWindow_p = other.doWindow_p;
@@ -522,20 +521,6 @@ Bool ImageMoments<T>::setSnr(const T& peakSNRU,
 } 
 
 
-template <class T>
-Bool ImageMoments<T>::setOutName(const String& outU)
-//
-// Assign the desired output file name
-//
-{
-   if (!goodParameterStatus_p) {
-      error_p = "Internal class status is bad";
-      return False;
-   }
-   out_p = outU;
-   return True;
-}
- 
 
 
 template <class T>
@@ -658,7 +643,9 @@ Vector<Int> ImageMoments<T>::toMethodTypes (const String& methods)
 
 
 template <class T>
-Bool ImageMoments<T>::createMoments(Bool removeAxis)
+Bool ImageMoments<T>::createMoments(PtrBlock<MaskedLattice<T>* >& outPt,
+                                    Bool doTemp, const String& outName,
+                                    Bool removeAxis)
 //
 // This function does all the work
 //
@@ -703,13 +690,12 @@ Bool ImageMoments<T>::createMoments(Bool removeAxis)
 // Check that input and output image names aren't the same.
 // if there is only one output image
 
-   if (moments_p.nelements() == 1) {
-      if (!out_p.empty() && (out_p == pInImage_p->name())) {
+   if (moments_p.nelements() == 1 && !doTemp) {
+      if (!outName.empty() && (outName == pInImage_p->name())) {
          error_p = "Input image and output image have same name";
          return False;
       }
    } 
-
 
 // Try and set some useful Booools.
 
@@ -781,9 +767,9 @@ Bool ImageMoments<T>::createMoments(Bool removeAxis)
                                                      pInImage_p->shape(),
                                                      momentAxis_p, removeAxis);
 
-// Create a vector of pointers for output images 
+// Resize the vector of pointers for output images 
 
-   PtrBlock<MaskedLattice<T> *> outPt(moments_p.nelements());
+   outPt.resize(moments_p.nelements());
    for (uInt i=0; i<outPt.nelements(); i++) outPt[i] = 0;
 
 // Loop over desired output moments
@@ -792,7 +778,7 @@ Bool ImageMoments<T>::createMoments(Bool removeAxis)
    Bool goodUnits;
    Bool giveMessage = True;
    Unit imageUnits = pInImage_p->units();
-   
+//   
    for (uInt i=0; i<moments_p.nelements(); i++) {
 
 // Set moment image units and assign pointer to output moments array
@@ -802,42 +788,46 @@ Bool ImageMoments<T>::createMoments(Bool removeAxis)
       goodUnits = setOutThings(suffix, momentUnits, imageUnits, momentAxisUnits, 
                                moments_p(i), convertToVelocity_p);
 //   
-// Create output image(s).  
+// Create output image(s).    Either PagedImage or TempImage
 //
-      const String in = pInImage_p->name(False);   
-      String outFileName;
-      if (moments_p.nelements() == 1) {
-         if (out_p.empty()) {
-            outFileName = in + suffix;
+      ImageInterface<Float>* imgp = 0;
+      if (!doTemp) {
+         const String in = pInImage_p->name(False);   
+         String outFileName;
+         if (moments_p.nelements() == 1) {
+            if (outName.empty()) {
+               outFileName = in + suffix;
+            } else {
+               outFileName = outName;
+            }
          } else {
-            outFileName = out_p;
+            if (outName.empty()) {
+               outFileName = in + suffix;
+            } else {
+               outFileName = outName + suffix;
+            }
          }
+//
+         if (!overWriteOutput_p) {
+            NewFile x;
+            String error;
+            if (!x.valueOK(outFileName, error)) {
+               os_p << LogIO::NORMAL << error << LogIO::POST;
+               return False;
+            }
+         }
+ //
+         imgp = new PagedImage<T>(outImageShape, cSysOut, outFileName);         
+         os_p << LogIO::NORMAL << "Created " << outFileName << LogIO::POST;
       } else {
-         if (out_p.empty()) {
-            outFileName = in + suffix;
-         } else {
-            outFileName = out_p + suffix;
-         }
+         imgp = new TempImage<T>(TiledShape(outImageShape), cSysOut);
+         os_p << LogIO::NORMAL << "Created TempImage" << LogIO::POST;
       }
 //
-      if (!overWriteOutput_p) {
-         NewFile x;
-         String error;
-         if (!x.valueOK(outFileName, error)) {
-            os_p << LogIO::NORMAL << error << LogIO::POST;
-            return False;
-         }
-      }
-
-// Try and make the file.  If we are operating from the DO, a file
-// of this file name could be open somewhere and this will fail.
-
-      PagedImage<T>* imgp = new PagedImage<T>(outImageShape, cSysOut, outFileName);
       if (imgp==0) {
          for (uInt j=0; j<i; j++) delete outPt[j];
          os_p << "Failed to create output file" << LogIO::EXCEPTION;        
       }
-      os_p << LogIO::NORMAL << "Created " << outFileName << LogIO::POST;
       imgp->setMiscInfo(pInImage_p->miscInfo());
       imgp->setImageInfo(pInImage_p->imageInfo());
       imgp->appendLog(pInImage_p->logger());
@@ -936,8 +926,7 @@ Bool ImageMoments<T>::createMoments(Bool removeAxis)
       }
    }
    if (pProgressMeter != 0) delete pProgressMeter;
-   for (uInt i=0; i<moments_p.nelements(); i++) delete outPt[i];
-
+//
    if (pSmoothedImage) {
        
 // Remove the smoothed image file if they don't want to save it
@@ -948,7 +937,6 @@ Bool ImageMoments<T>::createMoments(Bool removeAxis)
          dir.removeRecursive();
       }
    }
-   
 
 // Success guarenteed !
 

@@ -43,6 +43,7 @@ template <class T> class Matrix;
 template <class T> class MomentCalcBase;
 template <class T> class SubImage;
 template <class T> class ImageInterface;
+template <class T> class MaskedLattice;
 template <class T> class Lattice;
 template <class T> class PtrHolder;
 class CoordinateSystem;
@@ -436,14 +437,6 @@ enum MethodTypes {
    Bool setSnr(const T& peakSNR, 
                const T& stdDeviation);
 
-// Set the name of the output file.  If you create more than one moment, 
-// this string is the root name for the output files.  Suffixes will
-// be made up internally to append to this root.  If you only ask for one moment,
-// this will be the actual name of the output file.  If you don't call this
-// function, the default state of the class is to set the output name root to 
-// the name of the input file.
-   Bool setOutName(const String& outU);
-
 // This is the output file name for the smoothed image.   It can be useful
 // to have access this to this image when trying to get the pixel
 // <src>include</src> or <src>exclude</src> range correct for the smooth-clip
@@ -500,7 +493,20 @@ enum MethodTypes {
 // the output CoordinateSystem.  If <src>removeAxes=False</src> then the axis
 // is retained with shape=1 and with its original coordinate information (which
 // is probably meaningless).
-   Bool createMoments(Bool removeAxes=True);
+//
+// The output PtrBlock will hold PagedImages or TempImages (doTemp=True).
+// It is your responsibility to delete the pointers.  
+// If doTemp is True, the outFileName is irrelevant.
+//
+// If you create PagedImages, outFileName is the root name for 
+// the output files.  Suffixes will be made up internally to append 
+// to this root.  If you only ask for one moment,
+// this will be the actual name of the output file.  If you don't set this
+// variable, the default state of the class is to set the output name root to 
+// the name of the input file.  
+   Bool createMoments(PtrBlock<MaskedLattice<T>* >& images,
+                      Bool doTemp, const String& outFileName,                   
+                      Bool removeAxes=True);
 
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type (this class only accepts Float or Double images).
