@@ -55,7 +55,7 @@ SkyComponent::SkyComponent(ComponentType::Shape shape) {
     itsCompPtr = new PointCompRep; break;
   case ComponentType::GAUSSIAN:
     itsCompPtr = new GaussianCompRep; break;
-  case ComponentType::UNKNOWN:
+  case ComponentType::UNKNOWN_SHAPE:
   case ComponentType::NUMBER_SHAPES:
     throw(AipsError("SkyComponent::Unable to construct a component of "
 		    "UNKNOWN shape"));
@@ -172,35 +172,35 @@ ComponentType::Shape SkyComponent::getShape(String & errorMessage,
 					    const GlishRecord & record) {
   if (!record.exists("shape")) {
     errorMessage += "\nThe record does not have a 'shape' field";
-    return ComponentType::UNKNOWN;
+    return ComponentType::UNKNOWN_SHAPE;
   }
   if (record.get("shape").type() != GlishValue::RECORD) {
     errorMessage += "\nThe 'shape' field must be a record";
-    return ComponentType::UNKNOWN;
+    return ComponentType::UNKNOWN_SHAPE;
   }
   const GlishRecord shapeRec = record.get("shape");
   if (!shapeRec.exists("type")) {
     errorMessage += "\nThe shape record does not have a 'type' field";
-    return ComponentType::UNKNOWN;
+    return ComponentType::UNKNOWN_SHAPE;
   }
   if (shapeRec.get("type").type() != GlishValue::ARRAY) {
     errorMessage += "\nThe 'type' field cannot be a record";
-    return ComponentType::UNKNOWN;
+    return ComponentType::UNKNOWN_SHAPE;
   }
   const GlishArray typeField = shapeRec.get("type");
   if (typeField.elementType() != GlishArray::STRING) {
     errorMessage += "\nThe 'type' field must be a string";
-    return ComponentType::UNKNOWN;
+    return ComponentType::UNKNOWN_SHAPE;
   }
   const IPosition shape = typeField.shape();
   if (shape.nelements() != 1 || shape.product() != 1) {
     errorMessage +="\nThe 'type' field must be a vector with only one element";
-    return ComponentType::UNKNOWN;
+    return ComponentType::UNKNOWN_SHAPE;
   }
   String typeString;
   if (typeField.get(typeString) == False) {
     errorMessage += "\nCould not read the 'type' field for an unknown reason";
-    return ComponentType::UNKNOWN;
+    return ComponentType::UNKNOWN_SHAPE;
   }
   return ComponentType::shape(typeString);
 }
