@@ -1,5 +1,5 @@
 //# SDSourceFiller.cc: an SOURCE filler for SDFITS data  
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -134,7 +134,9 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 	}
 	uInt rownr = 0;
 	Vector<uInt> foundRows = index_p->getRowNumbers();
-	Bool found = False;
+	Bool rowFound, sourceFound;
+	rowFound = sourceFound = False;
+	
 	String transition = "";
 	if (transiti_p.isAttached()) transition = *transiti_p;
 	if (molecule_p.isAttached()) {
@@ -155,50 +157,58 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 	if (foundRows.nelements() > 0) {
 	    // we have at least 1 candidate, look for a matching spectral window ID
 	    uInt whichOne = 0;
-	    while (!found && whichOne<foundRows.nelements()) {
-		if (spectralWindowId == msSourceCols_p->spectralWindowId()(foundRows(whichOne))) {
-		    found = True;
-		    rownr = foundRows(whichOne);
-		    if (found && calibrationGroupField_p.isAttached()) {
-			found = msSourceCols_p->calibrationGroup()(rownr) == *calibrationGroupField_p;
+	    while (!rowFound && whichOne<foundRows.nelements()) {
+		// A source ID probably matches if TIME, INTERVAL, DIRECTION, POSITION, PROPER_MOTION,
+		// SYSVEL, and PULSAR_ID match
+		rownr = foundRows(whichOne);
+		rowFound = True;
+		if (rowFound && calibrationGroupField_p.isAttached()) {
+		    rowFound = msSourceCols_p->calibrationGroup()(rownr) == *calibrationGroupField_p;
+		}
+		if (rowFound && timeField_p.isAttached()) {
+		    rowFound = msSourceCols_p->time()(rownr) == *timeField_p;
+		}
+		if (rowFound && intervalField_p.isAttached()) {
+		    rowFound = msSourceCols_p->interval()(rownr) == *intervalField_p;
+		}
+		if (rowFound && directionField_p.isAttached()) {
+		    rowFound = allEQ(msSourceCols_p->direction()(rownr),*directionField_p);
+		}
+		if (rowFound && positionField_p.isAttached()) {
+		    rowFound = allEQ(msSourceCols_p->position()(rownr),*positionField_p);
+		}
+		if (rowFound && properMotionField_p.isAttached()) {
+		    rowFound = allEQ(msSourceCols_p->properMotion()(rownr),*properMotionField_p);
+		}
+		if (rowFound && hasSysVel_p) {
+		    rowFound = allEQ(msSourceCols_p->sysvel()(rownr), sysvel);
+		}
+		if (rowFound && pulsarIdField_p.isAttached()) {
+		    if (msSourceCols_p->pulsarId().isNull()) rowFound = !(*pulsarIdField_p>=0);
+		    else rowFound = msSourceCols_p->pulsarId()(rownr) == *pulsarIdField_p;
+		}
+		// if we're here, the source ID is probably okay
+		if (rowFound) {
+		    sourceFound = True;
+		    sourceId_p = msSourceCols_p->sourceId()(rownr);
+		    // we still might not have the right row, though
+		    rowFound = spectralWindowId == msSourceCols_p->spectralWindowId()(foundRows(whichOne));
+		    if (rowFound && hasTransition_p) {
+			rowFound = allEQ(msSourceCols_p->transition()(rownr), transition);
 		    }
-		    if (found && timeField_p.isAttached()) {
-			found = msSourceCols_p->time()(rownr) == *timeField_p;
-		    }
-		    if (found && intervalField_p.isAttached()) {
-			found = msSourceCols_p->interval()(rownr) == *intervalField_p;
-		    }
-		    if (found && directionField_p.isAttached()) {
-			found = allEQ(msSourceCols_p->direction()(rownr),*directionField_p);
-		    }
-		    if (found && positionField_p.isAttached()) {
-			found = allEQ(msSourceCols_p->position()(rownr),*positionField_p);
-		    }
-		    if (found && properMotionField_p.isAttached()) {
-			found = allEQ(msSourceCols_p->properMotion()(rownr),*properMotionField_p);
-		    }
-		    if (found && hasTransition_p) {
-			found = allEQ(msSourceCols_p->transition()(rownr), transition);
-		    }
-		    if (found && hasRestFreq_p) {
-			found = allEQ(msSourceCols_p->restFrequency()(rownr), restfreq);
-		    }
-		    if (found && hasSysVel_p) {
-			found = allEQ(msSourceCols_p->sysvel()(rownr), sysvel);
-		    }
-		    if (found && pulsarIdField_p.isAttached()) {
-			if (msSourceCols_p->pulsarId().isNull()) found = !(*pulsarIdField_p>=0);
-			else found = msSourceCols_p->pulsarId()(rownr) == *pulsarIdField_p;
+		    if (rowFound && hasRestFreq_p) {
+			rowFound = allEQ(msSourceCols_p->restFrequency()(rownr), restfreq);
 		    }
 		}
-		if (!found) whichOne++;
+		if (!rowFound) whichOne++;
 	    }
 	}
-	if (!found) {
+	if (!rowFound) {
 	    // we need to add one
 	    rownr = msSource_p->nrow();
 	    msSource_p->addRow();
-	    sourceId_p = nextSourceId_p++;
+	    if (!sourceFound) sourceId_p = nextSourceId_p++;
+
 	    msSourceCols_p->sourceId().put(rownr,sourceId_p);
 	    if (timeField_p.isAttached()) {
 		msSourceCols_p->time().put(rownr,*timeField_p);
