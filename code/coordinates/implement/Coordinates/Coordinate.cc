@@ -424,10 +424,14 @@ void Coordinate::set_error(const String &errorMsg) const
 Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
                                                       const Vector<String>& axisNames,
                                                       Double refLat, Bool printError) const
+//
+// Reflat in radians
+//
 {
     LogIO os(LogOrigin("Coordinate", "make_Direction_FITS_ctype", WHERE));
     Vector<String> ctype(2);
     Vector<Double> projParameters = proj.parameters();
+
 //
     Bool isNCP = False;
     for (uInt i=0; i<2; i++) {
@@ -451,8 +455,11 @@ Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
               } else {
                   // NCP?
                   // From Greisen and Calabretta
+                  // The potential divide by zero should never occur in
+                  // a real DirectionCoordinate as you better not have observed at
+                  // lat=0 with an EW array
                   if (::near(projParameters(0), 0.0) &&
-                      ::near(projParameters(1), 1.0/tan(refLat*C::pi/180.0))) {
+                      ::near(projParameters(1), 1.0/tan(refLat))) {
                       // Is NCP
                       isNCP = True;
                       name = name + "-NCP";
@@ -463,6 +470,7 @@ Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
                           os << LogIO::WARN << "SIN projection with non-zero"
                               " projp does not appear to be NCP." << endl <<
                               "However, assuming NCP anyway." << LogIO::POST;
+
                       }
                       name = name + "-NCP";
                       isNCP = True;
