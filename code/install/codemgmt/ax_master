@@ -2560,3 +2560,5 @@
 09 461 src rm trial/apps/measures/measures_observatories.g
 09 461 src rm trial/apps/measures/test/
 09 461 src mv trial/apps/measures/measures_help.g trial/implement/Measures/measures_help.g
+09 461 src rm trial/data/IERSMeasured/
+09 461 src rm trial/data/IERSPredicted/
