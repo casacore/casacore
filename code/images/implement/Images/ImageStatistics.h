@@ -191,9 +191,10 @@ public:
    Bool setAxes (const Vector<Int>& cursorAxes);
 
 // Set the region of interest of the image.    Currently, just a blc and trc 
-// are available (the increment is always set to unity at present),  In the 
-// future, a more sophisticated selection method will be available.  The default 
-// state of the class is to use the entire image.
+// are available (the increment is always set to unity at present).
+// Illegal or unspecified values are given 0 (blc) or the image shape (trc).
+// If <src>listRegion</src> is <src>True</src> then the selected region is listed
+// to the logger.  The default state of the class is to use the entire image.
    Bool setRegion (const IPosition &blc, 
                    const IPosition &trc,
                    const IPosition &inc,
