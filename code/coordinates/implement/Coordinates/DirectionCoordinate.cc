@@ -454,15 +454,16 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	    names = "????";
 	}
     } else {
-	names(0) = "Right Ascension";
-	names(1) = "Declination";
 	switch(type) {
-	case MDirection::J2000: names.ac() += String(" (J2000)"); break;
-	case MDirection::JMEAN: names.ac() += String(" (mean (J))"); break;
-	case MDirection::APP: names.ac() += String(" (apparent)"); break;
-	case MDirection::B1950: names.ac() += String(" (B1950)"); break;
-	case MDirection::BMEAN: names.ac() += String(" (mean (B))"); break;
-	case MDirection::BTRUE: names.ac() += String(" (true (B))"); break;
+	case MDirection::J2000: // These are all RA/DEC systems
+	case MDirection::JMEAN:
+	case MDirection::APP:
+	case MDirection::B1950:
+	case MDirection::BMEAN:
+	case MDirection::BTRUE:
+	    names(0) = "Right Ascension";
+	    names(1) = "Declination";
+	    break;
 	case MDirection::GALACTIC:
 	    names(0) = "Galactic Longitude";
 	    names(1) = "Galactic Latitude";
