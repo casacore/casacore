@@ -63,6 +63,8 @@ int main()
       AlwaysAssertExit (! pIm.isMaskWritable());
       AlwaysAssertExit (pIm.isWritable());
       AlwaysAssertExit (pIm.isPaged());
+      AlwaysAssertExit (pIm.canDefineRegion());
+      AlwaysAssertExit (! pIm.hasPixelMask());
       pIm.set(1);
       
 // Create a region as a mask and add it to the image.
@@ -78,6 +80,7 @@ int main()
       AlwaysAssertExit (pIm.getDefaultMask() == "reg1");
       AlwaysAssertExit (! pIm.isMasked());        // Slicer does not have mask
       AlwaysAssertExit (! pIm.isMaskWritable());
+      AlwaysAssertExit (! pIm.hasPixelMask());
 
 // Check number of elements.
       LatticeExprNode expr (nelements(pIm));
@@ -89,6 +92,7 @@ int main()
       AlwaysAssertExit (pIm.getDefaultMask() == "reg1");
       AlwaysAssertExit (! pIm.isMasked());
       AlwaysAssertExit (! pIm.isMaskWritable());
+      AlwaysAssertExit (! pIm.hasPixelMask());
       AlwaysAssertExit (pIm.isWritable());
       AlwaysAssertExit (pIm.isPaged());
       AlwaysAssertExit (pIm.getRegionPtr() != 0);
@@ -133,6 +137,8 @@ int main()
       AlwaysAssertExit (pIm.getDefaultMask() == "reg2");
       AlwaysAssertExit (pIm.isMasked());
       AlwaysAssertExit (pIm.isMaskWritable());
+      AlwaysAssertExit (pIm.hasPixelMask());
+      AlwaysAssertExit (pIm.pixelMask().isWritable());
 
 // Put a mask and check it is correct.
       mask(IPosition(2,0,0)) = False;
@@ -144,6 +150,11 @@ int main()
       AlwaysAssertExit (pIm.getDefaultMask() == "reg2n");
       AlwaysAssertExit (pIm.isMasked());
       AlwaysAssertExit (pIm.isMaskWritable());
+
+// Make a unique name.
+      AlwaysAssertExit (pIm.makeUniqueRegionName ("reg2n") == "reg2n1");
+      AlwaysAssertExit (pIm.makeUniqueRegionName ("reg2n", 3) == "reg2n3");
+      AlwaysAssertExit (pIm.makeUniqueRegionName ("reg2na", 3) == "reg2na3");
 
 // Now get the mask as a region and check it is correct.
       {
