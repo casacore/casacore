@@ -1,5 +1,5 @@
 //# ImageHistograms.cc: generate histograms from an image
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Arrays/VectorIter.h>
 #include <trial/Coordinates.h>  
 #include <aips/Functionals/Gaussian1D.h>
-#include <trial/Images/MaskedImage.h>
+#include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
@@ -61,7 +61,7 @@
 // Public functions
 
 template <class T>
-ImageHistograms<T>::ImageHistograms (const MaskedImage<T>& imageU, 
+ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU, 
                                      LogIO &os,
                                      Bool showProgressU)
 : os_p(os),
@@ -98,7 +98,7 @@ ImageHistograms<T>::ImageHistograms (const MaskedImage<T>& imageU,
 
 
 template <class T>
-ImageHistograms<T>::ImageHistograms (const MaskedImage<T>& imageU, 
+ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU, 
                                      Bool showProgressU)
 : pStoreImage_p(0),
   pStats_p(0),
@@ -466,7 +466,7 @@ Bool ImageHistograms<T>::setPlotting(PGPlotter& plotterU,
 
 
 template <class T>
-Bool ImageHistograms<T>::setNewImage(const MaskedImage<T>& image)
+Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
 //    
 // Assign pointer to image
 //
