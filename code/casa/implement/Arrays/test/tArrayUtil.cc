@@ -1,5 +1,5 @@
 //# tArrayUtil.cc: Test program for functions in ArrayUtil.h
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Utilities/Regex.h>
 
 // <summary>
 // Test of functions in ArrayUtil.h.
@@ -74,6 +75,67 @@ Bool testVectorToString (Bool)
     if (vec5.nelements() != 4  ||  vec5(0) != ""  ||  vec5(1) != "abc"
     ||  vec5(2) != "defg"  ||  vec5(3) != "") {
 	cout << "<,abc,defg,> should result in vector length 4" << endl;
+	ok = False;
+    }
+
+    return ok;
+}
+
+
+Bool testVectorToStringRegex (Bool)
+{
+    // Test using multiple spaces and a single comma as delimiter.
+    Regex delim(" *, *");
+    Bool ok = True;
+
+    Vector<String> vec1 = stringToVector ("", delim);
+    if (vec1.nelements() != 0) {
+	cout << "Empty string should result in vector length 0" << endl;
+	ok = False;
+    }
+
+    Vector<String> vec2 = stringToVector ("abc", delim);
+    if (vec2.nelements() != 1  ||  vec2(0) != "abc") {
+	cout << "<abc> should result in vector length 1" << endl;
+	ok = False;
+    }
+
+    Vector<String> vec3 = stringToVector (",", delim);
+    if (vec3.nelements() != 2  ||  vec3(0) != ""  ||  vec3(1) != "") {
+	cout << "<,> should result in vector length 2" << endl;
+	ok = False;
+    }
+
+    Vector<String> vec4 = stringToVector ("abc,defg,,h", delim);
+    if (vec4.nelements() != 4  ||  vec4(0) != "abc"  ||  vec4(1) != "defg"
+    ||  vec4(2) != ""  ||  vec4(3) != "h") {
+	cout << "<abc,defg,,h> should result in vector length 4" << endl;
+	ok = False;
+    }
+
+    Vector<String> vec5 = stringToVector (",abc,defg,", delim);
+    if (vec5.nelements() != 4  ||  vec5(0) != ""  ||  vec5(1) != "abc"
+    ||  vec5(2) != "defg"  ||  vec5(3) != "") {
+	cout << "<,abc,defg,> should result in vector length 4" << endl;
+	ok = False;
+    }
+
+    Vector<String> vec6 = stringToVector ("  ,  ", delim);
+    if (vec6.nelements() != 2  ||  vec6(0) != ""  ||  vec6(1) != "") {
+	cout << "<  ,  > should result in vector length 2" << endl;
+	ok = False;
+    }
+
+    Vector<String> vec7 = stringToVector ("abc  ,  defg  ,  ,  h", delim);
+    if (vec7.nelements() != 4  ||  vec7(0) != "abc"  ||  vec7(1) != "defg"
+    ||  vec7(2) != ""  ||  vec7(3) != "h") {
+	cout << "<abc  ,  defg  ,  ,  h> should result in vector length 4" << endl;
+	ok = False;
+    }
+
+    Vector<String> vec8 = stringToVector (" abc  ", delim);
+    if (vec8.nelements() != 1  ||  vec8(0) != " abc  ") {
+	cout << "< abc  > should result in vector length 1" << endl;
 	ok = False;
     }
 
@@ -143,6 +205,9 @@ main (int argc)
     Bool ok = True;
     try {
 	if (! testVectorToString (ToBool (argc < 2))) {
+	    ok = False;
+	}
+	if (! testVectorToStringRegex (ToBool (argc < 2))) {
 	    ok = False;
 	}
 	if (! testConcatenateArray(ToBool (argc < 2))) {
