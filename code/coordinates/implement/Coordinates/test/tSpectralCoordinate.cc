@@ -1,5 +1,5 @@
 //# tSpectralCoordinate.cc: Test program for SpectralCoordinate
-//# Copyright (C) 1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,7 +88,7 @@ int main()
          SpectralCoordinate lc = 
             makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
          Vector<Double> velocities;
-         lc.updateVelocityMachine (String("km/s"), MDoppler::OPTICAL);
+         lc.setVelocity (String("km/s"), MDoppler::OPTICAL);
          lc.frequencyToVelocity(velocities, freqs);
          SpectralCoordinate lc2(MFrequency::TOPO, MDoppler::OPTICAL, velocities, String("km/s"), restFreq);
          Double freq;
@@ -354,56 +354,30 @@ int main()
             throw(AipsError("Failed getPrecision test 2"));
          }
 //
-         lc.setPreferredVelocityType (MDoppler::BETA);
-         AlwaysAssert(lc.preferredVelocityType()==MDoppler::BETA, AipsError);
-         lc.setPreferredVelocityType (MDoppler::RADIO);
-         AlwaysAssert(lc.preferredVelocityType()==MDoppler::RADIO, AipsError);
-         Vector<String> puTmp(1); puTmp(0) = String("km/s");
-         AlwaysAssert(lc.setPreferredWorldAxisUnits(puTmp), AipsError);
-         AlwaysAssert(lc.preferredWorldAxisUnits()(0)==String("km/s"), AipsError);
-         puTmp(0) = String("Hz");
-         AlwaysAssert(lc.setPreferredWorldAxisUnits(puTmp), AipsError);
-         puTmp(0) = String("kg");
-         AlwaysAssert(!lc.setPreferredWorldAxisUnits(puTmp), AipsError);
-         puTmp(0) = String("");
-         AlwaysAssert(lc.setPreferredWorldAxisUnits(puTmp), AipsError);
-//
-         {
-            puTmp(0) = String("");
-            AlwaysAssert(lc.setPreferredWorldAxisUnits(puTmp), AipsError);
-            String unit;
-            Double val = 20.12345;
-            Quantum<Double> valq(20.12345, String(units(0)));
-            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
-            String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0, True, True, 4);
-            if (str != "20.1234" || str2 != "20.1234") {
-               throw(AipsError("Failed format test 1"));
-            }
-            str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, True, True, 4);
-            str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, True, True, 4);
-            if (str != "2.0123e+01" || str2 != "2.0123e+01") {
-               throw(AipsError("Failed format test 2"));
-            }
-         }
+         lc.setVelocity (String("m/s"), MDoppler::BETA);
+         AlwaysAssert(lc.velocityDoppler()==MDoppler::BETA, AipsError);
+         AlwaysAssert(lc.velocityUnit()==String("m/s"), AipsError);
 //
          {
             String unit("km/s");
             Double val = lc.restFrequency();
-            lc.setPreferredVelocityType (MDoppler::Z);
+            lc.setVelocity (String("m/s"), MDoppler::Z);
             String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
             if (str != String("0.0000")) {
                throw(AipsError("Failed format test 3"));
             }
          }
          {
-            puTmp(0) = String("km/s");
-            lc.setPreferredWorldAxisUnits(puTmp);
-            lc.setPreferredVelocityType (MDoppler::Z);
+            lc.setVelocity (String("m/s"), MDoppler::Z);
+            String nativeUnit = lc.worldAxisUnits()(0);
 //
             String unit;
-            Double val = lc.restFrequency();
+            Double val = 0.0;
             String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
             if (str != String("0.0000")) {
+               throw(AipsError("Failed format test 4"));
+            }
+            if (unit != nativeUnit) {
                throw(AipsError("Failed format test 4"));
             }
          }
@@ -411,8 +385,7 @@ int main()
             String unit;
             Double val = 1.4e9;
             lc.setRestFrequency(val, False);
-            lc.setPreferredWorldAxisUnits(lc.worldAxisUnits());
-            lc.setPreferredVelocityType (MDoppler::Z);
+            lc.setVelocity (String("m/s"), MDoppler::Z);
             String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
             if (str != String("1400000000.0000")) {
                throw(AipsError("Failed format test 5"));
@@ -666,7 +639,7 @@ int main()
          Double vel;
          Double pix = 0.0;
          Double pix2;
-         lc.updateVelocityMachine (velUnit, velType);
+         lc.setVelocity (velUnit, velType);
          if (!lc.pixelToVelocity(vel, pix)) {
             throw(AipsError(String("pixelToVelocity 1 conversion failed because ") + lc.errorMessage()));
          }
@@ -757,7 +730,7 @@ int main()
             throw(AipsError(String("velocityToFrequency 2 gave wrong answer")));
          }
 //
-         lc.updateVelocityMachine(String("m/s"), MDoppler::RADIO);
+         lc.setVelocity (String("m/s"), MDoppler::RADIO);
          if (!lc.frequencyToVelocity(velocities, frequencies)) {
             throw(AipsError(String("frequencyToVelocity 2b conversion failed because ") + lc.errorMessage()));
          }
@@ -771,7 +744,7 @@ int main()
             throw(AipsError(String("velocityToFrequency 2b gave wrong answer")));
          }
 //
-         lc.updateVelocityMachine(String("km/s"), MDoppler::RADIO);
+         lc.setVelocity (String("km/s"), MDoppler::RADIO);
          if (!lc.frequencyToVelocity(velQ, f0+finc)) {
             throw(AipsError(String("frequencyToVelocity 3 conversion failed because ") + lc.errorMessage()));
          }
