@@ -159,7 +159,7 @@ protected:
   //  <li> nrout: the number of transitions; numbered 0, ...
   //  <li> ntyp: the number of states
   //  <li> list: a [nrout][3] list of input and output transition type of
-  //		transition and a penalty hop number
+  //		transition and a penalty hop number (<100)
   //  <li> state: a [ntyp][ntyp] transition matrix with diagonal elements set
   //		to nrout.
   // </ul>
