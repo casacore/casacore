@@ -307,7 +307,7 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
     } else if (itsSval == "max") {
 	return max(arg1, arg2);
     } else if (itsSval == "complex") {
-	return complex(arg1, arg2);
+	return formComplex(arg1, arg2);
     } else if (itsSval == "length") {
 	return length(arg1, arg2);
     } else if (itsSval == "amp") {

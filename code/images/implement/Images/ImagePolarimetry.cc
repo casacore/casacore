@@ -327,10 +327,10 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
 // The TempImages will be cloned be LatticeExprNode so it's ok
 // that they go out of scope
 
-      node = LatticeExprNode(complex(tQ, tU));
+      node = LatticeExprNode(formComplex(tQ, tU));
    } else {
-      node = LatticeExprNode(complex(*itsStokesPtr[ImagePolarimetry::Q], 
-                                     *itsStokesPtr[ImagePolarimetry::U]));
+      node = LatticeExprNode(formComplex(*itsStokesPtr[ImagePolarimetry::Q], 
+					 *itsStokesPtr[ImagePolarimetry::U]));
    }
    LatticeExpr<Complex> le(node);
    ImageExpr<Complex> ie(le, String("ComplexLinearPolarization"));
