@@ -2887,7 +2887,7 @@ const Euler &MeasData::polarMotion(Double ut) {
 
 // Time functions
 Double MeasData::dUTC(Double utc) {
-    const N = 34;
+    const N = 35;
     static const Double LEAP[N][4] = {
     37300, 1.4228180, 37300., 0.001296,
     37512, 1.3728180, 37300., 0.001296,
@@ -2922,7 +2922,8 @@ Double MeasData::dUTC(Double utc) {
     48804, 27, 41317., 0.0,
     49169, 28, 41317., 0.0,
     49534, 29, 41317., 0.0,
-    50083, 30, 41317., 0.0};
+    50083, 30, 41317., 0.0,
+    50630, 31, 41317., 0.0};
     Double val;
     if (utc < LEAP[0][0]) {
       val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
