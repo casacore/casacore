@@ -260,7 +260,10 @@ TableRecord LCPagedMask::toRecord (const String& tableName) const
 LCPagedMask* LCPagedMask::fromRecord (const TableRecord& rec,
 				      const String& tableName)
 {
-    const TableLock& lockOptions = rec.tableAttributes("mask").lockOptions();
+    TableLock lockOptions(TableLock::AutoNoReadLocking);
+    if (rec.tableAttributes("mask").lockOptions().readLocking()) {
+        lockOptions = TableLock::AutoLocking;
+    }
     Table table (rec.asTable ("mask", lockOptions));
     PagedArray<Bool> mask(table);
     LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
