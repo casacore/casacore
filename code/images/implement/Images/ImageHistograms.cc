@@ -484,7 +484,8 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
    
 // Set indexing IPositions
    
-      for (Int i=0; i<lastHistAxis; i++) minMaxPos(i) = histIterator.position()(i+1);
+       minMaxPos(lastMinMaxAxis) = 0;
+       for (Int i=0; i<lastHistAxis; i++) minMaxPos(i) = histIterator.position()(i+1);
  
 // Work out the range for this histogram from the min/max storage image
  
