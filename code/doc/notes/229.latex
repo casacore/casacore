@@ -2151,7 +2151,7 @@ NAME &       String &    &      & Name of source as given during observations\\
 CALIBRATION\_GROUP &      Int &    &      & \# grouping for calibration purpose\\
 CODE &       String &    &      & Special characteristics of source, e.g. Bandpass calibrator\\
 DIRECTION &       Double(2) &  rad  &    DIRECTION &        Direction (e.g. RA, DEC) \\
-POSITION  & Double(3) &   m  & POSITION & Position (e.g. for solar system objects) \\
+{\it (POSITION)}  & Double(3) &   m  & POSITION & Position (e.g. for solar system objects) \\
 PROPER\_MOTION &  Double(2) &  rad/s & &  Proper motion \\
 {\it (TRANSITION)} & String(NUM\_LINES) & & & Transition name\\
 {\it (REST\_FREQUENCY)} & Double(NUM\_LINES) & Hz & FREQUENCY & Line rest frequency\\
@@ -2526,6 +2526,7 @@ Section 4.0.8; correctly identify SOURCE sub-table as optional; expand
 definition of SPECTRAL\_WINDOW\_ID=-1 in the description of the SOURCE
 sub-table; expand the definition of the REF\_FREQUENCY in the
 SPECTRAL\_WINDOW sub-table description.}
+\item{{\bf 08/28/00:} Make POSITION field in SOURCE table optional.}
 
 \end{description}
 
