@@ -63,6 +63,7 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
     LogSink logSink;
     LogMessage message(LogOrigin("VisSet","VisSet"));
 
+
     // sort out the channel selection
     Int nSpw=ms_p.spectralWindow().nrow();
     MSSpWindowColumns msSpW(ms_p.spectralWindow());
@@ -92,53 +93,28 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
 	} 
       }
     }
-    if (init) {
-      message.message("Initializing MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns");
 
+    // Add scratch columns
+    if (init) {
+      message.message("Adding MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns");
       logSink.post(message);
+
       removeCalSet(ms);
       addCalSet(ms, compress);
+      
       ArrayColumn<Complex> mcd(ms,"MODEL_DATA");
       mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
     }
+
 
     iter_p=new VisIter(ms_p,columns,timeInterval);
     for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
       iter_p->selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }
 
-    // Fill the CORRECTED_DATA, MODEL_DATA and IMAGING_WEIGHT
-    // columns when first created.
-    // Set the cross polarization correlations of the MODEL_DATA to zero
-    if (init) {
-      Vector<Int> lastCorrType;
-      Vector<Bool> zero;
-      for (iter_p->originChunks(); iter_p->moreChunks(); iter_p->nextChunk()) {
-	// figure out which correlations to set to 1. and 0. for the model.
-	Vector<Int> corrType; iter_p->corrType(corrType);
-	uInt nCorr = corrType.nelements();
-	if (nCorr!=lastCorrType.nelements() ||
-	    !allEQ(corrType,lastCorrType)) {
-	  lastCorrType.resize(nCorr); lastCorrType=corrType;
-	  zero.resize(nCorr);
-	  for (uInt i=0; i<nCorr; i++) {
-	    zero[i]=(corrType[i]==Stokes::RL || corrType[i]==Stokes::LR ||
-		      corrType[i]==Stokes::XY || corrType[i]==Stokes::YX);
-	  }
-	}
-	for (iter_p->origin(); iter_p->more(); (*iter_p)++) {
-	  Cube<Complex> data;
-	  iter_p->setVis(iter_p->visibility(data,VisibilityIterator::Observed),
-			 VisibilityIterator::Corrected);
-	  data=Complex(1.0,0.0);
-	  for (uInt i=0; i<nCorr; i++) {
-	    if (zero[i]) data(Slice(i),Slice(),Slice())=Complex(0.0,0.0);
-	  }
-	  iter_p->setVis(data,VisibilityIterator::Model);
-	};
-      };
-      iter_p->originChunks();
-    };
+    // Initialize MODEL_DATA and CORRECTED_DATA
+    if (init) initCalSet(0);
+
 }
 
 VisSet::VisSet(const VisSet& vs,const Block<Int>& columns, 
@@ -168,6 +144,45 @@ VisSet::~VisSet() {
   ms_p.flush();
   delete iter_p; iter_p=0;
 };
+
+
+void VisSet::initCalSet(Int val)
+{
+
+  LogSink logSink;
+  LogMessage message(LogOrigin("VisSet","VisSet"));
+
+  message.message("Initializing MODEL_DATA (to unity) and CORRECTED_DATA (to DATA)");
+  logSink.post(message);
+
+  Vector<Int> lastCorrType;
+  Vector<Bool> zero;
+  for (iter_p->originChunks(); iter_p->moreChunks(); iter_p->nextChunk()) {
+    // figure out which correlations to set to 1. and 0. for the model.
+    Vector<Int> corrType; iter_p->corrType(corrType);
+    uInt nCorr = corrType.nelements();
+    if (nCorr!=lastCorrType.nelements() ||
+	!allEQ(corrType,lastCorrType)) {
+      lastCorrType.resize(nCorr); lastCorrType=corrType;
+      zero.resize(nCorr);
+      for (uInt i=0; i<nCorr; i++) {
+	zero[i]=(corrType[i]==Stokes::RL || corrType[i]==Stokes::LR ||
+		 corrType[i]==Stokes::XY || corrType[i]==Stokes::YX);
+      }
+    }
+    for (iter_p->origin(); iter_p->more(); (*iter_p)++) {
+      Cube<Complex> data;
+      iter_p->setVis(iter_p->visibility(data,VisibilityIterator::Observed),
+		     VisibilityIterator::Corrected);
+      data=Complex(1.0,0.0);
+      for (uInt i=0; i<nCorr; i++) {
+	if (zero[i]) data(Slice(i),Slice(),Slice())=Complex(0.0,0.0);
+      }
+      iter_p->setVis(data,VisibilityIterator::Model);
+    };
+  };
+  iter_p->originChunks();
+}
 
 void VisSet::flush() {
   ms_p.flush();
