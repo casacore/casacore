@@ -27,7 +27,7 @@
 
 //# Includes
 #include <trial/Arrays/SquareMatrix.h>
-#include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/MatrixMathLA.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 

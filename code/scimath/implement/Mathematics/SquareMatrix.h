@@ -32,7 +32,6 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Arrays/Matrix.h>
-//#include <aips/Arrays/MatrixMath.h>
 #include <aips/iosfwd.h>
 
 //# forward declarations
