@@ -1,4 +1,4 @@
-//# tNewMSSimulator.cc: Test the synthesis MeasurementSet Simulator
+//# tMSSimulator.cc: Test the synthesis MeasurementSet Simulator
 //# Copyright (C) 1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSSimulator.h>
+#include <trial/MeasurementSets/MSSimulator.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Tables.h>
 #include <aips/Exceptions/Error.h>
@@ -42,7 +42,7 @@ int main()
 {
     try {
 
-	NewMSSimulator sim2;
+	MSSimulator sim2;
 
 	// make config information===================================================
 	Vector<Double> x(6);

@@ -27,15 +27,15 @@
 
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/MeasurementSets/NewMSDataDescColumns.h>
-#include <aips/MeasurementSets/NewMSDataDescription.h>
+#include <aips/MeasurementSets/MSDataDescColumns.h>
+#include <aips/MeasurementSets/MSDataDescription.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
-void putData(NewMSDataDescColumns& cols) {
+void putData(MSDataDescColumns& cols) {
   // test the spectralWindowId functions.
   cols.spectralWindowId().put(0, 0);
   cols.spectralWindowId().put(4, 1);
@@ -47,7 +47,7 @@ void putData(NewMSDataDescColumns& cols) {
   cols.flagRow().put(4, True);
 }
 
-void getData(const RONewMSDataDescColumns& cols) {
+void getData(const ROMSDataDescColumns& cols) {
   // test the spectralWindowId functions.
   AlwaysAssert(cols.spectralWindowId()(0) == 0, AipsError);
   AlwaysAssert(cols.spectralWindowId()(4) == 1, AipsError);
@@ -65,11 +65,11 @@ int main() {
   try {
     const String filename = "tMSDataDescColumns_tmp.table";
     { // Check the RW class
-      SetupNewTable setup(filename, NewMSDataDescription::requiredTableDesc(), 
+      SetupNewTable setup(filename, MSDataDescription::requiredTableDesc(), 
 			  Table::New);
-      NewMSDataDescription table(setup, 5);
+      MSDataDescription table(setup, 5);
       // Check the constructor
-      NewMSDataDescColumns cols(table);
+      MSDataDescColumns cols(table);
       // test the nrow function.
       AlwaysAssert(cols.nrow() == 5, AipsError);
       // Put data into the table
@@ -79,14 +79,14 @@ int main() {
     } // Close the table
 
     {// Check the RO class
-      const NewMSDataDescription table(filename, Table::Old);
+      const MSDataDescription table(filename, Table::Old);
       // Check the constructor
-      const RONewMSDataDescColumns cols(table);
+      const ROMSDataDescColumns cols(table);
       // Check the data is still there
       getData(cols);
     }
     {// Delete the table
-      NewMSDataDescription table(filename, Table::Old);
+      MSDataDescription table(filename, Table::Old);
       table.markForDelete();
     }
   }

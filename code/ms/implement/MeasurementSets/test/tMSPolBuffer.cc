@@ -167,7 +167,7 @@ int main() {
 //   }
 //   try {
 //     // Check that the Table ended up on disk (after the save function).
-//     NewMSPolarization ms(filename);
+//     MSPolarization ms(filename);
 //     ms.markForDelete();
 //   }
 //   catch (AipsError x) {

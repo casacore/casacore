@@ -222,7 +222,7 @@ int main() {
 //   }
 //   try {
 //     // Check that the Table ended up on disk (after the save function).
-//     NewMSField ms(filename);
+//     MSField ms(filename);
 //     ms.markForDelete();
 //   }
 //   catch (AipsError x) {

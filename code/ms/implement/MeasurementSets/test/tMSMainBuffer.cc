@@ -27,7 +27,7 @@
 
 #include <aips/aips.h>
 // #include <trial/MeasurementSets/MSMainBuffer.h>
-// #include <aips/MeasurementSets/NewMeasurementSet.h>
+// #include <aips/MeasurementSets/MeasurementSet.h>
 // #include <aips/Arrays/ArrayLogical.h>
 // #include <aips/Arrays/Vector.h>
 // #include <aips/Arrays/Cube.h>
@@ -353,9 +353,9 @@ int main() {
 //   } 
 //   try {
 //     // Check that the Table ended up on disk (after the save function). This
-//     // line may fail if the NewMS ctr checks for the existance of subtables (it
+//     // line may fail if the MS ctr checks for the existance of subtables (it
 //     // doesn't at the moment).
-//     NewMS ms(filename);
+//     MS ms(filename);
 //     ms.markForDelete();
 //   }
 //   catch (AipsError x) {

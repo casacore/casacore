@@ -1,4 +1,4 @@
-//# tNewMSDerivedValues: Tests the NewMSDerivedValues class
+//# tMSDerivedValues: Tests the MSDerivedValues class
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSDerivedValues.h>
+#include <trial/MeasurementSets/MSDerivedValues.h>
 #include <iostream.h>
 #include <iomanip.h>
 #include <aips/Exceptions/Error.h>
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
     pos(0)=MPosition(Quantity(236.9,"m"),longitude,latitude,
 		     MPosition::Ref(MPosition::WGS84));
 
-    NewMSDerivedValues msd;
+    MSDerivedValues msd;
     msd.setAntennaPositions(pos);
 
     Quantity time; MVTime::read(time,"today");
