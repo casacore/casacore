@@ -5814,3 +5814,4 @@
 16 134 src rm trial/apps/oldms
 16 136 src rm trial/implement/MeasurementSets/DOoldms.h
 16 136 src rm trial/implement/MeasurementSets/DOoldms.cc
+16 136 src rm aips/implement/MeasurementSets/OldMeasurementSet.h
