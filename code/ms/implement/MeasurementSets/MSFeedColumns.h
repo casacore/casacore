@@ -25,136 +25,24 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSFEEDCOLUMNS_H)
-#define AIPS_NewMSFEEDCOLUMNS_H
+#if !defined(AIPS_NEWMSFEEDCOLUMNS_H)
+#define AIPS_NEWMSFEEDCOLUMNS_H
 
-#include <aips/MeasurementSets/NewMSFeed.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/ArrayMeasColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/TableMeasures/ArrayQuantColumn.h>
-
+#include <aips/aips.h>
 #include <aips/Measures/MDirection.h>
-class MEpoch;
-class MPosition;
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MPosition.h>
+#include <aips/TableMeasures/ArrayMeasColumn.h>
+#include <aips/TableMeasures/ArrayQuantColumn.h>
+#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/ScalarQuantColumn.h>
+#include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/ScalarColumn.h>
+
+class NewMSFeed;
 
 // <summary>
-// A convenience class to provide easy access to NewMSFeed columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> NewMSFeed
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// NewMSFeedColumns stands for NewMeasurementSet Feed Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides access to the columns in the NewMSFeed Table,
-// it does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
-// </motivation>
-
-class NewMSFeedColumns
-{
-public:
-
-  NewMSFeedColumns(NewMSFeed& msFeed);
-
-  ~NewMSFeedColumns();
-
-  // Access to columns
-  ScalarColumn<Int>& antennaId() {return antennaId_p;}
-  ScalarColumn<Int>& beamId() {return beamId_p;}
-  ArrayColumn<Double>& beamOffset() {return beamOffset_p;}
-  ScalarColumn<Int>& feedId() {return feedId_p;}
-  ScalarColumn<Double>& interval() {return interval_p;}
-  ScalarColumn<Int>& numReceptors() {return numReceptors_p;}
-  ArrayColumn<Complex>& polResponse() {return polResponse_p;}
-  ArrayColumn<String>& polarizationType() {return polarizationType_p;}
-  ArrayColumn<Double>& position() {return position_p;}
-  ArrayColumn<Double>& receptorAngle() {return receptorAngle_p;}
-  ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
-  ScalarColumn<Double>& time() {return time_p;}
-  ScalarColumn<Double>& focusLength() {return focusLength_p;}
-  ScalarColumn<Int>& phasedFeedId() {return phasedFeedId_p;}
-
-  // Access to Measure columns
-  ArrayMeasColumn<MDirection>& beamOffsetMeas() 
-    {return beamOffsetMeas_p;}
-  ScalarMeasColumn<MPosition>& positionMeas() 
-    { return positionMeas_p;}
-  ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p;}
-
-  // Access to Quantum columns
-  ArrayQuantColumn<Double>& beamOffsetQuant() { return beamOffsetQuant_p;}
-  ScalarQuantColumn<Double>& focusLengthQuant() { return focusLengthQuant_p;}
-  ScalarQuantColumn<Double>& intervalQuant() { return intervalQuant_p;}
-  ArrayQuantColumn<Double>& positionQuant() {return positionQuant_p;}
-  ArrayQuantColumn<Double>& receptorAngleQuant() { return receptorAngleQuant_p;}
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p;}
-
-  // set the Direction reference for the beam offset column
-  void setDirectionRef(Int ref);
-
-  // Set the POSITION reference for the position column.
-  // Give the reference code as e.g., MPosition::ITRF.
-  void setPositionRef(Int ref);
-
-private:
-
-  ScalarColumn<Int> antennaId_p;
-  ScalarColumn<Int> beamId_p;
-  ArrayColumn<Double> beamOffset_p;
-  ScalarColumn<Int> feedId_p;
-  ScalarColumn<Double> interval_p;
-  ScalarColumn<Int> numReceptors_p;
-  ArrayColumn<Complex> polResponse_p;
-  ArrayColumn<String> polarizationType_p;
-  ArrayColumn<Double> position_p;
-  ArrayColumn<Double> receptorAngle_p;
-  ScalarColumn<Int> spectralWindowId_p;
-  ScalarColumn<Double> time_p;
-  ScalarColumn<Double> focusLength_p;
-  ScalarColumn<Int> phasedFeedId_p;
-
-  // Access to Measure columns
-  ArrayMeasColumn<MDirection> beamOffsetMeas_p;
-  ScalarMeasColumn<MPosition> positionMeas_p;
-  ScalarMeasColumn<MEpoch> timeMeas_p;
-
-  // Access to Quantum columns
-  ArrayQuantColumn<Double> beamOffsetQuant_p;
-  ScalarQuantColumn<Double> focusLengthQuant_p;
-  ScalarQuantColumn<Double> intervalQuant_p;
-  ArrayQuantColumn<Double> positionQuant_p;
-  ArrayQuantColumn<Double> receptorAngleQuant_p;
-  ScalarQuantColumn<Double> timeQuant_p;
-
-};
-
-// <summary>
-// A convenience class to provide easy access to NewMSFeed columns
+// A class to provide easy read-only access to NewMSFeed columns
 // </summary>
 
 // <use visibility=export>
@@ -190,43 +78,66 @@ class RONewMSFeedColumns
 {
 public:
 
+  // Create a columns object that accesses the data in the specified Table
   RONewMSFeedColumns(const NewMSFeed& msFeed);
 
+  // The destructor does nothing special
   ~RONewMSFeedColumns();
 
-  // Access to columns
+  // Access to required columns
+  // <group>
   const ROScalarColumn<Int>& antennaId() const {return antennaId_p;}
   const ROScalarColumn<Int>& beamId() const {return beamId_p;}
   const ROArrayColumn<Double>& beamOffset() const {return beamOffset_p;}
-  const ROScalarColumn<Int>& feedId() const {return feedId_p;}
-  const ROScalarColumn<Double>& interval() const {return interval_p;}
-  const ROScalarColumn<Int>& numReceptors() const {return numReceptors_p;}
-  const ROArrayColumn<Complex>& polResponse() const {return polResponse_p;}
-  const ROArrayColumn<String>& polarizationType() const {return polarizationType_p;}
-  const ROArrayColumn<Double>& position() const {return position_p;}
-  const ROArrayColumn<Double>& receptorAngle() const {return receptorAngle_p;}
-  const ROScalarColumn<Int>& spectralWindowId() const {return spectralWindowId_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-  const ROScalarColumn<Double>& focusLength() const {return focusLength_p;}
-  const ROScalarColumn<Int>& phasedFeedId() const {return phasedFeedId_p;}
-
-  // Access to Measure columns
+  const ROArrayQuantColumn<Double>& beamOffsetQuant() const {
+    return beamOffsetQuant_p;}
   const ROArrayMeasColumn<MDirection>& beamOffsetMeas() const 
     {return beamOffsetMeas_p;}
+  const ROScalarColumn<Int>& feedId() const {return feedId_p;}
+  const ROScalarColumn<Double>& interval() const {return interval_p;}
+  const ROScalarQuantColumn<Double>& intervalQuant() const {
+    return intervalQuant_p;}
+  const ROScalarColumn<Int>& numReceptors() const {return numReceptors_p;}
+  const ROArrayColumn<Complex>& polResponse() const {return polResponse_p;}
+  const ROArrayColumn<String>& polarizationType() const {
+    return polarizationType_p;}
+  const ROArrayColumn<Double>& position() const {return position_p;}
+  const ROArrayQuantColumn<Double>& positionQuant() const {
+    return positionQuant_p;}
   const ROScalarMeasColumn<MPosition>& positionMeas() const 
     { return positionMeas_p;}
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p;}
+  const ROArrayColumn<Double>& receptorAngle() const {return receptorAngle_p;}
+  const ROArrayQuantColumn<Double>& receptorAngleQuant() const {
+    return receptorAngleQuant_p;}
+  const ROScalarColumn<Int>& spectralWindowId() const {
+    return spectralWindowId_p;}
+  const ROScalarColumn<Double>& time() const {return time_p;}
+  const ROScalarQuantColumn<Double>& timeQuant() const {
+    return timeQuant_p;}
+  const ROScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
+  // </group>
 
-  // Access to Quantum columns
-  const ROArrayQuantColumn<Double>& beamOffsetQuant() const { return beamOffsetQuant_p;}
-  const ROScalarQuantColumn<Double>& focusLengthQuant() const { return focusLengthQuant_p;}
-  const ROScalarQuantColumn<Double>& intervalQuant() const { return intervalQuant_p;}
-  const ROArrayQuantColumn<Double>& positionQuant() const {return positionQuant_p;}
-  const ROArrayQuantColumn<Double>& receptorAngleQuant() const { return receptorAngleQuant_p;}
-  const ROScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p;}
+  // Access to optional columns
+  // <group>
+  const ROScalarColumn<Double>& focusLength() const {return focusLength_p;}
+  const ROScalarQuantColumn<Double>& focusLengthQuant() const {
+    return focusLengthQuant_p;}
+  const ROScalarColumn<Int>& phasedFeedId() const {return phasedFeedId_p;}
+  // </group>
+
+protected:
+  //# default constructor creates a object that is not usable. Use the attach
+  //# function correct this.
+  RONewMSFeedColumns();
+
+  //# attach this object to the supplied table.
+  void attach(const NewMSFeed& msFeed);
 
 private:
-
+  //# Check if any optional columns exist and if so attach them.
+  void attachOptionalCols(const NewMSFeed& msFeed);
+  
+  //# required columns
   ROScalarColumn<Int> antennaId_p;
   ROScalarColumn<Int> beamId_p;
   ROArrayColumn<Double> beamOffset_p;
@@ -239,6 +150,7 @@ private:
   ROArrayColumn<Double> receptorAngle_p;
   ROScalarColumn<Int> spectralWindowId_p;
   ROScalarColumn<Double> time_p;
+  //# optional columns
   ROScalarColumn<Double> focusLength_p;
   ROScalarColumn<Int> phasedFeedId_p;
 
@@ -249,11 +161,196 @@ private:
 
   // Access to Quantum columns
   ROArrayQuantColumn<Double> beamOffsetQuant_p;
-  ROScalarQuantColumn<Double> focusLengthQuant_p;
   ROScalarQuantColumn<Double> intervalQuant_p;
   ROArrayQuantColumn<Double> positionQuant_p;
   ROArrayQuantColumn<Double> receptorAngleQuant_p;
   ROScalarQuantColumn<Double> timeQuant_p;
+  //# optional Quantum columns
+  ROScalarQuantColumn<Double> focusLengthQuant_p;
+};
+
+// <summary>
+// A class to provide easy read-write access to NewMSFeed columns
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> NewMSFeed
+//   <li> ArrayColumn
+//   <li> ScalarColumn
+// </prerequisite>
+//
+// <etymology>
+// NewMSFeedColumns stands for NewMeasurementSet Feed Table columns.
+// </etymology>
+//
+// <synopsis>
+// This class provides access to the columns in the NewMSFeed Table,
+// it does the declaration of all the Scalar and ArrayColumns with the
+// correct types, so the application programmer doesn't have to
+// worry about getting those right. There is an access function
+// for every predefined column. Access to non-predefined columns will still
+// have to be done with explicit declarations.
+// See <linkto class=NewMSColumns> NewMSColumns</linkto> for an example.
+// </synopsis>
+//
+// <motivation>
+// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// </motivation>
+
+class NewMSFeedColumns: public RONewMSFeedColumns
+{
+public:
+
+  // Create a columns object that accesses the data in the specified Table
+  NewMSFeedColumns(NewMSFeed& msFeed);
+
+  // The desctructor does nothing special
+  ~NewMSFeedColumns();
+
+  // Read-write access to required columns
+  // <group>
+  ScalarColumn<Int>& antennaId() {return antennaId_p;}
+  ScalarColumn<Int>& beamId() {return beamId_p;}
+  ArrayColumn<Double>& beamOffset() {return beamOffset_p;}
+  ArrayQuantColumn<Double>& beamOffsetQuant() { return beamOffsetQuant_p;}
+  ArrayMeasColumn<MDirection>& beamOffsetMeas() 
+    {return beamOffsetMeas_p;}
+  ScalarColumn<Int>& feedId() {return feedId_p;}
+  ScalarColumn<Double>& interval() {return interval_p;}
+  ScalarQuantColumn<Double>& intervalQuant() { return intervalQuant_p;}
+  ScalarColumn<Int>& numReceptors() {return numReceptors_p;}
+  ArrayColumn<Complex>& polResponse() {return polResponse_p;}
+  ArrayColumn<String>& polarizationType() {return polarizationType_p;}
+  ArrayColumn<Double>& position() {return position_p;}
+  ArrayQuantColumn<Double>& positionQuant() {return positionQuant_p;}
+  ScalarMeasColumn<MPosition>& positionMeas() 
+    { return positionMeas_p;}
+  ArrayColumn<Double>& receptorAngle() {return receptorAngle_p;}
+  ArrayQuantColumn<Double>& receptorAngleQuant() {
+    return receptorAngleQuant_p;}
+  ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
+  ScalarColumn<Double>& time() {return time_p;}
+  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p;}
+  ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p;}
+  // </group>
+
+  // Read-write access to optional columns
+  // <group>
+  ScalarColumn<Double>& focusLength() {return focusLength_p;}
+  ScalarQuantColumn<Double>& focusLengthQuant() { return focusLengthQuant_p;}
+  ScalarColumn<Int>& phasedFeedId() {return phasedFeedId_p;}
+  // </group>
+
+  // Read-only access to required columns
+  // <group>
+  const ROScalarColumn<Int>& antennaId() const {
+    return RONewMSFeedColumns::antennaId();}
+  const ROScalarColumn<Int>& beamId() const {
+    return RONewMSFeedColumns::beamId();}
+  const ROArrayColumn<Double>& beamOffset() const {
+    return RONewMSFeedColumns::beamOffset();}
+  const ROArrayQuantColumn<Double>& beamOffsetQuant() const {
+    return RONewMSFeedColumns::beamOffsetQuant();}
+  const ROArrayMeasColumn<MDirection>& beamOffsetMeas() const {
+    return RONewMSFeedColumns::beamOffsetMeas();}
+  const ROScalarColumn<Int>& feedId() const {
+    return RONewMSFeedColumns::feedId();}
+  const ROScalarColumn<Double>& interval() const {
+    return RONewMSFeedColumns::interval();}
+  const ROScalarQuantColumn<Double>& intervalQuant() const {
+    return RONewMSFeedColumns::intervalQuant();}
+  const ROScalarColumn<Int>& numReceptors() const {
+    return RONewMSFeedColumns::numReceptors();}
+  const ROArrayColumn<Complex>& polResponse() const {
+    return RONewMSFeedColumns::polResponse();}
+  const ROArrayColumn<String>& polarizationType() const {
+    return RONewMSFeedColumns::polarizationType();}
+  const ROArrayColumn<Double>& position() const {
+    return RONewMSFeedColumns::position();}
+  const ROArrayQuantColumn<Double>& positionQuant() const {
+    return RONewMSFeedColumns::positionQuant();}
+  const ROScalarMeasColumn<MPosition>& positionMeas() const {
+    return RONewMSFeedColumns::positionMeas();}
+  const ROArrayColumn<Double>& receptorAngle() const {
+    return RONewMSFeedColumns::receptorAngle();}
+  const ROArrayQuantColumn<Double>& receptorAngleQuant() const {
+    return RONewMSFeedColumns::receptorAngleQuant();}
+  const ROScalarColumn<Int>& spectralWindowId() const {
+    return RONewMSFeedColumns::spectralWindowId();}
+  const ROScalarColumn<Double>& time() const {
+    return RONewMSFeedColumns::time();}
+  const ROScalarQuantColumn<Double>& timeQuant() const {
+    return RONewMSFeedColumns::timeQuant();}
+  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
+    return RONewMSFeedColumns::timeMeas();}
+  // </group>
+
+  // Read-only access to optional columns
+  // <group>
+  const ROScalarColumn<Double>& focusLength() const {
+    return RONewMSFeedColumns::focusLength();}
+  const ROScalarQuantColumn<Double>& focusLengthQuant() const {
+    return RONewMSFeedColumns::focusLengthQuant();}
+  const ROScalarColumn<Int>& phasedFeedId() const {
+    return RONewMSFeedColumns::phasedFeedId();}
+  // </group>
+
+  // set the Direction reference for the beam offset column. The supplied ref
+  // must really be a a member of the MDirection::Types enumerator.
+  void setDirectionRef(Int ref);
+
+  // Set the POSITION reference for the position column. The supplied ref must
+  // really be a a member of the MPosition::Types enumerator.  e.g.,
+  // MPosition::ITRF.
+  void setPositionRef(Int ref);
+
+protected:
+  //# default constructor creates a object that is not usable. Use the attach
+  //# function correct this.
+  NewMSFeedColumns();
+
+  //# attach this object to the supplied table.
+  void attach(NewMSFeed& msFeed);
+
+private:
+  //# Check if any optional columns exist and if so attach them.
+  void attachOptionalCols(NewMSFeed& msFeed);
+  
+  //# required columns
+  ScalarColumn<Int> antennaId_p;
+  ScalarColumn<Int> beamId_p;
+  ArrayColumn<Double> beamOffset_p;
+  ScalarColumn<Int> feedId_p;
+  ScalarColumn<Double> interval_p;
+  ScalarColumn<Int> numReceptors_p;
+  ArrayColumn<Complex> polResponse_p;
+  ArrayColumn<String> polarizationType_p;
+  ArrayColumn<Double> position_p;
+  ArrayColumn<Double> receptorAngle_p;
+  ScalarColumn<Int> spectralWindowId_p;
+  ScalarColumn<Double> time_p;
+  //# optional columns
+  ScalarColumn<Double> focusLength_p;
+  ScalarColumn<Int> phasedFeedId_p;
+
+  //# Access to Measure columns
+  ArrayMeasColumn<MDirection> beamOffsetMeas_p;
+  ScalarMeasColumn<MPosition> positionMeas_p;
+  ScalarMeasColumn<MEpoch> timeMeas_p;
+
+  //# Access to Quantum columns
+  ArrayQuantColumn<Double> beamOffsetQuant_p;
+  ScalarQuantColumn<Double> intervalQuant_p;
+  ArrayQuantColumn<Double> positionQuant_p;
+  ArrayQuantColumn<Double> receptorAngleQuant_p;
+  ScalarQuantColumn<Double> timeQuant_p;
+  //# optional Quantum columns
+  ScalarQuantColumn<Double> focusLengthQuant_p;
 
 };
 
