@@ -1311,6 +1311,36 @@ LatticeExprNode fractileRange (const LatticeExprNode& expr,
 }
 
 
+LatticeExprNode rebin (const LatticeExprNode& lat,
+                       const LatticeExprNode& bin)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function rebin" << endl;
+#endif
+
+   DataType dtype1 = lat.dataType();
+//
+   Block<LatticeExprNode> arg(2);
+   arg[0] = lat;
+   arg[1] = LatticeExprNode(bin.makeFloat());  // Pass bin as Float as no support in LEL for uInt
+   switch (dtype1) {
+   case TpFloat:
+      return new LELFunctionND<Float> (LELFunctionEnums::REBIN, arg);
+   case TpDouble:
+      return new LELFunctionND<Double> (LELFunctionEnums::REBIN, arg);
+   case TpComplex:
+      return new LELFunctionND<Complex> (LELFunctionEnums::REBIN, arg);
+   case TpDComplex:
+      return new LELFunctionND<DComplex> (LELFunctionEnums::REBIN, arg);
+   default:
+      throw (AipsError ("LatticeExprNode::rebin- "
+			"Invalid argument type used in numerical function"));
+   }
+   return LatticeExprNode();
+}
+
+
+
 LatticeExprNode atan2 (const LatticeExprNode& left,
 		       const LatticeExprNode& right)
 { 
@@ -1612,6 +1642,7 @@ LatticeExprNode indexin (const LatticeExprNode& axis,
    LELFunctionBool* ptr = new LELFunctionBool(LELFunctionEnums::INDEXIN, arg);
    return ptr;
 }
+
 
 LatticeExprNode all (const LatticeExprNode& expr)
 { 

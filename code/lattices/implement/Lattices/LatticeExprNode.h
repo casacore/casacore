@@ -352,6 +352,14 @@ class LatticeExprNode
 				   const LatticeExprNode& indexFlags);
 // </group>
 
+// 2-argument function rebinning Lattice by given factors. The 2nd argument
+// should be a vector (preferably Float - really Int but Int not well
+// supported in LEL yet).  Results in a T array.
+// <group>
+   friend LatticeExprNode rebin (const LatticeExprNode& expr,
+                                 const LatticeExprNode& bin);
+// </group>
+
 // Test if a value is a NaN.
    friend LatticeExprNode isNaN (const LatticeExprNode& expr);
 
