@@ -27,10 +27,12 @@
 
 #include <trial/ComponentModels/SpectralIndex.h>
 #include <trial/ComponentModels/Flux.h>
-#include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/Record.h>
+#include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCFrequency.h>
@@ -87,11 +89,7 @@ SpectralIndex::SpectralIndex(const MFrequency & refFreq,
    itsVindex(itsIndex(3))     
 {
   DebugAssert(exponents.nelements() == 4, AipsError);
-  if (nearAbs(exponents(1), 0.0) && 
-      nearAbs(exponents(2), 0.0) && 
-      nearAbs(exponents(3), 0.0)) {
-    itsIonly = True;
-  }
+  itsIonly = isIonly();
   DebugAssert(ok(), AipsError);
 }
 
@@ -190,17 +188,19 @@ void SpectralIndex::setIndex(const Double & newIndex,
 		    String("Can only set the spectral index for ")+ 
 		    String("Stokes I,Q,U or V polarisations")));
   };
+  itsIonly = isIonly();
   DebugAssert(ok(), AipsError);
 }
 
-const Vector<Double> & SpectralIndex::indices() const {
+Vector<Double> SpectralIndex::indices() const {
   DebugAssert(ok(), AipsError);
-  return itsIndex;
+  return itsIndex.copy();
 }
 
 void SpectralIndex::setIndices(const Vector<Double> & newIndices) {
   DebugAssert(newIndices.nelements() == 4, AipsError);
   itsIndex = newIndices;
+  itsIonly = isIonly();
   DebugAssert(ok(), AipsError);
 }
 
@@ -212,8 +212,8 @@ void SpectralIndex::sample(Flux<Double> & scaledFlux,
   if ((MFrequency::Types) centerFreq.getRef().getType() != itsRefFrame) {
     nu = MFrequency::Convert(centerFreq, itsRefFrame)().getValue().getValue();
   }
+  scaledFlux.convertPol(ComponentType::STOKES);
   if (!near(nu, itsNu0, C::dbl_epsilon)) {
-    scaledFlux.convertPol(ComponentType::STOKES);
     const Double freqFactor = nu/itsNu0;
     const Double Iscale = pow(freqFactor, itsIindex);
     if (itsIonly) {
@@ -246,6 +246,7 @@ setParameters(const Vector<Double> & newSpectralParms) {
   itsQindex = newSpectralParms(1);
   itsUindex = newSpectralParms(2);
   itsVindex = newSpectralParms(3);
+  itsIonly = isIonly();
   DebugAssert(ok(), AipsError);
 }
 
@@ -287,10 +288,7 @@ Bool SpectralIndex::fromRecord(String & errorMessage,
       errorMessage += "The 'index' field must be vector of real numbers\n";
       return False;
     }
-    setIndex(indexVal(0), Stokes::I);
-    setIndex(indexVal(1), Stokes::Q);
-    setIndex(indexVal(2), Stokes::U);
-    setIndex(indexVal(3), Stokes::V);
+    setIndices(indexVal);
   }
   DebugAssert(ok(), AipsError);
   return True;
@@ -301,26 +299,72 @@ Bool SpectralIndex::toRecord(String & errorMessage,
   DebugAssert(ok(), AipsError);
   record.define(RecordFieldId("type"), ComponentType::name(type()));
   if (!SpectralModel::addFreq(errorMessage, record)) return False;
-  {
-    Vector<Double> indicies(4);
-    indicies(0) = index(Stokes::I);
-    indicies(1) = index(Stokes::Q);
-    indicies(2) = index(Stokes::U);
-    indicies(3) = index(Stokes::V);
-    record.define("index", indicies);
-  }
+  record.define("index", indices());
   return True;
 }
 
 Bool SpectralIndex::ok() const {
+  if (itsIndex.nelements() != 4) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "Index vector does not have 4 elements"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsIndex(0) != itsIindex) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "I index and index vector disagree"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsIndex(1) != itsQindex) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "Q index and index vector disagree"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsIndex(2) != itsUindex) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "U index and index vector disagree"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsIndex(3) != itsVindex) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "V index and index vector disagree"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsIonly != isIonly()) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "I only flag incorrectly set"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsNu0 != itsRefFreq.getValue().getValue()) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "incorrectly cached reference frequency"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsRefFrame != (MFrequency::Types) itsRefFreq.getRef().getType()) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "incorrectly cached reference frame"
+           << LogIO::POST;
+    return False;
+  }
   return True;
 }
 
-// spectrum := [type = 'constant']
-// spectrum := [type = 'spectralindex',
-//              frequency = MFrequency,
-//              index = [1.0, .5, .4, 1],
-//             ]
+Bool SpectralIndex::isIonly() const {
+  if (nearAbs(itsQindex, 0.0, C::dbl_min) && 
+      nearAbs(itsUindex, 0.0, C::dbl_min) &&
+      nearAbs(itsVindex, 0.0, C::dbl_min)) {
+    return True;
+  } else {
+    return False;
+  }
+}
+
 // spectrum := [type = 'discrete',
 //              frequency = MFrequency,
 //              frequencyoffset[1] = MVFrequency
