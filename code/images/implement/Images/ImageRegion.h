@@ -32,11 +32,12 @@
 #include <aips/aips.h>
 
 //# Forward Declarations
-class LCRegion;
-class WCRegion;
 class CoordinateSystem;
-class TableRecord;
+class IPosition;
+class LCRegion;
 class String;
+class TableRecord;
+class WCRegion;
 
 
 // <summary>
@@ -105,7 +106,8 @@ public:
     // </group>
 
     // Convert to an LCRegion using the given coordinate system.
-    const LCRegion& toLCRegion (const CoordinateSystem&) const;
+    const LCRegion& toLCRegion (const CoordinateSystem& cSys,
+                                const IPosition& shape) const;
 
     // Convert the (derived) object to a record.
     // The record can be used to make the object persistent.
