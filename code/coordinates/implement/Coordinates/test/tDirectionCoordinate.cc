@@ -32,6 +32,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVDirection.h>
@@ -101,6 +102,40 @@ int main()
          }
      } 
 
+// Test Quantum constructor interface
+
+     {
+        Matrix<Double> xform(2,2);
+        xform = 0.0;
+        xform.diagonal() = 1.0;
+        Projection proj(Projection::SIN);
+        MDirection::Types type(MDirection::B1950);
+//
+        Vector<Double> crval(2);
+        Vector<Double> crpix(2);
+        Vector<Double> cdelt(2);
+//
+        crval(0) = 0.1; crval(1) = 0.5;
+        crpix(0) = 100.0; crpix(1) = 120.0;
+        cdelt(0) = 1e-6; cdelt(1) = 2e-6;
+//
+        DirectionCoordinate dc1(type, proj, crval(0), crval(1),
+                                cdelt(0), cdelt(1),
+                                xform, crpix(0), crpix(1));
+//
+        Quantum<Double> lon(crval(0)*180.0/C::pi, "deg");
+        Quantum<Double> lat(crval(1)*180.0/C::pi, "deg");
+        Quantum<Double> dlon(cdelt(0)*180.0/C::pi, "deg");
+        Quantum<Double> dlat(cdelt(1)*180.0/C::pi, "deg");
+//
+        DirectionCoordinate dc2(type, proj, lon, lat, dlon, dlat,
+                                xform, crpix(0), crpix(1));
+//
+        if (!dc1.near(&dc2)) {
+           throw(AipsError(String("Quantum interface constructor failed consistency test")));
+        }
+      }
+
 // Test the rest
 
       {
@@ -159,7 +194,6 @@ int main()
                                                  cdelt, xform);
          doit5(lc);
       }
-    
 
 
   } catch (AipsError x) {
