@@ -2080,3 +2080,4 @@
 08 276 src rm trial/implement/MeasurementComponents/UniformWTCoh.cc
 08 276 src rm trial/implement/MeasurementComponents/UniformWTCoh.h
 08 276 src rm trial/implement/Images/test/tImageTiledCache.cc
+08 276 src rm trial/implement/MeasurementComponents/UniformWTCoh.cc
