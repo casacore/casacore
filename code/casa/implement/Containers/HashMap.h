@@ -24,6 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 #if !defined(AIPS_HASHMAP_H_)
 #define AIPS_HASHMAP_H_
 
@@ -32,7 +33,6 @@
 #include <aips/Containers/List.h>
 #include <aips/Containers/OrderedPair.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/RTTI/Typeinfo.h>
 
 //# Forward Declarations
 template<class key,class val> class ConstHashMapIter;
@@ -149,7 +149,7 @@ public:
     virtual ~HashClass();
 };
 
-rtti_dcl_init_a2(HashMap);
+
 // <summary>
 //     Associative Array with a hash table implementation
 // </summary>
@@ -475,9 +475,6 @@ public:
     // dtor
     //
     virtual ~HashMap();
-
-    // Macro to define the typeinfo member functions
-    rtti_dcl_mbrf(TMPL_ARG2(HashMap,key,val));
 
     enum {HashMapVersion = 1};
 

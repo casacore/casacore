@@ -29,9 +29,6 @@
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 
-rtti_imp_init_a2(HashMap);
-rtti_imp_mbrf_a2(HashMap);
-
 
 template<class key> HashClass<key>::HashClass() { }
 template<class key> HashClass<key>::~HashClass() { }
