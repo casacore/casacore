@@ -110,15 +110,18 @@
 // modified using the set/get functions.
 //
 // The parameter interface (see 
-// <linkto class="Parameterized"> Parameterized </linkto> class), 
+// <linkto class="FunctionParam">FunctionParam</linkto> class), 
 // is used to provide an interface to the
 // <linkto module="Fitting"> Fitting </linkto> classes. 
-// There are always 4
-// parameter sets. The parameters are, in order:
+// There are always 4 parameter sets. 
+// <note role=warning> Note that the actual variance/covariance
+// parameters are the inverse matrix of the variance/covariance matrix given
+// by the user</note>.
+// The actual parameters are in order:
 // <ol>
 // <li> height (1 term). No assumptions on what quantity the height
-//      represents, and it can be negative
-// <li> mean (ndim terms).
+//      represents, and it can be negative (enumerated by <src>HEIGHT</src>)
+// <li> mean (ndim terms) (enumerated by <src>CENTER</src>).
 // <li> variance (ndim terms). The variance is always positive, and an
 //      exception (AipsError) will be thrown if you try to set a negative
 //      value. 
@@ -248,17 +251,16 @@ protected:
   //# Data
   // dimensionality
   uInt itsDim;
-  // The inverse of the covariance matrix
-  Matrix<T> itsCovariance;
   // factor to convert from flux to height 
   T itsFlux2Hgt;
 
   //# Methods
-  // Functions to convert between a Vector of parameters and the Covariance
+  // Functions to convert between internal Vector of parameters
+  // and the Covariance
   // Matrix 
   // <group>
-  void repack(Matrix<T> &covar, const Vector<T> &params) const;
-  Vector<T> unpack(const Matrix<T> &covar) const;
+  void repack(Matrix<T> &covar) const;
+  void unpack(const Matrix<T> &covar);
   // </group>
 };
 
