@@ -2156,3 +2156,6 @@
 11 120 src rm trial/implement/Tasking/objectmanager.g
 11 120 src rm trial/implement/Tasking/objectguiserver.g
 11 120 src rm trial/implement/Tasking/objectcliserver.g
+11 120 sys rm libexec/objectmanager.g
+11 120 sys rm libexec/objectguiserver.g
+11 120 sys rm libexec/objectcliserver.g
