@@ -29,7 +29,7 @@
 #include <trial/Images/ImageExprGram.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/FITSImage.h>
-#include <trial/Images/MIRIADImage.h>
+//#include <trial/Images/MIRIADImage.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/RegionHandlerTable.h>
@@ -462,9 +462,9 @@ Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
         if (imageType==ImageUtilities::FITS) {
            FITSImage img(name);
            node = LatticeExprNode (img);
-        } else if (imageType==ImageUtilities::MIRIAD) {
-           MIRIADImage img(name);
-           node = LatticeExprNode (img);
+//        } else if (imageType==ImageUtilities::MIRIAD) {
+//           MIRIADImage img(name);
+//           node = LatticeExprNode (img);
         } else {
            return False;
         }
