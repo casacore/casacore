@@ -118,11 +118,11 @@ public:
 			      const MFrequency & centerFrequency) const = 0;
 
   // Project the component onto an Image. The default implementation calls the
-  // sample function once for the centre of each pixel. The image needs only
-  // have a one (and only one) direction axis. Other axes are optionaland if
-  // there is no Stokes axes then it is assumed that the polarization is
-  // Stokes::I. If there is no frequency axis then the frequency is assumed to
-  // be the reference frequency ie., spectrum().refFrequency().
+  // sample function once for the centre of each pixel. The image needs to have
+  // one (and only one) direction axis. Other axes are optional and if there is
+  // no Stokes axes then it is assumed that the polarization is Stokes::I. If
+  // there is no frequency axis then the frequency is assumed to be the
+  // reference frequency ie., spectrum().refFrequency().
   virtual void project(ImageInterface<Float> & plane) const = 0;
 
   // Return the Fourier transform of the component at the specified point in
