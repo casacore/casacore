@@ -26,23 +26,46 @@
 //# $Id$
 
 #include <trial/ComponentModels/SpectralModel.h>
-#include <aips/Utilities/Assert.h>
+#include <aips/Containers/RecordFieldId.h>
+#include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
+#include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
 
 SpectralModel::~SpectralModel() {
-  //  DebugAssert(ok(), AipsError);
+  DebugAssert(ok(), AipsError);
 }
 
 void SpectralModel::refFrequency(MFrequency & refFreq) const {
-  //  DebugAssert(ok(), AipsError);
+  DebugAssert(ok(), AipsError);
   refFreq = refFrequency();
 }
 
-void SpectralModel::scale(Double & scaleFactor, 
-			  const MFrequency & centerFrequency) const {
-  //  DebugAssert(ok(), AipsError);
-  scaleFactor = scale(centerFrequency);
+ComponentType::SpectralShape SpectralModel::
+getType(String & errorMessage, const RecordInterface & record) {
+  const String typeString("type");
+  if (!record.isDefined(typeString)) {
+    errorMessage += 
+      String("\nThe record does not have a 'type' field.");
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }
+  const RecordFieldId type(typeString);
+  if (record.shape(type) != IPosition(1,1)) {
+    errorMessage += String("\nThe 'type' field must have only 1 element");
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }      
+  String typeVal;
+  try {
+    typeVal = record.asString(type);
+  }
+  catch (AipsError x) {
+    errorMessage += String("\nThe 'type' field must be a String");
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  } end_try;
+  return ComponentType::spectralShape(typeVal);
 }
 
 // Local Variables: 
