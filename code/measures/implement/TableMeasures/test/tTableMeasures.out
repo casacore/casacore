@@ -1,0 +1,10 @@
+Test of TableMeasures classes.
+Create MEpochScaCol from column Time1...
+Null MEpochScaCol successfully attached
+The MeasRef for the column is: Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+Epoch: 50220::10:47:60.0000
+Epoch: 50220::10:47:60.0000
+Epoch: 50220::10:47:60.0000
+Epoch: 50220::10:47:60.0000
+Epoch: 50220::10:47:60.0000
+Bye.
