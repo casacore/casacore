@@ -1,5 +1,5 @@
 //# ScaColData.cc: Access to a table column containing scalars
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,7 +116,7 @@ void ScalarColumnData<T>::getScalarColumn (void* val) const
 }
 
 // Remove eventually - needed for g++
-typedef Vector<uInt> forgnugpp;
+typedef Vector<uInt> forgnugpp_scacoldata;
 
 template<class T>
 void ScalarColumnData<T>::getColumn (const Vector<uInt>& rownrs,
