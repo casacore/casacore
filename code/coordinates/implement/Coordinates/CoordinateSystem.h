@@ -375,6 +375,13 @@ public:
     // put into pixelOut in the appropriate pixelAxis
     // location.  Values in pixelIn are copied to
     // pixelOut
+    // worldMin and worldMax specify the range of the world
+    // coordinate (in the world axis units of that world axis
+    // in the coordinate system) being solved for in a mixed calculation 
+    // for each world axis. They are only actually needed for DirectionCoordinates
+    // and for all other coordinates the relevant elements
+    // can be undefined.   If you don't know, use -180 to 180
+    // degrees for longitude, and -90 to 90 for latitude.    
     // Removed axes are handled (for example, a removed pixel
     // axis with remaining corresponding world axis will
     // correctly be converted to world using the replacement
@@ -383,11 +390,13 @@ public:
     // <src>errorMessage()</src> contains an error message. The output vectors
     // are resized.
     virtual Bool toMix(Vector<Double>& worldOut,
-               Vector<Double>& pixelOut,
-               const Vector<Double>& worldIn,
-               const Vector<Double>& pixelIn,
-               const Vector<Bool>& worldAxes,                
-               const Vector<Bool>& pixelAxes) const;
+                       Vector<Double>& pixelOut,
+                       const Vector<Double>& worldIn,
+                       const Vector<Double>& pixelIn,
+                       const Vector<Bool>& worldAxes,                
+                       const Vector<Bool>& pixelAxes,
+                       const Vector<Double>& worldMin,
+                       const Vector<Double>& worldMax) const; 
 
     // Return the requested attribute.
     // <group>
@@ -521,6 +530,14 @@ private:
 
     // A little temporary for toWorld from IPosition
     mutable Vector<Double> pixel_tmp_p;
+
+    // These temporaries all needed for the toMix function
+    mutable PtrBlock<Vector<Bool> *> worldAxes_tmps_p;
+    mutable PtrBlock<Vector<Bool> *> pixelAxes_tmps_p;
+    mutable PtrBlock<Vector<Double> *> worldOut_tmps_p;
+    mutable PtrBlock<Vector<Double> *> pixelOut_tmps_p;
+    mutable PtrBlock<Vector<Double> *> worldMin_tmps_p;
+    mutable PtrBlock<Vector<Double> *> worldMax_tmps_p;
 
     // Miscellaneous information about the observation associated with this
     // Coordinate System.
