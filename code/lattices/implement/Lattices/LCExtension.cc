@@ -27,6 +27,7 @@
 
 
 #include <trial/Lattices/LCExtension.h>
+#include <trial/Lattices/LCBox.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Exceptions/Error.h>
@@ -39,41 +40,32 @@ LCExtension::LCExtension()
 
 LCExtension::LCExtension (const LCRegion& region,
 			  const IPosition& extendAxes,
-			  const IPosition& latticeShape)
-: LCRegionMulti (region.cloneRegion(), latticeShape),
+			  const LCBox& extendBox)
+: LCRegionMulti (True, region.cloneRegion()),
   itsExtendAxes (extendAxes),
-  itsBlc (IPosition(extendAxes.nelements(), 0)),
-  itsTrc (IPosition(extendAxes.nelements(), 0))
+  itsExtendBox  (extendBox)
 {
-    //# Default trc is lattice shape.
-    for (uInt i=0; i<extendAxes.nelements(); i++) {
-        uInt axis = extendAxes(i);
-	if (axis < latticeShape.nelements()) {
-	    itsTrc = latticeShape(axis) - 1;
-	}
-    }
-    defineBox();
+    // Fill the other members variables and determine the bounding box.
+    fill();
 }
 
-LCExtension::LCExtension (const LCRegion& region,
+LCExtension::LCExtension (Bool takeOver,
+			  const LCRegion* region,
 			  const IPosition& extendAxes,
-			  const IPosition& extendBlc,
-			  const IPosition& extendTrc,
-			  const IPosition& latticeShape)
-: LCRegionMulti (region.cloneRegion(), latticeShape),
+			  const LCBox& extendBox)
+: LCRegionMulti (takeOver, region),
   itsExtendAxes (extendAxes),
-  itsBlc (extendBlc),
-  itsTrc (extendTrc)
+  itsExtendBox  (extendBox)
 {
-    defineBox();
+    // Fill the other members variables and determine the bounding box.
+    fill();
 }
 
 LCExtension::LCExtension (const LCExtension& other)
 : LCRegionMulti (other),
   itsExtendAxes (other.itsExtendAxes),
   itsRegionAxes (other.itsRegionAxes),
-  itsBlc (other.itsBlc),
-  itsTrc (other.itsTrc)
+  itsExtendBox  (other.itsExtendBox)
 {}
 
 LCExtension::~LCExtension()
@@ -85,38 +77,28 @@ LCExtension& LCExtension::operator= (const LCExtension& other)
 	LCRegionMulti::operator= (other);
 	itsExtendAxes.resize (other.itsExtendAxes.nelements());
 	itsRegionAxes.resize (other.itsRegionAxes.nelements());
-	itsBlc.resize (other.itsExtendAxes.nelements());
-	itsTrc.resize (other.itsExtendAxes.nelements());
 	itsExtendAxes = other.itsExtendAxes;
 	itsRegionAxes = other.itsRegionAxes;
-	itsBlc = other.itsBlc;
-	itsTrc = other.itsTrc;
+	itsExtendBox  = other.itsExtendBox;
     }
     return *this;
 }
 
 Bool LCExtension::operator== (const LCRegion& other) const
-//
-// See if this region is the same as the other region
-//
 {
-
-// Check below us
-
-   if (!LCRegionMulti::operator==(other)) return False;
-    
-// Caste(is safe)
- 
+    // Check if parent class matches.
+    // If so, we can safely cast.
+    if (! LCRegionMulti::operator== (other)) {
+	return False;
+    }
     const LCExtension& that = (const LCExtension&)other;
-  
-// Check the private data
- 
-   if (!itsExtendAxes.isEqual(that.itsExtendAxes)) return False;
-   if (!itsRegionAxes.isEqual(that.itsRegionAxes)) return False;
-   if (!itsBlc.isEqual(that.itsBlc)) return False;
-   if (!itsTrc.isEqual(that.itsTrc)) return False;
- 
-   return True;
+    // Check the private data
+    if (! itsExtendAxes.isEqual (that.itsExtendAxes)
+    ||  ! itsRegionAxes.isEqual (that.itsRegionAxes)
+    ||  !(itsExtendBox == that.itsExtendBox)) {
+	return False;
+    }
+    return True;
 }
  
 
@@ -129,30 +111,32 @@ LCRegion* LCExtension::doTranslate (const Vector<Float>& translateVector,
 				    const IPosition& newLatticeShape) const
 {
     uInt i;
-    // We need to separate the region axes and the extend axes.
+    // First translate the extendBox.
+    // Take appropriate elements from the vectors.
     uInt nre = itsExtendAxes.nelements();
-    uInt nrr = itsRegionAxes.nelements();
-    IPosition expBlc (itsBlc);
-    IPosition expTrc (itsTrc);
-    Vector<Float> transReg (nrr);
-    IPosition newShape (nrr);
+    Vector<Float> boxTransVec (nre);
+    IPosition boxLatShape (nre);
     for (i=0; i<nre; i++) {
-        uInt axis = itsExtendAxes(i);
-        expBlc(i) += Int(translateVector(axis));
-        expTrc(i) += Int(translateVector(axis));
+	uInt axis = itsExtendAxes(i);
+	boxTransVec(i) = translateVector(axis);
+	boxLatShape(i) = newLatticeShape(axis);
     }
+    LCBox* boxPtr = (LCBox*)(itsExtendBox.translate (boxTransVec, boxLatShape));
+    // Now translate the region.
+    uInt nrr = itsRegionAxes.nelements();
+    Vector<Float> regTransVec (nrr);
+    IPosition regLatShape (nrr);
     for (i=0; i<nrr; i++) {
-        uInt axis = itsRegionAxes(i);
-	transReg(i) = translateVector(axis);
-	newShape(i) = newLatticeShape(axis);
+	uInt axis = itsRegionAxes(i);
+	regTransVec(i) = translateVector(axis);
+	regLatShape(i) = newLatticeShape(axis);
     }
-    // Translate the region and create a new LCExtension with
-    // the translated blc/trc.
-    LCRegion* reg = region().translate (transReg, newShape);
-    LCExtension* ext = new LCExtension (*reg, itsExtendAxes, expBlc, expTrc,
-					newLatticeShape);
-    delete reg;
-    return ext;
+    LCRegion* regPtr = region().translate (regTransVec, regLatShape);
+    // Create the new LCExtension object.
+    LCExtension* extPtr = new LCExtension (*regPtr, itsExtendAxes, *boxPtr);
+    delete boxPtr;
+    delete regPtr;
+    return extPtr;
 }
 
 String LCExtension::className()
@@ -169,72 +153,93 @@ TableRecord LCExtension::toRecord (const String& tableName) const
 {
     TableRecord rec;
     defineRecordFields (rec, className());
-    rec.defineRecord ("region", region().toRecord(tableName));
+    rec.defineRecord ("region", region().toRecord (tableName));
     rec.define ("axes", itsExtendAxes.asVector());
-    rec.define ("blc", itsBlc.asVector());
-    rec.define ("trc", itsTrc.asVector());
-    rec.define ("shape", latticeShape().asVector());
+    rec.defineRecord ("box", itsExtendBox.toRecord (tableName));
     return rec;
 }
 
 LCExtension* LCExtension::fromRecord (const TableRecord& rec,
 				      const String& tableName)
 {
-    LCRegion* reg = LCRegion::fromRecord (rec.asRecord("region"), tableName);
-    LCExtension* ext = new LCExtension (*reg,
+    LCRegion* regPtr = LCRegion::fromRecord (rec.asRecord("region"),
+					     tableName);
+    LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
+						   tableName));
+    LCExtension* extPtr = new LCExtension (*regPtr,
 					Vector<Int>(rec.asArrayInt ("axes")),
-					Vector<Int>(rec.asArrayInt ("blc")),
-					Vector<Int>(rec.asArrayInt ("trc")),
-					Vector<Int>(rec.asArrayInt ("shape")));
-    delete reg;
-    return ext;
+					*boxPtr);
+    delete regPtr;
+    delete boxPtr;
+    return extPtr;
 }
 
-void LCExtension::defineBox()
+void LCExtension::fillRegionAxes()
+{
+    uInt nre = itsExtendAxes.nelements();
+    uInt nrr = region().ndim();
+    uInt nrdim = nre+nrr;
+    // allAxes will get the remaining (thus region) axes at the end.
+    IPosition allAxes = IPosition::makeAxisPath (nrdim, itsExtendAxes);
+    itsRegionAxes.resize (nrr);
+    for (uInt i=nre; i<nrdim; i++) {
+        uInt axis = allAxes(i);
+	itsRegionAxes(i-nre) = axis;
+    }
+}
+
+void LCExtension::fill()
 {
     uInt i;
-    // Check if the basic things are right.
-    uInt nr = itsExtendAxes.nelements();
-    uInt nrdim = latticeShape().nelements();
-    if (itsBlc.nelements() != nr  ||  itsTrc.nelements() != nr) {
+    // Check if extend axes are specified in ascending order.
+    uInt nre = itsExtendAxes.nelements();
+    if (nre == 0) {
 	throw (AipsError ("LCExtension::LCExtension - "
-			  "lengths of extendAxes, Blc, and Trc differ"));
+			  "no extend axes have been specified"));
     }
-    const IPosition& regionBlc = region().box().start();
-    const IPosition& regionTrc = region().box().end();
-    if (regionBlc.nelements() != nrdim-nr) {
+    Int first = -1;
+    for (i=0; i<nre; i++) {
+	if (itsExtendAxes(i) <= first) {
+	    throw (AipsError ("LCExtension::LCExtension - "
+			      "extend axes are not specified "
+			      "in ascending order"));
+	}
+	first = itsExtendAxes(i);
+    }
+    if (nre != itsExtendBox.blc().nelements()) {
 	throw (AipsError ("LCExtension::LCExtension - "
-			  "#extendAxes should be equal to difference "
-			  "in dimensionality of lattice and region"));
+			  "number of axes in extend box mismatches "
+			  "number of extend axes"));
     }
-    // Extend the axes to all of them, which will also check if the
-    // axes have been specified correctly.
-    // The specified axes are the first ones, thereafter the remaining axes.
-    IPosition allAxes = IPosition::makeAxisPath (nrdim, itsExtendAxes);
+    // Fill itsRegionAxes, i.e. the mapping of the axis of the contributing
+    // region into the extended region.
+    fillRegionAxes();
+    // Make up the lattice shape from the region and box latticeshape.
+    // Fill the bounding box from blc/trc in region and box.
+    uInt nrr = itsRegionAxes.nelements();
+    uInt nrdim = nre+nrr;
+    IPosition latShape(nrdim);
     IPosition blc (nrdim);
     IPosition trc (nrdim);
-    for (i=0; i<nr; i++) {
-        uInt axis = allAxes(i);
-        if (itsTrc(i) < itsBlc(i)) {
-	    throw (AipsError ("LCExtension::LCExtension - "
-			      "extendBlc > extendTrc"));
-	}
-	blc(axis) = max(0, itsBlc(i));
-	trc(axis) = min(latticeShape()(axis)-1, itsTrc(i));
+    const IPosition& regionShp = region().latticeShape();
+    const IPosition& regionBlc = region().boundingBox().start();
+    const IPosition& regionTrc = region().boundingBox().end();
+    for (i=0; i<nrr; i++) {
+        uInt axis = itsRegionAxes(i);
+	latShape(axis) = regionShp(i);
+	blc(axis) = regionBlc(i);
+	trc(axis) = regionTrc(i);
     }
-    itsRegionAxes.resize (nrdim-nr);
-    for (i=nr; i<nrdim; i++) {
-        uInt axis = allAxes(i);
-	if (latticeShape()(axis) != region().latticeShape()(i-nr)) {
-	    throw (AipsError ("LCExtension::LCExtension - "
-			      "lengths of corresponding axes in lattice "
-			      "and region lattice should match"));
-	}
-	blc(axis) = regionBlc(i-nr);
-	trc(axis) = regionTrc(i-nr);
-	itsRegionAxes(i-nr) = axis;
+    const IPosition& boxShp = itsExtendBox.latticeShape();
+    const IPosition& boxBlc = itsExtendBox.boundingBox().start();
+    const IPosition& boxTrc = itsExtendBox.boundingBox().end();
+    for (i=0; i<nre; i++) {
+        uInt axis = itsExtendAxes(i);
+	latShape(axis) = boxShp(i);
+	blc(axis) = boxBlc(i);
+	trc(axis) = boxTrc(i);
     }
-    setBox (Slicer(blc, trc, Slicer::endIsLast));
+    setShapeAndBoundingBox (latShape, Slicer(blc, trc, Slicer::endIsLast));
     fillHasMask();
 }
 
