@@ -5606,3 +5606,4 @@
 15 235 src rm trial/apps/image/image.cc
 15 237 src mv trial/apps/image app_image
 15 237 sys rm bin/image
+15 238 src rm atnf/implement/test
