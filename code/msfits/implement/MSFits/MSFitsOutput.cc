@@ -53,6 +53,7 @@
 #include <trial/Tasking/ProgressMeter.h>
 #include <trial/Tasking/NewFile.h>
 
+#include <stdlib.h> // for atoi()
 #include <strstream.h>
 #include <iomanip.h>
 
@@ -1026,7 +1027,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     for (uInt a = 0; a < nant; a++) {
       const String& antName = antid(a) ;
       if (antName.matches(RXint)) {
-	id[a] = String::toInt(antName);
+	id[a] = atoi(antName);
       } else {
 	useAntId = False;
 	break;
