@@ -134,8 +134,8 @@ class Slice;
 //
 // <srcblock>
 //   IPosition start (3,0,0,0), stride (3,3,3,3);
-//   IPosition end   (3,Slicer::mimicSource, Slicer::mimicSource, 
-//                    Slicer::mimicSource);
+//   IPosition end   (3,Slicer::MimicSource, Slicer::MimicSource, 
+//                    Slicer::MimicSource);
 //   Slicer smartSlicer (start, end, stride);
 //   // assume proper declarations...
 //   subArray = sourceArray (smartSlicer)
@@ -191,8 +191,8 @@ class Slice;
 // <srcblock>
 //   Image <Float>  image ("N5364.fits");   // a 4-d VLA map, 4096 x 4096 x 3 x 1
 //   IPosition start (4,0,0,0,0), stride (4,4,4,1,1);
-//   IPosition end   (4, Slicer::mimicSource, Slicer::mimicSource, 
-//                    Slicer::mimicSource, Slicer::mimicSource);
+//   IPosition end   (4, Slicer::MimicSource, Slicer::MimicSource, 
+//                    Slicer::MimicSource, Slicer::MimicSource);
 //   Slicer smartSlicer (start, end, stride);
 //   // assume proper declarations...
 //   Image <Float> subImage = image (smartSlicer);
