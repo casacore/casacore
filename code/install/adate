@@ -86,7 +86,7 @@
 
   set `date $MODE`
 
-  YEAR=`eval echo \$"$#"`
+  YEAR=`eval echo "$""$#"`
 
   case $2 in
      Jan) MONTH=01 ;;
