@@ -199,7 +199,7 @@ char *BlockInput::read() {
       OFF_T l_byte_left_in_file  = (m_fptr->Fptr)->filesize - (m_fptr->Fptr)->bytepos;
 		// if reached the end of file, return to caller with a NULL pointer.
 		if( l_byte_left_in_file == 0 ){ 
-		   cout << "No more data in file, return a NULL pointer." << endl;
+		   //cout << "No more data in file, return a NULL pointer." << endl;
 		   return(NULL);
 	   }
 		
