@@ -690,6 +690,14 @@ public:
   friend int readline(istream &s, String &x, char terminator = '\n',
 		      int discard_terminator = 1);
 
+  // Convert a integer to a String. This is a convenience function. Use the
+  // oststream class (or in the future the ostringstream class) for conversion
+  // of floating point data types or more sophisticated formatting options.
+  // <group>
+  static String toString(Int value);
+  static String toString(uInt value);
+  // </group>
+
 protected:
 
   // Strings are pointers to their representations

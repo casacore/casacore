@@ -1303,6 +1303,18 @@ int readline(istream& s, String& x, char terminator, int discard)
 }
 
 
+String String::toString(Int value){
+  ostrstream s;
+  s << value;
+  return s;
+}
+
+String String::toString(uInt value) {
+  ostrstream s;
+  s << value;
+  return s;
+}
+
 ostream& operator<<(ostream& s, const SubString& x)
 { 
   const char* a = x.chars();
