@@ -1,9 +1,9 @@
 #!/bin/sh
 #-----------------------------------------------------------------------------
-# inhale: Retrieve and install the latest AIPS++ update
+# testsuite: Run tests on the latest AIPS++ update
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997
+#   Copyright (C) 1992-1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -30,8 +30,8 @@
 #-----------------------------------------------------------------------------
 # Usage: testsuite [-i] [-m module ] [-p package]
 #-----------------------------------------------------------------------------
-# testsuite runs an inhale and then runs a gmake runtests.
-# aips2.nrao.edu.  It is invoked regularly as a cron job.
+# testsuite may optionally run an inhale and then do a gmake runtests.
+# It is invoked regularly as a cron job, on aips2.nrao.edu.
 #
 # Options:
 #   -i     do a gmake runtests after doing an inhale
@@ -40,7 +40,7 @@
 #          the -m and -p options maybe combined
 #
 # Status return values correspond to the various phases of the operation
-#    standard inhale status
+#    standard testsuite status
 #
 # Notes:
 #=============================================================================
@@ -132,10 +132,15 @@
   MODULES=""
   HASMODULES=0
   HASPACKAGES=0
+  INHALE_FLAG="-m"
 
   while [ "$#" -gt 0 ]
   do
      case $1 in
+     -c)
+        INHALE_FLAG="-c"
+        INHALE=1
+        ;;
      -i)
         INHALE=1
         ;;
@@ -206,37 +211,36 @@
     echo ""
     echo "testsuite: inhale started"
     echo ""
-    inhale -c
-  fi
-
-  if [ $HASPACKAGES -gt 0 -o $HASMODULES -gt 0 ] ; then
-    if [ $HASPACKAGES -eq 0 ] ; then
-       PACKAGES="aips"
-    fi
-    for PACK in $PACKAGES
-    do
-      if [ $HASMODULES -gt 0 ] ; then
-         for MODULE in $MODULES
-         do
-            if [ -d $AIPSCODE/$PACK/implement/$MODULE ] ; then
-               cd $AIPSCODE/$PACK/implement/$MODULE
-               gmake runtests
-            else
-               echo "testsuite: package $PACK has no module name $MODULE."
-            fi
-         done
-      else 
-        if [ -d $AIPSCODE/$PACK ] ; then
-            cd $AIPSCODE/$PACK
-            gmake runtests
-        else
-            echo "testsuite: no package named $PACK"
-        fi
-      fi
-    done
+    inhale $INHALE_FLAG > $AIPSROOT/inhale.log 2>&1
   else
-     cd $AIPSCODE
-     gmake runtests
+     if [ $HASPACKAGES -gt 0 -o $HASMODULES -gt 0 ] ; then
+       if [ $HASPACKAGES -eq 0 ] ; then
+          PACKAGES="aips"
+       fi
+       for PACK in $PACKAGES
+       do
+         if [ $HASMODULES -gt 0 ] ; then
+            for MODULE in $MODULES
+            do
+               if [ -d $AIPSCODE/$PACK/implement/$MODULE ] ; then
+                  cd $AIPSCODE/$PACK/implement/$MODULE
+                  gmake runtests
+               else
+                  echo "testsuite: package $PACK has no module name $MODULE."
+               fi
+            done
+         else 
+           if [ -d $AIPSCODE/$PACK ] ; then
+               cd $AIPSCODE/$PACK
+               gmake runtests
+           else
+               echo "testsuite: no package named $PACK"
+           fi
+         fi
+       done
+     else
+        runtests
+     fi
   fi
 
   echo ""
