@@ -56,7 +56,14 @@ class LogIO;
 // non-templated base class. Furthermore it gives the opportunity to
 // factor out some non-templated code.
 // </motivation>
-
+//
+// <note>
+// The cache functions (maximumCacheSize, setMaximumCacheSize,
+// setCacheSizeInTiles, setCacheSizeFromPath, clearCache, and
+// showCacheStatistics) should all be over-ridden together as
+// in PagedArray.
+// </note>
+//
 // <todo asof="1999/02/04">
 //   <li> Rename cloneBase function to clone and use covaraint return type.
 // </todo>
@@ -155,8 +162,8 @@ public:
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
   // Maximum cache size - not necessarily all used. In pixels.
-  // Default implementation does nothing
-  virtual uInt maximumCacheSize() const {;};
+  // Default returns 0, which means that there is no maximum.
+  virtual uInt maximumCacheSize() const {return 0;};
 
   // Set the maximum (allowed) cache size as indicated.
   // Default implementation does nothing
