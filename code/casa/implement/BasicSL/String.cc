@@ -231,11 +231,11 @@ void String::reverse() {
 }
 
 void String::upcase() {
-  transform(begin(), end(), begin(), toupper);
+  std::transform(begin(), end(), begin(), toupper);
 }
 
 void String::downcase() {
-  transform(begin(), end(), begin(), tolower);
+  std::transform(begin(), end(), begin(), tolower);
 }
 
 void String::capitalize() {
@@ -347,17 +347,17 @@ Int String::gsub(const RegexBase &pat, const string &repl) {
 
 // Global functions
 String reverse(string str) {
-  reverse(str.begin(), str.end());
+  std::reverse(str.begin(), str.end());
   return str;
 }
 
 String upcase(string str) {
-  transform(str.begin(), str.end(), str.begin(), toupper);
+  std::transform(str.begin(), str.end(), str.begin(), toupper);
   return str;
 }
 
 String downcase(string str) {
-  transform(str.begin(), str.end(), str.begin(), tolower);
+  std::transform(str.begin(), str.end(), str.begin(), tolower);
   return str;
 }
 
@@ -426,7 +426,7 @@ String common_prefix(const string &x, const string &y,
 String common_suffix(const string &x, const string &y, 
 		     Int startpos) {
   if (startpos >= 0 ||
-      startpos +Int(x.length()) < 0 ||
+      startpos + Int(x.length()) < 0 ||
       startpos + Int(y.length()) < 0) return String();
   String::const_iterator xs(x.end() + startpos+1);
   String::const_iterator ys(y.end() + startpos+1);

@@ -1,5 +1,5 @@
 //# String.h: String class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,8 @@
 
 //# Includes
 #include <string>
+
+using std::string;
 
 //# Forward Declarations
 class String;
@@ -323,9 +325,6 @@ class String : public string {
   Char lastchar() const { return at(length()-1); }
   // </group>
   // </group>
-
-  // Convert to Char* (** aips++ addition)
-  operator const Char*() const { return string::c_str(); } 
 
   //# Member functions
   // Iterators
