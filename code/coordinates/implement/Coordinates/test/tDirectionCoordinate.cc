@@ -921,4 +921,3 @@ void doit7 ()
          throw(AipsError("Reference change conversion reflection 1 failed"));
    }    
 }
-
