@@ -1,5 +1,5 @@
 //# BlockIO.h: Functions to perform IO for the Block class
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,11 +34,7 @@
 template<class T> class Block;
 class AipsIO;
 
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/aipsiosfwd.h>
 
 // <summary>IO functions for Block</summary>
 // <use visibility=export>

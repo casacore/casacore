@@ -1,5 +1,5 @@
 //# SimOrdMapIO.h: SimOrdMap IO operations
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,11 +33,7 @@
 
 // Class declarations.
 class AipsIO;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/aipsiosfwd.h>
 
 // <summary> Global IO functions </summary>
 // This header file defines the AipsIO functions for template SimpleOrderedMap.

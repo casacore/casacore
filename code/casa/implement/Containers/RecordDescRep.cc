@@ -31,8 +31,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
-#include <stdio.h>
-#include <iostream.h>
+#include <aips/stdio.h>
+#include <aips/iostream.h>
 
 RecordDescRep::RecordDescRep()
 : n_p(0),

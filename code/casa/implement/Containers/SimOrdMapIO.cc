@@ -1,5 +1,5 @@
 //# SimOrdMapIO.cc: SimOrdMap IO operations
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/IO/AipsIO.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // Write an OrderedMap into an AipsIO styream.
 template<class K, class V>

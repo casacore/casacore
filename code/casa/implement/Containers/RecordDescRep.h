@@ -40,11 +40,7 @@
 //# Forward Declarations
 class RecordDesc;
 class AipsIO;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/aipsiosfwd.h>
 
 
 // <summary>

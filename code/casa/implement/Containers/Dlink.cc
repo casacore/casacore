@@ -1,5 +1,5 @@
 //# Dlink.cc: Doubly linked list primitive
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Containers/Dlink.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 int Dlink_deprecated_flag = 0;
 

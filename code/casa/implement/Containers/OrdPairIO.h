@@ -1,5 +1,5 @@
 //# OrdPairIO.h: Functions to perform IO for ordered pair classes
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #define AIPS_ORDPAIRIO_H_
 
 #include <aips/Containers/OrderedPair.h>
-#include <iostream.h>
+#include <aips/aipsiosfwd.h>
 
 class AipsIO;
 

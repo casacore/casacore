@@ -1,5 +1,5 @@
 //# RecordDesc.cc: Description of the fields in a Record object
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/Containers/RecordDesc.h>
+#include <aips/iostream.h>
 #include <aips/IO/AipsIO.h>
 
 
