@@ -253,23 +253,25 @@ public:
   // Return the name of each of the subtables. This should be used by the
   // filler to create the subtables in the correct location.
   // <group>
-  String antennaTableName() {return tableName()+"/ANTENNA";}
-  String dataDescriptionTableName()   {return tableName()+"/DATA_DESCRIPTION";}
-  String dopplerTableName() { return tableName()+"/DOPPLER";}
-  String feedTableName() {return tableName()+"/FEED";}
-  String fieldTableName() {return tableName()+"/FIELD";}
-  String flagCmdTableName() {return tableName()+"/FLAG_CMD";}
-  String freqOffsetTableName() {return tableName()+"/FREQ_OFFSET";}
-  String historyTableName() {return tableName()+"/HISTORY";}
-  String observationTableName() {return tableName()+"/OBSERVATION";}
-  String pointingTableName() {return tableName()+"/POINTING";}
-  String polarizationTableName() {return tableName()+"/POLARIZATION";}
-  String processorTableName() {return tableName()+"/PROCESSOR";}
-  String sourceTableName() {return tableName()+"/SOURCE";}
-  String spectralWindowTableName() {return tableName()+"/SPECTRAL_WINDOW";}
-  String stateTableName() {return tableName()+"/STATE";}
-  String sysCalTableName() {return tableName()+"/SYSCAL";}
-  String weatherTableName() {return tableName()+"/WEATHER";}
+  String antennaTableName() const {return tableName()+"/ANTENNA";}
+  String dataDescriptionTableName() const {
+    return tableName()+"/DATA_DESCRIPTION";}
+  String dopplerTableName() const { return tableName()+"/DOPPLER";}
+  String feedTableName() const {return tableName()+"/FEED";}
+  String fieldTableName() const {return tableName()+"/FIELD";}
+  String flagCmdTableName() const {return tableName()+"/FLAG_CMD";}
+  String freqOffsetTableName() const {return tableName()+"/FREQ_OFFSET";}
+  String historyTableName() const {return tableName()+"/HISTORY";}
+  String observationTableName() const {return tableName()+"/OBSERVATION";}
+  String pointingTableName() const {return tableName()+"/POINTING";}
+  String polarizationTableName() const {return tableName()+"/POLARIZATION";}
+  String processorTableName() const {return tableName()+"/PROCESSOR";}
+  String sourceTableName() const {return tableName()+"/SOURCE";}
+  String spectralWindowTableName() const {
+    return tableName()+"/SPECTRAL_WINDOW";}
+  String stateTableName() const {return tableName()+"/STATE";}
+  String sysCalTableName() const {return tableName()+"/SYSCAL";}
+  String weatherTableName() const {return tableName()+"/WEATHER";}
   // </group>
     
   // Access functions for the subtables, using the NewMS-like interface for each
