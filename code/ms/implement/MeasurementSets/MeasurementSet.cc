@@ -59,6 +59,7 @@ MeasurementSet::MeasurementSet(const String &tableName,
 {
     // verify that the now opened table is valid
     checkVersion();
+    mainLock_p=TableLock(TableLock::AutoNoReadLocking);
     addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("MS(String &, TableOption) - "
@@ -90,13 +91,15 @@ MeasurementSet::MeasurementSet(const String &tableName,
       PredefinedKeywords>(tableName, lockOptions, option), 
       hasBeenDestroyed_p(False)
 {
-    // verify that the now opened table is valid
-    checkVersion();
-    addCat(); 
-    if (! validate(this->tableDesc()))
-	throw (AipsError("MS(String &, lockOptions, TableOption) - "
-			 "table is not a valid MS"));
-    initRefs();
+
+  mainLock_p=lockOptions;
+  // verify that the now opened table is valid
+  checkVersion();
+  addCat(); 
+  if (! validate(this->tableDesc()))
+    throw (AipsError("MS(String &, lockOptions, TableOption) - "
+		     "table is not a valid MS"));
+  initRefs();
 }
 
 MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescName,
@@ -105,6 +108,8 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
       PredefinedKeywords>(tableName, tableDescName, option),
       hasBeenDestroyed_p(False)
 {
+
+  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
     // verify that the now opened table is valid 
     checkVersion();
     addCat(); 
@@ -121,6 +126,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
+  mainLock_p=lockOptions;
     checkVersion();
     addCat(); 
     if (! validate(this->tableDesc()))
@@ -135,6 +141,8 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
+
+  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
     // verify that the now opened table is valid
     addCat(); 
     if (! validate(this->tableDesc()))
@@ -149,6 +157,8 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab,
       PredefinedKeywords>(newTab, lockOptions, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
+
+  mainLock_p=lockOptions;
     // verify that the now opened table is valid
     addCat(); 
     if (! validate(this->tableDesc()))
@@ -160,6 +170,8 @@ MeasurementSet::MeasurementSet(const Table &table)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
+
+  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
     // verify that the now opened table is valid 
     checkVersion();
     addCat(); 
@@ -173,6 +185,8 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(other), hasBeenDestroyed_p(False)
 {
+
+  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
     // verify that other is valid
     if (&other != this) {
         addCat(); 
@@ -593,41 +607,47 @@ void MeasurementSet::initRefs(Bool clear)
 				      " holding measurements from a Telescope");
     }
     if (this->keywordSet().isDefined("ANTENNA"))
-      antenna_p=MSAntenna(this->keywordSet().asTable("ANTENNA"));
+      antenna_p=MSAntenna(this->keywordSet().asTable("ANTENNA", mainLock_p));
     if (this->keywordSet().isDefined("DATA_DESCRIPTION"))
       dataDesc_p=MSDataDescription(this->keywordSet().
-				   asTable("DATA_DESCRIPTION"));
+				   asTable("DATA_DESCRIPTION", mainLock_p));
     if (this->keywordSet().isDefined("DOPPLER"))
-      doppler_p=MSDoppler(this->keywordSet().asTable("DOPPLER"));
+      doppler_p=MSDoppler(this->keywordSet().asTable("DOPPLER", mainLock_p));
     if (this->keywordSet().isDefined("FEED"))
-      feed_p=MSFeed(this->keywordSet().asTable("FEED"));
+      feed_p=MSFeed(this->keywordSet().asTable("FEED", mainLock_p));
     if (this->keywordSet().isDefined("FIELD"))
-      field_p=MSField(this->keywordSet().asTable("FIELD"));
+      field_p=MSField(this->keywordSet().asTable("FIELD", mainLock_p));
     if (this->keywordSet().isDefined("FLAG_CMD"))
-      flagCmd_p=MSFlagCmd(this->keywordSet().asTable("FLAG_CMD"));
+      flagCmd_p=MSFlagCmd(this->keywordSet().asTable("FLAG_CMD", mainLock_p));
     if (this->keywordSet().isDefined("FREQ_OFFSET"))
-      freqOffset_p=MSFreqOffset(this->keywordSet().asTable("FREQ_OFFSET"));
+      freqOffset_p=MSFreqOffset(this->keywordSet().
+				asTable("FREQ_OFFSET",mainLock_p));
     if (this->keywordSet().isDefined("HISTORY"))
-      history_p=MSHistory(this->keywordSet().asTable("HISTORY"));
+      history_p=MSHistory(this->keywordSet().asTable("HISTORY", mainLock_p));
     if (this->keywordSet().isDefined("OBSERVATION"))
-      observation_p=MSObservation(this->keywordSet().asTable("OBSERVATION"));
+      observation_p=MSObservation(this->keywordSet().asTable("OBSERVATION", 
+							     mainLock_p));
     if (this->keywordSet().isDefined("POINTING"))
-      pointing_p=MSPointing(this->keywordSet().asTable("POINTING"));
+      pointing_p=MSPointing(this->keywordSet().asTable("POINTING", 
+						       mainLock_p));
     if (this->keywordSet().isDefined("POLARIZATION"))
-      polarization_p=MSPolarization(this->keywordSet().asTable("POLARIZATION"));
+      polarization_p=MSPolarization(this->keywordSet().asTable("POLARIZATION",
+							       mainLock_p));
     if (this->keywordSet().isDefined("PROCESSOR"))
-      processor_p=MSProcessor(this->keywordSet().asTable("PROCESSOR"));
+      processor_p=MSProcessor(this->keywordSet().asTable("PROCESSOR", 
+							 mainLock_p));
     if (this->keywordSet().isDefined("SOURCE"))
-      source_p=MSSource(this->keywordSet().asTable("SOURCE"));
+      source_p=MSSource(this->keywordSet().asTable("SOURCE", mainLock_p));
     if (this->keywordSet().isDefined("SPECTRAL_WINDOW"))
       spectralWindow_p=MSSpectralWindow(this->keywordSet().
-					asTable("SPECTRAL_WINDOW"));
+					asTable("SPECTRAL_WINDOW", 
+						mainLock_p));
     if (this->keywordSet().isDefined("STATE"))
-      state_p=MSState(this->keywordSet().asTable("STATE"));
+      state_p=MSState(this->keywordSet().asTable("STATE", mainLock_p));
     if (this->keywordSet().isDefined("SYSCAL"))
-      sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL"));
+      sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL", mainLock_p));
     if (this->keywordSet().isDefined("WEATHER"))
-      weather_p=MSWeather(this->keywordSet().asTable("WEATHER"));
+      weather_p=MSWeather(this->keywordSet().asTable("WEATHER", mainLock_p));
   }
 }
 

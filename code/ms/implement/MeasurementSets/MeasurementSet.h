@@ -373,6 +373,7 @@ private:
 
   // required by the need to throw an exception in the destructor
   Bool hasBeenDestroyed_p;
+  TableLock mainLock_p;
 
 };
 
