@@ -2549,7 +2549,7 @@ Creates: <typ>.raw, <typ>.found
 The following UP scripts are available:
     UPfind    [-f] [-g]      [-c] [-r] [-u] [-d] [-n] <typ>
     UPlist    [-l]           [-c] [-r] [-u] [-d] [-n] <typ>         
-    UPlock                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPlock    [-a] [-l]      [-c] [-r] [-u] [-d] [-n] <typ>
     UPchange  [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
     UPmove    [-i] [-t]      [-c] [-r] [-u] [-d] [-n] <typ>
     UPload                   [-c] [-r] [-u] [-d] [-n] <typ>
@@ -2756,46 +2756,67 @@ Original: 2000/09/20 by Wim Brouw, ATNF
 \index{UPlock@\exe{UPlock}}
 \index{source files |see{\exe{UPlock}}}
 
-Check and report if files as listed in the given file list (probably created
-by \code{UPfind}) are locked.
+Check and report if files are locked.
 
 \subsubsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{UPlock} 
+   \code{\exe{UPlock} [\exe{-a}] [\exe{-l}] 
 	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
 \end{synopsis}
 
 \subsubsection*{Description}
 
 \noindent
-The \exe{UPlock} script lists all the files listed in the \exe{<typ>.found}
-file that are locked in the \aipspp\ master tree.
+The \exe{UPlock} script lists all the files that are locked in the
+master. Listed in \exe{<type>.lock} are either the files in the
+\exe{<typ>.found} file that are locked in the \aipspp\ master tree, or
+all locked files.
 The command can be used to check the status of files before actually changing
-or moving files, but is also valid in its own right.
+or moving files, but is also valid in its own right. If the command is run
+from a local installation, it is assumed that the user has an account at the
+aoc aips master suitable for ssh ({\em i.e.} if you are able to do
+\exe{rao}). If the account name differs from the local name, the
+\code{\$AUID} environment variable has to be set with the remote user name
+(like for \exe{rao}). 
 
 \subsubsection*{Options}
+
+\begin{description}
+\item[\code{\exe{-a}}]
+    Show all locked files, rather than the selection based on the
+    \exe{<type>.found} list
+\item[\code{\exe{-l}}]
+    Provide the locker and the revision level in addition to the file name.
+\end{description}
 
 \subsubsection*{Examples}
 
 \begin{verbatim}
-UPlock -h
-Usage:   UPlock [-c] [-r] [-u] [-d] [-n] <typ>
+Usage:   UPlock [-a] [-l] [-c] [-r] [-u] [-d] [-n] <typ>
   Test for each locked file if it is in the list of files
   <typ>.found (as created with UPfind), and output the 
-  result in the file <typ>.locked. Script must run at aoc
+  result in the file <typ>.locked.
 Uses:    <typ>.def, <typ>.found
 Creates: <typ>.locked
+  -a display all locked files, rather than a selection based
+     on <typ>.found
+  -l show the locker and revision number as well
 \end{verbatim}
 
 \noindent
-Using the find information from the general introduction, we get:
+Get all locked files and their lockers:
 
 \begin{verbatim}
-UPlock
-Assuming <typ> as 'strcat'.
-Getting info...
-Locked files can only be found while running at the aoc master site
+  UPlock ct -la
+  Getting info...
+  Finding locked files...
+  201 files in ct.locked
+
+  cat ct.locked
+  akemball 15.0 ./aips/implement/MeasurementSets.h
+  akemball 15.0 ./bima/apps/bimafiller/bimafiller.g
+  akemball 15.0 ./bima/apps/bimafiller/bimafiller.help
 \end{verbatim}
 \ldots
 
@@ -3101,12 +3122,9 @@ Using the information from the \exe{UPmove} example, we get:
 \begin{verbatim}
 UPload spec
 Getting info...
-Remote directory [wbrouw@aips2.nrao.edu:aips++/test/found]: 
 19 files in spec.scp
-Uploading 19 files ....
-spec.cfnm                 |          0 KB |   0.0 kB/s | ETA: 00:00:00 | 100%
+Uploading 19 files to wbrouw@aips2.nrao.edu:aips++/code/install/codemgmt ....
 \end{verbatim}
-\ldots
 
 \subsubsection*{Author}
 
