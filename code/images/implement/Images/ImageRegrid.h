@@ -188,20 +188,6 @@ public:
                  const CoordinateSystem& inCoords,
                  const CoordinateSystem& outCoords) const;
 
-  // Make Direction machine
-  Bool makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
-                            const DirectionCoordinate& dirCoordIn,
-                            const DirectionCoordinate& dirCoordOut,
-                            const ObsInfo& obsIn,
-                            const ObsInfo& obsOut) const;
-
-  // Make Frequency machine
-  Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, 
-                            Int coordinateTo, Int coordinateFrom,
-                            const CoordinateSystem& coordsTo,
-                            const CoordinateSystem& coordsFrom,
-                            const ObsInfo& obsTo, const ObsInfo& obsFrom) const;
-
   // Regrid 2 coupled axes
   void regrid2D (MaskedLattice<T>& outLattice,
                  const MaskedLattice<T>& inLattice,   
