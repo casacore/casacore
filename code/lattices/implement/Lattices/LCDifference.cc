@@ -64,6 +64,28 @@ LCDifference& LCDifference::operator= (const LCDifference& other)
     return *this;
 }
 
+Bool LCDifference::operator== (const LCRegion& other) const
+//
+// See if this region is the same as the other region
+//
+{ 
+
+// Check below us
+
+   if (LCRegionMulti::operator!=(other)) return False;
+  
+   return True;
+}
+    
+Bool LCDifference::operator!= (const LCRegion& other) const
+//
+// See if this region is different from the other region
+//  
+{
+   if (LCDifference::operator==(other)) return False;
+   return True;
+}
+
 LCRegion* LCDifference::cloneRegion() const
 {
     return new LCDifference (*this);
@@ -82,6 +104,11 @@ String LCDifference::className()
     return "LCDifference";
 }
 
+String LCDifference::type() const
+{
+   return className();
+}
+   
 TableRecord LCDifference::toRecord (const String& tableName) const
 {
     TableRecord rec;

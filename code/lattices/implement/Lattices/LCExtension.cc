@@ -95,6 +95,40 @@ LCExtension& LCExtension::operator= (const LCExtension& other)
     return *this;
 }
 
+Bool LCExtension::operator== (const LCRegion& other) const
+//
+// See if this region is the same as the other region
+//
+{
+
+// Check below us
+
+   if (LCRegionMulti::operator!=(other)) return False;
+    
+// Caste(is safe)
+ 
+    const LCExtension& that = (const LCExtension&)other;
+  
+// Check the private data
+ 
+   if (!itsExtendAxes.isEqual(that.itsExtendAxes)) return False;
+   if (!itsRegionAxes.isEqual(that.itsRegionAxes)) return False;
+   if (!itsBlc.isEqual(that.itsBlc)) return False;
+   if (!itsTrc.isEqual(that.itsTrc)) return False;
+ 
+   return True;
+}
+ 
+Bool LCExtension::operator!= (const LCRegion& other) const
+//
+// See if this region is different from the other region
+//
+{
+   if (LCExtension::operator==(other)) return False;
+   return True;
+}
+
+
 LCRegion* LCExtension::cloneRegion() const
 {
     return new LCExtension (*this);
@@ -133,6 +167,11 @@ LCRegion* LCExtension::doTranslate (const Vector<Float>& translateVector,
 String LCExtension::className()
 {
     return "LCExtension";
+}
+
+String LCExtension::type() const
+{
+   return className();
 }
 
 TableRecord LCExtension::toRecord (const String& tableName) const

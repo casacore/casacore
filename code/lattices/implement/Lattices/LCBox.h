@@ -84,13 +84,19 @@ public:
 	   const IPosition& latticeShape);
     // </group>
 
-    // Copy constructor (partly reference semantics).
+    // Copy constructor (reference semantics).
     LCBox (const LCBox& other);
 
     virtual ~LCBox();
 
     // Assignment (copy semantics).
     LCBox& operator= (const LCBox& other);
+
+    // Comparison.  Mask not checked
+    // <group>
+    virtual Bool operator== (const LCRegion& other) const;
+    virtual Bool operator!= (const LCRegion& other) const;
+    // </group>
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -104,12 +110,18 @@ public:
     // Get the class name (to store in the record).
     static String className();
 
+    // Get the region type.  Returns className()
+    virtual String type() const;
+
     // Convert the (derived) object to a record.
     virtual TableRecord toRecord (const String& tableName) const;
 
     // Convert correct object from a record.
     static LCBox* fromRecord (const TableRecord&,
 			      const String& tablename);
+
+    Vector<Float> blc() const {return itsBlc;};
+    Vector<Float> trc() const {return itsTrc;};
 
 private:
     // Make a box from the blc,trc such that it does not exceed the

@@ -50,7 +50,6 @@
 // <synopsis> 
 // The LCPagedMask class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
-// It makes it possible to define a rectangular region of interest.
 // </synopsis> 
 
 // <example>
@@ -78,10 +77,17 @@ public:
     // Copy constructor (copy semantics).
     LCPagedMask (const LCPagedMask& other);
 
+    // Destructor
     virtual ~LCPagedMask();
 
     // Assignment (reference semantics).
     LCPagedMask& operator= (const LCPagedMask& other);
+
+    // Comparison
+    // <group>
+    virtual Bool operator==(const LCRegion& other) const;
+    virtual Bool operator!=(const LCRegion& other) const;
+    // </group>
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -94,6 +100,9 @@ public:
 
     // Get the class name (to store in the record).
     static String className();
+
+    // Region type. Returns class name
+    virtual String type() const;
 
     // Convert the (derived) object to a record.
     virtual TableRecord toRecord (const String& tableName) const;

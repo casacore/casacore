@@ -26,10 +26,13 @@
 //# $Id$
 
 #include <trial/Lattices/LCRegionSingle.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
 
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/COWPtr.h>
+#include <aips/Exceptions/Error.h>
+#include <trial/Lattices/LatticeIterator.h>
 
 LCRegionSingle::LCRegionSingle()
 {}
@@ -61,6 +64,51 @@ void LCRegionSingle::setMaskPtr (Lattice<Bool>& mask)
     if (mask.nelements() != 0) {
         itsHasMask = True;
     }
+}
+
+
+Bool LCRegionSingle::masksEqual (const LCRegion& other) const
+{
+
+// Type check
+
+   if (type() != other.type()) return False;
+
+// Do both have a mask ? 
+
+   if ( hasMask() && !other.hasMask()) return False;
+   if (!hasMask() &&  other.hasMask()) return False;
+   if (!hasMask() && !other.hasMask()) return True;
+
+// Caste (is safe)
+
+   const LCRegionSingle& that = (const LCRegionSingle&)other;
+
+
+// See if masks are the same shape.
+
+   if (itsMaskPtr->shape() != that.itsMaskPtr->shape()) return False;
+
+// Now we must check the values.  
+
+   RO_LatticeIterator<Bool> iter1(*itsMaskPtr, 
+                                  itsMaskPtr->niceCursorShape());
+   RO_LatticeIterator<Bool> iter2(*(that.itsMaskPtr), 
+                                  itsMaskPtr->niceCursorShape());
+   while (!iter1.atEnd()) {   
+      if (anyNE(iter1.cursor(),iter2.cursor())) return False;
+      iter1++; 
+      iter2++;
+   }
+ 
+   return True;
+}
+
+const Array<Bool> LCRegionSingle::maskArray() const
+{
+   COWPtr<Array<Bool> > pMask(new Array<Bool>(itsMaskPtr->shape()));
+   itsMaskPtr->get(pMask);
+   return *pMask;
 }
 
 Bool LCRegionSingle::hasMask() const

@@ -86,10 +86,18 @@ public:
     // Copy constructor (copy semantics).
     LCRegionFixed (const LCRegionFixed& other);
 
+    // Destructor
     virtual ~LCRegionFixed();
 
-    // Get the mask (as an array).
-    const Array<Bool>& maskArray() const;
+    // Comparison. Mask is not checked. Use the masksEqual
+    // function as well if you want to check the mask
+    // <group>
+    virtual Bool operator== (const LCRegion& other) const;
+    virtual Bool operator!= (const LCRegion& other) const;
+    // </group>
+
+//    // Get the mask (as an array).
+//    const Array<Bool>& maskArray() const;
     
  protected:
     // Assignment (copy semantics) is only useful for derived classes.
@@ -102,11 +110,12 @@ private:
     ArrayLattice<Bool> itsMask;
 };
 
-
+/*
 inline const Array<Bool>& LCRegionFixed::maskArray() const
 {
     return itsMask.asArray();
 }
+*/
 
 
 #endif

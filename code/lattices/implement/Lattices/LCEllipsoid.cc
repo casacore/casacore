@@ -78,8 +78,8 @@ LCEllipsoid::LCEllipsoid (const Vector<Float>& center,
 			  const Vector<Float>& radii,
 			  const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
-  itsCenter     (center),
-  itsRadii      (radii)
+  itsCenter     (center.copy()),
+  itsRadii      (radii.copy())
 {
     setBox (makeBox (itsCenter, itsRadii, latticeShape));
     defineMask();
@@ -102,25 +102,64 @@ LCEllipsoid::LCEllipsoid (const Vector<Double>& center,
     defineMask();
 }
 
-LCEllipsoid::LCEllipsoid (const LCEllipsoid& that)
-: LCRegionFixed (that),
-  itsCenter     (that.itsCenter),
-  itsRadii      (that.itsRadii)
+LCEllipsoid::LCEllipsoid (const LCEllipsoid& other)
+: LCRegionFixed (other),
+  itsCenter     (other.itsCenter),
+  itsRadii      (other.itsRadii)
 {}
 
 LCEllipsoid::~LCEllipsoid()
 {}
 
-LCEllipsoid& LCEllipsoid::operator= (const LCEllipsoid& that)
+LCEllipsoid& LCEllipsoid::operator= (const LCEllipsoid& other)
 {
-    if (this != &that) {
-	LCRegionFixed::operator= (that);
-	itsCenter.resize (that.itsCenter.nelements());
-	itsRadii.resize  (that.itsCenter.nelements());
-	itsCenter = that.itsCenter;
-	itsRadii  = that.itsRadii;
+    if (this != &other) {
+	LCRegionFixed::operator= (other);
+	itsCenter.resize (other.itsCenter.nelements());
+	itsRadii.resize  (other.itsCenter.nelements());
+	itsCenter = other.itsCenter;
+	itsRadii  = other.itsRadii;
     }
     return *this;
+}
+
+Bool LCEllipsoid::operator== (const LCRegion& other) const
+// 
+// See if this region is the same as the other region
+//
+{
+
+// Check below us
+   
+   if (LCRegionFixed::operator!=(other)) return False;
+ 
+// Caste (is safe)
+
+    const LCEllipsoid& that = (const LCEllipsoid&)other;
+
+// Check ellipsoid values 
+
+   if (itsCenter.nelements() != that.itsCenter.nelements()) return False;
+   if (itsRadii.nelements()  != that.itsRadii.nelements()) return False;
+   
+   for (uInt i=0; i<itsCenter.nelements(); i++) {
+      if (!near(itsCenter(i), that.itsCenter(i))) return False;
+   }
+   for (i=0; i<itsRadii.nelements(); i++) {
+      if (!near(itsRadii(i), that.itsRadii(i))) return False;
+   }
+
+   return True;
+}
+
+
+Bool LCEllipsoid::operator!= (const LCRegion& other) const
+// 
+// See if this region is different from the other region
+//
+{
+   if (LCEllipsoid::operator==(other)) return False;
+   return True;
 }
 
 LCRegion* LCEllipsoid::cloneRegion() const
@@ -150,6 +189,11 @@ String LCEllipsoid::className()
     return "LCEllipsoid";
 }
 
+String LCEllipsoid::type() const
+{
+   return className();
+}
+
 TableRecord LCEllipsoid::toRecord (const String&) const
 {
     TableRecord rec;
@@ -163,8 +207,8 @@ TableRecord LCEllipsoid::toRecord (const String&) const
 LCEllipsoid* LCEllipsoid::fromRecord (const TableRecord& rec,
 				      const String&)
 {
-    return new LCEllipsoid (rec.asArrayFloat ("center"),
-			    rec.asArrayFloat ("radii"),
+    return new LCEllipsoid (Vector<Float>(rec.asArrayFloat ("center")),
+			    Vector<Float>(rec.asArrayFloat ("radii")),
 			    Vector<Int>(rec.asArrayInt ("shape")));
 }
 

@@ -51,19 +51,46 @@ LCRegion::LCRegion (const IPosition& latticeShape)
 : itsShape (latticeShape)
 {}
 
-LCRegion::LCRegion (const LCRegion& that)
-: itsShape (that.itsShape),
-  itsBox   (that.itsBox)
+LCRegion::LCRegion (const LCRegion& other)
+: itsShape (other.itsShape),
+  itsBox   (other.itsBox)
 {}
 
-LCRegion& LCRegion::operator= (const LCRegion& that)
+LCRegion& LCRegion::operator= (const LCRegion& other)
 {
-    if (this != &that) {
-	itsShape.resize (that.itsShape.nelements());
-	itsShape = that.itsShape;
-	itsBox   = that.itsBox;
+    if (this != &other) {
+	itsShape.resize (other.itsShape.nelements());
+	itsShape = other.itsShape;
+	itsBox   = other.itsBox;
     }
     return *this;
+}
+
+Bool LCRegion::operator== (const LCRegion& other) const
+{
+
+// Type check (not essential)
+
+    if (type() != other.type()) return False;
+
+// Compare bounding boxes, which also takes care of dimensionality.
+
+   if (!(itsBox.length().isEqual(other.itsBox.length())) ||
+       !(itsBox.start().isEqual(other.itsBox.start()))) {
+      return False;
+   }
+
+// Lattice shape
+
+   if (!(itsShape.isEqual(other.itsShape))) return False;
+
+   return True;
+}
+
+Bool LCRegion::operator!= (const LCRegion& other) const
+{
+   if (LCRegion::operator==(other))  return False;
+   return True;
 }
 
 LCRegion::~LCRegion()
