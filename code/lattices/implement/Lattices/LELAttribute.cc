@@ -31,13 +31,17 @@
 
 
 LELAttribute::LELAttribute()
-: isScalar_p(True)
+: isScalar_p (True),
+  isMasked_p (False)
+
 {}
 
-LELAttribute::LELAttribute(const IPosition& shape,
+LELAttribute::LELAttribute(Bool isMasked,
+			   const IPosition& shape,
 			   const IPosition& tileShape,
 			   const LatticeCoordinates& coordinates)
 : isScalar_p  (False),
+  isMasked_p  (isMasked),
   shape_p     (shape),
   tileShape_p (tileShape),
   coords_p    (coordinates)
@@ -45,6 +49,7 @@ LELAttribute::LELAttribute(const IPosition& shape,
 
 LELAttribute::LELAttribute(const LELAttribute& other)
 : isScalar_p  (other.isScalar_p),
+  isMasked_p  (other.isMasked_p),
   shape_p     (other.shape_p),
   tileShape_p (other.tileShape_p),
   coords_p    (other.coords_p)
@@ -54,9 +59,11 @@ LELAttribute::LELAttribute(const LELAttribute& leftAttr,
 			   const LELAttribute& rightAttr)
 {
    isScalar_p = False;
+   isMasked_p = ToBool (leftAttr.isMasked() || rightAttr.isMasked());
    if (leftAttr.isScalar()) {
       if (rightAttr.isScalar()) {
          isScalar_p = True;
+	 isMasked_p = False;
       } else {
          shape_p     = rightAttr.shape();
 	 tileShape_p = rightAttr.tileShape();
@@ -88,6 +95,7 @@ LELAttribute& LELAttribute::operator= (const LELAttribute& other)
 {
     if (this != &other) {
        isScalar_p  = other.isScalar_p;
+       isMasked_p  = other.isMasked_p;
        shape_p.resize (other.shape_p.nelements());
        tileShape_p.resize (other.tileShape_p.nelements());
        shape_p     = other.shape_p;
