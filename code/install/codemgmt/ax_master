@@ -2639,3 +2639,4 @@
 11 397 src mv trial/apps/simpleimage/simpleimage.help trial/apps/imager/simpleimage.help
 11 397 src rm trial/apps/gcatalog
 11 400 src mv trial/scripts/displayp.help trial/scripts/display.help
+11 400 src mv trial/scripts/atomsdisplayp.g trial/scripts/atomsdisplay.g
