@@ -856,7 +856,6 @@
 1000 scimath/Fitting/LSQFit2.cc 
      = algorithm 
      template Double *std::swap_ranges<Double *, Double *>(Double *, Double *, Double *) 
-#
 1010 scimath/Fitting/LSQFit2.cc 
      = casa/Arrays/VectorSTLIterator.h 
      template void LSQFit::makeNorm<Double, VectorSTLIterator<Double> >(VectorSTLIterator<Double> const &, Double const &, Double const &, Bool, Bool) 
@@ -874,7 +873,6 @@
      template void LSQFit::uncopy<VectorSTLIterator<Double> >(Double *, Double const *, VectorSTLIterator<Double> &, LSQReal) 
      template void LSQFit::copyDiagonal<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &, LSQReal) 
      template Bool LSQFit::getErrors<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &) 
-#
 1020 scimath/Fitting/LSQFit2.cc 
      = casa/Arrays/VectorSTLIterator.h 
      template void LSQFit::makeNorm<Float, VectorSTLIterator<Float> >(VectorSTLIterator<Float> const &, Float const &, Float const &, Bool, Bool) 
@@ -892,7 +890,6 @@
      template void LSQFit::uncopy<VectorSTLIterator<Float> >(Double *, Double const *, VectorSTLIterator<Float> &, LSQReal) 
      template void LSQFit::copyDiagonal<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &, LSQReal) 
      template Bool LSQFit::getErrors<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &) 
-#
 1030 scimath/Fitting/LSQFit2.cc 
      = casa/Arrays/VectorSTLIterator.h 
      typedef VectorSTLIterator<std::complex<Double> > It1 
@@ -918,7 +915,6 @@
      template void LSQFit::uncopy<It1>(Double *, Double const *, It1 &, LSQComplex) 
      template void LSQFit::copyDiagonal<It1>(It1 &, LSQComplex) 
      template Bool LSQFit::getErrors<It1>(It1 &) 
-#
 1040 scimath/Fitting/LSQFit2.cc 
      = casa/Arrays/VectorSTLIterator.h 
      typedef VectorSTLIterator<std::complex<Float> > It2 
@@ -944,7 +940,6 @@
      template void LSQFit::uncopy<It2>(Double *, Double const *, It2 &, LSQComplex) 
      template void LSQFit::copyDiagonal<It2>(It2 &, LSQComplex) 
      template Bool LSQFit::getErrors<It2>(It2 &) 
-# 
 1050 scimath/Fitting/LSQFit2.cc 
      = complex 
      typedef std::complex<Double>* It3 
@@ -970,7 +965,6 @@
      template void LSQFit::uncopy<std::complex<Double> >(Double *, Double const *, std::complex<Double> *, LSQComplex) 
      template Bool LSQFit::getErrors<Double>(std::complex<Double> *) 
      template Bool LSQFit::getCovariance<Double>(std::complex<Double> *) 
-#
 1060 scimath/Fitting/LSQFit2.cc 
      = complex 
      typedef std::complex<Float>* It4 
@@ -996,7 +990,6 @@
      template void LSQFit::uncopy<std::complex<Float> >(Double *, Double const *, std::complex<Float> *, LSQComplex) 
      template Bool LSQFit::getErrors<Float>(std::complex<Float> *) 
      template Bool LSQFit::getCovariance<Float>(std::complex<Float> *) 
-#
 1070 scimath/Fitting/LSQFit2.cc 
      typedef Double* It5 
      typedef uInt* It5Int 
@@ -1044,14 +1037,6 @@
      template Bool LSQFit::addConstraint<Double, It7, It7Int>(uInt nIndex, It7Int const &, It7 const &, Double const &) 
      template Bool LSQFit::setConstraint<Double, It7>(uInt n, It7 const &, Double const &) 
      template Bool LSQFit::setConstraint<Double, It7, It7Int>(uInt n, uInt nIndex, It7Int const &, It7 const &, Double const &) 
-     template Bool LSQFit::getConstraint<Double>(uInt, Double *) const 
-     template void LSQFit::solve<Double>(Double *) 
-     template Bool LSQFit::solveLoop<Double>(Double &, uInt &, Double *, Bool) 
-     template void LSQFit::copy<Double>(Double const *, Double const *, Double *, LSQReal) 
-     template void LSQFit::uncopy<Double>(Double *, Double const *, Double *, LSQReal) 
-     template Bool LSQFit::getErrors<Double>(Double *) 
-     template Bool LSQFit::getCovariance<Double>(Double *) 
-#
 1000 scimath/Fitting/LSQaips.cc 
      = casa/Arrays/Array.h 
      = casa/Arrays/Vector.h 
