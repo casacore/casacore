@@ -458,18 +458,18 @@ Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  con
 // Now convert the tips of the major & minor axes to x/y pixel coordinates
 
    const MDirection dirRef = refDirection();
-   Quantum<Double> major = majorAxis();
+   Quantum<Double> majorWorld = majorAxis();
    Quantum<Double> paMajor = positionAngle();
-   Vector<Double> majorCart = widthToCartesian (major, paMajor, dirRef, dirCoord, pixelCen);
-   major.scale(0.5);
+   majorWorld.scale(0.5);
+   Vector<Double> majorCart = widthToCartesian (majorWorld, paMajor, dirRef, dirCoord, pixelCen);
 
 // The following is in error.  I cannot just add 90deg. It is 90deg in the
 // pixel coordinate frame, not the world frame.  
 
-   Quantum<Double> minor = minorAxis();
+   Quantum<Double> minorWorld = minorAxis();
    Quantum<Double> paMinor = paMajor + Quantum<Double>(C::pi/2.0, Unit("rad"));
-   minor.scale(0.5);
-   Vector<Double> minorCart = widthToCartesian (minor, paMinor, dirRef, dirCoord, pixelCen);
+   minorWorld.scale(0.5);
+   Vector<Double> minorCart = widthToCartesian (minorWorld, paMinor, dirRef, dirCoord, pixelCen);
 
 // atan2 gives pos +x (long) -> +y (lat).   put in range +/- pi
                                         
