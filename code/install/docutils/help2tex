@@ -214,7 +214,7 @@ sub make_tex_file{
          $mname = $1;
          $miname = $1;
          $miname =~ s/\\_/_/g;
-         $wlabel = "\\subsubsection";
+         $wlabel = "\\subsection";
          $has_methods = 0;
          $iname = $1;
          $dum = $2;
