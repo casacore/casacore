@@ -31,10 +31,12 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Utilities/RecordTransformable.h>
 
 //# Forward Declarations
 class String;
-class RecordInterface;
+class GlishRecord;
 #include <aips/iosfwd.h>
 
 // <summary>
@@ -48,6 +50,7 @@ class RecordInterface;
 
 // <prerequisite>
 //   <li> <ahlink module=Functionals>Functionals</ahlink> module
+//   <li> <linkto class=RecordInterface>RecordInterface</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -81,7 +84,7 @@ class RecordInterface;
 //   <li> add more profile types
 // </todo>
 
-class SpectralElement {
+class SpectralElement : public RecordTransformable {
  public:
 
   //# Enumerations
@@ -98,22 +101,34 @@ class SpectralElement {
 
   //# Constructors
   // Default constructor creates a default Gaussian element with an amplitude
-  // of 1; a width (sigma) of 1; a central frequency of zero.
+  // of 1; an integral <src>(sigma=2sqrt(ln2)/pi)</src> of 1;
+  // a central frequency of zero.
   SpectralElement();
   // Construct with given type and values
   // <thrown>
   //   <li> AipsError if sigma == 0.0
+  //   <li> AipsError if type not GAUSSIAN
   // </thrown>
   SpectralElement(SpectralElement::Types tp, const Double ampl,
 		  const Double center, const Double sigma);
 
   // Construct an n-degree polynomial
   explicit SpectralElement(const uInt n);
+  // Construct the given tp with the given param
+  // <thrown>
+  //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
+  //   <li> AipsError if sigma == 0.0
+  // </thrown>
+  SpectralElement(SpectralElement::Types tp, const Vector<Double> &param);
   // Copy constructor (deep copy)
   // <thrown>
   //   <li> AipsError if sigma == 0.0
   // </thrown>
   SpectralElement(const SpectralElement &other);
+
+  //#Destructor
+  // Destructor
+  ~SpectralElement();
 
   //# Operators
   // Assignment (copy semantics)
@@ -135,43 +150,55 @@ class SpectralElement {
 		     const String &typName);
 
   // Get the data for this element
+  // <thrown>
+  //  <li> AipsError if element does not have data
+  //	   (e.g. amplitude for POLYNOMIAL)
+  // </thrown>
   // <group>
   // Get type of this element
   SpectralElement::Types getType() const { return tp_p; }
   // Get amplitude
-  Double getAmpl() const { return ampl_p; }
+  Double getAmpl() const;
   // Get center value
-  Double getCenter() const { return center_p; }
+  Double getCenter() const;
   // Get the width
   // <group>
-  Double getSigma() const { return sigma_p; }
+  Double getSigma() const;
   Double getFWHM() const;
   // </group>
   // Get the degree of e.g. polynomial
-  uInt getDegree() const { return n_p; }
+  uInt getDegree() const;
   // </group>
 
   // Set data for element
   // <group>
   // Set all data
   // <thrown>
+  //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
   //   <li> AipsError if sigma == 0.0
   // </thrown>
-  void set(SpectralElement::Types tp, const Double ampl,
-	   const Double center, const Double sigma);
-  // Set type
-  void setType(SpectralElement::Types tp);
+  void set(SpectralElement::Types tp, const Vector<Double> &param);
   // Set amplitude
+  // <thrown>
+  //   <li> AipsError if non GAUSSIAN
+  // </thrown>
   void setAmpl(Double ampl);
   // Set center
+  // <thrown>
+  //   <li> AipsError if non GAUSSIAN
+  // </thrown>
   void setCenter(Double center);
   // Set width
   // <thrown>
+  //   <li> AipsError if non GAUSSIAN
   //   <li> AipsError if sigma == 0.0
   // </thrown>
   void setSigma(Double sigma);
   // </group>
   // Set degree
+  // <thrown>
+  //   <li> AipsError if non POLYNOMIAL
+  // </thrown>
   void setDegree(uInt n);
 
   // Construct from record.  Must hold fields "type" (String) and 
@@ -180,33 +207,64 @@ class SpectralElement {
   // parameters(0) holds the degree.
   static SpectralElement* fromRecord(const RecordInterface &container);
 
-  // Save to a record.  Only returns False if the field is already defined.
-  Bool toRecord (RecordInterface& container, const String& fieldName);
+  // Create a SpectralElement from a record.
+  // An error message is generated, and False
+  // returned if an invalid record is given. A valid record will return True.
+  // A valid record contains the following fields (any additional fields are
+  // ignored):
+  // <ul>
+  // <li> type = TpString: type of element (gaussian etc; case
+  //	 insensitive)
+  // <li> parameters = TpVector(Double): one or more values giving the parameters
+  //		for the type
+  // </ul>
+  // A SpectralElement can be created from a string. In that case the string
+  // will only indicate the type of element (like gaussian), and will
+  // create a default element of that given type.
+  // Error messages are postfixed to error.
+  // <group>
+  virtual Bool fromRecord(String &error, const RecordInterface &in);
+  virtual Bool fromString(String &error, const String &in);
+  Bool fromRecord(String &error, const GlishRecord &in);
+  // </group>
 
+  // Save to a record.  The return will be False and an error
+  // message generated only if the SpectralElement is illegal (could not happen)
+  // Error messages are postfixed to error.
+  // <group>
+  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  Bool toRecord(String &error, GlishRecord &out) const;
+  // </group>
 
-  //#Destructor
-  // Destructor
-  ~SpectralElement();
+  // Get the identification of a record
+  virtual const String &ident() const;
 
  private:
   //#Data
   // type of element
   SpectralElement::Types tp_p;
-  // A number (like polynomial degree or number of doublet lines
+  // A number (like polynomial degree or number of doublet lines)
   uInt n_p;
-  // Amplitude
-  Double ampl_p;
-  // Center frequency
-  Double center_p;
-  // Width
-  Double sigma_p;
+  // The parameters of the function. I.e. the polynomial coefficients;
+  // amplitude, center and sigma of a Gaussian.
+  Vector<Double> par_p;
 
   //# Member functions
-  // Check for valid values: sigma should not be zero.
+  // Check if GAUSSIAN type
   // <thrown>
-  //   <li> AipsError if sigma == 0.0
+  //   <li> AipsError if non-Gaussian
   // </thrown>
-  void SpectralElement::check();
+  void SpectralElement::checkGauss() const;
+  // Check if POLYNOMIAL type
+  // <thrown>
+  //   <li> AipsError if non-polynomial
+  // </thrown>
+  void SpectralElement::checkPoly() const;
+  // Check if sigma non-equal to zero and positive if a GAUSSIAN
+  // <thrown>
+  //   <li> AipsError if illegal sigm
+  // </thrown>
+  void SpectralElement::check() const;
 
 };
 

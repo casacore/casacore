@@ -28,10 +28,11 @@
 //# Includes
 #include <trial/Wnbt/SpectralElement.h>
 
-#include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Quanta/MUString.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -41,23 +42,58 @@
 //# Constructors
 SpectralElement::SpectralElement() :
   tp_p(SpectralElement::GAUSSIAN), n_p(0),
-  ampl_p(1.0), center_p(0.0), sigma_p(1.0) {}
+  par_p(3) {
+  par_p(0) = 1.0;
+  par_p(1) = 0.0;
+  par_p(2) = 2*sqrt(C::ln2)/C::pi;
+}
 
-/// Check the type and the values; add a (type, vector one)
 SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
 				 const Double center, const Double sigma) :
   tp_p(tp), n_p(0),
-  ampl_p(ampl), center_p(center), sigma_p(sigma) {
+  par_p(3) {
+  if (tp != GAUSSIAN) {
+    throw(AipsError("SpectralElement: Only GAUSSIAN can have ampl, "
+		    "center and sigma"));
+  };
+  par_p(0) = ampl;
+  par_p(1) = center;
+  par_p(2) = sigma;
   check();
 }
 
 SpectralElement::SpectralElement(const uInt n) :
   tp_p(SpectralElement::POLYNOMIAL), n_p(n),
-  ampl_p(1.0), center_p(0.0), sigma_p(1.0) {}
+  par_p(n+1) {
+  par_p = 0;
+}
+
+SpectralElement::SpectralElement(SpectralElement::Types tp,
+				 const Vector<Double> &param) :
+  tp_p(tp), n_p(0),
+  par_p(0) {
+  if (tp_p == GAUSSIAN) {
+    if (param.nelements() != 3) {
+      throw(AipsError("SpectralElement: GAUSSIAN must have "
+		      "3 parameters"));
+    };
+    par_p.resize(3);
+  } else if (tp_p == POLYNOMIAL) {
+    if (param.nelements() == 0) {
+      throw(AipsError("SpectralElement: POLYNOMIAL must have "
+		      "at least 1 parameter"));
+    };
+    n_p = param.nelements()-1;
+    par_p.resize(n_p+1);
+  };
+  for (uInt i=0; i<param.nelements(); i++) par_p(i) = param(i);
+  check();
+}
 
 SpectralElement::SpectralElement(const SpectralElement &other) :
   tp_p(other.tp_p), n_p(other.n_p),
-  ampl_p(other.ampl_p), center_p(other.center_p), sigma_p(other.sigma_p) {
+  par_p(0) {
+  par_p = other.par_p;
   check();
 }
 
@@ -67,9 +103,7 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
   if (this != &other) {
     tp_p = other.tp_p;
     n_p = other.n_p;
-    ampl_p = other.ampl_p;
-    center_p = other.center_p;
-    sigma_p = other.sigma_p;
+    par_p = other.par_p;
     check();
   };
   return *this;
@@ -77,10 +111,16 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
 
 Double SpectralElement::operator()(const Double x) const {
   if (tp_p == GAUSSIAN) {
-    return  ampl_p*exp(-(x-center_p)*(x-center_p)*log(16.0)/
-		       sigma_p/sigma_p);
+    return  par_p(0)*exp(-(x-par_p(1))*(x-par_p(1))*4*C::ln2/
+			 par_p(2)/par_p(2));
   };
-  return 0.0; /// add poly!
+  Double s(0);
+  if (tp_p == POLYNOMIAL) {
+    for (uInt i=n_p; i<=n_p; i--) {
+      s += par_p(i); s *= x;
+    };
+  };    
+  return s;
 }
 
 const String *const SpectralElement::allTypes(Int &nall,
@@ -103,7 +143,6 @@ const String &SpectralElement::fromType(SpectralElement::Types tp) {
   Int nall;
   const SpectralElement::Types *typ;
   const String *const tname = SpectralElement::allTypes(nall, typ);
-  
   return tname[tp];
 }
 
@@ -121,44 +160,98 @@ Bool SpectralElement::toType(SpectralElement::Types &tp,
   return True;
 }
 
+Double SpectralElement::getAmpl() const {
+  checkGauss();
+  return par_p(0);
+};
+
+Double SpectralElement::getCenter() const {
+  checkGauss();
+  return par_p(1);
+};
+
+Double SpectralElement::getSigma() const {
+  checkGauss();
+  return par_p(2);
+};
+
 Double SpectralElement::getFWHM() const {
-  return sqrt(8.0*log(16.0))*sigma_p;
+  checkGauss();
+  return sqrt(32.0*C::ln2)*par_p(2);
 }
 
-void SpectralElement::set(SpectralElement::Types tp, const Double ampl,
-			  const Double center, const Double sigma) {
+uInt SpectralElement::getDegree() const {
+  checkPoly();
+  return n_p;
+};
+
+void SpectralElement::set(SpectralElement::Types tp,
+			  const Vector<Double> &param) {
   tp_p = tp;
-  ampl_p = ampl;
-  center_p = center;
-  sigma_p = sigma;
+  n_p = 0;
+  if (tp_p == GAUSSIAN) {
+    if (param.nelements() != 3) {
+      throw(AipsError("SpectralElement: GAUSSIAN must have "
+		      "3 parameters"));
+    };
+    par_p.resize(3);
+  };
+  if (tp_p == POLYNOMIAL) {
+    if (param.nelements() == 0) {
+      throw(AipsError("SpectralElement: POLYNOMIAL must have "
+		      "at least 1 parameter"));
+    };
+    n_p = param.nelements()-1;
+    par_p.resize(n_p+1);
+  };
+  for (uInt i=0; i<param.nelements(); i++) par_p(i) = param(i);
   check();
 }
 
-void SpectralElement::setType(SpectralElement::Types tp) {
-  tp_p = tp;
-}
-
 void SpectralElement::setAmpl(Double ampl) {
-  ampl_p = ampl;
+  checkGauss();
+  par_p(0) = ampl;
 } 
 
 void SpectralElement::setCenter(Double center) {
-  center_p = center;
+  checkGauss();
+  par_p(1) = center;
 }
 
 void SpectralElement::setSigma(Double sigma) {
-  sigma_p = sigma;
+  checkGauss();
+  par_p(2) = sigma;
   check();
 }
 
 void SpectralElement::setDegree(uInt n) {
+  checkPoly();
   n_p = n;
+  par_p.resize(n_p+1);
+  par_p = 0;
 }
 
-void SpectralElement::check() {
-  if (tp_p == GAUSSIAN && sigma_p == 0.0) {
-    throw(AipsError("An illegal sigma of zero was specified for a"
-		    " gaussian SpectralElement"));
+const String &SpectralElement::ident() const {
+  static String myid = "spectrel";
+  return myid;
+}
+
+void SpectralElement::checkGauss() const {
+  if (tp_p != GAUSSIAN) {
+    throw(AipsError("SpectralElement: GAUSSIAN element expected"));
+  };
+}
+
+void SpectralElement::checkPoly() const {
+  if (tp_p != POLYNOMIAL) {
+    throw(AipsError("SpectralElement: POLYNOMIAL element expected"));
+  };
+}
+
+void SpectralElement::check() const {
+  if (tp_p == GAUSSIAN && par_p(2) <= 0.0) {
+    throw(AipsError("SpectralElement: An illegal non-positive sigma was "
+		    "specified for a gaussian SpectralElement"));
   };
 }
 
@@ -176,61 +269,3 @@ ostream &operator<<(ostream &os, const SpectralElement &elem) {
 
   return os;
 }
-
-
-SpectralElement* SpectralElement::fromRecord (const RecordInterface& rec)
-{
-   if (!rec.isDefined("type") || !rec.isDefined("parameters")) {
-      throw (AipsError("Invalid estimate record"));
-   }
-//
-   Vector<Double> parameters = rec.asArrayDouble("parameters");
-   String sType = rec.asString("type");
-   SpectralElement::Types type;
-   if (!SpectralElement::toType(type, sType)) {
-      throw (AipsError("Invalid element type"));
-   }
-//
-   SpectralElement* p = 0;
-   if (type==SpectralElement::GAUSSIAN) {
-      AlwaysAssert(parameters.nelements()==3, AipsError);
-      p = new SpectralElement(SpectralElement::GAUSSIAN, 
-                              parameters(0), parameters(1), parameters(2));
-   } else if (type==SpectralElement::POLYNOMIAL) {
-      AlwaysAssert(parameters.nelements()==1, AipsError);
-      Int n = Int(parameters(0) + 0.5);
-      p = new SpectralElement(n);
-   }
-//
-   return p;
-}
-
-
-Bool SpectralElement::toRecord (RecordInterface& rec, const String& name)
-{
-   if (name.empty()) {
-      throw(AipsError("Record field name cannot be empty"));
-   }
-   if (rec.isDefined(name)) return False;
-//
-   Record rec2;
-   String type = SpectralElement::fromType(tp_p);
-   rec2.define("type", type);
-//
-   Vector<Double> p;
-   if (tp_p == SpectralElement::GAUSSIAN) {
-      p.resize(3);
-      p(0) = ampl_p;
-      p(1) = center_p;
-      p(2) = sigma_p;
-   } else if (tp_p == SpectralElement::POLYNOMIAL) {
-      p.resize(1);
-      Vector<Double> p(1);
-      p(0) = Double(n_p);
-   }
-   rec2.define("parameters", p);
-   rec.defineRecord(name, rec2);
-//
-   return True;
-}
-
