@@ -309,6 +309,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
   IPosition cellShape = arrShape.getFirst (lastAxis);
   uInt chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uInt nrinc = 0;
+  uInt lastRow = 0;
   TSMCube* lastCube = 0;
   IPosition rowpos;
   IPosition start(lastAxis+1);
@@ -322,10 +323,11 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
     uInt irow = iter.sliceIncr();
     while (rownr <= erow) {
       // Get the hypercube and the position of the row in it.
-      // A read has to be done if we have another hypercube.
+      // A read has to be done if we have another hypercube
+      // or if the rownr is not higher.
       TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, rowpos);
       Bool doIt = False;
-      if (hypercube != lastCube) {
+      if (hypercube != lastCube  ||  rownr <= lastRow) {
 	doIt = True;
       } else {
 	// The same hypercube. Check if the stride is the same.
@@ -366,7 +368,9 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
       } else {
 	end(lastAxis) = rowpos(lastAxis);
 	nrinc++;
+
       }
+      lastRow = rownr;
       rownr += irow;
     }
     iter++;
@@ -386,6 +390,7 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
   uInt lastAxis  = arrShape.nelements() - 1;
   uInt chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uInt nrinc = 0;
+  uInt lastRow = 0;
   TSMCube* lastCube = 0;
   IPosition rowpos;
   IPosition start(lastAxis+1);
@@ -399,10 +404,11 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
     uInt irow = iter.sliceIncr();
     while (rownr <= erow) {
       // Get the hypercube and the position of the row in it.
-      // A read has to be done if we have another hypercube.
+      // A read has to be done if we have another hypercube
+      // or if the rownr is not higher.
       TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, rowpos);
       Bool doIt = False;
-      if (hypercube != lastCube) {
+      if (hypercube != lastCube  ||  rownr <= lastRow) {
 	doIt = True;
       } else {
 	// The same hypercube. Check if the stride is the same.
@@ -437,6 +443,7 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
 	end(lastAxis) = rowpos(lastAxis);
 	nrinc++;
       }
+      lastRow = rownr;
       rownr += irow;
     }
     iter++;
@@ -485,7 +492,7 @@ void TSMDataColumn::accessSlicedCells (TSMCube* hypercube,
       }
       sliceShp(i) = 1 + end(i) - start(i);
     }
-    // Set only if a different slice is acsessed.
+    // Set only if a different slice is accessed.
     if (hypercube->getLastColAccess() != TSMCube::ColumnSliceAccess
     ||  ! sliceShp.isEqual (hypercube->getLastColSlice())) {
       // The further access path is along the trailing axes.
