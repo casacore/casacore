@@ -84,8 +84,10 @@ AIPSROOT := $(word 1, $(AIPSPATH))
 AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
 AIPSSITE := $(AIPSARCH)/$(word 3, $(AIPSPATH))
 AIPSHOST := $(AIPSSITE)/$(word 4, $(AIPSPATH))
+ARCHBIND := $(AIPSARCH)/bin
 
-THISDIR  := $(shell pwd | sed -e 's=^/tmp_mnt/=/=')
+THISDIR  := $(shell if [ -f $(ARCHBIND)/PWD ]; then $(ARCHBIND)/PWD; else pwd; fi )
+THISDIR  := $(shell echo $(THISDIR) | sed -e 's=^/tmp_mnt/=/=')
 CODESUBD := $(shell echo $(THISDIR)/ | sed -e '{s=^.*/code/==;s=/*$$==;}')
 
 PACKAGE  := $(word 1, $(subst /,$(space),$(CODESUBD)))
@@ -626,7 +628,6 @@ INSTARCH := $(CODEINSD)/$(word 2, $(AIPSPATH))
 # System directory definitions.
 ARCHAUXD := $(AIPSARCH)/aux
 ARCHTMPD := $(AIPSARCH)/tmp
-ARCHBIND := $(AIPSARCH)/bin
 ARCHDOCD := $(AIPSARCH)/doc
 ARCHMAN1 := $(ARCHDOCD)/man1
 
