@@ -1,5 +1,5 @@
 //# TiledFileAccess.cc: Tiled access to an array in a file
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -213,6 +213,15 @@ Array<Float> TiledFileAccess::getFloat (const Slicer& section,
   return arr;
 }
 
+Array<Float> TiledFileAccess::getFloat (const Slicer& section,
+					Float scale, Float offset,
+					Int deleteValue, Bool examineForDeleteValues)
+{
+  Array<Float> arr;
+  get (arr, section, scale, offset, deleteValue, examineForDeleteValues);
+  return arr;
+}
+
 void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
 			   Float scale, Float offset, Short deleteValue,
                            Bool examineForDeleteValues)
@@ -221,6 +230,33 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
   buffer.resize (arr.shape());
   Bool deleteArr, deleteBuf;
   const Short* arrPtr = arr.getStorage (deleteArr);
+  Float* bufPtr = buffer.getStorage (deleteBuf);
+  uInt n = arr.nelements();
+  if (examineForDeleteValues) {
+    for (uInt i=0; i<n; i++) {
+      if (arrPtr[i] == deleteValue) {
+        setNaN (bufPtr[i]);
+      } else {
+        bufPtr[i] = arrPtr[i] * scale + offset;
+      }
+    }
+  } else {
+    for (uInt i=0; i<n; i++) {
+      bufPtr[i] = arrPtr[i] * scale + offset;
+    }
+  }
+  arr.freeStorage (arrPtr, deleteArr);
+  buffer.putStorage (bufPtr, deleteBuf);
+}
+
+void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
+			   Float scale, Float offset, Int deleteValue,
+                           Bool examineForDeleteValues)
+{
+  Array<Int> arr = getInt (section);
+  buffer.resize (arr.shape());
+  Bool deleteArr, deleteBuf;
+  const Int* arrPtr = arr.getStorage (deleteArr);
   Float* bufPtr = buffer.getStorage (deleteBuf);
   uInt n = arr.nelements();
   if (examineForDeleteValues) {

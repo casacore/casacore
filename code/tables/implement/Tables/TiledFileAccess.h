@@ -1,5 +1,5 @@
 //# TiledFileAccess.h: Tiled access to an array in a file
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,14 +123,19 @@ public:
   // </group>
 
   // Get the array and scale/offset the data using the given values.
-  // It is meant for FITS, so for now it can only be used for a TpShort
-  // TiledFileAccess object.
+  // It is meant for FITS, so for now they can only be used for TpShort
+  // or TpInt TiledFileAccess objects.
   // A deleteValue is set to a NaN without being scaled.
   // <group>
   Array<Float> getFloat (const Slicer& section, Float scale, Float offset,
 			 Short deleteValue, Bool examineForDeleteValues=True);
+  Array<Float> getFloat (const Slicer& section, Float scale, Float offset,
+			 Int deleteValue, Bool examineForDeleteValues=True);
   void get (Array<Float>&, const Slicer& section,
 	    Float scale, Float offset, Short deleteValue,
+            Bool examineForDeleteValues=True);
+  void get (Array<Float>&, const Slicer& section,
+	    Float scale, Float offset, Int deleteValue,
             Bool examineForDeleteValues=True);
   // </group>
 
