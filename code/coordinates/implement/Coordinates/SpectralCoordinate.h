@@ -137,11 +137,14 @@ public:
   Bool toPixel(Double& pixel, const Double& world) const;
   // </group>
 
-    // Turn a pixel (channel number) into an MFrequency. Usually you will do
+    // Turn a pixel (channel number) into an MFrequency and vice versa. Usually you will do
     // this for calculating velocities or converting frequencies from one frame
     // to another.
+    // <group>
     Bool toWorld(MFrequency &world,
 		 Double pixel) const;
+    Bool toPixel(Double& pixel, const MFrequency &world) const;
+    // </group>
 
     // Retrieve/set the rest frequency in the current units.
     // <group>

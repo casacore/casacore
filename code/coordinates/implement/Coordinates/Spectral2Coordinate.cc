@@ -29,18 +29,41 @@
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Utilities/String.h>
 
-Bool SpectralCoordinate::toWorld(MFrequency &world, 
+
+Bool SpectralCoordinate::toWorld(MFrequency& world, 
 				 Double pixel) const
 {
     if (pixel_tmp_p.nelements()!=1) pixel_tmp_p.resize(1);
     pixel_tmp_p(0) = pixel;
     Bool ok = toWorld(world_tmp_p, pixel_tmp_p);
     if (ok) {
-        Unit units = worldAxisUnits()(0);
-        world = MFrequency(Quantity(world_tmp_p(0), units), type_p);
+       Unit units = worldAxisUnits()(0);
+       world = MFrequency(Quantity(world_tmp_p(0), units), type_p);
     }
-
     return ok;
 }
+
+Bool SpectralCoordinate::toPixel(Double& pixel,
+                                 const MFrequency& world) const
+{
+// Convert to current units
+
+    const Vector<String>& units = worldAxisUnits();
+    Quantum<Double> value = world.get(Unit(units(0)));
+    if (world_tmp_p.nelements()!=1) world_tmp_p.resize(1);
+    world_tmp_p(0) = value.getValue();
+
+// Convert to pixel
+
+    Bool ok = toPixel(pixel_tmp_p, world_tmp_p);
+    if (ok) {
+       pixel = pixel_tmp_p(0);
+    }
+    return ok;
+}
+ 
+ 
 
