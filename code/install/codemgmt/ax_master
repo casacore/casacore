@@ -3617,3 +3617,4 @@
 13 335 src mv trial/apps/dish/dishdemo.g trial/apps/dish/dishdemodata.g
 13 337 src rm doc/gettingresults/multifield.latex
 13 338 src mv trial/apps/table/taqlwidget.g trial/implement/Widgets/taqlwidget.g
+13 338 src mv trial/apps/table/taqlwidget.help trial/implement/Widgets/taqlwidget.help
