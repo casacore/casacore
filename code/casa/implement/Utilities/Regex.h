@@ -43,8 +43,10 @@
 #endif
 
 // Forward declarations.
-#if !defined(AIPS_STDLIB)
-imported class ostream;
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
+class ostream;
 #endif
 class  String;
 class  AipsIO;
