@@ -310,6 +310,12 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 			     DataManager* dataManPtr)
 {
+    if (! dataManPtr->canAddColumn()) {
+      throw TableError ("Table::addColumn - DataManager " +
+			dataManPtr->dataManagerName() + " (" +
+			dataManPtr->dataManagerType() +
+			") does not support column addition");
+    }
     checkWriteLock (True);
     //# When the column already exists, TableDesc::addColumn throws
     //# an exception.
