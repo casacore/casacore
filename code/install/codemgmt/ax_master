@@ -4470,3 +4470,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMeasurementSet.cc aips/implement/MeasurementSets/MeasurementSet.cc
 14 296 src mv aips/implement/MeasurementSets/NewMeasurementSet.h aips/implement/MeasurementSets/MeasurementSet.h
 14 296 src mv aips/implement/MeasurementSets/NewMSAntenna.cc aips/implement/MeasurementSets/MSAntenna.cc
+14 296 src mv aips/implement/MeasurementSets/NewMSAntenna.h aips/implement/MeasurementSets/MSAntenna.h
