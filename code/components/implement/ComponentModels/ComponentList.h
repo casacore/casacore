@@ -1,5 +1,5 @@
 //# ComponentList: this defines ComponentList.h
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,12 +33,14 @@
 #pragma implementation ("ComponentList.cc")
 #endif
 
-#include <aips/Utilities/String.h>
-#include <aips/Containers/List.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <aips/aips.h>
 #include <trial/ComponentModels/SkyComponent.h>
+#include <aips/Containers/Block.h>
+#include <aips/OS/File.h>
 
-class StokesVector;
+class MDirection;
+template <class T> class Vector;
+template <class T> class ImageInterface;
 
 // <summary> A class for manipulating groups of components </summary>
 
@@ -48,7 +50,7 @@ class StokesVector;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class="SkyComponent"> SkyComponent <linkto>
+//   <li> <linkto class="SkyComponent">SkyComponent<linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -102,95 +104,46 @@ class ComponentList {
 public:
   // Construct a componentList with no members in the list
   ComponentList();
-  // Construct a ComponentList with one element 
-  // <note role=warning> When using the third of these functions the
-  // componentList will "take over" the pointer, and arrange for its
-  // destruction once there are no more references to the
-  // <src>SkyComponent</src> You should not manipulate the raw pointer once
-  // the ComponentList has taken it over. If you need a pointer to the
-  // SkyComponent then the <src>getComp()</src> member function can be used
-  // to provide a <src>CountedPtr<SkyComponent></src> </note>
-  // <group>
-  ComponentList(SkyComponent & component);
-  ComponentList(CountedPtr<SkyComponent> ptrComponent);
-  ComponentList(SkyComponent * ptrComponent);
-  // </group>
 
-  // Read a componentList from an existing table
-  ComponentList(const String & filename, Bool readOnly=False);
+  // Read a componentList from an existing table. By default the Table is
+  // opened read-only.
+  ComponentList(const File & fileName, const Bool readOnly=True);
 
+  // The destructor saves the list to disk if it has a name (assigned using the
+  // setName member function)
   ~ComponentList();
   
-  // Sample all the members of the componentList at the specified direction
-  StokesVector operator()(const MDirection & samplePos);
-
-  // Sample all the members of the componentList at a number of Directions
-  Vector<StokesVector> operator()(const Vector<MDirection>& samplePos);
+  // Sample all the members of the componentList at the specified
+  // direction. The returned Vector containes all the polarisarions. 
+  void sample(Vector<Double> & result, const MDirection & samplePos) const;
 
   // Project all the members of the componentList onto the image
-  void operator()(ImageInterface<Float>& plane);
+  void project(ImageInterface<Float> & plane) const;
 
-  // Project all the members of the componentList onto the image and
-  // convolve using the specified psf.
-  void operator()(ImageInterface<Float>& plane,
- 		  const ImageInterface<Float>& psf);
+  // Add a SkyComponent to the end of the ComponentList. The list length is
+  // increased by one when using this function.
+  void add(SkyComponent & component);
 
-  // Insert a SkyComponent to a ComponentList before the current component. 
-  // <note role=warning> When using the third of these functions the
-  // componentList will "take over" the pointer, and arrange for its
-  // destruction once there are no more references to the
-  // <src>SkyComponent</src> You should not manipulate the raw pointer once
-  // the ComponentList has taken it over. If you need a pointer to the
-  // SkyComponent then the <src>getComp()</src> member function can be used
-  // to provide a <src>CountedPtr<SkyComponent></src> </note>
+  // Remove the specified SkyComponent from the ComponentList. After removing a
+  // component all the components with an index greater than this one will be
+  // reduced by one.
+  void remove(const uInt index);
+
+  // returns how many components are in the list.
+  uInt nelements() const;
+
+  // returns a reference to the specified element in the list.
   // <group>
-  void insertComp(SkyComponent & component);
-  void insertComp(CountedPtr<SkyComponent> & countedPtr);
-  void insertComp(SkyComponent * ptrComponent);
+  const SkyComponent & component(uInt index) const;
+  SkyComponent & component(uInt index);
   // </group>
-
-  // Add a SkyComponent to the ComponentList after the current component.
-  // <note role=warning> When using the third of these functions the
-  // componentList will "take over" the pointer, and arrange for its
-  // destruction once there are no more references to the
-  // <src>SkyComponent</src> You should not manipulate the raw pointer once
-  // the ComponentList has taken it over. If you need a pointer to the
-  // SkyComponent then the <src>getComp()</src> member function can be used
-  // to provide a <src>CountedPtr<SkyComponent></src> </note>
-  // <group>
-  void addComp(SkyComponent & component);
-  void addComp(CountedPtr<SkyComponent> & countedPtr);
-  void addComp(SkyComponent * ptrComponent);
-  // </group>
-
-  // Remove the current SkyComponent from the ComponentList
-  void removeComp();
-
-  // set the cursor to the beginning/end of the list or the specified element
-  void gotoStart();
-  void gotoEnd();
-  void gotoPosition(uInt index);
-
-  // increment/decrement the cursor to point to the next/prev element
-  // Does nothing if the cursor is at the beginning/end
-  void nextComp();
-  void prevComp();
-
-  // returns how many components in the list
-  uInt nComponents() const;
-
-  // Returns the position of the current component in the list. The first
-  // component is at position 1.
-  uInt curPosition() const;
-
-  // returns a pointer to the current element in the list
-  CountedPtr<SkyComponent> getComp();
 
   // make the ComponentList persistant by supplying a filename.
-  void setListName(const String& filename);
+  void setName(const File & fileName);
 
 private:
-  String theFileName;
-  ListIter<CountedPtr<SkyComponent> > theList;
+  Block<SkyComponent> theList;
+  uInt theNelements;
+  File theFileName;
 };
 #endif
