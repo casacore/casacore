@@ -213,7 +213,7 @@
      if (! -d "$a_root/$a_arch") then
         echo "Warning: $a_root/$a_arch does not exist."
      else if (! -d "$a_root/$a_arch/$a_site") then
-        echo "Warning: $a_root/$a_arch/$site does not exist."
+        echo "Warning: $a_root/$a_arch/$a_site does not exist."
      endif
 
 #    Define AIPSPATH.
