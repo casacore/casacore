@@ -26,10 +26,12 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeStepper.h>
-#include <aips/Exceptions/Error.h>
+#include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
+
 
 LatticeStepper::LatticeStepper(const IPosition & latticeShape,
 			       const IPosition & cursorShape,
@@ -157,10 +159,6 @@ Bool LatticeStepper::operator++(Int) {
   return successful;
 };
 
-Bool LatticeStepper::operator++() {
-  return operator++(0);
-};
-
 Bool LatticeStepper::operator--(Int) {
   DebugAssert(ok() == True, AipsError);
   if (theStart) return False;
@@ -198,10 +196,6 @@ Bool LatticeStepper::operator--(Int) {
     theStart = True;
   DebugAssert(ok() == True, AipsError);
   return successful;
-};
-
-Bool LatticeStepper::operator--() {
-  return operator--(0);
 };
 
 void LatticeStepper::reset() {
@@ -432,9 +426,29 @@ const IPosition & LatticeStepper::axisPath() const {
   return theAxisPath;
 };
 
-LatticeNavigator * LatticeStepper::clone() const {
+// check if the cursor shape is an sub-multiple of the Lattice shape
+Bool LatticeStepper::niceFit() const
+{
+  const uInt cursorDim = theCursorShape.nelements();
+  // Determine if the Lattice shape is a multiple of the cursor shape.
+  uInt i = 0;
+  while (i < cursorDim  &&  theIndexer.shape(i)%theCursorShape(i) == 0) {
+    i++;
+  }
+  return ToBool (i == cursorDim);
+};
+
+LatticeNavigator* LatticeStepper::clone() const {
   return new LatticeStepper(*this);
 };
+
+uInt LatticeStepper::calcCacheSize (const ROTiledStManAccessor& accessor,
+				    uInt rowNumber) const
+{
+  return accessor.calcCacheSize (rowNumber, theCursorShape,
+				 blc(), trc() - blc() + 1,
+				 theAxisPath);
+}
 
 Bool LatticeStepper::ok() const
 {
@@ -548,28 +562,4 @@ Bool LatticeStepper::ok() const
   
   // Otherwise it has passed all the tests
   return True;
-};
-
-// check if the cursor shape is an sub-multiple of the Lattice shape
-Bool LatticeStepper::niceFit() const
-{
-  const uInt cursorDim = theCursorShape.nelements();
-  // Determine if the Lattice shape is a multiple of the cursor shape.
-  uInt i = 0;
-  while (i < cursorDim && 
-	 theIndexer.shape(i)%theCursorShape(i) == 0)
-    i++;
-
-  if (i == cursorDim)
-    return True;
-  else
-    return False;
-};
-
-LatticeStepper * LatticeStepper::castToStepper() {
-  return this;
-};
-
-const LatticeStepper * LatticeStepper::castToConstStepper() const {
-  return this;
 };

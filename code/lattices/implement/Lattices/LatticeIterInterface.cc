@@ -27,40 +27,46 @@
 
 #include <trial/Lattices/LatticeIterInterface.h>
 
-template <class T> RO_LatticeIterInterface<T>::~RO_LatticeIterInterface()
+
+template <class T>
+LatticeIterInterface<T>::LatticeIterInterface
+                                     (const LatticeNavigator& navigator)
+: itsNavPtr (navigator.clone())
+{}
+
+template <class T>
+LatticeIterInterface<T>::LatticeIterInterface
+                                        (const LatticeIterInterface<T>& other)
+: itsNavPtr (other.itsNavPtr->clone())
+{}
+   
+template <class T>
+LatticeIterInterface<T>::~LatticeIterInterface()
 {
-  // Does Nothing
+  delete itsNavPtr;
 };
 
-template <class T> Bool RO_LatticeIterInterface<T>::operator++() {
-  return operator++(0);
+template <class T>
+LatticeIterInterface<T>& LatticeIterInterface<T>::operator=
+                                        (const LatticeIterInterface<T>& other)
+{
+  if (this != &other) {
+    itsNavPtr = other.itsNavPtr->clone();
+  }
+  return *this;
+}
+
+template <class T>
+Bool LatticeIterInterface<T>::operator++(Int) {
+  return operator++();
 };
 
-template <class T> Bool RO_LatticeIterInterface<T>::operator--() {
-  return operator++(0);
+template <class T>
+Bool LatticeIterInterface<T>::operator--(Int) {
+  return operator++();
 };
 
-template <class T> Bool RO_LatticeIterInterface<T>::ok() const {
+template <class T>
+Bool LatticeIterInterface<T>::ok() const {
   return True;
 };
-
-template <class T> LatticeIterInterface<T>::~LatticeIterInterface()
-{
-  // Does Nothing
-};
-
-template <class T> Bool LatticeIterInterface<T>::operator++() {
-  return operator++(0);
-};
-
-template <class T> Bool LatticeIterInterface<T>::operator--() {
-  return operator++(0);
-};
-
-template <class T> Bool LatticeIterInterface<T>::ok() const {
-  return True;
-};
-
-
-
-

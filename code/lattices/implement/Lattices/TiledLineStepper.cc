@@ -1,4 +1,4 @@
-//# TiledStepper.cc: defines TiledStepper class
+//# TiledLineStepper.cc: defines TiledLineStepper class
 //# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,30 +25,31 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/TiledStepper.h>
-#include <aips/Exceptions/Error.h>
+#include <trial/Lattices/TiledLineStepper.h>
+#include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
-TiledStepper::TiledStepper(const IPosition& latticeShape, 
-			   const IPosition& tileShape,
-			   const uInt axis)
-  :theIndexer(latticeShape),
-   theTiler(latticeShape),
-   theSubSection(latticeShape),
-   theBlc(latticeShape.nelements(), 0),
-   theTrc(latticeShape - 1),
-   theInc(latticeShape.nelements(), 1),
-   theTileShape(tileShape),
-   theTilerCursorPos(latticeShape.nelements(), 0),
-   theIndexerCursorPos(latticeShape.nelements(), 0),
-   theCursorShape(latticeShape.nelements(), 1),
-   theAxisPath(latticeShape.nelements(), 0),
-   theAxis(axis),
-   theNsteps(0),
-   theEnd(False),
-   theStart(True)
+TiledLineStepper::TiledLineStepper(const IPosition& latticeShape, 
+				   const IPosition& tileShape,
+				   const uInt axis)
+: theIndexer(latticeShape),
+  theTiler(latticeShape),
+  theSubSection(latticeShape),
+  theBlc(latticeShape.nelements(), 0),
+  theTrc(latticeShape - 1),
+  theInc(latticeShape.nelements(), 1),
+  theTileShape(tileShape),
+  theTilerCursorPos(latticeShape.nelements(), 0),
+  theIndexerCursorPos(latticeShape.nelements(), 0),
+  theCursorShape(latticeShape.nelements(), 1),
+  theAxisPath(latticeShape.nelements(), 0),
+  theAxis(axis),
+  theNsteps(0),
+  theEnd(False),
+  theStart(True)
 {
   const uInt nrdim = latticeShape.nelements();
   AlwaysAssert(nrdim > 0, AipsError);
@@ -64,34 +65,36 @@ TiledStepper::TiledStepper(const IPosition& latticeShape,
   theAxisPath(nrdim-1) = theAxis;
   reset();
   DebugAssert(ok() == True, AipsError);
-};
+}
 
 // the copy constructor which uses copy semantics.
-TiledStepper::TiledStepper(const TiledStepper & other)
-  :theIndexer(other.theIndexer),
-   theTiler(other.theTiler),
-   theSubSection(other.theSubSection),
-   theBlc(other.theBlc),
-   theTrc(other.theTrc),
-   theInc(other.theInc),
-   theTileShape(other.theTileShape),
-   theTilerCursorPos(other.theTilerCursorPos),
-   theIndexerCursorPos(other.theIndexerCursorPos),
-   theCursorShape(other.theCursorShape),
-   theAxisPath(other.theAxisPath),
-   theAxis(other.theAxis),
-   theNsteps(other.theNsteps),
-   theEnd(other.theEnd),
-   theStart(other.theStart)
+TiledLineStepper::TiledLineStepper (const TiledLineStepper& other)
+: theIndexer(other.theIndexer),
+  theTiler(other.theTiler),
+  theSubSection(other.theSubSection),
+  theBlc(other.theBlc),
+  theTrc(other.theTrc),
+  theInc(other.theInc),
+  theTileShape(other.theTileShape),
+  theTilerCursorPos(other.theTilerCursorPos),
+  theIndexerCursorPos(other.theIndexerCursorPos),
+  theCursorShape(other.theCursorShape),
+  theAxisPath(other.theAxisPath),
+  theAxis(other.theAxis),
+  theNsteps(other.theNsteps),
+  theEnd(other.theEnd),
+  theStart(other.theStart)
 {
   DebugAssert(ok() == True, AipsError);
-};
+}
 
-TiledStepper::~TiledStepper() {
+TiledLineStepper::~TiledLineStepper()
+{
   // does nothing
-};
+}
 
-TiledStepper & TiledStepper::operator=(const TiledStepper & other) {
+TiledLineStepper& TiledLineStepper::operator= (const TiledLineStepper& other)
+{
   if (this != &other) { 
     theIndexer = other.theIndexer;
     theTiler = other.theTiler;
@@ -111,9 +114,9 @@ TiledStepper & TiledStepper::operator=(const TiledStepper & other) {
   }
   DebugAssert(ok() == True, AipsError);
   return *this;
-};
+}
 
-Bool TiledStepper::operator++ (Int)
+Bool TiledLineStepper::operator++ (Int)
 {
   DebugAssert(ok() == True, AipsError);
   if (theEnd) {
@@ -181,13 +184,10 @@ Bool TiledStepper::operator++ (Int)
   }
   DebugAssert(ok() == True, AipsError);
   return False;
-};
+}
 
-Bool TiledStepper::operator++() {
-  return operator++(0);
-};
-
-Bool TiledStepper::operator--(Int) {
+Bool TiledLineStepper::operator--(Int)
+{
   DebugAssert(ok() == True, AipsError);
   if (theStart) {
     return False;
@@ -255,44 +255,9 @@ Bool TiledStepper::operator--(Int) {
   }
   DebugAssert(ok() == True, AipsError);
   return False;
+}
 
-/*
-  DebugAssert(ok() == True, AipsError);
-  if (theStart) return False;
-  Bool successful = theIndexer.tiledCursorMove(False, theCursorPos, 
-					       theCursorShape, theAxisPath);
-  if (!successful) { // Move to the next set of tiles
-    IPosition tileStep(theTiler.increment());
-    IPosition tileOrigin(theIndexer.offset()/tileStep);
-    successful = theTiler.tiledCursorMove(False, tileOrigin, 
-					  theCursorShape, theAxisPath);
-    if (successful) {
-      tileOrigin =  theTiler.absolutePosition(tileOrigin);
-      theIndexer.fullSize();
-      theIndexer.subSection(tileOrigin, tileOrigin+tileStep-1,
-			    IPosition(theTiler.ndim(), 1));
-      theCursorPos = tileStep-theCursorShape;
-    }
-  }
-  if (successful) {
-    theEnd = False;// by definition when decrementing
-    theNsteps++;     // increment the counter since we have moved
-    if (theCursorPos.isEqual(theIndexer.offset()) &&
-	theCursorPos.isEqual(IPosition(theIndexer.ndim(), 0)))
-      theStart = True;
-  }
-  else
-    theStart = True;
-  DebugAssert(ok() == True, AipsError);
-  return successful;
-*/
-};
-
-Bool TiledStepper::operator--() {
-  return operator--(0);
-};
-
-void TiledStepper::reset()
+void TiledLineStepper::reset()
 {
   //# Make sure the tiler starts on a tile boundary.
   //# Set theTiler subsection (its increment is always one).
@@ -339,124 +304,152 @@ void TiledStepper::reset()
   theEnd = False;
   theStart = True;
   DebugAssert(ok() == True, AipsError);
-};
+}
 
-Bool TiledStepper::atStart() const {
+Bool TiledLineStepper::atStart() const
+{
   DebugAssert(ok() == True, AipsError);
   return theStart;
-};
+}
 
-Bool TiledStepper::atEnd() const {
+Bool TiledLineStepper::atEnd() const
+{
   DebugAssert(ok() == True, AipsError);
   return theEnd;
-};
+}
 
-uInt TiledStepper::nsteps() const {
+uInt TiledLineStepper::nsteps() const
+{
   DebugAssert(ok() == True, AipsError);
   return theNsteps;
-};
+}
 
-IPosition TiledStepper::position() const {
+IPosition TiledLineStepper::position() const
+{
   DebugAssert(ok() == True, AipsError);
 //  cout << "position = " << theIndexer.absolutePosition(theIndexerCursorPos)
 //       << endl;
   return theIndexer.absolutePosition(theIndexerCursorPos);
-};
+}
 
-IPosition TiledStepper::endPosition() const {
+IPosition TiledLineStepper::endPosition() const
+{
   DebugAssert(ok() == True, AipsError);
   IPosition last = theIndexerCursorPos;
   last(theAxis) += (theCursorShape(theAxis) - 1) * theInc(theAxis);
   return theIndexer.absolutePosition(last);
-};
+}
 
-IPosition TiledStepper::latticeShape() const {
+IPosition TiledLineStepper::latticeShape() const
+{
   DebugAssert(ok() == True, AipsError);
   return theSubSection.fullShape();
-};
+}
 
-IPosition TiledStepper::subLatticeShape() const {
+IPosition TiledLineStepper::subLatticeShape() const
+{
   DebugAssert(ok() == True, AipsError);
   return theSubSection.shape();
-};
+}
 
-IPosition TiledStepper::cursorShape() const {
+IPosition TiledLineStepper::cursorShape() const
+{
   DebugAssert(ok() == True, AipsError);
   return theCursorShape;
-};
+}
 
-IPosition TiledStepper::cursorAxes() const
+IPosition TiledLineStepper::cursorAxes() const
 {
   DebugAssert(ok() == True, AipsError);
   return IPosition(1, theAxis);
-};
+}
 
-IPosition TiledStepper::tileShape() const {
+IPosition TiledLineStepper::tileShape() const
+{
   DebugAssert(ok() == True, AipsError);
   return theTileShape;
-};
+}
 
-Bool TiledStepper::hangOver() const {
+Bool TiledLineStepper::hangOver() const
+{
   return False;
-};
+}
 
 // Function to specify a "section" of the Lattice to Navigate over. A
 // section is defined in terms of the Bottom Left Corner (blc), Top Right
 // Corner (trc), and step size (inc), on ALL of its axes, including
 // degenerate axes.
-void TiledStepper::subSection (const IPosition& blc, const IPosition& trc, 
-			       const IPosition& inc)
+void TiledLineStepper::subSection (const IPosition& blc,
+				   const IPosition& trc, 
+				   const IPosition& inc)
 {
   theSubSection.subSection (blc, trc, inc);
   theBlc = theSubSection.offset();
   theInc = theSubSection.increment();
   theTrc = theBlc + (theSubSection.shape() - 1) * theInc;
   reset();
-};
+}
 
 // Function to specify a "section" of the Lattice to Navigate over. The step
 // increment is assumed to be one. 
-void TiledStepper::subSection(const IPosition & blc, const IPosition & trc)
+void TiledLineStepper::subSection (const IPosition& blc,
+				   const IPosition& trc)
 {
   subSection(blc, trc, IPosition(theIndexer.ndim(), 1));
-};
+}
 
 // Return the bottom left hand corner of the current sub-Lattice. If no
 // sub-Lattice has been defined return blc=0
-IPosition TiledStepper::blc() const{
+IPosition TiledLineStepper::blc() const
+{
   DebugAssert(ok() == True, AipsError);
   return theBlc;
-};
+}
 
 // Return the top right hand corner of the current sub-Lattice. If no
 // sub-Lattice has been defined return trc=latticeShape-1
-IPosition TiledStepper::trc() const{
+IPosition TiledLineStepper::trc() const
+{
   DebugAssert(ok() == True, AipsError);
   return theTrc;
-};
+}
 
 // Return the step increment between the current sub-Lattice and the main
 // Lattice. If no sub-Lattice has been defined return inc=1
-IPosition TiledStepper::increment() const {
+IPosition TiledLineStepper::increment() const
+{
   DebugAssert(ok() == True, AipsError);
   return theInc;
-};
+}
 
-const IPosition & TiledStepper::axisPath() const
+const IPosition& TiledLineStepper::axisPath() const
 {
   DebugAssert(ok() == True, AipsError);
   return theAxisPath;
 }
 
-LatticeNavigator * TiledStepper::clone() const
+uInt TiledLineStepper::calcCacheSize (const ROTiledStManAccessor& accessor,
+				      uInt rowNumber) const
+{
+  // Tile per tile is accessed, but the main axis needs the entire window.
+  // So calculate the start and end tile for the window.
+  IPosition tileShape = accessor.tileShape (rowNumber);
+  Int tilesz = tileShape(theAxis);
+  Int stTile = theBlc(theAxis) / tilesz;
+  Int endTile = theTrc(theAxis) / tilesz;
+  return (endTile - stTile + 1);
+}
+
+LatticeNavigator* TiledLineStepper::clone() const
 {
   DebugAssert(ok() == True, AipsError);
-  return new TiledStepper(*this);
-};
+  return new TiledLineStepper(*this);
+}
 
-static LogIO logErr(LogOrigin("TiledStepper", "ok()"));
+static LogIO logErr(LogOrigin("TiledLineStepper", "ok()"));
 
-Bool TiledStepper::ok() const {
+Bool TiledLineStepper::ok() const
+{
 //   const uInt latticeDim = theIndexer.ndim();
 //   // Check the cursor shape is OK
 //   if (theCursorShape.nelements() != latticeDim) {
@@ -548,12 +541,4 @@ Bool TiledStepper::ok() const {
   
 //   // Otherwise it has passed all the tests
   return True;
-};
-
-TiledStepper * TiledStepper::castToTiler() {
-  return this;
-};
-
-const TiledStepper * TiledStepper::castToConstTiler() const {
-  return this;
-};
+}

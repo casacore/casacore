@@ -29,8 +29,8 @@
 
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/PagedArrIter.h>
-#include <trial/Lattices/LatticeIterInterface.h>
 #include <trial/Lattices/LatticeNavigator.h>
+#include <trial/Lattices/TiledShape.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -43,7 +43,6 @@
 #include <aips/OS/Path.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TiledCellStMan.h>
-#include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/ArrColDesc.h>
@@ -53,285 +52,211 @@
 
 #include <iostream.h>
 
-template<class T> PagedArray<T>::
-PagedArray() 
-{
-  // Initialises all private data using their default consructor
-};
 
-template<class T> PagedArray<T>::
-PagedArray(const IPosition & shape, const String & filename) 
-  :theColumnName(defaultColumn()),
-   theRowNumber(defaultRow()) 
+template<class T>
+PagedArray<T>::PagedArray() 
 {
-  makeTable(filename, Table::New);
-  makeArray(shape, defaultTileShape(shape));
-  setTableType();
-  AlwaysAssert(ok() == True, AipsError);
-};
+  // Initializes all private data using their default consructor
+}
 
-template<class T> PagedArray<T>::
-PagedArray(const IPosition & shape, const String & filename, const IPosition & tileShape) 
-  :theColumnName(defaultColumn()),
-   theRowNumber(defaultRow()) 
+template<class T>
+PagedArray<T>::PagedArray (const TiledShape& shape, const String& filename) 
+: theColumnName (defaultColumn()),
+  theRowNumber  (defaultRow()) 
 {
   makeTable(filename, Table::New);
-  checkTileShape(shape, tileShape);
-  makeArray(shape, tileShape);
+  makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
-};
+}
 
-template<class T> PagedArray<T>::
-PagedArray(const IPosition & shape)
-  :theColumnName(defaultColumn()),
-   theRowNumber(defaultRow())
+template<class T>
+PagedArray<T>::PagedArray (const TiledShape& shape)
+: theColumnName (defaultColumn()),
+  theRowNumber  (defaultRow())
 {
   Path filename=File::newUniqueName(String("./"), String("pagedArray"));
-  makeTable(filename.absoluteName(), Table::Scratch);
-  makeArray(shape, defaultTileShape(shape));
+  makeTable (filename.absoluteName(), Table::Scratch);
+  makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
-};
+}
 
-template<class T> PagedArray<T>::
-PagedArray(const IPosition & shape, const IPosition & tileShape)
-  :theColumnName(defaultColumn()),
-   theRowNumber(defaultRow())
+template<class T>
+PagedArray<T>::PagedArray (const TiledShape& shape, Table& file)
+: theTable      (file),
+  theColumnName (defaultColumn()),
+  theRowNumber  (defaultRow()) 
 {
-  checkTileShape(shape, tileShape);
-  Path filename=File::newUniqueName(String("./"), String("pagedArray"));
-  makeTable(filename.absoluteName(), Table::Scratch);
-  makeArray(shape, tileShape);
+  makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
-};
+}
 
-template<class T> PagedArray<T>::
-PagedArray(const IPosition & shape, Table & file)
-  :theTable(file),
-   theColumnName(defaultColumn()),
-   theRowNumber(defaultRow()) 
+template<class T>
+PagedArray<T>::PagedArray (const TiledShape& shape, Table& file,
+			   const String& columnName, uInt rowNumber)
+: theTable      (file),
+  theColumnName (columnName),
+  theRowNumber  (rowNumber)
 {
-  makeArray(shape, defaultTileShape(shape));
+  makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
-};
+}
 
-template<class T> PagedArray<T>::
-PagedArray(const IPosition & shape, Table & file, const IPosition tileShape)
-  :theTable(file),
-   theColumnName(defaultColumn()),
-   theRowNumber(defaultRow())
-{
-  checkTileShape(shape, tileShape);
-  makeArray(shape, tileShape);
-  setTableType();
-  AlwaysAssert(ok() == True, AipsError);
-};
-
-template<class T> PagedArray<T>::
-PagedArray(const IPosition & shape, Table & file,
-	   const String & columnName, uInt rowNumber)
-  :theTable(file),
-   theColumnName(columnName),
-   theRowNumber(rowNumber)
-{
-  makeArray(shape, defaultTileShape(shape));
-  setTableType();
-  AlwaysAssert(ok() == True, AipsError);
-};
-
-template<class T> PagedArray<T>::
-PagedArray(const IPosition & shape, Table & file,
-	   const String & columnName, uInt rowNumber, const IPosition tileShape)
-  :theTable(file),
-   theColumnName(columnName),
-   theRowNumber(rowNumber)
-{
-  checkTileShape(shape, tileShape);
-  makeArray(shape, tileShape);
-  setTableType();
-  AlwaysAssert(ok() == True, AipsError);
-};
-
-template<class T> PagedArray<T>::
-PagedArray(const String & filename)
-  :theTable(filename, Table::Update),
-   theColumnName(defaultColumn()), 
-   theRowNumber(defaultRow()),
-   theArray(theTable, theColumnName)
+template<class T>
+PagedArray<T>::PagedArray (const String& filename)
+: theTable      (filename),
+  theColumnName (defaultColumn()), 
+  theRowNumber  (defaultRow()),
+  theROArray    (theTable, theColumnName),
+  theAccessor   (theTable, theColumnName)
 {
   AlwaysAssert(ok() == True, AipsError);
-};
+}
 
-template<class T> PagedArray<T>::
-PagedArray(Table & file)
-  :theTable(file),
-   theColumnName(defaultColumn()), 
-   theRowNumber(defaultRow()),
-   theArray(theTable, theColumnName)
+template<class T> PagedArray<T>::PagedArray (Table& file)
+: theTable      (file),
+  theColumnName (defaultColumn()), 
+  theRowNumber  (defaultRow()),
+  theROArray    (theTable, theColumnName),
+  theAccessor   (theTable, theColumnName)
 {
   AlwaysAssert(ok() == True, AipsError);
-};
+}
 
-template<class T> PagedArray<T>::
-PagedArray(Table & file, const String & columnName, uInt rowNumber)
-  :theTable(file),
-   theColumnName(columnName), 
-   theRowNumber(rowNumber),
-   theArray(theTable, theColumnName)
+template<class T>
+PagedArray<T>::PagedArray (Table& file, const String& columnName,
+			   uInt rowNumber)
+: theTable      (file),
+  theColumnName (columnName), 
+  theRowNumber  (rowNumber),
+  theROArray    (theTable, theColumnName),
+  theAccessor   (theTable, theColumnName)
 {
   AlwaysAssert(ok() == True, AipsError);
-};
+}
 
-template<class T> PagedArray<T>::PagedArray(const PagedArray<T> &other)
-  :theTable(other.theTable),
-   theColumnName(other.theColumnName), 
-   theRowNumber(other.theRowNumber),
-   theArray(other.theArray)
+template<class T>
+PagedArray<T>::PagedArray (const PagedArray<T> &other)
+: theTable      (other.theTable),
+  theColumnName (other.theColumnName), 
+  theRowNumber  (other.theRowNumber),
+  theROArray    (other.theROArray),
+  theRWArray    (other.theRWArray),
+  theAccessor   (other.theAccessor)
 {
   DebugAssert(ok() == True, AipsError);
-};
+}
 
-template<class T> PagedArray<T>::
-~PagedArray() {
+template<class T>
+PagedArray<T>::~PagedArray()
+{
   // Table may not be written if ref count > 1 - here we force a write.
   DebugAssert(ok() == True, AipsError);
   theTable.flush();
-};
+}
 
-template<class T> PagedArray<T> & PagedArray<T>::
-operator=(const PagedArray<T> & other) {
+template<class T>
+PagedArray<T>& PagedArray<T>::operator= (const PagedArray<T>& other)
+{
   if (this != &other) {
-    theTable = other.theTable;
+    theTable      = other.theTable;
     theColumnName = other.theColumnName;
-    theRowNumber = other.theRowNumber;
-    theArray.reference(other.theArray);
+    theRowNumber  = other.theRowNumber;
+    theROArray.reference(other.theROArray);
+    theRWArray.reference(other.theRWArray);
+    theAccessor   = other.theAccessor;
   }
   DebugAssert(ok() == True, AipsError);
   return *this;
-};
+}
 
-template<class T> IPosition PagedArray<T>::
-shape() const {
+template<class T>
+IPosition PagedArray<T>::shape() const
+{
   DebugAssert(ok() == True, AipsError);
-  return theArray.shape(theRowNumber);
-};
+  return theROArray.shape (theRowNumber);
+}
 
-template<class T> void PagedArray<T>::
-resize(const IPosition & newShape) {
-  resize(newShape, defaultTileShape(newShape));
-};
-
-// GER, I FOUND THE Table::re{move,name}Column FUNCTION'S ARE NOT
-// IMPLEMENTED YET.  IN THIS CODE I HAVE WORKED AROUND THIS. BUT IT IS
-// PROBABLY QUITE INEFFECIENT
-template<class T> void PagedArray<T>::
-resize(const IPosition & newShape, const IPosition & tileShape) {
+template<class T>
+void PagedArray<T>::resize (const TiledShape& newShape)
+{
   theLog << LogOrigin("PagedArray<T>", 
-		      "resize(const IPosition & shape,"
-		      " const IPosition & tileShape)");
-  checkTileShape(newShape, tileShape);
-  const uInt nRows = theTable.nrow();
-  if (nRows == 1){
-    // only one cell to the column, quicker to delete and start over.
-    if (theTable.canRemoveColumn(theColumnName))
-      theTable.removeColumn(theColumnName);
-    else
-      theColumnName += "_";
-    // build a new column: 
-    makeArray(newShape, tileShape);
-  }
-  else {
-    const String tempName(theColumnName + "_");
-    const uInt ndim = theArray.ndim(theRowNumber);
-    // This assertion is required as every array in a column must have the
-    // same number of dimensions. This may be relaxed eventually.
-    AlwaysAssert(ndim == newShape.nelements(), AipsError);
-    // recreate the column to hold the data
-    TableDesc description;
-    description.addColumn(ArrayColumnDesc<T>(tempName, defaultComment(), 
-					     ndim));
-    description.defineHypercolumn(tempName, ndim, stringToVector(tempName));
-    theTable.addColumn(description, TiledCellStMan(tempName, tileShape));
-    // Copy the data from the old column to the new
-    theArray.attach(theTable, tempName);
-    ROArrayColumn<T> oldColumn(theTable, theColumnName);
-    for (uInt r = 0; r < nRows; r++)
-      if (r == theRowNumber)
-    	theArray.setShape(r, newShape);
-      else 
-    	theArray.put(r, oldColumn, r);
+		      "resize(const TiledShape& shape)");
+  IPosition tileShape = newShape.tileShape();
+  getRWArray().setShape (theRowNumber, newShape.shape(), tileShape);
+  theLog << LogIO::DEBUGGING
+	 << "Resizing the PagedArray to shape " << newShape.shape()
+	 << " with a tile shape of " << tileShape << endl
+	 << " in row " << theRowNumber << " and column '" << theColumnName
+	 << "' of the Table '" << tableName() << "'" << LogIO::POST;
+}
 
-    if (theTable.canRemoveColumn(theColumnName))
-      theTable.removeColumn(theColumnName);
-    if (theTable.canRenameColumn())
-      theTable.renameColumn(theColumnName, tempName);
-    else
-      theColumnName = tempName;
-    theArray.attach(theTable, theColumnName);
-  }
-  theLog 
-    << LogIO::DEBUGGING
-    << "Resizing the PagedArray to shape " << newShape
-    << " with a tile shape of " << tileShape << endl
-    << " in row " << theRowNumber << " and column '" << theColumnName
-    << "' of the Table '" << tableName() << "'" << LogIO::POST;
-};
+template <class T>
+Bool PagedArray<T>::getSlice (COWPtr<Array<T> >& buffer,
+			      const IPosition& start,
+			      const IPosition& shape,
+			      const IPosition& stride, 
+			      Bool removeDegenerateAxes) const
+{
+  return getSlice (buffer, Slicer(start, shape, stride), removeDegenerateAxes);
+}
 
-template <class T> Bool PagedArray<T>::
-getSlice(COWPtr<Array<T> > & buffer, const IPosition & start,
-	 const IPosition & shape, const IPosition & stride, 
-	 Bool removeDegenerateAxes) const {
-  return Lattice<T>::getSlice(buffer, start, shape, stride, removeDegenerateAxes);
-};
- 
-template<class T> Bool PagedArray<T>::
-getSlice(COWPtr<Array<T> > & bufPtr, const Slicer & section, 
-	 Bool removeDegenerateAxes) const {
-  if (bufPtr.isNull())
-    if (removeDegenerateAxes == False)
+template<class T>
+Bool PagedArray<T>::getSlice (COWPtr<Array<T> >& bufPtr,
+			      const Slicer& section, 
+			      Bool removeDegenerateAxes) const
+{
+  if (bufPtr.isNull()) {
+    if (removeDegenerateAxes == False) {
       bufPtr.set(new Array<T>(section.length()));
-    else
+    } else {
       bufPtr.set(new Array<T>(section.length().nonDegenerate()));
+    }
+  }
   // I can remove the constness because the buffer is never returned by
   // reference.
-  PagedArray<T> * This = (PagedArray<T> *) this;
-  return This->getSlice(bufPtr.rwRef(), section, removeDegenerateAxes);
-};
+  PagedArray<T>* This = (PagedArray<T>*) this;
+  return This->getSlice (bufPtr.rwRef(), section, removeDegenerateAxes);
+}
 
-template <class T> Bool PagedArray<T>::
-getSlice(Array<T> & buffer, const IPosition & start, const IPosition & shape, 
-	 const IPosition & stride, Bool removeDegenerateAxes) {
-  return Lattice<T>::getSlice(buffer, start, shape, stride, removeDegenerateAxes);
-};
+template <class T>
+Bool PagedArray<T>::getSlice (Array<T>& buffer,
+			      const IPosition& start,
+			      const IPosition& shape, 
+			      const IPosition& stride,
+			      Bool removeDegenerateAxes)
+{
+  return getSlice (buffer, Slicer(start, shape, stride), removeDegenerateAxes);
+}
 
-template<class T> Bool PagedArray<T>::
-getSlice(Array<T> & buffer, const Slicer & section, 
-	 Bool removeDegenerateAxes) {
+template<class T>
+Bool PagedArray<T>::getSlice (Array<T>& buffer, const Slicer& section, 
+			      Bool removeDegenerateAxes)
+{
   if (buffer.nelements() == 0) {
-    theArray.getSlice(theRowNumber, section, buffer, True);
+    theROArray.getSlice (theRowNumber, section, buffer, True);
     if (removeDegenerateAxes == True) {
       const IPosition shape = buffer.shape();
-      if (!shape.nonDegenerate().isEqual(shape)){
+      if (!shape.nonDegenerate().isEqual(shape)) {
 	Array<T> noDegen(buffer.nonDegenerate());
 	buffer.reference(noDegen);
       }
     }
-  }
-  else {
+  } else {
     const IPosition bshape = buffer.shape();
     const IPosition slength = section.length();
-    if (bshape.nelements() == slength.nelements())
+    if (bshape.nelements() == slength.nelements()) {
       removeDegenerateAxes = False;
+    }
     if (removeDegenerateAxes == False) {
       AlwaysAssert(bshape.isEqual(slength), AipsError);
-      theArray.getSlice(theRowNumber, section, buffer);
-    }
-    else {
-      AlwaysAssert(bshape.nonDegenerate().isEqual(
-                   slength.nonDegenerate()), AipsError);
+      theROArray.getSlice (theRowNumber, section, buffer);
+    } else {
+      AlwaysAssert(bshape.nonDegenerate().isEqual
+                               (slength.nonDegenerate()), AipsError);
       // There is a nasty problem here.
       // RO_ArrayColumn::getSlice expects an Array that includes all the
       // axes, including the degenerate ones. How can I add the degenerate
@@ -349,161 +274,177 @@ getSlice(Array<T> & buffer, const Slicer & section,
       // be used. I'll circumvent this by calling getStorage, and letting it
       // decide whether to make a copy.
       Bool isAcopy;
-      T * bufferPtr = buffer.getStorage(isAcopy);
+      T* bufferPtr = buffer.getStorage (isAcopy);
       Array<T> tempBuffer(slength, bufferPtr, SHARE);
-      theArray.getSlice(theRowNumber, section, tempBuffer);
-      buffer.putStorage(bufferPtr, isAcopy);
+      theROArray.getSlice (theRowNumber, section, tempBuffer);
+      buffer.putStorage (bufferPtr, isAcopy);
     }
   }
   return False;
-};
+}
 
-template<class T> void PagedArray<T>::putSlice(const Array<T> & sourceArray, 
-					       const IPosition & where,
-					       const IPosition & stride) {
+template<class T>
+void PagedArray<T>::putSlice (const Array<T>& sourceArray, 
+			      const IPosition& where,
+			      const IPosition& stride)
+{
+  // Create a writable column object when not existing yet.
+  getRWArray();
   const uInt arrDim = sourceArray.ndim();
   const uInt latDim = ndim();
   AlwaysAssert(arrDim <= latDim, AipsError);
-  
   if (arrDim == latDim) {
     Slicer section(where, sourceArray.shape(), stride, Slicer::endIsLength); 
-    theArray.putSlice(theRowNumber, section, sourceArray);
-  }
-  else {
+    theRWArray.putSlice (theRowNumber, section, sourceArray);
+  } else {
     Array<T> degenerateArr(sourceArray.addDegenerate(latDim-arrDim));
     Slicer section(where, degenerateArr.shape(), stride, Slicer::endIsLength); 
-    theArray.putSlice(theRowNumber, section, degenerateArr);
+    theRWArray.putSlice (theRowNumber, section, degenerateArr);
   } 
-};
+}
 
-template<class T> void PagedArray<T>::
-putSlice(const Array <T> & sourceBuffer, const IPosition & where){
-  Lattice<T>::putSlice(sourceBuffer, where);
-};
+template<class T>
+void PagedArray<T>::putSlice (const Array <T>& sourceBuffer,
+			      const IPosition& where)
+{
+  Lattice<T>::putSlice (sourceBuffer, where);
+}
 
-template<class T> const String & PagedArray<T>::
-tableName() const {
+template<class T>
+const String& PagedArray<T>::tableName() const
+{
   return theTable.tableName();
-};
+}
 
-template<class T> const String & PagedArray<T>::
-columnName() const {
+template<class T>
+const String& PagedArray<T>::columnName() const
+{
   return theColumnName;
-};
+}
 
-template<class T> String PagedArray<T>::
-defaultColumn() {
-  return String("PagedArray");
-};
+template<class T>
+String PagedArray<T>::defaultColumn()
+{
+  return "PagedArray";
+}
 
+template<class T>
+const ROTiledStManAccessor& PagedArray<T>::accessor() const
+{
+  return theAccessor;
+}
 
-template<class T> uInt PagedArray<T>::
-rowNumber() const {
+template<class T>
+uInt PagedArray<T>::rowNumber() const
+{
   return theRowNumber;
-};
+}
 
-template<class T> uInt PagedArray<T>::
-defaultRow() {
+template<class T>
+uInt PagedArray<T>::defaultRow()
+{
   return 0;
-};
+}
 
-template<class T> IPosition PagedArray<T>::
-tileShape() const {
-  ROTiledStManAccessor accessor(theTable, theColumnName);
-  return accessor.tileShape(theRowNumber);
-};
+template<class T>
+IPosition PagedArray<T>::tileShape() const
+{
+  return theAccessor.tileShape (theRowNumber);
+}
 
-template<class T> uInt PagedArray<T>::
-maxPixels() const {
+template<class T>
+uInt PagedArray<T>::maxPixels() const
+{
   return tileShape().product();
-};
+}
 
-template<class T> IPosition PagedArray<T>::
-niceCursorShape(uInt maxPixels) const {
+template<class T>
+IPosition PagedArray<T>::niceCursorShape (uInt maxPixels) const
+{
   IPosition retval = tileShape();
-  if (retval.product() > maxPixels)
+  if (retval.product() > maxPixels) {
     retval = Lattice<T>::niceCursorShape(maxPixels);
+  }
   return retval;
-};
+}
 
-template<class T> void PagedArray<T>::
-setMaximumCacheSize(uInt howManyPixels) {
-  const uInt sizeInBytes = howManyPixels*sizeof(T);
-  ROTiledStManAccessor accessor(theTable, theColumnName);
-  accessor.setMaximumCacheSize(sizeInBytes);
-};
+template<class T>
+void PagedArray<T>::setMaximumCacheSize (uInt howManyPixels)
+{
+  const uInt sizeInBytes = howManyPixels * sizeof(T);
+  theAccessor.setMaximumCacheSize (sizeInBytes);
+}
 
-template<class T> uInt PagedArray<T>::
-maximumCacheSize() const {
-  ROTiledStManAccessor accessor(theTable, theColumnName);
-  return accessor.maximumCacheSize()/sizeof(T);
-};
+template<class T>
+uInt PagedArray<T>::maximumCacheSize() const
+{
+  return theAccessor.maximumCacheSize() / sizeof(T);
+}
 
-// GER, IT WOULD BE NICE TO HAVE A FUNCTION WHICH RETURNS THE CURRENT CACHE
-// SIZE FOR THE ROW/COLUMN. ie. uInt cacheSize() const
-// THIS WOULD INVOLVE ANOTHER FUNCTION IN THE ROTiledStManAccessor
-template<class T> void PagedArray<T>::
-setCacheSize(uInt howManyPixels) {
-  const uInt sizeInBytes = howManyPixels*sizeof(T);
-  ROTiledStManAccessor accessor(theTable, theColumnName);
-  accessor.setCacheSize(theRowNumber, sizeInBytes);
-};
+template<class T>
+void PagedArray<T>::setCacheSizeInTiles (uInt howManyTiles)
+{
+  theAccessor.setCacheSize (theRowNumber, howManyTiles);
+}
 
-template<class T> void PagedArray<T>::
-setCacheSizeFromPath(const IPosition& sliceShape,
-		     const IPosition& windowStart,
-		     const IPosition& windowLength,
-		     const IPosition& axisPath) {
-  ROTiledStManAccessor accessor(theTable, theColumnName);
-  accessor.setCacheSize(theRowNumber, sliceShape, windowStart,
-			windowLength, axisPath, False);
-};
+template<class T>
+void PagedArray<T>::setCacheSizeFromPath (const IPosition& sliceShape,
+					  const IPosition& windowStart,
+					  const IPosition& windowLength,
+					  const IPosition& axisPath)
+{
+  theAccessor.setCacheSize (theRowNumber, sliceShape, windowStart,
+			    windowLength, axisPath, True);
+}
 
-template<class T> void PagedArray<T>::
-clearCache() const {
-  ROTiledStManAccessor accessor(theTable, theColumnName);
-  accessor.clearCaches();
-};
+template<class T>
+void PagedArray<T>::clearCache()
+{
+  theAccessor.clearCaches();
+}
 
-template<class T> void PagedArray<T>::
-showCacheStatistics(ostream &os) {
-  ROTiledStManAccessor accessor(theTable, theColumnName);
-  accessor.showCacheStatistics(os);
-};
+template<class T>
+void PagedArray<T>::showCacheStatistics (ostream &os) const
+{
+  theAccessor.showCacheStatistics (os);
+}
 
-template<class T> T PagedArray<T>::
-getAt(const IPosition & where) const {
+template<class T>
+T PagedArray<T>::getAt(const IPosition& where) const
+{
   const uInt dim = ndim();
   AlwaysAssert(dim == where.nelements(), AipsError);
   const IPosition one(dim, 1);
   COWPtr<Array<T> > bufPtr(new Array<T>(one));
   getSlice(bufPtr, Slicer(where, one, one, Slicer::endIsLength));
   return bufPtr->operator()(IPosition(dim,0));
-};
+}
 
-template<class T> void PagedArray<T>::
-putAt(const T &value, const IPosition & where) {
+template<class T>
+void PagedArray<T>::putAt (const T &value, const IPosition& where)
+{
   const IPosition shape(ndim(),1);
   Array<T> buffer(shape);
   buffer = value;
-  theArray.putSlice(theRowNumber, Slicer(where,shape), buffer);
-};
+  getRWArray().putSlice(theRowNumber, Slicer(where,shape), buffer);
+}
 
-template<class T> Bool PagedArray<T>::
-ok() const {
+template<class T>
+Bool PagedArray<T>::ok() const
+{
   if (theTable.isNull() == True) {
     LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
     logErr << LogIO::SEVERE << "No Table associated with the Paged Array"
 	   << LogIO::POST;
      return False;
   }
-  if (theArray.isNull() == True) {
+  if (theROArray.isNull() == True) {
     LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
     logErr  << LogIO::SEVERE << "No Array associated with the Paged Array"
 	    << LogIO::POST;
      return False;
   }
-  if (theRowNumber > theArray.nrow()) {
+  if (theRowNumber > theTable.nrow()) {
     LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
     logErr << LogIO::SEVERE << "Row number is too big for the current Table"
  	   << LogIO::POST;
@@ -515,27 +456,30 @@ ok() const {
     return False;
   }
   return True;
-};
+}
 
-template<class T> RO_LatticeIterInterface<T> * PagedArray<T>::
-makeIter(const LatticeNavigator & navigator) const {
-  return new RO_PagedArrIter<T>(*this, navigator);
-};
 
-template<class T> LatticeIterInterface<T> * PagedArray<T>::
-makeIter(const LatticeNavigator & navigator) {
+template<class T>
+LatticeIterInterface<T>* PagedArray<T>::makeIter
+                                (const LatticeNavigator& navigator) const
+{
   return new PagedArrIter<T>(*this, navigator);
-};
+}
 
 // IT IS IMPOSSIBLE TO CREATE A COLUMN WHICH CONTAINS ARRAYS OF
-// DIFFERENT DIMENSIONS
-template <class T> void PagedArray<T>::
-makeArray(const IPosition & shape, const IPosition & tileShape) {
+// DIFFERENT DIMENSIONALITY
+template <class T>
+void PagedArray<T>::makeArray (const TiledShape& shape)
+{
+  // Make sure the table is writable.
+  theTable.reopenRW();
   theLog << LogOrigin("PagedArray<T>", 
-		      "makeArray(const IPosition & shape,"
-		      " const IPosition & tileShape)");
+		      "makeArray(const TiledShape& shape)");
+  // Get the lattice shape and tile shape.
+  IPosition latShape  = shape.shape();
+  IPosition tileShape = shape.tileShape();
   // Create a new column if it does not already exist.
-  const uInt ndim = shape.nelements();
+  const uInt ndim = latShape.nelements();
   Bool newColumn = False;
   if (!theTable.tableDesc().isColumn(theColumnName)) {
     newColumn = True;
@@ -550,7 +494,8 @@ makeArray(const IPosition & shape, const IPosition & tileShape) {
   }
 
   // Attach the default constructed ArrayColumn to the Table
-  theArray.attach(theTable, theColumnName);
+  theROArray.attach (theTable, theColumnName);
+  theRWArray.attach (theTable, theColumnName);
 
   // if table doesn't have enough rows to match our row number
   // then add rows and fill them with empty arrays
@@ -558,116 +503,63 @@ makeArray(const IPosition & shape, const IPosition & tileShape) {
   const Int rows = theTable.nrow() - 1;
   if (rows < theRowNumber) {
     theTable.addRow(theRowNumber-rows);
-    for (Int r = rows+1; r < theRowNumber; r++)
-      theArray.setShape(r, emptyShape);
+    for (Int r = rows+1; r < theRowNumber; r++) {
+      theRWArray.setShape(r, emptyShape);
+    }
   }
-  if (newColumn) 
-    for (Int r = 0; r <= rows; r++)
-      if (r != theRowNumber)
-	theArray.setShape(r, emptyShape);
+  if (newColumn) {
+    for (Int r = 0; r <= rows; r++) {
+      if (r != theRowNumber) {
+	theRWArray.setShape(r, emptyShape);
+      }
+    }
+  }
   // set a shape of the PagedArray
-  theArray.setShape(theRowNumber, shape);
+  theRWArray.setShape(theRowNumber, latShape);
+  // create the accessor object
+  theAccessor = ROTiledStManAccessor (theTable, theColumnName);
   theLog << LogIO::DEBUGGING
-         << "Created PagedArray of shape " << shape
+         << "Created PagedArray of shape " << latShape
          << " with a tile shape of " << tileShape << endl
          << " in row " << theRowNumber << " and column '" << theColumnName
          << "' of the Table '" << tableName() << "'" << LogIO::POST;
-};
+}
 
-template<class T> void PagedArray<T>::
-setTableType() {
-  TableInfo & info(theTable.tableInfo());
+template<class T>
+void PagedArray<T>::setTableType()
+{
+  TableInfo& info(theTable.tableInfo());
   {
-    const String reqdType = info.type(TableInfo::PAGEDARRAY);
-    if (info.type() != reqdType)
-      info.setType(reqdType);
+    const String reqdType = info.type (TableInfo::PAGEDARRAY);
+    if (info.type() != reqdType) {
+      info.setType (reqdType);
+    }
   }
   {
-    const String reqdSubType = info.subType(TableInfo::PAGEDARRAY);
-    if (info.subType() != reqdSubType)
-      info.setSubType(reqdSubType);
+    const String reqdSubType = info.subType (TableInfo::PAGEDARRAY);
+    if (info.subType() != reqdSubType) {
+      info.setSubType (reqdSubType);
+    }
   }
-};
+}
 
-template<class T> void PagedArray<T>::
-makeTable(const String & filename, Table::TableOption option) {
+template<class T>
+void PagedArray<T>::makeTable (const String& filename,
+			       Table::TableOption option)
+{
   SetupNewTable setupTable(filename, TableDesc(), option);
   theTable = Table(setupTable);
-};
+}
 
-template<class T> void PagedArray<T>::
-checkTileShape(const IPosition & shape, const IPosition & tileShape) {
-  const uInt ndim = shape.nelements();
-  AlwaysAssert(tileShape.nelements() == ndim, AipsError);
-  for (uInt i = 0; i < ndim; i++)
-    AlwaysAssert(shape(i) >= tileShape(i), AipsError);
-};
+template<class T>
+String PagedArray<T>::defaultComment()
+{
+  return String("version 4.0");
+}
 
-template<class T> String PagedArray<T>::
-defaultComment() {
-  return String("version 3.0");
-};
-
-template<class T> IPosition PagedArray<T>::
-defaultTileShape(const IPosition & latticeShape) {
-  // Get the shape recommended by the Tiles Storage manager
-  const IPosition stmantile = TiledStMan::makeTileShape(latticeShape);
-
-  // If the lattice is small  enough then use the whole lattice
-  if (latticeShape.product() <= stmantile.product())
-    return latticeShape;
-  
-//# This code segment and the one below it have been commented out by me (Ralph
-//# Marson) on 9-June-1997. This was after much discussion, between Neil
-//# Killeen, Brian Glendenning and myself about the algorithms for choosing
-//# congruent tile shapes, their shortcomings and the penalties
-//# associated with having a tile shape that is not congruent.
-
-//   // If the storage manager tile fits evenly assume it's best
-//   const uInt ndim = latticeShape.nelements();
-//   Bool stmantilefits = True;
-//   for (uInt j=0; j < ndim; j++) {
-//     if (latticeShape(j) % stmantile(j) != 0) {
-//       stmantilefits = False;
-//       break;
-//     }
-//   }
-//   if (stmantilefits)
-    return stmantile;
-//   // Alas, the storage manager tile does NOT fit evenly. Find
-//   // one that does. Algorithm:
-//   // 1. Start with a tile of length one on all axes
-//   // 2. While (tile.volume() <= stman volume && tile can grow)
-//   // 3.    adjust next axis to the next larger size that fits
-  
-//   // This algorithm should always provide at least a row-cursor
-//   // that fits. The worst case is if the first axis is degenerate
-//   // and the other axes are all large primes.
-//   IPosition tile(ndim, 1);
-//   IPosition lastTile(ndim, 1);
-//   const Int idealVolume = min(stmantile.product(), latticeShape.product());
-//   Int currentAxis = 0;
-//   // This condition means that the tile hasn't filled up
-//   // the entire shape.
-//   while (tile.product() < idealVolume){
-//     // Cache the current tile shape in case the next guess is too big
-//     lastTile = tile;
-//     // Make the current axis the next size larger that fits
-//     // Advance until we hit the end or it fits evenly
-//     Bool itFits = False;
-//     while(!itFits && (tile(currentAxis) < latticeShape(currentAxis))) {
-//       tile(currentAxis)++;
-//       if ((latticeShape(currentAxis) % tile(currentAxis)) == 0)
-// 	itFits = True;
-//     }
-//     // Advance the axis counter so that it wraps (0,1,2,0,1,2,...)
-//     currentAxis = (currentAxis + 1) % ndim;
-//   }
-//   // OK, we have a tile that FITS. We prefer larger tiles to
-//   // smaller ones unless they are TOO large. Arbitrarily assume
-//   // 10*idealVolume is too large, then we use the last volume.
-//   if (tile.product() > 10*idealVolume)
-//     return lastTile;
-//   else
-//     return tile;
-};
+template<class T>
+void PagedArray<T>::makeRWArray()
+{
+  theTable.reopenRW();
+  theRWArray.reference (ArrayColumn<T> (theTable, theColumnName));
+}

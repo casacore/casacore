@@ -30,40 +30,38 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
-LatticeNavigator::~LatticeNavigator() {
+LatticeNavigator::~LatticeNavigator()
+{
     // Nothing
-};
+}
 
-Bool LatticeNavigator::operator++() {
-  return operator++(0);
-};
+IPosition LatticeNavigator::relativePosition() const
+{
+  return (position() - blc()) / increment();
+}
 
-Bool LatticeNavigator::operator--() {
-  return operator--(0);
-};
+IPosition LatticeNavigator::relativeEndPosition() const
+{
+  return (endPosition() - blc()) / increment();
+}
 
-IPosition LatticeNavigator::relativePosition() const {
-  return position();
-};
-
-IPosition LatticeNavigator::relativeEndPosition() const {
-  return endPosition();
-};
-
-IPosition LatticeNavigator::subLatticeShape() const {
+IPosition LatticeNavigator::subLatticeShape() const
+{
   return latticeShape();
-};
+}
 
-IPosition LatticeNavigator::hangOverBlc() const {
+IPosition LatticeNavigator::hangOverBlc() const
+{
   IPosition blc(relativePosition());
   const uInt ndim = blc.nelements();
   for (uInt n = 0; n < ndim; n++)
     if (blc(n) < 0)
       blc(n) = 0;
   return blc;
-};
+}
 
-IPosition LatticeNavigator::hangOverTrc() const {
+IPosition LatticeNavigator::hangOverTrc() const
+{
   IPosition trc(relativeEndPosition());
   const IPosition latticeShape(subLatticeShape());
   const uInt ndim = trc.nelements();
@@ -72,52 +70,44 @@ IPosition LatticeNavigator::hangOverTrc() const {
     if (trc(n) >= latticeShape(n))
       trc(n) = latticeShape(n) - 1;
   return trc;
-};
+}
 
 void LatticeNavigator::subSection(const IPosition & blc,
-				  const IPosition & trc) {
+				  const IPosition & trc)
+{
   subSection(blc, trc, IPosition(latticeShape().nelements(),1));
-};
+}
 
 void LatticeNavigator::subSection(const IPosition & blc,
 				  const IPosition & trc, 
-				  const IPosition & inc){
+				  const IPosition & inc)
+{
   throw(AipsError("LatticeNavigator::subSection(blc, trc, inc)"
 	" - sub-Lattice's are not supported"));
-};
+}
 
-IPosition LatticeNavigator::blc() const {
-  return IPosition(latticeShape().nelements(),0);
-};
+IPosition LatticeNavigator::blc() const
+{
+  return IPosition(latticeShape().nelements(), 0);
+}
 
-IPosition LatticeNavigator::trc() const {
+IPosition LatticeNavigator::trc() const
+{
   return latticeShape() - 1;
-};
+}
 
-IPosition LatticeNavigator::increment() const {
-  return IPosition(latticeShape().nelements(),1);
-};
+IPosition LatticeNavigator::increment() const
+{
+  return IPosition(latticeShape().nelements(), 1);
+}
 
-Bool LatticeNavigator::ok() const {
+Bool LatticeNavigator::ok() const
+{
   return True;
-};
+}
 
-LatticeStepper * LatticeNavigator::castToStepper() {
-    return 0;
-};
-
-const LatticeStepper * LatticeNavigator::castToConstStepper() const {
-    return 0;
-};
-
-TiledStepper * LatticeNavigator::castToTiler() {
-    return 0;
-};
-
-const TiledStepper * LatticeNavigator::castToConstTiler() const {
-    return 0;
-};
-
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 LatticeNavigator"
-// End: 
+uInt LatticeNavigator::calcCacheSize (const ROTiledStManAccessor* accessor,
+				      Int rowNumber) const
+{
+    return (accessor == 0  ?  0 : calcCacheSize (*accessor, rowNumber));
+}

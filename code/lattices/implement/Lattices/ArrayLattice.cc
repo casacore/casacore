@@ -35,168 +35,202 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/COWPtr.h>
 
-template<class T> ArrayLattice<T>::
-ArrayLattice() {
+template<class T>
+ArrayLattice<T>::ArrayLattice()
+{
   // Nothing
-};
+}
 
-template<class T> ArrayLattice<T>::
-ArrayLattice(const IPosition & shape) 
-  :theData(shape) {
+template<class T>
+ArrayLattice<T>::ArrayLattice (const IPosition& shape) 
+: theData(shape)
+{
     // Nothing
-};
+}
 
-template<class T> ArrayLattice<T>::
-ArrayLattice(const Array<T> & array) 
-  :theData(array) {
+template<class T>
+ArrayLattice<T>::ArrayLattice (const Array<T>& array) 
+: theData(array)
+{
     // Nothing
-};
+}
 
-template<class T> ArrayLattice<T>::
-ArrayLattice(const ArrayLattice<T> &other) 
-  :theData(other.theData) {
+template<class T>
+ArrayLattice<T>::ArrayLattice (const ArrayLattice<T>&other) 
+: theData(other.theData)
+{
     // Nothing
-};
+}
 
-template<class T> ArrayLattice<T>::
-~ArrayLattice() {
+template<class T>
+ArrayLattice<T>::~ArrayLattice()
+{
   // Nothing
-};
+}
 
-template<class T> ArrayLattice<T> & ArrayLattice<T>::
-operator=(const ArrayLattice<T> & other) {
-  if (this != & other) 
+template<class T>
+ArrayLattice<T>& ArrayLattice<T>::operator= (const ArrayLattice<T>& other)
+{
+  if (this != &other) {
     theData = other.theData;
+  }
   return *this;
-};
+}
 
-template<class T> IPosition ArrayLattice<T>::
-shape() const {
+template<class T>
+IPosition ArrayLattice<T>::shape() const
+{
   return theData.shape();
-}; 
+} 
 
-template<class T> Bool ArrayLattice<T>::
-getSlice(COWPtr<Array<T> > & bufPtr, const IPosition & start, 
-	 const IPosition & shape, const IPosition & stride,
-	 Bool removeDegenerateAxes) const {
-  return Lattice<T>::getSlice(bufPtr, start, shape, stride, 
-			      removeDegenerateAxes);
-};
+template<class T>
+Bool ArrayLattice<T>::getSlice (COWPtr<Array<T> >& bufPtr,
+				const IPosition& start, 
+				const IPosition& shape,
+				const IPosition& stride,
+				Bool removeDegenerateAxes) const
+{
+  return getSlice (bufPtr, Slicer(start, shape, stride), removeDegenerateAxes);
+}
 
-template<class T> Bool ArrayLattice<T>::
-getSlice(COWPtr<Array<T> > & bufPtr, const Slicer & section, 
-	 Bool removeDegenerateAxes) const {
+template<class T>
+Bool ArrayLattice<T>::getSlice (COWPtr<Array<T> >& bufPtr,
+				const Slicer& section, 
+				Bool removeDegenerateAxes) const
+{
   // cast away the constness of the ArrayLattice using a pointer copy. This can
   // be done as the COWPtr will be set to be "readonly" and hence the
   // ArrayLattice cannot be modified without the COWPtr making a copy of the
   // cursor
-  if (bufPtr.isNull())
+  if (bufPtr.isNull()) {
     bufPtr.set(new Array<T>());
-  ArrayLattice<T> * This = (ArrayLattice<T> *) this;
+  }
+  ArrayLattice<T>* This = (ArrayLattice<T>*) this;
   Bool isAref = This->getSlice(bufPtr.rwRef(), section, removeDegenerateAxes);
-  if (isAref)
+  if (isAref) {
     bufPtr.setReadOnly();
+  }
   // While the returned array is normally a reference return "False" indicating
   // a copy as any attempt to modify the Array will result in a copy.
   return False;
-};
+}
 
-template<class T> Bool ArrayLattice<T>::
-getSlice(Array<T> & buffer, const IPosition & start, const IPosition & shape, 
-	 const IPosition & stride, Bool removeDegenerateAxes) {  
-  return Lattice<T>::getSlice(buffer, start, shape, stride,
-			      removeDegenerateAxes);
-};
+template<class T>
+Bool ArrayLattice<T>::getSlice (Array<T>& buffer,
+				const IPosition& start,
+				const IPosition& shape, 
+				const IPosition& stride,
+				Bool removeDegenerateAxes)
+{
+  return getSlice (buffer, Slicer(start, shape, stride), removeDegenerateAxes);
+}
 
-template<class T> Bool ArrayLattice<T>::
-getSlice(Array<T> & buffer, const Slicer & section, 
-	 Bool removeDegenerateAxes) {
+template<class T>
+Bool ArrayLattice<T>::getSlice (Array<T>& buffer,
+				const Slicer& section, 
+				Bool removeDegenerateAxes)
+{
   // The following block checks that the supplied buffer is the right size or
   // empty. These restrictions are not required for the rest of this function
   // to work. I impose them because they are required by the corresponding
   // functions in the PagedArray class. If these restrictions are a performance
   // bottleneck they can by removed (only for optimised code please).
-  {
-    const IPosition shape=buffer.shape();
-    if (shape.product() != 0)
-      if (removeDegenerateAxes){
-	AlwaysAssert(shape.isEqual(section.length().nonDegenerate()),
-		     AipsError);
-      }
-      else {
-	AlwaysAssert(shape.isEqual(section.length()), AipsError);
-      }
+  if (buffer.nelements() != 0) {
+    const IPosition& shape = buffer.shape();
+    if (removeDegenerateAxes) {
+      AlwaysAssert (shape.isEqual (section.length().nonDegenerate()),
+		    AipsError);
+    } else {
+      AlwaysAssert (shape.isEqual (section.length()), AipsError);
+    }
   }
   Array<T> cursor = theData(section.start(), section.end(), section.stride());
-  if (removeDegenerateAxes)
+  if (removeDegenerateAxes) {
     buffer.nonDegenerate(cursor);
-  else
+  } else {
     buffer.reference(cursor);
+  }
   return True;
-};
+}
 
-template<class T> void ArrayLattice<T>::
-putSlice(const Array<T> & sourceBuffer, const IPosition & where, 
-	 const IPosition & stride) {
+template<class T>
+void ArrayLattice<T>::putSlice (const Array<T>& sourceBuffer,
+				const IPosition& where, 
+				const IPosition& stride)
+{
   const uInt sdim = sourceBuffer.ndim();
   const uInt ldim = ndim();
   DebugAssert(ldim == where.nelements(), AipsError);
   DebugAssert(ldim == stride.nelements(), AipsError);
-
-  if (sdim == ldim)
+  if (sdim == ldim) {
     theData(where, 
 	    where + (sourceBuffer.shape()-1)*stride, 
 	    stride) = sourceBuffer;
-  else {
+  } else {
     Array<T> allAxes(sourceBuffer.addDegenerate(ldim-sdim));
     theData(where, 
 	    where + (allAxes.shape()-1)*stride, 
 	    stride) = allAxes;
   }
-};
+}
 
-template<class T> void ArrayLattice<T>::
-putSlice(const Array <T> & sourceBuffer, const IPosition & where){
-  Lattice<T>::putSlice(sourceBuffer, where);
-};
+template<class T>
+void ArrayLattice<T>::putSlice (const Array<T>& sourceBuffer,
+				const IPosition& where)
+{
+  const uInt sdim = sourceBuffer.ndim();
+  const uInt ldim = ndim();
+  DebugAssert(ldim == where.nelements(), AipsError);
+  if (sdim == ldim) {
+    theData(where, 
+	    where + (sourceBuffer.shape()-1)) = sourceBuffer;
+  } else {
+    Array<T> allAxes(sourceBuffer.addDegenerate(ldim-sdim));
+    theData(where, 
+	    where + (allAxes.shape()-1)) = allAxes;
+  }
+}
 
-template<class T> void ArrayLattice<T>::
-set(const T & value) {
+template<class T>
+void ArrayLattice<T>::set (const T& value)
+{
   theData.set(value);
-};
+}
 
-template <class T> T ArrayLattice<T>::
-getAt(const IPosition & where) const {
+template<class T>
+T ArrayLattice<T>::getAt (const IPosition& where) const
+{
   return theData(where);
-};
+}
 
-template <class T> void ArrayLattice<T>::
-putAt(const T & value, const IPosition & where) {
+template<class T>
+void ArrayLattice<T>::putAt (const T& value, const IPosition& where)
+{
   theData(where) = value;
-};
+}
 
-template <class T> RO_LatticeIterInterface<T> * ArrayLattice<T>::
-makeIter(const LatticeNavigator & nav) const {
-  return new RO_ArrLatticeIter<T>(*this, nav);
-};
-
-template <class T> LatticeIterInterface<T> * ArrayLattice<T>::
-makeIter(const LatticeNavigator & nav) {
+template<class T>
+LatticeIterInterface<T>* ArrayLattice<T>::makeIter
+                                       (const LatticeNavigator& nav) const
+{
   return new ArrLatticeIter<T>(*this, nav);
-};
+}
 
-template <class T> Array<T> & ArrayLattice<T>::
-asArray() {
+template<class T>
+Array<T>& ArrayLattice<T>::asArray()
+{
   return theData;
-};
+}
 
-template <class T> const Array<T> & ArrayLattice<T>::
-asArray() const {
+template<class T>
+const Array<T>& ArrayLattice<T>::asArray() const
+{
   return theData;
-};
+}
 
 // Check class invariants. 
-template <class T> Bool ArrayLattice<T>::
-ok() const {
+template<class T>
+Bool ArrayLattice<T>::ok() const
+{
   return theData.ok();
-};
+}

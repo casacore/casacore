@@ -39,273 +39,242 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h> 
 
-//---------------------RO_LatticeIterator---------------------------
 
-template <class T> RO_LatticeIterator<T>::
-RO_LatticeIterator(const Lattice<T> & lattice, const LatticeNavigator & method)
-  :theIterPtr(lattice.makeIter(method))
+template <class T>
+RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
+					   const LatticeNavigator& method)
+: itsIterPtr (lattice.makeIter (method))
 {
   DebugAssert(ok(), AipsError);
-};
+}
 
-template <class T> RO_LatticeIterator<T>::
-RO_LatticeIterator(const Lattice<T> & lattice, const IPosition & cursorShape)
-  :theIterPtr(lattice.makeIter(LatticeStepper(lattice.shape(),cursorShape)))
+template <class T>
+RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
+					   const IPosition& cursorShape)
+: itsIterPtr (lattice.makeIter (LatticeStepper(lattice.shape(), cursorShape)))
 {
   DebugAssert(ok(), AipsError);
-};
+}
 
-template <class T> RO_LatticeIterator<T>::
-RO_LatticeIterator(const RO_LatticeIterator<T> & other)
-  :theIterPtr(other.theIterPtr)
+template <class T>
+RO_LatticeIterator<T>::RO_LatticeIterator (const RO_LatticeIterator<T>& other)
+: itsIterPtr (other.itsIterPtr)
 {
   DebugAssert(ok(), AipsError);
-};
+}
 
-template <class T> RO_LatticeIterator<T>::
-~RO_LatticeIterator()
+template <class T>
+RO_LatticeIterator<T>::~RO_LatticeIterator()
 {
   // CountedPtr destructor takes care of deletion of the LatticeIterInterface
-};
+}
 
-template <class T> RO_LatticeIterator<T> & RO_LatticeIterator<T>::
-operator=(const RO_LatticeIterator<T> & other) {
+template <class T>
+RO_LatticeIterator<T>& RO_LatticeIterator<T>::operator=
+                                 (const RO_LatticeIterator<T>& other)
+{
   DebugAssert(ok(), AipsError);
-  if (this != &other)
-    theIterPtr = other.theIterPtr;
+  if (this != &other) {
+    itsIterPtr = other.itsIterPtr;
+  }
   return *this;
-};
+}
 
-template <class T> Bool RO_LatticeIterator<T>::
-operator++(Int) {
-  return theIterPtr->operator++(0);
-};
+template <class T>
+RO_LatticeIterator<T> RO_LatticeIterator<T>::copy() const
+{
+  RO_LatticeIterator<T> tmp (*this);
+  tmp.itsIterPtr = itsIterPtr->clone();
+  return tmp;
+}
+
+template <class T>
+Bool RO_LatticeIterator<T>::operator++(Int)
+{
+  return itsIterPtr->operator++(0);
+}
  
-template <class T> Bool RO_LatticeIterator<T>::
-operator++() {
-  return theIterPtr->operator++();
-};
+template <class T>
+Bool RO_LatticeIterator<T>::operator++()
+{
+  return itsIterPtr->operator++();
+}
  
-template <class T> Bool RO_LatticeIterator<T>::
-operator--(int) {
-  return theIterPtr->operator--(0);
-};
+template <class T>
+Bool RO_LatticeIterator<T>::operator--(int)
+{
+  return itsIterPtr->operator--(0);
+}
 
-template <class T> Bool RO_LatticeIterator<T>::
-operator--() {
-  return theIterPtr->operator--();
-}; 
+template <class T>
+Bool RO_LatticeIterator<T>::operator--()
+{
+  return itsIterPtr->operator--();
+} 
 
-template <class T> void RO_LatticeIterator<T>::
-reset() {
-  theIterPtr->reset();
-};
+template <class T>
+void RO_LatticeIterator<T>::reset()
+{
+  itsIterPtr->reset();
+}
 
-template <class T> Bool RO_LatticeIterator<T>::
-atStart() const {
-  return theIterPtr->atStart();
-};
+template <class T>
+Bool RO_LatticeIterator<T>::atStart() const
+{
+  return itsIterPtr->atStart();
+}
 
-template <class T> Bool RO_LatticeIterator<T>::
-atEnd() const {
-  return theIterPtr->atEnd();
-};
+template <class T>
+Bool RO_LatticeIterator<T>::atEnd() const
+{
+  return itsIterPtr->atEnd();
+}
 
-template <class T> uInt RO_LatticeIterator<T>::
-nsteps() const {
-  return theIterPtr->nsteps();
-};
+template <class T>
+uInt RO_LatticeIterator<T>::nsteps() const
+{
+  return itsIterPtr->nsteps();
+}
 
-template <class T> IPosition RO_LatticeIterator<T>::
-position() const {
-  return theIterPtr->position();
-};
+template <class T>
+IPosition RO_LatticeIterator<T>::position() const
+{
+  return itsIterPtr->position();
+}
 
-template <class T> IPosition RO_LatticeIterator<T>::
-endPosition() const {
-  return theIterPtr->endPosition();
-};
+template <class T>
+IPosition RO_LatticeIterator<T>::endPosition() const
+{
+  return itsIterPtr->endPosition();
+}
 
-template <class T>  IPosition RO_LatticeIterator<T>::
-latticeShape() const {
-  return theIterPtr->latticeShape();
-};
+template <class T>
+IPosition RO_LatticeIterator<T>::latticeShape() const
+{
+  return itsIterPtr->latticeShape();
+}
 
-template <class T> IPosition RO_LatticeIterator<T>::
-cursorShape() const {
-  return theIterPtr->cursorShape();
-};
+template <class T>
+IPosition RO_LatticeIterator<T>::cursorShape() const
+{
+  return itsIterPtr->cursorShape();
+}
 
-template <class T> const Vector<T> & RO_LatticeIterator<T>::
-vectorCursor() const {
-  return theIterPtr->vectorCursor();
-};
+template <class T>
+const Vector<T>& RO_LatticeIterator<T>::vectorCursor() const
+{
+  return itsIterPtr->vectorCursor();
+}
 
-template <class T> const Matrix<T> & RO_LatticeIterator<T>::
-matrixCursor() const {
-  return theIterPtr->matrixCursor();
-};
+template <class T>
+const Matrix<T>& RO_LatticeIterator<T>::matrixCursor() const
+{
+  return itsIterPtr->matrixCursor();
+}
 
-template <class T> const Cube<T> & RO_LatticeIterator<T>::
-cubeCursor() const {
-  return theIterPtr->cubeCursor();
-};
+template <class T>
+const Cube<T>& RO_LatticeIterator<T>::cubeCursor() const
+{
+  return itsIterPtr->cubeCursor();
+}
 
-template <class T> const Array<T> & RO_LatticeIterator<T>::
-cursor() const {
-  return theIterPtr->cursor();
-};
+template <class T>
+const Array<T>& RO_LatticeIterator<T>::cursor() const
+{
+  return itsIterPtr->cursor();
+}
 
 static LogIO ROlogErr(LogOrigin("RO_LatticeIterator<T>", "ok()"));
 
-template <class T> Bool RO_LatticeIterator<T>::
-ok() const {
-  if (theIterPtr.null() == True){
+template <class T>
+Bool RO_LatticeIterator<T>::ok() const
+{
+  if (itsIterPtr.null() == True){
     ROlogErr << LogIO::SEVERE 
-	   << "The pointer the the actual Lattice Iterator is zero!" 
-	   << LogIO::POST;
+	     << "The pointer the the actual Lattice Iterator is zero!" 
+	     << LogIO::POST;
     return False;
   }
-  if (theIterPtr->ok() == False){
+  if (itsIterPtr->ok() == False){
     ROlogErr << LogIO::SEVERE 
-	   << "The actual Lattice Iterator class is inconsistant" 
-	   << LogIO::POST;
+	     << "The actual Lattice Iterator class is inconsistent" 
+	     << LogIO::POST;
     return False;
   }
   return True;
-};
+}
 
-//-----------------------LatticeIterator-----------------------------------
 
-template <class T> LatticeIterator<T>::
-LatticeIterator(Lattice<T> & lattice, const LatticeNavigator & method)   
-  :theIterPtr(lattice.makeIter(method))
+
+template <class T>
+LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
+				     const LatticeNavigator& method)   
+: RO_LatticeIterator<T> (lattice, method)
+{}
+
+template <class T>
+LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
+				     const IPosition& cursorShape)   
+: RO_LatticeIterator<T> (lattice, cursorShape)
+{}
+
+template <class T>
+LatticeIterator<T>::LatticeIterator (const LatticeIterator<T>& other)
+: RO_LatticeIterator<T> (other)
+{}
+
+template <class T>
+LatticeIterator<T>::~LatticeIterator()
+{}
+
+template <class T>
+LatticeIterator<T>& LatticeIterator<T>::operator=
+                                      (const LatticeIterator<T>& other)
 {
-  DebugAssert(ok(), AipsError);
-};
-
-template <class T> LatticeIterator<T>::
-LatticeIterator(Lattice<T> & lattice, const IPosition & cursorShape)   
-  :theIterPtr(lattice.makeIter(LatticeStepper(lattice.shape(),cursorShape)))
-{
-  DebugAssert(ok(), AipsError);
-};
-
-template <class T> LatticeIterator<T>::
-LatticeIterator(const LatticeIterator<T> & other)
-  :theIterPtr(other.theIterPtr)
-{
-  DebugAssert(ok(), AipsError);
-};
-
-template <class T> LatticeIterator<T>::
-~LatticeIterator()
-{
-  // CountedPtr destructor takes care of deletion of the LatticeIterInterface
-};
-
-template <class T> LatticeIterator<T> & LatticeIterator<T>::
-operator=(const LatticeIterator<T> & other) {
-  DebugAssert(ok(), AipsError);
-  if (this != &other)
-    theIterPtr = other.theIterPtr;
+  RO_LatticeIterator<T>::operator= (other);
   return *this;
-};
+}
 
-template <class T> Bool LatticeIterator<T>::
-operator++(Int) {
-  return theIterPtr->operator++(0);
-};
- 
-template <class T> Bool LatticeIterator<T>::
-operator++() {
-  return theIterPtr->operator++();
-};
- 
-template <class T> Bool LatticeIterator<T>::operator--(Int) {
-  return theIterPtr->operator--(0);
-};
+template <class T>
+LatticeIterator<T> LatticeIterator<T>::copy() const
+{
+  LatticeIterator<T> tmp (*this);
+  tmp.itsIterPtr = itsIterPtr->clone();
+  return tmp;
+}
 
-template <class T> Bool LatticeIterator<T>::
-operator--() {
-  return theIterPtr->operator--();
-};
+template <class T>
+Vector<T>& LatticeIterator<T>::vectorCursor()
+{
+  return itsIterPtr->vectorCursor();
+}
 
-template <class T> void LatticeIterator<T>::
-reset() {
-  theIterPtr->reset();
-};
+template <class T>
+Matrix<T>& LatticeIterator<T>::matrixCursor()
+{
+  return itsIterPtr->matrixCursor();
+}
 
-template <class T> Bool LatticeIterator<T>::
-atStart() const {
-  return theIterPtr->atStart();
-};
+template <class T>
+Cube<T>& LatticeIterator<T>::cubeCursor()
+{
+  return itsIterPtr->cubeCursor();
+}
 
-template <class T> Bool LatticeIterator<T>::
-atEnd() const {
-  return theIterPtr->atEnd();
-};
+template <class T>
+Array<T>& LatticeIterator<T>::cursor()
+{
+  return itsIterPtr->cursor();
+}
 
-template <class T> uInt LatticeIterator<T>::
-nsteps() const {
-  return theIterPtr->nsteps();  
-};
+template <class T>
+void LatticeIterator<T>::writeCursor()
+{
+  itsIterPtr->writeCursor();
+}
 
-template <class T> IPosition LatticeIterator<T>::
-position() const {
-  return theIterPtr->position();
-};
-
-template <class T> IPosition LatticeIterator<T>::
-endPosition() const {
-  return theIterPtr->endPosition();
-};
-
-template <class T> IPosition LatticeIterator<T>::
-latticeShape() const {
-  return theIterPtr->latticeShape();
-};
-
-template <class T> IPosition LatticeIterator<T>::
-cursorShape() const {
-  return theIterPtr->cursorShape();
-};
-
-template <class T> Vector<T> & LatticeIterator<T>::
-vectorCursor() {
-  return theIterPtr->vectorCursor();
-};
-
-template <class T> Matrix<T> & LatticeIterator<T>::
-matrixCursor() {
-  return theIterPtr->matrixCursor();
-};
-
-template <class T> Cube<T> & LatticeIterator<T>::
-cubeCursor() {
-  return theIterPtr->cubeCursor();
-};
-
-template <class T> Array<T> & LatticeIterator<T>::
-cursor() {
-  return theIterPtr->cursor();
-};
-
-static LogIO logErr(LogOrigin("LatticeIterator<T>", "ok()"));
-
-template <class T> Bool LatticeIterator<T>::
-ok() const {
-  if (theIterPtr.null() == True){
-    logErr << LogIO::SEVERE 
-	   << "The pointer the the actual Lattice Iterator is zero!" 
-	   << LogIO::POST;
-    return False;
-  }
-  if (theIterPtr->ok() == False){
-    logErr << LogIO::SEVERE 
-	   << "The actual Lattice Iterator class is inconsistant" 
-	   << LogIO::POST;
-    return False;
-  }
-  return True;
-};
+template <class T>
+void LatticeIterator<T>::writeArray (const Array<T>& data)
+{
+  itsIterPtr->writeArray (data);
+}
