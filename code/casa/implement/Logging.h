@@ -32,6 +32,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogSink.h>
 #include <aips/Logging/LogFilter.h>
+#include <aips/Logging/TableLogSink.h>
 #include <aips/Logging/LogIO.h>
 
 // <module> 
@@ -136,6 +137,29 @@
 //         post it.
 //    <li> Change the priority to SEVERE and post an error message. 
 // </ol>
+//
+// When a dataset is created from several other datasets, their input
+// "histories" should be merged if possible. This can be done if the
+// local log sink is in fact a Table. The way you do this is by interrogating
+// the local sink to find out if it is in fact a TableLogSink. If it is, you
+// can use a concatenate method of TableLogSink. Schematically this would be
+// implemented as follows in some DataSet class that has a logSink method that
+// returns a LogIO reference:
+// <srcBlock>
+// void merge(DataSet &out, const DataSet &in1, const DataSet &in2) {
+//     ... copy the data from in1 and in2 to out
+//     if (out.logSink().localSink().isTableLogSink()) { // can write to out
+//         if (in1.logSink().localSink().isTableLogSink()) {
+//             out.logSink().localSink().castToTableLogSink().concatenate(
+//                  in1.logSink().localSink().castToTableLogSink());
+//     }
+//     if (... the same for in2 ...)
+// }
+// </srcBlock>
+// Of course, DataSet might provide some convenience function for merging
+// histories. However the point is that given a sink, you can safely determing
+// whether or not it is in fact a TableLogSink, and if it is you can call
+// its concatenate function, which takes another TableLogSink.
 // </synopsis> 
 //
 // <example>
