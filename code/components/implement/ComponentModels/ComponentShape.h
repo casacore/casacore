@@ -145,8 +145,8 @@ public:
 
   // set/get the reference direction
   // <group>
-  virtual void setRefDirection(const MDirection& newRefDir);
-  virtual const MDirection& refDirection() const;
+  void setRefDirection(const MDirection& newRefDir);
+  const MDirection& refDirection() const;
   // </group>
 
   // Calculate the proportion of the flux that is in a pixel of specified size
