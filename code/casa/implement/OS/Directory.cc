@@ -255,7 +255,7 @@ void Directory::copy (const Path& target, Bool overwrite,
     system (command);
     // Give write permission to user if needed.
     if (setUserWritePermission) {
-#if defined(__hpux__)
+#if defined(__hpux__) || defined(AIPS_IRIX)
 	command = "chmod -R u+w ";
 #else
 	command = "chmod -Rf u+w ";
