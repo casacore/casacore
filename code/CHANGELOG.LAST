@@ -1,0 +1,15 @@
+
+change id: 0009
+ author:   Neil Killeen
+ date:     2000/06/14
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   regionmanagergui
+ type:     Code
+ category: Change
+ summary:  Integrated GUI with standard guientry services
+I replaced the regionmanagergui entry box internals
+with standard services offered by guientry.g.  
+I improved some of the context sensitive popuphelp
+as well.
