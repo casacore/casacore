@@ -6256,3 +6256,4 @@
 17 191 src mv ./trial/implement/Fitting/LQNonLinearFit.cc ./trial/implement/Fitting/NonLinearFit.cc
 17 191 src mv ./trial/implement/Fitting/LQNonLinearFit.h ./trial/implement/Fitting/NonLinearFit.h
 17 191 src mv ./trial/implement/Fitting/LQNonLinearFitLM.cc ./trial/implement/Fitting/NonLinearFitLM.cc
+17 191 src mv ./trial/implement/Fitting/LQNonLinearFitLM.h ./trial/implement/Fitting/NonLinearFitLM.h
