@@ -53,21 +53,19 @@
 
 template <class T>
 ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
-{
-   pImage_p = image.cloneII();
-   cSys_p = image.coordinates();
-   obsInfo_p = cSys_p.obsInfo();
-   imageInfo_p = pImage_p->imageInfo();
-}
+: cSys_p(image.coordinates()),
+  obsInfo_p(cSys_p.obsInfo()),
+  imageInfo_p(image.imageInfo()),
+  pImage_p(image.cloneII())
+{}
 
 template <class T> 
 ImageSummary<T>::ImageSummary (const ImageSummary<T> &other)
-{
-   cSys_p = other.cSys_p;
-   obsInfo_p = other.obsInfo_p;
-   imageInfo_p = other.imageInfo_p;
-   pImage_p = other.pImage_p->cloneII();
-}
+: cSys_p(other.cSys_p),
+  obsInfo_p(other.obsInfo_p),
+  imageInfo_p(other.imageInfo_p),
+  pImage_p(other.pImage_p->cloneII())
+{}
 
 template <class T> 
 ImageSummary<T>::~ImageSummary ()
