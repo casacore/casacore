@@ -1,5 +1,5 @@
 //# LSQFit.h: Basic class for least squares fitting
-//# Copyright (C) 1999,2000,2001,2004
+//# Copyright (C) 1999,2000,2001,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,8 +78,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // arguments only. They can be used with any container having an STL
 // random-access iterator interface. Especially they can be used with
 // carrays (necessary templates provided), aips++ Vectors (necessary templates
-// provided, standard random access STL containers (like std::vector) (templates
-// not provided but just a matter of replacing names).
+// provided), standard random access STL containers (like std::vector)
+// (templates not provided but just a matter of replacing names).
 //
 // The normal operation of the class consists of the following steps:
 // <ul> 
@@ -140,6 +140,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // that it is possible to continue
 // with the same (partial) normal equations after e.g. an interim solution.
 //
+// If the normal equations are produced in separate partial sets (e.g.
+// in a multi-processor environment) a <src>merge()</src> method can combine
+// them.
+// <note role=tip>
+// It is suggested to add any possible constraint equations after the merge.
+// </note>
+//
 // A <src>debugIt(</src>) method provides access to all internal
 // information.
 //
@@ -148,9 +155,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // problem of duplicate definitions of non-templated members when 
 // pre-compiling them. 
 //
-// <note role=warning> No boundary checks on input and output containers is done
-// for faster execution. In general these tests should be done at the higher
-// level routines, like the <linkto class=LinearFit>LinearFit</linkto> and
+// <note role=warning> No boundary checks on input and output containers
+// is done for faster execution. In general these tests should be done at
+// the higher level routines, like the
+// <linkto class=LinearFit>LinearFit</linkto> and
 // <linkto class=NonLinearFitLM>NonLinearFit</linkto> classes.
 // </note>
 // </synopsis>
@@ -360,7 +368,6 @@ class LSQFit {
   // the iterations can be stopped.
   // Other arguments are as for <src>solve()</src> and <src>invert()</src>.
   // The <src>sol</src> is used for both input (parameter guess) and output.
-  // This non-linear solution will only work for 1 known. 
   // <group>
   template <class U>
     Bool solveLoop(Double &fit, uInt &nRank,
@@ -377,8 +384,7 @@ class LSQFit {
   // </group>
   // Make normal equations using the <src>cEq</src> condition equation
   // (with <src>nUnknowns</src> elements) and a weight <src>weight</src>,
-  // given the known observed value <src>obs</src> (with
-  // <src>nKnowns</src> elements).
+  // given the known observed value <src>obs</src>.
   //
   // <src>doNorm</src> and <src>doKnown</src> can be used
   // to e.g. re-use existing normal equations, i.e. the condition equations,
@@ -483,7 +489,7 @@ class LSQFit {
   // </group>
   // Add a new constraint equation (updating nConstraints); or set a
   // numbered constraint equation (0..nConstraints-1). False if illegal
-  // number n. The constraints are equations with nUnknowns terms, 
+  // number n. The constraints are equations with <src>nUnknowns</src> terms, 
   // and a constant value. E.g. measuring three angles of a triangle
   // could lead to equation <src>[1,1,1]</src> with obs as
   // <src>3.1415</src>. Note that each complex constraint will be
@@ -515,6 +521,17 @@ class LSQFit {
 		       const V &cEq,
 		       const std::complex<U> &obs);
   // </group>
+  // Merge other <src>LSQFit</src> object (i.e. the normal equation and
+  // related information) into <src>this</src>. Both objects must have the
+  // same number of unknowns, and be pure normal equations (i.e. no
+  // <src>invert(), solve(), solveLoop()</src> or statistics calls//
+  // should have been made). If merging cannot be done, <src>False</src>
+  // is returned.
+  // <note role=tip> For highest numerical precision in the case of a larger
+  // number of partial normal equations to be merged, it is best to merge
+  // them in pairs (and repeat).
+  // </note>
+  Bool merge(const LSQFit &other);
   // Reset status to empty
   void reset();
   // Set new sizes (default is for Real)
@@ -558,8 +575,8 @@ class LSQFit {
   uInt nUnknowns() const { return nun_p; };
   // Get the number of constraints
   uInt nConstraints() const { return ncon_p; };
-  // Get the rank deficiency <note role=warning>Note that the numberf is
-  // eturned assuming real values. For complex values it has to be halved
+  // Get the rank deficiency <note role=warning>Note that the number is
+  // returned assuming real values. For complex values it has to be halved
   // </note>
   uInt getDeficiency() const { return n_p-r_p; };
   // Get chi^2 (both are identical); the standard deviation (per observation)

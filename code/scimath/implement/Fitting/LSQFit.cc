@@ -1,5 +1,5 @@
 //# LSQFit.cc: Basic class for least squares fitting
-//# Copyright (C) 1999,2000,2002,2004
+//# Copyright (C) 1999,2000,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -542,6 +542,28 @@ Bool LSQFit::invertRect() {
   };
   
   state_p |= INVERTED;
+  return True;
+}
+
+Bool LSQFit::merge(const LSQFit &other) {
+  if (other.nun_p != nun_p || state_p || other.state_p) return False;
+  // Copy normal equations
+  Double *i2 = norm_p->row(0);
+  Double *i3 = other.norm_p->row(0);
+  for (uInt i=0; i<nun_p; ++i)
+    for (uInt j=i; j<nun_p; ++j, ++i2, ++i3) *i2 += *i3;
+  // Copy known terms
+  i2 = known_p;
+  i3 = other.known_p;
+  for (uInt i=0; i<nun_p; ++i, ++i2, ++i3) *i2 += *i3;
+  // Copy statistics information
+  error_p[NC]        += other.error_p[NC];
+  error_p[SUMWEIGHT] += other.error_p[SUMWEIGHT];
+  error_p[SUMLL]     += other.error_p[SUMLL];
+  // Copy constraint equations
+  for (uInt i=0; i<other.ncon_p; ++i) {
+    addConstraint(other.constr_p + i*other.nun_p, other.known_p[nun_p+i]);
+  };  
   return True;
 }
 
