@@ -58,7 +58,7 @@ void doit2 (DirectionCoordinate& lc,
             Vector<Double>& crpix,
             Vector<Double>& cdelt,
             Matrix<Double>& xform);
-void doit3 (const DirectionCoordinate& lc);
+void doit3 (DirectionCoordinate& lc);
 void doit4 (DirectionCoordinate& lc);
 void doit5 (DirectionCoordinate& lc);
 
@@ -344,18 +344,24 @@ void doit2 (DirectionCoordinate& lc,
    }
 }
 
-void doit3 (const DirectionCoordinate& lc)
+void doit3 (DirectionCoordinate& lc)
 {
 //
 // Test conversion
 //
    Vector<Double> pixel(2), world(2);
+   Vector<String> axisUnits = lc.worldAxisUnits();
+   axisUnits.set("rad");
+   if (!lc.setWorldAxisUnits(axisUnits, True)) {
+      throw(AipsError(String("failed to set world axis units to radians because ") + lc.errorMessage())); 
+   }
+//
    pixel(0) = 12.2;
    pixel(1) = -22.2;
+//
    if (!lc.toWorld(world, pixel)) {
       throw(AipsError(String("toWorld conversion (1) failed because ") + lc.errorMessage()));
    }
-//
    Vector<Double> pixel2(2);
    if (!lc.toPixel(pixel2, world)) {
       throw(AipsError(String("toPixel conversion (1) failed because ") + lc.errorMessage()));
@@ -364,34 +370,41 @@ void doit3 (const DirectionCoordinate& lc)
          throw(AipsError("Coordinate conversion reflection 1 failed"));
    }
 //
-   MDirection dir;
-   if (!lc.toWorld(dir, pixel)) {
-      throw(AipsError(String("toWorld conversion (2) failed because ") + lc.errorMessage())); 
-   }
-   if (!allNear(dir.getAngle().getValue(), world, 1e-6)) {
-         throw(AipsError("Coordinate conversion values (MDirection) are wrong"));
-   }
-   Vector<Double> pixel3;
-   if (!lc.toPixel(pixel3, dir)) {
-      throw(AipsError(String("toPixel conversion (2) failed because ") + lc.errorMessage()));
-   }
-   if (!allNear(pixel3, pixel, 1e-6)) {
-         throw(AipsError("Coordinate conversion reflection 2 failed"));
-   }
-//
    MVDirection dirV;
    if (!lc.toWorld(dirV, pixel)) {
       throw(AipsError(String("toWorld conversion (3) failed because ") + lc.errorMessage())); 
    }
-   MDirection dir2(dirV, lc.directionType());
-   if (!allNear(dir2.getAngle().getValue(), world, 1e-6)) {
+   axisUnits.set("deg");
+   if (!lc.setWorldAxisUnits(axisUnits, True)) {
+      throw(AipsError(String("failed to set world axis units to degrees because ") + lc.errorMessage())); 
+   }
+   if (!allNear(dirV.get(), world, 1e-6)) {
          throw(AipsError("Coordinate conversion values (MVDirection) are wrong"));
    }
+   Vector<Double> pixel3;
    if (!lc.toPixel(pixel3, dirV)) {
       throw(AipsError(String("toPixel conversion (3) failed because ") + lc.errorMessage()));
    }
    if (!allNear(pixel3, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 3 failed"));
+   }
+//
+   MDirection dir;
+   if (!lc.toWorld(dir, pixel)) {
+      throw(AipsError(String("toWorld conversion (2) failed because ") + lc.errorMessage())); 
+   }
+   if (!allNear(dir.getValue().get(), world, 1e-6)) {
+         throw(AipsError("Coordinate conversion values (MDirection) are wrong"));
+   }
+   axisUnits.set("rad");
+   if (!lc.setWorldAxisUnits(axisUnits, True)) {
+      throw(AipsError(String("failed to set world axis units to radians because ") + lc.errorMessage())); 
+   }
+   if (!lc.toPixel(pixel3, dir)) {
+      throw(AipsError(String("toPixel conversion (2) failed because ") + lc.errorMessage()));
+   }
+   if (!allNear(pixel3, pixel, 1e-6)) {
+         throw(AipsError("Coordinate conversion reflection 2 failed"));
    }
 //
 // Formatting.  
