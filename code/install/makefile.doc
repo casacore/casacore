@@ -332,6 +332,7 @@ docsys : $(HELPSYS) $(CHKDIR) $(DOCSAREA) \
     $(addprefix $(DOCSAREA)/,$(HTMDOCS)) \
     $(addprefix $(DOCSAREA)/,$(GIFDOCS)) \
     $(addprefix $(DOCSAREA)/,$(BGIFDOCS)) \
+    $(addprefix $(DOCSAREA)/,$(PNGDOCS)) \
     $(addprefix $(DOCSAREA)/,$(JSDOCS)) \
     $(addprefix $(DOCSAREA)/,$(JPGDOCS)) ;
 
@@ -397,6 +398,7 @@ show_local :
 	-@ echo "HTMDOCS =$(HTMDOCS)"
 	-@ echo "GIFDOCS =$(GIFDOCS)"
 	-@ echo "BGIFDOCS =$(GIFDOCS)"
+	-@ echo "PNGDOCS =$(PNGDOCS)"
 	-@ echo "JSDOCS =$(JSDOCS)"
 	-@ echo "JPGDOCS =$(JPGDOCS)"
 
