@@ -1,5 +1,5 @@
 //# CoordinateUtils.cc: 
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -188,7 +188,7 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
                                 Vector<Double>& pixelReplacement,
                                 const Vector<uInt>& worldAxes,
                                 const Bool removeThem,
-                                const Bool removePixelAxesToo=True)
+                                const Bool removePixelAxesToo)
 //
 // Remove all the world axes and optionally associated pixel axes
 // derived from the given list (a list to keep or remove).
