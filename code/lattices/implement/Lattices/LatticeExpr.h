@@ -74,6 +74,9 @@ template <class T> class Array;
 //    It is in the LatticeExprNode class that all the available expression
 //    operations are defined, so you should look there to see what 
 //    functionality is available.
+//
+//    A description of the implementation details of these classes can
+//    be found in <a href="../../../notes/216/216.html">Note 216</a>
 // </synopsis> 
 //
 // <example>

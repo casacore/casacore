@@ -93,6 +93,9 @@ template <class T> class Block;
 //    through and the expressions evaluated for each chunk (usually 
 //    a tile shape) of the iteration.
 //
+//    A description of the implementation details of these classes can
+//    be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 //    The available functionality is defined by the global friend functions
 //    and operators, plus the public constructors.  The other public members
 //    functions are generally not of interest to the user of this class.
