@@ -195,7 +195,8 @@ cubeCursor() const {
 template<class T> const Array<T> & RO_PagedArrIter<T>::
 cursor() const {
   DebugAssert(ok() == True, AipsError);
-  return *(const Array<T> *) theCurPtr;
+  //  return *(const Array<T> *) theCursor;
+  return theCursor;
 };
 
 template<class T> Bool RO_PagedArrIter<T>::
@@ -358,10 +359,9 @@ template<class T> Bool RO_PagedArrIter<T>::
 allocateCursor() {
   const IPosition cursorShape(theNavPtr->cursorShape());
   const IPosition realShape(cursorShape.nonDegenerate());
-  switch (realShape.nelements()) {
-  case 0:
-    theCurPtr = new Vector<T>(1);
-    break;
+  const uInt ndim = realShape.nelements();
+  AlwaysAssert(ndim > 0, AipsError)
+  switch (ndim) {
   case 1:
     theCurPtr = new Vector<T>(realShape);
     break;
@@ -585,7 +585,7 @@ cubeCursor() {
 template<class T> Array<T> & PagedArrIter<T>::
 cursor() {
   DebugAssert(ok() == True, AipsError);
-  return *theCurPtr;
+  return theCursor;
 };
 
 template<class T> Bool PagedArrIter<T>::
@@ -780,10 +780,9 @@ template<class T> Bool PagedArrIter<T>::
 allocateCursor() {
   const IPosition cursorShape(theNavPtr->cursorShape());
   const IPosition realShape(cursorShape.nonDegenerate());
-  switch (realShape.nelements()) {
-  case 0:
-    theCurPtr = new Vector<T>(1);
-    break;
+  const uInt ndim = realShape.nelements();
+  AlwaysAssert(ndim > 0, AipsError)
+  switch (ndim) {
   case 1:
     theCurPtr = new Vector<T>(realShape);
     break;
@@ -846,3 +845,7 @@ relinkArray() {
 			theCurPtr->getStorage(isACopy), SHARE);
   AlwaysAssert(isACopy == False, AipsError);
 };
+
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 PagedArrIter"
+// End: 
