@@ -5914,3 +5914,4 @@
 16 317 src mv trial/implement/Functionals/NQGaussian2D2.cc aips/implement/Functionals/NQGaussian2D2.cc
 16 317 src mv trial/implement/Functionals/NQGaussian2DParam.cc aips/implement/Functionals/NQGaussian2DParam.cc
 16 317 src mv trial/implement/Functionals/NQGaussian2DParam.h aips/implement/Functionals/NQGaussian2DParam.h
+16 317 src mv trial/implement/Functionals/NQPolynomial.cc aips/implement/Functionals/NQPolynomial.cc
