@@ -165,7 +165,7 @@ Double GaussianShape::sample(const MDirection& direction,
   const Double separation = compDirValue->separation(dirValue);
   Double retVal = 0.0;
   if (separation < 4 * itsShape.majorAxis()) {
-    const Double pa = compDirValue->positionAngle(dirValue);
+    const Double pa = - compDirValue->positionAngle(dirValue);
     retVal = square(pixelSize.radian()) *
       itsShape(separation*sin(pa), separation*cos(pa));
   }
@@ -200,7 +200,7 @@ void GaussianShape::sample(Vector<Double>& scale,
     if (separation > maxSep) {
       scale(i) = 0.0;
     } else {
-      pa = compDirValue->positionAngle(dirVal);
+      pa = - compDirValue->positionAngle(dirVal);
       scale(i) = pixArea * itsShape(separation*sin(pa), separation*cos(pa));
     }
   }
@@ -258,9 +258,7 @@ void GaussianShape::updateFT() {
   width(0) = factor/itsShape.minorAxis();
   width(1) = factor/itsShape.majorAxis();
   itsFT.setWidth(width);
-  Double pa = itsShape.PA();
-  pa += C::pi_2;
-  itsFT.setPA(pa);
+  itsFT.setPA(itsShape.PA() + C::pi_2);
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 GaussianShape"
