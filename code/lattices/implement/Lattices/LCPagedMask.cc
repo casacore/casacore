@@ -127,7 +127,7 @@ void LCPagedMask::handleDelete()
 LCRegion* LCPagedMask::doTranslate (const Vector<Float>&,
 				    const IPosition&) const
 {
-    // A PagedLCMask cannot be translated.
+    // An LCPagedMask cannot be translated.
     throw (AipsError ("LCPagedMask::translate is not supported"));
     return 0;
 }
