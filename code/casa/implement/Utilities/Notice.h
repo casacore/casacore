@@ -1,5 +1,5 @@
 //# Notice.h: Classes for manipulating notices
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,6 +141,7 @@ private:
 //  <li> The list relays the notice to all other iterators operating on the
 //       list (kept in the "target list").
 //  <li> Every iterator catches the notice and changes its state accordingly.
+// </ol>
 // </example>
 
 class NoticeTarget {
