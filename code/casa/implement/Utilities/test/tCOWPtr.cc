@@ -1,5 +1,5 @@
 //# tCOWPtr.cc: This program tests the Copy-On-Write-Pointer class
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -167,6 +167,13 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
   //assignment
   copy = COW;
   AlwaysAssert(allEQ(*copy, array), AipsError);
+
+  // test setReadOnly
+  if (!deleteIt) {
+    copy.setReadOnly(foo);
+    AlwaysAssert(allEQ(*copy, *foo), AipsError);
+    AlwaysAssert(copy.isReadOnly(), AipsError);
+  }
 
   if (!deleteIt) {
     delete foo;
