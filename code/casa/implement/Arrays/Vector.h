@@ -292,11 +292,9 @@ private:
     void initVector(const Block<T> &, Int nr);      // copy semantics
 };
 
-#if defined(__GNUG__)
 template<class T>
 inline  Array<T> &at_c(Vector<T> &val) { return(val.ac()); };
 template<class T>
 inline const  Array<T> &at_cc(const Vector<T> &val) { return(val.ac()); };
-#endif
 
 #endif
