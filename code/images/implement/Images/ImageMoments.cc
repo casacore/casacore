@@ -48,6 +48,7 @@
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Fitting/NonLinearFitLM.h>
+#include <trial/Images/ImageMomentsProgress.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/PagedImage.h>
@@ -58,7 +59,9 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/MomentCalculator.h>
+#include <trial/Lattices/PixelBox.h>
 #include <trial/Lattices/PagedArray.h>
+#include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/TiledLineStepper.h>
                
 #include <strstream.h>
@@ -1000,13 +1003,15 @@ Bool ImageMoments<T>::createMoments()
 
 // Iterate optimally through the image, compute the moments, fill the output lattices
 
-   LatticeApply<T>::vectorMultiApply(outPt, *pInImage_p, *pMomentCalculator,
-                                     momentAxis_p, blc_p, trc_p, True, True,
-                                     "Compute Moments");
-
+   const PixelBox region(blc_p, trc_p, pInImage_p->shape());
+   ImageMomentsProgress* pProgressMeter = new ImageMomentsProgress();
+   LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, region,
+                                   *pMomentCalculator, momentAxis_p, 
+                                   pProgressMeter);
 // Clean up
          
    delete pMomentCalculator;
+   delete pProgressMeter;
    for (i=0; i<Int(moments_p.nelements()); i++) delete outPt[i];
 
    if (pSmoothedImage) {
@@ -1564,12 +1569,14 @@ void ImageMoments<T>::saveLattice (const Lattice<T>* const pLattice,
    IPosition outShape(inDim,1);
    for (Int i=0; i<inDim; i++) outShape(i) = trc(i) - blc(i) + 1;
 
-
    CoordinateSystem outCSys = cSys.subImage(blc.asVector(), IPosition(inDim,1).asVector());
    PagedImage<T> outImage(outShape, outCSys, fileName);
 
    CopyLattice (outImage.lc(), pLattice->lc(), blc, trc);
 
+//   const PixelBox region(blc, trc, pLattice->shape());
+//   SubLattice<T> subLattice(*pLattice, region);
+//   outImage.copyData(subLattice);
 }
 
 
@@ -1678,6 +1685,10 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 // First copy input to output then smooth in situ.  
 
    CopyLattice(pSmoothedImage->lc(), pInImage_p->lc(), blc_p, trc_p);
+//   const PixelBox region(blc_p, trc_p, pInImage_p->shape());
+//   SubLattice<T> subLattice(*pInImage_p, region);
+//   pSmoothedImage->copyData(subLattice);
+
    for (Int i=0; i<Int(psf.ndim()); i++) {
       if (psf.shape()(i) > 1) {
          os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
