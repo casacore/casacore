@@ -1,5 +1,5 @@
 //# MSIter.h: Step through the MeasurementEquation by table
-//# Copyright (C) 1996,1999,2000,2001
+//# Copyright (C) 1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -308,7 +308,7 @@ protected:
   void setFieldInfo();
 
 // Determine if the numbers in r1 are a sorted subset of those in r2
-  Bool isSubSet(const class Vector<uInt>& r1, const class Vector<uInt>& r2);
+  Bool isSubSet(const Vector<uInt>& r1, const Vector<uInt>& r2);
 
   MSIter* This;
   Block<MeasurementSet> bms_p;
