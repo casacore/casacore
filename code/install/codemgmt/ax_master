@@ -2639,3 +2639,4 @@
 10 010 src mv aips/implement/Measures/UnitName.cc aips/implement/Quanta/UnitName.cc
 10 010 src mv aips/implement/Measures/UnitName.h aips/implement/Quanta/UnitName.h
 10 010 src mv aips/implement/Measures/UnitVal.cc aips/implement/Quanta/UnitVal.cc
+10 010 src mv aips/implement/Measures/UnitVal.h aips/implement/Quanta/UnitVal.h
