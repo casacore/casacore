@@ -27,52 +27,55 @@
 
 #include <aips/Mathematics/FFTServer.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/VectorIter.h>
-#include <aips/Mathematics/extern_fft.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/NumericTraits.h>
+#include <aips/Mathematics/extern_fft.h>
 #include <aips/Utilities/Assert.h>
 
 template<class T, class S> FFTServer<T,S>::
 FFTServer()
-  :theSize(0),
-   theComplexFlag(False),
-   theWork(0),
-   theBuffer(0)
+  :itsSize(0),
+   itsTransformType(FFTEnums::REALTOCOMPLEX),
+   itsWork(0),
+   itsBuffer(0)
 {
 }
 
 template<class T, class S> FFTServer<T,S>::
-FFTServer(const IPosition & fftSize, const Bool complexTransforms)
-  :theSize(fftSize.nelements(), 0),
-   theComplexFlag(complexTransforms),
-   theWork(fftSize.nelements()),
-   theBuffer(0)
+FFTServer(const IPosition & fftSize, 
+	  FFTEnums::TransformType transformType)
+  :itsSize(fftSize.nelements(), 0),
+   itsTransformType(transformType),
+   itsWork(fftSize.nelements()),
+   itsBuffer(0)
 {
-  const uInt ndim = theSize.nelements();
+  const uInt ndim = itsSize.nelements();
   for (uInt i = 0; i < ndim; i++) {
-    theWork[i] = new Block<T>;
+    itsWork[i] = new Block<T>;
   }
-  resize(fftSize, complexTransforms);
+  resize(fftSize, transformType);
 }
 
 template<class T, class S> FFTServer<T,S>::
 FFTServer(const FFTServer<T,S> & other)
-  :theSize(other.theSize),
-   theComplexFlag(other.theComplexFlag),
-   theWork(other.theSize.nelements()),
-   theBuffer(other.theBuffer.nelements())
+  :itsSize(other.itsSize),
+   itsTransformType(other.itsTransformType),
+   itsWork(other.itsSize.nelements()),
+   itsBuffer(other.itsBuffer.nelements())
 {
-  const uInt ndim = theSize.nelements();
+  const uInt ndim = itsSize.nelements();
   for (uInt n = 0; n < ndim; n++)
-    theWork[n] = new Block<T>(*(other.theWork[n]));
+    itsWork[n] = new Block<T>(*(other.itsWork[n]));
 }
 
 template<class T, class S> FFTServer<T,S>::
 ~FFTServer() {
-  const uInt ndim = theWork.nelements();
+  const uInt ndim = itsWork.nelements();
   for (uInt n = 0; n < ndim; n++) {
-    delete theWork[n];
-    theWork[n] = 0;
+    delete itsWork[n];
+    itsWork[n] = 0;
   }
 }
 
@@ -80,44 +83,45 @@ template<class T, class S> FFTServer<T,S> & FFTServer<T,S>::
 operator=(const FFTServer<T,S> & other) {
   if (this != &other) {
     uInt n;
-    const uInt curDim = theSize.nelements();
+    const uInt curDim = itsSize.nelements();
     for (n = 0; n < curDim; n++) {
-      delete theWork[n];
-      theWork[n] = 0;
+      delete itsWork[n];
+      itsWork[n] = 0;
     }
-    theSize = other.theSize;
-    theComplexFlag = other.theComplexFlag;
-    const uInt newDim = theSize.nelements();
+    itsSize = other.itsSize;
+    itsTransformType = other.itsTransformType;
+    const uInt newDim = itsSize.nelements();
     for (n = 0; n < newDim; n++)
-      theWork[n] = new Block<T>(*(other.theWork[n]));
-    theBuffer.resize(other.theBuffer.nelements());
+      itsWork[n] = new Block<T>(*(other.itsWork[n]));
+    itsBuffer.resize(other.itsBuffer.nelements());
   }
   return *this;
 }
 
 template<class T, class S> void FFTServer<T,S>::
-resize(const IPosition & fftSize, const Bool complexTransforms) {
+resize(const IPosition & fftSize,
+       FFTEnums::TransformType transformType) {
   const uInt ndim = fftSize.nelements();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(fftSize.product() > 0, AipsError);
 
   // if the number of dimensions has changed then allocate/remove the work
   // arrays required/used.
-  if (theSize.nelements() != ndim) {
-    const uInt curDim = theSize.nelements();
+  if (itsSize.nelements() != ndim) {
+    const uInt curDim = itsSize.nelements();
     uInt k;
-    theSize.resize(ndim);
+    itsSize.resize(ndim);
     if (curDim < ndim) {
-      theWork.resize(ndim);
+      itsWork.resize(ndim);
       for (k = curDim; k < ndim; k++) {
-	theWork[k] = new Block<T>;
-	theSize(k) = 0;
+	itsWork[k] = new Block<T>;
+	itsSize(k) = 0;
       }
     }
     else {
       for (k = ndim; k < curDim; k++) {
-	delete theWork[k];
-	theWork[k] = 0;
+	delete itsWork[k];
+	itsWork[k] = 0;
       }
     }
   }
@@ -125,37 +129,46 @@ resize(const IPosition & fftSize, const Bool complexTransforms) {
   // along the first dimension is a real <-> complex transform done so it is
   // treated separately.
   Int fftLen = fftSize(0);
-  uInt workSize;
-  uInt bufferLength = theBuffer.nelements();
-  if (complexTransforms != theComplexFlag || theSize(0) != fftLen) {
-    if (complexTransforms)
-      workSize = 4 * fftLen + 15;
-    else
-      workSize = 2 * fftLen + 15;
-    theWork[0]->resize(workSize); 
-    T * workPtr = theWork[0]->storage();
-    if (complexTransforms) {
-      cffti(fftLen, workPtr);
+  uInt workSize = 0;
+  uInt bufferLength = itsBuffer.nelements();
+  if (transformType != itsTransformType || itsSize(0) != fftLen) {
+    switch (transformType) {
+      case FFTEnums::COMPLEX:
+	workSize = 4 * fftLen + 15; break;
+      case FFTEnums::REALTOCOMPLEX:
+	workSize = 2 * fftLen + 15; break;
+      case FFTEnums::REALSYMMETRIC:
+	workSize = 3 * fftLen + 15; break;
+    }
+    itsWork[0]->resize(workSize); 
+    T * workPtr = itsWork[0]->storage();
+    switch (transformType) {
+      case FFTEnums::COMPLEX:
+	cffti(fftLen, workPtr); break;
+      case FFTEnums::REALTOCOMPLEX:
+	rffti(fftLen, workPtr); break;
+      case FFTEnums::REALSYMMETRIC:
+	costi(fftLen, workPtr); break;
+    }
+    if (transformType == FFTEnums::COMPLEX) {
       bufferLength = max(bufferLength, (uInt) fftLen);
     }
-    else
-      rffti(fftLen, workPtr);
-    theComplexFlag = complexTransforms;
-    theSize(0) = fftLen;
+    itsTransformType = transformType;
+    itsSize(0) = fftLen;
   }
   // Allocate the work arrays for the other dimensions.
   for (uInt n = 1; n < ndim; n++) {
     fftLen = fftSize(n);
-    if (theSize(n) != fftLen) {
+    if (itsSize(n) != fftLen) {
       workSize = 4 * fftLen + 15;
-      theWork[n]->resize(workSize); 
-      T * workPtr = theWork[n]->storage();
+      itsWork[n]->resize(workSize); 
+      T * workPtr = itsWork[n]->storage();
       cffti(fftLen, workPtr);
       bufferLength = max(bufferLength, (uInt) fftLen);
-      theSize(n) = fftLen;
+      itsSize(n) = fftLen;
     }
   }
-  theBuffer.resize(bufferLength);
+  itsBuffer.resize(bufferLength);
 }
 
 template<class T, class S> void FFTServer<T,S>::
@@ -217,25 +230,31 @@ fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True) {
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
   // The constInput argument is not used as the input Array is never changed by
-  // this function. But is put into the interface to in case this function
-  // changes in the future and to maintain a consistant interface with the
-  // other fft functions in this class. To supress the compiler warning I'll
-  // use it here.
+  // this function. But is put into the interface in case this function changes
+  // in the future and to maintain a consistant interface with the other fft
+  // functions in this class. To suppress the compiler warning I'll use it
+  // here.
   if (constInput) {
   }
 
   const IPosition shape = rData.shape();
-  // Initialise the work arrays
-  if (!shape.isEqual(theSize) || theComplexFlag != False)
-    resize(shape, False);
   // Ensure the output Array is the required size
   IPosition resultShape = shape;
   resultShape(0) = (shape(0)+2)/2;
   if (cResult.nelements() != 0) {
     AlwaysAssert(resultShape.isEqual(cResult.shape()), AipsError);
   }
-  else
+  else {
     cResult.resize(resultShape);
+  }
+  // Early exit if the Array is all zero;
+  if (allNearAbs(rData, T(0), NumericTraits<T>::epsilon)) {
+    cResult = S(0);
+    return;
+  }
+  // Initialise the work arrays
+  if (!shape.isEqual(itsSize) || itsTransformType != FFTEnums::REALTOCOMPLEX)
+    resize(shape, FFTEnums::REALTOCOMPLEX);
 
   // get a pointer to the array holding the result
   Bool resultIsAcopy;
@@ -245,12 +264,11 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
   {
     Bool dataIsAcopy;
     const T * dataPtr = rData.getStorage(dataIsAcopy);
-    T * workPtr = theWork[0]->storage();
+    T * workPtr = itsWork[0]->storage();
     T * resultPtr = (T *) complexPtr;
     fftLen = shape(0);
     Bool even = True;
-    if (fftLen%2 == 1)
-      even = False;
+    if (fftLen%2 == 1) even = False;
     uInt resultRowLen = resultShape(0)*2;
     const T * inputRowPtr = dataPtr;
     T * resultRowPtr = resultPtr;
@@ -289,8 +307,8 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
     for (uInt n = 1; n < ndim; n++) {
       fftLen = resultShape(n);
       nffts = cElements/fftLen;
-      workPtr = theWork[n]->storage();
-      buffPtr = theBuffer.storage();
+      workPtr = itsWork[n]->storage();
+      buffPtr = itsBuffer.storage();
       rowPtr = complexPtr;
       r = 0;
       while (r < nffts) {
@@ -299,7 +317,7 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
 	// this speeds up access to the data by a factors of about ten!
 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
 	// Do the transform
-	cfftf( fftLen, buffPtr, workPtr);
+	cfftf(fftLen, buffPtr, workPtr);
 	// copy the data back
 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
 	// indexing calculations
@@ -330,8 +348,14 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   const IPosition cShape = cCopy.shape();
   const IPosition rShape = determineShape(rResult.shape(), cCopy);
   rResult.resize(rShape);
-  if (!rShape.isEqual(theSize) || theComplexFlag != False)
-    resize(rShape, False);
+  // Early exit if the Array is all zero;
+  if (allNearAbs(cData, S(0), NumericTraits<S>::epsilon)) {
+    rResult = T(0);
+    return;
+  }
+  // resize the server if necessary
+  if (!rShape.isEqual(itsSize) || itsTransformType != FFTEnums::REALTOCOMPLEX)
+    resize(rShape, FFTEnums::REALTOCOMPLEX);
 
   const uInt ndim = rShape.nelements();
   uInt fftLen;
@@ -343,12 +367,12 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
 
   // Do complex to complex transforms along all other dimensions
   if (ndim > 1) {
-    S * buffPtr = theBuffer.storage();
+    S * buffPtr = itsBuffer.storage();
     S * rowPtr = 0;
     const uInt cElements = cShape.product();
     uInt n, r, nffts, stride = cShape(0);
     for (n = 1; n < ndim; n++) {
-      workPtr = theWork[n]->storage();
+      workPtr = itsWork[n]->storage();
       rowPtr = dataPtr;
       fftLen = rShape(n);
       nffts = cElements/fftLen;
@@ -375,7 +399,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   Bool resultIsAcopy;
   T * resultPtr = rResult.getStorage(resultIsAcopy);
   T * realDataPtr = (T *) dataPtr;
-  workPtr = theWork[0]->storage();
+  workPtr = itsWork[0]->storage();
 
   T * resultRowPtr = resultPtr;
   const uInt cStride = cShape(0)*2;
@@ -411,9 +435,14 @@ fft0(Array<T> & rResult, const Array<S> & cData) {
 
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<S> & cValues, const Bool toFrequency) {
+  // Early exit if the Array is all zero;
+  if (allNearAbs(cValues, S(0), NumericTraits<S>::epsilon)){
+    return;
+  }
+  // resize the server if necessary
   const IPosition shape = cValues.shape();
-  if (!shape.isEqual(theSize) || theComplexFlag != True)
-    resize(shape, True);
+  if (!shape.isEqual(itsSize) || itsTransformType != FFTEnums::COMPLEX)
+    resize(shape, FFTEnums::COMPLEX);
 
   const uInt ndim = shape.nelements();
   uInt fftLen;
@@ -422,7 +451,7 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
   T * workPtr = 0;
 
   // Do complex to complex transforms along all the dimensions
-  S * buffPtr = theBuffer.storage();
+  S * buffPtr = itsBuffer.storage();
   T * realBuffPtr = 0;
   T * endRowPtr = 0;
   S * rowPtr = 0;
@@ -431,12 +460,12 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
   const uInt shape0t2 = shape(0) * 2;
   uInt n, r, nffts, stride = 1u;
   for (n = 0; n < ndim; n++) {
-    workPtr = theWork[n]->storage();
+    workPtr = itsWork[n]->storage();
     rowPtr = dataPtr;
     fftLen = shape(n);
     nffts = nElements/fftLen;
     r = 0;
-    buffPtr = theBuffer.storage();
+    buffPtr = itsBuffer.storage();
     while (r < nffts) {
       // Copy the data into a temporary buffer. This makes it contigious and
       // hence it is more likely to fit into cache. With current computers
@@ -487,7 +516,7 @@ fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True) {
 // template<class T, class S> void FFTServer<T,S>::
 // fft0(Array<T> & rValues, const Bool toFrequency) {
 //   const IPosition shape = rValues.shape();
-//   if (!shape.isEqual(theSize) || theComplexFlag == True)
+//   if (!shape.isEqual(itsSize) || itsTransformType == True)
 //     resize(shape, False);
 
 //   const uInt ndim = shape.nelements();
@@ -497,7 +526,7 @@ fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True) {
 //   T * workPtr = 0;
 
 //   // Do complex to complex transforms along all the dimensions
-//   S * buffPtr = theBuffer.storage();
+//   S * buffPtr = itsBuffer.storage();
 //   T * realBuffPtr = 0;
 //   T * endRowPtr = 0;
 //   S * rowPtr = 0;
@@ -506,7 +535,7 @@ fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True) {
 //   const uInt shape0t2 = shape(0) * 2;
 //   uInt n, r, nffts, stride = 1u;
 //   for (n = 0; n < ndim; n++) {
-//     workPtr = theWork[n]->storage();
+//     workPtr = itsWork[n]->storage();
 //     rowPtr = dataPtr;
 //     fftLen = shape(n);
 //     nffts = nElements/fftLen;
@@ -579,14 +608,14 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
     }
   }
   // See if the FFTServer size can be used to guess the output Array size;
-  if (theSize.nelements() == cDim) {
+  if (itsSize.nelements() == cDim) {
     Bool match = True;
     for (uInt i = 1; i < cDim; i++)
-      if (theSize(i) != cShape(i))
+      if (itsSize(i) != cShape(i))
 	match = False;
     if (match == True && 
-	((theSize(0) == 2*cShape(0) - 2) || (theSize(0) == 2*cShape(0) - 1)))
-      return theSize;
+	((itsSize(0) == 2*cShape(0) - 2) || (itsSize(0) == 2*cShape(0) - 1)))
+      return itsSize;
   }
   IPosition defShape(cShape);
   defShape(0) = 2*cShape(0) - 2;
@@ -600,14 +629,14 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {
   const uInt nElements = shape.product();
   AlwaysAssert(nElements != 0, AipsError);
   {
-    Int buffLen = theBuffer.nelements();
+    Int buffLen = itsBuffer.nelements();
     for (uInt i = 0; i < ndim; i++)
       buffLen = max(buffLen, shape(i));
-    theBuffer.resize(buffLen, False, False);
+    itsBuffer.resize(buffLen, False, False);
   }
   Bool dataIsAcopy;
   S * dataPtr = cData.getStorage(dataIsAcopy);
-  S * buffPtr = theBuffer.storage();
+  S * buffPtr = itsBuffer.storage();
   S * rowPtr = 0;
   S * rowPtr2 = 0;
   S * rowPtr2o = 0;
@@ -657,14 +686,14 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian) {
   const uInt nElements = shape.product();
   AlwaysAssert(nElements != 0, AipsError);
   {
-    Int buffLen = theBuffer.nelements();
+    Int buffLen = itsBuffer.nelements();
     for (uInt i = 0; i < ndim; i++)
       buffLen = max(buffLen, shape(i)/2);
-    theBuffer.resize(buffLen, False, False);
+    itsBuffer.resize(buffLen, False, False);
   }
   Bool dataIsAcopy;
   T * dataPtr = rData.getStorage(dataIsAcopy);
-  T * buffPtr = (T *) theBuffer.storage();
+  T * buffPtr = (T *) itsBuffer.storage();
   T * rowPtr = 0;
   T * rowPtr2 = 0;
   T * rowPtr2o = 0;
