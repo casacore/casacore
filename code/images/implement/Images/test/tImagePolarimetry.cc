@@ -492,11 +492,12 @@ void traditionalRotationMeasure (Double rm, Double rmFg, Double rmMax,
    ImageInterface<Float>* pPA0Out = new TempImage<Float>(shapePA, cSysPA);
    ImageInterface<Float>* pPA0ErrOut = new TempImage<Float>(shapePA, cSysPA);
 //
+   PGPlotter pl2;
    ImageInterface<Float>* pNT = 0;
    ImageInterface<Float>* pChiSq = 0;
    Double maxPaErr = C::pi;
-   pol.rotationMeasure(pRMOut, pRMErrOut, pPA0Out, pPA0ErrOut, pNT, pChiSq, -1, 
-                       Float(rmMax), maxPaErr, Float(sigma), Float(rmFg));
+   pol.rotationMeasure(pRMOut, pRMErrOut, pPA0Out, pPA0ErrOut, pNT, pChiSq,
+                       pl2, -1, Float(rmMax), maxPaErr, Float(sigma), Float(rmFg));
    delete pIm;
 //
    IPosition posRM(shapeRM.nelements(),0);
