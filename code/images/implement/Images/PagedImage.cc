@@ -166,7 +166,7 @@ template <class T> PagedImage<T>::~PagedImage()
 	save_units();
 	// Update the coordinates
 	if (table_p.keywordSet().isDefined("coords")) {
-	    table_p.keywordSet().removeField("coords");
+	    table_p.rwKeywordSet().removeField("coords");
 	}
 	AlwaysAssert(coords_p.save(table_p.keywordSet(), "coords"), AipsError);
     }
@@ -245,7 +245,7 @@ Bool PagedImage<T>::setCoordinateInfo(const CoordinateSystem &coords)
 	if (table_p.isWritable()) {
 	    // Update the coordinates
 	    if (table_p.keywordSet().isDefined("coords")) {
-		table_p.keywordSet().removeField("coords");
+		table_p.rwKeywordSet().removeField("coords");
 	    }
 	    if (!(coords_p.save(table_p.keywordSet(), "coords"))) {
 		logSink() << LogIO::SEVERE << "Error saving coordinates in "
@@ -471,9 +471,9 @@ Bool PagedImage<T>::setMiscInfo(const RecordInterface &newInfo)
 	return False;
     }
     if (table_p.keywordSet().isDefined("miscinfo")) {
-	table_p.keywordSet().removeField("miscinfo");
+	table_p.rwKeywordSet().removeField("miscinfo");
     }
-    table_p.keywordSet().defineRecord("miscinfo", newInfo);
+    table_p.rwKeywordSet().defineRecord("miscinfo", newInfo);
     return True;
 }
 
@@ -671,9 +671,9 @@ template<class T> void PagedImage<T>::save_units()
 	return;
     }
     if (table_p.keywordSet().isDefined("units")) {
-	table_p.keywordSet().removeField("units");
+	table_p.rwKeywordSet().removeField("units");
     }
-    table_p.keywordSet().define("units", units_p.getName());
+    table_p.rwKeywordSet().define("units", units_p.getName());
 }
 
 template<class T> void PagedImage<T>::restore_units()

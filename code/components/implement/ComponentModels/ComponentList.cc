@@ -1,5 +1,5 @@
 //# ClassFileName.cc:  this defines ClassName, which ...
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -138,14 +138,14 @@ ComponentList::
 
       ArrayColumnDesc<Float> fluxCol("Flux" ,"Stokes I,Q,U,V flux in Jy",
 				     IPosition(1,4),  ColumnDesc::Direct);
-      fluxCol.keywordSet().define ("Unit", "Jy");
+      fluxCol.rwKeywordSet().define ("Unit", "Jy");
       td.addColumn(fluxCol);
 
       ArrayColumnDesc<Double> dirCol("Direction" ,"RA/Dec in "
 				     + angleUnits + " ("+refFrame+")",
 				     IPosition(1,2),  ColumnDesc::Direct);
-      dirCol.keywordSet().define ("Unit", angleUnits);
-      dirCol.keywordSet().define ("Frame", refFrame);
+      dirCol.rwKeywordSet().define ("Unit", angleUnits);
+      dirCol.rwKeywordSet().define ("Frame", refFrame);
       td.addColumn(dirCol);
       
       ArrayColumnDesc<Double> 

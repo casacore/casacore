@@ -150,7 +150,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
 	   String newname = colname + "-keyword";
 // 	   cout << "Duplicate name (keyword & column) : " << ttype(i)
 // 	       << " keyword will be renamed " << newname << endl;
-	   td.keywordSet().renameField(newname, colname);
+	   td.rwKeywordSet().renameField(newname, colname);
        }
        //		enter the name in the colNames map
        colNames->define(i, colname);
@@ -248,20 +248,20 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
        if (kwl(FITS::TTYPE, i)) 
 	   td.rwColumnDesc(colname).comment() = kwl(FITS::TTYPE,i)->comm();
        //		for 0 element fields, set ZEROELEM keyword, Bool=True
-       if (nelem[i]==0) td.rwColumnDesc(colname).keywordSet().define("ZEROELEM", True);
+       if (nelem[i]==0) td.rwColumnDesc(colname).rwKeywordSet().define("ZEROELEM", True);
        //		attach associated information
        //		Units
-       td.rwColumnDesc(colname).keywordSet().define("TUNIT", tunit(i));
+       td.rwColumnDesc(colname).rwKeywordSet().define("TUNIT", tunit(i));
        //		display format
-       td.rwColumnDesc(colname).keywordSet().define("TDISP", tunit(i));
+       td.rwColumnDesc(colname).rwKeywordSet().define("TDISP", tunit(i));
        //		TDIM array dimension convention, this should really be
        //		done above !!
-       td.rwColumnDesc(colname).keywordSet().define("TDIM", tdim(i));
+       td.rwColumnDesc(colname).rwKeywordSet().define("TDIM", tdim(i));
        //		For integer types, add TNULL, gives the undefined value
        //		for integer types
        if (field(i).fieldtype() == FITS::SHORT ||
 	   field(i).fieldtype() == FITS::LONG)
-	   td.rwColumnDesc(colname).keywordSet().define("TNULL", tnull(i));
+	   td.rwColumnDesc(colname).rwKeywordSet().define("TNULL", tnull(i));
    }	//		end of loop over columns
 
    // add the virtual columns if sdfits is true
@@ -320,7 +320,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
    } else {
        // no virtual columns, put any keywords in td and
        // clean out kwSet
-       td.keywordSet().merge(kwSet,RecordInterface::RenameDuplicates);
+       td.rwKeywordSet().merge(kwSet,RecordInterface::RenameDuplicates);
        RecordDesc emptyDesc;
        kwSet.restructure(emptyDesc);
    }
@@ -671,7 +671,7 @@ const TableDesc& BinaryTable::getDescriptor()
 
 TableRecord& BinaryTable::getKeywords()
 {
-    return currRowTab->keywordSet();
+    return currRowTab->rwKeywordSet();
 }
 
 const Table &BinaryTable::thisRow()

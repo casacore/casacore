@@ -1,5 +1,5 @@
 //# VisSet.cc: Implementation of VisSet
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,7 +98,7 @@ VisSet::VisSet(const MeasurementSet& ms,const Block<Int>& columns,
       modelCoh_p=referenceCopy(obsCoh_p,"-model",extraWritableColumns,"zero");
       modelCoh_p.tableInfo().setSubType("model");
       ArrayColumn<Complex> mcd(modelCoh_p,MS::columnName(MS::DATA));
-      mcd.keywordSet().define("CHANNEL_SELECTION",selection_p);
+      mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
     };
 
     Bool initCorr=True;
@@ -124,7 +124,7 @@ VisSet::VisSet(const MeasurementSet& ms,const Block<Int>& columns,
       corrCoh_p=referenceCopy(obsCoh_p,"-corrected", extraWritableColumns,"copy");
       corrCoh_p.tableInfo().setSubType("corrected");
       ArrayColumn<Complex> ccd(corrCoh_p,MS::columnName(MS::DATA));
-      ccd.keywordSet().define("CHANNEL_SELECTION",selection_p);
+      ccd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
 
       // Copy the weights from observed to corrected
       ScalarColumn<Float> oWt(obsCoh_p,MS::columnName(MS::WEIGHT));
@@ -290,7 +290,7 @@ Table VisSet::referenceCopy(const Table& tab, const String& extension,
 
   Table refTab(newTab,tab.nrow());
 
-  refTab.keywordSet()=tab.keywordSet();
+  refTab.rwKeywordSet()=tab.keywordSet();
 
   TiledDataStManAccessor* dataAccessor(0);
   if (tiledData) 
