@@ -29,6 +29,7 @@
 #include <trial/MeasurementSets/MSFitsInput.h>
 
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Cube.h>
@@ -59,7 +60,6 @@
 #include <trial/Tasking/NewFile.h>
 #include <trial/Tasking/ProgressMeter.h>
 
-static LogIO os;
 
 // Returns the 0-based position of the key string in the map,
 // which is a list of strings.  Looks for the "Which" occurrance
@@ -138,7 +138,7 @@ MSFitsInput::MSFitsInput(const String& msFile,
 			 const String& fitsFile)
   :infile_p(0),ok_p(False),msc_p(0)
 {
-  os << LogOrigin("ms", "MSFitsInput()", WHERE);
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
 
   // First, lets verify that fitsfile exists and that it appears to be a
   // FITS file.
@@ -192,6 +192,7 @@ MSFitsInput::MSFitsInput(const String& msFile,
 
 Bool MSFitsInput::readFitsFile()
 {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   Int nField=0, nSpW=0;
 
   if (!getPrimaryGroupAxisInfo()) {
@@ -265,6 +266,7 @@ MSFitsInput::~MSFitsInput()
 
 Bool MSFitsInput::checkInput(FitsInput& infile)
 {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   Bool ok=True;
   // Check that we have a valid UV fits file
   if (infile.rectype() != FITS::HDURecord) {
@@ -289,6 +291,7 @@ Bool MSFitsInput::checkInput(FitsInput& infile)
 
 Bool MSFitsInput::getPrimaryGroupAxisInfo()
 {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   Bool ok=True;
   // Extracts the axis related info. from the PrimaryGroup object and 
   // returns them in the form of arrays.
@@ -312,8 +315,16 @@ Bool MSFitsInput::getPrimaryGroupAxisInfo()
 	      (getIndex(coordType_p, "COMPLEX") >=0) &&
 	      (getIndex(coordType_p, "STOKES") >=0) &&
 	      (getIndex(coordType_p, "FREQ") >=0) &&
-	      (getIndex(coordType_p, "RA") >=0) &&
-	      (getIndex(coordType_p, "DEC") >=0));
+  // note that RA, DEC may be explicitly projected, reflecting
+  // the uvw coordinate system in use:
+	     ((getIndex(coordType_p, "RA") >=0) ||
+	      (getIndex(coordType_p, "RA---SIN") >=0) ||
+	      (getIndex(coordType_p, "RA---NCP") >=0) ||
+	      (getIndex(coordType_p, "RA---SCP") >=0)) &&
+	     ((getIndex(coordType_p, "DEC") >=0) ||
+	      (getIndex(coordType_p, "DEC--SIN") >=0) ||
+	      (getIndex(coordType_p, "DEC--NCP") >=0) ||
+	      (getIndex(coordType_p, "DEC--SCP") >=0)));
   if (!ok) return ok;
 
   // Sort out the order of the polarizations and find the sort indices
@@ -548,6 +559,7 @@ void MSFitsInput::fillObsTables()
 // the MeasurementSet 
 void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   // Get access to the MS columns
   MSColumns& msc(*msc_p);
   Regex trailing(" *$"); // trailing blanks
@@ -756,6 +768,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt)
 {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   Regex trailing(" *$"); // trailing blanks
   TableRecord btKeywords=bt.getKeywords();
   if (nAnt_p>bt.nrows()) 
@@ -819,12 +832,28 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
   Table anTab=bt.fullTable("",Table::Scratch);
   MSAntennaColumns& ant(msc_p->antenna());
   ROScalarColumn<String> name(anTab,"ANNAME");
-  ROArrayColumn<Double> antXYZ(anTab,"STABXYZ");
   ROScalarColumn<Int> id(anTab,"NOSTA");
   ROScalarColumn<Int> mountType(anTab,"MNTSTA");
   ROScalarColumn<Float> offset(anTab,"STAXOF");
   ROScalarColumn<Float> polangleA(anTab,"POLAA");
   ROScalarColumn<Float> polangleB(anTab,"POLAB");
+  ROArrayColumn<Double> antXYZ(anTab,"STABXYZ");
+
+  // Prepare handling of UVFITS Antenna position coord conventions:
+  // VLA requires rotation of local coords:
+  Bool doVLARot=(array_p=="VLA");
+  // initialize rotation matrix with zero rotation
+  Matrix<Double> posRot=Rot3D(0,0.0);  
+  if ( doVLARot ) {
+    // Form rotation around Z axis by VLA longitude=atan(refy/refx)
+    Double vlaLong=atan2(arrayXYZ(1),arrayXYZ(0));
+    posRot=Rot3D(2,vlaLong);  // Applied to each ant position below
+  }
+  // All "VLBI" (==arrayXYZ<1000) requires y-axis reflection: 
+  //  (ATCA looks like "VLBI" in UVFITS, but is already correct)
+  Bool doVLBIRefl= ((array_p!="ATCA") && allLE(abs(arrayXYZ),1000.0));
+
+
   // add antenna info to table
   ant.setPositionRef(MPosition::ITRF);
   Int row=ms_p.antenna().nrow()-1;
@@ -847,6 +876,15 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
     ant.offset().put(row,offsets);
     ant.station().put(row,name(i));
     ant.type().put(row,"GROUND-BASED");
+
+    // Do UVFITS-dependent position corrections:
+    // ROArrayColumn antXYZ(i) may need coord transform; do it in corXYZ:
+    Vector<Double> corXYZ=antXYZ(i);
+    // If nec, rotate coordinates out of local VLA frame to ITRF
+    if ( doVLARot ) corXYZ=product(posRot,corXYZ);
+    // If nec, reflect y-coord to yield right-handed geocentric:
+    if ( doVLBIRefl ) corXYZ(1)=-corXYZ(1);
+
     ant.position().put(row,arrayXYZ+antXYZ(i));
     // store the angle for use in the feed table
     receptorAngle_p(2*i+0)=polangleA(i)*C::degree;
@@ -860,6 +898,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
 
 void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
 {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   MSSpWindowColumns& msSpW(msc_p->spectralWindow());
   MSDataDescColumns& msDD(msc_p->dataDescription());
   MSPolarizationColumns& msPol(msc_p->polarization());
@@ -1000,6 +1039,7 @@ void MSFitsInput::fillSpectralWindowTable()
 
 void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
 {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   MSFieldColumns& msField(msc_p->field());
   Table suTab=bt.fullTable("",Table::Scratch);
   ROScalarColumn<Int> id(suTab,"ID. NO.");
@@ -1071,6 +1111,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
 // single source fits case
 void MSFitsInput::fillFieldTable(Int nField)
 {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   // some UVFITS files have the source number set, but have no SU
   // table. We will assume there is only a single source in that case
   // and set all fieldId's back to zero
@@ -1150,6 +1191,7 @@ void MSFitsInput::fillFeedTable() {
 }
 
 void MSFitsInput::fixEpochReferences() {
+  LogIO os(LogOrigin("ms", "MSFitsInput()", WHERE));
   if (timsys_p=="IAT") timsys_p="TAI";
   if (timsys_p=="UTC" || timsys_p=="TAI") {
     if (timsys_p=="UTC") msc_p->setEpochRef(MEpoch::UTC, False);
