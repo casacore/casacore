@@ -146,9 +146,9 @@ LatticeHistograms<T>::LatticeHistograms (const MaskedLattice<T>& lattice,
  
 template <class T>
 LatticeHistograms<T>::LatticeHistograms(const LatticeHistograms<T> &other)
-                      : pInLattice_p(0),
-                        pStoreLattice_p(0),
-                        pStats_p(0)
+ : pInLattice_p(0),
+   pStoreLattice_p(0),
+   pStats_p(0)
 //
 // Copy constructor.  Storage lattice not copied.
 //
@@ -183,13 +183,11 @@ LatticeHistograms<T> &LatticeHistograms<T>::operator=(const LatticeHistograms<T>
       }
       needStorageLattice_p = True;
 
-
 // Do the rest
   
       os_p = other.os_p;
       binAll_p = other.binAll_p;
       goodParameterStatus_p = other.goodParameterStatus_p;
-      needStorageLattice_p = other.needStorageLattice_p;
       doCumu_p = other.doCumu_p;
       doGauss_p = other.doGauss_p;
       doList_p = other.doList_p;
