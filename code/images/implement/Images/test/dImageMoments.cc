@@ -1,5 +1,5 @@
 //# dImageMoments.cc: generate image moments
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -163,6 +163,7 @@
 //
 //
 #include <aips/aips.h>
+#include <aips/Tasking/Aipsrc.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
@@ -194,9 +195,11 @@ try {
 
 // Get inputs
 
-   inputs.Create("in", "", "Input image name");
+   String root = Aipsrc::aipsRoot();
+   String name = root + "/code/trial/implement/Images/test/test_image";
+   inputs.Create("in", name, "Input image name");
    inputs.Create("moments", "0", "Moments to output");
-   inputs.Create("axis", "-100", "Moment axis");
+   inputs.Create("axis", "2", "Moment axis");
    inputs.Create("blc", "-10", "blc");
    inputs.Create("trc", "-10", "trc");
    inputs.Create("inc", "-10", "inc");
@@ -207,7 +210,7 @@ try {
    inputs.Create("include", "0.0", "Pixel range to include");
    inputs.Create("exclude", "0.0", "Pixel range to exclude");
    inputs.Create("snr", "3.0,0.0", "SNR cutoff and sigma for automatic window method");
-   inputs.Create("out", "", "Output root image name");
+   inputs.Create("out", "dImageMoments.output_file", "Output root image name");
    inputs.Create("psfout", "", "Output PSF image name");
    inputs.Create("smout", "", "Output smoothed image name");
    inputs.Create("plotter", "none", "PGPLOT device");
@@ -255,8 +258,7 @@ try {
 // interface the first allowed moment is 0.
 
    Vector<Int> moments(momentsB);
-   uInt i;
-   for (i=0; i<moments.nelements(); i++) moments(i)++;
+   for (uInt i=0; i<moments.nelements(); i++) moments(i)++;
    validInputs(MOMENTS) = True;
 
    
@@ -333,7 +335,7 @@ try {
 // Pixel inclusion/exclusion ranges
 
    Vector<Float> include(includeB.nelements());
-   for (i=0;i<include.nelements(); i++) {
+   for (uInt i=0;i<include.nelements(); i++) {
      include(i) = includeB[i];
    }
    if (include.nelements() == 1 && include(0)==0) {
@@ -342,7 +344,7 @@ try {
       validInputs(RANGE) = True;
    }
    Vector<Float> exclude(excludeB.nelements());
-   for (i=0;i<exclude.nelements(); i++) {
+   for (uInt i=0;i<exclude.nelements(); i++) {
      exclude(i) = excludeB[i];
    } 
    if (exclude.nelements() == 1 && exclude(0)==0) {
