@@ -1,5 +1,5 @@
 //# TSMCoordColumn.cc: Tiled Hypercube Storage Manager for id columns
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,7 +107,7 @@ Bool TSMCoordColumn::isShapeDefined (uInt rownr)
     //# The shape is defined when the shape is fixed, when
     //# a hypercube has been defined for this row or when the
     //# coordinate values have already been defined.
-    if (shapeColumn() != 0) {
+    if (shapeColumn().nelements() != 0) {
 	return True;                             // FixedShape
     }
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
