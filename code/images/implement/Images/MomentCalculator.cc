@@ -1,5 +1,5 @@
 //# MomentCalculator.cc: 
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1407,10 +1407,6 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
   iMom_p(iMom),
   os_p(os)
 {
-// Avoid double deletion by LogIO::cleanup
-
-   os_p.makePermanent();
-
 // Set moment selection vector
 
    selectMoments_p = selectMoments(iMom_p);
@@ -1848,10 +1844,6 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
   iMom_p(iMom),
   os_p(os)
 {
-// Avoid double deletion by LogIO::cleanup
-
-   os_p.makePermanent();
-
 // Set moment selection vector
 
    selectMoments_p = selectMoments(iMom_p);
@@ -2586,10 +2578,6 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 : iMom_p(iMom),
   os_p(os)
 {
-// Avoid double deletion by LogIO::cleanup
-
-   os_p.makePermanent();
-
 // Set moment selection vector
 
    selectMoments_p = selectMoments(iMom_p);

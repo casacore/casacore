@@ -69,9 +69,7 @@ template <class T>
 PagedImage<T>::PagedImage()
 : logTablePtr_p (0),
   regionPtr_p   (0)
-{
-  table_p.makePermanent();           // avoid double deletion by Cleanup
-}
+{}
 
 template <class T> 
 PagedImage<T>::PagedImage(const TiledShape& shape, 
@@ -83,7 +81,6 @@ PagedImage<T>::PagedImage(const TiledShape& shape,
   logTablePtr_p (0),
   regionPtr_p   (0)
 {
-  table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const TiledShape& shape,  "
@@ -151,8 +148,7 @@ void PagedImage<T>::makePagedImage(const TiledShape& shape,
 	    << "The image shape is " << shape.shape() << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab, lockOptions);
-  table_p.makePermanent();           // avoid double deletion by Cleanup
-  map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
+  map_p   = PagedArray<T> (shape, table_p, "map", rowNumber);
   attach_logtable();
   logSink() << LogIO::NORMAL;
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
@@ -180,8 +176,7 @@ PagedImage<T>::PagedImage(const TiledShape& shape,
 	    << "The image shape is " << shape.shape() << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab);
-  table_p.makePermanent();           // avoid double deletion by Cleanup
-  map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
+  map_p   = PagedArray<T> (shape, table_p, "map", rowNumber);
   attach_logtable();
   logSink() << LogIO::NORMAL;
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
@@ -196,7 +191,6 @@ PagedImage<T>::PagedImage(Table& table, MaskSpecifier spec, uInt rowNumber)
   logTablePtr_p (0),
   regionPtr_p   (0)
 {
-  table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(Table& table, "
@@ -235,8 +229,7 @@ PagedImage<T>::PagedImage(const String& filename, MaskSpecifier spec,
 	    << " of a file called"
 	    << " '" << filename << "'" << endl;
   table_p = Table(filename);
-  table_p.makePermanent();           // avoid double deletion by Cleanup
-  map_p = PagedArray<T>(table_p, "map", rowNumber);
+  map_p   = PagedArray<T>(table_p, "map", rowNumber);
   attach_logtable();
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
@@ -292,8 +285,7 @@ void PagedImage<T>::makePagedImage(const String& filename,
 	    << " of a file called"
 	    << " '" << filename << "'" << endl;
   table_p = Table(filename, lockOptions);
-  table_p.makePermanent();           // avoid double deletion by Cleanup
-  map_p = PagedArray<T>(table_p, "map", rowNumber);
+  map_p   = PagedArray<T>(table_p, "map", rowNumber);
   attach_logtable();
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
@@ -317,7 +309,6 @@ PagedImage<T>::PagedImage(const PagedImage<T>& other)
   logTablePtr_p (other.logTablePtr_p),
   regionPtr_p   (0)
 {
-  table_p.makePermanent();           // avoid double deletion by Cleanup
   if (other.regionPtr_p != 0) {
     regionPtr_p = new LatticeRegion (*other.regionPtr_p);
   }
@@ -341,8 +332,7 @@ PagedImage<T>& PagedImage<T>::operator=(const PagedImage<T>& other)
   if (this != &other) {
     ImageInterface<T>::operator= (other);
     table_p = other.table_p;
-    table_p.makePermanent();           // avoid double deletion by Cleanup
-    map_p = other.map_p;
+    map_p   = other.map_p;
     logTablePtr_p = other.logTablePtr_p;
     delete regionPtr_p;
     regionPtr_p = 0;

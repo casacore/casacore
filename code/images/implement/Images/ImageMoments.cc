@@ -103,8 +103,6 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
   overWriteOutput_p(overWriteOutput),
   error_p("")
 {
-// Avoid double deletion by LogIO::cleanup
-   os_p.makePermanent();
    momentAxis_p = momentAxisDefault_p;
    moments_p.resize(1);
    moments_p(0) = INTEGRATED;
@@ -125,8 +123,6 @@ template <class T>
 ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
 : pInImage_p(0)
 {
-// Avoid double deletion by LogIO::cleanup
-   os_p.makePermanent();
    operator=(other);
 }
 
@@ -134,8 +130,6 @@ template <class T>
 ImageMoments<T>::ImageMoments(ImageMoments<T> &other)
 : pInImage_p(0)
 {
-// Avoid double deletion by LogIO::cleanup
-   os_p.makePermanent();
    operator=(other);
 }
 

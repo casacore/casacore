@@ -49,7 +49,6 @@
 template <class T> 
 ImageInterface<T>::ImageInterface()
 {
-  log_p.makePermanent();
   logSink() << LogOrigin("ImageInterface<T>",
 	    "ImageInterface()",
 			 WHERE) << LogIO::DEBUGGING <<
@@ -63,7 +62,6 @@ ImageInterface<T>::ImageInterface (const ImageInterface& other)
   log_p    (other.log_p),
   imageInfo_p(other.imageInfo_p)
 {
-  log_p.makePermanent();
   logSink() << LogOrigin("ImageInterface<T>",
 	    "ImageInterface(const ImageInterface&)",
 			 WHERE) << LogIO::DEBUGGING << LogIO::POST;
@@ -76,7 +74,6 @@ ImageInterface<T>& ImageInterface<T>::operator= (const ImageInterface& other)
     MaskedLattice<T>::operator= (other);
     coords_p = other.coords_p;
     log_p    = other.log_p;
-    log_p.makePermanent();
     imageInfo_p = other.imageInfo_p;
   }
   return *this;
