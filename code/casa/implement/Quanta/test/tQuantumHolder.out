@@ -1,4 +1,4 @@
-Test QuantityHolder  
+Test QuantumHolder  
 ----------------------------------------------------
 Input quantity:              12.5 km/s
 Record output quantity:      12.5 km/s
@@ -12,4 +12,5 @@ Input quantity:              2 pc3/d
 Record output quantity:      2 pc3/d
 Error expected:
 Input quantity:              12.5 km/s
-From error: Illegal Quantity record in QuantityHolder::fromRecord
+From error: Illegal Quantity record in QuantumHolder::fromRecord
+
