@@ -40,7 +40,8 @@
 RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) : 
     RFAFlagCubeBase(ch,parm),
     RFDataMapper(parm.asArrayString(RF_EXPR),parm.asString(RF_COLUMN)),
-    threshold( parm.asDouble(RF_THR) )
+    threshold( parm.asDouble(RF_THR) ),
+    min_population( parm.asInt(RF_MINPOP) )
 //    rowclipper(chunk,flag,threshold,halfwin)
 {
 // get bin size arguments
@@ -60,6 +61,8 @@ RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) :
 // check threshold for validity
   if( threshold >= 1 )
     os<<String("RFAUVBinner: ")+RF_THR+" must be below 1"<<endl<<LogIO::EXCEPTION;
+  if( threshold==0 && !min_population )
+    os<<String("RFAUVBinner: ")+RF_THR+" and/or "+RF_MINPOP+" must be specified"<<endl<<LogIO::EXCEPTION;
 // check if a report is requested for a specific channel
   if( isFieldSet(parm,RF_PLOTCHAN) )
   {
@@ -340,34 +343,40 @@ RFA::IterMode RFAUVBinner::endDry ()
     // bins for this channel
     Matrix<Int> bins( bincounts.xyPlane(ich) );
     Int maxcount = max(bins);
-    Vector<Int> cumul(maxcount,0);
+    Vector<Int> cumul(maxcount+1,0);
     // compute total population for each non-zero count
     // (what we compute is actually the total number of points
-    // resident in a bin of size N, that is, N*numbins{count=N})
+    // resident in a bin of size N, that is, N*numbins{population=N})
     for( uInt i=0; i<bins.ncolumn(); i++ )
       for( uInt j=0; j<bins.nrow(); j++ )
         if( bins(j,i) )
-          cumul( bins(j,i)-1 ) += bins(j,i);
-    // convert to cumulative
-    for( Int i=1; i<maxcount; i++ )
+          cumul( bins(j,i) ) += bins(j,i);
+    // convert to cumul(N): number of points residing in a bin of size<=N
+    // (cumul(0) is 0 by definition)
+    for( Int i=1; i<=maxcount; i++ )
       cumul(i) += cumul(i-1);
-    // find at which bin count the cumulative probability gets higher 
-    // than the threshold
     Int thr_count=0;
-    Float pop_cutoff = totcounts(ich)*threshold;
-    while( cumul(thr_count)<=pop_cutoff && thr_count<maxcount )
-      thr_count++; 
-    // First thr_count bins (1..thr_count) should be flagged
-    // Mark the "bad" bins by negating their bin counts
-    // 0-bins are bad by definition, but they don't have 
-    // anything stored in them anyway
-    LogicalMatrix wh( bins<=thr_count );
+    if( threshold>0 )
+    {
+      // compute threshold based on cumulative counts
+      Float pop_cutoff = totcounts(ich)*threshold;
+      // find the first bin count value where the cumulative bin population 
+      // is higher than the threshold
+      while( thr_count<=maxcount && cumul(thr_count)<=pop_cutoff )
+        thr_count++; 
+    }
+    // if the explicit bin cut-off is higher, use it instead
+    if( thr_count < min_population )
+      thr_count = min_population;
+    // thr_count is now the first population value exceeding the threshold
+    // Bins with populations up to thr_count should be flagged
+    LogicalMatrix wh( bins<thr_count );
     bins(wh) = - bins(wh);
     //  set up to produce a plot at end of pass
     if( plot_chan==(Int)ich )
     {
       plot_thr_count = thr_count;
-      plot_prob.resize(maxcount);
+      plot_prob.resize(cumul.shape());
       convertArray(plot_prob,cumul);
       plot_prob /= (Float)totcounts(ich);
       // in econoplot mode, we only want the 10% least populous
@@ -403,7 +412,17 @@ String RFAUVBinner::getDesc ()
 {
   String desc( RFDataMapper::description()+"; " );
   char s[256];
-  sprintf(s,"%s=%g %s=%d,%d ",RF_THR,threshold,RF_NBINS,nbin_uv,nbin_y);
+  if( threshold>0 ) 
+  {
+    sprintf(s,"%s=%g ",RF_THR,threshold);
+    desc += s;
+  }
+  if( min_population ) 
+  {
+    sprintf(s,"%s=%d ",RF_MINPOP,min_population );
+    desc += s;
+  }
+  sprintf(s,"%s=%d,%d ",RF_NBINS,nbin_uv,nbin_y);
   desc += s + RFAFlagCubeBase::getDesc();
   return desc;
 }
@@ -423,6 +442,7 @@ const RecordInterface & RFAUVBinner::getDefaults ()
     rec.define(RF_COLUMN,"DATA");
     rec.define(RF_EXPR,"+ ABS XX YY");
     rec.define(RF_THR,.001);
+    rec.define(RF_MINPOP,0);
     rec.define(RF_NBINS,50);
     rec.define(RF_PLOTCHAN,False);
     rec.define(RF_ECONOPLOT,True);
@@ -430,6 +450,7 @@ const RecordInterface & RFAUVBinner::getDefaults ()
     rec.setComment(RF_COLUMN,"Use column: [DATA|MODEL|CORRected]");
     rec.setComment(RF_EXPR,"Expression for deriving value (e.g. \"ABS XX\", \"+ ABS XX YY\")");
     rec.setComment(RF_THR,"Probability cut-off");
+    rec.setComment(RF_MINPOP,"Bin population cut-off");
     rec.setComment(RF_NBINS,"Number of bins (single value, or [NUV,NY])");
     rec.setComment(RF_PLOTCHAN,"Make plot for a specific channel, or F for no plot");
     rec.setComment(RF_ECONOPLOT,"Produce a simplified plot: T/F");
@@ -476,13 +497,25 @@ void RFAUVBinner::makePlot ( PGPlotterInterface &pgp,uInt ich )
     plot_py.resize(plot_np,True);
   }
   pgp.pt( plot_px,plot_py,DOT );
+  int ci0 = pgp.qci();
   // plot boxes around flagged bins
   Vector<Float> xbox( xbox0*uvbinsize(ich) ),
                ybox( ybox0*ybinsize(ich) );
   for( uInt i=0; i<bins.ncolumn(); i++ )
     for( uInt j=0; j<bins.nrow(); j++ )
       if( bins(j,i)<0 )
-        pgp.line(xbox+uvmin(ich)+j*uvbinsize(ich),ybox+ymin(ich)+i*ybinsize(ich));
+      {
+        Vector<Float> xb(xbox+uvmin(ich)+j*uvbinsize(ich)),
+                     yb(ybox+ymin(ich)+i*ybinsize(ich));
+        pgp.line(xb,yb);
+        pgp.sci(48);
+        Vector<Float> x(2),y(2);
+        x(0)=xb(0); x(1)=xb(2); y(0)=yb(0); y(1)=yb(2);
+        pgp.line(x,y);
+        x(0)=xb(1); x(1)=xb(3); y(0)=yb(1); y(1)=yb(3);
+        pgp.line(x,y);
+        pgp.sci(ci0);
+      }
   
 // make probability plot
   // sum up flagged pixels
@@ -496,22 +529,27 @@ void RFAUVBinner::makePlot ( PGPlotterInterface &pgp,uInt ich )
       }
   // make plot of probability distributions
   Vector<Float> ind(maxcount);
-  indgen(ind); ind += 1.f;
-  // zoom display into interseting part of curve
-  Float pmax = threshold*5;
-  if( pmax>1 )
+  indgen(ind); 
+  // zoom display into interesting part of curve
+  Float pmax;
+  Int popmax = plot_thr_count*3;
+  if( popmax>=maxcount || !popmax )
+  {
     pmax = 1;
-  Int popmax = 0;
-  while( plot_prob(popmax)<=pmax && popmax<maxcount )
-    popmax++;  // popmax = #{bins<=Pmax}
+    popmax = maxcount-1;
+  }
+  else
+  {
+    pmax = plot_prob(popmax);
+  }
   // setup plot
   pgp.env(1,popmax,0,pmax,0,0);
-  sprintf(s1,"Bin population (threshold %d)",plot_thr_count);
+  sprintf(s1,"Total bin population (threshold %d)",plot_thr_count);
   sprintf(s2,"Cumulative probability (%g cut-off)",threshold);
   sprintf(s3,"%d of %d points in %d bins flagged",pixcount,totcounts(ich),bincount);
   pgp.lab(s1,s2,s3);
   // plot probability curve
-  pgp.line(ind(Slice(0,popmax)),plot_prob(Slice(0,popmax)));
+  pgp.line(ind(Slice(0,popmax+1)),plot_prob(Slice(0,popmax)));
   // plot cut-off points
   pgp.sls(LINE_DOT);
   Vector<Float> xx(2,plot_thr_count+.5);
