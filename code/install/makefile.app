@@ -2,7 +2,7 @@
 # makefile.app: Generic AIPS++ applications makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998
+#   Copyright (C) 1992-1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,9 @@ include $(AIPSARCH)/makedefs
 
 # The name of this application.
 #------------------------------
+ifndef THISAPP
 THISAPP  := $(word 3,$(subst /,$(space),$(CODESUBD)))
+endif
 PCKGAPP  := $(PACKAGE)_$(THISAPP)
 
 # Hook to allow compilation of this application to be skipped.
