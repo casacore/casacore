@@ -1,5 +1,5 @@
 //# tSubImage.cc: Test program for class SubImage
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -78,6 +78,7 @@ main (int argc, char** argv)
       SubImage<Float> subimg (image, slicer, True);
       AlwaysAssertExit (subimg.isWritable());
       AlwaysAssertExit (subimg.shape() == slicer.length());
+      AlwaysAssertExit (subimg.logSink().localSink().isTableLogSink());
       Array<Float> arr1, arr2;
       subimg.getSlice (arr1, IPosition(3,0), subimg.shape(),
 		       IPosition(3,1));
