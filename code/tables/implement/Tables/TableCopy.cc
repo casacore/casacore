@@ -35,6 +35,7 @@
 #include <tables/Tables/TableLocker.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Containers/Record.h>
+#include <casa/Containers/SimOrdMap.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/OS/Path.h>
 #include <casa/BasicSL/String.h>
@@ -51,9 +52,15 @@ Table TableCopy::makeEmptyTable (const String& newName,
   TableDesc tabDesc = tab.actualTableDesc();
   Record dminfo (dataManagerInfo);
   if (dminfo.nfields() == 0) {
+    // No new dminfo given, so use existing.
     dminfo = tab.dataManagerInfo();
+  } else {
+    // Set data manager group in description to actual group.
+    // Also remove possible obsolete hypercolumn definitions.
+    adjustDesc (tabDesc, dminfo);
   }
   if (replaceTSM) {
+    // Replace possible usage of TiledDataStMan by TiledShapeStMan.
     adjustTSM (tabDesc, dminfo);
   }
   SetupNewTable newtab (newName, tabDesc, Table::New);
@@ -68,6 +75,88 @@ Table TableCopy::makeEmptyMemoryTable (const String& newName,
   TableDesc tabDesc = tab.actualTableDesc();
   SetupNewTable newtab (newName, tabDesc, Table::New);
   return Table(newtab, Table::Memory, (noRows ? 0 : tab.nrow()));
+}
+
+void TableCopy::adjustDesc (TableDesc& tdesc, const Record& dminfo)
+{
+  // Find out the columns and data manager groups of the fields.
+  SimpleOrderedMap<String,String> dmTypeMap("", tdesc.ncolumn());
+  SimpleOrderedMap<String,String> dmGroupMap("", tdesc.ncolumn());
+  for (uInt i=0; i<dminfo.nfields(); i++) {
+    const Record& sub = dminfo.asRecord (i);
+    if (sub.isDefined("COLUMNS")) {
+      String dmType = "";
+      String dmGroup = "";
+      if (sub.isDefined("TYPE")) {
+	dmType = sub.asString ("TYPE");
+      }
+      if (sub.isDefined("NAME")) {
+	dmGroup = sub.asString ("NAME");
+      }
+      Vector<String> cols = sub.asArrayString ("COLUMNS");
+      for (uInt j=0; j<cols.nelements(); j++) {
+	dmTypeMap(cols[j]) = dmType;
+	dmGroupMap(cols[j]) = dmGroup;
+      }
+    }
+  }
+  // Exit if no columns in dminfo.
+  if (dmTypeMap.ndefined() == 0) {
+    return;
+  }
+  // Change data manager type and group as needed.
+  for (uInt i=0; i<tdesc.ncolumn(); i++) {
+    ColumnDesc& cdesc = tdesc.rwColumnDesc(i);
+    const String& name = cdesc.name();
+    String* v = dmTypeMap.isDefined (name);
+    if (v) {
+      if (! v->empty()) {
+	cdesc.dataManagerType() = *v;
+      }
+    }
+    v = dmGroupMap.isDefined (name);
+    if (v) {
+      if (! v->empty()) {
+	cdesc.dataManagerGroup() = *v;
+      }
+    }
+  }
+  // Remove hypercolumn definitions which are different from
+  // data manager group in the column descriptions.
+  Vector<String> hcNames = tdesc.hypercolumnNames();
+  for (uInt i=0; i<hcNames.nelements(); i++) {
+    Vector<String> dataNames, coordNames, idNames;
+    tdesc.hypercolumnDesc (hcNames[i], dataNames, coordNames, idNames);
+    Bool same = True;
+    for (uInt j=0; j<dataNames.nelements(); j++) {
+      const ColumnDesc& cdesc = tdesc[dataNames[j]];
+      if (cdesc.dataManagerGroup() != hcNames[i]) {
+	same = False;
+	break;
+      }
+    }
+    if (same) {
+      for (uInt j=0; j<coordNames.nelements(); j++) {
+	const ColumnDesc& cdesc = tdesc[dataNames[j]];
+	if (cdesc.dataManagerGroup() != hcNames[i]) {
+	  same = False;
+	  break;
+	}
+      }
+    }
+    if (same) {
+      for (uInt j=0; j<idNames.nelements(); j++) {
+	const ColumnDesc& cdesc = tdesc[dataNames[j]];
+	if (cdesc.dataManagerGroup() != hcNames[i]) {
+	  same = False;
+	  break;
+	}
+      }
+    }
+    if (!same) {
+      tdesc.removeHypercolumnDesc (hcNames[i]);
+    }
+  }
 }
 
 void TableCopy::adjustTSM (TableDesc& tabDesc, Record& dminfo)

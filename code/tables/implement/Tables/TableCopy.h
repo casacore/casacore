@@ -75,9 +75,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class TableCopy
 {
 public:
-  // Make an (empty) table with the same layout as the input one.
-  // It has the same keywords, columns, and data managers as the
-  // input one.
+  // Make an (empty) table with the given description.
+  // If the description contains no columns, the description of the input
+  // table is used, so it has the same keywords and columns as the input one.
+  // The data managers can be given in the dataManagerInfo record.
+  // If it is empty, the info is taken from the input table.
   // By default, the TiledDataStMan will be replaced by the TiledShapeStMan.
   // By default, the new table has the same nr of rows as the input table.
   // If <src>noRows=True</src> is given, it does not contain any row.
@@ -125,6 +127,10 @@ public:
   // Since TiledShapeStMan does not support ID columns, they are
   // adjusted as well in tabDesc and dminfo.
   static void adjustTSM (TableDesc& tabDesc, Record& dminfo);
+
+  // Adjust the data manager types and groups and the
+  // hypercolumn definitions to the actual data manager info.
+  static void adjustDesc (TableDesc& tabDesc, const Record& dminfo);
 };
 
 
