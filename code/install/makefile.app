@@ -2,7 +2,7 @@
 # makefile.app: Generic AIPS++ applications makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-2003
+#   Copyright (C) 1992-2004
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -110,6 +110,10 @@ endif
 
 # Libraries.
 #-----------
+# Find the most appropriate version.o object module.
+DBGVERSO := $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
+OPTVERSO := $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
+
 # Parse the link lists and library control variables.
 DBGLIBS  := $(foreach PCKG,$(LINK$(PACKAGE)), \
                $(subst $(LIBDBGD)/lib$(PCKG).defeat, \
@@ -142,6 +146,8 @@ OPTLIBS  := $(strip \
                   $(subst .shatic,.$(SFXSTAT), \
                      $(subst .shared,.$(SFXSHAR), \
                         $(filter-out %.defeat,$(OPTLIBS))))))
+
+
 
 ifeq "$(MAKEMODE)" "programmer"
    # Programmer libraries.
@@ -234,13 +240,9 @@ ifeq "$(MAKEMODE)" "programmer"
    endif
 
    ifndef OPTLIB
-      PGMRLIBS = \
-         $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o)) \
-         $(PGMRLIBR) $(XTRNLIBS) $(EXTRA_PGMRLIBS)
+      PGMRLIBS = $(DBGVERSO) $(PGMRLIBR) $(XTRNLIBS) $(EXTRA_PGMRLIBS)
    else
-      PGMRLIBS = \
-         $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o)) \
-         $(PGMRLIBR) $(XTRNLIBS) $(EXTRA_PGMRLIBS)
+      PGMRLIBS = $(OPTVERSO) $(PGMRLIBR) $(XTRNLIBS) $(EXTRA_PGMRLIBS)
    endif
 
 
@@ -291,29 +293,61 @@ $(TMPPCKGD)/%.ycc : $(CODEDIR)/%.y
 
 $(TMPPCKGD)/%.ycc : ;
 
-$(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
-    $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS)
+ifneq "$(findstring $(THISAPP),$(MEGASERVE))" ""
+   # No need to compile, just link to the megaserver.
+   $(BINDBGD)/% : FORCE
+	-@ echo "$* (dbg) symlinked to the megaserver."
+	 @ cd $(BINDBGD) && \
+	   if [ ! -h $@ ] ; then \
+	     $(RM) $@ ; \
+	     ln -s megaserver $* ; \
+	   fi
+
+   $(BINOPTD)/% : FORCE
+	-@ echo "$* (opt) symlinked to the megaserver."
+	 @ cd $(BINOPTD) && \
+	   if [ ! -h $@ ] ; then \
+	     $(RM) $@ ; \
+	     ln -s megaserver $* ; \
+	   fi
+
+else
+   $(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
+      $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
+      $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS)
 	-@ echo ""
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (dbg) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPDBG) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o)) $(patsubst $(LIBDBGD)/lib%.$(SFXSHAR), -l%, $(DBGLIBS)) $(MODULIBS) $(XTRNLIBS)
+	   $(C++) $(CPPDBG) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) \
+	      $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) \
+	      $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGVERSO) \
+	      $(patsubst $(LIBDBGD)/lib%.$(SFXSHAR), -l%, $(DBGLIBS)) \
+	      $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
-	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
+	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) \
+	         $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
 	-@ chmod 775 $@
 
-$(BINOPTD)/% : $(CODEDIR)/%.cc $(AIPSINST) $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
-    $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS)
+   $(BINOPTD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
+      $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
+      $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS)
 	-@ echo ""
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (opt) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o)) $(patsubst $(LIBOPTD)/lib%.$(SFXSHAR), -l%, $(OPTLIBS)) $(MODULIBS) $(XTRNLIBS)
+	   $(C++) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) \
+	      $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) \
+	      $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTVERSO) \
+	      $(patsubst $(LIBOPTD)/lib%.$(SFXSHAR), -l%, $(OPTLIBS)) \
+	      $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
-	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
+	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) \
+	         $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
 	-@ chmod 775 $@
+endif
 
 $(LIBDBGD)/%.$(SFXSTAT) : ;
 $(LIBDBGD)/%.$(SFXSHAR) : ;
@@ -610,6 +644,9 @@ show_local :
 	-@ echo ""
 	-@ echo "AIPSINST=$(AIPSINST)"
 	-@ echo ""
+	-@ echo "DBGVERSO=$(DBGVERSO)"
+	-@ echo "OPTVERSO=$(OPTVERSO)"
+	-@ echo ""
 	-@ echo "DBGLIBS =$(DBGLIBS)"
 	-@ echo "OPTLIBS =$(OPTLIBS)"
 	-@ echo ""
@@ -659,5 +696,3 @@ help ::
 ifeq "$(MAKEMODE)" "programmer"
    -include $(PGMRLIST)
 endif
-
-
