@@ -52,7 +52,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-NAMEORCODE [A-Za-z0-9]*[+-]*[A-Za-z_0-9]*|[A-Za-z0-9]*"*"
+NAMEORCODE [A-Za-z0-9]*[+]*[A-Za-z_0-9]*|[A-Za-z0-9]*"*"
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%

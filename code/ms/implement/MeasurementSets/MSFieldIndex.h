@@ -92,6 +92,9 @@ public:
   Vector<Int> matchFieldName(const String& name);
   Vector<Int> matchFieldName(const Vector<String>& names);
 
+  //ADD for file name wildcard selection
+  Vector<Int> matchSubFieldName(const String& name);
+
   // Look up FIELD_ID's for a given source id
   Vector<Int> matchSourceId(const Int& sourceId);
   Vector<Int> matchSourceId(const Vector<Int>& sourceIds);

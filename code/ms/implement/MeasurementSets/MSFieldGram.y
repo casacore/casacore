@@ -65,8 +65,8 @@ using namespace casa;
 %type <node> fieldstatement
 %type <node> fieldorsourceexpr
 %type <node> indexexpr
-%type <node> indexlist
-%type <node> indexrangeexpr
+%type <node> compoundexpr
+%type <node> singlerange
 %type <node> lowindexboundexpr
 %type <node> upindexboundexpr
 
@@ -94,8 +94,6 @@ fieldstatement: indexexpr {
 
 fieldorsourceexpr: NAMEORCODE {
                      String fieldname = String($1);		
-         	     cout << "input string " << fieldname<< endl;
-
                      $$ = MSFieldParse().selectFieldOrSource(fieldname);
                    }
                  | fieldorsourceexpr COMMA NAMEORCODE {
@@ -104,43 +102,48 @@ fieldorsourceexpr: NAMEORCODE {
                    }
                  ;
             
-indexexpr: indexlist
-         | indexrangeexpr
+indexexpr: compoundexpr
          | lowindexboundexpr
          | upindexboundexpr
          ;
 
-indexlist: INDEX {
-             Vector<Int> fieldids(1);
-             fieldids[0] = $1;
-             $$ = MSFieldParse().selectFieldIds(fieldids);
-           }
-         | indexlist COMMA INDEX {
-             Vector<Int> fieldids(1);
-             fieldids[0] = $3;
-             $$ = MSFieldParse().selectFieldIds(fieldids);
-           }
-         ;
-
-indexrangeexpr: INDEX DASH INDEX {
+compoundexpr: INDEX {
+                Vector<Int> fieldids(1);
+                fieldids[0] = $1;
+                $$ = MSFieldParse().selectFieldIds(fieldids);
+              }
+            | singlerange {
+                $$ = $1;}
+            | compoundexpr COMMA INDEX {
+                $$ = new TableExprNode ($1 || $3);} 
+            | compoundexpr COMMA singlerange {
+		  $$ = new TableExprNode ($1 || $3);}
+            ;
+ 
+singlerange:  INDEX DASH INDEX {
                   Int len = $<ival>3-$<ival>1+1;
                   Vector<Int> fieldids(len);
                   for(Int i = 0; i < len; i++) {
                     fieldids[i] = $<ival>1 + i;
                   }
                   $$ = MSFieldParse().selectFieldIds(fieldids);
-                }
-              ;
+              }
+           ;
 
 lowindexboundexpr: GT INDEX {
 		     ROMSFieldColumns msFieldCols_p(MSFieldParse::ms()->field());
 		     Int startID = $2;
 		     Int len = msFieldCols_p.nrow();
-		     Vector<Int> fieldids(len- startID -1);
-		     for(Int i = 0; i < (Int)fieldids.nelements(); i++) {
-		       fieldids[i] = startID + i + 1;
+		     if(len- startID -1 <= 0) {
+		       cout << "Your selection is out of range " << endl;
+		       exit(0);
+		     } else {
+		       Vector<Int> fieldids(len- startID -1);
+		       for(Int i = 0; i < (Int)fieldids.nelements(); i++) {
+			 fieldids[i] = startID + i + 1;
+		       }
+		       $$ = MSFieldParse().selectFieldIds(fieldids);
 		     }
-		     $$ = MSFieldParse().selectFieldIds(fieldids);
                    }
                  ;
 
