@@ -1,5 +1,5 @@
 //# LatticeIter.cc: defines the RO_LatticeIterator and LatticeIterator classes
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeNavigator.h>
 #include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/TileStepper.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
@@ -39,6 +40,14 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h> 
 
+
+template <class T>
+RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice)
+: itsIterPtr (lattice.makeIter (TileStepper (lattice.shape(),
+					     lattice.niceCursorShape())))
+{
+  DebugAssert(ok(), AipsError);
+}
 
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
@@ -203,6 +212,16 @@ Bool RO_LatticeIterator<T>::ok() const
 }
 
 
+
+template <class T>
+LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice)
+: RO_LatticeIterator<T> (lattice)
+{
+  if (! lattice.isWritable()) {
+    throw (AipsError ("LatticeIterator cannot be constructed; "
+		      "lattice is not writable"));
+  }
+}
 
 template <class T>
 LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
