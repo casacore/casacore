@@ -587,7 +587,7 @@ Bool ImageStatistics<T>::display()
 // There is no easy way to do this other than as I have
 
       uInt j;
-      for (i=0; i<NACCUM; i++) {
+      for (i=0; i<ImageStatsBase::NACCUM; i++) {
          for (j=0; j<n1; j++) ord(j,i) = matrix(j,i);
       }
 
@@ -1019,7 +1019,7 @@ Bool ImageStatistics<T>::findNextDatum (uInt& iFound,
                                         const uInt& n,
                                         const Vector<T>& mask,
                                         const uInt& iStart,
-                                        const Bool& findGood)
+                                        const Bool& findGood) const
 //
 // Find the next good (or bad) point in an array.
 // A good point in the array has a non-zero value.
@@ -1049,7 +1049,7 @@ Bool ImageStatistics<T>::findNextDatum (uInt& iFound,
 template <class T>
 Bool ImageStatistics<T>::findNextLabel (String& subLabel,
                                         Int& iLab,
-                                        String& label)
+                                        String& label) const
 //
 // Find the next comma delimitered sublabel in a string
 //
@@ -1100,7 +1100,7 @@ Bool ImageStatistics<T>::generateStorageImage()
 // Delete old storage image
 
    if (pStoreImage_p != 0) delete pStoreImage_p;
-   if (haveLogger_p) os_p << LogIO::NORMAL << "Creating new storage image" << endl << LogIO::POST;
+   if (haveLogger_p) os_p << LogIO::NORMAL << "Creating new statistics storage image" << endl << LogIO::POST;
 
 
 // Set the display axes vector (possibly already set in ::setAxes)
@@ -1113,7 +1113,7 @@ Bool ImageStatistics<T>::generateStorageImage()
 // are along the last axis)
 
     IPosition storeImageShape;
-    ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NACCUM),
+    ImageUtilities::setStorageImageShape(storeImageShape, True, Int(ImageStatsBase::NACCUM),
                                          displayAxes_p, pInImage_p->shape());
 
 // Set the storage image tile shape to the tile shape of the
@@ -1142,8 +1142,8 @@ Bool ImageStatistics<T>::generateStorageImage()
 
 // Iterate through image and accumulate statistical sums
 
-   ImageStatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,
-                                         fixedMinMax_p, blcParent_p);
+   StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,
+                                    fixedMinMax_p, blcParent_p);
 
 
    ImageStatisticsProgress* pProgressMeter = 0;
@@ -1175,7 +1175,7 @@ template <class T>
 void ImageStatistics<T>::lineSegments (uInt& nSeg,
                                        Vector<uInt>& start,
                                        Vector<uInt>& nPts,
-                                       const Vector<T>& mask)
+                                       const Vector<T>& mask) const
 //
 // Examine an array and determine how many segments
 // of good points it consists of.    A good point
@@ -1371,7 +1371,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 
 
 template <class T>
-IPosition ImageStatistics<T>::locInImage(const IPosition& storagePosition)
+IPosition ImageStatistics<T>::locInImage(const IPosition& storagePosition) const
                  
 //
 // Given a location in the storage image, convert those locations on
@@ -1393,7 +1393,7 @@ void ImageStatistics<T>::multiColourYLabel (String& label,
                                             PGPlotter& plotter,
                                             const String& LRLoc, 
                                             const Vector<uInt>& colours,
-                                            const Int& nLabs)
+                                            const Int& nLabs) const
 
 //
 // Draw each Y-axis sublabel in a string with a different colour
@@ -1473,7 +1473,7 @@ template <class T>
 void ImageStatistics<T>::multiPlot (PGPlotter& plotter,
                                     const Vector<T>& x,
                                     const Vector<T>& y,
-                                    const Vector<T>& mask)
+                                    const Vector<T>& mask) const
 //
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments
@@ -1522,7 +1522,7 @@ void ImageStatistics<T>::minMax (Bool& none,
                                  T& dMin, 
                                  T& dMax,  
                                  const Vector<T>& d,
-                                 const Vector<T>& n)
+                                 const Vector<T>& n) const
 //
 //
 // Inputs:
@@ -1557,7 +1557,7 @@ void ImageStatistics<T>::minMax (Bool& none,
 
 
 template <class T>
-Int ImageStatistics<T>::niceColour (Bool& initColours)
+Int ImageStatistics<T>::niceColour (Bool& initColours) const
 {
    static colourIndex = 1;
    if (initColours) {
@@ -1573,7 +1573,7 @@ Int ImageStatistics<T>::niceColour (Bool& initColours)
 template <class T>
 Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
                                     const Matrix<T>& stats,
-                                    PGPlotter& plotter)
+                                    PGPlotter& plotter) 
 //
 // Plot the desired statistics.    
 //
@@ -2077,7 +2077,7 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Vector<T>& slice,
 // Get slice
 
    IPosition sliceShape(nDim+1,1);
-   sliceShape(nDim) = NACCUM;
+   sliceShape(nDim) = ImageStatsBase::NACCUM;
    Array<T> tSlice;
    pStoreImage_p->getSlice(tSlice, slicePos, sliceShape, 
                            IPosition(nDim+1,1), False);
@@ -2085,7 +2085,7 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Vector<T>& slice,
 // Copy to vector      
 
    slicePos = 0;
-   for (uInt i=0; i<NACCUM; i++) {
+   for (uInt i=0; i<ImageStatsBase::NACCUM; i++) {
       slicePos(nDim) = i;
       slice(i) = tSlice(slicePos);         
    }
@@ -2163,8 +2163,8 @@ Bool ImageStatistics<T>::someGoodPoints ()
 }
 
 
-template <class T>
-IPosition ImageStatistics<T>::statsSliceShape ()
+template <class T> 
+IPosition ImageStatistics<T>::statsSliceShape () const
 // 
 // Return the shape of a slice from the statistics storage
 // image for a single spatial location.  The last axis
@@ -2260,7 +2260,7 @@ void ImageStatistics<T>::summStats ()
  
 template <class T>
 void ImageStatistics<T>::stretchMinMax (T& dMin,
-                                        T& dMax)
+                                        T& dMax) const
 //
 // Stretch a range by 5%  
 //  
@@ -2361,15 +2361,15 @@ Bool ImageStatistics<T>::setIncludeExclude (Vector<T>& range,
 
 
 
-// ImageStatsTiledCollapser
+// StatsTiledCollapser
 
 
 template <class T>
-ImageStatsTiledCollapser<T>::ImageStatsTiledCollapser(const Vector<T>& pixelRange, 
-                                                      Bool noInclude, 
-                                                      Bool noExclude,
-                                                      Bool fixedMinMax,
-                                                      const IPosition& blcParent)
+StatsTiledCollapser<T>::StatsTiledCollapser(const Vector<T>& pixelRange, 
+                                            Bool noInclude, 
+                                            Bool noExclude,
+                                            Bool fixedMinMax,
+                                            const IPosition& blcParent)
 : range_p(pixelRange),
   noInclude_p(noInclude),
   noExclude_p(noExclude),
@@ -2381,16 +2381,14 @@ ImageStatsTiledCollapser<T>::ImageStatsTiledCollapser(const Vector<T>& pixelRang
 
 
 template <class T>
-void ImageStatsTiledCollapser<T>::init (uInt nOutPixelsPerCollapse)
+void StatsTiledCollapser<T>::init (uInt nOutPixelsPerCollapse)
 {
-    AlwaysAssert (nOutPixelsPerCollapse == NACCUM, AipsError);
+    AlwaysAssert (nOutPixelsPerCollapse == ImageStatsBase::NACCUM, AipsError);
 }
 
 template <class T>
-void ImageStatsTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
+void StatsTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
 {
-//   cout << "Init accumulator called" << endl;
-//   cout << "n1,n3=" << n1 << ", " << n3 << endl;
    pSum_p = new Block<NumericTraits<T>::PrecisionType>(n1*n3);
    pSumSq_p = new Block<NumericTraits<T>::PrecisionType>(n1*n3);
    pNPts_p = new Block<uInt>(n1*n3);
@@ -2411,7 +2409,7 @@ void ImageStatsTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
 }
 
 template <class T>
-void ImageStatsTiledCollapser<T>::process (uInt index1,
+void StatsTiledCollapser<T>::process (uInt index1,
                                            uInt index3,
                                            const T* pInData, 
                                            const Bool* pInMask, 
@@ -2426,7 +2424,6 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
 //
 {
    uInt index = index1 + index3*n1_p;
-//   cout << "::process  index=" << index << endl;
    NumericTraits<T>::PrecisionType& sum = (*pSum_p)[index];
    NumericTraits<T>::PrecisionType& sumSq = (*pSumSq_p)[index];
    uInt& nPts = (*pNPts_p)[index];
@@ -2558,7 +2555,7 @@ void ImageStatsTiledCollapser<T>::process (uInt index1,
 }
 
 template <class T>
-void ImageStatsTiledCollapser<T>::endAccumulator(Array<T>& result,
+void StatsTiledCollapser<T>::endAccumulator(Array<T>& result,
                                                  Array<Bool>& resultMask,
                                                  const IPosition& shape)
 { 
@@ -2578,47 +2575,42 @@ void ImageStatsTiledCollapser<T>::endAccumulator(Array<T>& result,
     T* res = result.getStorage (deleteRes);
     T* resptr = res;
 
-//    cout << "Array shape = " << result.shape() << endl;
-
     const NumericTraits<T>::PrecisionType* sumPtr = pSum_p->storage();
     const NumericTraits<T>::PrecisionType* sumSqPtr = pSumSq_p->storage();
     const uInt* nPtsPtr = pNPts_p->storage();
     const T* minPtr = pMin_p->storage();
     const T* maxPtr = pMax_p->storage();
 
-//    cout << "EndAccumulator:: n1_p = " << n3_p << endl;
-//    cout << "EndAccumulator:: n3_p = " << n3_p << endl;
-
     uInt i,j,k;
     T* resptr_root = resptr;
     k = 0;
     for (i=0; i<n3_p; i++) {
-       resptr = resptr_root + (Int(NPTS) * n1_p);
+       resptr = resptr_root + (Int(ImageStatsBase::NPTS) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
           *resptr++ = T(*nPtsPtr++);
        }
 
-       resptr = resptr_root + (Int(SUM) * n1_p);
+       resptr = resptr_root + (Int(ImageStatsBase::SUM) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
           *resptr++ = T(*sumPtr++);
        }
 
-       resptr = resptr_root + (Int(SUMSQ) * n1_p);
+       resptr = resptr_root + (Int(ImageStatsBase::SUMSQ) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
           *resptr++ = T(*sumSqPtr++);
        }
 
-       resptr = resptr_root + (Int(MIN) * n1_p);
+       resptr = resptr_root + (Int(ImageStatsBase::MIN) * n1_p);
        objcopy (resptr, minPtr, n1_p); 
        resptr += n1_p;
        minPtr += n1_p;
 
-       resptr = resptr_root + (Int(MAX) * n1_p);
+       resptr = resptr_root + (Int(ImageStatsBase::MAX) * n1_p);
        objcopy (resptr, maxPtr, n1_p); 
        resptr += n1_p;
        maxPtr += n1_p;
 
-       resptr_root += n1_p * Int(NACCUM);
+       resptr_root += n1_p * Int(ImageStatsBase::NACCUM);
 
     }
 
@@ -2631,13 +2623,11 @@ void ImageStatsTiledCollapser<T>::endAccumulator(Array<T>& result,
 
     result.putStorage (res, deleteRes);
 
-//    cout << "result=" << result.ac() << endl;
-
 }
 
 
 template <class T>
-void ImageStatsTiledCollapser<T>::minMaxPos(IPosition& minPos, IPosition& maxPos)
+void StatsTiledCollapser<T>::minMaxPos(IPosition& minPos, IPosition& maxPos)
 {
    minPos.resize(minPos_p.nelements());
    minPos = minPos_p;
