@@ -90,7 +90,6 @@ public:
   // Construct from vectors of world coordinates 
   // defining the box corners.  It is assumed that the
   // order of the values is in the order of the pixel axes.
-  // <group>
   explicit LCLELMask (const LatticeExpr<Bool>& expr);
 
   // Copy constructor (copy semantics).
