@@ -30,11 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
 #include <trial/Lattices/MaskedLattice.h>
-#include <aips/IO/FileLocker.h>
-
+#include <aips/Containers/Block.h>
 
 //# Forward Declarations
 class IPosition;
@@ -73,10 +70,8 @@ class Slicer;
 // just references them.  You can use the Lattice<T>::copyData(Lattice<T>)
 // function to fill an output lattice with the concatenated input lattices.
 //
-// If you use the putSlice function, be aware that it will change the underlying
-// lattices if they are writable.
-// If you use the putMaskSlice function, be aware that it will change the underlying
-// lattices if their masks are writable.
+// If you use the putSlice function, be aware that it will change the
+// underlying lattices if they are writable.
 // </synopsis>
 //
 // <example>
@@ -127,10 +122,14 @@ template <class T> class LatticeConcat : public MaskedLattice<T>
 {
 public:
 
-// Constructor. Specify the concatenation axis (0 relative).
-   LatticeConcat (uInt axis);
+// Constructor. Specify the concatenation axis (0 relative)
+// and whether you wish all internal lattice copies to be
+// opened/closed on demand, rather than just being left open.
+// This prevents open file limits being reached
+   LatticeConcat (uInt axis, Bool tempClose=True);
 
 // Default constructor.  Sets the concatenation axis to 0
+// and tempClose is True
    LatticeConcat ();
 
 // Copy constructor (reference semantics)
@@ -147,33 +146,50 @@ public:
    void setLattice (MaskedLattice<T>& lattice);
 
 // Return the number of lattices set so far
-   uInt nlattices() const {return lattices_p.nelements();};
+   uInt nlattices() const
+     {return lattices_p.nelements();}
 
 // Returns the current concatenation axis (0 relative)
-   uInt axis () const {return axis_p;};
+   uInt axis () const
+     {return axis_p;}
+
+// Returns the tempClose constructor state
+   Bool isTempClose () const 
+     {return tempClose_p;} 
 
 // Returns the number of dimensions of the *input* lattices (may be different 
 // by one from output lattice).  Returns 0 if none yet set.
    uInt latticeDim() const;
 
 // Return pointer for specified lattice.  Do not delete this.
-   MaskedLattice<T>* lattice(uInt i) const {return lattices_p[i];};
+   MaskedLattice<T>* lattice(uInt i) const
+     { return lattices_p[i]; }
 
-// Acquire or release locks.
-// These functions operate on all of the underlying lattices
+// Handle the (un)locking and syncing, etc..  
 // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
-  virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+   virtual Bool lock (FileLocker::LockType, uInt nattempts);
+   virtual void unlock();
+   virtual Bool hasLock (FileLocker::LockType) const;
+   virtual void resync();
+   virtual void flush();
+   virtual void tempClose();
+   virtual void reopen();
 // </group>
 
+// Close/reopen a specific lattice.  It is your responsibility to leave the
+// LatticeConcat object in a fully closed state.  So always pair
+// a reopen with a tempClose.
+// <group>
+   void tempClose(uInt which);
+   void reopen(uInt which);
+// </group>
 
 // Name.  Since many lattices may go into the concatenation, the name 
 // is rather meaningless.  Returns the string "Concatenation :"
-   virtual String name (Bool stripPath=False) const {return String("Concatenation :");};
+   virtual String name (Bool stripPath=False) const;
 
 // Make a copy of the derived object (reference semantics).
-   virtual MaskedLattice<T>* cloneML() const;
+   virtual LatticeConcat<T>* cloneML() const;
 
 // Has the object really a mask?
    virtual Bool isMasked() const;
@@ -184,19 +200,15 @@ public:
 // If all of the underlying lattices are writable returns True
    virtual Bool isWritable() const;
 
-// Is the mask writable?
-// If all of the undcontributing lattice masks are writable returns True
-   virtual Bool isMaskWritable() const;
-
 // Does the lattice have a pixelmask?
    virtual Bool hasPixelMask() const;
 
 // Get access to the pixelmask.
 // An exception is thrown if the lattice does not have a pixelmask
 // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
-  // </group>
+   virtual const Lattice<Bool>& pixelMask() const;
+   virtual Lattice<Bool>& pixelMask();
+// </group>
 
 // Find the shape that the concatenated lattice will be.
 // Returns a null IPosition if function setLattice has not yet 
@@ -226,22 +238,13 @@ public:
                             const IPosition& where,
                             const IPosition& stride);
 
-// Do the actuak put of a section of the mask into the Lattice.   This will change
-// the underlying lattices (if they are writable) that were used to create the
-// LatticeConcat object. It throws an exception if not writable.
-// Generally the user should use function putMaskSlice
-  virtual void doPutMaskSlice (const Array<Bool>& buffer,
-                               const IPosition& where,
-                               const IPosition& stride);
  
 private:
-
    PtrBlock<MaskedLattice<T>* > lattices_p;
    uInt axis_p;
    IPosition shape_p;
-   Bool isMasked_p;
-   Bool hasPixelMask_p;
-   MaskedLattice<Bool>* pPixelMask_p;
+   Bool isMasked_p, dimUpOne_p, tempClose_p;
+   LatticeConcat<Bool>* pPixelMask_p;
 //
    void checkAxis(uInt axis, uInt ndim) const;
 //
@@ -265,14 +268,7 @@ private:
                        uInt nLattices);
    Bool getMaskSlice2 (Array<Bool>& buffer, const Slicer& section,
                        uInt nLattices);
-   Bool putMaskSlice1 (const Array<Bool>& buffer, const IPosition& where,
-                       const IPosition& stride, uInt nLattices);
-
-   Bool putMaskSlice2 (const Array<Bool>& buffer, const IPosition& where,
-                       const IPosition& stride, uInt nLattices);
 };
+
+
 #endif
-
-	
-
-
