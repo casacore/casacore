@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Tables/BucketCache.h>
-#include <aips/Tables/BucketFile.h>
-#include <aips/Tables/TableError.h>
+#include <aips/IO/BucketCache.h>
+#include <aips/IO/BucketFile.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/OS/Timer.h>
 #include <iostream.h>
 
@@ -43,8 +43,8 @@ void d (uInt bufSize);
 main (int argc)
 {
     try {
-	a ( (argc<2));
-	b ( (argc<2));
+	a (ToBool (argc<2));
+	b (ToBool (argc<2));
 	c (0);
 //	c (1024);
 //	c (32768);
@@ -100,8 +100,8 @@ char* aInitBuffer (void*)
     for (uInt i=0; i++; i<32768) {
 	ptr[i] = 0;
     }
-    *(uInt*)ptr = ++counter;
-    *(uInt*)(ptr+32764) = counter;
+    *(Int*)ptr = ++counter;
+    *(Int*)(ptr+32760) = counter;
     return ptr;
 }
 
@@ -134,7 +134,7 @@ void a (Bool)
     }
     for (i=0; i<100; i++) {
 	*(Int*)buf = i+1;
-	*(Int*)(buf+32764) = i+10;
+	*(Int*)(buf+32760) = i+10;
 	char* ptr = new char[32768];
 	memcpy (ptr, buf, 32768);
 	cache.addBucket (ptr);
@@ -143,7 +143,7 @@ void a (Bool)
     cache.extend (10);
     char* data = cache.getBucket (110);
     *(Int*)data = 110;
-    *(Int*)(data+32764) = 110;
+    *(Int*)(data+32760) = 110;
     cache.setDirty();
     Int rec[128];
     for (i=0; i<128; i++) {
@@ -179,14 +179,14 @@ void b (Bool)
     }
     for (i=0; i<5; i++) {
 	char* buf = cache.getBucket(i);
-	if (*(Int*)buf != i+1  ||  *(Int*)(buf+32764) != i+1) {
+	if (*(Int*)buf != i+1  ||  *(Int*)(buf+32760) != i+1) {
 	    cout << "Error in bucket " << i << endl;
 	}
     }
     cache.resize (20);
     for (i=0; i<100; i++) {
 	char* buf = cache.getBucket(i+5);
-	if (*(Int*)buf != i+1  ||  *(Int*)(buf+32764) != i+10) {
+	if (*(Int*)buf != i+1  ||  *(Int*)(buf+32760) != i+10) {
 	    cout << "Error in bucket " << i+5 << endl;
 	}
     }
@@ -194,11 +194,11 @@ void b (Bool)
     for (i=0; i<10; i++) {
 	char* buf = cache.getBucket (i+105);
 	if (i == 5) {
-	    if (*(Int*)buf != 110  ||  *(Int*)(buf+32764) != 110) {
+	    if (*(Int*)buf != 110  ||  *(Int*)(buf+32760) != 110) {
 		cout << "Error in bucket " << i << endl;
 	    }
 	}else{
-	    if (*(Int*)buf != i+6  ||  *(Int*)(buf+32764) != i+6) {
+	    if (*(Int*)buf != i+6  ||  *(Int*)(buf+32760) != i+6) {
 		cout << "Error in bucket " << i+105 << endl;
 	    }
 	}
