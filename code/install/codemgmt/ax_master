@@ -2329,3 +2329,4 @@
 09 306 src mv trial/implement/Lattices/LatticeGram.h trial/implement/Images/ImageExprGram.h
 09 306 src mv trial/implement/Lattices/LatticeGram.l trial/implement/Images/ImageExprGram.l
 09 306 src mv trial/implement/Lattices/LatticeGram.y trial/implement/Images/ImageExprGram.y
+09 306 src mv trial/implement/Lattices/test/tLatticeGram.cc trial/implement/Images/test/tImageExprGram.cc
