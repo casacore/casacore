@@ -90,24 +90,26 @@ class LatticeNavigator;
 // inside a function. This is always recommended as it allows Functions
 // which have Lattices as arguments to work for any derived class.
 //
-// I will give a few examples here and then refer the reader to the <linkto
-// class="ArrayLattice">ArrayLattice</linkto> (a memory resident Lattice)
-// and <linkto class="PagedArray">PagedArray</linkto> (a disk based Lattice)
-// classes which contain further examples using concrete classes (rather
-// than an abstract one). All the examples shown below are used in the
-// <src>dLattice.cc</src> demo program.
+// I will give a few examples here and then refer the reader to the 
+// <linkto class="ArrayLattice">ArrayLattice</linkto> class (a memory resident
+// Lattice) and the <linkto class="PagedArray">PagedArray</linkto> class (a
+// disk based Lattice) which contain further examples with concrete
+// classes (rather than an abstract one). All the examples shown below are used
+// in the <src>dLattice.cc</src> demo program.
 //
-// Example 1:<br>
-// This example calculates the mean of the Lattice. Because Lattices can be
-// too large to fit into physical memory it is not good enough to simply use
+// <h4>Example 1:</h4>
+// This example calculates the mean of the Lattice. Because Lattices can be too
+// large to fit into physical memory it is not good enough to simply use
 // <src>getSlice</src> to read all the elements into an Array. Instead the
 // Lattice is accessed in chunks which can fit into memory (the size is
 // determined by the <src>maxPixels</src> and <src>niceCursorShape</src>
-// functions). The <src>LatticeIterator::cursor()</src> function then
-// returns each of these chunks as an Array and the standard Array based
-// functions are used to calculate the mean on each of these
-// chunks. Functions like this one are the recommended way to access
-// Lattices as the LatticeIterator will correctly setup any required caches.
+// functions). The <src>LatticeIterator::cursor()</src> function then returns
+// each of these chunks as an Array and the standard Array based functions are
+// used to calculate the mean on each of these chunks. Functions like this one
+// are the recommended way to access Lattices as the 
+// <linkto class="LatticeIterator">LatticeIterator</linkto> will correctly
+// setup any required caches.
+
 // <srcblock>
 // Complex latMean(const Lattice<Complex> & lat) {
 //   const uInt cursorSize = lat.maxPixels();
@@ -118,22 +120,24 @@ class LatticeNavigator;
 //   RO_LatticeIterator<Complex> iter(lat, 
 // 				   LatticeStepper(latticeShape, cursorShape));
 //   for (iter.reset(); !iter.atEnd(); iter++){
-//     currentSum += sum(iter.cursor());    // 
+//     currentSum += sum(iter.cursor());
 //     nPixels += iter.cursor().nelements();
 //   }
 //   return currentSum/nPixels;
 // }
 // </srcblock>
 //
-// Example 2: <br> 
+// <h4>Example 2:</h4>
 // Sometimes it will be neccesary to access slices of a Lattice in a nearly
 // random way. Often this can be done using the subSection commands in the
-// LatticeStepper class. But it is also possible to use the getSlice and
-// putSlice functions. The following example does a two-dimensional Real to
-// Complex Fourier transform. This example is restricted to four-dimensional
-// Arrays (unlike the previous example) and does not set up any caches
-// (caching is currently only used with PagedArrays).  So only use getSlice
-// and putSlice when things cannot be done using LatticeIterators.
+// <linkto class="LatticeStepper">LatticeStepper</linkto> class. But it is also
+// possible to use the getSlice and putSlice functions. The following example
+// does a two-dimensional Real to Complex Fourier transform. This example is
+// restricted to four-dimensional Arrays (unlike the previous example) and does
+// not set up any caches (caching is currently only used with PagedArrays).  So
+// only use getSlice and putSlice when things cannot be done using
+// LatticeIterators.
+
 // <srcblock>
 // void FFT2DReal2Complex(Lattice<Complex> & result, 
 // 		       const Lattice<Float> & input){
@@ -160,9 +164,11 @@ class LatticeNavigator;
 //   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
 //  
 //   IPosition start(4,0);
+//   Bool isARef;
 //   for (uInt c = 0; c < nchan; c++){
 //     for (uInt p = 0; p < npol; p++){
-//       input.getSlice(inputArrPtr, Slicer(start,inputSliceShape), True);
+//       isARef = input.getSlice(inputArrPtr,
+//                               Slicer(start,inputSliceShape), True);
 //       resultArray = FFT2D.rcnyfft(*inputArrPtr);
 //       result.putSlice(resultArray, start);
 //       start(2) += 1;
@@ -173,16 +179,16 @@ class LatticeNavigator;
 // }
 // </srcblock>
 //
-// Example 3:<br>
+// <h4>Example 3:</h4>
 // Occasionally you may want to access a few elements of a Lattice without
 // all the difficulty involved in setting up Iterators or calling getSlice
 // and putSlice. This is demonstrated in the example below and uses the
-// parenthesis operator, along with the a LatticeValueRef companion
+// parenthesis operator, along with the LatticeValueRef companion
 // class. Using these functions to access many elements of a Lattice is not
 // recommended as this is the slowest access method.
 //
 // In this example an ideal point spread function will be inserted into an
-// empty Lattice. As with the previous to examples all the action occurs
+// empty Lattice. As with the previous examples all the action occurs
 // inside a function because Lattice is an interface (abstract) class.
 //
 // <srcblock>
@@ -218,7 +224,8 @@ class LatticeNavigator;
 template <class T> class Lattice 
 {
 public: 
-  // destructor
+  // a virtual destructor is needed so that it will use the actual destructor
+  // in the derived class
   virtual ~Lattice();
   
   // returns the value of the single element located at the argument 
@@ -368,9 +375,9 @@ public:
 				 const LatticeNavigator & navigator) = 0;
   // </group>
 
-  // These function was put in for the Gnu compiler which presently
+  // These functions were put in for the Gnu compiler which presently
   // (version 2.7.2.1) is unable to automatically cast a derived class to a
-  // base class reference (or pointer) in a templated global function.
+  // base class in a templated global function.
   // <group>
   Lattice<T> & latticeCast() {return *this;}
   const Lattice<T> & latticeCast() const {return *this;}
