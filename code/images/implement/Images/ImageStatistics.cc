@@ -429,6 +429,9 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
 // Set mean and sigma if no statistics requested
 
    if (statsToPlot_p.nelements()==0) {
+      if (haveLogger_p) {
+         os_p << LogIO::NORMAL << "No plot statistics requested, setting mean and sigma" << LogIO::POST;
+      }
       statsToPlot_p.resize(2);
       statsToPlot_p(0) = MEAN;
       statsToPlot_p(1) = SIGMA;
