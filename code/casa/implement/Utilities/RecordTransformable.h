@@ -122,7 +122,7 @@ public:
   // the supplied String giving the reason why the conversion failed.
   // <group>
   virtual Bool toRecord(String & error, RecordInterface & outRecord) const = 0;
-  virtual Bool toRecord(String & error, GlishRecord & outRecord) const = 0;
+  Bool toGlishRecord(String & error, GlishRecord & outRecord) const;
   // </group>
 
   // Initialise the class from a Record representation. The input record should
@@ -133,7 +133,7 @@ public:
   // conversion failed.
   // <group>
   virtual Bool fromRecord(String & error, const RecordInterface & inRecord) = 0;
-  virtual Bool fromRecord(String & error, const GlishRecord & inRecord) = 0;
+  Bool fromGlishRecord(String & error, const GlishRecord & inRecord);
   // </group>
 };
 
