@@ -1,5 +1,5 @@
 //# LELInterface.h:  Abstract base class for lattice expressions
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/DataType.h>
+#include <aips/IO/FileLocker.h>
 
 //# Forward Declarations
 template <class T> class LELScalar;
@@ -182,6 +183,16 @@ public:
 // It returns False if the expression is no scalar or if the expression
 // is an invalid scalar (i.e. with a False mask).
    static Bool replaceScalarExpr (CountedPtr<LELInterface<T> >& expr);
+
+  // Handle locking/syncing of the parts of a lattice expression.
+  // <br>By default the functions do not do anything at all.
+  // lock() and hasLock return True.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
 
 protected:
 // Set the expression attributes of this object.

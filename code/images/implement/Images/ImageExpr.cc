@@ -227,3 +227,24 @@ Bool ImageExpr<T>::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
    return latticeExpr_p.doGetMaskSlice (buffer, section);
 }
 
+
+template <class T>
+Bool ImageExpr<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+   return latticeExpr_p.lock (type, nattempts);
+}
+template<class T>
+void ImageExpr<T>::unlock()
+{
+  latticeExpr_p.unlock();
+}
+template<class T>
+Bool ImageExpr<T>::hasLock (FileLocker::LockType type) const
+{
+  return latticeExpr_p.hasLock (type);
+}
+template<class T>
+void ImageExpr<T>::resync()
+{
+  latticeExpr_p.resync();
+}

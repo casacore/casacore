@@ -517,6 +517,92 @@ LatticeExprNode& LatticeExprNode::operator= (const LatticeExprNode& other)
 }
 
 
+Bool LatticeExprNode::lock (FileLocker::LockType type, uInt nattempts)
+{
+   switch (dataType()) {
+   case TpFloat:
+     return pExprFloat_p->lock (type, nattempts);
+   case TpDouble:
+     return pExprDouble_p->lock (type, nattempts);
+   case TpComplex:
+     return pExprComplex_p->lock (type, nattempts);
+   case TpDComplex:
+     return pExprDComplex_p->lock (type, nattempts);
+   case TpBool:
+     return pExprBool_p->lock (type, nattempts);
+   default:
+     throw (AipsError ("LatticeExprNode::lock - "
+		       "unknown data type"));
+   }
+   return False;
+}
+void LatticeExprNode::unlock()
+{
+   switch (dataType()) {
+   case TpFloat:
+     pExprFloat_p->unlock();
+     break;
+   case TpDouble:
+     pExprDouble_p->unlock();
+     break;
+   case TpComplex:
+     pExprComplex_p->unlock();
+     break;
+   case TpDComplex:
+     pExprDComplex_p->unlock();
+     break;
+   case TpBool:
+     pExprBool_p->unlock();
+     break;
+   default:
+     throw (AipsError ("LatticeExprNode::unlock - "
+		       "unknown data type"));
+   }
+}
+Bool LatticeExprNode::hasLock (FileLocker::LockType type) const
+{
+   switch (dataType()) {
+   case TpFloat:
+     return pExprFloat_p->hasLock (type);
+   case TpDouble:
+     return pExprDouble_p->hasLock (type);
+   case TpComplex:
+     return pExprComplex_p->hasLock (type);
+   case TpDComplex:
+     return pExprDComplex_p->hasLock (type);
+   case TpBool:
+     return pExprBool_p->hasLock (type);
+   default:
+      throw (AipsError ("LatticeExprNode::hasLock - "
+			"unknown data type"));
+   }
+   return False;
+}
+void LatticeExprNode::resync()
+{
+   switch (dataType()) {
+   case TpFloat:
+     pExprFloat_p->resync();
+     break;
+   case TpDouble:
+     pExprDouble_p->resync();
+     break;
+   case TpComplex:
+     pExprComplex_p->resync();
+     break;
+   case TpDComplex:
+     pExprDComplex_p->resync();
+     break;
+   case TpBool:
+     pExprBool_p->resync();
+     break;
+   default:
+     throw (AipsError ("LatticeExprNode::resync - "
+		       "unknown data type"));
+   }
+}
+
+
 Bool LatticeExprNode::replaceScalarExpr()
 // 
 // If the current expression evaluates to a scalar, then it can 

@@ -135,3 +135,26 @@ String LELLattice<T>::className() const
 {
    return String("LELLattice");
 }
+
+
+template<class T>
+Bool LELInterface<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+    return pLattice_p->lock (type, nattempts);
+}
+template<class T>
+void LELInterface<T>::unlock()
+{
+    pLattice_p->unlock();
+}
+template<class T>
+Bool LELInterface<T>::hasLock (FileLocker::LockType type) const
+{
+    return pLattice_p->hasLock (type);
+}
+template<class T>
+void LELInterface<T>::resync()
+{
+    pLattice_p->resync();
+}
+

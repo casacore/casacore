@@ -540,6 +540,14 @@ public:
 				 const Block<Int>& argType,
 				 Bool expectArray);
 
+  // Handle locking of the LatticeExpr which is delegated to all of its parts.
+  // <group>
+  Bool lock (FileLocker::LockType, uInt nattempts);
+  void unlock();
+  Bool hasLock (FileLocker::LockType) const;
+  void resync();
+  // </group>
+
 
 private:
 // Make the object from a LELInterface* pointer.

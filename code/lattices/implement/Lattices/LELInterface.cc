@@ -1,5 +1,5 @@
 //# LELInterface.cc:  this defines LELInterface.cc
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,3 +71,22 @@ Bool LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
     }
     return isInvalidScalar;
 }
+
+
+template<class T>
+Bool LELInterface<T>::lock (FileLocker::LockType, uInt)
+{
+    return True;
+}
+template<class T>
+void LELInterface<T>::unlock()
+{}
+template<class T>
+Bool LELInterface<T>::hasLock (FileLocker::LockType) const
+{
+    return True;
+}
+template<class T>
+void LELInterface<T>::resync()
+{}
+

@@ -1,5 +1,5 @@
 //# ImageExpr.h: contains expressions involving images
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -202,6 +202,14 @@ public:
 // pixel values and don't care about the order or dimension of the
 // cursor. 
    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+
+  // Handle the (un)locking and syncing..
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
 
 
 private:  

@@ -138,84 +138,95 @@ template <class T> class LatticeExpr : public MaskedLattice<T>
 {
 public:
 
-// Default constructor
+  // Default constructor
    LatticeExpr();
 
-// Constructor from an arbitrary LatticeExprNode  expression object.
-// An exception is thrown if the expression data type cannot be
-// converted to the template data type.  Note that the 2nd argument 
-// is included to be sure that the compiler does not take this constructor 
-// into account for automatic conversions (since the keyword explicit is 
-// not implemented by all compilers yet). The conversion operators 
-// in class LatticeExprNode take care of automatic conversions.
+  // Constructor from an arbitrary LatticeExprNode  expression object.
+  // An exception is thrown if the expression data type cannot be
+  // converted to the template data type.  Note that the 2nd argument 
+  // is included to be sure that the compiler does not take this constructor 
+  // into account for automatic conversions (since the keyword explicit is 
+  // not implemented by all compilers yet). The conversion operators 
+  // in class LatticeExprNode take care of automatic conversions.
    LatticeExpr (const LatticeExprNode& expr, uInt dummy=0);
 
-// Copy constructor (reference semantics)
+  // Copy constructor (reference semantics)
    LatticeExpr(const LatticeExpr<T>& other);
 
-// Destructor, does nothing
+  // Destructor, does nothing
    virtual ~LatticeExpr();
 
-// Assignment (reference semantics)
+  // Assignment (reference semantics)
    LatticeExpr<T>& operator=(const LatticeExpr<T>& other);
 
-// Make a copy of the derived object (reference semantics).
+  // Make a copy of the derived object (reference semantics).
    virtual MaskedLattice<T>* cloneML() const;
 
-// Has the object really a mask?
+  // Has the object really a mask?
    virtual Bool isMasked() const;
 
-// Get the region used (always returns 0).
+  // Get the region used (always returns 0).
    virtual const LatticeRegion* getRegionPtr() const;
 
-// Returns False, as the LatticeExpr lattice is not writable.
+  // Returns False, as the LatticeExpr lattice is not writable.
    virtual Bool isWritable() const;
 
-// Returns the shape of the Lattice including all degenerate axes
-// (i.e. axes with a length of one)
+  // Handle locking of the LatticeExpr which is delegated to all of its parts.
+  // <br>hasLock() is True if all parts of the expression return True.
+  // <br>It is strongly recommended to use class
+  // <linkto class=LatticeLocker>LatticeLocker</linkto> to
+  // handle lattice locking. It also contains a more detailed
+  // explanation of the locking process.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  // </group>
+
+  // Resynchronize the Lattice object with the lattice file.
+  // This function is only useful if no read-locking is used, ie.
+  // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
+  // In that cases the table system does not acquire a read-lock, thus
+  // does not synchronize itself automatically.
+  // <br>By default the function does not do anything at all.
+  virtual void resync();
+
+  // Returns the shape of the Lattice including all degenerate axes
+  // (i.e. axes with a length of one)
    virtual IPosition shape() const;
 
-// Return the best cursor shape.  
+  // Return the best cursor shape.  
    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
-// Returns the coordinates of the lattice expression.
+  // Returns the coordinates of the lattice expression.
    virtual LELCoordinates lelCoordinates() const;
 
-// Do the actual get of the data.
-// The return value is always False, thus the buffer does not reference
-// another array.
+  // Do the actual get of the data.
+  // The return value is always False, thus the buffer does not reference
+  // another array.
    virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
-// Do the actual get of the mask data.
-// The return value is always False, thus the buffer does not reference
-// another array.
+  // Do the actual get of the mask data.
+  // The return value is always False, thus the buffer does not reference
+  // another array.
    virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
 
-// An expression is not writable so this functions throws an exception.
+  // An expression is not writable so this functions throws an exception.
    virtual void doPutSlice (const Array<T>& sourceBuffer,
 			    const IPosition& where,
 			    const IPosition& stride);
 
-// Copy the data from this lattice to the given lattice.
+  // Copy the data from this lattice to the given lattice.
    virtual void copyDataTo (Lattice<T>& to) const;
 
 
 private:
-// This class just contains an object of class LatticeExprNode. 
-// It is untemplated and does not inherit.
+  // This class just contains an object of class LatticeExprNode. 
+  // It is untemplated and does not inherit.
    LatticeExprNode expr_p;
    LELArray<T>*    lastChunkPtr_p;
    Slicer          lastSlicer_p;
 };
-
-
-// Some typedefs to help silly gcc compiler recognize these template types
-
-typedef LatticeExpr<Float> gpp_LatticeExpr_Float;
-typedef LatticeExpr<Double> gpp_LatticeExpr_Double;
-typedef LatticeExpr<Complex> gpp_LatticeExpr_Complex;
-typedef LatticeExpr<DComplex> gpp_LatticeExpr_DComplex;
-typedef LatticeExpr<Bool> gpp_LatticeExpr_Bool;
 
 
 #endif

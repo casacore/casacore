@@ -32,12 +32,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
 
-typedef LELArray<Bool> gppbug_latticeexpr_bool;
-typedef LELArray<Float> gppbug_latticeexpr_float;
-typedef LELArray<Double> gppbug_latticeexpr_double;
-typedef LELArray<Complex> gppbug_latticeexpr_complex;
-typedef LELArray<DComplex> gppbug_latticeexpr_dcomplex;
-
 
 template <class T>
 LatticeExpr<T>::LatticeExpr()
@@ -128,6 +122,27 @@ template <class T>
 Bool LatticeExpr<T>::isWritable() const
 {
    return False;
+}
+
+template<class T>
+Bool LatticeExpr<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return expr_p.lock (type, nattempts);
+}
+template<class T>
+void LatticeExpr<T>::unlock()
+{
+  expr_p.unlock();
+}
+template<class T>
+Bool LatticeExpr<T>::hasLock (FileLocker::LockType type) const
+{
+  return expr_p.hasLock (type);
+}
+template<class T>
+void LatticeExpr<T>::resync()
+{
+  expr_p.resync();
 }
 
 template <class T>
