@@ -174,8 +174,8 @@ int main()
                                                  proj, crval, crpix,
                                                  cdelt, xform);
          Vector<String> axisNames(2); 
-         axisNames(0) = "Galactic Longitude";
-         axisNames(1) = "Galactic Latitude";
+         axisNames(0) = "Longitude";
+         axisNames(1) = "Latitude";
          String axisUnit = "rad";
          doit(lc, MDirection::GALACTIC, axisNames, axisUnit);
       }
