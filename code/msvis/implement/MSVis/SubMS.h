@@ -66,7 +66,7 @@ class SubMS
 
  public:
 
- SubMS(String& theMS);
+  SubMS(String& theMS);
   
   // construct from an MS
   SubMS(MeasurementSet& ms);
@@ -115,8 +115,11 @@ class SubMS
   Bool fillDDTables();
   Bool fillFieldTable();
   Bool fillMainTable(const String& which);
+  Bool copyAntenna();
+  Bool copyFeed();
+  Bool copyObservation();
   MSColumns * msc_p;
-  ROMSColumns * mscIn_p;
+  MSColumns * mscIn_p;
 
   MeasurementSet ms_p, mssel_p, msOut_p;
   Vector<Int> spw_p, nchan_p, chanStart_p, chanStep_p, npol_p;
