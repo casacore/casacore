@@ -82,11 +82,11 @@ int MSAntennaGramlex (YYSTYPE*);
 
 %%
 antennastatement: SQUOTE antennaexpr SQUOTE {
-                    cout << "Antenna selection " << endl;
                     $$ = $2;
                   }
                 | antennalistexpr {
-                  $$ = $1; }
+                    $$ = $1;
+                  }
                 ;
 
 antennaexpr: IDENTIFIER {
@@ -94,41 +94,38 @@ antennaexpr: IDENTIFIER {
                   name[0] = String($1);
 		  $$ = MSAntennaParse().selectAntennaName(name);
              }
-	    |indexcombexprlist 
-	    ;
+	   | indexcombexprlist 
+	   ;
 		   
-indexcombexprlist : indexcombexpr
-                  | indexcombexprlist COMMA indexcombexpr 
-                  ;
+indexcombexprlist: indexcombexpr
+                 | indexcombexprlist COMMA indexcombexpr 
+                 ;
 
-indexcombexpr : indexlist AMPERSAND indexlist
-              | indexlist AMPERSAND STAR {
-                 printf("A wildcard presents \n");}
-              ;
+indexcombexpr: indexlist AMPERSAND indexlist
+             | indexlist AMPERSAND STAR
+             ;
 
 indexlist: LPAREN antennalistexpr RPAREN {
-                 $$ = $2;}
+             $$ = $2;
+           }
          | antennalistexpr {
-                   $$ = $1;}
+             $$ = $1;
+           }
          ;
-antennalistexpr : IDENTIFIER {
-                   cout << "SINGLE index" << $1 << endl;
-		   Vector<Int> ind(1);
-		   ind[0] = atoi($1);
+antennalistexpr: IDENTIFIER {
+                   Vector<Int> ind(1);
+                   ind[0] = atoi($1);
                    $$ = MSAntennaParse().selectAntennaIds(ind);
-                   }
-                | antennalistexpr COMMA IDENTIFIER
-                | IDENTIFIER DASH IDENTIFIER {
-                   cout << "index from $1 to $3 \n" << endl;
-
+                 }
+               | antennalistexpr COMMA IDENTIFIER
+               | IDENTIFIER DASH IDENTIFIER {
                    Int len = atoi($3)-atoi($1)+1;
-		   Vector<Int> antennaidx(len);
+                   Vector<Int> antennaidx(len);
                    for(Int i = 0; i < len; i++) {
                      antennaidx[i] = atoi($1) + i;
-		     cout << "antenna idx" << antennaidx[i] << endl;
                    }
                    $$ = MSAntennaParse().selectAntennaIds(antennaidx);
-		}
-                ;
+		 }
+               ;
 %%
 

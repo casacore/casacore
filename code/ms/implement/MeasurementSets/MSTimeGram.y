@@ -74,9 +74,8 @@ int MSTimeGramlex (YYSTYPE*);
 %}
 
 %%
-statement: SQUOTE SQUOTE {
-                  cout << "selection" << endl;}
-               ;
+statement: SQUOTE SQUOTE
+         ;
 
 %%
 

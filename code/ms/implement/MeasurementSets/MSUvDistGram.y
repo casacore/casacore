@@ -84,47 +84,48 @@ int MSUvDistGramlex (YYSTYPE*);
 %}
 
 %%
-uvdiststatement : SQUOTE uvdistexpr SQUOTE {
-                    $$ = $2 ;
-                    cout << "Start statement" << endl;}
-                ;
+uvdiststatement: SQUOTE uvdistexpr SQUOTE {
+                   $$ = $2 ;
+                 }
+               ;
 
-uvdistexpr : rangeexprlist
-            |upuvbound
-            |lowuvbound
-            |uvdistwithfract {
+uvdistexpr: rangeexprlist
+          | upuvbound
+          | lowuvbound
+          | uvdistwithfract {
               $$ = $1;
-             }
-           ;
+            }
+          ;
 
-rangeexprlist :   rangeexpr
-                | rangeexprlist COMMA rangeexpr {
-                  $$ = $1;
-                  delete $1;}
-           ;
-
-rangeexpr : NUMBER DASH NUMBER unit {
-	      cout << "uvdist between " << $1 << " and " << $3 << endl;
-              $$ = MSUvDistParse().selectUVRange($1, $3);}
-           ;
-
-unit :  DISTANCEUNIT
-      | WAVELENTHUNIT
-      ;
-
-upuvbound : LT NUMBER unit {
-	      cout << "uvdist < " << $2 << endl;
-              $$ = MSUvDistParse().selectUVRange(0, $2);}
-           ;
-        
-lowuvbound : GT NUMBER unit {
-	      cout << "uvdist > " << $2 << endl;
-              $$ = MSUvDistParse().selectUVRange($2, 1000000);}
-           ;
-
-uvdistwithfract : NUMBER unit COLON NUMBER PERCENT {
-	      cout << "uvdist around " << $1 << endl;
-              $$ = MSUvDistParse().selectUVRange($1-$4*0.01, 1+$4*0.01);}
+rangeexprlist: rangeexpr
+             | rangeexprlist COMMA rangeexpr {
+                 $$ = $1;
+                 delete $1;
+               }
              ;
+
+rangeexpr: NUMBER DASH NUMBER unit {
+             $$ = MSUvDistParse().selectUVRange($1, $3);
+           }
+         ;
+
+unit: DISTANCEUNIT
+    | WAVELENTHUNIT
+    ;
+
+upuvbound: LT NUMBER unit {
+             $$ = MSUvDistParse().selectUVRange(0, $2);
+           }
+         ;
+        
+lowuvbound: GT NUMBER unit {
+              $$ = MSUvDistParse().selectUVRange($2, 1000000);
+            }
+          ;
+
+uvdistwithfract: NUMBER unit COLON NUMBER PERCENT {
+                   $$ = MSUvDistParse().selectUVRange($1-$4*0.01, 1+$4*0.01);
+                 }
+               ;
 %%
 

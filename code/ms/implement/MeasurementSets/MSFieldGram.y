@@ -86,74 +86,78 @@ int MSFieldGramlex (YYSTYPE*);
 %}
 
 %%
-fieldstatement:  indexexpr {
-                  $$ = $1 ;}
-                |SQUOTE fieldexpr SQUOTE {
-                  $$ = $2 ;}
-               ;
+fieldstatement: indexexpr {
+                  $$ = $1 ;
+                }
+              | SQUOTE fieldexpr SQUOTE {
+                  $$ = $2 ;
+                }
+              ;
 
-fieldexpr:  namelist
-           |CODE {
-		 printf("field or source code\n");}
-            ;
-
-namelist : NAME {
-		 Vector<String> fieldnames(1);
-                 fieldnames[0] = String($1);		
-		 $$ = MSFieldParse().selectFieldNames(fieldnames);}
-         | namelist COMMA NAME { 
-	         printf("For list case, this one match first\n");}
+fieldexpr: namelist
          ;
+
+namelist: NAME {
+            Vector<String> fieldnames(1);
+            fieldnames[0] = String($1);		
+            $$ = MSFieldParse().selectFieldNames(fieldnames);
+          }
+        | namelist COMMA NAME {
+            Vector<String> fieldnames(1);
+            fieldnames[0] = String($3);		
+            $$ = MSFieldParse().selectFieldNames(fieldnames);
+          }
+        ;
             
-indexexpr:  indexlist
-           |indexrangeexpr
-           |lowindexboundexpr
-           |upindexboundexpr
-           ;
+indexexpr: indexlist
+         | indexrangeexpr
+         | lowindexboundexpr
+         | upindexboundexpr
+         ;
 
 indexlist: INDEX {
-                   Vector<Int> fieldids(1);
-		   fieldids[0] = $1;
-		   cout << ("field index\n") << fieldids[0] << endl;;
-                   $$ = MSFieldParse().selectFieldIds(fieldids);}
+             Vector<Int> fieldids(1);
+             fieldids[0] = $1;
+             $$ = MSFieldParse().selectFieldIds(fieldids);
+           }
          | indexlist COMMA INDEX {
-                   Vector<Int> fieldids(1);
-		   fieldids[0] = $3;
-		   cout << ("field index\n") << fieldids[0] << endl;;
-                   $$ = MSFieldParse().selectFieldIds(fieldids);}
+             Vector<Int> fieldids(1);
+             fieldids[0] = $3;
+             $$ = MSFieldParse().selectFieldIds(fieldids);
+           }
          ;
 
-indexrangeexpr : INDEX DASH INDEX {
-                   Int len = $<ival>3-$<ival>1+1;
-		   Vector<Int> fieldids(len);
-                   for(Int i = 0; i < len; i++) {
-                     fieldids[i] = $<ival>1 + i;
-		     cout << "field ids" << fieldids[i] << endl;
-                   }
-                   $$ = MSFieldParse().selectFieldIds(fieldids);}
-               ;
-
-lowindexboundexpr : GT INDEX {
-                   cout << "> index " << $2 << endl;
-		   ROMSFieldColumns msFieldCols_p(MSFieldParse::ms()->field());
-		   Int startID = $2;
-		   Int len = msFieldCols_p.nrow();
-		   Vector<Int> fieldids(len- startID -1);
-		   for(Int i = 0; i < (Int)fieldids.nelements(); i++) {
-		     fieldids[i] = startID + i + 1;
-		   }
-		   $$ = MSFieldParse().selectFieldIds(fieldids);}
-               ;
-
-upindexboundexpr : LT INDEX {
-		   Int len = $2;
-		   Vector<Int> fieldids(len);
-                   for(Int i = 0; i < len; i++) {
-                     fieldids[i] = i;
-		     cout << "field ids" << fieldids[i] << endl;
-                   }
-                   $$ = MSFieldParse().selectFieldIds(fieldids);}
+indexrangeexpr: INDEX DASH INDEX {
+                  Int len = $<ival>3-$<ival>1+1;
+                  Vector<Int> fieldids(len);
+                  for(Int i = 0; i < len; i++) {
+                    fieldids[i] = $<ival>1 + i;
+                  }
+                  $$ = MSFieldParse().selectFieldIds(fieldids);
+                }
               ;
+
+lowindexboundexpr: GT INDEX {
+		     ROMSFieldColumns msFieldCols_p(MSFieldParse::ms()->field());
+		     Int startID = $2;
+		     Int len = msFieldCols_p.nrow();
+		     Vector<Int> fieldids(len- startID -1);
+		     for(Int i = 0; i < (Int)fieldids.nelements(); i++) {
+		       fieldids[i] = startID + i + 1;
+		     }
+		     $$ = MSFieldParse().selectFieldIds(fieldids);
+                   }
+                 ;
+
+upindexboundexpr: LT INDEX {
+		    Int len = $2;
+		    Vector<Int> fieldids(len);
+                    for(Int i = 0; i < len; i++) {
+                      fieldids[i] = i;
+                    }
+                    $$ = MSFieldParse().selectFieldIds(fieldids);
+                  }
+                ;
 
 %%
 
