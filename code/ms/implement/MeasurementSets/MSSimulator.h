@@ -102,7 +102,7 @@ public:
   // set the antenna and array data.
   // This is held in MSSimulator vectors, and is then written into
   // the appropriate MS Tables when writeMS() and its helper function
-  // fillCoords() are called.   The same model is used for the Fields,
+  // extendMS() are called.   The same model is used for the Fields,
   // SpWindows, Feeds, and Times information below.
   void initAnt(const String& telname,
 	       const Vector<Double>& x, 
@@ -187,8 +187,6 @@ private:
 
 //# Secure Member Functions
   
-  void fillCoords(MeasurementSet & ms);
-
   void local2global(Vector<Double>& xReturned,
 		    Vector<Double>& yReturned,
 		    Vector<Double>& zReturned,
