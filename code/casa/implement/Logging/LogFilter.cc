@@ -1,5 +1,5 @@
-//# LogFilter.cc: Filter LogMessages on priority
-//# Copyright (C) 1996,2000
+//# LogFilter.cc: Filter LogMessages on message priority
+//# Copyright (C) 1996,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,49 +26,35 @@
 //# $Id$
 
 #include <aips/Logging/LogFilter.h>
-#include <aips/Logging/LogFilterExpr.h>
 
 
 LogFilter::LogFilter (LogMessage::Priority lowest)
-: lowest_p(lowest),
-  expr_p  (0)
+: lowest_p(lowest)
 {}
 
-LogFilter::LogFilter (const String& expr)
-: lowest_p(LogMessage::NORMAL),
-  expr_p  (0)
-{
-  expr_p = new LogFilterExpr(expr);
-}
-
 LogFilter::LogFilter (const LogFilter& other)
-: lowest_p(other.lowest_p),
-  expr_p  (0)
-{
-  if (other.expr_p != 0) {
-    expr_p = new LogFilterExpr (*other.expr_p);
-  }
-}
+: lowest_p(other.lowest_p)
+{}
 
 LogFilter& LogFilter::operator= (const LogFilter& other)
 {
   if (this != &other) {
     lowest_p = other.lowest_p;
-    delete expr_p;
-    expr_p = 0;
-    if (other.expr_p != 0) {
-      expr_p = new LogFilterExpr (*other.expr_p);
-    }
   }
   return *this;
 }
 
 LogFilter::~LogFilter()
+{}
+
+LogFilter* LogFilter::clone() const
 {
-  delete expr_p;
+  return new LogFilter(*this);
 }
 
-Bool LogFilter::passExpr (const LogMessage& message) const
+Bool LogFilter::pass (const LogMessage& message) const
 {
-  return expr_p->matches (message);
+  return message.priority() >= lowest_p;
 }
+
+
