@@ -1,5 +1,5 @@
 //# StArrayFile.cc: Read/write array in external format for a storage manager
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/IO/CanonicalIO.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Containers/Block.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/OS/Path.h>
@@ -249,7 +250,13 @@ uInt StManArrayFile::putShape (const IPosition& shape, uLong& offset,
     { return putRes (shape, offset, 2*sizeDouble_p); }
 uInt StManArrayFile::putShape (const IPosition& shape, uLong& offset,
 			       const String*)
-    { return putRes (shape, offset, sizeuInt_p); }
+{
+    uInt n = putRes (shape, offset, sizeuInt_p);
+    uInt nr = shape.product();
+    Block<uInt> data(nr, 0);
+    put (offset+n, 0, nr, data.storage());
+    return n;
+}
 
 //# Put a complex vector at the given file offset.
 void StManArrayFile::put (uLong fileOff, uInt arrayOff, uInt nr,
@@ -322,16 +329,20 @@ void StManArrayFile::get (uLong fileOff, uInt arrayOff, uInt nr,
 	setpos (offs);
 	offs += iofil_p->read (n, buf);
 	for (i=0; i<n; i++) {
-	    setpos (buf[i]);
-	    get (l);                              // read string length
-	    data->alloc (l);                      // resize string
-	    iofil_p->read (data->length(), (char*)(data->chars()));
-	    //# Do some kind of dirty trick to set the trailing zero.
-	    //# The cast is needed because String::chars() returns const char*.
-	    ((char*)(data->chars()))[l] = '\0';
+	    if (buf[i] == 0) {
+	        *data = String();
+	    } else {
+	        setpos (buf[i]);
+		get (l);                              // read string length
+		data->alloc (l);                      // resize string
+		iofil_p->read (data->length(), (char*)(data->chars()));
+		//# Do some kind of dirty trick to set the trailing zero.
+		//# The cast is needed because String::chars() returns const.
+		((char*)(data->chars()))[l] = '\0';
+	    }
 	    data++;
 	}
-	nr   -= n;
+	nr -= n;
     }
 }
 
