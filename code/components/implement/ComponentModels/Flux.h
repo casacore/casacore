@@ -833,8 +833,8 @@ public:
     out(1) = (xx - yy)/T(2);
     out(2) = (xy + yx)/T(2);
     NumericTraits<T>::ConjugateType & v = out(3);
-    v.re = (-xy.re-yx.im)/T(2);
-    v.im = (yx.re-xy.im)/T(2);
+    v.re = (xy.im-yx.im)/T(2);
+    v.im = (yx.re-xy.re)/T(2);
   };
 
   // This function converts between a Vector in Linear representation and one
