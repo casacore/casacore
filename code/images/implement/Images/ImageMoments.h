@@ -231,13 +231,13 @@ public:
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
    ImageMoments (const ImageInterface<T>& image, LogIO &os);
 
-// Copy constructor
+// Copy constructor.  Uses copy semantics.
    ImageMoments(const ImageMoments<T> &other);
 
 // Destructor
   ~ImageMoments();
 
-// Assignment operator
+// Assignment operator. USes copy semantics.
    ImageMoments<T> &operator=(const ImageMoments<T> &other);
 
 // This <src>enum MomentTypes</src> is provided for use with the
