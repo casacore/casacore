@@ -171,6 +171,7 @@ public:
 
 private:
   // Forbid copy constructor and assignment.
+  // <group>
   TiledFileAccess (const TiledFileAccess&);
   TiledFileAccess& operator= (const TiledFileAccess&);
   // </group>
