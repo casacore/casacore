@@ -2306,8 +2306,9 @@ an alternative to invoking \aipsexe{ai} directly on a machine on which the
 
 In order to use \exe{rai} a programmer must have an account on
 \host{aips2.nrao.edu} and it must be set up for \unixexe{ssh} access from the
-local host via a suitable entry in the \file{.ssh/authorized\_keys} file.  The
-programmer
+local host via a suitable entry in the \file{.ssh/authorized\_keys} file
+(\file{.ssh/authorized\_keys2} for ssh2 based access).
+The programmer
 must also have an up-to-date \aipspp\ workspace on \host{aips2.nrao.edu} and
 it \emph{must} be  rooted at \file{\$HOME/aips++} (see \exeref{mktree}).
 Visit the \htmladdnormallink{Using SSH page}{../../programmer/usingssh.html}
@@ -2355,7 +2356,8 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
 
    \noindent
 
-   The \file{.ssh/authorized\_keys} file for the \acct{remotename} account on
+   The \file{.ssh/authorized\_keys}  (\file{.ssh/authorized\_keys2} for ssh2)
+   file for the \acct{remotename} account on
    \host{aips2.nrao.edu} should have an entry for each machine you may want
    to use remotely.
 
@@ -2493,8 +2495,8 @@ on which the \aipspp\ master directory is remotely \textsc{nfs} mounted.
  
 In order to use \exe{rao} a programmer must have an account on
 \host{aips2.nrao.edu} and it must be set up for \unixexe{ssh} access from the
-local host via a suitable entry in the \file{.ssh/authorized\_keys} file.  The
-programmer
+local host via a suitable entry in the \file{.ssh/authorized\_keys} file
+(\file{.ssh/authorized\_keys2} for ssh2). The programmer
 must also have an up-to-date \aipspp\ workspace on \host{aips2.nrao.edu} and
 it \emph{must} be  rooted at \file{\$HOME/aips++} (see \exeref{mktree}). 
 Visit the \htmladdnormallink{Using SSH page}{../../programmer/usingssh.html}
@@ -2540,7 +2542,8 @@ Refer to the options for \exeref{ao}.  \exe{rao} itself has no options.
 \end{verbatim}
  
    \noindent
-   The \file{.ssh/authorized\_keys} file for the \acct{remotename} account on
+   The \file{.ssh/authorized\_keys} file   (\file{.ssh/authorized\_keys2} for ssh2)
+   for the \acct{remotename} account on
    \host{aips2.nrao.edu} should have an entry for each machine you may want
    to use remotely.
 
@@ -2643,8 +2646,8 @@ master directory is remotely \textsc{nfs} mounted.
 
 In order to use \exe{rau} a programmer must have an account on
 \host{aips2.nrao.edu} and it must be set up for \unixexe{ssh} access from the
-local host via a suitable entry in the \file{.ssh/authorized\_keys} file.  The
-programmer
+local host via a suitable entry in the \file{.ssh/authorized\_keys} file
+(\file{.ssh/authorized\_keys} for ssh2).  The programmer
 must also have an up-to-date \aipspp\ workspace on \host{aips2.nrao.edu} and
 it \emph{must} be  rooted at \file{\$HOME/aips++}.
 %$
@@ -2708,7 +2711,8 @@ None.
 \end{verbatim}
  
    \noindent
-   The \file{.ssh/authorized\_keys} file for the \acct{remotename} account on
+   The \file{.ssh/authorized\_keys} file   (\file{.ssh/authorized\_keys2} for ssh2)
+   for the \acct{remotename} account on
    \host{aips2.nrao.edu} should have an entry for each machine you may want
    to use remotely.
 
