@@ -1,5 +1,5 @@
 //# dMUString.cc: test of MUString class
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -84,7 +84,7 @@ main()
     } end_try;
 
      try {
-       String in = "pm";
+       String in = "12.5pm";
        String bb;
        Int ptr = 0;
        Int l = in.length();
@@ -96,14 +96,15 @@ main()
 	 String loc = loc0.at(ptr,p-ptr);
 	 ptr = p;
 	 istrstream instr(loc);
-	 cout << "Pos0: " << instr.tellg() << instr.rdstate() << endl;
+	 streampos stt(instr.tellg());
+	 cout << "Pos0: " << instr.tellg()-stt << instr.rdstate() << endl;
 	 instr >> res;
-	 cout << "Pos0a:" << instr.tellg() << instr.rdstate() << endl;
+	 cout << "Pos0a:" << instr.tellg()-stt << instr.rdstate() << endl;
 	 cout << "ios::failbit: " << ios::failbit << endl;
 	 instr.clear(~ios::failbit & instr.rdstate());
-	 cout << "Pos0b:" << instr.tellg() << instr.rdstate() << endl;
+	 cout << "Pos0b:" << instr.tellg()-stt << instr.rdstate() << endl;
 	 instr >> bb;
-	 cout << "Pos1: " << instr.tellg() << endl;
+	 cout << "Pos1: " << instr.tellg()-stt << endl;
 	 cout << in << " = " << res << " : " << bb << endl;
        };
      } catch (AipsError x) {
