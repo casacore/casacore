@@ -1,5 +1,5 @@
 //# RecordInterface.cc: Abstract base class for a hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1998,1999
+//# Copyright (C) 1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -542,7 +542,10 @@ Complex RecordInterface::asComplex (const RecordFieldId& id) const
     case TpComplex:
 	break;
     case TpDComplex:
-	return *(const DComplex*)get_pointer (whichField, TpDComplex);
+      {
+	DComplex dc = *(const DComplex*)get_pointer (whichField, TpDComplex);
+	return Complex(dc.real(), dc.imag());
+      }
     default:
 	throw (AipsError ("RecordInterface: invalid data type"));
     }
