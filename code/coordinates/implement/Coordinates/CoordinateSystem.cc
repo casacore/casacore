@@ -41,6 +41,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Record.h>
+#include <aips/Containers/Block.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
@@ -1053,17 +1054,12 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
 //
                Int where2;
                if (j==0) {      // 0 or 1
-                  where2 = world_maps_p[i]->operator[](1);
-//
-                  Quantum<Double> tmp180(180.0, Unit("deg"));
-                  worldMin_tmps_p[i]->operator()(0) = -tmp180.getValue(units(0));
-                  worldMax_tmps_p[i]->operator()(0) =  tmp180.getValue(units(0));
+                  worldMin_tmps_p[i]->operator()(0) = coordinates_p[i]->worldMixMin()(0);
+                  worldMax_tmps_p[i]->operator()(0) = coordinates_p[i]->worldMixMax()(0);
                } else {
                   where2 = world_maps_p[i]->operator[](0);
-//
-                  Quantum<Double> tmp90(90.0, Unit("deg"));
-                  worldMin_tmps_p[i]->operator()(1) = -tmp90.getValue(units(1));
-                  worldMax_tmps_p[i]->operator()(1) =  tmp90.getValue(units(1));
+                  worldMin_tmps_p[i]->operator()(1) = coordinates_p[i]->worldMixMin()(1);
+                  worldMax_tmps_p[i]->operator()(1) = coordinates_p[i]->worldMixMax()(1);
                }
                if (where2 >= 0) {
                   worldAxes_tmps_p[i]->operator()(j) = worldAxes(where2);
@@ -1260,6 +1256,443 @@ void CoordinateSystem::makePixelAbsolute (Vector<Double>& pixel) const
 	}
     }
 }
+
+
+Bool CoordinateSystem::convert (Vector<Double>& coordOut,
+                                const Vector<Double>& coordIn,
+                                const Vector<Bool>& absIn,
+                                const Vector<String>& unitsIn,
+                                MDoppler::Types dopplerIn,
+                                const Vector<Bool>& absOut,
+                                const Vector<String>& unitsOut,
+                                MDoppler::Types dopplerOut,
+                                Double pixInOffset, Double pixOutOffset)
+{
+   Matrix<Double> coordsIn(coordIn.nelements(), 1);
+   Matrix<Double> coordsOut(coordIn.nelements(), 1);
+   coordsIn.column(0) = coordIn;
+//
+   if (convert(coordsOut, coordsIn, absIn, unitsIn, dopplerIn,
+               absOut, unitsOut, dopplerOut, pixInOffset, 
+               pixOutOffset)) {
+      coordOut = coordsOut.column(0);
+      return True;
+   }
+   return False;
+}
+
+Bool CoordinateSystem::convert (Matrix<Double>& coordsOut,
+                                const Matrix<Double>& coordsIn,
+                                const Vector<Bool>& absIn,
+                                const Vector<String>& unitsIn,
+                                MDoppler::Types dopplerIn,
+                                const Vector<Bool>& absOut,
+                                const Vector<String>& unitsOut,
+                                MDoppler::Types dopplerOut,
+                                Double pixInOffset, Double pixOutOffset)
+{
+   if (nWorldAxes() != nPixelAxes()) {
+      throw (AipsError("Number of pixel and world axes differs"));
+   }
+
+// Copy CS so we can mess about with it
+
+   CoordinateSystem cSysIn = *this;
+   CoordinateSystem cSysOut = *this;
+//
+   const uInt n = nWorldAxes();
+   if (n != coordsIn.nrow()) {
+      set_error("Coordinates must all be of length nWorldAxes");
+      return False;
+   }
+//
+   Bool ok = absIn.nelements()==n && 
+             unitsIn.nelements()==n && 
+             absOut.nelements()==n && 
+             unitsOut.nelements()==n;
+   if (!ok) {
+      set_error("Inputs must all be of length nWorldAxes");
+      return False;
+   }
+   coordsOut.resize(coordsIn.shape());
+
+// Find input and output velocity axes, set native units strings
+// and figure out the allThing Bools
+
+   IPosition velAxesIn(n);
+   IPosition velAxesOut(n);
+   PtrBlock<SpectralCoordinate*> specCoordsIn(n, 0);
+   PtrBlock<SpectralCoordinate*> specCoordsOut(n, 0);
+//
+   Vector<String> unitsIn2(cSysIn.worldAxisUnits().copy());
+   Vector<String> unitsOut2(cSysOut.worldAxisUnits().copy());
+//
+   Vector<Bool> worldAxesIn(n,False), worldAxesOut(n, False);
+   Vector<Bool> pixelAxesIn(n,False), pixelAxesOut(n, False);
+//
+   Bool allPixIn = True;     // All input are pixel units
+   Bool allWorldIn = True;   // All input are consistent with native units
+   Bool allAbsIn = True;
+   Bool allRelIn = True;
+//
+   Bool allPixOut = True;     // All output are pixel units
+   Bool allWorldOut = True;   // All output are consistent with native units
+   Bool allAbsOut = True;
+   Bool allRelOut = True;
+//
+   String sPix("pix");
+   Unit velUnit("km/s");
+   Int coordinate, axisInCoordinate;
+   uInt jIn = 0;
+   uInt jOut = 0;
+   uInt idx;
+   for (uInt i=0; i<n; i++) {
+
+// Input axes
+
+      if (unitsIn(i)!=sPix) {             // System doesn't like pix units
+         Unit uu(unitsIn(i));              // unless I define them...
+         if (uu==velUnit) {
+            cSysIn.findWorldAxis(coordinate, axisInCoordinate, i);
+            if (cSysIn.type(coordinate) == Coordinate::SPECTRAL) {
+               specCoordsIn[i] = new SpectralCoordinate(cSysIn.spectralCoordinate(coordinate));
+               specCoordsIn[i]->updateVelocityMachine(unitsIn(i), dopplerIn);
+//
+               velAxesIn(jIn) = i;
+               jIn++;
+               allWorldIn = False;
+            } else if (cSysIn.type(coordinate) == Coordinate::LINEAR) {
+               unitsIn2(i) = unitsIn(i);
+               worldAxesIn(i) = True;
+            } else {
+              set_error("axis with km/s units is neither Spectral nor Linear");
+              cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+              return False;
+            }
+         } else {
+            unitsIn2(i) = unitsIn(i);
+            worldAxesIn(i) = True;
+         }
+         allPixIn = False;
+      } else {
+         allWorldIn = False;
+         pixelAxesIn(i) = True;
+      }
+      if (absIn(i)) {
+         allRelIn = False;
+      } else {
+         allAbsIn = False;
+      }
+
+// Output axes
+
+      if (unitsOut(i)!=sPix) {
+         Unit uu(unitsOut(i));  
+         if (uu==velUnit) {
+            cSysOut.findWorldAxis(coordinate, axisInCoordinate, i);
+            if (cSysOut.type(coordinate) == Coordinate::SPECTRAL) {
+               specCoordsOut[i] = new SpectralCoordinate(cSysOut.spectralCoordinate(coordinate));
+               specCoordsOut[i]->updateVelocityMachine(unitsOut(i), dopplerOut);
+//
+               velAxesOut(jOut) = i;
+               jOut++;
+               allWorldOut = False;
+            } else if (cSysOut.type(coordinate) == Coordinate::LINEAR) {
+               unitsOut2(i) = unitsOut(i);
+               worldAxesOut(i) = True;
+            } else {
+              set_error("axis with km/s units is neither Spectral nor Linear");
+              cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+              return False;
+            }
+         } else {
+            unitsOut2(i) = unitsOut(i);
+            worldAxesOut(i) = True;
+         }
+         allPixOut = False;
+      } else {
+         allWorldOut = False;
+         pixelAxesOut(i) = True;
+      }
+//
+      if (absOut(i)) {
+         allRelOut = False;
+      } else {
+         allAbsOut = False;
+      }
+   }
+   velAxesIn.resize(jIn,True);
+   velAxesOut.resize(jOut,True);
+   uInt nVelIn = velAxesIn.nelements();
+   uInt nVelOut = velAxesOut.nelements();
+
+// Set coordinate system units
+
+   if (!cSysIn.setWorldAxisUnits(unitsIn2)) {
+      set_error(cSysIn.errorMessage());
+      cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+      return False;
+   }
+//
+   if (!cSysOut.setWorldAxisUnits(unitsOut2)) {
+      set_error(cSysOut.errorMessage());
+      cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+      return False;
+   }
+
+// Generate toMix ranges.  The user *MUST* have called
+// setWorldMixRanges first.  They will be adjusted automatically
+// for the unit changes
+
+   Vector<Double> worldMin, worldMax;
+   worldMin = cSysIn.worldMixMin();
+   worldMax = cSysIn.worldMixMax();
+
+// Set up vectors of which we will overwrite bits and pieces
+
+   Vector<Double> absWorldIn(n), relWorldIn(n);
+   Vector<Double> absPixelIn(n), relPixelIn(n);
+   Vector<Double> absWorldIn2(n), absPixelIn2(n);
+   Vector<Double> absWorldOut(n), relWorldOut(n);
+   Vector<Double> absPixelOut(n), relPixelOut(n);
+//
+   Vector<Double> world(n), coordOut(n);
+   Double absVel, absVelRef, absFreq;
+//
+   Vector<Double> coordIn(n);
+   Vector<Float> coordInFloat(n);
+   Vector<Int> coordInInt(n);
+//
+   Vector<Double> relWorldRefIn(cSysIn.referenceValue().copy());
+   cSysIn.makeWorldRelative(relWorldRefIn);
+   Vector<Double> relPixelRefIn(cSysIn.referencePixel().copy());
+   cSysIn.makePixelRelative(relPixelRefIn);
+
+// Loop over fields in record.  First we convert to absolute pixel.
+// Then we convert to whatever we want.  We take as many short cuts 
+// as we can.
+
+   const uInt nCoords = coordsIn.ncolumn();
+   for (uInt j=0; j<nCoords; j++) {
+
+// Get data.  Vectorlengths must be correct or a conformance error will occur
+
+      coordIn = coordsIn.column(j);
+
+// Our first goal is a vector of absolute world
+// and/or a vector of absolute pixel for use in toMix
+// Take some short cuts.
+
+      if (allPixIn && allAbsIn) {
+         absPixelOut = coordIn + pixInOffset;
+         if (!cSysIn.toWorld(absWorldOut, absPixelOut)) {
+            set_error(cSysIn.errorMessage());
+            cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+            return False;
+         }
+      } else if (allPixIn && allRelIn) {
+         absPixelOut = coordIn;
+         cSysIn.makePixelAbsolute(absPixelOut);
+         if (!cSysIn.toWorld(absWorldOut, absPixelOut)) {
+            set_error(cSysIn.errorMessage());
+            cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+            return False;
+         }
+      } else if (allWorldIn && allAbsIn) {
+         absWorldOut = coordIn;
+         if (!cSysIn.toPixel(absPixelOut, absWorldOut)) {
+            set_error(cSysIn.errorMessage());
+            cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+            return False;
+         }
+      } else if (allWorldIn && allRelIn) {
+         absWorldOut = coordIn;
+         cSysIn.makeWorldAbsolute(absWorldOut);
+         if (!cSysIn.toPixel(absPixelOut, absWorldOut)) {
+            set_error(cSysIn.errorMessage());
+            cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+            return False;
+         }
+      } else {
+
+// On with the mixed cases.  
+
+         absWorldIn = cSysIn.referenceValue();
+         absPixelIn = cSysIn.referencePixel();
+//
+         relWorldIn = relWorldRefIn;
+         relPixelIn = relPixelRefIn;
+
+// Pick out each of abs/rel world/pixel values into vectors of that type
+// Presently, worldAxes(i) will be False for velocity.  We must
+// do that after
+
+         for (uInt i=0; i<n; i++) {
+            if (pixelAxesIn(i)) {
+               if (absIn(i)) {
+                  absPixelIn(i) = coordIn(i) + pixInOffset;
+               } else {
+                  relPixelIn(i) = coordIn(i);
+               }
+            } else if (worldAxesIn(i)) {
+               if (absIn(i)) {
+                  absWorldIn(i) = coordIn(i);
+               } else {
+                  relWorldIn(i) = coordIn(i);    
+               }
+            }
+         }
+
+// Convert relative world/pixel to absolute 
+
+         if (!allAbsIn) {
+            absWorldIn2 = relWorldIn;
+            cSysIn.makeWorldAbsolute(absWorldIn2);
+            absPixelIn2 = relPixelIn;
+            cSysIn.makePixelAbsolute(absPixelIn2);
+
+// Now poke in the new absolute values
+
+            for (uInt i=0; i<n; i++) {
+               if (!absIn(i)) {
+                  if (unitsIn(i)==sPix) {
+                     absPixelIn(i) = absPixelIn2(i);
+                  } else if (specCoordsIn[i]==0) {    
+                     absWorldIn(i) = absWorldIn2(i);
+                  }
+               }
+            }
+         }
+
+// OK now we have vector of absolute world and/or absolute pixel,
+// except for velocity.  Convert that to absolute world
+
+         if (nVelIn > 0) {
+            world = cSysIn.referenceValue();
+            for (uInt i=0; i<nVelIn; i++) {
+               idx = velAxesIn(i);
+
+// Make absolute velocity
+
+               absVel = coordIn(idx);
+               if (!absIn(idx)) {
+                  if (!(specCoordsIn[idx]->frequencyToVelocity(absVelRef, world(idx)))) {
+                     set_error(specCoordsIn[idx]->errorMessage());
+                     cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+                     return False;
+                  }
+                  absVel += absVelRef;       // rel = abs - ref
+               }
+
+// Convert to absolute world
+
+               if (!(specCoordsIn[idx]->velocityToFrequency(absFreq, absVel))) {
+                  set_error(specCoordsIn[idx]->errorMessage());
+                  cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+                  return False;
+               }
+               absWorldIn(idx) = absFreq;
+               worldAxesIn(idx) = True;
+            }
+         }
+// Do mixed conversion to get abs world AND abs pixel
+
+         if (!cSysIn.toMix(absWorldOut, absPixelOut, absWorldIn, absPixelIn,
+                           worldAxesIn, pixelAxesIn, worldMin, worldMax)) {
+            set_error(cSysIn.errorMessage());
+            cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+            return False;
+         }
+      }
+
+// At this point we have a vector of absolute world (cSysIn units)
+// AND absolute pixel.  Bug out now if we can. 
+
+      if (allAbsOut && allPixOut) {
+         coordOut = absPixelOut + pixOutOffset;
+         coordsOut.column(j) = coordOut;
+         continue;
+      }
+      relPixelOut = absPixelOut;
+      cSysOut.makePixelRelative(relPixelOut);
+      if (allRelOut && allPixOut) {
+         coordsOut.column(j) = relPixelOut;
+         continue;
+      }
+
+// We must convert our world values to cSysOut units.
+// We can use the absPixelOut vector for that
+
+      if (!cSysOut.toWorld(absWorldOut, absPixelOut)) {
+         set_error(cSysOut.errorMessage());
+         cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+         return False;
+      }
+//
+      if (allAbsOut && allWorldOut) {
+         coordsOut.column(j) = absWorldOut;
+         continue;
+      }
+      relWorldOut = absWorldOut;
+      cSysOut.makeWorldRelative(relWorldOut);
+      if (allRelOut && allWorldOut) {
+         coordsOut.column(j) = relWorldOut;
+         continue;
+      }
+
+// OK on with mixed cases. Pick out the output value for everything 
+// except velocity
+
+      for (uInt i=0; i<n; i++) {
+         if (pixelAxesOut(i)) {
+            if (absOut(i)) {
+               coordOut(i) = absPixelOut(i) + pixOutOffset;
+            } else {
+               coordOut(i) = relPixelOut(i);
+            }
+         } else if (worldAxesOut(i)) {
+            if (absOut(i)) {
+               coordOut(i) = absWorldOut(i);
+            } else {
+               coordOut(i) = relWorldOut(i);
+            }
+         }
+      }
+
+// Now do velocity
+
+      if (nVelOut > 0) {
+         world = cSysOut.referenceValue();
+         for (uInt i=0; i<nVelOut; i++) {
+            idx = velAxesOut(i);
+
+// Make absolute velocity
+
+            if (!(specCoordsOut[idx]->frequencyToVelocity(absVel, absWorldOut(idx)))) {
+               set_error(specCoordsOut[idx]->errorMessage());
+               cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+               return False;
+            }
+//
+            if (absOut(idx)) {
+               coordOut(idx) = absVel;
+            } else {
+              if (!(specCoordsOut[idx]->frequencyToVelocity(absVelRef, world(idx)))) {
+                 set_error(specCoordsOut[idx]->errorMessage());
+                 cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+                 return False;
+              }
+              coordOut(idx) = absVel - absVelRef;     // rel = abs - ref
+            }
+         }
+      }
+      coordsOut.column(j) = coordOut;
+   }
+//
+   cleanUpSpecCoord(specCoordsIn, specCoordsOut);
+   return True;
+}
+
 
 
 Vector<String> CoordinateSystem::worldAxisNames() const
@@ -3138,15 +3571,9 @@ void CoordinateSystem::getPCFromHeader(LogIO& os, Int& rotationAxis,
 
 
 void CoordinateSystem::list (LogIO& os,
-                             MDoppler::Types velocityType,
+                             MDoppler::Types doppler,
                              const IPosition& latticeShape,
                              const IPosition& tileShape) const
-//
-// List information about a CoordinateSystem to the logger
-//
-// Input:
-//   velocityType  Speciy velocity definition
-//
 {
    os << LogIO::NORMAL << endl;
 
@@ -3156,7 +3583,7 @@ void CoordinateSystem::list (LogIO& os,
 
 // List rest frequency and reference frame from the first spectral axis we find
 
-   listFrequencySystem(os, velocityType);
+   listFrequencySystem(os, doppler);
 
 // Pointing center
  
@@ -3197,7 +3624,7 @@ void CoordinateSystem::list (LogIO& os,
                    precRefValRADEC, precRefPixFloat,
                    precIncSci, nameAxis, nameCoord, nameName, nameProj, nameShape, 
                    nameTile, nameRefValue, nameRefPixel, nameInc, 
-                   nameUnits, velocityType, latticeShape,
+                   nameUnits, doppler, latticeShape,
                    tileShape);
 
 // Write headers
@@ -3275,7 +3702,7 @@ void CoordinateSystem::list (LogIO& os,
       if (pc->type() == Coordinate::SPECTRAL) {
          listVelocity (os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, widthTile, 
                  widthRefValue, widthRefPixel, widthInc, widthUnits,
-                 False, axisInCoordinate, pixelAxis, velocityType,
+                 False, axisInCoordinate, pixelAxis, doppler,
                  precRefValSci, precRefValFloat, precRefValRADEC, 
                  precRefPixFloat, precIncSci);
 
@@ -3329,7 +3756,7 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCo
                                        String& nameCoord, String& nameName, String& nameProj,
                                        String& nameShape, String& nameTile, String& nameRefValue,
                                        String& nameRefPixel, String& nameInc, String& nameUnits,
-                                       MDoppler::Types velocityType,
+                                       MDoppler::Types doppler,
                                        const IPosition& latticeShape, const IPosition& tileShape) const
 //
 // All these silly format and precision things should really be
@@ -3391,7 +3818,7 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCo
       if (pc->type() == Coordinate::SPECTRAL) {
          listVelocity (os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, 
                        widthTile, widthRefValue, widthRefPixel, widthInc, widthUnits,
-                       True, axisInCoordinate, pixelAxis, velocityType,
+                       True, axisInCoordinate, pixelAxis, doppler,
                        precRefValSci, precRefValFloat, precRefValRADEC, 
                        precRefPixFloat, precIncSci);
       }
@@ -3663,7 +4090,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
                                     uInt& widthShape, uInt& widthTile, uInt& widthRefValue, 
                                     uInt& widthRefPixel, uInt& widthInc,  uInt& widthUnits, 
                                     const Bool findWidths, const Int axisInCoordinate, 
-                                    const Int pixelAxis, const MDoppler::Types velocityType,
+                                    const Int pixelAxis, const MDoppler::Types doppler,
                                     const Int precRefValSci, const Int precRefValFloat, 
                                     const Int precRefValRADEC, const Int precRefPixFloat, 
                                     const Int precIncSci) const
@@ -3788,7 +4215,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
      SpectralCoordinate sc(*sc0);
 
      Double velocityInc;
-     if (!velocityIncrement(velocityInc, sc, velocityType, velUnits)) {
+     if (!velocityIncrement(velocityInc, sc, doppler, velUnits)) {
         string = "Fail";
      } else {
         ostrstream oss;
@@ -3850,7 +4277,7 @@ void CoordinateSystem::clearFlags(LogIO& os) const
 
 
 Bool CoordinateSystem::velocityIncrement(Double& velocityInc, SpectralCoordinate& sc,
-                                         MDoppler::Types velocityType, const String& velUnits) const
+                                         MDoppler::Types doppler, const String& velUnits) const
 {
 
 // DO this the hard way for now until Wim gives me spectralMachine
@@ -3863,7 +4290,7 @@ Bool CoordinateSystem::velocityIncrement(Double& velocityInc, SpectralCoordinate
    Double pixel;
    pixel = refPix + 0.5;
    Quantum<Double> velocity1;
-   sc.updateVelocityMachine(velUnits, velocityType);
+   sc.updateVelocityMachine(velUnits, doppler);
    if (!sc.pixelToVelocity(velocity1, pixel)) return False;
 //
    pixel = refPix - 0.5;
@@ -3892,7 +4319,7 @@ void CoordinateSystem::listDirectionSystem(LogIO& os) const
 
 
 
-void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types velocityType) const
+void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types doppler) const
 {
    Int afterCoord = -1;
    Int ic = findCoordinate(Coordinate::SPECTRAL, afterCoord);
@@ -3901,7 +4328,7 @@ void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types velocityTy
       MFrequency::Types freqType = specCoord.frequencySystem();
 //      
       os << "Spectral  reference : " << MFrequency::showType(freqType) << endl;
-      os << "Velocity  type      : " << MDoppler::showType(velocityType) << endl;
+      os << "Velocity  type      : " << MDoppler::showType(doppler) << endl;
 //
       Double rf = specCoord.restFrequency();
       if (rf > 0.0) {
@@ -4082,4 +4509,19 @@ Bool CoordinateSystem::setPreferredWorldAxisUnits(const Vector<String>& units)
     return ok;
 }
 
+
+void CoordinateSystem::cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in, 
+                                         PtrBlock<SpectralCoordinate*>&  out)
+{
+   for (uInt i=0; i<in.nelements(); i++) {
+      if (in[i]) {
+         delete in[i];
+         in[i] = 0;
+      }
+      if (out[i]) {
+         delete out[i];
+          out[i] = 0;
+      }
+   }
+}
 

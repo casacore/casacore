@@ -449,6 +449,48 @@ public:
     virtual void makeWorldAbsolute (Vector<Double>& world) const;
     //</group>
 
+    // General coordinate conversion.  Only works if no axes
+    // have been removed and no axis reordering has occurred.
+    // That is pixel axes and world axes are the same.
+    //
+    // Specify the input coordinate values, input units,
+    // whether value is absolute (or relative). For output
+    // specify units and abs/rel.  Units may be 'pix' and velocity consistent
+    // units (e.g. m/s).  Specify doppler types if velocities
+    // involved.   The default pixel offsets allow for the input
+    // and output pixel coordinates to be 1-rel.  If your pixel
+    // coordinates are all 0-rel, set both offsets to zero.
+    //
+    // The Matrix interface lets you do many conversions efficiently.
+    // Use <src>Matrix(nAxes, nConversions) </src> and 
+    // <src>Matrix.column()=coordinate</src> to get the order
+    // right.  
+    //
+    // These functions invoke <src>toMix</src>
+    // so make sure you call <src>setWorldMixRanges</src>
+    // first to set up the world ranges. 
+    // <group>
+    Bool convert (Vector<Double>& coordOut, 
+                  const Vector<Double>& coordin,
+                  const Vector<Bool>& absIn,
+                  const Vector<String>& unitsIn,
+                  MDoppler::Types dopplerIn,
+                  const Vector<Bool>& absOut,
+                  const Vector<String>& unitsOut,
+                  MDoppler::Types dopplerOut,
+                  Double pixInOffset = -1.0,
+                  Double pixOutOffset = 1.0);
+    Bool convert (Matrix<Double>& coordOut, 
+                  const Matrix<Double>& coordIn,
+                  const Vector<Bool>& absIn,
+                  const Vector<String>& unitsIn,
+                  MDoppler::Types dopplerIn,
+                  const Vector<Bool>& absOut,
+                  const Vector<String>& unitsOut,
+                  MDoppler::Types dopplerOut,
+                  Double pixInOffset = -1.0,
+                  Double pixOutOffset = 1.0);
+    // </group>
 
     // Return the requested attribute.
     // <group>
@@ -605,7 +647,7 @@ public:
 // If you give (both of) these, they are included in the listing.  If you pass
 // in zero length <src>IPositions</src> then they are not included in
 // the listing.  T
-   void list(LogIO& os, MDoppler::Types velocityType,
+   void list(LogIO& os, MDoppler::Types doppler,
              const IPosition& latticeShape,
              const IPosition& tileShape) const;
 
@@ -651,6 +693,11 @@ private:
     void copy(const CoordinateSystem &other);
     void clear();
     Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
+
+   // Dlete some pointer blocks
+   void cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
+                          PtrBlock<SpectralCoordinate*>&  out);
+
 
     // Decode CD cards from FITS file header
     static Bool getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header);
