@@ -291,6 +291,11 @@ public:
   const Array<FType> getPsf(Bool cachePsf=True); 
   // </group>
 
+  // Set to use convolution with lesser flips
+  // <group>
+  void setFastConvolve(); 
+  // </group>
+
 private:
   IPosition thePsfSize;
   IPosition theFFTSize;
@@ -310,6 +315,7 @@ private:
 //#   void padArray(Array<FType>& paddedArr, const Array<FType>& origArr, 
 //# 		const IPosition & blc);
   Bool valid;
+  Bool doFast_p;
   void validate();
 };
 #endif
