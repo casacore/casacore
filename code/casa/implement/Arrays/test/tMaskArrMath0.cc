@@ -94,12 +94,10 @@ main()
                 cout << endl << "((f>3) && (f<7)) = " << endl;
                 cout << ((f>3) && (f<7)) << endl;
 
-             //#MaskedArray<Int> m( h( ((f>3) && (f<7)) ) );
+		MaskedArray<Int> m( h( ((f>3) && (f<7)) ) );
 
                 h = 0;
-             //#indgen (m);
-                indgen ( h( ((f>3) && (f<7)) ), 10 );
-             //#cout << endl << "h=0; indgen( m( h(f<3) ), 10 ); h= " << endl;
+		indgen (m, 10);
                 cout << endl << "h=0; indgen( h( ((f>3) && (f<7)) ), 10 ); h= " << endl;
                 cout << h << endl;
 
