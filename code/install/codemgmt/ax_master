@@ -5866,3 +5866,4 @@
 16 273 src rm trial/apps/dish/dishplot_zoom.g
 16 273 src rm trial/apps/dish/sdimager.g
 16 273 src rm trial/apps/dish/sdimager.help
+16 273 src rm trial/apps/dish/sdimager_meta.g
