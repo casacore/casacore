@@ -2314,3 +2314,10 @@
 09 293 src mv trial/implement/ComponentModels/DO_componentlist.h trial/implement/ComponentModels/DOcomponentlist.h
 09 293 src mv trial/implement/ComponentModels/DO_componentlist.cc trial/implement/ComponentModels/DOcomponentlist.cc
 09 293 src rm trial/implement/MeasurementComponents/CompositeSkyModel.h
+09 293 src rm trial/implement/Measures/OperNode.h
+09 293 src rm trial/implement/Measures/OperNode.cc
+09 293 src rm trial/implement/Measures/ParseExpr.h
+09 293 src rm trial/implement/Measures/ParseExpr.cc
+09 293 src rm trial/implement/Measures/test/dParseExpr.cc
+09 293 src rm trial/implement/Measures/test/tParseExpr.cc
+09 293 src rm trial/implement/Measures/test/tParseExpr.out
