@@ -1,5 +1,5 @@
 //# LCExtension.h: Extend an LCRegion along straight lines to other dimensions
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -145,7 +145,7 @@ private:
     // Fill the object.
     // <group>
     void fillRegionAxes();
-    void fill();
+    void fill (const IPosition& stretchAxes, const LCBox& stretchBox);
     // </group>
 
     IPosition itsExtendAxes;
