@@ -43,7 +43,7 @@ uInt Precession::interval_reg = 0;
 
 //# Constructors
 Precession::Precession() :
-method(Precession::STANDARD), lres(0), fixedEpoch(MeasData::MJD2000) {
+method(Precession::STANDARD), fixedEpoch(MeasData::MJD2000), lres(0) {
     fillEpoch();
 }
 
@@ -52,7 +52,7 @@ Precession::Precession(const Precession &other) {
 }
 
 Precession::Precession(PrecessionTypes type, Double catepoch) :
-method(type), lres(0), fixedEpoch(catepoch) {
+method(type), fixedEpoch(catepoch), lres(0) {
     fillEpoch();
 }
 
@@ -171,7 +171,6 @@ void Precession::refresh() {
 }
 
 void Precession::calcPrec(Double t) {
-    Double intv;
     if (!nearAbs(t, checkEpoch,
 		 AipsrcValue<Double>::get(Precession::interval_reg))) {
 	checkEpoch = t;

@@ -166,7 +166,6 @@ Quantity Nutation::getEqoxAngle(Double epoch, const Unit &unit) {
 }
 
 void Nutation::calcNut(Double t) {
-  Double intv;
   if (!nearAbs(t, checkEpoch,
 	       AipsrcValue<Double>::get(Nutation::interval_reg))) {
     checkEpoch = t;
