@@ -44,7 +44,12 @@ typedef Quantum<Double> gpp_mvearthmag_bug2;
 
 //# Forward Declarations
 class RotMatrix;
-imported class ostream;
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
+
 
 // <summary> A 3D Earth magnetic field vector </summary>
 
