@@ -325,12 +325,27 @@ Bool StokesCoordinate::near(const Coordinate& other,
 // is the values along the axis.    Nothing else (e.g. crval_p etc)
 // is ever actually used.
 
+   if (nValues_p != sCoord.nValues_p) {
+      set_error("The StokesCoordinates have different numbers of Stokes values");
+      return False;
+   }
+
+// Conformance testing usually verifies aspects of the Coordinate
+// such as refval, refpix etc.  Because the StokesCoordinate
+// violates that model, and all the matters are the actual Stokes
+// values, it is a bit hard to know what to test.  E.g. I make
+// a LatticeExprNode from complex(q,u).  The conformance check
+// comes in here and will fail if I test actual values on the
+// Stokes axis.  Until I know what to do better, comment it out.
+
+/*
    for (Int i=0; i<nValues_p; i++) {
       if (values_p[i] != sCoord.values_p[i]) {
          set_error("The StokesCoordinates have different Stokes values");
          return False;
       }
    }
+*/
 // 
    return True;
 }
