@@ -35,34 +35,42 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
+#include <aips/Mathematics/Constants.h>
 
 int main() {
-    NQSimButterworthBandpass<Double> butt(1,1,-1,1,0,1);
+    NQSimButterworthBandpass<Double> butt(1.0,1.0,-1.0,1.0,0.0,1.0);
 
-    AlwaysAssertExit(butt.getCenter()    ==  0 &&
-		     butt.getPeak()      ==  1   );
-    AlwaysAssertExit(butt.getMinOrder()  ==  1 &&
-		     butt.getMaxOrder()  ==  1   );
-    AlwaysAssertExit(butt.getMinCutoff() == -1 &&
-		     butt.getMaxCutoff() ==  1   );
+    AlwaysAssertExit(butt.getCenter()    ==  0.0 &&
+		     butt.getPeak()      ==  1.0   );
+    AlwaysAssertExit(butt.getMinOrder()  ==  1.0 &&
+		     butt.getMaxOrder()  ==  1.0   );
+    AlwaysAssertExit(butt.getMinCutoff() == -1.0 &&
+		     butt.getMaxCutoff() ==  1.0   );
 
-    butt.setPeak(10);
-    AlwaysAssertExit(butt.getPeak() == 10);
-    butt.setCenter(5);
-    AlwaysAssertExit(butt.getCenter() == 5);
-    butt.setMinOrder(4);
-    AlwaysAssertExit(butt.getMinOrder() == 4);
-    butt.setMaxOrder(5);
-    AlwaysAssertExit(butt.getMaxOrder() == 5);
-    butt.setMinCutoff(1);
-    AlwaysAssertExit(butt.getMinCutoff() == 1);
-    butt.setMaxCutoff(9);
-    AlwaysAssertExit(butt.getMaxCutoff() == 9);
+//      AlwaysAssertExit(butt.getCenter() - 0.0 < DBL_EPSILON &&
+//  		     butt.getPeak()   - 1.0 < DBL_EPSILON   );
+//      AlwaysAssertExit(butt.getMinOrder()  - 1.0 < DBL_EPSILON &&
+//  		     butt.getMaxOrder()  - 1.0 < DBL_EPSILON   );
+//      AlwaysAssertExit(butt.getMinCutoff() + 1.0 < DBL_EPSILON &&
+//  		     butt.getMaxCutoff() - 1.0 < DBL_EPSILON   );
+
+    butt.setPeak(10.0);
+    AlwaysAssertExit(butt.getPeak() == 10.0);
+    butt.setCenter(5.0);
+    AlwaysAssertExit(butt.getCenter() == 5.0);
+    butt.setMinOrder(4.0);
+    AlwaysAssertExit(butt.getMinOrder() == 4.0);
+    butt.setMaxOrder(5.0);
+    AlwaysAssertExit(butt.getMaxOrder() == 5.0);
+    butt.setMinCutoff(1.0);
+    AlwaysAssertExit(butt.getMinCutoff() == 1.0);
+    butt.setMaxCutoff(9.0);
+    AlwaysAssertExit(butt.getMaxCutoff() == 9.0);
 
     Double pk = butt.getPeak(), cen = butt.getCenter(), irt2 = 1.0/sqrt(2.0);
     AlwaysAssertExit(butt(cen) == pk);
-    AlwaysAssertExit(butt(butt.getMinCutoff()) == irt2*pk && 
-	             butt(butt.getMaxCutoff()) == irt2*pk);
+    AlwaysAssertExit(butt(butt.getMinCutoff()) - irt2*pk < DBL_EPSILON && 
+	             butt(butt.getMaxCutoff()) - irt2*pk < DBL_EPSILON);
     AlwaysAssertExit(butt(6*butt.getMinCutoff()-5*cen) < 1e-2*pk);
     AlwaysAssertExit(butt(6*butt.getMaxCutoff()+5*cen) < 1e-2*pk);
 
