@@ -517,31 +517,6 @@ Bool CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
     return True;
 }
 
-Bool CoordinateSystem::worldReplacementValue (Double& replacement, uInt axis) const
-{
-   Int coordinate = -1;
-   Int axisInCoordinate = -1;
-   if (checkWorldReplacementAxis(coordinate, axisInCoordinate, axis)) {
-      replacement = world_replacement_values_p[coordinate]->operator()(axisInCoordinate);
-      return True;
-   }
-//
-   return False;
-}
-
-Bool CoordinateSystem::setWorldReplacementValue (uInt axis, Double replacement) 
-{
-   Int coordinate = -1;
-   Int axisInCoordinate = -1;
-   if (checkWorldReplacementAxis(coordinate, axisInCoordinate, axis)) {
-      world_replacement_values_p[coordinate]->operator()(axisInCoordinate) = replacement;
-      return True;
-   }
-//
-   return False;
-}
-
-
 Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement) 
 {
     if (axis >= nPixelAxes()) {
@@ -570,6 +545,34 @@ Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
 }
 
 
+/*
+//This implementation is flawed.  It only works if you have  removed
+//one axis.  I think you need to specify coordinate and axis in coordinate
+
+Bool CoordinateSystem::worldReplacementValue (Double& replacement, uInt axis) const
+{
+   Int coordinate = -1;
+   Int axisInCoordinate = -1;
+   if (checkWorldReplacementAxis(coordinate, axisInCoordinate, axis)) {
+      replacement = world_replacement_values_p[coordinate]->operator()(axisInCoordinate);
+      return True;
+   }
+//
+   return False;
+}
+
+Bool CoordinateSystem::setWorldReplacementValue (uInt axis, Double replacement) 
+{
+   Int coordinate = -1;
+   Int axisInCoordinate = -1;
+   if (checkWorldReplacementAxis(coordinate, axisInCoordinate, axis)) {
+      world_replacement_values_p[coordinate]->operator()(axisInCoordinate) = replacement;
+      return True;
+   }
+//
+   return False;
+}
+
 Bool CoordinateSystem::pixelReplacementValue (Double& replacement, uInt axis) const
 {
    Int coordinate = -1;
@@ -593,6 +596,7 @@ Bool CoordinateSystem::setPixelReplacementValue (uInt axis, Double replacement)
 //
    return False;
 }
+*/
 
 
 CoordinateSystem CoordinateSystem::subImage(const Vector<Float> &originShift,
@@ -4861,6 +4865,7 @@ CoordinateSystem CoordinateSystem::stripRemovedAxes (const CoordinateSystem& cSy
 }
 
 
+/*
 Bool CoordinateSystem::checkWorldReplacementAxis(Int& coordinate,
                                                  Int& axisInCoordinate,
                                                  uInt axis) const
@@ -4973,7 +4978,7 @@ Bool CoordinateSystem::checkPixelReplacementAxis(Int& coordinate,
     return True;
 }
 
-
+*/
 
 
 Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,

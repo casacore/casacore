@@ -286,6 +286,7 @@ public:
     Bool removePixelAxis(uInt axis, Double replacement);
     // </group>
 
+/*
     // You can recover the replacement values with these functions.
     // Use the same axis number as in the <src>removePixelAxis</src> and 
     // <src>removeWorldAxis</src> calls.
@@ -309,6 +310,7 @@ public:
     Bool setWorldReplacementValue (uInt axis, Double replacement);
     Bool setPixelReplacementValue(uInt axis, Double replacement);
     // </group>
+*/
 
     // Return a CoordinateSystem appropriate for a shift of origin
     // (the shift is subtracted from the reference pixel)
@@ -766,6 +768,7 @@ private:
     void clear();
     Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
 
+/*
     // Check world replacement axis is legal and find it
     Bool checkWorldReplacementAxis(Int& coordinate,
                                    Int& axisInCoordinate,
@@ -775,6 +778,7 @@ private:
     Bool checkPixelReplacementAxis(Int& coordinate,
                                    Int& axisInCoordinate,
                                    uInt axis) const;
+*/
 
    // Dlete some pointer blocks
    void cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
