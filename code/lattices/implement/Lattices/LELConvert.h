@@ -33,8 +33,6 @@
 #include <trial/Lattices/LELInterface.h>
 
 //# Forward Declarations
-template <class T> class Array;
-class PixelRegion;
 
 
 
@@ -105,7 +103,7 @@ public:
 
 // Recursively evaluate the expression.
    virtual void eval (Array<T>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar
    virtual T getScalar() const;

@@ -38,7 +38,7 @@
 
 //# Forward Declarations
 template <class T> class Array;
-class PixelRegion;
+class Slicer;
 
 
 // <summary> This base class provides the interface for Lattice expressions </summary>
@@ -119,12 +119,12 @@ class PixelRegion;
 //  the <src>eval</src> function or by value by <src>getScalar</src>
 //
 //  The classes evaluate the expression for each specified Lattice
-//  chunk (usually tile by tile).    The <src>region</src> argument 
+//  chunk (usually tile by tile).    The <src>section</src> argument 
 //  in the <src>eval</src> function specifies the section of the 
-//  Lattice being evaluated.   The absence of the <src>region</src> 
+//  Lattice being evaluated.   The absence of the <src>section</src> 
 //  argument in the <src>getScalar</src> function emphasises the 
 //  scalar nature; a scalar expression does not have a shape. For most
-//  of the letter classes, the <src>region</src> argument is irrelevant;
+//  of the letter classes, the <src>section</src> argument is irrelevant;
 //  the only one it really matters for is LELLattice which fetches the
 //  pixels from the Lattice.  The rest only care about the shape of the
 //  buffer in the <src>eval</src> call.
@@ -150,7 +150,7 @@ public:
 
 // Evaluate the expression and fill the result array
    virtual void eval (Array<T>& result,
-                      const PixelRegion& region) const = 0;
+                      const Slicer& section) const = 0;
 
 // Get the result of a scalar subexpression.
    virtual T getScalar() const = 0;

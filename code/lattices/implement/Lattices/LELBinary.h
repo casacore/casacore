@@ -34,8 +34,6 @@
 #include <trial/Lattices/LELBinaryEnums.h>
 
 //# Forward Declarations
-template <class T> class Array;
-class PixelRegion;
 
 
 // <summary> This LEL class handles numerical binary operators </summary>
@@ -112,7 +110,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<T>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively efvaluate the scalar expression 
    virtual T getScalar() const;
@@ -208,7 +206,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<Bool>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual Bool getScalar() const;
@@ -300,7 +298,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<Bool>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual Bool getScalar() const;

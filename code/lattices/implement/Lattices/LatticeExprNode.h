@@ -39,9 +39,9 @@
 #include <aips/Utilities/DataType.h>
 
 //# Forward Declarations
-class PixelRegion;
 template <class T> class LatticeExpr;
 template <class T> class Lattice;
+template <class T> class MaskedLattice;
 template <class T> class Array;
 template <class T> class Block;
 
@@ -349,6 +349,11 @@ public:
    LatticeExprNode (const Lattice<Complex>& lattice);
    LatticeExprNode (const Lattice<DComplex>& lattice);
    LatticeExprNode (const Lattice<Bool>& lattice);
+   LatticeExprNode (const MaskedLattice<Float>& lattice);
+   LatticeExprNode (const MaskedLattice<Double>& lattice);
+   LatticeExprNode (const MaskedLattice<Complex>& lattice);
+   LatticeExprNode (const MaskedLattice<DComplex>& lattice);
+   LatticeExprNode (const MaskedLattice<Bool>& lattice);
 // </group>
 
 // Copy constructor (reference semantics)
@@ -370,12 +375,15 @@ public:
 
 // Evaluate the expression
 // <group>
-   void eval (Array<Float>& result, const PixelRegion& region) const;
-   void eval (Array<Double>& result, const PixelRegion& region) const;
-   void eval (Array<Complex>& result, const PixelRegion& region) const;
-   void eval (Array<DComplex>& result, const PixelRegion& region) const;
-   void eval (Array<Bool>& result, const PixelRegion& region) const;
+   void eval (Array<Float>& result, const Slicer& section) const;
+   void eval (Array<Double>& result, const Slicer& section) const;
+   void eval (Array<Complex>& result, const Slicer& section) const;
+   void eval (Array<DComplex>& result, const Slicer& section) const;
+   void eval (Array<Bool>& result, const Slicer& section) const;
 // </group>
+
+// Evaluate the expression mask
+   void evalMask (Array<Bool>& result, const Slicer& section) const;
 
 // Evaluate the expression (in case it is a scalar).  The "eval"
 // and "get*" functions do the same thing, they just have
@@ -400,6 +408,10 @@ public:
 // Is the result of "eval" a scalar?
    Bool isScalar() const
       {return pAttr_p->isScalar();}
+
+// Is the result of "eval" masked?
+   Bool isMasked() const
+      {return pAttr_p->isMasked();}
 
 // Return the shape of the Lattice including all degenerate axes
 // (ie. axes with a length of one)

@@ -34,8 +34,6 @@
 #include <trial/Lattices/LELUnaryEnums.h>
 
 //# Forward Declarations
-template <class T> class Array;
-class PixelRegion;
 
 
 // <summary> This LEL class handles scalar (unary) constants </summary>
@@ -104,7 +102,7 @@ public:
 // Evaluate the expression.
 // This throws an exception, since only a scalar can be returned.
    virtual void eval (Array<T>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Evaluate the scalar expression (get the constant)
    virtual T getScalar() const;
@@ -189,7 +187,7 @@ public:
 
 // Recursively evaluate the expression.
    virtual void eval (Array<T>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression.
    virtual T getScalar() const;
@@ -276,7 +274,7 @@ public:
 
 // Recursively evaluate the expression.
    virtual void eval (Array<Bool>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression.
    virtual Bool getScalar() const;

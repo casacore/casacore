@@ -36,8 +36,6 @@
 #include <aips/Containers/Block.h>
 
 //# Forward Declarations
-template <class T> class Array;
-class PixelRegion;
 
 
 // <summary>
@@ -112,7 +110,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<T>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression.
    virtual T getScalar() const;
@@ -202,7 +200,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<T>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual T getScalar() const;
@@ -294,7 +292,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<T>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual T getScalar() const;
@@ -391,7 +389,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<Float>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual Float getScalar() const;
@@ -494,7 +492,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<Double>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual Double getScalar() const;
@@ -582,7 +580,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<Complex>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual Complex getScalar() const;
@@ -671,7 +669,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<DComplex>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual DComplex getScalar() const;
@@ -759,7 +757,7 @@ public:
 
 // Recursively evaluate the expression 
    virtual void eval (Array<Bool>& result,
-                      const PixelRegion& region) const;
+                      const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
    virtual Bool getScalar() const;
