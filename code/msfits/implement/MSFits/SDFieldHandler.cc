@@ -1,5 +1,5 @@
 //# SDFieldHandler.cc: a FIELD handler for SDFITS data  
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,25 +33,27 @@
 #include <aips/MeasurementSets/MSField.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Tables/ColumnsIndex.h>
 
 SDFieldHandler::SDFieldHandler() 
-    : msField_p(0), msFieldCols_p(0), rownr_p(-1)
+    : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0)
 {;}
 
 SDFieldHandler::SDFieldHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
-    : msField_p(0), msFieldCols_p(0), rownr_p(-1)
+    : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0)
 {
     initAll(ms, handledCols, row);
 }
 
 SDFieldHandler::SDFieldHandler(const SDFieldHandler &other) 
-    : msField_p(0), msFieldCols_p(0), rownr_p(-1)
+    : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0)
 {
     *this = other;
 }
@@ -76,6 +78,16 @@ SDFieldHandler &SDFieldHandler::operator=(const SDFieldHandler &other)
 	referenceDirField_p = other.referenceDirField_p;
 	referenceDirRateField_p = other.referenceDirRateField_p;
 	flagRowField_p = other.flagRowField_p;
+	delete index_p;
+	index_p = new ColumnsIndex(*msField_p, stringToVector("NAME,SOURCE_ID,TIME"));
+	AlwaysAssert(index_p, AipsError);
+	// attach the keys
+	nameKey_p.attachToRecord(index_p->accessKey(),"NAME");
+	sourceIdKey_p.attachToRecord(index_p->accessKey(),"SOURCE_ID");
+	timeKey_p.attachToRecord(index_p->accessKey(),"TIME");
+	*nameKey_p = *other.nameKey_p;
+	*sourceIdKey_p = *other.sourceIdKey_p;
+	*timeKey_p = *other.timeKey_p;
     }
     return *this;
 }
@@ -98,117 +110,141 @@ void SDFieldHandler::fill(const Record &row, const String &name, Int directionRe
 {
     // don't bother unless there is something there
     if (msField_p) {
-	// almost always add a new row
-	Bool canReuse = False;
+	Bool found = False;
+	Bool checkDir, checkPhase, checkRef;
+	checkDir = True;
+	checkPhase = checkRef = False;
 	Matrix<Double> dirPoly = directionPoly;
 	Matrix<Double> phasePoly = directionPoly;
 	Matrix<Double> referencePoly = directionPoly;
 	Int npoly = dirPoly.nrow() - 1;
+
+	// adjustments to the above given possible former MS columns
+	if (delayDirField_p.isAttached()) {
+	    // old MS 1 is always accompanied by a delayDirRateField_p
+	    if (delayDirRateField_p.isAttached()) {
+		// only use this if the rate is non-zero AND non-inf AND not a NaN
+		Vector<Double> ddRate(*delayDirRateField_p);
+		Double d0, d1;
+		d0 = ddRate(0);
+		d1 = ddRate(1);
+		if (!near(d0,0.0) && !near(d1,0.0) && !isInf(d0) && !isInf(d1) &&
+		    !isNaN(d0) && !isNaN(d1)) {
+		    npoly = 1;
+		}
+		dirPoly.resize(2,npoly+1);
+		dirPoly.column(0) = *delayDirField_p;
+		if (npoly == 1) dirPoly.column(1) = ddRate;
+	    } else {
+		dirPoly.resize((*delayDirField_p).shape());
+		dirPoly = *delayDirField_p;
+		npoly = dirPoly.nrow() - 1;
+	    }
+	}
+	if (phaseDirField_p.isAttached()) {
+	    checkPhase = True;
+	    // old MS 1 is always accompanied by a phaseDirRateField_p
+	    if (phaseDirRateField_p.isAttached()) {
+		// only use this if the rate is non-zero AND non-inf AND not a NaN
+		Vector<Double> pdRate(*phaseDirRateField_p);
+		Double p0, p1;
+		p0 = pdRate(0);
+		p1 = pdRate(1);
+		if (!near(p0,0.0) && !near(p1,0.0) && !isInf(p0) && !isInf(p1) &&
+		    !isNaN(p0) && !isNaN(p1)) {
+		    npoly = 1;
+		}
+		phasePoly.resize(2,npoly+1);
+		phasePoly.column(0) = *phaseDirField_p;
+		if (npoly == 1) phasePoly.column(1) = pdRate;
+	    } else {
+		phasePoly.resize((*phaseDirField_p).shape());
+		phasePoly = *phaseDirField_p;
+		npoly = dirPoly.nrow() - 1;
+	    }
+	}
+	if (referenceDirField_p.isAttached()) {
+	    checkRef = True;
+	    // old MS 1 is always accompanied by a referenceDirRateField_p
+	    if (referenceDirRateField_p.isAttached()) {
+		// only use this if the rate is non-zero AND non-inf AND not a NaN
+		Vector<Double> rdRate(*referenceDirRateField_p);
+		Double r0, r1;
+		r0 = rdRate(0);
+		r1 = rdRate(1);
+		if (!near(r0,0.0) && !near(r1,0.0) && !isInf(r0) && !isInf(r1) &&
+		    !isNaN(r0) && !isNaN(r1)) {
+		    npoly = 1;
+		}
+		referencePoly.resize(2,npoly+1);
+		referencePoly.column(0) = *referenceDirField_p;
+		if (npoly == 1) referencePoly.column(1) = rdRate;
+	    } else {
+		referencePoly.resize((*referenceDirField_p).shape());
+		referencePoly = *referenceDirField_p;
+		npoly = dirPoly.nrow() - 1;
+	    }
+	}
+	
 	if (fieldIdField_p.isAttached() && *fieldIdField_p >= 0) {
 	    // see if this row can be reused
 	    Int thisRow = *fieldIdField_p;
-	    Bool canReuse = thisRow >= 0 && uInt(thisRow) < msField_p->nrow();
-	    canReuse = canReuse && msFieldCols_p->sourceId()(thisRow) == sourceId;
-	    if (canReuse && codeField_p.isAttached()) {
-		canReuse = canReuse && *codeField_p == msFieldCols_p->code()(thisRow);
+	    Bool found = thisRow >= 0 && uInt(thisRow) < msField_p->nrow();
+	    found = found && msFieldCols_p->sourceId()(thisRow) == sourceId;
+	    if (found && codeField_p.isAttached()) {
+		found = *codeField_p == msFieldCols_p->code()(thisRow);
 	    }
-	    if (canReuse && nameField_p.isAttached()) {
-		canReuse = canReuse && name == *nameField_p && 
+	    if (found && nameField_p.isAttached()) {
+		found = name == *nameField_p && 
 		    *nameField_p == msFieldCols_p->name()(thisRow);
 	    }
-	    if (canReuse && timeField_p.isAttached()) {
-		canReuse = canReuse && time == *timeField_p &&
+	    if (found && timeField_p.isAttached()) {
+		found = time == *timeField_p &&
 		    *timeField_p == msFieldCols_p->time()(thisRow);
 	    }
-	    if (canReuse && flagRowField_p.isAttached()) {
-		canReuse = canReuse && 
-		    *flagRowField_p == msFieldCols_p->flagRow()(thisRow);
+	    if (found && flagRowField_p.isAttached()) {
+		found = *flagRowField_p == msFieldCols_p->flagRow()(thisRow);
 	    }
-	    // these checks serve two purposes, to see if the data can be reused by also as
-	    // a first check on the contents of the *rateFields and the npoly that they imply.
-	    if (delayDirField_p.isAttached()) {
-		// old MS version 1 is always accompanied by delayDirRateField_p
-		if (delayDirRateField_p.isAttached()) {
-		    // only use this if the rates here are non-zero AND non-inf AND not a NaN
-		    Vector<Double> ddRate_p(*delayDirRateField_p);
-		    Double d0, d1;
-		    d0 = ddRate_p(0);
-		    d1 = ddRate_p(1);
-		    if (!near(d0,0.0) && !near(d1,0.0) && !isInf(d0) && !isInf(d1) && !isNaN(d0) && !isNaN(d1)) {
-			npoly = 1;
-		    }
-		    if (canReuse) {
-			Matrix<Double> thisDelayDirPoly = msFieldCols_p->delayDir()(thisRow);
-			canReuse = canReuse && allEQ(*delayDirField_p, thisDelayDirPoly.column(0)) &&
-			    allEQ(*delayDirField_p, dirPoly.column(0));
-			if (npoly == 1) {
-			    canReuse = canReuse && thisDelayDirPoly.nrow() == 2;
-			    canReuse = canReuse && allEQ(*delayDirRateField_p, thisDelayDirPoly.column(1));
-			}
-		    }
-		} else {
-		    // assume its from MS 2, already a poly
-		    npoly = (*delayDirField_p).shape()(0) - 1;
-		    canReuse = canReuse && allEQ(*delayDirField_p, msFieldCols_p->delayDir()(thisRow));
-		}
-	    }
-	    // check npoly value, now that it is known
-	    canReuse = canReuse && npoly == msFieldCols_p->numPoly()(thisRow);
-	    if (phaseDirField_p.isAttached()) {
-		// old MS version 1 is always accompanied by phaseDirRateField_p
-		if (phaseDirRateField_p.isAttached()) {
-		    // only use this if the rates here are non-zero AND non-inf AND not a NaN
-		    Vector<Double> pdRate_p(*phaseDirRateField_p);
-		    Double d0, d1;
-		    d0 = pdRate_p(0);
-		    d1 = pdRate_p(1);
-		    if (!near(d0,0.0) && !near(d1,0.0) && !isInf(d0) && !isInf(d1) && !isNaN(d0) && !isNaN(d1)) {
-			npoly = 1;
-		    }
-		    if (canReuse) {
-			Matrix<Double> thisPhaseDirPoly = msFieldCols_p->phaseDir()(thisRow);
-			canReuse = canReuse && allEQ(*phaseDirField_p, thisPhaseDirPoly.column(0)) &&
-			    allEQ(*phaseDirField_p, phasePoly.column(0));
-			if (npoly == 1) {
-			    canReuse = canReuse && thisPhaseDirPoly.nrow() == 2;
-			    canReuse = canReuse && allEQ(*phaseDirRateField_p, thisPhaseDirPoly.column(1));
-			}
-		    }
-		} else {
-		    // assume its from MS 2, already a poly
-		    canReuse = canReuse && npoly == (*phaseDirField_p).shape()(0) - 1;
-		    canReuse = canReuse && allEQ(*phaseDirField_p, msFieldCols_p->phaseDir()(thisRow));
-		}
-	    }
-	    if (referenceDirField_p.isAttached()) {
-		// old MS version 1 is always accompanied by referenceDirRateField_p
-		if (referenceDirRateField_p.isAttached()) {
-		    // only use this if the rates here are non-zero AND non-inf AND not a NaN
-		    Vector<Double> rdRate_p(*referenceDirRateField_p);
-		    Double d0, d1;
-		    d0 = rdRate_p(0);
-		    d1 = rdRate_p(1);
-		    if (!near(d0,0.0) && !near(d1,0.0) && !isInf(d0) && !isInf(d1) && !isNaN(d0) && !isNaN(d1)) {
-			npoly = 1;
-		    }
-		    if (canReuse) {
-			Matrix<Double> thisReferenceDirPoly = msFieldCols_p->referenceDir()(thisRow);
-			canReuse = canReuse && allEQ(*referenceDirField_p, thisReferenceDirPoly.column(0)) &&
-			    allEQ(*referenceDirField_p, referencePoly.column(0));
-			if (npoly == 1) {
-			    canReuse = canReuse && thisReferenceDirPoly.nrow() == 2;
-			    canReuse = canReuse && allEQ(*referenceDirRateField_p, thisReferenceDirPoly.column(1));
-			}
-		    }
-		} else {
-		    // assume its from MS 2, already a poly
-		    canReuse = canReuse && npoly == (*referenceDirField_p).shape()(0) - 1;
-		    canReuse = canReuse && allEQ(*referenceDirField_p, msFieldCols_p->referenceDir()(thisRow));
-		}
-	    }
-	    if (canReuse) rownr_p = thisRow;
+	    found = found && npoly == msFieldCols_p->numPoly()(thisRow);
+	    found = found && allEQ(dirPoly,msFieldCols_p->delayDir()(thisRow));
+	    found = found && checkPhase && 
+		allEQ(phasePoly, msFieldCols_p->phaseDir()(thisRow));
+	    found = found && checkRef && 
+		allEQ(referencePoly, msFieldCols_p->referenceDir()(thisRow));
+	    if (found) rownr_p = thisRow;
 	}
-	if (!canReuse) {
+	if (!found) {
+	    // try and look for it 
+	    *nameKey_p = name;
+	    *sourceIdKey_p = sourceId;
+	    *timeKey_p = time;
+	    Vector<uInt> rows = index_p->getRowNumbers();
+	    uInt i=0;
+	    while (i<rows.nelements() && !found) {
+		uInt thisRow = rows(i);
+		found = npoly == msFieldCols_p->numPoly()(thisRow);
+		found = found && allEQ(msFieldCols_p->delayDir()(thisRow),dirPoly);
+		// that is enough for a standard SDFITS fill, the following additional
+		// tests are done for the case where this SDFITS originated as a MS
+		// either as version 1 or 2
+		if (found && codeField_p.isAttached()) {
+		    found = msFieldCols_p->code()(thisRow) == *codeField_p;
+		}
+		if (found && checkPhase) {
+		    found = allEQ(msFieldCols_p->phaseDir()(thisRow),phasePoly);
+		}
+		if (found && checkRef) {
+		    found = allEQ(msFieldCols_p->referenceDir()(thisRow),referencePoly);
+		}
+		if (found && flagRowField_p.isAttached()) {
+		    found = msFieldCols_p->flagRow()(thisRow) == *flagRowField_p;
+		}
+		if (found) rownr_p = thisRow;
+		else i++;
+	    }
+	}
+	if (!found) {
+	    // add it in
 	    rownr_p = msField_p->nrow();
 	    if (rownr_p ==0) {
 		// set the column direction references to the value of this direction
@@ -225,62 +261,8 @@ void SDFieldHandler::fill(const Record &row, const String &name, Int directionRe
 	    }
 	    msFieldCols_p->time().put(rownr_p, time);
 	    msFieldCols_p->numPoly().put(rownr_p, npoly);
-	    // any adjustments to dirPoly
-	    if (delayDirField_p.isAttached()) {
-		// MS1 or 2?
-		if (delayDirRateField_p.isAttached()) {
-		    // a valid rate?
-		    if (npoly == 1) {
-			// add it in
-			Vector<Double> dir = dirPoly.column(0);
-			dirPoly.resize(2,2);
-			dirPoly.column(0) = dir;
-			dirPoly.column(1) = *delayDirRateField_p;
-		    } // otherwise, use the direction poly as given
-		} else {
-		    // must be MS 2, use it as it is
-		    dirPoly.resize((*delayDirField_p).shape());
-		    dirPoly = *delayDirField_p;
-		}
-	    } 
 	    msFieldCols_p->delayDir().put(rownr_p, dirPoly);
-	    // any adjustments to phasePoly
-	    if (phaseDirField_p.isAttached()) {
-		// MS1 or 2?
-		if (phaseDirRateField_p.isAttached()) {
-		    // a valid rate?
-		    if (npoly == 1) {
-			// add it in
-			Vector<Double> dir = dirPoly.column(0);
-			dirPoly.resize(2,2);
-			dirPoly.column(0) = dir;
-			dirPoly.column(1) = *phaseDirRateField_p;
-		    } // otherwise, use the direction poly as given
-		} else {
-		    // must be MS 2, use it as it is
-		    dirPoly.resize((*phaseDirField_p).shape());
-		    dirPoly = *phaseDirField_p;
-		}
-	    } 
 	    msFieldCols_p->phaseDir().put(rownr_p, phasePoly);
-	    // any adjustments to referencePoly
-	    if (referenceDirField_p.isAttached()) {
-		// MS1 or 2?
-		if (referenceDirRateField_p.isAttached()) {
-		    // a valid rate?
-		    if (npoly == 1) {
-			// add it in
-			Vector<Double> dir = dirPoly.column(0);
-			dirPoly.resize(2,2);
-			dirPoly.column(0) = dir;
-			dirPoly.column(1) = *referenceDirRateField_p;
-		    } // otherwise, use the direction poly as given
-		} else {
-		    // must be MS 2, use it as it is
-		    dirPoly.resize((*referenceDirField_p).shape());
-		    dirPoly = *referenceDirField_p;
-		}
-	    } 
 	    msFieldCols_p->referenceDir().put(rownr_p, referencePoly); 
 	    msFieldCols_p->sourceId().put(rownr_p, sourceId);
 	    if (flagRowField_p.isAttached()) {
@@ -299,6 +281,9 @@ void SDFieldHandler::clearAll()
 
     delete msFieldCols_p;
     msFieldCols_p = 0;
+
+    delete index_p;
+    index_p = 0;
 
     clearRow();
 }
@@ -326,6 +311,12 @@ void SDFieldHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, cons
 
     msFieldCols_p = new MSFieldColumns(*msField_p);
     AlwaysAssert(msFieldCols_p, AipsError);
+
+    index_p = new ColumnsIndex(*msField_p, stringToVector("NAME,SOURCE_ID,TIME"));
+    AlwaysAssert(index_p, AipsError);
+    nameKey_p.attachToRecord(index_p->accessKey(),"NAME");
+    sourceIdKey_p.attachToRecord(index_p->accessKey(),"SOURCE_ID");
+    timeKey_p.attachToRecord(index_p->accessKey(),"TIME");
 
     initRow(handledCols, row);
 }

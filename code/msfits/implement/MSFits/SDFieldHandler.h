@@ -1,5 +1,5 @@
 //# SDFieldFiller.h: fills the FIELD table for the SDFITS filler
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,6 +38,7 @@ class MSField;
 class MSFieldColumns;
 class String;
 class Record;
+class ColumnsIndex;
 
 template <class T> class Vector;
 template <class T> class Matrix;
@@ -129,6 +130,11 @@ private:
 	phaseDirField_p, phaseDirRateField_p, referenceDirField_p,
 	referenceDirRateField_p;
     RORecordFieldPtr<Bool> flagRowField_p;
+
+    ColumnsIndex *index_p;
+    RecordFieldPtr<String> nameKey_p;
+    RecordFieldPtr<Int> sourceIdKey_p;
+    RecordFieldPtr<Double> timeKey_p;
 
     // cleanup everything
     void clearAll();
