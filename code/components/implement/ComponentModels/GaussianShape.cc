@@ -44,6 +44,7 @@
 #include <aips/Measures/Unit.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 
 #ifdef __GNUG__
@@ -283,31 +284,24 @@ Bool GaussianShape::fromRecord(String & errorMessage,
   {
     const String fieldString("majorAxis");
     if (!record.isDefined(fieldString)) {
-      errorMessage += "\nThe 'majoraxis' field does not exist";
+      errorMessage += "The 'majoraxis' field does not exist\n";
       return False;
     }
     const RecordFieldId field(fieldString);
-    if (!record.shape(field).isEqual(IPosition(1,1))) {
-      errorMessage += "\nThe 'majoraxis' field have only 1 element";
+    if (record.dataType(field) != TpRecord) {
+      errorMessage += "The 'majoraxis' field must be a record\n";
       return False;
-    }      
-    Record quantumRecord;
-    try {
-      quantumRecord = record.asRecord(field);
     }
-    catch (AipsError x) {
-      errorMessage += "\nThe 'majoraxis' field must be a record";
-      return False;
-    } end_try;
+    const Record & quantumRecord = record.asRecord(field);
     QuantumHolder qHolder;
     if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
-	!qHolder.isQuantity()) {
-      errorMessage += "\nThe 'majoraxis' field is not a quantity";
+	!qHolder.isQuantumDouble()) {
+      errorMessage += "The 'majoraxis' field is not a quantity\n";
       return False;
     }
-    const Quantum<Double> & quantum = qHolder.asQuantity();
+    const Quantum<Double> & quantum = qHolder.asQuantumDouble();
     if (quantum.getFullUnit() != Unit("deg")) {
-      errorMessage += "\nThe 'majoraxis' field must have angular units";
+      errorMessage += "The 'majoraxis' field must have angular units\n";
       return False;
     }
     majorAxis = MVAngle(quantum);
@@ -316,36 +310,24 @@ Bool GaussianShape::fromRecord(String & errorMessage,
   {
     const String fieldString("minorAxis");
     if (!record.isDefined(fieldString)) {
-      errorMessage += "\nThe 'minoraxis' field does not exist";
+      errorMessage += "The 'minoraxis' field does not exist\n";
       return False;
     }
     const RecordFieldId field(fieldString);
-    if (record.shape(field) != IPosition(1,1)) {
-	errorMessage += "\nThe 'minoraxis' field have only 1 element";
+    if (record.dataType(field) != TpRecord) {
+	errorMessage += "The 'minoraxis' field must be a record\n";
 	return False;
     }      
-    Record quantumRecord;
-    try {
-      quantumRecord = record.asRecord(field);
-    }
-    catch (AipsError x) {
-      errorMessage += "\nThe 'minoraxis' field must be a record";
-      return False;
-    } end_try;
+    const Record & quantumRecord = record.asRecord(field);
     QuantumHolder qHolder;
     if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
-	!qHolder.isQuantity()) {
-      errorMessage += "\nThe 'minoraxis' field is not a quantity";
+	!qHolder.isQuantumDouble()) {
+      errorMessage += "The 'minoraxis' field is not a quantity\n";
       return False;
     }
-    if (!qHolder.isQuantity()) {
-      errorMessage += 
-	"\nThe 'minoraxis' field could not converted to a quantity";
-      return False;
-    }
-    const Quantum<Double> & quantum = qHolder.asQuantity();
+    const Quantum<Double> & quantum = qHolder.asQuantumDouble();
     if (quantum.getFullUnit() != Unit("deg")) {
-      errorMessage += "\nThe 'minoraxis' field must have angular units";
+      errorMessage += "The 'minoraxis' field must have angular units\n";
       return False;
     }
     minorAxis = MVAngle(quantum);
@@ -354,31 +336,24 @@ Bool GaussianShape::fromRecord(String & errorMessage,
   {
     const String fieldString("positionangle");
     if (!record.isDefined(fieldString)) {
-      errorMessage += "\nThe 'positionangle' field does not exist";
+      errorMessage += "The 'positionangle' field does not exist\n";
       return False;
     }
     const RecordFieldId field(fieldString);
-    if (record.shape(field) != IPosition(1,1)) {
-	errorMessage += "\nThe 'positionangle' field have only 1 element";
-	return False;
-    }      
-    Record quantumRecord;
-    try {
-      quantumRecord = record.asRecord(field);
-    }
-    catch (AipsError x) {
-      errorMessage += "\nThe 'positionangle' field must be a record";
+    if (record.dataType(field) != TpRecord) {
+      errorMessage += "The 'positionangle' field must be a record\n";
       return False;
-    } end_try;
+    }      
+    Record quantumRecord = record.asRecord(field);
     QuantumHolder qHolder;
     if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
 	!qHolder.isQuantity()) {
-      errorMessage += "\nThe 'positionangle' field is not a quantity";
+      errorMessage += "The 'positionangle' field is not a quantity\n";
       return False;
     }
     const Quantum<Double> & quantum = qHolder.asQuantity();
     if (quantum.getFullUnit() != Unit("deg")) {
-      errorMessage += "\nThe 'positionangle' field must have angular units";
+      errorMessage += "The 'positionangle' field must have angular units\n";
       return False;
     }
     pa = MVAngle(quantum);
@@ -391,7 +366,6 @@ Bool GaussianShape::fromRecord(String & errorMessage,
 Bool GaussianShape::toRecord(String & errorMessage,
 			     RecordInterface & record) const {
   DebugAssert(ok(), AipsError);
-
   record.define(RecordFieldId("type"), String("gaussian"));
   if (!ComponentShape::addDir(errorMessage, record)) return False;
   const Unit arcmin("'");
@@ -399,7 +373,7 @@ Bool GaussianShape::toRecord(String & errorMessage,
     const QuantumHolder qHolder(majorAxis().get(arcmin));
     Record qRecord;
     if (!qHolder.toRecord(errorMessage, qRecord)) {
-      errorMessage += "\nCannot convert the major axis to a record";
+      errorMessage += "Cannot convert the major axis to a record\n";
       return False;
     }
     record.defineRecord(RecordFieldId("majoraxis"), qRecord);
@@ -408,7 +382,7 @@ Bool GaussianShape::toRecord(String & errorMessage,
     const QuantumHolder qHolder(minorAxis().get(arcmin));
     Record qRecord;
     if (!qHolder.toRecord(errorMessage, qRecord)) {
-      errorMessage += "\nCannot convert the minor axis to a record";
+      errorMessage += "Cannot convert the minor axis to a record\n";
       return False;
     }
     record.defineRecord(RecordFieldId("minoraxis"), qRecord);
@@ -417,7 +391,7 @@ Bool GaussianShape::toRecord(String & errorMessage,
     const QuantumHolder qHolder(positionAngle().get(Unit("deg")));
     Record qRecord;
     if (!qHolder.toRecord(errorMessage, qRecord)) {
-      errorMessage += "\nCannot convert the position angle to a record";
+      errorMessage += "Cannot convert the position angle to a record\n";
       return False;
     }
     record.defineRecord(RecordFieldId("positionangle"), qRecord);

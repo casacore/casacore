@@ -411,13 +411,12 @@ Bool SkyCompRep::toRecord(String & errorMessage,
     if (!itsSpectrumPtr->toRecord(errorMessage, spectrumRec)) {
       return False;
     }
-    record.defineRecord(RecordFieldId("shape"), spectrumRec);
+    record.defineRecord(RecordFieldId("spectrum"), spectrumRec);
   }
   record.define(RecordFieldId("label"), itsLabel);
   DebugAssert(ok(), AipsError);
   return True;
 }
-
 
 // void SkyCompRep::project(ImageInterface<Float> & image) const {
 //   const CoordinateSystem coords = image.coordinates();
@@ -586,84 +585,6 @@ Bool SkyCompRep::ok() const {
   }
   return True;
 }
-
-// // Use functions in the measures class for this.
-// Bool SkyCompRep::readDir(String & errorMessage, const GlishRecord & record) {
-//   // The GlishRecord parameter should really be const but the ParameterAccessor
-//   // needs a non-const one for an unknown reason
-//   MeasureParameterAccessor<MDirection> mpa(String("direction"),
-// 					   ParameterSet::In, 
-// 					   (GlishRecord *) &record);
-//   if (!mpa.copyIn(errorMessage)) return False;
-//   setDirection(mpa());
-//   return True;
-// }
-
-// Bool SkyCompRep::addDir(String & errorMessage, GlishRecord & record) const {
-//   MDirection compDir;
-//   direction(compDir);
-//   GlishRecord dirRec = measures::toRecord(compDir);
-//   record.add("direction", dirRec);
-//   if (errorMessage == ""); // Suppress compiler warning about unused variable
-//   return True;
-// }
-
-// Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
-//   if (!record.exists("flux")) {
-//     errorMessage += "\nThe component record does not have a 'flux' field";
-//     return False;
-//   }
-//   if (record.get("flux").type() != GlishValue::RECORD) {
-//     errorMessage += "\nThe 'flux' field must be a record";
-//     return False;
-//   }
-//   Flux<Double> & thisFlux = flux();
-//   const GlishRecord fluxRec = record.get("flux");
-//   return thisFlux.fromRecord(errorMessage, fluxRec);
-// }
-
-// Bool SkyCompRep::addFlux(String & errorMessage, GlishRecord & record) const {
-//   const Flux<Double> & thisFlux = flux();
-//   GlishRecord fluxRec;
-//   if (!thisFlux.toRecord(errorMessage, fluxRec)) return False;
-//   record.add("flux", fluxRec);
-//   return True;
-// }
-
-// Bool SkyCompRep::readLabel(String & errorMessage, const GlishRecord & record) {
-//   String labelVal("");
-//   if (record.exists("label")) {
-//     if (record.get("label").type() != GlishValue::ARRAY) {
-//       errorMessage += "\nThe 'label' field cannot be a record";
-//       return False;
-//     }
-//     const GlishArray labelField = record.get("label");
-//     if (labelField.elementType() != GlishArray::STRING) {
-//       errorMessage += "\nThe 'label' field must be a string";
-//       return False;
-//     }
-//     if (labelField.nelements() != 1) {
-//       errorMessage += String("\nThe 'label' field cannot be an array");
-//       return False;
-//     }
-//     if (!labelField.get(labelVal)) {
-//       errorMessage += String("\nCould not read the 'field' field ") + 
-// 	String("for an unknown reason");
-//       return False;
-//     }
-//   }
-//   setLabel(labelVal);
-//   return True;
-// }
-
-// Bool SkyCompRep::addLabel(String & errorMessage, GlishRecord & record) const {
-//   String thisLabel;
-//   label(thisLabel);
-//   if (errorMessage == ""); // Suppress compiler warning about unused variable
-//   record.add("label", thisLabel);
-//   return True;
-// }
-
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
 // End: 
