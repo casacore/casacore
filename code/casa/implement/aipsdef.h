@@ -56,9 +56,23 @@ extern Bool aips_debug_on;
 #define aips_debug aips_debug_on
 #endif
 
-// Define the use of the old string class (for sgi at the moment)
-#if (defined(__sgi) && !defined(AIPS_USE_NEW_STRING))
+// Define the use of the old string and stream classes (for sgi at the moment)
+// The use of the old classes (including complex) can be overwritten
+// with the use of -DAIPS_USE_NEW_SGI.
+// It is the intention to use the relevant 'USE_OLD' macros only
+// if and when closely related to the String class itself; the Complex
+// class and the stream proxy includes.
+#if defined(__sgi)
+#if !defined(AIPS_USE_NEW_SGI)
 #define USE_OLD_STRING
+#define AIPS_USE_OLD_STRING
+#define AIPS_USE_OLD_STREAM
+#else
+#undef USE_OLD_STRING
+#undef AIPS_USE_OLD_STRING
+#undef AIPS_USE_OLD_STREAM
+#undef AIPS_USE_OLD_COMPLEX
+#endif
 #endif
 
 #endif
