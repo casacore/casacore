@@ -3481,3 +3481,4 @@
 13 285 src mv trial/implement/Lattices/LatticeIterInterface.h aips/implement/Lattices/LatticeIterInterface.h
 13 285 src mv trial/implement/Lattices/LatticeIterInterface.cc aips/implement/Lattices/LatticeIterInterface.cc
 13 285 src mv trial/implement/Lattices/LatticeIndexer.h aips/implement/Lattices/LatticeIndexer.h
+13 285 src mv trial/implement/Lattices/LatticeIndexer.cc aips/implement/Lattices/LatticeIndexer.cc
