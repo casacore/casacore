@@ -6059,3 +6059,4 @@
 17 100 src rm trial/apps/gainfitter/gainpolyfitter_plotter.g
 17 100 src rm trial/apps/gainfitter/gainpolyfitter_widget.g
 17 102 src rm trial/apps/gainfitter/gainpolyfitter_framework.g
+17 123 src mv trial/apps/table/GlishTableIndexHolder.cc aips/apps/gtable/GlishTableIndexHolder.cc
