@@ -1,5 +1,5 @@
 //# LattStatsSpecialize.h: specialized functions for LatticeStatistics
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -68,13 +68,13 @@ class LattStatsSpecialize
 {
 public:
 //
-   static void accumulate (Float& nPts, Double& sum,
+   static void accumulate (Double& nPts, Double& sum,
                            Double& sumSq, Float& dataMin,
                            Float& dataMax, Int& minPos,
                            Int& maxPos, Bool& minMaxInit,
                            Bool fixedMinMax, Float datum,
                            uInt& pos, Float useIt);
-   static void accumulate (Complex& nPts, DComplex& sum,
+   static void accumulate (DComplex& nPts, DComplex& sum,
                            DComplex& sumSq, Complex& dataMin,
                            Complex& dataMax, Int& minPos,
                            Int& maxPos, Bool& minMaxInit,

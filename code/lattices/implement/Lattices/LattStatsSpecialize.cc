@@ -1,5 +1,5 @@
 //# LattStatsSpecialize.cc:  
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,16 +48,17 @@
 
 
 
-void LattStatsSpecialize::accumulate (Float& nPts, Double& sum,
-                                          Double& sumSq, Float& dataMin,
-                                          Float& dataMax, Int& minPos,
-                                          Int& maxPos, Bool& minMaxInit,
-                                          Bool fixedMinMax, Float datum,
-                                          uInt& pos, Float useIt)
+void LattStatsSpecialize::accumulate (Double& nPts, Double& sum,
+                                      Double& sumSq, Float& dataMin,
+                                      Float& dataMax, Int& minPos,
+                                      Int& maxPos, Bool& minMaxInit,
+                                      Bool fixedMinMax, Float datum,
+                                      uInt& pos, Float useIt)
 {
    if (useIt < 0) return;
 //
-   nPts += 1;
+
+   nPts += 1.0;
    sum += datum;
    sumSq += datum*datum;
     
@@ -88,12 +89,12 @@ void LattStatsSpecialize::accumulate (Float& nPts, Double& sum,
    }
 }
 
-void LattStatsSpecialize::accumulate (Complex& nPts, DComplex& sum,
-                                          DComplex& sumSq, Complex& dataMin,
-                                          Complex& dataMax, Int& minPos,
-                                          Int& maxPos, Bool& minMaxInit,
-                                          Bool fixedMinMax, Complex datum,
-                                          uInt& pos, Complex useIt)
+void LattStatsSpecialize::accumulate (DComplex& nPts, DComplex& sum,
+                                      DComplex& sumSq, Complex& dataMin,
+                                      Complex& dataMax, Int& minPos,
+                                      Int& maxPos, Bool& minMaxInit,
+                                      Bool fixedMinMax, Complex datum,
+                                      uInt& pos, Complex useIt)
 //
 // minPos and maxPos currently useless for Complex.  Don't
 // try to access.
