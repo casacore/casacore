@@ -1,5 +1,5 @@
 //# MCDirection.cc:  MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,10 +61,14 @@ uInt MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::APP,		MDirection::B1950,	2},
   {MDirection::APP,		MDirection::TOPO,	0},
   {MDirection::HADEC,		MDirection::AZEL,	0},
+  {MDirection::HADEC,           MDirection::AZELGEO,    0},
   {MDirection::AZEL,		MDirection::HADEC,	0},
+  {MDirection::AZELGEO,         MDirection::HADEC,      0},
   {MDirection::HADEC,		MDirection::TOPO,	0},
   {MDirection::AZEL,		MDirection::AZELSW,	0},
+  {MDirection::AZELGEO,         MDirection::AZELSWGEO,  0},
   {MDirection::AZELSW,		MDirection::AZEL,	0},
+  {MDirection::AZELSWGEO,       MDirection::AZELGEO,    0},
   {MDirection::APP,		MDirection::JNAT,	0},
   {MDirection::JNAT,		MDirection::APP,	0},
   {MDirection::J2000,		MDirection::ECLIPTIC,	0},
@@ -239,7 +243,9 @@ void MCDirection::initConvert(uInt which, MConvertBase &mc) {
   case HADEC_ITRF:
   case ITRF_HADEC: 
   case HADEC_AZEL:
+  case HADEC_AZELGEO:
   case AZEL_HADEC:
+  case AZELGEO_HADEC:
   case MECLIP_JMEAN:
   case JMEAN_MECLIP:
   case TECLIP_JTRUE:
@@ -383,11 +389,19 @@ void MCDirection::doConvert(MVDirection &in,
     case HADEC_AZEL:
       measMath.applyHADECtoAZEL(in);
     break;
+
+    case HADEC_AZELGEO: 
+      measMath.applyHADECtoAZELGEO(in);
+      break;
     
     case AZEL_HADEC:
       measMath.deapplyHADECtoAZEL(in);
     break;
     
+    case AZELGEO_HADEC:
+      measMath.deapplyHADECtoAZELGEO(in);
+      break;
+
     case HADEC_TOPO: 
       measMath.deapplyTOPOtoHADEC(in);
     break;
@@ -403,7 +417,9 @@ void MCDirection::doConvert(MVDirection &in,
       break;
 
     case AZEL_AZELSW: 
-    case AZELSW_AZEL: 
+    case AZELSW_AZEL:
+    case AZELGEO_AZELSWGEO:
+    case AZELSWGEO_AZELGEO: 
       measMath.applyAZELtoAZELSW(in);
       break;
 
