@@ -3797,3 +3797,4 @@
 14 058 src mv trial/implement/Fitting/test/tLSQBase.out trial/implement/Fitting/test/tLSQ.out
 14 060 src mv trial/apps/aips2help/ac install/docutils/ac
 14 060 src mv trial/apps/aips2help/rac install/docutils/rac
+14 060 src mv trial/apps/aips2help/buildchangelog install/docutils/buildchangelog
