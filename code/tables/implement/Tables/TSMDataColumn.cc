@@ -789,7 +789,7 @@ void TSMDataColumn::aips_name2(putArrayColumnCells,NM)(const RefRows& rownrs, \
     if (dataPtr->ndim() == stmanPtr_p->nrCoordVector() + 1) { \
         Bool deleteIt; \
 	const T* data = dataPtr->getStorage (deleteIt); \
-	accessColumnCells (rownrs, dataPtr->shape(), data, False); \
+	accessColumnCells (rownrs, dataPtr->shape(), data, True); \
 	dataPtr->freeStorage (data, deleteIt); \
     } else { \
         StManColumn::aips_name2(putArrayColumnCells,NM) (rownrs, dataPtr); \
