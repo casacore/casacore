@@ -1,5 +1,5 @@
 //# WCPolygon.cc: Class to define a 2D polygonal world coordinate region of interest 
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -468,6 +468,9 @@ LCRegion* WCPolygon::doToLCRegion (const CoordinateSystem& cSys,
    Vector<Double> yLC(nValues);
    Vector<Double> world(cSys.referenceValue().copy());
    Vector<Double> pixel(cSys.nPixelAxes());
+   Vector<Int> absRel(cSys.nWorldAxes());
+   absRel = RegionType::Abs;
+   absRel(xWorldAxis) = absRel(yWorldAxis) = itsAbsRel;
 //
    Vector<Double> refPix = cSys.referencePixel();
    for (uInt i=0; i<nValues; i++) {
@@ -476,6 +479,11 @@ LCRegion* WCPolygon::doToLCRegion (const CoordinateSystem& cSys,
 
       if (xIsWorld) world(xWorldAxis) = xValue(i);
       if (yIsWorld) world(yWorldAxis) = yValue(i);
+
+
+// Convert from relative world to absolute world if needed
+
+      makeWorldAbsolute (world, absRel, cSys, latticeShape);
 
 // Convert to pixel
 
@@ -590,12 +598,17 @@ void WCPolygon::convertPixel(Double& pixel,
                              const Int shape) const
 
 {
+   Bool isWorld = True;
    if (unit == "pix") {
       pixel = value;
+      isWorld = False;
    } else if (unit == "frac") {
       pixel = value * shape;
+      isWorld = False;
    }
 //      
+   if (isWorld) return;
+//
    if (absRel == RegionType::RelRef) {
       pixel += refPix;
    } else if (absRel == RegionType::RelCen) {
