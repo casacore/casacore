@@ -1,5 +1,5 @@
-//# CopyLattice.h: global functions to copy a Lattices
-//# Copyright (C) 1995,1996,1997,1999,2000
+//# LatticeUtilities.h: useful global functions for Lattices
+//# Copyright (C) 1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@ class IPosition;
 // <summary>Global functions on Lattices</summary>
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tCopyLattice.cc" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeUtilities.cc" demos="">
 // </reviewed>
 //
 // <prerequisite>
