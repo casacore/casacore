@@ -304,17 +304,17 @@ int main()
     IPosition shape(2,2,2);
     Array<Complex> cph(shape);
     const Complex j(0., 1.);
-    cph(IPosition(2,0,0)) = 0.1 + j * 0.2;
-    cph(IPosition(2,1,0)) = 0.3 + j * 0.4;
-    cph(IPosition(2,0,1)) = 0.5 + j * 0.6;
-    cph(IPosition(2,1,1)) = 0.7 + j * 0.8;
+    cph(IPosition(2,0,0)) = 0.1f + j * 0.2f;
+    cph(IPosition(2,1,0)) = 0.3f + j * 0.4f;
+    cph(IPosition(2,0,1)) = 0.5f + j * 0.6f;
+    cph(IPosition(2,1,1)) = 0.7f + j * 0.8f;
 
     for (uInt i=0; i < 6; i++) {
       tab.addRow();
       time.put(i, i);
       amp.put(i, i*i);
       vis.put(i, cph);
-      cph = cph + (1 + j*2);
+      cph = cph + (1.0f + j*2.0f);
     }
     // Now I have constructed a table with two scalar and one array column
     // Test the Interpolate1D class with the scalar columns
