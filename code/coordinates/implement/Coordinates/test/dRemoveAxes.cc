@@ -122,9 +122,7 @@ try {
    cout << endl << endl;
    {
      cout << "remove world axes = [0, 2] and associated pixel axes from [ra,dec,freq]" << endl;
-
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-
      Vector<uInt> list(2);
      list(0) = 0;
      list(1) = 2;
@@ -166,6 +164,9 @@ try {
    {
      cout << "remove pixel axes = [0] from [ra,dec,freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
+     pixelReplacement.resize(1);
+     pixelReplacement(0) = -20.0;
+     cout << "specified pixel replacement values = " << pixelReplacement << endl;
 
      Vector<uInt> list(1);
      list(0) = 0;
@@ -181,7 +182,9 @@ try {
    {
      cout << "remove pixel axes = [1] from [ra,dec,freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-
+     pixelReplacement.resize(1);
+     pixelReplacement(0) = +20.0;
+     cout << "specified pixel replacement values = " << pixelReplacement << endl;
      Vector<uInt> list(1);
      list(0) = 1;
      Bool remove = True;
@@ -196,7 +199,10 @@ try {
    {
      cout << "remove pixel axes = [0,1] from [ra,dec,freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-
+     pixelReplacement.resize(2);
+     pixelReplacement(0) = -20.0;
+     pixelReplacement(1) = +20.0;
+     cout << "specified pixel replacement values = " << pixelReplacement << endl;
      Vector<uInt> list(2);
      list(0) = 0;
      list(1) = 1;
@@ -212,7 +218,10 @@ try {
    {
      cout << "remove pixel axes = [0,2] from [ra,dec,freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-
+     pixelReplacement.resize(2);
+     pixelReplacement(0) = -20.0;
+     pixelReplacement(1) = +20.0;
+     cout << "specified pixel replacement values = " << pixelReplacement << endl;
      Vector<uInt> list(2);
      list(0) = 0;
      list(1) = 2;
@@ -228,7 +237,10 @@ try {
    {
      cout << "remove pixel axes = [1,2] from [ra,dec,freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-
+     pixelReplacement.resize(2);
+     pixelReplacement(0) = -20.0;
+     pixelReplacement(1) = +20.0;
+     cout << "specified pixel replacement values = " << pixelReplacement << endl;
      Vector<uInt> list(2);
      list(0) = 1;
      list(1) = 2;
