@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# Flux.h:
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,40 +26,19 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPONENTFLUX_H)
-#define AIPS_COMPONENTFLUX_H
+#if !defined(AIPS_FLUX_H)
+#define AIPS_FLUX_H
 
+#include <aips/aips.h>
+#include <aips/Utilities/CountedPtr.h>
 #include <aips/Measures/Unit.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/NumericTraits.h>
+#include <trial/ComponentModels/ComponentType.h>
 
-//# The following includes need to get moved back into the .cc file when the
-//# compiler gets good enough.
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Measures/Quantum.h>
+template <class Qtype> class Quantum;
 
-//# Uncomment this line when moving the above includes back to the .cc file.
-// template <class Qtype> class Quantum;
-
-// <summary>Lists the different prepresentations of the polarisation</summary>
-// <synopsis>This enumerator is brought out as a separate class because g++
-// currently cannot handle enumerators in a templated class. When it can this
-// class will go away and this enumerator moved into the ComponentFlux class.
-// class</synopsis>
-
-class FluxEnums {
-public:
-  enum PolType {
-    STOKES,
-    LINEAR,
-    CIRCULAR
-  };
-};
-
-
-// <summary>Contains a flux, its units and its polarisations</summary>
+// <summary>A class that represents the Flux (copy semantics)</summary>
 
 // <use visibility=export>
 
@@ -103,72 +82,47 @@ public:
 //   <li> start discussion of this possible extension
 // </todo>
 
-template<class T> class ComponentFlux
+template<class T> class FluxRep
 {
 public:
 
   // Assume I = 1, Q=U=V=0, Stokes representation, units are Jy.
-  ComponentFlux();
+  FluxRep();
 
   // Q=U=V=0, Stokes representation, units are Jy.
-  ComponentFlux(T i);
+  FluxRep(T i);
 
   // Stokes representation, units are Jy.
-  ComponentFlux(T i, T q, T u, T v);
+  FluxRep(T i, T q, T u, T v);
 
   // units are Jy.
-  ComponentFlux(NumericTraits<T>::ConjugateType xx, 
-  		NumericTraits<T>::ConjugateType xy,
-  		NumericTraits<T>::ConjugateType yx,
-  		NumericTraits<T>::ConjugateType yy, 
- 		FluxEnums::PolType rep)  
-    :itsFlux(4),
-     itsRep(rep),
-     itsUnit("Jy") 
-    {
-      itsFlux(0) = xx;
-      itsFlux(1) = xy;
-      itsFlux(2) = yx;
-      itsFlux(3) = yy;
-    };
+  FluxRep(NumericTraits<T>::ConjugateType xx,
+	  NumericTraits<T>::ConjugateType xy,
+	  NumericTraits<T>::ConjugateType yx,
+	  NumericTraits<T>::ConjugateType yy, ComponentType::Polarisation pol);
 
   // Stokes representation, units are Jy.
-  ComponentFlux(const Vector<T> & flux);
-
-  // Stokes representation
-  // <group>
-  ComponentFlux(const Quantum<Vector<T> > & flux);
-  // </group>
+  FluxRep(const Vector<T> & flux);
 
   // units are Jy.
-  ComponentFlux(const Vector<NumericTraits<T>::ConjugateType> & flux,
-  		const FluxEnums::PolType & rep)
-    :itsFlux(flux.copy()),
-     itsRep(rep),
-     itsUnit("Jy")
-    {
-      AlwaysAssert(itsFlux.nelements() == 4, AipsError);
-    };
+  FluxRep(const Vector<NumericTraits<T>::ConjugateType> & flux,
+  		const ComponentType::Polarisation & pol);
   
+  // Stokes representation
+  FluxRep(const Quantum<Vector<T> > & flux);
+
   // Fully Specified
-  ComponentFlux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
- 		const FluxEnums::PolType & rep)
-    :itsFlux(flux.getValue().copy()),
-     itsRep(rep),
-     itsUnit(flux.getFullUnit())
-    {
-      AlwaysAssert(itsFlux.nelements() == 4, AipsError);
-      AlwaysAssert(itsUnit == Unit("Jy"), AipsError);
-    };
+  FluxRep(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
+	  const ComponentType::Polarisation & pol);
 
   // The copy constructor uses copy semantics.
-  ComponentFlux(const ComponentFlux<T> & other);
+  FluxRep(const FluxRep<T> & other);
 
   // The destructor is trivial
-  ~ComponentFlux();
+  ~FluxRep();
 
   // The assignment operator uses copy semantics.
-  ComponentFlux<T> & operator=(const ComponentFlux<T> & other);
+  FluxRep<T> & operator=(const FluxRep<T> & other);
 
   // get the default units
   Unit unit() const;
@@ -179,210 +133,241 @@ public:
   void convertUnit(const Unit & unit);
 
   // get the default polarisation representation
-  FluxEnums::PolType rep() const;
-  void rep(FluxEnums::PolType & rep) const;
+  ComponentType::Polarisation pol() const;
+  void pol(ComponentType::Polarisation & pol) const;
   // set the default polarisation representation
-  void setRep(const FluxEnums::PolType & rep);
+  void setPol(const ComponentType::Polarisation & pol);
   // set the default polarisation representation and convert the internal flux
-  void convertRep(const FluxEnums::PolType & rep);
+  void convertPol(const ComponentType::Polarisation & pol);
 
-
-  // get the flux assuming ...
+  // get the flux value assuming ...
   // <group>
   // user wants I flux only
-  T flux();
+  T value();
   // Stokes representation & current unit
-  void flux(Vector<T> & value);
-  // current unit
-  void flux(Vector<NumericTraits<T>::ConjugateType> & value, 
- 	    const FluxEnums::PolType & rep) {
-    uInt len = value.nelements();
-    AlwaysAssert (len == 4 || len == 0, AipsError);
-    convertRep(rep);
-    value = itsFlux;
-  };
-  // Stokes rep.
-  void flux(Quantum<Vector<T> > & value);
+  void value(Vector<T> & value);
+  // current unit and pol
+  void value(Vector<NumericTraits<T>::ConjugateType> & value) const;
+  // Stokes pol.
+  void value(Quantum<Vector<T> > & value);
   // Don't assume anything
-  void flux(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-  	    const FluxEnums::PolType & rep) {
-    uInt len = value.getValue().nelements();
-    AlwaysAssert(len == 4 || len == 0, AipsError);
-    convertUnit(value.getFullUnit());
-    convertRep(rep);
-    value.setValue(itsFlux);
-  };
+  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
+  	    const ComponentType::Polarisation & pol);
   // </group>
 
   // Set the current flux assuming for the unspecified values ...
   // <group>
   // User specifies I only and Q=U=V=0 and the current unit
-  void setFlux(T value); 
-  // a Stokes rep and the current unit
-  void setFlux(const Vector<T> & value); 
-  // the current unit
-  void setFlux(const Vector<NumericTraits<T>::ConjugateType> & value, 
-	       const FluxEnums::PolType & rep) {
-    AlwaysAssert (value.nelements() == 4, AipsError);
-    itsFlux = value;
-    itsRep = rep;
-  };
-  // a Stokes rep
-  void setFlux(const Quantum<Vector<T> > & value);
+  void setValue(T value); 
+  // a Stokes pol and the current unit
+  void setValue(const Vector<T> & value); 
+  // the current unit and pol
+  void setValue(const Vector<NumericTraits<T>::ConjugateType> & value);
+  
+  // a Stokes pol
+  void setValue(const Quantum<Vector<T> > & value);
   // Nothing. Flux is fully specified.
-  void setFlux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
- 	       const FluxEnums::PolType & rep) {
-    AlwaysAssert (value.getValue().nelements() == 4, AipsError);
-    itsFlux = value.getValue();
-    itsUnit = value.getFullUnit();
-    itsRep = rep;
-  };
+  void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
+ 	       const ComponentType::Polarisation & pol);
+  // </group>
+
+  // Function which checks the internal data of this class for correct
+  // dimensionality and consistant values. Returns True if everything is fine
+  // otherwise returns False.
+  Bool ok() const;
+
+private:
+  Vector<NumericTraits<T>::ConjugateType> itsFlux;
+  ComponentType::Polarisation itsPol;
+  Unit itsUnit;
+};
+
+// <summary>A class that represents the Flux (reference semantics)</summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> SomeClass
+//   <li> SomeOtherClass
+//   <li> some concept
+// </prerequisite>
+//
+// <etymology>
+// </etymology>
+//
+// <synopsis>
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// This class was needed to contain the flux in the ComponentModels class. It
+// centralises a lot of code that would otherwise be duplicated. It may be
+// replaced by a Flux Measure in the future.
+// </motivation>
+//
+// <templating arg=T>
+//    <li>
+//    <li>
+// </templating>
+//
+// <thrown>
+//    <li>
+//    <li>
+// </thrown>
+//
+// <todo asof="yyyy/mm/dd">
+//   <li> add this feature
+//   <li> fix this bug
+//   <li> start discussion of this possible extension
+// </todo>
+
+template<class T> class Flux
+{
+public:
+
+  // Assume I = 1, Q=U=V=0, Stokes representation, units are Jy.
+  Flux();
+
+  // Q=U=V=0, Stokes representation, units are Jy.
+  Flux(T i);
+
+  // Stokes representation, units are Jy.
+  Flux(T i, T q, T u, T v);
+
+  // units are Jy.
+  Flux(NumericTraits<T>::ConjugateType xx, NumericTraits<T>::ConjugateType xy,
+       NumericTraits<T>::ConjugateType yx, NumericTraits<T>::ConjugateType yy, 
+       ComponentType::Polarisation pol);
+
+  // Stokes representation, units are Jy.
+  Flux(const Vector<T> & flux);
+
+  // units are Jy.
+  Flux(const Vector<NumericTraits<T>::ConjugateType> & flux,
+       const ComponentType::Polarisation & pol);
+  
+  // Stokes representation
+  Flux(const Quantum<Vector<T> > & flux);
+
+  // Fully Specified
+  Flux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
+       const ComponentType::Polarisation & pol);
+
+  // The copy constructor uses copy semantics.
+  Flux(const Flux<T> & other);
+
+  // The destructor is trivial
+  ~Flux();
+
+  // The assignment operator uses copy semantics.
+  Flux<T> & operator=(const Flux<T> & other);
+
+  // Return a distinct copy of this flux. As both the assignment operator
+  // and the copy constructor use reference semantics this is the only way to
+  // get a real copy.
+  Flux<T> copy() const;
+
+  // get the default units
+  Unit unit() const;
+  void unit(Unit & unit) const;
+  // set the default units
+  void setUnit(const Unit & unit);
+  // set the default units and convert the internal flux
+  void convertUnit(const Unit & unit);
+
+  // get the default polarisation representation
+  ComponentType::Polarisation pol() const;
+  void pol(ComponentType::Polarisation & pol) const;
+  // set the default polarisation representation
+  void setPol(const ComponentType::Polarisation & pol);
+  // set the default polarisation representation and convert the internal flux
+  void convertPol(const ComponentType::Polarisation & pol);
+
+  // get the flux value assuming ...
+  // <group>
+  // user wants I flux only
+  T value();
+  // Stokes representation & current unit
+  void value(Vector<T> & value);
+  // current unit and pol
+  void value(Vector<NumericTraits<T>::ConjugateType> & value) const;
+  // Stokes pol.
+  void value(Quantum<Vector<T> > & value);
+  // Don't assume anything
+  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
+	     const ComponentType::Polarisation & pol);
+  // </group>
+
+  // Set the current flux assuming for the unspecified values ...
+  // <group>
+  // User specifies I only and Q=U=V=0 and the current unit
+  void setValue(T value); 
+  // a Stokes pol and the current unit
+  void setValue(const Vector<T> & value); 
+  // the current unit and pol
+  void setValue(const Vector<NumericTraits<T>::ConjugateType> & value);
+  
+  // a Stokes pol
+  void setValue(const Quantum<Vector<T> > & value);
+  // Nothing. Flux is fully specified.
+  void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
+		const ComponentType::Polarisation & pol);
   // </group>
 
   // Functions for converting a 4 element complex vector between
   // different representations.
+  // <group>
   static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
-    			       const Vector<T> & in) {
-    const T i = in(0);
-    const T q = in(1);
-    const T u = in(2);
-    const T v = in(3);
-    out(0).re = i + v; out(0).im = T(0);
-    out(1).re = q;     out(1).im = u;
-    out(2).re = q;     out(2).im = -u;
-    out(3).re = i - v; out(3).im = T(0);
-  };
+    			       const Vector<T> & in);
 
   static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    const NumericTraits<T>::ConjugateType i = in(0);
-    const NumericTraits<T>::ConjugateType q = in(1);
-    const NumericTraits<T>::ConjugateType & u = in(2);
-    const NumericTraits<T>::ConjugateType ju(-u.im, u.re);
-    const NumericTraits<T>::ConjugateType v = in(3);
-    out(0) = i + v;
-    out(1) = q + ju;
-    out(2) = q - ju;
-    out(3) = i - v;
-  };
+ 			       in);
 
   static void circularToStokes(Vector<T> & out,
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    const T rr = in(0).re;
-    const NumericTraits<T>::ConjugateType rl = in(1);
-    const NumericTraits<T>::ConjugateType lr = in(2);
-    const T ll = in(3).re;
-    out(0) = (rr + ll)/T(2);
-    out(1) = (rl.re + lr.re)/T(2);
-    out(2) = (rl.im - lr.im)/T(2);
-    out(3) = (rr - ll)/T(2);
-  };
+ 			       in);
 
   static void circularToStokes(Vector<NumericTraits<T>::ConjugateType> & out,
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    const NumericTraits<T>::ConjugateType rr = in(0);
-    const NumericTraits<T>::ConjugateType rl = in(1);
-    const NumericTraits<T>::ConjugateType lr = in(2);
-    const NumericTraits<T>::ConjugateType ll = in(3);
-    out(0) = (rr + ll)/T(2);
-    out(1) = (rl + lr)/T(2);
-    NumericTraits<T>::ConjugateType & u = out(2);
-    u.re = (rl.im-lr.im)/T(2);
-    u.im = (lr.re-rl.re)/T(2);
-    out(3) = (rr - ll)/T(2);
-  };
+ 			       in);
 
   static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
-  			     const Vector<T> & in){
-    const T i = in(0);
-    const T q = in(1);
-    const T u = in(2);
-    const T v = in(3);
-    out(0).re = i + q; out(0).im = T(0);
-    out(1).re = u;     out(1).im = v;
-    out(2).re = u;     out(2).im = -v;
-    out(3).re = i - q; out(3).im = T(0);
-  };
+  			     const Vector<T> & in);
 
   static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
   			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in) {
-    const NumericTraits<T>::ConjugateType i = in(0);
-    const NumericTraits<T>::ConjugateType q = in(1);
-    const NumericTraits<T>::ConjugateType u = in(2);
-    const NumericTraits<T>::ConjugateType & v = in(3);
-    const NumericTraits<T>::ConjugateType jv(-v.im, v.re);
-    out(0) = i + q;
-    out(1) = u + jv;
-    out(2) = u - jv;
-    out(3) = i - q;
-  };
+ 			     in);
 
   static void linearToStokes(Vector<T> & out, 
  			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in) {
-    const T xx = in(0).re;
-    const NumericTraits<T>::ConjugateType xy = in(1);
-    const NumericTraits<T>::ConjugateType yx = in(2);
-    const T yy = in(3).re;
-    out(0) = (xx + yy)/T(2);
-    out(1) = (xx - yy)/T(2);
-    out(2) = (xy.re + xy.re)/T(2);
-    out(3) = (xy.im - yx.im)/T(2);
-  };
+ 			     in);
 
   static void linearToStokes(Vector<NumericTraits<T>::ConjugateType> & out, 
  			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in) {
-    const NumericTraits<T>::ConjugateType xx = in(0);
-    const NumericTraits<T>::ConjugateType xy = in(1);
-    const NumericTraits<T>::ConjugateType yx = in(2);
-    const NumericTraits<T>::ConjugateType yy = in(3);
-    out(0) = (xx + yy)/T(2);
-    out(1) = (xx - yy)/T(2);
-    out(2) = (xy + yx)/T(2);
-    NumericTraits<T>::ConjugateType & v = out(3);
-    v.re = (-xy.re-yx.im)/T(2);
-    v.im = (yx.re-xy.im)/T(2);
-  };
+ 			     in);
 
   static void linearToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    const NumericTraits<T>::ConjugateType xx = in(0);
-    const NumericTraits<T>::ConjugateType & xy = in(1);
-    const NumericTraits<T>::ConjugateType jxy(-xy.im, xy.re);
-    const NumericTraits<T>::ConjugateType & yx = in(2);
-    const NumericTraits<T>::ConjugateType jyx(-yx.im, yx.re);
-    const NumericTraits<T>::ConjugateType yy = in(3);
-    out(0) = (xx - jxy + jyx + yy)/T(2);
-    out(1) = (xx + jxy + jyx - yy)/T(2);
-    out(2) = (xx - jxy - jyx - yy)/T(2);
-    out(3) = (xx + jxy - jyx + yy)/T(2);
-  };
+ 			       in);
 
   static void circularToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    const NumericTraits<T>::ConjugateType rr = in(0);
-    const NumericTraits<T>::ConjugateType rl = in(1);
-    const NumericTraits<T>::ConjugateType lr = in(2);
-    const NumericTraits<T>::ConjugateType ll = in(3);
-    out(0) = (rr + rl + lr + ll)/T(2);
-    out(1).re = (-rr.im + rl.im - lr.im + ll.im)/T(2);
-    out(1).im = ( rr.re - rl.re + lr.re - ll.re)/T(2);
-    out(2).re = (-rr.im - rl.im + lr.im + ll.im)/T(2);
-    out(2).im = (-rr.re - rl.re + lr.re + ll.re)/T(2);
-    out(3) = (rr - rl - lr + ll)/T(2);
-  };
+ 			       in);
+  // </group>
+
+  // Function which checks the internal data of this class for correct
+  // dimensionality and consistant values. Returns True if everything is fine
+  // otherwise returns False.
+  Bool ok() const;
 
 private:
-  Vector<NumericTraits<T>::ConjugateType> itsFlux;
-  FluxEnums::PolType itsRep;
-  Unit itsUnit;
+  CountedPtr<FluxRep<T> > itsFluxPtr;
 };
 
 #endif
