@@ -1928,3 +1928,4 @@
 08 030 src rm atnf/implement/Shifter.cc
 08 030 src rm atnf/implement/Shifter.h
 08 030 src rm atnf/implement/test/gPKSLoad.cc
+08 030 src rm atnf/implement/test/gr2pksms.cc
