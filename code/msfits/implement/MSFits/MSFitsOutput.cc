@@ -921,7 +921,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
       if (telescopeName == "IRAM PDB" || telescopeName == "IRAM_PDB") {
 	(*iffreq)(inx)=0.0;
       } else {
-	(*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
+	(*iffreq)(inx) = freqs(refPixelFreq-1) - refFreq;
       }
       if (freqs.nelements() > 1) {
 	if (doWsrt) {
