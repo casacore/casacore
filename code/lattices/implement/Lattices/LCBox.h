@@ -31,6 +31,7 @@
 //# Includes
 #include <trial/Lattices/LCRegionFixed.h>
 #include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Vector.h>
 
 
 // <summary>
@@ -74,7 +75,16 @@ public:
     LCBox (const IPosition& blc, const IPosition& trc,
 	   const IPosition& latticeShape);
 
-    // Copy constructor (copy semantics).
+    // Construct from the Vector's defining the bottom-left and
+    // top-right corner of the box.
+    // <group>
+    LCBox (const Vector<Float>& blc, const Vector<Float>& trc,
+	   const IPosition& latticeShape);
+    LCBox (const Vector<Double>& blc, const Vector<Double>& trc,
+	   const IPosition& latticeShape);
+    // </group>
+
+    // Copy constructor (partly reference semantics).
     LCBox (const LCBox& other);
 
     virtual ~LCBox();
@@ -105,6 +115,14 @@ private:
     // Make a box from the blc,trc such that it does not exceed the
     // lattice boundaries.
     void setSlicerBox (const IPosition& blc, const IPosition& trc);
+
+    // Fill the blc and trc vector from IPositions.
+    void fillBlcTrc();
+
+
+    //# Variables
+    Vector<Float> itsBlc;
+    Vector<Float> itsTrc;
 };
 
 

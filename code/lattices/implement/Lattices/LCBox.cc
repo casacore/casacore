@@ -27,7 +27,6 @@
 
 #include <trial/Lattices/LCBox.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
@@ -47,8 +46,10 @@ LCBox::LCBox (const Slicer& box, const IPosition& latticeShape)
     if (box.isFixed()) {
         setSlicerBox (box.start(), box.end());
     } else {
-      setBox (box);
+	setBox (box);
     }
+    // Fill the blc and trc vectors.
+    fillBlcTrc();
 }
 
 // Construct from the IPosition's defining the bottom-left and
@@ -58,6 +59,45 @@ LCBox::LCBox (const IPosition& blc, const IPosition& trc,
 : LCRegionFixed (latticeShape)
 {
     setSlicerBox (blc, trc);
+    fillBlcTrc();
+}
+
+LCBox::LCBox (const Vector<Float>& blc, const Vector<Float>& trc,
+	      const IPosition& latticeShape)
+: LCRegionFixed (latticeShape),
+  itsBlc        (blc.copy()),
+  itsTrc        (trc.copy())
+{
+    uInt i;
+    IPosition bl(blc.nelements());
+    for (i=0; i<blc.nelements(); i++) {
+	bl(i) = Int(blc(i) + 0.99);
+    }
+    IPosition tr(trc.nelements());
+    for (i=0; i<trc.nelements(); i++) {
+	tr(i) = Int(trc(i));
+    }
+    setSlicerBox (bl, tr);
+}
+
+LCBox::LCBox (const Vector<Double>& blc, const Vector<Double>& trc,
+	      const IPosition& latticeShape)
+: LCRegionFixed (latticeShape),
+  itsBlc        (blc.nelements()),
+  itsTrc        (trc.nelements())
+{
+    uInt i;
+    IPosition bl(blc.nelements());
+    for (i=0; i<blc.nelements(); i++) {
+	itsBlc(i) = blc(i);
+	bl(i) = Int(blc(i) + 0.99);
+    }
+    IPosition tr(trc.nelements());
+    for (i=0; i<trc.nelements(); i++) {
+	itsTrc(i) = trc(i);
+	tr(i) = Int(trc(i));
+    }
+    setSlicerBox (bl, tr);
 }
 
 LCBox::LCBox (const LCBox& that)
@@ -88,11 +128,13 @@ LCRegion* LCBox::doTranslate (const Vector<Float>& translateVector,
     ||  newLatticeShape.nelements() != ndim) {
         throw (AipsError ("LCBox::translate - dimensionalities mismatch"));
     }
-    IPosition blc = box().start();
+    Vector<Float> blc (itsBlc.copy());
+    Vector<Float> trc (itsTrc.copy());
     for (uInt i=0; i<ndim; i++) {
-        blc(i) += Int(translateVector(i));
+        blc(i) += translateVector(i);
+        trc(i) += translateVector(i);
     }
-    return new LCBox (Slicer(blc, box().length()), newLatticeShape);
+    return new LCBox (blc, trc, newLatticeShape);
 }
 
 String LCBox::className()
@@ -104,17 +146,16 @@ TableRecord LCBox::toRecord (const String&) const
 {
     TableRecord rec;
     rec.define ("name", className());
-    rec.define ("blc", box().start().asVector());
-    rec.define ("trc", box().end().asVector());
+    rec.define ("blc", itsBlc);
+    rec.define ("trc", itsTrc);
     rec.define ("shape", latticeShape().asVector());
     return rec;
 }
 
 LCBox* LCBox::fromRecord (const TableRecord& rec, const String&)
 {
-    return new LCBox (Slicer (Vector<Int>(rec.asArrayInt ("blc")),
-			      Vector<Int>(rec.asArrayInt ("trc")),
-			      Slicer::endIsLast),
+    return new LCBox (Vector<Float>(rec.asArrayFloat ("blc")),
+		      Vector<Float>(rec.asArrayFloat ("trc")),
 		      Vector<Int>(rec.asArrayInt ("shape")));
 }
 
@@ -136,4 +177,16 @@ void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)
 	AlwaysAssert (blc(i) <= trc(i), AipsError);
     }
     setBox (Slicer(bl, tr, Slicer::endIsLast));
+}
+
+void LCBox::fillBlcTrc()
+{
+    const Slicer& sl = box();
+    uInt nd = sl.ndim();
+    itsBlc.resize (nd);
+    itsTrc.resize (nd);
+    for (uInt i=0; i<nd; i++) {
+	itsBlc(i) = sl.start()(i);
+	itsTrc(i) = sl.end()(i);
+    }
 }
