@@ -31,8 +31,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/StManAipsIO.h>
+#include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/ScaColDesc.h>
 
 #include <aips/Exceptions/Error.h>
@@ -60,10 +59,8 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
 	  String("Creating ") + fileName);
 	LogSink::postGlobally(logMessage);
         SetupNewTable setup(fileName, logTableDescription(), Table::New);
-// 	// Bind all to the ISM. When we have a standard storage manager we
-// 	// should bind the MESSAGE column to it.
-// 	IncrementalStMan stman("ISM");
-	StManAipsIO stman;   // Use AipsIO until bug gone from ISM
+// 	// Bind all to the SSM.
+ 	StandardStMan stman("SSM");
 	setup.bindAll(stman);
 	log_table_p = Table(setup);
 	log_table_p.tableInfo() = TableInfo(TableInfo::LOG);
@@ -200,7 +197,9 @@ TableDesc TableLogSink::logTableDescription()
 
     desc.addColumn(ScalarColumnDesc<Double>(columnName(TIME),
 					    "MJD in seconds"));
-    desc.addColumn(ScalarColumnDesc<String>(columnName(PRIORITY)));
+    ScalarColumnDesc<String> pdesc (columnName(PRIORITY));
+    pdesc.setMaxLength (9);   // Longest is DEBUGGING
+    desc.addColumn(pdesc);
     desc.addColumn(ScalarColumnDesc<String>(columnName(MESSAGE)));
     desc.addColumn(ScalarColumnDesc<String>(columnName(LOCATION)));
     desc.addColumn(ScalarColumnDesc<String>(columnName(OBJECT_ID)));
