@@ -217,6 +217,19 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
     return LatticeExprNode();
 }
 
+LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
+					      const LatticeExprNode& arg2,
+					      const LatticeExprNode& arg3) const
+{
+    AlwaysAssert (itsType == TpString, AipsError);
+    if (itsSval == "iif") {
+	return iif(arg1, arg2, arg3);
+    } else {
+	throw (AipsError ("3-argument function " + itsSval + " is unknown"));
+    }
+    return LatticeExprNode();
+}
+
 
 LatticeExprNode ImageExprParse::makeLiteralNode() const
 {
