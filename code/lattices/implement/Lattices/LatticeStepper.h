@@ -359,7 +359,7 @@ public:
   // Returns True if everything is fine otherwise returns False
   virtual Bool ok() const;
 
-  // Use until RTTI is widely available. Does not make a copy, merely
+  // Use until RTTI is available in g++. Does not make a copy, merely
   // returns a cast pointer.  Only implementers need to worry about this
   // function.
   // <group>
