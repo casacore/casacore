@@ -30,15 +30,20 @@
 #include <aips/Measures/Quantum.h>
 typedef Quantum<Double> gpp_MeasTable_bug1;
 #endif
+#include <aips/Measures/MeasTable.h>
+#include <aips/Measures/UnitVal.h>
+#include <aips/Measures/RotMatrix.h>
+#include <aips/Measures/Euler.h>
+#include <aips/Measures/MeasIERS.h>
+#include <aips/OS/Time.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/UnitVal.h>
-///#include <aips/Logging.h>
-#include <aips/Measures/RotMatrix.h>
-#include <aips/Measures/Euler.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MeasIERS.h>
+#include <aips/Logging.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableRow.h>
+#include <aips/Containers/RecordField.h>
 
 //# Constants
 
@@ -677,6 +682,28 @@ void MeasTable::calcMulSC(Bool &need, Double &check, Double T,
 	    result[j](3) = (poly[2*i+1].derivative())(T);
 	}
     }
+}
+
+const Double MeasTable::dPsiEps(uInt which, Double T) {
+  DebugAssert(which < 2, AipsError);
+  Double r = 0;
+  switch (which) {
+  case 1:
+    if (!MeasIERS::get(r, MeasIERS::MEASURED, MeasIERS::dEps,
+		       T)) {
+      //  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
+      // ///		       "No IERS nutation data available"));
+    };
+    break;
+  default:
+    if (!MeasIERS::get(r, MeasIERS::MEASURED, MeasIERS::dPsi,
+		       T)) {
+      //  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
+      // ///		       "No IERS nutation data available"));
+    };
+    break;
+  };
+  return (r * C::arcsec);
 }
 
 // Aberration function
@@ -2700,10 +2727,10 @@ const Euler &MeasTable::polarMotion(Double ut) {
     static Double checkT = -1e6;
     if ( !nearAbs(ut, checkT, 0.04)) {
         checkT = ut;
-	if (!MeasIERS::get(MeasIERS::MEASURED, MeasIERS::X,
-			   ut, res(0)) ||
-	    !MeasIERS::get(MeasIERS::MEASURED, MeasIERS::Y,
-			   ut, res(1))) {
+	if (!MeasIERS::get(res(0), MeasIERS::MEASURED, MeasIERS::X,
+			   ut) ||
+	    !MeasIERS::get(res(1), MeasIERS::MEASURED, MeasIERS::Y,
+			   ut)) {
 	  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
 	  ///		       "No IERS polar motion data available"));
 	};
@@ -2715,62 +2742,64 @@ const Euler &MeasTable::polarMotion(Double ut) {
 
 // Time functions
 Double MeasTable::dUTC(Double utc) {
-    const N = 35;
-    static const Double LEAP[N][4] = {
-    37300, 1.4228180, 37300., 0.001296,
-    37512, 1.3728180, 37300., 0.001296,
-    37665, 1.8458580, 37665., 0.0011232,
-    38334, 1.9458580, 37665., 0.0011232,
-    38395, 3.2401300, 38761., 0.001296,
-    38486, 3.3401300, 38761., 0.001296,
-    38639, 3.4401300, 38761., 0.001296,
-    38761, 3.5401300, 38761., 0.001296,
-    38820, 3.6401300, 38761., 0.001296,
-    38942, 3.7401300, 38761., 0.001296,
-    39004, 3.8401300, 38761., 0.001296,
-    39126, 4.3131700, 39126., 0.002592,
-    39887, 4.2131700, 39126., 0.002592,
-    41317, 10, 41317., 0.0,
-    41499, 11, 41317., 0.0,
-    41683, 12, 41317., 0.0,
-    42048, 13, 41317., 0.0,
-    42413, 14, 41317., 0.0,
-    42778, 15, 41317., 0.0,
-    43144, 16, 41317., 0.0,
-    43509, 17, 41317., 0.0,
-    43874, 18, 41317., 0.0,
-    44239, 19, 41317., 0.0,
-    44786, 20, 41317., 0.0,
-    45151, 21, 41317., 0.0,
-    45516, 22, 41317., 0.0,
-    46247, 23, 41317., 0.0,
-    47161, 24, 41317., 0.0,
-    47892, 25, 41317., 0.0,
-    48257, 26, 41317., 0.0,
-    48804, 27, 41317., 0.0,
-    49169, 28, 41317., 0.0,
-    49534, 29, 41317., 0.0,
-    50083, 30, 41317., 0.0,
-    50630, 31, 41317., 0.0};
-    Double val;
-    if (utc < LEAP[0][0]) {
-      val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
-    } else if (utc >= LEAP[N-1][0]) {
-      if (!MeasIERS::get(MeasIERS::MEASURED, MeasIERS::LeapSecond,
-			 utc, val)) {
-	val = LEAP[N-1][1] + (utc - LEAP[N-1][2])*LEAP[N-1][3];
-	///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
-	///		       "Used approximate value for UTC-TAI"));
-      };
-    } else {
-      for (Int i = 1; i < N; i++) {
-	if (utc < LEAP[i][0]) {
-	  val = LEAP[i-1][1] + (utc - LEAP[i-1][2])*LEAP[i-1][3];
-	  break;
-	};
+  static Int N = 0;
+  static Double (*LEAP)[4];
+  if (N == 0) {
+    Table t;
+    ROTableRow row;
+    TableRecord kws;
+    String rfn[4] = {"MJD", "dUTC", "Offset", "Multiplier"};
+    RORecordFieldPtr<Double> rfp[4];
+    Double dt;
+    String vs;
+    if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 4, rfn, "TAI_UTC",
+		  "measures.tai_utc.directory",
+		  "aips/Measures")) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("dUTC(Double)"),
+			 WHERE));
+      os << "Cannot read leap second table TAI_UTC" << LogIO::EXCEPTION;
+    };
+    N = t.nrow();
+    if (N < 35) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("dUTC(Double)"),
+			 WHERE));
+      os << "Leap second table TAI_UTC corrupted" << LogIO::EXCEPTION;
+    };
+    if (Time().modifiedJulianDay() - dt > 180) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("dUTC(Double)"),
+			 WHERE));
+      os << LogIO::SEVERE <<
+	String("Leap second table TAI_UTC seems out-of-date: ") +
+	"regenerate" << LogIO::POST;
+    };
+    LEAP = (Double (*)[4])(new Double[4*N]);
+    for (Int i=0; i < N; i++) {
+      row.get(i);
+      for (Int j=0; j < 4; j++) {
+	LEAP[i][j] = *(rfp[j]);
       };
     };
-    return val;
+  }; 
+  Double val;
+  if (utc < LEAP[0][0]) {
+    val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
+    ///  } else if (utc >= LEAP[N-1][0]) {
+    ///    val = LEAP[N-1][1];
+  } else {
+    for (Int i = N-1; i >= 0; i--) {
+      if (utc >= LEAP[i][0]) {
+	val = LEAP[i][1];
+	if (LEAP[i][3] != 0) {
+	  val += (utc - LEAP[i][2])*LEAP[i][3];
+	};
+	break;
+      };
+    };
+  };
+  return val;
 }
 
 Double MeasTable::dTAI(Double tai) {
@@ -2833,8 +2862,8 @@ Double MeasTable::dUT1(Double utc) {
     static Double checkT = -1e6;
     if ( !nearAbs(utc, checkT, 0.04)) {
         checkT = utc;
-	if (!MeasIERS::get(MeasIERS::MEASURED, MeasIERS::dUT1,
-			   utc, res)) {
+	if (!MeasIERS::get(res, MeasIERS::MEASURED, MeasIERS::dUT1,
+			   utc)) {
 	  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
 	  ///		       "No IERS dUT1 data available"));
 	};
