@@ -6181,3 +6181,5 @@
 17 183 src rm aips/implement/Functionals/Parameterized.h
 17 184 src rm aips/implement/Functionals/FuncWithDerivs.cc
 17 184 src rm aips/implement/Functionals/FuncWithDerivs.h
+17 184 src rm trial/implement/Functionals/FuncWithAutoDerivs.cc
+17 184 src rm trial/implement/Functionals/FuncWithAutoDerivs.h
