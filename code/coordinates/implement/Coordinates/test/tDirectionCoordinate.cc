@@ -89,11 +89,11 @@ int main()
                                                  proj, crval, crpix, 
                                                  cdelt, xform);
          if (!lc.near(&lc2)) {
-            throw(AipsError("Failed near test 1"));
+            throw(AipsError(String("Failed near test 1 because") + lc.errorMessage()));
          }
          Vector<Int> excludeAxes(1, 0);
          if (!lc.near(&lc2, excludeAxes)) {
-            throw(AipsError("Failed near test 2"));
+            throw(AipsError(String("Failed near test 2 because") + lc.errorMessage()));
          }
      } 
 
@@ -476,16 +476,27 @@ void doit4 (DirectionCoordinate& dC)
 {
    Vector<Double> pixelIn(2), worldIn(2), pixelOut, worldOut;
    Vector<Bool> pixelAxes(2), worldAxes(2);
+   Vector<Double> minWorld(2), maxWorld(2);
+   Vector<String> units = dC.worldAxisUnits();
+//
+   Quantum<Double> tmp(-180.0, Unit("deg"));
+   minWorld(0) = tmp.getValue(Unit(units(0)));
+   tmp.setValue(180.0);
+   maxWorld(0) = tmp.getValue(Unit(units(0)));
+   tmp.setValue(-90.0);
+   minWorld(1) = tmp.getValue(Unit(units(1)));
+   tmp.setValue(90.0);
+   maxWorld(1) = tmp.getValue(Unit(units(1)));
 //
 // Forced errors
 //
    pixelAxes.set(False);
    worldAxes.set(False);
-   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Forced fail 1 of toMix did not occur")));
    }
    pixelAxes(0) = True;
-   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Forced fail 2 of toMix did not occur")));
    }
 //
@@ -494,7 +505,7 @@ void doit4 (DirectionCoordinate& dC)
    pixelAxes.set(True);
    worldAxes.set(False);
    pixelIn = dC.referencePixel().copy();
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Failed pixel->world conversion failed because ")
                   + dC.errorMessage()));
    }
@@ -510,7 +521,7 @@ void doit4 (DirectionCoordinate& dC)
    pixelAxes.set(False);
    worldAxes.set(True);
    worldIn = dC.referenceValue().copy();
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Failed world->pixel conversion failed because ")
                   + dC.errorMessage()));
    }
@@ -529,7 +540,7 @@ void doit4 (DirectionCoordinate& dC)
    worldAxes.set(False);
    worldAxes(0) = True;
    pixelAxes(1) = True;
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
@@ -548,7 +559,7 @@ void doit4 (DirectionCoordinate& dC)
    worldAxes.set(False);
    worldAxes(1) = True;
    pixelAxes(0) = True;
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
@@ -568,7 +579,7 @@ void doit4 (DirectionCoordinate& dC)
    worldAxes.set(False); worldAxes(0) = True;
    Vector<Double> saveWorldIn(worldIn.copy());
    Vector<Double> savePixelIn(pixelIn.copy());
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
@@ -576,7 +587,7 @@ void doit4 (DirectionCoordinate& dC)
    worldIn(1) = worldOut(1);
    pixelAxes.set(False); pixelAxes(0) = True;
    worldAxes.set(False); worldAxes(1) = True;
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
@@ -596,7 +607,7 @@ void doit4 (DirectionCoordinate& dC)
    worldAxes.set(False); worldAxes(1) = True;
    saveWorldIn = worldIn.copy();
    savePixelIn = pixelIn.copy();
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
@@ -604,7 +615,7 @@ void doit4 (DirectionCoordinate& dC)
    worldIn(0) = worldOut(0);
    pixelAxes.set(False); pixelAxes(1) = True;
    worldAxes.set(False); worldAxes(0) = True;
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
