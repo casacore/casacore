@@ -914,7 +914,9 @@ void MCDirection::doConvert(MVDirection &in,
       *MVPOS3 = MVDirection(g1, g3);
       MVPOS3->readjust(g2);
       in(1) = -in(1);
-      *ROTMAT1 = RotMatrix(Euler(g1 ,(uInt) 3));
+      *EULER1 = MeasTable::polarMotion(tdbTime);
+      EULER1->operator()(2) = g1;
+      *ROTMAT1 = RotMatrix(*EULER1);
       in = *ROTMAT1 * in;
       in -= *MVPOS3;
     }
