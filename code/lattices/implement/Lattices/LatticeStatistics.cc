@@ -1318,7 +1318,7 @@ void LatticeStatistics<T>::generateRobust ()
          SubLattice<T> subLat(*pInLattice_p, slicer);
 //
          LatticeExprNode node(median(subLat));
-         T dummy;
+         T dummy = 0;
          if (showMsg) os_p << "  Median" << LogIO::POST;
          T lelMed = LattStatsSpecialize::getNodeScalarValue(node, dummy);
          LatticeExprNode node2(median(abs(subLat-lelMed)));
