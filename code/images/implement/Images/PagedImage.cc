@@ -33,6 +33,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/PagedArrIter.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Logging/TableLogSink.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -72,7 +73,7 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
    mask_p((PagedArray<Bool> *) 0)
 {
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
-
+  attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const IPosition & shape,  "
 			 "const CoordinateSystem & coordinateInfo, "
@@ -85,10 +86,11 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 	    << "The image shape is " << shape << endl;
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table, "mask", rowNumber);
-    logSink() << "A mask was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << "A mask was created" << LogIO::POST;
   }
   else
-    logSink() << "No mask is was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << "No mask was created" << LogIO::POST;
+  logSink() << LogIO::NORMAL;
   ::defaultValue(defaultvalue_p); 
   setTableType();
 };
@@ -110,14 +112,18 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 	    << "The image shape is " << shape << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab, lockOptions);
+  attach_logtable();
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber);
-    logSink() << "A mask was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << 
+      "A mask was created" << LogIO::POST;
   }
   else
-    logSink() << "No mask is was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << "No mask was created" << 
+      LogIO::POST;
   ::defaultValue(defaultvalue_p); 
+  logSink() << LogIO::NORMAL;
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 };
@@ -141,13 +147,17 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 	    << "The image shape is " << shape << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab, lockOptions);
+  attach_logtable();
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber, tileShape);
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber, tileShape);
-    logSink() << "A mask was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << 
+      "A mask was created" << LogIO::POST;
   }
   else
-    logSink() << "No mask is was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << "No mask was created" << 
+      LogIO::POST << LogIO::NORMAL;
+  logSink() << LogIO::NORMAL;
   ::defaultValue(defaultvalue_p); 
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
@@ -170,13 +180,17 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 	    << "The image shape is " << shape << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab);
+  attach_logtable();
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber);
-    logSink() << "A mask was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << 
+      "A mask was created" << LogIO::POST;
   }
   else
-    logSink() << "No mask is was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << 
+      "No mask was created" << LogIO::POST;
+  logSink() << LogIO::NORMAL;
   ::defaultValue(defaultvalue_p); 
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
@@ -200,13 +214,17 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 	    << "The image shape is " << shape << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab);
+  attach_logtable();
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber, tileShape);
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber, tileShape);
-    logSink() << "A mask was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << 
+      "A mask was created" << LogIO::POST;
   }
   else
-    logSink() << "No mask is was created" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << 
+      "No mask was created" << LogIO::POST;
+  logSink() << LogIO::NORMAL;
   ::defaultValue(defaultvalue_p); 
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
@@ -218,6 +236,7 @@ PagedImage(Table & table, uInt rowNumber)
    map_p(table, "map", rowNumber),
    mask_p((PagedArray<Bool> *)0)
 {
+  attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(Table & table, "
 			 "uInt rowNumber)", WHERE);
@@ -234,10 +253,10 @@ PagedImage(Table & table, uInt rowNumber)
 
   if (table_p.tableDesc().isColumn("mask")) {
     mask_p = new PagedArray<Bool>(table_p, "mask", rowNumber);
-    logSink() << "A mask was also read" << LogIO::POST;
+    logSink() << "A mask was also read" << LogIO::POST << LogIO::NORMAL;
   }
   else
-    logSink() << "No mask is defined" << LogIO::POST;
+    logSink() << "No mask is defined" << LogIO::POST << LogIO::NORMAL;
   throughmask_p = False;
   ::defaultValue(defaultvalue_p); 
   setTableType();
@@ -267,10 +286,11 @@ PagedImage(const String & filename, uInt rowNumber)
 
   if (table_p.tableDesc().isColumn("mask")) {
     mask_p = new PagedArray<Bool>(table_p, "mask", 0);
-    logSink() << "A mask was also read" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << "A mask was also read" << LogIO::POST;
   }
   else
-    logSink() << "No mask is defined" << LogIO::POST;
+    logSink() << LogIO::DEBUGGING << "No mask is defined" << LogIO::POST;
+  logSink() << LogIO::NORMAL;
   throughmask_p = False;
   ::defaultValue(defaultvalue_p); 
   setTableType();
@@ -304,6 +324,7 @@ PagedImage(const String & filename, const TableLock& lockOptions, uInt rowNumber
   }
   else
     logSink() << "No mask is defined" << LogIO::POST;
+  logSink() << LogIO::NORMAL;
   throughmask_p = False;
   ::defaultValue(defaultvalue_p); 
   setTableType();
@@ -318,6 +339,7 @@ PagedImage(const PagedImage<T> & other)
    mask_p((PagedArray<Bool> *)0),
    defaultvalue_p(other.defaultvalue_p)
 {
+  attach_logtable();
   AlwaysAssert(setCoordinateInfo(other.coords_p), AipsError);
   units_p = other.units_p;
   log_p = other.log_p;
@@ -346,6 +368,7 @@ operator=(const PagedImage<T> & other) {
     units_p = other.units_p;
     throughmask_p = other.throughmask_p;
     table_p = other.table_p;
+    attach_logtable();
     map_p = other.map_p;
     if (other.mask_p) 
       mask_p = new PagedArray<Bool>(*(other.mask_p));
@@ -357,6 +380,7 @@ operator=(const PagedImage<T> & other) {
 template <class T> void PagedImage<T>::
 rename(const String & newName) {
   table_p.rename(newName, Table::New);
+  attach_logtable();
 }
 
 template <class T> String PagedImage<T>::
@@ -642,11 +666,13 @@ makeIter(const IPosition & cursorShape) {
 template <class T> void PagedImage<T>::
 openTable(const String & filename) {
   table_p = Table(filename, Table::Update);
+  attach_logtable();
 }
 
 template <class T> void PagedImage<T>::
 openTable(const String & filename, const TableLock& lockOptions) {
   table_p = Table(filename, lockOptions, Table::Update);
+  attach_logtable();
 }
 
 template <class T> void PagedImage<T>::
@@ -654,6 +680,7 @@ openTable(const String & filename) const {
   // Logically const - we are opening 'filename' R/O
   PagedImage<T> *This = (PagedImage<T> *)this;
   This->table_p = Table(filename, Table::Old);
+  This->attach_logtable();
 }
 
 template <class T> void PagedImage<T>::
@@ -661,6 +688,7 @@ openTable(const String & filename,  const TableLock& lockOptions) const {
   // Logically const - we are opening 'filename' R/O
   PagedImage<T> *This = (PagedImage<T> *)this;
   This->table_p = Table(filename, lockOptions, Table::Old);
+  This->attach_logtable();
 }
 
 template <class T> Bool PagedImage<T>::
@@ -685,6 +713,7 @@ operator+=(const PagedImage<T> & other) {
   report_mask();
   check_conformance(other);
   logSink() << LogIO::POST;
+  logSink() << LogIO::NORMAL;
   
   IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
   LatticeIterator<T> toiter(*this, cursorShape);
@@ -750,6 +779,7 @@ operator+=(const Lattice<T> & other) {
   report_mask();
   check_conformance(other);
   logSink() << LogIO::POST;
+  logSink() << LogIO::NORMAL;
   
   IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
   LatticeIterator<T> toiter(*this, cursorShape);
@@ -778,6 +808,7 @@ operator+=(const T & val) {
   
   report_mask();
   logSink() << LogIO::POST;
+  logSink() << LogIO::NORMAL;
   
   IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
   LatticeIterator<T> toiter(*this, cursorShape);
@@ -793,6 +824,18 @@ operator+=(const T & val) {
     }
   }
   return *this;
+}
+
+template<class T> void PagedImage<T>::attach_logtable()
+{
+  TableLogSink *logtable = new TableLogSink(LogFilter(), name() + "/logtable");
+  LogSinkInterface *interface = logtable;
+  AlwaysAssert(logtable != 0, AipsError);
+  table_p.rwKeywordSet().defineTable("logtable", logtable->table());
+  LogSink tmp;
+  tmp.localSink(interface);
+  log_p = tmp;
+  log_p << LogIO::NORMAL;
 }
 
 template<class T> void PagedImage<T>::
@@ -841,6 +884,7 @@ restore_units() {
     // I give up!
     logSink() << LogIO::SEVERE << "Unit '" << unitName << "' is unknown."
       " Not restoring units" << LogIO::POST;
+    logSink() << LogIO::NORMAL;
     return;
   }
   // Cool, the unit is known.
