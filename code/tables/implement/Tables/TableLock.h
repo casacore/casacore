@@ -1,5 +1,5 @@
 //# TableLock.h: Class to hold table lock options
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,14 +28,10 @@
 #if !defined(AIPS_TABLELOCK_H)
 #define AIPS_TABLELOCK_H
 
-#if defined (_AIX)
-#pragma implementation ("TableLock.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
 #include <aips/IO/LockFile.h>
-#include <aips/Utilities/CountedPtr.h>
 
 
 // <summary> 
@@ -99,6 +95,17 @@ public:
 	UserLocking
     };
 
+    // Define the possible locking modes (read or write) that can be
+    // used in the <linkto class=TableLocker>TableLocker</linkto>
+    // constructor or in the functions <src>(un)lock</src> in class
+    // <linkto class=Table>Table</linkto>.
+    enum LockMode {
+	// Acquire a read lock.
+	Read,
+	// Acquire a write lock.
+	Write
+    };
+
     // Construct with given option and interval.
     // The default <src>LockOption</src> is <src>AutoLocking</src>.
     // In case of AutloLocking the inspection interval defines how often
@@ -108,7 +115,7 @@ public:
     // waits when acquiring a lock in AutoLocking mode. The default
     // is 0 seconds meaning indefinitely.
     // <group>
-    explicit TableLock (LockOption option = AutoLocking);
+    TableLock (LockOption option = AutoLocking);
     TableLock (LockOption option, double inspectionInterval, uInt maxWait = 0);
     // </group>
 
