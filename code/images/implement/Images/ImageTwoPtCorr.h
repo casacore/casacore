@@ -44,7 +44,7 @@ class IPosition;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=LatticeTwoPtrCorr>LatticeTwoPtCorr</linkto> 
+//   <li> <linkto class=LatticeTwoPtCorr>LatticeTwoPtCorr</linkto> 
 //   <li> <linkto class=ImageInterface>ImageInterface</linkto> 
 //   <li> <linkto class=TempImage>TempImage</linkto> 
 // </prerequisite>
