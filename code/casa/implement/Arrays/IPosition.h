@@ -182,6 +182,7 @@ public:
     // <group>
     IPosition nonDegenerate(uInt startingAxis=0) const;
     IPosition nonDegenerate(const IPosition& ignoreAxes) const;
+    // </group>
 
     // Old values are copied on resize if copy==True..
     // If the size increases, values beyond the former size are undefined.

@@ -232,6 +232,7 @@ public:
 			 Bool resize = False) const;
     Array<T> getColumnRange (const Slicer& rowRange) const;
     // </group>
+    // </group>
 
 private:
     // Assignment makes no sense for a readonly class.
