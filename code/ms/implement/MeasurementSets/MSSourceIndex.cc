@@ -96,6 +96,24 @@ Vector<Int> MSSourceIndex::matchSourceName(const String& name)
   return retval;
 }; 
 
+Vector<Int> MSSourceIndex::matchSourceCode(const String& code)
+{
+// Match a source code to a set of source id's
+// Input:
+//    code             const String&            Source code to match
+// Output:
+//    matchSourceCode  Vector<Int>              Matching source id's
+//
+  Vector<Int> retval;
+  if (!msSourceCols_p->isNull() && msSourceCols_p->nrow() > 0) {
+    LogicalArray maskArray = (msSourceCols_p->code().getColumn()==code);
+    MaskedArray<Int> maskSourceId(msSourceCols_p->sourceId().getColumn(), 
+				  maskArray);
+    retval = maskSourceId.getCompressedArray();
+  };
+  return retval;
+}; 
+
 Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names)
 {
 // Match a set of source names to a set of source id's
