@@ -1,5 +1,5 @@
 //# TSMFile.h: File object for Tiled Storage Manager
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Tables/BucketFile.h>
+#include <aips/IO/BucketFile.h>
 
 //# Forward Declarations
 class TiledStMan;
@@ -104,13 +104,13 @@ public:
     BucketFile* bucketFile();
 
     // Return the logical file length.
-    uInt length() const;
+    Int64 length() const;
 
     // Return the file sequence number.
     uInt sequenceNumber() const;
 
     // Increment the logical file length.
-    void extend (uInt increment);
+    void extend (Int64 increment);
 
 
 private:
@@ -121,7 +121,7 @@ private:
     // The file object.
     BucketFile* file_p;
     // The (logical) length of the file.
-    uInt length_p;
+    Int64 length_p;
 	    
 
     // Forbid copy constructor.
@@ -132,13 +132,13 @@ private:
 };
 
 
-inline uInt TSMFile::length() const
+inline Int64 TSMFile::length() const
     { return length_p; }
 
 inline uInt TSMFile::sequenceNumber() const
     { return fileSeqnr_p; }
 
-inline void TSMFile::extend (uInt increment)
+inline void TSMFile::extend (Int64 increment)
     { length_p += increment; }
 
 inline BucketFile* TSMFile::bucketFile()

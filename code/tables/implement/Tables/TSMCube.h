@@ -1,5 +1,5 @@
 //# TSMCube.h: Tiled hypercube in a table
-//# Copyright (C) 1995,1996,1997,1999,2000
+//# Copyright (C) 1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/TSMShape.h>
+#include <aips/Tables/BucketFile.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/OS/Conversion.h>
@@ -344,7 +345,7 @@ private:
     // Pointer to the TSMFile object holding the data.
     TSMFile*        filePtr_p;
     // Offset in the TSMFile object where the data of this hypercube starts.
-    uInt            fileOffset_p;
+    Int64           fileOffset_p;
     // Offset for each data column in a tile (in external format).
     Block<uInt>     externalOffset_p;
     // Offset for each data column in a tile (in local format).

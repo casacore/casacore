@@ -1,5 +1,5 @@
 //# ISMIndColumn.cc: Column of Incremental storage manager for indirect arrays
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,7 +53,7 @@ ISMIndColumn::~ISMIndColumn()
 
 void ISMIndColumn::clear()
 {
-    delete (uLong*)lastValue_p;
+    delete (Int64*)lastValue_p;
     lastValue_p = 0;
     if (stmanPtr_p->version() < 3) {
         delete iosfile_p;
@@ -71,7 +71,7 @@ void ISMIndColumn::doCreate (ISMBucket* bucket)
     init (ByteIO::New);
     // Insert a dummy zero offset as the first value.
     lastRowPut_p = 0;
-    *(uLong*)lastValue_p = 0;
+    *(Int64*)lastValue_p = 0;
     char* buffer = stmanPtr_p->tempBuffer();
     uInt leng = writeFunc_p (buffer, lastValue_p, 1);
     bucket->addData (colnr_p, 0, 0, buffer, leng);
@@ -125,7 +125,7 @@ StIndArray* ISMIndColumn::getArrayPtr (uInt rownr)
 {
     if (isLastValueInvalid (rownr)) {
 	getValue (rownr, lastValue_p, False);
-	uLong offset = *(uLong*)lastValue_p;
+	Int64 offset = *(Int64*)lastValue_p;
 	if (offset != 0) {
 	    indArray_p = StIndArray (offset);
 	    foundArray_p = True;
@@ -216,7 +216,7 @@ StIndArray* ISMIndColumn::putArrayPtr (uInt rownr, const IPosition& shape,
 	if (ptr->refCount (*iosfile_p) <= 1) {
 	    // The value is not shared, so we can replace it.
 	    ptr->setShape (*iosfile_p, dataType(), shape);
-	    uLong offset = ptr->fileOffset();
+	    Int64 offset = ptr->fileOffset();
 	    putValue (rownr, &offset);
 	    return ptr;
 	}
@@ -228,7 +228,7 @@ StIndArray* ISMIndColumn::putArrayPtr (uInt rownr, const IPosition& shape,
 	tmp.copyData (*iosfile_p, dataType(), *ptr);
     }
     indArray_p = tmp;
-    uLong offset = indArray_p.fileOffset();
+    Int64 offset = indArray_p.fileOffset();
     putValue (rownr, &offset);
     return &indArray_p;
 }
@@ -286,15 +286,15 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
     DebugAssert (nrelem_p==1, AipsError);
     Bool asCanonical = stmanPtr_p->asCanonical();
     if (asCanonical) {
-	readFunc_p    = CanonicalConversion::getToLocal (static_cast<uLong*>(0));
-	writeFunc_p   = CanonicalConversion::getFromLocal (static_cast<uLong*>(0));
-	fixedLength_p = CanonicalConversion::canonicalSize (static_cast<uLong*>(0));
+	readFunc_p    = CanonicalConversion::getToLocal (static_cast<Int64*>(0));
+	writeFunc_p   = CanonicalConversion::getFromLocal (static_cast<Int64*>(0));
+	fixedLength_p = CanonicalConversion::canonicalSize (static_cast<Int64*>(0));
 	nrcopy_p      = 1;
     }else{
 	readFunc_p = writeFunc_p = Conversion::valueCopy;
-	fixedLength_p = nrcopy_p = sizeof(uLong);
+	fixedLength_p = nrcopy_p = sizeof(Int64);
     }
-    lastValue_p = new uLong;
+    lastValue_p = new Int64;
     //# Open or create the type 1 file to hold the arrays in the column.
     //# For newer versions one file is maintained by the parent
     //# for all indirect columns.
@@ -311,7 +311,7 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
 
 void ISMIndColumn::handleCopy (uInt, const char* value)
 {
-    uLong offset;
+    Int64 offset;
     readFunc_p (&offset, value, nrcopy_p);
     if (offset != 0) {
 	StIndArray tmp (offset);
@@ -321,7 +321,7 @@ void ISMIndColumn::handleCopy (uInt, const char* value)
 
 void ISMIndColumn::handleRemove (uInt, const char* value)
 {
-    uLong offset;
+    Int64 offset;
     readFunc_p (&offset, value, nrcopy_p);
     if (offset != 0) {
 	StIndArray tmp (offset);

@@ -1,5 +1,5 @@
 //# ISMBase.cc: Base class of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,12 +31,12 @@
 #include <aips/Tables/ISMColumn.h>
 #include <aips/Tables/ISMIndColumn.h>
 #include <aips/Tables/ISMIndex.h>
-#include <aips/Tables/BucketCache.h>
-#include <aips/Tables/BucketFile.h>
 #include <aips/Tables/StArrayFile.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/IO/BucketCache.h>
+#include <aips/IO/BucketFile.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/IO/RawIO.h>
 #include <aips/IO/CanonicalIO.h>
@@ -273,7 +273,7 @@ void ISMBase::readIndex()
 	os >> firstFree_p;
     }
     os.getend();
-    Long off = nbucketInit_p;
+    Int64 off = nbucketInit_p;
     os.setpos (512 + off * bucketSize_p);
     index_p->get (os);
     os.close();
@@ -307,7 +307,7 @@ void ISMBase::writeIndex()
     os << getCache().firstFreeBucket();
     os.putend();
     // Write the index itself at the very end of the file.
-    Long off = nbuckets;
+    Int64 off = nbuckets;
     os.setpos (512 + off * bucketSize_p);
     index_p->put (os);
     os.close();

@@ -1,5 +1,5 @@
 //# StArrayFile.h: Read/write array in external format for a storage manager
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -97,7 +97,7 @@ class RegularFileIO;
 //     // space the hold the entire Bool array.
 //     // It fills in the file offset where the shape is stored
 //     // and returns the length of the shape in the file.
-//     uInt offset;
+//     Int64 offset;
 //     uInt shapeLength = arrayFile.putShape (array.shape(), offset, static_cast<Bool*>(0));
 //     // Now put the actual array.
 //     // This has to be put at the returned file offset plus the length
@@ -148,7 +148,7 @@ public:
     void reopenRW();
 
     // Return the current file length (merely a debug tool).
-    uLong length()
+    Int64 length()
 	{ return leng_p; }
 
     // Put the array shape and store its file offset into the offset argument.
@@ -158,44 +158,44 @@ public:
     // actual array data (which can be used by get and put).
     // Space is reserved to store the reference count.
     // <group>
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Bool* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Char* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const uChar* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Short* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const uShort* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Int* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const uInt* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
-		   const Long* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
-		   const uLong* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
+		   const Int64* dummy);
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
+		   const uInt64* dummy);
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Float* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Double* dummy);
-//#//    uInt putShape (const IPosition& shape, uLong& fileOffset,
+//#//    uInt putShape (const IPosition& shape, Int64& fileOffset,
 //#//                   const long double* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const Complex* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const DComplex* dummy);
-    uInt putShape (const IPosition& shape, uLong& fileOffset,
+    uInt putShape (const IPosition& shape, Int64& fileOffset,
 		   const String* dummy);
     // </group>
 
     // Get the reference count.
-    uInt getRefCount (uLong offset);
+    uInt getRefCount (Int64 offset);
 
     // Put the reference count.
     // An exception is thrown if a value other than 1 is put for version 0.
-    void putRefCount (uInt refCount, uLong offset);
+    void putRefCount (uInt refCount, Int64 offset);
 
     // Put nr elements at the given file offset and array offset.
     // The file offset of the first array element is the file offset
@@ -203,27 +203,27 @@ public:
     // The array offset is counted in number of elements. It can be
     // used to put only a (contiguous) section of the array.
     // <group>
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const Bool*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const Char*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const uChar*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const Short*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const uShort*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const Int*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const uInt*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const Long*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const uLong*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const Float*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const Double*);
-//#//    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const long double*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const Complex*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const DComplex*);
-    void put (uLong fileOffset, uInt arrayOffset, uInt nr, const String*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Bool*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Char*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const uChar*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Short*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const uShort*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Int*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const uInt*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Int64*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const uInt64*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Float*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Double*);
+//#//    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const long double*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const Complex*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const DComplex*);
+    void put (Int64 fileOffset, uInt arrayOffset, uInt nr, const String*);
     // </group>
 
     // Get the shape at the given file offset.
     // It will reshape the IPosition vector when needed.
     // It returns the length of the shape in the file.
-    uInt getShape (uLong fileOffset, IPosition& shape);
+    uInt getShape (Int64 fileOffset, IPosition& shape);
 
     // Get nr elements at the given file offset and array offset.
     // The file offset of the first array element is the file offset
@@ -231,47 +231,47 @@ public:
     // The array offset is counted in number of elements. It can be
     // used to get only a (contiguous) section of the array.
     // <group>
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, Bool*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, Char*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, uChar*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, Short*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, uShort*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, Int*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, uInt*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, Long*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, uLong*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, Float*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, Double*);
-//#//    void get (uLong fileOffset, uInt arrayOffset, uInt nr, long double*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, Complex*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, DComplex*);
-    void get (uLong fileOffset, uInt arrayOffset, uInt nr, String*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Bool*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Char*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, uChar*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Short*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, uShort*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Int*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, uInt*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Int64*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, uInt64*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Float*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Double*);
+//#//    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, long double*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, Complex*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, DComplex*);
+    void get (Int64 fileOffset, uInt arrayOffset, uInt nr, String*);
     // </group>
 
     // Copy the array with <src>nr</src> elements from one file offset
     // to another.
     // <group>
-    void copyArrayBool     (uLong to, uLong from, uInt nr);
-    void copyArrayChar     (uLong to, uLong from, uInt nr);
-    void copyArrayuChar    (uLong to, uLong from, uInt nr);
-    void copyArrayShort    (uLong to, uLong from, uInt nr);
-    void copyArrayuShort   (uLong to, uLong from, uInt nr);
-    void copyArrayInt      (uLong to, uLong from, uInt nr);
-    void copyArrayuInt     (uLong to, uLong from, uInt nr);
-    void copyArrayLong     (uLong to, uLong from, uInt nr);
-    void copyArrayuLong    (uLong to, uLong from, uInt nr);
-    void copyArrayFloat    (uLong to, uLong from, uInt nr);
-    void copyArrayDouble   (uLong to, uLong from, uInt nr);
-//#//    void copyArrayLDouble  (uLong to, uLong from, uInt nr);
-    void copyArrayComplex  (uLong to, uLong from, uInt nr);
-    void copyArrayDComplex (uLong to, uLong from, uInt nr);
-    void copyArrayString   (uLong to, uLong from, uInt nr);
+    void copyArrayBool     (Int64 to, Int64 from, uInt nr);
+    void copyArrayChar     (Int64 to, Int64 from, uInt nr);
+    void copyArrayuChar    (Int64 to, Int64 from, uInt nr);
+    void copyArrayShort    (Int64 to, Int64 from, uInt nr);
+    void copyArrayuShort   (Int64 to, Int64 from, uInt nr);
+    void copyArrayInt      (Int64 to, Int64 from, uInt nr);
+    void copyArrayuInt     (Int64 to, Int64 from, uInt nr);
+    void copyArrayInt64    (Int64 to, Int64 from, uInt nr);
+    void copyArrayuInt64   (Int64 to, Int64 from, uInt nr);
+    void copyArrayFloat    (Int64 to, Int64 from, uInt nr);
+    void copyArrayDouble   (Int64 to, Int64 from, uInt nr);
+//#//    void copyArrayLDouble  (Int64 to, Int64 from, uInt nr);
+    void copyArrayComplex  (Int64 to, Int64 from, uInt nr);
+    void copyArrayDComplex (Int64 to, Int64 from, uInt nr);
+    void copyArrayString   (Int64 to, Int64 from, uInt nr);
     // </group>
 
 private:
     RegularFileIO*  file_p;                //# File object
     TypeIO*         iofil_p;               //# IO object
-    uLong           leng_p;                //# File length
+    Int64           leng_p;                //# File length
     uInt            version_p;             //# Version of StArrayFile file
     Bool            swput_p;               //# True = put is possible
     Bool            hasPut_p;              //# True = put since last flush
@@ -282,8 +282,8 @@ private:
     uInt            sizeuShort_p;
     uInt            sizeInt_p;
     uInt            sizeuInt_p;
-    uInt            sizeLong_p;
-    uInt            sizeuLong_p;
+    uInt            sizeInt64_p;
+    uInt            sizeuInt64_p;
     uInt            sizeFloat_p;
     uInt            sizeDouble_p;
 
@@ -298,7 +298,7 @@ private:
     // space for nr elements (each lenElem bytes long).
     // It fills the file offset of the shape.
     // It returns the length of the shape in the file.
-    uInt putRes (const IPosition& shape, uLong& fileOffset, float lenElem);
+    uInt putRes (const IPosition& shape, Int64& fileOffset, float lenElem);
 
     // Get a single value at the current file offset.
     // It returns the length of the value in the file.
@@ -308,10 +308,10 @@ private:
     // </group>
 
     // Copy data with the given length from one file offset to another.
-    void copyData (uLong to, uLong from, uInt length);
+    void copyData (Int64 to, Int64 from, uInt length);
 
     // Position the file on the given offset.
-    void setpos (uLong offset);
+    void setpos (Int64 offset);
 };
     
 

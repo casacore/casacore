@@ -1,5 +1,5 @@
 //# StIndArray.cc: Read/write indirect arrays
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include <aips/Tables/DataManError.h>
 
 
-StIndArray::StIndArray (uInt fileOffset)
+StIndArray::StIndArray (Int64 fileOffset)
 : fileOffset_p (fileOffset),
   arrOffset_p  (0)
 {}
@@ -243,7 +243,7 @@ void StIndArray::getSlicefloatV (StManArrayFile& ios, const Slicer& ns,
     arr->putStorage (value, deleteIt);
 }
 void StIndArray::getVecfloatV (StManArrayFile& ios,
-			       uInt fileOffset,
+			       Int64 fileOffset,
 			       uInt start, uInt leng, uInt inc,
 			       uInt valInx, void* value)
 {
@@ -258,8 +258,8 @@ void StIndArray::getVecfloatV (StManArrayFile& ios,
     }
 }
 void StIndArray::getSliceData (StManArrayFile& ios, const Slicer& ns,
-	void* value, const IPosition& userShape,
-        void (*getVec) (StManArrayFile&, uInt, uInt, uInt, uInt, uInt, void*))
+      void* value, const IPosition& userShape,
+      void (*getVec) (StManArrayFile&, Int64, uInt, uInt, uInt, uInt, void*))
 {
     //# Check if the shape of the slice and user array match.
     uInt ndim = ns.ndim();
@@ -270,7 +270,7 @@ void StIndArray::getSliceData (StManArrayFile& ios, const Slicer& ns,
     //# Get the offset of the array in the file.
     //# If the array is 1-dim, we can just use the vector get.
     uInt leng = shape(0);
-    uInt fileOffset = fileOffset_p + arrOffset_p;
+    Int64 fileOffset = fileOffset_p + arrOffset_p;
     if (ndim == 1) {
 	getVec (ios, fileOffset, blc(0), leng, inc(0), 0, value);
     }else{
@@ -308,7 +308,7 @@ void StIndArray::putSlicefloatV (StManArrayFile& ios, const Slicer& ns,
     arr->freeStorage (value, deleteIt);
 }
 void StIndArray::putVecfloatV (StManArrayFile& ios,
-			       uInt fileOffset,
+			       Int64 fileOffset,
 			       uInt start, uInt leng, uInt inc,
 			       uInt valInx, const void* value)
 {
@@ -325,7 +325,7 @@ void StIndArray::putVecfloatV (StManArrayFile& ios,
 //# putSliceData works similar to getSliceData.
 void StIndArray::putSliceData (StManArrayFile& ios, const Slicer& ns,
 	const void* value, const IPosition& userShape,
-        void (*putVec) (StManArrayFile&, uInt, uInt, uInt, uInt, uInt,
+        void (*putVec) (StManArrayFile&, Int64, uInt, uInt, uInt, uInt,
 			const void*))
 {
     uInt ndim = ns.ndim();
@@ -333,7 +333,7 @@ void StIndArray::putSliceData (StManArrayFile& ios, const Slicer& ns,
     shape = ns.inferShapeFromSource (shape_p, blc,trc,inc);
     checkShape (userShape, shape);
     uInt leng = shape(0);
-    uInt fileOffset = fileOffset_p + arrOffset_p;
+    Int64 fileOffset = fileOffset_p + arrOffset_p;
     if (ndim == 1) {
 	putVec (ios, fileOffset, blc(0), leng, inc(0), 0, value);
     }else{
@@ -388,7 +388,7 @@ void StIndArray::aips_name2(getSlice,NM) (StManArrayFile& ios, \
     arr->putStorage (value, deleteIt); \
 } \
 void StIndArray::aips_name2(getVec,NM) \
-                  (StManArrayFile& ios, uInt fileOffset, \
+                  (StManArrayFile& ios, Int64 fileOffset, \
 		   uInt start, uInt leng, uInt inc, uInt valInx, void* value) \
 { \
     T* valp = (T*)value + valInx; \
@@ -412,7 +412,7 @@ void StIndArray::aips_name2(putSlice,NM) (StManArrayFile& ios, \
     arr->freeStorage (value, deleteIt); \
 } \
 void StIndArray::aips_name2(putVec,NM) \
-                  (StManArrayFile& ios, uInt fileOffset, \
+                  (StManArrayFile& ios, Int64 fileOffset, \
 		   uInt start, uInt leng, uInt inc, uInt valInx, \
                    const void* value) \
 { \

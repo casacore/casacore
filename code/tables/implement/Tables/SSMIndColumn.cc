@@ -1,5 +1,5 @@
 //# SSMIndColumn.cc: Column of Standard storage manager for indirect arrays
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,17 +38,16 @@
 
 
 SSMIndColumn::SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr)
-: SSMColumn     (aParent, aDataType, aColNr),
-  isShapeFixed  (False),
-  itsIosFile     (0),
-  itsIndArray    (0)
+: SSMColumn    (aParent, aDataType, aColNr),
+  isShapeFixed (False),
+  itsIosFile   (0),
+  itsIndArray  (0)
 {
     init();
 }
 
 SSMIndColumn::~SSMIndColumn()
-{
-}
+{}
 
 void SSMIndColumn::setMaxLength (uInt)
 {}
@@ -111,14 +110,14 @@ void SSMIndColumn::setShape (uInt aRowNr, const IPosition& aShape)
   // put the new shape (if changed)
   // when changed put the file offset
   if (itsIndArray.setShape (*itsIosFile, dataType(), aShape)) {
-    uLong anOffset = itsIndArray.fileOffset();
+    Int64 anOffset = itsIndArray.fileOffset();
     putValue (aRowNr, &anOffset);
   }
 }
 
 StIndArray* SSMIndColumn::getArrayPtr (uInt aRowNr)
 {
-  uLong anOffset;
+  Int64 anOffset;
   uInt  aStartRow;
   uInt  anEndRow;
   char* aValue;
@@ -221,21 +220,20 @@ SSMIndColumn_GETPUT(float,floatV)
 SSMIndColumn_GETPUT(double,doubleV)
 SSMIndColumn_GETPUT(Complex,ComplexV)
 SSMIndColumn_GETPUT(DComplex,DComplexV)
-  //SSMIndColumn_GETPUT(String,StringV)
 
 
-  void SSMIndColumn::init()
+void SSMIndColumn::init()
 {
   DebugAssert (itsNrElem==1, AipsError);
   Bool asCanonical = itsSSMPtr->asCanonical();
   if (asCanonical) {
-    itsReadFunc    = CanonicalConversion::getToLocal(static_cast<uLong*>(0));
-    itsWriteFunc   = CanonicalConversion::getFromLocal(static_cast<uLong*>(0));
-    itsExternalSizeBytes= CanonicalConversion::canonicalSize(static_cast<uLong*>(0));
+    itsReadFunc    = CanonicalConversion::getToLocal(static_cast<Int64*>(0));
+    itsWriteFunc   = CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+    itsExternalSizeBytes= CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
     itsNrCopy     = 1;
   }else{
     itsReadFunc = itsWriteFunc = Conversion::valueCopy;
-    itsExternalSizeBytes = itsNrCopy = sizeof(uLong);
+    itsExternalSizeBytes = itsNrCopy = sizeof(Int64);
   }
   itsExternalSizeBits = 8*itsExternalSizeBytes;
 }

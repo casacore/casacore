@@ -1,5 +1,5 @@
 //# StIndArrAIO.cc: Read/write a table column of arrays array using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -262,7 +262,13 @@ void StManColumnIndArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 	if (*dpa == 0) {
 	    ios << (uInt)0;
 	}else{
-	    ios << (*dpa)->fileOffset();
+	    Int64 off = (*dpa)->fileOffset();
+	    if (off <= 2u*1024u*1024u*1024u) {
+	        ios << uInt(off);
+	    }else{
+	        ios << 2u*1024u*1024u*1024u + 1u;
+		ios << off;
+	    }
 	}
 	dpa++;
     }
@@ -284,11 +290,17 @@ void StManColumnIndArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
 void StManColumnIndArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
 					 AipsIO& ios, uInt)
 {
-    uInt offset;
+    Int64 offset;
+    uInt off;
     StIndArray** dpa = (StIndArray**)dp;
     dpa += inx;
     while (nrval--) {
-	ios >> offset;
+	ios >> off;
+	if (off == 2u*1024u*1024u*1024u + 1u) {
+	    ios >> offset;
+	}else{
+	    offset = off;
+	}
 	if (offset == 0) {
 	    *dpa = 0;
 	}else{
