@@ -1,4 +1,4 @@
-//# CoordinateSystem.h: Interconvert pixel and image coordinates. 
+//# CoordinateSystem.cc: Interconvert pixel and image coordinates. 
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -41,7 +41,12 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Measures/MDoppler.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/VelocityMachine.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Quanta/MVTime.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/UnitMap.h>
 
@@ -51,6 +56,8 @@
 #include <aips/Mathematics/Constants.h>
 
 #include <strstream.h>
+#include <iomanip.h>
+#include <iostream.h>
 
 
 CoordinateSystem::CoordinateSystem()
@@ -2728,7 +2735,7 @@ Coordinate* CoordinateSystem::makeFourierCoordinate (const Vector<Bool>& axes,
 // Make a copy of the CS.  The caste is safe.
 
    Coordinate* pC = clone();
-   CoordinateSystem* pCS = (CoordinateSystem*)(pC);
+   CoordinateSystem* pCS = dynamic_cast<CoordinateSystem*>(pC);
 //
    uInt nReplaced = 0;
    const uInt nCoord = nCoordinates();
@@ -2956,3 +2963,790 @@ void CoordinateSystem::getPCFromHeader(LogIO& os, Int& rotationAxis,
 }
 
 
+
+
+void CoordinateSystem::list (LogIO& os,
+                             MDoppler::Types velocityType,
+                             Bool nativeFormat, 
+                             const IPosition& latticeShape,
+                             const IPosition& tileShape) const
+//
+// List information about a CoordinateSystem to the logger
+//
+// Input:
+//   velocityType  Speciy velocity definition
+//   nativeFormat  If True, reference values and axis increments
+//                 are formatted in their native format.  E.g.
+//                 RA and DEC in radians.  Otherwise, they are
+//                 possibly converted to some other unit and
+//                 formatted nicely (e.g. HH:MM:SS.S)
+//
+{
+   os << LogIO::NORMAL << endl;
+
+// List DirectionCoordinate type from the first DirectionCoordinate we find
+
+   listDirectionSystem(os);
+
+// List rest frequency and reference frame from the first spectral axis we find
+
+   listFrequencySystem(os, velocityType);
+
+//
+   os << "Telescope        : " << obsinfo_p.telescope() << endl;
+   os << "Observer         : " << obsinfo_p.observer() << endl;
+//
+   MEpoch epoch = obsinfo_p.obsDate();
+   if (epoch.getValue().getDay() != Double(0.0)) { 
+      MVTime time = MVTime(epoch.getValue());
+      os << "Date observation : " << time.string(MVTime::YMD) << endl;
+   } else {
+      os << "Date observation : " << "UNKNOWN" << endl;
+   }
+   os << endl;
+
+
+// Determine the widths for all the fields that we want to list
+
+   Bool doShape = tileShape.nelements()>0 && 
+                  latticeShape.nelements()>0 &&
+                  tileShape.nelements()==latticeShape.nelements();
+   uInt widthName, widthProj, widthShape, widthTile, widthRefValue;
+   uInt widthRefPixel, widthInc, widthUnits, totWidth;
+
+   String nameName, nameProj, nameShape, nameTile, nameRefValue;
+   String nameRefPixel, nameInc, nameUnits;
+   
+   Int precRefValSci, precRefValFloat, precRefValRADEC;
+   Int precRefPixFloat, precIncSci;
+   getFieldWidths (os, widthName, widthProj, widthShape, widthTile,
+                   widthRefValue, widthRefPixel, widthInc,
+                   widthUnits, precRefValSci, precRefValFloat, 
+                   precRefValRADEC, precRefPixFloat,
+                   precIncSci, nameName, nameProj, nameShape, 
+                   nameTile, nameRefValue, nameRefPixel, nameInc, 
+                   nameUnits, nativeFormat, velocityType, latticeShape,
+                   tileShape);
+
+// Write headers
+
+   os.output().fill(' ');
+   os.output().setf(ios::left, ios::adjustfield);
+
+   os.output().width(widthName);
+   os << nameName;
+
+   os.output().setf(ios::right, ios::adjustfield);
+   os.output().width(widthProj);
+   os << nameProj;
+
+   if (doShape) {
+      os.output().width(widthShape);
+      os << nameShape;
+
+      os.output().width(widthTile);
+      os << nameTile;
+   }
+
+   os.output().width(widthRefValue);
+   os << nameRefValue;
+
+   os.output().width(widthRefPixel);
+   os << nameRefPixel;
+
+   os.output().width(widthInc);
+   os << nameInc;
+
+   os << nameUnits << endl;
+
+   totWidth = widthName + widthProj + widthShape + widthTile +
+              widthRefValue + widthRefPixel + widthInc + widthUnits;
+   os.output().fill('-');
+   os.output().width(totWidth);
+   os.output().setf(ios::right, ios::adjustfield);
+   os << " " << endl;
+   os.output() << setfill(' ');
+
+
+// Loop over the number of pixel axes in the coordinate system (same
+// as number of axes in image) 
+
+   uInt pixelAxis;
+   Int axisInCoordinate, coordinate;
+   for (pixelAxis=0; pixelAxis<nPixelAxes(); pixelAxis++) {
+
+// Find coordinate number for this pixel axis
+ 
+      findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+
+// List it
+
+      Coordinate* pc = CoordinateSystem::coordinate(coordinate).clone();
+//      cout << "type = " << pc->type() << endl;
+
+      listHeader(os, pc, widthName, widthProj, widthShape, widthTile, 
+                 widthRefValue, widthRefPixel, widthInc, widthUnits,
+                 False, axisInCoordinate, pixelAxis, nativeFormat,
+                 precRefValSci, precRefValFloat, precRefValRADEC, 
+                 precRefPixFloat, precIncSci, latticeShape, tileShape);
+
+// If the axis is spectral, we might like to see it as
+// velocity as well as frequency.  Since the listing is row
+// based, we have to do it like this.  Urk.
+
+      if (pc->type() == Coordinate::SPECTRAL) {
+         listVelocity (os, pc, widthName, widthProj, widthShape, widthTile, 
+                 widthRefValue, widthRefPixel, widthInc, widthUnits,
+                 False, axisInCoordinate, pixelAxis, velocityType,
+                 precRefValSci, precRefValFloat, precRefValRADEC, 
+                 precRefPixFloat, precIncSci);
+
+      }
+      delete pc;
+   }
+   os << endl;
+
+
+// Now find those pixel axes that have been removed and list their
+// associated coordinate information.
+
+   uInt worldAxis;
+   for (worldAxis=0; worldAxis<nWorldAxes(); worldAxis++) {
+
+
+// Find coordinate number for this pixel axis
+ 
+      findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+
+
+// See if this world axis has an associated removed pixel axis
+      
+      Vector<Int> pixelAxes = CoordinateSystem::pixelAxes(coordinate);
+      if (pixelAxes(axisInCoordinate) == -1) {
+
+// List it
+
+        Coordinate* pc = CoordinateSystem::coordinate(coordinate).clone();
+        listHeader(os, pc, widthName, widthProj, widthShape, 
+                   widthTile, widthRefValue, widthRefPixel, 
+                   widthInc, widthUnits, False, axisInCoordinate, 
+                   -1, nativeFormat, precRefValSci, precRefValFloat, 
+                   precRefValRADEC, precRefPixFloat, precIncSci, 
+                   latticeShape, tileShape);
+        delete pc;
+     }
+   }
+
+
+// Post it
+
+   os.post();
+}
+
+void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthName, uInt& widthProj,  uInt& widthShape,               
+                                       uInt& widthTile, uInt& widthRefValue, uInt& widthRefPixel, 
+                                       uInt& widthInc, uInt& widthUnits,  Int& precRefValSci, 
+                                       Int& precRefValFloat, Int& precRefValRADEC, Int& precRefPixFloat, 
+                                       Int& precIncSci, String& nameName, String& nameProj,
+                                       String& nameShape, String& nameTile, String& nameRefValue,
+                                       String& nameRefPixel, String& nameInc, String& nameUnits,
+                                       Bool nativeFormat, MDoppler::Types velocityType,
+                                       const IPosition& latticeShape, const IPosition& tileShape) const
+//
+// All these silly format and precision things should really be
+// in  a little class, but I can't be bothered !
+//
+{
+
+// Precision for scientific notation, floating notation,
+// HH:MM:SS.SSS and sDD:MM:SS.SSS for the reference value formatting.
+// Precision for the reference pixel and increment formatting.
+
+   precRefValSci = 6;
+   precRefValFloat = 3;
+   precRefValRADEC = 3;
+   precRefPixFloat = 2;
+   precIncSci = 6;   
+   Bool doShape = tileShape.nelements()>0 && 
+                  latticeShape.nelements()>0 &&
+                  tileShape.nelements()==latticeShape.nelements();
+
+// Header names for fields
+
+   nameName = "Name";
+   nameProj = "Proj";
+   nameShape = "Shape";
+   nameTile = "Tile";
+   nameRefValue = "Coord value";
+   nameRefPixel = "at pixel";
+   nameInc = "Coord incr";
+   nameUnits = " Units";
+
+// Initialize (logger will never be actually used in this function)
+
+   widthName = widthProj = widthShape = widthTile = widthRefValue = 0;
+   widthRefPixel = widthInc = widthUnits = 0;
+
+// Loop over number of pixel axes
+
+   uInt pixelAxis;
+   Int coordinate, axisInCoordinate;
+   for (pixelAxis=0; pixelAxis<nPixelAxes(); pixelAxis++) {
+
+// Find coordinate number for this pixel axis
+ 
+      findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+
+// Update widths of fields
+
+      Coordinate* pc = CoordinateSystem::coordinate(coordinate).clone();
+      listHeader (os, pc,  widthName, widthProj, widthShape, widthTile, 
+                  widthRefValue, widthRefPixel, widthInc, widthUnits,
+                  True, axisInCoordinate, pixelAxis,
+                  nativeFormat, precRefValSci, precRefValFloat,
+                  precRefValRADEC, precRefPixFloat, precIncSci, 
+                  latticeShape, tileShape);
+//
+      if (pc->type() == Coordinate::SPECTRAL) {
+         listVelocity (os, pc, widthName, widthProj, widthShape, widthTile, 
+                 widthRefValue, widthRefPixel, widthInc, widthUnits,
+                 True, axisInCoordinate, pixelAxis, velocityType,
+                 precRefValSci, precRefValFloat, precRefValRADEC, 
+                 precRefPixFloat, precIncSci);
+      }
+//
+      delete pc;
+   }
+
+
+// Compare with header widths
+
+   widthName = max(nameName.length(), widthName) + 1;
+   widthProj = max(nameProj.length(), widthProj) + 1;
+   if (doShape) {
+      widthShape = max(nameShape.length(), widthShape) + 1;
+      widthTile = max(nameTile.length(), widthTile) + 1;
+   }
+   widthRefValue = max(nameRefValue.length(), widthRefValue) + 1;
+   widthRefPixel = max(nameRefPixel.length(), widthRefPixel) + 1;
+   widthInc = max(nameInc.length(), widthInc) + 1;
+   widthUnits = max(nameUnits.length(), widthUnits);
+}
+
+
+void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthName,  uInt& widthProj,
+                                   uInt& widthShape, uInt& widthTile, uInt& widthRefValue, 
+                                   uInt& widthRefPixel, uInt& widthInc,  uInt& widthUnits, 
+                                   Bool findWidths, Int axisInCoordinate,  Int pixelAxis,
+                                   Bool nativeFormat, Int precRefValSci, Int precRefValFloat, 
+                                   Int precRefValRADEC, Int precRefPixFloat, Int precIncSci,
+                                   const IPosition& latticeShape, const IPosition& tileShape) const
+//
+// List all the good stuff
+//
+//  Input:
+//     os               The LogIO to write to
+//     pc               Pointer to the coordinate
+//     axisIncoordinate The axis number in this coordinate 
+//     pixelAxis        The axis in the image for this axis in this coordinate
+//     nativeFormat     If true don't convert any units
+//           
+{
+
+// Clear flags
+
+   if (!findWidths) clearFlags(os);
+
+// Axis name
+
+   String string = pc->worldAxisNames()(axisInCoordinate);
+   if (findWidths) {
+      widthName = max(widthName, string.length());
+   } else {
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthName);
+      os << string;
+   }
+
+
+// Projection
+
+   if (pc->type() == Coordinate::DIRECTION) {
+      DirectionCoordinate* dc = (DirectionCoordinate*)pc;
+      string = dc->projection().name();
+   } else {
+      string = " ";
+   }
+   if (findWidths) {
+      widthProj = max(widthProj, string.length());
+   } else {
+      os.output().setf(ios::right, ios::adjustfield);
+      os.output().width(widthProj);
+      os << string;
+   }
+
+
+// Number of pixels
+
+   Bool doShape = tileShape.nelements()>0 && 
+                  latticeShape.nelements()>0 &&
+                  tileShape.nelements()==latticeShape.nelements();
+   if (doShape) {
+      if (pixelAxis != -1) {
+         ostrstream oss;
+         oss << latticeShape(pixelAxis);
+         string = String(oss);
+      } else {
+         string = " ";
+      }
+      if (findWidths) {
+         widthShape = max(widthShape, string.length());
+      } else {
+         os.output().width(widthShape);
+         os << string;
+      }
+
+// Tile shape
+
+      if (pixelAxis != -1) {
+         ostrstream oss;
+         oss << tileShape(pixelAxis);
+         string = String(oss);
+      } else {
+         string = " ";
+      }
+      if (findWidths) {
+         widthTile = max(widthTile, string.length());
+      } else {
+         os.output().width(widthTile);
+         os << string;
+      }
+   }
+
+// Remember units
+
+   Vector<String> oldUnits(pc->nWorldAxes());
+   oldUnits = pc->worldAxisUnits();
+   Vector<String> units(pc->nWorldAxes());
+
+// Reference value
+
+   if (nativeFormat && pc->type() != Coordinate::STOKES) {
+      ostrstream oss;
+      oss.setf(ios::scientific, ios::floatfield);
+      oss.precision(precRefValSci);
+      oss << pc->referenceValue()(axisInCoordinate);
+      string = String(oss);
+   } else {
+      Coordinate::formatType form;
+      Bool absolute = True;
+      String listUnits;
+      Int prec;
+//
+      if (pc->type() == Coordinate::STOKES) {
+         Vector<Double> world(1);
+         Vector<Double> pixel(1);
+         String sName;
+         form = Coordinate::DEFAULT;
+
+         if (pixelAxis != -1) {
+            StokesCoordinate* sc = dynamic_cast<StokesCoordinate*>(pc);
+            const uInt nPixels = sc->stokes().nelements();
+            for (uInt i=0; i<nPixels; i++) {
+               pixel(0) = Double(i);
+               Bool ok = pc->toWorld(world, pixel);
+               String temp;
+               if (ok) {
+                  temp = pc->format(listUnits, form, world(0), 
+                                    axisInCoordinate, absolute, -1);
+               } else {
+                  temp = "?";
+               }
+               sName += temp;
+            }
+         } else {
+            pixel(0) =pc->referencePixel()(axisInCoordinate);
+            Bool ok = pc->toWorld(world, pixel);
+            if (ok) {
+               sName = pc->format(listUnits, form, world(0), 
+                                  axisInCoordinate, absolute, -1);
+            } else {
+               sName = "?";
+            }
+         }
+         string = sName;
+      } else {
+         form = Coordinate::DEFAULT;
+         pc->getPrecision(prec, form, absolute, precRefValSci, 
+                          precRefValFloat, precRefValRADEC);
+         string = pc->format(listUnits, form, 
+                            pc->referenceValue()(axisInCoordinate),
+                            axisInCoordinate, absolute, prec);
+      }
+   }
+   if (findWidths) {
+      widthRefValue = max(widthRefValue,string.length());
+   } else {
+      os.output().width(widthRefValue);
+      os << string;
+   }
+
+// Reference pixel
+
+   if (pc->type() != Coordinate::STOKES) {
+      if (pixelAxis != -1) {
+         ostrstream oss;
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(precRefPixFloat);
+         oss << pc->referencePixel()(axisInCoordinate) + 1.0;
+         string = String(oss);
+      } else {
+         string = " ";
+      }
+      if (findWidths) {
+         widthRefPixel = max(widthRefPixel,string.length());
+      } else {
+         os.output().width(widthRefPixel);
+         os << string;
+      }
+   }
+
+
+// Increment
+
+   String incUnits;
+   if (pc->type() != Coordinate::STOKES) {
+      if (pixelAxis != -1) {
+         if (nativeFormat) {
+            ostrstream oss;
+            oss.setf(ios::scientific, ios::floatfield);
+            oss.precision(precIncSci);
+            oss << pc->increment()(axisInCoordinate);
+            string = String(oss);
+            incUnits = pc->worldAxisUnits()(axisInCoordinate);
+         } else {
+            Coordinate::formatType form;
+            const Bool absolute = False;
+            Int prec;
+
+            form = Coordinate::SCIENTIFIC;
+            pc->getPrecision(prec, form, absolute, precRefValSci, 
+                             precRefValFloat, precRefValRADEC);
+            string = pc->format(incUnits, form, 
+                                pc->increment()(axisInCoordinate),
+                                axisInCoordinate, absolute, prec);
+         }
+      } else {
+         string = " ";
+      }
+      if (findWidths) {
+         widthInc = max(widthInc,string.length());
+      } else {
+         os.output().width(widthInc);
+         os << string;
+      }
+   }
+
+
+// Increment units
+
+   if (pc->type()!= Coordinate::STOKES) {
+      if (pixelAxis != -1) {
+         string = " " + incUnits;
+      } else {
+         string = " ";
+      }
+      if (findWidths) {
+         widthUnits = max(widthUnits,string.length());
+      } else {
+         os.output().setf(ios::left, ios::adjustfield);
+         os << string;
+      }
+   }
+
+   if (!findWidths) os << endl;    
+}
+
+
+void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName, uInt& widthProj,
+                                    uInt& widthShape, uInt& widthTile, uInt& widthRefValue, 
+                                    uInt& widthRefPixel, uInt& widthInc,  uInt& widthUnits, 
+                                    const Bool findWidths, const Int axisInCoordinate, 
+                                    const Int pixelAxis, const MDoppler::Types velocityType,
+                                    const Int precRefValSci, const Int precRefValFloat, 
+                                    const Int precRefValRADEC, const Int precRefPixFloat, 
+                                    const Int precIncSci) const
+//
+// List all the good stuff
+//
+//  Input:
+//     os               The LogIO to write to
+//     pc               Pointer to the coordinate
+//     axisIncoordinate The axis number in this coordinate 
+//     pixelAxis        The axis in the image for this axis in this coordinate
+//           
+{
+
+// Clear flags
+
+   if (!findWidths) clearFlags(os);
+
+
+// Axis name
+
+   String string("Velocity");
+   if (findWidths) {
+      widthName = max(widthName, string.length());
+   } else {
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthName);
+      os << string;
+   }
+
+// Projection
+
+   if (!findWidths) {
+     os.output().setf(ios::right, ios::adjustfield);
+      os.output().width(widthProj);
+      string = " ";
+      os << string;
+   }
+
+// Number of pixels
+   
+   if (widthShape>0 && widthTile>0) {
+      if (!findWidths) {
+         os.output().width(widthShape);
+         os << string;
+      }
+
+// Tile shape
+
+      if (!findWidths) {   
+         os.output().width(widthTile);
+         os << string;
+      }
+   }
+
+
+// Caste the coordinate to a spectral coordinate
+
+//   SpectralCoordinate* sc = (SpectralCoordinate*)pc;
+   SpectralCoordinate* sc = dynamic_cast<SpectralCoordinate*>(pc);
+
+// Remember units
+
+   Vector<String> oldUnits(pc->nWorldAxes());
+   oldUnits = pc->worldAxisUnits();
+   Vector<String> units(pc->nWorldAxes());
+
+
+// Convert reference pixel it to a velocity and format 
+
+   Double velocity;
+   String velUnits("km/s");
+   Bool ok = pixelToVelocity(velocity, sc->referencePixel()(axisInCoordinate),
+                             sc, velocityType, velUnits);
+   if (!ok) {
+      string = "Fail";
+   } else {
+      Coordinate::formatType form;
+      Bool absolute = True;
+      String listUnits;
+      Int prec;
+      form = Coordinate::DEFAULT;
+      pc->getPrecision(prec, form, absolute, precRefValSci, 
+                       precRefValFloat, precRefValRADEC);
+      string = sc->format(listUnits, form, velocity,
+                          axisInCoordinate, absolute, prec);
+   }
+   if (findWidths) {
+      widthRefValue = max(widthRefValue,string.length());
+   } else {
+      os.output().width(widthRefValue);
+      os << string;
+   }
+
+
+// Reference pixel
+
+   if (pixelAxis != -1) {
+      ostrstream oss;
+      oss.setf(ios::fixed, ios::floatfield);
+      oss.precision(precRefPixFloat);
+      oss << sc->referencePixel()(axisInCoordinate) + 1.0;
+      string = String(oss);
+   } else {
+      string = " ";
+   }
+   if (!findWidths) {
+      os.output().width(widthRefPixel);
+      os << string;
+   }
+  
+
+// Increment
+
+   if (pixelAxis != -1) {
+     Double velocityInc;
+     if (!velocityIncrement(velocityInc, sc, velocityType, velUnits)) {
+        string = "Fail";
+     } else {
+        ostrstream oss;
+        oss.setf(ios::scientific, ios::floatfield);
+        oss.precision(precIncSci);
+        oss << velocityInc;
+        string = String(oss);
+     }
+  } else {
+     string = " ";
+  }
+  if (findWidths) {
+     widthInc = max(widthInc,string.length());
+  } else {
+     os.output().width(widthInc);
+     os << string;
+  }
+ 
+
+// Increment units
+
+   if (pixelAxis != -1) {
+      string = " " + velUnits;
+   } else {
+      string = " ";
+   }
+   if (findWidths) {
+      widthUnits = max(widthUnits,string.length());
+   } else {
+      os.output().setf(ios::left, ios::adjustfield);
+      os << string;
+   } 
+
+   if (!findWidths) os << endl;    
+}
+
+
+
+void CoordinateSystem::clearFlags(LogIO& os) const
+//
+// Clear all the formatting flags
+//
+{  
+   os.output().unsetf(ios::left);
+   os.output().unsetf(ios::right);
+   os.output().unsetf(ios::internal);
+ 
+   os.output().unsetf(ios::dec);
+   os.output().unsetf(ios::oct);
+   os.output().unsetf(ios::hex);
+ 
+   os.output().unsetf(ios::showbase | ios::showpos | ios::uppercase | ios::showpoint);
+ 
+   os.output().unsetf(ios::scientific);
+   os.output().unsetf(ios::fixed);
+ 
+}
+
+
+
+Bool CoordinateSystem::pixelToVelocity(Double& velocity, Double pixel, const SpectralCoordinate* sc,
+                                       MDoppler::Types velocityType, const String& velUnits) const
+{
+
+// Find rest frequency.  Assumes only one axis in SpectralCoordinate
+
+   if (sc->nWorldAxes() != 1) return False;
+   if (sc->restFrequency() <= 0) return False;
+
+   Quantum<Double> restFreq;
+   restFreq.setValue(sc->restFrequency());
+   restFreq.setUnit(sc->worldAxisUnits()(0));
+
+// Convert pixel to MFrequency
+
+   MFrequency frequency;
+   if (!sc->toWorld(frequency, pixel)) return False;
+
+
+// Create velocity machine
+
+   MDoppler::Ref ref;
+   ref = velocityType;
+   VelocityMachine m(sc->frequencySystem(), Unit("Hz"),
+                     MVFrequency(restFreq),
+   		     ref, Unit(velUnits));
+   velocity = m(frequency.get("Hz")).getValue();
+
+   return True;
+}
+
+         
+Bool CoordinateSystem::velocityIncrement(Double& velocityInc, const SpectralCoordinate* sc,
+                                         MDoppler::Types velocityType, const String& velUnits) const
+{
+
+// DO this the hard way for now until Wim gives me spectralMachine
+
+   if (sc->nWorldAxes() != 1) return False;
+   Double refPix = sc->referencePixel()(0);
+
+// Find world values at refPix +/- 0.5 and take difference
+
+   Double pixel;
+   pixel = refPix + 0.5;
+   Double velocity1;
+   if (!pixelToVelocity(velocity1, pixel, sc, velocityType, velUnits)) return False;
+
+//
+
+   pixel = refPix - 0.5;
+   Double velocity2;
+   if (!pixelToVelocity(velocity2, pixel, sc, velocityType, velUnits)) return False;
+
+
+// Return increment
+   
+   velocityInc = velocity1 - velocity2;
+
+   return True;
+}
+
+
+
+
+void CoordinateSystem::listDirectionSystem(LogIO& os) const
+{
+   Int afterCoord = -1;
+   Int ic = findCoordinate(Coordinate::DIRECTION, afterCoord);
+   if (ic >= 0) {
+      MDirection::Types dirType = directionCoordinate(uInt(ic)).directionType();
+      os << "Direction system : " << MDirection::showType(dirType) << endl;
+   }
+}
+
+
+
+void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types velocityType) const
+{
+   Int afterCoord = -1;
+   Int ic = findCoordinate(Coordinate::SPECTRAL, afterCoord);
+   if (ic >= 0) {
+      const SpectralCoordinate& specCoord = spectralCoordinate(uInt(ic));
+      MFrequency::Types freqType = specCoord.frequencySystem();
+//      
+      os << "Frequency system : " << MFrequency::showType(freqType) << endl;
+      os << "Velocity  system : " << MDoppler::showType(velocityType) << endl;
+//
+      Double rf = specCoord.restFrequency();
+      if (rf > 0.0) {
+         Quantum<Double> restFreq;
+         restFreq.setValue(rf);
+         restFreq.setUnit(specCoord.worldAxisUnits()(0));
+//
+         ostrstream oss;
+         oss << restFreq << endl;
+         os << "Rest frequency   : " << String(oss) << endl;
+      }
+   }
+}
