@@ -89,7 +89,7 @@ namespace std {};
 #undef WHATEVER_VECTOR_FORWARD_DEC
 #endif
 #else
-#define WHATEVER_VECTOR_FORWARD_DEC template <class T, class U> vector
+#define WHATEVER_VECTOR_FORWARD_DEC template <class T, class U> class vector
 #endif
 
 
