@@ -187,12 +187,6 @@ private:
   ImageInterface<T>* itsImagePtr;
   RebinLattice<T>*   itsRebinPtr;
 
-// Make CS
-   CoordinateSystem makeOutputCoordinates (const IPosition& factors,                                 
-                                           const CoordinateSystem& cSysIn, 
-                                           const IPosition& shapeIn, 
-                                           const IPosition& shapeOut);
-
   //# Make members of parent class known.
 public:
   using ImageInterface<T>::logger;

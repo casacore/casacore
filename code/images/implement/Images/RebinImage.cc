@@ -46,10 +46,8 @@ RebinImage<T>::RebinImage (const ImageInterface<T>& image,
 {
   itsRebinPtr = new RebinLattice<T>(image, factors);
 //
-  CoordinateSystem cSys = makeOutputCoordinates (factors,
-						 image.coordinates(),
-                                                 image.shape(),
-						 itsRebinPtr->shape());
+  CoordinateSystem cSys = 
+     CoordinateUtil::makeBinnedCoordinateSystem (factors, image.coordinates(), True);
   setCoordsMember (cSys);
 //
   setImageInfoMember (itsImagePtr->imageInfo());
@@ -254,27 +252,3 @@ void RebinImage<T>::reopen()
 {
   itsImagePtr->reopen();
 }
-
-
-template<class T>
-CoordinateSystem RebinImage<T>::makeOutputCoordinates (const IPosition& factors,
-                                                       const CoordinateSystem& cSysIn,
-                                                       const IPosition& shapeIn,
-                                                       const IPosition& shapeOut)
-{
-
-// Check Stokes.
-
-   Int coord, axisInCoord;
-   for (uInt i=0; i<cSysIn.nPixelAxes(); i++) {
-      cSysIn.findPixelAxis(coord, axisInCoord, i);
-      if (cSysIn.type(coord) == Coordinate::STOKES) {
-         if (shapeIn(i) != shapeOut(i)) {
-            throw (AipsError ("You cannot rebin a Stokes axis"));
-         }
-      }
-   }
-//
-   return CoordinateUtil::makeBinnedCoordinateSystem (factors, cSysIn);
-}
-  
