@@ -1,5 +1,5 @@
 //# MSSpWindowIndex.cc: implementation of MSSpWindowIndex.h
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Vector<Int>& freqGrps)
 //
   Vector<Int> matchedSpWindowIds;
   // Match each spw id individually
-  for (Int freqgrp=0; freqgrp<freqGrps.nelements(); freqgrp++) {
+  for (uInt freqgrp=0; freqgrp<freqGrps.nelements(); freqgrp++) {
     // Add to list of SpWindow id's
     Vector<Int> currentMatch = matchFreqGrp(freqGrps(freqgrp));
     if (currentMatch.nelements() > 0) {
@@ -91,6 +91,50 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Vector<Int>& freqGrps)
     };
   };
   return matchedSpWindowIds;
+};
+
+//-------------------------------------------------------------------------
+
+Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
+				       const Vector<MVFrequency>& chanWidth,
+				       const Double& tol)
+{
+// Match a frequency axis sampling to a set of spectral window id's
+// Input:
+//    chanFreq        const Vector<MFrequency>&    Channel frequencies
+//    chanWidth       const Vector<MVFrequency>&   Channel freq. width
+//    tol             const Double&                Tolerance for frequency
+//                                                 comparisons
+// Output:
+//    matchFreq       Vector<Int>                  Matching spw id.'s
+//
+
+  // Do the match per frequency channel on each row
+  uInt nChan = min(chanFreq.nelements(), chanWidth.nelements());
+  uInt nrows = msSpWindowCols_p.nrow();
+  Vector<Bool> freqMatch(nrows, False);
+  for (uInt row=0; row<nrows; row++) {
+    Vector<MFrequency> rowChanFreq;
+    msSpWindowCols_p.chanFreqMeas().get(row, rowChanFreq);
+    Vector<Quantity> rowChanWidth;
+    msSpWindowCols_p.chanWidthQuant().get(row, rowChanWidth);
+    freqMatch(row) = (rowChanFreq.nelements() == nChan &&
+		      rowChanWidth.nelements() == nChan);
+    if (freqMatch(row)) {
+      for (uInt chan=0; chan<nChan; chan++) {
+	freqMatch(row) = (freqMatch(row) &&
+			  chanFreq(chan).type() == rowChanFreq(chan).type() &&
+			  chanFreq(chan).getValue().
+			  nearAbs(rowChanFreq(chan).getValue(), tol) &&
+			  chanWidth(chan).nearAbs(rowChanWidth(chan), tol));
+      };
+    };
+  };
+
+  // Return matching row numbers
+  LogicalArray maskArray(freqMatch);
+  MaskedArray<Int> maskSpwId(spWindowIds_p, maskArray);
+  return maskSpwId.getCompressedArray();
 };
 
 //-------------------------------------------------------------------------
