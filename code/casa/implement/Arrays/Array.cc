@@ -187,6 +187,16 @@ template<class T> Array<T> Array<T>::copy() const
 	objcopy (vp.begin_p, begin_p, nels_p);
     } else if (ndim() == 1) {
 	objcopy (vp.begin_p, begin_p, uInt(length_p(0)), 1U, uInt(inc_p(0)));
+    } else if (length_p(0) == 1  &&  ndim() == 2) {
+        // Special case which can be quite common (e.g. row in a matrix).
+	objcopy (vp.begin_p, begin_p, uInt(length_p(1)), 1U,
+		 uInt(originalLength_p(0)*inc_p(1)));
+    } else if (length_p(0) <= 25) {
+        // If not many elements on a line, it's better to use this loop.
+        T* ptr = vp.begin_p;
+        for (Array<T>::const_iterator iter=begin(); iter!=end(); ++iter) {
+	    *ptr++ = *iter;
+	}
     } else {
 	// Step through Vector by Vector
 	// The output is guaranteed to have all incs set to 1
@@ -220,18 +230,30 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
     IPosition index(other.ndim());
 
     if (Conform == True) { // Copy in place
-      if (ndim() == 0) {
+        if (ndim() == 0) {
 	    return *this;
-      } else if (contiguousStorage() && other.contiguousStorage()) {
-	  objcopy (begin_p, other.begin_p, nels_p);
-      } else if (ndim() == 1) {
+	} else if (contiguousStorage() && other.contiguousStorage()) {
+	    objcopy (begin_p, other.begin_p, nels_p);
+	} else if (ndim() == 1) {
 	    objcopy (begin_p, other.begin_p, uInt(length_p(0)), uInt(inc_p(0)),
 		     uInt(other.inc_p(0)));
+	} else if (length_p(0) == 1  &&  ndim() == 2) {
+            // Special case which can be quite common (e.g. row in a matrix).
+	    objcopy (begin_p, other.begin_p, uInt(length_p(1)),
+		     uInt(originalLength_p(0)*inc_p(1)),
+		     uInt(other.originalLength_p(0)*other.inc_p(1)));
+	} else if (length_p(0) <= 25) {
+	    // If not many elements on a line, it's better to use this loop.
+	    Array<T>::const_iterator from(other.begin());
+	    for (Array<T>::iterator iter=begin(); iter!=end(); ++iter) {
+	        *iter = *from;
+		++from;
+	    }
 	} else {
 	    ArrayPositionIterator ai(other.shape(), 1);
 	    // Step through Vector by Vector
 	    while (! ai.pastEnd()) {
-		index = ai.pos();
+	        index = ai.pos();
 		offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
 					  inc_p.storage(), index);
 		offset2 = ArrayIndexOffset(other.ndim(),
@@ -314,6 +336,15 @@ template<class T> void Array<T>::set(const T &Value)
 	objset (begin_p, Value, nels_p);
     } else if (ndim() == 1) {
 	objset (begin_p, Value, uInt(length_p(0)), uInt(inc_p(0)));
+    } else if (length_p(0) == 1  &&  ndim() == 2) {
+        // Special case which can be quite common (e.g. row in a matrix).
+        objset (begin_p, Value, uInt(length_p(1)),
+		uInt(originalLength_p(0)*inc_p(1)));
+    } else if (length_p(0) <= 25) {
+        // If not many elements on a line, it's better to use this loop.
+        for (Array<T>::iterator iter=begin(); iter!=end(); ++iter) {
+	    *iter = Value;
+	}
     } else {
 	// Step through Vector by Vector
 	ArrayPositionIterator ai(shape(), 1);
@@ -1031,8 +1062,9 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
 	return 0;
     }
 
-    if (deleteIt == False)
+    if (deleteIt == False) {
 	return begin_p;
+    }
 
     // OK, we are unlucky so we need to do a copy
     T *storage = new T[nelements()];
@@ -1042,6 +1074,16 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
     // ok - copy it
     if (ndim() == 1) {
 	objcopy(storage, begin_p, uInt(length_p(0)), 1U, uInt(inc_p(0)));
+    } else if (length_p(0) == 1  &&  ndim() == 2) {
+        // Special case which can be quite common (e.g. row in a matrix).
+	objcopy(storage, begin_p, uInt(length_p(1)), 1U,
+		uInt(originalLength_p(0)*inc_p(1)));
+    } else if (length_p(0) <= 25) {
+        // If not many elements on a line, it's better to use this loop.
+        T* ptr = storage;
+        for (Array<T>::const_iterator iter=begin(); iter!=end(); ++iter) {
+	    *ptr++ = *iter;
+	}
     } else {
 	ArrayPositionIterator ai(this->shape(), 1);
 	uInt offset;
@@ -1079,6 +1121,16 @@ template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
 
     if (ndim() == 1) {
 	objcopy(begin_p, storage, uInt(length_p(0)), uInt(inc_p(0)), 1U);
+    } else if (length_p(0) == 1  &&  ndim() == 2) {
+        // Special case which can be quite common (e.g. row in a matrix).
+	objcopy(begin_p, storage, uInt(length_p(1)),
+		uInt(originalLength_p(0)*inc_p(1)), 1U);
+    } else if (length_p(0) <= 25) {
+        // If not many elements on a line, it's better to use this loop.
+        const T* ptr = storage;
+        for (Array<T>::iterator iter=begin(); iter!=end(); ++iter) {
+	    *iter = *ptr++;
+	}
     } else {
 	ArrayPositionIterator ai(this->shape(), 1);
 	uInt offset;
