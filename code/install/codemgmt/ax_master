@@ -3800,3 +3800,4 @@
 14 060 src mv trial/apps/aips2help/buildchangelog install/docutils/buildchangelog
 14 060 src mv trial/apps/aips2help/CHANGELOG.LASTID CHANGELOG.LASTID
 14 061 src mv doc/notes/231.dir/clean_time2complete.ps doc/notes/232.dir/clean_time2complete.ps
+14 061 src mv doc/notes/231.dir/clean_speedup.ps doc/notes/232.dir/clean_speedup.ps
