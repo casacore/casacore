@@ -65,8 +65,7 @@ ImageProfileFit::ImageProfileFit()
   itsMask(0),
   itsSpectralFitPtr(0),
   itsProfileAxis(-1),
-  itsDopplerType(MDoppler::RADIO),
-  itsXUnit(""),
+  itsDoppler(""),
   itsXAbs(True),
   itsFitRegion(False)
 {
@@ -80,8 +79,7 @@ ImageProfileFit::ImageProfileFit(const ImageProfileFit& other)
   itsMask(other.itsMask.copy()),
   itsCoords(other.itsCoords),
   itsProfileAxis(other.itsProfileAxis),
-  itsDopplerType(other.itsDopplerType),
-  itsXUnit(other.itsXUnit),
+  itsDoppler(other.itsDoppler),
   itsXAbs(other.itsXAbs),
   itsFitRegion(other.itsFitRegion)
 {
@@ -114,15 +112,19 @@ ImageProfileFit& ImageProfileFit::operator=(const ImageProfileFit& other)
 //
       itsFitDone = other.itsFitDone;
       itsMask.resize(other.itsMask.nelements());
-//
+
+// Does this look after resizing of itsX, itsY vectors ?
+
       itsX = other.itsX;
       itsY = other.itsY;
+//
+      itsMask.resize(0);
       itsMask = other.itsMask;
+//
       itsCoords = other.itsCoords;
       itsProfileAxis = other.itsProfileAxis;
 //
-      itsDopplerType = other.itsDopplerType;
-      itsXUnit = other.itsXUnit;
+      itsDoppler = other.itsDoppler;
       itsXAbs = other.itsXAbs;
       itsFitRegion = other.itsFitRegion;
 //
@@ -133,7 +135,7 @@ ImageProfileFit& ImageProfileFit::operator=(const ImageProfileFit& other)
    return *this;
 }
 
-void ImageProfileFit::setData (const ImageInterface<Float>& image,
+void ImageProfileFit::setData (const ImageInterface<Float>& image, 
                                const ImageRegion& region,
                                uInt profileAxis, Bool average)
 {
@@ -154,233 +156,193 @@ void ImageProfileFit::setData (const ImageInterface<Float>& image,
    setData(image, sl, average);
 }
 
-void ImageProfileFit::setData (const Quantum<Vector<Float> >& x, 
+void ImageProfileFit::setData (const CoordinateSystem& cSys,
+                               uInt profileAxis,
+                               const Quantum<Vector<Float> >& x, 
                                const Quantum<Vector<Float> >& y,
-                               Bool isAbs)
+                               Bool isAbs, const String& doppler)
 {
-   AlwaysAssert(x.getValue().nelements()==y.getValue().nelements(),AipsError);
-   AlwaysAssert(x.getValue().nelements()>0,AipsError);
-//
-   itsMask.resize(0);
-   itsX = x;
-   itsY = y;
-   itsXAbs = isAbs;
-   itsFitRegion = False;
+   Vector<Bool> mask;
+   setData (cSys, profileAxis, x, y, mask, isAbs, doppler);
 }
 
-void ImageProfileFit::setData (const Quantum<Vector<Float> >& x, 
+void ImageProfileFit::setData (const CoordinateSystem& cSys,
+                               uInt profileAxis,
+                               const Quantum<Vector<Float> >& x, 
                                const Quantum<Vector<Float> >& y,
                                const Vector<Bool>& mask,
-                               Bool isAbs)
+                               Bool isAbs, const String& doppler)
 {
-   AlwaysAssert(x.getValue().nelements()==mask.nelements(),AipsError);
-   setData(x, y, isAbs);
+   uInt n = x.getValue().nelements();
+   AlwaysAssert(n==y.getValue().nelements(),AipsError);
+   AlwaysAssert(n>0,AipsError);
 //
-   itsMask.resize(mask.nelements());
-   itsMask = mask;
+   itsMask.resize(n);
+   if (mask.nelements()!=n) {
+      itsMask = True;
+   } else {
+      itsMask = mask;
+   }      
+//
+   itsCoords =  cSys;
+   itsProfileAxis = profileAxis;
    itsFitRegion = False;
+   itsDoppler = doppler;
+   itsXAbs = isAbs;
+
+// Does this take care of resizing ?
+
+   itsX = x;
+   itsY = y;
 }
 
 
 
 uInt ImageProfileFit::addElements (const RecordInterface& rec)
+//
+// Decode the record and add the SpectralElements to the
+// private fitter. We convert the units of the model
+// to those of the data source
+//
 {
-   LogIO os(LogOrigin("image", "addElements", WHERE));
+   LogIO os(LogOrigin("ImageProfileFit", "addElements", WHERE));
    if (!rec.isDefined("xunit")) {
-      throw (AipsError("Record holding model is missing 'xunit' field"));
+      os << "Record holding model is missing 'xunit' field" << LogIO::EXCEPTION;
    }
    if (!rec.isDefined("yunit")) {
-      throw (AipsError("Record holding model is missing 'yunit' field"));
+      os << "Record holding model is missing 'yunit' field" << LogIO::EXCEPTION;
    }
    if (!rec.isDefined("xabs")) {
-      throw (AipsError("Record holding model is missing 'xabs' field"));
+      os << "Record holding model is missing 'xabs' field" << LogIO::EXCEPTION;
    }
-//
-   Unit yUnitEst(rec.asString("yunit"));
-   Unit xUnitEst(rec.asString("xunit"));
-   String doppler;
+   if (!rec.isDefined("elements")) {
+      os << "Record holding model is missing 'elements' field" << LogIO::EXCEPTION;
+   }
+
+// Setup input units etc
+
+   String xUnitIn = rec.asString("xunit");
+   String dopplerIn;
    if (rec.isDefined("doppler")) {
-      doppler = rec.asString("doppler");
+      dopplerIn = rec.asString("doppler");
    }
-   Bool xAbs = rec.asBool("xabs");
-//
-   Unit yUnitOut = itsY.getFullUnit();
+   Bool xAbsIn = rec.asBool("xabs");
+   Bool oneRelIn = True;
+   String yUnitIn = rec.asString("yunit");
+
+// Setup output units
+
+   String xUnitOut = itsX.getFullUnit().getName();
+   Bool xAbsOut = itsXAbs;
+   Bool oneRelOut = False;
+   String dopplerOut = itsDoppler;
+   String yUnitOut = itsY.getFullUnit().getName();
 
 // Loop over elements in record
 
-   if (!rec.isDefined("elements")) {
-      throw (AipsError("Record holding model is missing 'elements' field"));
-   }
    if (rec.dataType("elements") != TpRecord) {
-     throw (AipsError("Record holding model is invalid - 'elements' is not a record"));
+     os << "Record holding model is invalid - 'elements' is not a record" << LogIO::EXCEPTION;
    }
    Record rec2 = rec.asRecord("elements");
 //
    const uInt n = rec2.nfields();
-   AlwaysAssert(n>0, AipsError);
+   if (n <=0) {
+     os << "The 'elements' field of record is of zero length" << LogIO::EXCEPTION;
+   }
 //
    String error;
    for (uInt i=0; i<n; i++) {
       Record rec3 =  rec2.asRecord(i);
       SpectralElement se;
       if (!se.fromRecord(error, rec3)) {
-         throw(AipsError(error));
+         os << error << LogIO::EXCEPTION;
       }
 
-// Deal with each SpectralElement type
+// Convert element to required units
 
-      if (se.getType()==SpectralElement::GAUSSIAN) {
-         Quantum<Double> v(se.getAmpl(), yUnitEst);
-         se.setAmpl(v.getValue(yUnitOut));
+      SpectralElement seOut = convertSpectralElement (se, xAbsIn, xAbsOut,
+                                                      oneRelIn, oneRelOut,
+                                                      xUnitIn, xUnitOut,
+                                                      dopplerIn, dopplerOut,
+                                                      yUnitIn, yUnitOut);
 
-// Deal with center and width.  If the data source is an
-// image we convert the estimate x-values to pixels.
-// Otherwise we convert as best we can to the data source
-// x-units
+// See if we have the 'fixed' record; set fixed parameters as indicated
 
-         if (itsProfileAxis==-1) {                     // Data source is vectors
-
-// Set abs/rel
-
-            itsXAbs = xAbs;
-
-// Data source is just vectors
-
-           Unit xUnitData = itsX.getFullUnit();
-           Unit velUnit(String("m/s"));
+      Vector<Bool> fixed;
+      if (rec3.isDefined("fixed")) fixed = rec3.asArrayBool("fixed");
 //
-           if (xUnitEst==velUnit) {            // dimensional test
-              if (xUnitData!=velUnit) {
-                 throw (AipsError("X-data units must be km/s because estimate units are km/s"));
-              }
-           }
-
-// Need code here to handle 'pix' units for both the data source
-// and estimate units (unless they are both pix)
-
-           if (xUnitData.getName()==String("pix") ||
-               xUnitEst.getName()==String("pix")) {
-              if (!(xUnitData.getName()==String("pix") && 
-                    xUnitEst.getName()==String("pix"))) {
-                 throw (AipsError("x-units of 'pix' are not yet handled for data or model"));
-              }
-           }
-//
-           if (xUnitEst.getName() != xUnitData.getName()) {
-              Quantum<Double> vCen(se.getCenter(), xUnitEst);
-              se.setCenter(vCen.getValue(xUnitData));
-//
-              Quantum<Double> vWidth(se.getFWHM(), xUnitEst);
-              se.setFWHM(vWidth.getValue(xUnitData));
-           }
-         } else {
-
-// Data source is an image.  Convert 1-rel to 0-rel pixels in here.
-
-           convertXEstimateToPixels(se, xAbs, xUnitEst, doppler);
-         }
-
-// See if we have the 'fixed' record
-
-         Vector<Bool> fixed;
-         if (rec3.isDefined("fixed")) fixed = rec3.asArrayBool("fixed");
-//
-         if (fixed.nelements()!=0) {
+      if (fixed.nelements()!=0) {
+         if (seOut.getType()==SpectralElement::GAUSSIAN) {
             if (fixed.nelements()==3) {
-               if (fixed(0)) se.fixAmpl(True);
-               if (fixed(1)) se.fixCenter(True);
-               if (fixed(2)) se.fixFWHM(True);
+               if (fixed(0)) seOut.fixAmpl(True);
+               if (fixed(1)) seOut.fixCenter(True);
+               if (fixed(2)) seOut.fixFWHM(True);
             } else {
-               throw (AipsError("'fixed' vector must be of length 3 for a Gaussian"));
+               os << "'fixed' vector must be of length 3 for a Gaussian" << LogIO::EXCEPTION;
             }
-         }
-      } else if (se.getType()==SpectralElement::POLYNOMIAL) {
-         if (itsProfileAxis==-1) {
-
-// Convert coefficients to data source units
-
          } else {
-
-// Convert coefficients to absolute pixels
-
+            os << "element type not supported" << LogIO::EXCEPTION;
          }
-      } else {
-         throw (AipsError("element type not supported"));
       }
 //
-      itsSpectralFitPtr->addFitElement(se);
+      itsSpectralFitPtr->addFitElement(seOut);
    }
 //
    return itsSpectralFitPtr->list().nelements() - 1;
 }
 
-Bool ImageProfileFit::getElements (RecordInterface& rec,
-                                   const String& xUnit)
+Bool ImageProfileFit::getElements (RecordInterface& rec, 
+                                   Bool xAbsOut,
+                                   const String& xUnitOut,
+                                   const String& dopplerOut)
 {
    const SpectralList& list = itsSpectralFitPtr->list();
-   return getElements(rec, xUnit, list);
+   return getElements(rec, xAbsOut, xUnitOut, dopplerOut, list);
 }
 
 
 Bool ImageProfileFit::getElements (RecordInterface& rec,
-                                   const String& xUnit,
+                                   Bool xAbsOut,
+                                   const String& xUnitOut,
+                                   const String& dopplerOut,
                                    const SpectralList& list)
+
+// 
+// Convert internal model to a record
+//
 {
+   LogIO os(LogOrigin("ImageProfileFit", "getElements", WHERE));
+   String pix("pix");
 
-// If the data source is an image, the x-units are pixels.
-// Convert these to preferred world axis units.
-// If the data source is vectors, don't convert any units
+// Setup units
 
-   CoordinateSystem cSys = itsCoords;                  // Copy to play with
+   Bool xAbsIn = itsXAbs;
+   Bool oneRelIn = False;
+   String xUnitIn = itsX.getFullUnit().getName();
+   String dopplerIn = itsDoppler;
+   String yUnitIn = itsY.getFullUnit().getName();
 //
-   String pString;
-   Unit pUnit;
-   Vector<Double> pixel, world;
-   Unit velUnit("km/s");
-//
-   if (itsProfileAxis!=-1) {
-
-// Work out what x-units to use.  If the user gave an estimate
-// via addElements, use those units.  Else use the preferred units.
-// If they are empty use native units.
-
-      if (xUnit.empty()) {
-         pUnit = itsXUnit;
-      } else {      
-         pUnit = Unit(xUnit);
-      }
-      if (pUnit.getName().empty()) {
-         Int worldAxis = cSys.pixelAxisToWorldAxis(itsProfileAxis);
-         pString = cSys.preferredWorldAxisUnits()(worldAxis);
-         if (pString.empty()) {
-            pString = cSys.worldAxisUnits()(worldAxis);
-         }
-         pUnit = Unit(pString);
-      }
-   }
+   Bool oneRelOut = True;               // 1-rel for Glish
+   String yUnitOut = yUnitIn;
 //
    Record recVec;
    const uInt n = list.nelements();
    for (uInt i=0; i<n; i++) {
-      SpectralElement se = list[i];
-//
-      if (se.getType()==SpectralElement::GAUSSIAN) {
-         if (itsProfileAxis!=-1) {
 
-// Data source is an image
+// Convert element to desired units
 
-           convertXEstimateFromPixels(se, itsXAbs, pUnit, itsDopplerType);
-         }
-      } else {
-         throw (AipsError("cannot handle this type of element"));
-      }
+      SpectralElement seOut = convertSpectralElement (list[i], xAbsIn, xAbsOut,
+                                                      oneRelIn, oneRelOut,
+                                                      xUnitIn, xUnitOut,
+                                                      dopplerIn, dopplerOut,
+                                                      yUnitIn, yUnitOut);
 
 // Fill record for this element
 
       Record recEl;
       String error;
-      if (!se.toRecord(error, recEl)) {
-         throw(AipsError(error));
+      if (!seOut.toRecord(error, recEl)) {
+         os << error << LogIO::EXCEPTION;
       }
 
 // Stick it in output vector record
@@ -392,19 +354,12 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
 
    rec.defineRecord("elements", recVec);
 
-// Add fields 'xunit', 'yunit', 'doppler'
+// Add extra fields
 
-   if (itsProfileAxis!=-1) {
-      rec.define("xunit", pUnit.getName());
-      if (pUnit==velUnit) {
-         String sDoppler = MDoppler::showType(itsDopplerType);
-         rec.define("doppler", sDoppler);
-      }
-   } else {
-      rec.define("xunit", itsX.getFullUnit().getName());
-   }
-   rec.define("xabs", itsXAbs);
-   rec.define("yunit", itsY.getFullUnit().getName());
+   rec.define("xunit", xUnitOut);
+   rec.define("xabs", xAbsOut);
+   rec.define("doppler", dopplerOut);
+   rec.define("yunit", yUnitOut);
 //
    return True;
 }
@@ -427,7 +382,10 @@ void ImageProfileFit::reset ()
    delete itsSpectralFitPtr;
    itsSpectralFitPtr = 0;
    itsSpectralFitPtr = new SpectralFit;
+   itsFitDone = False;
 }
+
+
 
 Bool ImageProfileFit::estimate (uInt nMax)
 {
@@ -435,18 +393,14 @@ Bool ImageProfileFit::estimate (uInt nMax)
    itsSpectralFitPtr = 0;
    itsSpectralFitPtr = new SpectralFit;
 
-// The x-units for the estimate are always pixels
+// The estimate is made with x-units of absolute 0-rel pixels
+// so we need to convert it to the data source units
 
    SpectralEstimate est;
    est.setQ(5);
    Vector<Float> der(itsY.getValue().nelements());
    const SpectralList& list = est.estimate(itsY.getValue(), &der);
-
-// If the data source is not an image, convert units
-// to data source x-units.
-// If the data source is an image, pixels are the correct
-// units.  
-
+//
    uInt nEl = 0;
    if (nMax==0) {
       nEl = list.nelements();
@@ -456,31 +410,33 @@ Bool ImageProfileFit::estimate (uInt nMax)
    if (nEl==0) {
       return False;
    }
-//
-   if (itsProfileAxis==-1) { 
 
-// Average increment
-      
-      const Vector<Float>& x = itsX.getValue();
-      const uInt nP = x.nelements();
-      Double inc = (x(nP-1) - x(0)) / Double(nP);
+// Setup input units 
+
+   String xUnitIn("pix");
+   String dopplerIn = itsDoppler;
+   Bool xAbsIn = True;
+   Bool oneRelIn = False;
+   String yUnitIn = itsY.getFullUnit().getName();
+
+// Setup output units
+
+   String xUnitOut = itsX.getFullUnit().getName();
+   Bool xAbsOut = itsXAbs;
+   Bool oneRelOut = False;
+   String dopplerOut = dopplerIn;
+   String yUnitOut = yUnitIn;
 
 // Convert
 
-      Double v;
-      for (uInt i=0; i<nEl; i++) {   
-         SpectralElement el = list[i];
-         v = x(0) + inc*el.getCenter();
-         el.setCenter(v);
-         v = el.getFWHM();
-         el.setFWHM(v*inc);
-//
-         itsSpectralFitPtr->addFitElement(el);
-      }
-   } else {
-      for (uInt i=0; i<nEl; i++) {
-        itsSpectralFitPtr->addFitElement(list[i]);
-      }
+   for (uInt i=0; i<nEl; i++) {   
+      SpectralElement se = convertSpectralElement (list[i], xAbsIn, xAbsOut,
+                                                   oneRelIn, oneRelOut,
+                                                   xUnitIn, xUnitOut,
+                                                   dopplerIn, dopplerOut,
+                                                   yUnitIn, yUnitOut);
+
+      itsSpectralFitPtr->addFitElement(se);
    }
 //
    return True;
@@ -577,6 +533,7 @@ void ImageProfileFit::collapse (Vector<Float>& profile, Vector<Bool>& mask,
 void ImageProfileFit::setData (const ImageInterface<Float>& image,
                                const Slicer& sl, Bool average)
 {
+   itsXAbs = True;
    if (average) {
 
 // Average data over region except along profile axis
@@ -612,110 +569,200 @@ void ImageProfileFit::setData (const ImageInterface<Float>& image,
    }
 }
 
-void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
-                                                Bool xAbsIn,
-                                                const Unit& xUnitEstIn,
-                                                const String& dopplerIn)
+
+SpectralElement ImageProfileFit::convertSpectralElement (const SpectralElement& elIn,
+                                                         Bool xAbsIn, Bool xAbsOut,
+                                                         Bool oneRelIn, Bool oneRelOut,
+                                                         const String& xUnitIn, 
+                                                         const String& xUnitOut,
+                                                         const String& dopplerIn,
+                                                         const String& dopplerOut,
+                                                         const String& yUnitIn,
+                                                         const String& yUnitOut)
+{
+   LogIO os(LogOrigin("ImageProfileFit", "convertSpectralElement", WHERE));
 //
-// Convert estimate to absolute 0-rel pixels
+   SpectralElement elOut(elIn);
+   if (elOut.getType()==SpectralElement::GAUSSIAN) {
+
+// Brightness
+
+      if (yUnitIn != yUnitOut) {
+         Unit tIn(yUnitIn);
+         Quantum<Double> amp(elOut.getAmpl(), tIn);
+         Quantum<Double> ampErr(elOut.getAmplErr(), tIn);
+//
+         Unit tOut(yUnitOut);
+         elOut.setAmpl(amp.getValue(tOut));
+         Vector<Double> errors;
+         elOut.getError(errors);
+         errors(0) = ampErr.getValue(tOut);
+         elOut.setError(errors);
+      }
+//
+      convertGaussianElementX (elOut, itsCoords, itsProfileAxis,
+                               xAbsIn, xAbsOut,
+                               xUnitIn, xUnitOut,
+                               dopplerIn, dopplerOut, 
+                               oneRelIn, oneRelOut);
+   } else {
+      os << "Elements of type " << elOut.getType() << " are not yet supported" << LogIO::EXCEPTION;
+   }
+//
+   return elOut;
+}
+
+
+
+
+void ImageProfileFit::convertGaussianElementX (SpectralElement& el,
+                                               CoordinateSystem& cSys,
+                                               uInt profileAxis,
+                                               Bool absIn, Bool absOut,
+                                               const String& unitIn,
+                                               const String& unitOut,
+                                               const String& dopplerIn,
+                                               const String& dopplerOut,
+                                               Bool oneRelIn, 
+                                               Bool oneRelOut)
+//
+// The data source is an image
 //
 {
-   itsXAbs = True;
-   itsXUnit = xUnitEstIn;
-   Unit xUnitData = itsX.getFullUnit();
+   LogIO os(LogOrigin("ImageProfileFit", "convertGaussianElementX", WHERE));
+//
    Unit velUnit(String("m/s"));
-   String xUnit = xUnitEstIn.getName();
+   String pix("pix");
+
+// See if we have something to do.  One of the doppler strings
+// might be empty so only check if doing velocity.
+
+   if (unitIn==unitOut && absIn==absOut && oneRelIn==oneRelOut) {
+      Unit tIn(unitIn);
+      Unit tOut(unitOut);
+      if (tIn==velUnit && tOut==velUnit) {
+         if (dopplerIn==dopplerOut) return;
+      }
+   }
 
 // Assumes world and pixel axes the same.
 // Should really check order as well...
 
-   AlwaysAssert (itsCoords.nPixelAxes() == itsCoords.nPixelAxes(), AipsError);  
-   const uInt n = itsCoords.nWorldAxes();
-   Vector<Double> coordIn, coordOut;
-//
-   Vector<Bool> absIn(n, xAbsIn);
-   Vector<Bool> absOut(n, True);
-//
-   Vector<String> unitsIn(n);
-   Vector<String> unitsOut(n, String("pix"));
+   AlwaysAssert (cSys.nWorldAxes() == cSys.nPixelAxes(), AipsError);  
+   const uInt n = cSys.nWorldAxes();
 
-// Get doppler sorted out
+// Get dopplers sorted out
 
-   if (xUnitEstIn==velUnit) {
+   MDoppler::Types dopplerTypeIn, dopplerTypeOut;
+   if (Unit(unitIn)==velUnit) {
       if (dopplerIn.empty()) {
-         throw (AipsError("Record holding estimate does not specify the doppler type"));
+         os << "Input doppler is not specified" << LogIO::EXCEPTION;
       }
-      if (!MDoppler::getType(itsDopplerType, dopplerIn)) {
-         throw (AipsError("Record holding estimate has an invalid doppler type"));
+      if (!MDoppler::getType(dopplerTypeIn, dopplerIn)) {
+         os << "Input doppler type is invalid" << LogIO::EXCEPTION;
+      }
+   }
+   if (Unit(unitOut)==velUnit) {
+      if (dopplerOut.empty()) {
+         os << "Output doppler is not specified" << LogIO::EXCEPTION;
+      }
+      if (!MDoppler::getType(dopplerTypeOut, dopplerOut)) {
+         os << "Output doppler type is invalid" << LogIO::EXCEPTION;
       }
    }
 
-// Find fractional error
+// Find input fractional error
 
    Vector<Double> errors, pars;
    el.getError(errors);
    el.get(pars);
    errors /= pars;
 
-// Convert position
+// Declare conversion vectors
 
-   Double offset = 0.0;
-   if (xUnit==String("pix")) {
-      coordIn = itsCoords.referencePixel();
-      unitsIn = String("pix");
-      if (!xAbsIn) {
-         itsCoords.makePixelRelative(coordIn);
-      } else {
-         offset = -1.0;                             // make 0-rel
-      }
+   Vector<Double> coordIn(n), coordOut(n);
+   Vector<Bool> absIns(n), absOuts(n);
+   Vector<String> unitsIn(n), unitsOut(n);
+
+// Input; first make a vector at the reference of the correct abs/rel
+
+   if (unitIn==pix) {
+      coordIn = cSys.referencePixel();
+      unitsIn = pix;
+      if (!absIn) cSys.makePixelRelative(coordIn);
    } else {
-      coordIn = itsCoords.referenceValue();
-      unitsIn = itsCoords.worldAxisUnits();
-      if (!xAbsIn) {
-         itsCoords.makeWorldRelative(coordIn);
-      }
+      coordIn = cSys.referenceValue();
+      unitsIn = cSys.worldAxisUnits();
+      if (!absIn) cSys.makeWorldRelative(coordIn);
    }
-   unitsIn(itsProfileAxis) = xUnit;
-   Double centerValue = el.getCenter() + offset;
+   unitsIn(profileAxis) = unitIn;
+   absIns = absIn;
+
+// Output;  Just convert all except profile axis to pixels to make it easy.
+
+   absOuts = absOut;
+   unitsOut = pix;
+   unitsOut(profileAxis) = unitOut;
+
+// Setup pixel offsets if input is in pixels and 1-rel
+
+   Double offsetIn = 0.0;
+   if (oneRelIn) offsetIn = -1.0;
+   Double offsetOut = 0.0;
+   if (oneRelOut) offsetOut = 1.0;
+//
+// Get center and set values
+//
+   Double centerValue = el.getCenter();
+   coordIn(profileAxis) = centerValue;
+
+// Convert to 0-rel absolute pixels
+
+   if (!cSys.convert (coordOut, coordIn, absIns, unitsIn, dopplerTypeIn,
+                           absOuts, unitsOut, dopplerTypeOut, offsetIn, offsetOut)) {   
+      os << cSys.errorMessage() << LogIO::EXCEPTION;
+   }
+
+// Fish out error then set new center value in element (sets error to 0)
+
    Double centerValueErr = el.getCenterErr();
-//
-   coordIn(itsProfileAxis) = centerValue;
-   if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
-                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {   
-      throw (AipsError(itsCoords.errorMessage()));
-   }
-   Double newCenterValue = coordOut(itsProfileAxis);
+   Double newCenterValue = coordOut(profileAxis);
    el.setCenter(newCenterValue);
+
+// Now compute new error
+
+   coordIn(profileAxis) = centerValue + centerValueErr;  
+   if (!cSys.convert (coordOut, coordIn, absIns, unitsIn, dopplerTypeIn,
+                           absOuts, unitsOut, dopplerTypeOut, offsetIn, offsetOut)) {   
+      throw (AipsError(cSys.errorMessage()));
+   }
+   Double newCenterValueErr = abs(newCenterValue - coordOut(profileAxis));
 //
-   coordIn(itsProfileAxis) = centerValue + centerValueErr;        // setCenter sets error to 0
-   if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
-                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {   
-      throw (AipsError(itsCoords.errorMessage()));
-   }
-   Double newCenterValueErr = abs(newCenterValue - coordOut(itsProfileAxis));
-
 // Convert width
-
-   if (xUnit==String("pix")) {
-      coordIn = itsCoords.referencePixel();
-      unitsIn = String("pix");
-      itsCoords.makePixelRelative(coordIn);
+//
+   if (unitIn==pix) {
+      coordIn = cSys.referencePixel();
+      unitsIn = pix;
+      cSys.makePixelRelative(coordIn);
    } else {
-      coordIn = itsCoords.referenceValue();
-      unitsIn = itsCoords.worldAxisUnits();
-      itsCoords.makeWorldRelative(coordIn);
+      coordIn = cSys.referenceValue();
+      unitsIn = cSys.worldAxisUnits();
+      cSys.makeWorldRelative(coordIn);
    }
-   absIn = False;
-   absOut = False;
-   unitsIn(itsProfileAxis) = xUnit;
-   coordIn(itsProfileAxis) = el.getFWHM();
-   if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
-                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {
-      throw (AipsError(itsCoords.errorMessage()));
+   unitsIn(profileAxis) = unitIn;
+   absIns = False;
+   absOuts = False;
+   coordIn(profileAxis) = el.getFWHM();
+   if (!cSys.convert (coordOut, coordIn, absIns, unitsIn, dopplerTypeIn,
+                           absOuts, unitsOut, dopplerTypeOut, 0.0, 0.0)) {
+      os << cSys.errorMessage() << LogIO::EXCEPTION;
    }
-   el.setFWHM(abs(coordOut(itsProfileAxis)));
 
-// Set fractional errors
+// Set new width
+
+   el.setFWHM(abs(coordOut(profileAxis)));
+
+// Compute fractional errors
 
    el.get(pars);
    errors *= pars;
@@ -730,99 +777,14 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
 }
 
 
-void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
-                                                  Bool xAbsOut,
-                                                  const Unit& xUnitOut,
-                                                  MDoppler::Types dopplerOut)
-//
-// Convert estimate from absolute 0-rel pixels
-// If the output unit is 'pix' then they are 1-rel
-{
-   Unit velUnit(String("m/s"));
-   String xUnit = xUnitOut.getName();
-   String pix("pix");
-
-// Assumes world and pixel axes the same...
-
-   AlwaysAssert (itsCoords.nPixelAxes() == itsCoords.nPixelAxes(), AipsError);  
-   const uInt n = itsCoords.nWorldAxes();
-   Vector<Double> coordIn, coordOut;
-   coordIn = itsCoords.referencePixel();
-//
-   Vector<Bool> absIn(n, True);
-   Vector<Bool> absOut(n, xAbsOut);
-//
-   Double offset = 0.0;
-   Vector<String> unitsIn(n, String("pix"));
-   Vector<String> unitsOut(n);
-   if (xUnit==pix) {
-      unitsOut = pix;
-      if (xAbsOut) offset = 1.0;
-   } else {
-      unitsOut = itsCoords.worldAxisUnits();
-      unitsOut(itsProfileAxis) = xUnit;
-   }
-
-// Find fractional error
-
-   Vector<Double> errors, pars;
-   el.getError(errors);
-   el.get(pars);
-   errors /= pars;
-
-// Convert position
-
-   Double centerValue = el.getCenter();
-   Double centerValueErr = el.getCenterErr();
-   coordIn(itsProfileAxis) = centerValue;
-   if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, dopplerOut,
-                           absOut, unitsOut, dopplerOut, 0.0, offset)) {
-      throw (AipsError(itsCoords.errorMessage()));
-   }
-   Double newCenterValue = coordOut(itsProfileAxis);
-   el.setCenter(newCenterValue);                      // Sets error to 0
-//
-   coordIn(itsProfileAxis) = centerValue + centerValueErr;
-   if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, dopplerOut,
-                           absOut, unitsOut, dopplerOut, 0.0, offset)) {   
-      throw (AipsError(itsCoords.errorMessage()));
-   }
-   Double newCenterValueErr = abs(newCenterValue - coordOut(itsProfileAxis));
-
-// Convert width
-
-   absIn = False;
-   absOut = False;
-   coordIn = itsCoords.referencePixel();
-   itsCoords.makePixelRelative(coordIn);
-   coordIn(itsProfileAxis) = el.getFWHM();
-   if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
-                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {
-      throw (AipsError(itsCoords.errorMessage()));
-   }
-   el.setFWHM(abs(coordOut(itsProfileAxis)));
-
-// Set fractional errors
-
-   el.get(pars);
-   errors *= pars;
-
-// Overwrite position error
-
-   errors(1) = newCenterValueErr;
-
-// Set
-
-   el.setError(abs(errors));
-}
-
-
 void ImageProfileFit::fit (RecordInterface& rec, 
+                           Bool xAbsOut,
+                           const String& xUnitOut, 
+                           const String& dopplerOut,
                            PtrHolder<ImageInterface<Float> >& fitImage,
-                           PtrHolder<ImageInterface<Float> >& residImage,
-                           const String& xUnitRec)
+                           PtrHolder<ImageInterface<Float> >& residImage)
 {
-   LogIO os(LogOrigin("image", "setDataAndFit", WHERE));
+   LogIO os(LogOrigin("ImageProfileFit", "setDataAndFit", WHERE));
    if (!itsFitRegion) {
       os << "You cannot call this function as you are averaging all profiles" << LogIO::EXCEPTION;
    }
@@ -941,7 +903,7 @@ void ImageProfileFit::fit (RecordInterface& rec,
       rec3.defineRecord("position", rec4);    
 //
       Record rec2;
-      getElements (rec2, xUnitRec, list);
+      getElements (rec2, xAbsOut, xUnitOut, dopplerOut, list);
       rec3.defineRecord("fit", rec2);
 //
       rec.defineRecord(inIter.nsteps(), rec3);
