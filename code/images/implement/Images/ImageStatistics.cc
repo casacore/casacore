@@ -345,7 +345,8 @@ String ImageStatistics<T>::formatCoordinate (const IPosition& pos) const
    for (uInt i=0; i<pixel.nelements(); i++) pixel(i) = pos(i);
    Bool ok = cSys.toWorld(world, pixel);
    if (!ok) {
-      throw(AipsError("Error converting coordinate position"));
+      String err = String("Error converting coordinate position because ") + cSys.errorMessage();
+      throw(AipsError(err));
    }
 //
    Vector<String> s(cSys.nPixelAxes(),"");
@@ -506,7 +507,8 @@ void ImageStatistics<T>::summStats ()
   
       if (!fixedMinMax_p) {
 
-// Find world coordinates of min and max
+// Find world coordinates of min and max. We list pixel coordinates
+// of min/max relative to the start of the parent lattice
 
          String minPosString = formatCoordinate (minPos_p);
          String maxPosString = formatCoordinate (maxPos_p);
@@ -514,14 +516,14 @@ void ImageStatistics<T>::summStats ()
          os_p << "Minimum value "; 
          os_p.output() << setw(oWidth) << String(os6);
          if (type==TpFloat) {
-            os_p <<  " at " << minPos_p+1 << " (" << minPosString << ")" << endl;
+            os_p <<  " at " << blcParent_p + minPos_p+1 << " (" << minPosString << ")" << endl;
          }
          os_p << endl;
 //
          os_p << "Maximum value ";
          os_p.output() << setw(oWidth) << String(os7);
          if (type==TpFloat) {
-            os_p <<  " at " << maxPos_p+1 << " (" << maxPosString << ")" << endl;
+            os_p <<  " at " << blcParent_p + maxPos_p+1 << " (" << maxPosString << ")" << endl;
          }
          os_p << endl;
       }
