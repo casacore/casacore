@@ -123,7 +123,11 @@ const String &MDirection::showType(uInt tp) {
 	"HADEC",
 	"AZEL",
         "AZELSW",
-	"JNAT" };
+	"JNAT",
+	"ECLIPTIC",
+	"MECLIPTIC",
+	"TECLIPTIC",
+	"SUPERGAL" };
     static const String pname[MDirection::N_Planets - MDirection::MERCURY] = {
 	"MERCURY",
 	"VENUS",
@@ -146,7 +150,7 @@ const String &MDirection::showType(uInt tp) {
 }
 
 Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
-    static const Int N_name = 23;
+    static const Int N_name = 27;
     static const String tname[N_name] = {
 	"J2000",
 	"JMEAN",
@@ -161,6 +165,10 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
         "AZELSW",
 	"AZELNE",
 	"JNAT",
+	"ECLIPTIC",
+	"MECLIPTIC",
+	"TECLIPTIC",
+	"SUPERGAL",
 	"MERCURY",
 	"VENUS",
 	"MARS",
@@ -186,6 +194,10 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
         MDirection::AZELSW,
 	MDirection::AZEL,
 	MDirection::JNAT,
+	MDirection::ECLIPTIC,
+	MDirection::MECLIPTIC,
+	MDirection::TECLIPTIC,
+	MDirection::SUPERGAL,
 	MDirection::MERCURY,
 	MDirection::VENUS,
 	MDirection::MARS,
@@ -222,7 +234,11 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 	MDirection::GHADEC,
 	MDirection::GAZEL,
         MDirection::GAZEL,
-	MDirection::GRADEC };
+	MDirection::GRADEC,
+	MDirection::GLONGLAT,
+	MDirection::GLONGLAT,
+	MDirection::GLONGLAT,
+	MDirection::GLONGLAT };
     if ((tp & MDirection::EXTRA) != 0) tp = 0;
     DebugAssert(tp < MDirection::N_Types, AipsError);
 

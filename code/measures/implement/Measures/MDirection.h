@@ -29,10 +29,6 @@
 #if !defined(AIPS_MDIRECTION_H)
 #define AIPS_MDIRECTION_H
 
-#if defined(_AIX)
-#pragma implementation ("MDirection.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
@@ -83,6 +79,10 @@ template <class M, class F, class MC> class MeasConvert;
 //  <li>MDirection::AZEL --- topocentric Azimuth and Elevation (N through E)
 //  <li>MDirection::AZELSW - topocentric Azimuth and Elevation (S through W)
 //  <li>MDirection::AZELNE - topocentric Azimuth and Elevation (N through E)
+//  <li>MDirection::ECLIPTC   -- ecliptic for J2000 equator and equinox
+//  <li>MDirection::MECLIPTIC -- ecliptic for mean equator of date
+//  <li>MDirection::TECLIPTIC -- ecliptic for true equator of date
+//  <li>MDirection::SUPERGAL -- supergalactic coordinates
 //  <li>MDirection::MERCURY -- the planet: has no data attached
 //  <li>MDirection::VENUS
 //  <li>MDirection::MARS
@@ -104,7 +104,7 @@ template <class M, class F, class MC> class MeasConvert;
 // information is essential. The following list specifies which information
 // is needed if the conversion goes to or from the different types:
 // <ul>
-//   <li><em>Epoch</em>: all but J2000, B1950, GALACTIC
+//   <li><em>Epoch</em>: all but J2000, B1950, GALACTIC, SUPGAL, ECLIPTIC
 //   <li><em>Positiom</em>: HADEC, AZEL
 // </ul>
 // Conversions are based on the IAU system of 
@@ -175,6 +175,10 @@ public:
       AZEL,
       AZELSW,
       JNAT,
+      ECLIPTIC,
+      MECLIPTIC,
+      TECLIPTIC,
+      SUPERGAL,
       N_Types,
       // Planets. First one should be Mercury
       MERCURY = 32,

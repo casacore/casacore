@@ -29,10 +29,6 @@
 #if !defined(AIPS_MCDIRECTION_H)
 #define AIPS_MCDIRECTION_H
 
-#if defined(_AIX)
-#pragma implementation ("MCDirection.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
@@ -137,6 +133,14 @@ private:
     AZELSW_AZEL,
     APP_JNAT,
     JNAT_APP,
+    J2000_ECLIP,
+    ECLIP_J2000,
+    JMEAN_MECLIP,
+    MECLIP_JMEAN,
+    JTRUE_TECLIP,
+    TECLIP_JTRUE,
+    GAL_SUPERGAL,
+    SUPERGAL_GAL,
     N_Routes,
     // General for Planets
     R_PLANET0,

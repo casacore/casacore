@@ -83,7 +83,11 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::J2000_JNAT,
 	MCDirection::J2000_JNAT,
 	MCDirection::J2000_JNAT,
-	MCDirection::J2000_JNAT },
+	MCDirection::J2000_JNAT,
+	MCDirection::J2000_ECLIP,
+	MCDirection::J2000_JMEAN,
+	MCDirection::J2000_JMEAN,
+	MCDirection::J2000_GAL },
       { MCDirection::JMEAN_J2000, 
 	MCDirection::N_Routes,    
 	MCDirection::JMEAN_JTRUE,
@@ -95,7 +99,11 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::JMEAN_J2000, 
 	MCDirection::JMEAN_J2000, 
 	MCDirection::JMEAN_J2000, 
-	MCDirection::JMEAN_J2000},
+	MCDirection::JMEAN_J2000,
+	MCDirection::JMEAN_J2000,
+	MCDirection::JMEAN_MECLIP,
+	MCDirection::JMEAN_JTRUE,
+	MCDirection::JMEAN_J2000 },
       { MCDirection::JTRUE_JMEAN, 
 	MCDirection::JTRUE_JMEAN, 
 	MCDirection::N_Routes,
@@ -107,7 +115,11 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::JTRUE_JMEAN,  
 	MCDirection::JTRUE_JMEAN,  
 	MCDirection::JTRUE_JMEAN,  
-	MCDirection::JTRUE_JMEAN},
+	MCDirection::JTRUE_JMEAN,
+	MCDirection::JTRUE_JMEAN,
+	MCDirection::JTRUE_JMEAN,
+	MCDirection::JTRUE_TECLIP,
+	MCDirection::JTRUE_JMEAN },
       { MCDirection::APP_JNAT,  
 	MCDirection::APP_JNAT,  
 	MCDirection::APP_JNAT,  
@@ -119,6 +131,10 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::APP_HADEC, 
 	MCDirection::APP_HADEC, 
 	MCDirection::APP_HADEC,
+	MCDirection::APP_JNAT,
+	MCDirection::APP_JNAT,
+	MCDirection::APP_JNAT,
+	MCDirection::APP_JNAT,
 	MCDirection::APP_JNAT },
       { MCDirection::B1950_J2000, 
 	MCDirection::B1950_J2000, 
@@ -131,7 +147,11 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::B1950_APP, 
 	MCDirection::B1950_APP, 
 	MCDirection::B1950_APP,
-	MCDirection::B1950_J2000 },
+	MCDirection::B1950_J2000,
+	MCDirection::B1950_J2000,
+	MCDirection::B1950_J2000,
+	MCDirection::B1950_J2000,
+	MCDirection::B1950_GAL },
       { MCDirection::BMEAN_B1950, 
 	MCDirection::BMEAN_B1950, 
 	MCDirection::BMEAN_B1950,
@@ -143,7 +163,11 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::BMEAN_B1950, 
 	MCDirection::BMEAN_B1950, 
 	MCDirection::BMEAN_B1950, 
-	MCDirection::BMEAN_B1950},
+	MCDirection::BMEAN_B1950,
+	MCDirection::BMEAN_B1950,
+	MCDirection::BMEAN_B1950,
+	MCDirection::BMEAN_B1950,
+	MCDirection::BMEAN_B1950 },
       { MCDirection::BTRUE_BMEAN, 
 	MCDirection::BTRUE_BMEAN, 
 	MCDirection::BTRUE_BMEAN,
@@ -155,7 +179,11 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::BTRUE_BMEAN, 
 	MCDirection::BTRUE_BMEAN, 
 	MCDirection::BTRUE_BMEAN, 
-	MCDirection::BTRUE_BMEAN},
+	MCDirection::BTRUE_BMEAN,
+	MCDirection::BTRUE_BMEAN,
+	MCDirection::BTRUE_BMEAN,
+	MCDirection::BTRUE_BMEAN,
+	MCDirection::BTRUE_BMEAN },
       { MCDirection::GAL_J2000,   
 	MCDirection::GAL_J2000,   
 	MCDirection::GAL_J2000, 
@@ -167,7 +195,11 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::GAL_J2000,   
 	MCDirection::GAL_J2000,   
 	MCDirection::GAL_J2000,   
-	MCDirection::GAL_J2000},
+	MCDirection::GAL_J2000,
+	MCDirection::GAL_J2000,
+	MCDirection::GAL_J2000,
+	MCDirection::GAL_J2000,
+	MCDirection::GAL_SUPERGAL },
       { MCDirection::HADEC_APP,   
 	MCDirection::HADEC_APP,   
 	MCDirection::HADEC_APP, 
@@ -179,6 +211,10 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::N_Routes,    
 	MCDirection::HADEC_AZEL,
 	MCDirection::HADEC_AZEL,
+	MCDirection::HADEC_APP,
+	MCDirection::HADEC_APP,
+	MCDirection::HADEC_APP,
+	MCDirection::HADEC_APP,
 	MCDirection::HADEC_APP },
       { MCDirection::AZEL_HADEC,  
 	MCDirection::AZEL_HADEC,  
@@ -191,6 +227,10 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::AZEL_HADEC,  
 	MCDirection::N_Routes,
 	MCDirection::AZEL_AZELSW,
+	MCDirection::AZEL_HADEC,
+	MCDirection::AZEL_HADEC,
+	MCDirection::AZEL_HADEC,
+	MCDirection::AZEL_HADEC,
 	MCDirection::AZEL_HADEC },  
       { MCDirection::AZELSW_AZEL,
 	MCDirection::AZELSW_AZEL,
@@ -203,6 +243,10 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::AZELSW_AZEL,
 	MCDirection::AZELSW_AZEL,
 	MCDirection::N_Routes,
+	MCDirection::AZELSW_AZEL,
+	MCDirection::AZELSW_AZEL,
+	MCDirection::AZELSW_AZEL,
+	MCDirection::AZELSW_AZEL,
 	MCDirection::AZELSW_AZEL },
       { MCDirection::JNAT_J2000,
 	MCDirection::JNAT_J2000,
@@ -215,6 +259,74 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::JNAT_APP,
 	MCDirection::JNAT_APP,
 	MCDirection::JNAT_APP,
+	MCDirection::N_Routes,
+	MCDirection::JNAT_J2000,
+	MCDirection::JNAT_J2000,
+	MCDirection::JNAT_J2000,
+	MCDirection::JNAT_J2000 },
+      { MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::N_Routes,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000,
+	MCDirection::ECLIP_J2000 },
+      { MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::N_Routes,
+	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN },
+      { MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::TECLIP_JTRUE,
+	MCDirection::N_Routes,
+	MCDirection::TECLIP_JTRUE },
+      { MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
+	MCDirection::SUPERGAL_GAL,
 	MCDirection::N_Routes }
     };
     
@@ -232,7 +344,11 @@ void MCDirection::getConvert(MConvertBase &mc,
       MDirection::HADEC,    	MDirection::AZEL,
       MDirection::HADEC,    	MDirection::APP,
       MDirection::AZELSW,    	MDirection::AZEL,
-      MDirection::JNAT,		MDirection::APP
+      MDirection::JNAT,		MDirection::APP,
+      MDirection::ECLIPTIC,	MDirection::J2000,
+      MDirection::MECLIPTIC,	MDirection::JMEAN,
+      MDirection::TECLIPTIC,	MDirection::JTRUE,
+      MDirection::SUPERGAL,	MDirection::GALACTIC
     };
     
     Int iin  = inref.getType();
@@ -412,6 +528,12 @@ void MCDirection::initConvert(uInt which, MConvertBase &mc) {
   case AZELSW_AZEL:
     break;
     
+  case GAL_SUPERGAL:
+    break;
+
+  case SUPERGAL_GAL:
+    break;
+
   case R_PLANET:
     break;
     
@@ -578,10 +700,8 @@ void MCDirection::doConvert(MVDirection &in,
       ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
-      // Solar position in ecliptic coordinates
-      *MVPOS1 = SOLPOSFROM->operator()(tdbTime);
       // Solar position in rectangular coordinates
-      *MVPOS1 = MeasTable::posToRect() * *MVPOS1;
+      *MVPOS1 = SOLPOSFROM->operator()(tdbTime);
       // Get length and unit vector
       MVPOS1->adjust(lengthE);
       g1 = -1.974e-8 / lengthE;
@@ -657,10 +777,8 @@ void MCDirection::doConvert(MVDirection &in,
       ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
-      // Solar position in ecliptic coordinates
-      *MVPOS1 = SOLPOSTO->operator()(tdbTime);
       // Solar position in rectangular coordinates
-      *MVPOS1 = MeasTable::posToRect() * *MVPOS1;
+      *MVPOS1 = SOLPOSTO->operator()(tdbTime);
       // Get length and unit vector
       MVPOS1->adjust(lengthE);
       g1 = -1.974e-8 / lengthE;
@@ -808,6 +926,52 @@ void MCDirection::doConvert(MVDirection &in,
       in(1) = -in(1);
     }
     break;
+
+    case ECLIP_J2000:
+      *ROTMAT1 = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
+      in = *ROTMAT1 * in;
+      break;
+
+    case J2000_ECLIP:
+      *ROTMAT1 = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
+      in *= *ROTMAT1;
+      break;
+
+    case MECLIP_JMEAN:
+      *ROTMAT1 = 
+	RotMatrix(Euler(MeasTable::fundArg(0)((tdbTime - 
+					       MeasData::MJD2000)/
+					      MeasData::JDCEN), 1, 0, 0));
+      in = *ROTMAT1 * in;
+      break;
+
+    case JMEAN_MECLIP:
+      *ROTMAT1 =
+        RotMatrix(Euler(MeasTable::fundArg(0)((tdbTime -
+                                               MeasData::MJD2000)/
+                                              MeasData::JDCEN), 1, 0, 0));
+      in *= *ROTMAT1;
+      break;
+
+    case TECLIP_JTRUE:
+      *ROTMAT1 = 
+	RotMatrix(Euler(-Nutation(Nutation::STANDARD)(tdbTime)(2), 1, 0, 0));
+      in = *ROTMAT1 * in;
+      break;
+
+    case JTRUE_TECLIP:
+      *ROTMAT1 =
+        RotMatrix(Euler(-Nutation(Nutation::STANDARD)(tdbTime)(2), 1, 0, 0));
+      in *= *ROTMAT1;
+      break;
+
+    case GAL_SUPERGAL:
+      in = MeasTable::galToSupergal() * in;
+      break;
+      
+    case SUPERGAL_GAL:
+      in *= MeasTable::galToSupergal();
+      break;
     
     case R_PLANET0: {
       ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
