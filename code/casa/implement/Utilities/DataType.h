@@ -1,5 +1,5 @@
 //# DataType.h: data types (primarily) in the table system
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
+#include <aips/Quanta/Quantum.h>
 
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
@@ -165,6 +166,7 @@ enum DataType {TpBool,    TpChar,     TpUChar,
 	       TpRecord, TpOther,
 //#// TpLDouble,
 //#// TpArrayLDouble,
+	       TpQuantity, TpArrayQuantity,
 	       // Since we start at zero, this is the number of types in the
 	       // enum.
                TpNumberOfTypes
@@ -208,6 +210,8 @@ inline DataType whatType(const Array<Complex> *) {return TpArrayComplex ; }
 inline DataType whatType(const Array<DComplex> *) {return TpArrayDComplex ; }
 inline DataType whatType(const Array<String> *) {return TpArrayString ; }
 inline DataType whatType(const Record *) {return TpRecord ; }
+inline DataType whatType(const Quantity *) {return TpQuantity ; }
+inline DataType whatType(const Array<Quantity> *) {return TpArrayQuantity ; }
 // </group>
 
 // It is sometimes useful to discover what the corresponding
