@@ -1,5 +1,5 @@
 //# tTiledCellStM_1.cc: Test program for performance of TiledCellStMan class
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,10 +38,18 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/OS/Timer.h>
+#include <aips/OS/Path.h>
+#include <aips/OS/EnvVar.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 #include <strstream.h>
 
+#ifdef PABLO_IO
+#include "IOTrace.h"
+#include "PabloTrace.h"
+extern "C" Int setTraceFileName(char *);
+extern "C" Int endTracing(void);
+#endif // PABLO_IO
 
 // <summary>
 // Test program for performance of TiledCellStMan class.
@@ -51,6 +59,10 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
+#ifdef PABLO_IO
+void openPablo (char** argv);
+void closePablo ();
+#endif // PABLO_IO
 void makeCube (char** argv);
 void getCube (Bool trav, Bool ask);
 void traverse (const IPosition& cubeShape, const IPosition& tileShape);
@@ -83,14 +95,68 @@ main (int argc, char** argv)
 	return 0;
     }
     try {
+#ifdef PABLO_IO
+        openPablo(argv);
+#endif
 	makeCube(argv);
         getCube (ToBool(argc>4 && String(argv[4])!="0"), ToBool(argc>5));
+#ifdef PABLO_IO
+        closePablo();
+#endif
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } end_try;
     return 0;                           // exit with success status
 }
+
+#ifdef PABLO_IO
+void openPablo (char** argv)
+{
+  // We set the name of the trace file here.  Typically, you want the
+  // file to be written to a local disk, and if possible to a file to.
+  // Also, make sure the location you select has a lot of free space.
+  // For multiprocessor applications, set 'tracenode' to the
+  // appropriate node for each processor (for example, using the MPI
+  // rank) - here we just set it to 0.
+  //
+  // OK there are two environment variables that drive us.  First
+  // PABLOSTATS is a colon(:) seperated list (need those leading and
+  // trailing :'s) which tell us what processes to trace.  i.e.
+  // PABLOSTATS = ':imager:quanta:calibrater:' or PABLOSTATS = 'all'
+  // to get them all Second PABLOSTATSDIR is the directory where the
+  // stats files should go the default is /var/tmp be careful...
+  //
+  ostrstream oss;
+  Path myname(argv[0]);
+  int tracenode(0);
+  static EnvironmentVariables gevs;
+  if(gevs.isSet(String("PABLOSTATS"))) {
+     String pablostats(gevs.value(String("PABLOSTATS")));
+     Regex lookfor(String("\:")+myname.baseName()+String("\:"));
+     if(pablostats.contains(lookfor) || pablostats == String("all")){
+        cout << "Writing output Pablo file" << endl;
+        String pablostatsdir("/var/tmp");
+        if(gevs.isSet(String("PABLOSTATSDIR"))){
+           pablostatsdir = gevs.value("PABLOSTATSDIR");
+        }
+        oss << pablostatsdir << "/" << myname.baseName() << "_node" <<
+	   tracenode << ".PabloIO" << ends;
+        setTraceFileName( oss.str() );
+
+        initIOTrace();
+        traceEvent(1,"Starting instrumentation",24);
+     }
+  }
+}
+
+void closePablo ()
+{
+    traceEvent(1,"Ending instrumentation",24);
+    endIOTrace();
+    endTracing();
+}
+#endif
 
 // First build a description.
 void makeCube (char** argv)
