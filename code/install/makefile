@@ -2,7 +2,7 @@
 # AIPS++ install directory makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1996
+#   Copyright (C) 1992-1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -45,7 +45,7 @@ include $(AIPSARCH)/makedefs
 DOTFILES := cshrc exrc login profile prompt
 DOTEXECS := rshexec
 AIPSINIT := aipsinit.csh aipsinit.es aipsinit.rc aipsinit.sh
-ARCHSCRP := aipsrc makedefs
+ARCHSCRP := aipsrc makedefs testdefs
 SCRIPTS  := adate affirm amkdir assay avers depend doover mkinst updatelib
 
 AIPSEXES := $(basename $(filter %.c,$(AIPSSRCS)))
@@ -113,7 +113,7 @@ $(addprefix $(AIPSROOT)/.,$(DOTEXECS)) : $(AIPSROOT)/.% : $(CODEDIR)/%
 # Root level include-scripts and databases.
 $(AIPSINIT) : % : $(AIPSROOT)/% ;
 
-# Default aipsrc and makedefs files.
+# Default aipsrc and makedefs and also testdefs.
 $(ARCHSCRP) : % : $(AIPSARCH)/% ;
 
 # Scripts.
@@ -169,7 +169,7 @@ help ::
 	-@ echo " (DOTFILES): install root level dot files."
 	-@ echo " (DOTEXECS): install root level executables."
 	-@ echo " (AIPSINIT): install root level aipsinit scripts."
-	-@ echo " (ARCHSCRP): install aipsrc and makedefs."
+	-@ echo " (ARCHSCRP): install aipsrc, makedefs, and testdefs."
 	-@ echo "  (SCRIPTS): install general purpose scripts."
 	-@ echo "      bin/%: compile and install an (AIPSEXES) executable."
 	-@ echo ""
