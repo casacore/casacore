@@ -32,9 +32,8 @@
 #include <aips/Utilities/Assert.h>
 
 
-SSMIndex::SSMIndex( SSMBase* aSSMPtr, uInt rowsPerBucket) 
-  :
-  itsSSMPtr           (aSSMPtr),
+SSMIndex::SSMIndex (SSMBase* aSSMPtr, uInt rowsPerBucket) 
+: itsSSMPtr           (aSSMPtr),
   itsNUsed            (0),
   itsFreeSpace        (0),
   itsRowsPerBucket    (rowsPerBucket),
@@ -59,7 +58,7 @@ void SSMIndex::get (AipsIO& anOs)
   anOs.getend();
 }
 
-void SSMIndex::put (AipsIO& anOs)
+void SSMIndex::put (AipsIO& anOs) const
 {
   anOs.putstart("SSMIndex", 1);
   anOs << itsNUsed;
@@ -92,9 +91,9 @@ void SSMIndex::showStatistics (ostream& anOs) const
   anOs << endl;
 }
 
-void SSMIndex::setNrColumns(const Int aNrColumns,const uInt aSizeUsed)
+void SSMIndex::setNrColumns (Int aNrColumns, uInt aSizeUsed)
 {
-  itsNrColumns=aNrColumns;
+  itsNrColumns = aNrColumns;
   // Determine if there is some free space left at the end of the bucket.
   Int nfree = itsSSMPtr->getBucketSize()-aSizeUsed;
   if (nfree > 0) {
@@ -102,7 +101,7 @@ void SSMIndex::setNrColumns(const Int aNrColumns,const uInt aSizeUsed)
   }
 }
 
-void SSMIndex::addRow( uInt aNrRows )
+void SSMIndex::addRow (uInt aNrRows)
 {
   uInt lastRow=0;
   if (aNrRows == 0 ) {
@@ -155,7 +154,7 @@ void SSMIndex::addRow( uInt aNrRows )
   }
 }
 
-Int SSMIndex::deleteRow( const uInt aRowNr )
+Int SSMIndex::deleteRow (uInt aRowNr)
 {
   // Decrement the rowNrs of all the intervals after the row to be removed
   uInt anIndex = getIndex(aRowNr);
@@ -165,7 +164,7 @@ Int SSMIndex::deleteRow( const uInt aRowNr )
     if (itsLastRow[i] > 0) {
       itsLastRow[i]--;
     } else {
-      isEmpty=True;
+      isEmpty = True;
     }
   }
 
@@ -202,25 +201,23 @@ void SSMIndex::recreate()
 }
 
 
-uInt SSMIndex::getIndex( const uInt aRowNumber) const
+uInt SSMIndex::getIndex (uInt aRowNumber) const
 {
-
   Bool isFound;
-
   uInt anIndex = binarySearchBrackets( isFound, itsLastRow, aRowNumber, 
 				       itsNUsed );
-  AlwaysAssert (anIndex < itsNUsed,AipsError);
+  AlwaysAssert (anIndex < itsNUsed, AipsError);
   return anIndex;
 }
 
-Int SSMIndex::removeColumn(const Int anOffset, const uInt nbits)
+Int SSMIndex::removeColumn (Int anOffset, uInt nbits)
 {
   // set freespace (total in bytes).
   uInt aLength = (itsRowsPerBucket * nbits + 7) / 8;
   itsFreeSpace.define(anOffset,aLength);
  
   itsNrColumns--;
-  AlwaysAssert (itsNrColumns > -1,AipsError);
+  AlwaysAssert (itsNrColumns > -1, AipsError);
   
   uInt i=0;
   while (i < itsFreeSpace.ndefined()-1) {
@@ -248,14 +245,14 @@ Vector<uInt> SSMIndex::getBuckets() const
   return aBucketList;
 }
 
-Int SSMIndex::getFree(Int& anOffset,const uInt nbits) 
+Int SSMIndex::getFree (Int& anOffset, uInt nbits) const
 {
   Int aLength = (itsRowsPerBucket * nbits + 7) / 8;
   // returnvalue: -1  :  No fit
   //               0  :  Best fit at anOffset
   //            other :  Nr of bytes left after fit
 
-  Int bestLength=-1;
+  Int bestLength = -1;
   
   // try to find if there's a place to (best) fit data with a given length
   for (uInt i=0; i < itsFreeSpace.ndefined(); i++) {
@@ -278,7 +275,7 @@ Int SSMIndex::getFree(Int& anOffset,const uInt nbits)
   }
 }
 
-void SSMIndex::addColumn(const Int anOffset, const uInt nbits)
+void SSMIndex::addColumn (Int anOffset, uInt nbits)
 {
   Int aLength = (itsRowsPerBucket * nbits + 7) / 8;
   Int aV = itsFreeSpace(anOffset);
@@ -293,16 +290,14 @@ void SSMIndex::addColumn(const Int anOffset, const uInt nbits)
   }
 }
 
-void SSMIndex::find( const uInt aRowNumber, 
-		     uInt& aBucketNr, 
-		     uInt& aStartRow,
-		     uInt& anEndRow)
+void SSMIndex::find (uInt aRowNumber, uInt& aBucketNr, 
+		     uInt& aStartRow, uInt& anEndRow) const
 {
-  uInt anIndex=getIndex(aRowNumber);
-  aBucketNr=itsBucketNumber[anIndex];
-  anEndRow=itsLastRow[anIndex];
-  aStartRow=0;
+  uInt anIndex = getIndex(aRowNumber);
+  aBucketNr = itsBucketNumber[anIndex];
+  anEndRow = itsLastRow[anIndex];
+  aStartRow = 0;
   if (anIndex > 0) {
-    aStartRow=itsLastRow[anIndex-1]+1;
+    aStartRow = itsLastRow[anIndex-1]+1;
   }
 }

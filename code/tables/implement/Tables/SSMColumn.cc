@@ -752,27 +752,3 @@ void SSMColumn::resync (uInt)
     // Invalidate the last value read.
     columnCache().invalidate();
 }
-
-uInt SSMColumn::copyUInt (void* anOut, const void* anIn, uInt aNValues)
-{
-    aNValues *= sizeof(uInt);
-    memcpy (anOut, anIn, aNValues);
-    return aNValues;
-}
-
-
-Conversion::ValueFunction* SSMColumn::getReadUInt (Bool asCanonical)
-{
-    if (asCanonical) {
-	return CanonicalConversion::getToLocal ((uInt*)0);
-    }
-    return SSMColumn::copyUInt;
-}
-
-Conversion::ValueFunction* SSMColumn::getWriteUInt (Bool asCanonical)
-{
-    if (asCanonical) {
-	return CanonicalConversion::getFromLocal ((uInt*)0);
-    }
-    return SSMColumn::copyUInt;
-}
