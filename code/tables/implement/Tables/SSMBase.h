@@ -87,8 +87,9 @@ class SSMStringHandler;
 class SSMBase: public DataManager
 {
 public:
-  // Create a Standard storage manager without default name SSM.
-  explicit SSMBase (Int aBucketSize=0, uInt aCacheSize=1);
+  // Create a Standard storage manager with default name SSM.
+  explicit SSMBase (Int aBucketSize=0,
+		    uInt aCacheSize=1);
   
   // Create a Standard storage manager with the given name.
   explicit SSMBase (const String& aDataManName,
@@ -231,10 +232,13 @@ private:
   // Reopen the storage manager files for read/write.
   virtual void reopenRW();
   
-  // Let the storage manager initialize itself.
-  // It is used by create and open.
-  // Optionally it creates the index.
-  void init (Bool doMakeIndex);
+  // Let the storage manager initialize itself (upon creation).
+  // It determines the bucket size and fills the index.
+  void init();
+
+  // Determine and set the bucket size.
+  // It returns the number of rows per bucket.
+  uInt setBucketSize();
   
   // Get the number of indices in use.
   uInt getNrIndices() const;
@@ -331,6 +335,10 @@ private:
 
   // Number of the first index bucket
   Int itsFirstIdxBucket;
+
+  // Offset of index in first bucket.
+  // If >0, the index fits in a single bucket.
+  uInt itsIdxBucketOffset;
 
   // Number of the first String Bucket
   Int itsLastStringBucket;

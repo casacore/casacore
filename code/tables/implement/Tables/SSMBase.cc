@@ -51,7 +51,7 @@
 SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
   itsDataManName       ("SSM"),
-  itsVersion           (1),
+  itsVersion           (2),
   itsIosFile           (0),
   itsNrRows            (0),
   itsCache             (0),
@@ -62,6 +62,7 @@ SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
   itsNrBuckets         (0), 
   itsNrIdxBuckets      (0),
   itsFirstIdxBucket    (-1),
+  itsIdxBucketOffset   (0),
   itsLastStringBucket  (-1),
   itsIndexLength       (0),
   itsFreeBucketsNr     (0),
@@ -85,8 +86,8 @@ SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 SSMBase::SSMBase (const String& aDataManName,
 		  Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
-  itsDataManName       (aDataManName),
-  itsVersion           (1),
+  itsDataManName       ("SSM"),
+  itsVersion           (2),
   itsIosFile           (0),
   itsNrRows            (0),
   itsCache             (0),
@@ -94,9 +95,10 @@ SSMBase::SSMBase (const String& aDataManName,
   itsStringHandler     (0),
   itsPersCacheSize     (max(aCacheSize,2u)),
   itsCacheSize         (0),
-  itsNrBuckets         (0),
+  itsNrBuckets         (0), 
   itsNrIdxBuckets      (0),
   itsFirstIdxBucket    (-1),
+  itsIdxBucketOffset   (0),
   itsLastStringBucket  (-1),
   itsIndexLength       (0),
   itsFreeBucketsNr     (0),
@@ -104,7 +106,7 @@ SSMBase::SSMBase (const String& aDataManName,
   itsBucketSize        (0),
   itsBucketRows        (0),
   isDataChanged        (False)
-{
+{ 
   // Determine the data format (local or canonical).
   // For the moment it is always canonical (until Table supports it).
   isCanonical = True;
@@ -118,31 +120,29 @@ SSMBase::SSMBase (const String& aDataManName,
 }
 
 SSMBase::SSMBase (const SSMBase& that)
-  : DataManager          (),
-    itsDataManName       (that.itsDataManName),
-    itsVersion           (that.itsVersion),
-    itsIosFile           (0),
-    itsNrRows            (that.itsNrRows),
-    itsCache             (0),
-    itsFile              (0),
-    itsStringHandler     (0),
-    itsPersCacheSize     (that.itsPersCacheSize),
-    itsCacheSize         (that.itsCacheSize),
-    itsNrBuckets         (0),
-    itsNrIdxBuckets      (that.itsNrIdxBuckets),
-    itsFirstIdxBucket    (that.itsFirstIdxBucket),
-    itsLastStringBucket  (that.itsLastStringBucket),
-    itsIndexLength       (that.itsIndexLength),
-    itsFreeBucketsNr     (0),
-    itsFirstFreeBucket   (-1),
-    itsBucketSize        (that.itsBucketSize),
-    itsBucketRows        (that.itsBucketRows),
-    isDataChanged        (False)
-{
-  // Determine the data format (local or canonical).
-  // For the moment it is always canonical (until Table supports it).
-  isCanonical = True;
-}
+: DataManager          (),
+  itsDataManName       (that.itsDataManName),
+  itsVersion           (that.itsVersion),
+  itsIosFile           (0),
+  itsNrRows            (0),
+  itsCache             (0),
+  itsFile              (0),
+  itsStringHandler     (0),
+  itsPersCacheSize     (that.itsPersCacheSize),
+  itsCacheSize         (0),
+  itsNrBuckets         (0),
+  itsNrIdxBuckets      (0),
+  itsFirstIdxBucket    (-1),
+  itsIdxBucketOffset   (0),
+  itsLastStringBucket  (-1),
+  itsIndexLength       (0),
+  itsFreeBucketsNr     (0),
+  itsFirstFreeBucket   (-1),
+  itsBucketSize        (that.itsBucketSize),
+  itsBucketRows        (that.itsBucketRows),
+  isDataChanged        (False),
+  isCanonical          (that.isCanonical)
+{}
 
 SSMBase::~SSMBase()
 {
@@ -195,6 +195,7 @@ void SSMBase::showBaseStatistics (ostream& anOs) const
   anOs << "Total buckets               : " << itsNrBuckets << endl ; 
   anOs << "Total Index buckets         : " << itsNrIdxBuckets << endl ; 
   anOs << "1st Index bucket            : " << itsFirstIdxBucket << endl ; 
+  anOs << "Index bucket offset         : " << itsIdxBucketOffset << endl ; 
   anOs << "last String bucket used     : " << itsLastStringBucket << endl ; 
   anOs << "Total free buckets          : " << itsFreeBucketsNr << endl ; 
   anOs << "1st free bucket             : " << itsFirstFreeBucket << endl ; 
@@ -342,6 +343,7 @@ void SSMBase::readHeader()
   AipsIO anOs (aTio);
   itsVersion = anOs.getstart("StandardStMan");
   itsBucketRows = 0;
+  itsIdxBucketOffset = 0;
   anOs >> itsBucketSize;                // Size of the bucket
   anOs >> itsNrBuckets;                 // Initial Nr of Buckets
   anOs >> itsPersCacheSize;             // Size of Persistent cache
@@ -349,6 +351,9 @@ void SSMBase::readHeader()
   anOs >> itsFirstFreeBucket;           // First Free Bucket nr
   anOs >> itsNrIdxBuckets;              // Nr of Buckets needed 4 Index
   anOs >> itsFirstIdxBucket;            // First indexBucket Number
+  if (itsVersion >= 2) {
+    anOs >> itsIdxBucketOffset;
+  }
   anOs >> itsLastStringBucket;          // Last StringBucket in use
   anOs >> itsIndexLength;               // length of index
   uInt nrinx;
@@ -385,32 +390,35 @@ void SSMBase::readIndexBuckets()
   } else {
     aMio = new RawIO (&aMemBuf);
   }
-  
   AipsIO anMOs (aMio);
 
-  Int aBucket= itsFirstIdxBucket;
-  uInt idxBucketSize = itsBucketSize-aCLength; 
-  Int aNr=itsIndexLength;
+  Int aBucket = itsFirstIdxBucket;
+  Int idxBucketSize = itsBucketSize - aCLength;
+  Int aNr = itsIndexLength;
   char* aBucketPtr;
-  for (uint j=0; j< itsNrIdxBuckets; j++) {
+  for (uInt j=0; j< itsNrIdxBuckets; j++) {
     aBucketPtr = getBucket(aBucket);
 
-    // 1st aCLength/2 bytes should be identical to next aCLength/2 bytes
-    // if not it might be an indicator that something went wrong
+    // First aCLength/2 bytes should be identical to next aCLength/2 bytes.
+    // If not it might be an indicator that something went wrong
     // This can be used in the future
-
     Int aCheckNr;
     CanonicalConversion::toLocal(aCheckNr,aBucketPtr);
     CanonicalConversion::toLocal(aBucket,aBucketPtr+aCLength/2);
-
     if (aCheckNr != aBucket) {
       // Not used for now
     }
 
-    if (aNr < static_cast<Int>(idxBucketSize)) {
-      aMemBuf.write(aNr,static_cast<void*>(aBucketPtr+aCLength));
+    // If offset is given, index fits in this single bucket from offset on.
+    if (itsIdxBucketOffset > 0) {
+      AlwaysAssert (itsIdxBucketOffset+itsIndexLength <= itsBucketSize
+		    &&  itsNrIdxBuckets == 1,
+		    AipsError);
+      aMemBuf.write (aNr, aBucketPtr+itsIdxBucketOffset);
+    } else if (aNr < idxBucketSize) {
+      aMemBuf.write (aNr, aBucketPtr+aCLength);
     } else {
-      aMemBuf.write(idxBucketSize,static_cast<void*>(aBucketPtr+aCLength));
+      aMemBuf.write (idxBucketSize, aBucketPtr+aCLength);
     }
     aNr-=idxBucketSize;
   }
@@ -445,63 +453,81 @@ void SSMBase::writeIndex()
     aMio = new RawIO (&aMemBuf);
     aTio = new RawIO (&aFio);
   }
-  
   AipsIO anMOs (aMio);
 
   uInt aNrIdx = itsPtrIndex.nelements();
   for (uInt i=0;i<aNrIdx; i++ ){
     itsPtrIndex[i]->put(anMOs);
   }
-  
   anMOs.close();
 
-  // Write total Mio in NEW indexBuckets
-  
-  //leave space for next bucket nr
+  // Write total Mio in buckets.
+  // Leave space for next bucket nr.
+  const uChar* aMemPtr = aMemBuf.getBuffer();
+  uInt idxLength = aMemBuf.length();
   uInt idxBucketSize = itsBucketSize-aCLength; 
-  uInt aNrBuckets = aMemBuf.length()/idxBucketSize;
-  uInt aRestSize  = aMemBuf.length()%idxBucketSize;
-
+  uInt aNrBuckets = idxLength / idxBucketSize;
+  uInt aRestSize  = idxLength % idxBucketSize;
   if (aRestSize != 0) {
     aNrBuckets++;
+  } else {
+    aRestSize = idxBucketSize;
   }
 
-  Int anOldBucket=-1;
-  uInt aNewBucket=0;
-  const uChar* aMemPtr = aMemBuf.getBuffer();
-  char* aBucketPtr;
 
-  for (uInt i=aNrBuckets;i>0;i--) {
-    aNewBucket = getNewBucket();
-    aBucketPtr = getBucket(aNewBucket);
-
-    CanonicalConversion::fromLocal(aBucketPtr,anOldBucket);
-    CanonicalConversion::fromLocal(aBucketPtr+aCLength/2,anOldBucket);
-
-    // write rest of Index as far as it fits
-    if (i==aNrBuckets && aRestSize !=0) {
-      memcpy(aBucketPtr+aCLength,aMemPtr+((i-1)*idxBucketSize),aRestSize);
+  // If index is currently written in a single half of a bucket,
+  // see if this fits in the other half.
+  if (itsIdxBucketOffset > 0  &&  idxLength <= idxBucketSize/2) {
+    if (itsIdxBucketOffset == aCLength) {
+      itsIdxBucketOffset += idxBucketSize/2;
     } else {
-      memcpy(aBucketPtr+aCLength,aMemPtr+((i-1)*idxBucketSize),idxBucketSize);
+      itsIdxBucketOffset = aCLength;
     }
+    char* aBucketPtr = getBucket (itsFirstIdxBucket);
+    memcpy (aBucketPtr+itsIdxBucketOffset, aMemPtr, idxLength);
     setBucketDirty();
-    anOldBucket=aNewBucket;
-  }
+  } else {
+
+    // One or more new buckets are needed to store the index.
+    Int aNewBucket = -1;
+    Int anOldBucket = -1;
+    for (uInt i=aNrBuckets; i>0; i--) {
+      aNewBucket = getNewBucket();
+      char* aBucketPtr = getBucket(aNewBucket);
+
+      // Writing is done from the end to be able to fill in immediately
+      // the nr of the next bucket (held in anOldBucket).
+      CanonicalConversion::fromLocal (aBucketPtr, anOldBucket);
+      CanonicalConversion::fromLocal (aBucketPtr+aCLength/2, anOldBucket);
+
+      // Write rest of index as far as it fits.
+      memcpy (aBucketPtr+aCLength, aMemPtr+((i-1)*idxBucketSize), aRestSize);
+      setBucketDirty();
+      aRestSize = idxBucketSize;
+      anOldBucket = aNewBucket;
+    }
  
-  uInt aMioLength = aMemBuf.length();
-  itsNrIdxBuckets=aNrBuckets;
+    // New Index is written, give old indexbuckets free, and save firstBucketNr
+    Int aBucket = itsFirstIdxBucket;
+    while (aBucket != -1) {
+      char* aBucketPtr = getBucket(aBucket);
+      CanonicalConversion::toLocal (aBucket, aBucketPtr+aCLength/2);
+      itsCache->removeBucket();
+    }    
+    itsFirstIdxBucket = aNewBucket;
+    // If the index fits in half a bucket, we might be able to use the other
+    // half when writying the index the next time.
+    // Set the index offset variable accordingly.
+    if (idxLength <= idxBucketSize/2) {
+      itsIdxBucketOffset = aCLength;
+    } else {
+      itsIdxBucketOffset = 0;
+    }
+  }
+
+  itsNrIdxBuckets = aNrBuckets;
   delete aMio;
 
-  // New Index is written, give old indexbuckets free, and save firstBucketNr
-
-  Int aBucket= itsFirstIdxBucket;
-  while (aBucket != -1) {
-    aBucketPtr=getBucket(aBucket);
-    CanonicalConversion::toLocal(aBucket,aBucketPtr+aCLength/2);
-    itsCache->removeBucket();
-  }
-  
-  itsFirstIdxBucket=aNewBucket;
   AlwaysAssert ( itsStringHandler != 0, AipsError);
   itsLastStringBucket = itsStringHandler->lastStringBucket();
 
@@ -523,8 +549,9 @@ void SSMBase::writeIndex()
   anOs << getCache().firstFreeBucket(); // First Free Bucket nr
   anOs << itsNrIdxBuckets;              // Nr buckets needed for index
   anOs << itsFirstIdxBucket;            // First Index bucket number
+  anOs << itsIdxBucketOffset;           // Offset of bucket if fitting
   anOs << itsLastStringBucket;          // Last String bucket in use
-  anOs << aMioLength;                   // length of index
+  anOs << idxLength;                    // length of index
   anOs << itsPtrIndex.nelements();      // Nr of indices
   
   anOs.putend();  
@@ -600,11 +627,11 @@ void SSMBase::removeRow (uInt aRowNr)
     for (uInt i=0; i<itsPtrIndex.nelements(); i++) {
       delete itsPtrIndex[i];
     }
-    Int aBucket= itsFirstIdxBucket;
+    Int aBucket = itsFirstIdxBucket;
     uInt aCLength = 2*CanonicalConversion::canonicalSize(&itsFirstIdxBucket);
     while (aBucket != -1) {
       char* aBucketPtr=getBucket(aBucket);
-      CanonicalConversion::toLocal(aBucket,aBucketPtr+aCLength/2);
+      CanonicalConversion::toLocal (aBucket, aBucketPtr+aCLength/2);
       itsCache->removeBucket();
     }
     itsFirstIdxBucket=-1;
@@ -626,7 +653,7 @@ void SSMBase::addColumn (DataManagerColumn* aColumn)
 
   aSSMC->doCreate(0);
 
-  uInt aSearchLength = aSSMC->getExternalSizeBits();
+  Int aSearchLength = aSSMC->getExternalSizeBits();
 
   Int  anOffset=-1;
   Int  aBestFit=-1;
@@ -639,7 +666,7 @@ void SSMBase::addColumn (DataManagerColumn* aColumn)
   //                                             2) any fit
 
   for (uInt i=0; i<itsPtrIndex.nelements() && 
-	aBestFit != static_cast<Int>(aSearchLength) ; i++) {
+	         aBestFit != aSearchLength; i++) {
    
     Int aFoundFit =itsPtrIndex[i]->getFree(anOffset,aSearchLength);
     if (aFoundFit == 0) {
@@ -667,7 +694,7 @@ void SSMBase::addColumn (DataManagerColumn* aColumn)
   } else {
 
     // calculate rowsperbucket for new index
-    AlwaysAssert (aSearchLength !=0, AipsError);
+    AlwaysAssert (aSearchLength != 0, AipsError);
     uInt rowsPerBucket = itsBucketSize*8 / aSearchLength;
 
     if (rowsPerBucket < 1) {
@@ -894,7 +921,7 @@ void SSMBase::resync (uInt aNrRows)
 
 void SSMBase::create (uInt aNrRows)
 {
-  init(True);
+  init();
   recreate();
   itsNrRows = 0;
   addRow (aNrRows);
@@ -908,7 +935,6 @@ void SSMBase::open (uInt aRowNr, AipsIO& ios)
   getBlock (ios,itsColumnOffset);
   getBlock (ios,itsColIndexMap);
   ios.getend();
-  init(False);
   
   itsFile = new BucketFile (fileName(), table().isWritable());
   AlwaysAssert (itsFile != 0, AipsError);
@@ -940,60 +966,85 @@ void SSMBase::reopenRW()
   }
 }
 
-void SSMBase::init (Bool doMakeIndex)
+void SSMBase::init()
 {
-  // If the index has to be made, determine the nr of rows in the bucket.
-  if (doMakeIndex) {
-    uInt aNrCol = ncolumn();
-    itsColumnOffset.resize(aNrCol,True);                            
-    itsColIndexMap.resize(aNrCol,True);                            
-    itsColIndexMap = 0;
-    // Finding the nr of rows fitting in the bucket is a bit hard, because
-    // Bool values are stored as bits. Therefore we have to iterate.
-    // First find the nr of full bytes needed (ignoring possible remainders).
-    uInt aTotalSize = 0;
-    uInt rowsPerBucket = itsBucketRows;
-    if (itsBucketRows == 0) {
-      for (uInt i=0; i<aNrCol; i++) {
-	aTotalSize += itsPtrColumn[i]->getExternalSizeBytes();
-      }
-      rowsPerBucket = itsBucketSize/aTotalSize;
+  // Size the blocks as needed.
+  uInt nrCol = ncolumn();
+  itsColumnOffset.resize (nrCol, True);                            
+  itsColIndexMap.resize (nrCol, True);                            
+  itsColIndexMap = 0;
+  // Set the bucket size and get nr of rows per bucket.
+  // If an advised nr of rows per bucket was given and the actual
+  // nr is smaller, adjust it to fill up the last bucket.
+  uInt rowsPerBucket = setBucketSize();
+  if (itsBucketRows > 0  &&  itsBucketRows > rowsPerBucket) {
+    uInt nbuckets = (itsBucketRows + rowsPerBucket - 1) / rowsPerBucket;
+    itsBucketRows = (itsBucketRows + nbuckets - 1) / nbuckets;
+    rowsPerBucket = setBucketSize();
+  }
+  // Determine the offset of each column.
+  // Note that the data of a column are consecutive per bucket.
+  uInt aTotalSize = 0;
+  for (uInt i=0; i<nrCol; i++) {
+    itsColumnOffset[i] = aTotalSize;
+    aTotalSize += (rowsPerBucket *
+		   itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
+  }
+  
+  // All columns are in the same bucket list, thus only one SSMIndex needed.
+  itsPtrIndex.resize (1, True);
+  itsPtrIndex[0] = new SSMIndex(this, rowsPerBucket);
+  itsPtrIndex[0]->setNrColumns (nrCol, aTotalSize);
+}
+
+
+uInt SSMBase::setBucketSize()
+{
+  // Find nr of columns and possibly advised nr of rows per bucket.
+  uInt nrCol = ncolumn();
+  uInt advBucketRows = itsBucketRows;
+  // Finding the nr of rows fitting in the bucket is a bit hard, because
+  // Bool values are stored as bits. Therefore we have to iterate.
+  // First find the nr of full bytes needed (ignoring possible remainders).
+  uInt aTotalSize = 0;
+  for (uInt i=0; i<nrCol; i++) {
+    aTotalSize += itsPtrColumn[i]->getExternalSizeBytes();
+  }
+  // Get first guess for nr of rows per bucket.
+  uInt rowsPerBucket = advBucketRows;
+  if (advBucketRows == 0) {
+    rowsPerBucket = itsBucketSize/aTotalSize;
+  }
+  // Now refine it by determining how big bucket is when using one more row.
+  while (True) {
+    uInt aThisSize = 0;
+    uInt aNextSize = 0;
+    for (uInt i=0; i<nrCol; i++) {
+      aThisSize += (rowsPerBucket *
+		    itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
+      aNextSize += ((rowsPerBucket+1) *
+		    itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
     }
-    while (True) {
-      aTotalSize = 0;
-      uInt aNextSize = 0;
-      for (uInt i=0; i<aNrCol; i++) {
-	aTotalSize += (rowsPerBucket *
-		       itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
-	aNextSize  += ((rowsPerBucket+1) *
-		       itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
-      }
-      if (itsBucketRows > 0) {
-	itsBucketSize = min (65536u, max(256u, aTotalSize));
+    // If advised #rows/bucket given, get bucket size.
+    if (advBucketRows > 0) {
+      itsBucketSize = min (32768u, max(128u, aThisSize));
+      if (itsBucketSize == aThisSize) {
 	break;
       }
+      // Exceeding minimum or maximum, so calculate #rows/bucket.
+      rowsPerBucket = itsBucketSize/aTotalSize;
+      advBucketRows = 0;
+    } else {
+      // Stop if one more row does not fit.
       if (aNextSize > itsBucketSize) {
-	  break;
+	break;
       }
       rowsPerBucket++;
     }
-
-    if (itsBucketSize < 32 || rowsPerBucket < 1) {
-      // The BucketSize is too small to contain data.
-      throw (DataManError ("StandardStMan::init  bucketsize too small"));
-    }
-    // Determine the offset of each column.
-    // Note that the data of a column are consecutive per bucket.
-    aTotalSize = 0;
-    for (uInt i=0; i<aNrCol; i++) {
-      itsColumnOffset[i] = aTotalSize;
-      aTotalSize += (rowsPerBucket *
-		     itsPtrColumn[i]->getExternalSizeBits() + 7) / 8;
-    }
-
-    // All columns are in the same bucket list, thus only one SSMIndex needed.
-    itsPtrIndex.resize(1,True);
-    itsPtrIndex[0] = new SSMIndex(this, rowsPerBucket);
-    itsPtrIndex[0]->setNrColumns(aNrCol,aTotalSize);
   }
+  if (itsBucketSize < 128 || rowsPerBucket < 1) {
+    // The bucket size is too small to contain data.
+    throw (DataManError ("StandardStMan::init - bucketsize too small"));
+  }
+  return rowsPerBucket;
 }

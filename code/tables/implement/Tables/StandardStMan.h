@@ -118,13 +118,23 @@
 // </motivation>
 
 // <example>
-// This example shows how to create a table and how to attach
+// The following example shows how to create a table and how to attach
 // the storage manager to some columns.
 // <srcblock>
 //   SetupNewTable newtab("name.data", tableDesc, Table::New);
 //   StandardStMan stman;                     // define storage manager
 //   newtab.bindColumn ("column1", stman);    // bind column to st.man.
 //   newtab.bindColumn ("column2", stman);    // bind column to st.man.
+//   Table tab(newtab);                       // actually create table
+// </srcblock>
+//
+// The following example shows how to create a StandardStMan storage
+// manager for a table with 16 rows. By giving the (expected) nr of rows
+// to the storage manager, it can optimize its bucket size.
+// <srcblock>
+//   SetupNewTable newtab("name.data", tableDesc, Table::New);
+//   StandardStMan stman(-16);
+//   newtab.bindAll ("column1", stman);       // bind all columns to st.man.
 //   Table tab(newtab);                       // actually create table
 // </srcblock>
 // </example>
@@ -150,18 +160,18 @@ public:
     // The number of rows per bucket will be calculated from it.
     // <br>- A negative number gives the number of rows per bucket.
     // The bucket size in bytes will be calculated from it.
-    // Note that in this way the maximum bucketsize is 65536 (minimum is 256).
+    // Note that in this way the maximum bucketsize is 32768 (minimum is 128).
     // <br>- The default 0 means that 32 rows fill be stored in a bucket.
     // <br>Note that the default is only suitable for small tables.
     // In general it makes sense to give the expected number of table rows.
     // In that way the buckets will be small enough for small tables
     // and not too small for large tables.
     // <group>
-    explicit StandardStMan (Int aBucketSize = 0,
-			    uInt aCacheSize = 1);
+    explicit StandardStMan (Int bucketSize = 0,
+			    uInt cacheSize = 1);
     explicit StandardStMan (const String& dataManagerName,
-			    Int aBucketSize = 0,
-			    uInt aCacheSize = 1);
+			    Int bucketSize = 0,
+			    uInt cacheSize = 1);
     // </group>
 
     ~StandardStMan();
