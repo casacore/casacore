@@ -366,8 +366,8 @@ protected:
   // get the visibility data (observed, corrected or model);
   // deals with Float and Complex observed data (DATA or FLOAT_DATA)
   void getDataColumn(DataColumn whichOne, const Slicer& slicer, 
-		     Cube<Complex>& data);
-  void getDataColumn(DataColumn whichOne, Cube<Complex>& data);
+		     Cube<Complex>& data) const;
+  void getDataColumn(DataColumn whichOne, Cube<Complex>& data) const;
 
   ROVisibilityIterator* This;
   MSIter msIter_p;

@@ -624,7 +624,7 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight(DataColumn whichOne)
 
 void ROVisibilityIterator::getDataColumn(DataColumn whichOne, 
 					 const Slicer& slicer,
-					 Cube<Complex>& data)
+					 Cube<Complex>& data) const
 {
   // Return the visibility (observed, model or corrected);
   // deal with DATA and FLOAT_DATA seamlessly for observed data.
@@ -648,7 +648,7 @@ void ROVisibilityIterator::getDataColumn(DataColumn whichOne,
 };
 
 void ROVisibilityIterator::getDataColumn(DataColumn whichOne,
-					 Cube<Complex>& data)
+					 Cube<Complex>& data) const
 {
   // Return the visibility (observed, model or corrected);
   // deal with DATA and FLOAT_DATA seamlessly for observed data.
