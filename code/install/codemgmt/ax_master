@@ -2582,3 +2582,4 @@
 09 464 src mv trial/implement/Measures/test/tMeasureHolder.out aips/implement/Measures/test/tMeasureHolder.out
 09 475 src mv doc/memos/memos.dir/index.tex doc/memos/memos.dir/mindex.tex
 09 475 src mv doc/notes/notes.dir/index.tex doc/notes/notes.dir/nindex.tex
+09 499 src rm nrao/apps/dish/dish_wsman.g
