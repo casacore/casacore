@@ -2650,3 +2650,4 @@
 11 402 src mv aips/implement/Tables/AsciiFileIO.h aips/implement/Tables/ReadAsciiTable.h
 11 402 src mv aips/implement/Tables/AsciiFileIO.cc aips/implement/Tables/ReadAsciiTable.cc
 11 402 src mv aips/implement/Tables/test/tAsciiFileIO.cc aips/implement/Tables/test/tReadAsciiTable.cc
+11 402 src mv aips/implement/Tables/test/tAsciiFileIO.out aips/implement/Tables/test/tReadAsciiTable.out
