@@ -1,5 +1,5 @@
 //# LCExtension.cc: Extend an LCRegion along straight lines to other dimensions
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,9 +30,8 @@
 #include <trial/Lattices/LCBox.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Utilities/GenSort.h>
 #include <aips/Exceptions/Error.h>
-
-typedef Vector<Int> lcextension_gppbug1;
 
 
 LCExtension::LCExtension()
@@ -41,24 +40,20 @@ LCExtension::LCExtension()
 LCExtension::LCExtension (const LCRegion& region,
 			  const IPosition& extendAxes,
 			  const LCBox& extendBox)
-: LCRegionMulti (True, region.cloneRegion()),
-  itsExtendAxes (extendAxes),
-  itsExtendBox  (extendBox)
+: LCRegionMulti (True, region.cloneRegion())
 {
     // Fill the other members variables and determine the bounding box.
-    fill();
+    fill (extendAxes, extendBox);
 }
 
 LCExtension::LCExtension (Bool takeOver,
 			  const LCRegion* region,
 			  const IPosition& extendAxes,
 			  const LCBox& extendBox)
-: LCRegionMulti (takeOver, region),
-  itsExtendAxes (extendAxes),
-  itsExtendBox  (extendBox)
+: LCRegionMulti (takeOver, region)
 {
     // Fill the other members variables and determine the bounding box.
-    fill();
+    fill (extendAxes, extendBox);
 }
 
 LCExtension::LCExtension (const LCExtension& other)
@@ -162,14 +157,14 @@ TableRecord LCExtension::toRecord (const String& tableName) const
 LCExtension* LCExtension::fromRecord (const TableRecord& rec,
 				      const String& tableName)
 {
-    LCRegion* regPtr = LCRegion::fromRecord (rec.asRecord("region"),
-					     tableName);
-    LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
-						   tableName));
-    LCExtension* extPtr = new LCExtension (*regPtr,
-					Vector<Int>(rec.asArrayInt ("axes")),
-					*boxPtr);
-    delete regPtr;
+    // Initialize pointers to 0 to get rid of gcc-2.95 warnings.
+    LCRegion* regPtr = 0;
+    regPtr = LCRegion::fromRecord (rec.asRecord("region"), tableName);
+    LCBox* boxPtr = 0;
+    boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"), tableName));
+    LCExtension* extPtr = new LCExtension (True, regPtr,
+					  Vector<Int>(rec.asArrayInt ("axes")),
+					  *boxPtr);
     delete boxPtr;
     return extPtr;
 }
@@ -188,29 +183,44 @@ void LCExtension::fillRegionAxes()
     }
 }
 
-void LCExtension::fill()
+void LCExtension::fill (const IPosition& extendAxes, const LCBox& extendBox)
 {
-    uInt i;
-    // Check if extend axes are specified in ascending order.
-    uInt nre = itsExtendAxes.nelements();
+    // Check if extend axes are specified correctly.
+    // They do not need to be in ascending order, but duplicates are
+    // not allowed. 
+    IPosition regionShape = region().shape();
+    uInt nre = extendAxes.nelements();
     if (nre == 0) {
 	throw (AipsError ("LCExtension::LCExtension - "
 			  "no extend axes have been specified"));
     }
-    Int first = -1;
-    for (i=0; i<nre; i++) {
-	if (itsExtendAxes(i) <= first) {
-	    throw (AipsError ("LCExtension::LCExtension - "
-			      "extend axes are not specified "
-			      "in ascending order"));
-	}
-	first = itsExtendAxes(i);
-    }
-    if (nre != itsExtendBox.blc().nelements()) {
+    if (nre != extendBox.blc().nelements()) {
 	throw (AipsError ("LCExtension::LCExtension - "
 			  "number of axes in extend box mismatches "
 			  "number of extend axes"));
     }
+    // The axes can be specified in any order. We want them ordered.
+    // So sort them and fill itsExtendAxes and itsExtendBox.
+    itsExtendAxes.resize (nre);
+    IPosition boxLatShape(nre);
+    Vector<Float> boxLatBlc(nre);
+    Vector<Float> boxLatTrc(nre);
+    Vector<uInt> reginx(nre);
+    GenSortIndirect<Int>::sort (reginx, extendAxes.storage(), nre);
+    Int first = -1;
+    for (uInt i=0; i<nre; i++) {
+        uInt axis = reginx(i);
+	itsExtendAxes(i) = extendAxes(axis);
+	boxLatShape(i) = extendBox.latticeShape()(axis);
+	boxLatBlc(i) = extendBox.blc()(axis);
+	boxLatTrc(i) = extendBox.trc()(axis);
+	if (itsExtendAxes(i) <= first) {
+	    throw (AipsError ("LCExtension::LCExtension - "
+			      "extend axes multiply specified"));
+	}
+	first = itsExtendAxes(i);
+    }
+    itsExtendBox = LCBox (boxLatBlc, boxLatTrc, boxLatShape);
     // Fill itsRegionAxes, i.e. the mapping of the axis of the contributing
     // region into the extended region.
     fillRegionAxes();
@@ -224,7 +234,7 @@ void LCExtension::fill()
     const IPosition& regionShp = region().latticeShape();
     const IPosition& regionBlc = region().boundingBox().start();
     const IPosition& regionTrc = region().boundingBox().end();
-    for (i=0; i<nrr; i++) {
+    for (uInt i=0; i<nrr; i++) {
         uInt axis = itsRegionAxes(i);
 	latShape(axis) = regionShp(i);
 	blc(axis) = regionBlc(i);
@@ -233,7 +243,7 @@ void LCExtension::fill()
     const IPosition& boxShp = itsExtendBox.latticeShape();
     const IPosition& boxBlc = itsExtendBox.boundingBox().start();
     const IPosition& boxTrc = itsExtendBox.boundingBox().end();
-    for (i=0; i<nre; i++) {
+    for (uInt i=0; i<nre; i++) {
         uInt axis = itsExtendAxes(i);
 	latShape(axis) = boxShp(i);
 	blc(axis) = boxBlc(i);
