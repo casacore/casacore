@@ -28,14 +28,20 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/String.h>
 
-
 String ComponentType::name(Type componentEnum) {
   switch (componentEnum) {
   case POINT: return "Point";
   case GAUSSIAN: return "Gaussian";
-  default: return "";
+  default: return "Unknown";
   };
-};  
+}
+
+ComponentType::Type ComponentType::type(const String & componentName) {
+  for (uInt i = 0; i < NUMBER_TYPES; i++)
+    if (componentName.matches(name((Type) i)))
+      return (Type) i;
+  return UNKNOWN;
+}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentType"
 // End: 

@@ -58,11 +58,18 @@ public:
   // The types of all the components
   enum Type {
     // A simple Point Component
-    POINT,
+    POINT = 0,
     // A elliptical Gaussian Component
-    GAUSSIAN
+    GAUSSIAN,
+    // An unknown Component
+    UNKNOWN,
+    // The number of types in this enumerator
+    NUMBER_TYPES
   };
   // Convert the Type enumerator to a string
   static String name(Type componentEnum);
+  // Convert a given String to a Type enumerator
+  //  static Type getType(const String & componentName);
+  static ComponentType::Type type(const String & componentName);
 };
 #endif
