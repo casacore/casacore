@@ -40,7 +40,6 @@
 #include <trial/Tasking/ParameterSet.h>
 
 ComponentShape::~ComponentShape() {
-  DebugAssert(ok(), AipsError);
 }
 
 void ComponentShape::refDirection(MDirection & refDir) const {

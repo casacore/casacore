@@ -35,7 +35,6 @@
 #include <aips/Utilities/String.h>
 
 SpectralModel::~SpectralModel() {
-  DebugAssert(ok(), AipsError);
 }
 
 ComponentType::SpectralShape SpectralModel::
