@@ -134,7 +134,7 @@ template <class T> class ImageMoments;
 // </todo>
 
 
-template <class T> class MomentCalcBase : public LineCollapser<T>
+template <class T> class MomentCalcBase : public LineCollapser<T,T>
 {
 public:
    virtual ~MomentCalcBase();
