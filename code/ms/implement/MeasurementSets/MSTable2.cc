@@ -25,5 +25,41 @@
 //#
 //# $Id$
 
-// nothing in here -- ax file
 
+#if defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ < 91)
+#include <aips/MeasurementSets/NewMSTable.h>
+#include <aips/MeasurementSets/NewMeasurementSet.h>
+ 
+#define NeWMSTableStatics(ColEnum,KeyEnum) \
+SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::columnMap_p(""); \
+SimpleOrderedMap<Int, Int> NewMSTable<ColEnum,KeyEnum>::colDTypeMap_p(TpOther); \
+SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::colCommentMap_p(""); \
+SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::colUnitMap_p(""); \
+SimpleOrderedMap<Int, String> \
+  NewMSTable<ColEnum,KeyEnum>::colMeasureTypeMap_p(""); \
+SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::keywordMap_p(""); \
+SimpleOrderedMap<Int, Int> NewMSTable<ColEnum,KeyEnum>::keyDTypeMap_p(TpOther); \
+SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::keyCommentMap_p(""); \
+SimpleCountedConstPtr<TableDesc> NewMSTable<ColEnum,KeyEnum>::requiredTD_p;
+ 
+NewMSTableStatics(NewMS::PredefinedColumns,NewMS::PredefinedKeywords)
+NewMSTableStatics(NewMSAntenna::PredefinedColumns,NewMSAntenna::PredefinedKeywords)
+NewMSTableStatics(NewMSDataDescription::PredefinedColumns,NewMSDataDescription::PredefinedKeywords)
+NewMSTableStatics(NewMSFeed::PredefinedColumns,NewMSFeed::PredefinedKeywords)
+NewMSTableStatics(NewMSField::PredefinedColumns,NewMSField::PredefinedKeywords)
+NewMSTableStatics(NewMSFlagCmd::PredefinedColumns,NewMSFlagCmd::PredefinedKeywords)
+NewMSTableStatics(NewMSFreqOffset::PredefinedColumns,NewMSFreqOffset::PredefinedKeywords)
+NewMSTableStatics(NewMSHistory::PredefinedColumns,NewMSHistory::PredefinedKeywords)
+NewMSTableStatics(NewMSObservation::PredefinedColumns,NewMSObservation::PredefinedKeyword
+s)
+NewMSTableStatics(NewMSPointing::PredefinedColumns,NewMSPointing::PredefinedKeywords)
+NewMSTableStatics(NewMSPolarization::PredefinedColumns,NewMSPolarization::PredefinedKeywords)
+NewMSTableStatics(NewMSProcessor::PredefinedColumns,NewMSProcessor::PredefinedKeywords)
+NewMSTableStatics(NewMSSource::PredefinedColumns,NewMSSource::PredefinedKeywords)
+NewMSTableStatics(NewMSSpectralWindow::PredefinedColumns,NewMSSpectralWindow::PredefinedK
+eywords)
+NewMSTableStatics(NewMSState::PredefinedColumns,NewMSState::PredefinedKeywords)
+NewMSTableStatics(NewMSSysCal::PredefinedColumns,NewMSSysCal::PredefinedKeywords)
+NewMSTableStatics(NewMSWeather::PredefinedColumns,NewMSWeather::PredefinedKeywords)
+ 
+#endif
