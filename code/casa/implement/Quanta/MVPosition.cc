@@ -39,7 +39,9 @@
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 
-// MVPosition class
+//# Constants
+const Double MVPosition::loLimit = 743.568;
+const Double MVPosition::hiLimit = 743.569;
 
 //# Constructors
 MVPosition::MVPosition() :
@@ -81,48 +83,54 @@ MVPosition::MVPosition(Double in0, Double in1, Double in2) :
 
 MVPosition::MVPosition(const Quantity &l, Double angle0, Double angle1) : 
   xyz(3) {
-    Double loc = cos(angle1);
-    xyz(0) = cos(angle0)*loc;
-    xyz(1) = sin(angle0)*loc;
-    xyz(2) = sin(angle1);
-    readjust(l.getBaseValue());
-  }
+  Double loc = cos(angle1);
+  xyz(0) = cos(angle0)*loc;
+  xyz(1) = sin(angle0)*loc;
+  xyz(2) = sin(angle1);
+  Double t(l.getBaseValue());
+  if (t<0 && t>-7.0e6) t = t/1.0e7 + hiLimit;
+  else if (t>loLimit && t<hiLimit) t += 0.001;
+  readjust(t);
+}
 
 MVPosition::MVPosition(const Quantity &l, const Quantity &angle0, 
 		       const Quantity &angle1) : 
   xyz(3) {
-    Double loc = (cos(angle1)).getValue();
-    xyz(0) = ((cos(angle0)).getValue()) * loc;
-    xyz(1) = ((sin(angle0)).getValue()) * loc;
-    xyz(2) = (sin(angle1)).getValue();
-    l.assure(UnitVal::LENGTH);
-    readjust(l.getBaseValue());
-  }
+  Double loc = (cos(angle1)).getValue();
+  xyz(0) = ((cos(angle0)).getValue()) * loc;
+  xyz(1) = ((sin(angle0)).getValue()) * loc;
+  xyz(2) = (sin(angle1)).getValue();
+  l.assure(UnitVal::LENGTH);
+  Double t(l.getBaseValue());
+  if (t<0 && t>-7.0e6) t = t/1.0e7 + hiLimit;
+  else if (t>loLimit && t<hiLimit) t += 0.001;
+  readjust(t);
+}
 
 MVPosition::MVPosition(const Quantum<Vector<Double> > &angle) :
   xyz(3) {
-    uInt i; i = angle.getValue().nelements();
-    if (i > 3 ) {
-      throw (AipsError("Illegeal vector length in MVPosition constructor"));
-    } else if (i == 3) {
-      angle.assure(UnitVal::LENGTH);
-      xyz = angle.getBaseValue();
+  uInt i; i = angle.getValue().nelements();
+  if (i > 3 ) {
+    throw (AipsError("Illegeal vector length in MVPosition constructor"));
+  } else if (i == 3) {
+    angle.assure(UnitVal::LENGTH);
+    xyz = angle.getBaseValue();
+  } else {
+    Vector<Double> tsin = (sin(angle)).getValue(); 
+    Vector<Double> tcos = (cos(angle)).getValue(); 
+    xyz = Double(0.0);
+    if (i > 1) {
+      xyz(0) = tcos(0) * tcos(1);
+      xyz(1) = tsin(0) * tcos(1);
+      xyz(2) = tsin(1);
+    } else if (i > 0) {
+      xyz(0) = tcos(0);
+      xyz(1) = tsin(0);
     } else {
-      Vector<Double> tsin = (sin(angle)).getValue(); 
-      Vector<Double> tcos = (cos(angle)).getValue(); 
-      xyz = Double(0.0);
-      if (i > 1) {
-	xyz(0) = tcos(0) * tcos(1);
-	xyz(1) = tsin(0) * tcos(1);
-	xyz(2) = tsin(1);
-      } else if (i > 0) {
-	xyz(0) = tcos(0);
-	xyz(1) = tsin(0);
-      } else {
-	xyz(2)=1.0;
-      }
-    }
-  }
+      xyz(2)=1.0;
+    };
+  };
+}
 
 MVPosition::MVPosition(const Quantity &l, 
 		       const Quantum<Vector<Double> > &angle) :
@@ -178,10 +186,10 @@ MVPosition::MVPosition(const Vector<Double> &other) :
 
 MVPosition::MVPosition(const Vector<Quantity> &other) :
   xyz(3) {
-    if (!putValue(other)) {
-      throw (AipsError("Illegal quantum vector in MVPosition constructor"));
-    };
-  }
+  if (!putValue(other)) {
+    throw (AipsError("Illegal quantum vector in MVPosition constructor"));
+  };
+}
 
 //# Destructor
 MVPosition::~MVPosition() {}
@@ -316,6 +324,9 @@ Vector<Double> MVPosition::get() const{
   tmp(0) = norm(xyz);
   tmp(1) = getLong();
   tmp(2) = getLat(tmp(0));
+  if (tmp(0)>loLimit && tmp(0)<hiLimit) {
+    tmp(0) = (tmp(0) - hiLimit)*1e7;
+  };
   return tmp;
 }
 
@@ -467,7 +478,10 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
-      readjust(in(0).getBaseValue());
+      Double t(in(0).getBaseValue());
+      if (t<0 && t>-7.0e6) t = t/1.0e7 + hiLimit;
+      else if (t>loLimit && t<hiLimit) t += 0.001;
+      readjust(t);
     } else {
       return False;
     };
@@ -484,7 +498,10 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
-      readjust(in(2).getBaseValue());
+      Double t(in(2).getBaseValue());
+      if (t<0 && t>-7.0e6) t = t/1.0e7 + hiLimit;
+      else if (t>loLimit && t<hiLimit) t += 0.001;
+      readjust(t);
     } else {
       return False;
     };

@@ -111,7 +111,12 @@ class RotMatrix;
 class MVPosition : public MeasValue {	
 
 public:
-
+  //# Constants
+  // Internal limts codes for negative height
+  // <group>
+  static const Double loLimit;
+  static const Double hiLimit;
+  // </group>
   //# Friends
   
   //# Constructors
