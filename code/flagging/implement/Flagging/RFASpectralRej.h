@@ -1,5 +1,5 @@
 //# RFASpectralRej.h: this defines RFASpectralRej
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,8 +32,8 @@
 #include <trial/Flagging/RFFlagCube.h> 
 #include <trial/Flagging/RFRowClipper.h> 
 #include <trial/Flagging/RFDebugPlot.h> 
-#include <trial/Functionals/LinearComb.h>
-#include <trial/Fitting/LinearFit.h>
+#include <aips/Functionals/NQPolynomial.h>
+#include <trial/Fitting/LQLinearFit.h>
 #include <aips/Containers/Queue.h>
 #include <aips/Arrays/LogiVector.h>
     
@@ -97,8 +97,8 @@ protected:
   
   RFRowClipper rowclipper; // row clipper object
 
-  LinearComb<Float,Float> poly; // fitted polynomial
-  LinearFit<Float> fitter;     // fitter object
+  NQPolynomial<AutoDiff<Float> > poly; // fitted polynomial
+  LQLinearFit<Float> fitter;     // fitter object
   
   RFDebugPlot   debug;
   

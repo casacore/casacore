@@ -1,5 +1,5 @@
 //# RFASpectralRej.cc: this defines RFASpectralRej
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,8 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 #include <trial/Flagging/RFASpectralRej.h> 
-#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/NQPolynomial.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -141,12 +142,7 @@ RFASpectralRej::RFASpectralRej  ( RFChunkStats &ch,const RecordInterface &parm )
     os<<"No spectral region has been specified\n"<<LogIO::EXCEPTION;
     
 // set up fitter
-  for( uInt k=0; k<=ndeg; k++ )
-  {
-    Polynomial<Float> term(k);
-    term.setCoefficient(k,1.0);
-    poly.addFunction(term);
-  }
+  NQPolynomial<AutoDiff<Float> > poly(ndeg);
   fitter.setFunction(poly);
   
 // set up debugging info
@@ -294,6 +290,7 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
   // produce debugging plot if needed
       if( dbg )
       {
+	NQPolynomial<Float> poly(ndeg);
         poly.setCoefficients(c);
         Vector<Float> yfit(np);
         for( uInt i=0; i<y1.nelements(); i++ )
