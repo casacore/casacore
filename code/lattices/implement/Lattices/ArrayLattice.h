@@ -1,5 +1,5 @@
 //# ArrayLattice: Object which converts an Array to a Lattice.
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -176,74 +176,6 @@ public:
   // returns the shape of the ArrayLattice.
   virtual IPosition shape() const; 
   
-  // Functions which extract an Array of values from the ArrayLattice. The
-  // arguments to these functions are:
-  // <ul>
-  // <li> buffer: an <src>Array<T></src> or a
-  // <src>COWPtr<Array<T>></src>. The buffer shape must be big enough to
-  // exactly contain the specified slice. Otherwise an exception will be
-  // thrown. Alternatively the buffer can be empty
-  // (buffer.nelements()==0). Then the buffer will be resized to fit the
-  // requested slice. Unlike the other arguments the buffer can have fewer
-  // axes than the underlying PagedArray, but then you must set the
-  // removeDegenerateAxes flag to True.
-  // <li> start: The starting position (or Bottom Left Corner), within the
-  // PagedArray, of the slice to be extracted. Must have the same number of
-  // axes as the PagedArray otherwise an exception will be thrown.
-  // <li> shape: The shape of the slice to be extracted. This is not a
-  // position within the PagedArray but the actual shape the buffer will
-  // have after this function is called althoug it always includes all the
-  // degenerate axes even if the buffer does not. This argument added to the
-  // "start" argument will be the "Top Right Corner", assuming the stride is
-  // one on all axes.
-  // <li> stride: The increment for each axis. A stride of one will return
-  // every data element, a stride of two will return every other
-  // element. The IPosition elements may be different for each respective
-  // axis. Thus, a stride of IPosition(2,1,2) says: fill the buffer with
-  // every element whose position has a first index between start(0) and
-  // start(0)+shape(0) and a second index which is every other element
-  // between start(1) and (start(1)+shape(1)*2). Must have the same number
-  // of axes as the PagedArray otherwise an exception will be thrown.
-  // <li> section: The preferred way of specifying the start, shape and
-  // stride.
-  // <li> removeDegenerateAxes: a Bool which indicates whether to remove axes
-  // of length one in the extracted slice. You must set this to True if the
-  // supplied buffer has fewer axes than the specified slice, otherwise an
-  // exception is thrown. If the supplied buffer is empty all degenerate
-  // axes are stripped from the returned buffer.
-  // </ul>
-  // These functions return False if the returned buffer is a copy of the
-  // actual data and True if the returned buffer is a reference to the data in
-  // the ArrayLattice. You do not need to call putSlice to put the buffer back
-  // into the ArrayLattice if the buffer is a reference to the data. Currently
-  // the const versions of getSlice return False and the non-const versions
-  // (ie. the ones with <src>Array<T></src> and not <src>COWPtr<Array<T>></src>
-  // arguments) return True.
-  // <group>  
-  virtual Bool getSlice (COWPtr<Array<T> >& bufPtr, const IPosition& start, 
-			 const IPosition& shape, const IPosition& stride,
-			 Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice (COWPtr<Array<T> >& bufPtr, const Slicer& section, 
-			 Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice (Array<T>& buffer, const IPosition& start, 
-			 const IPosition& shape, const IPosition& stride,
-			 Bool removeDegenerateAxes=False);
-  virtual Bool getSlice (Array<T>& buffer, const Slicer& section, 
-			 Bool removeDegenerateAxes=False);
-  // </group>
-
-  // A function which copies an Array of values into the ArrayLattice at the
-  // location specified by the IPosition "where", incrementing by
-  // "stride". All of the IPosition arguments must have the same number of
-  // dimensions as the ArrayLattice. The sourceBuffer array may have fewer
-  // axes than the ArrayLattice. The stride defaults to one if not specified.
-  // <group>
-  virtual void putSlice (const Array <T>& sourceBuffer, 
-			 const IPosition& where, const IPosition& stride);
-  virtual void putSlice (const Array <T>& sourceBuffer, 
-			 const IPosition& where);
-  // </group>
-  
   // functions which sets all of the elements in the Lattice to a value.
   virtual void set (const T& value);
 
@@ -276,6 +208,15 @@ public:
   void getIterSlice (Array<T>& buffer, const IPosition& start,
 		     const IPosition& end, const IPosition& incr);
 
+protected:
+  // Do the actual getting of an array of values.
+  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+
+  // Do the actual getting of an array of values.
+  virtual void doPutSlice (const Array<T>& sourceBuffer,
+			   const IPosition& where,
+			   const IPosition& stride);
+  
 private:
   Array<T> itsData;
   Bool     itsWritable;
