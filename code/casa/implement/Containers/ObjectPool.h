@@ -1,5 +1,5 @@
 //# ObjectPool.h: A parameterized stack of re-usable objects
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -112,7 +112,7 @@ template <class T, class Key> class ObjectPool {
   // </group>
 
   // Get the object stack for the given key
-  PoolStack<T, Key> &ObjectPool<T, Key>::getStack(const Key key);
+  PoolStack<T, Key> &getStack(const Key key);
 
   // Release an object obtained from the pool through <src>get</src> for
   // re-use.
