@@ -413,7 +413,7 @@ void LatticeExprNode::eval (Array<Float>& result,
 // If first time, try to do optimization.
 
       LatticeExprNode* This = (LatticeExprNode*)this;
-      LELInterface<Float>::replaceScalarExpr (This->pExprFloat_p);
+      This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
    if (isScalar()) {
@@ -434,7 +434,7 @@ void LatticeExprNode::eval (Array<Double>& result,
 // If first time, try to do optimization.
 
       LatticeExprNode* This = (LatticeExprNode*)this;
-      LELInterface<Double>::replaceScalarExpr (This->pExprDouble_p);
+      This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
    if (isScalar()) {
@@ -455,7 +455,7 @@ void LatticeExprNode::eval (Array<Complex>& result,
 // If first time, try to do optimization.
 
       LatticeExprNode* This = (LatticeExprNode*)this;
-      LELInterface<Complex>::replaceScalarExpr (This->pExprComplex_p);
+      This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
    if (isScalar()) {
@@ -476,7 +476,7 @@ void LatticeExprNode::eval (Array<DComplex>& result,
 // If first time, try to do optimization.
 
       LatticeExprNode* This = (LatticeExprNode*)this;
-      LELInterface<DComplex>::replaceScalarExpr (This->pExprDComplex_p);
+      This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
    if (isScalar()) {
@@ -497,7 +497,7 @@ void LatticeExprNode::eval (Array<Bool>& result,
 // If first time, try to do optimization.
 
       LatticeExprNode* This = (LatticeExprNode*)this;
-      LELInterface<Bool>::replaceScalarExpr (This->pExprBool_p);
+      This->replaceScalarExpr();
       This->donePrepare_p = True;
    }
    if (isScalar()) {
