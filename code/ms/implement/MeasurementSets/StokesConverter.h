@@ -1,5 +1,5 @@
 //# StokesConverter.h: convert any set of polarizations into any other one
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -115,7 +115,12 @@ public:
   // The in and out vectors contain a list of polarization present/wanted
   // in that order. The in vector should match the data to convert.
   // (CORR_TYPE column in SPECTRAL_WINDOW table contains this info)
-  StokesConverter(const Vector<Int>& out, const Vector<Int>& in);
+  // The rescale option will correct for crosscorrelation data that
+  // has been scaled to the level Stokes I (common practice 
+  // in radioastronomy: even though officially I=XX+YY, in practice
+  // we need to do I=(XX+YY)/2, set rescale to True to do the latter).
+  StokesConverter(const Vector<Int>& out, const Vector<Int>& in,
+		  Bool rescale=False);
   
   // desctructor
   ~StokesConverter();
@@ -128,25 +133,31 @@ public:
   
   // Change or Set the conversion. Arguments are the same as for
   // constructor above.
-  void setConversion(const Vector<Int>& out, const Vector<Int>& in);
+  void setConversion(const Vector<Int>& out, const Vector<Int>& in,
+		     Bool rescale = False);
   
   // convert data, first dimension of input must match
   // that of the input conversion vector used to set up the conversion.
   // Output is resized as needed.
-  void convert(Array<Complex>& out, const Array<Complex>& in);
+  void convert(Array<Complex>& out, const Array<Complex>& in) const;
 
   // convert flags, first dimension of input must match
   // that of the input conversion vector used to set up the conversion.
   // Output is resized as needed. All output depending on a flagged input
   // will be flagged. 
-  void convert(Array<Bool>& out, const Array<Bool>& in);
+  void convert(Array<Bool>& out, const Array<Bool>& in) const;
+
+  // convert weights, first dimension of input must match
+  // that of the input conversion vector used to set up the conversion.
+  // Output is resized as needed.
+  void convert(Array<Float>& out, const Array<Float>& in) const;
 
   // invert flags, first dimension of input must match
   // that of the output conversion vector used to set up the conversion.
   // Output is resized as needed. All output depending on a flagged input
   // will be flagged. This does the inverse operation of convert, allowing
-  // flagging of converted data to be tranferred back to the original data.
-  void invert(Array<Bool>& out, const Array<Bool>& in);
+  // flagging of converted data to be transferred back to the original data.
+  void invert(Array<Bool>& out, const Array<Bool>& in) const;
 
 protected:
 
@@ -155,10 +166,13 @@ protected:
 
 private:
   Vector<Int> in_p,out_p;
-  Matrix<Complex> conv_p;
-  Matrix<Complex> iquvConv_p;
+  Bool rescale_p;
+  //# mutable because operator Matrix(Slice,Slice) doesn't have const version
+  mutable Matrix<Complex> conv_p; 
+  mutable Matrix<Complex> iquvConv_p;
   Bool doIQUV_p;
   Matrix<Bool> flagConv_p;
+  Matrix<Float> wtConv_p;
   Matrix<Complex> polConv_p;
 };
 
