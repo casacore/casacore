@@ -225,9 +225,9 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     Double meterValue;
 
     try {
-	Array<Float> cursor(cursorShape);
-	Int bufferSize = cursor.nelements();
+	Int bufferSize = cursorShape.product();
 	for (imiter.reset(),meterValue=0.0; !imiter.atEnd(); imiter++) {
+	    Array<Float> &cursor = imiter.woCursor();
 	    fitsImage.read(bufferSize);                  // Read from FITS
             meterValue += nPixPerIter*1.0/2.0;
             meter.update(meterValue);
@@ -241,7 +241,6 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 	    Float *ptr = cursor.getStorage(deletePtr);   // Get Image ptr
 	    fitsImage.copy(ptr, bufferSize);             // Copy
 	    cursor.putStorage(ptr, deletePtr);
-	    imiter.writeArray (cursor);
             meterValue += nPixPerIter*1.0/2.0;
             meter.update(meterValue);
 	}
