@@ -2589,3 +2589,4 @@
 09 513 src mv doc/newsletters/jun98/newsjune.latex doc/newsletters/jun98/newsjune/newsjune.latex
 09 513 src mv doc/newsletters/jun98/newsjune doc/newsletters/jun98/newsjune.dir
 09 513 src mv doc/newsletters/jun98/newsjune/newsjune.latex doc/newsletters/jun98/newsjune.latex
+09 513 src mv doc/newsletters/jun98/newsjune.dir/newsjune.latex doc/newsletters/jun98/newsjune.latex
