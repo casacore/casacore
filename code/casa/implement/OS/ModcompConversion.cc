@@ -1,5 +1,5 @@
 //# ModcompConversion.cc: Static functions to convert Modcomp numeric formats
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,56 @@
 #include <trial/OS/ModcompConversion.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+
+
+unsigned int ModcompConversion::toLocal (Int64* to, const void* from,
+					 unsigned int nr)
+{
+    const char* data = (const char*)from;
+    Int64* last = to + nr;
+    while (to < last) {
+	toLocal (*to++, data);
+	data += SIZE_MODCOMP_INT64;
+    }
+    return nr*SIZE_MODCOMP_INT64;
+}
+
+unsigned int ModcompConversion::toLocal (uInt64* to, const void* from,
+					 unsigned int nr)
+{ 
+    const char* data = (const char*)from;
+    uInt64* last = to + nr;
+    while (to < last) {
+	toLocal (*to++, data);
+	data += SIZE_MODCOMP_UINT64;
+    }
+    return nr*SIZE_MODCOMP_UINT64;
+}
+
+unsigned int ModcompConversion::fromLocal (void* to, const Int64* from,
+					   unsigned int nr)
+{
+    char* data = (char*)to;
+    const Int64* last = from + nr;
+    while (from < last) {
+	fromLocal (data, *from++);
+	data += SIZE_MODCOMP_INT64;
+    }
+    return nr*SIZE_MODCOMP_INT64;
+}
+
+unsigned int ModcompConversion::fromLocal (void* to, const uInt64* from,
+					   unsigned int nr)
+{ 
+    char* data = (char*)to;
+    const uInt64* last = from + nr;
+    while (from < last) {
+	fromLocal (data, *from++);
+	data += SIZE_MODCOMP_UINT64;
+    }
+    return nr*SIZE_MODCOMP_UINT64;
+}
+
 
 // Modcomp has one more bit in the exponent than IEEE and because it does not
 // have an implicit bit two less bits in the Mantissa. It does not have any

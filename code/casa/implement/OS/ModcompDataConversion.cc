@@ -1,5 +1,5 @@
 //# ModcompDataConversion.cc: A DataConversion class to convert Modcomp format.
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,11 +55,11 @@ uInt ModcompDataConversion::toLocal (uInt& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (Long& to, const void* from) const {
+uInt ModcompDataConversion::toLocal (Int64& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (uLong& to, const void* from) const {
+uInt ModcompDataConversion::toLocal (uInt64& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
@@ -101,12 +101,12 @@ uInt ModcompDataConversion::toLocal (uInt* to, const void* from,
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (Long* to, const void* from,
+uInt ModcompDataConversion::toLocal (Int64* to, const void* from,
 				     uInt nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (uLong* to, const void* from,
+uInt ModcompDataConversion::toLocal (uInt64* to, const void* from,
 				     uInt nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
@@ -145,11 +145,11 @@ uInt ModcompDataConversion::fromLocal (void* to, uInt from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, Long from) const {
+uInt ModcompDataConversion::fromLocal (void* to, Int64 from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, uLong from) const {
+uInt ModcompDataConversion::fromLocal (void* to, uInt64 from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
@@ -191,12 +191,12 @@ uInt ModcompDataConversion::fromLocal (void* to, const uInt* from,
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const Long* from,
+uInt ModcompDataConversion::fromLocal (void* to, const Int64* from,
 				       uInt nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const uLong* from,
+uInt ModcompDataConversion::fromLocal (void* to, const uInt64* from,
 				       uInt nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
@@ -212,43 +212,43 @@ uInt ModcompDataConversion::fromLocal (void* to, const Double* from,
 }
 
 Bool ModcompDataConversion::canCopy (const Char*) const {
-  return ToBool (CONVERT_MODCOMP_CHAR == 0);
+  return (CONVERT_MODCOMP_CHAR == 0);
 }
 
 Bool ModcompDataConversion::canCopy (const uChar*) const {
-  return ToBool (CONVERT_MODCOMP_UCHAR == 0);
+  return (CONVERT_MODCOMP_UCHAR == 0);
 }
 
 Bool ModcompDataConversion::canCopy (const Short*) const {
-  return ToBool (CONVERT_MODCOMP_SHORT == 0);
+  return (CONVERT_MODCOMP_SHORT == 0);
 }
 
 Bool ModcompDataConversion::canCopy (const uShort*) const {
-  return ToBool (CONVERT_MODCOMP_USHORT == 0);
+  return (CONVERT_MODCOMP_USHORT == 0);
 }
 
 Bool ModcompDataConversion::canCopy (const Int*) const {
-  return ToBool (CONVERT_MODCOMP_INT == 0);
+  return (CONVERT_MODCOMP_INT == 0);
 }
 
 Bool ModcompDataConversion::canCopy (const uInt*) const {
-  return ToBool (CONVERT_MODCOMP_UINT == 0);
+  return (CONVERT_MODCOMP_UINT == 0);
 }
 
-Bool ModcompDataConversion::canCopy (const Long*) const {
-  return ToBool (CONVERT_MODCOMP_LONG == 0);
+Bool ModcompDataConversion::canCopy (const Int64*) const {
+  return (CONVERT_MODCOMP_INT64 == 0);
 }
 
-Bool ModcompDataConversion::canCopy (const uLong*) const {
-  return ToBool (CONVERT_MODCOMP_ULONG == 0);
+Bool ModcompDataConversion::canCopy (const uInt64*) const {
+  return (CONVERT_MODCOMP_UINT64 == 0);
 }
 
 Bool ModcompDataConversion::canCopy (const Float*) const {
-  return ToBool (CONVERT_MODCOMP_FLOAT == 0);
+  return (CONVERT_MODCOMP_FLOAT == 0);
 }
 
 Bool ModcompDataConversion::canCopy (const Double*) const {
-  return ToBool (CONVERT_MODCOMP_DOUBLE == 0);
+  return (CONVERT_MODCOMP_DOUBLE == 0);
 }
 
 uInt ModcompDataConversion::externalSize (const Char*) const {
@@ -275,12 +275,12 @@ uInt ModcompDataConversion::externalSize (const uInt*) const {
   return SIZE_MODCOMP_UINT;
 }
 
-uInt ModcompDataConversion::externalSize (const Long*) const {
-  return SIZE_MODCOMP_LONG;
+uInt ModcompDataConversion::externalSize (const Int64*) const {
+  return SIZE_MODCOMP_INT64;
 }
 
-uInt ModcompDataConversion::externalSize (const uLong*) const {
-  return SIZE_MODCOMP_ULONG;
+uInt ModcompDataConversion::externalSize (const uInt64*) const {
+  return SIZE_MODCOMP_UINT64;
 }
 
 uInt ModcompDataConversion::externalSize (const Float*) const {

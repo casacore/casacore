@@ -1,5 +1,5 @@
 //# TapeIO.h: Class for IO on a tape device.
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,11 +28,15 @@
 #if !defined(AIPS_TAPEIO_H)
 #define AIPS_TAPEIO_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/IO/ByteIO.h>
 #include <aips/Utilities/String.h>
 
+//# Forward Declarations
 class Path;
+
+
 // <summary>Class for IO on a tape device</summary>
 
 // <use visibility=export>
@@ -139,11 +143,11 @@ public:
   // position. May not work on all Tape devices use the isSeekable(0 member
   // function to see if this function is usuable. Otherwise an Exception
   // (AipsError) is thrown. 
-  virtual Long seek(Long offset, ByteIO::SeekOption = ByteIO::Begin);
+  virtual Int64 seek(Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
   
   // Get the length of the tape device.  Not a meaningful function in for this
   // class and this function always returns -1.
-  virtual Long length();
+  virtual Int64 length();
   
   // Is the tape device readable?
   virtual Bool isReadable() const;

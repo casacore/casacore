@@ -1,5 +1,5 @@
 //# TapeIO.cc: Class for IO on a tape device
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -151,7 +151,7 @@ void TapeIO::mark(uInt howMany) {
   }
 }
 
-Long TapeIO::seek (Long offset, ByteIO::SeekOption dir) {
+Int64 TapeIO::seek (Int64 offset, ByteIO::SeekOption dir) {
   switch (dir) {
   case ByteIO::Begin:
     return ::lseek (itsDevice, offset, SEEK_SET);
@@ -163,7 +163,7 @@ Long TapeIO::seek (Long offset, ByteIO::SeekOption dir) {
   return ::lseek (itsDevice, offset, SEEK_CUR);
 }
 
-Long TapeIO::length() {
+Int64 TapeIO::length() {
   return -1;
 }
    
@@ -245,7 +245,7 @@ void TapeIO::fillSeekable() {
     itsSeekable = False;
     return;
   }
-  itsSeekable = ToBool (seek (0, ByteIO::Current)  >= 0);
+  itsSeekable = (seek (0, ByteIO::Current)  >= 0);
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 TapeIO; cd test; gmake OPTLIB=1 tTapeIO"

@@ -1,5 +1,5 @@
 //# tByteSink.cc: Test program for classes ByteSink and ByteSource
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

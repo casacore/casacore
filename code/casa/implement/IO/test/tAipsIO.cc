@@ -1,5 +1,5 @@
 //# tAipsIO.cc: This program tests the AipsIO class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -55,7 +55,7 @@ void doTry (AipsIO&);
 main (int argc)
 {
     try {
-	doit (ToBool (argc<2));
+	doit (argc<2);
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
@@ -112,9 +112,9 @@ void doIO (Bool doExcp, Bool out, AipsIO& io)
     tii = -5;
     unsigned int tuii,tuio;
     tuii = 6;
-    long tli,tlo;
+    Int64 tli,tlo;
     tli = -7;
-    unsigned long tuli,tulo;
+    uInt64 tuli,tulo;
     tuli = 8;
     float tfi,tfo;
     tfi = 3.15;

@@ -1,5 +1,5 @@
 //# tModcompConversion.h: Test program for class ModcompConversion
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -154,50 +154,66 @@ void compare(Int& error, uInt exp, uInt res) {
   }
 }
 
-void compare(Int& error, Long exp, Long res) {
+void compare(Int& error, Int64 exp, Int64 res) {
   // Compare the results.
   if (res != exp) {
     error = 1;
-    uChar byteResult[4];
-    uChar byteExpected[4];
-    memcpy (byteResult, &res, 4);
-    memcpy (byteExpected, &exp, 4);
+    uChar byteResult[8];
+    uChar byteExpected[8];
+    memcpy (byteResult, &res, 8);
+    memcpy (byteExpected, &exp, 8);
     cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
-	 << Int(byteExpected[3]) << ")";
+	 << Int(byteExpected[3]) << ":"
+	 << Int(byteExpected[4]) << ":"
+	 << Int(byteExpected[5]) << ":"
+	 << Int(byteExpected[6]) << ":"
+	 << Int(byteExpected[7]) << ")";
     cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
 	 << Int(byteResult[2]) << ":"
-	 << Int(byteResult[3]) << ")";
+	 << Int(byteResult[3]) << ":"
+	 << Int(byteResult[4]) << ":"
+	 << Int(byteResult[5]) << ":"
+	 << Int(byteResult[6]) << ":"
+	 << Int(byteResult[7]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void compare(Int& error, uLong exp, uLong res) {
+void compare(Int& error, uInt64 exp, uInt64 res) {
   // Compare the results.
   if (res != exp) {
     error = 1;
-    uChar byteResult[4];
-    uChar byteExpected[4];
-    memcpy (byteResult, &res, 4);
-    memcpy (byteExpected, &exp, 4);
+    uChar byteResult[8];
+    uChar byteExpected[8];
+    memcpy (byteResult, &res, 8);
+    memcpy (byteExpected, &exp, 8);
     cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
-	 << Int(byteExpected[3]) << ")";
+	 << Int(byteExpected[3]) << ":"
+	 << Int(byteExpected[4]) << ":"
+	 << Int(byteExpected[5]) << ":"
+	 << Int(byteExpected[6]) << ":"
+	 << Int(byteExpected[7]) << ")";
     cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
 	 << Int(byteResult[2]) << ":"
-	 << Int(byteResult[3]) << ")";
+	 << Int(byteResult[3]) << ":"
+	 << Int(byteResult[4]) << ":"
+	 << Int(byteResult[5]) << ":"
+	 << Int(byteResult[6]) << ":"
+	 << Int(byteResult[7]) << ")";
     cerr << setbase(10) << endl;
   }
 }
@@ -205,7 +221,7 @@ void compare(Int& error, uLong exp, uLong res) {
 void checkConversion (Int& error)
 {
   {
-    uChar input[2];
+    Char input[2];
     input[0] = 'A';
     input[1] = 'B';
     Char result[2];
@@ -239,22 +255,22 @@ void checkConversion (Int& error)
     result[1] = 0x00;
     uInt nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 1, AipsError);
-    compare(error, 0xa5, result[0]);
+    compare(error, uChar(0xa5), result[0]);
     result[0] = 0x00;
     nbytes = ModcompConversion::toLocal(result, input, 2);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, 0xa5, result[0]);
-    compare(error, 0xff, result[1]);
+    compare(error, uChar(0xa5), result[0]);
+    compare(error, uChar(0xff), result[1]);
     result[0] = 0xfe;
     result[1] = 0x5a;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, 0xfe, input[0]);
-    compare(error, 0x5a, input[1]);
+    compare(error, uChar(0xfe), input[0]);
+    compare(error, uChar(0x5a), input[1]);
     result[0] = 0x00;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 1, AipsError);
-    compare(error, 0x00, input[0]);
+    compare(error, uChar(0x00), input[0]);
   }
   {
     uChar input[4];
@@ -277,15 +293,15 @@ void checkConversion (Int& error)
     result[1] = 30000;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, 0xff, input[0]);
-    compare(error, 0xfe, input[1]);
-    compare(error, 0x75, input[2]);
-    compare(error, 0x30, input[3]);
+    compare(error, uChar(0xff), input[0]);
+    compare(error, uChar(0xfe), input[1]);
+    compare(error, uChar(0x75), input[2]);
+    compare(error, uChar(0x30), input[3]);
     result[0] = 1;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, 0x00, input[0]);
-    compare(error, 0x01, input[1]);
+    compare(error, uChar(0x00), input[0]);
+    compare(error, uChar(0x01), input[1]);
   }
   {
     uChar input[4];
@@ -298,25 +314,25 @@ void checkConversion (Int& error)
     result[1] = 0;
     uInt nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, 32421, result[0]);
+    compare(error, uShort(32421), result[0]);
     result[0] = 0;
     nbytes = ModcompConversion::toLocal(result, input, 2);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, 32421, result[0]);
-    compare(error, 65519, result[1]);
+    compare(error, uShort(32421), result[0]);
+    compare(error, uShort(65519), result[1]);
     result[0] = 65534;
     result[1] = 30000;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, 0xff, input[0]);
-    compare(error, 0xfe, input[1]);
-    compare(error, 0x75, input[2]);
-    compare(error, 0x30, input[3]);
+    compare(error, uChar(0xff), input[0]);
+    compare(error, uChar(0xfe), input[1]);
+    compare(error, uChar(0x75), input[2]);
+    compare(error, uChar(0x30), input[3]);
     result[0] = 1;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, 0x00, input[0]);
-    compare(error, 0x01, input[1]);
+    compare(error, uChar(0x00), input[0]);
+    compare(error, uChar(0x01), input[1]);
   }
   {
     uChar input[8];
@@ -343,21 +359,21 @@ void checkConversion (Int& error)
     result[1] = 305419896;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 8, AipsError);
-    compare(error, 0xfe, input[0]);
-    compare(error, 0xdc, input[1]);
-    compare(error, 0xba, input[2]);
-    compare(error, 0x98, input[3]);
-    compare(error, 0x12, input[4]);
-    compare(error, 0x34, input[5]);
-    compare(error, 0x56, input[6]);
-    compare(error, 0x78, input[7]);
+    compare(error, uChar(0xfe), input[0]);
+    compare(error, uChar(0xdc), input[1]);
+    compare(error, uChar(0xba), input[2]);
+    compare(error, uChar(0x98), input[3]);
+    compare(error, uChar(0x12), input[4]);
+    compare(error, uChar(0x34), input[5]);
+    compare(error, uChar(0x56), input[6]);
+    compare(error, uChar(0x78), input[7]);
     result[0] = 591751049;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, 0x23, input[0]);
-    compare(error, 0x45, input[1]);
-    compare(error, 0x67, input[2]);
-    compare(error, 0x89, input[3]);
+    compare(error, uChar(0x23), input[0]);
+    compare(error, uChar(0x45), input[1]);
+    compare(error, uChar(0x67), input[2]);
+    compare(error, uChar(0x89), input[3]);
   }
   {
     uChar input[8];
@@ -380,25 +396,25 @@ void checkConversion (Int& error)
     AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 2124759841u, result[0]);
     compare(error, 4293897165u, result[1]);
-    result[0] = 4275878552;
-    result[1] = 305419896;
+    result[0] = 4275878552u;
+    result[1] = 305419896u;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 8, AipsError);
-    compare(error, 0xfe, input[0]);
-    compare(error, 0xdc, input[1]);
-    compare(error, 0xba, input[2]);
-    compare(error, 0x98, input[3]);
-    compare(error, 0x12, input[4]);
-    compare(error, 0x34, input[5]);
-    compare(error, 0x56, input[6]);
-    compare(error, 0x78, input[7]);
+    compare(error, uChar(0xfe), input[0]);
+    compare(error, uChar(0xdc), input[1]);
+    compare(error, uChar(0xba), input[2]);
+    compare(error, uChar(0x98), input[3]);
+    compare(error, uChar(0x12), input[4]);
+    compare(error, uChar(0x34), input[5]);
+    compare(error, uChar(0x56), input[6]);
+    compare(error, uChar(0x78), input[7]);
     result[0] = 591751049;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, 0x23, input[0]);
-    compare(error, 0x45, input[1]);
-    compare(error, 0x67, input[2]);
-    compare(error, 0x89, input[3]);
+    compare(error, uChar(0x23), input[0]);
+    compare(error, uChar(0x45), input[1]);
+    compare(error, uChar(0x67), input[2]);
+    compare(error, uChar(0x89), input[3]);
   }
   {
     uChar input[8];
@@ -410,7 +426,7 @@ void checkConversion (Int& error)
     input[5] = 0xef;
     input[6] = 0xab;
     input[7] = 0xcd;
-    Long result[2];
+    Int64 result[2];
     result[0] = 0;
     result[1] = 0;
     uInt nbytes = ModcompConversion::toLocal(result[0], input);
@@ -425,21 +441,21 @@ void checkConversion (Int& error)
     result[1] = 305419896;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 8, AipsError);
-    compare(error, 0xfe, input[0]);
-    compare(error, 0xdc, input[1]);
-    compare(error, 0xba, input[2]);
-    compare(error, 0x98, input[3]);
-    compare(error, 0x12, input[4]);
-    compare(error, 0x34, input[5]);
-    compare(error, 0x56, input[6]);
-    compare(error, 0x78, input[7]);
+    compare(error, uChar(0xfe), input[0]);
+    compare(error, uChar(0xdc), input[1]);
+    compare(error, uChar(0xba), input[2]);
+    compare(error, uChar(0x98), input[3]);
+    compare(error, uChar(0x12), input[4]);
+    compare(error, uChar(0x34), input[5]);
+    compare(error, uChar(0x56), input[6]);
+    compare(error, uChar(0x78), input[7]);
     result[0] = 591751049;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, 0x23, input[0]);
-    compare(error, 0x45, input[1]);
-    compare(error, 0x67, input[2]);
-    compare(error, 0x89, input[3]);
+    compare(error, uChar(0x23), input[0]);
+    compare(error, uChar(0x45), input[1]);
+    compare(error, uChar(0x67), input[2]);
+    compare(error, uChar(0x89), input[3]);
   }
   {
     uChar input[8];
@@ -451,7 +467,7 @@ void checkConversion (Int& error)
     input[5] = 0xef;
     input[6] = 0xab;
     input[7] = 0xcd;
-    uLong result[2];
+    uInt64 result[2];
     result[0] = 0u;
     result[1] = 0u;
     uInt nbytes = ModcompConversion::toLocal(result[0], input);
@@ -462,25 +478,25 @@ void checkConversion (Int& error)
     AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 2124759841uL, result[0]);
     compare(error, 4293897165uL, result[1]);
-    result[0] = 4275878552;
-    result[1] = 305419896;
+    result[0] = 4275878552u;
+    result[1] = 305419896u;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 8, AipsError);
-    compare(error, 0xfe, input[0]);
-    compare(error, 0xdc, input[1]);
-    compare(error, 0xba, input[2]);
-    compare(error, 0x98, input[3]);
-    compare(error, 0x12, input[4]);
-    compare(error, 0x34, input[5]);
-    compare(error, 0x56, input[6]);
-    compare(error, 0x78, input[7]);
+    compare(error, uChar(0xfe), input[0]);
+    compare(error, uChar(0xdc), input[1]);
+    compare(error, uChar(0xba), input[2]);
+    compare(error, uChar(0x98), input[3]);
+    compare(error, uChar(0x12), input[4]);
+    compare(error, uChar(0x34), input[5]);
+    compare(error, uChar(0x56), input[6]);
+    compare(error, uChar(0x78), input[7]);
     result[0] = 591751049;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, 0x23, input[0]);
-    compare(error, 0x45, input[1]);
-    compare(error, 0x67, input[2]);
-    compare(error, 0x89, input[3]);
+    compare(error, uChar(0x23), input[0]);
+    compare(error, uChar(0x45), input[1]);
+    compare(error, uChar(0x67), input[2]);
+    compare(error, uChar(0x89), input[3]);
   }
 }
 

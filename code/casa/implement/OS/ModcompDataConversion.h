@@ -1,5 +1,5 @@
 //# ModcompDataConversion.h: A DataConversion class to convert Modcomp format.
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,8 +77,8 @@ public:
     virtual uInt toLocal (uShort& to, const void* from) const;
     virtual uInt toLocal (Int&    to, const void* from) const;
     virtual uInt toLocal (uInt&   to, const void* from) const;
-    virtual uInt toLocal (Long&   to, const void* from) const;
-    virtual uInt toLocal (uLong&  to, const void* from) const;
+    virtual uInt toLocal (Int64&  to, const void* from) const;
+    virtual uInt toLocal (uInt64& to, const void* from) const;
     virtual uInt toLocal (Float&  to, const void* from) const;
     virtual uInt toLocal (Double& to, const void* from) const;
     // </group>
@@ -92,8 +92,8 @@ public:
     virtual uInt toLocal (uShort* to, const void* from, uInt nr) const;
     virtual uInt toLocal (Int*    to, const void* from, uInt nr) const;
     virtual uInt toLocal (uInt*   to, const void* from, uInt nr) const;
-    virtual uInt toLocal (Long*   to, const void* from, uInt nr) const;
-    virtual uInt toLocal (uLong*  to, const void* from, uInt nr) const;
+    virtual uInt toLocal (Int64*  to, const void* from, uInt nr) const;
+    virtual uInt toLocal (uInt64* to, const void* from, uInt nr) const;
     virtual uInt toLocal (Float*  to, const void* from, uInt nr) const;
     virtual uInt toLocal (Double* to, const void* from, uInt nr) const;
     // </group>
@@ -107,8 +107,8 @@ public:
     virtual uInt fromLocal (void* to, uShort from) const;
     virtual uInt fromLocal (void* to, Int    from) const;
     virtual uInt fromLocal (void* to, uInt   from) const;
-    virtual uInt fromLocal (void* to, Long   from) const;
-    virtual uInt fromLocal (void* to, uLong  from) const;
+    virtual uInt fromLocal (void* to, Int64  from) const;
+    virtual uInt fromLocal (void* to, uInt64 from) const;
     virtual uInt fromLocal (void* to, Float  from) const;
     virtual uInt fromLocal (void* to, Double from) const;
     // </group>
@@ -122,8 +122,8 @@ public:
     virtual uInt fromLocal (void* to, const uShort* from, uInt nr) const;
     virtual uInt fromLocal (void* to, const Int*    from, uInt nr) const;
     virtual uInt fromLocal (void* to, const uInt*   from, uInt nr) const;
-    virtual uInt fromLocal (void* to, const Long*   from, uInt nr) const;
-    virtual uInt fromLocal (void* to, const uLong*  from, uInt nr) const;
+    virtual uInt fromLocal (void* to, const Int64*  from, uInt nr) const;
+    virtual uInt fromLocal (void* to, const uInt64* from, uInt nr) const;
     virtual uInt fromLocal (void* to, const Float*  from, uInt nr) const;
     virtual uInt fromLocal (void* to, const Double* from, uInt nr) const;
     // </group>
@@ -137,8 +137,8 @@ public:
     virtual Bool canCopy (const uShort*) const;
     virtual Bool canCopy (const Int*) const;
     virtual Bool canCopy (const uInt*) const;
-    virtual Bool canCopy (const Long*) const;
-    virtual Bool canCopy (const uLong*) const;
+    virtual Bool canCopy (const Int64*) const;
+    virtual Bool canCopy (const uInt64*) const;
     virtual Bool canCopy (const Float*) const;
     virtual Bool canCopy (const Double*) const;
     // </group>
@@ -151,8 +151,8 @@ public:
     virtual uInt externalSize (const uShort*) const;
     virtual uInt externalSize (const Int*) const;
     virtual uInt externalSize (const uInt*) const;
-    virtual uInt externalSize (const Long*) const;
-    virtual uInt externalSize (const uLong*) const;
+    virtual uInt externalSize (const Int64*) const;
+    virtual uInt externalSize (const uInt64*) const;
     virtual uInt externalSize (const Float*) const;
     virtual uInt externalSize (const Double*) const;
     // </group>

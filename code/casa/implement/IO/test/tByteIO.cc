@@ -1,5 +1,5 @@
 //# tByteIO.cc: Test program for class ByteIO and derived classes
-//# Copyright (C) 1996,1997,2000
+//# Copyright (C) 1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
