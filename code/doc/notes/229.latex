@@ -1237,9 +1237,79 @@ discussed in Section 3.1.3. As described in the same Section,
 polarization information is stored in a POLARIZATION sub-table.
 
 \subsubsection{Doppler tracking (DOPPLER)}
- A new doppler tracking table is added to store source-based doppler
+A new doppler tracking table is added to store source-based doppler
 tracking information for each SPECTRAL\_WINDOW, as discussed in
 Section 3.10.2.
+
+In spectral-line observing, both the on-line telescope and back-end
+processor control systems and the off-line data reduction package
+require information specifying the Doppler tracking parameters used
+during observing or required for post-processing. There are many
+different possibilities for how Doppler tracking is implemented in
+practice; these depend on the instrument and science goals of the
+observing. The MSv2 data format attempts to represent this information
+in a sufficiently general format that is not instrument-dependent, and
+covers all Doppler tracking strategies.
+
+In general, Doppler tracking parameters can be sub-divided into those
+that are dependent on the astronomical source or field, and those that
+capture the frequency tracking strategy used at the telescope and/or
+back-end processor. The source-based parameters include:
+
+\begin{description}
+
+\item{(a) Celestial coordinates of the source or field position used
+for Doppler tracking.}
+
+\item{(b) Properties of the associated transitions $(1..N_{lines})$.
+   \begin{description}
+      \item{(i) Transition name (e.g. CO J=2-1, HI etc.).}
+      \item{(ii) Systemic velocity $(V_{sys}).$}
+      \item{(iii) Rest frequency $(\nu_0).$}
+   \end{description}}
+
+\item{(c) Options for frequency tracking during observing include:
+   \begin{description}
+      \item{(i) No tracking on-line; shift spectra in post-processing.}
+      \item{(ii) Coarse tracking on-line; refine shift of spectra in post-processing.}
+      \item{(iii) Fine tracking on-line; no refinement in post-processing.}
+      \item{(iv) Shift spectra in post-processing to a new line or new frame, not tracked during observing, but lying in the observed frequency band.}
+   \end{description}}
+\end{description}
+
+In MSv2, the source properties (a,b) are recorded in the SOURCE
+sub-table, which is accordingly not optional if Doppler tracking is
+employed. The transition information is SPECTRAL\_WINDOW\_ID dependent, as
+reflected in the SOURCE sub-table key. The SPECTRAL\_WINDOW\_ID is part of the
+primary key in the MAIN table, via DATA\_DESC\_ID, and can accordingly
+be used in any sub-table key without introducing a circular
+dependency. If only the field center is tracked, then a SOURCE entry
+for the field center should be added, named accordingly. The
+transition list in the SOURCE table should include only those
+transitions of scientific interest to the observer, not all possible
+transitions in the frequency band. With increasing observing
+bandwidths, multiple transition entries will become more common
+however.
+
+The frequency tracking strategies (c) are recorded in the
+SPECTRAL\_WINDOW, FREQ\_OFFSET and DOPPLER sub-tables. An underlying
+principle is that spectral windows which can be calibrated together
+should share a common SPECTRAL\_WINDOW\_ID wherever possible. For
+minimal or no on-line tracking (c-i,ii), the frequency in the
+SPECTRAL\_WINDOW table should be labelled as topocentric, and will be
+fixed. Option (c-ii) is accommodated by adding supplementary offset in
+the FREQ\_OFFSET sub-table as required. This table can also be used to
+accomodate antenna-based and other frequency offsets in a flexible
+manner. Both (c-i,ii) have DOPPLER\_ID = -1.
+
+For (c-iii), the frequency axis can be labelling in a frame in which
+it is constant, to within meaningful scientific precision. In this
+case, the DOPPLER\_ID index points to the DOPPLER entry describing the
+transition information used in the on-line tracking. This can be
+source-dependent, as the DOPPLER key includes a SOURCE\_ID. For
+Doppler tracking in software (c-iv), the DOPPLER\_ID key should be
+adjusted to reflect the resultant frequency shift, in the same way
+as described for on-line Doppler tracking.
 
 \subsubsection{Scan summary information}
 
@@ -1266,21 +1336,21 @@ are tabulated below.  Optional sub-tables are shown in italics.
 \multicolumn{1}{|c|}{Table}&\multicolumn{1}{|c|}{Contents}&\multicolumn{1}{|c|}{Keys}\\ \cline{1-3}
 ANTENNA& Antenna characteristics & ANTENNA\_ID \\
 DATA\_DESCRIPTION & Data description & DATA\_DESC\_ID\\
-{\it DOPPLER} & Doppler tracking & DOPPLER\_ID, SOURCE\_ID \\
+({\it DOPPLER}) & Doppler tracking & DOPPLER\_ID, SOURCE\_ID \\
 FEED  &          Feed characteristics & FEED\_ID, ANTENNA\_ID, TIME, SPECTRAL\_WINDOW\_ID \\
 FIELD  &         Field position & FIELD\_ID  \\
 FLAG\_CMD  &  Flag commands & TIME \\
-{\it FREQ\_OFFSET} & Frequency offset information & FEED\_ID, ANTENNA$n$, FEED\_ID, TIME, SPECTRAL\_WINDOW\_ID \\
+({\it FREQ\_OFFSET}) & Frequency offset information & FEED\_ID, ANTENNA$n$, FEED\_ID, TIME, SPECTRAL\_WINDOW\_ID \\
 HISTORY  & History information & OBSERVATION\_ID, TIME \\
 OBSERVATION  &Observer, Schedule, etc & OBSERVATION\_ID \\ 
 POINTING & Pointing information & ANTENNA\_ID, TIME \\
 POLARIZATION &Polarization setup & POLARIZATION\_ID \\
 PROCESSOR & Processor information & PROCESSOR\_ID  \\
-SOURCE  &        Source information & SOURCE\_ID, SPECTRAL\_WINDOW\_ID, TIME \\
+({\it SOURCE})  &        Source information & SOURCE\_ID, SPECTRAL\_WINDOW\_ID, TIME \\
 SPECTRAL\_WINDOW  &     Spectral window setups & SPECTRAL\_WINDOW\_ID \\
 STATE   & State information & STATE\_ID \\
-{\it SYSCAL} &         System calibration characteristics & FEED\_ID, ANTENNA\_ID, TIME, SPECTRAL\_WINDOW\_ID \\
-{\it WEATHER}  &       Weather info for each antenna & ANTENNA\_ID, TIME \\
+({\it SYSCAL}) &         System calibration characteristics & FEED\_ID, ANTENNA\_ID, TIME, SPECTRAL\_WINDOW\_ID \\
+({\it WEATHER})  &       Weather info for each antenna & ANTENNA\_ID, TIME \\
 \hline
 \end{tabular}
 
@@ -1592,6 +1662,7 @@ sub-table.
 
 \item[TRANSITION\_ID] This index selects the appropriate line from the
 list of transitions stored for each SOURCE\_ID in the SOURCE table.
+
 \end{description}
 
 
@@ -2096,7 +2167,8 @@ MAIN.
 
 \item[INTERVAL] Time interval.
 
-\item[SPECTRAL\_WINDOW\_ID] Spectral window identifier.
+\item[SPECTRAL\_WINDOW\_ID] Spectral window identifier. A -1 indicates
+that the row is valid for all spectral windows.
 
 \item[NUM\_LINES] Number of spectral line transitions associated with
 this source and spectral window id. combination.
@@ -2172,7 +2244,11 @@ to calibrate as a single entity.
 
 \item[NAME] Spectral window name; user specified.
 
-\item[REF\_FREQUENCY] The reference frequency.
+\item[REF\_FREQUENCY] The reference frequency. A frequency
+representative of this spectral window, usually the sky frequency
+corresponding to the DC edge of the baseband. Used by the calibration
+system if a fixed scaling frequency is required or in algorithms to
+identify the observing band.
 
 \item[CHAN\_FREQ] Center frequencies for each channel in the data
 matrix. These can be frequency-dependent, to accommodate instruments
@@ -2432,6 +2508,18 @@ MAIN.
 \item[WIND\_DIRECTION\_FLAG] Flag for DEW\_POINT.
 
 \item[WIND\_SPEED\_FLAG] Flag for DEW\_POINT.
+
+\end{description}
+
+\section{Correction and additions}
+
+\begin{description}
+
+\item{{\bf 08/14/00:} Add expanded description of Doppler tracking to
+Section 4.0.8; correctly identify SOURCE sub-table as optional; expand
+definition of SPECTRAL\_WINDOW\_ID=-1 in the description of the SOURCE
+sub-table; expand the definition of the REF\_FREQUENCY in the
+SPECTRAL\_WINDOW sub-table description.}
 
 \end{description}
 
