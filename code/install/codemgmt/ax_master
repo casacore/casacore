@@ -4635,3 +4635,4 @@
 14 297 src mv trial/implement/MeasurementSets/NewMSWeatherIndex.cc trial/implement/MeasurementSets/MSWeatherIndex.cc
 14 297 src mv trial/implement/MeasurementSets/NewMSWeatherIndex.h trial/implement/MeasurementSets/MSWeatherIndex.h
 14 297 src mv trial/implement/MeasurementSets/DOnewms.h trial/implement/MeasurementSets/DOms.h
+14 297 src mv trial/implement/MeasurementSets/DOnewms.cc trial/implement/MeasurementSets/DOms.cc
