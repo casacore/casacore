@@ -131,7 +131,7 @@ public:
    void listFeed (LogIO& os, Bool verbose=False) const;
    void listField (LogIO& os, Bool verbose=False) const;
    void listObservation (LogIO& os, Bool verbose=False) const;
-   void listHistory (LogIO& os, Bool verbose=False) const;
+   void listHistory (LogIO& os) const;
    void listPolarization (LogIO& os, Bool verbose=False) const;
    void listSource (LogIO& os, Bool verbose=False) const;
    void listSpectralWindow (LogIO& os, Bool verbose=False) const;

@@ -123,7 +123,6 @@ void MSSummary::list (LogIO& os, Bool verbose) const
   listWhere (os,verbose);
   listWhat (os,verbose);
   listHow (os,verbose);
-  listHistory (os,verbose);
 
   // These aren't really useful (yet?)
   //  listSource (os,verbose);
@@ -728,38 +727,34 @@ String formatTime(const Double time) {
   return mvtime.string(MVTime::DMY,6);
 }
 
-void MSSummary::listHistory (LogIO& os, Bool verbose) const 
+void MSSummary::listHistory (LogIO& os) const 
 {
-  // Do nothing in terse mode
-  if (verbose) {
+  // Create a MS-history object
+  ROMSHistoryColumns msHis(pMS->history());
 
-    // Create a MS-history object
-    ROMSHistoryColumns msHis(pMS->history());
-
-    if (msHis.nrow()<=0) {
-      os << "The HISTORY table is empty" << endl;
-    }
-    else {
-      uInt nmessages = msHis.time().nrow();
-      os << "History table entries: " << nmessages << endl;
-      for (uInt i=0 ; i < nmessages; i++) {
-	os << formatTime(((msHis.time()).getColumn())(i))
-	   << "|" << ((msHis.origin()).getColumn())(i);
-	//<< ((msHis.application()).getColumn())(i) << " | "
-	//<< (msHis.appParams())(i) << " | "
-	try {
-	  os << " " << (msHis.cliCommand())(i) << " ";
-	} catch ( AipsError x ) {
-	  os << " ";
-	}
-	os << ((msHis.message()).getColumn())(i)
-	  //<< ((msHis.priority()).getColumn())(i) << " | "
-	  //<< (msHis.timeQuant())(i) << " | "
-	  //<< (msHis.timeMeas())(i)
-	   << endl;
+  if (msHis.nrow()<=0) {
+    os << "The HISTORY table is empty" << endl;
+  }
+  else {
+    uInt nmessages = msHis.time().nrow();
+    os << "History table entries: " << nmessages << endl;
+    for (uInt i=0 ; i < nmessages; i++) {
+      os << formatTime(((msHis.time()).getColumn())(i))
+	 << "|" << ((msHis.origin()).getColumn())(i);
+      //<< ((msHis.application()).getColumn())(i) << " | "
+      //<< (msHis.appParams())(i) << " | "
+      try {
+	os << " " << (msHis.cliCommand())(i) << " ";
+      } catch ( AipsError x ) {
+	os << " ";
       }
-      os << LogIO::POST;
+      os << ((msHis.message()).getColumn())(i)
+	//<< ((msHis.priority()).getColumn())(i) << " | "
+	//<< (msHis.timeQuant())(i) << " | "
+	//<< (msHis.timeMeas())(i)
+	 << endl;
     }
+    os << LogIO::POST;
   }
 }
 
