@@ -1,5 +1,5 @@
 //# ComponentList.cc:  this defines the ComponentList implementation
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,6 +55,7 @@
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/OS/Path.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ColumnDesc.h>
@@ -77,11 +78,13 @@ const String fluxErrName = "Flux_Error";
 const String shapeName = "Shape";
 const String refDirName = "Reference_Direction";
 const String dirErrName = "Direction_Error";
+const String dirErrUnitName = "Direction_Error_Units";
 const String shapeParName = "Shape_Parameters";
 const String shapeErrName = "Shape_Error";
 const String spectrumName = "Spectrum_Shape";
 const String refFreqName = "Reference_Frequency";
 const String freqErrName = "Frequency_Error";
+const String freqErrUnitName = "Frequency_Error_Units";
 const String spectParName = "Spectral_Parameters";
 const String spectErrName = "Spectral_Error";
 const String labelName = "Label";
@@ -98,7 +101,7 @@ ComponentList::ComponentList()
   AlwaysAssert(ok(), AipsError);
 }
 
-ComponentList::ComponentList(const String& fileName, const Bool readOnly)
+ComponentList::ComponentList(const Path& fileName, const Bool readOnly)
   :itsList(),
    itsNelements(0),
    itsTable(),
@@ -479,31 +482,31 @@ const SkyComponent& ComponentList::component(const uInt& index) const {
   return itsList[itsOrder[index]];
 }
 
-void ComponentList::rename(const String& fileName, 
+void ComponentList::rename(const Path& fileName, 
 			   const Table::TableOption option) {
   AlwaysAssert(option != Table::Old, AipsError);
   AlwaysAssert(itsROFlag == False, AipsError);
   DebugAssert(ok(), AipsError);
-  if (fileName == "") {
+  if (fileName.length() != 0) {
+    // See if this list is associated with a Table. 
+    if (itsTable.isNull()) {
+      createTable(fileName, option);
+    } else {
+      if (!itsTable.isWritable()) itsTable.reopenRW();
+      itsTable.rename(fileName.absoluteName(), option);
+    }
+
+    // Ensure that the Table::isReadable(fileName) returns True, otherwise the
+    // ok() function will fail.
+    itsTable.flush();
+    DebugAssert(ok(), AipsError);
+  } else {
     if (!itsTable.isNull()) {
       itsTable.markForDelete();
       itsTable = Table();
       itsROFlag = False;
     }
-    return;
   }
-  // See if this list is associated with a Table. 
-  if (itsTable.isNull()) {
-    createTable(fileName, option);
-  } else {
-    if (!itsTable.isWritable()) itsTable.reopenRW();
-    itsTable.rename(fileName, option);
-  }
-
-  // Ensure that the Table::isReadable(fileName) returns True, otherwise the
-  // ok() function will fail.
-  itsTable.flush();
-  DebugAssert(ok(), AipsError);
 }
 
 ComponentList ComponentList::copy() const {
@@ -637,7 +640,7 @@ Bool ComponentList::ok() const {
   return True;
 }
 
-void ComponentList::createTable(const String& fileName,
+void ComponentList::createTable(const Path& fileName,
 				const Table::TableOption option) {
   // Build a default table description
   TableDesc td("ComponentListDescription", "4", TableDesc::Scratch);  
@@ -645,7 +648,7 @@ void ComponentList::createTable(const String& fileName,
   {
     {
       const ArrayColumnDesc<DComplex> 
-	fluxValCol(fluxName, "Flux values", IPosition(1,4), ColumnDesc::Direct);
+	fluxValCol(fluxName, "Flux values", IPosition(1,4),ColumnDesc::Direct);
       td.addColumn(fluxValCol);
       const ScalarColumnDesc<String>
 	fluxUnitCol(fluxUnitName, "Flux units", ColumnDesc::Direct);
@@ -683,7 +686,6 @@ void ComponentList::createTable(const String& fileName,
  	dirErrCol(dirErrName, "Error in the reference direction values",
  		  IPosition(1,2), ColumnDesc::Direct);
       td.addColumn(dirErrCol);
-      const String dirErrUnitName = "Direction_Error_Units";
       const ArrayColumnDesc<String>
 	dirErrUnitCol(dirErrUnitName, "Units of the direction error", 
 		      IPosition(1,2), ColumnDesc::Direct);
@@ -727,7 +729,6 @@ void ComponentList::createTable(const String& fileName,
  	freqErrCol(freqErrName, "Error in the reference frequency",
 		   ColumnDesc::Direct);
       td.addColumn(freqErrCol);
-      const String freqErrUnitName = "Frequency_Error_Units";
       const ScalarColumnDesc<String>
 	freqErrUnitCol(freqErrUnitName, "Units of the frequency error", 
 		       ColumnDesc::Direct);
@@ -752,7 +753,7 @@ void ComponentList::createTable(const String& fileName,
       td.addColumn (labelCol);
     }
   }
-  SetupNewTable newTable(fileName, td, option);
+  SetupNewTable newTable(fileName.absoluteName(), td, option);
   itsTable = Table(newTable, TableLock::PermanentLocking, nelements(), False);
   {
     TableInfo& info(itsTable.tableInfo());
@@ -801,31 +802,43 @@ void ComponentList::writeTable() {
 	(ArrayColumnDesc<DComplex>(fluxErrName, "Flux errors", IPosition(1,4), 
 				   ColumnDesc::Direct));
     }
+    
     fluxErrCol.attach(itsTable, fluxErrName);
     if (!cds.isDefined(dirErrName)) {
-      LogIO logErr(LogOrigin("ComponentList", "ok()"));
-      logErr << LogIO::WARN 
-	     << "Cannot write the direction error columns "
-	     << "as this is an old format componentlist table."
-	     << LogIO::POST;
-    } else {
-      dirErrCol.attach(itsTable, dirErrName);
+      itsTable.addColumn
+	(ArrayColumnDesc<Double>(dirErrName,
+				 "Error in the reference direction values",
+				 IPosition(1,2), ColumnDesc::Direct));
+      itsTable.addColumn
+	(ArrayColumnDesc<String>(dirErrUnitName,
+				 "Units of the direction error",
+				 IPosition(1,2), ColumnDesc::Direct));
+      TableQuantumDesc dirErrTMCol(itsTable.tableDesc(), dirErrName,
+				   dirErrUnitName);
+      dirErrTMCol.write(itsTable);
     }
+    dirErrCol.attach(itsTable, dirErrName);
     if (!cds.isDefined(shapeErrName)) {
       itsTable.addColumn
 	(ArrayColumnDesc<Double>(shapeErrName,
 				 "Error in the shape parameters", 1));
     }
     shapeErrCol.attach(itsTable, shapeErrName);
+
     if (!cds.isDefined(freqErrName)) {
-      LogIO logErr(LogOrigin("ComponentList", "ok()"));
-      logErr << LogIO::WARN 
-	     << "Cannot write the frequency error columns "
-	     << "as this is an old format componentlist table."
-	     << LogIO::POST;
-    } else {
-      freqErrCol.attach(itsTable, freqErrName);
+      itsTable.addColumn
+	(ScalarColumnDesc<Double>(freqErrName, 
+				  "Error in the reference frequency",
+				  ColumnDesc::Direct));
+      itsTable.addColumn
+	(ScalarColumnDesc<String>(freqErrUnitName,
+				  "Units of the frequency error", 
+				  ColumnDesc::Direct));
+      TableQuantumDesc freqErrTMCol(itsTable.tableDesc(), freqErrName,
+				    freqErrUnitName);
+      freqErrTMCol.write(itsTable);
     }
+    freqErrCol.attach(itsTable, freqErrName);
     if (!cds.isDefined(spectErrName)) {
       itsTable.addColumn
 	(ArrayColumnDesc<Double>(spectErrName,
@@ -871,15 +884,16 @@ void ComponentList::writeTable() {
   }
 }
 
-void ComponentList::readTable(const String& fileName, const Bool readOnly) {
+void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
   {
+    const String& fullName = fileName.absoluteName();
     if (readOnly) {
-      AlwaysAssert(Table::isReadable(fileName), AipsError);
-      itsTable = Table(fileName, Table::Old);
+      AlwaysAssert(Table::isReadable(fullName), AipsError);
+      itsTable = Table(fullName, Table::Old);
     }
     else {
-      AlwaysAssert(Table::isWritable(fileName), AipsError);
-      itsTable = Table(fileName, TableLock(TableLock::PermanentLocking),
+      AlwaysAssert(Table::isWritable(fullName), AipsError);
+      itsTable = Table(fullName, TableLock(TableLock::PermanentLocking),
 		       Table::Update);
     }
   }
@@ -903,6 +917,11 @@ void ComponentList::readTable(const String& fileName, const Bool readOnly) {
     const ColumnDescSet& cds=itsTable.tableDesc().columnDescSet();
     if (cds.isDefined(fluxErrName)) {
       fluxErrCol.attach(itsTable, fluxErrName);
+      cerr << "ComponentList::readTable - Looks like a new componentlist"
+	   << endl;
+    } else {
+      cerr << "ComponentList::readTable - Looks like an old componentlist"
+	   << endl;
     }
     if (cds.isDefined(dirErrName)) {
       dirErrCol.attach(itsTable, dirErrName);
@@ -920,7 +939,7 @@ void ComponentList::readTable(const String& fileName, const Bool readOnly) {
 
   SkyComponent currentComp;
   const uInt nComp = fluxValCol.nrow();
-  Vector<DComplex> compFlux(4);
+  Vector<DComplex> compFluxValue(4);
   Vector<Double> shapeParms, spectralParms;
   String compName, compLabel, compFluxPol, compFluxUnit, compSpectrum;
   MDirection compDir;
@@ -933,16 +952,17 @@ void ComponentList::readTable(const String& fileName, const Bool readOnly) {
     currentComp = SkyComponent(ComponentType::shape(compName),
  			       ComponentType::spectralShape(compSpectrum));
     {
-      fluxValCol.get(i, compFlux);
-      currentComp.flux().setValue(compFlux);
+      Flux<Double>& compFlux = currentComp.flux();
+      fluxValCol.get(i, compFluxValue);
+      compFlux.setValue(compFluxValue);
       fluxUnitCol.get(i, compFluxUnit); 
-      currentComp.flux().setUnit(compFluxUnit);
+      compFlux.setUnit(compFluxUnit);
       fluxPolCol.get(i, compFluxPol); 
-      currentComp.flux().setPol(ComponentType::polarisation(compFluxPol));
+      compFlux.setPol(ComponentType::polarisation(compFluxPol));
       if (!fluxErrCol.isNull()) {
-	fluxErrCol.get(i, compFlux);
-	currentComp.flux().setErrors(compFlux(0), compFlux(1), 
-				     compFlux(2), compFlux(3));
+	fluxErrCol.get(i, compFluxValue);
+	compFlux.setErrors(compFluxValue(0), compFluxValue(1),
+			   compFluxValue(2), compFluxValue(3));
       }
     }
     {
