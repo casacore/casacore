@@ -36,7 +36,7 @@
 #include <aips/Logging.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
-
+#include <aips/Utilities/Regex.h>
 
 
 Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, 
@@ -116,9 +116,9 @@ Vector<Float> VectorKernel::make(KernelTypes kernelType, Float width,
 
 
 Vector<Int> VectorKernel::toKernelTypes (const String& kernels,
-                                         const String& delimiter)
+                                         const Regex& delimiter)
 {
-   const Vector<String> kernelStrings = stringToVector(kernels, *(delimiter.chars()));
+   const Vector<String> kernelStrings = stringToVector(kernels, delimiter);
    return VectorKernel::toKernelTypes(kernelStrings);
 }
  

@@ -34,7 +34,7 @@
 #include <aips/Arrays/Vector.h>
 
 //# Forward Declarations
-
+class Regex;
 
 // <summary>
 // Make a Vector smoothing kernel from a kernel specification
@@ -113,7 +113,7 @@ enum KernelTypes {
 // substrings "boxcar", "gaussian" or "hanning" (actually "box", "gauss", and "hann"
 // will do) is present.
    static Vector<Int> toKernelTypes (const String& kernels,
-                                     const String& delimiter);
+                                     const Regex& delimiter);
    static Vector<Int> toKernelTypes (const Vector<String>& kernels);
    static VectorKernel::KernelTypes toKernelType (const String& kernel);
 
