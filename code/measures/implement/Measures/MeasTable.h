@@ -141,12 +141,12 @@ public:
   //# General Member Functions
   // Precession related data
   // <group>
-  // Get the precession-rate part of the IAU 20000 precession-nutation models
+  // Get the precession-rate part of the IAU 2000 precession-nutation models
   // (which 0=dpsi (long) and 1=deps (obliquity))
   static Double precRate00(const uInt which, const Double tt);
 
   // Get the frame bias components for IAU2000 model. (which=0,1,2 for
-  // dpsi(long), desp(obl), dra(ICRS RA of J20000 mean equinox))
+  // dpsi(long), desp(obl), dra(ICRS RA of J2000 mean equinox))
   static Double frameBias00(const uInt which);
 
   // Generate the precession calculation polynomials for a fixed Epoch T
@@ -195,7 +195,7 @@ public:
   static const Vector<Double> &mulSC1950(uInt which, Double T);
   static const Vector<Double> &mulSC2000A(uInt which, Double T);
   static const Vector<Double> &mulSC2000B(uInt which, Double T);
-  static const Vector<Double> &mulPlanSC2000A(uInt which, Double T);
+  static const Vector<Double> &mulPlanSC2000A(uInt which);
   // </group>
 
   // Get nutation angles corrections for UTC T in rad.
@@ -430,7 +430,7 @@ private:
 			    Vector<Double> result[], uInt resrow,
 			    Polynomial<Double> poly[],
 			    const Long coeffSC[][6]);
-  static void calcMulSCPlan(Bool &need, Double &check, Double T,
+  static void calcMulSCPlan(Bool &need,
 			    Vector<Double> result[], uInt resrow,
 			    const Short coeffSC[][4]);
   // </group>
