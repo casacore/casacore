@@ -2874,3 +2874,4 @@
 11 442 src rm /doc/html/navpages/gettingstarted6.html
 11 442 src rm /doc/html/navpages/learnmore6.html
 11 442 src rm /doc/html/navpages/programmer.html
+11 450 src rm nrao/apps/vlafiller/vlatoms_meta.g
