@@ -40,22 +40,27 @@
 
 
 LatticeAddNoise::LatticeAddNoise()
-: itsParameters(0)
+: itsParameters(0),
+  itsNoise(0)
 {}
    
-LatticeAddNoise::LatticeAddNoise (LatticeAddNoise::Types type,
+LatticeAddNoise::LatticeAddNoise (Random::Types type,
                                   const Vector<Double>& parameters)
 : itsType(type),
-  itsParameters(parameters.copy())
+  itsParameters(parameters.copy()),
+  itsNoise(0)
 {
-   checkPars(itsType, itsParameters);
+   makeDistribution();
 }
   
 LatticeAddNoise::LatticeAddNoise (const LatticeAddNoise& other)
 : itsType(other.itsType),
   itsParameters(other.itsParameters.copy()),
-  itsGen(other.itsGen)
-{}
+  itsGen(other.itsGen),
+  itsNoise(0)
+{
+   makeDistribution();
+}
  
 LatticeAddNoise& LatticeAddNoise::operator=(const LatticeAddNoise& other)
 {
@@ -64,45 +69,53 @@ LatticeAddNoise& LatticeAddNoise::operator=(const LatticeAddNoise& other)
       itsParameters.resize(0);
       itsParameters = other.itsParameters;
       itsGen = other.itsGen;
+//
+      makeDistribution();
    }
    return *this;
 }
      
 LatticeAddNoise::~LatticeAddNoise()
-{}
+{
+   if (itsNoise) {
+      delete itsNoise;
+      itsNoise = 0;
+   }
+}
  
-void LatticeAddNoise::set (LatticeAddNoise::Types type,
+void LatticeAddNoise::set (Random::Types type,
                            const Vector<Double>& parameters)
 {
    itsType = type;
    itsParameters.resize(0);
    itsParameters = parameters;
-//
-   checkPars(itsType, itsParameters);
+   makeDistribution();
 }
  
 void LatticeAddNoise::add (MaskedLattice<Float>& lattice)
 {
-   Random* pNoise = makeDistribution(itsType, itsParameters);
+   if (!itsNoise) {
+      LogIO os(LogOrigin("LatticeAddNoise", "add", WHERE));
+      os << "You have not yet called function 'set'" << LogIO::EXCEPTION;
+   }
 //
    LatticeIterator<Float> it(lattice);
    for (it.reset(); !it.atEnd(); it++) {
-      addNoiseToArray(it.rwCursor(), *pNoise);
+      addNoiseToArray(it.rwCursor());
    }
-//
-   delete pNoise;
 }
 
 void LatticeAddNoise::add (MaskedLattice<Complex>& lattice)
 {
-   Random* pNoise = makeDistribution(itsType, itsParameters);
+   if (!itsNoise) {
+      LogIO os(LogOrigin("LatticeAddNoise", "add", WHERE));
+      os << "You have not yet called function 'set'" << LogIO::EXCEPTION;
+   }
 //
    LatticeIterator<Complex> it(lattice);
    for (it.reset(); !it.atEnd(); it++) {
-      addNoiseToArray(it.rwCursor(), *pNoise);
+      addNoiseToArray(it.rwCursor());
    }
-//
-   delete pNoise;
 }
 
 void LatticeAddNoise::add (Lattice<Float>& lattice)
@@ -118,134 +131,20 @@ void LatticeAddNoise::add (Lattice<Complex>& lattice)
 }
 
  
-String LatticeAddNoise::typeToString (LatticeAddNoise::Types type)
-{
-   String typeOut;
-   switch (type) {
-   case BINOMIAL:
-      typeOut = String("BINOMIAL");
-   break;
-   case DISCRETEUNIFORM:
-      typeOut = String("DISCRETEUNIFORM");
-   break;
-   case ERLANG:
-      typeOut = String("ERLANG");
-   break;
-   case GEOMETRIC:
-      typeOut = String("GEOMETRIC");
-   break;
-   case HYPERGEOMETRIC:
-      typeOut = String("HYPERGEOMETRIC");
-   break;
-   case NORMAL:
-      typeOut = String("NORMAL");
-   break;
-   case LOGNORMAL:
-      typeOut = String("LOGNORMAL");
-   break;
-   case NEGATIVEEXPONENTIAL:
-      typeOut = String("NEGATIVEEXPONENTIAL");
-   break;
-   case POISSON:
-      typeOut = String("POISSON");
-   break;
-   case UNIFORM:
-      typeOut = String("UNIFORM");
-   break;
-   case WEIBULL:
-      typeOut = String("WEIBULL");
-   break;
-   case NTYPES: 
-      throw(AipsError("NTYPES has no string equivalent"));
-   break;
-   }
-//
-   return typeOut;
-}
- 
-LatticeAddNoise::Types LatticeAddNoise::stringToType (const String& type)
-{
-   String typeUp(type);
-   typeUp.upcase();
-//
-// Funny if statement structure gives me minimum match for the
-// user given string
-      
-   String typeDist("BINOMIAL");
-   if (typeDist.matches(typeUp)) {
-      return BINOMIAL;
-   }
-//
-   typeDist = String("DISCRETEUNIFORM");
-   if (typeDist.matches(typeUp)) {
-      return DISCRETEUNIFORM;
-   }
-//
-   typeDist = String("ERLANG");
-   if (typeDist.matches(typeUp)) {
-      return ERLANG;
-   }
-//
-   typeDist = String("GEOMETRIC");
-   if (typeDist.matches(typeUp)) {
-      return GEOMETRIC;
-   }
-//
-   typeDist = String("HYPERGEOMETRIC");
-   if (typeDist.matches(typeUp)) {
-      return HYPERGEOMETRIC;
-   }
-//
-   typeDist = String("NORMAL");
-   if (typeDist.matches(typeUp)) {
-      return NORMAL;
-   }
-//  
-   typeDist = String("LOGNORMAL");
-   if (typeDist.matches(typeUp)) {
-      return LOGNORMAL;
-   }
-//
-   typeDist = String("NEGATIVEEXPONENTIAL");
-   if (typeDist.matches(typeUp)) {
-      return NEGATIVEEXPONENTIAL;
-   }
-//
-   typeDist = String("POISSON");
-   if (typeDist.matches(typeUp)) {
-      return POISSON;
-   }
-//
-   typeDist = String("UNIFORM");
-   if (typeDist.matches(typeUp)) {
-      return UNIFORM;
-   }
-//
-   typeDist = String("WEIBULL");   
-   if (typeDist.matches(typeUp)) {
-      return WEIBULL;
-   }
-// 
-   LogIO os(LogOrigin("LatticeAddNoise", "stringToType", WHERE));
-   os << "Unrecognized distribution type " << typeUp  << LogIO::EXCEPTION;   
-//
-   LatticeAddNoise::Types x(NORMAL);
-   return x;
-}
 
 // Private
 
-void LatticeAddNoise::addNoiseToArray (Array<Float>& data, Random& noiseGen) const
+void LatticeAddNoise::addNoiseToArray (Array<Float>& data) 
 {
    Bool deleteIt;
    Float* p = data.getStorage(deleteIt);
    for (uInt i=0; i<data.nelements(); i++) {
-      p[i] += noiseGen();
+      p[i] += (*itsNoise)();
    }
    data.putStorage(p, deleteIt);
 }
 
-void LatticeAddNoise::addNoiseToArray (Array<Complex>& data, Random& noiseGen) const
+void LatticeAddNoise::addNoiseToArray (Array<Complex>& data) 
 {
    Bool deleteIt;
    Complex* p = data.getStorage(deleteIt);
@@ -254,8 +153,8 @@ void LatticeAddNoise::addNoiseToArray (Array<Complex>& data, Random& noiseGen) c
 
 // Add noise to real and imag separately
 
-      rr = real(p[i]) + noiseGen();
-      ii = imag(p[i]) + noiseGen();
+      rr = real(p[i]) + (*itsNoise)();
+      ii = imag(p[i]) + (*itsNoise)();
 //
       p[i] = Complex(rr,ii);
    }
@@ -263,192 +162,20 @@ void LatticeAddNoise::addNoiseToArray (Array<Complex>& data, Random& noiseGen) c
 }
 
 
-void LatticeAddNoise::checkPars (LatticeAddNoise::Types type,
-                                 const Vector<Double>& pars) const
+void LatticeAddNoise::makeDistribution ()
 {
-   LogIO os(LogOrigin("LatticeAddNoise", "checkNoise", WHERE));
-//
-   const uInt n0 = defaultParameters(type).nelements();
-   if (pars.nelements() != n0) {
-     os << "For the " << typeToString(type) << " distribution you must give " 
-        << n0 << " parameters" << LogIO::EXCEPTION;
+   if (itsNoise) {
+      delete itsNoise;
+      itsNoise = 0;
    }
 //
-   if (type==BINOMIAL) {
-      if (pars(0) <= 0.0) {
-        os << "For the binomial distribution, it is required pars(0) > 0" << LogIO::EXCEPTION;
-      }
-      if (pars(1)<0.0 || pars(1)>1) {
-        os << "For the binomial distribution, it is required 0 <= pars(1) <=1" << LogIO::EXCEPTION;
-      }
-   } else if (type==DISCRETEUNIFORM) {
-      if (pars(1) <= pars(0)) {
-        os << "For the discreteuniform distribution, it is required pars(1) > pars(0)" << LogIO::EXCEPTION;
-      }
-   } else if (type==ERLANG) {
-      if (pars(0)==0.0) {
-         os << "For the erlang distribution, it is required pars(0) is non-zero" << LogIO::EXCEPTION;
-      }
-      if (pars(1)<=0) {
-         os << "For the erlang distribution, it is required pars(1) > 0" << LogIO::EXCEPTION;
-      }
-   } else if (type==GEOMETRIC) {
-      if (pars(0)<0 || pars(0)>=1) {
-         os << "For the geometric distribution, it is required 0 <= pars(0) < 1" << LogIO::EXCEPTION;
-      }
-   } else if (type==HYPERGEOMETRIC) {
-      if (pars(0)==0.0) {
-         os << "For the hypergeometric distribution, it is required pars(0) is non-zero" << LogIO::EXCEPTION;
-      }
-      if (pars(1)<0) {
-         os << "For the hypergeometric distribution, it is required pars(1) > 0" << LogIO::EXCEPTION;
-      }
-      if (pars(0) > sqrt(pars(1))) {
-         os << "For the hypergeometric distribution, it is required pars(0) < sqrt(pars(1))" << LogIO::EXCEPTION;
-      }
-   } else if (type==NORMAL) {
-      if (pars(1)<=0) {
-         os << "For the normal distribution, it is required pars(1) > 0" << LogIO::EXCEPTION;
-      }
-   } else if (type==LOGNORMAL) {
-      if (pars(0)==0.0) {
-         os << "For the lognormal distribution, it is required pars(0) is non-zero" << LogIO::EXCEPTION;
-      }
-      if (pars(1)<0) {
-         os << "For the lognormal distribution, it is required pars(1) > 0" << LogIO::EXCEPTION;
-      }
-   } else if (type==POISSON) {
-      if (pars(0)<0) {
-         os << "For the poission distribution, it is required pars(0) >= 0" << LogIO::EXCEPTION;
-      }
-   } else if (type==UNIFORM) {
-      if (pars(1) <= pars(0)) {
-        os << "For the uniform distribution, it is required pars(1) > pars(0)" << LogIO::EXCEPTION;
-      }
-   } else if (type==WEIBULL) {
-      if (pars(0)==0.0) {
-         os << "For the weibull distribution, it is required pars(0) is non-zero" << LogIO::EXCEPTION;
+   itsNoise = Random::construct(itsType, &itsGen);
+   if (itsNoise) {
+      if (!itsNoise->checkParameters(itsParameters)) {
+         LogIO os(LogOrigin("LatticeAddNoise", "makeDistribution", WHERE));
+         os << "The distribution parameters are illegal" << LogIO::EXCEPTION;
+      } else {
+         itsNoise->setParameters(itsParameters);
       }
    }
-}   
-
-
-Random* LatticeAddNoise::makeDistribution (LatticeAddNoise::Types type,
-                                           const Vector<Double>& pars) 
-{
-   Random* pNoise = 0;
-//
-   switch (type) {
-   case BINOMIAL:
-      pNoise = new Binomial(&itsGen, Int(floor(pars(0))), pars(1));
-   break;
-   case DISCRETEUNIFORM:
-      pNoise = new DiscreteUniform(&itsGen, Int(floor(pars(0))), Int(floor(pars(1))));
-   break;
-   case ERLANG:
-      pNoise = new Erlang (&itsGen, pars(0), pars(1));
-   break;
-   case GEOMETRIC:
-      pNoise = new Geometric (&itsGen, pars(0));
-   break;
-   case HYPERGEOMETRIC:
-      pNoise = new HyperGeometric (&itsGen, pars(0), pars(1));
-   break;
-   case NORMAL:
-      pNoise = new Normal (&itsGen, pars(0), pars(1));
-   break;
-   case LOGNORMAL:
-      pNoise = new LogNormal (&itsGen, pars(0), pars(1));
-   break;
-   case NEGATIVEEXPONENTIAL:
-      pNoise = new NegativeExpntl (&itsGen, pars(0));
-   break;
-   case POISSON:
-      pNoise = new Poisson (&itsGen, pars(0));
-   break;
-   case UNIFORM:
-      pNoise = new Uniform (&itsGen, pars(0), pars(1));
-   break;
-   case WEIBULL:
-      pNoise = new Weibull (&itsGen, pars(0), pars(1));
-   break;
-   case NTYPES:   // shut compiler up
-   break;
-   }
-//
-   return pNoise;
 }
-
-
-
-Vector<Double> LatticeAddNoise::defaultParameters (LatticeAddNoise::Types type)
-{
-   LogIO os(LogOrigin("LatticeAddNoise", "checkNoise", WHERE));
-   Vector<Double> pars(2);
-//
-   switch (type) {
-   case BINOMIAL:
-      {
-         pars(0) = 1; pars(1) = 0.5;
-      }
-   break;
-   case DISCRETEUNIFORM:
-      {
-         pars(0) = -100; pars(1) = 100;
-      }
-   break;
-   case ERLANG:
-      {
-         pars(0) = 0.5; pars(1) = 1.0;
-      }
-   break;
-   case GEOMETRIC:
-      {
-         pars.resize(1);
-         pars(0) = 0.5;
-      }
-   break;
-   case HYPERGEOMETRIC:
-      {
-         pars(0) = 0.5; pars(1) = 1.0;
-      }
-   break;
-   case NORMAL:
-      {
-         pars(0) = 0.5; pars(1) = 1.0;
-      }
-   break;
-   case LOGNORMAL:
-      {
-         pars(0) = 1.0; pars(1) = 1.0;
-      }
-   break;
-   case NEGATIVEEXPONENTIAL:
-      {
-         pars.resize(1);
-         pars(0) = 1.0;
-      }
-   break;
-   case POISSON:
-      {
-         pars.resize(1);
-         pars(0) = 0.5;
-      }
-   break;
-   case UNIFORM:
-      {
-         pars(0) = -10.0; pars(1) = 10.0;
-      }
-   break;
-   case WEIBULL:
-      {
-         pars(0) = 0.5; pars(1) = 1;
-      }
-   break;
-   default:
-      os << "Unrecognized distribution" << LogIO::EXCEPTION;
-   }
-//
-   return pars;
-}
-
