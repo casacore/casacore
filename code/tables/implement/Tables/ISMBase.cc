@@ -1,5 +1,5 @@
 //# ISMBase.cc: Base class of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -185,11 +185,11 @@ DataManagerColumn* ISMBase::makeIndArrColumn (const String&,
     return colp;
 }
 
-DataManager* ISMBase::makeObject (const String&)
+DataManager* ISMBase::makeObject (const String& group)
 {
     // This function is called when reading a table back.
     // Construct it with the default bucket size and cache size.
-    return new ISMBase (0, False);
+    return new ISMBase (group, 0, False, 0);
 }
 
 void ISMBase::setCacheSize (uInt cacheSize)

@@ -1,5 +1,5 @@
 //# TiledColumnStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,9 +72,9 @@ DataManager* TiledColumnStMan::clone() const
     return smp;
 }
 
-DataManager* TiledColumnStMan::makeObject (const String&)
+DataManager* TiledColumnStMan::makeObject (const String& group)
 {
-    TiledColumnStMan* smp = new TiledColumnStMan();
+    TiledColumnStMan* smp = new TiledColumnStMan (group, IPosition());
     if (smp == 0) {
 	throw (AllocError ("TiledColumnStMan::makeObject", 1));
     }

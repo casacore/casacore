@@ -267,11 +267,11 @@ DataManagerColumn* SSMBase::makeIndArrColumn (const String&,
   return aColumn;
 }
 
-DataManager* SSMBase::makeObject (const String&)
+DataManager* SSMBase::makeObject (const String& group)
 {
   // This function is called when reading a table back.
   // Construct it with the default bucket size and cache size.
-  return new SSMBase ();
+  return new SSMBase (group);
 }
 
 void SSMBase::setCacheSize (uInt aCacheSize)
@@ -860,6 +860,7 @@ void SSMBase::recreate()
   for (uInt i=0; i<aNrCol; i++) {
     itsPtrColumn[i]->doCreate(itsNrRows);
   }
+  isDataChanged = True;
 }
 
 Bool SSMBase::flush (AipsIO& ios, Bool doFsync)

@@ -74,9 +74,9 @@ DataManager* TiledShapeStMan::clone() const
     return smp;
 }
 
-DataManager* TiledShapeStMan::makeObject (const String&)
+DataManager* TiledShapeStMan::makeObject (const String& group)
 {
-    TiledShapeStMan* smp = new TiledShapeStMan();
+    TiledShapeStMan* smp = new TiledShapeStMan (group, IPosition());
     if (smp == 0) {
 	throw (AllocError ("TiledShapeStMan::makeObject", 1));
     }

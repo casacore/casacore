@@ -1,5 +1,5 @@
 //# TiledDataStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,9 +63,9 @@ DataManager* TiledDataStMan::clone() const
     return smp;
 }
 
-DataManager* TiledDataStMan::makeObject (const String&)
+DataManager* TiledDataStMan::makeObject (const String& group)
 {
-    TiledDataStMan* smp = new TiledDataStMan();
+    TiledDataStMan* smp = new TiledDataStMan (group);
     if (smp == 0) {
 	throw (AllocError ("TiledDataStMan::makeObject", 1));
     }
