@@ -2072,3 +2072,5 @@
 08 276 src rm trial/implement/MeasurementComponents/FFTBase.h
 08 276 src rm trial/implement/MeasurementComponents/FFTBase.cc
 08 276 src rm trial/implement/MeasurementComponents/FTCoh.h
+08 276 src rm trial/implement/MeasurementComponents/DFTCoh.h
+08 276 src rm trial/implement/MeasurementComponents/DFTCoh.cc
