@@ -450,8 +450,11 @@ TSMCube* TiledShapeStMan::getHypercube (uInt rownr)
     if (nrUsedRowMap_p == 0  ||  rownr > rowMap_p[nrUsedRowMap_p-1]) {
         return cubeSet_p[0];
     }
-    if (lastHC_p < 0  ||  rownr < rowMap_p[lastHC_p]
-    ||  rownr >= rowMap_p[1+lastHC_p]) {
+    // Test if the row number is in the most recently used interval.
+    // See description in function updateRowMap (about line 340)
+    // how intervals are defined.
+    if (lastHC_p < 0  ||  rownr > rowMap_p[lastHC_p]
+    ||  (lastHC_p > 0  &&  rownr <= rowMap_p[lastHC_p-1])) {
         Bool found;
 	lastHC_p = binarySearchBrackets (found, rowMap_p, rownr,
 					 nrUsedRowMap_p);
@@ -474,8 +477,11 @@ TSMCube* TiledShapeStMan::getHypercube (uInt rownr, IPosition& position)
 	position = shp;
         return hypercube;
     }
-    if (lastHC_p < 0  ||  rownr < rowMap_p[lastHC_p]
-    ||  rownr >= rowMap_p[1+lastHC_p]) {
+    // Test if the row number is in the most recently used interval.
+    // See description in function updateRowMap (about line 340)
+    // how intervals are defined.
+    if (lastHC_p < 0  ||  rownr > rowMap_p[lastHC_p]
+    ||  (lastHC_p > 0  &&  rownr <= rowMap_p[lastHC_p-1])) {
         Bool found;
 	lastHC_p = binarySearchBrackets (found, rowMap_p, rownr,
 					 nrUsedRowMap_p);
