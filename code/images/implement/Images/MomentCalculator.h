@@ -530,26 +530,31 @@ protected:
 // Normalize and fill moments
 
    calcMomentsMask = True;
-//
    calcMoments(IM::AVERAGE) = s0 / nPts;
    calcMoments(IM::INTEGRATED) = s0 * integratedScaleFactor; 
-   calcMoments(IM::WEIGHTED_MEAN_COORDINATE) = s1 / s0;
-   calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 
-     (s2 / s0) - calcMoments(IM::WEIGHTED_MEAN_COORDINATE) *
-                 calcMoments(IM::WEIGHTED_MEAN_COORDINATE);
-   calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
-      abs(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
-   if (calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) > 0.0) {
+   if (s0 > 0.0) {
+      calcMoments(IM::WEIGHTED_MEAN_COORDINATE) = s1 / s0;
+      calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 
+        (s2 / s0) - calcMoments(IM::WEIGHTED_MEAN_COORDINATE) *
+                    calcMoments(IM::WEIGHTED_MEAN_COORDINATE);
       calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
-         sqrt(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
+         abs(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
+      if (calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) > 0.0) {
+         calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) =
+            sqrt(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
+      } else {
+         calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 0.0;
+         calcMomentsMask(IM::WEIGHTED_DISPERSION_COORDINATE) = False;
+      }
    } else {
-      calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 0.0;
+      calcMomentsMask(IM::WEIGHTED_MEAN_COORDINATE) = False;
       calcMomentsMask(IM::WEIGHTED_DISPERSION_COORDINATE) = False;
    }
 
+
 // Standard deviation about mean of I
                  
-   if (Float((s0Sq - s0*s0/nPts)/(nPts-1)) > 0) {
+   if (nPts>1 && Float((s0Sq - s0*s0/nPts)/(nPts-1)) > 0) {
       calcMoments(IM::STANDARD_DEVIATION) = sqrt((s0Sq - s0*s0/nPts)/(nPts-1));
    } else {
       calcMoments(IM::STANDARD_DEVIATION) = 0;
