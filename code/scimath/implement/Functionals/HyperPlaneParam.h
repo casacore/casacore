@@ -96,7 +96,7 @@ template<class T> class HyperPlaneParam : public Function<T> {
   // default, the coefficients are initialized to zero. The default plane has
   // <src>m=0</src>
   // <group>
-  explicit HyperPlaneParam(const uInt m=0);
+  explicit HyperPlaneParam(uInt m=0);
   // </group>
 
   // Copy constructor (deep copy)
