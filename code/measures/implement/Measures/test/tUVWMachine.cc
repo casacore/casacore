@@ -86,6 +86,48 @@ Int main() {
       Double ph;
       um.convertUVW(ph, uvw);
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
+
+      cout << "Repeat with copied UVW machine" << endl;
+      UVWMachine umcp(um);
+      cout << "Converted to:  " << umcp.phaseCenter() << endl;
+      cout << "               " << umcp.phaseCenter().getAngle("deg") << endl;
+      cout << "UVW rotation matrix: " << umcp.rotationUVW() << endl;
+      mIm1 = umcp.phaseCenter();	// save for later
+      uvw = UVW;		// save UVW
+      uvw *= umcp.rotationUVW();
+      cout << "New UVW:        " << uvw << endl;
+      cout << "Phase rotation: " << uvw * umcp.rotationPhase() << endl;
+      uvw = UVW;
+      umcp.convertUVW(ph, uvw);
+      cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
+
+      cout << "Repeat with assigned UVW machine" << endl;
+      UVWMachine umas = um;
+      cout << "Converted to:  " << umas.phaseCenter() << endl;
+      cout << "               " << umas.phaseCenter().getAngle("deg") << endl;
+      cout << "UVW rotation matrix: " << umas.rotationUVW() << endl;
+      mIm1 = umas.phaseCenter();	// save for later
+      uvw = UVW;		// save UVW
+      uvw *= umas.rotationUVW();
+      cout << "New UVW:        " << uvw << endl;
+      cout << "Phase rotation: " << uvw * umas.rotationPhase() << endl;
+      uvw = UVW;
+      umas.convertUVW(ph, uvw);
+      cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
+
+      cout << "Repeat after reCalculate()" << endl;
+      umas.reCalculate();
+      cout << "Converted to:  " << umas.phaseCenter() << endl;
+      cout << "               " << umas.phaseCenter().getAngle("deg") << endl;
+      cout << "UVW rotation matrix: " << umas.rotationUVW() << endl;
+      mIm1 = umas.phaseCenter();	// save for later
+      uvw = UVW;		// save UVW
+      uvw *= umas.rotationUVW();
+      cout << "New UVW:        " << uvw << endl;
+      cout << "Phase rotation: " << uvw * umas.rotationPhase() << endl;
+      uvw = UVW;
+      umas.convertUVW(ph, uvw);
+      cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
     }
 
     { 

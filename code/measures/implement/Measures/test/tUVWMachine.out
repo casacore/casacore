@@ -18,6 +18,39 @@ UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
 New UVW:        [-737.906, -1939.54, 1168.62]
 Phase rotation: 0
 Phase: 0, UVW: [-737.906, -1939.54, 1168.62]
+Repeat with copied UVW machine
+Converted to:  Direction: [-0.991307, -0.126601, 0.0358136]
+               [-172.722, 2.05241] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[1, 0.000588765, -1.46416e-06
+ -0.000589093, 1, 1.45227e-06
+ -4.17058e-07, 3.64766e-07, 1]
+
+New UVW:        [-737.906, -1939.54, 1168.62]
+Phase rotation: 0
+Phase: 0, UVW: [-737.906, -1939.54, 1168.62]
+Repeat with assigned UVW machine
+Converted to:  Direction: [-0.991307, -0.126601, 0.0358136]
+               [-172.722, 2.05241] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[1, 0.000588765, -1.46416e-06
+ -0.000589093, 1, 1.45227e-06
+ -4.17058e-07, 3.64766e-07, 1]
+
+New UVW:        [-737.906, -1939.54, 1168.62]
+Phase rotation: 0
+Phase: 0, UVW: [-737.906, -1939.54, 1168.62]
+Repeat after reCalculate()
+Converted to:  Direction: [-0.991307, -0.126601, 0.0358136]
+               [-172.722, 2.05241] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[1, 0.000588765, -1.46416e-06
+ -0.000589093, 1, 1.45227e-06
+ -4.17058e-07, 3.64766e-07, 1]
+
+New UVW:        [-737.906, -1939.54, 1168.62]
+Phase rotation: 0
+Phase: 0, UVW: [-737.906, -1939.54, 1168.62]
 -------- B1950 -> B1950+offset ---------
 Input coordinates: Direction: [-0.992475, -0.11551, 0.0406321]
                  : [-173.361, 2.32869] deg
