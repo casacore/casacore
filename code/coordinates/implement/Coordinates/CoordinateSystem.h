@@ -144,6 +144,16 @@ public:
     // transposing and removing axes.
     uInt nCoordinates() const;
 
+    // For a given coordinate say where it's world and coordinate axes are in this
+    // coordinate system. The position in the returned Vector is its position in the
+    // original coordinate system, and its value is the axis number in the coordinate
+    // system. If the value is less than zero the axis has been removed from this
+    // CoordinateSystem.
+    // <group> 
+    Vector<Int> worldAxes(uInt whichCoord) const;
+    Vector<Int> pixelAxes(uInt whichCoord) const;
+    // </group> 
+
     // Return the type of the given coordinate.
     Coordinate::Type type(uInt whichCoordinate) const;
 
@@ -227,6 +237,14 @@ public:
     // they must be compatible, e.g. they can't change from time to length.
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
+
+    // Provide a common interface to getting formatted representations of
+    // coordinate values out. The default implementation merely turns
+    // the number into a string using operator<<(Double). Derived classes
+    // might, e.g., use an hms representation. sigDigits <=1 means make
+    // your best guess.
+    virtual String format(Double worldValue, uInt worldAxis, 
+			  Int sigDigits = -1) const;
 
     // Save ourself into the supplised record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.

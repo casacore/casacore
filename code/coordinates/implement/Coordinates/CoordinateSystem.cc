@@ -443,6 +443,43 @@ void CoordinateSystem::findPixelAxis(Int &coordinate, Int &axisInCoordinate,
     }
 }
 
+Vector<Int> CoordinateSystem::worldAxes(uInt whichCoord) const
+{
+    // Implemented in terms of the public member functions. It would be more
+    // efficient to use the private data, but would be harder to maintain.
+    // This isn't apt to be called often, so choose the easier course.
+    AlwaysAssert(whichCoord < nCoordinates(), AipsError);
+    Vector<Int> retval(coordinate(whichCoord).nWorldAxes());
+
+    retval = -1;  // Axes which aren't found must be removed!
+    const uInt naxes = nWorldAxes();
+    for (uInt i=0; i<naxes; i++) {
+	Int coord, axis;
+	findWorldAxis(coord, axis, i);
+	if (coord == whichCoord) {
+	    retval(axis) = i;
+	}
+    }
+    return retval;
+}
+
+Vector<Int> CoordinateSystem::pixelAxes(uInt whichCoord) const
+{
+    AlwaysAssert(whichCoord < nCoordinates(), AipsError);
+    Vector<Int> retval(coordinate(whichCoord).nPixelAxes());
+
+    retval = -1;  // Axes which aren't found must be removed!
+    const uInt naxes = nPixelAxes();
+    for (uInt i=0; i<naxes; i++) {
+	Int coord, axis;
+	findPixelAxis(coord, axis, i);
+	if (coord == whichCoord) {
+	    retval(axis) = i;
+	}
+    }
+    return retval;
+}
+
 Coordinate::Type CoordinateSystem::type() const
 {
     return Coordinate::COORDSYS;
@@ -780,6 +817,21 @@ Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
 
     return ok;
 }
+
+String CoordinateSystem::format(Double worldValue, uInt worldAxis, 
+				Int sigDigits) const
+{
+    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
+
+    Int coord, axis;
+    findWorldAxis(coord, axis, worldAxis);
+
+    // Should never fail
+    AlwaysAssert(coord>=0 && axis >= 0, AipsError);
+
+    return coordinate(coord).format(worldValue, axis, sigDigits);
+}
+
 
 Bool CoordinateSystem::save(RecordInterface &container,
 			    const String &fieldName) const
