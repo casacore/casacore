@@ -1,5 +1,5 @@
 //# tLCExtension.cc: Test program for LCExtension class
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -135,8 +135,8 @@ main()
 	      IPosition(1,4));
 	doIt (polygon, IPosition(1,1), IPosition(1,2), IPosition(1,3),
 	      IPosition(1,20));
-	doIt (polygon, IPosition(2,0,2), IPosition(2,2,0), IPosition(2,3,2),
-	      IPosition(2,20,10));
+	doIt (polygon, IPosition(2,2,0), IPosition(2,0,2), IPosition(2,2,3),
+	      IPosition(2,10,20));
 	// Trc outside lattice, is silently adjusted
 	doIt (polygon, IPosition(1,2), IPosition(1,2), IPosition(1,5),
 	      IPosition(1,3));
