@@ -90,15 +90,15 @@
 // possibility is its main reason for existence). A simple B1950-J2000
 // coordinate conversion example:
 // <srcblock>
-//  cout <<       		//  output
-//				//  the conversion of a B1950 direction
+//  cout <<       		// output
+//				// the conversion of a B1950 direction
 //	MDirection::Convert( MDirection( Quantity( 20, "deg"),
 //				         Quantity(-10, "deg"),
 //					 MDirection::Ref( MDirection::B1950)),
-//				//  to J2000
+//				// to J2000
 //			     MDirection::Ref( MDirection::J2000)) () 
-//				//  where the constructor sets up a conversion
-//				//  engine, and the operator() converts
+//				// where the constructor sets up a conversion
+//				// engine, and the operator() converts
 //		<< endl;
 // </srcblock>
 // or converting an UTC to a local apparent sidereal time:
