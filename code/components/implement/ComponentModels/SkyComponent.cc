@@ -50,6 +50,9 @@ SkyComponent::SkyComponent(ComponentType::Type type) {
     theCompPtr = new PointCompRep; break;
   case ComponentType::GAUSSIAN:
     theCompPtr = new GaussianCompRep; break;
+  case ComponentType::UNKNOWN:
+    throw(AipsError("SkyComponent::Unable to construct a component of "
+		    "UNKNOWN type"));
   };    
   AlwaysAssert(ok(), AipsError);
 };
