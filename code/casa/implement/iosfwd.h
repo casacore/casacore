@@ -35,23 +35,6 @@
 
 // Make sure any special macros are set
 #include <aips/aips.h>
-
-#if !defined(AIPS_USE_OLD_STREAM)
 #include <iosfwd>
-#else
-   // This ifdef is a temporary fix for the SGI compiler because it
-   // appears the forward declaration of the stream classes is not taking
-   // hold.
-#ifdef __sgi
-#include <iostream.h>
-#else
-class ostream;
-class istream;
-class iostream;
-#endif
-class fstream;
-class ifstream;
-class ofstream;
-#endif
 
 #endif

@@ -34,21 +34,11 @@
 
 // Make sure any special macros are set
 #include <aips/aips.h>
-
-#if !defined(AIPS_USE_OLD_STREAM)
 // gcc has no <ostream> yet. Change later
 #if defined(__GNUG__)
 #include <iostream>
 #else
 #include <ostream>
-#endif
-#else
-// sgi has no ostream.h
-#if defined(__sgi)
-#include <iostream.h>
-#else
-#include <ostream.h>
-#endif
 #endif
 
 #endif

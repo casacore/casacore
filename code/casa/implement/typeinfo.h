@@ -34,11 +34,6 @@
 
 // Make sure any special macros are set
 #include <aips/aips.h>
-
-#if !defined(AIPS_USE_OLD_STREAM)
 #include <typeinfo>
-#else
-#include <typeinfo.h>
-#endif
 
 #endif

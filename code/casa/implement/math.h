@@ -37,14 +37,6 @@
 
 #if defined(__sgi)
 #include <math.h>
-#if defined(AIPS_USE_OLD_STREAM)
-inline Float abs(Float Val) {if (Val >= 0) return Val; else return -Val;}
-inline Double abs(Double Val) {return fabs(Val);}
-// The following is not yet part of some of the cmath include file. Should be
-// removed at some stage
-inline Float pow(Float f1, Float f2) {
-  return Float(pow(Double(f1), Double(f2))); };
-#endif
 #else
 #include <cmath>
 // The following is not yet part of some of the cmath include file. Should be

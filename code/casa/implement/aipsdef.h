@@ -56,9 +56,9 @@ extern Bool aips_debug_on;
 #define aips_debug aips_debug_on
 #endif
 
-// With sgi the AIPS_USE_NEW_SGI switch is always set t0 cater for
-// still existing problesm in FFTPack and SquareMatrix. It should be removed
-// at some stage
+// With sgi the AIPS_USE_NEW_SGI switch is always set to cater for
+// still existing problems in FFTPack and SquareMatrix. It should be removed
+// at some stage.
 // Note that for the gcc compiler 'std::' is recognised as '::' for now.
 #if defined(__sgi)
 #define AIPS_USE_NEW_SGI

@@ -35,20 +35,7 @@
 
 // Make sure any special macros are set
 #include <aips/aips.h>
-
-#if !defined(AIPS_USE_OLD_STREAM)
 #include <iosfwd>
 #include <strstream>
-#else
-class ostream;
-class istream;
-class iostream;
-class fstream;
-class ifstream;
-class ofstream;
-class istrstream;
-class ostrstream;
-class strstream;
-#endif
 
 #endif
