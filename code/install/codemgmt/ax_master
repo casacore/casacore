@@ -2195,3 +2195,5 @@
 11 144 src mv nrao/implement/FITS/GBTWeather.h nrao/implement/FITS/OldGBTWeather.h
 11 144 src mv nrao/implement/FITS/GBTWeather.cc nrao/implement/FITS/OldGBTWeather.cc
 11 144 src mv nrao/implement/FITS/GBTPositionTable.h nrao/implement/FITS/OldGBTPositionTable.h
+11 144 src rm doc/user/Refman.dir/gbtmsfiller.ps
+11 144 src rm trial/scripts/gbtmsfiller.ps
