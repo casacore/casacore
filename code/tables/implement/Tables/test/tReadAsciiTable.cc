@@ -44,8 +44,11 @@
 // compares the results with the reference output file.
 
 void a (const String& dir);
-void a1 (const String& dir);
-void b (const String& dir, const String& postfix, Char separator);
+void a1 (const String& dir, const String& commentMarker,
+	 Int firstLine, Int lastLine);
+void b (const String& dir, const String& suffix, Char separator,
+	const String& commentMarker,
+	Int firstLine, Int lastLine);
 void b1 (const String& dir);
 void b2 (const String& dir);
 
@@ -56,9 +59,14 @@ int main (int argc, char** argv) {
 	    dir = argv[1];
 	}
 	a (dir);
-	a1 (dir);
-	b (dir, "", ' ');
-	b (dir, "c", ',');
+	a1 (dir, "", -1, -1);
+	a1 (dir, "1 ", -1, -1);
+	a1 (dir, "", 1, 2);
+	a1 (dir, "", 2, -1);
+	b (dir, "", ' ', " *#", 1, -1);
+	b (dir, "", ' ', " #", 2, 3);
+	b (dir, "c", ',', "", -1, -1);
+	b (dir, "c", ',', "K", -1, -1);
 	b1 (dir);
 	b2 (dir);
     } catch (AipsError x) {
@@ -91,11 +99,13 @@ void a (const String& dir)
     }
 }
 
-void a1 (const String& dir)
+void a1 (const String& dir, const String& commentMarker,
+	 Int firstLine, Int lastLine)
 {
     cout << ">>>" << endl;
     String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tah", "",
-				     "tReadAsciiTable_tmp.data_tah", True);
+				     "tReadAsciiTable_tmp.data_tah", True,
+				     ' ', commentMarker, firstLine, lastLine);
     cout << "<<<" << endl;
     cout << "Input format: [" << formStr << ']' << endl;
     Table tab("tReadAsciiTable_tmp.data_tah");
@@ -117,14 +127,16 @@ void a1 (const String& dir)
     }
 }
 
-void b (const String& dir, const String& postfix, Char separator)
+void b (const String& dir, const String& suffix, Char separator,
+	const String& commentMarker, Int firstLine, Int lastLine)
 {
     cout << ">>>" << endl;
-    String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh" + postfix,
-				     dir + "tReadAsciiTable.in_tkd" + postfix,
+    String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh" + suffix,
+				     dir + "tReadAsciiTable.in_tkd" + suffix,
 				     "tReadAsciiTable_tmp",
 				     "tReadAsciiTable_tmp.data_tk",
-				     separator);
+				     separator, commentMarker,
+				     firstLine, lastLine);
     cout << "<<<" << endl;
     cout << "Input format: [" << formStr << ']' << endl;
     cout << endl;
@@ -134,27 +146,29 @@ void b (const String& dir, const String& postfix, Char separator)
     Table tab("tReadAsciiTable_tmp.data_tk");
     const TableRecord& keys = tab.keywordSet();
     cout << keys.description();
-    cout << "KEYS " << keys.asShort ("KEYS") << endl;
-    cout << "KEYI " << keys.asInt ("KEYI") << endl;
-    cout << "KEYF " << keys.asfloat ("KEYF") << endl;
-    cout << "KEYD " << keys.asdouble ("KEYD") << endl;
-    cout << "KEYX " << keys.asComplex ("KEYX") << endl;
-    cout << "KEYZ " << keys.asComplex ("KEYZ") << endl;
-    cout << "KEYDX " << keys.asDComplex ("KEYDX") << endl;
-    cout << "KEYDZ " << keys.asDComplex ("KEYDZ") << endl;
-    cout << "KEYA " << keys.asString ("KEYA") << endl;
-    cout << "KEYB " << keys.asBool ("KEYB") << endl;
-    cout << "KEYSV " << keys.asArrayShort ("KEYSV") << endl;
-    cout << "KEYIV " << keys.asArrayInt ("KEYIV") << endl;
-    cout << "KEYFV " << keys.asArrayfloat ("KEYFV") << endl;
-    cout << "KEYDV " << keys.asArraydouble ("KEYDV") << endl;
-    cout << "KEYXC " << keys.asArrayComplex ("KEYXC") << endl;
-    cout << "KEYZV " << keys.asArrayComplex ("KEYZV") << endl;
-    cout << "KEYDXC " << keys.asArrayDComplex ("KEYDXC") << endl;
-    cout << "KEYDZV " << keys.asArrayDComplex ("KEYDZV") << endl;
-    cout << "KEYAV " << keys.asArrayString ("KEYAV") << endl;
-    cout << "KEYBV " << keys.asArrayBool ("KEYBV") << endl;
-    cout << endl;
+    if (commentMarker != "K") {
+      cout << "KEYS " << keys.asShort ("KEYS") << endl;
+      cout << "KEYI " << keys.asInt ("KEYI") << endl;
+      cout << "KEYF " << keys.asfloat ("KEYF") << endl;
+      cout << "KEYD " << keys.asdouble ("KEYD") << endl;
+      cout << "KEYX " << keys.asComplex ("KEYX") << endl;
+      cout << "KEYZ " << keys.asComplex ("KEYZ") << endl;
+      cout << "KEYDX " << keys.asDComplex ("KEYDX") << endl;
+      cout << "KEYDZ " << keys.asDComplex ("KEYDZ") << endl;
+      cout << "KEYA " << keys.asString ("KEYA") << endl;
+      cout << "KEYB " << keys.asBool ("KEYB") << endl;
+      cout << "KEYSV " << keys.asArrayShort ("KEYSV") << endl;
+      cout << "KEYIV " << keys.asArrayInt ("KEYIV") << endl;
+      cout << "KEYFV " << keys.asArrayfloat ("KEYFV") << endl;
+      cout << "KEYDV " << keys.asArraydouble ("KEYDV") << endl;
+      cout << "KEYXC " << keys.asArrayComplex ("KEYXC") << endl;
+      cout << "KEYZV " << keys.asArrayComplex ("KEYZV") << endl;
+      cout << "KEYDXC " << keys.asArrayDComplex ("KEYDXC") << endl;
+      cout << "KEYDZV " << keys.asArrayDComplex ("KEYDZV") << endl;
+      cout << "KEYAV " << keys.asArrayString ("KEYAV") << endl;
+      cout << "KEYBV " << keys.asArrayBool ("KEYBV") << endl;
+      cout << endl;
+    }
     {
       ROTableColumn tabcol (tab, "COLI");
       const TableRecord& keycol = tabcol.keywordSet();
@@ -192,7 +206,8 @@ void b1 (const String& dir)
 {
     cout << ">>>" << endl;
     String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh", "",
-				     "tReadAsciiTable_tmp.data_tk");
+				     "tReadAsciiTable_tmp.data_tk", False,
+				     ' ', " #");
     cout << "<<<" << endl;
     cout << "Input format: [" << formStr << ']' << endl;
     cout << endl;
@@ -257,7 +272,8 @@ void b2 (const String& dir)
 {
     cout << ">>>" << endl;
     String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh", "",
-				     "tReadAsciiTable_tmp.data_tk", True);
+				     "tReadAsciiTable_tmp.data_tk", True,
+				     ' ', " #");
     cout << "<<<" << endl;
     cout << "Input format: [" << formStr << ']' << endl;
     cout << endl;
