@@ -3430,3 +3430,4 @@
 13 264 src mv trial/implement/TableMeasures/TableQuantumDesc.h aips/implement/TableMeasures/TableQuantumDesc.h
 13 264 src mv trial/implement/TableMeasures/TableQuantumDesc.cc aips/implement/TableMeasures/TableQuantumDesc.cc
 13 264 src mv trial/implement/TableMeasures/makefile aips/implement/TableMeasures/makefile
+13 264 src mv trial/implement/TableMeasures/ScalarQuantColumn.h aips/implement/TableMeasures/ScalarQuantColumn.h
