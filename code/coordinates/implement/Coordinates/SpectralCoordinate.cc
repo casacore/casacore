@@ -38,6 +38,7 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
+#include <trial/FITS/FITSUtil.h>
 
 #if defined(__GNUG__)
 typedef Interpolate1D<Double,Double> gpp_bug;
@@ -325,6 +326,17 @@ Vector<Double> SpectralCoordinate::pixelCorrections() const
     return retval;
 }
 
+MFrequency::Types SpectralCoordinate::frequencySystem() const
+{
+    return type_p;
+}
+
+void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
+{
+    type_p = type;
+}
+
+
 Bool SpectralCoordinate::setRestFrequency(Double newFrequency)
 {
     restfreq_p = newFrequency;
@@ -486,7 +498,7 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 		LogIO &logger, Bool oneRelative, 
                 Bool preferVelocity,  Bool opticalVelDef) const
 {
-    Double offset = oneRelative == True ? 1.0 : 0.0;
+    const Double offset(1.0*Int(oneRelative == True));
 
     logger << LogOrigin("SpectralCoordinate", "toFITS", WHERE);
 
@@ -522,107 +534,60 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 	header.get("cunit", cunit);
     }
 
-    // Work out what we can about the velocity axis and reference frame
-    String fitsFrame;
-    Int fitsCode = 256 * Int(opticalVelDef==False);
-    switch (type_p) {
-    case MFrequency::LSR:
-	fitsFrame = "LSR";
-	fitsCode += 1;
-	break;
-    case MFrequency::BARY:
-	fitsFrame = "HEL";
-	fitsCode += 2;
-	break;
-    case MFrequency::TOPO:
-	fitsFrame = "OBS";
-	fitsCode += 3;
-	break;
-    default:
-	fitsFrame = "OBS";
-	fitsCode += 3;
-	logger << LogIO::NORMAL << "Cannot turn spectral type# " << type_p <<
-	    " into a FITS spectral frame. Using OBS" << LogIO::POST;
-    }
+    // Wacky capitalizatoin to avoid running into other variables
+    String Ctype;
+    Double Crval, Cdelt, Crpix, Altrval, Altrpix;
+    Int Velref;
+    Bool HaveAlt;
+    Double Restfreq = Quantity(restfreq_p, unit_p).getBaseValue(); // canonicalized
+    Double RefFreq = Quantity(crval_p, unit_p).getBaseValue();
+    Double FreqInc = Quantity(cdelt_p, unit_p).getBaseValue();
+    MDoppler::Types VelPreference = opticalVelDef ? MDoppler::OPTICAL :
+	MDoppler::RADIO;
+    AlwaysAssert(FITSSpectralUtil::toFITSHeader(Ctype,
+						Crval,
+						Cdelt,
+						Crpix,
+						HaveAlt,
+						Altrval,
+						Altrpix,
+						Velref,
+						Restfreq,
+						logger,
+						RefFreq,
+						crpix_p + offset,
+						FreqInc,
+						type_p,
+						preferVelocity,
+						VelPreference), AipsError);
 
-    Vector<String> oldUnits = worldAxisUnits();
-    Vector<String> newUnits(1); 
-    newUnits = "Hz";
 
-    // Make a copy so we can change the units to canonical (this func is const)
-    SpectralCoordinate coord(*this);
-    AlwaysAssert(coord.setWorldAxisUnits(newUnits), AipsError);
-
-    // Common frequency related headers
-    Double refVelocity, refVelocityDelta;
-    if (coord.restfreq_p > 0) {
-	header.define("velref", fitsCode);
-	header.setComment("velref", "1 LSR, 2 HEL, 3 OBS, +256 Radio");
-	header.define("restfreq", coord.restfreq_p);
-	header.setComment("restfreq", "Rest Frequency");
-
-	// Work out the velocity and delta (AIPS memo #27(Greisen))
-	if (opticalVelDef) {
-	    // OPTICAL
-	    refVelocity = -C::c / coord.referenceValue()(0) * 
-		(coord.referenceValue()(0) - coord.restfreq_p);
-	    refVelocityDelta = -coord.increment()(0)*(C::c + refVelocity) /
-		                  coord.referenceValue()(0);
-	} else {
-	    // RADIO
-	    refVelocity = -C::c / coord.restfreq_p * 
-		(coord.referenceValue()(0) - coord.restfreq_p);
-	    refVelocityDelta = -coord.increment()(0)*(C::c - refVelocity) /
-		                  coord.referenceValue()(0);
-	}
-    }
-
-    if (!preferVelocity || coord.restfreq_p <= 0) {
-	// Frequency is primary
-	if (cunit.nelements() > 0) {
-	    cunit(whichAxis) = "HZ";
-	}
-	crpix(whichAxis) = coord.referencePixel()(0) + offset;
-	crval(whichAxis) = coord.referenceValue()(0);
-	cdelt(whichAxis) = coord.increment()(0);
-	ctype(whichAxis) = "FREQ";
-	while(ctype(whichAxis).length() + fitsFrame.length() < 8) {
-	    ctype(whichAxis) += "-";
-	}
-	ctype(whichAxis) += fitsFrame;
-	if (coord.channel_corrector_p) {
-	    logger << LogIO::NORMAL << 
-		"A frequency offset table has been set - the FITS "
-		"representation is not exact" << LogIO::POST;
-	}
-	if (coord.restfreq_p > 0) {
-	    // Header keywords only needed if we have alternate velocity info
-	    header.define("altrval", refVelocity);
-	    header.setComment("altrval", "Alternate velocity reference value");
-	    header.define("altrpix", coord.referencePixel()(0)+offset);
-	    header.setComment("altrpix", "Alternate velocity reference pixel");
-	}
-    } else {
-	// Velocity is primary
-	if (cunit.nelements() > 0) {
+    ctype(whichAxis) = Ctype;
+    crval(whichAxis) = Crval;
+    crpix(whichAxis) = Crpix;
+    cdelt(whichAxis) = Cdelt;
+    if (cunit.nelements() > 0) {
+	if (Ctype.contains("FELO")) {
 	    cunit(whichAxis) = "M/S";
+	} else if (Ctype.contains("FREQ")) {
+	    cunit(whichAxis) = "HZ";
+	} else {
+	    AlwaysAssert(0, AipsError); // NOTREACHED
 	}
-	// We always have alternative frequency info
-	header.define("altrval", coord.referenceValue()(0));
-	header.setComment("altrval", "Alternate frequency reference value");
-	header.define("altrpix", coord.referencePixel()(0)+offset);
-	header.setComment("altrpix", "Alternate frequency reference pixel");
-	
-	crpix(whichAxis) = coord.referencePixel()(0) + offset;
-	crval(whichAxis) = refVelocity;
-	cdelt(whichAxis) = refVelocityDelta;
-	ctype(whichAxis) = "FELO";
-	while(ctype(whichAxis).length() + fitsFrame.length() < 8) {
-	    ctype(whichAxis) += "-";
-	}
-	ctype(whichAxis) += fitsFrame;
     }
 
+    if (Restfreq > 0) {
+	header.define("restfreq", Restfreq);
+	header.setComment("restfreq", "Rest Frequency (Hz)");
+    }
+    if (HaveAlt) {
+	header.define("altrval", Altrval);
+	header.setComment("altrval", "Alternate frequency reference value");
+	header.define("altrpix", Altrpix);
+	header.setComment("altrpix", "Alternate frequency reference pixel");
+	header.define("velref", Velref);
+	header.setComment("velref", "1 LSR, 2 HEL, 3 OBS, +256 Radio");
+    }
 
     // OK, put the primary header information back
     header.define("ctype", ctype);
@@ -639,159 +604,37 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &error,
 				  uInt whichAxis, LogIO &logger,
 				  Bool oneRelative)
 {
-    Double offset = oneRelative == True ? 1.0 : 0.0;
-
-    logger << LogOrigin("SpectralCoordinate", "fromFITS", WHERE);
-
-    // Verify that the required headers exist and are the right type
-    if (! (header.isDefined("ctype") && 
-	   header.dataType("ctype") == TpArrayString &&
-	   header.shape("ctype").nelements() == 1 &&
-	   header.shape("ctype")(0) > whichAxis &&
-	   header.isDefined("crval") && 
-	   header.dataType("crval") == TpArrayDouble &&
-	   header.shape("crval").nelements() == 1 &&
-	   header.shape("crval")(0) > whichAxis &&
-	   header.isDefined("crpix") && 
-	   header.dataType("crpix") == TpArrayDouble &&
-	   header.shape("crpix").nelements() == 1 &&
-	   header.shape("crpix")(0) > whichAxis &&
-	   header.isDefined("cdelt") && 
-	   header.dataType("cdelt") == TpArrayDouble &&
-	   header.shape("cdelt").nelements() == 1 &&
-	   header.shape("cdelt")(0)) ) {
-	error = "ctype,crval,crpix, or cdelt is undefined or the wrong type.";
-	return False;
+    Int spectralAxis;
+    Double referenceChannel, referenceFrequency, deltaFrequency;
+    Vector<Double> frequencies;
+    MFrequency::Types refFrame;
+    MDoppler::Types velocityPreference;
+    Double restFrequency;
+    
+    Bool ok = FITSSpectralUtil::fromFITSHeader(spectralAxis,
+					       referenceChannel,
+					       referenceFrequency,
+					       deltaFrequency,
+					       frequencies,
+					       refFrame,
+					       velocityPreference,
+					       restFrequency,
+					       logger,
+					       header,
+					       'c',
+					       oneRelative);
+    if (ok && spectralAxis == whichAxis) {
+	SpectralCoordinate tmp(refFrame, referenceFrequency, deltaFrequency, 
+			       referenceChannel, restFrequency);
+	out = tmp;
+    } else if (ok && spectralAxis != whichAxis) {
+	logger << LogOrigin("SpectralCoordinate", "fromFITS") << LogIO::SEVERE <<
+	    "Disgreement about where the spectral axis is. " << spectralAxis << " vs. " 
+	       << whichAxis << LogIO::POST;
+	ok = False;
     }
-
-
-    String ctype;
-    Double crval, crpix, cdelt;
-    {
-	Vector<String> ctypetmp;
-	Vector<Double> crvaltmp, cdelttmp, crpixtmp;
-	header.get("ctype", ctypetmp);
-	ctype = ctypetmp(whichAxis);
-	header.get("crval", crvaltmp);
-	crval = crvaltmp(whichAxis);
-	header.get("crpix", crpixtmp);
-	crpix = crpixtmp(whichAxis);
-	header.get("cdelt", cdelttmp);
-	cdelt = cdelttmp(whichAxis);
-    }
-
-    Int velref = -999;
-    if (header.isDefined("velref")) {
-	if (header.dataType("velref") != TpInt) {
-	    logger << LogIO::SEVERE << "Illegal type for VELREF"
-		", assuming topocentric" << LogIO::POST;
-	} else {
-	    header.get("velref", velref);
-	}
-    }
-	
-    // Try to work out OPTICAL/RADIO/...
-    Bool opticalVelocity = True;
-    if (velref > 256) {
-	opticalVelocity = False;
-    }
-
-    Double restfreq = 0.0;
-    if (header.isDefined("restfreq")) {
-	if (header.dataType("restfreq") != TpDouble) {
-	    logger << LogIO::SEVERE << "Illegal type for RESTFREQ"
-		", assuming 0.0 - velocity conversions will be impossible" 
-		   << LogIO::POST;
-	} else {
-	    header.get("restfreq", restfreq);
-	}
-    }
-
-    // Try to work out LSR/OBS/HEL
-    String tag;
-    MFrequency::Types type = MFrequency::TOPO; // The default
-    for (uInt i=4; i<ctype.length(); i++) {
-	if (ctype[i] != '-' && ctype[i] != ' ') {
-	    tag += ctype[i];
-	}
-	if (tag == "LSR") {
-	    type = MFrequency::LSR;
-	} else if (tag == "HEL") {
-	    type = MFrequency::BARY;
-	} else if (tag == "OBS") {
-	    type = MFrequency::TOPO;
-	} else if (tag == "") {
-	    // See if we can get it from VELREF
-	    if (velref >= 0) {
-		switch(velref % 256) {
-		case 1:
-		    type = MFrequency::LSR;
-		    break;
-		case 2:
-		    type = MFrequency::BARY;
-		    break;
-		case 3:
-		    type = MFrequency::TOPO;
-		    break;
-		default:
-		    logger << LogIO::SEVERE << "Illegal value for VELREF("
-			   << velref << 
-			") assuming topocentric" << LogIO::POST;
-		}
-	    } else {
-		// No tag, no VELREF, assume TOPO
-		type = MFrequency::TOPO;
-	    }
-	} else {
-	    type = MFrequency::TOPO;
-	    logger << LogIO::SEVERE << "Unknown spectral type " << tag << 
-		". Assuming OBS" << LogIO::POST;
-	}
-    }
-
-    if (! (ctype.contains("FELO") || ctype.contains("FREQ")) ) {
-	error = "ctype does not contain FELO or FREQ - not a spectral axis!";
-	return False;
-    }
-
-    if (ctype.contains("FREQ")) {
-	// Great - frequency is first, don't need doppler conversions
-	out = SpectralCoordinate(type, crval, cdelt, crpix-offset, restfreq);
-    } else {
-	// FELO
-	// Some kind of velocity is first. Try to get the frequency information
-	// directly from the alternate definition if possible, otherwise try
-	// turning the velocities into frequencies.
-	if (restfreq <= 0.0) {
-	    error = "No rest frequency - cannot work out frequency increment.";
-	    return False;
-	}
-
-	if (! (header.isDefined("altrval") && header.isDefined("altrpix") ) ) {
-	    error = "Invalid or missing ALTRVAL and ALTRPIX - "
-		"cannot work out frequency info.";
-	    return False;
-	}
-	Double altrval, altrpix;
-	header.get("altrval", altrval);
-	header.get("altrpix", altrpix);
-
-	// Work out cdelt using AIPS Memo#27 (Greisen)
-	Double cdeltfreq;
-	if (opticalVelocity) {
-	    // OPTICAL
-	    cdeltfreq =                  -cdelt*altrval / (
-			 ( cdelt*(crpix - altrpix) + (C::c + crval) ) );
-	} else {
-	    // RADIO
-	    cdeltfreq =                  -cdelt*altrval / (
-			 ( cdelt*(crpix - altrpix) + (C::c - crval) ) );
-	}
-
-	out = SpectralCoordinate(type, altrval, cdeltfreq, altrpix-offset, 
-				 restfreq);
-    }
-    return True;
+					       
+    return ok;
 }
 
 
