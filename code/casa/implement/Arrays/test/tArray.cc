@@ -84,6 +84,8 @@ void oldArrayTest()
 	AlwaysAssertExit(y.shape() == x.shape()); 
 	y.resize(shape+3);
 	AlwaysAssertExit( y.shape() == shape + 3); 
+	Array<Int> y1(shape, 4);
+	AlwaysAssertExit (allEQ(y1, 4));
 
 	// Test Array slices
 	IPosition i1(3), i2(3);
@@ -170,6 +172,8 @@ void oldArrayTest()
 	zzz.unique();
 	AlwaysAssertExit(zzz.nrefs() == 1 && allEQ(zzz.ac(), 11) &&
 			 zzz.nelements() == 5);
+	Vector<Int> y1(5, 4);
+	AlwaysAssertExit (allEQ(y1.ac(), 4));
 
 	Vector<String> vs(5);
 	vs(0) = "Every";vs(1) = "Good";vs(2) = "Boy";vs(3) = "Deserves";
@@ -427,6 +431,8 @@ void oldArrayTest()
 	for (int i = 0; i < 5; i++)
 	    for (int j = 0; j < 5; j++)
 		AlwaysAssertExit(a(i,j) == d(i + j*5));
+	Matrix<Int> y1(5,6, 4);
+	AlwaysAssertExit (allEQ(y1.ac(), 4));
 	
 	
 	Vector<Int> v(10);
@@ -460,6 +466,8 @@ void oldArrayTest()
 	Cube<Int> c3;
 	c3 = c;
 	AlwaysAssertExit(allEQ (c3.ac(), c.ac()));
+	Cube<Int> y1(5,6,7, 4);
+	AlwaysAssertExit (allEQ(y1.ac(), 4));
 	
 	// slice
 	AlwaysAssertExit(allEQ (c3 (Slice(0,2), Slice(1,2), 1).ac(),
