@@ -1,5 +1,5 @@
 //# tObjectID.cc: This program tests the ObjectID class
-//# Copyright (C) 1994,1995,1996,2000,2001
+//# Copyright (C) 1994,1995,1996,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,9 +33,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 
-main()
+int main()
 {
-
   try{
 
     // default ctor
@@ -68,8 +67,7 @@ main()
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
     return 1;
-  }
-  
+  } 
 
   cout << "OK" << endl;
   return 0;
