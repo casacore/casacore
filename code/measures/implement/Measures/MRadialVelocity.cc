@@ -99,19 +99,19 @@ void MRadialVelocity::assure(const Measure &in) {
 }
 
 MRadialVelocity::Types MRadialVelocity::castType(uInt tp) {
-  DebugAssert(tp < MRadialVelocity::N_Types, AipsError);
+  AlwaysAssert(tp < MRadialVelocity::N_Types, AipsError);
   return static_cast<MRadialVelocity::Types>(tp);
 }
 
 const String &MRadialVelocity::showType(MRadialVelocity::Types tp) {
-    static const String tname[MRadialVelocity::N_Types] = {
-	"LSRK",
-	"LSRD",
-	"BARY",
-	"GEO",	    
-	"TOPO",
-	"GALACTO"}; 
-    return tname[tp];
+  static const String tname[MRadialVelocity::N_Types] = {
+    "LSRK",
+    "LSRD",
+    "BARY",
+    "GEO",	    
+    "TOPO",
+    "GALACTO"}; 
+  return tname[tp];
 }
 
 const String &MRadialVelocity::showType(uInt tp) {
@@ -156,19 +156,15 @@ Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (MRadialVelocity::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = static_cast<MRadialVelocity::Types>(oname[i]);
   return True;
 }
 
 Bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
   MRadialVelocity::Types tp;
-  if (MRadialVelocity::getType(tp, in)) {
-    mr = MRadialVelocity::Ref(tp);
-  } else {
+  if (MRadialVelocity::getType(tp, in)) mr = MRadialVelocity::Ref(tp);
+  else {
     mr = MRadialVelocity::Ref();
     return False;
   };

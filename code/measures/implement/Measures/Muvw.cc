@@ -92,7 +92,7 @@ void Muvw::assure(const Measure &in) {
 }
 
 Muvw::Types Muvw::castType(uInt tp) {
-  DebugAssert(tp < Muvw::N_Types, AipsError);
+  AlwaysAssert(tp < Muvw::N_Types, AipsError);
   return static_cast<Muvw::Types>(tp);
 }
 
@@ -187,19 +187,15 @@ Bool Muvw::getType(Muvw::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (Muvw::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = static_cast<Muvw::Types>(oname[i]);
   return True;
 }
 
 Bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
   Muvw::Types tp;
-  if (Muvw::getType(tp, in)) {
-    mr = Muvw::Ref(tp);
-  } else {
+  if (Muvw::getType(tp, in)) mr = Muvw::Ref(tp);
+  else {
     mr = Muvw::Ref();
     return False;
   };

@@ -85,18 +85,18 @@ void MDoppler::assure(const Measure &in) {
 }
 
 MDoppler::Types MDoppler::castType(uInt tp) {
-    DebugAssert(tp < MDoppler::N_Types, AipsError);
-    return static_cast<MDoppler::Types>(tp);
+  AlwaysAssert(tp < MDoppler::N_Types, AipsError);
+  return static_cast<MDoppler::Types>(tp);
 }
 
 const String &MDoppler::showType(MDoppler::Types tp) {
-    static const String tname[MDoppler::N_Types] = {
-	"RADIO", 
-	"OPTICAL",
-	"RATIO",
-	"TRUE",
-	"GAMMA"};
-    return tname[tp];
+  static const String tname[MDoppler::N_Types] = {
+    "RADIO", 
+    "OPTICAL",
+    "RATIO",
+    "TRUE",
+    "GAMMA"};
+  return tname[tp];
 }
 
 const String &MDoppler::showType(uInt tp) {
@@ -145,19 +145,15 @@ Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (MDoppler::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = static_cast<MDoppler::Types>(oname[i]);
   return True;
 }
 
 Bool MDoppler::giveMe(MDoppler::Ref &mr, const String &in) {
   MDoppler::Types tp;
-  if (MDoppler::getType(tp, in)) {
-    mr = MDoppler::Ref(tp);
-  } else {
+  if (MDoppler::getType(tp, in)) mr = MDoppler::Ref(tp);
+  else {
     mr = MDoppler::Ref();
     return False;
   };

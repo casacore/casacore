@@ -105,10 +105,11 @@ void MEarthMagnetic::assure(const Measure &in) {
 
 MEarthMagnetic::Types MEarthMagnetic::castType(uInt tp) {
   if ((tp & MEarthMagnetic::EXTRA) == 0) {
-    DebugAssert(tp < MEarthMagnetic::N_Types, AipsError);
+    AlwaysAssert(tp < MEarthMagnetic::N_Types, AipsError);
   } else {
-    DebugAssert((tp & ~MEarthMagnetic::EXTRA) < 
-		(MEarthMagnetic::N_Models - MEarthMagnetic::IGRF), AipsError);
+    AlwaysAssert((tp & ~MEarthMagnetic::EXTRA) < 
+		 (MEarthMagnetic::N_Models - MEarthMagnetic::IGRF),
+		 AipsError);
   };
   return static_cast<MEarthMagnetic::Types>(tp);
 }
@@ -213,19 +214,15 @@ Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (MEarthMagnetic::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = static_cast<MEarthMagnetic::Types>(oname[i]);
   return True;
 }
 
 Bool MEarthMagnetic::giveMe(MEarthMagnetic::Ref &mr, const String &in) {
   MEarthMagnetic::Types tp;
-  if (MEarthMagnetic::getType(tp, in)) {
-    mr = MEarthMagnetic::Ref(tp);
-  } else {
+  if (MEarthMagnetic::getType(tp, in)) mr = MEarthMagnetic::Ref(tp);
+  else {
     mr = MEarthMagnetic::Ref();
     return False;
   };

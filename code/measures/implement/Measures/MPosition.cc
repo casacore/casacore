@@ -140,15 +140,15 @@ const String *const MPosition::allTypes(Int &nall, Int &nextra,
 }
 
 MPosition::Types MPosition::castType(uInt tp) {
-  DebugAssert(tp < MPosition::N_Types, AipsError);
+  AlwaysAssert(tp < MPosition::N_Types, AipsError);
   return static_cast<MPosition::Types>(tp);
 }
 
 const String &MPosition::showType(MPosition::Types tp) {
-    static const String tname[MPosition::N_Types] = {
-	"ITRF",
-	"WGS84"};
-    return tname[tp];
+  static const String tname[MPosition::N_Types] = {
+    "ITRF",
+    "WGS84"};
+  return tname[tp];
 }
 
 const String &MPosition::showType(uInt tp) {
@@ -162,19 +162,15 @@ Bool MPosition::getType(MPosition::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (MPosition::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = static_cast<MPosition::Types>(oname[i]);
   return True;
 }
 
 Bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {
   MPosition::Types tp;
-  if (MPosition::getType(tp, in)) {
-    mr = MPosition::Ref(tp);
-  } else {
+  if (MPosition::getType(tp, in)) mr = MPosition::Ref(tp);
+  else {
     mr = MPosition::Ref();
     return False;
   };
@@ -210,17 +206,17 @@ uInt MPosition::myType() {
 }
 
 Quantum<Vector<Double> > MPosition::get(const Unit &inunit) const {
-    return Quantum<Vector<Double> >(data.getValue(),"m").get(inunit);
+  return Quantum<Vector<Double> >(data.getValue(),"m").get(inunit);
 }
 
 Quantum<Vector<Double> > MPosition::getAngle() const {
-    return (data.getAngle());
+  return (data.getAngle());
 }
 
 Quantum<Vector<Double> > MPosition::getAngle(const Unit &inunit) const {
-    return (data.getAngle(inunit));
+  return (data.getAngle(inunit));
 }
 
 Measure *MPosition::clone() const {
-    return (new MPosition(*this));
+  return (new MPosition(*this));
 }

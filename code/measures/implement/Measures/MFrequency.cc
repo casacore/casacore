@@ -90,20 +90,20 @@ void MFrequency::assure(const Measure &in) {
 }
 
 MFrequency::Types MFrequency::castType(uInt tp) {
-  DebugAssert(tp < MFrequency::N_Types, AipsError);
+  AlwaysAssert(tp < MFrequency::N_Types, AipsError);
   return static_cast<MFrequency::Types>(tp);
 }
 
 const String &MFrequency::showType(MFrequency::Types tp) {
-    static const String tname[MFrequency::N_Types] = {
-	"REST",
-	"LSRK",
-	"LSRD",
-	"BARY",
-	"GEO",	    
-	"TOPO",
-	"GALACTO"}; 
-    return tname[tp];
+  static const String tname[MFrequency::N_Types] = {
+    "REST",
+    "LSRK",
+    "LSRD",
+    "BARY",
+    "GEO",	    
+    "TOPO",
+    "GALACTO"}; 
+  return tname[tp];
 }
 
 const String &MFrequency::showType(uInt tp) {
@@ -150,19 +150,15 @@ Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (MFrequency::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = (MFrequency::Types) oname[i];
   return True;
 }
 
 Bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
   MFrequency::Types tp;
-  if (MFrequency::getType(tp, in)) {
-    mr = MFrequency::Ref(tp);
-  } else {
+  if (MFrequency::getType(tp, in)) mr = MFrequency::Ref(tp);
+  else {
     mr = MFrequency::Ref();
     return False;
   };

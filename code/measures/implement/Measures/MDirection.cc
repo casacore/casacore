@@ -108,10 +108,10 @@ void MDirection::assure(const Measure &in) {
 
 MDirection::Types MDirection::castType(uInt tp) {
     if ((tp & MDirection::EXTRA) == 0) {
-      DebugAssert(tp < MDirection::N_Types, AipsError);
+      AlwaysAssert(tp < MDirection::N_Types, AipsError);
     } else {
-      DebugAssert((tp & ~MDirection::EXTRA) < 
-		  (MDirection::N_Planets - MDirection::MERCURY), AipsError);
+      AlwaysAssert((tp & ~MDirection::EXTRA) < 
+		   (MDirection::N_Planets - MDirection::MERCURY), AipsError);
     };
     return static_cast<MDirection::Types>(tp);
 }
@@ -243,19 +243,15 @@ Bool MDirection::getType(MDirection::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (MDirection::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = static_cast<MDirection::Types>(oname[i]);
   return True;
 }
 
 Bool MDirection::giveMe(MDirection::Ref &mr, const String &in) {
   MDirection::Types tp;
-  if (MDirection::getType(tp, in)) {
-    mr = MDirection::Ref(tp);
-  } else {
+  if (MDirection::getType(tp, in)) mr = MDirection::Ref(tp);
+  else {
     mr = MDirection::Ref();
     return False;
   };
@@ -284,7 +280,7 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 	MDirection::GRADEC,
 	MDirection::GRADEC };
     if ((tp & MDirection::EXTRA) != 0) tp = 0;
-    DebugAssert(tp < MDirection::N_Types, AipsError);
+    AlwaysAssert(tp < MDirection::N_Types, AipsError);
 
     return oname[tp];
 }

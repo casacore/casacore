@@ -93,7 +93,7 @@ void MBaseline::assure(const Measure &in) {
 }
 
 MBaseline::Types MBaseline::castType(uInt tp) {
-  DebugAssert(tp < MBaseline::N_Types, AipsError);
+  AlwaysAssert(tp < MBaseline::N_Types, AipsError);
   return static_cast<MBaseline::Types>(tp);
 }
 
@@ -188,19 +188,15 @@ Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (MBaseline::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = static_cast<MBaseline::Types>(oname[i]);
   return True;
 }
 
 Bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
   MBaseline::Types tp;
-  if (MBaseline::getType(tp, in)) {
-    mr = MBaseline::Ref(tp);
-  } else {
+  if (MBaseline::getType(tp, in)) mr = MBaseline::Ref(tp);
+  else {
     mr = MBaseline::Ref();
     return False;
   };

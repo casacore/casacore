@@ -87,7 +87,7 @@ void MEpoch::assure(const Measure &in) {
 }
 
 MEpoch::Types MEpoch::castType(uInt tp) {
-  DebugAssert((tp & ~MEpoch::EXTRA) < MEpoch::N_Types, AipsError);
+  AlwaysAssert((tp & ~MEpoch::EXTRA) < MEpoch::N_Types, AipsError);
   return static_cast<MEpoch::Types>(tp);
 }
 
@@ -172,19 +172,15 @@ Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
   
   Int i = Measure::giveMe(in, nall, tname);
 
-  if (i>=nall) {
-    return False;
-  } else {
-    tp = (MEpoch::Types) oname[i];
-  };
+  if (i>=nall) return False;
+  else tp = static_cast<MEpoch::Types>(oname[i]);
   return True;
 }
 
 Bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
   MEpoch::Types tp;
-  if (MEpoch::getType(tp, in)) {
-    mr = MEpoch::Ref(tp);
-  } else {
+  if (MEpoch::getType(tp, in)) mr = MEpoch::Ref(tp);
+  else {
     mr = MEpoch::Ref();
     return False;
   };
