@@ -351,22 +351,35 @@ public:
     // You MUST have already written a first HDU to FitsOutput.
     // description contains the names and types of the table columns to be written.
     // The row is not rearranged (i.e. they are used in order) for alignment purposes.
-    // Array columns must have fixed shape.  Use the maxStringLengths record to 
-    // indicate any string columns which should have a length other than the default
-    // value by providing an int field of the same name as the string field in this record.
+    // Array columns must have fixed shape unless tdimColumns is used. Use the 
+    // maxLengths record to indicate any string columns which should have a length other 
+    // than the default value by providing an int field of the same name as the string 
+    // field in this record.
     // The size of the table (nrows) must be given at creation.  Use extraKeywords to
     // indicate any keywords not automatically created.  The units record is used to
     // indicate the units for any column.  Provide a string field with the same name as
     // the column field in description.  If freeOutput is True, file must come from new
     // since it will be deleted upon destruction.  You might not want this to happen if
-    // you are going to write many tables to the same fits file.
+    // you are going to write many tables to the same fits file.  Use variableShapes to
+    // signal which array columns have variable shape and use maxLengths to indicate
+    // the maximum size of those variable shaped columns.  The variableShapes record
+    // should contain a String corresponding to the longest TDIM value appropriate for
+    // each variable shaped column.  The maxLengths record should contain an int field
+    // for each variable shaped column which indicates the maximum number of elements
+    // to be found in that column.  Unused values in any cell in the variable shaped
+    // columns will be filled with zero.  These columns will use the SDFITS TDIM convention
+    // where for column nnn there is a corresponding TDIMnnn column where
+    // the values in each row are the true shape of the data in column nnn.
+    // variableShapes appears as the last argument for backwards compatibility with
+    // existing code.
     FITSTableWriter(FitsOutput *file, 
 		    const RecordDesc &description,
-		    const Record &maxStringLengths,
+		    const Record &maxLengths,
 		    uInt nrows,
 		    const Record &extraKeywords,
 		    const Record &units,
-		    Bool freeOutput = True);
+		    Bool freeOutput = True,
+		    const Record &variableShapes = Record());
 
     ~FITSTableWriter();
 
