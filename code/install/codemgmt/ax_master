@@ -3539,3 +3539,4 @@
 13 307 src mv trial/implement/Display/WCSizeControlHandler.cc trial/implement/DisplayCanvas/WCSizeControlHandler.cc
 13 307 src mv trial/implement/Display/WCSizeControlHandler.h trial/implement/DisplayCanvas/WCSizeControlHandler.h
 13 308 src mv trial/implement/OS/RecordExpr.h aips/implement/Tables/RecordExpr.h
+13 308 src mv trial/implement/OS/RecordExpr.cc aips/implement/Tables/RecordExpr.cc
