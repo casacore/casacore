@@ -180,7 +180,7 @@ void uvinfo_c ARGS((int tno, Const char *object, double *data));
 #define uvputvrc_c(tno,name,value,n) \
         uvputvr_c(tno,H_CMPLX,name,(char *)(value),n)
 
-define uvgetvra_c(tno,name,value,n)   \
+#define uvgetvra_c(tno,name,value,n)   \
         uvgetvr_c(tno,H_BYTE,name,value,n)
 #define uvgetvrj_c(tno,name,value,n) \
         uvgetvr_c(tno,H_INT2,name,(char *)(value),n)
