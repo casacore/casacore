@@ -2444,3 +2444,4 @@
 11 265 src mv trial/implement/Lattices/LCMask.h trial/implement/Lattices/LCPixelSet.h
 11 265 src mv trial/implement/Lattices/LCMask.cc trial/implement/Lattices/LCPixelSet.cc
 11 265 src mv trial/implement/Lattices/test/tLCMask.cc trial/implement/Lattices/test/tLCPixelSet.cc
+11 265 src mv trial/implement/Lattices/test/tLCMask.out trial/implement/Lattices/test/tLCPixelSet.out
