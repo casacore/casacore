@@ -56,7 +56,7 @@ RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) :
   }
 // check threshold for validity
   if( threshold >= 1 )
-    throw( AipsError(String("RFAUVBinner: ")+RF_THR+" must be below 1") );
+    os<<String("RFAUVBinner: ")+RF_THR+" must be below 1"<<endl<<LogIO::EXCEPTION;
 // check if a report is requested for a specific channel
   if( isFieldSet(parm,RF_PLOTCHAN) )
   {
@@ -67,16 +67,17 @@ RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) :
       report_chan = -1;
     // setup plotter
     String filename("uvbinner.ps");
-    os<<"Extra plots will be dumped to file "<<filename<<endl<<LogIO::NORMAL;
+    os<<"Extra plots will be dumped to file "<<filename<<endl<<LogIO::POST;
     pgp = PGPlotter(filename+"/ps",80);
     // setup colormap for PS
     uInt c1=16,nc=64;
-    Float scale=1.0/(nc-1);
+    Float s0=.5,scale=.5/(nc-1);
     pgp.scir(c1,c1+nc-1);
     for( uInt c=0; c<nc; c++ )
-      pgp.scr(c1+c,c*scale,c*scale,c*scale);
+      pgp.scr(c1+c,s0+c*scale,s0+c*scale,s0+c*scale);
     // setup pane layout
     pgp.subp(2,2);
+    econoplot = isFieldSet(parm,RF_ECONOPLOT);
   }
   else
     plot_report = False;
@@ -237,16 +238,6 @@ void RFAUVBinner::startDry ()
     bincounts = Cube<Int>(nbin_uv,nbin_y,num(CHAN),0);
     totcounts.resize();
     totcounts = Vector<Int>(num(CHAN),0);
-// make debug plot
-    if( plot_chan>=0 )
-    {
-      Int ich = plot_chan;
-      pgp.env(uvmin(ich),uvmax(ich),ymin(ich),ymax(ich),0,0);
-      pgp.bbuf();
-      char s[256];
-      sprintf(s,"%d by %d bins, channel %d",nbin_uv,nbin_y,plot_chan);
-      pgp.lab("UV distance",RFDataMapper::descExpression(),s);
-    }
   }
 }
 
@@ -267,10 +258,21 @@ RFA::IterMode RFAUVBinner::iterDry (uInt it)
     for( uInt ifr=0; ifr<num(IFR); ifr++ )
     {
       Float uv = uvdist(ifr,it);
-      for( uInt ich=0; ich<num(CHAN); ich++ )
+      if( uv>0 )
       {
-        if( uv>0 && bincounts(computeBin(uv,yvalue(ich,ifr),ich))<0 )
-          flag.setFlag(ich,ifr);
+        for( uInt ich=0; ich<num(CHAN); ich++ )
+        {
+          Int bc = bincounts(computeBin(uv,yvalue(ich,ifr),ich));
+          if( bc<0 )
+            flag.setFlag(ich,ifr);
+          // add point to plot if in low-pop bin
+          if( plot_chan==(Int)ich && abs(bc)<=econo_density )
+          {
+            Vector<Float> x(1,uv),y(1,yvalue(ich,ifr));
+            pgp.pt(x,y,DOT);
+            cerr<<"plotting dit\n";
+          }
+        }
       }
     }
   }
@@ -286,22 +288,42 @@ RFA::IterMode RFAUVBinner::iterDry (uInt it)
           {
             bincounts( computeBin(uv,yvalue(ich,ifr),ich) )++;
             totcounts(ich)++;
-            if( plot_chan == (Int)ich )
-            {
-              Vector<Float> x(1,uv),y(1,yvalue(ich,ifr));
-              pgp.pt(x,y,DOT);
-            }
           }
     }
   }
   return RFA::CONT;
 }
 
+// static Matrix<Float> getImgColorMap ( PGPlotterInterface &pgp )
+// {
+//   Vector<Int> cir( pgp.qcir() );
+//   Matrix<Float> col(3,cir(1)-cir(0)+1);
+//   for( uInt i=0; i<col.ncolumn(); i++ )
+//   {
+//     Vector<Float> column( col.column(i) );
+//     column = pgp.qcr(i);
+//   }
+//   return col;
+// }
+// 
+// static void setImgColorMap ( PGPlotterInterface &pgp,const Matrix<Float> &cmap )
+// {
+//   Vector<Int> cir( pgp.qcir() );
+//   if( cmap.nrow()!=3 || cmap.ncolumn()!=(uInt)(cir(1)-cir(0)+1) )
+//     throw( AipsError("Incorrect colormap matrix size") );
+//   for( uInt i=0; i<cmap.ncolumn(); i++ )
+//     pgp.scr(cir(0)+i,cmap(0,i),cmap(1,i),cmap(2,i));
+// }
+
 RFA::IterMode RFAUVBinner::endDry ()
 {
 // already binned? then it must have been flagged, so stop
   if( binned )
+  {
+    if( plot_chan>=0 )
+      pgp.ebuf();
     return RFA::STOP;
+  }
 // else compute bad bins
   binned = True;
   for( uInt ich=0; ich<num(CHAN); ich++ )
@@ -325,23 +347,22 @@ RFA::IterMode RFAUVBinner::endDry ()
     // find at which bin count the cumulative probability gets higher 
     // than the threshold
     Int thr_count=0;
-    Int pop_cutoff=(Int)rint(totcounts(ich)*threshold);
+    Float pop_cutoff = totcounts(ich)*threshold;
     while( cumul(thr_count)<=pop_cutoff && thr_count<maxcount )
-      thr_count++;
+      thr_count++; 
+    // First thr_count bins (1..thr_count) should be flagged
     // Mark the "bad" bins by negating their bin counts
     // 0-bins are bad by definition, but they don't have 
     // anything stored in them anyway
-    LogicalMatrix wh( bins<thr_count );
+    LogicalMatrix wh( bins<=thr_count );
     bins(wh) = - bins(wh);
     // produce plots
     if( makeplot )
     {
-      // plot of flagged bins
-      Vector<Float> xbox(5,0.);
-      Vector<Float> ybox(5,0.);
-      xbox(2)=xbox(3)=ybox(1)=ybox(2)=1;
-      xbox *= uvbinsize(ich);
-      ybox *= ybinsize(ich);
+      const Float xbox_arr[] = {0,0,1,1,0}, ybox_arr[] = {0,1,1,0,0};
+      const Vector<Float> xbox0(IPosition(1,5),xbox_arr),
+                        ybox0(IPosition(1,5),ybox_arr);
+      // sum up flagged pixels
       Int bincount=0,pixcount=0;
       for( uInt i=0; i<bins.ncolumn(); i++ )
         for( uInt j=0; j<bins.nrow(); j++ )
@@ -349,30 +370,93 @@ RFA::IterMode RFAUVBinner::endDry ()
           {
             bincount++;
             pixcount+= -bins(j,i);
-            pgp.line(xbox+uvmin(ich)+j*uvbinsize(ich),ybox+ymin(ich)+i*ybinsize(ich));
           }
-      pgp.ebuf();
-      // plot of probability distributions
-      Vector<Float> ind(maxcount);
+      // make plot of probability distributions
       Vector<Float> prob(maxcount);
-      indgen(ind);
-      pgp.env(0,maxcount-1,0,1,0,0);
-
+      convertArray(prob,cumul);
+      prob /= (Float)totcounts(ich);
+      Vector<Float> ind(maxcount);
+      indgen(ind); ind += 1.f;
+      // zoom display into interseting part of curve
+      Float pmax = threshold*5;
+      if( pmax>1 )
+        pmax = 1;
+      Int popmax = 0;
+      while( prob(popmax)<=pmax && popmax<maxcount )
+        popmax++;  // popmax = #{bins<=Pmax}
+      // setup plot
+      pgp.env(1,popmax,0,pmax,0,0);
       char s1[256],s2[256],s3[256];
       sprintf(s1,"Bin population (threshold %d)",thr_count);
       sprintf(s2,"Cumulative probability (%g cut-off)",threshold);
-      sprintf(s3,"%d of %d points in %d bins flagged",totcounts(ich),pixcount,bincount);
+      sprintf(s3,"%d of %d points in %d bins flagged",pixcount,totcounts(ich),bincount);
       pgp.lab(s1,s2,s3);
-      
-      convertArray(prob,cumul);
-      prob /= (Float)totcounts(ich);
-      pgp.line(ind,prob);
-      Vector<Float> xx(2,thr_count);
+      // plot probability curve
+      pgp.line(ind(Slice(0,popmax)),prob(Slice(0,popmax)));
+      // plot cut-off points
+      pgp.sls(LINE_DOT);
+      Vector<Float> xx(2,thr_count+.5);
       Vector<Float> yy(2,0); yy(1)=1;
       pgp.line(xx,yy);
-      xx(0)=0; xx(1)=maxcount;
+      xx(0)=1; xx(1)=thr_count+.5;
       yy=threshold;
       pgp.line(xx,yy);
+      // plot full curve in a sub-box corner
+      Float xs=(popmax-1)/3.0;
+      Float ys=pmax/3.0;
+      Float x0=popmax-1.1*xs;
+      Float y0=.1*ys;
+      pgp.sls(LINE_FULL);
+      pgp.line(xbox0*xs+x0,ybox0*ys+y0); // box around graph
+      pgp.line(ind*(xs/maxcount)+x0,prob*ys+y0); // graph
+      pgp.sch(.5);
+      Vector<Float> cs( pgp.qcs(4)/4 );
+      pgp.ptxt(x0-cs(0),y0,0,1,"0");
+      pgp.ptxt(x0-cs(0),y0+ys-cs(1)*4,0,1,"1");
+      pgp.ptxt(x0,y0+ys+cs(1),0,0,"0");
+      pgp.ptxt(x0+xs,y0+ys+cs(1),0,1,String::toString(maxcount));
+      pgp.sch(1);
+      // make plot of bin density and flagged bins
+      pgp.env(uvmin(ich),uvmax(ich),ymin(ich),ymax(ich),0,0);
+      pgp.bbuf();
+      sprintf(s1,"%s chunk %d, channel %d, %d by %d bins",
+          chunk.msName().chars(),chunk.nchunk(),ich,nbin_uv,nbin_y);
+      pgp.lab("UV distance",RFDataMapper::descExpression(),s1);
+      // in econo-plot mode, plot image of bin density
+      if( econoplot )
+      {
+        Matrix<Float> img( bins.shape() );
+        convertArray(img,bins);
+        img += maxcount*.8f; // shift up (for darker greyscales)
+        // we want only the least-populous 10% to be plotted as points,
+        // the rest as an image. Find the critical density
+        
+        // only plot bins with higher that certain density. For the rest, point will be plotted
+        Int econo_density=0;
+        Float cutoff = totcounts(ich)*.1;
+        while( cumul(econo_density)<=cutoff && econo_density<maxcount )
+          econo_density++;
+        cerr<<"econo_density: "<<econo_density<<endl;
+        // zero the low values, and push the high values up
+        img( bins<=econo_density ) = 0;
+        // setup TR function and plot the image
+        const Float tr_array[] = {uvmin(ich)-uvbinsize(ich)/2,uvbinsize(ich),0,
+                                ymin(ich)-ybinsize(ich)/2,0,ybinsize(ich) }; 
+        const Vector<Float> tr(IPosition(1,6),tr_array);
+        pgp.imag(img,maxcount,0,tr);
+        // pgp.wedg("RI",.5,4,maxcount,0,"");
+      }
+      else
+        econo_density = maxcount;
+      // plot boxes around flagged bins
+      Vector<Float> xbox( xbox0*uvbinsize(ich) ),
+                   ybox( ybox0*ybinsize(ich) );
+      for( uInt i=0; i<bins.ncolumn(); i++ )
+        for( uInt j=0; j<bins.nrow(); j++ )
+          if( bins(j,i)<0 )
+            pgp.line(xbox+uvmin(ich)+j*uvbinsize(ich),ybox+ymin(ich)+i*ybinsize(ich));
+      // additional outliers will be plotted during the flagging
+      pgp.bbuf();
     }
   }
 // request another dry pass to do the flags
@@ -408,11 +492,15 @@ const RecordInterface & RFAUVBinner::getDefaults ()
     rec.define(RF_EXPR,"+ ABS XX YY");
     rec.define(RF_THR,.001);
     rec.define(RF_NBINS,50);
+    rec.define(RF_PLOTCHAN,False);
+    rec.define(RF_ECONOPLOT,True);
     
     rec.setComment(RF_COLUMN,"Use column: [DATA|MODEL|CORRected]");
     rec.setComment(RF_EXPR,"Expression for deriving value (e.g. \"ABS XX\", \"+ ABS XX YY\")");
     rec.setComment(RF_THR,"Probability cut-off");
     rec.setComment(RF_NBINS,"Number of bins (single value, or [NUV,NY])");
+    rec.setComment(RF_PLOTCHAN,"Make plot for a specific channel, or F for no plot");
+    rec.setComment(RF_ECONOPLOT,"Produce a simplified plot: T/F");
   }
   return rec;
 }
