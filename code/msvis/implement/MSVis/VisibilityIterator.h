@@ -410,7 +410,55 @@ inline ROVisibilityIterator&
 ROVisibilityIterator::velInterpolation(const String& type)
 { vInterpolation_p=type; return *this;}
 
-//# The read/write version of the VisibilityIterator
+// <summary>
+// VisibilityIterator iterates through one or more writable MeasurementSets
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class="ROVisibilityIterator">ROVisibilityIterator</linkto>
+// </prerequisite>
+//
+// <etymology>
+// The VisibilityIterator is a read/write iterator returning visibilities
+// </etymology>
+//
+// <synopsis>
+// VisibilityIterator provides iteration with various sort orders
+// for one or more MSs. It has member functions to retrieve the fields
+// commonly needed in synthesis calibration and imaging. It is 
+// derived from the read-only iterator
+// <linkto class="ROVisibilityIterator">ROVisibilityIterator</linkto>.
+//
+// One should use <linkto class="VisBuffer">VisBuffer</linkto>
+// to access chunks of data.
+// </synopsis>
+//
+// <example>
+// <code>
+// //
+// </code>
+// </example>
+//
+// <motivation>
+// For imaging and calibration you need to access an MS in some consistent
+// order (by field, spectralwindow, time interval etc.). This class provides
+// that access.
+// </motivation>
+//
+// #<thrown>
+//
+// #</thrown>
+//
+// <todo asof="1997/05/30">
+//   <li> cleanup the currently dual interface for visibilities and flags
+//   <li> sort out what to do with weights when interpolating
+// </todo>
+
 class VisibilityIterator : public ROVisibilityIterator
 {
 public:

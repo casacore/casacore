@@ -63,10 +63,13 @@
 // buffer of values to which calibration and averaging can be applied.
 // This allows processing of the data in larger blocks, avoiding some
 // overheads for processing per visibility point or spectrum.
+//
+// See <linkto class="MeasurementEquations">MeasurementEquations</linkto>
+// for more details on how the VisBuffer is to be used.
 //</synopsis>
 
 //<todo>
-// reconcile vis/visCube usage: visCube, flagCube and weightMatrix
+// <li> reconcile vis/visCube usage: visCube, flagCube and weightMatrix
 // are currently only correct when this VisBuffer got them from a
 // VisIter, operations like -=, freqAverage() are only done for
 // visibility() and flag().
