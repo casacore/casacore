@@ -31,6 +31,10 @@
 
 #include <aips/aips.h>
 class String;
+class SkyCompRep;
+class ComponentShape;
+class SpectralModel;
+class componentlist;
 
 // <summary>Enumerators common to the ComponentsModels module</summary>
 
@@ -46,10 +50,15 @@ class String;
 // <synopsis> 
 // This class does nothing.  It is merely a container for the enumerations used
 // by the ComponentModels module.  These enumerations define the standard
-// component types. It also contains static functions which convert between
-// these enumerators and strings. The first element in the enumerator must be
-// represented by zero and every enumerator must contain as the second last and
-// last elements an UNKNOWN and NUMBER element.
+// component types. It also contains:
+// <ul>
+// <li> static functions which convert between these enumerators and strings.
+// <li> static functions which construct the appropriate derived object given
+//      an enumerator. 
+// </ul>
+// The first element in the enumerator must be represented by zero and every
+// enumerator must contain as the second last and last elements an UNKNOWN and
+// NUMBER element.
 // </synopsis>
 
 // <example>
@@ -63,6 +72,12 @@ class String;
 
 class ComponentType {
 public:
+  // Declare which classes access the private functions which convert
+  // enumerators to objects. The private construct functions can only be
+  // accessed by functions in the friend classes specified below.
+  friend class SkyCompRep;
+  friend class componentlist;
+
   // The shapes of all the components
   enum Shape {
     // A simple Point Component
@@ -102,6 +117,7 @@ public:
   static String name(ComponentType::Shape shapeEnum);
   // Convert a given String to a Shape enumerator
   static ComponentType::Shape shape(const String & shapeName);
+
   // Convert the Polarisation enumerator to a string
   static String name(ComponentType::Polarisation fluxEnum);
   // Convert a given String to a Polarisation enumerator
@@ -112,5 +128,23 @@ public:
   // Convert a given String to a SpectralShape enumerator
   static ComponentType::SpectralShape spectralShape(const String &
 						    spectralName);
+private:
+
+  // Convert the Shape enumerator to a shape object (upcast to the base
+  // object). Returns a null pointer if the object could not be
+  // constructed. This will occur is the enumerator is UNKNOWN_SHAPE or
+  // NUMBER_SHAPES or there is insufficient memory. The caller of this function
+  // is responsible for deleting the pointer. This function is only accessible
+  // by the friend classes and should be considered an implementation detail.
+  static ComponentShape * construct(ComponentType::Shape shapeEnum);
+
+  // Convert the SpectralShape enumerator to a spectral model object (upcast to
+  // the base object). Returns a null pointer if the object could not be
+  // constructed. This will occur is the enumerator is UNKNOWN_SPECTRAL_SHAPE
+  // or NUMBER_SPECTRAL_SHAPES or there is insufficient memory. The caller of
+  // this function is responsible for deleting the pointer. This function is
+  // only accessible by the friend classes and should be considered an
+  // implementation detail.
+  static SpectralModel * construct(ComponentType::SpectralShape spectralEnum);
 };
 #endif
