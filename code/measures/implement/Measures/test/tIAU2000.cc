@@ -28,6 +28,8 @@
 #include <trial/Measures/SofaTest.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Measures/MeasData.h>
+#include <aips/Measures/MeasTable.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/Precession.h>
 #include <aips/OS/Time.h>
@@ -99,20 +101,37 @@ int main() {
     RotMatrix carm(p00a(tMJD));
     RotMatrix cbrm(p00b(tMJD));
     RotMatrix parm = fillRM(parp);
-    cout << "SOFA precession 2000A and bias:\n" << carm << endl;
-    cout << "SOFA precession 2000B and bias:\n" << cbrm << endl;
-    cout << "AIPS++ precession (no bias):\n" << parm << endl;
+    RotMatrix pbrm = fillRM(pbrp);
+    RotMatrix nbparm = fillRM(parpb);
+    cout << "SOFA precession 2000A and bias:\n" << nbparm << endl;
+    cout << "AIPS++ precession and bias:\n" <<
+      MeasTable::frameBias00()*carm << endl;
+    cout << "SOFA precession   (no bias):\n" << parm << endl;
+    cout << "AIPS++ precession (no bias):\n" << carm << endl;
+    Double depspr, dpsipr;
+    IAUR(pr00)(MJD0, tMJD, dpsipr, depspr);
+    cout << "SOFA precession corrections:   " << dpsipr << ", " <<
+      depspr << endl;
+    cout << "aips++ precession corrections: " <<
+      MeasTable::precRate00(0)*(tMJD-MeasData::MJD2000)/MeasData::JDCEN <<
+      ", " <<
+      MeasTable::precRate00(1)*(tMJD-MeasData::MJD2000)/MeasData::JDCEN <<
+      endl;
+    RotMatrix pparb = fillRM(parb);
+    cout << "\nSOFA 2000A bias matrix:\n" << pparb << endl;
+    cout << "aips++ 2000A bias matrix:\n" << MeasTable::frameBias00() << endl;
     cout.precision(9);
     cout.setf(ios::fixed);
-    cout << "Difference (arcsec) SOFA 2000A - SOFA 2000B:     " <<
-      checkRot(carm, cbrm) << endl;
     cout << "Difference (arcsec) SOFA 2000A - aips++ nobias:  " <<
-      checkRot(carm, parm) << endl;
+      checkRot(parm, carm) << endl;
+    cout << "Difference (arcsec) SOFA 2000A - aips++   bias:  " <<
+      checkRot(nbparm, MeasTable::frameBias00()*carm) << endl;
     Double fbrm[3][3], prrm[3][3], fbprrm[3][3];
     IAUR(bp00)(MJD0, tMJD, &fbrm[0][0], &prrm[0][0], &fbprrm[0][0]);
     RotMatrix prm = fillRM(prrm);
-    cout << "Difference (arcsec) SOFA nobias - aips++ nobias: " <<
-      checkRot(prm, parm) << endl;
+    cout << "Difference (arcsec) SOFA 2000A - aips++ nobias:  " <<
+      checkRot(prm, carm) << endl;
+    cout << "(The above must all 3 be .002 uas)" << endl;
     SEPAR();
     Nutation n00a(Nutation::IAU2000A);
     Nutation n00b(Nutation::IAU2000B);
@@ -128,10 +147,14 @@ int main() {
       checkRot(narm, nbrm) << endl;
     cout << "Difference (arcsec) aips++ 2000A - aips++ 2000B: " <<
       checkRot(cnarm, cnbrm) << endl;
+    cout << "(The above two differences are 0.512mas (note next note))" <<
+      endl;
     cout << "Difference (arcsec) SOFA 2000A - aips++ 2000A:   " <<
       checkRot(narm, cnarm) << endl;
     cout << "Difference (arcsec) SOFA 2000B - aips++ 2000B:   " <<
       checkRot(nbrm, cnbrm) << endl;
+    cout << "(This should be 0.422 uas, due to different definition of\n"
+      "\tthe fundamental arguments)" << endl;
     SEPAR();
 
     {
@@ -169,6 +192,8 @@ int main() {
 	checkRot(rm1, rm2) << endl;
       cout << "Difference (arcsec) SOFA CEO based and old J2000 in 1935: " <<
 	checkRot(rm1, rm3) << endl;
+      cout << "(The above should be 0.119 uas and 65.034 mas respectively)" <<
+	endl;
       SEPAR();
     }
 	
