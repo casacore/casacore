@@ -86,6 +86,15 @@ void AipsrcVector<String>::set(uInt keyword, const Vector<String> &deflt) {
   (gcl.tlst)[keyword-1] = deflt;
 }
 
+void AipsrcVector<String>::save(uInt keyword) {
+  AipsrcVector<String> &gcl = init();
+  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
+  ostrstream oss;
+  Int n = ((gcl.tlst)[keyword-1]).nelements();
+  for (Int i=0; i<n; i++) oss << " " << ((gcl.tlst)[keyword-1])(i);
+  Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
+}
+
 // The following construction necessary since the gnu compiler does not (yet)
 // support static templated data.
 AipsrcVector<String> &AipsrcVector<String>::init() {

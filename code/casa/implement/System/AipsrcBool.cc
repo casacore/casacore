@@ -75,6 +75,18 @@ void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
   (gcl.tlst)[keyword-1] = deflt;
 }
 
+void AipsrcValue<Bool>::save(uInt keyword) {
+  AipsrcValue<Bool> &gcl = init();
+  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
+  ostrstream oss;
+  if ((gcl.tlst)[keyword-1]) {
+    oss << "true";
+  } else {
+    oss << "false";
+  };
+  Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
+}
+
 AipsrcValue<Bool> &AipsrcValue<Bool>::init() {
   static AipsrcValue<Bool> myp;
   return myp;

@@ -203,6 +203,9 @@ public:
   static void set(uInt keyword, const T &deflt);
   // </group>
 
+  // Save registered value to <src>$HOME/.aipsrc</src>
+  static void save(uInt keyword);
+
 private:
   //# Data
   // Method to get reference to static AipsrcValue objcet

@@ -131,6 +131,9 @@ public:
   static void set(uInt keyword, const Vector<T> &deflt);
   // </group>
   
+  // Save registered value to <src>$HOME/.aipsrc</src>
+  static void save(uInt keyword);
+
 private:
   //# Data
   static AipsrcVector<T> &init();

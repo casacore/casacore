@@ -118,6 +118,15 @@ void AipsrcValue<T>::set(uInt keyword, const T &deflt) {
   (gcl.tlst)[keyword-1] = deflt;
 }
 
+template <class T>
+void AipsrcValue<T>::save(uInt keyword) {
+  AipsrcValue<T> &gcl = init();
+  AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
+  ostrstream oss;
+  oss << (gcl.tlst)[keyword-1];
+  Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
+}
+
 // The following construction necessary since the gnu compiler does not (yet)
 // support static templated data.
 template <class T>
