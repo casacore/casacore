@@ -533,12 +533,15 @@ template<class T> inline Array<T> cube(const Array<T> &val)
 // </group>
 
 
+// <summary> Helper function for partialX functions </summary>
+// <synopsis>
 // This is a specialized helper function for functions like partialSums.
 // It determines the shape of the resulting array and calculates the
 // result increments when iterating linearly through the source array.
 // It returns the first result axis which indicates the number of the first
 // contiguous collapse axes. The number of contiguous data points is
 // returned in nelemCont.
+// </synopsis>
 // <group name=partialFuncHelper>
 uInt partialFuncHelper (Int& nelemCont,
 			IPosition& resultShape, IPosition& incr,
