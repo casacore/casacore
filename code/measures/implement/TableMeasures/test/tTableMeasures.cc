@@ -50,9 +50,9 @@
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/TableRecord.h>
-#ifdef COMMENT
+//#ifdef COMMENT
 #include <trial/TableMeasures/ArrayMeasColumn.h>
-#endif
+//#endif
 #include <trial/TableMeasures/ScalarMeasColumn.h>
 #include <trial/TableMeasures/TableMeasValueDesc.h>
 #include <trial/TableMeasures/TableMeasOffsetDesc.h>
@@ -76,9 +76,10 @@ int main(void)
     ArrayColumnDesc<Double> cdMPos("MPosColumn", "Simple mposition column");
     ScalarColumnDesc<Int> cdTimeRef("TimeRef", "Reference column for Time1");
     
-#ifdef ARRAYMEAS
+    //#ifdef ARRAYMEAS
     ArrayColumnDesc<Double> cdTimeArr("Time1Arr", "An MEpoch array column");
-#endif
+    ScalarColumnDesc<Int> cdTimeArrRef("TimeArrRef", "VarRef co for TimeArr");
+    //#endif
 
     td.addColumn(cdTime);
     td.addColumn(cdTOffset);
@@ -86,9 +87,10 @@ int main(void)
     td.addColumn(cdMPos);
     td.addColumn(cdTimeRef);
     
-#ifdef ARRAYMEAS
+    //#ifdef ARRAYMEAS
     td.addColumn(cdTimeArr);
-#endif
+    td.addColumn(cdTimeArrRef);
+    //#endif
     
     {
     	// Another MEpoch column descriptor this one specifies a fixed offset 
@@ -133,14 +135,15 @@ int main(void)
     }
     
     
-#ifdef ARRAYMEAS
+    //#ifdef ARRAYMEAS
     {
 	// An array MEpoch column descriptor.  The TableMeasDesc for an Array
 	// measure column is identical to the Scalar measure column.
 	
 	MEpoch mjdToday(MVEpoch(51234));
 	TableMeasOffsetDesc tmodToday(mjdToday);
-	TableMeasRefDesc tmrdLast(MEpoch::LAST, tmodToday);
+	//	TableMeasRefDesc tmrdLast(MEpoch::LAST, tmodToday);
+	TableMeasRefDesc tmrdLast("TimeArrRef", tmodToday);
 	TableMeasValueDesc tmvdLast(td, "Time1Arr");
 	// create a tmp and test if copy constructor and assignment work
 	TableMeasDesc<MEpoch> tmp(tmvdLast, tmrdLast);
@@ -149,13 +152,13 @@ int main(void)
 	
 	tmdArrLast.write(td);
     }    
-#endif    
+    //#endif    
     // create the table
     SetupNewTable newtab("TestTableMeasures", td, Table::New);
     const uInt tabRows = 5;
-    Table tab(newtab, tabRows);
     
     {
+        Table tab(newtab, tabRows);
 	cout << "Create MEpochScaCol from column TimeOffset...\n";
 	cout << "A column of MEpochs where the reference and offset are ";
 	cout << "non-variable.\n";
@@ -201,8 +204,26 @@ int main(void)
 	}
 	
     }
+
+    {
+        // reopen the table RO and read the measures
+	cout << "Reopening the table read-only and reading contents...\n";
+        Table tab("TestTableMeasures", Table::Old);
+	ROMEpochScaCol timeColRead(tab, "TimeOffset");
+	MEpoch tm;
+	for (uInt i=0; i<tabRows; i++) {
+	    if (timeColRead.isDefined(i)) {
+		timeColRead.get(i, tm);
+	    	cout << "retrieve: " << tm << endl;
+		cout << "  " << tm.getRef() << endl;
+    	    } else {
+		cout << "Error: row " << i << " doesn't contain nay data!\n";
+	    }
+	}
+    }
     
     {
+        Table tab("TestTableMeasures", Table::Update);
 	// A column of MPositions
 	MPositionScaCol mposCol(tab, "MPosColumn");
 	if (mposCol.isRefVariable()) {
@@ -221,6 +242,7 @@ int main(void)
     }
     
     {
+        Table tab("TestTableMeasures", Table::Update);
 	// A column of MPositions
 	ROMPositionScaCol mposCol(tab, "MPosColumn");
 	if (mposCol.isRefVariable()) {
@@ -234,6 +256,7 @@ int main(void)
     }
     
     {
+        Table tab("TestTableMeasures", Table::Update);
 	cout << "Test of column TimeVarOffset...\n";
 	cout << "A column of MEpoch where the reference and offset components";
 	cout << " are variable.\n";
@@ -266,10 +289,19 @@ int main(void)
     }
 	
 
-#ifdef ARRAYMEAS
+    //#ifdef ARRAYMEAS
     {
+        Table tab("TestTableMeasures", Table::Update);
 	cout << "Creating an MEpoch Array Column\n";
-	MEpochArrCol arrayCol(tab, "Time1Arr");
+	MEpochArrCol tmpArrCol;
+
+	if (tmpArrCol.isNull()) {
+	    tmpArrCol.attach(tab, "Time1Arr");
+	}
+	tmpArrCol.throwIfNull();
+	cout << "Null MEpochArrCol successfully attached\n";
+	// no assignment operator but there is a copy constructor
+	MEpochArrCol arrayCol(tmpArrCol);
 
 	MEpoch last(Quantity(13.45, "h"), MEpoch::Ref(MEpoch::TAI));
 	Vector<MEpoch> ev(10);
@@ -281,15 +313,22 @@ int main(void)
 	cout << "Adding a vector to the column at row 0.\n";
 	arrayCol.put(0, ev);
 	Vector<MEpoch> ew;
-	arrayCol.get(ew, 0, True);
+	arrayCol.get(0,ew, True);
 	
 	for (i=0; i<10; i++) {
 	    cout << "ev: " << ev(i) << " " << ev(i).getRef() << endl;
 	    cout << "ew: " << ew(i) << " " << ew(i).getRef() << endl;
 	}
-//	cout << arrayCol(0) << endl;
     }
-#endif
+    //#ifdef ARRAYS
+    {
+        cout << "Open table again in RO mode to test ROArrayMeasColumn...\n";
+        Table tab("TestTableMeasures", Table::Old);
+	cout << "Creating an MEpoch Array Column\n";
+	ROMEpochArrCol arrayCol(tab, "Time1Arr");	
+	cout << arrayCol(0) << endl;
+    }
+    //#endif
     
     cout << "Bye.\n";  
   } catch (AipsError x) {
