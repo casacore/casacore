@@ -134,17 +134,17 @@ class VectorSTLIterator
   Bool operator< (iterator &other) {
     return iter_p <  other.iter_p; };
   Bool operator== (const_pointer const pos) const {
-    return iter_p == other.iter_p; };
+    return iter_p == pos; };
   Bool operator== (const_pointer const pos) {
-    return iter_p == other.iter_p; };
+    return iter_p == pos; };
   Bool operator!= (const_pointer const pos) const {
-    return iter_p != other.iter_p; };
+    return iter_p != pos; };
   Bool operator!= (const_pointer const pos) {
-    return iter_p != other.iter_p; };
+    return iter_p != pos; };
   Bool operator< (const_pointer const pos) const {
-    return iter_p <  other.iter_p; };
+    return iter_p <  pos; };
   Bool operator< (const_pointer const pos) {
-    return iter_p <  other.iter_p; };
+    return iter_p <  pos; };
   // </group>
  protected: 
   // Start (for random indexing)
