@@ -1,4 +1,4 @@
-//# NewMSFeedIndex.cc:  this defined NewMSFeedIndex
+//# MSFeedIndex.cc:  this defined MSFeedIndex
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,42 +25,42 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSFeedIndex.h>
+#include <trial/MeasurementSets/MSFeedIndex.h>
 
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/NewMSFeed.h>
+#include <aips/MeasurementSets/MSFeed.h>
 
-NewMSFeedIndex::NewMSFeedIndex() 
-    : NewMSTableIndex()
+MSFeedIndex::MSFeedIndex() 
+    : MSTableIndex()
 {;}
 
-NewMSFeedIndex::NewMSFeedIndex(const NewMSFeed &feed)
-    : NewMSTableIndex(feed, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"))
+MSFeedIndex::MSFeedIndex(const MSFeed &feed)
+    : MSTableIndex(feed, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"))
 { attachIds();}
 
-NewMSFeedIndex::NewMSFeedIndex(const NewMSFeedIndex &other)
-    : NewMSTableIndex(other)
+MSFeedIndex::MSFeedIndex(const MSFeedIndex &other)
+    : MSTableIndex(other)
 { attachIds();}
 
-NewMSFeedIndex::~NewMSFeedIndex()
+MSFeedIndex::~MSFeedIndex()
 {;}
 
-NewMSFeedIndex &NewMSFeedIndex::operator=(const NewMSFeedIndex &other)
+MSFeedIndex &MSFeedIndex::operator=(const MSFeedIndex &other)
 {
     if (this != &other) {
-	NewMSTableIndex::operator=(other);
+	MSTableIndex::operator=(other);
 	attachIds();
     }
     return *this;
 }
 
-void NewMSFeedIndex::attach(const NewMSFeed &feed)
+void MSFeedIndex::attach(const MSFeed &feed)
 {
-    NewMSTableIndex::attach(feed, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"));
+    MSTableIndex::attach(feed, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"));
     attachIds();
 }
 
-void NewMSFeedIndex::attachIds()
+void MSFeedIndex::attachIds()
 {
     antennaId_p.attachToRecord(accessKey(), "ANTENNA_ID");
     feedId_p.attachToRecord(accessKey(), "FEED_ID");

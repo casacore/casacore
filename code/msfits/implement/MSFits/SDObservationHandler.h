@@ -34,9 +34,9 @@
 
 //# Forward Declarations
 class ColumnsIndex;
-class NewMeasurementSet;
-class NewMSObservation;
-class NewMSObservationColumns;
+class MeasurementSet;
+class MSObservation;
+class MSObservationColumns;
 class Record;
 class String;
 
@@ -92,7 +92,7 @@ public:
 
     // attach this to a MS, mark the appropriate columns as handled given
     // the indicated row
-    SDObservationHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDObservationHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDObservationHandler(const SDObservationHandler &other);
@@ -103,7 +103,7 @@ public:
     SDObservationHandler &operator=(const SDObservationHandler &other);
 
     // attach to a MS, mark the appropriate columns as handled given the row
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS 
     void resetRow(const Record &row);
@@ -119,8 +119,8 @@ public:
 private:
     ColumnsIndex *index_p;
     RecordFieldPtr<String> telescopeKey_p, observerKey_p, projectKey_p, ns_obsidKey_p;
-    NewMSObservation *msObs_p;
-    NewMSObservationColumns *msObsCols_p;
+    MSObservation *msObs_p;
+    MSObservationColumns *msObsCols_p;
 
     Int rownr_p;
 
@@ -136,7 +136,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // initialize the things which depend on the row
     void initRow(Vector<Bool> &handledCols, const Record &row);

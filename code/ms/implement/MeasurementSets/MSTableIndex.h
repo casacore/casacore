@@ -1,4 +1,4 @@
- //# NewMSTableIndex: index into a MeasurementSet sub-table
+ //# MSTableIndex: index into a MeasurementSet sub-table
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSTABLEINDEX_H)
-#define AIPS_NEWMSTABLEINDEX_H
+#if !defined(AIPS_MSTABLEINDEX_H)
+#define AIPS_MSTABLEINDEX_H
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
@@ -76,24 +76,24 @@ class String;
 //    <li> Need to handle the INTERVAL=-1 case fully
 // </todo>
 
-class NewMSTableIndex
+class MSTableIndex
 {
 public:
     // no index attached, use the attach function or assignment operator to change that
-    NewMSTableIndex();
+    MSTableIndex();
 
     // construct one using the indicated subtable which is part of the parent MS
     // using the indicated index columns.  All index columns must be scalar integer
     // columns.  TIME and INTERVAL will be used when present. 
-    NewMSTableIndex(const Table &subTable, const Vector<String> &indexCols);
+    MSTableIndex(const Table &subTable, const Vector<String> &indexCols);
 
     // construct one from another
-    NewMSTableIndex(const NewMSTableIndex &other);
+    MSTableIndex(const MSTableIndex &other);
 
-    virtual ~NewMSTableIndex();
+    virtual ~MSTableIndex();
 
     // assignment operator, refernce semantics
-    virtual NewMSTableIndex &operator=(const NewMSTableIndex &other);
+    virtual MSTableIndex &operator=(const MSTableIndex &other);
 
     // attach this to a subtable using indexCols
     virtual void attach(const Table &subTable, const Vector<String> &indexCols);

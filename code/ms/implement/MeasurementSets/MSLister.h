@@ -1,4 +1,4 @@
-//# NewMSLister.h: Helper class for applications listing records from an MS
+//# MSLister.h: Helper class for applications listing records from an MS
 //# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 //#
-#if !defined(TRIAL_NEWMSLISTER_H)
-#define TRIAL_NEWMSLISTER_H
+#if !defined(TRIAL_MSLISTER_H)
+#define TRIAL_MSLISTER_H
 
 
 #include <aips/aips.h>
@@ -35,8 +35,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
-#include <trial/MeasurementSets/NewMSSelector.h>
-class NewMeasurementSet;
+#include <trial/MeasurementSets/MSSelector.h>
+class MeasurementSet;
 
 // <summary> List visibility records from a Measurement Set </summary>
 // <use visibility=export>
@@ -45,8 +45,8 @@ class NewMeasurementSet;
 // </reviewed>
 // 
 // <prerequisite>
-//   <li> <linkto class=NewMSSelector>NewMSSelector</linkto>
-//   <li> <linkto class=NewMSSummary>NewMSSummary</linkto> 
+//   <li> <linkto class=MSSelector>MSSelector</linkto>
+//   <li> <linkto class=MSSummary>MSSummary</linkto> 
 // </prerequisite>
 //
 // <etymology>
@@ -64,11 +64,11 @@ class NewMeasurementSet;
 // <example>
 // <srcBlock>
 //	// Define an MS
-//	NewMeasurementSet myMS(fileName);
+//	MeasurementSet myMS(fileName);
 //	// Define an output stream
 //	LogIO myLog;
 //	// Construct the Lister object
-//	NewMSLister myList(myMS,myLog);
+//	MSLister myList(myMS,myLog);
 //	// List all data
 //	myList.list();
 //
@@ -83,7 +83,7 @@ class NewMeasurementSet;
 //      String timeStop=yyyy/mm/dd[/hh[:mm[:ss]]];
 //	myList.list(timeStart,timeStop);
 // </srcBlock>
-// An <src>NewMSLister</src> object is constructed from a <src>MS</src>
+// An <src>MSLister</src> object is constructed from a <src>MS</src>
 // object, and then logged to the supplied <src>LogIO</src> object.
 // A new <src>LogIO</src> object is defined for a more restricted
 // listing.
@@ -105,7 +105,7 @@ class NewMeasurementSet;
 //	needs to default to prefix the correct "yyyy/mm/dd/" string if
 //	not provided, or accept it if it is.
 //   <li> The (pointer to the) MS is declared and used as non-const throughout
-//	NewMSLister, because NewMSSelector requires it.  NewMSSelector should be
+//	MSLister, because MSSelector requires it.  MSSelector should be
 //	changed to require a const MS since it claims not to change the MS
 //	anyway.  Then the pointer/MS should be made const here too.
 //   <li> Add more sanity checks.
@@ -114,33 +114,33 @@ class NewMeasurementSet;
 // </todo>
  
 
-class NewMSLister
+class MSLister
 {
 public:
   // Null constructor
-  NewMSLister();
+  MSLister();
 
-  // Construct from a NewMeasurementSet (set pointer), set formatting string,
+  // Construct from a MeasurementSet (set pointer), set formatting string,
   // and initialise listing with os.
-  NewMSLister (NewMeasurementSet& ms, LogIO& os);
+  MSLister (MeasurementSet& ms, LogIO& os);
 
-  // Copy constructor, this will initialise the NewMSLister's MS with other's MS
-  NewMSLister (NewMSLister& other);
+  // Copy constructor, this will initialise the MSLister's MS with other's MS
+  MSLister (MSLister& other);
 
-  // Assignment, this will initialise the NewMSLister's MS with other's MS
-  NewMSLister& operator=(NewMSLister& other);
+  // Assignment, this will initialise the MSLister's MS with other's MS
+  MSLister& operator=(MSLister& other);
 
   // Destructor
-  ~NewMSLister();
+  ~MSLister();
 
-  // Change or set the OS this NewMSLister uses.  Do this before setNewMS()
-  // if doing both.  This method avoids having to reconstruct the NewMSLister
+  // Change or set the OS this MSLister uses.  Do this before setMS()
+  // if doing both.  This method avoids having to reconstruct the MSLister
   // object if you change your mind about the output destination.
   Bool setNewOS (LogIO& os);
 
-  // Change or set the MS this NewMSLister refers to, and reinitialise the
-  // NewMSLister object.  Do this after setNewOS() if doing both.
-  Bool setNewMS (NewMeasurementSet& ms);
+  // Change or set the MS this MSLister refers to, and reinitialise the
+  // MSLister object.  Do this after setNewOS() if doing both.
+  Bool setMS (MeasurementSet& ms);
 
   // Page size for various formats, output devices (default for landscape
   // printing).
@@ -175,11 +175,11 @@ public:
 private:
   // Initialise the listing.  initList() does things that need to be done
   // once per MS: initialises the pagination/formatting, lists some header
-  // information, declares and initialises the private NewMSSelector object,
+  // information, declares and initialises the private MSSelector object,
   // and gets all the attribute ranges up front.
   void initList();
 
-  // A preamble of abbreviated NewMSSummary information.
+  // A preamble of abbreviated MSSummary information.
   void listHeader();
 
   // Get the ranges of a fixed set of MS key attributes.
@@ -193,7 +193,7 @@ private:
   void listColumnHeader();
 
   // Pointer to the MS
-  NewMeasurementSet* pMS;
+  MeasurementSet* pMS;
 
   // Output stream
   LogIO os_p;
@@ -201,8 +201,8 @@ private:
   // A formatting string for convenience
   const String dashline_p;
 
-  // The NewMSSelector object used in list() etc.
-  NewMSSelector mss_p;
+  // The MSSelector object used in list() etc.
+  MSSelector mss_p;
 
   // Channel/Pol counters
   uInt nchan_p, npols_p;

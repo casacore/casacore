@@ -1,4 +1,4 @@
-//# NewMSSelector.cc: selection and iteration of an MS
+//# MSSelector.cc: selection and iteration of an MS
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSSelector.h>
+#include <trial/MeasurementSets/MSSelector.h>
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -38,7 +38,7 @@
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/ExprNodeSet.h>
 #include <aips/Tables/ArrColDesc.h>
@@ -47,27 +47,27 @@
 #include <aips/Tables/TableIter.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/GenSort.h>
-#include <trial/MeasurementSets/NewMSIter.h>
-#include <trial/MeasurementSets/NewMSRange.h>
-#include <trial/MeasurementSets/NewMSSelUtil.h>
+#include <trial/MeasurementSets/MSIter.h>
+#include <trial/MeasurementSets/MSRange.h>
+#include <trial/MeasurementSets/MSSelUtil.h>
 
 static LogIO os;
 
-NewMSSelector::NewMSSelector():msIter_p(0),initSel_p(False),dataDescId_p(-1),
+MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(-1),
 lastDataDescId_p(-2),
 useSlicer_p(False),haveSlicer_p(False),wantedOne_p(-1),convert_p(False)
 { }
 
-NewMSSelector::NewMSSelector(NewMeasurementSet& ms):ms_p(ms),
+MSSelector::MSSelector(MeasurementSet& ms):ms_p(ms),
 selms_p(ms),savems_p(ms),msIter_p(0),initSel_p(False),dataDescId_p(-1),
 lastDataDescId_p(-2),
 useSlicer_p(False),haveSlicer_p(False),wantedOne_p(-1),convert_p(False)
 { }
 
-NewMSSelector::NewMSSelector(const NewMSSelector& other):msIter_p(0)
+MSSelector::MSSelector(const MSSelector& other):msIter_p(0)
 { operator=(other);}
 
-NewMSSelector& NewMSSelector::operator=(const NewMSSelector& other)
+MSSelector& MSSelector::operator=(const MSSelector& other)
 {
   if (this==&other) return *this;
   ms_p=other.ms_p;
@@ -76,7 +76,7 @@ NewMSSelector& NewMSSelector::operator=(const NewMSSelector& other)
   lastDataDescId_p=other.lastDataDescId_p;
   if (msIter_p) delete msIter_p;
   msIter_p = 0;
-  if (other.msIter_p) msIter_p=new NewMSIter(*other.msIter_p);
+  if (other.msIter_p) msIter_p=new MSIter(*other.msIter_p);
   initSel_p=other.initSel_p;
   dataDescId_p=other.dataDescId_p;
   useSlicer_p=other.useSlicer_p;
@@ -87,13 +87,13 @@ NewMSSelector& NewMSSelector::operator=(const NewMSSelector& other)
   return *this;
 }
 
-NewMSSelector::~NewMSSelector() 
+MSSelector::~MSSelector() 
 {
   if (msIter_p) delete msIter_p;
   msIter_p=0;
 }
 
-void NewMSSelector::setMS(NewMeasurementSet& ms)
+void MSSelector::setMS(MeasurementSet& ms)
 {
   ms_p=ms;
   selms_p=ms;
@@ -108,7 +108,7 @@ void NewMSSelector::setMS(NewMeasurementSet& ms)
   convert_p=False;
 }
 
-Bool NewMSSelector::initSelection(Int dataDescId, Bool reset)
+Bool MSSelector::initSelection(Int dataDescId, Bool reset)
 {
   // first check if we want to throw all selections away
   if (reset) {
@@ -137,19 +137,19 @@ Bool NewMSSelector::initSelection(Int dataDescId, Bool reset)
   Bool constantShape=True;
   if (ms_p.dataDescription().nrow()>1) {
     if (dataDescId>=0) {
-      selms_p=selms_p(selms_p.col(NewMS::columnName(NewMS::DATA_DESC_ID)) 
+      selms_p=selms_p(selms_p.col(MS::columnName(MS::DATA_DESC_ID)) 
 		      == dataDescId);
       dataDescId_p=dataDescId;
     } else {
       // check if the data shape is the same for all data
       // if not: select first data desc id only
-      ROScalarColumn<Int> dd(selms_p,NewMS::columnName(NewMS::DATA_DESC_ID));
-      RONewMSDataDescColumns ddc(selms_p.dataDescription());
+      ROScalarColumn<Int> dd(selms_p,MS::columnName(MS::DATA_DESC_ID));
+      ROMSDataDescColumns ddc(selms_p.dataDescription());
       Vector<Int> ddId=dd.getColumn();
       Int ndd=GenSort<Int>::sort(ddId, Sort::Ascending, 
 				 Sort::HeapSort | Sort::NoDuplicates);
-      RONewMSSpWindowColumns spwc(ms_p.spectralWindow());
-      RONewMSPolarizationColumns polc(ms_p.polarization());
+      ROMSSpWindowColumns spwc(ms_p.spectralWindow());
+      ROMSPolarizationColumns polc(ms_p.polarization());
       for (Int i=1; i<ndd; i++) {
 	if (spwc.numChan()(ddc.spectralWindowId()(i)) != 
 	    spwc.numChan()(ddc.spectralWindowId()(i-1)) ||
@@ -161,7 +161,7 @@ Bool NewMSSelector::initSelection(Int dataDescId, Bool reset)
       }
       dataDescId_p=-1;
       if (!constantShape) {
-	selms_p=selms_p(selms_p.col(NewMS::columnName(NewMS::DATA_DESC_ID))
+	selms_p=selms_p(selms_p.col(MS::columnName(MS::DATA_DESC_ID))
 			== ddId(0));
 	os<< LogIO::WARN << "Data shape varies, selected first data desc id"
 	  " only"<< LogIO::POST;
@@ -185,13 +185,13 @@ Bool NewMSSelector::initSelection(Int dataDescId, Bool reset)
     // save the current selection
     savems_p=selms_p;
     // Set channel selection to entire spectrum
-    ROScalarColumn<Int> ddId(selms_p,NewMS::columnName(NewMS::DATA_DESC_ID));
-    RONewMSDataDescColumns ddc(selms_p.dataDescription());
-    RONewMSSpWindowColumns spwc(selms_p.spectralWindow());
+    ROScalarColumn<Int> ddId(selms_p,MS::columnName(MS::DATA_DESC_ID));
+    ROMSDataDescColumns ddc(selms_p.dataDescription());
+    ROMSSpWindowColumns spwc(selms_p.spectralWindow());
     selectChannel(spwc.numChan()(ddc.spectralWindowId()(ddId(0))),0,1,1);
 
     // Set polarization selection/conversion to all present
-    RONewMSPolarizationColumns polc(selms_p.polarization());
+    ROMSPolarizationColumns polc(selms_p.polarization());
     Vector<Int> pols=polc.corrType()(ddc.polarizationId()(ddId(0)));
     Vector<String> polSel(pols.nelements());
     for (uInt i=0; i<pols.nelements(); i++) 
@@ -202,7 +202,7 @@ Bool NewMSSelector::initSelection(Int dataDescId, Bool reset)
   return constantShape;
 }
 
-Bool NewMSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
+Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
 {
   if (!initSel_p) {
     os << LogIO::WARN <<"Initializing selection with dd=0"
@@ -220,7 +220,7 @@ Bool NewMSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
     os << LogIO::SEVERE << "Illegal channel selection"<<LogIO::POST;
     return False;
   }
-  RONewMSColumns msc(selms_p);
+  ROMSColumns msc(selms_p);
   Int dd=msc.dataDescId()(0);
   Int numChan=msc.spectralWindow().numChan()
     (msc.dataDescription().spectralWindowId()(dd));
@@ -276,7 +276,7 @@ Bool NewMSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
   return True;
 }
 
-Bool NewMSSelector::selectPolarization(const Vector<String>& wantedPol)
+Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 {
   // this selection/conversion assumes that parallactic angle rotation
   // is taken care of elsewhere (i.e., results may only be correct for
@@ -293,7 +293,7 @@ Bool NewMSSelector::selectPolarization(const Vector<String>& wantedPol)
   for (Int i=0; i<n; i++) wanted(i)=Stokes::type(wantedPol(i));
 
   // now find out the input polarizations
-  RONewMSColumns msc(selms_p);
+  ROMSColumns msc(selms_p);
   Int polId=msc.dataDescription().polarizationId()(0);
   Int numCorr=msc.polarization().numCorr()(polId);
   Vector<Int> inputPol=msc.polarization().corrType()(polId);
@@ -349,7 +349,7 @@ Bool NewMSSelector::selectPolarization(const Vector<String>& wantedPol)
   return True;
 }
 
-Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
+Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
 {
   if (!initSel_p) {
     os << LogIO::WARN <<"Initializing selection with dd=0"
@@ -365,17 +365,17 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
   Int n=items.nelements();
   for (Int i=0; i<n; i++) {
     String column=items.name(i);
-    NewMSS::Field fld=NewMSS::field(column);
+    MSS::Field fld=MSS::field(column);
     column.upcase();
     switch (fld) {
-    case NewMSS::ANTENNA1:
-    case NewMSS::ANTENNA2:
-    case NewMSS::ARRAY_ID:
-    case NewMSS::DATA_DESC_ID:
-    case NewMSS::FEED1:
-    case NewMSS::FEED2:
-    case NewMSS::FIELD_ID:
-    case NewMSS::SCAN_NUMBER:
+    case MSS::ANTENNA1:
+    case MSS::ANTENNA2:
+    case MSS::ARRAY_ID:
+    case MSS::DATA_DESC_ID:
+    case MSS::FEED1:
+    case MSS::FEED2:
+    case MSS::FIELD_ID:
+    case MSS::SCAN_NUMBER:
       {
 	Vector<Int> id;
 	if (GlishArray(items.get(i)).get(id) && id.nelements()>0) {
@@ -391,7 +391,7 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::IFR_NUMBER:
+    case MSS::IFR_NUMBER:
       {
 	Vector<Int> ifrNum;
 	if (GlishArray(items.get(i)).get(ifrNum) && ifrNum.nelements()>0) {
@@ -408,12 +408,12 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
             }
 	  }
 	  if (ifrNum.nelements()==1) {
-	    selms_p=selms_p((selms_p.col(NewMS::columnName(NewMS::ANTENNA1))*1000+
-			     selms_p.col(NewMS::columnName(NewMS::ANTENNA2))) ==
+	    selms_p=selms_p((selms_p.col(MS::columnName(MS::ANTENNA1))*1000+
+			     selms_p.col(MS::columnName(MS::ANTENNA2))) ==
 			    ifrNum(0));
 	  } else {
-	    selms_p=selms_p((selms_p.col(NewMS::columnName(NewMS::ANTENNA1))*1000+
-			     selms_p.col(NewMS::columnName(NewMS::ANTENNA2)))
+	    selms_p=selms_p((selms_p.col(MS::columnName(MS::ANTENNA1))*1000+
+			     selms_p.col(MS::columnName(MS::ANTENNA2)))
 			    .in(ifrNum));
 	  }
 	  ifrSelection_p.reference(ifrNum);
@@ -423,7 +423,7 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::ROWS:
+    case MSS::ROWS:
       {
 	Vector<Int> rows;
 	if (GlishArray(items.get(i)).get(rows) && rows.nelements()>0) {
@@ -437,7 +437,7 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::TIME:
+    case MSS::TIME:
       {
 	Vector<Double> range;
 	if (GlishArray(items.get(i)).get(range) && range.nelements()==2) {
@@ -451,9 +451,9 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::TIMES:
+    case MSS::TIMES:
       {
-	column=NewMS::columnName(NewMS::TIME);
+	column=MS::columnName(MS::TIME);
 	Vector<Double> time;
 	if (GlishArray(items.get(i)).get(time) && time.nelements()>0) {
 	  if (time.nelements()==1) {
@@ -464,14 +464,14 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::U:
-    case NewMSS::V:
-    case NewMSS::W:
+    case MSS::U:
+    case MSS::V:
+    case MSS::W:
       {
-	Int uvwIndex=fld-NewMSS::U;
+	Int uvwIndex=fld-MSS::U;
 	Vector<Double> range;
 	if (GlishArray(items.get(i)).get(range) && range.nelements()==2) {
-	  column=NewMS::columnName(NewMS::UVW);
+	  column=MS::columnName(MS::UVW);
 	  TableExprNodeSet interval;
 	  interval.add (TableExprNodeSetElem (True, range(0), 
 					      range(1), True));
@@ -483,12 +483,12 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::UVDIST:
+    case MSS::UVDIST:
       {
 	Vector<Double> range;
 	if (GlishArray(items.get(i)).get(range) && range.nelements()==2) {
 	  range*=range; // square
-	  ROArrayColumn<Double> uvwcol(selms_p,NewMS::columnName(NewMS::UVW));
+	  ROArrayColumn<Double> uvwcol(selms_p,MS::columnName(MS::UVW));
 	  Int nrow=selms_p.nrow();
 	  if (nrow>0) {
 	    Matrix<Double> uvw=uvwcol.getColumn();
@@ -508,7 +508,7 @@ Bool NewMSSelector::select(const GlishRecord& items, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::UNDEFINED:
+    case MSS::UNDEFINED:
     default:
       os << LogIO::WARN << "Unrecognized field in input ignored: "<<
 	downcase(column)<<LogIO::POST;
@@ -549,7 +549,7 @@ static void averageDouble(Vector<Double>& vec)
   }
 }
 
-GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
+GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				Int inc, Bool average, Bool oneBased)
 {
   GlishRecord out;
@@ -596,13 +596,13 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   } else {
     tab=selms_p;
   }
-  RONewMSColumns msc(tab);
+  ROMSColumns msc(tab);
   Int nIfr = ifrSelection_p.nelements();
   if (ifrAxis && nIfr==0) {
     // set default
     //    ifrSelection_p=ifrNumbers(msc.antenna1(),msc.antenna2());
-    NewMSRange msRange(tab);
-    GlishArray(msRange.range(NewMSS::IFR_NUMBER).get(0)).get(ifrSelection_p);
+    MSRange msRange(tab);
+    GlishArray(msRange.range(MSS::IFR_NUMBER).get(0)).get(ifrSelection_p);
     nIfr = ifrSelection_p.nelements();
   }
   Int nTime = 0;
@@ -650,24 +650,24 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   // now get out the data
   for (Int it=0; it<nItems; it++) {
     String item=downcase(items(it));
-    NewMSS::Field fld=NewMSS::field(item);
+    MSS::Field fld=MSS::field(item);
     switch (fld) {
-    case NewMSS::AMPLITUDE:
+    case MSS::AMPLITUDE:
       wantAmp=True;
       break;
-    case NewMSS::CORRECTED_AMPLITUDE:
+    case MSS::CORRECTED_AMPLITUDE:
       wantCAmp=True;
       break;
-    case NewMSS::MODEL_AMPLITUDE:
+    case MSS::MODEL_AMPLITUDE:
       wantMAmp=True;
       break;
-    case NewMSS::RESIDUAL_AMPLITUDE:
+    case MSS::RESIDUAL_AMPLITUDE:
       wantRAmp=True;
       break;
-    case NewMSS::OBS_RESIDUAL_AMPLITUDE:
+    case MSS::OBS_RESIDUAL_AMPLITUDE:
       wantORAmp=True;
       break;
-    case NewMSS::ANTENNA1:
+    case MSS::ANTENNA1:
       if (doIfrAxis) {
 	Vector<Int> ant1(nIfr);
 	ant1=ifrSelection_p;
@@ -682,7 +682,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,ant);
       }
       break;
-    case NewMSS::ANTENNA2:
+    case MSS::ANTENNA2:
       if (doIfrAxis) {
 	Vector<Int> ant2(nIfr);
 	ant2=ifrSelection_p;
@@ -697,7 +697,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,ant);
       }
       break;
-    case NewMSS::AXIS_INFO:
+    case MSS::AXIS_INFO:
       {
 	GlishRecord axis_info;
 	// add info for the axes of the data array
@@ -761,10 +761,10 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  MEpoch ep=msc.timeMeas()(0);
 	  Bool doUT=False, doHA=False, doLAST=False;
 	  for (Int k=0; k<nItems; k++) {
-	    Int enumval=NewMSS::field(downcase(items(k)));
-	    if (enumval == NewMSS::UT) doUT=True;
-	    if (enumval == NewMSS::LAST) doLAST=True;
-	    if (enumval == NewMSS::HA) doHA=True;
+	    Int enumval=MSS::field(downcase(items(k)));
+	    if (enumval == MSS::UT) doUT=True;
+	    if (enumval == MSS::LAST) doLAST=True;
+	    if (enumval == MSS::HA) doHA=True;
 	  }
 	  // Note: HA conversion assumes there is a single fieldId for
 	  // each time slot.
@@ -809,26 +809,26 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add("axis_info",axis_info);
       }
       break;
-    case NewMSS::CORRELATOR_GAIN:
+    case MSS::CORRELATOR_GAIN:
       wantCorrGain=True;
-    case NewMSS::OBS_CORRELATOR_GAIN:
+    case MSS::OBS_CORRELATOR_GAIN:
       wantObsCorrGain=True;
-    case NewMSS::DATA:
+    case MSS::DATA:
       wantData=True;
       break;
-    case NewMSS::CORRECTED_DATA:
+    case MSS::CORRECTED_DATA:
       wantCData=True;
       break;
-    case NewMSS::MODEL_DATA:
+    case MSS::MODEL_DATA:
       wantMData=True;
       break;
-    case NewMSS::RESIDUAL_DATA:
+    case MSS::RESIDUAL_DATA:
       wantRData=True;
       break;
-    case NewMSS::OBS_RESIDUAL_DATA:
+    case MSS::OBS_RESIDUAL_DATA:
       wantORData=True;
       break;
-    case NewMSS::FEED1:
+    case MSS::FEED1:
       // problem: doIfrAxis won't work with multiple feeds
       if (doIfrAxis) {
 	os << LogIO::WARN << "Note - multiple feeds not supported for"
@@ -841,7 +841,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,feed);
       }
       break;
-    case NewMSS::FEED2:
+    case MSS::FEED2:
       if (doIfrAxis) {
 	os << LogIO::WARN << "Note - multiple feeds not supported for"
 	  " ifrAxis==True" << LogIO::POST;
@@ -853,7 +853,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,feed);
       }
       break;
-    case NewMSS::FIELD_ID:
+    case MSS::FIELD_ID:
       if (doIfrAxis) {
 	Vector<Int> fldId=msc.fieldId().getColumn();
 	Vector<Int> fldTime(nTime);
@@ -870,10 +870,10 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,f);
       }
       break;
-    case NewMSS::FLAG:
+    case MSS::FLAG:
       wantFlag=True;
       break;
-    case NewMSS::FLAG_ROW:
+    case MSS::FLAG_ROW:
       if (doIfrAxis) {
 	Matrix<Bool> itFlag(nIfr,nTime);
 	itFlag.set(True); // flag unfilled slots
@@ -886,10 +886,10 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,msc.flagRow().getColumn());
       }
       break;
-    case NewMSS::FLAG_SUM:
+    case MSS::FLAG_SUM:
       wantFlagSum=True;
       break;
-    case NewMSS::IFR_NUMBER:
+    case MSS::IFR_NUMBER:
       {
 	if (doIfrAxis) {
 	  if (oneBased) {
@@ -913,21 +913,21 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	}
       }
       break;
-    case NewMSS::IMAGINARY:
+    case MSS::IMAGINARY:
       wantImag=True;
       break;
-    case NewMSS::CORRECTED_IMAGINARY:
+    case MSS::CORRECTED_IMAGINARY:
       wantCImag=True;
-    case NewMSS::MODEL_IMAGINARY:
+    case MSS::MODEL_IMAGINARY:
       wantMImag=True;
       break;
-    case NewMSS::RESIDUAL_IMAGINARY:
+    case MSS::RESIDUAL_IMAGINARY:
       wantRImag=True;
       break;
-    case NewMSS::OBS_RESIDUAL_IMAGINARY:
+    case MSS::OBS_RESIDUAL_IMAGINARY:
       wantORImag=True;
       break;
-    case NewMSS::IMAGING_WEIGHT:
+    case MSS::IMAGING_WEIGHT:
       {
 	if (!msc.imagingWeight().isNull()) {
 	  // averaging doesn't make sense here
@@ -959,37 +959,37 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	}
       }
       break;
-    case NewMSS::PHASE:
+    case MSS::PHASE:
       wantPhase=True;
       break;
-    case NewMSS::CORRECTED_PHASE:
+    case MSS::CORRECTED_PHASE:
       wantCPhase=True;
       break;
-    case NewMSS::MODEL_PHASE:
+    case MSS::MODEL_PHASE:
       wantMPhase=True;
       break;
-    case NewMSS::RESIDUAL_PHASE:
+    case MSS::RESIDUAL_PHASE:
       wantRPhase=True;
       break;
-    case NewMSS::OBS_RESIDUAL_PHASE:
+    case MSS::OBS_RESIDUAL_PHASE:
       wantORPhase=True;
       break;
-    case NewMSS::REAL:
+    case MSS::REAL:
       wantReal=True;
       break;
-    case NewMSS::CORRECTED_REAL:
+    case MSS::CORRECTED_REAL:
       wantCReal=True;
       break;
-    case NewMSS::MODEL_REAL:
+    case MSS::MODEL_REAL:
       wantMReal=True;
       break;
-    case NewMSS::RESIDUAL_REAL:
+    case MSS::RESIDUAL_REAL:
       wantRReal=True;
       break;
-    case NewMSS::OBS_RESIDUAL_REAL:
+    case MSS::OBS_RESIDUAL_REAL:
       wantORReal=True;
       break;
-    case NewMSS::SCAN_NUMBER:
+    case MSS::SCAN_NUMBER:
       if (doIfrAxis) {
 	Vector<Int> scanNo=msc.scanNumber().getColumn();
 	Vector<Int> scanNoTime(nTime);
@@ -1006,7 +1006,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,scan);
       }
       break;
-    case NewMSS::DATA_DESC_ID:
+    case MSS::DATA_DESC_ID:
       if (doIfrAxis) {
 	Vector<Int> ddNo=msc.dataDescId().getColumn();
 	Vector<Int> ddTime(nTime);
@@ -1023,7 +1023,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,dd);
       }
       break;
-    case NewMSS::TIME:
+    case MSS::TIME:
       {
 	Vector<Double> time=msc.time().getColumn();
 	if (doIfrAxis) {
@@ -1039,7 +1039,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	}
       }
       break;
-    case NewMSS::UVW:
+    case MSS::UVW:
       if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
       if (doIfrAxis) {
 	Cube<Double> uvw2(uvw.shape()(0),nIfr,nTime); uvw2.set(0);
@@ -1055,11 +1055,11 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add(item,uvw);
       }
       break;
-    case NewMSS::U:
-    case NewMSS::V:
-    case NewMSS::W:
+    case MSS::U:
+    case MSS::V:
+    case MSS::W:
       {
-	Int index=fld-NewMSS::U;
+	Int index=fld-MSS::U;
 	if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
 	if (doIfrAxis) {
 	  Matrix<Double> uvw2(nIfr,nTime); uvw2.set(0);
@@ -1072,7 +1072,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	}
       }
       break;
-    case NewMSS::UVDIST:
+    case MSS::UVDIST:
       {
 	if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
 	Vector<Double> u2(uvw.row(0)),v2(uvw.row(1));
@@ -1095,15 +1095,15 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	}
       }
       break;
-    case NewMSS::WEIGHT:
+    case MSS::WEIGHT:
       wantWeight=True;
       break;
-    case NewMSS::HA:
-    case NewMSS::LAST:
-    case NewMSS::UT:
+    case MSS::HA:
+    case MSS::LAST:
+    case MSS::UT:
       // do nothing, only used within AXIS_INFO
       break;
-    case NewMSS::UNDEFINED:
+    case MSS::UNDEFINED:
     default:
       os << LogIO::WARN << "Unrecognized field in input ignored: "<<
 	item<<LogIO::POST;
@@ -1152,7 +1152,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     getAveragedFlag(flag,msc.flag());
     uInt nPol=flag.shape()(0), nChan=flag.shape()(1), nRow=flag.shape()(2);
     if (doIfrAxis) {
-      NewMSSelUtil2<Bool>::reorderData(flag,ifrSlot,nIfr,timeSlot,nTime,True);
+      MSSelUtil2<Bool>::reorderData(flag,ifrSlot,nIfr,timeSlot,nTime,True);
     }
     if (average) flags=flag;
     if (wantFlag && !average) {
@@ -1209,7 +1209,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	 << " data may give incorrect results"<< LogIO::POST;
     }
     getAveragedData(data,msc.data());
-    if (doIfrAxis) NewMSSelUtil2<Complex>::
+    if (doIfrAxis) MSSelUtil2<Complex>::
       reorderData(data,ifrSlot,nIfr,timeSlot,nTime,Complex());
     if (wantOR || wantObsCorrGain) {
       if (average) observed_data=data;
@@ -1229,7 +1229,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       // get the data
       Array<Complex> data;
       getAveragedData(data,msc.correctedData());
-      if (doIfrAxis) NewMSSelUtil2<Complex>::
+      if (doIfrAxis) MSSelUtil2<Complex>::
 	reorderData(data,ifrSlot,nIfr,timeSlot,nTime,Complex());
       if (wantR || wantCorrGain) {
 	if (average) corrected_data=data;
@@ -1253,7 +1253,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       // get the data
       Array<Complex> data;
       getAveragedData(data,msc.modelData());
-      if (doIfrAxis) NewMSSelUtil2<Complex>::
+      if (doIfrAxis) MSSelUtil2<Complex>::
 	reorderData(data,ifrSlot,nIfr,timeSlot,nTime,Complex());
       if (wantR || wantOR || wantCorrGain || wantObsCorrGain) {
 	if (average) {
@@ -1322,7 +1322,7 @@ GlishRecord NewMSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   return out;
 }
 
-Bool NewMSSelector::putData(const GlishRecord& items)
+Bool MSSelector::putData(const GlishRecord& items)
 {
   if (!initSel_p) {
     os << LogIO::WARN <<"Initializing selection with dd=0"
@@ -1336,11 +1336,11 @@ Bool NewMSSelector::putData(const GlishRecord& items)
     return False;
   }
   if (!selms_p.isWritable()) {
-    os << LogIO::SEVERE << "NewMeasurementSet is not writable"<< LogIO::POST;
+    os << LogIO::SEVERE << "MeasurementSet is not writable"<< LogIO::POST;
     return False;
   }
 
-  NewMSColumns msc(selms_p);
+  MSColumns msc(selms_p);
   if (useSlicer_p) {
     if (!haveSlicer_p) {
       if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
@@ -1350,9 +1350,9 @@ Bool NewMSSelector::putData(const GlishRecord& items)
   Int n=items.nelements();
   for (Int i=0; i<n; i++) {
     String item=downcase(items.name(i));
-    NewMSS::Field fld=NewMSS::field(item);
+    MSS::Field fld=MSS::field(item);
     switch (fld) {
-    case NewMSS::DATA:
+    case MSS::DATA:
       {
 	// averaging not supported
 	if (chanSel_p(2)>1) {
@@ -1369,7 +1369,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	  if (data.ndim()==4) {
 	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
 		data.shape()(3)==Int(rowIndex_p.ncolumn())) {
-	      NewMSSelUtil2<Complex>::reorderData(data, rowIndex_p, 
+	      MSSelUtil2<Complex>::reorderData(data, rowIndex_p, 
 					       selms_p.nrow());
 	    } else {
 	      os << LogIO::SEVERE<<"Data shape inconsistent with "
@@ -1384,7 +1384,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	}
       }
       break;
-    case NewMSS::CORRECTED_DATA:
+    case MSS::CORRECTED_DATA:
       {
 	// averaging not supported
 	if (chanSel_p(2)>1) {
@@ -1403,7 +1403,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	  if (data.ndim()==4) {
 	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
 		data.shape()(3)==Int(rowIndex_p.ncolumn())) {
-	      NewMSSelUtil2<Complex>::reorderData(data, rowIndex_p, 
+	      MSSelUtil2<Complex>::reorderData(data, rowIndex_p, 
 					       selms_p.nrow());
 	    } else {
 	      os << LogIO::SEVERE<<"Data shape inconsistent with "
@@ -1418,7 +1418,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	}
       }
       break;
-    case NewMSS::MODEL_DATA:
+    case MSS::MODEL_DATA:
       {
 	// averaging not supported
 	if (chanSel_p(2)>1) {
@@ -1436,7 +1436,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	  if (data.ndim()==4) {
 	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
 		data.shape()(3)==Int(rowIndex_p.ncolumn())) {
-	      NewMSSelUtil2<Complex>::reorderData(data, rowIndex_p, 
+	      MSSelUtil2<Complex>::reorderData(data, rowIndex_p, 
 					       selms_p.nrow());
 	    } else {
 	      os << LogIO::SEVERE<<"Data shape inconsistent with "
@@ -1451,14 +1451,14 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	}
       }
       break;
-    case NewMSS::FLAG:
+    case MSS::FLAG:
       {
 	Array<Bool> flag;
 	if (GlishArray(items.get(i)).get(flag)) {
 	  if (flag.ndim()==4) {
 	    if (flag.shape()(2)==Int(rowIndex_p.nrow()) && 
 		flag.shape()(3)==Int(rowIndex_p.ncolumn())) {
-	      NewMSSelUtil2<Bool>::reorderData(flag, rowIndex_p, selms_p.nrow());
+	      MSSelUtil2<Bool>::reorderData(flag, rowIndex_p, selms_p.nrow());
 	    } else {
 	      os << LogIO::SEVERE<<"Flag shape inconsistent with "
 		"current selection"<< LogIO::POST;
@@ -1471,7 +1471,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	}
       }
       break;
-    case NewMSS::FLAG_ROW:
+    case MSS::FLAG_ROW:
       {
 	Array<Bool> flagRow;
 	if (GlishArray(items.get(i)).get(flagRow)) {
@@ -1484,7 +1484,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	}
       }
       break;
-    case NewMSS::IMAGING_WEIGHT:
+    case MSS::IMAGING_WEIGHT:
       {
 	// averaging not supported
 	if (chanSel_p(2)>1) {
@@ -1504,7 +1504,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	}
       }
       break;
-    case NewMSS::WEIGHT:
+    case MSS::WEIGHT:
       {
 	Array<Float> weight;
 	if (GlishArray(items.get(i)).get(weight)) {
@@ -1517,7 +1517,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
 	}
       }
       break;
-    case NewMSS::UNDEFINED:
+    case MSS::UNDEFINED:
     default:
       os << LogIO::WARN << "Unrecognized field in input ignored: "<<
 	item<<LogIO::POST;
@@ -1527,7 +1527,7 @@ Bool NewMSSelector::putData(const GlishRecord& items)
   return True;
 }
 
-Bool NewMSSelector::iterInit(const Vector<String>& columns,
+Bool MSSelector::iterInit(const Vector<String>& columns,
 			  Double interval, Int maxRows)
 {
   if (!initSel_p) {
@@ -1544,20 +1544,20 @@ Bool NewMSSelector::iterInit(const Vector<String>& columns,
   Int n=columns.nelements();
   Block<Int> col(n);
   for (Int i=0; i<n; i++) {
-    col[i]=NewMS::columnType(columns(i));
-    if (col[i]==NewMS::UNDEFINED_COLUMN) {
+    col[i]=MS::columnType(columns(i));
+    if (col[i]==MS::UNDEFINED_COLUMN) {
       os << LogIO::SEVERE << "Iteration initialization failed: unrecognized"
 	" column name: "<<columns(i)<<LogIO::POST;
       return False;
     }
   }
   if (msIter_p) delete msIter_p;
-  msIter_p=new NewMSIter(selms_p,col,interval);
+  msIter_p=new MSIter(selms_p,col,interval);
   maxRow_p = maxRows;
   return True;
 }
 
-Bool NewMSSelector::iterNext()
+Bool MSSelector::iterNext()
 {
   Bool more=False;
   if (msIter_p) {
@@ -1583,7 +1583,7 @@ Bool NewMSSelector::iterNext()
   return more;
 }
 
-Bool NewMSSelector::iterOrigin()
+Bool MSSelector::iterOrigin()
 {
   Bool ok=False;
   if (msIter_p) {
@@ -1603,14 +1603,14 @@ Bool NewMSSelector::iterOrigin()
   return ok;
 }
   
-Bool NewMSSelector::iterEnd()
+Bool MSSelector::iterEnd()
 {
   if (!msIter_p) return False;
   selms_p=msIter_p->ms();
   return True;
 }
 
-void NewMSSelector::getAveragedData(Array<Complex>& avData, 
+void MSSelector::getAveragedData(Array<Complex>& avData, 
 				 const ROArrayColumn<Complex>& col)
 {
   Array<Complex> data;
@@ -1657,7 +1657,7 @@ void NewMSSelector::getAveragedData(Array<Complex>& avData,
 //# TODO: change the flagging to AND instead of OR and do the right
 // thing when averaging the data
 
-void NewMSSelector::getAveragedFlag(Array<Bool>& avFlag, 
+void MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
 				 const ROArrayColumn<Bool>& col)
 {
   Array<Bool> flag;
@@ -1697,7 +1697,7 @@ void NewMSSelector::getAveragedFlag(Array<Bool>& avFlag,
   }
 }
 
-void NewMSSelector::putAveragedFlag(const Array<Bool>& avFlag, 
+void MSSelector::putAveragedFlag(const Array<Bool>& avFlag, 
 				 ArrayColumn<Bool>& col)
 {
   Array<Bool> polFlag=avFlag;
@@ -1739,7 +1739,7 @@ void NewMSSelector::putAveragedFlag(const Array<Bool>& avFlag,
   else col.putColumn(flag);
 }
 
-void NewMSSelector::makeSlicer(Int start, Int nCorr)
+void MSSelector::makeSlicer(Int start, Int nCorr)
 {
   if (chanSel_p(2)==1) {
     // width is one, we can use a stride
@@ -1754,7 +1754,7 @@ void NewMSSelector::makeSlicer(Int start, Int nCorr)
 }
 
 // reorder from 2d to 1d (removing ifr axis)
-void NewMSSelector::reorderFlagRow(Array<Bool>& flagRow)
+void MSSelector::reorderFlagRow(Array<Bool>& flagRow)
 {
   Int nIfr=flagRow.shape()(0), nTime=flagRow.shape()(1);
   Int nRow=selms_p.nrow();
@@ -1777,7 +1777,7 @@ void NewMSSelector::reorderFlagRow(Array<Bool>& flagRow)
 }
 
 // reorder from 2d to 1d (removing ifr axis)
-void NewMSSelector::reorderWeight(Array<Float>& weight)
+void MSSelector::reorderWeight(Array<Float>& weight)
 {
   Int nIfr=weight.shape()(0), nTime=weight.shape()(1);
   Int nRow=selms_p.nrow();
@@ -1801,7 +1801,7 @@ void NewMSSelector::reorderWeight(Array<Float>& weight)
 
 // average data (with flags & weights applied) over it's last axis (time or
 // row), return in data (overwritten), dataFlag gives new flags.
-void NewMSSelector::timeAverage(Array<Bool>& dataFlag, Array<Complex>& data, 
+void MSSelector::timeAverage(Array<Bool>& dataFlag, Array<Complex>& data, 
 			     const Array<Bool>& flag, 
 			     const Array<Float>& weight)
 {

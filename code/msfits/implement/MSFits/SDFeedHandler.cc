@@ -29,9 +29,9 @@
 #include <trial/MeasurementSets/SDFeedHandler.h>
 
 #include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSFeedColumns.h>
-#include <aips/MeasurementSets/NewMSFeed.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSFeedColumns.h>
+#include <aips/MeasurementSets/MSFeed.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -50,7 +50,7 @@ SDFeedHandler::SDFeedHandler()
     : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0)
 {;}
 
-SDFeedHandler::SDFeedHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
+SDFeedHandler::SDFeedHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
     : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0)
 {
     initAll(ms, handledCols, row);
@@ -71,10 +71,10 @@ SDFeedHandler &SDFeedHandler::operator=(const SDFeedHandler &other)
 	// need to avoid the assignment operator here because we want
 	// this to point to the field in index_p, not in other.index_p
 	numRecpKey_p.attachToRecord(index_p->accessKey(),
-				    NewMSFeed::columnName(NewMSFeed::NUM_RECEPTORS));
-	msFeed_p = new NewMSFeed(*(other.msFeed_p));
+				    MSFeed::columnName(MSFeed::NUM_RECEPTORS));
+	msFeed_p = new MSFeed(*(other.msFeed_p));
 	AlwaysAssert(msFeed_p, AipsError);
-	msFeedCols_p = new NewMSFeedColumns(*msFeed_p);
+	msFeedCols_p = new MSFeedColumns(*msFeed_p);
 	AlwaysAssert(msFeedCols_p, AipsError);
 	feedId_p = other.feedId_p;
 	nextFeedId_p = other.nextFeedId_p;
@@ -95,7 +95,7 @@ SDFeedHandler &SDFeedHandler::operator=(const SDFeedHandler &other)
     return *this;
 }
 
-void SDFeedHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDFeedHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -247,9 +247,9 @@ void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Ve
 		    delete msFeedCols_p;
 		    msFeedCols_p = 0;
 		    TableDesc td;
-		    NewMSFeed::addColumnToDesc(td, NewMSFeed::PHASED_FEED_ID);
+		    MSFeed::addColumnToDesc(td, MSFeed::PHASED_FEED_ID);
 		    msFeed_p->addColumn(td[0]);
-		    msFeedCols_p = new NewMSFeedColumns(*msFeed_p);
+		    msFeedCols_p = new MSFeedColumns(*msFeed_p);
 		    AlwaysAssert(msFeedCols_p, AipsError);
 		}
 		if (!msFeedCols_p->phasedFeedId().isNull()) {
@@ -297,20 +297,20 @@ void SDFeedHandler::clearRow()
     polarizationTypeField_p.detach();
 }
 
-void SDFeedHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDFeedHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
-    msFeed_p = new NewMSFeed(ms.feed());
+    msFeed_p = new MSFeed(ms.feed());
     AlwaysAssert(msFeed_p, AipsError);
 
-    msFeedCols_p = new NewMSFeedColumns(*msFeed_p);
+    msFeedCols_p = new MSFeedColumns(*msFeed_p);
     AlwaysAssert(msFeedCols_p, AipsError);
 
     index_p = new ColumnsIndex(*msFeed_p, 
-			       NewMSFeed::columnName(NewMSFeed::NUM_RECEPTORS));
+			       MSFeed::columnName(MSFeed::NUM_RECEPTORS));
     AlwaysAssert(index_p, AipsError);
     
     numRecpKey_p.attachToRecord(index_p->accessKey(),
-				NewMSFeed::columnName(NewMSFeed::NUM_RECEPTORS));
+				MSFeed::columnName(MSFeed::NUM_RECEPTORS));
     feedId_p = -1;
     nextFeedId_p = 0;
     nrecpt_p = 0;

@@ -1,4 +1,4 @@
-//# NewMSRange.cc: selection and iteration of an MS
+//# MSRange.cc: selection and iteration of an MS
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSRange.h>
+#include <trial/MeasurementSets/MSRange.h>
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Matrix.h>
@@ -35,7 +35,7 @@
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Tables/TableRecord.h>
@@ -44,21 +44,21 @@
 
 static LogIO os;
 
-NewMSRange::NewMSRange():blockSize_p(10),ddId_p(UNCHECKED),
+MSRange::MSRange():blockSize_p(10),ddId_p(UNCHECKED),
 checked_p(False)
 {}
 
-NewMSRange::NewMSRange(const NewMeasurementSet& ms, Int dataDescriptionId)
+MSRange::MSRange(const MeasurementSet& ms, Int dataDescriptionId)
 :ms_p(ms),blockSize_p(10),ddId_p(dataDescriptionId),
 checked_p(False)
 {
 }
 
-NewMSRange::NewMSRange(const NewMSRange& other)
+MSRange::MSRange(const MSRange& other)
 { operator=(other); }
 
 
-NewMSRange& NewMSRange::operator=(const NewMSRange& other)
+MSRange& MSRange::operator=(const MSRange& other)
 {
   if (this==&other) return *this;
   ms_p=other.ms_p;
@@ -68,19 +68,19 @@ NewMSRange& NewMSRange::operator=(const NewMSRange& other)
   return *this;
 }
 
-void NewMSRange::setMS(const NewMeasurementSet& ms, Int dataDescriptionId)
+void MSRange::setMS(const MeasurementSet& ms, Int dataDescriptionId)
 {
   ms_p=ms;
   ddId_p=dataDescriptionId;
   checked_p=False;
 }
 
-Bool NewMSRange::checkSelection()
+Bool MSRange::checkSelection()
 {
   if (!checked_p) {
     if (ddId_p<0) {
       // check dd
-      ROScalarColumn<Int> dd(ms_p,NewMS::columnName(NewMS::DATA_DESC_ID));
+      ROScalarColumn<Int> dd(ms_p,MS::columnName(MS::DATA_DESC_ID));
       Vector<Int> ddId=scalarRange(dd);
       Int ndd=ddId.nelements();
       if (ndd==1) {
@@ -90,9 +90,9 @@ Bool NewMSRange::checkSelection()
 	// check if the shape is the same for all spectral windows that occur
 	// in the main table
 	Bool constantShape=True;
-	RONewMSDataDescColumns ddc(ms_p.dataDescription());
-	RONewMSSpWindowColumns spwc(ms_p.spectralWindow());
-	RONewMSPolarizationColumns polc(ms_p.polarization());
+	ROMSDataDescColumns ddc(ms_p.dataDescription());
+	ROMSSpWindowColumns spwc(ms_p.spectralWindow());
+	ROMSPolarizationColumns polc(ms_p.polarization());
 	for (Int i=1; i<ndd; i++) {
 	  if (spwc.numChan()(ddc.spectralWindowId()(i)) != 
 	      spwc.numChan()(ddc.spectralWindowId()(i-1)) ||
@@ -111,7 +111,7 @@ Bool NewMSRange::checkSelection()
   return ToBool(ddId_p>=ALL);
 }
 
-GlishRecord NewMSRange::range(const Vector<String>& items, Bool oneBased)
+GlishRecord MSRange::range(const Vector<String>& items, Bool oneBased)
 {
   Int n=items.nelements();
   Vector<Int> keys(n);
@@ -120,8 +120,8 @@ GlishRecord NewMSRange::range(const Vector<String>& items, Bool oneBased)
   String keyword;
   for (Int i=0; i<n; i++) {
     keyword=downcase(items(i));
-    keys(k)=NewMSS::field(keyword);
-    if (keys(k)!=NewMSS::UNDEFINED) {
+    keys(k)=MSS::field(keyword);
+    if (keys(k)!=MSS::UNDEFINED) {
       k++;
     } else {
       os<< LogIO::WARN << "Unrecognized field in input ignored: "<<
@@ -132,7 +132,7 @@ GlishRecord NewMSRange::range(const Vector<String>& items, Bool oneBased)
   return range(keys,oneBased);
 }
 
-GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
+GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
 {
   // TODO: apply channel selection? polconversion?
 
@@ -144,7 +144,7 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
     os<< LogIO::WARN << "Table is empty - use setMS"<<LogIO::POST;
     return out;
   }
-  RONewMSColumns msc(ms_p);
+  ROMSColumns msc(ms_p);
   Bool wantAmp, wantPhase, wantReal, wantImag, wantData,
     wantCAmp, wantCPhase, wantCReal, wantCImag, wantCData,
     wantMAmp, wantMPhase, wantMReal, wantMImag, wantMData;
@@ -159,31 +159,31 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
   String keyword;
   for (Int i=0; i<n; i++) {
     // get the enum and the keyword value
-    NewMSS::Field fld=NewMSS::Field(keys(i));
-    keyword=NewMSS::keyword(fld);
+    MSS::Field fld=MSS::Field(keys(i));
+    keyword=MSS::keyword(fld);
     switch (fld) {
-    case NewMSS::AMPLITUDE:
+    case MSS::AMPLITUDE:
       wantAmp=True;
       break;
-    case NewMSS::CORRECTED_AMPLITUDE:
+    case MSS::CORRECTED_AMPLITUDE:
       wantCAmp=True;
       break;
-    case NewMSS::MODEL_AMPLITUDE:
+    case MSS::MODEL_AMPLITUDE:
       wantMAmp=True;
       break;
-    case NewMSS::ANTENNA1:
+    case MSS::ANTENNA1:
       scalarRange(out,keyword,msc.antenna1(),oneBased);
       break;
-    case NewMSS::ANTENNA2:
+    case MSS::ANTENNA2:
       scalarRange(out,keyword,msc.antenna2(),oneBased);
       break;
-    case NewMSS::ANTENNAS:
+    case MSS::ANTENNAS:
       out.add(keyword,msc.antenna().name().getColumn());
       break;
-    case NewMSS::ARRAY_ID:
+    case MSS::ARRAY_ID:
       scalarRange(out,keyword,msc.arrayId(),oneBased);
       break;
-    case NewMSS::CHAN_FREQ:
+    case MSS::CHAN_FREQ:
       {
 	Array<Double> chanFreq;
 	Bool selected=checkSelection();
@@ -200,14 +200,14 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::CORR_NAMES:
-    case NewMSS::CORR_TYPES:
+    case MSS::CORR_NAMES:
+    case MSS::CORR_TYPES:
       {
 	Bool selected=checkSelection();
 	if (ddId_p == ALL) {
 	  Matrix<Int> corrTypes=
 	    msc.polarization().corrType().getColumn();
-	  if (fld==NewMSS::CORR_NAMES) {
+	  if (fld==MSS::CORR_NAMES) {
 	    Matrix<String> names(corrTypes.shape());
 	    for (uInt k=0; k<names.nrow(); k++) {
 	      for (uInt j=0; j<names.ncolumn(); j++) {
@@ -223,7 +223,7 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	    Vector<Int> corrTypes=
 	      msc.polarization().corrType()
 	      (msc.dataDescription().polarizationId()(ddId_p));
-	    if (fld==NewMSS::CORR_NAMES) {
+	    if (fld==MSS::CORR_NAMES) {
 	      Vector<String> names(corrTypes.nelements());
 	      for (uInt k=0; k<names.nelements(); k++) {
 		names(k)=Stokes::name(Stokes::type(corrTypes(k)));
@@ -238,47 +238,47 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::DATA:
+    case MSS::DATA:
       wantData=True;
       break;
-    case NewMSS::CORRECTED_DATA:
+    case MSS::CORRECTED_DATA:
       wantCData=True;
       break;
-    case NewMSS::MODEL_DATA:
+    case MSS::MODEL_DATA:
       wantMData=True;
       break;
-    case NewMSS::DATA_DESC_ID:
+    case MSS::DATA_DESC_ID:
       scalarRange(out,keyword,msc.dataDescId(),oneBased);
       break;
-    case NewMSS::FEED1:
+    case MSS::FEED1:
       scalarRange(out,keyword,msc.feed1(),oneBased);
       break;
-    case NewMSS::FEED2:
+    case MSS::FEED2:
       scalarRange(out,keyword,msc.feed2(),oneBased);
       break;
-    case NewMSS::FIELD_ID:
+    case MSS::FIELD_ID:
       scalarRange(out,keyword,msc.fieldId(),oneBased);
       break;
-    case NewMSS::FIELDS:
+    case MSS::FIELDS:
       out.add(keyword,msc.field().name().getColumn());
       break;
-    case NewMSS::IFR_NUMBER:
+    case MSS::IFR_NUMBER:
       {
 	Vector<Int> ifr=ifrNumbers(msc.antenna1(),msc.antenna2());
 	if (oneBased) ifr+=1001;
 	out.add(keyword,ifr);
       }
       break;
-    case NewMSS::IMAGINARY:
+    case MSS::IMAGINARY:
       wantImag=True;
       break;
-    case NewMSS::CORRECTED_IMAGINARY:
+    case MSS::CORRECTED_IMAGINARY:
       wantCImag=True;
       break;
-    case NewMSS::MODEL_IMAGINARY:
+    case MSS::MODEL_IMAGINARY:
       wantMImag=True;
       break;
-    case NewMSS::IMAGING_WEIGHT:
+    case MSS::IMAGING_WEIGHT:
       {
 	Bool selected=checkSelection();
 	if (selected) {
@@ -295,7 +295,7 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::NUM_CORR:
+    case MSS::NUM_CORR:
       {
 	Bool selected=checkSelection();
 	if (selected) {
@@ -307,7 +307,7 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::NUM_CHAN:
+    case MSS::NUM_CHAN:
       {
 	Bool selected=checkSelection();
 	if (selected) {
@@ -319,16 +319,16 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::PHASE:
+    case MSS::PHASE:
       wantPhase=True;
       break;
-    case NewMSS::CORRECTED_PHASE:
+    case MSS::CORRECTED_PHASE:
       wantCPhase=True;
       break;
-    case NewMSS::MODEL_PHASE:
+    case MSS::MODEL_PHASE:
       wantMPhase=True;
       break;
-    case NewMSS::PHASE_DIR:
+    case MSS::PHASE_DIR:
       {
 	GlishRecord phasedir;
 	// return 0th order position only
@@ -345,16 +345,16 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	out.add(keyword,phasedir);
       }
       break;
-    case NewMSS::REAL:
+    case MSS::REAL:
       wantReal=True;
       break;
-    case NewMSS::CORRECTED_REAL:
+    case MSS::CORRECTED_REAL:
       wantCReal=True;
       break;
-    case NewMSS::MODEL_REAL:
+    case MSS::MODEL_REAL:
       wantMReal=True;
       break;
-    case NewMSS::REF_FREQUENCY:
+    case MSS::REF_FREQUENCY:
       {
 	Bool selected=checkSelection();
 	if (ddId_p==ALL) {
@@ -371,7 +371,7 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	}
       }
       break;
-    case NewMSS::ROWS:
+    case MSS::ROWS:
       {
 	// Glish doesn't like uInt (like me), so convert
 	Int n=ms_p.nrow();
@@ -382,35 +382,35 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	out.add(keyword,rows);
       }
       break;
-    case NewMSS::SCAN_NUMBER:
+    case MSS::SCAN_NUMBER:
       scalarRange(out,keyword,msc.scanNumber(),oneBased);
       break;
-    case NewMSS::TIME:
+    case MSS::TIME:
       {
 	Vector<Double> time(2);
 	::minMax(time(0),time(1),msc.time().getColumn());
 	out.add(keyword,time);
       }
       break;
-    case NewMSS::TIMES:
+    case MSS::TIMES:
       {
 	Vector<Double> times=msc.time().getColumn();
 	Int n=GenSort<Double>::sort (times, order, option);
 	out.add(keyword,times(Slice(0,n)));
       }
       break;
-    case NewMSS::U:
-    case NewMSS::V:
-    case NewMSS::W:
+    case MSS::U:
+    case MSS::V:
+    case MSS::W:
       {
-	Int index=fld-NewMSS::U;
+	Int index=fld-MSS::U;
 	Vector<Double> range(2);
 	if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
 	::minMax(range(0),range(1),uvw.row(index));
 	out.add(keyword,range);
       }	
       break;
-    case NewMSS::UVDIST:
+    case MSS::UVDIST:
       {
 	if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
 	Array<Double> u2,v2;
@@ -425,14 +425,14 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
 	out.add(keyword,uvrange);
       }
       break;
-    case NewMSS::WEIGHT:
+    case MSS::WEIGHT:
       {
 	Vector<Float> range(2); 
 	::minMax(range(0),range(1),msc.weight().getColumn());
 	out.add(keyword,range);
       }
       break;
-    case NewMSS::UNDEFINED:
+    case MSS::UNDEFINED:
     default:
       { 
       }
@@ -551,19 +551,19 @@ GlishRecord NewMSRange::range(const Vector<Int>& keys, Bool oneBased)
   return out;
 }
 
-GlishRecord NewMSRange::range(NewMSS::Field item)
+GlishRecord MSRange::range(MSS::Field item)
 {
   Vector<Int> key(1);
   key(0)=item;
   return range(key);
 }
 
-void NewMSRange::setBlockSize(Int blockSize)
+void MSRange::setBlockSize(Int blockSize)
 {
   if (blockSize>0) blockSize_p=blockSize;
 }
 
-void NewMSRange::scalarRange(GlishRecord& out, const String& item, 
+void MSRange::scalarRange(GlishRecord& out, const String& item, 
 		 const ROScalarColumn<Int>& id, Bool oneBased) 
 {
   Vector<Int> ids=scalarRange(id);
@@ -571,7 +571,7 @@ void NewMSRange::scalarRange(GlishRecord& out, const String& item,
   out.add(item,ids);
 }
 
-Vector<Int> NewMSRange::scalarRange(const ROScalarColumn<Int>& id)
+Vector<Int> MSRange::scalarRange(const ROScalarColumn<Int>& id)
 {
   const Int option=Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order=Sort::Ascending;
@@ -581,7 +581,7 @@ Vector<Int> NewMSRange::scalarRange(const ROScalarColumn<Int>& id)
   return ids;
 }
 
-void NewMSRange::minMax(Float& mini, Float& maxi, 
+void MSRange::minMax(Float& mini, Float& maxi, 
 		     Array<Float> (*func)(const Array<Complex>&),
 		     const ROArrayColumn<Complex>& data)
 {
@@ -601,7 +601,7 @@ void NewMSRange::minMax(Float& mini, Float& maxi,
   }
 }
 
-Vector<Int> NewMSRange::ifrNumbers(const ROScalarColumn<Int>& ant1,
+Vector<Int> MSRange::ifrNumbers(const ROScalarColumn<Int>& ant1,
 				const ROScalarColumn<Int>& ant2)
 {
   const Int option=Sort::HeapSort | Sort::NoDuplicates;

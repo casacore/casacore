@@ -29,9 +29,9 @@
 #include <trial/MeasurementSets/SDSourceHandler.h>
 
 #include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSSourceColumns.h>
-#include <aips/MeasurementSets/NewMSSource.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSSourceColumns.h>
+#include <aips/MeasurementSets/MSSource.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
@@ -45,7 +45,7 @@ SDSourceHandler::SDSourceHandler()
       hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
 {;}
 
-SDSourceHandler::SDSourceHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+SDSourceHandler::SDSourceHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				   const Record &row) 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
       nextSourceId_p(0), restfreq_p(-1), rvsys_p(-1), vframe_p(-1),
@@ -71,12 +71,12 @@ SDSourceHandler &SDSourceHandler::operator=(const SDSourceHandler &other)
 	// need to avoid the assignment operator here because we want
 	// this to point to the field in index_p, not in other.index_p
 	nameKey_p.attachToRecord(index_p->accessKey(),
-				 NewMSSource::columnName(NewMSSource::NAME));
+				 MSSource::columnName(MSSource::NAME));
 	codeKey_p.attachToRecord(index_p->accessKey(),
-				 NewMSSource::columnName(NewMSSource::CODE));
-	msSource_p = new NewMSSource(*(other.msSource_p));
+				 MSSource::columnName(MSSource::CODE));
+	msSource_p = new MSSource(*(other.msSource_p));
 	AlwaysAssert(msSource_p, AipsError);
-	msSourceCols_p = new NewMSSourceColumns(*msSource_p);
+	msSourceCols_p = new MSSourceColumns(*msSource_p);
 	AlwaysAssert(msSourceCols_p, AipsError);
 	
 	sourceId_p = other.sourceId_p;
@@ -105,7 +105,7 @@ SDSourceHandler &SDSourceHandler::operator=(const SDSourceHandler &other)
     return *this;
 }
 
-void SDSourceHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDSourceHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -214,9 +214,9 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 			delete msSourceCols_p;
 			msSourceCols_p = 0;
 			TableDesc td;
-			NewMSSource::addColumnToDesc(td, NewMSSource::PULSAR_ID);
+			MSSource::addColumnToDesc(td, MSSource::PULSAR_ID);
 			msSource_p->addColumn(td[0]);
-			msSourceCols_p = new NewMSSourceColumns(*msSource_p);
+			msSourceCols_p = new MSSourceColumns(*msSource_p);
 			AlwaysAssert(msSourceCols_p, AipsError);
 			msSourceCols_p->pulsarId().put(rownr, *pulsarIdField_p);
 		    } else {
@@ -332,10 +332,10 @@ void SDSourceHandler::clearRow()
     properMotionField_p.detach();
 }
 
-void SDSourceHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+void SDSourceHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, 
 			      const Record &row)
 {
-    msSource_p = new NewMSSource(ms.source());
+    msSource_p = new MSSource(ms.source());
     AlwaysAssert(msSource_p, AipsError);
 
     // things in row might trigger the need for optional columns
@@ -343,15 +343,15 @@ void SDSourceHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
 
     TableDesc td;
     if (restfreq_p >= 0) {
-	NewMSSource::addColumnToDesc(td,NewMSSource::REST_FREQUENCY);
+	MSSource::addColumnToDesc(td,MSSource::REST_FREQUENCY);
 	hasRestFreq_p = True;
     }
     if (rvsys_p >= 0) {
-	NewMSSource::addColumnToDesc(td,NewMSSource::SYSVEL);
+	MSSource::addColumnToDesc(td,MSSource::SYSVEL);
 	hasSysVel_p = True;
     }
     if (transiti_p.isAttached() || molecule_p.isAttached()) {
-	NewMSSource::addColumnToDesc(td, NewMSSource::TRANSITION);
+	MSSource::addColumnToDesc(td, MSSource::TRANSITION);
 	hasTransition_p = True;
     }
     // and add these columns in, if there any
@@ -359,19 +359,19 @@ void SDSourceHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
 	msSource_p->addColumn(td[i]);
     }
 
-    msSourceCols_p = new NewMSSourceColumns(*msSource_p);
+    msSourceCols_p = new MSSourceColumns(*msSource_p);
     AlwaysAssert(msSourceCols_p, AipsError);
 
     Vector<String> indexCols(2);
-    indexCols(0) = NewMSSource::columnName(NewMSSource::NAME);
-    indexCols(1) = NewMSSource::columnName(NewMSSource::CODE);
+    indexCols(0) = MSSource::columnName(MSSource::NAME);
+    indexCols(1) = MSSource::columnName(MSSource::CODE);
     index_p = new ColumnsIndex(*msSource_p, indexCols);
     AlwaysAssert(index_p, AipsError);
     
     nameKey_p.attachToRecord(index_p->accessKey(),
-			     NewMSSource::columnName(NewMSSource::NAME));
+			     MSSource::columnName(MSSource::NAME));
     codeKey_p.attachToRecord(index_p->accessKey(),
-			     NewMSSource::columnName(NewMSSource::CODE));
+			     MSSource::columnName(MSSource::CODE));
     sourceId_p = -1;
     nextSourceId_p = 0;
 }

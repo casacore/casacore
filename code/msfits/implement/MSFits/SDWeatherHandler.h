@@ -33,9 +33,9 @@
 #include <aips/Containers/RecordField.h>
 
 //# Forward Declarations
-class NewMeasurementSet;
-class NewMSWeather;
-class NewMSWeatherColumns;
+class MeasurementSet;
+class MSWeather;
+class MSWeatherColumns;
 class Record;
 
 template <class T> class Vector;
@@ -89,7 +89,7 @@ public:
     SDWeatherHandler();
 
     // attach this to a MS - mark fields in row as handled
-    SDWeatherHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDWeatherHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDWeatherHandler(const SDWeatherHandler &other);
@@ -100,7 +100,7 @@ public:
     SDWeatherHandler &operator=(const SDWeatherHandler &other);
 
     // attach to a MS, mark fields in row as handled
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
@@ -109,8 +109,8 @@ public:
     // reused.  Only the current row might be reused.
     void fill(const Record &row, Int antennaId, Double time, Vector<Double> &timeRange);
 private:
-    NewMSWeather *msWeather_p;
-    NewMSWeatherColumns *msWeatherCols_p;
+    MSWeather *msWeather_p;
+    MSWeatherColumns *msWeatherCols_p;
 
     Int rownr_p;
 
@@ -128,7 +128,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // intialize the row related stuff
     void initRow(Vector<Bool> &handledCols, const Record &row);

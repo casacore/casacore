@@ -1,4 +1,4 @@
-//# NewMSFreqOffIndex.cc:  this defined NewMSFreqOffIndex
+//# MSFreqOffIndex.cc:  this defined MSFreqOffIndex
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,42 +25,42 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSFreqOffIndex.h>
+#include <trial/MeasurementSets/MSFreqOffIndex.h>
 
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/NewMSFreqOffset.h>
+#include <aips/MeasurementSets/MSFreqOffset.h>
 
-NewMSFreqOffIndex::NewMSFreqOffIndex() 
-    : NewMSTableIndex()
+MSFreqOffIndex::MSFreqOffIndex() 
+    : MSTableIndex()
 {;}
 
-NewMSFreqOffIndex::NewMSFreqOffIndex(const NewMSFreqOffset &freqOffset)
-    : NewMSTableIndex(freqOffset, stringToVector("ANTENNA1,ANTENNA2,FEED_ID,SPECTRAL_WINDOW_ID"))
+MSFreqOffIndex::MSFreqOffIndex(const MSFreqOffset &freqOffset)
+    : MSTableIndex(freqOffset, stringToVector("ANTENNA1,ANTENNA2,FEED_ID,SPECTRAL_WINDOW_ID"))
 { attachIds();}
 
-NewMSFreqOffIndex::NewMSFreqOffIndex(const NewMSFreqOffIndex &other)
-    : NewMSTableIndex(other)
+MSFreqOffIndex::MSFreqOffIndex(const MSFreqOffIndex &other)
+    : MSTableIndex(other)
 { attachIds();}
 
-NewMSFreqOffIndex::~NewMSFreqOffIndex()
+MSFreqOffIndex::~MSFreqOffIndex()
 {;}
 
-NewMSFreqOffIndex &NewMSFreqOffIndex::operator=(const NewMSFreqOffIndex &other)
+MSFreqOffIndex &MSFreqOffIndex::operator=(const MSFreqOffIndex &other)
 {
     if (this != &other) {
-	NewMSTableIndex::operator=(other);
+	MSTableIndex::operator=(other);
 	attachIds();
     }
     return *this;
 }
 
-void NewMSFreqOffIndex::attach(const NewMSFreqOffset &freqOffset)
+void MSFreqOffIndex::attach(const MSFreqOffset &freqOffset)
 {
-    NewMSTableIndex::attach(freqOffset, stringToVector("ANTENNA1,ANTENNA2,FEED_ID,SPECTRAL_WINDOW_ID"));
+    MSTableIndex::attach(freqOffset, stringToVector("ANTENNA1,ANTENNA2,FEED_ID,SPECTRAL_WINDOW_ID"));
     attachIds();
 }
 
-void NewMSFreqOffIndex::attachIds()
+void MSFreqOffIndex::attachIds()
 {
     antenna1Id_p.attachToRecord(accessKey(), "ANTENNA1");
     antenna2Id_p.attachToRecord(accessKey(), "ANTENNA2");

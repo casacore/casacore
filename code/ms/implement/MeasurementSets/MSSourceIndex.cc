@@ -1,4 +1,4 @@
-//# NewMSSourceIndex.cc:  this defined NewMSSourceIndex
+//# MSSourceIndex.cc:  this defined MSSourceIndex
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,42 +25,42 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSSourceIndex.h>
+#include <trial/MeasurementSets/MSSourceIndex.h>
 
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/NewMSSource.h>
+#include <aips/MeasurementSets/MSSource.h>
 
-NewMSSourceIndex::NewMSSourceIndex() 
-    : NewMSTableIndex()
+MSSourceIndex::MSSourceIndex() 
+    : MSTableIndex()
 {;}
 
-NewMSSourceIndex::NewMSSourceIndex(const NewMSSource &source)
-    : NewMSTableIndex(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"))
+MSSourceIndex::MSSourceIndex(const MSSource &source)
+    : MSTableIndex(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"))
 { attachIds();}
 
-NewMSSourceIndex::NewMSSourceIndex(const NewMSSourceIndex &other)
-    : NewMSTableIndex(other)
+MSSourceIndex::MSSourceIndex(const MSSourceIndex &other)
+    : MSTableIndex(other)
 { attachIds();}
 
-NewMSSourceIndex::~NewMSSourceIndex()
+MSSourceIndex::~MSSourceIndex()
 {;}
 
-NewMSSourceIndex &NewMSSourceIndex::operator=(const NewMSSourceIndex &other)
+MSSourceIndex &MSSourceIndex::operator=(const MSSourceIndex &other)
 {
     if (this != &other) {
-	NewMSTableIndex::operator=(other);
+	MSTableIndex::operator=(other);
 	attachIds();
     }
     return *this;
 }
 
-void NewMSSourceIndex::attach(const NewMSSource &source)
+void MSSourceIndex::attach(const MSSource &source)
 {
-    NewMSTableIndex::attach(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"));
+    MSTableIndex::attach(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"));
     attachIds();
 }
 
-void NewMSSourceIndex::attachIds()
+void MSSourceIndex::attachIds()
 {
     sourceId_p.attachToRecord(accessKey(), "SOURCE_ID");
     spwId_p.attachToRecord(accessKey(), "SPECTRAL_WINDOW_ID");

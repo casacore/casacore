@@ -1,4 +1,4 @@
-//# NewMSSysCalIndex.cc:  this defined NewMSSysCalIndex
+//# MSSysCalIndex.cc:  this defined MSSysCalIndex
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,42 +25,42 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSSysCalIndex.h>
+#include <trial/MeasurementSets/MSSysCalIndex.h>
 
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/NewMSSysCal.h>
+#include <aips/MeasurementSets/MSSysCal.h>
 
-NewMSSysCalIndex::NewMSSysCalIndex() 
-    : NewMSTableIndex()
+MSSysCalIndex::MSSysCalIndex() 
+    : MSTableIndex()
 {;}
 
-NewMSSysCalIndex::NewMSSysCalIndex(const NewMSSysCal &sysCal)
-    : NewMSTableIndex(sysCal, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"))
+MSSysCalIndex::MSSysCalIndex(const MSSysCal &sysCal)
+    : MSTableIndex(sysCal, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"))
 { attachIds();}
 
-NewMSSysCalIndex::NewMSSysCalIndex(const NewMSSysCalIndex &other)
-    : NewMSTableIndex(other)
+MSSysCalIndex::MSSysCalIndex(const MSSysCalIndex &other)
+    : MSTableIndex(other)
 { attachIds();}
 
-NewMSSysCalIndex::~NewMSSysCalIndex()
+MSSysCalIndex::~MSSysCalIndex()
 {;}
 
-NewMSSysCalIndex &NewMSSysCalIndex::operator=(const NewMSSysCalIndex &other)
+MSSysCalIndex &MSSysCalIndex::operator=(const MSSysCalIndex &other)
 {
     if (this != &other) {
-	NewMSTableIndex::operator=(other);
+	MSTableIndex::operator=(other);
 	attachIds();
     }
     return *this;
 }
 
-void NewMSSysCalIndex::attach(const NewMSSysCal &sysCal)
+void MSSysCalIndex::attach(const MSSysCal &sysCal)
 {
-    NewMSTableIndex::attach(sysCal, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"));
+    MSTableIndex::attach(sysCal, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"));
     attachIds();
 }
 
-void NewMSSysCalIndex::attachIds()
+void MSSysCalIndex::attachIds()
 {
     antennaId_p.attachToRecord(accessKey(), "ANTENNA_ID");
     feedId_p.attachToRecord(accessKey(), "FEED_ID");

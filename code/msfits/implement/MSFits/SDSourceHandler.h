@@ -33,9 +33,9 @@
 
 //# Forward Declarations
 class ColumnsIndex;
-class NewMeasurementSet;
-class NewMSSource;
-class NewMSSourceColumns;
+class MeasurementSet;
+class MSSource;
+class MSSourceColumns;
 class Record;
 
 template <class T> class Vector;
@@ -89,7 +89,7 @@ public:
     SDSourceHandler();
 
     // attach this to a MS, marking fields in row which are explicitly handled here
-    SDSourceHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDSourceHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDSourceHandler(const SDSourceHandler &other);
@@ -100,7 +100,7 @@ public:
     SDSourceHandler &operator=(const SDSourceHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &);
@@ -113,8 +113,8 @@ public:
 private:
     RecordFieldPtr<String> nameKey_p, codeKey_p;
     ColumnsIndex *index_p;
-    NewMSSource *msSource_p;
-    NewMSSourceColumns *msSourceCols_p;
+    MSSource *msSource_p;
+    MSSourceColumns *msSourceCols_p;
 
     // the current source ID
     Int sourceId_p;
@@ -143,7 +143,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // initialize the stuff dependent on the row
     void initRow(Vector<Bool> &handledCols, const Record &row);

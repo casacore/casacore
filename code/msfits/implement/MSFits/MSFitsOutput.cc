@@ -1,4 +1,4 @@
-//# NewMSFITSOutput: MS to UVFITS
+//# MSFITSOutput: MS to UVFITS
 //# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSFitsOutput.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <trial/MeasurementSets/MSFitsOutput.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Tables.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Containers/Block.h>
@@ -71,7 +71,7 @@ static String toFITSDate(const MVTime &time)
 
 
 // MJD seconds to day number and day fraction
-void NewMSFitsOutput::timeToDay(Int &day, Double &dayFraction, Double time)
+void MSFitsOutput::timeToDay(Int &day, Double &dayFraction, Double time)
 {
   const Double JDofMJD0=2400000.5;
   time /= C::day; // now in days;
@@ -80,8 +80,8 @@ void NewMSFitsOutput::timeToDay(Int &day, Double &dayFraction, Double time)
   dayFraction = time - floor(time);
 }
 
-Bool NewMSFitsOutput::writeFitsFile(const String& fitsfile,
-				 const NewMeasurementSet& ms,
+Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
+				 const MeasurementSet& ms,
 				 const String& column, 
 				 Bool writeSysCal,
 				 Bool asMultiSource,
@@ -111,7 +111,7 @@ Bool NewMSFitsOutput::writeFitsFile(const String& fitsfile,
     return False;
   }
 
-  os << LogIO::NORMAL << "Converting NewMeasurementSet " << ms.tableName()
+  os << LogIO::NORMAL << "Converting MeasurementSet " << ms.tableName()
      << " to FITS file '" <<    outfile << "'" << LogIO::POST;
 
   // Determine if this MS is a subset of a main MS.
@@ -126,7 +126,7 @@ Bool NewMSFitsOutput::writeFitsFile(const String& fitsfile,
   Vector<Int> spwids;
   uInt nrspw;
   {
-    ROScalarColumn<Int> ddidcol(ms, NewMS::columnName(NewMS::DATA_DESC_ID));
+    ROScalarColumn<Int> ddidcol(ms, MS::columnName(MS::DATA_DESC_ID));
     nrspw = makeIdMap (spwidMap, spwids, ddidcol.getColumn(), isSubset);
   }
 
@@ -134,7 +134,7 @@ Bool NewMSFitsOutput::writeFitsFile(const String& fitsfile,
   Block<Int> fieldidMap;
   uInt nrfield;
   {
-    ROScalarColumn<Int> fldidcol(ms, NewMS::columnName(NewMS::FIELD_ID));
+    ROScalarColumn<Int> fldidcol(ms, MS::columnName(MS::FIELD_ID));
     Vector<Int> fldid = fldidcol.getColumn();
     if (!asMultiSource) {
       if (!allEQ (fldid, fldid(0))) {
@@ -210,10 +210,10 @@ Bool NewMSFitsOutput::writeFitsFile(const String& fitsfile,
 }
 
 
-FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
+FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 				    Double& chanbw,
 				    const String &outFITSFile, 
-				    const NewMeasurementSet &rawms,
+				    const MeasurementSet &rawms,
 				    const String &column,
 				    const Block<Int>& spwidMap,
 				    const Block<Int>& fieldidMap,
@@ -227,8 +227,8 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     return 0;
   }
 
-  NewMSField fieldTable(rawms.field());
-  RONewMSFieldColumns msfc(fieldTable);
+  MSField fieldTable(rawms.field());
+  ROMSFieldColumns msfc(fieldTable);
   Vector<Double> radec = msfc.phaseDirMeas(0).getAngle().getValue();
   radec *=180.0/C::pi; // convert to degrees for FITS
   if (radec(0) < 0) {
@@ -239,23 +239,23 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   // First scan the SPECTRAL_WINDOW table to make sure that the data
   // shape is constant, the correlation type is constant, and that the
   // frequencies can be represented as f = f0 + i*inc
-  NewMSSpectralWindow spectralTable = rawms.spectralWindow();
-  NewMSPolarization polTable = rawms.polarization();
+  MSSpectralWindow spectralTable = rawms.spectralWindow();
+  MSPolarization polTable = rawms.polarization();
   const uInt nspec = spectralTable.nrow();
   if (nspec == 0) {
     os << LogIO::SEVERE << "No spectral window table in MS" << LogIO::POST;
     return 0;
   }
   ROScalarColumn<Int> numcorr(polTable, 
-	      NewMSPolarization::columnName(NewMSPolarization::NUM_CORR));
+	      MSPolarization::columnName(MSPolarization::NUM_CORR));
   ROScalarColumn<Int> numchan(spectralTable, 
-	      NewMSSpectralWindow::columnName(NewMSSpectralWindow::NUM_CHAN));
+	      MSSpectralWindow::columnName(MSSpectralWindow::NUM_CHAN));
   ROArrayColumn<Double> frequencies(spectralTable,
-	    NewMSSpectralWindow::columnName(NewMSSpectralWindow::CHAN_FREQ));
+	    MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
   ROArrayColumn<Int> stokesTypes(polTable,
-				 NewMSPolarization::columnName(NewMSPolarization::CORR_TYPE));
+				 MSPolarization::columnName(MSPolarization::CORR_TYPE));
   ROScalarColumn<Double> totalbw(spectralTable,
-	      NewMSSpectralWindow::columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH));
+	      MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
 
   // Also find out what the Stokes are and make sure that they are the same
   // throughout the MS. In principle we could handle the same stokes in
@@ -357,15 +357,15 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   String columnName;
   String col=column;
   col.upcase();
-  if (col=="OBSERVED" || col==NewMS::columnName(NewMS::DATA)) {
-    columnName = NewMS::columnName(NewMS::DATA);
+  if (col=="OBSERVED" || col==MS::columnName(MS::DATA)) {
+    columnName = MS::columnName(MS::DATA);
     os << "Writing DATA column" << LogIO::POST;
   } else if(col=="MODEL" || col=="MODEL_DATA") {
     if(rawms.tableDesc().isColumn("MODEL_DATA")) {
       columnName = "MODEL_DATA";
       os << "Writing MODEL_DATA column" << LogIO::POST;
     } else {
-      columnName = NewMS::columnName(NewMS::DATA);
+      columnName = MS::columnName(MS::DATA);
       os << LogIO::SEVERE << "MODEL_DATA does not exist, writing DATA"
 	 << LogIO::POST;
     }
@@ -374,19 +374,19 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
       columnName="CORRECTED_DATA";
       os << "Writing CORRECTED_DATA column" << LogIO::POST;
     } else {
-      columnName=NewMS::columnName(NewMS::DATA);
+      columnName=MS::columnName(MS::DATA);
       os << LogIO::SEVERE << "CORRECTED_DATA does not exist, writing DATA"
 	 << LogIO::POST;
     }
   } else {
-    columnName=NewMS::columnName(NewMS::DATA);
+    columnName=MS::columnName(MS::DATA);
     os << LogIO::SEVERE << "Unrecognized column "<<column<<", writing DATA"
        << LogIO::POST;
   }
 
   // Does the MS have a WEIGHT_SPECTRUM?
   Bool hasWeightArray = rawms.tableDesc().
-                           isColumn(NewMS::columnName(NewMS::WEIGHT_SPECTRUM));
+                           isColumn(MS::columnName(MS::WEIGHT_SPECTRUM));
 
 
   IPosition dataShape(6, 3, numcorr0, numchan0, 1, 1, 1);
@@ -407,7 +407,7 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   desc.addField("baseline", TpFloat);
   // FREQSEL
   ROScalarColumn<Int> inddid(rawms,
-			     NewMS::columnName(NewMS::DATA_DESC_ID));
+			     MS::columnName(MS::DATA_DESC_ID));
   desc.addField("freqsel", TpFloat);
   // SOURCE and INTTIM only in multi-source table
   if (asMultiSource) {
@@ -522,7 +522,7 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
   // OBS-TIME
   {
-    ROScalarColumn<Double> intm(rawms, NewMS::columnName(NewMS::TIME));
+    ROScalarColumn<Double> intm(rawms, MS::columnName(MS::TIME));
     ek.define("date-obs", toFITSDate(intm(0)/C::day)); // First time entry
   }
 
@@ -543,7 +543,7 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   }
 
   // TELESCOP INSTRUME
-  RONewMSObservationColumns obsC(rawms.observation());
+  ROMSObservationColumns obsC(rawms.observation());
   ek.define("telescop", obsC.telescopeName()(0));
   ek.define("instrume", obsC.telescopeName()(0));
   ek.define("observer", obsC.observer()(0));
@@ -627,25 +627,25 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   // Make objects for the various columns.
   ROArrayColumn<Complex> indata(sortTable, columnName);
   ROScalarColumn<Float> inweightscalar(sortTable, 
-				       NewMS::columnName(NewMS::WEIGHT));
+				       MS::columnName(MS::WEIGHT));
   ROArrayColumn<Float> inweightarray;
   if (hasWeightArray) {
-    inweightarray.attach(sortTable, NewMS::columnName(NewMS::WEIGHT_SPECTRUM));
+    inweightarray.attach(sortTable, MS::columnName(MS::WEIGHT_SPECTRUM));
   }
-  ROScalarColumn<Bool> inrowflag(sortTable, NewMS::columnName(NewMS::FLAG_ROW));
-  ROArrayColumn<Bool> indataflag(sortTable, NewMS::columnName(NewMS::FLAG));
-  ROArrayColumn<Double> inuvw(sortTable, NewMS::columnName(NewMS::UVW));
-  ROScalarColumn<Double> intime(sortTable, NewMS::columnName(NewMS::TIME));
-  ROScalarColumn<Int> inant1(sortTable, NewMS::columnName(NewMS::ANTENNA1));
-  ROScalarColumn<Int> inant2(sortTable, NewMS::columnName(NewMS::ANTENNA2));
-  ROScalarColumn<Int> inarray(sortTable, NewMS::columnName(NewMS::ARRAY_ID));
+  ROScalarColumn<Bool> inrowflag(sortTable, MS::columnName(MS::FLAG_ROW));
+  ROArrayColumn<Bool> indataflag(sortTable, MS::columnName(MS::FLAG));
+  ROArrayColumn<Double> inuvw(sortTable, MS::columnName(MS::UVW));
+  ROScalarColumn<Double> intime(sortTable, MS::columnName(MS::TIME));
+  ROScalarColumn<Int> inant1(sortTable, MS::columnName(MS::ANTENNA1));
+  ROScalarColumn<Int> inant2(sortTable, MS::columnName(MS::ANTENNA2));
+  ROScalarColumn<Int> inarray(sortTable, MS::columnName(MS::ARRAY_ID));
   ROScalarColumn<Int> inspwinid(sortTable,
-				NewMS::columnName(NewMS::DATA_DESC_ID));
+				MS::columnName(MS::DATA_DESC_ID));
   ROScalarColumn<Int> infieldid;
   ROScalarColumn<Double> inexposure;
   if (asMultiSource) {
-    infieldid.attach (sortTable, NewMS::columnName(NewMS::FIELD_ID));
-    inexposure.attach (sortTable, NewMS::columnName(NewMS::EXPOSURE));
+    infieldid.attach (sortTable, MS::columnName(MS::FIELD_ID));
+    inexposure.attach (sortTable, MS::columnName(MS::EXPOSURE));
   }
 
   // Check if first cell has a WEIGHT of correct shape.
@@ -743,15 +743,15 @@ FitsOutput *NewMSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 }
 
 
-Bool NewMSFitsOutput::writeFQ(FitsOutput *output, const NewMeasurementSet &ms, 
+Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms, 
 			   const Block<Int>& spwidMap, Int nrspw,
 			   Double refFreq, Int refPixelFreq, Bool combineSpw)
 {
-  NewMSSpectralWindow specTable(ms.spectralWindow());
+  MSSpectralWindow specTable(ms.spectralWindow());
   ROArrayColumn<Double> inchanfreq(specTable,
-				   NewMSSpectralWindow::columnName(NewMSSpectralWindow::CHAN_FREQ));
+				   MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
   ROScalarColumn<Double> intotbw(specTable,
-				 NewMSSpectralWindow::columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH));
+				 MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
 
   // ##### Header
   Record header;
@@ -827,15 +827,15 @@ Bool NewMSFitsOutput::writeFQ(FitsOutput *output, const NewMeasurementSet &ms,
   return True;
 }
 
-Bool NewMSFitsOutput::writeAN(FitsOutput *output, const NewMeasurementSet &ms,
+Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 			   Double refFreq)
 {
-  NewMSObservation obsTable(ms.observation());
+  MSObservation obsTable(ms.observation());
   ROScalarColumn<String> inarrayname(obsTable,
-				     NewMSObservation::columnName
-				     (NewMSObservation::TELESCOPE_NAME));
+				     MSObservation::columnName
+				     (MSObservation::TELESCOPE_NAME));
   ROArrayColumn<Double> inarraypos(ms.antenna(),
-				   NewMSAntenna::columnName(NewMSAntenna::POSITION));
+				   MSAntenna::columnName(MSAntenna::POSITION));
   const uInt narray = obsTable.nrow();
   if (narray == 0) {
     os << LogIO::SEVERE << "No Observation info!" << LogIO::POST;
@@ -847,7 +847,7 @@ Bool NewMSFitsOutput::writeAN(FitsOutput *output, const NewMeasurementSet &ms,
      << LogIO::POST;
 
   // Calculate GSTIA0, DEGPDY, UT1UTC, and IATUTC.
-  ScalarQuantColumn<Double> intime(ms, NewMS::columnName(NewMS::TIME));
+  ScalarQuantColumn<Double> intime(ms, MS::columnName(MS::TIME));
   MEpoch utctime (intime(0), MEpoch::UTC);
   MEpoch iattime = MEpoch::Convert (utctime, MEpoch::IAT) ();
   MEpoch ut1time = MEpoch::Convert (utctime, MEpoch::UT1) ();
@@ -941,30 +941,30 @@ Bool NewMSFitsOutput::writeAN(FitsOutput *output, const NewMeasurementSet &ms,
     ///		  IPosition(1,0));
     desc.addField("POLCALB", TpFloat);           // POLCALB
 
-    NewMSAntenna antennaTable = ms.antenna();
+    MSAntenna antennaTable = ms.antenna();
 
     // SELECT antennas for the current sub-array
-    //    NewMSAntenna antennaTable = ms.antenna()
-    //(ms.antenna().col(NewMSAntenna::columnName(NewMSAntenna::ARRAY_ID)) == 
+    //    MSAntenna antennaTable = ms.antenna()
+    //(ms.antenna().col(MSAntenna::columnName(MSAntenna::ARRAY_ID)) == 
     //				  Int(arraynum));
 
     ROScalarColumn<String> 
-      inantname(antennaTable, NewMSAntenna::columnName(NewMSAntenna::STATION));
+      inantname(antennaTable, MSAntenna::columnName(MSAntenna::STATION));
     ROScalarColumn<String> inantmount(antennaTable,
-				      NewMSAntenna::columnName(NewMSAntenna::MOUNT));
+				      MSAntenna::columnName(MSAntenna::MOUNT));
     ROArrayColumn<Double> inantposition(antennaTable,
-					NewMSAntenna::columnName(NewMSAntenna::POSITION));
+					MSAntenna::columnName(MSAntenna::POSITION));
     ROArrayColumn<Double> inantoffset(antennaTable,
-				      NewMSAntenna::columnName(NewMSAntenna::OFFSET));
+				      MSAntenna::columnName(MSAntenna::OFFSET));
     const uInt nant = antennaTable.nrow();
     os << LogIO::NORMAL << "Found " << nant << " antennas in array #"
        << arraynum+1 << LogIO::POST;
 
-    NewMSFeed feedTable = ms.feed();
+    MSFeed feedTable = ms.feed();
     ROArrayColumn<String> inpoltype(feedTable,
-				    NewMSFeed::columnName(NewMSFeed::POLARIZATION_TYPE));
+				    MSFeed::columnName(MSFeed::POLARIZATION_TYPE));
     ROScalarColumn<Int> inantid(feedTable,
-				NewMSFeed::columnName(NewMSFeed::ANTENNA_ID));
+				MSFeed::columnName(MSFeed::ANTENNA_ID));
 
     FITSTableWriter writer(output, desc, strlengths, nant, 
 			   header, units, False);
@@ -1041,18 +1041,18 @@ Bool NewMSFitsOutput::writeAN(FitsOutput *output, const NewMeasurementSet &ms,
   return True;
 }
 
-Bool NewMSFitsOutput::writeSU(FitsOutput *output, const NewMeasurementSet &ms,
+Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
 			   const Block<Int>& fieldidMap, uInt nrfield)
 {
   // Basically we make the FIELD_ID the source ID.
-  NewMSField fieldTable(ms.field());
-  RONewMSFieldColumns msfc(fieldTable);
+  MSField fieldTable(ms.field());
+  ROMSFieldColumns msfc(fieldTable);
   const ROScalarColumn<Int>& insrcid=msfc.sourceId();
   const ROScalarColumn<String>& inname=msfc.name();
 
-  NewMSSource sourceTable(ms.source());
-  RONewMSSourceColumns sourceColumns (sourceTable);
-  NewMSSpectralWindow spectralTable(ms.spectralWindow());
+  MSSource sourceTable(ms.source());
+  ROMSSourceColumns sourceColumns (sourceTable);
+  MSSpectralWindow spectralTable(ms.spectralWindow());
 
   const uInt nrow = fieldTable.nrow();
   if (nrow == 0) {
@@ -1065,7 +1065,7 @@ Bool NewMSFitsOutput::writeSU(FitsOutput *output, const NewMeasurementSet &ms,
     return False;
   }
   ROScalarColumn<Double> totalbw(spectralTable,
-		   NewMSSpectralWindow::columnName(NewMSSpectralWindow::TOTAL_BANDWIDTH));
+		   MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
   Double totalBandwidth = totalbw(0);
   //    const uInt nsource = sourceTable.nrow(); // this is allowed to be 0
 
@@ -1232,13 +1232,13 @@ Bool NewMSFitsOutput::writeSU(FitsOutput *output, const NewMeasurementSet &ms,
   return True;
 }
 
-Bool NewMSFitsOutput::writeTY(FitsOutput *output, const NewMeasurementSet &ms,
+Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
 			   const Table& syscal,
 			   const Block<Int>& spwidMap, uInt nrif,
 			   Bool combineSpw)
 {
-  const NewMSSysCal subtable(syscal);
-  RONewMSSysCalColumns sysCalColumns(subtable);
+  const MSSysCal subtable(syscal);
+  ROMSSysCalColumns sysCalColumns(subtable);
   const uInt nrow = syscal.nrow();
   if (nrow == 0) {
     os << LogIO::SEVERE << "No SysCal TY info!" << LogIO::POST;
@@ -1259,7 +1259,7 @@ Bool NewMSFitsOutput::writeTY(FitsOutput *output, const NewMeasurementSet &ms,
   // Get reference time (i.e. start time) from the main table.
   Double refTime;
   {                                // get starttime (truncated to days)
-    RONewMSColumns mscol(ms);
+    ROMSColumns mscol(ms);
     refTime = floor(mscol.time()(0) / C::day) * C::day;
   }
   // ##### Header
@@ -1348,7 +1348,7 @@ Bool NewMSFitsOutput::writeTY(FitsOutput *output, const NewMeasurementSet &ms,
   return True;
 }
 
-Bool NewMSFitsOutput::writeGC(FitsOutput *output, const NewMeasurementSet &ms,
+Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
 			   const Table& syscal, const Block<Int>& spwidMap,
 			   Double sensitivity,
 			   Int refPixelFreq, Double refFreq, Double chanbw)
@@ -1359,9 +1359,9 @@ Bool NewMSFitsOutput::writeGC(FitsOutput *output, const NewMeasurementSet &ms,
   // So sort the SYSCAL table in that order and skip duplicate
   // spectral-windows. Use insertion sort, since the table is already in order.
   Block<String> sortNames(2);
-  sortNames[0] = NewMSSysCal::columnName(NewMSSysCal::ANTENNA_ID);
-  //  sortNames[1] = NewMSSysCal::columnName(NewMSSysCal::ARRAY_ID);
-  sortNames[1] = NewMSSysCal::columnName(NewMSSysCal::TIME);
+  sortNames[0] = MSSysCal::columnName(MSSysCal::ANTENNA_ID);
+  //  sortNames[1] = MSSysCal::columnName(MSSysCal::ARRAY_ID);
+  sortNames[1] = MSSysCal::columnName(MSSysCal::TIME);
   Table sorcal = syscal.sort (sortNames, Sort::Ascending,
 			      Sort::InsSort + Sort::NoDuplicates);
   // Sort again (without duplicates) to get the nr of antennas.
@@ -1379,7 +1379,7 @@ Bool NewMSFitsOutput::writeGC(FitsOutput *output, const NewMeasurementSet &ms,
     return False;
   }
   // Get #pol by taking shape of first trx in the column.
-  const Int npol = RONewMSSysCalColumns(ms.sysCal()).trx().shape(0)(0);
+  const Int npol = ROMSSysCalColumns(ms.sysCal()).trx().shape(0)(0);
 
   os << LogIO::NORMAL << "Found " << nrant
      << " GC table entries (" << npol << " polarizations)" << LogIO::POST;
@@ -1388,7 +1388,7 @@ Bool NewMSFitsOutput::writeGC(FitsOutput *output, const NewMeasurementSet &ms,
   Int nchan, nstk;
   Double startTime, startHA;
   {
-    RONewMSColumns mscol(ms);
+    ROMSColumns mscol(ms);
     IPosition shp = mscol.data().shape(0);
     nstk = shp(0);
     nchan = shp(1);
@@ -1404,8 +1404,8 @@ Bool NewMSFitsOutput::writeGC(FitsOutput *output, const NewMeasurementSet &ms,
   {
     Table tableChunk (tabiter.table());
     uInt n = tableChunk.nrow();
-    NewMSSysCal syscal (tableChunk);
-    RONewMSSysCalColumns sysCalColumns (syscal);
+    MSSysCal syscal (tableChunk);
+    ROMSSysCalColumns sysCalColumns (syscal);
     // Fill the hourangle vector (which is the same for all subsets).
     // Its unit is degrees; startHA is in fractions of a circle.
     // The time is in seconds, so convert that to a full day (circle).
@@ -1507,8 +1507,8 @@ Bool NewMSFitsOutput::writeGC(FitsOutput *output, const NewMeasurementSet &ms,
   // Each chunk should have the same size.
   while (!tabiter.pastEnd()) {
     Table tableChunk (tabiter.table());
-    NewMSSysCal syscal (tableChunk);
-    RONewMSSysCalColumns sysCalColumns (syscal);
+    MSSysCal syscal (tableChunk);
+    ROMSSysCalColumns sysCalColumns (syscal);
     *antenna = sysCalColumns.antennaId()(0) + 1;
     //    *arrayId = sysCalColumns.arrayId()(0) + 1;
     *spwId = 1 + spwidMap[sysCalColumns.spectralWindowId()(0)];
@@ -1542,10 +1542,10 @@ Bool NewMSFitsOutput::writeGC(FitsOutput *output, const NewMeasurementSet &ms,
   return True;
 }
 
-void NewMSFitsOutput::getStartHA (Double& startTime, Double& startHA,
-			       const NewMeasurementSet& ms, uInt rownr)
+void MSFitsOutput::getStartHA (Double& startTime, Double& startHA,
+			       const MeasurementSet& ms, uInt rownr)
 {
-    RONewMSColumns mscol(ms);
+    ROMSColumns mscol(ms);
     startTime = mscol.time()(rownr);
     MEpoch stTime = mscol.timeMeas()(rownr);
     Int fieldId = mscol.fieldId()(rownr);
@@ -1567,7 +1567,7 @@ void NewMSFitsOutput::getStartHA (Double& startTime, Double& startHA,
 }
 
 
-Table NewMSFitsOutput::handleSysCal (const NewMeasurementSet& ms,
+Table MSFitsOutput::handleSysCal (const MeasurementSet& ms,
 				  const Vector<Int>& spwids, Bool isSubset)
 {
   Table syscal(ms.sysCal());
@@ -1578,8 +1578,8 @@ Table NewMSFitsOutput::handleSysCal (const NewMeasurementSet& ms,
   {
     // Find the maximum antenna number.
     // Assure that the minimum >= 0.
-    ROScalarColumn<Int> ant1col(ms, NewMS::columnName(NewMS::ANTENNA1));
-    ROScalarColumn<Int> ant2col(ms, NewMS::columnName(NewMS::ANTENNA2));
+    ROScalarColumn<Int> ant1col(ms, MS::columnName(MS::ANTENNA1));
+    ROScalarColumn<Int> ant2col(ms, MS::columnName(MS::ANTENNA2));
     Vector<Int> ant1 = ant1col.getColumn();
     Vector<Int> ant2 = ant2col.getColumn();
     Int minant1, minant2, maxant1, maxant2;
@@ -1607,7 +1607,7 @@ Table NewMSFitsOutput::handleSysCal (const NewMeasurementSet& ms,
   {
     // Now skip all antennas in SYSCAL not present in the main table.
     ROScalarColumn<Int> antcol(syscal,
-			       NewMSSysCal::columnName(NewMSSysCal::ANTENNA_ID));
+			       MSSysCal::columnName(MSSysCal::ANTENNA_ID));
     Vector<Int> ant = antcol.getColumn();
     Int minant, maxant;
     minMax (minant, maxant, ant);
@@ -1636,7 +1636,7 @@ Table NewMSFitsOutput::handleSysCal (const NewMeasurementSet& ms,
   // Skip first rows which maybe contain an average for each antenna.
   // This is an old WSRT feature/problem.
   {
-    RONewMSSysCalColumns sysCalColumns (ms.sysCal());
+    ROMSSysCalColumns sysCalColumns (ms.sysCal());
     Double sttim = sysCalColumns.time()(0);
     uInt nrow = sysCalColumns.time().nrow();
     for (uInt i=0; i<nrow; i++) {
@@ -1655,20 +1655,20 @@ Table NewMSFitsOutput::handleSysCal (const NewMeasurementSet& ms,
   // the MS.
   if (isSubset) {
     syscal = syscal
-      (syscal.col(NewMSSysCal::columnName(NewMSSysCal::SPECTRAL_WINDOW_ID))
+      (syscal.col(MSSysCal::columnName(MSSysCal::SPECTRAL_WINDOW_ID))
        .in (TableExprNode(spwids)));
   }
   // Sort the SYSCAL table in order of array, antenna, time, spectral-window.
   Block<String> sortNames(3);
-  sortNames[0] = NewMSSysCal::columnName(NewMSSysCal::ANTENNA_ID);
-  //  sortNames[1] = NewMSSysCal::columnName(NewMSSysCal::ARRAY_ID);
-  sortNames[1] = NewMSSysCal::columnName(NewMSSysCal::TIME);
-  sortNames[2] = NewMSSysCal::columnName(NewMSSysCal::SPECTRAL_WINDOW_ID);
+  sortNames[0] = MSSysCal::columnName(MSSysCal::ANTENNA_ID);
+  //  sortNames[1] = MSSysCal::columnName(MSSysCal::ARRAY_ID);
+  sortNames[1] = MSSysCal::columnName(MSSysCal::TIME);
+  sortNames[2] = MSSysCal::columnName(MSSysCal::SPECTRAL_WINDOW_ID);
   return syscal.sort (sortNames);
 }
 
 
-Int NewMSFitsOutput::makeIdMap (Block<Int>& map, Vector<Int>& selids,
+Int MSFitsOutput::makeIdMap (Block<Int>& map, Vector<Int>& selids,
 			     const Vector<Int>& allids, Bool isSubset)
 {
   // Determine the number of ids and make a mapping of

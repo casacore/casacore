@@ -1,4 +1,4 @@
-//# NewMSRange.h: this defines NewMSRange, which determines ranges of ms values 
+//# MSRange.h: this defines MSRange, which determines ranges of ms values 
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,18 +26,18 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSRANGE_H)
-#define TRIAL_NEWMSRANGE_H
+#if !defined(TRIAL_MSRANGE_H)
+#define TRIAL_MSRANGE_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <trial/MeasurementSets/NewMSSelectionKeywords.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <trial/MeasurementSets/MSSelectionKeywords.h>
 template <class T> class ROArrayColumn;
 template <class T> class ROScalarColumn;
 class GlishRecord;
 
 // <summary>
-// NewMSRange determines ranges of values in a MeasurementSet
+// MSRange determines ranges of values in a MeasurementSet
 // </summary>
 
 // <visibility=export>
@@ -51,7 +51,7 @@ class GlishRecord;
 // </prerequisite>
 //
 // <etymology>
-// NewMSRange is a class that determines ranges of values in an MS
+// MSRange is a class that determines ranges of values in an MS
 // </etymology>
 //
 // <synopsis>
@@ -63,7 +63,7 @@ class GlishRecord;
 // The ms DO provides access to this class from glish and GUIs.
 //
 // <example> <srcblock>
-// NewMSRange myRange(myMS);
+// MSRange myRange(myMS);
 // Vector<String> items(3); 
 // // fill in some fields
 // items(0)="field_id";
@@ -74,10 +74,10 @@ class GlishRecord;
 // // sample output: range=[field_id=[0,1,2],time=[4.5e9, 4.51e9],
 // //   spectral_window_id=[0,1]];
 // // Now preselect on spectral window
-// NewMSSelector mss(myMS);
+// MSSelector mss(myMS);
 // mss.selectinit(0,1); // select spectral window 1
 // myRange.setMS(mss.selectedTable());
-// // Following line will avoid check by NewMSRange, but can be omitted for
+// // Following line will avoid check by MSRange, but can be omitted for
 // // a single spectral window.
 // // Setting it to -1 signals multiple windows with same shape data.
 // myRange.selectedSpectralWindow(1); 
@@ -91,7 +91,7 @@ class GlishRecord;
 // <motivation>
 // Finding out the range of values in a column is often needed before a 
 // sensible selection of data can be made. This class, formerly part of 
-// NewMSSelector, separates out this functionality.
+// MSSelector, separates out this functionality.
 // </motivation>
 //
 // <thrown>
@@ -103,7 +103,7 @@ class GlishRecord;
 //   <li> maybe add channel selection and polarization conversion
 // </todo>
 
-class NewMSRange
+class MSRange
 {
 public:
   enum {
@@ -115,46 +115,46 @@ public:
     ALL = -1
   };
 
-  NewMSRange();
+  MSRange();
   
   // construct from an MS. You can use the second argument to
-  // signal to NewMSRange that the MS provided has already been pre-selected
+  // signal to MSRange that the MS provided has already been pre-selected
   // on SPECTRAL_WINDOW_ID, allowing it to skip the check on
-  // this. Set spectralWindowId to NewMSRange::ALL if the MS contains multiple
+  // this. Set spectralWindowId to MSRange::ALL if the MS contains multiple
   // spectral windows, all with the same data shape.
   // The 2nd argument is mainly for internal use by the MS DO, 
   // providing incorrect values could cause runtime failures.
-  explicit NewMSRange(const NewMeasurementSet& ms, Int spectralWindowId=UNCHECKED);
+  explicit MSRange(const MeasurementSet& ms, Int spectralWindowId=UNCHECKED);
   
   // Copy constructor
-  NewMSRange(const NewMSRange& other);
+  MSRange(const MSRange& other);
   
   // Assignment
-  NewMSRange& operator=(const NewMSRange& other);
+  MSRange& operator=(const MSRange& other);
   
-  // Change or Set the MS this NewMSRange refers to.
+  // Change or Set the MS this MSRange refers to.
   // You can use the second argument to
-  // signal to NewMSRange that the MS provided has already been pre-selected
+  // signal to MSRange that the MS provided has already been pre-selected
   // on SPECTRAL_WINDOW_ID, allowing it to skip the check on
-  // this. Set spectralWindowId to NewMSRange::ALL if the MS contains multiple
+  // this. Set spectralWindowId to MSRange::ALL if the MS contains multiple
   // spectral windows, all with the same data shape.
   // The 2nd argument is mainly for internal use by the MS DO, 
   // providing incorrect values could cause runtime failures.
-  void setMS(const NewMeasurementSet& ms, Int spectralWindowId=UNCHECKED);
+  void setMS(const MeasurementSet& ms, Int spectralWindowId=UNCHECKED);
   
   // Return the range of values for each of the items specified in 
   // the record. For index-like items a list of values is returned,
   // for non-index items the minimum and maximum are returned.
-  // See the enum description in NewMSSelector for the list of supported items.
+  // See the enum description in MSSelector for the list of supported items.
   // Correct for one-based indexing if oneBased is True.
   GlishRecord range(const Vector<String>& items, Bool OneBased=False);
 
-  // Same as previous function, with Vector of NewMSS::Field keys instead
+  // Same as previous function, with Vector of MSS::Field keys instead
   // of Strings
   GlishRecord range(const Vector<Int>& items, Bool OneBased=False);
 
   // Similar to above, with a single enum, for convenience
-  GlishRecord range(NewMSS::Field item);
+  GlishRecord range(MSS::Field item);
 
   // Set the block size (in Mbytes) to use when reading the data column.
   // The default is 10 MB. Actual memory used is higher due to 
@@ -173,7 +173,7 @@ protected:
 		   const ROScalarColumn<Int>& id, Bool oneBased);
 
   // get the range of a ScalarColumn<Int>
-  Vector<Int> NewMSRange::scalarRange(const ROScalarColumn<Int>& id);
+  Vector<Int> MSRange::scalarRange(const ROScalarColumn<Int>& id);
 
   // get the minimum and maximum of a Complex data column, after
   // application of some function to convert to Float (e.g., real,
@@ -190,7 +190,7 @@ protected:
 
 private:
 
-  NewMeasurementSet ms_p; // the original ms
+  MeasurementSet ms_p; // the original ms
   Int blockSize_p;
   Int ddId_p;
   Bool checked_p;

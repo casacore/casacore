@@ -33,9 +33,9 @@
 #include <aips/Containers/RecordField.h>
 
 //# Forward Declarations
-class NewMeasurementSet;
-class NewMSSysCal;
-class NewMSSysCalColumns;
+class MeasurementSet;
+class MSSysCal;
+class MSSysCalColumns;
 class Record;
 
 template <class T> class Vector;
@@ -89,7 +89,7 @@ public:
     SDSysCalHandler();
 
     // attach this to a MS - mark fields in row as handled
-    SDSysCalHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDSysCalHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDSysCalHandler(const SDSysCalHandler &other);
@@ -100,7 +100,7 @@ public:
     SDSysCalHandler &operator=(const SDSysCalHandler &other);
 
     // attach to a MS, mark fields in row as handled
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
@@ -110,8 +110,8 @@ public:
     void fill(const Record &row, Int antennaId, Int feedId, Int spectralWindowId,
 	      Double time, Vector<Double> timeRange, uInt numReceptors);
 private:
-    NewMSSysCal *msSysCal_p;
-    NewMSSysCalColumns *msSysCalCols_p;
+    MSSysCal *msSysCal_p;
+    MSSysCalColumns *msSysCalCols_p;
 
     Int rownr_p;
 
@@ -134,7 +134,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // intialize the row related stuff
     void initRow(Vector<Bool> &handledCols, const Record &row);

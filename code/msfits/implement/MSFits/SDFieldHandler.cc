@@ -28,9 +28,9 @@
 //# Includes
 #include <trial/MeasurementSets/SDFieldHandler.h>
 
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSFieldColumns.h>
-#include <aips/MeasurementSets/NewMSField.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSFieldColumns.h>
+#include <aips/MeasurementSets/MSField.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
@@ -43,7 +43,7 @@ SDFieldHandler::SDFieldHandler()
     : msField_p(0), msFieldCols_p(0), rownr_p(-1)
 {;}
 
-SDFieldHandler::SDFieldHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
+SDFieldHandler::SDFieldHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
     : msField_p(0), msFieldCols_p(0), rownr_p(-1)
 {
     initAll(ms, handledCols, row);
@@ -59,9 +59,9 @@ SDFieldHandler &SDFieldHandler::operator=(const SDFieldHandler &other)
 {
     if (this != &other) {
 	clearAll();
-	msField_p = new NewMSField(*(other.msField_p));
+	msField_p = new MSField(*(other.msField_p));
 	AlwaysAssert(msField_p, AipsError);
-	msFieldCols_p = new NewMSFieldColumns(*msField_p);
+	msFieldCols_p = new MSFieldColumns(*msField_p);
 	AlwaysAssert(msFieldCols_p, AipsError);
 	rownr_p = other.rownr_p;
 	fieldIdField_p = other.fieldIdField_p;
@@ -78,7 +78,7 @@ SDFieldHandler &SDFieldHandler::operator=(const SDFieldHandler &other)
     return *this;
 }
 
-void SDFieldHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDFieldHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -307,12 +307,12 @@ void SDFieldHandler::clearRow()
     referenceDirRateField_p.detach();
 }
 
-void SDFieldHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDFieldHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
-    msField_p = new NewMSField(ms.field());
+    msField_p = new MSField(ms.field());
     AlwaysAssert(msField_p, AipsError);
 
-    msFieldCols_p = new NewMSFieldColumns(*msField_p);
+    msFieldCols_p = new MSFieldColumns(*msField_p);
     AlwaysAssert(msFieldCols_p, AipsError);
 
     initRow(handledCols, row);

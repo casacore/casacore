@@ -28,8 +28,8 @@
 //# Includes
 #include <trial/MeasurementSets/SDMainHandler.h>
 
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSMainColumns.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSMainColumns.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Utilities/Assert.h>
@@ -46,7 +46,7 @@ SDMainHandler::SDMainHandler()
       intervalId_p(-1), weightId_p(-1), flagId_p(-1), maxDataId_p(-1)
 {;}
 
-SDMainHandler::SDMainHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
+SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
 			     const String &dataHypercubeName)
     : ms_p(0), msCols_p(0), dataAccessor_p(0),
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
@@ -67,9 +67,9 @@ SDMainHandler &SDMainHandler::operator=(const SDMainHandler &other)
 {
     if (this != &other) {
 	clearAll();
-	ms_p = new NewMeasurementSet(*(other.ms_p));
+	ms_p = new MeasurementSet(*(other.ms_p));
 	AlwaysAssert(ms_p, AipsError);
-	msCols_p = new NewMSMainColumns(*ms_p);
+	msCols_p = new MSMainColumns(*ms_p);
 	AlwaysAssert(msCols_p, AipsError);
 	dataAccessor_p = new TiledDataStManAccessor(*(other.dataAccessor_p));
 	AlwaysAssert(dataAccessor_p, AipsError);
@@ -87,7 +87,7 @@ SDMainHandler &SDMainHandler::operator=(const SDMainHandler &other)
     return *this;
 }
 
-void SDMainHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
+void SDMainHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
 			   const String &dataHypercubeName)
 {
     clearAll();
@@ -223,22 +223,22 @@ void SDMainHandler::clearRow()
 	weightId_p = flagId_p = -1;
 }
 
-void SDMainHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
+void SDMainHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
 			    const String &dataHypercubeName)
 {
-    ms_p = new NewMeasurementSet(ms);
+    ms_p = new MeasurementSet(ms);
     AlwaysAssert(ms_p, AipsError);
 
     dataAccessor_p = new TiledDataStManAccessor(*ms_p, dataHypercubeName);
     AlwaysAssert(dataAccessor_p, AipsError);
 
     hyperDef_p.restructure(RecordDesc());
-    hyperDef_p.define(NewMS::columnName(NewMS::DATA_DESC_ID),-1);
-    hyperId_p.attachToRecord(hyperDef_p, NewMS::columnName(NewMS::DATA_DESC_ID));
+    hyperDef_p.define(MS::columnName(MS::DATA_DESC_ID),-1);
+    hyperId_p.attachToRecord(hyperDef_p, MS::columnName(MS::DATA_DESC_ID));
 
     initRow(handledCols, row);
 
-    msCols_p = new NewMSMainColumns(*ms_p);
+    msCols_p = new MSMainColumns(*ms_p);
     AlwaysAssert(msCols_p, AipsError);
 }
 

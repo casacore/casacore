@@ -29,9 +29,9 @@
 #include <trial/MeasurementSets/SDDataDescHandler.h>
 
 #include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSDataDescColumns.h>
-#include <aips/MeasurementSets/NewMSDataDescription.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSDataDescColumns.h>
+#include <aips/MeasurementSets/MSDataDescription.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
@@ -42,7 +42,7 @@ SDDataDescHandler::SDDataDescHandler()
     : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1)
 {;}
 
-SDDataDescHandler::SDDataDescHandler(NewMeasurementSet &ms) 
+SDDataDescHandler::SDDataDescHandler(MeasurementSet &ms) 
     : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1)
 {
     initAll(ms);
@@ -63,19 +63,19 @@ SDDataDescHandler &SDDataDescHandler::operator=(const SDDataDescHandler &other)
 	// need to avoid the assignment operator here because we want
 	// this to point to the field in index_p, not in other.index_p
 	spwinIdKey_p.attachToRecord(index_p->accessKey(),
-		     NewMSDataDescription::columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID));
+		     MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
 	polIdKey_p.attachToRecord(index_p->accessKey(),
-		     NewMSDataDescription::columnName(NewMSDataDescription::POLARIZATION_ID));
-	msDataDesc_p = new NewMSDataDescription(*(other.msDataDesc_p));
+		     MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
+	msDataDesc_p = new MSDataDescription(*(other.msDataDesc_p));
 	AlwaysAssert(msDataDesc_p, AipsError);
-	msDataDescCols_p = new NewMSDataDescColumns(*msDataDesc_p);
+	msDataDescCols_p = new MSDataDescColumns(*msDataDesc_p);
 	AlwaysAssert(msDataDescCols_p, AipsError);
 	rownr_p = other.rownr_p;
     }
     return *this;
 }
 
-void SDDataDescHandler::attach(NewMeasurementSet &ms, Vector<Bool> &, const Record &)
+void SDDataDescHandler::attach(MeasurementSet &ms, Vector<Bool> &, const Record &)
 {
     clearAll();
     initAll(ms);
@@ -115,24 +115,24 @@ void SDDataDescHandler::clearAll()
     msDataDescCols_p = 0;
 }
 
-void SDDataDescHandler::initAll(NewMeasurementSet &ms)
+void SDDataDescHandler::initAll(MeasurementSet &ms)
 {
-    msDataDesc_p = new NewMSDataDescription(ms.dataDescription());
+    msDataDesc_p = new MSDataDescription(ms.dataDescription());
     AlwaysAssert(msDataDesc_p, AipsError);
 
-    msDataDescCols_p = new NewMSDataDescColumns(*msDataDesc_p);
+    msDataDescCols_p = new MSDataDescColumns(*msDataDesc_p);
     AlwaysAssert(msDataDescCols_p, AipsError);
 
     Vector<String> indexCols(2);
-    indexCols(0) = NewMSDataDescription::columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID);
-    indexCols(1) = NewMSDataDescription::columnName(NewMSDataDescription::POLARIZATION_ID);
+    indexCols(0) = MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID);
+    indexCols(1) = MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID);
     index_p = new ColumnsIndex(*msDataDesc_p, indexCols);
     AlwaysAssert(index_p, AipsError);
     
     spwinIdKey_p.attachToRecord(index_p->accessKey(),
-	       NewMSDataDescription::columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID));
+	       MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
     polIdKey_p.attachToRecord(index_p->accessKey(),
-	       NewMSDataDescription::columnName(NewMSDataDescription::POLARIZATION_ID));
+	       MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
     rownr_p = -1;
     // nothing depends directly on the row, no columns are handled here
 }

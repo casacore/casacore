@@ -29,10 +29,10 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/MeasurementSets/NewMSDataDescColumns.h>
-#include <aips/MeasurementSets/NewMSSpWindowColumns.h>
-#include <aips/MeasurementSets/NewMSPolColumns.h>
-#include <aips/MeasurementSets/NewMSFeed.h>
+#include <aips/MeasurementSets/MSDataDescColumns.h>
+#include <aips/MeasurementSets/MSSpWindowColumns.h>
+#include <aips/MeasurementSets/MSPolColumns.h>
+#include <aips/MeasurementSets/MSFeed.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRow.h>
 #include <aips/Tables/ColumnsIndex.h>
@@ -46,8 +46,8 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasConvert.h>
 
-MSConcat::MSConcat(NewMeasurementSet& ms):
-  NewMSColumns(ms),
+MSConcat::MSConcat(MeasurementSet& ms):
+  MSColumns(ms),
   itsMS(ms),
   itsFixedShape(isFixedShape(ms.tableDesc()))
 {
@@ -69,19 +69,19 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       const String& dataColName = dataColNames(dc);
       // The order of these if conditions is important as I am trying to get
       // the biggest possible fixed shape.
-      if (dataColName == NewMS::columnName(NewMS::FLAG_CATEGORY) || 
-	  dataColName == NewMS::columnName(NewMS::DATA) ||
-	  dataColName == NewMS::columnName(NewMS::FLAG) || 
-	  dataColName == NewMS::columnName(NewMS::SIGMA_SPECTRUM) ||
-	  dataColName == NewMS::columnName(NewMS::WEIGHT_SPECTRUM) ||
-	  dataColName == NewMS::columnName(NewMS::FLOAT_DATA) ||
-	  dataColName == NewMS::columnName(NewMS::CORRECTED_DATA) || 
-	  dataColName == NewMS::columnName(NewMS::MODEL_DATA) || 
-	  dataColName == NewMS::columnName(NewMS::LAG_DATA) ||
-	  dataColName == NewMS::columnName(NewMS::SIGMA) || 
-	  dataColName == NewMS::columnName(NewMS::WEIGHT) || 
-	  dataColName == NewMS::columnName(NewMS::IMAGING_WEIGHT) || 
-	  dataColName == NewMS::columnName(NewMS::VIDEO_POINT)) {
+      if (dataColName == MS::columnName(MS::FLAG_CATEGORY) || 
+	  dataColName == MS::columnName(MS::DATA) ||
+	  dataColName == MS::columnName(MS::FLAG) || 
+	  dataColName == MS::columnName(MS::SIGMA_SPECTRUM) ||
+	  dataColName == MS::columnName(MS::WEIGHT_SPECTRUM) ||
+	  dataColName == MS::columnName(MS::FLOAT_DATA) ||
+	  dataColName == MS::columnName(MS::CORRECTED_DATA) || 
+	  dataColName == MS::columnName(MS::MODEL_DATA) || 
+	  dataColName == MS::columnName(MS::LAG_DATA) ||
+	  dataColName == MS::columnName(MS::SIGMA) || 
+	  dataColName == MS::columnName(MS::WEIGHT) || 
+	  dataColName == MS::columnName(MS::IMAGING_WEIGHT) || 
+	  dataColName == MS::columnName(MS::VIDEO_POINT)) {
 	const ColumnDesc& colDesc = td.columnDesc(dataColNames(dc));
 	isFixed = colDesc.isFixedShape();
 	if (isFixed) fixedShape = colDesc.shape();
@@ -96,12 +96,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   return fixedShape;
 }
 
-void MSConcat::concatenate(const NewMeasurementSet& otherMS)
+void MSConcat::concatenate(const MeasurementSet& otherMS)
 {
   LogIO log(LogOrigin("MSConcat", "concatenate"));
   log << "Appending " << otherMS.tableName() 
       << " to " << itsMS.tableName() << endl;
-  RONewMSColumns otherCols(otherMS);
+  ROMSColumns otherCols(otherMS);
   if (otherMS.nrow() > 0) {
     if (itsFixedShape.nelements() > 0) {
       const uInt nShapes = itsMS.dataDescription().nrow();
@@ -150,9 +150,9 @@ void MSConcat::checkShape(const IPosition& otherShape) const
   }
 }
 
-IPosition MSConcat::getShape(const RONewMSColumns& msCols, uInt whichShape)
+IPosition MSConcat::getShape(const ROMSColumns& msCols, uInt whichShape)
 {
-  const RONewMSDataDescColumns& ddCol = msCols.dataDescription();
+  const ROMSDataDescColumns& ddCol = msCols.dataDescription();
   DebugAssert(whichShape < ddCol.nrow(), AipsError);
   const Int polId = ddCol.polarizationId()(whichShape);
   DebugAssert(polId >= 0 && 
@@ -168,7 +168,7 @@ IPosition MSConcat::getShape(const RONewMSColumns& msCols, uInt whichShape)
   return IPosition(2, nCorr, nChan);
 }
 
-void MSConcat::checkCategories(const RONewMSColumns& otherCols) const {
+void MSConcat::checkCategories(const ROMSColumns& otherCols) const {
   const Vector<String> cat = flagCategories();
   const Vector<String> otherCat = otherCols.flagCategories();
   const uInt nCat = cat.nelements();
@@ -186,20 +186,20 @@ void MSConcat::checkCategories(const RONewMSColumns& otherCols) const {
   }
 }
 
-Block<uInt> MSConcat::copyAntennaAndFeed(const NewMSAntenna& otherAnt,
-					 const NewMSFeed& otherFeed) {
+Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
+					 const MSFeed& otherFeed) {
   const uInt nAntIds = otherAnt.nrow();
   Block<uInt> antMap(nAntIds);
 
-  const RONewMSAntennaColumns otherAntCols(otherAnt);
-  NewMSAntennaColumns& antCols = antenna();
-  NewMSAntenna& ant = itsMS.antenna();
+  const ROMSAntennaColumns otherAntCols(otherAnt);
+  MSAntennaColumns& antCols = antenna();
+  MSAntenna& ant = itsMS.antenna();
   const Quantum<Double> tol(1, "m");
   const ROTableRow otherAntRow(otherAnt);
   TableRow antRow(ant);
 
-  const String& antIndxName = NewMSFeed::columnName(NewMSFeed::ANTENNA_ID);
-  NewMSFeed& feed = itsMS.feed();
+  const String& antIndxName = MSFeed::columnName(MSFeed::ANTENNA_ID);
+  MSFeed& feed = itsMS.feed();
   const ROTableRow otherFeedRow(otherFeed);
   TableRow feedRow(feed);
   TableRecord feedRecord;
@@ -236,12 +236,12 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const NewMSAntenna& otherAnt,
   return antMap;
 }
 
-Block<uInt>  MSConcat::copyField(const NewMSField& otherFld) {
+Block<uInt>  MSConcat::copyField(const MSField& otherFld) {
   const uInt nFlds = otherFld.nrow();
   Block<uInt> fldMap(nFlds);
   const Quantum<Double> tolerance(.1, "deg");
-  const RONewMSFieldColumns otherFieldCols(otherFld);
-  NewMSFieldColumns& fieldCols = field();
+  const ROMSFieldColumns otherFieldCols(otherFld);
+  MSFieldColumns& fieldCols = field();
 
   const MDirection::Types dirType = MDirection::castType(
     fieldCols.referenceDirMeasCol().getMeasRef().getType());
@@ -253,7 +253,7 @@ Block<uInt>  MSConcat::copyField(const NewMSField& otherFld) {
     dirCtr = MDirection::Convert(otherDirType, dirType);
   }
   MDirection refDir, delayDir, phaseDir;
-  NewMSField& fld = itsMS.field();
+  MSField& fld = itsMS.field();
   const ROTableRow otherFldRow(otherFld);
   TableRow fldRow(fld);
   for (uInt f = 0; f < nFlds; f++) {

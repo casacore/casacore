@@ -30,13 +30,13 @@
 #define AIPS_MSCONCAT_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MSColumns.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Arrays/IPosition.h>
 
 class TableDesc;
-class NewMSAntenna;
-class NewMSFeed;
+class MSAntenna;
+class MSFeed;
 template <class T> class Block;
 
 // <summary>A class with functions for concatenating MeasurementSets</summary>
@@ -80,22 +80,22 @@ template <class T> class Block;
 //   <li> start discussion of this possible extension
 // </todo>
 
-class MSConcat: public NewMSColumns
+class MSConcat: public MSColumns
 {
 public:
-  MSConcat(NewMeasurementSet& ms);
-  void concatenate(const NewMeasurementSet& otherMS);
+  MSConcat(MeasurementSet& ms);
+  void concatenate(const MeasurementSet& otherMS);
 private:
   MSConcat();
   static IPosition isFixedShape(const TableDesc& td);
-  static IPosition getShape(const RONewMSColumns& msCols, uInt whichShape);
+  static IPosition getShape(const ROMSColumns& msCols, uInt whichShape);
   void checkShape(const IPosition& otherShape) const;
-  void checkCategories(const RONewMSColumns& otherCols) const;
-  Block<uInt> copyAntennaAndFeed(const NewMSAntenna& otherAnt,
-				 const NewMSFeed& otherFeed);
-  Block<uInt> copyField(const NewMSField& otherFld);
+  void checkCategories(const ROMSColumns& otherCols) const;
+  Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
+				 const MSFeed& otherFeed);
+  Block<uInt> copyField(const MSField& otherFld);
 
-  NewMeasurementSet itsMS;
+  MeasurementSet itsMS;
   IPosition itsFixedShape;
 };
 #endif

@@ -1,4 +1,4 @@
-//# NewMSFreqOffIndex: index into a MeasurementSet FREQ_OFFSET subtable
+//# MSFreqOffIndex: index into a MeasurementSet FREQ_OFFSET subtable
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSFREQOFFINDEX_H)
-#define AIPS_NEWMSFREQOFFINDEX_H
+#if !defined(AIPS_MSFREQOFFINDEX_H)
+#define AIPS_MSFREQOFFINDEX_H
 
-#include <trial/MeasurementSets/NewMSTableIndex.h>
+#include <trial/MeasurementSets/MSTableIndex.h>
 
 #include <aips/Containers/RecordField.h>
 
 //# forward declarations
-class NewMSFreqOffset;
+class MSFreqOffset;
 
 // <summary>
 // </summary>
@@ -46,7 +46,7 @@ class NewMSFreqOffset;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> NewMSTableIndex
+//   <li> MSTableIndex
 // </prerequisite>
 //
 // <etymology>
@@ -67,23 +67,23 @@ class NewMSFreqOffset;
 // </thrown>
 //
 
-class NewMSFreqOffIndex : public NewMSTableIndex
+class MSFreqOffIndex : public MSTableIndex
 {
 public:
     // no index attached, use the attach function or assignment operator to change that
-  NewMSFreqOffIndex();
+  MSFreqOffIndex();
 
   // construct one using the indicated FREQOFF table
-  NewMSFreqOffIndex(const NewMSFreqOffset &freqOffset);
+  MSFreqOffIndex(const MSFreqOffset &freqOffset);
 
   // construct one from another
-  NewMSFreqOffIndex(const NewMSFreqOffIndex &other);
+  MSFreqOffIndex(const MSFreqOffIndex &other);
 
-  virtual ~NewMSFreqOffIndex();
+  virtual ~MSFreqOffIndex();
 
-  virtual NewMSFreqOffIndex &operator=(const NewMSFreqOffIndex &other);
+  virtual MSFreqOffIndex &operator=(const MSFreqOffIndex &other);
 
-  virtual void attach(const NewMSFreqOffset &freqOffset);
+  virtual void attach(const MSFreqOffset &freqOffset);
 
   // access to the antenna1 ID key, throws an exception if isNull() is False
   Int &antenna1Id() {return *antenna1Id_p;}

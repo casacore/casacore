@@ -33,9 +33,9 @@
 
 //# Forward Declarations
 class ColumnsIndex;
-class NewMeasurementSet;
-class NewMSFeed;
-class NewMSFeedColumns;
+class MeasurementSet;
+class MSFeed;
+class MSFeedColumns;
 class Record;
 
 template <class T> class Vector;
@@ -89,7 +89,7 @@ public:
     SDFeedHandler();
 
     // attach this to a MS - no columns are explicitly handled here
-    SDFeedHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDFeedHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDFeedHandler(const SDFeedHandler &other);
@@ -100,7 +100,7 @@ public:
     SDFeedHandler &operator=(const SDFeedHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
@@ -116,8 +116,8 @@ public:
 private:
     RecordFieldPtr<Int> numRecpKey_p;
     ColumnsIndex *index_p;
-    NewMSFeed *msFeed_p;
-    NewMSFeedColumns *msFeedCols_p;
+    MSFeed *msFeed_p;
+    MSFeedColumns *msFeedCols_p;
 
     Int feedId_p, nextFeedId_p, nrecpt_p;
 
@@ -137,7 +137,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // initialize things which depend on row
     void initRow(Vector<Bool> &handledCols, const Record &row);

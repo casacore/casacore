@@ -1,4 +1,4 @@
-//# NewMSPointingIndex: index into a MeasurementSet POINTING subtable
+//# MSPointingIndex: index into a MeasurementSet POINTING subtable
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSPOINTINGINDEX_H)
-#define AIPS_NEWMSPOINTINGINDEX_H
+#if !defined(AIPS_MSPOINTINGINDEX_H)
+#define AIPS_MSPOINTINGINDEX_H
 
-#include <trial/MeasurementSets/NewMSTableIndex.h>
+#include <trial/MeasurementSets/MSTableIndex.h>
 
 #include <aips/Containers/RecordField.h>
 
 //# forward declarations
-class NewMSPointing;
+class MSPointing;
 
 // <summary>
 // </summary>
@@ -46,7 +46,7 @@ class NewMSPointing;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> NewMSTableIndex
+//   <li> MSTableIndex
 // </prerequisite>
 //
 // <etymology>
@@ -67,23 +67,23 @@ class NewMSPointing;
 // </thrown>
 //
 
-class NewMSPointingIndex : public NewMSTableIndex
+class MSPointingIndex : public MSTableIndex
 {
 public:
     // no index attached, use the attach function or assignment operator to change that
-  NewMSPointingIndex();
+  MSPointingIndex();
 
   // construct one using the indicated POINTING table
-  NewMSPointingIndex(const NewMSPointing &pointing);
+  MSPointingIndex(const MSPointing &pointing);
 
   // construct one from another
-  NewMSPointingIndex(const NewMSPointingIndex &other);
+  MSPointingIndex(const MSPointingIndex &other);
 
-  virtual ~NewMSPointingIndex();
+  virtual ~MSPointingIndex();
 
-  virtual NewMSPointingIndex &operator=(const NewMSPointingIndex &other);
+  virtual MSPointingIndex &operator=(const MSPointingIndex &other);
 
-  virtual void attach(const NewMSPointing &pointing);
+  virtual void attach(const MSPointing &pointing);
 
   // access to the antenna ID key, throws an exception if isNull() is False
   Int &antennaId() {return *antennaId_p;}

@@ -36,9 +36,9 @@
 
 //# Forward Declarations
 class ColumnsIndex;
-class NewMeasurementSet;
-class NewMSAntenna;
-class NewMSAntennaColumns;
+class MeasurementSet;
+class MSAntenna;
+class MSAntennaColumns;
 class Record;
 
 template <class T> class Vector;
@@ -93,7 +93,7 @@ public:
 
     // attach this to a MS, mark the appropriate columns as handled given
     // the indicated row
-    SDAntennaHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDAntennaHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDAntennaHandler(const SDAntennaHandler &other);
@@ -104,7 +104,7 @@ public:
     SDAntennaHandler &operator=(const SDAntennaHandler &other);
 
     // attach to a MS, mark the appropriate columns as handled given the
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS 
     void resetRow(const Record &row);
@@ -125,8 +125,8 @@ private:
     RecordFieldPtr<String> nameKey_p, stationKey_p, mountKey_p;
     RecordFieldPtr<Double> dishDiameterKey_p;
     RecordFieldPtr<Int> orbitIdKey_p, phasedIdKey_p;
-    NewMSAntenna *msAnt_p;
-    NewMSAntennaColumns *msAntCols_p;
+    MSAntenna *msAnt_p;
+    MSAntennaColumns *msAntCols_p;
 
     Int rownr_p;
 
@@ -157,7 +157,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // initialize the things which depend on the row
     void initRow(Vector<Bool> &handledCols, const Record &row);

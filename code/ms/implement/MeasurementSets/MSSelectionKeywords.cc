@@ -1,4 +1,4 @@
-//# NewMSSelectionKeywords.cc: selection keywords for the MS
+//# MSSelectionKeywords.cc: selection keywords for the MS
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,11 +25,11 @@
 //#
 //#
 //# $Id$
-#include <trial/MeasurementSets/NewMSSelectionKeywords.h>
+#include <trial/MeasurementSets/MSSelectionKeywords.h>
 #include <aips/Containers/SimOrdMap.h>
 #include <aips/Utilities/String.h>
 
-NewMSSelectionKeywords::Field NewMSSelectionKeywords::field(const String& itemName)
+MSSelectionKeywords::Field MSSelectionKeywords::field(const String& itemName)
 {
   // static map with enum to string mapping for fields
   static SimpleOrderedMap<String,Int>* fieldMap(0);
@@ -41,7 +41,7 @@ NewMSSelectionKeywords::Field NewMSSelectionKeywords::field(const String& itemNa
   return p ? Field(*p) : UNDEFINED;
 }
 
-const String& NewMSSelectionKeywords::keyword(Field fld) 
+const String& MSSelectionKeywords::keyword(Field fld) 
 {
   static SimpleOrderedMap<String,Int>* fieldMap(0);
   static Block<Int>* reverseMap(0);
@@ -52,7 +52,7 @@ const String& NewMSSelectionKeywords::keyword(Field fld)
 }
 
 
-void NewMSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
+void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
 				  Block<Int>*& reverseMap)
 {
   static Bool initialized(False);

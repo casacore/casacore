@@ -1,4 +1,4 @@
-//# NewMSSelectionKeywords.h: selection keywords for the MS
+//# MSSelectionKeywords.h: selection keywords for the MS
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,23 +26,23 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSSELECTIONKEYWORDS_H)
-#define TRIAL_NEWMSSELECTIONKEYWORDS_H
+#if !defined(TRIAL_MSSELECTIONKEYWORDS_H)
+#define TRIAL_MSSELECTIONKEYWORDS_H
 
 #include <aips/aips.h>
 
 template <class K, class V> class SimpleOrderedMap;
 template <class T> class Block;
 // forward declare the class so we can typedef it
-class NewMSSelectionKeywords;
+class MSSelectionKeywords;
 class String;
 
 // Define a shorthand notation for this class, so enums can be specified
 // easily.
-typedef NewMSSelectionKeywords NewMSS;
+typedef MSSelectionKeywords MSS;
 
 // <summary>
-// NewMSSelectionKeywords specifies selection keywords for the MeasurementSet
+// MSSelectionKeywords specifies selection keywords for the MeasurementSet
 // </summary>
 
 // <visibility=export>
@@ -52,18 +52,18 @@ typedef NewMSSelectionKeywords NewMSS;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> NewMSSelector
+//   <li> MSSelector
 // </prerequisite>
 //
 // <etymology>
-// NewMSSelectionKeywords is a class that defines selection keywords
+// MSSelectionKeywords is a class that defines selection keywords
 // </etymology>
 //
 // <synopsis>
 // This class is used to specify selections on a MeasurementSet.
 // It is a purely static class that just defines a mapping from 
 // Strings to Enums, and provides these for use by classes like
-// NewMSSelector and NewMSRange
+// MSSelector and MSRange
 //
 // <example> <srcblock>
 // </srcblock></example>
@@ -83,7 +83,7 @@ typedef NewMSSelectionKeywords NewMSS;
 //   <li> add this feature
 // </todo>
 
-class NewMSSelectionKeywords
+class MSSelectionKeywords
 {
 public:
   // The fields in the MS for which selection and range operations are
@@ -229,13 +229,13 @@ public:
   static Field field(const String& keyword);
 
   // convert an enum value to the corresponding keyword string
-  static const String& keyword(NewMSS::Field field);
+  static const String& keyword(MSS::Field field);
 
 protected:
   // This class is purely static, no instances are allowed.
-  NewMSSelectionKeywords();
-  NewMSSelectionKeywords(const NewMSSelectionKeywords& other);
-  NewMSSelectionKeywords& operator=(const NewMSSelectionKeywords& other);
+  MSSelectionKeywords();
+  MSSelectionKeywords(const MSSelectionKeywords& other);
+  MSSelectionKeywords& operator=(const MSSelectionKeywords& other);
   
   // initialization function for the string to enum mapping
   static void initMap(SimpleOrderedMap<String,Int>*& fieldMap,

@@ -33,9 +33,9 @@
 #include <aips/Containers/RecordField.h>
 
 //# Forward Declarations
-class NewMeasurementSet;
-class NewMSField;
-class NewMSFieldColumns;
+class MeasurementSet;
+class MSField;
+class MSFieldColumns;
 class String;
 class Record;
 
@@ -91,7 +91,7 @@ public:
     SDFieldHandler();
 
     // attach this to a MS - no columns are explicitly handled here
-    SDFieldHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDFieldHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDFieldHandler(const SDFieldHandler &other);
@@ -102,7 +102,7 @@ public:
     SDFieldHandler &operator=(const SDFieldHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &row);
@@ -116,8 +116,8 @@ public:
     // get the current field ID
     Int fieldId() {return rownr_p;}
 private:
-    NewMSField *msField_p;
-    NewMSFieldColumns *msFieldCols_p;
+    MSField *msField_p;
+    MSFieldColumns *msFieldCols_p;
 
     Int rownr_p;
 
@@ -135,7 +135,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // initialize things which depend on the row
     void initRow(Vector<Bool> &handledCols, const Record &row);

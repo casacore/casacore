@@ -1,4 +1,4 @@
-//# NewMSValidIds.cc:  this defines NewMSValidIds.
+//# MSValidIds.cc:  this defines MSValidIds.
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,30 +27,30 @@
 
 //# Includes
 
-#include <trial/MeasurementSets/NewMSValidIds.h>
+#include <trial/MeasurementSets/MSValidIds.h>
 
 #include <aips/Exceptions/Error.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-NewMSValidIds::NewMSValidIds()
+MSValidIds::MSValidIds()
     : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)
 { ;}
 
-NewMSValidIds::NewMSValidIds(const NewMeasurementSet &ms)
+MSValidIds::MSValidIds(const MeasurementSet &ms)
     : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)
 { attach(ms);}
 
-NewMSValidIds::NewMSValidIds(const NewMSValidIds &other)
+MSValidIds::MSValidIds(const MSValidIds &other)
     : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)
 { *this = other;}
 
-NewMSValidIds::~NewMSValidIds()
+MSValidIds::~MSValidIds()
 { clear(); }
 
-NewMSValidIds &NewMSValidIds::operator=(const NewMSValidIds &other)
+MSValidIds &MSValidIds::operator=(const MSValidIds &other)
 { 
     if (this != &other) {
 	attach(other.ms_p);
@@ -58,13 +58,13 @@ NewMSValidIds &NewMSValidIds::operator=(const NewMSValidIds &other)
     return *this;
 }
 
-void NewMSValidIds::attach(const NewMeasurementSet &ms)
+void MSValidIds::attach(const MeasurementSet &ms)
 {
     clear();
     
     ms_p = ms;
 
-    romsCols_p = new RONewMSColumns(ms_p);
+    romsCols_p = new ROMSColumns(ms_p);
     AlwaysAssert(romsCols_p, AipsError);
 
     // check on existance of optional sub-tables
@@ -72,7 +72,7 @@ void NewMSValidIds::attach(const NewMeasurementSet &ms)
     hasSource_p = ms_p.keywordSet().isDefined("SOURCE");
 }
 
-Int NewMSValidIds::antenna1(uInt rownr) const
+Int MSValidIds::antenna1(uInt rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -81,7 +81,7 @@ Int NewMSValidIds::antenna1(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::antenna2(uInt rownr) const
+Int MSValidIds::antenna2(uInt rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -90,7 +90,7 @@ Int NewMSValidIds::antenna2(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::dataDescId(uInt rownr) const
+Int MSValidIds::dataDescId(uInt rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -99,7 +99,7 @@ Int NewMSValidIds::dataDescId(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::fieldId(uInt rownr) const
+Int MSValidIds::fieldId(uInt rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -108,7 +108,7 @@ Int NewMSValidIds::fieldId(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::observationId(uInt rownr) const
+Int MSValidIds::observationId(uInt rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -117,7 +117,7 @@ Int NewMSValidIds::observationId(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::processorId(uInt rownr) const
+Int MSValidIds::processorId(uInt rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -126,7 +126,7 @@ Int NewMSValidIds::processorId(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::stateId(uInt rownr) const
+Int MSValidIds::stateId(uInt rownr) const
 {
     Int result = -1;
     if (checkRow(rownr) && romsCols_p) {
@@ -135,7 +135,7 @@ Int NewMSValidIds::stateId(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::polarizationId(uInt rownr) const
+Int MSValidIds::polarizationId(uInt rownr) const
 {
     Int result = dataDescId(rownr);
     if (result >= 0) {
@@ -144,7 +144,7 @@ Int NewMSValidIds::polarizationId(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::spectralWindowId(uInt rownr) const
+Int MSValidIds::spectralWindowId(uInt rownr) const
 {
     Int result = dataDescId(rownr);
     if (result >= 0) {
@@ -153,7 +153,7 @@ Int NewMSValidIds::spectralWindowId(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::dopplerId(uInt rownr) const
+Int MSValidIds::dopplerId(uInt rownr) const
 {
     Int result = hasDoppler_p ? spectralWindowId(rownr) : -1;
     if (result >= 0) {
@@ -163,7 +163,7 @@ Int NewMSValidIds::dopplerId(uInt rownr) const
     return result;
 }
 
-Int NewMSValidIds::sourceId(uInt rownr) const
+Int MSValidIds::sourceId(uInt rownr) const
 {
     Int result = hasSource_p ? fieldId(rownr) : -1;
     if (result >= 0) {
@@ -172,7 +172,7 @@ Int NewMSValidIds::sourceId(uInt rownr) const
     return result;
 }
 
-void NewMSValidIds::clear()
+void MSValidIds::clear()
 {
     delete romsCols_p;
     romsCols_p = 0;

@@ -1,4 +1,4 @@
-//# NewMSFitsInput:  uvfits (random group) to NewMeasurementSet filler
+//# MSFitsInput:  uvfits (random group) to MeasurementSet filler
 //# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,7 +26,7 @@
 //# $Id$
 //
 
-#include <trial/MeasurementSets/NewMSFitsInput.h>
+#include <trial/MeasurementSets/MSFitsInput.h>
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayUtil.h>
@@ -51,7 +51,7 @@
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledShapeStMan.h>
 #include <aips/Utilities/GenSort.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/MSColumns.h>
 
 #include <trial/FITS/FITSUtil.h>
 #include <trial/FITS/BinTable.h>
@@ -88,15 +88,15 @@ static Int getIndexContains(Vector<String> &map, String key, Int Which=0)
   return (-1);
 }
 
-NewMSPrimaryGroupHolder::NewMSPrimaryGroupHolder():hdu_p(0),ps(0),pl(0),pf(0)
+MSPrimaryGroupHolder::MSPrimaryGroupHolder():hdu_p(0),ps(0),pl(0),pf(0)
 {}
 
-NewMSPrimaryGroupHolder::NewMSPrimaryGroupHolder(FitsInput& infile):ps(0),pl(0),pf(0)
+MSPrimaryGroupHolder::MSPrimaryGroupHolder(FitsInput& infile):ps(0),pl(0),pf(0)
 {
   attach(infile);
 }
 
-void NewMSPrimaryGroupHolder::attach(FitsInput& infile)
+void MSPrimaryGroupHolder::attach(FitsInput& infile)
 {
   detach();
   switch(infile.datatype()) {
@@ -117,12 +117,12 @@ void NewMSPrimaryGroupHolder::attach(FitsInput& infile)
   }
 }
 
-NewMSPrimaryGroupHolder::~NewMSPrimaryGroupHolder()
+MSPrimaryGroupHolder::~MSPrimaryGroupHolder()
 {
   detach();
 }
 
-void NewMSPrimaryGroupHolder::detach()
+void MSPrimaryGroupHolder::detach()
 {
   if (ps) delete ps;
   if (pl) delete pl;
@@ -133,11 +133,11 @@ void NewMSPrimaryGroupHolder::detach()
 }
 
 
-NewMSFitsInput::NewMSFitsInput(const String& msFile,
+MSFitsInput::MSFitsInput(const String& msFile,
 			 const String& fitsFile)
   :infile_p(0),ok_p(False),msc_p(0)
 {
-  os << LogOrigin("ms", "NewMSFitsInput()", WHERE);
+  os << LogOrigin("ms", "MSFitsInput()", WHERE);
 
   // First, lets verify that fitsfile exists and that it appears to be a
   // FITS file.
@@ -166,7 +166,7 @@ NewMSFitsInput::NewMSFitsInput(const String& msFile,
   msFile_p=msFile;
 
   os << LogIO::NORMAL << "Converting FITS file '" << fitsFile << 
-    "' to NewMeasurementSet '" << msFile << "'" << LogIO::POST;
+    "' to MeasurementSet '" << msFile << "'" << LogIO::POST;
 
   os << LogIO::SEVERE; // For the next while all outputs are errors
         
@@ -189,7 +189,7 @@ NewMSFitsInput::NewMSFitsInput(const String& msFile,
   }
 }
 
-Bool NewMSFitsInput::readFitsFile()
+Bool MSFitsInput::readFitsFile()
 {
   Int nField=0, nSpW=0;
 
@@ -256,13 +256,13 @@ Bool NewMSFitsInput::readFitsFile()
 } 
 
  
-NewMSFitsInput::~NewMSFitsInput() 
+MSFitsInput::~MSFitsInput() 
 {
   delete infile_p;
   delete msc_p;
 }
 
-Bool NewMSFitsInput::checkInput(FitsInput& infile)
+Bool MSFitsInput::checkInput(FitsInput& infile)
 {
   Bool ok=True;
   // Check that we have a valid UV fits file
@@ -286,7 +286,7 @@ Bool NewMSFitsInput::checkInput(FitsInput& infile)
   return ok;
 }
 
-Bool NewMSFitsInput::getPrimaryGroupAxisInfo()
+Bool MSFitsInput::getPrimaryGroupAxisInfo()
 {
   Bool ok=True;
   // Extracts the axis related info. from the PrimaryGroup object and 
@@ -400,41 +400,41 @@ Bool NewMSFitsInput::getPrimaryGroupAxisInfo()
   return ok;
 }
 
-void NewMSFitsInput::setupMeasurementSet(const String& NewMSFileName, Bool useTSM) {
+void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
   Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
   Int nChan = nPixel_p(getIndex(coordType_p,"FREQ"));
   nIF_p = getIndex(coordType_p,"IF");
   if (nIF_p>=0) nIF_p=nPixel_p(nIF_p); else nIF_p=1;
 
   // Make the MS table
-  TableDesc td = NewMS::requiredTableDesc();
+  TableDesc td = MS::requiredTableDesc();
   
   // Even though we know the data is going to be the same shape throughout I'll
   // still create a column that has a variable shape as this will permit MS's
   // with other shapes to be appended.
-  NewMS::addColumnToDesc(td, NewMS::DATA, 2);
+  MS::addColumnToDesc(td, MS::DATA, 2);
   // add this optional column because random group fits has a
   // weight per visibility
-  NewMS::addColumnToDesc(td, NewMS::WEIGHT_SPECTRUM, 1);
+  MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 1);
   
   if (useTSM) {
     td.defineHypercolumn("TiledData",3,
-			 stringToVector(NewMS::columnName(NewMS::DATA)));
+			 stringToVector(MS::columnName(MS::DATA)));
     td.defineHypercolumn("TiledFlag",3,
-			 stringToVector(NewMS::columnName(NewMS::FLAG)));
+			 stringToVector(MS::columnName(MS::FLAG)));
     td.defineHypercolumn("TiledWeight",2,
-			 stringToVector(NewMS::columnName(NewMS::WEIGHT_SPECTRUM)));
+			 stringToVector(MS::columnName(MS::WEIGHT_SPECTRUM)));
     td.defineHypercolumn("TiledUVW",2,
-			 stringToVector(NewMS::columnName(NewMS::UVW)));
+			 stringToVector(MS::columnName(MS::UVW)));
   }
-  SetupNewTable newtab(NewMSFileName, td, Table::New);
+  SetupNewTable newtab(MSFileName, td, Table::New);
   
   // Set the default Storage Manager to be the Incr one
   IncrementalStMan incrStMan ("ISMData");
   newtab.bindAll(incrStMan, True);
   // bind ANTENNA2 to the aipsStMan as it changes every row
   StandardStMan aipsStMan;
-  newtab.bindColumn(NewMS::columnName(NewMS::ANTENNA2),aipsStMan);
+  newtab.bindColumn(MS::columnName(MS::ANTENNA2),aipsStMan);
   
   if (useTSM) {
     Int tileSize=nChan/10+1;
@@ -451,19 +451,19 @@ void NewMSFitsInput::setupMeasurementSet(const String& NewMSFileName, Bool useTS
     TiledColumnStMan tiledStMan3("TiledUVW",
 				 IPosition(2,3,1024));
     // Bind the DATA, FLAG & WEIGHT_SPECTRUM columns to the tiled stman
-    newtab.bindColumn(NewMS::columnName(NewMS::DATA),tiledStMan1);
-    newtab.bindColumn(NewMS::columnName(NewMS::FLAG),tiledStMan1f);
-    newtab.bindColumn(NewMS::columnName(NewMS::WEIGHT_SPECTRUM),tiledStMan2);
-    newtab.bindColumn(NewMS::columnName(NewMS::UVW),tiledStMan3);
+    newtab.bindColumn(MS::columnName(MS::DATA),tiledStMan1);
+    newtab.bindColumn(MS::columnName(MS::FLAG),tiledStMan1f);
+    newtab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM),tiledStMan2);
+    newtab.bindColumn(MS::columnName(MS::UVW),tiledStMan3);
   } else {
-    newtab.bindColumn(NewMS::columnName(NewMS::DATA),aipsStMan);
-    newtab.bindColumn(NewMS::columnName(NewMS::FLAG),aipsStMan);
-    newtab.bindColumn(NewMS::columnName(NewMS::WEIGHT_SPECTRUM),aipsStMan);
-    newtab.bindColumn(NewMS::columnName(NewMS::UVW),aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::DATA),aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::FLAG),aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM),aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::UVW),aipsStMan);
   }
   // avoid lock overheads by locking the table permanently
   TableLock lock(TableLock::PermanentLocking);
-  NewMeasurementSet ms(newtab,lock);
+  MeasurementSet ms(newtab,lock);
 
   // create all subtables
   // we make new tables with 0 rows
@@ -475,10 +475,10 @@ void NewMSFitsInput::setupMeasurementSet(const String& NewMSFileName, Bool useTS
   ms.initRefs();
  
   ms_p=ms;
-  msc_p=new NewMSColumns(ms_p);
+  msc_p=new MSColumns(ms_p);
 }
 
-void NewMSFitsInput::fillObsTables()
+void MSFitsInput::fillObsTables()
 {
   Regex trailing(" *$"); // trailing blanks
   const FitsKeyword* kwp;
@@ -487,7 +487,7 @@ void NewMSFitsInput::fillObsTables()
   String observer;
   observer = (kwp=priGroup_p.kw(keyword)) ? kwp->asString() : "";
   observer=observer.before(trailing);
-  NewMSObservationColumns msObsCol(ms_p.observation());
+  MSObservationColumns msObsCol(ms_p.observation());
   msObsCol.observer().put(0,observer);
   keyword=FITS::TELESCOP;
   String telescope= (kwp=priGroup_p.kw(keyword)) ? kwp->asString() : "unknown";
@@ -519,14 +519,14 @@ void NewMSFitsInput::fillObsTables()
   keyword=FITS::HISTORY;
   String history = (kwp=priGroup_p.kw(keyword)) ? kwp->comm(): "";
   history = history.before(trailing);
-  NewMSHistoryColumns msHisCol(ms_p.history());
+  MSHistoryColumns msHisCol(ms_p.history());
   Int row=-1;
   while (history!="") {
     ms_p.history().addRow(); row++;
     msHisCol.observationId().put(row,0);
     msHisCol.time().put(row,time);
     msHisCol.priority().put(row,"NORMAL");
-    msHisCol.origin().put(row,"NewMSFitsInput::fillObsTables");
+    msHisCol.origin().put(row,"MSFitsInput::fillObsTables");
     msHisCol.application().put(row,"ms");
     msHisCol.message().put(row,history);
     history = (kwp=priGroup_p.nextkw()) ? kwp->comm(): "";
@@ -536,11 +536,11 @@ void NewMSFitsInput::fillObsTables()
 
 //
 // Extract the data from the PrimaryGroup object and stick it into
-// the NewMeasurementSet 
-void NewMSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
+// the MeasurementSet 
+void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 {
   // Get access to the MS columns
-  NewMSColumns& msc(*msc_p);
+  MSColumns& msc(*msc_p);
   Regex trailing(" *$"); // trailing blanks
 
   // get the random group parameter names
@@ -575,7 +575,7 @@ void NewMSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   iV = getIndexContains(pType,"VV");
   iW = getIndexContains(pType,"WW");
   if (iU < 0 || iV < 0 || iW < 0) {
-    throw(AipsError("NewMSFitsInput: Cannot find UVW information"));
+    throw(AipsError("MSFitsInput: Cannot find UVW information"));
   }
   // get index for baseline
   Int iBsln = getIndex(pType, "BASELINE");
@@ -745,7 +745,7 @@ void NewMSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   // set the Measure References
 }
 
-void NewMSFitsInput::fillAntennaTable(BinaryTable& bt)
+void MSFitsInput::fillAntennaTable(BinaryTable& bt)
 {
   Regex trailing(" *$"); // trailing blanks
   TableRecord btKeywords=bt.getKeywords();
@@ -758,7 +758,7 @@ void NewMSFitsInput::fillAntennaTable(BinaryTable& bt)
   arrayXYZ=0.0;
   if(!btKeywords.isDefined("ARRAYX")||!btKeywords.isDefined("ARRAYY")||
      !btKeywords.isDefined("ARRAYZ")) {
-    throw(AipsError("NewMSFitsInput: Illegal AN file: no antenna positions"));
+    throw(AipsError("MSFitsInput: Illegal AN file: no antenna positions"));
   }
   arrayXYZ(0)=bt.getKeywords().asdouble("ARRAYX");
   arrayXYZ(1)=bt.getKeywords().asdouble("ARRAYY");
@@ -808,7 +808,7 @@ void NewMSFitsInput::fillAntennaTable(BinaryTable& bt)
   if (array_p=="ATCA") diameter=22;
   
   Table anTab=bt.fullTable("",Table::Scratch);
-  NewMSAntennaColumns& ant(msc_p->antenna());
+  MSAntennaColumns& ant(msc_p->antenna());
   ROScalarColumn<String> name(anTab,"ANNAME");
   ROArrayColumn<Double> antXYZ(anTab,"STABXYZ");
   ROScalarColumn<Int> id(anTab,"NOSTA");
@@ -849,11 +849,11 @@ void NewMSFitsInput::fillAntennaTable(BinaryTable& bt)
   ant.position().rwKeywordSet().define("ARRAY_POSITION",arrayXYZ);
 }
 
-void NewMSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
+void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
 {
-  NewMSSpWindowColumns& msSpW(msc_p->spectralWindow());
-  NewMSDataDescColumns& msDD(msc_p->dataDescription());
-  NewMSPolarizationColumns& msPol(msc_p->polarization());
+  MSSpWindowColumns& msSpW(msc_p->spectralWindow());
+  MSDataDescColumns& msDD(msc_p->dataDescription());
+  MSPolarizationColumns& msPol(msc_p->polarization());
   Int iFreq = getIndex(coordType_p, "FREQ");
   Int nChan = nPixel_p(iFreq);
   Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
@@ -936,11 +936,11 @@ void NewMSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
   }
 }
 
-void NewMSFitsInput::fillSpectralWindowTable()
+void MSFitsInput::fillSpectralWindowTable()
 {
-  NewMSSpWindowColumns& msSpW(msc_p->spectralWindow());
-  NewMSDataDescColumns& msDD(msc_p->dataDescription());
-  NewMSPolarizationColumns& msPol(msc_p->polarization());
+  MSSpWindowColumns& msSpW(msc_p->spectralWindow());
+  MSDataDescColumns& msDD(msc_p->dataDescription());
+  MSPolarizationColumns& msPol(msc_p->polarization());
   Int iFreq = getIndex(coordType_p, "FREQ");
   Int nChan = nPixel_p(iFreq);
   Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
@@ -989,9 +989,9 @@ void NewMSFitsInput::fillSpectralWindowTable()
   msSpW.measFreqRef().put(spw,freqsys_p);
 }
 
-void NewMSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
+void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
 {
-  NewMSFieldColumns& msField(msc_p->field());
+  MSFieldColumns& msField(msc_p->field());
   Table suTab=bt.fullTable("",Table::Scratch);
   ROScalarColumn<Int> id(suTab,"ID. NO.");
   ROScalarColumn<String> name(suTab,"SOURCE");
@@ -1041,7 +1041,7 @@ void NewMSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     // Note: this code code attempts to interpret possible FITS usage
     // of the epoch. Here it serves as both the coordinate epoch reference
     // and the 'zero-point' for the proper motion parameters.
-    // Normally the Time column in the NewMSField table would contain
+    // Normally the Time column in the MSField table would contain
     // the observation time for which the position is accurate (i.e. 
     // zero point for rates). The coordinate epoch would be specified 
     // separately.
@@ -1060,7 +1060,7 @@ void NewMSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
 }
 
 // single source fits case
-void NewMSFitsInput::fillFieldTable(Int nField)
+void MSFitsInput::fillFieldTable(Int nField)
 {
   // some UVFITS files have the source number set, but have no SU
   // table. We will assume there is only a single source in that case
@@ -1074,7 +1074,7 @@ void NewMSFitsInput::fillFieldTable(Int nField)
   msc_p->setDirectionRef(epochRef);
 
 
-  NewMSFieldColumns& msField(msc_p->field());
+  MSFieldColumns& msField(msc_p->field());
   ms_p.field().addRow();
   Int fld=0;
   msField.sourceId().put(fld,-1); // source table not used
@@ -1099,13 +1099,13 @@ void NewMSFitsInput::fillFieldTable(Int nField)
   }
 }
 
-void NewMSFitsInput::fillFeedTable() {
-  NewMSFeedColumns& msfc(msc_p->feed());
+void MSFitsInput::fillFeedTable() {
+  MSFeedColumns& msfc(msc_p->feed());
 
   // find out the POLARIZATION_TYPE
   // In the fits files we handle there can be only a single, uniform type
   // of polarization so the following should work.
-  NewMSPolarizationColumns& msPolC(msc_p->polarization());
+  MSPolarizationColumns& msPolC(msc_p->polarization());
   Int numCorr=msPolC.numCorr()(0);
   Vector<String> rec_type(2); rec_type="";
   if (corrType_p(0)>=Stokes::RR && corrType_p(numCorr-1)<=Stokes::LL) {
@@ -1140,7 +1140,7 @@ void NewMSFitsInput::fillFeedTable() {
   }      
 }
 
-void NewMSFitsInput::fixEpochReferences() {
+void MSFitsInput::fixEpochReferences() {
   if (timsys_p=="IAT") timsys_p="TAI";
   if (timsys_p=="UTC" || timsys_p=="TAI") {
     if (timsys_p=="UTC") msc_p->setEpochRef(MEpoch::UTC, False);
@@ -1151,5 +1151,5 @@ void NewMSFitsInput::fixEpochReferences() {
   }
 }
 // Local Variables: 
-// compile-command: "gmake NewMSFitsInput"
+// compile-command: "gmake MSFitsInput"
 // End: 

@@ -1,4 +1,4 @@
-//# NewMSValidIds: ensures that required MS Ids are valid or -1 by row number
+//# MSValidIds: ensures that required MS Ids are valid or -1 by row number
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,14 +26,14 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSVALIDIDS_H)
-#define AIPS_NEWMSVALIDIDS_H
+#if !defined(AIPS_MSVALIDIDS_H)
+#define AIPS_MSVALIDIDS_H
 
 #include <aips/aips.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
 
 //# Forward declarations
-class RONewMSColumns;
+class ROMSColumns;
 
 // <summary>
 // </summary>
@@ -44,7 +44,7 @@ class RONewMSColumns;
 // </reviewed>
 
 // <prerequisite>
-//   <li> NewMeasurementSet
+//   <li> MeasurementSet
 // </prerequisite>
 //
 // <etymology>
@@ -64,29 +64,29 @@ class RONewMSColumns;
 //    <li>
 // </thrown>
 
-class NewMSValidIds
+class MSValidIds
 {
 public:
-    // Construct one unattached to a NewMeasurementSet.  All functions return -1.
-    // Use the attach function to attach this to a NewMeasurementSet after construction.
-    NewMSValidIds();
+    // Construct one unattached to a MeasurementSet.  All functions return -1.
+    // Use the attach function to attach this to a MeasurementSet after construction.
+    MSValidIds();
 
-    // Construct one attached to the indicated NewMeasurementSet
-    NewMSValidIds(const NewMeasurementSet &ms);
+    // Construct one attached to the indicated MeasurementSet
+    MSValidIds(const MeasurementSet &ms);
 
     // Construct one from another
-    NewMSValidIds(const NewMSValidIds &other);
+    MSValidIds(const MSValidIds &other);
 
     // The destructor
-    ~NewMSValidIds();
+    ~MSValidIds();
 
     // Assignment operator, reference semantics.
-    NewMSValidIds &operator=(const NewMSValidIds &other);
+    MSValidIds &operator=(const MSValidIds &other);
 
-    // Attach this one to a NewMeasurementSet.  This can also be used to
-    // re-attach to the same NewMeasurementSet when additional optional 
+    // Attach this one to a MeasurementSet.  This can also be used to
+    // re-attach to the same MeasurementSet when additional optional 
     // subtables have been added since this object was constructed.
-    void attach(const NewMeasurementSet &ms);
+    void attach(const MeasurementSet &ms);
 
     // These functions check on the validity of the appropriate value in
     // the main table or sub-tables in the case of some Ids.  The actual
@@ -120,8 +120,8 @@ public:
     Int sourceId(uInt rownr) const;
     // </group>
 private:
-    NewMeasurementSet ms_p;
-    RONewMSColumns *romsCols_p;
+    MeasurementSet ms_p;
+    ROMSColumns *romsCols_p;
 
     Bool hasDoppler_p, hasSource_p;
     

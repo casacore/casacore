@@ -33,9 +33,9 @@
 
 //# Forward Declarations
 class ColumnsIndex;
-class NewMeasurementSet;
-class NewMSPolarization;
-class NewMSPolarizationColumns;
+class MeasurementSet;
+class MSPolarization;
+class MSPolarizationColumns;
 class Record;
 
 template <class T> class Vector;
@@ -89,7 +89,7 @@ public:
     SDPolarizationHandler();
 
     // attach this to a MS - no columns are explicitly handled here
-    SDPolarizationHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDPolarizationHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDPolarizationHandler(const SDPolarizationHandler &other);
@@ -100,7 +100,7 @@ public:
     SDPolarizationHandler &operator=(const SDPolarizationHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &row);
@@ -113,8 +113,8 @@ public:
 private:
     RecordFieldPtr<Int> numCorrKey_p;
     ColumnsIndex *index_p;
-    NewMSPolarization *msPol_p;
-    NewMSPolarizationColumns *msPolCols_p;
+    MSPolarization *msPol_p;
+    MSPolarizationColumns *msPolCols_p;
 
     Int rownr_p;
 
@@ -132,7 +132,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     void initRow(Vector<Bool> &handledCols, const Record &row);
 };

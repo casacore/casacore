@@ -1,4 +1,4 @@
-//# NewMSSelUtil2.cc: templated helper function for NewMSSelector
+//# MSSelUtil2.cc: templated helper function for MSSelector
 //# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSSelUtil.h>
+#include <trial/MeasurementSets/MSSelUtil.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
@@ -34,7 +34,7 @@
 
 // reorder from 3d to 4d (adding ifr axis)
 template <class T>
-void NewMSSelUtil2<T>::reorderData(Array<T>& data,
+void MSSelUtil2<T>::reorderData(Array<T>& data,
 				const Vector<Int>& ifrSlot,
 				Int nIfr, const Vector<Int>& timeSlot, 
 				Int nTime, const T& defvalue)
@@ -59,7 +59,7 @@ void NewMSSelUtil2<T>::reorderData(Array<T>& data,
 
 // reorder from 4d to 3d (removing ifr axis)
 template <class T>
-void NewMSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int>& rowIndex,
+void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int>& rowIndex,
 				Int nRow)
 {
   Int nPol=data.shape()(0),nChan=data.shape()(1),nIfr=data.shape()(2),
@@ -91,8 +91,8 @@ void NewMSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int>& rowIndex,
 
 
 // define the instantiations we need
-template class NewMSSelUtil2<Bool>;
-template class NewMSSelUtil2<Complex>;
+template class MSSelUtil2<Bool>;
+template class MSSelUtil2<Complex>;
 
 
 

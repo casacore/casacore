@@ -1,4 +1,4 @@
-//# NewMSSummary.cc:  Helper class for applications listing a MeasurementSet
+//# MSSummary.cc:  Helper class for applications listing a MeasurementSet
 //# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -40,8 +40,8 @@
 
 #include <trial/Coordinates.h>
 #include <aips/MeasurementSets.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <trial/MeasurementSets/NewMSSummary.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <trial/MeasurementSets/MSSummary.h>
 
 #include <iomanip.h>
 #include <iostream.h>
@@ -51,7 +51,7 @@
 // Constructor assigns pointer.  If MS goes out of scope you
 // will get rubbish.  Also sets string to separate subtable output.
 //
-NewMSSummary::NewMSSummary (const NewMeasurementSet& ms)
+MSSummary::MSSummary (const MeasurementSet& ms)
   : pMS(&ms),
     dashlin1(replicate("-",80)),
     dashlin2(replicate("=",80))
@@ -61,14 +61,14 @@ NewMSSummary::NewMSSummary (const NewMeasurementSet& ms)
 //
 // Destructor does nothing
 //
-NewMSSummary::~NewMSSummary ()
+MSSummary::~MSSummary ()
 {}
 
 
 //
 // Retrieve number of rows
 //
-Int NewMSSummary::nrow () const
+Int MSSummary::nrow () const
 {
    return pMS->nrow();
 }
@@ -77,7 +77,7 @@ Int NewMSSummary::nrow () const
 //
 // Get ms name
 //
-String NewMSSummary::name () const
+String MSSummary::name () const
 {
    return pMS->tableName();
 }
@@ -86,9 +86,9 @@ String NewMSSummary::name () const
 //
 // Reassign pointer.  
 //
-Bool NewMSSummary::setNewMS (const NewMeasurementSet& ms)
+Bool MSSummary::setMS (const MeasurementSet& ms)
 {
-  const NewMeasurementSet* pTemp;
+  const MeasurementSet* pTemp;
   pTemp = &ms;
   if (pTemp == 0) {
     return False;
@@ -102,7 +102,7 @@ Bool NewMSSummary::setNewMS (const NewMeasurementSet& ms)
 //
 // List information about an ms to the logger
 //
-void NewMSSummary::list (LogIO& os, Bool verbose) const
+void MSSummary::list (LogIO& os, Bool verbose) const
 {
   // List a title for the Summary
   listTitle (os);
@@ -133,7 +133,7 @@ void NewMSSummary::list (LogIO& os, Bool verbose) const
 //
 // List a title for the Summary
 //
-void NewMSSummary::listTitle (LogIO& os) const
+void MSSummary::listTitle (LogIO& os) const
 {
   // Version number of the MS definition
   Float vers = 1.0;
@@ -143,7 +143,7 @@ void NewMSSummary::listTitle (LogIO& os) const
 
   // List the MS name and version as the title of the Summary
   os << LogIO::NORMAL;
-  os << dashlin2 << endl << "           NewMeasurementSet Name:  " << this->name()
+  os << dashlin2 << endl << "           MeasurementSet Name:  " << this->name()
      << "      MS Version " << vers << endl << dashlin2 << endl;
 }
 
@@ -151,20 +151,20 @@ void NewMSSummary::listTitle (LogIO& os) const
 //
 // Convenient table groupings
 //
-void NewMSSummary::listWhere (LogIO& os, Bool verbose) const
+void MSSummary::listWhere (LogIO& os, Bool verbose) const
 {
   listObservation (os,verbose);
 }
 
 
-void NewMSSummary::listWhat (LogIO& os, Bool verbose) const
+void MSSummary::listWhat (LogIO& os, Bool verbose) const
 {
   listField (os,verbose);
   listMain (os,verbose);
 }
 
 
-void NewMSSummary::listHow (LogIO& os, Bool verbose) const
+void MSSummary::listHow (LogIO& os, Bool verbose) const
 {
   listSpectralWindow (os,verbose);
   listPolarization (os,verbose);
@@ -176,14 +176,14 @@ void NewMSSummary::listHow (LogIO& os, Bool verbose) const
 //
 // SUBTABLES
 //
-void NewMSSummary::listMain (LogIO& os, Bool verbose) const
+void MSSummary::listMain (LogIO& os, Bool verbose) const
 {
   if (nrow()<=0) {
     os << "The MAIN table is empty: there are no data!!!" << endl;
   }
   else {
     // Make objects
-    RONewMSColumns msc(*pMS);
+    ROMSColumns msc(*pMS);
     Double startTime, stopTime;
     minMax(startTime, stopTime, msc.time().getColumn());
     Double exposTime = stopTime - startTime;
@@ -203,13 +203,13 @@ void NewMSSummary::listMain (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listAntenna (LogIO& os, Bool verbose) const 
+void MSSummary::listAntenna (LogIO& os, Bool verbose) const 
 {
   // Do nothing in terse mode
   if (verbose) {
 
     // Make a MS-antenna object
-    NewMSAntenna antennaTable(pMS->antenna());
+    MSAntenna antennaTable(pMS->antenna());
 
     if (antennaTable.nrow()<=0) {
       os << "The ANTENNA table is empty" << endl;
@@ -217,7 +217,7 @@ void NewMSSummary::listAntenna (LogIO& os, Bool verbose) const
     else {
       os << "Antennas: " << antennaTable.nrow() << endl;
       ROScalarColumn<String> antennaNames(antennaTable,
-				NewMSAntenna::columnName(NewMSAntenna::NAME));
+				MSAntenna::columnName(MSAntenna::NAME));
       String line, leader;
       Int last=-1;
       for (uInt row=0; row<antennaNames.nrow(); row++) {
@@ -243,21 +243,21 @@ void NewMSSummary::listAntenna (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listArray (LogIO& os, Bool verbose) const 
+void MSSummary::listArray (LogIO& os, Bool verbose) const 
 {
   // Do nothing in terse mode
   if (verbose) {
 
     // Make a MS-observation object
-    NewMSObservation obsTable(pMS->observation());
+    MSObservation obsTable(pMS->observation());
 
     if (obsTable.nrow()<=0) {
       os << "The OBSERVATION table is empty" << endl;
     }
     else {
       os << "Observations: " << obsTable.nrow() << endl;
-      ROScalarColumn<String> arrayNames(obsTable,NewMSObservation::columnName
-					(NewMSObservation::TELESCOPE_NAME));
+      ROScalarColumn<String> arrayNames(obsTable,MSObservation::columnName
+					(MSObservation::TELESCOPE_NAME));
       os << "   Array names:";
       for (uInt row=0; row<arrayNames.nrow(); row++) {
 	os << " " << arrayNames(row);
@@ -269,13 +269,13 @@ void NewMSSummary::listArray (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listFeed (LogIO& os, Bool verbose) const 
+void MSSummary::listFeed (LogIO& os, Bool verbose) const 
 {
   // Do nothing in terse mode
   if (verbose) {
 
     // Make a MS-feed-columns object
-    RONewMSFeedColumns msFC(pMS->feed());
+    ROMSFeedColumns msFC(pMS->feed());
 
     if (msFC.antennaId().nrow()<=0) {
       os << "The FEED table is empty" << endl;
@@ -317,10 +317,10 @@ void NewMSSummary::listFeed (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listField (LogIO& os, Bool verbose) const 
+void MSSummary::listField (LogIO& os, Bool verbose) const 
 {
   // Make a MS-field-columns object
-  RONewMSFieldColumns msFC(pMS->field());
+  ROMSFieldColumns msFC(pMS->field());
 
   if (msFC.phaseDir().nrow()<=0) {
     os << "The FIELD table is empty" << endl;
@@ -377,11 +377,11 @@ void NewMSSummary::listField (LogIO& os, Bool verbose) const
   os << endl << LogIO::POST;
 }
 
-void NewMSSummary::listObservation (LogIO& os, Bool verbose) const 
+void MSSummary::listObservation (LogIO& os, Bool verbose) const 
 {
   // Make objects
-  RONewMSColumns msc(*pMS);
-  const RONewMSObservationColumns& msOC(msc.observation());
+  ROMSColumns msc(*pMS);
+  const ROMSObservationColumns& msOC(msc.observation());
 
   if (msOC.project().nrow()<=0) {
     os << "The OBSERVATION table is empty" << endl;
@@ -428,13 +428,13 @@ void NewMSSummary::listObservation (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listObsLog (LogIO& os, Bool verbose) const 
+void MSSummary::listObsLog (LogIO& os, Bool verbose) const 
 {
   // Do nothing in terse mode
   if (verbose) {
 
     // Create a MS-obslog-columns object
-    RONewMSHistoryColumns msHis(pMS->history());
+    ROMSHistoryColumns msHis(pMS->history());
 
     if (msHis.time().nrow()<=0) {
       os << "The HISTORY table is empty" << endl;
@@ -448,7 +448,7 @@ void NewMSSummary::listObsLog (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listSource (LogIO& os, Bool verbose) const 
+void MSSummary::listSource (LogIO& os, Bool verbose) const 
 {
   // Check if optional SOURCE table is present:
   if (pMS->source().isNull()) {
@@ -457,7 +457,7 @@ void NewMSSummary::listSource (LogIO& os, Bool verbose) const
   }
 
   // Create a MS-source-columns object
-  RONewMSSourceColumns msSC(pMS->source());
+  ROMSSourceColumns msSC(pMS->source());
 
   if (msSC.name().nrow()<=0) {
     os << "The SOURCE table is empty: see the FIELD table" << endl;
@@ -511,10 +511,10 @@ void NewMSSummary::listSource (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
+void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
 {
   // Create a MS-spwin-columns object
-  RONewMSSpWindowColumns msSWC(pMS->spectralWindow());
+  ROMSSpWindowColumns msSWC(pMS->spectralWindow());
 
   if (verbose) {}	//null; always the same output
 
@@ -590,10 +590,10 @@ void NewMSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
   os << LogIO::POST;
 }
 
-void NewMSSummary::listPolarization (LogIO& os, Bool verbose) const
+void MSSummary::listPolarization (LogIO& os, Bool verbose) const
 {
   // Create a MS-pol-columns object
-  RONewMSPolarizationColumns msPolC(pMS->polarization());
+  ROMSPolarizationColumns msPolC(pMS->polarization());
 
   if (verbose) {}	//null; always the same output
 
@@ -632,7 +632,7 @@ void NewMSSummary::listPolarization (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listSysCal (LogIO& os, Bool verbose) const 
+void MSSummary::listSysCal (LogIO& os, Bool verbose) const 
 {
   // Check for existence of optional SYSCAL table:
   if (pMS->sysCal().isNull()) {
@@ -644,7 +644,7 @@ void NewMSSummary::listSysCal (LogIO& os, Bool verbose) const
   if (verbose) {
 
     // Create a MS-syscal-columns object
-    RONewMSSysCalColumns msSCC(pMS->sysCal());
+    ROMSSysCalColumns msSCC(pMS->sysCal());
 
     if (msSCC.tsys().nrow()<=0) {
       os << "The SYSCAL table is empty" << endl;
@@ -659,7 +659,7 @@ void NewMSSummary::listSysCal (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listWeather (LogIO& os, Bool verbose) const 
+void MSSummary::listWeather (LogIO& os, Bool verbose) const 
 {
   // Check for existence of optional WEATHER table:
   if (pMS->weather().isNull()) {
@@ -687,7 +687,7 @@ void NewMSSummary::listWeather (LogIO& os, Bool verbose) const
 }
 
 
-void NewMSSummary::listTables (LogIO& os, Bool verbose) const 
+void MSSummary::listTables (LogIO& os, Bool verbose) const 
 {
   // Get nrows for each table (=-1 if table absent)
   Vector<Int> tableRows(18);
@@ -784,7 +784,7 @@ void NewMSSummary::listTables (LogIO& os, Bool verbose) const
 //
 // Clear all the formatting flags
 //
-void NewMSSummary::clearFlags(LogIO& os) const
+void MSSummary::clearFlags(LogIO& os) const
 {
   os.output().unsetf(ios::left);
   os.output().unsetf(ios::right);

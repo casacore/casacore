@@ -28,9 +28,9 @@
 //# Includes
 #include <trial/MeasurementSets/SDWeatherHandler.h>
 
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSWeatherColumns.h>
-#include <aips/MeasurementSets/NewMSWeather.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSWeatherColumns.h>
+#include <aips/MeasurementSets/MSWeather.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
@@ -44,7 +44,7 @@ SDWeatherHandler::SDWeatherHandler()
       winddireId_p(-1)
 {;}
 
-SDWeatherHandler::SDWeatherHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+SDWeatherHandler::SDWeatherHandler(MeasurementSet &ms, Vector<Bool> &handledCols, 
 				 const Record &row)
     : msWeather_p(0), msWeatherCols_p(0), rownr_p(-1), humidityId_p(-1),
       tambientId_p(-1), pressureId_p(-1),dewpointId_p(-1), windspeeId_p(-1),
@@ -65,9 +65,9 @@ SDWeatherHandler &SDWeatherHandler::operator=(const SDWeatherHandler &other)
 {
     if (this != &other) {
 	clearAll();
-	msWeather_p = new NewMSWeather(*(other.msWeather_p));
+	msWeather_p = new MSWeather(*(other.msWeather_p));
 	AlwaysAssert(msWeather_p, AipsError);
-	msWeatherCols_p = new NewMSWeatherColumns(*msWeather_p);
+	msWeatherCols_p = new MSWeatherColumns(*msWeather_p);
 	AlwaysAssert(msWeatherCols_p, AipsError);
 	rownr_p = other.rownr_p;
 	humidityId_p = other.humidityId_p;
@@ -89,7 +89,7 @@ SDWeatherHandler &SDWeatherHandler::operator=(const SDWeatherHandler &other)
     return *this;
 }
 
-void SDWeatherHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+void SDWeatherHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, 
 			     const Record &row)
 {
     clearAll();
@@ -217,11 +217,11 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
 			delete msWeatherCols_p;
 			msWeatherCols_p = 0;
 			TableDesc td;
-			NewMSWeather::addColumnToDesc(td, NewMSWeather::H2O);
-			NewMSWeather::addColumnToDesc(td, NewMSWeather::H2O_FLAG);
+			MSWeather::addColumnToDesc(td, MSWeather::H2O);
+			MSWeather::addColumnToDesc(td, MSWeather::H2O_FLAG);
 			msWeather_p->addColumn(td[0]);
 			msWeather_p->addColumn(td[1]);
-			msWeatherCols_p = new NewMSWeatherColumns(*msWeather_p);
+			msWeatherCols_p = new MSWeatherColumns(*msWeather_p);
 			AlwaysAssert(msWeatherCols_p, AipsError);
 			msWeatherCols_p->H2O().put(rownr_p, *H2OField_p);
 			msWeatherCols_p->H2OFlag().put(rownr_p, False);
@@ -238,11 +238,11 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
 			delete msWeatherCols_p;
 			msWeatherCols_p = 0;
 			TableDesc td;
-			NewMSWeather::addColumnToDesc(td, NewMSWeather::IONOS_ELECTRON);
-			NewMSWeather::addColumnToDesc(td, NewMSWeather::IONOS_ELECTRON_FLAG);
+			MSWeather::addColumnToDesc(td, MSWeather::IONOS_ELECTRON);
+			MSWeather::addColumnToDesc(td, MSWeather::IONOS_ELECTRON_FLAG);
 			msWeather_p->addColumn(td[0]);
 			msWeather_p->addColumn(td[1]);
-			msWeatherCols_p = new NewMSWeatherColumns(*msWeather_p);
+			msWeatherCols_p = new MSWeatherColumns(*msWeather_p);
 			AlwaysAssert(msWeatherCols_p, AipsError);
 			msWeatherCols_p->ionosElectron().put(rownr_p, *ionosElectronField_p);
 			msWeatherCols_p->ionosElectronFlag().put(rownr_p, False);
@@ -293,10 +293,10 @@ void SDWeatherHandler::clearRow()
     windSpeedField_p.detach();
 }
 
-void SDWeatherHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+void SDWeatherHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
 			      const Record &row)
 {
-    msWeather_p = new NewMSWeather(ms.weather());
+    msWeather_p = new MSWeather(ms.weather());
     AlwaysAssert(msWeather_p, AipsError);
 
     initRow(handledCols, row);
@@ -304,34 +304,34 @@ void SDWeatherHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
     // do we need to add any optional columns
     TableDesc td;
     if (humidityId_p >= 0 || humidityField_p.isAttached()) {
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::REL_HUMIDITY);
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::REL_HUMIDITY_FLAG);
+	MSWeather::addColumnToDesc(td,MSWeather::REL_HUMIDITY);
+	MSWeather::addColumnToDesc(td,MSWeather::REL_HUMIDITY_FLAG);
     }
     if (tambientId_p >= 0 || temperatureField_p.isAttached()) {
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::TEMPERATURE);
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::TEMPERATURE_FLAG);
+	MSWeather::addColumnToDesc(td,MSWeather::TEMPERATURE);
+	MSWeather::addColumnToDesc(td,MSWeather::TEMPERATURE_FLAG);
     }
     if (pressureId_p >= 0 || pressureField_p.isAttached()) {
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::PRESSURE);
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::PRESSURE_FLAG);
+	MSWeather::addColumnToDesc(td,MSWeather::PRESSURE);
+	MSWeather::addColumnToDesc(td,MSWeather::PRESSURE_FLAG);
     }
     if (dewpointId_p >= 0) {
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::DEW_POINT);
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::DEW_POINT_FLAG);
+	MSWeather::addColumnToDesc(td,MSWeather::DEW_POINT);
+	MSWeather::addColumnToDesc(td,MSWeather::DEW_POINT_FLAG);
     }
     if (windspeeId_p >= 0 || windSpeedField_p.isAttached()) {
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::WIND_SPEED);
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::WIND_SPEED_FLAG);
+	MSWeather::addColumnToDesc(td,MSWeather::WIND_SPEED);
+	MSWeather::addColumnToDesc(td,MSWeather::WIND_SPEED_FLAG);
     }
     if (winddireId_p >= 0 || windDirField_p.isAttached()) {
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::WIND_DIRECTION);
-	NewMSWeather::addColumnToDesc(td,NewMSWeather::WIND_DIRECTION_FLAG);
+	MSWeather::addColumnToDesc(td,MSWeather::WIND_DIRECTION);
+	MSWeather::addColumnToDesc(td,MSWeather::WIND_DIRECTION_FLAG);
     }
     for (uInt i=0;i<td.ncolumn();i++) {
 	msWeather_p->addColumn(td[i]);
     }
 
-    msWeatherCols_p = new NewMSWeatherColumns(*msWeather_p);
+    msWeatherCols_p = new MSWeatherColumns(*msWeather_p);
     AlwaysAssert(msWeatherCols_p, AipsError);
 }
 

@@ -1,4 +1,4 @@
-//# NewMSTableIndex.cc:  this defined NewMSTableIndex
+//# MSTableIndex.cc:  this defined MSTableIndex
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <trial/MeasurementSets/NewMSTableIndex.h>
+#include <trial/MeasurementSets/MSTableIndex.h>
 
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordDesc.h>
@@ -37,13 +37,13 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-NewMSTableIndex::NewMSTableIndex()
+MSTableIndex::MSTableIndex()
     : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
       lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
       hasChanged_p(True), index_p(0), hasTime_p(False), hasInterval_p(False)
 {;}
 
-NewMSTableIndex::NewMSTableIndex(const Table &subTable,
+MSTableIndex::MSTableIndex(const Table &subTable,
 				 const Vector<String> &indexCols)
     : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
       lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
@@ -52,7 +52,7 @@ NewMSTableIndex::NewMSTableIndex(const Table &subTable,
     attach(subTable, indexCols);
 }
 
-NewMSTableIndex::NewMSTableIndex(const NewMSTableIndex &other)
+MSTableIndex::MSTableIndex(const MSTableIndex &other)
     : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
       lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
       hasChanged_p(True), index_p(0), hasTime_p(False), hasInterval_p(False)
@@ -60,12 +60,12 @@ NewMSTableIndex::NewMSTableIndex(const NewMSTableIndex &other)
     *this = other;
 }
 
-NewMSTableIndex::~NewMSTableIndex()
+MSTableIndex::~MSTableIndex()
 {
     clear();
 }
 
-NewMSTableIndex &NewMSTableIndex::operator=(const NewMSTableIndex &other)
+MSTableIndex &MSTableIndex::operator=(const MSTableIndex &other)
 {
     if (this != &other) {
 	clear();
@@ -92,7 +92,7 @@ NewMSTableIndex &NewMSTableIndex::operator=(const NewMSTableIndex &other)
     return *this;
 }
 
-void NewMSTableIndex::attach(const Table &subTable,
+void MSTableIndex::attach(const Table &subTable,
 			     const Vector<String> &indexCols)
 {
     clear();
@@ -116,7 +116,7 @@ void NewMSTableIndex::attach(const Table &subTable,
     if (hasInterval_p) fullIndexCols(nkeys+1) = "INTERVAL";
 
     if (fullIndexCols.nelements() > 0) {    
-	index_p = new ColumnsIndex(tab_p, fullIndexCols, NewMSTableIndex::compare);
+	index_p = new ColumnsIndex(tab_p, fullIndexCols, MSTableIndex::compare);
 	AlwaysAssert(index_p, AipsError);
 
 	RecordDesc keyDesc;
@@ -135,19 +135,19 @@ void NewMSTableIndex::attach(const Table &subTable,
     }
 }
 
-void NewMSTableIndex::setChanged()
+void MSTableIndex::setChanged()
 {
     hasChanged_p = True;
     if (index_p) index_p->setChanged();
 }
 
-Vector<uInt> NewMSTableIndex::getRowNumbers()
+Vector<uInt> MSTableIndex::getRowNumbers()
 {
     getInternals();
     return lastSearch_p;
 }
 
-uInt NewMSTableIndex::getNearestRow(Bool &found)
+uInt MSTableIndex::getNearestRow(Bool &found)
 {
     getInternals();
     if (!nearestReady_p) {
@@ -193,7 +193,7 @@ uInt NewMSTableIndex::getNearestRow(Bool &found)
     return lastNearest_p;
 }
 
-void NewMSTableIndex::makeKeys()
+void MSTableIndex::makeKeys()
 {
     // resize as appropriate
     uInt nKeys = key_p->nfields();
@@ -225,7 +225,7 @@ void NewMSTableIndex::makeKeys()
     }
 }
 
-void NewMSTableIndex::clear() 
+void MSTableIndex::clear() 
 {
     hasTime_p = hasInterval_p = nearestFound_p = nearestReady_p = False;
     delete index_p;
@@ -250,7 +250,7 @@ void NewMSTableIndex::clear()
     tab_p = Table();
 }
 
-void NewMSTableIndex::getInternals()
+void MSTableIndex::getInternals()
 {
     if (!isNull() && (hasChanged_p ||
 	tab_p.nrow() != nrows_p ||
@@ -286,7 +286,7 @@ void NewMSTableIndex::getInternals()
     }
 }
 
-Bool NewMSTableIndex::keysChanged()
+Bool MSTableIndex::keysChanged()
 {
     Bool result = False;
     for (uInt i=0;i<intKeys_p.nelements();i++) {
@@ -300,7 +300,7 @@ Bool NewMSTableIndex::keysChanged()
     return result;
 }
 
-Bool NewMSTableIndex::okDataTypes(const Block<Int> &dataTypes) {
+Bool MSTableIndex::okDataTypes(const Block<Int> &dataTypes) {
     Bool result = True;
     Bool doubleFound = False;
     uInt nDouble = 0;
@@ -322,7 +322,7 @@ Bool NewMSTableIndex::okDataTypes(const Block<Int> &dataTypes) {
     return result;
 }
 
-Int NewMSTableIndex::compare(const Block<void *>& fieldPtrs,
+Int MSTableIndex::compare(const Block<void *>& fieldPtrs,
 			     const Block<void *>& dataPtrs,
 			     const Block<Int> &dataTypes,
 			     Int index)

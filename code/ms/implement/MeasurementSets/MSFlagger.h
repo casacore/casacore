@@ -1,4 +1,4 @@
-//# NewMSFlagger.h: this defines NewMSFlagger, which implement flagging/editing
+//# MSFlagger.h: this defines MSFlagger, which implement flagging/editing
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,18 +26,18 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSFLAGGER_H)
-#define TRIAL_NEWMSFLAGGER_H
+#if !defined(TRIAL_MSFLAGGER_H)
+#define TRIAL_MSFLAGGER_H
 
 #include <aips/aips.h>
 #include <aips/Glish/GlishRecord.h>
 
 template <class T> class Array;
-class NewMSSelector;
+class MSSelector;
 class Table;
 
 // <summary>
-// NewMSFlagger specifies selections on a MeasurementSet
+// MSFlagger specifies selections on a MeasurementSet
 // </summary>
 
 // <visibility=export>
@@ -52,7 +52,7 @@ class Table;
 // </prerequisite>
 //
 // <etymology>
-// NewMSFlagger is a class that sets flags in an MS
+// MSFlagger is a class that sets flags in an MS
 // </etymology>
 //
 // <synopsis>
@@ -62,7 +62,7 @@ class Table;
 // The ms DO  uses this class to allow flagging from glish or a GUI.
 //
 // <example> <srcblock>
-// NewMSFlagger msFlagger(myMS);
+// MSFlagger msFlagger(myMS);
 // </srcblock></example>
 // </synopsis>
 //
@@ -81,24 +81,24 @@ class Table;
 //   <li> add this feature
 // </todo>
 
-class NewMSFlagger
+class MSFlagger
 {
 public:
-  NewMSFlagger();
+  MSFlagger();
   
-  // construct from an NewMSSelector object
-  NewMSFlagger(NewMSSelector& msSel);
+  // construct from an MSSelector object
+  MSFlagger(MSSelector& msSel);
   
   // Copy constructor
-  NewMSFlagger(const NewMSFlagger& other);
+  MSFlagger(const MSFlagger& other);
   
   // Assignment
-  NewMSFlagger& operator=(const NewMSFlagger& other);
+  MSFlagger& operator=(const MSFlagger& other);
   
-  ~NewMSFlagger();
+  ~MSFlagger();
 
-  // Change or Set the MS this NewMSFlagger refers to.
-  void setMSSelector(NewMSSelector& msSel);
+  // Change or Set the MS this MSFlagger refers to.
+  void setMSSelector(MSSelector& msSel);
   
   // Fill an internal buffer with the data item requested, similar to getData
   // except that the data is not returned, but kept around for further
@@ -208,11 +208,11 @@ protected:
   // apply the row flags to the data flags and v.v.
   void applyRowFlags(Array<Bool>& flag, Array<Bool>& flagRow);
 
-  // check if we are attached to an NewMSSelector
+  // check if we are attached to an MSSelector
   Bool check();
 
 private:
-  NewMSSelector* msSel_p; 
+  MSSelector* msSel_p; 
   GlishRecord buffer_p;
 };
 

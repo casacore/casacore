@@ -1,4 +1,4 @@
-//# NewMSWeatherIndex.cc:  this defined NewMSWeatherIndex
+//# MSWeatherIndex.cc:  this defined MSWeatherIndex
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,42 +25,42 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSWeatherIndex.h>
+#include <trial/MeasurementSets/MSWeatherIndex.h>
 
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/NewMSWeather.h>
+#include <aips/MeasurementSets/MSWeather.h>
 
-NewMSWeatherIndex::NewMSWeatherIndex() 
-    : NewMSTableIndex()
+MSWeatherIndex::MSWeatherIndex() 
+    : MSTableIndex()
 {;}
 
-NewMSWeatherIndex::NewMSWeatherIndex(const NewMSWeather &weather)
-    : NewMSTableIndex(weather, stringToVector("ANTENNA_ID"))
+MSWeatherIndex::MSWeatherIndex(const MSWeather &weather)
+    : MSTableIndex(weather, stringToVector("ANTENNA_ID"))
 { attachIds();}
 
-NewMSWeatherIndex::NewMSWeatherIndex(const NewMSWeatherIndex &other)
-    : NewMSTableIndex(other)
+MSWeatherIndex::MSWeatherIndex(const MSWeatherIndex &other)
+    : MSTableIndex(other)
 { attachIds();}
 
-NewMSWeatherIndex::~NewMSWeatherIndex()
+MSWeatherIndex::~MSWeatherIndex()
 {;}
 
-NewMSWeatherIndex &NewMSWeatherIndex::operator=(const NewMSWeatherIndex &other)
+MSWeatherIndex &MSWeatherIndex::operator=(const MSWeatherIndex &other)
 {
     if (this != &other) {
-	NewMSTableIndex::operator=(other);
+	MSTableIndex::operator=(other);
 	attachIds();
     }
     return *this;
 }
 
-void NewMSWeatherIndex::attach(const NewMSWeather &weather)
+void MSWeatherIndex::attach(const MSWeather &weather)
 {
-    NewMSTableIndex::attach(weather, stringToVector("ANTENNA_ID"));
+    MSTableIndex::attach(weather, stringToVector("ANTENNA_ID"));
     attachIds();
 }
 
-void NewMSWeatherIndex::attachIds()
+void MSWeatherIndex::attachIds()
 {
     antennaId_p.attachToRecord(accessKey(), "ANTENNA_ID");
 }

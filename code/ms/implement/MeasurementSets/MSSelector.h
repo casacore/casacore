@@ -1,4 +1,4 @@
-//# NewMSSelector.h: this defines NewMSSelector, which specifies MS selections
+//# MSSelector.h: this defines MSSelector, which specifies MS selections
 //# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,25 +26,25 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSSELECTOR_H)
-#define TRIAL_NEWMSSELECTOR_H
+#if !defined(TRIAL_MSSELECTOR_H)
+#define TRIAL_MSSELECTOR_H
 
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
 #include <trial/MeasurementComponents/StokesConverter.h>
-#include <trial/MeasurementSets/NewMSDerivedValues.h>
-#include <trial/MeasurementSets/NewMSSelectionKeywords.h>
+#include <trial/MeasurementSets/MSDerivedValues.h>
+#include <trial/MeasurementSets/MSSelectionKeywords.h>
 
 template <class T> class ROArrayColumn;
 template <class T> class ArrayColumn;
 template <class T> class ROScalarColumn;
 class GlishRecord;
-class NewMSIter;
+class MSIter;
 
 // <summary>
-// NewMSSelector specifies selections on a MeasurementSet
+// MSSelector specifies selections on a MeasurementSet
 // </summary>
 
 // <visibility=export>
@@ -58,7 +58,7 @@ class NewMSIter;
 // </prerequisite>
 //
 // <etymology>
-// NewMSSelector's main function is selection of data from a MeasurementSet
+// MSSelector's main function is selection of data from a MeasurementSet
 // </etymology>
 //
 // <synopsis>
@@ -71,7 +71,7 @@ class NewMSIter;
 // The ms DO uses this class to allow these operations to be done from glish.
 //
 // <example> <srcblock>
-// NewMSSelector msSelector(myMS);
+// MSSelector msSelector(myMS);
 // // select data desc Id 1
 // msSelector.initSelection(1);
 // Vector<String> items(3); 
@@ -80,7 +80,7 @@ class NewMSIter;
 // items(1)="time";
 // items(2)="num_chan";
 // // get the range of values for the items specified
-// NewMSRange msRange(msSelector.selectedTable(),msSelector.spectralWindow());
+// MSRange msRange(msSelector.selectedTable(),msSelector.spectralWindow());
 // GlishRecord range=msRange.range(items);
 // //.. change the ranges as needed
 // // now select with the new range
@@ -109,26 +109,26 @@ class NewMSIter;
 //   <li> provide access to all other columns in the MS?
 // </todo>
 
-class NewMSSelector
+class MSSelector
 {
 public:
 
-  NewMSSelector();
+  MSSelector();
   
   // construct from an MS, the MS will supply the range of the various
   // parameters that can be selected on.
-  explicit NewMSSelector(NewMeasurementSet& ms);
+  explicit MSSelector(MeasurementSet& ms);
   
   // Copy constructor, this will initialize the MS with other's MS
-  NewMSSelector(const NewMSSelector& other);
+  MSSelector(const MSSelector& other);
   
   // Assignment, this will initialize the MS with other's MS
-  NewMSSelector& operator=(const NewMSSelector& other);
+  MSSelector& operator=(const MSSelector& other);
 
-  ~NewMSSelector();
+  ~MSSelector();
   
-  // Change or Set the MS this NewMSSelector refers to.
-  void setMS(NewMeasurementSet& ms);
+  // Change or Set the MS this MSSelector refers to.
+  void setMS(MeasurementSet& ms);
   
   // initialize the selection by specifying, optionally, 
   // the DATA_DESC_ID. If it is not
@@ -241,10 +241,10 @@ protected:
 
 private:
 
-  NewMeasurementSet ms_p; // the original ms
-  NewMeasurementSet selms_p; // the selected ms
-  NewMeasurementSet savems_p; // the saved preselection
-  NewMSIter* msIter_p;
+  MeasurementSet ms_p; // the original ms
+  MeasurementSet selms_p; // the selected ms
+  MeasurementSet savems_p; // the saved preselection
+  MSIter* msIter_p;
   Bool initSel_p;
   Int dataDescId_p, lastDataDescId_p;
   Vector<Int> chanSel_p;
@@ -256,15 +256,15 @@ private:
   Vector<String> polSelection_p;
   Vector<Int> ifrSelection_p;
   Matrix<Double> chanFreq_p,bandwidth_p;
-  NewMSDerivedValues msd_p;
+  MSDerivedValues msd_p;
   Matrix<Int> rowIndex_p; // mapping of rows to time and ifr slots
   Vector<uInt> selRows_p; // range of rows from selms_p returned by getData
   Int startRow_p, maxRow_p; // start and length of range of rows
 
 };
-inline Int NewMSSelector::nrow() { return selms_p.nrow();}
-inline Int NewMSSelector::dataDescId() { return dataDescId_p;}
-inline Table NewMSSelector::selectedTable() {return selms_p;}
+inline Int MSSelector::nrow() { return selms_p.nrow();}
+inline Int MSSelector::dataDescId() { return dataDescId_p;}
+inline Table MSSelector::selectedTable() {return selms_p;}
 
 #endif
 

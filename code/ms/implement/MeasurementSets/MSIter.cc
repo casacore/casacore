@@ -1,4 +1,4 @@
-//# NewMSIter.cc: Step through NewMeasurementSet by table
+//# MSIter.cc: Step through MeasurementSet by table
 //# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSIter.h>
+#include <trial/MeasurementSets/MSIter.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableIter.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Measures.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MPosition.h>
@@ -40,10 +40,10 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Tables/TableRecord.h>
 
-Double NewMSInterval::interval_p;
-Double NewMSInterval::offset_p;
+Double MSInterval::interval_p;
+Double MSInterval::offset_p;
  
-Int NewMSInterval::compare(const void * obj1, const void * obj2)
+Int MSInterval::compare(const void * obj1, const void * obj2)
 {
     Double t1, t2;
     t1 = *(const Double*)obj1 - offset_p;
@@ -52,9 +52,9 @@ Int NewMSInterval::compare(const void * obj1, const void * obj2)
 }
  
 
-NewMSIter::NewMSIter():nMS_p(0),msc_p(0) {}
+MSIter::MSIter():nMS_p(0),msc_p(0) {}
 
-NewMSIter::NewMSIter(const NewMeasurementSet& ms,
+MSIter::MSIter(const MeasurementSet& ms,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval)
 : msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval)
@@ -64,7 +64,7 @@ NewMSIter::NewMSIter(const NewMeasurementSet& ms,
   construct(sortColumns);
 }
 
-NewMSIter::NewMSIter(const Block<NewMeasurementSet>& mss,
+MSIter::MSIter(const Block<MeasurementSet>& mss,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval)
 : bms_p(mss),msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval)
@@ -72,7 +72,7 @@ NewMSIter::NewMSIter(const Block<NewMeasurementSet>& mss,
   construct(sortColumns);
 }
 
-Bool NewMSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
+Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
   Int n1 = r1.nelements();
   Int n2 = r2.nelements();
   if (n1==0) return True;
@@ -90,14 +90,14 @@ Bool NewMSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
   return ok;
 }
 
-void NewMSIter::construct(const Block<Int>& sortColumns)
+void MSIter::construct(const Block<Int>& sortColumns)
 {
-  This = (NewMSIter*)this; 
+  This = (MSIter*)this; 
   nMS_p=bms_p.nelements();
-  if (nMS_p==0) throw(AipsError("NewMSIter::construct -  No input MeasurementSets"));
+  if (nMS_p==0) throw(AipsError("MSIter::construct -  No input MeasurementSets"));
   for (Int i=0; i<nMS_p; i++) {
     if (bms_p[i].nrow()==0) {
-      throw(AipsError("NewMSIter::construct - Input NewMeasurementSet.has zero selected rows"));
+      throw(AipsError("MSIter::construct - Input MeasurementSet.has zero selected rows"));
     }
   }
   tabIter_p.resize(nMS_p);
@@ -119,7 +119,7 @@ void NewMSIter::construct(const Block<Int>& sortColumns)
     Vector<String> colNames = bms_p[0].keywordSet().asArrayString("SORT_COLUMNS");
     uInt n=colNames.nelements();
     cols.resize(n);
-    for (uInt i=0; i<n; i++) cols[i]=NewMS::columnType(colNames(i));
+    for (uInt i=0; i<n; i++) cols[i]=MS::columnType(colNames(i));
   } else {
     cols=sortColumns;
   }
@@ -128,12 +128,12 @@ void NewMSIter::construct(const Block<Int>& sortColumns)
   Int nCol=0;
   for (uInt i=0; i<cols.nelements(); i++) {
     if (cols[i]>0 && 
-	cols[i]<NewMS::NUMBER_PREDEFINED_COLUMNS) {
-      if (cols[i]==NewMS::FIELD_ID) { fieldSeen=True; nCol++; }
-      if (cols[i]==NewMS::DATA_DESC_ID) { ddSeen=True; nCol++; }
-      if (cols[i]==NewMS::TIME) { timeSeen=True; nCol++; }
+	cols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
+      if (cols[i]==MS::FIELD_ID) { fieldSeen=True; nCol++; }
+      if (cols[i]==MS::DATA_DESC_ID) { ddSeen=True; nCol++; }
+      if (cols[i]==MS::TIME) { timeSeen=True; nCol++; }
     } else {
-      throw(AipsError("NewMSIter() - invalid sort column"));
+      throw(AipsError("MSIter() - invalid sort column"));
     }
   }
   Block<String> columns(cols.nelements()+3-nCol);
@@ -141,23 +141,23 @@ void NewMSIter::construct(const Block<Int>& sortColumns)
   Int iCol=0;
   if (!fieldSeen) {
     // add field if it's not there
-    columns[iCol++]=NewMS::columnName(NewMS::FIELD_ID);
+    columns[iCol++]=MS::columnName(MS::FIELD_ID);
   }
   if (!ddSeen) {
     // add dd if it's not there
-    columns[iCol++]=NewMS::columnName(NewMS::DATA_DESC_ID);
+    columns[iCol++]=MS::columnName(MS::DATA_DESC_ID);
   }
   if (!timeSeen) {
     // add time if it's not there
-    columns[iCol++]=NewMS::columnName(NewMS::TIME);
+    columns[iCol++]=MS::columnName(MS::TIME);
   }
   for (uInt i=0; i<cols.nelements(); i++) {
-    columns[iCol++]=NewMS::columnName(NewMS::PredefinedColumns(cols[i]));
+    columns[iCol++]=MS::columnName(MS::PredefinedColumns(cols[i]));
   }
   if (interval_p==0.0) {
     interval_p=DBL_MAX; // semi infinite
   }
-  NewMSInterval::setInterval(interval_p);
+  MSInterval::setInterval(interval_p);
   // do not set the offset (all intervals are zero based so we can convert
   // times to intervals easily in other classes, e.g. TimeVarVisJones)
   // Due to flagging, intervals may not have data over their full range
@@ -169,8 +169,8 @@ void NewMSIter::construct(const Block<Int>& sortColumns)
   // now find the time column and set the compare function
   PtrBlock<ObjCompareFunc*> objCompFuncs(columns.nelements());
   for (uInt i=0; i<columns.nelements(); i++) {
-    if (columns[i]==NewMS::columnName(NewMS::TIME)) {
-      objCompFuncs[i]=NewMSInterval::compare;
+    if (columns[i]==MS::columnName(MS::TIME)) {
+      objCompFuncs[i]=MSInterval::compare;
     } else {
       objCompFuncs[i]=static_cast<ObjCompareFunc*>(0);
     }
@@ -248,22 +248,22 @@ void NewMSIter::construct(const Block<Int>& sortColumns)
   
 }
 
-NewMSIter::NewMSIter(const NewMSIter& other)
+MSIter::MSIter(const MSIter& other)
 {
     operator=(other);
 }
 
-NewMSIter::~NewMSIter() 
+MSIter::~MSIter() 
 {
   if (msc_p) delete msc_p;
   for (Int i=0; i<nMS_p; i++) delete tabIter_p[i];
 }
 
-NewMSIter& 
-NewMSIter::operator=(const NewMSIter& other) 
+MSIter& 
+MSIter::operator=(const MSIter& other) 
 {
   if (this==&other) return *this;
-  This=(NewMSIter*)this;
+  This=(MSIter*)this;
   bms_p=other.bms_p;
   {for (Int i=0; i<nMS_p; i++) delete tabIter_p[i];}
   nMS_p=other.nMS_p;
@@ -273,7 +273,7 @@ NewMSIter::operator=(const NewMSIter& other)
   }
   tabIterAtStart_p=other.tabIterAtStart_p;
   if (msc_p) delete msc_p;
-  msc_p=static_cast<RONewMSColumns*>(0);
+  msc_p=static_cast<ROMSColumns*>(0);
   curMS_p=0;
   lastMS_p=-1;
   interval_p=other.interval_p;
@@ -281,42 +281,42 @@ NewMSIter::operator=(const NewMSIter& other)
   return *this;
 }
 
-void NewMSIter::setInterval(Double timeInterval)
+void MSIter::setInterval(Double timeInterval)
 {
   interval_p=timeInterval;
-  NewMSInterval::setInterval(interval_p);
+  MSInterval::setInterval(interval_p);
 }
 
-void NewMSIter::origin()
+void MSIter::origin()
 {
   curMS_p=0;
-  NewMSInterval::setInterval(interval_p);
+  MSInterval::setInterval(interval_p);
   if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
   setState();
   newMS_p=newSpectralWindow_p=newField_p=newPolarizationId_p=
     newDataDescId_p=more_p=checkFeed_p=True;
 }
 
-NewMSIter & NewMSIter::operator++(int)
+MSIter & MSIter::operator++(int)
 {
   if (!more_p) return *this;
   advance();
   return *this;
 }
 
-NewMSIter & NewMSIter::operator++()
+MSIter & MSIter::operator++()
 {
   if (!more_p) return *this;
   advance();
   return *this;
 }
 
-void NewMSIter::advance()
+void MSIter::advance()
 {
   newMS_p=newSpectralWindow_p=newPolarizationId_p=
     newDataDescId_p=newField_p=checkFeed_p=False;
   // make sure we've still got the right interval
-  NewMSInterval::setInterval(interval_p);
+  MSInterval::setInterval(interval_p);
   tabIter_p[curMS_p]->next();
   tabIterAtStart_p[curMS_p]=False;
   if (tabIter_p[curMS_p]->pastEnd()) {
@@ -328,19 +328,19 @@ void NewMSIter::advance()
   if (more_p) setState();
 }
 
-void NewMSIter::setState()
+void MSIter::setState()
 {
   checkFeed_p = newMS_p;
   setMSInfo();
   curTable_p=tabIter_p[curMS_p]->table();
-  colDataDesc_p.attach(curTable_p,NewMS::columnName(NewMS::DATA_DESC_ID));
-  colField_p.attach(curTable_p,NewMS::columnName(NewMS::FIELD_ID));
+  colDataDesc_p.attach(curTable_p,MS::columnName(MS::DATA_DESC_ID));
+  colField_p.attach(curTable_p,MS::columnName(MS::FIELD_ID));
   setDataDescInfo();
   setFeedInfo();
   setFieldInfo();
 }
 
-const Vector<Double>& NewMSIter::frequency() const
+const Vector<Double>& MSIter::frequency() const
 {
   if (!freqCacheOK_p) {
     This->freqCacheOK_p=True;
@@ -358,7 +358,7 @@ const Vector<Double>& NewMSIter::frequency() const
   return frequency_p;
 }
 
-const MFrequency& NewMSIter::frequency0() const
+const MFrequency& MSIter::frequency0() const
 {
   // set the channel0 frequency measure
     This->frequency0_p=
@@ -369,7 +369,7 @@ const MFrequency& NewMSIter::frequency0() const
   return frequency0_p;
 }
 
-const MFrequency& NewMSIter::restFrequency(Int line) const
+const MFrequency& MSIter::restFrequency(Int line) const
 {
   MFrequency freq;
   Int sourceId = msc_p->field().sourceId()(curField_p);
@@ -382,14 +382,14 @@ const MFrequency& NewMSIter::restFrequency(Int line) const
   return restFrequency_p;
 }
 
-void NewMSIter::setMSInfo()
+void MSIter::setMSInfo()
 {
   newMS_p=ToBool(lastMS_p!=curMS_p);
   if (newMS_p) {
     lastMS_p=curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
     if (msc_p) delete msc_p;
-    msc_p = new RONewMSColumns(bms_p[curMS_p]);
+    msc_p = new ROMSColumns(bms_p[curMS_p]);
     // check to see if we are attached to a 'reference MS' with a 
     // DATA column that is a selection of the original DATA
     preselected_p = msc_p->data().keywordSet().isDefined("CHANNEL_SELECTION");
@@ -425,7 +425,7 @@ void NewMSIter::setMSInfo()
   }
 }
 
-void NewMSIter::setFeedInfo()
+void MSIter::setFeedInfo()
 { 
 
   // Setup CJones and the receptor angle: feed 0 on each antenna
@@ -461,12 +461,12 @@ void NewMSIter::setFeedInfo()
       }
     }	
   } else {
-    throw(AipsError("NewMSIter::setFeedInfo() - time dependent feed table NYI"));
+    throw(AipsError("MSIter::setFeedInfo() - time dependent feed table NYI"));
   }
 }
 
 
-void NewMSIter::setDataDescInfo()
+void MSIter::setDataDescInfo()
 {
   curDataDescId_p = colDataDesc_p(0);
   curSpectralWindow_p = msc_p->dataDescription().spectralWindowId()
@@ -493,7 +493,7 @@ void NewMSIter::setDataDescInfo()
   }
 }
 
-void NewMSIter::setFieldInfo()
+void MSIter::setFieldInfo()
 {
   curField_p=colField_p(0);
   newField_p=ToBool(lastField_p!=curField_p);

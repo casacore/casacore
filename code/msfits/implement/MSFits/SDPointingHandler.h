@@ -34,9 +34,9 @@
 #include <aips/Arrays/Matrix.h>
 
 //# Forward Declarations
-class NewMeasurementSet;
-class NewMSPointing;
-class NewMSPointingColumns;
+class MeasurementSet;
+class MSPointing;
+class MSPointingColumns;
 class Record;
 
 template <class T> class Vector;
@@ -90,7 +90,7 @@ public:
     SDPointingHandler();
 
     // attach this to a MS, mark fields row which are handled here
-    SDPointingHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDPointingHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDPointingHandler(const SDPointingHandler &other);
@@ -101,7 +101,7 @@ public:
     SDPointingHandler &operator=(const SDPointingHandler &other);
 
     // attach to a MS, mark fields in row which are handled here
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &);
@@ -124,8 +124,8 @@ public:
     const Matrix<Double> &directionPoly() {return directionPoly_p;}
     Double time() {return time_p;}
 private:
-    NewMSPointing *msPointing_p;
-    NewMSPointingColumns *msPointingCols_p;
+    MSPointing *msPointing_p;
+    MSPointingColumns *msPointingCols_p;
 
     Int antId_p, ntimes_p;
     Double time_p, minTime_p, maxTime_p;
@@ -150,7 +150,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // initialize everythign which depends on row
     void initRow(Vector<Bool> &handledCols, const Record &row);

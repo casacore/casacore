@@ -1,4 +1,4 @@
-//# NewMSSelUtil.h: this defines NewMSSelUtil, a helper class for NewMSSelector
+//# MSSelUtil.h: this defines MSSelUtil, a helper class for MSSelector
 //# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,23 +26,23 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSSELUTIL_H)
-#define TRIAL_NEWMSSELUTIL_H
+#if !defined(TRIAL_MSSELUTIL_H)
+#define TRIAL_MSSELUTIL_H
 
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Mathematics/Complex.h>
 
 // <summary> 
-// Helper class for NewMSFlagger with templated static function
+// Helper class for MSFlagger with templated static function
 // </summary>
 // <synopsis> 
-// Helper class for NewMSFlagger/DOms with templated static function to difference
+// Helper class for MSFlagger/DOms with templated static function to difference
 // data in one of two directions.
 // </synopsis> 
 //<visibility=local>
 
-template <class T> class NewMSSelUtil
+template <class T> class MSSelUtil
 {
 public:
   // Compute the absolute difference of the data, subtracting
@@ -61,14 +61,14 @@ public:
 };
 
 // <summary> 
-// Helper class for NewMSSelector/DOms with templated static functions
+// Helper class for MSSelector/DOms with templated static functions
 // </summary>
 // <synopsis> 
-// Helper class for NewMSSelector/DOms with templated static functions to 
+// Helper class for MSSelector/DOms with templated static functions to 
 // reorder data to include or exclude an interferometer axis.
 // </synopsis> 
 //<visibility=local>
-template <class T> class NewMSSelUtil2
+template <class T> class MSSelUtil2
 {
   public:
   // reorder data from 3d (corr,chan,row) to 4d (corr,chan,ifr,time)

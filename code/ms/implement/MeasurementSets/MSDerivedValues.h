@@ -1,4 +1,4 @@
-//# NewMSDerivedValues.h: a server for values derived from a MS (e.g. P.A.)
+//# MSDerivedValues.h: a server for values derived from a MS (e.g. P.A.)
 //# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSDERIVEDVALUES_H)
-#define TRIAL_NEWMSDERIVEDVALUES_H
+#if !defined(TRIAL_MSDERIVEDVALUES_H)
+#define TRIAL_MSDERIVEDVALUES_H
 
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
@@ -38,11 +38,11 @@
 #include <aips/Measures/MPosition.h>
 
 //# Forward Declarations
-class RONewMSAntennaColumns;
+class ROMSAntennaColumns;
 class String;
 
 // <summary>
-// NewMSDerivedValues calculates values derived from a MS
+// MSDerivedValues calculates values derived from a MS
 // </summary>
 
 // <use visibility=export>
@@ -57,11 +57,11 @@ class String;
 // </prerequisite>
 //
 // <etymology>
-// NewMSDerivedValues calculates values derived from those in a MS
+// MSDerivedValues calculates values derived from those in a MS
 // </etymology>
 //
 // <synopsis>
-// NewMSDerivedValues is a class that computes values derived from those present
+// MSDerivedValues is a class that computes values derived from those present
 // in a MeasurementSet. E.g., calculate feed position angles on the sky from
 // time, antenna positions and feed characteristics.
 // </synopsis>
@@ -71,14 +71,14 @@ class String;
 // // calculate the parallactic angle and the observatory velocity for the
 // // first time and first source in the MS.
 // // set up 
-// NewMSDerivedValues msd;
+// MSDerivedValues msd;
 // MS myMS("myMS");
-// RONewMSColumns msc(myMS);
+// ROMSColumns msc(myMS);
 // msd.setAntennas(msc.antenna());
-// MEpoch ep=NewMS::epochMeasure(msc.time());
+// MEpoch ep=MS::epochMeasure(msc.time());
 // ep.set(MVEpoch(Quantity(msc.time()(0),"s")));
 // msd.setEpoch(ep);
-// MDirection dir=NewMS::directionMeasure(msc.field().phaseDir());
+// MDirection dir=MS::directionMeasure(msc.field().phaseDir());
 // dir.set(MVDirection(Vector<Double>(msc.field().phaseDir()(0))));
 // msd.setFieldCenter(dir);
 // msd.setVelocityFrame(MRadialVelocity::LSRK);
@@ -104,46 +104,46 @@ class String;
 //   <li> probably needs speeding up
 // </todo>
 
-class NewMSDerivedValues
+class MSDerivedValues
 {
 public:
-  NewMSDerivedValues();
-  ~NewMSDerivedValues();
+  MSDerivedValues();
+  ~MSDerivedValues();
 
   // Copy constructor, this will initialize with other's MS
-  NewMSDerivedValues(const NewMSDerivedValues& other);
+  MSDerivedValues(const MSDerivedValues& other);
   
   // Assignment, this will initialize with other's MS
-  NewMSDerivedValues& operator=(const NewMSDerivedValues& other);
+  MSDerivedValues& operator=(const MSDerivedValues& other);
   
   // Set antenna position from an antenna table
   // Returns the number of antennas. Also
   // sets the observatory position to the average of the antenna positions.
-  Int setAntennas(const RONewMSAntennaColumns& ac);
+  Int setAntennas(const ROMSAntennaColumns& ac);
 
   // Set antenna positions, index in vector is antenna number
   // for calls below.
-  NewMSDerivedValues& setAntennaPositions(const Vector<MPosition>& antPosition);
+  MSDerivedValues& setAntennaPositions(const Vector<MPosition>& antPosition);
   
   // Set the observatory position. Note that setAntennas will reset this.
-  NewMSDerivedValues& setObservatoryPosition(const MPosition& obsPosition);
+  MSDerivedValues& setObservatoryPosition(const MPosition& obsPosition);
 
   // Set antenna mounts, should have same number of entries as
   // antPosition in setAntennaPosition
-  NewMSDerivedValues& setAntennaMount(const Vector<String>& mount);
+  MSDerivedValues& setAntennaMount(const Vector<String>& mount);
   
   // Set epoch
-  NewMSDerivedValues& setEpoch(const MEpoch& time);
+  MSDerivedValues& setEpoch(const MEpoch& time);
 
   // Set field center
-  NewMSDerivedValues& setFieldCenter(const MDirection& fieldCenter);
+  MSDerivedValues& setFieldCenter(const MDirection& fieldCenter);
 
   // Set antenna index, sets the position reference for the conversions. 
   // Use -1 to set the reference frame to the observatory position.
-  NewMSDerivedValues& setAntenna(Int antenna);
+  MSDerivedValues& setAntenna(Int antenna);
 
   // Set the velocity frame type (e.g., MRadialVelocity::LSRK) 
-  NewMSDerivedValues& setVelocityFrame(MRadialVelocity::Types vType);
+  MSDerivedValues& setVelocityFrame(MRadialVelocity::Types vType);
 
   // get hour angle
   Double hourAngle();

@@ -1,4 +1,4 @@
-//# NewMSSourceIndex: index into a MeasurementSet SOURCE subtable
+//# MSSourceIndex: index into a MeasurementSet SOURCE subtable
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSSOURCEINDEX_H)
-#define AIPS_NEWMSSOURCEINDEX_H
+#if !defined(AIPS_MSSOURCEINDEX_H)
+#define AIPS_MSSOURCEINDEX_H
 
-#include <trial/MeasurementSets/NewMSTableIndex.h>
+#include <trial/MeasurementSets/MSTableIndex.h>
 
 #include <aips/Containers/RecordField.h>
 
 //# forward declarations
-class NewMSSource;
+class MSSource;
 
 // <summary>
 // </summary>
@@ -46,7 +46,7 @@ class NewMSSource;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> NewMSTableIndex
+//   <li> MSTableIndex
 // </prerequisite>
 //
 // <etymology>
@@ -67,23 +67,23 @@ class NewMSSource;
 // </thrown>
 //
 
-class NewMSSourceIndex : public NewMSTableIndex
+class MSSourceIndex : public MSTableIndex
 {
 public:
     // no index attached, use the attach function or assignment operator to change that
-  NewMSSourceIndex();
+  MSSourceIndex();
 
   // construct one using the indicated SOURCE table
-  NewMSSourceIndex(const NewMSSource &source);
+  MSSourceIndex(const MSSource &source);
 
   // construct one from another
-  NewMSSourceIndex(const NewMSSourceIndex &other);
+  MSSourceIndex(const MSSourceIndex &other);
 
-  virtual ~NewMSSourceIndex();
+  virtual ~MSSourceIndex();
 
-  virtual NewMSSourceIndex &operator=(const NewMSSourceIndex &other);
+  virtual MSSourceIndex &operator=(const MSSourceIndex &other);
 
-  virtual void attach(const NewMSSource &source);
+  virtual void attach(const MSSource &source);
 
   // access to the source ID key, throws an exception if isNull() is False
   Int &sourceId() {return *sourceId_p;}

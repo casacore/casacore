@@ -1,4 +1,4 @@
-//# NewMSFitsInput:  simple uvfits (random group) to NewMeasurementSet conversion
+//# MSFitsInput:  simple uvfits (random group) to MeasurementSet conversion
 //# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSFITSINPUT_H)
-#define TRIAL_NEWMSFITSINPUT_H
+#if !defined(TRIAL_MSFITSINPUT_H)
+#define TRIAL_MSFITSINPUT_H
 
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/FITS/hdu.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Utilities/String.h>
 
@@ -41,7 +41,7 @@ template<class T> class PrimaryGroup;
 class BinaryTable;
 
 // <summary>
-// A helper class for NewMSFitsInput
+// A helper class for MSFitsInput
 // </summary>
 // <use visibility=local>
 // <etymology>
@@ -52,20 +52,20 @@ class BinaryTable;
 // template type of the primary group
 // It forwards all the PrimaryGroup member functions we need in the filler.
 // </synopsis>
-class NewMSPrimaryGroupHolder
+class MSPrimaryGroupHolder
 {
   // This is a helper class to avoid cumbersome switch statements on the
   // template type of the primary group
   // It forwards all the PrimaryGroup member function we need in the filler.
 public:
   // Construct an empty holder, used to attach to later
-  NewMSPrimaryGroupHolder();
+  MSPrimaryGroupHolder();
 
   // Construct from an input file containing a FITS primary group hdu.
   // Throws an exception if the datatype is not Short, FitsLong or Float
-  NewMSPrimaryGroupHolder(FitsInput& infile);
+  MSPrimaryGroupHolder(FitsInput& infile);
 
-  ~NewMSPrimaryGroupHolder();
+  ~MSPrimaryGroupHolder();
 
   // Attach to the input file, create the appropriate PrimaryGroup.
   // Throws an exception if the datatype is not Short, FitsLong or Float
@@ -144,7 +144,7 @@ private:
 };
 
 // <summary>
-// UV FITS to NewMeasurementSet filler
+// UV FITS to MeasurementSet filler
 // </summary>
 
 // <use visibility=export>
@@ -155,11 +155,11 @@ private:
 // </prerequisite>
 //
 // <etymology>
-// NewMSFitsInput handles the conversion of FITS files to MeasurementSets
+// MSFitsInput handles the conversion of FITS files to MeasurementSets
 // </etymology>
 //
 // <synopsis>
-// UV FITS to NewMeasurementSet filler. This can handle single source fits and
+// UV FITS to MeasurementSet filler. This can handle single source fits and
 // multi source fits as written by classic AIPS. Also copes with multiple
 // arrays (i.e. multiple AN tables) but doesn't correct for 5 day offsets
 // introduced by DBCON.
@@ -169,15 +169,15 @@ private:
 //   <li> So far we interpret AN, FQ and SU tables only
 // </todo>
 
-class NewMSFitsInput
+class MSFitsInput
 {
   // This is an implementation helper class used to store 'local' data
   // during the filling process.
 public:
   // Create from output and input file names
-  NewMSFitsInput(const String& msFile, const String& fitsFile);
+  MSFitsInput(const String& msFile, const String& fitsFile);
 
-  ~NewMSFitsInput();
+  ~MSFitsInput();
 
   // Has the filler been constructed ok? If false, do not use any other
   // member functions.
@@ -199,7 +199,7 @@ protected:
   // Set up the MeasurementSet, including StorageManagers and fixed columns.
   // If useTSM is True, the Tiled Storage Manager will be used to store
   // DATA, FLAG and WEIGHT_SPECTRUM
-  void setupMeasurementSet(const String& NewMSFileName, Bool useTSM=True);
+  void setupMeasurementSet(const String& MSFileName, Bool useTSM=True);
 
   // Fill the Observation and ObsLog tables
   void fillObsTables();
@@ -232,10 +232,10 @@ protected:
 private:
   FitsInput* infile_p;
   String msFile_p;
-  NewMSPrimaryGroupHolder priGroup_p;
+  MSPrimaryGroupHolder priGroup_p;
   Bool ok_p;
-  NewMeasurementSet ms_p;
-  NewMSColumns* msc_p;
+  MeasurementSet ms_p;
+  MSColumns* msc_p;
   Int nAxis_p, nIF_p;
   Vector<Int> nPixel_p,corrType_p;
   Block<Int> corrIndex_p;

@@ -28,9 +28,9 @@
 //# Includes
 #include <trial/MeasurementSets/SDPointingHandler.h>
 
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSPointingColumns.h>
-#include <aips/MeasurementSets/NewMSPointing.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSPointingColumns.h>
+#include <aips/MeasurementSets/MSPointing.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -49,7 +49,7 @@ SDPointingHandler::SDPointingHandler()
       minTime_p(0.0), maxTime_p(0.0), directionRate_p(2), name_p(""), rownr_p(-1)
 {;}
 
-SDPointingHandler::SDPointingHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+SDPointingHandler::SDPointingHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				     const Record &row) 
     : msPointing_p(0), msPointingCols_p(0), antId_p(-1), time_p(0.0),
       minTime_p(0.0), maxTime_p(0.0), directionRate_p(2), name_p(""), rownr_p(-1)
@@ -68,9 +68,9 @@ SDPointingHandler &SDPointingHandler::operator=(const SDPointingHandler &other)
 {
     if (this != &other) {
 	clearAll();
-	msPointing_p = new NewMSPointing(*(other.msPointing_p));
+	msPointing_p = new MSPointing(*(other.msPointing_p));
 	AlwaysAssert(msPointing_p, AipsError);
-	msPointingCols_p = new NewMSPointingColumns(*msPointing_p);
+	msPointingCols_p = new MSPointingColumns(*msPointing_p);
 	AlwaysAssert(msPointingCols_p, AipsError);
 	antId_p = other.antId_p;
 	time_p = other.time_p;
@@ -86,7 +86,7 @@ SDPointingHandler &SDPointingHandler::operator=(const SDPointingHandler &other)
     return *this;
 }
 
-void SDPointingHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+void SDPointingHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, 
 			       const Record &row)
 {
     clearAll();
@@ -198,13 +198,13 @@ void SDPointingHandler::clearRow()
     pointingDirRateField_p.detach();
 }
 
-void SDPointingHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+void SDPointingHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
 				const Record &row)
 {
-    msPointing_p = new NewMSPointing(ms.pointing());
+    msPointing_p = new MSPointing(ms.pointing());
     AlwaysAssert(msPointing_p, AipsError);
 
-    msPointingCols_p = new NewMSPointingColumns(*msPointing_p);
+    msPointingCols_p = new MSPointingColumns(*msPointing_p);
     AlwaysAssert(msPointingCols_p, AipsError);
 
     antId_p = -1;

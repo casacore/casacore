@@ -28,9 +28,9 @@
 //# Includes
 #include <trial/MeasurementSets/SDHistoryHandler.h>
 
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSHistoryColumns.h>
-#include <aips/MeasurementSets/NewMSHistory.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSHistoryColumns.h>
+#include <aips/MeasurementSets/MSHistory.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -45,7 +45,7 @@ SDHistoryHandler::SDHistoryHandler()
     : msHis_p(0), msHisCols_p(0)
 {;}
 
-SDHistoryHandler::SDHistoryHandler(NewMeasurementSet &ms, const Vector<Bool> &handledCols,
+SDHistoryHandler::SDHistoryHandler(MeasurementSet &ms, const Vector<Bool> &handledCols,
 				   const Record &row) 
     : msHis_p(0), msHisCols_p(0)
 {
@@ -62,16 +62,16 @@ SDHistoryHandler &SDHistoryHandler::operator=(const SDHistoryHandler &other)
 {
     if (this != &other) {
 	clearAll();
-	msHis_p = new NewMSHistory(*(other.msHis_p));
+	msHis_p = new MSHistory(*(other.msHis_p));
 	AlwaysAssert(msHis_p, AipsError);
-	msHisCols_p = new NewMSHistoryColumns(*msHis_p);
+	msHisCols_p = new MSHistoryColumns(*msHis_p);
 	AlwaysAssert(msHisCols_p, AipsError);
 	timesys_p = other.timesys_p;
     }
     return *this;
 }
 
-void SDHistoryHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+void SDHistoryHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, 
 			      const Record &row)
 {
     clearAll();
@@ -125,13 +125,13 @@ void SDHistoryHandler::clearRow()
     timesys_p.detach();
 }
 
-void SDHistoryHandler::initAll(NewMeasurementSet &ms, const Vector<Bool> &handledCols,
+void SDHistoryHandler::initAll(MeasurementSet &ms, const Vector<Bool> &handledCols,
 			       const Record &row)
 {
-    msHis_p = new NewMSHistory(ms.history());
+    msHis_p = new MSHistory(ms.history());
     AlwaysAssert(msHis_p, AipsError);
 
-    msHisCols_p = new NewMSHistoryColumns(*msHis_p);
+    msHisCols_p = new MSHistoryColumns(*msHis_p);
     AlwaysAssert(msHisCols_p, AipsError);
 
     initRow(handledCols, row);

@@ -29,9 +29,9 @@
 #include <trial/MeasurementSets/SDPolarizationHandler.h>
 
 #include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSPolColumns.h>
-#include <aips/MeasurementSets/NewMSPolarization.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSPolColumns.h>
+#include <aips/MeasurementSets/MSPolarization.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -47,7 +47,7 @@ SDPolarizationHandler::SDPolarizationHandler()
     : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1)
 {;}
 
-SDPolarizationHandler::SDPolarizationHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
+SDPolarizationHandler::SDPolarizationHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
     : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1)
 {
     initAll(ms, handledCols, row);
@@ -68,10 +68,10 @@ SDPolarizationHandler &SDPolarizationHandler::operator=(const SDPolarizationHand
 	// need to avoid the assignment operator here because we want
 	// this to point to the field in index_p, not in other.index_p
 	numCorrKey_p.attachToRecord(index_p->accessKey(),
-				    NewMSPolarization::columnName(NewMSPolarization::NUM_CORR));
-	msPol_p = new NewMSPolarization(*(other.msPol_p));
+				    MSPolarization::columnName(MSPolarization::NUM_CORR));
+	msPol_p = new MSPolarization(*(other.msPol_p));
 	AlwaysAssert(msPol_p, AipsError);
-	msPolCols_p = new NewMSPolarizationColumns(*msPol_p);
+	msPolCols_p = new MSPolarizationColumns(*msPol_p);
 	AlwaysAssert(msPolCols_p, AipsError);
 	rownr_p = other.rownr_p;
 	numCorrField_p = other.numCorrField_p;
@@ -81,7 +81,7 @@ SDPolarizationHandler &SDPolarizationHandler::operator=(const SDPolarizationHand
     return *this;
 }
 
-void SDPolarizationHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDPolarizationHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -176,20 +176,20 @@ void SDPolarizationHandler::clearRow()
     corrProductField_p.detach();
 }
 
-void SDPolarizationHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDPolarizationHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
-    msPol_p = new NewMSPolarization(ms.polarization());
+    msPol_p = new MSPolarization(ms.polarization());
     AlwaysAssert(msPol_p, AipsError);
 
-    msPolCols_p = new NewMSPolarizationColumns(*msPol_p);
+    msPolCols_p = new MSPolarizationColumns(*msPol_p);
     AlwaysAssert(msPolCols_p, AipsError);
 
     index_p = new ColumnsIndex(*msPol_p, 
-			       NewMSPolarization::columnName(NewMSPolarization::NUM_CORR));
+			       MSPolarization::columnName(MSPolarization::NUM_CORR));
     AlwaysAssert(index_p, AipsError);
     
     numCorrKey_p.attachToRecord(index_p->accessKey(),
-				NewMSPolarization::columnName(NewMSPolarization::NUM_CORR));
+				MSPolarization::columnName(MSPolarization::NUM_CORR));
 
     initRow(handledCols, row);
 }

@@ -1,4 +1,4 @@
-//# NewMSPointingIndex.cc:  this defined NewMSPointingIndex
+//# MSPointingIndex.cc:  this defined MSPointingIndex
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,42 +25,42 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSPointingIndex.h>
+#include <trial/MeasurementSets/MSPointingIndex.h>
 
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/NewMSPointing.h>
+#include <aips/MeasurementSets/MSPointing.h>
 
-NewMSPointingIndex::NewMSPointingIndex() 
-    : NewMSTableIndex()
+MSPointingIndex::MSPointingIndex() 
+    : MSTableIndex()
 {;}
 
-NewMSPointingIndex::NewMSPointingIndex(const NewMSPointing &pointing)
-    : NewMSTableIndex(pointing, stringToVector("ANTENNA_ID"))
+MSPointingIndex::MSPointingIndex(const MSPointing &pointing)
+    : MSTableIndex(pointing, stringToVector("ANTENNA_ID"))
 { attachIds();}
 
-NewMSPointingIndex::NewMSPointingIndex(const NewMSPointingIndex &other)
-    : NewMSTableIndex(other)
+MSPointingIndex::MSPointingIndex(const MSPointingIndex &other)
+    : MSTableIndex(other)
 { attachIds();}
 
-NewMSPointingIndex::~NewMSPointingIndex()
+MSPointingIndex::~MSPointingIndex()
 {;}
 
-NewMSPointingIndex &NewMSPointingIndex::operator=(const NewMSPointingIndex &other)
+MSPointingIndex &MSPointingIndex::operator=(const MSPointingIndex &other)
 {
     if (this != &other) {
-	NewMSTableIndex::operator=(other);
+	MSTableIndex::operator=(other);
 	attachIds();
     }
     return *this;
 }
 
-void NewMSPointingIndex::attach(const NewMSPointing &pointing)
+void MSPointingIndex::attach(const MSPointing &pointing)
 {
-    NewMSTableIndex::attach(pointing, stringToVector("ANTENNA_ID"));
+    MSTableIndex::attach(pointing, stringToVector("ANTENNA_ID"));
     attachIds();
 }
 
-void NewMSPointingIndex::attachIds()
+void MSPointingIndex::attachIds()
 {
     antennaId_p.attachToRecord(accessKey(), "ANTENNA_ID");
 }

@@ -1,4 +1,4 @@
-//# NewMSFeedIndex: index into a MeasurementSet FEED subtable
+//# MSFeedIndex: index into a MeasurementSet FEED subtable
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSFEEDINDEX_H)
-#define AIPS_NEWMSFEEDINDEX_H
+#if !defined(AIPS_MSFEEDINDEX_H)
+#define AIPS_MSFEEDINDEX_H
 
-#include <trial/MeasurementSets/NewMSTableIndex.h>
+#include <trial/MeasurementSets/MSTableIndex.h>
 
 #include <aips/Containers/RecordField.h>
 
 //# forward declarations
-class NewMSFeed;
+class MSFeed;
 
 // <summary>
 // </summary>
@@ -46,7 +46,7 @@ class NewMSFeed;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> NewMSTableIndex
+//   <li> MSTableIndex
 // </prerequisite>
 //
 // <etymology>
@@ -67,23 +67,23 @@ class NewMSFeed;
 // </thrown>
 //
 
-class NewMSFeedIndex : public NewMSTableIndex
+class MSFeedIndex : public MSTableIndex
 {
 public:
     // no index attached, use the attach function or assignment operator to change that
-  NewMSFeedIndex();
+  MSFeedIndex();
 
   // construct one using the indicated FEED table
-  NewMSFeedIndex(const NewMSFeed &feed);
+  MSFeedIndex(const MSFeed &feed);
 
   // construct one from another
-  NewMSFeedIndex(const NewMSFeedIndex &other);
+  MSFeedIndex(const MSFeedIndex &other);
 
-  virtual ~NewMSFeedIndex();
+  virtual ~MSFeedIndex();
 
-  virtual NewMSFeedIndex &operator=(const NewMSFeedIndex &other);
+  virtual MSFeedIndex &operator=(const MSFeedIndex &other);
 
-  virtual void attach(const NewMSFeed &feed);
+  virtual void attach(const MSFeed &feed);
 
   // access to the antenna ID key, throws an exception if isNull() is False
   Int &antennaId() {return *antennaId_p;}

@@ -1,4 +1,4 @@
-//# NewMSFitsOutput.h:  Write a NewMeasurementSet to a random group uvfits file
+//# MSFitsOutput.h:  Write a MeasurementSet to a random group uvfits file
 //# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSFITSOUTPUT_H)
-#define TRIAL_NEWMSFITSOUTPUT_H
+#if !defined(TRIAL_MSFITSOUTPUT_H)
+#define TRIAL_MSFITSOUTPUT_H
 
 //# Includes
 #include <aips/aips.h>
@@ -34,26 +34,26 @@
 //# Forward Declarations
 class String;
 class FitsOutput;
-class NewMeasurementSet;
+class MeasurementSet;
 class Table;
 template<class T> class Block;
 template<class T> class Vector;
 
 
 // <summary>
-// Write a NewMeasurementSet to a random group uvfits file.
+// Write a MeasurementSet to a random group uvfits file.
 // </summary>
 
-class NewMSFitsOutput
+class MSFitsOutput
 {
 public:
-  // Convert a NewMeasurementSet to random group UVFITS,
+  // Convert a MeasurementSet to random group UVFITS,
   // specifying the column to write ("observed", "calibrated", "model") and
   // whether to write the system calibration table.
   // <br>If asMultiSource=True a multi-source UVFits file is written.
   // <br>If combineSpw=True, all spectral-windows of a frequency group
   // are combined.
-  static Bool writeFitsFile(const String& fitsfile, const NewMeasurementSet& ms,
+  static Bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms,
 			    const String& column, Bool writeSysCal = False,
 			    Bool asMultiSource = False, Bool combineSpw=False,
 			    Double sensitivity = 1.0);
@@ -64,7 +64,7 @@ private:
   static FitsOutput *writeMain(Int& refPixelFreq, Double& refFreq,
 			       Double& chanbw,
 			       const String& outFITSFile,
-			       const NewMeasurementSet& rawms,
+			       const MeasurementSet& rawms,
 			       const String& column,
 			       const Block<Int>& spwidMap,
 			       const Block<Int>& fieldidMap,
@@ -74,25 +74,25 @@ private:
   // Write the FQ table.
   // If combineSpw is True, all spectral-windows are written in one
   // row of the FITS table.
-  static Bool writeFQ(FitsOutput *output, const NewMeasurementSet& ms, 
+  static Bool writeFQ(FitsOutput *output, const MeasurementSet& ms, 
 		      const Block<Int>& spwidMap, Int nrspw,
 		      Double refFreq, Int refPixelFreq, Bool combineSpw);
 
   // Write the AN table.
-  static Bool writeAN(FitsOutput *output, const NewMeasurementSet& ms,
+  static Bool writeAN(FitsOutput *output, const MeasurementSet& ms,
 		      Double refFreq);
 
   // Write the SU table.
-  static Bool writeSU(FitsOutput *output, const NewMeasurementSet& ms,
+  static Bool writeSU(FitsOutput *output, const MeasurementSet& ms,
 		      const Block<Int>& fieldidMap, uInt nrfield);
 
   // Write the TY table.
-  static Bool writeTY(FitsOutput *output, const NewMeasurementSet& ms,
+  static Bool writeTY(FitsOutput *output, const MeasurementSet& ms,
 		      const Table& syscal, const Block<Int>& spwidMap,
 		      uInt nrif, Bool combineSpw);
 
   // Write the GC table.
-  static Bool writeGC(FitsOutput *output, const NewMeasurementSet& ms,
+  static Bool writeGC(FitsOutput *output, const MeasurementSet& ms,
 		      const Table& syscal, const Block<Int>& spwidMap,
 		      Double sensitivity,
 		      Int refPixelFreq, Double refFreq, Double chanbw);
@@ -103,11 +103,11 @@ private:
   // Get the time and hourangle from the MS at the given row.
   // It uses the field-id and observation-id to calculate the hourangle.
   static void getStartHA (Double& startTime, Double& startHA,
-			  const NewMeasurementSet& ms, uInt rownr);
+			  const MeasurementSet& ms, uInt rownr);
 
   // Handle the SYSCAL table.
   // It skips the entries not needed and sorts it in the correct order.
-  static Table handleSysCal (const NewMeasurementSet& ms,
+  static Table handleSysCal (const MeasurementSet& ms,
 			     const Vector<Int>& spwids, Bool isSubset);
 
   // Determine which ids are selected in the main table

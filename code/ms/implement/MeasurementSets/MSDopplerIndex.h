@@ -1,4 +1,4 @@
-//# NewMSDopplerIndex: index into a MeasurementSet DOPPLER subtable
+//# MSDopplerIndex: index into a MeasurementSet DOPPLER subtable
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSDOPPLERINDEX_H)
-#define AIPS_NEWMSDOPPLERINDEX_H
+#if !defined(AIPS_MSDOPPLERINDEX_H)
+#define AIPS_MSDOPPLERINDEX_H
 
-#include <trial/MeasurementSets/NewMSTableIndex.h>
+#include <trial/MeasurementSets/MSTableIndex.h>
 
 #include <aips/Containers/RecordField.h>
 
 //# forward declarations
-class NewMSDoppler;
+class MSDoppler;
 
 // <summary>
 // </summary>
@@ -46,7 +46,7 @@ class NewMSDoppler;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> NewMSTableIndex
+//   <li> MSTableIndex
 // </prerequisite>
 //
 // <etymology>
@@ -67,23 +67,23 @@ class NewMSDoppler;
 // </thrown>
 //
 
-class NewMSDopplerIndex : public NewMSTableIndex
+class MSDopplerIndex : public MSTableIndex
 {
 public:
     // no index attached, use the attach function or assignment operator to change that
-  NewMSDopplerIndex();
+  MSDopplerIndex();
 
   // construct one using the indicated DOPPLER table
-  NewMSDopplerIndex(const NewMSDoppler &doppler);
+  MSDopplerIndex(const MSDoppler &doppler);
 
   // construct one from another
-  NewMSDopplerIndex(const NewMSDopplerIndex &other);
+  MSDopplerIndex(const MSDopplerIndex &other);
 
-  virtual ~NewMSDopplerIndex();
+  virtual ~MSDopplerIndex();
 
-  virtual NewMSDopplerIndex &operator=(const NewMSDopplerIndex &other);
+  virtual MSDopplerIndex &operator=(const MSDopplerIndex &other);
 
-  virtual void attach(const NewMSDoppler &doppler);
+  virtual void attach(const MSDoppler &doppler);
 
   // access to the doppler ID key, throws an exception if isNull() is False
   Int &dopplerId() {return *dopplerId_p;}

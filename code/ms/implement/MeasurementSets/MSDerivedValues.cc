@@ -1,4 +1,4 @@
-//# NewMSDerivedValues.cc: Calculate values derived from a MS
+//# MSDerivedValues.cc: Calculate values derived from a MS
 //# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,28 +25,28 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSDerivedValues.h>
+#include <trial/MeasurementSets/MSDerivedValues.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Logging/LogMessage.h>
 #include <aips/Logging/LogSink.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-NewMSDerivedValues::NewMSDerivedValues() 
+MSDerivedValues::MSDerivedValues() 
 {
   init();
 }
 
-NewMSDerivedValues::NewMSDerivedValues(const NewMSDerivedValues& other)
+MSDerivedValues::MSDerivedValues(const MSDerivedValues& other)
 {
   operator=(other);
 }
 
-NewMSDerivedValues::~NewMSDerivedValues() {}
+MSDerivedValues::~MSDerivedValues() {}
 
-NewMSDerivedValues& 
-NewMSDerivedValues::operator=(const NewMSDerivedValues& other) 
+MSDerivedValues& 
+MSDerivedValues::operator=(const MSDerivedValues& other) 
 {
   antenna_p=other.antenna_p;
   // should copy all data here, for now, just init
@@ -54,7 +54,7 @@ NewMSDerivedValues::operator=(const NewMSDerivedValues& other)
   return *this;
 }
 
-Int NewMSDerivedValues::setAntennas(const RONewMSAntennaColumns& ac)
+Int MSDerivedValues::setAntennas(const ROMSAntennaColumns& ac)
 {
   Int nAnt=ac.position().nrow();
 
@@ -76,7 +76,7 @@ Int NewMSDerivedValues::setAntennas(const RONewMSAntennaColumns& ac)
   return nAnt;
 }
 
-NewMSDerivedValues& NewMSDerivedValues::setAntennaPositions(const Vector<MPosition>&
+MSDerivedValues& MSDerivedValues::setAntennaPositions(const Vector<MPosition>&
 						      antPosition)
 {
   Int nAnt=antPosition.nelements();
@@ -94,7 +94,7 @@ NewMSDerivedValues& NewMSDerivedValues::setAntennaPositions(const Vector<MPositi
   return *this;
 }
 
-NewMSDerivedValues& NewMSDerivedValues::setObservatoryPosition(const MPosition&
+MSDerivedValues& MSDerivedValues::setObservatoryPosition(const MPosition&
 							 obsPosition)
 {
   mObsPos_p=obsPosition;
@@ -102,7 +102,7 @@ NewMSDerivedValues& NewMSDerivedValues::setObservatoryPosition(const MPosition&
   return *this;
 }
 
-NewMSDerivedValues& NewMSDerivedValues::setAntennaMount(const Vector<String>& mount)
+MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
 {
   Int nAnt=mount.nelements();
   if (nAnt>0) {
@@ -113,20 +113,20 @@ NewMSDerivedValues& NewMSDerivedValues::setAntennaMount(const Vector<String>& mo
       else if (mount(i)=="X-Y") mount_p(i)=2;
       else if (mount(i)=="orbiting") mount_p(i)=3;
       else if (mount(i)=="bizarre") mount_p(i)=4;
-      else throw(AipsError("NewMSDerivedValues::setAntennaMount() - "
+      else throw(AipsError("MSDerivedValues::setAntennaMount() - "
 			   "Unrecognized mount type"));
     }
   }
   return *this;
 }
-NewMSDerivedValues& NewMSDerivedValues::setEpoch(const MEpoch& time)
+MSDerivedValues& MSDerivedValues::setEpoch(const MEpoch& time)
 {
   cUTCToLAST_p.setModel(time);
   fAntFrame_p.resetEpoch(time);
   return *this;
 }
 
-NewMSDerivedValues& NewMSDerivedValues::setFieldCenter(const MDirection& fieldCenter)
+MSDerivedValues& MSDerivedValues::setFieldCenter(const MDirection& fieldCenter)
 {
   cRADecToAzEl_p.setModel(fieldCenter);
   cRADecToHADec_p.setModel(fieldCenter);
@@ -135,7 +135,7 @@ NewMSDerivedValues& NewMSDerivedValues::setFieldCenter(const MDirection& fieldCe
   return *this;
 }
 
-NewMSDerivedValues& NewMSDerivedValues::setAntenna(Int antenna)
+MSDerivedValues& MSDerivedValues::setAntenna(Int antenna)
 {
   DebugAssert(antenna>=-1,AipsError);
   DebugAssert(antenna<Int(mAntPos_p.nelements()),AipsError);
@@ -151,7 +151,7 @@ NewMSDerivedValues& NewMSDerivedValues::setAntenna(Int antenna)
 }
 
 // compute parallactic angle.
-Double NewMSDerivedValues::parAngle()
+Double MSDerivedValues::parAngle()
 {
   DebugAssert(mAntPos_p.nelements()==mount_p.nelements(),AipsError);
   // Calculate Parallactic angle for this UT. To do this we find
@@ -179,7 +179,7 @@ Double NewMSDerivedValues::parAngle()
   } else if (mount_p(antenna_p)==1) {
     // nothing to do for equatorial mounts, pa is always 0
   } else {
-    LogMessage message(LogOrigin("NewMSDerivedValues","parAngle"));
+    LogMessage message(LogOrigin("MSDerivedValues","parAngle"));
     LogSink logSink;
     message.message("unhandled mount type");
     message.priority(LogMessage::SEVERE);
@@ -188,33 +188,33 @@ Double NewMSDerivedValues::parAngle()
   return pa;
 }
 
-NewMSDerivedValues& NewMSDerivedValues::setVelocityFrame(MRadialVelocity::Types vType)
+MSDerivedValues& MSDerivedValues::setVelocityFrame(MRadialVelocity::Types vType)
 {
   cTOPOToLSR_p.setOut(vType);
   return *this;
 }
 
-Double NewMSDerivedValues::hourAngle() 
+Double MSDerivedValues::hourAngle() 
 {
   return cRADecToHADec_p().getValue().get()(0);
 }
 
-const MDirection& NewMSDerivedValues::azel()
+const MDirection& MSDerivedValues::azel()
 {
   return cRADecToAzEl_p();
 }
 
-const MEpoch& NewMSDerivedValues::last()
+const MEpoch& MSDerivedValues::last()
 {
   return cUTCToLAST_p();
 }
 
-const MRadialVelocity& NewMSDerivedValues::obsVel()
+const MRadialVelocity& MSDerivedValues::obsVel()
 {
   return cTOPOToLSR_p();
 }
 
-void NewMSDerivedValues::init() 
+void MSDerivedValues::init() 
 {
   // Set up the frame for epoch and antenna position. We will
   // adjust this to effect the coordinate transformations

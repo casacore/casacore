@@ -29,9 +29,9 @@
 #include <trial/MeasurementSets/SDAntennaHandler.h>
 
 #include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSAntennaColumns.h>
-#include <aips/MeasurementSets/NewMSAntenna.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSAntennaColumns.h>
+#include <aips/MeasurementSets/MSAntenna.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/Quantum.h>
@@ -51,7 +51,7 @@ SDAntennaHandler::SDAntennaHandler()
       siteLongFldNum_p(-1), siteLatFldNum_p(-1), siteElevFldNum_p(-1)
 {;}
 
-SDAntennaHandler::SDAntennaHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+SDAntennaHandler::SDAntennaHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				   const Record &row) 
     : index_p(0), msAnt_p(0), msAntCols_p(0), rownr_p(-1),
       siteLongFldNum_p(-1), siteLatFldNum_p(-1), siteElevFldNum_p(-1)
@@ -75,10 +75,10 @@ SDAntennaHandler &SDAntennaHandler::operator=(const SDAntennaHandler &other)
 	// need to avoid the assignment operator here because we want
 	// this to point to the field in index_p, not in other.index_p
 	nameKey_p.attachToRecord(index_p->accessKey(),
-				 NewMSAntenna::columnName(NewMSAntenna::NAME));
-	msAnt_p = new NewMSAntenna(*(other.msAnt_p));
+				 MSAntenna::columnName(MSAntenna::NAME));
+	msAnt_p = new MSAntenna(*(other.msAnt_p));
 	AlwaysAssert(msAnt_p, AipsError);
-	msAntCols_p = new NewMSAntennaColumns(*msAnt_p);
+	msAntCols_p = new MSAntennaColumns(*msAnt_p);
 	AlwaysAssert(msAntCols_p, AipsError);
 	
 	rownr_p = other.rownr_p;
@@ -101,7 +101,7 @@ SDAntennaHandler &SDAntennaHandler::operator=(const SDAntennaHandler &other)
     return *this;
 }
 
-void SDAntennaHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDAntennaHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -268,12 +268,12 @@ void SDAntennaHandler::clearRow()
     rownr_p = -1;
 }
 
-void SDAntennaHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDAntennaHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
-    msAnt_p = new NewMSAntenna(ms.antenna());
+    msAnt_p = new MSAntenna(ms.antenna());
     AlwaysAssert(msAnt_p, AipsError);
 
-    msAntCols_p = new NewMSAntennaColumns(*msAnt_p);
+    msAntCols_p = new MSAntennaColumns(*msAnt_p);
     AlwaysAssert(msAntCols_p, AipsError);
 
     initRow(handledCols, row);
@@ -282,19 +282,19 @@ void SDAntennaHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
     // might be a number of rows and so it will be necessary to check
     // the position at each row before a true match is found
     // Optionally index on other columns as necessary
-    String indxStr = NewMSAntenna::columnName(NewMSAntenna::NAME);
+    String indxStr = MSAntenna::columnName(MSAntenna::NAME);
     
     if (mountField_p.isAttached()) {
 	indxStr += ",";
-	indxStr += NewMSAntenna::columnName(NewMSAntenna::MOUNT);
+	indxStr += MSAntenna::columnName(MSAntenna::MOUNT);
     } 
     if (stationField_p.isAttached()) {
 	indxStr += ",";
-	indxStr += NewMSAntenna::columnName(NewMSAntenna::STATION);
+	indxStr += MSAntenna::columnName(MSAntenna::STATION);
     }
     if (dishDiameterField_p.isAttached()) {
 	indxStr += ",";
-	indxStr += NewMSAntenna::columnName(NewMSAntenna::DISH_DIAMETER);
+	indxStr += MSAntenna::columnName(MSAntenna::DISH_DIAMETER);
     }
     // ORBIT_ID and PHASED_ARRAY_ID are dealt with later, if necessary
     index_p = new ColumnsIndex(*msAnt_p, stringToVector(indxStr));
@@ -302,18 +302,18 @@ void SDAntennaHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
     
 
     nameKey_p.attachToRecord(index_p->accessKey(), 
-			     NewMSAntenna::columnName(NewMSAntenna::NAME));
+			     MSAntenna::columnName(MSAntenna::NAME));
     if (stationField_p.isAttached()) {
 	stationKey_p.attachToRecord(index_p->accessKey(),
-				    NewMSAntenna::columnName(NewMSAntenna::STATION));
+				    MSAntenna::columnName(MSAntenna::STATION));
     }
     if (mountField_p.isAttached()) {
 	mountKey_p.attachToRecord(index_p->accessKey(),
-				  NewMSAntenna::columnName(NewMSAntenna::MOUNT));
+				  MSAntenna::columnName(MSAntenna::MOUNT));
     }
     if (dishDiameterField_p.isAttached()) {
 	dishDiameterKey_p.attachToRecord(index_p->accessKey(),
-					 NewMSAntenna::columnName(NewMSAntenna::DISH_DIAMETER));
+					 MSAntenna::columnName(MSAntenna::DISH_DIAMETER));
     }
     // orbit_id and phased_array_id columns are dealt with elsewhere
 }
@@ -391,36 +391,36 @@ void SDAntennaHandler::addPhasedArrayIdColumn()
 	msAntCols_p = 0;
 	// we need to add a new column to the ANTENNA table
 	TableDesc td;
-	NewMSAntenna::addColumnToDesc(td,NewMSAntenna::PHASED_ARRAY_ID);
+	MSAntenna::addColumnToDesc(td,MSAntenna::PHASED_ARRAY_ID);
 	msAnt_p->addColumn(td[0]);
 	// remake the columns object
-	msAntCols_p = new NewMSAntennaColumns(*msAnt_p);
+	msAntCols_p = new MSAntennaColumns(*msAnt_p);
 	AlwaysAssert(msAntCols_p, AipsError);
 	// and the index
 	indexNames.resize(indexNames.nelements()+1, True);
 	indexNames(indexNames.nelements()-1) = 
-	    NewMSAntenna::columnName(NewMSAntenna::PHASED_ARRAY_ID);
+	    MSAntenna::columnName(MSAntenna::PHASED_ARRAY_ID);
 	index_p = new ColumnsIndex(*msAnt_p, indexNames);
 	AlwaysAssert(index_p, AipsError);	
 	nameKey_p.attachToRecord(index_p->accessKey(), 
-				 NewMSAntenna::columnName(NewMSAntenna::NAME));
+				 MSAntenna::columnName(MSAntenna::NAME));
 	if (stationField_p.isAttached()) {
 	    stationKey_p.attachToRecord(index_p->accessKey(),
-					NewMSAntenna::columnName(NewMSAntenna::STATION));
+					MSAntenna::columnName(MSAntenna::STATION));
 	}
 	if (mountField_p.isAttached()) {
 	    mountKey_p.attachToRecord(index_p->accessKey(),
-				      NewMSAntenna::columnName(NewMSAntenna::MOUNT));
+				      MSAntenna::columnName(MSAntenna::MOUNT));
 	}
 	if (dishDiameterField_p.isAttached()) {
 	    dishDiameterKey_p.attachToRecord(index_p->accessKey(),
-					     NewMSAntenna::columnName(NewMSAntenna::DISH_DIAMETER));
+					     MSAntenna::columnName(MSAntenna::DISH_DIAMETER));
 	}
 	phasedIdKey_p.attachToRecord(index_p->accessKey(),
-				     NewMSAntenna::columnName(NewMSAntenna::PHASED_ARRAY_ID));
-	if (anyEQ(indexNames, NewMSAntenna::columnName(NewMSAntenna::ORBIT_ID))) {
+				     MSAntenna::columnName(MSAntenna::PHASED_ARRAY_ID));
+	if (anyEQ(indexNames, MSAntenna::columnName(MSAntenna::ORBIT_ID))) {
 	    orbitIdKey_p.attachToRecord(index_p->accessKey(),
-					NewMSAntenna::columnName(NewMSAntenna::ORBIT_ID));
+					MSAntenna::columnName(MSAntenna::ORBIT_ID));
 	}
     }
 }
@@ -436,35 +436,35 @@ void SDAntennaHandler::addOrbitIdColumn()
 	msAntCols_p = 0;
 	// we need to add a new column to the ANTENNA table
 	TableDesc td;
-	NewMSAntenna::addColumnToDesc(td,NewMSAntenna::ORBIT_ID);
+	MSAntenna::addColumnToDesc(td,MSAntenna::ORBIT_ID);
 	msAnt_p->addColumn(td[0]);
 	// remake the columns object
-	msAntCols_p = new NewMSAntennaColumns(*msAnt_p);
+	msAntCols_p = new MSAntennaColumns(*msAnt_p);
 	AlwaysAssert(msAntCols_p, AipsError);
 	// and the index
 	indexNames.resize(indexNames.nelements()+1, True);
-	indexNames(indexNames.nelements()-1) = NewMSAntenna::columnName(NewMSAntenna::ORBIT_ID);
+	indexNames(indexNames.nelements()-1) = MSAntenna::columnName(MSAntenna::ORBIT_ID);
 	index_p = new ColumnsIndex(*msAnt_p, indexNames);
 	AlwaysAssert(index_p, AipsError);	
 	nameKey_p.attachToRecord(index_p->accessKey(), 
-				 NewMSAntenna::columnName(NewMSAntenna::NAME));
+				 MSAntenna::columnName(MSAntenna::NAME));
 	if (stationField_p.isAttached()) {
 	    stationKey_p.attachToRecord(index_p->accessKey(),
-					NewMSAntenna::columnName(NewMSAntenna::STATION));
+					MSAntenna::columnName(MSAntenna::STATION));
 	}
 	if (mountField_p.isAttached()) {
 	    mountKey_p.attachToRecord(index_p->accessKey(),
-				      NewMSAntenna::columnName(NewMSAntenna::MOUNT));
+				      MSAntenna::columnName(MSAntenna::MOUNT));
 	}
 	if (dishDiameterField_p.isAttached()) {
 	    dishDiameterKey_p.attachToRecord(index_p->accessKey(),
-					     NewMSAntenna::columnName(NewMSAntenna::DISH_DIAMETER));
+					     MSAntenna::columnName(MSAntenna::DISH_DIAMETER));
 	}
 	orbitIdKey_p.attachToRecord(index_p->accessKey(),
-				    NewMSAntenna::columnName(NewMSAntenna::ORBIT_ID));
-	if (anyEQ(indexNames, NewMSAntenna::columnName(NewMSAntenna::PHASED_ARRAY_ID))) {
+				    MSAntenna::columnName(MSAntenna::ORBIT_ID));
+	if (anyEQ(indexNames, MSAntenna::columnName(MSAntenna::PHASED_ARRAY_ID))) {
 	    phasedIdKey_p.attachToRecord(index_p->accessKey(),
-					 NewMSAntenna::columnName(NewMSAntenna::PHASED_ARRAY_ID));
+					 MSAntenna::columnName(MSAntenna::PHASED_ARRAY_ID));
 	}
     }
 }

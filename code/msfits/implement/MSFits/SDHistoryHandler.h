@@ -32,9 +32,9 @@
 #include <aips/Containers/RecordField.h>
 
 //# Forward Declarations
-class NewMeasurementSet;
-class NewMSHistory;
-class NewMSHistoryColumns;
+class MeasurementSet;
+class MSHistory;
+class MSHistoryColumns;
 class Record;
 
 template <class T> class Vector;
@@ -88,7 +88,7 @@ public:
     SDHistoryHandler();
 
     // attach this to a MS - no columns are explicitly handled here
-    SDHistoryHandler(NewMeasurementSet &ms, const Vector<Bool> &handledCols, const Record &row);
+    SDHistoryHandler(MeasurementSet &ms, const Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDHistoryHandler(const SDHistoryHandler &other);
@@ -99,7 +99,7 @@ public:
     SDHistoryHandler &operator=(const SDHistoryHandler &other);
 
     // attach to a MS
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
@@ -108,8 +108,8 @@ public:
     void fill(const Record& row, Int observationId,
 	      const String &message, const String &priority);
 private:
-    NewMSHistory *msHis_p;
-    NewMSHistoryColumns *msHisCols_p;
+    MSHistory *msHis_p;
+    MSHistoryColumns *msHisCols_p;
 
     // TIMESYS field pointer when available
     RORecordFieldPtr<String> timesys_p;
@@ -121,7 +121,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, const Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, const Vector<Bool> &handledCols, const Record &row);
 
     // initialize stuff which depends on the row
     void initRow(const Vector<Bool> &handledCols, const Record &row);

@@ -1,4 +1,4 @@
-//# NewMSSimulator.cc:  this defines NewMSSimulator, which simulates a MeasurementSet
+//# MSSimulator.cc:  this defines MSSimulator, which simulates a MeasurementSet
 //# Copyright (C) 1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/NewMSSimulator.h>
-#include <trial/MeasurementSets/NewMSDerivedValues.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
+#include <trial/MeasurementSets/MSSimulator.h>
+#include <trial/MeasurementSets/MSDerivedValues.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Containers/Record.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -68,19 +68,19 @@
 static LogIO os;
 
 
-NewMSSimulator::NewMSSimulator() :
+MSSimulator::MSSimulator() :
   fractionBlockageLimit_p(1.0e-6),
   elevationLimit_p(Quantity(10.0, "deg")),
   autoCorrelationWt_p(0.0)
 {}
 
-NewMSSimulator::NewMSSimulator(const NewMSSimulator & mss)
+MSSimulator::MSSimulator(const MSSimulator & mss)
 {
   operator=(mss);
 }
 
 
-void NewMSSimulator::initAnt(const String& telescope,
+void MSSimulator::initAnt(const String& telescope,
 			  const Vector<Double>& x, 
 			  const Vector<Double>& y, 
 			  const Vector<Double>& z,
@@ -90,7 +90,7 @@ void NewMSSimulator::initAnt(const String& telescope,
 			  const String& coordsystem,
 			  const MPosition& mRefLocation) 
 {
-  LogIO os(LogOrigin("NewMSSimulator", "initAnt()", WHERE));
+  LogIO os(LogOrigin("MSSimulator", "initAnt()", WHERE));
 
   telescope_p = telescope;
   nAnt_p = x.nelements();
@@ -130,7 +130,7 @@ void NewMSSimulator::initAnt(const String& telescope,
 }
 
 
-void NewMSSimulator::local2global(Vector<Double>& xGeo,
+void MSSimulator::local2global(Vector<Double>& xGeo,
 			       Vector<Double>& yGeo,
 			       Vector<Double>& zGeo,
 			       const MPosition& mRefLocation,
@@ -169,7 +169,7 @@ void NewMSSimulator::local2global(Vector<Double>& xGeo,
 
 };
 
-void NewMSSimulator::longlat2global(Vector<Double>& xReturned,
+void MSSimulator::longlat2global(Vector<Double>& xReturned,
 				 Vector<Double>& yReturned,
 				 Vector<Double>& zReturned,
 				 const MPosition& mRefLocation,
@@ -177,12 +177,12 @@ void NewMSSimulator::longlat2global(Vector<Double>& xReturned,
 				 const Vector<Double>& yIn,
 				 const Vector<Double>& zIn)
 {
-  LogIO os(LogOrigin("NewMSSimulator", "longlat2global()", WHERE));
-  os <<  LogIO::SEVERE << "NewMSSimulator::longlat2global not yet implemented" << LogIO::POST;
+  LogIO os(LogOrigin("MSSimulator", "longlat2global()", WHERE));
+  os <<  LogIO::SEVERE << "MSSimulator::longlat2global not yet implemented" << LogIO::POST;
 };
 
 
-void NewMSSimulator::initFields(const uInt nSources,
+void MSSimulator::initFields(const uInt nSources,
 			     const Vector<String>& sourceName, 
 			     const Vector<MDirection>& sourceDirection,
 			     const Vector<Int>& intsPerPointing,
@@ -227,7 +227,7 @@ void NewMSSimulator::initFields(const uInt nSources,
   }
 };
 
-void NewMSSimulator::setTimes(const Quantity& qIntegrationTime, 
+void MSSimulator::setTimes(const Quantity& qIntegrationTime, 
 			   const Quantity& qGapTime, 
 			   const Bool      useHourAngles,
 			   const Quantity& qStartTime, 
@@ -244,7 +244,7 @@ void NewMSSimulator::setTimes(const Quantity& qIntegrationTime,
 }
 
 
-void NewMSSimulator::initSpWindows(const uInt nSpWindows,
+void MSSimulator::initSpWindows(const uInt nSpWindows,
 				const Vector<String>& spWindowName,
 				const Vector<Int>& nChan,
 				const Vector<Quantity>& startFreq,
@@ -300,15 +300,15 @@ void NewMSSimulator::initSpWindows(const uInt nSpWindows,
 // NOTE:  initAnt and initSpWindows must be called before this one!
 // This method is currently brain dead, we will have to revive it
 // at a later date -- we can ONLY make perfect R L or X Y feeds
-void NewMSSimulator::initFeeds(const String& mode)
+void MSSimulator::initFeeds(const String& mode)
 {
   LogIO os(LogOrigin("MSsimulator", "initFeeds()", WHERE));
 
   if (nAnt_p <= 0) {
-    os <<  LogIO::SEVERE << "NewMSSimulator::initFeeds: must call initAnt() first" << LogIO::POST;
+    os <<  LogIO::SEVERE << "MSSimulator::initFeeds: must call initAnt() first" << LogIO::POST;
   }
   if (nSpWindows_p <= 0) {
-    os <<  LogIO::SEVERE << "NewMSSimulator::initFeeds: must call initSpWindows() first" << LogIO::POST;
+    os <<  LogIO::SEVERE << "MSSimulator::initFeeds: must call initSpWindows() first" << LogIO::POST;
   }
 
   Int antId = -1;  // ie, apply this info to ALL antennas
@@ -377,34 +377,34 @@ void NewMSSimulator::initFeeds(const String& mode)
 };
 
 
-NewMSSimulator::~NewMSSimulator() 
+MSSimulator::~MSSimulator() 
 {
 }
 
 
-NewMSSimulator & NewMSSimulator::operator=(const NewMSSimulator & other) 
+MSSimulator & MSSimulator::operator=(const MSSimulator & other) 
 {
     if (this==&other) return *this;
     // copy state...
     return *this;
 }
 
-void NewMSSimulator::writeMS(const String& name)
+void MSSimulator::writeMS(const String& name)
 {
     // make MS with standard columns
-    TableDesc td(NewMS::requiredTableDesc());
+    TableDesc td(MS::requiredTableDesc());
     // add data column
-    NewMS::addColumnToDesc(td,NewMS::DATA,2);
+    MS::addColumnToDesc(td,MS::DATA,2);
     if (nSpWindows_p==1) {
       // all data has same shape, make columns direct
-      td.removeColumn(NewMS::columnName(NewMS::DATA));
-      NewMS::addColumnToDesc(td, NewMS::DATA, IPosition(2,nCorr_p(0),nChan_p(0)), 
+      td.removeColumn(MS::columnName(MS::DATA));
+      MS::addColumnToDesc(td, MS::DATA, IPosition(2,nCorr_p(0),nChan_p(0)), 
 			  ColumnDesc::Direct);
-      td.removeColumn(NewMS::columnName(NewMS::FLAG));
-      NewMS::addColumnToDesc(td, NewMS::FLAG, IPosition(2,nCorr_p(0),nChan_p(0)), 
+      td.removeColumn(MS::columnName(MS::FLAG));
+      MS::addColumnToDesc(td, MS::FLAG, IPosition(2,nCorr_p(0),nChan_p(0)), 
 			  ColumnDesc::Direct);
-      td.removeColumn(NewMS::columnName(NewMS::SIGMA));
-      NewMS::addColumnToDesc(td, NewMS::SIGMA, IPosition(1,nCorr_p(0)), 
+      td.removeColumn(MS::columnName(MS::SIGMA));
+      MS::addColumnToDesc(td, MS::SIGMA, IPosition(1,nCorr_p(0)), 
 			  ColumnDesc::Direct);
     } 
     // define tiled hypercube for the data (may add flag etc later)
@@ -412,13 +412,13 @@ void NewMSSimulator::writeMS(const String& name)
     td.addColumn(ScalarColumnDesc<Int>("DATA_HYPERCUBE_ID",
 				       "Index for Data Tiling"));
     td.defineHypercolumn("TiledData",3,
-			 stringToVector(NewMS::columnName(NewMS::DATA)+","+
-					NewMS::columnName(NewMS::FLAG)),
+			 stringToVector(MS::columnName(MS::DATA)+","+
+					MS::columnName(MS::FLAG)),
 			 coordColNames,
 			 stringToVector("DATA_HYPERCUBE_ID")
 			 );
     td.defineHypercolumn("TiledUVW",2,
-			 stringToVector(NewMS::columnName(NewMS::UVW)));
+			 stringToVector(MS::columnName(MS::UVW)));
 
     
     SetupNewTable newtab(name, td, Table::New);
@@ -429,17 +429,17 @@ void NewMSSimulator::writeMS(const String& name)
     StManAipsIO aipsStMan;
     TiledDataStMan tiledStMan("TiledData");
     // Bind the DATA column to the tiled stman
-    newtab.bindColumn(NewMS::columnName(NewMS::DATA),tiledStMan);
-    newtab.bindColumn(NewMS::columnName(NewMS::FLAG),tiledStMan);
+    newtab.bindColumn(MS::columnName(MS::DATA),tiledStMan);
+    newtab.bindColumn(MS::columnName(MS::FLAG),tiledStMan);
     newtab.bindColumn("DATA_HYPERCUBE_ID",tiledStMan);
     // Tile UVW access to avoid loading it all into memory at once
     TiledColumnStMan tiledStManUVW("TiledUVW",IPosition(2,3,1024));
-    newtab.bindColumn(NewMS::columnName(NewMS::UVW),tiledStManUVW);
+    newtab.bindColumn(MS::columnName(MS::UVW),tiledStManUVW);
     
     // Change some to be aips
-    newtab.bindColumn(NewMS::columnName(NewMS::ANTENNA2),aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::ANTENNA2),aipsStMan);
 
-    NewMeasurementSet simulMS(newtab,0);
+    MeasurementSet simulMS(newtab,0);
     simulMS.createDefaultSubtables(Table::New);
 
     // fill all 'coordinate' columns
@@ -448,10 +448,10 @@ void NewMSSimulator::writeMS(const String& name)
 
 /* commented out till new TiledStMan is available which doesn't need
    the extendHypercube call (in fillcoords)
-void NewMSSimulator::writeMS(NewMeasurementSet& ms)
+void MSSimulator::writeMS(MeasurementSet& ms)
 {
     if (ms.nrow()>0) {
-	throw(AipsError("NewMSSimulator::writeMS(ms) - ms must be empty"));
+	throw(AipsError("MSSimulator::writeMS(ms) - ms must be empty"));
     }
     if (!ms.keywordSet().isDefined("ANTENNA")) {
 	// assume there are no subtables yet
@@ -461,11 +461,11 @@ void NewMSSimulator::writeMS(NewMeasurementSet& ms)
 }
 */
 
-void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
+void MSSimulator::fillCoords(MeasurementSet & ms)
 {
-    LogIO os(LogOrigin("NewMSSimulator", "fillCoords()", WHERE));
+    LogIO os(LogOrigin("MSSimulator", "fillCoords()", WHERE));
     const double forever=1.e30;
-    NewMSDerivedValues msd;
+    MSDerivedValues msd;
     Vector<MPosition> vpos(1);
     vpos(0) =  refPosition_p;
     msd.setAntennaPositions(vpos);
@@ -500,25 +500,25 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
     //    os<< " calculating Coordinates ..."<<LogIO::POST;
     
     // fill Observation Table
-    NewMSObservation& obs=ms.observation();
+    MSObservation& obs=ms.observation();
 
     //    // add the position column because the fits writer expects it.
     //    TableDesc td;
-    //    NewMSArray::addColumnToDesc(td,NewMSArray::POSITION,IPosition(1,3),
+    //    MSArray::addColumnToDesc(td,MSArray::POSITION,IPosition(1,3),
     //			     ColumnDesc::Direct);
     //    StManAipsIO stman;
     //    arr.addColumn(td,stman);
 
-    NewMSColumns msc(ms);
-    NewMSObservationColumns& obsc=msc.observation();
+    MSColumns msc(ms);
+    MSObservationColumns& obsc=msc.observation();
     obs.addRow();
     obsc.telescopeName().put(0,telescope_p);
     //    Vector<Double> arrpos(3); arrpos=0.0;
     //    arrc.position().put(0,arrpos);
 
     // fill Antenna table
-    NewMSAntenna& ant=ms.antenna();
-    NewMSAntennaColumns& antc=msc.antenna();
+    MSAntenna& ant=ms.antenna();
+    MSAntennaColumns& antc=msc.antenna();
     ant.addRow(nAnt_p); // make nAnt_p rows
     antc.dishDiameter().putColumn(antDiam_p);
     antc.mount().putColumn(mountType_p);
@@ -532,7 +532,7 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
     
     // fill Feed table
     ms.feed().addRow(nFeed_p);
-    NewMSFeedColumns& feedc=msc.feed();
+    MSFeedColumns& feedc=msc.feed();
     feedc.antennaId().putColumn(feedAntId_p);
     feedc.feedId().putColumn(feedId_p);
     feedc.spectralWindowId().putColumn(feedSpWId_p);
@@ -552,9 +552,9 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
     ms.spectralWindow().addRow(nSpWindows_p);
     ms.polarization().addRow(nSpWindows_p);
     ms.dataDescription().addRow(nSpWindows_p);
-    NewMSSpWindowColumns& spwc=msc.spectralWindow();
-    NewMSDataDescColumns& ddc=msc.dataDescription();
-    NewMSPolarizationColumns& polc=msc.polarization();
+    MSSpWindowColumns& spwc=msc.spectralWindow();
+    MSDataDescColumns& ddc=msc.dataDescription();
+    MSPolarizationColumns& polc=msc.polarization();
     spwc.numChan().putColumn(nChan_p);
     spwc.name().fillColumn("");
     spwc.netSideband().fillColumn(1);
@@ -616,7 +616,7 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
 
     // fill source and field table
     ms.source().addRow(nSources_p);
-    NewMSSourceColumns& sourcec=msc.source();
+    MSSourceColumns& sourcec=msc.source();
     sourcec.interval().fillColumn(forever);
     sourcec.spectralWindowId().fillColumn(-1); //not used
     sourcec.time().fillColumn(Tstart_p);
@@ -630,7 +630,7 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
     sourcec.properMotion().fillColumn(pm);
     for (Int i=0; i<nSources_p; i++) sourcec.sourceId().put(i,i);
 
-    NewMSFieldColumns& fieldc=msc.field();
+    MSFieldColumns& fieldc=msc.field();
     Int nField=0;
     for (Int i=0; i<nSources_p; i++) nField+=nMos_p(0,i)*nMos_p(1,i);
     ms.field().addRow(nField);
@@ -897,7 +897,7 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
 // We will want to put this somewhere else eventually, but I don't yet know where!
 // Till then.
 // Stolen from Fred Schwab
-void NewMSSimulator::blockage(Double &fraction1, Double &fraction2,
+void MSSimulator::blockage(Double &fraction1, Double &fraction2,
 			   const Vector<Double>& uvw, 
 			   const Double diam1, 
 			   const Double diam2)

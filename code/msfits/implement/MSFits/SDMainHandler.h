@@ -35,8 +35,8 @@
 #include <aips/Containers/RecordField.h>
 
 //# Forward Declarations
-class NewMeasurementSet;
-class NewMSMainColumns;
+class MeasurementSet;
+class MSMainColumns;
 class MEpoch;
 class MVTime;
 class TiledDataStManAccessor;
@@ -93,7 +93,7 @@ public:
     SDMainHandler();
 
     // attach this to a MS - mark fields in row as handled
-    SDMainHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
+    SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
 		  const String &dataHypercubeName);
 
     // copy ctor
@@ -105,7 +105,7 @@ public:
     SDMainHandler &operator=(const SDMainHandler &other);
 
     // attach to a MS, mark fields in row as handled
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
 		const String &dataHypercubeName);
 
     // reset internals given indicated row, use the same MS
@@ -116,8 +116,8 @@ public:
 	      Int dataDescId, Int fieldId, const MVTime &exposure, 
 	      Int observationId, const Matrix<Float> &floatData);
 private:
-    NewMeasurementSet *ms_p;
-    NewMSMainColumns *msCols_p;
+    MeasurementSet *ms_p;
+    MSMainColumns *msCols_p;
 
     TiledDataStManAccessor *dataAccessor_p;
 
@@ -137,7 +137,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
 		 const String &dataHypercubeName);
 
     // intialize the row related stuff

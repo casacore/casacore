@@ -34,9 +34,9 @@
 
 //# Forward Declarations
 class ColumnsIndex;
-class NewMeasurementSet;
-class NewMSSpectralWindow;
-class NewMSSpWindowColumns;
+class MeasurementSet;
+class MSSpectralWindow;
+class MSSpWindowColumns;
 class Record;
 class Table;
 
@@ -91,7 +91,7 @@ public:
     SDSpWindowHandler();
 
     // attach this to a MS, marking fields in row which are explicitly handled here
-    SDSpWindowHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDSpWindowHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDSpWindowHandler(const SDSpWindowHandler &other);
@@ -102,7 +102,7 @@ public:
     SDSpWindowHandler &operator=(const SDSpWindowHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &);
@@ -121,8 +121,8 @@ private:
     ColumnsIndex *index_p;
     // temporary table to hold the fields we are indexing on, can't index on array column
     Table *theCache_p;
-    NewMSSpectralWindow *msSpWin_p;
-    NewMSSpWindowColumns *msSpWinCols_p;
+    MSSpectralWindow *msSpWin_p;
+    MSSpWindowColumns *msSpWinCols_p;
 
     // the columns in the cache table
     TableColumn idCol_p, nchanCol_p, freqRefTypeCol_p, 
@@ -151,7 +151,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // initialize the stuff dependent on the row
     void initRow(Vector<Bool> &handledCols, const Record &row);

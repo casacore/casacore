@@ -33,9 +33,9 @@
 
 //# Forward Declarations
 class ColumnsIndex;
-class NewMeasurementSet;
-class NewMSDataDescription;
-class NewMSDataDescColumns;
+class MeasurementSet;
+class MSDataDescription;
+class MSDataDescColumns;
 class Record;
 
 template <class T> class Vector;
@@ -89,7 +89,7 @@ public:
     SDDataDescHandler();
 
     // attach this to a MS - no columns are explicitly handled here
-    SDDataDescHandler(NewMeasurementSet &ms);
+    SDDataDescHandler(MeasurementSet &ms);
 
     // copy ctor
     SDDataDescHandler(const SDDataDescHandler &other);
@@ -100,7 +100,7 @@ public:
     SDDataDescHandler &operator=(const SDDataDescHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &) {rownr_p=-1;}
@@ -113,8 +113,8 @@ public:
 private:
     RecordFieldPtr<Int> spwinIdKey_p, polIdKey_p;
     ColumnsIndex *index_p;
-    NewMSDataDescription *msDataDesc_p;
-    NewMSDataDescColumns *msDataDescCols_p;
+    MSDataDescription *msDataDesc_p;
+    MSDataDescColumns *msDataDescCols_p;
 
     Int rownr_p;
 
@@ -122,7 +122,7 @@ private:
     void clearAll();
 
     // initialize everything
-    void initAll(NewMeasurementSet &ms);
+    void initAll(MeasurementSet &ms);
 };
 
 #endif

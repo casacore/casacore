@@ -1,4 +1,4 @@
-//# NewMSLister.cc:  Class for listing records from a MeasurementSet
+//# MSLister.cc:  Class for listing records from a MeasurementSet
 //# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,11 +28,11 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Measures/Stokes.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <trial/MeasurementSets/NewMSLister.h>
-#include <trial/MeasurementSets/NewMSSummary.h>
-#include <trial/MeasurementSets/NewMSRange.h>
+#include <aips/MeasurementSets/MSColumns.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <trial/MeasurementSets/MSLister.h>
+#include <trial/MeasurementSets/MSSummary.h>
+#include <trial/MeasurementSets/MSRange.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MaskedArray.h>
@@ -44,7 +44,7 @@
 //
 // Null constructor merely sets private formatting string
 //
-NewMSLister::NewMSLister ()
+MSLister::MSLister ()
   : dashline_p(replicate("-",80))
 {}
 
@@ -54,7 +54,7 @@ NewMSLister::NewMSLister ()
 // initialises the output, sets string to format output, and initialises the
 // listing.
 //
-NewMSLister::NewMSLister (NewMeasurementSet& ms, LogIO& os)
+MSLister::MSLister (MeasurementSet& ms, LogIO& os)
   : pMS(&ms),
     os_p(os),
     dashline_p(replicate("-",80))
@@ -77,7 +77,7 @@ NewMSLister::NewMSLister (NewMeasurementSet& ms, LogIO& os)
 //
 // Assignment operator
 //
-NewMSLister& NewMSLister::operator=(NewMSLister& other)
+MSLister& MSLister::operator=(MSLister& other)
 {
   if (this==&other) return *this;
   pMS = other.pMS;
@@ -88,14 +88,14 @@ NewMSLister& NewMSLister::operator=(NewMSLister& other)
 //
 // Destructor does nothing
 //
-NewMSLister::~NewMSLister()
+MSLister::~MSLister()
 {}
 
 
 //
-// Reinitialise output stream.  Do this before setNewMS() if doing both.
+// Reinitialise output stream.  Do this before setMS() if doing both.
 //
-Bool NewMSLister::setNewOS (LogIO& os)
+Bool MSLister::setNewOS (LogIO& os)
 {
   os_p = os;
   return True;
@@ -103,10 +103,10 @@ Bool NewMSLister::setNewOS (LogIO& os)
 
 
 //
-// Reassign MS pointer and reinitialise NewMSLister object.  Do this after
+// Reassign MS pointer and reinitialise MSLister object.  Do this after
 // setNewOS() if doing both.
 //
-Bool NewMSLister::setNewMS (NewMeasurementSet& ms)
+Bool MSLister::setMS (MeasurementSet& ms)
 {
   pMS = &ms;
   initList();
@@ -117,9 +117,9 @@ Bool NewMSLister::setNewMS (NewMeasurementSet& ms)
 //
 // initList() does things that need to be done once per MS: initialises
 // the pagination/formatting, lists some header information, initialises
-// the NewMSSelector object, and gets all the attribute ranges up front.
+// the MSSelector object, and gets all the attribute ranges up front.
 //
-void NewMSLister::initList()
+void MSLister::initList()
 {
   // Establish the formatting
   setPage();		// page size
@@ -128,7 +128,7 @@ void NewMSLister::initList()
   // List some header information so the user knows what to select on
   listHeader();
 
-  // Initialise the NewMSSelector object.  By default, initSelection() takes all
+  // Initialise the MSSelector object.  By default, initSelection() takes all
   // polarisations and the first spectral channel.
   mss_p.setMS(*pMS);
 
@@ -156,8 +156,8 @@ void NewMSLister::initList()
   cout << "After getRanges." << endl << endl;
 
   // Set up for selection on channel or polarisation
-  RONewMSSpWindowColumns msSpWinC(pMS->spectralWindow());
-  RONewMSPolarizationColumns msPolC(pMS->polarization());
+  ROMSSpWindowColumns msSpWinC(pMS->spectralWindow());
+  ROMSPolarizationColumns msPolC(pMS->polarization());
   nchan_p = msSpWinC.numChan()(0);
   npols_p = msPolC.corrType()(0).nelements();
   pols_p.resize(npols_p,False);
@@ -176,7 +176,7 @@ void NewMSLister::initList()
 }
 
 
-void NewMSLister::setPage (const uInt width, const uInt height)
+void MSLister::setPage (const uInt width, const uInt height)
 {
   // Set up pagination for output.  Default is for landscape printing (w=120)
   // with font size 10 (h=60).
@@ -185,13 +185,13 @@ void NewMSLister::setPage (const uInt width, const uInt height)
 }
 
 
-void NewMSLister::setFormat (const uInt ndec)
+void MSLister::setFormat (const uInt ndec)
 {
   // Set up data display precision
   nDecimal_p = ndec;
 }
 
-void NewMSLister::setPrecision ( const Int precTime, const Int precUVDist,
+void MSLister::setPrecision ( const Int precTime, const Int precUVDist,
 			      const Int precAmpl, const Int precPhase, 
 			      const Int precWeight )
 {
@@ -205,10 +205,10 @@ void NewMSLister::setPrecision ( const Int precTime, const Int precUVDist,
 
 
 
-void NewMSLister::listHeader()
+void MSLister::listHeader()
 {
-  // Construct the NewMSSummary object and output the header info
-  NewMSSummary header(*pMS);
+  // Construct the MSSummary object and output the header info
+  MSSummary header(*pMS);
   header.listTitle (os_p);
   header.listWhat (os_p,False);
   header.listSpectralWindow (os_p,True);
@@ -222,7 +222,7 @@ void NewMSLister::listHeader()
 //
 // Get the ranges of a fixed set of MS key attributes
 //
-void NewMSLister::getRanges()
+void MSLister::getRanges()
 {
   // Get the range of values for the items specified in items_p, into
   // a GlishRecord.
@@ -231,7 +231,7 @@ void NewMSLister::getRanges()
   
   cout << endl << "mss_p.dataDescId() = " <<  mss_p.dataDescId() << endl;
 
-  NewMSRange msr(mss_p.selectedTable(),mss_p.dataDescId());		
+  MSRange msr(mss_p.selectedTable(),mss_p.dataDescId());		
   ranges_p = msr.range(items_p);		
 
   // Print out the retrieved ranges:
@@ -247,7 +247,7 @@ void NewMSLister::getRanges()
 //
 // Version to list only data for times in given range, converting
 // input strings to Double times
-void NewMSLister::list (const String stimeStart, const String stimeStop)
+void MSLister::list (const String stimeStart, const String stimeStop)
 {
   // Convert the time strings
   Quantum<Double> qtime;
@@ -259,7 +259,7 @@ void NewMSLister::list (const String stimeStart, const String stimeStop)
 }
 
 // Version to list only data for times in given range
-void NewMSLister::list (Double& timeStart, Double& timeStop)
+void MSLister::list (Double& timeStart, Double& timeStop)
 {
   // Check on time selection:
   if (!selectTime (timeStart, timeStop)) return;
@@ -269,7 +269,7 @@ void NewMSLister::list (Double& timeStart, Double& timeStop)
 }
 
 // Version to list data for all (possibly previously selected) times
-void NewMSLister::list()
+void MSLister::list()
 {
   // NOTE: several placeholders for future functionality.  Implementing
   // some of these may require some rearrangement of the interface...
@@ -306,7 +306,7 @@ void NewMSLister::list()
 }
 
 
-Bool NewMSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
+Bool MSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
 {
   // First get the range of available times in the MS.  The private GlishRecord
   // ranges_p has previously been set in getRanges(), while dataRecords_p is a
@@ -343,7 +343,7 @@ Bool NewMSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
 }
 
 
-void NewMSLister::listData()
+void MSLister::listData()
 {
   // Now get the data for the listing.  
   // Currently we are extracting the data through a GlishRecord 
@@ -586,7 +586,7 @@ void NewMSLister::listData()
   os_p.post();
 }
 
-void NewMSLister::listColumnHeader() {
+void MSLister::listColumnHeader() {
   // Write the column headers
   os_p << endl << endl;
 
@@ -628,7 +628,7 @@ void NewMSLister::listColumnHeader() {
 //
 // Clear all the formatting flags
 //
-void NewMSLister::clearFlags()
+void MSLister::clearFlags()
 {
   os_p.output().unsetf(ios::left);
   os_p.output().unsetf(ios::right);

@@ -1,4 +1,4 @@
-//# NewMSSysCalIndex: index into a MeasurementSet SYSCAL subtable
+//# MSSysCalIndex: index into a MeasurementSet SYSCAL subtable
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSSYSCALINDEX_H)
-#define AIPS_NEWMSSYSCALINDEX_H
+#if !defined(AIPS_MSSYSCALINDEX_H)
+#define AIPS_MSSYSCALINDEX_H
 
-#include <trial/MeasurementSets/NewMSTableIndex.h>
+#include <trial/MeasurementSets/MSTableIndex.h>
 
 #include <aips/Containers/RecordField.h>
 
 //# forward declarations
-class NewMSSysCal;
+class MSSysCal;
 
 // <summary>
 // </summary>
@@ -46,7 +46,7 @@ class NewMSSysCal;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> NewMSTableIndex
+//   <li> MSTableIndex
 // </prerequisite>
 //
 // <etymology>
@@ -67,23 +67,23 @@ class NewMSSysCal;
 // </thrown>
 //
 
-class NewMSSysCalIndex : public NewMSTableIndex
+class MSSysCalIndex : public MSTableIndex
 {
 public:
     // no index attached, use the attach function or assignment operator to change that
-  NewMSSysCalIndex();
+  MSSysCalIndex();
 
   // construct one using the indicated SYSCAL table
-  NewMSSysCalIndex(const NewMSSysCal &sysCal);
+  MSSysCalIndex(const MSSysCal &sysCal);
 
   // construct one from another
-  NewMSSysCalIndex(const NewMSSysCalIndex &other);
+  MSSysCalIndex(const MSSysCalIndex &other);
 
-  virtual ~NewMSSysCalIndex();
+  virtual ~MSSysCalIndex();
 
-  virtual NewMSSysCalIndex &operator=(const NewMSSysCalIndex &other);
+  virtual MSSysCalIndex &operator=(const MSSysCalIndex &other);
 
-  virtual void attach(const NewMSSysCal &sysCal);
+  virtual void attach(const MSSysCal &sysCal);
 
   // access to the antenna ID key, throws an exception if isNull() is False
   Int &antennaId() {return *antennaId_p;}

@@ -29,9 +29,9 @@
 #include <trial/MeasurementSets/SDSpWinHandler.h>
 
 #include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSSpWindowColumns.h>
-#include <aips/MeasurementSets/NewMSSpectralWindow.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSSpWindowColumns.h>
+#include <aips/MeasurementSets/MSSpectralWindow.h>
 #include <aips/Containers/Record.h>
 #include <aips/Tables/Table.h>
 #include <aips/Arrays/Vector.h>
@@ -54,7 +54,7 @@ SDSpWindowHandler::SDSpWindowHandler()
       freqresField_p(-1)
 {;}
 
-SDSpWindowHandler::SDSpWindowHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+SDSpWindowHandler::SDSpWindowHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				     const Record &row) 
     : index_p(0), theCache_p(0), msSpWin_p(0), msSpWinCols_p(0), nextCacheRow_p(0),
       cacheSize_p(1000), rownr_p(-1), obsfreqField_p(-1), bandwidField_p(-1),
@@ -101,9 +101,9 @@ SDSpWindowHandler &SDSpWindowHandler::operator=(const SDSpWindowHandler &other)
 	fdeltCol_p.attach(*theCache_p, "FDELT");
 	freqresCol_p.attach(*theCache_p, "FREQRES");
 
-	msSpWin_p = new NewMSSpectralWindow(*(other.msSpWin_p));
+	msSpWin_p = new MSSpectralWindow(*(other.msSpWin_p));
 	AlwaysAssert(msSpWin_p, AipsError);
-	msSpWinCols_p = new NewMSSpWindowColumns(*msSpWin_p);
+	msSpWinCols_p = new MSSpWindowColumns(*msSpWin_p);
 	AlwaysAssert(msSpWinCols_p, AipsError);
 
 	nextCacheRow_p = other.nextCacheRow_p;
@@ -121,7 +121,7 @@ SDSpWindowHandler &SDSpWindowHandler::operator=(const SDSpWindowHandler &other)
     return *this;
 }
 
-void SDSpWindowHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDSpWindowHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -271,13 +271,13 @@ void SDSpWindowHandler::clearRow()
     rownr_p = -1;
 }
 
-void SDSpWindowHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, 
 				const Record &row)
 {
-    msSpWin_p = new NewMSSpectralWindow(ms.spectralWindow());
+    msSpWin_p = new MSSpectralWindow(ms.spectralWindow());
     AlwaysAssert(msSpWin_p, AipsError);
 
-    msSpWinCols_p = new NewMSSpWindowColumns(*msSpWin_p);
+    msSpWinCols_p = new MSSpWindowColumns(*msSpWin_p);
     AlwaysAssert(msSpWinCols_p, AipsError);
 
     // construct a cache table with zero rows

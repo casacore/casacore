@@ -1,4 +1,4 @@
-//# NewMSDopplerIndex.cc:  this defined NewMSDopplerIndex
+//# MSDopplerIndex.cc:  this defined MSDopplerIndex
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,42 +25,42 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSDopplerIndex.h>
+#include <trial/MeasurementSets/MSDopplerIndex.h>
 
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/NewMSDoppler.h>
+#include <aips/MeasurementSets/MSDoppler.h>
 
-NewMSDopplerIndex::NewMSDopplerIndex() 
-    : NewMSTableIndex()
+MSDopplerIndex::MSDopplerIndex() 
+    : MSTableIndex()
 {;}
 
-NewMSDopplerIndex::NewMSDopplerIndex(const NewMSDoppler &doppler)
-    : NewMSTableIndex(doppler, stringToVector("DOPPLER_ID,SOURCE_ID"))
+MSDopplerIndex::MSDopplerIndex(const MSDoppler &doppler)
+    : MSTableIndex(doppler, stringToVector("DOPPLER_ID,SOURCE_ID"))
 { attachIds();}
 
-NewMSDopplerIndex::NewMSDopplerIndex(const NewMSDopplerIndex &other)
-    : NewMSTableIndex(other)
+MSDopplerIndex::MSDopplerIndex(const MSDopplerIndex &other)
+    : MSTableIndex(other)
 { attachIds();}
 
-NewMSDopplerIndex::~NewMSDopplerIndex()
+MSDopplerIndex::~MSDopplerIndex()
 {;}
 
-NewMSDopplerIndex &NewMSDopplerIndex::operator=(const NewMSDopplerIndex &other)
+MSDopplerIndex &MSDopplerIndex::operator=(const MSDopplerIndex &other)
 {
     if (this != &other) {
-	NewMSTableIndex::operator=(other);
+	MSTableIndex::operator=(other);
 	attachIds();
     }
     return *this;
 }
 
-void NewMSDopplerIndex::attach(const NewMSDoppler &doppler)
+void MSDopplerIndex::attach(const MSDoppler &doppler)
 {
-    NewMSTableIndex::attach(doppler, stringToVector("DOPPLER_ID,SOURCE_ID"));
+    MSTableIndex::attach(doppler, stringToVector("DOPPLER_ID,SOURCE_ID"));
     attachIds();
 }
 
-void NewMSDopplerIndex::attachIds()
+void MSDopplerIndex::attachIds()
 {
     dopplerId_p.attachToRecord(accessKey(), "DOPPLER_ID");
     sourceId_p.attachToRecord(accessKey(), "SOURCE_ID");

@@ -29,9 +29,9 @@
 #include <trial/MeasurementSets/SDObservationHandler.h>
 
 #include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSObsColumns.h>
-#include <aips/MeasurementSets/NewMSObservation.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSObsColumns.h>
+#include <aips/MeasurementSets/MSObservation.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -45,7 +45,7 @@ SDObservationHandler::SDObservationHandler()
     : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1)
 {;}
 
-SDObservationHandler::SDObservationHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+SDObservationHandler::SDObservationHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				   const Record &row) 
     : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1)
 {
@@ -67,17 +67,17 @@ SDObservationHandler &SDObservationHandler::operator=(const SDObservationHandler
 	// need to avoid the assignment operator here because we want
 	// this to point to the field in index_p, not in other.index_p
 	telescopeKey_p.attachToRecord(index_p->accessKey(),
-				      NewMSObservation::columnName(NewMSObservation::TELESCOPE_NAME));
+				      MSObservation::columnName(MSObservation::TELESCOPE_NAME));
 	observerKey_p.attachToRecord(index_p->accessKey(),
-				     NewMSObservation::columnName(NewMSObservation::OBSERVER));
+				     MSObservation::columnName(MSObservation::OBSERVER));
 	projectKey_p.attachToRecord(index_p->accessKey(),
-				      NewMSObservation::columnName(NewMSObservation::PROJECT));
+				      MSObservation::columnName(MSObservation::PROJECT));
 	if (index_p->accessKey().fieldNumber("NS_OBSID") >= 0) {
 	    ns_obsidKey_p.attachToRecord(index_p->accessKey(), "NS_OBSID");
 	}
-	msObs_p = new NewMSObservation(*(other.msObs_p));
+	msObs_p = new MSObservation(*(other.msObs_p));
 	AlwaysAssert(msObs_p, AipsError);
-	msObsCols_p = new NewMSObservationColumns(*msObs_p);
+	msObsCols_p = new MSObservationColumns(*msObs_p);
 	AlwaysAssert(msObsCols_p, AipsError);
 	if (ns_obsidKey_p.isAttached()) {
 	    nsObsIdCol_p.attach(*msObs_p, "NS_OBSID");
@@ -93,7 +93,7 @@ SDObservationHandler &SDObservationHandler::operator=(const SDObservationHandler
     return *this;
 }
 
-void SDObservationHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDObservationHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -195,12 +195,12 @@ void SDObservationHandler::clearRow()
     rownr_p = -1;
 }
 
-void SDObservationHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDObservationHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
-    msObs_p = new NewMSObservation(ms.observation());
+    msObs_p = new MSObservation(ms.observation());
     AlwaysAssert(msObs_p, AipsError);
 
-    msObsCols_p = new NewMSObservationColumns(*msObs_p);
+    msObsCols_p = new MSObservationColumns(*msObs_p);
     AlwaysAssert(msObsCols_p, AipsError);
 
     if (msObs_p->tableDesc().isColumn(String("NS_OBSID"))) {
@@ -217,9 +217,9 @@ void SDObservationHandler::makeIndex()
     if (!nsObsIdCol_p.isNull()) nKeys++;
 
     Vector<String> keys(nKeys);
-    keys(0) = NewMSObservation::columnName(NewMSObservation::TELESCOPE_NAME);
-    keys(1) = NewMSObservation::columnName(NewMSObservation::OBSERVER);
-    keys(2) = NewMSObservation::columnName(NewMSObservation::PROJECT);
+    keys(0) = MSObservation::columnName(MSObservation::TELESCOPE_NAME);
+    keys(1) = MSObservation::columnName(MSObservation::OBSERVER);
+    keys(2) = MSObservation::columnName(MSObservation::PROJECT);
     if (!nsObsIdCol_p.isNull()) {
 	keys(3) = "NS_OBSID";
     }
@@ -228,11 +228,11 @@ void SDObservationHandler::makeIndex()
     
 
     telescopeKey_p.attachToRecord(index_p->accessKey(),
-			     NewMSObservation::columnName(NewMSObservation::TELESCOPE_NAME));
+			     MSObservation::columnName(MSObservation::TELESCOPE_NAME));
     observerKey_p.attachToRecord(index_p->accessKey(),
-			     NewMSObservation::columnName(NewMSObservation::OBSERVER));
+			     MSObservation::columnName(MSObservation::OBSERVER));
     projectKey_p.attachToRecord(index_p->accessKey(),
-			     NewMSObservation::columnName(NewMSObservation::PROJECT));
+			     MSObservation::columnName(MSObservation::PROJECT));
     if (!nsObsIdCol_p.isNull()) {
 	ns_obsidKey_p.attachToRecord(index_p->accessKey(),"NS_OBSID");
     }

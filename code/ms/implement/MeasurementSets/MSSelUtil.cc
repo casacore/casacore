@@ -1,4 +1,4 @@
-//# NewMSSelUtil.cc: templated helper function for NewMSSelector
+//# MSSelUtil.cc: templated helper function for MSSelector
 //# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,13 +26,13 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSSelUtil.h>
+#include <trial/MeasurementSets/MSSelUtil.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
 template<class T> 
-Array<Float> NewMSSelUtil<T>::diffData(const Array<T>& data,
+Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 				    const Array<Bool>& flag,
 				    const Array<Bool>& flagRow,
 				    Int diffAxis,
@@ -160,5 +160,5 @@ Array<Float> NewMSSelUtil<T>::diffData(const Array<T>& data,
 
 
 // declare the two instantiations we need
-template class NewMSSelUtil<Float>;
-template class NewMSSelUtil<Complex>;
+template class MSSelUtil<Float>;
+template class MSSelUtil<Complex>;

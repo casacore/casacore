@@ -28,9 +28,9 @@
 //# Includes
 #include <trial/MeasurementSets/SDSysCalHandler.h>
 
-#include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/MeasurementSets/NewMSSysCalColumns.h>
-#include <aips/MeasurementSets/NewMSSysCal.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSSysCalColumns.h>
+#include <aips/MeasurementSets/MSSysCal.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
@@ -45,7 +45,7 @@ SDSysCalHandler::SDSysCalHandler()
       hasTcalCol_p(False), hasTrxCol_p(False)
 {;}
 
-SDSysCalHandler::SDSysCalHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+SDSysCalHandler::SDSysCalHandler(MeasurementSet &ms, Vector<Bool> &handledCols, 
 				 const Record &row)
     : msSysCal_p(0), msSysCalCols_p(0), rownr_p(-1), nrecpt_p(0),
       tcalId_p(-1), tsysId_p(-1), trxId_p(-1), hasTsysCol_p(False),
@@ -66,9 +66,9 @@ SDSysCalHandler &SDSysCalHandler::operator=(const SDSysCalHandler &other)
 {
     if (this != &other) {
 	clearAll();
-	msSysCal_p = new NewMSSysCal(*(other.msSysCal_p));
+	msSysCal_p = new MSSysCal(*(other.msSysCal_p));
 	AlwaysAssert(msSysCal_p, AipsError);
-	msSysCalCols_p = new NewMSSysCalColumns(*msSysCal_p);
+	msSysCalCols_p = new MSSysCalColumns(*msSysCal_p);
 	AlwaysAssert(msSysCalCols_p, AipsError);
 	rownr_p = other.rownr_p;
 	nrecpt_p = other.nrecpt_p;
@@ -91,7 +91,7 @@ SDSysCalHandler &SDSysCalHandler::operator=(const SDSysCalHandler &other)
     return *this;
 }
 
-void SDSysCalHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+void SDSysCalHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, 
 			     const Record &row)
 {
     clearAll();
@@ -210,11 +210,11 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
 			delete msSysCalCols_p;
 			msSysCalCols_p = 0;
 			TableDesc td;
-			NewMSSysCal::addColumnToDesc(td, NewMSSysCal::PHASE_DIFF);
-			NewMSSysCal::addColumnToDesc(td, NewMSSysCal::PHASE_DIFF_FLAG);
+			MSSysCal::addColumnToDesc(td, MSSysCal::PHASE_DIFF);
+			MSSysCal::addColumnToDesc(td, MSSysCal::PHASE_DIFF_FLAG);
 			msSysCal_p->addColumn(td[0]);
 			msSysCal_p->addColumn(td[1]);
-			msSysCalCols_p = new NewMSSysCalColumns(*msSysCal_p);
+			msSysCalCols_p = new MSSysCalColumns(*msSysCal_p);
 			AlwaysAssert(msSysCalCols_p, AipsError);
 			msSysCalCols_p->phaseDiff().put(rownr_p, *phaseDiffField_p);
 			if (phaseDiffFlagField_p.isAttached()) {
@@ -272,10 +272,10 @@ void SDSysCalHandler::clearRow()
     tsysField_p.detach();
 }
 
-void SDSysCalHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+void SDSysCalHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
 			      const Record &row)
 {
-    msSysCal_p = new NewMSSysCal(ms.sysCal());
+    msSysCal_p = new MSSysCal(ms.sysCal());
     AlwaysAssert(msSysCal_p, AipsError);
 
     initRow(handledCols, row);
@@ -284,24 +284,24 @@ void SDSysCalHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols,
     TableDesc td;
     if (tsysId_p >= 0 || tsysField_p.isAttached()) {
 	hasTsysCol_p = True;
-	NewMSSysCal::addColumnToDesc(td,NewMSSysCal::TSYS);
-	NewMSSysCal::addColumnToDesc(td,NewMSSysCal::TSYS_FLAG);
+	MSSysCal::addColumnToDesc(td,MSSysCal::TSYS);
+	MSSysCal::addColumnToDesc(td,MSSysCal::TSYS_FLAG);
     }
     if (tcalId_p >= 0 || tcalField_p.isAttached()) {
 	hasTcalCol_p = True;
-	NewMSSysCal::addColumnToDesc(td,NewMSSysCal::TCAL);
-	NewMSSysCal::addColumnToDesc(td,NewMSSysCal::TCAL_FLAG);
+	MSSysCal::addColumnToDesc(td,MSSysCal::TCAL);
+	MSSysCal::addColumnToDesc(td,MSSysCal::TCAL_FLAG);
     }
     if (trxId_p >= 0 || trxField_p.isAttached()) {
 	hasTrxCol_p = True;
-	NewMSSysCal::addColumnToDesc(td,NewMSSysCal::TRX);
-	NewMSSysCal::addColumnToDesc(td,NewMSSysCal::TRX_FLAG);
+	MSSysCal::addColumnToDesc(td,MSSysCal::TRX);
+	MSSysCal::addColumnToDesc(td,MSSysCal::TRX_FLAG);
     }
     for (uInt i=0;i<td.ncolumn();i++) {
 	msSysCal_p->addColumn(td[i]);
     }
 
-    msSysCalCols_p = new NewMSSysCalColumns(*msSysCal_p);
+    msSysCalCols_p = new MSSysCalColumns(*msSysCal_p);
     AlwaysAssert(msSysCalCols_p, AipsError);
 
     nrecpt_p = 0;

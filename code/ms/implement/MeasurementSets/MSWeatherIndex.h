@@ -1,4 +1,4 @@
-//# NewMSWeatherIndex: index into a MeasurementSet WEATHER subtable
+//# MSWeatherIndex: index into a MeasurementSet WEATHER subtable
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMSWEATHERINDEX_H)
-#define AIPS_NEWMSWEATHERINDEX_H
+#if !defined(AIPS_MSWEATHERINDEX_H)
+#define AIPS_MSWEATHERINDEX_H
 
-#include <trial/MeasurementSets/NewMSTableIndex.h>
+#include <trial/MeasurementSets/MSTableIndex.h>
 
 #include <aips/Containers/RecordField.h>
 
 //# forward declarations
-class NewMSWeather;
+class MSWeather;
 
 // <summary>
 // </summary>
@@ -46,7 +46,7 @@ class NewMSWeather;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> NewMSTableIndex
+//   <li> MSTableIndex
 // </prerequisite>
 //
 // <etymology>
@@ -67,23 +67,23 @@ class NewMSWeather;
 // </thrown>
 //
 
-class NewMSWeatherIndex : public NewMSTableIndex
+class MSWeatherIndex : public MSTableIndex
 {
 public:
     // no index attached, use the attach function or assignment operator to change that
-  NewMSWeatherIndex();
+  MSWeatherIndex();
 
   // construct one using the indicated WEATHER table
-  NewMSWeatherIndex(const NewMSWeather &weather);
+  MSWeatherIndex(const MSWeather &weather);
 
   // construct one from another
-  NewMSWeatherIndex(const NewMSWeatherIndex &other);
+  MSWeatherIndex(const MSWeatherIndex &other);
 
-  virtual ~NewMSWeatherIndex();
+  virtual ~MSWeatherIndex();
 
-  virtual NewMSWeatherIndex &operator=(const NewMSWeatherIndex &other);
+  virtual MSWeatherIndex &operator=(const MSWeatherIndex &other);
 
-  virtual void attach(const NewMSWeather &weather);
+  virtual void attach(const MSWeather &weather);
 
   // access to the antenna ID key, throws an exception if isNull() is False
   Int &antennaId() {return *antennaId_p;}

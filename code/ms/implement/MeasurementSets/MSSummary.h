@@ -1,4 +1,4 @@
-//# NewMSSummary.h: Helper class for applications listing an image header
+//# MSSummary.h: Helper class for applications listing an image header
 //# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,13 +25,13 @@
 //#
 //# $Id$
 //#
-#if !defined(TRIAL_NEWMSSUMMARY_H)
-#define TRIAL_NEWMSSUMMARY_H
+#if !defined(TRIAL_MSSUMMARY_H)
+#define TRIAL_MSSUMMARY_H
 
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-#include <aips/MeasurementSets/NewMSColumns.h>
-class NewMeasurementSet;
+#include <aips/MeasurementSets/MSColumns.h>
+class MeasurementSet;
 class LogIO;
 
 // <summary>Provides and lists information about the header of an image</summary>
@@ -41,13 +41,13 @@ class LogIO;
 // </reviewed>
 // 
 // <prerequisite>
-//   <li> <linkto class=NewMeasurementSet>NewMeasurementSet</linkto>
+//   <li> <linkto class=MeasurementSet>MeasurementSet</linkto>
 //   <li> <linkto module=Coordinates>Coordinates</linkto> 
 // </prerequisite>
 //
 // <etymology>
 // This class lists the ancilliary or header information from a
-// NewMeasurementSet in a Summary format.
+// MeasurementSet in a Summary format.
 // </etymology>
 //
 // <synopsis>
@@ -60,7 +60,7 @@ class LogIO;
 // <example>
 // <srcBlock>
 //     PagedMS<Float> inMS(fileName);
-//     NewMSSummary<Float> header(inMS);
+//     MSSummary<Float> header(inMS);
 //     LogOrigin or("myClass", "myFunction(...)", WHERE);
 //     LogIO os(or);
 //     header.list(os);
@@ -82,18 +82,18 @@ class LogIO;
 //
 // <todo asof="1998/12/09">
 //  There are various placeholders which will need to be activated for
-//  Version 2 of the NewMeasurementSet definition.
+//  Version 2 of the MeasurementSet definition.
 // </todo>
  
 
-class NewMSSummary
+class MSSummary
 {
 public:
 // Constructor
-   NewMSSummary (const NewMeasurementSet&);
+   MSSummary (const MeasurementSet&);
 
 // Destructor
-  ~NewMSSummary();
+  ~MSSummary();
 
 // Retrieve number of rows
    Int nrow() const;
@@ -102,7 +102,7 @@ public:
    String name() const;
 
 // Set a new MS
-   Bool setNewMS (const NewMeasurementSet& ms);
+   Bool setMS (const MeasurementSet& ms);
 
 // List all header information.
    void list (LogIO& os, Bool verbose=False) const;
@@ -143,7 +143,7 @@ public:
 
 private:
 // Pointer to MS
-   const NewMeasurementSet* pMS;
+   const MeasurementSet* pMS;
 
 // Formatting strings
    const String dashlin1, dashlin2;

@@ -1,4 +1,4 @@
-//# NewMSSimulator.h: this defines the NewMeasurementSet Simulator
+//# MSSimulator.h: this defines the MeasurementSet Simulator
 //# Copyright (C) 1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_NEWMSSIMULATOR_H)
-#define TRIAL_NEWMSSIMULATOR_H
+#if !defined(TRIAL_MSSIMULATOR_H)
+#define TRIAL_MSSIMULATOR_H
 
 
 //# Includes
@@ -39,11 +39,11 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>
 //# Forward Declarations
-class NewMeasurementSet;
+class MeasurementSet;
 class MDirection;
 
 // <category lib=aips module="ModuleName">
-// <summary> Create an empty NewMeasurementSet from observation and telescope descriptions. </summary>
+// <summary> Create an empty MeasurementSet from observation and telescope descriptions. </summary>
 // <reviewed reviewer="" date="" tests="">
 //
 // <prerequisite>
@@ -59,7 +59,7 @@ class MDirection;
 // </etymology>
 //
 // <synopsis> 
-// This class creates a NewMeasurementSet from a set of parameters for instrument
+// This class creates a MeasurementSet from a set of parameters for instrument
 // and sources. It does not simulate the data, only the coordinates of a 
 // measurement. The application "simulator" uses this class to create a true
 // simulated MS with perfect or corrupted data.
@@ -81,26 +81,26 @@ class MDirection;
 //          yet.
 // </todo>
 
-class NewMSSimulator
+class MSSimulator
 {
 public: 
   
   // Default constructor - use this, then invoke initAnt, initFeed, initSpWindow,
   // initConfig.
-  NewMSSimulator();
+  MSSimulator();
   
   // Copy constructor - for completeness only
-  NewMSSimulator(const NewMSSimulator & mss);
+  MSSimulator(const MSSimulator & mss);
   
   //# Destructor
-  ~NewMSSimulator();
+  ~MSSimulator();
   
 //# Operators
   // Assignment
-  NewMSSimulator & operator=(const NewMSSimulator &);
+  MSSimulator & operator=(const MSSimulator &);
   
   // set the antenna and array data.
-  // This is held in NewMSSimulator vectors, and is then written into
+  // This is held in MSSimulator vectors, and is then written into
   // the appropriate MS Tables when writeMS() and its helper function
   // fillCoords() are called.   The same model is used for the Fields,
   // SpWindows, Feeds, and Times information below.
@@ -152,7 +152,7 @@ public:
 		const Quantity& qStopTime, 
 		const MEpoch&   qRefTime );
 
-  // Write out a simulated NewMeasurementSet with the given name
+  // Write out a simulated MeasurementSet with the given name
   void writeMS(const String& msname); 
 
 
@@ -187,7 +187,7 @@ private:
 
 //# Secure Member Functions
   
-  void fillCoords(NewMeasurementSet & ms);
+  void fillCoords(MeasurementSet & ms);
 
   void local2global(Vector<Double>& xReturned,
 		    Vector<Double>& yReturned,
