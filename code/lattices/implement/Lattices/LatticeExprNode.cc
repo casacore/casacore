@@ -989,7 +989,7 @@ LatticeExprNode operator< (const LatticeExprNode& left,
 #endif
    AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
 		 AipsError);
-   return LatticeExprNode::newBinaryCmp (LELBinaryEnums::LT, right, left);
+   return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GT, right, left);
 }
 
 LatticeExprNode operator<= (const LatticeExprNode& left,
@@ -1000,7 +1000,7 @@ LatticeExprNode operator<= (const LatticeExprNode& left,
 #endif
    AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
 		 AipsError);
-   return LatticeExprNode::newBinaryCmp (LELBinaryEnums::LE, right, left);
+   return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GE, right, left);
 }
 
 LatticeExprNode operator!= (const LatticeExprNode& left,
