@@ -311,54 +311,6 @@ public:
   static Vector<Bool> makeMaskFromRanges(const String& ranges, uInt length,
 					 Bool oneRelative=False);
 
-  // Capitalized synonyms of the functions for compatibility with
-  // the old functions names.
-  // They will be removed in the near future.
-  // <group>
-  void Create(String key)
-    { create(key); }
-  void Create(String key, String value)
-    { create(key, value); }
-  void Create(String key, String value, String help)
-    { create(key, value, help); }
-  void Create(String key, String value, String help, String type)
-    { create(key, value, help, type); }
-  void Create(String key, String value, String help, String type, 
-	      String range)
-    { create(key, value, help, type, range); }
-  void Create(String key, String value, String help, String type, 
-	      String range, String unit)
-    { create(key, value, help, type, range, unit); }
-  void Close()
-    { close(); }
-  void ReadArguments(Int argc, char *argv[])
-    { readArguments(argc, argv); }
-  double GetDouble(String key)
-    { return getDouble(key); }
-  Block<double> GetDoubleArray(String key)
-    { return getDoubleArray(key); }
-  int GetInt(String key)
-    { return getInt(key); }
-  Block<Int> GetIntArray(String key)
-    { return getIntArray(key); }
-  String GetString(String key)
-    { return getString(key); }
-  Bool GetBool(String key)
-    { return getBool(key); }
-  int Count()
-    { return count(); }
-  Bool Debug(int l)
-    { return debug(l); }
-  Bool Put(String key, String value)
-    { return put(key, value); }
-  Bool Put(String keyval)
-    { return put(keyval); }
-  void Version(String str)
-    { version(str); }
-  void Announce()
-    { announce(); }
-  // </group>
-
 
 private:
   // Get the index of the named parameter (0 if unknown key).
