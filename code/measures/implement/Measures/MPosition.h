@@ -1,5 +1,5 @@
 //# MPosition.h: A Measure: position on Earth
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,11 @@
 class MPosition;
 class MCPosition;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -100,6 +105,11 @@ public:
     typedef class MeasRef<MPosition> Ref;
 // MeasConvert use
     typedef class MeasConvert<MPosition,MVPosition,MCPosition> Convert;
+// Measure table Columns (e.g., MPosition::ROScalarColumn)
+    typedef class ROScalarMeasColumn<MPosition, MVPosition> ROScalarColumn;
+    typedef class ScalarMeasColumn<MPosition, MVPosition> ScalarColumn;
+    typedef class ROArrayMeasColumn<MPosition, MVPosition> ROArrayColumn;
+    typedef class ArrayMeasColumn<MPosition, MVPosition> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

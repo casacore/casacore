@@ -1,5 +1,5 @@
 //# MBaseline.h: A Measure: Baseline on Earth
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,10 @@
 class MBaseline;
 class MCBaseline;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -121,6 +125,11 @@ public:
     typedef class MeasRef<MBaseline> Ref;
 // MeasConvert use
     typedef class MeasConvert<MBaseline,MVBaseline,MCBaseline> Convert;
+// Measure table Columns (e.g., MBaseline::ROScalarColumn)
+    typedef class ROScalarMeasColumn<MBaseline, MVBaseline> ROScalarColumn;
+    typedef class ScalarMeasColumn<MBaseline, MVBaseline> ScalarColumn;
+    typedef class ROArrayMeasColumn<MBaseline, MVBaseline> ROArrayColumn;
+    typedef class ArrayMeasColumn<MBaseline, MVBaseline> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

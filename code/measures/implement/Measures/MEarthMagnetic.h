@@ -1,5 +1,5 @@
 //# MEarthMagnetic.h: A Measure: Magnetic field on Earth
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,10 @@
 class MEarthMagnetic;
 class MCEarthMagnetic;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -163,6 +167,11 @@ public:
     typedef MeasRef<MEarthMagnetic> Ref;
 // MeasConvert use
     typedef class MeasConvert<MEarthMagnetic,MVEarthMagnetic,MCEarthMagnetic> Convert;
+// Measure table Columns (e.g., MEarthMagnetic::ROScalarColumn)
+    typedef class ROScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> ROScalarColumn;
+    typedef class ScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> ScalarColumn;
+    typedef class ROArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic> ROArrayColumn;
+    typedef class ArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic> ArrayColumn;
 
 //# Constructors
 // <note> In the following constructors and other functions, all 

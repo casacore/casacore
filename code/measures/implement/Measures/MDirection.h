@@ -1,5 +1,5 @@
 //# MDirection.h: A Measure: astronomical direction
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,11 @@
 class MDirection;
 class MCDirection;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -220,6 +225,11 @@ public:
     typedef class MeasRef<MDirection> Ref;
 // MeasConvert use
     typedef class MeasConvert<MDirection,MVDirection,MCDirection> Convert;
+// Measure table Columns (e.g., MDirection::ROScalarColumn)
+    typedef class ROScalarMeasColumn<MDirection, MVDirection> ROScalarColumn;
+    typedef class ScalarMeasColumn<MDirection, MVDirection> ScalarColumn;
+    typedef class ROArrayMeasColumn<MDirection, MVDirection> ROArrayColumn;
+    typedef class ArrayMeasColumn<MDirection, MVDirection> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

@@ -1,5 +1,5 @@
 //# Muvw.h: A Measure: uvw on Earth
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,6 +41,10 @@ class MCuvw;
 class MBaseline;
 class MDirection;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -155,6 +159,11 @@ public:
   typedef class MeasRef<Muvw> Ref;
   // MeasConvert use
   typedef class MeasConvert<Muvw,MVuvw,MCuvw> Convert;
+  // Measure table Columns (e.g., Muvw::ROScalarColumn)
+  typedef class ROScalarMeasColumn<Muvw, MVuvw> ROScalarColumn;
+  typedef class ScalarMeasColumn<Muvw, MVuvw> ScalarColumn;
+  typedef class ROArrayMeasColumn<Muvw, MVuvw> ROArrayColumn;
+  typedef class ArrayMeasColumn<Muvw, MVuvw> ArrayColumn;
   
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

@@ -1,5 +1,5 @@
 //# MRadialVelocity.h: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,10 @@
 class MRadialVelocity;
 class MCRadialVelocity;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 class MDoppler;
 class MVDoppler;
 
@@ -161,6 +165,11 @@ public:
     typedef MeasRef<MRadialVelocity> Ref;
 // Measure conversion use
     typedef MeasConvert<MRadialVelocity,MVRadialVelocity,MCRadialVelocity> Convert;
+// Measure table Columns (e.g., MRadialVelocity::ROScalarColumn)
+    typedef class ROScalarMeasColumn<MRadialVelocity, MVRadialVelocity> ROScalarColumn;
+    typedef class ScalarMeasColumn<MRadialVelocity, MVRadialVelocity> ScalarColumn;
+    typedef class ROArrayMeasColumn<MRadialVelocity, MVRadialVelocity> ROArrayColumn;
+    typedef class ArrayMeasColumn<MRadialVelocity, MVRadialVelocity> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

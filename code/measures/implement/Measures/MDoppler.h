@@ -1,5 +1,5 @@
 //# MDoppler.h: A Measure: Doppler shift
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,10 @@
 class MDoppler;
 class MCDoppler;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -157,6 +161,11 @@ public:
     typedef MeasRef<MDoppler> Ref;
 // Measure conversion use
     typedef MeasConvert<MDoppler,MVDoppler,MCDoppler> Convert;
+// Measure table Columns (e.g., MDoppler::ROScalarColumn)
+    typedef class ROScalarMeasColumn<MDoppler, MVDoppler> ROScalarColumn;
+    typedef class ScalarMeasColumn<MDoppler, MVDoppler> ScalarColumn;
+    typedef class ROArrayMeasColumn<MDoppler, MVDoppler> ROArrayColumn;
+    typedef class ArrayMeasColumn<MDoppler, MVDoppler> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

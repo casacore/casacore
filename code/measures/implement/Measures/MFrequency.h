@@ -1,5 +1,5 @@
 //# MFrequency.h: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,6 +45,11 @@ class MCFrequency;
 class MDoppler;
 class MVDoppler;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -173,6 +178,11 @@ public:
     typedef class MeasRef<MFrequency> Ref;
 // Measure conversion use
     typedef class MeasConvert<MFrequency,MVFrequency,MCFrequency> Convert;
+// Measure table Columns (e.g., MFrequency::ROScalarColumn)
+    typedef class ROScalarMeasColumn<MFrequency, MVFrequency> ROScalarColumn;
+    typedef class ScalarMeasColumn<MFrequency, MVFrequency> ScalarColumn;
+    typedef class ROArrayMeasColumn<MFrequency, MVFrequency> ROArrayColumn;
+    typedef class ArrayMeasColumn<MFrequency, MVFrequency> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

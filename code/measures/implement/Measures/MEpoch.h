@@ -1,5 +1,5 @@
 //# MEpoch.h: A Measure: instant in time
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,10 @@
 class MEpoch;
 class MCEpoch;
 template <class M, class F, class MC> class MeasConvert;
+template <class M, class MV> class ArrayMeasColumn;
+template <class M, class MV> class ROArrayMeasColumn;
+template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -142,7 +146,12 @@ public:
   typedef class MeasRef<MEpoch> Ref;
   // Measure Convert (i.e. MEpoch::Convert)
   typedef class MeasConvert<MEpoch,MVEpoch,MCEpoch> Convert;
-  
+  // Measure table Columns (e.g., MEpoch::ROScalarColumn)
+  typedef class ROScalarMeasColumn<MEpoch, MVEpoch> ROScalarColumn;
+  typedef class ScalarMeasColumn<MEpoch, MVEpoch> ScalarColumn;
+  typedef class ROArrayMeasColumn<MEpoch, MVEpoch> ROArrayColumn;
+  typedef class ArrayMeasColumn<MEpoch, MVEpoch> ArrayColumn;
+    
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 
   // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
