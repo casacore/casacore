@@ -1,5 +1,5 @@
 //# tLinearCoordinate.cc: Test program for LinearCoordinate
-//# Copyright (C) 1998,1999,2000,2001,2003
+//# Copyright (C) 1998,1999,2000,2001,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -223,11 +223,6 @@ int main()
          }
          if (!allEQ(units, lc.worldAxisUnits())) {
             throw(AipsError("Failed world axis units set/recovery test 2"));
-         }
-         Vector<String> prefUnits(lc.nWorldAxes());
-         prefUnits(0) = String("Hz");
-         if (!lc.setPreferredWorldAxisUnits(prefUnits)) {
-            throw(AipsError(String("Failed to set preferred world axis units because ") + lc.errorMessage()));
          }
 //       
          xform.diagonal() = -2.0;
@@ -517,7 +512,7 @@ LinearCoordinate makeCoordinate (Vector<String>& names,
    xform.resize(n,n);
 //
    for (uInt i=0; i<n; i++) {
-      ostrstream oss;
+      ostringstream oss;
       oss << i;
       names(i) = "axis" + String(oss);
       crpix(i) = 10*(i+1);
