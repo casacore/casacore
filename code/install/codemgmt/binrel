@@ -141,10 +141,12 @@ if ( -e $logdir ) {
 die "couldn't create log directory: $logdir" unless mkdir($logdir,0755);
 
 %ahosts = ();
+%known_archs = ();
 die "couldn't open aipshosts" unless open(AHOSTS,"< aipshosts");
 while ( <AHOSTS> ) {
     ($h,$a,@junk) = split(/\s+/);
     $ahosts{$h} = $a;
+    $known_archs{$a} = 1 unless defined $known_archs{$a};
 }
 close(AHOSTS);
 
@@ -203,11 +205,12 @@ $FIND_DIR = "";
 
 ##
 ## automatically exclude architecture files beneath
-## glish, RCS links, and template instantiations
+## glish (for all possible architectures), RCS links,
+## and template instantiations
 ##
 push(@EXCLUDE_RE,'RCS$');
 push(@EXCLUDE_RE,'/tmplinst/');
-while (($key, $val) = each %arch_map) {
+while (($key, $val) = each %known_archs) {
     push(@EXCLUDE_RE,"glish/\.*/$key");
 }
 
