@@ -130,73 +130,61 @@ public:
   // The assignment operator uses reference semantics
   SkyComponent & operator=(const SkyComponent & other);
 
-  // return a reference to the flux of the component. Because this is a
-  // reference, manipulation of the flux values is performed through the
-  // functions in the Flux class. eg.,
-  // <src>comp.flux().setValue(newVal)</src>. 
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of these functions.
   // <group>
   virtual Flux<Double> & flux();
   virtual const Flux<Double> & flux() const;
   // </group>
 
-  // return a reference to the shape of the component. Because this is a
-  // reference, manipulation of the shape of the component is performed through
-  // the functions in the ComponentShape (or derived) class. eg.,
-  // <src>comp.shape().setRefDirection(newVal)</src>.
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of these functions.
   // <group>
   virtual const ComponentShape & shape() const;
   virtual ComponentShape & shape();
+  virtual void setShape(const ComponentShape & newShape);
   // </group>
   
-  // return a reference to the spectrum of the component. Because this is a
-  // reference, manipulation of the spectrum of the component is performed
-  // through the functions in the SpectralModel (or derived) class. eg.,
-  // <src>refFreq = comp.spectrum().refFrequency()</src>.
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of these functions.
   // <group>
   virtual const SpectralModel & spectrum() const;
   virtual SpectralModel & spectrum();
+  virtual void setSpectrum(const SpectralModel & newSpectrum);
   // </group>
   
-  // return a reference to the label associated with this component. The label
-  // is a text string for general use.
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of these functions.
   // <group>
   virtual String & label();
   virtual const String & label() const;
   // </group>
 
-  // Calculate the flux at the specified direction & frequency, in a pixel of
-  // specified size.
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of this function.
   virtual Flux<Double> sample(const MDirection & direction, 
 			      const MVAngle & pixelSize, 
 			      const MFrequency & centerFrequency) const;
 
-  // Project the component onto an Image. Calls the sample function once for
-  // the centre of each pixel. The image needs only have a one (and only one)
-  // direction axis. Other axes are optional and if there is no Stokes axes
-  // then it is assumed that the polarization is Stokes::I. If there is no
-  // frequency axis then the frequency is assumed to be the reference
-  // frequency ie., spectrum().refFrequency().
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of this function.
   virtual void project(ImageInterface<Float> & plane) const;
 
-  // Return the Fourier transform of the component at the specified point in
-  // the spatial frequency domain. The point is specified by a 3-element vector
-  // (u,v,w) that has units of meters and the frequency of the observation, in
-  // Hertz. These two quantities can be used to derive the required spatial
-  // frequency <src>(s = uvw*freq/c)</src>. The w component is not used in
-  // these functions.
-
-  // The "origin" of the transform is the reference direction of the
-  // component. This means, for symmetric components where the reference
-  // direction is at the centre, that the Fourier transform will always be
-  // real.
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of this function.
   virtual Flux<Double> visibility(const Vector<Double> & uvw,
 				  const Double & frequency) const;
 
-  // This functions convert between a record and a component.  Derived classes
-  // can interpret fields in the record in a class specific way. These
-  // functions define how a component is represented in glish.  They return
-  // False if the record is malformed and append an error message to the
-  // supplied string giving the reason.
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of these functions.
   // <group>
   virtual Bool fromRecord(String & errorMessage, 
 			  const RecordInterface & record);
@@ -209,9 +197,9 @@ public:
   // get a real copy.
   SkyComponent copy() const;
 
-  // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. Returns True if everything is fine
-  // otherwise returns False.
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of these functions.
   Bool ok() const;
 
 private:
