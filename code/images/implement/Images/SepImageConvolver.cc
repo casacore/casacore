@@ -1,5 +1,5 @@
 //# SepImageConvolver.cc:  separable convolution of an image
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,6 +46,7 @@
 #include <trial/Images/SubImage.h>
 #include <trial/Images/TempImage.h>
 #include <aips/Lattices/LatticeIterator.h>
+#include <trial/Lattices/LatticeUtilities.h>
 #include <aips/Lattices/TiledLineStepper.h>
 #include <trial/Mathematics/VectorKernel.h>
 #include <trial/Tasking/ProgressMeter.h>
@@ -252,7 +253,7 @@ void SepImageConvolver<T>::convolve(ImageInterface<T>& imageOut)
 // First copy input to output. We must replace masked pixels by zeros.  These reflect 
 // both the pixel mask and the region mask.  We also set the output mask to the input mask
  
-   copyAndZero(imageOut, *itsImagePtr);
+   LatticeUtilities::copyAndZero(itsOs, imageOut, *itsImagePtr);
 
 // Smooth in situ.  
       
@@ -303,50 +304,6 @@ void SepImageConvolver<T>::convolve()
    }  
 }
 
-template <class T>
-void SepImageConvolver<T>::copyAndZero(ImageInterface<T>& out,
-                                       ImageInterface<T>& in)
-{
-   if (in.isMasked()) {
-      itsOs << LogIO::NORMAL << "Copy input (and zero masked pixels) to smoothed image" << LogIO::POST;
-//
-      LatticeIterator<T> outIter(out);
-      Bool deleteDataIn, deleteMaskIn, deleteDataOut;
-      IPosition shape = outIter.woCursor().shape();
-      Array<T> dataIn(shape);
-      Array<Bool> maskIn(shape);
-      Lattice<Bool>* maskOutPtr = 0;
-      if (out.isMasked()) maskOutPtr = &(out.pixelMask());
-//       
-      for (outIter.reset(); !outIter.atEnd(); outIter++) {
-         shape = outIter.woCursor().shape();
-         if (!dataIn.shape().isEqual(shape)) dataIn.resize(shape);
-         if (!maskIn.shape().isEqual(shape)) maskIn.resize(shape);
-//
-         in.getSlice(dataIn, outIter.position(), shape);
-         in.getMaskSlice(maskIn, outIter.position(), shape);
-//
-         const T* pDataIn = dataIn.getStorage(deleteDataIn);
-         const Bool* pMaskIn = maskIn.getStorage(deleteMaskIn);
-//
-         Array<T>& dataOut = outIter.woCursor();
-         T* pDataOut = dataOut.getStorage(deleteDataOut);
-//
-         for (Int i=0; i<shape.product(); i++) {
-            pDataOut[i] = pDataIn[i];
-            if (!pMaskIn[i]) pDataOut[i] = 0.0;
-         }
-         if (maskOutPtr != 0) maskOutPtr->putSlice(maskIn, outIter.position());
-//
-         dataIn.freeStorage(pDataIn, deleteDataIn);
-         maskIn.freeStorage(pMaskIn, deleteMaskIn);
-         dataOut.putStorage(pDataOut, deleteDataOut);
-      }
-   } else {
-      itsOs << LogIO::NORMAL << "Copy input to smoothed image" << LogIO::POST;
-      out.copyData(in);
-   }     
-}        
  
 template <class T>
 void SepImageConvolver<T>::zero()
