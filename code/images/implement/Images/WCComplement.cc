@@ -61,7 +61,9 @@ Bool WCComplement::operator== (const WCCompound& other) const
    return WCCompound::operator== (other);
 }
 
-WCCompound* WCComplement::cloneRegion() const
+  //Clone needs to be a WCRegion cause the SGI compiler is 
+  //not smart enough to do the right thing.
+WCRegion* WCComplement::cloneRegion() const
 {
     return new WCComplement (*this);
 }

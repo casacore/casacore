@@ -90,7 +90,9 @@ public:
     virtual Bool operator== (const WCCompound& other) const;
 
     // Make a copy of the derived object.
-    virtual WCCompound* cloneRegion() const;
+    // cloneRegion needs to return a WCRegion * because the
+    // SGI compiler is smart enough to do the right thing.
+    virtual WCRegion* cloneRegion() const;
 
     // Get the class name (to store in the record).
     static String className();
