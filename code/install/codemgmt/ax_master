@@ -5833,3 +5833,4 @@
 16 204 src rm trial/apps/synthesistester/imagerpositiontest.cc
 16 204 src rm trial/apps/synthesistester/imagerpositiontest.cc
 16 215 src rm trial/implement/Functionals/Sinusoid1D2.h
+16 217 src mv trial/implement/Functionals/Gaussian1DParam.h aips/implement/Functionals/Gaussian1DParam.h
