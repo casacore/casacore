@@ -5929,3 +5929,4 @@
 16 329 sys rm libexec/gbtuts_standard.gp
 16 329 sys rm libexec/dishcli.g
 16 338 src rm trial/apps/calibrater/templates
+16 339 src mv bima/mirlib aips/mirlib
