@@ -5976,3 +5976,4 @@
 16 367 src rm trialdisplay/apps/viewer/skycatfromascii.help
 16 367 src rm trialdisplay/apps/viewer/skycatfromascii.g
 16 381 src rm doc/html/tour
+17 000 src mv trial/implement/Functionals/NQChebyshev.h aips/implement/Functionals/NQChebyshev.h
