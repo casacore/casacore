@@ -1,5 +1,5 @@
 //# tComponentList.cc:  this defines tComponentList.cc
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -221,19 +221,26 @@ int main() {
  	sampleDirection3 = direction;
       }
       const MVAngle pixelSize(Quantity(1.0, "'"));
+      const MVAngle halfSize(pixelSize.radian()/2.0);
       Vector<Double> sampledFlux(4);
       const MFrequency defaultFreq;
-      crux.sample(sampleDirection1, pixelSize, defaultFreq).value(sampledFlux);
-      AlwaysAssert(!near(sampledFlux(0), 0.0, 1E-2), AipsError);
+      crux.sample(sampleDirection1, pixelSize, pixelSize, defaultFreq)
+	.value(sampledFlux);
+      AlwaysAssert(near(sampledFlux(0), 0.1985720, 1E-6), AipsError);
+      crux.sample(sampleDirection1, pixelSize, halfSize, defaultFreq)
+	.value(sampledFlux);
+      AlwaysAssert(near(sampledFlux(0), 0.099286, 1E-6), AipsError);
       AlwaysAssert(near(sampledFlux(1), 0.0, C::dbl_epsilon), AipsError);
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(3), 0.0, 1E-10), AipsError);
-      crux.sample(sampleDirection2, pixelSize, defaultFreq).value(sampledFlux);;
+      crux.sample(sampleDirection2, pixelSize, pixelSize, defaultFreq)
+	.value(sampledFlux);;
       AlwaysAssert(near(sampledFlux(0), 0.0769, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(1), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(3), 0.0, 1E-10), AipsError);
-      crux.sample(sampleDirection3, pixelSize, defaultFreq).value(sampledFlux);
+      crux.sample(sampleDirection3, pixelSize, halfSize, defaultFreq)
+	.value(sampledFlux);
       AlwaysAssert(near(sampledFlux(0), 0.0373, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(1), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
