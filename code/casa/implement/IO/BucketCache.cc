@@ -1,5 +1,5 @@
 //# BucketCache.cc: Cache for buckets in a file
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -194,7 +194,7 @@ void BucketCache::setDirty()
 void BucketCache::setLRU()
 {
     // When the LRU counter would wrap, clear all LRU info in the cache.
-    if (its_LRUCounter == 4294967295) {
+    if (its_LRUCounter == 4294967295u) {
 	its_LRUCounter = 0;
 	for (uInt i=0; i<its_CacheSizeUsed; i++) {
 	    its_LRU[i] = 0;
