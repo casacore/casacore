@@ -22,8 +22,9 @@
 This document describes a phased plan to realize the Mosaicing
 specifications as described by Holdaway {\em et al.}
 \htmladdnormallink{(AIP++ Specification memo
-120)}{../specs/120/120.html}
-(hereafter HSCR).
+120)}{../specs/120/120.html} (hereafter HSCR). The concentration here
+is on the grouping of work to be done. For any necessary clarification
+of the definition of the work, see HSCR.
 
 \section{Current status}
 
@@ -38,21 +39,41 @@ is capable of supporting mosaicing data reduction.
 
 A significant design decision in {\tt sky} is that all deconvolution
 is performed inside {\tt sky}. This is contrary to the model used in
-Miriad mosaicing, whereby the dirty image and PSFs are written out and
-processed separately in another program. The rationale for the choice
-not to do this in {\em sky} is that the ancillary information (arising
-from the MeasurementSet) that must be carried along may be quite
-complicated (internally the VisibilityIterator class is used to
-encapsulate this information).
+Miriad mosaicing, whereby the dirty image, PSFs and primary beams are
+written out and processed separately in another program. The rationale
+for the choice not to do this in {\em sky} is that the ancillary
+information (arising from the MeasurementSet) that must be carried
+along may be quite complicated (internally the VisibilityIterator
+class is used to encapsulate this information). 
 
-The calibration object, {\tt cal}, knows nothing about mosaicing: all
-prediction of model visibilities is done by {\tt sky}.
+Other points relevant to HSCR:
+
+\begin{itemize}
+\item The SkyEquation formalism naturally decomposes primary
+beams into antenna-based terms, as desired in HSCR. 
+\item Tracking of {\em e.g.} solar system objects is 
+available via the Measures system.
+\item The calibration object, {\tt cal}, knows nothing about 
+mosaicing: all prediction of model visibilities is done by {\tt sky}.
 Visibility-plane calibration is thus independent of whether or not the
-data are mosaiced.
-
-The one key capability yet to be developed fully and demonstrated in the
-synthesis framework is the solution for image plane-based effects such
-as non-isoplanicity or pointing errors.
+data are mosaiced. This means that the forms of visibility-plane
+calibration envisaged by HSCR should be straightforward to 
+implement. The exception may be derivation of a relative
+calibration between single dish and interferometric data.
+\item The one key capability yet to be developed fully and 
+demonstrated in the synthesis framework is the solution for image
+plane-based calibration effects such as non-isoplanicity or pointing errors.
+\item Optimization of performance and disk space usage will
+continue to require special attention. One strategy advocated by
+Sault, Staveley-Smith and Brouw is to grid at a fixed wavelength (thus
+implying frequency-scaled uv and sky position coordinate systems).
+This would reduce the disk space needed for scratch images such as the
+transfer functions at the cost of causing problems elsewhere with
+a non-physical coordinate system.
+\item The advent of image regions will also help
+performance since currently the entire model image is transformed
+even if the primary beam covers only a fraction of the image. 
+\end{itemize}
 
 \section{Phase I: Improve sky}
 
@@ -60,12 +81,11 @@ To build on the current capabilities of {\tt sky}, we need to do the
 following:
 
 \begin{itemize}
-\item Improve the PBSkyJones class hierachy to allow the types of
-PB models described in HSCR. In this phase, we will only allow
-PBs with known form. Solveable primary beams will come later.
+\item Rework the existing PBSkyJones class hierachy to allow the types of
+PB models described in HSCR. In this phase, we will only allow PBs
+with known form. Solveable primary beams will come later.
 \item Optimize the use of FFTs in the Gridded transform (class GridFT)
-to avoid FFTing regions outside the primary beam model (need Image
-region support).
+to avoid FFTing regions outside the primary beam model.
 \item Post-deconvolution primary beam correction, both single field
 and multiple field.
 \item Provide different deconvolution methods: 
@@ -76,7 +96,18 @@ PSF).
 \item SDI-CLEAN
 \item MEM using Cornwell-Evans algorithm (as modified by Sault)
 \end{itemize}
-\item ComponentModel processing should be optimized.
+\item ComponentModel processing should be optimized and extended to
+include a number of effects such as time and bandwidth smearing.
+\item Wide-field imaging and mosaicing should be decoupled. 
+A wide-field image will be constructed from a number of facets cleaned
+simultaneously.  The SkyEquation mechanism will automatically apply
+the correct primary beam correction to each one. Sault, Staveley-Smith
+and Brouw show that the correction to place different facets on the
+same ultimate tangent plane can be performed by the appropriate
+rotation of the uv data during the gridding and degridding steps.
+This should be put into place in UVWMachine, and then {\tt sky}
+changed to make the appropriate facet images. The missing ingredient
+is a simple facility to insert the facets into a final large image.
 \end{itemize}
 
 A suitable concluding milestone for this phase would be to able to
@@ -88,13 +119,15 @@ observing circular polarization on the Sun.
 \section{Phase II: Develop Single Dish OTF imaging in sky}
 
 Single Dish On-The-Fly data reduction can be accomplished using the
-SkyEquation formalizm but to acheive satisfactory performance when
+SkyEquation formalism but to acheive satisfactory performance when
 imaging only OTF data, some changes may be required. In particular,
 a different version of SkyEquation::gradientsChiSquared is probably
-necessary since a Fourier transform is not required.
+necessary since a Fourier transform is not required. In the
+case of mixed single dish and interferometric data, the
+current gridded transform machine should be adequate.
 
-MeasurementSet V2 is needed in order to hold OTF data in a 
-reasonably compact form.
+An important dependency is that MeasurementSet V2 is needed in order
+to hold OTF data in a reasonably compact form.
 
 A concluding milestone would be to construct an OTF image from
 12m spectral data.
@@ -111,6 +144,11 @@ I suggest that the simulator be a separate object, with an interface
 similar in spirit to that of {\tt sky} {\em i.e.}  tending towards
 atomic, low-level operations rather than high-level operations.
 
+VisJones classes for simulating additive noise and gain errors
+now exist and are used in the current simulator. Some work is
+needed on an interface for defining observing patterns
+(such as mosaicing sequences).
+
 Part of the simulation tools should be devoted towards examining
 the three measures of accuracy of reconstruction described
 by Cornwell, Holdaway and Uson (1992):
@@ -126,7 +164,9 @@ divided by rms error in reconstruction.
 
 A concluding milestone would be to simulate a simple mosaiced
 observation from one of the consortium telescopes, and make an image
-using sky, and evaluate the imaging performance.
+using sky, and evaluate the imaging performance. As a check on
+performance, the simulation should be done for separate time-variable
+pointing errors per antenna.
 
 \section{Phase IV: Mosaicing tools}
 
@@ -146,9 +186,58 @@ are relevant (and with what weight).
 \item Based on proximity to a given point on the sky
 \item Based on data criteria {\em e.g.} peak visibility
 \end{itemize}
-\item Weighting tools
+\item Weighting tools to control the weighting of various
+parts of the mosaic.
+\begin{itemize}
+\item tools to show effect of weighting on sensitivity and
+beam shape
+\item relative weighting of interferometric ({\em i.e.}
+sensitivity-based or sidelobe-minimizing
+\item relative weighting of SD and interferometric data
+\end{itemize}
+\end{itemize}
+
+\section{Phase V: Advanced mosaicing tools}
+
+Development of advanced mosaicing tools will require the 
+simulation capabilities and tools developed in phases III and
+IV.
+
+\begin{itemize}
+\item On-the-Fly interferometric imaging. The computational load
+seems to be immense but the formalism should handle this
+adequately.
+\item Adaptive weighting of data during the deconvolution
+process.
+\item Calibration determination between SD and interferometers
+by, for example, regression in the overlap region of the
+uv plane. Bob Sault has done work in this area that we should
+emulate.
+\item Self-calibration for Primary beam parameters such as
+scaling of the PB ({\em e.g.} probably adequate for WSRT UHF feeds?),
+and pointing offsets. This is simpler for componentmodels and should
+be done that way first. Note that if done correctly, non-isoplanatic
+imaging should be a special case. By using bright sources at known
+positions, one can determine antenna- and sky position-dependent gain
+terms (phases in the non-isoplanatic case) on the bright objects, and
+then take these phases into account when forming an image of the
+residuals. In this way, a corrected image of the entire field
+can be formed. The next step is to extend this to the emission
+modelled by images (not just the componentmodels).
 \end{itemize}
 
 \section{Scheduling}
+
+The phasing is not strict. Phase I and II can proceed
+concurrently. Phases II, IV can be interchanged. Phase V obviously
+must come last.
+
+I'd estimate phases I-IV are several FTE-months of effort each.
+Phase V is probably substantially longer, maybe 6 months.
+Hence the entire effort is probably 18-24 FTE-months. Phase
+II should be done by someone familiar with OTF data, phase
+III requires a moderate but not sophisticated understanding
+of interferometry, and the other phases require someone with a
+deep understanding.
 
 \end{document}
