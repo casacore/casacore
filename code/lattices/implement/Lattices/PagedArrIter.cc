@@ -46,38 +46,32 @@
 template<class T> RO_PagedArrIter<T>::
 RO_PagedArrIter(const PagedArray<T> & data, const LatticeNavigator & nav)
   :theData(data),
-   theNavPtr(nav.clone())
+   theNavPtr(nav.clone()),
+   theReadFlag(False)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
-  Bool isARef = theData.getSlice(theCursor, theNavPtr->position(),
-                                 theNavPtr->cursorShape(),
-                                 theNavPtr->increment());
-  AlwaysAssert(isARef == False, AipsError);
   AlwaysAssert(ok() == True, AipsError);
 };
 
 template<class T> RO_PagedArrIter<T>::
 RO_PagedArrIter(const PagedArray<T> & data, const IPosition & curShape)
   :theData(data),
-   theNavPtr(new LatticeStepper(data.shape(), curShape))
+   theNavPtr(new LatticeStepper(data.shape(), curShape)),
+   theReadFlag(False)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
-  Bool isARef = theData.getSlice(theCursor, theNavPtr->position(),
-                                 theNavPtr->cursorShape(),
-                                 theNavPtr->increment());
-  AlwaysAssert(isARef == False, AipsError);
   AlwaysAssert(ok() == True, AipsError);
 };
 
 template<class T> RO_PagedArrIter<T>::
 RO_PagedArrIter(const RO_PagedArrIter<T> & other)
   :theData(other.theData),
-   theNavPtr(other.theNavPtr->clone())
+   theNavPtr(other.theNavPtr->clone()),
+   theReadFlag(False)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
-  *theCurPtr = *(other.theCurPtr);
   DebugAssert(ok() == True, AipsError);
 };
 
@@ -90,12 +84,11 @@ template<class T> RO_PagedArrIter<T>::
 template<class T> RO_PagedArrIter<T> & RO_PagedArrIter<T>::
 operator=(const RO_PagedArrIter<T> & other) {
   if (this != &other) {
-    if (theCurPtr != 0) 
-      delete theCurPtr;
+    delete theCurPtr;
     theData = other.theData;
     theNavPtr = other.theNavPtr->clone();
     AlwaysAssert(allocateCursor() == True, AipsError);
-    *theCurPtr = *(other.theCurPtr);
+    theReadFlag = False;
   }
   DebugAssert(ok() == True, AipsError);
   return *this;
@@ -177,6 +170,9 @@ vectorCursor() const {
   if (theCurPtr->ndim() != 1)
     throw(AipsError("RO_PagedArrIter<T>::vectorCursor()"
 		    " - check the cursor has only one non-degenerate axis"));
+  if (!theReadFlag) {
+    getData();
+  }
   return *(const Vector<T> *) theCurPtr;
 };
 
@@ -186,6 +182,9 @@ matrixCursor() const {
   if (theCurPtr->ndim() != 2)
     throw(AipsError("RO_PagedArrIter<T>::matrixCursor()"
 		    " - check the cursor has only two non-degenerate axes"));
+  if (!theReadFlag) {
+    getData();
+  }
   return *(const Matrix<T> *) theCurPtr;
 };
 
@@ -195,13 +194,30 @@ cubeCursor() const {
   if (theCurPtr->ndim() != 3)
     throw(AipsError("RO_PagedArrIter<T>::cubeCursor()"
 		    " - check the cursor has only three non-degenerate axes"));
+  if (!theReadFlag) {
+    getData();
+  }
   return *(const Cube<T> *) theCurPtr;
 };
 
 template<class T> const Array<T> & RO_PagedArrIter<T>::
 cursor() const {
   DebugAssert(ok() == True, AipsError);
+  if (!theReadFlag) {
+    getData();
+  }
   return theCursor;
+};
+
+template<class T> void RO_PagedArrIter<T>::
+getData()
+{
+  // Cast away the constness (which is harmless).
+  Bool isARef = theData.getSlice (theCursor, theNavPtr->position(),
+				  theNavPtr->endPosition(),
+				  theNavPtr->increment());
+  AlwaysAssert (isARef == False, AipsError);
+  theReadFlag = True;
 };
 
 template<class T> Bool RO_PagedArrIter<T>::
@@ -210,110 +226,82 @@ ok() const {
   // performance reasons. Both function static and file static variables
   // where considered and rejected for this purpose.
 
+  String message;
+  Bool flag = True;
   // Check that we have a pointer to a cursor and not a NULL pointer.
   if (theCurPtr == 0) {
-    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE << "Cursor pointer is uninitialised"
-           << LogIO::POST;
-     return False;
+    message += "Cursor pointer is uninitialised\n";
+    flag = False;
   }
   // Check the cursor is OK (by calling its "ok" function).
   if (theCurPtr->ok() == False) {
-    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE << "Cursor internals are inconsistant" 
-           << LogIO::POST;
-     return False;
+    message += "Cursor internals are inconsistent\n"; 
+    flag = False;
   }
   // Do the same for the Array cursor
   if (theCursor.ok() == False) {
-    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE << "Array Cursor internals are inconsistant" 
-           << LogIO::POST;
-     return False;
+    message += "Array Cursor internals are inconsistent\n";
+    flag = False;
   }
   // Check that both cursors have the same number of elements
   if (theCursor.nelements() != theCurPtr->nelements()) {
-    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE << "Cursors are inconsistant lengths" 
-           << LogIO::POST;
-     return False;
+    message += "Cursors are inconsistent lengths\n"; 
+    flag = False;
   }
   // Check that both cursors have the same contents. 
-  // This test is a performance pig.
+  // This test can be a performance pig.
 #if defined(AIPS_DEBUG)
-  if (theCurPtr->nelements() == 1) {
-    if (theCursor(IPosition(theCursor.ndim(),0)) != 
-        theCurPtr->operator()(IPosition(1,0))) {
-      LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-      ROlogErr << LogIO::SEVERE << "Cursors contain different data" 
-             << LogIO::POST;
-      return False;
-    }
+  if (allEQ(theCursor.nonDegenerate(theCursorAxes), *theCurPtr) == False) {
+    message += "Cursors contain different data\n"; 
+    flag = False;
   }
-  else
-    if (allEQ(theCursor.nonDegenerate(), *theCurPtr) == False) {
-      LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-      ROlogErr << LogIO::SEVERE << "Cursors contain different data" 
-             << LogIO::POST;
-      return False;
-    }
 #endif
   // Check that we have a pointer to a navigator and not a NULL pointer.
   if (theNavPtr.null() == True) {
-    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE << "Navigator pointer is uninitialised"
-           << LogIO::POST;
-    return False;
+    message += "Navigator pointer is uninitialised\n";
+    flag = False;
   }
   // Check the navigator is OK (by calling its "ok" function).
   if (theNavPtr->ok() == False) {
-    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE << "Navigator internals are inconsistant" 
-           << LogIO::POST;
-    return False;
+    message += "Navigator internals are inconsistent\n"; 
+    flag = False;
   }
   // Check the Navigator and Lattice are the same shape
   if (!(theNavPtr->latticeShape()).isEqual(theData.shape())) {
-    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE 
-             << "Navigator Lattice and Data Lattice are different shapes"
-             << LogIO::POST;
-     return False;
+    message += "Navigator Lattice and Data Lattice are different shapes\n";
+    flag = False;
   }
   // Check the Navigator cursor and cached Array are the same shape
   // There is a special case if the cursor has only one element
   if ((theCurPtr->nelements() == 1)) {
     if (theNavPtr->cursorShape().product() != 1) {
-      LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-      ROlogErr << LogIO::SEVERE 
-             << "Navigator cursor and Data cursor are not both unit shapes" 
-             << LogIO::POST;
-      return False;
+      message += "Navigator cursor and Data cursor are not both unit shapes\n"; 
+      flag = False;
+    }
+  }else{
+    if (!(theNavPtr->cursorShape().nonDegenerate(theCursorAxes))
+                                  .isEqual(theCurPtr->shape())) {
+      message += "Navigator cursor and Data cursor are different shapes\n"; 
+      flag = False;
     }
   }
-  else
-    if (!(theNavPtr->cursorShape().nonDegenerate())
-        .isEqual(theCurPtr->shape())) {
-      LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
-      ROlogErr << LogIO::SEVERE 
-             << "Navigator cursor and Data cursor are different shapes" 
-             << LogIO::POST;
-      return False;
-    }
-  return True;
+  if (!flag) {
+    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
+    ROlogErr << LogIO::SEVERE << message << LogIO::POST;
+  }
+  return flag;
 };
 
 template<class T> void RO_PagedArrIter<T>::
-cursorUpdate() {
+cursorUpdate()
+{
+  // Set to data not read.
+  theReadFlag = False;
   // Check if the cursor shape has changed.
   {
     const IPosition oldShape(theCurPtr->shape());
-    const IPosition newShape(theNavPtr->cursorShape().nonDegenerate());
-    if (newShape.nelements() != oldShape.nelements()){
-      delete theCurPtr;
-      AlwaysAssert(allocateCursor() == True, AipsError);
-    }
-    else if (oldShape != newShape) {
+    const IPosition newShape(theNavPtr->cursorShape().nonDegenerate(theCursorAxes));
+    if (oldShape != newShape) {
       theCurPtr->resize(newShape);
       relinkArray();
     }
@@ -365,8 +353,11 @@ cursorUpdate() {
 
 template<class T> Bool RO_PagedArrIter<T>::
 allocateCursor() {
+  const IPosition cursorAxes(theNavPtr->cursorAxes());
+  theCursorAxes.resize (cursorAxes.nelements());
+  theCursorAxes = cursorAxes;
   const IPosition cursorShape(theNavPtr->cursorShape());
-  const IPosition realShape(cursorShape.nonDegenerate());
+  const IPosition realShape(cursorShape.nonDegenerate (theCursorAxes));
   const uInt ndim = realShape.nelements();
   AlwaysAssert(ndim > 0, AipsError)
   switch (ndim) {
@@ -432,7 +423,8 @@ relinkArray() {
 template<class T> PagedArrIter<T>::
 PagedArrIter(PagedArray<T> & data, const LatticeNavigator & nav)
   :theData(data),
-   theNavPtr(nav.clone())
+   theNavPtr(nav.clone()),
+   theReadFlag(False)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
@@ -446,7 +438,8 @@ PagedArrIter(PagedArray<T> & data, const LatticeNavigator & nav)
 template<class T> PagedArrIter<T>::
 PagedArrIter(PagedArray<T> & data, const IPosition & curShape)
   :theData(data),
-   theNavPtr(new LatticeStepper(data.shape(), curShape))
+   theNavPtr(new LatticeStepper(data.shape(), curShape)),
+   theReadFlag(False)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
@@ -460,7 +453,8 @@ PagedArrIter(PagedArray<T> & data, const IPosition & curShape)
 template<class T> PagedArrIter<T>::
 PagedArrIter(const PagedArrIter<T> & other)
   :theData(other.theData),
-   theNavPtr(other.theNavPtr->clone())
+   theNavPtr(other.theNavPtr->clone()),
+   theReadFlag(False)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   *theCurPtr = *(other.theCurPtr);
@@ -484,6 +478,7 @@ operator=(const PagedArrIter<T> & other) {
     theData = other.theData;
     theNavPtr = other.theNavPtr->clone();
     AlwaysAssert(allocateCursor() == True, AipsError);
+    theReadFlag = False;
     *theCurPtr = *(other.theCurPtr);
   }
   DebugAssert(ok() == True, AipsError);
@@ -612,43 +607,33 @@ ok() const {
   // Check the cursor is OK (by calling its "ok" function).
   if (theCurPtr->ok() == False) {
     LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
-    logErr << LogIO::SEVERE << "Cursor internals are inconsistant" 
+    logErr << LogIO::SEVERE << "Cursor internals are inconsistent" 
            << LogIO::POST;
      return False;
   }
   // Do the same for the Array cursor
   if (theCursor.ok() == False) {
     LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
-    logErr << LogIO::SEVERE << "Array Cursor internals are inconsistant" 
+    logErr << LogIO::SEVERE << "Array Cursor internals are inconsistent" 
            << LogIO::POST;
      return False;
   }
   // Check that both cursors have the same number of elements
   if (theCursor.nelements() != theCurPtr->nelements()) {
     LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
-    logErr << LogIO::SEVERE << "Cursors are inconsistant lengths" 
+    logErr << LogIO::SEVERE << "Cursors are inconsistent lengths" 
            << LogIO::POST;
      return False;
   }
   // Check that both cursors have the same contents. 
   // This test is a performance pig.
 #if defined(AIPS_DEBUG)
-  if (theCurPtr->nelements() == 1) {
-    if (theCursor(IPosition(theCursor.ndim(),0)) != 
-        theCurPtr->operator()(IPosition(1,0))) {
-      LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
-      logErr << LogIO::SEVERE << "Cursors contain different data" 
-             << LogIO::POST;
-      return False;
-    }
+  if (allEQ(theCursor.nonDegenerate(theCursorAxes), *theCurPtr) == False) {
+    LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
+    logErr << LogIO::SEVERE << "Cursors contain different data" 
+	   << LogIO::POST;
+    return False;
   }
-  else
-    if (allEQ(theCursor.nonDegenerate(), *theCurPtr) == False) {
-      LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
-      logErr << LogIO::SEVERE << "Cursors contain different data" 
-             << LogIO::POST;
-      return False;
-    }
 #endif
   // Check that we have a pointer to a navigator and not a NULL pointer.
   if (theNavPtr.null() == True) {
@@ -660,7 +645,7 @@ ok() const {
   // Check the navigator is OK (by calling its "ok" function).
   if (theNavPtr->ok() == False) {
     LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
-    logErr << LogIO::SEVERE << "Navigator internals are inconsistant" 
+    logErr << LogIO::SEVERE << "Navigator internals are inconsistent" 
            << LogIO::POST;
     return False;
   }
@@ -683,7 +668,7 @@ ok() const {
       return False;
     }
   } else {
-    if (!(theNavPtr->cursorShape().nonDegenerate())
+    if (!(theNavPtr->cursorShape().nonDegenerate(theCursorAxes))
         .isEqual(theCurPtr->shape())) {
       LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
       logErr << LogIO::SEVERE 
@@ -729,16 +714,13 @@ cursorWrite() {
 
 template<class T> void PagedArrIter<T>::
 cursorUpdate() {
-  DebugAssert(ok() == True, AipsError);
+  // Set to data not read.
+  theReadFlag = False;
   // Check if the cursor shape has changed.
   {
     const IPosition oldShape(theCurPtr->shape());
-    const IPosition newShape(theNavPtr->cursorShape().nonDegenerate());
-    if (newShape.nelements() != oldShape.nelements()){
-      delete theCurPtr;
-      AlwaysAssert(allocateCursor() == True, AipsError);
-    }
-    else if (oldShape != newShape) {
+    const IPosition newShape(theNavPtr->cursorShape().nonDegenerate(theCursorAxes));
+    if (oldShape != newShape) {
       theCurPtr->resize(newShape);
       relinkArray();
     }
@@ -790,8 +772,11 @@ cursorUpdate() {
 
 template<class T> Bool PagedArrIter<T>::
 allocateCursor() {
+  const IPosition cursorAxes(theNavPtr->cursorAxes());
+  theCursorAxes.resize (cursorAxes.nelements());
+  theCursorAxes = cursorAxes;
   const IPosition cursorShape(theNavPtr->cursorShape());
-  const IPosition realShape(cursorShape.nonDegenerate());
+  const IPosition realShape(cursorShape.nonDegenerate(theCursorAxes));
   const uInt ndim = realShape.nelements();
   AlwaysAssert(ndim > 0, AipsError)
   switch (ndim) {
@@ -857,7 +842,3 @@ relinkArray() {
                         theCurPtr->getStorage(isACopy), SHARE);
   AlwaysAssert(isACopy == False, AipsError);
 };
-
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 PagedArrIter"
-// End: 
