@@ -1,4 +1,5 @@
 \documentclass[11pt]{article}
+\include{aips2defs}
 \usepackage{html,epsf}
 %%-----------------------------------------------------------------------------
 
