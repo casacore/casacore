@@ -99,6 +99,9 @@ public:
     uInt dimIter() const {return iterationDim;}
     // How many steps have we taken from the beginning?
     uInt nSteps() const {return stepsFromBegin;}
+protected:
+    // Advance cursor to its next position and tell which dimension stepped.
+    uInt nextStep();
 private:
     // Setup the object for the constructor.
     void setup();

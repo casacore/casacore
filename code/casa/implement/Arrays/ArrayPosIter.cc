@@ -1,5 +1,5 @@
 //# ArrayPosIter.cc: Iterate an IPosition through the shape of an Array
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -91,6 +91,11 @@ Bool ArrayPositionIterator::atStart() const
 // </thrown>
 void ArrayPositionIterator::next()
 {
+    nextStep();
+}
+
+uInt ArrayPositionIterator::nextStep()
+{
     // This could and should be made more efficient. 
     // next will step past the end (as it needs to for pastEnd to trigger).
 
@@ -99,7 +104,7 @@ void ArrayPositionIterator::next()
     if (iterationDim == ndim()){
         atOrBeyondEnd = True;
         Cursor = End;
-	return;
+	return ndim();
     }
 
     if (aips_debug) {
@@ -116,16 +121,17 @@ void ArrayPositionIterator::next()
     // increment the next higher  one, and it might ripple (e.g. 999+1=1000).
     // We let the most significan digit keep climbing.
     uInt iterDim = iterationDim;
-    while (Cursor(iterDim) > End(iterDim) && 
-	   iterDim < ndim() - 1) {
+    while (Cursor(iterDim) > End(iterDim)  &&  iterDim < ndim() - 1) {
 	Cursor(iterDim) = Start(iterDim);
 	if (++iterDim > ndim() - 1)
 	    break;
 	Cursor(iterDim) += 1;
     }
     // We're at the end if the last index has rolled past the end
-    if (Cursor(ndim() - 1) > End(ndim() - 1))
+    if (Cursor(ndim() - 1) > End(ndim() - 1)) {
         atOrBeyondEnd = True;
-    else
+    } else {
 	stepsFromBegin++;
+    }
+    return iterDim;
 }
