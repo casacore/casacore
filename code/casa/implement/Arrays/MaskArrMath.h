@@ -42,9 +42,7 @@
 #include <aips/Mathematics/Complex.h>
 
 
-// <summary> 
-//   Mathematical operations for MaskedArrays (and with Arrays) 
-// </summary>
+// <summary> Mathematical operations for MaskedArrays (and with Arrays) </summary>
 // <reviewed reviewer="" date="" tests="tMaskArrMath0 tMaskArrMath1 tMaskArrMath2 tMaskArrExcp">
 //
 // <prerequisite>
@@ -116,7 +114,7 @@
 //    operations for MaskedArrays, and between MaskedArrays and Arrays.
 // </linkfrom>
 //
-
+// <group name="MaskedArray mathematical operations">
 
 // Element by element arithmetic modifying left in-place. left and other
 // must be conformant.
@@ -427,5 +425,6 @@ template<class T> MaskedArray<T> square(const MaskedArray<T> &val);
 // Returns a MaskedArray where every element is cubed.
 template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 
+// </group>
 
 #endif
