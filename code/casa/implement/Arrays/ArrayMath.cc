@@ -1089,6 +1089,24 @@ template<class T> Array<T> pow(const Array<T> &a, const Array<T> &b)
     return tmp;
 }
 
+template<class T> Array<T> pow(const T &a, const Array<T> &b)
+{
+    uInt ntotal = b.nelements();
+    Array<T> tmp(b.copy());
+    Bool deleteIt;
+    T *storage = tmp.getStorage(deleteIt);
+    T *ts = storage;
+
+    while (ntotal--) {
+	*ts = pow(a,*ts);
+	ts++;
+    }
+
+    tmp.putStorage(storage, deleteIt); // should be a no-op
+
+    return tmp;
+}
+
 // <thrown>
 //   </item> ArrayConformanceError
 // </thrown>
@@ -1149,6 +1167,42 @@ template<class T> Array<T> fmod(const Array<T> &a, const Array<T> &b)
 
     tmp.putStorage(storage, deleteIt); // should be a no-op
     b.freeStorage(otherStorage, deleteOther);
+
+    return tmp;
+}
+
+template<class T> Array<T> fmod(const T &a, const Array<T> &b)
+{
+    uInt ntotal = b.nelements();
+    Array<T> tmp(b.copy());
+    Bool deleteIt;
+    T *storage = tmp.getStorage(deleteIt);
+    T *ts = storage;
+
+    while (ntotal--) {
+	*ts = fmod(a,*ts);
+	ts++;
+    }
+
+    tmp.putStorage(storage, deleteIt); // should be a no-op
+
+    return tmp;
+}
+
+template<class T> Array<T> fmod(const Array<T> &a, const T &b)
+{
+    uInt ntotal = a.nelements();
+    Array<T> tmp(a.copy());
+    Bool deleteIt;
+    T *storage = tmp.getStorage(deleteIt);
+    T *ts = storage;
+
+    while (ntotal--) {
+	*ts = fmod(*ts,b);
+	ts++;
+    }
+
+    tmp.putStorage(storage, deleteIt); // should be a no-op
 
     return tmp;
 }
