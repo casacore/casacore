@@ -42,7 +42,7 @@ template<class Container, class ElType>
 
     Int lower = originalLower;
     Int upper = lower + n - 1;
-    Int middle;
+    Int middle = 0;
 
     Bool ascending = ToBool(! (container(upper) < container(lower)));
     Bool toLeft, toRight;
@@ -91,7 +91,7 @@ template<class Container, class ElType>
 
     Int lower = originalLower;
     Int upper = lower + n - 1;
-    Int middle;
+    Int middle = 0;
 
     Bool ascending = ToBool(! (container[upper] < container[lower]));
     Bool toLeft, toRight;

@@ -56,10 +56,10 @@ template<class T> void showBlock (ostream& ios, const Block<T>& blk, Int nr)
 {
     if (nr < 0)
 	nr = 0;
-    if (nr > blk.nelements())
+    if (nr > Int(blk.nelements()))
 	nr = blk.nelements();
     ios << "[";
-    for (uInt i=0; i<nr; i++) {
+    for (Int i=0; i<nr; i++) {
 	if (i > 0)
 	    ios << ", ";
 	ios << blk[i];

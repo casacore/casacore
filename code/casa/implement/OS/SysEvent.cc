@@ -80,9 +80,9 @@ SysEventTargetInfo::SysEventTargetInfo(SysEventTargetProc t, void *u) : tgt(0),
 		tgtProc(t), regex(new Regex()),userData(u) { }
 
 SysEventTargetInfo::SysEventTargetInfo(SysEventTarget *t,const String &r) : tgt(t),
-		regex(new Regex(r)), tgtProc(0), userData(0) { }
-SysEventTargetInfo::SysEventTargetInfo(SysEventTarget *t) : tgt(t), regex(new Regex()),
-		tgtProc(0), userData(0) { }
+		tgtProc(0), regex(new Regex(r)), userData(0) { }
+SysEventTargetInfo::SysEventTargetInfo(SysEventTarget *t) : tgt(t),
+		tgtProc(0), regex(new Regex()), userData(0) { }
 
 
 SysEventTargetInfo::SysEventTargetInfo(SysEventTargetInfo &other) : tgt(other.tgt),
