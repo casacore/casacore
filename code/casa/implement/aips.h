@@ -1,5 +1,5 @@
 //# aips.h: Global initialization for namespace management, standard types, etc.
-//# Copyright (C) 1993-1997,1998,1999
+//# Copyright (C) 1993-1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,20 +25,11 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ENTER_)
-#include <aips/aips_enter.h>
-#endif
-
 #if !defined(AIPS_AIPS_H)
 #define AIPS_AIPS_H
 
 //# For size_t
 #include <stdlib.h>
-
-
-// Including aips.h should guarantee that AIPS++ namespace management is
-// switched on - it may have been explicitly switched off beforehand by
-// aips_exit.h.
 
 // Defined the "aips_" macro which is used for name space management, and
 // the "aips_name2" macro which is used to join two tokens.
