@@ -251,7 +251,7 @@ Bool TabularCoordinate::toPixel(Double &pixel, Double world) const
 Bool TabularCoordinate::toWorld(Vector<Double> &world, 
   	                        const Vector<Double> &pixel) const
 {
-   DebugAssert(pixel.nelements()==1,"TabularCoordinate: pixel vector must be length 1");
+   DebugAssert(pixel.nelements()==1,AipsError);
 //
    world.resize(1);
    return toWorld(world(0), pixel(0));
@@ -260,7 +260,7 @@ Bool TabularCoordinate::toWorld(Vector<Double> &world,
 Bool TabularCoordinate::toPixel(Vector<Double> &pixel, 
                                 const Vector<Double> &world) const
 {
-   DebugAssert(world.nelements()==1,"TabularCoordinate: world vector must be length 1");
+   DebugAssert(world.nelements()==1,AipsError);
 //
    pixel.resize(1);
    return toPixel(pixel(0), world(0));
