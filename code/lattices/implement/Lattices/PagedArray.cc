@@ -64,8 +64,6 @@ PagedArray<T>::PagedArray (const TiledShape& shape, const String& filename)
   itsRowNumber  (defaultRow()) 
 {
   makeTable(filename, Table::New);
-  itsTable.makePermanent();      // avoid double deletion by Cleanup
-  itsLog.makePermanent();
   makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
@@ -78,8 +76,6 @@ PagedArray<T>::PagedArray (const TiledShape& shape)
 {
   Path filename=File::newUniqueName(String("./"), String("pagedArray"));
   makeTable (filename.absoluteName(), Table::Scratch);
-  itsTable.makePermanent();      // avoid double deletion by Cleanup
-  itsLog.makePermanent();
   makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
@@ -91,8 +87,6 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file)
   itsColumnName (defaultColumn()),
   itsRowNumber  (defaultRow()) 
 {
-  itsTable.makePermanent();      // avoid double deletion by Cleanup
-  itsLog.makePermanent();
   makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
@@ -105,8 +99,6 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file,
   itsColumnName (columnName),
   itsRowNumber  (rowNumber)
 {
-  itsTable.makePermanent();      // avoid double deletion by Cleanup
-  itsLog.makePermanent();
   makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
@@ -120,8 +112,6 @@ PagedArray<T>::PagedArray (const String& filename)
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  itsTable.makePermanent();      // avoid double deletion by Cleanup
-  itsLog.makePermanent();
   AlwaysAssert(ok() == True, AipsError);
 }
 
@@ -132,8 +122,6 @@ template<class T> PagedArray<T>::PagedArray (Table& file)
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  itsTable.makePermanent();      // avoid double deletion by Cleanup
-  itsLog.makePermanent();
   AlwaysAssert(ok() == True, AipsError);
 }
 
@@ -146,8 +134,6 @@ PagedArray<T>::PagedArray (Table& file, const String& columnName,
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  itsTable.makePermanent();      // avoid double deletion by Cleanup
-  itsLog.makePermanent();
   AlwaysAssert(ok() == True, AipsError);
 }
 
@@ -160,8 +146,6 @@ PagedArray<T>::PagedArray (const PagedArray<T>& other)
   itsROArray    (other.itsROArray),
   itsAccessor   (other.itsAccessor)
 {
-  itsTable.makePermanent();      // avoid double deletion by Cleanup
-  itsLog.makePermanent();
   DebugAssert(ok() == True, AipsError);
 }
 
@@ -181,8 +165,6 @@ PagedArray<T>& PagedArray<T>::operator= (const PagedArray<T>& other)
 {
   if (this != &other) {
     itsTable      = other.itsTable;
-    itsTable.makePermanent();      // avoid double deletion by Cleanup
-    itsLog.makePermanent();
     itsColumnName = other.itsColumnName;
     itsRowNumber  = other.itsRowNumber;
     itsROArray.reference(other.itsROArray);
