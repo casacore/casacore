@@ -298,33 +298,55 @@ Bool TiledStMan::canAddRow() const
 }
 
 
-const IPosition& TiledStMan::hypercubeShape (uInt rownr)
+const IPosition& TiledStMan::hypercubeShape (uInt rownr) const
 {
     return getHypercube(rownr)->cubeShape();
 }
 
-const IPosition& TiledStMan::tileShape (uInt rownr)
+const IPosition& TiledStMan::tileShape (uInt rownr) const
 {
     return getHypercube(rownr)->tileShape();
+}
+
+uInt TiledStMan::bucketSize (uInt rownr) const
+{
+    return getHypercube(rownr)->bucketSize();
+}
+
+uInt TiledStMan::cacheSize (uInt rownr) const
+{
+    return getHypercube(rownr)->cacheSize();
+}
+
+uInt TiledStMan::calcCacheSize (uInt rownr,
+				const IPosition& sliceShape,
+				const IPosition& windowStart,
+				const IPosition& windowLength,
+				const IPosition& axisPath) const
+{
+    // Calculate the cache size for the given hypercube.
+    return getHypercube(rownr)->calcCacheSize (sliceShape, windowStart,
+					       windowLength, axisPath);
 }
 
 void TiledStMan::setCacheSize (uInt rownr,
 			       const IPosition& sliceShape,
 			       const IPosition& windowStart,
 			       const IPosition& windowLength,
-			       const IPosition& axisPath, Bool forceSmaller)
+			       const IPosition& axisPath,
+			       Bool forceSmaller)
 {
     // Set the cache size for the given hypercube.
-    getHypercube(rownr)->setCacheSize (sliceShape, windowStart, windowLength,
-				       axisPath, forceSmaller);
-    userSetCache_p = True;
+    getHypercube(rownr)->setCacheSize (sliceShape, windowStart,
+				       windowLength, axisPath,
+				       forceSmaller);
 }
 
-void TiledStMan::setCacheSize (uInt rownr, uInt nbytes, Bool forceSmaller)
+void TiledStMan::setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller)
 {
     // Set the cache size (in buckets) for the given hypercube.
     TSMCube* hypercube = getHypercube(rownr);
-    hypercube->setCacheSize (nbytes / hypercube->bucketSize(), forceSmaller);
+    hypercube->setCacheSize (nbuckets, forceSmaller);
     userSetCache_p = True;
 }
 
