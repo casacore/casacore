@@ -529,7 +529,7 @@ Bool ImageMoments<T>::setSmoothOutName(const String& smoothOutU)
    }
 //
    if (!overWriteOutput_p) {
-      NewFile x(False);
+      NewFile x;
       String error;
       if (!x.valueOK(smoothOutU, error)) {
          return False;
@@ -803,20 +803,27 @@ Bool ImageMoments<T>::createMoments()
 //   
 // Create output image(s).  
 //
-      PagedImage<T>* imgp;
+      PagedImage<T>* imgp = 0;
       const String in = pInImage_p->name(False);   
 //
       if (moments_p.nelements() == 1) {
          if (out_p.empty()) out_p = in+suffix;
          if (!overWriteOutput_p) {
-            NewFile x(False);
+            NewFile x;
             String error;
             if (!x.valueOK(out_p, error)) {
+               os_p << LogIO::NORMAL << error << LogIO::POST;
                return False;
             }
          }
 //
+// Try and make the file.  If we are operating from the DO, a file
+// of this file name could be open somewhere and this will fail.
+
          imgp = new PagedImage<T>(outImageShape, outImageCoord, out_p);
+         if (imgp==0) {
+            os_p << "Failed to create output file" << LogIO::EXCEPTION;        
+         }
          os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
       } else {
@@ -824,14 +831,18 @@ Bool ImageMoments<T>::createMoments()
          String name = out_p + suffix;
 //
          if (!overWriteOutput_p) {
-            NewFile x(False);
+            NewFile x;
             String error;
             if (!x.valueOK(name, error)) {
+               os_p << LogIO::NORMAL << error << LogIO::POST;
                return False;
             }
          }
 //
          imgp = new PagedImage<T>(outImageShape, outImageCoord, name);
+         if (imgp==0) {
+            os_p << "Failed to create output file" << LogIO::EXCEPTION;        
+         }
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
       }
