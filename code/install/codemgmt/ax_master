@@ -3956,3 +3956,4 @@
 14 065 src mv trial/implement/Display/test/dPSWorldCanvasApp.cc trialdisplay/implement/Display/test/dPSWorldCanvasApp.cc
 14 065 src mv trial/implement/Display/test/dRGBWCRaster.cc trialdisplay/implement/Display/test/dRGBWCRaster.cc
 14 065 src mv trial/implement/Display/test/tAttribute.cc trialdisplay/implement/Display/test/tAttribute.cc
+14 065 src mv trial/implement/Display/test/dMultichannelRaster.exec trialdisplay/implement/Display/test/dMultichannelRaster.exec
