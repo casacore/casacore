@@ -126,7 +126,7 @@
      shift
   done
 
-  rm -f before after tmp.$$
+  rm -f before after tmp.$$ tmp1.$$
   trap 'echo "Cleaning up..." ; \
         rm -f before after ; \
         trap 0 ; \
@@ -219,7 +219,7 @@
 ##     echo "// $*" > $TFILE
 ###
 ## (un)Comment next lines till ### to get (new)old behaviour
-       touch ${TFILE}.$$
+       touch tmp1.$$
 ###
      shift
 ## (un)Comment next lines till ### to get (new)old behaviour
@@ -236,7 +236,7 @@
 	      k=1; j=i; continue; } \
 	    k++; } \
 	  if( k!=0 ) {v=""; for(m=j; m < j+k; m++) v = v $(m) " "; \
-	    print v w}}' >> ${TFILE}.$$
+	    print v w}}' >> tmp1.$$
 ###
 ## (un)Comment next lines till ### to get (old)new  behaviour
 ##     echo "$*" |
@@ -272,7 +272,7 @@
            echo "   Bad entry for ${TFILE}:" 1>&2
            echo "        $ENTRY" 1>&2
 ## (un)Comment next lines till ### to get (new)old behaviour
-           rm -f ${TFILE}.$$
+           rm -f tmp1.$$
 ###
            NEW=`expr $NEW - 1`
            BAD=`expr $BAD + 1`
@@ -287,11 +287,11 @@
 ## (un)Comment next lines till ### to get (new)old behaviour
      if [ -f "$TFILE" ]
      then
-        if tail +2 $TFILE | diff - ${TFILE}.$$ >/dev/null 2>&1
+        if tail +2 $TFILE | diff - tmp1.$$ >/dev/null 2>&1
 	then
 	    [ "$VERBOSE" ] && echo "   $TFILE unchanged"
             OLD=`expr $OLD + 1`
-	    rm -f ${TFILE}.$$
+	    rm -f tmp1.$$
             continue
         else
             echo "   Replacing $TFILE"
@@ -300,9 +300,9 @@
      fi
      rm -f $TFILE
      echo "// $TFILE -- `date` -- `whoami`" > $TFILE
-     cat ${TFILE}.$$ >> $TFILE
+     cat tmp1.$$ >> $TFILE
      NEW=`expr $NEW + 1`
-     rm -f ${TFILE}.$$
+     rm -f tmp1.$$
 ###
   done
 
@@ -330,6 +330,6 @@
      echo "   Zap: $ZAP removed"
   }
 
-  rm -f before after tmp.$$
+  rm -f before after tmp.$$ tmp1.$$
   trap 0
   exit $STATUS
