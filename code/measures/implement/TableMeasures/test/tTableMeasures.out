@@ -6,117 +6,117 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
   #Keywords = 0
   #Columns  = 19
    Name=Time1   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = An MEpoch column
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=TimeOffset   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = MEpoch column with fix reference and offset
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=TimeVarOffset   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = Variable Offset col
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=MDirColumn   DataType=double   Nrdim=1   Shape=[2]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = Simple mdirection column
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=TimeRef   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = Reference column for Time1
    #keywords=0
 
    Name=TimeRefStr   DataType=String
-   DataManager=StManAipsIO/StManAipsIO   Default=
+   DataManager=StandardStMan/StandardStMan   Default=
    Comment = String variable reference column
    #keywords=0
 
    Name=MEpochVarStr   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = Another MEpoch column
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=Time1Arr   DataType=double   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = An MEpoch array column
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=TimeArrRef   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = VarRef co for TimeArr
    #keywords=0
 
    Name=Time2Arr   DataType=double   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = An MEpoch array column
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=Time2ArrOffset   DataType=double   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = Offset column for Time2Arr
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=Time2ArrRef   DataType=Int   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = Ref column for Time2Arr
    #keywords=0
 
    Name=Time3Arr   DataType=double   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = An MEpoch array column
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=Time3ArrStrRef   DataType=String   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = Array string reference column
    #keywords=0
 
    Name=Time4Arr   DataType=double   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = An MEpoch array column
    #keywords=0
 
    Name=Time4StrRef   DataType=String
-   DataManager=StManAipsIO/StManAipsIO   Default=
+   DataManager=StandardStMan/StandardStMan   Default=
    Comment = Scalar int reference column
    #keywords=0
 
    Name=Time4ScaOffset   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = Scalar offset column
    #keywords=0
 
    Name=SpareCol1   DataType=double   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = Test of exception column
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
 1  MEASINFO : SUBRECORD
 
    Name=SpareArrOffset   DataType=double   Nrdim=-1   Shape=[]
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = Spare int array column
    #keywords=2
 0  QuantumUnits : Array<String>[-1]
