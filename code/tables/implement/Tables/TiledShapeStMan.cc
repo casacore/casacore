@@ -49,7 +49,8 @@ static Record emptyRecord;
 
 TiledShapeStMan::TiledShapeStMan()
 : TiledStMan     (),
-  nrUsedRowMap_p (0)
+  nrUsedRowMap_p (0),
+  lastHC_p       (-1)
 {}
 
 TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
@@ -57,13 +58,15 @@ TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
 				  uInt maximumCacheSize)
 : TiledStMan         (hypercolumnName, maximumCacheSize),
   defaultTileShape_p (defaultTileShape),
-  nrUsedRowMap_p     (0)
+  nrUsedRowMap_p     (0),
+  lastHC_p           (-1)
 {}
 
 TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
 				  const Record& spec)
 : TiledStMan     (hypercolumnName, 0),
-  nrUsedRowMap_p (0)
+  nrUsedRowMap_p (0),
+  lastHC_p       (-1)
 {
     if (spec.isDefined ("DEFAULTTILESHAPE")) {
         defaultTileShape_p = IPosition (spec.asArrayInt ("DEFAULTTILESHAPE"));
@@ -440,31 +443,53 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, uInt rownr)
 
 TSMCube* TiledShapeStMan::getHypercube (uInt rownr)
 {
-    IPosition pos;
-    return TiledShapeStMan::getHypercube (rownr, pos);
-}
-TSMCube* TiledShapeStMan::getHypercube (uInt rownr, IPosition& position)
-{
-    // Check if the row number is correct.
     if (rownr >= nrrow_p) {
 	throw (TSMError ("getHypercube: rownr is too high"));
     }
-    TSMCube* hypercube = 0;
-    position.resize (0);
-    // Get the hypercube and the position in it.
+    // Get the hypercube.
     if (nrUsedRowMap_p == 0  ||  rownr > rowMap_p[nrUsedRowMap_p-1]) {
-        hypercube = cubeSet_p[0];
-	position = hypercube->cubeShape();
-    } else {
+        return cubeSet_p[0];
+    }
+    if (lastHC_p < 0  ||  rownr < rowMap_p[lastHC_p]
+    ||  rownr >= rowMap_p[1+lastHC_p]) {
         Bool found;
-	Int index = binarySearchBrackets (found, rowMap_p, rownr,
-					  nrUsedRowMap_p);
-        hypercube = cubeSet_p[cubeMap_p[index]];
-	position = hypercube->cubeShape();
-	// Add the starting position of the hypercube chunk the row is in.
-	if (position.nelements() > 0) {
-	  position(nrdim_p - 1) = posMap_p[index] - (rowMap_p[index] - rownr);
+	lastHC_p = binarySearchBrackets (found, rowMap_p, rownr,
+					 nrUsedRowMap_p);
+    }
+    return cubeSet_p[cubeMap_p[lastHC_p]];
+}
+
+TSMCube* TiledShapeStMan::getHypercube (uInt rownr, IPosition& position)
+{
+    if (rownr >= nrrow_p) {
+	throw (TSMError ("getHypercube: rownr is too high"));
+    }
+    // Get the hypercube.
+    if (nrUsedRowMap_p == 0  ||  rownr > rowMap_p[nrUsedRowMap_p-1]) {
+        TSMCube* hypercube = cubeSet_p[0];
+        const IPosition& shp = hypercube->cubeShape();
+        if (position.nelements() != shp.nelements()) {
+	    position.resize (shp.nelements());
 	}
+	position = shp;
+        return hypercube;
+    }
+    if (lastHC_p < 0  ||  rownr < rowMap_p[lastHC_p]
+    ||  rownr >= rowMap_p[1+lastHC_p]) {
+        Bool found;
+	lastHC_p = binarySearchBrackets (found, rowMap_p, rownr,
+					 nrUsedRowMap_p);
+    }
+    TSMCube* hypercube = cubeSet_p[cubeMap_p[lastHC_p]];
+    const IPosition& shp = hypercube->cubeShape();
+    if (position.nelements() != shp.nelements()) {
+        position.resize (shp.nelements());
+    }
+    position = shp;
+    // Add the starting position of the hypercube chunk the row is in.
+    if (position.nelements() > 0) {
+        position(nrdim_p - 1) = posMap_p[lastHC_p] -
+	                        (rowMap_p[lastHC_p] - rownr);
     }
     return hypercube;
 }
