@@ -362,8 +362,9 @@ String ImageStatistics<T>::formatCoordinate (const IPosition& pos)
       throw(AipsError(err));
    }
 //
-   String s, s2, u;
+   String s2;
    for (uInt i=0; i<world.nelements(); i++) {
+      String s, u;
       String tmp = cSys.format(u, Coordinate::DEFAULT, world(i), i, 
                                True, True, -1);
 //
@@ -430,7 +431,6 @@ void ImageStatistics<T>::listMinMax(ostrstream& osMin,
 
 // Find world coordinates of min and max. We list pixel coordinates
 // of min/max relative to the start of the parent lattice
-
 
       String minPosString = formatCoordinate (minPos_p);
       String maxPosString = formatCoordinate (maxPos_p);
