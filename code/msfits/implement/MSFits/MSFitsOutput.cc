@@ -776,12 +776,26 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 {
   LogIO os(LogOrigin("MSFitsOutput", "writeFQ"));
   MSSpectralWindow specTable(ms.spectralWindow());
-  ROArrayColumn<Double> inchanfreq(specTable,
-				   MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
-  ROScalarColumn<Double> intotbw(specTable,
-				 MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
-  ROScalarColumn<Int> insideband(specTable,
-				 MSSpectralWindow::columnName(MSSpectralWindow::NET_SIDEBAND));
+  ROArrayColumn<Double> inchanfreq
+            (specTable,
+	     MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
+  ROScalarColumn<Double> intotbw
+            (specTable,
+	     MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+  ROScalarColumn<Int> insideband
+            (specTable,
+	     MSSpectralWindow::columnName(MSSpectralWindow::NET_SIDEBAND));
+
+  Bool doWsrt = False;
+  {
+    MSObservation obsTable(ms.observation());
+    if (obsTable.nrow() > 0) {
+      ROScalarColumn<String> inarrayname(obsTable,
+					 MSObservation::columnName
+					 (MSObservation::TELESCOPE_NAME));
+      doWsrt = inarrayname(0) == "WSRT";
+    }
+  }
 
 
   // ##### Header
@@ -837,7 +851,15 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 	(*ifwidth)(inx) = intotbw(i);
       }
       (*totbw)(inx) = intotbw(i);
-      (*sideband)(inx) = insideband(i);
+      if (doWsrt) {
+	if (freqs(1) < freqs(0)) {
+	  (*sideband)(inx) = -1;
+	} else {
+	  (*sideband)(inx) = 1;
+	}
+      } else {
+	(*sideband)(inx) = insideband(i);
+      }
       // Write the current row if not combined.
       if (combineSpw) {
 	inx(0)++;
@@ -1055,7 +1077,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
       }
     }
     for (uInt antnum=0; antnum<nant; antnum++) {
-      *anname = inantname(antnum);
+      *anname = antid(antnum);
 
       Vector<Double> corstabxyz = inantposition(antnum) - arraypos;
 
@@ -1336,7 +1358,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
 			   const Block<Int>& spwidMap, uInt nrif,
 			   Bool combineSpw)
 {
-  LogIO os(LogOrigin("MSFitsOutput", "writeTy"));
+  LogIO os(LogOrigin("MSFitsOutput", "writeTY"));
   const MSSysCal subtable(syscal);
   ROMSSysCalColumns sysCalColumns(subtable);
   const uInt nrow = syscal.nrow();
@@ -1418,6 +1440,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
     *sourceId = 1;
     *antenna = 1 + sysCalColumns.antennaId()(i);
     //    *arrayId = 1 + sysCalColumns.arrayId()(i);
+    *arrayId = 1;
     *spwId = 1 + spwidMap[sysCalColumns.spectralWindowId()(i)];
     sysCalColumns.tsys().get (i, tsysval);
     Vector<Float> ts1(nrif);
@@ -1469,7 +1492,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
   // Remove TIME from the sort columns.
   // Use insertion sort, because the table is already in order.
   Int nrant;
-  sortNames.resize (2, True, True);
+  sortNames.resize (1, True, True);
   {
     Table sorcal2 = sorcal.sort (sortNames, Sort::Ascending,
 				 Sort::InsSort + Sort::NoDuplicates);
@@ -1547,7 +1570,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
   Record stringLengths; // no strings
   Record units; // default to Hz
   desc.addField("ANTENNA_NO", TpInt);
-  //  desc.addField("SUBARRAY", TpInt);
+  desc.addField("SUBARRAY", TpInt);
   desc.addField("FREQ ID", TpInt);
   desc.addField("TYPE_1", TpInt);
   desc.addField("NTERM_1", TpInt);
@@ -1574,8 +1597,8 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
     
   FITSTableWriter writer(output, desc, stringLengths,
 			 nrant, header, units, False);
-  RecordFieldPtr<Int> antenna(writer.row(), "ANTENNA NO.");
-  //  RecordFieldPtr<Int> arrayId(writer.row(), "SUBARRAY");
+  RecordFieldPtr<Int> antenna(writer.row(), "ANTENNA_NO");
+  RecordFieldPtr<Int> arrayId(writer.row(), "SUBARRAY");
   RecordFieldPtr<Int> spwId(writer.row(), "FREQ ID");
   RecordFieldPtr<Int> type1(writer.row(), "TYPE_1");
   RecordFieldPtr<Int> nterm1(writer.row(), "NTERM_1");
@@ -1612,6 +1635,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
     ROMSSysCalColumns sysCalColumns (syscal);
     *antenna = sysCalColumns.antennaId()(0) + 1;
     //    *arrayId = sysCalColumns.arrayId()(0) + 1;
+    *arrayId = 1;
     *spwId = 1 + spwidMap[sysCalColumns.spectralWindowId()(0)];
     if (tableChunk.nrow() != havec.nelements()) {
       os << LogIO::SEVERE << "SysCal table is irregular!" 
