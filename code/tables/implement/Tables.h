@@ -1,5 +1,5 @@
 //# Tables.h: The Tables module - AIPS++ data storage
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,6 +44,7 @@
 #include <aips/Tables/TiledDataStManAccessor.h>
 #include <aips/Tables/TiledCellStMan.h>
 #include <aips/Tables/TiledColumnStMan.h>
+#include <aips/Tables/TiledShapeStMan.h>
 
 //#   virtual column engines
 #include <aips/Tables/RetypedArrayEngine.h>
@@ -1063,7 +1064,7 @@
 // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
 // contains a discussion about the effect of defining a maximum cache size.
 // <p>
-// There are three Tiled Storage Managers:
+// The following Tiled Storage Managers are available:
 // <dl>
 //  <dt> <linkto class=TiledCellStMan:description>TiledCellStMan</linkto>
 //  <dd> creates (automatically) a new hypercube for each row.
@@ -1096,6 +1097,19 @@
 //       <br>
 //       This storage manager could be used to store UV-data with a mix
 //       of continuum and line data.
+//  <dt> <linkto class=TiledShapeStMan:description>TiledShapeStMan</linkto>
+//  <dd> can be seen as a specialization of <src>TiledDataStMan</src>
+//       by using the array shape as the id value.
+//       Similarly to <src>TiledDataStMan</src> it can maintain multiple
+//       hypercubes and store multiple rows in a hypercube, but is is
+//       easier to use, because the special <src>addHypercube</src> and
+//       <src>extendHypercube</src> functions are not needed.
+//       An hypercube is automatically added when a new array shape is
+//       encountered.
+//       <br>
+//       This storage manager could be used for a table with a column
+//       containing line and continuum data, which will result
+//       in 2 hypercubes.
 // </dl>
 //
 // For example:<br>
@@ -1121,6 +1135,9 @@
 // in time order, but that the size of the data is known. In that case
 // the hypercubes can be defined with their correct shape and putColumn
 // (with a Slicer) can be used to put the data (and reorder them implicitly).
+// <br>
+// Another alternative is to use TiledShapeStMan, so the hypercubes are
+// added or extended automatically.
 
 // <A NAME="Tables:virtual column engines">
 // <h3>Virtual Column Engines</h3></A>
