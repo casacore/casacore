@@ -130,8 +130,7 @@ public:
     // Makes a copy (copy, NOT reference, semantics) of other.
     IPosition(const IPosition& other);
     
-    ~IPosition()
-        { if (data_p != &buffer_p[0]) delete [] data_p; }
+    ~IPosition();
 
     // Makes this a copy of other. "this" and "other" must either be conformant
     // (same size) or this must be 0-length, in which case it will
@@ -421,6 +420,13 @@ inline IPosition::IPosition (uInt length)
 {
     if (length > BufferLength) {
 	allocateBuffer();
+    }
+}
+
+inline IPosition::~IPosition()
+{
+    if (data_p != &buffer_p[0]) {
+        delete [] data_p;
     }
 }
 
