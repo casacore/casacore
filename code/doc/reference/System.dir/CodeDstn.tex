@@ -119,13 +119,13 @@ when it is called upon to produce a new base release, \code{\textit{mm}.000}
    \item
       Concatenate \rcs\ revisions numbered \code{\textit{l}.0} to
       \code{\textit{m}.0} in the master into the archive \rcs\ version file
-      using a specially written utility called \exeref{rcscat}).  This
-      includes files rescinded files.  Files created in the master since the
-      previous base release are simply copied to the archive.
+      using a specially written utility called \exeref{rcscat}.  This includes
+      rescinded files.  Files created in the master since the previous base
+      release are simply copied to the archive.
    \end{itemize}
 
 \item
-   Verify the master and archive using \exeref{xrcs}).
+   Verify the master and archive using \exeref{xrcs}.
 
 \item
    Create the base release tar file for consortium installations in
@@ -174,8 +174,8 @@ when it is called upon to produce a new base release, \code{\textit{mm}.000}
    \exe{-l} option, even if there are no files to be updated.
 
    The latchkey mechanism works by recording a version and timestamp on the
-   second line of the \file{VERSION} file.  Normally 'inhale' obtains the
-   current version number from the first line, but if invoked with the
+   second line of the \file{VERSION} file.  Normally \exeref{inhale} obtains
+   the current version number from the first line, but if invoked with the
    \exe{-l} option it reads the last line instead.
 
 \item
