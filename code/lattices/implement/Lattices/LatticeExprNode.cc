@@ -1487,9 +1487,12 @@ LatticeExprNode iif (const LatticeExprNode& condition,
        arg[1] = arg1.makeDComplex();
        arg[2] = arg2.makeDComplex();
        return new LELFunctionND<DComplex>(LELFunctionEnums::IIF, arg);
+   case TpBool:
+       arg[1] = arg1.makeBool();
+       arg[2] = arg2.makeBool();
+       return new LELFunctionND<Bool>(LELFunctionEnums::IIF, arg);
    default:
-      throw (AipsError ("LatticeExprNode::iif - "
-			"2nd and 3rd argument cannot be Bool"));
+      throw (AipsError ("LatticeExprNode::iif - unknown data type"));
    }
    return LatticeExprNode();
 }
@@ -1520,9 +1523,12 @@ LatticeExprNode replace (const LatticeExprNode& arg1,
        arg[0] = arg1.makeDComplex();
        arg[1] = arg2.makeDComplex();
        return new LELFunctionND<DComplex>(LELFunctionEnums::REPLACE, arg);
+   case TpBool:
+       arg[0] = arg1.makeBool();
+       arg[1] = arg2.makeBool();
+       return new LELFunctionND<Bool>(LELFunctionEnums::REPLACE, arg);
    default:
-      throw (AipsError ("LatticeExprNode::replace - "
-			"1st and 2nd argument cannot be Bool"));
+      throw (AipsError ("LatticeExprNode::replace - unknown data type"));
    }
    return LatticeExprNode();
 }
