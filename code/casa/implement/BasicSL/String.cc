@@ -25,8 +25,9 @@
 //#
 //# $Id$
 
-#ifndef USE_OLD_STRING		/* The new String class */
 #include <aips/Utilities/String.h>
+
+#ifndef USE_OLD_STRING		/* The new String class */
 #include <aips/Utilities/Regex.h>
 #include <algorithm>
 #include <cstring>
@@ -506,7 +507,6 @@ template Char *transform<Char *, Char *, Int (*)(Int)>(Char *, Char *, Char *,
 //# AIPS++ history:
 //#	10-mar-92  pjt  added the hash() member function from ivstring
 
-#include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 
 #include <strstream.h>
