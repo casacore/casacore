@@ -35,6 +35,7 @@
 #include <trial/Coordinates/TabularCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Quantum.h>
 
 #include <iostream.h>
