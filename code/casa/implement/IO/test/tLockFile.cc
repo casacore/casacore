@@ -48,7 +48,8 @@ void doIt (const String& name, double interval)
     int op;
     while (True) {
 	cout << "1=readlock, 2=writelock, 3=unlock, 4=inspect" << endl;
-	cout << "5=canreadlock, 6=canwritelock, 7=speed, 8=message, else=end: ";
+	cout << "5=canreadlock, 6=canwritelock, 7=speed, 8=isMultiUsed" << endl;
+	cout << "9=message, else=end: ";
 	cin >> op;
 	if (op == 1) {
 	    if (lock.acquire (False, 1)) {
@@ -80,6 +81,8 @@ void doIt (const String& name, double interval)
 	    }
 	    timer.show ("Acquiring 500 locks:");
 	} else if (op == 8) {
+	    cout << "isMultiUsed = " << lock.isMultiUsed() << endl;
+	} else if (op == 9) {
 	    cout << lock.lastError() << ": " << lock.lastMessage() << endl;
 	} else {
 	    break;
