@@ -929,11 +929,13 @@ Bool ImageMoments<T>::createMoments()
          if (out_p.empty()) out_p = in+suffix;
          outPt[i] = new PagedImage<T>(outImageShape, outImageCoord, out_p);
          os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
+         outPt[i]->setMiscInfo(pInImage_p->miscInfo());
       } else {
          if (out_p.empty()) out_p = in;
          outPt[i] = new PagedImage<T>(outImageShape, outImageCoord,
                                       out_p+suffix);
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
+         outPt[i]->setMiscInfo(pInImage_p->miscInfo());
       }
 
 // Set output image units if possible
@@ -1040,8 +1042,8 @@ Bool ImageMoments<T>::createMoments()
 // Set up progress indicator
 
    Int nProfiles = imageIterator.latticeShape().product()/imageIterator.vectorCursor().nelements();
-   ProgressMeter clock(0.0, Double(nProfiles), String("Compute Moments"), String(""),
-                       String(""), String(""), True, max(1,Int(nProfiles/10)));
+   ProgressMeter clock(0.0, Double(nProfiles), "Compute Moments", "Profiles computed",
+                       "", "", True, max(1,Int(nProfiles/20)));
    Double meterValue = 0.0;
 
 
@@ -1133,8 +1135,8 @@ Bool ImageMoments<T>::createMoments()
 
       imageIterator++;
 
-      clock.update(meterValue);
       meterValue += 1.0; 
+      clock.update(meterValue);
    }
 
 // Delete memory
@@ -3839,6 +3841,7 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 // Create smoothed image
        
    pSmoothedImage = new PagedImage<T>(latticeShape, cSys, smoothName);
+   pSmoothedImage->setMiscInfo(pInImage_p->miscInfo());
    pSmoothedImage->set(0.0);
    if (!smoothOut_p.empty()) {
       os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
