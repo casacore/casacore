@@ -98,6 +98,10 @@
 // <dt> <src>DiffType</src>
 // <dd> The default differentiation type (e.g. <src>AutoDiff<Double></src>
 //		for <src>AutoDiff<Double></src>)
+// <dt> <src>getValue()</src> 
+// <dd>		get the value of a simple numeric or of an <src>AutoDiff</src>
+// <dt> <src>setValue()</src> 
+// <dd>		set the value of a simple numeric or of an <src>AutoDiff</src>
 // </dl>
 //
 // The specializations are done in such a way that higher order
@@ -146,6 +150,8 @@ public:
   typedef T ArgType;
   // Default type for differentiation
   typedef AutoDiff<T> DiffType;
+  // Get the value
+  static const T &getValue(const T &in) { return in; };
 };
 
 //# Following are specializations. Naming only for documentation
@@ -170,6 +176,9 @@ public:
   typedef T ArgType;
   // Default type for differentiation
   typedef AutoDiff<T> DiffType;
+  // Get the value
+  static const T &getValue(const Type &in) {
+    return FunctionTraits<T>::getValue(in.value()); };
 };
 
 #undef FunctionTraits_P
@@ -193,6 +202,9 @@ public:
   typedef AutoDiffA<T> ArgType;
   // Default type for differentiation
   typedef AutoDiffA<T> DiffType;
+  // Get the value
+  static const T &getValue(const Type &in) {
+    return FunctionTraits<T>::getValue(in.value()); };
 };
 
 #undef FunctionTraits_PA
@@ -216,6 +228,9 @@ public:
   typedef AutoDiffX<T> ArgType;
   // Default type for differentiation
   typedef AutoDiffX<T> DiffType;
+  // Get the value
+  static const T &getValue(const Type &in) {
+    return FunctionTraits<T>::getValue(in.value()); };
 };
 
 #undef FunctionTraits_PX
