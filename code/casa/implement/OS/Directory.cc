@@ -40,10 +40,16 @@
 #include <errno.h>                  // needed for errno
 #include <string.h>                 // needed for strerror
 #if defined(AIPS_SOLARIS)
-#include <sys/statvfs.h>            // needed for statvfs
-#define statfs statvfs
+#  include <sys/statvfs.h>          // needed for statvfs
+#  define statfs statvfs
+#elif defined(AIPS_OSF)
+#  include <sys/mount.h>
 #else
-#include <sys/vfs.h>
+#  include <sys/vfs.h>
+#  if defined(AIPS_IRIX)
+#    include <sys/statfs.h>
+#    define f_bavail f_bfree
+#  endif
 #endif
 
 // Shouldn't be needed, but is needed to get rename under linux. The
@@ -142,7 +148,13 @@ Bool Directory::isEmpty() const
 uLong Directory::freeSpace() const
 {
     struct statfs buf;
-    if (statfs (itsFile.path().expandedName().chars(), &buf) < 0) {
+#if defined(AIPS_OSF)
+    if (statfs (itsFile.path().expandedName(), &buf, sizeof(buf)) < 0) {
+#elif defined(AIPS_IRIX)
+    if (statfs (itsFile.path().expandedName(), &buf, sizeof(buf), 0) < 0) {
+#else
+    if (statfs (itsFile.path().expandedName(), &buf) < 0) {
+#endif
 	throw (AipsError ("Directory::freeSpace error on " +
 			  itsFile.path().expandedName() +
 			  ": " + strerror(errno)));
