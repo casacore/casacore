@@ -288,7 +288,8 @@ void GaussianShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
   DebugAssert(frequency > 0, AipsError);
   DebugAssert(ok(), AipsError);
   const Double wavenumber = frequency/C::c;
-  flux.scaleValue(itsFT(uvw(0)*wavenumber, uvw(1)*wavenumber));
+  const Double scaleFactor = itsFT(uvw(0)*wavenumber, uvw(1)*wavenumber);
+  flux.scaleValue(scaleFactor, scaleFactor, scaleFactor, scaleFactor);
 }
 
 ComponentShape * GaussianShape::clone() const {
