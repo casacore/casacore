@@ -35,27 +35,30 @@
 template <class T> class Vector;
 template <class T> class Lattice;
 
-// <summary>Functions for Fourier transforming Lattices</summary>
+// <summary>
+// Functions for Fourier transforming Lattices
+// </summary>
 
 // <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
 
 // <prerequisite>
 // </prerequisite>
-//
+
 // <etymology>
 // </etymology>
-//
+
 // <synopsis> 
 // </synopsis> 
-//
+
 // <example>
 // <srcblock>
 // </srcblock>
 // </example>
-//
+
 // <motivation>
 // </motivation>
-//
+
 // <todo asof="">
 // </todo>
 
@@ -94,15 +97,20 @@ public:
   // required. If whichAxis is specified Transforms are only done on selected
   // dimensions otherwise they are done on all axes. The origin of the
   // transform is the center of the Lattice ie., [nx/2,ny/2,...] if doShift is
-  // True, otherwise it is the first element ie., [0,0,...]  THIS FUNCTION WILL
-  // SCRAMBLE THE INPUT LATTICE. If you want the input Lattice preserved you
-  // should copy the input data to a temporary Lattice (using the functions in
-  // the CopytLattice class) prior to calling this function. 
+  // True, otherwise it is the first element ie., [0,0,...]  
+
+  // These functions will <b>scramble the input Lattice</b> unless the versions
+  // with const inputs are used. The const input versions are less efficient as
+  // they create a temporary Lattice and copy the input data into it.
   // <group>
   static void crfft(Lattice<Float> & out, Lattice<Complex> & in, 
 		    const Vector<Bool> & whichAxes, const Bool doShift=True);
   static void crfft(Lattice<Float> & out, Lattice<Complex> & in, 
 		    const Bool doShift=True);
+  static void crfft(Lattice<Float> & out, const Lattice<Complex> & in, 
+		    const Bool doShift=True);
   // </group>
 };
+
+
 #endif
