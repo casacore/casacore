@@ -86,20 +86,20 @@ int main() {
       Vector<Double> actualSample(4);
       expectedSample = 0.0; expectedSample(0) = peak*0.5;
       defGaussian.sample(actualSample, sampleDir, pixelSize);
-      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(),
-			   10000*C::dbl_epsilon), AipsError);
+      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+		   AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
       defGaussian.sample(actualSample, sampleDir, pixelSize);
       expectedSample(0) = peak;
-      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(),
-			   C::dbl_epsilon), AipsError);
+      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+		   AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
       expectedSample(0) = peak*0.5;
       defGaussian.sample(actualSample, sampleDir, pixelSize);
-      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(),
-			   10000*C::dbl_epsilon), AipsError);
+      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+		   AipsError);
       cout << "Passed the default Gaussian component test" << endl;
     }
     {
@@ -645,7 +645,6 @@ int main() {
       AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
  		   AipsError);
       cout << "Passed the Fourier transform test" << endl;
-      
     }
   }
   catch (AipsError x) {
