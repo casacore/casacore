@@ -116,6 +116,7 @@ endif
 
 AIPSIMPS := $(filter %.cc,$(AIPSSRCS))
 LIBEXECS := $(filter %.g %.gp, $(AIPSSRCS))
+LIBICONS := $(filter %.xbm, $(AIPSSRCS))
 AIPSGIFS := $(filter %.gif,$(AIPSSRCS))
 AIPSHTML := $(filter %.html,$(AIPSSRCS))
 
@@ -236,6 +237,11 @@ $(PCKGOPTD)/%.ycc : ;
 %.h : ;
 
 $(LIBEXECD)/% : $(CODEDIR)/%
+	@ $(RM) $@
+	  cp $< $@
+	@ chmod 664 $@
+
+$(LIBICOND)/% : $(CODEDIR)/%
 	@ $(RM) $@
 	  cp $< $@
 	@ chmod 664 $@
@@ -422,7 +428,7 @@ $(DPNDTIME) : $(addprefix $(CODEDIR)/,$(AIPSIMPS)) \
 
 lib : build_lock $(AIPSINST) $(addsuffix version.o,$(dir $(AIPSLIBS))) \
     $(foreach OBJ,$(AIPSIMPS:.cc=.o), $(addsuffix ($(OBJ)),$(AIPSLIBS))) \
-    $(UPDATELIB) $(LIBEXECS)
+    $(UPDATELIB) $(LIBEXECS) $(LIBICONS)
 	-@ $(RM) $(LOCKDBG)
 	-@ $(RM) $(LOCKOPT)
 
@@ -486,6 +492,9 @@ ranlib :
 
 # Scripts.
 $(LIBEXECS) : % : $(LIBEXECD)/% ;
+
+# Script icons.
+$(LIBICONS) : % : $(LIBICOND)/% ;
 
 docscan : $(patsubst %.h,$(SCANTIME)(%),$(filter %.h,$(AIPSSRCS)))
 	@ for i in $$SUBDIRS ; do \
@@ -682,6 +691,7 @@ show_local :
 	-@ echo ""
 	-@ echo "AIPSIMPS=$(AIPSIMPS)"
 	-@ echo "LIBEXECS=$(LIBEXECS)"
+	-@ echo "LIBICONS=$(LIBICONS)"
 	-@ echo "AIPSGIFS=$(AIPSGIFS)"
 	-@ echo "AIPSHTML=$(AIPSHTML)"
 	-@ echo ""
