@@ -261,11 +261,7 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
 //# normally be called by the end user.
 
 #if !defined(NEED_FORTRAN_UNDERSCORES)
-#if defined(__hpux__)
-#define NEED_FORTRAN_UNDERSCORES 0
-#else
 #define NEED_FORTRAN_UNDERSCORES 1
-#endif
 #endif
 
 #if NEED_FORTRAN_UNDERSCORES
