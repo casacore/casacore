@@ -1,5 +1,5 @@
 //# LogiArrayFwd.h: Forwards for LogicalArrays.
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,7 +60,7 @@
 // <motivation>
 // There are places where LogicalArrays cannot be defined, i.e. where
 // LogiArray.h cannot be included.  In those places, one must provide
-// forward declarations for those objects which one is using.
+// forward declarations for those tools which one is using.
 // This is particularly tricky for LogicalArrays, since they are not
 // classes, but are rather typedefs.  In order to make these forwards
 // easier to get correct, and easier to maintain, this file was created.
