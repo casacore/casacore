@@ -1,19 +1,22 @@
 \documentclass[11pt]{article}
 \usepackage{html, epsf}
+\begin{latexonly}
 \setlength{\textheight}{7in}
 \setlength{\textwidth}{8in}
 \setlength{\topmargin}{-0.5in}
 \special{landscape}
+\end{latexonly}
+
 %%-----------------------------------------------------------------------------
 
 \begin{document}
 
-\title{NOTE 205 -- AIPS++ TALK SLIDES}
+\title{NOTE 208 -- AIPS++ TALK SLIDES}
   
 
 \author{Tim Cornwell}
 
-\date{May 9 1997}
+\date{June 16 1997}
 
 \maketitle
 %%---------------------------------------------------------------------------
@@ -21,8 +24,9 @@
 \htmladdnormallink{A postscript version of this note is available (100kB).}{../208.ps}
 \end{htmlonly}
 
-%\tableofcontents
+\begin{latexonly}
 \newpage
+\end{latexonly}
       
 \input{talkslides.tex}
 \end{document}
