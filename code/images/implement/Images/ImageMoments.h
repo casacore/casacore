@@ -382,23 +382,6 @@ enum MethodTypes {
    Bool setWinFitMethod(const Vector<Int>& method);
 
 
-
-// The <src>enum KernelTypes</src> is provided for use with the
-// <src>setSmoothMethod</src> function.  It gives the allowed smoothing
-// kernel types which are available with this function.  
-enum KernelTypes {
-
-// Box-car smoothing kernel
-   BOXCAR,
-
-// Gaussian smoothing kernel
-   GAUSSIAN,
-
-// Hanning smoothing kernel
-   HANNING,
-
-   NKERNELS};
-
 // This function invokes smoothing of the input image.  Give <src>Int</src> 
 // arrays for the axes (0 relative) to be smoothed and the smoothing kernel 
 // types (use the <src>enum KernelTypes</src>) for each axis.  Give a
@@ -408,7 +391,8 @@ enum KernelTypes {
 // kernel (no matter what you might ask for).  A return value of <src>False</src>
 // indicates that you have given an inconsistent or invalid set of smoothing 
 // parameters.  If you don't call this function the default state of the
-// class is to do no smoothing.
+// class is to do no smoothing.  The kernel types are specified with
+// the VectorKernel::KernelTypes enum
    Bool setSmoothMethod(const Vector<Int>& smoothAxes,
                         const Vector<Int>& kernelTypes,
                         const Vector<Double>& kernelWidths);
@@ -454,11 +438,6 @@ enum KernelTypes {
 // function, the default state of the class is to set the output name root to 
 // the name of the input file.
    Bool setOutName(const String& outU);
-
-// This is the output file name for the convolving function generated for the
-// smoothing.  If you don't call this function, the default state of the class 
-// is to not output the PSF.
-   Bool setPsfOutName(const String& psfOut);
 
 // This is the output file name for the smoothed image.   It can be useful
 // to have access this to this image when trying to get the pixel
@@ -517,14 +496,6 @@ enum KernelTypes {
 // "inter" will do) is present.
    static Vector<Int> toMethodTypes (const String& methods);
 
-// Helper function to convert a string containing a list of desired smoothed kernel types
-// to the correct <src>Vector<Int></src> required for the <src>setSmooth</src> function.
-// This may be usful if your user interface involves strings rather than integers.
-// A new value is added to the output vector (which is resized appropriately) if any of the 
-// substrings "boxcar", "gaussian" or "hanning" (actually "box", "gauss", and "hann"
-// will do) is present.
-   static Vector<Int> toKernelTypes (const String& kernels);
-
 
 private:
 
@@ -536,7 +507,6 @@ private:
    T stdDeviation_p;
    T yMin_p, yMax_p;
    String out_p;
-   String psfOut_p;
    String smoothOut_p;
    Bool goodParameterStatus_p;
    Bool doWindow_p, doFit_p, doAuto_p, doSmooth_p, noInclude_p, noExclude_p;
@@ -584,13 +554,6 @@ private:
                        T& y,
                        PGPlotter& plotter);
 
-// Increase an integer to the next odd integer
-   Bool makeOdd        (Int& i);
-                     
-// Generate the PSF
-   void makePSF        (Array<T>& psf,
-                        Matrix<T>& psfSep);
-
 // Convert a <T> to a <Float> for plotting
    static Float convertT (const T value) {return Float(real(value));};
 
@@ -621,11 +584,6 @@ private:
 
 // Smooth an image   
   ImageInterface<T>* smoothImage (String& smoothName);
-
-// Smooth one row in situ
-  void smoothProfiles (ImageInterface<T>& in,
-                       const Int& row,
-                       const Vector<T>& psf);
 
 // Determine the noise by fitting a Gaussian to a histogram 
 // of the entire image above the 25% levels.  If a plotting
