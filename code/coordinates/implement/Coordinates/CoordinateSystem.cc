@@ -4639,23 +4639,18 @@ void CoordinateSystem::listPointingCenter (LogIO& os) const
    if (iC >= 0) {
       MVDirection pc = obsinfo_p.pointingCenter();
       if (!obsinfo_p.isPointingCenterInitial()) {
-         const DirectionCoordinate& dC = directionCoordinate(iC);
-         Vector<Double> pixel, world;
-         if (!dC.toPixel(pixel, pc)) {
-            os << dC.errorMessage() << LogIO::EXCEPTION;
-         }
-         if (!dC.toWorld(world, pixel)) {
-            os << dC.errorMessage() << LogIO::EXCEPTION;
-         }
-
-// We must use coordinates_p not dC as the latter is const
-
          Int prec;
          Coordinate::formatType form(Coordinate::DEFAULT);
          coordinates_p[iC]->getPrecision(prec, form, True, 6, 6, 6);
+//
          String listUnits;
-         String lon = coordinates_p[iC]->format(listUnits, form, world(0), 0, True, True, prec);
-         String lat  = coordinates_p[iC]->format(listUnits, form, world(1), 1, True, True, prec);
+         Quantum<Double> qLon = pc.getLong(Unit(String("deg")));
+         Quantum<Double> qLat = pc.getLat(Unit(String("deg")));
+//
+         String lon = coordinates_p[iC]->formatQuantity(listUnits, form, qLon,
+                                                        0, True, True, prec);
+         String lat  = coordinates_p[iC]->formatQuantity(listUnits, form, qLat,
+                                                        1, True, True, prec);
 //
          ostrstream oss;
          oss << "Pointing center     :  " << lon << "  " << lat << ends;
