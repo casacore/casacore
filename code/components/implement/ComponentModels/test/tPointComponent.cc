@@ -26,7 +26,6 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/PointComponent.h>
-#include <trial/ComponentModels/SkyComponent.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/PagedImage.h>
 #include <aips/Arrays/Array.h>
@@ -34,6 +33,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasConvert.h>
@@ -49,12 +49,11 @@
 int main() {
   try {
     {
-      // Create a point component at the default position
-      MVDirection defMVdir;
-      MDirection defDirJ2000(defMVdir);
-      MDirection defDirB1950(defMVdir, MDirection::B1950);
-      
-      PointComponent defPoint;
+      // Create a point component at the default direction
+      const MVDirection defMVdir;
+      const MDirection defDirJ2000(defMVdir);
+      const MDirection defDirB1950(defMVdir, MDirection::B1950);
+      const PointComponent defPoint;
       Vector<Double> sampledFlux(4);
       Vector<Double> expectedFlux(4); 
       expectedFlux = 0.0; expectedFlux(0) = 1.0;
@@ -69,13 +68,13 @@ int main() {
       cout << "Passed the default Point component test" << endl;
     }
     {
-      // Create a point component at a defined non-J2000 position
-      MVDirection dir1934(Quantity(293.5,"deg"),
-			  Quantity(-63, "deg") + Quantity(43, "'"));
-      MDirection coord1934J2000(dir1934, MDirection::J2000);
-      MDirection coord1934B1950(dir1934, MDirection::B1950);
+      // Create a point component at a defined non-J2000 direction
+      const MVDirection dir1934(Quantity(293.5,"deg"),
+				Quantity(-63, "deg") + Quantity(43, "'"));
+      const MDirection coord1934J2000(dir1934, MDirection::J2000);
+      const MDirection coord1934B1950(dir1934, MDirection::B1950);
       Vector<Double> flux1934(4); flux1934 = 0.0; flux1934(0) = 6.3;
-      PointComponent B1934(flux1934, coord1934B1950);
+      const PointComponent B1934(flux1934, coord1934B1950);
       Vector<Double> sampledFlux(4);
       const MVAngle tol = Quantity(1.0, "mas");
       B1934.sample(sampledFlux, coord1934B1950, tol);
@@ -94,21 +93,21 @@ int main() {
       B1934.setFlux(flux1934);
       Vector<Double> pointFlux(4);
       B1934.flux(pointFlux);
-      AlwaysAssert(allNear(pointFlux.ac(), flux1934.ac(), 1E-12), 
- 		   AipsError);
-   
-      // Set and verify the position of the point component. It is internally
+      AlwaysAssert(allNear(pointFlux.ac(), flux1934.ac(), 1E-12), AipsError);
+
+      // Set and verify the direction of the point component. It is internally
       // converted to a J2000 reference frame
-      MVDirection dir1934(Quantity(293.5,"deg"),Quantity(-63.8,"deg"));
-      MDirection coord1934B1950(dir1934, MDirection::B1950);
-      B1934.setPosition(coord1934B1950);
+      const MVDirection dir1934(Quantity(293.5,"deg"),Quantity(-63.8,"deg"));
+      const MDirection coord1934B1950(dir1934, MDirection::B1950);
+      B1934.setDirection(coord1934B1950);
       MDirection coord1934J2000;
-      B1934.position(coord1934J2000);
+      B1934.direction(coord1934J2000);
       AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
  		   AipsError); 
-      AlwaysAssert(coord1934J2000.getValue().near(MDirection::Convert(
-		   coord1934B1950,MDirection::J2000)().getValue()),AipsError);
-   
+      AlwaysAssert(coord1934J2000.getValue()
+		   .near(MDirection::Convert(coord1934B1950,MDirection::J2000)
+			 ().getValue()),AipsError);
+
       // Check this is a point component
       AlwaysAssert(B1934.type() == ComponentType::POINT, AipsError);
       AlwaysAssert(ComponentType::name(B1934.type()).matches("Point") == 1, 
@@ -181,19 +180,18 @@ int main() {
       AlwaysAssert(B1934.ok(), AipsError);
       AlwaysAssert(compCopy.ok(), AipsError);
       AlwaysAssert(compRef.ok(), AipsError);
-      cout << "Passed the copy and assignment tests" 
-  	   << endl;
+      cout << "Passed the copy and assignment tests" << endl;
     }
     {
-      uInt nx=6, ny=nx;
+      const uInt nx=6, ny=nx;
       PagedImage<Float> image(IPosition(2,nx,ny), 
  			      CoordinateUtil::defaultCoords2D(),
  			      "tPointComponent_tmp.image");
       image.set(0.0f);
       PointComponent defComp;
-      MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
-      MDirection coord00(ra0dec0, MDirection::J2000);
-      defComp.setPosition(coord00);
+      const MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
+      const MDirection coord00(ra0dec0, MDirection::J2000);
+      defComp.setDirection(coord00);
       defComp.project(image);
       AlwaysAssert(near(image(IPosition(2, 2, 1)), 1.0f), AipsError);
       image(IPosition(2, 2, 1)) = 0.0f;
