@@ -1,5 +1,5 @@
 //# Quantum.h: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,19 +31,11 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <strstream.h>
 #include <aips/Quanta/QBase.h>
 
 //# Forward Declarations
 template <class T> class Quantum;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#include <strstream.h>
-#else
-class istream;
-class ostream;
-class ostrstream;
-#endif
+#include <aips/iosstrfwd.h>
 
 //# Typedefs
 typedef Quantum<Double> Quantity;

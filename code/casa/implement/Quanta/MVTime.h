@@ -34,11 +34,7 @@
 #include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 class String;
 class MVEpoch;
 class Time;

@@ -1,5 +1,5 @@
 //# MUString.h: Pointed String class to aid analysis of quantity strings
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,11 +35,7 @@
 #include <aips/Containers/Block.h>
 
 //# Forward Declarations
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 template <class T> class Vector; 
 
 // <summary>

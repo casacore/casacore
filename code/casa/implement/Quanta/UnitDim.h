@@ -1,5 +1,5 @@
 //# UnitDim.h: defines the (private) class describing basic SI dimensions
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,11 +36,7 @@
 class String;
 class UnitVal;
 class UnitMap;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 
 // 
 // <summary>
