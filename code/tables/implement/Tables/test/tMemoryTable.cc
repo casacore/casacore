@@ -28,6 +28,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableRecord.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
@@ -79,6 +80,9 @@ void addIndStringArray(Table&);
 // add an indirect array
 void addIndArray(Table&);
 
+// add a keyword and subtable
+void addKeys(Table&);
+
 // show table info
 void info(const Table& aTable);
 
@@ -113,17 +117,25 @@ int main ()
 	addColumn       (TpBool, tab);
 	// add a DComplex Column Should use new index && space
 	addColumn       (TpDComplex, tab);
-	// copy to a plain table
-	copyTable(tab);
-	// copy to a memory table
-	copyMemoryTable(tab);
-	// copy a subset to a memory table
-	copyMemoryTableSubSet(tab);
-	// copy from a plain table
+	// Test the copy table stuff.
 	{
-	  Table tab2("tMemoryTable_tmp.tabcp");
-	  copyMemoryTable(tab2);
-	  copyMemoryTableSubSet(tab2);
+	  cout << endl << "Test copying ..." << endl;
+	  Table tabc = tab.copyToMemoryTable ("tmtestc");
+	  // Add a keyword and a subtable.
+	  addKeys (tabc);
+	  // copy to a plain table
+	  copyTable(tabc);
+	  // copy to a memory table
+	  copyMemoryTable(tabc);
+	  // copy a subset to a memory table
+	  copyMemoryTableSubSet(tabc);
+	  // copy from a plain table
+	  {
+	    Table tab2("tMemoryTable_tmp.tabcp");
+	    copyMemoryTable(tab2);
+	    copyMemoryTableSubSet(tab2);
+	  }
+	  cout << endl;
 	}
 	// delete first Column
 	deleteColumn    ("Col-1", tab);
@@ -177,6 +189,7 @@ void initArrays (Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
 
 void info (const Table& aTable)
 {
+  cout << "TableType = " << aTable.tableType() << endl;
   TableDesc tdesc = aTable.tableDesc();
   for (uInt i=0; i<tdesc.ncolumn(); i++) {
     const ColumnDesc& cdesc = tdesc.columnDesc(i);
@@ -231,7 +244,37 @@ void info (const Table& aTable)
     default:
       cout << "Sorry, datatype not implemented yet." << endl;
     }
-  } 
+  }
+  const TableRecord& rec = aTable.keywordSet();
+  for (uInt i=0; i<rec.nfields(); i++) {
+    cout << rec.name(i) << '=';
+    switch (rec.type(i)) {
+    case TpTable:
+      cout << "Record" << endl;
+      info (rec.asTable(i));
+      break;
+    case TpBool:
+      cout << rec.asBool(i) << endl;
+      break;
+    case TpString:
+      cout << rec.asString(i) << endl;
+      break;
+    case TpDComplex:
+    case TpComplex:
+      {
+	DComplex val;
+	rec.get (i, val);
+	cout << val << endl;
+      }
+      break;
+    default:
+      {
+	Double val;
+	rec.get (i, val);
+	cout << val << endl;
+      }
+    }
+  }
 }
 
 // First build a description.
@@ -528,6 +571,21 @@ void addIndArray (Table& aTable)
   }
 
   info(aTable);
+}
+
+void addKeys(Table& tab)
+{
+  tab.rwKeywordSet().define ("Key1", "abc");
+  // Create a subtable.
+  TableDesc td("", "1", TableDesc::Scratch);
+  td.addColumn (ScalarColumnDesc<String> ("str"));
+  SetupNewTable aNewTab("tmtest", td, Table::New);
+  Table aTable (aNewTab, Table::Memory, 2);
+  ScalarColumn<String> sc(aTable, "str");
+  sc.put (0, "str1");
+  sc.put (0, "s1");
+  sc.put (1, "sstr2");
+  tab.rwKeywordSet().defineTable ("Subtab", aTable);
 }
 
 void putColumnTest (Table& aTable)
