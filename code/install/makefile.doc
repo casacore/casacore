@@ -256,7 +256,7 @@ endif
 
 .PHONY : docsys
 
-allsys : docsys helpsys $(CODESUBS)
+allsys : docsys $(CODESUBS)
 
 .cleancode ::
 	-$Q cd $(CODEDIR) && \
