@@ -76,6 +76,7 @@
 template <class T> 
 ImageMoments<T>::ImageMoments (ImageInterface<T>& image, 
                                LogIO &os,
+                               Bool overWriteOutput,
                                Bool showProgressU)
 : os_p(os),
   showProgress_p(showProgressU),
@@ -94,7 +95,8 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
   doSmooth_p(False),
   noInclude_p(True),
   noExclude_p(True),
-  fixedYLimits_p(False)
+  fixedYLimits_p(False),
+  overWriteOutput_p(overWriteOutput)
 //
 // Constructor. 
 //
@@ -143,7 +145,8 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
   selectRange_p(other.selectRange_p),
   smoothAxes_p(other.smoothAxes_p),
   pInImage_p(other.pInImage_p),
-  plotter_p(other.plotter_p)
+  plotter_p(other.plotter_p),
+  overWriteOutput_p(other.overWriteOutput_p)
 //
 // Copy constructor
 //
@@ -177,7 +180,8 @@ ImageMoments<T>::ImageMoments(ImageMoments<T> &other)
   selectRange_p(other.selectRange_p),
   smoothAxes_p(other.smoothAxes_p),
   pInImage_p(other.pInImage_p),
-  plotter_p(other.plotter_p)
+  plotter_p(other.plotter_p),
+  overWriteOutput_p(other.overWriteOutput_p)
 //
 // Copy constructor
 //
@@ -234,6 +238,7 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       noInclude_p = other.noInclude_p;
       noExclude_p = other.noExclude_p;
       fixedYLimits_p = other.fixedYLimits_p;
+      overWriteOutput_p = other.overWriteOutput_p;
    }
    return *this;
 }
@@ -530,7 +535,6 @@ Bool ImageMoments<T>::setInExCludeRange(const Vector<T>& includeU,
       goodParameterStatus_p = False;
       return False;
    }
-
    return True; 
 }
 
@@ -573,12 +577,6 @@ Bool ImageMoments<T>::setOutName(const String& outU)
       os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
-//   
-   NewFile x(False);
-   String error;
-   if (!x.valueOK(outU, error)) {
-      return False;
-   }
    out_p = outU;
    return True;
 }
@@ -595,10 +593,12 @@ Bool ImageMoments<T>::setPsfOutName(const String& psfOutU)
       return False;
    }
 //
-   NewFile x(False);
-   String error;
-   if (!x.valueOK(psfOutU, error)) {
-      return False;
+   if (!overWriteOutput_p) {
+      NewFile x(False);
+      String error;
+      if (!x.valueOK(psfOutU, error)) {
+         return False;
+      }
    }
 //
    psfOut_p = psfOutU;
@@ -618,10 +618,12 @@ Bool ImageMoments<T>::setSmoothOutName(const String& smoothOutU)
       return False;
    }
 //
-   NewFile x(False);
-   String error;
-   if (!x.valueOK(smoothOutU, error)) {
-      return False;
+   if (!overWriteOutput_p) {
+      NewFile x(False);
+      String error;
+      if (!x.valueOK(smoothOutU, error)) {
+         return False;
+      }
    }
 //
    smoothOut_p = smoothOutU;  
@@ -930,15 +932,15 @@ Bool ImageMoments<T>::createMoments()
 
       Unit momentUnits;
       goodUnits = setOutThings(suffix, momentUnits, imageUnits, momentAxisUnits, moments_p(i));
-   
-// Create output image(s)
-
+//   
+// Create output image(s).  
+//
       PagedImage<T>* imgp;
       const String in = pInImage_p->name(False);   
 //
       if (moments_p.nelements() == 1) {
-         if (out_p.empty()) {
-            out_p = in+suffix;
+         if (out_p.empty()) out_p = in+suffix;
+         if (!overWriteOutput_p) {
             NewFile x(False);
             String error;
             if (!x.valueOK(out_p, error)) {
@@ -950,17 +952,18 @@ Bool ImageMoments<T>::createMoments()
          os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
       } else {
-         if (out_p.empty()) {
-            out_p = in;
+         if (out_p.empty()) out_p = in;
+         String name = out_p + suffix;
+//
+         if (!overWriteOutput_p) {
             NewFile x(False);
             String error;
-            if (!x.valueOK(out_p, error)) {
+            if (!x.valueOK(name, error)) {
                return False;
             }
-          }
+         }
 //
-         imgp = new PagedImage<T>(outImageShape, outImageCoord,
-				  out_p+suffix);
+         imgp = new PagedImage<T>(outImageShape, outImageCoord, name);
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
       }
@@ -1167,22 +1170,26 @@ Bool ImageMoments<T>::checkMethod ()
       else
          os_p <<  "  N";
 
-      if (doWindow_p) 
+      if (doWindow_p) {
          os_p <<  "          Y";
-      else
+      } else {
          os_p <<  "          N";
-      if (doFit_p) 
+      }
+      if (doFit_p) {
          os_p <<  "         Y";
-      else
+      } else {
          os_p <<  "         N";
-      if (noInclude_p && noExclude_p)
+      }
+      if (noInclude_p && noExclude_p) {
          os_p <<  "        N";
-      else
+      } else {
          os_p <<  "        Y";
-      if (doAuto_p)
+      }
+      if (doAuto_p) {
          os_p <<  "            Y";
-      else
+      } else {
          os_p <<  "            N";
+      }
       os_p <<  endl;
       os_p <<  "-----------------------------------------------------" << endl << LogIO::POST;
       return False;
@@ -1197,37 +1204,41 @@ Bool ImageMoments<T>::checkMethod ()
    if (doWindow_p) {
       os_p << "The window method" << endl;
       if (doFit_p) {
-         if (doInter)
+         if (doInter) {
             os_p << "   with window selection via interactive Gaussian fitting" << endl;
-         else
+         } else {
             os_p << "   with window selection via automatic Gaussian fitting" << endl;
+         }
       } else {
-         if (doInter)
+         if (doInter) {
             os_p << "   with interactive direct window selection" << endl;
-         else     
-            os_p << "   with automatic window selection via the Bosma algorithm" << endl;
+         } else {
+            os_p << "   with automatic window selection via the converging mean (Bosma) algorithm" << endl;
+         }
       }           
       if (doSmooth_p) {
          os_p << "   operating on the smoothed image.  The moments are still" << endl;
          os_p << "   evaluated from the unsmoothed image" << endl;
-      } else
+      } else {
          os_p << "   operating on the unsmoothed image" << endl;
+      }
    } else if (doFit_p) {
-      if (doInter)
+      if (doInter) {
          os_p << "The interactive Gaussian fitting method" << endl;
-      else
+      } else {
          os_p << "The automatic Gaussian fitting method" << endl;
-          
+      }          
       os_p << "   operating on the unsmoothed data" << endl;
       os_p << "   The moments are evaluated from the fits" << endl;
    } else if (doSmooth_p) {
       os_p << "The smooth and clip method.  The moments are evaluated from" << endl;
       os_p << "   the masked unsmoothed image" << endl;
    } else {
-      if (noInclude_p && noExclude_p)
-         os_p << "The basic show it as it is method !" << endl;
-      else
-         os_p << "The clip method" << endl;
+      if (noInclude_p && noExclude_p) {
+         os_p << "The basic method" << endl;
+      } else {
+         os_p << "The basic clip method" << endl;
+      }
    }
    os_p << endl << endl << LogIO::POST;
    
