@@ -1,5 +1,5 @@
 //# tDlist.cc: This program tests the Dlist class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -399,13 +399,11 @@ main() {
   t3 = onePc;
   dump(&t3);
   try {
+    cout << ">>> Instance-specific assertion error message:" << endl;
     t4 = &onePd;
     show(t4);
   } catch (IterError xx) {
-#if defined(__GNUG__)
-    cout << "#X#" << endl;
-#endif
-    cout << endl << ">>> Instance-specific assertion error message:" << endl
+    cout << endl
          << "#X# IterError: " << xx.getMesg() << endl
          << "<<< End of assertion error message." << endl;
   } end_try;
