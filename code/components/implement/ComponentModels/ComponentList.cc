@@ -535,7 +535,7 @@ String ComponentList::name(ComponentList::SortCriteria enumerator) {
   switch (enumerator) {
   case ComponentList::FLUX: return "Flux";
   case ComponentList::POSITION: return "Position";
-  case ComponentList::POLARISATION: return "Polarisation";
+  case ComponentList::POLARISATION: return "Polarization";
   default: return "unknown";
   };
 }
