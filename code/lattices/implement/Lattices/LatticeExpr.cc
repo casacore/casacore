@@ -1,5 +1,5 @@
 //# LatticeExpr.cc:  this defines LatticeExpr.cc
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,6 +46,11 @@ LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr)
 // converted to match the template type if possible
 //
 {
+    // Check if an expression array has a shape.
+    if (!expr.isScalar()  &&  expr.shape().nelements() == 0) {
+       throw AipsError ("LatticeExpr cannot be constructed from a lattice "
+			"expression with an undefined shape");
+    }
     DataType thisDT = whatType (static_cast<T*>(0));
     if (expr.dataType() == thisDT) {
 	expr_p = expr;
