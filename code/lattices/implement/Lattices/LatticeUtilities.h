@@ -31,10 +31,12 @@
 
 #include <aips/aips.h>
 
+template <class T> class Array;
 template <class T> class Lattice;
 template <class T> class MaskedLattice;
 class IPosition;
 class LogIO;
+class Slicer;
 
 // <summary>Static functions for Lattices</summary>
 // <use visibility=export>
@@ -64,6 +66,20 @@ class LatticeUtilities
 {
    public:
 
+// Collapse the specified axes by averaging
+// <group>
+   template <class T>
+   static void collapse (Array<T>& out, const IPosition& axes,
+                         const MaskedLattice<T>& in,
+                         Bool dropDegenerateAxes);
+//
+   template <class T>
+   static void collapse (Array<T>& data, Array<Bool>& mask,
+                         const IPosition& axes, 
+                         const MaskedLattice<T>& lat,
+                         Bool dropDegenerateAxes);
+// </group>
+
 // Copy pixels and mask from input to output.  Zero output pixels
 // where mask is False (bad)
    template <class T>
@@ -74,6 +90,11 @@ class LatticeUtilities
    static void copyDataAndMask (LogIO& os, MaskedLattice<T>& out,
                                 MaskedLattice<T>& in);
 
+// Replicate array through lattice in the specified region
+   template <class T>
+   static void replicate (Lattice<T>& im,
+                          const Slicer& region,
+                          const Array<T>& pixels);
 };
 
 // <summary>Global functions on Lattices</summary>

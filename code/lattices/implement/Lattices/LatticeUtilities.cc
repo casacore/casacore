@@ -28,11 +28,14 @@
 
 #include <aips/aips.h>
 #include <aips/Lattices/Lattice.h>
+#include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/MaskedLattice.h>
+#include <trial/Lattices/LatticeStatistics.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
@@ -80,6 +83,57 @@ void minMax(T & globalMin, T & globalMax,
     }
   }
 }
+
+
+// LatticeUtilities
+
+template <class T>
+void LatticeUtilities::collapse (Array<T>& out, const IPosition& axes,
+                                 const MaskedLattice<T>& in,
+                                 Bool dropDegenerateAxes) 
+{ 
+   LatticeStatistics<T> stats(in, False, False);
+   stats.setAxes(axes.asVector());
+   stats.getMean(out, dropDegenerateAxes);
+}
+
+template <class T>
+void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
+                                const IPosition& axes, 
+                                const MaskedLattice<T>& in,
+                                Bool dropDegenerateAxes) 
+{ 
+   
+// These lattice are all references so should be reasonably
+// fast.  I can't do it the otherway around, i.e. drop degenerate
+// axes first with an axes specifier because then the 'axes'
+// argument won't match one to one with the lattice axes and
+// that would be confusing.  Pity.
+                      
+   LatticeStatistics<T> stats(in, False, False);
+   stats.setAxes(axes.asVector());
+   stats.getMean(data, dropDegenerateAxes);
+
+// CLumsy way to get mask.  I should add it to LS
+
+   Array<T> n;
+   stats.getNPts(n, dropDegenerateAxes);
+   mask.resize(n.shape());
+//
+   Bool deleteN, deleteM;
+   const T* pN = n.getStorage(deleteN);
+   Bool* pM = mask.getStorage(deleteM);
+//
+   T lim(0.5);
+   for (Int i=0; i<n.shape().product(); i++) {
+      pM[i] = True;
+      if (pN[i] < lim) pM[i] = False;   
+   }
+//
+   n.freeStorage(pN, deleteN);
+   mask.putStorage(pM, deleteM);
+ }
+
 
 template <class T>
 void LatticeUtilities::copyAndZero(LogIO& os,
@@ -176,6 +230,21 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
          pMaskOut->putSlice(in.getMaskSlice(iter.position(),
                             iter.cursorShape()), iter.position());
       }
+   }
+}
+
+
+template <class T>
+void LatticeUtilities::replicate (Lattice<T>& lat,
+                                  const Slicer& region,
+                                  const Array<T>& pixels)
+{
+   SubLattice<T> subLattice(lat, region, True); 
+   LatticeStepper stepper(subLattice.shape(), pixels.shape(),
+                          LatticeStepper::RESIZE);
+   LatticeIterator<T> iter(subLattice, stepper);
+   for (iter.reset(); !iter.atEnd(); iter++) {
+      subLattice.putSlice(pixels, iter.position()); 
    }
 }
 
