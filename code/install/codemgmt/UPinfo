@@ -228,6 +228,19 @@ endif
 #
 # Basic package names in order
 #
+set a = $apath[1]/code/install
+set x = (`gmake -f $a/makedefs VARS=PACKAGES show_vars | sed -e 's;^.*=;;'`)
+unset a
+set casapack = ()
+while ($#x > 0)
+  if ("$x[1]" != "demo") then
+    set casapack = ($casapack $x[1])
+  endif
+  shift x
+end
+set casapack = ($casapack tasking)
+unset x
+
 set casapack = (casa scimath tables measures fits lattices coordinates \
 	components images ms msvis calibration ionosphere flagging \
 	dish simulators synthesis graphics tasking)
