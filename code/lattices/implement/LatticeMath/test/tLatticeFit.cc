@@ -1,5 +1,5 @@
 //# tLatticeFit.cc: test the baselineFit function
-//# Copyright (C) 1995,1996,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,9 +28,8 @@
 #include<trial/Fitting/LatticeFit.h>
 
 #include<aips/Arrays.h>
-#include<trial/Fitting/LinearFitSVD.h>
-#include <aips/Functionals/Polynomial.h>
-#include <trial/Functionals/LinearComb.h>
+#include<trial/Fitting/LQLinearFitSVD.h>
+#include <aips/Functionals/NQPolynomial.h>
 #include<aips/Lattices/ArrayLattice.h>
 #include<aips/Utilities/Assert.h>
 
@@ -38,75 +37,71 @@
 
 int main() {
     uInt nx = 10, ny = 20, nz = 30;
-    Cube<Float> cube(10, 20, 30);  
+    Cube<Float> cube(10, 20, 30);
 
     Vector<Float> fittedParameters;
 
     // x^2
-    Polynomial<Float> square(2); 
-    square.setAdjustParameter(2, 1.0);
+    NQPolynomial<AutoDiff<Float> > square(2);
 
-    LinearComb<Float,Float> combination;
-    combination.addFunction(square);
+    LQLinearFitSVD<Float> fitter;
+    fitter.setFunction(square);
 
-    LinearFitSVD<Float> fitter;
-    fitter.setFunction(combination);
-    
 
     // x axis
     {
         Vector<Float> x(nx); indgen((Array<Float>&)x); // 0, 1, 2, ...
-	Vector<Bool> mask(nx); 
+	Vector<Bool> mask(nx);
 	mask = True;
         for (uInt k=0; k < nz; k++) {
             for (uInt j=0; j < ny; j++) {
-	        cube.xyPlane(k).column(j) = 
+	        cube.xyPlane(k).column(j) =
 		  Float(j*k)*((Array<Float>&)x)*((Array<Float>&)x);
 	    }
 	}
 	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
 	ArrayLattice<Float> outLattice(outCube);
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 0, mask, 
+	baselineFit(outLattice, fittedParameters, fitter, inLattice, 0, mask,
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 7.e-3));
-	
 
-	AlwaysAssertExit(near(fittedParameters(0),
+
+	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((ny-1)*(nz-1)), 1.0e-3));
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 0, mask, 
+	baselineFit(outLattice, fittedParameters, fitter, inLattice, 0, mask,
 		    False);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 7.e-3));
-	AlwaysAssertExit(near(fittedParameters(0),
+	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((ny-1)*(nz-1)), 1.0e-3));
     }
 
     // y axis
     {
         Vector<Float> x(ny); indgen((Array<Float>&)x); // 0, 1, 2, ...
-	Vector<Bool> mask(ny); 
+	Vector<Bool> mask(ny);
 	mask = True;
         for (uInt k=0; k < nz; k++) {
             for (uInt i=0; i < nx; i++) {
-	        cube.xyPlane(k).row(i) = 
+	        cube.xyPlane(k).row(i) =
 		  Float(i*k)*((Array<Float>&)x)*((Array<Float>&)x);
 	    }
 	}
 	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
 	ArrayLattice<Float> outLattice(outCube);
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 1, mask, 
+	baselineFit(outLattice, fittedParameters, fitter, inLattice, 1, mask,
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 3.e-2));
-	AlwaysAssertExit(near(fittedParameters(0),
+	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((nx-1)*(nz-1)), 1.0e-3));
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 1, mask, 
+	baselineFit(outLattice, fittedParameters, fitter, inLattice, 1, mask,
 		    False);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 3.e-2));
-	AlwaysAssertExit(near(fittedParameters(0),
+	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((nx-1)*(nz-1)), 1.0e-3));
     }
-	    
+
     // z axis
     {
         Vector<Float> x(nz); indgen((Array<Float>&)x); // 0, 1, 2, ...
@@ -121,18 +116,18 @@ int main() {
 	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
 	ArrayLattice<Float> outLattice(outCube);
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 2, mask, 
+	baselineFit(outLattice, fittedParameters, fitter, inLattice, 2, mask,
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 2.0e-2));
-	AlwaysAssertExit(near(fittedParameters(0),
+	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((nx-1)*(ny-1)), 1.0e-3));
-	baselineFit(outLattice, fittedParameters, fitter, inLattice, 2, mask, 
+	baselineFit(outLattice, fittedParameters, fitter, inLattice, 2, mask,
 		    False);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 2.0e-2));
-	AlwaysAssertExit(near(fittedParameters(0),
+	AlwaysAssertExit(near(fittedParameters(2),
 			      Float((nx-1)*(ny-1)), 1.0e-3));
     }
-	    
+
 
     cout << "OK" << endl;
     return 0;

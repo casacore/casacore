@@ -1,5 +1,5 @@
 //# LatticeFit.cc: Fit every line of pixels parallel to any axis in a Lattice.
-//# Copyright (C) 1994,1995,1999,2000,2001
+//# Copyright (C) 1994,1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,9 +26,8 @@
 //# $Id$
 
 #include <trial/Fitting/LatticeFit.h>
-#include <trial/Fitting/LinearFit.h>
-#include <aips/Functionals/FunctionND.h>
 
+#include <aips/Functionals/Function.h>
 #include <aips/Lattices/Lattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
@@ -42,7 +41,7 @@
 
 uInt baselineFit(Lattice<Float> &outImage,
 		 Vector<Float> &fittedParameters,
-		 LinearFit<Float> &fitter, 
+		 LQLinearFit<Float> &fitter, 
 		 const Lattice<Float> &inImage,
 		 uInt whichAxis,
 		 const Vector<Bool> &fitMask,
@@ -115,9 +114,8 @@ uInt baselineFit(Lattice<Float> &outImage,
 	 ! inIter.atEnd(); inIter++, outIter++, count++) {
         yall = inIter.vectorCursor();
 	fittedParameters=fitter.fit(x, yall, sigma);
-	fitter.fittedFunction()->setAdjustParameters(fittedParameters);
 	for (uInt ii=0; ii < solution.nelements(); ii++) {
-	    solution(ii) = (*fitter.fittedFunction())(xall(ii));
+	    solution(ii) = (*fitter.fittedFunction())(xall(ii)).value();
 	}
 	if (returnResiduals) {
 	    outIter.woVectorCursor() = (yall - solution);

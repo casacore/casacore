@@ -1,5 +1,5 @@
 //# LatticeFit.h: Fit every line of pixels parallel to any axis in a Lattice.
-//# Copyright (C) 1994,1995,1999,2000
+//# Copyright (C) 1994,1995,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 
 #include <aips/aips.h>
 #include <aips/Lattices/Lattice.h>
-#include <trial/Fitting/LinearFit.h>
+#include <trial/Fitting/LQLinearFit.h>
 
 class GlishSysEventSource;
 
@@ -41,7 +41,7 @@ class GlishSysEventSource;
 // <reviewed reviewer="" date="" tests="" demos="">
 
 // <prerequisite>
-//   <li> <linkto class=LinearFit>LinearFit</linkto>
+//   <li> <linkto class=LQLinearFit>LQLinearFit</linkto>
 //   <li> <linkto class=Lattice>Lattice</linkto>
 // </prerequisite>
 //
@@ -69,13 +69,9 @@ class GlishSysEventSource;
 //    Image<Float> myImage("myimage"); // Get the image
 //    uInt nchan = myImage.shape()(2); // 0 relative axis number
 //    // Set up the fitter
-//    Polynomial<Float> constant(0);  constant.setCoefficient(0, 1.0);
-//    Polynomial<Float> linear(1);    linear.setCoefficient(1, 1.0);
-//    LinearFitSVD<Float> fitter;
-//    LinearComb<Float,Float> combination;
-//    combination.addFunction(constant);
-//    combination.addFunction(linear);
-//    fitter.setFunction(combination);
+//    NQPolynomial<AutoDiff<Float> > linear(1);    
+//    LQLinearFitSVD<Float> fitter;
+//    fitter.setFunction(linear);
 //    Vector<Float> fittedParameters,
 //
 //    // Set up a mask indicating what channels we want to fit over. We want
@@ -107,7 +103,7 @@ class GlishSysEventSource;
 // <group name="baselineFit">
 uInt baselineFit(Lattice<Float> &outImage,
 		 Vector<Float> &fittedParameters,
-		 LinearFit<Float> &fitter, 
+		 LQLinearFit<Float> &fitter, 
 		 const Lattice<Float> &inImage,
 		 uInt whichAxis,
 		 const Vector<Bool> &fitMask,
