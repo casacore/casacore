@@ -1,5 +1,5 @@
 //# ValType.h: Data types and their undefined values
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,13 +28,8 @@
 #if !defined(AIPS_VALTYPE_H)
 #define AIPS_VALTYPE_H
 
-#if defined(_AIX)
-#pragma implementation ("ValType.cc")
-#endif
 
-#include <aips/aips_exit.h>
-#include <values.h>
-#include <aips/aips.h>
+//# Includes
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 #include <aips/Mathematics/Complex.h>
@@ -43,8 +38,16 @@
 #include <aips/IO/AipsIO.h>
 #include <iostream.h>
 
-// <summary> Data types and their undefined values </summary>
+//# Forward Declarations
+class TableRecord;
+
+
+// <summary>
+// Data types and their undefined values.
+// </summary>
+
 // <use visibility=export>
+
 // <reviewed reviewer="Friso olnon" date="1995/03/20" tests="" demos="">
 // </reviewed>
 
@@ -67,6 +70,7 @@
 // value", the data type, or certain other information about the data
 // type.
 // </synopsis>
+
 
 class ValType {
 public:
@@ -122,6 +126,7 @@ public:
     static DataType getType (const Complex*);
     static DataType getType (const DComplex*);
     static DataType getType (const String*);
+    static DataType getType (const TableRecord*);
     static DataType getType (const void*);
     //</group>
 
@@ -141,6 +146,7 @@ public:
     static const String& getTypeStr (const Complex*);
     static const String& getTypeStr (const DComplex*);
     static const String& getTypeStr (const String*);
+    static const String& getTypeStr (const TableRecord*);
     static const String& getTypeStr (const void*);
     //</group>
 
@@ -268,6 +274,7 @@ private:
     static const String strcomplex;
     static const String strdcomplex;
     static const String strstring;
+    static const String strrecord;
     static const String strtable;
     static const String strother;
     static const String strunknown;
@@ -356,6 +363,8 @@ inline DataType ValType::getType (const DComplex*)
     {return TpDComplex;}
 inline DataType ValType::getType (const String*)
     {return TpString;}
+inline DataType ValType::getType (const TableRecord*)
+    {return TpRecord;}
 inline DataType ValType::getType (const void*)
     {return TpOther;}
 
@@ -383,6 +392,8 @@ inline const String& ValType::getTypeStr (const DComplex*)
     {return strdcomplex;}
 inline const String& ValType::getTypeStr (const String*)
     {return strstring;}
+inline const String& ValType::getTypeStr (const TableRecord*)
+    {return strrecord;}
 inline const String& ValType::getTypeStr (const void*)
     {return strother;}
 

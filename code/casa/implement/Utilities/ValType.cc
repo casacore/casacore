@@ -28,9 +28,11 @@
 #include <aips/Utilities/ValType.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/Mathematics/Constants.h>
+#include <values.h>
 
 //# This is the implementation of the ValType class.
 //# Most functions are inlined in the header file.
+
 
 ValType::ValType ()
 {}
@@ -50,21 +52,22 @@ const DComplex       ValType::undefdcomplex  (-C::mindouble, -C::mindouble);
 const String         ValType::undefstring    ("");
 
 
-const String ValType::strbool      = "Bool    ";
-const String ValType::strchar      = "Char    ";
-const String ValType::struchar     = "uChar   ";
-const String ValType::strshort     = "Short   ";
-const String ValType::strushort    = "uShort  ";
-const String ValType::strint       = "Int     ";
-const String ValType::struint      = "uInt    ";
-const String ValType::strfloat     = "float   ";
-const String ValType::strdouble    = "double  ";
-const String ValType::strcomplex   = "Complex ";
-const String ValType::strdcomplex  = "DComplex";
-const String ValType::strstring    = "String  ";
-const String ValType::strtable     = "Table   ";
-const String ValType::strother     = "Other   ";
-const String ValType::strunknown   = "unknown ";
+const String ValType::strbool        = "Bool    ";
+const String ValType::strchar        = "Char    ";
+const String ValType::struchar       = "uChar   ";
+const String ValType::strshort       = "Short   ";
+const String ValType::strushort      = "uShort  ";
+const String ValType::strint         = "Int     ";
+const String ValType::struint        = "uInt    ";
+const String ValType::strfloat       = "float   ";
+const String ValType::strdouble      = "double  ";
+const String ValType::strcomplex     = "Complex ";
+const String ValType::strdcomplex    = "DComplex";
+const String ValType::strstring      = "String  ";
+const String ValType::strrecord      = "Record  ";
+const String ValType::strtable       = "Table   ";
+const String ValType::strother       = "Other   ";
+const String ValType::strunknown     = "unknown ";
 
 
 //# Get the name of the data type.
@@ -95,6 +98,8 @@ const String& ValType::getTypeStr (DataType dt)
 	return strdcomplex;
     case TpString:
 	return strstring;
+    case TpRecord:
+	return strrecord;
     case TpTable:
 	return strtable;
     case TpOther:
