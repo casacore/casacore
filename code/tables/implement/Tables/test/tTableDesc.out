@@ -10,23 +10,23 @@ TableDesc namex   version v2.0.1   (Directory **SCRATCH**)
 0  tab_key1 : String
   #Columns  = 4
    Name=colint   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = comment addition
    #keywords=0
 
    Name=colint2   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = comment2
    #keywords=1
 0  colint_key1 : Int
 
    Name=colint3   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = comment
    #keywords=0
 
    Name=c1   DataType=Int
-   DataManager=c1_engine/c1_engine   Default=-2147483648
+   DataManager=c1_engine/c1_engine   Default=0
    Comment = c1-comment
    #keywords=0
 
@@ -38,23 +38,23 @@ TableDesc tTableDesc_tmp1   version    (Directory ./)
 0  tab_key1 : String
   #Columns  = 4
    Name=colint   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = comment addition
    #keywords=0
 
    Name=colint2   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = comment2
    #keywords=1
 0  colint_key1 : Int
 
    Name=colint3   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = comment
    #keywords=0
 
    Name=c1   DataType=Int
-   DataManager=c1_engine/c1_engine   Default=-2147483648
+   DataManager=c1_engine/c1_engine   Default=0
    Comment = c1-comment
    #keywords=0
 
@@ -73,14 +73,14 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
 0  ra : float
 1  equinox : double
 2  aa : Int
-  #Columns  = 12
+  #Columns  = 13
    Name=ab   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Comment for column ab
    #keywords=0
 
    Name=ac   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=2
 0  scale : Complex
@@ -98,6 +98,11 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
    DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StManAipsIO/StManAipsIO
    Comment = 
    #keywords=0
 
@@ -142,12 +147,12 @@ TableDesc tTableDesc_tmp_sub   version 1   (Directory ./)
 0  subint : Int
   #Columns  = 2
    Name=ra   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=dec   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
@@ -160,17 +165,17 @@ TableDesc tTableDesc_tmp_sub   version 1   (Directory ./)
 1  CoordSys : String
   #Columns  = 3
    Name=ra   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=dec   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=Equinox   DataType=float
-   DataManager=StManAipsIO/StManAipsIO   Default=-1.4013e-45
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
@@ -182,16 +187,16 @@ TableDesc tTableDesc_tmp_sub   version 1   (Directory **SCRATCH**)
 0  subint : Int
   #Columns  = 2
    Name=ra   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=dec   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
-[ab, ac, ad, ae, arr0, Arr1, A2r1, Arr3, sub1, sub2, sub3, sub4Renamed]
+[ab, ac, ad, ae, arr0, rec0, Arr1, A2r1, Arr3, sub1, sub2, sub3, sub4Renamed]
 10000001
 
 TableDesc tTableDesc_tmp   version 1   (Directory ./)
@@ -201,14 +206,14 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
 0  ra : float
 1  equinox : double
 2  aa : Int
-  #Columns  = 12
+  #Columns  = 13
    Name=ab   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Comment for column ab
    #keywords=0
 
    Name=ac   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=2
 0  scale : Complex
@@ -226,6 +231,11 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
    DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StManAipsIO/StManAipsIO
    Comment = 
    #keywords=0
 
@@ -269,17 +279,17 @@ TableDesc tTableDesc_tmp_sub   version 1   (Directory ./)
 1  CoordSys : String
   #Columns  = 3
    Name=ra   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=dec   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=Equinox   DataType=float
-   DataManager=StManAipsIO/StManAipsIO   Default=-1.4013e-45
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
@@ -291,12 +301,12 @@ TableDesc tTableDesc_tmp_sub   version 1   (Directory **SCRATCH**)
 0  subint : Int
   #Columns  = 2
    Name=ra   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=dec   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
@@ -309,17 +319,17 @@ TableDesc tTableDesc_tmp_sub   version 1   (Directory **SCRATCH**)
 1  CoordSys : String
   #Columns  = 3
    Name=ra   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=dec   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=Equinox   DataType=float
-   DataManager=StManAipsIO/StManAipsIO   Default=-1.4013e-45
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
@@ -348,14 +358,14 @@ TableDesc OtherName   version O2   (Directory **SCRATCH**)
 0  ra : float
 1  equinox : double
 2  aa : Int
-  #Columns  = 13
+  #Columns  = 14
    Name=ab   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Comment for column ab
    #keywords=0
 
    Name=ac   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=2
 0  scale : Complex
@@ -373,6 +383,11 @@ TableDesc OtherName   version O2   (Directory **SCRATCH**)
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
    DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StManAipsIO/StManAipsIO
    Comment = 
    #keywords=0
 
@@ -419,14 +434,14 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
 0  ra : float
 1  equinox : double
 2  aa : Int
-  #Columns  = 13
+  #Columns  = 14
    Name=ab   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Comment for column ab
    #keywords=0
 
    Name=ac   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=2
 0  scale : Complex
@@ -444,6 +459,11 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
    DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StManAipsIO/StManAipsIO
    Comment = 
    #keywords=0
 
@@ -489,14 +509,14 @@ TableDesc OtherName   version O2   (Directory **SCRATCH**)
   #Keywords = 2
 0  equinox : double
 1  aa : Int
-  #Columns  = 13
+  #Columns  = 14
    Name=ab   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Comment for column ab
    #keywords=0
 
    Name=ac   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=1
 0  unit : String
@@ -513,6 +533,11 @@ TableDesc OtherName   version O2   (Directory **SCRATCH**)
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
    DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StManAipsIO/StManAipsIO
    Comment = 
    #keywords=0
 
