@@ -225,57 +225,57 @@ Vector<Int> ComponentList::selected() const {
   return retVal;
 }
 
-void ComponentList::setLabel(const Vector<Int> & whichComponents,
+void ComponentList::setLabel(const Vector<Int> & which,
 			     const String & newLabel) {
   uInt c;
-  for (uInt i = 0; i < whichComponents.nelements(); i++) {
-    AlwaysAssert(whichComponents(i) >= 0, AipsError);
-    c = whichComponents(i);
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
     component(c).label() = newLabel;
   }
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setFlux(const Vector<Int> & whichComponents,
+void ComponentList::setFlux(const Vector<Int> & which,
 			    const Flux<Double> & newFlux) {
   uInt c;
-  for (uInt i = 0; i < whichComponents.nelements(); i++) {
-    AlwaysAssert(whichComponents(i) >= 0, AipsError);
-    c = whichComponents(i);
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
     component(c).flux() = newFlux;
   }
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::convertFluxUnit(const Vector<Int> & whichComponents,
+void ComponentList::convertFluxUnit(const Vector<Int> & which,
 				    const Unit & unit) {
   uInt c;
-  for (uInt i = 0; i < whichComponents.nelements(); i++) {
-    AlwaysAssert(whichComponents(i) >= 0, AipsError);
-    c = whichComponents(i);
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
     component(c).flux().convertUnit(unit);
   }
   DebugAssert(ok(), AipsError);
 }
   
-void ComponentList::convertFluxPol(const Vector<Int> & whichComponents,
+void ComponentList::convertFluxPol(const Vector<Int> & which,
 				   ComponentType::Polarisation pol) {
   uInt c;
-  for (uInt i = 0; i < whichComponents.nelements(); i++) {
-    AlwaysAssert(whichComponents(i) >= 0, AipsError);
-    c = whichComponents(i);
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
     component(c).flux().convertPol(pol);
   }
   DebugAssert(ok(), AipsError);
 }
  
-void ComponentList::setRefDirection(const Vector<Int> & whichComponents,
+void ComponentList::setRefDirection(const Vector<Int> & which,
 				    const MVDirection & newDir) {
   uInt c;
   MDirection curDir;
-  for (uInt i = 0; i < whichComponents.nelements(); i++) {
-    AlwaysAssert(whichComponents(i) >= 0, AipsError);
-    c = whichComponents(i);
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
     ComponentShape & curShape = component(c).shape();
     curDir = curShape.refDirection();
     curDir.set(newDir);
@@ -284,14 +284,14 @@ void ComponentList::setRefDirection(const Vector<Int> & whichComponents,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setRefDirectionFrame(const Vector<Int> & whichComponents,
+void ComponentList::setRefDirectionFrame(const Vector<Int> & which,
 					 MDirection::Types newFrame) {
   uInt c;
   MDirection curDir;
   const MDirection::Ref newRef(newFrame);
-  for (uInt i = 0; i < whichComponents.nelements(); i++) {
-    AlwaysAssert(whichComponents(i) >= 0, AipsError);
-    c = whichComponents(i);
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
     ComponentShape & curShape = component(c).shape();
     curDir = curShape.refDirection();
     curDir.set(newRef);
@@ -300,15 +300,15 @@ void ComponentList::setRefDirectionFrame(const Vector<Int> & whichComponents,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::convertRefDirection(const Vector<Int> & whichComponents,
+void ComponentList::convertRefDirection(const Vector<Int> & which,
 					MDirection::Types newFrame) {
   uInt c;
   MDirection::Convert converter;
   converter.setOut(newFrame);
   MDirection curDir;
-  for (uInt i = 0; i < whichComponents.nelements(); i++) {
-    AlwaysAssert(whichComponents(i) >= 0, AipsError);
-    c = whichComponents(i);
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
     ComponentShape & curShape = component(c).shape();
     curDir = curShape.refDirection();
     curShape.setRefDirection(converter(curDir));
@@ -316,15 +316,27 @@ void ComponentList::convertRefDirection(const Vector<Int> & whichComponents,
   DebugAssert(ok(), AipsError);
 }
 
-// void ComponentList::changeShape(const Vector<Int> & which,
-// 				ComponentType::Shape newShape) {
-//   uInt c;
-//   for (uInt i = 0; i < whichComponents.nelements(); i++) {
-//     AlwaysAssert(whichComponents(i) >= 0, AipsError);
-//     c = whichComponents(i);
-//   }
-//   DebugAssert(ok(), AipsError);
-// }
+void ComponentList::setShape(const Vector<Int> & which,
+			     const ComponentShape & newShape) {
+  uInt c;
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
+    component(c).setShape(newShape);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
+void ComponentList::setSpectrum(const Vector<Int> & which,
+				const SpectralModel & newSpectrum) {
+  uInt c;
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
+    component(c).setSpectrum(newSpectrum);
+  }
+  DebugAssert(ok(), AipsError);
+}
 
 SkyComponent & ComponentList::component(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
