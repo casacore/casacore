@@ -34,14 +34,21 @@
 #include <aips/Exceptions/Excp.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Measures/Stokes.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Quanta/UnitMap.h>
+#include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QMath.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <trial/ComponentModels/ComponentList.h>
@@ -53,6 +60,7 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/Images/ImageInfo.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 
@@ -60,7 +68,7 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 {
   const CoordinateSystem& coords = image.coordinates();
   const IPosition imageShape = image.shape();
-  LogIO os(LogOrigin("ComponentImager", "project(...)", WHERE));
+  LogIO os(LogOrigin("ComponentImager", "project"));
   
   // I currently REQUIRE that:
   // * The list has at least one element.
@@ -139,6 +147,59 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     freqValues(0) = defaultFreq.getValue();
   }
 
+  // Find out what the units are. Currently allowed units are anything
+  // dimensionally equivalent to Jy/pixel or Jy/beam. If the former then the
+  // pixel size at the centre of the image is assumed to hold throughout the
+  // image. If the latter then the beam is fished out of the header and a
+  // 'beam' unit defined. If the units are not defined or are not one of the
+  // above they are assumed to be Jy/pixel and a warning message is sent to the
+  // logger.
+  Unit fluxUnits;
+  {
+    Unit imageUnit = image.units();
+    const String& imageUnitName = imageUnit.getName();
+    UnitMap::putUser("pixel", UnitVal(pixelLatSize.radian() * 
+				      pixelLongSize.radian(), "rad.rad"));
+    const Unit pixel("pixel");
+    if (imageUnitName.contains("pixel")) {
+      // Get the new definition of the imageUnit which uses the new
+      // definition of the pixels unit.
+      imageUnit = image.units();
+      fluxUnits.setValue(imageUnit.getValue() * pixel.getValue());
+      fluxUnits.setName(imageUnitName + String(".") + pixel.getName());
+    } else if (imageUnitName.contains("beam")) {
+      const ImageInfo imageInfo = image.imageInfo();
+      const Vector<Quantum<Double> > beam = imageInfo.restoringBeam();
+      if (beam.nelements() == 0) {
+	os << LogIO::WARN 
+	   << "No beam defined even though the image units contain a beam" 
+	   << endl << "Assuming the beam is one pixel" << LogIO::POST;
+	UnitMap::putUser("beam", pixel.getValue());
+      } else {
+	const Quantum<Double> beamArea = beam(0) * beam(1) * C::pi/log(16);
+	UnitMap::putUser("beam", UnitVal(beamArea.getValue(),
+					 beamArea.getFullUnit().getName()));
+      }
+      const Unit beamUnit("beam");
+      const UnitVal fudgeFactor(pixel.getValue().getFac()/
+				beamUnit.getValue().getFac());
+      // Get the new definition of the imageUnit which uses the new
+      // definition of the beam unit.
+      imageUnit = image.units();
+      fluxUnits.setValue(imageUnit.getValue() * 
+			 beamUnit.getValue() * fudgeFactor);
+      fluxUnits.setName(imageUnitName + String(".") + beamUnit.getName());
+    }
+    const Unit jy("Jy");
+    if (fluxUnits != jy) {
+      os << LogIO::WARN 
+	 << "Image units are not dimensionally equivalent to "
+	 << "Jy/pixel or Jy/beam " << endl
+	 << "Ignoring the specified units and proceeding on the assumption"
+	 << " they are Jy/pixel" << LogIO::POST;
+      fluxUnits = jy;
+    }
+  }
   // Setup an iterator to step through the image in chunks that can fit into
   // memory. Go to a bit of effort to make the chunck size as large as
   // possible but still minimize the number of tiles in the cache.
@@ -203,7 +264,7 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 
     // Sample model
 
-    list.sample(pixelVals, Unit("Jy"), dirVals, dirRef, pixelLatSize, 
+    list.sample(pixelVals, fluxUnits, dirVals, dirRef, pixelLatSize, 
    		pixelLongSize, freqValues, freqRef);
     // Modify data by model for this chunk of data
 
