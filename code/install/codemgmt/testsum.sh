@@ -3,7 +3,7 @@
 # testsum.sh: Formats the runtests.report file
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998
+#   Copyright (C) 1992-1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -51,15 +51,16 @@ fi
 PACK=$2
 VERSION=`avers | awk '{printf("%.6s",$1)}'`
 TPASS=`grep "^$2.*PASS" $1/bintest/runtests.report | wc -l`
+TUNTESTED=`grep "^$2.*UNTESTED" $1/bintest/runtests.report | wc -l`
 TFAIL=`grep "^$2.*FAIL" $1/bintest/runtests.report | wc -l`
 echo 
 echo "Summary of $AIPSPATH runtests $VERSION"
 echo
-echo "****************************************************************************************"
+echo "******************************************************************************"
 echo 
 echo $PACK | awk '{printf "Test results for %s package\n", $1}'
-echo $TPASS $TFAIL | awk '{printf "\t%5.1f%% Passed %d of %d\n", 100*$1/($1+$2), $1, $1+$2}'
-echo "****************************************************************************************"
+echo $TPASS $TFAIL $TUNTESTED| awk '{printf "\t%5.1f%% Passed %d of %d (%d skipped)\n", 100*$1/($1+$2+$3), $1, $1+$2+$3, $3}'
+echo "******************************************************************************"
 echo 
 echo "Tests that failed to compile"
 echo 
@@ -72,8 +73,11 @@ echo
 echo "Tests that failed to verify"
 echo 
 grep "^$2.*FAIL.*verify" $1/bintest/runtests.report
-echo 
 grep "^$2.*FAIL.*execute" $1/bintest/runtests.report > /tmp/aips2tests.noexecute
+echo 
+echo "Tests that were skipped"
+echo 
+grep "^$2.*UNTESTED" $1/bintest/runtests.report
 if [ -s /tmp/aips2tests.noexecute ]
 then
    echo 
