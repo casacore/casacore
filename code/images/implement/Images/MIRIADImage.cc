@@ -1068,25 +1068,32 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       imageInfo.setRestoringBeam(qbmaj, qbmin, qbpa);
    }
 
-  // DATE-OBS
+// ObsInfo
+
+  ObsInfo oi;
+
+// DATE-OBS
   Double obstime;
   rdhdd_c(tno_p, "obstime", &obstime, -1.0);
   // cerr << "obstime=" << obstime << endl;
-  obstime -= 2400000.5;    // make it MJD ("d")
-  MVEpoch mve(Quantity(obstime,"d"));
-  MEpoch mep(mve,MEpoch::UTC);   // miriad uses JDN (in UTC)   -- no good
+  if (obstime > -1.0) {
+     obstime -= 2400000.5;    // make it MJD ("d")
+     MVEpoch mve(Quantity(obstime,"d"));
+     MEpoch mep(mve,MEpoch::UTC);   // miriad uses JDN (in UTC)   -- no good
+     oi.setObsDate(mep);
+  }
 
-  // TELESCOP
+// TELESCOP
+
   String telescop;
   rdhda_c(tno_p, "telescop", tmps64,"",64);
   telescop = tmps64;
+  if (!telescop.empty()) {
+     oi.setTelescope(telescop);
+  }
 
-  ObsInfo oi;
-  oi.setTelescope(telescop);
-  oi.setObsDate(mep);
-
+//
   cSys.setObsInfo(oi);
-
   xyclose_c(tno_p);
 }
 
