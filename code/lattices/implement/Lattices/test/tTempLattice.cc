@@ -40,10 +40,13 @@
 
 void doIt (TempLattice<Int>& scratch)
 {
+    scratch.tempClose();
     IPosition shape(3,1);    
     shape(2) = scratch.shape()(2);
     AlwaysAssertExit (scratch.isWritable());
+    scratch.tempClose();
     LatticeIterator<Int> li(scratch, shape);
+    scratch.tempClose();
     Int i = 0;
     for (li.reset(); !li.atEnd(); li++, i++) {
 	li.woCursor() = i;
@@ -51,7 +54,9 @@ void doIt (TempLattice<Int>& scratch)
     shape = scratch.shape();
     shape(2) = 1;
     COWPtr<Array<Int> > ptrM;
+    scratch.tempClose();
     scratch.getSlice(ptrM, IPosition(3,0), shape, IPosition(3,1), False);
+    scratch.reopen();
     AlwaysAssert(ptrM->shape().isEqual(shape), AipsError);
     Array<Int> expectedResult(shape);
     indgen(expectedResult.ac());
