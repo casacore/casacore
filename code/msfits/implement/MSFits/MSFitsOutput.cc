@@ -364,8 +364,13 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     }
   }
   Int f0RefPix = nchan/2;
-  refFreq = f0 + f0RefPix * bw0;
+  refFreq = f0 + (f0RefPix-1) * bw0;
+  if(f0RefPix==0) {
+    f0RefPix=1;
+    refFreq=f0 + bw0/2.0 -delta/2.0;
+  }
   refPixelFreq = f0RefPix;
+ 
 
   // OK, turn the stokes into FITS values.
   for (Int j=0; j<numcorr0; j++) {
@@ -494,7 +499,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   ek.define("ctype4", "FREQ"); 
   ek.define("crval4", refFreq);
   ek.define("cdelt4", bw0);
-  ek.define("crpix4", Double(1+refPixelFreq));
+  ek.define("crpix4", Double(refPixelFreq));
   ek.define("crota4", 0.0);
 
   ek.define("ctype5", "IF"); 
@@ -896,7 +901,8 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
     if (i < spwidMap.nelements()  &&  spwidMap[i] >= 0) {
       *freqsel = 1 + spwidMap[i];
       Vector<Double> freqs = inchanfreq(i);
-      (*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
+      //      (*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
+      (*iffreq)(inx) = 0.0; 
       if (freqs.nelements() > 1) {
 	if(doWsrt){
 	  (*ifwidth)(inx) = abs(chanbw);
