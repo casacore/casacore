@@ -700,8 +700,8 @@ Bool ImageHistograms<T>::displayHistograms ()
    
 // Display the histogram
 
-      if (!displayOneHistogram (histIterator.vectorCursor(), histIterator.position(),
-                                range, nPts, sum, mean, sigma, var)) return False;
+      displayOneHistogram (histIterator.vectorCursor(), histIterator.position(),
+                           range, nPts, sum, mean, sigma, var);
  
    }
       
@@ -714,7 +714,7 @@ Bool ImageHistograms<T>::displayHistograms ()
  
 
 template <class T>
-Bool ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
+void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
                                               const IPosition& histPos,   
                                               const Vector<T>& range,
                                               const Int& nStatsPts,
@@ -807,7 +807,7 @@ Bool ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
 
          for (Int j=0; j<nDisplayAxes; j++) {
             pixel(0) = histPos(j+1);
-            if (!pix2World (sWorld, displayAxes_p(j), pixel, oPrec)) return False;
+            pix2World (sWorld, displayAxes_p(j), pixel, oPrec);
 
             Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
             String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
@@ -907,9 +907,8 @@ Bool ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
       
 // Write values of the display axes on the plot
  
-   if (!writeDispAxesValues (histPos, xMin, yMax)) return False;
-   
-   return True;
+   writeDispAxesValues (histPos, xMin, yMax);
+
 }
  
 
@@ -1395,7 +1394,7 @@ void ImageHistograms<T>::makeLogarithmic (Vector<Float>& counts,
                 
 
 template <class T>
-Bool ImageHistograms<T>::pix2World (Vector<String>& sWorld,
+void ImageHistograms<T>::pix2World (Vector<String>& sWorld,
                                     const Int& pixelAxis,
                                     const Vector<Double>& pixel,
                                     const Int& prec) 
@@ -1463,56 +1462,66 @@ Bool ImageHistograms<T>::pix2World (Vector<String>& sWorld,
       for (Int i=0; i<n1; i++) {
          pix(pixelAxis) = pixel(i);
 
-         if (!cSys.toWorld(world,pix)) return False;
-         MVAngle mVA(world(pixelAxis));
+         if (cSys.toWorld(world,pix)) {
+            MVAngle mVA(world(pixelAxis));
          
-         if (tString.contains("RIGHT ASCENSION")) {
-            sWorld(i) = mVA.string(MVAngle::TIME,8);
-         } else if (tString.contains("DECLINATION")) {
-            sWorld(i) = mVA.string(MVAngle::DIG2,8);
+            if (tString.contains("RIGHT ASCENSION")) {
+               sWorld(i) = mVA.string(MVAngle::TIME,8);
+            } else if (tString.contains("DECLINATION")) {
+               sWorld(i) = mVA.string(MVAngle::DIG2,8);
+            } else {
+               ostrstream oss;
+               oss.setf(ios::scientific, ios::floatfield);
+               oss.setf(ios::left);
+               oss.precision(prec);
+               oss << mVA.degree() << ends;
+               String temp(oss.str());
+               sWorld(i) = temp;   
+            }
          } else {
-            ostrstream oss;
-            oss.setf(ios::scientific, ios::floatfield);
-            oss.setf(ios::left);
-            oss.precision(prec);
-            oss << mVA.degree() << ends;
-            String temp(oss.str());
-            sWorld(i) = temp;   
+            sWorld(i) = "?";
          }
       }
    } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) {
       for (Int i=0; i<n1; i++) {
          pix(pixelAxis) = pixel(i);
-         if (!cSys.toWorld(world,pix)) return False;
-         
-         ostrstream oss;
-         oss.setf(ios::scientific, ios::floatfield);
-         oss.setf(ios::left);
-         oss.precision(prec);
-         oss << world(pixelAxis) << ends;
-         String temp(oss.str());
-         sWorld(i) = temp;
+         if (cSys.toWorld(world,pix)) {
+            ostrstream oss;
+            oss.setf(ios::scientific, ios::floatfield);
+            oss.setf(ios::left);
+            oss.precision(prec);
+            oss << world(pixelAxis) << ends;
+            String temp(oss.str());
+            sWorld(i) = temp;
+         } else {
+            sWorld(i) = "?";
+         }
       }
    } else if (cSys.type(coordinate) == Coordinate::LINEAR) {
       for (Int i=0; i<n1; i++) {
          pix(pixelAxis) = pixel(i);
-         if (!cSys.toWorld(world,pix)) return False;
-
-         ostrstream oss;
-         oss.setf(ios::scientific, ios::floatfield);
-         oss.setf(ios::left);
-         oss.precision(prec);
-         oss << world(pixelAxis) << ends;
-         String temp(oss.str());
-         sWorld(i) = temp;
+         if (cSys.toWorld(world,pix)) {
+            ostrstream oss;
+            oss.setf(ios::scientific, ios::floatfield);
+            oss.setf(ios::left);
+            oss.precision(prec);
+            oss << world(pixelAxis) << ends;
+            String temp(oss.str());
+            sWorld(i) = temp;
+         } else {
+            sWorld(i) = "?";
+         }
       }
    } else if (cSys.type(coordinate) == Coordinate::STOKES) {
       const StokesCoordinate coord = cSys.stokesCoordinate(coordinate);
       for (Int i=0; i<n1; i++) {
          Stokes::StokesTypes iStokes;
          Int pix = Int(pixel(i));
-         if (!coord.toWorld(iStokes, pix)) return False;
-         sWorld(i) = Stokes::name(Stokes::type(iStokes));
+         if (coord.toWorld(iStokes, pix)) {
+            sWorld(i) = Stokes::name(Stokes::type(iStokes));
+         } else {
+            sWorld(i) = "?";
+         }
       }
    }
    return True;
@@ -1706,7 +1715,7 @@ inline void ImageHistograms<T>::statsAccum (Vector<Double>& stats,
 
 
 template <class T>
-Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
+void ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
                                               const Float& xMin,
                                               const Float& yMax)
 {
@@ -1721,7 +1730,7 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
 
       for (Int j=0; j<nDisplayAxes; j++) {
          pixel(0) = histPos(j+1);
-         if (!pix2World (sWorld, displayAxes_p(j), pixel, 6)) return False;
+         pix2World (sWorld, displayAxes_p(j), pixel, 6);
 
          Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
@@ -1749,7 +1758,5 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
       cpgptxt (mx, my, 0.0, 0.0, tLabel);
       cpgstbg(tbg);
    }
-
-   return True;
 }
 
