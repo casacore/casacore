@@ -115,9 +115,7 @@ DBGVERSO := $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
 OPTVERSO := $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
 
 # Is there an overriding link list for this application?
-ifneq "$(origin LINK$(THISAPP))" "undefined"
-  LINKAPP := $(LINK$(THISAPP))
-else
+ifeq "$(origin LINKAPP)" "undefined"
   LINKAPP := $(LINK$(PACKAGE))
 endif
 
