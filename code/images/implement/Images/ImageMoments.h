@@ -256,9 +256,12 @@ public:
    friend MomentCalcBase<T>;
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
+// You specify whether output images are  overwritten if pre-existing,
+// or whether an intercative choice dialog widget appears.
 // You may also determine whether a progress meter is displayed or not.
    ImageMoments (ImageInterface<T>& image, 
                  LogIO &os,
+                 Bool overWriteOutput=False,
                  Bool showProgress=True);
 
 // Copy constructor.  Uses copy semantics.
@@ -544,7 +547,6 @@ private:
    Bool doWindow_p, doFit_p, doAuto_p, doSmooth_p, noInclude_p, noExclude_p;
    Bool fixedYLimits_p;
 
-
    Int momentAxis_p;
    Vector<Int> kernelTypes_p;
    Vector<Double> kernelWidths_p;   
@@ -554,7 +556,7 @@ private:
    Vector<Int> smoothAxes_p;
    ImageInterface<T>* pInImage_p;
    PGPlotter plotter_p;
-
+   Bool overWriteOutput_p;
 
 
 // Check that the combination of methods that the user has requested is valid
