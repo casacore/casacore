@@ -103,17 +103,17 @@ Bool ImageSourceFinder<T>::setNewImage (const ImageInterface<T>& image)
 }
 
 template <class T>
-ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, 
-                                                      Int nMax, 
-                                                      Double cutoff, Bool absFind)
+ComponentList ImageSourceFinder<T>::findSources (LogIO& os, Int nMax, 
+                                                 Double cutoff, Bool absFind,
+                                                 Bool doPoint)
 {
-   return findPointSources(os, *pImage_p, nMax, cutoff, absFind);
+   return findSources(os, *pImage_p, nMax, cutoff, absFind, doPoint);
 }
 
 
 template <class T>
 SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& absPixel,
-                                                    Double cutoff, Bool absFind)
+                                                    Double cutoff, Bool absFind, Bool doPoint)
 {
 
 // Find sky
@@ -182,7 +182,7 @@ SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& a
 // Find one source
 
    const uInt nMax = 1;
-   ComponentList list = findPointSources (os, subImage, nMax, cutoff, absFind);
+   ComponentList list = findSources (os, subImage, nMax, cutoff, absFind, doPoint);
 //
    SkyComponent sky = list.component(0);
 //
@@ -203,10 +203,11 @@ SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& a
 
 
 template <class T>
-ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, 
-	                                              const ImageInterface<T>& image,
-                                                      Int nMax, 
-                                                      Double cutoff, Bool absFind)
+ComponentList ImageSourceFinder<T>::findSources (LogIO& os, 
+                                                 const ImageInterface<T>& image,
+                                                 Int nMax, 
+                                                 Double cutoff, Bool absFind,
+                                                 Bool doPoint)
 {
 // Make sure the Image is 2D and that it holds the sky.  Exception if not.
 
@@ -214,9 +215,11 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os,
    Bool xIsLong = CoordinateUtil::isSky(os, cSys);
 
 // Results matrix
-   
-   Matrix<NumericTraits<T>::PrecisionType> rs(nMax, 3);
+
+   Matrix<NumericTraits<T>::PrecisionType> rs(nMax, 3);    // flux, x, y
+   Matrix<NumericTraits<T>::PrecisionType> ss(nMax, 3);    // maj, min, pa
    rs = 0.0;
+   ss = 0.0;
     
 // Assume only positive
     
@@ -280,9 +283,9 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os,
       inp++;
       inp %= 3;
       isRef = image.getSlice(inPtr[(inp+1)%3],
-				Slicer(start, inSliceShape), True);
+                             Slicer(start, inSliceShape), True);
       isMaskRef = image.getMaskSlice(inMaskPtr[(inp+1)%3],
-                                        Slicer(start, inSliceShape), True);
+                                     Slicer(start, inSliceShape), True);
       for (uInt i0=0; i0<nx; i0++) inDone((inp+1)%3, i0) =
 				     !(inMaskPtr[(inp+1)%3].ref()(IPosition(1, i0)));
       start(1) += 1;
@@ -361,9 +364,14 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os,
                for (Int l=nMax-1; l>k; l--) {
                   for (uInt i0=0; i0<3; i0++) rs(l,i0) = rs(l-1,i0);
                }
-               rs(k,0) = sol(0);
-               rs(k,1) = i+r1-1;
-               rs(k,2) = j+r0;
+               rs(k,0) = sol(0);                      // Peak
+               rs(k,1) = i+r1-1;                      // Y
+               rs(k,2) = j+r0;                        // X
+//
+               ss(k,0) = 3.01;                        // major
+               ss(k,1) = 3.0;                         // minor
+               ss(k,2) = 0.0;                         // pa
+//
                for (Int l=-1; l<2; l++) {
                   for (Int m=-1; m<2; m++) {
                      inDone((inp+l+3)%3, j+m) = True;
@@ -383,7 +391,6 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os,
      if (abs(rs(i,0)) < x || rs(i,0) == 0) break;
      nFound++;   
    }      
-   Vector<Double> pars(3);
    
 // What Stokes is the plane we are finding in ?
       
@@ -400,13 +407,31 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os,
       const ImageInfo& ii = image.imageInfo();
       const Unit& bU = image.units();
       Double rat;
+//
+      Vector<Double> pars;
+      ComponentType::Shape cType;
+      if (doPoint) {
+        cType = ComponentType::POINT;
+        pars.resize(3);
+      } else {
+        cType = ComponentType::GAUSSIAN;
+        pars.resize(6);
+      }
+//
       for (Int i=0; i<nFound; i++) {
          pars(0) = rs(i,0);
          pars(1) = rs(i,2);
          pars(2) = rs(i,1);
+
+//
+         if (!doPoint) {
+            pars(3) = ss(i,0);
+            pars(4) = ss(i,1);
+            pars(5) = ss(i,2);
+         }
+// 
          listOut.add(ImageUtilities::encodeSkyComponent (os, rat, ii, cSys, bU,
-                                                         ComponentType::POINT, 
-                                                         pars, stokes, xIsLong));
+                                                         cType, pars, stokes, xIsLong));
       }
    } 
 //
