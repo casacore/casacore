@@ -96,7 +96,7 @@ template <class T> class RO_LatticeIterator;
 // </synopsis>
 
 // <example>
-// For an example see <linkto class=ArrLatticeIter>ArrLatticeIter</linkto>.
+// For an example see <linkto class=LatticeIterator>LatticeIterator</linkto>.
 // </example>
 
 // <motivation>
