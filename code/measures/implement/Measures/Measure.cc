@@ -48,8 +48,8 @@ const String *const Measure::allTypes(Int &nall, Int &nextra,
 				      const uInt *&typ) const {
   static const Int N_name  = 0;
   static const Int N_extra = 0;
-  static const String tname[N_name] = {};
-  static const uInt oname[N_name] = {};
+  static const String *tname = 0;
+  static const uInt *oname = 0;
 
   nall   = N_name;
   nextra = N_extra;
