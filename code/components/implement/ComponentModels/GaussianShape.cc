@@ -148,50 +148,63 @@ Double GaussianShape::positionAngleInRad() const {
   return itsShape.PA();
 }
 
-void GaussianShape::sample(Flux<Double>& flux, const MDirection& direction, 
- 			   const MVAngle& pixelSize) const {
+Double GaussianShape::sample(const MDirection& direction, 
+			     const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
-  Double separation;
-  Double pa;
-  if ((MDirection::Types) direction.getRef().getType() != refDirFrame()) {
-    const MVDirection convertedDirVal = 
-      MDirection::Convert(direction, refDirFrame())().getValue();
-    separation = refDirValue().separation(convertedDirVal);
-    pa = refDirValue().positionAngle(convertedDirVal);
-  } else {
-    const MVDirection& dirVal = direction.getValue();
-    separation = refDirValue().separation(dirVal);
-    pa = refDirValue().positionAngle(dirVal);
+  const MDirection& compDir(refDirection());
+  const MDirection::Ref& compDirFrame(compDir.getRef());
+  const MDirection::MVType* compDirValue = &(compDir.getValue());
+  Bool deleteValue = False;
+  // Convert direction to the same frame as the reference direction
+  if (direction.getRef() != compDirFrame) {
+    compDirValue = new MDirection::MVType
+      (MDirection::Convert(compDir, direction.getRef())().getValue());
+    deleteValue = True;
   }
-  const Double scale = square(pixelSize.radian()) *
-    itsShape(separation*sin(pa), separation*cos(pa));
-  flux.scaleValue(scale, scale, scale, scale);
+  const MDirection::MVType& dirValue = direction.getValue();
+  const Double separation = compDirValue->separation(dirValue);
+  Double retVal = 0.0;
+  if (separation < 4 * itsShape.majorAxis()) {
+    const Double pa = compDirValue->positionAngle(dirValue);
+    retVal = square(pixelSize.radian()) *
+      itsShape(separation*sin(pa), separation*cos(pa));
+  }
+  if (deleteValue) delete compDirValue;
+  return retVal;
 }
 
-void GaussianShape::multiSample(Vector<Double>& scale, 
- 				const Vector<MVDirection>& directions, 
- 				const MVAngle& pixelSize) const {
+void GaussianShape::sample(Vector<Double>& scale, 
+			   const Vector<MDirection::MVType>& directions, 
+			   const MDirection::Ref& refFrame,
+			   const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
   const uInt nSamples = directions.nelements();
-  if (scale.nelements() == 0) scale.resize(nSamples);
   DebugAssert(scale.nelements() == nSamples, AipsError);
 
-  Double separation;
-  Double pa;
-  const Double pixSize = pixelSize.radian();
-  const Double pixArea = pixSize * pixSize;
-  // The factor of 10 is somewhat arbitrary
-  const Double maxSep = 10.0 * itsShape.majorAxis();
+  const MDirection& compDir(refDirection());
+  const MDirection::Ref& compDirFrame(compDir.getRef());
+  const MDirection::MVType* compDirValue = &(compDir.getValue());
+  Bool deleteValue = False;
+  // Convert direction to the same frame as the reference direction
+  if (refFrame != compDirFrame) {
+    compDirValue = new MDirection::MVType
+      (MDirection::Convert(compDir, refFrame)().getValue());
+    deleteValue = True;
+  }
+  const Double pixArea = square(pixelSize.radian());
+  const Double maxSep = 4.0 * itsShape.majorAxis();
+  Double separation, pa;
   for (uInt i = 0; i < nSamples; i++) {
-    const MVDirection& dirVal = directions(i);
-    separation = refDirValue().separation(dirVal);
+    const MDirection::MVType& dirVal = directions(i);
+    separation = compDirValue->separation(dirVal);
     if (separation > maxSep) {
       scale(i) = 0.0;
     } else {
-      pa = refDirValue().positionAngle(dirVal);
+      pa = compDirValue->positionAngle(dirVal);
       scale(i) = pixArea * itsShape(separation*sin(pa), separation*cos(pa));
     }
   }
+  if (deleteValue) delete compDirValue;
 }
 
 void GaussianShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,

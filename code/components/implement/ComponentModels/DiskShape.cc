@@ -139,72 +139,76 @@ Double DiskShape::positionAngleInRad() const {
   return itsPaValue;
 }
 
-void DiskShape::sample(Flux<Double>& flux, const MDirection& direction, 
-		       const MVAngle& pixelSize) const {
+Double DiskShape::sample(const MDirection& direction, 
+			 const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
-  Double separation;
-  Double pa;
+  const MDirection& compDir(refDirection());
+  const MDirection::Ref& compDirFrame(compDir.getRef());
+  const MDirection::MVType* compDirValue = &(compDir.getValue());
+  Bool deleteValue = False;
+  // Convert direction to the same frame as the reference direction
+  if (direction.getRef() != compDirFrame) {
+    compDirValue = new MDirection::MVType
+      (MDirection::Convert(compDir, direction.getRef())().getValue());
+    deleteValue = True;
+  }
+  const MDirection::MVType& dirValue = direction.getValue();
+  const Double separation = compDirValue->separation(dirValue);
   const Double majRad = itsMajValue/2.0; 
-  if ((MDirection::Types) direction.getRef().getType() != refDirFrame()) {
-    const MVDirection dirVal = 
-      MDirection::Convert(direction, refDirFrame())().getValue();
-    separation = refDirValue().separation(dirVal);
-    if (separation > majRad) {
-      flux.setValue(0.0);
-      return;
+  Double retVal = 0.0;
+  if (separation < majRad) {
+    const Double pa = compDirValue->positionAngle(dirValue) - itsPaValue;
+    const Double x = abs(separation*cos(pa));
+    const Double y = abs(separation*sin(pa));
+    const Double minRad = itsMinValue/2.0; 
+    if ((x <= majRad) && 
+	(y <= minRad) && 
+	(y <= minRad * sqrt(0.25 - square(x/majRad)))) {
+      retVal = itsHeight*square(pixelSize.radian());
     }
-    pa = refDirValue().positionAngle(dirVal) - itsPaValue;
-  } else {
-    const MVDirection& dirVal = direction.getValue();
-    separation = refDirValue().separation(dirVal);
-    if (separation > majRad) {
-      flux.setValue(0.0);
-      return;
-    }
-    pa = refDirValue().positionAngle(dirVal) - itsPaValue;
   }
-
-  const Double x = abs(separation*cos(pa));
-  const Double y = abs(separation*sin(pa));
-  const Double minRad = itsMinValue/2.0; 
-  if ((x <= majRad) && 
-      (y <= minRad) && 
-      (y <= minRad * sqrt(0.25 - square(x/majRad)))) {
-    const Double scale = itsHeight*square(pixelSize.radian());
-    flux.scaleValue(scale, scale, scale, scale);
-  } else {
-    flux.setValue(0.0);
-  }
+  if (deleteValue) delete compDirValue;
+  return retVal;
 }
 
-void DiskShape::multiSample(Vector<Double>& scale, 
-			    const Vector<MVDirection>& directions, 
-			    const MVAngle& pixelSize) const {
+void DiskShape::sample(Vector<Double>& scale, 
+		       const Vector<MVDirection>& directions, 
+		       const MDirection::Ref& refFrame,
+		       const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
   const uInt nSamples = directions.nelements();
-  if (scale.nelements() == 0) scale.resize(nSamples);
   DebugAssert(scale.nelements() == nSamples, AipsError);
 
-  Double separation;
-  Double pa;
-  const Double pixArea = square(pixelSize.radian());
+  const MDirection& compDir(refDirection());
+  const MDirection::Ref& compDirFrame(compDir.getRef());
+  const MDirection::MVType* compDirValue = &(compDir.getValue());
+  Bool deleteValue = False;
+  // Convert direction to the same frame as the reference direction
+  if (refFrame != compDirFrame) {
+    compDirValue = new MDirection::MVType
+      (MDirection::Convert(compDir, refFrame)().getValue());
+    deleteValue = True;
+  }
+  Double separation, pa;
   const Double majRad = itsMajValue/2.0; 
   const Double minRad = itsMinValue/2.0; 
+  const Double pixValue = square(pixelSize.radian()) * itsHeight;
   for (uInt i = 0; i < nSamples; i++) {
     const MVDirection& dirVal = directions(i);
-    separation = refDirValue().separation(dirVal);
+    separation = compDirValue->separation(dirVal);
     scale(i) = 0.0;
     if (separation <= majRad) {
-      pa = refDirValue().positionAngle(dirVal);
+      pa = compDirValue->positionAngle(dirVal);
       const Double x = abs(separation*cos(pa));
       const Double y = abs(separation*sin(pa));
       if ((x <= majRad) && 
        	  (y <= minRad) && 
 	  (y <= minRad * sqrt(0.25 - square(x/majRad)))) {
-	scale(i) = itsHeight*pixArea;
+	scale(i) = pixValue;
       }
     }
   }
+  if (deleteValue) delete compDirValue;
 }
 
 void DiskShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
@@ -261,7 +265,7 @@ Bool DiskShape::ok() const {
            << LogIO::POST;
     return False;
   }
-  if (!near(itsHeight, 1.0/C::pi*itsMajValue*itsMinValue, C::dbl_epsilon)) {
+  if (!near(itsHeight, 1.0/(C::pi*itsMajValue*itsMinValue), C::dbl_epsilon)) {
     LogIO logErr(LogOrigin("DiskCompRep", "ok()"));
     logErr << LogIO::SEVERE << "The disk shape does not have"
 	   << " unit area"
