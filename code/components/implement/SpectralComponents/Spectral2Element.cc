@@ -39,18 +39,18 @@
 //# Member functions 
 Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {
   out.define(RecordFieldId("type"), fromType(tp_p));
-//
+
   Vector<Double> ptmp(par_p.copy());
   Vector<Double> etmp(err_p.copy());
-//
+
   if (tp_p == GAUSSIAN) {
      ptmp(2) = sigmaToFWHM(par_p(2));
      etmp(2) = sigmaToFWHM(err_p(2));
-  }
-//
+  };
+
   out.define(RecordFieldId("parameters"), ptmp);  
   out.define(RecordFieldId("errors"), etmp);
-//
+
   return True;
 }
 
@@ -65,55 +65,94 @@ Bool SpectralElement::fromRecord(String &error, const RecordInterface &in) {
       return False;
     }
 
-// Accomodate possibility of record coming from Glish in any old type
+    // Accomodate possibility of record coming from Glish in any old type
+
+    Vector<Double> errs;
+
+    // Get the errors if defined in record
+
+    if (in.isDefined("errors")) {
+      DataType dataType = in.dataType("errors");
+      if (dataType == TpArrayDouble) {
+	in.get("errors", errs);
+      } else if (dataType == TpArrayFloat) {
+	Vector<Float> v;
+	in.get("errors", v);
+	errs.resize(v.nelements());
+	convertArray(errs, v);
+      } else if (dataType == TpArrayInt) {
+	Vector<Int> v;
+	in.get("errors", v);
+	errs.resize(v.nelements());
+	convertArray(errs, v);
+      } else {
+	error += String("SpectralElement::fromRecord: errors field "
+			"must be double, float or int\n");
+	return False;
+      };
+    };
 
     Vector<Double> param;
     DataType dataType = in.dataType("parameters");
-    if (dataType==TpArrayDouble) {
+    if (dataType == TpArrayDouble) {
        in.get("parameters", param);
-    } else if (dataType==TpArrayFloat) {
+    } else if (dataType == TpArrayFloat) {
        Vector<Float> v;
        in.get("parameters", v);
        param.resize(v.nelements());
-       convertArray(param,v);
-    } else if (dataType==TpArrayInt) {
+       convertArray(param, v);
+    } else if (dataType == TpArrayInt) {
        Vector<Int> v;
        in.get("parameters", v);
        param.resize(v.nelements());
-       convertArray(param,v);
+       convertArray(param, v);
     } else {
-      error += String("Parameters field must be double, float or int\n");
+      error += String("SpectralElement::fromRecord: parameters field "
+		      "must be double, float or int\n");
       return False;
-    }
-//
+    };
+
+    // Make sizes of errors and params equal
+    if (errs.nelements() == 0) {
+      errs.resize(param.nelements());
+      errs = 0.0;
+    };
+    if (errs.nelements() != param.nelements()) {
+      error += String("SpectralElement::fromRecord must have equal lengths "
+		      "for parameters and errors fields\n");
+    };
     if (tp == GAUSSIAN) {
       if (param.nelements() != 3) {
 	error += String("Illegal number of parameters for Gaussian element\n");
 	return False;
       };
       if (param(2) <= 0.0) {
-	error += String("The width of a gaussian element must be positive\n");
+	error += String("The width of a Gaussian element must be positive\n");
 	return False;
       };
       param(2) = sigmaFromFWHM (param(2));
-//
+      errs(2) = sigmaFromFWHM (errs(2));
       par_p.resize(3);
+      err_p.resize(3);
     } else if (tp_p == POLYNOMIAL) {
       if (param.nelements() == 0) {
 	error += String("Polynomial spectral element must have order "
-			"of at least zero");
+			"of at least zero\n");
 	return False;
       };
       n_p = param.nelements()-1;
       par_p.resize(n_p+1);
+      err_p.resize(n_p+1);
     };
-//
     par_p = param;
-    return True;
+    err_p = errs;
+
+   return True;
   };
-  error += String("Illegal spectral element record in fromRecord\n");
+  error += String("Illegal spectral element record in "
+		  "SpectralElement::fromRecord\n");
   return False;
-}
+  }
 
 Bool SpectralElement::fromString(String &error, const String &in) {
   SpectralElement::Types tp;
@@ -121,15 +160,7 @@ Bool SpectralElement::fromString(String &error, const String &in) {
     error += String("Unknown spectral type in SpectralElement::fromString\n");
     return False;
   };
-  if (tp == GAUSSIAN) {
-    par_p.resize(3);
-    par_p(0) = 1.0;
-    par_p(1) = 0.0;
-    par_p(2) = 2*sqrt(C::ln2)/C::pi;
-  } else if (tp_p == POLYNOMIAL) {
-    n_p = 0;
-    par_p.resize(n_p);
-    par_p = 0;
-  };
+  if (tp == GAUSSIAN) *this = SpectralElement();
+  else if (tp_p == POLYNOMIAL)  *this = SpectralElement(0);
   return True;
 }
