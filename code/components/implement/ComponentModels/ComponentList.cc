@@ -1,5 +1,5 @@
 //# ComponentList.cc:  this defines the ComponentList implementation
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -197,7 +197,7 @@ void ComponentList::sample(Cube<Double>& samples,
 }
 
 void ComponentList::add(SkyComponent component) {
-  AlwaysAssert(itsROFlag == False, AipsError);
+//  AlwaysAssert(itsROFlag == False, AipsError);
   DebugAssert(ok(), AipsError);
   uInt blockSize = itsList.nelements();
   if (itsNelements == blockSize) {
@@ -214,7 +214,7 @@ void ComponentList::add(SkyComponent component) {
 }
 
 void ComponentList::remove(const uInt& index) {
-  AlwaysAssert(itsROFlag == False, AipsError);
+//  AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);
   DebugAssert(ok(), AipsError);
   uInt realIndex = itsOrder[index];
@@ -470,7 +470,7 @@ void ComponentList::setRefFrequencyUnit(const Vector<Int>& which,
 }
 
 SkyComponent& ComponentList::component(const uInt& index) {
-  AlwaysAssert(itsROFlag == False, AipsError);
+//  AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);
   DebugAssert(ok(), AipsError);
   return itsList[itsOrder[index]];
