@@ -1,0 +1,21 @@
+
+change id: 0135
+ author:   Joe McMullin
+ date:     2003/03/21
+ avers:    1.8
+ area:     Tool
+ package:  trial
+ module:   benchmark
+ type:     Code
+ category: New
+ summary:  Single dish benchmark tests
+Added functionality to test the timings of import, scan access, scan plotting, calibration, averaging, and baselining.
+The data tested are:
+42256 - Spectral Processor data - [17,18] - OffOn PSWITCH
+121k - Spectral Processor data - [36,37] - Track FSWITCH
+114k - Spectrometer data - [20,21] - OffOn PSWITCH
+224k - Spectrometer data - [43,44] - OffOn PSWITCH 
+128k - Spectrometer data - [48,48] - Track FSWITCH
+1216k - Spectrometer data - [22,23] - OffOn PSWITCH
+12125k- Spectrometer data - [51,52] - OffOn PSWITCH
+where the first number is the number of IFs, the second number is the number of polarizations, and the third number is the number of channels.
