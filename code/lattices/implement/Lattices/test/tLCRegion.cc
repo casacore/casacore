@@ -109,6 +109,19 @@ void doIt (const IPosition& latticeShape,
 				 ((LCEllipsoid*)circop)->radii().ac()));
 	delete circop;
     }
+    {
+        // test comparison
+        LCBox box1(start, end, latticeShape);
+        LCBox box2(box1);
+        AlwaysAssertExit (box2 == box1);
+        LCBox box3(start, end-2, latticeShape);
+        AlwaysAssertExit (box3 != box1);
+        LCEllipsoid cir1 (center, radius, latticeShape);
+        LCEllipsoid cir2 (cir1);
+        AlwaysAssertExit (cir2 == cir1);
+        LCEllipsoid cir3 (center, radius-0.01, latticeShape);
+        AlwaysAssertExit (cir3 != cir1);
+    }
 }
 
 
