@@ -183,7 +183,7 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
     // Initialize
     // have to find a valid value in array to init min and max
     Bool found=False;
-    uInt ifound;
+    uInt ifound=0;
     uInt n = mi.vector().nelements();
     while (! mi.pastEnd() && !found) {
 	for (uInt i=0; i<n; i++) {

@@ -1,5 +1,5 @@
 //# MaskArrMath.cc: Simple mathematics done with MaskedArray's.
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -869,10 +869,10 @@ void minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos,
 
     uInt ntotal = marray.nelements();
     Bool foundOne = False;
-    T minLocal;
-    T maxLocal;
-    uInt minNtotal;
-    uInt maxNtotal;
+    T minLocal = T();
+    T maxLocal = T();
+    uInt minNtotal=0;
+    uInt maxNtotal=0;
 
     while (ntotal--) {
         if (*marraymaskS) {
