@@ -28,17 +28,17 @@
 #include <trial/Fitting/LQNonLinearFitLM.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffIO.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Random.h>
+#include <aips/Functionals/Function.h>
 #include <aips/Functionals/NQGaussian1D.h>
 #include <aips/Functionals/NQGaussian2D.h>
-#include <aips/Functionals/Function.h>
-
-#include <aips/Mathematics/Math.h>
+#include <aips/Functionals/NQCompoundFunction.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayIO.h>
-#include <aips/Mathematics/Random.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Timer.h>
 
@@ -67,43 +67,24 @@ int main() {
   // Set converge criteria.  Default is 0.001
   fitter.setCriteria(0.0001);
 
-
   // ***** test one: fit 1D gaussian function to data ****** 
 
   // Make some fake data sets
   //  20.0 * exp (-((x-25)/4)^2) 
-  NQGaussian1D<Double> gauss1(20,25.0,4.0);  
-  for (uInt j=0; j<n; j++) {
-    x(j) = j*0.5;
-  };
+  NQGaussian1D<Double> gauss1(20, 25.0, 4.0);  
+  for (uInt j=0; j<n; j++) x(j) = j*0.5;
   for (uInt i=0; i<n; i++) {
     value = gauss1(x(i));
     y(i) = abs(value);
   };  
     
-  // Construct a gaussian function. 
-  // It can either be NQGaussian1D instantiated with AutoDiff
-  // or NQGaussian1D instantiated with Double.  The one instantiated
-  // with AutoDiff can be added with other functionals to form a new
-  // functional which can be used for nonlinear fitting.  The one 
-  // instantaited with AutoDiff offers best perfoemance, but it cannot
-  // be added with other functional to form new functionals for nonlinear
-  // fitting.
-  //
-  // An example on constructing an AutoDiff instantiated functional
-  // and using it to construct Function for nonlinear fitting:
-  //
-  // NQGaussian1D<AutoDiff<Double> > gauss_auto;  
-  // Function<Double> 
-  //   gauss = Function<Double>(gauss_auto);
-  //
-  // We'll use Double instantiated NQGaussian1D for performance.
+  // Construct a gaussian function for fitting
+  // It has to be a NQGaussian1D instantiated with an AutoDiff. 
 
   NQGaussian1D<AutoDiff<Double> > gauss;
 
   // Must give an initial guess for the set of fitted parameters.
-  // Current function parameter values will be used as initial guess if
-  // setFittedFuncParams() is not called.
+
   Vector<Double> v(3);
   v(0) = 2;
   v(1) = 20;
@@ -160,6 +141,115 @@ int main() {
     return 1;
   };
 
+  // ***** test oneA: fit 1D gaussian function using non Autodiff param ****** 
+    
+  // Construct a gaussian function for fitting
+  // It has to be a NQGaussian1D instantiated with an AutoDiff. 
+
+  NQGaussian1D<AutoDiff<Double> > gaussA;
+  for (uInt i=0; i<3; i++) gaussA[i] = v[i];
+  // Set the function
+  fitter.setFunction(gaussA);
+  timer1.mark();
+
+  // perform fit
+  solution = fitter.fit(x, y, sigma);
+  user_time = timer1.user ();
+
+  // compute new chi-square for the solution
+  newChiSquare = fitter.chiSquare();
+
+  if (fitter.converged()) {
+    cout << "****** Test oneA: fit a 1D gaussian (non-auto param) ******" <<
+      endl;
+    cout << "User time:   " << user_time << endl;
+    cout << "Converged after "<< fitter.currentIteration() <<
+      " iterations" <<endl;
+    cout << "Initial guess for fitted parameters " << v <<endl;
+    cout << "chi-square after convergence " <<  newChiSquare << endl;
+    cout << "Converge criteria " << fitter.getCriteria() << endl;
+    Matrix<Double> covariance = fitter.compuCovariance();
+    
+    cout << "Covariance matrix " << covariance;
+    // Compare solution with gauss1 parameters
+    for (uInt i=0; i<gauss1.parameters().nMaskedParameters(); i++) {
+      cout << "Expected Parameter Value " <<
+	gauss1.parameters().getMaskedParameters()[i]; 
+      cout << " Computed Value " << solution(i) << " Std Dev " <<
+	sqrt(covariance(i,i)) << endl;
+    };
+    
+    // See if they are within 3*sigma. 
+    for (uInt i=0; i<gaussA.nparameters(); i++) {
+      Int factor=3;
+      AlwaysAssertExit(nearAbs(abs(solution(i)), 
+      			       gauss1[i],
+      			       factor*sqrt(covariance(i,i))));
+    };
+    cout << "Test oneA succeeded" << endl;
+  } else {
+    cout << "Did not converge after " << fitter.currentIteration();
+    cout << " interations." << endl;
+    cout << "Test oneA failed" << endl;
+    return 1;
+  };
+
+  
+  // ***** test oneB: fit 1D gaussian function using compound ****** 
+    
+  // Construct a gaussian function for fitting
+  // It has to be a NQGaussian1D instantiated with an AutoDiff. 
+
+  NQGaussian1D<AutoDiff<Double> > gaussB0;
+  for (uInt i=0; i<3; i++) gaussB0[i] = v[i];
+  NQCompoundFunction<AutoDiff<Double> > gaussB;
+  gaussB.addFunction(gaussB0);
+  // Set the function
+  fitter.setFunction(gaussB);
+  timer1.mark();
+
+  // perform fit
+  solution = fitter.fit(x, y, sigma);
+  user_time = timer1.user ();
+
+  // compute new chi-square for the solution
+  newChiSquare = fitter.chiSquare();
+
+  if (fitter.converged()) {
+    cout << "****** Test oneB: fit a 1D gaussian (use compound)  ******" << 
+      endl;
+    cout << "User time:   " << user_time << endl;
+    cout << "Converged after "<< fitter.currentIteration() <<
+      " iterations" <<endl;
+    cout << "Initial guess for fitted parameters " << v <<endl;
+    cout << "chi-square after convergence " <<  newChiSquare << endl;
+    cout << "Converge criteria " << fitter.getCriteria() << endl;
+    Matrix<Double> covariance = fitter.compuCovariance();
+    
+    cout << "Covariance matrix " << covariance;
+    // Compare solution with gauss1 parameters
+    for (uInt i=0; i<gauss1.parameters().nMaskedParameters(); i++) {
+      cout << "Expected Parameter Value " <<
+	gauss1.parameters().getMaskedParameters()[i]; 
+      cout << " Computed Value " << solution(i) << " Std Dev " <<
+	sqrt(covariance(i,i)) << endl;
+    };
+    
+    // See if they are within 3*sigma. 
+    for (uInt i=0; i<gaussB.nparameters(); i++) {
+      Int factor=3;
+      AlwaysAssertExit(nearAbs(abs(solution(i)), 
+      			       gauss1[i],
+      			       factor*sqrt(covariance(i,i))));
+    };
+    cout << "Test oneB succeeded" << endl;
+  } else {
+    cout << "Did not converge after " << fitter.currentIteration();
+    cout << " interations." << endl;
+    cout << "Test oneB failed" << endl;
+    return 1;
+  };
+  
   // ***** test two: fit a 1D gaussian function to data but hold the center 
   // ***** of the gaussian fixed
   
@@ -175,8 +265,6 @@ int main() {
   fitter.setFunction(gauss);
 
   // Must give an initial guess for the set of fitted parameters.  
-  // Current function parameter values will be used as initial guess if
-  // setFittedFuncParams() is not called.
   v.resize(2);
   v(0) = 2;
   v(1) = 10;
