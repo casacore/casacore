@@ -153,7 +153,7 @@ main() {
   --onePa;
 
   cout << "<onePc> - ";
-  ListIter<int> onePc = onePa;
+  ListIter<int> onePc(&onePa);
   while(onePc.atEnd() != True) {
     cout << onePc.getRight() << ".";
     onePc++;
@@ -330,7 +330,7 @@ main() {
   onePc.toStart();
 
   List<int> *four = new List<int>;
-  ListIter<int> onePd = four;
+  ListIter<int> onePd (four);
 
   onePd.addRight(23);
   onePd.addRight(24);
