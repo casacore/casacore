@@ -205,8 +205,10 @@ inline Double fabs(const DComplex &val) { return abs(val); };
 inline Float fabs(const Complex &val) { return abs(val); };
 // The log10 should be in stl
 // <group>
+#if !defined( AIPS_USE_NEW_SGI) 
 DComplex log10(const DComplex &val);
 Complex log10(const Complex &val);
+#endif
 // </group>
 // </group>
 
