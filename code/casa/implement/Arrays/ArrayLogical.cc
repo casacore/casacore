@@ -31,6 +31,28 @@
 //# For scalar near() functions.
 #include <aips/Mathematics/Math.h>
 
+template<class T>
+Bool allEQ (const Array<T> &l, const Array<T> &r)
+{
+    if (l.conform(r) == False) {
+        return False;
+    }
+    uInt ntotal = l.nelements();
+    Bool deleteL, deleteR;
+    const T *ls = l.getStorage(deleteL);
+    const T *rs = r.getStorage(deleteR);
+    Bool retval = True;
+    for (uInt i=0; i < ntotal; i++) {
+	if (ls[i] != rs[i]) {
+	    retval = False;
+	    break;
+	}
+    }
+    l.freeStorage(ls, deleteL);
+    r.freeStorage(rs, deleteR);
+    return retval;
+}
+
 #define ARRLOG_B_ALLFUNC_AA(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
 Bool ALLFUNC (const Array<T> &l, const Array<T> &r) \
@@ -56,12 +78,10 @@ Bool ALLFUNC (const Array<T> &l, const Array<T> &r) \
     return retval; \
 }
 
-
-ARRLOG_B_ALLFUNC_AA ( allLE,  <=, "allLE" )
+ARRLOG_B_ALLFUNC_AA ( allLE,  <,  "allLE" )
 ARRLOG_B_ALLFUNC_AA ( allLT,  <,  "allLT" )
 ARRLOG_B_ALLFUNC_AA ( allGE,  >=, "allGE" )
 ARRLOG_B_ALLFUNC_AA ( allGT,  >,  "allGT" )
-ARRLOG_B_ALLFUNC_AA ( allEQ,  ==, "allEQ" )
 ARRLOG_B_ALLFUNC_AA ( allNE,  !=, "allNE" )
 ARRLOG_B_ALLFUNC_AA ( allAND, &&, "allAND" )
 ARRLOG_B_ALLFUNC_AA ( allOR,  ||, "allOR" )

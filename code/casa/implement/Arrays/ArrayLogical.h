@@ -67,7 +67,7 @@ template <class T> class Cube;
 // any elements of the input arrays for the "any" functions
 // (e.g. anyLE()).
 //
-// For instance allLE (a, b) imples that every element of a is
+// For instance allLE (a, b) implies that every element of a is
 // less than or equal to every element of b. Note that with this definition
 // allLE (a, b) and allGE (a, b) can both be false (e.g. a = [1,0] b = [0,1]).
 //
@@ -125,7 +125,7 @@ template <class T> class Cube;
 // The operator forms of array logical operations now return a LogicalArray.
 //
 // The arrays must conform except for allEQ, which will return False if the
-// arrays are different shapes.
+// arrays have different shapes.
 //
 // <thrown>
 //    <li> ArrayConformanceError
@@ -312,8 +312,8 @@ template<class T> LogicalArray operator || (const T &val, const Array<T> &array)
 
 
 //# With two arrays, they must both conform, and the result is done element
-//# by element. For instance anyLE (a, b) imples that some element of a is
-//# less than or equal to every element of b.
+//# by element. For instance anyLE (a, b) implies that some element of a is
+//# less than or equal to the corresponding element of b.
 //# NB comparison between two zero-sized arrays is not defined (should it
 //# throw an exception?).
 
