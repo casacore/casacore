@@ -117,9 +117,9 @@ public:
     //<group>
     void setData (const ImageInterface<Float>& image,
                   const ImageRegion& region,
-                  uInt profileAxis);
+                  uInt profileAxis, Bool average=True);
     void setData (const ImageInterface<Float>& image,
-                  uInt profileAxis);
+                  uInt profileAxis, Bool average=True);
     //</group>
 
     // Set data directly. x-units can be 'pix'. if absolute
@@ -158,7 +158,7 @@ public:
                       const String& xUnit);
 
     // List all elements to stream (in same units as getElement)
-    void listElements (LogIO& os) const;
+    void listElements (LogIO& os, const SpectralList& list) const;
 
     // Reset to default state
     void reset ();
@@ -166,9 +166,16 @@ public:
     // Return number of SpectralElements set
     uInt nElements ();
 
-    // Do the fit
+    // Do the fit of the averaged profile
     //<group>
     Bool fit();
+    //</group>
+
+
+    // Fit all profiles in the region and write out images.
+    //<group>
+    void fit (ImageInterface<Float>*& fit,
+              ImageInterface<Float>*& residual);
     //</group>
 
     // Find the residuals 
@@ -183,7 +190,13 @@ public:
     void model (Vector<Float>& model) const;
     //</group>
 
+
 private:
+
+// Image holding data.  Only will be set if fitting all profiles in region
+
+   ImageInterface<Float>* itsImagePtr;
+//
    Bool itsFitDone;
 
 // Holds the abcissa, ordinate and mask.  x-units will be pixels
@@ -210,7 +223,7 @@ private:
    MDoppler::Types itsDopplerType;
    Unit itsXUnit;
    Bool itsXAbs;
-
+   Bool itsFitRegion;                 // True to fit all profiles in region
 //
    void collapse (Vector<Float>& profile, Vector<Bool>& mask,
                   uInt profileAxis,  const MaskedLattice<Float>& lat) const;
@@ -228,7 +241,7 @@ private:
                                     const MDoppler::Types dopplerOut);
 //
    void setData (const ImageInterface<Float>& image,
-                 const Slicer& sl);
+                 const Slicer& sl, Bool average);
 };
 
 #endif
