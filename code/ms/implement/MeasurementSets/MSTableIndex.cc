@@ -75,36 +75,41 @@ MSTableIndex &MSTableIndex::operator=(const MSTableIndex &other)
 {
     if (this != &other) {
 	clear();
-	tab_p = other.tab_p;
-	timeColumn_p.reference(other.timeColumn_p);
-	intervalColumn_p.reference(other.intervalColumn_p);
-	timeVec_p = other.timeVec_p;
-	if (other.timeVals_p) {
-	    timeVals_p = timeVec_p.getStorage(deleteItTime_p);
+	if (!other.tab_p.isNull()) {
+	    tab_p = other.tab_p;
+	    timeColumn_p.reference(other.timeColumn_p);
+	    intervalColumn_p.reference(other.intervalColumn_p);
+	    timeVec_p = other.timeVec_p;
+	    if (other.timeVals_p) {
+		timeVals_p = timeVec_p.getStorage(deleteItTime_p);
+	    }
+	    intervalVec_p = other.intervalVec_p;
+	    if (other.intervalVals_p) {
+		intervalVals_p = intervalVec_p.getStorage(deleteItInterval_p);
+	    }
+	    
+	    hasTime_p = other.hasTime_p;
+	    hasInterval_p = other.hasInterval_p;
+	    // there might not be any index columns 
+	    if (other.key_p) {
+		key_p = new Record(*other.key_p);
+		AlwaysAssert(key_p, AipsError);
+		index_p = new ColumnsIndex(*other.index_p);
+		AlwaysAssert(index_p, AipsError);
+		makeKeys();
+		lastKeys_p = other.lastKeys_p;
+	    }
+	    time_p = other.time_p;
+	    interval_p = other.interval_p;
+	    lastTime_p = other.lastTime_p;
+	    lastInterval_p = other.lastInterval_p;
+	    lastSearch_p = other.lastSearch_p;
+	    lastNearest_p = other.lastNearest_p;
+	    nearestFound_p = other.nearestFound_p;
+	    nearestReady_p = other.nearestReady_p;
+	    nrows_p = other.nrows_p;
+	    hasChanged_p = other.hasChanged_p;
 	}
-	intervalVec_p = other.intervalVec_p;
-	if (other.intervalVals_p) {
-	    intervalVals_p = intervalVec_p.getStorage(deleteItInterval_p);
-	}
-	
-	key_p = new Record(*other.key_p);
-	AlwaysAssert(key_p, AipsError);
-	index_p = new ColumnsIndex(*other.index_p);
-	AlwaysAssert(index_p, AipsError);
-	hasTime_p = other.hasTime_p;
-	hasInterval_p = other.hasInterval_p;
-	makeKeys();
-	time_p = other.time_p;
-	interval_p = other.interval_p;
-	lastKeys_p = other.lastKeys_p;
-	lastTime_p = other.lastTime_p;
-	lastInterval_p = other.lastInterval_p;
-	lastSearch_p = other.lastSearch_p;
-	lastNearest_p = other.lastNearest_p;
-	nearestFound_p = other.nearestFound_p;
-	nearestReady_p = other.nearestReady_p;
-	nrows_p = other.nrows_p;
-	hasChanged_p = other.hasChanged_p;
     }
     return *this;
 }
