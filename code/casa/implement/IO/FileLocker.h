@@ -1,5 +1,5 @@
 //# FileLocker.h: Class to handle file locking
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -120,7 +120,11 @@ public:
     Bool release();
 
     // Test if the file can be locked for read or write.
+    // Optionally the PID of the process holding the lock is returned.
+    // <group>
     Bool canLock (LockType = Write);
+    Bool canLock (uInt& pid, LockType = Write);
+    // </group>
 
     // Test if the process has a lock for read or write on the file.
     Bool hasLock (LockType = Write) const;
