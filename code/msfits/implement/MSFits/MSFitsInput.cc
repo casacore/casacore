@@ -723,8 +723,11 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW)
   itsLog << LogIO::NORMAL << "Reading and writing " << nGroups
      << " visibility groups"<< LogIO::POST;
   Int row=-1;
+
   Double interval, exposure;
   interval=0.0; exposure=0.0;
+  Bool discernIntExp(True);
+  Double discernedInt(DBL_MAX);
 
   // ProgressMeter meter(0.0, nGroups*1.0, "UVFITS Filler", "Groups copied", "",// 		      "", True,  nGroups/100);
  
@@ -741,7 +744,6 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW)
   Vector<Int> lastFieldId(1), lastFreqId(1);
   scanNumber=0; lastFieldId=-1, lastFreqId=-1;
 
-  Int fixToRow=-1;
   Bool lastRowFlag=False;
   Vector<Int> ant1(totRows);
   Vector<Int> ant2(totRows);
@@ -813,17 +815,17 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW)
 
     // If integration time is a RP, use it:
     if (iInttim > -1) {
+      discernIntExp=False;
       exposure = priGroup_p.parm(iInttim);
       interval = exposure;
     } else {
       // keep track of minimum which is the only one
+      // (if time step is larger than UVFITS precision (and zero))
+      discernIntExp=True;
       Double tempint;
       tempint=time-lastFillTime;
-      // if interval larger than UVFITS precision (and zero):
       if (tempint > 0.01) {
-	interval=tempint;
-        // assume exposure=interval (wrong for pulsar gating!)
-        exposure=interval;
+	discernedInt=min(discernedInt,tempint);
       }
     }
 
@@ -889,8 +891,11 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW)
 	}
       }
 
-      interv(row)=interval;
-      expos(row)=exposure;
+      if (!discernIntExp) {
+	interv(row)=interval;
+	expos(row)=exposure;
+      }
+
       Bool rowFlag=allEQ(flag.xyPlane(row),True);
       if (rowFlag!=lastRowFlag) {
 	msc.flagRow().put(row,rowFlag);
@@ -908,10 +913,6 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW)
       if (time!=lastFillTime) {
  	msc.time().put(row,time);
  	msc.timeCentroid().put(row,time);
-	// the second integration: record row number
-	if (fixToRow==-2) fixToRow=row-1;
-	// the first integration: get ready to record row number 
-	if (lastFillTime==0) fixToRow=-2;
  	lastFillTime=time;
       }
       
@@ -940,9 +941,10 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW)
 
   // If determining interval on-the-fly, fill interval/exposure columns
   //  now:
-  if (interval==0.0) {
-    msc.interval().fillColumn(exposure);
-    msc.exposure().fillColumn(exposure);
+  if (discernIntExp) {
+    discernedInt=floor(100.0*discernedInt+0.5)/100.0;
+    msc.interval().fillColumn(discernedInt);
+    msc.exposure().fillColumn(discernedInt);
   }
   else{
     msc.interval().putColumn(interv);
@@ -1025,8 +1027,11 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   itsLog << LogIO::NORMAL << "Reading and writing " << nGroups
      << " visibility groups"<< LogIO::POST;
   Int row=-1;
+
   Double interval, exposure;
   interval=0.0; exposure=0.0;
+  Bool discernIntExp(True);
+  Double discernedInt(DBL_MAX);
 
   ProgressMeter meter(0.0, nGroups*1.0, "UVFITS Filler", "Groups copied", "",
  		      "", True,  nGroups/100);
@@ -1043,7 +1048,6 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   Vector<Int> lastFieldId(1), lastFreqId(1);
   scanNumber=0; lastFieldId=-1, lastFreqId=-1;
 
-  Int fixToRow=-1;
   Bool lastRowFlag=False;
 
   // Loop over groups
@@ -1053,6 +1057,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
     priGroup_p.read();
 
     // Extract time in MJD seconds
+    //  (this has VERY limited precision [~0.01s])
     const Double JDofMJD0=2400000.5;
     Double time = priGroup_p.parm(iTime0); 
     time -= JDofMJD0;
@@ -1108,25 +1113,17 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 
     // If integration time is a RP, use it:
     if (iInttim > -1) {
+      discernIntExp=False;
       exposure = priGroup_p.parm(iInttim);
       interval = exposure;
     } else {
       // keep track of minimum which is the only one
+      // (if time step is larger than UVFITS precision (and zero))
+      discernIntExp=True;
       Double tempint;
       tempint=time-lastFillTime;
-      // if interval larger than UVFITS precision (and zero):
       if (tempint > 0.01) {
-	interval=tempint;
-        // assume exposure=interval (wrong for pulsar gating!)
-        exposure=interval;
-	// fix up the rows for which we didn't set a valid interval/exposure
-	if (fixToRow>=0) {
-	  for (Int i=0; i<=fixToRow; i++) {
-	    msc.interval().put(i,interval);
-	    msc.exposure().put(i,exposure);
-	  }
-	  fixToRow=-1;
-	}
+	discernedInt=min(discernedInt,tempint);
       }
     }
 
@@ -1192,8 +1189,11 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 	}
       }
 
-      msc.interval().put(row,interval);
-      msc.exposure().put(row,exposure);
+      // If available, store interval/exposure
+      if (!discernIntExp) {
+	msc.interval().put(row,interval);
+	msc.exposure().put(row,exposure);
+      }
 
       msc.data().put(row,vis);
 
@@ -1220,10 +1220,6 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       if (time!=lastFillTime) {
  	msc.time().put(row,time);
  	msc.timeCentroid().put(row,time);
-	// the second integration: record row number
-	if (fixToRow==-2) fixToRow=row-1;
-	// the first integration: get ready to record row number 
-	if (lastFillTime==0) fixToRow=-2;
  	lastFillTime=time;
       }
       msc.uvw().put(row,uvw);
@@ -1254,9 +1250,10 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 
   // If determining interval on-the-fly, fill interval/exposure columns
   //  now:
-  if (interval==0.0) {
-    msc.interval().fillColumn(exposure);
-    msc.exposure().fillColumn(exposure);
+  if (discernIntExp) {
+    discernedInt=floor(100.0*discernedInt+0.5)/100.0;
+    msc.interval().fillColumn(discernedInt);
+    msc.exposure().fillColumn(discernedInt);
   }
 
   // fill the receptorAngle with defaults, just in case there is no AN table
