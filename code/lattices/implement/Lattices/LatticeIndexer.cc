@@ -34,193 +34,149 @@
 
 // default constructor (one dimensional, unit-length instance)
 LatticeIndexer::LatticeIndexer()
-  :theFullShape(IPosition(1,1)), 
-   theNdim(theFullShape.nelements()), 
-   theShape(theFullShape),
-   theAxisInc(IPosition(theNdim,1)),
-   theOffset(IPosition(theNdim,0))
+: itsFullShape (IPosition(1,1)), 
+  itsNdim      (1),
+  itsShape     (IPosition(1,1)),
+  itsAxisInc   (IPosition(1,1)),
+  itsOffset    (IPosition(1,0))
 {
   DebugAssert(ok() == True, AipsError);
-};
+}
 
 // Specify the size of the Lattice. Assume a full size sub-Lattice. 
-LatticeIndexer::LatticeIndexer(const IPosition &shape)
-  :theFullShape(shape),
-   theNdim(theFullShape.nelements()), 
-   theShape(theFullShape),
-   theAxisInc(theNdim,1),
-   theOffset(theNdim,0)
+LatticeIndexer::LatticeIndexer (const IPosition& shape)
+: itsFullShape (shape),
+  itsNdim      (shape.nelements()), 
+  itsShape     (shape),
+  itsAxisInc   (shape.nelements(), 1),
+  itsOffset    (shape.nelements(), 0)
 {
   DebugAssert(ok() == True, AipsError);
-};
+}
 
 // Specify a Lattice and define a sub-Lattice within it.
-LatticeIndexer::LatticeIndexer(const IPosition &shape, const IPosition &blc, 
-			       const IPosition &trc, const IPosition &inc)
-  :theFullShape(shape),
-   theNdim(theFullShape.nelements()), 
-   theShape(theFullShape),
-   theAxisInc(theNdim, 1),
-   theOffset(theNdim, 0)
+LatticeIndexer::LatticeIndexer (const IPosition& shape, const IPosition& blc, 
+				const IPosition& trc, const IPosition& inc)
+: itsFullShape (shape),
+  itsNdim      (shape.nelements()), 
+  itsShape     (shape),
+  itsAxisInc   (shape.nelements(), 1),
+  itsOffset    (shape.nelements(), 0)
 {
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(blc.nelements() == theNdim, AipsError);
-  AlwaysAssert(trc.nelements() == theNdim, AipsError);
-  AlwaysAssert(inc.nelements() == theNdim, AipsError);
-  for (uInt i=0; i < theNdim; i++) {
-    AlwaysAssert(blc(i) >= 0 && blc(i) < theFullShape(i), AipsError);
-    AlwaysAssert(trc(i) < theFullShape(i) && trc(i) >= blc(i), AipsError);
-    AlwaysAssert(inc(i) > 0 && inc(i) <= theFullShape(i), AipsError);
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (blc.nelements() == itsNdim, AipsError);
+  AlwaysAssert (trc.nelements() == itsNdim, AipsError);
+  AlwaysAssert (inc.nelements() == itsNdim, AipsError);
+  for (uInt i=0; i<itsNdim; i++) {
+    AlwaysAssert (blc(i) >= 0  &&  blc(i) < itsFullShape(i), AipsError);
+    AlwaysAssert (trc(i) < itsFullShape(i)  &&  trc(i) >= blc(i), AipsError);
+    AlwaysAssert (inc(i) > 0  &&  inc(i) <= itsFullShape(i), AipsError);
   }
-  theOffset = blc;
-  theAxisInc = inc;
-  theShape = (trc - blc + inc)/inc; 
-  DebugAssert(ok() == True, AipsError);
-};
+  itsOffset  = blc;
+  itsAxisInc = inc;
+  itsShape   = (trc - blc + inc) / inc; 
+  DebugAssert (ok() == True, AipsError);
+}
 
 // Copy constructor. This uses copy semantics.
-LatticeIndexer::LatticeIndexer (const LatticeIndexer &other)
-  :theFullShape(other.theFullShape),
-   theNdim(other.theNdim),
-   theShape(other.theShape), 
-   theAxisInc(other.theAxisInc), 
-   theOffset(other.theOffset)
+LatticeIndexer::LatticeIndexer (const LatticeIndexer& other)
+: itsFullShape (other.itsFullShape),
+  itsNdim      (other.itsNdim),
+  itsShape     (other.itsShape), 
+  itsAxisInc   (other.itsAxisInc), 
+  itsOffset    (other.itsOffset)
 {
   DebugAssert(ok() == True, AipsError);
-};
+}
 
 // the destructor does nothing
 LatticeIndexer::~LatticeIndexer()
 {
   // does nothing
-};
+}
 
 // Assignment operator. Uses copy semantics.
-LatticeIndexer &LatticeIndexer::operator=(const LatticeIndexer &other)
+LatticeIndexer& LatticeIndexer::operator= (const LatticeIndexer& other)
 {
   if (this != &other) {
-    if (theNdim != other.theNdim) {
-      theNdim = other.theNdim;
-      theFullShape.resize(theNdim);
-      theShape.resize(theNdim);
-      theAxisInc.resize(theNdim);
-      theOffset.resize(theNdim);
+    if (itsNdim != other.itsNdim) {
+      itsNdim = other.itsNdim;
+      itsFullShape.resize (itsNdim);
+      itsShape.resize (itsNdim);
+      itsAxisInc.resize (itsNdim);
+      itsOffset.resize (itsNdim);
     }
-    theFullShape = other.theFullShape;
-    theShape = other.theShape;
-    theAxisInc = other.theAxisInc;
-    theOffset = other.theOffset;
+    itsFullShape = other.itsFullShape;
+    itsShape     = other.itsShape;
+    itsAxisInc   = other.itsAxisInc;
+    itsOffset    = other.itsOffset;
   }
   DebugAssert(ok() == True, AipsError);
   return *this;
-};
+}
 
 // function to change the shape of the Lattice. Resets the sub-Lattice to
 // fullsize.
-void LatticeIndexer::resize(const IPosition &newShape)
+void LatticeIndexer::resize (const IPosition& newShape)
 {
-  if (newShape.nelements() != theNdim) {
-    theNdim = newShape.nelements();
-    theFullShape.resize(theNdim);
-    theShape.resize(theNdim);
-    theAxisInc.resize(theNdim);
-    theOffset.resize(theNdim);
+  if (newShape.nelements() != itsNdim) {
+    itsNdim = newShape.nelements();
+    itsFullShape.resize (itsNdim);
+    itsShape.resize (itsNdim);
+    itsAxisInc.resize (itsNdim);
+    itsOffset.resize (itsNdim);
   }
-  theFullShape = newShape;
-  theShape = theFullShape;
-  theAxisInc = 1;
-  theOffset = 0;
+  itsFullShape = newShape;
+  itsShape     = itsFullShape;
+  itsAxisInc   = 1;
+  itsOffset    = 0;
   DebugAssert(ok() == True, AipsError);
-};
-
-// Returns the length of each axis in the parent Lattice
-const IPosition &LatticeIndexer::fullShape() const
-{
-  DebugAssert(ok() == True, AipsError);
-  return theFullShape;
-};
+}
 
 // Returns the length of the requested axis in the parent Lattice
-uInt LatticeIndexer::fullShape(uInt axis) const
+uInt LatticeIndexer::fullShape (uInt axis) const
 {
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(axis < theNdim, AipsError);
-  return theFullShape(axis);
-};
-
-// Returns the length of each axis in the sub-Lattice
-const IPosition &LatticeIndexer::shape() const
-{
-  DebugAssert(ok() == True, AipsError);
-  return theShape;
-};
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (axis < itsNdim, AipsError);
+  return itsFullShape(axis);
+}
 
 // Returns the length of the requested axis in the sub-Lattice
-uInt LatticeIndexer::shape(uInt axis) const
+uInt LatticeIndexer::shape (uInt axis) const
 {
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(axis < theNdim, AipsError);
-  return theShape(axis);
-};
-
-// function to return the increments along each axis of the LatticeIndexer.
-const IPosition &LatticeIndexer::increment() const
-{
-  DebugAssert(ok() == True, AipsError);
-  return theAxisInc;
-};
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (axis < itsNdim, AipsError);
+  return itsShape(axis);
+}
 
 // function to return the increments along the requested axis of the
 // Lattice.
-uInt LatticeIndexer::increment(uInt axis) const
+uInt LatticeIndexer::increment (uInt axis) const
 {
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(axis < theNdim, AipsError);
-  return theAxisInc(axis);
-};
-
-// function to return the offset between the sub-Lattice and the parent
-// one.
-const IPosition & LatticeIndexer::offset() const
-{
-  DebugAssert(ok() == True, AipsError);
-  return theOffset;
-};
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (axis < itsNdim, AipsError);
+  return itsAxisInc(axis);
+}
 
 // function to return the offset on the specified axes between the
 // sub-Lattice and the parent one.
-uInt LatticeIndexer::offset(uInt axis) const
+uInt LatticeIndexer::offset (uInt axis) const
 {
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(axis < theNdim, AipsError);
-  return theOffset(axis);
-};
-
-// function which returns the number of dimensions in the LatticeIndexer.
-uInt LatticeIndexer::ndim() const
-{
-  DebugAssert(ok() == True, AipsError);
-  return theNdim;
-};
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (axis < itsNdim, AipsError);
+  return itsOffset(axis);
+}
 
 // Revert from a sub-Lattice description back to the main Lattice. This is
 // the only way to "increase" the the size of the sub-Lattice used by the
 // LatticeIndexer.
 void LatticeIndexer::fullSize()
 {
-  theShape = theFullShape;
-  theAxisInc = 1;
-  theOffset = 0;
-  DebugAssert(ok() == True, AipsError);
+  itsShape   = itsFullShape;
+  itsAxisInc = 1;
+  itsOffset  = 0;
+  DebugAssert (ok() == True, AipsError);
 }
-
-// function which returns the number of elements in the sub-Lattice
-// this value is equal to the product of shape().
-uInt LatticeIndexer::nelements() const
-{
-  DebugAssert(ok() == True, AipsError);
-  return theShape.product();
-};
 
 // function which increments (incr=True) or decrements (incr=False) the
 // cursor position (the first IPosition argument) by a cursor shape (the
@@ -232,9 +188,9 @@ uInt LatticeIndexer::nelements() const
 // sub-Lattice is reached. The cursorPosition is relative to the origin of
 // the sub-Lattice. To get its location relative to the main Lattice use
 // the absolutePosition() function. 
-Bool LatticeIndexer::tiledCursorMove(Bool incr, IPosition &cursorPos, 
-				     const IPosition &cursorShape,
-				     const IPosition &cursorHeading) const
+Bool LatticeIndexer::tiledCursorMove (Bool incr, IPosition& cursorPos, 
+				      const IPosition& cursorShape,
+				      const IPosition& cursorHeading) const
 {
   // this function performs IPosition addition/subtraction
   // ie. cursorPos += cursorShape but it makes sure that some pixels are
@@ -255,56 +211,60 @@ Bool LatticeIndexer::tiledCursorMove(Bool incr, IPosition &cursorPos,
   //    preliminary value for cursorPos += congruentCursorShape.
   //    this is the "base" or "bottomLeftCorner" of the new cursor.
 
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(cursorPos.nelements() == theNdim, AipsError);
-  AlwaysAssert(cursorShape.nelements() == theNdim, AipsError);
-  AlwaysAssert(cursorHeading.nelements() == theNdim,AipsError);
-  for (uInt i=0; i<theNdim; i++)
-    AlwaysAssert(cursorShape(i) > 0, AipsError);
-
-  uInt activeAxis, indexToActiveAxis = 0;
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (cursorPos.nelements() == itsNdim, AipsError);
+  AlwaysAssert (cursorShape.nelements() == itsNdim, AipsError);
+  AlwaysAssert (cursorHeading.nelements() == itsNdim,AipsError);
+  for (uInt i=0; i<itsNdim; i++) {
+    AlwaysAssert (cursorShape(i) > 0, AipsError);
+  }
+  uInt activeAxis;
+  uInt indexToActiveAxis = 0;
   IPosition candidateCursorPos(cursorPos);
 
-  while (indexToActiveAxis < theNdim) {
+  while (indexToActiveAxis < itsNdim) {
     activeAxis = cursorHeading(indexToActiveAxis);
-    if (incr)
+    if (incr) {
       candidateCursorPos(activeAxis) += cursorShape(activeAxis);
-    else
+    } else {
       candidateCursorPos(activeAxis) -= cursorShape(activeAxis);
-    if ((candidateCursorPos(activeAxis) < theShape(activeAxis)) &&
-	(candidateCursorPos(activeAxis) + cursorShape(activeAxis) > 0)){
+    }
+    if ((candidateCursorPos(activeAxis) < itsShape(activeAxis))  &&
+	(candidateCursorPos(activeAxis) + cursorShape(activeAxis) > 0)) {
       cursorPos = candidateCursorPos;
       return True;
     }
-    if (incr)
+    if (incr) {
       candidateCursorPos(activeAxis) -= 
-	((candidateCursorPos(activeAxis)+cursorShape(activeAxis)-1)
-	 /cursorShape(activeAxis))
-	*cursorShape(activeAxis);
-    else 
-      candidateCursorPos(activeAxis) +=
-	((theShape(activeAxis)-candidateCursorPos(activeAxis)-1)
-	 /cursorShape(activeAxis))
+	((candidateCursorPos(activeAxis) + cursorShape(activeAxis) - 1)
+	 / cursorShape(activeAxis))
 	* cursorShape(activeAxis);
+    } else {
+      candidateCursorPos(activeAxis) +=
+	((itsShape(activeAxis) - candidateCursorPos(activeAxis) - 1)
+	 / cursorShape(activeAxis))
+	* cursorShape(activeAxis);
+    }
     indexToActiveAxis++;
   } // while 
   return False;
-};
+}
 
 // function which returns a value of True if the IPosition argument
 // is within the sub-Lattice.  Returns False if the IPosition argument is 
 // outside the sub-Lattice or if the argument doesn't conform to the 
 // data members.
-Bool LatticeIndexer::isInside(const IPosition &index) const
+Bool LatticeIndexer::isInside (const IPosition& index) const
 {
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(index.nelements () == theNdim, AipsError);
-
-  for (uInt i=0; i<theNdim; i++)
-    if ((index(i) < 0) || (index(i) >= theShape(i)))
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (index.nelements () == itsNdim, AipsError);
+  for (uInt i=0; i<itsNdim; i++) {
+    if ((index(i) < 0) || (index(i) >= itsShape(i))) {
       return False;
+    }
+  }
   return True;
-};
+}
 
 // function which subsections a LatticeIndexer.  The argument IPositions
 // specify "bottom left" and "upper right" corners and axis increments
@@ -318,42 +278,42 @@ Bool LatticeIndexer::isInside(const IPosition &index) const
 // possible Lattice size.  Also note that the trc might not be used if an
 // integral number of increments does not end on the trc (in which case
 // the last position below the trc will be used).
-void LatticeIndexer::subSection (const IPosition &blc, const IPosition &trc,
-				 const IPosition &inc)
+void LatticeIndexer::subSection (const IPosition& blc, const IPosition& trc,
+				 const IPosition& inc)
 {
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(blc.nelements() == theNdim, AipsError);
-  AlwaysAssert(trc.nelements() == theNdim, AipsError);
-  AlwaysAssert(inc.nelements() == theNdim, AipsError);
-  for (uInt i=0; i<theNdim; i++) {
-    AlwaysAssert(blc(i) >= 0, AipsError);
-    AlwaysAssert(trc(i) < theShape(i), AipsError);
-    AlwaysAssert(blc(i) <= trc(i), AipsError);
-    AlwaysAssert(inc(i) > 0 && inc(i) <= theShape(i), AipsError);
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (blc.nelements() == itsNdim, AipsError);
+  AlwaysAssert (trc.nelements() == itsNdim, AipsError);
+  AlwaysAssert (inc.nelements() == itsNdim, AipsError);
+  for (uInt i=0; i<itsNdim; i++) {
+    AlwaysAssert (blc(i) >= 0, AipsError);
+    AlwaysAssert (trc(i) < itsShape(i), AipsError);
+    AlwaysAssert (blc(i) <= trc(i), AipsError);
+    AlwaysAssert (inc(i) > 0  &&  inc(i) <= itsShape(i), AipsError);
   }
-  theShape = (trc-blc+inc)/inc;
-  theOffset = theOffset+blc*theAxisInc;
-  theAxisInc = theAxisInc*inc;
-  DebugAssert(ok() == True, AipsError);
-};
+  itsShape   = (trc-blc+inc) / inc;
+  itsOffset  = itsOffset + blc*itsAxisInc;
+  itsAxisInc = itsAxisInc*inc;
+  DebugAssert (ok() == True, AipsError);
+}
 
-void LatticeIndexer::subSection(const IPosition &blc, const IPosition &trc)
+void LatticeIndexer::subSection (const IPosition& blc, const IPosition& trc)
 {
-  DebugAssert(ok() == True, AipsError);
-  subSection(blc, trc, IPosition(theNdim, 1));
-};
+  DebugAssert (ok() == True, AipsError);
+  subSection (blc, trc, IPosition(itsNdim, 1));
+}
 
 // function which returns an IPosition in the parent Lattice given an
 // IPostion in the sub-Lattice.  Accounting is taken of any offsets and
 // increments caused by subSectioning. No checks are made to ensure the
 // supplied IPosition or the returned one are within the bounds of the
 // Lattice(s).
-IPosition LatticeIndexer::absolutePosition(const IPosition &position) const
+IPosition LatticeIndexer::absolutePosition (const IPosition& position) const
 {
-  DebugAssert(ok() == True, AipsError);
-  AlwaysAssert(position.nelements () == theNdim, AipsError);
-  return theOffset + position*theAxisInc;
-};
+  DebugAssert (ok() == True, AipsError);
+  AlwaysAssert (position.nelements () == itsNdim, AipsError);
+  return itsOffset + position*itsAxisInc;
+}
 
 
 // function which returns True if all the elements in this 
@@ -364,88 +324,92 @@ IPosition LatticeIndexer::absolutePosition(const IPosition &position) const
 // {
 //   DebugAssert(ok() == True, AipsError);
 //   Bool checkDegenerate = False;
-//   for (uInt i=0; i < theNdim; i++) {
-//     if (theAxisInc(i) > 1) 
+//   for (uInt i=0; i < itsNdim; i++) {
+//     if (itsAxisInc(i) > 1) 
 //       checkDegenerate = True;
-//     if (theOffset(i) != 0 && i != 0)
+//     if (itsOffset(i) != 0  &&  i != 0)
 //       return False;
-//     if (checkDegenerate && shape(i) > 1)
+//     if (checkDegenerate  &&  shape(i) > 1)
 //       return False;
 //   }
 //   return True;
-// };
+// }
 
-static  LogIO logErr(LogOrigin("LatticeIndexer", "ok()"));
+static LogIO logErr(LogOrigin("LatticeIndexer", "ok()"));
 
 
 // Is this LatticeIndexer consistent, i.e. are the class invariants valid?
 // return True if every thing is fine otherwise return False
 Bool LatticeIndexer::ok() const
 {
-  if (theNdim == 0){
+  if (itsNdim == 0) {
     logErr << LogIO::SEVERE << "zero dimensions" << LogIO::POST;
     return False;
   }
-  if (theFullShape.nelements() != theNdim){
+  if (itsFullShape.nelements() != itsNdim) {
     logErr << LogIO::SEVERE << "LatticeIndexer::ok() - Lattice has "
-	   << theFullShape.nelements() << " dimensions"
+	   << itsFullShape.nelements() << " dimensions"
 	   << " instead of "
-	   << theNdim << " dimensions"
+	   << itsNdim << " dimensions"
 	   << "(ie. inconsistancy)" << LogIO::POST;
     return False;
   }
-  for (uInt i=0; i < theNdim; i++)
-    if (theFullShape(i) < 0){
+  for (uInt i=0; i < itsNdim; i++) {
+    if (itsFullShape(i) < 0) {
       logErr << LogIO::SEVERE << "an element of the Lattice shape"
-	     << " (=" << theFullShape << ")"
+	     << " (=" << itsFullShape << ")"
 	     << " is negative" << LogIO::POST;
       return False;
     }
-  if (theAxisInc.nelements() != theNdim) {
+  }
+  if (itsAxisInc.nelements() != itsNdim) {
     logErr << LogIO::SEVERE << "increments"
-	   << " (=" << theAxisInc << ")"
+	   << " (=" << itsAxisInc << ")"
 	   << " are the wrong dimension" 
-	   << " (ie. not" << theNdim << ")" << LogIO::POST;
+	   << " (ie. not" << itsNdim << ")" << LogIO::POST;
     return False;
   }
-  for (uInt j=0; j < theNdim; j++)
-    if (theAxisInc(j) <= 0 || theAxisInc(j) > theFullShape(j)) {
+  for (uInt j=0; j < itsNdim; j++) {
+    if (itsAxisInc(j) <= 0 || itsAxisInc(j) > itsFullShape(j)) {
       logErr << LogIO::SEVERE << "axis increments"
-	     << "(=" << theAxisInc << ")"
+	     << "(=" << itsAxisInc << ")"
 	     << " are negative OR larger than lattice shape"
-	     << " (=" << theFullShape << ")" << LogIO::POST;
+	     << " (=" << itsFullShape << ")" << LogIO::POST;
       return False;
     }
-  if (theOffset.nelements() != theNdim) {
+  }
+  if (itsOffset.nelements() != itsNdim) {
     logErr << LogIO::SEVERE << "offset"
-	   << " (=" << theOffset << ")"
+	   << " (=" << itsOffset << ")"
 	   << " is the wrong dimension"
-	   << " (ie. not " << theNdim << ")" << LogIO::POST;
+	   << " (ie. not " << itsNdim << ")" << LogIO::POST;
     return False;
   }
-  for (uInt k=0; k < theNdim; k++)
-    if (theOffset(k) < 0 || theOffset(k) >= theFullShape(k)) {
+  for (uInt k=0; k < itsNdim; k++) {
+    if (itsOffset(k) < 0 || itsOffset(k) >= itsFullShape(k)) {
       logErr << LogIO::SEVERE << "offset"
-	     << " (=" << theOffset << ")"
+	     << " (=" << itsOffset << ")"
 	     << " is larger than lattice shape "
-	     << " (=" << theFullShape << ")" 
+	     << " (=" << itsFullShape << ")" 
 	     << " or negative" << LogIO::POST;
       return False;
     }
-  if (theShape.nelements() != theNdim) {
+  }
+  if (itsShape.nelements() != itsNdim) {
     logErr << LogIO::SEVERE << "sub-Lattice shape"
-	   << " (=" << theShape << ")"
+	   << " (=" << itsShape << ")"
 	   << " has wrong number of dimensions"
-	   << " (ie. not" << theNdim << ")" << LogIO::POST;
+	   << " (ie. not" << itsNdim << ")" << LogIO::POST;
     return False;
   }
-  for (uInt m=0; m < theNdim; m++)
-    if (theShape(m) <= 0 || theShape > theFullShape(m)) {
+  for (uInt m=0; m < itsNdim; m++) {
+    if (itsShape(m) <= 0 || itsShape > itsFullShape(m)) {
       logErr << LogIO::SEVERE << "sub-Lattice shape"
-	     << " (=" << theShape << ")"
+	     << " (=" << itsShape << ")"
 	     << " is less than or equal to zero or larger than lattice shape"
-	     << " (=" << theFullShape << ")" << LogIO::POST;
+	     << " (=" << itsFullShape << ")" << LogIO::POST;
       return False;
     }
+  }
   return True;
-};
+}
