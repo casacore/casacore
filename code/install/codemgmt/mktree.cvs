@@ -197,6 +197,7 @@
 		  echo "created directory $newdir"
                   if [ -d $myDir/CVS ]
                   then 
+		     echo "linking $myDir $newdir/src"
 	             ln -s $myDir $newdir/src
 		     cp -r $myDir/CVS $newdir
                      if [  "$CVSROOT" ]
@@ -212,14 +213,16 @@
           else
 
 		  # Update the CVS repository files, be careful
-		   echo Refreshing $newdir/CVS.
+		   echo "Refreshing $newdir/CVS."
                    if [ -d $myDir/CVS ]
                    then
                       if [ ! -d $newdir/CVS ]
                       then
                           mkdir $newdir/CVS
                       fi
-	           cp $myDir/CVS/* $newdir/CVS
+	           ln -sf $myDir $newdir/src
+		   echo "linking $myDir $newdir/src"
+	           #cp -f $myDir/CVS/* $newdir/CVS
                    if [  "$CVSROOT" ]
                    then
                      chmod u+w $newdir/CVS/Root
@@ -234,7 +237,7 @@
   then
      if [ ! -d ./include ]
      then
-	if `mkdir ./include`
+	if `mkdir ./include` 
 	then
 	   echo "Created directory ./include"
         else
