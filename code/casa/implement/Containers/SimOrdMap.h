@@ -1,5 +1,5 @@
 //# SimOrdMap.h: Simple map with ordered keys
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,7 +59,7 @@
 // Exceptions are raised when new[] is failing or when the next()
 // getKey() or getValue() function is failing.
 //
-// The AipsIO >> and << operators are defined in <aips/SimpleOMIO.h>.
+// The AipsIO >> and << operators are defined in <aips/SimOrdMapIO.h>.
 
 
 template<class K, class V> class SimpleOrderedMap
