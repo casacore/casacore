@@ -86,7 +86,7 @@ void b()
     Table tab ("tTableLockSync_tmp.tab", TableLock(TableLock::UserLocking),
 	       Table::Update);
     try {
-	TableLocker lock1 (tab, TableLock::Write, 1);
+	TableLocker lock1 (tab, FileLocker::Write, 1);
 	tab.addRow();
     } catch (AipsError x) {
 	cout << "table is write-locked" << endl;

@@ -1,5 +1,5 @@
 //# tLockFile.cc: Program to test classes LockFile and FileLocker
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,13 +52,13 @@ void doIt (const String& name, double interval)
 	cout << "9=message, else=end: ";
 	cin >> op;
 	if (op == 1) {
-	    if (lock.acquire (False, 1)) {
+	    if (lock.acquire (FileLocker::Read, 1)) {
 		cout << "Read lock acquired" << endl;
 	    }else{
 		cout << "Already locked" << endl;
 	    }
 	} else if (op == 2) {
-	    if (lock.acquire (True, 1)) {
+	    if (lock.acquire (FileLocker::Write, 1)) {
 		cout << "Write lock acquired" << endl;
 	    }else{
 		cout << "Already locked" << endl;
@@ -70,14 +70,14 @@ void doIt (const String& name, double interval)
 	} else if (op == 4) {
 	    cout << "Request flag is " << lock.inspect() << endl;
 	} else if (op == 5) {
-	    cout << "canReadLock = " << lock.canLock (False) << endl;
+	    cout << "canReadLock = " << lock.canLock (FileLocker::Read) << endl;
 	} else if (op == 6) {
-	    cout << "canWriteLock = " << lock.canLock (True) << endl;
+	    cout << "canWriteLock = " << lock.canLock (FileLocker::Write)
+		 << endl;
 	} else if (op == 7) {
 	    Timer timer;
-	    int val;
 	    for (int i=0; i<500; i++) {
-		lock.acquire (True, 1);
+		lock.acquire (FileLocker::Write, 1);
 	    }
 	    timer.show ("Acquiring 500 locks:");
 	} else if (op == 8) {
@@ -123,7 +123,7 @@ void doTest()
     AlwaysAssertExit (value == 10);
     //# Write very long info.
     Int val[10000];
-    uInt i;
+    Int i;
     for (i=0; i<10000; i++) {
 	val[i] = i-5000;
     }
