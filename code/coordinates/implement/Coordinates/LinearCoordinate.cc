@@ -31,6 +31,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Math.h>
@@ -370,29 +371,59 @@ Bool LinearCoordinate::near(const Coordinate& other,
 //
 // the to/from FITS header conversion will convert linear axis
 // names to upper case.  So to prevent that reflection failing,
-// test on upper case only.
+// test on upper case only.  Also we need to strip off
+// trialing white space (FITS length will be 8 chars)
 //
-         String x1 = names_p(i);
-         x1.upcase();
-         String x2 = lCoord.names_p(i);
-         x2.upcase();
-         if (x1 != x2) {
-            oss << "The LinearCoordinates have differing axis names for axis "
-                << i << ends;
-            set_error(String(oss));
-            return False;
-         }
-
+         {
+           String x1 = names_p(i);
+           x1.upcase();
+           String x2 = lCoord.names_p(i);
+           x2.upcase();
+//
+           Int i1 = x1.index(RXwhite,0);
+           if (i1==-1) i1 = x1.length();
+           Int i2 = x2.index(RXwhite,0);
+           if (i2==-1) i2 = x2.length();
+//
+           String y1 = String(x1.before(i1));
+           String y2 = String(x2.before(i2));
+//
+           if (y1 != y2) {
+              oss << "The LinearCoordinates have differing axis names for axis "
+                  << i << ends;
+              set_error(String(oss));
+              return False;
+           }
+        }
       }
    }
    for (i=0; i<units_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (units_p(i) != lCoord.units_p(i)) {
-            oss << "The LinearCoordinates have differing axis units for axis "
-                << i << ends;
-            set_error(String(oss));
-            return False;
-         }
+
+// This is bad.  After reading from FITS, the units are upper case.  
+// So we cannot distinguish between a unit which is the same letter
+// but case different if its been throgh FITS...
+
+         {
+           String x1 = units_p(i);
+           x1.upcase();
+           String x2 = lCoord.units_p(i);
+           x2.upcase();
+//
+           Int i1 = x1.index(RXwhite,0);
+           if (i1==-1) i1 = x1.length();
+           Int i2 = x2.index(RXwhite,0);
+           if (i2==-1) i2 = x2.length();
+//
+           String y1 = String(x1.before(i1));
+           String y2 = String(x2.before(i2));
+           if (y1 != y2) {
+             oss << "The LinearCoordinates have differing axis units for axis "
+                 << i << ends;
+             set_error(String(oss));
+             return False;
+           }
+        }
       }
    }
    for (i=0; i<crval_p.nelements(); i++) {
