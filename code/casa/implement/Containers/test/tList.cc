@@ -1,5 +1,5 @@
-//# tDlist.cc: This program tests the Dlist class
-//# Copyright (C) 1993,1994,1995,1998,2000
+//# tList.cc: This program tests the Dlist class
+//# Copyright (C) 1993,1994,1995,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <iostream.h>
 #include <aips/Containers/List.h>
 #include <aips/Containers/ListIO.h>
+#include <aips/iostream.h>
 
 static void show(const ConstListIter<int> &);
 static void dump(const ConstListIter<int> *);

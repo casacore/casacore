@@ -1,5 +1,5 @@
 //# tOrdMap2.cc: Test program for class OrderedMap
-//# Copyright (C) 1992,1993,1994,1995,1996,1998,1999,2000
+//# Copyright (C) 1992,1993,1994,1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <iostream.h>
 #include <aips/Containers/Map.h>
 #include <aips/Containers/OrdMapIO.h>
+#include <aips/iostream.h>
 
 // This test program creates an OrderedMap, which is written to
 // disk and read back. It outputs to stdout. A script executing

@@ -1,5 +1,5 @@
 //# tDlist.cc: This program tests the Dlist class
-//# Copyright (C) 1993,1994,1995,2000
+//# Copyright (C) 1993,1994,1995,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <iostream.h>
 #include <aips/Containers/Dlist.h>
+#include <aips/iostream.h>
 
 main() {
 

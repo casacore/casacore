@@ -1,5 +1,5 @@
 //# tListMap.cc: This program tests the ListMap class
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <iostream.h>
-#include <aips/Utilities/String.h>
 #include <aips/Containers/ListMap.h>
+#include <aips/Utilities/String.h>
 #include <aips/Containers/OrdPairIO.h>
 #include <aips/Containers/MapIO.h>
+#include <aips/iostream.h>
 
 //template<class key,class value> void print(const ListMap<key,value> &);
 

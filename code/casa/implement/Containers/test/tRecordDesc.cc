@@ -29,8 +29,7 @@
 #include <aips/IO/AipsIO.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
 
 void doIt (Bool doExcp);
 

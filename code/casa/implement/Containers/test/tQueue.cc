@@ -1,5 +1,5 @@
 //# tQueue.cc: Test program for the Queue class
-//# Copyright (C) 1995,2000
+//# Copyright (C) 1995,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 
 #include <aips/Containers/Queue.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 int main()
 {
