@@ -86,8 +86,6 @@ void doit5 ();
 int main()
 {
    try {
-
-
       uInt nCoords;
       Vector<Int> types;
       Vector<String> sTypes;
@@ -1094,6 +1092,20 @@ void doit5()
    Vector<Bool> pixelAxes(cSys.nPixelAxes());
    Vector<Bool> worldAxes(cSys.nWorldAxes());
    Vector<Double> worldOut, pixelOut;
+//
+// Force a failure.   ALl axes must be pixel or world
+//
+   pixelAxes.set(False);
+   worldAxes.set(False);
+   if (cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                   worldAxes, pixelAxes)) {
+      throw(AipsError(String("toMix forced failure 1 did not occur")));
+   }
+   pixelAxes(0) = True;
+   if (cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                   worldAxes, pixelAxes)) {
+      throw(AipsError(String("toMix forced failure 2 did not occur")));
+   }
 //
 // First test pure pixel->world and world->pixel via the
 // mix function.
