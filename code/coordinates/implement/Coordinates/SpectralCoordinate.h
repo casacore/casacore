@@ -325,7 +325,7 @@ public:
     virtual Bool setWorldMixRanges (const IPosition& shape)
       {return worker_p.setWorldMixRanges(shape);};
     virtual void setDefaultWorldMixRanges ()
-      {return worker_p.setDefaultWorldMixRanges();};
+      {worker_p.setDefaultWorldMixRanges();};
     virtual Vector<Double> worldMixMin () const 
       {return worker_p.worldMixMin();};
     virtual Vector<Double> worldMixMax () const 
