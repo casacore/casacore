@@ -36,7 +36,7 @@
 //# Constructor
 template <class T>
 AipsrcVector<T>::AipsrcVector() : 
-  ntlst(0), tlst(0) {}
+  tlst(0), ntlst(0) {}
 
 //# Destructor
 template <class T>

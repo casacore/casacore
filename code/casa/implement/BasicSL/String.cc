@@ -531,7 +531,7 @@ void SubString::assign(StrRep* ysrc, const char* ys, int ylen)
     scopy(&(oldtarg->s[pos + len]), &(targ->s[pos + ylen]));
     delete [] (char*)oldtarg;
   }
-  else if (len == ylen)
+  else if (len == (uInt)ylen)
     ncopy(ys, &(targ->s[pos]), len);
   else if (ylen < (int)len)
   {
@@ -1097,7 +1097,7 @@ StrRep* Scapitalize(StrRep* src, StrRep* dest)
   for (; p < e; ++p)
   {
     int at_word;
-    if (at_word = islower(*p))
+    if ((at_word = islower(*p)))
       *p = toupper(*p);
     else 
       at_word = isupper(*p) || isdigit(*p);
