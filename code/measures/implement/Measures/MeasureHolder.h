@@ -170,15 +170,15 @@ public:
   // <group>
   virtual Bool fromRecord(String &error,
 			  const RecordInterface &in);
-  Bool fromRecord(String &error,
-		  const GlishRecord &in);
+  virtual Bool fromRecord(String &error,
+			  const GlishRecord &in);
   // </group>
   // Create a record from a Measure. The return will be False and an error
   // message generated only if the MeasureHolder does not contain a Measure.
   // Error messages are postfixed to error.
   // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
-  Bool toRecord(String &error, GlishRecord &out) const;
+  virtual Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
 private:
 
