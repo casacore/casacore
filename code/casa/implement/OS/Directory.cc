@@ -180,7 +180,6 @@ Double Directory::freeSpace() const
     if (buf.f_frsize > 0) {
 	bsize = buf.f_frsize;
     }
-    cout << buf.f_frsize << ' ' << buf.f_bavail <<  ' ' << buf.f_bsize << ' ' << buf.f_ffree << ' ' << buf.f_blocks << endl;
 #endif
     return bsize * buf.f_bavail;
 }
@@ -288,14 +287,25 @@ void Directory::move (const Path& target, Bool overwrite)
     if (rename (path().expandedName().chars(),
 		targetPath.expandedName().chars()) == 0) {
 	return;
+    
     }
     // The rename failed for one reason or another.
     // Remove the target if it already exists.
-#if defined(ENOTEMPTY)
-    if (errno == EEXIST || errno == ENOTEMPTY) {
-#else
+    Bool alrExist = False;
     if (errno == EEXIST) {
+      alrExist = True;
+    }
+#if defined(ENOTEMPTY)
+    if (errno == ENOTEMPTY) {
+      alrExist = True;
+    }
 #endif
+#if defined(EBUSY)
+    if (errno == EBUSY) {
+      alrExist = True;
+    }
+#endif
+    if (alrExist) {
 	Directory(targetPath).removeRecursive();
     } else if (errno == ENOTDIR) {
 	unlink (targetPath.expandedName().chars());
