@@ -162,8 +162,9 @@ Bool SubMS::makeSelection(){
 
   LogIO os(LogOrigin("SubMS", "makeSelection()", WHERE));
 
-  // check that sorted table exists (it should), if not, make it now.
-  if (!ms_p.keywordSet().isDefined("SORTED_TABLE")) {
+  //VisSet/MSIter will check if the SORTED exists
+  //and resort if necessary
+  {
     Block<int> sort(0);
     Matrix<Int> noselection;
     VisSet vs(ms_p,sort,noselection);
