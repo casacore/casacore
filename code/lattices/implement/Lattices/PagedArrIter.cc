@@ -27,6 +27,7 @@
 
 #include <trial/Lattices/PagedArrIter.h>
 #include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/TiledStepper.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
@@ -48,9 +49,9 @@ RO_PagedArrIter(const PagedArray<T> & data, const LatticeNavigator & nav)
    theNavPtr(nav.clone())
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
+  setup_tile_cache();
   theData.getSlice(*theCurPtr, theNavPtr->position(),
 		   theNavPtr->cursorShape(), theNavPtr->increment(), True);
-  setup_tile_cache();
   AlwaysAssert(ok() == True, AipsError);
 };
 
@@ -60,9 +61,9 @@ RO_PagedArrIter(const PagedArray<T> & data, const IPosition & curShape)
    theNavPtr(new LatticeStepper(data.shape(), curShape))
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
+  setup_tile_cache();
   theData.getSlice(*theCurPtr, theNavPtr->position(),
 		   theNavPtr->cursorShape(), theNavPtr->increment(), True);
-  setup_tile_cache();
   AlwaysAssert(ok() == True, AipsError);
 };
 
@@ -351,20 +352,38 @@ setup_tile_cache() {
   IPosition axisPath;
   LatticeStepper *stepper = theNavPtr->castToStepper();
 
-  if (stepper != 0)
+  if (stepper != 0) {
     axisPath = stepper->axisPath();
-  else {
-    // Because the current stepper is not a LatticeStepper assume that the
-    // longest axis is the fastest moving one.
-    IPosition shape = theData.shape();
-    Int whichLongest = 0;
-    for (uInt i=1; i<shape.nelements(); i++)
-      if (shape(i) > shape(whichLongest))
-	whichLongest = i;
-    axisPath = IPosition(1,whichLongest);
+    theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
+				 theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
   }
-  theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
-			       theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
+  else {
+    TiledStepper * tilerPtr = theNavPtr->castToTiler();
+    if (tilerPtr != 0){
+      IPosition shape = theData.shape();
+      Int whichLongest = 0;
+      for (uInt i=1; i<shape.nelements(); i++)
+	if (shape(i) > shape(whichLongest))
+	  whichLongest = i;
+      axisPath = IPosition(1,whichLongest);
+      theData.setCacheSizeFromPath(tilerPtr->cursorShape(), tilerPtr->blc(), 
+				   tilerPtr->blc() + tilerPtr->tileShape(),
+				   axisPath);
+    }
+    else {
+      // Because the current stepper is not a LatticeStepper or TiledStepper
+      // assume that the
+      // longest axis is the fastest moving one.
+      IPosition shape = theData.shape();
+      Int whichLongest = 0;
+      for (uInt i=1; i<shape.nelements(); i++)
+	if (shape(i) > shape(whichLongest))
+	  whichLongest = i;
+      axisPath = IPosition(1,whichLongest);
+      theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
+				   theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
+    }
+  }
 };
 
 // +++++++++++++++++++++++ PagedArrIter ++++++++++++++++++++++++++++++++
@@ -375,9 +394,9 @@ PagedArrIter(PagedArray<T> & data, const LatticeNavigator & nav)
    theNavPtr(nav.clone())
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
+  setup_tile_cache();
   theData.getSlice(*theCurPtr, theNavPtr->position(),
 		   theNavPtr->cursorShape(), theNavPtr->increment(), True);
-  setup_tile_cache();
   AlwaysAssert(ok() == True, AipsError);
 };
 
@@ -387,9 +406,9 @@ PagedArrIter(PagedArray<T> & data, const IPosition & curShape)
    theNavPtr(new LatticeStepper(data.shape(), curShape))
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
+  setup_tile_cache();
   theData.getSlice(*theCurPtr, theNavPtr->position(),
 		   theNavPtr->cursorShape(), theNavPtr->increment(), True);
-  setup_tile_cache();
   AlwaysAssert(ok() == True, AipsError);
 };
 
@@ -730,18 +749,36 @@ setup_tile_cache() {
   IPosition axisPath;
   LatticeStepper *stepper = theNavPtr->castToStepper();
 
-  if (stepper != 0)
+  if (stepper != 0) {
     axisPath = stepper->axisPath();
-  else {
-    // Because the current stepper is not a LatticeStepper assume that the
-    // longest axis is the fastest moving one.
-    IPosition shape = theData.shape();
-    Int whichLongest = 0;
-    for (uInt i=1; i<shape.nelements(); i++)
-      if (shape(i) > shape(whichLongest))
-	whichLongest = i;
-    axisPath = IPosition(1,whichLongest);
+    theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
+				 theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
   }
-  theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
-			       theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
+  else {
+    TiledStepper * tilerPtr = theNavPtr->castToTiler();
+    if (tilerPtr != 0){
+      IPosition shape = theData.shape();
+      Int whichLongest = 0;
+      for (uInt i=1; i<shape.nelements(); i++)
+	if (shape(i) > shape(whichLongest))
+	  whichLongest = i;
+      axisPath = IPosition(1,whichLongest);
+      theData.setCacheSizeFromPath(tilerPtr->cursorShape(), tilerPtr->blc(), 
+				   tilerPtr->blc() + tilerPtr->tileShape(),
+				   axisPath);
+    }
+    else {
+      // Because the current stepper is not a LatticeStepper or TiledStepper
+      // assume that the
+      // longest axis is the fastest moving one.
+      IPosition shape = theData.shape();
+      Int whichLongest = 0;
+      for (uInt i=1; i<shape.nelements(); i++)
+	if (shape(i) > shape(whichLongest))
+	  whichLongest = i;
+      axisPath = IPosition(1,whichLongest);
+      theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
+				   theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
+    }
+  }
 };
