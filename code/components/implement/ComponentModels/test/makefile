@@ -2,5 +2,5 @@
 
 # Use the generic AIPS++ test makefile.
 #--------------------------------------
-XLIBLIST := GLISH WCSLIB LAPACK F77
+XLIBLIST := GLISH
 include $(word 1, $(AIPSPATH))/code/install/makefile.tst
