@@ -1,5 +1,5 @@
 //# UnitVal.h: defines the class describing a unit as a value and a dimension
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -168,8 +168,7 @@ class ostream;
 
 class UnitVal {
 //# Friends
-    friend class UnitMap_init;
-    friend class UnitVal_init;
+///    friend class UnitVal_init;
 // Multiply
     friend UnitVal operator*(const UnitVal &in, const UnitVal &other);
 // Divide

@@ -1,5 +1,5 @@
 //# QC.cc: physical constants with units
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/Measures/QC.h>
+#include <aips/Measures/UnitMap.h>
 
 Quantum<Double> QC::c(C::c,"m/s");
 Quantum<Double> QC::G(C::Gravity,"N.m2/kg2");
@@ -51,6 +52,7 @@ uShort QC_init::count;
 
 QC_init::QC_init() {
     if (count++ == 0) {
+        UnitMap::clearCache();
 	QC::init();		// make sure statics initialized
     }
 }

@@ -27,13 +27,8 @@
 
 //# Includes
 
-#include <aips/Measures/UnitDim.h>
 #include <aips/Measures/UnitName.h>
 #include <iomanip.h>
-//# constants
-
-// default undimensioned value
-static const UnitName defbu;
 
 UnitName::UnitName() :
     basicKind(),

@@ -29,8 +29,8 @@
 
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/UnitName.h>
 #include <aips/Measures/UnitVal.h>
+#include <aips/Measures/UnitName.h>
 #include <aips/Measures/MUString.h>
 #include <aips/Measures/UnitMap.h>
 
@@ -50,7 +50,7 @@ uShort UnitVal_init::count;
 
 UnitVal_init::UnitVal_init() {
     if (count++ == 0) {
-	UnitVal::init();		// make sure statics initialized
+      ///	UnitVal::init();		// make sure statics initialized
     }
 }
 

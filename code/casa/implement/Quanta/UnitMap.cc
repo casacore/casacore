@@ -40,9 +40,9 @@ void UnitMap::initUM() {
   needInit = False;
 
   // default undimensioned unit name value
-  static const UnitName defbu;
+   UnitName defbu;
   // default undimensioned unit value value
-  static const UnitVal defbv;
+   UnitVal defbv;
   // Initialise lists
   UnitMap::mapPref = 
     new SimpleOrderedMap<String, UnitName> (defbu,20);

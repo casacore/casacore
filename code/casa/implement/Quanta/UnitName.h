@@ -36,9 +36,9 @@
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 #include <aips/Measures/Unit.h>
+#include <aips/Measures/UnitVal.h>
 
 //# Forward Declarations
-class UnitVal;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
