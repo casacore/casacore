@@ -66,6 +66,12 @@ const char
     RF_COLUMN[]  = "column",
     RF_EXPR[]    = "expr",
     
+    RF_CLIP[]      = "clip",
+    RF_FLAGRANGE[] = "flagrange",
+    RF_MIN[]       = "min",
+    RF_MAX[]       = "max",
+    
+    
     RF_NDEG[]    = "ndeg",
     RF_SPWID[]   = "spwid", 
     RF_FREQS[]   = "fq",
