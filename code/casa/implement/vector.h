@@ -34,9 +34,12 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 
+#if !defined(AIPS_SGI)
 #include <vector>
-
 using std::vector;
+#else
+#include <vector.h>
+#endif
 
 // A special macro to create the auxilliary template definitions for
 // various compilers
