@@ -41,6 +41,7 @@ class MEpoch;
 class MFrequency;
 class MPosition;
 class MRadialVelocity;
+class GlishRecord;
 
 // <summary> A holder for Measures to enable record conversions </summary>
 
@@ -82,6 +83,12 @@ class MRadialVelocity;
 //	if (!MeasureHolder(dir).toRecord(error, rec)) {
 //		cout << error << endl;
 //	};
+//	GlishRecord grec;		// a GlishRecord
+//	if (!MeasureHolder(dir).toRecord(error, grec)) {  // make record
+//		cout << error << endl;
+//	};
+// // Note that for GlishRecords use can be made of the to/fromGlishrecord()
+// // methods	
 // </srcblock>
 // </example>
 //
@@ -91,7 +98,6 @@ class MRadialVelocity;
 // </motivation>
 //
 // <todo asof="1998/04/14">
-//   <li> use dynamic_cast once turned on to improve speed
 //   <li> possible change if GlishRecord derived from RecordInterface
 // </todo>
 
@@ -166,14 +172,15 @@ public:
   // </ul>
   // Error messages are postfixed to error.
   // <group>
-  virtual Bool fromRecord(String &error,
-			  const RecordInterface &in);
+  virtual Bool fromRecord(String &error, const RecordInterface &in);
+  Bool fromRecord(String &error, const GlishRecord &in);
   // </group>
   // Create a record from a Measure. The return will be False and an error
   // message generated only if the MeasureHolder does not contain a Measure.
   // Error messages are postfixed to error.
   // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
+  Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
 private:
 
