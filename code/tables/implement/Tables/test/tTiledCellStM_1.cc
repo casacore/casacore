@@ -159,6 +159,9 @@ void makeCube (char** argv)
     table.flush();
     timer.show ("put+flush");
     timer.mark();
+    table.copy ("tTiledCellStM_1_tmp.data2", Table::New);
+    timer.show ("copy     ");
+    timer.mark();
     data.get (0, array);
     timer.show ("get      ");
     ROTiledStManAccessor accessor(table, "TSMExample");
@@ -174,7 +177,7 @@ void getCube (Bool ask)
     uInt i, nrdim;
     Timer timer;
     {
-	Table table("tTiledCellStM_1_tmp.data");
+	Table table("tTiledCellStM_1_tmp.data2");
 	timer.show ("reopen   ");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	ROArrayColumn<Float> data (table, "Data");
@@ -310,7 +313,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
     Timer timer;
     if (cubeShape(2) > 1) {
 	IPosition length (3, 1, 1, cubeShape(2));
-	Table table("tTiledCellStM_1_tmp.data");
+	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(2,2,1));
 	ROArrayColumn<Float> data (table, "Data");
@@ -356,7 +359,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
     }
     if (cubeShape(1) > 1) {
 	IPosition length (3, 1, cubeShape(1), 1);
-	Table table("tTiledCellStM_1_tmp.data");
+	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(3,1,2,0));
 	ROArrayColumn<Float> data (table, "Data");
@@ -402,7 +405,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
     }
     if (cubeShape(0) > 1) {
 	IPosition length (3, cubeShape(0), 1, 1);
-	Table table("tTiledCellStM_1_tmp.data");
+	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(2,0,2));
 	ROArrayColumn<Float> data (table, "Data");
@@ -448,7 +451,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
     }
     if (cubeShape(0) > 1  &&  cubeShape(1) > 1  &&  cubeShape(2) > 1) {
 	IPosition length (3, cubeShape(0), cubeShape(1), 1);
-	Table table("tTiledCellStM_1_tmp.data");
+	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition());
 	ROArrayColumn<Float> data (table, "Data");
@@ -490,7 +493,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
     }
     if (cubeShape(0) > 1  &&  cubeShape(1) > 1  &&  cubeShape(2) > 1) {
 	IPosition length (3, 1, cubeShape(1), cubeShape(2));
-	Table table("tTiledCellStM_1_tmp.data");
+	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(3,1,2,0));
 	ROArrayColumn<Float> data (table, "Data");
