@@ -105,9 +105,13 @@ uInt NQCompoundParam<T>::addFunction(const Function<T> &newFunction) {
   param_p = FunctionParam<T>(np + newFunction.nparameters());
   funpar_p.resize(np + newFunction.nparameters());
   locpar_p.resize(np + newFunction.nparameters());
-  for (uInt j=0; j<np; ++j) param_p[j] = old[j];
+  for (uInt j=0; j<np; ++j) {
+    param_p[j] = old[j];
+    param_p.mask(j) = old.mask(j);
+  };
   for (uInt j=np; j<np+newFunction.nparameters(); ++j) {
     param_p[j] = newFunction[j-np];
+    param_p.mask(j) = newFunction.mask(j-np);
     funpar_p[j] = i;
     locpar_p[j] = j-paroff_p[funpar_p[j]];
   };

@@ -46,6 +46,7 @@ void NQCompoundFunction<T>::fromParam_p() const {
     parset_p = False;
     for (uInt i=0; i<nparameters(); ++i) {
       (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = param_p[i];
+      functionPtr_p[funpar_p[i]]->mask(locpar_p[i]) = param_p.mask(i);
     };
   };
 }
