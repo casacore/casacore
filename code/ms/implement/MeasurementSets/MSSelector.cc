@@ -803,7 +803,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  String prefix = 
 	    common_prefix(antName(0),antName(antName.nelements()-1));
 	  Matrix<Double> antPos=msc.antenna().position().getColumn();
-	  Vector<Double> baseline(nIfr,-1);
+	  Vector<Double> baseline(nIfr,-1.0);
 	  // PROBLEM: antName elements have string size extending beyond \0
 	  // string catenation doesn't work correctly!
 	  for (Int k=0; k<nIfr; k++) {
