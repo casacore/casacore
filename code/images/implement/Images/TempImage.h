@@ -137,6 +137,10 @@ public:
   // It has to have the same shape as the image.
   void attachMask (const Lattice<Bool>& mask);
 
+  // Delete the pixel mask attached to the TempImage.
+  // Does nothing if there isn't one
+  void removeMask();
+
   // It a mask attached to the image?
   virtual Bool isMasked() const;
 
