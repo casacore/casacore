@@ -2862,3 +2862,4 @@
 11 438 src mv trial/scripts/aipsview_meta.g trial/apps/aipsview/aipsview_meta.g
 11 438 src mv trial/scripts/aipsview.help trial/apps/aipsview/aipsview.help
 11 440 src rm /doc/user/gsedition4.ps
+11 440 src rm /doc/user/gettingstarted.dir/gsed3.latex
