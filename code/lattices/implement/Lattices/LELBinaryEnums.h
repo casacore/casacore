@@ -28,14 +28,13 @@
 #define AIPS_LELBINARYENUMS_H
 
 
-// <summary> Each LEL binary operation is described in this enum
-// </summary>
-
+// <summary> Each LEL binary operation is described in this enum  </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
 //   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
@@ -43,7 +42,7 @@
 //   <li> <linkto class="LELInterface"> LELInterface</linkto>
 //   <li> <linkto class="LELBinary"> LELBinary</linkto>
 // </prerequisite>
-
+//
 // <etymology>
 //  This enum provides a value for each binary operation accepted
 //  by the Lattice Expression Language classes.
