@@ -35,6 +35,8 @@
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Utilities/Assert.h>
+
 
 
 #include <iostream.h>
