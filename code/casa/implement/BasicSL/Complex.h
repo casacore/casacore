@@ -141,6 +141,24 @@
 //# <todo asof="2000/11/27">
 //# </todo>
 
+using std::real;
+using std::imag;
+using std::norm;
+using std::abs;
+using std::arg;
+using std::conj;
+using std::cos;
+using std::cosh;
+using std::sin;
+using std::sinh;
+using std::tan;
+using std::tanh;
+using std::exp;
+using std::log;
+using std::sqrt;
+using std::polar;
+using std::pow;
+
 // <group name="Complex NaN">
 Bool isNaN (const Complex& val);
 void setNaN(Complex& val);
@@ -196,21 +214,24 @@ inline Bool operator<  (const DComplex& left, const DComplex& right)
 // <group name=math>
 inline Double fabs(const DComplex &val) { return abs(val); };
 inline Float fabs(const Complex &val) { return abs(val); };
+
 // The log10 should be in stl
 // <group>
-#if !defined(AIPS_USE_NEW_SGI) 
-DComplex log10(const DComplex &val);
+#if defined(NEEDS_LOG10_COMPLEX)
 Complex log10(const Complex &val);
+DComplex log10(const DComplex &val);
 #endif
 // </group>
+
 // ArrayMath::pow needs this pow function (on SGI).
 inline Complex pow(const Complex& val, Double p) { return pow(val,Float(p)); }
+
 // QMath needs these operators * and / (on SGI).
 // <group>
 inline Complex operator*(const Complex& val, Double f) { return val*Float(f); }
 inline Complex operator/(const Complex& val, Double f) { return val/Float(f); }
 // </group>
-// These operators are useful, otherwise Float and Double are applicable
+// These operators are useful, otherwise both Float and Double are applicable
 // for Ints.
 // <group>
 inline Complex operator*(const Complex& val, Int f) { return val*Float(f); }
