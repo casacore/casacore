@@ -37,6 +37,7 @@
 #include <aips/Utilities/Assert.h>
 
 #include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/TabularCoordinate.h>
 #include <trial/Images/ImageSummary.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/MaskedLattice.h>
@@ -50,7 +51,8 @@ ImageConcat<T>::ImageConcat()
   itsWarnImageUnits(True),
   itsWarnRefPix(True),
   itsWarnRefVal(True),
-  itsWarnInc(True)
+  itsWarnInc(True),
+  itsIsContig(True)
 {
 }
 
@@ -63,7 +65,8 @@ ImageConcat<T>::ImageConcat(uInt axis, Bool showProgress)
   itsWarnContig(True),
   itsWarnRefPix(True),
   itsWarnRefVal(True),
-  itsWarnInc(True)
+  itsWarnInc(True),
+  itsIsContig(True)
 {
 }
 
@@ -76,7 +79,8 @@ ImageConcat<T>::ImageConcat (const ImageConcat<T>&other)
   itsWarnContig(other.itsWarnContig),
   itsWarnRefPix(other.itsWarnRefPix),
   itsWarnRefVal(other.itsWarnRefVal),
-  itsWarnInc(other.itsWarnInc)
+  itsWarnInc(other.itsWarnInc),
+  itsIsContig(other.itsIsContig)
 {
 }
 
@@ -97,6 +101,7 @@ ImageConcat<T>& ImageConcat<T>::operator= (const ImageConcat<T>& other)
      itsWarnRefPix = other.itsWarnRefPix;
      itsWarnRefVal = other.itsWarnRefVal;
      itsWarnInc = other.itsWarnInc;
+     itsIsContig = other.itsIsContig;
   }
   return *this;
 }
@@ -284,15 +289,71 @@ template<class T>
 void ImageConcat<T>::copyData(ImageInterface<T>& image)
 {
 // Copy the pixels and mask.  Throws an exception if no
-// images do concatenate
+// images to concatenate
 
    LatticeConcat<T>::copyData(image);
 
-// Copy the imagy things from the first image
+// If not contiguous, make an irregular TabularCoordinate
 
    ImageInterface<T>* pIm = (ImageInterface<T>*)(itsLattices[0]);
-//   
-   image.setCoordinateInfo(pIm->coordinates());
+   CoordinateSystem cSys = pIm->coordinates();
+   Int coord, axisInCoord;
+   cSys.findPixelAxis(coord, axisInCoord,  itsAxis);
+   if (coord<0) {
+      throw(AipsError("The coordinate for the concatenation axis has been removed"));        
+   } 
+//
+   if (!itsIsContig) {
+      const uInt nIm = itsLattices.nelements();
+      Vector<Double> pixelValues;
+      Vector<Double> worldValues;
+      uInt off = 0;
+      String unit, name;
+
+// Loop over images
+
+      for (uInt i=0; i<nIm; i++) {
+         ImageInterface<T>* pIm2 = (ImageInterface<T>*)(itsLattices[i]);
+         const CoordinateSystem& cSys2 = pIm2->coordinates();
+//
+         const uInt shape = pIm2->shape()(itsAxis);
+         Vector<Double> p = cSys2.referencePixel();
+         Vector<Double> w = cSys2.referenceValue();
+         Int worldAxis = cSys2.pixelAxisToWorldAxis(itsAxis);
+//
+         const uInt l = pixelValues.nelements();
+         pixelValues.resize(l+shape, True);
+         worldValues.resize(l+shape, True);
+
+// For each pixel in concatenation axis for this image, find world 
+// and pixel values 
+
+         for (uInt j=0; j<shape; j++) {        
+            p(itsAxis) = Double(j);
+            if (cSys2.toWorld(w, p)) {
+               pixelValues(off+j) = p(itsAxis) + off;
+               worldValues(off+j) = w(worldAxis);
+            } else {
+               throw(AipsError(String("Coordinate conversion failed because")+cSys2.errorMessage()));        
+            }
+         }
+//
+         off += shape;
+         if (i==0) {
+            unit = cSys2.worldAxisUnits()(worldAxis);
+            name = cSys2.worldAxisNames()(worldAxis);
+         }
+      }
+
+// Make TabularCoordinate and replace it.  Better hope "coord" does not change !
+
+      TabularCoordinate tc(pixelValues, worldValues, unit, name);
+      cSys.replaceCoordinate(tc, uInt(coord));
+   }
+
+// Copy the imagy things from the first image
+
+   image.setCoordinateInfo(cSys);
    image.setMiscInfo(pIm->miscInfo());
    image.setUnits(pIm->units());
    image.setImageInfo(pIm->imageInfo());
@@ -327,7 +388,8 @@ void ImageConcat<T>::checkContiguous (Bool& warnContig, const IPosition& shape1,
       if (relax) {
          if (warnContig) {
             os << LogIO::WARN
-               << "Images are not contiguous along the concatenation axis"
+               << "Images are not contiguous along the concatenation axis" << endl;
+            os << "For this axis, a non-regular TabularCoordinate will be made"
                << LogIO::POST;
             warnContig = False;
         }
@@ -335,6 +397,7 @@ void ImageConcat<T>::checkContiguous (Bool& warnContig, const IPosition& shape1,
         os << "Images are not contiguous along the concatenation axis" 
            << LogIO::EXCEPTION;
       }
+      itsIsContig = False;
    }
 }
 
