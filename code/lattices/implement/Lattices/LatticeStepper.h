@@ -406,7 +406,7 @@ private:
   // pad the cursor to the right number of dimensions
   void padCursor();
   // check if the cursor shape is an sub-multiple of the Lattice shape
-  Bool niceFit();
+  Bool niceFit() const;
 
   LatticeIndexer theIndexer;//# Knows about the (sub)-Lattice shape and how
                             //# to traverse it.
