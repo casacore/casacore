@@ -117,7 +117,7 @@ Bool LattRegionHolder::operator== (const LattRegionHolder& other) const
     ||  isLCSlicer()   != other.isLCSlicer()) {
 	return False;
     }
-    Bool match;
+    Bool match = True;
     if (isLCRegion()) {
 	match = (*itsLC == *other.asLCRegionPtr());
     } else if (isLCSlicer()) {
