@@ -158,7 +158,7 @@ Bool ImageInfo::fromRecord(String & error, const RecordInterface & inRecord)
 // Returns default object if none in record
 //
 {
-// Make sure we are "empty" first;
+// Make sure we are "empty" first
 
     ImageInfo tmp;
     (*this) = tmp; 
