@@ -167,7 +167,7 @@ public:
     // It returns the current value of the pointer.
     // This function is called when changing the state of a table
     // (i.e. create, close, rename, (un)markForDelete).
-    static const ScratchCallback* setScratchCallback (const ScratchCallback*);
+    static ScratchCallback* setScratchCallback (ScratchCallback*);
 
 
     // Create a null Table object (i.e. no table is attached yet).
@@ -715,7 +715,7 @@ protected:
     //# Counter of last call to hasDataChanged.
     uInt        lastModCounter_p;
     //# Pointer to the ScratchCallback function.
-    static const ScratchCallback* scratchCallback_p;
+    static ScratchCallback* scratchCallback_p;
 
 
     // Construct a Table object from a BaseTable*.

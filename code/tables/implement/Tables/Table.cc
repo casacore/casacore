@@ -43,12 +43,12 @@
 #include <aips/OS/DirectoryIterator.h>
 
 
-const Table::ScratchCallback* Table::scratchCallback_p = 0;
+Table::ScratchCallback* Table::scratchCallback_p = 0;
 
-const Table::ScratchCallback* Table::setScratchCallback
-                                    (const Table::ScratchCallback* fptr)
+Table::ScratchCallback* Table::setScratchCallback
+                                    (Table::ScratchCallback* fptr)
 {
-    const Table::ScratchCallback* cur = scratchCallback_p;
+    Table::ScratchCallback* cur = scratchCallback_p;
     scratchCallback_p = fptr;
     return cur;
 }
