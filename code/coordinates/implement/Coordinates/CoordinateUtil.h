@@ -31,9 +31,11 @@
 
 
 #include <aips/aips.h>
+#include <aips/Arrays/Vector.h>
 
 class CoordinateSystem;
-template<class T> class Vector;
+class String;
+//template<class T> class Vector;
 
 // <summary>Functions for creating default CoordinateSystems</summary>
 // <use visibility=export>
@@ -181,29 +183,58 @@ template<class T> class Vector;
 class CoordinateUtil {
 public: 
 
-// <group name=defaultAxes>
 // Add a RA/DEC pair of direction axes (ie. a DirectionCoordinate) to the
 // user supplied CoordinateSystem. See the synopsis above for the current
 // default values.
-static void addDirAxes(CoordinateSystem & coords);
+static void addDirAxes(CoordinateSystem& coords);
+
 // Add a Stokes I,Q,U,V axis to the user supplied CoordinateSystem.
-static void addIQUVAxis(CoordinateSystem & coords);
+static void addIQUVAxis(CoordinateSystem& coords);
+
 // Add a Stokes I (only) axis to the user supplied CoordinateSystem.
-static void addIAxis(CoordinateSystem & coords);
+static void addIAxis(CoordinateSystem& coords);
+
+// Add a Stokes axis of length 1 to 4 selected from I,Q,U,V
+// E.g. if shape=2 you get IQ.   Returns False if shape
+// is not in the range 1 to 4
+static Bool addStokesAxis(CoordinateSystem& coords, uInt shape);
+
+// Add Linear axes.  The LinearCoordinate can have > 1 axes (like
+// the DirectionCoordinate has 2).  The number of axes is given
+// by the length of the names argument.   If you supply a shape,
+// it will be used to set the reference pixel to 1/2 the shape.
+// If the shape does not have the same number of elements as
+// the names variable, the reference pixel will be 0
+static void addLinearAxes (CoordinateSystem & coords,
+                           const Vector<String>& names,
+                           const IPosition& shape);
+
 // Add a spectral axis to the user supplied CoordinateSystem. See the
 // synopsis above for the current default values.
-static void addFreqAxis(CoordinateSystem & coords);
+static void addFreqAxis(CoordinateSystem& coords);
+
 // Return a 2-dimensional coordinate system with RA/DEC axes only. 
 static CoordinateSystem defaultCoords2D();
+
 // Return a 3-dimensional coordinate system with RA/DEC axes and a spectral axis.
 static CoordinateSystem defaultCoords3D();
+
 // Return a 4-dimensional coordinate system with RA/DEC axes, an IQUV
 // polarisation axis  and a spectral axis.
 static CoordinateSystem defaultCoords4D();
+
 // Calls one of the above three functions depending of the arguement. An
 // AipsError is thrown if dims is not 2, 3, or 4.
 static CoordinateSystem defaultCoords(uInt dims);
-//  </group>
+
+// If doLinear=False, Tries to make a standard RA/DEC/Stokes/Frequency CoordinateSystem
+// depending upon the shape.   The shape for the Stokes axis
+// must be <= 4.   If axis 2 can't be Stokes it will be a Spectral
+// axis instead.  AFter the standard types, the rest (if any)
+// of the CoordinateSystem consists of LinearCoordinates.
+// If doLinear=True, then you just get a linear coordinate system
+static CoordinateSystem makeCoordinateSystem(const IPosition& shape,
+                                             Bool doLinear=False);
 
 //
 // Find which pixel axis in the CoordinateSystem corresponds to the

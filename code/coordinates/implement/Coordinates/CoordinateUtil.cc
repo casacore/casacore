@@ -28,6 +28,7 @@
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
+#include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/Projection.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
@@ -38,9 +39,13 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/Stokes.h>
+#include <aips/Quanta/QC.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/String.h>
+
+#include <strstream.h>
+
 
 void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
   Matrix<Double> xform(2, 2); xform = 0.0; xform.diagonal() = 1.0;
@@ -77,13 +82,74 @@ void CoordinateUtil::addIAxis(CoordinateSystem & coords){
   coords.addCoordinate(polAxis);
 }
 
-void CoordinateUtil::addFreqAxis(CoordinateSystem & coords){
+Bool CoordinateUtil::addStokesAxis(CoordinateSystem & coords,
+                                   uInt shape)
+{
+   if (shape<1 || shape>4) return False;
+//
+   Vector<Int> which;
+   if (shape==1) {
+      which.resize(1);
+      which(0) = Stokes::I;
+   } else if (shape==2) {
+      which.resize(2);
+      which(0) = Stokes::I;
+      which(1) = Stokes::Q;
+   } else if (shape==3) {
+      which.resize(3);
+      which(0) = Stokes::I;
+      which(1) = Stokes::Q;
+      which(2) = Stokes::U;
+   } else if (shape==4) {
+      which.resize(4);
+      which(0) = Stokes::I;
+      which(1) = Stokes::Q;
+      which(2) = Stokes::U;
+      which(3) = Stokes::V;
+   }
+   StokesCoordinate sc(which);
+   coords.addCoordinate(sc);
+   return True;
+}
+
+
+void CoordinateUtil::addFreqAxis(CoordinateSystem & coords)
+{
   SpectralCoordinate freqAxis(MFrequency::LSR, // Local standard of rest
 			      1415E6,          // ref. freq. = 1415MHz
 			      1E3,             // 1 kHz bandwidth/channel
 			      0.0);            // channel 0 is the ref.
-  // Add the frequency coordinate to the system. 
+  freqAxis.setRestFrequency(QC::HI.getValue(Unit("Hz")));    // HI
   coords.addCoordinate(freqAxis);
+}
+
+void CoordinateUtil::addLinearAxes(CoordinateSystem & coords, 
+                                   const Vector<String>& names,
+                                   const IPosition& shape)
+{
+    const uInt n = names.nelements();
+//
+    Vector<String> units(n);
+    Vector<Double> refVal(n);
+    Vector<Double> refPix(n);
+    Vector<Double> inc(n);
+//     
+    for (uInt i=0; i<n; i++) {
+       refVal(i) = 0.0;
+       inc(i) = 1.0; 
+       if (shape.nelements()==n) {
+          refPix(i) = Double(Int((shape(i) + 1)/2));
+       } else {
+          refPix(i) = 0.0;
+       }
+       units(i) = String("arcsec");
+    } 
+    Matrix<Double> pc(n, n);
+    pc = 0.0; 
+    pc.diagonal() = 1.0;
+//
+    LinearCoordinate lc(names, units, refVal, inc, pc, refPix);
+    coords.addCoordinate(lc);
 }
 
 CoordinateSystem CoordinateUtil::defaultCoords2D(){
@@ -314,4 +380,86 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
 
 
 
+
+CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
+                                                      Bool doLinear)
+{         
+   const uInt n = shape.nelements();
+   CoordinateSystem cSys;
+//
+   if (doLinear) {
+      Vector<String> names(n);
+      for (uInt i=0; i<n; i++) {
+         ostrstream oss;
+         oss << (i+1);
+         String t(oss);
+         names(i) = "linear" + t;
+      }
+      CoordinateUtil::addLinearAxes(cSys, names, shape);
+      return cSys;
+   }
+//
+   Bool doneStokes = False;
+   Bool doneFreq = False;
+//
+   if (n==1) {
+      CoordinateUtil::addFreqAxis(cSys);
+      return cSys;
+   }
+//          
+   if (n>=2) {
+      CoordinateUtil::addDirAxes(cSys);
+   }
+//
+   if (n>=3) {
+      if (CoordinateUtil::addStokesAxis(cSys, uInt(shape(2)))) {
+         doneStokes = True;
+      } else {
+         CoordinateUtil::addFreqAxis(cSys);
+         doneFreq = True;   
+      }  
+   }
+//
+   uInt nDone = 0;
+   if (n>=4) {
+      Bool ok = True;
+      nDone = 4;
+      if (doneStokes) {
+         CoordinateUtil::addFreqAxis(cSys);
+         doneFreq = True;
+      } else {
+         if (CoordinateUtil::addStokesAxis(cSys, uInt(shape(3)))) {
+            doneStokes = True;
+         } else {
+            if (!doneFreq) {
+               CoordinateUtil::addFreqAxis(cSys);
+               doneFreq = True;
+            } else {
+               ok = False;
+               nDone = 3;
+            }
+         } 
+      }
+   }
+
+
+// Linear for the rest
+
+   if (nDone==3 || n >=5) {
+      const uInt nLeft = n - nDone;
+      if (nLeft > 0) {
+         IPosition shape2(nLeft);
+         Vector<String> names(nLeft);
+         for (uInt i=0; i<nLeft; i++) {
+            shape2(i) = shape(i+nDone);
+            ostrstream oss;
+            oss << (i+1);
+            String t(oss);
+            names(i) = "linear" + t;
+         }
+         CoordinateUtil::addLinearAxes(cSys, names, shape2);
+      }
+   }
+   return cSys;
+} 
 
