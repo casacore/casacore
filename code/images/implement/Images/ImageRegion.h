@@ -1,5 +1,5 @@
 //# ImageRegion.h: Class to hold a region of interest in an image
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,8 +57,9 @@ class TableRecord;
 
 // <synopsis> 
 // The only purpose of ImageRegion is to have a single object for
-// the various kinds of regions
-// <linkto class=LCSlicer>LCSlicer</linkto> and
+// the various kinds of regions. It can hold a
+// <linkto class=LCRegion>LCRegion</linkto>,
+// <linkto class=LCSlicer>LCSlicer</linkto>, and
 // <linkto class=WCRegion>WCRegion</linkto>.
 // </synopsis> 
 
@@ -82,6 +83,9 @@ class TableRecord;
 class ImageRegion
 {
 public:
+    // Construct from a region based on lattice coordinates.
+    ImageRegion (const LCRegion&);
+
     // Construct from a slicer based on lattice coordinates.
     ImageRegion (const LCSlicer&);
 
@@ -92,6 +96,7 @@ public:
     // It takes over the pointer, so the user should not delete the
     // object. It is deleted by the ImageRegion destructor.
     // <group>
+    ImageRegion (LCRegion*);
     ImageRegion (LCSlicer*);
     ImageRegion (WCRegion*);
     // </group>
@@ -112,6 +117,7 @@ public:
 
     // Test if the underlying region is an WCRegion, etc..
     // <group>
+    Bool isLCRegion() const;
     Bool isLCSlicer() const;
     Bool isWCRegion() const;
     // </group>
@@ -120,6 +126,7 @@ public:
     // An exception is thrown if the region is not the correct type.
     // Functions <src>isWCRegion()</src>, etc. can be used to test the type.
     // <group>
+    const LCRegion& asLCRegion() const;
     const LCSlicer& asLCSlicer() const;
     const WCRegion& asWCRegion() const;
     // </group>
@@ -151,12 +158,17 @@ public:
 				    const String& tableName);
 
 private:
+    LCRegion*   itsLC;
     LCSlicer*   itsSlicer;
     WCRegion*   itsWC;
     uInt        itsNdim;
 };
 
 
+inline Bool ImageRegion::isLCRegion() const
+{
+    return ToBool (itsLC != 0);
+}
 inline Bool ImageRegion::isLCSlicer() const
 {
     return ToBool (itsSlicer != 0);
