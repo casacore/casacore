@@ -391,27 +391,35 @@ void ImageFFT::copyMask (ImageInterface<Float>& out,
                          const ImageInterface<Float>& in) const
 {
    if (in.isMasked()) {
-      if (!out.isMasked() || !out.isMaskWritable()) {
-         LogIO os(LogOrigin("ImageFFT", "copyMask(...)", WHERE));
-         os << LogIO::WARN << "The input image is masked but the output image does" << endl;
-         os << "not have a writeable mask.  Therefore no mask will be transferred" << LogIO::POST;
+      if (out.isMasked() && out.hasPixelMask()) {
+         if (!out.pixelMask().isWritable()) {
+            LogIO os(LogOrigin("ImageFFT", "copyMask(...)", WHERE));
+            os << LogIO::WARN << "The input image is masked but the output image does "<< endl;
+            os << "not have a writable mask.  Therefore no mask will be transferred" << LogIO::POST;
+            return;
+         }
+      } else {
          return;
       }
+   } else {
+      return;
+   }
+
 
 // Use the same stepper for input and output.
 
-      IPosition cursorShape = out.niceCursorShape();
-      LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
+   IPosition cursorShape = out.niceCursorShape();
+   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
   
 // Create an iterator for the output to setup the cache.
 // It is not used, because using putSlice directly is faster and as easy.
       
-      LatticeIterator<Float> dummyIter(out);
-      RO_LatticeIterator<Float> iter(in, stepper);
-      for (iter.reset(); !iter.atEnd(); iter++) { 
-         out.putMaskSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
-                          iter.position());
-      }
+   LatticeIterator<Float> dummyIter(out);
+   RO_LatticeIterator<Float> iter(in, stepper);
+   Lattice<Bool>& outMask = out.pixelMask();
+   for (iter.reset(); !iter.atEnd(); iter++) {
+      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),  
+                       iter.position());
    }
 }
 
@@ -419,27 +427,35 @@ void ImageFFT::copyMask (ImageInterface<Float>& out,
                          const ImageInterface<Complex>& in) const
 {
    if (in.isMasked()) {
-      if (!out.isMasked() || !out.isMaskWritable()) {
-         LogIO os(LogOrigin("ImageFFT", "copyMask(...)", WHERE));
-         os << LogIO::WARN << "The input image is masked but the output image does" << endl;
-         os << "not have a writeable mask.  Therefore no mask will be transferred" << LogIO::POST;
+      if (out.isMasked() && out.hasPixelMask()) {
+         if (!out.pixelMask().isWritable()) {
+            LogIO os(LogOrigin("ImageFFT", "copyMask(...)", WHERE));
+            os << LogIO::WARN << "The input image is masked but the output image does "<< endl;
+            os << "not have a writable mask.  Therefore no mask will be transferred" << LogIO::POST;
+            return;
+         } 
+      } else {
          return;
       }
+   } else {
+      return;
+   }
+   
 
 // Use the same stepper for input and output.
-       
-      IPosition cursorShape = out.niceCursorShape();
-      LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
+      
+   IPosition cursorShape = out.niceCursorShape();   
+   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);   
 
 // Create an iterator for the output to setup the cache.
 // It is not used, because using putSlice directly is faster and as easy.
-
-      LatticeIterator<Float> dummyIter(out);
-      RO_LatticeIterator<Complex> iter(in, stepper);
-      for (iter.reset(); !iter.atEnd(); iter++) {
-         out.putMaskSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
-                          iter.position());
-      }
+      
+   LatticeIterator<Float> dummyIter(out);   
+   RO_LatticeIterator<Complex> iter(in, stepper);   
+   Lattice<Bool>& outMask = out.pixelMask();
+   for (iter.reset(); !iter.atEnd(); iter++) {
+      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
+                       iter.position());
    }
 }
 
@@ -447,27 +463,35 @@ void ImageFFT::copyMask (ImageInterface<Complex>& out,
                          const ImageInterface<Float>& in) const
 {
    if (in.isMasked()) {
-      if (!out.isMasked() || !out.isMaskWritable()) {
-         LogIO os(LogOrigin("ImageFFT", "copyMask(...)", WHERE));
-         os << LogIO::WARN << "The input image is masked but the output image does" << endl;
-         os << "not have a writeable mask.  Therefore no mask will be transferred" << LogIO::POST;
+      if (out.isMasked() && out.hasPixelMask()) {
+         if (!out.pixelMask().isWritable()) {
+            LogIO os(LogOrigin("ImageFFT", "copyMask(...)", WHERE));
+            os << LogIO::WARN << "The input image is masked but the output image does "<< endl;
+            os << "not have a writable mask.  Therefore no mask will be transferred" << LogIO::POST;
+            return;
+         } 
+      } else {
          return;
       }
+   } else {
+      return;
+   }
+   
 
 // Use the same stepper for input and output.
-       
-      IPosition cursorShape = out.niceCursorShape();
-      LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
+      
+   IPosition cursorShape = out.niceCursorShape();   
+   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);   
 
 // Create an iterator for the output to setup the cache.
 // It is not used, because using putSlice directly is faster and as easy.
-
-      LatticeIterator<Complex> dummyIter(out);
-      RO_LatticeIterator<Float> iter(in, stepper);
-      for (iter.reset(); !iter.atEnd(); iter++) {
-         out.putMaskSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
-                          iter.position());
-      }
+      
+   LatticeIterator<Complex> dummyIter(out);   
+   RO_LatticeIterator<Float> iter(in, stepper);   
+   Lattice<Bool>& outMask = out.pixelMask();
+   for (iter.reset(); !iter.atEnd(); iter++) {
+      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
+                       iter.position());
    }
 }
 
@@ -475,27 +499,35 @@ void ImageFFT::copyMask (ImageInterface<Complex>& out,
                          const ImageInterface<Complex>& in) const
 {
    if (in.isMasked()) {
-      if (!out.isMasked() || !out.isMaskWritable()) {
-         LogIO os(LogOrigin("ImageFFT", "copyMask(...)", WHERE));
-         os << LogIO::WARN << "The input image is masked but the output image does" << endl;
-         os << "not have a writeable mask.  Therefore no mask will be transferred" << LogIO::POST;
+      if (out.isMasked() && out.hasPixelMask()) {
+         if (!out.pixelMask().isWritable()) {
+            LogIO os(LogOrigin("ImageFFT", "copyMask(...)", WHERE));
+            os << LogIO::WARN << "The input image is masked but the output image does "<< endl;
+            os << "not have a writable mask.  Therefore no mask will be transferred" << LogIO::POST;
+            return;
+         } 
+      } else {
          return;
       }
+   } else {
+      return;
+   }
+   
 
 // Use the same stepper for input and output.
-       
-      IPosition cursorShape = out.niceCursorShape();
-      LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
+      
+   IPosition cursorShape = out.niceCursorShape();   
+   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);   
 
 // Create an iterator for the output to setup the cache.
 // It is not used, because using putSlice directly is faster and as easy.
-
-      LatticeIterator<Complex> dummyIter(out);
-      RO_LatticeIterator<Complex> iter(in, stepper);
-      for (iter.reset(); !iter.atEnd(); iter++) {
-         out.putMaskSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
-                          iter.position());
-      }
+      
+   LatticeIterator<Complex> dummyIter(out);   
+   RO_LatticeIterator<Complex> iter(in, stepper);   
+   Lattice<Bool>& outMask = out.pixelMask();
+   for (iter.reset(); !iter.atEnd(); iter++) {
+      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
+                       iter.position());
    }
 }
 
