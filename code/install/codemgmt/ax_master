@@ -3532,3 +3532,4 @@
 13 300 src mv trial/implement/MeasurementSets/test/tNewMSColumns.cc aips/implement/MeasurementSets/test/tNewMSColumns.cc
 13 307 src mv trial/implement/Display/DefaultWCCoordinateHandler.cc trial/implement/DisplayCanvas/DefaultWCCoordinateHandler.cc
 13 307 src mv trial/implement/Display/DefaultWCCoordinateHandler.h trial/implement/DisplayCanvas/DefaultWCCoordinateHandler.h
+13 307 src mv trial/implement/Display/DefaultWCSizeControlHandler.cc trial/implement/DisplayCanvas/DefaultWCSizeControlHandler.cc
