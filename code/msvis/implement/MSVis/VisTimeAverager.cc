@@ -1,5 +1,5 @@
 //# VisTimeAverager.cc: Implementation of VisTimeAverager.h
-//# Copyright (C) 1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -106,15 +106,15 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
       row++;
     };
     if (row < vb.nRow()) {
-      Double startTime = vb.time()(row);
+      Double thisTime = vb.time()(row);
       // Round down to the start of an accumulation interval
-      if (interval_p > 0) {
-	startTime = Int (startTime / interval_p) * interval_p;
-      };
+      //      if (interval_p > 0) {
+      //	thisTime = Int (thisTime / interval_p) * interval_p;
+      //      };
 
       // Check for the first accumulation interval
       if (firstInterval_p) {
-	tStart_p = startTime;
+	tStart_p = thisTime;
 	firstInterval_p = False;
 	nChan_p = vb.nChannel();
 	// Initialize the first accumulation interval
@@ -126,7 +126,7 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
 	// Normalize
 	normalize();
 	// Advance indices to the next accumulation interval
-	tStart_p = startTime;
+	tStart_p = thisTime;
 	avrow_p += hashFunction(nAnt_p-1, nAnt_p-1) + 1;
 	// Initialize the next accumulation interval
 	initialize();
