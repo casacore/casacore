@@ -1,4 +1,4 @@
-#!/bin/tcsh
+#!/bin/sh
 #-----------------------------------------------------------------------------
 # Usage: tfits2ms.run
 #-----------------------------------------------------------------------------
@@ -11,14 +11,15 @@
 # $Id$
 #-----------------------------------------------------------------------------
 
-  if ( "$AIPSPATH" == "" ) then
+  if [ "$AIPSPATH" == "" ]
+  then
      echo "UNTESTED: tfits2ms.run (AIPSPATH not defined)"
      exit 3
-  endif
-  set IN  = '3C273XC1.fits'
-  set AIPSDEMO = `echo $AIPSPATH | awk '{printf("%s/data/demo",$1)}'`
-  set FITS  = `echo $AIPSDEMO $IN | awk '{printf("%s/%s", $1,$2)}'`
-  set MS  = `echo $IN | sed 's/.fits/_tmp.ms/'`
+  fi
+  IN='3C273XC1.fits'
+  AIPSDEMO=`echo $AIPSPATH | awk '{printf("%s/data/demo",$1)}'`
+  FITS=`echo $AIPSDEMO $IN | awk '{printf("%s/%s", $1,$2)}'`
+  MS=`echo $IN | sed 's/.fits/_tmp.ms/'`
   echo $AIPSDEMO
   echo $FITS
   echo $MS

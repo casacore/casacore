@@ -9,6 +9,8 @@
 #include <tables/Tables/Table.h>
 #include <casa/Inputs.h>
 
+#include <casa/namespace.h>
+
 int main(int argc, char** argv) {
   try {
     Input inputs(1);
