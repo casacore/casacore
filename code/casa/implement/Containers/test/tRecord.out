@@ -12,18 +12,14 @@ Record::define - fixed array conformance error for field TpArrayString2
 Record::define - fixed array conformance error for field TpBool
 Record cannot be changed (fixed structure)
 >>> Instance-specific assertion error message:
-(Record.cc : 98) Failed AlwaysAssertExit conform (other)
+(Record.cc : 106) Failed AlwaysAssertExit conform (other)
 <<<
 RecordInterface: invalid data type
-Record cannot be changed (fixed structure)
 >>> Instance-specific assertion error message:
-(Record.cc : 98) Failed AlwaysAssertExit conform (other)
+(Record.cc : 106) Failed AlwaysAssertExit conform (other)
 <<<
 >>> Instance-specific assertion error message:
-(Record.cc : 98) Failed AlwaysAssertExit conform (other)
-<<<
->>> Instance-specific assertion error message:
-(Record.cc : 262) Failed AlwaysAssertExit this != &other
+(Record.cc : 290) Failed AlwaysAssertExit this != &other
 <<<
 RecordDesc::mergeField - duplicate in other
 Record cannot be changed (fixed structure)
