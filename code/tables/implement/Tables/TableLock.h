@@ -1,5 +1,5 @@
 //# TableLock.h: Class to hold table lock options
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -92,7 +92,16 @@ public:
 	// The user is taking care of locking the table by means
 	// of the Table functions <src>lock</src> and <src>unlock</src>.
 	// In this way transaction processing can be implemented.
-	UserLocking
+	UserLocking,
+	// The system takes care of acquiring/releasing locks.
+	// It is similar to AutoLocking, but no locks are needed for
+	// reading.
+	AutoNoReadLocking,
+	// The user is taking care of locking the table by means
+	// of the Table functions <src>lock</src> and <src>unlock</src>.
+	// It is similar to UserLocking, but no locks are needed for
+	// reading.
+	UserNoReadLocking
     };
 
     // Construct with given option and interval.
@@ -124,6 +133,9 @@ public:
     // Get the locking option.
     LockOption option() const;
 
+    // Is read locking needed?
+    Bool readLocking() const;
+
     // Is permanent locking used?
     Bool isPermanent() const;
 
@@ -136,9 +148,14 @@ public:
 
 private:
     LockOption  itsOption;
+    Bool        itsReadLocking;
     uInt        itsMaxWait;
     double      itsInterval;
     Bool        itsIsDefaultInterval;
+
+
+    // Set itsOption and itsReadLocking when needed.
+    void init();
 };
 
 
@@ -147,15 +164,23 @@ inline TableLock::LockOption TableLock::option() const
 {
     return itsOption;
 }
+
+inline Bool TableLock::readLocking() const
+{
+    return itsReadLocking;
+}
+
 inline Bool TableLock::isPermanent() const
 {
     return ToBool (itsOption == PermanentLocking
 	       ||  itsOption == PermanentLockingWait);
 }
+
 inline double TableLock::interval() const
 {
     return itsInterval;
 }
+
 inline uInt TableLock::maxWait() const
 {
     return itsMaxWait;
