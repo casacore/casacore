@@ -68,7 +68,7 @@ SDSysCalHandler &SDSysCalHandler::operator=(const SDSysCalHandler &other)
 	clearAll();
 	msSysCal_p = new NewMSSysCal(*(other.msSysCal_p));
 	AlwaysAssert(msSysCal_p, AipsError);
-	msSysCalCols_p = new NewMSSysCalColumns(*(other.msSysCalCols_p));
+	msSysCalCols_p = new NewMSSysCalColumns(*msSysCal_p);
 	AlwaysAssert(msSysCalCols_p, AipsError);
 	rownr_p = other.rownr_p;
 	nrecpt_p = other.nrecpt_p;
