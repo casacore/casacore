@@ -221,9 +221,9 @@ Bool PagedArray<T>::isWritable() const
 }
 
 template<class T>
-inline const String& PagedArray<T>::tableName() const
+const String& PagedArray<T>::tableName() const
 {
-  // Make sure the table is open, so it knos about a possible rename
+  // Make sure the table is open, so it knows about a possible rename
   // (e.g. if an LCPagedMask (which uses Lattice<Bool>) gets renamed).
   return table().tableName();
 }
