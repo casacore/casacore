@@ -208,7 +208,7 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
 	    }
 	    if (phaseDiffField_p.isAttached()) {
 		if (msSysCalCols_p->phaseDiff().isNull()) {
-		    if (!near(*phaseDiffField_p, 0.0f) && 
+		    if (!near(*phaseDiffField_p, 0.0) && 
 			!isNaN(*phaseDiffField_p) && !isInf(*phaseDiffField_p)) {
 			// need to add this column
 			delete msSysCalCols_p;
