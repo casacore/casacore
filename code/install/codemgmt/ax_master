@@ -4813,3 +4813,4 @@
 14 316 src rm trial/apps/dish/dish_smapp.g
 14 316 sys rm libexec/dish_smapp.g
 14 316 src rm trial/apps/dish/dish_smman.g
+14 316 sys rm libexec/dish_smman.g
