@@ -1,5 +1,5 @@
 //# tVirtColEng.cc: Test program for virtual column engine
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,8 +37,8 @@
 
 
 //# Includes
-#include "dVirtColEng.h"
-#include "dVirtColEng.cc"
+#include <aips/Tables/test/dVirtColEng.h>
+#include <aips/Tables/test/dVirtColEng.cc>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
