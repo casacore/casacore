@@ -565,17 +565,16 @@ DataManagerColumn* TiledStMan::reallocateColumn (DataManagerColumn* column)
 }
     
 
-void TiledStMan::setup()
+void TiledStMan::setup (Bool canonical)
 {
     uInt i;
     // Determine if the data has to be stored in canonical format.
-    // For the time being this is the only format.
-    asCanonical_p = True;
+    asCanonical_p = canonical;
     // Get the description of the hypercolumn.
     Vector<String> dataNames;
     Vector<String> coordNames;
     Vector<String> idNames;
-    const TableDesc& tableDesc = table().tableDesc();
+    const TableDesc& tableDesc = getDesc();
     nrdim_p = tableDesc.hypercolumnDesc (hypercolumnName_p, dataNames,
 					 coordNames, idNames);
     // Determine the number of vector coordinates.
@@ -638,6 +637,12 @@ void TiledStMan::setup()
 	dataCols_p[i]->setColumnNumber (i);
 	dataColSet_p[i] = dataCols_p[i];
     }
+}
+
+
+const TableDesc& TiledStMan::getDesc() const
+{
+    return table().tableDesc();
 }
 
 

@@ -355,6 +355,9 @@ protected:
     virtual void setupCheck (const TableDesc& tableDesc,
 			     const Vector<String>& dataNames) const;
 
+    // Get the table description needed for the hypercolumn description.
+    virtual const TableDesc& getDesc() const;
+
     // Check if values are given in the record for all columns in
     // the block. Also check if the data types are correct.
     // An exception is thrown if something is incorrect.
@@ -424,7 +427,8 @@ protected:
     void headerFileClose (AipsIO* headerFile);
 
     // Set up the TiledStMan variables from the table description.
-    void setup();
+    // Tell if the data is in canonical format.
+    void setup (Bool canonical=True);
 
     // Create a TSMFile object and store its pointer at the given index
     // in the block.
