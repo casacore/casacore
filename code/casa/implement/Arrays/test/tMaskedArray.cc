@@ -1,5 +1,5 @@
 //# tMaskedArray.cc: Test program for MaskedArrays
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -263,8 +263,8 @@ main()
 // End Vector
 
 // Matrix
-            Matrix<Int> v8(5,3);
-            Matrix<Int> v(5,3);
+            Matrix<Int> v8(5u,3u);
+            Matrix<Int> v(5u,3u);
             v8 = 8;
             indgen (v.ac());
 
@@ -283,7 +283,7 @@ main()
             cout << v.ac() << endl;
 
             {
-                Matrix<Int> yc (4,6);
+                Matrix<Int> yc (4u,6u);
                 indgen (yc.ac());
                 const Matrix<Int> ycc (yc);
 
@@ -302,7 +302,7 @@ main()
             }
 
             {
-                Matrix<Int> yc (4,6);
+                Matrix<Int> yc (4u,6u);
                 indgen (yc.ac());
 
                 cout << "\n";
@@ -317,7 +317,7 @@ main()
             }
 
             {
-                Matrix<Int> yc (4,6);
+                Matrix<Int> yc (4u,6u);
                 indgen (yc.ac());
 
                 cout << "\n";
@@ -443,7 +443,7 @@ main()
             }
 
             {
-                Matrix<Int> mat (5,2);
+                Matrix<Int> mat (5u,2u);
 
                 mcu.getCompressedArray (mat);
 
@@ -466,10 +466,10 @@ main()
 
 // Readonly
             {
-            Cube<Int> cu (5, 3, 2);
+            Cube<Int> cu (5u, 3u, 2u);
             indgen (cu.ac());
 
-            LogicalCube lcu (5, 3, 2);
+            LogicalCube lcu (5u, 3u, 2u);
 	    lcu = (cu.ac() > 10) && (cu.ac() <= 20);
 
             {
