@@ -110,6 +110,7 @@ class SpectralFit {
   const SpectralElement &getElement(uInt index) const;
   // Fit the (gaussian) elements as given by the specified spectral elements
   // at the frequencies x with values y. Weights of all points are equal.
+  // Fitting of polynomial possible
   // <group>
   Bool SpectralFit::fit(const Vector<Double> &x,
 			const Vector<Double> &y);

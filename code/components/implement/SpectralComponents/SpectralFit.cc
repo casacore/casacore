@@ -31,6 +31,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/SumFunction.h>
 #include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/Polynomial.h>
 #include <trial/Wnbt/SpectralElement.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
@@ -86,16 +87,32 @@ Bool SpectralFit::fit(const Vector<Double> &x,
   NonLinearFitLM<Double> fitter;
   // The functions to fit
   const Gaussian1D<AutoDiff<Double> > gauss; 
+  const Polynomial<AutoDiff<Double> > poly; 
   SumFunction<AutoDiff<Double>,AutoDiff<Double> > func;
-  for (uInt i=0; i<n_p; i++) func.addFunction(gauss);
+  Int npar(0);
+  for (uInt i=0; i<n_p; i++) {
+    if (el_p[i].getType() == SpectralElement::GAUSSIAN) {
+      func.addFunction(gauss);
+      npar += 3;
+    } else if (el_p[i].getType() == SpectralElement::POLYNOMIAL) {
+      npar += el_p[i].getDegree()+1;
+      const Polynomial<AutoDiff<Double> > poly(el_p[i].getDegree());
+      func.addFunction(poly);
+    };
+  };
   FuncWithAutoDerivs<Double,Double> autoFunc(func);
   fitter.setFunction(autoFunc);
   // Initial guess
-  Vector<Double> v(3*n_p);
+  Vector<Double> v(npar);
+  uInt j(0);
   for (uInt i=0; i<n_p; i++) {
-    v(3*i +0) = el_p[i].getAmpl();
-    v(3*i +1) = el_p[i].getCenter();
-    v(3*i +2) = el_p[i].getSigma();
+    if (el_p[i].getType() == SpectralElement::GAUSSIAN) {
+      v(j++) = el_p[i].getAmpl();
+      v(j++) = el_p[i].getCenter();
+      v(j++) = el_p[i].getSigma();
+    } else if (el_p[i].getType() == SpectralElement::POLYNOMIAL) {
+      for (uInt k=0; k<el_p[i].getDegree()+1; k++) v(j++) = 0;
+    };
   };
   fitter.setFittedFuncParams(v);
   // Max. number of iterations
