@@ -117,7 +117,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
 
  Added and initialized 1 row
  Reopened table
-Invalid Table operation: Table::removeColumn - column c2 cannot be removed
+Invalid Table operation: Table::removeColumn - column c2 cannot be removed from table tTable_4_tmp.data
 
 TableDesc    version 1   (Directory **SCRATCH**)
 ---------
