@@ -71,15 +71,15 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(const Table& tab,
 	TableMeasDescBase::reconstruct(tab, columnName);
     
     AlwaysAssert(M::showMe() == tmDesc->type(), AipsError);
-    itsDataCol = new ArrayColumn<Double>(tab, columnName);
+    itsDataCol = new ROArrayColumn<Double>(tab, columnName);
     
     // Set up the reference code component of the MeasRef
     if (tmDesc->isRefCodeVariable()) {
 	const String varColName = tmDesc->refColumnName();
 	if (tab.tableDesc().columnDesc(varColName).isScalar()) {
-	    itsRefCodeCol = new ScalarColumn<Int>(tab, varColName);	
+	    itsRefCodeCol = new ROScalarColumn<Int>(tab, varColName);	
 	} else {
-	    itsArrRefCodeCol = new ArrayColumn<Int>(tab, varColName);
+	    itsArrRefCodeCol = new ROArrayColumn<Int>(tab, varColName);
     	}
 	itsVarRefFlag = True;
     } else {
@@ -92,9 +92,10 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(const Table& tab,
 	if (tmDesc->isOffsetVariable()) {
 	    const String varColName = tmDesc->offsetColumnName();
 	    if (tab.tableDesc().columnDesc(varColName).isScalar()) {
-		itsOffsetCol = new ScalarMeasColumn<M, MV>(tab, varColName);	
+		itsOffsetCol = new ROScalarMeasColumn<M, MV>(tab, varColName);
 	    } else {
-		itsArrOffsetCol = new ArrayMeasColumn<M, MV>(tab, varColName);
+		itsArrOffsetCol = 
+		  new ROArrayMeasColumn<M, MV>(tab, varColName);
     	    }
 	    itsVarOffsetFlag = True;
 	} else {
@@ -108,8 +109,9 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(const Table& tab,
 template<class M, class MV>
 ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(
     const ROArrayMeasColumn<M, MV>& that)
-: itsDataCol(that.itsDataCol),
-  itsVarRefFlag(that.itsVarRefFlag),
+: itsVarRefFlag(that.itsVarRefFlag),
+  itsVarOffsetFlag(that.itsVarOffsetFlag),
+  itsDataCol(that.itsDataCol),
   itsRefCodeCol(that.itsRefCodeCol),
   itsArrRefCodeCol(that.itsArrRefCodeCol),
   itsOffsetCol(that.itsOffsetCol),
@@ -117,16 +119,16 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(
   itsMeasRef(that.itsMeasRef)
 {
     if (itsDataCol != 0) {
-	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
+	itsDataCol = new ROArrayColumn<Double>(*itsDataCol);
     }
     if (itsRefCodeCol != 0) {
-	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+	itsRefCodeCol = new ROScalarColumn<Int>(*itsRefCodeCol);
     }
     if (itsArrRefCodeCol != 0) {
-	itsArrRefCodeCol = new ArrayColumn<Int>(*itsArrRefCodeCol);
+	itsArrRefCodeCol = new ROArrayColumn<Int>(*itsArrRefCodeCol);
     }
     if (itsArrOffsetCol != 0) {
-	itsArrOffsetCol = new ArrayMeasColumn<M, MV>(*itsArrOffsetCol);
+	itsArrOffsetCol = new ROArrayMeasColumn<M, MV>(*itsArrOffsetCol);
     }
 }
 
@@ -158,19 +160,19 @@ void ROArrayMeasColumn<M, MV>::reference(const ROArrayMeasColumn<M, MV>& that)
     itsArrOffsetCol = that.itsArrOffsetCol;
     itsMeasRef = that.itsMeasRef;
     if (itsDataCol != 0) {
-	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
+	itsDataCol = new ROArrayColumn<Double>(*itsDataCol);
     }
     if (itsRefCodeCol != 0) {
-	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+	itsRefCodeCol = new ROScalarColumn<Int>(*itsRefCodeCol);
     }
     if (itsArrRefCodeCol != 0) {
-	itsArrRefCodeCol = new ArrayColumn<Int>(*itsArrRefCodeCol);
+	itsArrRefCodeCol = new ROArrayColumn<Int>(*itsArrRefCodeCol);
     }
     if (itsOffsetCol != 0) {
-	itsOffsetCol = new ScalarMeasColumn<M, MV>(*itsOffsetCol);
+	itsOffsetCol = new ROScalarMeasColumn<M, MV>(*itsOffsetCol);
     }
     if (itsArrOffsetCol != 0) {
-	itsArrOffsetCol = new ArrayMeasColumn<M, MV>(*itsArrOffsetCol);
+	itsArrOffsetCol = new ROArrayMeasColumn<M, MV>(*itsArrOffsetCol);
     }
 }
 
@@ -319,24 +321,128 @@ void ROArrayMeasColumn<M, MV>::throwIfNull() const
  
 template<class M, class MV>
 ArrayMeasColumn<M, MV>::ArrayMeasColumn()
-: ROArrayMeasColumn<M, MV>()
+: ROArrayMeasColumn<M, MV>(),
+  itsDataCol(0),
+  itsRefCodeCol(0),
+  itsArrRefCodeCol(0),
+  itsOffsetCol(0),
+  itsArrOffsetCol(0)
 {}
 
 template<class M, class MV>
 ArrayMeasColumn<M, MV>::ArrayMeasColumn(const Table& tab,
 					const String& columnName)
-: ROArrayMeasColumn<M, MV>(tab, columnName)
-{}
+: ROArrayMeasColumn<M, MV>(tab, columnName),
+  itsDataCol(0),
+  itsRefCodeCol(0),
+  itsArrRefCodeCol(0),
+  itsOffsetCol(0),
+  itsArrOffsetCol(0)
+{
+    TableMeasDesc<M>* tmDesc = (TableMeasDesc<M>*) 
+	TableMeasDescBase::reconstruct(tab, columnName);
+    
+    AlwaysAssert(M::showMe() == tmDesc->type(), AipsError);
+    itsDataCol = new ArrayColumn<Double>(tab, columnName);
+    
+    // Set up the reference code component of the MeasRef
+    if (tmDesc->isRefCodeVariable()) {
+	const String varColName = tmDesc->refColumnName();
+	if (tab.tableDesc().columnDesc(varColName).isScalar()) {
+	    itsRefCodeCol = new ScalarColumn<Int>(tab, varColName);	
+	} else {
+	    itsArrRefCodeCol = new ArrayColumn<Int>(tab, varColName);
+    	}
+    } else {
+	itsMeasRef.set(tmDesc->getRefCode());
+    }
+    
+    // Set up the offset component of the MeasRef
+    if (tmDesc->hasOffset()) {
+	if (tmDesc->isOffsetVariable()) {
+	    const String varColName = tmDesc->offsetColumnName();
+	    if (tab.tableDesc().columnDesc(varColName).isScalar()) {
+		itsOffsetCol = new ScalarMeasColumn<M, MV>(tab, varColName);
+	    } else {
+		itsArrOffsetCol = 
+		  new ArrayMeasColumn<M, MV>(tab, varColName);
+    	    }
+	} else {
+	    itsMeasRef.set(tmDesc->getOffset());
+	}
+    } 
+    delete tmDesc;
+}
 
 template<class M, class MV>
 ArrayMeasColumn<M, MV>::ArrayMeasColumn(const ArrayMeasColumn<M, MV>& that)
-: ROArrayMeasColumn<M, MV>(that)
-{}
+: ROArrayMeasColumn<M, MV>(that),
+  itsDataCol(that.itsDataCol),
+  itsRefCodeCol(that.itsRefCodeCol),
+  itsArrRefCodeCol(that.itsArrRefCodeCol),
+  itsOffsetCol(that.itsOffsetCol),
+  itsArrOffsetCol(that.itsArrOffsetCol),
+  itsMeasRef(that.itsMeasRef)
+{
+    if (itsDataCol != 0) {
+	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
+    }
+    if (itsRefCodeCol != 0) {
+	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+    }
+    if (itsArrRefCodeCol != 0) {
+	itsArrRefCodeCol = new ArrayColumn<Int>(*itsArrRefCodeCol);
+    }
+    if (itsArrOffsetCol != 0) {
+	itsArrOffsetCol = new ArrayMeasColumn<M, MV>(*itsArrOffsetCol);
+    }
+}
 
 template<class M, class MV>
 ArrayMeasColumn<M, MV>::~ArrayMeasColumn()
 {}
 
+template<class M, class MV>
+void ArrayMeasColumn<M, MV>::cleanUp()
+{
+    delete itsDataCol;
+    delete itsRefCodeCol;
+    delete itsArrRefCodeCol;
+    delete itsOffsetCol;
+    delete itsArrOffsetCol;
+}
+
+template<class M, class MV>
+void ArrayMeasColumn<M, MV>::reference(const ArrayMeasColumn<M, MV>& that)
+{
+    ROArrayMeasColumn<M, MV>::reference(that);
+    itsDataCol = that.itsDataCol;
+    itsRefCodeCol = that.itsRefCodeCol;
+    itsArrRefCodeCol = that.itsArrRefCodeCol;
+    itsOffsetCol = that.itsOffsetCol;
+    itsArrOffsetCol = that.itsArrOffsetCol;
+    itsMeasRef = that.itsMeasRef;
+    if (itsDataCol != 0) {
+	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
+    }
+    if (itsRefCodeCol != 0) {
+	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+    }
+    if (itsArrRefCodeCol != 0) {
+	itsArrRefCodeCol = new ArrayColumn<Int>(*itsArrRefCodeCol);
+    }
+    if (itsArrOffsetCol != 0) {
+	itsArrOffsetCol = new ArrayMeasColumn<M, MV>(*itsArrOffsetCol);
+    }
+}
+
+template<class M, class MV>
+void ArrayMeasColumn<M, MV>::attach(const Table& tab, 
+				    const String& columnName)
+{
+    reference(ArrayMeasColumn<M, MV>(tab, columnName)); 
+}
+ 
 template<class M, class MV>
 void ArrayMeasColumn<M, MV>::put(uInt rownr, const Array<M>& meas)
 {
