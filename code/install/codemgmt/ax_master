@@ -2464,3 +2464,4 @@
 11 312 src mv trial/implement/HDS/HDSLocator.h npoi/implement/HDS/HDSLocator.h
 11 312 src mv trial/implement/HDS/HDSLocator.cc npoi/implement/HDS/HDSLocator.cc
 11 312 src mv trial/implement/HDS/HDSFile.cc npoi/implement/HDS/HDSFile.cc
+11 312 src mv trial/implement/HDS/HDSFile.h npoi/implement/HDS/HDSFile.h
