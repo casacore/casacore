@@ -242,7 +242,6 @@ Bool LatticeHistograms<T>::setAxes (const Vector<Int>& axes)
 
    Vector<Int> saveAxes(cursorAxes_p.copy());
 
-
 // Set cursor arrays (can't assign to potentially zero length array)
 
    cursorAxes_p.resize(0);   
@@ -262,6 +261,12 @@ Bool LatticeHistograms<T>::setAxes (const Vector<Int>& axes)
          }
       }
    }
+
+// Set the display axes 
+
+   displayAxes_p.resize(0);
+   displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
+                                        cursorAxes_p).asVector();
 
 // Signal that we have changed the axes and need new accumulation lattices
    
@@ -605,7 +610,6 @@ Bool LatticeHistograms<T>::getHistogram (Vector<T>& values,
       return False;
    }
 
-
 // Make sure we have a correctly size position
       
    if (posInLattice) {
@@ -651,7 +655,7 @@ Bool LatticeHistograms<T>::getHistogram (Vector<T>& values,
          histPos(i+1) = pos(i);
       }
    }
- 
+
             
 // Get histogram slice of integer counts (i.e. linear,
 // not cumulative or logarithmic etc)
@@ -888,11 +892,13 @@ Bool LatticeHistograms<T>::generateStorageLattice()
 // Generate the histogram, and statistics storage lattices.
 //
 {
-// Set the display axes vector.
+// Set the display axes vector if needed
 
-   displayAxes_p.resize(0);
-   displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
-                                        cursorAxes_p).asVector();
+   if (displayAxes_p.nelements()==0) {
+      displayAxes_p.resize(0);
+      displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
+                                           cursorAxes_p).asVector();
+   }
 
 // Make the statistics object 
 
