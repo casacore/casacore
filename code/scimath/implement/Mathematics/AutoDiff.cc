@@ -35,82 +35,62 @@ template<class T> Vector<T> AutoDiff<T>::null;
 #endif 
 
 template <class T>
-AutoDiff<T>::AutoDiff():value_(T(0.0)),gradient_(pool.get()),nderivs(0)
-{
-  // nothing
-}
+AutoDiff<T>::AutoDiff() :
+  value_(T(0.0)),gradient_(pool.get()),nderivs(0) {}
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v):value_(v),gradient_(pool.get()),nderivs(0)
-{
-  // nothing
-}
+AutoDiff<T>::AutoDiff(const T &v) :
+  value_(v),gradient_(pool.get()),nderivs(0) {}
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs, const uInt i):value_(v),gradient_(pool.get()),nderivs(ndiffs)
-{
+AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs, const uInt i) :
+  value_(v),gradient_(pool.get()),nderivs(ndiffs) {
   if(i >= ndiffs) {
     throw(AipsError("AutoDiff(const T& v, uInt ndiffs, uInt i): i >= ndiffs"));
-  }
-  if(ndiffs > gradient_->nelements())
-    gradient_->resize(ndiffs);
-  for(uInt j = 0; j < ndiffs; j++) {
-    (*gradient_)(j) = T(0.0);
-  }
-  (*gradient_)(i) = 1.0;
+  };
+  if(ndiffs > gradient_->nelements()) gradient_->resize(ndiffs);
+  for (uInt j = 0; j < ndiffs; j++) (*gradient_)(j) = T(0.0);
+  (*gradient_)(i) = T(1.0);
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const AutoDiff<T> &other):value_(other.value_),gradient_(pool.get())
-{
+AutoDiff<T>::AutoDiff(const AutoDiff<T> &other) :
+  value_(other.value_),gradient_(pool.get()) {
   nderivs = other.nderivs;
-  if(nderivs > 0) {
-    if(nderivs > gradient_->nelements())
-      gradient_->resize(nderivs);
-    for(uInt i = 0; i < nderivs; i++)
-      (*gradient_)(i) = (*other.gradient_)(i);
-  }
+  if (nderivs > 0) {
+    if(nderivs > gradient_->nelements()) gradient_->resize(nderivs);
+    for(uInt i = 0; i < nderivs; i++) (*gradient_)(i) = (*other.gradient_)(i);
+  };
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T& v, const Vector<T>& derivs):value_(v),gradient_(pool.get())
-{
+AutoDiff<T>::AutoDiff(const T& v, const Vector<T>& derivs) :
+  value_(v),gradient_(pool.get()) {
   nderivs = derivs.nelements();
-  if(nderivs > gradient_->nelements())
-    gradient_->resize(nderivs);
-  for(uInt i = 0; i < nderivs; i++) {
-    (*gradient_)(i) = derivs(i);
-  }
+  if(nderivs > gradient_->nelements()) gradient_->resize(nderivs);
+  for (uInt i = 0; i < nderivs; i++) (*gradient_)(i) = derivs(i);
 }
 
 template<class T>
-AutoDiff<T>::~AutoDiff()
-{
+AutoDiff<T>::~AutoDiff() {
   pool.release(gradient_);
 }
 
 template <class T>
-AutoDiff<T>& AutoDiff<T>::operator=(const T& v)
-{
+AutoDiff<T>& AutoDiff<T>::operator=(const T& v) {
   value_ = v;
   nderivs = 0;
   return *this;
 }
 
 template <class T>
-AutoDiff<T>& AutoDiff<T>::operator=(const AutoDiff<T> &other)
-{ 
-  if (this == &other) return *this;
-
-  value_ = other.value_;
-  nderivs = other.nderivs;
-  
-  if(nderivs > gradient_->nelements()) {
-    gradient_->resize(nderivs);
-  }
-  for(uInt i = 0; i < nderivs; i++) {
-    (*gradient_)(i) = (*other.gradient_)(i);
-  }
+AutoDiff<T>& AutoDiff<T>::operator=(const AutoDiff<T> &other) { 
+  if (this != &other) {
+    value_ = other.value_;
+    nderivs = other.nderivs;
+    if (nderivs > gradient_->nelements()) gradient_->resize(nderivs);
+    for (uInt i = 0; i < nderivs; i++) (*gradient_)(i) = (*other.gradient_)(i);
+  };
   return *this;
 }
 
@@ -175,79 +155,58 @@ AutoDiff<T>& AutoDiff<T>::operator-=(const AutoDiff<T> &other) {
   return *this;
 }
 
-template <class T> Vector<T>& AutoDiff<T>::derivatives()
-{ 
-  uInt i;
-  if(nderivs == 0) {
-    return null; 
-  } else {
-    if(gradient_->nelements() != nderivs) {
+template <class T> Vector<T>& AutoDiff<T>::derivatives() { 
+  if (nderivs == 0) return null; 
+  else {
+    if (gradient_->nelements() != nderivs) {
       Vector<T> tmp(nderivs);
-      for(i = 0; i < nderivs; i++) 
-	tmp(i) = (*gradient_)(i);
+      for (uInt i = 0; i < nderivs; i++) tmp(i) = (*gradient_)(i);
       gradient_->resize(nderivs);
-      for(i = 0; i < nderivs; i++) 
-	(*gradient_)(i) = tmp(i);
-    }
-    return *gradient_;
-  }
+      for (uInt i = 0; i < nderivs; i++) (*gradient_)(i) = tmp(i);
+    };
+  };
+  return *gradient_;
 }
 
-template <class T> const Vector<T>& AutoDiff<T>::derivatives() const
-{ 
-  uInt i;
-  if(nderivs == 0) {
-    return null; 
-  } else {
-    if(gradient_->nelements() != nderivs) {
+template <class T> const Vector<T>& AutoDiff<T>::derivatives() const { 
+  if (nderivs == 0) return null; 
+  else {
+    if (gradient_->nelements() != nderivs) {
       Vector<T> tmp(nderivs);
-      for(i = 0; i < nderivs; i++) 
-	tmp(i) = (*gradient_)(i);
+      for (uInt i = 0; i < nderivs; i++) tmp(i) = (*gradient_)(i);
       gradient_->resize(nderivs);
-      for(i = 0; i < nderivs; i++) 
-	(*gradient_)(i) = tmp(i);
-    }
-    return *gradient_;
-  }
+      for (uInt i = 0; i < nderivs; i++) (*gradient_)(i) = tmp(i);
+    };
+  };
+  return *gradient_;
 }
 
-template <class T> T& AutoDiff<T>::derivative(uInt which)
-{ 
-  if(which >= nderivs) {
-    throw(AipsError("AutoDiff<T>::derivative(uInt which): derivative index out of bound"));
-  }
+template <class T> T& AutoDiff<T>::derivative(uInt which) { 
+  if (which >= nderivs) {
+    throw(AipsError("AutoDiff<T>::derivative(uInt which): "
+		    "derivative index out of bound"));
+  };
   return (*gradient_)(which);
 }
 
-template <class T> uInt AutoDiff<T>::nDerivatives() const
-{ 
+template <class T> uInt AutoDiff<T>::nDerivatives() const { 
   return nderivs;
 }
 
-template <class T> T& AutoDiff<T>::value()
-{
+template <class T> T& AutoDiff<T>::value() {
   return value_;
 }
 
-template <class T> const T& AutoDiff<T>::value() const
-{
+template <class T> const T& AutoDiff<T>::value() const {
   return value_;
 }
 
-template <class T> Bool AutoDiff<T>::isConstant() const
-{ 
-  if(nderivs == 0)
-    return True;
-  else
-    return False;
+template <class T> Bool AutoDiff<T>::isConstant() const { 
+  return (nderivs == 0);
 }
 
-template <class T> void AutoDiff<T>::resize(uInt ndivs)
-{ 
-  if (ndivs > gradient_->nelements()) {
-    gradient_->resize(ndivs); 
-  }
+template <class T> void AutoDiff<T>::resize(uInt ndivs) { 
+  if (ndivs > gradient_->nelements()) gradient_->resize(ndivs); 
   nderivs = ndivs;
-  for(uInt i = 0; i < nderivs; i++) 
-    (*gradient_)(i) = T(0.0);
+  for (uInt i = 0; i < nderivs; i++) (*gradient_)(i) = T(0.0);
 }
