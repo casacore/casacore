@@ -330,6 +330,7 @@ public:
                                      const IPosition& imageShape);
 
 // Return, 0 relative, the number of the first axis in an image which is a spectral axis
+// A return value of -1 indicates no spectral axis was found
    static Int findSpectralAxis     (const IPosition& imageShape,
                                     const CoordinateSystem& coordinate);
 
@@ -348,7 +349,6 @@ public:
 // Stretch a range by 10%
    static void stretchMinMax       (Float& min, 
                                     Float& max);
-
 
 // Convert comma or space delimitered substrings into an
 // array of strings.  
