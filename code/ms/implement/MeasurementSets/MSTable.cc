@@ -1,5 +1,5 @@
 //# MSTable.cc:  the class that hold measurements from telescopes
-//# Copyright (C) 1996,1997,2000
+//# Copyright (C) 1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,14 +87,16 @@ MSTable<ColEnum,KeyEnum>::MSTable(const String& tableName,
 template <class ColEnum, class KeyEnum> 
 MSTable<ColEnum,KeyEnum>::MSTable(SetupNewTable &newTab, uInt nrrow,
 				  Bool initialize)
-    : Table(newTab, nrrow, initialize)
+    : Table(MSTableImpl::setupCompression(newTab),
+	    nrrow, initialize)
 {}
 
 template <class ColEnum, class KeyEnum> 
 MSTable<ColEnum,KeyEnum>::MSTable(SetupNewTable &newTab,
 				  const TableLock& lockOptions,
 				  uInt nrrow,  Bool initialize)
-    : Table(newTab, lockOptions, nrrow, initialize)
+    : Table(MSTableImpl::setupCompression(newTab),
+	    lockOptions, nrrow, initialize)
 {}
 
 template <class ColEnum, class KeyEnum> 
@@ -216,6 +218,14 @@ void MSTable<ColEnum,KeyEnum>::addKeyToDesc(TableDesc& td, KeyEnum key)
 {
     MSTableImpl::addKeyToDesc(td,keywordName(key),keywordDataType(key),
 			      keywordStandardComment(key));
+}
+
+template <class ColEnum, class KeyEnum> 
+void MSTable<ColEnum,KeyEnum>::addColumnCompression (TableDesc& td,
+						     ColEnum which,
+						     Bool autoScale)
+{
+    MSTableImpl::addColumnCompression (td, columnName(which), autoScale);
 }
 
 template <class ColEnum, class KeyEnum> 
