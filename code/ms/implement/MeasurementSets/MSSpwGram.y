@@ -47,6 +47,7 @@ using namespace casa;
 %token VELOCITYUNIT
 %token <str> SPWNAME
 %token <ival> INDEX
+%token <dval> NUMBER
 %token DASH
 %token EQASS
 %token SQUOTE
@@ -61,13 +62,7 @@ using namespace casa;
 
 %type <node> spwstatement
 %type <node> spwexpr
-%type <node> channellistexpr
-%type <node> channellist
-%type <node> channelrangeexpr
-%type <node> rangeexpr
-%type <node> frequencyrangeexpr
-%type <node> velocityrangeexpr
-%type <node> chansstartstepexpr
+%type <node> indexlist
 
 %left OR
 %nonassoc EQ EQASS GT GE LT LE NE COMMA SLASH
@@ -85,54 +80,24 @@ int MSSpwGramlex (YYSTYPE*);
 spwstatement: SQUOTE spwexpr SQUOTE {
                 $$ = $2;
                 cout << "Spw selection "<< endl;}
-            | INDEX {
+            | LBRACKET indexlist RBRACKET {
+                $$ = $2; }
+            ;
+
+indexlist: INDEX {
                    Vector<Int> spwids(1);
 		   spwids[0] = $1;
 		   cout << ("spw index\n") << spwids[0] << endl;;
                    $$ = MSSpwParse().selectSpwIds(spwids);}
-            ;
+         | indexlist COMMA INDEX
+         ;
 
 spwexpr: SPWNAME {
               String name($1);
-              cout << ("spw name\n") << name << endl;;
+              cout << ("spw name\n") << name << endl;
               $$ = MSSpwParse().selectSpwName(name);
           }
-         |channellistexpr COMMA channelrangeexpr         
-         |channellistexpr
-         |rangeexpr
-         |chansstartstepexpr          ;
-
-channellistexpr: INDEX COLON channellist {}
-               ;
-
-channellist: LPAREN listexpr RPAREN {}
-           | INDEX {
-                printf("a single channel \n");}
-           ;
-listexpr : INDEX {
-                 printf("a channel selected\n");
-	       }
-         | listexpr COMMA INDEX {
-                 printf("a list channel selected\n");}
-         ;
-rangeexpr : channelrangeexpr 
-          | frequencyrangeexpr
-          | velocityrangeexpr
-          ;
-
-channelrangeexpr: INDEX COLON INDEX DASH INDEX {
-                     printf("a channel range selected\n");}  
-                ;
-frequencyrangeexpr : INDEX COLON INDEX DASH INDEX FREQUENCYUNIT {
-                       printf("a FREQUENCY range selected\n");}
-                   ;
-velocityrangeexpr : INDEX COLON INDEX DASH INDEX VELOCITYUNIT {
-                       printf("a VELOCITY range selected\n");}
-                   ;
-
-chansstartstepexpr : INDEX COLON INDEX SLASH INDEX SLASH INDEX SLASH INDEX {
-                    cout << " Given start and step \n" << endl;}
-                   ;
+       ;
 
 %%
 
