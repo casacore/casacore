@@ -1,5 +1,5 @@
 //# Utilities.h: Bag of unrelated classes and groups for general use.
-//# Copyright (C) 1995,1996,1997,2000
+//# Copyright (C) 1995,1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,6 +44,7 @@
 #include <aips/Utilities/RegSequence.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/RegexError.h>
+#include <aips/Utilities/Register.h>
 #include <aips/Utilities/Sequence.h>
 #include <aips/Utilities/Sort.h>
 #include <aips/Utilities/SortError.h>
@@ -65,18 +66,18 @@
 // <ul>
 //  <li> Object utilities:
 //  <ul>
-//   <li> <a href="Utilities/Compare.html">Compare</a>
+//   <li> <linkto class=Compare>Compare</linkto>
 //    objects with each other. A signature for comparison functions 
 //    is defined (required for comparison functions used in the
 //    <linkto class="Sort">Sort</linkto>
 //    class), and one such function is provided.
-//   <li> <a href="Utilities/Copy.html">Copy</a>
+//   <li> <linkto class=Copy>Copy</linkto>
 //    objects from one place to another.
-//   <li> <a href="Utilities/Fallible.html">Mark</a>
+//   <li> <linkto class=Fallible>Mark</linkto>
 //    objects as valid or invalid.
-//   <li> <a href="Utilities/Notice.html">Notices</a>
+//   <li> <linkto class=Notice>Notices</linkto>
 //    provide basic support for shared access of data by various objects.
-//   <li> <a href="Utilities/Sort.html">Sort</a>
+//   <li> <linkto class=Sort>Sort</linkto>
 //    objects on one or more keys, in ascending or descending order.
 //    <linkto class=GenSort>Fast sorting</linkto>
 //    is provided for certain types of objects.
@@ -86,43 +87,45 @@
 //  </ul> 
 //  <li> Logical utilities:
 //  <ul>
-//   <li> <a href="Utilities/Assert.html">Assertion</a>
+//   <li> <linkto class=Assert>Assertion</linkto>
 //    lets you throw an error when a condition in not fullfilled.
-//   <li> <a href="Utilities/BitVector.html">Bit vectors</a>
+//   <li> <linkto class=BitVector>Bit vectors</linkto>
 //    are an efficient method to keep True/False information on a set of
 //    items or conditions.
 //  </ul> 
 //  <li> Pointer utilities
 //  <ul>
-//   <li> <a href="Utilities/CountedPtr.html">Counted pointers</a>
+//   <li> <linkto class=CountedPtr>Counted pointers</linkto>
 //    provide support for reference counting.
-//   <li> <a href="Utilities/PtrHolder.html">Pointer holders</a>
+//   <li> <linkto class=PtrHolder>Pointer holders</linkto>
 //    can be used to hold allocated pointers which should be deleted
 //    when an exception is thrown.
 //  </ul> 
 //  <li> Datatype utilities
 //  <ul>
-//   <li> <a href="Utilities/DataType.html">DataType</a>
+//   <li> <linkto class=DataType>DataType</linkto>
 //    enumerates the possible data types in the table system.
-//   <li> <a href="Utilities/ValType.html">ValType</a>
+//   <li> <linkto class=ValType>ValType</linkto>
 //    describes the data types and their undefined values.
+//   <li> <linkto class=Register>Register</linkto>
+//    provides runtime typing information.
 //  </ul> 
 //  <li> Other utilities
 //  <ul>
-//   <li> <a href="Utilities/DynBuffer.html">Dynamic buffers</a>
+//   <li> <linkto class=DynBuffer>Dynamic buffers</linkto>
 //    are used to store data in dynamically allocated buffers.
-//   <li> <a href="Utilities/Regex.html">Regular expressions</a>
+//   <li> <linkto class=Regex>Regular expressions</linkto>
 //    are supported by the class <linkto class=Regex>Regex</linkto> and
 //    the associated function library 
 //    <a href="Utilities/cregex.html">cregex</a>.
-//   <li> <a href="Utilities/Sequence.html">Sequences</a>
+//   <li> <linkto class=Sequence>Sequences</linkto>
 //    of any datatype can be derived from the base class
 //    <linkto class=Sequence>Sequence</linkto>.
 //    One example is <linkto class=uIntSequence>uIntSequence</linkto>,
 //    provided for general use. Another is
 //    <linkto class=RegSequence>RegSequence</linkto>, exclusively used
-//    by the <a href="RTTI/Register.html">Register</a> function.
-//   <li> <a href="Utilities/String.html">Strings</a>.
+//    by the <linkto class=Register>Register</linkto> function.
+//   <li> <linkto class=String>Strings</linkto>.
 //    for the C++ preprocessor
 //  </ul>
 // </ul>
@@ -135,9 +138,9 @@
 //
 // </synopsis>
 
-// <todo asof="1995/03/20">
-//   <li> insert String description
-// </todo>
+//# <todo asof="1995/03/20">
+//#   <li>
+//# </todo>
 
 // </module>
 
