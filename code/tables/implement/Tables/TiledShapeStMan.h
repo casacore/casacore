@@ -1,5 +1,5 @@
 //# TiledShapeStMan.h: Tiled Data Storage Manager using the shape as id
-//# Copyright (C) 1998,2000,2001
+//# Copyright (C) 1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -79,6 +79,7 @@
 //
 // TiledShapeStMan has the following (extra) properties:
 // <ul>
+//  <li> It can only handle columns containing arrays, thus not scalars.
 //  <li> Addition of a row sets the appropriate data arrays
 //       in that row temporarily to an empty hypercube.
 //       However, if the data arrays have a fixed shape, the
