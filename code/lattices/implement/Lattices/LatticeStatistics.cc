@@ -2614,9 +2614,6 @@ void LatticeStatistics<T>::summStats ()
       os8 << median;
       os9 << medAbsDevMed;
       os10 << quartile;
-      if (hasBeam) {
-         os0 << sum/beamArea;
-      }
 //
       os_p << "Number points = ";
       os_p.output() << setw(oWidth) << String(os00) << "       Sum      = ";
