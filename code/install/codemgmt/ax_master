@@ -6465,3 +6465,4 @@
 18 564 src mv trial/implement/MeasurementComponents/CalMainRecord.cc trial/implement/CalTables/CalMainRecord.cc
 18 564 src mv trial/implement/MeasurementComponents/BJonesMRec.cc trial/implement/CalTables/BJonesMRec.cc
 18 564 src mv trial/implement/MeasurementComponents/MJonesMRec.cc trial/implement/CalTables/MJonesMRec.cc
+18 564 src mv trial/implement/MeasurementComponents/SolvableVJMRec.cc trial/implement/CalTables/SolvableVJMRec.cc
