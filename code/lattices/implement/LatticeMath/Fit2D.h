@@ -33,7 +33,7 @@
 #include <aips/Functionals/CompoundFunction.h>
 #include <aips/Mathematics/Constants.h>
 #include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Logging.h>
+#include <aips/Logging/LogIO.h>
 
 template<class T> class Array;
 template<class T> class Matrix;
