@@ -611,10 +611,10 @@ private:
                      Bool absolute) const;
 
     // Format a latitude.
-    String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
-                                                Bool absolute, 
-                                                Coordinate::formatType form,
-                                                Int prec) const;
+    String formatLatitude (String& units, MVAngle& mVA,
+			   Bool absolute, 
+			   Coordinate::formatType form,
+			   Int prec) const;
     // Format a longitude.
     String formatLongitude (String& units, MVAngle& mVA,
                             MDirection::GlobalTypes gtype,
