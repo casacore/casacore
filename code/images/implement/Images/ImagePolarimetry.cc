@@ -298,9 +298,9 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
    LatticeExprNode node;
    if (zeroZeroLag) {
       LatticeExprNode node1( (*itsStokesPtr[ImagePolarimetry::Q])
-                               - sum(*itsStokesPtr[ImagePolarimetry::Q]));
+                               - mean(*itsStokesPtr[ImagePolarimetry::Q]));
       LatticeExprNode node2( (*itsStokesPtr[ImagePolarimetry::U]) 
-                               - sum(*itsStokesPtr[ImagePolarimetry::U]));
+                               - mean(*itsStokesPtr[ImagePolarimetry::U]));
       node = LatticeExprNode(complex(node1, node2));
    } else {
       node = LatticeExprNode(complex(*itsStokesPtr[ImagePolarimetry::Q], 
