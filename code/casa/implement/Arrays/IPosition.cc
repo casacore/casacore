@@ -28,9 +28,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/IO/AipsIO.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Logging/LogIO.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 
@@ -984,39 +982,6 @@ ostream& operator<< (ostream& os, const IPosition& ip)
     }
     os << "]";
     return os;
-}
-
-LogIO& operator<< (LogIO& os, const IPosition& ip)
-{
-    os.output() << ip;
-    return os;
-}
-
-AipsIO& operator<< (AipsIO& aio, const IPosition& ip)
-{
-    aio.putstart("IPosition", IPosition::IPositionVersion);
-    // Write out the values
-    aio.put (ip.size_p, ip.data_p);
-    aio.putend();
-    return aio;
-}
-
-// <thrown>
-//    <item> AipsError
-// </thrown>
-AipsIO& operator>> (AipsIO& aio, IPosition& ip)
-{
-    if (aio.getstart("IPosition") != IPosition::IPositionVersion) {
-	throw(AipsError("AipsIO& operator>>(AipsIO& aio, IPosition& ip) - "
-			"version on disk and in class do not match"));
-    }
-    uInt nel;
-    aio >> nel;
-    ip.resize (nel, False);
-    aio.get (nel, ip.data_p);
-    aio.getend();
-    DebugAssert (ip.ok(), AipsError);
-    return aio;
 }
 
 Bool IPosition::ok() const
