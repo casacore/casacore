@@ -1,9 +1,7 @@
 1000 casa/Arrays/ArrayLogical.cc casa/Arrays/Array.h 
      template Bool allNearAbs(Array<Double> const &, Double const &, Double) 
 ################################################################################
-# Needed for tVelocityAligner and tFrequencyAligner
-1000 coordinates/Coordinates/VelocityAligner.cc 
-     template class VelocityAligner<Float> 
+# Needed for tFrequencyAligner
 1000 coordinates/Coordinates/FrequencyAligner.cc 
      template class FrequencyAligner<Float> 
 1020 scimath/Mathematics/InterpolateArray1D.cc 
