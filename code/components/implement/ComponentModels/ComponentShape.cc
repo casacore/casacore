@@ -246,7 +246,7 @@ Vector<Double> ComponentShape::toPixel (const DirectionCoordinate& dirCoord) con
 }
 
 
-void ComponentShape::fromPixel (const Vector<Double>& parameters,
+Bool ComponentShape::fromPixel (const Vector<Double>& parameters,
                                 const DirectionCoordinate& dirCoord) 
 {
    LogIO os(LogOrigin("ComponentShape", "fromPixel(...)"));
@@ -258,6 +258,7 @@ void ComponentShape::fromPixel (const Vector<Double>& parameters,
       os << "DirectionCoordinate conversion to pixel failed because "
          << dirCoord.errorMessage() << LogIO::EXCEPTION;
    }                                
+   return True;
 }
 
 

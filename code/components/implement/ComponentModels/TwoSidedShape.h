@@ -302,8 +302,10 @@ public:
   virtual Vector<Double> toPixel (const DirectionCoordinate& dirCoord) const;
 
   // Fill the shape from the vector (longitude, latitude, major axis, 
-  // minor axis, position angle [positive +x -> +y ; rad])
-  virtual void fromPixel (const Vector<Double>& parameters,
+  // minor axis, position angle [positive +x -> +y ; rad]).  The return
+  // is True if the input major axis (in pixels) became the minor 
+  // axis (in world coordinates), else False.
+  virtual Bool fromPixel (const Vector<Double>& parameters,
                           const DirectionCoordinate& dirCoord);
 
 protected:

@@ -270,8 +270,8 @@ public:
   virtual Vector<Double> toPixel (const DirectionCoordinate& dirCoord) const;
 
   // Fill the shape direction from the vector (longitude and latitude
-  // in absolute pixels)
-  virtual void fromPixel (const Vector<Double>& parameters,
+  // in absolute pixels).  The return value is always True.
+  virtual Bool fromPixel (const Vector<Double>& parameters,
                           const DirectionCoordinate& dirCoord);
 
   // Function which checks the internal data of this class for correct

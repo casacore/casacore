@@ -515,7 +515,7 @@ Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  con
 }
  
 
-void TwoSidedShape::fromPixel (const Vector<Double>& parameters,
+Bool TwoSidedShape::fromPixel (const Vector<Double>& parameters,
                                const DirectionCoordinate& dirCoord)
 //
 // pars(0) = long cen   abs pix
@@ -574,11 +574,13 @@ void TwoSidedShape::fromPixel (const Vector<Double>& parameters,
    MVDirection mvdMinor = directionMinor.getValue();
 
 // Separations
-      
+
    Double tmp1 = 2 * mvdRef.separation(mvdMajor) * 3600 * 180.0 / C::pi;
    Double tmp2 = 2 * mvdRef.separation(mvdMinor) * 3600 * 180.0 / C::pi;
+//
    Quantum<Double> majorAxis(max(tmp1,tmp2), Unit("arcsec"));
    Quantum<Double> minorAxis(min(tmp1,tmp2), Unit("arcsec"));
+   Bool flipped = tmp2 > tmp1;
 //
    Quantum<Double> pa;
    if (tmp1 >= tmp2) {
@@ -590,6 +592,8 @@ void TwoSidedShape::fromPixel (const Vector<Double>& parameters,
 // Set them      
       
    setWidth (majorAxis, minorAxis, pa);
+//
+   return flipped;
 }
 
 // Local Variables: 
