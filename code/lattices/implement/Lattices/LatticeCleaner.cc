@@ -103,13 +103,21 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);
   convertLattice(*itsXfr,psf);
   LatticeFFT::cfft(*itsXfr, True);
+
+  itsScales.resize(0);
+  itsDirtyConvScales.resize(0);
+  itsPsfConvScales.resize(0);
+
 }
 
 template <class T> LatticeCleaner<T>::
 LatticeCleaner(const LatticeCleaner<T> & other):
    itsCleanType(other.itsCleanType),
    itsDirty(other.itsDirty),
-   itsXfr(other.itsXfr)
+   itsXfr(other.itsXfr),
+   itsScales(other.itsScales),
+   itsPsfConvScales(other.itsPsfConvScales),
+   itsDirtyConvScales(other.itsDirtyConvScales)
 {
 }
 
@@ -119,6 +127,9 @@ operator=(const LatticeCleaner<T> & other) {
     itsCleanType = other.itsCleanType;
     itsXfr = other.itsXfr;
     itsDirty = other.itsDirty;
+    itsScales = other.itsScales;
+    itsPsfConvScales = other.itsPsfConvScales;
+    itsDirtyConvScales = other.itsDirtyConvScales;
   }
   return *this;
 }
@@ -136,18 +147,21 @@ template <class T>
 Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
 				   const Int niter,
 				   const Float gain,
-				   const Quantity& threshold)
+				   const Quantity& threshold,
+				   const Bool choose)
 {
   itsCleanType=cleanType;
   itsNiter=niter;
   itsGain=gain;
   itsThreshold=threshold;
+  itsChoose=choose;
   return True;
 }
 
 // Do the clean as set up
 template <class T>
-Bool LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanerProgress<T>* progress)
+Bool LatticeCleaner<T>::clean(Lattice<T>& model,
+			      LatticeCleanerProgress<T>* progress)
 {
 
   AlwaysAssert(model.shape()==itsDirty->shape(), AipsError);
@@ -209,15 +223,17 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanerProgress<T>* prog
 
   for (Int iteration=0; iteration < itsNiter; iteration++) {
     // Find the peak
+    strengthOptimum = 0.0;
+    optimumScale = 0;
     for (scale=0; scale<nScalesToClean; scale++) {
       // Find absolute maximum for the dirty image
       SubLattice<T> dirtySub(*itsDirtyConvScales[scale], centerBox);
       maxima(scale)=0;
       posMaximum[scale]=IPosition(model.shape().nelements(), 0);
       findMaxAbsLattice(dirtySub, maxima(scale), posMaximum[scale]);
-      // Adjust the amplitude for the beam scaling
+      // Remember to adjust the position for the window and for 
+      // the flux scale
       maxima(scale)/=maxPsfConvScales(scale);
-      // Remember to adjust the position for the window
       posMaximum[scale]+=blcDirty;
       if(abs(maxima(scale))>abs(strengthOptimum)) {
         optimumScale=scale;
@@ -226,22 +242,27 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanerProgress<T>* prog
       }
     }
 
-    totalFlux += strengthOptimum*maxPsfConvScales(optimumScale);
-    totalFluxScale(optimumScale) += strengthOptimum*maxPsfConvScales(optimumScale);
+    totalFlux += strengthOptimum;
+    totalFluxScale(optimumScale) += strengthOptimum;
 
-    // Now stop if below threshold
+    // Various ways of stopping:
+    //    1. stop if below threshold
     if(abs(strengthOptimum)<itsThreshold.get("Jy").getValue()) {
       os << "Reached stopping threshold" << LogIO::POST;
       converged = True;
       break;
     }
-    // Call back: the return value tells us to stop
+    //    2. call back: the return value tells us to stop
     if(progress) {
       if(progress->info(False, iteration, itsNiter, model, maxima,
 			posMaximum, strengthOptimum,
 			optimumScale, positionOptimum,
 			totalFlux, totalFluxScale,
 			itsDirtyConvScales)) break;
+    }
+    //    3. try the stopnow method after every 10% of the iterations
+    if(iteration%(itsNiter/10)==0) {
+      if(stopnow()) break;
     }
       
     // Continuing: subtract the peak that we found from all dirty images
@@ -271,7 +292,9 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanerProgress<T>* prog
     SubLattice<T> scaleSub(*itsScales[optimumScale], subRegionPsf, True);
 
     // Now do the addition of this scale to the model image....
-    LatticeExpr<T> add(modelSub+itsGain*strengthOptimum*scaleSub);
+    Float scaleFactor;
+    scaleFactor=itsGain*strengthOptimum;
+    LatticeExpr<T> add(modelSub+scaleFactor*scaleSub);
     modelSub.copyData(add);
 
     // and then subtract the effects of this scale from all the precomputed
@@ -281,7 +304,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanerProgress<T>* prog
       AlwaysAssert(itsPsfConvScales[index(scale,optimumScale)], AipsError);
       SubLattice<T> psfSub(*itsPsfConvScales[index(scale,optimumScale)],
 			       subRegionPsf, True);
-      LatticeExpr<T> sub(dirtySub-itsGain*strengthOptimum*psfSub);
+      LatticeExpr<T> sub(dirtySub-scaleFactor*psfSub);
       dirtySub.copyData(sub);
     }
   }
@@ -377,8 +400,13 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
 
   itsNscales=scaleSizes.nelements();
   
+  if(itsScales.nelements()>0) {
+    destroyScales();
+  }
+
   itsScales.resize(itsNscales);
   itsDirtyConvScales.resize(itsNscales);
+  itsPsfConvScales.resize((itsNscales+1)*(itsNscales+1));
 
   AlwaysAssert(itsDirty, AipsError);
 
@@ -406,26 +434,23 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     LatticeFFT::cfft(*scaleXfr[scale], True);
   }
     
-  itsPsfConvScales.resize((itsNscales+1)*(itsNscales+1));
-  
   // Now we can do all the convolutions
   TempLattice<Complex> cWork(itsDirty->shape(), itsMemoryMB);
   for (scale=0; scale<itsNscales;scale++) {
     os << "Calculating convolutions for scale " << scale+1 << LogIO::POST;
-    AlwaysAssert(itsPsfConvScales[scale], AipsError);
     
     // PSF * PSF * scale
     LatticeExpr<Complex> ppsExpr(conj(*itsXfr)*(*itsXfr)*(*scaleXfr[scale]));
     cWork.copyData(ppsExpr);
     LatticeFFT::cfft(cWork, False);
     itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),  itsMemoryMB);
+    AlwaysAssert(itsPsfConvScales[scale], AipsError);
     LatticeExpr<Float> realWork(real(cWork));
     itsPsfConvScales[scale]->copyData(realWork);
     
     // Dirty * PSF * scale
-    //    LatticeExpr<Complex> dpsExpr(conj(*itsXfr)*(dirtyFT)*(*scaleXfr[scale]));
-    //    cWork.copyData(dpsExpr);
-    cWork.copyData(dirtyFT);
+    LatticeExpr<Complex> dpsExpr(conj(*itsXfr)*(dirtyFT)*(*scaleXfr[scale]));
+    cWork.copyData(dpsExpr);
     LatticeFFT::cfft(cWork, False);
     itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
     AlwaysAssert(itsDirtyConvScales[scale], AipsError);
@@ -502,14 +527,17 @@ template<class T>
 Bool LatticeCleaner<T>::destroyScales()
 {
   if(!itsScalesValid) return True;
-  for (Int scale=0; scale<itsNscales;scale++) {
+  for(uInt scale=0; scale<itsScales.nelements();scale++) {
     if(itsScales[scale]) delete itsScales[scale];
+    itsScales[scale]=0;
+  }
+  for(scale=0; scale<itsDirtyConvScales.nelements();scale++) {
     if(itsDirtyConvScales[scale]) delete itsDirtyConvScales[scale];
+    itsDirtyConvScales[scale]=0;
+  }
+  for(scale=0; scale<itsPsfConvScales.nelements();scale++) {
     if(itsPsfConvScales[scale]) delete itsPsfConvScales[scale];
-    for (Int otherscale=scale; otherscale<itsNscales;otherscale++) {
-      if(itsPsfConvScales[index(scale,otherscale)])
-	delete itsPsfConvScales[index(scale,otherscale)];
-    }
+    itsPsfConvScales[scale]=0;
   }
   itsScales.resize(0);
   itsDirtyConvScales.resize(0);
