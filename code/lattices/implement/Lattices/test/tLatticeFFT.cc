@@ -31,8 +31,9 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/Lattices/IPosition.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Utilities/Assert.h>
 #include <trial/Lattices/LatticeFFT.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/PagedArray.h>
@@ -41,61 +42,64 @@
 Int main() {
   try {
     {
-      const uInt n = 64;
-      const uInt nPlanes = 3;
-      const IPosition shape(3,n,n,nPlanes);
-      PagedArray<Complex> arr(shape);
-      IPosition centre(3, n/2, n/2, 0);
+      const uInt nz = 3;
+      const uInt ny = 8;
+      const uInt nx = (ny+2)/2;
+      const IPosition cShape(3,nx,ny,nz);
+      const IPosition rShape(3,ny,ny,nz);
+      PagedArray<Complex> cArr(cShape);
+      PagedArray<Float> rArr(rShape);
+      IPosition centre=cShape/2;
       { // test the fft2d function
-	arr.set(Complex(1,0));
-	LatticeFFT::fft2d(arr);
+	cArr.set(Complex(1,0));
+ 	LatticeFFT::fft2d(cArr);
 	uInt i;
-	for (i = 0; i < nPlanes; i++) {
+	for (i = 0; i < nz; i++) {
 	  centre(2) = i;
-	  AlwaysAssert(near(arr.getAt(centre), Complex(n*n,0), 1E-5),
+	  AlwaysAssert(near(cArr.getAt(centre), Complex(nx*ny,0), 1E-5),
 		       AipsError);
-	  arr.putAt(Complex(0,0), centre);
+	  cArr.putAt(Complex(0,0), centre);
 	}
 	
-	RO_LatticeIterator<Complex> iter(arr, 
-					 arr.niceCursorShape(arr.maxPixels()));
+	RO_LatticeIterator<Complex> iter(cArr, 
+				       cArr.niceCursorShape(cArr.maxPixels()));
 	for (iter.reset(); !iter.atEnd(); iter++) {
 	  AlwaysAssert(allNearAbs(iter.cursor(), Complex(0,0), 1E-5),
 		       AipsError);
 	}
-	for (i = 0; i < nPlanes; i++) {
+	for (i = 0; i < nz; i++) {
 	  centre(2) = i;
-	  arr.putAt(Complex(n*n,0), centre);
+	  cArr.putAt(Complex(nx*ny,0), centre);
 	}
-	LatticeFFT::fft2d(arr, False);
+	LatticeFFT::fft2d(cArr, False);
 	for (iter.reset(); !iter.atEnd(); iter++) {
 	  AlwaysAssert(allNearAbs(iter.cursor(), Complex(1,0), 1E-5),
 		       AipsError);
 	}
       }
-      { // test the fft function
-	Vector<Bool> whichAxes(3, True);
-	arr.set(Complex(1,0));
-	LatticeFFT::fft(arr, whichAxes);
-	centre(2) = nPlanes/2;
- 	AlwaysAssert(near(arr.getAt(centre), Complex(n*n*nPlanes,0), 1E-5),
+      { // test the complex->complex fft function
+	cArr.set(Complex(1,0));
+	LatticeFFT::fft(cArr);
+	centre(2) = nz/2;
+ 	AlwaysAssert(near(cArr.getAt(centre), Complex(nx*ny*nz,0), 1E-5),
  		     AipsError);
- 	arr.putAt(Complex(0,0), centre);
-	const IPosition tileShape(arr.niceCursorShape(arr.maxPixels()));
+ 	cArr.putAt(Complex(0,0), centre);
+	const IPosition tileShape(cArr.niceCursorShape(cArr.maxPixels()));
 	{
-	  RO_LatticeIterator<Complex> iter(arr, tileShape);
+	  RO_LatticeIterator<Complex> iter(cArr, tileShape);
 	  for (iter.reset(); !iter.atEnd(); iter++) {
 	    AlwaysAssert(allNearAbs(iter.cursor(), Complex(0,0), 1E-5),
 			 AipsError);
 	  }
 	}
+	Vector<Bool> whichAxes(3, True);
 	whichAxes(2) = False;
-	arr.putAt(Complex(n*n,0), centre);
-	LatticeFFT::fft(arr, whichAxes, False);
+	cArr.putAt(Complex(nx*ny,0), centre);
+	LatticeFFT::fft(cArr, whichAxes, False);
 	IPosition planeShape = tileShape;
 	planeShape(2) = 1;
 	{
-	  RO_LatticeIterator<Complex> planeIter(arr,planeShape);
+	  RO_LatticeIterator<Complex> planeIter(cArr,planeShape);
 	  Complex cValue;
 	  for (planeIter.reset(); !planeIter.atEnd(); planeIter++) {
 	    if (planeIter.position()(2) == centre(2))
@@ -103,6 +107,55 @@ Int main() {
 	    else
 	      cValue = Complex(0,0);
 	    AlwaysAssert(allNearAbs(planeIter.cursor(), cValue, 1E-5),
+			 AipsError);
+	  }
+	}
+      }
+      { // test the real->complex fft function
+	rArr.set(1.0);
+ 	LatticeFFT::fft(cArr, rArr);
+ 	{
+//  	  RO_LatticeIterator<Float> iter(rArr, rArr.shape());
+//  	  cout << iter.cursor() << endl;
+//  	  RO_LatticeIterator<Complex> iter(cArr, cArr.shape());
+//  	  cout << iter.cursor() << endl;
+ 	}
+	centre = cShape/2;
+	centre(0) = 0;
+	
+	AlwaysAssert(near(cArr.getAt(centre), Complex(ny*ny*nz,0), 1E-5),
+		       AipsError);
+	cArr.putAt(Complex(0,0), centre);
+	{
+	  RO_LatticeIterator<Complex> iter(cArr, 
+				       cArr.niceCursorShape(cArr.maxPixels()));
+	  for (iter.reset(); !iter.atEnd(); iter++) {
+	    AlwaysAssert(allNearAbs(iter.cursor(), Complex(0,0), 1E-5),
+			 AipsError);
+	  }
+	}
+	
+	Vector<Bool> whichAxes(3, True);
+	whichAxes(2) = False;
+	LatticeFFT::fft(cArr, rArr, whichAxes, False);
+//  	{
+//  	  RO_LatticeIterator<Float> iter(rArr, rArr.shape());
+//  	  cout << iter.cursor() << endl;
+//   	  RO_LatticeIterator<Complex> iter(cArr, cArr.shape());
+//   	  cout << iter.cursor() << endl;
+//  	}
+	centre = 0;
+	for (uInt i = 0; i < nz; i++) {
+	  centre(2) = i;
+	  AlwaysAssert(near(cArr.getAt(centre), Complex(ny*ny,0), 1E-5),
+		       AipsError);
+	  cArr.putAt(Complex(0,0), centre);
+	}
+	{
+	  RO_LatticeIterator<Complex> iter(cArr, 
+				       cArr.niceCursorShape(cArr.maxPixels()));
+	  for (iter.reset(); !iter.atEnd(); iter++) {
+	    AlwaysAssert(allNearAbs(iter.cursor(), Complex(0,0), 1E-5),
 			 AipsError);
 	  }
 	}
