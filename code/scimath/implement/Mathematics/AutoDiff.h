@@ -36,6 +36,7 @@
 
 //# Forward declarations
 template <class T> class Vector;
+template <class T> class AutoDiff;
 
 // <summary>
 // Class that computes partial derivatives by automatic differentiation.
@@ -258,6 +259,13 @@ template <class T> class Vector;
 
 template <class T> class AutoDiff {
  public:
+  //# Typedefs
+  typedef T 					value_type;
+  typedef AutoDiff<T>::value_type&		reference;
+  typedef const AutoDiff<T>::value_type&	const_reference;
+  typedef AutoDiff<T>::value_type*		iterator;
+  typedef const AutoDiff<T>::value_type*	const_iterator;
+
   //# Constructors
   // Construct a constant with a value of zero.  Zero derivatives.
   AutoDiff();
