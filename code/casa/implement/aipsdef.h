@@ -1,5 +1,5 @@
 //# aipsdef.h: Global initialization for special aips++ macros
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPSDEF_H)
-#define AIPS_AIPSDEF_H
+#if !defined(AIPS_AIPS_DEF_H)
+#define AIPS_AIPS_DEF_H
 
 // Define the aips++ global macros
 
@@ -63,7 +63,23 @@ extern Bool aips_debug_on;
 #if defined(__sgi)
 #define AIPS_USE_NEW_SGI
 namespace std {};
-using namespace std;
 #endif
+
+// The restrict keyword is only supported by the KAI C++ compiler.
+#if !defined(AIPS_KCC)
+#if !defined(restrict)
+#define restrict
+#endif
+#endif
+
+// SUN Native compiler has trouble with typedef inside class
+#if defined(AIPS_SUN_NATIVE)
+#define WHATEVER_SUN_TYPEDEF(X) X::
+#define WHATEVER_TYPENAME
+#else
+#define WHATEVER_SUN_TYPEDEF(X)
+#define WHATEVER_TYPENAME typename
+#endif
+
 
 #endif

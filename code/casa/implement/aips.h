@@ -1,5 +1,5 @@
 //# aips.h: Global initialization for standard types, etc.
-//# Copyright (C) 1993-1999,2000
+//# Copyright (C) 1993-1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,9 @@
 
 #if !defined(AIPS_AIPS_H)
 #define AIPS_AIPS_H
+
+// Define compiler specific flags
+#include <aips/aipsenv.h>
 
 // Define the standard types used by AIPS++.
 #include <aips/aipstype.h>
