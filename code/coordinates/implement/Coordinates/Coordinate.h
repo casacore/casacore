@@ -1,5 +1,5 @@
 //# Coordinate.h: Interface for converting between world and pixel coordinates
-//# Copyright (C) 1997,1999,2000,2001
+//# Copyright (C) 1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -271,14 +271,24 @@ public:
     // </group>
 
 
-    // Make absolute coordinates relative and vice-versa.
+    // Make absolute coordinates relative and vice-versa (with
+    // respect to the referencfe value).
     // Vectors must be length <src>nPixelAxes()</src> or
-    // <src>nWorldAxes()</src> or
+    // <src>nWorldAxes()</src> or memory access errors will occur
     // <group>
     virtual void makePixelRelative (Vector<Double>& pixel) const;
     virtual void makePixelAbsolute (Vector<Double>& pixel) const;
     virtual void makeWorldRelative (Vector<Double>& world) const;
     virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    // </group>
+
+    // Make absolute coordinates relative and vice versa with respect
+    // to the given reference value.  Add the other functions in this grouping
+    // as needed. Vectors must be length <src>nPixelAxes()</src> or
+    // <src>nWorldAxes()</src> or memory access errors will occur
+    // <group>
+    virtual void makeWorldAbsolute (Vector<Double>& world,
+                                    const Vector<Double>& refVal) const;
     // </group>
 
 

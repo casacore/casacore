@@ -699,6 +699,17 @@ void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
    world += referenceValue();
 }
 
+void Coordinate::makeWorldAbsolute (Vector<Double>& world,
+                                    const Vector<Double>& refVal) const
+//
+// abs = rel + ref 
+//
+{
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
+   DebugAssert(refVal.nelements()==nWorldAxes(),AipsError);
+   world += refVal;
+}
+
 void Coordinate::makePixelRelativeMany (Matrix<Double>& value) const
 {
     uInt n = value.ncolumn();
