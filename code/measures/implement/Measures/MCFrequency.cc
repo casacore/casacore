@@ -1,5 +1,5 @@
 //# MCFrequency.cc: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -157,7 +157,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 			    MRBase &inref,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
-  Double g0, g1, g2, g3, lengthE, tdbTime;
+  Double g1, g2, g3, lengthE, tdbTime;
 
   MCFrame::make(inref.getFrame());
   MCFrame::make(outref.getFrame());
@@ -171,10 +171,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1)/C::c/C::c);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 - g1);
+      in = g2*sqrt((1+g1)/(1-g1));
     }
     break;
 
@@ -183,10 +182,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1)/C::c/C::c);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 + g1);
+      in = g2*sqrt((1-g1)/(1+g1));
     }
     break;
 
@@ -198,10 +196,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1));
-      g1 = (*MVPOS1 * *MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1)/C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 - g1);
+      in = g2*sqrt((1+g1)/(1-g1));
     }	
     break;
 
@@ -224,10 +221,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getApp(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1));
-      g1 = (*MVPOS1 * *MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1)/C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 - g1);
+      in = g2*sqrt((1+g1)/(1-g1));
     }
     break;
 
@@ -239,10 +235,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getApp(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1));
-      g1 = (*MVPOS1 * *MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1)/C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 + g1);
+      in = g2*sqrt((1-g1)/(1+g1));
     }	
     break;
 
@@ -265,10 +260,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getApp(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1));
-      g1 = (*MVPOS1 * *MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1)/C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 + g1);
+      in = g2*sqrt((1-g1)/(1+g1));
     }
     break;
 
@@ -277,10 +271,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1)/C::c/C::c);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 + g1);
+      in = g2*sqrt((1-g1)/(1+g1));
       break;
       
     case GALACTO_LSRD:
@@ -288,10 +281,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1)/C::c/C::c);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 - g1);
+      in = g2*sqrt((1+g1)/(1-g1));
       break;
 
     case LSRK_BARY:
@@ -299,10 +291,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1)/C::c/C::c);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 - g1);
+      in = g2*sqrt((1+g1)/(1-g1));
       break;
 
     case BARY_LSRK:
@@ -310,10 +301,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - (*MVPOS1 * *MVPOS1)/C::c/C::c);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 + g1);
+      in = g2*sqrt((1-g1)/(1+g1));
       break;
 
     case REST_LSRK:
@@ -323,10 +313,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - g1 * g1/C::c/C::c);
       g1 /= C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 + g1);
+      in = g2*sqrt((1-g1)/(1+g1));
       break;
 
     case LSRK_REST:
@@ -336,10 +325,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g0 = sqrt(1. - g1 * g1/C::c/C::c);
       g1 /= C::c;
       g2 = in.getValue();
-      in = g2 * g0/(1 - g1);
+      in = g2*sqrt((1+g1)/(1-g1));
       break;
 
     default:
