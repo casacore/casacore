@@ -28,6 +28,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Glish/GlishArray.h>
@@ -43,10 +44,15 @@
 #include <aips/Tables/RefRows.h>
 #include <aips/Utilities/GenSort.h>
 #include <trial/Coordinates.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableIter.h>
+#include <aips/Tables/TableVector.h>
 #include <aips/MeasurementSets.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
+#include <aips/MeasurementSets/MSColumns.h>
 #include <trial/MeasurementSets/MSSummary.h>
 #include <trial/MeasurementSets/MSRange.h>
+#include <trial/MeasurementSets/MSSelector.h>
 
 #include <aips/iomanip.h>
 #include <aips/iostream.h>
@@ -163,8 +169,8 @@ void MSSummary::listWhere (LogIO& os, Bool verbose) const
 
 void MSSummary::listWhat (LogIO& os, Bool verbose) const
 {
-  listField (os,verbose);
   listMain (os,verbose);
+  listField (os,verbose);
 }
 
 
@@ -195,15 +201,216 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
     //    Double exposTime = sum(msc.exposure().getColumn());
     MVTime startMVT(startTime/86400.0), stopMVT(stopTime/86400.0);
 
-    if (verbose) {}	//null; always the same output
-
     // Output info
     os << "Data records: " << nrow() << "       Total integration time = "
        << exposTime << " seconds" << endl
        << "   Observed from   " << startMVT.string()
        << "   to   " << stopMVT.string() << endl << endl;
 
-  }
+
+    os << LogIO::POST;
+
+    if (verbose) {   // do "scan" listing
+
+      // the selected MS (all of it) as a Table tool:
+      //   MS is accessed as a generic table here because
+      //   the ms tool hard-wires iteration over SPWID, FLDID,
+      //   and TIME and this is not desired in this application.
+      //   It would be easier if the ms tool did not automatically
+      //   iterate over any indices, or if there were an ms.table()
+      //   function.
+      MSSelector mssel;
+      mssel.setMS(const_cast<MeasurementSet&>(*pMS));
+      mssel.initSelection(True);
+      Table mstab(mssel.selectedTable());
+
+      // Field names:
+      ROMSFieldColumns field(pMS->field());
+      Vector<String> fieldnames(field.name().getColumn());
+
+      // Field widths for printing:
+      Int widthLead  =  3;
+      Int widthbtime = 22;
+      Int widthetime = 10;
+      Int widthField = 12;
+
+      // Set up iteration over OBSID and ARRID:
+      Block<String> icols(2);
+      icols[0] = "OBSERVATION_ID";
+      icols[1] = "ARRAY_ID";
+      TableIterator obsarriter(mstab,icols);
+
+      // Iterate:
+      while (!obsarriter.pastEnd()) {
+
+	// Table containing this iteration:
+	Table obsarrtab(obsarriter.table());
+	
+	// Extract (zero-based) OBSID and ARRID for this iteration:
+	ROTableVector<Int> obsidcol(obsarrtab,"OBSERVATION_ID");
+	Int obsid(obsidcol(0));
+	ROTableVector<Int> arridcol(obsarrtab,"ARRAY_ID");
+	Int arrid(arridcol(0));
+  
+	// Report OBSID and ARRID, and header for listing:
+	os << endl << "   ObservationID = " << obsid+1;
+	os << "         ArrayID = " << arrid+1 << endl;
+	os << "   Date        Timerange                 ";
+	os << "Field          DataDescIds" << endl;
+
+	// Setup iteration over timestamps within this iteration:
+	TableIterator timeiter(obsarrtab,"TIME");
+
+	// Vars for keeping track of time, fields, and ddis
+	Vector<Int> lastfldids;
+	Vector<Int> lastddids; 
+	Vector<Int> fldids(1,0);
+	Vector<Int> ddids(1,0);
+	Int nfld(1);
+	Int nddi(1);
+	Double btime(0.0), etime(0.0);
+	Double lastday(0.0), day(0.0);
+	Bool firsttime(True);
+      
+	// Iterate over timestamps:
+	while (!timeiter.pastEnd()) {
+
+	  // ms table at this timestamp
+	  Table t(timeiter.table());
+	  Int nrow=t.nrow();
+
+	  // relevant columns
+	  ROTableVector<Double> timecol(t,"TIME");
+	  ROTableVector<Int> fldcol(t,"FIELD_ID");
+	  ROTableVector<Int> ddicol(t,"DATA_DESC_ID");
+	  
+	  // this timestamp
+	  Double thistime(timecol(0));
+
+	  // First field and ddi at this timestamp:
+	  fldids.resize(1,False);
+	  fldids(0)=fldcol(0);
+	  nfld=1;
+	  ddids.resize(1,False);
+	  ddids(0)=ddicol(0);
+	  nddi=1;
+
+	  // fill field and ddi lists for this timestamp
+	  for (Int i=1; i < nrow; i++) {
+	    if ( !anyEQ(fldids,fldcol(i)) ) {
+	      nfld++;
+	      fldids.resize(nfld,True);
+	      fldids(nfld-1)=fldcol(i);
+	    }
+	    
+
+	    //	    Bool newddi(True);
+	    //	    for (Int j=0; j < nddi; j++) {
+	    //	      if (ddicol(i)==ddids(j)) {
+	    //		newddi=False;
+	    //	      }
+	    //	    }
+	    if ( !anyEQ(ddids,ddicol(i)) ) {
+	      nddi++;
+	      ddids.resize(nddi,True);
+	      ddids(nddi-1)=ddicol(i);
+	    }
+	  }
+	  
+	  // If not first timestamp, check if scan changed, etc.
+	  if (!firsttime) {
+
+	    // Has state changed?
+	    Bool samefld;
+	    samefld=!anyNE(fldids,lastfldids);
+	    Bool sameddi;
+	    sameddi=!anyNE(ddids,lastddids);
+	    Bool samescan;
+	    samescan= samefld & sameddi;
+
+	    // If state changed, then print out last scan's info
+	    if (!samescan) {
+
+	      // this MJD
+	      day=floor(MVTime(btime/C::day).day());
+
+	      // Print out last scan's times, fields, ddis
+	      os.output().setf(ios::right, ios::adjustfield);
+	      os.output().width(widthLead); os << "   ";
+	      os.output().width(widthbtime);
+	      if (day!=lastday) {     // print date
+		os << MVTime(btime/C::day).string(MVTime::DMY,7);
+	      } else {                // omit date
+		os << MVTime(btime/C::day).string(MVTime::TIME,7);
+	      }
+	      os.output().width(widthLead);  os << " - ";
+	      os.output().width(widthetime);
+	      os << MVTime(etime/C::day).string(MVTime::TIME,7);
+	      os.output().width(widthLead);  os << "   ";
+	      os.output().setf(ios::left, ios::adjustfield);
+	      os.output().width(widthField); os << fieldnames(lastfldids(0));
+	      os.output().width(widthLead);  os << "   ";
+	      os << lastddids+1;
+	      os << endl;
+
+	      // new btime:
+	      btime=thistime;
+	      // next last day is this day
+	      lastday=day;
+	    }
+
+	    // etime keeps pace with thistime
+	    etime=thistime;
+
+	  } else {  
+	    // initialize btime and etime
+	    btime=thistime;
+	    etime=thistime;
+	    // no longer first time thru
+	    firsttime=False;
+	  }
+
+	  // for comparison at next timestamp
+	  lastfldids=fldids;
+	  lastddids=ddids;
+
+	  // push iteration
+	  timeiter.next();
+	} // end of time iteration
+
+	// this MJD
+	day=floor(MVTime(btime/C::day).day());
+
+	// Print out final scan's times, fields, ddis
+	os.output().setf(ios::right, ios::adjustfield);
+	os.output().width(widthLead); os << "   ";
+	os.output().width(widthbtime);
+	if (day!=lastday) {
+	  os << MVTime(btime/C::day).string(MVTime::DMY,7);
+	} else {
+	  os << MVTime(btime/C::day).string(MVTime::TIME,7);
+	}
+	os.output().width(widthLead);  os << " - ";
+	os.output().width(widthetime);
+	os << MVTime(etime/C::day).string(MVTime::TIME,7);
+	os.output().width(widthLead);  os << "   ";
+	os.output().setf(ios::left, ios::adjustfield);
+	os.output().width(widthField); os << fieldnames(lastfldids(0));
+	os.output().width(widthLead);  os << "   ";
+	os << lastddids+1;
+	os << endl;
+	
+	// post to logger
+	os << LogIO::POST;
+	
+	// push OBS/ARR iteration
+	obsarriter.next();
+      } // end of OBS/ARR iteration
+
+    } // end of verbose section
+
+  } // end if any data in ms
+
   os << LogIO::POST;
 }
 
