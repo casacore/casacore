@@ -1,4 +1,4 @@
-//# tMatrixMath.cc: Test functions in MatrixMath.h
+//# tMatrixMathLA.cc: Test functions in MatrixMathLA.h
 //# Copyright (C) 1995,1996,1999,2001, 2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,47 +27,41 @@
 
 //# Includes
 
-#include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/MatrixMathLA.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 
-
 int main()
 {
-  try {
     Matrix<Double> ind(3,3);
     ind(0,0) = 2; ind(0,1) = 8; ind(0,2) = 6;
     ind(1,0) = 4; ind(1,1) = 2; ind(1,2) = -2;
     ind(2,0) = 3; ind(2,1) = -1; ind(2,2) = 1;
 
     Matrix<Double> outd(3,3);
-    outd(0,0) = 2; outd(0,1) = 4; outd(0,2) = 3;
-    outd(1,0) = 8; outd(1,1) = 2; outd(1,2) = -1;
-    outd(2,0) = 6; outd(2,1) = -2; outd(2,2) = 1;
+    outd(0,0) = 0; outd(0,1) = 7; outd(0,2) = 14;
+    outd(1,0) = 5; outd(1,1) = 8; outd(1,2) = -14;
+    outd(2,0) = 5; outd(2,1) = -13; outd(2,2) = 14;
+    outd /= 70.0;
 
-    AlwaysAssertExit(allNearAbs(transpose(ind), outd, 0.00001));
+    AlwaysAssertExit(allNearAbs(invert(ind), outd, 0.00001));
 
     // Now test the other types - Float/Complex/DComplex
 
     Matrix<Float> inf(3,3), outf(3,3);
     convertArray(inf, ind); convertArray(outf, outd);
-    AlwaysAssertExit(allNearAbs(transpose(inf), outf, 0.00001));
+    AlwaysAssertExit(allNearAbs(invert(inf), outf, 0.00001));
 
     Matrix<Complex> inc(3,3), outc(3,3);
     convertArray(inc, ind); convertArray(outc, outd);
-    AlwaysAssertExit(allNearAbs(transpose(inc), outc, 0.00001));
+    AlwaysAssertExit(allNearAbs(invert(inc), outc, 0.00001));
 
     Matrix<DComplex> indc(3,3), outdc(3,3);
     convertArray(indc, ind); convertArray(outdc, outd);
-    AlwaysAssertExit(allNearAbs(transpose(indc), outdc, 0.00001));
+    AlwaysAssertExit(allNearAbs(invert(indc), outdc, 0.00001));
 
-  } catch(AipsError x) {
-    cout << "Caught exception : " << x.getMesg() << endl;
-    return 1;
-  } 
-
-  cout << "OK" << endl;
-  return 0;
+    cout << "OK" << endl;
+    return 0;
 }
