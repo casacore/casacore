@@ -53,6 +53,7 @@
 #include <trial/MeasurementSets/MSIter.h>
 #include <trial/MeasurementSets/MSRange.h>
 #include <trial/MeasurementSets/MSSelUtil.h>
+#include <aips/iostream.h>
 
 
 MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(0),

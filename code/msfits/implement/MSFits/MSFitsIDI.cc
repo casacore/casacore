@@ -1,5 +1,5 @@
 //# MSFitsIDI.cc: Implementation of MSFitsIDI.h
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -266,7 +266,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   atEnd = False;
 
   // Construct a FitsInput object
-  FitsInput infits(itsDataSource, itsDeviceType);
+  FitsInput infits(itsDataSource.chars(), itsDeviceType);
   if (infits.err() != FitsIO::OK) {
     os << LogIO::SEVERE << "Error reading FITS input" << LogIO::EXCEPTION;
   };

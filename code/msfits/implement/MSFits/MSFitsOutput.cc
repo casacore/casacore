@@ -1,5 +1,5 @@
 //# MSFITSOutput: MS to UVFITS
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -1064,7 +1064,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     for (uInt a = 0; a < nant; a++) {
       const String& antName = antid(a) ;
       if (antName.matches(RXint)) {
-	id[a] = atoi(antName);
+	id[a] = atoi(antName.chars());
       } else {
 	useAntId = False;
 	break;

@@ -1,5 +1,5 @@
 //# MSFlagger.cc: selection and iteration of an MS
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,6 +53,7 @@
 #include <aips/Utilities/GenSort.h>
 #include <trial/MeasurementSets/MSSelector.h>
 #include <trial/MeasurementSets/MSSelUtil.h>
+#include <aips/iostream.h>
 
 
 MSFlagger::MSFlagger():msSel_p(0)

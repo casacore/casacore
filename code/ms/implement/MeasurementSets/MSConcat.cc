@@ -1,5 +1,5 @@
 //# MSConcat.cc: A class for concatenating MeasurementSets.
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,6 +55,7 @@
 #include <aips/Tables/TableRow.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
+#include <aips/iostream.h>
 
 MSConcat::MSConcat(MeasurementSet& ms):
   MSColumns(ms),

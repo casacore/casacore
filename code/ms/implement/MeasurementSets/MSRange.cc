@@ -1,5 +1,5 @@
 //# MSRange.cc: selection and iteration of an MS
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,6 +46,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 
 MSRange::MSRange():blockSize_p(10),ddId_p(0),constantShape_p(False),sel_p(0)

@@ -203,7 +203,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile)
 	 << "' to MeasurementSet '" << msFile << "'" << LogIO::POST;
 
   // Open the FITS file for reading
-  infile_p = new FitsInput(fitsFile, FITS::Disk);
+  infile_p = new FitsInput(fitsFile.chars(), FITS::Disk);
   if (infile_p) {
     if (infile_p->err() == FitsIO::IOERR) {
       itsLog << "Error reading file " << fitsFile << LogIO::EXCEPTION;

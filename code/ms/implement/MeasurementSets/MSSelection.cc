@@ -1,5 +1,5 @@
 //# MSSelection.cc: Implementation of MSSelection.h
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,6 +42,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/DataType.h>
+#include <aips/iostream.h>
 
 //----------------------------------------------------------------------------
 
