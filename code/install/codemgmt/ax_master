@@ -6427,3 +6427,4 @@
 18 495 src mv trialdisplay/apps/viewer/qv trialdisplay/apps/viewer/aqview
 18 505 src mv trial/implement/Arrays/test/tArrayIteratorSTL.cc aips/implement/Arrays/test/tArrayIteratorSTL.cc
 18 506 src mv trial/implement/MeasurementComponents/CalIntpMatch.h trial/implement/CalTables/CalIntpMatch.h
+18 506 src mv trial/implement/MeasurementComponents/CalIntpMatch.cc trial/implement/CalTables/CalIntpMatch.cc
