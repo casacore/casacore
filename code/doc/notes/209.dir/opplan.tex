@@ -27,7 +27,7 @@ In the latest development plan for AIPS++ (\htmladdnormallink{Note
 that it be a functional equivalent to the existing consortium packages
 by late 1999. At that point, AIPS++ will be a fully functional system,
 in use for production at a large number of astronomical (and
-non-astronomical sites). To get some idea of the scale of the
+non-astronomical) sites. To get some idea of the scale of the
 distribution that is plausible, we can sum the existing sites for
 consortium packages: AIPS, Unipops, SDE, Miriad, Newstar. This is in
 excess of 200 active sites. Presumably the majority of the active
@@ -46,7 +46,7 @@ vehicle for a number of clients to use in their work.
 
 Let us turn, therefore, to focus on the clients that AIPS++ will have in
 this operational phase. These clients split naturally into a number of
-catagories.
+categories.
 
 \begin{description}
 \item[Observatories] Observatories will use AIPS++ as the vehicle for
@@ -70,25 +70,27 @@ as a resource for tools to solve problems and as a distribution mechanism for
 their products.
 \end{description}
 
-As a working assumption, we will take it that all of these classes of
-clients are equally important, and deserving of support by AIPS++.  We
-should thus aim to be as responsive as possible to all of these
-clients. Perhaps the most difficult problem of operations will be
-to find suitable compromises between the imperatives of all these
-different clients. Finding the right balance between conservatism
-and innovation will require a firm hand. We return to this problem below.
+The overall goal of the AIPS++ package must be to aid in science. As a
+working assumption, we will take it that all of these classes of
+clients are equally important in furthering that goal, and thus are
+equally deserving of support by AIPS++.  We should thus aim to be as
+responsive as possible to all of these clients. Perhaps the most
+difficult problem of operations will be to find suitable compromises
+between the imperatives of all these different clients. Finding the
+right balance between conservatism and innovation will require a firm
+hand. We return to this problem below.
 
 In the rest of this document, we describe the operations of AIPS++ in
-more detail. We see the operations of AIPS++ as splitting into a number of
-components. First, there are {\em core operational functions} that
-must be performed in order for the package to be usable at any
-consortium site. Second, there is {\em astronomer and programmer
-support}, needed to support the use of the system by astronomers and
-programmers alike. Third, there must be a {\em quality assurance
-program} that ensures and tracks the overall quality of the system.
-Overseeing, coordinating and monitoring all of these functions is a
-{\em management and oversight} component. These are discussed in
-turn in the following sections.
+more detail. We see the operations of AIPS++ as splitting into a
+number of components. First, there are {\em core operational
+functions} that must be performed in order for the package to be
+installable and usable at any consortium site. Second, there is {\em
+astronomer and programmer support}, needed to support the use of the
+system by astronomers and programmers alike. Third, there must be a
+{\em quality assurance program} that ensures and tracks the overall
+quality of the system.  Overseeing, coordinating and monitoring all of
+these functions is a {\em management and oversight} component. These
+are discussed in turn in the following sections.
 
 \section{Core operational functions}
 
@@ -98,7 +100,7 @@ distribution}, and {\em development}.
 \subsection{Maintenance}
 
 Maintenance of the package is needed to discover and eradicate bugs, and
-to tracking environmental changes such as operating systems changes
+to track environmental changes such as operating systems changes
 and compiler changes.
 \begin{description}
 \item[Bugs] In any system, a continuing effort is needed to uncover,
@@ -129,9 +131,9 @@ for computing in the future.
 at the Project Center in Socorro, New Mexico. 
 
 System distribution for developers occurs via two mechanisms. First,
-periodically the system is downloaded to sites over the Internet,
+periodically the system is distributed to sites over the Internet,
 either incrementally or cumulatively.  This is usually done in a batch
-job, and uses ftp for transmission.  Second, uploads to the master are
+job, and uses ftp for transmission.  Second, changes to the master are
 performed via an NFS mount of the master disks onto a local machine.
 The first function, downloading, is highly reliable and essentially
 presents no significant problems.  The second function, uploading, is
@@ -142,23 +144,23 @@ place of simple UDP datagrams.  Inside NRAO, we rely upon our own
 intranet in place of the Internet.  Outside NRAO, we tend to bypass
 the mounting process by ftp'ing files directly to an NRAO computer.
 
-For end-users, the system is currently distributed by anonymous ftp.
-Our beta testing has shown this to be a simple, effective and reliable
-approach.  About 90\% of AIPS distribution is via ftp. However to
-service some communities, we will also distribute via two hardcopy
-forms: CD-ROM and various tapes: 8mm and DAT initially.
+For end-users, the system is currently distributed as both binaries
+and source by anonymous ftp.  Our beta testing has shown this to be a
+simple, effective and reliable approach.  About 90\% of AIPS
+distribution is via ftp. However to service some communities, we will
+also distribute via two hardcopy forms: CD-ROM and various tapes: 8mm
+and DAT initially.
 
 \item[Data] Data in AIPS++ fall into a number of categories. First,
-there are data from telescopes. Currently we plan no significant
-support for moving data from telescopes to other computers. Second,
-there are data needed for the software to execute. Examples would be
-databases needed for the Measures system. Third, there are databases
-that aid the user in some process. Examples would be source
-parameters, antenna locations, scheduling information, {\em etc.}
-Fourth, there are data needed for testing and demonstration purposes.
-We are currently determining requirements for the latter three, and
-plan to put in place mechanisms for users to acquire such data either
-from the AIPS++ Project Center, or directly from the original source.
+there are data from telescopes.  Second, there are data needed for the
+software to execute. Examples would be databases needed for the
+Measures system. Third, there are databases that aid the user in some
+process. Examples would be source parameters, antenna locations,
+scheduling information, {\em etc.}  Fourth, there are data needed for
+testing and demonstration purposes.  We are currently determining
+requirements for the latter three, and plan to put in place mechanisms
+for users to acquire such data either from the AIPS++ Project Center,
+or directly from the original source.
 
 \item[Knowledge] Knowledge about astronomical processing and analysis
 should be one of the prime commodities that AIPS++ can help provide to
@@ -186,15 +188,16 @@ the VLBA. During this time, the AIPS software was evolving rapidly in
 response to deluge of new data (and concommitant problems to be
 solved) from the VLBA correlator. Groups tightly tied to use of the
 VLBA therefore wished to update their own working copy of AIPS more
-often than allowed by the release schedule. The answer was for them to
-be placed on the AIPS Midnight Job whereby the working version is
-updated every night. The advantage of this is obvious. The
-disadvantage is that the system is then more unstable.  However, if a
-stable release is also available then the bad effects of some of the
-instability can be reduced. This may form a good model: release
-stable, well-tested releases a couple of time per year, and then allow
-users to be placed on a periodic update schedule as dictated by their
-needs.
+often than allowed by any reasonable formal release schedule. The
+answer was for them to be placed on the AIPS Midnight Job whereby the
+working version is updated every night. The advantage of this is
+obvious. The disadvantages are that the system is then more unstable,
+and, more seriously, that it is impossible to determine the state of
+the system on any given date.  However, if an actual release is also
+available then these bad effects can be reduced. This may form a good
+model: release stable, well-tested releases a couple of time per year,
+and then allow users to be placed on a periodic update schedule as
+dictated by their needs.
 
 \end{description}
 
@@ -211,8 +214,8 @@ that object-oriented methods work well if high-level interfaces do
 not have to drift over time. 
 
 \begin{description}
-\item[Core library] Continuing development of the core library
-much after the initial programmer's release will be very difficult.
+\item[Core library] Any significant continuing development of the core library
+after the initial programmer's release will be very difficult.
 Additions to a widely-used interface are often acceptable but the cost
 of changing an interface can be very large. In practice, we think that
 this cost has to be borne by the Project Center since otherwise the
@@ -232,11 +235,11 @@ devices, improved visualization devices, {\em etc.}). Determining which
 configurations will be supported is a function of the Project Center.
 \end{description}
 
-Development entails continuing hard choices. These choices have to be
-made bearing in mind the needs of potentially all the clients, and
-making sensible guesses as to which lines of development should be
-followed with which priority. As we said above, this will probably be
-one of the most contentious areas in operating AIPS++. We think that a
+Development entails hard choices. These choices have to be made
+bearing in mind the needs of potentially all the clients, and making
+sensible guesses as to which lines of development should be followed
+with which priority. As we said above, this will probably be one of
+the most contentious areas in operating AIPS++. We think that a
 diverse but tightly knit group would be best suited to advising AIPS++
 management on such issues.  We return to this issue below.
 
@@ -246,19 +249,18 @@ management on such issues.  We return to this issue below.
 
 We see help for clients of AIPS++ as being layered. We strongly
 suggest that each AIPS++ consortium site have a designated contact
-person who can also provide immediate, in-person advice on how to use
-the system. This role has two components: astronomer and programmer.
-Ideally both roles would be filled, by two people if necessary. For
-the next layer of help or for queries from non-consortium sites, there
-are a couple of possibilities: either set up a special group to
-provide detailed help, or adopt something similar to the {\em
-Designated AIP} program of the AIPS system whereby such duties are
-rotated around the active programmers in the Project.  The latter has
-a number of attractions: it keeps the programmers in touch with the
-users, the level of advice is high, and it spreads a difficult and
-demanding job amongst a group of people. The downside is that it takes
-some fraction of the time of the best people. Overall, we prefer the
-latter approach and recommend that it be adopted.
+person who can also provide immediate, in-person advice to both
+astronomers and programmers on how to use the system.  For the next
+layer of help or for queries from non-consortium sites, there are a
+couple of possibilities: either set up a special group to provide
+detailed help, or adopt something similar to the {\em Designated AIP}
+program of the AIPS system whereby such duties are rotated around the
+active programmers in the Project.  The latter has a number of
+attractions: it keeps the programmers in touch with the users, the
+level of advice is high, and it spreads a difficult and demanding job
+amongst a group of people. The downside is that it takes some fraction
+of the time of the best people. Overall, we prefer the latter approach
+and recommend that it be adopted.
 
 \subsection{Education and training}
 
@@ -271,11 +273,14 @@ be very clear that it will be a substantial effort.
 
 \begin{description}
 \item[Users workshops] For the first few years of operation of
-AIPS++, it will be important to hold training sessions for 
-astronomical users. This is probably best considered as a responsibility
-of the consortium partners so that, for example, NRAO would offer a
-workshop for the users of NRAO telescopes. The role of the AIPS++
-Project might be to send core staff to help with those workshops.
+AIPS++, it will be important to hold training sessions for
+astronomical users. This is probably best considered as a
+responsibility of the consortium partners so that, for example, NRAO
+would offer a workshop for the users of NRAO telescopes. The role of
+the AIPS++ Project might be to send core staff to help with those
+workshops.  These workshops are distinct from, but might be held close
+in time with Users Meetings at which feedback from the users is
+solicited.
 \item[Tutorials and demonstrations] Computer-based tutorials and
 demonstrations are an effective way to train end-users both in
 concepts of astronomical observing and in AIPS++ data reduction.
@@ -292,7 +297,8 @@ all of these would be covered in annual developers workshops.
 We see user feedback as coming via a number of mechanisms. Immediate
 feedback comes via email, phone calls, and bug reports. This feedback
 and any related replies should be logged in a generally accessible
-form. Longer term feedback comes via User Group meetings at which
+form. Thus for purposes of logging, we will prefer feedback via
+e-mail. Longer term feedback comes via User Group meetings at which
 representative clients of AIPS++ can comment on current capabilities
 and future development priorities.
 
@@ -332,7 +338,7 @@ migrate from the peripheral libraries such as {\em contrib} and {\em
 atnf, bima, nfra, nrao} into the core libraries {\em aips, synthesis,
 dish, vlbi, doc}. However, such migration could be potentially very
 time-consuming, and is a lesser priority than either maintenance
-of existing code, or development of new code.
+of existing code, or development of new core code.
 
 \section{Quality Assurance}
 
@@ -341,7 +347,7 @@ diffused over an entire organization or, more commonly, done by the
 users. Given the distributed nature of AIPS++, we think it would be
 possible and very attractive to designate a Quality Assurance division
 that has special responsibility for ensuring the quality of official
-AIPS++ products. The principle task for such a division would be
+AIPS++ products. The principal task for such a division would be
 testing of AIPS++ products, including execution of software, reviewing
 code and documentation.
 
@@ -368,7 +374,7 @@ of a technical textbook.
 \item[Benchmarking] The AIPS Project found that benchmarking of
 new systems using a pre-determined set of applications was
 extremely useful both for determining possible computer purchases
-and for uncovering systematic performance problems. They used a 
+and for uncovering systematic performance problems. They use a 
 set of Dirty Dozen Tasks to characterize the performance.
 \end{description}
 
@@ -390,12 +396,14 @@ wish to use code walkthroughs or inspections.
 It is our view that the current management structure works well, and
 strikes a reasonable balance between autonomy for and oversight of the
 Project Manager. Thus any change to the structure must be motivated by
-changes on going to operations. Lines of command and responsibility
+the transition to operations. Lines of command and responsibility
 must remain clear, both inside the consortium sites and within the
 Project. Thus the reporting line of {\em Executive Committee - Project
 Manager - Site Managers - Project staff} should be maintained if at
 all possible. We note that the lack of a formal line of responsibility
 of Site Managers to Project Managers works satisfactorily in most cases.
+It will be a challenge to maintain this aspect under the increased
+pressure of operations.
 
 Although we hesitate to suggest an overly structured management
 scheme, we do think that some formal recognition of the de facto
@@ -426,7 +434,7 @@ of all three classes of clients: Observatories, Astronomers and
 Programmers. Moderate and long term issues are discussed in this
 group.
 \item[AIPS++ Technical Working Group] This is an internal group that
-mets often, perhaps monthly or quarterly, to advise the Project
+meets often, perhaps monthly or quarterly, to advise the Project
 Management on detailed technical issues. It is here that short-term
 development issues are discussed. We recommend that this be composed of
 no more than a dozen people drawn from the inner circles of the Project
