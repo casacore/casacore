@@ -44,10 +44,10 @@ int main()
 		exit(0);
 	}
 
-	// We will create an array with 3 rows and 6 columns, as one
+	// We will create an array with 10 rows and 10 columns, as one
 	// would normally do in C.
-	const int row = 3;
-	const int col = 6;
+	const int row = 10;
+	const int col = 10;
 	FitsLong data[col][row];
 	// And, we will populate it with data
 	int i, j;
@@ -60,9 +60,10 @@ int main()
 	st.mk(FITS::SIMPLE,True,"Standard FITS format");
 	st.mk(FITS::BITPIX,32,"Integer data");
 	st.mk(FITS::NAXIS,2,"This is a primary array");
-	st.mk(1,FITS::NAXIS,3);
-	st.mk(2,FITS::NAXIS,6);
+	st.mk(1,FITS::NAXIS,row);
+	st.mk(2,FITS::NAXIS,col);
 	st.mk(FITS::EXTEND,True,"Extension exists");
+	//st.mk(FITS::EXTEND,False,"Extension exists");
 	st.spaces();
 	st.comment("This is test 2.");
 	st.spaces();
@@ -75,7 +76,13 @@ int main()
 	cout << "Initial HDU constructed\n";
 	// Display the keyword list
 	cout << hdu1;
-	hdu1.write_hdr(fout);
+	if( !hdu1.write_hdr(fout) ){
+	    cout << "Primary Header wrote ok!"<<endl;
+		 //return 0;
+	}else{
+	    cout<< "Prinary Header wrote error!" << endl;
+		 exit(0);
+	}
 	hdu1.store(&data[0][0],FITS::CtoF);
 	hdu1.write(fout);
 
@@ -84,29 +91,32 @@ int main()
 	kw.mk(FITS::XTENSION,"IMAGE   ","Image extension");
 	kw.mk(FITS::BITPIX,32,"Integer data");
 	kw.mk(FITS::NAXIS,2,"This is an image");
-	kw.mk(1,FITS::NAXIS,3);
-	kw.mk(2,FITS::NAXIS,6);
+	kw.mk(1,FITS::NAXIS,row);
+	kw.mk(2,FITS::NAXIS,col);
 	kw.mk(FITS::PCOUNT,0);
 	kw.mk(FITS::GCOUNT,1);
 	kw.spaces();
 	kw.comment("This is test 2.");
 	kw.spaces();
 	kw.end();
-
+	
 	ImageExtension<FitsLong> ie(kw);
 	if (ie.err())
 		exit(0);
 	cout << "ImageExtension constructed\n";
 	// Display the keyword list
 	cout << ie;
-	ie.write_hdr(fout);
-
+	if( !ie.write_hdr(fout) ){
+      cout << "ImageExtension header wrote ok!"<< endl;
+	}
 	ie.set_next(row * col);		// setup to write the whole array
-	for (i = 0; i < row; ++i)
+
+	for (i = 0; i < row; ++i){
 	  for(j = 0; j < col; ++j)
-	    ie.data(i,j) = i * 10 + j;	// assign the data
-
+	  {  ie.data(i,j) = i * 10 + j; }	// assign the data
+   }
+	cout<< "data(i,j) assignment ok."<< endl;
 	ie.write(fout);			// write the data
-
+   cout << "ImageExtension data wrote!"<< endl;
 	return 0;
 }

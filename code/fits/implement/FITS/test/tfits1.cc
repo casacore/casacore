@@ -30,11 +30,13 @@
 # include <fits/FITS/fits.h>
 # include <fits/FITS/fitsio.h>
 # include <fits/FITS/hdu.h>
-
 # include <casa/BasicSL/String.h>
-
 # include <casa/iostream.h>
 # include <casa/stdlib.h>
+
+# include <casa/Arrays/Vector.h>
+
+// # include <casa/string.h> // test
 
 // Display basic info and the keyword list
 void show(HeaderDataUnit *h) {
@@ -46,7 +48,6 @@ void show(HeaderDataUnit *h) {
 		     << h->dim(n) << "\n";
 	cout << "----- Keyword List -----\n" << *h << "\n";
 }
-
 
 // Read the data in a Primary Group and display the first few groups
 #define DOGROUP(Z) void do_primary_group(PrimaryGroup<Z> &x) { \
@@ -62,7 +63,7 @@ void show(HeaderDataUnit *h) {
 	    if (i < number_to_display) { \
 		cout << "Group " << i << " parms: " << "\n"; \
 		for (j = 0; j < x.pcount(); ++j) \
-		    cout << " " << x.parm(j); \
+		    cout << " "<< x.parm(j); \
 		cout << "\n"; \
 		cout << "Group " << i << " data: " << "\n"; \
 		for (j = 0; j < 4; ++j) \
@@ -75,17 +76,23 @@ void show(HeaderDataUnit *h) {
 
 // Read the data in a Primary Array and display the first few data points
 #define DOARRAY(Z) void do_primary_array(PrimaryArray<Z> &x) { \
+   cout << "[ tftis1.cc::do_primary_array() ] called. " << endl; \
 	int i, j, n0, n1; \
+	cout<< " The header card images are( testing kwlist_str()): " << endl; \
+	Vector<String> imageCards = x.kwlist_str();   \
+	for( uInt k = 0; k< imageCards.nelements(); k++ ){  \
+	    cout << imageCards[ k ] << endl;\	
+	}\
 	if (x.fitsdatasize()) \
-	    x.read(); \
+	    if(x.read()==-1 ){ exit(0);} \
 	show(&x); \
 	if (x.err() != HeaderDataUnit::OK) { \
 		cout << "Error occured during construction process -- exiting\n"; \
 		exit(0); \
 	} \
 	if (x.dims() == 2) { \
-	    n0 = x.dim(0) > 6 ? 6 : x.dim(0); \
-	    n1 = x.dim(1) > 6 ? 6 : x.dim(1); \
+	    n0 = x.dim(0) > 60 ? 60 : x.dim(0); \
+	    n1 = x.dim(1) > 60 ? 60 : x.dim(1); \
 	    for (i = 0; i < n0; ++i) \
 	    for (j = 0; j < n1; ++j) \
 		cout << "(" << i << "," << j << ") = " \
@@ -132,7 +139,8 @@ void do_binary_table(BinaryTableExtension &x) {
 		 << x.tunit(i) << "\n";		 
 	}
 	cout << endl;
-
+   cout <<" [do_binary_table()] read all the table rows." << endl;
+	cout <<" [do_binary_table()] x.nrows() = " << x.nrows() << endl;
         x.read(x.nrows()); // read all the table rows
 	// any heap to read?
 	char * theheap = 0;
@@ -368,7 +376,10 @@ int main(int argc, char **argv) {
 	    cout << "ex1 <filename>" << "\n";
 	    exit(0);
 	}
+	cout<<"argv[1]="<<argv[1]<<endl;
 	FitsInput fin(argv[1],FITS::Disk);
+	cout<<"FitsInput object created ok."<<endl;
+	
 	if (fin.err() == FitsIO::IOERR) {
 	    cout << "Error opening FITS input.\n";
 	    exit(0);
@@ -376,15 +387,16 @@ int main(int argc, char **argv) {
 	    cout << "Error reading initial record -- exiting.\n";
 	    exit(0);
 	}
-	const int NMAXERRS = 100;
+	const int NMAXERRS = 4;
 
 	int nerrs;
 	for(nerrs = 0;
 		nerrs < NMAXERRS && fin.rectype() != FITS::EndOfFile; ) {
-	    if (fin.rectype() == FITS::HDURecord) {
-		switch (fin.hdutype()) {
+	  if (fin.rectype() == FITS::HDURecord) {
+		 switch (fin.hdutype()) {
 		    case FITS::PrimaryArrayHDU:
 			cout << "----- Primary Array -----\n";
+			cout << "[ tfits1.cc::main() ] Data type is " << fin.datatype() << endl;
 			switch (fin.datatype()) {
 			    case FITS::BYTE:
 				paB = new PrimaryArray<unsigned char>(fin);
@@ -395,12 +407,18 @@ int main(int argc, char **argv) {
 				do_primary_array(*paS);
 				break;
 			    case FITS::LONG:
+				cout<<"About to instantiate  PrimaryArray<FitsLong>."<< endl;
 				paL = new PrimaryArray<FitsLong>(fin);
+				cout<<"About to call do_primary_array( *paL )." << endl;
 				do_primary_array(*paL);
+				cout<<"After called do_primary_array()."<< endl;
 				break;
 			    case FITS::FLOAT:
+				cout<<"About to instantiate  PrimaryArray<float>."<< endl;
 				paF = new PrimaryArray<float>(fin);
+				cout<<"About to call do_primary_array()"<< endl;
 				do_primary_array(*paF);
+				cout<<"Called do_primary_array()"<< endl;
 				break;
 			    case FITS::DOUBLE:
 				paD = new PrimaryArray<double>(fin);
@@ -409,6 +427,7 @@ int main(int argc, char **argv) {
 			    default:
 				break;
 			}
+			cout<<"PrimaryArray appropriated object instantiated."<< endl;
 			break;
 		    case FITS::PrimaryGroupHDU:
 			cout << "----- Primary Group -----\n";
@@ -473,6 +492,7 @@ int main(int argc, char **argv) {
 			    default:
 				break;
 			}
+			cout << " Image Extension is passed into do_primary_array()." << endl;
 			break;
 		    case FITS::UnknownExtensionHDU:
 			h = new ExtensionHeaderDataUnit(fin);
@@ -484,24 +504,23 @@ int main(int argc, char **argv) {
 			cout << "This isn't supposed to happen\n";
 			break;
 		}
-	    } else if (fin.rectype() == FITS::BadBeginningRecord ||
+	 }else if (fin.rectype() == FITS::BadBeginningRecord ||
 		       fin.rectype() == FITS::UnrecognizableRecord) {
-		cout << "Bad Record encountered\n";
-		exit(0);
-	    }
-	    else if (fin.rectype() == FITS::SpecialRecord) {
-		cout << "Special Record encountered\n";
-		exit(0);
-	    }
-	    if (fin.err())
+		 cout << "Bad Record encountered\n";
+		 exit(0);
+	 }else if (fin.rectype() == FITS::SpecialRecord) {
+		 cout << "Special Record encountered\n";
+		 exit(0);
+	 }
+	   if (fin.err())
 		++nerrs;
-	}
+	} // end of for( nerrs = 0, .... ) loop
 
 	if (nerrs == NMAXERRS)
 	    cout << "Too many errors.  Processing terminated.\n";
 	else
 	    cout << "End of Header-Data Units.\n";
 	cout << endl;
-
+   cout<< "[tfits1.cc] Before retrun."<< endl;
 	return 0;
 }
