@@ -31,6 +31,7 @@
 
 //# Includes
 #include <trial/Images/ImageInterface.h>
+#include <trial/Arrays/AxesSpecifier.h>
 
 //# Forward Declarations
 class IPosition;
@@ -63,6 +64,10 @@ class String;
 // Class SubImage has to be used to apply a region or mask to an image.
 // Several functions are inherited from SubLattice and not declared
 // in this class.
+// <p>
+// Using an <linkto class=AxesSpecifier>AxesSpecifier</linkto> object
+// it is possible to remove some or all degenerate axes (i.e. axes
+// with length 1) to get an image with a lower dimensionality.
 // </synopsis> 
 //
 // <example>
@@ -90,26 +95,29 @@ public:
   // should be writable (if the original image is non-writable, the
   // SubImage is always set to non-writable).
   // <group>
-  SubImage (const ImageInterface<T>& image);
-  SubImage (ImageInterface<T>& image, Bool writableIfPossible);
+  SubImage (const ImageInterface<T>& image, AxesSpecifier=AxesSpecifier());
+  SubImage (ImageInterface<T>& image, Bool writableIfPossible,
+	    AxesSpecifier=AxesSpecifier());
   // </group>
 
   // Create a SubImage from the given Image and region.
   // <br>An exception is thrown if the image shape used in the region
   // differs from the shape of the image.
   // <group>
-  SubImage (const ImageInterface<T>& image, const LattRegionHolder& region);
+  SubImage (const ImageInterface<T>& image, const LattRegionHolder& region,
+	    AxesSpecifier=AxesSpecifier());
   SubImage (ImageInterface<T>& image, const LattRegionHolder& region,
-	    Bool writableIfPossible);
+	    Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
   // </group>
   
   // Create a SubImage from the given Image and slicer.
   // The slicer can be strided.
   // <br>An exception is thrown if the slicer exceeds the image shape.
   // <group>
-  SubImage (const ImageInterface<T>& image, const Slicer& slicer);
+  SubImage (const ImageInterface<T>& image, const Slicer& slicer,
+	    AxesSpecifier=AxesSpecifier());
   SubImage (ImageInterface<T>& image, const Slicer& slicer,
-	    Bool writableIfPossible);
+	    Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
   // </group>
   
   // Copy constructor (reference semantics).
@@ -195,12 +203,7 @@ public:
 
   // Return the name of the current ImageInterface object. 
   // Returns a blank string.
-  virtual String name(const Bool stripPath=False) const;
-  
-  // Functions to set or replace the coordinate information.
-  // The function returns False as the coordinates of a SubImage
-  // cannot be changed.
-  virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
+  virtual String name (Bool stripPath=False) const;
   
   // Often we have miscellaneous information we want to attach to an image.
   // It returns the info of the parent object.
@@ -234,15 +237,26 @@ public:
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
-  // Handle the (un)locking and syncing..
+  // Handle the (un)locking and syncing, etc..
   // <group>
   virtual Bool lock (FileLocker::LockType, uInt nattempts);
   virtual void unlock();
   virtual Bool hasLock (FileLocker::LockType) const;
   virtual void resync();
+  virtual void flush();
+  virtual void tempClose();
+  virtual void reopen();
   // </group>
 
+protected:
+  // Let a derived class reopen the log.
+  virtual void doReopenLogSink();
+
 private:
+  // Set the coordinates.
+  // It removes world axes if the subimage has axes removed.
+  void setCoords (const CoordinateSystem& coords);
+
   //# itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;
   SubLattice<T>*     itsSubLatPtr;
