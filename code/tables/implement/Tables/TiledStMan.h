@@ -191,7 +191,7 @@ public:
     // E.g. in the previous example axisPath=[2] defines the same path.
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
-    // <br>The userSetCache flag is set indicating that the TSMDataColumn
+    // <br>A flag is set indicating that the TSMDataColumn
     // access functions do not need to size the cache.
     uInt calcCacheSize (uInt rownr, const IPosition& sliceShape,
 			const IPosition& windowStart,
@@ -211,12 +211,12 @@ public:
     // than 10%, the maximum cache size is used instead.
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
-    // <br>The userSetCache flag is set indicating that the TSMDataColumn
+    // <br>A flag is set indicating that the TSMDataColumn
     // access functions do not need to size the cache.
     void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller);
 
     // Determine if the user set the cache size (using setCacheSize).
-    Bool userSetCache() const;
+    Bool userSetCache (uInt rownr) const;
 
     // Empty the caches used by the hypercubes in this storage manager.
     // It will flush the caches as needed and remove all buckets from them
@@ -450,8 +450,6 @@ protected:
     uInt      nrCoordVector_p;
     // The fixed cell shape.
     IPosition fixedCellShape_p;
-    // The user set the cache size.
-    Bool      userSetCache_p;
     // Has any data changed since the last flush?
     Bool      dataChanged_p;
 };
@@ -472,9 +470,6 @@ inline uInt TiledStMan::nrow() const
 inline uInt TiledStMan::nhypercubes() const
     { return cubeSet_p.nelements(); }
 
-inline Bool TiledStMan::userSetCache() const
-    { return userSetCache_p; }
-
 inline Bool TiledStMan::asCanonical() const
     { return asCanonical_p; }
 
@@ -483,6 +478,7 @@ inline void TiledStMan::setDataChanged()
 
 inline const TSMCube* TiledStMan::getHypercube (uInt rownr) const
     { return ((TiledStMan*)this)->getHypercube (rownr); }
+
 
 
 #endif

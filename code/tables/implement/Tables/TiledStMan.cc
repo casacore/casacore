@@ -54,7 +54,6 @@ TiledStMan::TiledStMan ()
   persMaxCacheSize_p(0),
   maxCacheSize_p    (0),
   fileSet_p         (1, (TSMFile*)0),
-  userSetCache_p    (False),
   dataChanged_p     (False)
 {}
 
@@ -67,7 +66,6 @@ TiledStMan::TiledStMan (const String& hypercolumnName, uInt maximumCacheSize)
   maxCacheSize_p    (maximumCacheSize),
   fileSet_p         (1, (TSMFile*)0),
   hypercolumnName_p (hypercolumnName),
-  userSetCache_p    (False),
   dataChanged_p     (False)
 {}
 
@@ -339,15 +337,19 @@ void TiledStMan::setCacheSize (uInt rownr,
     // Set the cache size for the given hypercube.
     getHypercube(rownr)->setCacheSize (sliceShape, windowStart,
 				       windowLength, axisPath,
-				       forceSmaller);
+				       forceSmaller, True);
 }
 
 void TiledStMan::setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller)
 {
     // Set the cache size (in buckets) for the given hypercube.
     TSMCube* hypercube = getHypercube(rownr);
-    hypercube->setCacheSize (nbuckets, forceSmaller);
-    userSetCache_p = True;
+    hypercube->setCacheSize (nbuckets, forceSmaller, True);
+}
+
+Bool TiledStMan::userSetCache (uInt rownr) const
+{
+    return getHypercube(rownr)->userSetCache();
 }
 
 void TiledStMan::emptyCaches()
@@ -357,7 +359,6 @@ void TiledStMan::emptyCaches()
 	    cubeSet_p[i]->emptyCache();
 	}
     }
-    userSetCache_p = False;
 }
 
 void TiledStMan::showCacheStatistics (ostream& os) const
