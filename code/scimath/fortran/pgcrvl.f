@@ -107,11 +107,11 @@
 *                          6    axis annotation     2
 *                          7        title           -
 *
-*                        For example, if CI(3) is used for numeric
-*                        labels for the first world coordinate.
+*                        For example, CI(3) is used for numeric labels
+*                        for the first world coordinate.
 *
 *                        Colour selection is disabled for component J
-*                        if CI(J) <= 0.
+*                        if CI(J) < 0.
 *
 *      GCODE(2) I        Code for the type of grid to draw for each
 *                        world coordinate:
@@ -281,7 +281,7 @@
 *       The extrema of the world coordinate elements are stored in
 *       CACHE(,0).  When a coordinate grid is plotted with multiple calls
 *       to PGCRVL the initial call should always have IC set to -1 to
-*       to signal that PGCRVL needs to determine the extrema.  On
+*       signal that PGCRVL needs to determine the extrema.  On
 *       subsequent calls with IC non-negative PGCRVL uses the extrema
 *       cached from the first call.  This can speed up execution
 *       considerably.
@@ -845,7 +845,7 @@
 *     Determine initial colour.
       CALL PGQCI (CI0)
       DO 70 J = 1, 7
-         IF (CI(J).GT.0) THEN
+         IF (CI(J).GE.0) THEN
             CJ(J) = CI(J)
          ELSE
             CJ(J) = CI0
@@ -1928,7 +1928,7 @@
             END IF
          END IF
 
-         IF (K.EQ.0 .OR. CI(6).LE.0) THEN
+         IF (K.EQ.0) THEN
             CALL PGPTXT (X, Y, ANGL, 0.5, TEXT)
          ELSE
 *           Two-colour annotation.
