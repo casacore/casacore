@@ -34,6 +34,7 @@
 #include <trial/Coordinates/ObsInfo.h>
 
 #include <aips/Containers/Block.h>
+#include <aips/Measures/MDoppler.h>
 
 template<class T> class Matrix;
 class DirectionCoordinate;
@@ -43,6 +44,7 @@ class StokesCoordinate;
 class TabularCoordinate;
 class IPosition;
 class LogIO;
+
 
 // <summary>
 // Interconvert pixel and world coordinates.
@@ -544,6 +546,21 @@ public:
 			       Bool oneRelative,
 			       char prefix = 'c');
 
+// List all header information.  By default, the reference
+// values and pixel increments are converted to a "nice" unit before 
+// formatting (e.g. RA is  shown as HH:MM:SS.S).  If <src>nativeFormat</src> 
+// is <src>True</src> then the values are formatted in their native format.
+// For spectral axes, both frequency and velocity information is listed. You
+// can specify what velocity definition you want with <src>velocityType</src>
+// If you wish, you can specify two shapes; a lattice and tile shape
+// (perhaps an image from which the CoordinateSystem came)
+// If you give (both of) these, they are included in the listing.  If you pass
+// in zero length <src>IPositions</src> then they are not included in
+// the listing.  T
+   void list(LogIO& os, MDoppler::Types velocityType,
+             Bool nativeFormat, const IPosition& latticeShape,
+             const IPosition& tileShape) const;
+
 private:
     // Where we store copies of the coordinates we are created with.
     PtrBlock<Coordinate *> coordinates_p;
@@ -618,6 +635,45 @@ private:
                             LogIO& os,
                             const CoordinateSystem& coordsys,
                             Int stokesAxis, Int stokesCoord) const;
+
+    //  All these functions are in support of the <src>list</src> function
+    // <group>
+    void listDirectionSystem(LogIO& os) const; 
+    void listFrequencySystem(LogIO& os, MDoppler::Types velocityType) const;
+    void getFieldWidths (LogIO& os, uInt& widthName,
+                         uInt& widthProj, uInt& widthShape,
+                         uInt& widthTile, uInt& widthRefValue,
+                         uInt& widthRefPixel, uInt& widthInc,
+                         uInt& widthUnits, Int& precRefValSci,
+                         Int& precRefValFloat,  Int& precRefValRADEC,
+                         Int& precRefPixFloat, Int& precIncSci,
+                         String& nameName, String& nameProj,
+                         String& nameShape, String& nameTile,
+                         String& nameRefValue, String& nameRefPixel,
+                         String& nameInc, String& nameUnits,
+                         Bool nativeFormat, MDoppler::Types velocityType,
+                         const IPosition& latticeShape, const IPosition& tileShape) const;
+
+    void listHeader (LogIO& os, Coordinate* pc, uInt& widthName, uInt& widthProj,
+                     uInt& widthShape, uInt& widthTile, uInt& widthRefValue,
+                     uInt& widthRefPixel, uInt& widthInc, uInt& widthUnits,     
+                     Bool findWidths, Int axisInCoordinate, Int pixelAxis, Bool nativeFormat,
+                     Int precRefValSci, Int precRefValFloat, Int precRefValRADEC, Int precRefPixFloat,
+                     Int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const;
+    void listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName, uInt& widthProj,
+                       uInt& widthShape, uInt& widthTile, uInt& widthRefValue,
+                       uInt& widthRefPixel, uInt& widthInc,  uInt& widthUnits,
+                       const Bool findWidths, const Int axisInCoordinate,
+                       const Int pixelAxis, const MDoppler::Types velocityType,
+                       const Int precRefValSci, const Int precRefValFloat,
+                       const Int precRefValRADEC, const Int precRefPixFloat,
+                       const Int precIncSci) const;
+    void clearFlags (LogIO& os) const;
+    Bool pixelToVelocity(Double& velocity, Double pixel, const SpectralCoordinate* sc,
+                         MDoppler::Types velocityType, const String& velUnits) const;
+    Bool velocityIncrement(Double& velocityInc,  const SpectralCoordinate* sc,
+                           MDoppler::Types velocityType, const String& velUnits) const;
+    // </group>
 };
 
 #endif
