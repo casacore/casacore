@@ -119,7 +119,7 @@ operator=(const FluxRep<T> & other) {
   return *this;
 }
 
-template<class T> Unit FluxRep<T>::
+template<class T> const Unit & FluxRep<T>::
 unit() const {
   DebugAssert(ok(), AipsError);
   return itsUnit;
@@ -149,7 +149,7 @@ convertUnit(const Unit & unit) {
   DebugAssert(ok(), AipsError);
 }
 
-template<class T> ComponentType::Polarisation FluxRep<T>::
+template<class T> const ComponentType::Polarisation & FluxRep<T>::
 pol() const {
   DebugAssert(ok(), AipsError);
   return itsPol;
@@ -266,6 +266,17 @@ scaleValue(const T & factor) {
   }
   DebugAssert(ok(), AipsError);
 }
+
+template<class T> void FluxRep<T>::
+scaleValue(const T & factor0, const T & factor1, 
+	   const T & factor2, const T & factor3) {
+  itsVal(0) *= factor0;
+  itsVal(1) *= factor1;
+  itsVal(2) *= factor2;
+  itsVal(3) *= factor3;
+  DebugAssert(ok(), AipsError);
+}
+
 template<class T> Bool FluxRep<T>::
 fromRecord(String & errorMessage, const GlishRecord & record) {
   {
@@ -324,7 +335,7 @@ fromRecord(String & errorMessage, const GlishRecord & record) {
 	String("must contain a vector with 4 elements");
       return False;
     }
-    Vector<DComplex> fluxVal(4);
+    Vector<NumericTraits<T>::ConjugateType> fluxVal(4);
     if (!valueField.get(fluxVal.ac())) {
       errorMessage += String("\nCould not read the 'value' field ") + 
 	String("in the flux record for an unknown reason");
@@ -364,8 +375,8 @@ fromRecord(String & errorMessage, const GlishRecord & record) {
 template<class T> Bool FluxRep<T>::
 toRecord(String & errorMessage, GlishRecord & record) const {
   if (pol() == ComponentType::STOKES) {
-    FluxRep<Double> fluxCopy = *this;
-    Vector<Double> fluxVal(4);
+    FluxRep<T> fluxCopy = *this;
+    Vector<T> fluxVal(4);
     fluxCopy.value(fluxVal);
     record.add("value", GlishArray(fluxVal.ac()));
     record.add("polarisation", ComponentType::name(ComponentType::STOKES));
@@ -467,7 +478,7 @@ copy() const {
   return newFlux;
 }
 
-template<class T> Unit Flux<T>::
+template<class T> const Unit & Flux<T>::
 unit() const {
   DebugAssert(ok(), AipsError);
   return itsFluxPtr->unit();
@@ -491,7 +502,7 @@ convertUnit(const Unit & unit) {
   itsFluxPtr->convertUnit(unit);
 }
 
-template<class T> ComponentType::Polarisation Flux<T>::
+template<class T> const ComponentType::Polarisation & Flux<T>::
 pol() const {
   DebugAssert(ok(), AipsError);
   return itsFluxPtr->pol();
@@ -547,8 +558,15 @@ setValue(const Quantum<Vector<T> > & value) {
 
 template<class T> void Flux<T>::
 scaleValue(const T & factor) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->scaleValue(factor);
+  DebugAssert(ok(), AipsError);
+}
+
+template<class T> void Flux<T>::
+scaleValue(const T & factor0, const T & factor1, 
+	   const T & factor2, const T & factor3) {
+  itsFluxPtr->scaleValue(factor0, factor1, factor2, factor3);
+  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Bool Flux<T>::
