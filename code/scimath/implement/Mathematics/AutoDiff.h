@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Mathematics/AutoDiffRep.h>
-#include <trial/Mathematics/ObjectPool.h>
+#include <aips/Containers/ObjectPool.h>
 
 //# Forward declarations
 template <class T> class Vector;
