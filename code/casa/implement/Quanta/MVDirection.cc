@@ -206,12 +206,12 @@ Bool MVDirection::putValue(const Vector<Quantum<Double> > &in) {
       in(0).check(UnitVal::NODIM) &&
       in(1).check(UnitVal::NODIM) &&
       in(2).check(UnitVal::NODIM)) {
-    for (Int j = 0; j<i; j++) {
+    for (uInt j = 0; j<i; j++) {
       xyz(j) = in(j).getValue();
     };
     adjust();
   } else {
-    Int j;
+    uInt j;
     for (j = 0; j<i; j++) {
       if (!in(j).check(UnitVal::ANGLE)) return False;
     };

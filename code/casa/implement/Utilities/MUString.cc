@@ -156,7 +156,7 @@ Int MUString::getInt() {
 }
 
 void MUString::skipInt() {
-  Int t = getInt();
+  getInt();
 }
 
 uInt MUString::getuInt() {
@@ -172,7 +172,7 @@ uInt MUString::getuInt() {
 }
 
 void MUString::skipuInt() {
-  uInt t = getuInt();
+  getuInt();
 }
 
 Bool MUString::testDouble() const {
@@ -181,7 +181,7 @@ Bool MUString::testDouble() const {
 }
 
 void MUString::skipDouble() {
-  Double t = getDouble();
+  getDouble();
 }
 
 Bool MUString::tSkipDouble() {
@@ -391,7 +391,7 @@ Bool MUString::matchPair(Char nd) {
 
 Int MUString::freqChar(Char ch) const {
   Int c = 0;
-  for (Int i = ptr; i < len; i++) {
+  for (uInt i = ptr; i < len; i++) {
     if (str[i] == ch) c++;
   };
   return c;
@@ -436,7 +436,7 @@ const String &MUString::lastGet() const {
 }
 
 void MUString::adjustPtr(Int in) {
-  ptr = in<0 ? 0 : (in>len ? len : in);
+  ptr = in<0 ? 0 : (in>(Int)len ? len : in);
 }
  
 Int MUString::initLast() {
@@ -446,7 +446,7 @@ Int MUString::initLast() {
 }
 
 void MUString::setLast(Int st) {
-  if (st < ptr) {
+  if (st < (Int)ptr) {
     stat = True; lget = str(st, ptr-st);
   };
 }

@@ -181,7 +181,7 @@ Bool UnitVal::create(const String &s, UnitVal &res) {
 
 Bool UnitVal::create(MUString &str, UnitVal &res) {
     UnitVal kind;
-    uInt ptr = str.getPtr();
+    Int ptr = str.getPtr();
     if (str.eos()) return True;
     Int ps = UnitVal::psign(str);	 	// power sign
     if (str.eos()) return True;

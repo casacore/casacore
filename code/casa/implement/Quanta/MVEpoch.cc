@@ -74,7 +74,7 @@ MVEpoch::MVEpoch(const Quantity &in1, const Quantity &in2) :
 
 MVEpoch::MVEpoch(const Quantum<Vector<Double> > &in) : 
   wday(0), frday(0) {
-    for (Int i=0; i<in.getValue().nelements(); i++) {
+    for (uInt i=0; i<in.getValue().nelements(); i++) {
       addTime(makeDay(Quantity((in.getValue())(i),in.getUnit())));
     }
     adjust();
@@ -82,7 +82,7 @@ MVEpoch::MVEpoch(const Quantum<Vector<Double> > &in) :
 
 MVEpoch::MVEpoch(const Vector<Double> &inday) :
   wday(0), frday(0) {
-    for (Int i=0; i<inday.nelements(); i++) {
+    for (uInt i=0; i<inday.nelements(); i++) {
       addTime(inday(i));
     }
     adjust();
@@ -210,6 +210,7 @@ void MVEpoch::print(ostream &os) const {
   os << setw(os.precision()+3) << s <<
     setprecision(prec);
   os.setf(oldb,ios::floatfield);
+  os.fill(fill);
 }
 
 MeasValue *MVEpoch::clone() const {
@@ -241,12 +242,12 @@ Vector<Quantum<Double> > MVEpoch::getRecordValue() const {
 
 Bool MVEpoch::putValue(const Vector<Quantum<Double> > &in) {
   {
-    for (Int i=0; i<in.nelements(); i++) {
+    for (uInt i=0; i<in.nelements(); i++) {
       if (!in(i).check(UnitVal::TIME)) return False;
     };
   }
   {
-    for (Int i=0; i<in.nelements(); i++) {
+    for (uInt i=0; i<in.nelements(); i++) {
       addTime(makeDay(in(i)));
     };
   }
