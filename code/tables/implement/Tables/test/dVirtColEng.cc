@@ -1,5 +1,5 @@
 //# dVirtColEng.cc: Demo of a virtual column engine
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -144,9 +144,6 @@ DummyVirtualScalar::DummyVirtualScalar (const DummyVirtualScalar& that)
     }
 }
 
-// Remove eventually - needed for g++
-typedef ROScalarColumn<Int> forgnugpp2;
-typedef ScalarColumn<Int> forgnugpp3;
 
 DummyVirtualScalar::~DummyVirtualScalar()
 {
@@ -242,10 +239,6 @@ DummyVirtualArray::DummyVirtualArray (const DummyVirtualArray& that)
 	throw (DataManInternalError ("DummyVirtualArray copy ctor"));
     }
 }
-
-// Remove eventually - needed for g++
-typedef ROArrayColumn<Int> forgnugpp0;
-typedef ArrayColumn<Int> forgnugpp1;
 
 DummyVirtualArray::~DummyVirtualArray()
 {
