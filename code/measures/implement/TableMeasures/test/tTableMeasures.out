@@ -7,4 +7,30 @@ Epoch: 50220::10:47:60.0000
 Epoch: 50220::10:47:60.0000
 Epoch: 50220::10:47:60.0000
 Epoch: 50220::10:47:60.0000
+Creating an MEpoch Array Column
+Adding a vector to the column at row 0.
+elements: 10
+ndim(): 1
+new ms shape: [10, 2]
+array.nelements(): 20
+ev: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::21:27:00.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::21:27:00.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
 Bye.
