@@ -6232,3 +6232,4 @@
 17 191 src mv ./aips/implement/Functionals/NQSinusoid1DParam.cc ./aips/implement/Functionals/Sinusoid1DParam.cc
 17 191 src mv ./aips/implement/Functionals/NQSinusoid1DParam.h ./aips/implement/Functionals/Sinusoid1DParam.h
 17 191 src mv ./aips/implement/Functionals/NQWrapperBase.h ./aips/implement/Functionals/WrapperBase.h
+17 191 src mv ./aips/implement/Functionals/NQWrapperData.h ./aips/implement/Functionals/WrapperData.h
