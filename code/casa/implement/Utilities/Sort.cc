@@ -118,10 +118,18 @@ Sort::Sort (const void* dat, uInt sz)
   size_p  (sz)
 {}
 
+Sort::Sort (const Sort& that)
+: nrkey_p (0),
+  data_p  (0),
+  size_p  (0)
+{
+    copy (that);
+}
+
 Sort::~Sort()
 {
     for (uInt i=0; i<nrkey_p; i++) {
-	delete keys_p[i];
+	delete (SortKey*)(keys_p[i]);
     }
 }
 
@@ -130,6 +138,28 @@ void Sort::cleanup()
     this->Sort::~Sort();
 }
 
+Sort& Sort::operator= (const Sort& that)
+{
+    if (this != &that) {
+        copy (that);
+    }
+    return *this;
+}
+
+void Sort::copy (const Sort& that)
+{
+    uInt i;
+    for (i=0; i<nrkey_p; i++) {
+	delete (SortKey*)(keys_p[i]);
+    }
+    nrkey_p = that.nrkey_p;
+    keys_p.resize (nrkey_p);
+    for (i=0; i<nrkey_p; i++) {
+	keys_p = new SortKey (*(SortKey*)(that.keys_p[i]));
+    }
+    data_p = that.data_p;
+    size_p = that.size_p;
+}
 
 void Sort::sortKey (const void* dat, DataType dt, uInt inc, Order ord)
 {

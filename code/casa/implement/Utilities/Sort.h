@@ -276,10 +276,16 @@ public:
     // <src>sortKey</src> functions.
     Sort (const void* data, uInt elementSize);
 
+    // Copy constructor (copy semantics).
+    Sort (const Sort&);
+
     ~Sort();
 
     // Needed for Cleanup.
     void cleanup ();
+
+    // Assignment (copy semantics).
+    Sort& operator= (const Sort&);
 
     // Define a sort key (the most significant key should be defined first).
     // The key contains:
@@ -358,10 +364,8 @@ public:
     // </group>
 
 private:
-    Block<void*>    keys_p;                       //# keys to sort on
-    uInt            nrkey_p;                      //# #sort-keys
-    const void*     data_p;                       //# pointer to data records
-    uInt            size_p;                       //# size of data record
+    // Copy that Sort object to this.
+    void copy (const Sort& that);
 
     // Add a sort key giving a data type or a compare function.
     // <group>
@@ -397,6 +401,12 @@ private:
 
     // Swap 2 indices.
     inline void swap (Int index1, Int index2, uInt* indices) const;
+
+
+    Block<void*>    keys_p;                       //# keys to sort on
+    uInt            nrkey_p;                      //# #sort-keys
+    const void*     data_p;                       //# pointer to data records
+    uInt            size_p;                       //# size of data record
 };
 
 
