@@ -5890,3 +5890,4 @@
 16 291 sys rm libexec/dishpg.g
 16 291 sys rm libexec/temppf.g
 16 291 sys rm libexec/pfg.g
+16 304 src rm trial/apps/ms/templates
