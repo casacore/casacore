@@ -1,5 +1,5 @@
 //# OS.h: Classes for operating system services, and assorted other things
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,23 +29,25 @@
 #define <AIPS_OS_H>
 
 //# Includes
-#include <aips/OS/EnvVar.h
-#include <aips/OS/Path.h
-#include <aips/OS/RegularFile.h
-#include <aips/OS/SymLink.h
-#include <aips/OS/Directory.h
-#include <aips/OS/DirectoryIterator.h
+#include <aips/OS/EnvVar.h>
+#include <aips/OS/Path.h>
+#include <aips/OS/RegularFile.h>
+#include <aips/OS/SymLink.h>
+#include <aips/OS/Directory.h>
+#include <aips/OS/DirectoryIterator.h>
 
-#include <aips/OS/SysEvent.h
-#include <aips/OS/Time.h
-#include <aips/OS/Timer.h
+#include <aips/OS/SysEvent.h>
+#include <aips/OS/Time.h>
+#include <aips/OS/Timer.h>
 
-#include <aips/OS/Conversion.h
-#include <aips/OS/CanonicalConversion.h
-#include <aips/OS/DataConversion.h
-#include <aips/OS/CanonicalDataConversion.h
+#include <aips/OS/Conversion.h>
+#include <aips/OS/CanonicalConversion.h>
+#include <aips/OS/DataConversion.h>
+#include <aips/OS/CanonicalDataConversion.h>
 
 #include <aips/OS/Memory.h>
+
+
 // <module>
 //
 // <summary>
@@ -128,8 +130,6 @@
 //   <li> Time and Date classes should be revised after studying
 //        similar classes designed by others.  Roel Martinez is tenatively
 //        scheduled to do this in the late summer of 1995.
-//   <li> File, Path, and PathList would also benefit from revision.  Roel
-//        is scheduled to work on this in the summer 1995 as well.
 //   <li> There was once some discussion of a 'VOS' (virtual operating system)
 //        module.  This seems like a good idea.  Nested subdirectories for
 //        specific operating systems would contain the implementations, but
