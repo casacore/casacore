@@ -1,5 +1,5 @@
 //# MSDopplerIndex: index into a MeasurementSet DOPPLER subtable
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,7 +81,7 @@ public:
 
   virtual ~MSDopplerIndex();
 
-  virtual MSDopplerIndex &operator=(const MSDopplerIndex &other);
+  MSDopplerIndex &operator=(const MSDopplerIndex &other);
 
   virtual void attach(const MSDoppler &doppler);
 

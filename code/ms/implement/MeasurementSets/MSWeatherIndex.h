@@ -1,5 +1,5 @@
 //# MSWeatherIndex: index into a MeasurementSet WEATHER subtable
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,7 +81,7 @@ public:
 
   virtual ~MSWeatherIndex();
 
-  virtual MSWeatherIndex &operator=(const MSWeatherIndex &other);
+  MSWeatherIndex &operator=(const MSWeatherIndex &other);
 
   virtual void attach(const MSWeather &weather);
 

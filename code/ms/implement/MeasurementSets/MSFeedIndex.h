@@ -82,7 +82,7 @@ public:
 
   virtual ~MSFeedIndex();
 
-  virtual MSFeedIndex &operator=(const MSFeedIndex &other);
+  MSFeedIndex &operator=(const MSFeedIndex &other);
 
   virtual void attach(const MSFeed &feed);
 

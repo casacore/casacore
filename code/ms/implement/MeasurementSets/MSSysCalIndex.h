@@ -1,5 +1,5 @@
 //# MSSysCalIndex: index into a MeasurementSet SYSCAL subtable
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,7 +81,7 @@ public:
 
   virtual ~MSSysCalIndex();
 
-  virtual MSSysCalIndex &operator=(const MSSysCalIndex &other);
+  MSSysCalIndex &operator=(const MSSysCalIndex &other);
 
   virtual void attach(const MSSysCal &sysCal);
 

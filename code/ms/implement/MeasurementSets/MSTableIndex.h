@@ -1,5 +1,5 @@
  //# MSTableIndex: index into a MeasurementSet sub-table
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,7 +95,7 @@ public:
     virtual ~MSTableIndex();
 
     // assignment operator, refernce semantics
-    virtual MSTableIndex &operator=(const MSTableIndex &other);
+    MSTableIndex &operator=(const MSTableIndex &other);
 
     // attach this to a subtable using indexCols
     virtual void attach(const Table &subTable, const Vector<String> &indexCols,

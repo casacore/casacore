@@ -1,5 +1,5 @@
 //# MSSourceIndex: index into a MeasurementSet SOURCE subtable
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,7 +82,7 @@ public:
 
   virtual ~MSSourceIndex();
 
-  virtual MSSourceIndex &operator=(const MSSourceIndex &other);
+  MSSourceIndex &operator=(const MSSourceIndex &other);
 
   virtual void attach(const MSSource &source);
 

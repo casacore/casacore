@@ -1,5 +1,5 @@
 //# MSPointingIndex: index into a MeasurementSet POINTING subtable
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,7 +81,7 @@ public:
 
   virtual ~MSPointingIndex();
 
-  virtual MSPointingIndex &operator=(const MSPointingIndex &other);
+  MSPointingIndex &operator=(const MSPointingIndex &other);
 
   virtual void attach(const MSPointing &pointing);
 
