@@ -181,7 +181,7 @@ sub aips2topbar {
 "         onMouseOut=\"imgOff('img3')\">\n" .
 "<IMG NAME=\"img3\" SRC=\"$DOCSROOT/html/navpages/images/toplearnoff.gif\" BORDER=0></A>\n" .
 "</td></tr><tr><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/search/search.html\"         \n" .
+"<A HREF=\"$DOCSROOT/html/navpages/search/search.html\"  \n" .
 "          onMouseOver=\"imgOn('img4')\" \n" .
 "          onMouseOut=\"imgOff('img4')\">\n" .
 "<IMG NAME=\"img4\" SRC=\"$DOCSROOT/html/navpages/images/topsearchoff.gif\" BORDER=0></A>\n" .
