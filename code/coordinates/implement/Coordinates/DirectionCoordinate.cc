@@ -95,6 +95,8 @@ static void copy_celprm_and_prjprm(celprm *&tocel, prjprm *&toprj,
     if (! tocel) {
         throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(celprm)));
     }
+    delete toprj;
+    toprj = 0;
     toprj = new prjprm;
     if (! toprj) {
         delete tocel;
@@ -182,6 +184,7 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
     if (this != &other) {
 	type_p = other.type_p;
 	projection_p = other.projection_p;
+
 	copy_celprm_and_prjprm(celprm_p, prjprm_p,
 			       other.celprm_p, other.prjprm_p);
 	linear_p = other.linear_p;
