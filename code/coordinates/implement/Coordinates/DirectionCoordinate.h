@@ -89,12 +89,8 @@ template<class T> class Quantum;
 // Of course the <linkto class=MDirection>MDirection</linkto> object you can
 // obtain from this class would be the prime input for that conversion.
 //
-// Relative world coordinates are defined according to
-//
-// relLong = (absLong - refLong) * cos(refLat)
-// relLat  =  absLat  - refLat
-//
-// The actual computations are carried out with the WCS library.
+// The actual computations converting pixel to world are carried out 
+// with the WCS library.
 // </synopsis>
 //
 //
@@ -364,14 +360,18 @@ public:
     // If you actually request a pure pixel to world or world to pixel
     // via <src>toMix</src>, then the functions <src>toWorld</src> or <src>toPixel</src>
     // will be invoked directly (see above) and the extra conversion layer
-    // invoked through function <src>setConversionDirectionType</src> is always
-    // active.  However, if you do request a true mixed pixel/world conversion,
+    // invoked through function <src>setConversionDirectionType</src> is always active.  
+    //     
+    // However, if you do request a true mixed pixel/world conversion,
     // then because of the nature of mixed conversions, the extra conversion
     // layer can only be partly implemented.  If you make a mixed conversion
     // and <src>useConversionType==True</src>, then the *output* world values are
     // further converted to the type specified by the 
     // <src>setConversionDirectionType</src> function.  Any input world value 
     // must always be in the Direction type specified by the constructor.
+    //
+    // Presently,  for mixed conversions, no extra conversions are done.
+    // At some point the above partial implementation will be activated.
     // If  <src>useConversionType==False</src>, then no further conversion
     // of the  *output* world values is done.   This is not a symmetric
     // situation but it's the best I can do.
@@ -382,7 +382,7 @@ public:
                        const Vector<Bool>& worldAxes,
                        const Vector<Bool>& pixelAxes,
                        const Vector<Double>& worldMin,
-                       const Vector<Double>& worldMax, Bool useConversionType=False) const; 
+                       const Vector<Double>& worldMax) const; 
 
     // Compute and retrieve the world min and max ranges, for use in function <src>toMix</src>, 
     // for  a lattice of the given shape (for this coordinate).   Using these
