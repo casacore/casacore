@@ -5600,3 +5600,4 @@
 15 224 src mv trial/implement/stdio.h aips/implement/stdio.h
 15 224 src mv trial/implement/stdlib.h aips/implement/stdlib.h
 15 226 src mv trial/implement/iosfwd.h aips/implement/iosfwd.h
+15 226 src mv trial/implement/iosstrfwd.h aips/implement/iosstrfwd.h
