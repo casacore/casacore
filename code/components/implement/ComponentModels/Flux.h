@@ -609,7 +609,7 @@ public:
 		 const NumericTraits<T>::ConjugateType& error2,
 		 const NumericTraits<T>::ConjugateType& error3);
 
-  const Vector<NumericTraits<T>::ConjugateType>& errors();
+  const Vector<NumericTraits<T>::ConjugateType>& errors() const;
   // </group>
 
   // This functions convert between a RecordInterface and a Flux object and
