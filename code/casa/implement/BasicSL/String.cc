@@ -295,7 +295,7 @@ SubString String::through(const Regex &r, Int startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   if (first != npos) first += mlen;
-  return _substr(first, length()-first);
+  return _substr(0, first);
 }
 
 SubString String::from(const Regex &r, Int startpos) {
