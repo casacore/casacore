@@ -1,5 +1,5 @@
 //# VisibilityIterator.cc: Step through MeasurementEquation by visibility
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,11 +93,15 @@ preselected_p(False)
   if (interval_p==0.0) {
     interval_p=DBL_MAX; // semi infinite
   }
-  Double startTime;
+//#  Double startTime;
   MSColumns msc(ms);
-  msc.time().get(0,startTime);
+//#  msc.time().get(0,startTime);
   Interval::setInterval(interval_p);
-  Interval::setOffset(startTime);
+  // do not set the offset (all intervals zero based so we can convert
+  // times to intervals easily in other classes, e.g. TimeVarVisJones)
+  // Due to flagging, intervals may not have data over their full range
+  // anyway, so we don't really loose anything here.
+//#  Interval::setOffset(startTime);
   // now find the time column and set the compare function
   PtrBlock<ObjCompareFunc*> objCompFuncs(sortCols.nelements());
   for (i=0; i<sortCols.nelements(); i++) {
