@@ -352,8 +352,8 @@ public:
     // They are indices in the supplied indexVector, so
     // /src>data[indexVector(uniqueVector(i))]</src>
     // is giving the i-th unique record.
-    // Note that the records indexed by <src>indexVector(uniqueVector(i))<src>
-    // till <src>indexVector(uniqueVector(i+1))<src> are all the same.
+    // Note that the records indexed by <src>indexVector(uniqueVector(i))</src>
+    // till <src>indexVector(uniqueVector(i+1))</src> are all the same.
     // <br>
     // It returns the number of unique records. The unique array
     // is resized to that number.
