@@ -47,6 +47,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/MVAngle.h>
+#include <aips/OS/Path.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
@@ -319,18 +320,18 @@ int main() {
 // 		   AipsError);
 
        cout << "Passed the sampling & projection tests" << endl;
-       crux.rename("tComponentList_tmp.model", Table::New);
+       crux.rename(Path("tComponentList_tmp.model"), Table::New);
        //       image.table().markForDelete();
     }
      {
        // Create a model by reading the previous one from disk
-       ComponentList model("tComponentList_tmp.model");
+       ComponentList model(Path("tComponentList_tmp.model"));
        AlwaysAssert(model.nelements() == 6, AipsError);
        AlwaysAssert(model.component(2).shape().type() == 
 		    ComponentType::POINT, AipsError);
        AlwaysAssert(model.component(3).shape().type() == 
 		    ComponentType::GAUSSIAN, AipsError);
-       model.rename("tComponentList_tmp_renamed.model");
+       model.rename(Path("tComponentList_tmp_renamed.model"));
        model.component(1).flux().convertUnit("WU");
        model.component(2).flux().convertUnit("WU");
        model.component(3).flux().convertUnit("WU");
@@ -346,7 +347,7 @@ int main() {
   		   AipsError);
 
       // Open (readonly) the renamed model and copy it so we can mess with.
-      const ComponentList model("tComponentList_tmp_renamed.model", True);
+      const ComponentList model(Path("tComponentList_tmp_renamed.model"),True);
       AlwaysAssert(model.nelements() == 6, AipsError);
       AlwaysAssert(model.component(2).shape().type() == ComponentType::POINT,
   		   AipsError);
@@ -386,12 +387,12 @@ int main() {
 		   ComponentType::POINT, AipsError);
       AlwaysAssert(RW_Model.component(2).shape().type() == 
 		   ComponentType::GAUSSIAN, AipsError);
-      RW_Model.rename("tComponentList_tmp_copied.model");
+      RW_Model.rename(Path("tComponentList_tmp_copied.model"));
       cout << "Passed the Table reading/writing tests" << endl;
     }
     {
-      ComponentList original("tComponentList_tmp_renamed.model");
-      ComponentList modified("tComponentList_tmp_copied.model", False);
+      ComponentList original(Path("tComponentList_tmp_renamed.model"));
+      ComponentList modified(Path("tComponentList_tmp_copied.model"), False);
       AlwaysAssert(original.nelements() == 6, AipsError);
       AlwaysAssert(original.component(2).shape().type() == 
 		   ComponentType::POINT, AipsError);
