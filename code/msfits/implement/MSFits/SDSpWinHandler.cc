@@ -190,9 +190,9 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
 	    uInt i = 0;
 	    while (i<cacheRows.nelements() && !found) {
 		uInt rownr = rowPtr[i];
-		found = (abs(bwCachePtr_p[i]-thisBW)/originalFreqDelt < chanTol);
-		found = found && (abs(f0CachePtr_p[i]-thisF0)/originalFreqDelt < chanTol);
-		found = found && (abs(fNCachePtr_p[i]-thisFN)/originalFreqDelt < chanTol);
+		found = (abs((bwCachePtr_p[i]-thisBW)/originalFreqDelt) < chanTol);
+		found = found && (abs((f0CachePtr_p[i]-thisF0)/originalFreqDelt) < chanTol);
+		found = found && (abs((fNCachePtr_p[i]-thisFN)/originalFreqDelt) < chanTol);
 		if (found) {
 		    rownr_p = Int(rownr);
 		}
