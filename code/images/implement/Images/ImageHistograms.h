@@ -88,12 +88,6 @@ class PGPlotter;
 // They have a name starting with the string "ImageHistograms::",
 // and then a unique number. You can safely delete them in this case.
 //
-// <note role=caution>
-// Note that if the <src>ImageInterface</src> object goes out of scope, this
-// class will retrieve and generate rubbish as it just maintains a pointer
-// to the image.
-// </note>
-//
 // <note role=tip>
 // If you ignore return error statuses from the functions that set the
 // state of the class, the internal status of the class is set to bad.
@@ -281,13 +275,13 @@ public:
 private:
 
    LogIO os_p;
+   const ImageInterface<T>* pInImage_p;
    PagedArray<T>* pStoreImage_p;
    ImageStatistics<T>* pStats_p;
    Bool binAll_p, goodParameterStatus_p, needStorageImage_p;
    Bool doCumu_p, doGauss_p, doList_p, doLog_p;
    Bool haveLogger_p, showProgress_p;
    uInt nBins_p;
-   const ImageInterface<T>* pInImage_p;
    PGPlotter plotter_p;
    Vector<Int> cursorAxes_p, displayAxes_p, nxy_p;
    Vector<T> range_p;
