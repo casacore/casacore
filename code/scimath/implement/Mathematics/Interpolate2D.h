@@ -58,8 +58,7 @@
 // pixel coordinates.
 //
 // Absolutely no checking of the consistency of the input data
-// is done in order to preserve maximum speed.  If you use the Array
-// interface, it *must* be of dimension 2.  The coordinate vector
+// is done in order to preserve maximum speed.   The coordinate vector
 // *must* have at least 2 elements (others will be ignored). If 
 // you supply data and mask, those arrays *must* be the same shape.
 // Failure to follow these rules will result in your program 
@@ -69,11 +68,12 @@
 // <example>
 // <srcblock>
 //
-// Matrix matt(10,10);
-// Vector where(2);  
+// Matrix<Float> matt(10,10);
+// Vector<Float> where(2);  
 // where(0) = 3.452;  where(1) = 6.1;
-// Interpolate2D myInterp(iorder);
-// Float result = myInterp(matt, where);
+// Interpolate2D myInterp(Interpolate2D::LINEAR);
+// Float result;
+// Bool ok = myInterp(result, where, matt);
 //
 // </srcblock> 
 // </example>
@@ -120,7 +120,7 @@ class Interpolate2D
   // Assignment operator (copy semantics)
   Interpolate2D &operator=(const Interpolate2D &other);
 
-  // Do one Float interpolation, supply Matrix/Array and mask (True is good),
+  // Do one Float interpolation, supply Matrix and mask (True is good),
   // and pixel coordinate.  Returns False if coordinate out of range or data 
   // are masked.  No shape integrity checking is done (see above).
   // <group>
@@ -128,16 +128,9 @@ class Interpolate2D
                const Vector<Double> &where,
                const Matrix<Float> &data) const;
   Bool interp (Float &result, 
-               const Vector<Double> &where, 
-               const Array<Float> &data) const;
-  Bool interp (Float &result, 
                const Vector<Double> &where,
                const Matrix<Float> &data, 
                const Matrix<Bool> &mask) const;
-  Bool interp (Float &result, 
-               const Vector<Double> &where, 
-               const Array<Float> &data, 
-               const Array<Bool> &mask) const;
   // </group>
 
   // Do one Double interpolation, supply Matrix/Array and mask (True is good),
@@ -148,19 +141,12 @@ class Interpolate2D
                const Vector<Double> &where,
                const Matrix<Double> &data) const;
   Bool interp (Double &result, 
-               const Vector<Double> &where, 
-               const Array<Double> &data) const;
-  Bool interp (Double &result, 
                const Vector<Double> &where,
                const Matrix<Double> &data, 
                const Matrix<Bool> &mask) const;
-  Bool interp (Double &result, 
-               const Vector<Double> &where, 
-               const Array<Double> &data, 
-               const Array<Bool> &mask) const;
   // </group>
-  // Do two lineair interpolation simultaneous. The second call is direct.
-  // The first call transfer to the second call. It is assumed that the
+  // Do two linear interpolations simultaneously. The second call is direct.
+  // The first call transfers to the second call. It is assumed that the
   // structure (shape, steps) of the mask and data files are the same.
   // <group>
   Bool interp(Double &resultI, Double &resultJ, 
@@ -183,9 +169,6 @@ class Interpolate2D
   Bool  interp (Bool &result, 
                 const Vector<Double> &where,
                 const Matrix<Bool> &data) const;
-  Bool interp (Bool &result, 
-               const Vector<Double> &where, 
-               const Array<Bool> &data) const;
   // </group>
 
 // Recover interpolation method

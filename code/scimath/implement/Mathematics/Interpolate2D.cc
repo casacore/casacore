@@ -81,30 +81,10 @@ Interpolate2D &Interpolate2D::operator=(const Interpolate2D &other)
 
 Bool Interpolate2D::interp(Float &result, 
                            const Vector<Double> &where, 
-                           const Array<Float> &data) const
-{
-  const Matrix<Float> &data2 = dynamic_cast<const Matrix<Float>&>(data);
-  return interp(result, where, data2);
-}
-
-Bool Interpolate2D::interp(Float &result, 
-                           const Vector<Double> &where, 
                            const Matrix<Float> &data) const
 {
   const Matrix<Bool>* maskPtr(0);
   return ((*this).*itsFuncPtrFloat)(result, where, data, maskPtr);
-}
-
-
-
-Bool Interpolate2D::interp(Float &result, 
-                           const Vector<Double> &where, 
-                           const Array<Float> &data,
-                           const Array<Bool> &mask) const
-{
-  const Matrix<Float> &data2 = dynamic_cast<const Matrix<Float>&>(data);
-  const Matrix<Bool> &mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
-  return interp(result, where, data2, mask2);
 }
 
 
@@ -120,12 +100,6 @@ Bool Interpolate2D::interp(Float &result,
 
 // Double versions
 
-Bool Interpolate2D::interp(Double &result, 
-                           const Vector<Double> &where, 
-                           const Array<Double> &data) const {
-  const Matrix<Double> &data2 = dynamic_cast<const Matrix<Double>&>(data);
-  return interp(result, where, data2);
-}
 
 Bool Interpolate2D::interp(Double &result, 
                            const Vector<Double> &where, 
@@ -134,16 +108,6 @@ Bool Interpolate2D::interp(Double &result,
   return ((*this).*itsFuncPtrDouble)(result, where, data, maskPtr);
 }
 
-
-
-Bool Interpolate2D::interp(Double &result, 
-                           const Vector<Double> &where, 
-                           const Array<Double> &data,
-                           const Array<Bool> &mask) const {
-  const Matrix<Double> &data2 = dynamic_cast<const Matrix<Double>&>(data);
-  const Matrix<Bool> &mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
-  return interp(result, where, data2, mask2);
-}
 
 Bool Interpolate2D::interp(Double &result, 
                            const Vector<Double> &where, 
@@ -167,13 +131,6 @@ Bool Interpolate2D::interp(Double &resultI, Double &resultJ,
 
 // Bool versions
 
-Bool Interpolate2D::interp(Bool &result, 
-                           const Vector<Double> &where, 
-                           const Array<Bool> &data) const
-{
-  const Matrix<Bool> &data2 = dynamic_cast<const Matrix<Bool>&>(data);
-  return interp(result, where, data2);
-}
 
 Bool Interpolate2D::interp(Bool &result, 
                            const Vector<Double> &where, 
