@@ -279,8 +279,6 @@ typedef Quantum<Double> Quantity;
 
 template <class Qtype> class Quantum : public QBase{
 //# Friends
-// Output as a dimensioned value (e.g. 1.23 Jy/beam)
-    friend ostream& operator<< (ostream &os, const Quantum<Qtype> &ku);
 // Input, only quantity is supported now
   friend istream& operator>> (istream &is, Quantity &ku);
 public:
@@ -429,8 +427,6 @@ private:
 // Output/Input
 // <group name=output>
 // only Quantity is supported on input
-template<class Qtype>
- ostream& operator<< (ostream &os, const Quantum<Qtype> &ku);
 istream& operator>> (istream &is, Quantity &ku);
 // </group>
 

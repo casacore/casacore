@@ -377,8 +377,3 @@ uInt Quantum<Qtype>::myType() {
   return Register((Quantum<Qtype> *)0);
 }
 
-template <class Qtype>
-ostream& operator<< (ostream &os, const Quantum<Qtype> &ku) {
-    os << at_cc(ku.qVal) << " " << ku.qUnit.getName();
-    return os;
-}
