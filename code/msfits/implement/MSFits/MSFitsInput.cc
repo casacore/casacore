@@ -1,5 +1,5 @@
 //# MSFitsInput:  uvfits (random group) to MeasurementSet filler
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -271,6 +271,7 @@ void MSFitsInput::readFitsFile()
     // single source case
     fillFieldTable(nField);
   }
+  fillPointingTable();
   fixEpochReferences();
 
   if (!haveAn) {
@@ -1265,6 +1266,67 @@ void MSFitsInput::fillFeedTable() {
     msfc.polResponse().put(row,polResponse);
     msfc.position().put(row,position);
     msfc.receptorAngle().put(row,receptorAngle_p(Slice(2*ant,2)));
+  }
+}
+
+void MSFitsInput::fillPointingTable()
+{
+  // fill the pointing table
+  // run though the main table, find field changes, and add pointing rows
+  // as needed by looking up the field info in the field table
+  Int nrow=ms_p.nrow();
+  Int nAnt=ms_p.antenna().nrow();
+  Int lastFieldId=-1;
+  Double lastTime=0;
+  Vector<Int> fieldId=msc_p->fieldId().getColumn();
+  for (Int i=0; i<nrow; i++) {
+    if (fieldId(i)!=lastFieldId) {
+      lastFieldId=fieldId(i);
+      if (i>0) lastTime=msc_p->time()(i-1);
+      Array<Double> pointingDir = 
+	msc_p->field().phaseDir()(lastFieldId);
+      String name = msc_p->field().name()(lastFieldId);
+      Int numPoly = msc_p->field().numPoly()(lastFieldId);
+      Double time = msc_p->time()(i);
+      Int np=ms_p.pointing().nrow();
+      if (np>0) {
+	// fix up time and interval for previous entries
+	Double midTime = (lastTime + msc_p->pointing().time()(np-1))/2;
+	Double interval = lastTime - msc_p->pointing().time()(np-1) +
+	  msc_p->interval()(i-1);
+	for (Int j=0; j<nAnt; j++) {
+	  msc_p->pointing().time().put(np-j-1,midTime);
+	  msc_p->pointing().timeOrigin().put(np-j-1,midTime);
+	  msc_p->pointing().interval().put(np-j-1,interval);
+	}
+      }
+      for (Int j=0; j<nAnt; j++) {
+	ms_p.pointing().addRow();
+	msc_p->pointing().time().put(np+j,time);
+	msc_p->pointing().timeOrigin().put(np+j,time);
+	msc_p->pointing().interval().put(np+j,DBL_MAX);
+	msc_p->pointing().antennaId().put(np+j, j);
+	msc_p->pointing().name().put(np+j, name);
+	msc_p->pointing().numPoly().put(np+j, numPoly);
+	msc_p->pointing().direction().put(np+j,pointingDir);
+	msc_p->pointing().target().put(np+j,pointingDir);
+	msc_p->pointing().tracking().put(np+j,True);
+      }
+    }
+  }
+  // fix up last interval
+  lastTime = msc_p->time()(nrow-1);
+  Int np=ms_p.pointing().nrow();
+  if (np>0) {
+    // fix up time and interval for previous entries
+    Double midTime = (lastTime + msc_p->pointing().time()(np-1))/2;
+    Double interval = lastTime - msc_p->pointing().time()(np-1) +
+      msc_p->interval()(nrow-1);
+    for (Int j=0; j<nAnt; j++) {
+      msc_p->pointing().time().put(np-j-1,midTime);
+      msc_p->pointing().timeOrigin().put(np-j-1,midTime);
+      msc_p->pointing().interval().put(np-j-1,interval);
+    }
   }
 }
 
