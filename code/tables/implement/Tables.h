@@ -1,5 +1,5 @@
 //# Tables.h: The Tables module - AIPS++ data storage
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -69,7 +69,7 @@
 #include <aips/Containers/RecordField.h>
 
 //#   table lookup
-///#include <aips/Tables/ColumnsIndex.h>
+#include <aips/Tables/ColumnsIndex.h>
 
 //#   table expressions (for selection of rows)
 #include <aips/Tables/ExprNode.h>
