@@ -1,4 +1,5 @@
-#!/usr/local/bin/perl5
+#!/local/bin/perl
+### !/usr/local/bin/perl5
 #
 #   Copyright (C) 1996,1997,1998,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
@@ -27,6 +28,7 @@
 #   $Id$
 #
 use Getopt::Long;
+use Cwd;
 
 $/ = "";
 $* = 1;
@@ -116,7 +118,7 @@ sub fetch_raw_help{
    while(<$readme>){
       s/\\%/escapedpercent/g;
         # remove any comments that have ah commands or
-        # enviornments in them.
+        # environments in them.
       s/%.*begin.*ah.*//g;
       s/%.*\\ah.*//g;
       s/%%.*//g;
@@ -539,10 +541,21 @@ sub make_tex_file{
      s/\\end{ahmodule}/$end_section
    \\newpage/g;
    
+      my $dir = cwd() . '/' . $file;
+      $dir =~ s|/+|/|g;
+      my @dirs = split (/\//, $dir);
+      if ($#dirs > 2) {
+	$dir = $dirs[$#dirs - 3];     #get package
+      }
+      my $name = $dirs[$#dirs];       #get tool name (is .help file)
+      $name =~ s|\.[^.]+$||;          #remove extension
+
      s/\\begin{ahmodule}\s*{($mtext)}\s*{($mtext)}/
    \\section{$1 - Module \\label{$iname}\\index{$1}}
      \\begin{htmlonly}
      \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\htmladdnormallink{Changelog of current developement cycle}{..\/..\/project\/releasenotes\/changelogs\/changelog_Tool_${dir}_$name.html}
      \\vspace{.10in}
      \\end{htmlonly}
    $2\\\\/g;
