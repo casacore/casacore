@@ -37,6 +37,7 @@
 #include <aips/Containers/Block.h>
 
 //# Forward declarations
+template <class T> class Vector;
 template <class T> class AipsrcValue;
 template <class T> class AipsrcVector;
 class Aipsrc;
@@ -217,6 +218,16 @@ public:
   static Bool findNoHome(String &value, const String &keyword);
   // </group>
 
+  // These finds check a (possible) value of the keyword against a list
+  // of coded values provided, and return an index into the list (N if not
+  // found). Matching is minimax, case insensitive. Always better to use
+  // the one with default. return is False if no keyword or no match.
+  // <group>
+  static Bool find(uInt &value, const String &keyword,
+		   Int Nname, const String tname[]);
+  static Bool find(uInt &value, const String &keyword,
+		   const Vector<String> &tname);
+  // </group>
   // This find usually saves you some lines of code, since you can supply the
   // default you want to use when no such keyword is defined.
   // If the return value is False, the keyword was not found and the default
@@ -226,6 +237,10 @@ public:
 		   const String &deflt);
   static Bool findNoHome(String &value, const String &keyword,
 			 const String &deflt);
+  static Bool find(uInt &value, const String &keyword,
+		   Int Nname, const String tname[], const String &deflt);
+  static Bool find(uInt &value, const String &keyword,
+		   const Vector<String> &tname, const String &deflt);
   // </group>
 
   // Functions to register keywords for later use in get() and set(). The
@@ -233,17 +248,27 @@ public:
   // <group>
   static uInt registerRC(const String &keyword,
 			 const String &deflt);
+  static uInt registerRC(const String &keyword,
+			 Int Nname, const String tname[], const String &deflt);
+  static uInt registerRC(const String &keyword,
+			 const Vector<String> &tname, const String &deflt);
   // </group>
 
   // Gets are like find, but using registered integers rather than names.
   // <group>
   static const String &get(uInt keyword);
+  // get for code
+  static const uInt &get(uInt &code, uInt keyword);
   // </group>
 
   // Sets allow registered values to be set
   // <group>
   static void set(uInt keyword, const String &deflt);
-  // </group>
+  static void set(uInt keyword,
+		  Int Nname, const String tname[], const String &deflt);
+  static void set(uInt keyword,
+		  const Vector<String> &tname, const String &deflt);
+ // </group>
 
   // Returns the appropiate AIPS++ or system variable values
   // <group>
@@ -308,6 +333,8 @@ private:
   // <group>
   static Block<String> strlst;
   static Block<String> nstrlst;
+  static Block<uInt> codlst;
+  static Block<String> ncodlst;
   // </group>
 
   //# General member functions
