@@ -34,7 +34,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
-
+#include <aips/Exceptions/Error.h>
 
 TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode)
 : itsRefCode(referenceCode),
