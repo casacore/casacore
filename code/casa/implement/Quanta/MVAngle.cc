@@ -1,5 +1,5 @@
 //# MVAngle.cc: Class to handle angle type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -308,7 +308,7 @@ void MVAngle::print(ostream &oss,
       // The following was necessary since abs(0) becomes -0 (Solaris at least)
       if (t <= 0.0) t = 0;
       Int oprec = oss.precision();
-      Long oldb = oss.setf(ios::fixed,ios::floatfield);
+      ios::fmtflags oldb = oss.setf(ios::fixed,ios::floatfield);
       oss << setfill('0') << setprecision(inprec-6) << setw(inprec-3) << t <<
 	setprecision(oprec);
       oss.setf(oldb,ios::floatfield);

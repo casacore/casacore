@@ -1,5 +1,5 @@
 //# MVEpoch.cc: a class for high precision time
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -199,7 +199,7 @@ void MVEpoch::print(ostream &os) const {
   os << setfill('0') << setw(2) << h << ":" <<
     setw(2) << m << ':' << 
     setprecision(max(prec-2,2));
-  Long oldb = os.setf(ios::fixed,ios::floatfield);
+  ios::fmtflags oldb = os.setf(ios::fixed,ios::floatfield);
   os << setw(os.precision()+3) << s <<
     setprecision(prec);
   os.setf(oldb,ios::floatfield);
