@@ -1879,12 +1879,26 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
       nL++;
    }
    if (doMedian) {
-      minMax(none, yLMin, yLMax, stats.column(MEDIAN), stats.column(NPTS));
+      minMax(none, yMin, yMax, stats.column(MEDIAN), stats.column(NPTS));
+      if (first) {
+         yLMin = yMin;
+         yLMax = yMax;
+      } else {
+         yLMin = min(yLMin,yMin);
+         yLMax = max(yLMax,yMax);
+      }
       first = False;
       nL++;
    }
    if (doFlux) {
-      minMax(none, yLMin, yLMax, stats.column(FLUX), stats.column(NPTS));
+      minMax(none, yMin, yMax, stats.column(FLUX), stats.column(NPTS));
+      if (first) {
+         yLMin = yMin;
+         yLMax = yMax;
+      } else {
+         yLMin = min(yLMin,yMin);
+         yLMax = max(yLMax,yMax);
+      }
       first = False;
       nL++;
    }
