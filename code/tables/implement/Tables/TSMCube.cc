@@ -207,6 +207,15 @@ uInt TSMCube::coordinateSize (const String& coordinateName) const
     return shape(0);
 }
 
+IPosition TSMCube::cellShape() const
+{
+    uInt nr = stmanPtr_p->nrCoordVector();
+    if (nr < cubeShape_p.nelements()) {
+        return cubeShape_p.getFirst (nr);
+    }
+    return cubeShape_p;
+}
+
 
 IPosition TSMCube::adjustTileShape (const IPosition& cubeShape,
                                     const IPosition& tileShape) const
