@@ -122,9 +122,6 @@ Bool nearAbs(Double val1, Double val2, Double tol) {
   return ToBool(tol > abs(val2 - val1));
 }
 
-Bool isNaN(Float val) {
-  return ToBool(isnan(Double(val)));
-}
 
 Bool isNaN(Double val) {
   return ToBool(isnan(val));
