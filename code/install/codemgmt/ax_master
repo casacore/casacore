@@ -5772,3 +5772,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSSysCalColumns.h
 16 134 src rm aips/implement/MeasurementSets/OldMSSysCalEnums.h
 16 134 src rm aips/implement/MeasurementSets/OldMSTable.cc
+16 134 src rm aips/implement/MeasurementSets/OldMSTable.h
