@@ -38,6 +38,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVAngle.h>
@@ -1824,7 +1825,12 @@ cerr << "lonpol = " << c_lonPole << endl;
 // ierr = 0 means successful update.
 // ierr = -1 means no changed needed
 
-   if (ierr==-1) return True;
+   LogIO os(LogOrigin("DirectionCoordinate", "cylindricalFix", WHERE));
+//
+   if (ierr==-1) {
+//      os << LogIO::NORMAL << "No cylindrical coordinate update was required" << LogIO::POST;
+      return True;
+   }
 //
    if (ierr == 0) {
 
@@ -1851,6 +1857,8 @@ cerr << "lonpol = " << c_lonPole << endl;
       refPix[0] = c_crpix[0];
       refPix[1] = c_crpix[1];
       setReferencePixel(refPix);
+//
+      os << LogIO::NORMAL << "A cylindrical coordinate update was required and applied" << LogIO::POST;
    } else {
       set_error(String("DirectionCoordinate::cylindricalFix - ") +
                 String("Could not convert CYL header to [-180,180] longitude range"));
