@@ -1,5 +1,5 @@
 //# MSRange.cc: selection and iteration of an MS
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -483,22 +483,22 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
 	if (wantCAmp) {
 	  Vector<Float> amp(2);
 	  minMax(amp(0),amp(1),amplitude,msc.correctedData());
-	  out.add("correctedamplitude",amp);
+	  out.add("corrected_amplitude",amp);
 	}
 	if (wantCPhase) {
 	  Vector<Float> phas(2);
 	  minMax(phas(0),phas(1),phase,msc.correctedData());
-	  out.add("correctedphase",phas);
+	  out.add("corrected_phase",phas);
 	}
 	if (wantCReal) {
 	  Vector<Float> re(2);
 	  minMax(re(0),re(1),real,msc.correctedData());
-	  out.add("correctedreal",re);
+	  out.add("corrected_real",re);
 	}
 	if (wantCImag) {
 	  Vector<Float> im(2);
 	  minMax(im(0),im(1),imag,msc.correctedData());
-	  out.add("correctedimaginary",im);
+	  out.add("corrected_imaginary",im);
 	}
 	if (wantCData) {
 	  os << LogIO::WARN << "range not available for complex CORRECTED_DATA"
@@ -518,22 +518,22 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
 	if (wantMAmp) {
 	  Vector<Float> amp(2);
 	  minMax(amp(0),amp(1),amplitude,msc.modelData());
-	  out.add("modelamplitude",amp);
+	  out.add("model_amplitude",amp);
 	}
 	if (wantMPhase) {
 	  Vector<Float> phas(2);
 	  minMax(phas(0),phas(1),phase,msc.modelData());
-	  out.add("modelphase",phas);
+	  out.add("model_phase",phas);
 	}
 	if (wantMReal) {
 	  Vector<Float> re(2);
 	  minMax(re(0),re(1),real,msc.modelData());
-	  out.add("modelreal",re);
+	  out.add("model_real",re);
 	}
 	if (wantMImag) {
 	  Vector<Float> im(2);
 	  minMax(im(0),im(1),imag,msc.modelData());
-	  out.add("modelimaginary",im);
+	  out.add("model_imaginary",im);
 	}
 	if (wantMData) {
 	  os << LogIO::WARN << "range not available for complex MODEL_DATA"
