@@ -737,11 +737,6 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	    SpWCount = 0;
 	    if (uInt(++SpWId) >= nIntSpW_p.nelements()) SpWId = 0;
 	}
-	if (++counter >=  loopCount) {
-	  // insert gap
-	  Time+=Tgap_p;
-	  counter=0;
-	}
 
 	MDirection fc = msc.field().phaseDirMeas(FldId);
 	ra = fc.getAngle().getValue()(0);
@@ -909,7 +904,11 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	    }
 	  }
 	}
-
+	if (++counter >= loopCount) {
+	  // insert gap
+	  Time+=Tgap_p;
+	  counter=0;
+	}
 	Time+=Tint_p; 
     }
 
@@ -1241,11 +1240,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	    SpWCount = 0;
 	    if (uInt(++SpWId) >= nIntSpW_p.nelements()) SpWId = 0;
 	}
-	if (++counter >= loopCount) {
-	  // insert gap
-	  Time+=Tgap_p;
-	  counter=0;
-	}
+	
 	MDirection fc = msc.field().phaseDirMeas(FldId);
 	ra = fc.getAngle().getValue()(0);
 	dec = fc.getAngle().getValue()(1);
@@ -1430,6 +1425,11 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	  }
 	}
 
+	if (++counter >= loopCount) {
+	  // insert gap
+	  Time+=Tgap_p;
+	  counter=0;
+	}
 	Time+=Tint_p; 
     }
 
