@@ -106,7 +106,7 @@ rangeexprlist :   rangeexpr
 
 rangeexpr : NUMBER DASH NUMBER unit {
 	      cout << "uvdist between " << $1 << " and " << $3 << endl;
-              $$ = MSUvDistParse(msUvDistGramMS()).selectUVRange($1, $3);}
+              $$ = MSUvDistParse().selectUVRange($1, $3);}
            ;
 
 unit :  DISTANCEUNIT
@@ -115,17 +115,17 @@ unit :  DISTANCEUNIT
 
 upuvbound : LT NUMBER unit {
 	      cout << "uvdist < " << $2 << endl;
-              $$ = MSUvDistParse(msUvDistGramMS()).selectUVRange(0, $2);}
+              $$ = MSUvDistParse().selectUVRange(0, $2);}
            ;
         
 lowuvbound : GT NUMBER unit {
 	      cout << "uvdist > " << $2 << endl;
-              $$ = MSUvDistParse(msUvDistGramMS()).selectUVRange($2, 1000000);}
+              $$ = MSUvDistParse().selectUVRange($2, 1000000);}
            ;
 
 uvdistwithfract : NUMBER unit COLON NUMBER PERCENT {
 	      cout << "uvdist around " << $1 << endl;
-              $$ = MSUvDistParse(msUvDistGramMS()).selectUVRange($1-$4*0.01, 1+$4*0.01);}
+              $$ = MSUvDistParse().selectUVRange($1-$4*0.01, 1+$4*0.01);}
              ;
 %%
 

@@ -122,11 +122,11 @@ public:
     String& shorthand();
 
     // Get ms object.
-    MeasurementSet& ms();
+    static MeasurementSet& ms();
 
 private:
-    String  shorthand_p;
-    MeasurementSet   ms_p;
+    String shorthand_p;
+    static MeasurementSet ms_p;
 };
 
 } //# NAMESPACE CASA - END

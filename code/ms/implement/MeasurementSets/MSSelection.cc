@@ -26,6 +26,7 @@
 //# $Id: 
 //----------------------------------------------------------------------------
 
+#include <ms/MeasurementSets/MSSelection.h>
 #include <ms/MeasurementSets/MSAntennaGram.h>
 #include <ms/MeasurementSets/MSCorrGram.h>
 #include <ms/MeasurementSets/MSFieldGram.h>
@@ -44,8 +45,6 @@
 #include <casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-TableExprNode *MSSelection::msTableExprNode = 0x0;
 
 //----------------------------------------------------------------------------
 
@@ -151,36 +150,50 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
 
   for(uInt i=0; i<exprOrder_p.nelements(); i++)
   {
+    TableExprNode node;
+
     switch(exprOrder_p[i])
     {
       case ANTENNA_EXPR:
-        if(antennaExpr_p != "")
-          condition = msAntennaGramParseCommand(ms, antennaExpr_p);
+        if(antennaExpr_p != "" &&
+           msAntennaGramParseCommand(ms, antennaExpr_p))
+          node = msAntennaGramParseNode();
         break;
       case CORR_EXPR:
-        if(corrExpr_p != "")
-          condition = condition && msCorrGramParseCommand(ms, corrExpr_p);
+        if(corrExpr_p != "" &&
+           msCorrGramParseCommand(ms, corrExpr_p))
+          node = msCorrGramParseNode();
         break;
       case FIELD_EXPR:
-        if(fieldExpr_p != "")
-//          condition = condition && msFieldGramParseCommand(ms, fieldExpr_p);
+        if(fieldExpr_p != "" &&
+           msFieldGramParseCommand(ms, fieldExpr_p))
+          node = msFieldGramParseNode();
         break;
       case SPW_EXPR:
-        if(spwExpr_p != "")
-          condition = condition && msSPWGramParseCommand(ms, spwExpr_p);
+        if(spwExpr_p != "" &&
+           msSPWGramParseCommand(ms, spwExpr_p))
+          node = msSPWGramParseNode();
         break;
       case TIME_EXPR:
-        if(timeExpr_p != "")
-          condition = condition && msTimeGramParseCommand(ms, timeExpr_p);
+        if(timeExpr_p != "" &&
+           msTimeGramParseCommand(ms, timeExpr_p))
+          node = msTimeGramParseNode();
         break;
       case UVDIST_EXPR:
-        if(uvDistExpr_p != "")
-//          condition = condition && msUvDistGramParseCommand(ms, uvDistExpr_p);
+        if(uvDistExpr_p != "" &&
+           msUvDistGramParseCommand(ms, uvDistExpr_p))
+          node = msUvDistGramParseNode();
         break;
       case NO_EXPR:
       default:
         break;
     }
+
+    if(node.isNull() == False)
+      if(condition.isNull() == True)
+        condition = node;
+      else
+        condition = condition && node;
   }
 
   return condition;

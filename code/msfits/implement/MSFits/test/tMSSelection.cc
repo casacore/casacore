@@ -56,16 +56,16 @@ int main(int argc, char **argv)
 
         MSSelection select;
         select.setUVDistExpr("uvdist='3727km:5%'");
-        select.setFieldExpr("field='>0'");
+//        select.setFieldExpr("field='>0'");
 
         cout << "Original table has rows " << ms.nrow() << endl;
 
-        select.toTableExprNode(ms);
+        TableExprNode node = select.toTableExprNode(ms);
 
-        cout << "TableExprNode has rows = " << MSSelection::msTableExprNode->nrow() << endl;
+        cout << "TableExprNode has rows = " << node.nrow() << endl;
 
         Table tablesel(ms.tableName(), Table::Update);
-        MeasurementSet mssel(tablesel(*MSSelection::msTableExprNode, MSSelection::msTableExprNode->nrow() ));
+        MeasurementSet mssel(tablesel(&node, node.nrow() ));
 
         cout << "After mssel constructor called " << endl;
         mssel.rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
@@ -76,7 +76,6 @@ int main(int argc, char **argv)
         else {
           cout << "selected table has rows " << mssel.nrow() << endl;
         }
-        delete MSSelection::msTableExprNode;
     } catch (AipsError x) {
         cout << "ERROR: " << x.getMesg() << endl;
     }

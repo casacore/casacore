@@ -29,11 +29,22 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSAntennaParse::node;
+TableExprNode MSAntennaParse::node_p;
+
+//# Constructor
+MSAntennaParse::MSAntennaParse ()
+: MSParse()
+{
+}
 
 //# Constructor with given ms name.
 MSAntennaParse::MSAntennaParse (const MeasurementSet& ms)
 : MSParse(ms, "Antenna")
 {}
+
+TableExprNode& MSAntennaParse::node()
+{
+    return node_p;
+}
 
 } //# NAMESPACE CASA - END

@@ -29,11 +29,22 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSTimeParse::node;
+TableExprNode MSTimeParse::node_p;
+
+//# Constructor
+MSTimeParse::MSTimeParse ()
+: MSParse()
+{
+}
 
 //# Constructor with given ms name.
 MSTimeParse::MSTimeParse (const MeasurementSet& ms)
 : MSParse(ms, "Time")
 {}
+
+TableExprNode& MSTimeParse::node()
+{
+    return node_p;
+}
 
 } //# NAMESPACE CASA - END

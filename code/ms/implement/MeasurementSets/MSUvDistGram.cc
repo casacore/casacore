@@ -56,7 +56,6 @@ int MSUvDistGramwrap()
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
-static const MeasurementSet* msMSUvDistGram = 0x0;
 static const char*           strpMSUvDistGram = 0;
 static Int                   posMSUvDistGram = 0;
 
@@ -69,14 +68,14 @@ int msUvDistGramParseCommand (const MeasurementSet& ms, const String& command)
     yy_start = 1;
     strpMSUvDistGram = command.chars();     // get pointer to command string
     posMSUvDistGram  = 0;                   // initialize string position
-    msMSUvDistGram = &ms;                   // get pointer to measurement set
+    MSUvDistParse parser(ms);               // setup measurement set
     return MSUvDistGramparse();             // parse command string
 }
 
-//# Give the measurement set
-const MeasurementSet& msUvDistGramMS()
+//# Give the table expression node
+const TableExprNode& msUvDistGramParseNode()
 {
-    return *msMSUvDistGram;
+    return MSUvDistParse::node();
 }
 
 //# Give the string position.

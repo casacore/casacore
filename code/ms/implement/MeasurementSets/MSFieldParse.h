@@ -87,14 +87,20 @@ class MSFieldParse : public MSParse
 {
 
 public:
+    // Default constructor
+    MSFieldParse ();
+
     // Associate the ms and the shorthand.
     MSFieldParse (const MeasurementSet& ms);
 
     TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
     TableExprNode *selectFieldNames(const Vector<String>& fieldNames);
 
+    // Get table expression node object.
+    static TableExprNode& node();
+
 private:
-    static TableExprNode node;
+    static TableExprNode node_p;
     const String colName;
 };
 

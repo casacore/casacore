@@ -86,11 +86,17 @@ class MSAntennaParse : public MSParse
 {
 
 public:
+    // Default constructor
+    MSAntennaParse ();
+
     // Associate the ms and the shorthand.
     MSAntennaParse (const MeasurementSet& ms);
 
+    // Get table expression node object.
+    static TableExprNode& node();
+
 private:
-    static TableExprNode node;
+    static TableExprNode node_p;
 };
 
 } //# NAMESPACE CASA - END

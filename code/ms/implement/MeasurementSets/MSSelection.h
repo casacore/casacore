@@ -114,9 +114,6 @@ class MSSelection
    // Convert to TableExprNode format (C++ interface to TaQL)
    TableExprNode toTableExprNode(const MeasurementSet& ms);
 
-   //TableExprNode msTableExprNode;
-   static TableExprNode *msTableExprNode;
-
  private:
    // Set into the order of the selection expression
    Bool setOrder(MSSelection::MSExprType type);

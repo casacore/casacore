@@ -31,12 +31,12 @@
 
 //# Includes
 #include <casa/BasicSL/String.h>
-#include <ms/MeasurementSets/MSSelection.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class MeasurementSet;
+class TableExprNode;
 
 // <summary>
 // Global functions for flex/bison scanner/parser for MSFieldGram
@@ -76,8 +76,8 @@ int msFieldGramParseCommand (const MeasurementSet &ms, const String& command);
 // It throws an exception with the current token.
 void MSFieldGramerror (char*);
 
-// Give the measurment set.
-const MeasurementSet& msFieldGramMS();
+// Give the table expression node.
+const TableExprNode &msFieldGramParseNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

@@ -29,11 +29,22 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSCorrParse::node;
+TableExprNode MSCorrParse::node_p;
+
+//# Constructor
+MSCorrParse::MSCorrParse ()
+: MSParse()
+{
+}
 
 //# Constructor with given ms name.
 MSCorrParse::MSCorrParse (const MeasurementSet& ms)
 : MSParse(ms, "Corr")
 {}
+
+TableExprNode& MSCorrParse::node()
+{
+    return node_p;
+}
 
 } //# NAMESPACE CASA - END

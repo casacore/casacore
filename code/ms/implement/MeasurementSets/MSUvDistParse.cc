@@ -30,15 +30,27 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSUvDistParse::node;
+TableExprNode MSUvDistParse::node_p;
+
+//# Constructor
+MSUvDistParse::MSUvDistParse ()
+: MSParse()
+{
+}
 
 //# Constructor with given ms name.
 MSUvDistParse::MSUvDistParse (const MeasurementSet& ms)
 : MSParse(ms, "UvDist")
-{}
+{
+}
+
+TableExprNode& MSUvDistParse::node()
+{
+    return node_p;
+}
 
 TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
-                                           const Double& endUV)
+                                            const Double& endUV)
 {
     // Column accessors
     ROMSMainColumns msMainCol(ms());
@@ -63,7 +75,8 @@ TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
     if(nRowSel == 0)
       rowsel.resize(nRowSel, True);
 
-    return &(node = TableExprNode((ms().nodeRownr().in(rowsel))));
+    node() = TableExprNode((ms().nodeRownr().in(rowsel)));
+    return &node();
 }
 
 } //# NAMESPACE CASA - END

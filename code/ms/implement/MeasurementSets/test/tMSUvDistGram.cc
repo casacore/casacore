@@ -35,22 +35,20 @@
 
 #include <casa/namespace.h>
 
-//namespace casa { //# NAMESPACE CASA - BEGIN
-using namespace casa;
 
 int main(int argc, char **argv)
 {
   try {
     cout << "before ms constructor called " << endl;
-    const String msName = "3C273XC1.ms";
+    const String msName = "3C273XC1_tmp.ms";
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
-    //Table sorted=ms.keywordSet().asTable("SORTED_TABLE");
     cout << "Original table has rows " << ms.nrow() << endl;
     msUvDistGramParseCommand(ms, "uvdist='3727km:5%'");
-    cout << "TableExprNode has rows = " << MSSelection::msTableExprNode->nrow() << endl;
+    const TableExprNode *node = &msUvDistGramParseNode();
+    cout << "TableExprNode has rows = " << node->nrow() << endl;
     Table tablesel(ms.tableName(), Table::Update);
-    mssel = new MeasurementSet(tablesel(*MSSelection::msTableExprNode, MSSelection::msTableExprNode->nrow() ));
+    mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
     cout << "After mssel constructor called " << endl;
     mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
     mssel->flush();
@@ -60,7 +58,6 @@ int main(int argc, char **argv)
     else {
       cout << "selected table has rows " << mssel->nrow() << endl;
     }
-    delete MSSelection::msTableExprNode;
     delete mssel;
   } catch (AipsError x) {
     cout << "ERROR: " << x.getMesg() << endl;

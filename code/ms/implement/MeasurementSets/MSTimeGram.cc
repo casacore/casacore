@@ -55,7 +55,6 @@ int MSTimeGramwrap()
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
-static const MeasurementSet* msMSTimeGram = 0x0;
 static const char*           strpMSTimeGram = 0;
 static Int                   posMSTimeGram = 0;
 
@@ -68,14 +67,14 @@ int msTimeGramParseCommand (const MeasurementSet& ms, const String& command)
     yy_start = 1;
     strpMSTimeGram = command.chars();     // get pointer to command string
     posMSTimeGram  = 0;                   // initialize string position
-    msMSTimeGram = &ms;                   // get pointer to measurement set
+    MSTimeParse parser(ms);               // setup measurement set
     return MSTimeGramparse();             // parse command string
 }
 
-//# Give the measurement set
-const MeasurementSet& msTimeGramMS()
+//# Give the table expression node
+const TableExprNode& msTimeGramParseNode()
 {
-    return *msMSTimeGram;
+    return MSTimeParse::node();
 }
 
 //# Give the string position.

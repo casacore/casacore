@@ -55,7 +55,6 @@ int MSCorrGramwrap()
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
-static const MeasurementSet* msMSCorrGram = 0x0;
 static const char*           strpMSCorrGram = 0;
 static Int                   posMSCorrGram = 0;
 
@@ -68,14 +67,14 @@ int msCorrGramParseCommand (const MeasurementSet& ms, const String& command)
     yy_start = 1;
     strpMSCorrGram = command.chars();     // get pointer to command string
     posMSCorrGram  = 0;                   // initialize string position
-    msMSCorrGram = &ms;                   // get pointer to measurement set
+    MSCorrParse parser(ms);               // setup measurement set
     return MSCorrGramparse();             // parse command string
 }
 
-//# Give the measurement set
-const MeasurementSet& msCorrGramMS()
+//# Give the table expression node
+const TableExprNode& msCorrGramParseNode()
 {
-    return *msMSCorrGram;
+    return MSCorrParse::node();
 }
 
 //# Give the string position.

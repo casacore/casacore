@@ -30,23 +30,36 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSFieldParse::node;
+TableExprNode MSFieldParse::node_p;
+
+//# Constructor
+MSFieldParse::MSFieldParse ()
+: MSParse()
+{
+}
 
 //# Constructor with given ms name.
 MSFieldParse::MSFieldParse (const MeasurementSet& ms)
 : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))
 {}
 
+TableExprNode& MSFieldParse::node()
+{
+    return node_p;
+}
+
 TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
 {
-    return &(node = TableExprNode((ms().col(colName).in(fieldIds))));
+    node() = TableExprNode((ms().col(colName).in(fieldIds)));
+    return &node();
 }
 
 TableExprNode *MSFieldParse::selectFieldNames(const Vector<String>& fieldNames)
 {
     MSFieldIndex msFI(ms().field());
 
-    return &(node = TableExprNode((ms().col(colName).in(msFI.matchFieldName(fieldNames)))));
+    node() = TableExprNode((ms().col(colName).in(msFI.matchFieldName(fieldNames))));
+    return &node();
 }
 
 } //# NAMESPACE CASA - END

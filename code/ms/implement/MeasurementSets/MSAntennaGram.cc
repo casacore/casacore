@@ -55,7 +55,6 @@ int MSAntennaGramwrap()
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
-static const MeasurementSet* msMSAntennaGram = 0x0;
 static const char*           strpMSAntennaGram = 0;
 static Int                   posMSAntennaGram = 0;
 
@@ -68,14 +67,14 @@ int msAntennaGramParseCommand (const MeasurementSet& ms, const String& command)
     yy_start = 1;
     strpMSAntennaGram = command.chars();     // get pointer to command string
     posMSAntennaGram  = 0;                   // initialize string position
-    msMSAntennaGram = &ms;                   // get pointer to measurement set
+    MSAntennaParse parser(ms);               // setup measurement set
     return MSAntennaGramparse();             // parse command string
 }
 
-//# Give the measurement set
-const MeasurementSet& msAntennaGramMS()
+//# Give the table expression node
+const TableExprNode& msAntennaGramParseNode()
 {
-    return *msMSAntennaGram;
+    return MSAntennaParse::node();
 }
 
 //# Give the string position.

@@ -86,13 +86,19 @@ class MSUvDistParse : public MSParse
 {
 
 public:
+    // Default constructor
+    MSUvDistParse ();
+
     // Associate the ms and the shorthand.
     MSUvDistParse (const MeasurementSet& ms);
 
     TableExprNode *selectUVRange(const Double& startUV, const Double& endUV);
 
+    // Get table expression node object.
+    static TableExprNode& node();
+
 private:
-    static TableExprNode node;
+    static TableExprNode node_p;
 };
 
 } //# NAMESPACE CASA - END

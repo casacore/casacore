@@ -99,7 +99,7 @@ fieldexpr:  namelist
 namelist : NAME {
 		 Vector<String> fieldnames(1);
                  fieldnames[0] = String($1);		
-		 $$ = MSFieldParse(msFieldGramMS()).selectFieldNames(fieldnames);}
+		 $$ = MSFieldParse().selectFieldNames(fieldnames);}
          | namelist COMMA NAME { 
 	         printf("For list case, this one match first\n");}
          ;
@@ -111,19 +111,19 @@ indexrangeexpr : INDEX DASH INDEX {
                      fieldids[i] = $<ival>1 + i;
 		     cout << "field ids" << fieldids[i] << endl;
                    }
-                   $$ = MSFieldParse(msFieldGramMS()).selectFieldIds(fieldids);}
+                   $$ = MSFieldParse().selectFieldIds(fieldids);}
                ;
 
 lowindexboundexpr : GT INDEX {
                    cout << "> index " << $2 << endl;
-		   ROMSFieldColumns msFieldCols_p(msFieldGramMS().field());
+		   ROMSFieldColumns msFieldCols_p(MSFieldParse::ms().field());
 		   Int startID = $2;
 		   Int len = msFieldCols_p.nrow();
 		   Vector<Int> fieldids(len- startID -1);
 		   for(Int i = 0; i < (Int)fieldids.nelements(); i++) {
 		     fieldids[i] = startID + i + 1;
 		   }
-		   $$ = MSFieldParse(msFieldGramMS()).selectFieldIds(fieldids);}
+		   $$ = MSFieldParse().selectFieldIds(fieldids);}
                ;
 
 upindexboundexpr : LT INDEX {
@@ -133,7 +133,7 @@ upindexboundexpr : LT INDEX {
                      fieldids[i] = i;
 		     cout << "field ids" << fieldids[i] << endl;
                    }
-                   $$ = MSFieldParse(msFieldGramMS()).selectFieldIds(fieldids);}
+                   $$ = MSFieldParse().selectFieldIds(fieldids);}
               ;
 
 %%
