@@ -28,20 +28,22 @@
 #include <aips/Tables/StArrayFile.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/IO/RegularFileIO.h>
-#include <aips/IO/RawIO.h>
 #include <aips/IO/CanonicalIO.h>
+#include <aips/IO/LECanonicalIO.h>
 #include <aips/OS/CanonicalConversion.h>
+#include <aips/OS/LECanonicalConversion.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/ValType.h>
 #include <aips/OS/Path.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/Utilities/Assert.h>
 
 
 StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
-				uInt version, Bool canonical,
+				uInt version, Bool bigEndian,
 				uInt bufferSize)
 : leng_p    (16),
   version_p (version),
@@ -54,10 +56,10 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
     //# Open file name as input and/or output; throw exception if it fails.
     file_p = new RegularFileIO (RegularFile(fname), fop, bufferSize);
     AlwaysAssert (file_p != 0, AipsError);
-    if (canonical) {
+    if (bigEndian) {
 	iofil_p = new CanonicalIO (file_p);
     }else{
-	iofil_p = new RawIO (file_p);
+	iofil_p = new LECanonicalIO (file_p);
     }
     AlwaysAssert (iofil_p != 0, AipsError);
     swput_p = iofil_p->isWritable();
@@ -70,28 +72,24 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
     }else{
 	hasPut_p = True;
     }
-    if (canonical) {
-	sizeChar_p   = CanonicalConversion::canonicalSize (static_cast<Char*>(0));
-	sizeuChar_p  = CanonicalConversion::canonicalSize (static_cast<uChar*>(0));
-	sizeShort_p  = CanonicalConversion::canonicalSize (static_cast<Short*>(0));
-	sizeuShort_p = CanonicalConversion::canonicalSize (static_cast<uShort*>(0));
-	sizeInt_p    = CanonicalConversion::canonicalSize (static_cast<Int*>(0));
-	sizeuInt_p   = CanonicalConversion::canonicalSize (static_cast<uInt*>(0));
-	sizeInt64_p  = CanonicalConversion::canonicalSize (static_cast<Int64*>(0));
-	sizeuInt64_p = CanonicalConversion::canonicalSize (static_cast<uInt64*>(0));
-	sizeFloat_p  = CanonicalConversion::canonicalSize (static_cast<Float*>(0));
-	sizeDouble_p = CanonicalConversion::canonicalSize (static_cast<Double*>(0));
-    }else{
-	sizeChar_p   = sizeof(Char);
-	sizeuChar_p  = sizeof(uChar);
-	sizeShort_p  = sizeof(Short);
-	sizeuShort_p = sizeof(uShort);
-	sizeInt_p    = sizeof(Int);
-	sizeuInt_p   = sizeof(uInt);
-	sizeInt64_p  = sizeof(Int64);
-	sizeuInt64_p = sizeof(uInt64);
-	sizeFloat_p  = sizeof(Float);
-	sizeDouble_p = sizeof(Double);
+    sizeChar_p   = ValType::getCanonicalSize (TpChar,   bigEndian);
+    sizeuChar_p  = ValType::getCanonicalSize (TpUChar,  bigEndian);
+    sizeShort_p  = ValType::getCanonicalSize (TpShort,  bigEndian);
+    sizeuShort_p = ValType::getCanonicalSize (TpUShort, bigEndian);
+    sizeInt_p    = ValType::getCanonicalSize (TpInt,    bigEndian);
+    sizeuInt_p   = ValType::getCanonicalSize (TpUInt,   bigEndian);
+    sizeFloat_p  = ValType::getCanonicalSize (TpFloat,  bigEndian);
+    sizeDouble_p = ValType::getCanonicalSize (TpDouble, bigEndian);
+    if (bigEndian) {
+        sizeInt64_p =
+            CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+	sizeuInt64_p =
+            CanonicalConversion::canonicalSize(static_cast<uInt64*>(0));
+    } else {
+        sizeInt64_p =
+            LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+	sizeuInt64_p =
+            LECanonicalConversion::canonicalSize(static_cast<uInt64*>(0));
     }
 }
 

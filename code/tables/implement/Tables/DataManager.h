@@ -257,6 +257,10 @@ public:
     uInt ncolumn() const
 	{ return nrcol_p; }
 
+    // Have the data to be stored in big or little endian canonical format?
+    Bool asBigEndian() const
+      { return asBigEndian_p; }
+
     // Compose a keyword name from the given keyword appended with the
     // sequence number (e.g. key_0).
     // This makes the keyword name unique if multiple data managers
@@ -337,6 +341,7 @@ protected:
 private:
     uInt         nrcol_p;            //# #columns in this st.man.
     uInt         seqnr_p;            //# Unique nr of this st.man. in a Table
+    Bool         asBigEndian_p;      //# store data in big or little endian
     Table*       table_p;            //# Table this data manager belongs to
     mutable DataManager* clone_p;    //# Pointer to clone (used by SetupNewTab)
 
@@ -395,6 +400,10 @@ private:
 
     // Link the data manager to the Table object.
     void linkToTable (Table& tab);
+
+    // Tell the data manager if big or little endian format is needed.
+    void setEndian (Bool bigEndian)
+      { asBigEndian_p = bigEndian; }
 
     // Flush and optionally fsync the data.
     // The AipsIO stream represents the main table file and can be
@@ -950,7 +959,6 @@ private:
     // The private declaration of this operator makes it unusable.
     DataManagerColumn& operator= (const DataManagerColumn&);
 };
-
 
 
 #endif

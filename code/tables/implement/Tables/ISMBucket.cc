@@ -1,5 +1,5 @@
 //# ISMBucket.cc: A bucket in the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1999,2001
+//# Copyright (C) 1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -214,7 +214,7 @@ uInt ISMBucket::getLength (uInt fixedLength, const char* data) const
     // Get the data item length when it is variable.
     uInt leng;
     Conversion::ValueFunction* readuInt =
-	                  ISMColumn::getReaduInt (stmanPtr_p->asCanonical());
+	                  ISMColumn::getReaduInt (stmanPtr_p->asBigEndian());
     readuInt (&leng, data, 1);
     return leng;
 }
@@ -304,7 +304,7 @@ void ISMBucket::write (char* bucketStorage) const
 {
     uInt nrcol = stmanPtr_p->ncolumn();
     Conversion::ValueFunction* writeuInt =
-	                  ISMColumn::getWriteuInt (stmanPtr_p->asCanonical());
+	                  ISMColumn::getWriteuInt (stmanPtr_p->asBigEndian());
     // The index will be written just after the data.
     uInt offset = dataLeng_p + uIntSize_p;
     writeuInt (bucketStorage, &offset, 1);
@@ -328,7 +328,7 @@ void ISMBucket::read (const char* bucketStorage)
 {
     uInt nrcol = stmanPtr_p->ncolumn();
     Conversion::ValueFunction* readuInt =
-	                  ISMColumn::getReaduInt (stmanPtr_p->asCanonical());
+	                  ISMColumn::getReaduInt (stmanPtr_p->asBigEndian());
     // Get the offset of the index.
     uInt offset;
     readuInt (&offset, bucketStorage, 1);

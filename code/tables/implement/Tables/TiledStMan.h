@@ -1,5 +1,5 @@
 //# TiledStMan.h: Base class for Tiled Storage Managers
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -243,9 +243,6 @@ public:
     // Get the number of coordinate vectors.
     uInt nrCoordVector() const;
 
-    // Have the data to be stored in canonical format?
-    Bool asCanonical() const;
-
     // Get the nr of rows in this storage manager.
     uInt nrow() const;
 
@@ -440,8 +437,7 @@ protected:
     void headerFileClose (AipsIO* headerFile);
 
     // Set up the TiledStMan variables from the table description.
-    // Tell if the data is in canonical format.
-    void setup (Bool canonical=True);
+    void setup();
 
     // Create a TSMFile object and store its pointer at the given index
     // in the block.
@@ -456,8 +452,6 @@ protected:
     //# Declare all data members.
     // The name of the hypercolumn.
     String hypercolumnName_p;
-    // Is the data stored in canonical format?
-    Bool  asCanonical_p;
     // The number of rows in the columns.
     uInt  nrrow_p;
     // The assembly of all columns.
@@ -501,9 +495,6 @@ inline uInt TiledStMan::nrow() const
 
 inline uInt TiledStMan::nhypercubes() const
     { return cubeSet_p.nelements(); }
-
-inline Bool TiledStMan::asCanonical() const
-    { return asCanonical_p; }
 
 inline void TiledStMan::setDataChanged()
     { dataChanged_p = True; }

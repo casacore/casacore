@@ -1,5 +1,5 @@
 //# ISMBase.h: Base class of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -138,9 +138,6 @@ public:
 
     // Get the bucket size (in bytes).
     uInt bucketSize() const;
-
-    // Have the data to be stored in canonical format?
-    Bool asCanonical() const;
 
     // Get the size of a uInt in external format (can be canonical or local).
     uInt uIntSize() const;
@@ -342,8 +339,6 @@ private:
     Bool dataChanged_p;
     // The size of a uInt in external format (local or canonical).
     uInt uIntSize_p;
-    // Have the data to be stored in canonical or local format.
-    Bool asCanonical_p;
     // A temporary read/write buffer (also for other classes).
     char* tempBuffer_p;
 };
@@ -377,11 +372,6 @@ inline uInt ISMBase::bucketSize() const
 inline uInt ISMBase::uIntSize() const
 {
     return uIntSize_p;
-}
-
-inline Bool ISMBase::asCanonical() const
-{
-    return asCanonical_p;
 }
 
 inline char* ISMBase::tempBuffer() const

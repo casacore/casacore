@@ -36,6 +36,7 @@
 #include <aips/Utilities/Copy.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/OS/CanonicalConversion.h>
+#include <aips/OS/LECanonicalConversion.h>
 
 
 SSMColumn::SSMColumn (SSMBase* aParent, int aDataType, uInt aColNr)
@@ -701,7 +702,7 @@ void SSMColumn::init()
 {
   DataType aDT = static_cast<DataType>(dataType());
   itsLocalSize = ValType::getTypeSize(aDT);
-  Bool asCanonical = itsSSMPtr->asCanonical();
+  Bool asBigEndian = itsSSMPtr->asBigEndian();
   itsNrCopy = itsNrElem;
   if (aDT == TpString) {
     // Fixed length strings are written directly.
@@ -716,16 +717,11 @@ void SSMColumn::init()
       // the strings are.
       itsNrCopy=1;
       itsLocalSize = ValType::getTypeSize(TpInt);
-      if (asCanonical) {
-	itsExternalSizeBytes = ValType::getCanonicalSize (TpInt);
-	uInt aNRel;
-	ValType::getCanonicalFunc (TpInt, itsReadFunc, itsWriteFunc, aNRel);
-	itsNrCopy *= aNRel;
-      }else{
-	itsExternalSizeBytes = itsLocalSize;
-	itsReadFunc = itsWriteFunc = Conversion::valueCopy;
-	itsNrCopy *= itsLocalSize;
-      }
+      itsExternalSizeBytes = ValType::getCanonicalSize (TpInt, asBigEndian);
+      uInt aNRel;
+      ValType::getCanonicalFunc (TpInt, itsReadFunc, itsWriteFunc, aNRel,
+				 asBigEndian);
+      itsNrCopy *= aNRel;
       itsExternalSizeBytes *= 3;
       itsLocalSize         *= 3;
       itsNrCopy            *= 3;
@@ -737,16 +733,11 @@ void SSMColumn::init()
     itsReadFunc  = &Conversion::bitToBool;
     itsWriteFunc = &Conversion::boolToBit;
   } else {
-    if (asCanonical) {
-      itsExternalSizeBytes = ValType::getCanonicalSize (aDT);
-      uInt aNRel;
-      ValType::getCanonicalFunc (aDT, itsReadFunc, itsWriteFunc, aNRel);
-      itsNrCopy *= aNRel;
-    }else{
-      itsExternalSizeBytes = itsLocalSize;
-      itsReadFunc = itsWriteFunc = Conversion::valueCopy;
-      itsNrCopy *= itsLocalSize;
-    }
+    itsExternalSizeBytes = ValType::getCanonicalSize (aDT, asBigEndian);
+    uInt aNRel;
+    ValType::getCanonicalFunc (aDT, itsReadFunc, itsWriteFunc, aNRel,
+			       asBigEndian);
+    itsNrCopy *= aNRel;
     itsExternalSizeBytes *= itsNrElem;
     itsLocalSize         *= itsNrElem;
     itsExternalSizeBits   = 8*itsExternalSizeBytes;

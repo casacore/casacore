@@ -1,5 +1,5 @@
 //# SSMBase.h: Base class of the Standard Storage Manager
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -211,9 +211,6 @@ public:
   // Get the bucket size.
   uInt getBucketSize() const;
   
-  // Have the data to be stored in canonical format?
-  Bool asCanonical() const;
-  
   // Get the number of rows in this storage manager.
   uInt getNRow() const;
   
@@ -377,8 +374,6 @@ private:
   //# Declare member variables.
   // Name of data manager.
   String       itsDataManName;
-  // The version of the class.
-  uInt         itsVersion;
   
   // The file containing the indirect arrays.
   StManArrayFile* itsIosFile;
@@ -444,17 +439,8 @@ private:
   
   // Has the data changed since the last flush?
   Bool isDataChanged;
-  
-  // Have the data to be stored in canonical or local format.
-  Bool isCanonical;
-  
 };
 
-
-inline uInt SSMBase::getVersion() const
-{
-  return itsVersion;
-}
 
 inline uInt SSMBase::getNrIndices() const
 {
@@ -475,12 +461,6 @@ inline uInt SSMBase::getBucketSize() const
 {
   return itsBucketSize;
 }
-
-inline Bool SSMBase::asCanonical() const
-{
-  return isCanonical;
-}
-
 
 inline BucketCache& SSMBase::getCache()
 {

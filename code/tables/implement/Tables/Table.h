@@ -91,6 +91,11 @@ template<class T> class PtrBlock;
 // to be bound to storage managers or virtual column engines.
 // Class SetupNewTable is needed for this purpose. The Tables module
 // documentation explains in more detail how to create a table.
+// When creating a table, it can be specified which endian format to use.
+// By default it uses the format specified in the aipsrc variable
+// <code>table.endianformat</code> which defaults to
+// <code>Table::LocalEndian</code> (thus the endian format of the
+// machine being used).
 //
 // Other Table objects can be created from a Table using
 // the select, project and sort functions. In that way a subset
@@ -152,6 +157,17 @@ public:
 	Delete
     };
 
+    enum EndianFormat {
+	// store table data in big endian (e.g. SUN) format
+	BigEndian=1,
+	// store table data in little endian (e.g. Intel) format
+	LittleEndian,
+	// store data in endian format of the machine used
+	LocalEndian,
+	// use endian format defined in the aipsrc variable table.endianformat
+	AipsrcEndian
+    };
+
     // Define the signature of the function being called when the state
     // of a scratch table changes (i.e. created, closed, renamed,
     // (un)markForDelete).
@@ -196,7 +212,7 @@ public:
     // of 5 seconds. Otherwise DefaultLocking keeps the locking options
     // of the already open table.
     // <group>
-    explicit Table (const String& tableName, TableOption = Table::Old);
+  explicit Table (const String& tableName, TableOption = Table::Old);
     Table (const String& tableName, const TableLock& lockOptions,
 	   TableOption = Table::Old);
     Table (const String& tableName, const String& tableDescName,
@@ -218,12 +234,16 @@ public:
     // <linkto class=TableLock>TableLock</linkto>.
     // The default locking mechanism is AutoLocking with a default
     // inspection interval of 5 seconds.
+    // <br>The data will be stored in the given endian format.
     // <group>
-    explicit Table (SetupNewTable&, uInt nrrow = 0, Bool initialize = False);
+    explicit Table (SetupNewTable&, uInt nrrow = 0, Bool initialize = False,
+		    EndianFormat = Table::AipsrcEndian);
     Table (SetupNewTable&, TableLock::LockOption,
-	   uInt nrrow = 0, Bool initialize = False);
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian);
     Table (SetupNewTable&, const TableLock& lockOptions,
-	   uInt nrrow = 0, Bool initialize = False);
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian);
     // </group>
 
     //# Virtually concatenate some tables.
@@ -273,6 +293,9 @@ public:
     // An exception is thrown if the table is not writable.
     // Nothing is done if the table is already open for read/write.
     void reopenRW();
+
+    // Get the endian format in which the table is stored.
+    Table::EndianFormat endianFormat() const;
 
     // Is the table used (i.e. open) in this process.
     static Bool isOpened (const String& tableName);

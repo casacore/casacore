@@ -207,6 +207,14 @@
 //       be assigned its own data manager, which allows for optimization of the
 //       data storage per column. The choice of data manager determines
 //       whether a column is filled or virtual.
+//  <li> Table data are stored in a canonical format, so they can be read
+//       on any machine. To avoid needless swapping of bytes, the data can
+//       be stored in big endian (as used on e.g. SUN) or little endian
+//       (as used on Intel PC-s) canonical format. 
+//       By default it uses the format specified in the aipsrc variable
+//       <code>table.endianformat</code> which defaults to
+//       <code>Table::LocalEndian</code> (thus the endian format of the
+//       machine being used).
 // </ul>
 // Concurrent access from different processes to the same table is
 // fully supported by means of a <A HREF="#Tables:LockSync">
@@ -942,6 +950,11 @@
 // Other storage managers should only be used when they pay off in
 // file space (like <src>IncrementalStMan</src> for slowly varying data)
 // or access speed (like the tiled storage managers for large data arrays).
+// <br>The storage managers store the data in a big or little endian
+// canonical format. The format can be specified when the table is created.
+// By default it uses the endian format as specified in the aipsrc variable
+// <code>table.endianformat</code> which can have the value local, big,
+// or little. The default is local.
 // <ol>
 //  <li>
 //   <linkto class="StandardStMan:description">StandardStMan</linkto>
@@ -971,7 +984,7 @@
 //   It supports all table functionality, but its I/O is probably not
 //   as efficient as other storage managers. It also requires that
 //   a large part of the table fits in memory.
-//   <br>It should not be used anymore, because it uses much memory
+//   <br>It should not be used anymore, because it uses a lot of memory
 //   for larger tables and because it is not very robust in case an
 //   application or system crashes.
 // </ol>

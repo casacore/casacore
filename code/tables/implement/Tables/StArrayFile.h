@@ -1,5 +1,5 @@
 //# StArrayFile.h: Read/write array in external format for a storage manager
-//# Copyright (C) 1994,1995,1996,1997,1999,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -134,7 +134,7 @@ public:
     // The buffersize is used to allocate a buffer of a proper size
     // for the underlying filebuf object (see iostream package).
     StManArrayFile (const String& name, ByteIO::OpenOption,
-		    uInt version=0, Bool canonical=True,
+		    uInt version=0, Bool bigEndian=True,
 		    uInt bufferSize=65536);
 
     // Close the possibly opened file.

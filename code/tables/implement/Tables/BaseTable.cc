@@ -222,7 +222,7 @@ void BaseTable::flushTableInfo()
 }
 
 
-void BaseTable::writeStart (AipsIO& ios)
+void BaseTable::writeStart (AipsIO& ios, Bool bigEndian)
 {
     //# Check option.
     if (!openedForWrite()) {
@@ -237,7 +237,12 @@ void BaseTable::writeStart (AipsIO& ios)
     //# Version 2 (of PlainTable) does not have its own TableRecord anymore.
     ios.putstart ("Table", 2);
     ios << nrrow_p;
-    ios << uInt(0);              // format = canonical
+    //# Write endianity as a uInt, because older tables contain a uInt 0 here.
+    uInt endian = 0;
+    if (!bigEndian) {
+      endian = 1;
+    }
+    ios << endian;              // 0=bigendian; 1=littleendian
     if (made && !isMarkedForDelete()) {
 	scratchCallback (False, name_p);
     }

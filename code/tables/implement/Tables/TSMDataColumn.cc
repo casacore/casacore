@@ -50,15 +50,10 @@ TSMDataColumn::TSMDataColumn (const TSMColumn& column)
 	writeFunc_p = &Conversion::boolToBit;
 	tilePixelSize_p = 0;
     }else{
-	if (stmanPtr_p->asCanonical()) {
-	    ValType::getCanonicalFunc (dt, readFunc_p, writeFunc_p,
-				       convPixelSize_p);
-	    tilePixelSize_p = ValType::getCanonicalSize (dt);
-	}else{
-	    readFunc_p = writeFunc_p = Conversion::valueCopy;
-	    tilePixelSize_p = localPixelSize_p;
-	    convPixelSize_p = localPixelSize_p;
-	}
+        Bool asBigEndian = stmanPtr_p->asBigEndian();
+	ValType::getCanonicalFunc (dt, readFunc_p, writeFunc_p,
+				   convPixelSize_p, asBigEndian);
+	tilePixelSize_p = ValType::getCanonicalSize (dt, asBigEndian);
     }
 }
 

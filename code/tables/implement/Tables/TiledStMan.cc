@@ -1,5 +1,5 @@
 //# TiledStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -576,11 +576,9 @@ DataManagerColumn* TiledStMan::reallocateColumn (DataManagerColumn* column)
 }
     
 
-void TiledStMan::setup (Bool canonical)
+void TiledStMan::setup()
 {
     uInt i;
-    // Determine if the data has to be stored in canonical format.
-    asCanonical_p = canonical;
     // Get the description of the hypercolumn.
     Vector<String> dataNames;
     Vector<String> coordNames;
@@ -944,7 +942,14 @@ AipsIO* TiledStMan::headerFileOpen()
 void TiledStMan::headerFilePut (AipsIO& headerFile, uInt nrCube)
 {
     uInt i;
-    headerFile.putstart ("TiledStMan", 1);
+    // The endian switch is a new feature. So only put it if little endian
+    // is used. In that way older software can read newer tables.
+    if (asBigEndian()) {
+        headerFile.putstart ("TiledStMan", 1);
+    } else {
+        headerFile.putstart ("TiledStMan", 2);
+	headerFile << asBigEndian();
+    }
     //# Write StMan sequence number, the number of rows and columns,
     //# and the column data types.
     //# This is only done to check it when reading back.
@@ -978,7 +983,14 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 {
     nrrow_p = tabNrrow;
     uInt i;
-    headerFile.getstart ("TiledStMan");
+    uInt version = headerFile.getstart ("TiledStMan");
+    Bool bigEndian = True;
+    if (version >= 2) {
+        headerFile >> bigEndian;
+    }
+    if (bigEndian != asBigEndian()) {
+        throw DataManError("Endian flag in TSM mismatches the table flag");
+    }
     //# Get and check the number of rows and columns and the column types.
     uInt nrrow, nrcol, seqnr;
     int  dtype;

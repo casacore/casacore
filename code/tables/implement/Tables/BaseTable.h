@@ -115,6 +115,9 @@ public:
     // Reopen the table for read/write.
     virtual void reopenRW() = 0;
 
+    // Is the table stored in big or little endian format?
+    virtual Bool asBigEndian() const = 0;
+
     // Is the table in use (i.e. open) in another process?
     // If <src>checkSubTables</src> is set, it is also checked if
     // a subtable is used in another process.
@@ -464,7 +467,7 @@ protected:
 
     // Start writing a table. It does a putstart and writes <src>nrrow_p</src>.
     // It should be ended by calling <src>writeEnd</src>.
-    void writeStart (AipsIO&);
+    void writeStart (AipsIO&, Bool bigEndian);
 
     // End writing a table.
     void writeEnd (AipsIO&);

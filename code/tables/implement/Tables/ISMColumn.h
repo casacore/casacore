@@ -1,5 +1,5 @@
 //# ISMColumn.h: A Column in the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -355,11 +355,6 @@ private:
     // Forbid assignment.
     ISMColumn& operator= (const ISMColumn&);
 
-    // Copy uInt values.
-    // This function is used to write the lengths, etc. when the
-    // data is kept in local format.
-    static uInt copyuInt (void* out, const void* in, uInt nvalues);
-
     // Initialize part of the object.
     // It is used by doCreate and getFile.
     void init();
@@ -403,10 +398,10 @@ private:
 			    Conversion::ValueFunction* writeLeng);
     static uInt toString (void* out, const void* in, uInt n,
 			  Conversion::ValueFunction* readLeng);
-    static uInt copyFromString (void* out, const void* in, uInt n);
-    static uInt copyToString (void* out, const void* in, uInt n);
-    static uInt writeString (void* out, const void* in, uInt n);
-    static uInt readString (void* out, const void* in, uInt n);
+    static uInt writeStringBE (void* out, const void* in, uInt n);
+    static uInt readStringBE (void* out, const void* in, uInt n);
+    static uInt writeStringLE (void* out, const void* in, uInt n);
+    static uInt readStringLE (void* out, const void* in, uInt n);
     // </group>
 };
 

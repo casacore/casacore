@@ -1,5 +1,5 @@
 //# RefTable.cc: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -186,6 +186,11 @@ void RefTable::reopenRW()
     option_p = Table::Update;
 }
 
+Bool RefTable::asBigEndian() const
+{
+    return baseTabPtr_p->asBigEndian();
+}
+
 Bool RefTable::isMultiUsed (Bool) const
 {
     return False;
@@ -259,7 +264,7 @@ void RefTable::writeRefTable (Bool sync)
     //# Do this only when something has changed.
     if (changed_p) {
 	AipsIO ios;
-	writeStart (ios);
+	writeStart (ios, True);
 	ios << "RefTable";
 	ios.putstart ("RefTable", 2);
 	// Make the name of the base table relative to this table.

@@ -118,7 +118,7 @@ public:
     // It creates the data manager column objects for each column
     // and it allows the data managers to link themselves to the
     // Table object and to initialize themselves.
-    void initDataManagers (uInt nrrow, Table& tab);
+    void initDataManagers (uInt nrrow, Bool bigEndian, Table& tab);
 
     // Link the ColumnSet object to the TableLockData object in the
     // PlainTable object.
@@ -173,13 +173,17 @@ public:
     // Add a column to the table.
     // The default implementation throws an "invalid operation" exception.
     // <group>
-    void addColumn (const ColumnDesc& columnDesc, Table& tab);
     void addColumn (const ColumnDesc& columnDesc,
-		    const String& dataManager, Bool byName, Table& tab);
+		    Bool bigEndian, Table& tab);
     void addColumn (const ColumnDesc& columnDesc,
-		    const DataManager& dataManager, Table& tab);
+		    const String& dataManager, Bool byName,
+		    Bool bigEndian, Table& tab);
+    void addColumn (const ColumnDesc& columnDesc,
+		    const DataManager& dataManager,
+		    Bool bigEndian, Table& tab);
     void addColumn (const TableDesc& tableDesc,
-		    const DataManager& dataManager, Table& tab);
+		    const DataManager& dataManager,
+		    Bool bigEndian, Table& tab);
     // </group>
 
     // Get nr of rows.
@@ -202,7 +206,7 @@ public:
     // Read the data, reconstruct the data managers, and link those to
     // the table object.
     // This function gets called when an existing table is read back.
-    void getFile (AipsIO&, Table& tab, uInt nrrow);
+    void getFile (AipsIO&, Table& tab, uInt nrrow, Bool bigEndian);
 
     // Set the table to being changed.
     void setTableChanged();
@@ -260,7 +264,8 @@ private:
     String uniqueDataManagerName (const String& name) const;
 
     // Do the actual addition of a column.
-    void doAddColumn (const ColumnDesc& columnDesc, DataManager* dataManPtr);
+    void doAddColumn (const ColumnDesc& columnDesc, DataManager* dataManPtr,
+		      Bool bigEndian);
 
     // Check if columns to be removed can be removed.
     // It returns a map of DataManager* telling how many columns for

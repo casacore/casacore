@@ -40,9 +40,9 @@
 #include <aips/IO/BucketCache.h>
 #include <aips/IO/BucketFile.h>
 #include <aips/IO/AipsIO.h>
-#include <aips/IO/RawIO.h>
 #include <aips/IO/MemoryIO.h>
 #include <aips/IO/CanonicalIO.h>
+#include <aips/IO/LECanonicalIO.h>
 #include <aips/IO/FilebufIO.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/OS/DOos.h>
@@ -54,7 +54,6 @@
 SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
   itsDataManName       ("SSM"),
-  itsVersion           (2),
   itsIosFile           (0),
   itsNrRows            (0),
   itsCache             (0),
@@ -74,9 +73,6 @@ SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
   itsBucketRows        (0),
   isDataChanged        (False)
 { 
-  // Determine the data format (local or canonical).
-  // For the moment it is always canonical (until Table supports it).
-  isCanonical = True;
   if (aBucketSize < 0) {
     itsBucketRows = -aBucketSize;
   } else if (aBucketSize == 0) {
@@ -90,7 +86,6 @@ SSMBase::SSMBase (const String& aDataManName,
 		  Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
   itsDataManName       (aDataManName),
-  itsVersion           (2),
   itsIosFile           (0),
   itsNrRows            (0),
   itsCache             (0),
@@ -110,9 +105,6 @@ SSMBase::SSMBase (const String& aDataManName,
   itsBucketRows        (0),
   isDataChanged        (False)
 { 
-  // Determine the data format (local or canonical).
-  // For the moment it is always canonical (until Table supports it).
-  isCanonical = True;
   if (aBucketSize < 0) {
     itsBucketRows = -aBucketSize;
   } else if (aBucketSize == 0) {
@@ -126,7 +118,6 @@ SSMBase::SSMBase (const String& aDataManName,
 		  const Record& spec)
 : DataManager          (),
   itsDataManName       (aDataManName),
-  itsVersion           (2),
   itsIosFile           (0),
   itsNrRows            (0),
   itsCache             (0),
@@ -146,10 +137,7 @@ SSMBase::SSMBase (const String& aDataManName,
   itsBucketRows        (0),
   isDataChanged        (False)
 { 
-  // Determine the data format (local or canonical).
-  // For the moment it is always canonical (until Table supports it).
-  isCanonical = True;
-  // Get buxketrows if defined.
+  // Get bucketrows if defined.
   if (spec.isDefined ("BUCKETROWS")) {
     itsBucketRows = spec.asInt ("BUCKETROWS");
   }
@@ -171,7 +159,6 @@ SSMBase::SSMBase (const String& aDataManName,
 SSMBase::SSMBase (const SSMBase& that)
 : DataManager          (),
   itsDataManName       (that.itsDataManName),
-  itsVersion           (that.itsVersion),
   itsIosFile           (0),
   itsNrRows            (0),
   itsCache             (0),
@@ -189,8 +176,7 @@ SSMBase::SSMBase (const SSMBase& that)
   itsFirstFreeBucket   (-1),
   itsBucketSize        (that.itsBucketSize),
   itsBucketRows        (that.itsBucketRows),
-  isDataChanged        (False),
-  isCanonical          (that.isCanonical)
+  isDataChanged        (False)
 {}
 
 SSMBase::~SSMBase()
@@ -389,22 +375,29 @@ void SSMBase::readHeader()
 {
   itsFile->seek(0);
   
-  // Use the file indicated by the fd from the BucketFile object.
+  // Use the file indicated by the fd from the BucketFile object
   // Use a buffer size (512) equal to start of buckets in the file,
   // so the IO buffers in the different objects do not overlap.
   FilebufIO aFio (itsFile->fd(), 512);
   TypeIO*   aTio;
   
-  // It is stored in canonical or local format.
-  if (asCanonical()) {
+  // It is stored in big or little endian canonical format.
+  if (asBigEndian()) {
     aTio = new CanonicalIO (&aFio);
   } else {
-    aTio = new RawIO (&aFio);
+    aTio = new LECanonicalIO (&aFio);
   }
   AipsIO anOs (aTio);
-  itsVersion = anOs.getstart("StandardStMan");
+  uInt version = anOs.getstart("StandardStMan");
   itsBucketRows = 0;
   itsIdxBucketOffset = 0;
+  Bool bigEndian = True;
+  if (version >= 3) {
+    anOs >> bigEndian;
+  }
+  if (bigEndian != asBigEndian()) {
+    throw DataManError("Endian flag in SSM mismatches the table flag");
+  }
   anOs >> itsBucketSize;                // Size of the bucket
   anOs >> itsNrBuckets;                 // Initial Nr of Buckets
   anOs >> itsPersCacheSize;             // Size of Persistent cache
@@ -412,7 +405,7 @@ void SSMBase::readHeader()
   anOs >> itsFirstFreeBucket;           // First Free Bucket nr
   anOs >> itsNrIdxBuckets;              // Nr of Buckets needed 4 Index
   anOs >> itsFirstIdxBucket;            // First indexBucket Number
-  if (itsVersion >= 2) {
+  if (version >= 2) {
     anOs >> itsIdxBucketOffset;
   }
   anOs >> itsLastStringBucket;          // Last StringBucket in use
@@ -442,14 +435,13 @@ void SSMBase::readIndexBuckets()
   TypeIO*   aMio;
   MemoryIO  aMemBuf(itsIndexLength);
 
-  uInt aCLength = 2*CanonicalConversion::canonicalSize(&itsFirstIdxBucket);
-
+  uInt aCLength = 2*CanonicalConversion::canonicalSize (&itsFirstIdxBucket);
   getCache();
-  // It is stored in canonical or local format.
-  if (asCanonical()) {
+  // It is stored in big or little endian canonical format.
+  if (asBigEndian()) {
     aMio = new CanonicalIO (&aMemBuf);
   } else {
-    aMio = new RawIO (&aMemBuf);
+    aMio = new LECanonicalIO (&aMemBuf);
   }
   AipsIO anMOs (aMio);
 
@@ -464,8 +456,8 @@ void SSMBase::readIndexBuckets()
     // If not it might be an indicator that something went wrong
     // This can be used in the future
     Int aCheckNr;
-    CanonicalConversion::toLocal(aCheckNr,aBucketPtr);
-    CanonicalConversion::toLocal(aBucket,aBucketPtr+aCLength/2);
+    CanonicalConversion::toLocal (aCheckNr,aBucketPtr);
+    CanonicalConversion::toLocal (aBucket,aBucketPtr+aCLength/2);
     if (aCheckNr != aBucket) {
       // Not used for now
     }
@@ -508,13 +500,13 @@ void SSMBase::writeIndex()
   FilebufIO aFio (itsFile->fd(), 512);
   uInt aCLength = 2*CanonicalConversion::canonicalSize(&itsFirstIdxBucket);
 
-  // store it in canonical or local format.
-  if (asCanonical()) {
+  // Store it in big or little endian canonical format.
+  if (asBigEndian()) {
     aMio = new CanonicalIO (&aMemBuf);
     aTio = new CanonicalIO (&aFio);
   } else {
-    aMio = new RawIO (&aMemBuf);
-    aTio = new RawIO (&aFio);
+    aMio = new LECanonicalIO (&aMemBuf);
+    aTio = new LECanonicalIO (&aFio);
   }
   AipsIO anMOs (aMio);
 
@@ -536,6 +528,7 @@ void SSMBase::writeIndex()
   } else {
     aRestSize = idxBucketSize;
   }
+
 
   // If index is currently written in a single half of a bucket,
   // see if this fits in the other half.
@@ -602,8 +595,14 @@ void SSMBase::writeIndex()
   AipsIO anOs (aTio);
   
   // write a few items at the beginning of the file  AipsIO anOs (aTio);
-
-  anOs.putstart("StandardStMan",itsVersion);
+  // The endian switch is a new feature. So only put it if little endian
+  // is used. In that way older software can read newer tables.
+  if (asBigEndian()) {
+    anOs.putstart("StandardStMan", 2);
+  } else {
+    anOs.putstart("StandardStMan", 3);
+    anOs << asBigEndian();
+  }
   anOs << itsBucketSize;                // Size of the bucket
   anOs << aNrBuckets;                   // Present number of buckets
   anOs << itsPersCacheSize;             // Size of Persistent cache
@@ -956,7 +955,7 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
     itsIosFile->flush(doFsync);
   }
   
-  ios.putstart ("SSM", itsVersion);
+  ios.putstart ("SSM", 2);
   ios << itsDataManName;
   putBlock (ios, itsColumnOffset, itsColumnOffset.nelements());
   putBlock (ios, itsColIndexMap,  itsColIndexMap.nelements());
@@ -998,7 +997,7 @@ void SSMBase::create (uInt aNrRows)
 void SSMBase::open (uInt aRowNr, AipsIO& ios)
 {
   itsNrRows = aRowNr;
-  itsVersion = ios.getstart ("SSM");
+  ios.getstart ("SSM");
   ios >> itsDataManName;
   getBlock (ios,itsColumnOffset);
   getBlock (ios,itsColIndexMap);
@@ -1019,7 +1018,7 @@ StManArrayFile* SSMBase::openArrayFile (ByteIO::OpenOption anOpt)
 {
   if (itsIosFile == 0) {
     itsIosFile = new StManArrayFile (fileName() + 'i', anOpt,
-				     0, asCanonical());
+				     0, asBigEndian());
   }
   return itsIosFile;
 }

@@ -35,8 +35,10 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/CanonicalConversion.h>
+#include <aips/OS/LECanonicalConversion.h>
 #include <aips/Tables/DataManError.h>
-#include <aips/stdio.h>                           // for sprintf
+
+#include <aips/stdio.h>                     // for sprintf
 
 ISMIndColumn::ISMIndColumn (ISMBase* smptr, int dataType, uInt colnr)
 : ISMColumn     (smptr, dataType, colnr),
@@ -284,15 +286,17 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
 {
     clear();
     DebugAssert (nrelem_p==1, AipsError);
-    Bool asCanonical = stmanPtr_p->asCanonical();
-    if (asCanonical) {
+    Bool asBigEndian = stmanPtr_p->asBigEndian();
+    if (asBigEndian) {
 	readFunc_p    = CanonicalConversion::getToLocal (static_cast<Int64*>(0));
 	writeFunc_p   = CanonicalConversion::getFromLocal (static_cast<Int64*>(0));
 	fixedLength_p = CanonicalConversion::canonicalSize (static_cast<Int64*>(0));
 	nrcopy_p      = 1;
     }else{
-	readFunc_p = writeFunc_p = Conversion::valueCopy;
-	fixedLength_p = nrcopy_p = sizeof(Int64);
+	readFunc_p    = LECanonicalConversion::getToLocal (static_cast<Int64*>(0));
+	writeFunc_p   = LECanonicalConversion::getFromLocal (static_cast<Int64*>(0));
+	fixedLength_p = LECanonicalConversion::canonicalSize (static_cast<Int64*>(0));
+	nrcopy_p      = 1;
     }
     lastValue_p = new Int64;
     //# Open or create the type 1 file to hold the arrays in the column.
@@ -304,7 +308,7 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
         char strc[8];
 	sprintf (strc, "i%i", seqnr_p);
 	iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
-					fileOption, 1, asCanonical);
+					fileOption, 1, asBigEndian);
     }
 }
 

@@ -1,5 +1,5 @@
 //# SSMIndColumn.cc: Column of Standard storage manager for indirect arrays
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/CanonicalConversion.h>
+#include <aips/OS/LECanonicalConversion.h>
 #include <aips/Tables/DataManError.h>
 
 
@@ -225,15 +226,21 @@ SSMIndColumn_GETPUT(DComplex,DComplexV)
 void SSMIndColumn::init()
 {
   DebugAssert (itsNrElem==1, AipsError);
-  Bool asCanonical = itsSSMPtr->asCanonical();
-  if (asCanonical) {
-    itsReadFunc    = CanonicalConversion::getToLocal(static_cast<Int64*>(0));
-    itsWriteFunc   = CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
-    itsExternalSizeBytes= CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
-    itsNrCopy     = 1;
+  if (itsSSMPtr->asBigEndian()) {
+    itsReadFunc =
+            CanonicalConversion::getToLocal(static_cast<Int64*>(0));
+    itsWriteFunc =
+            CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+    itsExternalSizeBytes =
+            CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
   }else{
-    itsReadFunc = itsWriteFunc = Conversion::valueCopy;
-    itsExternalSizeBytes = itsNrCopy = sizeof(Int64);
+    itsReadFunc =
+            LECanonicalConversion::getToLocal(static_cast<Int64*>(0));
+    itsWriteFunc =
+            LECanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+    itsExternalSizeBytes =
+            LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
   }
+  itsNrCopy = 1;
   itsExternalSizeBits = 8*itsExternalSizeBytes;
 }

@@ -1,5 +1,5 @@
 //# ISMBase.cc: Base class of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,8 +39,8 @@
 #include <aips/IO/BucketCache.h>
 #include <aips/IO/BucketFile.h>
 #include <aips/IO/AipsIO.h>
-#include <aips/IO/RawIO.h>
 #include <aips/IO/CanonicalIO.h>
+#include <aips/IO/LECanonicalIO.h>
 #include <aips/IO/FiledesIO.h>
 #include <aips/OS/DOos.h>
 #include <aips/Tables/DataManError.h>
@@ -280,10 +280,10 @@ void ISMBase::readIndex()
     FiledesIO fio (file_p->fd());
     TypeIO* tio;
     // It is stored in canonical or local format.
-    if (asCanonical()) {
+    if (asBigEndian()) {
 	tio = new CanonicalIO (&fio);
     }else{
-	tio = new RawIO (&fio);
+	tio = new LECanonicalIO (&fio);
     }
     AipsIO os (tio);
     uInt version = os.getstart ("IncrementalStMan");
@@ -300,6 +300,13 @@ void ISMBase::readIndex()
     //# to make these MSs accessible.
     if (version == 3) {
         version_p = 3;
+    }
+    Bool bigEndian = True;
+    if (version >= 5) {
+      os >> bigEndian;
+    }
+    if (bigEndian != asBigEndian()) {
+      throw DataManError("Endian flag in ISM mismatches the table flag");
     }
     os >> bucketSize_p;
     os >> nbucketInit_p;
@@ -329,13 +336,20 @@ void ISMBase::writeIndex()
     FiledesIO fio (file_p->fd());
     TypeIO* tio;
     // Store it in canonical or local format.
-    if (asCanonical()) {
+    if (asBigEndian()) {
 	tio = new CanonicalIO (&fio);
     }else{
-	tio = new RawIO (&fio);
+	tio = new LECanonicalIO (&fio);
     }
     AipsIO os (tio);
-    os.putstart ("IncrementalStMan", 4);
+    // The endian switch is a new feature. So only put it if little endian
+    // is used. In that way older software can read newer tables.
+    if (asBigEndian()) {
+      os.putstart ("IncrementalStMan", 4);
+    } else {
+      os.putstart ("IncrementalStMan", 5);
+      os << asBigEndian();
+    }
     os << bucketSize_p;
     os << nbuckets;
     os << persCacheSize_p;
@@ -587,7 +601,7 @@ StManArrayFile* ISMBase::openArrayFile (ByteIO::OpenOption opt)
 {
     if (iosfile_p == 0) {
 	iosfile_p = new StManArrayFile (fileName() + 'i', opt,
-					1, asCanonical());
+					1, asBigEndian());
     }
     return iosfile_p;
 }
@@ -618,15 +632,8 @@ void ISMBase::deleteManager()
 
 void ISMBase::init()
 {
-    // Determine the data format (local or canonical).
-    // For the moment it is always canonical (until Table supports it).
-    asCanonical_p = True;
     // Determine the size of a uInt in external format.
-    if (asCanonical_p) {
-	uIntSize_p = ValType::getCanonicalSize (TpUInt);
-    }else{
-	uIntSize_p = ValType::getTypeSize (TpUInt);
-    }
+    uIntSize_p = ValType::getCanonicalSize (TpUInt, asBigEndian());
     // Get the total length for all columns.
     // Use 32 for each variable length element.
     // On top of that each variable length element requires uIntSize_p bytes

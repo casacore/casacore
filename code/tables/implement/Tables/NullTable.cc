@@ -1,5 +1,5 @@
 //# NullTable.cc: Class indicating a null Table object
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,6 +50,12 @@ Bool NullTable::isNull() const
 void NullTable::reopenRW()
 {
   throwError ("reopenRW");
+}
+
+Bool NullTable::asBigEndian() const
+{
+  throwError ("asBigEndian");
+  return True;
 }
 
 Bool NullTable::isMultiUsed (Bool) const

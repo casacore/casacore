@@ -36,6 +36,7 @@
 #include <aips/Utilities/Copy.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/OS/CanonicalConversion.h>
+#include <aips/OS/LECanonicalConversion.h>
 
 
 ISMColumn::ISMColumn (ISMBase* parent, int dataType, uInt colnr)
@@ -1158,23 +1159,18 @@ void ISMColumn::init()
     clear();
     DataType dt = (DataType)dataType();
     typeSize_p = ValType::getTypeSize (dt);
-    Bool asCanonical = stmanPtr_p->asCanonical();
+    Bool asBigEndian = stmanPtr_p->asBigEndian();
     nrcopy_p = nrelem_p;
     if (dt == TpString) {
 	fixedLength_p = 0;
     } else if (dt == TpBool) {
 	fixedLength_p = (nrelem_p + 7) / 8;
     }else{
-	if (asCanonical) {
-	    fixedLength_p = ValType::getCanonicalSize (dt);
-	    uInt nrel;
-	    ValType::getCanonicalFunc (dt, readFunc_p, writeFunc_p, nrel);
-	    nrcopy_p *= nrel;
-	}else{
-	    fixedLength_p = typeSize_p;
-	    readFunc_p = writeFunc_p = Conversion::valueCopy;
-	    nrcopy_p *= typeSize_p;
-	}
+	fixedLength_p = ValType::getCanonicalSize (dt, asBigEndian);
+	uInt nrel;
+	ValType::getCanonicalFunc (dt, readFunc_p, writeFunc_p, nrel,
+				   asBigEndian);
+	nrcopy_p *= nrel;
 	fixedLength_p *= nrelem_p;
     }
     switch (dt) {
@@ -1262,12 +1258,12 @@ void ISMColumn::init()
 	break;
     case TpString:
 	{
-	    if (asCanonical) {
-		readFunc_p  = readString;
-		writeFunc_p = writeString;
+	    if (asBigEndian) {
+		readFunc_p  = readStringBE;
+		writeFunc_p = writeStringBE;
 	    }else{
-		readFunc_p  = copyToString;
-		writeFunc_p = copyFromString;
+		readFunc_p  = readStringLE;
+		writeFunc_p = writeStringLE;
 	    }
 	    compareFunc_p = ObjCompare<String>::compare;
 	    lastValue_p   = new String [nrelem_p];
@@ -1310,25 +1306,19 @@ void ISMColumn::reopenRW()
 {}
 
 
-uInt ISMColumn::copyuInt (void* out, const void* in, uInt nvalues)
+Conversion::ValueFunction* ISMColumn::getReaduInt (Bool asBigEndian)
 {
-    nvalues *= sizeof(uInt);
-    memcpy (out, in, nvalues);
-    return nvalues;
-}
-Conversion::ValueFunction* ISMColumn::getReaduInt (Bool asCanonical)
-{
-    if (asCanonical) {
+    if (asBigEndian) {
 	return CanonicalConversion::getToLocal (static_cast<uInt*>(0));
     }
-    return ISMColumn::copyuInt;
+    return LECanonicalConversion::getToLocal (static_cast<uInt*>(0));
 }
-Conversion::ValueFunction* ISMColumn::getWriteuInt (Bool asCanonical)
+Conversion::ValueFunction* ISMColumn::getWriteuInt (Bool asBigEndian)
 {
-    if (asCanonical) {
+    if (asBigEndian) {
 	return CanonicalConversion::getFromLocal (static_cast<uInt*>(0));
     }
-    return ISMColumn::copyuInt;
+    return LECanonicalConversion::getFromLocal (static_cast<uInt*>(0));
 }
 
 
@@ -1378,19 +1368,19 @@ uInt ISMColumn::toString (void* out, const void* in, uInt n,
     }
     return leng;
 }
-uInt ISMColumn::copyFromString (void* out, const void* in, uInt n)
-{
-    return fromString (out, in, n, copyuInt);
-}
-uInt ISMColumn::copyToString (void* out, const void* in, uInt n)
-{
-    return toString (out, in, n, copyuInt);
-}
-uInt ISMColumn::writeString (void* out, const void* in, uInt n)
+uInt ISMColumn::writeStringBE (void* out, const void* in, uInt n)
 {
     return fromString (out, in, n, CanonicalConversion::fromLocalUInt);
 }
-uInt ISMColumn::readString (void* out, const void* in, uInt n)
+uInt ISMColumn::readStringBE (void* out, const void* in, uInt n)
 {
     return toString (out, in, n, CanonicalConversion::toLocalUInt);
+}
+uInt ISMColumn::writeStringLE (void* out, const void* in, uInt n)
+{
+    return fromString (out, in, n, LECanonicalConversion::fromLocalUInt);
+}
+uInt ISMColumn::readStringLE (void* out, const void* in, uInt n)
+{
+    return toString (out, in, n, LECanonicalConversion::toLocalUInt);
 }

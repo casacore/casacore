@@ -1,5 +1,5 @@
 //# NullTable.h: Class indicating a null Table object
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -76,6 +76,7 @@ public:
   // All functions throw a "null table" exception.
   // <group>
   virtual void reopenRW();
+  virtual Bool asBigEndian() const;
   virtual Bool isMultiUsed (Bool checkSubTable) const;
   virtual const TableLock& lockOptions() const;
   virtual void mergeLock (const TableLock& lockOptions);

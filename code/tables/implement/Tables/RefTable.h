@@ -1,5 +1,5 @@
 //# RefTable.h: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,6 +152,9 @@ public:
     // An exception is thrown if the table is not writable.
     // Nothing is done if the table is already open for read/write.
     virtual void reopenRW();
+
+    // Is the table stored in big or little endian format?
+    virtual Bool asBigEndian() const;
 
     // Is the table in use (i.e. open) in another process?
     // It always returns False.

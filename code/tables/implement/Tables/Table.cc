@@ -102,32 +102,36 @@ Table::Table (const String& name, const String& type,
     open (name, type, option, lockOptions);
 }
 
-Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize)
+Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize,
+	      Table::EndianFormat endianFormat)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
-				   TableLock(TableLock::DefaultLocking));
+				   TableLock(TableLock::DefaultLocking),
+				   endianFormat);
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, TableLock::LockOption lockOption,
-	      uInt nrrow, Bool initialize)
+	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
-				   TableLock(lockOption));
+				   TableLock(lockOption),
+				   endianFormat);
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
-	      uInt nrrow, Bool initialize)
+	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    baseTabPtr_p = new PlainTable (newtab, nrrow, initialize, lockOptions);
+    baseTabPtr_p = new PlainTable (newtab, nrrow, initialize, lockOptions,
+				   endianFormat);
     baseTabPtr_p->link();
 }
 
@@ -233,6 +237,11 @@ Vector<String> Table::nonWritableFiles (const String& tableName)
     return names;
 }
 
+
+Table::EndianFormat Table::endianFormat() const
+{
+  return baseTabPtr_p->asBigEndian() ?  Table::BigEndian : Table::LittleEndian;
+}
 
 Bool Table::isNativeDataType (DataType dtype)
 {

@@ -1,5 +1,5 @@
 //# PlainTable.h: Class defining a plain regular table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,7 +88,7 @@ public:
     // all storage managers. The given number of rows is stored in
     // the table and initialized if the flag is set.
     PlainTable (SetupNewTable&, uInt nrrow, Bool initialize,
-		const TableLock& lockOptions);
+		const TableLock& lockOptions, int endianFormat);
 
     // Construct the object for an existing table.
     // It opens the table file, reads the table control information
@@ -113,6 +113,9 @@ public:
     // An exception is thrown if the table is not writable.
     // Nothing is done if the table is already open for read/write.
     virtual void reopenRW();
+
+    // Is the table stored in big or little endian format?
+    virtual Bool asBigEndian() const;
 
     // Is the table in use (i.e. open) in another process?
     // If <src>checkSubTables</src> is set, it is also checked if
@@ -263,13 +266,17 @@ private:
     // It updates the table and column keywords.
     void syncTable();
 
+    // Determine and set the endian format (big or little).
+    void setEndian (int endianFormat);
+
 
     ColumnSet*     colSetPtr_p;        //# pointer to set of columns
     Bool           tableChanged_p;     //# Has the main data changed?
     Bool           addToCache_p;       //# Is table added to cache?
     TableLockData* lockPtr_p;          //# pointer to lock object
     TableSyncData  lockSync_p;         //# table synchronization
-
+    Bool           bigEndian_p;        //# True  = big endian canonical
+                                       //# False = little endian canonical
 };
 
 

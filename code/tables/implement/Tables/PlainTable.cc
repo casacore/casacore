@@ -38,6 +38,7 @@
 #include <aips/Containers/Block.h>
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/String.h>
+#include <aips/Tasking/AipsrcValue.h>
 
 
 //# Initialize the static TableCache object.
@@ -45,13 +46,15 @@ TableCache PlainTable::tableCache = TableCache();
 
 
 PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
-			const TableLock& lockOptions)
+			const TableLock& lockOptions, int endianFormat)
 : BaseTable      (newtab.name(), newtab.option(), 0),
   colSetPtr_p    (0),
   tableChanged_p (True),
   addToCache_p   (True),
   lockPtr_p      (0)
 {
+    // Determine and set the endian option.
+    setEndian (endianFormat);
     // Set initially to no write in destructor.
     // At the end it is reset. In this way nothing is written if
     // an exception is thrown during initialization.
@@ -98,7 +101,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     //# Initialize the data managers.
     Table tab(this, False);
     nrrowToAdd_p = nrrow;
-    colSetPtr_p->initDataManagers (nrrow, tab);
+    colSetPtr_p->initDataManagers (nrrow, bigEndian_p, tab);
     //# Initialize the columns if needed.
     if (initialize  &&  nrrow > 0) {
 	colSetPtr_p->initialize (0, nrrow-1);
@@ -169,6 +172,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     uInt format;
     ios >> nrrow;
     ios >> format;
+    bigEndian_p = (format==0);
     ios >> tp;
 #if defined(TABLEREPAIR)
     cerr << "tableRepair: found " << nrrow << " rows; give new number: ";
@@ -208,7 +212,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     //# Create a Table object to be used internally by the data managers.
     //# Do not count it, otherwise a mutual dependency exists.
     Table tab(this, False);
-    colSetPtr_p->getFile (ios, tab, nrrow_p);
+    colSetPtr_p->getFile (ios, tab, nrrow_p, bigEndian_p);
     //# Read the TableInfo object.
     getTableInfo();
     //# Release the read lock if UserLocking is used.
@@ -281,6 +285,11 @@ void PlainTable::renameSubTables (const String& newName,
 {
     rwKeywordSet().renameTables (newName, oldName);
     colSetPtr_p->renameTables (newName, oldName);
+}
+
+Bool PlainTable::asBigEndian() const
+{
+    return bigEndian_p;
 }
 
 Bool PlainTable::isMultiUsed (Bool checkSubTables) const
@@ -438,7 +447,7 @@ Bool PlainTable::putFile (Bool always)
 #ifdef AIPS_TRACE
         cout << "  full PlainTable::putFile" << endl;
 #endif
-	writeStart (ios);
+	writeStart (ios, bigEndian_p);
 	ios << "PlainTable";
 	tdescPtr_p->putFile (ios, attr);                 // write description
 	colSetPtr_p->putFile (True, ios, attr, False);   // write column data
@@ -593,7 +602,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc)
 	throw (TableInvOper ("Table::addColumn; table is not writable"));
     }
     Table tab(this, False);
-    colSetPtr_p->addColumn (columnDesc, tab);
+    colSetPtr_p->addColumn (columnDesc, bigEndian_p, tab);
     tableChanged_p = True;
 }
 void PlainTable::addColumn (const ColumnDesc& columnDesc,
@@ -603,7 +612,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
 	throw (TableInvOper ("Table::addColumn; table is not writable"));
     }
     Table tab(this, False);
-    colSetPtr_p->addColumn (columnDesc, dataManager, byName, tab);
+    colSetPtr_p->addColumn (columnDesc, dataManager, byName, bigEndian_p, tab);
     tableChanged_p = True;
 }
 void PlainTable::addColumn (const ColumnDesc& columnDesc,
@@ -613,7 +622,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
 	throw (TableInvOper ("Table::addColumn; table is not writable"));
     }
     Table tab(this, False);
-    colSetPtr_p->addColumn (columnDesc, dataManager, tab);
+    colSetPtr_p->addColumn (columnDesc, dataManager, bigEndian_p, tab);
     tableChanged_p = True;
 }
 void PlainTable::addColumn (const TableDesc& tableDesc,
@@ -623,7 +632,7 @@ void PlainTable::addColumn (const TableDesc& tableDesc,
 	throw (TableInvOper ("Table::addColumn; table is not writable"));
     }
     Table tab(this, False);
-    colSetPtr_p->addColumn (tableDesc, dataManager, tab);
+    colSetPtr_p->addColumn (tableDesc, dataManager, bigEndian_p, tab);
     tableChanged_p = True;
 }
 
@@ -669,4 +678,35 @@ ByteIO::OpenOption PlainTable::toAipsIOFoption (int tabOpt)
     }
     //# This statement is only there to satisfy strict compilers.
     return ByteIO::Scratch;
+}
+
+
+void PlainTable::setEndian (int endianFormat)
+{
+    int endOpt = endianFormat;
+    if (endOpt == Table::AipsrcEndian) {
+        String opt;
+	// Use default "local" from AIPS++ version 1.9 on.
+	////	AipsrcValue<String>::find (opt, "table.endianformat", "local");
+	AipsrcValue<String>::find (opt, "table.endianformat", "big");
+	opt.downcase();
+	if (opt == "big") {
+	    endOpt = Table::BigEndian;
+	} else if (opt == "little") {
+	    endOpt = Table::LittleEndian;
+	} else {
+	    endOpt = Table::LocalEndian;
+	}
+    }
+    if (endOpt == Table::LocalEndian) {
+#if defined(AIPS_LITTLE_ENDIAN)
+        endOpt = Table::LittleEndian;
+#else
+        endOpt = Table::BigEndian;
+#endif
+    }
+    bigEndian_p = True;
+    if (endOpt == Table::LittleEndian) {
+        bigEndian_p = False;
+    }
 }

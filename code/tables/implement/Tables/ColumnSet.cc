@@ -105,9 +105,12 @@ void ColumnSet::removeLastDataManager()
     seqCount_p--;
 }
 
-void ColumnSet::initDataManagers (uInt nrrow, Table& tab)
+void ColumnSet::initDataManagers (uInt nrrow, Bool bigEndian, Table& tab)
 {
     uInt i;
+    for (i=0; i<blockDataMan_p.nelements(); i++) {
+	BLOCKDATAMANVAL(i)->setEndian (bigEndian);
+    }
     for (i=0; i<colMap_p.ndefined(); i++) {
 	getColumn(i)->createDataManagerColumn();
     }
@@ -261,7 +264,8 @@ void ColumnSet::removeRow (uInt rownr)
 }
 
 
-void ColumnSet::addColumn (const ColumnDesc& columnDesc, Table& tab)
+void ColumnSet::addColumn (const ColumnDesc& columnDesc,
+			   Bool bigEndian, Table& tab)
 {
     // Find a storage manager allowing addition of columns.
     // If found, add the column to it and exit.
@@ -269,7 +273,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc, Table& tab)
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	dmptr = BLOCKDATAMANVAL(i);
 	if (dmptr->isStorageManager()  &&  dmptr->canAddColumn()) {
-	    doAddColumn (columnDesc, dmptr);
+	    doAddColumn (columnDesc, dmptr, bigEndian);
 	    return;
 	}
     }
@@ -279,13 +283,13 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc, Table& tab)
     dmptr = DataManager::getCtor(columnDesc.dataManagerType())
                       (uniqueDataManagerName (columnDesc.dataManagerGroup()),
 		       Record());
-    addColumn (columnDesc, *dmptr, tab);
+    addColumn (columnDesc, *dmptr, bigEndian, tab);
     delete dmptr;
 }
 
 void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 			   const String& dataManager, Bool byName,
-			   Table& tab)
+			   Bool bigEndian, Table& tab)
 {
     // Give an error when no data manager name/type given.
     if (dataManager.empty()) {
@@ -294,7 +298,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
     // When given by name, find the data manager and add the column to it.
     // findDataManager throws an exception when the data manager is unknown.
     if (byName) {
-	doAddColumn (columnDesc, findDataManager (dataManager));
+	doAddColumn (columnDesc, findDataManager (dataManager), bigEndian);
 	return;
     }
     // Find the first data manager with the given type allowing addition
@@ -304,7 +308,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 	dmptr = BLOCKDATAMANVAL(i);
 	if (dataManager == dmptr->dataManagerType()) {
 	    if (dmptr->canAddColumn()) {
-		doAddColumn (columnDesc, dmptr);
+		doAddColumn (columnDesc, dmptr, bigEndian);
 		return;
 	    }
 	}
@@ -315,12 +319,13 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
     dmptr = DataManager::getCtor(dataManager)
                                    (uniqueDataManagerName(dataManager),
 				    Record());
-    addColumn (columnDesc, *dmptr, tab);
+    addColumn (columnDesc, *dmptr, bigEndian, tab);
     delete dmptr;
 }
 
 void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
-			     DataManager* dataManPtr)
+			     DataManager* dataManPtr,
+			     Bool)
 {
     if (! dataManPtr->canAddColumn()) {
       throw TableError ("Table::addColumn - DataManager " +
@@ -375,15 +380,17 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 }
 
 void ColumnSet::addColumn (const ColumnDesc& columnDesc,
-			   const DataManager& dataManager, Table& tab)
+			   const DataManager& dataManager,
+			   Bool bigEndian, Table& tab)
 {
     TableDesc td;
     td.addColumn (columnDesc);
-    addColumn (td, dataManager, tab);
+    addColumn (td, dataManager, bigEndian, tab);
 }
 
 void ColumnSet::addColumn (const TableDesc& tableDesc,
-			   const DataManager& dataManager, Table& tab)
+			   const DataManager& dataManager,
+			   Bool bigEndian, Table& tab)
 {
     checkWriteLock (True);
     // Check if the data manager name has not been used already.
@@ -394,6 +401,7 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
     tdescPtr_p->add (tableDesc, False);
     // Clone the data manager (to get our own copy) and add it to the list.
     DataManager* dmptr = dataManager.clone();
+    dmptr->setEndian (bigEndian);
     addDataManager (dmptr);
     // Loop through all new columns and construct column objects for them.
     // We have to use the column description in our table description.
@@ -732,7 +740,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 }
 
 
-void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow)
+void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow, Bool bigEndian)
 {
     //# When the first value is negative, it is the version.
     //# Otherwise it is nrrow_p.
@@ -761,6 +769,7 @@ void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow)
 	DataManager* dmp = DataManager::getCtor(str)(str, Record());
 	addDataManager (dmp);
         dmp->setSeqnr (seqnr);
+	dmp->setEndian (bigEndian);
     }
     //# Now set seqCount_p (because that was changed by addDataManager).
     seqCount_p = nrman;
