@@ -143,7 +143,7 @@ typedef NewMeasurementSet NewMS;
 //      // now we need to define all required subtables
 //      // the following call does this for us if we don't need to
 //      // specify details of Storage Managers for columns.
-//      simpleNewMS.createDummySubtables(Table::New);
+//      simpleNewMS.createDefaultSubtables(Table::New);
 //      // fill NewMeasurementSet via its Table interface
 //      // For example, construct one of the columns
 //      TableColumn feed(simpleNewMS, NewMS::columnName(NewMS::FEED1));
