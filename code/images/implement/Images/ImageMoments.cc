@@ -1110,7 +1110,7 @@ Bool ImageMoments<T>::createMoments()
       } else if (clipMethod) {
             
 // no clip or clip
-
+        
          doMomCl (calcMoments, sepWorldCoord, imageIterator.vectorCursor(), 
                   doMedianI, doMedianV, doAbsDev, doCoordCalc);
       }  else {
@@ -1574,18 +1574,15 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
          selectedDataIndex(i) = i;
       }   
    }
-         
-    
-// If no points make moments zero. Blank at a later date.
-// Since calcMoments is only accessed at filled in locations
-// there is no point in the extra overhead of zero filling it
 
-/*   
-   if (nPts==0) {
-      calcMoments = 0.0;
-      return;
+    
+// Absolute deviations of I from mean needs an extra pass.
+               
+   Double sumAbsDev = 0.0;
+   if (doAbsDev) {
+      Double iMean = s0 / nPts;
+      for (Int i=0; i<nPts; i++) sumAbsDev += abs(selectedData(i) - iMean);
    }
-*/
 
  
 // Median of I
@@ -1646,26 +1643,6 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
    } 
                
 
-// Absolute deviations of I from mean needs an extra pass.
-               
-   Double sumAbsDev = 0.0;
-   if (doAbsDev) {
-      Double iMean = s0 / nPts;
-      Int nPts2 = data.nelements();
-
-      if (doInclude) {
-         for (Int i=0; i<nPts2; i++) {
-            if (data(i) >= range_p(0) && data(i) <= range_p(1))
-               sumAbsDev += abs(data(i) - iMean);
-         }
-      } else if (doExclude) {
-         for (Int i=0; i<nPts2; i++) {
-            if (data(i) <= range_p(0) || data(i) >= range_p(1))
-               sumAbsDev += abs(data(i) - iMean);
-         }
-      } else
-         for (Int i=0; i<nPts2; i++) sumAbsDev += abs(Double(data(i)) - iMean);
-   }
 
 
 // Fill moments array
@@ -1742,27 +1719,16 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
       }
    }
  
-   
-// Generate Gaussian array
-
-   const Int nPts = data.nelements();
-   Vector<T> gData(nPts);
-   const Gaussian1D<T> gauss(gaussPars(0), gaussPars(1), gaussPars(2));
-   T xx;
-   for (Int i=0; i<nPts; i++) {
-      xx = i;
-      gData(i) = gauss(xx) + gaussPars(3);
-   }
-
-
-// Assign array for median.
-
-   Vector<T> medianData(nPts); 
 
 
 // Were the profile coordinates precomputed ?
 
    Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
+
+// Generate Gaussian functional
+
+   const Int nPts = data.nelements();
+   const Gaussian1D<T> gauss(gaussPars(0), gaussPars(1), gaussPars(2));
 
    
 // Compute moments
@@ -1776,8 +1742,13 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
    Double dMin =  1.0e30;
    Double dMax = -1.0e30;   
    Double coord = 0.0;
- 
-   for (i=0; i<nPts; i++) {
+   T xx;
+   Vector<T> gData(nPts);
+
+   for (Int i=0; i<nPts; i++) {
+      xx = i;
+      gData(i) = gauss(xx) + gaussPars(3);
+
       if (preComp) {
          coord = sepWorldCoord(i);
       } else if (doCoordCalc) {
@@ -1785,17 +1756,9 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
       }
       accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                  dMin, dMax, i, gData(i), coord);
-      medianData(i) = gData(i);
    }
 
-// Medians
-   
-   T dMedian = 0.0;
-   if (doMedianI) dMedian = median(medianData.ac());
 
-   T vMedian = 0.0;
-   
-         
 // Absolute deviations of I from mean.  Requires a second pass
        
    Double sumAbsDev = 0.0;
@@ -1803,6 +1766,13 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
       Double iMean = s0 / nPts;
       for (Int i=0; i<=nPts; i++) sumAbsDev += abs(Double(gData(i)) - iMean);
     }
+
+
+// Medians
+   
+   T dMedian = 0.0;
+   if (doMedianI) dMedian = median(gData.ac());
+   T vMedian = 0.0;
    
          
 // Fill moments array
@@ -1814,7 +1784,7 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 
 
 template <class T> 
-void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
+void ImageMoments<T>::doMomSm(Vector<T>& calcMoments,
                                const Vector<Double>& sepWorldCoord, 
                                const Vector<T>& data, 
                                const Vector<T>& smoothedData,
@@ -1885,7 +1855,6 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 
    Int nPts = data.nelements();
    Vector<T> selectedData(nPts);
-   Vector<Int> selectedDataIndex(nPts);
 
 // Were the profile coordinates precomputed ?
     
@@ -1908,7 +1877,8 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 
 
 // We won't be in this method unless the range is set and either noInclude_p
-// or noExclude_p are set.  So we don't have to check them both.
+// or noExclude_p are set.  So we don't have to check them both or provide
+// a selectedData with all points
 
    if (doInclude) {
       for (i=0,j=0; i<nPts; i++) {
@@ -1921,7 +1891,6 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
             accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                        dMin, dMax, i, data(i), coord);
             selectedData(j) = data(i);
-            selectedDataIndex(j) = i;
             j++;
          }
       }
@@ -1937,7 +1906,6 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
             accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                        dMin, dMax, i, data(i), coord);
             selectedData(j) = data(i);
-            selectedDataIndex(j) = i;
             j++;
          }
       }
@@ -1945,16 +1913,14 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
    nPts = j;
 
 
-// If no points make moments zero. Blank at a later date.
-// Since calcMoments is only accessed at filled in locations
-// there is no point in the extra overhead of zero filling it
+// Absolute deviations of I from mean.  Requires a second pass
 
-/*
-   if (nPts==0) {
-      calcMoments = 0.0;
-      return;
+   Double sumAbsDev = 0.0;
+   if (doAbsDev) {
+      Double iMean = s0 / nPts;
+      for (Int i=0; i<nPts; i++) sumAbsDev += abs(Double(selectedData(i) - iMean));
    }
-*/
+
 
 // Medians
 
@@ -1963,31 +1929,8 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
       selectedData.resize(nPts,True);
       dMedian = median(selectedData.ac());
    }
-
    T vMedian = 0.0;
 
-// Absolute deviations of I from mean.  Requires a second pass
-
-   Double sumAbsDev = 0.0;
-   if (doAbsDev) {
-      Double iMean = s0 / nPts;
-      Int nPts2 = data.nelements();
-
-      if (doInclude) {
-         for (Int i=0; i<nPts2; i++) {
-            if (smoothedData(i) >= range_p(0) && smoothedData(i) <= range_p(1)) {
-               sumAbsDev += abs(Double(data(i) - iMean));
-            }
-         }
-         nPts = j;
-      } else {
-         for (Int i=0; i<nPts2; i++) {
-            if (smoothedData(i) <= range_p(0) || smoothedData(i) >= range_p(1)) {
-               sumAbsDev += abs(Double(data(i) - iMean));
-            }
-         }
-      }
-   }
 
 
 // Fill moments array
@@ -2092,18 +2035,6 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
    nPts = window(1) - window(0) + 1;
    
 
-// If no points make moments zero. Blank at a later date.
-// Since calcMoments is only accessed at filled in locations
-// there is no point in the extra overhead of zero filling it
-
-/*
-   if (nPts==0) {
-      calcMoments = 0.0;
-      return;
-   }
-*/
-
-
 // Assign array for median.  
 
    Vector<T> selectedData(nPts);
@@ -2140,7 +2071,6 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
 
    T dMedian = 0.0;
    if (doMedianI) dMedian = median(selectedData.ac());
-
    T vMedian = 0.0;
 
 // Absolute deviations of I from mean.  Requires a second pass
