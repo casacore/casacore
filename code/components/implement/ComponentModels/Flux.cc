@@ -495,6 +495,7 @@ errors() const {
 
 template<class T> Bool FluxRep<T>::
 fromRecord(String& errorMessage, const RecordInterface& record) {
+  ComponentType::Polarisation newPol = ComponentType::UNKNOWN_POLARISATION;
   {
     const String polarisationString("polarisation");
     if (!record.isDefined(polarisationString)) {
@@ -517,16 +518,15 @@ fromRecord(String& errorMessage, const RecordInterface& record) {
 	return False;
       } 
       const String polVal = record.asString(polarisation);
-      const ComponentType::Polarisation 
-	newPol(ComponentType::polarisation(polVal));
+      newPol = ComponentType::polarisation(polVal);
       if (newPol == ComponentType::UNKNOWN_POLARISATION) {
 	errorMessage += String("The polarisation type is not known.\n") +
 	  String("Allowed values are 'Stokes', 'Linear' & 'Circular'\n");
 	return False;
       }
-      setPol(newPol);
     }
   }
+  setPol(newPol);
   {
     QuantumHolder qh;
     if (!qh.fromRecord(errorMessage, record)) {
@@ -536,7 +536,7 @@ fromRecord(String& errorMessage, const RecordInterface& record) {
     if (qh.isScalar() && pol() == ComponentType::STOKES) {
       if (qh.isReal()) {
 	const Quantum<Double>& qVal = qh.asQuantumDouble();
-	setValue(T(qVal.getValue()));
+	setValue(qVal.getValue());
 	setUnit(qVal.getFullUnit());
       } else {
 	const Quantum<DComplex>& qVal = qh.asQuantumDComplex();
@@ -594,6 +594,29 @@ fromRecord(String& errorMessage, const RecordInterface& record) {
       }
     }
   }
+  {
+    const String errorString("error");
+    if (record.isDefined(errorString)) {
+      const RecordFieldId error(errorString);
+      Vector<DComplex> err(4, DComplex(0.0, 0.0));
+      if  (record.shape(error) != IPosition(1,4)) {
+ 	errorMessage += 
+ 	  "The 'error' field must be a vector with 4 elements\n";
+ 	return False;
+      }
+      if (record.dataType(error) == TpArrayDouble && 
+	  newPol == ComponentType::STOKES) {
+	convertArray(err, record.asArrayDouble(error));
+      } else if (record.dataType(error) == TpArrayDComplex) {
+	err = record.asArrayDComplex(error);
+      } else {
+ 	errorMessage += 
+ 	  "The 'error' field must be a complex vector with 4 elements\n";
+ 	return False;
+      }
+      setErrors(err(0), err(1), err(2), err(3));
+    }
+  }
   if (unit() != Unit("Jy")) {
     errorMessage += "The dimensions of the units must be same as the Jy\n";
     return False;
@@ -627,6 +650,13 @@ toRecord(String& errorMessage, RecordInterface& record) const {
     return False;
   }
   record.define(RecordFieldId("polarisation"), ComponentType::name(pol()));
+  if (pol() != ComponentType::STOKES) {
+    record.define(RecordFieldId("error"), errors());
+  } else {
+    Vector<T> realErr(4);
+    real(realErr, errors());
+    record.define(RecordFieldId("error"), realErr);
+  }
   return True;
 }
 
