@@ -179,7 +179,7 @@ public:
    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 // Returns the coordinates of the lattice expression.
-   virtual LatticeCoordinates coordinates() const;
+   virtual LELCoordinates lelCoordinates() const;
 
 // Do the actual get of the data.
 // The return value is always False, thus the buffer does not reference

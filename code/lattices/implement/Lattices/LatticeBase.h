@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Lattices/LatticeCoordinates.h>
+#include <trial/Lattices/LELCoordinates.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/IO/FileLocker.h>
 
@@ -117,8 +117,8 @@ public:
     { return shape().isEqual (other.shape()); }
 
   // Return the coordinates of the lattice.
-  // The default implementation returns an 'empty' LattCoord object.
-  virtual LatticeCoordinates latticeCoordinates() const;
+  // The default implementation returns an 'empty' LELLattCoord object.
+  virtual LELCoordinates lelCoordinates() const;
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator. The default implementation
