@@ -38,7 +38,6 @@
     MAILCMD=mail
   fi 
  
-  echo $PATH
 # Do it, sending the results to aips2-inhale.
   {  exec 2>&1
 
