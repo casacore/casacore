@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# LogIO.cc: this defines LogIO which provides a stream like interface for logging
 //# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -77,7 +77,19 @@ void LogIO::post()
 	msg_p.message(*text_p);
 	delete text_p;
 	text_p = 0;
-	sink_p.post(msg_p);
+        sink_p.post(msg_p);
+    }
+    // Reset priority.
+    msg_p.priority(LogMessage::NORMAL);
+}
+
+void LogIO::postLocally()
+{
+    if (text_p) {
+	msg_p.message(*text_p);
+	delete text_p;
+	text_p = 0;
+        sink_p.postLocally(msg_p);
     }
     // Reset priority.
     msg_p.priority(LogMessage::NORMAL);
