@@ -481,19 +481,19 @@ public:
   // Set the maximum allowed cache size for all Arrays in this column of the
   // Table.  The actual value used may be smaller. A value of zero means
   // that there is no maximum.
-  void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uInt howManyPixels);
 
   // Return the maximum allowed cache size (in pixels) for all Arrays in
   // this column of the Table. The actual cache size may be smaller. A
   // value of zero means that no maximum is currently defined.
-  uInt maximumCacheSize() const;
+  virtual uInt maximumCacheSize() const;
 
   // Set the actual cache size for this Array to be be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uInt howManyTiles);
 
   // Set the actual cache size for this Array to "fit" the indicated
   // path. This cache is not shared with PagedArrays in other rows and is
@@ -502,18 +502,18 @@ public:
   // {get,put}Slice). The windowStart and windowLength delimit the range of
   // pixels that will ultimatly be accessed. The AxisPath is described in
   // the documentation for the LatticeStepper class.
-  void setCacheSizeFromPath (const IPosition& sliceShape,
+  virtual void setCacheSizeFromPath (const IPosition& sliceShape,
 				     const IPosition& windowStart,
 				     const IPosition& windowLength,
 				     const IPosition& axisPath);
 
   // Clears and frees up the tile cache. The maximum allowed cache size is
   // unchanged from when <src>setMaximumCacheSize</src> was last called.
-  void clearCache();
+  virtual void clearCache();
 
   // Generate a report on how the cache is doing. This is reset every
   // time <src>clearCache</src> is called.
-  void showCacheStatistics (ostream& os) const;
+  virtual void showCacheStatistics (ostream& os) const;
 
   // Return the value of the single element located at the argument
   // IPosition.

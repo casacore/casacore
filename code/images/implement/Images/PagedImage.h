@@ -392,23 +392,23 @@ public:
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  uInt maximumCacheSize() const;
+  virtual uInt maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uInt howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
-  void setCacheSizeFromPath (const IPosition& sliceShape,
-			     const IPosition& windowStart,
-			     const IPosition& windowLength,
-			     const IPosition& axisPath);
+  virtual void setCacheSizeFromPath (const IPosition& sliceShape,
+  			             const IPosition& windowStart,
+			             const IPosition& windowLength,
+			             const IPosition& axisPath);
     
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
-  void clearCache();
+  virtual void clearCache();
 
   // Report on cache success.
-  void showCacheStatistics (ostream& os) const;
+  virtual void showCacheStatistics (ostream& os) const;
 
   // Handle the (un)locking.
   // <group>
