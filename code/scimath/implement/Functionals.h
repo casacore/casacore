@@ -49,7 +49,6 @@
 #include <aips/Functionals/FuncWithDerivs.h>
 
 //# 1-D Functions
-#include <aips/Functionals/Gaussian1D.h>
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Functionals/Interpolate1D.h>
 #include <aips/Functionals/ArraySampledFunctional.h>
