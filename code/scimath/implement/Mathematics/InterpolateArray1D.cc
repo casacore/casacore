@@ -1,5 +1,5 @@
 //# Interpolate1DArray.cc:  implements Interpolation in one dimension
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,8 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
   Bool deleteYin, deleteYout;
   const Range* pyin=yin.getStorage(deleteYin);
   Int yStep=1; 
-  for (Int i=0; i<yin.ndim()-1; i++) yStep*=yinShape(i);
+  Int i;
+  for (i=0; i<Int(yin.ndim())-1; i++) yStep*=yinShape(i);
   IPosition youtShape=yinShape;
   youtShape(yout.ndim()-1)=nxout;
   yout.resize(youtShape);
@@ -82,7 +83,8 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
   const Range* pyin=yin.getStorage(deleteYin);
   const Bool* pyinFlags=yinFlags.getStorage(deleteYinFlags);
   Int yStep=1; 
-  for (Int i=0; i<yin.ndim()-1; i++) yStep*=yinShape(i);
+  Int i;
+  for (Int i=0; i<Int(yin.ndim())-1; i++) yStep*=yinShape(i);
   IPosition youtShape=yinShape;
   youtShape(yout.ndim()-1)=nxout;
   yout.resize(youtShape);
@@ -121,11 +123,12 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 					Int method)
 {
   uInt nElements=xin.nelements();
+  AlwaysAssert (nElements>0, AipsError);
   Domain x_req;
   switch (method) {
   case nearestNeighbour: // This does nearest neighbour interpolation
     {
-      for (Int i=0; i<xout.nelements(); i++) {
+      for (uInt i=0; i<xout.nelements(); i++) {
 	x_req=xout[i];
 	Bool found;
 	uInt where = binarySearchBrackets(found, xin, x_req, nElements);
@@ -149,7 +152,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
     }
   case linear: // Linear interpolation is the default
     {
-      for (Int i=0; i<xout.nelements(); i++) {
+      for (uInt i=0; i<xout.nelements(); i++) {
 	x_req=xout[i];
 	Bool found;
 	uInt where = binarySearchBrackets(found, xin, x_req, nElements);
@@ -205,7 +208,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	const Float one = 1;
 	Range r;
 	Int i;
-	for (i = 1; i < nElements-1; i++){
+	for (i = 1; i < Int(nElements)-1; i++){
 	  a = c;
 	  b = 2*(xin[i+1] - xin[i-1]);
 	  if (nearAbs(xin[i+1],  xin[i])) 
@@ -224,11 +227,11 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	}
 	// The second part of the solution is to do the back-substitution to
 	// iteratively obtain the second derivatives.
-	for (i = nElements-2; i > 1; i--){
+	for (i = Int(nElements)-2; i > 1; i--){
 	  y2[i] -= t[i]*y2[i+1];
 	}
 
-	for (i=0; i<xout.nelements(); i++) {
+	for (i=0; i<Int(xout.nelements()); i++) {
 	  x_req=xout[i];
 	  Bool found;
 	  uInt where = binarySearchBrackets(found, xin, x_req, nElements);
@@ -283,7 +286,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr
   switch (method) {
   case nearestNeighbour: // This does nearest neighbour interpolation
     {
-      for (Int i=0; i<xout.nelements(); i++) {
+      for (Int i=0; i<Int(xout.nelements()); i++) {
 	x_req=xout[i];
 	Bool found;
 	uInt where = binarySearchBrackets(found, xin, x_req, nElements);
@@ -319,7 +322,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr
     }
   case linear: // Linear interpolation is the default
     {
-      for (Int i=0; i<xout.nelements(); i++) {
+      for (Int i=0; i<Int(xout.nelements()); i++) {
 	x_req=xout[i];
 	Bool found;
 	uInt where = binarySearchBrackets(found, xin, x_req, nElements);
@@ -379,7 +382,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr
 	const Float one = 1;
 	Range r;
 	Int i;
-	for (i = 1; i < nElements-1; i++){
+	for (i = 1; i < Int(nElements)-1; i++){
 	  a = c;
 	  b = 2*(xin[i+1] - xin[i-1]);
 	  if (nearAbs(xin[i+1],  xin[i])) 
@@ -402,7 +405,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr
 	  y2[i] -= t[i]*y2[i+1];
 	}
 
-	for (i=0; i<xout.nelements(); i++) {
+	for (i=0; i<Int(xout.nelements()); i++) {
 	  x_req=xout[i];
 	  Bool found;
 	  uInt where = binarySearchBrackets(found, xin, x_req, nElements);
@@ -458,7 +461,7 @@ void InterpolateArray1D<Domain,Range>::polynomialInterpolation
   Block<Domain> x(n);
   Int nElements = xin.nelements();
   DebugAssert((n<=nElements),AipsError);
-  for (Int i=0; i<xout.nelements(); i++) {
+  for (Int i=0; i<Int(xout.nelements()); i++) {
     Domain x_req=xout[i];
     Bool found;
     Int where = binarySearchBrackets(found, xin, x_req, nElements);

@@ -1,5 +1,5 @@
 //# SquareMatrix.cc: Fast Square Matrix class with fixed (templated) size
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -150,6 +150,7 @@ SquareMatrix<T,n>::operator+=(const SquareMatrix<T,n>& other) {
 	    }
 	}
     }
+    return *this;
 }
 
 template <class T, Int n> 
@@ -191,7 +192,8 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::operator*=(const SquareMatrix<T,n>& other)
 	    }
 	    case General: {
 		T a[n];
-		for (Int i=0; i<n; i++) a[i]=a_p[i][i];
+		Int i;
+		for (i=0; i<n; i++) a[i]=a_p[i][i];
 		for (i=0; i<n; i++) {
 		    for (Int j=0; j<n; j++) {
 			a_p[i][j]=a[i]; a_p[i][j]*=other.a_p[i][j];
@@ -217,7 +219,8 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::operator*=(const SquareMatrix<T,n>& other)
 	default: {
 		T a[n], tmp;
 		for (Int i=0; i<n; i++) {
-		    for (Int j=0; j<n; j++) a[j]=a_p[i][j];
+		    Int j;
+		    for (j=0; j<n; j++) a[j]=a_p[i][j];
 		    for (j=0; j<n; j++) {
 			a_p[i][j]=a[0]; a_p[i][j]*=other.a_p[0][j];
 			for (Int k=1; k<n; k++) {
@@ -230,6 +233,7 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::operator*=(const SquareMatrix<T,n>& other)
 	    }
 	}
     }
+    return *this;
 }
 template <class T, Int n> 
 SquareMatrix<T,n>& SquareMatrix<T,n>::operator*=(Float f) 
@@ -382,6 +386,7 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::adjoint() {
 	    return *this;
 	}
     }
+    return *this;
 }
 
 template <class T, Int n> 

@@ -1,5 +1,5 @@
 //# RigidVector.cc: Fast Vector classes with fixed (templated) length
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,8 @@ RigidVector<T,n>::operator*=(const SquareMatrix<T,n>& m) {
   default:
     {
       T v[n], tmp;
-      for (Int i=0; i<n; i++) v[i]=v_p[i];
+      Int i;
+      for (i=0; i<n; i++) v[i]=v_p[i];
       for (i=0; i<n; i++) {
 	v_p[i]=m.a_p[i][0]; v_p[i]*=v[0];
 	for (Int j=1; j<n; j++) {
