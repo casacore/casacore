@@ -200,6 +200,10 @@ Vector<Quantum<Double> > MVDirection::getXRecordValue() const {
   return tmp;
 }
 
+Vector<Quantum<Double> > MVDirection::getTMRecordValue() const {
+  return getRecordValue();
+}
+
 Bool MVDirection::putValue(const Vector<Quantum<Double> > &in) {
   uInt i; i = in.nelements();
   if (i > 3 ) return False;
