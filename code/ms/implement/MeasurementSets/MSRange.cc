@@ -30,6 +30,7 @@
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Glish/GlishArray.h>
 #include <aips/Glish/GlishRecord.h>

@@ -32,8 +32,8 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/Cube.h>
-#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Containers/Record.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/FITS/fitsio.h>

@@ -31,6 +31,7 @@
 
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordDesc.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/ColumnsIndex.h>
 #include <aips/Tables/TableDesc.h>

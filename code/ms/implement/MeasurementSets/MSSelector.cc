@@ -33,6 +33,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Arrays/Cube.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishArray.h>
 #include <aips/Glish/GlishRecord.h>
