@@ -1,5 +1,5 @@
 //# MeasValue.cc: Base class for values in a Measure
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,8 @@
 
 //# Includes
 #include <aips/Measures/MeasValue.h>
+#include <aips/Measures/Quantum.h>
+#include <aips/Arrays/Vector.h>
 
 //# Constants
 
@@ -38,6 +40,11 @@ MeasValue::~MeasValue() {}
 //# Operators
 
 //# Member functions
+
+Vector<Quantum<Double> > MeasValue::getXRecordValue() const {
+  return Vector<Quantum<Double> >(0);
+}
+
 void MeasValue::adjust() {}
 
 void MeasValue::adjust(Double &val) {

@@ -79,13 +79,8 @@ MVFrequency::MVFrequency(const Vector<Double> &other) {
 }
 
 MVFrequency::MVFrequency(const Vector<Quantity> &other) {
-  uInt i = other.nelements();
-  if (i == 0) {
-    val = 0.0;
-  } else if (i == 1) {
-    val = makeF( other(0).getValue(), other(0).getFullUnit());
-  } else {
-    throw (AipsError("Illegal vector length in MVFrequency constructor"));
+  if (!putValue(other)) {
+    throw (AipsError("Illegal quantity vector in MVFrequency constructor"));
   };
 }
 
@@ -174,6 +169,50 @@ void MVFrequency::putVector(const Vector<Double> &in) {
   } else {
     val = in(0);
   };
+}
+
+Vector<Quantum<Double> > MVFrequency::getRecordValue() const {
+  Vector<Quantum<Double> > tmp(1);
+  tmp(0) = get();
+  return tmp;
+}
+
+Bool MVFrequency::putValue(const Vector<Quantum<Double> > &in) {
+  static Bool needInit = True;
+  static UnitVal InvTime;
+  static UnitVal AngleTime;
+  static UnitVal InvLength;
+  static UnitVal Energy;
+  static UnitVal Impuls;
+  if (needInit) {
+    needInit = False;
+    InvTime = UnitVal::NODIM/UnitVal::TIME;
+    AngleTime = UnitVal::ANGLE/UnitVal::TIME;
+    InvLength = UnitVal::NODIM/UnitVal::LENGTH;
+    Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
+      UnitVal::TIME/UnitVal::TIME;
+    Impuls = UnitVal::MASS*UnitVal::LENGTH;
+  };
+  uInt i = in.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    UnitVal dt = in(0).getFullUnit().getValue();
+    if (dt == UnitVal::TIME ||
+	dt == InvTime ||
+	dt == AngleTime ||
+	dt == UnitVal::LENGTH ||
+	dt == InvLength ||
+	dt == Energy ||
+	dt == Impuls) {
+      val = makeF(in(0).getValue(), in(0).getFullUnit());
+    } else {
+      return False;
+    };
+  } else {
+    return False;
+  };
+  return True;
 }
 
 Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{

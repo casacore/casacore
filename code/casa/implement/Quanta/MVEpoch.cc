@@ -1,5 +1,5 @@
 //# MVEpoch.cc: a class for high precision time
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -90,10 +90,9 @@ MVEpoch::MVEpoch(const Vector<Double> &inday) :
 
 MVEpoch::MVEpoch(const Vector<Quantity> &in) :
   wday(0), frday(0) {
-    for (Int i=0; i<in.nelements(); i++) {
-      addTime(makeDay(in(i)));
-    }
-    adjust();
+    if (!putValue(in)) {
+      throw(AipsError("Illegal Quantity type argument: MVEpoch"));
+    };
   }
 
 //# Destructor
@@ -232,6 +231,27 @@ void MVEpoch::putVector(const Vector<Double> &in) {
     wday = in(0);
     frday = in(1);
   };
+}
+
+Vector<Quantum<Double> > MVEpoch::getRecordValue() const {
+  Vector<Quantum<Double> > tmp(1);
+  tmp(0) = getTime();
+  return tmp;
+}
+
+Bool MVEpoch::putValue(const Vector<Quantum<Double> > &in) {
+  {
+    for (Int i=0; i<in.nelements(); i++) {
+      if (!in(i).check(UnitVal::TIME)) return False;
+    };
+  }
+  {
+    for (Int i=0; i<in.nelements(); i++) {
+      addTime(makeDay(in(i)));
+    };
+  }
+  adjust();
+  return True;
 }
 
 Double MVEpoch::makeDay(const Quantity &in) const {

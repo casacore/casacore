@@ -1,5 +1,5 @@
 //# MVDirection.h: Vector of three direction cosines
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -177,6 +177,15 @@ public:
   Vector<Double> get() const;
   // Produce the cross product
   MVDirection crossProduct(const MVDirection &other) const;
+  // Get the internal value as a <src>Vector<Quantity></src>. Usable in
+  // records. The getXRecordValue() gets additional information for records.
+  // Note that the Vectors could be empty.
+  // <group>
+  virtual Vector<Quantum<Double> > getRecordValue() const;
+  virtual Vector<Quantum<Double> > getXRecordValue() const;
+  // </group>
+  // Set the internal value if correct values and dimensions
+  virtual Bool putValue(const Vector<Quantum<Double> > &in);
   
 protected:
   //# Data

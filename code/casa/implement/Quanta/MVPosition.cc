@@ -1,5 +1,5 @@
 //# MVPosition.cc: A 3D vector in space
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -181,30 +181,8 @@ MVPosition::MVPosition(const Vector<Double> &other) :
 
 MVPosition::MVPosition(const Vector<Quantity> &other) :
   xyz(3) {
-    uInt i; i = other.nelements();
-    if (i != 3 ) {
-      throw (AipsError("Illegal vector length in MVPosition constructor"));
-    } else {
-      other(0).assert(UnitVal::LENGTH);
-      if (other(1).check(UnitVal::LENGTH) &&
-	  other(2).check(UnitVal::LENGTH)) {
-	Int j;
-	for (j = 0; j<i; j++) {
-	  xyz(j) = other(j).getBaseValue();
-	};
-      } else {
-	Vector<Double> tsin(2), tcos(2);
-	Int j;
-	for (j=1; j < i; j++) {
-	  tsin(j-1) = (sin(other(j))).getValue(); 
-	  tcos(j-1) = (cos(other(j))).getValue(); 
-	};
-	xyz = Double(0.0);
-	xyz(0) = tcos(0) * tcos(1);
-	xyz(1) = tsin(0) * tcos(1);
-	xyz(2) = tsin(1);
-	readjust(other(0).getBaseValue());
-      };
+    if (!putValue(other)) {
+      throw (AipsError("Illegal quantum vector in MVPosition constructor"));
     };
   }
 
@@ -438,6 +416,71 @@ void MVPosition::putVector(const Vector<Double> &in) {
     xyz = 0.0;
     for (Int i=0; i<in.nelements();i++) xyz(i) = in(i);
   };
+}
+
+Vector<Quantum<Double> > MVPosition::getRecordValue() const {
+  Vector<Double> t(3);
+  t = get();
+  Vector<Quantum<Double> > tmp(3);
+  tmp(2) = Quantity(t(0), "m");
+  tmp(0) = Quantity(t(1), "rad"); 
+  tmp(1) = Quantity(t(2), "rad"); 
+  return tmp;
+}
+
+Vector<Quantum<Double> > MVPosition::getXRecordValue() const {
+  Vector<Quantum<Double> > tmp(3);
+  tmp(0) = Quantity(xyz(0), "m");
+  tmp(1) = Quantity(xyz(1), "m");
+  tmp(2) = Quantity(xyz(2), "m");
+  return tmp;
+}
+
+Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
+  uInt i; i = in.nelements();
+  if (i != 3 ) return False;
+  if (in(0).check(UnitVal::LENGTH)) {
+    if (in(1).check(UnitVal::LENGTH) &&
+	in(2).check(UnitVal::LENGTH)) {
+      Int j;
+      for (j = 0; j<i; j++) {
+	xyz(j) = in(j).getBaseValue();
+      };
+    } else if (in(1).check(UnitVal::ANGLE) &&
+	       in(2).check(UnitVal::ANGLE)) {
+      Vector<Double> tsin(2), tcos(2);
+      Int j;
+      for (j=1; j < i; j++) {
+	tsin(j-1) = (sin(in(j))).getValue(); 
+	tcos(j-1) = (cos(in(j))).getValue(); 
+      };
+      xyz = Double(0.0);
+      xyz(0) = tcos(0) * tcos(1);
+      xyz(1) = tsin(0) * tcos(1);
+      xyz(2) = tsin(1);
+      readjust(in(0).getBaseValue());
+    } else {
+      return False;
+    };
+  } else if (in(2).check(UnitVal::LENGTH)) {
+    if (in(0).check(UnitVal::ANGLE) &&
+	in(1).check(UnitVal::ANGLE)) {
+      Vector<Double> tsin(2), tcos(2);
+      Int j;
+      for (j=0; j < 2; j++) {
+	tsin(j) = (sin(in(j))).getValue(); 
+	tcos(j) = (cos(in(j))).getValue(); 
+      };
+      xyz = Double(0.0);
+      xyz(0) = tcos(0) * tcos(1);
+      xyz(1) = tsin(0) * tcos(1);
+      xyz(2) = tsin(1);
+      readjust(in(2).getBaseValue());
+    } else {
+      return False;
+    };
+  };
+  return True;
 }
 
 MVPosition operator*(const RotMatrix &left, const MVPosition &right) {

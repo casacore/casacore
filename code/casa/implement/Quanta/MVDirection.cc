@@ -1,5 +1,5 @@
 //# MVDirection.cc: Vector of three direction cosines
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -106,37 +106,9 @@ MVDirection::MVDirection(const Vector<Double> &angle) :
 
 MVDirection::MVDirection(const Vector<Quantity> &angle) :
   MVPosition() {
-    uInt i; i = angle.nelements();
-    if (i > 3 ) {
-      throw (AipsError("Illegal vector length in MVDirection constructor"));
-    } else if (i == 3) {
-      angle(0).assert(UnitVal::NODIM);
-      angle(1).assert(UnitVal::NODIM);
-      angle(2).assert(UnitVal::NODIM);
-      Int j;
-      for (j = 0; j<i; j++) {
-	xyz(j) = angle(j).getValue();
-      };
-      adjust();
-    } else {
-      Vector<Double> tsin(i), tcos(i);
-      Int j;
-      for (j=0; j < i; j++) {
-	tsin(j) = (sin(angle(j))).getValue(); 
-	tcos(j) = (cos(angle(j))).getValue(); 
-      };
-      xyz = Double(0.0);
-      if (i > 1) {
-	xyz(0) = tcos(0) * tcos(1);
-	xyz(1) = tsin(0) * tcos(1);
-	xyz(2) = tsin(1);
-      } else if (i > 0) {
-	xyz(0) = tcos(0);
-	xyz(1) = tsin(0);
-      } else {
-	xyz(2)=1.0;
-      }
-    }
+    if (!putValue(angle)) {
+      throw (AipsError("Illegal quantum vector in MVDirection constructor"));
+    };
   }
 
 //# Destructor
@@ -208,6 +180,60 @@ Vector<Double> MVDirection::get() const {
   tmp(1) = asin(xyz(2));
   return tmp;
 }    
+
+Vector<Quantum<Double> > MVDirection::getRecordValue() const {
+  Vector<Double> t(2);
+  t = get();
+  Vector<Quantum<Double> > tmp(2);
+  tmp(0) = Quantity(t(0), "rad"); 
+  tmp(1) = Quantity(t(1), "rad"); 
+  return tmp;
+}
+
+Vector<Quantum<Double> > MVDirection::getXRecordValue() const {
+  Vector<Quantum<Double> > tmp(3);
+  tmp(0) = Quantity(xyz(0), "");
+  tmp(1) = Quantity(xyz(1), "");
+  tmp(2) = Quantity(xyz(2), "");
+  return tmp;
+}
+
+Bool MVDirection::putValue(const Vector<Quantum<Double> > &in) {
+  uInt i; i = in.nelements();
+  if (i > 3 ) return False;
+  if (i == 3 &&
+      in(0).check(UnitVal::NODIM) &&
+      in(1).check(UnitVal::NODIM) &&
+      in(2).check(UnitVal::NODIM)) {
+    for (Int j = 0; j<i; j++) {
+      xyz(j) = in(j).getValue();
+    };
+    adjust();
+  } else {
+    Int j;
+    for (j = 0; j<i; j++) {
+      if (!in(j).check(UnitVal::ANGLE)) return False;
+    };
+    Vector<Double> tsin(i), tcos(i);
+    for (j=0; j < i; j++) {
+      tsin(j) = (sin(in(j))).getValue(); 
+      tcos(j) = (cos(in(j))).getValue(); 
+    };
+    xyz = Double(0.0);
+    if (i > 1) {
+      xyz(0) = tcos(0) * tcos(1);
+      xyz(1) = tsin(0) * tcos(1);
+      xyz(2) = tsin(1);
+    } else if (i > 0) {
+      xyz(0) = tcos(0);
+      xyz(1) = tsin(0);
+    } else {
+      xyz(2)=1.0;
+    };
+    adjust();
+  };
+  return True;
+}
 
 MVDirection MVDirection::crossProduct(const MVDirection &other) const {
   MVDirection res;

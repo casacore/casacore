@@ -1,5 +1,5 @@
 //# MeasValue.h: Base class for values in a Measure
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,7 @@
 #include <aips/aips.h>
 
 //# Forward Declarations
+template <class Qtype> class Quantum;
 template <class T> class Vector;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
@@ -167,16 +168,27 @@ public:
   // Clone a MeasValue
   virtual MeasValue *clone() const = 0;
 
-  //  Get the internal value as a Vector<Double>. Note that the vector could
+  // Get the internal value as a <src>Vector<Double></src>.
+  // Note that the vector could
   // be empty, or not be a true representation (different data sizes e.g.)
   virtual Vector<Double> getVector() const = 0;
 
+  // Get the internal value as a <src>Vector<Quantity></src>. Usable in
+  // records. The getXRecordValue() gets additional information for records.
+  // Note that the Vectors could be empty.
+  // <group>
+  virtual Vector<Quantum<Double> > getRecordValue() const = 0;
+  virtual Vector<Quantum<Double> > getXRecordValue() const;
+  // </group>
   // Set the internal value from a Vector of values (obtained in principle
   // with a getVector()). It will be assumed that the Vector is correctly 
   // formatted. If Vector is too long, the remainder will be discarded.
   // If Vector is too short, action will depend on the individual classes,
   // but in general act the same way as a constructor with a short Vector. 
   virtual void putVector(const Vector<Double> &in) = 0;
+
+  // Set the internal value if correct values and dimensions
+  virtual Bool putValue(const Vector<Quantum<Double> > &in) = 0;
 
   // Some of the Measure values used need the occasional adjustments to proper
   // values. Examples are MVDirection (direction cosines) which have to be
