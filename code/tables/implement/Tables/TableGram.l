@@ -93,6 +93,9 @@ ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
 IN        [Ii][Nn]
 AS        [Aa][Ss]
+AND       [Aa][Nn][Dd]
+OR        [Oo][Rr]
+NOT       [Nn][Oo][Tt]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}
 TEMPTAB   [$]{INT}
@@ -166,6 +169,39 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
             BEGIN(EXPRstate);
             return RBRACKET;
           }
+
+"<:<"     { tableGramPosition() += yyleng; return OPENOPEN; }
+"<:="     { tableGramPosition() += yyleng; return OPENCLOSED; }
+"=:<"     { tableGramPosition() += yyleng; return CLOSEDOPEN; }
+"=:="     { tableGramPosition() += yyleng; return CLOSEDCLOSED; }
+"<:"      { tableGramPosition() += yyleng; return OPENEMPTY; }
+":<"      { tableGramPosition() += yyleng; return EMPTYOPEN; }
+"=:"      { tableGramPosition() += yyleng; return CLOSEDEMPTY; }
+":="      { tableGramPosition() += yyleng; return EMPTYCLOSED; }
+":"       { tableGramPosition() += yyleng; return COLON; }
+"=="      { tableGramPosition() += yyleng; return EQ; }
+"="       { tableGramPosition() += yyleng; return EQ; }
+"!="      { tableGramPosition() += yyleng; return NE; }
+"<>"      { tableGramPosition() += yyleng; return NE; }
+">="      { tableGramPosition() += yyleng; return GE; }
+">"       { tableGramPosition() += yyleng; return GT; }
+"<="      { tableGramPosition() += yyleng; return LE; }
+"<"       { tableGramPosition() += yyleng; return LT; }
+"&&"      { tableGramPosition() += yyleng; return AND; }
+{AND}     { tableGramPosition() += yyleng; return AND; }
+"||"      { tableGramPosition() += yyleng; return OR; }
+{OR}      { tableGramPosition() += yyleng; return OR; }
+"!"       { tableGramPosition() += yyleng; return NOT; }
+{NOT}     { tableGramPosition() += yyleng; return NOT; }
+"^"       { tableGramPosition() += yyleng; return POWER; }
+"*"       { tableGramPosition() += yyleng; return TIMES; }
+"/"       { tableGramPosition() += yyleng; return DIVIDE; }
+"%"       { tableGramPosition() += yyleng; return MODULO; }
+"+"       { tableGramPosition() += yyleng; return PLUS; }
+"-"       { tableGramPosition() += yyleng; return MINUS; }
+"("       { tableGramPosition() += yyleng; return LPAREN; }
+")"       { tableGramPosition() += yyleng; return RPAREN; }
+","       { tableGramPosition() += yyleng; return COMMA; }
 
  /* In the ORDERBY clause the sort qualifier ASC or DESC can be given.
  */
@@ -268,34 +304,6 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
 	    return TABNAME;
 	  }
-
-"<:<"     { tableGramPosition() += yyleng; return OPENOPEN; }
-"<:="     { tableGramPosition() += yyleng; return OPENCLOSED; }
-"=:<"     { tableGramPosition() += yyleng; return CLOSEDOPEN; }
-"=:="     { tableGramPosition() += yyleng; return CLOSEDCLOSED; }
-"<:"      { tableGramPosition() += yyleng; return OPENEMPTY; }
-":<"      { tableGramPosition() += yyleng; return EMPTYOPEN; }
-"=:"      { tableGramPosition() += yyleng; return CLOSEDEMPTY; }
-":="      { tableGramPosition() += yyleng; return EMPTYCLOSED; }
-":"       { tableGramPosition() += yyleng; return COLON; }
-"=="      { tableGramPosition() += yyleng; return EQ; }
-">="      { tableGramPosition() += yyleng; return GE; }
-">"       { tableGramPosition() += yyleng; return GT; }
-"<="      { tableGramPosition() += yyleng; return LE; }
-"<"       { tableGramPosition() += yyleng; return LT; }
-"!="      { tableGramPosition() += yyleng; return NE; }
-"&&"      { tableGramPosition() += yyleng; return AND; }
-"||"      { tableGramPosition() += yyleng; return OR; }
-"!"       { tableGramPosition() += yyleng; return NOT; }
-"^"       { tableGramPosition() += yyleng; return POWER; }
-"*"       { tableGramPosition() += yyleng; return TIMES; }
-"/"       { tableGramPosition() += yyleng; return DIVIDE; }
-"%"       { tableGramPosition() += yyleng; return MODULO; }
-"+"       { tableGramPosition() += yyleng; return PLUS; }
-"-"       { tableGramPosition() += yyleng; return MINUS; }
-"("       { tableGramPosition() += yyleng; return LPAREN; }
-")"       { tableGramPosition() += yyleng; return RPAREN; }
-","       { tableGramPosition() += yyleng; return COMMA; }
 
  /* Whitespace is skipped */
 {WHITE}   { tableGramPosition() += yyleng; }
