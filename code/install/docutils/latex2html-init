@@ -152,9 +152,9 @@ sub aips2script {
 "            document[imgName].src = eval(imgName + \"off.src\");        }}\n" .
 #"\n" .
 "//-->\n" .
-#"\n" .
+"\n" .
 "</SCRIPT>\n" .
-"\n"
+"\n" .
 }
 sub aips2topbar {
 #"\n" .
