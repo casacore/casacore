@@ -1,5 +1,5 @@
 //# COWPtr.h: this defines the Copy-On-Write-Pointer class.
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,6 @@
 
 #if !defined(AIPS_COWPTR_H)
 #define AIPS_COWPTR_H
-
-#if defined(_AIX)
-#pragma implementation ("COWPtr.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Utilities/CountedPtr.h>
