@@ -243,11 +243,44 @@ else
 XLIBSEL:=XLIBLIST_override
 endif
 
+###
+### Required libraries for linking of applications when
+### using shared libraries.
+###
 ifeq "$(XLIBLIST_shared_aips)" ""
 XLIBLIST_shared_aips:=GLISH X11 LAPACK F77
 endif
 ifeq "$(XLIBLIST_shared_trial)" ""
 XLIBLIST_shared_trial:=GLISH XmPGPLOT XPM Motif X11 WCSLIB LAPACK F77
+endif
+ifeq "$(XLIBLIST_shared_nrao)" ""
+XLIBLIST_shared_nrao:=$(XLIBLIST_shared_trial)
+endif
+ifeq "$(XLIBLIST_shared_atnf)" ""
+XLIBLIST_shared_atnf:=RPFITS $(XLIBLIST_shared_trial)
+endif
+ifeq "$(XLIBLIST_shared_nfra)" ""
+XLIBLIST_shared_nfra:=$(XLIBLIST_shared_trial)
+endif
+
+###
+### select the shared library list for applications select
+### shared library linking if either of the C++ library is
+### specified as shared
+###
+ifneq "$(word 1,$(LIB$(PACKAGE)))" "static"
+XLIB_do_shared := YES
+endif
+ifneq "$(word 2,$(LIB$(PACKAGE)))" "static"
+XLIB_do_shared := YES
+endif
+
+ifneq "$(XLB_do_shared)" ""
+ifeq "$(XLIBLIST_override)" ""
+ifneq "$(XLIBLIST_shared_$(PACKAGE))" ""
+XLIBSEL := XLIBLIST_shared_$(PACKAGE)
+endif
+endif
 endif
 
 ###
