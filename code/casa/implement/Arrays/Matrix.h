@@ -326,11 +326,4 @@ private:
     void makeIndexingConstants();
 };
 
-#if defined(__GNUG__)
-template<class T>
-inline  Array<T> &at_c(Matrix<T> &val) { return(val.ac()); };
-template<class T>
-inline const  Array<T> &at_cc(const Matrix<T> &val) { return(val.ac()); };
-#endif
-
 #endif

@@ -595,11 +595,4 @@ template<class T, class U>
 
 // </group>
 
-#if defined(__GNUG__)
-template<class T>
-inline  Array<T> &at_c(Array<T> &val) { return(val.ac()); };
-template<class T>
-inline const  Array<T> &at_cc(const Array<T> &val) { return(val.ac()); };
-#endif
-
 #endif

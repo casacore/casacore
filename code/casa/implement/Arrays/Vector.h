@@ -1,5 +1,5 @@
 //# Vector.h: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1998
+//# Copyright (C) 1993,1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -283,12 +283,5 @@ private:
     // Helper functions for constructors.
     void initVector(const Block<T> &, Int nr);      // copy semantics
 };
-
-#if defined(__GNUG__)
-template<class T>
-inline  Array<T> &at_c(Vector<T> &val) { return(val.ac()); };
-template<class T>
-inline const  Array<T> &at_cc(const Vector<T> &val) { return(val.ac()); };
-#endif
 
 #endif
