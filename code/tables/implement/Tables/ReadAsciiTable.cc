@@ -417,7 +417,9 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
     throw AipsError ("No type info in type string '" + typestr + "'");
   }
   // Get type without shape info.
-  String tp = vec(0).before (pos);
+  // Note: need to convert pos to an Int because some compilers are more picky about
+  // type safety, i.e. the native compilers for SGI and SUN
+  String tp = vec(0).before (Int(pos));
   if (pos >= vec(0).length()) {
     vec(0) = String();
     // Clear vector if no shape given at all.
@@ -426,7 +428,7 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
     }
   } else {
     // Keep only length in first value.
-    vec(0) = vec(0).from(pos);
+    vec(0) = vec(0).from(Int(pos));
   }
   shape.resize (vec.nelements());
   Regex num("[0-9]+");
