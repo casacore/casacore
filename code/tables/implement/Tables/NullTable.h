@@ -86,6 +86,8 @@ public:
   virtual void resync();
   virtual uInt getModifyCounter() const;
   virtual Bool isWritable() const;
+  virtual TableDesc actualTableDesc() const;
+  virtual Record dataManagerInfo() const;
   virtual TableRecord& keywordSet();
   virtual TableRecord& rwKeywordSet();
   virtual BaseColumn* getColumn (uInt columnIndex) const;
@@ -102,8 +104,8 @@ public:
 			  const DataManager& dataManager);
   virtual void addColumn (const TableDesc& tableDesc,
 			  const DataManager& dataManager);
-  virtual Bool canRemoveColumn (const String& columnName) const;
-  virtual void removeColumn (const String& columnName);
+  virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;
+  virtual void removeColumn (const Vector<String>& columnNames);
   virtual Bool canRenameColumn (const String& columnName) const;
   virtual void renameColumn (const String& newName, const String& oldName);
   virtual Vector<uInt> rowNumbers() const;
