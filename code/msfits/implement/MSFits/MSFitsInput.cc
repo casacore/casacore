@@ -84,6 +84,7 @@
 #include <fits/FITS/FITSKeywordUtil.h>
 #include <fits/FITS/FITSSpectralUtil.h>
 #include <fits/FITS/BinTable.h>
+#include <fits/FITS/fits.h>
 #include <tables/LogTables/NewFile.h>
 #include <casa/System/ProgressMeter.h>
 #include <ms/MeasurementSets/MSTileLayout.h>
@@ -279,10 +280,15 @@ void MSFitsInput::readFitsFile(Int obsType)
       } else if (type.contains("SU") && !haveField) {
 	haveField=True;
 	fillFieldTable(binTab, nField);
+	setFreqFrameVar(binTab);
+	//in case spectral window was already filled
+	if(haveSpW){
+	  updateSpectralWindowTable();
+	}
       } else {
 	itsLog << LogIO::NORMAL 
-	   << "Skipping table, duplicate or unrecognized type: "
-	   << type << LogIO::POST;
+	       << "Skipping table, duplicate or unrecognized type: "
+	       << type << LogIO::POST;
 	//	binTab.fullTable("", Table::Scratch); // infile.skip_hdu();
 	binTab.fullTable();
       }
@@ -1890,6 +1896,55 @@ void MSFitsInput::fixEpochReferences() {
       itsLog << LogIO::SEVERE << "Unhandled time reference frame: "<<timsys_p<<LogIO::POST;
   }
 }
+void MSFitsInput::setFreqFrameVar(BinaryTable& binTab) {
+ 
+  ConstFitsKeywordList kwlist=binTab.kwlist();
+  const FitsKeyword* kw;
+
+  kwlist.first();
+  String frame;
+
+  while ((kw = kwlist.next())) {
+    String kwname = kw->name();
+    if(kwname=="VELTYP"){
+      frame= kw->asString();
+    }
+  }
+  if(frame.contains("LSR")){
+    freqsys_p= MFrequency::LSRK; // because some smart people use only LSR
+    if(frame.contains("LSRD"))   // in uvfits !
+      freqsys_p= MFrequency::LSRD; 
+  }
+  else if(frame.contains("REST")){
+    freqsys_p= MFrequency::REST; 
+  }
+  else if(frame.contains("BARY")){
+    freqsys_p= MFrequency::BARY; 
+  }
+  else if(frame.contains("GEO")){
+    freqsys_p= MFrequency::GEO; 
+  }
+  else if(frame.contains("TOPO")){
+    freqsys_p= MFrequency::TOPO; 
+  }
+  else if(frame.contains("GALAC")){
+    freqsys_p= MFrequency::GALACTO; 
+  }
+  else if(frame.contains("LOCAL") ||frame.contains("LGROUP") ){
+    freqsys_p= MFrequency::LGROUP;
+  }
+  else if(frame.contains("CMB")){
+    freqsys_p= MFrequency::CMB;
+  } 
+}
+
+void MSFitsInput::updateSpectralWindowTable(){
+
+  MSSpWindowColumns& msSpW(msc_p->spectralWindow());
+  msSpW.measFreqRef().fillColumn(freqsys_p);
+  
+}
+
 // Local Variables: 
 // compile-command: "gmake MSFitsInput"
 // End: 

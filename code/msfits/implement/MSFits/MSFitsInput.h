@@ -243,6 +243,12 @@ protected:
   // fix up the EPOCH MEASURE_REFERENCE keywords using the value found
   // in the (last) AN table
   void fixEpochReferences();
+  // Check the frame if there is an SU table
+  void setFreqFrameVar(BinaryTable& binTab);
+  // update a the Spectral window post filling if necessary
+  void updateSpectralWindowTable();
+
+
 
 private:
   //# The default constructor is private and undefined
@@ -251,6 +257,7 @@ private:
   MSFitsInput(const MSFitsInput& other);
   //# The assignment operator is private and undefined
   MSFitsInput& operator=(const MSFitsInput& other);
+
 
   FitsInput* infile_p;
   String msFile_p;
