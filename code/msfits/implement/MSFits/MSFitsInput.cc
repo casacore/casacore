@@ -515,13 +515,11 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   // Bind ANTENNA1, ANTENNA2 and DATA_DESC_ID to the standardStMan 
   // as they may change sufficiently frequently to make the
   // incremental storage manager inefficient for these columns.
-  //  (gmoellen 02May08: commented out ANTENNA1/DATA_DESC_ID
-  //   to avoid problems this introduced in ANTENNA1)
 
   StandardStMan aipsStMan(32768);
-  //  newtab.bindColumn(MS::columnName(MS::ANTENNA1), aipsStMan);
+  newtab.bindColumn(MS::columnName(MS::ANTENNA1), aipsStMan);
   newtab.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
-  //  newtab.bindColumn(MS::columnName(MS::DATA_DESC_ID), aipsStMan);
+  newtab.bindColumn(MS::columnName(MS::DATA_DESC_ID), aipsStMan);
 
   if (useTSM) {
     // Choose an appropriate tileshape
