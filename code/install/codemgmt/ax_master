@@ -4386,3 +4386,4 @@
 14 276 src rm npoi/apps/Cuttlefish/COPYRIGHT
 14 282 src rm doc/html/tour/aips++tour.ppt
 14 284 src rm trial/apps/simpleimage
+14 284 sys rm libexec/simpleimage.g
