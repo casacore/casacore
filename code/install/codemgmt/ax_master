@@ -3553,3 +3553,4 @@
 13 317 src rm trial/apps/ms/ms_standard.gp
 13 317 sys rm libexec/ms_standard.gp
 13 318 src mv trial/implement/OS/TableExprData.h aips/implement/Tables/TableExprData.h
+13 318 src mv trial/implement/OS/TableExprData.cc aips/implement/Tables/TableExprData.cc
