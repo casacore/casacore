@@ -2122,3 +2122,4 @@
 08 362 src rm trial/apps/imager/templates
 08 364 src rm trial/implement/ComponentModels/test/templates
 08 374 src rm install/makefile.boot
+08 374 src rm install/PWD.c
