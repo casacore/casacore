@@ -1,5 +1,5 @@
 //# aipsxtype.h: Global initialization for special aips++ types
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,5 +38,14 @@ typedef unsigned long long uInt64;
 
 //# Slicer is used in GLU (OpenGL Utilities), so use another name for AIPS++.
 #define Slicer ArraySlicer
+
+//# All FITS code seems to assume longs are 4 bytes. Take care of machines 
+//# for which this isn't true here by defining FitsLong to be the 4 byte int.
+//# Use FitsLong instead of long in the FITS code where it matters.
+#if (defined(AIPS_ALPHA) || defined(AIPS_SGI))
+    typedef Int FitsLong;
+#else
+    typedef Long FitsLong;
+#endif 
 
 #endif
