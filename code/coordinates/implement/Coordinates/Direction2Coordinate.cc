@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,10 @@
 //# $Id$
 
 #include <trial/Coordinates/DirectionCoordinate.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 
 // A different file so that apps which don't need measures don't link them all
 // in (measures bring in tables and lots of other stuff)
@@ -38,10 +42,33 @@ Bool DirectionCoordinate::toWorld(MDirection &world,
 
 // We could cache much of this for efficiency
 
-    Quantity longi(world_tmp_p(0), units_p(0));
-    Quantity lati(world_tmp_p(1), units_p(1));
+    Quantum<Double> longi(world_tmp_p(0), units_p(0));
+    Quantum<Double> lati(world_tmp_p(1), units_p(1));
     world = MDirection(longi, lati, type_p);
-
+//
     return ok;
 }
+
+Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
+                                  const MDirection &world) const
+{
+// Convert to current units
+
+    Quantum<Vector<Double> > lonlat = world.getAngle();
+    Vector<Double> lonlatVal(2);
+
+// Don't think this can be done more easily
+
+    lonlat.convert(units_p(0));
+    lonlatVal(0) = lonlat.getValue()(0);
+//
+    lonlat.convert(units_p(1));
+    lonlatVal(1) = lonlat.getValue()(1);
+
+// Do it
+
+    if (pixel.nelements()!=2) pixel.resize(2,False);
+    return toPixel(pixel, lonlatVal);
+}
+
 

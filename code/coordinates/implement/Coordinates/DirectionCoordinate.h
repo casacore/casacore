@@ -1,5 +1,5 @@
 //# DirectionCoordinate.h: Interconvert pixel positions and directions (e.g. RA/DEC)
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -195,9 +195,11 @@ public:
     // 
     // We could improve the performance of this if it would be useful, however I
     // expect that normally you would just call this once to get a template
-    // MDirection, and then call the vector versions. A similar toPixel is also
-    // possible, but probably not needed.
+    // MDirection, and then call the vector versions. 
+    // <group>
     Bool toWorld(MDirection &world, const Vector<Double> &pixel) const;
+    Bool toPixel(Vector<Double> &pixel, const MDirection &world) const;
+     //</group>
 
     // Recover the requested attributed.
     // <group>
