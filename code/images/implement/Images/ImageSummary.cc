@@ -1,5 +1,5 @@
 //# ImageSummary.cc:  list an image header
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -363,12 +363,6 @@ String ImageSummary<T>::imageType  () const
 template <class T> 
 Vector<String> ImageSummary<T>::list (LogIO& os, const MDoppler::Types velocityType,
                                       Bool postLocally)
-//
-// List information about an image to the logger
-//
-// Input:
-//   velocityType  Speciy velocity definition
-//
 {
    LogSinkInterface& lsi = os.localSink();
    uInt n = lsi.nelements();
@@ -383,6 +377,7 @@ Vector<String> ImageSummary<T>::list (LogIO& os, const MDoppler::Types velocityT
 
    os << "Image name       : " << name() << endl;
    os << "Image type       : " << imageType() << endl;
+   os << "Image quantity   : " << ImageInfo::imageType(imageInfo_p.imageType()) << endl;
 //
    String list = makeMasksString();
    os << "Pixel mask(s)    : " << list << endl;
@@ -393,7 +388,6 @@ Vector<String> ImageSummary<T>::list (LogIO& os, const MDoppler::Types velocityT
    if (!units().getName().empty()) {
       os << "Image units      : " << this->units().getName() << endl;
    }
-
 
 // Restoring beam
 
