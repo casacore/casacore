@@ -201,19 +201,126 @@ g:=F							# How to kill the frame
 \section{Single Dish}
 
 \begin{itemize}
-\item Load sdddemo and create tables for reading
+\item Load sddemo and create tables for reading
 \begin{verbatim}
 include 'sddemo.g'
 sddemo()
 \end{verbatim}
-\item Load the table using the File menu.
+\item Start the single dish environment
+\begin{verbatim}
+include 'sdavg.g'
+\end{verbatim}
+\item Load one of the demo tables using the File menu (select Open).
 \item Browse
+\begin{itemize}
 \item Look at a number of records and see how the plot changes
-\item Look at record 65 (it's bad!)
-\item Select an operation: selection and averaging
-\item In the Record region of the selection pane, enter [1-64][66-256]
+\item Look at record 65 of sddemo.table (it's bad!)
+\item Select ``Browse record''
+\begin{itemize}
+\item Change to a different coordinate system for ``Direction'' by pushing
+the button labelled ``B1950'' and selecting ``J2000'' (button label should
+change).
+\item Change to a different format for the Time display by pushing the
+button labelled ``Time'' and selecting ``dmy''.
+\item Change to a different time system by pushing the button labelled
+``UTC'' and selecting ``LAST''.
+\item Experiment with the other buttons (e.g. the telescope Position).
+\item Display the data values by pressing the ``arr'' button.
+\item Show the ns\_header and history by pressing those buttons.
+\end{itemize}
+\item Click on any number of other records in the ``SD Working Set Browser''
+window to see them update the record browser window and the plotter.
+\end{itemize}
+\item Select two operations: Selection and Averaging (Operations menu).
+\begin{itemize}
+\item In the Record region of the selection pane, enter [1,64][66,256]
 to avoid the bad record
-\item Press the averaging button and look at spectrum
-\item Now do some smoothing
-\item Now play with plotting options on plotting window
+\item Press the ``Average selected spectra'' button and look at spectrum
+(result will appear in the plotter and be selected in the result manager.
+\item Browse (this just brings up the individual record browser when the focus
+is on an individual record).  Look at the history of this result.
+\item Try different alignment and weighting options.
+\item You can browse the intermediate working sets created as a result of
+the selection operation.  You can browse more than one thing at a time.
+\item Overlay two of these results
+\begin{itemize}
+\item Select one of the results in the results manager.
+\item On the plotter, in the Active Plot menu, select ``2''
+\item Select another of the results in the results manager.
+\item On the plotter, in the Overlays menu, select ``1'' 
+(overlaying will become simpler eventually)
+\end{itemize}
+\end{itemize}
+\item Any of these results can be examined at the glish prompt.
+For example, type ``print criteria1'' at the glish prompt.  This shows
+the selection criteria.
+\item You can rename a variable in the results manager by typing in a
+new name and hitting return.
+\item Now do some smoothing (turn ``off'' the other operation GUIs to
+conserve real estate on your desktop)
+\begin{itemize}
+\item Select a record (either the result of a previous operation, or
+through the browser on a working set).  This operation works on the
+most recently displayed record.
+\item Try different types of smoothing.
+\item Try Hanning or Boxcar with and without ``decimation''
+\item Do a Gaussian smooth.
+\begin{itemize}
+\item Select ``Gaussian''
+\item Enter a width in channels
+\item Convert it to x-axis units by pushing the ``Convert'' button.
+\item Enter a different width.
+\item Oops, you meant that to be in channels, push the menu button
+labelled ``X-axis Units'' and select ``Channels'' (the value you just
+typed in has not changed, but the label has).
+\item Actually do the smooth.
+\end{itemize}
+\end{itemize}
+\item Fit some baselines.
+\begin{itemize}
+\item Select ``Polynomial'' (sine-wave is not yet supported)
+\item Choose an order.
+\item Chose the x-axis ranges to include in the fit, using the plotter
+\begin{itemize}
+\item click on ``Range Select''
+\item Mark ranges with the cursor - left mouse to start and end, right
+mouse to cancel.
+\item Height of a range box is 2x the local RMS, the center Y of a 
+range box is the local mean.
+\item Notice that these ranges are also displayed in the Baselines GUI.
+\item You can convert to X-axis units in the Baselines GUI.
+\item You can deselect and delete ranges in the ``Selected Ranges'' GUI.
+\end{itemize}
+\item With the ``Recalculate'' and ``Show'' options selected, press ``Apply''.
+\item Note the chi squared in the GUI, the fit overlaying the data on the 
+plotter and the original record still selected.
+\item Change the order and/or the ranges
+\item Ranges can be edited in the Baselines GUI entry - these changes will
+noy appear on the plotter until the ``Apply'' button is pressed.
+\item When you are satified that this is a baseline you want to remove,
+turn off the ``Recalculate'' button and select the ``Subtract'' option
+and press ``Apply''.
+\end{itemize}
+\item Function on data - with a record selected and plotted try the following
+(comments appear after the \verb_#_), you might want to return to the original
+record before each application of a function on the data.
+\begin{itemize}
+\item ARR*ARR  \verb_#_ square of the data array, press Apply
+\item ARR * HEADER.tsys  \verb_#_ multiply by tsys in the header record
+\item sqrt(ARR) \verb_#_ take the sqrt of the data
+\item Any valid glish, ARR is replaced by the data array, HEADER by
+the header record, NS\_HEADER by the ns\_header record, DESC by the 
+desc record, and DATA by the data record.  The operations must return
+an array of the same shape as the input data array.  Any global glish
+variable can be used here (including functions).
+\end{itemize}
+\item Play with plotting options on plotting window
+\item Turn on the ``Trace'' option and try some of these operations.
+Note: these will eventually be equivalent to what the program is doing
+at the glish level, they are only there now to illustrate the concept.
+\item Select ``Open Eval Window'' from the ``Tools'' menu.
+\item Type any valid glish in the eval window.
+\item Press ``Eval Contents''
+\item marvel at the result which appears in the glish window where you
+started from.
 \end{itemize}
