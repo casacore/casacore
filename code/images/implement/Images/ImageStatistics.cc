@@ -52,6 +52,7 @@
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/TiledStepper.h>
 #include <trial/Tasking/ProgressMeter.h>
 
 
@@ -396,7 +397,6 @@ Bool ImageStatistics<T>::display()
      return False;
    }
 
-
 // Do we have anything to do
 
    if (!doList_p && device_p.empty()) {
@@ -451,7 +451,7 @@ Bool ImageStatistics<T>::display()
 
 // Iterate through storage image. The cursor may be of > 2 dimensions, but 
 // only the first (first display axis) and last (statistics) axes are of 
-// non-unit size, so it  is effectively a matrix.  
+// non-unit size, so it is effectively a matrix.  
 
    IPosition cursorShape(pStoreImage_p->ndim(),1);
    cursorShape(0) = pStoreImage_p->shape()(0);
@@ -997,7 +997,7 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
 
 
 template <class T>
-void ImageStatistics<T>::copyArray (Array<T>&slice, const Array<Double>& cursor)
+void ImageStatistics<T>::copyArray (Array<T>&outSlice, const Array<Double>& inSlice)
 //
 // Copy the values in the cursor to the output array
 //
@@ -1005,37 +1005,37 @@ void ImageStatistics<T>::copyArray (Array<T>&slice, const Array<Double>& cursor)
 
 // Resize output
 
-   slice.resize(cursor.shape());
+   outSlice.resize(inSlice.shape());
 
 
-   if (cursor.shape().product() == 1) {
+   if (inSlice.shape().product() == 1) {
 
 // Take easy path for degenerate array
 
-      IPosition posIn(cursor.ndim(),0);
-      IPosition posOut(slice.ndim(),0);
-      slice(posOut) = cursor(posIn);
+      IPosition posIn(inSlice.ndim(),0);
+      IPosition posOut(outSlice.ndim(),0);
+      outSlice(posOut) = inSlice(posIn);
 
    } else {
 
 // Set up to iterate by vectors 
 
-      ReadOnlyVectorIterator<Double> cursorIt(cursor);
-      VectorIterator<T> sliceIt(slice);
-      Int n1 = cursorIt.vector().nelements();
+      ReadOnlyVectorIterator<Double> inSliceIt(inSlice);
+      VectorIterator<T> outSliceIt(outSlice);
+      Int n1 = inSliceIt.vector().nelements();
       Int i;
 
 // Iterate and copy
 
-      while (!cursorIt.pastEnd()) {
+      while (!inSliceIt.pastEnd()) {
 
 // We have to copy them element by element because
 // the types may be different (e.g. Double -> Float)
 
-         for (i=0; i<n1; i++) sliceIt.vector()(i) = cursorIt.vector()(i);
+         for (i=0; i<n1; i++) outSliceIt.vector()(i) = inSliceIt.vector()(i);
 
-         cursorIt.next();
-         sliceIt.next();
+         inSliceIt.next();
+         outSliceIt.next();
       }
    }
 }
@@ -1137,7 +1137,7 @@ void ImageStatistics<T>::generateStorageImage()
       File inputImageName(pInImage_p->name());
       const String path = inputImageName.path().dirName() + "/";
 
-      Path fileName = File::newUniqueName(path, String("PagedArray"));
+      Path fileName = File::newUniqueName(path, String("Scratch_ImageStatistics_"));
       SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
       Table myTable(setup);
 
@@ -1174,30 +1174,42 @@ void ImageStatistics<T>::generateStorageImage()
 
 // Set up pixel iterator and navigator
 
-   RO_LatticeIterator<T> pixelIterator(*pInImage_p, cursorShape_p);
+   RO_LatticeIterator<T>* pPixelIterator;
+   if (cursorAxes_p.nelements() == 1) {
+      TiledStepper imageNavigator (pInImage_p->shape(), 
+                                   pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
+                                   cursorAxes_p(0));
+      pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, imageNavigator);
+   } else {
+       pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, cursorShape_p);
+   }
+
 
 // Iterate through image and accumulate statistical sums
 
 /*
    Double min = Double(0);
-   Double max = Double(pInImage_p->shape().product())/Double(pixelIterator.cursor().shape().product());
+   Double max = Double(pInImage_p->shape().product())/Double(pPixelIterator->cursor().shape().product());
    ProgressMeter clock(min, max, String("Generate Storage Image"), String(""), 
                        String(""), String(""), True, Int(max/20));
    Double value = 0.0;
 */
    Int nIter =0;
-   for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
-      accumulate (nIter, pixelIterator.position(), 
-                  pixelIterator.cursor());
+   for (pPixelIterator->reset(); !pPixelIterator->atEnd(); (*pPixelIterator)++) {
+      accumulate (nIter, pPixelIterator->position(), 
+                  pPixelIterator->cursor());
 //      clock.update(value);
 //      value += 1.0;
    }  
 
    needStorageImage_p = False;     
    doneSomeGoodPoints_p = False;
+
+   delete pPixelIterator;
 }
 
 
+   
 
 template <class T>
 void ImageStatistics<T>::lineSegments (Int& nSeg,
@@ -1227,15 +1239,13 @@ void ImageStatistics<T>::lineSegments (Int& nSeg,
    nPts.resize(n);
 
    for (Int i=0; !finish;) {
-      Bool ok = findNextDatum (iGood, n, pn, i, True);
-      if (!ok) {
+      if (!findNextDatum (iGood, n, pn, i, True)) {
          finish = True;
       } else {
          nSeg++;
          start(nSeg-1) = iGood;
 
-         Bool ok2 = findNextDatum (iBad, n, pn, iGood, False);
-         if (!ok2) {
+         if (!findNextDatum (iBad, n, pn, iGood, False)) {
             nPts(nSeg-1) = n - start(nSeg-1);
             finish = True;
          } else { 
@@ -1782,8 +1792,7 @@ void ImageStatistics<T>::multiColourYLabel (const String& LRLoc,
 
 // Fish out next sub label
 
-      Bool ok = findNextLabel (subLabel, iLab, label);
-      if (!ok) {
+      if (!findNextLabel (subLabel, iLab, label)) {
          cpgsci (sci);
          return;
       } 
@@ -1966,8 +1975,19 @@ void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
 // Get coordinate system.
          
    CoordinateSystem cSys = pInImage_p->coordinates();
- 
-         
+
+
+// Set angular units in radians 
+
+   Vector<String> units = cSys.worldAxisUnits().ac();
+   Int coordinate, axisInCoordinate;
+   for (Int j=0; j<cSys.nWorldAxes(); j++) {
+      cSys.findWorldAxis(coordinate, axisInCoordinate, j);
+      if (cSys.type(coordinate) == Coordinate::DIRECTION) units(j) = "rad";    
+   }
+   cSys.setWorldAxisUnits(units,True);
+
+
 // Create pixel and world vectors for all pixel axes. Initialize pixel values
 // to reference pixel, but if an axis is a cursor axis (whose coordinate is 
 // essentially being averaged) set the pixel to the mean pixel.
@@ -1976,8 +1996,8 @@ void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
    Vector<Double> world(cSys.nPixelAxes());
    pix = cSys.referencePixel(); 
    for (Int i=0; i<pix.nelements(); i++) {
-     if (ImageUtilities::inVector(i, cursorAxes_p)) {
-       pix(i) = Double(pInImage_p->shape()(i)-1) / 2.0;
+     if (ImageUtilities::inVector(i, cursorAxes_p) != -1) {
+       pix(i) = Double(pInImage_p->shape()(i)) / 2.0;
      }
    }
 
@@ -1989,20 +2009,18 @@ void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
 
 // Find coordinate for this pixel axis
   
-   Int coordinate, axisInCoordinate, otherAxisInCoordinate;
+   Int otherAxisInCoordinate;
    cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
   
 
 // Convert to world and format depending upon coordinate type
 
    if (cSys.type(coordinate) == Coordinate::DIRECTION) {
- 
 
 // Find name of pixel axis
          
       String tString = cSys.worldAxisNames()(worldAxis);
       tString.upcase();
-         
          
 // Loop over list of pixel coordinates and convert to world
    
@@ -2032,8 +2050,7 @@ void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
    } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) {
       for (Int i=0; i<n1; i++) {
          pix(pixelAxis) = pixel(i);
-         Bool ok = cSys.toWorld(world,pix);
-         if (ok) {
+         if (cSys.toWorld(world,pix)) {
             ostrstream oss;
             oss.setf(ios::scientific, ios::floatfield);
             oss.setf(ios::left);
