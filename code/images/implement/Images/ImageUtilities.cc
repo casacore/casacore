@@ -44,7 +44,7 @@
   
 
 Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
-                                 const CoordinateSystem& cSysIn,
+                                 CoordinateSystem& cSysIn,
                                  const Int& pixelAxis,
                                  const Vector<Int>& cursorAxes,
                                  const IPosition& blc,

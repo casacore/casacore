@@ -90,7 +90,7 @@ public:
 // <<src>blc</src> and <src>trc</src> are not equal to the number of pixel axes
 // in the coordinate system.
    static Bool pixToWorld (Vector<String>& sWorld,
-                           const CoordinateSystem& cSys,
+                           CoordinateSystem& cSys,
                            const Int& pixelAxis,
                            const Vector<Int>& cursorAxes,
                            const IPosition& blc,
