@@ -1,5 +1,5 @@
 //# LELFunctionEnums.h: Enums of function names
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -160,6 +160,12 @@ public:
 
 // median; median(x) (is a scalar)
    MEDIAN1D,
+
+// fractile; fractile(x,fraction) (is a scalar)
+   FRACTILE1D,
+
+// fractilerange; fractilerange(x,fraction1[,fraction2]) (is a scalar)
+   FRACTILERANGE1D,
 
 // sum; sum(x) (is a scalar)
    SUM,

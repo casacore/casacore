@@ -29,11 +29,11 @@
 #include <trial/Lattices/LELFunctionEnums.h>
 #include <trial/Lattices/LELArray.h>
 #include <trial/Lattices/LELScalar.h>
-#include <aips/Arrays/Slicer.h>
+#include <trial/Lattices/LatticeFractile.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <aips/Lattices/LatticeIterator.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h> 
 
@@ -79,12 +79,11 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
     }
     case LELFunctionEnums::SIGN :
     {
-// Expect 1 Float argument
-
-	Block<Int> argType(1);
-	argType[0] = TpFloat;
-	setAttr (LatticeExprNode::checkArg (exp, argType, False));
-	break;
+       // Expect 1 Float argument
+       Block<Int> argType(1);
+       argType[0] = TpFloat;
+       setAttr (LatticeExprNode::checkArg (exp, argType, False));
+       break;
     }
     case LELFunctionEnums::ATAN2 :
     case LELFunctionEnums::POW :
@@ -92,13 +91,47 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
     case LELFunctionEnums::MIN :
     case LELFunctionEnums::MAX :
     {
-// Expect 2 Float arguments
-
-	Block<Int> argType(2);
-	argType[0] = TpFloat;
-	argType[1] = TpFloat;
-	setAttr (LatticeExprNode::checkArg (exp, argType, False));
-	break;
+       // Expect 2 Float arguments
+       Block<Int> argType(2);
+       argType[0] = TpFloat;
+       argType[1] = TpFloat;
+       setAttr (LatticeExprNode::checkArg (exp, argType, False));
+       break;
+    }
+    case LELFunctionEnums::FRACTILE1D :
+    {
+       if (exp.nelements() != 2) {
+          throw (AipsError ("LELFunctionFloat::constructor - "
+			    "fractile function should have 2 arguments"));
+       }
+       if (! (exp[1].isScalar()  &&  exp[1].dataType()==TpFloat)) {
+          throw (AipsError ("LELFunctionFloat::constructor - "
+			    "2nd argument of fractile function "
+			    "should be a float scalar"));
+       }
+       setAttr (LELAttribute());                         // result is scalar
+       break;
+    }
+    case LELFunctionEnums::FRACTILERANGE1D :
+    {
+       if (exp.nelements() != 2  &&  exp.nelements() != 3) {
+          throw (AipsError ("LELFunctionFloat::constructor - "
+		       "fractilerange function should have 2 or 3 arguments"));
+       }
+       if (exp[0].isScalar()) {
+	  throw (AipsError ("LELFunctionFloat::constructor - "
+			    "1st argument of fractilerange function "
+			    "should be a lattice"));
+       }
+       for (uInt i=1; i<exp.nelements(); i++) {
+	  if (! (exp[i].isScalar()  &&  exp[i].dataType()==TpFloat)) {
+	     throw (AipsError ("LELFunctionFloat::constructor - "
+			    "2nd and 3rd argument of fractilerange function "
+			    "should be a float scalar"));
+	  }
+       }
+       setAttr (LELAttribute());                         // result is scalar
+       break;
     }
     default:
 	throw (AipsError ("LELFunctionFloat::constructor - "
@@ -387,6 +420,34 @@ LELScalar<Float> LELFunctionFloat::getScalar() const
        return min(arg_p[0].getFloat(), arg_p[1].getFloat());
    case LELFunctionEnums::MAX :
        return max(arg_p[0].getFloat(), arg_p[1].getFloat());
+   case LELFunctionEnums::FRACTILE1D :
+   {
+      if (arg_p[0].isScalar()) {
+         return arg_p[0].getFloat();
+      }
+      Vector<Float> fractile = LatticeFractile<Float>::maskedFractile
+                                             (LatticeExpr<Float>(arg_p[0]),
+					      arg_p[1].getFloat());
+      if (fractile.nelements() == 0) {
+	 return LELScalar<Float>();             // no valid fractile found
+      }
+      return fractile(0);
+   }
+   case LELFunctionEnums::FRACTILERANGE1D :
+   {
+      Float fraction1 = arg_p[1].getFloat();
+      Float fraction2 = fraction1;
+      if (arg_p.nelements() > 2) {
+	 fraction2 = arg_p[2].getFloat();
+      }
+      Vector<Float> fractiles = LatticeFractile<Float>::maskedFractiles
+                                              (LatticeExpr<Float>(arg_p[0]),
+					       fraction1, fraction2);
+      if (fractiles.nelements() < 2) {
+	 return LELScalar<Float>();             // no valid fractiles found
+      }
+      return fractiles(1) - fractiles(0);
+   }
    default:
       throw(AipsError("LELFunctionFloat::getScalar - unknown function"));
    }
@@ -498,6 +559,41 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
 	argType[1] = TpDouble;
 	setAttr (LatticeExprNode::checkArg (exp, argType, False));
 	break;
+    }
+    case LELFunctionEnums::FRACTILE1D :
+    {
+       if (exp.nelements() != 2) {
+          throw (AipsError ("LELFunctionDouble::constructor - "
+			    "fractile function should have 2 arguments"));
+       }
+       if (! (exp[1].isScalar()  &&  exp[1].dataType()==TpFloat)) {
+          throw (AipsError ("LELFunctionDouble::constructor - "
+			    "2nd argument of fractile function "
+			    "should be a float scalar"));
+       }
+       setAttr (LELAttribute());                         // result is scalar
+       break;
+    }
+    case LELFunctionEnums::FRACTILERANGE1D :
+    {
+       if (exp.nelements() != 2  &&  exp.nelements() != 3) {
+          throw (AipsError ("LELFunctionDouble::constructor - "
+		       "fractilerange function should have 2 or 3 arguments"));
+       }
+       if (exp[0].isScalar()) {
+	  throw (AipsError ("LELFunctionDouble::constructor - "
+			    "1st argument of fractilerange function "
+			    "should be a lattice"));
+       }
+       for (uInt i=1; i<exp.nelements(); i++) {
+	  if (! (exp[i].isScalar()  &&  exp[i].dataType()==TpFloat)) {
+	     throw (AipsError ("LELFunctionDouble::constructor - "
+			    "2nd and 3rd argument of fractilerange function "
+			    "should be a float scalar"));
+	  }
+       }
+       setAttr (LELAttribute());                         // result is scalar
+       break;
     }
     default:
 	throw (AipsError ("LELFunctionDouble::constructor - "
@@ -616,9 +712,12 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
          }
 
       } else if (arg_p[1].isScalar()) {
-         Double scalarTemp;
-         arg_p[1].eval(scalarTemp);
-         arg_p[0].eval(result, section);
+         Double scalarTemp = 0;
+	 if (function_p != LELFunctionEnums::FRACTILE1D
+	 &&  function_p != LELFunctionEnums::FRACTILERANGE1D) {
+	    arg_p[1].eval(scalarTemp);
+	    arg_p[0].eval(result, section);
+	 }
          switch (function_p) {
          case LELFunctionEnums::ATAN2 :
          {
@@ -722,7 +821,7 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -762,7 +861,7 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -820,6 +919,34 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
        return min(arg_p[0].getDouble(), arg_p[1].getDouble());
    case LELFunctionEnums::MAX :
        return max(arg_p[0].getDouble(), arg_p[1].getDouble());
+   case LELFunctionEnums::FRACTILE1D :
+   {
+      if (arg_p[0].isScalar()) {
+         return arg_p[0].getDouble();
+      }
+      Vector<Double> fractile = LatticeFractile<Double>::maskedFractile
+                                             (LatticeExpr<Double>(arg_p[0]),
+					      arg_p[1].getFloat());
+      if (fractile.nelements() == 0) {
+	 return LELScalar<Double>();             // no valid fractile found
+      }
+      return fractile(0);
+   }
+   case LELFunctionEnums::FRACTILERANGE1D :
+   {
+      Float fraction1 = arg_p[1].getFloat();
+      Float fraction2 = fraction1;
+      if (arg_p.nelements() > 2) {
+	 fraction2 = arg_p[2].getFloat();
+      }
+      Vector<Double> fractiles = LatticeFractile<Double>::maskedFractiles
+                                              (LatticeExpr<Double>(arg_p[0]),
+					       fraction1, fraction2);
+      if (fractiles.nelements() < 2) {
+	 return LELScalar<Double>();             // no valid fractiles found
+      }
+      return fractiles(1) - fractiles(0);
+   }
    default:
       throw(AipsError("LELFunctionDouble::getScalar - unknown function"));
    }
@@ -834,7 +961,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    {
       LatticeExpr<Float> latExpr(expr);
       RO_LatticeIterator<Float> iter(latExpr, latExpr.niceCursorShape());
-////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
 	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
@@ -847,7 +974,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    {
       LatticeExpr<Double> latExpr(expr);
       RO_LatticeIterator<Double> iter(latExpr, latExpr.niceCursorShape());
-////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
 	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
@@ -860,7 +987,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    {
       LatticeExpr<Complex> latExpr(expr);
       RO_LatticeIterator<Complex> iter(latExpr, latExpr.niceCursorShape());
-////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
 	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
@@ -873,7 +1000,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    {
       LatticeExpr<DComplex> latExpr(expr);
       RO_LatticeIterator<DComplex> iter(latExpr, latExpr.niceCursorShape());
-////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
 	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
@@ -886,7 +1013,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    {
       LatticeExpr<Bool> latExpr(expr);
       RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
-////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
 	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
@@ -1668,7 +1795,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -1710,7 +1837,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();

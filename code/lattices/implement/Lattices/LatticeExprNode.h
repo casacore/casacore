@@ -1,5 +1,5 @@
 //# LatticeExprNode.h:  LatticeExprNode.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -296,6 +296,25 @@ class LatticeExprNode
    friend LatticeExprNode variance (const LatticeExprNode& expr);
    friend LatticeExprNode stddev   (const LatticeExprNode& expr);
    friend LatticeExprNode avdev    (const LatticeExprNode& expr);
+// </group>
+
+// Determine the value of the element at the part <src>fraction</src>
+// from the beginning of the given lattice.
+// Thus <src>fraction=0.5</src> is equal to the median.
+   friend LatticeExprNode fractile (const LatticeExprNode& expr,
+				    const LatticeExprNode& fraction);
+
+// Determine the value range of the elements at the part <src>fraction1</src>
+// and fraction2 from the beginning of the given lattice. Both fractions
+// must be >=0 and <=1 and fraction1 must be <= fraction2.
+// By default <fraction2</src> is equal to <src>1-fraction1</src>.
+// Thus <src>fraction=0.25</src> gives the quartile range of the lattice.
+// <group>
+   friend LatticeExprNode fractileRange (const LatticeExprNode& expr,
+					 const LatticeExprNode& fraction1,
+					 const LatticeExprNode& fraction2);
+   friend LatticeExprNode fractileRange (const LatticeExprNode& expr,
+					 const LatticeExprNode& fraction);
 // </group>
 
 // 1-argument function to get the number of elements in a lattice.

@@ -1194,6 +1194,89 @@ LatticeExprNode avdev(const LatticeExprNode& expr)
    return sum(abs(expr - mean(expr))) / max(1, nelements(expr));
 }
 
+LatticeExprNode fractile (const LatticeExprNode& expr,
+			  const LatticeExprNode& fraction)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function fractile" << endl;
+#endif
+//
+// Create a new node for this real numerical function with 2 arguments.
+// The result has the same data type as the input.
+// 
+   DataType dtype = expr.dataType();
+   Block<LatticeExprNode> arg(2);
+   arg[0] = expr;
+   arg[1] = fraction.makeFloat();
+   switch (dtype) {
+   case TpFloat:
+      return new LELFunctionFloat (LELFunctionEnums::FRACTILE1D, arg);
+   case TpDouble:
+      return new LELFunctionDouble (LELFunctionEnums::FRACTILE1D, arg);
+   default:
+      throw (AipsError ("LatticeExprNode::fractile - "
+			"Bool or complex argument used in real "
+			"numerical function"));
+   }
+   return LatticeExprNode();
+}
+
+LatticeExprNode fractileRange (const LatticeExprNode& expr,
+			       const LatticeExprNode& fraction)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function fractileRange" << endl;
+#endif
+//
+// Create a new node for this real numerical function with 2 arguments.
+// The result has the same data type as the input.
+// 
+   DataType dtype = expr.dataType();
+   Block<LatticeExprNode> arg(2);
+   arg[0] = expr;
+   arg[1] = fraction.makeFloat();
+   switch (dtype) {
+   case TpFloat:
+       return new LELFunctionFloat (LELFunctionEnums::FRACTILERANGE1D, arg);
+   case TpDouble:
+       return new LELFunctionDouble (LELFunctionEnums::FRACTILERANGE1D, arg);
+   default:
+      throw (AipsError ("LatticeExprNode::fractileRange - "
+			"Bool or complex argument used in real "
+			"numerical function"));
+   }
+   return LatticeExprNode();
+}
+
+LatticeExprNode fractileRange (const LatticeExprNode& expr,
+			       const LatticeExprNode& fraction1,
+			       const LatticeExprNode& fraction2)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 3d function fractileRange" << endl;
+#endif
+//
+// Create a new node for this real numerical function with 2 arguments.
+// The result has the same data type as the input.
+// 
+   DataType dtype = expr.dataType();
+   Block<LatticeExprNode> arg(3);
+   arg[0] = expr;
+   arg[1] = fraction1.makeFloat();
+   arg[2] = fraction2.makeFloat();
+   switch (dtype) {
+   case TpFloat:
+       return new LELFunctionFloat (LELFunctionEnums::FRACTILERANGE1D, arg);
+   case TpDouble:
+       return new LELFunctionDouble (LELFunctionEnums::FRACTILERANGE1D, arg);
+   default:
+      throw (AipsError ("LatticeExprNode::fractileRange - "
+			"Bool or complex argument used in real "
+			"numerical function"));
+   }
+   return LatticeExprNode();
+}
+
 
 LatticeExprNode atan2 (const LatticeExprNode& left,
 		       const LatticeExprNode& right)
