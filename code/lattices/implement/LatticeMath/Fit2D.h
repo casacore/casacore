@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Functionals/SumFunction.h>
-#include <aips/Functionals/Gaussian2D.h>
+#include <trial/Functionals/Gaussian2D2.h>
 #include <aips/Mathematics/Constants.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
 #include <aips/Fitting.h>
