@@ -200,6 +200,10 @@ public:
     // The units must be compatible with the current units.
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
+    // Overwrite the world axis units with no compatibility 
+    // checks or adjustment.
+    Bool overwriteWorldAxisUnits(const Vector<String> &units);
+
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't 
     // compare on the specified     

@@ -261,6 +261,18 @@ Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units)
 }
 
 
+Bool LinearCoordinate::overwriteWorldAxisUnits(const Vector<String> &units)
+{
+   Bool ok = units.nelements() == nWorldAxes();
+   if (ok) {
+      units_p = units;
+   } else {
+      set_error ("units vector has the wrong size");
+   }
+   return ok;
+}
+
+
 Bool LinearCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
     Bool ok = ToBool(refPix.nelements() == nWorldAxes());
