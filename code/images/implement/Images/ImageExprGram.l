@@ -1,5 +1,5 @@
 /*
-    LatticeGram.l: Lexical analyzer for lattice expressions
+    ImageExprGram.l: Lexical analyzer for image expressions
     Copyright (C) 1998
     Associated Universities, Inc. Washington DC, USA.
 
@@ -29,10 +29,10 @@
 
 %{
 #undef YY_INPUT
-#define YY_INPUT(buf,result,max_size) result=latticeGramInput(buf,max_size)
+#define YY_INPUT(buf,result,max_size) result=imageExprGramInput(buf,max_size)
 
 #undef YY_DECL
-#define YY_DECL int LatticeGramlex (YYSTYPE* lvalp)
+#define YY_DECL int ImageExprGramlex (YYSTYPE* lvalp)
 %}
 
 /*
@@ -53,6 +53,8 @@ FLINT     {FLOAT}|{INT}
 DBINT     {DOUBLE}|{INT}
 COMPLEX   {FLINT}"i"
 DCOMPLEX  {DBINT}"i"
+TRUE      T
+FALSE     F
 
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
@@ -60,7 +62,8 @@ UQSTRING   \"[^\"\n]*\n
 UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
-NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
+NAME      [A-Za-z_]([A-Za-z_0-9])*
+ESCNAME   \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMELAT   [A-Za-z0-9._\~$]+
 
 
@@ -68,46 +71,55 @@ NAMELAT   [A-Za-z0-9._\~$]+
 
  /* Literals */
 {DCOMPLEX} {
-            latticeGramPosition() += yyleng;
+            imageExprGramPosition() += yyleng;
             Double value;
-	    sscanf (LatticeGramtext, "%lf%*c", &value);
-            lvalp->val = new LatticeParse (DComplex (0, value));
+	    sscanf (ImageExprGramtext, "%lf%*c", &value);
+            lvalp->val = new ImageExprParse (DComplex (0, value));
 	    return LITERAL;
 	  }
 {COMPLEX} {
-            latticeGramPosition() += yyleng;
+            imageExprGramPosition() += yyleng;
             Float value;
-	    sscanf (LatticeGramtext, "%f%*c", &value);
-            lvalp->val = new LatticeParse (Complex (0, value));
+	    sscanf (ImageExprGramtext, "%f%*c", &value);
+            lvalp->val = new ImageExprParse (Complex (0, value));
 	    return LITERAL;
 	  }
 {DOUBLE}  {
-            latticeGramPosition() += yyleng;
-            lvalp->val = new LatticeParse (atof(LatticeGramtext));
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse (atof(ImageExprGramtext));
 	    return LITERAL;
 	  }
 {FLOAT}   {
-            latticeGramPosition() += yyleng;
-            lvalp->val = new LatticeParse (Float(atof(LatticeGramtext)));
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse (Float(atof(ImageExprGramtext)));
 	    return LITERAL;
 	  }
 {INT}     {
-            latticeGramPosition() += yyleng;
-            Int ival = atoi(LatticeGramtext);
-            Double dval = atof(LatticeGramtext);
+            imageExprGramPosition() += yyleng;
+            Int ival = atoi(ImageExprGramtext);
+            Double dval = atof(ImageExprGramtext);
             if (ival < dval-0.1  ||  ival > dval+0.1) {
-                lvalp->val = new LatticeParse (dval);
+                lvalp->val = new ImageExprParse (dval);
             } else {
-                lvalp->val = new LatticeParse (ival);
+                lvalp->val = new ImageExprParse (ival);
             }
             return LITERAL;
 	  }
+{TRUE}    {
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse (True);
+	    return LITERAL;
+	  }
+{FALSE}   {
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse (False);
+	    return LITERAL;
+	  }
 
- /* A simple name can be a lattice name or a function name */
+ /* A simple name can be name of constant, function, or lattice */
 {NAME}    {
-            latticeGramPosition() += yyleng;
-            lvalp->val = new LatticeParse
-                                (latticeGramRemoveEscapes (LatticeGramtext));
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse (ImageExprGramtext);
 	    return NAME;
 	  }
 
@@ -127,40 +139,47 @@ NAMELAT   [A-Za-z0-9._\~$]+
        a\/b\/c      results in a/b/c
  */
 {NAMELAT} {
-            latticeGramPosition() += yyleng;
-            lvalp->val = new LatticeParse (LatticeGramtext);
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse (ImageExprGramtext);
+	    return LATNAME;
+	  }
+{ESCNAME} {
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse
+                             (imageExprGramRemoveEscapes (ImageExprGramtext));
 	    return LATNAME;
 	  }
 {STRING}  {
-            latticeGramPosition() += yyleng;
-            lvalp->val = new LatticeParse (LatticeGramtext);
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse
+                             (imageExprGramRemoveQuotes (ImageExprGramtext));
 	    return LATNAME;
 	  }
 
-"=="      { latticeGramPosition() += yyleng; return EQ; }
-">="      { latticeGramPosition() += yyleng; return GE; }
-">"       { latticeGramPosition() += yyleng; return GT; }
-"<="      { latticeGramPosition() += yyleng; return LE; }
-"<"       { latticeGramPosition() += yyleng; return LT; }
-"!="      { latticeGramPosition() += yyleng; return NE; }
-"&&"      { latticeGramPosition() += yyleng; return AND; }
-"||"      { latticeGramPosition() += yyleng; return OR; }
-"!"       { latticeGramPosition() += yyleng; return NOT; }
-"^"       { latticeGramPosition() += yyleng; return POWER; }
-"*"       { latticeGramPosition() += yyleng; return TIMES; }
-"/"       { latticeGramPosition() += yyleng; return DIVIDE; }
-"%"       { latticeGramPosition() += yyleng; return MODULO; }
-"+"       { latticeGramPosition() += yyleng; return PLUS; }
-"-"       { latticeGramPosition() += yyleng; return MINUS; }
-"("       { latticeGramPosition() += yyleng; return LPAREN; }
-")"       { latticeGramPosition() += yyleng; return RPAREN; }
-","       { latticeGramPosition() += yyleng; return COMMA; }
+"=="      { imageExprGramPosition() += yyleng; return EQ; }
+">="      { imageExprGramPosition() += yyleng; return GE; }
+">"       { imageExprGramPosition() += yyleng; return GT; }
+"<="      { imageExprGramPosition() += yyleng; return LE; }
+"<"       { imageExprGramPosition() += yyleng; return LT; }
+"!="      { imageExprGramPosition() += yyleng; return NE; }
+"&&"      { imageExprGramPosition() += yyleng; return AND; }
+"||"      { imageExprGramPosition() += yyleng; return OR; }
+"!"       { imageExprGramPosition() += yyleng; return NOT; }
+"^"       { imageExprGramPosition() += yyleng; return POWER; }
+"*"       { imageExprGramPosition() += yyleng; return TIMES; }
+"/"       { imageExprGramPosition() += yyleng; return DIVIDE; }
+"%"       { imageExprGramPosition() += yyleng; return MODULO; }
+"+"       { imageExprGramPosition() += yyleng; return PLUS; }
+"-"       { imageExprGramPosition() += yyleng; return MINUS; }
+"("       { imageExprGramPosition() += yyleng; return LPAREN; }
+")"       { imageExprGramPosition() += yyleng; return RPAREN; }
+","       { imageExprGramPosition() += yyleng; return COMMA; }
 
  /* Whitespace is skipped */
-{WHITE}   { latticeGramPosition() += yyleng; }
+{WHITE}   { imageExprGramPosition() += yyleng; }
 
  /* An unterminated string is an error */
-{USTRING} { throw (AipsError ("LatticeParse: Unterminated string")); }
+{USTRING} { throw (AipsError ("ImageExprParse: Unterminated string")); }
 
  /* terminate on EOF */
 <<EOF>>   { yyterminate(); }
