@@ -27,6 +27,8 @@
 
 # include <aips/FITS/hdu.h>
 # include <aips/FITS/fitsio.h>
+# include <aips/Utilities/String.h>
+# include <aips/Containers/Block.h>
 # include <string.h>
 # include <strstream.h>
 
