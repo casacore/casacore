@@ -112,6 +112,7 @@ private:
   Block<uInt> copySpwAndPol(const MSSpectralWindow& otherSpw,
 			    const MSPolarization& otherPol,
 			    const MSDataDescription& otherDD);
+  void updateModelDataKeywords();
 
   MeasurementSet itsMS;
   IPosition itsFixedShape;

@@ -129,7 +129,8 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     doModelData=True;
   else if (itsMS.tableDesc().isColumn("MODEL_DATA") && 
 	   !otherMS.tableDesc().isColumn("MODEL_DATA")){
-    log << "Concatenant has MODEL_DATA column but not the concatanatee"
+    log << itsMS.tableName() 
+	<< " has MODEL_DATA column but not " << otherMS.tableName()
   	<< LogIO::EXCEPTION;
     log << "You may wish to create this column by loading " 
 	<< otherMS.tableName() 
@@ -141,7 +142,8 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     doCorrectedData=True;
   else if (itsMS.tableDesc().isColumn("CORRECTED_DATA") && 
 	   !otherMS.tableDesc().isColumn("CORRECTED_DATA"))
-    log << "Concatenant has CORRECTED_DATA column but not the concatanatee"
+    log << itsMS.tableName() 
+	<<" has CORRECTED_DATA column but not " << otherMS.tableName()
 	<< LogIO::EXCEPTION;
 
   if (itsMS.tableDesc().isColumn("IMAGING_WEIGHT") && 
@@ -149,7 +151,8 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     doImagingWeight=True;
   else if (itsMS.tableDesc().isColumn("IMAGING_WEIGHT") && 
 	   !otherMS.tableDesc().isColumn("IMAGING_WEIGHT"))
-    log << "Concatenant has IMAGING_WEIGHT column but not the concatanatee"
+    log << itsMS.tableName() 
+	<< " has IMAGING_WEIGHT column but not " << otherMS.tableName() 
 	<< LogIO::EXCEPTION;
 
   const ROMSMainColumns otherMainCols(otherMS);
@@ -335,6 +338,12 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     thisFlagRow.put(curRow, otherFlagRow, r);
     if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp, r);
   } 
+
+  if(doModelData){
+    //update the MODEL_DATA keywords
+    updateModelDataKeywords();
+  }
+
 }
 
 void MSConcat::setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol){
@@ -692,6 +701,19 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     }
   }
   return ddMap;
+}
+
+void MSConcat::updateModelDataKeywords(){
+  Int nSpw=itsMS.spectralWindow().nrow();
+  MSSpWindowColumns msSpW(itsMS.spectralWindow());
+  Matrix<Int> selection(2,nSpw);
+  // fill in default selection
+  selection.row(0)=0; //start
+  selection.row(1)=msSpW.numChan().getColumn(); 
+  TableColumn col(itsMS,"MODEL_DATA");
+  if (col.keywordSet().isDefined("CHANNEL_SELECTION"))
+    col.rwKeywordSet().removeField("CHANNEL_SELECTION");
+  col.rwKeywordSet().define("CHANNEL_SELECTION",selection);
 }
 // Local Variables: 
 // compile-command: "gmake MSConcat"
