@@ -74,8 +74,8 @@ template <class T> class Vector;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1998/09/20">
-//	<li> Extend MeasMath a bit more
+// <todo asof="2000/09/12">
+//	<li> nothing I know
 // </todo>
 
 class MCDirection : public MCBase { 
