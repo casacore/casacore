@@ -125,39 +125,39 @@ main (int argc, char **argv)
 try {
 
    Input inputs(1);
-   inputs.Version ("$Revision$");
+   inputs.version ("$Revision$");
 
 
 // Get inputs
 
    String root = Aipsrc::aipsRoot();
    String name = root + "/code/trial/implement/Images/test/test_image";
-   inputs.Create("in", name, "Input file name");
-   inputs.Create("axes", "-10", "Cursor axes");
-   inputs.Create("blc", "-10", "blc");
-   inputs.Create("trc", "-10", "trc");
-   inputs.Create("inc", "-10", "inc");
-   inputs.Create("stats", "mean,sigma", "Statistics to plot");
-   inputs.Create("include", "0.0", "Pixel range to include");
-   inputs.Create("exclude", "0.0", "Pixel range to exclude");
-   inputs.Create("list", "True", "List statistics as well as plot ?");
-   inputs.Create("plotter", "none", "PGPlot device");
-   inputs.Create("nxy", "-1", "Number of subplots in x & y");
-   inputs.Create("disk", "F", "Force storage image to be disk based");
-   inputs.ReadArguments(argc, argv);
+   inputs.create("in", name, "Input file name");
+   inputs.create("axes", "-10", "Cursor axes");
+   inputs.create("blc", "-10", "blc");
+   inputs.create("trc", "-10", "trc");
+   inputs.create("inc", "-10", "inc");
+   inputs.create("stats", "mean,sigma", "Statistics to plot");
+   inputs.create("include", "0.0", "Pixel range to include");
+   inputs.create("exclude", "0.0", "Pixel range to exclude");
+   inputs.create("list", "True", "List statistics as well as plot ?");
+   inputs.create("plotter", "none", "PGPlot device");
+   inputs.create("nxy", "-1", "Number of subplots in x & y");
+   inputs.create("disk", "F", "Force storage image to be disk based");
+   inputs.readArguments(argc, argv);
 
-   const String in = inputs.GetString("in");
-   const Block<Int> cursorAxesB(inputs.GetIntArray("axes"));
-   const Block<Int> blcB(inputs.GetIntArray("blc"));
-   const Block<Int> trcB(inputs.GetIntArray("trc"));
-   const Block<Int> incB(inputs.GetIntArray("inc"));
-   const String statsToPlot = inputs.GetString("stats");
-   const Block<Double> includeB = inputs.GetDoubleArray("include");
-   const Block<Double> excludeB = inputs.GetDoubleArray("exclude");
-   const Bool doList = inputs.GetBool("list");
-   const Block<Int> nxyB(inputs.GetIntArray("nxy"));
-   String device = inputs.GetString("plotter");
-   const Bool forceDisk = inputs.GetBool("disk");
+   const String in = inputs.getString("in");
+   const Block<Int> cursorAxesB(inputs.getIntArray("axes"));
+   const Block<Int> blcB(inputs.getIntArray("blc"));
+   const Block<Int> trcB(inputs.getIntArray("trc"));
+   const Block<Int> incB(inputs.getIntArray("inc"));
+   const String statsToPlot = inputs.getString("stats");
+   const Block<Double> includeB = inputs.getDoubleArray("include");
+   const Block<Double> excludeB = inputs.getDoubleArray("exclude");
+   const Bool doList = inputs.getBool("list");
+   const Block<Int> nxyB(inputs.getIntArray("nxy"));
+   String device = inputs.getString("plotter");
+   const Bool forceDisk = inputs.getBool("disk");
 
 
 // Create defaults array
@@ -407,7 +407,8 @@ try {
         os << stats.errorMessage() << LogIO::POST;
      }
    } else {
-      os << LogIO::NORMAL << "images of type " << imageType << " not yet supported" << LogIO::POST;
+      os << LogIO::NORMAL << "images of type " << Int(imageType)
+	 << " not yet supported" << LogIO::POST;
       return 1;
    }
 }
