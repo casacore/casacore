@@ -4478,3 +4478,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSColumns.h aips/implement/MeasurementSets/MSColumns.h
 14 296 src mv aips/implement/MeasurementSets/NewMSDataDescColumns.cc aips/implement/MeasurementSets/MSDataDescColumns.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSDataDescColumns.h aips/implement/MeasurementSets/MSDataDescColumns.h
+14 296 src mv aips/implement/MeasurementSets/NewMSDataDescEnums.h aips/implement/MeasurementSets/MSDataDescEnums.h
