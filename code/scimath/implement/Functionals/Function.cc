@@ -45,3 +45,12 @@ U Function<T,U>::operator()(const ArgType &x, const ArgType &y) const {
   arg_p[0] = x; arg_p[1] = y;
   return this->eval(&(arg_p[0]));
 }
+
+template<class T, class U>
+U Function<T,U>::operator()(const ArgType &x, const ArgType &y,
+			    const ArgType &z) const {
+  DebugAssert(ndim()==3, AipsError);
+  arg_p.resize(ndim());
+  arg_p[0] = x; arg_p[1] = y; arg_p[2] = z;
+  return this->eval(&(arg_p[0]));
+} 

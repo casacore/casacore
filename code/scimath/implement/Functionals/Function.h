@@ -69,8 +69,13 @@
 // <li> <src>operator()(const T &x)</src>
 // <li> <src>operator()(const Vector<T> &x)</src>
 // <li> <src>operator()(Function::FunctionArg x)</src>
+// <li> <src>operator()(const T &x, const T &y)</src> (for 2D)
+// <li> <src>operator()(const T &x, const T &y, const T &z)</src> (for 3D)
 // </ul>
-// These calls are (in debug mode) tested for correct number of arguments,
+// The <src>T</src> in the above is the <src>Function::ArgType</src>
+// as derived from the <linkto class="FunctionTraits">FunctionTraits</a>
+// class.
+// These calls are (in debug mode) tested for the correct number of arguments,
 // after which they call a <src>T eval(FunctionArg x) const = 0</src> to
 // be implemented in derived classes. The derived class should also implement 
 // an <src>uInt ndim() const = 0</src>. The derived class can access the
@@ -230,6 +235,8 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   virtual U operator()(const Vector<ArgType> &x) const;
   virtual U operator()(FunctionArg x) const { return this->eval(x); };
   virtual U operator()(const ArgType &x, const ArgType &y) const;
+  virtual U operator()(const ArgType &x, const ArgType &y,
+		       const ArgType &z) const;
   // </group>
 
   //# Member functions
