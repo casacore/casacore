@@ -1,5 +1,5 @@
 //# SpectralIndex.cc:
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,21 +44,24 @@
 
 SpectralIndex::SpectralIndex()
   :SpectralModel(),
-   itsIndex(0.0)
+   itsIndex(0.0),
+   itsError(0.0)
 {
   DebugAssert(ok(), AipsError);
 }
 
 SpectralIndex::SpectralIndex(const MFrequency& refFreq, Double exponent)
   :SpectralModel(refFreq),
-   itsIndex(exponent)
+   itsIndex(exponent),
+   itsError(0.0)
 {
   DebugAssert(ok(), AipsError);
 }
 
 SpectralIndex::SpectralIndex(const SpectralIndex& other) 
   :SpectralModel(other),
-   itsIndex(other.itsIndex)
+   itsIndex(other.itsIndex),
+   itsError(other.itsError)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -71,6 +74,7 @@ SpectralIndex& SpectralIndex::operator=(const SpectralIndex& other) {
   if (this != &other) {
     SpectralModel::operator=(other);
     itsIndex = other.itsIndex;
+    itsError = other.itsError;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -165,13 +169,13 @@ void SpectralIndex::setErrors(const Vector<Double>& newSpectralErrs) {
     logErr << "The errors must be non-negative."
 	   << LogIO::EXCEPTION;
   }
-  itsIndex = newSpectralErrs(0);
+  itsError = newSpectralErrs(0);
   DebugAssert(ok(), AipsError);
 }
 
 Vector<Double> SpectralIndex::errors() const {
   DebugAssert(ok(), AipsError);
-  return Vector<Double>(1, itsIndex);
+  return Vector<Double>(1, itsError);
 }
 
 Bool SpectralIndex::fromRecord(String& errorMessage, 
@@ -181,24 +185,55 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
     errorMessage += "The 'spectrum' record must have an 'index' field\n";
     return False;
   }
-  const RecordFieldId index("index");
-  const IPosition shape(1,1);
-  if (record.shape(index) != shape) {
-    errorMessage += "The 'index' field must be a scalar\n";
-    return False;
+//
+  {
+     const RecordFieldId index("index");
+     const IPosition shape(1,1);
+     if (record.shape(index) != shape) {
+       errorMessage += "The 'index' field must be a scalar\n";
+       return False;
+     }
+     Double indexVal;
+     switch (record.dataType(index)) {
+     case TpDouble:
+     case TpFloat:
+     case TpInt:
+       indexVal = record.asDouble(index);
+       break;
+     default:
+       errorMessage += "The 'index' field must be a real number\n";
+       return False;
+     }
+     setIndex(indexVal);
   }
-  Double indexVal;
-  switch (record.dataType(index)) {
-  case TpDouble:
-  case TpFloat:
-  case TpInt:
-    indexVal = record.asDouble(index);
-    break;
-  default:
-    errorMessage += "The 'index' field must be a real number\n";
-    return False;
+//
+  {
+     Vector<Double> tmp(1);
+     if (!(record.isDefined("error"))) {
+        tmp[0] = 0.0;
+     } else {
+        const RecordFieldId error("error");
+        const IPosition shape(1,1);
+        if (record.shape(error) != shape) {
+          errorMessage += "The 'error' field must be a scalar\n";
+          return False;
+        }
+        Double errorVal;
+        switch (record.dataType(error)) {
+        case TpDouble:
+        case TpFloat:
+        case TpInt:
+          errorVal = record.asDouble(error);
+          break;
+        default:
+          errorMessage += "The 'error' field must be a real number\n";
+          return False;
+        }
+     }
+//
+     setErrors(tmp);
   }
-  setIndex(indexVal);
+//
   DebugAssert(ok(), AipsError);
   return True;
 }
@@ -208,6 +243,7 @@ Bool SpectralIndex::toRecord(String& errorMessage,
   DebugAssert(ok(), AipsError);
   if (!SpectralModel::toRecord(errorMessage, record)) return False;
   record.define("index", index());
+  record.define("error", errors()(0));
   return True;
 }
 
