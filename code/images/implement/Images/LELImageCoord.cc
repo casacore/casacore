@@ -1,5 +1,5 @@
 //# LELImageCoord.cc: The letter class for image coordinates
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,7 +72,7 @@ Bool LELImageCoord::doConform (const LELImageCoord& other) const
 {
 // This is the real conformance checker.
 
-    return coordinates().near (other.coordinates());
+    return coordinates().nearPixel (other.coordinates());
 }
 
 LatticeExprNode LELImageCoord::makeSubLattice
