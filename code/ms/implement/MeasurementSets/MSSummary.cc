@@ -1,5 +1,5 @@
 //# MSSummary.cc:  Helper class for applications listing a MeasurementSet
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -212,6 +212,17 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 
     if (verbose) {   // do "scan" listing
 
+      // Set up iteration over OBSID, ARRID, and SCAN_NUMBER:
+      //      Block<String> mssortcols(3);
+      //      mssortcols[0] = "OBSERVATION_ID";
+      //      mssortcols[1] = "ARRAY_ID";
+      //      mssortcols[2] = "SCAN_NUMBER";
+      //      MSIter msIter(const_cast<MeasurementSet&>(*pMS),mssortcols,0.0,False );
+      
+      //      for (msIter.origin(); msIter.more(); msIter++) {
+      //      }
+
+
       // the selected MS (all of it) as a Table tool:
       //   MS is accessed as a generic table here because
       //   the ms tool hard-wires iteration over SPWID, FLDID,
@@ -229,10 +240,11 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
       Vector<String> fieldnames(field.name().getColumn());
 
       // Field widths for printing:
-      Int widthLead  =  3;
+      Int widthLead  =  2;
+      Int widthScan  =  4;
       Int widthbtime = 22;
       Int widthetime = 10;
-      Int widthField = 12;
+      Int widthField = 13;
 
       // Set up iteration over OBSID and ARRID:
       Block<String> icols(2);
@@ -255,15 +267,17 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	// Report OBSID and ARRID, and header for listing:
 	os << endl << "   ObservationID = " << obsid+1;
 	os << "         ArrayID = " << arrid+1 << endl;
-	os << "   Date        Timerange                 ";
-	os << "Field          DataDescIds" << endl;
-
-
+	os << "  Date        Timerange                ";
+	os << "Scan  Field          DataDescIds" << endl;
 
 	// Setup iteration over timestamps within this iteration:
-	TableIterator timeiter(obsarrtab,"TIME");
+	Block<String> jcols(2);
+	jcols[0] = "SCAN_NUMBER";
+	jcols[1] = "TIME";
+	TableIterator stiter(obsarrtab,jcols);
 
 	// Vars for keeping track of time, fields, and ddis
+        Int lastscan(-1);
 	Vector<Int> lastfldids;
 	Vector<Int> lastddids; 
 	Vector<Int> fldids(1,0);
@@ -275,19 +289,23 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	Bool firsttime(True);
       
 	// Iterate over timestamps:
-	while (!timeiter.pastEnd()) {
+	while (!stiter.pastEnd()) {
 
 	  // ms table at this timestamp
-	  Table t(timeiter.table());
+	  Table t(stiter.table());
 	  Int nrow=t.nrow();
 
 	  // relevant columns
 	  ROTableVector<Double> timecol(t,"TIME");
+	  ROTableVector<Int> scncol(t,"SCAN_NUMBER");
 	  ROTableVector<Int> fldcol(t,"FIELD_ID");
 	  ROTableVector<Int> ddicol(t,"DATA_DESC_ID");
 	  
 	  // this timestamp
 	  Double thistime(timecol(0));
+
+          // this scan_number
+	  Int thisscan(scncol(0));
 
 	  // First field and ddi at this timestamp:
 	  fldids.resize(1,False);
@@ -322,18 +340,17 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	  // If not first timestamp, check if scan changed, etc.
 	  if (!firsttime) {
 
-
 	    // Has state changed?
 	    Bool samefld;
 	    samefld=fldids.conform(lastfldids) && !anyNE(fldids,lastfldids);
-	    //	    samefld=(fldids.nelements()==lastfldids.nelements()) && !anyNE(fldids,lastfldids);
 
 	    Bool sameddi;
 	    sameddi=ddids.conform(lastddids) && !anyNE(ddids,lastddids);
-	    //	    sameddi=(ddids.nelements()==lastddids.nelements()) && !anyNE(ddids,lastddids);
 	    
 	    Bool samescan;
-	    samescan= samefld & sameddi;
+	    samescan=(thisscan==lastscan);
+
+	    samescan= samescan & samefld & sameddi;
 
 	    // If state changed, then print out last scan's info
 	    if (!samescan) {
@@ -343,20 +360,23 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 
 	      // Print out last scan's times, fields, ddis
 	      os.output().setf(ios::right, ios::adjustfield);
-	      os.output().width(widthLead); os << "   ";
+	      os.output().width(widthLead); os << "  ";
 	      os.output().width(widthbtime);
 	      if (day!=lastday) {     // print date
 		os << MVTime(btime/C::day).string(MVTime::DMY,7);
 	      } else {                // omit date
 		os << MVTime(btime/C::day).string(MVTime::TIME,7);
 	      }
-	      os.output().width(widthLead);  os << " - ";
+	      os.output().width(3); os << " - ";
 	      os.output().width(widthetime);
 	      os << MVTime(etime/C::day).string(MVTime::TIME,7);
-	      os.output().width(widthLead);  os << "   ";
+	      os.output().width(widthLead); os << "  ";
+	      os.output().setf(ios::right, ios::adjustfield);
+	      os.output().width(widthScan); os << lastscan+1;
+	      os.output().width(widthLead); os << "  ";
 	      os.output().setf(ios::left, ios::adjustfield);
 	      os.output().width(widthField); os << fieldnames(lastfldids(0));
-	      os.output().width(widthLead);  os << "   ";
+	      os.output().width(widthLead); os << "  ";
 	      os << lastddids+1;
 	      os << endl;
 
@@ -380,9 +400,10 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	  // for comparison at next timestamp
 	  lastfldids.resize(); lastfldids=fldids;
 	  lastddids.resize(); lastddids=ddids;
+	  lastscan=thisscan;
 
 	  // push iteration
-	  timeiter.next();
+	  stiter.next();
 	} // end of time iteration
 
 	// this MJD
@@ -390,7 +411,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 
 	// Print out final scan's times, fields, ddis
 	os.output().setf(ios::right, ios::adjustfield);
-	os.output().width(widthLead); os << "   ";
+	os.output().width(widthLead); os << "  ";
 	os.output().width(widthbtime);
 	if (day!=lastday) {
 	  os << MVTime(btime/C::day).string(MVTime::DMY,7);
@@ -400,10 +421,13 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os.output().width(widthLead);  os << " - ";
 	os.output().width(widthetime);
 	os << MVTime(etime/C::day).string(MVTime::TIME,7);
-	os.output().width(widthLead);  os << "   ";
+	os.output().width(widthLead); os << "  ";
+	os.output().setf(ios::right, ios::adjustfield);
+	os.output().width(widthScan); os << lastscan+1;
+	os.output().width(widthLead);  os << "  ";
 	os.output().setf(ios::left, ios::adjustfield);
 	os.output().width(widthField); os << fieldnames(lastfldids(0));
-	os.output().width(widthLead);  os << "   ";
+	os.output().width(widthLead);  os << "  ";
 	os << lastddids+1;
 	os << endl;
 	
@@ -455,7 +479,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 
     String title;
     title="Antennas: "+String::toString(nAnt)+":";
-    String indent("   ");
+    String indent("  ");
     uInt indwidth =5;
     uInt namewidth=6;
     uInt statwidth=10;
@@ -547,14 +571,14 @@ void MSSummary::listFeed (LogIO& os, Bool verbose) const
       os << "Feeds: " << msFC.antennaId().nrow();
       os << ": printing first row only";
       // Line is	FeedID SpWinID NumRecept PolTypes
-      Int widthLead	=  3;
+      Int widthLead	=  2;
       Int widthAnt	= 10;
       Int widthSpWinId	= 20;
       Int widthNumRec	= 15;
       Int widthPolType	= 10;
       os << endl;
       os.output().setf(ios::left, ios::adjustfield);
-      os.output().width(widthLead);	os << "   ";
+      os.output().width(widthLead);	os << "  ";
       os.output().width(widthAnt);	os << "Antenna";
       os.output().width(widthSpWinId);	os << "Spectral Window";
       os.output().width(widthNumRec);	os << "# Receptors";
@@ -565,7 +589,7 @@ void MSSummary::listFeed (LogIO& os, Bool verbose) const
       // for (uInt row=0; row<msFC.antennaId().nrow(); row++) {
       for (uInt row=0; row<1; row++) {
 	os.output().setf(ios::left, ios::adjustfield);
-	os.output().width(widthLead);	os << "   ";
+	os.output().width(widthLead);	os << "  ";
 	os.output().width(widthAnt);	os << (msFC.antennaId()(row)+1);
         Int spwId = msFC.spectralWindowId()(row);
 	if (spwId >= 0) spwId = spwId + 1;
@@ -596,9 +620,9 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
     os << "The MAIN table is empty" << endl;
   } else {
     os << "Fields: " << fieldId.nelements()<<endl;
-    Int widthLead  =  3;	
+    Int widthLead  =  2;	
     Int widthField =  5;	
-    Int widthName  = 10;
+    Int widthName  = 14;
     Int widthRA    = 17;
     Int widthDec   = 14;
     Int widthType  =  8;
@@ -607,7 +631,7 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
 
     // Line is	ID Date Time Name RA Dec Type
     os.output().setf(ios::left, ios::adjustfield);
-    os.output().width(widthLead);	os << "   ";
+    os.output().width(widthLead);	os << "  ";
     os.output().width(widthField);	os << "ID";
     os.output().width(widthName);	os << "Name";
     os.output().width(widthRA);	os << "Right Ascension";
@@ -624,7 +648,7 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
 	MVAngle mvDec= mRaDec.getAngle().getValue()(1);
 
 	os.output().setf(ios::left, ios::adjustfield);
-	os.output().width(widthLead);	os << "   ";
+	os.output().width(widthLead);	os << "  ";
         os.output().width(widthField);	os << (fld+1);
 	os.output().width(widthName);	os << msFC.name()(fld);
 	os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,8);
@@ -650,8 +674,8 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
     os << "The OBSERVATION table is empty" << endl;
   }
   else {
-    os << "   Observer: " << msOC.observer()(0) << "   "
-       << "   Project: " << msOC.project()(0) << "   ";
+    os << "   Observer: " << msOC.observer()(0) << "  "
+       << "   Project: " << msOC.project()(0) << "  ";
 //v2os << "   Obs Date: " << msOC.obsDate()(0) << endl
 //     << "   Tel name: " << msOC.telescopeName()(0);
     if (msc.observation().telescopeName().nrow()>0) {
@@ -663,13 +687,13 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
     if (msOC.project().nrow()>1) {
       // for version 2 of the MS
       // Line is	TelName ObsDate Observer Project
-      Int widthLead =  3;
+      Int widthLead =  2;
       Int widthTel  = 10;
       Int widthDate = 20;
       Int widthObs  = 15;
       Int widthProj = 15;
       os.output().setf(ios::left, ios::adjustfield);
-      os.output().width(widthLead);	os << "   ";
+      os.output().width(widthLead);	os << "  ";
       os.output().width(widthTel);	os << "Telescope";
       os.output().width(widthDate);	os << "Observation Date";
       os.output().width(widthObs);	os << "Observer";
@@ -678,7 +702,7 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
 
       for (uInt row=0;row<msOC.project().nrow();row++) {
 	os.output().setf(ios::left, ios::adjustfield);
-        os.output().width(widthLead);	os << "   ";
+        os.output().width(widthLead);	os << "  ";
 	os.output().width(widthTel);	os << msOC.telescopeName()(row);
 	os.output().width(widthDate);	os << msOC.timeRange()(row);
 	os.output().width(widthObs);	os << msOC.observer()(row);
@@ -729,14 +753,14 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
     os << "Sources: " << msSC.name().nrow() << endl;
     if (verbose) {
       //  Line is	Time Name RA Dec SysVel
-      Int widthLead =  3;
+      Int widthLead =  2;
       Int widthTime = 15;
       Int widthName = 10;
       Int widthRA   = 20;
       Int widthDec  = 20;
       Int widthVel  = 10;
       os.output().setf(ios::left, ios::adjustfield);
-      os.output().width(widthLead);	os << "   ";
+      os.output().width(widthLead);	os << "  ";
       os.output().width(widthTime);	os << "Time MidPt";
       os.output().width(widthName);	os << "Name";
       os.output().width(widthRA);	os << "RA";
@@ -750,7 +774,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
 	MVAngle mvRa=mRaDec.getAngle().getValue()(0);
 	MVAngle mvDec=mRaDec.getAngle().getValue()(1);
 	os.output().setf(ios::left, ios::adjustfield);
-	os.output().width(widthLead);	os<< "   ";
+	os.output().width(widthLead);	os<< "  ";
 	os.output().width(widthTime);
 				os<< MVTime(msSC.time()(row)/86400.0).string();
 	os.output().width(widthName);	os<< msSC.name()(row);
@@ -763,7 +787,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
 
     // Terse mode
     else {
-      os << "   ";
+      os << "  ";
       for (uInt row=0; row<msSC.name().nrow(); row++) {
 	os << msSC.name()(row) << " ";
       }
@@ -793,7 +817,7 @@ void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
     // V2 subtable:		SOURCE		 SOURCE		      POLARIZ'N
 
     // Define the column widths
-    Int widthLead	=  3;
+    Int widthLead	=  2;
     Int widthFreq	= 12;
     Int widthFrqNum	=  7;
     //Int widthMol	= 10;
@@ -804,7 +828,7 @@ void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
 
     // Write the column headers
     os.output().setf(ios::left, ios::adjustfield);
-    os.output().width(widthLead);	os << "   ";
+    os.output().width(widthLead);	os << "  ";
     os.output().width(widthFreq);	os << "Ref.Freq";
     //os.output().width(widthFreq);	os << "RestFreq";
     //os.output().width(widthMol);	os << "Molecule";
@@ -818,7 +842,7 @@ void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
     // For each row of the SpWin subtable, write the info
     for (uInt row=0; row<msSWC.refFrequency().nrow(); row++) {
       os.output().setf(ios::left, ios::adjustfield);
-      os.output().width(widthLead);		os << "   ";
+      os.output().width(widthLead);		os << "  ";
       // 1st column: reference frequency
       os.output().width(widthFrqNum);
 				os<< msSWC.refFrequency()(row)/1.0e6 <<"MHz  ";
@@ -868,20 +892,20 @@ void MSSummary::listPolarization (LogIO& os, Bool verbose) const
     os << "Polarization setups: " << nRow << endl;
 
     // Define the column widths
-    Int widthLead	=  3;
+    Int widthLead	=  2;
     Int widthCorrTypes	= msPolC.corrType()(0).nelements()*4;
     Int widthCorrType	=  4;
 
     // Write the column headers
     os.output().setf(ios::left, ios::adjustfield);
-    os.output().width(widthLead);	os << "   ";
+    os.output().width(widthLead);	os << "  ";
     os.output().width(widthCorrTypes); os << "Correlations";
     os << endl;
 
     // For each row of the Pol subtable, write the info
     for (uInt row=0; row<nRow; row++) {
       os.output().setf(ios::left, ios::adjustfield);
-      os.output().width(widthLead);		os << "   ";
+      os.output().width(widthLead);		os << "  ";
       // 8th column: the correlation type(s)
       for (uInt i=0; i<msPolC.corrType()(row).nelements(); i++) {
       	os.output().width(widthCorrType);
@@ -935,7 +959,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
     os << " polarization setups)"<<endl;
 
     // Define the column widths
-    Int widthLead	=  3;
+    Int widthLead	=  2;
     Int widthDDId       =  6;
     Int widthFreq	= 12;
     Int widthFrqNum	=  7;
@@ -945,7 +969,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
 
     // Write the column headers
     os.output().setf(ios::left, ios::adjustfield);
-    os.output().width(widthLead);	os << "   ";
+    os.output().width(widthLead);	os << "  ";
     os.output().width(widthDDId);	os << "ID    ";
     os.output().width(widthFreq);	os << "Ref.Freq";
     os.output().width(widthNumChan);	os << "#Chans";
@@ -960,7 +984,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
       Int spw = msDDC.spectralWindowId()(dd);
       Int pol = msDDC.polarizationId()(dd);
       os.output().setf(ios::left, ios::adjustfield);
-      os.output().width(widthLead);		os << "   ";
+      os.output().width(widthLead);		os << "  ";
       // 1th column: Data description Id
       os.output().width(widthDDId); os << (dd+1);
       // 2nd column: reference frequency
