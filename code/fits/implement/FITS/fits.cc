@@ -2497,3 +2497,23 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 
 // For some amazing reason the following wouldn't inline
 FITS::ReservedName ReservedFitsKeyword::name() const {  return name_; }
+
+Bool FitsFPUtil::isFP(const float *) {return True;}
+Bool FitsFPUtil::isFP(const double *) {return True;}
+Bool FitsFPUtil::isFP(const void *) {return False;}
+
+void FitsFPUtil::setNaN(double &val)
+{
+    char *cptr = (char *)(&val);
+    for (unsigned int i=0; i<sizeof(double); i++) {
+	cptr[i] = 0xff;
+    }
+}
+
+void FitsFPUtil::setNaN(float &val)
+{
+    char *cptr = (char *)(&val);
+    for (unsigned int i=0; i<sizeof(float); i++) {
+	cptr[i] = 0xff;
+    }
+}
