@@ -2808,14 +2808,14 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
            n = naxis.nelements();
         }
 //
-	if (header.isDefined(sprefix + "crval")) {
+	if (header.isDefined(sprefix + "rval")) {
            header.get(sprefix + "rval", crval);
         }
-	if (header.isDefined(sprefix + "crpix")) {
+	if (header.isDefined(sprefix + "rpix")) {
            header.get(sprefix + "rpix", crpix);
            crpix -= offset;
         }
-	if (header.isDefined(sprefix + "ctype")) {
+	if (header.isDefined(sprefix + "type")) {
            header.get(sprefix + "type", ctype);
            if (n==0) n = ctype.nelements();
         }
@@ -2839,7 +2839,7 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 
 // Get cdelt  and PC from header
 
-           if (header.isDefined(sprefix + "ctype")) {   
+           if (header.isDefined(sprefix + "delt")) {   
               header.get(sprefix + "delt", cdelt);
            }
            getPCFromHeader(os, rotationAxis, pc, n, header, sprefix);
@@ -2860,10 +2860,10 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
        if (n > n2) {
          for (Int i=n2; i<n; i++) {
             ostrstream oss;
-            oss << String("LinAxis") << (i+1) << ends;
+            oss << String("Dummy") << (i+1) << ends;
             ctype(i) = String(oss);
          }
-         os << LogIO::WARN << "Padding missing ctype values with 'LinAxis'" << LogIO::POST;
+         os << LogIO::WARN << "Padding missing ctype values with 'Dummy'" << LogIO::POST;
        } else {
          os << LogIO::WARN << "Discarding excess ctype values" << LogIO::POST;
        }
