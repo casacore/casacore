@@ -206,8 +206,10 @@ public:
     ROWS,
     // the list of scan_number values
     SCAN_NUMBER,
-    // the list of spectral window id values
-    // SPECTRAL_WINDOW_ID,
+    //# the list of spectral window id values
+    //# SPECTRAL_WINDOW_ID,
+    // the per spectrum sigmas
+    SIGMA,
     // the range of times
     TIME,
     // the list of time values
