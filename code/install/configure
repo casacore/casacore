@@ -1553,7 +1553,11 @@ EOT
 
 # Begin the installation.
   cd $AIPSCODE
-  gmake allsys 2>&1 | tee build.log
+  if [ "$SOURCE" = no ] ; then
+     gmake allsys > build.log 2>&1
+  else
+     gmake -C install allsys > build.log 2>&1
+  fi
 
 # Mark it as done.
   if [ -f VERSION ]
