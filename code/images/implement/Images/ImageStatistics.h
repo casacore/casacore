@@ -38,6 +38,7 @@ template <class T> class ArrayLattice;
 template <class T> class Vector;
 class IPosition;
 class LogIO;
+class CoordinateSystem;
 
 // <summary> Displays various statistics from an image</summary>
 // <use visibility=export>
@@ -47,7 +48,7 @@ class LogIO;
 // 
 // <prerequisite>
 //   <li> ImageStatsBase (base class)
-//   <li> PagedImage
+//   <li> ImageInterface
 // </prerequisite>
 //
 // <etymology>
@@ -128,7 +129,7 @@ class LogIO;
 // </example>
 //
 // <note role=caution>
-// Note that if the <src>PagedImage</src> goes out of scope, this
+// Note that if the <src>ImageInterface</src> object goes out of scope, this
 // class will retrieve and generate rubbish as it just maintains a pointer
 // to the image.
 // </note>
@@ -244,7 +245,7 @@ public:
 // This function allows you to reset that internal state to good.
    void resetError () {goodParameterStatus_p = True;};
 
-// Set a new PagedImage.  A return value of <src>False</src> indicates the 
+// Set a new ImageInterface object.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal state of the class is bad.
    Bool setNewImage (const ImageInterface<T>& image);
 
@@ -354,14 +355,15 @@ private:
 // Find the next nice PGPLOT colour index 
    Int niceColour         (Bool& initColours);
 
+// Find the world axis of the given pixel axis
+   Int pixelAxisToWorldAxis(const CoordinateSystem& cSys,
+                            const Int& pixelAxis);
 
 // Convert pixel coordinate to world coordinate string
    Bool pix2World         (Vector<String>& sWorld,
                            const Int& worldAxis,
                            const Vector<Double>& pixel,
-                           const Int& prec,
-                           const Bool& meanOther);
-
+                           const Int& prec);
 
 // Retrieve a statistic from the accumulation image and return in an array
    void retrieveStorageStatistic
