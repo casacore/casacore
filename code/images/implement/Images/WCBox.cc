@@ -409,6 +409,7 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
    Int nTrc = itsTrcWorldAxes.nelements();
    Bool found;
    Int wPt = 0;
+   uInt cWorldAxis;
  
    for (uInt i=0; i<nWorld; i++) {
       if (worldAxisTranspose(i) != -1) {
@@ -416,17 +417,16 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
 // This given CS world axis is found in the construction CS. But was
 // the WCBox constructed with a corresponding value for blc & trc ?
 
-         wPt = linearSearch(found, itsBlcWorldAxes, 
-                            worldAxisTranspose(i), nBlc);
+         cWorldAxis = worldAxisTranspose(i);
+         wPt = linearSearch(found, itsBlcWorldAxes, cWorldAxis, nBlc);
          if (found) {
             blcWC(i) = itsBlcWC(wPt);
-            blcUnits(i) = itsCSys.worldAxisUnits()(worldAxisTranspose(i));
+            blcUnits(i) = itsCSys.worldAxisUnits()(cWorldAxis);
          }
-         wPt = linearSearch(found, itsTrcWorldAxes, 
-                            worldAxisTranspose(i), nTrc);
+         wPt = linearSearch(found, itsTrcWorldAxes, cWorldAxis, nTrc);
          if (found) {
             trcWC(i) = itsTrcWC(wPt);
-            trcUnits(i) = itsCSys.worldAxisUnits()(worldAxisTranspose(i));
+            trcUnits(i) = itsCSys.worldAxisUnits()(cWorldAxis);
          }
       }
    }
@@ -463,12 +463,11 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
 // We allow the construction blc/trc to have less elements than there
 // are world axes so fill in the defaults here.
 
-         if (linearSearch(found, itsBlcWorldAxes, 
-                          worldAxisTranspose(worldAxis), nBlc) == -1) {
+         cWorldAxis = worldAxisTranspose(worldAxis);
+         if (linearSearch(found, itsBlcWorldAxes, cWorldAxis, nBlc) == -1) {
             blcLC(i) = 0.0;
          }
-         if (linearSearch(found, itsTrcWorldAxes, 
-                          worldAxisTranspose(worldAxis), nTrc) == -1) {
+         if (linearSearch(found, itsTrcWorldAxes, cWorldAxis, nTrc) == -1) {
             trcLC(i) = Double(latticeShape(i) - 1);
          }
       }
