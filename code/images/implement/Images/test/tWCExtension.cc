@@ -202,12 +202,12 @@ void testRegionBox (const CoordinateSystem& cSys,
   // Define: shape of the total lattice
   //         blc and trc for possible extend axes
   //         blc and trc for possible stretch axes
-  IPosition latShape(4,30,40,50,60);
-  IPosition regBlc(4, 1, 2, 3, 4);
-  IPosition extBlc(4, 3, 4, 5, 6);
-  IPosition extTrc(4, 5, 7, 9, 11);
-  IPosition strBlc(4, 12, 13, 14, 15);
-  IPosition strTrc(4, 14, 18, 20, 22);
+  IPosition latShape(4,30,40,4,60);
+  IPosition regBlc(4, 1, 2, 2, 4);
+  IPosition extBlc(4, 3, 4, 0, 6);
+  IPosition extTrc(4, 5, 7, 1, 11);
+  IPosition strBlc(4, 12, 13, 1, 15);
+  IPosition strTrc(4, 14, 18, 3, 22);
   // Create a region (which is a box) for the given region axes.
   // All axes have length 1 in it (so they can all be stretched).
   // First create a temporary box with axes in normal order.
