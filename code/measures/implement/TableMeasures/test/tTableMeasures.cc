@@ -1,5 +1,5 @@
 //# tTableMeasures.cc: test program for the TableMeasures class.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <trial/TableMeasures/TableMeasOffsetDesc.h>
 #include <trial/TableMeasures/TableMeasRefDesc.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
+#include <trial/TableMeasures/ArrayQuantColumn.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
@@ -42,6 +43,7 @@
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/QLogical.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -53,6 +55,8 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayIO.h>
+#include <aips/Utilities/DataType.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Timer.h>
@@ -98,6 +102,9 @@ void showKeys (const TableRecord& record, uInt indent)
     case TpString:
       cout << record.asString(i) << "  (String)" << endl;
       break;
+    case TpArrayString:
+      cout << record.asArrayString(i) << "  (String)" << endl;
+      break;
     case TpTable:
       cout << "  (Table)" << endl;
       break;
@@ -106,7 +113,8 @@ void showKeys (const TableRecord& record, uInt indent)
       showKeys (record.subRecord(i), indent+2);
       break;
     default:
-      cout << "  Array " << ValType::getTypeStr(record.dataType(i)) << ' '
+      cout << "  Array "
+	   << ValType::getTypeStr(asScalar(record.dataType(i))) << ' '
 	   << record.shape(i) << endl;
     }
   }
@@ -1076,6 +1084,14 @@ int main(int argc)
 	MEpoch tmp = MEpoch::Convert (outArr(i), inArr(i).getRef())();
 	AlwaysAssertExit (near (tmp.get("s"), inArr(i).get("s"), 1.e-10));
       }
+
+      // Check that the column can be accessed as a quantum.
+      ROArrayQuantColumn<Double> qcol(tab, "Time4Arr");
+      Vector<Quantum<Double> > q = qcol(0);
+      for (uInt i=0; i<10; i++) {
+	AlwaysAssertExit (near (outArr(i).get("d"), q(i), 1.e-10));
+      }
+
       {
 	// Resetting cannot be done, since the table is not empty.
 	MEpoch::ArrayColumn arrayCol(tab, "Time1Arr");
