@@ -217,6 +217,39 @@ PagedImage(const String & filename, uInt rowNumber)
 };
 
 template <class T> PagedImage<T>::
+PagedImage(const String & filename, const TableLock& lockOptions, uInt rowNumber)
+  :mask_p((PagedArray<Bool> *) 0)
+{
+  logSink() << LogOrigin("PagedImage<T>", 
+			 "PagedImage(const String & filename, "
+			 "const TableLock& lockOptions, uInt rowNumber)", WHERE);
+  logSink() << LogIO::DEBUGGING
+	 << "Reading an image from row " << rowNumber 
+	 << " of a file called"
+	 << " '" << filename << "'" << endl;
+  openTable(filename, lockOptions);
+  map_p = PagedArray<T>(table_p, "map", rowNumber);
+  logSink() << "The image shape is " << map_p.shape() << endl;
+
+  CoordinateSystem * restoredCoords =
+    CoordinateSystem::restore(table_p.keywordSet(), "coords");
+  AlwaysAssert(restoredCoords != 0, AipsError);
+  coords_p = * restoredCoords;
+  delete restoredCoords;
+
+  if (table_p.tableDesc().isColumn("mask")) {
+    mask_p = new PagedArray<Bool>(table_p, "mask", 0);
+    logSink() << "A mask was also read" << LogIO::POST;
+  }
+  else
+    logSink() << "No mask is defined" << LogIO::POST;
+  throughmask_p = False;
+  ::defaultValue(defaultvalue_p); 
+  setTableType();
+  restore_units();
+};
+
+template <class T> PagedImage<T>::
 PagedImage(const PagedImage<T> & other)
   :ImageInterface<T>(other.throughmask_p), 
    table_p(other.table_p), 
@@ -550,10 +583,22 @@ openTable(const String & filename) {
 }
 
 template <class T> void PagedImage<T>::
+openTable(const String & filename, const TableLock& lockOptions) {
+  table_p = Table(filename, lockOptions, Table::Update);
+}
+
+template <class T> void PagedImage<T>::
 openTable(const String & filename) const {
   // Logically const - we are opening 'filename' R/O
   PagedImage<T> *This = (PagedImage<T> *)this;
   This->table_p = Table(filename, Table::Old);
+}
+
+template <class T> void PagedImage<T>::
+openTable(const String & filename,  const TableLock& lockOptions) const {
+  // Logically const - we are opening 'filename' R/O
+  PagedImage<T> *This = (PagedImage<T> *)this;
+  This->table_p = Table(filename, lockOptions, Table::Old);
 }
 
 template <class T> Bool PagedImage<T>::
