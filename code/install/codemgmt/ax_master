@@ -3645,3 +3645,4 @@
 13 349 src rm atnf/apps/pksmbfits/mbfits_common.h
 13 365 src rm atnf/apps/livedata/livedata.help
 13 365 src rm atnf/apps/pksgridzilla/gridzilla.help
+13 371 src rm trial/implement/MeasurementComponents/test/KnownAlgorithms.cc
