@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VALTYPEID_H)
-#define AIPS_VALTYPEID_H
+#ifndef CASA_VALTYPEID_H
+#define CASA_VALTYPEID_H
 
 #include <casa/Utilities/ValType.h>
 

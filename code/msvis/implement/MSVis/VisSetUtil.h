@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_VISSETUTIL_H)
-#define TRIAL_VISSETUTIL_H
+#ifndef MSVIS_VISSETUTIL_H
+#define MSVIS_VISSETUTIL_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>

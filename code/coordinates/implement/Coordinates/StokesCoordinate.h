@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STOKES_COORDINATE_H)
-#define AIPS_STOKES_COORDINATE_H
+#ifndef COORDINATES_STOKESCOORDINATE_H
+#define COORDINATES_STOKESCOORDINATE_H
 
 #include <casa/aips.h>
 #include <coordinates/Coordinates/Coordinate.h>

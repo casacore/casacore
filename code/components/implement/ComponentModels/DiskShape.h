@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DISKSHAPE_H)
-#define AIPS_DISKSHAPE_H
+#ifndef COMPONENTS_DISKSHAPE_H
+#define COMPONENTS_DISKSHAPE_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>

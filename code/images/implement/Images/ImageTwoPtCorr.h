@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGETWOPTCORR_H)
-#define AIPS_IMAGETWOPTCORR_H
+#ifndef IMAGES_IMAGETWOPTCORR_H
+#define IMAGES_IMAGETWOPTCORR_H
 
 #include <casa/aips.h>
 #include <images/Images/ImageInterface.h>

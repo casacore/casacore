@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LECANONICALIO_H)
-#define AIPS_LECANONICALIO_H
+#ifndef CASA_LECANONICALIO_H
+#define CASA_LECANONICALIO_H
 
 #include <casa/aips.h>
 #include <casa/IO/TypeIO.h>

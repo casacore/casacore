@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MATH_H)
-#define AIPS_MATH_H
+#ifndef CASA_MATH_H
+#define CASA_MATH_H
 
 #include <casa/aips.h>
 //# The following is to get abs(int)

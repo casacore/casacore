@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MCUVW_H)
-#define AIPS_MCUVW_H
+#ifndef MEASURES_MCUVW_H
+#define MEASURES_MCUVW_H
 
 //# Includes
 #include <casa/aips.h>

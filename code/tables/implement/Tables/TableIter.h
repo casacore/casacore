@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEITER_H)
-#define AIPS_TABLEITER_H
+#ifndef TABLES_TABLEITER_H
+#define TABLES_TABLEITER_H
 
 //# Includes
 #include <casa/aips.h>

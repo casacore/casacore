@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MASKEDARRAY_H)
-#define AIPS_MASKEDARRAY_H
+#ifndef CASA_MASKEDARRAY_H
+#define CASA_MASKEDARRAY_H
 
 
 //# Includes

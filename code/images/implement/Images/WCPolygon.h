@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_WCPOLYGON_H)
-#define AIPS_WCPOLYGON_H
+#ifndef IMAGES_WCPOLYGON_H
+#define IMAGES_WCPOLYGON_H
 
 //# Includes
 #include <casa/aips.h>

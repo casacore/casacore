@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCACOLDATA_H)
-#define AIPS_SCACOLDATA_H
+#ifndef TABLES_SCACOLDATA_H
+#define TABLES_SCACOLDATA_H
 
 //# Includes
 #include <casa/aips.h>

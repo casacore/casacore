@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXTERNALLOCKSYNC_H)
-#define AIPS_EXTERNALLOCKSYNC_H
+#ifndef TABLES_EXTERNALLOCKSYNC_H
+#define TABLES_EXTERNALLOCKSYNC_H
 
 
 //# Includes

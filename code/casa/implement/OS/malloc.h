@@ -27,8 +27,8 @@
 
 #if !defined(AIPS_NO_LEA_MALLOC)
 
-#if !defined (AIPS_MALLOC_H)
-#define AIPS_MALLOC_H
+#ifndef CASA_MALLOC_H
+#define CASA_MALLOC_H
 
 
 /* 

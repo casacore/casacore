@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_HOSTINFO_H)
-#define AIPS_HOSTINFO_H
+#ifndef CASA_HOSTINFO_H
+#define CASA_HOSTINFO_H
 
 #include <casa/aips.h>
 

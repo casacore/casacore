@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFREQ_OFFSETCOLUMNS_H)
-#define AIPS_MSFREQ_OFFSETCOLUMNS_H
+#ifndef MS_MSFREQOFFCOLUMNS_H
+#define MS_MSFREQOFFCOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MEpoch.h>

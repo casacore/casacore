@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_IMAGE_FITS_CONVERTER_H)
-#define AIPS_IMAGE_FITS_CONVERTER_H
+#ifndef IMAGES_IMAGEFITSCONVERTER_H
+#define IMAGES_IMAGEFITSCONVERTER_H
 
 #include <casa/aips.h>
 

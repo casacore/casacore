@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PGPLOTTER_H)
-#define AIPS_PGPLOTTER_H
+#ifndef CASA_PGPLOTTER_H
+#define CASA_PGPLOTTER_H
 
 #include <casa/aips.h>
 #include <casa/System/PGPlotterInterface.h>

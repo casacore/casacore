@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDPOLARIZATIONHANDLER_H)
-#define AIPS_SDPOLARIZATIONHANDLER_H
+#ifndef MS_SDPOLARIZATIONHANDLER_H
+#define MS_SDPOLARIZATIONHANDLER_H
 
 #include <casa/Containers/RecordField.h>
 

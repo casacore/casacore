@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELUNARY_H)
-#define AIPS_LELUNARY_H
+#ifndef LATTICES_LELUNARY_H
+#define LATTICES_LELUNARY_H
 
 
 //# Includes

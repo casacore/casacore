@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_WCREGION_H)
-#define AIPS_WCREGION_H
+#ifndef IMAGES_WCREGION_H
+#define IMAGES_WCREGION_H
 
 //# Includes
 #include <casa/Containers/Record.h>

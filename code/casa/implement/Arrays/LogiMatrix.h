@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_LOGIMATRIX_H)
-#define AIPS_LOGIMATRIX_H
+#ifndef CASA_LOGIMATRIX_H
+#define CASA_LOGIMATRIX_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/LogiArray.h>

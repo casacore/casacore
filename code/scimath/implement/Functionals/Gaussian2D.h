@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GAUSSIAN2D_H)
-#define AIPS_GAUSSIAN2D_H
+#ifndef SCIMATH_GAUSSIAN2D_H
+#define SCIMATH_GAUSSIAN2D_H
 
 //# Includes
 #include <casa/aips.h>

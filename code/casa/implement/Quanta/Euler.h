@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EULER_H)
-#define AIPS_EULER_H
+#ifndef CASA_EULER_H
+#define CASA_EULER_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_LOGIVECTOR_H)
-#define AIPS_LOGIVECTOR_H
+#ifndef CASA_LOGIVECTOR_H
+#define CASA_LOGIVECTOR_H
 
 
 #include <casa/aips.h>

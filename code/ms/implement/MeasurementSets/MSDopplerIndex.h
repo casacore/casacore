@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSDOPPLERINDEX_H)
-#define AIPS_MSDOPPLERINDEX_H
+#ifndef MS_MSDOPPLERINDEX_H
+#define MS_MSDOPPLERINDEX_H
 
 #include <ms/MeasurementSets/MSTableIndex.h>
 

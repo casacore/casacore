@@ -26,8 +26,8 @@
 //#
 //#   $Id$
 
-#if !defined(TRIAL_IMAGEFIT1D_H)
-#define TRIAL_IMAGEFIT1D_H
+#ifndef IMAGES_IMAGEFIT1D_H
+#define IMAGES_IMAGEFIT1D_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_IOSSTRFWD_H)
-#define AIPS_AIPS_IOSSTRFWD_H
+#ifndef CASA_IOSSTRFWD_H
+#define CASA_IOSSTRFWD_H
 
 // Define the IO system forward declarations for strings (strstream) as well
 // After changeover to sstream, iosfwd takes care of it all.

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#ifndef AIPS_CHOICE_H
-#define AIPS_CHOICE_H
+#ifndef CASA_CHOICE_H
+#define CASA_CHOICE_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 
 
 
-#if !defined(AIPS_WCBOX_H)
-#define AIPS_WCBOX_H
+#ifndef IMAGES_WCBOX_H
+#define IMAGES_WCBOX_H
 
 //# Includes
 #include <casa/aips.h>

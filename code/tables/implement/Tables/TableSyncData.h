@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLESYNCDATA_H)
-#define AIPS_TABLESYNCDATA_H
+#ifndef TABLES_TABLESYNCDATA_H
+#define TABLES_TABLESYNCDATA_H
 
 //# Includes
 #include <casa/aips.h>

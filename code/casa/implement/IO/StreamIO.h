@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STREAMIO_H)
-#define AIPS_STREAMIO_H
+#ifndef CASA_STREAMIO_H
+#define CASA_STREAMIO_H
 
 #include <casa/aips.h>
 #include <casa/IO/ByteIO.h>

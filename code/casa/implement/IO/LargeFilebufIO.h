@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LARGEFILEBUFIO_H)
-#define AIPS_LARGEFILEBUFIO_H
+#ifndef CASA_LARGEFILEBUFIO_H
+#define CASA_LARGEFILEBUFIO_H
 
 
 //# Includes

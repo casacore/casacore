@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_WCCONCATENATION_H)
-#define AIPS_WCCONCATENATION_H
+#ifndef IMAGES_WCCONCATENATION_H
+#define IMAGES_WCCONCATENATION_H
 
 //# Includes
 #include <images/Images/WCCompound.h>

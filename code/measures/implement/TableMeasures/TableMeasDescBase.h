@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEMEASDESCBASE_H)
-#define AIPS_TABLEMEASDESCBASE_H
+#ifndef MEASURES_TABLEMEASDESCBASE_H
+#define MEASURES_TABLEMEASDESCBASE_H
 
 //# Includes
 #include <measures/TableMeasures/TableMeasValueDesc.h>

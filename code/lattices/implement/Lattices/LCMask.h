@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCMASK_H)
-#define AIPS_LCMASK_H
+#ifndef LATTICES_LCMASK_H
+#define LATTICES_LCMASK_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLELOCKDATA_H)
-#define AIPS_TABLELOCKDATA_H
+#ifndef TABLES_TABLELOCKDATA_H
+#define TABLES_TABLELOCKDATA_H
 
 
 //# Includes

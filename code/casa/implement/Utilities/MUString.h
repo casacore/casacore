@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MUSTRING_H)
-#define AIPS_MUSTRING_H
+#ifndef CASA_MUSTRING_H
+#define CASA_MUSTRING_H
 
 
 //# Includes

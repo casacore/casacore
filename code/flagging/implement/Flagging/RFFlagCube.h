@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#ifndef AIPS_RF_FLAGCUBE_H
-#define AIPS_RF_FLAGCUBE_H
+#ifndef FLAGGING_RFFLAGCUBE_H
+#define FLAGGING_RFFLAGCUBE_H
     
 #include <flagging/Flagging/RedFlagger.h>
 #include <flagging/Flagging/RFCubeLattice.h>

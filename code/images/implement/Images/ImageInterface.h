@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGEINTERFACE_H)
-#define AIPS_IMAGEINTERFACE_H
+#ifndef IMAGES_IMAGEINTERFACE_H
+#define IMAGES_IMAGEINTERFACE_H
 
 
 //# Includes

@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_UVWMACHINE_H)
-#define AIPS_UVWMACHINE_H
+#ifndef MEASURES_UVWMACHINE_H
+#define MEASURES_UVWMACHINE_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VISBUFFERUTIL_H)
-#define AIPS_VISBUFFERUTIL_H
+#ifndef MSVIS_VISBUFFERUTIL_H
+#define MSVIS_VISBUFFERUTIL_H
 
 #include <casa/aips.h>
 #include <msvis/MSVis/VisBuffer.h>

@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#if !defined(AIPS_MEDIANSLIDER_H)
-#define AIPS_MEDIANSLIDER_H
+#ifndef SCIMATH_MEDIANSLIDER_H
+#define SCIMATH_MEDIANSLIDER_H
 
 //#! Includes go here
 

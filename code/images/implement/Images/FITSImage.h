@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FITSIMAGE_H)
-#define AIPS_FITSIMAGE_H
+#ifndef IMAGES_FITSIMAGE_H
+#define IMAGES_FITSIMAGE_H
 
 
 //# Includes

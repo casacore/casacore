@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCALARQUANTCOLUMN_H)
-#define AIPS_SCALARQUANTCOLUMN_H
+#ifndef MEASURES_SCALARQUANTCOLUMN_H
+#define MEASURES_SCALARQUANTCOLUMN_H
 
 //# Includes
 #include <casa/Quanta/Quantum.h>

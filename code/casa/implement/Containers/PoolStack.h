@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_POOLSTACK_H)
-#define AIPS_POOLSTACK_H
+#ifndef CASA_POOLSTACK_H
+#define CASA_POOLSTACK_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_COORDINATES_H)
-#define AIPS_COORDINATES_H
+#ifndef COORDINATES_COORDINATES_H
+#define COORDINATES_COORDINATES_H
 
 //# Module includes
 #include <coordinates/Coordinates/Coordinate.h>

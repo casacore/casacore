@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDOBSERVATIONHANDLER_H)
-#define AIPS_SDOBSERVATIONHANDLER_H
+#ifndef MS_SDOBSERVATIONHANDLER_H
+#define MS_SDOBSERVATIONHANDLER_H
 
 #include <casa/Containers/RecordField.h>
 #include <tables/Tables/ScalarColumn.h>

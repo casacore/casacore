@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSTABLEINDEX_H)
-#define AIPS_MSTABLEINDEX_H
+#ifndef MS_MSTABLEINDEX_H
+#define MS_MSTABLEINDEX_H
 
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Block.h>

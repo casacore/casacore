@@ -27,8 +27,8 @@
     $Id$
 */
 
-#if !defined(AIPS_CREGEX_H)
-#define AIPS_CREGEX_H
+#ifndef CASA_CREGEX_H
+#define CASA_CREGEX_H
 
 /* Definitions for data structures callers pass the regex library. */
 

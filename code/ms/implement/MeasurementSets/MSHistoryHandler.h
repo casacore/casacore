@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined(TRIAL_MSHISTORYHANDLER_H)
-#define TRIAL_MSHISTORYHANDLER_H
+#ifndef MS_MSHISTORYHANDLER_H
+#define MS_MSHISTORYHANDLER_H
 
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSHistory.h>

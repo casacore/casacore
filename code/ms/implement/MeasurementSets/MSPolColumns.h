@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPOLCOLUMNS_H)
-#define AIPS_MSPOLCOLUMNS_H
+#ifndef MS_MSPOLCOLUMNS_H
+#define MS_MSPOLCOLUMNS_H
 
 #include <casa/aips.h>
 #include <tables/Tables/ArrayColumn.h>

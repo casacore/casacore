@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGEREGION_H)
-#define AIPS_IMAGEREGION_H
+#ifndef IMAGES_IMAGEREGION_H
+#define IMAGES_IMAGEREGION_H
 
 //# Includes
 #include <lattices/Lattices/LattRegionHolder.h>

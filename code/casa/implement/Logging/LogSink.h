@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOGSINK_H)
-#define AIPS_LOGSINK_H
+#ifndef CASA_LOGSINK_H
+#define CASA_LOGSINK_H
 
 #include <casa/aips.h>
 #include <casa/Logging/LogSinkInterface.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_VISBUFFER_H)
-#define TRIAL_VISBUFFER_H
+#ifndef MSVIS_VISBUFFER_H
+#define MSVIS_VISBUFFER_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Cube.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_RETYPEDARRAYENGINE_H)
-#define AIPS_RETYPEDARRAYENGINE_H
+#ifndef TABLES_RETYPEDARRAYENGINE_H
+#define TABLES_RETYPEDARRAYENGINE_H
 
 //# Includes
 #include <tables/Tables/BaseMappedArrayEngine.h>

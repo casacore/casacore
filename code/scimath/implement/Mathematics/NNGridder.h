@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NNGRIDDER_H)
-#define AIPS_NNGRIDDER_H
+#ifndef SCIMATH_NNGRIDDER_H
+#define SCIMATH_NNGRIDDER_H
 
 #include <scimath/Mathematics/Gridder.h>
 

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_IMAGEREGRID_H)
-#define TRIAL_IMAGEREGRID_H
+#ifndef IMAGES_IMAGEREGRID_H
+#define IMAGES_IMAGEREGRID_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CURVEDLATTICE2D_H)
-#define AIPS_CURVEDLATTICE2D_H
+#ifndef LATTICES_CURVEDLATTICE2D_H
+#define LATTICES_CURVEDLATTICE2D_H
 
 
 //# Includes

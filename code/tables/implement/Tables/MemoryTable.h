@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEMORYTABLE_H)
-#define AIPS_MEMORYTABLE_H
+#ifndef TABLES_MEMORYTABLE_H
+#define TABLES_MEMORYTABLE_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NULLTABLE_H)
-#define AIPS_NULLTABLE_H
+#ifndef TABLES_NULLTABLE_H
+#define TABLES_NULLTABLE_H
 
 
 //# Includes

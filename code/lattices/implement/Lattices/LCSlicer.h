@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCSLICER_H)
-#define AIPS_LCSLICER_H
+#ifndef LATTICES_LCSLICER_H
+#define LATTICES_LCSLICER_H
 
 //# Includes
 #include <lattices/Lattices/RegionType.h>

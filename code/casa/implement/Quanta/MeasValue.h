@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEASVALUE_H)
-#define AIPS_MEASVALUE_H
+#ifndef CASA_MEASVALUE_H
+#define CASA_MEASVALUE_H
 
 
 //# Includes

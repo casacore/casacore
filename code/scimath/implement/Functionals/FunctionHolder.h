@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONHOLDER_H)
-#define AIPS_FUNCTIONHOLDER_H
+#ifndef SCIMATH_FUNCTIONHOLDER_H
+#define SCIMATH_FUNCTIONHOLDER_H
 
 //# Includes
 #include <casa/aips.h>

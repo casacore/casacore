@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLELOGSINK_H)
-#define AIPS_TABLELOGSINK_H
+#ifndef TABLES_TABLELOGSINK_H
+#define TABLES_TABLELOGSINK_H
 
 //# Includes
 #include <casa/aips.h>

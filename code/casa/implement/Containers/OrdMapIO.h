@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ORDMAPIO_H)
-#define AIPS_ORDMAPIO_H
+#ifndef CASA_ORDMAPIO_H
+#define CASA_ORDMAPIO_H
 
 // <summary>
 // Input/output operators for OrderedMaps.

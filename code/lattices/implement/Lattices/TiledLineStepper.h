@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILEDLINESTEPPER_H)
-#define AIPS_TILEDLINESTEPPER_H
+#ifndef LATTICES_TILEDLINESTEPPER_H
+#define LATTICES_TILEDLINESTEPPER_H
 
 //# Includes
 #include <casa/aips.h>

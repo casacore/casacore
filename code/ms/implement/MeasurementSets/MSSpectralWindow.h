@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSPECTRALWINDOW_H)
-#define AIPS_MSSPECTRALWINDOW_H
+#ifndef MS_MSSPECTRALWINDOW_H
+#define MS_MSSPECTRALWINDOW_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

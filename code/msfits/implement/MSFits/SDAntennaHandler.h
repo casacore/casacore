@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDANTENNAHANDLER_H)
-#define AIPS_SDANTENNAHANDLER_H
+#ifndef MS_SDANTENNAHANDLER_H
+#define MS_SDANTENNAHANDLER_H
 
 #include <casa/Containers/RecordField.h>
 #include <casa/BasicSL/String.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_QUANTUM_H)
-#define AIPS_QUANTUM_H
+#ifndef CASA_QUANTUM_H
+#define CASA_QUANTUM_H
 
 
 //# Includes

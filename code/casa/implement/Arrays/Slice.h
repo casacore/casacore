@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SLICE_H)
-#define AIPS_SLICE_H
+#ifndef CASA_SLICE_H
+#define CASA_SLICE_H
 
 #include <casa/aips.h>
 

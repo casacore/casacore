@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CONVERSIONIO_H)
-#define AIPS_CONVERSIONIO_H
+#ifndef CASA_CONVERSIONIO_H
+#define CASA_CONVERSIONIO_H
 
 #include <casa/aips.h>
 #include <casa/IO/TypeIO.h>

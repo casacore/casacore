@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSOBSERVATION_H)
-#define AIPS_MSOBSERVATION_H
+#ifndef MS_MSOBSERVATION_H
+#define MS_MSOBSERVATION_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

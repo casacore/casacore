@@ -25,8 +25,8 @@
 //#
 //#   $Id$
 
-#if !defined(AIPS_FIT2D_H)
-#define AIPS_FIT2D_H
+#ifndef LATTICES_FIT2D_H
+#define LATTICES_FIT2D_H
 
 //# Includes
 #include <casa/aips.h>

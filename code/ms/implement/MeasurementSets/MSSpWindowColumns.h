@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSPWINDOWCOLUMNS_H)
-#define AIPS_MSSPWINDOWCOLUMNS_H
+#ifndef MS_MSSPWINDOWCOLUMNS_H
+#define MS_MSSPWINDOWCOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MFrequency.h>

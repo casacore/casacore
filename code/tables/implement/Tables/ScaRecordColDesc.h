@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCARECORDCOLDESC_H)
-#define AIPS_SCARECORDCOLDESC_H
+#ifndef TABLES_SCARECORDCOLDESC_H
+#define TABLES_SCARECORDCOLDESC_H
 
 
 //# Includes

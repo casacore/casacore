@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STMANCOLUMN_H)
-#define AIPS_STMANCOLUMN_H
+#ifndef TABLES_STMANCOLUMN_H
+#define TABLES_STMANCOLUMN_H
 
 
 //# Includes

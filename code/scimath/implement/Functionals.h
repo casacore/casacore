@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined (AIPS_FUNCTIONALS_H)
-#define AIPS_FUNCTIONALS_H
+#ifndef SCIMATH_FUNCTIONALS_H
+#define SCIMATH_FUNCTIONALS_H
 
 //# Base classes
 #include <casa/BasicMath/Functional.h>

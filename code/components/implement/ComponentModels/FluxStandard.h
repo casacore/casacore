@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_FLUX_STANDARD_H)
-#define TRIAL_FLUX_STANDARD_H
+#ifndef COMPONENTS_FLUXSTANDARD_H
+#define COMPONENTS_FLUXSTANDARD_H
 
 // include directives
 #include <casa/aips.h>

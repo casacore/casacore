@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEGRAM_H)
-#define AIPS_TABLEGRAM_H
+#ifndef TABLES_TABLEGRAM_H
+#define TABLES_TABLEGRAM_H
 
 //# Includes
 #include <casa/BasicSL/String.h>

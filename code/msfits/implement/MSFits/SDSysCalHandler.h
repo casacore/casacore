@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDSYSCALHANDLER_H)
-#define AIPS_SDSYSCALHANDLER_H
+#ifndef MS_SDSYSCALHANDLER_H
+#define MS_SDSYSCALHANDLER_H
 
 #include <casa/aips.h>
 #include <casa/Containers/RecordField.h>

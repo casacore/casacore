@@ -22,8 +22,8 @@
  **  Copyright (c) 2002, Associated Universities Inc.
  */
 
-#if ! defined(AIPS_HOSTINFO_HPUX_H)
-#define AIPS_HOSTINFO_HPUX_H
+#ifndef CASA_HOSTINFOHPUX_H
+#define CASA_HOSTINFOHPUX_H
 
 # if defined(HOSTINFO_DO_IMPLEMENT)
 

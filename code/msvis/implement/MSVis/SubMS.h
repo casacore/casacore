@@ -31,8 +31,8 @@
 #include <casa/Arrays/Vector.h>
 
 
-#if !defined(TRIAL_SUBMS_H)
-#define TRIAL_SUBMS_H
+#ifndef MSVIS_SUBMS_H
+#define MSVIS_SUBMS_H
 
 // <summary>
 // SubMS provides functionalities to make a subset of an existing MS

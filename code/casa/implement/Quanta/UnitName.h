@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_UNITNAME_H)
-#define AIPS_UNITNAME_H
+#ifndef CASA_UNITNAME_H
+#define CASA_UNITNAME_H
 
 
 //# Includes

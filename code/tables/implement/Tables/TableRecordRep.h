@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_TABLERECORDREP_H)
-#define AIPS_TABLERECORDREP_H
+#ifndef TABLES_TABLERECORDREP_H
+#define TABLES_TABLERECORDREP_H
 
 #include <casa/aips.h>
 #include <casa/Containers/RecordRep.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXPRDERNODEARRAY_H)
-#define AIPS_EXPRDERNODEARRAY_H
+#ifndef TABLES_EXPRDERNODEARRAY_H
+#define TABLES_EXPRDERNODEARRAY_H
 
 //# Includes
 #include <casa/aips.h>

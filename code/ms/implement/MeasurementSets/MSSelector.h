@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSSELECTOR_H)
-#define TRIAL_MSSELECTOR_H
+#ifndef MS_MSSELECTOR_H
+#define MS_MSSELECTOR_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

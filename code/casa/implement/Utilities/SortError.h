@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_SORTERROR_H)
-#define AIPS_SORTERROR_H
+#ifndef CASA_SORTERROR_H
+#define CASA_SORTERROR_H
 
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>

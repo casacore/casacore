@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GLISHSERIALHELPER_H)
-#define AIPS_GLISHSERIALHELPER_H
+#ifndef SCIMATH_SERIALHELPER_H
+#define SCIMATH_SERIALHELPER_H
 
 #include <scimath/Functionals/FunctionFactoryErrors.h>
 #include <casa/Containers/Record.h>

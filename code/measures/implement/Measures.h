@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MODULE_MEASURES_H)
-#define AIPS_MODULE_MEASURES_H
+#ifndef MEASURES_MEASURES_H
+#define MEASURES_MEASURES_H
 
 //# Includes
 #include <casa/Quanta.h>

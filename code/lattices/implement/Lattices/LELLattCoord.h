@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELLATTCOORD_H)
-#define AIPS_LELLATTCOORD_H
+#ifndef LATTICES_LELLATTCOORD_H
+#define LATTICES_LELLATTCOORD_H
 
 
 //# Includes

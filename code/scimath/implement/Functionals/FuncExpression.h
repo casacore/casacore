@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCEXPRESSION_H)
-#define AIPS_FUNCEXPRESSION_H
+#ifndef SCIMATH_FUNCEXPRESSION_H
+#define SCIMATH_FUNCEXPRESSION_H
 
 //# Includes
 #include <casa/aips.h>

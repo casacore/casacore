@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSWEATHERINDEX_H)
-#define AIPS_MSWEATHERINDEX_H
+#ifndef MS_MSWEATHERINDEX_H
+#define MS_MSWEATHERINDEX_H
 
 #include <ms/MeasurementSets/MSTableIndex.h>
 

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_STOKESCONVERTER_H)
-#define TRIAL_STOKESCONVERTER_H
+#ifndef MS_STOKESCONVERTER_H
+#define MS_STOKESCONVERTER_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

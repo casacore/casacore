@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGEPOLARIMETRY_H)
-#define AIPS_IMAGEPOLARIMETRY_H
+#ifndef IMAGES_IMAGEPOLARIMETRY_H
+#define IMAGES_IMAGEPOLARIMETRY_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_VECTORITER_H)
-#define AIPS_VECTORITER_H
+#ifndef CASA_VECTORITER_H
+#define CASA_VECTORITER_H
 
 
 #include <casa/aips.h>

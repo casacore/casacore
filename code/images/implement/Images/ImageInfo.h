@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGE_INFO_H)
-#define AIPS_IMAGE_INFO_H
+#ifndef IMAGES_IMAGEINFO_H
+#define IMAGES_IMAGEINFO_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/RecordTransformable.h>

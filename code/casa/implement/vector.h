@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_VECTOR_H)
-#define AIPS_AIPS_VECTOR_H
+#ifndef CASA_STD_VECTOR_H
+#define CASA_STD_VECTOR_H
 
 // Define the standard C++ include file. 
 // This is an interim solution to cater for the SGI non-existence of

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVEARTHMAGNETIC_H)
-#define AIPS_MVEARTHMAGNETIC_H
+#ifndef CASA_MVEARTHMAGNETIC_H
+#define CASA_MVEARTHMAGNETIC_H
 
 //# Includes
 #include <casa/aips.h>

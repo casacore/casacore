@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PARAM_H)
-#define AIPS_PARAM_H
+#ifndef CASA_PARAM_H
+#define CASA_PARAM_H
 
 
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SETUPNEWTABLE_H)
-#define AIPS_SETUPNEWTABLE_H
+#ifndef TABLES_SETUPNEWTAB_H
+#define TABLES_SETUPNEWTAB_H
 
 
 //# Includes

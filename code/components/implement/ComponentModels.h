@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (TRIAL_COMPONENTMODELS_H)
-#define TRIAL_COMPONENTMODELS_H
+#ifndef COMPONENTS_COMPONENTMODELS_H
+#define COMPONENTS_COMPONENTMODELS_H
 
 #include <components/ComponentModels/ComponentType.h>
 

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICECONVOLVER_H)
-#define AIPS_LATTICECONVOLVER_H
+#ifndef LATTICES_LATTICECONVOLVER_H
+#define LATTICES_LATTICECONVOLVER_H
 
 //# Includes
 #include <casa/aips.h>

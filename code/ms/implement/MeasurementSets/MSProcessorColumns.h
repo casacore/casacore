@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPROCESSORCOLUMNS_H)
-#define AIPS_MSPROCESSORCOLUMNS_H
+#ifndef MS_MSPROCESSORCOLUMNS_H
+#define MS_MSPROCESSORCOLUMNS_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSProcessor.h>

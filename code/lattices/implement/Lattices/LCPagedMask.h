@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCPAGEDMASK_H)
-#define AIPS_LCPAGEDMASK_H
+#ifndef LATTICES_LCPAGEDMASK_H
+#define LATTICES_LCPAGEDMASK_H
 
 
 //# Includes

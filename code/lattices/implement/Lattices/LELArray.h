@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELARRAY_H)
-#define AIPS_LELARRAY_H
+#ifndef LATTICES_LELARRAY_H
+#define LATTICES_LELARRAY_H
 
 
 //# Includes

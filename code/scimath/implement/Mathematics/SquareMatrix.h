@@ -26,8 +26,8 @@
 //#
 //# $Id$
  
-#if !defined(AIPS_SQUAREMATRIX_H)
-#define AIPS_SQUAREMATRIX_H
+#ifndef SCIMATH_SQUAREMATRIX_H
+#define SCIMATH_SQUAREMATRIX_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_COMPONENTUPDATE_H)
-#define TRIAL_COMPONENTUPDATE_H
+#ifndef IMAGES_COMPONENTUPDATE_H
+#define IMAGES_COMPONENTUPDATE_H
 
 //# Includes
 

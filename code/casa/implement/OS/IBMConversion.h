@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IBMCONVERSION_H)
-#define AIPS_IBMCONVERSION_H
+#ifndef CASA_IBMCONVERSION_H
+#define CASA_IBMCONVERSION_H
 
 //# Includes
 #include <casa/OS/CanonicalConversion.h>

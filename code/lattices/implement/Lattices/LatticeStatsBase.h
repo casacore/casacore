@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICESTATSBASE_H)
-#define AIPS_LATTICESTATSBASE_H
+#ifndef LATTICES_LATTICESTATSBASE_H
+#define LATTICES_LATTICESTATSBASE_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

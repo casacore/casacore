@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STINDARRAY_H)
-#define AIPS_STINDARRAY_H
+#ifndef TABLES_STINDARRAY_H
+#define TABLES_STINDARRAY_H
 
 //# Includes
 #include <casa/aips.h>

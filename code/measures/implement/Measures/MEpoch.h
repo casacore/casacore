@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEPOCH_H)
-#define AIPS_MEPOCH_H
+#ifndef MEASURES_MEPOCH_H
+#define MEASURES_MEPOCH_H
 
 //# Includes
 #include <casa/aips.h>

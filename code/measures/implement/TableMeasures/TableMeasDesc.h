@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEMEASDESC_H)
-#define AIPS_TABLEMEASDESC_H
+#ifndef MEASURES_TABLEMEASDESC_H
+#define MEASURES_TABLEMEASDESC_H
 
 
 //# Includes

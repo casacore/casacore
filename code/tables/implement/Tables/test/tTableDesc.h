@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined(TTABLEDESC_H)
-#define TTABLEDESC_H
+#ifndef TABLES_TTABLEDESC_H
+#define TABLES_TTABLEDESC_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_TYPE_H)
-#define AIPS_AIPS_TYPE_H
+#ifndef CASA_AIPSTYPE_H
+#define CASA_AIPSTYPE_H
 
 // Define the standard types used by aips++
 

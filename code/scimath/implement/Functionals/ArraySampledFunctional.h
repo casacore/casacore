@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAYSAMPLEDFUNCTIONAL_H)
-#define AIPS_ARRAYSAMPLEDFUNCTIONAL_H
+#ifndef SCIMATH_ARRAYSAMPLEDFUNCTIONAL_H
+#define SCIMATH_ARRAYSAMPLEDFUNCTIONAL_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/SampledFunctional.h>

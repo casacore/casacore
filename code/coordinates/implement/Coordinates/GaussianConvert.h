@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GAUSSIANCONVERT_H)
-#define AIPS_GAUSSIANCONVERT_H
+#ifndef COORDINATES_GAUSSIANCONVERT_H
+#define COORDINATES_GAUSSIANCONVERT_H
 
 //# Includes
 #include <casa/aips.h>

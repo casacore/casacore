@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_XTYPE_H)
-#define AIPS_AIPS_XTYPE_H
+#ifndef CASA_AIPSXTYPE_H
+#define CASA_AIPSXTYPE_H
 
 // Define the extra non-standard types used by aips++
 // (like proposed uSize, Size)

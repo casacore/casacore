@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CLIPNEAREST2D_H)
-#define AIPS_CLIPNEAREST2D_H
+#ifndef LATTICES_CLIPNEAREST2D_H
+#define LATTICES_CLIPNEAREST2D_H
 
 
 //# Includes

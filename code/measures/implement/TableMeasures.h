@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_TABLEMEASURES_H)
-#define AIPS_TABLEMEASURES_H
+#ifndef MEASURES_TABLEMEASURES_H
+#define MEASURES_TABLEMEASURES_H
 
 #include <measures/TableMeasures/ArrayMeasColumn.h>
 #include <measures/TableMeasures/ArrayQuantColumn.h>

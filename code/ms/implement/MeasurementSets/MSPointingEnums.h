@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPOINTINGENUMS_H)
-#define AIPS_MSPOINTINGENUMS_H
+#ifndef MS_MSPOINTINGENUMS_H
+#define MS_MSPOINTINGENUMS_H
 
 #include <casa/aips.h>
 

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICETWOPTCORR_H)
-#define AIPS_LATTICETWOPTCORR_H
+#ifndef LATTICES_LATTICETWOPTCORR_H
+#define LATTICES_LATTICETWOPTCORR_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NUMERICTRAITS2_H)
-#define AIPS_NUMERICTRAITS2_H
+#ifndef SCIMATH_NUMERICTRAITS2_H
+#define SCIMATH_NUMERICTRAITS2_H
 
 #include <casa/BasicSL/Complex.h>
 

@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_FITS_KEYWORD_UTIL_H)
-#define AIPS_FITS_KEYWORD_UTIL_H
+#ifndef FITS_FITSKEYWORDUTIL_H
+#define FITS_FITSKEYWORDUTIL_H
 
 #include <casa/aips.h>
 

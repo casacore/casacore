@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSYSCALINDEX_H)
-#define AIPS_MSSYSCALINDEX_H
+#ifndef MS_MSSYSCALINDEX_H
+#define MS_MSSYSCALINDEX_H
 
 #include <ms/MeasurementSets/MSTableIndex.h>
 

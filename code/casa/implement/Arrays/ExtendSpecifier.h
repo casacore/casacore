@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXTENDSPECIFIER_H)
-#define AIPS_EXTENDSPECIFIER_H
+#ifndef CASA_EXTENDSPECIFIER_H
+#define CASA_EXTENDSPECIFIER_H
 
 
 //# Includes

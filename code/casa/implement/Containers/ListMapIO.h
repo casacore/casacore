@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LISTMAPIO_H_)
-#define AIPS_LISTMAPIO_H_
+#ifndef CASA_LISTMAPIO_H
+#define CASA_LISTMAPIO_H
 
 // <summary>
 // Input/output operators for ListMaps.

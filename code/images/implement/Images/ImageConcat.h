@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGECONCAT_H)
-#define AIPS_IMAGECONCAT_H
+#ifndef IMAGES_IMAGECONCAT_H
+#define IMAGES_IMAGECONCAT_H
 
 
 //# Includes

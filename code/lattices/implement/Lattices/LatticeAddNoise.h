@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICEADDNOISE_H)
-#define AIPS_LATTICEADDNOISE_H
+#ifndef LATTICES_LATTICEADDNOISE_H
+#define LATTICES_LATTICEADDNOISE_H
 
 
 //# Includes

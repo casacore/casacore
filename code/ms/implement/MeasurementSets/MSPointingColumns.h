@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPOINTINGCOLUMNS_H)
-#define AIPS_MSPOINTINGCOLUMNS_H
+#ifndef MS_MSPOINTINGCOLUMNS_H
+#define MS_MSPOINTINGCOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MDirection.h>

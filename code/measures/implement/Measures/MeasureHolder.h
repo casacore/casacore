@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEASUREHOLDER_H)
-#define AIPS_MEASUREHOLDER_H
+#ifndef MEASURES_MEASUREHOLDER_H
+#define MEASURES_MEASUREHOLDER_H
 
 //# Includes
 #include <casa/aips.h>

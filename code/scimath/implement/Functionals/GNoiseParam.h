@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GNOISEPARAM_H)
-#define AIPS_GNOISEPARAM_H
+#ifndef SCIMATH_GNOISEPARAM_H
+#define SCIMATH_GNOISEPARAM_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCELLIPSOID_H)
-#define AIPS_LCELLIPSOID_H
+#ifndef LATTICES_LCELLIPSOID_H
+#define LATTICES_LCELLIPSOID_H
 
 //# Includes
 #include <lattices/Lattices/LCRegionFixed.h>

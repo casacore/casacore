@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ISMBUCKET_H)
-#define AIPS_ISMBUCKET_H
+#ifndef TABLES_ISMBUCKET_H
+#define TABLES_ISMBUCKET_H
 
 //# Includes
 #include <casa/aips.h>

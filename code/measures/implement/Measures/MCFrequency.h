@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MCFREQUENCY_H)
-#define AIPS_MCFREQUENCY_H
+#ifndef MEASURES_MCFREQUENCY_H
+#define MEASURES_MCFREQUENCY_H
 
 //# Includes
 #include <casa/aips.h>

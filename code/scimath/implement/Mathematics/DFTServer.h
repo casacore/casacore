@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DFTSERVER_H)
-#define AIPS_DFTSERVER_H
+#ifndef SCIMATH_DFTSERVER_H
+#define SCIMATH_DFTSERVER_H
 
 
 #include <casa/aips.h>

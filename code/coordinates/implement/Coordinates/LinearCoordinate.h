@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LINEAR_COORDINATE_H)
-#define AIPS_LINEAR_COORDINATE_H
+#ifndef COORDINATES_LINEARCOORDINATE_H
+#define COORDINATES_LINEARCOORDINATE_H
 
 #include <casa/aips.h>
 #include <coordinates/Coordinates/Coordinate.h>

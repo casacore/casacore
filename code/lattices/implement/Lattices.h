@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_LATTICES_H)
-#define AIPS_LATTICES_H
+#ifndef LATTICES_LATTICES_H
+#define LATTICES_LATTICES_H
 
 
 // #include <aips/Arrays/ArrayLattice.h>

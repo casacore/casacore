@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFIELDINDEX_H)
-#define AIPS_MSFIELDINDEX_H
+#ifndef MS_MSFIELDINDEX_H
+#define MS_MSFIELDINDEX_H
 
 //# includes
 #include <casa/aips.h>

@@ -59,8 +59,8 @@
 //#!  #define <AIPS_CLASSFILENAME_H>  to  #define AIPS_LATTICEITER_H
 //#!
 
-#if !defined(AIPS_COMPONENTIMAGER_H)
-#define AIPS_COMPONENTIMAGER_H
+#ifndef IMAGES_COMPONENTIMAGER_H
+#define IMAGES_COMPONENTIMAGER_H
 
 #include <casa/aips.h>
 

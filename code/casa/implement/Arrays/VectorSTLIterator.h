@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VECTORSTLITERATOR_H)
-#define AIPS_VECTORSTLITERATOR_H
+#ifndef CASA_VECTORSTLITERATOR_H
+#define CASA_VECTORSTLITERATOR_H
 
 //# Includes
 #include <casa/aips.h>

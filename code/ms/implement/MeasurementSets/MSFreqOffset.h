@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFREQOFFSET_H)
-#define AIPS_MSFREQOFFSET_H
+#ifndef MS_MSFREQOFFSET_H
+#define MS_MSFREQOFFSET_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

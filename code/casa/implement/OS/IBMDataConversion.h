@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IBMDATACONVERSION_H)
-#define AIPS_IBMDATACONVERSION_H
+#ifndef CASA_IBMDATACONVERSION_H
+#define CASA_IBMDATACONVERSION_H
 
 //# Includes
 #include <casa/OS/DataConversion.h>

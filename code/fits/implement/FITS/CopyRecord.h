@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COPYRECORD_H)
-#define AIPS_COPYRECORD_H
+#ifndef FITS_COPYRECORD_H
+#define FITS_COPYRECORD_H
 
 
 #include <casa/aips.h>

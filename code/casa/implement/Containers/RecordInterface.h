@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_RECORDINTERFACE_H)
-#define AIPS_RECORDINTERFACE_H
+#ifndef CASA_RECORDINTERFACE_H
+#define CASA_RECORDINTERFACE_H
 
 
 //# Includes

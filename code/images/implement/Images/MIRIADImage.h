@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MIRIADIMAGE_H)
-#define AIPS_MIRIADIMAGE_H
+#ifndef IMAGES_MIRIADIMAGE_H
+#define IMAGES_MIRIADIMAGE_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NUTATION_H)
-#define AIPS_NUTATION_H
+#ifndef MEASURES_NUTATION_H
+#define MEASURES_NUTATION_H
 
 //# Includes
 #include <casa/aips.h>

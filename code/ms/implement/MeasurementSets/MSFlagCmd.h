@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFLAGCMD_H)
-#define AIPS_MSFLAGCMD_H
+#ifndef MS_MSFLAGCMD_H
+#define MS_MSFLAGCMD_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

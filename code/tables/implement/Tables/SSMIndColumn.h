@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SSMINDCOLUMN_H)
-#define AIPS_SSMINDCOLUMN_H
+#ifndef TABLES_SSMINDCOLUMN_H
+#define TABLES_SSMINDCOLUMN_H
 
 
 //# Includes

@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_PARANGLEMACHINE_H)
-#define AIPS_PARANGLEMACHINE_H
+#ifndef MEASURES_PARANGLEMACHINE_H
+#define MEASURES_PARANGLEMACHINE_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MCFRAME_H)
-#define AIPS_MCFRAME_H
+#ifndef MEASURES_MCFRAME_H
+#define MEASURES_MCFRAME_H
 
 //# Includes
 #include <casa/aips.h>

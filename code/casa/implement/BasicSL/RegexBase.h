@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REGEXBASE_H)
-#define AIPS_REGEXBASE_H
+#ifndef CASA_REGEXBASE_H
+#define CASA_REGEXBASE_H
 
 //# Includes
 #include <casa/aips.h>

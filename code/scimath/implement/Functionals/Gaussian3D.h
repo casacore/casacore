@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GAUSSIAN3D_H)
-#define AIPS_GAUSSIAN3D_H
+#ifndef SCIMATH_GAUSSIAN3D_H
+#define SCIMATH_GAUSSIAN3D_H
 
 template<class T> class Vector;
 

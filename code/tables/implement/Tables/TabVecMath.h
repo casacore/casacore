@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABVECMATH_H)
-#define AIPS_TABVECMATH_H
+#ifndef TABLES_TABVECMATH_H
+#define TABLES_TABVECMATH_H
 
 //# Global functions similar to those defined in ArrayMath are defined for
 //# the table vectors. Furthermore vector functions like norm are defined.

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LITTLEENDIANCONVERSION_H)
-#define AIPS_LITTLEENDIANCONVERSION_H
+#ifndef CASA_LITTLEENDIANCONVERSION_H
+#define CASA_LITTLEENDIANCONVERSION_H
 
 //# Includes
 #include <casa/aipsxtype.h>

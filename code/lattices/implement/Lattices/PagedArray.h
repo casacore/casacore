@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PAGEDARRAY_H)
-#define AIPS_PAGEDARRAY_H
+#ifndef LATTICES_PAGEDARRAY_H
+#define LATTICES_PAGEDARRAY_H
 
 //# Includes
 #include <lattices/Lattices/Lattice.h>

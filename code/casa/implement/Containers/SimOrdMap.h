@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SIMORDMAP_H)
-#define AIPS_SIMORDMAP_H
+#ifndef CASA_SIMORDMAP_H
+#define CASA_SIMORDMAP_H
 
 #include <casa/aips.h>
 #include <casa/Containers/OrderedPair.h>

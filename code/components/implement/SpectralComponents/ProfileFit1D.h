@@ -25,8 +25,8 @@
 //#
 //#   $Id$
 
-#if !defined(TRIAL_PROFILEFIT1D_H)
-#define TRIAL_PROFILEFIT1D_H
+#ifndef COMPONENTS_PROFILEFIT1D_H
+#define COMPONENTS_PROFILEFIT1D_H
 
 //# Includes
 #include <casa/aips.h>

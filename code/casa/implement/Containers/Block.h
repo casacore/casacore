@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_BLOCK_H)
-#define AIPS_BLOCK_H
+#ifndef CASA_BLOCK_H
+#define CASA_BLOCK_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/Copy.h>

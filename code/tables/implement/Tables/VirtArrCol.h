@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VIRTARRCOL_H)
-#define AIPS_VIRTARRCOL_H
+#ifndef TABLES_VIRTARRCOL_H
+#define TABLES_VIRTARRCOL_H
 
 //# Includes
 #include <casa/aips.h>

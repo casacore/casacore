@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_VISSET_H)
-#define TRIAL_VISSET_H
+#ifndef MSVIS_VISSET_H
+#define MSVIS_VISSET_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>

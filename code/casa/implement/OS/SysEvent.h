@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SYSEVENT_H)
-#define AIPS_SYSEVENT_H
+#ifndef CASA_SYSEVENT_H
+#define CASA_SYSEVENT_H
 
 
 

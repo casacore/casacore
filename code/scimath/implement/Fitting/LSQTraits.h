@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_LSQTRAITS_H)
-#define AIPS_LSQTRAITS_H
+#ifndef SCIMATH_LSQTRAITS_H
+#define SCIMATH_LSQTRAITS_H
 
 //# Includes
 #include <casa/aips.h>

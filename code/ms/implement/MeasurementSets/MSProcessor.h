@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPROCESSOR_H)
-#define AIPS_MSPROCESSOR_H
+#ifndef MS_MSPROCESSOR_H
+#define MS_MSPROCESSOR_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

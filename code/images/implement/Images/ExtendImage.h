@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXTENDIMAGE_H)
-#define AIPS_EXTENDIMAGE_H
+#ifndef IMAGES_EXTENDIMAGE_H
+#define IMAGES_EXTENDIMAGE_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LSQFIT_H)
-#define AIPS_LSQFIT_H
+#ifndef SCIMATH_LSQFIT_H
+#define SCIMATH_LSQFIT_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SAMPLEDFUNCTIONAL_H)
-#define AIPS_SAMPLEDFUNCTIONAL_H
+#ifndef SCIMATH_SAMPLEDFUNCTIONAL_H
+#define SCIMATH_SAMPLEDFUNCTIONAL_H
 
 #include <casa/aips.h>
 #include <casa/BasicMath/Functional.h>

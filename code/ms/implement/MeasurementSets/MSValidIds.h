@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSVALIDIDS_H)
-#define AIPS_MSVALIDIDS_H
+#ifndef MS_MSVALIDIDS_H
+#define MS_MSVALIDIDS_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MeasurementSet.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEKEYWORD_H)
-#define AIPS_TABLEKEYWORD_H
+#ifndef TABLES_TABLEKEYWORD_H
+#define TABLES_TABLEKEYWORD_H
 
 //# Includes
 #include <casa/aips.h>

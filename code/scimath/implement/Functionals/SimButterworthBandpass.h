@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#if !defined(AIPS_SIMBUTTERWORTHBANDPASS_H)
-#define AIPS_SIMBUTTERWORTHBANDPASS_H
+#ifndef SCIMATH_SIMBUTTERWORTHBANDPASS_H
+#define SCIMATH_SIMBUTTERWORTHBANDPASS_H
 
 //# Includes
 #include <casa/aips.h>

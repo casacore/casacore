@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PAGEDARRITER_H)
-#define AIPS_PAGEDARRITER_H
+#ifndef LATTICES_PAGEDARRITER_H
+#define LATTICES_PAGEDARRITER_H
 
 //# Includes
 #include <lattices/Lattices/LatticeIterInterface.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSDATADESCCOLUMNS_H)
-#define AIPS_MSDATADESCCOLUMNS_H
+#ifndef MS_MSDATADESCCOLUMNS_H
+#define MS_MSDATADESCCOLUMNS_H
 
 #include <casa/aips.h>
 #include <tables/Tables/ScalarColumn.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCCOMPLEMENT_H)
-#define AIPS_LCCOMPLEMENT_H
+#ifndef LATTICES_LCCOMPLEMENT_H
+#define LATTICES_LCCOMPLEMENT_H
 
 //# Includes
 #include <lattices/Lattices/LCRegionMulti.h>

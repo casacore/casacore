@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined (AIPS_PATH_H)
-#define AIPS_PATH_H
+#ifndef CASA_PATH_H
+#define CASA_PATH_H
 
 //# Includes
 #include <casa/aips.h>

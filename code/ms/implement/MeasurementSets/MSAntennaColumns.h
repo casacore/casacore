@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSANTENNACOLUMNS_H)
-#define AIPS_MSANTENNACOLUMNS_H
+#ifndef MS_MSANTENNACOLUMNS_H
+#define MS_MSANTENNACOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MPosition.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VELOCITYMACHINE_H)
-#define AIPS_VELOCITYMACHINE_H
+#ifndef MEASURES_VELOCITYMACHINE_H
+#define MEASURES_VELOCITYMACHINE_H
 
 //# Includes
 #include <casa/aips.h>

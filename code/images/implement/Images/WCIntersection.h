@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_WCINTERSECTION_H)
-#define AIPS_WCINTERSECTION_H
+#ifndef IMAGES_WCINTERSECTION_H
+#define IMAGES_WCINTERSECTION_H
 
 //# Includes
 #include <images/Images/WCCompound.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICESTEPPER_H)
-#define AIPS_LATTICESTEPPER_H
+#ifndef LATTICES_LATTICESTEPPER_H
+#define LATTICES_LATTICESTEPPER_H
 
 //# Includes
 #include <casa/aips.h>

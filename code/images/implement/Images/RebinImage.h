@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REBINIMAGE_H)
-#define AIPS_REBINIMAGE_H
+#ifndef IMAGES_REBINIMAGE_H
+#define IMAGES_REBINIMAGE_H
 
 
 //# Includes

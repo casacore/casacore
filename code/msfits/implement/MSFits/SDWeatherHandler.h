@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDWEATHERHANDLER_H)
-#define AIPS_SDWEATHERHANDLER_H
+#ifndef MS_SDWEATHERHANDLER_H
+#define MS_SDWEATHERHANDLER_H
 
 #include <casa/aips.h>
 #include <casa/Containers/RecordField.h>

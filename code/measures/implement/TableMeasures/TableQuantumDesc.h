@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEQUANTUMDESC_H)
-#define AIPS_TABLEQUANTUMDESC_H
+#ifndef MEASURES_TABLEQUANTUMDESC_H
+#define MEASURES_TABLEQUANTUMDESC_H
 
 //# Includes
 #include <casa/Arrays/Vector.h>

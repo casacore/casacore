@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSSELECTIONKEYWORDS_H)
-#define TRIAL_MSSELECTIONKEYWORDS_H
+#ifndef MS_MSSELECTIONKEYWORDS_H
+#define MS_MSSELECTIONKEYWORDS_H
 
 #include <casa/aips.h>
 

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LINEAR_XFORM_H)
-#define AIPS_LINEAR_XFORM_H
+#ifndef COORDINATES_LINEARXFORM_H
+#define COORDINATES_LINEARXFORM_H
 
 #include <casa/aips.h>
 #include <wcslib/lin.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MATRIXMATHLA_H)
-#define AIPS_MATRIXMATHLA_H
+#ifndef SCIMATH_MATRIXMATHLA_H
+#define SCIMATH_MATRIXMATHLA_H
 
 
 #include <casa/aips.h>

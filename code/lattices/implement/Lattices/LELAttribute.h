@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELATTRIBUTE_H)
-#define AIPS_LELATTRIBUTE_H
+#ifndef LATTICES_LELATTRIBUTE_H
+#define LATTICES_LELATTRIBUTE_H
 
 
 //# Includes

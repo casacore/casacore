@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MBASELINE_H)
-#define AIPS_MBASELINE_H
+#ifndef MEASURES_MBASELINE_H
+#define MEASURES_MBASELINE_H
 
 //# Includes
 #include <casa/aips.h>

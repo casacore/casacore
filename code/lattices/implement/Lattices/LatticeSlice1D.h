@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICESLICE1D_H)
-#define AIPS_LATTICESLICE1D_H
+#ifndef LATTICES_LATTICESLICE1D_H
+#define LATTICES_LATTICESLICE1D_H
 
 
 //# Includes

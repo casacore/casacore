@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELCONVERT_H)
-#define AIPS_LELCONVERT_H
+#ifndef LATTICES_LELCONVERT_H
+#define LATTICES_LELCONVERT_H
 
 
 //# Includes

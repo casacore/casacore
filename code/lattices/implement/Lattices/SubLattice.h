@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SUBLATTICE_H)
-#define AIPS_SUBLATTICE_H
+#ifndef LATTICES_SUBLATTICE_H
+#define LATTICES_SUBLATTICE_H
 
 
 //# Includes

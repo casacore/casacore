@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_RAWDATACONVERSION_H)
-#define AIPS_RAWDATACONVERSION_H
+#ifndef CASA_RAWDATACONVERSION_H
+#define CASA_RAWDATACONVERSION_H
 
 //# Includes
 #include <casa/OS/DataConversion.h>

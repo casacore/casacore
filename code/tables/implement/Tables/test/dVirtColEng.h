@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DVIRTCOLENG_H)
-#define AIPS_DVIRTCOLENG_H
+#ifndef TABLES_DVIRTCOLENG_H
+#define TABLES_DVIRTCOLENG_H
 
 //# Includes
 #include <tables/Tables/VirtColEng.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SOLARPOS_H)
-#define AIPS_SOLARPOS_H
+#ifndef MEASURES_SOLARPOS_H
+#define MEASURES_SOLARPOS_H
 
 //# Includes
 #include <casa/aips.h>

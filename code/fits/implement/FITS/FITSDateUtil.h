@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_FITS_DATE_UTIL_H)
-#define AIPS_FITS_DATE_UTIL_H
+#ifndef FITS_FITSDATEUTIL_H
+#define FITS_FITSDATEUTIL_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MEpoch.h>

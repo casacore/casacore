@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPOLARIZATIONINDEX_H)
-#define AIPS_MSPOLARZATIONINDEX_H
+#ifndef MS_MSPOLINDEX_H
+#define MS_MSPOLINDEX_H
 
 //# includes
 #include <casa/aips.h>

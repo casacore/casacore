@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELIMAGECOORD_H)
-#define AIPS_LELIMAGECOORD_H
+#ifndef IMAGES_LELIMAGECOORD_H
+#define IMAGES_LELIMAGECOORD_H
 
 //# Includes
 #include <lattices/Lattices/LELLattCoord.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VALTYPE_H)
-#define AIPS_VALTYPE_H
+#ifndef CASA_VALTYPE_H
+#define CASA_VALTYPE_H
 
 
 //# Includes

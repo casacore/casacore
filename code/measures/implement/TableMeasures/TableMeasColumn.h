@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEMEASCOLUMN_H)
-#define AIPS_TABLEMEASCOLUMN_H
+#ifndef MEASURES_TABLEMEASCOLUMN_H
+#define MEASURES_TABLEMEASCOLUMN_H
 
 //# Includes
 #include <tables/Tables/TableColumn.h>

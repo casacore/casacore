@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_RECORDDESCREP_H)
-#define AIPS_RECORDDESCREP_H
+#ifndef CASA_RECORDDESCREP_H
+#define CASA_RECORDDESCREP_H
 
 //# Includes
 #include <casa/aips.h>

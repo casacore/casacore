@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MAPIO_H_)
-#define AIPS_MAPIO_H_
+#ifndef CASA_MAPIO_H
+#define CASA_MAPIO_H
 
 #include <casa/Containers/Map.h>
 

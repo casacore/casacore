@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ISMINDEX_H)
-#define AIPS_ISMINDEX_H
+#ifndef TABLES_ISMINDEX_H
+#define TABLES_ISMINDEX_H
 
 //# Includes
 #include <casa/aips.h>

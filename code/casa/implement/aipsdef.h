@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_DEF_H)
-#define AIPS_AIPS_DEF_H
+#ifndef CASA_AIPSDEF_H
+#define CASA_AIPSDEF_H
 
 // Define the aips++ global macros
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_DATAMANERROR_H)
-#define AIPS_DATAMANERROR_H
+#ifndef TABLES_DATAMANERROR_H
+#define TABLES_DATAMANERROR_H
 
 //# Includes
 #include <casa/aips.h>

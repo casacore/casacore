@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_TABLERECORD_H)
-#define AIPS_TABLERECORD_H
+#ifndef TABLES_TABLERECORD_H
+#define TABLES_TABLERECORD_H
 
 //# Includes
 #include <casa/aips.h>

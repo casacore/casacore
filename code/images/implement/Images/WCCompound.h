@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_WCCOMPOUND_H)
-#define AIPS_WCCOMPOUND_H
+#ifndef IMAGES_WCCOMPOUND_H
+#define IMAGES_WCCOMPOUND_H
 
 //# Includes
 #include <images/Images/WCRegion.h>

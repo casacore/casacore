@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COLDESCSET_H)
-#define AIPS_COLDESCSET_H
+#ifndef TABLES_COLDESCSET_H
+#define TABLES_COLDESCSET_H
 
 //# Includes
 #include <casa/aips.h>

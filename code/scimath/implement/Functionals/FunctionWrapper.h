@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONWRAPPER_H)
-#define AIPS_FUNCTIONWRAPPER_H
+#ifndef SCIMATH_FUNCTIONWRAPPER_H
+#define SCIMATH_FUNCTIONWRAPPER_H
 
 //# Includes
 #include <casa/aips.h>

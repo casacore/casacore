@@ -26,8 +26,8 @@
 
 //# $Id$
 
-#if !defined(AIPS_FFTPACK_H)
-#define AIPS_FFTPACK_H
+#ifndef SCIMATH_FFTPACK_H
+#define SCIMATH_FFTPACK_H
 
 #include <casa/aips.h>
   //

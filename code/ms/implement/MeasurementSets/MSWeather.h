@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSWEATHER_H)
-#define AIPS_MSWEATHER_H
+#ifndef MS_MSWEATHER_H
+#define MS_MSWEATHER_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

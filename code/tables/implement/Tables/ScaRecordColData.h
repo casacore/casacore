@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCARECORDCOLDATA_H)
-#define AIPS_SCARECORDCOLDATA_H
+#ifndef TABLES_SCARECORDCOLDATA_H
+#define TABLES_SCARECORDCOLDATA_H
 
 
 //# Includes

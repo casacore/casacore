@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_TILEDSHAPE_H)
-#define AIPS_TILEDSHAPE_H
+#ifndef LATTICES_TILEDSHAPE_H
+#define LATTICES_TILEDSHAPE_H
 
 //# Includes
 #include <casa/Arrays/IPosition.h>

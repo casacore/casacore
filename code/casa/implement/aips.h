@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_H)
-#define AIPS_AIPS_H
+#ifndef CASA_AIPS_H
+#define CASA_AIPS_H
 
 // Define compiler specific flags
 #include <casa/aipsenv.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COPY_H)
-#define AIPS_COPY_H
+#ifndef CASA_COPY_H
+#define CASA_COPY_H
 
 //# Includes
 #include <casa/aips.h>

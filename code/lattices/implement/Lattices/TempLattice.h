@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TEMPLATTICE_H)
-#define AIPS_TEMPLATTICE_H
+#ifndef LATTICES_TEMPLATTICE_H
+#define LATTICES_TEMPLATTICE_H
 
 
 //# Includes

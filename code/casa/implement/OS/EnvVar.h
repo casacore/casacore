@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ENVIRONMENTVARIABLES_H)
-#define AIPS_ENVIRONMENTVARIABLES_H
+#ifndef CASA_ENVVAR_H
+#define CASA_ENVVAR_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

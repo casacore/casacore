@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_HASHMAP_H_)
-#define AIPS_HASHMAP_H_
+#ifndef CASA_HASHMAP_H
+#define CASA_HASHMAP_H
 
 //# Includes
 #include <casa/Containers/Block.h>

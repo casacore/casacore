@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABVECLOGIC_H)
-#define AIPS_TABVECLOGIC_H
+#ifndef TABLES_TABVECLOGIC_H
+#define TABLES_TABVECLOGIC_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REBINLATTICE_H)
-#define AIPS_REBINLATTICE_H
+#ifndef LATTICES_REBINLATTICE_H
+#define LATTICES_REBINLATTICE_H
 
 
 //# Includes

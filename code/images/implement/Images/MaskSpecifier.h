@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MASKSPECIFIER_H)
-#define AIPS_MASKSPECIFIER_H
+#ifndef IMAGES_MASKSPECIFIER_H
+#define IMAGES_MASKSPECIFIER_H
 
 //# Includes
 #include <casa/aips.h>

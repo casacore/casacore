@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_COMPLEX_H)
-#define AIPS_COMPLEX_H
+#ifndef CASA_COMPLEX_H
+#define CASA_COMPLEX_H
 
 
 //# Includes

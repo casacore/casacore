@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGECONVOLVER_H)
-#define AIPS_IMAGECONVOLVER_H
+#ifndef IMAGES_IMAGECONVOLVER_H
+#define IMAGES_IMAGECONVOLVER_H
 
 
 //# Includes

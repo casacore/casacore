@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRCOLDATA_H)
-#define AIPS_ARRCOLDATA_H
+#ifndef TABLES_ARRCOLDATA_H
+#define TABLES_ARRCOLDATA_H
 
 //# Includes
 #include <casa/aips.h>

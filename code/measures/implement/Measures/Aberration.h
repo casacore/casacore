@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ABERRATION_H)
-#define AIPS_ABERRATION_H
+#ifndef MEASURES_ABERRATION_H
+#define MEASURES_ABERRATION_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_READASCIITABLE_H)
-#define AIPS_READASCIITABLE_H
+#ifndef TABLES_READASCIITABLE_H
+#define TABLES_READASCIITABLE_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGEFFT_H)
-#define AIPS_IMAGEFFT_H
+#ifndef IMAGES_IMAGEFFT_H
+#define IMAGES_IMAGEFFT_H
 
 #include <casa/aips.h>
 #include <images/Images/ImageInterface.h>

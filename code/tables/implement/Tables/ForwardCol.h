@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FORWARDCOL_H)
-#define AIPS_FORWARDCOL_H
+#ifndef TABLES_FORWARDCOL_H
+#define TABLES_FORWARDCOL_H
 
 //# Includes
 #include <tables/Tables/VirtColEng.h>

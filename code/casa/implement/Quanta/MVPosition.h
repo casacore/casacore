@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVPOSITION_H)
-#define AIPS_MVPOSITION_H
+#ifndef CASA_MVPOSITION_H
+#define CASA_MVPOSITION_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TYPEIO_H)
-#define AIPS_TYPEIO_H
+#ifndef CASA_TYPEIO_H
+#define CASA_TYPEIO_H
 
 #include <casa/aips.h>
 #include <casa/IO/ByteIO.h>

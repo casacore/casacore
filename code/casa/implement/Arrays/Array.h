@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAY_H)
-#define AIPS_ARRAY_H
+#ifndef CASA_ARRAY_H
+#define CASA_ARRAY_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEPARSE_H)
-#define AIPS_TABLEPARSE_H
+#ifndef TABLES_TABLEPARSE_H
+#define TABLES_TABLEPARSE_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICECLEANER_H)
-#define AIPS_LATTICECLEANER_H
+#ifndef LATTICES_LATTICECLEANER_H
+#define LATTICES_LATTICECLEANER_H
 
 //# Includes
 #include <casa/aips.h>

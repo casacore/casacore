@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSTATEENUMS_H)
-#define AIPS_MSSTATEENUMS_H
+#ifndef MS_MSSTATEENUMS_H
+#define MS_MSSTATEENUMS_H
 
 #include <casa/aips.h>
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DIRACDFUNCTION_H)
-#define AIPS_DIRACDFUNCTION_H
+#ifndef SCIMATH_DIRACDFUNCTION_H
+#define SCIMATH_DIRACDFUNCTION_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SINCPARAM_H)
-#define AIPS_SINCPARAM_H
+#ifndef SCIMATH_SINCPARAM_H
+#define SCIMATH_SINCPARAM_H
 
 //# Includes
 #include <casa/aips.h>

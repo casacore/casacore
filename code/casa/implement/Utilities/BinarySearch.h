@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_BINARY_SEARCH_H)
-#define AIPS_BINARY_SEARCH_H
+#ifndef CASA_BINARYSEARCH_H
+#define CASA_BINARYSEARCH_H
 
 //# Includes
 #include <casa/aips.h>

@@ -24,8 +24,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELFUNCTIONENUMS_H)
-#define AIPS_LELFUNCTIONENUMS_H
+#ifndef LATTICES_LELFUNCTIONENUMS_H
+#define LATTICES_LELFUNCTIONENUMS_H
 
 
 // <summary> Each LEL function is described in this enum </summary>

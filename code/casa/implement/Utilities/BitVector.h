@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BITVECTOR_H)
-#define AIPS_BITVECTOR_H
+#ifndef CASA_BITVECTOR_H
+#define CASA_BITVECTOR_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VIRTCOLENG_H)
-#define AIPS_VIRTCOLENG_H
+#ifndef TABLES_VIRTCOLENG_H
+#define TABLES_VIRTCOLENG_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_RECORD_FIELD_WRITER_H)
-#define AIPS_RECORD_FIELD_WRITER_H
+#ifndef CASA_RECORDFIELDWRITER_H
+#define CASA_RECORDFIELDWRITER_H
 
 #include <casa/aips.h>
 #include <casa/Containers/RecordField.h>

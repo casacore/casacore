@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEMORYLOGSINK_H)
-#define AIPS_MEMORYLOGSINK_H
+#ifndef CASA_MEMORYLOGSINK_H
+#define CASA_MEMORYLOGSINK_H
 
 //# Includes
 #include <casa/aips.h>

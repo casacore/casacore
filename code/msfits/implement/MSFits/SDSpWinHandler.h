@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDSPWINDOWHANDLER_H)
-#define AIPS_SDSPWINDOWHANDLER_H
+#ifndef MS_SDSPWINHANDLER_H
+#define MS_SDSPWINHANDLER_H
 
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/RecordField.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_QUEUE_H)
-#define AIPS_QUEUE_H
+#ifndef CASA_QUEUE_H
+#define CASA_QUEUE_H
 
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>

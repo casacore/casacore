@@ -26,8 +26,8 @@
 
 
 
-#if !defined(AIPS_WCLELMASK_H)
-#define AIPS_WCLELMASK_H
+#ifndef IMAGES_WCLELMASK_H
+#define IMAGES_WCLELMASK_H
 
 //# Includes
 #include <images/Images/WCRegion.h>

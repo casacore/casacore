@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GRIDDER_H)
-#define AIPS_GRIDDER_H
+#ifndef SCIMATH_GRIDDER_H
+#define SCIMATH_GRIDDER_H
 
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/Vector.h>

@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_RF_CHUNKSTATS_H)
-#define AIPS_RF_CHUNKSTATS_H
+#ifndef FLAGGING_RFCHUNKSTATS_H
+#define FLAGGING_RFCHUNKSTATS_H
 
 #include <measures/Measures/Stokes.h> 
 #include <casa/Arrays/Vector.h> 

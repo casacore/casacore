@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGEEXPRGRAM_H)
-#define AIPS_IMAGEEXPRGRAM_H
+#ifndef IMAGES_IMAGEEXPRGRAM_H
+#define IMAGES_IMAGEEXPRGRAM_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_SPECTRALESTIMATE_H)
-#define TRIAL_SPECTRALESTIMATE_H
+#ifndef COMPONENTS_SPECTRALESTIMATE_H
+#define COMPONENTS_SPECTRALESTIMATE_H
 
 //# Includes
 #include <casa/aips.h>

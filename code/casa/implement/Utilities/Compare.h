@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPARE_H)
-#define AIPS_COMPARE_H
+#ifndef CASA_COMPARE_H
+#define CASA_COMPARE_H
 
 //# Includes
 #include <casa/aips.h>

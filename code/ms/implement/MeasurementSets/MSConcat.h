@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSCONCAT_H)
-#define AIPS_MSCONCAT_H
+#ifndef MS_MSCONCAT_H
+#define MS_MSCONCAT_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSColumns.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSYSCALENUMS_H)
-#define AIPS_MSSYSCALENUMS_H
+#ifndef MS_MSSYSCALENUMS_H
+#define MS_MSSYSCALENUMS_H
 
 #include <casa/aips.h>
 

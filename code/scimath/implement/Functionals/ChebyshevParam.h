@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#if !defined(AIPS_CHEBYSHEVPARAM_H)
-#define AIPS_CHEBYSHEVPARAM_H
+#ifndef SCIMATH_CHEBYSHEVPARAM_H
+#define SCIMATH_CHEBYSHEVPARAM_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/Function1D.h>

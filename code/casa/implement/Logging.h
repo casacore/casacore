@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_LOGGING_H)
-#define AIPS_LOGGING_H
+#ifndef CASA_LOGGING_H
+#define CASA_LOGGING_H
 
 #include <casa/Logging/LogMessage.h>
 #include <casa/Logging/LogOrigin.h>

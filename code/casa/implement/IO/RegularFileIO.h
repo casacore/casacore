@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REGULARFILEIO_H)
-#define AIPS_REGULARFILEIO_H
+#ifndef CASA_REGULARFILEIO_H
+#define CASA_REGULARFILEIO_H
 
 //# Includes
 #include <casa/aips.h>

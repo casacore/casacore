@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BASETABITER_H)
-#define AIPS_BASETABITER_H
+#ifndef TABLES_BASETABITER_H
+#define TABLES_BASETABITER_H
 
 //# Includes
 #include <casa/aips.h>

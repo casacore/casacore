@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCSL_H)
-#define AIPS_SCSL_H
+#ifndef SCIMATH_SCSL_H
+#define SCIMATH_SCSL_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>

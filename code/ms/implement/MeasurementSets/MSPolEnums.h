@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPOLARIZATIONENUMS_H)
-#define AIPS_MSPOLARIZATIONENUMS_H
+#ifndef MS_MSPOLENUMS_H
+#define MS_MSPOLENUMS_H
 
 #include <casa/aips.h>
 

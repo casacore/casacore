@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSDATADESCINDEX_H)
-#define AIPS_MSDATADESCINDEX_H
+#ifndef MS_MSDATADESCINDEX_H
+#define MS_MSDATADESCINDEX_H
 
 //# includes
 #include <casa/aips.h>

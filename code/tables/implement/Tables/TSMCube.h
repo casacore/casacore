@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TSMCUBE_H)
-#define AIPS_TSMCUBE_H
+#ifndef TABLES_TSMCUBE_H
+#define TABLES_TSMCUBE_H
 
 
 //# Includes

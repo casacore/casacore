@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFREQOFFINDEX_H)
-#define AIPS_MSFREQOFFINDEX_H
+#ifndef MS_MSFREQOFFINDEX_H
+#define MS_MSFREQOFFINDEX_H
 
 #include <ms/MeasurementSets/MSTableIndex.h>
 

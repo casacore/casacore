@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SUBTABDESC_H)
-#define AIPS_SUBTABDESC_H
+#ifndef TABLES_SUBTABDESC_H
+#define TABLES_SUBTABDESC_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELBINARY_H)
-#define AIPS_LELBINARY_H
+#ifndef LATTICES_LELBINARY_H
+#define LATTICES_LELBINARY_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BUCKETFILE_H)
-#define AIPS_BUCKETFILE_H
+#ifndef CASA_BUCKETFILE_H
+#define CASA_BUCKETFILE_H
 
 //# Includes
 #include <casa/aips.h>

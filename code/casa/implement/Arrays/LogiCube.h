@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_LOGICUBE_H)
-#define AIPS_LOGICUBE_H
+#ifndef CASA_LOGICUBE_H
+#define CASA_LOGICUBE_H
 
 
 #include <casa/aips.h>

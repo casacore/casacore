@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFEEDENUMS_H)
-#define AIPS_MSFEEDENUMS_H
+#ifndef MS_MSFEEDENUMS_H
+#define MS_MSFEEDENUMS_H
 
 #include <casa/aips.h>
 

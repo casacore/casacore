@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSOBSERVATIONENUMS_H)
-#define AIPS_MSOBSERVATIONENUMS_H
+#ifndef MS_MSOBSENUMS_H
+#define MS_MSOBSENUMS_H
 
 // <use visibility=export>
 

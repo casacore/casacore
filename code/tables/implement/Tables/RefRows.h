@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REFROWS_H)
-#define AIPS_REFROWS_H
+#ifndef TABLES_REFROWS_H
+#define TABLES_REFROWS_H
 
 //# Includes
 #include <casa/Arrays/Vector.h>

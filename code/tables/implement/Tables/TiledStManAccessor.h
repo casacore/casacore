@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILEDSTMANACCESSOR_H)
-#define AIPS_TILEDSTMANACCESSOR_H
+#ifndef TABLES_TILEDSTMANACCESSOR_H
+#define TABLES_TILEDSTMANACCESSOR_H
 
 //# Includes
 #include <casa/aips.h>

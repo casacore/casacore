@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DIRECTORYITERATOR_H)
-#define AIPS_DIRECTORYITERATOR_H
+#ifndef CASA_DIRECTORYITERATOR_H
+#define CASA_DIRECTORYITERATOR_H
 
 //# Includes
 #include <casa/aips.h>

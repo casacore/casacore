@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ECLECTICFUNCTIONFACTORY_H)
-#define AIPS_ECLECTICFUNCTIONFACTORY_H
+#ifndef SCIMATH_ECLECTICFUNCTIONFACTORY_H
+#define SCIMATH_ECLECTICFUNCTIONFACTORY_H
 
 #include <scimath/Functionals/Function.h>
 #include <casa/Containers/ListMap.h>

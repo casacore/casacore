@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICECACHE_H)
-#define AIPS_LATTICECACHE_H
+#ifndef LATTICES_LATTICECACHE_H
+#define LATTICES_LATTICECACHE_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPOINTING_H)
-#define AIPS_MSPOINTING_H
+#ifndef MS_MSPOINTING_H
+#define MS_MSPOINTING_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFIELDENUMS_H)
-#define AIPS_MSFIELDENUMS_H
+#ifndef MS_MSFIELDENUMS_H
+#define MS_MSFIELDENUMS_H
 
 #include <casa/aips.h>
 

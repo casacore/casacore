@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILEDFILEHELPER_H)
-#define AIPS_TILEDFILEHELPER_H
+#ifndef TABLES_TILEDFILEHELPER_H
+#define TABLES_TILEDFILEHELPER_H
 
 
 //# Includes

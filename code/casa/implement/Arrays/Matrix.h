@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MATRIX_H)
-#define AIPS_MATRIX_H
+#ifndef CASA_MATRIX_H
+#define CASA_MATRIX_H
 
 
 //# Includes

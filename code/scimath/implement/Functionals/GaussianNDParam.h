@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GAUSSIANNDPARAM_H)
-#define AIPS_GAUSSIANNDPARAM_H
+#ifndef SCIMATH_GAUSSIANNDPARAM_H
+#define SCIMATH_GAUSSIANNDPARAM_H
 
 //# Includes
 #include <casa/aips.h>

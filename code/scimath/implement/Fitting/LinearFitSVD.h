@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LINEARFITSVD_H)
-#define AIPS_LINEARFITSVD_H
+#ifndef SCIMATH_LINEARFITSVD_H
+#define SCIMATH_LINEARFITSVD_H
 
 #include <casa/aips.h>
 #include <scimath/Fitting/LinearFit.h>

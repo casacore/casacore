@@ -25,8 +25,8 @@
 //#
 //# $Id$
  
-#if !defined(AIPS_SSMSTRINGHANDLER_H)
-#define AIPS_SSMSTRINGHANDLER_H
+#ifndef TABLES_SSMSTRINGHANDLER_H
+#define TABLES_SSMSTRINGHANDLER_H
  
  
 //# Includes

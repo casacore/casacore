@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSWEATHERENUMS_H)
-#define AIPS_MSWEATHERENUMS_H
+#ifndef MS_MSWEATHERENUMS_H
+#define MS_MSWEATHERENUMS_H
 
 #include <casa/aips.h>
 

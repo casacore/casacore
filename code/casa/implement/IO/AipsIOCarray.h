@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_AIPSIOCARRAY_H)
-#define AIPS_AIPSIOCARRAY_H
+#ifndef CASA_AIPSIOCARRAY_H
+#define CASA_AIPSIOCARRAY_H
 
 //# Includes
 #include <casa/IO/AipsIO.h>

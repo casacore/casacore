@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VANVLECK_H)
-#define AIPS_VANVLECK_H
+#ifndef SCIMATH_VANVLECK_H
+#define SCIMATH_VANVLECK_H
 
 //#! Includes go here
 #include <casa/aips.h>

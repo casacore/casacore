@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSOBSERVATIONCOLUMNS_H)
-#define AIPS_MSOBSERVATIONCOLUMNS_H
+#ifndef MS_MSOBSCOLUMNS_H
+#define MS_MSOBSCOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MEpoch.h>

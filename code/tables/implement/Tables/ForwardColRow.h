@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FORWARDCOLROW_H)
-#define AIPS_FORWARDCOLROW_H
+#ifndef TABLES_FORWARDCOLROW_H
+#define TABLES_FORWARDCOLROW_H
 
 //# Includes
 #include <tables/Tables/ForwardCol.h>

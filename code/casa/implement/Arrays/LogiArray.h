@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_LOGIARRAY_H)
-#define AIPS_LOGIARRAY_H
+#ifndef CASA_LOGIARRAY_H
+#define CASA_LOGIARRAY_H
 
 
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CANONICALCONVERSION_H)
-#define AIPS_CANONICALCONVERSION_H
+#ifndef CASA_CANONICALCONVERSION_H
+#define CASA_CANONICALCONVERSION_H
 
 //# Includes
 #include <casa/aipsxtype.h>

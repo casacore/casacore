@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVDIRECTION_H)
-#define AIPS_MVDIRECTION_H
+#ifndef CASA_MVDIRECTION_H
+#define CASA_MVDIRECTION_H
 
 //# Includes
 #include <casa/aips.h>

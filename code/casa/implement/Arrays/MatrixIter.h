@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MATRIXITER_H)
-#define AIPS_MATRIXITER_H
+#ifndef CASA_MATRIXITER_H
+#define CASA_MATRIXITER_H
 
 
 #include <casa/aips.h>

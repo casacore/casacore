@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MS1TOMS2CONVERTER_H)
-#define AIPS_MS1TOMS2CONVERTER_H
+#ifndef MS_MS1TOMS2CONVERTER_H
+#define MS_MS1TOMS2CONVERTER_H
 
 //# Includes
 #include <casa/aips.h>

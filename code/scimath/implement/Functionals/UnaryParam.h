@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_UNARYPARAM_H)
-#define AIPS_UNARYPARAM_H
+#ifndef SCIMATH_UNARYPARAM_H
+#define SCIMATH_UNARYPARAM_H
 
 //# Includes
 #include <casa/aips.h>

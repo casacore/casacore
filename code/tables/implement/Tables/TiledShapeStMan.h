@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILEDSHAPESTMAN_H)
-#define AIPS_TILEDSHAPESTMAN_H
+#ifndef TABLES_TILEDSHAPESTMAN_H
+#define TABLES_TILEDSHAPESTMAN_H
 
 
 //# Includes

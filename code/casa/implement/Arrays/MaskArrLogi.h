@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MASKEDARRAY_LOGICAL_H)
-#define AIPS_MASKEDARRAY_LOGICAL_H
+#ifndef CASA_MASKARRLOGI_H
+#define CASA_MASKARRLOGI_H
 
 
 #include <casa/aips.h>

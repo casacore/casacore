@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SEQUENCE_H)
-#define AIPS_SEQUENCE_H
+#ifndef CASA_SEQUENCE_H
+#define CASA_SEQUENCE_H
 
 #include <casa/aips.h>
 

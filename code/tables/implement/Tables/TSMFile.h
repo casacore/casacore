@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TSMFILE_H)
-#define AIPS_TSMFILE_H
+#ifndef TABLES_TSMFILE_H
+#define TABLES_TSMFILE_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_ARRAYS_H)
-#define AIPS_ARRAYS_H
+#ifndef CASA_ARRAYS_H
+#define CASA_ARRAYS_H
 
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Slicer.h>

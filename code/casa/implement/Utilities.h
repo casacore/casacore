@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined (AIPS_MODULE_UTILITIES_H)
-#define AIPS_MODULE_UTILITIES_H
+#ifndef CASA_UTILITIES_H
+#define CASA_UTILITIES_H
 
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/BinarySearch.h>

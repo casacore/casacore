@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#if !defined(AIPS_MARSHBUTTERBANDPASS_H)
-#define AIPS_MARSHBUTTERBANDPASS_H
+#ifndef SCIMATH_MARSHBUTTERWORTHBANDPASS_H
+#define SCIMATH_MARSHBUTTERWORTHBANDPASS_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/SimButterworthBandpass.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILEDCELLSTMAN_H)
-#define AIPS_TILEDCELLSTMAN_H
+#ifndef TABLES_TILEDCELLSTMAN_H
+#define TABLES_TILEDCELLSTMAN_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONORDER_H)
-#define AIPS_FUNCTIONORDER_H
+#ifndef SCIMATH_FUNCTIONORDER_H
+#define SCIMATH_FUNCTIONORDER_H
 
 //# Include files
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLES_H)
-#define AIPS_TABLES_H
+#ifndef TABLES_TABLES_H
+#define TABLES_TABLES_H
 
 //# Includes
 //#   table description

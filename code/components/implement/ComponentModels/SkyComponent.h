@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SKYCOMPONENT_H)
-#define AIPS_SKYCOMPONENT_H
+#ifndef COMPONENTS_SKYCOMPONENT_H
+#define COMPONENTS_SKYCOMPONENT_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/CountedPtr.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DVSCENGINE_H)
-#define AIPS_DVSCENGINE_H
+#ifndef TABLES_DVSCENGINE_H
+#define TABLES_DVSCENGINE_H
 
 
 //# Includes

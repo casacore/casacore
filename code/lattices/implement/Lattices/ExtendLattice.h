@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXTENDLATTICE_H)
-#define AIPS_EXTENDLATTICE_H
+#ifndef LATTICES_EXTENDLATTICE_H
+#define LATTICES_EXTENDLATTICE_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MASKEDARRAY_IO_H)
-#define AIPS_MASKEDARRAY_IO_H
+#ifndef CASA_MASKARRIO_H
+#define CASA_MASKARRIO_H
 
 #include <casa/aips.h>
 

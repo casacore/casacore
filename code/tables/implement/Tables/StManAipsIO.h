@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STMANAIPSIO_H)
-#define AIPS_STMANAIPSIO_H
+#ifndef TABLES_STMANAIPSIO_H
+#define TABLES_STMANAIPSIO_H
 
 
 //# Includes

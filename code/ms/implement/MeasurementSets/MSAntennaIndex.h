@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSANTENNAINDEX_H)
-#define AIPS_MSANTENNAINDEX_H
+#ifndef MS_MSANTENNAINDEX_H
+#define MS_MSANTENNAINDEX_H
 
 //# includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSSELUTIL_H)
-#define TRIAL_MSSELUTIL_H
+#ifndef MS_MSSELUTIL_H
+#define MS_MSSELUTIL_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>

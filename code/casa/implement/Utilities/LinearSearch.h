@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_LINEAR_SEARCH_H)
-#define AIPS_LINEAR_SEARCH_H
+#ifndef CASA_LINEARSEARCH_H
+#define CASA_LINEARSEARCH_H
 
 //# Includes
 #include <casa/aips.h>

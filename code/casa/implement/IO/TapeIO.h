@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TAPEIO_H)
-#define AIPS_TAPEIO_H
+#ifndef CASA_TAPEIO_H
+#define CASA_TAPEIO_H
 
 #include <casa/aips.h>
 #include <casa/IO/ByteIO.h>

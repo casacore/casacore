@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PTRHOLDER_H)
-#define AIPS_PTRHOLDER_H
+#ifndef CASA_PTRHOLDER_H
+#define CASA_PTRHOLDER_H
 
 //# Includes
 #include <casa/aips.h>

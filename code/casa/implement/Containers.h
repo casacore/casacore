@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_CONTAINERS_H)
-#define AIPS_CONTAINERS_H
+#ifndef CASA_CONTAINERS_H
+#define CASA_CONTAINERS_H
 
 #include <casa/Containers/Block.h>
 #include <casa/Containers/Link.h>

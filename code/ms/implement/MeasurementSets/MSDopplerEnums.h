@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSDOPPLERENUMS_H)
-#define AIPS_MSDOPPLERENUMS_H
+#ifndef MS_MSDOPPLERENUMS_H
+#define MS_MSDOPPLERENUMS_H
 
 #include <casa/aips.h>
 

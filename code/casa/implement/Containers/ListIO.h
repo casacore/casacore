@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LISTIO_H_)
-#define AIPS_LISTIO_H_
+#ifndef CASA_LISTIO_H
+#define CASA_LISTIO_H
 
 #include <casa/Containers/List.h>
 

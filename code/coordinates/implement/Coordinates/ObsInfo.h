@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_OBSINFO_H)
-#define AIPS_OBSINFO_H
+#ifndef COORDINATES_OBSINFO_H
+#define COORDINATES_OBSINFO_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/RecordTransformable.h>

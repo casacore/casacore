@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STATACC_H)
-#define AIPS_STATACC_H
+#ifndef SCIMATH_STATACC_H
+#define SCIMATH_STATACC_H
 
 #include <casa/aips.h>
 #include <casa/BasicMath/Math.h>

@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_ROWCOPIER_H)
-#define AIPS_ROWCOPIER_H
+#ifndef TABLES_ROWCOPIER_H
+#define TABLES_ROWCOPIER_H
 
 //# Includes
 #include <casa/aips.h>

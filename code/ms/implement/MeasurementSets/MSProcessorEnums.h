@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPROCESSORENUMS_H)
-#define AIPS_MSPROCESSORENUMS_H
+#ifndef MS_MSPROCESSORENUMS_H
+#define MS_MSPROCESSORENUMS_H
 
 #include <casa/aips.h>
 

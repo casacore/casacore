@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_AUTODIFFIO_H)
-#define AIPS_AUTODIFFIO_H
+#ifndef SCIMATH_AUTODIFFIO_H
+#define SCIMATH_AUTODIFFIO_H
 
 
 //# Includes

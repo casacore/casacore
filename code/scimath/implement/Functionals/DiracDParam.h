@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DIRACDPARAM_H)
-#define AIPS_DIRACDPARAM_H
+#ifndef SCIMATH_DIRACDPARAM_H
+#define SCIMATH_DIRACDPARAM_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BYTESINKSOURCE_H)
-#define AIPS_BYTESINKSOURCE_H
+#ifndef CASA_BYTESINKSOURCE_H
+#define CASA_BYTESINKSOURCE_H
 
 #include <casa/aips.h>
 #include <casa/IO/ByteSink.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCALARCOLUMN_H)
-#define AIPS_SCALARCOLUMN_H
+#ifndef TABLES_SCALARCOLUMN_H
+#define TABLES_SCALARCOLUMN_H
 
 
 //# Includes

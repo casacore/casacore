@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_APPINFO_H)
-#define AIPS_APPINFO_H
+#ifndef CASA_APPINFO_H
+#define CASA_APPINFO_H
 
 //# Includes
 #include <casa/aips.h>

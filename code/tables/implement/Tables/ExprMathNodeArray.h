@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXPRMATHNODEARRAY_H)
-#define AIPS_EXPRMATHNODEARRAY_H
+#ifndef TABLES_EXPRMATHNODEARRAY_H
+#define TABLES_EXPRMATHNODEARRAY_H
 
 //# Includes
 #include <casa/aips.h>

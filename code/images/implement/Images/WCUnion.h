@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_WCUNION_H)
-#define AIPS_WCUNION_H
+#ifndef IMAGES_WCUNION_H
+#define IMAGES_WCUNION_H
 
 //# Includes
 #include <images/Images/WCCompound.h>

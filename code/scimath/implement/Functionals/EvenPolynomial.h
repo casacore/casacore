@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EVENPOLYNOMIAL_H)
-#define AIPS_EVENPOLYNOMIAL_H
+#ifndef SCIMATH_EVENPOLYNOMIAL_H
+#define SCIMATH_EVENPOLYNOMIAL_H
 
 //# Includes
 #include <casa/aips.h>

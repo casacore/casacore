@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SPOLYNOMIAL_H)
-#define AIPS_SPOLYNOMIAL_H
+#ifndef SCIMATH_SPOLYNOMIAL_H
+#define SCIMATH_SPOLYNOMIAL_H
 
 //# Includes
 #include <casa/aips.h>

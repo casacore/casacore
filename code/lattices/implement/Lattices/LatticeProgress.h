@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICEPROGRESS_H)
-#define AIPS_LATTICEPROGRESS_H
+#ifndef LATTICES_LATTICEPROGRESS_H
+#define LATTICES_LATTICEPROGRESS_H
  
 
 //# Includes

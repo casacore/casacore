@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FLUX_H)
-#define AIPS_FLUX_H
+#ifndef COMPONENTS_FLUX_H
+#define COMPONENTS_FLUX_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

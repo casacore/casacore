@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GAUSSIANND_H)
-#define AIPS_GAUSSIANND_H
+#ifndef SCIMATH_GAUSSIANND_H
+#define SCIMATH_GAUSSIANND_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/GaussianNDParam.h>

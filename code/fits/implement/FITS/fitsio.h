@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-# if !defined(AIPS_FITS_IO_H)
-# define AIPS_FITS_IO_H
+#ifndef FITS_FITSIO_H
+#define FITS_FITSIO_H
 
 # include <fits/FITS/fits.h>
 # include <fits/FITS/blockio.h>

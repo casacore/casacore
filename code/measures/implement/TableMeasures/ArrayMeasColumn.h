@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAYMEASCOLUMN_H)
-#define AIPS_ARRAYMEASCOLUMN_H
+#ifndef MEASURES_ARRAYMEASCOLUMN_H
+#define MEASURES_ARRAYMEASCOLUMN_H
 
 //# Includes
 #include <measures/TableMeasures/TableMeasColumn.h>

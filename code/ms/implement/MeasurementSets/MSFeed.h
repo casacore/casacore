@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFEED_H)
-#define AIPS_MSFEED_H
+#ifndef MS_MSFEED_H
+#define MS_MSFEED_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FITSERROR_H)
-#define AIPS_FITSERROR_H
+#ifndef FITS_FITSERROR_H
+#define FITS_FITSERROR_H
 
 //#! Includes go here
 #include <casa/aips.h>

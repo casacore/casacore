@@ -25,8 +25,8 @@
 //#
 //# $Id$
 //#
-#if !defined(TRIAL_MSLISTER_H)
-#define TRIAL_MSLISTER_H
+#ifndef MS_MSLISTER_H
+#define MS_MSLISTER_H
 
 
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICEFRACTILE_H)
-#define AIPS_LATTICEFRACTILE_H
+#ifndef LATTICES_LATTICEFRACTILE_H
+#define LATTICES_LATTICEFRACTILE_H
 
 
 //# Includes

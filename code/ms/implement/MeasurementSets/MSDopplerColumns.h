@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSDOPPLERCOLUMNS_H)
-#define AIPS_MSDOPPLERCOLUMNS_H
+#ifndef MS_MSDOPPLERCOLUMNS_H
+#define MS_MSDOPPLERCOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MDoppler.h>

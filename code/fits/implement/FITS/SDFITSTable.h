@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDFITSTABLE_H)
-#define AIPS_SDFITSTABLE_H
+#ifndef FITS_SDFITSTABLE_H
+#define FITS_SDFITSTABLE_H
 
 
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_IMAGES_H)
-#define AIPS_IMAGES_H
+#ifndef IMAGES_IMAGES_H
+#define IMAGES_IMAGES_H
 
 
 #include <casa/Arrays/IPosition.h>

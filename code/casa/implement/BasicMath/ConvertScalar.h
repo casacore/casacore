@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_CONVERTSCALAR_H)
-#define AIPS_CONVERTSCALAR_H
+#ifndef CASA_CONVERTSCALAR_H
+#define CASA_CONVERTSCALAR_H
 
 //# Includes
 #include <casa/BasicSL/Complex.h>

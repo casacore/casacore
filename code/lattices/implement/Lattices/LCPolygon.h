@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCPOLYGON_H)
-#define AIPS_LCPOLYGON_H
+#ifndef LATTICES_LCPOLYGON_H
+#define LATTICES_LCPOLYGON_H
 
 //# Includes
 #include <lattices/Lattices/LCRegionFixed.h>

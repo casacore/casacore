@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MOMENTCALCULATOR_H)
-#define AIPS_MOMENTCALCULATOR_H
+#ifndef IMAGES_MOMENTCALCULATOR_H
+#define IMAGES_MOMENTCALCULATOR_H
 
 //# Includes
 #include <casa/aips.h>

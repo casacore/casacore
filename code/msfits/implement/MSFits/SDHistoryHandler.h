@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDHISTORYHANDLER_H)
-#define AIPS_SDHISTORYHANDLER_H
+#ifndef MS_SDHISTORYHANDLER_H
+#define MS_SDHISTORYHANDLER_H
 
 #include <casa/Containers/RecordField.h>
 

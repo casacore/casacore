@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXPRMATHNODE_H)
-#define AIPS_EXPRMATHNODE_H
+#ifndef TABLES_EXPRMATHNODE_H
+#define TABLES_EXPRMATHNODE_H
 
 //# Includes
 #include <casa/aips.h>

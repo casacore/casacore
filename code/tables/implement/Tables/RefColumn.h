@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REFCOLUMN_H)
-#define AIPS_REFCOLUMN_H
+#ifndef TABLES_REFCOLUMN_H
+#define TABLES_REFCOLUMN_H
 
 
 //# Includes

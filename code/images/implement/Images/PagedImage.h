@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PAGEDIMAGE_H)
-#define AIPS_PAGEDIMAGE_H
+#ifndef IMAGES_PAGEDIMAGE_H
+#define IMAGES_PAGEDIMAGE_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVDOUBLE_H)
-#define AIPS_MVDOUBLE_H
+#ifndef CASA_MVDOUBLE_H
+#define CASA_MVDOUBLE_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CONVOLVEGRIDDER_H)
-#define AIPS_CONVOLVEGRIDDER_H
+#ifndef SCIMATH_CONVOLVEGRIDDER_H
+#define SCIMATH_CONVOLVEGRIDDER_H
 
 #include <scimath/Mathematics/Gridder.h>
 

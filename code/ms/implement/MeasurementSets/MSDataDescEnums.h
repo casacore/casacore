@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSDATADESCENUMS_H)
-#define AIPS_MSDATADESCENUMS_H
+#ifndef MS_MSDATADESCENUMS_H
+#define MS_MSDATADESCENUMS_H
 
 #include <casa/aips.h>
 

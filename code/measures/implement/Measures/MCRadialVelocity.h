@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MCRADIALVELOCITY_H)
-#define AIPS_MCRADIALVELOCITY_H
+#ifndef MEASURES_MCRADIALVELOCITY_H
+#define MEASURES_MCRADIALVELOCITY_H
 
 //# Includes
 #include <casa/aips.h>

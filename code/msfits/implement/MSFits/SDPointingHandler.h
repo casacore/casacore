@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDPOINTINGHANDLER_H)
-#define AIPS_SDPOINTINGHANDLER_H
+#ifndef MS_SDPOINTINGHANDLER_H
+#define MS_SDPOINTINGHANDLER_H
 
 #include <casa/Containers/RecordField.h>
 #include <measures/Measures/MDirection.h>

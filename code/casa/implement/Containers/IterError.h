@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ITERERROR_H)
-#define AIPS_ITERERROR_H
+#ifndef CASA_ITERERROR_H
+#define CASA_ITERERROR_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAYMATH_H)
-#define AIPS_ARRAYMATH_H
+#ifndef CASA_ARRAYMATH_H
+#define CASA_ARRAYMATH_H
 
 #include <casa/aips.h>
 #include <casa/BasicMath/Math.h>

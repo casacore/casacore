@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MCDOPPLER_H)
-#define AIPS_MCDOPPLER_H
+#ifndef MEASURES_MCDOPPLER_H
+#define MEASURES_MCDOPPLER_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TVECSCACOL_H)
-#define AIPS_TVECSCACOL_H
+#ifndef TABLES_TVECSCACOL_H
+#define TABLES_TVECSCACOL_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_HASHMAPIO_H_)
-#define AIPS_HASHMAPIO_H_
+#ifndef CASA_HASHMAPIO_H
+#define CASA_HASHMAPIO_H
 
 
 #include <casa/Containers/HashMapIter.h>

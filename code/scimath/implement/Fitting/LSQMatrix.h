@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LSQMATRIX_H)
-#define AIPS_LSQMATRIX_H
+#ifndef SCIMATH_LSQMATRIX_H
+#define SCIMATH_LSQMATRIX_H
 
 //# Includes
 #include <casa/aips.h>

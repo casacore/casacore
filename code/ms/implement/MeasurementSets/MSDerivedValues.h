@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSDERIVEDVALUES_H)
-#define TRIAL_MSDERIVEDVALUES_H
+#ifndef MS_MSDERIVEDVALUES_H
+#define MS_MSDERIVEDVALUES_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

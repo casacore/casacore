@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPOSITENUMBER_H)
-#define AIPS_COMPOSITENUMBER_H
+#ifndef CASA_COMPOSITENUMBER_H
+#define CASA_COMPOSITENUMBER_H
 
 //# Includes
 #include <casa/aips.h>

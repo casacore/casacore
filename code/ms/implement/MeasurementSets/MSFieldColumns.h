@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFIELDCOLUMNS_H)
-#define AIPS_MSFIELDCOLUMNS_H
+#ifndef MS_MSFIELDCOLUMNS_H
+#define MS_MSFIELDCOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MDirection.h>

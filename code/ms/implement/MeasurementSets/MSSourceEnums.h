@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSOURCEENUMS_H)
-#define AIPS_MSSOURCEENUMS_H
+#ifndef MS_MSSOURCEENUMS_H
+#define MS_MSSOURCEENUMS_H
 
 #include <casa/aips.h>
 

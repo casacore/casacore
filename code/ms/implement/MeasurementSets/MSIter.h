@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSITER_H)
-#define TRIAL_MSITER_H
+#ifndef MS_MSITER_H
+#define MS_MSITER_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>

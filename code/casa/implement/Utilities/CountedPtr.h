@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COUNTEDPTR_H)
-#define AIPS_COUNTEDPTR_H
+#ifndef CASA_COUNTEDPTR_H
+#define CASA_COUNTEDPTR_H
 
 #include <casa/aips.h>
 

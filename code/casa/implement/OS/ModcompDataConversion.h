@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MODCOMPDATACONVERSION_H)
-#define AIPS_MODCOMPDATACONVERSION_H
+#ifndef CASA_MODCOMPDATACONVERSION_H
+#define CASA_MODCOMPDATACONVERSION_H
 
 #include <casa/OS/DataConversion.h>
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_RECORDGRAM_H)
-#define AIPS_RECORDGRAM_H
+#ifndef TABLES_RECORDGRAM_H
+#define TABLES_RECORDGRAM_H
 
 //# Includes
 #include <casa/BasicSL/String.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_GENSORT_H)
-#define AIPS_GENSORT_H
+#ifndef CASA_GENSORT_H
+#define CASA_GENSORT_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/Sort.h>

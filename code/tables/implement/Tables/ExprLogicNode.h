@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXPRLOGICNODE_H)
-#define AIPS_EXPRLOGICNODE_H
+#ifndef TABLES_EXPRLOGICNODE_H
+#define TABLES_EXPRLOGICNODE_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_KAISERBPARAM_H)
-#define AIPS_KAISERBPARAM_H
+#ifndef SCIMATH_KAISERBPARAM_H
+#define SCIMATH_KAISERBPARAM_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAYUTIL_H)
-#define AIPS_ARRAYUTIL_H
+#ifndef CASA_ARRAYUTIL_H
+#define CASA_ARRAYUTIL_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABULAR_COORDINATE_H)
-#define AIPS_TABULAR_COORDINATE_H
+#ifndef COORDINATES_TABULARCOORDINATE_H
+#define COORDINATES_TABULARCOORDINATE_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/ArrayMath.h>

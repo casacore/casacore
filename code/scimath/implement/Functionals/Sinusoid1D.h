@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SINUSOID1D_H)
-#define AIPS_SINUSOID1D_H
+#ifndef SCIMATH_SINUSOID1D_H
+#define SCIMATH_SINUSOID1D_H
 
 //# Includes
 #include <casa/aips.h>

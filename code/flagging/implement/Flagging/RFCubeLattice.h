@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#ifndef AIPS_RF_CUBELATTICE_H
-#define AIPS_RF_CUBELATTICE_H
+#ifndef FLAGGING_RFCUBELATTICE_H
+#define FLAGGING_RFCUBELATTICE_H
     
 #include <casa/Arrays/Matrix.h> 
 #include <lattices/Lattices/TempLattice.h> 

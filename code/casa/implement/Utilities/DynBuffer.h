@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DYNBUFFER_H)
-#define AIPS_DYNBUFFER_H
+#ifndef CASA_DYNBUFFER_H
+#define CASA_DYNBUFFER_H
 
 //# Includes
 #include <casa/aips.h>

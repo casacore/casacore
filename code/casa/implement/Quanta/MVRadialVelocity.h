@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVRADIALVELOCITY_H)
-#define AIPS_MVRADIALVELOCITY_H
+#ifndef CASA_MVRADIALVELOCITY_H
+#define CASA_MVRADIALVELOCITY_H
 
 
 //# Includes

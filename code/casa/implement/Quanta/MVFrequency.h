@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVFREQUENCY_H)
-#define AIPS_MVFREQUENCY_H
+#ifndef CASA_MVFREQUENCY_H
+#define CASA_MVFREQUENCY_H
 
 
 //# Includes

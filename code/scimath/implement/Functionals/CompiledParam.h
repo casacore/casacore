@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPILEDPARAM_H)
-#define AIPS_COMPILEDPARAM_H
+#ifndef SCIMATH_COMPILEDPARAM_H
+#define SCIMATH_COMPILEDPARAM_H
 
 //# Includes
 #include <casa/aips.h>

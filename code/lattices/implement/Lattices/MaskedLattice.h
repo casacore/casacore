@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MASKEDLATTICE_H)
-#define AIPS_MASKEDLATTICE_H
+#ifndef LATTICES_MASKEDLATTICE_H
+#define LATTICES_MASKEDLATTICE_H
 
 
 //# Includes

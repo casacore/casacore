@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FALLIBLE_H)
-#define AIPS_FALLIBLE_H
+#ifndef CASA_FALLIBLE_H
+#define CASA_FALLIBLE_H
 
 #include <casa/aips.h>
 

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPONENTLIST_H)
-#define AIPS_COMPONENTLIST_H
+#ifndef COMPONENTS_COMPONENTLIST_H
+#define COMPONENTS_COMPONENTLIST_H
 
 
 #include <casa/aips.h>

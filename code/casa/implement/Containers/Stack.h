@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STACK_H)
-#define AIPS_STACK_H
+#ifndef CASA_STACK_H
+#define CASA_STACK_H
 
 #include <casa/aips.h>
 #include <casa/Containers/Link.h>

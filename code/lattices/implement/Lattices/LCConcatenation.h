@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCCONCATENATION_H)
-#define AIPS_LCCONCATENATION_H
+#ifndef LATTICES_LCCONCATENATION_H
+#define LATTICES_LCCONCATENATION_H
 
 //# Includes
 #include <lattices/Lattices/LCRegionMulti.h>

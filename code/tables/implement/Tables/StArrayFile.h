@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_STARRAYFILE_H)
-#define AIPS_STARRAYFILE_H
+#ifndef TABLES_STARRAYFILE_H
+#define TABLES_STARRAYFILE_H
 
 //# Includes
 #include <casa/aips.h>

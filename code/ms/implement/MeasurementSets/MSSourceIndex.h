@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSOURCEINDEX_H)
-#define AIPS_MSSOURCEINDEX_H
+#ifndef MS_MSSOURCEINDEX_H
+#define MS_MSSOURCEINDEX_H
 
 #include <ms/MeasurementSets/MSTableIndex.h>
 #include <ms/MeasurementSets/MSSourceColumns.h>

@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_RFCOMMON_H)
-#define AIPS_RFCOMMON_H
+#ifndef FLAGGING_RFCOMMON_H
+#define FLAGGING_RFCOMMON_H
     
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>

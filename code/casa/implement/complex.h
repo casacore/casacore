@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_COMPLEX_H)
-#define AIPS_AIPS_COMPLEX_H
+#ifndef CASA_STD_COMPLEX_H
+#define CASA_STD_COMPLEX_H
 
 // Make sure any special macros are set
 #include <casa/aips.h>

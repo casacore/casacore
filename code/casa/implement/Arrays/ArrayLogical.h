@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAY_LOGICAL_H)
-#define AIPS_ARRAY_LOGICAL_H
+#ifndef CASA_ARRAYLOGICAL_H
+#define CASA_ARRAYLOGICAL_H
 
 //# Includes
 #include <casa/aips.h>

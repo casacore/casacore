@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCALARMEASCOLUMN_H)
-#define AIPS_SCALARMEASCOLUMN_H
+#ifndef MEASURES_SCALARMEASCOLUMN_H
+#define MEASURES_SCALARMEASCOLUMN_H
 
 //# Includes
 #include <measures/TableMeasures/TableMeasColumn.h>

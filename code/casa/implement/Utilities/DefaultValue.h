@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DEFAULTVALUE_H)
-#define AIPS_DEFAULTVALUE_H
+#ifndef CASA_DEFAULTVALUE_H
+#define CASA_DEFAULTVALUE_H
 
 #include <casa/aips.h>
 

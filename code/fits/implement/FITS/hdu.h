@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-# if !defined(AIPS_FITS_HDU_H)
-# define AIPS_FITS_HDU_H
+#ifndef FITS_HDU_H
+#define FITS_HDU_H
 
 # include <fits/FITS/fits.h>
 # include <casa/aips.h>

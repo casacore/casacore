@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSANTENNA_H)
-#define AIPS_MSANTENNA_H
+#ifndef MS_MSANTENNA_H
+#define MS_MSANTENNA_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

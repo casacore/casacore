@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_OS_H)
-#define AIPS_OS_H
+#ifndef CASA_OS_H
+#define CASA_OS_H
 
 //# Includes
 #include <casa/OS/EnvVar.h>

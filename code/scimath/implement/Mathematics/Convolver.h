@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CONVOLVER_H)
-#define AIPS_CONVOLVER_H
+#ifndef SCIMATH_CONVOLVER_H
+#define SCIMATH_CONVOLVER_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Array.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STACKERROR_H)
-#define AIPS_STACKERROR_H
+#ifndef CASA_STACKERROR_H
+#define CASA_STACKERROR_H
 
 //# Includes
 #include <casa/aips.h>

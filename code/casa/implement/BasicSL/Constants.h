@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_C_H)
-#define AIPS_C_H
+#ifndef CASA_CONSTANTS_H
+#define CASA_CONSTANTS_H
 
 #if defined (sun) && ! defined (AIPS_SOLARIS) 
 #   include <sys/limits.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VAXDATACONVERSION_H)
-#define AIPS_VAXDATACONVERSION_H
+#ifndef CASA_VAXDATACONVERSION_H
+#define CASA_VAXDATACONVERSION_H
 
 //# Includes
 #include <casa/OS/DataConversion.h>

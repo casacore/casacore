@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BLOCKIO_H)
-#define AIPS_BLOCKIO_H
+#ifndef CASA_BLOCKIO_H
+#define CASA_BLOCKIO_H
 
 #include <casa/aips.h>
 

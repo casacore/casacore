@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MASKARRMATH_H)
-#define AIPS_MASKARRMATH_H
+#ifndef CASA_MASKARRMATH_H
+#define CASA_MASKARRMATH_H
 
 
 #include <casa/aips.h>

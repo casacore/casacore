@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_QUANTUMHOLDER_H)
-#define AIPS_QUANTUMHOLDER_H
+#ifndef CASA_QUANTUMHOLDER_H
+#define CASA_QUANTUMHOLDER_H
 
 //# Includes
 #include <casa/aips.h>

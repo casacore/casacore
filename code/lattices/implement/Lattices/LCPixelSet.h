@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCPIXELSET_H)
-#define AIPS_LCPIXELSET_H
+#ifndef LATTICES_LCPIXELSET_H
+#define LATTICES_LCPIXELSET_H
 
 //# Includes
 #include <lattices/Lattices/LCBox.h>

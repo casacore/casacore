@@ -26,8 +26,8 @@
 //#
 //# $Id$
  
-#if !defined(AIPS_RIGIDVECTOR_H)
-#define AIPS_RIGIDVECTOR_H
+#ifndef SCIMATH_RIGIDVECTOR_H
+#define SCIMATH_RIGIDVECTOR_H
   
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

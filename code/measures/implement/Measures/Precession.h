@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PRECESSION_H)
-#define AIPS_PRECESSION_H
+#ifndef MEASURES_PRECESSION_H
+#define MEASURES_PRECESSION_H
 
 //# Includes
 #include <casa/aips.h>

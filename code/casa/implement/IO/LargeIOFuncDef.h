@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LARGEIOFUNCDEF_H)
-#define AIPS_LARGEIOFUNCDEF_H
+#ifndef CASA_LARGEIOFUNCDEF_H
+#define CASA_LARGEIOFUNCDEF_H
 
 
 // <summary>

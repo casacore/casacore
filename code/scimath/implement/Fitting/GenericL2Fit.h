@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GENERICL2FIT_H)
-#define AIPS_GENERICL2FIT_H
+#ifndef SCIMATH_GENERICL2FIT_H
+#define SCIMATH_GENERICL2FIT_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICEINDEXER_H)
-#define AIPS_LATTICEINDEXER_H
+#ifndef LATTICES_LATTICEINDEXER_H
+#define LATTICES_LATTICEINDEXER_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONMARSHALLABLE_H)
-#define AIPS_FUNCTIONMARSHALLABLE_H
+#ifndef SCIMATH_FUNCTIONMARSHALLABLE_H
+#define SCIMATH_FUNCTIONMARSHALLABLE_H
 
 #include <scimath/Functionals/Function.h>
 #include <scimath/Functionals/FunctionFactoryErrors.h>

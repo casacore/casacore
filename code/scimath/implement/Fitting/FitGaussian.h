@@ -25,8 +25,8 @@
 //#
 //#
 //# $Id$
-#ifndef AIPS_FITGAUSSIAN_H
-#define AIPS_FITGAUSSIAN_H
+#ifndef SCIMATH_FITGAUSSIAN_H
+#define SCIMATH_FITGAUSSIAN_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>

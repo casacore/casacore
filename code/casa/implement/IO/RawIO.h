@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_RAWIO_H)
-#define AIPS_RAWIO_H
+#ifndef CASA_RAWIO_H
+#define CASA_RAWIO_H
 
 #include <casa/aips.h>
 #include <casa/IO/TypeIO.h>

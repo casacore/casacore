@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_DDMAPPER_H)
-#define AIPS_DDMAPPER_H
+#ifndef FLAGGING_DDMAPPER_H
+#define FLAGGING_DDMAPPER_H
 
 #include <casa/Arrays/Vector.h> 
 #include <casa/Arrays/Cube.h> 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CONVERSION_H)
-#define AIPS_CONVERSION_H
+#ifndef CASA_CONVERSION_H
+#define CASA_CONVERSION_H
 
 //# Includes
 #include <casa/string.h>                       // needed for memcpy

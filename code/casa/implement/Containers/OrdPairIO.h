@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ORDPAIRIO_H_)
-#define AIPS_ORDPAIRIO_H_
+#ifndef CASA_ORDPAIRIO_H
+#define CASA_ORDPAIRIO_H
 
 #include <casa/Containers/OrderedPair.h>
 #include <casa/iosfwd.h>

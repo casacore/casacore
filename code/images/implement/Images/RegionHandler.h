@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REGIONHANDLER_H)
-#define AIPS_REGIONHANDLER_H
+#ifndef IMAGES_REGIONHANDLER_H
+#define IMAGES_REGIONHANDLER_H
 
 
 //# Includes

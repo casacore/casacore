@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PROGRESS_METER_H)
-#define AIPS_PROGRESS_METER_H
+#ifndef CASA_PROGRESSMETER_H
+#define CASA_PROGRESSMETER_H
 
 //# Includes
 #include <casa/aips.h>

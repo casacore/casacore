@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ORDEREDPAIR_H_)
-#define AIPS_ORDEREDPAIR_H_
+#ifndef CASA_ORDEREDPAIR_H
+#define CASA_ORDEREDPAIR_H
 
 
 //# Includes

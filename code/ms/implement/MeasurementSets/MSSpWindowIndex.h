@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSPWINDOWINDEX_H)
-#define AIPS_MSSPWINDOWINDEX_H
+#ifndef MS_MSSPWINDOWINDEX_H
+#define MS_MSSPWINDOWINDEX_H
 
 //# includes
 #include <casa/aips.h>

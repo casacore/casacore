@@ -25,8 +25,8 @@
 //#
 //# $Id: Interpolate1DArray.h,v 8.1 1997/05/21 22:59:29 rm
 
-#if !defined(AIPS_INTERPOLATEARRAY1D_H)
-#define AIPS_INTERPOLATEARRAY1D_H
+#ifndef SCIMATH_INTERPOLATEARRAY1D_H
+#define SCIMATH_INTERPOLATEARRAY1D_H
 
 
 #include <casa/aips.h>

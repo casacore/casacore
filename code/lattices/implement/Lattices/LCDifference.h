@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCDIFFERENCE_H)
-#define AIPS_LCDIFFERENCE_H
+#ifndef LATTICES_LCDIFFERENCE_H
+#define LATTICES_LCDIFFERENCE_H
 
 //# Includes
 #include <lattices/Lattices/LCRegionMulti.h>

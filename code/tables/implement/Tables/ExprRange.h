@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXPRRANGE_H)
-#define AIPS_EXPRRANGE_H
+#ifndef TABLES_EXPRRANGE_H
+#define TABLES_EXPRRANGE_H
 
 //# Includes
 #include <casa/aips.h>

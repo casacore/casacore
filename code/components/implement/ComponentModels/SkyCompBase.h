@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SKYCOMPBASE_H)
-#define AIPS_SKYCOMPBASE_H
+#ifndef COMPONENTS_SKYCOMPBASE_H
+#define COMPONENTS_SKYCOMPBASE_H
 
 #include <casa/aips.h>
 #include <components/ComponentModels/ComponentType.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_IO_H)
-#define AIPS_IO_H
+#ifndef CASA_IO_H
+#define CASA_IO_H
 
 //# Includes for object persistency.
 #include <casa/IO/AipsIO.h>

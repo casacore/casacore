@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TWOSIDEDSHAPE_H)
-#define AIPS_TWOSIDEDSHAPE_H
+#ifndef COMPONENTS_TWOSIDEDSHAPE_H
+#define COMPONENTS_TWOSIDEDSHAPE_H
 
 #include <casa/aips.h>
 #include <components/ComponentModels/ComponentShape.h>

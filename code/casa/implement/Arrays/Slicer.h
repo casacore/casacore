@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SLICER_H)
-#define AIPS_SLICER_H
+#ifndef CASA_SLICER_H
+#define CASA_SLICER_H
 
 
 //# Includes

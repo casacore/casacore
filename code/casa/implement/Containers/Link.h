@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LINK_H)
-#define AIPS_LINK_H
+#ifndef CASA_LINK_H
+#define CASA_LINK_H
 
 #include <casa/aips.h>
 

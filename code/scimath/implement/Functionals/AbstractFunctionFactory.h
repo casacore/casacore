@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONFACTORY_H)
-#define AIPS_FUNCTIONFACTORY_H
+#ifndef SCIMATH_ABSTRACTFUNCTIONFACTORY_H
+#define SCIMATH_ABSTRACTFUNCTIONFACTORY_H
 
 #include <scimath/Functionals/Function.h>
 #include <scimath/Functionals/FunctionFactoryErrors.h>

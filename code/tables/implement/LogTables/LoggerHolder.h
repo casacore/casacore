@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOGGERHOLDER_H)
-#define AIPS_LOGGERHOLDER_H
+#ifndef TABLES_LOGGERHOLDER_H
+#define TABLES_LOGGERHOLDER_H
 
 //# Includes
 #include <casa/Logging/LogIO.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_POINTSHAPE_H)
-#define AIPS_POINTSHAPE_H
+#ifndef COMPONENTS_POINTSHAPE_H
+#define COMPONENTS_POINTSHAPE_H
 
 #include <casa/aips.h>
 #include <components/ComponentModels/ComponentShape.h>

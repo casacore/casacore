@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSMAINENUMS_H)
-#define AIPS_MSMAINENUMS_H
+#ifndef MS_MSMAINENUMS_H
+#define MS_MSMAINENUMS_H
 
 #include <casa/aips.h>
 

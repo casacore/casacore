@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_HISTACC_H)
-#define AIPS_HISTACC_H
+#ifndef SCIMATH_HISTACC_H
+#define SCIMATH_HISTACC_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/Fallible.h>

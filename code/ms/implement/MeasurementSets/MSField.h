@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFIELD_H)
-#define AIPS_MSFIELD_H
+#ifndef MS_MSFIELD_H
+#define MS_MSFIELD_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEMEASTYPE_H)
-#define AIPS_TABLEMEASTYPE_H
+#ifndef MEASURES_TABLEMEASTYPE_H
+#define MEASURES_TABLEMEASTYPE_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PLAINTABLE_H)
-#define AIPS_PLAINTABLE_H
+#ifndef TABLES_PLAINTABLE_H
+#define TABLES_PLAINTABLE_H
 
 
 //# Includes

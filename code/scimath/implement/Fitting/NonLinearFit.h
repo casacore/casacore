@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NONLINEARFIT_H)
-#define AIPS_NONLINEARFIT_H
+#ifndef SCIMATH_NONLINEARFIT_H
+#define SCIMATH_NONLINEARFIT_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSMINDCOLUMN_H)
-#define AIPS_MSMINDCOLUMN_H
+#ifndef TABLES_MSMINDCOLUMN_H
+#define TABLES_MSMINDCOLUMN_H
 
 
 //# Includes

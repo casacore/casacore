@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOCKFILE_H)
-#define AIPS_LOCKFILE_H
+#ifndef CASA_LOCKFILE_H
+#define CASA_LOCKFILE_H
 
 
 //# Includes

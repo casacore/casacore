@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EVENPOLYNOMIALPARAM_H)
-#define AIPS_EVENPOLYNOMIALPARAM_H
+#ifndef SCIMATH_EVENPOLYNOMIALPARAM_H
+#define SCIMATH_EVENPOLYNOMIALPARAM_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDMAINHANDLER_H)
-#define AIPS_SDMAINHANDLER_H
+#ifndef MS_SDMAINHANDLER_H
+#define MS_SDMAINHANDLER_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/DataType.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STINDARRAIO_H)
-#define AIPS_STINDARRAIO_H
+#ifndef TABLES_STINDARRAIO_H
+#define TABLES_STINDARRAIO_H
 
 
 //# Includes

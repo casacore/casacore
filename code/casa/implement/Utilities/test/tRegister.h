@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TEST_TREGISTER_H)
-#define AIPS_TEST_TREGISTER_H
+#ifndef CASA_TREGISTER_H
+#define CASA_TREGISTER_H
 
 // <summary>
 // Example classes for test of Register class

@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_FITTING_H)
-#define AIPS_FITTING_H
+#ifndef SCIMATH_FITTING_H
+#define SCIMATH_FITTING_H
 
 #include <casa/aips.h>
 #include <scimath/Fitting/FitLSQ.h>

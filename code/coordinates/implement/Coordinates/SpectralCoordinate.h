@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SPECTRAL_COORDINATE_H)
-#define AIPS_SPECTRAL_COORDINATE_H
+#ifndef COORDINATES_SPECTRALCOORDINATE_H
+#define COORDINATES_SPECTRALCOORDINATE_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

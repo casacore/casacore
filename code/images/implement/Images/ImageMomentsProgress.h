@@ -26,8 +26,8 @@
 //#
 //# $Id$
 //
-#if !defined(AIPS_IMAGEMOMENTSPROGRESS_H)
-#define AIPS_IMAGEMOMENTSPROGRESS_H
+#ifndef IMAGES_IMAGEMOMENTSPROGRESS_H
+#define IMAGES_IMAGEMOMENTSPROGRESS_H
 
 
 #include <casa/aips.h>

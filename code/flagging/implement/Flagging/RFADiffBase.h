@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_RFA_DIFFBASE_H)
-#define AIPS_RFA_DIFFBASE_H
+#ifndef FLAGGING_RFADIFFBASE_H
+#define FLAGGING_RFADIFFBASE_H
 
 #include <casa/Arrays/LogiVector.h>
 #include <casa/Containers/RecordInterface.h>

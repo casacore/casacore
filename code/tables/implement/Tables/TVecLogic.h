@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TVECLOGIC_H)
-#define AIPS_TVECLOGIC_H
+#ifndef TABLES_TVECLOGIC_H
+#define TABLES_TVECLOGIC_H
 
 //# Includes
 #include <casa/aips.h>

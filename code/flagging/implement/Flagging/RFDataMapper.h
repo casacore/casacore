@@ -23,8 +23,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-# if !defined(AIPS_RF_DATAMAPPER_H)
-#define AIPS_RF_DATAMAPPER_H
+#ifndef FLAGGING_RFDATAMAPPER_H
+#define FLAGGING_RFDATAMAPPER_H
 
 #include <flagging/Flagging/RFChunkStats.h> 
 #include <flagging/Flagging/DDMapper.h> 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FITSIDITOMS_H)
-#define AIPS_FITSIDITOMS_H
+#ifndef MS_FITSIDITOMS_H
+#define MS_FITSIDITOMS_H
 
 #include <fits/FITS/fits.h>
 #include <casa/aips.h>

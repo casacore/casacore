@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAYQUANTCOLUMN_H)
-#define AIPS_ARRAYQUANTCOLUMN_H
+#ifndef MEASURES_ARRAYQUANTCOLUMN_H
+#define MEASURES_ARRAYQUANTCOLUMN_H
 
 //# Includes
 #include <casa/Arrays/Vector.h>

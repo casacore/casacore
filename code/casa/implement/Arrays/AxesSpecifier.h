@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AXESSPECIFIER_H)
-#define AIPS_AXESSPECIFIER_H
+#ifndef CASA_AXESSPECIFIER_H
+#define CASA_AXESSPECIFIER_H
 
 
 //# Includes

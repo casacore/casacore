@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SORT_H)
-#define AIPS_SORT_H
+#ifndef CASA_SORT_H
+#define CASA_SORT_H
 
 //# Includes
 #include <casa/aips.h>

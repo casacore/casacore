@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VIRTSCACOL_H)
-#define AIPS_VIRTSCACOL_H
+#ifndef TABLES_VIRTSCACOL_H
+#define TABLES_VIRTSCACOL_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSYSCAL_H)
-#define AIPS_MSSYSCAL_H
+#ifndef MS_MSSYSCAL_H
+#define MS_MSSYSCAL_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

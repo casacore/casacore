@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CURVEDIMAGE2D_H)
-#define AIPS_CURVEDIMAGE2D_H
+#ifndef IMAGES_CURVEDIMAGE2D_H
+#define IMAGES_CURVEDIMAGE2D_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPOUNDPARAM_H)
-#define AIPS_COMPOUNDPARAM_H
+#ifndef SCIMATH_COMPOUNDPARAM_H
+#define SCIMATH_COMPOUNDPARAM_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>

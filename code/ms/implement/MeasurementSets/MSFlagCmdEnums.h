@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFLAGCMDENUMS_H)
-#define AIPS_MSFLAGCMDENUMS_H
+#ifndef MS_MSFLAGCMDENUMS_H
+#define MS_MSFLAGCMDENUMS_H
 
 #include <casa/aips.h>
 

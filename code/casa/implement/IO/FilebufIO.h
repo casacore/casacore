@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FILEBUFIO_H)
-#define AIPS_FILEBUFIO_H
+#ifndef CASA_FILEBUFIO_H
+#define CASA_FILEBUFIO_H
 
 //# Includes
 #include <casa/aips.h>

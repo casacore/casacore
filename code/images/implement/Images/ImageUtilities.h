@@ -25,8 +25,8 @@
 //#
 //#
 //# $Id$
-#if !defined(AIPS_IMAGEUTILITIES_H)
-#define AIPS_IMAGEUTILITIES_H
+#ifndef IMAGES_IMAGEUTILITIES_H
+#define IMAGES_IMAGEUTILITIES_H
 
 
 #include <casa/aips.h>

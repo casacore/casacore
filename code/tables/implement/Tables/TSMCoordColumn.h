@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TSMCOORDCOLUMN_H)
-#define AIPS_TSMCOORDCOLUMN_H
+#ifndef TABLES_TSMCOORDCOLUMN_H
+#define TABLES_TSMCOORDCOLUMN_H
 
 //# Includes
 #include <casa/aips.h>

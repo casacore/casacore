@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILESTEPPER_H)
-#define AIPS_TILESTEPPER_H
+#ifndef LATTICES_TILESTEPPER_H
+#define LATTICES_TILESTEPPER_H
 
 //# Includes
 #include <casa/aips.h>

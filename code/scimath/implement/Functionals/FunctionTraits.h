@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONTRAITS_H)
-#define AIPS_FUNCTIONTRAITS_H
+#ifndef SCIMATH_FUNCTIONTRAITS_H
+#define SCIMATH_FUNCTIONTRAITS_H
 
 //# Includes
 #include <casa/aips.h>

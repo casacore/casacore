@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GAUSSIAN3DPARAM_H)
-#define AIPS_GAUSSIAN3DPARAM_H
+#ifndef SCIMATH_GAUSSIAN3DPARAM_H
+#define SCIMATH_GAUSSIAN3DPARAM_H
 
 template<class Type> class Vector;
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSSIMULATOR_H)
-#define TRIAL_MSSIMULATOR_H
+#ifndef MS_NEWMSSIMULATOR_H
+#define MS_NEWMSSIMULATOR_H
 
 
 //# Includes

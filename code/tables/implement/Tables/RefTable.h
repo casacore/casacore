@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REFTABLE_H)
-#define AIPS_REFTABLE_H
+#ifndef TABLES_REFTABLE_H
+#define TABLES_REFTABLE_H
 
 
 //# Includes

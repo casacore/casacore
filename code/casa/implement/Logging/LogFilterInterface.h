@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOGFILTERINTERFACE_H)
-#define AIPS_LOGFILTERINTERFACE_H
+#ifndef CASA_LOGFILTERINTERFACE_H
+#define CASA_LOGFILTERINTERFACE_H
 
 //# Includes
 #include <casa/aips.h>

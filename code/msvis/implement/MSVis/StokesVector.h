@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STOKESVECTOR_H)
-#define AIPS_STOKESVECTOR_H
+#ifndef MSVIS_STOKESVECTOR_H
+#define MSVIS_STOKESVECTOR_H
 
 #include <casa/aips.h>
 #include <casa/IO/AipsIO.h>

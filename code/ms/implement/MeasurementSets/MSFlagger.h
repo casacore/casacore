@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSFLAGGER_H)
-#define TRIAL_MSFLAGGER_H
+#ifndef MS_MSFLAGGER_H
+#define MS_MSFLAGGER_H
 
 #include <casa/aips.h>
 #include <casa/Containers/Record.h>

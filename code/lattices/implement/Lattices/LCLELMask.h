@@ -26,8 +26,8 @@
 
 
 
-#if !defined(AIPS_LCLELMASK_H)
-#define AIPS_LCLELMASK_H
+#ifndef LATTICES_LCLELMASK_H
+#define LATTICES_LCLELMASK_H
 
 //# Includes
 #include <lattices/Lattices/LCRegionSingle.h>

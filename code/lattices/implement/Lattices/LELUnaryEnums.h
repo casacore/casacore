@@ -24,8 +24,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELUNARYENUMS_H)
-#define AIPS_LELUNARYENUMS_H
+#ifndef LATTICES_LELUNARYENUMS_H
+#define LATTICES_LELUNARYENUMS_H
 
 
 // <summary> Each LEL unary operation is described in this enum  </summary>

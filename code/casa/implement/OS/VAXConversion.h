@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VAXCONVERSION_H)
-#define AIPS_VAXCONVERSION_H
+#ifndef CASA_VAXCONVERSION_H
+#define CASA_VAXCONVERSION_H
 
 //# Includes
 #include <assert.h>

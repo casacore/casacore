@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAYPOSITER_H)
-#define AIPS_ARRAYPOSITER_H
+#ifndef CASA_ARRAYPOSITER_H
+#define CASA_ARRAYPOSITER_H
 
 #include <casa/aips.h>
 //# Change the following to a forward declare?

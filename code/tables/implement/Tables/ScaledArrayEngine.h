@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCALEDARRAYENGINE_H)
-#define AIPS_SCALEDARRAYENGINE_H
+#ifndef TABLES_SCALEDARRAYENGINE_H
+#define TABLES_SCALEDARRAYENGINE_H
 
 //# Includes
 #include <tables/Tables/BaseMappedArrayEngine.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_MATH_H)
-#define AIPS_AIPS_MATH_H
+#ifndef CASA_STD_MATH_H
+#define CASA_STD_MATH_H
 
 #if defined(__APPLE__)
 #include <ostream>

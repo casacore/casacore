@@ -26,8 +26,8 @@
 
 //# $Id$
 
-#if !defined(AIPS_TIME_H)
-#define AIPS_TIME_H
+#ifndef CASA_TIME_H
+#define CASA_TIME_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

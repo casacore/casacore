@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICELOCKER_H)
-#define AIPS_LATTICELOCKER_H
+#ifndef LATTICES_LATTICELOCKER_H
+#define LATTICES_LATTICELOCKER_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TAIPSIOCARRAY_H)
-#define AIPS_TAIPSIOCARRAY_H
+#ifndef CASA_TAIPSIOCARRAY_H
+#define CASA_TAIPSIOCARRAY_H
 
 //# Includes
 #include <casa/IO/AipsIOCarray.h>

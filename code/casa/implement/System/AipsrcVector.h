@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPSRCVECTOR_H)
-#define AIPS_AIPSRCVECTOR_H
+#ifndef CASA_AIPSRCVECTOR_H
+#define CASA_AIPSRCVECTOR_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

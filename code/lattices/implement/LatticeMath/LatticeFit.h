@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICE_FIT_H)
-#define AIPS_LATTICE_FIT_H
+#ifndef LATTICES_LATTICEFIT_H
+#define LATTICES_LATTICEFIT_H
 
 #include <casa/aips.h>
 #include <lattices/Lattices/Lattice.h>

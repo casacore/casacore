@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EARTHMAGNETICMACHINE_H)
-#define AIPS_EARTHMAGNETICMACHINE_H
+#ifndef MEASURES_EARTHMAGNETICMACHINE_H
+#define MEASURES_EARTHMAGNETICMACHINE_H
 
 //# Includes
 #include <casa/aips.h>

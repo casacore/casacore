@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSTABLE_H)
-#define AIPS_MSTABLE_H
+#ifndef MS_MSTABLE_H
+#define MS_MSTABLE_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/DataType.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONPARAM_H)
-#define AIPS_FUNCTIONPARAM_H
+#ifndef SCIMATH_FUNCTIONPARAM_H
+#define SCIMATH_FUNCTIONPARAM_H
 
 //# Include files
 #include <casa/aips.h>

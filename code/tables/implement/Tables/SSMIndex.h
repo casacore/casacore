@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //# $Id$   
 
-#if !defined(AIPS_SSMINDEX_H)
-#define AIPS_SSMINDEX_H
+#ifndef TABLES_SSMINDEX_H
+#define TABLES_SSMINDEX_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_IOSFWD_H)
-#define AIPS_AIPS_IOSFWD_H
+#ifndef CASA_IOSFWD_H
+#define CASA_IOSFWD_H
 
 // Define the IO system forward declarations. Note that if fully standard
 // suppliant, the iosfwd will also forward declare the stringstream classes.

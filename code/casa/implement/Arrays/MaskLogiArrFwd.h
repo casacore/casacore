@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MASKLOGIARRAYFWD_H)
-#define AIPS_MASKLOGIARRAYFWD_H
+#ifndef CASA_MASKLOGIARRFWD_H
+#define CASA_MASKLOGIARRFWD_H
 
 //# There is no source file, so this pragma is not needed.
 #if 0

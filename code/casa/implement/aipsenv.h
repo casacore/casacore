@@ -27,8 +27,8 @@
 
 // this file contains all the compiler specific defines
 
-#if !defined(AIPS_AIPS_ENV_H)
-#define AIPS_AIPS_ENV_H
+#ifndef CASA_AIPSENV_H
+#define CASA_AIPSENV_H
 
 // AIPS++ project compiler
 #if defined(AIPS_GCC)

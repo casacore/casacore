@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPOINTINGINDEX_H)
-#define AIPS_MSPOINTINGINDEX_H
+#ifndef MS_MSPOINTINGINDEX_H
+#define MS_MSPOINTINGINDEX_H
 
 #include <ms/MeasurementSets/MSTableIndex.h>
 

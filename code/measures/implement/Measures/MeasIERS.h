@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEASIERS_H)
-#define AIPS_MEASIERS_H
+#ifndef MEASURES_MEASIERS_H
+#define MEASURES_MEASIERS_H
 
 //# Includes
 #include <casa/aips.h>

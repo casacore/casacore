@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ORDEREDMAP_H)
-#define AIPS_ORDEREDMAP_H
+#ifndef CASA_ORDEREDMAP_H
+#define CASA_ORDEREDMAP_H
 
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>

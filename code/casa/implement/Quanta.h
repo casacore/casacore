@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MODULE_QUANTA_H)
-#define AIPS_MODULE_QUANTA_H
+#ifndef CASA_QUANTA_H
+#define CASA_QUANTA_H
 
 //# Includes
 #include <casa/Quanta/Unit.h>

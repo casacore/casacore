@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BINTABLE_H)
-#define AIPS_BINTABLE_H
+#ifndef FITS_BINTABLE_H
+#define FITS_BINTABLE_H
 
 
 //# Includes

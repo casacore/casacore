@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEARTHMAGNETIC_H)
-#define AIPS_MEARTHMAGNETIC_H
+#ifndef MEASURES_MEARTHMAGNETIC_H
+#define MEASURES_MEARTHMAGNETIC_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MASKEDLATTICEITERATOR_H)
-#define AIPS_MASKEDLATTICEITERATOR_H
+#ifndef LATTICES_MASKEDLATTICEITERATOR_H
+#define LATTICES_MASKEDLATTICEITERATOR_H
 
 //# Includes
 #include <casa/aips.h>

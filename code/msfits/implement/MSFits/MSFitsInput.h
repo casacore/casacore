@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSFITSINPUT_H)
-#define TRIAL_MSFITSINPUT_H
+#ifndef MS_MSFITSINPUT_H
+#define MS_MSFITSINPUT_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>

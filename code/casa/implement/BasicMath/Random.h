@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_RANDOM_H)
-#define AIPS_RANDOM_H
+#ifndef CASA_RANDOM_H
+#define CASA_RANDOM_H
 
 #include <casa/aips.h>
 #include <casa/BasicMath/Math.h>

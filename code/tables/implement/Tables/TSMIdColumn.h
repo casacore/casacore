@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TSMIDCOLUMN_H)
-#define AIPS_TSMIDCOLUMN_H
+#ifndef TABLES_TSMIDCOLUMN_H
+#define TABLES_TSMIDCOLUMN_H
 
 //# Includes
 #include <casa/aips.h>

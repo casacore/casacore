@@ -27,8 +27,8 @@
 //# $Id: DirectionCoordinate.h,v 18.0 2002/06/07 21:18:59 aips2adm Exp nkilleen
 
 
-#if !defined(AIPS_DIRECTION_COORDINATE_H)
-#define AIPS_DIRECTION_COORDINATE_H
+#ifndef COORDINATES_DIRECTIONCOORDINATE_H
+#define COORDINATES_DIRECTIONCOORDINATE_H
 
 #include <casa/aips.h>
 #include <coordinates/Coordinates/Coordinate.h>

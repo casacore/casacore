@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICEEXPR_H)
-#define AIPS_LATTICEEXPR_H
+#ifndef LATTICES_LATTICEEXPR_H
+#define LATTICES_LATTICEEXPR_H
 
 
 //# Includes

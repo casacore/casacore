@@ -35,8 +35,8 @@
  *                        Rainer Orth       <ro@techfak.uni-bielefeld.de>
  */
 
-#if ! defined(AIPS_HOSTINFO_OSF1_H)
-#define AIPS_HOSTINFO_OSF1_H
+#ifndef CASA_HOSTINFOOSF1_H
+#define CASA_HOSTINFOOSF1_H
 
 # if defined(HOSTINFO_DO_IMPLEMENT)
 

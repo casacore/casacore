@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_KAISERBFUNCTION_H)
-#define AIPS_KAISERBFUNCTION_H
+#ifndef SCIMATH_KAISERBFUNCTION_H
+#define SCIMATH_KAISERBFUNCTION_H
 
 //# Includes
 #include <casa/aips.h>

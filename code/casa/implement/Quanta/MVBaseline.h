@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVBASELINE_H)
-#define AIPS_MVBASELINE_H
+#ifndef CASA_MVBASELINE_H
+#define CASA_MVBASELINE_H
 
 //# Includes
 #include <casa/aips.h>

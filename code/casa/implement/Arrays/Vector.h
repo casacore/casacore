@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VECTOR_H)
-#define AIPS_VECTOR_H
+#ifndef CASA_VECTOR_H
+#define CASA_VECTOR_H
 
 //# Includes
 #include <casa/Arrays/Array.h>

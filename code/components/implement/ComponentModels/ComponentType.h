@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPONENTTYPE_H)
-#define AIPS_COMPONENTTYPE_H
+#ifndef COMPONENTS_COMPONENTTYPE_H
+#define COMPONENTS_COMPONENTTYPE_H
 
 #include <casa/aips.h>
 class String;

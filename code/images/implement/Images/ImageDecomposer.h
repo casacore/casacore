@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_IMAGEDECOMPOSER_H)
-#define TRIAL_IMAGEDECOMPOSER_H
+#ifndef IMAGES_IMAGEDECOMPOSER_H
+#define IMAGES_IMAGEDECOMPOSER_H
 
 #include <casa/iostream.h>
 #include <casa/math.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_WCDIFFERENCE_H)
-#define AIPS_WCDIFFERENCE_H
+#ifndef IMAGES_WCDIFFERENCE_H
+#define IMAGES_WCDIFFERENCE_H
 
 //# Includes
 #include <images/Images/WCCompound.h>

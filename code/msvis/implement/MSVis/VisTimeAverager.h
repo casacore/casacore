@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_VISTIMEAVERAGER_H)
-#define TRIAL_VISTIMEAVERAGER_H
+#ifndef MSVIS_VISTIMEAVERAGER_H
+#define MSVIS_VISTIMEAVERAGER_H
 
 #include <casa/aips.h>
 #include <msvis/MSVis/VisBuffer.h>

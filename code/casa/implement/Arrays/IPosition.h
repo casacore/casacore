@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_IPOSITION_H)
-#define AIPS_IPOSITION_H
+#ifndef CASA_IPOSITION_H
+#define CASA_IPOSITION_H
 
 //# Includes
 #include <casa/aips.h>

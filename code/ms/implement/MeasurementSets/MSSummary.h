@@ -25,8 +25,8 @@
 //#
 //# $Id$
 //#
-#if !defined(TRIAL_MSSUMMARY_H)
-#define TRIAL_MSSUMMARY_H
+#ifndef MS_MSSUMMARY_H
+#define MS_MSSUMMARY_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

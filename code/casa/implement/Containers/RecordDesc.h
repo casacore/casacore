@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_RECORDDESC_H)
-#define AIPS_RECORDDESC_H
+#ifndef CASA_RECORDDESC_H
+#define CASA_RECORDDESC_H
 
 
 //# Includes

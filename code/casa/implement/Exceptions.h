@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_EXCEPTIONS_H)
-#define AIPS_EXCEPTIONS_H
+#ifndef CASA_EXCEPTIONS_H
+#define CASA_EXCEPTIONS_H
 
 
 #include <casa/Exceptions/Error.h>

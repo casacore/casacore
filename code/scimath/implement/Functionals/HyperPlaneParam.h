@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_HYPERPLANEPARAM_H)
-#define AIPS_HYPERPLANEPARAM_H
+#ifndef SCIMATH_HYPERPLANEPARAM_H
+#define SCIMATH_HYPERPLANEPARAM_H
 
 
 #include <casa/aips.h>

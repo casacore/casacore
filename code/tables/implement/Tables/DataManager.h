@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DATAMANAGER_H)
-#define AIPS_DATAMANAGER_H
+#ifndef TABLES_DATAMANAGER_H
+#define TABLES_DATAMANAGER_H
 
 
 //# Includes

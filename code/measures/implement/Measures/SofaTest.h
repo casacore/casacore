@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SOFATEST_H)
-#define AIPS_SOFATEST_H
+#ifndef MEASURES_SOFATEST_H
+#define MEASURES_SOFATEST_H
 
 //# Include files
 #include <casa/aips.h>

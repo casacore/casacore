@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_RFA_MEDIANCLIP_H)
-#define AIPS_RFA_MEDIANCLIP_H
+#ifndef FLAGGING_RFAMEDIANCLIP_H
+#define FLAGGING_RFAMEDIANCLIP_H
 
 #include <flagging/Flagging/RFADiffBase.h> 
 #include <scimath/Mathematics/MedianSlider.h> 

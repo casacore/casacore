@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_REDFLAGGER_H)
-#define AIPS_REDFLAGGER_H
+#ifndef FLAGGING_REDFLAGGER_H
+#define FLAGGING_REDFLAGGER_H
 
 #include <flagging/Flagging/RFChunkStats.h>
 #include <casa/System/PGPlotter.h>

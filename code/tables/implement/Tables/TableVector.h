@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEVECTOR_H)
-#define AIPS_TABLEVECTOR_H
+#ifndef TABLES_TABLEVECTOR_H
+#define TABLES_TABLEVECTOR_H
 
 //# Includes
 #include <casa/aips.h>

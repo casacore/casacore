@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVEPOCH_H)
-#define AIPS_MVEPOCH_H
+#ifndef CASA_MVEPOCH_H
+#define CASA_MVEPOCH_H
 
 
 //# Includes

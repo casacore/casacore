@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BASEMAPPEDARRAYENGINE_H)
-#define AIPS_BASEMAPPEDARRAYENGINE_H
+#ifndef TABLES_BASEMAPPEDARRAYENGINE_H
+#define TABLES_BASEMAPPEDARRAYENGINE_H
 
 //# Includes
 #include <tables/Tables/VirtColEng.h>

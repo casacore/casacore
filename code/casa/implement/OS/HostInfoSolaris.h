@@ -22,8 +22,8 @@
  **  Copyright (c) 2002, Associated Universities Inc.
  */
 
-#if ! defined(AIPS_HOSTINFO_SOLARIS_H)
-#define AIPS_HOSTINFO_SOLARIS_H
+#ifndef CASA_HOSTINFOSOLARIS_H
+#define CASA_HOSTINFOSOLARIS_H
 
 # if defined(HOSTINFO_DO_IMPLEMENT)
 

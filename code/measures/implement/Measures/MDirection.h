@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MDIRECTION_H)
-#define AIPS_MDIRECTION_H
+#ifndef MEASURES_MDIRECTION_H
+#define MEASURES_MDIRECTION_H
 
 //# Includes
 #include <casa/aips.h>

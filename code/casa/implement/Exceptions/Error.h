@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ERROR_H)
-#define AIPS_ERROR_H
+#ifndef CASA_ERROR_H
+#define CASA_ERROR_H
 
 
 

@@ -25,8 +25,8 @@
 //#
 //#   $Id$
 
-#if !defined(AIPS_IMAGEPROFILEFIT_H)
-#define AIPS_IMAGEPROFILEFIT_H
+#ifndef IMAGES_IMAGEPROFILEFIT_H
+#define IMAGES_IMAGEPROFILEFIT_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSRANGE_H)
-#define TRIAL_MSRANGE_H
+#ifndef MS_MSRANGE_H
+#define MS_MSRANGE_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LINEARFIT_H)
-#define AIPS_LINEARFIT_H
+#ifndef SCIMATH_LINEARFIT_H
+#define SCIMATH_LINEARFIT_H
 
 //# Includes
 #include <casa/aips.h>

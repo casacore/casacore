@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABPATH_H)
-#define AIPS_TABPATH_H
+#ifndef TABLES_TABPATH_H
+#define TABLES_TABPATH_H
 
 //# Includes
 #include <casa/aips.h>

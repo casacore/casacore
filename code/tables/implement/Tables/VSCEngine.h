@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VSCENGINE_H)
-#define AIPS_VSCENGINE_H
+#ifndef TABLES_VSCENGINE_H
+#define TABLES_VSCENGINE_H
 
 //# Includes
 #include <tables/Tables/VirtColEng.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MRBASE_H)
-#define AIPS_MRBASE_H
+#ifndef MEASURES_MRBASE_H
+#define MEASURES_MRBASE_H
 
 //# Includes
 #include <casa/aips.h>

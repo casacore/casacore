@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSPECTRALWINDOWENUMS_H)
-#define AIPS_MSSPECTRALWINDOWENUMS_H
+#ifndef MS_MSSPWINDOWENUMS_H
+#define MS_MSSPWINDOWENUMS_H
 
 #include <casa/aips.h>
 

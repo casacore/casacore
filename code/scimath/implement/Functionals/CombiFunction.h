@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMBIFUNCTION_H)
-#define AIPS_COMBIFUNCTION_H
+#ifndef SCIMATH_COMBIFUNCTION_H
+#define SCIMATH_COMBIFUNCTION_H
 
 //# Includes
 #include <casa/aips.h>

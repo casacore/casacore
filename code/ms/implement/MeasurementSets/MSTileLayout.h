@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSTILELAYOUT_H)
-#define TRIAL_MSTILELAYOUT_H
+#ifndef MS_MSTILELAYOUT_H
+#define MS_MSTILELAYOUT_H
 
 #include <casa/aips.h>
 

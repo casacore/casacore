@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSTABLEIMPL_H)
-#define AIPS_MSTABLEIMPL_H
+#ifndef MS_MSTABLEIMPL_H
+#define MS_MSTABLEIMPL_H
 
 //# Includes
 #include <casa/aips.h>

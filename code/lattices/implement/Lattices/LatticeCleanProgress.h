@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICECLEANPROGRESS_H)
-#define AIPS_LATTICECLEANPROGRESS_H
+#ifndef LATTICES_LATTICECLEANPROGRESS_H
+#define LATTICES_LATTICECLEANPROGRESS_H
  
 //# Includes
 #include <casa/aips.h>

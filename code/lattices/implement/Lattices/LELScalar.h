@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELSCALAR_H)
-#define AIPS_LELSCALAR_H
+#ifndef LATTICES_LELSCALAR_H
+#define LATTICES_LELSCALAR_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILEDCOLLAPSER_H)
-#define AIPS_TILEDCOLLAPSER_H
+#ifndef LATTICES_TILEDCOLLAPSER_H
+#define LATTICES_TILEDCOLLAPSER_H
  
 
 //# Includes

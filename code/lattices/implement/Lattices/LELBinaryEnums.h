@@ -24,8 +24,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELBINARYENUMS_H)
-#define AIPS_LELBINARYENUMS_H
+#ifndef LATTICES_LELBINARYENUMS_H
+#define LATTICES_LELBINARYENUMS_H
 
 
 // <summary> Each LEL binary operation is described in this enum  </summary>

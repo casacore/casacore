@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSMAINCOLUMNS_H)
-#define AIPS_MSMAINCOLUMNS_H
+#ifndef MS_MSMAINCOLUMNS_H
+#define MS_MSMAINCOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MEpoch.h>

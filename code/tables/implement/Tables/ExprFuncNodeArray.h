@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXPRFUNCNODEARRAY_H)
-#define AIPS_EXPRFUNCNODEARRAY_H
+#ifndef TABLES_EXPRFUNCNODEARRAY_H
+#define TABLES_EXPRFUNCNODEARRAY_H
 
 //# Includes
 #include <tables/Tables/ExprNodeArray.h>

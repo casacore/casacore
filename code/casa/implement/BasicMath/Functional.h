@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONAL_H)
-#define AIPS_FUNCTIONAL_H
+#ifndef CASA_FUNCTIONAL_H
+#define CASA_FUNCTIONAL_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NUMERICTRAITS_H)
-#define AIPS_NUMERICTRAITS_H
+#ifndef SCIMATH_NUMERICTRAITS_H
+#define SCIMATH_NUMERICTRAITS_H
 
 //# Include files
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_SYMLINK_H)
-#define AIPS_SYMLINK_H
+#ifndef CASA_SYMLINK_H
+#define CASA_SYMLINK_H
 
 //# Includes
 #include <casa/aips.h>

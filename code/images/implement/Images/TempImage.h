@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TEMPIMAGE_H)
-#define AIPS_TEMPIMAGE_H
+#ifndef IMAGES_TEMPIMAGE_H
+#define IMAGES_TEMPIMAGE_H
 
 
 //# Includes

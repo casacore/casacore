@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COORDINATE_SYSTEM_H)
-#define AIPS_COORDINATE_SYSTEM_H
+#ifndef COORDINATES_COORDINATESYSTEM_H
+#define COORDINATES_COORDINATESYSTEM_H
 
 #include <casa/aips.h>
 #include <coordinates/Coordinates/Coordinate.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FILELOCKER_H)
-#define AIPS_FILELOCKER_H
+#ifndef CASA_FILELOCKER_H
+#define CASA_FILELOCKER_H
 
 
 //# Includes

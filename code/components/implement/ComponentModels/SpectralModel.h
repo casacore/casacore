@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SPECTRALMODEL_H)
-#define AIPS_SPECTRALMODEL_H
+#ifndef COMPONENTS_SPECTRALMODEL_H
+#define COMPONENTS_SPECTRALMODEL_H
 
 #include <casa/aips.h>
 #include <components/ComponentModels/ComponentType.h>

@@ -25,8 +25,8 @@
 
 //# $Id$
 
-#if !defined(AIPS_PRIMES_H)
-#define AIPS_PRIMES_H
+#ifndef SCIMATH_PRIMES_H
+#define SCIMATH_PRIMES_H
 
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>

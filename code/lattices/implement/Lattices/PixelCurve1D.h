@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PIXELCURVE1D_H)
-#define AIPS_PIXELCURVE1D_H
+#ifndef LATTICES_PIXELCURVE1D_H
+#define LATTICES_PIXELCURVE1D_H
 
 
 //# Includes

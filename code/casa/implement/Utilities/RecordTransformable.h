@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_RECORDTRANSFORMABLE_H)
-#define AIPS_RECORDTRANSFORMABLE_H
+#ifndef CASA_RECORDTRANSFORMABLE_H
+#define CASA_RECORDTRANSFORMABLE_H
 
 #include <casa/aips.h>
 

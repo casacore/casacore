@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CONSTANTSPECTRUM_H)
-#define AIPS_CONSTANTSPECTRUM_H
+#ifndef COMPONENTS_CONSTANTSPECTRUM_H
+#define COMPONENTS_CONSTANTSPECTRUM_H
 
 #include <casa/aips.h>
 #include <components/ComponentModels/ComponentType.h>

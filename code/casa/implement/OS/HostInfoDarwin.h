@@ -39,8 +39,8 @@
 **
 */
 
-#if ! defined(AIPS_HOSTINFO_DARWIN_H)
-#define AIPS_HOSTINFO_DARWIN_H
+#ifndef CASA_HOSTINFODARWIN_H
+#define CASA_HOSTINFODARWIN_H
 
 # if defined(HOSTINFO_DO_IMPLEMENT)
 

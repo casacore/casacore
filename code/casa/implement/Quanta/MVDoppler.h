@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVDOPPLER_H)
-#define AIPS_MVDOPPLER_H
+#ifndef CASA_MVDOPPLER_H
+#define CASA_MVDOPPLER_H
 
 
 //# Includes

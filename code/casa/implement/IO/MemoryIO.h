@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEMORYIO_H)
-#define AIPS_MEMORYIO_H
+#ifndef CASA_MEMORYIO_H
+#define CASA_MEMORYIO_H
 
 //# Includes
 #include <casa/aips.h>

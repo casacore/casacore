@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MATHFUNC_H)
-#define AIPS_MATHFUNC_H 
+#ifndef SCIMATH_MATHFUNC_H
+#define SCIMATH_MATHFUNC_H
 
 //# MathFunc: A templated letter/envelope set of classes for packaging
 //# of specific single dependent variable functions.

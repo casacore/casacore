@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AUTODIFFA_H)
-#define AIPS_AUTODIFFA_H
+#ifndef SCIMATH_AUTODIFFA_H
+#define SCIMATH_AUTODIFFA_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CUBE_H)
-#define AIPS_CUBE_H
+#ifndef CASA_CUBE_H
+#define CASA_CUBE_H
 
 
 //# Includes

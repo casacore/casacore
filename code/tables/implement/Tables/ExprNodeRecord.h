@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EXPRNODERECORD_H)
-#define AIPS_EXPRNODERECORD_H
+#ifndef TABLES_EXPRNODERECORD_H
+#define TABLES_EXPRNODERECORD_H
 
 //# Includes
 #include <tables/Tables/ExprNodeRep.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DLISTIO_H_)
-#define AIPS_DLISTIO_H_
+#ifndef CASA_DLISTIO_H
+#define CASA_DLISTIO_H
 
 #include <casa/aips.h>
 #include <casa/Containers/Dlist.h>

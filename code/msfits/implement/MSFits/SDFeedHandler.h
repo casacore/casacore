@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDFEEDHANDLER_H)
-#define AIPS_SDFEEDHANDLER_H
+#ifndef MS_SDFEEDHANDLER_H
+#define MS_SDFEEDHANDLER_H
 
 #include <casa/Containers/RecordField.h>
 

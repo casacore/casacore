@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SUBIMAGE_H)
-#define AIPS_SUBIMAGE_H
+#ifndef IMAGES_SUBIMAGE_H
+#define IMAGES_SUBIMAGE_H
 
 
 //# Includes

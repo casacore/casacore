@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TILEDCOLUMNSTMAN_H)
-#define AIPS_TILEDCOLUMNSTMAN_H
+#ifndef TABLES_TILEDCOLUMNSTMAN_H
+#define TABLES_TILEDCOLUMNSTMAN_H
 
 //# Includes
 #include <casa/aips.h>

@@ -22,8 +22,8 @@
  **  Copyright (c) 2002, Associated Universities Inc.
  */
 
-#if ! defined(AIPS_HOSTINFO_LINUX_H)
-#define AIPS_HOSTINFO_LINUX_H
+#ifndef CASA_HOSTINFOLINUX_H
+#define CASA_HOSTINFOLINUX_H
 
 # if defined(HOSTINFO_DO_IMPLEMENT)
 

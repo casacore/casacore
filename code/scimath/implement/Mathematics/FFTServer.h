@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FFTSERVER_H)
-#define AIPS_FFTSERVER_H
+#ifndef SCIMATH_FFTSERVER_H
+#define SCIMATH_FFTSERVER_H
 
 //# Includes
 #include <casa/aips.h>

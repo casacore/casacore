@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPSRC_H)
-#define AIPS_AIPSRC_H
+#ifndef CASA_AIPSRC_H
+#define CASA_AIPSRC_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

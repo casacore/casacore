@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_CANONICALDATACONVERSION_H)
-#define AIPS_CANONICALDATACONVERSION_H
+#ifndef CASA_CANONICALDATACONVERSION_H
+#define CASA_CANONICALDATACONVERSION_H
 
 //# Includes
 #include <casa/OS/DataConversion.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AXESMAPPING_H)
-#define AIPS_AXESMAPPING_H
+#ifndef CASA_AXESMAPPING_H
+#define CASA_AXESMAPPING_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRAYACCESSOR_H)
-#define AIPS_ARRAYACCESSOR_H
+#ifndef CASA_ARRAYACCESSOR_H
+#define CASA_ARRAYACCESSOR_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_QBASE_H)
-#define AIPS_QBASE_H
+#ifndef CASA_QBASE_H
+#define CASA_QBASE_H
 
 
 //# Includes

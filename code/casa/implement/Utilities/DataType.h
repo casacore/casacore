@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DATATYPE_H)
-#define AIPS_DATATYPE_H
+#ifndef CASA_DATATYPE_H
+#define CASA_DATATYPE_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>

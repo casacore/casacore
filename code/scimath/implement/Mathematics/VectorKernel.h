@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_VECTORKERNEL_H)
-#define AIPS_VECTORKERNEL_H
+#ifndef SCIMATH_VECTORKERNEL_H
+#define SCIMATH_VECTORKERNEL_H
 
 
 //# Includes

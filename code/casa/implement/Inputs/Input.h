@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_INPUT_H)
-#define AIPS_INPUT_H
+#ifndef CASA_INPUT_H
+#define CASA_INPUT_H
 
 
 #include <casa/aips.h>

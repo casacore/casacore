@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVANGLE_H)
-#define AIPS_MVANGLE_H
+#ifndef CASA_MVANGLE_H
+#define CASA_MVANGLE_H
 
 
 //# Includes

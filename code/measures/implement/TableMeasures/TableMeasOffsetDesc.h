@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEMEASOFFSETDESC_H)
-#define AIPS_TABLEMEASOFFSETDESC_H
+#ifndef MEASURES_TABLEMEASOFFSETDESC_H
+#define MEASURES_TABLEMEASOFFSETDESC_H
 
 //# Includes
 #include <casa/BasicSL/String.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOG_ORIGIN_H)
-#define AIPS_LOG_ORIGIN_H
+#ifndef CASA_LOGORIGIN_H
+#define CASA_LOGORIGIN_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

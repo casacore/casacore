@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFREQOFFSETENUMS_H)
-#define AIPS_MSFREQOFFSETENUMS_H
+#ifndef MS_MSFREQOFFENUMS_H
+#define MS_MSFREQOFFENUMS_H
 
 #include <casa/aips.h>
 

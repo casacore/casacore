@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STARRAIPSIO_H)
-#define AIPS_STARRAIPSIO_H
+#ifndef TABLES_STARRAIPSIO_H
+#define TABLES_STARRAIPSIO_H
 
 //# Includes
 #include <casa/aips.h>

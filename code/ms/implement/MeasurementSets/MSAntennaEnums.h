@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSANTENNAENUMS_H)
-#define AIPS_MSANTENNAENUMS_H
+#ifndef MS_MSANTENNAENUMS_H
+#define MS_MSANTENNAENUMS_H
 
 #include <casa/aips.h>
 

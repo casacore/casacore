@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BASECOLDESC_H)
-#define AIPS_BASECOLDESC_H
+#ifndef TABLES_BASECOLDESC_H
+#define TABLES_BASECOLDESC_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GAUSSIAN2DPARAM_H)
-#define AIPS_GAUSSIAN2DPARAM_H
+#ifndef SCIMATH_GAUSSIAN2DPARAM_H
+#define SCIMATH_GAUSSIAN2DPARAM_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>

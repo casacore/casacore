@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //# $Id$
 
-#if !defined(AIPS_INTERPOLATE1D_H)
-#define AIPS_INTERPOLATE1D_H
+#ifndef SCIMATH_INTERPOLATE1D_H
+#define SCIMATH_INTERPOLATE1D_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/Function1D.h>

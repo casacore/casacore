@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_EARTHFIELD_H)
-#define AIPS_EARTHFIELD_H
+#ifndef MEASURES_EARTHFIELD_H
+#define MEASURES_EARTHFIELD_H
 
 //# Includes
 #include <casa/aips.h>

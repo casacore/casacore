@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_STDMAP_H)
-#define AIPS_AIPS_STDMAP_H
+#ifndef CASA_STDMAP_H
+#define CASA_STDMAP_H
 
 // Define the C standard C++ include file. 
 // This is an interim solution to cater for the SGI non-existence of

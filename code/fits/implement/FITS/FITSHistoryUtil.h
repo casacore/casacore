@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_FITS_HISTORY_UTIL_H)
-#define AIPS_FITS_HISTORY_UTIL_H
+#ifndef FITS_FITSHISTORYUTIL_H
+#define FITS_FITSHISTORYUTIL_H
 
 #include <casa/aips.h>
 

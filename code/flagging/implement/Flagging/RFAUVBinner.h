@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_RFA_UVBINNER_H)
-#define AIPS_RFA_UVBINNER_H
+#ifndef FLAGGING_RFAUVBINNER_H
+#define FLAGGING_RFAUVBINNER_H
 
 #include <flagging/Flagging/RFAFlagCubeBase.h> 
 #include <flagging/Flagging/RFDataMapper.h> 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPS_STDEXCEPT_H)
-#define AIPS_AIPS_STDEXCEPT_H
+#ifndef CASA_STDEXCEPT_H
+#define CASA_STDEXCEPT_H
 
 // Define the C standard C++ include file. 
 // This is an interim solution to cater for the SGI non-existence of

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FILEDESIO_H)
-#define AIPS_FILEDESIO_H
+#ifndef CASA_FILEDESIO_H
+#define CASA_FILEDESIO_H
 
 //# Includes
 #include <casa/aips.h>

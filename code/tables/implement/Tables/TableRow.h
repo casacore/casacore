@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEROW_H)
-#define AIPS_TABLEROW_H
+#ifndef TABLES_TABLEROW_H
+#define TABLES_TABLEROW_H
 
 //# Includes
 #include <casa/aips.h>

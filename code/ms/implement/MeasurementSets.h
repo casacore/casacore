@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MEASUREMENTSETS_H)
-#define AIPS_MEASUREMENTSETS_H
+#ifndef MS_MEASUREMENTSETS_H
+#define MS_MEASUREMENTSETS_H
 
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSColumns.h>

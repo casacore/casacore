@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSREADER_H)
-#define AIPS_MSREADER_H
+#ifndef MS_MSREADER_H
+#define MS_MSREADER_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

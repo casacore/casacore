@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#if !defined(AIPS_CHEBESHEV_H)
-#define AIPS_CHEBESHEV_H
+#ifndef SCIMATH_CHEBYSHEV_H
+#define SCIMATH_CHEBYSHEV_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/ChebyshevParam.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPONENTSHAPE_H)
-#define AIPS_COMPONENTSHAPE_H
+#ifndef COMPONENTS_COMPONENTSHAPE_H
+#define COMPONENTS_COMPONENTSHAPE_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complexfwd.h>

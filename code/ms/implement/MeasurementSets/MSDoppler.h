@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSDOPPLER_H)
-#define AIPS_MSDOPPLER_H
+#ifndef MS_MSDOPPLER_H
+#define MS_MSDOPPLER_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

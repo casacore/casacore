@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REGISTER_H)
-#define AIPS_REGISTER_H
+#ifndef CASA_REGISTER_H
+#define CASA_REGISTER_H
 
 #include <casa/Utilities/RegSequence.h>
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLEMEASREFDESC_H)
-#define AIPS_TABLEMEASREFDESC_H
+#ifndef MEASURES_TABLEMEASREFDESC_H
+#define MEASURES_TABLEMEASREFDESC_H
 
 //# Includes
 #include <measures/TableMeasures/TableMeasOffsetDesc.h>

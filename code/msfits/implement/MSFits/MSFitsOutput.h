@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSFITSOUTPUT_H)
-#define TRIAL_MSFITSOUTPUT_H
+#ifndef MS_MSFITSOUTPUT_H
+#define MS_MSFITSOUTPUT_H
 
 //# Includes
 #include <casa/aips.h>

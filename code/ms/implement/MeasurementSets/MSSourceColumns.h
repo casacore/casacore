@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSOURCECOLUMNS_H)
-#define AIPS_MSSOURCECOLUMNS_H
+#ifndef MS_MSSOURCECOLUMNS_H
+#define MS_MSSOURCECOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MDirection.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TIMER_H)
-#define AIPS_TIMER_H
+#ifndef CASA_TIMER_H
+#define CASA_TIMER_H
 
 
 #include <casa/aips.h>

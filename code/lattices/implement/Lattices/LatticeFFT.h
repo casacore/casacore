@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICEFFT_H)
-#define AIPS_LATTICEFFT_H
+#ifndef LATTICES_LATTICEFFT_H
+#define LATTICES_LATTICEFFT_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>

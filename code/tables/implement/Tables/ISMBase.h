@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ISMBASE_H)
-#define AIPS_ISMBASE_H
+#ifndef TABLES_ISMBASE_H
+#define TABLES_ISMBASE_H
 
 
 //# Includes

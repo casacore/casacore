@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COLUMNSET_H)
-#define AIPS_COLUMNSET_H
+#ifndef TABLES_COLUMNSET_H
+#define TABLES_COLUMNSET_H
 
 
 //# Includes

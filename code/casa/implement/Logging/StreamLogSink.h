@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STREAM_LOG_SINK_H)
-#define AIPS_STREAM_LOG_SINK_H
+#ifndef CASA_STREAMLOGSINK_H
+#define CASA_STREAMLOGSINK_H
 
 #include <casa/aips.h>
 #include <casa/Logging/LogSinkInterface.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSWEATHERCOLUMNS_H)
-#define AIPS_MSWEATHERCOLUMNS_H
+#ifndef MS_MSWEATHERCOLUMNS_H
+#define MS_MSWEATHERCOLUMNS_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MEpoch.h>

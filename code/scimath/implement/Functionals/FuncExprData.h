@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCEXPRDATA_H)
-#define AIPS_FUNCEXPRDATA_H
+#ifndef SCIMATH_FUNCEXPRDATA_H
+#define SCIMATH_FUNCEXPRDATA_H
 
 //# Includes
 #include <casa/aips.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDFITSHANDLER_H)
-#define AIPS_SDFITSHANDLER_H
+#ifndef MS_SDFITSHANDLER_H
+#define MS_SDFITSHANDLER_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MEpoch.h>

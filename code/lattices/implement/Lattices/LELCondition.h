@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELCONDITION_H)
-#define AIPS_LELCONDITION_H
+#ifndef LATTICES_LELCONDITION_H
+#define LATTICES_LELCONDITION_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_UNITDIM_H)
-#define AIPS_UNITDIM_H
+#ifndef CASA_UNITDIM_H
+#define CASA_UNITDIM_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSSELECTION_H)
-#define TRIAL_MSSELECTION_H
+#ifndef MS_MSSELECTION_H
+#define MS_MSSELECTION_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

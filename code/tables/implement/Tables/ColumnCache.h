@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COLUMNCACHE_H)
-#define AIPS_COLUMNCACHE_H
+#ifndef TABLES_COLUMNCACHE_H
+#define TABLES_COLUMNCACHE_H
 
 
 //# Includes

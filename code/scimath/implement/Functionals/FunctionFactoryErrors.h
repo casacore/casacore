@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTIONFACTORYERRORS_H)
-#define AIPS_FUNCTIONFACTORYERRORS_H
+#ifndef SCIMATH_FUNCTIONFACTORYERRORS_H
+#define SCIMATH_FUNCTIONFACTORYERRORS_H
 
 #include <casa/Exceptions/Error.h>
 

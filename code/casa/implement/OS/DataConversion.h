@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_DATACONVERSION_H)
-#define AIPS_DATACONVERSION_H
+#ifndef CASA_DATACONVERSION_H
+#define CASA_DATACONVERSION_H
 
 //# Includes
 #include <casa/aips.h>

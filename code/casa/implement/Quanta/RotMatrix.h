@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ROTMATRIX_H)
-#define AIPS_ROTMATRIX_H
+#ifndef CASA_ROTMATRIX_H
+#define CASA_ROTMATRIX_H
 
 
 //# Includes

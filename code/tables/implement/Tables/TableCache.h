@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLECACHE_H)
-#define AIPS_TABLECACHE_H
+#ifndef TABLES_TABLECACHE_H
+#define TABLES_TABLECACHE_H
 
 //# Includes
 #include <casa/aips.h>

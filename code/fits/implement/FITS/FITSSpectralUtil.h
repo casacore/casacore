@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_FITS_SPECTRAL_UTIL_H)
-#define AIPS_FITS_SPECTRAL_UTIL_H
+#ifndef FITS_FITSSPECTRALUTIL_H
+#define FITS_FITSSPECTRALUTIL_H
 
 #include <casa/aips.h>
 #include <measures/Measures/MDoppler.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LCREGIONMULTI_H)
-#define AIPS_LCREGIONMULTI_H
+#ifndef LATTICES_LCREGIONMULTI_H
+#define LATTICES_LCREGIONMULTI_H
 
 //# Includes
 #include <lattices/Lattices/LCRegion.h>

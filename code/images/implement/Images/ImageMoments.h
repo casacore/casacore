@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGEMOMENTS_H)
-#define AIPS_IMAGEMOMENTS_H
+#ifndef IMAGES_IMAGEMOMENTS_H
+#define IMAGES_IMAGEMOMENTS_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MCEPOCH_H)
-#define AIPS_MCEPOCH_H
+#ifndef MEASURES_MCEPOCH_H
+#define MEASURES_MCEPOCH_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GNOISEFUNCTION_H)
-#define AIPS_GNOISEFUNCTION_H
+#ifndef SCIMATH_GNOISEFUNCTION_H
+#define SCIMATH_GNOISEFUNCTION_H
 
 //# Includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTION1D_H)
-#define AIPS_FUNCTION1D_H
+#ifndef SCIMATH_FUNCTION1D_H
+#define SCIMATH_FUNCTION1D_H
 
 //# Includes
 #include <casa/aips.h>

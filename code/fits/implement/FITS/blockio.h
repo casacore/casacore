@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-# if !defined(AIPS_FITS_BLOCK_IO_H)
-# define AIPS_FITS_BLOCK_IO_H
+#ifndef FITS_BLOCKIO_H
+#define FITS_BLOCKIO_H
 
 # include <stdlib.h>
 # include <unistd.h>

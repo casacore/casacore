@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEWMEASUREMENTSET_H)
-#define AIPS_NEWMEASUREMENTSET_H
+#ifndef MS_MEASUREMENTSET_H
+#define MS_MEASUREMENTSET_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

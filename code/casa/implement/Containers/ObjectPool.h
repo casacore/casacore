@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_OBJECTPOOL_H)
-#define AIPS_OBJECTPOOL_H
+#ifndef CASA_OBJECTPOOL_H
+#define CASA_OBJECTPOOL_H
 
 //# Includes
 #include <casa/aips.h>

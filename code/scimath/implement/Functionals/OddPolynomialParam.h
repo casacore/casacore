@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ODDPOLYNOMIALPARAM_H)
-#define AIPS_ODDPOLYNOMIALPARAM_H
+#ifndef SCIMATH_ODDPOLYNOMIALPARAM_H
+#define SCIMATH_ODDPOLYNOMIALPARAM_H
 
 //# Includes
 #include <casa/aips.h>

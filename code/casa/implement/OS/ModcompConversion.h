@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MODCOMPCONVERSION_H)
-#define AIPS_MODCOMPCONVERSION_H
+#ifndef CASA_MODCOMPCONVERSION_H
+#define CASA_MODCOMPCONVERSION_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/Assert.h>

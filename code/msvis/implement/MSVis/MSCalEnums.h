@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSCALENUMS_H)
-#define TRIAL_MSCALENUMS_H
+#ifndef MSVIS_MSCALENUMS_H
+#define MSVIS_MSCALENUMS_H
 
 #include <casa/aips.h>
 #include <casa/Containers/SimOrdMap.h>

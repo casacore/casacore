@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AUTODIFFMATH_H)
-#define AIPS_AUTODIFFMATH_H
+#ifndef SCIMATH_AUTODIFFMATH_H
+#define SCIMATH_AUTODIFFMATH_H
 
 //# Includes
 

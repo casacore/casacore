@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MEMORY_H)
-#define AIPS_MEMORY_H
+#ifndef CASA_MEMORY_H
+#define CASA_MEMORY_H
 
 //# The following is used to get size_t.
 #include <casa/stdlib.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSDOPPLERUTIL_H)
-#define TRIAL_MSDOPPLERUTIL_H
+#ifndef MS_MSDOPPLERUTIL_H
+#define MS_MSDOPPLERUTIL_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MeasurementSet.h>

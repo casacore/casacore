@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSMDIRCOLUMN_H)
-#define AIPS_MSMDIRCOLUMN_H
+#ifndef TABLES_MSMDIRCOLUMN_H
+#define TABLES_MSMDIRCOLUMN_H
 
 
 //# Includes

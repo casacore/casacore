@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#if !defined(AIPS_TABLEEXPRID_H)
-#define AIPS_TABLEEXPRID_H
+#ifndef TABLES_TABLEEXPRID_H
+#define TABLES_TABLEEXPRID_H
 
 //# Includes
 #include <casa/aips.h>

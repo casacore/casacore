@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOGFILTEREXPR_H)
-#define AIPS_LOGFILTEREXPR_H
+#ifndef TABLES_LOGFILTEREXPR_H
+#define TABLES_LOGFILTEREXPR_H
 
 
 //# Includes

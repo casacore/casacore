@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LINECOLLAPSER_H)
-#define AIPS_LINECOLLAPSER_H
+#ifndef LATTICES_LINECOLLAPSER_H
+#define LATTICES_LINECOLLAPSER_H
  
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FITSMASK_H)
-#define AIPS_FITSMASK_H
+#ifndef LATTICES_FITSMASK_H
+#define LATTICES_FITSMASK_H
 
 //# Includes
 #include <casa/Arrays/Array.h>

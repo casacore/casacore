@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COWPTR_H)
-#define AIPS_COWPTR_H
+#ifndef CASA_COWPTR_H
+#define CASA_COWPTR_H
 
 #include <casa/aips.h>
 #include <casa/Utilities/CountedPtr.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSHISTORYENUMS_H)
-#define AIPS_MSHISTORYENUMS_H
+#ifndef MS_MSHISTORYENUMS_H
+#define MS_MSHISTORYENUMS_H
 
 // <use visibility=export>
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_BASESINKSOURCE_H)
-#define AIPS_BASESINKSOURCE_H
+#ifndef CASA_BASESINKSOURCE_H
+#define CASA_BASESINKSOURCE_H
 
 #include <casa/aips.h>
 #include <casa/IO/TypeIO.h>

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSSOURCE_H)
-#define AIPS_MSSOURCE_H
+#ifndef MS_MSSOURCE_H
+#define MS_MSSOURCE_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

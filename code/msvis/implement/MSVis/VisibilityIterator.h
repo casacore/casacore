@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_VISIBILITYITERATOR_H)
-#define TRIAL_VISIBILITYITERATOR_H
+#ifndef MSVIS_VISIBILITYITERATOR_H
+#define MSVIS_VISIBILITYITERATOR_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>

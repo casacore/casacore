@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_PROJECTION_H)
-#define AIPS_PROJECTION_H
+#ifndef COORDINATES_PROJECTION_H
+#define COORDINATES_PROJECTION_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>

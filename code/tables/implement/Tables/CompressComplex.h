@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPRESSCOMPLEX_H)
-#define AIPS_COMPRESSCOMPLEX_H
+#ifndef TABLES_COMPRESSCOMPLEX_H
+#define TABLES_COMPRESSCOMPLEX_H
 
 //# Includes
 #include <tables/Tables/BaseMappedArrayEngine.h>

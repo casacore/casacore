@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_INTERPOLATE2D_H)
-#define AIPS_INTERPOLATE2D_H
+#ifndef SCIMATH_INTERPOLATE2D_H
+#define SCIMATH_INTERPOLATE2D_H
 
 //# Includes
 #include <casa/aips.h>

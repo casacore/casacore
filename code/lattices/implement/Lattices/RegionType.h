@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_REGIONTYPE_H)
-#define AIPS_REGIONTYPE_H
+#ifndef LATTICES_REGIONTYPE_H
+#define LATTICES_REGIONTYPE_H
 
 
 // <summary>

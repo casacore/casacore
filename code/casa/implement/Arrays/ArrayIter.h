@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_ARRAYITER_H)
-#define AIPS_ARRAYITER_H
+#ifndef CASA_ARRAYITER_H
+#define CASA_ARRAYITER_H
 
 #include <casa/aips.h>
 #include <casa/Arrays/ArrayPosIter.h>

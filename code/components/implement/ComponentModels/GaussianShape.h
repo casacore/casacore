@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_GAUSSIANSHAPE_H)
-#define AIPS_GAUSSIANSHAPE_H
+#ifndef COMPONENTS_GAUSSIANSHAPE_H
+#define COMPONENTS_GAUSSIANSHAPE_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/Gaussian2D.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPLEXFWD_H)
-#define AIPS_COMPLEXFWD_H
+#ifndef CASA_COMPLEXFWD_H
+#define CASA_COMPLEXFWD_H
 
 //# Includes
 

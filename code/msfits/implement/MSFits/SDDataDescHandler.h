@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SDDATADESCHANDLER_H)
-#define AIPS_SDDATADESCHANDLER_H
+#ifndef MS_SDDATADESCHANDLER_H
+#define MS_SDDATADESCHANDLER_H
 
 #include <casa/Containers/RecordField.h>
 

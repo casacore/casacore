@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELINTERFACE_H)
-#define AIPS_LELINTERFACE_H
+#ifndef LATTICES_LELINTERFACE_H
+#define LATTICES_LELINTERFACE_H
 
 
 //# Includes

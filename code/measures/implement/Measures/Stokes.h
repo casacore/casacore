@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_STOKES_H)
-#define AIPS_STOKES_H
+#ifndef MEASURES_STOKES_H
+#define MEASURES_STOKES_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>

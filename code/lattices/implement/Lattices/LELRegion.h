@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LELREGION_H)
-#define AIPS_LELREGION_H
+#ifndef LATTICES_LELREGION_H
+#define LATTICES_LELREGION_H
 
 
 //# Includes

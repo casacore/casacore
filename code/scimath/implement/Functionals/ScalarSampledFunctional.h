@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCALARSAMPLEDFUNCTIONAL_H)
-#define AIPS_SCALARSAMPLEDFUNCTIONAL_H
+#ifndef SCIMATH_SCALARSAMPLEDFUNCTIONAL_H
+#define SCIMATH_SCALARSAMPLEDFUNCTIONAL_H
 
 #include <casa/aips.h>
 #include <scimath/Functionals/SampledFunctional.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MATRIXSOLVER_H)
-#define AIPS_MATRIXSOLVER_H
+#ifndef SCIMATH_MATRIXSOLVER_H
+#define SCIMATH_MATRIXSOLVER_H
 
 
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_SCACOLDESC_H)
-#define AIPS_SCACOLDESC_H
+#ifndef TABLES_SCACOLDESC_H
+#define TABLES_SCACOLDESC_H
 
 
 //# Includes

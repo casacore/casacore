@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_MATHEMATICS_H)
-#define AIPS_MATHEMATICS_H
+#ifndef SCIMATH_MATHEMATICS_H
+#define SCIMATH_MATHEMATICS_H
 
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicSL/Constants.h>

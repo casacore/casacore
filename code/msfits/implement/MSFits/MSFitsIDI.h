@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_MSFITSIDI_H)
-#define TRIAL_MSFITSIDI_H
+#ifndef MS_MSFITSIDI_H
+#define MS_MSFITSIDI_H
 
 #include <casa/aips.h>
 #include <fits/FITS/fits.h>

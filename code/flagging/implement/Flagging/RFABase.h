@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_RFA_BASE_H)
-#define AIPS_RFA_BASE_H
+#ifndef FLAGGING_RFABASE_H
+#define FLAGGING_RFABASE_H
 
 #include <casa/Arrays/Cube.h> 
 #include <lattices/Lattices/TempLattice.h> 

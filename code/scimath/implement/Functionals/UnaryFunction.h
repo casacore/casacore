@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_UNARYFUNCTION_H)
-#define AIPS_UNARYFUNCTION_H
+#ifndef SCIMATH_UNARYFUNCTION_H
+#define SCIMATH_UNARYFUNCTION_H
 
 //# Includes
 #include <casa/aips.h>

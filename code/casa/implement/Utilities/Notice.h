@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NOTICE_H)
-#define AIPS_NOTICE_H
+#ifndef CASA_NOTICE_H
+#define CASA_NOTICE_H
 
 #include <casa/Containers/Link.h>
 

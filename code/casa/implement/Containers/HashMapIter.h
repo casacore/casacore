@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_HASHMAPITER_H_)
-#define AIPS_HASHMAPITER_H_
+#ifndef CASA_HASHMAPITER_H
+#define CASA_HASHMAPITER_H
 
 
 #include <casa/Containers/HashMap.h>

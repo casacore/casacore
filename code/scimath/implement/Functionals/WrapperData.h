@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_WRAPPERDATA_H)
-#define AIPS_WRAPPERDATA_H
+#ifndef SCIMATH_WRAPPERDATA_H
+#define SCIMATH_WRAPPERDATA_H
 
 //# Includes
 #include <casa/aips.h>

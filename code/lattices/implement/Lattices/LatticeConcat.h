@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICECONCAT_H)
-#define AIPS_LATTICECONCAT_H
+#ifndef LATTICES_LATTICECONCAT_H
+#define LATTICES_LATTICECONCAT_H
 
 
 //# Includes

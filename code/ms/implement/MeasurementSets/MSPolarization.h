@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSPOLARIZATION_H)
-#define AIPS_MSPOLARIZATION_H
+#ifndef MS_MSPOLARIZATION_H
+#define MS_MSPOLARIZATION_H
 
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSTable.h>

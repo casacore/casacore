@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FITS_FIELD_COPIER_H)
-#define AIPS_FITS_FIELD_COPIER_H
+#ifndef FITS_FITSFIELDCOPIER_H
+#define FITS_FITSFIELDCOPIER_H
 
 #include <casa/aips.h>
 #include <fits/FITS/hdu.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MVTIME_H)
-#define AIPS_MVTIME_H
+#ifndef CASA_MVTIME_H
+#define CASA_MVTIME_H
 
 
 //# Includes

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_QMATH_H)
-#define AIPS_QMATH_H
+#ifndef CASA_QMATH_H
+#define CASA_QMATH_H
 
 
 //# Includes

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSOBSERVATIONINDEX_H)
-#define AIPS_MSOBSERVATIONINDEX_H
+#ifndef MS_MSOBSINDEX_H
+#define MS_MSOBSINDEX_H
 
 //# includes
 #include <casa/aips.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_MSFEEDCOLUMNS_H)
-#define AIPS_MSFEEDCOLUMNS_H
+#ifndef MS_MSFEEDCOLUMNS_H
+#define MS_MSFEEDCOLUMNS_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LISTMAP_H_)
-#define AIPS_LISTMAP_H_
+#ifndef CASA_LISTMAP_H
+#define CASA_LISTMAP_H
 
 #include <casa/aips.h>
 #include <casa/Containers/Map.h>
