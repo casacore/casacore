@@ -1,5 +1,5 @@
 //# VisibilityIterator.cc: Step through MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -258,11 +258,9 @@ void ROVisibilityIterator::getTopoFreqs()
   if (velSelection_p) {
     // convert selected velocities to TOPO frequencies
     // first convert observatory vel to correct frame (for this time)
-    MEpoch epoch = MS::epochMeasure(colTime);
-    epoch.set(MVEpoch(Quantity(colTime(0),"s")));
-    msd_p.setEpoch(epoch);
-    if (msIter_p.newArray()) 
-      msd_p.setAntenna(-1); // set the observatory position
+    msd_p.setEpoch(msIter_p.msColumns().timeMeas()(curStartRow_p));
+    if (msIter_p.newMS()) 
+      msd_p.setObservatoryPosition(msIter_p.telescopePosition());
     // get obs velocity in required frame
     MRadialVelocity obsRV = msd_p.obsVel();
     // convert to doppler in required definition and get out in m/s
@@ -298,10 +296,9 @@ void ROVisibilityIterator::setState()
   lcolTime.getColumn(time_p);
   curStartRow_p=0;
   setSelTable();
-  // If this is a new array then set up the antenna locations
-  if (msIter_p.newArray()) {
-    This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna(),
-				     msIter_p.arrayId()) + 1;
+  // If this is a new MeasurementSet then set up the antenna locations
+  if (msIter_p.newMS()) {
+    This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna()) + 1;
     This->pa_p.resize(nAnt_p);
     This->pa_p.set(0);
     This->azel_p.resize(nAnt_p);
@@ -407,8 +404,8 @@ Vector<Int>& ROVisibilityIterator::channel(Vector<Int>& chan) const
 
 Vector<Int>& ROVisibilityIterator::corrType(Vector<Int>& corrTypes) const
 {
-  Int spw = msIter_p.spectralWindowId();
-  msIter_p.msColumns().spectralWindow().corrType().get(spw,corrTypes,True);
+  Int polId = msIter_p.polarizationId();
+  msIter_p.msColumns().polarization().corrType().get(polId,corrTypes,True);
   return corrTypes;
 }
 
@@ -697,14 +694,10 @@ const Vector<Float>& ROVisibilityIterator::feed_pa(Double time) const
     This->lastUT_p=ut;
 
     // Set up the Epoch using the absolute MJD in seconds
-    // get the Epoch reference from the column keyword
-        MEpoch mEpoch=MS::epochMeasure(colTime);
-    //#     now set the value
-        mEpoch.set(MVEpoch(Quantity(ut, "s")));
-    //# Note the above fails for VLA data with TAI epoch, the resulting
-    //# pa's are wrong (by much more than UTC-TAI), we force UTC here 
-    //# for the moment
-    //    MEpoch mEpoch(Quantity(ut, "s"), MEpoch::Ref(MEpoch::UTC));
+    // get the Epoch reference from the column
+    MEpoch mEpoch=msIter_p.msColumns().timeMeas()(0);
+    //     now set the value
+    mEpoch.set(MVEpoch(Quantity(ut, "s")));
 
     This->msd_p.setEpoch(mEpoch);
 
@@ -740,13 +733,9 @@ const Vector<MDirection>& ROVisibilityIterator::azel(Double time) const
 
     // Set up the Epoch using the absolute MJD in seconds
     // get the Epoch reference from the column keyword
-        MEpoch mEpoch=MS::epochMeasure(colTime);
-    //#     now set the value
-        mEpoch.set(MVEpoch(Quantity(ut, "s")));
-    //# Note the above fails for VLA data with TAI epoch, the resulting
-    //# pa's are wrong (by much more than UTC-TAI), we force UTC here 
-    //# for the moment
-    //    MEpoch mEpoch(Quantity(ut, "s"), MEpoch::Ref(MEpoch::UTC));
+    MEpoch mEpoch=msIter_p.msColumns().timeMeas()(0);
+    //     now set the value
+    mEpoch.set(MVEpoch(Quantity(ut, "s")));
 
     This->msd_p.setEpoch(mEpoch);
 
