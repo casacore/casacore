@@ -4666,3 +4666,4 @@
 14 300 src mv atnf/apps/rpfitsfiller2/rpfitsfiller2.help atnf/apps/atcafiller/atcafiller.help
 14 300 src mv atnf/apps/rpfitsfiller2/rpfitsfiller2Factory.cc atnf/apps/atcafiller/atcafillerFactory.cc
 14 300 src mv atnf/apps/rpfitsfiller2/rpfitsfiller2Factory.h atnf/apps/atcafiller/atcafillerFactory.h
+14 301 src rm trial/implement/test/templates
