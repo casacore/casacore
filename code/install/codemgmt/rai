@@ -3,7 +3,7 @@
 # rai: Remotely check in AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996
+#   Copyright (C) 1996,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 #-----------------------------------------------------------------------------
 # Usage: rai [ai options]
 #-----------------------------------------------------------------------------
-# rai is an rsh-based front-end to 'ai'.  It allows remote checkin of AIPS++
+# rai is an ssh-based front-end to 'ai'.  It allows remote checkin of AIPS++
 # sources by invoking 'ai' on the AIPS++ master machine.  This contrasts to
 # the usual method where 'ai' is invoked on a remote machine on which the
 # AIPS++ master directory is NFS mounted.
@@ -47,7 +47,7 @@
 #    1) Where the remote account name differs from the local account name an
 #       environment variable may be used to translate between them:
 #
-#          ARSH="rsh aips2.nrao.edu -l <remotename>"
+#          ARSH="ssh aips2.nrao.edu -l <remotename>"
 #
 #       The .rhosts file for the <remotename> account on aips2.nrao.edu should
 #       have an entry of the form
@@ -130,7 +130,7 @@
   done
 
 # Transmit files to the master host.
-  ARSH=${ARSH-"rsh aips2.nrao.edu"}
+  ARSH=${ARSH-"ssh aips2.nrao.edu"}
 
   if [ "$FILES" != "" ]
   then
