@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,7 +96,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   // We need to guess the memory use. For the moment, we'll assume
   // that about 5 scales will be used, giving about 32 TempLattices
   // in all.
-  itsMemoryMB=AppInfo::memoryInMB()/32;
+  itsMemoryMB=Double(AppInfo::memoryInMB())/32.0;
 
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
@@ -446,7 +446,8 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     LatticeExpr<Complex> ppsExpr(conj(*itsXfr)*(*itsXfr)*(*scaleXfr[scale]));
     cWork.copyData(ppsExpr);
     LatticeFFT::cfft2d(cWork, False);
-    itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),  itsMemoryMB);
+    itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
+						 itsMemoryMB);
     AlwaysAssert(itsPsfConvScales[scale], AipsError);
     LatticeExpr<Float> realWork(real(cWork));
     itsPsfConvScales[scale]->copyData(realWork);
@@ -455,7 +456,8 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     LatticeExpr<Complex> dpsExpr(conj(*itsXfr)*(dirtyFT)*(*scaleXfr[scale]));
     cWork.copyData(dpsExpr);
     LatticeFFT::cfft2d(cWork, False);
-    itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
+    itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
+						   itsMemoryMB);
     AlwaysAssert(itsDirtyConvScales[scale], AipsError);
     itsDirtyConvScales[scale]->copyData(realWork);
 
