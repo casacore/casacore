@@ -666,7 +666,7 @@ Double Geometric::operator()() {
 
 uInt Geometric::asInt() {
   uInt samples;
-  for (samples = 1; itsRNG->asDouble() < itsProbability; samples++);
+  for (samples = 0; itsRNG->asDouble() > itsProbability; samples++);
   return samples;
 }
 
