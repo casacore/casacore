@@ -226,12 +226,39 @@ Bool ObsInfo::fromRecord(String & error, const RecordInterface & inRecord)
 	    return False;
 	}
         Record rec = inRecord.asRecord(field);
-        Vector<Double> v = Vector<Double>(rec.asArrayDouble("value"));
+//
+        Vector<Double> v;
+        Int field2 = rec.fieldNumber("value");
+        if (field2 >= 0) {
+   	   if (rec.type(field2) != TpArrayDouble) {
+              error = "pointingcenter.value field is not ArrayDouble";
+              return False;
+           } else {
+              v = Vector<Double>(rec.asArrayDouble(field2));
+           }
+        } else {
+           error = "field pointingcenter does not contain subfield 'value'";
+           return False;
+        }
+//
+        Bool b = False;
+        Int field3 = rec.fieldNumber("initial");
+        if (field3 >= 0) {
+   	   if (rec.type(field3) != TpBool) {
+              error = "pointingcenter.initial field is not Bool";
+              return False;
+           } else {
+              b = rec.asBool(field3);
+           }
+        } else {
+           error = "field pointingcenter does not contain subfield 'initial'";
+           return False;
+        }
 
-// Don't use "setPointingCenter" as it will set 
+// Don't use function "setPointingCenter" as it will set 
 // isPointingCenterInitial_p to False
-
-        isPointingCenterInitial_p = rec.asBool("initial");
+        
+        isPointingCenterInitial_p = b;
         pointingCenter_p = MVDirection(v);
     }
 //
