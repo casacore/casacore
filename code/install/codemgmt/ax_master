@@ -2400,3 +2400,4 @@
 09 346 src mv trial/scripts/matrix.help trial/implement/Mathematics/matrix.help
 09 346 src mv trial/scripts/lsfit.help trial/implement/Mathematics/lsfit.help
 09 346 src mv trial/scripts/lsfit.g trial/implement/Mathematics/lsfit.g
+09 351 src rm trial/implement/Images/ImageBinaryOp.h
