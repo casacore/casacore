@@ -5687,3 +5687,4 @@
 15 337 src rm trial/apps/megaserver/imageFactory_mega.h
 15 337 src rm trial/apps/megaserver/imagerFactory_mega.h
 15 337 src rm trial/apps/megaserver/impolFactory_mega.h
+15 337 src rm trial/apps/megaserver/logtable_mega.h
