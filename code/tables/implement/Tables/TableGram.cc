@@ -35,7 +35,7 @@
 #include <stdio.h> // for printf on linux
 
 #if defined (sparc)
-#if !defined(AIPS_SUN_NATIVE) && !defined(__GNUG__) && !defined(__KCC)
+#if !defined(AIPS_SUN_NATIVE) && !defined(__GNUG__) && !defined(AIPS_STDLIB)
 extern "C" char *__builtin_alloca(int);
 #endif
 #include <alloca.h>

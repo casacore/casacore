@@ -45,7 +45,7 @@ class TSMFile;
 class TSMColumn;
 class BucketCache;
 template<class T> class Block;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

@@ -41,7 +41,7 @@ class ISMBase;
 class DataManager;
 class Table;
 class String;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

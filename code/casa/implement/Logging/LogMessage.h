@@ -33,7 +33,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/OS/Time.h>
 
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

@@ -42,7 +42,7 @@ typedef Quantum<Double> gpp_mvrad_bug2;
 #endif
 
 //# Forward Declarations
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

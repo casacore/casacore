@@ -48,7 +48,7 @@ class RefTable;
 class RefColumn;
 class TableDesc;
 class ColumnSet;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 imported class ostream;

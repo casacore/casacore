@@ -37,7 +37,7 @@
 #include <aips/Utilities/String.h>
 
 //# Forward declarations
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 imported class ostream;

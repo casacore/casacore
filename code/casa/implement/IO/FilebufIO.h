@@ -37,7 +37,7 @@
 #include <aips/IO/ByteIO.h>
 #include <aips/Utilities/String.h>
 
-#if !defined(__KCC)
+#if !defined(AIPS_STDLIB)
 imported class filebuf;
 #endif
 

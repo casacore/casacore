@@ -41,7 +41,7 @@ class Unit;
 class MeasValue;
 class Measure;
 class MRBase;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

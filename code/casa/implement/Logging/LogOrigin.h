@@ -33,7 +33,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Tasking/ObjectID.h>
 
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

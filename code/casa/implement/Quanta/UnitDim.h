@@ -39,7 +39,7 @@
 class String;
 class UnitVal;
 class UnitMap;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

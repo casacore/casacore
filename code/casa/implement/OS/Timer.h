@@ -31,7 +31,7 @@
 #include <aips/aips_exit.h>
 #include <sys/types.h>
 
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

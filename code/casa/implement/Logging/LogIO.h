@@ -37,7 +37,7 @@
 
 class LogSink;
 class LogOrigin;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #include <strstream.h>
 #else

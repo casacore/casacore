@@ -34,7 +34,7 @@
 
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/PtrHolder.h>
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

@@ -53,7 +53,7 @@
 // To get rid of ambiguities on Suns
 // Some machines might have efficient versions of these (require ifdefs)
 // <group>
-#if !defined(__KCC)
+#if !defined(AIPS_STDLIB)
 inline float pow(float f1, float f2) {return pow (double(f1), double(f2));}
 #endif
 inline int pow(int f1,int f2) {return int(pow(double(f1), double(f2)));}
@@ -101,11 +101,11 @@ inline Float min(Float a, Float b) { if (a > b) return b; else return a; }
 // Get the absolute value of Float or Double values. Should already be defined
 // for integers in <src><stdlib.h></src> .
 // <group>
-#if !defined(__KCC)
+#if !defined(AIPS_STDLIB)
 inline Float abs(Float Val) {return Val > 0 ? Val : -Val;}
 #endif
 
-#if !defined(AIPS_IBM) && !defined(AIPS_CL) && !defined(__KCC)
+#if !defined(AIPS_IBM) && !defined(AIPS_CL) && !defined(AIPS_STDLIB)
 // AIX and CenterLine provde an <src>abs(double)</src>
 // (which is probably slower!)
 inline Double abs(Double Val) {return Val > 0 ? Val : -Val;}

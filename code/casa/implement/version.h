@@ -29,7 +29,7 @@
 #if !defined(AIPS_VERSION_H)
 #define AIPS_VERSION_H
 
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Logging/LogSinkInterface.h>
 
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

@@ -43,7 +43,7 @@
 
 //# Forward declarations for functions which convert an IPosition to and from
 //# 1-D arrays.
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 imported class ostream;

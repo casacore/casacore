@@ -39,7 +39,7 @@
 
 //# Forward declarations
 class ISMBase;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;

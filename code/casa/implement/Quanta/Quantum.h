@@ -39,7 +39,7 @@
 
 //# Forward Declarations
 template <class T> class Quantum;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #include <strstream.h>
 #else

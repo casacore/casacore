@@ -44,7 +44,7 @@ typedef Quantum<Double> gpp_mvposition_bug2;
 
 //# Forward Declarations
 class RotMatrix;
-#if defined(__KCC)
+#if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;
