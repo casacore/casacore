@@ -96,9 +96,7 @@ public:
     virtual Bool operator!= (const LCRegion& other) const;
     // </group>
 
-//    // Get the mask (as an array).
-//    const Array<Bool>& maskArray() const;
-    
+
  protected:
     // Assignment (copy semantics) is only useful for derived classes.
     LCRegionFixed& operator= (const LCRegionFixed& other);
@@ -109,13 +107,5 @@ public:
 private:
     ArrayLattice<Bool> itsMask;
 };
-
-/*
-inline const Array<Bool>& LCRegionFixed::maskArray() const
-{
-    return itsMask.asArray();
-}
-*/
-
 
 #endif
