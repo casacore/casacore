@@ -1,5 +1,5 @@
 //# DirectionCoordinate.cc: this defines the DirectionCoordinate class
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,7 +61,6 @@ DirectionCoordinate::DirectionCoordinate()
   projection_p(Projection(Projection::CAR)),
   names_p(2), 
   units_p(2), 
-  prefUnits_p(2), 
   worldMin_p(0),
   worldMax_p(0),
   pConversionMachineTo_p(0),
@@ -89,7 +88,6 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
   projection_p(projection),
   names_p(axisNames(directionType).copy()),
   units_p(2),
-  prefUnits_p(2), 
   worldMin_p(0),
   worldMax_p(0),
   pConversionMachineTo_p(0),
@@ -117,7 +115,6 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
   projection_p(projection),
   names_p(axisNames(directionType).copy()),
   units_p(2),
-  prefUnits_p(2), 
   worldMin_p(0),
   worldMax_p(0),
   pConversionMachineTo_p(0),
@@ -175,7 +172,6 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
   to_radians_p(other.to_radians_p.copy()),
   names_p(other.names_p.copy()), 
   units_p(other.units_p.copy()),
-  prefUnits_p(other.prefUnits_p.copy()), 
   worldMin_p(other.worldMin_p.copy()),
   worldMax_p(other.worldMax_p.copy()),
   rot_p(other.rot_p),
@@ -222,7 +218,6 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
 //
 	names_p = other.names_p;
 	units_p = other.units_p;
-	prefUnits_p = other.prefUnits_p;
         worldMin_p = other.worldMin_p;
         worldMax_p = other.worldMax_p;
 	to_degrees_p = other.to_degrees_p.copy();
@@ -512,18 +507,29 @@ Bool DirectionCoordinate::toWorldMany (Matrix<Double>& world,
     Double* pWorld = world.getStorage(deleteWorld);
     const Double* pPixel = pixel.getStorage(deletePixel);
 // 
-    double imgCrd[nCoord][nPixel];
-    double phi[nCoord];
-    double theta[nCoord];
-    int stat[nCoord];   
+    Bool deleteImgCrd, deletePhi, deleteTheta, deleteStat;
+    Matrix<Double> imgCrd(nPixel,nCoord);
+    Vector<Double> phi(nCoord);
+    Vector<Double> theta(nCoord);
+    Vector<Int> stat(nCoord);
+//
+    Double* pImgCrd = imgCrd.getStorage(deleteImgCrd);    
+    Double* pPhi = phi.getStorage(deletePhi);    
+    Double* pTheta = theta.getStorage(deleteTheta);    
+    Int* pStat = stat.getStorage(deleteStat);    
+//
     int nC = nCoord;
-    int iret = wcsp2s (&wcs_p, nC, 2, pPixel, imgCrd[0], phi, theta, pWorld, stat);
+    int iret = wcsp2s (&wcs_p, nC, 2, pPixel, pImgCrd, pPhi, pTheta, pWorld, pStat);
     for (uInt i=0; i<nCoord; i++) {
        failures[i] = (stat[i]!=0);
     }
 //
-    world.putStorage(pWorld, deleteWorld);
     pixel.freeStorage(pPixel, deletePixel);
+    world.putStorage(pWorld, deleteWorld);
+    imgCrd.putStorage(pImgCrd, deleteImgCrd);
+    phi.putStorage(pPhi, deletePhi);
+    theta.putStorage(pTheta, deleteTheta);
+    stat.putStorage(pStat, deleteStat);
 //
     Vector<Double> r0(world.row(0));
     r0 /= to_degrees_p[0];
@@ -559,19 +565,30 @@ Bool DirectionCoordinate::toPixelMany (Matrix<Double>& pixel,
     Bool deleteWorld, deletePixel;
     Double* pPixel = pixel.getStorage(deletePixel);
     const Double* pWorld = world2.getStorage(deleteWorld);
-    int stat[nCoord];
-//  
-    double imgCrd[nCoord][nWorld];
-    double phi[nCoord];
-    double theta[nCoord];
+//
+    Bool deleteImgCrd, deletePhi, deleteTheta, deleteStat;
+    Matrix<Double> imgCrd(nWorld,nCoord);
+    Vector<Double> phi(nCoord);
+    Vector<Double> theta(nCoord);
+    Vector<Int> stat(nCoord);
+//
+    Double* pImgCrd = imgCrd.getStorage(deleteImgCrd);    
+    Double* pPhi = phi.getStorage(deletePhi);    
+    Double* pTheta = theta.getStorage(deleteTheta);    
+    Int* pStat = stat.getStorage(deleteStat);    
+//
     const int nC = nCoord;
-    int iret = wcss2p (&wcs_p, nC, 2, pWorld, phi, theta, imgCrd[0], pPixel, stat);
+    int iret = wcss2p (&wcs_p, nC, 2, pWorld, pPhi, pTheta, pImgCrd, pPixel, pStat);
     for (uInt i=0; i<nCoord; i++) {
        failures[i] = (stat[i]!=0);
     }
 //  
     world2.freeStorage(pWorld, deleteWorld);
     pixel.putStorage(pPixel, deletePixel);
+    imgCrd.putStorage(pImgCrd, deleteImgCrd);
+    phi.putStorage(pPhi, deletePhi);
+    theta.putStorage(pTheta, deleteTheta);
+    stat.putStorage(pStat, deleteStat);
 //
     if (iret!=0) {
         String errorMsg= "wcs wcss2p_error: ";
@@ -604,20 +621,6 @@ Vector<String> DirectionCoordinate::worldAxisUnits() const
 {
     return units_p;
 }
-
-Bool DirectionCoordinate::setPreferredWorldAxisUnits (const Vector<String>& units)
-{
-    if (!Coordinate::setPreferredWorldAxisUnits(units)) return False;
-//
-    prefUnits_p = units;
-    return True;
-}
-
-Vector<String> DirectionCoordinate::preferredWorldAxisUnits() const
-{
-   return prefUnits_p;
-}
-
 
 Vector<Double> DirectionCoordinate::referenceValue() const
 {
@@ -986,14 +989,8 @@ String DirectionCoordinate::format(String& units,
 
    static const Unit unitRAD("rad");
    String nativeUnit = worldAxisUnits()(worldAxis);
-   String prefUnit;
    if (units.empty()) {
-      prefUnit = preferredWorldAxisUnits()(worldAxis);
-      if (prefUnit.empty()) {
 //            leave empty telling formatLong/Lat to make up something nice
-      } else {
-         units = prefUnit;       // prefUnit always consistent
-      }
    } else {
       Unit unitCurrent(units);
       if (unitCurrent != unitRAD) {
