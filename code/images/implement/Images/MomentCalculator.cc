@@ -1036,9 +1036,9 @@ Bool MomentCalcBase<T>::getLoc (T& x,
 
 template <class T>
 void MomentCalcBase<T>::lineSegments (uInt& nSeg,
-                                      gpp_Vector_uInt& start, 
-                                      gpp_Vector_uInt& nPts,
-                                      const gpp_Vector_Bool& mask) const
+                                      Vector<uInt>& start, 
+                                      Vector<uInt>& nPts,
+                                      const Vector<Bool>& mask) const
 //
 // Examine an array and determine how many segments
 // of good points it consists of.    A good point
