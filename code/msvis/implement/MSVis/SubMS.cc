@@ -134,8 +134,8 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
   copyObservation();
   fillMainTable(colname);
   
-
-
+  msOut_p.relinquishAutoLocks (True);
+  msOut_p.unlock();
   return True;
 
 }
@@ -145,6 +145,7 @@ Bool SubMS::makeSelection(){
 
 
 
+  // check that sorted table exists (it should), if not, make it now.
   if (!ms_p.keywordSet().isDefined("SORTED_TABLE")) {
     Block<int> sort(4);
     sort[0] = MS::FIELD_ID;
@@ -164,21 +165,24 @@ Bool SubMS::makeSelection(){
 
   const TableExprNode exprNode=thisSelection.toTableExprNode(sorted);
 
-  // check that sorted table exists (it should), if not, make it now.
+ 
 
   {
+
+    MSDataDescription ddtable=ms_p.dataDescription();
+    ROScalarColumn<Int> polId(ddtable, 
+			      MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
     MSPolarization poltable= ms_p.polarization();
     ROArrayColumn<Int> pols(poltable, 
 			    MSPolarization::columnName(MSPolarization::CORR_TYPE));
     
-    npol_p.resize(spw_p.shape()); //assuming a simple data_desc_id
+    npol_p.resize(spw_p.shape()); 
     for (uInt k=0; k < npol_p.nelements(); ++k){  
-      npol_p[k]=pols(spw_p[k]).nelements();
+      npol_p[k]=pols(polId(spw_p[k])).nelements();
     }
   }
   // Now remake the selected ms
   mssel_p = MeasurementSet(sorted(exprNode));
-  
   mssel_p.rename(ms_p.tableName()+"/SELECTED_TABLE", Table::Scratch);
 
 
@@ -261,7 +265,7 @@ MeasurementSet& SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String t
     newtab.bindColumn(MS::columnName(MS::SIGMA),tiledStMan5);
 
   // avoid lock overheads by locking the table permanently
-    TableLock lock(TableLock::PermanentLocking);
+    TableLock lock(TableLock::AutoLocking);
     MeasurementSet *ms = new MeasurementSet (newtab,lock);
 
   // Set up the subtables for the UVFITS MS
@@ -299,7 +303,17 @@ Bool SubMS::fillDDTables(){
   MSDataDescColumns& msDD(msc_p->dataDescription());
   MSPolarizationColumns& msPol(msc_p->polarization());
 
+
+
+  //DD table
+  MSDataDescription ddtable= mssel_p.dataDescription();
+  ROScalarColumn<Int> polId(ddtable, 
+			    MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
+
+
   //POLARIZATION table 
+
+
   MSPolarization poltable= mssel_p.polarization();
   ROArrayColumn<Int> corrType(poltable, 
 			  MSPolarization::columnName(MSPolarization::CORR_TYPE));
@@ -330,9 +344,9 @@ Bool SubMS::fillDDTables(){
     msOut_p.spectralWindow().addRow();
     msOut_p.dataDescription().addRow();
     msPol.numCorr().put(k,npol_p[k]);
-    msPol.corrType().put(k,corrType(spw_p[k]));
-    msPol.corrProduct().put(k,corrProd(spw_p[k]));
-    msPol.flagRow().put(k,polFlagRow(spw_p[k]));
+    msPol.corrType().put(k,corrType(polId(spw_p[k])));
+    msPol.corrProduct().put(k,corrProd(polId(spw_p[k])));
+    msPol.flagRow().put(k,polFlagRow(polId(spw_p[k])));
     spwRelabel_p[spw_p[k]]=k;
     if(nchan_p[k] != numChan(spw_p[k])){
       doChanAver_p=True; 
@@ -453,11 +467,14 @@ Bool SubMS::fillMainTable(const String& whichCol){
   msc_p->feed1().putColumn(mscIn_p->feed1());
   msc_p->feed2().putColumn(mscIn_p->feed2());
   //  msc_p->flag().putColumn(mscIn_p->flag());
-  msc_p->flagCategory().putColumn(mscIn_p->flagCategory());
+  if(!(mscIn_p->flagCategory().isNull()))
+    if(mscIn_p->flagCategory().isDefined(0))
+      msc_p->flagCategory().putColumn(mscIn_p->flagCategory());
   msc_p->flagRow().putColumn(mscIn_p->flagRow());
   msc_p->interval().putColumn(mscIn_p->interval());
   msc_p->observationId().putColumn(mscIn_p->observationId());
   msc_p->processorId().putColumn(mscIn_p->processorId());
+  cout << "post procid" << endl;
   msc_p->scanNumber().putColumn(mscIn_p->scanNumber());
   msc_p->stateId().putColumn(mscIn_p->stateId());
   msc_p->time().putColumn(mscIn_p->time());
@@ -544,15 +561,21 @@ Bool SubMS::fillMainTable(const String& whichCol){
     sort[2] = MS::DATA_DESC_ID;
     sort[3] = MS::TIME;
     Matrix<Int> noselection;
+
     VisSet *vs= new VisSet(mssel_p, sort, noselection);
     ROVisIter& vi(vs->iter());
     VisBuffer vb(vi);
-
+    Vector<Int> spwindex(max(spw_p));
+    spwindex.set(-1);
+    for (uInt k=0; k < spw_p.nelements() ; ++k){
+      spwindex[spw_p[k]]=k;
+    }
+    
     for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
       for (vi.origin(); vi.more(); vi++) {
 	rowsnow=vb.nRow();
 	RefRows rowstoadd(rowsdone, rowsdone+rowsnow-1);
-	Int spw=vb.spectralWindow();
+	Int spw=spwindex[vb.spectralWindow()];
 	Cube<Complex> vis;
 	if(columnName== MS::columnName(MS::DATA))
 	  vis.reference(vb.visCube());
@@ -561,7 +584,10 @@ Bool SubMS::fillMainTable(const String& whichCol){
 	else
 	  vis.reference(vb.correctedVisCube());
 
-	Cube<Bool> inFlag=vb.flagCube();
+	Cube<Bool> inFlag;
+	inFlag.reference(vb.flagCube());
+	Matrix<Bool> chanFlag;
+	chanFlag.reference(vb.flag());
 	Cube<Complex> averdata(npol_p[spw], nchan_p[spw], rowsnow);
 	Cube<Bool> locflag(npol_p[spw], nchan_p[spw], rowsnow);
 	for(Int k=0; k < rowsnow; ++k){
@@ -574,21 +600,35 @@ Bool SubMS::fillMainTable(const String& whichCol){
 	    }else{
 	      Vector<Bool> tryFlag(npol_p[spw]);
 	      Vector<Complex> avervis(npol_p[spw]);
-	      avervis=0;
-	      tryFlag=False;
+	      avervis.set(Complex(0,0));
+	      tryFlag.set(False);
+
+	      Int counter=0;
 	      for (Int m=0; m < chanStep_p[spw]; ++m){
-		avervis=avervis+vis.xyPlane(k).column(chanStart_p[spw]+ 
-						      j*chanStep_p[spw]+m);
+		Int chancol=chanStart_p[spw]+ 
+		  j*chanStep_p[spw]+m;
+		if(chanFlag(k, chancol)){
+		  avervis=avervis+vis.xyPlane(k).column(chancol);
+		  ++counter;
+		}
+		/*
 		for (Int pol=0; pol < npol_p[spw]; ++pol){
 		  tryFlag[pol]=tryFlag[pol] | 
 		    inFlag.xyPlane(k).column(chanStart_p[spw]+ 
 					     j*chanStep_p[spw]+m)[pol];
 		  
 		}
-
+		*/
+		
 	      }
-	      averdata.xyPlane(k).column(j)=avervis/chanStep_p[spw];
-	      locflag.xyPlane(k).column(j)=tryFlag;
+	      if(counter >0){
+		averdata.xyPlane(k).column(j)=avervis/counter;
+		locflag.xyPlane(k).column(j).set(False);
+	      }
+	      else{
+		averdata.xyPlane(k).column(j).set(0);
+		locflag.xyPlane(k).column(j).set(True);
+	      }
 	      
 	    }
 	  }
