@@ -318,6 +318,101 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     }
   }
 }
+
+Unit ComponentImager::defineBrightnessUnits(LogIO& os, 
+                                            const ImageInterface<Float>& im, 
+                                            Bool integralIsJy) 
+{
+   const CoordinateSystem& cSys = im.coordinates();
+   Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+   Unit bU = im.units();
+   const ImageInfo& imageInfo = im.imageInfo();
+
+// Define "pixel" units if we can
+
+   Vector<Double> inc;
+   if (dirCoordinate>=0) {
+      DirectionCoordinate dirCoord = cSys.directionCoordinate(dirCoordinate);
+      Vector<String> units(2); units.set("rad");
+      dirCoord.setWorldAxisUnits(units, True);
+      inc = dirCoord.increment();
+      UnitMap::putUser("pixel", UnitVal(abs(inc(0)*inc(1)), String("rad2")));
+//
+//      Quantum<Double> t(1.0, Unit("pixel"));
+//      cerr << "1 pixel = " << t.getFullUnit().getValue() << endl;
+   }
+
+// Define "beam" units if needed
+
+   Vector<Quantum<Double> > beam = imageInfo.restoringBeam();
+   if (bU.getName().contains("beam")) {
+      if (beam.nelements()==3) {
+         beam(0).convert(Unit("rad"));
+         beam(1).convert(Unit("rad"));
+         Double fac = C::pi / 4.0 / log(2.0) * beam(0).getValue() * beam(1).getValue();
+         UnitMap::putUser("beam", UnitVal(fac,String("rad2")));
+      } else {
+         if (dirCoordinate>=0) {
+            os << LogIO::WARN 
+               << "No restoring beam defined even though the image units contain a beam" 
+               << endl << "Assuming the restoring beam is one pixel" << LogIO::POST;
+            UnitMap::putUser("beam", UnitVal(abs(inc(0)*inc(1)), String("rad2")));
+         } else {
+            os << "The image units contain a beam.  However, there is no restoring beam" << endl;
+            os << "defined, and no DirectionCoordinate in the image" << LogIO::EXCEPTION;
+         }
+      }
+//      Quantum<Double> t(1.0, Unit("beam"));
+//      cerr << "1 beam = " << t.getFullUnit().getValue() << endl;
+   }
+
+// We must tell the old unit that it has been redefined 
+
+   bU = Unit(bU.getName());
+
+// Check integral units
+
+   if (integralIsJy) {
+     if (bU.empty()) {
+        bU = Unit("Jy/pixel");
+        if (dirCoordinate>=0) {
+           os << LogIO::WARN << "There are no image brightness units, assuming Jy/pixel" << LogIO::POST;
+           bU = Unit("Jy/pixel");  
+        } else {
+           os << "There are no image brightness units, we would like to assume Jy/pixel" << endl;
+           os << "However, there is no DirectionCoordinate in the image either" << LogIO::EXCEPTION;
+        }
+     } else {
+        Quantum<Double> t0(1.0, bU);
+        Quantum<Double> t1(1.0, Unit("rad2"));
+        Quantum<Double> t2 = t0 * t1;
+        if (!t2.isConform(Unit("Jy"))) {
+           if (dirCoordinate>=0) {
+              os << LogIO::WARN << "The image units '" << bU.getName() << "' are not consistent " << endl;
+              os << "with Jy when integrated over the sky.  Assuming Jy/pixel" << LogIO::POST;
+              bU = Unit("Jy/pixel");
+           } else {
+              os << "The image units '" << bU.getName() << "' are not consistent " << endl;
+              os << "with Jy when integrated over the sky.  We would like to assume Jy/pixel" << endl;
+              os << "However, there is no DirectionCoordinate in the image either" << LogIO::EXCEPTION;
+           }
+        }
+     }
+   }
+//
+   return bU;
+}
+
+
+void ComponentImager::undefineBrightnessUnits() 
+{
+   UnitMap::removeUser("beam");
+   UnitMap::removeUser("pixel");
+   UnitMap::clearCache();
+}
+
+ 
+
 // Local Variables: 
 // compile-command: "gmake ComponentImager"
 // End: 
