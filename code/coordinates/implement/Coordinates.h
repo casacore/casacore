@@ -83,18 +83,23 @@
 // </ol>
 //
 // A <linkto class=CoordinateSystem>CoordinateSystem</linkto> is the
-// <src>AxesMapping</src> class that application programmers will usually interact
+// class that application programmers will usually interact
 // with. A <src>CoordinateSystem</src> consists of one or more independent Coordinates
 // which control the mapping of various axes. Normally one group will be for
 // RA/DEC, another for a STOKES axis, and another group for the spectral axis.
-// The axex may be transposed arbitrarily,
-// for example RA could be the first axis, and DEC the third. Normally
-// the CoordinateSystem being manipulated will be embedded in an <src>Image</src>
-// or other object.
+// The axes may be transposed arbitrarily,
+// for example RA could be the first axis, and DEC the third. 
+//
+// Normally the CoordinateSystem being manipulated will be embedded in a <src>PagedImage</src>
+// or other object.    Note that the axes of the <src>PagedImage</src> do not
+// necessarily map directly to the axes in the <src>CoordinateSystem</src>.  Functionality
+// is provided to determine this mapping.
 //
 // One or more axes from the CoordinateSystem may be removed. Pixel axes and/or
 // world axes may be removed. You are encouraged to leave all the world axes when
 // you remove pixel axes.
+//
+// 
 //
 // The linear transformation and sky projection computations are carried out in an
 // underlying library -- WCSLIB -- written by Mark Calabretta of the ATNF.
