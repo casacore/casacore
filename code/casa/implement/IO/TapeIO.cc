@@ -101,27 +101,34 @@ void TapeIO::write (uInt size, const void* buf) {
   }
 }
 
-void TapeIO::read (uInt size, void* buf) {
+Int TapeIO::read(uInt size, void* buf, Bool throwException) {
   if (!itsReadable) {
-    throw (AipsError ("TapeIO object is not readable"));
+    throw (AipsError ("TapeIO::read - tape is not readable"));
   }
   Int bytesRead = ::read (itsDevice, buf, size);
-  if (bytesRead < Int(size)) {// Throw an exception if not readable.
-    //    cout << "Bytes read: " << bytesRead << "\tExpected:" << size << endl;
+  if (bytesRead > Int(size)) { // Should never be executed
+    throw (AipsError ("TapeIO::read - read returned a bad value"));
+  }
+  if (bytesRead != Int(size) && throwException == True) {
     if (bytesRead < 0) {
-      throw(AipsError(String("TapeIO: read error ") + strerror(errno)));
+      throw (AipsError (String("TapeIO::read - "
+			       " error returned by system call: ") + 
+			strerror(errno)));
+    } else if (bytesRead < Int(size)) {
+      throw (AipsError ("TapeIO::read - incorrect number of bytes read"));
     }
   }
+  return bytesRead;
 }
 
 void TapeIO::rewind() {
   struct mtop tapeCommand;
   tapeCommand.mt_op = MTREW;
   tapeCommand.mt_count = 1;
-  Int error = ioctl(itsDevice, MTIOCTOP, &tapeCommand);
+  Int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
   if (error != 0) {
-    //    cout << "Rewind returned " << error << endl;
-    throw(AipsError(String("TapeIO: rewind error") + strerror(errno)));
+    throw(AipsError(String("TapeIO::rewind - error returned by ioctl: ") 
+		    + strerror(errno)));
   }
 }
 
