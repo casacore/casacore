@@ -1,7 +1,7 @@
 [107.367, 67.8951] <--- [138, 138]
 [107.367, 67.8951] ---> [138, 138]
 Stokes Q is plane 1
-Error: Stokes value 9 is not found on any axis position
+Expected error: Stokes value 9 is not found on any axis position
 Continuing...
 Stokes XX is plane 1
 [1401] <--- [50]
@@ -12,3 +12,4 @@ Stokes XX is plane 1
 [107.367, 67.8951, 1401, 3] ---> [138, 138, 50, 2]
 [107.367, 67.8951, 1401, 3] <--- [138, 50, 2]
 [107.367, 67.8951, 1401, 3] ---> [138, 50, 2]
+ok
