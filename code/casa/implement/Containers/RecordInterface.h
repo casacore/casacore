@@ -375,13 +375,31 @@ public:
     virtual RecordInterface& asrwRecord (const RecordFieldId&) = 0;
     // </group>
 
+    // Get an array while promoting the data as needed.
+    // A scalar value is also converted to an array.
+    // These functions are slower than <src>asX</src>, but more general.
+    // <group>
+    Array<Bool>     toArrayBool    (const RecordFieldId&) const;
+    Array<uChar>    toArrayuChar   (const RecordFieldId&) const;
+    Array<Short>    toArrayShort   (const RecordFieldId&) const;
+    Array<Int>      toArrayInt     (const RecordFieldId&) const;
+    Array<uInt>     toArrayuInt    (const RecordFieldId&) const;
+    Array<Float>    toArrayFloat   (const RecordFieldId&) const;
+    Array<Double>   toArrayDouble  (const RecordFieldId&) const;
+    Array<Complex>  toArrayComplex (const RecordFieldId&) const; 
+    Array<DComplex> toArrayDComplex(const RecordFieldId&) const;
+    Array<String>   toArrayString  (const RecordFieldId&) const;
+    // </group>
+
     // Get value based on field name or number.
     // They are here for backward compatibility with the old KeywordSet
     // classes and will be removed in the future.
+    // <group>
     Float           asfloat   (const RecordFieldId&) const;
     Double          asdouble  (const RecordFieldId&) const;
     const Array<Float>&    asArrayfloat   (const RecordFieldId&) const;
     const Array<Double>&   asArraydouble  (const RecordFieldId&) const;
+    // </group>
     
     // Make a unique record representation
     // (for copy-on-write in RecordFieldPtr).
@@ -483,23 +501,23 @@ inline void RecordInterface::define (const RecordFieldId& id, const Char* value)
 {
     define (id, String(value));
 }
-inline Float RecordInterface::asFloat (const RecordFieldId& id) const
+inline Float RecordInterface::asfloat (const RecordFieldId& id) const
 {
-    return asfloat (id);
+    return asFloat (id);
 }
-inline Double RecordInterface::asDouble (const RecordFieldId& id) const
+inline Double RecordInterface::asdouble (const RecordFieldId& id) const
 {
-    return asdouble (id);
+    return asDouble (id);
 }
-inline const Array<Float>& RecordInterface::asArrayFloat
+inline const Array<Float>& RecordInterface::asArrayfloat
                                          (const RecordFieldId& id) const
 {
-    return asArrayfloat (id);
+    return asArrayFloat (id);
 }
-inline const Array<Double>& RecordInterface::asArrayDouble
+inline const Array<Double>& RecordInterface::asArraydouble
                                          (const RecordFieldId& id) const
 {
-    return asArraydouble (id);
+    return asArrayDouble (id);
 }
 
 
