@@ -1,5 +1,5 @@
 //# tTable.cc: Test program for the Table classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -69,6 +69,14 @@ void cbFunc (const String& name, Bool isScratch, const String& oldname)
 	 << "  oldName=" << oldname << endl;
 }
 
+// Define the endian format.
+#ifdef AIPS_LITTLE_ENDIAN
+Table::EndianFormat theEndianFormat = Table::LittleEndian;
+#else
+Table::EndianFormat theEndianFormat = Table::BigEndian;
+#endif
+
+
 // First build a description.
 void a (Bool doExcp)
 {
@@ -101,11 +109,13 @@ void a (Bool doExcp)
 	} 
     }
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
-    Table tab(newtabcp, 10);
+    Table tab(newtabcp, 10, False, Table::LocalEndian);
+    AlwaysAssertExit (tab.endianFormat() == theEndianFormat);
     tab.tableInfo().setType ("testtype");
     tab.tableInfo().setSubType ("testsubtype");
     tab.tableInfo().readmeAddLine ("first readme line");
     tab.tableInfo().readmeAddLine ("second test readme line");
+
 
     // Determine if columns are stored.
     uInt i;
@@ -225,6 +235,7 @@ void b (Bool doExcp)
     // Read back the table.
     cout << "start reading Table" << endl;
     Table tab("tTable_tmp.data", TableLock(TableLock::PermanentLockingWait));
+    AlwaysAssertExit (tab.endianFormat() == theEndianFormat);
     cout << "end reading Table" << endl;
     cout << "type = " << tab.tableInfo().type() << endl;
     cout << "subtype = " << tab.tableInfo().subType() << endl;
@@ -850,7 +861,7 @@ void d()
     }
 }
 
-main (int argc)
+int main (int argc)
 {
     try {
 	Table::setScratchCallback (cbFunc);
