@@ -147,12 +147,12 @@ OPTLIBS  := $(strip \
 
 ifeq "$(TESTOPT)" "opt"
    C++OPTS  := $(CPPOPT) $(C++OPT) $(LDOPT)
-   AIPSLIBS := $(OPTLIBS) \
-	$(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
+   AIPSLIBS := $(OPTLIBS)
+   AIPSVERS := $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
 else
    C++OPTS  := $(CPPDBG) $(C++DBG) $(LDDBG)
-   AIPSLIBS := $(DBGLIBS) \
-	$(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
+   AIPSLIBS := $(DBGLIBS)
+   AIPSVERS := $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
 endif
 
 
@@ -336,7 +336,7 @@ $(BINTESTD)/% : $(CODEDIR)/%.cc $(INSTLIBR:%=$(CODEDIR)/templates) $(AIPSLIBS)
 	@ echo "Remaking $@ ($(TESTOPT)) because of $?"
 	@ $(INSTLIBR:%=$(MAKE) %)
 	@ cd $(TMPPCKGD) && \
-	  $(C++) $(C++OPTS) -I$(CODEDIR) $(AIPSINCL) -o $@ $< $(INSTLIBR) $(AIPSLIBS) $(XTRNLIBS) $(INSTLIBR)
+	  $(C++) $(C++OPTS) -I$(CODEDIR) $(AIPSINCL) -o $@ $< $(INSTLIBR) $(AIPSLIBS) $(XTRNLIBS) $(INSTLIBR) $(AIPSVERS)
 	@ $(TIMER)
 	@ $(RM) $(TMPPCKGD)/$(<F:cc=o)
 	@ chmod 775 $@
@@ -433,7 +433,7 @@ endif
 
 # Static and static pattern rules.
 #---------------------------------
-.PRECIOUS : $(AIPSLIBS)
+.PRECIOUS : $(AIPSLIBS) $(AIPSVERS)
 
 .PHONY : bin bintest exorcise instsys lib
 
@@ -635,6 +635,7 @@ show_local :
 	-@ echo "OPTLIBS =$(OPTLIBS)"
 	-@ echo "C++OPTS =$(C++OPTS)"
 	-@ echo "AIPSLIBS=$(AIPSLIBS)"
+	-@ echo "AIPSVERS=$(AIPSVERS)"
 	-@ echo ""
 	-@ echo "Programmer"
 	-@ echo "----------"
