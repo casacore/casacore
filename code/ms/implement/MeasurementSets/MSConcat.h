@@ -114,6 +114,7 @@ private:
   IPosition itsFixedShape;
   Quantum<Double> itsFreqTol;
   Quantum<Double> itsDirTol;
+  Vector<Bool> itsChanReversed;
 };
 #endif
 
