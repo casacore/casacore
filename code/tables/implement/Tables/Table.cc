@@ -1,5 +1,5 @@
 //# Table.cc: Main interface class to table data
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -274,33 +274,12 @@ void Table::open (const String& name, const String& type, int tableOption,
 	if (! Table::isReadable (name)) {
 	    throw (TableNoFile (name));
 	}
-	//# Determine the file option for the table.
-	//# Only existing tables can be opened.
-	//# This is guaranteed by the calling functions.
-	ByteIO::OpenOption fopt = PlainTable::toAipsIOFoption (tableOption);
-	//# Open the file.
-	AipsIO ios (Table::fileName(name), fopt);
-	//# Determine the kind of table by reading the type.
-	String tp;
-	uInt version = ios.getstart ("Table");
-	uInt nrrow, format;
-	ios >> nrrow;
-	ios >> format;
-	ios >> tp;
-	if (tp == "PlainTable") {
-	    baseTabPtr_p = new PlainTable (ios, version, name, type, nrrow,
-					   tableOption, lockOptions);
-	} else if (tp == "RefTable") {
-	    baseTabPtr_p = new RefTable (ios, name, nrrow, tableOption,
-					 lockOptions);
-	}else{
-	    throw (TableInternalError
-		   ("Table::open: unknown table kind " + tp));
-	}
+	// Create the BaseTable object and add a PlainTable to the cache.
+	baseTabPtr_p = makeBaseTable (name, type, tableOption,
+				      lockOptions, True, 0);
 	if (baseTabPtr_p == 0) {
 	    throw (AllocError("Table::open",1));
 	}
-	ios.getend();
     }
     baseTabPtr_p->link();
     if (deleteOpt) {
@@ -308,6 +287,39 @@ void Table::open (const String& name, const String& type, int tableOption,
     }
 }
 
+BaseTable* Table::makeBaseTable (const String& name, const String& type,
+				 int tableOption, const TableLock& lockOptions,
+				 Bool addToCache, uInt locknr)
+{
+    BaseTable* baseTabPtr = 0;
+    //# Determine the file option for the table.
+    //# Only existing tables can be opened.
+    //# This is guaranteed by the calling functions.
+    ByteIO::OpenOption fopt = PlainTable::toAipsIOFoption (tableOption);
+    //# Open the file.
+    AipsIO ios (Table::fileName(name), fopt);
+    //# Determine the kind of table by reading the type.
+    String tp;
+    uInt version = ios.getstart ("Table");
+    uInt nrrow, format;
+    ios >> nrrow;
+    ios >> format;
+    ios >> tp;
+    if (tp == "PlainTable") {
+	baseTabPtr = new PlainTable (ios, version, name, type, nrrow,
+				     tableOption, lockOptions, addToCache,
+				     locknr);
+    } else if (tp == "RefTable") {
+	baseTabPtr = new RefTable (ios, name, nrrow, tableOption,
+				     lockOptions);
+    }else{
+	throw (TableInternalError
+	       ("Table::open: unknown table kind " + tp));
+    }
+    ios.getend();
+    return baseTabPtr;
+}
+	
 BaseTable* Table::lookCache (const String& name, int tableOption,
 			     const TableLock& lockOptions)
 {
