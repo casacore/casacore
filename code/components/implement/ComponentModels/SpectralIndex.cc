@@ -1,4 +1,4 @@
-//# ClassFileName.cc:  this defines ClassName, which ...
+//# SpectralIndex.cc:
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -300,6 +300,23 @@ Bool SpectralIndex::toRecord(String & errorMessage,
   record.define(RecordFieldId("type"), ComponentType::name(type()));
   if (!SpectralModel::addFreq(errorMessage, record)) return False;
   record.define("index", indices());
+  return True;
+}
+
+Bool SpectralIndex::convertUnit(String & errorMessage,
+                                const RecordInterface & record) {
+  const String fieldString("index");
+  if (!record.isDefined(fieldString)) {
+    return True;
+  }
+  const RecordFieldId field(fieldString);
+  if (!((record.dataType(field) == TpString) && 
+	(record.shape(field) == IPosition(1,1)) &&
+	(record.asString(field) == ""))) {
+    errorMessage += "The 'index' field must be an empty string\n";
+    errorMessage += "(and not a vector of strings)\n";
+    return False;
+  }
   return True;
 }
 

@@ -221,6 +221,15 @@ public:
   virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
   // </group>
 
+  // Convert the parameters of the spectral index object to the specified
+  // units. Only one field of the supplied record is used, namely 'index'. This
+  // filed is optional as the spectral index is a unitless quantity. If the
+  // index field is specified it must have the empty string as its value.  This
+  // function always returns True unless the index field is specified and does
+  // not contain an empty string.
+  virtual Bool convertUnit(String & errorMessage,
+			   const RecordInterface & record);
+
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
