@@ -272,7 +272,7 @@ void RFASelector::addClipInfoDesc ( const Block<ClipInfo> &clip )
   for( uInt i=0; i<clip.nelements(); i++ )
   {
     String ss;
-    char s1[32]="",s2[32]="",s[256];
+    char s1[32]="",s2[32]="";
     if( clip[i].vmin != -C::flt_max )
       sprintf(s1,"%g",clip[i].vmin);
     if( clip[i].vmax != C::flt_max )
