@@ -3458,3 +3458,4 @@
 13 279 src mv trial/implement/Measures/DumComet.cc aips/implement/Measures/MeasComet.cc
 13 283 src mv trial/implement/Display/WCDataScaleHandler.h trial/implement/DisplayCanvas/WCDataScaleHandler.h
 13 283 src mv trial/implement/Display/WCDataScaleHandler.cc trial/implement/DisplayCanvas/WCDataScaleHandler.cc
+13 283 src mv trial/implement/Display/WCLinearScaleHandler.cc trial/implement/DisplayCanvas/WCLinearScaleHandler.cc
