@@ -4058,3 +4058,4 @@
 14 065 src mv trial/implement/DisplayDatas/CachingDisplayData.h trialdisplay/implement/DisplayDatas/CachingDisplayData.h
 14 065 src mv trial/implement/DisplayDatas/CachingDisplayMethod.h trialdisplay/implement/DisplayDatas/CachingDisplayMethod.h
 14 065 src mv trial/implement/DisplayDatas/DDDObject.h trialdisplay/implement/DisplayDatas/DDDObject.h
+14 065 src mv trial/implement/DisplayDatas/DDDRectangle.h trialdisplay/implement/DisplayDatas/DDDRectangle.h
