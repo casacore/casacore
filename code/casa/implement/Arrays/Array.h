@@ -281,8 +281,8 @@ public:
     // This ensures that this array does not reference any other storage.
     // <note role=tip>
     //        When a section is taken of an array with non-unity strides,
-    //        storage can be wasted if the array which originally contained
-    //        all the data goes away. unique() also reclaims storage. This
+    //        storage can be wasted if the array, which originally contained
+    //        all the data, goes away. unique() also reclaims storage. This
     //        is an optimization users don't normally need to understand.
     //
     //        <srcblock>
@@ -363,6 +363,15 @@ public:
     // Make this array a different shape. Presently the old values are not
     // copied over to the new array.
     // Resize without argument is equal to resize(IPosition()).
+    // <br>It is important to note that if multiple Array objects
+    // reference the same data storage, this Array object still references
+    // the same data storage as the other Array objects if the shape does
+    // not change. Otherwise this Array object references newly allocated
+    // storage, while the other Array objects still reference the existing
+    // data storage.
+    // <br>If you want to be sure that the data storage of this Array object
+    // is not referenced by other Array objects, the function unique should
+    // be called first.
     // <group>
     virtual void resize();
     virtual void resize(const IPosition &newShape);
