@@ -878,46 +878,74 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 {
 // Basic checks
 
-   if (this->type() != pOther->type()) return False;
+   if (this->type() != pOther->type()) {
+      set_error("Comparison is not with another CoordinateSystem");
+      return False;
+   }
 
    CoordinateSystem* cSys = (CoordinateSystem*)pOther;  
 
-   if (nCoordinates() != cSys->nCoordinates()) return False;
+   if (nCoordinates() != cSys->nCoordinates()) {
+      set_error("The CoordinateSystems have different numbers of coordinates");
+      return False;
+   }
 
-   if (nPixelAxes() != cSys->nPixelAxes()) return False;
-   if (nWorldAxes() != cSys->nWorldAxes()) return False;
+   if (nPixelAxes() != cSys->nPixelAxes()) {
+      set_error("The CoordinateSystems have different numbers of pixel axes");
+      return False;
+   }
+   if (nWorldAxes() != cSys->nWorldAxes()) {
+      set_error("The CoordinateSystems have different numbers of world axes");
+      return False;
+   }
 
 
 
 // Loop over number of coordinates
 
+   ostrstream oss;
    for (Int i=0; i<nCoordinates(); i++) {
 
 // Although the coordinates are checked for their types in
 // the coordinate comparison routines, we can save ourselves
 // some time by checking here too
 
-      if (coordinate(i).type() != cSys->coordinate(i).type()) 
+      if (coordinate(i).type() != cSys->coordinate(i).type()) {
+         oss << "The coordinate types differ for coordinate number " << i << ends;
+         set_error(String(oss));
          return False;
+      }
 
 // Find which pixel axes in the CoordinateSystem this coordinate
 // inhabits and compare the vectors.   Here we don't take into 
 // account the exclusion axes vector; that's only used when we are 
 // actually comparing the axis descriptor values on certain axes
 
-      if (pixelAxes(i).nelements() != cSys->pixelAxes(i).nelements())
+      if (pixelAxes(i).nelements() != cSys->pixelAxes(i).nelements()) {
+         oss << "The number of pixel axes differs for coordinate number " << i << ends;
+         set_error(String(oss));
          return False;
-      if (!allEQ(pixelAxes(i).ac(), cSys->pixelAxes(i).ac())) 
+      }
+      if (!allEQ(pixelAxes(i).ac(), cSys->pixelAxes(i).ac())) {
+         oss << "The pixel axes differ for coordinate number " << i << ends;
+         set_error(String(oss));
          return False;
+      }
 
 // Find which world axes in the CoordinateSystem this
 // coordinate inhabits and compare the vectors
     
-      if (worldAxes(i).nelements() != cSys->worldAxes(i).nelements()) 
+      if (worldAxes(i).nelements() != cSys->worldAxes(i).nelements()) {
+         oss << "The number of world axes differs for coordinate number " << i << ends;
+         set_error(String(oss));
          return False;
-      if (!allEQ(worldAxes(i).ac(), cSys->worldAxes(i).ac())) 
+      }
+      if (!allEQ(worldAxes(i).ac(), cSys->worldAxes(i).ac())) {
+         oss << "The world axes differ for coordinate number " << i << ends;
+         set_error(String(oss));
          return False;
-
+      }
+ 
 
 // Were all the world axes for this coordinate removed ? If so
 // we don't check it
@@ -967,7 +995,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 
 // Now, for the current coordinate, convert the world axes in 
 // the CoordinateSystems to axes in the current coordinate
-// and compare the two CoordinateSystems
+// and compare the two 
 
          Int coord1, coord2, axisInCoord1, axisInCoord2;
          for (j=0; j<worldAxes(i).nelements(); j++) {
@@ -978,13 +1006,29 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
                      findWorldAxis(coord1, axisInCoord1, worldAxes(i)(j));
                cSys->findWorldAxis(coord2, axisInCoord2, worldAxes(i)(j));
 
-               if (coord1 != coord2) return False;
-               if (axisInCoord1 != axisInCoord2) return False;
+// This better not happen !  
+
+               if (coord1 != coord2) {
+                  oss << "The coordinate numbers differ (!!) for coordinate number "
+                      << i << ends;
+                  set_error(String(oss));
+                  return False;
+               }
+
+// This might
+               if (axisInCoord1 != axisInCoord2) {
+                  oss << "World axis " << j << " in the CoordinateSystems"
+                      << "has a different axis number in coordinate number "
+                      << i << ends;
+                  set_error(String(oss));
+                  return False;
+               }
             }
          }
          
 // Now, finally, compare the current coordinate from the two 
-// CoordinateSystems except on the specified axes
+// CoordinateSystems except on the specified axes. Leave it
+// this function to set the error message
 
          return coordinate(i).near(&cSys->coordinate(i),excludeAxes,tol);
 
