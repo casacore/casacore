@@ -1,4 +1,273 @@
 Test of TableMeasures classes.
+
+TableDesc tTableMeasures_desc   version 1   (Directory ./)
+---------
+  Comment: A test of TableMeasures class.
+  #Keywords = 0
+  #Columns  = 19
+   Name=Time1   DataType=double
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = An MEpoch column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=TimeOffset   DataType=double
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = MEpoch column with fix reference and offset
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=TimeVarOffset   DataType=double
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = Variable Offset col
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=MPosColumn   DataType=double   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = Simple mposition column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=TimeRef   DataType=Int
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = Reference column for Time1
+   #keywords=0
+
+   Name=TimeRefStr   DataType=String
+   DataManager=StManAipsIO/StManAipsIO   Default=
+   Comment = String variable reference column
+   #keywords=0
+
+   Name=MEpochVarStr   DataType=double
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = Another MEpoch column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=Time1Arr   DataType=double   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = An MEpoch array column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=TimeArrRef   DataType=Int
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = VarRef co for TimeArr
+   #keywords=0
+
+   Name=Time2Arr   DataType=double   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = An MEpoch array column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=Time2ArrOffset   DataType=double   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = Offset column for Time2Arr
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=Time2ArrRef   DataType=Int   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = Ref column for Time2Arr
+   #keywords=0
+
+   Name=Time3Arr   DataType=double   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = An MEpoch array column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=Time3ArrStrRef   DataType=String   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = Array string reference column
+   #keywords=0
+
+   Name=Time4Arr   DataType=double   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = An MEpoch array column
+   #keywords=0
+
+   Name=Time4StrRef   DataType=String
+   DataManager=StManAipsIO/StManAipsIO   Default=
+   Comment = Scalar int reference column
+   #keywords=0
+
+   Name=Time4ScaOffset   DataType=double
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = Scalar offset column
+   #keywords=0
+
+   Name=SpareCol1   DataType=double   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = Test of exception column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=SpareArrOffset   DataType=double   Nrdim=-1   Shape=[]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = Spare int array column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+* Time1
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      VarRefCol = TimeRef  (String)
+      RefOffCol = TimeVarOffset  (String)
+      RefOffvarPerArr = 0  (Bool)
+* TimeOffset
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      Ref = TAI  (String)
+      RefOffMsr =   (Record)
+        type = epoch  (String)
+        refer = UTC  (String)
+        m0 =   (Record)
+          value = 49854.3  (Double)
+          unit = d  (String)
+* TimeVarOffset
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      Ref = UTC  (String)
+* MPosColumn
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = position  (String)
+        refer = ITRF  (String)
+        m2 =   (Record)
+          value = 0  (Double)
+          unit = m  (String)
+        m1 =   (Record)
+          unit = rad  (String)
+          value = 0  (Double)
+        m0 =   (Record)
+          unit = rad  (String)
+          value = 0  (Double)
+      NumUnits = 3  (uInt)
+      unit0 = rad  (String)
+      unit1 = rad  (String)
+      unit2 = m  (String)
+      Ref = ITRF  (String)
+* TimeRef
+* TimeRefStr
+* MEpochVarStr
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      VarRefCol = TimeRefStr  (String)
+      RefOffCol = TimeVarOffset  (String)
+      RefOffvarPerArr = 0  (Bool)
+* Time1Arr
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = h  (String)
+      VarRefCol = TimeArrRef  (String)
+      RefOffMsr =   (Record)
+        type = epoch  (String)
+        refer = UTC  (String)
+        m0 =   (Record)
+          value = 51234  (Double)
+          unit = d  (String)
+* TimeArrRef
+* Time2Arr
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      VarRefCol = Time2ArrRef  (String)
+      RefOffCol = Time2ArrOffset  (String)
+      RefOffvarPerArr = 1  (Bool)
+* Time2ArrOffset
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      Ref = UTC  (String)
+* Time2ArrRef
+* Time3Arr
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      VarRefCol = Time3ArrStrRef  (String)
+* Time3ArrStrRef
+* Time4Arr
+* Time4StrRef
+* Time4ScaOffset
+* SpareCol1
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      Ref = GAST  (String)
+      RefOffCol = SpareArrOffset  (String)
+      RefOffvarPerArr = 1  (Bool)
+* SpareArrOffset
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = epoch  (String)
+        refer = LAST  (String)
+        m0 =   (Record)
+          value = 0  (Double)
+          unit = d  (String)
+      NumUnits = 1  (uInt)
+      unit0 = d  (String)
+      Ref = UTC  (String)
 The following should report no such column  for TableMeasRefDesc.
 TableMeasRefDesc::checkColumn; No such column: SillyColumnName
 The following should report that the column's type is no good.
@@ -6,9 +275,13 @@ TableMeasRefDesc::checkColumn; Reference column's type must be Int or String: Ti
 The following should report no such column for TableMeasValueDesc.
 TableMeasValueDesc::checkColumn; No such column: SillyColumnName
 The following should report that the column is not array for TabelMeasValueDesc.
-TableMeasValueDesc::checkColumn; MeasValue column must be an array: Time4StrRef
+TableMeasValueDesc::checkColumn; Column's type must be Double: Time4StrRef
 The following should report that the column's type should be double for the TableMeasValueDesc.
 TableMeasValueDesc::checkColumn; Column's type must be Double: Time2ArrRef
+The following should report that the column's unit vector is too long.
+TableMeasDescBase::setMeasUnits; Unit vector for column Time2Arr is too long
+The following should report that the column has an invalid unit.
+TableMeasDescBase::setMeasUnits; invalid unit m for column Time2Arr
 Attempt to reference undefined Measure offset  exception on the TableMeasOffsetDesc object.
 TableMeasOffsetDesc::getOffset() attempt to reference undefined measure offset.
 PASS - TMRefDesc doesn't have an offset yet
@@ -16,24 +289,14 @@ PASS - Reference has column offset.
 Create MEpochScaCol from column TimeOffset...
 A column of MEpochs where the reference and offset are non-variable.
 Null MEpochScaCol successfully attached
-The MeasRef for the column is: Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+The MeasRef for the column is: Reference for an Epoch with Type: GAST, Offset: Epoch: 50220::08:17:60.0000
+The following line should report an error in ScalarMeasColumn::setDescUnits - invalid unit.
+TableMeasDescBase::resetUnits; invalid unit m for column Time1Arr
+Units of Time1Arr: h
+Units of Time1Arr: h
+Units of Time1Arr: s
 Adding a few MEpochs to column TimeOffset...
-adding: Epoch: 1234::00:00:00.0000
-adding: Epoch: 1234::02:23:60.0000
-adding: Epoch: 1234::04:48:00.0000
-adding: Epoch: 1234::07:11:60.0000
-adding: Epoch: 1234::09:36:00.0000
 Reading the MEpochs back from TimeOffset...
-retrieve: Epoch: 1234::00:00:00.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-retrieve: Epoch: 1234::02:23:60.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-retrieve: Epoch: 1234::04:48:00.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-retrieve: Epoch: 1234::07:11:60.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-retrieve: Epoch: 1234::09:36:00.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
 TEST of attach/reference...
 Column attached...
 Epoch: 1::00:00:00.0000
@@ -44,20 +307,10 @@ Epoch: 1::00:00:00.0000
 The following line should report an error in reconstruct - invalid column exception.
 TableMeasDescBase::reconstruct; MEASINFO record not found for column TimeRef
 The following line should be a null column exception.
-Invalid Table operation: Measure table column is null
+Invalid Table operation: ROMeasTableColumn object is null
 The following line should be an illegal offset column type exception.
-ROScalarMeasColumn::ROScalarMeasColumn Offset column must be a ScalarMeasColumn.
+Invalid Table data type when accessing column in ROScalarColumn ctor for column SpareCol1
 Reopening the table read-only and reading contents...
-retrieve: Epoch: 1234::00:00:00.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-retrieve: Epoch: 1234::02:23:60.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-retrieve: Epoch: 1234::04:48:00.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-retrieve: Epoch: 1234::07:11:60.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-retrieve: Epoch: 1234::09:36:00.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
 Filling the MPosition column MPosColumn
 put: Position: [14.138, 5.14582, 19.9659]
 put: Position: [14.7035, 5.35165, 20.7645]
@@ -72,109 +325,22 @@ retrieve: Position: [15.8346, 5.76332, 22.3618]
 retrieve: Position: [16.4001, 5.96915, 23.1604]
 Test of column TimeVarOffset...
 A column of MEpoch where the reference and offset components are variable.
-retrieve: Epoch: 51234::02:23:60.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 1234::00:00:00.0000
-retrieve: Epoch: 51234::04:47:60.0000
-  Reference for an Epoch with Type: UTC, Offset: Epoch: 1234::02:23:60.0000
-retrieve: Epoch: 51234::07:12:00.0000
-  Reference for an Epoch with Type: TAI, Offset: Epoch: 1234::04:48:00.0000
-retrieve: Epoch: 51234::09:36:00.0000
-  Reference for an Epoch with Type: UTC, Offset: Epoch: 1234::07:11:60.0000
-retrieve: Epoch: 51234::12:00:00.0000
-  Reference for an Epoch with Type: LAST, Offset: Epoch: 0::00:00:00.0000
+The following line should report an error in ScalarMeasColumn::put - not allowed to put a measure with a frame in variable column.
+ScalarMeasColumn::put() measure has a frame. Illegal for variable reference column.
 Creating an MEpoch Array Column
 Null MEpochArrCol successfully attached
 Adding a vector to the column at row 0.
 PASS - nothing in the measure array column row yet
 PASS - valid entry in array column row 0
-ev: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::21:27:00.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::21:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+The following line should report an error in ScalarMeasColumn::setDescUnits - not allowed to put when the table is not empty.
+ArrayMeasColumn::setDescUnits cannot be done; the table is not empty
 Open table again in RO mode to test ROArrayMeasColumn...
 Creating an MEpoch Array Column
-[Epoch: 0::13:26:60.0000, Epoch: 0::14:26:60.0000, Epoch: 0::15:27:00.0000, Epoch: 0::16:26:60.0000, Epoch: 0::17:26:60.0000, Epoch: 0::18:27:00.0000, Epoch: 0::19:26:60.0000, Epoch: 0::20:26:60.0000, Epoch: 0::21:27:00.0000, Epoch: 0::22:26:60.0000]
 Adding vectors to the test measure column
-in:  Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-in:  Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-in:  Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-in:  Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-in:  Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
 Reference for ArrayMeasCol is variable
 Reference for the ArrayMeasCol is: Reference for an Epoch with Type: LAST
 The following line should be a null column exception.
-Invalid Table operation: Measure table column is null
-in:  Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC
-in:  Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI
-in:  Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC
-in:  Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI
-in:  Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC
-in:  Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI
-in:  Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC
-in:  Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI
-in:  Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC
-in:  Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI
-in:  Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::11:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-out: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
-in:  Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
-out: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
+Invalid Table operation: ROMeasTableColumn object is null
 The following line should be a Table array conformance error exception.
-ArrayQuantColumn::get: Table array conformance error
+ROArrayMeasColumn::get: Table array conformance error
 Test completed normally...bye.
