@@ -34,6 +34,7 @@
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/ImageInfo.h>
+#include <trial/Images/ImageLogger.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/TempLattice.h>
@@ -177,24 +178,9 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 
 // Restore the logtable from HISTORY (this could be moved to non-templated code)
 
-    if (pNewImage->logSink().localSink().isTableLogSink()) {
-	TableLogSink& logTable = 
-	    pNewImage->logSink().localSink().castToTableLogSink();
-//
-	Vector<String> lines;
-	String groupType;
-	ConstFitsKeywordList kw = fitsImage.kwlist();
-	kw.first();
-	uInt n;
-	while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=
-	       0) {
-	    if (groupType == "LOGTABLE") {
-		FITSHistoryUtil::fromHISTORY(logTable, lines, n, True);
-	    } else if (groupType == "") {
-		FITSHistoryUtil::fromHISTORY(logTable, lines, n, False);
-	    }
-	}
-    }
+    ImageLogger& logger = pNewImage->logger();
+    ConstFitsKeywordList kw = fitsImage.kwlist();
+    ImageFITSConverter::restoreHistory (logger, kw);
 
 // Cool, now we just need to write it.
 
