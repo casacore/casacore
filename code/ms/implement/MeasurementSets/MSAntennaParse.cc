@@ -108,7 +108,7 @@ const TableExprNode* MSAntennaParse::selectFromIdsAndCPs(const Int index, const 
 {
   LogIO os(LogOrigin("MSSpwParse", "selectFromIdsAndCPs()", WHERE));
   os << " selectFromIdsAndCPs is not available "  <<LogIO::POST;
-  exit(0);
+  return NULL;
   
   TableExprNode condition;
   
