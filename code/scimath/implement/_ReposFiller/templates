@@ -1300,6 +1300,8 @@
      template class CompiledFunction<AutoDiff<Complex> > 
 1010 scimath/Functionals/CompiledFunction.cc 
      = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class CompiledFunction<DComplex> 
      template class CompiledFunction<Complex> 
 1020 scimath/Functionals/CompiledFunction.cc 
@@ -1313,6 +1315,8 @@
      template class CompiledFunction<AutoDiffA<Double> > 
      template class CompiledFunction<AutoDiffA<Float> > 
 1040 scimath/Functionals/CompiledFunction.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class CompiledFunction<Double> 
      template class CompiledFunction<Float> 
 1000 scimath/Functionals/CompiledParam.cc 
@@ -1382,6 +1386,8 @@
      template class DiracDFunction<AutoDiff<Complex> > 
 1010 scimath/Functionals/DiracDFunction.cc 
      = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class DiracDFunction<DComplex> 
      template class DiracDFunction<Complex> 
 1020 scimath/Functionals/DiracDFunction.cc 
@@ -1390,6 +1396,8 @@
      template class DiracDFunction<AutoDiff<Double> > 
      template class DiracDFunction<AutoDiff<Float> > 
 1030 scimath/Functionals/DiracDFunction.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class DiracDFunction<Double> 
      template class DiracDFunction<Float> 
 1000 scimath/Functionals/DiracDParam.cc 
@@ -1846,6 +1854,8 @@
      template class KaiserBFunction<AutoDiff<Complex> > 
 1010 scimath/Functionals/KaiserBFunction.cc 
      = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class KaiserBFunction<DComplex> 
      template class KaiserBFunction<Complex> 
 1020 scimath/Functionals/KaiserBFunction.cc 
@@ -1854,6 +1864,8 @@
      template class KaiserBFunction<AutoDiff<Double> > 
      template class KaiserBFunction<AutoDiff<Float> > 
 1030 scimath/Functionals/KaiserBFunction.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class KaiserBFunction<Double> 
      template class KaiserBFunction<Float> 
 1000 scimath/Functionals/KaiserBParam.cc 
@@ -2048,6 +2060,8 @@
      template class SincFunction<AutoDiff<Complex> > 
 1010 scimath/Functionals/SincFunction.cc 
      = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class SincFunction<DComplex> 
      template class SincFunction<Complex> 
 1020 scimath/Functionals/SincFunction.cc 
@@ -2056,6 +2070,8 @@
      template class SincFunction<AutoDiff<Double> > 
      template class SincFunction<AutoDiff<Float> > 
 1030 scimath/Functionals/SincFunction.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class SincFunction<Double> 
      template class SincFunction<Float> 
 1000 scimath/Functionals/SincParam.cc 
@@ -2140,6 +2156,8 @@
      template class UnaryFunction<AutoDiff<Complex> > 
 1010 scimath/Functionals/UnaryFunction.cc 
      = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class UnaryFunction<DComplex> 
      template class UnaryFunction<Complex> 
 1020 scimath/Functionals/UnaryFunction.cc 
@@ -2148,6 +2166,8 @@
      template class UnaryFunction<AutoDiff<Double> > 
      template class UnaryFunction<AutoDiff<Float> > 
 1030 scimath/Functionals/UnaryFunction.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
      template class UnaryFunction<Double> 
      template class UnaryFunction<Float> 
 1000 scimath/Functionals/UnaryParam.cc 
