@@ -4570,3 +4570,4 @@
 14 297 src mv trial/implement/MeasurementSets/MSDerivedValues.h trial/implement/MeasurementSets/OldMSDerivedValues.h
 14 297 src mv trial/implement/MeasurementSets/MSFitsInput.cc trial/implement/MeasurementSets/OldMSFitsInput.cc
 14 297 src mv trial/implement/MeasurementSets/MSFitsInput.h trial/implement/MeasurementSets/OldMSFitsInput.h
+14 297 src mv trial/implement/MeasurementSets/MSFitsOutput.cc trial/implement/MeasurementSets/OldMSFitsOutput.cc
