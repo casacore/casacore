@@ -6123,3 +6123,4 @@
 17 165 src rm aips/implement/Functionals/test/dG1D.cc
 17 168 src rm hia/implement/GSDDataSource/gsd/gsd1_getval.o
 17 168 src rm hia/implement/GSDDataSource/gsd/gsd1_rddata.o
+17 168 src rm hia/implement/GSDDataSource/gsd/gsd1_rdfildsc.o
