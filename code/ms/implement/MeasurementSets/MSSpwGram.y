@@ -63,6 +63,7 @@ using namespace casa;
 %type <node> spwstatement
 %type <node> nameexpr
 %type <node> combindexexpr
+%type <node> pureindexexpr
 %type <node> indexexpr
 
 %left OR
@@ -83,17 +84,23 @@ spwstatement: SQUOTE nameexpr SQUOTE {
             | combindexexpr
             ;
 
-combindexexpr: indexexpr {
+combindexexpr: pureindexexpr {
                  $$ = $1;}
              | indexexpr COMMA indexexpr {
                  $$ = new TableExprNode ($1 || $3);}
              ;
-indexexpr: INDEX {
-             Vector<Int> spwids(1);
-             spwids[0] = $1;
-             $$ = MSSpwParse().selectSpwIds(spwids);
-             }
-         | INDEX COLON INDEX {
+pureindexexpr: INDEX {
+                 Vector<Int> spwids(1);
+                 spwids[0] = $1;
+                 $$ = MSSpwParse().selectSpwIds(spwids);
+                 }
+             | pureindexexpr COMMA INDEX {
+                 Vector<Int> spwids(1);
+                 spwids[0] = $3;
+	         $$ = MSSpwParse().selectSpwIds(spwids);
+                 }
+             ;
+indexexpr: INDEX COLON INDEX {
 	     $$ = MSSpwParse().selectChaninASpw($1, $3);
 	     }
          | INDEX COLON INDEX DASH INDEX {
