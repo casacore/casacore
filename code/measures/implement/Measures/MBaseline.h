@@ -115,7 +115,7 @@ public:
       SUPERGAL,
       N_Types,
       // Defaults
-      DEFAULT=J2000,
+      DEFAULT=ITRF,
       // Synonyms
       AZELNE=AZEL};
 
