@@ -4431,3 +4431,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSFieldEnums.h aips/implement/MeasurementSets/OldMSFieldEnums.h
 14 296 src mv aips/implement/MeasurementSets/MSMainEnums.h aips/implement/MeasurementSets/OldMSMainEnums.h
 14 296 src mv aips/implement/MeasurementSets/MSObservation.cc aips/implement/MeasurementSets/OldMSObservation.cc
+14 296 src mv aips/implement/MeasurementSets/MSObservation.h aips/implement/MeasurementSets/OldMSObservation.h
