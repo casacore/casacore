@@ -76,6 +76,39 @@ Double checkRot(const RotMatrix &rm1, RotMatrix rm2) {
   return 0.;
 }
 
+// Calculate EqEqCT2000
+Double measEqEqCT2000(Double tt) {
+  tt -= MeasData::MJD2000;
+  tt /= MeasData::JDCEN;
+  Vector<Double> pfa(14), pdfa(14);
+  Double dtmp, ddtmp;
+  Double neval(0), deval(0);
+  for (uInt i=0; i<14; i++) {
+    pfa(i) = MeasTable::planetaryArg2000(i)(tt);
+    pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(tt);
+  };
+  for (Int i=32; i>=0; --i) {
+    dtmp = ddtmp = 0;
+    for (uInt j=0; j<14; j++) {
+      dtmp += MeasTable::mulArgEqEqCT2000(i)[j] * pfa[j];
+      ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
+    };
+    neval += MeasTable::mulSCEqEqCT2000(i)[0] * sin(dtmp);
+    neval += MeasTable::mulSCEqEqCT2000(i)[1] * cos(dtmp);
+    deval += MeasTable::mulSCEqEqCT2000(i)[0] * cos(dtmp) -
+      MeasTable::mulSCEqEqCT2000(i)[1] * sin(dtmp) * ddtmp;
+  };
+  dtmp = ddtmp = 0;
+  for (uInt j=0; j<14; j++) {
+    dtmp += MeasTable::mulArgEqEqCT2000(33)[j] * pfa[j];
+    ddtmp += MeasTable::mulPlanArg2000A(33)[j] * pdfa[j];
+  };
+  neval += tt*MeasTable::mulSCEqEqCT2000(33)[0] * sin(dtmp);
+  neval += tt*MeasTable::mulSCEqEqCT2000(33)[1] * cos(dtmp);
+  deval += MeasTable::mulSCEqEqCT2000(33)[0] * cos(dtmp) -
+    MeasTable::mulSCEqEqCT2000(33)[1] * sin(dtmp) * ddtmp;;;
+  return neval*C::arcsec;
+}
 
 int main() {
   try {
@@ -249,9 +282,10 @@ int main() {
     {
       cout << "Test of some details ..." << endl;
       SEPAR();
-      Double era = IAUR(era00)(uta,utb); 
-      Double gst = IAUR(gmst00)(uta,utb,tta,ttb);
-      Double sp  = IAUR(sp00)(tta,ttb);
+      Double era  = IAUR(era00)(uta,utb); 
+      Double gmst = IAUR(gmst00)(uta,utb,tta,ttb);
+      Double sp   = IAUR(sp00)(tta,ttb);
+      Double eect = IAUR(eect00)(tta,ttb);
       cout << "UT: " << (uta-2451545.0)+utb << ", " <<
 	utb-MeasData::MJD2000 << endl; 
       cout << "TT: " << (tta-2451545.0)+ttb << ", " <<
@@ -263,9 +297,9 @@ int main() {
 	era << ", " << MeasTable::ERA00(utb) << ", " <<
 	era - MeasTable::ERA00(utb) << endl;
       cout << "GMST (Sofa, aips++, diff): " <<
-	gst << ", " <<
+	gmst << ", " <<
 	fmod((ttb+6713.)*C::_2pi + MeasTable::GMST00(utb, ttb),
-	     C::_2pi) << ", " << gst -
+	     C::_2pi) << ", " << gmst -
 	fmod((ttb+6713.)*C::_2pi + MeasTable::GMST00(utb, ttb),
 	     C::_2pi) << endl;
       cout << "GMST82 (GMST82, GMST00, diff): " <<
@@ -273,6 +307,9 @@ int main() {
 	ttb+MeasTable::GMST00(utb, ttb)/C::_2pi + 6713. <<", " <<
 	utb+MeasTable::GMST0(utb)/MeasData::SECinDAY -
 	ttb-MeasTable::GMST00(utb, ttb)/C::_2pi << endl;
+      cout << "EqEqCT00 (Sofa, aips++, diff): " <<
+	eect << ", " << measEqEqCT2000(ttb) << ", " <<
+	eect-measEqEqCT2000(ttb) << endl;
       SEPAR();
     }
 
