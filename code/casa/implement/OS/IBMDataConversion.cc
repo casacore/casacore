@@ -1,5 +1,5 @@
 //# IBMDataConversion.cc: A class with virtual functions to convert IBM format
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,6 +82,18 @@ unsigned int IBMDataConversion::toLocal (unsigned long&  to,
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_ULONG;
 }
+unsigned int IBMDataConversion::toLocal (long long&      to,
+					 const void* from) const
+{
+    IBMConversion::toLocal (to, from);
+    return SIZE_IBM_LLONG;
+}
+unsigned int IBMDataConversion::toLocal (unsigned long long& to,
+					 const void* from) const
+{
+    IBMConversion::toLocal (to, from);
+    return SIZE_IBM_ULLONG;
+}
 unsigned int IBMDataConversion::toLocal (float&          to,
 					 const void* from) const
 {
@@ -144,6 +156,19 @@ unsigned int IBMDataConversion::toLocal (unsigned long*  to, const void* from,
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_ULONG;
 }
+unsigned int IBMDataConversion::toLocal (long long*      to, const void* from,
+					 unsigned int nr) const
+{
+    IBMConversion::toLocal (to, from, nr);
+    return nr*SIZE_IBM_LLONG;
+}
+unsigned int IBMDataConversion::toLocal (unsigned long long* to,
+					 const void* from,
+					 unsigned int nr) const
+{
+    IBMConversion::toLocal (to, from, nr);
+    return nr*SIZE_IBM_ULLONG;
+}
 unsigned int IBMDataConversion::toLocal (float*          to, const void* from,
 					 unsigned int nr) const
 {
@@ -196,6 +221,16 @@ unsigned int IBMDataConversion::fromLocal (void* to, unsigned long  from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_ULONG;
+}
+unsigned int IBMDataConversion::fromLocal (void* to, long long      from) const
+{
+    IBMConversion::fromLocal (to, from);
+    return SIZE_IBM_LLONG;
+}
+unsigned int IBMDataConversion::fromLocal (void* to, unsigned long long from) const
+{
+    IBMConversion::fromLocal (to, from);
+    return SIZE_IBM_ULLONG;
 }
 unsigned int IBMDataConversion::fromLocal (void* to, float          from) const
 {
@@ -257,6 +292,19 @@ unsigned int IBMDataConversion::fromLocal (void* to, const unsigned long* from,
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_ULONG;
 }
+unsigned int IBMDataConversion::fromLocal (void* to, const long long* from,
+					   unsigned int nr) const
+{
+    IBMConversion::fromLocal (to, from, nr);
+    return nr*SIZE_IBM_LLONG;
+}
+unsigned int IBMDataConversion::fromLocal (void* to,
+					   const unsigned long long* from,
+					   unsigned int nr) const
+{
+    IBMConversion::fromLocal (to, from, nr);
+    return nr*SIZE_IBM_ULLONG;
+}
 unsigned int IBMDataConversion::fromLocal (void* to, const float* from,
 					   unsigned int nr) const
 {
@@ -307,7 +355,7 @@ Bool IBMDataConversion::canCopy (const unsigned short*) const
 Bool IBMDataConversion::canCopy (const int*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(int) == SIZE_IBM_UINT) {
+    if (sizeof(int) == SIZE_IBM_INT) {
 	return True;
     }
 #endif
@@ -327,7 +375,7 @@ Bool IBMDataConversion::canCopy (const unsigned int*) const
 Bool IBMDataConversion::canCopy (const long*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(long) == SIZE_IBM_ULONG) {
+    if (sizeof(long) == SIZE_IBM_LONG) {
 	return True;
     }
 #endif
@@ -338,6 +386,26 @@ Bool IBMDataConversion::canCopy (const unsigned long*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(unsigned long) == SIZE_IBM_ULONG) {
+	return True;
+    }
+#endif
+    return False;
+}
+
+Bool IBMDataConversion::canCopy (const long long*) const
+{
+#if !defined(AIPS_LITTLE_ENDIAN)
+    if (sizeof(long long) == SIZE_IBM_LLONG) {
+	return True;
+    }
+#endif
+    return False;
+}
+
+Bool IBMDataConversion::canCopy (const unsigned long long*) const
+{
+#if !defined(AIPS_LITTLE_ENDIAN)
+    if (sizeof(unsigned long long) == SIZE_IBM_ULLONG) {
 	return True;
     }
 #endif
@@ -386,6 +454,14 @@ unsigned int IBMDataConversion::externalSize (const long*) const
 unsigned int IBMDataConversion::externalSize (const unsigned long*) const
 {
     return SIZE_IBM_ULONG;
+}
+unsigned int IBMDataConversion::externalSize (const long long*) const
+{
+    return SIZE_IBM_LLONG;
+}
+unsigned int IBMDataConversion::externalSize (const unsigned long long*) const
+{
+    return SIZE_IBM_ULLONG;
 }
 unsigned int IBMDataConversion::externalSize (const float*) const
 {

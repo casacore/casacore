@@ -1,5 +1,5 @@
 //# RawDataConversion.cc: A class with virtual functions to copy without conversion
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -75,5 +75,7 @@ RAWDATACONVERSION_DOIT(int)
 RAWDATACONVERSION_DOIT(unsigned int)
 RAWDATACONVERSION_DOIT(long)
 RAWDATACONVERSION_DOIT(unsigned long)
+RAWDATACONVERSION_DOIT(long long)
+RAWDATACONVERSION_DOIT(unsigned long long)
 RAWDATACONVERSION_DOIT(float)
 RAWDATACONVERSION_DOIT(double)

@@ -1,5 +1,5 @@
 //# CanonicalDataConversion.cc: A class with virtual functions to convert canonical format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -74,6 +74,16 @@ unsigned int CanonicalDataConversion::toLocal (unsigned long& to,
 {
     return CanonicalConversion::toLocal (to, from);
 }
+unsigned int CanonicalDataConversion::toLocal (long long& to,
+					       const void* from) const
+{
+    return CanonicalConversion::toLocal (to, from);
+}
+unsigned int CanonicalDataConversion::toLocal (unsigned long long& to,
+					       const void* from) const
+{
+    return CanonicalConversion::toLocal (to, from);
+}
 unsigned int CanonicalDataConversion::toLocal (float& to,
 					       const void* from) const
 {
@@ -133,6 +143,18 @@ unsigned int CanonicalDataConversion::toLocal (unsigned long* to,
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
+unsigned int CanonicalDataConversion::toLocal (long long* to,
+					       const void* from,
+					       unsigned int nr) const
+{
+    return CanonicalConversion::toLocal (to, from, nr);
+}
+unsigned int CanonicalDataConversion::toLocal (unsigned long long* to,
+					       const void* from,
+					       unsigned int nr) const
+{
+    return CanonicalConversion::toLocal (to, from, nr);
+}
 unsigned int CanonicalDataConversion::toLocal (float* to,
 					       const void* from,
 					       unsigned int nr) const
@@ -183,6 +205,16 @@ unsigned int CanonicalDataConversion::fromLocal (void* to,
 }
 unsigned int CanonicalDataConversion::fromLocal (void* to,
 						 unsigned long from) const
+{
+    return CanonicalConversion::fromLocal (to, from);
+}
+unsigned int CanonicalDataConversion::fromLocal (void* to,
+						 long long from) const
+{
+    return CanonicalConversion::fromLocal (to, from);
+}
+unsigned int CanonicalDataConversion::fromLocal (void* to,
+						 unsigned long long from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
@@ -246,6 +278,18 @@ unsigned int CanonicalDataConversion::fromLocal (void* to,
     return CanonicalConversion::fromLocal (to, from, nr);
 }
 unsigned int CanonicalDataConversion::fromLocal (void* to,
+						 const long long* from,
+						 unsigned int nr) const
+{
+    return CanonicalConversion::fromLocal (to, from, nr);
+}
+unsigned int CanonicalDataConversion::fromLocal (void* to,
+						 const unsigned long long* from,
+						 unsigned int nr) const
+{
+    return CanonicalConversion::fromLocal (to, from, nr);
+}
+unsigned int CanonicalDataConversion::fromLocal (void* to,
 						 const float* from,
 						 unsigned int nr) const
 {
@@ -291,6 +335,14 @@ Bool CanonicalDataConversion::canCopy (const unsigned long*) const
 {
     return ToBool (CONVERT_CAN_ULONG == 0);
 }
+Bool CanonicalDataConversion::canCopy (const long long*) const
+{
+    return ToBool (CONVERT_CAN_LLONG == 0);
+}
+Bool CanonicalDataConversion::canCopy (const unsigned long long*) const
+{
+    return ToBool (CONVERT_CAN_ULLONG == 0);
+}
 Bool CanonicalDataConversion::canCopy (const float*) const
 {
     return ToBool (CONVERT_CAN_FLOAT == 0);
@@ -332,6 +384,14 @@ unsigned int CanonicalDataConversion::externalSize (const long*) const
 unsigned int CanonicalDataConversion::externalSize (const unsigned long*) const
 {
     return SIZE_CAN_ULONG;
+}
+unsigned int CanonicalDataConversion::externalSize (const long long*) const
+{
+    return SIZE_CAN_LLONG;
+}
+unsigned int CanonicalDataConversion::externalSize (const unsigned long long*) const
+{
+    return SIZE_CAN_ULLONG;
 }
 unsigned int CanonicalDataConversion::externalSize (const float*) const
 {
