@@ -1,5 +1,5 @@
 //# StokesCoordinate.h: Interconvert between pixel number and Stokes value.
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -219,15 +219,6 @@ public:
     virtual Vector<Double> worldMixMax () const {return worldMax_p;};
     //</group>
 
-
-    // Set and recover the preferred world axis units.  Meaningless for StokesCoordinate
-    // so these functions have no effect.
-    // <group>
-    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
-    virtual Vector<String> preferredWorldAxisUnits() const;
-    // </group>
-
-
     // Format a StokesCoordinate world value with the common format 
     // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
     // for basics.
@@ -291,7 +282,6 @@ private:
     Double crval_p, crpix_p, matrix_p, cdelt_p;
     String name_p;
     String unit_p;
-    String prefUnit_p;
     Int nValues_p;
     Vector<Double> worldMin_p, worldMax_p;
 

@@ -1,5 +1,5 @@
 //# StokesCoordinate.cc: this defines StokesCoordinate which shoe-horns Stokes axes into a Coordinate
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,8 +46,7 @@ StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
   matrix_p(1),
   cdelt_p(1), 
   name_p("Stokes"), 
-  unit_p(""),
-  prefUnit_p("")
+  unit_p("")
 {
     setStokes(whichStokes);
     nValues_p = values_p.nelements();
@@ -63,7 +62,6 @@ StokesCoordinate::StokesCoordinate(const StokesCoordinate &other)
   cdelt_p(other.cdelt_p),
   name_p(other.name_p),
   unit_p(other.unit_p),
-  prefUnit_p(other.prefUnit_p),
   nValues_p(other.nValues_p)
 {  
     setDefaultWorldMixRanges();
@@ -80,7 +78,6 @@ StokesCoordinate &StokesCoordinate::operator=(const StokesCoordinate &other)
 	cdelt_p = other.cdelt_p;
 	name_p = other.name_p;
 	unit_p = other.unit_p;
-        prefUnit_p = other.prefUnit_p;
         nValues_p = other.nValues_p;
         worldMin_p = other.worldMin_p;
         worldMax_p = other.worldMax_p;
@@ -232,13 +229,6 @@ Vector<String> StokesCoordinate::worldAxisUnits() const
     return units;
 }
 
-Vector<String> StokesCoordinate::preferredWorldAxisUnits() const
-{
-    Vector<String> units(1);
-    units = prefUnit_p;
-    return units;
-}
-
 Vector<Double> StokesCoordinate::referencePixel() const
 {
     Vector<Double> crpix(1);
@@ -282,12 +272,6 @@ Bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     return True;
 }
-
-Bool StokesCoordinate::setPreferredWorldAxisUnits(const Vector<String> &units)
-{
-    return True;
-}
-
 
 Bool StokesCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
@@ -426,7 +410,6 @@ Bool StokesCoordinate::save(RecordInterface &container,
         subrec.define("crpix", referencePixel());
         subrec.define("cdelt", increment());
         subrec.define("pc", linearTransform());
-        subrec.define("preferredunits", preferredWorldAxisUnits());
 
 // it never makes sense to set the units
 // subrec.define("units", worldAxisUnits()); 
@@ -501,11 +484,6 @@ StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
     retval->setReferenceValue(crval);
     retval->setReferencePixel(crpix);
 //
-    if (subrec.isDefined("preferredunits")) {                // optional
-       Vector<String> prefUnits;
-       subrec.get("preferredunits", prefUnits);
-       retval->setPreferredWorldAxisUnits(prefUnits);
-    }           
 */
 //
     return retval;
