@@ -31,6 +31,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/Stokes.h>
+#include <aips/Measures/Unit.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SpectralModel.h>
 
@@ -165,6 +166,13 @@ public:
   virtual const MFrequency & refFrequency() const;
   // </group>
 
+  // get the frequency unit, and change the default frequency unit to the
+  // specified one.
+  // <group>
+  virtual const Unit & frequencyUnit() const;
+  virtual void convertFrequencyUnit(const Unit & freqUnit);
+  // </group>
+
   // set/get the spectral index. The which argument must be either Stokes::I,
   // Stokes::Q, Stokes::U or Stokes::V. No other StokesTypes are allowed.
   // <group>
@@ -254,5 +262,6 @@ private:
   Double & itsQindex;
   Double & itsUindex;
   Double & itsVindex;
+  Unit itsUnit;
 };
 #endif
