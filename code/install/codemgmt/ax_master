@@ -4181,3 +4181,4 @@
 14 065 src mv trial/apps/viewer/magnifyb3.xbm trialdisplay/apps/viewer/magnifyb3.xbm
 14 065 src mv trial/apps/viewer/makefile trialdisplay/apps/viewer/makefile
 14 065 src mv trial/apps/viewer/polyregion.xbm trialdisplay/apps/viewer/polyregion.xbm
+14 065 src mv trial/apps/viewer/polyregionb0.xbm trialdisplay/apps/viewer/polyregionb0.xbm
