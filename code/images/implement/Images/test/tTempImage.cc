@@ -76,8 +76,6 @@ void doIt (TempImage<Int>& scratch)
   mask.putAt (False, IPosition(3,7));
   AlwaysAssertExit (! scratch.isMasked());
   AlwaysAssertExit (! scratch.hasPixelMask());
-  AlwaysAssertExit (! scratch.isMaskWritable());
-  AlwaysAssertExit (scratch.getRegionPtr() == 0);
   Array<Bool> tm;
   scratch.getMaskSlice (tm, IPosition(3,1), IPosition(3,6));
   AlwaysAssertExit (allEQ (tm, True));
@@ -86,8 +84,7 @@ void doIt (TempImage<Int>& scratch)
   scratch.attachMask (mask);
   AlwaysAssertExit (scratch.isMasked());
   AlwaysAssertExit (scratch.hasPixelMask());
-  AlwaysAssertExit (scratch.isMaskWritable());
-  AlwaysAssertExit (scratch.getRegionPtr() == 0);
+  AlwaysAssertExit (scratch.pixelMask().isWritable());
   Array<Bool> tm1;
   scratch.getMaskSlice (tm1, IPosition(3,1), IPosition(3,6));
   AlwaysAssertExit (allEQ (tm1, True));
@@ -100,7 +97,7 @@ void doIt (TempImage<Int>& scratch)
   AlwaysAssertExit (allEQ (tm2, tm1));
 
   // Change the image mask directly and see if it is fine.
-  scratch.putMaskSlice (tm2, IPosition(3,0));
+  scratch.pixelMask().putSlice (tm2, IPosition(3,0));
   Array<Bool> tm3(IPosition(3,7));
   tm3 = True;
   tm1(IPosition(3,6)) = False;
@@ -113,8 +110,6 @@ void doIt (TempImage<Int>& scratch)
   scratch.removeMask();
   AlwaysAssertExit (!scratch.isMasked());
   AlwaysAssertExit (!scratch.hasPixelMask());
-  AlwaysAssertExit (!scratch.isMaskWritable());
-  AlwaysAssertExit (scratch.getRegionPtr() == 0);
 
   // Test unit handling.
   scratch.setUnits (Unit("Jy"));
