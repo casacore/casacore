@@ -1,5 +1,5 @@
 //# TableCopy.h: Class with static functions for copying a table
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -150,7 +150,7 @@ void TableCopy::copyInfo (Table& out, const Table& in)
 
 void TableCopy::copySubTables (Table& out, const Table& in)
 {
-  copySubTables (out.rwKeywordSet(), in.keywordSet(), out.tableName());
+  copySubTables (out.rwKeywordSet(), in.keywordSet(), out.tableName(), in);
   const TableDesc& outDesc = out.tableDesc();
   const TableDesc& inDesc = in.tableDesc();
   for (uInt i=0; i<outDesc.ncolumn(); i++) {
@@ -159,7 +159,7 @@ void TableCopy::copySubTables (Table& out, const Table& in)
       TableColumn outCol(out, name);
       ROTableColumn inCol(in, name);
       copySubTables (outCol.rwKeywordSet(), inCol.keywordSet(),
-		     out.tableName());
+		     out.tableName(), in);
     }
   }
   out.flush(); 
@@ -167,14 +167,25 @@ void TableCopy::copySubTables (Table& out, const Table& in)
 
 void TableCopy::copySubTables (TableRecord& outKeys,
 			       const TableRecord& inKeys,
-			       const String& outName)
+			       const String& outName,
+			       const Table& in)
 {
   for (uInt i=0; i<inKeys.nfields(); i++) {
     if (inKeys.type(i) == TpTable) {
       Table inTab = inKeys.asTable(i);
-      String newName = outName + '/' + Path(inTab.tableName()).baseName();
-      inTab.deepCopy (newName, Table::New);
-      outKeys.defineTable (inKeys.name(i), Table(newName));
+      // If the table to be copied has the same root as the main input table,
+      // we do not make a copy. This is needed to avoid the recursive copy
+      // of SORTED_TABLE in a MeasurementSet.
+      if (inTab.isSameRoot (in)) {
+	String keyName = inKeys.name(i);
+	if (outKeys.isDefined (keyName)) {
+	  outKeys.removeField (keyName);
+	}
+      } else {
+	String newName = outName + '/' + Path(inTab.tableName()).baseName();
+	inTab.deepCopy (newName, Table::New);
+	outKeys.defineTable (inKeys.name(i), Table(newName));
+      }
     }
   }
 }

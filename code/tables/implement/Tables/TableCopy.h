@@ -1,5 +1,5 @@
 //# TableCopy.h: Class with static functions for copying a table
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,7 +108,8 @@ public:
   // in the table with the given name.
   static void copySubTables (TableRecord& outKeys,
 			     const TableRecord& inKeys,
-			     const String& outName);
+			     const String& outName,
+			     const Table& in);
 
   // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.
   // Since TiledShapeStMan does not support ID columns, they are
