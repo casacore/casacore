@@ -27,14 +27,16 @@
 
 //# Includes
 #include <aips/Measures/MeasIERS.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Logging.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/OS/Time.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVTime.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/OS/Time.h>
-#include <aips/Logging.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Tasking/AipsrcValue.h>
+#include <aips/Utilities/String.h>
 
 //# Constants
 const Double MeasIERS::INTV = 5;
@@ -226,23 +228,34 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     "/data/geodetic/" };
   String ldir;
   Bool ok = True;
+  Vector<String> searched;
   if (Aipsrc::find(ldir, rc)) {
     ldir += '/';
+    searched.resize(searched.nelements()+1, True);
+    searched[searched.nelements()-1] = ldir;
   } else {
     String udir;
     if (!dir.empty()) udir = dir + '/';
     ldir = "./";
+    searched.resize(searched.nelements()+1, True);
+    searched[searched.nelements()-1] = ldir;
     if (!Table::isReadable(ldir + name)) {
       ldir = "./data/";
+      searched.resize(searched.nelements()+1, True);
+      searched[searched.nelements()-1] = ldir;
       if (!Table::isReadable(ldir + name)) {
 	Bool found = False;
 	for (Int i=0; i<2; i++) {
 	  ldir = Aipsrc::aipsHome() + path[i];
+	  searched.resize(searched.nelements()+1, True);
+	  searched[searched.nelements()-1] = ldir;
 	  if (Table::isReadable(ldir + name)) {
 	    found = True;
 	    break;
 	  };
 	  ldir = Aipsrc::aipsRoot() + path[i];
+	  searched.resize(searched.nelements()+1, True);
+	  searched[searched.nelements()-1] = ldir;
 	  if (Table::isReadable(ldir + name)) {
 	    found = True;
 	    break;
@@ -250,12 +263,20 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 	};
 	if (!found) {
 	  ldir = Aipsrc::aipsHome() + "/data/" + udir;
+	  searched.resize(searched.nelements()+1, True);
+	  searched[searched.nelements()-1] = ldir;
 	  if (!Table::isReadable(ldir + name)) {
 	    ldir = Aipsrc::aipsRoot() + "/data/" + udir;
+	    searched.resize(searched.nelements()+1, True);
+	    searched[searched.nelements()-1] = ldir;
 	    if (!Table::isReadable(ldir + name)) {
 	      ldir = Aipsrc::aipsHome() + "/code/trial/apps/measures/";
+	      searched.resize(searched.nelements()+1, True);
+	      searched[searched.nelements()-1] = ldir;
 	      if (!Table::isReadable(ldir + name)) {
 		ldir = Aipsrc::aipsRoot() + "/code/trial/apps/measures/";
+		searched.resize(searched.nelements()+1, True);
+		searched[searched.nelements()-1] = ldir;
 	      };
 	    };
 	  };
@@ -263,7 +284,17 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
       };
     };
   };
-  if (!Table::isReadable(ldir + name)) return False;
+  if (!Table::isReadable(ldir + name)) {
+    LogIO os(LogOrigin("MeasIERS",
+		       String("fillMeas(MeasIERS::Files, Double)"),
+		       WHERE));
+    os << LogIO::WARN <<
+      String("Requested data table") << name <<
+      String(" cannot be found in the searched directories:\n");
+    for (uInt i=0; i<searched.nelements(); ++i) os << searched[i] << "\n";
+    os << LogIO::POST;
+    return False;
+  };
   Table tab(ldir + name);
   TableRecord ks(tab.keywordSet());
   if (!ks.isDefined("VS_DATE") || !ks.isDefined("VS_VERSION") ||
