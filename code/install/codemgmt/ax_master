@@ -2045,3 +2045,4 @@
 08 220 src rm doc/user/Refman.dir/synthesis.htex
 08 220 src rm doc/user/Refman.dir/table.htex
 08 220 src rm doc/user/Refman.dir/tableplotter.htex
+08 222 src rm trial/scripts/image.help
