@@ -40,6 +40,7 @@ using std::string;
 class String;
 class RegexBase;
 #include <aips/iosstrfwd.h>
+#include <aips/sstream.h>
 
 // <summary> SubString help class to be used in at, before, ... </summary>
 // <synopsis>
