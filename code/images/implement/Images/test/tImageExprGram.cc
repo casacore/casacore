@@ -504,6 +504,66 @@ main (int argc, char *argv[])
     }
   }
   {
+    cout << "Expr:  a = median(b)" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("median(b)"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    Double result = bVal;
+    if (! allNear (aArr, result, 1e-10)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+    }
+  }
+  {
+    cout << "Expr:  a = fractile(b,0.2)" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("fractile(b,0.2)"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    Double result = bVal;
+    if (! allNear (aArr, result, 1e-10)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+    }
+  }
+  {
+    cout << "Expr:  a = fractilerange(b,0.2)" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("fractilerange(b,0.2)"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    Double result = 0.0;
+    if (! allNear (aArr, result, 1e-10)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+    }
+  }
+  {
+    cout << "Expr:  a = fractilerange(b,0.2,0.6)" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("fractilerange(b,0.2,0.6)"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    Double result = 0.0;
+    if (! allNear (aArr, result, 1e-10)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+    }
+  }
+  {
     {
 	PagedArray<Double> ap (shape, "a");
 	ap.copyData (a);
