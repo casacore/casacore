@@ -25,13 +25,17 @@
 //#
 //# $Id$
 
+#include <trial/Images/ImageHistograms.h>
+#include <trial/Images/ImageHistSpecialize.h>
+#include <trial/Images/ImageHistProgress.h>
+#include <trial/Lattices/LattStatsSpecialize.h>
+
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/VectorIter.h>
 #include <trial/Coordinates.h>  
-#include <aips/Functionals/Gaussian1D.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/LatticeApply.h>
@@ -42,7 +46,6 @@
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Tables/Table.h>
@@ -57,7 +60,7 @@
 #include <stdlib.h>
 #include <strstream.h>
 
-#include <trial/Images/ImageHistograms.h>
+
 
 
 
@@ -99,7 +102,7 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& image,
       Vector<Int> cursorAxes;
       goodParameterStatus_p = setAxes(cursorAxes);
    } else {
-      goodParameterStatus_p = False;
+      os_p << error_p << LogIO::EXCEPTION;
    }
 
 // Avoid double deletion by LogIO::cleanup
@@ -142,7 +145,7 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& image,
       Vector<Int> cursorAxes;
       goodParameterStatus_p = setAxes(cursorAxes);
    } else {
-      goodParameterStatus_p = False;
+      os_p << error_p << LogIO::EXCEPTION;
    }
 }
 
@@ -240,7 +243,6 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axes)
 //
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -285,7 +287,6 @@ Bool ImageHistograms<T>::setNBins (const uInt& nBins)
 //
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -316,7 +317,6 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& include)
 //
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -354,7 +354,6 @@ Bool ImageHistograms<T>::setGaussian (const Bool& doGauss)
 //
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -372,7 +371,6 @@ Bool ImageHistograms<T>::setForm (const Bool& doLog, const Bool& doCumu)
 // 
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
     }
 
@@ -390,7 +388,6 @@ Bool ImageHistograms<T>::setStatsList (const Bool& doList)
 //
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -409,7 +406,6 @@ Bool ImageHistograms<T>::setPlotting(PGPlotter& plotter,
 //
 {     
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -455,23 +451,21 @@ Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
 //
 { 
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
-   T *dummy = 0;
+   T* dummy = 0;
    DataType imageType = whatType(dummy);
-   if (imageType !=TpFloat && imageType != TpDouble) {
+   if (imageType !=TpFloat && imageType != TpComplex) {
       ostrstream oss;
-      oss << "Histograms can only be evaluated from images of type : "
-          << TpFloat << " and " << TpDouble << endl;
+      oss << "Images of type " << imageType << " are not currently supported" << endl;
       error_p = String(oss);
       goodParameterStatus_p = False;
       pInImage_p = 0;
       return False;
    }
 
-// Make a clone of the image
+// Clone pointer
       
    if (pInImage_p!=0) delete pInImage_p;
    pInImage_p = image.cloneII();
@@ -507,7 +501,6 @@ Bool ImageHistograms<T>::display()
 //
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -537,7 +530,6 @@ Bool ImageHistograms<T>::getHistograms (Array<T>& values,
 //
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -618,7 +610,6 @@ Bool ImageHistograms<T>::getHistogram (Vector<T>& values,
 //
 {
    if (!goodParameterStatus_p) {
-       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -807,33 +798,26 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
    Bool doGauss2 = False;
    if (doGauss_p && stats(LatticeStatsBase::SIGMA)>0) doGauss2 = True;
  
-// Get extrema. 
+// Set binwidth
 
-   Vector<T> range(2);
-   range(0) = stats(LatticeStatsBase::MIN);
-   range(1) = stats(LatticeStatsBase::MAX);
-   T xMin = range(0);
-   T xMax = range(1);
-   T yMin = convertF(0.0);
-   T yMax = linearYMax; 
+   const T binWidth = ImageHistSpecialize::setBinWidth(stats(LatticeStatsBase::MIN),
+                                                       stats(LatticeStatsBase::MAX),
+                                                       nBins_p);
+// Do plots
 
-// Set bin width  
-      
-   const uInt nBins = nBins_p;
-   const T binWidth = HistTiledCollapser<T>::setBinWidth(range, nBins);
-   
-// Generate the equivalent Gaussian if desired
-      
-   Vector<T> gX, gY;
-   uInt nGPts;
-   T gMax;
-   if (doGauss2) {
-      makeGauss (nGPts, gMax, gX, gY, stats(LatticeStatsBase::MEAN), 
-                 stats(LatticeStatsBase::SIGMA), linearSum,
-                 xMin, xMax, binWidth);   
-      yMax = max(yMax, gMax);
-   }
-      
+   ImageHistSpecialize::plot(plotter, doGauss_p, doCumu_p, doLog_p,
+                             linearSum, linearYMax, binWidth, values, 
+                             counts, stats, 0, 1, True);
+
+// Write values of the display axes on the plot
+ 
+
+   T* dummy = 0;
+   DataType type = whatType(dummy);
+   Float nchar = 0.5;
+   if (type==TpComplex) nchar = 1.5;
+   if (!writeDispAxesValues (histPos, plotter, nchar)) return False;
+
  
 // Write statistics to a LogIO object
 
@@ -868,89 +852,57 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
 // the manipulators
 
       const Int oPrec = 6;
-      const Int oWidth = 15;
-      os_p.output().fill(' ');
-      os_p.output().precision(oPrec);
-      os_p.output().setf(ios::scientific, ios::floatfield);
-      os_p.output().setf(ios::left, ios::adjustfield);
-   
+      setStream(os_p.output(), oPrec);
+      ostrstream os0, os1, os2, os3, os4, os5, os6, os7;
+      setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec);
+      setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
+      setStream(os6, oPrec); setStream(os7, oPrec);
+//
+      T* dummy = 0;
+      DataType type = whatType(dummy);
+      Int oWidth;
+      if (type==TpFloat) {  
+         oWidth = 15;               //
+      } else if (type==TpComplex) {
+         oWidth = 33;               // (x, y)
+      }
+//
       os_p << endl << "No. binned = ";
-      os_p.output() << setw(oWidth) << Int(stats(LatticeStatsBase::NPTS)+0.1) << endl;
+      os_p.output() << setw(oWidth) << Int(real(stats(LatticeStatsBase::NPTS))+0.1) << endl;
 
       os_p << "Sum        = ";
-      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::SUM) <<   "       Mean     = ";
-      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::MEAN) << endl;
-
+      os0 << stats(LatticeStatsBase::SUM);
+      os_p.output() << setw(oWidth) << String(os0) <<   "       Mean     = ";
+      os1 << stats(LatticeStatsBase::MEAN);
+      os_p.output() << setw(oWidth) << String(os1) << endl;
+//
       os_p << "Variance   = ";
-      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::VARIANCE);
+      os2 << stats(LatticeStatsBase::VARIANCE);
+      os_p.output() << setw(oWidth) << String(os2);
+//
       if (stats(LatticeStatsBase::VARIANCE)> 0.0) {
          os_p << "       Sigma    = ";
-         os_p.output() << setw(oWidth) << stats(LatticeStatsBase::SIGMA) << endl;
+         os3 << stats(LatticeStatsBase::SIGMA);
+         os_p.output() << setw(oWidth) << String(os3) << endl;
       } else {
          os_p << endl;
       }
       os_p << "Rms        = ";
-      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::RMS) << endl;
+      os4 << stats(LatticeStatsBase::RMS);
+      os_p.output() << setw(oWidth) << String(os4) << endl;
  
       os_p << endl;  
       os_p << "Bin width  = ";
-      os_p.output() << setw(oWidth) << binWidth << endl;
+      os5 << binWidth;
+      os_p.output() << setw(oWidth) << String(os5) << endl;
       os_p << "Min binned = ";
-      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::MIN) << "       Max binned = ";
-      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::MAX) << endl << endl << endl;
+      os6 << stats(LatticeStatsBase::MIN);
+      os_p.output() << setw(oWidth) << String(os6) << "       Max binned = ";
+      os7 << stats(LatticeStatsBase::MAX);
+      os_p.output() << setw(oWidth) << String(os7) << endl << endl << endl;
       os_p.post();
    }
-      
-   
-// Now we convert our <T> to Float
-// Stretch extrema by 5%
-
-   Float xMinF = convertT(xMin);
-   Float xMaxF = convertT(xMax);
-   Float yMinF = convertT(yMin);
-   Float yMaxF = convertT(yMax);
-         
-   ImageUtilities::stretchMinMax(xMinF, xMaxF);
-   ImageUtilities::stretchMinMax(yMinF, yMaxF);
-
-
-// Plot
-         
-   plotter.page();
-   plotter.swin(xMinF, xMaxF, 0.0, yMaxF);
-   plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-   plotHist (values, counts, plotter);
-   if (doGauss2) {
-      Vector<Float> gXF(gX.nelements());
-      Vector<Float> gYF(gY.nelements());
-      for(uInt i=0; i<gXF.nelements(); i++) {
-         gXF(i) = convertT(gX(i));
-         gYF(i) = convertT(gY(i));
-      }
-      plotter.line (gXF, gYF);
-   }
- 
-// Label
-  
-   if (doCumu_p) {
-      if (doLog_p) {
-         plotter.lab("Pixel Value", "Log10 (Cumulative Counts)", "");
-      } else {
-         plotter.lab("Pixel Value", "Cumulative Counts", "");
-      }
-   }
-   else {
-      if (doLog_p) {
-         plotter.lab("Pixel Value", "Log10 (Counts)", "");
-      } else {
-         plotter.lab("Pixel Value", "Counts", "");
-      }
-   }
-   
-      
-// Write values of the display axes on the plot
- 
-   if (!writeDispAxesValues (histPos, xMinF, yMaxF, plotter)) return False;
+     
 
    return True;
 }
@@ -979,7 +931,7 @@ void ImageHistograms<T>::extractOneHistogram (T& linearSum,
 // Set bin width  
       
    const uInt nBins = nBins_p;
-   const T binWidth = HistTiledCollapser<T>::setBinWidth(range, nBins);
+   const T binWidth = ImageHistSpecialize::setBinWidth(range(0), range(1), nBins);
 
 // Copy histogram counts into output T array and generate
 // values (abcissa) array
@@ -991,21 +943,19 @@ void ImageHistograms<T>::extractOneHistogram (T& linearSum,
       values(i) = xx;
       counts(i) = intCounts(i);
       xx += binWidth;
-      linearYMax = max(linearYMax,counts(i));
+      linearYMax = LattStatsSpecialize::max(linearYMax,counts(i));
       linearSum += counts(i);
    }
-   linearSum = linearSum*binWidth;
- 
+   linearSum = ImageHistSpecialize::mul(linearSum, binWidth);
 
 // Make histogram cumulative if desired
       
-   if (doCumu_p) makeCumulative (counts, linearYMax, nBins, T(1.0));
+   if (doCumu_p) ImageHistSpecialize::makeCumulative (counts, linearYMax, nBins, 1.0);
           
 
 // Make histogram logarithmic if desired
          
-   if (doLog_p) makeLogarithmic (counts, linearYMax, nBins);
-
+   if (doLog_p) ImageHistSpecialize::makeLogarithmic (counts, linearYMax, nBins);
 }
 
 
@@ -1085,92 +1035,6 @@ IPosition ImageHistograms<T>::locHistInImage(const IPosition& storagePosition) c
 }
 
 
-
-template <class T>
-void ImageHistograms<T>::makeCumulative (Vector<T>& counts,
-                                         T& yMax,
-                                         const uInt nBins,
-                                         const T scale) const
-{
-   counts(0) = scale * counts(0);
-   for (uInt i=1; i<nBins; i++) counts(i) = counts(i)*scale + counts(i-1);
-   yMax = counts(nBins-1);
-}
-                          
-
-template <class T>
-void ImageHistograms<T>::makeGauss (uInt& nGPts,
-                                    T& gMax,
-                                    Vector<T>& gX,
-                                    Vector<T>& gY,
-                                    const T dMean,
-                                    const T dSigma,
-                                    const T dSum,
-                                    const T xMin,
-                                    const T xMax,
-                                    const T binWidth) const
-//
-// Make overlay Gaussian with the given parameters
-//
-{
-
-// 100 points please
- 
-   nGPts = 100;
-   gX.resize(nGPts);
-   gY.resize(nGPts);
- 
-   
-// Set up Gaussian functional
-   
-   const Float gaussAmp = convertT(dSum) * C::_1_sqrt2 * C::_1_sqrtpi / convertT(dSigma);
-   const Float gWidth = sqrt(8.0*C::ln2) * convertT(dSigma);
-   const Gaussian1D<Float> gauss(gaussAmp, convertT(dMean), gWidth);
- 
-   
-// Generate Gaussian.  
-     
-   T tmp;
-   T dgx = (xMax - xMin) / nGPts;
-   T xx;
-   uInt i;
-   for (i=0,xx=xMin,gMax=0.0; i<nGPts; i++) {
-      gX(i) = xx;
-      gY(i) = gauss(convertT(xx));
-
-      tmp = gY(i);
-      gMax = max(gMax, tmp);
-      xx += dgx;
-   }
- 
- 
-// Make cumulative if desired
-   
-   const T scale = dgx / binWidth;
-   if (doCumu_p) makeCumulative (gY, gMax, nGPts, scale);
-   
-   
-// Take log if desired
-   
-   if (doLog_p) makeLogarithmic (gY, gMax, nGPts);
-
-}
-   
-   
-   
-template <class T>
-void ImageHistograms<T>::makeLogarithmic (Vector<T>& counts,
-                                          T& yMax,
-                                          const uInt nBins) const
-{
-   yMax = 0.0;
-   for (uInt i=0; i<nBins; i++) {
-     if (counts(i) > 0.0) counts(i) = log10(counts(i));
-     yMax = max(yMax, counts(i)); 
-   }
-}
-
-
 template <class T>
 Bool ImageHistograms<T>::makeStatistics()
 {
@@ -1232,13 +1096,12 @@ void ImageHistograms<T>::makeHistograms()
    if (pStoreImage_p != 0) delete pStoreImage_p;
 
 // Create storage image
- 
 
    uInt memory = AppInfo::memoryInMB();
    Double useMemory = Double(memory)/10.0;
    if (forceDisk_p) useMemory = 0.0;
    pStoreImage_p = new TempLattice<T>(TiledShape(storeImageShape,
-                                       tileShape), useMemory);
+                                      tileShape), useMemory);
 
 // Create collapser for LatticeApply
 
@@ -1268,28 +1131,6 @@ void ImageHistograms<T>::makeHistograms()
                 
 
 
-template <class T>
-void ImageHistograms<T>::plotHist (const Vector<T>& x,
-                                   const Vector<T>& y,
-                                   PGPlotter& plotter) const
-{ 
-   const Float width = convertT(x(1) - x(0)) / 2.0;
-   Float xx, yy;
-   for (uInt i=0; i<x.nelements(); i++) {
-      xx = convertT(x(i)) - width;
-      yy = convertT(y(i));
-     
-      plotter.move (xx, 0.0);
-      plotter.draw (xx, yy);
-                          
-      plotter.move (xx, yy);
-      xx = convertT(x(i)) + width;
-      plotter.draw (xx, yy);
-   
-      plotter.move (xx, yy);
-      plotter.draw (xx, 0.0);
-    }
-}
 
 template <class T>
 Bool ImageHistograms<T>::setInclude(Vector<T>& range,
@@ -1336,9 +1177,8 @@ Bool ImageHistograms<T>::setInclude(Vector<T>& range,
 
 template <class T>
 Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
-                                              const Float xMin,
-                                              const Float yMax,
-                                              PGPlotter& plotter) const
+                                              PGPlotter& plotter,
+                                              Float nchar) const
 {
    
 // Fill the string stream with the name and value of each display axis
@@ -1374,10 +1214,11 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
 
       box = plotter.qtxt (0.0, 0.0, 0.0, 0.0, tLabel);
       Float dy = box(5) - box(4);
-                           
-      Float mx = xMin + dx; 
-      Float my = yMax + 0.5*dy;
-      
+                     
+      Vector<Float> win = plotter.qwin();
+      Float mx = win(0) + dx; 
+      Float my = win(3) + nchar*dy;
+//      
       Int tbg = plotter.qtbg();
       plotter.stbg(0);
       plotter.ptxt (mx, my, 0.0, 0.0, tLabel);
@@ -1388,6 +1229,15 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
 }
 
 
+template <class T>
+void ImageHistograms<T>::setStream (ostream& os, Int oPrec)
+{
+    os.fill(' ');
+    os.precision(oPrec);
+    os.setf(ios::scientific, ios::floatfield);
+    os.setf(ios::left, ios::adjustfield);
+}
+   
 
 
 // HistTiledCollapser
@@ -1409,10 +1259,13 @@ void HistTiledCollapser<T>::init (uInt nOutPixelsPerCollapse)
    
 template <class T>
 void HistTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
+//
+// pHist_p contains the histograms for each chunk
+// It is T not uInt so we can handle Complex types
 {
-   pHist_p = new Block<uInt>(nBins_p*n1*n3);
+   pHist_p = new Block<T>(nBins_p*n1*n3);
    pHist_p->set(0);
-          
+//          
    n1_p = n1;
    n3_p = n3;
 }
@@ -1445,52 +1298,15 @@ void HistTiledCollapser<T>::process (uInt index1,
 
 // Set histogram bin width
    
-   const T binWidth = setBinWidth(clip, nBins_p);
+   const T binWidth = ImageHistSpecialize::setBinWidth(clip(0), clip(1), nBins_p);
 
 
-// Fill histograms
+// Fill histograms.  
 
-   uInt index;    
    uInt offset = (nBins_p*index1) + (nBins_p*n1_p*index3);
-
-
-   if (pInMask == 0) {
-
-// All pixels are good
-
-      T datum;
-      for (uInt i=0; i<nrval; i++) {
-         datum = *pInData;
-         if (datum >= clip(0) && datum <= clip(1)) {   
-            Int iBin = min(nBins_p-1, uInt((datum-clip(0))/binWidth));
-   
-            index = iBin + offset;
-            uInt& hist = (*pHist_p)[index];
-            hist++;
-         }
-         pInData += inIncr;
-      }
-   } else {
-
-// Some pixels might be bad
-
-      T datum;
-      Bool mask;
-      for (uInt i=0; i<nrval; i++) {
-         datum = *pInData;
-         mask = *pInMask;
-
-         if (mask && datum >= clip(0) && datum <= clip(1)) {   
-            Int iBin = min(nBins_p-1, uInt((datum-clip(0))/binWidth));
-            index = iBin + offset;
-            uInt& hist = (*pHist_p)[index];
-            hist++;
-         }
-         pInData += inIncr;
-         pInMask += inIncr;
-      }
-   }
-
+   ImageHistSpecialize::process(pInData, pInMask, pHist_p, clip,
+                                binWidth, offset, nrval, 
+                                nBins_p, inIncr);
 }
 
 
@@ -1510,12 +1326,11 @@ void HistTiledCollapser<T>::endAccumulator(Array<T>& result,
     resultMask.resize(shape);
     resultMask.set(True);
     result.resize(shape);
-       
-
+//
     Bool deleteRes;
     T* res = result.getStorage (deleteRes);
     T* resptr = res;
-    const uInt* histPtr = pHist_p->storage();
+    const T* histPtr = pHist_p->storage();
 
 // The histogram storage image has the logical shape
 // [nBins, n1, n3]
@@ -1526,24 +1341,4 @@ void HistTiledCollapser<T>::endAccumulator(Array<T>& result,
     
     result.putStorage (res, deleteRes);
     delete pHist_p;
-
 }      
-
-
-
-template <class T>
-T HistTiledCollapser<T>::setBinWidth (const Vector<T>& clip,
-                                      uInt nBins)
-//
-// Set the bin width for the current histogram.  If the reange
-// is constant, do someting rather arbitrary to avoid 
-// divide by zeros
-//
-{ 
-   T width = (clip(1) - clip(0)) / nBins;
-   if (near(width,0.0f,1e-6)) {
-      width = 0.001;
-   }
-   return width;
-}
-
