@@ -5391,3 +5391,4 @@
 15 138 src rm trial/implement/Tables/NullTable.cc
 15 148 src mv trial/implement/Tables/TableAttr.h aips/implement/Tables/TableAttr.h
 15 148 src mv trial/implement/Tables/TableAttr.cc aips/implement/Tables/TableAttr.cc
+15 148 src mv trial/implement/Tables/test/tTableLock.cc aips/implement/Tables/test/tTableLock.cc
