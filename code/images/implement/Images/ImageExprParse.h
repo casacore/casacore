@@ -37,6 +37,8 @@
 
 //# Forward Declarations
 template<class T> class Block;
+template<class T> class PtrBlock;
+class ImageRegion;
 
 
 // <summary>
@@ -199,13 +201,14 @@ public:
     // Parse the given command.
     // It will open all lattices needed.
     // It returns the resulting image expression.
-    // <br>The <src>tempLattices</src> argument makes it possible to
-    // use temporary lattices/images in the expression by means
+    // <br>The <src>tempLattices/tempRegions</src> arguments make it possible
+    // to use temporary lattices/images and regions in the expression by means
     // of the <src>$n</src> notation.
     // <group>
     static LatticeExprNode command (const String& str);
     static LatticeExprNode command (const String& str,
-				   const Block<LatticeExprNode>& tempLattices);
+				    const Block<LatticeExprNode>& tempLattices,
+				    const PtrBlock<const ImageRegion*>& tempRegions);
     // </group>
 
     // Construct a literal object for the given type.
@@ -231,20 +234,34 @@ public:
 				  const LatticeExprNode& arg3) const;
     // </group>
 
-    // Make a LatticeExprNode object for the lattice name.
-    LatticeExprNode makeLatticeNode() const;
+    // Make a LatticeExprNode object for the lattice or region name.
+    LatticeExprNode makeLRNode() const;
+
+    // Make a LatticeExprNode object for the name of constant, lattice,
+    // or region.
+    LatticeExprNode makeLitLRNode() const;
+
+    // Make a LatticeExprNode object for the temporary region number.
+    LatticeExprNode makeRegionNode() const;
 
     // Make a LatticeExprNode object for the literal value.
     LatticeExprNode makeLiteralNode() const;
-
-    // Make a LatticeExprNode object for the name of constant or lattice.
-    LatticeExprNode makeLitLattNode() const;
 
     // Set the static node object (used by the .y file).
     static void setNode (const LatticeExprNode& node)
         { theirNode = node; }
 
 private:
+    // Try if the name represent a lattice or image.
+    // Return False if not.
+    Bool tryLatticeNode (LatticeExprNode& node, const String& name) const;
+
+    // Make the node from the image name and a mask name.
+    // The mask name can be NOMASK (case insensitive) meaning that no mask
+    // is applied to the image.
+    LatticeExprNode makeImageNode (const String& name,
+				   const String& mask) const;
+
     //# A 'global' node object to hold the resulting expression.
     static LatticeExprNode theirNode;
 
