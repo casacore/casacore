@@ -1871,8 +1871,9 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
        if (latAxis>=0) {
           const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
           cctype = make_Direction_FITS_ctype (dc.projection(), 
-                                              DirectionCoordinate::axisNames(dc.directionType(), True),
-                                              crval(latAxis), True);
+                                              DirectionCoordinate::axisNames(dc.directionType(), 
+                                              True),
+                                              C::pi/180.0*crval(latAxis), True);
        } else {
           os << LogIO::SEVERE 
              << "Cannot handle conversion to WCS for DirectionCoordinate with  lat axis removed"
