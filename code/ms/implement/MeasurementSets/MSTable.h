@@ -1,5 +1,5 @@
 //# MSTable.h: A Table to hold astronomical data (a set of Measurements)
-//# Copyright (C) 1996,1997,2000
+//# Copyright (C) 1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -201,7 +201,8 @@ public:
     static Bool validate(const TableRecord& tabKeySet);
  
     // validate self (make sure that this MS is valid)
-    Bool validate() const { return validate(this->tableDesc());}
+    Bool validate() const 
+      { return this->isNull() ? False : validate(this->tableDesc());}
  
     // return the required table description
     static const TableDesc& requiredTableDesc();
