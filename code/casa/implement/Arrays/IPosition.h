@@ -427,7 +427,7 @@ inline uInt IPosition::nelements() const
 inline Int &IPosition::operator()(uInt index)
 {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-    if (index > nelements() - 1) {
+    if (index >= nelements()) {
         // This should be a IndexError<uInt> - but that causes multiply
 	// defined symbols with the current objectcenter.
         throw(AipsError("IPosition::operator() - index error"));
@@ -439,7 +439,7 @@ inline Int &IPosition::operator()(uInt index)
 inline Int IPosition::operator()(uInt index) const
 {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-    if (index > nelements() - 1) {
+    if (index >= nelements()) {
         // This should be a IndexError<uInt> - but that causes multiply
 	// defined symbols with the current objectcenter.
         throw(AipsError("IPosition::operator() - index error"));
