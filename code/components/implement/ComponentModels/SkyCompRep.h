@@ -31,17 +31,18 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/SpectralModel.h>
+#include <trial/ComponentModels/Flux.h>
+#include <aips/Utilities/String.h>
+#include <aips/Utilities/CountedPtr.h>
 
-class GlishRecord;
 class MDirection;
 class MFrequency;
 class MVAngle;
-class String;
-template <class Qtype> class Quantum;
-template <class T> class Flux;
-template <class T> class ImageInterface;
+class RecordInterface;
 template <class T> class Vector;
+// template <class T> class ImageInterface;
 
 // <summary>A model component of the sky brightness</summary>
 
@@ -112,119 +113,151 @@ template <class T> class Vector;
 //   <li> 
 // </todo>
 
-class SkyCompRep: public SpectralModel
+class SkyCompRep: public ComponentShape,
+		  public SpectralModel
 {
 public:
-  // a virtual destructor is needed so that the actual destructor in the
-  // derived class will be used. The default version of this function does
-  // nothing.
-  virtual ~SkyCompRep();
+
+  // The default SkyCompRep is a point source with a constant spectrum. See the
+  // default constructors in the PointShape, ConstantSpectrum and Flux classes
+  // for the default values for the flux, shape and spectrum.
+  SkyCompRep();
+  
+  // Construct a SkyCompRep with the user specified model for the shape and
+  // spectrum.
+  SkyCompRep(const ComponentType::Shape & shape,
+ 	     const ComponentType::SpectralShape & spectrum);
+
+  // Construct a SkyCompRep with a fully specified model for the shape and
+  // spectrum and Flux.
+  SkyCompRep(const Flux<Double> & flux,
+ 	     const ComponentShape & shape, 
+ 	     const SpectralModel & spectrum);
+  
+  // The copy constructor uses copy semantics
+  SkyCompRep(const SkyCompRep & other);
+  
+  ~SkyCompRep();
+
+  // The assignment operator uses copy semantics.
+  SkyCompRep & operator=(const SkyCompRep & other);
 
   // return a reference to the flux of the component. Because this is a
   // reference, manipulation of the flux values is performed through the
   // functions in the Flux class. eg.,
-  // <src>comp.flux().setValue(newVal)</src>. If the component Flux varies with
+  // <src>comp.flux().setValue(newVal)</src>. If the component flux varies with
   // frequency then the flux set using this function is the value at the
-  // reference freqeuncy. 
+  // reference frequency.
   // <group>
-  virtual const Flux<Double> & flux() const = 0;
-  virtual Flux<Double> & flux() = 0;
+  const Flux<Double> & flux() const;
+  Flux<Double> & flux();
   // </group>
 
-  // get the shape of the component.  The default version of this
-  // function returns ComponentType::POINT
-  virtual ComponentType::Shape shape() const = 0;
+  // get the shape of the component.
+  virtual ComponentType::Shape shape() const;
 
-  // set/get the direction of the centre of component. Default versions of
-  // these functions do nothing.
+  // set/get the reference direction of the component
   // <group>
-  virtual void setDirection(const MDirection & newDirection) = 0;
-  virtual void direction(MDirection & compDirection) const = 0;
+  virtual void setRefDirection(const MDirection & newDirection);
+  virtual const MDirection & refDirection() const;
   // </group>
 
-  // return the number of parameters in the component and set/get them.
+  // Calculate the flux at the specified direction, in a pixel of specified
+  // size.  The frequency is assumed to be the reference frequency.
   // <group>
-  virtual uInt nParameters() const = 0;
-  virtual void setParameters(const Vector<Double> & newParms) = 0;
-  virtual void parameters(Vector<Double> & compParms) const = 0;
+  Flux<Double> sample(const MDirection & direction,
+		      const MVAngle & pixelSize) const;
+  virtual void sample(Flux<Double> & flux, const MDirection & direction, 
+		     const MVAngle & pixelSize) const;
+  // </group>
+
+  // Return the Fourier transform of the component at the specified point in
+  // the spatial frequency domain. The point is specified by a 3-element vector
+  // (u,v,w) that has units of meters and the frequency of the observation, in
+  // Hertz. These two quantities can be used to derive the required spatial
+  // frequency <src>(s = uvw*freq/c)</src>. The w component is not used in
+  // these functions.
+
+  // The "origin" of the transform is the reference direction of the
+  // component. This means, for symmetric components where the reference
+  // direction is at the centre, that the Fourier transform will always be
+  // real.
+  // <group>
+  Flux<Double> visibility(const Vector<Double> & uvw,
+			  const Double & frequency) const;
+  virtual void visibility(Flux<Double> & flux, const Vector<Double> & uvw, 
+			  const Double & frequency) const;
+  // </group>
+
+  // Return a pointer to a copy of the shape of this component upcast to a
+  // ComponentShape object. The class that uses this function is responsible
+  // for deleting the pointer.
+  virtual ComponentShape * cloneShape() const;
+
+  // return the number of shape parameters in the component and set/get them.
+  // <group>
+  virtual uInt nShapeParameters() const;
+  virtual void setShapeParameters(const Vector<Double> & newParms);
+  virtual void shapeParameters(Vector<Double> & compParms) const;
   // </group>
 
   // get the spectral type of the component.
-  virtual ComponentType::SpectralShape spectralShape() const = 0;
+  virtual ComponentType::SpectralShape spectralShape() const;
 
-  // set/get the reference frequency. Default versions of these functions
-  // do nothing.
+  // set/get the reference frequency.
   // <group>
-  virtual void setRefFrequency(const MFrequency & newRefFreq) = 0;
-  virtual const MFrequency & refFrequency() const = 0;
+  virtual void setRefFrequency(const MFrequency & newFrequency);
+  virtual const MFrequency & refFrequency() const;
   // </group>
 
-  // Return the scaling factor used to scale the flux of the component at the
-  // specified frequency. The scaling factor is always 1 at the reference
-  // frequency. The default version of this function ignores the sampleFreq
-  // argument and always returns 1.
-  virtual Double scale(const MFrequency & sampleFreq) const = 0;
+  // Calculate the flux at the specified frequency. The direction is assumed to
+  // be the reference direction.
+  // <group>
+  Flux<Double> sample(const MFrequency & centerFrequency) const;
+  virtual void sample(Flux<Double> & flux,
+		     const MFrequency & centerFrequency) const;
+  // </group>
 
-  // Return the flux (in dimensions of W/m^2/Hz) of the component at the
-  // specified frequency. The default version of this function returns the Flux
-  // at the reference frequency and ignores the sampleFreq argument.
-  virtual Flux<Double> sample(const MFrequency & sampleFreq) const;
+  // Return a pointer to a copy of the spectral model of this component upcast
+  // to a SpectralModel object. The class that uses this function is
+  // responsible for deleting the pointer.
+  virtual SpectralModel * cloneSpectrum() const;
 
   // return the number of parameters in the spectral shape and set/get them.
   // <group>
-  virtual uInt nSpectralParameters() const = 0;
-  virtual void setSpectralParameters(const Vector<Double> & newParms) = 0;
-  virtual void spectralParameters(Vector<Double> & compParms) const = 0;
+  virtual uInt nSpectralParameters() const;
+  virtual void setSpectralParameters(const Vector<Double> & newParms);
+  virtual void spectralParameters(Vector<Double> & compParms) const;
+  // </group>
+
+  // Calculate the flux at the specified direction & frequency, in a pixel of
+  // specified size.
+  // <group>
+  Flux<Double> sample(const MDirection & direction, 
+		      const MVAngle & pixelSize, 
+		      const MFrequency & centerFrequency) const;
+  void sample(Flux<Double> & flux, const MDirection & direction, 
+	      const MVAngle & pixelSize, 
+	      const MFrequency & centerFrequency) const;
   // </group>
 
   // set/get the label associated with this component. Default versions of
   // these functions do nothing.
   // <group>
-  virtual void setLabel(const String & newLabel) = 0;
-  virtual void label(String & compLabel) const = 0;
+  void setLabel(const String & newLabel);
+  const String & label() const;
   // </group>
 
-  // Return the intensity (in Jy/pixel) of the component at the specified
-  // direction. The returned Vector contains the different polarizations of the
-  // radiation and the pixel size is assumed to be square.
-  virtual void sample(Vector<Double> & result,
-		      const MDirection & sampleDir,
-		      const MVAngle & pixelSize) const = 0;
-
-  // Project the component onto an Image. The default implementation calls the
-  // sample function once for the centre of each pixel. The image needs
-  // only have a one (and only one) direction axis. Other axes are optional and
-  // if there is no Stokes axes then it is assumed that the polarization is
-  // Stokes::I. The component is gridded equally onto all other axes of the
-  // image (ie. spectral axes).
-  virtual void project(ImageInterface<Float> & plane) const;
-
-  // Return the Fourier transform of the component at the specified point in
-  // the spatial frequency domain. The point is specified by a 3 element vector
-  // (u,v,w) that has units of meters and the frequency of the observation, in
-  // Hertz. These two quantities can be used to derive the required spatial
-  // frequency <src>(s = uvw*freq/c)</src>. The w component is not used in
-  // these functions.
-  //
-  // The reference position for the transform is the direction of the
-  // component. Hence the transform is always a real value and there is no
-  // phase variation due to the spatial structure if the component has a
-  // symmetric shape. The returned visibility values may still be Complex if a
-  // polarisation representation other than Stokes is used.
-  // <group>
-  virtual Flux<Double> visibility(const Vector<Double> & uvw,
-				  const Double & frequency) const = 0;
-  // </group>
-
-  // This functions convert between a glish record and a SkyCompRep. This way
-  // derived classes can interpret fields in the record in a class specific
-  // way. These functions define how a component is represented in glish.  They
-  // return False if the glish record is malformed and append an error message
-  // to the supplied string giving the reason.
+  // This functions convert between a record and a SkyCompRep. This way derived
+  // classes can interpret fields in the record in a class specific way. These
+  // functions define how a component is represented in glish.  They return
+  // False if the record is malformed and append an error message to the
+  // supplied string giving the reason.
   // <group>
   virtual Bool fromRecord(String & errorMessage, 
-			  const GlishRecord & record) = 0;
-  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const = 0;
+			  const RecordInterface & record);
+  virtual Bool toRecord(String & errorMessage, 
+			RecordInterface & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
@@ -232,24 +265,18 @@ public:
   // otherwise returns False.
   virtual Bool ok() const;
 
-  // Return a pointer to a copy of the derived object upcast to a SkyComponent
-  // object. The class that uses this function is responsible for deleting the
-  // pointer. This is used to implement a virtual copy constructor.
-  virtual SkyCompRep * clone() const = 0;
+  //# Project the component onto an Image. The default implementation calls the
+  //# sample function once for the centre of each pixel. The image needs
+  //# only have a one (and only one) direction axis. Other axes are optionaland
+  //# if there is no Stokes axes then it is assumed that the polarization is
+  //# Stokes::I. The component is gridded equally onto all other axes of the
+  //# image (ie. spectral axes).
+  //# virtual void project(ImageInterface<Float> & plane) const;
 
-protected:
-  //# These functions are used by derived classes implementing concrete
-  //# versions of the toRecord and fromRecord member functions.
-  // <group>
-  Bool readFlux(String & errorMessage, const GlishRecord & record);
-  Bool addFlux(String & errorMessage, GlishRecord & record) const;
-
-  Bool readDir(String & errorMessage, const GlishRecord & record);
-  Bool addDir(String & errorMessage, GlishRecord & record) const;
-
-  Bool readLabel(String & errorMessage, const GlishRecord & record);
-  Bool addLabel(String & errorMessage, GlishRecord & record) const;
-  // </group>
+private:
+  CountedPtr<ComponentShape> itsShapePtr;
+  CountedPtr<SpectralModel> itsSpectrumPtr;
+  Flux<Double> itsFlux;
+  String itsLabel;
 };
-
 #endif
