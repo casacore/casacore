@@ -156,8 +156,8 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     //# FilebufIO should do its own buffering and have a sync function.
     AipsIO ios (Table::fileName(tabname), ByteIO::Old);
     String tp;
-    uInt version = ios.getstart ("Table");
-    uInt nrrow, format;
+    version = ios.getstart ("Table");
+    uInt format;
     ios >> nrrow;
     ios >> format;
     ios >> tp;
