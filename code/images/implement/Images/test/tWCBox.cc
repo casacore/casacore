@@ -237,8 +237,8 @@ try {
    {
 //      cout << "[ra,dec,freq], [ra,dec]" << endl;
       CoordinateSystem cSys3 = CoordinateUtil::defaultCoords3D();
-      setValues (blcI, trcI, shape, checkBox, wBlc, wTrc, cSys);
-      WCBox box3(wBlc, wTrc, cSys, absRel);
+      setValues (blcI, trcI, shape, checkBox, wBlc, wTrc, cSys3);
+      WCBox box3(wBlc, wTrc, cSys3, absRel);
 //
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
       IPosition shape2(cSys2.nPixelAxes());
@@ -304,21 +304,22 @@ try {
       IPosition shape4(cSys4.nPixelAxes(),10);
       shape4(0) = shape(0); 
       shape4(1) = shape(1); 
-      shape4(2) = 10;
-      shape4(3) = shape(2);
+      shape4(2) = 4;          // Stokes
+      shape4(3) = shape(2);   // Spectral
 //
       LCRegion* pLCRegion = 0;
 //      cout << "toLCRegion called with shape = " << shape4 << endl;
       pLCRegion = box3.toLCRegion(cSys4, shape4);
-
+//
       IPosition blc4(4), trc4(4);
       blc4(0) = blcI(0);
       blc4(1) = blcI(1);
       blc4(2) = 0;
       blc4(3) = blcI(2);
+//
       trc4(0) = trcI(0);
       trc4(1) = trcI(1);
-      trc4(2) = shape4(3) - 1;
+      trc4(2) = shape4(2) - 1;
       trc4(3) = trcI(2);
       LCBox checkBox4(blc4, trc4, shape4); 
       AlwaysAssert(*pLCRegion==checkBox4, AipsError);
