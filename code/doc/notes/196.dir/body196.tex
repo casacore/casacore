@@ -16,27 +16,38 @@ compiler is slower than the Sun native compiler. In practice (my experience,
 and in the time taken for system rebuilds) it appears to be faster,
 because it does not do excessive recompilations.
 
-g++ will, I expect, become the ``standard'' AIPS++ compiler in the next few
-months.  This greatly simplifies the port of the software to new machines.
+Because of these problems with the standard Sun compiler and to aid
+porting of AIPS++ to other architectures, g++ has become the standard
+C++ compiler for AIPS++.
 
-Code compiled and optimised under g++ is in my experience about 30\% slower
-than code compiled and optimised under the Sun native compiler
+This note describes details on compiling AIPS++ code that are specific
+to using g++ and the ``do it yourself'' template instantiation
+mechanism that is used to specify which templates are created.
+
+Code compiled and optimised under g++ is in my experience about 30\%
+slower than code compiled and optimised under the Sun native compiler.
+Currently we are investigating using the using the ``do it yourself''
+template instantiation mechanism in conjunction with the latest
+release of the Sun compiler and other compilers.
 
 \section{g++ system setup}
 These notes assume you have the g++ compilers installed and aips++
 setup to use it. I know nothing about this and you should contact (in
-order) either, Mark Calabretta (mcalabre@atnf.csiro.au) or Brian
-Glendenning (bglenden@nrao.edu) on how to do this. The g++ compiler is now
-available at many of the consortium sites, and version 2.7.2 has been
-extensively used at Socorro. These notes relate to that version.
+order) either, Pat Murphy or Brian Glendenning (bglenden@nrao.edu) on
+how to do this. The g++ compiler is now available at all of the
+consortium sites, and version 2.7.2 has been extensively used at
+Socorro. These notes relate to that version.
 
 \section{Switching to g++}
-Switch to the g++ compiler by using
+Most sites are setup to have the gnu compiler as the default
+compiler. 
+
+If not you can switch to to the g++ compiler using:
 \begin{verbatim}
    aipsinit gnu
 \end{verbatim}
-   This assumes that you have already run aipsinit to get the normal AIPS++
-   environment variables set. 
+This assumes that you have already run aipsinit to get the normal
+AIPS++ environment variables set.
 
 \section{Setting up your workspace}
 
@@ -60,36 +71,38 @@ and create a symbolic link pointing from
 \texttt{/tarzan2/\$USERNAME/sun4sol\_gnu}
  
 \section{Compiling}
-Compiling should be done in the normal way (ie. using gmake in the source
-directory), and with all the normal flags (eg. OPT=1). Using gmake, in my
-experience, with the OPT=1 flag results in faster compilation as
-well as optimised code. But the fastest way to recompile your code is to
-use the OPTLIB=1 option. This links your code (compiled with debug flags)
-against the optimised libraries, and compiles about 2-3 times faster than
-not using any flags. It has the added advantage that you can use the
-debugger to step through your code (but not the system code). Using gmake
-without any flags also results in executables that are about ten times
-bigger than the optimised version (ie. they are huge). 
+Compiling should be done in the normal way (ie. using gmake in the
+source directory), and with all the normal flags (eg. OPT=1). Using
+gmake, in my experience, with the OPT=1 flag results in faster
+compilation as well as optimised code. But the fastest way to
+recompile your code is to use the OPTLIB=1 option. This links your
+code (compiled with debug flags) against the optimised libraries, and
+compiles about 2-3 times faster than not using any flags. It has the
+added advantage that you can use the debugger to step through your
+code (but not the system code). Using gmake without any flags also
+results in executables that are about ten times bigger than the
+optimised version (ie. they are huge).
 
-Debugging should be done using gdb (or xxgdb for a graphical interface),
-rather than the normal system debuggers (ie. dbx and friends). Note that the
-commands differ from the standard ones (e.g. no 'stop' but rather 'break').
-Help can be obtained by typing 'help' or 'help subject', while information
-is available with the 'info' command (see 'help info').
+Debugging should be done using gdb (use ddd or xxgdb for a graphical
+interface), rather than the normal system debuggers (ie. dbx and
+friends). Note that the commands differ from the standard ones (e.g.
+no 'stop' but rather 'break').  Help can be obtained by typing 'help'
+or 'help subject', while information is available with the 'info'
+command (see 'help info').
 
-If gmake dumps core it may be because you are using a very old
-version that exists in \texttt{/opt/local1/bin} (Socorro only).
+If gmake dumps core it may be because you are using a very old version
+that exists in \texttt{/opt/local1/bin} (Socorro only).
    
 \section{Upcasting Bug\label{sec:upcast}}
-The g++ compiler cannot do a few things the Sun
-native compiler can. In particular if a global function with templated
-arguments of some base class is called with a class derived from the
-base class it will not find a match. (i.e. it cannot do upcasts)
+The g++ compiler cannot do a few things the Sun native compiler can.
+In particular if a global function with templated arguments of some
+base class is called with a class derived from the base class it will
+not find a match. (i.e. it cannot do upcasts)
 
-This problem is particularly endemic in the Arrays module and for these
-classes particular solution has been devised. The Array class (and hence
-derived classes) have an upcasting member function called \texttt{
-  arrayCast()} (or \texttt{ ac()} for short).
+This problem is particularly endemic in the Arrays module and for
+these classes a particular solution has been devised. The Array class
+(and hence derived classes) have an upcasting member function called
+\texttt{arrayCast()} (or \texttt{ac()} for short).
 
 For example in the aips/Arrays/ArrayMath.h class there is a function
 \begin{verbatim}
@@ -100,7 +113,7 @@ which will not compile when called with a vector as an argument. ie.
    Vector<Float> vec(4);
    cout << max(vec) << endl; // error flagged on this line!
 \end{verbatim}
-but will compile if rewritten as
+but will compile if rewritten as:
 \begin{verbatim}
    cout << max(vec.arrayCast()) << endl; 
 \end{verbatim}
@@ -119,8 +132,8 @@ And this should be changed to
 \end{verbatim}
 
 This problem has also been recently seen in the Lattice classes and a
-corresponding set of member functions called \texttt{latticeCast()} (or
-\texttt{lc()} for short), have been written. 
+corresponding set of member functions called \texttt{latticeCast()}, or
+\texttt{lc()} for short, have been written. 
 
 On rare occasions you may need to selectively do an upcast when a templated
 argument can be either a builtin data type (Int/Float etc.) or an Array
@@ -174,7 +187,7 @@ arbitrary but this seems like a good convention (Brian's convention).
 This appears to occur when a specific templated types used in the context
 of a general template definition. eg.
 \begin{verbatim}
-   template <class T> const Lattice<Bool> &PagedImage<T>::mask() const
+   template <class T> const Lattice<Bool> & PagedImage<T>::mask() const
 \end{verbatim}
 will trigger this bug because requiring a typedef for \texttt{Lattice<Bool>}
 
@@ -189,37 +202,53 @@ It is not necessary to do this when using the array upcasting functions
 (arrayCast() etc.) described in section \ref{sec:upcast}.
 
 The error messages that indicate you are being affected by this bug can be
-quite obscure and are listed in section~\ref{sec:error-messages}
+quite obscure and some are listed in section~\ref{sec:error-messages}
 
-\section{Creating a templates file}
+\section{Do it yourself templates (creating a templates file)}
 When linking the aips++ system will have a large number of template
-instantiations already done for you. However there may be some template
-instantiations you will have to create for yourself. This is done with a
-personal template instantiation list. To do this create a file called
-\texttt{ templates}. This should be in the directory containing the test
-program for the class you are currently working on. gmake will see this file
-and ``knows'' how to create the templates you have specified.
+instantiations already done for you. However there may be some
+template instantiations you will have to create for yourself. This is
+done with a personal template instantiation list. To do this create a
+file called \texttt{templates}. This should be in the directory
+containing the test program for the class you are currently working on
+(eg., \texttt{.../code/trial/implement/MyModule/test/templates}) or in
+the applications directory (eg.,
+\texttt{.../code/trial/apps/MyApp/templates}). gmake will see this
+file and ``knows'' how to create the templates you have specified. You
+should \emph{never} create a templates file in a code module directory
+(eg.  \texttt{.../code/trial/implement/MyModule/templates} as the
+templates in this file will overwrite the system templates (when you
+check the templates file in).
+
+The format of the template entries is described in detail in Chapter 9
+of the AIPS++ system manual (the mkinst section).  
+I will only outline the basics  here.
 
 The templates file should contain entries like:
 \begin{verbatim}
-0010 trial/Arrays/Convolver.cc template class Convolver<Float, Complex>
-1000 aips/Arrays/ArrayMath.cc template operator*(const Array<Float> &, const Float &)
+1010 trial/Arrays/Convolver.cc 
+     template class Convolver<Float>
+1000 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h
+     template Double min(Array<Double> const &)
 \end{verbatim}
 
 The entries are:
 \begin{description}
-\item[Ident. number:] The exact number is arbitrary but it should be a
-  unique number for each .cc file, and should be (by convention) a 4 digit
-  number
+\item[Identification number:] The exact number is arbitrary but it
+  should be a unique number for each .cc file, and should be (by
+  convention) a 4 digit number. An value of four zeros will be
+  converted to a unique number by ``reident'' (described below).
 \item[template file(s):] The .cc file containing the template. If using
   templates like \texttt{ myClass< Array<Float> >} you should also
   include a .h file containing the definitions of the
   template arguments. In this example \\
   \texttt{ trial/Utilities/myClass.cc aips/Arrays/Array.h}
-\item[template:] A keyword separating the filenames from the required template.
+\item[template:] A keyword separating the filenames from the required
+  template. This usually goes in a seperate line although it is not
+  manditory to do this.
 \item[required template:] This states which specific template is required
   to be instantiated. It can either be a class or a global
-  function. An example of each is shown above.
+  function. An example of each is shown above. 
 \end{description}
 See the system template instantiation list in: \\
 \texttt{ .../code/\{aips,trial\}/implement/\_ReposFiller/templates} 
@@ -233,28 +262,38 @@ separate templates files that exist in the test directories. This keeps
 the aips++ libraries at a manageable size and avoids excessive link
 times. 
 
-If your templates file is getting long and unmanageable there is a utility
-called \texttt{ reident} to sort/uniq, re-sequence and
-``canonicalise''\footnote{By canonicalise I mean that it reformats your
-  template entries so that float becomes Float etc. as well as
-  adding/removing whitespace. This makes searching for duplicate entries
-  simpler.} the templates file.
+If your templates file is getting long and unmanageable there is a
+utility called \texttt{reident} to sort/uniq, re-sequence and
+``canonicalise''the templates file.
 
-In the default mode\footnote{There is an old mode enabled using the \texttt{
-    -z} option which adds idents starting at 1000 for each .cc file and
-  increments by 10 to allow sufficient space for inserting new entries. You
-  should rebuild your object library from scratch after running reident
-  using this mode} reident will check if there are duplicates and if
-necessary changes idents to ensure they're all unique.  Idents of $0000$ are
-always replaced.
+In the default mode\footnote{There is an old mode enabled using the
+  \texttt{ -z} option which adds identification numbers starting at
+  1000 for each .cc file and increments by 10 to allow sufficient
+  space for inserting new entries. You should rebuild your object
+  library from scratch after running reident using this mode} reident
+will do the following:
+\begin{itemize}
+\item Adjust the identification number on the template definitions so
+  that they are unique. It will also add identification numbers if they
+  are missing and replace the identification numbers for all templates
+  below 1000.
+\item Convert builtin types to AIPS++ standard definitions. eg., float
+  will be converted to Float.
+\item Remove unnecessary white space.
+\item Warn if the const keywords are incorrectly positioned
+\item Warn if global functions do not have a return type
+\item Check that \verb{#ifdef} and \verb{#else} and \verb{#endif} are 
+  properly sequenced.
+\item Comment out bad templates entries.
+\end{itemize}
 
 Its output is always to the file called templates (and input and output
-\emph{can} be the same file) so I usually type
+\emph{can} be the same file) so I usually just type
 \begin{verbatim}
-reident templates
+reident
 \end{verbatim}
-where I have already appended my changes to an already existing file called
-templates. 
+as the default input file is also called templates and I have already
+appended my changes tothis file.
 
 reident can also merge multiple template files together so that
 \begin{verbatim}
@@ -263,7 +302,29 @@ reident templates templates.additions
 will merge both input files into the output file. 
 
 The shell comment character \texttt{\#} can be used to comment entries in
-your templates file.
+your templates file and the preprocessor directives \verb{#if},
+\verb{#if defined(symbol)}, \verb{#if !defined(symbol)}, \verb{#ifdef},
+\verb{#ifndef}, \verb{#else}, \verb{#endif} can also be used. 
+
+Each entry in the templates file gets compiled into an object file
+called myClass_Ident.o where the myClass is the name of the first .cc
+file in the template line and Ident is the indentification number.
+Normally this object file contains only one instantiation. But often
+templates instaitions are required in groups. For example to use a
+\verb{CountedPtr<SkyCompRep>} requires you instantiate four other
+classes, namely: \verb{CountedConstPtr<SkyCompRep>},
+\verb{PtrRep<SkyCompRep>}, \verb{SimpleCountedConstPtr<SkyCompRep>} \&
+\verb{SimpleCountedPtr<SkyCompRep>}. In this case it is better to
+group all five instantiations in one object file. This is done by
+adding multiple template lines as shown below. 
+\begin{verbatim}
+1000 aips/Utilities/CountedPtr.cc trial/ComponentModels/SkyCompRep.h 
+     template class CountedConstPtr<SkyCompRep> 
+     template class CountedPtr<SkyCompRep> 
+     template class PtrRep<SkyCompRep> 
+     template class SimpleCountedConstPtr<SkyCompRep> 
+     template class SimpleCountedPtr<SkyCompRep> 
+\end{verbatim}
 
 \section{Demangling the template names}
 When linking the names of the missing class/function instantiations may
