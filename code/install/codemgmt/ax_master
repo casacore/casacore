@@ -3146,3 +3146,4 @@
 13 030 src mv trial/implement/Lattices/ExprMathNodeArray.h aips/implement/Tables/ExprMathNodeArray.h
 13 035 src rm nfra/apps/gui
 13 035 src rm nfra/apps/wbork
+13 035 src rm nfra/apps/xyftool
