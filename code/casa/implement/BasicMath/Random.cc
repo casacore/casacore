@@ -1,5 +1,5 @@
 //# Random.cc: Random number classes
-//# Copyright (C) 1992,1993,1994,1995
+//# Copyright (C) 1992,1993,1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -210,8 +210,9 @@ ACG::ACG(unsigned long seed, int size)
     //
     //	Determine the size of the state table
     //
-    
-    for (register int l = 0;
+
+    register int l;
+    for (l = 0;
 	 randomStateTable[l][0] != -1 && randomStateTable[l][1] < size;
 	 l++);
     
