@@ -3,7 +3,7 @@
 # aipsinit.csh: Define the AIPS++ environment for C-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1999,2000,2001
+#   Copyright (C) 1992-1999,2000,2001,2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -173,6 +173,9 @@
            breaksw
         IRIX*:
            set a_arch = sgi
+           breaksw
+        AIX:
+           set a_arch = aix
            breaksw
         default:
            if (`uname -m` == alpha) then
