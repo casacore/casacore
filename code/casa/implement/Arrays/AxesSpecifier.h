@@ -69,6 +69,10 @@
 // This object is (for example) used internally in the
 // <linkto class=SubLattice>SubLattice</linkto> class to know how
 // to map the axes form the original lattice to the sublattice.
+// <note role=caution>
+// Reordering axes is not supported (yet) by the other AIPS++ classes
+// like Lattices and Images.
+// </note>
 // </synopsis>
 
 // <example>
