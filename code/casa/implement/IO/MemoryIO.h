@@ -205,7 +205,39 @@ public:
     // Is the IO stream seekable?
     virtual Bool isSeekable() const;
 
+    // resize the internal buffer (if necessary) so that it is big enough
+    // to hold the specified number of bytes. Returns a non-const pointer
+    // to the buffer that can be used to write up to the specified number
+    // of bytes into the buffer. If less data is written into the buffer
+    // then the setUsed member funtion should be used to indicate how much
+    // of the buffer is valid. Throws an exception if the MemoryIO object
+    // is not writable or if it needs to increase the size of the internal
+    // buffer and the MemoryIO object is not expandable.
+    // <note role=warning> You should not use the supplied pointer to write
+    // more than length data points to the buffer</note>
+    uChar* setBuffer(uInt length);
+
+    // tell the MemoryIO object how much of its internal buffer is valid
+    // data. You only need to use this function if you are directly writing to
+    // the buffer using the pointer returned by the non-const getBuffer
+    // function. This function throws an exception if the number of bytes used
+    // is greater than the number allocated or if the MemoryIO object is not
+    // writeable.
+    void setUsed(uInt bytesUsed);
+
 private:
+    //# Copy constructor, should not be used.
+    MemoryIO (const MemoryIO& that);
+
+    //# Assignment, should not be used.
+    MemoryIO& operator= (const MemoryIO& that);
+
+    //# Expand the buffer to at least the given size. The specified size
+    //# will be used if it results in a larger buffer size. In this way the
+    //# buffer does not get reallocated too often.  It returns a false status
+    //# when the buffer cannot be expanded. 
+    Bool expand (uLong minSize);
+
     uChar* itsBuffer;
     uLong  itsAlloc;
     uLong  itsExpandSize;
@@ -214,18 +246,6 @@ private:
     Bool   itsReadable;
     Bool   itsWritable;
     Bool   itsCanDelete;
-
-    // Copy constructor, should not be used.
-    MemoryIO (const MemoryIO& that);
-
-    // Assignment, should not be used.
-    MemoryIO& operator= (const MemoryIO& that);
-
-    // Expand the buffer to at least the given size.
-    // The expandSize will be used if that gives a larger new size.
-    // In this way the buffer does no get expanded too often.
-    // It returns a false status when the buffer cannot be expanded.
-    Bool expand (uLong minSize);
 };
 
 
