@@ -1,0 +1,110 @@
+
+\newcommand{\subsectionC}[4]{
+  {\bfseries \vspace{-\baselineskip} \vspace{-\baselineskip}
+
+   \begin{longtable}[l]{lrl}
+    #1 -- &Constructor & \kill\\
+          & Package & #2\\
+          & Module & #3\\
+          & Tool & #4\\
+    \end{longtable}
+
+  }
+  \flushleft\vspace{\baselineskip}
+}
+
+\newcommand{\subsectionF}[3]{
+  {\bfseries\large \vspace{-\baselineskip} \vspace{-\baselineskip}
+   \begin{longtable}[l]{lrl}
+    #1 -- &Function & \kill\\
+      & Package & #2\\
+      & Module  &#3\\
+   \end{longtable}
+
+  }
+  \flushleft\vspace{\baselineskip}
+}
+
+\newcommand{\subsectionM}[4]{
+  {\bfseries \vspace{-\baselineskip} \vspace{-\baselineskip}
+   \begin{longtable}[l]{lrl}
+     \thesubsection #1 -- & Tool & \kill\\
+     &Package  &#2\\
+     &Module  &#3\\
+     &Tool  &#4\\
+  \end{longtable}
+
+  }
+  \flushleft\vspace{\baselineskip}
+}
+
+\newcommand{\subsectionO}[3]{
+  {\bfseries \large \vspace{-\baselineskip} \vspace{-\baselineskip}
+
+   \begin{longtable}[l]{lrl}
+     \thesubsection #1 -- & Tool & \kill\\
+     & Package & #2\\
+     & Module  &#3\\
+   \end{longtable}
+  }
+  \flushleft\vspace{\baselineskip}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Generic .help file definitions
+%%
+\newcommand{\aipspp}{\textsf{AIPS++}}
+\newcommand{\glish}{\emph{Glish}}
+\newcommand{\av}{\textit{AipsView}}
+\newcommand{\tool}               {{\tt tool}}
+\newcommand{\tools}              {{\tt tools}}
+\newcommand{\toolfunction}       {{\tt tool function}}
+\newcommand{\toolfunctions}      {{\tt tool functions}}
+\newcommand{\constructor}        {{\tt constructor}}
+\newcommand{\constructors}       {{\tt constructors}}
+\newcommand{\fits}              {{FITS}}
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% The following definitions are used by NEBK
+%% in a range of   image related .help files
+
+%% specific tool font
+\newcommand{\stf} {\bf}
+%% specific tool function font
+\newcommand{\stff} {\tt}
+%% specific tool function argument font
+\newcommand{\stfaf} {\tt}
+%% specific file font
+\newcommand{\sff} {\em}
+%% glish variable font
+\newcommand{\gvf} {\tt}
+%% code font
+\newcommand{\cf} {\tt}
+%% module font
+\newcommand{\mf} {\tt}
+ 
+%Generic
+\newcommand{\viewer}             {Viewer}
+\newcommand{\regionmanager}      {Regionmanager}
+ 
+%% Specific
+\newcommand{\imagefile}          {{\tt image file}}
+\newcommand{\imagefiles}         {{\tt image files}}
+\newcommand{\imagetool}          {{\tt image tool}}
+\newcommand{\imagetools}         {{\tt image tools}}   
+\newcommand{\imagetoolfunction}  {{\tt image tool function}}
+\newcommand{\imagetoolfunctions} {{\tt image tool functions}}
+%%
+\newcommand{\region}             {{\tt region-of-interest}}
+\newcommand{\regions}             {{\tt regions-of-interest}}
+\newcommand{\Regions}             {{\tt Regions-of-interest}}
+\newcommand{\regionmask}             {{\tt region mask}}
+\newcommand{\pixelmask}             {{\tt pixel mask}}
+\newcommand{\pixelmasks}             {{\tt pixel masks}}
+\newcommand{\Pixelmasks}             {{\tt Pixel masks}}
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
