@@ -330,15 +330,16 @@ TaQL knows the following data types:
   \item[ Double] which includes integers and times/positions
   \item[ Complex ] which includes single and double precision complex
   \item[ String ] Operator + can be used (concatenation).
-  \item[ Regex ] which is formed by the functions \texttt{regex}
-    and \texttt{pattern} (see below).
+  \item[ Regex ] which is formed by the functions \texttt{regex},
+    \texttt{pattern}, and \texttt{sqlpattern} or by a special constant
+    (see discussion \htmlref{below}{TAQL:CONSTANTS}).
   \item[ DateTime ] which represents a date/time. There are several functions
        acting on a date/time. Also operator + and - can be used.
 \end{description}
 All these data types can be used for scalars and, except for Regex,
 they can also be used for arrays.
 \\When an operand or function argument with a non-matching data type
-is used TaQL can do the following automatic conversions:
+is used, TaQL can do the following automatic conversions:
 \\- from Double to Complex
 \\- from String to DateTime
 
@@ -387,12 +388,31 @@ Scalar constants of the various data types can be formed as follows
          "ab'cd"'ef"gh'
              which results in constant  ab'cdef"gh
        \end{verbatim}
-  \item A Regex constant as such does not exist. A Regex is formed from a String
-       by the function \texttt{regex} or \texttt{pattern} (see below).
-       In this way one can form a Regex constant. E.g.
+  \item A Regex constant has to be given as \texttt{m/regex/} or
+       \texttt{p/pattern/} after operator ~ or !~.
+       Besides /, the characters \% and \# can also be used as
+       delimiter, as long as the same delimiter is used on both sides.
+       The delimiter can not be part of the regex itself.
+       \begin{verbatim}
+         name ~ m/[a-zA-Z][a-zA-Z0-9]*/
+         name !~ p#3c*#
+       \end{verbatim}
+
+       An SQL style pattern has to be given as a string after the LIKE
+       operator. E.g.
+       \begin{verbatim}
+         name LIKE '3c%'
+       \end{verbatim}
+       Note that the string does not need to be a constant.
+
+       Finally a Regex can be formed from a String
+       by the function \texttt{regex}, \texttt{pattern}, or
+       \texttt{sqlpattern}. (see below). 
+       In this way one can also form a Regex constant. E.g.
        \begin{verbatim}
          regex ("[a-zA-Z][a-zA-Z0-9]*")
        \end{verbatim}
+       Only operator = and != can be used on a regex constructed this way.
   \item A DateTime constant can be formed in 2 ways:
        \begin{enumerate}
          \item From a String constant using the \texttt{datetime} function.
@@ -444,11 +464,34 @@ Scalar constants of the various data types can be formed as follows
               by using the function \texttt{datetime} without arguments.
        \end{enumerate}
 \end{itemize}
-Constant arrays cannot be formed, but it is possible to form a
-constant set. Such a set is transformed to a 1D array and can be used
-as such.
-\\Whenever needed it is easy to implement a Glish-like array function
-to construct a constant array.
+Constant N-dimensional arrays cannot be formed directly.
+It is possible though to form a constant bounded discrete
+\htmlref{set}{TAQL:SETS}. When needed such a set is automatically
+transformed to a 1-dimensional array and can be used. E.g.
+\begin{verbatim}
+     [1:10]
+\end{verbatim}
+is equal to a 1D array with 10 elements with values 1..10.
+
+Furthermore it is possible to use the \texttt{array} function to
+transform an array to another shape. This function is very similar to
+the same function in glish. E.g.
+\begin{verbatim}
+     array([1:10],10,4)
+\end{verbatim}
+creates an array with shape [10,4]. Each row contains the values
+1..10.
+\\Please note that in TaQL arrays are stored in Fortran order, thus
+the first index varies most rapidly (which is opposite to C).
+
+Similar to glish the value array is wrapped if the created
+array has more elements. Unlike glish the shape does not need to be
+defined by scalars, but it can also be defined by another set. Thus:
+\begin{verbatim}
+     array(F,shape(DATA))
+\end{verbatim}
+creates an array filled with F with the same shape as the DATA array.
+
 
 \subsection{\label{TAQL:OPERATORS}Operators}
 The following operators can be used (with their normal meaning and
@@ -461,7 +504,6 @@ precedence) for scalars:
   \item[] Unary \textbf{!} (or \textbf{NOT})
        \\Logical NOT operator.
        Can only be used with Bool operands.
-%  \item[ Binary \verb+^+, *, /, \%, +, and -] 
   \item[] Binary \textbf{$\wedge$, *, /, \%, +}, and \textbf{-}
        \\\% is the modulo operator.
        E.g. \texttt{3\%1.4} results in \texttt{0.2} and
@@ -487,9 +529,23 @@ precedence) for scalars:
        They use the norm for Complex values.
        \\To be compliant with SQL $=$ can be used for
        $==$ and $<>$ can be used for $!=$.
-  \item[] \textbf{IN}
+  \item[] \textbf{~, $!~$}, and \textbf{LIKE} and \textbf{NOT LIKE}.
+       \\~ and $!~$ have to be used with regular expression
+       \htmlref{constants}{TAQL:CONSTANTS}.
+       \\LIKE exists for SQL compliancy. It operates on a string
+       giving a pattern with special characters \% (0 or more
+       characters) and \_ (any character). 
+  \item[] \textbf{IN} and \textbf{NOT IN}
        \\Can be used to test if a value is an element in a set of
-       values (see discussion of \htmlref{sets}{TAQL:SETS}).
+       values, ranges, and/or intervals.
+       (See the discussion of \htmlref{sets}{TAQL:SETS}).
+  \item[] \textbf{BETWEEN} and \textbf{NOT BETWEEN}
+       \\Is a special form of IN with a single closed interval.
+       It exist for SQL compliance.
+       It can be used to test if a value is between two other values.
+       E.g.
+       \\\texttt{   col BETWEEN 1 AND 3}  and  \texttt{col in [1=:=3]}
+       are the same.
   \item[] \textbf{\&\&} and \textbf{$\mid\mid$}
        \\Logical AND and OR operator. 
        \\To be compliant with SQL the
@@ -548,12 +604,20 @@ These functions can only be used on a scalar argument.
   \item[ \texttt{regex REGEX(string)}]
        Handle the given string as a regular expression.
   \item[ \texttt{regex PATTERN(string)}]
-       Handle the given string as a filename-like pattern and
+       Handle the given string as a UNIX filename-like pattern and
        convert it to a regular expression.
+  \item[ \texttt{regex SQLPATTERN(string)}]
+       Handle the given string as an SQL-style pattern and
+       convert it to a regular expression.
+       An SQL-style pattern has two special character:
+       \\ \% for zero or more arbitrary characters
+       \\ \_ for one arbitrary character
 \end{description}
-A regex can only be used in a comparison == or !=. E.g.
+A regex formed this way can only be used in a comparison == or !=. E.g.
 \\\texttt{upcase(object) == pattern('3C*')}
 \\to find all 3C objects in a catalogue.
+See also the discussion on \htmlref{constants}{TAQL:CONSTANTS} for
+other ways of forming and testing regular expressions.
 
 \subsubsection{Date/time functions}
 These functions can be used on a scalar or an array argument.
@@ -709,14 +773,14 @@ These functions reduce an array to a smaller array by collapsing
 the given axes using the given function. The axes are the last argument(s).
 They can be given in two ways:
 \\- As a single set argument; for example, \texttt{maxs(ARRAY,[1:2])}
-\\  It has the advantage that the the end value can be left out. This
-if a column can contain differently dimensioned arrays, giving
-\texttt{maxs(ARRAY,[2:])} always gives a 1-dim result.
-\\- As individual function arguments; for example, \texttt{maxs(ARRAY,1,2)}
+\\- As individual scalar arguments; for example, \texttt{maxs(ARRAY,1,2)}
 \\For example, using
 \texttt{MINS(array,1,2)} for a 3-dim array results in a 1-dim array
 where each value is the minimum of each plane in the cube.
 \\Axes numbers are 1-relative, thus 1 is the first axis.
+\\Axes numbers exceeding the dimensionality of the array are ignored.
+Thus, for example, \texttt{maxs(ARRAY,[2:10])} works for virtually
+any array and results in a 1-dim array.
 \\The function names are the 'plural' forms of the
 functions in the previous table.
 They can only be used for arrays, thus not for scalars.
@@ -778,7 +842,7 @@ They can only be used for arrays, thus not for scalars.
        time, so the results are different from run to run.
        \\The function can, for instance, be used to select a random
        subset from a table.
-  \item[ \texttt{double IIF(cond,arg1,arg2)}]
+  \item[ \texttt{anytype IIF(cond,arg1,arg2)}]
        This is a special funtion which operates like the ternary \texttt{?:}
        operator in C++. 
        If all arguments are scalars, the result is a scalar, otherwise
@@ -786,6 +850,18 @@ They can only be used for arrays, thus not for scalars.
        virtually expanded to arrays.
        IIF evaluates the condition for each element. If True, it takes
        the corresponding element of \texttt{arg1}, otherwise of \texttt{arg2}.
+  \item[ \texttt{anytype ARRAY(anytype,shape)}]
+       This function creates an array of the given type and shape.
+       The shape is given in the last argument(s).
+       It can be given in two ways:
+       \\- As a single set argument; for example, \texttt{array(0,[3,4])}
+       \\- As individual scalar arguments; for example, \texttt{array(0,3,4)}
+       \\The first argument gives the values the array is filled with.
+       It can be a scalar or an array of any shape. To initialize the
+       created array, the value array is flattened to a 1D array.
+       Its successive values are stored in the created array. If the
+       new array has more values than the value array, the value array is
+       reset to its beginning and the process continues.
 \end{description}
 
 \subsection{\label{TAQL:COLUMNS}Table Columns}
@@ -811,10 +887,10 @@ character of the column name. E.g. \verb+\+\texttt{1stDay}.
 Because several words are used in the language, they cannot
 be used directly as column names. The reserved words are:
 \begin{verbatim}
-   ALL AND AS ASC DELETE DESC DISTINCT FROM GIVING
-   GROUPBY HAVING IN INSERT INTO LIMIT NODUPLICATES NOT
-   OFFSET OR ORDERBY SAVETO SELECT SET UNIQUE UPDATE
-   VALUES WHERE
+   ALL AND AS ASC BETWEEN DELETE DESC DISTINCT EXISTS
+   FROM GIVING GROUPBY HAVING IN INSERT INTO LIKE LIMIT
+   NODUPLICATES NOT OFFSET OR ORDERBY SAVETO SELECT SET
+   UNIQUE UPDATE VALUES WHERE
 \end{verbatim}
 They can, however, be used as a column name by escaping
 them with a backslash. E.g. \verb+\+\texttt{IN}.
@@ -1123,10 +1199,22 @@ in radians, so it can be used directly in a comparison. For example,
 \\In the future this may change when units are handled in their full glory.
 
 \subsection{Optimization}
-There remains a lot of work to be done on improving query optimization.
-At this stage the only optimization done is the precalculation of constant
-subexpressions.
-\\
+A lot of development work can be done to improve the query optimization.
+At this stage a few optimizations are done.
+\begin{enumerate}
+\item Constant subexpressions are calculated only once. E.g.
+\\in \texttt{COL*sin(180/pi)} the part \texttt{sin(180/pi)} is
+evaluated once.
+\item If a subquery generates intervals of doubles or dates, overlapping
+intervals are combined and eliminated. E.g.
+\begin{verbatim}
+select from GER.MS where TIME in [select from ::POINTING where
+sumsqr(DIRECTION[1])>0 giving [TIME-INTERVAL/2=:=TIME+INTERVAL/2]]
+\end{verbatim}
+can generate many identical or overlapping intervals. They are
+sorted and combined where possible to make the set as small as possible.
+\end{enumerate}
+
 However, the user can optimize a query by specifying the expression
 carefully. Especially when using operator $\mid\mid$ or \&\&,
 attention should be
@@ -1137,7 +1225,7 @@ should be the shortest one, i.e., the fastest to evaluate.
 by swapping the branches. This means that one should not count on
 the order of evaluation (as you can do in the C(++) language).
 
-The user should also use functions and operators in a careful way.
+The user should also use functions, operators, and subqueries in a careful way.
 \begin{itemize}
 
 \item
@@ -1173,6 +1261,13 @@ could also be expressed as
 \end{verbatim}
 The latter (as a set) is slower. So, if possible, the column should
 be returned directly. This is also easier to write.
+\\An even more important optimization for this query is writing it as:
+\begin{verbatim}
+  SELECT FROM maintable WHERE time IN
+      [SELECT DISTINCT time FROM othertable WHERE windspeed < 5]
+\end{verbatim}
+Using the DISTINCT qualifier has the effect that duplicates are
+removed which often results in a much smaller set.
 
 \item
 Sometimes operator \texttt{IN} and function \texttt{ANY} can be used to test
