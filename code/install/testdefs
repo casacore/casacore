@@ -478,6 +478,24 @@ system :
 	-@ echo ""
 	-@ echo "ARCHLIBS=$(ARCHLIBS)"
 	-@ echo ""
+	-@ echo "CFITSIOROOT=$(CFITSIOROOT)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(CFITSIOROOT) ; $(CheckDir)
+    endif
+	-@ echo "CFITSIODEFS=$(CFITSIODEFS)"
+	-@ echo "CFITSIOINCD=$(CFITSIOINCD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(CFITSIOINCD) ; $(CheckDir)
+    endif
+	-@ echo "CFITSIOLIBD=$(CFITSIOLIBD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(CFITSIOLIBD) ; $(CheckDir)
+    endif
+	-@ echo "CFITSIOLIB =$(CFITSIOLIB)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(CFITSIOLIBD) $(CFITSIOLIB) ; $(CheckLibs)
+    endif
+	-@ echo ""
 	-@ echo "RPFITSROOT=$(RPFITSROOT)"
     ifdef DO_TEST
 	-@ set ADVISORY $(RPFITSROOT) ; $(CheckDir)
