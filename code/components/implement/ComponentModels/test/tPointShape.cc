@@ -189,10 +189,12 @@ int main() {
     }
     {
       AlwaysAssert(shapePtr->nParameters() == 0, AipsError);
-      Vector<Double> v(0);
-      shapePtr->parameters(v);
+      Vector<Double> v = shapePtr->parameters().copy();
       AlwaysAssert(v.nelements() == 0, AipsError);
       shapePtr->setParameters(v);
+      Vector<Double> e = shapePtr->errors().copy();
+      AlwaysAssert(e.nelements() == 0, AipsError);
+      shapePtr->setErrors(e);
 #if defined(AIPS_DEBUG)
       v.resize(1);
       try{
@@ -204,12 +206,13 @@ int main() {
 	  throw;
 	}
       }
+      e.resize(1);
       try{
-	shapePtr->parameters(v);
+	shapePtr->setErrors(e);
 	throw(AipsError("Incorrect parameter vector exception NOT thrown"));
       }
       catch (AipsError x) {
-	if(!x.getMesg().contains("compParms.nelements() == nParameters()")) {
+	if(!x.getMesg().contains("newErrors.nelements() == nParameters()")) {
 	  throw;
 	}
       }
