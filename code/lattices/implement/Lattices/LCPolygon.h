@@ -103,10 +103,16 @@ public:
 
     // Construct from the given x and y values.
     // The latticeShape must define a 2-dimensional lattice.
+    // <br>LCPolygon can be used for an N-dimensional lattice by making
+    // another lattice representing any 2 axes from the original lattice.
+    // <group>
     LCPolygon (const Vector<Float>& x, const Vector<Float>& y,
 	       const IPosition& latticeShape);
+    LCPolygon (const Vector<Double>& x, const Vector<Double>& y,
+	       const IPosition& latticeShape);
+    // </group>
 
-    // Copy constructor (copy semantics).
+    // Copy constructor (partly reference semantics).
     LCPolygon (const LCPolygon& other);
 
     virtual ~LCPolygon();
