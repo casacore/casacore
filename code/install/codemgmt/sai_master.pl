@@ -1,6 +1,12 @@
 #!/usr/local/bin/perl
-# print "$<: $>\n";
-# print "$(: $)\n";
+#
+# $Id$
+
+print "$<: $>\n";
+print "$(: $)\n";
+$< = $>;
+print "$<: $>\n";
+
 $AIPSPATH = (split (' ', $ENV{AIPSPATH}))[0];
 # Untaint.
 if ($AIPSPATH =~ /(.*)/) {
