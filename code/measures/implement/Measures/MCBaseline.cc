@@ -1,5 +1,5 @@
 //# MCBaseline.cc:  MBaseline conversion routines 
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -344,7 +344,7 @@ void MCBaseline::doConvert(MVBaseline &in,
       in.adjust(g2);
       // E-terms
       // Iterate
-      *MVPOS1 = MeasTable::AberETerm(0);
+      *MVPOS1 = MVPosition(MeasTable::AberETerm(0));
       *MVPOS2 = in;
       do {
 	g1 = *MVPOS2 * *MVPOS1;
@@ -360,7 +360,7 @@ void MCBaseline::doConvert(MVBaseline &in,
     
     case B1950_J2000: {
       // E-terms
-      *MVPOS1 = MeasTable::AberETerm(0);
+      *MVPOS1 = MVPosition(MeasTable::AberETerm(0));
       in.adjust(g2);
       g1 = in * *MVPOS1;
       in += g1 * in;
@@ -490,7 +490,7 @@ void MCBaseline::doConvert(MVBaseline &in,
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
       // E-terms
-      *MVPOS1 = MeasTable::AberETerm(0);
+      *MVPOS1 = MVPosition(MeasTable::AberETerm(0));
       in.adjust(g2);
       g1 = in * *MVPOS1;
       in += g1 * in;
@@ -515,7 +515,7 @@ void MCBaseline::doConvert(MVBaseline &in,
       in = *ROTMAT1 * in;
       // E-terms
       // Iterate
-      *MVPOS1 = MeasTable::AberETerm(0);
+      *MVPOS1 = MVPosition(MeasTable::AberETerm(0));
       in.adjust(g2);
       *MVPOS2 = in;
       do {

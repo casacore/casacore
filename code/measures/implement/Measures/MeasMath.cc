@@ -380,7 +380,7 @@ void MeasMath::deapplyJ2000toB1950(MVPosition &in) {
 
 void MeasMath::applyETerms(MVPosition &in) {
   // E-terms
-  MVPOS1 = MeasTable::AberETerm(0);
+  MVPOS1 = MVPosition(MeasTable::AberETerm(0));
   g1 = in * MVPOS1;
   in += g1 * in;
   in -= MVPOS1;
@@ -390,7 +390,7 @@ void MeasMath::applyETerms(MVPosition &in) {
 void MeasMath::deapplyETerms(MVPosition &in) {
   // E-terms
   // Iterate
-  MVPOS1 = MeasTable::AberETerm(0);
+  MVPOS1 = MVPosition(MeasTable::AberETerm(0));
   MVPOS2 = in;
   do {
     g1 = MVPOS2 * MVPOS1;

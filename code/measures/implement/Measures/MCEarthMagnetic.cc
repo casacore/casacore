@@ -361,7 +361,7 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
       in.adjust(g2);
       // E-terms
       // Iterate
-      *MVPOS1 = MeasTable::AberETerm(0);
+      *MVPOS1 = MVPosition(MeasTable::AberETerm(0));
       *MVPOS2 = in;
       do {
 	g1 = *MVPOS2 * *MVPOS1;
@@ -377,7 +377,7 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
     
     case B1950_J2000: {
       // E-terms
-      *MVPOS1 = MeasTable::AberETerm(0);
+      *MVPOS1 = MVPosition(MeasTable::AberETerm(0));
       in.adjust(g2);
       g1 = in * *MVPOS1;
       in += g1 * in;
@@ -507,7 +507,7 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
       // E-terms
-      *MVPOS1 = MeasTable::AberETerm(0);
+      *MVPOS1 = MVPosition(MeasTable::AberETerm(0));
       in.adjust(g2);
       g1 = in * *MVPOS1;
       in += g1 * in;
@@ -532,7 +532,7 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
       in = *ROTMAT1 * in;
       // E-terms
       // Iterate
-      *MVPOS1 = MeasTable::AberETerm(0);
+      *MVPOS1 = MVPosition(MeasTable::AberETerm(0));
       in.adjust(g2);
       *MVPOS2 = in;
       do {
