@@ -979,3 +979,45 @@ Stokes::StokesTypes CoordinateUtil::findSingleStokes (LogIO& os, const Coordinat
    }
    return stokes;
 }
+
+String CoordinateUtil::formatCoordinate (const IPosition& pixel, CoordinateSystem& cSys)
+{
+   Vector<Double> pixel2(cSys.nPixelAxes());
+   for (uInt i=0; i<pixel2.nelements(); i++) pixel2(i) = pixel(i);
+//
+   return CoordinateUtil::formatCoordinate(pixel2, cSys);
+}
+   
+
+String CoordinateUtil::formatCoordinate (const Vector<Double>& pixel, CoordinateSystem& cSys)
+{
+   Vector<Double> world;
+//
+   if (!cSys.toWorld(world, pixel)) {
+      String err = String("Error converting coordinate position because ") + cSys.errorMessage();
+      throw(AipsError(err));
+   }
+//
+   String s2;  
+   for (uInt i=0; i<world.nelements(); i++) {
+      String s, u;
+      String tmp = cSys.format(u, Coordinate::DEFAULT, world(i), i,
+                               True, True, -1);
+//
+      if (u.empty()) {
+        s = tmp;
+      } else {
+        s = tmp + u;
+      }
+//
+      if (i==0) {
+         s2 += s;
+      } else {
+         s2 += String(", ") + s;
+      }
+   }
+//
+   return s2;
+}
+   
+
