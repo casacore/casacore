@@ -1,5 +1,5 @@
 //# TempImage.h: Temporary astronomical images
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,6 +108,10 @@ public:
     TempImage (const TiledShape& mapShape,
 	       const CoordinateSystem& coordinateInfo,
 	       Int maxMemoryInMB=-1);
+  
+    TempImage (const TiledShape& mapShape,
+	       const CoordinateSystem& coordinateInfo,
+	       Double maxMemoryInMB);
   
     // Copy constructor (reference semantics).
     TempImage (const TempImage<T>& other);
