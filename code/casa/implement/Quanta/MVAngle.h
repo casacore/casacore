@@ -291,7 +291,7 @@ class MVAngle {
 // Copy assignment
     MVAngle &operator=(const MVAngle &other);
 // Constructor from Double
-    explicit MVAngle(Double d);
+    MVAngle(Double d);
 // Constructor from Quantum : value can be an angle or time
 // <thrown>
 //   <li> AipsError if not a time or angle

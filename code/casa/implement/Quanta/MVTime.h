@@ -293,7 +293,7 @@ class MVTime {
 // Copy assignment
     MVTime &operator=(const MVTime &other);
 // Constructor from Double (in MJD)
-    explicit MVTime(Double d);
+    MVTime(Double d);
 // Constructor from Quantum : value can be an angle or time
 // <thrown>
 //   <li> AipsError if not a time or angle

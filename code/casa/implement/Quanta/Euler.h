@@ -1,5 +1,5 @@
 //# Euler.h: Vector of Euler rotation angles
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,7 +131,7 @@ class Euler
 // Copy assignment
     Euler &operator=(const Euler &other);
 // Constructs an Euler with specified angles and (1,2,3) axes
-    explicit Euler(Double in0, Double in1 = 0, Double in2 = 0);
+    Euler(Double in0, Double in1 = 0, Double in2 = 0);
 // Constructs an Euler with specified angles and axes
     Euler(Double in0, uInt ax0, Double in1 = 0, uInt ax1=0, Double in2 = 0,
 	  uInt ax2=0);
@@ -140,13 +140,13 @@ class Euler
 // </thrown>
 // Constructs an Euler from specified angle quantities
 // <group>
-    explicit Euler(const Quantity &in0, const Quantity &in1 = RAD0, 
+    Euler(const Quantity &in0, const Quantity &in1 = RAD0, 
 	  const Quantity &in2 = RAD0);
     Euler(const Quantity &in0, uInt ax0, const Quantity &in1 = RAD0, uInt ax1=0,
 	  const Quantity &in2 = RAD0, uInt ax2=0);
 // Constructs an Euler (zero filled) from elements of Quantity vector
 // <group>
-    explicit Euler(const Quantum<Vector<Double> > &in);
+    Euler(const Quantum<Vector<Double> > &in);
     Euler(const Quantum<Vector<Double> > &in, const Vector<uInt> &ax);
 // </group>
 // </group>

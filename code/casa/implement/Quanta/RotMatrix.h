@@ -99,7 +99,7 @@ class RotMatrix
 // The copy constructor copies
     RotMatrix(const RotMatrix &other);
 // Make from an Euler
-    explicit RotMatrix(const Euler &other);
+    RotMatrix(const Euler &other);
 // Make from an Euler around specified axes
     RotMatrix(const Euler &other, Int ax0, Int ax1, Int ax2);
 // Copy assignment

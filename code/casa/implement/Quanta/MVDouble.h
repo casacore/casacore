@@ -100,7 +100,7 @@ public:
   // Copy assignment
   MVDouble &operator=(const MVDouble &other);
   // Constructor from Double
-  explicit MVDouble(Double d);
+  MVDouble(Double d);
   // Constructor from Quantum : value taken will be the canonical value
   // <group>
   MVDouble(const Quantity &other);

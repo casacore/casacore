@@ -112,7 +112,7 @@ public:
   // Copy assignment
   MVFrequency &operator=(const MVFrequency &other);
   // Constructor from Double
-  explicit MVFrequency(Double d);
+  MVFrequency(Double d);
   // Constructor from Quantum : value taken will be the canonical value
   // <group>
   MVFrequency(const Quantity &other);

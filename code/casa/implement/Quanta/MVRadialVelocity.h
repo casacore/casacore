@@ -107,7 +107,7 @@ public:
   // Copy assignment
   MVRadialVelocity &operator=(const MVRadialVelocity &other);
   // Constructor from Double (assume m/s)
-  explicit MVRadialVelocity(Double d);
+  MVRadialVelocity(Double d);
   // Constructor from Quantum
   // <group>
   MVRadialVelocity(const Quantity &other);
