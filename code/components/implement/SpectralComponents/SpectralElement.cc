@@ -27,9 +27,15 @@
 
 //# Includes
 #include <trial/Wnbt/SpectralElement.h>
+
+#include <aips/Arrays/Vector.h>
+#include <aips/Containers/Record.h>
+#include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
 #include <aips/Quanta/MUString.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
+
 #include <aips/iostream.h>
 
 //# Constructors
@@ -162,3 +168,61 @@ ostream &operator<<(ostream &os, const SpectralElement &elem) {
 
   return os;
 }
+
+
+SpectralElement* SpectralElement::fromRecord (const RecordInterface& rec)
+{
+   if (!rec.isDefined("type") || !rec.isDefined("parameters")) {
+      throw (AipsError("Invalid estimate record"));
+   }
+//
+   Vector<Double> parameters = rec.asArrayDouble("parameters");
+   String sType = rec.asString("type");
+   SpectralElement::Types type;
+   if (!SpectralElement::toType(type, sType)) {
+      throw (AipsError("Invalid element type"));
+   }
+//
+   SpectralElement* p = 0;
+   if (type==SpectralElement::GAUSSIAN) {
+      AlwaysAssert(parameters.nelements()==3, AipsError);
+      p = new SpectralElement(SpectralElement::GAUSSIAN, 
+                              parameters(0), parameters(1), parameters(2));
+   } else if (type==SpectralElement::POLYNOMIAL) {
+      AlwaysAssert(parameters.nelements()==1, AipsError);
+      Int n = Int(parameters(0) + 0.5);
+      p = new SpectralElement(n);
+   }
+//
+   return p;
+}
+
+
+Bool SpectralElement::toRecord (RecordInterface& rec, const String& name)
+{
+   if (name.empty()) {
+      throw(AipsError("Record field name cannot be empty"));
+   }
+   if (rec.isDefined(name)) return False;
+//
+   Record rec2;
+   String type = SpectralElement::fromType(tp_p);
+   rec2.define("type", type);
+//
+   Vector<Double> p;
+   if (tp_p == SpectralElement::GAUSSIAN) {
+      p.resize(3);
+      p(0) = ampl_p;
+      p(1) = center_p;
+      p(2) = sigma_p;
+   } else if (tp_p = SpectralElement::POLYNOMIAL) {
+      p.resize(1);
+      Vector<Double> p(1);
+      p(0) = Double(n_p);
+   }
+   rec2.define("parameters", p);
+   rec.defineRecord(name, rec2);
+//
+   return True;
+}
+
