@@ -2577,3 +2577,4 @@
 11 378 src mv trial/scripts/buttonscript.g trial/implement/Widgets/buttonscript.g
 11 378 src mv trial/scripts/glishelp.g trial/implement/Widgets/glishelp.g
 11 378 src mv trial/scripts/glishtutorial.g trial/implement/Widgets/glishtutorial.g
+11 378 src mv trial/scripts/inspect.g trial/implement/Widgets/inspect.g
