@@ -1,5 +1,5 @@
 //# LatticeIterator.h: Iterators for Lattices: readonly or read/write
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -242,6 +242,8 @@ public:
   // Increment operator - increment the cursor to the next position.  These
   // functions are forwarded to the current LatticeNavigator and both
   // postfix and prefix versions will do the same thing.
+  // <br>They return True if the cursor moved (which should always be the
+  // case if the iterator is not at the end).
   // <group>
   Bool operator++();
   Bool operator++(int);
@@ -250,6 +252,8 @@ public:
   // Decrement operator - decrement the cursor to the previous
   // position. These functions are forwarded to the current LatticeNavigator
   // and both postfix and prefix versions will do the same thing.
+  // <br>They return True if the cursor moved (which should always be the
+  // case if the iterator is not at the start).
   // <group>
   Bool operator--();
   Bool operator--(int);
