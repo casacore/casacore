@@ -37,8 +37,7 @@ template<class T> AutoDiff<T> operator+(const AutoDiff<T> &other) {
 
 template<class T> AutoDiff<T> operator-(const AutoDiff<T> &other) { 
   AutoDiff<T> tmp(other);
-  tmp.theRep()->val_p *= T(-1);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) tmp.theRep()->grad_p[i] *= T(-1);
+  tmp *= T(-1);
   return tmp.ref();
 }
 
@@ -78,106 +77,88 @@ AutoDiff<T> operator/(const AutoDiff<T> &left, const AutoDiff<T> &right) {
 template<class T> 
 AutoDiff<T> operator+(const AutoDiff<T> &left, const T &right) { 
   AutoDiff<T> tmp(left);
-  tmp.theRep()->val_p += right;
+  tmp += right;
   return tmp.ref();
 }
 
 template<class T> 
 AutoDiff<T> operator-(const AutoDiff<T> &left, const T &right) { 
   AutoDiff<T> tmp(left);
-  tmp.theRep()->val_p -= right;
+  tmp -= right;
   return tmp.ref();
 }
 
 template<class T> 
 AutoDiff<T> operator* (const AutoDiff<T> &left, const T &right) { 
   AutoDiff<T> tmp(left);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= right;
-  };
-  tmp.theRep()->val_p *= right;
+  tmp *= right;
   return tmp.ref();
 }
 
 template<class T> 
 AutoDiff<T> operator/(const AutoDiff<T> &left, const T &right) {
   AutoDiff<T> tmp(left);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= right;
-  };
-  tmp.theRep()->val_p /= right;
+  tmp /= right;
   return tmp.ref();
 }
 
 template<class T> 
 AutoDiff<T> operator+(const T &left, const AutoDiff<T> &right) { 
   AutoDiff<T> tmp(right);
-  tmp.theRep()->val_p += left;
+  tmp += left;
   return tmp.ref();
 }
 
 template<class T> 
 AutoDiff<T> operator-(const T &left, const AutoDiff<T> &right) { 
   AutoDiff<T> tmp(right);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= T(-1);
-  };
-  tmp.theRep()->val_p = left - right.theRep()->val_p;
+  tmp *= T(-1);
+  tmp += left;
   return tmp.ref();
 }
 
 template<class T> 
 AutoDiff<T> operator*(const T &left, const AutoDiff<T> &right) { 
   AutoDiff<T> tmp(right);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= left;
-  };
-  tmp.theRep()->val_p *= left;
+  tmp *= left;
   return tmp.ref();
 }
 
 template<class T> 
 AutoDiff<T> operator/(const T &left, const AutoDiff<T> &right) { 
   AutoDiff<T> tmp(right);
-  tmp.theRep()->val_p = left/right.theRep()->val_p;
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= -tmp.theRep()->val_p/right.theRep()->val_p;
-  };
+  T tv(right.theRep()->val_p);
+  tmp.theRep()->val_p = left/tv;
+  tmp.theRep()->grad_p *= -tmp.theRep()->val_p/tv;
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> acos(const AutoDiff<T>& ad) {
+template<class T> AutoDiff<T> acos(const AutoDiff<T> &ad) {
   AutoDiff<T> tmp(ad);
-  T temp = sqrt(T(1) - tmp.theRep()->val_p*tmp.theRep()->val_p);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= -temp;
-  };
-  tmp.theRep()->val_p = acos(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p /= -sqrt(T(1) - tv*tv);
+  tmp.theRep()->val_p = acos(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> asin(const AutoDiff<T>& ad) {
+template<class T> AutoDiff<T> asin(const AutoDiff<T> &ad) {
   AutoDiff<T> tmp(ad);
-  T temp = sqrt(T(1) - tmp.theRep()->val_p*tmp.theRep()->val_p);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= temp;
-  };
-  tmp.theRep()->val_p = asin(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p /= sqrt(T(1) - tv*tv);
+  tmp.theRep()->val_p = asin(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> atan(const AutoDiff<T>& ad) {
+template<class T> AutoDiff<T> atan(const AutoDiff<T> &ad) {
   AutoDiff<T> tmp(ad);
-  T temp = T(1) + tmp.theRep()->val_p*tmp.theRep()->val_p;
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= temp;
-  };
-  tmp.theRep()->val_p = atan(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p /= T(1) + tv*tv;
+  tmp.theRep()->val_p = atan(tv);
   return tmp.ref();
 }
 
 template<class T>
-AutoDiff<T> atan2(const AutoDiff<T>& y, const AutoDiff<T>& x) {  
+AutoDiff<T> atan2(const AutoDiff<T> &y, const AutoDiff<T> &x) {  
   // this gets the derivative right, via the chain rule using the already
   // defined / and atan functions, but the value may be wrong
   AutoDiff<T> tmp = atan(y/x);
@@ -186,79 +167,71 @@ AutoDiff<T> atan2(const AutoDiff<T>& y, const AutoDiff<T>& x) {
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> cos(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> cos(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= -sin(tmp.theRep()->val_p);
-  };
-  tmp.theRep()->val_p = cos(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p *= -sin(tv);
+  tmp.theRep()->val_p = cos(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> cosh(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> cosh(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= sinh(tmp.theRep()->val_p);
-  };
-  tmp.theRep()->val_p = cosh(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p *= sinh(tv);
+  tmp.theRep()->val_p = cosh(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> sin(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> sin(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= cos(tmp.theRep()->val_p);
-  };
-  tmp.theRep()->val_p = sin(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p *= cos(tv);
+  tmp.theRep()->val_p = sin(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> sinh(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> sinh(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= cosh(tmp.theRep()->val_p);
-  };
-  tmp.theRep()->val_p = sinh(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p *= cosh(tv);
+  tmp.theRep()->val_p = sinh(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> exp(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> exp(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   tmp.theRep()->val_p = exp(ad.theRep()->val_p);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= tmp.theRep()->val_p;
-  };
+  tmp.theRep()->grad_p *= tmp.theRep()->val_p;
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> log(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> log(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= tmp.theRep()->val_p;
-  }
-  tmp.theRep()->val_p = log(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p /= tv;
+  tmp.theRep()->val_p = log(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> log10(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> log10(const AutoDiff<T> &ad) {
+  static const T l10 = T(log(10.0));
   AutoDiff<T> tmp(ad);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= tmp.theRep()->val_p*T(log(10.0));
-  };
-  tmp.theRep()->val_p = log10(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p /= tv*l10;
+  tmp.theRep()->val_p = log10(tv);
   return tmp.ref();
 }
 
 template<class T> 
-AutoDiff<T> pow(const AutoDiff<T>& a, const AutoDiff<T>& b) {
+AutoDiff<T> pow(const AutoDiff<T> &a, const AutoDiff<T> &b) {
   if (b.theRep()->nd_p == 0) return pow(a, b.theRep()->val_p);
-  T value = pow(a.theRep()->val_p, b.theRep()->val_p);
-  T temp1 = value * log(a.theRep()->val_p);
-  T temp2 = b.theRep()->val_p * pow(a.theRep()->val_p, b.theRep()->val_p - T(1));
+  T ta = a.theRep()->val_p;
+  T tb = b.theRep()->val_p;
+  T value = pow(ta, tb);
+  T temp2 = tb * pow(ta, tb - T(1));
   AutoDiff<T> tmp(b);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= temp1;
-  };
+  tmp.theRep()->grad_p *= value * log(ta);
   for (uInt i=0; i<a.theRep()->nd_p; i++) {
     tmp.theRep()->grad_p[i] += a.theRep()->grad_p[i]*temp2;
   };
@@ -266,62 +239,53 @@ AutoDiff<T> pow(const AutoDiff<T>& a, const AutoDiff<T>& b) {
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> pow(const AutoDiff<T>& a, const T& b) {
+template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, const T &b) {
   AutoDiff<T> tmp(a);
-  T temp = b*pow(a.theRep()->val_p, b-T(1));
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] *= temp;
-  };
-  tmp.theRep()->val_p = pow(a.theRep()->val_p, b);
+  T ta = a.theRep()->val_p;
+  tmp.theRep()->grad_p *= b*pow(ta, b-T(1));
+  tmp.theRep()->val_p = pow(ta, b);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> sqrt(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> sqrt(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  tmp.theRep()->val_p = sqrt(tmp.theRep()->val_p);
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= T(2)*tmp.theRep()->val_p;
-  };
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->val_p = sqrt(tv);
+  tmp.theRep()->grad_p /= T(2)*tv;
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> tan(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> tan(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  T temp = cos(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  T temp = cos(tv);
   temp *= temp;
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= temp;
-  };
-  tmp.theRep()->val_p = tan(tmp.theRep()->val_p);
+  tmp.theRep()->grad_p /= temp;
+  tmp.theRep()->val_p = tan(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> tanh(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> tanh(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  T temp = cosh(tmp.theRep()->val_p);
+  T tv = tmp.theRep()->val_p;
+  T temp = cosh(tv);
   temp *= temp;
-  for (uInt i=0; i<tmp.theRep()->nd_p; i++) {
-    tmp.theRep()->grad_p[i] /= temp;
-  };
-  tmp.theRep()->val_p = tanh(tmp.theRep()->val_p);
+  tmp.theRep()->grad_p /= temp;
+  tmp.theRep()->val_p = tanh(tv);
   return tmp.ref();
 }
 
-template<class T> AutoDiff<T> abs(const AutoDiff<T>& ad) { 
+template<class T> AutoDiff<T> abs(const AutoDiff<T> &ad) { 
   // Here we assume that function F represented by ad is continous and 
   // differentiable in a small enough neighborhood where F is 
-  // evaluated. So if ad.theRep()->val_p is positive, F is positive in the small
-  // neighborhood.
+  // evaluated. So if ad.theRep()->val_p is positive, F is positive in
+  // the small neighborhood.
   AutoDiff<T> tmp(ad);
-  if (ad.theRep()->val_p < T(0)) {
-    for (uInt i=0; i<tmp.theRep()->nd_p; i++) tmp.theRep()->grad_p[i] *= T(-1);
-    tmp.theRep()->val_p = -ad.theRep()->val_p;
-  };
+  if (ad.theRep()->val_p < T(0)) tmp *= T(-1);
   return tmp.ref();
 }
 
-
-template<class T> AutoDiff<T> fmod(const AutoDiff<T>& x, const T c) { 
+template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x, const T &c) { 
   // Floating-point remainder of x/c, with the same sign as x, where c is
   // a constant.  Since fmod(x,c) = x - ((int)(x/c))*c and d[(int)(z)]/dz = 0, 
   // d(fmod(x,c))/dx = 1.  At z = integer, (int)(z) is discontinuous, but
@@ -329,100 +293,223 @@ template<class T> AutoDiff<T> fmod(const AutoDiff<T>& x, const T c) {
   // we use the derivative at z = integer+epsilon as the derivative at
   // z = integer.
   AutoDiff<T> tmp(x);
-  tmp.theRep()->val_p = fmod(x.theRep()->val_p,c);
+  tmp.theRep()->val_p = fmod(x.theRep()->val_p, c);
   return tmp.ref();
 }
 
-
 template<class T>
-Bool operator>(const AutoDiff<T>& right, const AutoDiff<T>& left) {
-  return (right.theRep()->val_p > left.theRep()->val_p);
+Bool operator>(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (left.theRep()->val_p > right.theRep()->val_p);
 }
 
 template<class T>
-Bool operator<(const AutoDiff<T>& right, const AutoDiff<T>& left) {
-  return (right.theRep()->val_p < left.theRep()->val_p);
+Bool operator<(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (left.theRep()->val_p < right.theRep()->val_p);
 }
 
 template<class T>
-Bool operator>=(const AutoDiff<T>& right, const AutoDiff<T>& left) {
-  return (right.theRep()->val_p >= left.theRep()->val_p);
+Bool operator>=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (left.theRep()->val_p >= right.theRep()->val_p);
 }
 
 template<class T>
-Bool operator<=(const AutoDiff<T>& right, const AutoDiff<T>& left) {
-  return (right.theRep()->val_p <= left.theRep()->val_p);
+Bool operator<=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (left.theRep()->val_p <= right.theRep()->val_p);
 }
 
 template<class T>
-Bool operator==(const AutoDiff<T>& right, const AutoDiff<T>& left) {
-  return (right.theRep()->val_p == left.theRep()->val_p);
+Bool operator==(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (left.theRep()->val_p == right.theRep()->val_p);
 }
 
 template<class T>
-Bool operator!=(const AutoDiff<T>& right, const AutoDiff<T>& left) {
-  return (right.theRep()->val_p != left.theRep()->val_p);
+Bool operator!=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (left.theRep()->val_p != right.theRep()->val_p);
 }
 
 // Compare an AutoDiff and a constant
-template<class T> Bool operator>(const AutoDiff<T>& right,const T& left) {
-  return (right.theRep()->val_p > left);
+template<class T> Bool operator>(const AutoDiff<T> &left,const T &right) {
+  return (left.theRep()->val_p > right);
 }
 
-template<class T> Bool operator<(const AutoDiff<T>& right,const T& left) {
-  return (right.theRep()->val_p < left);
+template<class T> Bool operator<(const AutoDiff<T> &left,const T &right) {
+  return (left.theRep()->val_p < right);
 }
 
-template<class T> Bool operator>=(const AutoDiff<T>& right,const T& left) {
-  return (right.theRep()->val_p >= left);
+template<class T> Bool operator>=(const AutoDiff<T> &left,const T &right) {
+  return (left.theRep()->val_p >= right);
 }
 
-template<class T> Bool operator<=(const AutoDiff<T>& right,const T& left) {
-  return (right.theRep()->val_p <= left);
+template<class T> Bool operator<=(const AutoDiff<T> &left,const T &right) {
+  return (left.theRep()->val_p <= right);
 }
 
-template<class T> Bool operator==(const AutoDiff<T>& right,const T& left) {
-  return (right.theRep()->val_p == left);
+template<class T> Bool operator==(const AutoDiff<T> &left,const T &right) {
+  return (left.theRep()->val_p == right);
 }
 
-template<class T> Bool operator!=(const AutoDiff<T>& right,const T& left) {
-  return (right.theRep()->val_p != left);
+template<class T> Bool operator!=(const AutoDiff<T> &left,const T &right) {
+  return (left.theRep()->val_p != right);
 }
 
 // Compare a constant and an AutoDiff
-template<class T> Bool operator>(const T& right, const AutoDiff<T>& left) {
-  return (right > left.theRep()->val_p);
+template<class T> Bool operator>(const T &left, const AutoDiff<T> &right) {
+  return (left > right.theRep()->val_p);
 }
 
-template<class T> Bool operator<(const T& right, const AutoDiff<T>& left) {
-  return (right < left.theRep()->val_p);
+template<class T> Bool operator<(const T &left, const AutoDiff<T> &right) {
+  return (left < right.theRep()->val_p);
 }
 
-template<class T> Bool operator>=(const T& right, const AutoDiff<T>& left) {
-  return (right >= left.theRep()->val_p);
+template<class T> Bool operator>=(const T &left, const AutoDiff<T> &right) {
+  return (left >= right.theRep()->val_p);
 }
 
-template<class T> Bool operator<=(const T& right, const AutoDiff<T>& left) {
-  return (right <= left.theRep()->val_p);
+template<class T> Bool operator<=(const T &left, const AutoDiff<T> &right) {
+  return (left <= right.theRep()->val_p);
 }
 
-template<class T> Bool operator==(const T& right, const AutoDiff<T>& left) {
-  return (right == left.theRep()->val_p);
+template<class T> Bool operator==(const T &left, const AutoDiff<T> &right) {
+  return (left == right.theRep()->val_p);
 }
 
-template<class T> Bool operator!=(const T& right, const AutoDiff<T>& left) {
-  return (right != left.theRep()->val_p);
+template<class T> Bool operator!=(const T &left, const AutoDiff<T> &right) {
+  return (left != right.theRep()->val_p);
 }
 
-template<class T> Bool near(const T& right, const AutoDiff<T>& left) {
-  return near(right, left.theRep()->val_p);
+// Near comparisons
+
+template<class T>
+Bool near(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (near(left.theRep()->val_p, right.theRep()->val_p));
 }
 
-template<class T> Bool near(const AutoDiff<T>& right, const T& left) {
+template<class T>
+Bool near(const T &left, const AutoDiff<T> &right) {
   return near(left, right.theRep()->val_p);
 }
 
 template<class T>
-Bool near(const AutoDiff<T>& right, const AutoDiff<T>& left) {
+Bool near(const AutoDiff<T> &left, const T &right) {
+  return near(left.theRep()->val_p, right);
+}
+
+template<class T>
+Bool near(const AutoDiff<T> &left, const AutoDiff<T> &right,
+	  const Double tol) {
+  return near(left.theRep()->val_p, right.theRep()->val_p, tol);
+}
+
+template<class T>
+Bool near(const T &left, const AutoDiff<T> &right, const Double tol) {
+  return near(left, right.theRep()->val_p, tol);
+}
+
+template<class T>
+Bool near(const AutoDiff<T> &left, const T &right, const Double tol) {
+  return near(left.theRep()->val_p, right, tol);
+}
+
+template<class T>
+Bool allnear(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (near(left.theRep()->val_p, right.theRep()->val_p));
 }
+
+template<class T>
+Bool allnear(const T &left, const AutoDiff<T> &right) {
+  return near(left, right.theRep()->val_p);
+}
+
+template<class T>
+Bool allnear(const AutoDiff<T> &left, const T &right) {
+  return near(left.theRep()->val_p, right);
+}
+
+template<class T>
+Bool allnear(const AutoDiff<T> &left, const AutoDiff<T> &right,
+	     const Double tol) {
+  return near(left.theRep()->val_p, right.theRep()->val_p, tol);
+}
+
+template<class T>
+Bool allnear(const T &left, const AutoDiff<T> &right, const Double tol) {
+  return near(left, right.theRep()->val_p, tol);
+}
+
+template<class T>
+Bool allnear(const AutoDiff<T> &left, const T &right, const Double tol) {
+  return near(left.theRep()->val_p, right, tol);
+}
+
+template<class T>
+Bool nearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (nearAbs(left.theRep()->val_p, right.theRep()->val_p));
+}
+
+template<class T>
+Bool nearAbs(const T &left, const AutoDiff<T> &right) {
+  return nearAbs(left, right.theRep()->val_p);
+}
+
+template<class T>
+Bool nearAbs(const AutoDiff<T> &left, const T &right) {
+  return nearAbs(left.theRep()->val_p, right);
+}
+
+template<class T>
+Bool nearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right,
+	     const Double tol) {
+  return nearAbs(left.theRep()->val_p, right.theRep()->val_p, tol);
+}
+
+template<class T>
+Bool nearAbs(const T &left, const AutoDiff<T> &right, const Double tol) {
+  return nearAbs(left, right.theRep()->val_p, tol);
+}
+
+template<class T>
+Bool nearAbs(const AutoDiff<T> &left, const T &right, const Double tol) {
+  return nearAbs(left.theRep()->val_p, right, tol);
+}
+
+template<class T>
+Bool allnearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+  return (nearAbs(left.theRep()->val_p, right.theRep()->val_p));
+}
+
+template<class T>
+Bool allnearAbs(const T &left, const AutoDiff<T> &right) {
+  return nearAbs(left, right.theRep()->val_p);
+}
+
+template<class T>
+Bool allnearAbs(const AutoDiff<T> &left, const T &right) {
+  return nearAbs(left.theRep()->val_p, right);
+}
+
+template<class T>
+Bool allnearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right,
+		const Double tol) {
+  return nearAbs(left.theRep()->val_p, right.theRep()->val_p, tol);
+}
+
+template<class T>
+Bool allnearAbs(const T &left, const AutoDiff<T> &right, const Double tol) {
+  return nearAbs(left, right.theRep()->val_p, tol);
+}
+
+template<class T>
+Bool allnearAbs(const AutoDiff<T> &left, const T &right, const Double tol) {
+  return nearAbs(left.theRep()->val_p, right, tol);
+}
+
+// Test special values
+template<class T>
+Bool isNaN (const AutoDiff<T> &val) {
+  return isNaN(val.theRep()->val_p);
+};
+
+template<class T>
+Bool isInf(AutoDiff<T> &val) {
+  return isInf(val.theRep()->val_p);
+};
