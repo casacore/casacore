@@ -1,7 +1,8 @@
 %% VLBI++103
 %%----------------------------------------------------------------------------
 \documentclass[11pt]{article}
-\usepackage{html, epsf}
+\usepackage{html, epsfig, longtable, aips2help}
+\input{aips2defs.tex}
 %%-----------------------------------------------------------------------------
 
 \begin{document}
@@ -17,14 +18,15 @@
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available (100kB).}{../xxx.ps}
+\htmladdnormallink{A postscript version of this note is available (123kB).}{../234.ps.gz}
 \end{htmlonly}
 
 \tableofcontents
       
 \newcommand{\remark}[1]{{\small\begin{itemize}\em \item #1\end{itemize}}}
-%\newcommand{\thisdocURL}{http://aips2.nrao.edu/aips++/docs/project/releasenotes/releasenotes.html}
-\newcommand{\thisdocURL}{http://www.nrao.edu/~tcornwel/synplan/synplan.html}
+\newcommand{\prevdocURL}{http://aips2.nrao.edu/aips++/docs/notes/226/226.html}
+\newcommand{\thisdocURL}{http://aips2.nrao.edu/aips++/docs/notes/234/234.html}
+\newcommand{\systemplanURL}{../220/220.html}
 \newcommand{\searchURL}{../../html/aips2search.html}
 \newcommand{\aipsviewURL}{../../user/aipsview/aipsview.html}
 \newcommand{\GlishmanualURL}{../../reference/Glish/Glish.html}
@@ -32,20 +34,19 @@
 \newcommand{\synthesisURL}{../../user/synthesis/synthesis.html}
 \newcommand{\gsURL}{../../user/gettingstarted/gettingstarted.html}
 \newcommand{\userrefmanualURL}{../../user/Refman/Refman.html}
-
 \newcommand{\specsURL}{../../specs/specs.html}
 \newcommand{\betaURL}{../beta/beta.html}
 \newcommand{\consortiumURL}{../consortium.html}
+\externallabels{../../reference/Glish}{../../reference/Glish/labels.pl}
+\externallabels{../../user/Utility}{../../user/Utility/labels.pl}
+\externallabels{../../user/General}{../../user/General/labels.pl}
+\externallabels{../../user/Display}{../../user/Display/labels.pl}
+\externallabels{../../user/Dish}{../../user/Dish/labels.pl}
+\externallabels{../../user/Synthesis}{../../user/Synthesis/labels.pl}
+\externallabels{../../user/ATNF}{../../user/ATNF/labels.pl}
+\externallabels{../../user/NFRA}{../../user/NFRA/labels.pl}
+\externallabels{../../user/NRAO}{../../user/NRAO/labels.pl}
 %
-% URL to Help system
-%
-\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
-
-% Add home page navigation button
-%
-
-\htmladdtonavigation{\htmladdnormallink
-  {\htmladdimg{../../gif/home.gif}}{{../../html/aips++.html}}}
 
 \section{\underbar{Purpose}}
 
