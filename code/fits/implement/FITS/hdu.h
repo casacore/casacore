@@ -1,5 +1,5 @@
 //# hdu.h:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -754,7 +754,7 @@ class FitsField : public FitsBase {
 // Bit fields require special treatment
 //</note>
 
-class FitsField<FitsBit> : public FitsBase {
+template <> class FitsField<FitsBit> : public FitsBase {
     public:
 	FitsField(int n = 1);
 	~FitsField();
@@ -841,7 +841,7 @@ class FitsArray : public FitsField<TYPE> {
 // We must specify a FitsArray<FitsBit> as a specialization.
 //</note>
 
-class FitsArray<FitsBit> : public FitsField<FitsBit> {
+template <> class FitsArray<FitsBit> : public FitsField<FitsBit> {
     public:
 	FitsArray(int, const int *);
     	~FitsArray();

@@ -1,5 +1,5 @@
 //# NumericTraits2.h: Specialisations of the NumericTraits class
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Mathematics/Complex.h>
 
 // <summary> A specialisation for T=Float of the NumericTraits class </summary>
-class NumericTraits<Float> {
+template <> class NumericTraits<Float> {
 public:
   typedef Complex ConjugateType;
   typedef Double PrecisionType;
@@ -42,7 +42,7 @@ public:
 };
 
 // <summary> A specialisation for T=Double of the NumericTraits class </summary>
-class NumericTraits<Double> {
+template <> class NumericTraits<Double> {
 public:
   typedef DComplex ConjugateType;
   typedef Double PrecisionType;
@@ -52,7 +52,7 @@ public:
 };
 
 // <summary> A specialisation for T=Complex of the NumericTraits class </summary>
-class NumericTraits<Complex> {
+template <> class NumericTraits<Complex> {
 public:
   typedef Float ConjugateType;
   typedef DComplex PrecisionType;
@@ -72,7 +72,7 @@ public:
 // specialisations.
 // </synopsis>
 
-class NumericTraits<DComplex> {
+template <> class NumericTraits<DComplex> {
 public:
   typedef Double ConjugateType;
   typedef DComplex PrecisionType;
