@@ -177,5 +177,53 @@ int main()
       return 1;
     }
   }
+
+  // Test for a Short array written in canonical format.
+  // Read it also back as Float with a scale and offset.
+  {
+    IPosition shape(2,17,40);
+    Array<Short> arrs(shape);
+    Array<Float> arrf(shape);
+    Float scale = 2;
+    Float offset = -10;
+    indgen(arrs);
+    indgen(arrf, float(-10), float(2));
+    {
+      Bool deleteIt;
+      const Short* dataPtr = arrs.getStorage (deleteIt);
+      RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
+      CanonicalIO ios (&fios);
+      ios.write (shape.product(), dataPtr);
+      arrs.freeStorage (dataPtr, deleteIt);
+    }
+    try {
+      Slicer slicer (IPosition(2,0,0), shape);
+      TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
+			    IPosition(2,17,4), TpShort, 0, True);
+      AlwaysAssertExit (allEQ (arrs, tfac.getShort (slicer)));
+      AlwaysAssertExit (allEQ (arrf, tfac.getFloat (slicer, scale, offset,
+						    -32768)));
+      AlwaysAssertExit (tfac.shape() == shape);
+      AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,4));
+    } catch (AipsError x) {
+      cout << "Exception: " << x.getMesg() << endl;
+      return 1;
+    }
+  }
+
+  // Test the tileShape function in various ways.
+  {
+    try {
+      cout << TiledFileAccess::makeTileShape (IPosition(2,17,40)) << endl;
+      cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 17) << endl;
+      cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 34) << endl;
+      cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 33) << endl;
+      cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 15) << endl;
+      cout << TiledFileAccess::makeTileShape (IPosition(2,17,40), 3) << endl;
+    } catch (AipsError x) {
+      cout << "Exception: " << x.getMesg() << endl;
+      return 1;
+    }
+  }
   return 0;
 }
