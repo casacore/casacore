@@ -33,7 +33,6 @@
 #include <trial/MeasurementSets/MSAntennaIndex.h>
 #include <trial/MeasurementSets/MSSpWindowIndex.h>
 #include <aips/MeasurementSets/MSMainColumns.h>
-#include <trial/Tasking/Unset.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/MVTime.h>
