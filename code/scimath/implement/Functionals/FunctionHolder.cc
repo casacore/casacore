@@ -305,7 +305,7 @@ Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
     nf_p = GAUSSIAN3D;
   } else if (dynamic_cast<const GaussianND<T> *>(hold_p.ptr())) {
     nf_p = GAUSSIANND;
-    order_p = Int(-3.0+sqrt(1+8*hold_p.ptr()->nparameters())+0.1)/2;
+    order_p = Int(-3.0+sqrt(1.0+8.0*hold_p.ptr()->nparameters())+0.1)/2;
   } else if (dynamic_cast<const HyperPlane<T> *>(hold_p.ptr())) {
     nf_p = HYPERPLANE;
     order_p = hold_p.ptr()->nparameters()-1;
