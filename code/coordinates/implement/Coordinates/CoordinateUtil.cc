@@ -1530,10 +1530,16 @@ Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
    Bool dropped = False;
    CoordinateSystem tmp;
    cSysOut = tmp;
-//
+
+// Copy the ObsInfo
+
+   cSysOut.setObsInfo(cSysIn.obsInfo());
+
+// Do the business
+
    Vector<Int> removeWorld(cSysIn.nPixelAxes());
    Vector<Int> removePixel(cSysIn.nWorldAxes());
-
+//
    uInt k = 0;
    uInt l = 0;
    for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
