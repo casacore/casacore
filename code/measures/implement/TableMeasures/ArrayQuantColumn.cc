@@ -172,7 +172,16 @@ void ROArrayQuantColumn<T>::attach (const Table& tab,
  
 template<class T>
 void ROArrayQuantColumn<T>::attach (const Table& tab, 
-				    const String& columnName, const Unit& u)
+				    const String& columnName,
+				    const Unit& u)
+{
+  reference(ROArrayQuantColumn<T> (tab, columnName, u)); 
+}
+ 
+template<class T>
+void ROArrayQuantColumn<T>::attach (const Table& tab, 
+				    const String& columnName,
+				    const Vector<Unit>& u)
 {
   reference(ROArrayQuantColumn<T> (tab, columnName, u)); 
 }
@@ -324,6 +333,15 @@ Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr,
 }
 
 template<class T> 
+Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr,
+						   const Vector<Unit>& u) const
+{
+  Array<Quantum<T> > q;
+  get (rownr, q, u);
+  return q;
+}
+
+template<class T> 
 Array<Quantum<T> > ROArrayQuantColumn<T>::operator()
                                (uInt rownr, const Quantum<T>& other) const
 {
@@ -435,6 +453,8 @@ void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
     if (itsArrUnitsCol != 0) {
       Array<String> arru;
       itsArrUnitsCol->put (rownr, arru);
+    } else if (itsScaUnitsCol != 0) {
+      itsScaUnitsCol->put (rownr, String());
     }
     return;
   }
