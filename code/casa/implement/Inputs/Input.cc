@@ -1,5 +1,5 @@
 //# Input.cc: A linked list of user input parameters
-//# Copyright (C) 1993,1994,1995,1996,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Utilities/Regex.h>
 
 #if defined(TESTBED)
 #define DEBUG 1

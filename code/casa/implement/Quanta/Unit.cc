@@ -29,6 +29,7 @@
 
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Utilities/Regex.h>
 
 Unit::Unit() 
 : uName(), uVal() {}

@@ -29,6 +29,7 @@
 #include <aips/Quanta/MUString.h>
 #include <strstream.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Utilities/Regex.h>
 
 // Constructors
 MUString::MUString() :

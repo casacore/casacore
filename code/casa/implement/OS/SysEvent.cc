@@ -1,5 +1,5 @@
 //# SysEvent.cc: baseclass for system events
-//# Copyright (C) 1994,1995,2000
+//# Copyright (C) 1994,1995,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 #include <aips/OS/SysEvent.h>
 #include <aips/Exceptions/Error.h>
-
+#include <aips/Utilities/Regex.h>
 
 SysEvent::~SysEvent() {
     if (rep) delete rep;

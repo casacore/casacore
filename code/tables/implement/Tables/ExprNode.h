@@ -1,5 +1,5 @@
 //# ExprNode.h: Handle class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Tables/ExprFuncNode.h>
+#include <aips/Utilities/Regex.h>
 
 //# Forward Declarations
 class BaseTable;

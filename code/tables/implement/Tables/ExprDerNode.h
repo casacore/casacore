@@ -1,5 +1,5 @@
 //# ExprDerNode.h: Nodes representing scalars in table select expression tree
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/ExprNodeRep.h>
 #include <aips/Mathematics/Random.h>
+#include <aips/Utilities/Regex.h>
 
 //# Forward Declarations
 class ROTableColumn;

@@ -30,6 +30,7 @@
 //          a helper class for Input.
 
 #include <aips/Inputs/Param.h>
+#include <aips/Utilities/Regex.h>
 
 
 Param::Param()			// default constructor; doesn't do anything
