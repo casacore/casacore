@@ -270,7 +270,7 @@ void LCEllipsoid::defineMask()
     Float distsq = 0;
     for (i=1; i<nrdim; i++) {
 	center(i) = itsCenter(i) - box().start()(i);
-	Float d = max (float(0), center(i)-0.5) / itsRadii(i);
+	Float d = max (float(0), center(i)-0.5f) / itsRadii(i);
 	dist(i) = d * d;
 	distsq += dist(i);
     }
@@ -302,14 +302,14 @@ void LCEllipsoid::defineMask()
 	    distsq -= dist(i);
 	    if (++pos(i) < length(i)) {
 		Float d = abs(center(i) - pos(i));
-		d = max(float(0), d-0.5) / itsRadii(i);
+		d = max(float(0), d-0.5f) / itsRadii(i);
 		dist(i) = d*d;
 		distsq += dist(i);
 		break;
 	    }
 	    // This dimension is done. Reset it and continue with the next.
 	    pos(i) = 0;
-	    Float d = max (float(0), center(i)-0.5) / itsRadii(i);
+	    Float d = max (float(0), center(i)-0.5f) / itsRadii(i);
 	    dist(i) = d*d;
 	    distsq += dist(i);
         }
