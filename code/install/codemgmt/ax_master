@@ -4168,3 +4168,4 @@
 14 065 src mv trial/apps/viewer/brightcontrastb3.xbm trialdisplay/apps/viewer/brightcontrastb3.xbm
 14 065 src mv trial/apps/viewer/changelog trialdisplay/apps/viewer/changelog
 14 065 src mv trial/apps/viewer/crosshairb0.xbm trialdisplay/apps/viewer/crosshairb0.xbm
+14 065 src mv trial/apps/viewer/crosshairb1.xbm trialdisplay/apps/viewer/crosshairb1.xbm
