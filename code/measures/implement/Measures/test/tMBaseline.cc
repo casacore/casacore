@@ -102,7 +102,7 @@ main()
 	    MBaseline::Convert backw(rout, rin);
 	    if (!allNearAbs(mb0.getValue().getValue() -
 			 backw(forw(mb0)).getValue().getValue(), 
-			 tvec, 1e-7)) {
+			 tvec, 1e-8)) {
 	      cout << MBaseline::showType(i) << " to " <<
 		MBaseline::showType(j) << ": " <<
 		mb0.getValue().getValue() -
