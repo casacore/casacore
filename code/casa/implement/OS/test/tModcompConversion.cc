@@ -29,7 +29,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 
 // This program tests the Modcomp conversion functions.

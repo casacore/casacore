@@ -41,7 +41,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 DirectionCoordinate makeCoordinate(MDirection::Types type,
                                    Projection& proj,

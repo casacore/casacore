@@ -48,7 +48,7 @@
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Exceptions/Error.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True,
                                             MDirection::Types type=MDirection::J2000);

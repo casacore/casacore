@@ -33,7 +33,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Containers/Record.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 
 
 int main()

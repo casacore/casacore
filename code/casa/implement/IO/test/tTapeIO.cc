@@ -30,7 +30,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/OS/Path.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 #include <aips/OS/Timer.h>
 #include <aips/Mathematics/Random.h>

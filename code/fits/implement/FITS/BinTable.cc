@@ -44,7 +44,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Regex.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/stdio.h>
 
 Bool isSDFitsColumn(FITS::ReservedName name) {

@@ -1,5 +1,5 @@
 //# AutoDiffIO.cc: text output for AutoDiff
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <trial/Mathematics/AutoDiffIO.h>
 #include <trial/Mathematics/AutoDiff.h>
 #include <aips/Arrays/ArrayIO.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 template<class T>
 ostream &operator<<(ostream &s, const AutoDiff<T> &ad)

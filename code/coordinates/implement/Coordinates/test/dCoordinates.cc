@@ -1,5 +1,5 @@
 //# Program.cc: This program ...
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 #include <aips/Exceptions/Error.h>
 
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 //# Enumerated lines are in the Coordinates.h module header. If you
 //# change them, change Coordinates.h to match.

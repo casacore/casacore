@@ -27,7 +27,7 @@
 
 #include <trial/Containers/HashMapIO.h>
 #include <aips/Utilities/String.h>
-#include <fstream.h>
+#include <aips/fstream.h>
 #include <aips/stdlib.h>
 
 #if defined(AIPS_STUPID_SUN)

@@ -54,9 +54,9 @@
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Regex.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/iomanip.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 CoordinateSystem::CoordinateSystem()

@@ -40,7 +40,7 @@
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iomanip.h>  
-#include <strstream.h>
+#include <aips/strstream.h>
 
 
 Coordinate::Coordinate()

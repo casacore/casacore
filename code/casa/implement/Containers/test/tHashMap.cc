@@ -27,7 +27,7 @@
 
 #include <trial/Containers/HashMapIter.h>
 #include <aips/Utilities/String.h>
-#include <fstream.h>
+#include <aips/fstream.h>
 #include <aips/stdlib.h>
 
 #define DIAGNOSTICS 1

@@ -38,7 +38,7 @@
 #include <aips/Utilities/Assert.h>
 
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 StokesCoordinate makeCoordinate(Vector<Int>& whichStokes,
                                 Vector<String>& stokesStrings);

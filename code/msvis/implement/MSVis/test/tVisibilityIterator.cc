@@ -28,7 +28,7 @@
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <aips/Tables.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>

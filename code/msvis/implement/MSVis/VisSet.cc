@@ -45,7 +45,7 @@
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/GenSort.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #include <aips/Logging/LogMessage.h>
 #include <aips/Logging/LogSink.h>

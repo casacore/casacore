@@ -49,7 +49,7 @@
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 int main() {
   try {

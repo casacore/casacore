@@ -74,7 +74,7 @@
 #include <aips/Measures/Stokes.h>
 #include <trial/FITS/FITSUtil.h>
 #include <trial/Tasking/ProgressMeter.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/stdio.h>
 
 

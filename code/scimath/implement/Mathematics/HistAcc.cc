@@ -31,7 +31,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays.h>
 // #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 
 // Constructor: Fully automatic bin definition

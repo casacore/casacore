@@ -39,7 +39,7 @@
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Glish/GlishArray.h>
 #include <aips/iomanip.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 //

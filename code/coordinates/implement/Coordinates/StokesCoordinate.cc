@@ -36,7 +36,7 @@
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Mathematics/Math.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
 : Coordinate(),

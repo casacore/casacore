@@ -37,7 +37,7 @@
 
 #include <aips/Arrays/Array.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 
 #include <aips/stdio.h>
 

@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #include <trial/FITS/FITSMultiTable.h>
 

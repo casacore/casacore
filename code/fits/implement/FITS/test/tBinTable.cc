@@ -33,7 +33,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/OS/File.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/stdio.h>
 
 main(int argc, char **argv)

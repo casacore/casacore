@@ -1,5 +1,5 @@
 //# SDFeedHandler.cc: an FEED handler for SDFITS data  
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Tables/TableDesc.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 
 SDFeedHandler::SDFeedHandler() 
     : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0)

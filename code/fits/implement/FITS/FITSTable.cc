@@ -47,7 +47,7 @@
 #include <aips/Arrays/Array.h>
 
 #include <aips/stdlib.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 // Just returns the scalar type.
 static DataType fitsDataType(FITS::ValueType fitsType)

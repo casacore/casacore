@@ -56,7 +56,7 @@
 // #include <trial/Coordinates/CoordinateUtil.h>
 // #include <trial/Coordinates/StokesCoordinate.h>
 // #include <trial/Images/PagedImage.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 int main() {
   try {

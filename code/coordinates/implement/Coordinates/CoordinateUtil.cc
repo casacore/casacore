@@ -56,7 +56,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Mathematics/Math.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 
 
 void CoordinateUtil::addDirAxes(CoordinateSystem & coords){

@@ -40,7 +40,7 @@
 #include <aips/IO/RegularFileIO.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 int main()

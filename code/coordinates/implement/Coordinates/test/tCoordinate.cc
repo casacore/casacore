@@ -30,7 +30,7 @@
 #include <trial/Coordinates/Coordinate.h>
 #include <aips/Exceptions/Error.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 

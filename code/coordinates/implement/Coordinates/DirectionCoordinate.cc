@@ -47,7 +47,7 @@
 #include <aips/Utilities/String.h>
 
 #include <aips/iomanip.h>  
-#include <strstream.h>
+#include <aips/strstream.h>
 
 
 DirectionCoordinate::DirectionCoordinate()

@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/MeasurementSets/MSDerivedValues.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/MVAngle.h>

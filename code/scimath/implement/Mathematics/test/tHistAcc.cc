@@ -1,5 +1,5 @@
 //# tHistAcc.cc: Test program for class HistAcc
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/Arrays.h>
 #include <aips/Mathematics/Random.h>
 #include <trial/Mathematics/StatAcc.h>

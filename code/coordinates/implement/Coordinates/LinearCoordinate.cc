@@ -38,7 +38,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Quantum.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
 : Coordinate(),

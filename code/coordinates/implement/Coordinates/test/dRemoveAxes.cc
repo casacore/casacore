@@ -34,7 +34,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/String.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 
 

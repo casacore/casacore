@@ -1,5 +1,5 @@
 //# VisBufferUtil.cc: VisBuffer Utilities
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <trial/MeasurementEquations/VisBufferUtil.h>
 #include <trial/MeasurementEquations/StokesVector.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // <summary> 
 // </summary>

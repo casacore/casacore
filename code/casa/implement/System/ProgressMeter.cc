@@ -1,5 +1,5 @@
 //# ProgressMeter.h: Visual indication of a tasks progress.
-//# Copyright (C) 1997,2000
+//# Copyright (C) 1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/String.h>
 #include <aips/Containers/Block.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // First implement a simple stderr based progress meter that just prints out
 // 0%....10....20....30....40....50....60....70....80....90....100%

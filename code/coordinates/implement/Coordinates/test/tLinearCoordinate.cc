@@ -37,7 +37,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 LinearCoordinate makeCoordinate(Vector<String>& names,
                                 Vector<String>& units,

@@ -38,7 +38,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Quantum.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 TabularCoordinate makeLinearCoordinate(String& axisName,
                                        String& axisUnit,

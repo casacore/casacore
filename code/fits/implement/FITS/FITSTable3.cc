@@ -42,7 +42,7 @@
 #include <aips/version.h>
 #include <aips/Logging.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/iomanip.h>
 
 

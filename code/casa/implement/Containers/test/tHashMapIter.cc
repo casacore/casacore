@@ -28,7 +28,7 @@
 #include <trial/Containers/HashMapIter.h>
 #include <trial/Containers/HashMapIO.h>
 #include <aips/Utilities/String.h>
-#include <fstream.h>
+#include <aips/fstream.h>
 #include <aips/stdlib.h>
 
 //# for GNU compile in trial:

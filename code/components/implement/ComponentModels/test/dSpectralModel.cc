@@ -40,7 +40,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 
 void plotSpectrum(const SpectralModel& modelSpectrum) {

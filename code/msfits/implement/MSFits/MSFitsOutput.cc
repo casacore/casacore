@@ -56,7 +56,7 @@
 #include <trial/Tasking/NewFile.h>
 
 #include <aips/stdlib.h> // for atoi()
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/iomanip.h>
 
 #include <aips/Logging/LogIO.h>

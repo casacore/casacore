@@ -42,7 +42,7 @@
 #include <aips/Utilities/String.h>
 // #include <aips/Glish/GlishRecord.h>
 // #include <aips/iomanip.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 // void plotSpectrum(const Flux<Double> & refFlux,

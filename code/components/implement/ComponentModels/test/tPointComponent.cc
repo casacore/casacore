@@ -1,5 +1,5 @@
 //# tPointShape.cc:  this defines tPointShape.cc
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 int main() {
   try {

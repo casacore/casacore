@@ -40,7 +40,7 @@
 
 
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
            const CoordinateSystem& cSys,

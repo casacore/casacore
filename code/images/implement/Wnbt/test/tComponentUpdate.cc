@@ -1,5 +1,5 @@
 //# tComponentUpdate.cc: test the component update functions
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SkyComponent.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 int main() {
   cout << "Test ComponentUpdate" << endl;

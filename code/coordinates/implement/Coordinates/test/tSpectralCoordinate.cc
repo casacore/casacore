@@ -43,7 +43,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 SpectralCoordinate makeLinearCoordinate(MFrequency::Types type,
                                         Double& crval,

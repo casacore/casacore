@@ -44,7 +44,7 @@
 #include <trial/MeasurementSets/MSSummary.h>
 
 #include <aips/iomanip.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 //
