@@ -34,7 +34,7 @@
 
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/PtrHolder.h>
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary>
 // Distribute LogMessages to their destination(s)

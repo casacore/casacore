@@ -32,7 +32,7 @@
 //# Includes
 
 #include <aips/aips.h>
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary>
 // Integer complex numbers.

@@ -42,7 +42,7 @@ class TSMFile;
 class TSMColumn;
 class BucketCache;
 template<class T> class Block;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 
 // <summary>

@@ -36,7 +36,7 @@
 #include <aips/Utilities/Compare.h>
 #include <aips/OS/Conversion.h>
 #include <aips/IO/AipsIO.h>
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 //# Forward Declarations
 class TableRecord;

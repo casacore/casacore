@@ -35,7 +35,7 @@
 
 //# Forward Declarations
 class BitVectorHelper;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // The size of a unsigned Integer ( assumes 8-bit char )
 const uInt WORDSIZE = sizeof(uInt)*8;

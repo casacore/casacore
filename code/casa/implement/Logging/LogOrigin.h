@@ -33,7 +33,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Tasking/ObjectID.h>
 
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 class SourceLocation;
 
 // <summary> 

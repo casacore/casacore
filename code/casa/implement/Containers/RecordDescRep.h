@@ -40,7 +40,7 @@
 //# Forward Declarations
 class RecordDesc;
 class AipsIO;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 
 // <summary>

@@ -42,7 +42,7 @@ class MeasComet;
 class FrameRep;
 template <class T> class Vector;
 template <class Qtype> class Quantum;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary> Container for Measure frame </summary>
 

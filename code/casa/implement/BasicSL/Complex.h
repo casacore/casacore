@@ -248,7 +248,7 @@ inline DComplex min(const DComplex &x, const DComplex &y)
 
 #include <aips/aips.h>
 #include <aips/Utilities/generic.h>
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/stdlib.h>
 

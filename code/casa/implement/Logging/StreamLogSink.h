@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Logging/LogSinkInterface.h>
 
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary>
 // Send log messages to an ostream.

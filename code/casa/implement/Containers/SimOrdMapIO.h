@@ -33,7 +33,7 @@
 
 // Class declarations.
 class AipsIO;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary> Global IO functions </summary>
 // This header file defines the AipsIO functions for template SimpleOrderedMap.

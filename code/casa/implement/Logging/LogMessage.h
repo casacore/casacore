@@ -33,7 +33,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/OS/Time.h>
 
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary>
 // Informational log messages with with time, priority, and origin.

@@ -39,7 +39,7 @@ class MeasValue;
 class MRBase;
 template <class T> class Quantum;
 template <class T> class Vector;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary>
 // Physical quantities within reference frame

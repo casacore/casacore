@@ -32,7 +32,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 class Table;
 template<class T> class Array;
 template<class T> class Quantum;

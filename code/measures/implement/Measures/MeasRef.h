@@ -37,7 +37,7 @@
 //# Forward Declarations
 class String;
 template <class Ms> class MeasRef;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary> Reference frame for physical measures </summary>
 

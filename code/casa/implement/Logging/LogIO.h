@@ -38,7 +38,7 @@
 //# Forward Declarations
 class LogSink;
 class LogOrigin;
-#include <aips/aipsiosstrfwd.h>
+#include <aips/iosstrfwd.h>
 
 // <summary>
 // ostream-like interface to creating log messages.

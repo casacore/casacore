@@ -34,7 +34,7 @@
 
 //# Forward Declarations
 class String;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary>
 // Describes (a set of related) spectral lines

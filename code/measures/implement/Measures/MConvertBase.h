@@ -37,7 +37,7 @@ class Unit;
 class MeasValue;
 class Measure;
 class MRBase;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 //# Typedefs
 

@@ -35,7 +35,7 @@
 
 //# Forward Declarations
 class String;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary> Base for Reference frame for physical measures </summary>
 

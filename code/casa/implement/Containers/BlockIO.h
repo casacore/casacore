@@ -34,7 +34,7 @@
 template<class T> class Block;
 class AipsIO;
 
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary>IO functions for Block</summary>
 // <use visibility=export>

@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 
 // Forward declarations.
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 class  String;
 struct re_pattern_buffer;

@@ -38,7 +38,7 @@
 //# Forward Declarations
 class String;
 class Regex;
-#include <aips/aipsiosstrfwd.h>
+#include <aips/iosstrfwd.h>
 
 // <summary> SubString help class to be used in at, before, ... </summary>
 // <synopsis>

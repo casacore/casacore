@@ -38,7 +38,7 @@
 
 //# Forward Declarations
 class AipsIO;
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 
 // <summary>

@@ -29,7 +29,7 @@
 #define AIPS_ORDPAIRIO_H_
 
 #include <aips/Containers/OrderedPair.h>
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 class AipsIO;
 

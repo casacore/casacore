@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 
 //# Forward declarations
-#include <aips/aipsiosfwd.h>
+#include <aips/iosfwd.h>
 
 // <summary>
 // Version information for AIPS++
