@@ -34,6 +34,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
+// Tweaked for SUN NTV compiler.  Added the const_cast<void*> to give a hint to the Solaris compiler.
+
 
 RecordRep::RecordRep ()
 : nused_p (0)
@@ -521,10 +523,10 @@ Bool RecordRep::conform (const RecordRep& other) const
     // Now check for each fixed sub-record if it conforms.
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
-	    const Record& thisRecord = *static_cast<Record*>(data_p[i]);
+	    const Record& thisRecord = *static_cast<Record*>(const_cast<void*>(data_p[i]));
 	    if (thisRecord.isFixed()) {
 		const Record& thatRecord =
-		  *static_cast<Record*>(other.data_p[i]);
+		  *static_cast<Record*>(const_cast<void*>(other.data_p[i]));
 		if (! thisRecord.conform (thatRecord)) {
 		    return False;
 		}
@@ -546,7 +548,7 @@ void RecordRep::copy_other (const RecordRep& other)
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    *static_cast<Record*>(data_p[i]) =
-	      *static_cast<Record*>(other.data_p[i]);
+	      *static_cast<Record*>(const_cast<void*>(other.data_p[i]));
 	}else{
 	    copyDataField (desc_p.type(i), data_p[i], other.data_p[i]);
 	}
@@ -883,9 +885,9 @@ void RecordRep::putData (AipsIO& os) const
 	if (desc_p.type(i) == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
-		os << *static_cast<Record*>(data_p[i]);
+		os << *static_cast<Record*>(const_cast<void*>(data_p[i]));
 	    }else{
-		static_cast<Record*>(data_p[i])->putData (os);
+		static_cast<Record*>(const_cast<void*>(data_p[i]))->putData (os);
 	    }
 	}else{
 	    putDataField (os, desc_p.type(i), data_p[i]);
