@@ -32,24 +32,26 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSSummary.h>
 
-int main()
+int main(int argc, char *argv[])
 {
-  //using namespace std;
+  using namespace std;
   using namespace casa;
+
+  if (argc != 2) {
+  	cout << "Usage: "<< argv[0] << " MS_filename" << endl;
+	return 0;
+  }
+
   try {
     cout << "MSSummary" << endl;
     cout << "--------------------------------------" << endl;
 
-
-    // Open the test MS.
-    // !!! Make sure that MSName points to a local MeasurementSet!!!
-    String MSName("/home/rrusk/testing/3C273XC1.ms");
-    MeasurementSet ms(MSName, Table::Old);
-
     LogIO os(LogOrigin("tMSSummary", "main()"));
-
-    MSSummary mss(ms);
     Bool verbose=True;
+
+    String MSName(argv[1]);
+    MeasurementSet ms(MSName, Table::Old);
+    MSSummary mss(ms);
     //mss.list(os, verbose);
     mss.listHistory(os, verbose);
   } catch (AipsError x) {
