@@ -53,6 +53,7 @@
 #include <aips/Quanta/Unit.h>
 #include <trial/Tasking/NewFile.h>
 #include <aips/Utilities/String.h>
+#include <aips/iostream.h>
 
 template <class T> 
 Image2DConvolver<T>::Image2DConvolver ()

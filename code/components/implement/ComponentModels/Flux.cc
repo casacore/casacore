@@ -1,5 +1,5 @@
 //# Flux.cc:
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,6 +41,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
+#include <aips/iostream.h>
 
 template<class T> FluxRep<T>::
 FluxRep()

@@ -1,5 +1,5 @@
 //# ImageConcat.cc: concatenate images
-//# Copyright (C) 1995,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/TabularCoordinate.h>
