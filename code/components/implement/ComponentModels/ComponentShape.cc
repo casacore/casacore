@@ -196,6 +196,12 @@ ComponentType::Shape ComponentShape::getType(String& errorMessage,
   return ComponentType::shape(typeVal);
 }
 
+Vector<Double> ComponentShape::toPixel (const DirectionCoordinate& dirCoord) const
+{
+   throw (AipsError ("ComponentShape::toPixel - requires development for this derived class"));
+}
+
+
 Bool ComponentShape::differentRefs(const MeasRef<MDirection>& ref1,
 				   const MeasRef<MDirection>& ref2) {
   if (ref1.getType() != ref2.getType()) return True;
