@@ -5825,3 +5825,6 @@
 16 162 src mv nrao/implement/GBTFillers/GBTGlishFiller.cc nrao/implement/GBTFillers/GBTGOFiller.cc
 16 162 src mv nrao/implement/GBTFillers/GBTGlishFiller.h nrao/implement/GBTFillers/GBTGOFiller.h
 16 162 src rm aips/implement/MeasurementSets/test/tOldMeasurementSet.cc
+16 199 src rm trial/implement/Functionals/Gaussian1D2.h
+16 199 src rm trial/implement/Functionals/Gaussian2D2.h
+16 199 src rm trial/implement/Functionals/Sinusoid1D2.h
