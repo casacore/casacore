@@ -313,7 +313,7 @@ String MVTime::string(const MVTime::Format &form) const {
     return oss;
 }
 
-const Double &MVTime::timeZone() {
+Double MVTime::timeZone() {
   return MVAngle::timeZone();
 }  
 void MVTime::print(ostream &oss,

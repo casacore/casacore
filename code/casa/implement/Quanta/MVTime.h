@@ -397,7 +397,7 @@ class MVTime {
   // Get code belonging to string. 0 if not known
   static MVTime::formatTypes  giveMe(const String &in);
   // Get time zone offset (in days)
-static const Double &timeZone();
+static Double timeZone();
 
     private:
 //# Data
