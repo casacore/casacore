@@ -1,5 +1,5 @@
 //# TableParse.cc: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997,1998,1999
+//# Copyright (C) 1994,1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,12 +45,12 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/Sort.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/Timer.h>
 #include <iostream.h>
 
-typedef Quantum<Double> TableParse_gpp_bug1;
 
 static const PtrBlock<const Table*>* theTempTables;
 
@@ -418,28 +418,30 @@ TableExprNode TableParseSelect::handleSlice (const TableExprNode& array,
 }
  
 //# Parse the name of a function.
-TableExprNode TableParseSelect::handleFunc (const String& name,
-					    const TableExprNodeSet& arguments)
+TableExprFuncNode::FunctionType TableParseSelect::findFunc
+                                        (const String& name,
+					 uInt narguments,
+					 const Vector<Int>& ignoreFuncs)
 {
-    //# Determine if there is a single argument
-    //# (needed for overloading functions min and max).
-    Bool isOneArg = ToBool (arguments.nelements() == 1);
     //# Determine the function type.
+    //# Use the function name in lower case.
+    //# Error if name in ingoreNames.
     TableExprFuncNode::FunctionType ftype = TableExprFuncNode::piFUNC;
     String funcName (name);
     funcName.downcase();
+    Bool ok = True;
     if (funcName == "pi") {
 	ftype = TableExprFuncNode::piFUNC;
     } else if (funcName == "e") {
 	ftype = TableExprFuncNode::eFUNC;
     } else if (funcName == "near") {
 	ftype = TableExprFuncNode::near2FUNC;
-	if (arguments.nelements() == 3) {
+	if (narguments == 3) {
 	    ftype = TableExprFuncNode::near3FUNC;
 	}
     } else if (funcName == "nearabs") {
 	ftype = TableExprFuncNode::nearabs2FUNC;
-	if (arguments.nelements() == 3) {
+	if (narguments == 3) {
 	    ftype = TableExprFuncNode::nearabs3FUNC;
 	}
     } else if (funcName == "cos") {
@@ -488,12 +490,12 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
 	ftype = TableExprFuncNode::fmodFUNC;
     } else if (funcName == "min") {
 	ftype = TableExprFuncNode::minFUNC;
-	if (isOneArg) {
+	if (narguments == 1) {
 	    ftype = TableExprFuncNode::arrminFUNC;
 	}
     } else if (funcName == "max") {
 	ftype = TableExprFuncNode::maxFUNC;
-	if (isOneArg) {
+	if (narguments == 1) {
 	    ftype = TableExprFuncNode::arrmaxFUNC;
 	}
     } else if (funcName == "sum") {
@@ -581,8 +583,30 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
     } else if (funcName == "rand") {
 	ftype = TableExprFuncNode::randFUNC;
     } else {
-	throw (TableInvExpr ("Function " + funcName + " is unknown"));
+	ok = False;
     }
+    // Functions to be ignored are incorrect.
+    if (ok) {
+        Bool found;
+        linearSearch (found, ignoreFuncs, Int(ftype), ignoreFuncs.nelements());
+	ok = !found;
+    }
+    if (!ok) {
+        throw (TableInvExpr ("Function " + funcName + " is unknown"));
+    }
+    return ftype;
+}
+
+//# Parse the name of a function.
+TableExprNode TableParseSelect::handleFunc (const String& name,
+					    const TableExprNodeSet& arguments)
+{
+    //# Determine the function type.
+    //# No functions have to be ignored.
+    Vector<Int> ignoreFuncs;
+    TableExprFuncNode::FunctionType ftype = findFunc (name,
+						      arguments.nelements(),
+						      ignoreFuncs);
     parseIter_p->toStart();
     return TableExprNode::newFunctionNode (ftype, arguments,
 					   parseIter_p->getRight().table());
