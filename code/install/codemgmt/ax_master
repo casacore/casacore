@@ -2294,3 +2294,4 @@
 11 186 src rm trial/implement/test/tExamples.exec
 11 186 src rm trial/implement/test/tExamples.out
 11 191 src mv nrao/implement/VLA/TapeIO.h nrao/implement/VLA/VLATapeIO.h
+11 195 src rm doc/papers/bgadass93.latex
