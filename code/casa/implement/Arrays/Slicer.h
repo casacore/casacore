@@ -28,50 +28,42 @@
 #if !defined(AIPS_SLICER_H)
 #define AIPS_SLICER_H
 
-#if defined(_AIX)
-#pragma implementation ("Slicer.cc")
-#endif 
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Lattices/IPosition.h>
 
-//# Forward declaration.
+//# Forward Declarations
 class Slice;
 
-// <summary>specify which elements to extract from an n-dimensional array </summary>
+
+// <summary>
+// Specify which elements to extract from an n-dimensional array
+// </summary>
+
 // <reviewed reviewer="Paul Shannon" date="1994/07/07" tests="tSlicer">
 //  The review and modification of this class were undertaken, in part,
 //  with the aim of making this class header an example -- this is what
 //  the aips++ project thinks a class header should look like.
 // </reviewed>
-//
+
 // <prerequisite>
 // You should have at least a preliminary understanding of these classes:
-//   <li> IPosition
-//   <li> Array
-//   <li> Slice
+//   <li> <linkto class=IPosition>IPosition</linkto>
+//   <li> <linkto class=Array>Array</linkto>
+//   <li> <linkto class=Slice>Slice</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 // The class name "Slicer" may be thought of as a short form 
 // of "n-Dimensional Slice Specifier."  Some confusion is possible
-// between class "Slice" and this class.  We plan to absorb Slice
-// into Slicer in the near future, eliminating that confusion.
+// between class "Slice" and this class.
 // </etymology>
 //
 // <synopsis>
 // If you need to extract or operate upon a portion of an array,
 // the Slicer class is the best way to specify the subarray you are
 // interested in.
-//
-// <note role=tip> At the present time (July 1994) this class is only used
-// with TableArray's in the Tables module.  In time, we will make 
-// modifications to other classes (Lattice, Array and Image) so that they
-// understand Slicers as well.  In the following discussion, we use "array" 
-// (with a lower case "a") to denote all of these container classes for 
-// homogeneous data. They are the classes which will eventually 
-// use Slicer, even though only TableArray's uses them now.
-// </note>
 //
 // Slicer has many constructors.  Of these, some require that the
 // programmer supply a full specification of the array elements he
@@ -80,7 +72,7 @@ class Slice;
 // when directed, infer missing information from the array that's getting 
 // sliced (hereafter, the "source" array).
 //
-// <h3> Constructing With Full Information </h3>
+// <h4> Constructing With Full Information </h4>
 //
 // To fully specify a subarray, you must supply three pieces of information
 // for each axis of the subarray: 
@@ -126,7 +118,7 @@ class Slice;
 // above when we used "length".)
 // </note>
 //
-// <h3> Constructing with Partial Information </h3>
+// <h4> Constructing with Partial Information </h4>
 // 
 // Some of the constructors don't require complete information:  Slicer
 // either calculates sensible default values or deduces them from the
@@ -207,7 +199,7 @@ class Slice;
 // </srcblock>
 //  
 // </example>
-//
+
 // <motivation>
 // Slicer is particularly convenient for designers of other library
 // classes: Array and Image, for example. (In fact, this convenience 
@@ -269,16 +261,12 @@ class Slice;
 // some of the slice specification.  This benefit is explained and
 // demonstrated above.
 // </motivation>
-// 
+
 // <todo asof="1994/07/01">
 //   <li> This class, and the TableArray, Array and Image classes, 
 //   could allow for the extraction of a subarray with fewer axes than the
 //   source array.  At present, for example, you cannot, directly slice
 //   a matrix from a cube.
-//   <li> This class will eventually absorb its one-dimensional
-//   cousin, "Slice.h", perhaps as a nested class,  and it will be 
-//   used with all classes derived from Lattice: Array, Image.  Right
-//   now it only works with the TableArray class.
 // </todo>
 
 
@@ -290,41 +278,47 @@ public:
     // This value should be different from MIN_INT in IPosition.h.
     // It should also not be the lowest possible value, since that
     // will probably be used as an undefined value.
-
     // <note> This definition may not be portable. Instead a #define
     // or a static public data member could be used.
-
     enum {MimicSource= -2147483646};
-    enum LengthOrLast {endIsLength, endIsLast};  // how to interpret "end"
+
+    // Define the possible interpretations of the end-value.
+    enum LengthOrLast {
+	// The end-values given in the constructor define the lengths.
+	endIsLength,
+	// The end-values given in the constructor define the trc.
+	endIsLast
+    };
 
     // Construct a 1-dimensional Slicer.
     // Start and end are inferred from the source; stride=1.
     // "endIsLength" and "endIsLast" are identical here, so there's
     // no need to discriminate between them by using a default parameter.
-
     Slicer();
 
-    // The member function "inferFromSource" (invoked as a callback by the
+    // The member function <src>inferShapeFromSource</src>
+    // (invoked as a callback by the
     // source array) will use the shape of the source array for the 
     // unspecified values:  IPosition elements with the value
     //  Slicer::MimicSource
     // <thrown>
     //    <li> ArraySlicerError
     // </thrown>
-    // Create a Slicer with a given start, end, and stride.
-    //    - Length must be >= 0.
-    //    - Stride must be > 0.
-    // The IPositions start, end, and stride must all have the same dimension.
+    // Create a Slicer with a given start, end (or length), and stride.
+    // An exception will be thrown if a negative length or non-positive
+    // stride is given or if the IPositions start, end, and stride
+    // do not have the same dimensionality.
+    // If length or stride is not given, they default to 1.
+    // <br> It is possible to leave values in start and end undefined
+    // by giving the value <src>MimicSource</src>. They can be filled
+    // in later with the actual array shape using function
+    // <src>inferShapeFromSource</src>.
     // <group>
     Slicer (const IPosition& start, const IPosition& end, 
 	    const IPosition& stride, 
 	    LengthOrLast endInterpretation = endIsLength);
-
-    // Use stride=1.
     Slicer (const IPosition& start, const IPosition& end,
 	    LengthOrLast endInterpretation = endIsLength);
-
-    // Use stride=1 and length=1 in all dimensions
     explicit Slicer (const IPosition& start);
     // </group>
 
@@ -413,6 +407,7 @@ private:
 
     // Check the given start, end/length and stride.
     // Fill in the length or end.
+    // It also call <src>fillFixed</src> to fill the fixed flag.
     void fillEndLen();
 
     // Fill in start, len and stride from a Slice.
@@ -422,15 +417,15 @@ private:
     void Slicer::fillFixed();
 };
 
+
 // <summary>IO functions for Slicer's</summary>
 // <group name="Slicer IO">
 // Print the contents of the specified Slicer to the specified stream.
 ostream  &operator << (ostream &stream, const Slicer &slicer);
 // </group>
 
-// <summary>Inline member functions for Slicer's</summary>
-// These functions have all been inlined for efficiency
-// <group name="Slicer Inlines">
+
+
 inline uInt Slicer::ndim() const
     { return start_p.nelements(); }
 
@@ -449,6 +444,6 @@ inline const IPosition& Slicer::length() const
 inline Bool Slicer::isFixed() const
     { return fixed_p; }
 
-// </group>
+
 #endif
 
