@@ -1,5 +1,5 @@
 //# tfits5.cc: FITS test program to read and display values from a FITS file
-//# Copyright (C) 1993,1994
+//# Copyright (C) 1993,1994,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -61,7 +61,8 @@ void cvt_table(AsciiTableExtension &x, FitsOutput &fout) {
 
 	cout << "\nTable Data\n\n";
 
-	for (int i = 0; i < x.ncols(); ++i) {
+	int i;
+	for (i = 0; i < x.ncols(); ++i) {
 	    cout << "Col " << i << ": " 
 		 << x.field(i).nelements() << " "
 		 << x.field(i).fieldtype() << " "
@@ -71,7 +72,8 @@ void cvt_table(AsciiTableExtension &x, FitsOutput &fout) {
 	cout << endl;
 
         x.read(); // read the whole ascii table
-	for (int n = 0; n < 50 && n < x.nrows(); ++n) { // display first 50 rows
+	int n;
+	for (n = 0; n < 50 && n < x.nrows(); ++n) { // display first 50 rows
 		cout << x.currrow() << ": | ";
 		if (x.field(0).nelements() != 0)
 	            cout << x.field(0);
@@ -120,6 +122,8 @@ void cvt_table(AsciiTableExtension &x, FitsOutput &fout) {
 			    break;
 			case FITS::DOUBLE:
 			    bk.mk((n + 1),FITS::TFORM,"D");
+			    break;
+		        default:
 			    break;
 		    }
 		    ++n;		
@@ -207,6 +211,8 @@ This is another implementation that accomplishes the same thing.
 			source_d = &((FitsField<double> &)x.field(i));
 			(*target_d)(0) = (*source_d)(0);
 			break;
+		    default:
+			break;
 	 	}
 	    }
 	    ++x;	// increment the ascii table row
@@ -218,7 +224,7 @@ This is another implementation that accomplishes the same thing.
 	delete &x;
 }
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
 	AsciiTableExtension *at;
 
 	cout << "Test5 -- convert an ASCII table to a binary table" << endl;
@@ -257,7 +263,8 @@ void main(int argc, char **argv) {
 	cout << hdu1;
 	hdu1.write_hdr(fout); if (hdu1.err()) exit(0);
 
-	for(int nerrs = 0;
+	int nerrs;
+	for(nerrs = 0;
 		nerrs < NMAXERRS && fin.rectype() != FITS::EndOfFile; ) {
 	    if (fin.rectype() == FITS::HDURecord) {
 		switch (fin.hdutype()) {
@@ -295,4 +302,5 @@ void main(int argc, char **argv) {
 	else
 	    cout << "End of Header-Data Units.\n";
 	cout << endl;
+	return 0;
 }
