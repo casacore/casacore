@@ -39,8 +39,6 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-namespace casa { //# NAMESPACE CASA - BEGIN
-
 class String;
 class FITSFieldCopier;
 class TableDesc;
