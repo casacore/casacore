@@ -28,9 +28,11 @@
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/WCRegion.h>
 #include <trial/Lattices/LCRegion.h>
+#include <trial/Lattices/RegionType.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Utilities/String.h>
 
 
 ImageRegion::ImageRegion (const LCRegion& region)
@@ -97,29 +99,40 @@ TableRecord ImageRegion::toRecord (const String& tableName) const
 {
     TableRecord record;
     if (isWCRegion()) {
-        record.defineRecord ("WC", itsWC->toRecord(tableName));
+        return itsWC->toRecord(tableName);
     } else {
-        record.defineRecord ("LC", itsLC->toRecord(tableName));
+        return itsLC->toRecord(tableName);
     }
-    return record;
 }
 
 ImageRegion ImageRegion::fromRecord (const TableRecord& record,
 				     const String& tableName)
 {
-    ImageRegion* region;
-    if (record.isDefined ("WC")) {
-        WCRegion* ptr = WCRegion::fromRecord (record.asRecord("WC"),
-                                              tableName);
-	region = new ImageRegion(*ptr);
-	delete ptr;
-    } else {
-        LCRegion* ptr = LCRegion::fromRecord (record.asRecord("LC"),
-					      tableName);
-	region = new ImageRegion(*ptr);
-	delete ptr;
-    }
-    ImageRegion tmp(*region);
-    delete region;
-    return tmp;
+
+// See if this is a valid LC or WC region record
+
+
+   if (!record.isDefined("isRegion")) {
+      throw (AipsError ("ImageRegion::fromRecord - record does not define a region"));
+   }
+  
+// Convert to correct region type
+
+   Int regionType = record.asInt("isRegion");       
+   ImageRegion* region = 0;
+   if (regionType == Int(RegionType::WC)) {
+      WCRegion* ptr = WCRegion::fromRecord (record, tableName);
+      region = new ImageRegion(*ptr);
+      delete ptr;
+   } else if (regionType == Int(RegionType::LC)) {
+       LCRegion* ptr = LCRegion::fromRecord (record, tableName);
+       region = new ImageRegion(*ptr);
+       delete ptr;
+   } else {
+      throw (AipsError ("ImageRegion::fromRecord - record is neither an LC nor WC region"));
+   }
+
+   ImageRegion tmp(*region);
+   delete region;
+   return tmp;
 }
