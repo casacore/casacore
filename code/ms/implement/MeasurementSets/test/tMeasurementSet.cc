@@ -1,4 +1,4 @@
-//# tNewMeasurementSet.cc : this program tests the NewMeasurementSet class
+//# tMeasurementSet.cc : this program tests the MeasurementSet class
 //# Copyright (C) 1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
@@ -71,18 +71,18 @@ DataType makeArrayType(DataType type)
 }
 
 // test functions, all return the number of errors unless otherwise stated
-// test PredefinedColumns static functions in NewMeasurementSet
+// test PredefinedColumns static functions in MeasurementSet
 
 uInt tColumnStatics()
 {
     // ensure that the conversions are consistent
     uInt errCount = 0;
 
-    for (Int i=0;i<NewMS::NUMBER_PREDEFINED_COLUMNS;i++) {
-	NewMS::PredefinedColumns pdcol = NewMS::PredefinedColumns(i);
-	DataType dtype = NewMS::columnDataType(pdcol);
-	String pdname = NewMS::columnName(pdcol);
-	NewMS::PredefinedColumns pdtype = NewMS::columnType(pdname);
+    for (Int i=0;i<MS::NUMBER_PREDEFINED_COLUMNS;i++) {
+	MS::PredefinedColumns pdcol = MS::PredefinedColumns(i);
+	DataType dtype = MS::columnDataType(pdcol);
+	String pdname = MS::columnName(pdcol);
+	MS::PredefinedColumns pdtype = MS::columnType(pdname);
 	if (pdtype != pdcol) {
 	    cerr << "Inconsistency found for column : " << pdname << endl;
 	    cerr << "  Type : " << Int(pdtype) << " should be : " 
@@ -91,37 +91,37 @@ uInt tColumnStatics()
 	}
 
 	// verify that we get an UNDEFINED_COLUMN when appropriate
-	pdtype = NewMS::columnType("NotAPredefinedColumn");
-	if (pdtype != NewMS::UNDEFINED_COLUMN) {
+	pdtype = MS::columnType("NotAPredefinedColumn");
+	if (pdtype != MS::UNDEFINED_COLUMN) {
 	    cerr << "columnType returned a valid PredefinedColumn for \"NotAPredefinedColumn\""
 		<< Int(pdtype) << endl;
 	    errCount++;
 	}
 
         // this just tests that a comment exists (an exception will occur here if not)
-	String comment = NewMS::columnStandardComment(pdcol);
+	String comment = MS::columnStandardComment(pdcol);
         // this just tests that a UNIT exists (an exception will occur here if not)
-	String unit = NewMS::columnUnit(pdcol);
+	String unit = MS::columnUnit(pdcol);
         // this just tests that a MEASURE_TYPE exists (an exception will occur here if not)
-	String measureType = NewMS::columnMeasureType(pdcol);
+	String measureType = MS::columnMeasureType(pdcol);
 
     }
     return errCount;
 }
 
 
-// test PredefinedKeywords static functions in NewMeasurementSet
+// test PredefinedKeywords static functions in MeasurementSet
 
 uInt tKeywordStatics()
 {
     uInt errCount = 0;
 
-    // NewMS::PredefinedKeywords
+    // MS::PredefinedKeywords
 
-    for (uInt i=0;i<NewMS::NUMBER_PREDEFINED_KEYWORDS;i++) {
-	NewMS::PredefinedKeywords pdkey = NewMS::PredefinedKeywords(i);
-	String pdname = NewMS::keywordName(pdkey);
-	NewMS::PredefinedKeywords pdtype = NewMS::keywordType(pdname);
+    for (uInt i=0;i<MS::NUMBER_PREDEFINED_KEYWORDS;i++) {
+	MS::PredefinedKeywords pdkey = MS::PredefinedKeywords(i);
+	String pdname = MS::keywordName(pdkey);
+	MS::PredefinedKeywords pdtype = MS::keywordType(pdname);
 	// this MUST be valid and it must have the same value as pdkey
 	if (pdtype != pdkey) {
 	    cerr << "Inconsistency found for keyword : " << pdname << endl;
@@ -131,9 +131,9 @@ uInt tKeywordStatics()
 	}
 
 	// this just tests that a dtype is available
-	DataType dtype = NewMS::keywordDataType(pdkey);
+	DataType dtype = MS::keywordDataType(pdkey);
         // this just tests that a comment exists (an exception will occur here if not)
-	String comment = NewMS::keywordStandardComment(pdkey);
+	String comment = MS::keywordStandardComment(pdkey);
 
     }
 
@@ -149,13 +149,13 @@ uInt tAddAllColumns()
     // test addColumnToDesc for all possible columns
     {
 	TableDesc testTD;
-	for (uInt i=1;i<NewMS::NUMBER_PREDEFINED_COLUMNS;i++) {
-	    NewMS::addColumnToDesc(testTD, NewMS::PredefinedColumns(i));
+	for (uInt i=1;i<MS::NUMBER_PREDEFINED_COLUMNS;i++) {
+	    MS::addColumnToDesc(testTD, MS::PredefinedColumns(i));
 	}
 //	testTD.show();
 
 	// we should be able to add an existing column without causing an exception
-	NewMS::addColumnToDesc(testTD, NewMS::TIME);
+	MS::addColumnToDesc(testTD, MS::TIME);
     }
 
     return errCount;
@@ -167,9 +167,9 @@ uInt tNonStatic(const String& sdmsName)
 {
     uInt errCount = 0;
 
-    TableDesc td(NewMS::requiredTableDesc());
+    TableDesc td(MS::requiredTableDesc());
     // Add the DATA column
-    NewMS::addColumnToDesc(td, NewMS::FLOAT_DATA, 2);
+    MS::addColumnToDesc(td, MS::FLOAT_DATA, 2);
     // add one column, not a PredefinedColumn
     td.addColumn(ScalarColumnDesc<Double>("test_column"));
 
@@ -178,10 +178,10 @@ uInt tNonStatic(const String& sdmsName)
     setup.bindAll(aipsioman);
     
     // small table, ten rows
-    NewMeasurementSet ms(setup, 10);
+    MeasurementSet ms(setup, 10);
     ms.createDefaultSubtables(Table::New);
 
-    ArrayColumn<Float> fldata(ms,NewMS::columnName(NewMS::FLOAT_DATA));
+    ArrayColumn<Float> fldata(ms,MS::columnName(MS::FLOAT_DATA));
     for (Int i=0; i<10; i++) {
       Matrix<Float> arr(4,2);
       arr=Float(i);
@@ -194,17 +194,17 @@ uInt tNonStatic(const String& sdmsName)
 	cerr << "self validation failed" <<endl;
 	errCount++;
     }
-    if (! NewMS::validate(ms.tableDesc())) {
+    if (! MS::validate(ms.tableDesc())) {
 	cerr << "validation of tableDesc fails" << endl;
 	errCount++;
     }
-    if (! NewMS::validate(ms.keywordSet())) {
+    if (! MS::validate(ms.keywordSet())) {
 	cerr << "validation of keywordSet fails" << endl;
 	errCount++;
     }
 
     // they are all writable at this point
-    if (!ms.isColumnWritable(NewMS::TIME)) {
+    if (!ms.isColumnWritable(MS::TIME)) {
 	cerr << "TIME column should be writable but isColumnWritable() returned False" 
 	     << endl;
 	errCount++;
@@ -214,33 +214,33 @@ uInt tNonStatic(const String& sdmsName)
     ms.makeComplexData();
 
     // TIME is a scalar column, DATA is an array column
-    if (!ms.isScalar(NewMS::TIME)) {
+    if (!ms.isScalar(MS::TIME)) {
 	cerr << "TIME column is scalar but isScalar() returned False" << endl;
 	errCount++;
     }
-    if (ms.isArray(NewMS::TIME)) {
+    if (ms.isArray(MS::TIME)) {
 	cerr << "TIME column is scalar but isArray() returned True" << endl;
 	errCount++;
     }
-    if (ms.isScalar(NewMS::DATA)) {
+    if (ms.isScalar(MS::DATA)) {
 	cerr << "DATA column is array but isScalar() returned True" << endl;
 	errCount++;
     }
-    if (!ms.isArray(NewMS::DATA)) {
+    if (!ms.isArray(MS::DATA)) {
 	cerr << "DATA column is array but isArray() returned False" << endl;
 	errCount++;
     }
 
     // TIME has units of seconds
     // test via string
-    if (ms.unit(NewMS::columnName(NewMS::TIME)) != "s") {
-	cerr << "NewMS::unit(const String&) failed to return s for TIME" << endl;
+    if (ms.unit(MS::columnName(MS::TIME)) != "s") {
+	cerr << "MS::unit(const String&) failed to return s for TIME" << endl;
 	errCount++;
     }
-    if (ms.unit(NewMS::TIME) != "s") {
-	cerr << "NewMS::unit(NewMS::TIME) failed to return s" << endl;
+    if (ms.unit(MS::TIME) != "s") {
+	cerr << "MS::unit(MS::TIME) failed to return s" << endl;
 //*** testing
-	cerr << ms.unit(NewMS::TIME) <<endl;
+	cerr << ms.unit(MS::TIME) <<endl;
 //*** testing
 
 	errCount++;
@@ -248,10 +248,10 @@ uInt tNonStatic(const String& sdmsName)
 
     // test of operator=
     // construct a scratch APERTURE_SYNTHESIS MS
-    TableDesc std(NewMS::requiredTableDesc());
+    TableDesc std(MS::requiredTableDesc());
     SetupNewTable scratchSetup("",std,Table::Scratch);
     scratchSetup.bindAll(aipsioman);
-    NewMeasurementSet sms(scratchSetup, 20);
+    MeasurementSet sms(scratchSetup, 20);
     sms.createDefaultSubtables();
 
     //    String parentName = ms.tableName();
@@ -282,16 +282,16 @@ uInt tConstructors(const String& msName)
 {
     uInt errCount = 0;
     // test default constructor
-    NewMeasurementSet tms0();
+    MeasurementSet tms0();
 
     // existing table on disk, with correct type
-    NewMeasurementSet tms1(msName);
+    MeasurementSet tms1(msName);
 
     // try invalid table
 
     // make tableDesc
     {
-      TableDesc td(NewMSFeed::requiredTableDesc(),"badTD","",TableDesc::New);
+      TableDesc td(MSFeed::requiredTableDesc(),"badTD","",TableDesc::New);
     }
     // make non MS table
     {
@@ -303,18 +303,18 @@ uInt tConstructors(const String& msName)
     // try creating bad MS
     Bool thrown=False;
     try {
-      NewMeasurementSet badms("badmsTable");
+      MeasurementSet badms("badmsTable");
     } catch (AipsError x) {
       thrown = True;
     } 
     if (!thrown) errCount++;
 
     // alternate form with TableDesc (none specified here)
-    NewMeasurementSet tms2(msName,"");
+    MeasurementSet tms2(msName,"");
     // try creating bad MS
     thrown=False;
     try {
-      NewMeasurementSet badms("badmsTable","");
+      MeasurementSet badms("badmsTable","");
     } catch (AipsError x) {
       thrown = True;
     } 
@@ -323,13 +323,13 @@ uInt tConstructors(const String& msName)
     // first, construct a Table
     Table tab(tms1);
     // then, as a MS referencing that table
-    NewMeasurementSet tabRefMS(tab);
+    MeasurementSet tabRefMS(tab);
 
     // try the same with a bad table
     thrown=False;
     try {
       Table badtab("badmsTab;e","");
-      NewMeasurementSet badms(badtab);
+      MeasurementSet badms(badtab);
     } catch (AipsError x) {
       thrown = True;
     } 
@@ -341,31 +341,31 @@ uInt tConstructors(const String& msName)
     TableDesc("badTD",TableDesc::Delete);
 
     // finally, as a const MS referencing that MS
-    const NewMeasurementSet constRefMS(tabRefMS);
+    const MeasurementSet constRefMS(tabRefMS);
 
     // can't test copy construct from bad MS, because we can't make one..
 
     {
       // Test MSAntenna constructors, as test of all MSTable derived classes
       // Test default constructor
-      NewMSAntenna msant1();
+      MSAntenna msant1();
       
       // make two tableDescs
       {
-	TableDesc td1(NewMSAntenna::requiredTableDesc(),"antTD","",TableDesc::New);
-	TableDesc td2(NewMSFeed::requiredTableDesc(),"badAntTD","",TableDesc::New);
+	TableDesc td1(MSAntenna::requiredTableDesc(),"antTD","",TableDesc::New);
+	TableDesc td2(MSFeed::requiredTableDesc(),"badAntTD","",TableDesc::New);
       }
       // construct from name and tabledesc
       SetupNewTable newtab1("msant2","antTD",Table::New);
       {
-	NewMSAntenna msant(newtab1);
+	MSAntenna msant(newtab1);
       }
-      NewMSAntenna msant2("msant2","antTD",Table::Old);
+      MSAntenna msant2("msant2","antTD",Table::Old);
       
       // try an invalid tableDesc
       Bool thrown=False;
       try {
-	NewMSAntenna msant2b("msant2","badAntTD",Table::Old);
+	MSAntenna msant2b("msant2","badAntTD",Table::Old);
 	msant2b.markForDelete();
       } catch (AipsError x) {
 	thrown = True;
@@ -374,15 +374,15 @@ uInt tConstructors(const String& msName)
       //if (!thrown) errCount++;
       
       // construct from SetupNewTable
-      SetupNewTable newtab2("msant3",NewMSAntenna::requiredTableDesc(),Table::New);
-      NewMSAntenna msant3(newtab2,5);
+      SetupNewTable newtab2("msant3",MSAntenna::requiredTableDesc(),Table::New);
+      MSAntenna msant3(newtab2,5);
       msant3.markForDelete();
       
       // try invalid newtab
       thrown = False;
       try {
-	SetupNewTable newtab("msant3b",NewMSFeed::requiredTableDesc(),Table::New);
-	NewMSAntenna msant3b(newtab,5);
+	SetupNewTable newtab("msant3b",MSFeed::requiredTableDesc(),Table::New);
+	MSAntenna msant3b(newtab,5);
       } catch (AipsError x) {
 	thrown = True;
       } 
@@ -390,7 +390,7 @@ uInt tConstructors(const String& msName)
 
       // cleanup the mess
       {
-	SetupNewTable newtab("msant3b",NewMSFeed::requiredTableDesc(),Table::New);
+	SetupNewTable newtab("msant3b",MSFeed::requiredTableDesc(),Table::New);
 	Table tab(newtab);
 	tab.markForDelete();
       }
@@ -399,7 +399,7 @@ uInt tConstructors(const String& msName)
       SetupNewTable newtab3("msantTable","antTD",Table::New);
       Table tab(newtab3);
       tab.markForDelete();
-      NewMSAntenna msant4(tab);
+      MSAntenna msant4(tab);
       
       // try invalid table
       thrown = False;
@@ -407,14 +407,14 @@ uInt tConstructors(const String& msName)
 	SetupNewTable newtab4("badmsantTable","badAntTD",Table::New);
 	Table tab(newtab4);
 	tab.markForDelete();
-	NewMSAntenna msant4b(tab);
+	MSAntenna msant4b(tab);
       } catch (AipsError x) {
 	thrown = True;
       } 
       if (!thrown) errCount++;
       
       // construct from existing table
-      NewMSAntenna msant5("msantTable",Table::Old);
+      MSAntenna msant5("msantTable",Table::Old);
 
       // try invalid table
       thrown = False;
@@ -422,20 +422,20 @@ uInt tConstructors(const String& msName)
 	{
 	  Table tab("badmsantTable","badAntTD",Table::New);
 	}
-	NewMSAntenna msant5b("badmsantTable");
+	MSAntenna msant5b("badmsantTable");
       } catch (AipsError x) {
 	thrown = True;
       } 
       if (!thrown) errCount++;
 
       // Copy construct
-      NewMSAntenna msant6(msant4);
+      MSAntenna msant6(msant4);
       
       // try copy construct from invalid 
       try {
-	NewMSFeed msfeed("msfeed", Table::New);
+	MSFeed msfeed("msfeed", Table::New);
 	msfeed.markForDelete();
-	NewMSAntenna msant6b(msfeed);
+	MSAntenna msant6b(msfeed);
       } catch (AipsError x) {
 	thrown = True;
       } 
@@ -446,9 +446,9 @@ uInt tConstructors(const String& msName)
       thrown=False;
       try {
 	SetupNewTable newtab("msAnt","antTD",Table::New);
-	NewMSAntenna msant(newtab);
+	MSAntenna msant(newtab);
 	msant.markForDelete();
-	msant.renameColumn("myPos",NewMSAntenna::columnName(NewMSAntenna::POSITION));
+	msant.renameColumn("myPos",MSAntenna::columnName(MSAntenna::POSITION));
       } catch (AipsError x) {
 	thrown = True;
       } 
@@ -472,26 +472,26 @@ uInt tReferenceCopy(const String& msName, const String& refMSName)
     
     // open an existing table (we need Update to be able to make a writeable
     // reference table, even if we're not writing to the original table)
-    NewMeasurementSet ms(msName,Table::Update);
+    MeasurementSet ms(msName,Table::Update);
     {
     // make a reference copy, making TIME writable and all others references
-    Block<String> writableColumn(1, NewMS::columnName(NewMS::TIME));
+    Block<String> writableColumn(1, MS::columnName(MS::TIME));
     // this also tests the assignment operator
-    NewMeasurementSet refCopyMS = ms.referenceCopy(refMSName, 
+    MeasurementSet refCopyMS = ms.referenceCopy(refMSName, 
 						writableColumn);
     Vector<String> colNames(refCopyMS.tableDesc().columnNames());
     // tests below will be useful when we can open the table with Old
     for (uInt i=0;i<colNames.nelements();i++) {
 	if (refCopyMS.isColumnWritable(colNames(i))) {
 	    // if so, it had better be TIME
-	    if (colNames(i) != NewMS::columnName(NewMS::TIME)) {
+	    if (colNames(i) != MS::columnName(MS::TIME)) {
 //		cerr << "reference copy table column : " << colNames(i) 
-//		     << " is writable.  Only NewMS::TIME should be writable." << endl;
+//		     << " is writable.  Only MS::TIME should be writable." << endl;
 //		errCount++;
 	    }
 	} else {
 	    // it had better NOT be TIME
-	    if (colNames(i) == NewMS::columnName(NewMS::TIME)) {
+	    if (colNames(i) == MS::columnName(MS::TIME)) {
 //		cerr << "reference copy table column : " << colNames(i)
 //		     << " is NOT writable.  It should be!" << endl;
 //		errCount++;
@@ -513,19 +513,19 @@ uInt tSetupNewTabError()
 
     // make a bogus TableDesc
     TableDesc td;
-    NewMS::addColumnToDesc(td, NewMS::TIME);
+    MS::addColumnToDesc(td, MS::TIME);
     SetupNewTable setup("",td, Table::Scratch);
     StManAipsIO stman;
     setup.bindAll(stman);
 
     Bool thrown = False;
     try {
-	NewMeasurementSet ms(setup,0);
+	MeasurementSet ms(setup,0);
     } catch (AipsError x) {
 	thrown = True;
     } 
     if (!thrown) {
-	cerr << "NewMeasurementSet(SetupNewTable &, uInt) " 
+	cerr << "MeasurementSet(SetupNewTable &, uInt) " 
 	    << "should have thrown an exception" << endl;
 	errCount++;
     }
@@ -539,15 +539,15 @@ uInt tDestructorError(const String& sdmsName)
 
     Bool thrown = False;
     try {
-	NewMeasurementSet ms(sdmsName);
+	MeasurementSet ms(sdmsName);
 	// remove a column
-	ms.removeColumn(NewMS::columnName(NewMS::TIME));
+	ms.removeColumn(MS::columnName(MS::TIME));
     } catch (AipsError x) {
 	thrown = True;
     } 
 
     if (!thrown) {
-	cerr << "~NewMeasurementSet() should have thrown an exception" << endl;
+	cerr << "~MeasurementSet() should have thrown an exception" << endl;
 	errCount++;
     }
   
@@ -569,15 +569,15 @@ int main() {
     uInt errCount = 0;
     uInt newErrors;
 
-    String msName = "tNewMeasurementSet_tmp.Table";
-    String refMSName = "tNewMeasurementSet_tmp.Ref-Table";
+    String msName = "tMeasurementSet_tmp.Table";
+    String refMSName = "tMeasurementSet_tmp.Ref-Table";
 
-    cout << "\nNewMS::PredefinedColumns - test of static functions ... ";
+    cout << "\nMS::PredefinedColumns - test of static functions ... ";
     newErrors = tColumnStatics();
     checkErrors(newErrors);
     errCount += newErrors;
 
-    cout << "\nNewMS::PredefinedKeywords - test of static functions ... ";
+    cout << "\nMS::PredefinedKeywords - test of static functions ... ";
     newErrors = tKeywordStatics();
     checkErrors(newErrors);
     errCount += newErrors;
@@ -620,9 +620,9 @@ int main() {
     ms.markForDelete();
 
     if (errCount > 0) {
-	cout << "tNewMeasurementSet ends with " << errCount << " errors." << endl;
+	cout << "tMeasurementSet ends with " << errCount << " errors." << endl;
     } else {
-	cout << "tNewMeasurementSet ends successfully" << endl;
+	cout << "tMeasurementSet ends successfully" << endl;
     }
 
     return errCount;
