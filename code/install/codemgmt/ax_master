@@ -4410,3 +4410,4 @@
 14 296 src mv OldMSAntenna.h aips/implement/MeasurementSets/OldMSAntenna.h
 14 296 src mv aips/implement/MeasurementSets/MSArray.cc aips/implement/MeasurementSets/OldMSArray.cc
 14 296 src mv aips/implement/MeasurementSets/MSArray.h aips/implement/MeasurementSets/OldMSArray.h
+14 296 src mv aips/implement/MeasurementSets/MSArrayColumns.cc aips/implement/MeasurementSets/OldMSArrayColumns.cc
