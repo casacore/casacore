@@ -1,0 +1,256 @@
+\newcommand{\thisdocURL}{http://aips2.nrao.edu/aips++/docs/notes/222/222.html}
+\newcommand{\systemplanURL}{../220/220.html}
+\newcommand{\searchURL}{../../html/aips2search.html}
+\newcommand{\aipsviewURL}{../../user/aipsview/aipsview.html}
+\newcommand{\GlishmanualURL}{../../reference/Glish/Glish.html}
+\newcommand{\GlishtutorialURL}{../../notes/195/195.html}
+\newcommand{\synthesisURL}{../../user/synthesis/synthesis.html}
+\newcommand{\gsURL}{../../user/gettingstarted/gettingstarted.html}
+\newcommand{\userrefmanualURL}{../../user/Refman/Refman.html}
+\newcommand{\specsURL}{../../specs/specs.html}
+\newcommand{\betaURL}{../beta/beta.html}
+\newcommand{\consortiumURL}{../consortium.html}
+%
+% URL to Help system
+%
+\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
+
+% Add home page navigation button
+%
+
+\htmladdtonavigation{\htmladdnormallink
+  {\htmladdimg{../../gif/home.gif}}{{../../html/aips++.html}}}
+
+\section{Introduction}
+The purpose of this document is to outline the deliverables
+in the forthcoming release.
+
+The priorities for the AIPS++ project are:
+\begin{itemize}
+\item Have a scientifically usable system for the common UNIX platforms.
+The documentation should be such that a user can find its way.
+\item Stabilize the development system. Configuring, building and
+releasing the system should be fully and easily supported.
+\item Make a plan for future releases. It has to be investigated and
+decided which changes need to be made and which
+capabilities need to be added. Changes and additions have to be
+weighed against the scientific priorities in the project.
+\end{itemize}
+
+\section{Synthesis}
+
+\section{Single Dish}
+
+\section{Image Analysis}
+
+\section{Visualization}
+
+\section{Glish}
+
+\section{Measures}
+
+\subsection{(a) the current state of the library}
+
+\begin{enumerate}
+\item[1]. Time, 'infinite' directions, 'stable' Earth platform, magnetic field:
+       some minor improvements (more separation of calculations (90% done)
+       and improved iteration between forward/backward (B1950/J2000 really))
+       necessary.
+\item[2]. Unstable Earth (Earth tides etc):
+       no support
+\item[3]. Moving directions:
+       support for major solar system objects
+       almost no support for minor solar system objects
+       no support for proper motions of 'far' objects
+       no support for atmospheric stuff (ionosphere)
+\end{enumerate}
+\subsection{(b) the current state of applications}
+Applications are supportive only (conversion guis; specialised
+       conversion machinery). Status:
+\begin{itemize}
+\item conversion guis: not available for differential positions on Earth
+         (baseline, uvw). Available for others
+\item conversion engines: available where requested
+\end{itemize}
+
+\subsection{(c) scientific priorities}
+    Probably determined by others. My idea would be:
+\begin{itemize}
+\item Earth tides etc (for VLBI -- EVN especially)
+\item Proper motion
+\item Ionosphere (for polarisation work)
+\item minor solar system bodies
+\end{itemize}
+\subsection{(d) deliverables by first release}
+\begin{itemize}
+\item Earth tides 
+\end{itemize}
+\subsection{(e) deliverables by second release}
+\begin{itemize}
+\item Proper motions
+\item minor solar system bodies
+\item ionosphere
+\end{itemize}
+\subsection{(f) assumptions about progress in other areas}
+\begin{itemize}
+\item external data support
+\item improved vectors/arrays
+\end{itemize}
+
+
+A few comments about other areas:
+- Documentation;
+  Will cxx2html updates (what about Wes' and Ger's proposal of Feb 1996?) be
+  part of the plan
+  .help generation
+
+- basic library:
+  - HashMap and Fitting and Functional related things: ideas, future
+  - Containers and 'almost base' types (String, Complex): STL?
+
+
+\section{Documentation}
+
+\subsection{(a) the current state of the library}
+
+\begin{itemize}
+\item Lots of .helpfiles
+\item utilities for converting .help files into help atoms/table
+\item recipes LaTeX macros
+\item LaTeX to HTML translation
+\end{itemize}
+
+\subsection{(b) the current state of applications}
+
+\begin{itemize}
+\item Web framework
+\item Getting started
+\item Installation guide
+\item Glish documentation
+\item User's Reference manual
+\item Some recipes
+\item Documentation Search
+\item Bug reporting/tracking
+\end{itemize}
+
+\subsection{(c) scientific priorities}
+
+\begin{itemize}
+\item More recipes
+\item Consortium instrument tutorials
+\item Technical editing of existing documentation, for consistent terminology
+\item Improved presentation of Reference manual material.
+\end{itemize}
+
+\subsection{(d) deliverables by first release}
+
+\begin{itemize}
+\item Comprehensive tutorial(s)
+     a) single dish
+     b) VLA
+     c) VLBA
+     d) BIMA
+     e) Westerbork
+     f) ATNF
+\item A framework for presenting recipes
+\item Clean up of bug tracking system
+\item Clean up Reference manual in both terminology and presentation
+\end{itemize}
+
+\subsection{(e) deliverables by second release}
+
+\begin{itemize}
+\item PDF availablity of all documents
+\end{itemize}
+
+\subsection{(f) assumptions about progress in other areas}
+
+Documentation (recipes) must come from our users.
+
+\section{Quality Assurance Group}
+
+\subsection{(a) the current state of the library}
+We have regular testing of the C++ test progams under the following
+archectures: sun4sol\_gnu, linux\_egcs, hpux, alpha\_gnu. I have not seen 
+a sgi testsuite report but Wes tells me it is "very close".
+
+We also have a demonstrated ability to produce "stable" souce
+releases.
+
+\subsection{(b) the current state of applications}
+Not relevant to QAG
+
+\subsection{(c) scientific priorities }
+Not relevant to QAG
+
+\subsection{(d) deliverables by first release}
+\begin{itemize}
+\item Improve out C++ testing on all supported architectures. (RGM)
+  Currently only the sun4sol\_gnu architecture is at 100% we need to get 
+  all architectures so that 100% of the test programs pass.
+\item Regular stable releases (JEN + MH)
+  I expect stable releases to occur on an approximately monthly
+  timescale. These will be both binary and source releases. The
+  binary releases will be for beta testers and the source releases for 
+  AIPS++ affiliates (eg GBT, Multibeam project, JCMT etc).
+\item Depopulating trial. (RGM)
+  Important code in the following module will be reviewed.
+  Important code means the following modules:
+  - TableMeasures
+  - Lattices
+  - Tasking
+  - Coordinates
+  - MeasurementEquations
+  - MeasurementComponents
+  - MeasurementSets
+  - ComponentModels
+  - Images
+  We will be flexible about exactly which classes in these
+  modules need to be reviewed. the guideline is that we should not, by
+  the first public release, be distributing code that has not been
+  reviewed.
+\item Implementation of the Data proposal (WNB)
+\item Archive of "representative" data. (WNB)
+  We need to maintain an archive containing, at a bare minimum, a
+  data sets (preferably in local format if we are to test the fillers) 
+  from each of the consortium members instruments ie
+  WSRT, ATNF-CA, ATNF-Parkes, VLA, VLBA, GBT, BIMA. 
+\end{itemize}
+
+\subsection{(e) deliverables by second release}
+
+The following items will be in the "alpha" stage by the first
+release. They will be routine by the second release.
+
+\begin{itemize}
+\item Standardised automatic testing of all glish code. (JEN)
+  We need automatic ways of testing as much of the glish code as
+  possible.
+\item Mechanism for user testing. (JEN)
+  We need have have people and proceedures for user testing of
+  guis. Ideally we need someone at each consortium site who will test
+  the guis with data from there own instrument(s). This testing will
+  be complementry to the automatic testing described above and only
+  done prior to a major release. It will not be done prior to release of 
+  "stable" versions of AIPS++.
+\item Mechanism for installation testing (JEN)
+  We need to have a group of people who can download and install
+  AIPS++ releases and tell us the problems they have in doing so.
+  This testing will only be 
+  done prior to a major release and will ensure that the binaries and
+  configuration scripts are kept are working . It will not be done
+  prior to release of "stable" versions of AIPS++.
+\end{itemize}
+
+\subsection{(f) assumptions about progress in other areas}
+
+I have assume that we can get time from non-QAG members like Michael
+Haller and Darrell Schiebel prior to the major releases.
+
+I have also assumed that we can get timely cooperation from sites that
+support the alpha and sgi architectures and that we will NOT be
+testing/distributing an NT version of AIPS++ (or any other new
+architecture).
+
+\section{System}
+
