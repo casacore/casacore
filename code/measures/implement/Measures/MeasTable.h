@@ -1,5 +1,5 @@
 //# MeasTable.h: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -269,8 +269,9 @@ public:
   static Double diurnalAber(Double radius, Double T);
   
   // LSR (kinematical) velocity conversion: 0 gives J2000; 1 gives B1950.
-  // In both cases a velocity
-  // of 19.5 km/s assumed, and a B1900 RA/Dec direction of (270,30) degrees
+  // In both cases a velocity of 20.0 km/s is assumed, and a B1900 RA/Dec
+  // direction of (270,30) degrees. This value has been defined between
+  // the groups doing HI radio work in the mid 1950s.
   static const Vector<Double> &velocityLSRK(uInt which);
   // LSR (dynamical, IAU definition). Velocity (9,12,7) km/s in galactic
   // coordinates. Or 16.552945 towards l,b = 53.13, +25.02 deg.

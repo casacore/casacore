@@ -1,5 +1,5 @@
 //# MeasTable.cc: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1901,7 +1901,7 @@ const Vector<Double> &MeasTable::velocityLSRK(uInt which) {
   };
   if (needInit) {
     needInit = False;
-    Double v = 19.5*1000.;
+    Double v = 20.0*1000.;
     for (Int i=0; i<2; i++) {
       argArray[i].resize(3);
       for (Int j=0; j<3; j++) {

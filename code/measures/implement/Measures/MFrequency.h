@@ -1,5 +1,5 @@
 //# MFrequency.h: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,9 +87,10 @@ template <class M> class ROScalarMeasColumn;
 // <ul>
 //  <li> MFrequency::REST -- Rest frequency
 //  <li> MFrequency::LSRD -- Local Standard of Rest (J2000) -- as the
-//		dynamical definition (IAU, [9,12,7] km/s in galactic coordinates)
-//  <li> MFrequency::LSRK -- LSR as a kinematical definition -- 19.4 km/s
-//		in direction ra,dec = [270,+30] deg (B1900)
+//		dynamical definition (IAU, [9,12,7] km/s in galactic
+//		coordinates)
+//  <li> MFrequency::LSRK -- LSR as a kinematical (radio) definition --
+//		20.0 km/s in direction ra,dec = [270,+30] deg (B1900.0)
 //  <li> MFrequency::BARY -- Barycentric (J2000)
 //  <li> MFrequency::GEO --- Geocentric
 //  <li> MFrequency::TOPO -- Topocentric
