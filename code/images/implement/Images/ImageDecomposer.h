@@ -28,6 +28,7 @@
 #if !defined(TRIAL_IMAGEDECOMPOSER_H)
 #define TRIAL_IMAGEDECOMPOSER_H
 
+//#Includes
 #include <aips/iostream.h>
 #include <aips/math.h>
 #include <aips/aips.h>
@@ -41,6 +42,7 @@
 
 
 // <summary>
+// A tool to separate a complex image into individual components.
 // </summary>
 //
 // <use visibility=export>
@@ -56,29 +58,33 @@
 // </prerequisite>
 
 // <etymology>
+// It takes an image, and separates it into components.
 // </etymology>
 
 // <synopsis>
-// The ImageDecomposer has all the main necessary functionality of the
-// project, and is the only new class the end-user will see.
-// Only the fitting is done elsewhere.
+// ImageDecomposer is an image decomposition tool that performs several tasks,
+// with the end result being that a strongly blended image is separated into
+// components - both in the sense that it determines the parameters for each
+// parameter (assuming a Gaussian model) and that is physically assigns each
+// pixel in the image to an individual object.  The products of these two
+// operations are called the component list and the component map, 
+// respectively.  The fitting process (which determines the component list) and
+// the pixel-decomposition process (which determines the component map) are
+// designed to work cooperatively to increase the efficiency and accuracy of
+// both.
+// 
+// The algorithm between the decomposition is based on the function clfind
+// described in Williams et al 1994, which uses a contouring procedure whereby
+// a closed contour designates a separate component.  The program first 
+// separates the image into clearly distint 'regions' of blended emission, then
+// contours each region to determine the areas constituting each component and
+// passes this information on to the fitter, which determines the component 
+// list.  
 //
-// The data structure of the ImageDecomposer is the "componentmap",
-// a 3D TempImage of integers, where the value  of each integer indicates 
-// the component to which that pixel belongs.
-// The componentmap's top-level function is decomposeimage(), which
-// takes an image and breaks it into fragments surrounding each
-// distinct object, each with their own sub-componentmap, then applies the
-// deblendregions() function to each fragment's  componentmap to separate the 
-// individual components in each fragment. 
-// (This function is similar to clfind, Williams et al
-// 1994.)  The sub-componentmaps are then synthesized into a main map.
-// It is also possible for the user to directly use deblendregions() or
-// identifyregions() directly to form the componentmap , and then fitgauss3d() to 
-// find the components; they have the same overall functionality.
-//
-// Most of the code is compatible with an N-dimensional image.  However,
-// the contour decomposition and fitting functions are 2/3-D only.
+// The software is compatible with 2 and 3 dimensional images, but is not
+// yet structured for higher dimensions.
+// </synopsis>
+
 //
 //
 //
@@ -96,11 +102,18 @@
 //     to the pmap pixels or the 9 parameters used to model them.  Components
 //     have no substructure, and are the base unit for Gaussian fitting.
 //
-// </synopsis>  
+//
+
 //
 //
 // <example>
 // <srcblock>
+//  TempImage<Double> image;
+//  //(populate the image with data: see dImageDecomposer.cc)
+//  ImageDecomposer<Double> id(image);
+//  id.decomposeImage(0.1, 10, 0.1, 0);
+//  id.display();
+//  id.printComponents();
 // </srcblock>
 // </example>
 //   
@@ -110,8 +123,9 @@
 // <note>
 // </note>
 //
-// <todo asof="1996/09/04">
-//   <li> Generalize dimensionality
+// <todo asof="2002/06/20">
+//   <li> Generalize dimensionality 
+//   <li> Numerous possible improvements to make are documented in the code.
 // </todo>
   
 
@@ -120,6 +134,10 @@ template <class T> class ImageDecomposer {
 
 public:
 
+// 'Special' flag values for pixels in the component map.  An indeterminate
+// pixel lies directly between two components and cannot be immediately 
+// assigned.  A masked pixel is not inside the targeted region of the
+// sub-componentmap and is not used in decomposition or fitting.
    enum componentValues {
        INDETERMINATE=-1,
        MASKED=-2 
@@ -140,8 +158,10 @@ public:
 // Destructor
    ~ImageDecomposer();
 
-// Set a new image.  Resets internal componentmap.
+// Tell the decomposer what image to decompose ("target image")
+// This resets internal component map.
    void setImage (ImageInterface<T>& image);
+
 //
 // The simplest method of image decomposition. Initially, the image
 // is decomposed into contiguous regions via a thresholding process.
@@ -150,14 +170,15 @@ public:
 // fit for that many components is made.
 //
 // The fit will be repeated until it converges to a result with 
-// chisquared > chisqcriterion.
+// RMS < maximumError, though if it cannot converge within 3 x 2^g iterations
+// it will take the best result available.
 //
 // Does not generate an accurate componentmap. 
   void decomposeImage(T thresholdval, T chisqcriterion); 
 
 // The more complex method of image decomposition.  Uses successive
 // contouring to assign each pixel to a specific component, then fits
-// Gaussian components.  Components located in contiguous blocks are
+// Gaussians to the components.  Components located in contiguous blocks are
 // fitted together.  The thresholdVal specifies both the noise cutoff
 // and the threshold at which components are fitted separately.  Each fit
 // will be repeated until it converges to a result with chisquare >
@@ -165,46 +186,59 @@ public:
 // block is contoured separately depending on its regional maximum.
 // If varyContours=False, all components are contoured based on the global
 // maximum.
-//
-// The primary, highest-level function of the class; used to form a component
-// map out of a standard AIPS++ image and automatically fit to the components.
-// It first breaks the image down into regions based on the specified
-// threshold value, then forms a contour map of each subimage and uses
-// deblendregions to form component maps of each subimage, which are synthesized
-// together to make the final map.
-  void decomposeImage(T thresholdVal, uInt nContour, T chiSqCriterion, 
+  void decomposeImage(T thresholdVal, uInt nContour, T maximumError, 
                       Bool varyContours=True);
 
 //Retrieves the target image's value at the given location.
 // <group>
   T getImageVal(IPosition coord) const;
 // </group>
-//
+
+// Returns the number of regions found in the image.
   uInt numRegions() const;
+
+// Returns the number of components found in the image.
   uInt numComponents() const;
 //
+// Command-line text output functions; generally useful only for debugging.
+// <group>
   void display() const;
   void displayContourMap(const Vector<T>& clevels) const;
   void printComponents() const;
+// </group>
 //
 private:
-  ImageInterface<T> *itsImagePtr;  
-  TempLattice<Int> *itsMapPtr;        // The actual component map.  
-  IPosition itsShape;                 // Image shape
-  uInt itsDim;                        // Image dimensions
-  uInt itsNRegions;                   // Number of distinct regions in component map
-  uInt itsNComponents;                // Number of components that have been fitted
-  Matrix<T> itsList;              //Matrix containing parameters of the component 
-                                  //gaussians - should always have size 
-                                  //ncomponents x 9
-// 
-  IPosition shape() const;                    
-  Int shape(uInt axis) const;                 
+  ImageInterface<T> *itsImagePtr;// Points to the target image.
+  Lattice<Int> *itsMapPtr;       // The actual component map.  
+  IPosition itsShape;            // Component map shape
+  uInt itsDim;                   // Component map number of dimensions
+  uInt itsNRegions;              // Number of distinct regions in component map
+  uInt itsNComponents;           // Number of components that have been fitted
+  Matrix<T> itsList;             // The component list (Gaussian parameters for
+                                 // each component.)  
+
+// Returns the shape of the component map.
+  IPosition shape() const;                
+
+// Returns the length of a specific axis.
+  Int shape(uInt axis) const;            
+
+// Returns True if the image has been thresholded (split up into regions.)
   Bool isDerived() const;
+
+// Returns True if the image has been decomposed (split up into components.)
   Bool isDecomposed() const;  
+
+// Makes sure a pair of IPositions is in the correct format for blc/trc, and
+// corrects them if they are not.
   void correctBlcTrc(IPosition& blc, IPosition& trc) const;
+
+// Used as an N-dimensional interator.  This should probably be replaced by
+// LatticeIterators...?
+// <group>
   Bool increment(IPosition& pos, const IPosition& shape) const;
   void decrement(IPosition& pos) const;
+// </group>
 
 //Retrieves the target image's value at the given location.
 // <group>
@@ -237,7 +271,7 @@ private:
 
 // Nonlinear spacing option for contouring; spaces contours according to the
 // function given.  The domain of the function is 0 <-> ncontours-1; the
-// range is automatically calibrated to be minvalue<-> maxvalue.  The function
+// range is automatically calibrated to be minvalue <-> maxvalue.  The function
 // should be nondecreasing in the domain such that each contour is greater
 // than the last.
   Vector<T> autoContour(const Function1D<T>& fn,
@@ -247,24 +281,17 @@ private:
 // Overlays a smaller map onto an empty region of a larger map,
 // and adds submap component list to main component list.
 // The user should exercise caution with this function and synthesize submaps
-// only into regions of the main map that are truly empty (0), because the
-// program does not perform any blending between itsMapPtr components.  Otherwise,
-// false detections are likely.
-  void synthesize(const ImageDecomposer<T>& subdecomposer);
+// only into regions of the main map that are truly empty (0), as no blending
+// is assumed between different maps.
+  void synthesize(const ImageDecomposer<T>& subdecomposer, IPosition blc);
+
 // 
-// Set all elements in the itsMapPtr to zero and clear the component list.
+// Set all elements in the component map to zero and clear the component list.
   void zero();
 
-// Set all nonmasked elements in itsMapPtr to zero and clear the component list.
+// Set all nonmasked elements in the component map to zero and clear the 
+// component list.
   void clear();
-
-// Eliminates redundant regions (components with no representative cells in
-// the component map) by renumbering higher-numbered regions to fill in
-// the gaps.  For example..
-// 011          011
-// 113  becomes 112
-// 113          112
-  void renumberRegions();
 
 // Boxes each region in the componentmap:
 // blc is set to the lowest coordinate value in each region;
@@ -275,9 +302,7 @@ private:
 // target image.
 // <group>
   T findAreaGlobalMax(IPosition blc, IPosition trc) const;
-  void findAreaGobalMax(T& maxval, IPosition& maxvalpos, 
-                         IPosition blc, IPosition trc) const;
-  void findAreaGlobalMax(T& maxval, IPosition& maxvalpos,
+  void findAreaGlobalMax(T& maxval, IPosition& maxvalpos, 
                          IPosition blc, IPosition trc) const;
   Vector<T> findAreaGlobalMax(IPosition blc, IPosition trc, Int naxis) const;
   void findAreaGlobalMax(Vector<T>& maxvals,
@@ -288,36 +313,48 @@ private:
 
 // Finds all local maxima inside the specified rectangular area of the
 // target image.
+// <group>
   Vector<T> findAreaLocalMax(IPosition blc, IPosition trc, Int naxis) const;
   void findAreaLocalMax(Vector<T>& maxvals,Block<IPosition>& maxvalpos, 
                         IPosition blc, IPosition trc, Int naxis) const;
+// </group>
 
 // Finds the maximum value of the target image in each region of the
 // componentmap.
+// <group>
   Vector<T> findAllRegionGlobalMax() const;
   void findAllRegionGlobalMax(Vector<T>& maxvals, 
                               Block<IPosition>& maxvalpos) const;
+// </group>
+
 
 // Finds all local maxima of the target image inside the specifed region
 // of the componentmap.
+// <group>
   Vector<T> findRegionLocalMax(Int nregion, Int naxis) const;
   void findRegionLocalMax(Vector<T>& maxvals, Block<IPosition>& maxvalpos, 
                           Int nregion, Int naxis) const;
+// </group>
 
-  //Compares specified pixel to adjacent pixels to determine if it is
-  //greatest in local pixel block.
-  //2D:
-  //naxis = 1: compare to 4 adjacent pixels (axes only)
-  //naxis = 2: compare to 8 adjacent pixels (axes and diagonals)
-  //3D:
-  //naxis = 1: compare to 6 adjacent pixels (axes only)
-  //naxis = 2: compare to 18 adjacent pixels (axes and 2-axis diagonals)
-  //naxis = 3: compare to 26 adjacent pixels (axes and 2/3-axis diagonals)
+
+//Compares specified pixel to adjacent pixels to determine if it is
+//greatest in local pixel block.
+//2D:
+//naxis = 1: compare to 4 adjacent pixels (axes only)
+//naxis = 2: compare to 8 adjacent pixels (axes and diagonals)
+//3D:
+//naxis = 1: compare to 6 adjacent pixels (axes only)
+//naxis = 2: compare to 18 adjacent pixels (axes and 2-axis diagonals)
+//naxis = 3: compare to 26 adjacent pixels (axes and 2/3-axis diagonals)
+// <group>
   Bool isLocalMax(const IPosition& pos, Int naxis) const;
-//
   Bool isLocalMax(Int x, Int y, Int naxis) const;
   Bool isLocalMax(Int x, Int y, Int z, Int naxis) const;
-//
+// </group>
+
+// Finds a rough estimate of the width of each component by scanning to find
+// the full width at quarter maximum.
+// Requires the location of each component.
   void estimateComponentWidths(Matrix<T>& width,
                                const Block<IPosition>& maxvalpos) const;
 
@@ -327,30 +364,58 @@ private:
 // starting at one.  All pixels with target image values below thrval are set
 // to zero.
   uInt identifyRegions(T thrval, Int naxis = 2);
+
+// Performs the contour decomposition on a blended image to generate a 
+// component map that can detect components blended above any threshold(s),
+// by performing threshold scans at each contour level and recognizing
+// as individual any components that are distinct above any such level.
   void deblendRegions(const Vector<T>& contours);
 
 // Retrieves the number of the highest contour with a value less then the
 // target image's value at the given location.
+// <group>
   Int getContourVal(IPosition coord, const Vector<T>& clevels) const;
   Int getContourVal(Int x, Int y, Int z, const Vector<T>& clevels) const;
   Int getContourVal(Int x, Int y, const Vector<T>& clevels) const;
-//
-  Matrix<T> fitRegion(Int region, T chisqcriterion);
-//
-  void fitRegions(T chisqcriterion);
-  void fitComponents(T chisqcriterion);
-//
+// <//group>
+
+// Fits multiple gaussians to a single region.  First performs  a local 
+// maximum scan to estimate the number of components in the region.
+  Matrix<T> fitRegion(Int region, T maximumError);
+
+
+// Fits gaussians to an image; multiple gaussians per region in the pmap.
+// The regions are fit sequentially and independently, so this function 
+// can be used on the main image.
+// If the map is not yet thresholded, will fit to the entire image as if it
+// were a single composite object, which will be very slow.
+  void fitRegions(T maximumError);
+
+// Fits gaussians to an image; one gaussian per region in the pmap.
+// This function is intended to be used only by ImageDecomposer on its
+// intermediary subimages; using it at higher level will execute a full
+// gaussian fit on the main image and will be extremely slow. Every 
+// nonflagged object pixel in the image is used in fitting.
+
+// If the deblended flag is True, the function will treat each region as
+// an individual component and will fit that many gaussians to the image
+  void fitComponents(T maximumError);
+
+
+// Fits the specified number of 3D gaussians to the data, and returns 
+// solution in image (world) coordinates.  Essentially just an interface
+// for FitGaussian.
+// <group>
   Matrix<T> fitGauss(const Matrix<T>& positions, 
                      const Vector<T>& dataValues,
                      uInt ngaussians,
-                     const Matrix<T>& initestimate, T chisqcriterion) const;
-
-//
+                     const Matrix<T>& initestimate, T maximumError) const;
   Matrix<T> fitGauss(const Matrix<T>& positions,
                      const Vector<T>& dataValue, 
                      uInt ngaussians,
                      const Matrix<T>& initestimate, 
-                     const Matrix<T>& retrymatrix, T chisqcriterion) const;
+                     const Matrix<T>& retrymatrix, T maximumError) const;
+// </group>
 
 };
 #endif
