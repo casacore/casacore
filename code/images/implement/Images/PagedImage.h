@@ -52,6 +52,7 @@ template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
 class ostream;
 class String;
+class TableLock;
 
 // <summary> read, store, and manipulate astronomical images </summary>
 //
@@ -118,6 +119,13 @@ public:
   PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
 	     const String &nameOfNewFile, Bool masking = False, 
 	     uInt rowNumber = 0);
+  
+  // construct a new Image from an IPosition and coordinate information. Table
+  // will be stored in the named file, masking is created if True. The lock
+  // options may be specfied
+  PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
+	     const String &nameOfNewFile, const TableLock& lockOptions,
+             Bool masking = False, uInt rowNumber = 0);
   
   // reconstruct an image from a pre-existing file
   PagedImage(Table &table, uInt rowNumber = 0);
