@@ -73,6 +73,12 @@ template<class T> class TempLattice;
 // The other Image information like coordinates, units, and miscinfo
 // is held in member variables and disappears when the TempImage object
 // is destructed.
+// <p>
+// It is possibly to temporarily close a TempImage, which only takes effect
+// when it is created as a PagedArray. In this way it is possible to reduce
+// the number of open files in case a lot of TempImage objects are used.
+// A temporarily closed TempImage will be reopened automatically when needed.
+// It can also be reopened explicitly.
 // </synopsis> 
 
 // <example>
@@ -126,6 +132,16 @@ public:
 
     // Is the TempImage writable?
     virtual Bool isWritable() const;
+
+    // Close the TempImage temporarily (if it is paged to disk).
+    // It'll be reopened automatically when needed or when
+    // <src>reopen</src> is called explicitly.
+    void tempClose()
+        { mapPtr_p->tempClose(); }
+
+    // If needed, reopen a temporarily closed TempLattice.
+    void reopen()
+        { mapPtr_p->reopen(); }
 
     // Function which changes the shape of the image (N.B. the data is thrown 
     // away - the Image will be filled with nonsense afterwards)
