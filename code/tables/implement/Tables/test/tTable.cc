@@ -1,5 +1,5 @@
 //# tTable.cc: Test program for the Table classes
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -49,6 +49,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
+#include <stdio.h>
 
 // <summary>
 // Test program for the Table classes

@@ -1,5 +1,5 @@
 //# tForwardColRow.cc: Test program for class ForwardColumn
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -24,6 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#include <stdio.h>
 
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
