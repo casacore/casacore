@@ -27,16 +27,19 @@
 #include <trial/Lattices/LatticeUtilities.h>
 
 #include <aips/aips.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Lattices/Lattice.h>
+#include <trial/Lattices/ExtendLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/MaskedLatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeStatistics.h>
+#include <aips/Lattices/TempLattice.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
@@ -227,3 +230,24 @@ void LatticeUtilities::replicate (Lattice<T>& lat,
    }
 }
 
+
+template <class T>
+void  LatticeUtilities::addDegenerateAxes (Lattice<T>*& pLatOut, const Lattice<T>& latIn, 
+                                           uInt nDim)
+{
+   delete pLatOut; pLatOut = 0;
+   const uInt dimIn = latIn.ndim();
+   if (nDim < dimIn ) {
+      throw (AipsError ("Input Lattice has more dimensions than desired output Lattice"));
+   } else if (nDim == dimIn) {
+      pLatOut = new SubLattice<T>(latIn);
+   } else {
+      IPosition newShape(nDim,1);
+      newShape.setFirst (latIn.shape());
+      IPosition tPath = IPosition::makeAxisPath(newShape.nelements());
+      IPosition newAxes = tPath.getLast(nDim-dimIn);
+      IPosition stretchAxes;
+//
+      pLatOut = new ExtendLattice<T>(latIn, newShape, newAxes, stretchAxes);
+   }
+}

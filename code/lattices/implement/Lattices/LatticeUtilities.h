@@ -96,6 +96,13 @@ class LatticeUtilities
    static void replicate (Lattice<T>& im,
                           const Slicer& region,
                           const Array<T>& pixels);
+
+// Add degenerate axes to the lattice if needed (nDim is the desired number of dimensions
+// for the output lattice).  If the shapes are the same, the returned
+// pointer holds a SubLattice.  If a reshape was necessary, the pointer
+// holds an ExtendLattice.  The pointer is the callers responsibility to delete.
+   template <class T>
+   static void addDegenerateAxes (Lattice<T>*& pLatOut, const Lattice<T>& latIn, uInt nDim);
 };
 
 // <summary>Global functions on Lattices</summary>
