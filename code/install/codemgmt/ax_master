@@ -4640,3 +4640,4 @@
 14 297 src mv trial/implement/MeasurementSets/DOnewsdfits2ms.cc trial/implement/MeasurementSets/DOsdfits2ms.cc
 14 298 src mv aips/implement/MeasurementSets/test/tMeasurementSet.cc aips/implement/MeasurementSets/test/tOldMeasurementSet.cc
 14 298 src mv aips/implement/MeasurementSets/test/tNewMeasurementSet.cc aips/implement/MeasurementSets/test/tMeasurementSet.cc
+14 298 src mv aips/implement/MeasurementSets/test/tNewMSColumns.cc aips/implement/MeasurementSets/test/tMSColumns.cc
