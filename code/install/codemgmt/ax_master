@@ -4578,3 +4578,4 @@
 14 297 src mv trial/implement/MeasurementSets/MSIter.h trial/implement/MeasurementSets/OldMSIter.h
 14 297 src mv trial/implement/MeasurementSets/MSLister.cc trial/implement/MeasurementSets/OldMSLister.cc
 14 297 src mv trial/implement/MeasurementSets/MSLister.h trial/implement/MeasurementSets/OldMSLister.h
+14 297 src mv trial/implement/MeasurementSets/MSRange.cc trial/implement/MeasurementSets/OldMSRange.cc
