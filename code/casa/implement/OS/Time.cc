@@ -28,6 +28,7 @@
 #include <aips/OS/Time.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Mathematics/Constants.h>
 
 #if defined(AIPS_SOLARIS) || defined(_AIX) || defined(AIPS_IRIX)
 #include <sys/time.h>
@@ -90,7 +91,7 @@ static double secondsFrom1970()
 
 inline double daysFrom1970()
 {
-    return secondsFrom1970() / 86400.0;
+    return secondsFrom1970() / C::day;
 }
 
 Time::Time() {
@@ -162,7 +163,7 @@ Time::Time(uInt year, uInt month, uInt day, uInt hour, uInt min, double sec) {
 
   md =(1461*(y+4800+(m-14)/12))/4+(367*(m-2-12*((m-14)/12)))/12-(3*((y+4900+(m-14)/12)/100))/4+d-32075;
 
-  jd= ((double)hour/24) + ((double)min/1440) + ((double)sec/86400);
+  jd= ((double)hour/24) + ((double)min/1440) + ((double)sec/C::day);
   // with this formula (calculated md)
   // date --> Julian day number - 0.5
   // then Julian day -1 (jd-1) and fraction +0.5 (md+0.5)
@@ -208,7 +209,7 @@ double Time::operator-(const Time& begin) {
   else
     d = (double)mJulianDay - (double)begin.mJulianDay;
 
-  s=(d+s)*86400.0;
+  s=(d+s)*C::day;
 
   return s;
 }
@@ -218,13 +219,13 @@ Time Time::operator+(const double plus) {
   Time result;
   double mjd;
 
-  mjd = mJulianDayfrac + (plus/86400.0 - (int)(plus/86400.0));
+  mjd = mJulianDayfrac + (plus/C::day - (int)(plus/C::day));
   if(mjd >= 1.0) {
-    result.mJulianDay= mJulianDay + (int)(plus/86400.0) + 1;
+    result.mJulianDay= mJulianDay + (int)(plus/C::day) + 1;
     result.mJulianDayfrac= mjd - 1.0;
   }
   else {
-    result.mJulianDay= mJulianDay + (int)(plus/86400.0);
+    result.mJulianDay= mJulianDay + (int)(plus/C::day);
     result.mJulianDayfrac= mjd;
   }
 
@@ -468,7 +469,7 @@ istream& operator>>(istream& in, Time& other) {
 
   md =(1461*(y+4800+(m-14)/12))/4+(367*(m-2-12*((m-14)/12)))/12-(3*((y+4900+(m-14)/12)/100))/4+d-32075;
 
-  jd= ((double)hour/24) + ((double)min/1440) + ((double)sec/86400);
+  jd= ((double)hour/24) + ((double)min/1440) + ((double)sec/C::day);
   // with this formula (calculated md)
   // date --> Julian day number - 0.5
   // then Julian day -1 (jd-1) and fraction +0.5 (md+0.5)
@@ -541,7 +542,7 @@ void Time::setDate(uInt year, uInt month, uInt day, uInt hour, uInt min, double 
 
   md =(1461*(y+4800+(m-14)/12))/4+(367*(m-2-12*((m-14)/12)))/12-(3*((y+4900+(m-14)/12)/100))/4+d-32075;
 
-  jd= ((double)hour/24) + ((double)min/1440) + ((double)sec/86400);
+  jd= ((double)hour/24) + ((double)min/1440) + ((double)sec/C::day);
   // with this formula (calculated md)
   // date --> Julian day number - 0.5
   // then Julian day -1 (jd-1) and fraction +0.5 (md+0.5)
@@ -556,12 +557,12 @@ double Time::age() {
   if(mJulianDay >= 40587) {
     double jd;
     jd=(double)mJulianDay - 40587.0;
-    double se = sn - ((jd + mJulianDayfrac)*86400.0);
+    double se = sn - ((jd + mJulianDayfrac)*C::day);
     return se;
   }
   else {
     sn = 3506716800.0 + sn;
-    double se = sn - (((double)mJulianDay + mJulianDayfrac)*86400.0);
+    double se = sn - (((double)mJulianDay + mJulianDayfrac)*C::day);
     return se;
   }
 }
@@ -710,32 +711,6 @@ uInt Time::dayOfYear() {
   return day;
 }
 
-uInt Time::leapSeconds() {
-  // Return leap seconds
-  uInt leapsec=10;
-
-  if(Time().mJulianDay>=41499) leapsec++;    // 1 July      1972
-  if(Time().mJulianDay>=41683) leapsec++;    // 1 January   1973
-  if(Time().mJulianDay>=42048) leapsec++;    // 1 January   1974
-  if(Time().mJulianDay>=42413) leapsec++;    // 1 January   1975
-  if(Time().mJulianDay>=42778) leapsec++;    // 1 January   1976
-  if(Time().mJulianDay>=43144) leapsec++;    // 1 January   1977
-  if(Time().mJulianDay>=43509) leapsec++;    // 1 January   1978
-  if(Time().mJulianDay>=43874) leapsec++;    // 1 January   1979
-  if(Time().mJulianDay>=44239) leapsec++;    // 1 January   1980
-  if(Time().mJulianDay>=44786) leapsec++;    // 1 July      1981
-  if(Time().mJulianDay>=45151) leapsec++;    // 1 July      1982
-  if(Time().mJulianDay>=45516) leapsec++;    // 1 July      1983
-  if(Time().mJulianDay>=46247) leapsec++;    // 1 July      1985
-  if(Time().mJulianDay>=47161) leapsec++;    // 1 January   1988
-  if(Time().mJulianDay>=47892) leapsec++;    // 1 January   1990
-  if(Time().mJulianDay>=48257) leapsec++;    // 1 January   1991
-  if(Time().mJulianDay>=48804) leapsec++;    // 1 July      1992
-  if(Time().mJulianDay>=49169) leapsec++;    // 1 July      1993
-
-  return leapsec;
-}
-
 uInt Time::howManyDaysInMonth(uInt month, uInt year) {
   // Return how many days are in a month
   // Note: for february, always return 28
@@ -832,13 +807,6 @@ Int Time::timeZoneSeconds () {
   extern time_t altzone;	// Not declared in all <time.h> files.
   return isDST () ? -altzone : -timezone;
 }
-#elif defined(__hpux__) || defined(_AIX)
-Int Time::timeZoneSeconds () {
-  // This will not work unless the DST correction is +1 hour.  (HP/UX
-  // and AIX do not have an altzone variable, at least not that I can
-  // find.)
-  return -timezone + (3600 * isDST ());
-}
 #elif defined(AIPS_OSF)
 Int Time::timeZoneSeconds () {
   time_t tim = time (NULL);
@@ -847,15 +815,18 @@ Int Time::timeZoneSeconds () {
 }
 #else
 Int Time::timeZoneSeconds () {
-  throw (AipsError ("Current time zone handling not yet supported on this OS."))
-  return 0;
+  // This will not be accurate unless the DST correction is +1 hour.
+  // HP/UX and AIX do not have an altzone variable--at least not that I
+  // can find--and this is also generic enough that it should work for
+  // most other "reasonable" UNIX-like OS's.
+  return -timezone + (C::hour * isDST ());
 }
 #endif
 
 Double Time::timeZoneDays () {
 // Same as timeZoneSeconds(), but returns fractional days rather than
 // seconds.
-  return (double)timeZoneSeconds () / 86400.0; // Turn seconds into days.
+  return (double)timeZoneSeconds () / C::day; // Turn seconds into days.
 }
 
 String Time::timeZoneName () {
