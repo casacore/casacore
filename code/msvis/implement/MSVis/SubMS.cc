@@ -33,7 +33,6 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/Logging.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/OS/File.h>
 #include <aips/Containers/Record.h>

@@ -48,7 +48,6 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Quanta/MVAngle.h>
 
-#include <aips/Logging.h>
 #include <aips/Logging/LogIO.h>
 
 #include <aips/iostream.h>
