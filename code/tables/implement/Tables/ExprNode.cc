@@ -32,6 +32,8 @@
 #include <aips/Tables/ExprMathNode.h>
 #include <aips/Tables/ExprLogicNode.h>
 #include <aips/Tables/ExprDerNodeArray.h>
+#include <aips/Tables/ExprMathNodeArray.h>
+#include <aips/Tables/ExprLogicNodeArray.h>
 #include <aips/Tables/ExprRange.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableColumn.h>
