@@ -222,7 +222,13 @@ SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
   epoch_p(other.epoch_p)
 {
    pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
-   makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
+   Int ok = makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
+   if (ok==-1) {
+
+// Trial conversion failed
+
+      conversionType_p = type_p;
+   }
 }
 
 SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &other)
@@ -241,7 +247,13 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
         direction_p = other.direction_p;
         position_p = other.position_p;
         epoch_p = other.epoch_p;
-        makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
+        Int ok = makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
+        if (ok==-1) {
+
+// Trial conversion failed
+
+           conversionType_p = type_p;
+        }
 //
         deleteVelocityMachine();
         if (other.pVelocityMachine_p) {
@@ -399,16 +411,29 @@ Vector<String> SpectralCoordinate::preferredWorldAxisUnits () const
    return t;
 }
 
-void SpectralCoordinate::setReferenceConversion (MFrequency::Types conversionType,
+Bool SpectralCoordinate::setReferenceConversion (MFrequency::Types conversionType,
                                                  const MEpoch& epoch, const MPosition& position,
                                                  const MDirection& direction)
 {
 // See if something to do
 
-   if (conversionType_p==conversionType) return;
+   if (conversionType_p==conversionType) return True;
 //
    conversionType_p = conversionType;
-   makeConversionMachines(type_p, conversionType_p, epoch, position, direction);
+   Int ok = makeConversionMachines(type_p, conversionType_p, epoch, position, direction);
+   if (ok==-1) {
+
+// Trial conversion failed
+
+      conversionType_p = type_p;
+      return False;
+   }
+//
+   epoch_p = epoch;
+   position_p = position;
+   direction_p = direction;   
+//
+   return True;
 }
 
 
@@ -783,10 +808,16 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
           retval->epoch_p = mh.asMEpoch();
        }
 //
-       retval->makeConversionMachines(retval->type_p, retval->conversionType_p,
-                                      retval->epoch_p, 
-                                      retval->position_p, 
-                                      retval->direction_p);
+       Int ok = retval->makeConversionMachines(retval->type_p, retval->conversionType_p,
+                                               retval->epoch_p, 
+                                               retval->position_p, 
+                                               retval->direction_p);
+       if (ok==-1) {
+
+// Trial conversion failed
+ 
+          retval->conversionType_p = retval->type_p;
+       }
     } else {
 
 // Old SpectralCoordinates won't have this state.  The conversion
