@@ -35,6 +35,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/ExprNode.h>
+#include <aips/Tables/ExprNodeSet.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
@@ -206,6 +207,9 @@ void b (Bool doExcp)
     cout << Table::isWritable("tTable_tmp.data");
     cout << Table::isReadable("tTablex.data");
     cout << Table::isWritable("tTablex.data");
+    if (Table::nonWritableFiles("tTable_tmp.data").nelements() > 0) {
+	cout << "There should be no non-writable table files" << endl;
+    }
     cout << endl;
 
     // Read back the table.
@@ -366,6 +370,17 @@ void b (Bool doExcp)
     cout << "sortab2 type = " << sortab2.tableInfo().type() << endl;
     cout << "sortab2 subtype = " << sortab2.tableInfo().subType() << endl;
     cout << sortab2.tableInfo().readme() << endl;
+
+    // Select using the IN function.
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem ("V3"));
+    set.add (TableExprNodeSetElem ("V1"));
+    set.add (TableExprNodeSetElem ("V9"));
+    set.add (TableExprNodeSetElem ("V6"));
+    Table seltabset = sortab (sortab.col("af").in (set));
+    if (seltabset.nrow() != 4) {
+	cout << "seltabset does not contain 4 rows" << endl;
+    }
 
     // Get a subset of the table via row numbers.
     Vector<uInt> rownrs(4);
