@@ -71,18 +71,20 @@ install:
 In addition to these, you need to ensure that a few packages which are normally
 part of a Linux installation are installed:
 \begin{itemize}
-\item \htmladdnormallinkfoot{GNU make}{http://www.gnu.org/software/make/make.html}
+\item \htmladdnormallinkfoot{GNU make}{http://www.gnu.org/software/make/}
 \item either \htmladdnormallinkfoot{Open MOTIF}{http://www.opengroup.org/openmotif/} or
       \htmladdnormallinkfoot{LessTif}{http://www.lesstif.org/} ({\em or just about any
       other Motif you might have installed})
-\item \htmladdnormallinkfoot{LAPACK}{http://www.netlib.org/lapack/}
+\item \htmladdnormallinkfoot{LAPACK}{http://www.netlib.org/lapack/} and BLAS
 \item all of the standard header files, e.g. \verb+glibc-devel+
 \item all of the X11 header files, e.g. \verb+XFree86-devel+
 \item \verb+tcl+ and \verb+tk+
+\item \htmladdnormallinkfoot{bison}{http://www.gnu.org/software/bison/} and
+      \htmladdnormallinkfoot{flex}{http://www.gnu.org/software/flex/}
 \end{itemize}
 A good way to check is to do something like:
 \begin{verbatim}
-    rpm -qa | egrep '^openmotif|^lesstif|^make|^glibc|^XFree|^lapack|^tcl|^tk'
+    rpm -qa | egrep '^openmotif|^lesstif|^make|^glibc|^XFree|^lapack|^blas|^tcl|^tk|^bison|^flex'
 \end{verbatim}
 If the output of this seems to list all requirements, then you are in good shape.
 
