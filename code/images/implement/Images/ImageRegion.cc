@@ -34,13 +34,13 @@
 
 
 ImageRegion::ImageRegion (const LCRegion& region)
-: itsLC (region.clone()),
+: itsLC (region.cloneRegion()),
   itsWC (0)
 {}
 
 ImageRegion::ImageRegion (const WCRegion& region)
 : itsLC (0),
-  itsWC (region.clone())
+  itsWC (region.cloneRegion())
 {}
 
 ImageRegion::ImageRegion (const ImageRegion& other)
@@ -64,9 +64,9 @@ ImageRegion& ImageRegion::operator= (const ImageRegion& other)
 	itsLC = 0;
 	itsWC = other.itsWC;
 	if (isWCRegion()) {
-	    itsWC = itsWC->clone();
+	    itsWC = itsWC->cloneRegion();
 	} else {
-	    itsLC = other.itsLC->clone();
+	    itsLC = other.itsLC->cloneRegion();
 	}
     }
     return *this;

@@ -85,7 +85,7 @@ public:
     virtual ~WCRegion();
 
     // Clone a WCRegion object.
-    virtual WCRegion* clone() const = 0;
+    virtual WCRegion* cloneRegion() const = 0;
 
     // Convert to an LCRegion using the given coordinate system.
     virtual LCRegion* toLCRegion (const CoordinateSystem&) const = 0;
