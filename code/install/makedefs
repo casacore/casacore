@@ -846,7 +846,8 @@ ifdef AIPSRCS
 	   $(MAKE) -C $$i $@ ; \
 	done
 
-   $(CODEDIR) : $(AIPSSRCS:%=$(CODEDIR)/%)
+   # Need the extra "%:" segment to handle filenames with :'s in them!
+   $(CODEDIR) :%: $(AIPSSRCS:%=$(CODEDIR)/%)
 endif
 
 
