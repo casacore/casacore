@@ -154,11 +154,11 @@ Disk longitude and latitude:
 1997/12/21/01:30:00 0: [0, 0, 1]
 Frame and conversion:
 Frame: Frame: Epoch: 50802::17:30:00.0288
-       Position: [-502.513, -1582.42, 1115.08]
+       Position: [-1.60119e+06, -5.04198e+06, 3.55488e+06]
        VENUS comet between MJD 50802.7 and 50803.1
 Apparent: Direction: [0.547479, -0.764558, -0.340175]
 Topo: Direction: [0.547535, -0.764484, -0.340249]
-HADEC: Direction: [0.446432, -0.827604, -0.340249]
+HADEC: Direction: [0.446423, -0.827609, -0.34025]
 --------------------------------------
 Opened VTOP
 --------------------------------------
@@ -220,11 +220,11 @@ Radial velocity:
 --------------------------------------
 Frame and conversion:
 Frame: Frame: Epoch: 50802::17:30:00.0288
-       Position: [-502.513, -1582.42, 1115.08]
+       Position: [-1.60119e+06, -5.04198e+06, 3.55488e+06]
        VENUS comet between MJD 50802.7 and 50803.1
-Apparent: Direction: [0.547479, -0.764557, -0.340175]
+Apparent: Direction: [0.547479, -0.764557, -0.340174]
 Topo: Direction: [0.547535, -0.764484, -0.340249]
-HADEC: Direction: [0.446432, -0.827605, -0.340249]
+HADEC: Direction: [0.446423, -0.827609, -0.340249]
 --------------------------------------
 --------------------------------------
 Cloned VTOP
