@@ -1,5 +1,5 @@
 //# Image2DConvolver.h: 2D convolution of an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,8 +123,9 @@ public:
 // the  convolution parameters (major, minor, position angle)
 // and the pixel axes which you are convolving.
 // If the output image needs a mask and doesn't have one,
-// it will be given one if possible.  The miscInfo, imageInfo,
-// units and logger will be copied from the input to the output.
+// it will be given one if possible and the input mask transferred
+// to it.  The miscInfo, imageInfo, units and logger
+// will be copied from the input to the output.
 // The output file will be overwritten if it pre-exists.
 // The calling routine must delete the returned pointer.
    ImageInterface<T>* convolve(LogIO& os, const String& outFile,
