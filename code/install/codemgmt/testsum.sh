@@ -3,7 +3,7 @@
 # testsum.sh: Formats the runtests.report file
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999,2001
+#   Copyright (C) 1992-1997,1998,1999,2001,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -51,15 +51,21 @@ fi
 PACK=$2
 VERSION=`avers | awk '{printf("%.6s",$1)}'`
 TPASS=`grep "^${2}-.*PASS" $1/bintest/runtests.report | wc -l`
-TUNTESTED=`grep "^${2}-.*UNTESTED" $1/bintest/runtests.report | wc -l`
 TFAIL=`grep "^${2}-.*FAIL" $1/bintest/runtests.report | wc -l`
+TWARNING=`grep "^${2}-.*WARNING" $1/bintest/runtests.report | wc -l`
+TUNKNOWN=`grep "^${2}-.*UNKNOWN" $1/bintest/runtests.report | wc -l`
+TUNTESTED=`grep "^${2}-.*UNTESTED" $1/bintest/runtests.report | wc -l`
 echo 
 echo "Summary of $AIPSPATH runtests $VERSION"
 echo
 echo "******************************************************************************"
 echo 
 echo $PACK | awk '{printf "Test results for %s package\n", $1}'
-echo $TPASS $TFAIL $TUNTESTED| awk '{printf "\t%5.1f%% Passed %d of %d (%d skipped)\n", 100*$1/($1+$2), $1, $1+$2, $3}'
+echo $TPASS $TFAIL $TWARNING $TUNKNOWN| awk '{printf "\t%5.1f%% passed (%d of %d)\n", 100*$1/($1+$2+$3+$4), $1, $1+$2+$3+$4}'
+echo "          $TFAIL failed"
+echo "          $TWARNING with verification warnings (floating point discrepancies)"
+echo "          $TUNKNOWN unknown"
+echo "          $TUNTESTED skipped"
 echo "******************************************************************************"
 echo 
 echo "Tests that failed to compile"
@@ -74,6 +80,10 @@ echo "Tests that failed to verify"
 echo 
 grep "^${2}-.*FAIL.*verify" $1/bintest/runtests.report
 grep "^${2}-.*FAIL.*execute" $1/bintest/runtests.report > /tmp/aips2tests.noexecute
+echo 
+echo "Tests that were unknown"
+echo 
+grep "^${2}-.*UNKNOWN" $1/bintest/runtests.report
 echo 
 echo "Tests that were skipped"
 echo 
@@ -122,7 +132,7 @@ fi
 rm /tmp/aips2tests.noverify
 echo "Tests that had warnings"
 echo 
-grep "^${2}-.*WARN" $1/bintest/runtests.report
+grep "^${2}-.*WARNING" $1/bintest/runtests.report
 echo
 echo "Tests that passed"
 echo
