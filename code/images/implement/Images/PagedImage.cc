@@ -62,6 +62,7 @@
 
 template <class T> 
 PagedImage<T>::PagedImage()
+: logTablePtr_p (0)
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
 }
@@ -113,8 +114,8 @@ PagedImage<T>::PagedImage(const TiledShape & shape,
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab, lockOptions);
   table_p.makePermanent();           // avoid double deletion by Cleanup
-  attach_logtable();
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
+  attach_logtable();
   logSink() << LogIO::NORMAL;
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
@@ -140,8 +141,8 @@ PagedImage<T>::PagedImage(const TiledShape & shape,
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   table_p = Table(newtab);
   table_p.makePermanent();           // avoid double deletion by Cleanup
-  attach_logtable();
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
+  attach_logtable();
   logSink() << LogIO::NORMAL;
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
@@ -154,6 +155,7 @@ PagedImage<T>::PagedImage(Table & table, uInt rowNumber)
   map_p(table, "map", rowNumber)
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
+  attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(Table & table, "
 			 "uInt rowNumber)", WHERE);
@@ -184,6 +186,7 @@ PagedImage<T>::PagedImage(const String & filename, uInt rowNumber)
   table_p = Table(filename);
   table_p.makePermanent();           // avoid double deletion by Cleanup
   map_p = PagedArray<T>(table_p, "map", rowNumber);
+  attach_logtable();
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
   CoordinateSystem * restoredCoords =
@@ -209,6 +212,7 @@ PagedImage<T>::PagedImage(const String & filename, const TableLock& lockOptions,
   table_p = Table(filename, lockOptions);
   table_p.makePermanent();           // avoid double deletion by Cleanup
   map_p = PagedArray<T>(table_p, "map", rowNumber);
+  attach_logtable();
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
   CoordinateSystem * restoredCoords =
@@ -222,9 +226,11 @@ template <class T>
 PagedImage<T>::PagedImage(const PagedImage<T> & other)
 : ImageInterface<T>(other),
   table_p(other.table_p), 
-  map_p(other.map_p)
+  map_p(other.map_p),
+  logTablePtr_p(other.logTablePtr_p)
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
+  attach_logtable();
 }
 
 template <class T> 
@@ -232,6 +238,8 @@ PagedImage<T>::~PagedImage()
 {
   // Detach the LogIO from the log table in case the pixel table is going to
   // be destroyed.
+  // Note that this also destructs the LogTableSink object pointed to
+  // by logTablePtr_p, so we do not need to delete that pointer.
   LogIO globalOnly;
   log_p = globalOnly;
 };
@@ -244,6 +252,7 @@ PagedImage<T> & PagedImage<T>::operator=(const PagedImage<T> & other)
     table_p = other.table_p;
     table_p.makePermanent();           // avoid double deletion by Cleanup
     map_p = other.map_p;
+    logTablePtr_p = other.logTablePtr_p;
   } 
   return *this;
 };
@@ -263,6 +272,15 @@ template <class T>
 Bool PagedImage<T>::isWritable() const
 {
   return map_p.isWritable();
+}
+
+template<class T>
+void PagedImage<T>::doReopenRW()
+{
+  table_p.reopenRW();
+  if (logTablePtr_p != 0) {
+    logTablePtr_p->reopenRW (LogFilter());
+  }
 }
 
 template <class T> 
@@ -558,10 +576,19 @@ PagedImage<T> & PagedImage<T>::operator+= (const Lattice<T> & other)
 template<class T> 
 void PagedImage<T>::attach_logtable()
 {
-  TableLogSink *logtable = new TableLogSink(LogFilter(), name() + "/logtable");
+  // Open logtable as readonly if main table is not writable.
+  TableLogSink *logtable = 0;
+  if (table_p.isWritable()) {
+    logtable = new TableLogSink(LogFilter(), name() + "/logtable");
+  } else {
+    logtable = new TableLogSink(name() + "/logtable");
+  }
   LogSinkInterface *interface = logtable;
   AlwaysAssert(logtable != 0, AipsError);
-  table_p.rwKeywordSet().defineTable("logtable", logtable->table());
+  // Insert the keyword if it does not exist yet.
+  if (! table_p.keywordSet().isDefined ("logtable")) {
+    table_p.rwKeywordSet().defineTable("logtable", logtable->table());
+  }
   LogSink tmp;
   tmp.localSink(interface);
   log_p = tmp;

@@ -291,10 +291,12 @@ private:
   void save_units();
   void check_conformance(const Lattice<T> &other);
   void reopenRW();
+  void doReopenRW();
   void setTableType();
 
   Table table_p;
   PagedArray<T> map_p;
+  TableLogSink* logTablePtr_p;
 };
 
 
@@ -316,8 +318,7 @@ inline void PagedImage<T>::reopenRW()
 {
   //# Open for write if not done yet and if writable.
   if (!table_p.isWritable()  &&  isWritable()) {
-    table_p.reopenRW();
-    attach_logtable();
+    doReopenRW();
   }
 }
 
