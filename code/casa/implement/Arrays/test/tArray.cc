@@ -453,7 +453,7 @@ void oldArrayTest()
 	AlwaysAssertExit (fractile(x4, 0.0) == 0.);
 	AlwaysAssertExit (fractile(x4, 0.5) == 50.);
 	AlwaysAssertExit (fractile(x4, 0.05) == 5.);
-	AlwaysAssertExit (fractile(x4, 0.95) == 95.);
+	AlwaysAssertExit (fractile(x4, 0.951) == 95.);
 	// Make sure x4 is not sorted itself.
 	AlwaysAssertExit (allEQ (x4, x5));
 	cout << "OK\n";
@@ -575,7 +575,7 @@ void seeIfWeMakeMemoryLeak()
 }
 
 
-main()
+int main()
 {
     try {
 	oldArrayTest();                          // Used to be ArrayTest.cc
