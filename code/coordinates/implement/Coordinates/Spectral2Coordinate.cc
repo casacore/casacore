@@ -47,20 +47,24 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
                                        Double restFrequency )
 : Coordinate(),
   type_p(freqType),
-  restfreq_p(restFrequency),
+  restfreqs_p(0),
+  restfreqIdx_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO)
 {
+   restfreqs_p.resize(1);
+   restfreqs_p(0) = restFrequency;
+
 // Convert to frequency 
 
-      makeVelocityMachine (velUnit, velType, String("Hz"), freqType, restFrequency);
-      Quantum<Vector<Double> > frequencies = pVelocityMachine_p->makeFrequency(velocities);
+   makeVelocityMachine (velUnit, velType, String("Hz"), freqType, restFrequency);
+   Quantum<Vector<Double> > frequencies = pVelocityMachine_p->makeFrequency(velocities);
   
 // Construct
    
-      Vector<Double> channels(velocities.nelements());
-      indgen(channels);
-      worker_p = TabularCoordinate(channels, frequencies.getValue(), "Hz", "Frequency");
+   Vector<Double> channels(velocities.nelements());
+   indgen(channels);
+   worker_p = TabularCoordinate(channels, frequencies.getValue(), "Hz", "Frequency");
 }                                      
  
 
@@ -241,7 +245,7 @@ void SpectralCoordinate::updateVelocityMachine (const String& velUnit,
 void SpectralCoordinate::reinitializeVelocityMachine ()
 {
    Unit fU(worldAxisUnits()(0));
-   Quantum<Double> rF(restfreq_p, fU);
+   Quantum<Double> rF(restfreqs_p(restfreqIdx_p), fU);
 //
    deleteVelocityMachine();
    pVelocityMachine_p = new VelocityMachine(MFrequency::Ref(type_p), fU,

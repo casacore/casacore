@@ -31,6 +31,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Containers/Record.h>
 #include <aips/Functionals/Interpolate1D.h>
@@ -44,9 +45,14 @@
 #include <aips/Logging/LogOrigin.h>
 #include <trial/FITS/FITSUtil.h>
 
+#include <aips/strstream.h>
+
+
 SpectralCoordinate::SpectralCoordinate()
 : Coordinate(),
-  type_p(MFrequency::TOPO), restfreq_p(0.0),
+  type_p(MFrequency::TOPO), 
+  restfreqs_p(0),
+  restfreqIdx_p(0),
   worker_p(0.0,1.0,0.0,"Hz", "Frequency"),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
@@ -54,22 +60,26 @@ SpectralCoordinate::SpectralCoordinate()
 {
    makeVelocityMachine (String("km/s"), prefVelType_p, 
                         worker_p.worldAxisUnits()(0),
-                        type_p, restfreq_p);
+                        type_p, 0.0);
 }
 
 SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 				       Double f0, Double inc, Double refPix,
 				       Double restFrequency)
 : Coordinate(),
-  type_p(type), restfreq_p(restFrequency),
+  type_p(type), 
+  restfreqs_p(0),
+  restfreqIdx_p(0),
   worker_p(f0, inc, refPix, "Hz", "Frequency"),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
   prefUnit_p("")
 {
+   restfreqs_p.resize(1);
+   restfreqs_p(0) = restFrequency;
    makeVelocityMachine (String("km/s"), prefVelType_p, 
                         worker_p.worldAxisUnits()(0),   
-                        type_p, restfreq_p);
+                        type_p, restfreqs_p(restfreqIdx_p));
 }
 
 
@@ -80,6 +90,8 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        const Quantum<Double>& restFrequency)
 : Coordinate(),
   type_p(type),
+  restfreqs_p(0),
+  restfreqIdx_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
   prefUnit_p("")
@@ -95,13 +107,15 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
       throw(AipsError("Unit of rest frequency is not consistent with Hz"));
    }
 //
-   restfreq_p = restFrequency.getValue(hz);
+   restfreqs_p.resize(1);
+   restfreqs_p(0) = restFrequency.getValue(hz);
+//
    worker_p = TabularCoordinate(f0.getValue(hz), inc.getValue(hz),
                                 refPix, "Hz", "Frequency");
 //
    makeVelocityMachine (String("km/s"), prefVelType_p, 
                         worker_p.worldAxisUnits()(0),   
-                        type_p, restfreq_p);
+                        type_p, restfreqs_p(restfreqIdx_p));
 }
 
 
@@ -110,18 +124,22 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        Double restFrequency)
 : Coordinate(),
   type_p(type), 
-  restfreq_p(restFrequency),
+  restfreqs_p(0),
+  restfreqIdx_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
   prefUnit_p("")
 {
-    Vector<Double> channels(freqs.nelements());
-    indgen(channels);
-    worker_p = TabularCoordinate(channels, freqs, "Hz", "Frequency");
+   restfreqs_p.resize(1);
+   restfreqs_p(0) = restFrequency;
+//
+   Vector<Double> channels(freqs.nelements());
+   indgen(channels);
+   worker_p = TabularCoordinate(channels, freqs, "Hz", "Frequency");
 //
    makeVelocityMachine (String("km/s"), prefVelType_p, 
                         worker_p.worldAxisUnits()(0),   
-                        type_p, restfreq_p);
+                        type_p, restfreqs_p(restfreqIdx_p));
 }
 
 
@@ -130,6 +148,8 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        const Quantum<Double>& restFrequency)
 : Coordinate(),
   type_p(type),
+  restfreqs_p(0),
+  restfreqIdx_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
   prefUnit_p("")
@@ -142,7 +162,8 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
       throw(AipsError("Unit of rest frequency is not consistent with Hz"));
    }
 //
-   restfreq_p = restFrequency.getValue(hz);
+   restfreqs_p.resize(1);
+   restfreqs_p(0) = restFrequency.getValue(hz);
 //
    Vector<Double> freqs2 = freqs.getValue(hz);
    Vector<Double> channels(freqs2.nelements());
@@ -151,14 +172,15 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 //
    makeVelocityMachine (String("km/s"), prefVelType_p,
                         worker_p.worldAxisUnits()(0),
-                        type_p, restfreq_p);
+                        type_p, restfreqs_p(restfreqIdx_p));
 }
 
 
 SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
 : Coordinate(other),
   type_p(other.type_p),
-  restfreq_p(other.restfreq_p),
+  restfreqs_p(other.restfreqs_p.copy()),
+  restfreqIdx_p(other.restfreqIdx_p),
   worker_p(other.worker_p),
   pVelocityMachine_p(0),
   prefVelType_p(other.prefVelType_p),
@@ -173,7 +195,9 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
     if (this != &other) {
         Coordinate::operator=(other);
 	type_p = other.type_p;
-	restfreq_p = other.restfreq_p;
+        restfreqs_p.resize(0);
+        restfreqs_p = other.restfreqs_p;
+	restfreqIdx_p = other.restfreqIdx_p;
 	worker_p = other.worker_p;
 //
         deleteVelocityMachine();
@@ -276,7 +300,7 @@ Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units)
     Bool ok = worker_p.setWorldAxisUnits(units);
     if (ok) {
 	Double after = increment()(0);
-	restfreq_p *= after / before;
+        restfreqs_p *= after / before;
 //
         pVelocityMachine_p->set(Unit(units(0)));
     }
@@ -339,7 +363,7 @@ Bool SpectralCoordinate::setReferenceValue(const Vector<Double> &refval)
 
 Double SpectralCoordinate::restFrequency() const
 {
-    return restfreq_p;
+    return restfreqs_p(restfreqIdx_p);
 }
 
 Vector<Double> SpectralCoordinate::pixelValues() const
@@ -364,18 +388,78 @@ void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
     deleteVelocityMachine();
     makeVelocityMachine (String("km/s"), prefVelType_p, 
                          worker_p.worldAxisUnits()(0),
-                         type_p, restfreq_p);
+                         type_p, restfreqs_p(restfreqIdx_p));
 }
 
 
-Bool SpectralCoordinate::setRestFrequency(Double newFrequency)
+Bool SpectralCoordinate::setRestFrequency(Double newFrequency, Bool append)
 {
-    restfreq_p = newFrequency;
-    Quantum<Double> rf(restfreq_p, worldAxisUnits()(0));
+    if (append) {
+       uInt n = restfreqs_p.nelements();
+       restfreqs_p.resize(n+1, True);
+       restfreqs_p(n) = newFrequency;
+       restfreqIdx_p = n;
+    } else {
+
+// Null constructor makes empty list of rest frequencies
+
+       if (restfreqs_p.nelements()==0) {
+          restfreqs_p.resize(1);
+          restfreqIdx_p = 0;
+       }
+//
+       AlwaysAssert(restfreqIdx_p < restfreqs_p.nelements(), AipsError)
+       restfreqs_p(restfreqIdx_p) = newFrequency;
+    }
+//
+    Quantum<Double> rf(restfreqs_p(restfreqIdx_p), worldAxisUnits()(0));
     pVelocityMachine_p->set(MVFrequency(rf));
+//
     return True;
 }
 
+void SpectralCoordinate::setRestFrequencies(const Vector<Double>& restFrequencies,
+                                            uInt which, Bool append)
+{
+   if (append) {
+      Vector<Double> tmp = concatenateArray (restfreqs_p, restFrequencies);
+      restfreqs_p.resize(0);      
+      restfreqs_p = tmp;
+   } else {
+      restfreqs_p.resize(0);
+      restfreqs_p = restFrequencies;
+   }
+//
+   AlwaysAssert(which>=0 && which<restfreqs_p.nelements(), AipsError);
+   selectRestFrequency(which);
+}
+
+void SpectralCoordinate::selectRestFrequency(Double restFrequency)
+{
+   AlwaysAssert(restFrequency >= 0.0, AipsError);
+   AlwaysAssert(restfreqs_p.nelements()>0, AipsError); 
+   uInt which = 0;
+   Double d, diff = 1.0e99;
+   for (uInt i=0; i<restfreqs_p.nelements(); i++) {
+      d = abs(restfreqs_p(i) - restFrequency);
+      if (d < diff) {
+         which = i;
+         diff = d;
+      }
+   }
+//
+   selectRestFrequency(which);
+}
+
+void SpectralCoordinate::selectRestFrequency(uInt which)
+{
+   AlwaysAssert(restfreqs_p.nelements()>0, AipsError); 
+   AlwaysAssert(which>=0 && which<restfreqs_p.nelements(), AipsError)
+//
+   restfreqIdx_p = which;
+   Quantum<Double> rf(restfreqs_p(restfreqIdx_p), worldAxisUnits()(0));
+   pVelocityMachine_p->set(MVFrequency(rf));
+}
 
 
 Bool SpectralCoordinate::near(const Coordinate& other,
@@ -394,19 +478,35 @@ Bool SpectralCoordinate::near(const Coordinate& other,
       set_error("Comparison is not with another SpectralCoordinate");
       return False;
    }
-
+//
    const SpectralCoordinate& sCoord = dynamic_cast<const SpectralCoordinate&>(other);
- 
+//
    if (type_p != sCoord.frequencySystem()) {
       set_error("The SpectralCoordinates have differing frequency systems");
       return False;
    }
-
-   if (!::near(restfreq_p,sCoord.restFrequency(),tol)) {
-      set_error("The SpectralCoordinates have differing rest frequencies");
+//
+   if (!::near(restFrequency(), sCoord.restFrequency(), tol)) {
+      set_error("The SpectralCoordinates have differing active rest frequencies");
       return False;
    }
 
+// Perhaps we shouldn't check the lists of rest frequencies. 
+// Does it really matter ?
+
+   const Vector<Double>& rfs = sCoord.restFrequencies();
+   if (restfreqs_p.nelements() != rfs.nelements()) {
+      set_error("The SpectralCoordinates have differing numbers of rest frequencies");
+      return False;
+   }
+//
+   for (uInt i=0; i<restfreqs_p.nelements(); i++) {
+      if (!::near(restfreqs_p(i),rfs(i),tol)) {
+         set_error("The SpectralCoordinates have differing lists of rest frequencies");
+         return False;
+      }
+   }
+//
    if (prefVelType_p != sCoord.preferredVelocityType()) {
       set_error("The SpectralCoordinates have differing preferred velocity types");
       return False;
@@ -444,6 +544,7 @@ Bool SpectralCoordinate::save(RecordInterface &container,
 	}
 	subrec.define("system", system);
 	subrec.define("restfreq", restFrequency());
+        subrec.define("restfreqs", restFrequencies());
         subrec.define("prefVelType", Int(prefVelType_p));
         subrec.define("preferredunits", preferredWorldAxisUnits());
 	ok = (worker_p.save(subrec, "tabular"));
@@ -488,7 +589,7 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     }
     Double restfreq;
     subrec.get("restfreq", restfreq);
-
+//
     if (!subrec.isDefined("tabular")) {
 	return 0;
     }
@@ -504,17 +605,26 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     retval->worker_p = *tabular;
     delete tabular;
     retval->type_p = sys;
-    retval->restfreq_p = restfreq;
 //
     if (subrec.isDefined("prefVelType")) {                 // optional
        MDoppler::Types type = 
           static_cast<MDoppler::Types>(subrec.asInt("prefVelType"));
        retval->setPreferredVelocityType(type);
     }
+//
     if (subrec.isDefined("preferredunits")) {              // optional
        Vector<String> prefUnits;
        subrec.get("preferredunits", prefUnits);
        retval->setPreferredWorldAxisUnits(prefUnits);
+    }
+//
+    if (subrec.isDefined("restfreqs")) {                   // optional
+       Vector<Double> restFreqs;
+       subrec.get("restfreqs", restFreqs);
+       retval->setRestFrequencies(restFreqs, 0, False);
+       retval->selectRestFrequency(restfreq);
+    } else {
+       retval->setRestFrequency(restfreq, False);
     }
 
 // This is subtle.  The velocity machine is made empty because the default
@@ -610,7 +720,7 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
     Double Crval, Cdelt, Crpix, Altrval, Altrpix;
     Int Velref;
     Bool HaveAlt;
-    Double Restfreq = Quantity(restfreq_p,  // Canonicalize
+    Double Restfreq = Quantity(restfreqs_p(restfreqIdx_p),  // Canonicalize
 			       worldAxisUnits()(0)).getBaseValue();
     Double RefFreq = Quantity(referenceValue()(0), 
 			      worldAxisUnits()(0)).getBaseValue();
@@ -703,7 +813,7 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &,
 	    spectralAxis << " vs. " << whichAxis << LogIO::POST;
 	ok = False;
     }
-					       
+//					       
     return ok;
 }
 
@@ -847,4 +957,47 @@ void SpectralCoordinate::checkFormat(Coordinate::formatType& format,
       if (format != Coordinate::SCIENTIFIC &&
           format != Coordinate::FIXED) format = Coordinate::SCIENTIFIC;
    }
+}
+
+const Vector<Double>& SpectralCoordinate::restFrequencies() const
+{
+   return restfreqs_p;
+}
+
+
+
+String SpectralCoordinate::formatRestFrequencies () const
+{  
+   const Vector<Double>& rfs = restFrequencies();
+   Double rf = restFrequency();
+   String unit = worldAxisUnits()(0);
+   const uInt n = rfs.nelements();
+//
+   if (n==0) return String("");
+         
+// It should never be that the active rest frequency is zero
+// but there is more than one.  Zero is often used when making
+// a continuum SpectralCoordinate where the restfreq is irrelevant
+   
+   ostrstream oss;
+   if (rf > 0.0) {
+      oss << "Rest frequency      : " << rf;
+//
+      if (n > 1) {
+         oss << " [";
+         uInt j = 0;
+         for (uInt i=0; i<n; i++) {
+            if (!::near(rfs(i), rf)) {
+               if (j > 0) oss << ", ";
+               oss << rfs(i);
+               j++;
+            }
+         }
+         oss << "]";
+      }
+//
+      oss << " " << unit << ends;
+   }   
+//
+   return String(oss);
 }
