@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSAntennaParse.h>
+#include <ms/MeasurementSets/MSAntennaIndex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -33,14 +34,35 @@ TableExprNode MSAntennaParse::node_p;
 
 //# Constructor
 MSAntennaParse::MSAntennaParse ()
-: MSParse()
+: MSParse(),
+  colName1(MS::columnName(MS::ANTENNA1)),
+  colName2(MS::columnName(MS::ANTENNA2))
 {
 }
 
 //# Constructor with given ms name.
 MSAntennaParse::MSAntennaParse (const MeasurementSet& ms)
-: MSParse(ms, "Antenna")
-{}
+: MSParse(ms, "Antenna"),
+  colName1(MS::columnName(MS::ANTENNA1)),
+  colName2(MS::columnName(MS::ANTENNA2))
+{
+}
+
+TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds)
+{
+    node() = ms().col(colName1).in(antennaIds) ||
+             ms().col(colName2).in(antennaIds);
+    return &node();
+}
+
+TableExprNode* MSAntennaParse::selectAntennaName(const Vector<String>& antennaNames)
+{
+    MSAntennaIndex msAI(ms().antenna());
+
+    node() = ms().col(colName1).in(msAI.matchAntennaName(antennaNames)) ||
+             ms().col(colName2).in(msAI.matchAntennaName(antennaNames));
+    return &node();
+}
 
 TableExprNode& MSAntennaParse::node()
 {

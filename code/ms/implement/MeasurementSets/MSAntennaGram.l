@@ -28,6 +28,7 @@
 */
 
 %{
+#include <string.h>
 #undef YY_INPUT
 #define YY_INPUT(buf,result,max_size) result=msAntennaGramInput(buf,max_size)
 
@@ -43,8 +44,6 @@ FNUMBER   {INT}"."{DIGIT}*
 TRUE      T
 FALSE     F
 
-
-
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
 UQSTRING   \"[^\"\n]*\n
@@ -52,12 +51,8 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-UVDIST     [Uu][Vv][Dd][Ii][Ss][Tt]
-DISTANCEUNIT [Kk][Mm]
-ML           [Mm][Ll]
-KL           [Kk][Ll]
-L            [Ll]
-WAVELENTHUNIT {ML}|{KL}|{L}
+IDENTIFIER     [A-Za-z_0-9]+
+ANTENNA        [Aa][Nn][Tt][Ee][Nn][Nn][Aa]
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -99,6 +94,8 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             return LE; }
 "<"       { msAntennaGramPosition() += yyleng;
             return LT; }
+"&"       { msAntennaGramPosition() += yyleng;
+            return AMPERSAND; }
 "&&"      { msAntennaGramPosition() += yyleng;
             return AND; }
 "||"      { msAntennaGramPosition() += yyleng;
@@ -108,11 +105,11 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 "^"       { msAntennaGramPosition() += yyleng;
             return POWER; }
 "*"       { msAntennaGramPosition() += yyleng;
-            return TIMES; }
+            return STAR; }
 "/"       { msAntennaGramPosition() += yyleng;
             return DIVIDE; }
 "%"       { msAntennaGramPosition() += yyleng;
-            return PERCENT; }
+            return MODULO; }
 "+"       { msAntennaGramPosition() += yyleng;
             return PLUS; }
 "-"       { msAntennaGramPosition() += yyleng;
@@ -127,7 +124,17 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             return COMMA;
           }
 
- /* Literals */
+  /* Literals */
+{ANTENNA}  { msAntennaGramPosition() += yyleng;
+             return ANTENNA;
+	   }
+
+{IDENTIFIER} { msAntennaGramPosition() += yyleng;
+               cout << "scan " << MSAntennaGramtext << endl;
+               lvalp->str = MSAntennaGramtext;
+               cout << "assign " << lvalp->str << endl;
+               return IDENTIFIER;
+             }
 
 %%
 

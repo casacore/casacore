@@ -34,7 +34,7 @@ TableExprNode MSFieldParse::node_p;
 
 //# Constructor
 MSFieldParse::MSFieldParse ()
-: MSParse()
+: MSParse(), colName(MS::columnName(MS::FIELD_ID))
 {
 }
 

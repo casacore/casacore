@@ -39,19 +39,19 @@ using namespace casa;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
   Int ival;
-  Double dval[2];
+  Double dval;
+  char* str;
 }
+
+%token ANTENNA
+%token <str> IDENTIFIER
+%token <ival> INDEX
+%token <dval> FNUMBER
+%token DASH
+%token STAR
 
 %token EQASS
 %token SQUOTE
-%token <ival> NUMBER
-%token <dval> FNUMBER
-%token DASH
-%token LT
-%token GT
-%token COLON
-%token COMMA
-%token PERCENT
 
 %token LBRACKET
 %token LPAREN
@@ -59,10 +59,18 @@ using namespace casa;
 %token RPAREN
 %token LBRACE
 %token RBRACE
+%token COMMA
+%token COLON
 
-%left OR
-%left AND
-%nonassoc EQ EQASS GT GE LT LE NE
+%type <node> antennastatement
+%type <node> antennaexpr
+%type <node> indexcombexprlist
+%type <node> indexcombexpr
+%type <node> indexlist
+%type <node> antennalistexpr
+
+%left OR AND
+%nonassoc EQ EQASS GT GE LT LE NE COMMA AMPERSAND
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %nonassoc UNARY
@@ -74,9 +82,54 @@ int MSAntennaGramlex (YYSTYPE*);
 %}
 
 %%
-statement: EQASS SQUOTE SQUOTE {
-                  cout << "selection" << endl;}
-               ;
+antennastatement: ANTENNA EQASS SQUOTE antennaexpr SQUOTE {
+                    cout << "Antenna selection " << endl;
+                    $$ = $4;
+                  }
+                | ANTENNA EQASS antennalistexpr {
+                  $$ = $3; }
+                ;
 
+antennaexpr: IDENTIFIER {
+                  Vector<String> name(1);
+                  name[0] = String($1);
+		  $$ = MSAntennaParse().selectAntennaName(name);
+             }
+	    |indexcombexprlist 
+	    ;
+		   
+indexcombexprlist : indexcombexpr
+                  | indexcombexprlist COMMA indexcombexpr 
+                  ;
+
+indexcombexpr : indexlist AMPERSAND indexlist
+              | indexlist AMPERSAND STAR {
+                 printf("A wildcard presents \n");}
+              ;
+
+indexlist: LPAREN antennalistexpr RPAREN {
+                 $$ = $2;}
+         | antennalistexpr {
+                   $$ = $1;}
+         ;
+antennalistexpr : IDENTIFIER {
+                   cout << "SINGLE index" << $1 << endl;
+		   Vector<Int> ind(1);
+		   ind[0] = atoi($1);
+                   $$ = MSAntennaParse().selectAntennaIds(ind);
+                   }
+                | antennalistexpr COMMA IDENTIFIER
+                | IDENTIFIER DASH IDENTIFIER {
+                   cout << "index from $1 to $3 \n" << endl;
+
+                   Int len = atoi($3)-atoi($1)+1;
+		   Vector<Int> antennaidx(len);
+                   for(Int i = 0; i < len; i++) {
+                     antennaidx[i] = atoi($1) + i;
+		     cout << "antenna idx" << antennaidx[i] << endl;
+                   }
+                   $$ = MSAntennaParse().selectAntennaIds(antennaidx);
+		}
+                ;
 %%
 

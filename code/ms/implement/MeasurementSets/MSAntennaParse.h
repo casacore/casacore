@@ -92,11 +92,15 @@ public:
     // Associate the ms and the shorthand.
     MSAntennaParse (const MeasurementSet& ms);
 
+    TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds);
+    TableExprNode* selectAntennaName(const Vector<String>& antennaNames);
+
     // Get table expression node object.
     static TableExprNode& node();
 
 private:
     static TableExprNode node_p;
+    const String colName1, colName2;
 };
 
 } //# NAMESPACE CASA - END
