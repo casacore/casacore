@@ -48,44 +48,82 @@ void doIt (const String& str)
   Table tab(name);
   TableExprNode expr = RecordGram::parse (tab, str);
   cout << str << ": ";
-  switch (expr.getColumnDataType()) {
-  case TpBool:
-    cout << expr.getColumnBool();
-    break;
-  case TpUChar:
-    cout << expr.getColumnuChar();
-    break;
-  case TpShort:
-    cout << expr.getColumnShort();
-    break;
-  case TpUShort:
-    cout << expr.getColumnuShort();
-    break;
-  case TpInt:
-    cout << expr.getColumnInt();
-    break;
-  case TpUInt:
-    cout << expr.getColumnuInt();
-    break;
-  case TpFloat:
-    cout << expr.getColumnFloat();
-    break;
-  case TpDouble:
-    cout << expr.getColumnDouble();
-    break;
-  case TpComplex:
-    cout << expr.getColumnComplex();
-    break;
-  case TpDComplex:
-    cout << expr.getColumnDComplex();
-    break;
-  case TpString:
-    cout << expr.getColumnString();
-    break;
-  default:
-    cout << "Unknown expression data type " << expr.getColumnDataType();
+  if (expr.isScalar()) {
+    switch (expr.getColumnDataType()) {
+    case TpBool:
+      cout << expr.getColumnBool();
+      break;
+    case TpUChar:
+      cout << expr.getColumnuChar();
+      break;
+    case TpShort:
+      cout << expr.getColumnShort();
+      break;
+    case TpUShort:
+      cout << expr.getColumnuShort();
+      break;
+    case TpInt:
+      cout << expr.getColumnInt();
+      break;
+    case TpUInt:
+      cout << expr.getColumnuInt();
+      break;
+    case TpFloat:
+      cout << expr.getColumnFloat();
+      break;
+    case TpDouble:
+      cout << expr.getColumnDouble();
+      break;
+    case TpComplex:
+      cout << expr.getColumnComplex();
+      break;
+    case TpDComplex:
+      cout << expr.getColumnDComplex();
+      break;
+    case TpString:
+      cout << expr.getColumnString();
+      break;
+    default:
+      cout << "Unknown expression scalar type " << expr.getColumnDataType();
+    }
+    cout << endl;
+  } else {
+    for (uInt i=0; i<tab.nrow(); i++) {
+      cout << "  row " << i << ":" << endl;
+      switch (expr.dataType()) {
+      case TpBool:
+	{
+	  Array<Bool> arr;
+	  expr.get (i, arr);
+	  cout << arr;
+	  break;
+	}
+      case TpDouble:
+	{
+	  Array<Double> arr;
+	  expr.get (i, arr);
+	  cout << arr;
+	  break;
+	}
+      case TpDComplex:
+	{
+	  Array<DComplex> arr;
+	  expr.get (i, arr);
+	  cout << arr;
+	  break;
+	}
+      case TpString:
+	{
+	  Array<String> arr;
+	  expr.get (i, arr);
+	  cout << arr;
+	  break;
+	}
+      default:
+	cout << "Unknown expression array type " << expr.dataType();
+      }
+    }
   }
-  cout << endl;
 }
 
 // Ask and execute command till empty string is given.
