@@ -300,7 +300,14 @@ uInt SubLattice<T>::maxPixels() const
 template<class T>
 IPosition SubLattice<T>::doNiceCursorShape (uInt maxPixels) const
 {
-  return itsLatticePtr->niceCursorShape (maxPixels);
+  IPosition cursorShape (itsLatticePtr->niceCursorShape (maxPixels));
+  const IPosition& shape = itsRegion.slicer().length();
+  for (uInt i=0; i<shape.nelements(); i++) {
+    if (cursorShape(i) > shape(i)) {
+      cursorShape(i) = shape(i);
+    }
+  }
+  return cursorShape;
 }
 
 template<class T>
