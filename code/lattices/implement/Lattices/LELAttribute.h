@@ -122,6 +122,9 @@ public:
 // What are the coordinates of the expression?
    const LELCoordinates& coordinates() const { return coords_p; }
 
+// Compare the coordinates and shapes to see if this is a subset of other.
+   Int compareCoord (const LELAttribute& other) const;
+
 private:
    Bool      isScalar_p;
    Bool      isRegion_p;

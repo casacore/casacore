@@ -157,3 +157,44 @@ LELAttribute& LELAttribute::operator= (const LELAttribute& other)
   }
   return *this;
 }
+
+Int LELAttribute::compareCoord (const LELAttribute& other) const
+{
+  // Both scalars is always equal.
+  if (isScalar()  ||  other.isScalar()) {
+    return 0;
+  }
+  // Compare coordinates; exit if not equal.
+  Int result = coordinates().compare (other.coordinates());
+  if (result != 0) {
+    return result;
+  }
+  // The coordinates are equal, check if shapes are also equal.
+  // A length can be 1, thus be a subset of the other.
+  const IPosition& thisShape = shape();
+  const IPosition& thatShape = other.shape();
+  if (thisShape.nelements() != thatShape.nelements()) {
+    return 9;
+  }
+  for (uInt i=0; i<thisShape.nelements(); i++) {
+    if (thisShape(i) != thatShape(i)) {
+      if (thisShape(i) == 1  &&  thatShape(i) > 1) {
+	// This is subset of that; check if not already the other way.
+	if (result == 1) {
+	  return 9;
+	}
+	result = -1;
+      } else if (thisShape(i) > 1  &&  thatShape(i) == 1) {
+	// That is subset of this; check if not already the other way.
+	if (result == -1) {
+	  return 9;
+	}
+	result = 1;
+      } else {
+	// Mismatching shapes
+	return 9;
+      }
+    }
+  }
+  return result;
+}
