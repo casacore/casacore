@@ -174,7 +174,7 @@ The various clauses have the following meaning:
        ORDERBY mjd(datetime(col))        is correct
        \end{verbatim}
   \item[ \label{TAQL:GIVING}GIVING table ]
-       indicates that the ultimate result of the SELECT command can be
+       indicates that the ultimate result of the SELECT command should be
        written to a table (with the given name). This table is a
        so-called reference table.
        It does not contain data of its own, but only references the
@@ -247,7 +247,7 @@ is used TaQL can do the following automatic conversions:
 Scalar constants of the various data types can be formed as follows
 (which is very similar to Glish):
 \begin{itemize}
-  \item A Bool constant is not needed and therefore does not exist.
+  \item A Bool constant is the value \texttt{T} or \texttt{F}.
   \item A Double constant can be any integer or floating-point number.
        \\Another way to define a Double constant is by means of
        a Time or Position. Such a constant is always converted to radians.
@@ -387,6 +387,9 @@ precedence) for scalars:
        They use the norm for Complex values.
        \\To be compliant with SQL $=$ can be used for
        $==$ and $<>$ can be used for $!=$.
+  \item[] \textbf{IN}
+       \\Can be used to test if a value is an element in a set of
+       values (see discussion of \htmlref{sets}{TAQL:SETS}).
   \item[] \textbf{\&\&} and \textbf{$\mid\mid$}
        \\Logical AND and OR operator. 
        \\To be compliant with SQL the
@@ -401,7 +404,7 @@ precedence) for scalars:
        \\unary \texttt{+, -, !}
        \\\texttt{*, /, \%}
        \\\texttt{+, -}
-       \\\texttt{$==, !=, >, >=, <, <=$}
+       \\\texttt{$==, !=, >, >=, <, <=, IN$}
        \\\texttt{\&\&}
        \\\texttt{$\mid\mid$}
 \end{description}
@@ -606,6 +609,12 @@ These functions can only be used on arrays.
        Return the row number being tested (first row is row number 1).
        \\This can, for instance, be used to select the first N rows
        of a sorted table to get the rows with the highest values).
+  \item[ \texttt{double ROWID()}]
+       Return the row number in the original table. This is especially
+       useful for returning the result of a selection of a subtable
+       of an AIPS++ measurement set
+       (see also sections \htmlref{Subqueries}{TAQL:SUBQUERIES}
+       and \htmlref{Examples}{TAQL:EXAMPLES}).
   \item[ \texttt{double RAND()}]
        Return (per table row) a uniformly distributed random number
        between 0 and 1 using a Multiplicative Linear Congruential Generator.
@@ -662,7 +671,8 @@ a scalar or an array value. A table keyword has to be specified
 as \texttt{::key}. In an expression the \texttt{::} part can be omitted
 when there is no column with such a name.
 A column keyword has to be specified as \texttt{column::key}.
-\\Note that \texttt{::} is similar to the scope operator in C++.
+\\Note that the \texttt{::} syntax is chosen, because it is similar
+to the scope operator in C++.
 \\
 As explained in the \htmlref{FROM clause}{TAQL:TABLE_LIST} of the syntax
 section, keywords from the primary table and from secondary tables
@@ -737,9 +747,19 @@ expression has to be done with care.
 
 \subsection{\label{TAQL:SETS}Sets}
 As in SQL the operator \texttt{IN} can be used to do a selection
-based on a set or array. E.g.
+based on an array or a set. E.g.
 \begin{verbatim}
-  SELECT FROM table WHERE column in [expr1, expr2, expr3]
+  SELECT FROM table WHERE column IN expr1
+\end{verbatim}
+In this example \texttt{expr1} is the array result of an expression. The result
+of operator \texttt{IN} is true if the column value matches one of the
+values in the array. It is also possible to use a scalar as the
+righthand of operator \texttt{IN}.
+So if \texttt{expr1} is a scalar, operator \texttt{IN}
+gives the same result as operator \texttt{==}.
+\\It is also possible to define a set explicitly. E.g.
+\begin{verbatim}
+  SELECT FROM table WHERE column IN [expr1, expr2, expr3]
 \end{verbatim}
 This example shows that (in its simplest form) a set
 consists of one or more values (which
@@ -763,11 +783,11 @@ Incr has to be a double. Some examples:
   1:       means all positive integer numbers
   date('18Aug97')::2   means every other day from 18Aug97 on
 \end{verbatim}
-These examples show constants only, but start, end, and incr can
-be any expression.
+These examples show constants only, but \texttt{start}, \texttt{end},
+and \texttt{incr} can be any expression.
 \\Note that :: used here can conflict with the :: in the
 \htmlref{keywords}{TAQL:KEYWORDS}. E.g. \texttt{a::b} is scanned as
-a keyword specification. When the intension is \texttt{start::incr}
+a keyword specification. When the intention is \texttt{start::incr}
 it should be specified as \texttt{a: :b}. In practice this conflict
 will hardly ever occur.
 \item Continuous intervals can be specified for double, string, and datetime.
@@ -803,8 +823,8 @@ This makes it possible for array operators and functions
 It is very important to note that the 2nd form results in
 discrete values, while the 3rd form results in a continuous interval.
 
-Another form of constructing a set is the
-\htmlref{subquery}{TAQL:SUBQUERIES} shown below.
+Another form of constructing a set is using a
+\htmlref{subquery}{TAQL:SUBQUERIES} as shown below.
 
 \subsection{\label{TAQL:SUBQUERIES}Subqueries}
 As in SQL it is possible to create a set from a subquery. A
@@ -814,8 +834,9 @@ enclosed in square brackets. Basically it looks like:
   SELECT FROM maintable WHERE time IN
       [SELECT time FROM othertable WHERE windspeed < 5]
 \end{verbatim}
-The subquery on the other table results in a constant set containing the times
-for which the windspeed is okay. Subsequently the main query
+The subquery on \texttt{othertable} results in a constant set
+containing the times
+for which the windspeed matches. Subsequently the main query
 is executed and selects all rows from the main table with times in
 that set.
 Note that like other bounded sets this set is transformed to a
@@ -854,37 +875,55 @@ However, this has the disadvantage that the table \texttt{tmptab}
 still exists after the query and has to be deleted explictly by the
 user. Below a better solution for this problem is shown.
 
-TaQL has two extensions to support tables better,
+TaQL has a few extensions to support tables better,
 in particular the AIPS++ measurement sets.
 \begin{enumerate}
 \item
 The time range problem above can be solved elegantly by using
-a set as the result of the subquery. Instead of a table name
-it is possible to define a set in the GIVING clause (as mentioned
+a set as the result of the subquery. Instead of a table name,
+it is possible to give an expression in the GIVING clause (as mentioned
 in the \htmlref{syntax section}{TAQL:GIVING}). E.g.
 \begin{verbatim}
-  SELECT FROM maintable WHERE time IN
-      [SELECT starttime FROM othertable WHERE windspeed < 5
-                                   GIVING [starttime=:=endtime]]
+  select from MY.MS where TIME in
+      [select FROM OTHERTABLE where WINDSPEED < 5
+           giving [TIME-INTERVAL/2 =:= TIME+INTERVAL/2]]
 \end{verbatim}
 The set expression in the GIVING clause is filled with the
 results from the subquery and used in the main query. So when
 the subquery results in 5 rows, the resulting set contains 5
 intervals.
+
 \item
 In AIPS++ the other table will often be the name of a subtable,
 which is stored in a table or column keyword of the main table.
 The standard \htmlref{keyword syntax}{TAQL:KEYWORDS} can be used
 to indicate that the other table is the table in the given keyword.
 Note that for a table keyword the \texttt{::} part has to be given,
-otherwise the name is scanned as an ordinary table name. E.g.
+otherwise the name is treated as an ordinary table name. E.g.
 \begin{verbatim}
-  SELECT FROM my.ms WHERE time IN
-      [SELECT time FROM weather::key WHERE windspeed < 5]
+  select from MY.MS where TIME in
+      [select TIME from ::WEATHER where WINDSPEED < 5]
 \end{verbatim}
 In this example the other table is a subtable of table \texttt{my.ms}.
-Its name is stored in keyword \texttt{key} of column
-\texttt{weather}.
+Its name is stored in keyword \texttt{WEATHER} of \texttt{my.ms}.
+
+\item
+Often the result of a query on a subtable of a measurement set is
+used to select columns from the main table. However, several
+subtables do not have an explicit key, but use the row number as
+an implicit key. The function \texttt{ROWID()} can be used to
+return the row number as the subtable query result. E.g.
+\begin{verbatim}
+  select from MY.MS where DATA_DESC_ID in
+      [select from ::DATA_DESCRIPTION where
+         SPECTRAL_WINDOW_ID in [0,2,4] giving [ROWID()]] 
+\end{verbatim}
+Note that the function \texttt{ROWNUMBER} cannot be used here,
+because it will give the row number in the selection and not
+(as \texttt{ROWID} does) the row number in the original table.
+Furthermore, \texttt{ROWID} gives a 0-relative row number which is
+needed to be able to use it as a selection criterium on the 0-relative
+values in the measurement set.
 \end{enumerate}
 
 
@@ -931,8 +970,8 @@ or \texttt{POW(COL,0.5)}
 \item
 \texttt{SQUARE(U) + SQUARE(V) $<$ 1000}\verb+^+\texttt{2} is considerably faster
 than
-\\\texttt{SQRT(SQUARE(U) + SQUARE(V)) $<$ 1000}, because it avoids the
-\texttt{SQRT} function.
+\\\texttt{SQRT(SQUARE(U) + SQUARE(V)) $<$ 1000}, because the
+\texttt{SQRT} function does not need to be evaluated for each row.
 
 \item
 \texttt{TIME IN [$0<:<4$]} is faster than
@@ -996,7 +1035,7 @@ that indexing arrays should be done with care.
     \\\texttt{ near(TIME/(24*3600),MJD(1999/03/30/17:27:15)) }
     \\selects the rows with the given time from a MeasurementSet.
     \\Note that the TIME is stored in seconds; the division converts
-	it to days.
+        it to days.
    \item[] \texttt{ SELECT FROM some.MS where TIME/(24*3600) in }
      \\\texttt{ [\{MJD(1999/03/30/17:27:15),MJD(1999/03/30/17:29:15)\}] }
      \\selects the rows in the given closed time interval.
@@ -1036,6 +1075,16 @@ that indexing arrays should be done with care.
         cos(DEC) * cos(3h30m - RA) }
      \\finds all 3C objects inside that circle.
      \\
+  \item[] \texttt{ select from MY.MS where DATA\_DESC\_ID in}
+      \\\texttt{[select from ::DATA\_DESCRIPTION where}
+      \\\texttt{SPECTRAL\_WINDOW\_ID in [0,2,4] giving [ROWID()]]}
+      \\finds all rows in a measurement set matching the given
+      spectral windows.
+  \item[] \texttt{ select from MY.MS where TIME in}
+      \\\texttt{[select from ::SOURCE where REST\_FREQUENCY $<$ 180000000.}
+      \\\texttt{giving [TIME-INTERVAL/2 =:= TIME+INTERVAL/2]]}
+      \\finds all rows in a measurement set observing sources with a
+      rest frequency less than 180 Mhz.
 \end{description}
 
 \section{\label{TAQL:GLISHC}Interface to TaQL}
@@ -1044,7 +1093,7 @@ Glish functions form the user interface, while C++ functions
 and classes form the programmer interface.
 \begin{itemize}
 \item
-  The TaQL interface in Glish is formed by the
+  The main TaQL interface in Glish is formed by the
   \htmlref{\texttt{query}}{table:query} function in module
   \htmlref{\texttt{table}}{table} (in script \texttt{table.g}).
   The function can be used
@@ -1091,7 +1140,7 @@ and classes form the programmer interface.
   \htmladdnormallink{User Reference
   Manual}{../../user/Refman/Refman.html}.
   \\The substitution mechanism uses the eval function in glish.
-  As of 8-Jul-1998 eval only looks at global variables. This means
+  As of 28-Feb-2001 eval only looks at global variables. This means
   that in a function one needs to create a global variable (with
   a unique name) if the variable is to be used in a TaQL command.
   The global variable should be deleted at the end of the function.
@@ -1137,7 +1186,7 @@ and classes form the programmer interface.
     When selecting rows class \htmladdnormallink{TableExprNode}
     {../../aips/implement/Tables/ExprNode.html} (in ExprNode.h)
     has to be used to
-    build a where expression which can be executed by the overloaded
+    build a WHERE expression which can be executed by the overloaded
     function operator in class \texttt{Table}. E.g.
 \begin{verbatim}
   Int limit = 0;
@@ -1151,12 +1200,12 @@ and classes form the programmer interface.
     {../../aips/implement/Tables/ExprNode.html}, and
     \htmladdnormallink{TableExprNodeSet}
     {../../aips/implement/Tables/ExprNodeSet.html} for more
-    information on how to construct a where expression.
+    information on how to construct a WHERE expression.
   \end{enumerate}
   
 \end{itemize}
 
-\section{Future developments}
+\section{Possible future developments}
 In the near or far future TaQL will be enhanced by adding new
 features and by doing optimizations.
 \begin{itemize}
@@ -1185,7 +1234,6 @@ features and by doing optimizations.
   \item Maybe functions to convert positions from one equinox or system
        to another (using the Measures system).
   \item Use of fields in records by means of operator \texttt{.}.
-  \item Use a temporary table as the input of a selection.
   \item Optimize using a B+ tree index.
   \item Expressions in the selected column-list to calculate new columns. E.g.
        \\\texttt{SELECT SQUARE(UVW[1])+SQUARE(UVW[2]) UVWNORM FROM ...}
