@@ -133,6 +133,11 @@ ComponentShape & SkyCompRep::shape() {
   return *itsShapePtr;
 }
 
+void SkyCompRep::setShape(const ComponentShape & newShape) {
+  DebugAssert(ok(), AipsError);
+  itsShapePtr = newShape.clone();
+}
+
 SpectralModel & SkyCompRep::spectrum() {
   DebugAssert(ok(), AipsError);
   return *itsSpectrumPtr;
@@ -141,6 +146,11 @@ SpectralModel & SkyCompRep::spectrum() {
 const SpectralModel & SkyCompRep::spectrum() const {
   DebugAssert(ok(), AipsError);
   return *itsSpectrumPtr;
+}
+
+void SkyCompRep::setSpectrum(const SpectralModel & newSpectrum) {
+  DebugAssert(ok(), AipsError);
+  itsSpectrumPtr = newSpectrum.clone();
 }
 
 String & SkyCompRep::label() {

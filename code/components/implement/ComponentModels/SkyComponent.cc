@@ -105,6 +105,11 @@ ComponentShape & SkyComponent::shape() {
   return itsCompPtr->shape();
 }
 
+void SkyComponent::setShape(const ComponentShape & newShape) {
+  DebugAssert(ok(), AipsError);
+  itsCompPtr->setShape(newShape);
+}
+
 const SpectralModel & SkyComponent::spectrum() const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->spectrum();
@@ -113,6 +118,11 @@ const SpectralModel & SkyComponent::spectrum() const {
 SpectralModel & SkyComponent::spectrum() {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->spectrum();
+}
+
+void SkyComponent::setSpectrum(const SpectralModel & newSpectrum) {
+  DebugAssert(ok(), AipsError);
+  itsCompPtr->setSpectrum(newSpectrum);
 }
 
 String & SkyComponent::label() {
