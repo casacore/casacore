@@ -100,6 +100,12 @@ template \
 T *std::__uninitialized_copy_aux<T const *, T *>(T const *, T const *, \
 					    T *, __false_type); \
 template \
+   vector<T >::iterator std::__uninitialized_fill_n_aux<vector<T >::iterator, uInt, T >(vector<T >::iterator, uInt, \
+              T const &, __false_type); \
+template \
+   vector<T >::iterator std::__uninitialized_fill_n_aux<vector<T >::iterator, uLong, T >(vector<T >::iterator, uLong, \
+              T const &, __false_type); \
+template \
 T *std::fill_n<T *, uInt, T >(T *, uInt, T const &); \
 template \
 void std::fill<T *, T >(T *, T *, T const &); \
