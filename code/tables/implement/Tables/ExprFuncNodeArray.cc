@@ -307,8 +307,7 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
     case TableExprFuncNode::squareFUNC:
 	{
 	    Array<Double> val = operands()[0]->getArrayDouble(id);
-	    val *= val;
-	    return val;
+	    return val * val;
 	}
     case TableExprFuncNode::sqrtFUNC:
 	return sqrt     (operands()[0]->getArrayDouble(id));
@@ -317,8 +316,7 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
     case TableExprFuncNode::normFUNC:
 	if (argDataType() == NTDouble) {
 	    Array<Double> val = operands()[0]->getArrayDouble(id);
-	    val *= val;
-	    return val;
+	    return val * val;
 	} else {
 	    Array<DComplex> arr = operands()[0]->getArrayDComplex(id);
 	    Array<Double> result(arr.shape());
@@ -341,7 +339,7 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
     case TableExprFuncNode::argFUNC:
 	if (argDataType() == NTDouble) {
 	    Double pival = atan2 (Double(0), Double(-1));  // results in pi
-	    Array<Double> arr = operands()[0]->getArrayDouble(id);
+	    Array<Double> arr = operands()[0]->getArrayDouble(id).copy();
 	    Bool deleteIt;
 	    Double* data = arr.getStorage (deleteIt);
 	    uInt nr = arr.nelements();
@@ -381,7 +379,7 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	return tanh     (operands()[0]->getArrayDouble(id));
     case TableExprFuncNode::signFUNC:
 	{
-	    Array<Double> arr = operands()[0]->getArrayDouble(id);
+	    Array<Double> arr = operands()[0]->getArrayDouble(id).copy();
 	    Bool deleteIt;
 	    Double* data = arr.getStorage (deleteIt);
 	    uInt nr = arr.nelements();
@@ -397,7 +395,7 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	}
     case TableExprFuncNode::roundFUNC:
 	{
-	    Array<Double> arr = operands()[0]->getArrayDouble(id);
+	    Array<Double> arr = operands()[0]->getArrayDouble(id).copy();
 	    Bool deleteIt;
 	    Double* data = arr.getStorage (deleteIt);
 	    uInt nr = arr.nelements();
@@ -660,8 +658,7 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
     case TableExprFuncNode::squareFUNC:
 	{
 	    Array<DComplex> val = operands()[0]->getArrayDComplex(id);
-	    val *= val;
-	    return val;
+	    return val * val;
 	}
     case TableExprFuncNode::sqrtFUNC:
 	return sqrt     (operands()[0]->getArrayDComplex(id));
