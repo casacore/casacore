@@ -810,6 +810,16 @@ void testTable (Bool doExcp)
     rec1.defineTable ("tab1a", t1);
     AlwaysAssertExit (rec1.conform(rec2));      // second table type is var.
     AlwaysAssertExit (! rec2.conform(rec1));    // second table type mismatches
+
+    // Constructor from RecordInterface
+    // The first one should dynamic cast itself to a TableRecord,
+    TableRecord rec3((const RecordInterface&)rec1);
+    AlwaysAssertExit (rec1.conform(rec3));
+    Record rec4a;
+    rec4a.define ("fld1", 1.);
+    TableRecord rec4(rec4a);
+    AlwaysAssertExit (rec4.nfields() == 1);
+    AlwaysAssertExit (rec4.asDouble("fld1") == 1.);
 }
 
 void testTable2 (Bool)
@@ -834,7 +844,7 @@ void testTable2 (Bool)
 }
 
 
-main (int argc)
+int main (int argc)
 {
     try {
 	doIt ( (argc<2));
