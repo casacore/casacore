@@ -2545,3 +2545,4 @@
 11 374 src mv trial/scripts/types.help trial/implement/Tasking/types.help
 11 374 src rm trial/scripts/pgtkdemo.reference
 11 374 src mv trial/scripts/edit.help trial/implement/Utilities/edit.help
+11 374 src mv trial/scripts/note.help trial/implement/Utilities/note.help
