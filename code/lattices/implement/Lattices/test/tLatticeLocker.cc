@@ -29,6 +29,7 @@
 #include <trial/Lattices/LatticeLocker.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Tables/Table.h>
+#include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
 
