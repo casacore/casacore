@@ -230,6 +230,8 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 // reset existing flags?
   Bool reset_flags = isFieldSet(opt,RF_RESET);
   
+  try { // all exceptions to be caught below
+    
 // setup plotting devices
   setupPlotters(opt);
   
@@ -248,7 +250,10 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 // clean up any dead agents from previous run  
   for( uInt i=0; i<acc.nelements(); i++ )
     if( acc[i] )
+    {
       delete acc[i];
+      acc[i] = NULL;
+    }
 
 // generate new array of agents by iterating through agents record
   Record agcounts; // record of agent instance counts
@@ -524,22 +529,28 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     
   } // end loop over chunks
   
-// delete all chunks
-  for( uInt i=0; i<acc.nelements(); i++ )
+  } 
+  catch( AipsError x )
   {
-    if( acc[i] )
+    // clean up agents
+    for( uInt i=0; i<acc.nelements(); i++ )
     {
-      delete acc[i];
-      acc[i] = NULL;
+      if( acc[i] )
+      {
+        delete acc[i];
+        acc[i] = NULL;
+      }
     }
+    acc.resize(0);
+    // clean up PGPlotters
+    if( pgp_screen.isAttached() )
+      pgp_screen.detach();
+    if( pgp_report.isAttached() )
+      pgp_report.detach();
+    // throw the exception on
+    throw x;
   }
-  acc.resize(0);
-      
   os<<"Flagging complete\n"<<LogIO::POST;
-  if( pgp_screen.isAttached() )
-    pgp_screen.detach();
-  if( pgp_report.isAttached() )
-    pgp_report.detach();
 }
 
 // -----------------------------------------------------------------------
