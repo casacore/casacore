@@ -148,10 +148,14 @@ public:
    void fft (const ImageInterface<Float>& in, 
              const Vector<Bool>& axes);
 
+// Do the FFT of the specified pixel axes (True to FT).  
+// The rest are iterated over
+   void fft (const ImageInterface<Complex>& in, 
+             const Vector<Bool>& axes);
+
 // Return the FFT (from the last call to fftsky or fft) in the 
-// desired form.    The CoordinateSystem of
-// the image is overwritten by these functions to reflect the 
-// Fourier axes.  
+// desired form.    The CoordinateSystem of the image is overwritten 
+// by these functions to reflect the Fourier axes.  
 // <group>
    void getComplex (ImageInterface<Complex>& out) const;
    void getReal (ImageInterface<Float>& out) const;
@@ -168,18 +172,26 @@ public:
 private:
 
    ImageInterface<Complex>* itsTempImagePtr;
-   ImageInterface<Float>* itsInImagePtr;
+   ImageInterface<Float>* itsInImagePtrFloat;
+   ImageInterface<Complex>* itsInImagePtrComplex;
    Bool itsDone;
    Coordinate* itsCoordPtr;
 
 // Check axes for multi-dim FFT
-   void checkAxes(const ImageInterface<Float>& in, const Vector<Bool>& axes);
+   void checkAxes(const CoordinateSystem& cSys, uInt ndim, 
+                  const Vector<Bool>& axes);
 
 // Copy the  mask to the output
+   void copyMask (ImageInterface<Float>& out) const;
+   void copyMask (ImageInterface<Complex>& out) const;
    void copyMask (ImageInterface<Float>& out,
                   const ImageInterface<Float>& in) const;
+   void copyMask (ImageInterface<Float>& out,
+                  const ImageInterface<Complex>& in) const;
    void copyMask (ImageInterface<Complex>& out,
                   const ImageInterface<Float>& in) const;
+   void copyMask (ImageInterface<Complex>& out,
+                  const ImageInterface<Complex>& in) const;
 
 // Copy some bits and pieces from the input to the output
 // images
@@ -193,9 +205,14 @@ private:
                  const ImageInterface<Float>& in,
                  const Vector<Int>& pixelAxes);
 
-// FFT given axes
+// FFT (Float) given axes
    void fft2(ImageInterface<Complex>& out,
              const ImageInterface<Float>& in,
+             const Vector<Bool>& axes);
+
+// FFT (Complex) given axes
+   void fft3(ImageInterface<Complex>& out,
+             const ImageInterface<Complex>& in,
              const Vector<Bool>& axes);
 
 // Find the sky axes in this CoordinateSystem
@@ -211,7 +228,8 @@ private:
 // Overwrite the coordinate system with Fourier coordinates for all desginated axes
    void setCoordinates (LogIO& os,
                         ImageInterface<Complex>& out,
-                        const ImageInterface<Float>& in,
-                        const Vector<Bool>& axes);
+                        const CoordinateSystem& cSys,
+                        const Vector<Bool>& axes,
+                        const IPosition& shape);
 };
 #endif
