@@ -49,7 +49,10 @@
 
 #include <float.h>
 #include <values.h>
-
+#if defined (AIPS_OSF)
+#   define LN_MAXFLOAT (M_LN2 * FMAXEXP)
+#   define LN_MINFLOAT (M_LN2 * (FMINEXP -1))
+#endif
 #include <aips/aips.h>
 
 // <summary>
