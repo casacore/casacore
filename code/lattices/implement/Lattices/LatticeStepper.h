@@ -117,15 +117,33 @@
 // the first row.
 
 // The cursor shape on all axes must be less than or equal to the Lattice
-// shape on that axis. Otherwise an exception will be thrown. The cursor
-// does not change shape as it traverses the Lattice. If the cursor shape is
-// congruent with the Lattice shape (ie. the cursor shape is a sub-multiple
-// of the Lattice shape on all axes), then stepping will cover all the
-// elements of the Lattice.  If they aren't congruent (eg. stepper is
-// 8x8, Lattice is 10x10) then some steps of iteration will "hang over" the
-// edge of the Lattice.  The last example will need 4 steps to cover the
-// 10x10 plane.  The hangover function will return True whenever a step
-// hangs over.
+// shape on that axis. Otherwise an exception will be thrown. 
+
+// The cursor never changes dimensionality as it traverses the Lattice.  But it
+// may change shape if the cursor shape is not congruent with the Lattice
+// shape. A cursor shape is not congruent with the Lattice shape if the cursor
+// shape is not a sub-multiple of the Lattice shape on all axes. For example
+// for a Lattice of shape [10,10,10] a cursor of shape [8,5,2] is not congruent
+// but one with a shape of [10,5,1] is.
+
+// When the cursor is not congruent with the Lattice moving the cursor through
+// the Lattice will sometimes result in part of the cursor hanging over the
+// edge of the Lattice. When this occurs the hangOver member function will
+// return True. What to do in these situtation is specified by the
+// hangOverPolicy enumerator.
+
+// If the LatticeStepper::PAD option (the default) is used at construction time
+// the cursor shape does not change. The parts of the cursor that hang over the
+// edge of the Lattice are filled with a default value, usually zero, that is
+// defined by the particular LatticeIterator used.
+
+// If the LatticeStepper::RESIZE option is used at construction time the cursor
+// shape does change to a smaller value when near the edge of the Lattice so
+// that it is just big enough. For example with a Lattice shape of 10x10 and a
+// cursor of 8x8 the cursor shape will start initally be 8x8, then resize to
+// 2x8 on the first step, then resize to 8x2 on the second step and finally
+// resize to 2x2. The hangover function will return True for the last three
+// steps, even though the cursor has resized.
 
 // The portion of the Lattice that the cursor will traverse can be
 // restricted to a region defined by a top right corner, bottom left corner
@@ -225,25 +243,40 @@
 class LatticeStepper: public LatticeNavigator {
 public:
 
+  // The hangOverPolicy enumerator is used in the constructors to indicate what this
+  // class should do when the cursor shape hangs over the edge of the Lattice. 
+enum hangOverPolicy {
+  // PAD is the default and means that the cursor size supplied by the user is
+  // kept fixed. But if the cursor overhangs the Lattice the part that
+  // overhangs is filled with a default value that is specified by the
+  // Iterator. Currently the default value is zero. 
+  PAD,
+  // RESIZE means that the cursor shape is adjusted whenever it approaches the
+  // edges of the Lattice so that it is always the right size to include only
+  // the parts of the Lattice that are available. The user specified cursor
+  // shape now becomes the default and largest possible cursor shape. 
+  RESIZE};
+
   // The first argument is the shape of the Lattice to be iterated and the
   // second argument is the shape of the cursor. The cursor will increment
   // initially along first axis, then the second and then the third
   // (ie. axisPath = IPosition(ndim,0,1,2,...))
-  LatticeStepper(const IPosition &latticeShape, const IPosition &cursorShape);
+  LatticeStepper(const IPosition & latticeShape, const IPosition & cursorShape,
+		 const uInt hangOverPolicy=PAD);
 
   // Same as the above constructor except that the axis path is explicitly
   // specified. The axis path is described in the synopsis above. 
-  LatticeStepper(const IPosition &latticeShape, const IPosition &cursorShape,
-		 const IPosition &axisPath);
+  LatticeStepper(const IPosition & latticeShape, const IPosition & cursorShape,
+		 const IPosition & axisPath, const uInt hangOverPolicy=PAD);
   
   // the copy constructor which uses copy semantics.
-  LatticeStepper(const LatticeStepper &other);
+  LatticeStepper(const LatticeStepper & other);
     
   // destructor (does nothing)
   ~LatticeStepper();
 
   // The assignment operator which uses copy semantics.
-  LatticeStepper &operator=(const LatticeStepper &other);
+  LatticeStepper & operator=(const LatticeStepper & other);
 
   // Increment operator (postfix or prefix version) - move the cursor
   // forward one step. Returns True if the cursor was moved.  Both functions
@@ -347,12 +380,12 @@ public:
   // </group>
 
   // Return the axis path.
-  const IPosition &axisPath() const;
+  const IPosition & axisPath() const;
 
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this instance.  The pointer returned by this function must
   // be deleted externally.
-  LatticeNavigator *clone() const;
+  LatticeNavigator * clone() const;
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. 
@@ -363,8 +396,8 @@ public:
   // returns a cast pointer.  Only implementers need to worry about this
   // function.
   // <group>
-  virtual LatticeStepper *castToStepper();
-  virtual const LatticeStepper *castToConstStepper() const;
+  virtual LatticeStepper * castToStepper();
+  virtual const LatticeStepper * castToConstStepper() const;
   // </group>
 
 private:
@@ -392,6 +425,7 @@ private:
                             //# decrement operators if theNiceFit == False. It
                             //# is used to tell if the cursor "Hangs over"
                             //# the edge of the lattice shape.
+  uInt thePolicy;           //# what to do if the cursor does hang over
 };
 
 #endif
