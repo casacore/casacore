@@ -46,6 +46,7 @@ template <class T> class RO_LatticeIterator;
 class IPosition;
 class CoordinateSystem;
 class PGPlotter;
+class ostream;
 
 // <summary>
 // Displays histograms of regions from an image.
@@ -77,8 +78,6 @@ class PGPlotter;
 // axes [2]).   Or  you could retrieve histograms from the z axis (cursor axes [2])
 // for each [x,y] location (display axes [0,1]).
 //
-// Currently complex images are not handled by this class.
-//
 // This class generates a "storage image" into which it writes the histograms.
 // It is from this storage image that the plotting and retrieval
 // arrays are drawn.  The storage image is either in core or on disk
@@ -86,6 +85,11 @@ class PGPlotter;
 // then it goes into a disk-based PagedArray).  If on disk,  the
 // storage image is deleted when the <src>ImageHistograms</src> 
 // object destructs.    
+//
+// <note role=tip>
+// Note that for complex images, real and imaginary are treated independently.
+// They are binned and plotted separately.
+// </note role=tip>
 //
 // <note role=tip>
 // If you ignore return error statuses from the functions that set the
@@ -338,39 +342,11 @@ private:
 // non-histogram axis (the first one) to account for the lattice subsectioning
    IPosition locHistInImage (const IPosition& histPosition) const;
 
-// Make histogram cumulative
-   void makeCumulative (Vector<T>& counts,
-                        T& yMax,
-                        const uInt nBins,
-                        const T scale) const;
-
-// Make array with Gaussian
-   void makeGauss (uInt& nGPts,
-                   T& gMax,
-                   Vector<T>& gX,
-                   Vector<T>& gY,
-                   const T dMean,
-                   const T dSigma,
-                   const T dSum,
-                   const T xMin,
-                   const T xMax,
-                   const T binWidth) const;
-
-// Make the histogram logarithmic
-   void makeLogarithmic (Vector<T>& counts,
-                         T& yMax,
-                         const uInt nBins) const;
-
 // Fill histograms storage image
    void makeHistograms();
 
 // Create and fill statistics object
    Bool makeStatistics();
-
-// Plot one histogram
-   void plotHist  (const Vector<T>& x,
-                   const Vector<T>& y,
-                   PGPlotter& plotter) const;
 
 // Check/set include pixel range
    Bool setInclude (Vector<T>& range,
@@ -378,11 +354,14 @@ private:
                     const Vector<T>& include,
                     ostream& os);
 
+// Set stream attributes
+   void setStream (ostream& os, Int oPrec);
+
+
 // Write values of display axes on plots
    Bool writeDispAxesValues (const IPosition& startPos,
-                             const Float xMin,
-                             const Float yMax,
-                             PGPlotter& plotter) const;
+                             PGPlotter& plotter,
+                             Float nchar) const;
 };
 
 
@@ -484,79 +463,16 @@ public:
                                 Array<Bool>& resultMask,
                                 const IPosition& shape); 
 
-
-// Set bin width.  STatic so ImageHistograms can use it too
-    static T setBinWidth (const Vector<T>& clip,
-                          uInt nBins);
-
 // Can handle null mask
    virtual Bool canHandleNullMask() const {return True;};
 
 private:
     ImageStatistics<T>* pStats_p;
-    Block<uInt>* pHist_p;
+    Block<T>* pHist_p;
     uInt nBins_p;
     uInt n1_p;
     uInt n3_p;
 };
  
-  
-// <summary> Provides a progress meter for the <src>ImageHistograms</src> class </summary>
-// <use visibility=export>
-//
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
-// </reviewed>
-//
-// <prerequisite>
-//   <li> <linkto module=Lattices>LatticeProgress</linkto>
-// </prerequisite>
-//
-// <etymology>
-// Display a progress meter for the class  <src>ImageHistograms</src>
-// </etymology>
-//
-// <synopsis>
-//   Progress meters can be displayed by the <src>LatticeApply</src> class
-//   which is used by <src>ImageHistograms</src> in order to optimally iterate
-//   through the image.  To do this,  one must derive a
-//   class from <src>LatticeProgress</src>. <src>LatticeApply</src> calls 
-//   methods declared in <src>LatticeProgress</src> and  implemented in 
-//   the derived class.
-// </synopsis>
-//
-// <motivation>
-//  I like progress meters !
-// </motivation>
-//
-// <todo asof="1998/01/10">
-// </todo>
-  
-class ImageHistProgress : public LatticeProgress
-{   
-public:
- 
-// Constructor makes a null object
-    ImageHistProgress() : itsMeter(0) {};
- 
-// Destructor deletes the ProgressMeter pointer
-    virtual ~ImageHistProgress();
- 
-// Initialize this object.  Here we create the ProgressMeter
-// This function is called by the <src>init</src> in LatticeProgress
-    virtual void initDerived();
-  
-// Tell the number of steps done so far.
-    virtual void nstepsDone (uInt nsteps);
- 
-// The process has ended so clean things up.
-    virtual void done();
- 
-private:
-    ProgressMeter* itsMeter;
-};
-
-
 
 #endif
-
-
