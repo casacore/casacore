@@ -352,8 +352,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.setComment("bitpix", "Floating point (32 bit)");
 
     Vector<Int> naxis(ndim);
-    Int i;
-    for (i=0; i < Int(ndim); i++) {
+    uInt i;
+    for (i=0; i < ndim; i++) {
         naxis(i) = shape(i);
     }
     header.define("NAXIS", naxis);
@@ -407,8 +407,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     }
     if (naxis.nelements() != shapeCopy.nelements()) {
         naxis.resize(shapeCopy.nelements());
-	for (Int i=0; i < Int(shapeCopy.nelements()); i++) {
-	    naxis(i) = shapeCopy(i);
+	for (uInt j=0; j < shapeCopy.nelements(); j++) {
+	    naxis(j) = shapeCopy(j);
 	}
 	header.define("NAXIS", naxis);
     }
@@ -416,7 +416,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
     // Add in the fields from miscInfo that we can
     const uInt nmisc = image.miscInfo().nfields();
-    for (i=0; i<Int(nmisc); i++) {
+    for (i=0; i<nmisc; i++) {
 	String miscname = image.miscInfo().name(i);
 	if (miscname != "end" && miscname != "END" && 
 	    !header.isDefined(miscname)) {
@@ -565,7 +565,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     AlwaysAssert(sizeof(Short) == sizeof(short), AipsError);
 
     IPosition cursorOrder(ndim);
-    for (i=0; i<Int(ndim); i++) {
+    for (i=0; i<ndim; i++) {
 	cursorOrder(i) = i;
     }
 
@@ -638,18 +638,18 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		}
 	    } else if (fits16) {
 		short blankOffset = hasBlanks ? 1 : 0;
-		for (Int i=0; i<bufferSize; i++) {
-		    if (ptr[i] != ptr[i]) {
+		for (Int j=0; j<bufferSize; j++) {
+		    if (ptr[j] != ptr[j]) {
 			// NaN
-			buffer16[i] = minshort;
+			buffer16[j] = minshort;
 		    } else {
 			// Not a NaN
-			if (ptr[i] > maxPix) {
-			    buffer16[i] = maxshort;
-			} else if (ptr[i] < minPix) {
-			    buffer16[i] = minshort + blankOffset;
+			if (ptr[j] > maxPix) {
+			    buffer16[j] = maxshort;
+			} else if (ptr[j] < minPix) {
+			    buffer16[j] = minshort + blankOffset;
 			} else {
-			    buffer16[i] = Short((ptr[i] - bzero)/bscale);
+			    buffer16[j] = Short((ptr[j] - bzero)/bscale);
 			}
 		    }
 		}
