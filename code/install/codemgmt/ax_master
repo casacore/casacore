@@ -2618,3 +2618,4 @@
 11 389 src mv trial/implement/MeasurementSets trial/implement/MeasurementSet
 11 389 src mv trial/implement/MeasurementSet trial/implement/MeasurementSets
 11 391 src rm trial/apps/simulater/simulater.cc
+11 391 src rm trial/apps/simulater/simulaterFactory.cc
