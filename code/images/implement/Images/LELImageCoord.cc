@@ -1,5 +1,5 @@
-//# ImageCoord.cc: The letter class for image coordinates
-//# Copyright (C) 1998
+//# LELImageCoord.cc: The letter class for image coordinates
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,45 +26,77 @@
 //# $Id$
 
 
-#include <trial/Images/ImageCoord.h>
+#include <trial/Images/LELImageCoord.h>
+#include <trial/Images/ImageExpr.h>
+#include <trial/Images/SubImage.h>
+#include <trial/Lattices/LattRegionHolder.h>
+#include <trial/Lattices/LatticeRegion.h>
+#include <trial/Lattices/LatticeExpr.h>
+#include <aips/Exceptions/Error.h>
 
 
-ImageCoord::ImageCoord()
+LELImageCoord::LELImageCoord()
 {}
 
-ImageCoord::ImageCoord (const CoordinateSystem& coordinates)
+LELImageCoord::LELImageCoord (const CoordinateSystem& coordinates)
 : coords_p (new CoordinateSystem(coordinates))
 {}
 
-ImageCoord::~ImageCoord()
+LELImageCoord::~LELImageCoord()
 {}
 
-const CoordinateSystem& ImageCoord::coordinates() const
+const CoordinateSystem& LELImageCoord::coordinates() const
 {
     return *coords_p;
 }
 
-Bool ImageCoord::hasCoordinates() const
+Bool LELImageCoord::hasCoordinates() const
 {
     return True;
 }
 
-String ImageCoord::classname() const
+String LELImageCoord::classname() const
 {
-    return "ImageCoord";
+    return "LELImageCoord";
 }
 
-Bool ImageCoord::conform (const LattCoord& other) const
+Bool LELImageCoord::conform (const LELLattCoord& other) const
 {
 // Call the virtual doConform function to be able to compare
-// two ImageCoord objects.
+// two LELImageCoord objects.
 
     return other.doConform (*this);
 }
 
-Bool ImageCoord::doConform (const ImageCoord& other) const
+Bool LELImageCoord::doConform (const LELImageCoord& other) const
 {
 // This is the real conformance checker.
 
     return coordinates().near (&(other.coordinates()));
+}
+
+LatticeExprNode LELImageCoord::makeSubLattice
+                                    (const LatticeExprNode& expr,
+				     const LattRegionHolder& region) const
+{
+    switch (expr.dataType()) {
+/// case TpBool:
+///     return SubImage<Bool> (ImageExpr<Bool>
+///                        (LatticeExpr<Bool>(expr), ""), region);
+    case TpFloat:
+        return SubImage<Float> (ImageExpr<Float>
+                           (LatticeExpr<Float>(expr), ""), region);
+/// case TpDouble:
+///     return SubImage<Double> (ImageExpr<Double>
+///                        (LatticeExpr<Double>(expr, "")), region);
+    case TpComplex:
+        return SubImage<Complex> (ImageExpr<Complex>
+                           (LatticeExpr<Complex>(expr), ""), region);
+/// case TpDComplex:
+///     return SubImage<DComplex> (ImageExpr<DComplex>
+///                        (LatticeExpr<DComplex>(expr), ""), region);
+    default:
+        throw (AipsError ("LELImageCoord::makeSubLattice - unknown datatype"));
+    }
+    return LatticeExprNode();
 }
