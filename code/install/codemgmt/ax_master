@@ -332,6 +332,7 @@
                     echo "Renamed master RCS version file"
                     echo "   from $AIPSMSTR/$ARG1,v"
                     echo "     to $AIPSMSTR/$ARG2,v"
+		    touch $AIPSMSTR/$ARG2,v
                  fi
               fi
               ;;
@@ -535,6 +536,7 @@
                     echo "Renamed slave RCS version file"
                     echo "   from $AIPSLAVE/$ARG1,v"
                     echo "     to $AIPSLAVE/$ARG2,v"
+		    touch $AIPSLAVE/$ARG2,v
                  fi
               fi
 
@@ -1041,6 +1043,7 @@
                     echo "$MAJMIN: Renamed archive RCS version file"
                     echo "   from $AIPSARKV/$ARG1,v"
                     echo "     to $AIPSARKV/$ARG2,v"
+		    touch $AIPSARKV/$ARG2,v
                  fi
               fi
               ;;
