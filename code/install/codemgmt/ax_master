@@ -5311,3 +5311,4 @@
 15 034 src rm nrao/apps/gbtutils/gbtutils.g
 15 034 src rm nrao/apps/gbtutils/gbtutils.help
 15 034 src rm nrao/apps/gbtutils/if.g
+15 034 src rm nrao/apps/gbtutils/if_data
