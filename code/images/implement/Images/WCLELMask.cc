@@ -1,5 +1,5 @@
 //# WCLELMask.cc: Class to define a mask as a LEL expression
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <trial/Images/ImageExpr.h>
 #include <trial/Lattices/LCLELMask.h>
 #include <trial/Lattices/LatticeExpr.h>
+#include <aips/Lattices/LELLattCoordBase.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
