@@ -4275,3 +4275,4 @@
 14 127 src mv trial/implement/Fitting/test/tLSQ.cc aips/implement/Fitting/test/tLSQ.cc
 14 127 src mv trial/implement/Fitting/test/tLSQ.out aips/implement/Fitting/test/tLSQ.out
 14 128 src mv trial/implement/UPtmpl install/codemgmt/UPtmpl
+14 131 src mv trial/implement/Measures/UPmove install/codemgmt/UPmove
