@@ -1899,7 +1899,7 @@ Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag,
       Array<Bool> ref(avFlag(is,ie));
       // average over channels
       for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
-	ref*=flag(cs,ce);
+	ref = ref && flag(cs,ce);
       }
     }
   }
