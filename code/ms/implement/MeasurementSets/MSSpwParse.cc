@@ -29,6 +29,7 @@
 #include <ms/MeasurementSets/MSDataDescIndex.h>
 #include <ms/MeasurementSets/MSSpWindowIndex.h>
 #include <ms/MeasurementSets/MSPolIndex.h>
+#include <ms/MeasurementSets/MSSourceColumns.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Arrays/Slicer.h>
 #include <casa/Arrays/IPosition.h>
@@ -194,22 +195,36 @@ const TableExprNode *MSSpwParse::selectChanRangeinASpw(const Int spw, const Int 
 const TableExprNode *MSSpwParse::selectVelRangeinASpw(const Int spw, const Double startVel, const Double endVel) 
 {
   LogIO os(LogOrigin("MSSpwParse", "selectVelRangeinASpw()", WHERE)); 
-  TableExprNode condition;
-  os << " velocity range selection is not available " << LogIO::POST;
-  //  exit(0);
-  if(node_p->isNull())
-    *node_p = condition;
-  else
-    *node_p = *node_p || condition;
-  
-  return node_p;
+  Double factor = 1000000;
+  //---------------------------------------------------------------
+  if(!ms()->source().isReadable(ms()->source().tableName())){
+    os <<" Source table does not exist, No rest Frequency! " << LogIO::POST;
+    exit(0);
+  }
+  ROMSSourceColumns msSrcCol( ms()->source());
+  ROArrayColumn<Double> restFreqCol = msSrcCol.restFrequency();
+  if(restFreqCol.nrow()==0){
+    os <<" Source table is empty, No rest Frequency! " << LogIO::POST;
+    exit(0);
+  }
+  Array<Double> restFreqArray = restFreqCol.getColumn();
+  IPosition ip = restFreqArray.shape();
+  Vector<Double> restFreqVec(restFreqArray.nonDegenerate());
+  Double restFreq = restFreqVec(0);
+  // Note: Large velocity means small frequency
+  Double startFreq = restFreq / (1000 * endVel/C::c + 1) / factor;
+  Double endFreq = restFreq / (1000 * startVel/C::c + 1) / factor;
+  return selectFreRangeinASpw(spw, startFreq, endFreq);
+
 }
 
 const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Double startFreq, const Double endFreq) 
 {
   LogIO os(LogOrigin("MSSpwParse", "selectFreRangeinASpw()", WHERE)); 
-  //////////////////////////////////////////////////////////////////
-
+  //Convert between MHz and Hz
+  Double factor = 1000000;
+  long double adjStartFreq = 0;
+  long double adjEndFreq = 0;
   Int startChan = 0;
   Int endChan = 0;
   ROMSSpWindowColumns msSpwCol( ms()->spectralWindow());
@@ -227,24 +242,48 @@ const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Doubl
   
   Vector<Double> freqVec(freq.nonDegenerate());
   Int numChan = freqVec.nelements();
+
+  if(startFreq <= freqVec(0)/factor){
+    adjStartFreq = freqVec(0)/factor;
+  } else {
+    adjStartFreq = startFreq;
+  }
+  if(endFreq >= freqVec(numChan - 1)/factor) {
+    adjEndFreq = freqVec(numChan - 1)/factor;
+  } else {
+    adjEndFreq = endFreq;
+  }
+
+  if(startFreq >= freqVec(numChan-1)/factor || endFreq <= freqVec(0)/factor){
+    os <<" Selection is not in the range! " <<LogIO::POST;
+    exit(0);
+  }
+  //  cout << " adj startFreq " << adjStartFreq << " adj endFreq " << adjEndFreq << endl;
+  //Channel starts from 1
   for (Int i = 0; i < numChan - 1 ; i++) {
-    if ( freqVec(i)/1000000 == startFreq) {
+    if ( adjStartFreq == freqVec(i)/factor ) {
       startChan= i + 1;
-    } else if( freqVec(i)/1000000 < startFreq && freqVec(i+1)/1000000 >= startFreq) {
+      break;
+    } else if( freqVec(i)/factor < adjStartFreq && freqVec(i+1)/factor > adjStartFreq) {
       startChan = i + 2;
+      break;
     }
   }
-  for (Int i = 0; i < numChan - 1 ; i++) {
-    if ( freqVec(i)/1000000 == endFreq) {
+  // Find end channel
+  for (Int i = numChan - 1; i > 1; i--) {
+    if ( freqVec(i)/factor == adjEndFreq) {
       endChan= i+1;
-    } else if ( freqVec(i)/1000000 < endFreq && freqVec(i+1)/1000000 > endFreq){
-      endChan = i+1;
-    } else if(freqVec(i+1)/1000000 == endFreq) {
-      endChan = i+2;
-    }
+      break;
+    } else if ( freqVec(i)/factor > adjEndFreq && freqVec(i-1)/factor < adjEndFreq){
+      endChan = i;
+      break;
+    } 
   }
+  
+  //  cout << " startChan  " << startChan << " endChan " << endChan << endl;
   if(startChan > endChan ) {
-    os <<" Start Frequence is greater than End Frequence ! " <<LogIO::POST;
+    os <<" Start is greater than End ! " <<LogIO::POST;
+    exit(0);
   }
   return selectChanRangeinASpw(spw, startChan, endChan);
   //////////////////////////////////////////////////////////////////
