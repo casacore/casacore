@@ -1,5 +1,5 @@
 //# VisSet.h: VisSet definitions
-//# Copyright (C) 1996,1997,1998,2001
+//# Copyright (C) 1996,1997,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,8 +117,10 @@ public:
   // same channel selection applied, they are reused.
   // Note that the contents of these columns are NOT initialized,
   // you should fill them before trying to read the data.
+  // The MS calibration scratch columns can be optionally compressed.
   VisSet(MeasurementSet & ms, const Block<Int>& columns, 
-	 const Matrix<Int>& chanSelection, Double timeInterval=0);
+	 const Matrix<Int>& chanSelection, Double timeInterval=0,
+	 Bool compress=False);
 
   // Construct from an existing VisSet, this references the underlying
   // MeasurementSet(s) but allows a new iteration order and time interval
@@ -163,16 +165,25 @@ public:
   String msName() {return ms_p.tableName();};
   
 private:
+  // Add a calibration set (comprising a set of CORRECTED_DATA, MODEL_DATA
+  // and IMAGING_WEIGHT columns) to the MeasurementSet (MS). Optionally
+  // compress these columns using the CompressComplex column engine.
+  void addCalSet(MeasurementSet& ms, Bool compress=True);
+
+  // Remove an existing cal set (a CORRECTED_DATA, MODEL_DATA 
+  // and IMAGING_WEIGHT column set and, optionally, any associated
+  // compression columns)
+  void removeCalSet(MeasurementSet& ms);
+
   // add the MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns
+  // (deprecated)
   void addColumns(Table& tab);
 
-  // remove the MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns
-  void removeColumns(Table& tab);
-  
   MeasurementSet ms_p;
   VisIter* iter_p;
   Matrix<Int> selection_p;
 };
 
 #endif
+
 
