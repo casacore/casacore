@@ -4615,3 +4615,4 @@
 14 297 src mv trial/implement/MeasurementSets/NewMSRange.h trial/implement/MeasurementSets/MSRange.h
 14 297 src mv trial/implement/MeasurementSets/NewMSSelectionKeywords.cc trial/implement/MeasurementSets/MSSelectionKeywords.cc
 14 297 src mv trial/implement/MeasurementSets/NewMSSelectionKeywords.h trial/implement/MeasurementSets/MSSelectionKeywords.h
+14 297 src mv trial/implement/MeasurementSets/NewMSSelector.cc trial/implement/MeasurementSets/MSSelector.cc
