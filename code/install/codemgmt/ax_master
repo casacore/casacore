@@ -3457,3 +3457,4 @@
 13 274 src rm trial/apps/measures/IGRF/table.f0i1
 13 279 src mv trial/implement/Measures/DumComet.cc aips/implement/Measures/MeasComet.cc
 13 283 src mv trial/implement/Display/WCDataScaleHandler.h trial/implement/DisplayCanvas/WCDataScaleHandler.h
+13 283 src mv trial/implement/Display/WCDataScaleHandler.cc trial/implement/DisplayCanvas/WCDataScaleHandler.cc
