@@ -85,16 +85,24 @@ public:
 
     // Construct an N-dimensional sphere with the given center and
     // radius (in pixels). The center does not need to be pixel-aligned.
+    // <group>
     LCEllipsoid (const Vector<Float>& center, Float radius,
 		 const IPosition& latticeShape);
+    LCEllipsoid (const Vector<Double>& center, Double radius,
+		 const IPosition& latticeShape);
+    // </group>
 
     // Construct an N-dimensional ellipsoid with the given center and
     // radii (in pixels). The center does not need to be pixel-aligned.
     // (the radii are half the length of the axes of the ellipsoid).
+    // <group>
     LCEllipsoid (const Vector<Float>& center, const Vector<Float>& radii,
 		 const IPosition& latticeShape);
+    LCEllipsoid (const Vector<Double>& center, const Vector<Double>& radii,
+		 const IPosition& latticeShape);
+    // </group>
 
-    // Copy constructor (copy semantics).
+    // Copy constructor (partly reference semantics).
     LCEllipsoid (const LCEllipsoid& other);
 
     virtual ~LCEllipsoid();

@@ -52,10 +52,24 @@ LCEllipsoid::LCEllipsoid (const IPosition& center, Float radius,
 LCEllipsoid::LCEllipsoid (const Vector<Float>& center, Float radius,
 			  const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
-  itsCenter     (center),
+  itsCenter     (center.copy()),
   itsRadii      (latticeShape.nelements())
 {
     itsRadii = radius;
+    setBox (makeBox (itsCenter, itsRadii, latticeShape));
+    defineMask();
+}
+
+LCEllipsoid::LCEllipsoid (const Vector<Double>& center, Double radius,
+			  const IPosition& latticeShape)
+: LCRegionFixed (latticeShape),
+  itsCenter     (center.nelements()),
+  itsRadii      (center.nelements())
+{
+    for (uInt i=0; i<center.nelements(); i++) {
+	itsCenter(i) = center(i);
+	itsRadii(i) = radius;
+    }
     setBox (makeBox (itsCenter, itsRadii, latticeShape));
     defineMask();
 }
@@ -67,6 +81,23 @@ LCEllipsoid::LCEllipsoid (const Vector<Float>& center,
   itsCenter     (center),
   itsRadii      (radii)
 {
+    setBox (makeBox (itsCenter, itsRadii, latticeShape));
+    defineMask();
+}
+
+LCEllipsoid::LCEllipsoid (const Vector<Double>& center,
+			  const Vector<Double>& radii,
+			  const IPosition& latticeShape)
+: LCRegionFixed (latticeShape),
+  itsCenter     (center.nelements()),
+  itsRadii      (radii.nelements())
+{
+    for (uInt i=0; i<center.nelements(); i++) {
+	itsCenter(i) = center(i);
+	if (i < radii.nelements()) {
+	    itsRadii(i) = radii(i);
+	}
+    }
     setBox (makeBox (itsCenter, itsRadii, latticeShape));
     defineMask();
 }
