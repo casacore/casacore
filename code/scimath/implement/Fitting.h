@@ -28,7 +28,7 @@
 #define AIPS_FITTING_H
 
 #include <aips/aips.h>
-#include <trial/Fitting/FitLSQ.h>
+#include <aips/Fitting/FitLSQ.h>
 #include <trial/Fitting/LinearFit.h>
 #include <trial/Fitting/LinearFitSVD.h>
 #include <trial/Fitting/NonLinearFit.h>
