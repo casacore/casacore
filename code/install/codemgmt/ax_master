@@ -2309,3 +2309,4 @@
 11 197 src rm doc/recipes/recipe4/testrecipe.latex
 11 199 src mv trial/implement/Display/Zoomer.cc trial/implement/DisplayEvents/Zoomer.cc
 11 199 src mv trial/implement/Display/Zoomer.h trial/implement/DisplayEvents/Zoomer.h
+11 199 src mv trial/implement/Display/ZoomEH.cc trial/implement/DisplayEvents/ZoomEH.cc
