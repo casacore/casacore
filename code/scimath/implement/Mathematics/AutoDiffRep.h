@@ -121,29 +121,6 @@ template <class T> class AutoDiffRep {
   AutoDiffRep<T> &operator=(const AutoDiffRep<T> &other);
 
   //# Member functions
-  // Returns the value of the represented function
-  // <group>
-  T &value() { return val_p; };
-  const T &value() const { return val_p; };
-  // </group>
-
-  // Returns a vector with the partial derivatives of the represented
-  // function
-  // <group>
-  void derivatives(Vector<T> &res) const;
-  // </group>
-
-  // Returns a specific derivative
-  // <group>
-  const T &derivative(uInt which) const { return (grad_p[which]); };
-  T &derivative(uInt which) { return (grad_p[which]); };
-  // </group>
-
-  // Return total number of derivatives
-  uInt nDerivatives() const { return nd_p; };
-
-  // Is it a constant, i.e., with zero derivatives?
-  Bool isConstant() const { return nd_p == 0; };
 
   //# Data
   // The function value
