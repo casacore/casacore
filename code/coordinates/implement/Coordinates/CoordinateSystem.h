@@ -445,6 +445,14 @@ public:
     // function are then passed on to the formatter for that Coordinate. So
     // refer to the other derived Coordinate classes for specifics on the
     // formatting.
+    //
+    // The world value should have the units currently
+    // set in the state of the particular Coordinate.  The units of
+    // the formatted number are returned in <src>units</src>.
+    // You can also use the Quantum interface (see base class Coordinate).
+    // The units can then be anything consistent with the particualr 
+    // Coordinate units.
+    //<group>
     virtual String format(String& units,
                           const Coordinate::formatType format,
                           const Double worldValue,
