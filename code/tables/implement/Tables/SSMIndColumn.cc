@@ -42,7 +42,9 @@ SSMIndColumn::SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr)
   isShapeFixed  (False),
   itsIosFile     (0),
   itsIndArray    (0)
-{}
+{
+    init();
+}
 
 SSMIndColumn::~SSMIndColumn()
 {
@@ -54,14 +56,14 @@ void SSMIndColumn::setMaxLength (uInt)
 void SSMIndColumn::doCreate (uInt aNrRows)
 {
     // Initialize and create new file.
-    init (ByteIO::New);
+    itsIosFile = itsSSMPtr->openArrayFile (ByteIO::New);
     addRow(aNrRows,0,False);
 }
 
 void SSMIndColumn::getFile (uInt)
 {
     // Initialize and open existing file.
-    init (itsSSMPtr->fileOption());
+    itsIosFile = itsSSMPtr->openArrayFile (itsSSMPtr->fileOption());
 }
 
 void SSMIndColumn::addRow (uInt aNewNrRows, uInt anOldNrRows, Bool doInit)
@@ -222,7 +224,7 @@ SSMIndColumn_GETPUT(DComplex,DComplexV)
   //SSMIndColumn_GETPUT(String,StringV)
 
 
-void SSMIndColumn::init (ByteIO::OpenOption aFileOption)
+  void SSMIndColumn::init()
 {
   DebugAssert (itsNrElem==1, AipsError);
   Bool asCanonical = itsSSMPtr->asCanonical();
@@ -235,6 +237,5 @@ void SSMIndColumn::init (ByteIO::OpenOption aFileOption)
     itsReadFunc = itsWriteFunc = Conversion::valueCopy;
     itsExternalSizeBytes = itsNrCopy = sizeof(uLong);
   }
-  itsIosFile = itsSSMPtr->openArrayFile (aFileOption);
   itsExternalSizeBits = 8*itsExternalSizeBytes;
 }
