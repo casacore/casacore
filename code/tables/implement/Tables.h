@@ -57,6 +57,7 @@
 #include <tables/Tables/ForwardColRow.h>
 #include <tables/Tables/CompressComplex.h>
 #include <tables/Tables/CompressFloat.h>
+#include <tables/Tables/VirtualTaQLColumn.h>
 
 //#   table access
 #include <tables/Tables/Table.h>
@@ -1230,15 +1231,35 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // cells of the two other columns. So the result is that accessing a
 // particular cell of the virtual column invokes the virtual column engine,
 // which then gets the values from the other two columns, and returns their
-// difference.
+// difference. This particular example could be done using 
+// <linkto class="VirtualTaQLColumn:description">VirtualTaQLColumn</linkto>.
 // <p>
 // Several virtual column engines exist:
 // <ol>
-//  <li> The doubly templated class
+//  <li> The class
+//   <linkto class="VirtualTaQLColumn:description">VirtualTaQLColumn</linkto>
+//   makes it possible to define a column as an arbitrary expression of
+//   other columns. It uses the <a href="../../notes/199/199.html">TaQL</a>
+//   CALC command. The virtual column can be a scalar or an array and
+//   can have one of the standard data types supported by the Table System.
+//  <li> The class
+//   <linkto class="CompressFloat:description">CompressFloat</linkto>
+//   compresses a single precision floating point array by scaling the
+//   values to shorts (16-bit integer).
+//  <li> The class
+//   <linkto class="CompressComplex:description">CompressComplex</linkto>
+//   compresses a single precision complex array by scaling the
+//   values to shorts (16-bit integer). In fact, the 2 parts of the complex
+//   number are combined to an 32-bit integer.
+//  <li> The class
+//   <linkto class="CompressComplexSD:description">CompressComplexSD</linkto>
+//   does the same as CompressComplex, but optimizes for the case where the
+//   imaginary part is zero (which is often the case for Single Dish data).
+//  <li> The double templated class
 //   <linkto class="ScaledArrayEngine:description">ScaledArrayEngine</linkto>
 //   scales the data in an array from, for example,
 //   float to short before putting it.
-//  <li> The doubly templated class
+//  <li> The double templated class
 //   <linkto class="RetypedArrayEngine:description">RetypedArrayEngine</linkto>
 //   converts the data from one data type to another with the possibility
 //   to reduce the number of dimensions. For example, it can be used to
