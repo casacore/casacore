@@ -1,4 +1,4 @@
-//# ClassFileName.cc:  this defines ClassName, which ...
+//# ComponentList.cc:  this defines the ComponentList implementation
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,6 +27,7 @@
 
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/MeasurementEquations/StokesVector.h>
+#include <trial/Images/ImageInterface.h>
 #include <aips/Measures.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Tables/TableDesc.h>
@@ -49,33 +50,39 @@ typedef MeasConvert<MDirection,MVDirection,MCDirection> gpp_complist_bug1;
 ComponentList::
 ComponentList()
   :theFileName(), 
-   theList(new List<CountedPtr<SkyComponent> >(), True){}
+   theList(new List<CountedPtr<SkyComponent> >(), True)
+{
+};
 
 ComponentList::
 ComponentList(SkyComponent & component)
   :theFileName(), 
-   theList(new List<CountedPtr<SkyComponent> >(), True){
+   theList(new List<CountedPtr<SkyComponent> >(), True)
+{
      insertComp(component);
-}
+};
 
 ComponentList::
 ComponentList(CountedPtr<SkyComponent> ptrComponent)
   :theFileName(), 
-   theList(new List<CountedPtr<SkyComponent> >(), True){
+   theList(new List<CountedPtr<SkyComponent> >(), True)
+{
      insertComp(ptrComponent);
-}
+};
 
 ComponentList::
 ComponentList(SkyComponent * ptrComponent)
   :theFileName(), 
-   theList(new List<CountedPtr<SkyComponent> >(), True){
+   theList(new List<CountedPtr<SkyComponent> >(), True)
+{
      insertComp(ptrComponent);
-}
+};
 
 ComponentList::
 ComponentList(const String & filename, Bool readOnly)  
   :theFileName(filename), 
-   theList(new List<CountedPtr<SkyComponent> >(), True){
+   theList(new List<CountedPtr<SkyComponent> >(), True)
+{
      if (readOnly)
        theFileName = "";
      // The table is always opened readonly
@@ -126,7 +133,7 @@ ComponentList(const String & filename, Bool readOnly)
        //       cout << compDir << endl;
        getComp()->setPosition(compDir);
      }
-}
+};
 
 ComponentList::
 ~ComponentList(){
@@ -197,7 +204,7 @@ ComponentList::
       nextComp();
     }
   }
-}
+};
 
 StokesVector ComponentList::
 operator()(const MDirection & samplePos) {
@@ -210,7 +217,7 @@ operator()(const MDirection & samplePos) {
     result += getComp()->operator()(samplePos);
   }
   return result;
-}
+};
 
 Vector<StokesVector> ComponentList::
 operator()(const Vector<MDirection> & samplePos) {
@@ -220,10 +227,10 @@ operator()(const Vector<MDirection> & samplePos) {
     result(i) = operator()(samplePos(i));
   }
   return result;
-}
+};
 
 void ComponentList::
-operator()(ImageInterface<Float>& plane){
+operator()(ImageInterface<Float> & plane){
   for (uInt i = 0; i < nComponents(); i++) {
     if (curPosition() == nComponents()) 
       gotoStart();
@@ -231,10 +238,10 @@ operator()(ImageInterface<Float>& plane){
       nextComp();
     getComp()->operator()(plane);
   }
-}
+};
 
 void ComponentList::
-operator()(ImageInterface<Float>& plane, const ImageInterface<Float>& psf) {
+operator()(ImageInterface<Float> & plane, const ImageInterface<Float> & psf) {
   for (uInt i = 0; i < nComponents(); i++) {
     if (curPosition() == nComponents()) 
       gotoStart();
@@ -242,95 +249,97 @@ operator()(ImageInterface<Float>& plane, const ImageInterface<Float>& psf) {
       nextComp();
     getComp()->operator()(plane, psf);
   }
-}
+};
 
 void ComponentList::
 insertComp(SkyComponent & component){
   CountedPtr<SkyComponent> countedPtr(&component, False);
   insertComp(countedPtr);
-}
+};
 
 void ComponentList::
 insertComp(CountedPtr<SkyComponent> & countedPtr){
   theList.addRight(countedPtr);
-}
+};
 
 void ComponentList::
 insertComp(SkyComponent * ptrComponent){
   CountedPtr<SkyComponent> countedPtr(ptrComponent);
   insertComp(countedPtr);
-}
+};
 
 void ComponentList::
 addComp(SkyComponent & component){
   CountedPtr<SkyComponent> countedPtr(&component, False);
   addComp(countedPtr);
-}
+};
 
 void ComponentList::
 addComp(CountedPtr<SkyComponent> & countedPtr){
   if (nComponents() != 0) theList++;
   insertComp(countedPtr);
-}
+};
 
 void ComponentList::
 addComp(SkyComponent * ptrComponent){
   CountedPtr<SkyComponent> countedPtr(ptrComponent);
   addComp(countedPtr);
-}
+};
 
 void ComponentList::
 removeComp(){
   theList.removeRight();
   if ((curPosition() > nComponents()) && (nComponents() != 0))
     theList--;
-}
+};
 
 void ComponentList::
 gotoStart() {
   theList.toStart();
-}
+};
 
 void ComponentList::
 gotoEnd() {
   theList.toEnd();
   theList--;
-}
+};
 
 void ComponentList::
 gotoPosition(uInt index) {
   theList.pos(index-1);
-}
+};
 
 void ComponentList::
 nextComp() {
   if (curPosition() < nComponents())
     theList++;
-}
+};
 
 void ComponentList::
 prevComp() {
   if (curPosition() > 1)
     theList--;
-}
+};
 
 uInt ComponentList::
 nComponents() const {
   return theList.len();
-}
+};
 
 uInt ComponentList::
 curPosition() const {
   return theList.pos() + 1;
-}
+};
 
 CountedPtr<SkyComponent> ComponentList::
 getComp(){
   return theList.getRight();
-}
+};
 
 void ComponentList::
-setListName(const String& filename){
+setListName(const String & filename){
   theFileName = filename;
-}
-
+};
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 ComponentList"
+// End: 
