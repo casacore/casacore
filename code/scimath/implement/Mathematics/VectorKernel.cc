@@ -71,7 +71,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
    } else if (kernelType == BOXCAR) {
       Int intWidth = Int(width+0.5);
       nPixels = intWidth;  
-      const Int n = min(shape,nPixels);
+      const uInt n = min(shape,nPixels);
       kernel.resize(n);
       Double norm;
       if (peakIsUnity)  {
