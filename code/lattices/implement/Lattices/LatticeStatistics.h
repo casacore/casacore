@@ -1,5 +1,5 @@
 //# LatticeStatistics.h: generate statistics from a Lattice
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -284,8 +284,11 @@ public:
 // array is the shape of the display axes (e.g. if the shape of the lattice is
 // [nx,ny,nz] and you ask for the mean of the y axis the shape of the returned
 // array would be [nx,nz].    A returned array of zero shape indicates that there 
-// were no good values. A return  value of <src>False</src> indicates that the 
-// internal state of the class is bad.
+// were no good values. getMinMaxPos only works if there are no
+// display axes (i.e. statistics found over entire image), otherwise,
+// the returned values are resized to 0 shape.  A return  
+// value of <src>False</src> indicates that the internal state of 
+// the class is bad.
 // <group>
    Bool getNPts (Array<T>&);
    Bool getSum (Array<T>&);
@@ -297,6 +300,7 @@ public:
    Bool getVariance (Array<T>&);
    Bool getSigma (Array<T>&);
    Bool getRms (Array<T>&);
+   Bool getMinMaxPos(IPosition& minPos, IPosition& maxPos);
 // </group>   
 
 // This function gets a vector containing all the statistics
@@ -584,7 +588,7 @@ public:
 
 // Find the location of the minimum and maximum data values
 // in the input lattice.
-    void minMaxPos(IPosition& minPos, IPosition& maxPos);
+   void minMaxPos(IPosition& minPos, IPosition& maxPos);
 
 
 private:

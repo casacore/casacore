@@ -833,7 +833,7 @@ Bool LatticeStatistics<T>::getRms(Array<T>& stats)
 {
  
 // Check class status
- 
+
    if (!goodParameterStatus_p) {
      return False; 
    }
@@ -841,6 +841,26 @@ Bool LatticeStatistics<T>::getRms(Array<T>& stats)
 // Do it
 
    return calculateStatistic(stats, Int(RMS));
+}
+
+
+template <class T>
+Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos)
+{
+   if (!goodParameterStatus_p) {
+     return False; 
+   }
+//
+   if (displayAxes_p.nelements() == 0) {
+      minPos.resize(minPos_p.nelements());
+      minPos = minPos_p;
+      maxPos.resize(maxPos_p.nelements());
+      maxPos = maxPos_p;
+   } else {
+      minPos.resize(0);
+      maxPos.resize(0);
+   }
+   return True;
 }
 
 
