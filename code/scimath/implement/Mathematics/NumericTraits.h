@@ -1,5 +1,5 @@
 //# NumericTraits.h: Defines relationships between numeric data types 
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -147,8 +147,8 @@
 // <dd>is FLT_MAX for Float and complex Types and DBL_MAX for Double and
 // DComplex data types.
 // </dl>
-// See the <linkto class="C">Constants</linkto> class for the
-// values of these variables.
+// See the <linkto class=Dummy_Constants_class">C class/namespace</linkto>
+// for the values of these variables.
 // </example>
 //
 // <motivation>
