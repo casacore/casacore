@@ -1,5 +1,5 @@
 //# ImageConcat.cc: concatenate images
-//# Copyright (C) 1995,1997,1998,1999
+//# Copyright (C) 1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,8 +47,8 @@
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/LELImageCoord.h>
 #include <trial/Lattices/LatticeConcat.h>
-#include <trial/Lattices/LELCoordinates.h>
 #include <trial/Lattices/MaskedLattice.h>
+#include <aips/Lattices/LELCoordinates.h>
 
 
 template<class T>
