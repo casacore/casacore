@@ -86,6 +86,7 @@ spwstatement: SQUOTE nameexpr SQUOTE {
 
 combindexexpr: pureindexexpr {
                  $$ = $1;}
+             | indexexpr 
              | indexexpr COMMA indexexpr {
                  $$ = new TableExprNode ($1 || $3);}
              ;
