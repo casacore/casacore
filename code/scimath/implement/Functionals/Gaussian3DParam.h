@@ -57,9 +57,8 @@ template<class Type> class Vector;
 // A <src>Gaussian3D</src> is described by a height, center, width,   
 // and two position angles.
 
-// The width of the Gaussian is *not* specified in terms of the full width 
-// at half maximum (FWHM) like the 2D Gaussian.  The width factors correspond
-// to the sigma term in the standard Gaussian equation.
+// The width of the Gaussian is now specified in terms of the full width 
+// at half maximum (FWHM), as with the 1D and 2D Gaussian functional classes.
 
 // The three axis values refer to the x, y, and z axes, and unlike with the
 // 2D Gaussian any of the three axes may be the longest.  Instead, the position
@@ -69,9 +68,6 @@ template<class Type> class Vector;
 // the theta-rotated y axis.  The domain of both angles is -pi/4 < A < pi/4.
 // (Note that the use of theta and phi corresponds to the mathematical
 // convention for these angles, not the physics convention.)
-
-// Currently no function is available to set the Gaussian parameters based
-// on flux, but one could be easily added.
 
 // The parameter interface (see
 // <linkto class="FunctionParam">FunctionParam</linkto> class),
@@ -113,8 +109,7 @@ template<class Type> class Vector;
 // <li> If you need to fit a circular Gaussian to data you should mask one or
 //      both  position angles. This avoids rank deficiency in the fitting 
 //      routines as the position angle is meaningless when the axes are
-//      equal.  (However, the fitter seems to converge properly even if this
-//      is not done.)
+//      equal.  
 // </ul>
 // </note>
 //
@@ -202,7 +197,9 @@ public:
   void setHeight(const Type & height);
   // </group>
 
-  // Get or set the total flux of the Gaussian
+  // Get or set the total flux of the Gaussian.  (Note: Since this changes
+  // the height of the Gaussian but not its width, always set the width 
+  // before setting the flux.)
   // <group>
   Type flux() const;                     
   void setFlux(const Type & flux);
