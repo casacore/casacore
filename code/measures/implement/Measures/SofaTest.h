@@ -189,10 +189,14 @@ class SofaTest {
 // <summary> Global Fortran function wraps </summary>
 // <group name=IAU_SOFA>
 
-#if defined(FORTRAN_EXTRA_)
-#define IAUR(x) iau_##x##__
+#if !defined(NEED_FORTRAN_UNDERSCORES)
+#define NEED_FORTRAN_UNDERSCORES 1
+#endif
+
+#if NEED_FORTRAN_UNDERSCORES
+#define IAUR(x) iau_##x##_
 #else
-#define IAUR(x) iau_##x##__
+#define IAUR(x) iau_##x##
 #endif
 extern "C" void 
 IAUR(cal2jd)(const Int &iy, const Int &im, const Int &id,
