@@ -30,7 +30,7 @@ C
 C Grid a number of visibility records
 C
       subroutine ggridft (uvw, dphase, values, nvispol, nvischan,
-     $   dopsf, flag, weight, nrow, irow,
+     $   dopsf, flag, weight, nrow, rownum,
      $   scale, offset, grid, nx, ny, npol, nchan, freq, c,
      $   support, sampling, convFunc, chanmap, polmap, sumwt)
 
@@ -44,7 +44,7 @@ C
       complex phasor
       integer flag(nvispol, nvischan, nrow)
       real weight(nvischan, nrow), sumwt(npol, nchan)
-      integer irow
+      integer rownum
       integer support, sampling
       integer chanmap(nchan), polmap(npol)
       integer dopsf
@@ -61,7 +61,9 @@ C
       integer loc(2), off(2), iloc(2)
       integer rbeg, rend
       integer ix, iy, ipol, ichan
-      integer apol, achan
+      integer apol, achan, irow
+      
+      irow=rownum
 
       if(irow.ge.0) then
          rbeg=irow+1
@@ -119,7 +121,7 @@ C
 C Degrid a number of visibility records
 C
       subroutine dgridft (uvw, dphase, values, nvispol, nvischan, flag, 
-     $     nrow, irow, scale, offset, grid, nx, ny, npol, nchan, freq,
+     $     nrow, rownum, scale, offset, grid, nx, ny, npol, nchan, freq,
      $     c, support, sampling, convFunc, chanmap, polmap)
 
       implicit none
@@ -131,7 +133,7 @@ C
       double precision dphase(nrow)
       complex phasor
       integer flag(nvispol, nvischan, nrow)
-      integer irow
+      integer rownum
       integer support, sampling
       integer chanmap(*), polmap(*)
 
@@ -146,8 +148,10 @@ C
       integer loc(2), off(2), iloc(2)
       integer rbeg, rend
       integer ix, iy, ipol, ichan
-      integer apol, achan
+      integer apol, achan, irow
       real wt, wtx, wty
+
+      irow=rownum
 
       if(irow.ge.0) then
          rbeg=irow+1
