@@ -1254,7 +1254,7 @@ void FITSIDItoMS1::describeColumns()
 	    // this name.
 	    //
 	    ostringstream newname;
-	    newname << colname << "." << icol << ends;
+	    newname << colname << "." << icol;
 	    colname = newname.str();
 	    //
 	    // Issue a warning.

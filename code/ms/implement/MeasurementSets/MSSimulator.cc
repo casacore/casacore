@@ -688,9 +688,9 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	    fieldc.referenceDirMeasCol().put(row,direction);
 	    ostringstream name;
 	    if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
-	      name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
+	      name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k;
 	    } else {
-	      name << flush <<srcName_p(i) << ends;
+	      name << flush <<srcName_p(i);
 	    }
 	    fieldc.name().put(row,String(name));
 	    Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
@@ -1172,9 +1172,9 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	    fieldc.referenceDirMeasCol().put(row,direction);
 	    ostringstream name;
 	    if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
-	      name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
+	      name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k;
 	    } else {
-	      name << flush <<srcName_p(i) << ends;
+	      name << flush <<srcName_p(i);
 	    }
 	    fieldc.name().put(row,String(name));
 	    Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
