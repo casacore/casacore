@@ -135,7 +135,7 @@ void LELFunction1D<T>::eval(Array<T>& result,
       break;
    }
    default:
-      throw(AipsError("LELFunction1D: unknown function"));
+      throw(AipsError("LELFunction1D::eval - unknown function"));
    }
 
 }
@@ -235,7 +235,7 @@ T LELFunction1D<T>::getScalar() const
       return sumVal;
    }
    default:
-      throw(AipsError("LELFunction1D: unknown function"));
+      throw(AipsError("LELFunction1D::getScalar - unknown function"));
    }
    return pExpr_p->getScalar();         // to make compiler happy
 }
@@ -337,7 +337,7 @@ void LELFunctionReal1D<T>::eval(Array<T>& result,
       break;
    }
    default:
-      throw(AipsError("LELFunctionReal1D: unknown function"));
+      throw(AipsError("LELFunctionReal1D::eval - unknown function"));
    }
 
 }
@@ -367,7 +367,7 @@ T LELFunctionReal1D<T>::getScalar() const
    case LELFunctionEnums::FLOOR :
       return floor(pExpr_p->getScalar());
    default:
-      throw(AipsError("LELFunctionReal1D: unknown function"));
+      throw(AipsError("LELFunctionReal1D::getScalar - unknown function"));
    }
    return pExpr_p->getScalar();         // to make compiler happy
 }

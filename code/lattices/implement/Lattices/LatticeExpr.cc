@@ -121,9 +121,10 @@ Bool LatticeExpr<T>::getSlice (COWPtr<Array<T> >& buffer,
 			       const Slicer& section, 
 			       Bool removeDegenerateAxes) const
 {
-   // I can remove the constness because the buffer is never returned by
-   // reference.
-   // The COWPtr takes over the pointer to the array.
+// I can remove the constness because the buffer is never returned by
+// reference.
+// The COWPtr takes over the pointer to the array.
+
    Array<T>* arr = new Array<T>;
    LatticeExpr<T>* This = (LatticeExpr<T>*) this;
    Bool isARef = This->getSlice (*arr, section, removeDegenerateAxes);
@@ -145,17 +146,20 @@ Bool LatticeExpr<T>::getSlice(Array<T>& buffer,
 			      const Slicer& section,
 			      Bool removeDegenerateAxes)
 {
-   // removeDegenerateAxes is not supported.
+// removeDegenerateAxes is not supported.
+
    AlwaysAssert (!removeDegenerateAxes, AipsError);
-   // Turn the section into a PixelBox. This ensures that unspecified
-   // section values are filled in. So use the box thereafter as the section.
-   // Resize the buffer when empty. Otherwise check its shape.
+
+// Turn the section into a PixelBox. This ensures that unspecified
+// section values are filled in. So use the box thereafter as the section.
+// Resize the buffer when empty. Otherwise check its shape.
+
    PixelBox region(section, expr_p.shape());
    if (buffer.nelements() == 0) {
       buffer.resize (region.box().length());
    } else {
       AlwaysAssert (buffer.shape().isEqual(region.box().length()), AipsError);
-   }
+ }
    expr_p.eval (buffer, region);
    return False;
 }
@@ -163,13 +167,13 @@ Bool LatticeExpr<T>::getSlice(Array<T>& buffer,
 template <class T>
 void LatticeExpr<T>::putSlice (const Array<T>&, const IPosition&)
 {
-   throw (AipsError ("LatticeExpr::putSlice is not possible"));
+   throw (AipsError ("LatticeExpr::putSlice - is not possible"));
 }
 template <class T>
 void LatticeExpr<T>::putSlice (const Array<T>&, const IPosition&,
 			       const IPosition&)
 {
-   throw (AipsError ("LatticeExpr::putSlice is not possible"));
+   throw (AipsError ("LatticeExpr::putSlice - is not possible"));
 }
 
 template<class T>

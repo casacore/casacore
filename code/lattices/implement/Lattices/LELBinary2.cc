@@ -42,7 +42,7 @@ LELBinaryBool::LELBinaryBool(const LELBinaryEnums::Operation op,
 			 pRightExpr_p->getAttribute()));
    if (op == LELBinaryEnums::EQ  ||  op == LELBinaryEnums::NE) {
        if (pLeftExpr_p->isScalar() != pRightExpr_p->isScalar()) {
-	   throw (AipsError ("LELBinaryBool:: - comparison between Bool scalar and "
+	   throw (AipsError ("LELBinaryBool::constructor - comparison between Bool scalar and "
 			     " array not possible; use function ANY or ALL"));
        }
    }
