@@ -380,6 +380,10 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
       return False;
    }
 
+// No extra methods set
+
+   if (methodU.nelements() == 0) return True;
+
 
 // Check legality
 
@@ -430,9 +434,8 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
       }
       doSmooth_p = True;
    } else {
-      os_p << LogIO::SEVERE << "No smoothing axes given" << LogIO::POST;
-      goodParameterStatus_p = False;
-      return False;
+      doSmooth_p = False;
+      return True;
    }
 
 
@@ -548,8 +551,8 @@ Bool ImageMoments<T>::setInExCludeRange(const Vector<Double>& includeU,
       goodParameterStatus_p = False;
       return False;
    }
-   return True; 
 
+   return True; 
 }
 
 
@@ -3710,7 +3713,8 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 
    IPosition cursorShape(pI->ndim());
    cursorShape = pI->niceCursorShape(pI->maxPixels());
-   RO_LatticeIterator<T> iterator(*pI, cursorShape);
+   LatticeStepper nav(pI->shape(), cursorShape, LatticeStepper::RESIZE);
+   RO_LatticeIterator<T> iterator(*pI, nav);
 
 // First pass to get data min and max
 
