@@ -6051,3 +6051,4 @@
 17 070 src rm aips/implement/Functionals/test/tSumFunction.cc
 17 074 src mv trial/apps/calibrater/atmosphere.cc trial/apps/atmosphere/atmosphere.cc
 17 074 src mv trial/apps/calibrater/atmosphere.g trial/apps/atmosphere/atmosphere.g
+17 074 src mv trial/apps/calibrater/atmosphere.help trial/apps/atmosphere/atmosphere.help
