@@ -83,58 +83,60 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
         // Find the rest frequency information in the SOURCE subtable
         Int transId = msc.doppler().transitionId()(idoprow);
         if (!ms_p.source().isNull()) {
-          // Use indexed access to the SOURCE sub-table
-          MSSourceIndex sourceIndex (ms_p.source());
-          sourceIndex.sourceId() = srcId;
-          sourceIndex.spectralWindowId() = spwId;
-          Vector<uInt> rows = sourceIndex.getRowNumbers();
-          for (uInt irow=0; irow<rows.nelements(); irow++) {
-            Vector<Double> restFrq = msc.source().restFrequency()(irow);
-            // Does this already exist in the output rest frequency array ?
-            Bool exists = False;
-            for (uInt k=0; k<restFrequency.nelements(); k++) {
-              if (restFrq(transId)==restFrequency(k)) {
-                exists = True;
-              };
-            };
-            if (!exists) {
-              restFrequency.resize(restFrequency.nelements()+1, True);
-              restFrequency(nRestFreq) = restFrq(transId);
-              nRestFreq++;
-              found = True;
-            };
-          }; // for (Int irow=0..)
+	    // Use indexed access to the SOURCE sub-table
+	    MSSourceIndex sourceIndex (ms_p.source());
+	    sourceIndex.sourceId() = srcId;
+	    sourceIndex.spectralWindowId() = spwId;
+	    Vector<uInt> rows = sourceIndex.getRowNumbers();
+	    for (uInt irow=0; irow<rows.nelements(); irow++) {
+	      Vector<Double> restFrq = msc.source().restFrequency()(irow);
+	      // Does this already exist in the output rest frequency array ?
+	      Bool exists = False;
+	      for (uInt k=0; k<restFrequency.nelements(); k++) {
+		if (restFrq(transId)==restFrequency(k)) {
+		  exists = True;
+		};
+	      };
+	      if (!exists) {
+		restFrequency.resize(restFrequency.nelements()+1, True);
+		restFrequency(nRestFreq) = restFrq(transId);
+		nRestFreq++;
+		found = True;
+	      };
+	    }; // for (Int irow=0..)
         }; // if (!ms_p.source().isNull())
       }; // if (msc.doppler().dopplerId()..)
     }; // for (Int idoprow=0;..)
   } else if (!ms_p.source().isNull()) {
-    // use just the source table if it exists
-    MSSourceIndex sourceIndex(ms_p.source());
-    sourceIndex.sourceId()= msc.field().sourceId()(fieldId);
-    sourceIndex.spectralWindowId()=spwId;
-    Vector<uInt> rows = sourceIndex.getRowNumbers();
-    if (!msc.source().restFrequency().isNull()){
-      if ( msc.source().restFrequency().isDefined(0)) {
+    if(ms_p.source().nrow() > 0){
+      // use just the source table if it exists
+      MSSourceIndex sourceIndex(ms_p.source());
+      sourceIndex.sourceId()= msc.field().sourceId()(fieldId);
+      sourceIndex.spectralWindowId()=spwId;
+      Vector<uInt> rows = sourceIndex.getRowNumbers();
+      if (!msc.source().restFrequency().isNull()){
 	for (uInt irow=0; irow<rows.nelements(); irow++) {
-	  Vector<Double> restFrq = msc.source().restFrequency()(irow);
-	  // Does this already exist in the output rest frequency array ?
-	  for (uInt transId=0; transId<restFrq.nelements(); transId++) {
-	    Bool exists = False;
-          for (uInt k=0; k<restFrequency.nelements(); k++) {
-            if (restFrq(transId)==restFrequency(k)) {
-              exists = True;
-            };
-          };
-          if (!exists) {
-            restFrequency.resize(restFrequency.nelements()+1, True);
-            restFrequency(nRestFreq) = restFrq(transId);
-            nRestFreq++;
-            found = True;
-          };
-	  }
-	}; // for (Int irow=0..)
-      } 
-    }   
+	  if ( msc.source().restFrequency().isDefined(irow)) {
+	    Vector<Double> restFrq = msc.source().restFrequency()(irow);
+	    // Does this already exist in the output rest frequency array ?
+	    for (uInt transId=0; transId<restFrq.nelements(); transId++) {
+	      Bool exists = False;
+	      for (uInt k=0; k<restFrequency.nelements(); k++) {
+		if (restFrq(transId)==restFrequency(k)) {
+		  exists = True;
+		};
+	      };
+	      if (!exists) {
+		restFrequency.resize(restFrequency.nelements()+1, True);
+		restFrequency(nRestFreq) = restFrq(transId);
+		nRestFreq++;
+		found = True;
+	      };
+	    }
+	  } 
+	} // for (Int irow=0..)
+      }   
+    }
   }
   return found;
 };
