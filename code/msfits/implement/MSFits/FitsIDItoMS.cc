@@ -1,5 +1,5 @@
 //# FITSIDItoMS.cc: Convert a FITS-IDI binary table to an AIPS++ Table.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This program is free software; you can redistribute it and/or modify
@@ -92,7 +92,7 @@
 #include <trial/FITS/BinTable.h>
 #include <trial/Tasking/NewFile.h>
 #include <trial/Tasking/ProgressMeter.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/stdio.h>
 
 #include <aips/OS/File.h>
@@ -453,7 +453,7 @@ void FITSIDItoMS1::fillRow()
 		//
 		IPosition shp (tabcol.shapeColumn());
 		uInt nr = shp.product();
-		istrstream istr(cptr,length);
+		istringstream istr(String(cptr,length));
 		Vector<String> vec;
 		istr >> vec;
 		ArrayColumn<String> arrcol(tabcol);
@@ -1253,14 +1253,9 @@ void FITSIDItoMS1::describeColumns()
 	    // Yes, as a column name.  Append the column number to
 	    // this name.
 	    //
-	    ostrstream newname;
+	    ostringstream newname;
 	    newname << colname << "." << icol << ends;
-	    //
-	    // str gives the space to cptr, icol must be deleted.
-	    //
-	    char* cptr = newname.str();
-	    colname = cptr;
-	    delete cptr;
+	    colname = newname.str();
 	    //
 	    // Issue a warning.
 	    //

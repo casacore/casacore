@@ -1,5 +1,5 @@
 //# SDFeedHandler.cc: an FEED handler for SDFITS data  
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Tables/TableDesc.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 SDFeedHandler::SDFeedHandler() 
     : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0)
@@ -129,7 +129,7 @@ void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Ve
 	// also, ignore the MS row columns if POLARIZATION_TYPE doesn't match polType
 	if (doMSCheck && polarizationTypeField_p.isAttached()) {
 	    // turn this into an array
-	    istrstream istr((*polarizationTypeField_p).chars(), (*polarizationTypeField_p).length());
+	    istringstream istr(String((*polarizationTypeField_p).chars(), (*polarizationTypeField_p).length()));
 	    Array<String> polTypeArr;
 	    // decode it - [#,#,#,#...] - individual brackets separated by commas
 	    istr >> polTypeArr;
