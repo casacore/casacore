@@ -203,7 +203,7 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 	cubeSpace *= hypercubeShape(i);
     }
     // Find the shapes on each axis that will be tried.
-    Block<uInt> nval(nrdim, 0);
+    Block<uInt> nval(nrdim, uInt(0));
     PtrBlock<Block<Int>*> values(nrdim);
     for (i=0; i<nrdim; i++) {
 	values[i] = new Block<Int> (maxShape(i) - minShape(i) + 1);
@@ -225,7 +225,7 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
     }
     // Now calculate the cost for all the possibilities.
     // Take the one with the lowest cost.
-    Block<uInt> ndone (nrdim, 0);
+    Block<uInt> ndone (nrdim, uInt(0));
     IPosition tshape (nrdim);
     for (i=0; i<nrdim; i++) {
 	tshape(i) = (*values[i])[0];
