@@ -3,7 +3,7 @@
 # sneeze: Rebuild the AIPS++ system areas for 'inhale'
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1993-1997
+#   Copyright (C) 1993-1997,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: sneeze [-l] [-e <extlist>] [-m <mode>] targets
+# Usage: sneeze [-l] [-e <extlist>] [-m <mode>] [-s <seconds>] targets 
 #-----------------------------------------------------------------------------
 # sneeze rebuilds the AIPS++ system areas performing certain accounting
 # functions.  It is intended for the use of 'inhale' rather than for general
@@ -49,6 +49,8 @@
 #
 #   -m     Mode of the rebuild, "incremental" (default), "cumulative",
 #          "hybrid", or "base".
+#
+#   -s     time to wait until starting.  Helpful in avoid simultaneous glish build problems
 #
 # Status return values correspond to the various phases of the operation
 #    0:  success
@@ -123,6 +125,12 @@
         -l)
            DOLOG=1
            ARGS="$ARGS $1"
+           ;;
+        -s)
+           shift
+           echo "Sleeping $1 seconds before continuing..."
+           sleep $1
+           echo "continuing"
            ;;
         *)
            ARGS="$ARGS $1"
