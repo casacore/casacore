@@ -31,7 +31,7 @@
 
 % References.
 %------------
-\renewcommand{\hyperref}[4]{#2p\pageref{#4}#3}
+\newcommand{\ahyperref}[4]{#2p\pageref{#4}#3}
 
 % \aipsexe and \aipsfil produce a link in the HTML output but no page
 % reference in the printed output.
@@ -40,15 +40,15 @@
 
 % \exeref and \filref produce a link in the HTML output and a page reference
 % in the printed output.
-\newcommand{\exeref}[1]{\hyperref{\exe{#1}}{\exe{#1} (}{)}{#1}}
-\newcommand{\filref}[1]{\hyperref{\file{#1}}{\file{#1} (}{)}{#1}}
+\newcommand{\exeref}[1]{\ahyperref{\exe{#1}}{\exe{#1} (}{)}{#1}}
+\newcommand{\filref}[1]{\ahyperref{\file{#1}}{\file{#1} (}{)}{#1}}
 
 % The following two-argument forms of the above commands allow the label to be
 % specified as the second argument.
 \newcommand{\aipsexee}[2]{\htmlref{\exe{#1}}{#2}}
 \newcommand{\aipsfill}[2]{\htmlref{\file{#1}}{#2}}
-\newcommand{\exereff}[2]{\hyperref{\exe{#1}}{\exe{#1} (}{)}{#2}}
-\newcommand{\filreff}[2]{\hyperref{\file{#1}}{\file{#1} (}{)}{#2}}
+\newcommand{\exereff}[2]{\ahyperref{\exe{#1}}{\exe{#1} (}{)}{#2}}
+\newcommand{\filreff}[2]{\ahyperref{\file{#1}}{\file{#1} (}{)}{#2}}
 
 % \href produces a link to an external URL in the HTML output and prints the
 % URL in the printed output.
