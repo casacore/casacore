@@ -84,6 +84,11 @@ uInt ROTiledStManAccessor::maximumCacheSize() const
     return dataManPtr_p->maximumCacheSize();
 }
 
+uInt ROTiledStManAccessor::cacheSize (uInt rownr) const
+{
+    return dataManPtr_p->cacheSize (rownr);
+}
+
 const IPosition& ROTiledStManAccessor::hypercubeShape (uInt rownr) const
 {
     return dataManPtr_p->hypercubeShape (rownr);
@@ -94,13 +99,36 @@ const IPosition& ROTiledStManAccessor::tileShape (uInt rownr) const
     return dataManPtr_p->tileShape (rownr);
 }
 
-void ROTiledStManAccessor::setCacheSize (uInt rownr, 
+uInt ROTiledStManAccessor::bucketSize (uInt rownr) const
+{
+    return dataManPtr_p->bucketSize (rownr);
+}
+
+uInt ROTiledStManAccessor::calcCacheSize (uInt rownr,
+					  const IPosition& sliceShape,
+					  const IPosition& axisPath) const
+{
+    return dataManPtr_p->calcCacheSize (rownr, sliceShape, IPosition(),
+					IPosition(), axisPath);
+}
+uInt ROTiledStManAccessor::calcCacheSize (uInt rownr,
+					  const IPosition& sliceShape,
+					  const IPosition& windowStart,
+					  const IPosition& windowLength,
+					  const IPosition& axisPath) const
+{
+    return dataManPtr_p->calcCacheSize (rownr, sliceShape, windowStart,
+					windowLength, axisPath);
+}
+
+void ROTiledStManAccessor::setCacheSize (uInt rownr,
 					 const IPosition& sliceShape,
 					 const IPosition& axisPath,
 					 Bool forceSmaller)
 {
-    setCacheSize (rownr, sliceShape, IPosition(), IPosition(),
-		  axisPath, forceSmaller);
+    dataManPtr_p->setCacheSize (rownr, sliceShape, IPosition(),
+				IPosition(), axisPath,
+				forceSmaller);
 }
 void ROTiledStManAccessor::setCacheSize (uInt rownr,
 					 const IPosition& sliceShape,
@@ -109,13 +137,15 @@ void ROTiledStManAccessor::setCacheSize (uInt rownr,
 					 const IPosition& axisPath,
 					 Bool forceSmaller)
 {
-    dataManPtr_p->setCacheSize (rownr, sliceShape, windowStart, windowLength,
-				axisPath, forceSmaller);
+    dataManPtr_p->setCacheSize (rownr, sliceShape, windowStart,
+				windowLength, axisPath,
+				forceSmaller);
 }
-void ROTiledStManAccessor::setCacheSize (uInt rownr, uInt nbytes,
+
+void ROTiledStManAccessor::setCacheSize (uInt rownr, uInt nbuckets,
 					 Bool forceSmaller)
 {
-    dataManPtr_p->setCacheSize (rownr, nbytes, forceSmaller);
+    dataManPtr_p->setCacheSize (rownr, nbuckets, forceSmaller);
 }
 
 void ROTiledStManAccessor::clearCaches()
