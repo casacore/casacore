@@ -1,5 +1,5 @@
 //# AipsIO.cc: AipsIO is the object persistency mechanism of AIPS++
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -455,12 +455,12 @@ AipsIO& AipsIO::put (uInt nrv, const String* var, Bool putNR)
 // It puts the object type and version and reserves space for the length.
 // It increases the level for each object to hold the length.
 
-uInt AipsIO::putstart (const String& type, uInt vers)
+uInt AipsIO::putstart (const Char* type, uInt vers)
 {
-    return (putstart (type.chars(), vers));
+    return (putstart (String(type), vers));
 }
 
-uInt AipsIO::putstart (const Char* type, uInt vers)
+uInt AipsIO::putstart (const String& type, uInt vers)
 {
     if (opened_p == 0  ||  swput_p < 0  ||  swget_p > 0) {
 	throw (AipsError ("AipsIO::putstart: not open or not writable"));
