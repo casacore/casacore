@@ -38,6 +38,7 @@ typedef Quantum<Double> gpp_Baseline_bug1;
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Measures/RotMatrix.h>
+#include <aips/Measures/MVPosition.h>
 #include <aips/Measures/Precession.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
@@ -410,6 +411,7 @@ void MCBaseline::clearConvert() {
 
 //# Conversion routines
 void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
+  if (False) initConvert(which, mc);	// Stop warning
   if (!ROTMAT1) ROTMAT1 = new RotMatrix();
   if (!MVPOS1)  MVPOS1 = new MVPosition();
   if (!MVPOS2)  MVPOS2 = new MVPosition();
@@ -561,7 +563,7 @@ void MCBaseline::doConvert(MeasValue &in,
 			    MRBase &inref,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
-  doConvert(*(MVBaseline*)&in,
+  doConvert((MVBaseline &) in,
 	    inref, outref, mc);
 }
 
@@ -569,7 +571,7 @@ void MCBaseline::doConvert(MVBaseline &in,
 			    MRBase &inref,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
-  Double g1, g2, g3, lengthE, tdbTime;
+  Double g1, g2, g3, tdbTime;
   
   MCFrame::make(inref.getFrame());
   MCFrame::make(outref.getFrame());
@@ -591,15 +593,16 @@ void MCBaseline::doConvert(MVBaseline &in,
       g1 -= g3/C::circle;
       *EULER1 = MeasTable::polarMotion(tdbTime);
       EULER1->operator()(2) = g1;
+      in(1) = -in(1);
       *ROTMAT1 = RotMatrix(*EULER1);
-      in *= *ROTMAT1;
-      // Nutation
-      *ROTMAT1 = NUTATTO->operator()(tdbTime);
+      in = *ROTMAT1 * in;
       // Precession
-      *ROTMAT1 *= PRECESTO->operator()(tdbTime);
+      *ROTMAT1 = PRECESTO->operator()(tdbTime);
+      // Nutation
+      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
       in = *ROTMAT1 * in;
     };
-    break; ///
+    break;
     
     case JNAT_ITRF: {
       ((MCFrame *)(MBaseline::Ref::frameEpoch(outref, inref).
@@ -616,7 +619,7 @@ void MCBaseline::doConvert(MVBaseline &in,
       *ROTMAT1 = PRECESFROM->operator()(tdbTime);
       // Nutation
       *ROTMAT1 *= NUTATFROM->operator()(tdbTime);
-      in *= *ROTMAT1;
+     in *= *ROTMAT1;
       *EULER1 = MeasTable::polarMotion(tdbTime);
       EULER1->operator()(2) = g1;
       *ROTMAT1 = RotMatrix(*EULER1);
@@ -645,7 +648,7 @@ void MCBaseline::doConvert(MVBaseline &in,
       // Frame rotation
       *ROTMAT1 = MeasData::MToB1950(4);
       in *= *ROTMAT1;
-      in.adjust();
+      in.adjust(g2);
       // E-terms
       // Iterate
       *MVPOS1 = MeasTable::AberETerm(0);
@@ -656,15 +659,16 @@ void MCBaseline::doConvert(MVBaseline &in,
 	MVPOS3->adjust();
 	*MVPOS3 -= in;
 	*MVPOS2 -= *MVPOS3;
-      } 
-      while (MVPOS3->radius() > 1e-10);
+      } while (MVPOS3->radius() > 1e-10);
       in = *MVPOS2;
+      in.readjust(g2);
     }
     break;
     
     case B1950_J2000: {
       // E-terms
       *MVPOS1 = MeasTable::AberETerm(0);
+      in.adjust(g2);
       g1 = in * *MVPOS1;
       in += g1 * in;
       in -= *MVPOS1;
@@ -672,7 +676,7 @@ void MCBaseline::doConvert(MVBaseline &in,
       // Frame rotation
       *ROTMAT1 = MeasData::MToJ2000(0);
       in *= *ROTMAT1;
-      in.adjust();
+      in.readjust(g2);
     }	
     break;
     
@@ -776,10 +780,10 @@ void MCBaseline::doConvert(MVBaseline &in,
       ((MCFrame *)(MBaseline::Ref::frameEpoch(inref, outref).
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
-      // Nutation
-      *ROTMAT1 = NUTATTO->operator()(tdbTime);
       // Precession
-      *ROTMAT1 *= PRECESTO->operator()(tdbTime);
+      *ROTMAT1 = PRECESTO->operator()(tdbTime);
+      // Nutation
+      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
       in = *ROTMAT1 * in;
     }
     break;
@@ -794,10 +798,11 @@ void MCBaseline::doConvert(MVBaseline &in,
 	getTDB(tdbTime);
       // E-terms
       *MVPOS1 = MeasTable::AberETerm(0);
+      in.adjust(g2);
       g1 = in * *MVPOS1;
       in += g1 * in;
       in -= *MVPOS1;
-      in.adjust();
+      in.readjust(g2);
       // Precession
       *ROTMAT1 = PRECESFROM->operator()(tdbTime);
       // Nutation
@@ -810,17 +815,25 @@ void MCBaseline::doConvert(MVBaseline &in,
       ((MCFrame *)(MBaseline::Ref::frameEpoch(inref, outref).
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
-      // Nutation
-      *ROTMAT1 = NUTATTO->operator()(tdbTime);
       // Precession
-      *ROTMAT1 *= PRECESTO->operator()(tdbTime);
+      *ROTMAT1 = PRECESTO->operator()(tdbTime);
+      // Nutation
+      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
       in = *ROTMAT1 * in;
       // E-terms
+      // Iterate
       *MVPOS1 = MeasTable::AberETerm(0);
-      g1 = in * *MVPOS1;
-      in += g1 * in;
-      in += *MVPOS1;
-      in.adjust();
+      in.adjust(g2);
+      *MVPOS2 = in;
+      do {
+	g1 = *MVPOS2 * *MVPOS1;
+	*MVPOS3 = *MVPOS2 - *MVPOS1 + (g1 * *MVPOS2);
+	MVPOS3->adjust();
+	*MVPOS3 -= in;
+	*MVPOS2 -= *MVPOS3;
+      } while (MVPOS3->radius() > 1e-10);
+      in = *MVPOS2;
+      in.readjust(g2);
     }
     break;
     
@@ -828,17 +841,9 @@ void MCBaseline::doConvert(MVBaseline &in,
       ((MCFrame *)(MBaseline::Ref::frameEpoch(outref, inref).
 		   getMCFramePoint()))->
 	getLASTr(g1);
-      ((MCFrame *)(MBaseline::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
-	getRadius(lengthE);
       ((MCFrame *)(MBaseline::Ref::frameEpoch(outref, inref).
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
-      ((MCFrame *)(MBaseline::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
-	getLat(g3);
-      *MVPOS3 = MVBaseline(g1, g3);
-      in += *MVPOS3;
       *EULER1 = MeasTable::polarMotion(tdbTime);
       EULER1->operator()(2) = g1;
       *ROTMAT1 = RotMatrix(*EULER1);
@@ -869,18 +874,13 @@ void MCBaseline::doConvert(MVBaseline &in,
       ((MCFrame *)(MBaseline::Ref::frameEpoch(inref, outref).
 		   getMCFramePoint()))->
 	getLASTr(g1);
-      ((MCFrame *)(MBaseline::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
-	getRadius(lengthE);
       ((MCFrame *)(MBaseline::Ref::frameEpoch(inref, outref).
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
-      ((MCFrame *)(MBaseline::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
-	getLat(g3);
-      *MVPOS3 = MVBaseline(g1, g3);
       in(1) = -in(1);
-      *ROTMAT1 = RotMatrix(Euler(g1 ,(uInt) 3));
+      *EULER1 = MeasTable::polarMotion(tdbTime);
+      EULER1->operator()(2) = g1;
+      *ROTMAT1 = RotMatrix(*EULER1);
       in = *ROTMAT1 * in;
       in -= *MVPOS3;
     }
@@ -904,6 +904,9 @@ void MCBaseline::doConvert(MVBaseline &in,
       break;
 
     case MECLIP_JMEAN:
+      ((MCFrame *)(MBaseline::Ref::frameEpoch(outref, inref).
+                   getMCFramePoint()))->
+        getTDB(tdbTime);
       *ROTMAT1 = 
 	RotMatrix(Euler(MeasTable::fundArg(0)((tdbTime - 
 					       MeasData::MJD2000)/
@@ -912,6 +915,9 @@ void MCBaseline::doConvert(MVBaseline &in,
       break;
 
     case JMEAN_MECLIP:
+      ((MCFrame *)(MBaseline::Ref::frameEpoch(outref, inref).
+                   getMCFramePoint()))->
+        getTDB(tdbTime);
       *ROTMAT1 =
         RotMatrix(Euler(MeasTable::fundArg(0)((tdbTime -
                                                MeasData::MJD2000)/
@@ -920,23 +926,31 @@ void MCBaseline::doConvert(MVBaseline &in,
       break;
 
     case TECLIP_JTRUE:
+      ((MCFrame *)(MBaseline::Ref::frameEpoch(outref, inref).
+                   getMCFramePoint()))->
+        getTDB(tdbTime);
       *ROTMAT1 = 
 	RotMatrix(Euler(-Nutation(Nutation::STANDARD)(tdbTime)(2), 1, 0, 0));
       in = *ROTMAT1 * in;
       break;
 
     case JTRUE_TECLIP:
+      ((MCFrame *)(MBaseline::Ref::frameEpoch(outref, inref).
+                   getMCFramePoint()))->
+        getTDB(tdbTime);
       *ROTMAT1 =
         RotMatrix(Euler(-Nutation(Nutation::STANDARD)(tdbTime)(2), 1, 0, 0));
       in *= *ROTMAT1;
       break;
 
     case GAL_SUPERGAL:
-      in = MeasTable::galToSupergal() * in;
+      *ROTMAT1 = MeasTable::galToSupergal();
+      in = *ROTMAT1 * in;
       break;
       
     case SUPERGAL_GAL:
-      in *= MeasTable::galToSupergal();
+      *ROTMAT1 = MeasTable::galToSupergal();
+      in *= *ROTMAT1;
       break;
     
     default:
