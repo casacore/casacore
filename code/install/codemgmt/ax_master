@@ -1938,3 +1938,4 @@
 08 030 src rm atnf/implement/test/tygms.cc
 08 031 src mv trial/scripts/guicomponents.g trial/implement/guiutils/guicomponents.g
 08 031 src mv trial/scripts/guicomponents.help trial/implement/guiutils/guicomponents.help
+08 031 src mv trial/implement/Tasking/choice.help trial/implement/guiutils/choice.help
