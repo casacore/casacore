@@ -136,6 +136,7 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 {WHERE}   {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
+            theFromQueryDone = False;
 	    return WHERE;
 	  }
 {ORDERBY} {
@@ -213,7 +214,14 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 ")"       { tableGramPosition() += yyleng; return RPAREN; }
 "{"       { tableGramPosition() += yyleng; return LBRACE; }
 "}"       { tableGramPosition() += yyleng; return RBRACE; }
-","       { tableGramPosition() += yyleng; return COMMA; }
+","       {
+            tableGramPosition() += yyleng;
+            if (theFromQueryDone) {
+              BEGIN(FROMstate);
+              theFromQueryDone=False;
+            }
+            return COMMA;
+          }
 
 
  /* Literals */
