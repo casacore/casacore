@@ -52,9 +52,9 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 	   ("SetupNewTable object already used for another Table"));
   }
   //# Use MemoryStMan for stored and unbound columns.
-  MemoryStMan stman("MSMTAB");
   TableDesc* tdescPtr  = newtab.tableDescPtr();
   ColumnSet* colSetPtr = newtab.columnSetPtr();
+  MemoryStMan stman(colSetPtr->uniqueDataManagerName("MSMTAB"));
   for (uInt i=0; i<tdescPtr->ncolumn(); i++) {
     PlainColumn* col = colSetPtr->getColumn(i);
     if (!col->isBound()  ||  col->isStored()) {
