@@ -143,7 +143,8 @@ main (int argc, char** argv) {
 
 void initArrays(Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
 {
-    indgen (static_cast< Array<Float> >(arrf));
+      // The static_cast is a workaround for an SGI compiler bug
+    indgen (static_cast< Cube<Float> &>(arrf));
     arrdc(0) = DComplex(1.2, 3.4);
     arrdc(1) = DComplex(-2.3, 5.6);
     IPosition shape(arrb.shape());
