@@ -2083,3 +2083,4 @@
 11 089 src mv trial/implement/Lattices/test/tComplex.run aips/implement/Mathematics/test/tComplex.run
 11 089 src mv trial/implement/Lattices/test/tArrayIO2.run aips/implement/Arrays/test/tArrayIO2.run
 11 089 src mv trial/implement/Lattices/test/tException.run aips/implement/Exceptions/test/tException.run
+11 089 src mv trial/implement/Lattices/test/tExcpA.run aips/implement/Exceptions/test/tExcpA.run
