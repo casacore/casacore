@@ -1,4 +1,3 @@
-
 //# CoordinateSystem.h: Interconvert pixel and image coordinates. 
 //# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
@@ -67,6 +66,8 @@ void CoordinateSystem::copy(const CoordinateSystem &other)
     }
 
     clear();
+
+    obsinfo_p = other.obsinfo_p;
 
     coordinates_p = other.coordinates_p;
     const uInt n = coordinates_p.nelements();
@@ -1273,6 +1274,15 @@ String CoordinateSystem::format(String& units,
                                     absolute, precision);
 }
 
+ObsInfo CoordinateSystem::obsInfo() const
+{
+    return obsinfo_p;
+}
+
+void CoordinateSystem::setObsInfo(const ObsInfo &obsinfo)
+{
+    obsinfo_p = obsinfo;
+}
 
 Bool CoordinateSystem::save(RecordInterface &container,
 			    const String &fieldName) const
@@ -1310,9 +1320,15 @@ Bool CoordinateSystem::save(RecordInterface &container,
 	name = String("pixelreplace") + num;
 	subrec.define(name, Vector<Double>(*pixel_replacement_values_p[i]));
     }
-    container.defineRecord(fieldName, subrec);
+    // Write the obsinfo
+    String error;
+    Bool ok = obsinfo_p.toRecord(error, subrec);
 
-    return True;
+    if (ok) {
+	container.defineRecord(fieldName, subrec);
+    }    
+
+    return ok;
 }
 
 CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
@@ -1396,6 +1412,10 @@ CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
 	name = String("pixelreplace") + num;
 	subrec.get(name, *(retval->pixel_replacement_values_p[i]));
     }
+    // Get the obsinfo
+    String error;
+    Bool ok = retval->obsinfo_p.fromRecord(error, subrec);
+    AlwaysAssert(ok, AipsError); // Should never happen
 
     return retval;
 }
@@ -1738,7 +1758,15 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 		    opticalVelocity);
     }
 
-    return True;
+    // Write out the obsinfo
+    String error;
+    Bool ok = obsinfo_p.toFITS(error, header);
+    if (!ok) {
+	os << LogIO::SEVERE << "Error converting ObsInfo: " << error << 
+	    LogIO::POST;
+    }
+
+    return ok;
 }
 
 Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys, 
@@ -2185,7 +2213,16 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	}
     }
     coordsys.transpose(order, order);
-    
-    return True;
-}
 
+    ObsInfo oi;
+    String error;
+    Bool ok = oi.fromFITS(error, header);
+    if (ok) {
+	coordsys.setObsInfo(oi);
+    } else {
+	os << LogIO::SEVERE << 
+	    "Error reading ObsInfo: " << error << LogIO::POST;
+    }
+    
+    return ok;
+}

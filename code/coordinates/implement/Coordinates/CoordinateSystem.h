@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,8 @@
 
 #include <aips/aips.h>
 #include <trial/Coordinates/Coordinate.h>
+#include <trial/Coordinates/ObsInfo.h>
+
 #include <aips/Containers/Block.h>
 
 class DirectionCoordinate;
@@ -384,6 +386,13 @@ public:
                           const Bool absolute,
                           const Int precision = -1) const;
 
+    // Miscellaneous information related to an observation, for example the
+    // observation date.
+    // <group>
+    ObsInfo obsInfo() const;
+    void setObsInfo(const ObsInfo &obsinfo);
+    // </group>
+
     // Save ourself into the supplised record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
@@ -443,6 +452,10 @@ private:
     PtrBlock<Block<Int> *>     pixel_maps_p;
     PtrBlock<Vector<Double> *> pixel_tmps_p;
     PtrBlock<Vector<Double> *> pixel_replacement_values_p;
+
+    // Miscellaneous information about the observation associated with this
+    // Coordinate System.
+    ObsInfo obsinfo_p;
 
     // Helper functions to group common code.
     Bool mapOne(Vector<Int>& worldAxisMap, 
