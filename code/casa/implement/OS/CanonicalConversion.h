@@ -1,5 +1,5 @@
 //# CanonicalConversion.h: A class with static functions to convert canonical format
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -83,8 +83,13 @@
 #define CONVERT_CAN_USHORT   0
 #define CONVERT_CAN_INT      0
 #define CONVERT_CAN_UINT     0
+#ifdef SGI64
+#define CONVERT_CAN_LONG     0
+#define CONVERT_CAN_ULONG    0
+#else 
 #define CONVERT_CAN_LONG     1
 #define CONVERT_CAN_ULONG    1
+#endif
 #define CONVERT_CAN_FLOAT    0
 #define CONVERT_CAN_DOUBLE   0
 // LDOUBLE is 8 bytes on SUN, but 16 bytes canonical.
