@@ -151,20 +151,29 @@ public:
     // Set the maximum cache size (in bytes) in a non-persistent way.
     void setMaximumCacheSize (uInt maxSize);
 
-    // Get the current maximum cache size.
+    // Get the current maximum cache size (in bytes).
     uInt maximumCacheSize() const;
 
+    // Get the current cache size (in buckets) for the hypercube in
+    // the given row.
+    uInt cacheSize (uInt rownr) const;
+
     // Get the hypercube shape of the data in the given row.
-    const IPosition& hypercubeShape (uInt rownr);
+    const IPosition& hypercubeShape (uInt rownr) const;
 
     // Get the tile shape of the data in the given row.
-    const IPosition& tileShape (uInt rownr);
+    const IPosition& tileShape (uInt rownr) const;
+
+    // Get the bucket size (in bytes) of the hypercube in the given row.
+    uInt bucketSize (uInt rownr) const;
 
     // Can the tiled storage manager handle changing array shapes?
     // The default is no (but TiledCellStMan can).
     virtual Bool canChangeShape() const;
 
-    // Set the cache size for accessing the hypercube containing the given row.
+    // Calculate the cache size (in buckets) for accessing the hypercube
+    // containing the given row. It takes the maximum cache size into
+    // account (allowing an overdraft of 10%).
     // It uses the given axisPath (i.e. traversal order) to determine
     // the optimum size. A window can be specified to indicate that only
     // the given subset of the hypercube will be accessed.
@@ -174,31 +183,37 @@ public:
     // The non-specified <src>windowStart</src> parts default to 0.
     // The non-specified <src>windowLength</src> parts default to
     // the hypercube shape.
-    // The non-specified <src>SliceShape</src> arguments default to 1.
+    // The non-specified <src>sliceShape</src> parts default to 1.
     // <br>
     // Axispath = [2,0,1] indicates that the z-axis changes most rapidly,
     // thereafter x and y. An axis can occur only once in the axisPath.
     // The non-specified <src>axisPath</src> parts get the natural order.
-    // E.g. in the previous example axisPath=[2] would have done.
+    // E.g. in the previous example axisPath=[2] defines the same path.
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
     // <br>The userSetCache flag is set indicating that the TSMDataColumn
     // access functions do not need to size the cache.
+    uInt calcCacheSize (uInt rownr, const IPosition& sliceShape,
+			const IPosition& windowStart,
+			const IPosition& windowLength,
+			const IPosition& axisPath) const;
+
+    // Set the cache size using the <src>calcCacheSize</src>
+    // function mentioned above.
     void setCacheSize (uInt rownr, const IPosition& sliceShape,
 		       const IPosition& windowStart,
 		       const IPosition& windowLength,
-		       const IPosition& axisPath, Bool forceSmaller);
+		       const IPosition& axisPath,
+		       Bool forceSmaller);
 
     // Set the cache size for accessing the hypercube containing the given row.
-    // The available number of slots will be the given cache size
-    // divided by the bucket size.
     // When the give cache size exceeds the maximum cache size with more
     // than 10%, the maximum cache size is used instead.
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
     // <br>The userSetCache flag is set indicating that the TSMDataColumn
     // access functions do not need to size the cache.
-    void setCacheSize (uInt rownr, uInt nbytes, Bool forceSmaller);
+    void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller);
 
     // Determine if the user set the cache size (using setCacheSize).
     Bool userSetCache() const;
@@ -242,7 +257,10 @@ public:
     TSMCube* singleHypercube();
 
     // Get the hypercube in which the given row is stored.
+    // <group>
+    const TSMCube* getHypercube (uInt rownr) const;
     virtual TSMCube* getHypercube (uInt rownr) = 0;
+    // </group>
 
     // Get the hypercube in which the given row is stored.
     // It also returns the position of the row in that hypercube.
@@ -462,6 +480,9 @@ inline Bool TiledStMan::asCanonical() const
 
 inline void TiledStMan::setDataChanged()
     { dataChanged_p = True; }
+
+inline const TSMCube* TiledStMan::getHypercube (uInt rownr) const
+    { return ((TiledStMan*)this)->getHypercube (rownr); }
 
 
 #endif
