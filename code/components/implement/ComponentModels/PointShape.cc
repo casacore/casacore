@@ -153,7 +153,7 @@ Bool PointShape::fromRecord(String & errorMessage,
 Bool PointShape::toRecord(String & errorMessage,
 			  RecordInterface & record) const {
   DebugAssert(ok(), AipsError);
-  record.define(RecordFieldId("type"), String("point"));
+  record.define(RecordFieldId("type"), ComponentType::name(type()));
   if (!ComponentShape::addDir(errorMessage, record)) return False;
   return True;
 }

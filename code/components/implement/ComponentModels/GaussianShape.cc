@@ -366,7 +366,7 @@ Bool GaussianShape::fromRecord(String & errorMessage,
 Bool GaussianShape::toRecord(String & errorMessage,
 			     RecordInterface & record) const {
   DebugAssert(ok(), AipsError);
-  record.define(RecordFieldId("type"), String("gaussian"));
+  record.define(RecordFieldId("type"), ComponentType::name(type()));
   if (!ComponentShape::addDir(errorMessage, record)) return False;
   const Unit arcmin("'");
   {
