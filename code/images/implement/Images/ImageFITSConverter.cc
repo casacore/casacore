@@ -75,7 +75,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 
     // shape
     IPosition shape(ndim);
-    for (Int i=0; i<ndim; i++) {
+    for (Int i=0; i<Int(ndim); i++) {
 	shape(i) = fitsImage.dim(i);
     }
 
@@ -181,6 +181,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 	Int bufferSize = cursorShape.product();
 	for (imiter.reset(),meterValue=0.0; !imiter.atEnd(); imiter++) {
 	    fitsImage.read(bufferSize);                  // Read from FITS
+            meterValue += nPixPerIter*1.0/2.0;
+            meter.update(meterValue);
 	    if (fitsImage.err()) {
 		error = "Error reading from FITS image";
 		delete newImage;
@@ -193,7 +195,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 	    fitsImage.copy(ptr, bufferSize);             // Copy
 	    cursor.putStorage(ptr, deletePtr);
 
-            meterValue += nPixPerIter;
+            meterValue += nPixPerIter*1.0/2.0;
             meter.update(meterValue);
 	}
     } catch (AipsError x) {

@@ -278,7 +278,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.setComment("bitpix", "Floating point (32 bit)");
 
     Vector<Int> naxis(ndim);
-    for (Int i=0; i < ndim; i++) {
+    for (Int i=0; i < Int(ndim); i++) {
         naxis(i) = shape(i);
     }
     header.define("NAXIS", naxis);
@@ -328,7 +328,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     }
     if (naxis.nelements() != shapeCopy.nelements()) {
         naxis.resize(shapeCopy.nelements());
-	for (Int i=0; i < shapeCopy.nelements(); i++) {
+	for (Int i=0; i < Int(shapeCopy.nelements()); i++) {
 	    naxis(i) = shapeCopy(i);
 	}
 	header.define("NAXIS", naxis);
@@ -337,7 +337,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
     // Add in the fields from miscInfo that we can
     const uInt nmisc = image.miscInfo().nfields();
-    for (i=0; i<nmisc; i++) {
+    for (i=0; i<Int(nmisc); i++) {
 	String miscname = image.miscInfo().name(i);
 	if (miscname != "end" && miscname != "END" && 
 	    !header.isDefined(miscname)) {
@@ -468,7 +468,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     AlwaysAssert(sizeof(Short) == sizeof(short), AipsError);
 
     IPosition cursorOrder(ndim);
-    for (i=0; i<ndim; i++) {
+    for (i=0; i<Int(ndim); i++) {
 	cursorOrder(i) = i;
     }
 
@@ -520,6 +520,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    const Array<Float> &cursor = iter.cursor();
 	    Bool deleteIt;
 	    const Float *ptr = cursor.getStorage(deleteIt);
+	    meter.update((count*1.0 - 0.5)*curpixels);
 
 	    error= "";
 	    Int n = 0;
@@ -536,7 +537,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		    return False;
 		}
 	    } else if (fits16) {
-		for (uInt i=0; i<bufferSize; i++) {
+		for (Int i=0; i<bufferSize; i++) {
 		    if (ptr[i] > maxPix) {
 			buffer16[i] = maxshort;
 		    } else if (ptr[i] < minPix) {
@@ -607,7 +608,7 @@ IPosition ImageFITSConverter::copyCursorShape(String &report,
     maxPixels /= 2; // because 1/2 the pixels are in FITS, 1/2 in Image
 
     Int axis = ndim - 1;
-    if (shape.product() > maxPixels) {
+    if (shape.product() > Int(maxPixels)) {
 	while (--axis >= 0 && shape(axis) == 1) {
 	    ; // Nothing
 	}
@@ -618,7 +619,7 @@ IPosition ImageFITSConverter::copyCursorShape(String &report,
     }
 
     uInt prod = 1;
-    for (uInt i=0; i<=axis; i++) {
+    for (uInt i=0; Int(i)<=axis; i++) {
 	prod *= shape(i);
     }
     // Correct for the probable tile shape
@@ -646,12 +647,12 @@ IPosition ImageFITSConverter::copyCursorShape(String &report,
 
     IPosition cursorShape(ndim);
     cursorShape = 1;
-    for (i=0; i<=axis; i++) {
+    for (i=0; Int(i)<=axis; i++) {
 	cursorShape(i) = shape(i);
     }
 
     ostrstream buffer;
-    if (axis == ndim - 1) {
+    if (axis == Int(ndim) - 1) {
 	buffer << "All pixels fit in memory";
     } else {
 	switch(axis) {
