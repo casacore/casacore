@@ -1,0 +1,17 @@
+
+change id: 0058
+ author:   Neil Killeen
+ date:     2000/12/04
+ avers:    1.5
+ area:     Tool
+ package:  trial
+ module:   coordsys
+ type:     Code Documentation Test
+ category: New
+ summary:  relative coordinates are now supported
+Support was added to the Coordsys tool
+to handle relative coordinates (pixel or world)
+
+ALso flexibility for different world coordinate format
+types was imporved and offered wherever a world coordinate
+is used.
