@@ -5881,3 +5881,4 @@
 16 273 sys rm libexec/dish_ranges.g
 16 273 sys rm libexec/dish_sranges.g
 16 273 sys rm libexec/dish_granges.g
+16 274 src rm trial/apps/dish/ssa.g
