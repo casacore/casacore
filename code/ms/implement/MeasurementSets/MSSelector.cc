@@ -839,7 +839,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  Double startOfDay=( nSlot>0 ? 
 			      C::day*int(time(0)/C::day) : 0);
 	  Int nT = (average ? 1 : nSlot);
-	  Vector<Double> times(nT,0),ut(nT),ha(nT),last(nT);
+	  Vector<Double> times(nT,0.0),ut(nT),ha(nT),last(nT);
 	  MEpoch ep=msc.timeMeas()(0);
 	  Bool doUT=False, doHA=False, doLAST=False;
 	  for (Int k=0; k<nItems; k++) {
