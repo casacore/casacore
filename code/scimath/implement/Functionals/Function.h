@@ -176,10 +176,9 @@
 // </templating>
 //
 // <todo asof="2001/08/29">
-//   <li> Should the clone() functions return a reference-counted pointer
-//   instead of a raw pointer?
 //   <li> At some point, we may want to implement a letter-envelope class,
 //   implement function arithmetic, etc.
+//   <li> use maybe Poolstack for static Vector
 // </todo>
 
 template<class T> class Function : public Functional<T, T>,
@@ -212,8 +211,9 @@ template<class T> class Function : public Functional<T, T>,
   T &operator[](const uInt n) { return param_p[n]; };
   const T &operator[](const uInt n) const{ return param_p[n]; };
   // </group>
-  // Evaluate this function object at <src>x</src>. The length of <src>
-  // x</src> must be greater than or equal to as <src>ndim()</src>.
+  // Evaluate this function object at <src>x</src>or at <src>x, y</src>.
+  // The length of <src>x</src> must be greater than or equal to
+  // <src>ndim()</src>.
   // <group>
   virtual T operator()() const {
     DebugAssert(ndim()==0, AipsError); return this->eval(FunctionArg(0)); };
@@ -223,6 +223,7 @@ template<class T> class Function : public Functional<T, T>,
     DebugAssert(x.contiguousStorage() && ndim()<=x.nelements(), AipsError);
     return this->eval(&(x[0])); };
   virtual T operator()(FunctionArg x) const { return this->eval(x); };
+  virtual T operator()(const T &x, const T &y) const;
   // </group>
 
   //# Member functions
