@@ -1,5 +1,5 @@
 //# ImageExprParse.cc: Classes to hold results from image expression parser
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <trial/Images/ImageExprParse.h>
 #include <trial/Images/ImageExprGram.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/FITSImage.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/RegionHandlerTable.h>
 #include <trial/Lattices/LatticeExprNode.h>
@@ -314,6 +315,10 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 	return amp(arg1, arg2);
     } else if (itsSval == "pa") {
 	return pa(arg1, arg2);
+    } else if (itsSval == "fractile") {
+	return fractile(arg1, arg2);
+    } else if (itsSval == "fractilerange") {
+	return fractileRange(arg1, arg2);
     } else if (itsSval == "replace") {
 	return replace(arg1, arg2);
     } else {
@@ -329,6 +334,8 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
     AlwaysAssert (itsType == TpString, AipsError);
     if (itsSval == "iif") {
 	return iif(arg1, arg2, arg3);
+    } else if (itsSval == "fractilerange") {
+	return fractileRange(arg1, arg2, arg3);
     } else {
 	throw (AipsError ("3-argument function " + itsSval + " is unknown"));
     }
@@ -442,15 +449,21 @@ Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
 				     const String& name) const
 {
     if (! Table::isReadable(name)) {
-	return False;
+        try {
+	    FITSImage fimg(name);
+	    node = LatticeExprNode (fimg);
+	} catch (AipsError) {
+	    return False;
+	}
+	return True;
     }
-    Table table(name);
     Bool isImage = True;
+    Table table(name);
     String type = table.tableInfo().type();
     if (type == TableInfo::type(TableInfo::PAGEDARRAY)) {
-	isImage = False;
+        isImage = False;
     } else if (type != TableInfo::type(TableInfo::PAGEDIMAGE)) {
-	return False;
+        return False;
     }
     if (table.nrow() != 1) {
 	throw (AipsError ("ImageExprParse can only handle Lattices/"
@@ -511,8 +524,23 @@ Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
 LatticeExprNode ImageExprParse::makeImageNode (const String& name,
 					       const String& mask) const
 {
+    // Look if we need a mask for the image.
+    // By default we do need one.
+    MaskSpecifier spec(True);
+    if (! mask.empty()) {
+        String maskName = mask;
+	maskName.upcase();
+        if (maskName == "NOMASK") {
+	    spec = MaskSpecifier(False);
+	} else {
+  	    spec = MaskSpecifier(mask);
+	}
+    }
+    LatticeExprNode node;
     if (! Table::isReadable(name)) {
-	return False;
+	FITSImage fimg(name, spec);
+	node = LatticeExprNode (fimg);
+	return node;
     }
     Table table(name);
     String type = table.tableInfo().type();
@@ -528,20 +556,7 @@ LatticeExprNode ImageExprParse::makeImageNode (const String& name,
     if (cdesc.isArray()) {
 	dtype = cdesc.dataType();
     }
-    // Look if we need a mask for the image.
-    // By default we do need one.
-    MaskSpecifier spec(True);
-    if (! mask.empty()) {
-        String maskName = mask;
-	maskName.upcase();
-        if (maskName == "NOMASK") {
-	    spec = MaskSpecifier(False);
-	} else {
-  	    spec = MaskSpecifier(mask);
-	}
-    }
     // Create the node from the lattice (and optional mask).
-    LatticeExprNode node;
     switch (dtype) {
     case TpFloat:
     {
