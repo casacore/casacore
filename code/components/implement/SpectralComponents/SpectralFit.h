@@ -112,12 +112,12 @@ class SpectralFit {
 
   // Fit the elements as given by the specified spectral elements
   // at the frequencies x with values y. Weights of all points are equal.
-  // The mask (if specified) means: use point if True.
+  // The mask (if specified) means: use point if True. Returns 
+  // the convergence status.
   // <group>
   template <class MT>
-    Bool fit(const Vector<MT> &y,
-	     const Vector<MT> &x) {
-    return fit(y, x, static_cast<const Vector<Bool> *const>(0)); }
+    Bool fit(const Vector<MT> &y, const Vector<MT> &x) {
+       return fit(y, x, static_cast<const Vector<Bool> *const>(0)); }
   template <class MT> 
     Bool fit(const Vector<MT> &y,
 	     const Vector<MT> &x, const Vector<Bool> &mask) {
