@@ -1,5 +1,5 @@
 //# tListMap2.cc: This program tests the ListMap class
-//# Copyright (C) 1993,1994,1995,1996,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,14 +30,12 @@
 #include <iostream.h>
 #include <aips/Containers/ListMap.h>
 #include <aips/Containers/ListMapIO.h>
-#include <aips/IO/AipsIO.h>
 
 // This test program creates an OrderedMap, which is written to
 // disk and read back. It outputs to stdout. A script executing
 // this test program makes a diff of the output and a reference output.
 
 main () {
-    AipsIO io("tListMap2_tmp", ByteIO::New);
     Int i;
     i=-32768;
     ListMap<Int,Int> Name(i);
@@ -89,7 +87,7 @@ main () {
     nams.define("Darrell",3);
     cout << "Ger " << nams("Ger") << " Darrell " << nams("Darrell") << " Zomaar " << nams("Zomaar") << " Brian " << nams("Brian") << endl;
     cout << Nams << endl;
-    io << nams;                             // write the map
+
     ListMap<String,Int> Nam2 = Nams;        // copy the map
     MapIter<String,Int> nam2 = Nam2;        // copy the map
     cout << Nam2 << endl;                   // and show it
@@ -101,16 +99,7 @@ main () {
     nam1.define("A",1);
     nam1.define("B",2);
     cout << Nam1 << endl;
-    io << nam1;                             // write the changed map
     nam1 = nams;                            // get original again
-    io << nam1;                             // and write that
-    io.setpos (0);                          // reposition to BOF
-    cout << Nams << endl;
-    io >> nam1;                             // read first map
-    cout << Nams << endl;
-    io >> nam1;                             // read 2nd map
-    cout << Nams << endl;
-    io >> nam1;                             // read 3rd map
     cout << Nams << endl;
     return 0;                               // exit with success status
 }

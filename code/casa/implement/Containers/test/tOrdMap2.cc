@@ -1,5 +1,5 @@
 //# tOrdMap2.cc: Test program for class OrderedMap
-//# Copyright (C) 1992,1993,1994,1995,1996,1998,1999
+//# Copyright (C) 1992,1993,1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,14 +30,12 @@
 #include <iostream.h>
 #include <aips/Containers/Map.h>
 #include <aips/Containers/OrdMapIO.h>
-#include <aips/IO/AipsIO.h>
 
 // This test program creates an OrderedMap, which is written to
 // disk and read back. It outputs to stdout. A script executing
 // this test program makes a diff of the output and a reference output.
 
 main () {
-    AipsIO io("tOrdMap2_tmp", ByteIO::New);
     Int i;
     i=-32768;
     OrderedMap<Int,Int> Name(i);
@@ -88,7 +86,6 @@ main () {
     nams.define("Darrell",3);
     cout << "Ger " << nams("Ger") << " Darrell " << nams("Darrell") << " Zomaar " << nams("Zomaar") << " Brian " << nams("Brian") << endl;
     cout << Nams << endl;
-    io << Nams;                             // write the map
     OrderedMap<String,Int> Nam2 = Nams;     // copy the map
     MapIter<String,Int> nam2 = Nam2;
     cout << Nam2 << endl;                           // and show it
@@ -100,16 +97,9 @@ main () {
     nam1.define("A",1);
     nam1.define("B",2);
     cout << Nam1 << endl;
-    io << Nam1;                             // write the changed map
-    Nam1 = Nams;                            // get original again
-    io << Nam1;                             // and write that
-    io.setpos (0);                          // reposition to BOF
+    cout << Nams << endl;
+    cout << Nams << endl;
     cout << Nam1 << endl;
-    io >> Nam1;                             // read first map
-    cout << Nam1 << endl;
-    io >> Nam1;                             // read 2nd map
-    cout << Nam1 << endl;
-    io >> Nam1;                             // read 3rd map
-    cout << Nam1 << endl;
+    cout << Nams << endl;
     return 0;                               // exit with success status
 }
