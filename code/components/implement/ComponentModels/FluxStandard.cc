@@ -287,7 +287,7 @@ Bool FluxStandard::matchStandard (const String& name,
   // Perley-Taylor (1999)
   else if (lname.contains("perley") && lname.contains("taylor") &&
       (lname.contains("99") || lname.contains("1999"))) {
-    stdEnum = FluxStandard::PERLEY_TAYLOR_95;
+    stdEnum = FluxStandard::PERLEY_TAYLOR_99;
   }
   // Baars
   else if (lname.contains("baars")) {
