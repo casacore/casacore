@@ -1,5 +1,5 @@
 //# GenSort.cc: General sort functions
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Block.h>
+#include <aips/Exceptions/Error.h>
 
 // Do a quicksort in ascending order.
 // All speedups are from Sedgewick; Algorithms in C.
@@ -51,22 +52,21 @@ void GenSort<T>::quickSortAsc (T* data, Int nr)
     Int i = (nr-1)/2;                        // middle element
     T* sf = data;                            // first element
     T* sl = data+nr-1;                       // last element
-    T tmp;
     if (data[i] < *sf)
-	swap (data[i], *sf, tmp);
+	swap (data[i], *sf);
     if (*sl < *sf)
-	swap (*sl, *sf, tmp);
+	swap (*sl, *sf);
     if (data[i] < *sl)
-	swap (data[i], *sl, tmp);
+	swap (data[i], *sl);
     T par = *sl;                             // partition element
     // Now partition until the pointers cross.
     for (;;) {
 	while (*++sf < par) ;
 	while (*--sl > par) ;
 	if (sf >= sl) break;
-	swap (*sf, *sl, tmp);
+	swap (*sf, *sl);
     }
-    swap (*sf, data[nr-1], tmp);
+    swap (*sf, data[nr-1]);
     i = sf-data;
     quickSortAsc (data, i);                  // sort left part
     quickSortAsc (sf+1, nr-i-1);             // sort right part
@@ -82,25 +82,67 @@ void GenSort<T>::quickSortDesc (T* data, Int nr)
     Int i = (nr-1)/2;                        // middle element
     T* sf = data;                            // first element
     T* sl = data+nr-1;                       // last element
-    T tmp;
     if (data[i] > *sf)
-	swap (data[i], *sf, tmp);
+	swap (data[i], *sf);
     if (*sl > *sf)
-	swap (*sl, *sf, tmp);
+	swap (*sl, *sf);
     if (data[i] > *sl)
-	swap (data[i], *sl, tmp);
+	swap (data[i], *sl);
     T par = *sl;                             // partition element
     // Now partition until the pointers cross.
     for (;;) {
 	while (*++sf > par) ;
 	while (*--sl < par) ;
 	if (sf >= sl) break;
-	swap (*sf, *sl, tmp);
+	swap (*sf, *sl);
     }
-    swap (*sf, data[nr-1], tmp);
+    swap (*sf, data[nr-1]);
     i = sf-data;
     quickSortDesc (data, i);                  // sort left part
     quickSortDesc (sf+1, nr-i-1);             // sort right part
+}
+
+// Find the k-th largest element using a partial quicksort.
+template<class T>
+T GenSort<T>::kthLargest (T* data, uInt nr, uInt k)
+{
+    if (k >= nr) {
+	throw (AipsError ("kthLargest(data, nr, k): k must be < nr"));
+    }
+    Int st = 0;
+    Int end = Int(nr) - 1;
+    // Partition until a set of 1 element is left.
+    while (end > st) {
+	// Choose a partition element by taking the median of the
+	// first, middle and last element.
+	// Store the partition element at the end.
+	// Do not use Sedgewick\'s advise to store the partition element in
+	// data[nr-2]. This has dramatic results for reversed ordered arrays.
+	Int i = (st+end)/2;                      // middle element
+	T* sf = data+st;                         // first element
+	T* sl = data+end;                        // last element
+	if (data[i] < *sf)
+	    swap (data[i], *sf);
+	if (*sl < *sf)
+	    swap (*sl, *sf);
+	if (data[i] < *sl)
+	    swap (data[i], *sl);
+	T par = *sl;                             // partition element
+	// Now partition until the pointers cross.
+	for (;;) {
+	    while (*++sf < par) ;
+	    while (*--sl > par) ;
+	    if (sf >= sl) break;
+	    swap (*sf, *sl);
+	}
+	swap (*sf, data[end]);
+	// Determine index of partitioning and update the start and end
+	// to take left or right part.
+	i = sf-data;
+	if (i <= k) st = i;
+	if (i >= k) end = i;
+    }
+    return data[k];
 }
 
 // Do an insertion sort in ascending order.
@@ -225,9 +267,8 @@ void GenSort<T>::heapSortAsc (T* data, Int nr)
     for (Int j=nr/2; j>=1; j--) {
 	heapAscSiftDown (j, nr, data);
     }
-    T tmp;
     for (j=nr; j>=2; j--) {
-	swap (data[1], data[j], tmp);
+	swap (data[1], data[j]);
 	heapAscSiftDown (1, j-1, data);
     }
 }
@@ -244,12 +285,11 @@ void GenSort<T>::heapAscSiftDown (Int low, Int up, T* data)
 	data[i] = data[c];
     }
     data[i] = sav;
-    T tmp;
     for ( ; (c=i/2)>= low; i=c) {
 	if (!(data[i] > data[c])) {
 	    break;
 	}
-	swap (data[c], data[i], tmp);
+	swap (data[c], data[i]);
     }
 }
 
@@ -263,9 +303,8 @@ void GenSort<T>::heapSortDesc (T* data, Int nr)
     for (Int j=nr/2; j>=1; j--) {
 	heapDescSiftDown (j, nr, data);
     }
-    T tmp;
     for (j=nr; j>=2; j--) {
-	swap (data[1], data[j], tmp);
+	swap (data[1], data[j]);
 	heapDescSiftDown (1, j-1, data);
     }
 }
@@ -282,12 +321,11 @@ void GenSort<T>::heapDescSiftDown (Int low, Int up, T* data)
 	data[i] = data[c];
     }
     data[i] = sav;
-    T tmp;
     for ( ; (c=i/2)>= low; i=c) {
 	if (!(data[i] < data[c])) {
 	    break;
 	}
-	swap (data[c], data[i], tmp);
+	swap (data[c], data[i]);
     }
 }
 
