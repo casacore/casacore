@@ -4030,3 +4030,4 @@
 14 065 src mv trial/implement/DisplayCanvas/WCAxisLabeller.h trialdisplay/implement/DisplayCanvas/WCAxisLabeller.h
 14 065 src mv trial/implement/DisplayCanvas/WCBilinearResampleHandler.h trialdisplay/implement/DisplayCanvas/WCBilinearResampleHandler.h
 14 065 src mv trial/implement/DisplayCanvas/WCCSAxisLabeller.h trialdisplay/implement/DisplayCanvas/WCCSAxisLabeller.h
+14 065 src mv trial/implement/DisplayCanvas/WCCSNLAxisLabeller.h trialdisplay/implement/DisplayCanvas/WCCSNLAxisLabeller.h
