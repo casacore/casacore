@@ -357,9 +357,40 @@ to managing the collection of registered DisplayDatas, and to
 arranging a set of ``restrictions'' which are used to assist the
 DisplayDatas in determining what of their data to draw, and how.
 
+\subsection{The MultiWCHolder}
+
 \section{The Glish Connection}
 
+The {\tt glishtk} proxy client has been chosen as the (current)
+vehicle to provide the Display Library services to the \aipspp\ user.
+This facility has been provided this way so that Display Library
+canvases could be embedded in the \aipspp\ graphical user
+interface elements which were already supplied by by the {\tt glishtk}
+proxy client.  Additionally, the nature of {\tt glishtk} enable the
+Display Library services to be loaded {\em dynamically}\/ into an
+already-running client.  Had the interface been implemented more along
+the lines of the existing \glish\ distributed-object mechanism, then
+the canvases of the Display Library would be confined to their own
+window/s and display tools would have been unable to exploit the
+graphical user interface elements (eg.\ buttons, menus) already
+provided by {\tt glishtk}.
 
+To this end, the major components of the Display Library have been
+collected into a dynamically loadable Tcl module, known as {\tt
+gDisplay.so}.  At run-time, this module can be loaded into memory
+and be incorporated into {\tt glishtk}'s execution thread using Tcl's
+dynamic loading facility.  Ideally, a transparent interface could be
+written to provide constructors, methods and destructors for each
+class in the Display Library, and then instances of any of the Library
+classes could be constructed and built from \glish, which of course
+controls the {\tt glishtk} client itself.  However, this approach
+seemed too fine-grained, and would result in a moderately heavy burden
+on the \glish\ programmer who wanted to produce a simple visualisation
+application.  Therefore, the {\em agents}\/ which have been
+implemented in {\tt gDisplay.so} are at an even higher level than the
+top-level Display Library tools, and thereby provide more convenient
+but less capable interfaces to the \glish\ programmer.  In the future,
+this design decision should be revisited.
 
 \section{Programming Practicalities}
 
