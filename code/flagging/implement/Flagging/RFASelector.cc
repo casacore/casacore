@@ -456,7 +456,7 @@ RFASelector::RFASelector ( RFChunkStats &ch,const RecordInterface &parm ) :
   {
     Vector<Int> sant = parm.asArrayInt(RF_ANT);
     for( uInt i=0; i<sant.nelements(); i++ )
-      sel_ant( sant(i) ) = True;
+      sel_ant( sant(i) - (Int)indexingBase() ) = True;
   }
   if( sum(sel_ant) )
   {
@@ -511,7 +511,7 @@ RFASelector::RFASelector ( RFChunkStats &ch,const RecordInterface &parm ) :
         if( sscanf(ss(i).chars(),"%d-%d",&ant1,&ant2)<2 ||
             ant1>=num(ANT) || ant2>=num(ANT) )
           os<<"Illegal baseline specification "<<ss(i)<<endl<<LogIO::EXCEPTION;
-        sel_ifr( chunk.antToIfr(ant1,ant2) ) = True;
+        sel_ifr( chunk.antToIfr(ant1-(Int)indexingBase(),ant2-(Int)indexingBase()) ) = True;
         addString(ifrdesc,ss(i),",");
       }
     }
