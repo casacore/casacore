@@ -5884,3 +5884,4 @@
 16 274 src rm trial/apps/dish/ssa.g
 16 274 sys rm libexec/ssa.g
 16 276 src rm trial/apps/almati2ms
+16 291 src rm trial/apps/dish/dishpg.g
