@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Measures/EarthMagneticMachine.h>
+#include <aips/Measures/EarthMagneticMachine.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCPosition.h>

@@ -30,7 +30,7 @@
 #include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mEarthMagnetic_bug1;
 #endif
-#include <trial/Measures/MEarthMagnetic.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <aips/Exceptions.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>

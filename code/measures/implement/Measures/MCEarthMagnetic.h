@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Measures/MEarthMagnetic.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Measures/MCBase.h>

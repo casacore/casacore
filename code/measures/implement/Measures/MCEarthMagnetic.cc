@@ -31,8 +31,8 @@
 typedef Quantum<Double> gpp_EarthMagnetic_bug1;
 #endif
 #include <aips/Exceptions.h>
-#include <trial/Measures/MCEarthMagnetic.h>
-#include <trial/Measures/EarthField.h>
+#include <aips/Measures/MCEarthMagnetic.h>
+#include <aips/Measures/EarthField.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>

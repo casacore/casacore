@@ -37,7 +37,7 @@
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <trial/Measures/MVEarthMagnetic.h>
+#include <aips/Measures/MVEarthMagnetic.h>
 
 //# Forward Declarations
 class MEarthMagnetic;

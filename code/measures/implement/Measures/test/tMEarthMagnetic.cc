@@ -31,9 +31,9 @@
 #include <aips/Measures.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/Euler.h>
-#include <trial/Measures/MEarthMagnetic.h>
-#include <trial/Measures/MCEarthMagnetic.h>
-#include <trial/Measures/EarthField.h>
+#include <aips/Measures/MEarthMagnetic.h>
+#include <aips/Measures/MCEarthMagnetic.h>
+#include <aips/Measures/EarthField.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>

@@ -30,7 +30,7 @@
 #include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_earthfield__bug1;
 #endif
-#include <trial/Measures/EarthField.h>
+#include <aips/Measures/EarthField.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MVPosition.h>
 #include <aips/Arrays/Vector.h>
