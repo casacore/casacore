@@ -178,7 +178,8 @@ Bool Lattice<T>::getSlice (Array<T>& buffer, const Slicer& section,
     isARef = doGetSlice (buffer, Slicer(blc,trc,inc,Slicer::endIsLast));
   }
   if (removeDegenerateAxes) {
-    buffer.nonDegenerate();
+    Array<T> tmp = buffer.nonDegenerate();
+    buffer.reference (tmp);
   }
   return isARef;
 }
