@@ -112,11 +112,11 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   log << "Appending " << otherMS.tableName() 
       << " to " << itsMS.tableName() << endl;
   const ROMSMainColumns otherMainCols(otherMS);
-  const ROMSPolarizationColumns otherPolCols(otherMS.polarization());
-  const ROMSSpWindowColumns otherSpwCols(otherMS.spectralWindow());
-  const ROMSDataDescColumns otherDDCols(otherMS.dataDescription());
   if (otherMS.nrow() > 0) {
     if (itsFixedShape.nelements() > 0) {
+      const ROMSPolarizationColumns otherPolCols(otherMS.polarization());
+      const ROMSSpWindowColumns otherSpwCols(otherMS.spectralWindow());
+      const ROMSDataDescColumns otherDDCols(otherMS.dataDescription());
       const uInt nShapes = otherDDCols.nrow();
       for (uInt s = 0; s < nShapes; s++) {
 	checkShape(getShape(otherDDCols, otherSpwCols, otherPolCols, s));
@@ -154,6 +154,80 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
 	<< " rows and matched " << matchedRows 
 	<< " from the data description subtable" << endl;
   }
+  // I need to check that the Measures and units are the same.
+  const uInt newRows = otherMS.nrow();
+  uInt curRow = itsMS.nrow();
+  itsMS.addRow(newRows);
+  const ROScalarColumn<Double>& otherTime = otherMainCols.time();
+  ScalarColumn<Double>& thisTime = time();
+  const ROScalarColumn<Int>& otherAnt1 = otherMainCols.antenna1();
+  ScalarColumn<Int>& thisAnt1 = antenna1();
+  const ROScalarColumn<Int>& otherAnt2 = otherMainCols.antenna2();
+  ScalarColumn<Int>& thisAnt2 = antenna2();
+  const ROScalarColumn<Int>& otherFeed1 = otherMainCols.feed1();
+  ScalarColumn<Int>& thisFeed1 = feed1();
+  const ROScalarColumn<Int>& otherFeed2 = otherMainCols.feed2();
+  ScalarColumn<Int>& thisFeed2 = feed2();
+  const ROScalarColumn<Int>& otherDDId = otherMainCols.dataDescId();
+  ScalarColumn<Int>& thisDDId = dataDescId();
+  const ROScalarColumn<Int>& otherFieldId = otherMainCols.fieldId();
+  ScalarColumn<Int>& thisFieldId = fieldId();
+  const ROScalarColumn<Double>& otherInterval = otherMainCols.interval();
+  ScalarColumn<Double>& thisInterval = interval();
+  const ROScalarColumn<Double>& otherExposure = otherMainCols.exposure();
+  ScalarColumn<Double>& thisExposure = exposure();
+  const ROScalarColumn<Double>& otherTimeCen = otherMainCols.timeCentroid();
+  ScalarColumn<Double>& thisTimeCen = timeCentroid();
+  const ROScalarColumn<Int>& otherScan = otherMainCols.scanNumber();
+  ScalarColumn<Int>& thisScan = scanNumber();
+  const ROScalarColumn<Int>& otherArrayId = otherMainCols.arrayId();
+  ScalarColumn<Int>& thisArrayId = arrayId();
+  const ROScalarColumn<Int>& otherStateId = otherMainCols.stateId();
+  ScalarColumn<Int>& thisStateId = stateId();
+  const ROArrayColumn<Double>& otherUvw = otherMainCols.uvw();
+  ArrayColumn<Double>& thisUvw = uvw();
+  const ROArrayColumn<Complex>& otherData = otherMainCols.data();
+  ArrayColumn<Complex>& thisData = data();
+  const ROArrayColumn<Float>& otherSigma = otherMainCols.sigma();
+  ArrayColumn<Float>& thisSigma = sigma();
+  const ROArrayColumn<Float>& otherWeight = otherMainCols.weight();
+  ArrayColumn<Float>& thisWeight = weight();
+  const ROArrayColumn<Bool>& otherFlag = otherMainCols.flag();
+  ArrayColumn<Bool>& thisFlag = flag();
+  const ROArrayColumn<Bool>& otherFlagCat = otherMainCols.flagCategory();
+  ArrayColumn<Bool>& thisFlagCat = flagCategory();
+  const ROScalarColumn<Bool>& otherFlagRow = otherMainCols.flagRow();
+  ScalarColumn<Bool>& thisFlagRow = flagRow();
+  // This needs to be fixed when I relaxe the restriction that the input MS
+  // must have been created using the uvfits filler.
+  const Int curObsId =  observationId()(curRow-1) + 1;
+  ScalarColumn<Int>& thisObsId = observationId();
+  const ROArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
+  ArrayColumn<Float>& thisWeightSp = weightSpectrum();
+  for (uInt r = 0; r < newRows; r++, curRow++) {
+    thisTime.put(curRow, otherTime, r);
+    thisAnt1.put(curRow, newAntIndices[otherAnt1(r)]);
+    thisAnt2.put(curRow, newAntIndices[otherAnt2(r)]);
+    thisFeed1.put(curRow, otherFeed1, r);
+    thisFeed2.put(curRow, otherFeed2, r);
+    thisDDId.put(curRow, newDDIndices[otherDDId(r)]);
+    thisFieldId.put(curRow, newFldIndices[otherFieldId(r)]);
+    thisInterval.put(curRow, otherInterval, r);
+    thisExposure.put(curRow, otherExposure, r);
+    thisTimeCen.put(curRow, otherTimeCen, r);
+    thisScan.put(curRow, otherScan, r);
+    thisArrayId.put(curRow, otherArrayId, r);
+    thisObsId.put(curRow, curObsId);
+    thisStateId.put(curRow, otherStateId, r);
+    thisUvw.put(curRow, otherUvw, r);
+    thisData.put(curRow, otherData, r);
+    thisSigma.put(curRow, otherSigma, r);
+    thisWeight.put(curRow, otherWeight, r);
+    thisFlag.put(curRow, otherFlag, r);
+    thisFlagCat.put(curRow, otherFlagCat, r);
+    thisFlagRow.put(curRow, otherFlagRow, r);
+    thisWeightSp.put(curRow, otherWeightSp, r);
+  } 
 }
 
 void MSConcat::checkShape(const IPosition& otherShape) const 
@@ -263,7 +337,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
 Block<uInt>  MSConcat::copyField(const MSField& otherFld) {
   const uInt nFlds = otherFld.nrow();
   Block<uInt> fldMap(nFlds);
-  const Quantum<Double> tolerance(.1, "deg");
+  const Quantum<Double> tolerance(.1, "mas");
   const ROMSFieldColumns otherFieldCols(otherFld);
   MSFieldColumns& fieldCols = field();
 
@@ -282,30 +356,30 @@ Block<uInt>  MSConcat::copyField(const MSField& otherFld) {
   TableRow fldRow(fld);
   for (uInt f = 0; f < nFlds; f++) {
     delayDir = otherFieldCols.delayDirMeas(f);
-    phaseDir = otherFieldCols.phaseDirMeas(f);
-    refDir = otherFieldCols.referenceDirMeas(f);
-    if (dirType != otherDirType) {
-      delayDir = dirCtr(delayDir.getValue());
-      phaseDir = dirCtr(phaseDir.getValue());
-      refDir = dirCtr(refDir.getValue());
-    }
+     phaseDir = otherFieldCols.phaseDirMeas(f);
+     refDir = otherFieldCols.referenceDirMeas(f);
+     if (dirType != otherDirType) {
+       delayDir = dirCtr(delayDir.getValue());
+       phaseDir = dirCtr(phaseDir.getValue());
+       refDir = dirCtr(refDir.getValue());
+     }
 
-    const Int newFld = 
-      fieldCols.matchDirection(refDir, delayDir, phaseDir, tolerance);
-    if (newFld >= 0) {
-      fldMap[f] = newFld;
-    } else { // need to add a new entry in the FIELD subtable
-      fldMap[f] = fld.nrow();
-      fld.addRow();
-      fldRow.putMatchingFields(fldMap[f], otherFldRow.get(f));
+     const Int newFld = 
+       fieldCols.matchDirection(refDir, delayDir, phaseDir, tolerance);
+     if (newFld >= 0) {
+       fldMap[f] = newFld;
+     } else { // need to add a new entry in the FIELD subtable
+       fldMap[f] = fld.nrow();
+       fld.addRow();
+       fldRow.putMatchingFields(fldMap[f], otherFldRow.get(f));
       if (dirType != otherDirType) {
-	DebugAssert(fieldCols.numPoly()(fldMap[f]) == 0, AipsError);
-	Vector<MDirection> vdir(1, refDir);
-	fieldCols.referenceDirMeasCol().put(fldMap[f], vdir);
-	vdir(0) = delayDir;
-	fieldCols.delayDirMeasCol().put(fldMap[f], vdir);
-	vdir(0) = phaseDir;
-	fieldCols.phaseDirMeasCol().put(fldMap[f], vdir);
+ 	DebugAssert(fieldCols.numPoly()(fldMap[f]) == 0, AipsError);
+ 	Vector<MDirection> vdir(1, refDir);
+ 	fieldCols.referenceDirMeasCol().put(fldMap[f], vdir);
+ 	vdir(0) = delayDir;
+ 	fieldCols.delayDirMeasCol().put(fldMap[f], vdir);
+ 	vdir(0) = phaseDir;
+ 	fieldCols.phaseDirMeasCol().put(fldMap[f], vdir);
       }
     }
   }
