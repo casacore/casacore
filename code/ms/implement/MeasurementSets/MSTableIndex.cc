@@ -197,9 +197,9 @@ uInt MSTableIndex::getNearestRow(Bool &found)
 		if (thisElem == 0) {
 		    lastNearest_p = lastSearch_p(0);
 		} else {
-		    Double lowDiff = time_p - timeColumn_p(thisElem-1);
-		    Double highDiff = timeColumn_p(thisElem) - time_p;
-		    lastNearest_p = lowDiff < highDiff ? lastSearch_p(thisElem-1) : lastSearch_p(thisElem);
+		    Double lowDiff = time_p - timeColumn_p(lastSearch_p(thisElem-1));
+		    Double highDiff = timeColumn_p(lastSearch_p(thisElem)) - time_p;
+		    lastNearest_p = lowDiff > highDiff ? lastSearch_p(thisElem) : lastSearch_p(thisElem-1);
 		}
 	    } else if (nElem > 0) {
 	      // just return the last one
@@ -409,10 +409,13 @@ Int MSTableIndex::compare(const Block<void *>& fieldPtrs,
 			const Double width = ((const Double*)(dataPtrs[i+1]))[index];
 			if (width < 0) {
 			    // nope, just TIME, no interval
-			    if (key < time) {
-				return -1;
-			    } else if (key > time) {
-				return 1;
+			    // use NEAR instead of absolute comparison here
+			    if (!near(key,time)) {
+				if (key < time) {
+				    return -1;
+				} else if (key > time) {
+				    return 1;
+				}
 			    }
 			} else {
 			    const Double start = time - width/2;
