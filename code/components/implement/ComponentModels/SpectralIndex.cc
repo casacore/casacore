@@ -278,10 +278,10 @@ Bool SpectralIndex::fromRecord(String & errorMessage,
       indexVal = record.asArrayDouble(index);
       break;
     case TpArrayFloat:
-      convertArray(indexVal, record.asArrayFloat(index));
+      convertArray(indexVal.ac(), record.asArrayFloat(index));
       break;
     case TpArrayInt:
-      convertArray(indexVal, record.asArrayInt(index));
+      convertArray(indexVal.ac(), record.asArrayInt(index));
       break;
     default:
       errorMessage += "The 'index' field must be vector of real numbers\n";
