@@ -584,10 +584,11 @@ void GenericL2Fit<T>::buildConstraint() {
 				      (*ptr_derive_p)[j].value();
     typename FunctionTraits<T>::BaseType b(*constrVal_p[i]); // known value
     // Get arguments
-    for (uInt k=0; k<constrArg_p[i]->nelements(); ++k) arg_p[k] =
+    carg_p.resize(constrArg_p[i]->nelements());
+    for (uInt k=0; k<constrArg_p[i]->nelements(); ++k) carg_p[k] =
 							 (*constrArg_p[i])[k];
     // calculate constraint equations
-    valder_p = (*constrFun_p[i])(arg_p);
+    valder_p = (*constrFun_p[i])(carg_p);
     valder_p.derivatives(fullEq_p);
     b -= valder_p.value();
     for (uInt j=0, k=0; j<pCount_p; ++j) {

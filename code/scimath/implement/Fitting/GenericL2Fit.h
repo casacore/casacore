@@ -479,8 +479,11 @@ template<class T> class GenericL2Fit : public LSQaips {
   mutable Vector<typename FunctionTraits<T>::BaseType> condEq_p;
   // Equation for all available parameters
   mutable Vector<typename FunctionTraits<T>::BaseType> fullEq_p;
-  // Contiguous argument area
+  // Contiguous argument areas
+  // <group>
   mutable Vector<typename FunctionTraits<T>::ArgType> arg_p;
+  mutable Vector<typename FunctionTraits<T>::ArgType> carg_p;
+  // </group>
   // Local solution area
   // <group>
   mutable Vector<typename FunctionTraits<T>::BaseType> sol_p;
