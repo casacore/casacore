@@ -570,15 +570,17 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
     String groupType;
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
-    LogSink& log = logger().sink();
+    ImageLogger& log = logger();
+    LogSink& logSink = log.sink();
     LogOrigin or(String("FITSImage"), String("crackHeaderFloat"));
 //
     uInt n;
     while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
-       for (uInt i=0; i<lines.nelements(); i++) {
-          LogMessage msg(lines(i), or);
-          log.postLocally(msg);
-       }
+       if (groupType == "LOGTABLE") {
+          FITSHistoryUtil::fromHISTORY(logSink, lines, n, True);
+        } else if (groupType == "") {
+          FITSHistoryUtil::fromHISTORY(logSink, lines, n, False);
+        }
     }
 }
 
@@ -667,14 +669,16 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
     String groupType;
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
-    LogSink& log = logger().sink();
+    ImageLogger& log = logger();
+    LogSink& logSink = log.sink();
     LogOrigin or(String("FITSImage"), String("crackHeaderShort"));
 //
     uInt n;
     while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
-       for (uInt i=0; i<lines.nelements(); i++) {
-          LogMessage msg(lines(i), or);
-          log.postLocally(msg);
+       if (groupType == "LOGTABLE") {
+         FITSHistoryUtil::fromHISTORY(logSink, lines, n, True);
+       } else if (groupType == "") {
+         FITSHistoryUtil::fromHISTORY(logSink, lines, n, False);
        }
     }
 }
