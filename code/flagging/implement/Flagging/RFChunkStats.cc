@@ -93,6 +93,8 @@ void RFChunkStats::newChunk ()
   counts[ROW]  = visiter.nRowChunk();
 // get correlation types
   visiter.corrType(corrtypes);
+// reset min/max time slots
+  start_time = end_time = current_time = 0;
 
 // setups statistics
   nrf_time.resize(num(TIME));
@@ -126,10 +128,18 @@ void RFChunkStats::newPass (uInt npass)
 
 void RFChunkStats::newTime ()
 {
+// setup IFR numbers for every row in time slot
   ifr_nums.resize( visbuf.antenna1().nelements() );
   ifr_nums = flagger.ifrNumbers( visbuf.antenna1(),visbuf.antenna2() );
+// reset stats
   for( uInt i=0; i<ifr_nums.nelements(); i++ )
     rows_per_ifr(ifr_nums(i))++;
+// set start/end times
+  current_time = (visbuf.time()(0))/(24*3600);
+  if( current_time<start_time || start_time==0 )
+    start_time = current_time;
+  if( current_time>end_time )
+    end_time = current_time;
   itime++;
 //  fprintf(stderr,"newTime: %d\n",itime);
 }

@@ -96,6 +96,7 @@ protected:
   Vector<Int>  ifr_nums;
   Vector<Int>  corrtypes;
   Vector<Double> freq;
+  Double       start_time,end_time,current_time;
   uInt chunk_no,pass_no;
   Int itime;
   
@@ -142,6 +143,16 @@ public:
   uInt num ( StatEnums which ) const { return counts[which]; }
 // returns vector of frequencies (one per channel)
   const Vector<Double> & frequency ();
+  
+// returns time of currently iterated time slot
+  Double currentMJD () const     
+    { return current_time; }
+// return first time slot in chunk
+  Double startMJD () const     
+    { return start_time; }
+// return last time slot in chunk
+  Double endMJD () const       
+    { return end_time; }
 
 // returns corr mask corresponding to specified Stokes types
 // (templated, but only String and Int will actually work)
