@@ -31,11 +31,12 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Fitting/LSQaips.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/AutoDiff.h>
+#include <aips/Containers/Block.h>
+#include <aips/Fitting/LSQaips.h>
 #include <aips/Functionals/FunctionTraits.h>
+#include <aips/Mathematics/AutoDiff.h>
 
 //# Forward declarations
 template <class T> class Array;
@@ -234,7 +235,16 @@ template<class T> class GenericL2Fit : public LSQaips {
   // of the function are taken as the initial guess for the non-linear fitting.
   void setFunction(Function<typename FunctionTraits<T>::DiffType,
 		   typename FunctionTraits<T>::DiffType> &function);
-
+  // Set the possible constraint functions. The <src>addConstraint</src>
+  // will add one; the <src>setConstraint</src> will [re-]set the
+  // <src>n</src>th constraint. If unsucessful, False returned.
+  // <group>
+  Bool setConstraint(const uInt n,
+		     Function<typename FunctionTraits<T>::DiffType,
+		     typename FunctionTraits<T>::DiffType> &function);
+  Bool addConstraint(Function<typename FunctionTraits<T>::DiffType,
+		     typename FunctionTraits<T>::DiffType> &function);
+  // </group>
   // Set the collinearity factor as the square of the sine of the
   // minimum angle allowed between input vectors (default zero for non-SVD,
   // 1e-8 for SVD)
@@ -261,6 +271,16 @@ template<class T> class GenericL2Fit : public LSQaips {
   // </group>
   // Return the number of fitted parameters
   uInt fittedNumber() const { return aCount_ai; };
+
+  // Return the number of constraints, and pointers to constraint functions.
+  // A <src>0-pointer</src> will be returned if no such constraint present.
+  // This pointer should never be destroyed.
+  // <group>
+  uInt NConstraints() { return constrList_p.nelements(); };
+  Function<typename FunctionTraits<T>::DiffType,
+    typename FunctionTraits<T>::DiffType> *getConstraint(const uInt n) {
+    return (n >= constrList_p.nelements() ? 0 : constrList_p[n]); };
+  // </group>
 
   // Set the parameter values. The input is a vector of parameters; all
   // or only the masked ones' values will be set, using the input values
@@ -402,6 +422,9 @@ template<class T> class GenericL2Fit : public LSQaips {
   // Function to use in evaluating condition equation
   Function<typename FunctionTraits<T>::DiffType,
     typename FunctionTraits<T>::DiffType> *ptr_derive_p;
+  // List of functions describing the possible constraint equations
+  PtrBlock<Function<typename FunctionTraits<T>::DiffType,
+    typename FunctionTraits<T>::DiffType>*> constrList_p;
   // Number of available parameters
   uInt pCount_p;
   // Number of dimensions of input data

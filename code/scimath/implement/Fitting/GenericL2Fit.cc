@@ -30,8 +30,8 @@
 #include <trial/Fitting/GenericL2Fit.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/VectorSTLIterator.h>
-#include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Functionals/Function.h>
+#include <aips/Mathematics/AutoDiffIO.h>
 
 //# Constants
 // Default svd collinearity
@@ -41,7 +41,7 @@ GenericL2Fit<T>::GenericL2Fit() :
   LSQaips(),
   COLLINEARITY(1e-8),
   aCount_ai(0),
-  svd_p(False), ptr_derive_p(0),
+  svd_p(False), ptr_derive_p(0), constrList_p(),
   pCount_p(0), ndim_p(0),
   needInit_p(True), solved_p(False),
   errors_p(False), ferrors_p(False),
@@ -57,7 +57,7 @@ GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
   LSQaips(other),
   COLLINEARITY(1e-8),
   aCount_ai(other.aCount_ai),
-  svd_p(other.svd_p), ptr_derive_p(0),
+  svd_p(other.svd_p), ptr_derive_p(0), constrList_p(),
   pCount_p(other.pCount_p), ndim_p(other.ndim_p),
   needInit_p(other.needInit_p), solved_p(other.solved_p),
   errors_p(other.errors_p), ferrors_p(other.ferrors_p),
@@ -66,6 +66,7 @@ GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
   err_p(0), ferr_p(0),
   valder_p(typename FunctionTraits<T>::DiffType(0)) {
   if (other.ptr_derive_p) ptr_derive_p = other.ptr_derive_p->clone();
+  constrList_p = other.constrList_p;
   condEq_p = other.condEq_p;
   fullEq_p = other.fullEq_p;
   arg_p = other.arg_p;
@@ -84,6 +85,7 @@ GenericL2Fit<T> &GenericL2Fit<T>::operator=(const GenericL2Fit &other) {
     svd_p = other.svd_p;
     if (other.ptr_derive_p) ptr_derive_p = other.ptr_derive_p->clone();
     else ptr_derive_p = 0;
+    constrList_p = other.constrList_p;
     pCount_p = other.pCount_p;
     ndim_p = other.ndim_p;
     needInit_p = other.needInit_p;
@@ -118,6 +120,25 @@ setFunction(Function<typename FunctionTraits<T>::DiffType> &function) {
   aCount_ai = ptr_derive_p->parameters().nMaskedParameters();
   ndim_p = ptr_derive_p->ndim();
   initfit_p(aCount_ai);
+}
+
+template<class T>
+Bool GenericL2Fit<T>::
+setConstraint(const uInt n,
+	      Function<typename FunctionTraits<T>::DiffType> &function) {
+  if (n >= constrList_p.nelements()) return False;
+  delete constrList_p[n]; constrList_p[n] = 0;
+  constrList_p[n] = function.clone();
+  return True;
+}
+
+template<class T>
+Bool GenericL2Fit<T>::
+addConstraint(Function<typename FunctionTraits<T>::DiffType> &function) {
+  uInt n = constrList_p.nelements();
+  constrList_p.resize(n+1); constrList_p = 0;
+  constrList_p[n] = function.clone();
+  return True;
 }
 
 template<class T>
@@ -417,6 +438,9 @@ void GenericL2Fit<T>::resetFunction() {
   solved_p = False;
   errors_p = False;
   ferrors_p = False;
+  for (uInt i=0; i<constrList_p.nelements(); i++) {
+    delete constrList_p[i]; constrList_p[i] = 0;
+  };
 }
 
 template<class T>
