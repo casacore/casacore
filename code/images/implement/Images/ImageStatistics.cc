@@ -37,10 +37,11 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/DataType.h>
   
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageStatistics.h>
-#include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
@@ -61,7 +62,7 @@ extern "C" {
 // Public functions
 
 template <class T>
-ImageStatistics<T>::ImageStatistics (const PagedImage<T>& imageU,
+ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
                                      LogIO& osU) : os_p(osU)
 //
 // Constructor. 
@@ -70,32 +71,117 @@ ImageStatistics<T>::ImageStatistics (const PagedImage<T>& imageU,
    goodParameterStatus_p = True;
    pStoreImage_p = 0;
    needStorageImage_p = True;
+
+   noInclude_p = True;
+   noExclude_p = True;
+   doList_p = False;
+
+   nxy_p.resize(0);
+   statsToPlot_p.resize(0);
+   range_p.resize(0);
+   device_p = "";
+   cursorShape_p.resize(0);
+   minPos_p.resize(0);
+   maxPos_p.resize(0);
+   nVirCursorIter_p = 0;
   
    if (setNewImage(imageU)) {
-
-// range_p is only accessed if !noInclude || !noExclude
-// which means setInExcRange has been called and range_p
-// filled in
-
-      noInclude_p = True;
-      noExclude_p = True;
-      doList_p = False;
-
-// Plotting device is empty on construction. nxy_p is only accessed 
-// if device is not empty which means setPlotting has been called so
-// nxy_p will have been given a default
-
-
-// Default cursor axes are entire image
-
       Vector<Int> cursorAxes(pInImage_p->ndim());
-      for (Int i=0; i<pInImage_p->ndim(); i++) cursorAxes(i) = i;
 
+// Cursor axes default to entire image
+
+      for (Int i=0; i<pInImage_p->ndim(); i++) cursorAxes(i) = i;
       goodParameterStatus_p = setAxes(cursorAxes);
    } else {
       goodParameterStatus_p = False;
    }
 }
+
+
+template <class T>
+ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other) 
+                      : os_p(other.os_p), 
+                        cursorAxes_p(other.cursorAxes_p),
+                        displayAxes_p(other.displayAxes_p), 
+                        nxy_p(other.nxy_p),
+                        statsToPlot_p(other.statsToPlot_p), 
+                        range_p(other.range_p),
+                        device_p(other.device_p), 
+                        doList_p(other.doList_p),
+                        goodParameterStatus_p(other.goodParameterStatus_p),
+                        needStorageImage_p(other.needStorageImage_p),
+                        noInclude_p(other.noInclude_p), 
+                        noExclude_p(other.noExclude_p),
+                        cursorShape_p(other.cursorShape_p),
+                        minPos_p(other.minPos_p), 
+                        maxPos_p(other.maxPos_p),
+                        nVirCursorIter_p(other.nVirCursorIter_p)
+//
+// Copy constructor
+//
+{
+
+// Assign to image pointer
+
+   pInImage_p = other.pInImage_p;
+
+// Copy storage image
+
+   if (other.pStoreImage_p !=0) {
+      pStoreImage_p = new ArrayLattice<Double>(*(other.pStoreImage_p));
+   } else {
+      pStoreImage_p = 0;
+   }
+}
+
+
+
+
+template <class T>
+ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &other)
+//
+// Assignment operator
+//
+{
+   if (this != &other) {
+
+// Assign to image pointer
+
+      pInImage_p = other.pInImage_p;
+
+// Copy storage image
+
+      if (other.pStoreImage_p !=0) {
+         pStoreImage_p = new ArrayLattice<Double>(*(other.pStoreImage_p));
+      } else {
+         pStoreImage_p = 0;
+      }
+
+// Do the rest
+
+      os_p = other.os_p;
+      cursorAxes_p = other.cursorAxes_p;
+      displayAxes_p = other.displayAxes_p; 
+      nxy_p = other.nxy_p;
+      statsToPlot_p = other.statsToPlot_p; 
+      range_p = other.range_p;
+      device_p = other.device_p; 
+      doList_p = other.doList_p;
+      goodParameterStatus_p = other.goodParameterStatus_p;
+      needStorageImage_p = other.needStorageImage_p;
+      noInclude_p = other.noInclude_p; 
+      noExclude_p = other.noExclude_p;
+      cursorShape_p = other.cursorShape_p;
+      minPos_p = other.minPos_p; 
+      maxPos_p = other.maxPos_p;
+      nVirCursorIter_p = other.nVirCursorIter_p;
+
+      return *this;
+   }
+
+}
+
+
  
 
 template <class T>
@@ -120,7 +206,7 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
    }
 
 // Set cursor arrays
-                          
+
    cursorAxes_p.resize(0);
    cursorAxes_p = axesU;
    ostrstream os;
@@ -182,6 +268,7 @@ Bool ImageStatistics<T>::setList (const Bool& doList)
 // See if user wants to list statistics as well as plot them
 //
 {
+
    if (!goodParameterStatus_p) {
       os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
@@ -247,7 +334,7 @@ Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
 
 
 template <class T>
-Bool ImageStatistics<T>::setNewImage(const PagedImage<T>& image)
+Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 //    
 // Assign pointer to image
 //
@@ -258,8 +345,11 @@ Bool ImageStatistics<T>::setNewImage(const PagedImage<T>& image)
    }
   
    pInImage_p = &image;
-   DataType imageType = imagePixelType(pInImage_p->name());
-  
+
+//   DataType imageType = imagePixelType(pInImage_p->name());
+
+   T *dummy = 0;
+   DataType imageType = whatType(dummy);
    if (imageType !=TpFloat && imageType != TpDouble) {
       os_p << LogIO::SEVERE << "Statistics can only be evaluated from images of type : " 
            << TpFloat << " and " << TpDouble << endl << LogIO::POST;
@@ -321,14 +411,14 @@ Bool ImageStatistics<T>::display()
 
 // Size of plotting abcissa axis
 
-   n1_p = pStoreImage_p->shape()(0);
+   Int n1 = pStoreImage_p->shape()(0);
 
 
 // Allocate abcissa and oridnate arrays for plotting and listing
 
-   pAbc_p = new float[n1_p];
-   for (i=0; i<n1_p; i++) pAbc_p[i] = i + 1.0;
-   for (i=0; i<NSTATS; i++) pOrd_p[i] = new float[n1_p];
+   Vector<Float> abc(n1);
+   for (i=0; i<n1; i++) abc(i) = i + 1.0;
+   Matrix<Float> ord(n1,NSTATS);
 
 
 // Open plotting device if required and set up some plotting things
@@ -357,57 +447,51 @@ Bool ImageStatistics<T>::display()
    cursorShape(pStoreImage_p->ndim()-1) = NACCUM;
    RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, cursorShape);
 
-
    for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
 
-
-// Convert accumulations to mean, sigma, and rms. Make sure we do all calculations
+// Convert accumulations to  mean, sigma, and rms. Make sure we do all calculations
 // with double precision values. 
  
       Matrix<Double> matrix(pixelIterator.matrixCursor());
-      for (i=0; i<n1_p; i++) {
+      for (i=0; i<n1; i++) {
          Int nPts = Int(matrix(i,NPTS)+0.1);
          if (nPts > 0) {
-            pOrd_p[MEAN][i] = matrix(i,SUM) / matrix(i,NPTS);
+            ord(i,MEAN) = matrix(i,SUM) / matrix(i,NPTS);
             Double tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/matrix(i,NPTS))) / 
                          (matrix(i,NPTS)-1);
             if (tmp > 0.0) {
-               pOrd_p[SIGMA][i]  = sqrt(tmp);
+               ord(i,SIGMA) = sqrt(tmp);
             } else {
-               pOrd_p[SIGMA][i]  = 0.0;
+               ord(i,SIGMA) = 0.0;
             }
-            pOrd_p[RMS][i] = sqrt(matrix(i,SUMSQ)/matrix(i,NPTS));
+            ord(i,RMS) = sqrt(matrix(i,SUMSQ)/matrix(i,NPTS));
          }
       }
 
 
-// Extract the accumulation values from the cursor matrix into rows (note stupid
-// aips++ convention) and copy to float arrays for plotting
+// Extract the direct values from the cursor matrix into the plot matrix
+// There is no easy way to do this other than as I have
 
+      Int j;
       for (i=0; i<NACCUM; i++) {
-         Bool deleteIt;
-         const Double* pt = pixelIterator.matrixCursor().column(i).getStorage(deleteIt);
-         for (Int j=0; j<n1_p; j++) pOrd_p[i][j] = pt[j];
-         pixelIterator.matrixCursor().column(i).freeStorage(pt, deleteIt);
+         for (j=0; j<n1; j++) ord(j,i) = pixelIterator.matrixCursor()(j,i);
       }
 
 
 // Plot statistics
 
-      if (doPlot) plotStats (pixelIterator.position());
+      if (doPlot) plotStats (pixelIterator.position(), n1, abc, ord);
 
 
 // List statistics
 
-      if (!doPlot || (doPlot && doList_p)) listStats (pixelIterator.position());
+      if (!doPlot || (doPlot && doList_p)) listStats (pixelIterator.position(), n1, abc, ord);
 
     }
 
 
-// Deallocate memory
+// Finish up
 
-   delete [] pAbc_p;
-   for (Int j=0; j<NSTATS; j++) delete [] pOrd_p[j];
    if (doPlot) cpgend();
    return True;
 }
@@ -675,64 +759,65 @@ void ImageStatistics<T>::accumulate (Int& nIter,
    Bool exclude = Bool(!noExclude_p);
 
 
-// Iterate 
+// Iterate; {} destroys iterator when done with it
 
-   Bool init = True;
-   while (!posIt.pastEnd()) {
-      Int orig = posIt.vector().origin()(0);
+   {
+      Bool init = True;
+      while (!posIt.pastEnd()) {
+         Int orig = posIt.vector().origin()(0);
 
-      if (include) {
+         if (include) {
 
 // Inclusion range
 
-         for (i=0; i<n1; i++) {
-            tmp = posIt.vector()(i+orig);
-            if (tmp >= range_p(0) && tmp <= range_p(1)) {
-               if (init) {
-                  sMin = tmp + 1;
-                  sMax = tmp - 1;
-                  init = False;
+            for (i=0; i<n1; i++) {
+               tmp = posIt.vector()(i+orig);
+               if (tmp >= range_p(0) && tmp <= range_p(1)) {
+                  if (init) {
+                     sMin = tmp + 1;
+                     sMax = tmp - 1;
+                     init = False;
+                  }
+                  accumulate2 (sum, sumsq, sMin, sMax, nPts, tMinPos, tMaxPos,
+                               i, posIt.pos(), tmp);
                }
-               accumulate2 (sum, sumsq, sMin, sMax, nPts, tMinPos, tMaxPos,
-                            i, posIt.pos(), tmp);
             }
-         }
-      } else if (exclude) {
+         } else if (exclude) {
 
 // Exclusion range
 
-         for (i=0; i<n1; i++) {
-            tmp = posIt.vector()(i+orig);
-            if (tmp < range_p(0) || tmp > range_p(1)) {
-               if (init) {                
-                  sMin = tmp + 1;
-                  sMax = tmp - 1;
-                  init = False;
+            for (i=0; i<n1; i++) {
+               tmp = posIt.vector()(i+orig);
+               if (tmp < range_p(0) || tmp > range_p(1)) {
+                  if (init) {                
+                     sMin = tmp + 1;
+                     sMax = tmp - 1;
+                     init = False;
+                  }
+                  accumulate2 (sum, sumsq, sMin, sMax, nPts, tMinPos, tMaxPos,
+                               i, posIt.pos(), tmp);
                }
-               accumulate2 (sum, sumsq, sMin, sMax, nPts, tMinPos, tMaxPos,
-                            i, posIt.pos(), tmp);
             }
-         }
-      } else {
+         } else {
 
 // All data accepted
-
-         if (init) {
-            sMin = posIt.vector()(orig) + 1;
-            sMax = posIt.vector()(orig) - 1;
-            init = False;
+ 
+            if (init) {
+               sMin = posIt.vector()(orig) + 1;
+               sMax = posIt.vector()(orig) - 1;
+               init = False;
+            }
+            for (i=0; i<n1; i++) accumulate2 (sum, sumsq, sMin, sMax, nPts, tMinPos,
+                                              tMaxPos, i, posIt.pos(), 
+                                              posIt.vector()(i+orig));
          }
-         for (i=0; i<n1; i++) accumulate2 (sum, sumsq, sMin, sMax, nPts, tMinPos,
-                                           tMaxPos, i, posIt.pos(), 
-                                           posIt.vector()(i+orig));
+         posIt.next();
       }
-
-      posIt.next();
    }
 
 
-// Fill storage image.   
 
+// Fill storage image
 
    IPosition storeImagePos(pStoreImage_p->ndim());
    Int lastAxis = pStoreImage_p->ndim() - 1;
@@ -919,7 +1004,7 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
          }
       }
 
-// If there were no decent opints return a nothing array
+// If there were no decent points return a nothing array
 
       if (noGoodPoints) slice.resize(IPosition(1,0));
 
@@ -1120,15 +1205,21 @@ void ImageStatistics<T>::lineSegments (Int& nSeg,
    nPts.resize(nSeg,True);
 }
 
-
+typedef Matrix<Float> gpp_MatrixFloat;
 template <class T>
-void ImageStatistics<T>::listStats (const IPosition& dPos)
+void ImageStatistics<T>::listStats (const IPosition& dPos,
+                                    const Int& n1,
+                                    const Vector<Float>& abc,
+                                    const gpp_MatrixFloat& ord)
 //
 // List the statistics for this line to the standard output
 //
 // Inputs:
 //   dPos    The location of the start of the cursor in the
 //           storage image for this line 
+//   n1      Number of points
+//   abc     Abcissa
+//   ord     Ordinate arrays
 //
 {
    Int nDisplayAxes = displayAxes_p.nelements();
@@ -1140,7 +1231,8 @@ void ImageStatistics<T>::listStats (const IPosition& dPos)
 
    if (nDisplayAxes > 1) {
       for (Int j=1; j<nDisplayAxes; j++) {
-         os_p << pInImage_p->coordinates().worldAxisNames()(displayAxes_p(j))
+//         os_p << pInImage_p->coordinates().worldAxisNames()(displayAxes_p(j))
+      os_p <<  ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)))
               << " = " << dPos(j)+1;
          if (j < nDisplayAxes-1) os_p << ", ";
       }
@@ -1150,7 +1242,7 @@ void ImageStatistics<T>::listStats (const IPosition& dPos)
 // out how big the field width needs to be.  Min of 6 so label fits.
 
    Int nMax = 0;
-   for (Int j=0; j<n1_p; j++) nMax = max(nMax, Int(pOrd_p[NPTS][j]+0.1));
+   for (Int j=0; j<n1; j++) nMax = max(nMax, Int(ord.column(NPTS)(j)+0.1));
    Int logNMax = Int(log10(nMax+1.5));
 
 // Have to convert LogIO object to ostream before can apply
@@ -1187,8 +1279,10 @@ void ImageStatistics<T>::listStats (const IPosition& dPos)
       len0 = 11;
    }
 
-   os_p.output() << setw(oDWidth) << pInImage_p->coordinates().
-     worldAxisNames()(displayAxes_p(0));
+
+
+   os_p.output() << setw(oDWidth) << 
+      ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)));
    os_p.output() << setw(oIWidth) << "Npts";
    os_p.output() << setw(oDWidth) << "Sum";
    os_p.output() << setw(oDWidth) << "Mean"; 
@@ -1200,18 +1294,18 @@ void ImageStatistics<T>::listStats (const IPosition& dPos)
 
 // Write statistics
 
-   for (j=0; j<n1_p; j++) {
+   for (j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+1;
-      os_p.output() << setw(oDWidth)   << pAbc_p[j];
-      os_p.output() << setw(oIWidth)   << Int(pOrd_p[NPTS][j]+0.1);
+      os_p.output() << setw(oDWidth)   << abc(j);
+      os_p.output() << setw(oIWidth)   << Int(ord.column(NPTS)(j)+0.1);
 
-      if (Int(pOrd_p[NPTS][j]+0.1) > 0) {
-         os_p.output() << setw(oDWidth)   << pOrd_p[SUM][j];
-         os_p.output() << setw(oDWidth)   << pOrd_p[MEAN][j];
-         os_p.output() << setw(oDWidth)   << pOrd_p[RMS][j];
-         os_p.output() << setw(oDWidth)   << pOrd_p[SIGMA][j];
-         os_p.output() << setw(oDWidth)   << pOrd_p[MIN][j];
-         os_p.output() << setw(oDWidth)   << pOrd_p[MAX][j];
+      if (Int(ord.column(NPTS)(j)+0.1) > 0) {
+         os_p.output() << setw(oDWidth)   << ord.column(SUM)(j);
+         os_p.output() << setw(oDWidth)   << ord.column(MEAN)(j);
+         os_p.output() << setw(oDWidth)   << ord.column(RMS)(j);
+         os_p.output() << setw(oDWidth)   << ord.column(SIGMA)(j);
+         os_p.output() << setw(oDWidth)   << ord.column(MIN)(j);
+         os_p.output() << setw(oDWidth)   << ord.column(MAX)(j);
       }
       os_p << endl;
    }
@@ -1222,15 +1316,22 @@ void ImageStatistics<T>::listStats (const IPosition& dPos)
 
 
 template <class T>
-void ImageStatistics<T>::plotStats (const IPosition& dPos)
+void ImageStatistics<T>::plotStats (const IPosition& dPos,
+                                    const Int& n1,
+                                    const Vector<Float>& abc,
+                                    const Matrix<Float>& ord)
 //
 // Plot the desired statistics.  
 //
 // Inputs:
 //   dPos    The location of the start of the cursor in the 
 //           storage image for this line 
+//   n1      Number of points
+//   abc     Abcissa
+//   ord     Ordinate arrays
 //
 {
+
 
 // Work out what we are plotting
 
@@ -1249,22 +1350,23 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
    Int nL = 0;
    Int nR = 0;
 
+
 // Find extrema.  Return if there were no valid points to plot
 
    Float yMin, yMax, xMin, xMax, yLMin, yLMax, yRMin, yRMax;
 
-   minMax(none, xMin, xMax, pAbc_p, pOrd_p[NPTS], n1_p);
+   minMax(none, xMin, xMax, abc, ord.column(NPTS), n1);
    if (none) return;
 
 // Left hand y axis
 
    if (doMean) {
-      minMax(none, yLMin, yLMax, pOrd_p[MEAN], pOrd_p[NPTS], n1_p);
+      minMax(none, yLMin, yLMax, ord.column(MEAN), ord.column(NPTS), n1);
       first = False;
       nL++;
    }
    if (doSum) {
-      minMax(none, yMin, yMax, pOrd_p[SUM], pOrd_p[NPTS], n1_p);
+      minMax(none, yMin, yMax, ord.column(SUM), ord.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1276,7 +1378,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
       nL++;
    }
    if (doSumSq) {
-      minMax(none, yMin, yMax, pOrd_p[SUMSQ], pOrd_p[NPTS], n1_p);
+      minMax(none, yMin, yMax, ord.column(SUMSQ), ord.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1288,7 +1390,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
       nL++;
    }
    if (doMin) {
-      minMax(none, yMin, yMax, pOrd_p[MIN], pOrd_p[NPTS], n1_p);
+      minMax(none, yMin, yMax, ord.column(MIN), ord.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1300,7 +1402,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
       nL++;
    }
    if (doMax) {
-      minMax(none, yMin, yMax, pOrd_p[MAX], pOrd_p[NPTS], n1_p);
+      minMax(none, yMin, yMax, ord.column(MAX), ord.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1312,7 +1414,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
       nL++;
    }
    if (doNPts) {
-      minMax(none, yMin, yMax, pOrd_p[NPTS], pOrd_p[NPTS], n1_p);
+      minMax(none, yMin, yMax, ord.column(NPTS), ord.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1329,12 +1431,12 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
 
    first = True;
    if (doSigma) {
-      minMax(none, yRMin, yRMax, pOrd_p[SIGMA], pOrd_p[NPTS], n1_p);
+      minMax(none, yRMin, yRMax, ord.column(SIGMA), ord.column(NPTS), n1);
       first = False;
       nR++;
    }
    if (doRms) {
-      minMax(none, yMin, yMax, pOrd_p[RMS], pOrd_p[NPTS], n1_p);
+      minMax(none, yMin, yMax, ord.column(RMS), ord.column(NPTS), n1);
       if (first) {
          yRMin = yMin;
          yRMax = yMax;
@@ -1423,7 +1525,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot ( n1_p, pAbc_p, pOrd_p[MEAN], pOrd_p[NPTS]);
+         multiPlot ( n1, abc, ord.column(MEAN), ord.column(NPTS));
       }
       if (doSum) {
          if (++ls > 5) ls = 1;
@@ -1432,7 +1534,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1_p, pAbc_p, pOrd_p[SUM], pOrd_p[NPTS]);
+         multiPlot (n1, abc, ord.column(SUM), ord.column(NPTS));
       }
       if (doSumSq) {
          if (++ls > 5) ls = 1;
@@ -1441,7 +1543,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1_p, pAbc_p, pOrd_p[SUMSQ], pOrd_p[NPTS]);
+         multiPlot (n1, abc, ord.column(SUMSQ), ord.column(NPTS));
       }
       if (doMin) {
          if (++ls > 5) ls = 1;
@@ -1450,7 +1552,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1_p, pAbc_p, pOrd_p[MIN], pOrd_p[NPTS]);
+         multiPlot (n1, abc, ord.column(MIN), ord.column(NPTS));
       }
       if (doMax) {
          if (++ls > 5) ls = 1;
@@ -1459,7 +1561,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1_p, pAbc_p, pOrd_p[MAX], pOrd_p[NPTS]);
+         multiPlot (n1, abc, ord.column(MAX), ord.column(NPTS));
       }
       if (doNPts) {
          if (++ls > 5) ls = 1;
@@ -1468,7 +1570,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1_p, pAbc_p, pOrd_p[NPTS], pOrd_p[NPTS]);
+         multiPlot (n1, abc, ord.column(NPTS), ord.column(NPTS));
       }
 
 // Y label
@@ -1497,7 +1599,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
          rCols(++i) = niceColour (initColours);
          cpgsci (rCols(i));
 
-         multiPlot (n1_p, pAbc_p, pOrd_p[SIGMA], pOrd_p[NPTS]);
+         multiPlot (n1, abc, ord.column(SIGMA), ord.column(NPTS));
       }
       if (doRms) {
          if (++ls > 5) ls = 1;
@@ -1506,7 +1608,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos)
          rCols(++i) = niceColour (initColours);
          cpgsci (rCols(i));
 
-         multiPlot (n1_p, pAbc_p, pOrd_p[RMS], pOrd_p[NPTS]);
+         multiPlot (n1, abc, ord.column(RMS), ord.column(NPTS));
       }
 
 // Y label
@@ -1631,29 +1733,35 @@ void ImageStatistics<T>::multiColourYLabel (const String& LRLoc,
 
 
 
+
 template <class T>
-void ImageStatistics<T>::multiPlot (const Int& n,
-                                    const float* px,
-                                    const float* py,
-                                    const float* pn)
+void ImageStatistics<T>::multiPlot (const Int& n1,
+                                    const Vector<Float>& x,
+                                    const Vector<Float>& y,
+                                    const Vector<Float>& n)
 //
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments
 //
 // Inputs:
-//  n        Number of points (good and bad)
-//  px,py    Pointers to plot arrays
-//  pn       Pointer to array indicating whether
-//           points in px,py should be plotted or
-//           not.  If > 0 plot it.
+//  n1       Number of points (good and bad)
+//  x,y,n    Abcissa, ordinate, and "masking" array
+//           (if > 0 plot it)
 {
+
+// Get pointers
+
+   Bool deleteX, deleteY, deleteN;
+   const float* px = x.getStorage(deleteX);
+   const float* py = y.getStorage(deleteY);
+   const float* pn = n.getStorage(deleteN);
 
 // Find number of segments in this array
 
    Int nSeg = 0;
    Vector<Int> start;
    Vector<Int> nPts;
-   lineSegments (nSeg, start, nPts, pn,  n);
+   lineSegments (nSeg, start, nPts, pn,  n1);
 
 // Loop over segments and plot them
 
@@ -1664,6 +1772,13 @@ void ImageStatistics<T>::multiPlot (const Int& n,
       else
          cpgline (nPts(i), &px[ip], &py[ip]);
    }
+
+// Delete memory
+
+   x.freeStorage(px, deleteX);
+   y.freeStorage(py, deleteY);
+   n.freeStorage(pn, deleteN);
+
 }
 
 
@@ -1671,35 +1786,34 @@ template <class T>
 void ImageStatistics<T>::minMax (Bool& none,
                                  Float& dMin, 
                                  Float& dMax,  
-                                 const float* pd,           
-                                 const float* pn,
-                                 const Int& n)
+                                 const Vector<Float>& d,
+                                 const Vector<Float>& n,
+                                 const Int& n1)
 //
 // Inputs:
-//   pd   Pointer to array to find min and max of
-//   pn   Pointer to array which gives the number of points
-//        that were used to compute the value in pt.  If zero,
-//        that means there were no valid points and we don't
-//        want to consider the corresponding pd[i] value
-//   n    number of points in pd and pn arrays
+//   d   Vector to find min and max of
+//   n   Vector which gives the number of points
+//       that were used to compute the value in pt.  If zero,
+//       that means there were no valid points and we don't
+//       want to consider the corresponding pd[i] value
+//   n1  Number of points in d and n arrays
 // Outputs:
-//   none No valid points in array
-//   min,max
-//        Min and max of array pd
+//   none       No valid points in array
+//   dMin,DMax  Min and max of array pd
 
 {
    Bool init = True;
    none = True;
 
-   for (Int i=0; i<n; i++) {
-     if (pn[i] > 0.5) {
+   for (Int i=0; i<n1; i++) {
+     if (n(i) > 0.5) {
         if (init) {
-           dMin = pd[i];
-           dMax = pd[i];
+           dMin = d(i);
+           dMax = d(i);
            init = False;
         } else {
-           dMin = min(dMin, pd[i]);
-           dMax = max(dMax, pd[i]);
+           dMin = min(dMin, d(i));
+           dMax = max(dMax, d(i));
         }
         none = False;
      }
