@@ -203,7 +203,10 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
       break;
     };
     case PERLEY_TAYLOR_99: {
-      fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
+      if (dt<=4) 
+        fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
+      else
+        fluxCoeff = -202.6259 + dt * (149.7321 + dt * (-36.4943 + dt * 2.9372));
       break;
     };
     };
