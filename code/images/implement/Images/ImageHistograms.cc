@@ -195,9 +195,8 @@ ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &othe
       device_p = other.device_p;
       nxy_p = other.nxy_p;
       range_p = other.range_p;
-
-      return *this;
    }
+   return *this;
 }
 
  
