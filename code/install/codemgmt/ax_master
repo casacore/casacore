@@ -2705,3 +2705,4 @@
 10 020 src mv trial/apps/datalinetool/textgroup.g trial/implement/Datalinetool/textgroup.g
 10 020 src mv trial/apps/datalinetool/tgplot.g trial/implement/Datalinetool/tgplot.g
 10 030 src rm trial/apps/gmisc/gmisc.cc
+10 030 sys rm bin/gmisc
