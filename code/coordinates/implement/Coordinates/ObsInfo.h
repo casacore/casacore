@@ -128,7 +128,7 @@ public:
 
     // Functions to interconvert between an ObsInfo and a record. These 
     // functions are inherited from class
-    // <linkto class=RecordTransformable>RecordTransformable</class>. As new
+    // <linkto class=RecordTransformable>RecordTransformable</linkto>. As new
     // fields get added to ObsInfo these functions should be augmented. Missing
     // fields should not generate an error to in fromRecord to allow for 
     // backwards compatibility - null values should be supplied instead.
