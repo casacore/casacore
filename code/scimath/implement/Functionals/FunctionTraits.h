@@ -179,6 +179,8 @@ public:
   typedef AutoDiffA<T> ParamType;
   // Type for arguments
   typedef AutoDiffA<T> ArgType;
+  // Default type for differentiation
+  typedef AutoDiffA<T> DiffType;
 };
 
 #undef FunctionTraits_PA
