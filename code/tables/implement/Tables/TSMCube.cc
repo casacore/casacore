@@ -1,5 +1,5 @@
 //# TSMCube.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -75,11 +75,14 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
 
 TSMCube::TSMCube (TiledStMan* stman, AipsIO& ios)
 : stmanPtr_p     (stman),
+  filePtr_p      (0),
   cache_p        (0),
   userSetCache_p (False)
 {
-    uInt fileSeqnr = getObject (ios);
-    filePtr_p = stmanPtr_p->getFile (fileSeqnr);
+    Int fileSeqnr = getObject (ios);
+    if (fileSeqnr >= 0) {
+	filePtr_p = stmanPtr_p->getFile (fileSeqnr);
+    }
     // Calculate the various variables.
     setup();
 }
@@ -188,13 +191,17 @@ void TSMCube::putObject (AipsIO& ios)
     ios << nrdim_p;
     ios << cubeShape_p;
     ios << tileShape_p;
-    ios << filePtr_p->sequenceNumber();
+    Int seqnr = -1;
+    if (filePtr_p != 0) {
+	seqnr = filePtr_p->sequenceNumber();
+    }
+    ios << seqnr;
     ios << fileOffset_p;
 }
-uInt TSMCube::getObject (AipsIO& ios)
+Int TSMCube::getObject (AipsIO& ios)
 {
     uInt version;
-    uInt fileSeqnr;
+    Int fileSeqnr;
     ios >> version;
     ios >> values_p;
     ios >> extensible_p;
