@@ -5536,3 +5536,4 @@
 15 211 sys rm libexec/oldsdaverager.g
 15 211 sys rm libexec/oldsditerator.g
 15 211 sys rm bin/oldsditerator
+15 211 top rm code/trial/apps/oldsditerator
