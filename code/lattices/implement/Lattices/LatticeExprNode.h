@@ -282,12 +282,13 @@ class LatticeExprNode
 // </group>
 
 // 1-argument function to get the number of elements in a lattice
+// Results in a scalar Double
    friend LatticeExprNode nelements (const LatticeExprNode& expr);
 
 // Functions operating on a logical expression resulting in a scalar;
 // Functions "any" (are any pixels "True") and "all" (are all pixels
 // "True") result in a Bool; functions "ntrue" and "nfalse" result 
-// in a float.
+// in a Float.
 // <group>
    friend LatticeExprNode any   (const LatticeExprNode& expr);
    friend LatticeExprNode all   (const LatticeExprNode& expr);
