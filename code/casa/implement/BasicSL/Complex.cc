@@ -105,6 +105,15 @@ void setNaN(DComplex &val)
   val = DComplex(x, y);
 }
 
+// fmod functions
+
+DComplex fmod(const DComplex &in, const DComplex &f) {
+  return DComplex(fmod(real(in), real(f))); }
+Complex fmod(const Complex &in, const Complex &f) {
+  return Complex(fmod(real(in), real(f))); }
+
+
+
 // Temporary for now, likely should go into templates
 
 #if defined(AIPS_SUN_NATIVE)
