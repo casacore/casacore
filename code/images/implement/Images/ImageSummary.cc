@@ -273,6 +273,57 @@ String ImageSummary<T>::telescope() const
    return obsInfo_p.telescope();
 }
 
+template <class T> 
+Bool ImageSummary<T>::restFrequency(String& restFreqString, 
+                                    Quantum<Double>& restFreq) const
+{
+   Bool ok;
+   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
+   if (spectralAxis >= 0) {
+      Int coordinate, axisInCoordinate;
+      cSys_p.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
+//
+      restFreq.setValue(cSys_p.spectralCoordinate(coordinate).restFrequency());
+      restFreq.setUnit(cSys_p.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate));
+      ostrstream oss;
+//      oss.output().setf(ios::scientific, ios::floatfield);
+//      oss.output().precision(8);
+      oss << restFreq << endl;
+      restFreqString= String(oss);
+      ok = True;
+   } else {
+      restFreq.setValue(0.0);
+      restFreq.setUnit("Hz");
+      restFreqString = "";
+      ok = False;
+   }
+   return ok;
+}
+
+
+
+template <class T> 
+Bool ImageSummary<T>::frequencySystem(String& freqTypeString, 
+                                      MFrequency::Types& freqType) const
+{
+   Bool ok;
+   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
+   if (spectralAxis >= 0) {
+      Int coordinate, axisInCoordinate;
+      cSys_p.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
+//
+      freqType = cSys_p.spectralCoordinate(uInt(coordinate)).frequencySystem();
+      freqTypeString = MFrequency::showType(freqType);
+      ok = True;
+   } else {
+      freqTypeString = "";
+      ok = False;
+   }
+   return ok;
+}
+
+
+
 
 
 
@@ -341,27 +392,19 @@ void ImageSummary<T>::list (LogIO& os,
 
 // List rest frequency and reference frame from the first spectral axis we find
 
-   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
-
-   if (spectralAxis >= 0) {
-      Int coordinate, axisInCoordinate;
-      cSys_p.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
-//      const Double restFreq = cSys_p.spectralCoordinate(coordinate).restFrequency();
-      Quantum<Double> restFreq;
-      restFreq.setValue(cSys_p.spectralCoordinate(coordinate).restFrequency());
-      restFreq.setUnit(cSys_p.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate));
-
-      MFrequency::Types freqType = cSys_p.spectralCoordinate(uInt(coordinate)).frequencySystem();
-      os << "Frequency system : " << MFrequency::showType(freqType) << endl;
+   String freqTypeString;
+   MFrequency::Types freqType;
+   if (frequencySystem(freqTypeString, freqType)) {
+      os << "Frequency system : " << freqTypeString << endl;
       os << "Velocity  system : " << MDoppler::showType(velocityType) << endl;
-
-      if (restFreq.getValue() > 0) {
-         os.output().setf(ios::scientific, ios::floatfield);
-         os.output().precision(8);
-         os << "Rest Frequency   : " << restFreq.getValue() << " "+restFreq.getUnit() << endl;
-      } else {
-         os << "Rest Frequency   : Absent" << endl;
-      }
+   }
+//
+   Quantum<Double> restFreq;
+   String restFreqString;
+   if (restFrequency(restFreqString, restFreq)) {
+      os << "Rest Frequency   : " << restFreqString << endl;
+   } else {
+      os << "Rest Frequency   : Absent" << endl;
    }
    os << endl;
       
