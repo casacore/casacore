@@ -51,7 +51,8 @@
 
 template<class T>
 PagedArray<T>::PagedArray()
-: itsIsClosed (True)
+: itsIsClosed (True),
+  itsWritable (False)
 {
   // Initializes all private data using their default consructor
 }
@@ -63,7 +64,6 @@ PagedArray<T>::PagedArray (const TiledShape& shape, const String& filename)
   itsIsClosed   (True)
 {
   makeTable(filename, Table::New);
-  itsTableName = itsTable.tableName();
   makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
@@ -77,7 +77,6 @@ PagedArray<T>::PagedArray (const TiledShape& shape)
 {
   Path filename=File::newUniqueName(String("./"), String("pagedArray"));
   makeTable (filename.absoluteName(), Table::Scratch);
-  itsTableName = itsTable.tableName();
   makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
@@ -90,7 +89,6 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file)
   itsRowNumber  (defaultRow()),
   itsIsClosed   (False)
 {
-  itsTableName = itsTable.tableName();
   makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
@@ -104,7 +102,6 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file,
   itsRowNumber  (rowNumber),
   itsIsClosed   (False)
 {
-  itsTableName = itsTable.tableName();
   makeArray (shape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
@@ -119,7 +116,6 @@ PagedArray<T>::PagedArray (const String& filename)
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  itsTableName = itsTable.tableName();
   AlwaysAssert(ok() == True, AipsError);
 }
 
@@ -131,7 +127,6 @@ template<class T> PagedArray<T>::PagedArray (Table& file)
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  itsTableName = itsTable.tableName();
   AlwaysAssert(ok() == True, AipsError);
 }
 
@@ -145,7 +140,6 @@ PagedArray<T>::PagedArray (Table& file, const String& columnName,
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  itsTableName = itsTable.tableName();
   AlwaysAssert(ok() == True, AipsError);
 }
 
@@ -218,7 +212,7 @@ Bool PagedArray<T>::isWritable() const
 {
   // PagedArray is writable if underlying table is already open for write
   // or if the underlying table is in principle writable.
-  if (itsTable.isNull()) {
+  if (itsIsClosed) {
     return ToBool (itsWritable  ||
 		   Table::isWritable (itsTableName));
   }
@@ -226,10 +220,18 @@ Bool PagedArray<T>::isWritable() const
 		 Table::isWritable (itsTable.tableName()));
 }
 
+template<class T>
+inline const String& PagedArray<T>::tableName() const
+{
+  // Make sure the table is open, so it knos about a possible rename
+  // (e.g. if an LCPagedMask (which uses Lattice<Bool>) gets renamed).
+  return table().tableName();
+}
+
 template <class T> 
 String PagedArray<T>::name (const Bool stripPath) const 
 {
-   Path path(itsTableName);
+   Path path(tableName());
    if (!stripPath) {
       return path.absoluteName();
    } 
@@ -380,12 +382,6 @@ void PagedArray<T>::putAt (const T& value, const IPosition& where)
 template<class T>
 Bool PagedArray<T>::ok() const
 {
-  if (itsTableName.length() == 0) {
-    LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-    logErr << LogIO::SEVERE << "No TableName associated with the Paged Array"
-	   << LogIO::POST;
-    return False;
-  }
   if (itsIsClosed) {
     if (itsTable.isNull() == False) {
       LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
@@ -557,14 +553,16 @@ void PagedArray<T>::flush()
 template<class T>
 void PagedArray<T>::tempClose()
 {
-  itsTable.flush();
-  itsTableName = itsTable.tableName();
-  itsWritable  = itsTable.isWritable();
-  itsLockOpt   = itsTable.lockOptions();
-  itsTable     = Table();
-  itsROArray.reference (ROArrayColumn<T>());
-  itsRWArray.reference (ArrayColumn<T>());
-  itsIsClosed = True;
+  if (!itsIsClosed) {
+    itsTable.flush();
+    itsTableName = itsTable.tableName();
+    itsWritable  = itsTable.isWritable();
+    itsLockOpt   = itsTable.lockOptions();
+    itsTable     = Table();
+    itsROArray.reference (ROArrayColumn<T>());
+    itsRWArray.reference (ArrayColumn<T>());
+    itsIsClosed = True;
+  }
 }
 
 template<class T>
