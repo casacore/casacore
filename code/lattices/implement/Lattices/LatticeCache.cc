@@ -54,8 +54,7 @@ LatticeCache<T>::LatticeCache(const LatticeCache<T> & other)
 }
 
 template <class T>
-LatticeCache<T> &LatticeCache<T>::operator=(const
-						  LatticeCache<T> & other)
+LatticeCache<T> &LatticeCache<T>::operator=(const LatticeCache<T> & other)
 {
   tileLocs=other.tileLocs;
   tileSequence=other.tileSequence;
@@ -82,8 +81,8 @@ LatticeCache<T>::LatticeCache(Lattice<T> &image,
 				    Int iCacheSize, IPosition iTileShape,
 				    Vector<Float>& iTileOverlap,
 				    Bool iadditive)
-  :  numberTiles(0), cacheAccesses(0), cacheHits(0), cacheMisses(0),
-  image_p(&image), cacheReads(0), cacheWrites(0), additive(iadditive)
+  :  numberTiles(0), additive(iadditive), cacheAccesses(0), cacheHits(0),
+     cacheMisses(0), cacheReads(0), cacheWrites(0), image_p(&image)
 {
 
   AlwaysAssert(iTileShape.conform(image.shape()), AipsError);
@@ -92,7 +91,8 @@ LatticeCache<T>::LatticeCache(Lattice<T> &image,
   tileShape=iTileShape;
   tileShapeVec=tileShape.asVector().ac();
   tileOverlap=iTileOverlap;
-  for (Int i=0;i<tileShapeVec.nelements();i++) {
+  uInt i;
+  for (i=0;i<tileShapeVec.nelements();i++) {
     AlwaysAssert(tileOverlap(i)>=0.0, AipsError);
     AlwaysAssert(tileOverlap(i)<1.0, AipsError);
   }
@@ -220,7 +220,7 @@ void LatticeCache<T>::clearCacheStatistics() {
 // Find the cache location (i.e. only on a grid).
 template <class T>
 IPosition& LatticeCache<T>::cacheLocation(IPosition& cacheLoc, const IPosition& tileLoc) {
-  for (Int i=0;i<tileLoc.nelements();i++) {
+  for (uInt i=0;i<tileLoc.nelements();i++) {
     if(tileOffsetVec(i)>0) {
       Int loco=tileLoc(i);
       Int loc=loco;
@@ -265,7 +265,7 @@ void LatticeCache<T>::readTile(Int tile, Bool readonly) {
   AlwaysAssert(tileLocs[tile].conform(tileShape), AipsError);
   Vector<Int> endLocVec=(tileLocs[tile]+tileShape).asVector();
   Vector<Int> imageShapeVec=image_p->shape().asVector();
-  for (Int i=0;i<imageShapeVec.nelements();i++) {
+  for (uInt i=0;i<imageShapeVec.nelements();i++) {
     endLocVec(i)=min(endLocVec(i), imageShapeVec(i));
   }
   IPosition actualShape=IPosition(endLocVec.ac())-tileLocs[tile];
