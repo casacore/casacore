@@ -1,5 +1,5 @@
 //# tPagedArray.cc:  tests the PagedArray class
-//# Copyright (C) 1997,1999,2000,2001
+//# Copyright (C) 1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -239,6 +239,26 @@ int main() {
       AlwaysAssert(pa3.getAt(IPosition(2,7)) == 7, AipsError);
       AlwaysAssert(pa3.getAt(IPosition(2,0)) == 0, AipsError);
       AlwaysAssert(pa3.shape().isEqual(IPosition(2,8)), AipsError);
+    }
+    {
+      SetupNewTable arraySetup("tPagedArray_tmp_1.table", 
+			       TableDesc(), Table::New);
+      Table arrayTable(arraySetup);
+      const IPosition latticeShape(4, 4, 16, 15, 8);
+      PagedArray<Float> pa(TiledShape(latticeShape, IPosition(4,2,8,8,3)),
+				      arrayTable);
+      Array<Float> arr(latticeShape);
+      indgen(arr);
+      pa.put (arr);
+      AlwaysAssertExit (allEQ(pa.get(), arr));
+      pa += pa;
+      AlwaysAssertExit (allEQ(pa.get(), float(2)*arr));
+    }
+    {
+      PagedArray<Float> pa("tPagedArray_tmp_1.table");
+      Array<Float> arr(pa.shape());
+      indgen(arr);
+      AlwaysAssertExit (allEQ(pa.get(), float(2)*arr));
     }
     testTempClose();
   } catch (AipsError x) {

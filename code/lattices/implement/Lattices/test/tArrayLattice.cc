@@ -1,5 +1,5 @@
 //# tArrayLattice.cc: test ArrayLattices and ArrayLatticeIterators.
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Lattices/LatticeStepper.h> 
 
 #include <aips/Arrays/ArrayIO.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Slicer.h>
@@ -53,7 +54,7 @@ Int func(Int val)
   return 2*val*val;
 };
 
-main()
+int main()
 {
   try{
     // make an array
@@ -858,6 +859,19 @@ main()
 	  }
 	}
       }
+    }
+    // Test of operator+, etc.
+    {
+      const IPosition latticeShape(4, 4, 16, 15, 8);
+      ArrayLattice<Float> pa(latticeShape);
+      Array<Float> arr(latticeShape);
+      indgen(arr);
+      pa.put (arr);
+      AlwaysAssertExit (allEQ(pa.get(), arr));
+      pa += pa;
+      AlwaysAssertExit (allEQ(pa.get(), float(2)*arr));
+      pa -= ArrayLattice<Float>(arr);
+      AlwaysAssertExit (allEQ(pa.get(), arr));
     }
   } catch (AipsError x) {
     cerr << x.getMesg () << endl;
