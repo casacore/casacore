@@ -341,7 +341,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
       if (doIt) {
 	if (lastCube != 0) {
 	  accessFullCells (lastCube, data, writeFlag, start, end, incr);
-	  data += nrinc * chunkSize;
+	  data += (nrinc+1) * chunkSize;
 	} else {
 	  for (uInt i=0; i<lastAxis; i++) {
 	    start(i) = 0;
@@ -364,7 +364,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	  }
 	}
       } else {
-	end(lastAxis)   = rowpos(lastAxis);
+	end(lastAxis) = rowpos(lastAxis);
 	nrinc++;
       }
       rownr += irow;
@@ -418,7 +418,7 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
       if (doIt) {
 	if (lastCube != 0) {
 	  accessSlicedCells (lastCube, data, writeFlag, start, end, incr);
-	  data += nrinc * chunkSize;
+	  data += (nrinc+1) * chunkSize;
 	} else {
 	  IPosition blc, trc, inc;
 	  ns.inferShapeFromSource (shape(rownr), blc, trc, inc);
@@ -434,7 +434,7 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
 	incr(lastAxis)  = 1;
 	nrinc = 0;
       } else {
-	end(lastAxis)   = rowpos(lastAxis);
+	end(lastAxis) = rowpos(lastAxis);
 	nrinc++;
       }
       rownr += irow;
