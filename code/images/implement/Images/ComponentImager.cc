@@ -71,7 +71,6 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   //   each of these coordinates can exist.
   // * If there is a Stokes axis it can only contain Stokes::I,Q,U,V pols.
   // * No other coordinate types, like LinearCoordinate, are used.
-  // * The pixels are square.
   uInt latAxis, longAxis;
   {
     const Vector<Int> dirAxes = CoordinateUtil::findDirectionAxes(coords);
@@ -85,15 +84,11 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   DebugAssert(dirCoord.nWorldAxes() == 2, AipsError);
   dirCoord.setWorldAxisUnits(Vector<String>(2, "rad"));
   const MeasRef<MDirection> dirRef(dirCoord.directionType());
-  MVAngle pixelSize;
+  MVAngle pixelLatSize, pixelLongSize;
   {
-    Vector<Double> inc = dirCoord.increment();
-    Double latInc = abs(inc(0));
-    if (!near(latInc, abs(inc(1)))) {
-	throw(AipsError("ComponentImager::project(...) - "
-			"cannot handle non-square pixels yet"));
-    }
-    pixelSize = MVAngle(latInc);
+    const Vector<Double> inc = dirCoord.increment();
+    pixelLatSize = MVAngle(abs(inc(0)));
+    pixelLongSize = MVAngle(abs(inc(1)));
   }
   
   // Check if there is a Stokes Axes and if so which polarizations. Otherwise
@@ -206,7 +201,8 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 
 // Sample model
 
-    list.sample(pixelVals, dirVals, dirRef, pixelSize, freqValues, freqRef);
+    list.sample(pixelVals, dirVals, dirRef, pixelLatSize, 
+		pixelLongSize, freqValues, freqRef);
 
 // Modify data by model for this chunk of data
 
@@ -252,3 +248,6 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     }
   }
 }
+// Local Variables: 
+// compile-command: "gmake ComponentImager"
+// End: 
