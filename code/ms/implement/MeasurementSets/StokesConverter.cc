@@ -1,5 +1,5 @@
 //# StokesConverter.cc: convert polarizations from one frame to another
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <trial/Arrays/SquareMatrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
