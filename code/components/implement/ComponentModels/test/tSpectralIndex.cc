@@ -32,7 +32,6 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasureHolder.h>

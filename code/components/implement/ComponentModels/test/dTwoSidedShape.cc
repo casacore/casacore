@@ -34,7 +34,6 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/TwoSidedShape.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MeasFrame.h>

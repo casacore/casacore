@@ -38,7 +38,6 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Glish/GlishArray.h>
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Glish/GlishValue.h>

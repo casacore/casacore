@@ -34,7 +34,6 @@
 // #include <aips/Containers/Record.h>
 // #include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 // #include <aips/Measures/MFrequency.h>
 // #include <aips/Quanta/MVFrequency.h>
 // #include <aips/Quanta/Quantum.h>

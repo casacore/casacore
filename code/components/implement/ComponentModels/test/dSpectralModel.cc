@@ -32,7 +32,6 @@
 #include <trial/ComponentModels/SpectralModel.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MeasFrame.h>

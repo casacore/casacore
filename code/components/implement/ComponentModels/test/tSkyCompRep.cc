@@ -28,7 +28,6 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
