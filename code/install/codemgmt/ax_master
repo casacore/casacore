@@ -2009,3 +2009,4 @@
 08 186 src mv nfra/apps/wsrtfiller/WSRTInput.h nfra/implement/wsrt/WSRTInput.h
 08 200 src rm trial/implement/Functionals/BinaryArithEnums.h
 08 200 src rm trial/implement/Functionals/BinaryArithmetic.cc
+08 200 src rm trial/implement/Functionals/BinaryArithmetic.h
