@@ -3248,3 +3248,4 @@
 13 146 src rm trial/implement/Images/ImageBinaryOpEnums.h
 13 156 src rm trial/implement/Display/DisplayUtils.h
 13 156 src rm trial/implement/Display/DisplayUtils.cc
+13 158 src mv trial/implement/ComponentModels/test/dPointCompRep.cc trial/implement/ComponentModels/test/dPointShape.cc
