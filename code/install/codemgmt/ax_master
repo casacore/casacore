@@ -2761,3 +2761,4 @@
 10 093 src mv trial/implement/Measures/VelocityMachine.h aips/implement/Measures/VelocityMachine.h
 10 093 src mv trial/implement/Measures/VelocityMachine.cc aips/implement/Measures/VelocityMachine.cc
 10 093 src mv trial/implement/Measures/test/tVelocityMachine.cc aips/implement/Measures/test/tVelocityMachine.cc
+10 093 src mv trial/implement/Measures/test/tVelocityMachine.out aips/implement/Measures/test/tVelocityMachine.out
