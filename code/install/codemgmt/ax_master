@@ -6262,3 +6262,4 @@
 17 194 src mv trial/implement/Containers/test/tHashMap.exec trial/implement/Containers/test/tHashMap.run
 17 194 src mv trial/implement/Containers/test/tHashMapIO.exec trial/implement/Containers/test/tHashMapIO.run
 17 194 src mv trial/implement/Containers/test/tHashMapIter.exec trial/implement/Containers/test/tHashMapIter.run
+17 194 src mv trial/implement/Containers/test/words.gz trial/implement/Containers/test/tHashMap.in_words.gz
