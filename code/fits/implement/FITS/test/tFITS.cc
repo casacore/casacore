@@ -1,5 +1,5 @@
 //# tFITS.cc: This program tests the simple FITS wrappers
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -42,8 +42,9 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Containers/OrderedMap.h>
+#include <aips/iostream.h>
 
-main()
+int main()
 {
     const char *file = "test.fits";
     Matrix<Float> m(512,512), m2;
@@ -72,8 +73,8 @@ main()
 
 
     cout << "Writing...." << endl;
-    if (WriteFITS(file,m,message, unitout, &namesout, &refout,
-		  &locout, &deltaout, &mapout, objectout) == False) {
+    if (WriteFITS(file,m,message, unitout.chars(), &namesout, &refout,
+		  &locout, &deltaout, &mapout, objectout.chars()) == False) {
 	cout << "Write failed: " << message << endl;
 	return 1;
     }
