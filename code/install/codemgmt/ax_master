@@ -4160,3 +4160,4 @@
 14 065 src mv trial/apps/gDisplay/makefile trialdisplay/apps/gDisplay/makefile
 14 065 src mv trial/apps/viewer/arrowcrossb0.xbm trialdisplay/apps/viewer/arrowcrossb0.xbm
 14 065 src mv trial/apps/viewer/arrowcrossb1.xbm trialdisplay/apps/viewer/arrowcrossb1.xbm
+14 065 src mv trial/apps/viewer/arrowcrossb2.xbm trialdisplay/apps/viewer/arrowcrossb2.xbm
