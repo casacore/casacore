@@ -374,7 +374,7 @@ IPosition SubLattice<T>::shape() const
 }
 
 template<class T>
-String SubLattice<T>::name (const Bool stripPath) const
+String SubLattice<T>::name (Bool stripPath) const
 {
   return itsLatticePtr->name(stripPath);
 }
