@@ -38,7 +38,7 @@ endif
 $(WCSLIB)(%.o) : $(CODEDIR)/%.c
 	-@ echo ""
 	-@ echo "$%"
-	 @ cd $(WCSTMPD) && $(CC) $(WCSDEFS) -I$(CODEDIR) $(COPT) -c $<
+	 @ cd $(WCSTMPD) && $(CC) $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $<
 	-@ $(TIMER)
 
 
