@@ -972,13 +972,6 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 {
     LogIO os(LogOrigin("CoordinateSystem", "toFITSHeader", WHERE));
 
-    if (writeWCS) {
-	os << LogIO::NORMAL <<
-	    "Writing the DRAFT WCS coordinate convention. This will probably\n"
-	    "not cause any problems, except perhaps for the NCP projection." <<
-	    LogIO::POST;
-    }
-
     // ********** Validation
 
     const uInt n = nWorldAxes();
