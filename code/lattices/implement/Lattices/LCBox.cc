@@ -27,9 +27,12 @@
 
 #include <trial/Lattices/LCBox.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+#include <iostream.h>
+#include <strstream.h>
 
 typedef Vector<Int> lcbox_gppbug1;
 
@@ -37,17 +40,30 @@ typedef Vector<Int> lcbox_gppbug1;
 LCBox::LCBox()
 {}
 
+LCBox::LCBox (const IPosition& latticeShape)
+: LCRegionFixed (latticeShape)
+{
+    // Set the box to the full lattice.
+    setBoundingBox (Slicer (IPosition(latticeShape.nelements(), 0),
+			    latticeShape));
+    // Fill the blc and trc vectors.
+    fillBlcTrc();
+}
+
 LCBox::LCBox (const Slicer& box, const IPosition& latticeShape)
 : LCRegionFixed (latticeShape)
 {
     // Make sure no stride is given.
-    AlwaysAssert (box.stride()==1, AipsError);
+    if (box.stride() != 1) {
+	throw (AipsError ("LCBox::LCBox - "
+			  "stride in given Slicer has to be 1"));
+    }
     // When the slicer is fixed (i.e. blc and trc explicitly given),
     // it is possible that it partly exceeds the lattice boundaries.
     if (box.isFixed()) {
         setSlicerBox (box.start(), box.end());
     } else {
-	setBox (box);
+	setBoundingBox (box);
     }
     // Fill the blc and trc vectors.
     fillBlcTrc();
@@ -115,40 +131,35 @@ LCBox& LCBox::operator= (const LCBox& other)
 {
     if (this != &other) {
 	LCRegionFixed::operator= (other);
+	itsBlc.resize(other.itsBlc.nelements());
+	itsTrc.resize(other.itsTrc.nelements());
+	itsBlc = other.itsBlc;    
+	itsTrc = other.itsTrc;
     }
-    itsBlc.resize(other.itsBlc.nelements());
-    itsTrc.resize(other.itsTrc.nelements());
-    itsBlc = other.itsBlc;    
-    itsTrc = other.itsTrc;
-
     return *this;
 }
 
 
 Bool LCBox::operator== (const LCRegion& other) const
-// 
-// See if this region is the same as the other region
-//
 {
-
-// Check below us
-
-   if (!LCRegionFixed::operator==(other)) return False;
-
-// Caste (is safe)
-
-   const LCBox& that = (const LCBox&)other;
-
-// Compare private data.  The blc/trc vectors have the same length
-
-   if (itsBlc.nelements() != that.itsBlc.nelements()) return False;
-   if (itsTrc.nelements() != that.itsTrc.nelements()) return False;
-   for (uInt i=0; i<itsBlc.nelements(); i++) {
-      if (!near(itsBlc(i),that.itsBlc(i))) return False;
-      if (!near(itsTrc(i),that.itsTrc(i))) return False;
-   }
-
-   return True;
+    // Check if parent class matches.
+    // If so, we can safely cast.
+    if (! LCRegionFixed::operator== (other)) {
+	return False;
+    }
+    const LCBox& that = (const LCBox&)other;
+    // Compare private data.
+    if (itsBlc.nelements() != that.itsBlc.nelements()
+    ||  itsTrc.nelements() != that.itsTrc.nelements()) {
+	return False;
+    }
+    for (uInt i=0; i<itsBlc.nelements(); i++) {
+	if (!near (itsBlc(i), that.itsBlc(i))
+	||  !near (itsTrc(i), that.itsTrc(i))) {
+	    return False;
+	}
+    }
+    return True;
 }
 
 LCRegion* LCBox::cloneRegion() const
@@ -160,10 +171,6 @@ LCRegion* LCBox::doTranslate (const Vector<Float>& translateVector,
 			      const IPosition& newLatticeShape) const
 {
     uInt ndim = latticeShape().nelements();
-    if (translateVector.nelements() != ndim
-    ||  newLatticeShape.nelements() != ndim) {
-        throw (AipsError ("LCBox::translate - dimensionalities mismatch"));
-    }
     Vector<Float> blc (itsBlc.copy());
     Vector<Float> trc (itsTrc.copy());
     for (uInt i=0; i<ndim; i++) {
@@ -187,16 +194,22 @@ TableRecord LCBox::toRecord (const String&) const
 {
     TableRecord rec;
     defineRecordFields (rec, className());
-    rec.define ("blc", itsBlc);
-    rec.define ("trc", itsTrc);
+    // Write 1-relative.
+    rec.define ("oneRel", True);
+    rec.define ("blc", itsBlc.ac() + Float(1));
+    rec.define ("trc", itsTrc.ac() + Float(1));
     rec.define ("shape", latticeShape().asVector());
     return rec;
 }
 
 LCBox* LCBox::fromRecord (const TableRecord& rec, const String&)
 {
-    return new LCBox (Vector<Float>(rec.asArrayFloat ("blc")),
-		      Vector<Float>(rec.asArrayFloat ("trc")),
+    // If 1-relative, subtract 1 from blc and trc.
+    Bool oneRel = rec.asBool ("oneRel");
+    Float off = (oneRel ? 1:0);
+    Array<Float> blc (rec.asArrayFloat ("blc"));
+    Array<Float> trc (rec.asArrayFloat ("trc"));
+    return new LCBox (blc-off, trc-off,
 		      Vector<Int>(rec.asArrayInt ("shape")));
 }
 
@@ -204,8 +217,11 @@ void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)
 {
     const IPosition& shape = latticeShape();
     uInt ndim = shape.nelements();
-    AlwaysAssert (blc.nelements() == ndim  &&  trc.nelements() == ndim,
-		  AipsError);
+    if (blc.nelements() != ndim  ||  trc.nelements() != ndim) {
+	throw (AipsError ("LCBox::LCBox - "
+			  "length of blc and trc vectors have to match "
+			  "dimensionality of lattice"));
+    }
     IPosition bl(blc);
     IPosition tr(trc);
     for (uInt i=0; i<ndim; i++) {
@@ -215,14 +231,21 @@ void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)
 	if (tr(i) >= shape(i)) {
 	    tr(i) = shape(i) - 1;
 	}
-	AlwaysAssert (blc(i) <= trc(i), AipsError);
+	if (bl(i) > tr(i)) {
+	    ostrstream bstr, tstr;
+	    bstr << bl;
+	    tstr << tr;
+	    throw (AipsError ("LCBox::LCBox - "
+			      "blc " + String(bstr) + " must be <= trc "
+			      + String(tstr)));
+	}
     }
-    setBox (Slicer(bl, tr, Slicer::endIsLast));
+    setBoundingBox (Slicer(bl, tr, Slicer::endIsLast));
 }
 
 void LCBox::fillBlcTrc()
 {
-    const Slicer& sl = box();
+    const Slicer& sl = boundingBox();
     uInt nd = sl.ndim();
     itsBlc.resize (nd);
     itsTrc.resize (nd);
