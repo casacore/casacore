@@ -1,5 +1,5 @@
 //# tUnit.cc: test program for Unit section of Measures module
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,10 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Measures.h>
+#include <aips/Measures/Unit.h>
+#include <aips/Measures/UnitMap.h>
+#include <aips/Measures/UnitVal.h>
+#include <aips/Measures/UnitName.h>
 
 main ()
 {
