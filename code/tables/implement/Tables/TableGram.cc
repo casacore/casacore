@@ -1,5 +1,5 @@
 //# TableGram.cc: Grammar for table command lines
-//# Copyright (C) 1993,1994,1995,1997,1999
+//# Copyright (C) 1993,1994,1995,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,9 @@
 #include <aips/Tables/TableParse.h>       // routines used by bison actions
 #include <aips/Tables/TableError.h>
 
+//# stdlib.h is needed for bison 1.28 and needs to be included here
+//# (before the flex/bison files).
+#include <stdlib.h>
 #include <TableGram.ycc>                  // flex output
 #include <TableGram.lcc>                  // bison output
 

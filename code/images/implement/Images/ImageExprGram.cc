@@ -1,5 +1,5 @@
 //# ImageExprGram.cc: Grammar for image expressions
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,9 @@
 #include <trial/Images/ImageExprParse.h>    // routines used by bison actions
 #include <aips/Exceptions/Error.h>
 
+//# stdlib.h is needed for bison 1.28 and needs to be included here
+//# (before the flex/bison files).
+#include <stdlib.h>
 #include <ImageExprGram.ycc>                  // flex output
 #include <ImageExprGram.lcc>                  // bison output
 
