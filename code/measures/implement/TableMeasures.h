@@ -41,7 +41,7 @@
 // <module> 
 
 // <summary> 
-// TableMeasures.h: Create and use scalar and array columns of Quanta and Measures in Tables.
+// Create and use scalar and array columns of Quanta and Measures in Tables.
 // </summary>
 
 // <prerequisite>
