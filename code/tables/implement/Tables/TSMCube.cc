@@ -163,27 +163,50 @@ IPosition TSMCube::adjustTileShape (const IPosition& cubeShape,
     // so it can be shorter or longer than the cube shape.
     // The returned tile shape always has the length of the cube shape.
     uInt nrdim = cubeShape.nelements();
-    IPosition tileShp (nrdim, 1);                   // initialize to 1
-    // If no tile shape given, calculate a default one.
-    if (tileShape.nelements() == 0) {
-        // If the last axis is extendible, discard that axis
-        // (so its tile axis length remains 1).
-        if (cubeShape(nrdim-1) == 0) {
-	    tileShp.setFirst (TiledStMan::makeTileShape
-                                                (cubeShape.getFirst(nrdim-1)));
-	} else {
-	    tileShp = TiledStMan::makeTileShape (cubeShape);
-	}
-    }
+    // Make length of tile shape equal to length of cube shape.
+    // Fill with 0 (meaning undefined tile axes).
+    IPosition tileShp (nrdim, 0);
+    IPosition cubeUnk (nrdim);
+    uInt nrunk = 0;
+    uInt length = 1;
     for (uInt i=0; i<nrdim; i++) {
         if (i < tileShape.nelements()) {
-            if (tileShape(i) != 0) {
-                tileShp(i) = tileShape(i);
-            }
-            if (cubeShape(i) != 0  &&  tileShp(i) > cubeShape(i)) {
-                tileShp(i) = cubeShape(i);
-            }
-        }
+	    tileShp(i) = tileShape(i);
+	}
+      // Get the cube axes of all unknown tile axes.
+      // Ignore an extendible cube axis (for the time being).
+      if (tileShp(i) == 0) {
+	  if (cubeShape(i) != 0) {
+	      cubeUnk(nrunk++) = cubeShape(i);
+	  }
+      } else {
+	  // Tile axis length cannot exceed cube axis length.
+	  // Get total length of known tile axes.
+	  if (tileShp(i) > cubeShape(i)  &&  cubeShape(i) != 0) {
+	      tileShp(i) = cubeShape(i);
+	  }
+	  length *= tileShp(i);
+      }
+    }
+    cubeUnk.resize (nrunk);
+    // Calculate a default for the unknown tile axes.
+    // Use the remainder of the 32768 for it.
+    if (nrunk > 0) {
+        Float rem = 32768. / length;
+	Int leng = max(1, Int(rem + 0.5));
+	IPosition tileUnk = TiledStMan::makeTileShape (cubeUnk, 0.5, leng);
+	length *= tileUnk.product();
+	uInt j = 0;
+	for (uInt i=0; i<nrdim; i++) {
+	    if (tileShp(i) == 0  &&  j < nrunk) {
+	        tileShp(i) = tileUnk(j++);
+	    }
+	}
+    }
+    // If the cube is extendible, calculate the last tile axis if needed.
+    if (cubeShape(nrdim-1) == 0  &&  tileShp(nrdim-1) == 0) {
+        Float rem = 32768. / length;
+        tileShp(nrdim-1) = max(1, Int(rem + 0.5));
     }
     return tileShp;
 }
