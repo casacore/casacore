@@ -149,6 +149,8 @@
 #    Resolve logging issues.
      LOGFILE=""
      LOGMAIL=""
+     LOGMAILER=""
+
      if [ "$DOLOG" ]
      then
         EXTLIST=`echo :$EXTLIST: | sed -e 's/::*/::/g'`
@@ -159,15 +161,17 @@
 
         LOGFILE=`getrc -i sneeze.$HOST.$AIPSEXT.logfile 2> /dev/null`
         LOGMAIL=`getrc -i sneeze.$HOST.$AIPSEXT.logmail 2> /dev/null`
+	LOGMAILER=`getrc -i sneeze.$HOST.$AIPSEXT.mailer 2> /dev/null`
 
         [ "$LOGFILE" = "" ] && LOGFILE=$AIPSROOT/$ARCH/sneeze.log
         [ "$LOGMAIL" = "" ] && LOGMAIL=aips2-inhale@nrao.edu
+	[ "$LOGMAILER" = "" ] && LOGMAILER=mail
      fi
 
      cp $0 $0-
      if [ "$LOGMAIL" != "" ]
      then
-        $0- -e $EXTLIST $ARGS 2>&1 | tee $LOGFILE | mail $LOGMAIL
+        $0- -e $EXTLIST $ARGS 2>&1 | tee $LOGFILE | $LOGMAILER $LOGMAIL
         exit 0
      else
         exec $0- -e $EXTLIST $ARGS 2>&1 > $LOGFILE
@@ -479,14 +483,16 @@
 
         LOGFILE=`getrc -i sneeze.$HOST.$AIPSEXT.logfile 2> /dev/null`
         LOGMAIL=`getrc -i sneeze.$HOST.$AIPSEXT.logmail 2> /dev/null`
+	LOGMAILER=`getrc -i sneeze.$HOST.$AIPSEXT.mailer 2> /dev/null`
 
         [ "$LOGFILE" = "" ] && LOGFILE=$AIPSROOT/$ARCH/sneeze.log
         [ "$LOGMAIL" = "" ] && LOGMAIL=aips2-inhale@nrao.edu
+	[ "$LOGMAILER" = "" ] && LOGMAILER=mail
 
         if [ "$LOGMAIL" != "" ]
         then
            (exec $0 -e $EXTLIST -l -m $MODE $TARGETS 2>&1 | \
-              tee $LOGFILE | mail $LOGMAIL) &
+              tee $LOGFILE | $LOGMAILER $LOGMAIL) &
            exit 0
         else
            exec $0 -e $EXTLIST -l -m $MODE $TARGETS 2>&1 > $LOGFILE
