@@ -4288,3 +4288,5 @@
 14 169 src rm bima/data/1733-130.wide.lsb.miriad.tar.gz
 14 179 src mv atnf/apps/pksmscalstats atnf/apps/pksstats
 14 179 src mv atnf/apps/livedata/pksmscalstats.g atnf/apps/livedata/pksstats.g
+14 179 sys rm bin/pksmscalstats
+14 179 sys rm libexec/pksmscalstats.g
