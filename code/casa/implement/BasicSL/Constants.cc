@@ -1,5 +1,5 @@
 //# Constants.cc: Mathematical and physical constants
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -69,7 +69,9 @@ Double C::etogamma            ;
 // Machine constants
 //----------------------------------------------------------------------------
 Double C::flt_min;
+Double C::minfloat;
 Double C::dbl_min;
+Double C::mindouble;
 Double C::flt_max;
 Double C::dbl_max;
 Double C::flt_epsilon;
@@ -416,10 +418,27 @@ C::etogamma            =  1.7810724179901979852;
 //----------------------------------------------------------------------------
 // Machine constants
 //----------------------------------------------------------------------------
+
+// Minimum normalised number
  C::flt_min = FLT_MIN;
  C::dbl_min = DBL_MIN;
+
+// Minimum denormalised number
+//# Any double closer to zero than -2.2250738585072017e-308 (except 0) causes a
+//# Floating Exception on the alpha when used in any way.
+#ifdef __alpha
+ C::minfloat = FLT_MIN;
+ C::mindouble = DBL_MIN;
+#else
+ C::minfloat = MINFLOAT;
+ C::mindouble = MINDOUBLE;
+#endif
+
+ // Maximum floating point number
  C::flt_max = FLT_MAX;
  C::dbl_max = DBL_MAX;
+
+ // minimum value such that  (1+epsilon) != 1
  C::flt_epsilon = FLT_EPSILON;
  C::dbl_epsilon = DBL_EPSILON;
 

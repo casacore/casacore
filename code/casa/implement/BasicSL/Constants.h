@@ -1,5 +1,5 @@
 //# Constants.h: Mathematical and physical constants
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,10 +42,6 @@
 #   undef DBL_MIN
 #   undef DBL_MAX
 #endif
-
-#if defined(_AIX)
-#pragma implementation ("<ClassFileName>.cc")
-#endif 
 
 #include <float.h>
 #include <values.h>
@@ -171,15 +167,21 @@
 // LDBL_DIG             10
 //
 // FLT_EPSILON        1E-5  Minimum floating point number X such  that
+// (use C::flt_epsilon in preference to this)
 // DBL_EPSILON        1E-9  1.0 + X does not equal 1.0.
+// (use C::dbl_epsilon in preference to this)
 // LDBL_EPSILON       1E-9
 //
 // FLT_MIN           1E-37  Minimum normalized positive floating point
-// DBL_MIN           1E-37  number.
+// (use C::flt_min in preference to this)
+// DBL_MIN           1E-37  number
+// (use C::dbl_min in preference to this)
 // LDBL_MIN          1E-37
 //
 // FLT_MAX           1E+37  Maximum representable floating point number.
+// (use C::flt_max in preference to this)
 // DBL_MAX           1E+37
+// (use C::dbl_max in preference to this)
 // LDBL_MAX          1E+37
 //
 // </srcblock>
@@ -207,9 +209,11 @@
 //                   the same as MAXSHORT or MAXLONG).
 //
 // MINFLOAT          Minimum positive value of a single-precision
+// (use C::minfloat in preference to this)
 // LN_MINFLOAT       floating-point number, and its natural logarithm.
 //
 // MINDOUBLE         Minimum positive value of a double-precision
+// (use C::mindouble in preference to this)
 // LN_MINDOUBLE      floating-point number, and its natural logarithm.
 //
 // MAXFLOAT          Maximum value of a single-precision
@@ -343,9 +347,15 @@ struct C {
   // the minimum single precision floating point number, 
   // excluding denormalised numbers
    static Double flt_min;
+  // the minimum single precision floating point number, 
+  // including denormalised numbers
+   static Double minfloat;
   // the minimum double precision floating point number,
   // excluding denormalised numbers
    static Double dbl_min;
+  // the minimum double precision floating point number,
+  // including denormalised numbers
+   static Double mindouble;
   // the maximum single precision floating point number 
    static Double flt_max;
   // the maximum double precision floating point number 
