@@ -1,5 +1,5 @@
 //# Fit2D.h: Class to fit 2-D objects to Lattices or Arrays
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Functionals/SumFunction.h>
 #include <aips/Functionals/Gaussian2D.h>
+#include <aips/Mathematics/Constants.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
 #include <aips/Fitting.h>
 #include <aips/Logging.h>
@@ -75,8 +76,9 @@ template<class T> class MaskedLattice;
 // will be fitted for.
 // 
 // For Gaussians, the parameter Vector consists, in order, of
-// the peak, x location, y location, major axis, minor axis,
-// and position angle of the major axis (in radians). The 
+// the peak, x location, y location, FWHM of major axis, 
+// FWHM of minor axis, and position angle of the major 
+// axis (in radians). The 
 // position angle is positive +x to +y 
 // in the pixel coordinate system ([0,0] in center of image) and 
 // in the range -2pi to 2pi.  When the solution is recovered, the
@@ -89,7 +91,6 @@ template<class T> class MaskedLattice;
 // </example>
 
 // <todo asof="1998/12/11">
-//  <li> Return error estimates
 //  <li> template it 
 //  <li> Speed up some Array calculations indexed with IPositions
 //  <li> Don't handle Lattices simply by getting pixels into Arrays
@@ -153,7 +154,7 @@ public:
 
     // Convert mask from a string to a vector.  The string gives the parameters
     // to keep fixed in the fit (f (flux), x (x position), y (y position),
-    // a (major axis), b (minor axis), p (position angle)
+    // a (FWHM major axis), b (FWHM minor axis), p (position angle)
     static Vector<Bool> convertMask (const String fixedmask,
                                      Fit2D::Types type);
 
@@ -251,6 +252,14 @@ public:
 
     // Find type of specific model
     Fit2D::Types type(uInt which);
+
+    // Convert p.a. (radians) from positive +x -> +y 
+    // (Fit2D) to positive +y -> -x (Gaussian2D)
+    static Double paToGauss2D (Double pa) {return pa - C::pi_2;};
+
+    // Convert p.a. (radians) from positive +y -> -x
+    // (Gaussian2D) to positive +x -> +y (Fit2D)
+    static Double paFromGauss2D (Double pa) {return pa + C::pi_2;};
 
 private:
 
