@@ -118,6 +118,9 @@ uInt TSMCube::coordinateSize (const String& coordinateName) const
         return 0;
     }
     IPosition shape (values_p.shape (coordinateName));
+    if (shape.nelements() == 0) {
+	return 0;
+    }
     return shape(0);
 }
 
@@ -282,14 +285,21 @@ void TSMCube::extendCoordinates (const Record& coordValues,
     //# minus already defined coordinate length.
     uInt vectorLength = length;
     if (defined) {
-        vectorLength -= values_p.shape (name) (0);
+        vectorLength -= coordinateSize (name);
+    }
+    //# Exit if no extend.
+    if (vectorLength == 0) {
+	return;
     }
     //# Determine the start and end of the new coordinate values.
     //# If they are not defined, start will be > end.
     IPosition start(1, length);
     IPosition end(1, length-1);
     if (coordValues.isDefined (name)) {
-        start(0) -= coordValues.shape (name) (0);
+	IPosition shape = coordValues.shape (name);
+	if (shape.nelements() > 0) {
+	    start(0) -= shape(0);
+	}
     }
     //# Now insert the new coordinate values.
     //# Note that the nr of new coordinate values can be less than
