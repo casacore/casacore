@@ -537,7 +537,7 @@ void UnitMap::removeUser(const UnitName& name) {
 }
 
 Bool UnitMap::getNameFITS(UnitName *&name, uInt which) {
-  const uInt N_FITS = 16;
+  const uInt N_FITS = 17;
   static UnitName FITSunit[N_FITS] = {
     UnitName("BEAM",	UnitVal(1.0, "_"),	"dimensionless beam"),
     UnitName("DAYS",	UnitVal(1.0, "d"),	"day"),
@@ -550,6 +550,7 @@ Bool UnitMap::getNameFITS(UnitName *&name, uInt which) {
     UnitName("METERS",	UnitVal(1.0, "m"),	"meter"),
     UnitName("M",	UnitVal(1.0, "m"),	"meter"),
     UnitName("PASCAL",	UnitVal(1.0, "Pa"),	"pascal"),
+    UnitName("PIXEL",   UnitVal(1.0, "_"),"dimensionless pixel"),
     UnitName("SECONDS",	UnitVal(1.0, "s"),	"second"),
     UnitName("SEC",	UnitVal(1.0, "s"),	"second"),
     UnitName("VOLTS",	UnitVal(1.0, "V"),	"volt"),
