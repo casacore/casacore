@@ -1,5 +1,4 @@
-//# LatticeUtilities.cc: defines the Lattice Utilities global functions
-//# Copyright (C) 1995,1996,1997,1999,2000
+//# LatticeUtilities.cc: defines the Lattice Utilities global functions//# Copyright (C) 1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,21 +24,26 @@
 //#
 //# $Id$
 
+#include <trial/Lattices/LatticeUtilities.h>
+
 #include <aips/aips.h>
 #include <aips/Lattices/Lattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
+#include <trial/Lattices/MaskedLattice.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
+
 template <class T> 
 void minMax(T & globalMin, T & globalMax, 
 	    IPosition & globalMinPos, IPosition & globalMaxPos, 
-	    const Lattice<T> & lat) {
-
+	    const Lattice<T> & lat) 
+{
   //check if IPositions are conformant
   IPosition zeroPos = IPosition( lat.shape().nelements(), 0); 
   DebugAssert((zeroPos.nelements() == globalMinPos.nelements()), AipsError);
@@ -75,5 +79,60 @@ void minMax(T & globalMin, T & globalMax,
       globalMaxPos = loc + localMaxPos;
     }
   }
+}
 
-};
+template <class T>
+void LatticeUtilities::copyAndZero(LogIO& os,
+                                   MaskedLattice<T>& out,
+                                   MaskedLattice<T>& in)
+//
+// Copy the data and the mask from in to out.
+// The output pixels are zeroed if the pixel is masked
+//
+{
+   Bool doMask = in.isMasked() && out.hasPixelMask();
+   Lattice<Bool>* pMaskOut = 0;
+   if (doMask) {
+      pMaskOut = &out.pixelMask();
+      if (!pMaskOut->isWritable()) {
+         doMask = False;
+         os << LogIO::WARN << "The output image has a mask but it is not writable" << endl;
+         os << LogIO::WARN << "So the mask will not be transferred to the output" << LogIO::POST;
+      }
+   }
+//  
+   if (doMask) {
+      LatticeIterator<T> outIter(out);
+      Bool deleteDataIn, deleteMaskIn, deleteDataOut;
+      IPosition shape = outIter.woCursor().shape();
+      Array<T> dataIn(shape);
+      Array<Bool> maskIn(shape);
+//
+      for (outIter.reset(); !outIter.atEnd(); outIter++) {
+         shape = outIter.woCursor().shape();
+         if (!dataIn.shape().isEqual(shape)) dataIn.resize(shape);
+         if (!maskIn.shape().isEqual(shape)) maskIn.resize(shape);
+//
+         in.getSlice(dataIn, outIter.position(), shape);
+         in.getMaskSlice(maskIn, outIter.position(), shape);
+//
+         const T* pDataIn = dataIn.getStorage(deleteDataIn);
+         const Bool* pMaskIn = maskIn.getStorage(deleteMaskIn);
+//
+         Array<T>& dataOut = outIter.woCursor();
+         T* pDataOut = dataOut.getStorage(deleteDataOut);
+//
+         for (Int i=0; i<shape.product(); i++) {
+            pDataOut[i] = pDataIn[i];
+            if (!pMaskIn[i]) pDataOut[i] = 0.0;
+         }
+         pMaskOut->putSlice(maskIn, outIter.position());
+//
+         dataIn.freeStorage(pDataIn, deleteDataIn);
+         maskIn.freeStorage(pMaskIn, deleteMaskIn);
+         dataOut.putStorage(pDataOut, deleteDataOut);
+      }
+   } else {
+      out.copyData(in);
+   }
+}
