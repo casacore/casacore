@@ -68,7 +68,7 @@
 #endif
 
 
-Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
+Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
 				     String &error,
 				     const String &imageName,
 				     const String &fitsName, 
@@ -81,17 +81,20 @@ Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
     error = "";
 
 // First make sure that imageName is writable and does not already
-// exist.  Optionally remove it if it does
+// exist.  Optionally remove it if it does.  If imageName is empty,
+// great.  That means we are going to make a TempImage
 
-    File imfile(imageName);
-    if (!ImageFITSConverter::removeFile (error, imfile, imageName, allowOverwrite)) return False;
+    if (!imageName.empty()) {
+       File imfile(imageName);
+       if (!ImageFITSConverter::removeFile (error, imfile, imageName, allowOverwrite)) return False;
 //
-    Directory imdir = imfile.path().dirName();
-    if (!imdir.exists() || !imdir.isWritable()) {
-	error = String("Directory ") + imdir.path().originalName() + 
-	  " does not exist or is not writable";
-	return False;
-    }
+       Directory imdir = imfile.path().dirName();
+       if (!imdir.exists() || !imdir.isWritable()) {
+          error = String("Directory ") + imdir.path().originalName() + 
+                  " does not exist or is not writable";
+          return False;
+       }
+   }
 //
     File fitsfile(fitsName);
     if (!fitsfile.exists() || !fitsfile.isReadable() || 
