@@ -2657,3 +2657,4 @@
 11 402 src mv trial/apps/table/tReadAsciiTable.in_tah aips/implement/Tables/test/tReadAsciiTable.in_tah
 11 403 src rm doc/project/jobs.html
 11 403 src rm doc/html/aips2search.html
+11 403 src rm doc/html/betasearch.html
