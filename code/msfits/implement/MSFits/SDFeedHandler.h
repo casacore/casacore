@@ -123,7 +123,7 @@ private:
 
     // fields which might be the result of saving via ms2sdfits
     RORecordFieldPtr<Int> feed1Field_p, feed2Field_p, beamIdField_p, phasedFeedIdField_p, numReceptorsField_p;
-    RORecordFieldPtr<Double> intervalField_p, timeField_p; 
+    RORecordFieldPtr<Double> intervalField_p, timeField_p, scaReceptorAngleField_p; 
     RORecordFieldPtr<Array<Double> > beamOffsetField_p, positionField_p, receptorAngleField_p;
     RORecordFieldPtr<Array<Complex> > polResponseField_p;
     RORecordFieldPtr<String> polarizationTypeField_p;

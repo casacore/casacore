@@ -89,6 +89,7 @@ SDFeedHandler &SDFeedHandler::operator=(const SDFeedHandler &other)
 	beamOffsetField_p = other.beamOffsetField_p;
 	positionField_p = other.positionField_p;
 	receptorAngleField_p = other.receptorAngleField_p;
+	scaReceptorAngleField_p = other.scaReceptorAngleField_p;
 	polResponseField_p = other.polResponseField_p;
 	polarizationTypeField_p = other.polarizationTypeField_p;
     }
@@ -174,6 +175,9 @@ void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Ve
 			if (found && receptorAngleField_p.isAttached()) { 
 			    found = allEQ(*receptorAngleField_p,msFeedCols_p->receptorAngle()(thisRow));
 			}
+			if (found && scaReceptorAngleField_p.isAttached()) { 
+			    found = allEQ(msFeedCols_p->receptorAngle()(thisRow),*scaReceptorAngleField_p);
+			}
 			if (found && polResponseField_p.isAttached()) { 
 			    found = allEQ(*polResponseField_p,msFeedCols_p->polResponse()(thisRow));
 			}
@@ -238,6 +242,8 @@ void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Ve
 	    }
 	    if (receptorAngleField_p.isAttached()) {
 		msFeedCols_p->receptorAngle().put(newRow, *receptorAngleField_p);
+	    } else if (scaReceptorAngleField_p.isAttached()) {
+		msFeedCols_p->receptorAngle().put(newRow, Vector<Double>(*numRecpKey_p, *scaReceptorAngleField_p));
 	    } else {
 		msFeedCols_p->receptorAngle().put(newRow, Vector<Double>(*numRecpKey_p, 0.0));
 	    }
@@ -293,6 +299,7 @@ void SDFeedHandler::clearRow()
     beamOffsetField_p.detach(); 
     positionField_p.detach(); 
     receptorAngleField_p.detach();
+    scaReceptorAngleField_p.detach();
     polResponseField_p.detach();
     polarizationTypeField_p.detach();
 }
@@ -358,9 +365,14 @@ void SDFeedHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 	positionField_p.attachToRecord(row, "FEED_POSITION");
 	handledCols(row.fieldNumber("FEED_POSITION")) = True;
     }
-    if (row.fieldNumber("FEED_RECEPTOR_ANGLE") >= 0 && row.dataType("FEED_RECEPTOR_ANGLE") == TpArrayDouble) {
-	receptorAngleField_p.attachToRecord(row, "FEED_RECEPTOR_ANGLE");
-	handledCols(row.fieldNumber("FEED_RECEPTOR_ANGLE")) = True;
+    if (row.fieldNumber("FEED_RECEPTOR_ANGLE") >= 0) {
+	if (row.dataType("FEED_RECEPTOR_ANGLE") == TpArrayDouble) {
+	    receptorAngleField_p.attachToRecord(row, "FEED_RECEPTOR_ANGLE");
+	    handledCols(row.fieldNumber("FEED_RECEPTOR_ANGLE")) = True;
+	} else if (row.dataType("FEED_RECEPTOR_ANGLE") == TpDouble) {
+	    scaReceptorAngleField_p.attachToRecord(row, "FEED_RECEPTOR_ANGLE");
+	    handledCols(row.fieldNumber("FEED_RECEPTOR_ANGLE")) = True;
+	}
     }
     if (row.fieldNumber("FEED_POL_RESPONSE") >= 0 && row.dataType("FEED_POL_RESPONSE") == TpArrayComplex) {
 	polResponseField_p.attachToRecord(row, "FEED_POL_RESPONSE");
