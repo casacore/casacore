@@ -138,6 +138,12 @@ void LCPagedMask::handleRename (const String& newName, Bool overwrite)
     }
 }
 
+void LCPagedMask::unlock()
+{
+    // Unlock the PagedArray containing the mask.
+    itsMask.unlock();
+}
+
 LCRegion* LCPagedMask::doTranslate (const Vector<Float>&,
 				    const IPosition&) const
 {

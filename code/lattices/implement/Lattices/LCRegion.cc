@@ -86,6 +86,8 @@ void LCRegion::handleDelete()
 {}
 void LCRegion::handleRename (const String&, Bool)
 {}
+void LCRegion::unlock()
+{}
 
 LCRegion* LCRegion::translate (const IPosition& translateVector,
 			       const IPosition& newLatticeShape) const

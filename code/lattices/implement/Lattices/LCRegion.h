@@ -116,8 +116,12 @@ public:
     virtual void handleDelete();
 
     // Handle renaming the region by renaming possible tables.
-      // The default implementation does nothing.
+    // The default implementation does nothing.
     virtual void handleRename (const String& newName, Bool overwrite);
+
+    // Unlock the tables possibly associated with this region.
+    // The default implementation does nothing.
+    virtual void unlock();
 
     // Region type.  Returns className() of derived class.
     virtual String type() const = 0;

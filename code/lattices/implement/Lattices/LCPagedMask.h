@@ -98,6 +98,9 @@ public:
     // new name already exists.
     virtual void handleRename (const String& newName, Bool overwrite);
 
+    // Unlock the table associated with this region.
+    virtual void unlock();
+
     // Get the class name (to store in the record).
     static String className();
 

@@ -107,6 +107,9 @@ public:
     // Has the region a mask?
     Bool hasMask() const;
 
+    // Unlock the tables possibly associated with this region.
+    void unlock();
+
     // Get the LCRegion object describing the region.
     // Note that it does not contain strides, even if this LatticeRegion
     // object was constructed from a Slicer with strides. In that case

@@ -100,6 +100,11 @@ Bool LatticeRegion::isWritable() const
     return itsRegion->isWritable();
 }
 
+void LatticeRegion::unlock()
+{
+    itsRegion->unlock();
+}
+
 IPosition LatticeRegion::shape() const
 {
     return itsSlicer.length();
