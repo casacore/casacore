@@ -308,7 +308,7 @@ void MDirection::shift(const Quantum<Double> &lng,
   data.shift(lng, lat);
 }
 
-void MDirection::shift(Double lng, Double &lat) {
+void MDirection::shift(Double lng, Double lat) {
   data.shift(lng);
 }
 
@@ -316,7 +316,7 @@ void MDirection::shiftLatitude(const Quantum<Double> &lat) {
   data.shiftLatitude(lat);
 }
 
-void MDirection::shiftLatitude(Double &lat) {
+void MDirection::shiftLatitude(Double lat) {
   data.shiftLatitude(lat);
 }
 

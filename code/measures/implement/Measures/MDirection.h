@@ -295,9 +295,9 @@ public:
   void shift(Double lng);
   void shift(const Quantum<Double> &lng,
 	     const Quantum<Double> &lat);
-  void shift(Double lng, Double &lat);
+  void shift(Double lng, Double lat);
   void shiftLatitude(const Quantum<Double> &lat);
-  void shiftLatitude(Double &lat);
+  void shiftLatitude(Double lat);
   void shift(const MVDirection &shft);
   // </group>
 

@@ -256,7 +256,7 @@ void MVDirection::shift(const Quantum<Double> &lng,
   shift(lng.getBaseValue(), lat.getBaseValue());
 }
 
-void MVDirection::shift(Double lng, Double &lat) {
+void MVDirection::shift(Double lng, Double lat) {
   Vector<Double> x(2);
   x = get();
   x(0) += lng;
@@ -268,7 +268,7 @@ void MVDirection::shiftLatitude(const Quantum<Double> &lat) {
   shift(0, lat.getBaseValue());
 }
 
-void MVDirection::shiftLatitude(Double &lat) {
+void MVDirection::shiftLatitude(Double lat) {
   shift(0, lat);
 }
 
