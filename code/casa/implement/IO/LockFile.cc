@@ -64,7 +64,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     itsName = Path(fileName).expandedName();
     //# Create the file if it does not exist yet.
     //# When the flag is set, it is allowed that the file does not
-    //# eixst and cannot be created. In that case it is assumed that
+    //# exist and cannot be created. In that case it is assumed that
     //# later on each locking request is successful (without doing actual
     //# locking).
     if (! create) {
@@ -107,7 +107,10 @@ LockFile::~LockFile()
 {
     delete itsCanIO;
     delete itsFileIO;
-    FiledesIO::close (itsLocker.fd());
+    int fd = itsLocker.fd();
+    if (fd >= 0) {
+	FiledesIO::close (fd);
+    }
 }
 
 Bool LockFile::isMultiUsed()
