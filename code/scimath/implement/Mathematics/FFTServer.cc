@@ -377,7 +377,7 @@ fft(Array<S> & cValues, const Bool toFrequency)
   if (doFlip) flip(cValues, True, False);
 
   //  if (doFlip) cerr << "...Flipping"; 
-  cerr << endl;
+  //  cerr << endl;
 
   fft0(cValues, toFrequency);
 
