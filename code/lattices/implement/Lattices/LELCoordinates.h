@@ -38,23 +38,23 @@
 // <summary>
 // Envelope class to handle Lattice Coordinates in LEL.
 // </summary>
-//
+
 // <use visibility=export>
-//
-// <reviewed reviewer="" date="" tests="">
+
+// <reviewed reviewer="Bob Garwood" date="2000/01/25" tests="tLatticeExpr">
 // </reviewed>
-//
+
 // <prerequisite>
 //   <li> <linkto class="Lattice">Lattice</linkto>
 //   <li> <linkto class="LELLattCoordBase">LELLattCoordBase</linkto>
 // </prerequisite>
-//
+
 // <synopsis> 
 //  The LatticeExpression classes (LatticeExpr, LatticeExprNode, LEL*)
-//  exist so that the C++ programmer can manipulate  mathematical 
+//  exist so that the C++ programmer can manipulate mathematical 
 //  expressions involving Lattices.  A further usage of these classes 
 //  is to manipulate ImageInterface objects (which inherit from Lattice) such 
-//  as PagedImages.   These objects have Coordinates as well as the Lattice 
+//  as PagedImages.  These objects have Coordinates as well as the Lattice 
 //  pixels.  In order that Coordinate conformance be enforcable, we must 
 //  give the LatticeExpression classes access to the Coordinates of the 
 //  ImageInterface objects.
@@ -63,50 +63,57 @@
 //  It is actually an envelope class which holds letter classes which
 //  are the actual implementation of the objects which hold the Lattice
 //  CoordinateSystems.
-//  Lattice objects have a member function called lelCoordinates.
-//  This returns a LELCoordinates object.   This object contains a
-//  pointer (actually a CountedPtr) of type LELLattCoordBase.  This is the base
-//  class of the letter classes.   For Lattices such as ImageInterface,
+//  Lattice objects have a member function called <src>lelCoordinates</src>.
+//  This returns a LELCoordinates object.  This object contains a
+//  pointer (actually a CountedPtr) of type
+//  <linkto class=LELLattCoordBase>LELLattCoordBase</klinkto>.  This is the
+//  base class of the letter classes.  For Lattices such as ImageInterface,
 //  this pointer actually points at the derived letter class LELImageCoord.
 //  This class in turn contains a pointer (a CountedPtr) to the actual
 //  CoordinateSystem object.   
 // 
-//  Note that every time the lelCoordinates function is called, the
-//  LELLattCoord and LELImageCoord (or whatever the letter class
-//  actually being invoked is)  objects are constructed.  For example
-//  the internals of ImageInterface::lelCoordinates are
-//  <src>return LELCoordinates (new LELImageCoord (coords_p));</src>
-//  so that the LELCoordinates constructor invokes the LELImageCoord
+//  Note that every time the <src>lelCoordinates</src> function is called,
+//  the <linkto class=LELLattCoord>LELLattCoord</linkto>
+//  and <linkto class=LELImageCoord>LELImageCoord</linkto>
+//  (or whatever the letter class actually being invoked is)
+//  objects are constructed.  For example
+//  the internals of <src>ImageInterface::lelCoordinates</src> are
+//  <br><src>return LELCoordinates (new LELImageCoord (coords_p));</src>
+//  <br>so that the LELCoordinates constructor invokes the LELImageCoord
 //  constructor with the CoordinateSystem as its argument.  However,
-//  the internal use of CountedPtrs make subsequent constructions inexpensive.
+//  the internal use of CountedPtrs makes subsequent constructions inexpensive.
 //
 //  Having a LELCoordinates object in hand, the programmer then has access
 //  to the CoordinateSystem that it ultimately contains.  This is via the
-//  LELCoordinates member function coordinates which returns a reference to
-//  the letter base class LELLattCoordBase. For example, if the actual letter
-//  class object was LELImageCoord, one has to then cast the reference to
-//  the LELLattCoordBase returned
-//  by LELCoordinates::coordinates() to an LELImageCoord.  This is because
-//  the letter class functions that actually return the CoordinateSystem
-//  are not virtual (i.e. they are not defined in LELLattCoordBase).
+//  LELCoordinates member function <src>coordinates</src> which returns
+//  a reference to the letter base class LELLattCoordBase.
+//  For example, if the actual letter class object was LELImageCoord,
+//  one has to then cast the reference returned by
+//  <src>LELCoordinates::coordinates()</src> to an LELImageCoord.
+//  This is because the LELImageCoord class functions that actually deal
+//  with the CoordinateSystem are not virtual (otherwise LELLattCoordBase
+//  needs to know about Coordinates).
 // </synopsis>
-//
+
 // <example>
 // <srcblock>
 //    PagedImage<Float> im("myimage");
-//    LELCoordinates* pLatCoord = &(im.lelCoordinates());
-//    LELImageCoord* pImCoord = (LELImageCoord*)pLatCoord;
+//    const LELCoordinates* pLatCoord = &(im.lelCoordinates());
+//    const LELImageCoord* pImCoord =
+//                  dynamic_cast<const LELImageCoord*>(pLatCoord);
 //    CoordinateSystem coords = pImCoord->coordinates();
 // </srcblock>
 // </example>
-//
+
 // <motivation>
-//   We needed access to CoordinateSystems in the Lattice Expression classes
+//  We needed access to CoordinateSystems in the Lattice Expression classes
+//  without making the Lattices module dependent on the Images or Coordinates
+//  module.
 // </motivation>
-//
-// <todo asof="1995/09/12">
-//  <li>
-// </todo>
+
+//# <todo asof="1995/09/12">
+//#  <li>
+//# </todo>
 
 
 class LELCoordinates

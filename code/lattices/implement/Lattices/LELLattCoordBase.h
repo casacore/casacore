@@ -40,39 +40,34 @@ class LELImageCoord;
 // <summary>
 // The base letter class for lattice coordinates in LEL.
 // </summary>
-//
-// <use visibility=export>
-//
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+
+// <use visibility=local>
+
+// <reviewed reviewer="Bob Garwood" date="2000/01/25" tests="tLatticeExpr">
 // </reviewed>
-//
+
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
 //   <li> <linkto class="LELCoordinates"> LELCoordinates</linkto>
 // </prerequisite>
-//
+
 // <synopsis>
-// This base class is the basic letter for the envelope class
+// This abstract base class is the basic letter for the envelope class
 // <linkto class=LELCoordinates>LELCoordinates</linkto>.
 // It does not do anything, but makes it possible that derived classes
-// (like LELImageCoord) implement their own behaviour.  LELLattCoordBase is
-// an abstract base class.  LELLattCoord can be constructed and
-// used to return null LELCoordinate objects for Lattices that 
-// don't have Coordinates (e.g. ArrayLattice, PagedArray)
+// (like <linkto class=LELLattCoord>LELLattCoord</linkto> and
+// <linkto class=LELImageCoord>LELImageCoord</linkto>)
+// implement their own behaviour.
 // </synopsis> 
-//
-// <example>
-// <srcblock>
-// </srcblock>
-// </example>
-//
+
 // <motivation>
 // It must be possible to handle image coordinates in a lattice
 // expression.   
 // </motivation>
-//
-// <todo asof="1998/01/31">
-// </todo>
+
+//# <todo asof="1998/01/31">
+//#  <li>
+//# </todo>
 
 
 class LELLattCoordBase
@@ -95,6 +90,8 @@ public:
     virtual Bool conform (const LELLattCoordBase& other) const = 0;
 
     // Check if the coordinates of this and that image conform.
+    // This function is used by <src>conform</src> to make a
+    // double virtual dispatch possible.
     virtual Bool doConform (const LELImageCoord& other) const = 0;
 };
 
