@@ -298,6 +298,12 @@ public:
    // Assignment (copy semantics) 
    WCBox& operator= (const WCBox& other);
 
+   // Comparison
+   // <group> 
+   virtual Bool operator==(const WCRegion& other) const;
+   virtual Bool operator!=(const WCRegion& other) const;
+   // </group>
+
    // Clone a WCBox object.
    virtual WCBox* cloneRegion() const;
 
@@ -319,6 +325,9 @@ public:
    // Returns WCBox
    static String className();
 
+   // Return region type.  Returns the class name 
+   virtual String type() const;
+ 
 
 private:
    Vector<Double> itsBlcWC;
