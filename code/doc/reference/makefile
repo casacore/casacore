@@ -1,6 +1,7 @@
 # $Id$
 
 # Declare LaTeX documents to be converted to HTML by setting latex2html flags.
+Admin   := -split +2
 System   := -split +2
 HowTos   := -split +2
 Coding   := -split +3
