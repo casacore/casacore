@@ -2404,3 +2404,6 @@
 09 351 src rm trial/implement/Images/ImageBinaryOp.cc
 09 351 src rm trial/implement/Lattices/LatticeBinaryOp.h
 09 351 src rm trial/implement/Lattices/LatticeBinaryOp.cc
+09 351 src rm aips/implement/Functionals/BinaryArithEnums.h
+09 351 src rm aips/implement/Functionals/BinaryArithmetic.h
+09 351 src rm aips/implement/Functionals/BinaryArithmetic.cc
