@@ -28,31 +28,33 @@
 #define AIPS_LELUNARYENUMS_H
 
 
-// <summary>
-// </summary>
-
+// <summary> Each LEL unary operation is described in this enum  </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELUnary"> LELUnary</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This enum provides a value for each unary operation accepted
+//  by the Lattice Expression Language classes.
 // </etymology>
 //
 // <synopsis>
+//  Each unary operator accepted by the bridging class LatticeExprNode
+//  and passed  on to the LELUnary letter classes is labelled internally 
+//  with a value from this enum.  
 // </synopsis> 
 //
-// <example>
-// </example>
-//
-// <motivation>
-// </motivation>
-//
-// <todo asof="1996/07/01">
+// <todo asof="1998/01/21">
 // </todo>
 
 
