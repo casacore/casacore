@@ -6270,3 +6270,4 @@
 17 206 sys rm libexec/dishpfgui.g
 17 206 src rm trial/apps/dish/dishpf.g
 17 206 sys rm libexec/dishpf.g
+17 206 src rm bima/apps/bimatester/bima.g
