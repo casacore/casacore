@@ -54,19 +54,20 @@ class String;
 // index. A spectral index is is the exponent for a power law model that
 // mathematically is defined as:
 // <srcblock>
-// I = I_0 * (\nu / \nu_0)^\alpha
+// I = I_0 * (nu / nu_0)^alpha
 // </srcblock>
 // Where:
 // <dl compact>
-// <dt><src>\nu_0</src><dd> is the reference frequency
-// <dt><src>I_0</src><dd> is the reference frequency
-// <dt><src>\alpha</src><dd> is the spectral index
-// <dt><src>\nu</src><dd> is the user specified frequency
+// <dt><src>nu_0</src><dd> is the reference frequency
+// <dt><src>I_0</src><dd> is the flux, in the I polarisation, 
+//                        at the reference frequency
+// <dt><src>alpha</src><dd> is the spectral index
+// <dt><src>nu</src><dd> is the user specified frequency
 // <dt><src>I</src><dd> is the flux, in the I polarisation, 
 //                      at the specified frequency
-// <dl>
+// </dl>
 // In general the flux has four polarisation components and this class has
-// seperate indicies for each of the four Stokes parameters, I, Q, U, \& V.
+// seperate indicies for each of the four Stokes parameters, I, Q, U, & V.
 
 // As with all classes derived from SpectralModel the basic operation of this
 // class is to model the flux as a function of frequency. This class does not
@@ -76,17 +77,43 @@ class String;
 // a Stokes representation. The returned flux is always in the Stokes
 // representation.
 
-// This class has besides the reference frequency, four parameters. These are
-// the spectral indices.
+// Besides the reference frequency this class has four parameters; the
+// spectral indices in the I, Q, U, & V polarisations
 // </synopsis>
 //
 // <example>
 // These examples are coded in the tSpectralModel.h file.
 // <h4>Example 1:</h4>
-// In this example ...
+// In this example a SpectralIndex object is created and used to calculate the
+// flux at a number of frequencies.
 // <srcblock>
+//  SpectralIndex siModel;
+//  siModel.setRefFrequency(MFrequency(Quantity(1.0, "GHz")));
+//  siModel.setIndex(1.0, Stokes::I);  
+//  siModel.setIndex(0.5, Stokes::Q);  
+//  siModel.setIndex(0.5, Stokes::U);  
+//  siModel.setIndex(-1.0, Stokes::V);
+//  const Flux<Double> LBandFlux(1.0, 1.0, 1.0, 1.0);
+//  const MVFrequency step(Quantity(100.0, "MHz"));
+//  MVFrequency sampleFreq = siModel.refFrequency().getValue();
+//  Flux<Double> sampleFlux;
+//  cout << "Frequency\t I-Flux\t Q-Flux\t U-Flux\t V-Flux\n";
+//  for (uInt i = 0; i < 11; i++) {
+//    sampleFlux = LBandFlux.copy();
+//    sampleFlux.convertPol(ComponentType::LINEAR);
+//    sampleFlux.convertUnit(Unit("WU"));
+//    siModel.sample(sampleFlux,
+//   	             MFrequency(sampleFreq, siModel.refFrequency().getRef()));
+//    cout << setprecision(3) << sampleFreq.get("GHz")
+//         << "\t\t " << sampleFlux.value(0u).re
+//         << "\t " << sampleFlux.value(1u).re
+//         << "\t " << sampleFlux.value(2u).re
+//         << "\t " << sampleFlux.value(3u).re
+//         << " " << sampleFlux.unit().getName() << endl;
+//    sampleFreq += step;
+//  }
 // </srcblock>
-/// </example>
+// </example>
 //
 // <motivation> A Spectral Index frequency variation is the  most widely used
 // model in radio astronomy. In particular the NFRA package 'newstar' uses it
@@ -129,7 +156,7 @@ public:
   // The assignment operator uses copy semantics.
   SpectralIndex & operator=(const SpectralIndex & other);
 
-  // return the actual spectral type.
+  // return the actual spectral type ie., ComponentType::SPECTRAL_INDEX
   virtual ComponentType::SpectralShape type() const;
 
   // set/get the reference frequency
@@ -150,9 +177,12 @@ public:
   // indices. Similarly the returned vector is of length 4 with the indices in
   // the same order.
   // <group>
-  const Vector<Double> & indices() const;
+  Vector<Double> indices() const;
   void setIndices(const Vector<Double> & newIndices);
   // </group>
+
+  // returns True if the Q, U & V indices are zero.
+  Bool isIonly() const;
 
   // Calculate the flux at the specified frequency given the flux at the
   // reference frequency. The flux at the reference frequency must be supplied
@@ -175,11 +205,16 @@ public:
   virtual void parameters(Vector<Double> & spectralParms) const;
   // </group>
 
-  // This functions convert between a record and a SpectralModel. This way
-  // derived classes can interpret fields in the record in a class specific
-  // way. These functions define how a spectral index is represented in glish.
-  // They return False if the supplied record is malformed and append an error
-  // message to the supplied string giving the reason.
+  // These functions convert between a record and a SpectralIndex. These
+  // functions define how a spectralindex object is represented in glish.  A
+  // typical SpectralIndex object is defined by the record:
+  // <srcblock>
+  // [type = 'Spectral Index',
+  //  frequency = frequency record (see the measures module),
+  //  index = [1.0, 0.5, 0.4, -0.1]]
+  // </srcblock>.
+  // These functions return False if the record is malformed and append an
+  // error message to the supplied string giving the reason.
   // <group>
   virtual Bool fromRecord(String & errorMessage,
 			  const RecordInterface & record);
@@ -192,6 +227,7 @@ public:
   virtual Bool ok() const;
 
 private:
+
   MFrequency itsRefFreq;
   Vector<Double> itsIndex;
   //# The following data member is contained in the itsRefFreq data
