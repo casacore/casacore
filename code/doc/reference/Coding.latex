@@ -10,7 +10,7 @@
 
 \maketitle
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this document is available.}{../Coding.ps}
+\htmladdnormallink{A postscript version of this document is available.}{../Coding.ps.gz}
 \end{htmlonly}
 \renewcommand{\appendix}{}
 \tableofcontents
@@ -51,28 +51,28 @@ Charlottesville, Va. 22903-2475 USA.
 \chapter{ Standards and Guidelines  \label{Coding.Standards}}
 {\em This chapter was written by P. Shannon as AIPS++ Note 167}\\
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this chapter is available.}{../../notes/167.ps}
+\htmladdnormallink{A postscript version of this chapter is available.}{../../notes/167.ps.gz}
 \end{htmlonly}
 \input{body167}
 
 \chapter{ Code Review Process  \label{Code.Review}}
 {\em This chapter was written by P. Shannon as AIPS++ Note 170}\\
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this chapter is available.}{../../notes/170.ps}
+\htmladdnormallink{A postscript version of this chapter is available.}{../../notes/170.ps.gz}
 \end{htmlonly}
 \input{body170}
 
 \chapter{Documentation\label{Coding.Documentation}}
 {\em This chapter was witten by D. Schiebel as AIPS++ note 156}\\
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this chapter is available.}{http://aips2.nrao.edu/docs/notes/156.ps}
+\htmladdnormallink{A postscript version of this chapter is available.}{http://aips2.nrao.edu/docs/notes/156.ps.gz}
 \end{htmlonly}
 \input{body156}
 
 \chapter{The Design of AIPS++\label{Coding.Design}}\index{AIPS++ Design}
 {\em This chapter was written by B.E. Glendenning as AIPS++ Implementation Memo 111}\\
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this chapter is available.}{../memos/111.ps}
+\htmladdnormallink{A postscript version of this chapter is available.}{../memos/111.ps.gz}
 \end{htmlonly}
 \begin{cbunit}
 \input{body111}
