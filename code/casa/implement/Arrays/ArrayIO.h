@@ -114,7 +114,7 @@ template<class T> class Block;
 
 template<class T> ostream &operator << (ostream &, const Array<T> &);
 
-// Write a formatted copy of the array to the LogIO output tool. Merely calls
+// Write a formatted copy of the array to the LogIO output object. Merely calls
 // the ostream operator<< in turn.
 template<class T> LogIO &operator<<(LogIO &os, const Array<T> &a);
 
