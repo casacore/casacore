@@ -1,7 +1,7 @@
 /*=============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2000, Mark Calabretta
+*   Copyright (C) 1995-2001, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -153,19 +153,19 @@
 *         reference point of the projection.  These are given by the CRVALn
 *         keywords in FITS.
 *
-*         The second pair of values are the native longitude and latitude of
-*         the pole of the celestial coordinate system and correspond to the
-*         FITS keywords LONGPOLE and LATPOLE.
+*         The second pair of values are the native longitude of the celestial
+*         pole and the celestial latitude of the native pole and correspond to
+*         the FITS keywords LONPOLE and LATPOLE.
 *
-*         LONGPOLE defaults to 0 degrees if the celestial latitude of the
+*         LONPOLE defaults to 0 degrees if the celestial latitude of the
 *         reference point of the projection is greater than the native
 *         latitude, otherwise 180 degrees.  (This is the condition for the
 *         celestial latitude to increase in the same direction as the native
 *         latitude at the reference point.)  ref[2] may be set to 999.0 to
 *         indicate that the correct default should be substituted.
 *
-*         In some circumstances the latitude of the native pole may be
-*         determined by the first three values only to within a sign and
+*         In some circumstances the celestial latitude of the native pole may
+*         be determined by the first three values only to within a sign and
 *         LATPOLE is used to choose between the two solutions.  LATPOLE is
 *         set in ref[3] and the solution closest to this value is used to
 *         reset ref[3].  It is therefore legitimate, for example, to set
@@ -173,8 +173,8 @@
 *         if the LATPOLE card is omitted from the FITS header.  For the
 *         special case where the reference point of the projection is at
 *         native latitude zero, its celestial latitude is zero, and
-*         LONGPOLE = +/- 90 then the native latitude of the pole is not
-*         determined by the first three reference values and LATPOLE
+*         LONPOLE = +/- 90 then the celestial latitude of the native pole is
+*         not determined by the first three reference values and LATPOLE
 *         specifies it completely.
 *
 *   The remaining members of the celprm struct are maintained by the
@@ -254,7 +254,7 @@ const char *celrev_errmsg[] = {
    "Invalid coordinate transformation parameters",
    "Invalid projection parameters",
    "Invalid value of (x,y)"};
- 
+
 
 int celset(pcode, cel, prj)
 
@@ -446,7 +446,7 @@ double *lng, *lat;
    int    err;
 
    if (cel->flag != CELSET) {
-      if(celset(pcode, cel, prj)) return 1;
+      if (celset(pcode, cel, prj)) return 1;
    }
 
    /* Apply reverse projection. */

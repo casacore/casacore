@@ -1,7 +1,7 @@
 *=======================================================================
 *
 *   PGSBOX - a non-linear coordinate axis plotter for PGPLOT.
-*   Copyright (C) 1997-2000, Mark Calabretta
+*   Copyright (C) 1997-2001, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or
 *   modify it under the terms of the GNU Library General Public
@@ -177,10 +177,12 @@
 *                        returned by NLFUNC.
 *
 *                        If NG1 is zero, then
-*                           a) if GRID1(0) is non-zero it defines a
-*                              uniform grid spacing.
+*                           a) if GRID1(0) is greater than zero it
+*                              defines a uniform grid spacing.
 *                           b) if GRID1(0) is zero a suitable spacing
 *                              will be determined (see LABDEN).
+*                           c) if GRID1(0) is less than zero then no
+*                              grid lines will be drawn.
 *
 *                        If NG1 is greater than zero, then GRID1(0) is
 *                        ignored.
@@ -188,7 +190,8 @@
 *      NG2      I        Upper array index for GRID2.
 *
 *      GRID2    D(0:NG2) Grid values in WORLD(2) in the same units as
-*                        returned by NLFUNC.
+*                        returned by NLFUNC, interpreted the same way
+*                        as GRID1.
 *
 *      DOEQ     L        If NG1 = NG2 = 0, and GRID1(0) = 0D0 and/or
 *                        GRID2(0) = 0D0, then choose the same grid
@@ -342,7 +345,7 @@
 *                               coordinates.
 *
 *                        N.B. NLFUNC must not change the input
-*                        coordinates; that is the world coordinates for 
+*                        coordinates; that is the world coordinates for
 *                        OPCODEs = +2 and +1, or the Cartesian
 *                        coordinates for OPCODE = -1.
 *
@@ -1225,15 +1228,15 @@
       SUBROUTINE PGCRLB (BLC, TRC, IDENTS, TYPE, LABCTL, CI, NC, IC,
      :                   CACHE)
 *-----------------------------------------------------------------------
-      LOGICAL   ANGLE, LFORCE, TICKIT
+      LOGICAL   ANGLE, DODEG, DOMIN, LFORCE, SEXA(2), TICKIT
       INTEGER   CI(7), EDGE, IC, IMAG(2), ITER, IWRLD, J, JC, K, K1, K2,
      :          L, LABCTL, LD, LM, LMAG(2), LS, LV, M, M1, M2, MM, NC,
-     :          NCH, NI(2,0:4), NSWAP, PP, PRVD(2), PRVH(2), PRVM(2),
-     :          PRVEDG, SKIP(4), SKOP(4)
+     :          NCH, NI(2,0:4), NSWAP, PP, PRVD(2), PRVM(2), PRVEDG,
+     :          SEXSUP(2), SKIP(4), SKOP(4)
       REAL      ANGL, BLC(2), FJUST, BNDRY(4), OMAG(2), SI(2), TRC(2),
      :          X, XBOX(4), XCH, XL, XW1, XW2, Y, YCH, YBOX(4), YL, YW1,
      :          YW2, Z
-      DOUBLE PRECISION CACHE(4,0:NC), TMP
+      DOUBLE PRECISION CACHE(4,0:NC), TMP, VS
       CHARACTER ESCAPE*1, EXPONT*20, FMT*8, IDENTS(3)*(*), TEXT*80,
      :          TYPE(2)*1, TXT(2)*80
 
@@ -1547,8 +1550,10 @@
       END IF
 
 *     Sexagesimal labelling.
-      IF (INDEX('DEFGHIT', TYPE(1)).NE.0 .OR.
-     :    INDEX('DEFGHIT', TYPE(2)).NE.0) THEN
+      SEXA(1) = INDEX('DEFGHIT', TYPE(1)).NE.0
+      SEXA(2) = INDEX('DEFGHIT', TYPE(2)).NE.0
+
+      IF (SEXA(1) .OR. SEXA(2)) THEN
          LMAG(1) = -2
          LMAG(2) = -2
 
@@ -1560,10 +1565,10 @@
             END IF
 
 *           Skip non-sexagesimal coordinates.
-            IF (INDEX('DEFGHIT', TYPE(IWRLD)).EQ.0) GO TO 150
+            IF (.NOT.SEXA(IWRLD)) GO TO 150
 
 *           Defeat rounding errors.
-            TMP = ABS(CACHE(4,J)*3600D0) + 0.5D-6
+            TMP = ABS(CACHE(4,J)*3600D0) + 5D-7
             LS = INT(TMP)
             LV = INT(MOD(TMP, 1D0)*1D6)
             IF (LV.NE.0) THEN
@@ -1610,7 +1615,7 @@
       PRVEDG = 0
 
 *     Loop through the axis crossing table.
-      DO 180 J = 1, IC
+      DO 200 J = 1, IC
 *        Determine the position.
          IF (CACHE(3,J).EQ.1D0) THEN
             IWRLD = 1
@@ -1622,12 +1627,43 @@
 
          EDGE = NINT(CACHE(1,J))
          IF (EDGE.NE.PRVEDG) THEN
-            PRVD(1) = -1
-            PRVD(2) = -1
-            PRVH(1) = -1
-            PRVH(2) = -1
-            PRVM(1) = -1
-            PRVM(2) = -1
+*           Start of new edge.
+
+            IF (SEXA(1) .OR. SEXA(2)) THEN
+*              Sexagesimal field suppression policy.
+               PRVD(1) = -1
+               PRVM(1) = -1
+               PRVD(2) = -1
+               PRVM(2) = -1
+
+               SEXSUP(1) = 0
+               SEXSUP(2) = 0
+
+*              Vertical sides.
+               IF (MOD(CACHE(1,J),2).EQ.0) THEN
+                  DO 160 K = J, IC
+                     IF (NINT(CACHE(1,K)).NE.EDGE) GO TO 170
+                     IF (SEXSUP(NINT(CACHE(3,K))).EQ.1) GO TO 160
+
+                     LV = INT(ABS(CACHE(4,K))*3600D0 + 5D-7)
+                     LD =  LV/3600
+                     LM = (LV - LD*3600)/60
+                     LS =  LV - LD*3600 - LM*60
+                     TMP = ABS(CACHE(4,K)) - LD
+
+                     IF (TMP.LT.5D-7) THEN
+*                       Write deg/hr field only when min/sec are zero.
+                        SEXSUP(NINT(CACHE(3,K))) = 1
+                     ELSE IF (TMP*60-LM.LT.3D-5) THEN
+*                       Write min field only when sec is zero; only
+*                       write the deg/hr field when min is written.
+                        SEXSUP(NINT(CACHE(3,K))) = 2
+                     END IF
+ 160              CONTINUE
+               END IF
+            END IF
+ 170        CONTINUE
+
             XL = -999.0
             YL = -999.0
          END IF
@@ -1637,9 +1673,9 @@
          IF (EDGE.EQ.1) THEN
 *           Bottom.
             IF (IWRLD.EQ.1) THEN
-               IF (MOD(SKIP(1),2).NE.1) GO TO 180
+               IF (MOD(SKIP(1),2).NE.1) GO TO 200
             ELSE
-               IF (MOD(SKIP(1)/2,2).NE.1) GO TO 180
+               IF (MOD(SKIP(1)/2,2).NE.1) GO TO 200
             END IF
 
             FJUST = 0.5
@@ -1648,9 +1684,9 @@
          ELSE IF (EDGE.EQ.2) THEN
 *           Left.
             IF (IWRLD.EQ.1) THEN
-               IF (MOD(SKIP(2),2).NE.1) GO TO 180
+               IF (MOD(SKIP(2),2).NE.1) GO TO 200
             ELSE
-               IF (MOD(SKIP(2)/2,2).NE.1) GO TO 180
+               IF (MOD(SKIP(2)/2,2).NE.1) GO TO 200
             END IF
 
             FJUST = 1.0
@@ -1659,9 +1695,9 @@
          ELSE IF (EDGE.EQ.3) THEN
 *           Top.
             IF (IWRLD.EQ.1) THEN
-               IF (MOD(SKIP(3),2).NE.1) GO TO 180
+               IF (MOD(SKIP(3),2).NE.1) GO TO 200
             ELSE
-               IF (MOD(SKIP(3)/2,2).NE.1) GO TO 180
+               IF (MOD(SKIP(3)/2,2).NE.1) GO TO 200
             END IF
 
             FJUST = 0.5
@@ -1670,9 +1706,9 @@
          ELSE IF (EDGE.EQ.4) THEN
 *           Right.
             IF (IWRLD.EQ.1) THEN
-               IF (MOD(SKIP(4),2).NE.1) GO TO 180
+               IF (MOD(SKIP(4),2).NE.1) GO TO 200
             ELSE
-               IF (MOD(SKIP(4)/2,2).NE.1) GO TO 180
+               IF (MOD(SKIP(4)/2,2).NE.1) GO TO 200
             END IF
 
             FJUST = 0.0
@@ -1683,7 +1719,7 @@
 *        Format the numeric label.
          IF (INDEX('ABC', TYPE(IWRLD)).NE.0) THEN
 *           Decimal angle; allow up to 6 decimal digits.
-            TMP = ABS(CACHE(4,J)) + 0.5D-6
+            TMP = ABS(CACHE(4,J)) + 5D-7
             LD  = INT(TMP)
 
             K = 1
@@ -1702,21 +1738,44 @@
             IF (LV.NE.0) CALL PGNUMB (LV, -6, 1, TEXT(K:), NCH)
             TEXT(K:K) = 'd'
 
-         ELSE IF (INDEX('DEFGHIT', TYPE(IWRLD)).NE.0) THEN
+         ELSE IF (SEXA(IWRLD)) THEN
 *           Sexagesimal format; angle or time?
             ANGLE = INDEX('DEF', TYPE(IWRLD)).NE.0
             L = LMAG(IWRLD)
 
 *           Use integer arithmetic to avoid rounding problems.
-            TMP = ABS(CACHE(4,J))*3600D0 + 0.5D-6
-            LV = INT(TMP)
+            VS = ABS(CACHE(4,J))*3600D0 + 5D-7
+            LV = INT(VS)
 
-*           Degree/hour field.
-            LD = LV/3600
+*           Sexagesimal fields.
+            LD =  LV/3600
+            LM = (LV - LD*3600)/60
+            LS =  LV - LD*3600 - LM*60
+
+*           Field suppression policy.
+            IF (SEXSUP(IWRLD).GT.0) THEN
+               TMP = ABS(CACHE(4,J)) - LD
+
+               IF (TMP.LT.5D-7) THEN
+                 DODEG = .TRUE.
+                 DOMIN = .TRUE.
+               ELSE IF (SEXSUP(IWRLD).EQ.2) THEN
+                 DOMIN = TMP*60-LM.LT.3D-5
+                 DODEG = DOMIN .AND. LD.NE.PRVD(IWRLD)
+               ELSE
+                 DODEG = .FALSE.
+                 DOMIN = .FALSE.
+               END IF
+            ELSE
+               DODEG = LD.NE.PRVD(IWRLD)
+               DOMIN = LM.NE.PRVM(IWRLD)
+            END IF
 
             K = 1
-            IF (L.EQ.-2 .OR. LD.NE.PRVD(IWRLD)) THEN
+            IF (L.EQ.-2 .OR. DODEG) THEN
 *              Write the degree/hour field.
+               DODEG = .TRUE.
+
                IF (CACHE(4,J).LT.0D0) THEN
 *                 Insert a minus sign.
                   TEXT(1:1) = '-'
@@ -1742,15 +1801,13 @@
                   TEXT(K:) = ESCAPE // 'uh' // ESCAPE // 'd'
                   K = K + 5
                END IF
-
             END IF
 
             IF (L.GE.-1) THEN
-*              Arcminute/minute field.
-               LV = LV - LD*3600
-               LM = LV/60
+*              Write arcminute/minute field.
 
-               IF (L.EQ.-1 .OR. K.GT.1 .OR. LM.NE.PRVM(IWRLD)) THEN
+               IF (L.EQ.-1 .OR. K.GT.1 .OR. DOMIN) THEN
+                  DOMIN = .TRUE.
                   IF (ANGLE) THEN
                      WRITE (TEXT(K:), '(I2.2,A)') LM, ''''
                      K = K + 3
@@ -1763,8 +1820,6 @@
 
                IF (L.GE.0) THEN
 *                 Arcsec/second field.
-                  LS = LV - LM*60
-
                   IF (ANGLE) THEN
                      WRITE (TEXT(K:), '(I2.2,A)') LS, '"'
                      K = K + 3
@@ -1777,7 +1832,7 @@
                   IF (L.GT.0) THEN
 *                    Sub-arcsec/second field.
                      WRITE (FMT, '(A,I1,A,I1,A)') '(A,I', L, '.', L, ')'
-                     LV = INT(MOD(TMP,1D0)*10**L)
+                     LV = INT(MOD(VS,1D0)*10**L)
                      WRITE (TEXT(K:), FMT) '.', LV
                   END IF
                END IF
@@ -1800,10 +1855,10 @@
             ELSE
 *              FORTRAN is really abysmal sometimes.
                WRITE (TEXT, '(I8)') PP
-               DO 160 K = 1, 8
-                  IF (TEXT(K:K).NE.' ') GO TO 170
- 160           CONTINUE
- 170           TEXT = '10' // ESCAPE // 'u' // TEXT(K:8)
+               DO 180 K = 1, 8
+                  IF (TEXT(K:K).NE.' ') GO TO 190
+ 180           CONTINUE
+ 190           TEXT = '10' // ESCAPE // 'u' // TEXT(K:8)
 
                LFORCE = .TRUE.
             END IF
@@ -1831,12 +1886,14 @@
             END IF
 
             CALL PGPTXT (X, Y, 0.0, FJUST, TEXT)
-            XL = XBOX(4) + XCH
+            XL = XBOX(4) + 0.5*XCH
             YL = YBOX(2) + 0.5*YCH
 
 *           Sexagesimal formatting.
-            PRVD(IWRLD) = LD
-            PRVM(IWRLD) = LM
+            IF (SEXA(IWRLD)) THEN
+               IF (DODEG) PRVD(IWRLD) = LD
+               IF (DOMIN) PRVM(IWRLD) = LM
+            END IF
 
 *           Record the fact.
             IF (IWRLD.EQ.1) THEN
@@ -1897,38 +1954,38 @@
                END IF
             END IF
          END IF
- 180  CONTINUE
+ 200  CONTINUE
 
 
 *  Write the identification strings.
 *     World coordinates.
-      DO 260 EDGE = 1, 4
+      DO 280 EDGE = 1, 4
          TEXT = ' '
 
-         DO 230 IWRLD = 1, 2
+         DO 250 IWRLD = 1, 2
             TXT(IWRLD) = ' '
 
-            IF (MOD(SKOP(EDGE)/IWRLD,2).EQ.0) GO TO 230
+            IF (MOD(SKOP(EDGE)/IWRLD,2).EQ.0) GO TO 250
 
             L = LEN(IDENTS(IWRLD))
-            DO 190 K = 1, L
+            DO 210 K = 1, L
                IF (IDENTS(IWRLD)(K:K).NE.' ') THEN
                   TXT(IWRLD) = IDENTS(IWRLD)(K:L)
-                  GO TO 200
+                  GO TO 220
                END IF
- 190        CONTINUE
+ 210        CONTINUE
 
- 200        IF (IMAG(IWRLD).NE.0) THEN
-               DO 210 K = 40, 1, -1
-                  IF (TXT(IWRLD)(K:K).NE.' ') GO TO 220
- 210           CONTINUE
+ 220        IF (IMAG(IWRLD).NE.0) THEN
+               DO 230 K = 40, 1, -1
+                  IF (TXT(IWRLD)(K:K).NE.' ') GO TO 240
+ 230           CONTINUE
 
 *              Add scaling information.
- 220           CALL PGNUMB (IMAG(IWRLD), 0, 1, EXPONT, NCH)
+ 240           CALL PGNUMB (IMAG(IWRLD), 0, 1, EXPONT, NCH)
                TXT(IWRLD)(K+1:) = '  x10' // ESCAPE // 'u' // EXPONT
             END IF
 
- 230     CONTINUE
+ 250     CONTINUE
 
          K = 0
          IF (TXT(1).NE.' ') THEN
@@ -1938,11 +1995,11 @@
 
             IF (TXT(2).NE.' ') THEN
 *              ...and also second world coordinate.
-               DO 240 K = 40, 1, -1
-                  IF (TEXT(K:K).NE.' ') GO TO 250
- 240           CONTINUE
+               DO 260 K = 40, 1, -1
+                  IF (TEXT(K:K).NE.' ') GO TO 270
+ 260           CONTINUE
 
- 250           K = K + 1
+ 270           K = K + 1
                TEXT(K:) = ',  ' // TXT(2)
             END IF
          ELSE IF (TXT(2).NE.' ') THEN
@@ -1951,7 +2008,7 @@
             CALL PGSCI (CI(6))
          ELSE
 *           No text to write.
-            GO TO 260
+            GO TO 280
          END IF
 
          IF (EDGE.EQ.1) THEN
@@ -1997,7 +2054,7 @@
             CALL PGPTXT (XBOX(4), YBOX(4), ANGL, 1.0, TEXT(K+1:))
          END IF
 
- 260  CONTINUE
+ 280  CONTINUE
 
 *     Title.
       IF (IDENTS(3).NE.' ') THEN

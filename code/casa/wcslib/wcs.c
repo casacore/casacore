@@ -907,7 +907,7 @@ double pixcrd[];
                   if (dabs < tol) return 0;
 
                   if (dlat < tol) {
-                     /* An artifact of numerical precision. */
+                     /* An artifact of numerical imprecision. */
                      if (dabs < tol2) return 0;
 
                      /* Must be a discontinuity. */
@@ -1099,7 +1099,7 @@ double pixcrd[];
                   if (dabs < tol) return 0;
 
                   if (dlng < tol) {
-                     /* An artifact of numerical precision. */
+                     /* An artifact of numerical imprecision. */
                      if (dabs < tol2) return 0;
 
                      /* Must be a discontinuity. */
