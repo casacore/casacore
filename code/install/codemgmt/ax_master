@@ -3225,3 +3225,4 @@
 13 069 src rm trial/implement/Images/ImageStatsBase.cc
 13 069 src rm trial/implement/Images/Image2Statistics.cc
 13 069 src rm aips/implement/MeasurementSets/MSTable2.cc
+13 078 src mv trial/implement/MeasurementSets/MSTable2.cc aips/implement/MeasurementSets/MSTable2.cc
