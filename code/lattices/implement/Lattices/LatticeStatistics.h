@@ -49,9 +49,7 @@
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
 class IPosition;
-class ostream;
-
-
+#include <aips/iosstrfwd.h>
 
 // <summary>
 // Compute and display various statistics from a lattice

@@ -1,5 +1,5 @@
 //# LatticeHistograms.h: generate histograms from a lattice
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ template <class T> class TempLattice;
 template <class T> class Vector;
 class IPosition;
 class PGPlotter;
-class ostream;
+#include <aips/iosfwd.h>
 
 // <summary>
 // Displays histograms of regions from a lattice.
