@@ -70,18 +70,18 @@
 
 # Libraries and include paths.
 #-----------------------------------------------------------------------------
- 
+
 # The C++ compiler.
 #------------------
 C++ROOT  := /usr
 
 # General external libraries.
 #----------------------------
-# Motif.
-MotifROOT := /usr/X11
-
 # X11.
-X11ROOT  := /usr/X11
+X11ROOT  := /usr/X11R6
+
+# Motif.
+MotifROOT := $(X11ROOT)
 
 # PGPLOT
 PGPLOTROOT := /usr/local
@@ -164,14 +164,14 @@ ifeq "$(MAKEMODE)" "programmer"
    ifeq "$(CPPFLAGS)" "alt1"
       override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
    endif
- 
+
    # C++ compiler flags for programmer compilations.
    ifdef OPT
       C++FLAGS := $(C++OPT)
    else
       C++FLAGS := $(C++DBG)
    endif
- 
+
    # Where to put binaries for programmer compilations.
    ifdef OPT
       PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
@@ -180,7 +180,7 @@ ifeq "$(MAKEMODE)" "programmer"
       PGMRLIBD := $(wildcard $(PGMRARCH)/libdbg)
       PGMRBIND := $(wildcard $(PGMRARCH)/bindbg)
    endif
- 
+
    # Alternate definitions for C++FLAGS.
    ifeq "$(C++FLAGS)" "alt1"
       override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
@@ -188,7 +188,7 @@ ifeq "$(MAKEMODE)" "programmer"
       PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
       override C++FLAGS := $(C++OPT)
    endif
- 
+
    # Extra compiler flags.
    C++FLAGS += $(EXTRA_C++FLAGS)
 endif
@@ -208,4 +208,3 @@ LIBatnf      := static static defeat defeat static static
 
 AUXILIARY := trial
 CONSORTIA := atnf nrao
-
