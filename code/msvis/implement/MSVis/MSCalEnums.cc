@@ -120,6 +120,13 @@ void MSCalEnums::initMaps ()
     theirFieldMap.define (POLY_COEFF_AMP, "POLY_COEFF_AMP");
     theirFieldMap.define (POLY_COEFF_PHASE, "POLY_COEFF_PHASE");
     theirFieldMap.define (SIDEBAND_REF, "SIDEBAND_REF");
+
+    theirFieldMap.define (N_KNOTS_AMP, "N_KNOTS_AMP");
+    theirFieldMap.define (N_KNOTS_PHASE, "N_KNOTS_PHASE");
+    theirFieldMap.define (SPLINE_KNOTS_AMP, "SPLINE_KNOTS_AMP");
+    theirFieldMap.define (SPLINE_KNOTS_PHASE, "SPLINE_KNOTS_PHASE");
+    theirFieldMap.define (SCALE_FACTOR_AMP, "SCALE_FACTOR_AMP");
+    theirFieldMap.define (SCALE_FACTOR_PHASE, "SCALE_FACTOR_PHASE");
   };
 
 // Initialize the static map containing the basic field data types
@@ -204,6 +211,13 @@ void MSCalEnums::initMaps ()
     theirTypeMap.define (POLY_COEFF_AMP, TpDouble);
     theirTypeMap.define (POLY_COEFF_PHASE, TpDouble);
     theirTypeMap.define (SIDEBAND_REF, TpComplex);
+
+    theirTypeMap.define (N_KNOTS_AMP, TpInt);
+    theirTypeMap.define (N_KNOTS_PHASE, TpInt);
+    theirTypeMap.define (SPLINE_KNOTS_AMP, TpDouble);
+    theirTypeMap.define (SPLINE_KNOTS_PHASE, TpDouble);
+    theirTypeMap.define (SCALE_FACTOR_AMP, TpDouble);
+    theirTypeMap.define (SCALE_FACTOR_PHASE, TpDouble);
   };
 
 };
