@@ -87,6 +87,9 @@ public:
   // The destructor does nothing special
   ~RONewMSSourceColumns();
 
+  // Is this object defined? (NewMSSource table is optional)
+  Bool isNull() const {return isNull_p;}
+
   // Access to required columns
   // <group>
   const ROScalarColumn<Int>& calibrationGroup() const {
@@ -135,8 +138,9 @@ public:
   const ROArrayColumn<String>& transition() const {return transition_p;}
   // </group>
 
-  // Convenience function that returns the number of rows in any of the columns
-  uInt nrow() const {return calibrationGroup_p.nrow();}
+  // Convenience function that returns the number of rows in any of the
+  // columns. Returns zero if the object is null.
+  uInt nrow() const {return isNull() ? 0 : calibrationGroup_p.nrow();}
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -155,6 +159,9 @@ private:
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSSource& msSource);
   
+  //# Is the object not attached to a Table.
+  Bool isNull_p;
+
   //# required columns
   ROScalarColumn<Int> calibrationGroup_p;
   ROScalarColumn<String> code_p;

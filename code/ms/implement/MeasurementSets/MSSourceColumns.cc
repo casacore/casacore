@@ -34,45 +34,42 @@
 #include <aips/Measures/MRadialVelocity.h>
 
 RONewMSSourceColumns::RONewMSSourceColumns(const NewMSSource& msSource):
-  calibrationGroup_p(msSource, NewMSSource::
-		     columnName(NewMSSource::CALIBRATION_GROUP)),
-  code_p(msSource, NewMSSource::columnName(NewMSSource::CODE)),
-  direction_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
-  interval_p(msSource, NewMSSource::columnName(NewMSSource::INTERVAL)),
-  name_p(msSource, NewMSSource::columnName(NewMSSource::NAME)),
-  numLines_p(msSource, NewMSSource::columnName(NewMSSource::NUM_LINES)),
-  properMotion_p(msSource, NewMSSource::
-		 columnName(NewMSSource::PROPER_MOTION)),
-  sourceId_p(msSource, NewMSSource::columnName(NewMSSource::SOURCE_ID)),
-  spectralWindowId_p(msSource, NewMSSource::
-		     columnName(NewMSSource::SPECTRAL_WINDOW_ID)),
-  time_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  isNull_p(True),
+  calibrationGroup_p(),
+  code_p(),
+  direction_p(),
+  interval_p(),
+  name_p(),
+  numLines_p(),
+  properMotion_p(),
+  spectralWindowId_p(),
+  time_p(),
   position_p(),
   pulsarId_p(),
   restFrequency_p(),
   sourceModel_p(),
   sysvel_p(),
   transition_p(),
-  directionMeas_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
-  timeMeas_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  directionMeas_p(),
+  timeMeas_p(),
   positionMeas_p(),
   restFrequencyMeas_p(),
   sysvelMeas_p(),
-  directionQuant_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
-  intervalQuant_p(msSource, NewMSSource::columnName(NewMSSource::INTERVAL)),
-  properMotionQuant_p(msSource, NewMSSource::
-		      columnName(NewMSSource::PROPER_MOTION)),
-  timeQuant_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  directionQuant_p(),
+  intervalQuant_p(),
+  properMotionQuant_p(),
+  timeQuant_p(),
   positionQuant_p(),
   restFrequencyQuant_p(),
   sysvelQuant_p()
 { 
-  attachOptionalCols(msSource);
+  attach(msSource);
 }
 
 RONewMSSourceColumns::~RONewMSSourceColumns() {}
 
 RONewMSSourceColumns::RONewMSSourceColumns():
+  isNull_p(True),
   calibrationGroup_p(),
   code_p(),
   direction_p(),
@@ -106,31 +103,37 @@ RONewMSSourceColumns::RONewMSSourceColumns():
 
 void RONewMSSourceColumns::attach(const NewMSSource& msSource)
 {
-  calibrationGroup_p.attach(msSource, NewMSSource::
-			    columnName(NewMSSource::CALIBRATION_GROUP));
-  code_p.attach(msSource, NewMSSource::columnName(NewMSSource::CODE));
-  direction_p.attach(msSource, NewMSSource::
-		     columnName(NewMSSource::DIRECTION));
-  interval_p.attach(msSource, NewMSSource::columnName(NewMSSource::INTERVAL));
-  name_p.attach(msSource, NewMSSource::columnName(NewMSSource::NAME));
-  numLines_p.attach(msSource, NewMSSource::columnName(NewMSSource::NUM_LINES));
-  properMotion_p.attach(msSource, NewMSSource::
-			columnName(NewMSSource::PROPER_MOTION));
-  sourceId_p.attach(msSource, NewMSSource::columnName(NewMSSource::SOURCE_ID));
-  spectralWindowId_p.attach(msSource, NewMSSource::
-			    columnName(NewMSSource::SPECTRAL_WINDOW_ID));
-  time_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-  directionMeas_p.attach(msSource, NewMSSource::
-			 columnName(NewMSSource::DIRECTION));
-  timeMeas_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-  directionQuant_p.attach(msSource, NewMSSource::
-			  columnName(NewMSSource::DIRECTION));
-  intervalQuant_p.attach(msSource, NewMSSource::
-			 columnName(NewMSSource::INTERVAL));
-  properMotionQuant_p.attach(msSource, NewMSSource::
-			     columnName(NewMSSource::PROPER_MOTION));
-  timeQuant_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-  attachOptionalCols(msSource);
+  isNull_p = msSource.isNull();
+  if (!isNull()) {
+    calibrationGroup_p.attach(msSource, NewMSSource::
+			      columnName(NewMSSource::CALIBRATION_GROUP));
+    code_p.attach(msSource, NewMSSource::columnName(NewMSSource::CODE));
+    direction_p.attach(msSource, NewMSSource::
+		       columnName(NewMSSource::DIRECTION));
+    interval_p.attach(msSource, NewMSSource::
+		      columnName(NewMSSource::INTERVAL));
+    name_p.attach(msSource, NewMSSource::columnName(NewMSSource::NAME));
+    numLines_p.attach(msSource, NewMSSource::
+		      columnName(NewMSSource::NUM_LINES));
+    properMotion_p.attach(msSource, NewMSSource::
+			  columnName(NewMSSource::PROPER_MOTION));
+    sourceId_p.attach(msSource, NewMSSource::
+		      columnName(NewMSSource::SOURCE_ID));
+    spectralWindowId_p.attach(msSource, NewMSSource::
+			      columnName(NewMSSource::SPECTRAL_WINDOW_ID));
+    time_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
+    directionMeas_p.attach(msSource, NewMSSource::
+			   columnName(NewMSSource::DIRECTION));
+    timeMeas_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
+    directionQuant_p.attach(msSource, NewMSSource::
+			    columnName(NewMSSource::DIRECTION));
+    intervalQuant_p.attach(msSource, NewMSSource::
+			   columnName(NewMSSource::INTERVAL));
+    properMotionQuant_p.attach(msSource, NewMSSource::
+			       columnName(NewMSSource::PROPER_MOTION));
+    timeQuant_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
+    attachOptionalCols(msSource);
+  }
 }
 
 void RONewMSSourceColumns::attachOptionalCols(const NewMSSource& msSource)
@@ -165,41 +168,36 @@ void RONewMSSourceColumns::attachOptionalCols(const NewMSSource& msSource)
 }
 
 NewMSSourceColumns::NewMSSourceColumns(NewMSSource& msSource):
-  RONewMSSourceColumns(msSource),
-  calibrationGroup_p(msSource, NewMSSource::
-		     columnName(NewMSSource::CALIBRATION_GROUP)),
-  code_p(msSource, NewMSSource::columnName(NewMSSource::CODE)),
-  direction_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
-  interval_p(msSource, NewMSSource::columnName(NewMSSource::INTERVAL)),
-  name_p(msSource, NewMSSource::columnName(NewMSSource::NAME)),
-  numLines_p(msSource, NewMSSource::columnName(NewMSSource::NUM_LINES)),
-  properMotion_p(msSource, NewMSSource::
-		 columnName(NewMSSource::PROPER_MOTION)),
-  sourceId_p(msSource, NewMSSource::columnName(NewMSSource::SOURCE_ID)),
-  spectralWindowId_p(msSource, NewMSSource::
-		     columnName(NewMSSource::SPECTRAL_WINDOW_ID)),
-  time_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  RONewMSSourceColumns(),
+  calibrationGroup_p(),
+  code_p(),
+  direction_p(),
+  interval_p(),
+  name_p(),
+  numLines_p(),
+  properMotion_p(),
+  spectralWindowId_p(),
+  time_p(),
   position_p(),
   pulsarId_p(),
   restFrequency_p(),
   sourceModel_p(),
   sysvel_p(),
   transition_p(),
-  directionMeas_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
-  timeMeas_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  directionMeas_p(),
+  timeMeas_p(),
   positionMeas_p(),
   restFrequencyMeas_p(),
   sysvelMeas_p(),
-  directionQuant_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
-  intervalQuant_p(msSource, NewMSSource::columnName(NewMSSource::INTERVAL)),
-  properMotionQuant_p(msSource, NewMSSource::
-		      columnName(NewMSSource::PROPER_MOTION)),
-  timeQuant_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  directionQuant_p(),
+  intervalQuant_p(),
+  properMotionQuant_p(),
+  timeQuant_p(),
   positionQuant_p(),
   restFrequencyQuant_p(),
   sysvelQuant_p()
 { 
-  attachOptionalCols(msSource);
+  attach(msSource);
 }
 
 NewMSSourceColumns::~NewMSSourceColumns() {}
@@ -240,31 +238,36 @@ NewMSSourceColumns::NewMSSourceColumns():
 void NewMSSourceColumns::attach(NewMSSource& msSource)
 {
   RONewMSSourceColumns::attach(msSource);
-  calibrationGroup_p.attach(msSource, NewMSSource::
-			    columnName(NewMSSource::CALIBRATION_GROUP));
-  code_p.attach(msSource, NewMSSource::columnName(NewMSSource::CODE));
-  direction_p.attach(msSource, NewMSSource::
-		     columnName(NewMSSource::DIRECTION));
-  interval_p.attach(msSource, NewMSSource::columnName(NewMSSource::INTERVAL));
-  name_p.attach(msSource, NewMSSource::columnName(NewMSSource::NAME));
-  numLines_p.attach(msSource, NewMSSource::columnName(NewMSSource::NUM_LINES));
-  properMotion_p.attach(msSource, NewMSSource::
-			columnName(NewMSSource::PROPER_MOTION));
-  sourceId_p.attach(msSource, NewMSSource::columnName(NewMSSource::SOURCE_ID));
-  spectralWindowId_p.attach(msSource, NewMSSource::
-			    columnName(NewMSSource::SPECTRAL_WINDOW_ID));
-  time_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-  directionMeas_p.attach(msSource, NewMSSource::
-			 columnName(NewMSSource::DIRECTION));
-  timeMeas_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-  directionQuant_p.attach(msSource, NewMSSource::
-			  columnName(NewMSSource::DIRECTION));
-  intervalQuant_p.attach(msSource, NewMSSource::
-			 columnName(NewMSSource::INTERVAL));
-  properMotionQuant_p.attach(msSource, NewMSSource::
-			     columnName(NewMSSource::PROPER_MOTION));
-  timeQuant_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
-  attachOptionalCols(msSource);
+  if (!isNull()) {
+    calibrationGroup_p.attach(msSource, NewMSSource::
+			      columnName(NewMSSource::CALIBRATION_GROUP));
+    code_p.attach(msSource, NewMSSource::columnName(NewMSSource::CODE));
+    direction_p.attach(msSource, NewMSSource::
+		       columnName(NewMSSource::DIRECTION));
+    interval_p.attach(msSource, NewMSSource::
+		      columnName(NewMSSource::INTERVAL));
+    name_p.attach(msSource, NewMSSource::columnName(NewMSSource::NAME));
+    numLines_p.attach(msSource, NewMSSource::
+		      columnName(NewMSSource::NUM_LINES));
+    properMotion_p.attach(msSource, NewMSSource::
+			  columnName(NewMSSource::PROPER_MOTION));
+    sourceId_p.attach(msSource, NewMSSource::
+		      columnName(NewMSSource::SOURCE_ID));
+    spectralWindowId_p.attach(msSource, NewMSSource::
+			      columnName(NewMSSource::SPECTRAL_WINDOW_ID));
+    time_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
+    directionMeas_p.attach(msSource, NewMSSource::
+			   columnName(NewMSSource::DIRECTION));
+    timeMeas_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
+    directionQuant_p.attach(msSource, NewMSSource::
+			    columnName(NewMSSource::DIRECTION));
+    intervalQuant_p.attach(msSource, NewMSSource::
+			   columnName(NewMSSource::INTERVAL));
+    properMotionQuant_p.attach(msSource, NewMSSource::
+			       columnName(NewMSSource::PROPER_MOTION));
+    timeQuant_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
+    attachOptionalCols(msSource);
+  }
 }
 
 void NewMSSourceColumns::attachOptionalCols(NewMSSource& msSource)
@@ -308,7 +311,9 @@ void NewMSSourceColumns::setDirectionRef(MDirection::Types ref) {
 
 void NewMSSourceColumns::setPositionRef(MPosition::Types ref)
 {
-  positionMeas_p.setDescRefCode(ref);
+  if (!positionMeas_p.isNull()) {
+    positionMeas_p.setDescRefCode(ref);
+  }
 }
 
 void NewMSSourceColumns::setFrequencyRef(MFrequency::Types ref)

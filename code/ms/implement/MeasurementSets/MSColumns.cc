@@ -87,9 +87,11 @@ void NewMSColumns::setEpochRef(MEpoch::Types ref)
   history().setEpochRef(ref);
   observation().setEpochRef(ref);
   pointing().setEpochRef(ref);
-  source().setEpochRef(ref);
   if (!freqOffset_p.isNull()) {
     freqOffset_p.setEpochRef(ref);
+  }
+  if (!source_p.isNull()) {
+    source().setEpochRef(ref);
   }
   if (!sysCal_p.isNull()) {
     sysCal_p.setEpochRef(ref);
@@ -103,7 +105,9 @@ void NewMSColumns::setDirectionRef(MDirection::Types ref)
 {
   field().setDirectionRef(ref);
   pointing().setDirectionRef(ref);
-  source().setDirectionRef(ref);
+  if (!source_p.isNull()) {
+    source().setDirectionRef(ref);
+  }
 }
 // Local Variables: 
 // compile-command: "gmake NewMSColumns"

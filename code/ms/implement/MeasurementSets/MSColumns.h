@@ -123,7 +123,6 @@ public:
   const RONewMSPolarizationColumns& polarization() const {
     return polarization_p;}
   const RONewMSProcessorColumns& processor() const {return processor_p;}
-  const RONewMSSourceColumns& source() const {return source_p;}
   const RONewMSSpWindowColumns& spectralWindow() const {
     return spectralWindow_p;}
   const RONewMSStateColumns& state() const {return state_p;}
@@ -133,6 +132,7 @@ public:
   // <group>
   const RONewMSDopplerColumns& doppler() const {return doppler_p;}
   const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
+  const RONewMSSourceColumns& source() const {return source_p;}
   const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
   const RONewMSWeatherColumns& weather() const {return weather_p;}
   // </group>
@@ -151,7 +151,7 @@ private:
   RONewMSPointingColumns pointing_p;
   RONewMSPolarizationColumns polarization_p;
   RONewMSProcessorColumns processor_p;
-  RONewMSSourceColumns source_p;
+  RONewMSSourceColumns source_p; // optional
   RONewMSSpWindowColumns spectralWindow_p;
   RONewMSStateColumns state_p;
   RONewMSSysCalColumns sysCal_p; //optional
@@ -232,7 +232,6 @@ public:
   NewMSPointingColumns& pointing() {return pointing_p;}
   NewMSPolarizationColumns& polarization() {return polarization_p;}
   NewMSProcessorColumns& processor() {return processor_p;}
-  NewMSSourceColumns& source() {return source_p;}
   NewMSSpWindowColumns& spectralWindow() {return spectralWindow_p;}
   NewMSStateColumns& state() {return state_p;}
   // </group>
@@ -241,6 +240,7 @@ public:
   // <group>
   NewMSDopplerColumns& doppler() {return doppler_p;}
   NewMSFreqOffsetColumns& freqOffset() {return freqOffset_p;}
+  NewMSSourceColumns& source() {return source_p;}
   NewMSSysCalColumns& sysCal() {return sysCal_p;}
   NewMSWeatherColumns& weather() {return weather_p;}
   // </group>
@@ -294,7 +294,7 @@ private:
   NewMSPointingColumns pointing_p;
   NewMSPolarizationColumns polarization_p;
   NewMSProcessorColumns processor_p;
-  NewMSSourceColumns source_p;
+  NewMSSourceColumns source_p; // optional
   NewMSSpWindowColumns spectralWindow_p;
   NewMSStateColumns state_p;
   NewMSSysCalColumns sysCal_p; //optional
