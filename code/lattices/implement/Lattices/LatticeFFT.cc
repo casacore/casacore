@@ -1,5 +1,5 @@
 //# LatticeFFT.cc: functions for doing FFT's on Lattices.
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,13 +34,12 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/FFTServer.h>
 #include <aips/Utilities/Assert.h>
+#include <trial/Lattices/CopyLattice.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/TiledLineStepper.h>
-#include <trial/Lattices/CopyLattice.h>
 #include <trial/Lattices/TempLattice.h>
-
+#include <trial/Lattices/TiledLineStepper.h>
 
 void LatticeFFT::cfft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
@@ -57,7 +56,7 @@ void LatticeFFT::cfft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
     FFTServer<Float,Complex> ffts(cursorShape);
     for (li.reset(); !li.atEnd(); li++) {
        if (!allNear(li.cursor(), cZero, 1E-6)) {
-	 ffts.fft(li.rwMatrixCursor().ac(), toFrequency);
+	 ffts.fft(li.rwMatrixCursor(), toFrequency);
        }
     }
   } // For large transforms , we do line by line FFT's
@@ -134,9 +133,9 @@ void LatticeFFT::rcfft(Lattice<Complex> & out, const Lattice<Float> & in,
 	    outIter.woCursor() = cZero;
 	  } else {
 	    if (doShift) {
-	      ffts.fft(outIter.rwVectorCursor(), inIter.vectorCursor());
+	      ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
 	    } else {
-	      ffts.fft0(outIter.rwVectorCursor(), inIter.vectorCursor());
+	      ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
 	    }
 	  }
 	}
@@ -218,9 +217,9 @@ void LatticeFFT::crfft(Lattice<Float> & out, Lattice<Complex> & in,
  	for (inIter.reset(), outIter.reset(); 
  	     !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
 	  if (doShift) {
-	    ffts.fft(outIter.rwVectorCursor(), inIter.vectorCursor());
+	    ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
 	  } else {
-	    ffts.fft0(outIter.rwVectorCursor(), inIter.vectorCursor());
+	    ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
 	  }
 	}
       }
@@ -229,7 +228,7 @@ void LatticeFFT::crfft(Lattice<Float> & out, Lattice<Complex> & in,
 }
 
 void LatticeFFT::crfft(Lattice<Float> & out, Lattice<Complex> & in, 
-		     const Bool doShift){
+		       const Bool doShift){
   const Vector<Bool> whichAxes(in.ndim(), True);
   LatticeFFT::crfft(out, in, whichAxes, doShift);
 }
