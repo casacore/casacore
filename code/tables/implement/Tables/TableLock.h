@@ -101,7 +101,12 @@ public:
 	// of the Table functions <src>lock</src> and <src>unlock</src>.
 	// It is similar to UserLocking, but no locks are needed for
 	// reading.
-	UserNoReadLocking
+	UserNoReadLocking,
+	// This is the default locking option.
+	// It means that AutoLocking will be used if the table is not
+	// opened yet. Otherwise the locking options of the PlainTable
+	// objec already in use will be used.
+	DefaultLocking
     };
 
     // Construct with given option and interval.
@@ -113,7 +118,7 @@ public:
     // waits when acquiring a lock in AutoLocking mode. The default
     // is 0 seconds meaning indefinitely.
     // <group>
-    TableLock (LockOption option = AutoLocking);
+    TableLock (LockOption option = DefaultLocking);
     TableLock (LockOption option, double inspectionInterval, uInt maxWait = 0);
     // </group>
 
@@ -128,6 +133,7 @@ public:
     // The option order (ascending) is UserLocking, AutoLocking,
     // PermanentLocking.
     // When an interval was defaulted, it is not taken into account.
+    // An option DefaultLocking is not taken into account.
     void merge (const TableLock& that);
 
     // Get the locking option.
@@ -151,6 +157,7 @@ private:
     Bool        itsReadLocking;
     uInt        itsMaxWait;
     double      itsInterval;
+    Bool        itsIsDefaultLocking;
     Bool        itsIsDefaultInterval;
 
 

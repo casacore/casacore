@@ -71,7 +71,7 @@ Table::Table (const String& name, TableOption option)
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    open (name, "", option, TableLock(TableLock::AutoLocking));
+    open (name, "", option, TableLock(TableLock::DefaultLocking));
 }
 
 Table::Table (const String& name, const TableLock& lockOptions,
@@ -88,7 +88,7 @@ Table::Table (const String& name, const String& type, TableOption option)
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    open (name, type, option, TableLock(TableLock::AutoLocking));
+    open (name, type, option, TableLock(TableLock::DefaultLocking));
 }
     
 Table::Table (const String& name, const String& type,
@@ -106,7 +106,7 @@ Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize)
   lastModCounter_p (0)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
-				   TableLock(TableLock::AutoLocking));
+				   TableLock(TableLock::DefaultLocking));
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, TableLock::LockOption lockOption,

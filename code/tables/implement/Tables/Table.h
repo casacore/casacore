@@ -190,8 +190,10 @@ public:
     // When the table with this name was already opened in this process,
     // the existing and new locking options are merged using
     // <src>TableLock::merge</src>.
-    // The default locking mechanism is AutoLocking with a default
-    // inspection interval of 5 seconds.
+    // The default locking mechanism is DefaultLocking. When the table
+    // is not open yet, it comes to AutoLocking with an inspection interval
+    // of 5 seconds. Otherwise DefaultLocking keeps the locking options
+    // of the already open table.
     // <group>
     explicit Table (const String& tableName, TableOption = Table::Old);
     Table (const String& tableName, const TableLock& lockOptions,

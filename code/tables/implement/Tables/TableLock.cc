@@ -1,5 +1,5 @@
 //# TableLock.cc: Class to hold table lock options
-//# Copyright (C) 1997,2000
+//# Copyright (C) 1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@ TableLock::TableLock (LockOption option)
   itsReadLocking       (True),
   itsMaxWait           (0),
   itsInterval          (5),
+  itsIsDefaultLocking  (False),
   itsIsDefaultInterval (True)
 {
   init();
@@ -46,6 +47,7 @@ TableLock::TableLock (LockOption option, double inspectionInterval,
   itsReadLocking       (True),
   itsMaxWait           (maxWait),
   itsInterval          (inspectionInterval),
+  itsIsDefaultLocking  (False),
   itsIsDefaultInterval (False)
 {
   init();
@@ -56,6 +58,7 @@ TableLock::TableLock (const TableLock& that)
   itsReadLocking       (that.itsReadLocking),
   itsMaxWait           (that.itsMaxWait),
   itsInterval          (that.itsInterval),
+  itsIsDefaultLocking  (that.itsIsDefaultLocking),
   itsIsDefaultInterval (that.itsIsDefaultInterval)
 {}
 
@@ -66,6 +69,7 @@ TableLock& TableLock::operator= (const TableLock& that)
     itsReadLocking       = that.itsReadLocking;
     itsMaxWait           = that.itsMaxWait;
     itsInterval          = that.itsInterval;
+    itsIsDefaultLocking  = that.itsIsDefaultLocking;
     itsIsDefaultInterval = that.itsIsDefaultInterval;
   }
   return *this;
@@ -74,7 +78,10 @@ TableLock& TableLock::operator= (const TableLock& that)
 
 void TableLock::init()
 {
-  if (itsOption == AutoNoReadLocking) {
+  if (itsOption == DefaultLocking) {
+    itsOption           = AutoLocking;
+    itsIsDefaultLocking = True;
+  } else if (itsOption == AutoNoReadLocking) {
     itsOption      = AutoLocking;
     itsReadLocking = False;
   } else if (itsOption == UserNoReadLocking) {
@@ -86,16 +93,21 @@ void TableLock::init()
 
 void TableLock::merge (const TableLock& that)
 {
-  if (that.itsOption < itsOption) {
-    itsOption  = that.itsOption;
-    itsMaxWait = that.itsMaxWait;
-  }
-  if (that.itsReadLocking) {
-    itsReadLocking = True;
-  }
-  if (! that.itsIsDefaultInterval) {
-    if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
-      itsInterval = that.itsInterval;
+  if (! that.itsIsDefaultLocking) {
+    if (itsIsDefaultLocking  ||  that.itsOption < itsOption) {
+      itsOption  = that.itsOption;
+      itsMaxWait = that.itsMaxWait;
+      itsIsDefaultLocking = that.itsIsDefaultLocking;
+    }
+    if (itsIsDefaultLocking) {
+      itsReadLocking = that.itsReadLocking;
+    } else if (that.itsReadLocking) {
+      itsReadLocking = True;
+    }
+    if (! that.itsIsDefaultInterval) {
+      if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
+	itsInterval = that.itsInterval;
+      }
     }
   }
 }
