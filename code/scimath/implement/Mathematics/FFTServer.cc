@@ -299,7 +299,7 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
 	// this speeds up access to the data by a factors of about ten!
 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
 	// Do the transform
-	cfftf( fftLen, (T *) buffPtr, workPtr);
+	cfftf( fftLen, buffPtr, workPtr);
 	// copy the data back
 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
 	// indexing calculations
@@ -359,7 +359,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
 	// this speeds up access to the data by a factors of about ten!
 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
 	// Do the FFT
-	cfftb(fftLen, (T *) buffPtr, workPtr);
+	cfftb(fftLen, buffPtr, workPtr);
 	// copy the data back
 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
 	// indexing calculations
@@ -436,8 +436,7 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
     fftLen = shape(n);
     nffts = nElements/fftLen;
     r = 0;
-    if (n != 0) 
-      realBuffPtr = (T *) buffPtr;
+    buffPtr = theBuffer.storage();
     while (r < nffts) {
       // Copy the data into a temporary buffer. This makes it contigious and
       // hence it is more likely to fit into cache. With current computers
@@ -445,18 +444,22 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
       if (n != 0)
 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
       else
-	realBuffPtr = (T *) rowPtr;
+	buffPtr = rowPtr;
       // Do the FFT
       if (toFrequency == True)
-	cfftf(fftLen, realBuffPtr, workPtr);
+	cfftf(fftLen, buffPtr, workPtr);
       else {
-	cfftb(fftLen, realBuffPtr, workPtr);
-	if (n == 0) // Scale by 1/N while things are (hopefully) in cache
+	cfftb(fftLen, buffPtr, workPtr);
+	if (n == 0) {// Scale by 1/N while things are (hopefully) in cache
+	  realBuffPtr = (T *) buffPtr;
+	  // No need to do complex multiplications when real ones will do. 
+	  // This saves two multiplies and additions per complex element.
 	  for (endRowPtr = realBuffPtr+shape0t2; 
-	       realBuffPtr < endRowPtr; realBuffPtr++)
+	       realBuffPtr < endRowPtr; realBuffPtr++) {
 	    *realBuffPtr *= scale;
+	  }
+	}
       }
-      
       // copy the data back
       if (n != 0)
 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
