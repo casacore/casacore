@@ -94,9 +94,11 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
   }
   const ROScalarColumn<String> typeCol(itsTable, "Type");
   const ROArrayColumn<Double> fluxCol(itsTable, "Flux");
+  const TableRecord fluxKeywords(fluxCol.keywordSet());
   const ROArrayColumn<Double> dirCol(itsTable, "Direction");
   const TableRecord dirKeywords(dirCol.keywordSet());
   const ROArrayColumn<Double> parmCol(itsTable, "Parameters");
+  const ROScalarColumn<String> labelCol(itsTable, "Label");
   MDirection compDir;
   {
     MDirection::Ref refType;
@@ -111,16 +113,24 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
     dirKeywords.get("Unit", angleUnit);
     qdir.setUnit(angleUnit);
   }
+  Quantum<Vector<Double> > qFlux;
+  {
+    String fluxUnit;
+    fluxKeywords.get("Unit", fluxUnit);
+    qFlux.setUnit(fluxUnit);
+  }
   const uInt nComp = typeCol.nrow();
   Vector<Double> flux(4), dir(2), parameters;
-  String componentName;
+  String componentName, compLabel;
   SkyComponent currentComp;
   for (uInt i = 0; i < nComp; i++) {
     typeCol.get(i, componentName);
     currentComp = SkyComponent(ComponentType::type(componentName));
-    fluxCol.get(i, flux); currentComp.setFlux(flux);
+    fluxCol.get(i, flux); qFlux.setValue(flux); currentComp.setFlux(qFlux);
     dirCol.get(i, dir); qdir.setValue(dir); compDir.set(qdir);
     currentComp.setDirection(compDir);
+    labelCol.get(i, compLabel);
+    currentComp.setLabel(compLabel);
     parameters.resize(0);
     parmCol.get(i, parameters); currentComp.setParameters(parameters);
     add(currentComp);
@@ -221,6 +231,16 @@ void ComponentList::remove(const uInt & index) {
   }
 }
 
+void ComponentList::remove() {
+  AlwaysAssert(itsROFlag == False, AipsError);
+  DebugAssert(ok(), AipsError);
+  uInt i = nelements() ;
+  while (i > 0) {
+    i--;
+    if (isActive(i) == False) remove(i);
+  }
+}
+
 uInt ComponentList::nelements() const {
   return itsNelements;
 }
@@ -306,6 +326,10 @@ void ComponentList::rename(const String & fileName,
       dirCol.rwKeywordSet().define ("Frame", refFrame);
       td.addColumn(dirCol);
       
+      ScalarColumnDesc<String> labelCol("Label" ,
+					"An arbitrary label for the user");
+      td.addColumn (labelCol);
+
       ArrayColumnDesc<Double> 
 	parmCol("Parameters", "Parameters specific to this component type", 1);
       td.addColumn(parmCol);
@@ -333,17 +357,16 @@ ComponentList ComponentList::copy() const {
 void ComponentList::sort(ComponentList::SortCriteria criteria) {
   if (criteria == ComponentList::FLUX) {
     Block<Double> absI(nelements());
-    Vector<Double> compFlux(4);
+    Quantum<Vector<Double> > compFlux;
     for (uInt i = 0; i < nelements(); i++) {
       itsList[i].flux(compFlux);
-      absI[i] = abs(compFlux(0));
+      absI[i] = abs(compFlux.getValue("Jy")(0));
     }
     // The genSort function requires a Vector<uInt> and not a Block<uInt> so
     // I'll create a temporary Vector here which references the data in the
     // 'itsOrder' Block.
-    Vector<uInt> vecOrder(IPosition(1, nelements()), 
-			  itsOrder.storage(), SHARE);
-    AlwaysAssert(genSort(vecOrder, absI, Sort::Descending) == nactive(), 
+    Vector<uInt> vecOrder(IPosition(1,nelements()), itsOrder.storage(), SHARE);
+    AlwaysAssert(genSort(vecOrder, absI, Sort::Descending) == nelements(), 
 		 AipsError);
   }
 }
@@ -452,8 +475,10 @@ void ComponentList::writeTable(const Bool & saveActiveOnly) {
   }
   ScalarColumn<String> typeCol(itsTable, "Type");
   ArrayColumn<Double> fluxCol(itsTable, "Flux");
+  TableRecord fluxKeywords(fluxCol.keywordSet());
   ArrayColumn<Double> dirCol(itsTable, "Direction");
   TableRecord dirKeywords(dirCol.keywordSet());
+  ScalarColumn<String> labelCol(itsTable, "Label");
   ArrayColumn<Double> parmCol(itsTable, "Parameters");
   
   MDirection compDir;
@@ -465,19 +490,25 @@ void ComponentList::writeTable(const Bool & saveActiveOnly) {
     AlwaysAssert(compDir.giveMe(refFrame, refType), AipsError);
     refNum = refType.getType();
   }
+  String fluxUnits;
+  fluxKeywords.get("Unit", fluxUnits);
+  Quantum<Vector<Double> > compFlux(Vector<Double>(4,0.0), fluxUnits);
   String angleUnits;
   dirKeywords.get("Unit", angleUnits);
   Vector<Double> dirn;
-  Vector<Double> compFlux(4), compParms;
+  Vector<Double> compParms;
+  String compLabel;
   for (uInt i = 0; i < nelements(); i++) {
     if (saveActiveOnly == False || isActive(i)) {
       typeCol.put(i, ComponentType::name(component(i).type()));
-      component(i).flux(compFlux); fluxCol.put(i, compFlux);
+      component(i).flux(compFlux);fluxCol.put(i, compFlux.getValue(fluxUnits));
       component(i).direction(compDir);
       if (compDir.getRef().getType() != refNum)
 	compDir = MDirection::Convert(compDir, refNum)();
       dirn = compDir.getAngle().getValue(angleUnits);
       dirCol.put(i, dirn);
+      component(i).label(compLabel);
+      labelCol.put(i, compLabel);
       compParms.resize(component(i).nParameters());
       component(i).parameters(compParms);
       parmCol.put(i, compParms);
