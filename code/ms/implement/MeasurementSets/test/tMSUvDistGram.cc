@@ -38,17 +38,20 @@
 int main(int argc, char **argv)
 {
   try {
-    cout << "before ms constructor called " << endl;
-    const String msName = "3C273XC1_tmp.ms";
+    if(argc<3){
+      cout << "Please input MS file and selection string on command line " << endl;
+      exit(0);
+    }
+    const String msName = argv[1];
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
+    cout << "Select from " << msName << endl;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msUvDistGramParseCommand(&ms, "'3727km:5%'")==0) {
+    if(msUvDistGramParseCommand(&ms, argv[2])==0) {
       const TableExprNode *node = msUvDistGramParseNode();
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
-      cout << "After mssel constructor called " << endl;
       mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
       mssel->flush();
       if(mssel->nrow()==0) {
