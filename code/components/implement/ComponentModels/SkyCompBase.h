@@ -246,8 +246,10 @@ public:
   // once. The visibilities are returned in the first argument which must have
   // dimensions of [4, nChan, nVis]. The points to sample are specified in the
   // second argument which must have dimensions of [3, nVis], and the
-  // frequencoies to sampel are specified by the third argument which must have
-  // a length of nChan.
+  // frequencies to sample are specified by the third argument which must have
+  // a length of nChan. The units and polarisation of the returned visibilities
+  // are the same as the flux of this object, and can be queried using the
+  // <src>flux().units()</src> & <src>flux().pol()</src> functions.
   virtual void visibility(Cube<DComplex>& visibilities,
 			  const Matrix<Double>& uvws,
 			  const Vector<Double>& frequencies) const = 0;
