@@ -1,5 +1,5 @@
 //# RecordRep.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,13 +36,11 @@
 
 
 RecordRep::RecordRep ()
-: data_p  (0),
-  nused_p (0)
+: nused_p (0)
 {}
 	
 RecordRep::RecordRep (const RecordDesc& description)
 : desc_p  (description),
-  data_p  (0),
   nused_p (0)
 {
     restructure (desc_p);
@@ -50,7 +48,6 @@ RecordRep::RecordRep (const RecordDesc& description)
 
 RecordRep::RecordRep (const RecordRep& other)
 : desc_p  (other.desc_p),
-  data_p  (0),
   nused_p (0)
 {
     restructure (desc_p);
@@ -76,6 +73,8 @@ void RecordRep::restructure (const RecordDesc& newDescription)
     delete_myself (desc_p.nfields());
     desc_p  = newDescription;
     nused_p = desc_p.nfields();
+    datavec_p.resize (nused_p);
+    datavec_p = static_cast<void*>(0);
     data_p.resize (nused_p);
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
@@ -83,7 +82,6 @@ void RecordRep::restructure (const RecordDesc& newDescription)
 	}else{
 	    data_p[i] = createDataField (desc_p.type(i), desc_p.shape(i));
 	}
-	AlwaysAssert (data_p[i], AipsError);
     }
 }
 
@@ -95,8 +93,10 @@ Int RecordRep::fieldNumber (const String& name) const
 void RecordRep::addDataPtr (void* ptr)
 {
     if (nused_p >= data_p.nelements()) {
+	datavec_p.resize (nused_p + 16);
 	data_p.resize (nused_p + 16);
     }
+    datavec_p[nused_p] = 0;
     data_p[nused_p++] = ptr;
 }
 
@@ -104,24 +104,26 @@ void RecordRep::removeDataPtr (Int index)
 {
     nused_p--;
     if (index < Int(nused_p)) {
+	memmove (&datavec_p[index], &datavec_p[index+1],
+		 (nused_p-index) * sizeof(void*));
 	memmove (&data_p[index], &data_p[index+1],
 		 (nused_p-index) * sizeof(void*));
     }
 }
 
-void RecordRep::removeData (Int whichField, void* ptr)
+void RecordRep::removeData (Int whichField, void* ptr, void* vecptr)
 {
     DataType type = desc_p.type(whichField);
     if (type == TpRecord) {
-	delete (Record*)ptr;
+	delete static_cast<Record*>(ptr);
     }else{
-	deleteDataField (type, ptr);
+	deleteDataField (type, ptr, vecptr);
     }
 }
 
 void RecordRep::removeField (Int whichField)
 {
-    removeData (whichField, data_p[whichField]);
+    removeData (whichField, data_p[whichField], datavec_p[whichField]);
     removeDataPtr (whichField);
     removeFieldFromDesc (whichField);
 }
@@ -183,64 +185,78 @@ void RecordRep::addField (const String& name, const Record& rec,
 }
 
 void RecordRep::checkShape (DataType type, const IPosition& shape,
-			    const void* value)
+			    const void* value, const String& fieldName)
 {
     IPosition arrShape;
     switch (type) {
     case TpArrayBool:
-	arrShape = ((Array<Bool>*)value)->shape();
+	arrShape = static_cast<Array<Bool>*>(value)->shape();
 	break;
     case TpArrayUChar:
-	arrShape = ((Array<uChar>*)value)->shape();
+	arrShape = static_cast<Array<uChar>*>(value)->shape();
 	break;
     case TpArrayShort:
-	arrShape = ((Array<Short>*)value)->shape();
+	arrShape = static_cast<Array<Short>*>(value)->shape();
 	break;
     case TpArrayInt:
-	arrShape = ((Array<Int>*)value)->shape();
+	arrShape = static_cast<Array<Int>*>(value)->shape();
 	break;
     case TpArrayUInt:
-	arrShape = ((Array<uInt>*)value)->shape();
+	arrShape = static_cast<Array<uInt>*>(value)->shape();
 	break;
     case TpArrayFloat:
-	arrShape = ((Array<float>*)value)->shape();
+	arrShape = static_cast<Array<float>*>(value)->shape();
 	break;
     case TpArrayDouble:
-	arrShape = ((Array<double>*)value)->shape();
+	arrShape = static_cast<Array<double>*>(value)->shape();
 	break;
     case TpArrayComplex:
-	arrShape = ((Array<Complex>*)value)->shape();
+	arrShape = static_cast<Array<Complex>*>(value)->shape();
 	break;
     case TpArrayDComplex:
-	arrShape = ((Array<DComplex>*)value)->shape();
+	arrShape = static_cast<Array<DComplex>*>(value)->shape();
 	break;
     case TpArrayString:
-	arrShape = ((Array<String>*)value)->shape();
+	arrShape = static_cast<Array<String>*>(value)->shape();
 	break;
     default:
 	throw (AipsError ("RecordRep::checkShape"));
     }
-    if (shape != arrShape) {
+    if (! shape.isEqual (arrShape)) {
 	throw (ArrayConformanceError
-                           ("Record::define; fixed array conformance error"));
+	       ("Record::define - fixed array conformance error for field " +
+		fieldName));
     }
 }
 
 void RecordRep::defineDataField (Int whichField, DataType type,
 				 const void* value)
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p)
-		  &&  desc_p.type(whichField) == type, AipsError);
-    if (type == TpRecord) {
-	*(Record*)data_p[whichField] = *(const Record*)value;
-    }else{
-	if (desc_p.isArray(whichField)) {
-	    const IPosition& shape = desc_p.shape(whichField);
-	    if (shape.nelements() > 0  &&  shape(0) > 0) {
-		checkShape (type, shape, value);
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p), AipsError);
+    DataType descDtype = desc_p.type(whichField);
+    if (type == descDtype) {
+        if (type == TpRecord) {
+	    *static_cast<Record*>(data_p[whichField]) =
+	      *static_cast<const Record*>(value);
+	}else{
+	    if (desc_p.isArray(whichField)) {
+	        const IPosition& shape = desc_p.shape(whichField);
+		if (shape.nelements() > 0  &&  shape(0) > 0) {
+		    checkShape (type, shape, value, desc_p.name(whichField));
+		}
 	    }
+	    copyDataField (type, data_p[whichField], value);
 	}
-	copyDataField (type, data_p[whichField], value);
+    } else if (isArray(type)  &&  asScalar(type) == descDtype) {
+	// A scalar can be defined using a single element vector.
+        checkShape (type, IPosition(1,1), value, desc_p.name(whichField));
+	// Make sure there is a datavec entry.
+	get_pointer (whichField, type);
+	copyDataField (type, datavec_p[whichField], value);
+    } else {
+        throw (AipsError ("RecordRep::defineDataField - "
+			  "incorrect data type used for field " +
+			  desc_p.name(whichField)));
     }
 }
 
@@ -354,79 +370,139 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
     return 0;
 }
 
+void RecordRep::makeDataVec (Int whichField, DataType type)
+{
+    IPosition shape(1,1);
+    switch (type) {
+    case TpBool:
+        datavec_p[whichField] = new Array<Bool>
+	  (shape, static_cast<Bool*>(data_p[whichField]), SHARE);
+	break;
+    case TpUChar:
+        datavec_p[whichField] = new Array<uChar>
+	  (shape, static_cast<uChar*>(data_p[whichField]), SHARE);
+	break;
+    case TpShort:
+        datavec_p[whichField] = new Array<Short>
+	  (shape, static_cast<Short*>(data_p[whichField]), SHARE);
+	break;
+    case TpInt:
+        datavec_p[whichField] = new Array<Int>
+	  (shape, static_cast<Int*>(data_p[whichField]), SHARE);
+	break;
+    case TpUInt:
+        datavec_p[whichField] = new Array<uInt>
+	  (shape, static_cast<uInt*>(data_p[whichField]), SHARE);
+	break;
+    case TpFloat:
+        datavec_p[whichField] = new Array<float>
+	  (shape, static_cast<float*>(data_p[whichField]), SHARE);
+	break;
+    case TpDouble:
+        datavec_p[whichField] = new Array<double>
+	  (shape, static_cast<double*>(data_p[whichField]), SHARE);
+	break;
+    case TpComplex:
+        datavec_p[whichField] = new Array<Complex>
+	  (shape, static_cast<Complex*>(data_p[whichField]), SHARE);
+	break;
+    case TpDComplex:
+        datavec_p[whichField] = new Array<DComplex>
+	  (shape, static_cast<DComplex*>(data_p[whichField]), SHARE);
+	break;
+    case TpString:
+        datavec_p[whichField] = new Array<String>
+	  (shape, static_cast<String*>(data_p[whichField]), SHARE);
+	break;
+    default:
+	throw (AipsError ("RecordRep::makeDataVec: unknown data type"));
+    }
+}
+
 void RecordRep::delete_myself (uInt nfields)
 {
     if (nfields > nused_p) {
 	nfields = nused_p;
     }
     for (uInt i=0; i<nfields; i++) {
-	removeData (i, data_p[i]);
+	removeData (i, data_p[i], datavec_p[i]);
 	data_p[i] = 0;
+	datavec_p[i] = 0;
     }
 }
 
-void RecordRep::deleteDataField (DataType type, void* ptr)
+void RecordRep::deleteDataField (DataType type, void* ptr, void* vecptr)
 {
     switch (type) {
     case TpBool:
-	delete (Bool*)ptr;
+	delete static_cast<Bool*>(ptr);
+	delete static_cast<Array<Bool>*>(vecptr);
 	break;
     case TpUChar:
-	delete (uChar*)ptr;
+	delete static_cast<uChar*>(ptr);
+	delete static_cast<Array<uChar>*>(vecptr);
 	break;
     case TpShort:
-	delete (Short*)ptr;
+	delete static_cast<Short*>(ptr);
+	delete static_cast<Array<Short>*>(vecptr);
 	break;
     case TpInt:
-	delete (Int*)ptr;
+	delete static_cast<Int*>(ptr);
+	delete static_cast<Array<Int>*>(vecptr);
 	break;
     case TpUInt:
-	delete (uInt*)ptr;
+	delete static_cast<uInt*>(ptr);
+	delete static_cast<Array<uInt>*>(vecptr);
 	break;
     case TpFloat:
-	delete (float*)ptr;
+	delete static_cast<float*>(ptr);
+	delete static_cast<Array<float>*>(vecptr);
 	break;
     case TpDouble:
-	delete (double*)ptr;
+	delete static_cast<double*>(ptr);
+	delete static_cast<Array<double>*>(vecptr);
 	break;
     case TpComplex:
-	delete (Complex*)ptr;
+	delete static_cast<Complex*>(ptr);
+	delete static_cast<Array<Complex>*>(vecptr);
 	break;
     case TpDComplex:
-	delete (DComplex*)ptr;
+	delete static_cast<DComplex*>(ptr);
+	delete static_cast<Array<DComplex>*>(vecptr);
 	break;
     case TpString:
-	delete (String*)ptr;
+	delete static_cast<String*>(ptr);
+	delete static_cast<Array<String>*>(vecptr);
 	break;
     case TpArrayBool:
-	delete (Array<Bool>*)ptr;
+	delete static_cast<Array<Bool>*>(ptr);
 	break;
     case TpArrayUChar:
-	delete (Array<uChar>*)ptr;
+	delete static_cast<Array<uChar>*>(ptr);
 	break;
     case TpArrayShort:
-	delete (Array<Short>*)ptr;
+	delete static_cast<Array<Short>*>(ptr);
 	break;
     case TpArrayInt:
-	delete (Array<Int>*)ptr;
+	delete static_cast<Array<Int>*>(ptr);
 	break;
     case TpArrayUInt:
-	delete (Array<uInt>*)ptr;
+	delete static_cast<Array<uInt>*>(ptr);
 	break;
     case TpArrayFloat:
-	delete (Array<float>*)ptr;
+	delete static_cast<Array<float>*>(ptr);
 	break;
     case TpArrayDouble:
-	delete (Array<double>*)ptr;
+	delete static_cast<Array<double>*>(ptr);
 	break;
     case TpArrayComplex:
-	delete (Array<Complex>*)ptr;
+	delete static_cast<Array<Complex>*>(ptr);
 	break;
     case TpArrayDComplex:
-	delete (Array<DComplex>*)ptr;
+	delete static_cast<Array<DComplex>*>(ptr);
 	break;
     case TpArrayString:
-	delete (Array<String>*)ptr;
+	delete static_cast<Array<String>*>(ptr);
 	break;
     default:
 	throw (AipsError ("RecordRep::deleteDataField"));
@@ -442,9 +518,10 @@ Bool RecordRep::conform (const RecordRep& other) const
     // Now check for each fixed sub-record if it conforms.
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
-	    const Record& thisRecord = *(const Record*)data_p[i];
+	    const Record& thisRecord = *static_cast<Record*>(data_p[i]);
 	    if (thisRecord.isFixed()) {
-		const Record& thatRecord = *(const Record*)other.data_p[i];
+		const Record& thatRecord =
+		  *static_cast<Record*>(other.data_p[i]);
 		if (! thisRecord.conform (thatRecord)) {
 		    return False;
 		}
@@ -465,7 +542,8 @@ void RecordRep::copy_other (const RecordRep& other)
 {
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
-	    *(Record*)data_p[i] = *(const Record*)other.data_p[i];
+	    *static_cast<Record*>(data_p[i]) =
+	      *static_cast<Record*>(other.data_p[i]);
 	}else{
 	    copyDataField (desc_p.type(i), data_p[i], other.data_p[i]);
 	}
@@ -483,76 +561,94 @@ void RecordRep::copyDataField (DataType type, void* ptr,
 {
     switch (type) {
     case TpBool:
-	*(Bool*)ptr = *(const Bool*)that;
+	*static_cast<Bool*>(ptr) = *static_cast<const Bool*>(that);
 	break;
     case TpUChar:
-	*(uChar*)ptr = *(const uChar*)that;
+        *static_cast<uChar*>(ptr) = *static_cast<const uChar*>(that);
 	break;
     case TpShort:
-	*(Short*)ptr = *(const Short*)that;
+	*static_cast<Short*>(ptr) = *static_cast<const Short*>(that);
 	break;
     case TpInt:
-	*(Int*)ptr = *(const Int*)that;
+	*static_cast<Int*>(ptr) = *static_cast<const Int*>(that);
 	break;
     case TpUInt:
-	*(uInt*)ptr = *(const uInt*)that;
+	*static_cast<uInt*>(ptr) = *static_cast<const uInt*>(that);
 	break;
     case TpFloat:
-	*(float*)ptr = *(const float*)that;
+	*static_cast<float*>(ptr) = *static_cast<const float*>(that);
 	break;
     case TpDouble:
-	*(double*)ptr = *(const double*)that;
+	*static_cast<double*>(ptr) = *static_cast<const double*>(that);
 	break;
     case TpComplex:
-	*(Complex*)ptr = *(const Complex*)that;
+	*static_cast<Complex*>(ptr) = *static_cast<const Complex*>(that);
 	break;
     case TpDComplex:
-	*(DComplex*)ptr = *(const DComplex*)that;
+	*static_cast<DComplex*>(ptr) = *static_cast<const DComplex*>(that);
 	break;
     case TpString:
-	*(String*)ptr = *(const String*)that;
+	*static_cast<String*>(ptr) = *static_cast<const String*>(that);
 	break;
     case TpArrayBool:
-	((Array<Bool>*)ptr)->resize (((const Array<Bool>*)that)->shape());
-	*(Array<Bool>*)ptr = *(const Array<Bool>*)that;
+        static_cast<Array<Bool>*>(ptr)->resize
+	  (static_cast<const Array<Bool>*>(that)->shape());
+	*static_cast<Array<Bool>*>(ptr) =
+	  *static_cast<const Array<Bool>*>(that);
 	break;
     case TpArrayUChar:
-	((Array<uChar>*)ptr)->resize (((const Array<uChar>*)that)->shape());
-	*(Array<uChar>*)ptr = *(const Array<uChar>*)that;
+	static_cast<Array<uChar>*>(ptr)->resize
+	  (static_cast<const Array<uChar>*>(that)->shape());
+	*static_cast<Array<uChar>*>(ptr) =
+	  *static_cast<const Array<uChar>*>(that);
 	break;
     case TpArrayShort:
-	((Array<Short>*)ptr)->resize (((const Array<Short>*)that)->shape());
-	*(Array<Short>*)ptr = *(const Array<Short>*)that;
+	static_cast<Array<Short>*>(ptr)->resize
+	  (static_cast<const Array<Short>*>(that)->shape());
+	*static_cast<Array<Short>*>(ptr) =
+	  *static_cast<const Array<Short>*>(that);
 	break;
     case TpArrayInt:
-	((Array<Int>*)ptr)->resize (((const Array<Int>*)that)->shape());
-	*(Array<Int>*)ptr = *(const Array<Int>*)that;
+	static_cast<Array<Int>*>(ptr)->resize
+	  (static_cast<const Array<Int>*>(that)->shape());
+	*static_cast<Array<Int>*>(ptr) =
+	  *static_cast<const Array<Int>*>(that);
 	break;
     case TpArrayUInt:
-	((Array<uInt>*)ptr)->resize (((const Array<uInt>*)that)->shape());
-	*(Array<uInt>*)ptr = *(const Array<uInt>*)that;
+	static_cast<Array<uInt>*>(ptr)->resize
+	  (static_cast<const Array<uInt>*>(that)->shape());
+	*static_cast<Array<uInt>*>(ptr) =
+	  *static_cast<const Array<uInt>*>(that);
 	break;
     case TpArrayFloat:
-	((Array<float>*)ptr)->resize (((const Array<float>*)that)->shape());
-	*(Array<float>*)ptr = *(const Array<float>*)that;
+	static_cast<Array<float>*>(ptr)->resize
+	  (static_cast<const Array<float>*>(that)->shape());
+	*static_cast<Array<float>*>(ptr) 
+	  = *static_cast<const Array<float>*>(that);
 	break;
     case TpArrayDouble:
-	((Array<double>*)ptr)->resize (((const Array<double>*)that)->shape());
-	*(Array<double>*)ptr = *(const Array<double>*)that;
+	static_cast<Array<double>*>(ptr)->resize
+	  (static_cast<const Array<double>*>(that)->shape());
+	*static_cast<Array<double>*>(ptr) =
+	  *static_cast<const Array<double>*>(that);
 	break;
     case TpArrayComplex:
-	((Array<Complex>*)ptr)->resize
-	                             (((const Array<Complex>*)that)->shape());
-	*(Array<Complex>*)ptr = *(const Array<Complex>*)that;
+	static_cast<Array<Complex>*>(ptr)->resize
+	  (static_cast<const Array<Complex>*>(that)->shape());
+	*static_cast<Array<Complex>*>(ptr) =
+	  *static_cast<const Array<Complex>*>(that);
 	break;
     case TpArrayDComplex:
-	((Array<DComplex>*)ptr)->resize
-	                            (((const Array<DComplex>*)that)->shape());
-	*(Array<DComplex>*)ptr = *(const Array<DComplex>*)that;
+	static_cast<Array<DComplex>*>(ptr)->resize
+	  (static_cast<const Array<DComplex>*>(that)->shape());
+	*static_cast<Array<DComplex>*>(ptr) =
+	  *static_cast<const Array<DComplex>*>(that);
 	break;
     case TpArrayString:
-	((Array<String>*)ptr)->resize (((const Array<String>*)that)->shape());
-	*(Array<String>*)ptr = *(const Array<String>*)that;
+        static_cast<Array<String>*>(ptr)->resize
+	  (static_cast<const Array<String>*>(that)->shape());
+	*static_cast<Array<String>*>(ptr) =
+	  *static_cast<const Array<String>*>(that);
 	break;
     default:
 	throw (AipsError ("RecordRep::copyDataField"));
@@ -568,9 +664,21 @@ void* RecordRep::get_pointer (Int whichField, DataType type,
 }
 void* RecordRep::get_pointer (Int whichField, DataType type) const
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p)  &&
-		  type == desc_p.type(whichField), AipsError);
-    return data_p[whichField];
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p), AipsError);
+    DataType descDtype = desc_p.type(whichField);
+    if (type == descDtype) {
+        return data_p[whichField];
+    }
+    // A scalar can be returned as an array.
+    if (! (isArray(type)  &&  asScalar(type) == descDtype)) {
+        throw (AipsError ("RecordRep::get_pointer - "
+			  "incorrect data type used for field " +
+			  desc_p.name(whichField)));
+    }
+    if (datavec_p[whichField] == 0) {
+        const_cast<RecordRep*>(this)->makeDataVec (whichField, descDtype);
+    }
+    return datavec_p[whichField];
 }
 
 
@@ -596,7 +704,7 @@ void RecordRep::mergeField (const RecordRep& other, Int whichFieldFromOther,
 	void* otherPtr = other.get_pointer (whichFieldFromOther, type);
 	void* ptr;
 	if (type == TpRecord) {
-	    ptr = new Record (*(Record*)otherPtr);
+	    ptr = new Record (*static_cast<Record*>(otherPtr));
 	}else{
 	    ptr = createDataField (type, desc_p.shape(nr));
 	    copyDataField (type, ptr, otherPtr);
@@ -619,64 +727,64 @@ void RecordRep::putDataField (AipsIO& os, DataType type, const void* ptr) const
 {
     switch (type) {
     case TpBool:
-	os << *(const Bool*)ptr;
+	os << *static_cast<const Bool*>(ptr);
 	break;
     case TpUChar:
-	os << *(const uChar*)ptr;
+	os << *static_cast<const uChar*>(ptr);
 	break;
     case TpShort:
-	os << *(const Short*)ptr;
+	os << *static_cast<const Short*>(ptr);
 	break;
     case TpInt:
-	os << *(const Int*)ptr;
+	os << *static_cast<const Int*>(ptr);
 	break;
     case TpUInt:
-	os << *(const uInt*)ptr;
+	os << *static_cast<const uInt*>(ptr);
 	break;
     case TpFloat:
-	os << *(const float*)ptr;
+	os << *static_cast<const float*>(ptr);
 	break;
     case TpDouble:
-	os << *(const double*)ptr;
+	os << *static_cast<const double*>(ptr);
 	break;
     case TpComplex:
-	os << *(const Complex*)ptr;
+	os << *static_cast<const Complex*>(ptr);
 	break;
     case TpDComplex:
-	os << *(const DComplex*)ptr;
+	os << *static_cast<const DComplex*>(ptr);
 	break;
     case TpString:
-	os << *(const String*)ptr;
+	os << *static_cast<const String*>(ptr);
 	break;
     case TpArrayBool:
-	os << *(const Array<Bool>*)ptr;
+	os << *static_cast<const Array<Bool>*>(ptr);
 	break;
     case TpArrayUChar:
-	os << *(const Array<uChar>*)ptr;
+	os << *static_cast<const Array<uChar>*>(ptr);
 	break;
     case TpArrayShort:
-	os << *(const Array<Short>*)ptr;
+	os << *static_cast<const Array<Short>*>(ptr);
 	break;
     case TpArrayInt:
-	os << *(const Array<Int>*)ptr;
+	os << *static_cast<const Array<Int>*>(ptr);
 	break;
     case TpArrayUInt:
-	os << *(const Array<uInt>*)ptr;
+	os << *static_cast<const Array<uInt>*>(ptr);
 	break;
     case TpArrayFloat:
-	os << *(const Array<float>*)ptr;
+	os << *static_cast<const Array<float>*>(ptr);
 	break;
     case TpArrayDouble:
-	os << *(const Array<double>*)ptr;
+	os << *static_cast<const Array<double>*>(ptr);
 	break;
     case TpArrayComplex:
-	os << *(const Array<Complex>*)ptr;
+	os << *static_cast<const Array<Complex>*>(ptr);
 	break;
     case TpArrayDComplex:
-	os << *(const Array<DComplex>*)ptr;
+	os << *static_cast<const Array<DComplex>*>(ptr);
 	break;
     case TpArrayString:
-	os << *(const Array<String>*)ptr;
+	os << *static_cast<const Array<String>*>(ptr);
 	break;
     default:
 	throw (AipsError ("RecordRep::putDataField"));
@@ -687,64 +795,64 @@ void RecordRep::getDataField (AipsIO& os, DataType type, void* ptr)
 {
     switch (type) {
     case TpBool:
-	os >> *(Bool*)ptr;
+	os >> *static_cast<Bool*>(ptr);
 	break;
     case TpUChar:
-	os >> *(uChar*)ptr;
+	os >> *static_cast<uChar*>(ptr);
 	break;
     case TpShort:
-	os >> *(Short*)ptr;
+	os >> *static_cast<Short*>(ptr);
 	break;
     case TpInt:
-	os >> *(Int*)ptr;
+	os >> *static_cast<Int*>(ptr);
 	break;
     case TpUInt:
-	os >> *(uInt*)ptr;
+	os >> *static_cast<uInt*>(ptr);
 	break;
     case TpFloat:
-	os >> *(float*)ptr;
+	os >> *static_cast<float*>(ptr);
 	break;
     case TpDouble:
-	os >> *(double*)ptr;
+	os >> *static_cast<double*>(ptr);
 	break;
     case TpComplex:
-	os >> *(Complex*)ptr;
+	os >> *static_cast<Complex*>(ptr);
 	break;
     case TpDComplex:
-	os >> *(DComplex*)ptr;
+	os >> *static_cast<DComplex*>(ptr);
 	break;
     case TpString:
-	os >> *(String*)ptr;
+	os >> *static_cast<String*>(ptr);
 	break;
     case TpArrayBool:
-	os >> *(Array<Bool>*)ptr;
+	os >> *static_cast<Array<Bool>*>(ptr);
 	break;
     case TpArrayUChar:
-	os >> *(Array<uChar>*)ptr;
+	os >> *static_cast<Array<uChar>*>(ptr);
 	break;
     case TpArrayShort:
-	os >> *(Array<Short>*)ptr;
+	os >> *static_cast<Array<Short>*>(ptr);
 	break;
     case TpArrayInt:
-	os >> *(Array<Int>*)ptr;
+	os >> *static_cast<Array<Int>*>(ptr);
 	break;
     case TpArrayUInt:
-	os >> *(Array<uInt>*)ptr;
+	os >> *static_cast<Array<uInt>*>(ptr);
 	break;
     case TpArrayFloat:
-	os >> *(Array<float>*)ptr;
+	os >> *static_cast<Array<float>*>(ptr);
 	break;
     case TpArrayDouble:
-	os >> *(Array<double>*)ptr;
+	os >> *static_cast<Array<double>*>(ptr);
 	break;
     case TpArrayComplex:
-	os >> *(Array<Complex>*)ptr;
+	os >> *static_cast<Array<Complex>*>(ptr);
 	break;
     case TpArrayDComplex:
-	os >> *(Array<DComplex>*)ptr;
+	os >> *static_cast<Array<DComplex>*>(ptr);
 	break;
     case TpArrayString:
-	os >> *(Array<String>*)ptr;
+	os >> *static_cast<Array<String>*>(ptr);
 	break;
     default:
 	throw (AipsError ("RecordRep::getDataField"));
@@ -767,9 +875,9 @@ void RecordRep::putData (AipsIO& os) const
 	if (desc_p.type(i) == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
-		os << *(const Record*)data_p[i];
+		os << *static_cast<Record*>(data_p[i]);
 	    }else{
-		(*(const Record*)data_p[i]).putData (os);
+		static_cast<Record*>(data_p[i])->putData (os);
 	    }
 	}else{
 	    putDataField (os, desc_p.type(i), data_p[i]);
@@ -807,9 +915,9 @@ void RecordRep::getData (AipsIO& os, uInt version)
 	if (desc_p.type(i) == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
-		os >> *(Record*)data_p[i];
+		os >> *static_cast<Record*>(data_p[i]);
 	    }else{
-		(*(Record*)data_p[i]).getData (os, version);
+		static_cast<Record*>(data_p[i])->getData (os, version);
 	    }
 	}else{
 	    getDataField (os, desc_p.type(i), data_p[i]);

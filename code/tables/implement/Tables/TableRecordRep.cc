@@ -1,5 +1,5 @@
 //# TableRecordRep.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -76,11 +76,12 @@ void TableRecordRep::restructure (const RecordDesc& newDescription)
     delete_myself (desc_p.nfields());
     desc_p  = newDescription;
     nused_p = desc_p.nfields();
+    datavec_p.resize (nused_p);
+    datavec_p = static_cast<void*>(0);
     data_p.resize (nused_p);
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
-	    data_p[i] = new 
-TableRecord (this, desc_p.subRecord(i));
+	    data_p[i] = new TableRecord (this, desc_p.subRecord(i));
 	} else if (desc_p.type(i) == TpTable) {
 	    data_p[i] = new TableKeyword (desc_p.tableDescName(i));
 	}else{
@@ -95,15 +96,15 @@ Int TableRecordRep::fieldNumber (const String& name) const
     return desc_p.fieldNumber (name);
 }
 
-void TableRecordRep::removeData (Int whichField, void* ptr)
+void TableRecordRep::removeData (Int whichField, void* ptr, void* vecptr)
 {
     DataType type = desc_p.type(whichField);
     if (type == TpRecord) {
-	delete (TableRecord*)ptr;
+	delete static_cast<TableRecord*>(ptr);
     } else if (type == TpTable) {
-	delete (TableKeyword*)ptr;
+	delete static_cast<TableKeyword*>(ptr);
     }else{
-	deleteDataField (type, ptr);
+	deleteDataField (type, ptr, vecptr);
     }
 }
 
@@ -157,20 +158,34 @@ void TableRecordRep::addField (const String& name, const Table& value,
 void TableRecordRep::defineDataField (Int whichField, DataType type,
 				      const void* value)
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p)
-		  &&  desc_p.type(whichField) == type, AipsError);
-    if (type == TpRecord) {
-	*(TableRecord*)data_p[whichField] = *(const TableRecord*)value;
-    } else if (type == TpTable) {
-	*(TableKeyword*)data_p[whichField] = *(const Table*)value;
-    }else{
-	if (desc_p.isArray(whichField)) {
-	    const IPosition& shape = desc_p.shape(whichField);
-	    if (shape.nelements() > 0  &&  shape(0) > 0) {
-		checkShape (type, shape, value);
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p), AipsError);
+    DataType descDtype = desc_p.type(whichField);
+    if (type == descDtype) {
+        if (type == TpRecord) {
+	    *static_cast<TableRecord*>(data_p[whichField]) =
+	      *static_cast<const TableRecord*>(value);
+	} else if (type == TpTable) {
+	    *static_cast<TableKeyword*>(data_p[whichField]) =
+	      *static_cast<const Table*>(value);
+	}else{
+	    if (desc_p.isArray(whichField)) {
+	        const IPosition& shape = desc_p.shape(whichField);
+	        if (shape.nelements() > 0  &&  shape(0) > 0) {
+		    checkShape (type, shape, value, desc_p.name(whichField));
+		}
 	    }
+	    copyDataField (type, data_p[whichField], value);
 	}
-	copyDataField (type, data_p[whichField], value);
+    } else if (isArray(type)  &&  asScalar(type) == descDtype) {
+	// A scalar can be defined using a single element vector.
+        checkShape (type, IPosition(1,1), value, desc_p.name(whichField));
+	// Make sure there is a datavec entry.
+	get_pointer (whichField, type);
+	copyDataField (type, datavec_p[whichField], value);
+    } else {
+        throw (AipsError ("TableRecordRep::defineDataField - "
+			  "incorrect data type used for field " +
+			  desc_p.name(whichField)));
     }
 }
 
@@ -183,19 +198,21 @@ Bool TableRecordRep::conform (const TableRecordRep& other) const
     // Now check for each fixed sub-record and table if it conforms.
     for (Int i=0; i<Int(nused_p); i++) {
 	if (desc_p.type(i) == TpRecord) {
-	    const TableRecord& thisRecord = *(const TableRecord*)data_p[i];
+	    const TableRecord& thisRecord =
+	      *static_cast<TableRecord*>(data_p[i]);
 	    if (thisRecord.isFixed()) {
 		const TableRecord& thatRecord =
-		                      *(const TableRecord*)other.data_p[i];
+		  *static_cast<TableRecord*>(other.data_p[i]);
 		if (! thisRecord.conform (thatRecord)) {
 		    return False;
 		}
 	    }
 	} else if (desc_p.type(i) == TpTable) {
-	    const TableKeyword& thisKey = *(const TableKeyword*)data_p[i];
+	    const TableKeyword& thisKey =
+	      *static_cast<TableKeyword*>(data_p[i]);
 	    if (thisKey.isFixed()) {
 		const TableKeyword& thatKey =
-		                      *(const TableKeyword*)other.data_p[i];
+		  *static_cast<TableKeyword*>(other.data_p[i]);
 		if (! thisKey.conform (thatKey)) {
 		    return False;
 		}
@@ -216,9 +233,11 @@ void TableRecordRep::copy_other (const TableRecordRep& other)
 {
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
-	    *(TableRecord*)data_p[i] = *(const TableRecord*)other.data_p[i];
+	    *static_cast<TableRecord*>(data_p[i]) =
+	      *static_cast<TableRecord*>(other.data_p[i]);
 	} else if (desc_p.type(i) == TpTable) {
-	    *(TableKeyword*)data_p[i] = *(const TableKeyword*)other.data_p[i];
+	    *static_cast<TableKeyword*>(data_p[i]) =
+	      *static_cast<TableKeyword*>(other.data_p[i]);
 	}else{
 	    copyDataField (desc_p.type(i), data_p[i], other.data_p[i]);
 	}
@@ -229,21 +248,37 @@ void TableRecordRep::copy_other (const TableRecordRep& other)
 void* TableRecordRep::get_pointer (Int whichField, DataType type,
 				   const String& recordType) const
 {
-    AlwaysAssert (recordType == "TableRecord", AipsError);
+    if (recordType != "TableRecord") {
+        throw (AipsError ("TableRecordRep::get_pointer - field " +
+			  desc_p.name(whichField) +
+			  " is not of type TableRecord"));
+    }
     return get_pointer (whichField, type);
 }
 void* TableRecordRep::get_pointer (Int whichField, DataType type) const
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < Int(desc_p.nfields())
-		  &&  type == desc_p.type(whichField), AipsError);
-    return data_p[whichField];
+    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p), AipsError);
+    DataType descDtype = desc_p.type(whichField);
+    if (type == descDtype) {
+        return data_p[whichField];
+    }
+    // A scalar can be returned as an array.
+    if (! (isArray(type)  &&  asScalar(type) == descDtype)) {
+        throw (AipsError ("TableRecordRep::get_pointer - "
+			  "incorrect data type used for field " +
+			  desc_p.name(whichField)));
+    }
+    if (datavec_p[whichField] == 0) {
+        const_cast<TableRecordRep*>(this)->makeDataVec (whichField, descDtype);
+    }
+    return datavec_p[whichField];
 }
 
 void TableRecordRep::closeTable (Int whichField) const
 {
     AlwaysAssert (whichField >= 0  &&  whichField < Int(desc_p.nfields())
 		  &&  desc_p.type(whichField) == TpTable, AipsError);
-    ((TableKeyword*)data_p[whichField])->close();
+    static_cast<TableKeyword*>(data_p[whichField])->close();
 }
 
 
@@ -269,9 +304,9 @@ void TableRecordRep::mergeField (const TableRecordRep& other,
 	void* otherPtr = other.get_pointer (whichFieldFromOther, type);
 	void* ptr;
 	if (type == TpRecord) {
-	    ptr = new TableRecord (*(TableRecord*)otherPtr);
+	    ptr = new TableRecord (*static_cast<TableRecord*>(otherPtr));
 	} else if (type == TpTable) {
-	    ptr = new TableKeyword (*(TableKeyword*)otherPtr);
+	    ptr = new TableKeyword (*static_cast<TableKeyword*>(otherPtr));
 	}else{
 	    ptr = createDataField (type, desc_p.shape(nr));
 	    copyDataField (type, ptr, otherPtr);
@@ -295,8 +330,8 @@ void TableRecordRep::renameTables (const String& newParentName,
 {
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpTable) {
-	    ((TableKeyword*)data_p[i])->renameTable (newParentName,
-							   oldParentName);
+	    static_cast<TableKeyword*>(data_p[i])->renameTable (newParentName,
+								oldParentName);
 	}
     }
 }
@@ -319,13 +354,15 @@ void TableRecordRep::putData (AipsIO& os,
 	if (desc_p.type(i) == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
-		(*(const TableRecord*)data_p[i]).putRecord (os,
-							    parentTableName);
+		static_cast<TableRecord*>(data_p[i])->putRecord
+		  (os, parentTableName);
 	    }else{
-		(*(const TableRecord*)data_p[i]).putData (os, parentTableName);
+		static_cast<TableRecord*>(data_p[i])->putData
+		  (os, parentTableName);
 	    }
 	} else if (desc_p.type(i) == TpTable) {
-	    os << ((const TableKeyword*)data_p[i])->tableName(parentTableName);
+	    os << static_cast<TableKeyword*>(data_p[i])->tableName
+	      (parentTableName);
 	}else{
 	    putDataField (os, desc_p.type(i), data_p[i]);
 	}
@@ -369,17 +406,17 @@ void TableRecordRep::getData (AipsIO& os, uInt version, Bool openWritable,
 	if (type == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
-		(*(TableRecord*)data_p[i]).getRecord (os, openWritable,
-						      parentTableName);
+		static_cast<TableRecord*>(data_p[i])->getRecord
+		  (os, openWritable, parentTableName);
 	    }else{
-		(*(TableRecord*)data_p[i]).getData (os, version, openWritable,
-						    parentTableName);
+		static_cast<TableRecord*>(data_p[i])->getData
+		  (os, version, openWritable, parentTableName);
 	    }
 	}else if (type == TpTable) {
 	    String name;
 	    os >> name;
-	    ((TableKeyword*)data_p[i])->set (name, openWritable,
-					     parentTableName);
+	    static_cast<TableKeyword*>(data_p[i])->set (name, openWritable,
+							parentTableName);
 	}else{
 	    getDataField (os, desc_p.type(i), data_p[i]);
 	}
@@ -391,9 +428,9 @@ void TableRecordRep::reopenRW()
     for (uInt i=0; i<nused_p; i++) {
 	DataType type = desc_p.type(i);
 	if (type == TpRecord) {
-	    (*(TableRecord*)data_p[i]).reopenRW();
+	    static_cast<TableRecord*>(data_p[i])->reopenRW();
 	}else if (type == TpTable) {
-	    ((TableKeyword*)data_p[i])->setRW();
+	    static_cast<TableKeyword*>(data_p[i])->setRW();
 	}
     }
 }
@@ -421,8 +458,8 @@ void TableRecordRep::getTableKeySet (AipsIO& os, uInt version,
 	for (i=0; i<n; i++) {
 	    os >> key;               // keyword name
 	    os >> name;              // table name
-	    ((TableKeyword*)data_p[desc_p.fieldNumber(key)])->set
-	                               (name, openWritable, parentTableName);
+	    static_cast<TableKeyword*>(data_p[desc_p.fieldNumber(key)])->set
+	      (name, openWritable, parentTableName);
 	}
     }
     // Newer keyword sets may contain nested keyword sets.

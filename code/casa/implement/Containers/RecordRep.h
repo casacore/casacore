@@ -1,5 +1,5 @@
 //# RecordRep.h: The representation of a Record
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -227,14 +227,14 @@ protected:
     // Check if the shape of the data array matches the shape of a
     // fixed-shaped array in the description.
     void checkShape (DataType type, const IPosition& shape,
-		     const void* value);
+		     const void* value, const String& fieldName);
 
     // Add a field to the description.
     virtual void addFieldToDesc (const String& name, DataType type,
 				 const IPosition& shape, Bool fixedShape);
 
     // Remove a data field.
-    virtual void removeData (Int whichField, void* ptr);
+    virtual void removeData (Int whichField, void* ptr, void* vecptr);
 
     // Remove a field from the description.
     virtual void removeFieldFromDesc (Int whichField);
@@ -245,7 +245,7 @@ protected:
 
     // Delete a data field.
     // This can only handle scalars and arrays.
-    void deleteDataField (DataType type, void* ptr);
+    void deleteDataField (DataType type, void* ptr, void* vecptr);
 
     // Copy a data field.
     // This can only handle scalars and arrays.
@@ -258,6 +258,11 @@ protected:
     // Get a data field.
     // This can only handle scalars and arrays.
     void getDataField (AipsIO& os, DataType type, void* ptr);
+
+    // Make an array for a scalar data field.
+    // It shares the data, so a change in the data is reflected in the array.
+    // It is used to be able to access a scalar as an 1D array.
+    void makeDataVec (Int whichField, DataType type);
 
     // Get a Scalar/ArrayKeywordSet object as a Record.
     // (type 0 = ScalarKeywordSet;  type 1 = ArrayKeywordSet).
@@ -277,6 +282,8 @@ protected:
     RecordDesc   desc_p;
     // Pointers to data values.
     Block<void*> data_p;
+    // Pointers to a vector of a scalar (to access a scalar as an array).
+    Block<void*> datavec_p;
     // #Entries used in data_p.
     uInt         nused_p;
 };

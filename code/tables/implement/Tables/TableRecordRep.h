@@ -1,5 +1,5 @@
 //# TableRecordRep.h: The representation of a TableRecord
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -226,7 +226,7 @@ protected:
 				 const IPosition& shape, Bool fixedShape);
 
     // Remove a data field.
-    virtual void removeData (Int whichField, void* ptr);
+    virtual void removeData (Int whichField, void* ptr, void* vecptr);
 
     // Remove a field from the description.
     virtual void removeFieldFromDesc (Int whichField);
