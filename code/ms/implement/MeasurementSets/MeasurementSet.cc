@@ -644,7 +644,7 @@ void MeasurementSet::initRefs(Bool clear)
     if (this->keywordSet().isDefined("STATE"))
       state_p=MSState(this->keywordSet().asTable("STATE", mainLock_p));
     if (this->keywordSet().isDefined("SYSCAL"))
-      sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL"));// mainLock_p));
+      sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL", mainLock_p));
     if (this->keywordSet().isDefined("WEATHER"))
       weather_p=MSWeather(this->keywordSet().asTable("WEATHER", mainLock_p));
   }
