@@ -4266,3 +4266,4 @@
 14 127 src mv trial/implement/Fitting/FitLSQ.h aips/implement/Fitting/FitLSQ.h
 14 127 src mv trial/implement/Fitting/FitLSQ2.cc aips/implement/Fitting/FitLSQ2.cc
 14 127 src mv trial/implement/Fitting/LSQ.cc aips/implement/Fitting/LSQ.cc
+14 127 src mv trial/implement/Fitting/LSQ.h aips/implement/Fitting/LSQ.h
