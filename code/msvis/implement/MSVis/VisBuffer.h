@@ -1,5 +1,5 @@
 //# VisBuffer.h: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,8 +34,10 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MEpoch.h>
 #include <trial/MeasurementEquations/StokesVector.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
+#include <trial/MeasurementComponents/MSCalEnums.h>
 
 //#forward
 
@@ -218,6 +220,24 @@ public:
   Matrix<Float>& imagingWeight() 
   {return weightMatOK_p ? weightMat_p : fillImagingWeight();}
   const Matrix<Float>& imagingWeight() const {return This->imagingWeight();}
+ 
+  //</group>
+
+  //<group>
+  // Utility functions to provide coordinate or column ranges of the
+  // data in the VisBuffer. Flagging is applied before computing the ranges.
+  //
+  // Generic accessor to column ranges of integer type, as specified by
+  // enumerations defined in class MSCalEnums. Throws an exception
+  // if the enum is not for a recognized integer column.
+  Vector<Int> vecIntRange(const MSCalEnums::colDef& calEnum) const;
+
+  // Antenna id. range (includes both ANTENNA1 and ANTENNA2 columns)
+  Vector<Int> antIdRange() const;
+
+  // Time range 
+  Bool timeRange(MEpoch& rTime, MVEpoch& rTimeEP, MVEpoch& rInterval) const;
+
   //</group>
 
   // Frequency average the buffer
@@ -274,6 +294,9 @@ private:
   Cube<Complex>& fillVisCube(VisibilityIterator::DataColumn whichOne);
   Vector<Float>& fillWeight();
   Matrix<Float>& fillImagingWeight();
+
+  // Filter index arrays for unique elements
+  Vector<Int> unique(const Vector<Int>& indices) const;
 
   ROVisibilityIterator* visIter_p;
   Bool twoWayConnection_p;
