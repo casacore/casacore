@@ -35,9 +35,9 @@ LatticeStepper::LatticeStepper(const IPosition & latticeShape,
 			       const IPosition & cursorShape,
 			       const uInt hangOverPolicy)
   :theIndexer(latticeShape),
-   theCursorPos(latticeShape.nelements(),0),
-   theCursorShape(cursorShape),
+   theCursorShape(latticeShape.nelements()),
    theAxisPath(latticeShape.nelements()),
+   theCursorPos(latticeShape.nelements(),0),
    theNsteps(0),
    theEnd(False),
    theStart(True),
@@ -46,10 +46,10 @@ LatticeStepper::LatticeStepper(const IPosition & latticeShape,
    thePolicy(hangOverPolicy)
 {
   uInt ndim = theIndexer.ndim();
-  for (uInt i=0; i < ndim; i++)
+  for (uInt i=0; i < ndim; i++) {
     theAxisPath(i) = i;
-  padCursor();
-  theNiceFit = niceFit();
+  }
+  setCursorShape (cursorShape);
   DebugAssert(ok() == True, AipsError);
 };
 
@@ -58,9 +58,9 @@ LatticeStepper::LatticeStepper(const IPosition & latticeShape,
 			       const IPosition & axisPath,
 			       const uInt hangOverPolicy)
   :theIndexer(latticeShape),
-   theCursorPos(latticeShape.nelements(), 0),
-   theCursorShape(cursorShape),
+   theCursorShape(latticeShape.nelements()),
    theAxisPath(axisPath),
+   theCursorPos(latticeShape.nelements(), 0),
    theNsteps(0),
    theEnd(False),
    theStart(True),
@@ -68,16 +68,36 @@ LatticeStepper::LatticeStepper(const IPosition & latticeShape,
    theHangover(False),
    thePolicy(hangOverPolicy)
 {
-   padCursor();
-   theNiceFit = niceFit();
+   setCursorShape (cursorShape);
+   DebugAssert(ok() == True, AipsError);
+};
+
+LatticeStepper::LatticeStepper(const IPosition & latticeShape,
+			       const IPosition & cursorShape,
+			       const IPosition & cursorAxes,
+			       const IPosition & axisPath,
+			       const uInt hangOverPolicy)
+  :theIndexer(latticeShape),
+   theCursorShape(latticeShape.nelements()),
+   theAxisPath(axisPath),
+   theCursorPos(latticeShape.nelements(), 0),
+   theNsteps(0),
+   theEnd(False),
+   theStart(True),
+   theNiceFit(False),
+   theHangover(False),
+   thePolicy(hangOverPolicy)
+{
+   setCursorShape (cursorShape, cursorAxes);
    DebugAssert(ok() == True, AipsError);
 };
 
 LatticeStepper::LatticeStepper(const LatticeStepper & other)
   :theIndexer(other.theIndexer),
-   theCursorPos(other.theCursorPos),
+   theCursorAxes (other.theCursorAxes),
    theCursorShape(other.theCursorShape),
    theAxisPath(other.theAxisPath),
+   theCursorPos(other.theCursorPos),
    theNsteps(other.theNsteps),
    theEnd(other.theEnd),
    theStart(other.theStart),
@@ -95,9 +115,10 @@ LatticeStepper::~LatticeStepper() {
 LatticeStepper & LatticeStepper::operator=(const LatticeStepper & other) {
   if (this != &other) { 
     theIndexer = other.theIndexer;
-    theCursorPos = other.theCursorPos;
+    theCursorAxes  = other.theCursorAxes;
     theCursorShape = other.theCursorShape;
     theAxisPath = other.theAxisPath;
+    theCursorPos = other.theCursorPos;
     theNsteps = other.theNsteps;
     theEnd = other.theEnd;
     theStart = other.theStart;
@@ -232,17 +253,17 @@ IPosition LatticeStepper::endPosition() const {
 // relative to the sub Lattice.
 IPosition LatticeStepper::relativeEndPosition() const {
   DebugAssert(ok() == True, AipsError);
-  if (thePolicy == PAD)
-    return theCursorPos + theCursorShape - 1;
-  else {
-    IPosition trc(theCursorPos + theCursorShape - 1);
+  IPosition trc(theCursorPos + theCursorShape - 1);
+  if (thePolicy == RESIZE) {
     const IPosition latticeShape(subLatticeShape());
     const uInt nDim = trc.nelements();
-    for (uInt n = 0; n < nDim; n++)
-      if (trc(n) >= latticeShape(n))
-	trc(n) = latticeShape(n) - 1;
-    return trc;
+    for (uInt n = 0; n < nDim; n++) {
+      if (trc(n) >= latticeShape(n)) {
+        trc(n) = latticeShape(n) - 1;
+      }
+    }
   }
+  return trc;
 };
 
 IPosition LatticeStepper::latticeShape() const {
@@ -255,17 +276,108 @@ IPosition LatticeStepper::subLatticeShape() const {
   return theIndexer.shape();
 };
 
-void LatticeStepper::setCursorShape(const IPosition & cursorShape) {
-  const uInt cursorDim = cursorShape.nelements();
-  if (cursorDim != theIndexer.ndim()){
-    theCursorShape.resize(cursorDim);
-    theCursorShape = cursorShape;
-    padCursor();
+void LatticeStepper::setCursorShape(const IPosition & cursorShape)
+{
+  setCursorShape (cursorShape, IPosition());
+};
+
+void LatticeStepper::setCursorShape(const IPosition & cursorShape,
+				    const IPosition & cursorAxes)
+{
+  const IPosition& latticeShape = theIndexer.fullShape();
+  uInt latticeDim = theIndexer.ndim();
+  uInt ndimCS = cursorShape.nelements();
+  uInt ndimCA = cursorAxes.nelements();
+  if (ndimCS == 0  ||  ndimCS > latticeDim) {
+    throw (AipsError ("LatticeStepper::setCursorShape: cursorShape"
+		      " has no axes or more axes than lattice"));
   }
-  else
-    theCursorShape = cursorShape;
+  if (ndimCA > latticeDim) {
+    throw (AipsError ("LatticeStepper::setCursorShape: cursorAxes"
+		      " has more axes than lattice"));
+  }
+  if (!(ndimCA==0 || ndimCA==ndimCS || ndimCS==latticeDim)) {
+    throw (AipsError ("LatticeStepper::setCursorShape: cursorAxes"
+		      " has invalid number of axes; it should be 0,"
+		      " equal to cursorShape, or cursorShape should"
+		      " contain all axes"));
+  }
+  uInt i;
+  // Check the cursor shape.
+  // Count the cursor shape axes with length > 1.
+  uInt count = 0;
+  for (i=0; i<ndimCS; i++) {
+    if (cursorShape(i) <= 0  ||  cursorShape(i) > latticeShape(i)) {
+      throw (AipsError ("LatticeStepper::setCursorShape: "
+			"cursorShape <=0 or > latticeShape"));
+    }
+    if (cursorShape(i) > 1) {
+      count++;
+    }
+  }
+  // Check if the cursor axes are given correctly and in ascending order.
+  // Check if the cursor shape for non-given axes is 1.
+  for (i=0; i<ndimCA; i++) {
+    if (cursorAxes(i) < 0   ||  cursorAxes(i) >= latticeDim) {
+      throw (AipsError ("LatticeStepper::setCursorShape: "
+			"cursorAxes value <0 or >latticeDim"));
+    }
+    if (i > 0) {
+      if (cursorAxes(i) <= cursorAxes(i-1)) {
+	throw (AipsError ("LatticeStepper::setCursorShape: "
+			  "cursorAxes values not in ascending order"));
+      }
+    }
+  }
+  // If cursorAxes is given and cursorShape is given for all axes,
+  // check if the cursor shape for non-cursorAxes is 1.
+  if (ndimCA > 0  &&  ndimCA != ndimCS) {
+    for (i=0; i<ndimCS; i++) {
+      for (uInt j=0; j<ndimCA; j++) {
+	if (i == cursorAxes(j)) {
+	  break;
+	}
+      }
+      if (j == ndimCA) {
+	if (cursorShape(i) == 1) {
+	  throw (AipsError ("LatticeStepper::setCursorShape: "
+			    "a non-cursorAxes axis in the cursorShape"
+			    " should have length 1"));
+	}
+      }
+    }
+  }
+  // Pad the cursor shape with 1's if not given completely.
+  // When ndimCA==ndimCS, cursorAxes gives the axes of the cursor shape.
+  theCursorShape = 1;
+  for (i=0; i<ndimCS; i++) {
+    if (ndimCA == ndimCS) {
+      theCursorShape(cursorAxes(i)) = cursorShape(cursorAxes(i));
+    }else{
+      theCursorShape(i) = cursorShape(i);
+    }
+  }
+  // When cursorAxes is not given, the axes with length>1 form the cursorAxes.
+  if (ndimCA == 0) {
+    theCursorAxes.resize (count);
+    count = 0;
+    for (i=0; i<ndimCS; i++) {
+      if (theCursorShape(i) > 1) {
+	theCursorAxes(count++) = i;
+      }
+    }
+  }else{
+    theCursorAxes.resize (ndimCA);
+    theCursorAxes = cursorAxes;
+  }
   theNiceFit = niceFit();
+  AlwaysAssert(ok() == True, AipsError);
+};
+
+IPosition LatticeStepper::cursorAxes() const
+{
   DebugAssert(ok() == True, AipsError);
+  return theCursorAxes;
 };
 
 IPosition LatticeStepper::cursorShape() const {
@@ -318,7 +430,8 @@ LatticeNavigator * LatticeStepper::clone() const {
   return new LatticeStepper(*this);
 };
 
-Bool LatticeStepper::ok() const {
+Bool LatticeStepper::ok() const
+{
   const uInt latticeDim = theIndexer.ndim();
   // Check the cursor shape is OK
   if (theCursorShape.nelements() != latticeDim) {
@@ -326,7 +439,7 @@ Bool LatticeStepper::ok() const {
     logErr << LogIO::SEVERE << "cursor shape"
 	   << " (=" << theCursorShape << ")"
 	   << " has wrong number of dimensions"
-	   << " (ie. not" << latticeDim << ")" << endl;
+	   << " (ie. not " << latticeDim << ")" << endl;
      return False;
   }
   for (uInt i=0; i < latticeDim; i++) 
@@ -378,8 +491,8 @@ Bool LatticeStepper::ok() const {
       LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
       logErr << LogIO::SEVERE << "axis path"
 	     << " (=" << theAxisPath << ")"
-	     << " has elements bigger than the lattice dim -1 "
-	     << " (ie. " << latticeDim - 1 << ")" << LogIO::POST;
+	     << " has elements >= the lattice dim "
+	     << latticeDim - 1 << LogIO::POST;
       return False;
     }
 
@@ -431,38 +544,12 @@ Bool LatticeStepper::ok() const {
   return True;
 };
 
-// pad the cursor to the right number of dimensions
-void LatticeStepper::padCursor() {
-  const uInt latticeDim = theIndexer.ndim();
-  // the stepper theCursorShape must not have more axes than the lattice
-  const uInt cursorDim = theCursorShape.nelements();
-  if (cursorDim != latticeDim)
-    if (cursorDim < latticeDim){
-      IPosition tempCursor(theCursorShape);
-      theCursorShape.resize(latticeDim);
-      theCursorShape = 1;
-      for (uInt k = 0; k < cursorDim; k++)
-	theCursorShape(k) = tempCursor(k);
-    }
-    else
-      throw(AipsError("LatticeStepper::padCursor()"
-		      " - Cursor shape has more axes than the lattice."));
-};
-
 // check if the cursor shape is an sub-multiple of the Lattice shape
 Bool LatticeStepper::niceFit() const
 {
   const uInt cursorDim = theCursorShape.nelements();
-  // Check the case when theCursorShape == 0 as this will cause a floating
-  // point error below.
-  uInt i = 0;
-  for ( ;i < cursorDim; i++)
-    if (theCursorShape(i) <= 0)
-      throw(AipsError("LatticeStepper::niceFit()"
-		      " - Cursor shape is is zero or negative"));
-
   // Determine if the Lattice shape is a multiple of the cursor shape.
-  i = 0;
+  uInt i = 0;
   while (i < cursorDim && 
 	 theIndexer.shape(i)%theCursorShape(i) == 0)
     i++;
@@ -480,6 +567,3 @@ LatticeStepper * LatticeStepper::castToStepper() {
 const LatticeStepper * LatticeStepper::castToConstStepper() const {
   return this;
 };
-// Local Variables:
-// compile-command: "gmake OPTLIB=1 LatticeStepper"
-// End:
