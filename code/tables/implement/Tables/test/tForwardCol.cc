@@ -37,6 +37,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/StManAipsIO.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayMath.h>
