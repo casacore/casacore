@@ -580,6 +580,17 @@ private:
                                    const char fromctype[2][9], const double fromcrval[2]) const;
     // </group>
 
+
+    // These are just to help debugging to print out the contents of 
+    // these wcs structures
+    // <group>
+    void listCel () const;
+    void listProj () const;
+    void listWCS ()  const;
+    void listLin(linprm*) const;
+    // </group>
+
+
 };
 
 #endif

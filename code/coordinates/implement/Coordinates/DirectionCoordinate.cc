@@ -261,6 +261,11 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
     if (ok) {
 	d_x = world(0);
         d_y = world(1);
+//
+/*
+        listProj();
+        listCel();  
+*/
 	int errnum = celrev(pcodes[projection_p.type()],
 			    d_x, d_y, prjprm_p, &d_phi, &d_theta,
 			    celprm_p, &d_lng, &d_lat);
@@ -339,7 +344,6 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
                                 const Vector<Double>& worldMin,
                                 const Vector<Double>& worldMax) const
 {
-
 // Temporaries
 
    static Vector<Double> in_tmp;
@@ -398,7 +402,9 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       in_tmp(0) = pixelIn(0);
       in_tmp(1) = worldIn(1);
       if (!toMix2(out_tmp, in_tmp, worldMin, 
-                  worldMax, False)) return False;
+                  worldMax, False)) {
+         return False;
+      }
 //
       pixelOut(0) = in_tmp(0);
       pixelOut(1) = out_tmp(1);
@@ -420,7 +426,9 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       in_tmp(0) = worldIn(0);
       in_tmp(1) = pixelIn(1);
       if (!toMix2(out_tmp, in_tmp, worldMin, 
-                  worldMax, True)) return False;
+                  worldMax, True)) {
+         return False;
+      }
 //
       pixelOut(0) = out_tmp(0);
       pixelOut(1) = in_tmp(1);
@@ -1326,7 +1334,6 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 // Latitude span
 //
        mix_vspan[0] = minWorld(1) * to_degrees_p[1];
-//
        mix_vspan[1] = maxWorld(1) * to_degrees_p[1];
     } else {
        mixcel = 2;          // 1 or 2 (a code, not an index)
@@ -1343,20 +1350,33 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
 // Do it
 //
-//cout << "doMix2: mixpix = " << mixpix << endl;
-//cout << "doMix2: mixcel = " << mixcel << endl;
-//cout << "doMix2: input world = " << mix_world[0] << ", " << mix_world[1] << endl;
-//cout << "doMix2: input pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
-//cout << "doMix2: input vspan_p = " << mix_vspan[0] << ", " << mix_vspan[1] << endl;
-//cout << "doMix2: c_crval= " << c_crval_p[0] << " " << c_crval_p[1] << endl;
-//
     mix_vstep = 1.0;
     mix_viter = 2;
-    prjprm_p->flag = -1;
+    prjprm_p->flag = -1;                    // Return a solution, even if ambiguous
+
+/*
+cout << "ctype = " << c_ctype_p[0] << " " << c_ctype_p[1] << endl;
+cout << "mixpix = " << mixpix << endl;
+cout << "mixcel = " << mixcel << endl;
+cout << "vspan = " << mix_vspan[0] << ", " << mix_vspan[1] << endl;
+cerr << "vstep = " << mix_vstep << endl;
+cerr << "viter = " << mix_viter << endl;
+cout << "input world = " << mix_world[0] << ", " << mix_world[1] << endl;
+cout << "input pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
+cout << "crval = " << c_crval_p[0] << " " << c_crval_p[1] << endl << endl;
+*/
+
     int iret = wcsmix(c_ctype_p, wcs_p, mixpix, mixcel, mix_vspan, 
                       mix_vstep, mix_viter, 
                       mix_world, c_crval_p, celprm_p, &mix_phi, &mix_theta, 
                       prjprm_p, mix_imgcrd, linear_p.linprmWCS(), mix_pixcrd);
+
+/*
+cerr << "iret = " << iret << endl;
+cout << "output world = " << mix_world[0] << ", " << mix_world[1] << endl;
+cout << "output pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
+cout << "phi, theta=" << mix_phi << ", " << mix_theta << endl;
+*/
     if (iret!=0) {
         errorMsg= "wcs wcsmix_error: ";
         errorMsg += wcsmix_errmsg[iret];
@@ -1366,10 +1386,6 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
 // Fish out the results
 //
-//cout << "doMix2: output world = " << mix_world[0] << ", " << mix_world[1] << endl;
-//cout << "doMix2: output pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
-//cout << "doMix2: phi, theta=" << phi << ", " << theta << endl;
-
     if (longIsWorld) {
        out(0) = mix_pixcrd[0];
        out(1) = mix_world[wcs_p->lat] / to_degrees_p[1];
@@ -1676,7 +1692,7 @@ Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
 {
    const uInt n = shape.nelements();
    if (n!=nPixelAxes()) {
-      set_error("Shape has must be of length nPixelAxes");
+      set_error("Shape must be of length nPixelAxes");
       return False;
    }
 //
@@ -1725,3 +1741,68 @@ void DirectionCoordinate::setDefaultMixRanges (Vector<Double>& worldMin,
    worldMax(1) =   90.0/to_degrees_p[1];
 }
 
+
+void DirectionCoordinate::listProj ()  const
+{
+   cerr << endl << "Proj struct" << endl;
+   cerr << "projection type = " << projection_p.type() << endl;
+   cerr << " flag = " << prjprm_p->flag << endl;
+   cerr << " r0   = " << prjprm_p->r0 << endl;
+   cerr << " p    = ";
+   for (uInt i=0; i<10; i++) {
+      cerr << prjprm_p->p[i]  << ", ";
+   }
+   cerr << endl;
+   cerr << " n    = " << prjprm_p->n << endl;
+   cerr << " w    = ";
+   for (uInt i=0; i<10; i++) {
+      cerr << prjprm_p->w[i]  << ", ";
+   }
+   cerr << endl;
+}
+
+void DirectionCoordinate::listCel ()  const
+{
+   cerr << endl << "celprm_p struct" << endl;
+   cerr << " flag = " << celprm_p->flag << endl;
+   cerr << " ref  = " << celprm_p->ref[0] << ", " << celprm_p->ref[1] << ", " <<
+                         celprm_p->ref[2] << ", " << celprm_p->ref[3] << endl;
+   cerr << " euler= ";
+   for (uInt i=0; i<5; i++) {
+      cerr << celprm_p->euler[i]  << ", ";
+   }
+   cerr << endl;
+}
+
+
+void DirectionCoordinate::listWCS ()  const
+{
+   cerr << endl << "wcsprm struct" << endl;
+   cerr << " flag = " << wcs_p->flag << endl;
+   cerr << " pcode = " << wcs_p->pcode << endl;
+   cerr << " lngtyp = ";
+   for (uInt i=0; i<5; i++) {
+      cerr << wcs_p->lngtyp[i]  << ", ";
+   }
+   cerr << endl;
+   cerr << " lattyp = ";
+   for (uInt i=0; i<5; i++) {
+      cerr << wcs_p->lattyp[i]  << ", ";
+   }
+   cerr << endl;
+   cerr << " lng, lat = " << wcs_p->lng << ", " << wcs_p->lat << endl;
+   cerr << " cubeface = " << wcs_p->cubeface << endl;
+   cerr << endl;
+}
+
+
+void DirectionCoordinate::listLin (linprm* linprm)  const
+{
+   cerr << endl << "linprm struct" << endl;
+   cerr << " flag = " << linprm->flag << endl;
+   cerr << " naxis = " << linprm->naxis << endl;
+   cerr << " crpix = " << linprm->crpix[0] << ", " << linprm->crpix[1] << endl;
+   cerr << " cdelt = " << linprm->cdelt[0] << ", " << linprm->cdelt[1] << endl;
+   cerr << " pc = " << linprm->pc[0] << ", " << linprm->pc[1] << ", " <<
+                       linprm->pc[2] << ", " << linprm->pc[3] << endl;
+}
