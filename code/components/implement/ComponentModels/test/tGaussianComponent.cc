@@ -25,233 +25,343 @@
 //#
 //# $Id$
 
+#include <aips/aips.h>
 #include <trial/ComponentModels/GaussianComponent.h>
+#include <trial/ComponentModels/ComponentType.h>
+#include <trial/Coordinates/StokesCoordinate.h>
+#include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/PagedImage.h>
-#include <trial/MeasurementEquations/StokesVector.h>
-#include <trial/MeasurementEquations/StokesUtil.h>
-
-#include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
-#include <aips/Logging/LogSink.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/Euler.h>
+#include <aips/Measures/Quantum.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/Quantum.h>
 #include <aips/Measures/RotMatrix.h>
+#include <aips/Measures/Stokes.h>
+#include <aips/Tables/Table.h>
 #include <aips/Utilities/String.h>
-
-#ifdef __GNUG__
-typedef MeasConvert<MDirection,MVDirection,MCDirection> gnu_tGaussianComponent_bug;
-#endif
+#include <aips/Utilities/Assert.h>
+#include <iostream.h>
 
 int main() {
   try {
-    Bool anyFailures = False;
     {
       // Create a Gaussian component at the default position
       GaussianComponent defGaussian;
-      // Sample the Gaussian at the Maximum at half a degree on either side.
-      MVDirection sampleDir(Quantity(0,"deg"), Quantity(89.5, "deg"));
-      RotMatrix rotDec(Euler(Quantity(0.5, "deg").get().getValue(), uInt(2)));
+      // Sample the Gaussian at the Maximum and half an arc-min on either side.
+      MVDirection sampleDirVal(Quantity(0,"deg"), 
+			       Quantity(90, "deg") - Quantity(.5, "'"));
+      MDirection sampleDir(sampleDirVal, MDirection::J2000);
+      RotMatrix rotDec(Euler(Quantity(0.5, "'").get().getValue(), 2u));
       
-      const Float peak = 4. * pow(180.,2.) * C::ln2 * pow(C::pi,-3.0);
-      const StokesVector polPeak(peak, 0.f,0.f,0.f);
-      
-      AlwaysAssert(near(defGaussian(sampleDir), polPeak*0.5f, 1E-6),AipsError);
-      sampleDir *= rotDec;
-      AlwaysAssert(near(defGaussian(sampleDir), polPeak, 1E-6), AipsError);
-      sampleDir *= rotDec;
-      AlwaysAssert(near(defGaussian(sampleDir), polPeak*0.5f, 1E-6),AipsError);
+      const Double peak = 4. * 3600 * pow(180.,2.) * C::ln2 * pow(C::pi,-3.0);
+      Vector<Double> expectedSample(4);
+      Vector<Double> actualSample(4);
+      expectedSample = 0.0; expectedSample(0) = peak*0.5;
+      defGaussian.sample(actualSample, sampleDir);
+      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+		   AipsError);
+      sampleDirVal *= rotDec;
+      sampleDir.set(sampleDirVal);
+      defGaussian.sample(actualSample, sampleDir);
+      expectedSample(0) = peak;
+      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+		   AipsError);
+      sampleDirVal *= rotDec;
+      sampleDir.set(sampleDirVal);
+      expectedSample(0) = peak*0.5;
+      defGaussian.sample(actualSample, sampleDir);
+      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+		   AipsError);
       cout << "Passed the default Gaussian component test" << endl;
     }
     {
       // Create a Gaussian component at a defined non-J2000 position
       MVDirection dir1934(Quantity(293.5,"deg"), Quantity(-63.7, "deg"));
       MDirection coord1934J2000(dir1934, MDirection::J2000);
-      StokesVector flux1934(6.3f,0.0f,0.0f,0.0f);
-      Vector<MVAngle> width(2);
-      width = MVAngle(Quantity(2E-3, "''" ));
-      GaussianComponent J1934(flux1934, coord1934J2000, width, MVAngle());
+      Vector<Double> flux1934(4);
+      flux1934 = 0.0; flux1934(0) = 6.3;
+      MVAngle majorAxis(Quantity(2E-3, "''"));
+      MVAngle minorAxis(Quantity(2E-3, "''"));
+      GaussianComponent J1934(flux1934, coord1934J2000, majorAxis, minorAxis,
+			      MVAngle());
       // Create a direction that is 1 mas away from the pole
       MVDirection sampleDir(Quantity(0,"deg"),
-			    Quantity(90, "deg") - Quantity(1.E-3, "''"));
+ 			    Quantity(90, "deg") - Quantity(1.E-3, "''"));
       // And now make another rotater that can rotate this point about the pole
       // in steps of say 40 degrees
       RotMatrix rotater(Euler(Quantity(40, "deg").get().getValue(), uInt(3)));
-      
+   
       // Create a rotation matrix that can rotate the pole down to the
       // component. 
-      RotMatrix pole2src(Euler(Quantity(-153.7,"deg").get().getValue(),uInt(2),
-			       Quantity(-293.5,"deg").get().getValue(),uInt(3)
-			       ));
+      RotMatrix pole2src(Euler(Quantity(-153.7,"deg").get().getValue(), 2u,
+ 			       Quantity(-293.5,"deg").get().getValue(), 3u));
       MVDirection pole;
-      // Create a vector of MDirections equidistant from the position of the
+      // Sample at a set of MDirections equidistant from the position of the
       // component. All these points should have the same flux (in Jy/pixel)
       // of half the maximum. 
-      Vector<MDirection> directions(6);
+      MDirection sampledDirection;
+      Vector<Double> sampledFlux(4);
+      Vector<Double> peak(4);
+      peak = flux1934.ac() * 4. * pow(180. *60. *60. *1000. /2. ,2.) 
+	                   * C::ln2 * pow(C::pi,-3.);
       for (uInt i = 0; i < 6; i++){
-	directions(i) = MDirection(sampleDir*pole2src, MDirection::J2000);
-	sampleDir *= rotater;
+ 	sampledDirection = MDirection(sampleDir*pole2src, MDirection::J2000);
+	J1934.sample(sampledFlux, sampledDirection);
+	// Precision is lost because of the subtraction done in the
+	// MVPosition::separation member function
+ 	AlwaysAssert(allNear(sampledFlux.ac(), peak.ac()*0.5, 1E-6), 
+		     AipsError);
+ 	sampleDir *= rotater;
       }
-      Vector<StokesVector> fluxes;
-      fluxes = J1934(directions);
-      const StokesVector peak = flux1934 * 4.0f 
-	* pow(180.0f*60.0f*60.0f*1000.0f/2.0f,2.0f) 
-	* C::ln2 * pow(C::pi,-3.0f);
-      for (uInt j = 0; j < 6; j++)
-	AlwaysAssert(near(fluxes(j), peak*0.5f, 1E-5), AipsError);
       cout << "Passed the arbitrary Gaussian component test" << endl;
     }
     {
-      // Create an arbitrary Gaussian component
-      GaussianComponent B1934(StokesVector(2.0f), 
-			      MDirection(MVDirection(1.0), MDirection::B1950), 
-			      MVAngle(Quantity(13, "''")), 
-			      0.1f, 
-			      MVAngle(Quantity(10, "deg")));
-      
+      // Create a Gaussian component at a defined non-J2000 position
+      Vector<Double> initialFlux(4);
+      initialFlux = 2.0;
+      const MDirection initialPosition(MVDirection(1.0), MDirection::B1950);
+      const MVAngle initialMajorAxis(MVAngle(Quantity(13, "''")));
+      const Double initialAxialRatio = 0.1;
+      const MVAngle initialPA(MVAngle(Quantity(10, "deg")));
+   
+      GaussianComponent B1934(initialFlux, initialPosition, initialMajorAxis,
+			    initialAxialRatio, initialPA);
+      Vector<Double> componentFlux(4);
+      B1934.flux(componentFlux);
+      AlwaysAssert(allNear(initialFlux.ac(), componentFlux.ac(), 1E-10),
+		   AipsError);
+   
       // Set and verify  the flux of the Gaussian component.
-      StokesVector flux1934(6.3f, 0.3f, 0.2f, 0.1f);
+      Vector<Double> flux1934(4);
+      flux1934 = 0.0; flux1934(0) = 6.3;
       B1934.setFlux(flux1934);
-      
-      AlwaysAssert(near(B1934.flux(), flux1934), AipsError);
-      
+      B1934.flux(componentFlux);
+      AlwaysAssert(allNear(flux1934.ac(), componentFlux.ac(), 1E-10),
+		   AipsError);
+   
       // Set and verify the position of the Gaussian component. It is
       // internally converted to a J2000 reference frame
       MVDirection dir1934(Quantity(293.5,"deg"),Quantity(-63.8,"deg"));
       MDirection coord1934B1950(dir1934, MDirection::B1950);
-      B1934.setPosition(coord1934B1950);
-      MDirection coord1934J2000 = B1934.position();
+      MDirection coord1934J2000 = coord1934B1950;
+      B1934.position(coord1934J2000);
       AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
-		   AipsError); 
+ 		   AipsError); 
       AlwaysAssert(coord1934J2000.getValue().near(
- 	   MDirection::Convert(coord1934B1950,MDirection::J2000)().getValue()),
+  	  MDirection::Convert(initialPosition,MDirection::J2000)().getValue()),
+ 		   AipsError);
+      B1934.setPosition(coord1934B1950);
+      B1934.position(coord1934J2000);
+      AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
+ 		   AipsError); 
+      AlwaysAssert(coord1934J2000.getValue().near( 
+  	   MDirection::Convert(coord1934B1950,MDirection::J2000)().getValue()),
 		   AipsError);
       // Set and verify the width of the Gaussian component. 
-      Vector<MVAngle> width(2);
-      width(0) = MVAngle(Quantity(4, "''" ));
-      width(1) = MVAngle(Quantity(2, "''" ));
-      B1934.setWidth(width);
-      Vector<MVAngle> newWidth(2);
-      newWidth = B1934.width();
-      
-      AlwaysAssert(near(newWidth(0).radian(),width(0).radian(), 1E-7), 
+      MVAngle majorAxis;
+      B1934.majorAxis(majorAxis);
+      AlwaysAssert(near(majorAxis.radian(), initialMajorAxis.radian(), 1E-10), 
+ 		   AipsError);
+      MVAngle minorAxis;
+      B1934.minorAxis(minorAxis);
+      AlwaysAssert(near(minorAxis.radian(), 
+			initialMajorAxis.radian()*initialAxialRatio, 1E-10), 
+ 		   AipsError);
+      Double axialRatio;
+      B1934.axialRatio(axialRatio);
+      AlwaysAssert(near(axialRatio, initialAxialRatio, 1E-10), AipsError);
+      MVAngle pa;
+      B1934.positionAngle(pa);
+      AlwaysAssert(near(pa.radian(), initialPA.radian(), 1E-10), AipsError);
+   
+      MVAngle compMajorAxis(Quantity(4, "''" ));
+      MVAngle compMinorAxis(Quantity(2, "''" ));
+      MVAngle compPA(Quantity(45, "deg" ));
+      B1934.setWidth(compMajorAxis, compMinorAxis, compPA);
+      B1934.width(majorAxis, minorAxis, pa);
+      AlwaysAssert(near(majorAxis.radian(), compMajorAxis.radian(), 1E-10), 
 		   AipsError);
-      AlwaysAssert(near(newWidth(1).radian(),width(1).radian(), 1E-7), 
+      AlwaysAssert(near(minorAxis.radian(), compMinorAxis.radian(), 1E-10), 
 		   AipsError);
-
-      // Set and verify the axial ratio
-      B1934.setAxialRatio(0.5f);
-      AlwaysAssert(near(B1934.axialRatio(), 0.5f), AipsError);
-      
-      // Set and verify the position Angle
-      B1934.setPA(MVAngle(Quantity(45.0, "deg")));
-      AlwaysAssert(near(B1934.PA().circle(), 0.125, 1E-6), AipsError);
-      
+      AlwaysAssert(near(pa.radian(), compPA.radian(), 1E-10), AipsError);
+   
+      compMajorAxis = Quantity(8, "''");
+      compPA = Quantity(30, "deg");
+      Double compAxialRatio = .5;
+      B1934.setWidth(compMajorAxis, compAxialRatio, compPA);
+      B1934.width(majorAxis, axialRatio, pa);
+      AlwaysAssert(near(majorAxis.radian(), compMajorAxis.radian(), 1E-10), 
+		   AipsError);
+      AlwaysAssert(near(axialRatio, compAxialRatio, 1E-10), AipsError);
+      AlwaysAssert(near(pa.radian(), compPA.radian(), 1E-10), AipsError);
+   
       // Check this is a Gaussian component
-      AlwaysAssert(B1934.type().matches("Gaussian") == 1, AipsError);
+      AlwaysAssert(B1934.type() == ComponentType::GAUSSIAN, AipsError);
+      AlwaysAssert(ComponentType::name(B1934.type()).matches("Gaussian") == 1, 
+ 		   AipsError);
+
+      // Check the parameters interface
+      AlwaysAssert(B1934.nParameters() == 3, AipsError);
+      Vector<Double> parms(3);
+      B1934.parameters(parms);
+      AlwaysAssert(near(parms(0), compMajorAxis.radian(), 1E-10), AipsError);
+      AlwaysAssert(near(parms(1), compMajorAxis.radian()*compAxialRatio,1E-10),
+		   AipsError);
+      AlwaysAssert(near(parms(2), compPA.radian(), 1E-10), AipsError);
+      parms(0) = Quantity(4, "''").getValue("rad");
+      parms(1) = Quantity(2, "''").getValue("rad");;
+      parms(2) = Quantity(45.0, "deg").getValue("rad");
+      B1934.setParameters(parms);
+      parms = 0.0;
+      B1934.parameters(parms);
+      AlwaysAssert(near(parms(0), Quantity(4, "''").getValue("rad"), 1E-10), 
+		   AipsError);
+      AlwaysAssert(near(parms(1), Quantity(2, "''").getValue("rad"), 1E-10), 
+		   AipsError);
+      AlwaysAssert(near(parms(2), Quantity(45, "deg").getValue("rad"), 1E-10), 
+		   AipsError);
+      parms.resize(1);
+      try {
+	B1934.setParameters(parms);
+  	throw(AipsError("GaussianComponent incorrectly accepted a too small "
+  			"Parameter Vector"));
+      }
+      catch (AipsError x) {
+ 	if (!x.getMesg().contains("newParms.nelements() == nParameters()")) {
+ 	  cerr << x.getMesg() << endl;
+ 	  cout << "FAIL" << endl;
+ 	  return 1;
+ 	}
+      }
+      end_try;
       cout << "Passed the set/get parameters test for Gaussian components"
-	   << endl;
+ 	   << endl;
+      GaussianComponent compCopy = B1934.copy();
+      AlwaysAssert(compCopy.type() == ComponentType::GAUSSIAN, AipsError);
+      flux1934 = 0.0;
+      B1934.setFlux(flux1934);
+      compCopy.flux(flux1934);
+      AlwaysAssert(near(flux1934(0), 6.3), AipsError);
+      B1934.flux(flux1934);
+      AlwaysAssert(near(flux1934(0), 0.0), AipsError);
+
+      compCopy = B1934.copy();
+      compCopy.flux(flux1934);
+      AlwaysAssert(near(flux1934(0), 0.0), AipsError);
+      flux1934(0) = 6.3;
+      B1934.setFlux(flux1934);
+      compCopy.flux(flux1934);
+      AlwaysAssert(near(flux1934(0), 0.0), AipsError);
+      B1934.flux(flux1934);
+      AlwaysAssert(near(flux1934(0), 6.3), AipsError);
+
+      GaussianComponent compRef = B1934;
+      compRef.flux(flux1934);
+      AlwaysAssert(near(flux1934(0), 6.3), AipsError);
+      flux1934 = 0.0;
+      B1934.setFlux(flux1934);
+      flux1934(0) = 6.3;
+      compRef.flux(flux1934);
+      AlwaysAssert(near(flux1934(0), 0.0), AipsError);
+      flux1934(0) = 6.3;
+      compCopy.setFlux(flux1934);
+      compRef = compCopy;
+      flux1934(0) = 0.0;
+      compRef.flux(flux1934);
+      AlwaysAssert(near(flux1934(0), 6.3), AipsError);
+      AlwaysAssert(B1934.ok(), AipsError);
+      AlwaysAssert(compCopy.ok(), AipsError);
+      AlwaysAssert(compRef.ok(), AipsError);
+      cout << "Passed the copy and assignment tests" 
+  	   << endl;
     }
     {
       const uInt imSize = 6;
-      const uInt nPol = 4;
-      const uInt nFreq = 1;
-      PagedImage<Float> image(IPosition(4,imSize,imSize,nPol,nFreq), 
-			      defaultCoords4D(), 
-			      "tGaussianComponent_tmp.image");
+      const uInt nPol = 3;
+      const uInt nFreq = 2;
+      CoordinateSystem coords(defaultCoords2D());
+      addFreqAxis(coords);
+      {
+	Vector<Int> pols(nPol);
+	pols(0) = Stokes::I;
+	pols(1) = Stokes::Q;
+	pols(2) = Stokes::U;
+	StokesCoordinate polAxis(pols);
+	coords.addCoordinate(polAxis);
+      }
+      PagedImage<Float> image(IPosition(4,imSize,imSize,nFreq,nPol), 
+ 			      coords, "tGaussianComponent_tmp.image");
       image.set(0.0f);
       GaussianComponent defComp;
-      
-      Vector<MVAngle> width(2);
-      width = MVAngle(Quantity(2, "'" ));
-      defComp.setWidth(width);
-      StokesVector flux(1.0f, 0.5f, 0.1f, 0.0f);
+   
+      MVAngle majorAxis(Quantity(2., "'"));
+      MVAngle minorAxis = majorAxis;
+      MVAngle pa(Quantity(0., "deg"));
+      defComp.setWidth(majorAxis, minorAxis, pa);
+      Vector<Double> flux(4);
+      flux(0) = 1.0;
+      flux(1) = 0.5;
+      flux(2) = 0.2;
+      flux(3) = 0.1;
       defComp.setFlux(flux);
-      
-      MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
+   
+      MVDirection ra0dec0(Quantity(4, "'"), Quantity(1, "'"));
       MDirection coord00(ra0dec0, MDirection::J2000);
       defComp.setPosition(coord00);
-      defComp(image);
-//       const Float peak = 60.*60.* pow(180.,2.) * C::ln2 * pow(C::pi,-3.0);
-//       AlwaysAssert(near(image(IPosition(4, 2, 1, 0, 0)),peak), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 0, 0, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 2, 0, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 1, 1, 0, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 3, 1, 0, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 1, 1, 0)),peak*0.5f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 0, 1, 0)),peak*0.25f),AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 1, 2, 0)),peak*0.1f), AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 1, 1, 2, 0)),peak*0.05f),AipsError);
-//       AlwaysAssert(near(image(IPosition(4, 2, 1, 3, 0)),peak*0.0f), AipsError);
-      
-//       cout << "Passed the projection to an image test" << endl;
+      defComp.project(image);
+      Float peak = 60.*60.* pow(180.,2.) * C::ln2 * pow(C::pi,-3.0);
+      AlwaysAssert(near(image(IPosition(4, 4, 1, 0, 0)), peak), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 4, 0, 0, 0)),peak*0.5f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 4, 2, 0, 0)),peak*0.5f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 3, 1, 0, 0)),peak*0.5f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 5, 1, 0, 0)),peak*0.5f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 4, 1, 0, 1)),peak*0.5f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 4, 0, 0, 1)),peak*0.25f),AipsError);
+      AlwaysAssert(near(image(IPosition(4, 4, 1, 0, 2)),peak*0.2f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 4, 0, 0, 2)),peak*0.1f), AipsError);
+   
+      majorAxis = Quantity(10., "'");
+      minorAxis = Quantity(2., "'");
+      pa = Quantity(1.0*atan(3.0/4.0), "rad");
+      defComp.setWidth(majorAxis, minorAxis, pa);
+      image.set(0.0f);
+      defComp.project(image);
+      peak = image(IPosition(4,4,1,0,0));
+      AlwaysAssert(near(image(IPosition(4, 1, 5, 0, 0)), peak*0.5f),
+ 		   AipsError);
+      AlwaysAssert(near(image(IPosition(4, 1, 5, 1, 0)), peak*0.5f),
+ 		   AipsError);
+      AlwaysAssert(near(image(IPosition(4, 1, 5, 0, 1)), peak*0.25f),
+ 		   AipsError);
+      AlwaysAssert(near(image(IPosition(4, 1, 5, 1, 1)), peak*0.25f),
+ 		   AipsError);
+      AlwaysAssert(near(image(IPosition(4, 1, 5, 0, 2)), peak*0.1f),
+ 		   AipsError);
+      AlwaysAssert(near(image(IPosition(4, 1, 5, 1, 2)), peak*0.1f),
+ 		   AipsError);
+      image.table().rename("junk.image", Table::Scratch);
+      cout << "Passed the projection to an image test" << endl;
     }
-//     {
-//       const uInt imSize = 6;
-//       const uInt nPol = 1;
-//       CoordinateSystem coords(defaultCoords2D());
-//       addIAxis(coords);
-//       PagedImage<Float> image(IPosition(3,imSize,imSize,nPol), 
-// 			      coords, 
-// 			      String("tGaussianComponent_tmp.image"));
-//       PagedImage<Float> psf(IPosition(2,4), defaultCoords2D(), 
-// 			    String("tGaussianComponentPsf_tmp.image"));
-//       image.set(Float(0)); psf.set(Float(0));
-//       psf(IPosition(2, 2, 2)) = Float(1);
-//       psf(IPosition(2, 1, 2)) = Float(.5);
-//       psf(IPosition(2, 3, 2)) = Float(.5);
-//       psf(IPosition(2, 2, 1)) = Float(.5);
-//       psf(IPosition(2, 2, 3)) = Float(.5);
-      
-//       GaussianComponent defComp;
-//       MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
-//       MDirection coord00(ra0dec0, MDirection::J2000);
-//       defComp.setPosition(coord00);
-//       Vector<MVAngle> width(2); 
-//       width = MVAngle(Quantity(2, "''" ));
-//       defComp.setWidth(width);
-//       StokesVector flux(1.0f, 0.5f, 0.1f, 0.0f);
-//       defComp.setFlux(flux);
-//       const Float peak=60.*60.*60.*60.*pow(180.,2.) * C::ln2 * pow(C::pi,-3.0);
-      
-//       defComp(image, psf);
-
-//       AlwaysAssert(near(image(IPosition(3, 2, 1, 0)), peak), AipsError);
-//       image(IPosition(3, 2, 1, 0)) = Float(0);
-//       AlwaysAssert(near(image(IPosition(3, 1, 1, 0)), peak*0.5f), AipsError);
-//       image(IPosition(3, 1, 1, 0)) = Float(0);
-//       AlwaysAssert(near(image(IPosition(3, 3, 1, 0)), peak*0.5f), AipsError);
-//       image(IPosition(3, 3, 1, 0)) = Float(0);
-//       AlwaysAssert(near(image(IPosition(3, 2, 0, 0)), peak*0.5f), AipsError);
-//       image(IPosition(3, 2, 0, 0)) = Float(0);
-//       AlwaysAssert(near(image(IPosition(3, 2, 2, 0)), peak*0.5f), AipsError);
-//       image(IPosition(3, 2, 2, 0)) = Float(0);
-
-//       cout << "Passed the projection to an image (with convolution) test" 
-// 	   << endl;
-//   }
-  if (anyFailures) {
-    cout << "FAIL" << endl;
-    return 1;
-  }
-  else {
-    cout << "OK" << endl;
-    return 0;
-  }
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
+    cout << "FAIL" << endl;
     return 1;
   } end_try;
+  cout << "OK" << endl;
+  return 0;
 }
-
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 tGaussianComponent"
 // End: 
