@@ -36,8 +36,32 @@
 
 
 template <class T>
+MaskedLattice<T>::MaskedLattice (const MaskedLattice<T>& that)
+: itsDefRegPtr (0)
+{
+  if (that.itsDefRegPtr != 0) {
+    itsDefRegPtr = new LatticeRegion (*that.itsDefRegPtr);
+  }
+}
+
+template <class T>
 MaskedLattice<T>::~MaskedLattice()
-{}
+{
+  delete itsDefRegPtr;
+}
+
+template <class T>
+MaskedLattice<T>& MaskedLattice<T>::operator= (const MaskedLattice<T>& that)
+{
+  if (this != &that) {
+    delete itsDefRegPtr;
+    itsDefRegPtr = 0;
+    if (that.itsDefRegPtr != 0) {
+      itsDefRegPtr = new LatticeRegion (*that.itsDefRegPtr);
+    }
+  }
+  return *this;
+}
 
 template<class T>
 Lattice<T>* MaskedLattice<T>::clone() const
@@ -55,18 +79,6 @@ Bool MaskedLattice<T>::isMasked() const
   return ptr->hasMask();
 }
 
-template<class T>
-Bool MaskedLattice<T>::isMaskWritable() const
-{
-  if (!isWritable()) {
-    return False;
-  }
-  const LatticeRegion* ptr = getRegionPtr();
-  if (ptr == 0) {
-    return False;
-  }
-  return ptr->isWritable();
-}
 
 template<class T>
 Bool MaskedLattice<T>::hasPixelMask() const
@@ -79,24 +91,36 @@ const Lattice<Bool>& MaskedLattice<T>::pixelMask() const
 {
   throw (AipsError ("MaskedLattice::pixelMask - no pixelmask available"));
   //# Make the compiler happy.
-  return *getRegionPtr();
+  return *itsDefRegPtr;
 }
 template<class T>
 Lattice<Bool>& MaskedLattice<T>::pixelMask()
 {
   throw (AipsError ("MaskedLattice::pixelMask - no pixelmask available"));
   //# Make the compiler happy.
-  return *rwRegionPtr();
+  return *itsDefRegPtr;
 }
 
 template<class T>
-LatticeRegion MaskedLattice<T>::region() const
+const LatticeRegion& MaskedLattice<T>::region() const
 {
+  // If there is a region, return it.
   const LatticeRegion* ptr = getRegionPtr();
   if (ptr != 0) {
     return *ptr;
   }
-  return LatticeRegion (LCBox(shape()));
+  // No region, so use the one in the MaskedLattice itself which
+  // describes the entire lattice. Create it if it does not exist yet.
+  // Check if its shape still matches.
+  if (itsDefRegPtr != 0) {
+    if (itsDefRegPtr->slicer().length().isEqual (shape())) {
+      return *itsDefRegPtr;
+    }
+    delete itsDefRegPtr;
+    itsDefRegPtr = 0;
+  }
+  itsDefRegPtr = new LatticeRegion (LCBox(shape()));
+  return *itsDefRegPtr;
 }
 
 
@@ -183,7 +207,8 @@ Bool MaskedLattice<T>::getMaskSlice (Array<Bool>& buffer,
 }
 
 template<class T>
-Bool MaskedLattice<T>::getMaskSlice (Array<Bool>& buffer, const Slicer& section,
+Bool MaskedLattice<T>::getMaskSlice (Array<Bool>& buffer,
+				     const Slicer& section,
 				     Bool removeDegenerateAxes)
 {
   Bool isARef;
@@ -248,38 +273,11 @@ Bool MaskedLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
 {
   // Note that Slicer::inferShapeFromSource has already been called
   // by getMaskSlice.
-  LatticeRegion* ptr = rwRegionPtr();
+  const LatticeRegion* ptr = getRegionPtr();
   if (ptr == 0) {
     buffer.resize (section.length());
     buffer = True;
     return False;
   }
-  return ptr->doGetSlice (buffer, section);
-}
-
-
-template<class T>
-void MaskedLattice<T>::putMaskSlice (const Array<Bool>& sourceBuffer,
-				     const IPosition& where)
-{
-  doPutMaskSlice (sourceBuffer, where, IPosition(where.nelements(),1));
-}
-template<class T>
-void MaskedLattice<T>::putMask (const Array<Bool>& sourceBuffer)
-{
-  uInt nd = ndim();
-  doPutMaskSlice (sourceBuffer, IPosition(nd,0), IPosition(nd,1));
-}
-
-template<class T>
-void MaskedLattice<T>::doPutMaskSlice (const Array<Bool>& buffer,
-				       const IPosition& where,
-				       const IPosition& stride)
-{
-  LatticeRegion* ptr = rwRegionPtr();
-  if (ptr == 0  ||  !ptr->isWritable()) {
-    throw (AipsError ("MaskedLattice::putMaskSlice is not possible; "
-		      "the mask is not writable"));
-  }
-  ptr->doPutSlice (buffer, where, stride);
+  return const_cast<LatticeRegion*>(ptr)->doGetSlice (buffer, section);
 }
