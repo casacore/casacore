@@ -1,5 +1,5 @@
 //# tObsInfo.cc: test program for class ObsInfo
-//# Copyright (C) 1998,2000,2001
+//# Copyright (C) 1998,2000,2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Containers/Record.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 int main()
@@ -94,8 +94,8 @@ int main()
 
 // Test output.  
 
-    ostrstream oss;
-    oss << oi << endl;
+    ostringstream oss;
+    oss << oi;
     String x(oss);
 //
     String x1("Telescope: telescope2 Observer: observer2 ");
