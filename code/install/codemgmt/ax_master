@@ -3107,3 +3107,4 @@
 12 022 src rm doc/papers/addass93
 12 026 src mv nrao/apps/vlafiller/vlafiller.cc nrao/apps/vlatoms/vlatoms.cc
 12 026 src rm nrao/implement/VLA/vlatoms.g
+12 026 sys rm libexec/vlatoms.g
