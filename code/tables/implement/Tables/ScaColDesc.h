@@ -1,5 +1,5 @@
 //# ScaColDesc.h: Templated class for description of table scalar columns
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_SCACOLDESC_H)
 #define AIPS_SCACOLDESC_H
 
-#if defined(_AIX)
-#pragma implementation ("ScaColDesc.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -64,19 +61,22 @@ class ColumnSet;
 // <synopsis> 
 // ScalarColumnDesc is a templated class for defining a
 // table column containing scalar values.
-//
+// Note that class
+// <linkto class=ScalarRecordColumnDesc>ScalarRecordColumnDesc</linkto>
+// has to be used to define the description of a column containing records.
+// <p>
 // The table values are handled by a data manager. This can be
 // a storage manager to store the values in a file or it can be
 // a virtual column engine to calculate them on-the-fly.
 // Only the basic data types are allowed when storing in a file. These are:
 //  Bool, uChar, Short, uShort, Int, uInt, float, double,
 //  Complex, DComplex and String.
-//
+// <p>
 // At table creation time (when a table gets created from a table
 // description), each column needs to be bound to a data manager.
 // If not done explicitly, the table system will bind a column to the
 // default data manager defined in the column description.
-//
+// <p>
 // A scalar column description consists of the following attributes:
 // <ul>
 //  <li> Name, which has to be unique and must also be different
@@ -111,10 +111,10 @@ class ColumnSet;
 // There are several constructors, which allow to define most
 // of the above mentioned attributes. Others, like the default keyword
 // set, have to be defined explicitly.
-//
+// <p>
 // This class is derived from BaseColumnDesc, thus the functions
 // in there also apply to this class.
-//
+// <br>
 // Once a column description is setup satisfactorily, it must be added
 // to a table description before it can be used by the table system.
 // </synopsis>
