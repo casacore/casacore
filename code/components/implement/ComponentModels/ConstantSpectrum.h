@@ -33,6 +33,7 @@
 #include <aips/Measures/MFrequency.h>
 
 template <class T> class Vector;
+class RecordInterface;
 
 // <summary></summary>
 
@@ -93,9 +94,17 @@ public:
   virtual const MFrequency & refFrequency() const;
   // </group>
 
-  // Return the attenuation of the component at the specified frequency. The
-  // attenuation is always 1.
-  virtual Double scale(const MFrequency & centerFreq) const;
+  // Calculate the flux at the specified frequency given the flux at the
+  // reference frequency. The flux at the reference frequency must be supplied
+  // in the flux variable and the flux at the specified frequency is returned
+  // in the same variable. This function does not change the Flux.
+  virtual void sample(Flux<Double> & flux,
+		      const MFrequency & centerFrequency) const;
+
+  // Return a pointer to a copy of this object upcast to a SpectralModel
+  // object. The class that uses this function is responsible for deleting the
+  // pointer. This is used to implement a virtual copy constructor.
+  virtual SpectralModel * cloneSpectrum() const;
 
   // return the number of parameters. There are no parameters for this
   // spectral model.
@@ -111,8 +120,9 @@ public:
   // return False if the glish record is malformed and append an error message
   // to the supplied string giving the reason.
   // <group>
-  virtual Bool fromRecord(String & errorMessage, const GlishRecord & record);
-  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
+  virtual Bool fromRecord(String & errorMessage,
+			  const RecordInterface & record);
+  virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct

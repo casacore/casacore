@@ -27,7 +27,7 @@
 
 #include <trial/ComponentModels/ConstantSpectrum.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Glish/GlishRecord.h>
+#include <aips/Containers/RecordInterface.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
@@ -70,12 +70,22 @@ void ConstantSpectrum::setRefFrequency(const MFrequency & newRefFreq) {
   DebugAssert(ok(), AipsError);
 }
 
-Double ConstantSpectrum::scale(const MFrequency & centerFreq) const {
+void ConstantSpectrum::sample(Flux<Double> & flux, 
+			      const MFrequency & centerFreq) const {
   DebugAssert(ok(), AipsError);
   // Use centerFreq for something to suppress a compiler warning
   if (&centerFreq == 0) {
   }
-  return 1.0;
+  // Use flux for something to suppress a compiler warning
+  if (&flux == 0) {
+  }
+}
+
+SpectralModel * ConstantSpectrum::cloneSpectrum() const {
+  DebugAssert(ok(), AipsError);
+  SpectralModel * tmpPtr = new ConstantSpectrum(*this);
+  AlwaysAssert(tmpPtr != 0, AipsError);
+  return tmpPtr;
 }
 
 uInt ConstantSpectrum::nSpectralParameters() const {
@@ -95,7 +105,7 @@ void ConstantSpectrum::spectralParameters(Vector<Double> & spectralParms) const 
 }
 
 Bool ConstantSpectrum::fromRecord(String & errorMessage, 
-				  const GlishRecord & record) {
+				  const RecordInterface & record) {
   // Use errorMessage for something to suppress a compiler warning
   if (&errorMessage == 0) {
   }
@@ -106,11 +116,11 @@ Bool ConstantSpectrum::fromRecord(String & errorMessage,
 }
 
 Bool ConstantSpectrum::toRecord(String & errorMessage,
-			     GlishRecord & record) const {
+				RecordInterface & record) const {
   // Use errorMessage for something to suppress a compiler warning
   if (&errorMessage == 0) {
   }
-  record.add("type", ComponentType::name(spectralShape()));
+  record.define("type", ComponentType::name(spectralShape()));
   return True;
 }
 
@@ -119,4 +129,4 @@ Bool ConstantSpectrum::ok() const {
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ConstantSpectrum"
-// End: 
+// End:
