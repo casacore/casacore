@@ -3282,3 +3282,4 @@
 13 210 src mv doc/user/SythesisRef.dir doc/user/SynthesisRef.dir
 13 213 src mv aips/implement/Lattices/IPosition.h aips/implement/Arrays/IPosition.h
 13 213 src mv aips/implement/Lattices/Slice.h aips/implement/Arrays/Slice.h
+13 213 src mv aips/implement/Lattices/Slicer.h aips/implement/Arrays/Slicer.h
