@@ -461,16 +461,13 @@ String StokesCoordinate::format(String& units,
                                 Coordinate::formatType,
                                 Double worldValue,
                                 uInt worldAxis,
-                                Bool abs, Int, Bool) 
+                                Bool, Bool, Int)
+//
+// world  abs=rel for Stokes
+//
 {
    units = worldAxisUnits()(worldAxis);
-   Vector<Double> tmp(1); 
-   tmp(0) = worldValue;
-   if (!abs) {
-     makeWorldAbsolute (tmp);
-   } 
-//
-   return Stokes::name(StokesCoordinate::toWorld (tmp(0)));
+   return Stokes::name(StokesCoordinate::toWorld (worldValue));
 }
 
 

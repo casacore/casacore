@@ -237,9 +237,9 @@ public:
     // of the matrices contain the coordinates. Return the number of failures.
     // The failures array will be at least as long as the returned number of 
     // failures, and contains the indicies of the failed transformations.
-    // errorMessage() will be set to the error from the FIRST failure. A default
+    // <src>errorMessage()</src> will be set to the error from the FIRST failure. A default
     // implementation is provided that works with the "single" version of
-    // toWorld and toPixel, but for maximum efficiency these should be
+    // <src>toWorld</src> and <src>toPixel</src>, but for maximum efficiency these should be
     // overridden. If failures is longer than the return value, the value
     // in the excess locations is undefined.
     // <group>
@@ -252,6 +252,8 @@ public:
     // </group>
 
     // Make absolute coordinates relative and vice-versa.
+    // Vectors must be length <src>nPixelAxes()</src> or
+    // <src>nWorldAxes()</src> or
     // <group>
     virtual void makePixelRelative (Vector<Double>& pixel) const;
     virtual void makePixelAbsolute (Vector<Double>& pixel) const;
@@ -304,7 +306,7 @@ public:
 
     // Comparison to fractional tolerance (for floating point values). 
     // Don't compare on specified axes in Coordinate. If the comparison
-    // returns False, errorMessage() contains a message.
+    // returns False, <src>errorMessage()</src> contains a message.
     // <group>
     virtual Bool near(const Coordinate& other, 
                       Double tol=1.0e-6) const = 0;
@@ -322,9 +324,8 @@ public:
     // provide this functionality.   
     // 
     // You may specify the format with the format argument and a value
-    // from the enum Coordinate::formatType.  If 
-    // you give it the value Coordinate::DEFAULT then a default
-    // is taken.
+    // from the enum <src>Coordinate::formatType</src>. If you give it the value 
+    // <src>Coordinate::DEFAULT</src> then a sensible default is used.
     //
     // A mechanism for specifying the precision number of significant digits after 
     // decimal point is provided.  You can specify the precision directly when 
@@ -343,43 +344,52 @@ public:
     // Some derived classes will format differently depending upon whether
     // you want to format an absolute or offset world value input via 
     // absolute (e.g. DirectionCoordinates).
-    //
-    // Some derived classes will format in units different from that which
-    // currently reflect the state of the CoordinateSystem.  The units of
-    // the formatted number are returned in <src>units</src> (except for
-    // TIME formatting whereupon it is returned empty).
-    // You can also use the Quantum interface.  The units can then be anything 
-    // consistent with the Coordinate.
     // 
-    // When native is True, no units conversions are done. If False,
-    // the coordinate values are converted to a conventional unit,
-    // if appropriate (e.g. Galatic Longitude in degrees).  
+    // The provided <src>worldValue</src> must be in the native units
+    // of the Coordinate.  It may be an absolute (<src>isAbsolute=True</src>)
+    // or relative (<src>isAbsolute=False</src>) value.   You may choose to
+    // format the world value as absolute (<src>showAsAbsolute=True</src>) or
+    // relative (<src>showAsAbsolute=False</src>).  <src>axis</src>
+    // specifies which axis of the Coordinate this value belongs to.
     //
-    // The default implementation here in this base class is to format only
-    // with scientific or fixed formats and in native format. absolute is ignored.
-    // If precision is negative, a the default precision is used.
+    // <src>units</src> specifies the units in which the input world value
+    // will be formatted.  If the <src>units</src> string is empty, units will be supplied
+    // for you and the input world value converted to those units.
+    // Some derived classes will format in units different from the 
+    // native unit of the Coordinate. The units of
+    // the formatted number are returned in <src>units</src>.
+    // If the <src>units</src> string is provided, the unit must be
+    // consistent with the native unit of the coordinate.  The input
+    // world value will be converted to this unit.
+    //
+    // You can also use the Quantum interface.  The units of the Quantum 
+    // can then be anything  consistent with the Coordinate.
+    // 
+    // The default implementation here is to format only
+    // with scientific or fixed formats. If precision is negative, a 
+    // the default precision is used.
     //
     //<group>
     virtual void getPrecision(Int &precision,
                               Coordinate::formatType& format,
-                              Bool absolute,
+                              Bool showAsAbsolute,
                               Int defPrecScientific,
                               Int defPrecFixed,
                               Int defPrecTime) const;
     virtual String format(String& units,
                           Coordinate::formatType format, 
                           Double worldValue, 
-                          uInt worldAxis, 
-                          Bool absolute,
- 			  Int precision=-1,
-                          Bool native=False);
+                          uInt axis, 
+                          Bool isAbsolute=True,
+                          Bool showAsAbsolute=True,
+ 			  Int precision=-1);
     String formatQuantity(String& units,
                           Coordinate::formatType format, 
                           const Quantum<Double>& worldValue, 
-                          uInt worldAxis, 
-                          Bool absolute,
-        		  Int precision=-1,
-                          Bool native=False);
+                          uInt axis, 
+                          Bool isAbsolute=True,
+                          Bool showAsAbsolute=True,
+        		  Int precision=-1);
     //</group>
 
     // Used for persistence. Derived classes will have similar static

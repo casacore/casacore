@@ -416,7 +416,10 @@ public:
 
 
     // Format a DirectionCoordinate coordinate world value nicely through the
-    // common format interface.  Formatting types that are allowed are
+    // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
+    // for basics.
+    //
+    //Formatting types that are allowed are
     // Coordinate::SCIENTIFIC, Coordinate::FIXED, Coordinate::TIME
     // If you ask for format type Coordinate::DEFAULT then the
     // selected format depends upon what the value of the enum 
@@ -425,23 +428,14 @@ public:
     // get Coordinate::TIME style formatting (DD:MM:SS.SS), otherwise
     // you would get Coordinate::FIXED formatting by default.
     //
-    // axis says which axis in this Coordinate we are formatting.  
-    // We have to know this because we may format, say, RA and DEC differently.  
+    // <src>axis</src> says which axis in this Coordinate we are formatting.  
+    // We have to know this because we may format Longitude and Latitude differently.  
     // For Coordinate::TIME style formatting, precision
     // refers to the places after the decimal in the SS field.
-    //
-    // The world value should have the units currently
-    // set in the state of the DirectionCoordinate.  The units of
-    // the formatted number are returned in <src>units</src>.
-    // You can also use the Quantum interface (see base class Coordinate). 
-    // The units can then be anything consistent with DirectionCoordinate units.
-    //
-    // native only applies to FIXED and SCIENTIFIC formatting.  If true
-    // you get radians, else degrees.
     //<group>
     virtual void getPrecision (Int& precision, 
                                Coordinate::formatType& format,
-                               Bool absolute, 
+                               Bool showAsAbsolute, 
                                Int defPrecScientific,
                                Int defPrecFixed,
                                Int defPrecTime) const;
@@ -449,9 +443,9 @@ public:
                           Coordinate::formatType format, 
                           Double worldValue, 
                           uInt axis, 
-                          Bool absolute,
-                          Int precision=-1,
-                          Bool native=False);
+                          Bool isAbsolute,
+                          Bool showAsAbsolute,
+                          Int precision=-1);
     //</group>
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
@@ -530,13 +524,13 @@ private:
 
     // Format a latitude.
     String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
-                                                Bool absolute, Bool native,
+                                                Bool absolute, 
                                                 Coordinate::formatType form,
                                                 Int prec) const;
     // Format a longitude.
     String formatLongitude (String& units, MVAngle& mVA,
                             MDirection::GlobalTypes gtype,
-                            Bool absolute, Bool native,
+                            Bool absolute, 
                             Coordinate::formatType form,
                             Int prec) const;
 

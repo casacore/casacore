@@ -1697,9 +1697,9 @@ String CoordinateSystem::format(String& units,
                                 Coordinate::formatType format,
                                 Double worldValue,
                                 uInt worldAxis,
-                                Bool absolute,
-                                Int precision,
-                                Bool native) 
+                                Bool isAbsolute,
+                                Bool showAsAbsolute,
+                                Int precision)
 {
     AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
 // 
@@ -1707,7 +1707,7 @@ String CoordinateSystem::format(String& units,
     findWorldAxis(coord, axis, worldAxis);
     AlwaysAssert(coord>=0 && axis >= 0, AipsError);
     return coordinates_p[coord]->format(units, format, worldValue, axis, 
-                                        absolute, precision, native);
+                                        isAbsolute, showAsAbsolute, precision);
 }
 
 ObsInfo CoordinateSystem::obsInfo() const
@@ -3177,7 +3177,6 @@ void CoordinateSystem::getPCFromHeader(LogIO& os, Int& rotationAxis,
 
 void CoordinateSystem::list (LogIO& os,
                              MDoppler::Types velocityType,
-                             Bool nativeFormat, 
                              const IPosition& latticeShape,
                              const IPosition& tileShape) const
 //
@@ -3185,11 +3184,6 @@ void CoordinateSystem::list (LogIO& os,
 //
 // Input:
 //   velocityType  Speciy velocity definition
-//   nativeFormat  If True, reference values and axis increments
-//                 are formatted in their native format.  E.g.
-//                 RA and DEC in radians.  Otherwise, they are
-//                 possibly converted to some other unit and
-//                 formatted nicely (e.g. HH:MM:SS.S)
 //
 {
    os << LogIO::NORMAL << endl;
@@ -3241,7 +3235,7 @@ void CoordinateSystem::list (LogIO& os,
                    precRefValRADEC, precRefPixFloat,
                    precIncSci, nameAxis, nameCoord, nameName, nameProj, nameShape, 
                    nameTile, nameRefValue, nameRefPixel, nameInc, 
-                   nameUnits, nativeFormat, velocityType, latticeShape,
+                   nameUnits, velocityType, latticeShape,
                    tileShape);
 
 // Write headers
@@ -3308,7 +3302,7 @@ void CoordinateSystem::list (LogIO& os,
 
       listHeader(os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, widthTile, 
                  widthRefValue, widthRefPixel, widthInc, widthUnits,
-                 False, axisInCoordinate, pixelAxis, nativeFormat,
+                 False, axisInCoordinate, pixelAxis, 
                  precRefValSci, precRefValFloat, precRefValRADEC, 
                  precRefPixFloat, precIncSci, latticeShape, tileShape);
 
@@ -3352,7 +3346,7 @@ void CoordinateSystem::list (LogIO& os,
         listHeader(os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, 
                    widthTile, widthRefValue, widthRefPixel, 
                    widthInc, widthUnits, False, axisInCoordinate, 
-                   -1, nativeFormat, precRefValSci, precRefValFloat, 
+                   -1, precRefValSci, precRefValFloat, 
                    precRefValRADEC, precRefPixFloat, precIncSci, 
                    latticeShape, tileShape);
         delete pc;
@@ -3373,7 +3367,7 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCo
                                        String& nameCoord, String& nameName, String& nameProj,
                                        String& nameShape, String& nameTile, String& nameRefValue,
                                        String& nameRefPixel, String& nameInc, String& nameUnits,
-                                       Bool nativeFormat, MDoppler::Types velocityType,
+                                       MDoppler::Types velocityType,
                                        const IPosition& latticeShape, const IPosition& tileShape) const
 //
 // All these silly format and precision things should really be
@@ -3428,7 +3422,7 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCo
       listHeader (os, pc,  widthAxis, widthCoord, widthName, widthProj, widthShape, widthTile, 
                   widthRefValue, widthRefPixel, widthInc, widthUnits,
                   True, axisInCoordinate, pixelAxis,
-                  nativeFormat, precRefValSci, precRefValFloat,
+                  precRefValSci, precRefValFloat,
                   precRefValRADEC, precRefPixFloat, precIncSci, 
                   latticeShape, tileShape);
 //
@@ -3466,7 +3460,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
                                    uInt& widthName,  uInt& widthProj, uInt& widthShape, uInt& widthTile, 
                                    uInt& widthRefValue,  uInt& widthRefPixel, uInt& widthInc,  
                                    uInt& widthUnits,  Bool findWidths, Int axisInCoordinate,  
-                                   Int pixelAxis, Bool nativeFormat, Int precRefValSci, 
+                                   Int pixelAxis, Int precRefValSci, 
                                    Int precRefValFloat, Int precRefValRADEC, Int precRefPixFloat, 
                                    Int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const
 //
@@ -3477,7 +3471,6 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
 //     pc               Pointer to the coordinate
 //     axisIncoordinate The axis number in this coordinate 
 //     pixelAxis        The axis in the image for this axis in this coordinate
-//     nativeFormat     If true don't convert any units
 //           
 {
 
@@ -3584,15 +3577,8 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
 
 // Reference value
 
-   if (nativeFormat && pc->type() != Coordinate::STOKES) {
-      ostrstream oss;
-      oss.setf(ios::scientific, ios::floatfield);
-      oss.precision(precRefValSci);
-      oss << pc->referenceValue()(axisInCoordinate);
-      string = String(oss);
-   } else {
+   {
       Coordinate::formatType form;
-      Bool absolute = True;
       String listUnits;
       Int prec;
 //
@@ -3611,7 +3597,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
                String temp;
                if (ok) {
                   temp = pc->format(listUnits, form, world(0), 
-                                    axisInCoordinate, absolute, -1);
+                                    axisInCoordinate, True, True, -1);
                } else {
                   temp = "?";
                }
@@ -3622,7 +3608,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
             Bool ok = pc->toWorld(world, pixel);
             if (ok) {
                sName = pc->format(listUnits, form, world(0), 
-                                  axisInCoordinate, absolute, -1);
+                                  axisInCoordinate, True, True, -1);
             } else {
                sName = "?";
             }
@@ -3630,11 +3616,11 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
          string = sName;
       } else {
          form = Coordinate::DEFAULT;
-         pc->getPrecision(prec, form, absolute, precRefValSci, 
+         pc->getPrecision(prec, form, True, precRefValSci, 
                           precRefValFloat, precRefValRADEC);
          string = pc->format(listUnits, form, 
                             pc->referenceValue()(axisInCoordinate),
-                            axisInCoordinate, absolute, prec);
+                            axisInCoordinate, True, True, prec);
       }
    }
    if (findWidths) {
@@ -3670,25 +3656,14 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
    String incUnits;
    if (pc->type() != Coordinate::STOKES) {
       if (pixelAxis != -1) {
-         if (nativeFormat) {
-            ostrstream oss;
-            oss.setf(ios::scientific, ios::floatfield);
-            oss.precision(precIncSci);
-            oss << pc->increment()(axisInCoordinate);
-            string = String(oss);
-            incUnits = pc->worldAxisUnits()(axisInCoordinate);
-         } else {
-            Coordinate::formatType form;
-            const Bool absolute = False;
-            Int prec;
-
-            form = Coordinate::SCIENTIFIC;
-            pc->getPrecision(prec, form, absolute, precRefValSci, 
-                             precRefValFloat, precRefValRADEC);
-            string = pc->format(incUnits, form, 
-                                pc->increment()(axisInCoordinate),
-                                axisInCoordinate, absolute, prec);
-         }
+         Coordinate::formatType form;
+         Int prec;
+         form = Coordinate::SCIENTIFIC;
+         pc->getPrecision(prec, form, False, precRefValSci, 
+                          precRefValFloat, precRefValRADEC);
+         string = pc->format(incUnits, form, 
+                             pc->increment()(axisInCoordinate),
+                             axisInCoordinate, False, False, prec);
       } else {
          string = " ";
       }
@@ -3745,7 +3720,6 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
 
    if (!findWidths) clearFlags(os);
 
-
 // Axis number
 
    String string;
@@ -3755,7 +3729,6 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
       os << string;
    }
 
-
 // Coordinate type
 
    string = Coordinate::typeToString(pc->type());
@@ -3764,7 +3737,6 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
       string = " ";
       os << string;
    }
-
 
 // Axis name
 
@@ -3804,37 +3776,23 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
       }
    }
 
-
-// Caste the coordinate to a spectral coordinate and get a non-const version
-
-   SpectralCoordinate* sc0 = dynamic_cast<SpectralCoordinate*>(pc);
-   SpectralCoordinate sc(*sc0);
-
 // Remember units
 
    Vector<String> oldUnits(pc->nWorldAxes());
    oldUnits = pc->worldAxisUnits();
    Vector<String> units(pc->nWorldAxes());
 
-
 // Convert reference pixel it to a velocity and format 
 
-   Quantum<Double> velocity;
+   Coordinate::formatType form;
    String velUnits("km/s");
-   if (!sc.pixelToVelocity(velocity, sc.referencePixel()(axisInCoordinate),
-                           velUnits, velocityType)) {
-      string = "Fail";
-   } else {
-      Coordinate::formatType form;
-      Bool absolute = True;
-      String listUnits;
-      Int prec;
-      form = Coordinate::DEFAULT;
-      pc->getPrecision(prec, form, absolute, precRefValSci, 
-                       precRefValFloat, precRefValRADEC);
-      string = sc.format(listUnits, form, velocity.getValue(),
-                          axisInCoordinate, absolute, prec);
-   }
+   Int prec;
+   form = Coordinate::DEFAULT;
+   pc->getPrecision(prec, form, True, precRefValSci, 
+                    precRefValFloat, precRefValRADEC);
+   string = pc->format(velUnits, form, 
+                       pc->referenceValue()(axisInCoordinate),
+                       axisInCoordinate, True, True, prec);
    if (findWidths) {
       widthRefValue = max(widthRefValue,string.length());
    } else {
@@ -3842,14 +3800,13 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
       os << string;
    }
 
-
 // Reference pixel
 
    if (pixelAxis != -1) {
       ostrstream oss;
       oss.setf(ios::fixed, ios::floatfield);
       oss.precision(precRefPixFloat);
-      oss << sc.referencePixel()(axisInCoordinate) + 1.0;
+      oss << pc->referencePixel()(axisInCoordinate) + 1.0;
       string = String(oss);
    } else {
       string = " ";
@@ -3859,10 +3816,15 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
       os << string;
    }
   
-
 // Increment
 
    if (pixelAxis != -1) {
+
+// Caste the coordinate to a spectral coordinate and get a non-const version
+
+     SpectralCoordinate* sc0 = dynamic_cast<SpectralCoordinate*>(pc);
+     SpectralCoordinate sc(*sc0);
+
      Double velocityInc;
      if (!velocityIncrement(velocityInc, sc, velocityType, velUnits)) {
         string = "Fail";
@@ -4017,8 +3979,8 @@ void CoordinateSystem::listPointingCenter (LogIO& os) const
          Coordinate::formatType form(Coordinate::DEFAULT);
          coordinates_p[iC]->getPrecision(prec, form, True, 6, 6, 6);
          String listUnits;
-         String lon = coordinates_p[iC]->format(listUnits, form, world(0), 0, True, prec);
-         String lat  = coordinates_p[iC]->format(listUnits, form, world(1), 1, True, prec);
+         String lon = coordinates_p[iC]->format(listUnits, form, world(0), 0, True, True, prec);
+         String lat  = coordinates_p[iC]->format(listUnits, form, world(1), 1, True, True, prec);
 //
          ostrstream oss;
          oss << "Pointing center     :  " << lon << "  " << lat << ends;

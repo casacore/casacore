@@ -347,23 +347,25 @@ public:
     String preferredSpectralUnit () const {return prefSpecUnit_p;};
     // </group>
 
-    // Format a world value.  It must be in the native units of the SpectralCoordinate.
-    // If <src>units</src> is given, it must be consistent with Hz
-    // or m/s and the world value will be converted to those units.  
-    // If you give a unit consistent with m/s then the
+    // Format a SpectralCoordinate coordinate world value nicely through the
+    // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
+    // for basics.
+    //
+    // If <src>units</src> is given, it must be dimensionally consistent with Hz
+    // or m/s.   If you give a unit consistent with m/s then the
     // appropriate velocity definition is taken from that set by
     // function <src>setPreferredVelocityType</src>.
-    // If <src>units</src> is emoty, the units given by the
+    // If <src>units</src> is empty, the units given by the
     // units specified by <src>setPreferredSpectralUnits</src> is used.
-    // If those preferred units are empty, the native units are used.
-    // Argument <src>native</src> is ignored.
+    // If those preferred units are empty, the native units of  
+    // the SpectralCoordinate are used.
     virtual String format(String& units,
                           Coordinate::formatType format,
                           Double worldValue,  
                           uInt worldAxis,
-                          Bool absolute,
-                          Int precision=-1,
-                          Bool native=False);
+                          Bool isAbsolute=True,
+                          Bool showAsAbsolute=True,
+                          Int precision=-1);
     // </group>
 
     // Save the SpectralCoordinate into the supplied record using the supplied field name.

@@ -202,21 +202,21 @@ public:
 
     // Format a StokesCoordinate world value with the common format 
     // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
-    // for more details on this interface, particularly with regards to polymorphic use).  
+    // for basics.
     //
     // A StokesCoordinate is formatted differently from other Coordinate
     // types.  The world value is converted to the character representation
     // as defined by the enum <src>StokesTypes</src> in the class
     // <linkto class=Stokes>Stokes</linkto>.
     //
-    // Thus, all arguments to do with formatting and precision are ignored.
+    // Thus, all other arguments to do with formatting and precision are ignored.
     virtual String format(String& units,
                           Coordinate::formatType format,
                           Double worldValue,
                           uInt worldAxis,
-                          Bool absolute,
-                          Int precision = -1,
-                          Bool native=True);
+                          Bool isAbsolute=True,
+                          Bool showAsAbsolute=True,
+                          Int precision = -1);
 
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     

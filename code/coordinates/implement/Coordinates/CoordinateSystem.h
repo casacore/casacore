@@ -468,28 +468,26 @@ public:
                       Double tol=1e-6) const;
     // </group>
 
-    // Format a world value with the common format interface (refer to the base 
-    // class <linkto class=Coordinate>Coordinate</linkto> for more details on this 
-    // interface).   For the specified worldAxis, the coordinate
+    // Format a world value nicely through the
+    // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
+    // for basics.
+    //
+    // You specify a world value and its corresponding world axis in
+    // the CoordinateSystem.   
+    //
+    // For the specified worldAxis, the coordinate
     // number in the CoordinateSystem is found and the actual derived Coordinate
     // class object for that number is created.  The arguments to the formatting 
     // function are then passed on to the formatter for that Coordinate. So
     // refer to the other derived Coordinate classes for specifics on the
     // formatting.
-    //
-    // The world value should have the units currently
-    // set in the state of the particular Coordinate.  The units of
-    // the formatted number are returned in <src>units</src>.
-    // You can also use the Quantum interface (see base class Coordinate).
-    // The units can then be anything consistent with the particualr 
-    // Coordinate units.
     virtual String format(String& units,
                           Coordinate::formatType format,
                           Double worldValue,
                           uInt worldAxis,
-                          Bool absolute,
-                          Int precision=-1,
-                          Bool native=False);
+                          Bool isAbsolute=True,
+                          Bool showAsAbsolute=True,
+                          Int precision=-1);
 
     // Miscellaneous information related to an observation, for example the
     // observation date.
@@ -565,8 +563,7 @@ public:
 
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
-// formatting (e.g. RA is  shown as HH:MM:SS.S).  If <src>nativeFormat</src> 
-// is <src>True</src> then the values are formatted in their native format.
+// formatting (e.g. RA is  shown as HH:MM:SS.S).  
 // For spectral axes, both frequency and velocity information is listed. You
 // can specify what velocity definition you want with <src>velocityType</src>
 // If you wish, you can specify two shapes; a lattice and tile shape
@@ -575,7 +572,7 @@ public:
 // in zero length <src>IPositions</src> then they are not included in
 // the listing.  T
    void list(LogIO& os, MDoppler::Types velocityType,
-             Bool nativeFormat, const IPosition& latticeShape,
+             const IPosition& latticeShape,
              const IPosition& tileShape) const;
 
 private:
@@ -674,14 +671,14 @@ private:
                          String& nameShape, String& nameTile,
                          String& nameRefValue, String& nameRefPixel,
                          String& nameInc, String& nameUnits,
-                         Bool nativeFormat, MDoppler::Types velocityType,
+                         MDoppler::Types velocityType,
                          const IPosition& latticeShape, const IPosition& tileShape) const;
 
     void listHeader (LogIO& os, Coordinate* pc, uInt& widthAxis, uInt& widthCoord, 
                      uInt& widthName, uInt& widthProj,
                      uInt& widthShape, uInt& widthTile, uInt& widthRefValue,
                      uInt& widthRefPixel, uInt& widthInc, uInt& widthUnits,     
-                     Bool findWidths, Int axisInCoordinate, Int pixelAxis, Bool nativeFormat,
+                     Bool findWidths, Int axisInCoordinate, Int pixelAxis, 
                      Int precRefValSci, Int precRefValFloat, Int precRefValRADEC, Int precRefPixFloat,
                      Int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const;
     void listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis, uInt& widthCoord, 
