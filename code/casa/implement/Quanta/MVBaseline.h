@@ -1,5 +1,5 @@
 //# MVBaseline.h: A 3D vector on Earth
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -231,6 +231,8 @@ public:
   // <group>
   virtual Vector<Quantum<Double> > getRecordValue() const;
   virtual Vector<Quantum<Double> > getXRecordValue() const;
+  virtual Vector<Quantum<Double> > getTMRecordValue() const {
+    return getXRecordValue(); } ;
   // </group>
   // Set the internal value if correct values and dimensions
   virtual Bool putValue(const Vector<Quantum<Double> > &in);

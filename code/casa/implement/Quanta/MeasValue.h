@@ -172,10 +172,13 @@ public:
 
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
+  // The getTMRecordValue() gets the record values as deemed appropriate for 
+  // the TableMeasures.
   // Note that the Vectors could be empty.
   // <group>
   virtual Vector<Quantum<Double> > getRecordValue() const = 0;
   virtual Vector<Quantum<Double> > getXRecordValue() const;
+  virtual Vector<Quantum<Double> > getTMRecordValue() const;
   // </group>
   // Set the internal value from a Vector of values (obtained in principle
   // with a getVector()). It will be assumed that the Vector is correctly 
