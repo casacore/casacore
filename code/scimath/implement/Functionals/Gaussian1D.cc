@@ -39,3 +39,24 @@ T NQGaussian1D<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
 }
 
 //# Member functions
+template<class T>
+Function<typename FunctionTraits<T>::DiffType>
+*NQGaussian1D<T>::cloneAD() const {
+  Function<typename FunctionTraits<T>::DiffType> *t =
+    new NQGaussian1D<typename FunctionTraits<T>::DiffType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]);
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<T>::BaseType>
+*NQGaussian1D<T>::cloneBase() const {
+  Function<typename FunctionTraits<T>::BaseType> *t =
+    new NQGaussian1D<typename FunctionTraits<T>::BaseType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]).value();
+  };
+  return t;
+}

@@ -166,10 +166,16 @@ template<class T> class NQGaussian1D : public NQGaussian1DParam<T> {
 
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible 
-  // for deleting this pointer.
+  // for deleting this pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <group>
   virtual Function<T> *clone() const { return new NQGaussian1D<T>(*this); };
-
-private:
+  virtual Function<typename FunctionTraits<T>::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<T>::BaseType>
+    *cloneBase() const;
+  // </group>
 
 };
 
@@ -219,9 +225,17 @@ public NQGaussian1DParam<AutoDiff<T> > {
 
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible 
-  // for deleting this pointer.
+  // for deleting this pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new NQGaussian1D<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneBase() const;
+  // </group>
 
 };
 
