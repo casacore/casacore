@@ -36,8 +36,19 @@
 #include <trial/SpectralComponents/SpectralElement.h>
 
 //# Templated member functions
+
 template <class MT>
 Bool SpectralFit::fit(const Vector<MT> &y,
+		      const Vector<MT> &x,
+		      const Vector<Bool> *const mask) {
+  Vector<MT> sigma(x.nelements());
+  sigma = 1.0;
+  return fit(sigma, y, x, mask);
+}
+
+template <class MT>
+Bool SpectralFit::fit(const Vector<MT> &sigma,
+                      const Vector<MT> &y,
 		      const Vector<MT> &x,
 		      const Vector<Bool> *const mask) {
   // The fitter
@@ -77,8 +88,6 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   // Fit
   Vector<MT> sol;
   Vector<MT> err;
-  Vector<MT> sigma(x.nelements());
-  sigma = 1.0;
   sol = fitter.fit(x, y, sigma, mask);
   err = fitter.errors();
   // Number of iterations
@@ -110,3 +119,12 @@ template Bool SpectralFit::fit<Double>(Vector<Double> const &,
 template Bool SpectralFit::fit<Float>(Vector<Float> const &,
 			       Vector<Float> const &,
 			       Vector<Bool> const *);
+template Bool SpectralFit::fit<Double>(Vector<Double> const &,
+			       Vector<Double> const &,
+			       Vector<Double> const &,
+			       Vector<Bool> const *);
+template Bool SpectralFit::fit<Float>(Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Bool> const *);
+

@@ -124,6 +124,22 @@ class SpectralFit {
     return fit(y, x, &mask); }
   // </group>
 
+  // Fit the elements as given by the specified spectral elements
+  // at the frequencies x with values y and weights sigma.
+  // The mask (if specified) means: use point if True.
+  // <group>
+  template <class MT>
+    Bool fit(const Vector<MT> &sigma,
+             const Vector<MT> &y,
+	     const Vector<MT> &x) {
+    return fit(w, y, x, static_cast<const Vector<Bool> *const>(0)); }
+  template <class MT> 
+    Bool fit(const Vector<MT> &sigma,
+             const Vector<MT> &y,
+	     const Vector<MT> &x, const Vector<Bool> &mask) {
+    return fit(w, y, x, &mask); }
+  // </group>
+
   // Get the number of iterations last fit
   uInt nIterations() { return iter_p; }
 
@@ -139,6 +155,11 @@ class SpectralFit {
   // <group>
   template <class MT>
     Bool fit(const Vector<MT> &y,
+	     const Vector<MT> &x,
+	     const Vector<Bool> *const mask);
+  template <class MT>
+    Bool fit(const Vector<MT> &sigma,
+             const Vector<MT> &y,
 	     const Vector<MT> &x,
 	     const Vector<Bool> *const mask);
   // </group>
