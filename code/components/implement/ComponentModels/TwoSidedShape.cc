@@ -423,36 +423,6 @@ TwoSidedShape::TwoSidedShape(const TwoSidedShape& other)
   DebugAssert(ok(), AipsError);
 }
 
-void TwoSidedShape::majorAxisUnit(const Unit& majorAxisUnit) {
-  DebugAssert(majorAxisUnit == Unit("rad"), AipsError);
-  itsMajUnit = majorAxisUnit;
-  DebugAssert(ok(), AipsError);
-}
-
-const Unit& TwoSidedShape::majorAxisUnit() {
-  return itsMajUnit;
-}
-
-void TwoSidedShape::minorAxisUnit(const Unit& minorAxisUnit) {
-  DebugAssert(minorAxisUnit == Unit("rad"), AipsError);
-  itsMinUnit = minorAxisUnit;
-  DebugAssert(ok(), AipsError);
-}
-
-const Unit& TwoSidedShape::minorAxisUnit() {
-  return itsMinUnit;
-}
-
-void TwoSidedShape::paUnit(const Unit& paUnit) {
-  DebugAssert(paUnit == Unit("rad"), AipsError);
-  itsPaUnit = paUnit;
-  DebugAssert(ok(), AipsError);
-}
-
-const Unit& TwoSidedShape::paUnit() {
-  return itsPaUnit;
-}
-
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 TwoSidedShape"
 // End: 

@@ -298,20 +298,6 @@ protected:
   TwoSidedShape& operator=(const TwoSidedShape& other);
   // </group>
 
-  //# Set the units for the major axis, minor axis and position angle.
-  // <group>
-  void majorAxisUnit(const Unit& majorAxisUnit);
-  void minorAxisUnit(const Unit& minorAxisUnit);
-  void paUnit(const Unit& paUnit);
-  // </group>
-
-  //# Get the current units for the major axis, minor axis or position angle.
-  // <group>
-  const Unit& majorAxisUnit();
-  const Unit& minorAxisUnit();
-  const Unit& paUnit();
-  // </group>
-
 private:
   Unit itsMajUnit;
   Unit itsMinUnit;
