@@ -127,7 +127,7 @@ PGPLOTROOT := /usr
 C++ROOT := /usr/local/gcc
 
 # Preprocessor flags for system debug/optimized compilations.
-CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_STDLIB -DAIPS_NO_LEA_MALLOC
+CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_STDLIB -DAIPS_NO_LEA_MALLOC  -D_GLIBCPP_DEPRECATED
 
 # C compiler flags for system debug/optimized compilations.
 CC      := $(C++ROOT)/bin/gcc
@@ -135,8 +135,9 @@ CSTD    += -DHAVE_LINUX_GLIBC -Wall
 COPTLVL := -O2 -fno-strength-reduce
 
 # C++ compiler flags for system debug/optimized compilations.
-C++       := $(C++ROOT)/bin/g++
-C++STD    += -pipe -fno-implicit-templates -Wall -Wno-non-template-friend -Woverloaded-virtual -Wmissing-prototypes -Wcast-align
+C++       := $(C++ROOT)/bin/g++ -Wno-deprecated
+C++STD    += -pipe -fno-implicit-templates -Wall -Wno-non-template-friend -Woverloaded-virtual -Wmissing-prototypes -Wcast-align -Wno-comment -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+
 
 # FORTRAN compiler - using gcc (g77)
 F77ROOT  := $(C++ROOT)
