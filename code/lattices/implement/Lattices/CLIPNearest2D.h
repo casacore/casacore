@@ -91,7 +91,14 @@ public:
 			const Vector<Float>& y,
 			const Slicer& section);
 
-private:
+  //# Make members of parent class known.
+protected:
+  using CLInterpolator2D<T>::itsAxesMap;
+  using CLInterpolator2D<T>::itsAxis1;
+  using CLInterpolator2D<T>::itsAxis2;
+  using CLInterpolator2D<T>::itsCurveAxis;
+  using CLInterpolator2D<T>::itsIsRef;
+  using CLInterpolator2D<T>::itsLatticePtr;
 };
 
 

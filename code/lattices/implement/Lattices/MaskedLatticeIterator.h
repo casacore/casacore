@@ -112,6 +112,13 @@
 
 template<class T> class RO_MaskedLatticeIterator: public RO_LatticeIterator<T>
 {
+  //# Make members of parent class known.
+public:
+  using RO_LatticeIterator<T>::isNull;
+  using RO_LatticeIterator<T>::position;
+  using RO_LatticeIterator<T>::endPosition;
+  using RO_LatticeIterator<T>::cursorShape;
+
 public:
   // The default constructor creates an empty object which is practically
   // unusable.

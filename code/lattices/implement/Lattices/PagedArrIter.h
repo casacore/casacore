@@ -90,6 +90,11 @@ template <class T> class PagedArrIter : public LatticeIterInterface<T>
 {
 friend class PagedArray<T>;
 
+  //# Make members of parent class known.
+protected:
+  using LatticeIterInterface<T>::rewriteData;
+  using LatticeIterInterface<T>::itsNavPtr;
+
 protected:
   // Construct the Iterator with the supplied data, and iteration strategy
   PagedArrIter (const PagedArray<T>& data, const LatticeNavigator& method,

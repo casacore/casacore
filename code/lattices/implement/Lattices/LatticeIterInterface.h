@@ -33,9 +33,9 @@
 #include <casa/aips.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Array.h>
+#include <lattices/Lattices/LatticeNavigator.h>
 
 //# Forward Declarations
-class LatticeNavigator;
 template <class T> class Vector;
 template <class T> class Matrix;
 template <class T> class Cube;

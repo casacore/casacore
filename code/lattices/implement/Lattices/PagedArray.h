@@ -369,6 +369,10 @@
 
 template <class T> class PagedArray : public Lattice<T>
 {
+  //# Make members of parent class known.
+public:
+  using Lattice<T>::ndim;
+
 public: 
   // The default constructor creates a PagedArray that is useless for just
   // about everything, except that it can be assigned to with the assignment

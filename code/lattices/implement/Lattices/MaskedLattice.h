@@ -213,6 +213,11 @@ class LatticeRegion;
 
 template <class T> class MaskedLattice : public Lattice<T>
 {
+  //# Make members of parent class known.
+public:
+  using Lattice<T>::ndim;
+  using Lattice<T>::shape;
+
 public: 
   // Default constructor.
   MaskedLattice()

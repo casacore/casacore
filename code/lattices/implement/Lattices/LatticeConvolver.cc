@@ -49,7 +49,7 @@ LatticeConvolver()
    itsPsf(0),
    itsCachedPsf(False)
 {
-  itsXfr->set(NumericTraits<T>::ConjugateType(1));
+  itsXfr->set(typename NumericTraits<T>::ConjugateType(1));
   doFast_p=False;
 } 
 

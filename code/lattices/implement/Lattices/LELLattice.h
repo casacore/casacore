@@ -91,8 +91,13 @@ template <class T> class MaskedLattice;
 
 template <class T> class LELLattice : public LELInterface<T>
 {
+  //# Make members of parent class known.
+public:
+  using LELInterface<T>::getAttribute;
+protected:
+  using LELInterface<T>::setAttr;
+
 public: 
-   
 // Constructor takes lattice to fetch from it
 // <group>
    LELLattice (const Lattice<T>& lattice);  

@@ -97,8 +97,11 @@
 
 template <class T> class LELBinary : public LELInterface<T>
 {
+  //# Make members of parent class known.
+protected:
+  using LELInterface<T>::setAttr;
+
 public: 
-   
 // Constructor takes operation and left and right expressions
 // to be operated upon
    LELBinary(const LELBinaryEnums::Operation op, 

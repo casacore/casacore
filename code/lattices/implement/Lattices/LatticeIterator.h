@@ -504,6 +504,15 @@ public:
   // Function which checks the internals of the class for consistency.
   // Returns True if everything is fine. Otherwise returns False.
   Bool ok() const;
+
+  //# Make members of parent class known.
+public:
+  using LatticeIterator<T>::isNull;
+  using LatticeIterator<T>::position;
+  using LatticeIterator<T>::endPosition;
+  using LatticeIterator<T>::cursorShape;
+protected:
+  using LatticeIterator<T>::itsIterPtr;
 };
 
 

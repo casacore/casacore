@@ -92,6 +92,10 @@
 
 template <class T> class LELUnaryConst : public LELInterface<T>
 {
+  //# Make members of parent class known.
+protected:
+  using LELInterface<T>::setAttr;
+
 public: 
 // Default constructor creates a scalar with a false mask.
    LELUnaryConst();

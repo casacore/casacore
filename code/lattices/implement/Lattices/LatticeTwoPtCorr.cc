@@ -109,7 +109,7 @@ typename LatticeTwoPtCorr<T>::Method LatticeTwoPtCorr<T>::fromString (const Stri
 {
    String method = methodU;
    method.upcase();
-   LatticeTwoPtCorr<T>::Method m = LatticeTwoPtCorr<T>::UNDEFINED;
+   typename LatticeTwoPtCorr<T>::Method m = LatticeTwoPtCorr<T>::UNDEFINED;
 //
    if (method.contains("STR")) {
      m = LatticeTwoPtCorr<T>::STRUCTUREFUNCTION;

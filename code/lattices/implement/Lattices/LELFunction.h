@@ -99,8 +99,11 @@
 
 template <class T> class LELFunction1D : public LELInterface<T>
 {
+  //# Make members of parent class known.
+protected:
+  using LELInterface<T>::setAttr;
+
 public: 
-   
 // Constructor takes operation and expression to be operated upon
    LELFunction1D(const LELFunctionEnums::Function function,
 		 const CountedPtr<LELInterface<T> >& expr);
@@ -197,8 +200,11 @@ private:
 
 template <class T> class LELFunctionReal1D : public LELInterface<T>
 {
+  //# Make members of parent class known.
+protected:
+  using LELInterface<T>::setAttr;
+
 public: 
-   
 // Constructor takes operation and expression to be operated upon
    LELFunctionReal1D(const LELFunctionEnums::Function function,
 		     const CountedPtr<LELInterface<T> >& expr);
@@ -298,8 +304,11 @@ private:
 
 template<class T> class LELFunctionND : public LELInterface<T>
 {
+  //# Make members of parent class known.
+protected:
+  using LELInterface<T>::setAttr;
+
 public: 
-   
 // Constructor takes operation and expressions to be operated upon
    LELFunctionND(const LELFunctionEnums::Function function,
 		 const Block<LatticeExprNode>& expr);

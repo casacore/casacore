@@ -68,8 +68,11 @@
 
 template<class T> class LELSpectralIndex : public LELInterface<T>
 {
+  //# Make members of parent class known.
+protected:
+  using LELInterface<T>::setAttr;
+
 public: 
-   
   // Constructor takes operation and expressions to be operated upon
   LELSpectralIndex (const Block<LatticeExprNode>& expr);
 

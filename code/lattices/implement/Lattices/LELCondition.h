@@ -86,6 +86,10 @@
 
 template <class T> class LELCondition : public LELInterface<T>
 {
+  //# Make members of parent class known.
+protected:
+  using LELInterface<T>::setAttr;
+
 public: 
 // Construct the condition on the given expression.
    LELCondition (const CountedPtr<LELInterface<T> >& expr,

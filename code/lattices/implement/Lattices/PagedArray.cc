@@ -439,7 +439,8 @@ void PagedArray<T>::makeArray (const TiledShape& shape)
 					     ndim));
     description.defineHypercolumn(itsColumnName, ndim, 
 				  stringToVector(itsColumnName));
-    itsTable.addColumn(description, TiledCellStMan(itsColumnName, tileShape));
+    TiledCellStMan stman(itsColumnName, tileShape);
+    itsTable.addColumn(description, stman);
   }
 
   // Attach the default constructed ArrayColumn to the Table

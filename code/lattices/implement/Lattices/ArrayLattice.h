@@ -142,6 +142,10 @@
 
 template <class T> class ArrayLattice : public Lattice<T>
 {
+  //# Make members of parent class known.
+public:
+  using Lattice<T>::ndim;
+
 public: 
   // The default constructor creates a ArrayLattice that is useless for just
   // about everything, except that it can be assigned to with the assignment
