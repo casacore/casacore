@@ -139,7 +139,7 @@ public:
 
 private:
   T refData; 
-  IPosition origin, slice;
+  IPosition shape;
   uInt lastAxis;
   uInt nElements;
 };

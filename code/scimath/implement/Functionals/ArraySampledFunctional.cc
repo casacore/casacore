@@ -30,7 +30,6 @@
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional()
   :refData(),
-   origin(),
    slice(),
    lastAxis(0),
    nElements(0){
@@ -39,7 +38,6 @@ ArraySampledFunctional()
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional(const T & data) 
   :refData(data),
-   origin(data.origin()),
    slice(data.end()),
    lastAxis(0),
    nElements(0)
@@ -54,7 +52,6 @@ ArraySampledFunctional(const T & data)
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional(ArraySampledFunctional<T> & other)
   :refData(other.refData),
-   origin(other.origin),
    slice(other.slice),
    lastAxis(other.lastAxis),
    nElements(other.nElements){
@@ -64,7 +61,6 @@ template<class T> ArraySampledFunctional<T> & ArraySampledFunctional<T>::
 operator=(ArraySampledFunctional<T> &other){
   if (this != &other){
     refData.reference(other.refData);
-    origin = other.origin;
     slice = other.slice;
     lastAxis = other.lastAxis;
     nElements = other.nElements; 
@@ -74,8 +70,10 @@ operator=(ArraySampledFunctional<T> &other){
 
 template<class T> T ArraySampledFunctional<T>::
 operator()(const uInt &index) const {
-  IPosition blc(origin); blc(lastAxis) += index;
-  IPosition trc(slice); trc(lastAxis) += index;
+  IPosition blc(slice.nelements(), 0);
+  blc(lastAxis) = index;
+  IPosition trc(slice);
+  trc(lastAxis) += index;
   // Because refData is const I cannot use the operator() function as this
   // returns a reference. The way around this is to create a non const
   // pointer to the array, call the operator() function and then create a
