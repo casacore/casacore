@@ -1,5 +1,5 @@
 //# tTiledCellStM_1.cc: Test program for performance of TiledCellStMan class
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ main (int argc, char** argv)
     // Get the command line arguments as cube shape, tile shape.
     if (argc < 4) {
 	cout << ">>>" << endl;
-	cout << "tTiledCellStM_1 uses TiledCellStMan to store nD Complex "
+	cout << "tTiledCellStM_1 uses TiledCellStMan to store nD Float "
 	        "arrays in one cell." << endl;
 	cout << "It writes the data, reads the cell back, and iterates "
 	        "along tiles." << endl;
@@ -136,7 +136,7 @@ void makeCube (char** argv)
 	
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
-    td.addColumn (ArrayColumnDesc<Complex> ("Data", cubeShape,
+    td.addColumn (ArrayColumnDesc<Float> ("Data", cubeShape,
 					  ColumnDesc::FixedShape));
     td.defineHypercolumn ("TSMExample",
 			  nrdim,
@@ -148,8 +148,8 @@ void makeCube (char** argv)
     TiledCellStMan sm1 ("TSMExample", tileShape, maxCacheSize);
     newtab.bindAll (sm1);
     Table table(newtab, 1);
-    ArrayColumn<Complex> data (table, "Data");
-    Array<Complex> array(cubeShape);
+    ArrayColumn<Float> data (table, "Data");
+    Array<Float> array(cubeShape);
     Timer timer;
     indgen (array);
     timer.show ("indgen   ");
@@ -169,20 +169,26 @@ void getCube (Bool ask)
 {
     IPosition cubeShape;
     IPosition tileShape;
+    double sizeMb = sizeof(Float);
+    double realtime;
     uInt i, nrdim;
     Timer timer;
     {
 	Table table("tTiledCellStM_1_tmp.data");
 	timer.show ("reopen   ");
 	ROTiledStManAccessor accessor(table, "TSMExample");
-	ROArrayColumn<Complex> data (table, "Data");
+	ROArrayColumn<Float> data (table, "Data");
 	cubeShape = data.shape (0);
+	sizeMb *= cubeShape.product();
+	sizeMb /= 1024*1024;
 	tileShape = accessor.tileShape (0);
 	nrdim = cubeShape.nelements();
-	Array<Complex> result;
+	Array<Float> result;
 	timer.mark();
 	data.get (0, result);
+	realtime = timer.real();
 	timer.show ("get cell ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -190,8 +196,8 @@ void getCube (Bool ask)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, tileShape, IPosition());
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	IPosition last(nrdim);
@@ -209,7 +215,7 @@ void getCube (Bool ask)
         IPosition stepnr(start);
 	IPosition length(tileShape);
 	while (True) {
-	    Array<Complex> arr = data.getSlice (0, Slicer (start, length));
+	    Array<Float> arr = data.getSlice (0, Slicer (start, length));
 	    nr++;
 	    for (i=0; i<nrdim; i++) {
 		start(i) += tileShape(i);
@@ -231,7 +237,9 @@ void getCube (Bool ask)
 	}
 	cout << "array x,y,z along tiles" << " (" << nr << " passes  "
 	     << nrsteps << ")" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -249,7 +257,7 @@ void getCube (Bool ask)
     Table table("tTiledCellStM_1_tmp.data");
     ROTiledStManAccessor accessor(table, "TSMExample");
     while (True) {
-	IPosition slice = getVec (nrdim, "slice shape (end means stop):  ");
+	IPosition slice = getVec (nrdim, "slice shape (end means stop): ");
 	if (slice.nelements() == 0) {
 	    break;
 	}
@@ -296,25 +304,30 @@ IPosition getVec (uInt nrdim, const String& prompt)
 
 void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 {
+    double sizeMb = sizeof(Float) * cubeShape.product();
+    sizeMb /= 1024*1024;
+    double realtime;
     Timer timer;
     if (cubeShape(2) > 1) {
 	IPosition length (3, 1, 1, cubeShape(2));
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(2,2,1));
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt i=0; i<cubeShape(0); i++) {
 	    for (uInt j=0; j<cubeShape(1); j++) {
-		Array<Complex> arr = data.getSlice
+		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,i,j,0), length));
 		nr++;
 	    }
 	}
 	cout << "arraySlice z along y,x" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -323,19 +336,21 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(1,2));
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt j=0; j<cubeShape(1); j++) {
 	    for (uInt i=0; i<cubeShape(0); i++) {
-		Array<Complex> arr = data.getSlice
+		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,i,j,0), length));
 		nr++;
 	    }
 	}
 	cout << "arraySlice z along x,y" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -344,19 +359,21 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(3,1,2,0));
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt i=0; i<cubeShape(0); i++) {
 	    for (uInt j=0; j<cubeShape(2); j++) {
-		Array<Complex> arr = data.getSlice
+		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,i,0,j), length));
 		nr++;
 	    }
 	}
 	cout << "arraySlice y along z,x" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -365,19 +382,21 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(1,1));
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt j=0; j<cubeShape(2); j++) {
 	    for (uInt i=0; i<cubeShape(0); i++) {
-		Array<Complex> arr = data.getSlice
+		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,i,0,j), length));
 		nr++;
 	    }
 	}
 	cout << "arraySlice y along x,z" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -386,19 +405,21 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(2,0,2));
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt i=0; i<cubeShape(1); i++) {
 	    for (uInt j=0; j<cubeShape(2); j++) {
-		Array<Complex> arr = data.getSlice
+		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,0,i,j), length));
 		nr++;
 	    }
 	}
 	cout << "arraySlice x along z,y" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -407,19 +428,21 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition());
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt j=0; j<cubeShape(2); j++) {
 	    for (uInt i=0; i<cubeShape(1); i++) {
-		Array<Complex> arr = data.getSlice
+		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,0,i,j), length));
 		nr++;
 	    }
 	}
 	cout << "arraySlice x along y,z" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -428,17 +451,19 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition());
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt j=0; j<cubeShape(2); j++) {
-	    Array<Complex> arr = data.getSlice
+	    Array<Float> arr = data.getSlice
 		                 (0, Slicer (IPosition(3,0,0,j), length));
 	    nr++;
 	}
 	cout << "arrayPlane x,y along z" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -447,17 +472,19 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(3,0,2,1));
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt j=0; j<cubeShape(1); j++) {
-	    Array<Complex> arr = data.getSlice
+	    Array<Float> arr = data.getSlice
 		                 (0, Slicer (IPosition(3,0,j,0), length));
 	    nr++;
 	}
 	cout << "arrayPlane x,z along y" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -466,17 +493,19 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(3,1,2,0));
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	for (uInt j=0; j<cubeShape(0); j++) {
-	    Array<Complex> arr = data.getSlice
+	    Array<Float> arr = data.getSlice
 		                 (0, Slicer (IPosition(3,j,0,0), length));
 	    nr++;
 	}
 	cout << "arrayPlane y,z along x" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
@@ -485,8 +514,8 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	IPosition length (3, cubeShape(0), cubeShape(1), tileShape(2));
 	accessor.setCacheSize (0, length, IPosition());
-	ROArrayColumn<Complex> data (table, "Data");
-	Array<Complex> result;
+	ROArrayColumn<Float> data (table, "Data");
+	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
 	uInt last = cubeShape(2) % tileShape(2);
@@ -496,12 +525,14 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	    if (k==nrk) {
 		length(2) = last;
 	    }
-	    Array<Complex> arr = data.getSlice
+	    Array<Float> arr = data.getSlice
 		(0, Slicer (IPosition(3, 0, 0, k*tileShape(2)), length));
 	    nr++;
 	}
 	cout << "array x,y,z along z-tiles" << " (" << nr << " passes)" << endl;
+	realtime = timer.real();
 	timer.show ("get      ");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
