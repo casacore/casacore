@@ -1,5 +1,5 @@
 //# Regex.cc: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996,1997,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/IO/AipsIO.h>
 #include <iostream.h>
+#include <stdlib.h>
 
 
 Regex::Regex ()

@@ -36,6 +36,7 @@
 #include <unistd.h>                 // needed for pathconf
 #include <limits.h>                 // needed for PATH_MAX, etc.
 #include <ctype.h>                  // needed for isprint
+#include <stdlib.h>                 // needed for getenv
 
 
 // The maximum number of bytes in a pathname is 255 (_POSIX_PATH_MAX)
