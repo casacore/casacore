@@ -188,17 +188,6 @@ public:
     // Test if internal state is correct.
     Bool ok() const;
 
-    // Cast a derived class to this base class.
-    // This is needed for g++ to use TableVector as a ROTableVector
-    // in global functions.
-    // <group>
-    ROTableVector<T>& ac()
-	{ return *this; }
-    const ROTableVector<T>& ac() const
-	{ return *this; }
-    // </group>
-
-
 protected:
     TabVecRep<T>* tabVecPtr_p;
 
