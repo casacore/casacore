@@ -430,7 +430,7 @@ sub make_tex_file{
    
      $hasArgs = 0;
      $dtext = ".*[\s]*.*";
-     while(/\\ahaddarg{($dtext)}\s*{($dtext)}\s*{($dtext)}\s*{($dtext)}/g){
+     while(/\\ahaddarg{($dtext)}\s*{($dtext)}\s*{($dtext)}\s*{($dtext)}/mg){
        $args .= ($1.", ");
        $hasArgs = 1;
        if($opt_glish == 1 && length $argroot){
@@ -491,7 +491,7 @@ sub make_tex_file{
    /sg;
       } else {
          s/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/
-   \\subsection{$1 - Function\\label{$miname:$iname.function}\\index{$1}\\index{$mname.$1}}
+   \\subsection{$1 - Function\\label{$miname:$iname.function}\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    \\subsectionF{$1}{$pack}{$mname}
    $2\\\\
    \\ahsynopsis{$1}
@@ -628,12 +628,26 @@ sub make_tex_file{
      s/\\ahkeyword{($mtext)}\s*{($mtext)}/\\index{$1}\\index{$mname.$1}/g;
      s/\\ahkeyword{($mtext)}\s*{}/\\index{$1}\\index{$mname:$1}/g;
      s/\\ahkeyword{($mtext)}/\\index{$1}\\index{$mname:$1}/g;
-     if(/\\ahlink{($mtext)}\s*{($mtext)}/){
+     while(/\\ahlink{($mtext)}\s*{($mtext)}/){
         $thelabel = $2;
-        if(($thelabel =~ m/function$/g) || ($thelabel =~ m/constructor$/g)){
-           s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/g;
+        if(($thelabel =~ m/function$/) || ($thelabel =~ m/constructor$/)){
+           s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/;
         } else {
-           s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2.function}/g;
+           if( $thelabel =~ m/[:\.]/){
+              @lfields = split(/[:\.]/, $thelabel);
+              $nfields = @lfields;
+              if($nfields > 2){
+                 if( $lfields[$nfields-2] eq $lfields[$nfields-1] ){
+                    s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2.constructor}/;
+                 } else {
+                    s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2.function}/;
+                 }
+              } else {
+                 s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/;
+              }
+           } else {
+              s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/;
+           }
         }
      }
      s/\\end{ahcomments}//g;
