@@ -1,5 +1,5 @@
 //# BaseMappedArrayEngine.cc: Abstract virtual column engine for source->target mapping
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,2001
 //# Associated Universitie Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -83,7 +83,7 @@ BaseMappedArrayEngine<SourceType, TargetType>::~BaseMappedArrayEngine()
 // The initialization order of the columns is undetermined, which means
 // that this function isWritable can be called before the column has been
 // initialized.
-// For example, suppose column A uses column B and A get initialized
+// For example, suppose column A uses column B and A gets initialized
 // before B. Then A will call B's isWritable(), while B has not been
 // initialized yet.
 // This all means that isWritable must take care of the case
@@ -151,9 +151,6 @@ void BaseMappedArrayEngine<SourceType, TargetType>::prepare()
     //# Allocate an object to get from the target column.
     //# Allocate one to put if the column is writable.
     roColumn_p = new ROArrayColumn<TargetType> (table(), targetName_p);
-    if (roColumn_p == 0) {
-	throw (AllocError ("BaseMappedArrayEngine::prepare", 1));
-    }
     //# It is not permitted to have a FixedShape target and non-FixedShape
     //# source column.
     if ((! arrayIsFixed_p)  &&
@@ -165,9 +162,6 @@ void BaseMappedArrayEngine<SourceType, TargetType>::prepare()
     }
     if (isWritable()) {
 	column_p = new ArrayColumn<TargetType> (table(), targetName_p);
-	if (column_p == 0) {
-	    throw (AllocError ("BaseMappedArrayEngine::create", 1));
-	}
     }
     //# Add the initial number of rows (thus only done after create).
     //# This will set the shape of the target arrays when needed.
@@ -184,9 +178,6 @@ void BaseMappedArrayEngine<SourceType, TargetType>::reopenRW()
     if (column_p == 0) {
 	if (isWritable()) {
 	    column_p = new ArrayColumn<TargetType> (table(), targetName_p);
-	    if (column_p == 0) {
-		throw (AllocError ("BaseMappedArrayEngine::reopenRW", 1));
-	    }
 	}
     }
 }
@@ -254,4 +245,10 @@ template<class SourceType, class TargetType>
 IPosition BaseMappedArrayEngine<SourceType, TargetType>::shape (uInt rownr)
 {
     return roColumn_p->shape (rownr);
+}
+
+template<class SourceType, class TargetType>
+Bool BaseMappedArrayEngine<SourceType, TargetType>::canChangeShape() const
+{
+    return (roColumn_p == 0  ?  False : roColumn_p->canChangeShape());
 }

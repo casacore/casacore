@@ -1,5 +1,5 @@
 //# BaseMappedArrayEngine.h: Abstract virtual column engine for source->target mapping
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -364,6 +364,10 @@ protected:
     // This implementation assumes the shape of source and target arrays
     // are the same. If not, it has to be overidden in a derived class.
     virtual IPosition shape (uInt rownr);
+
+    // The data manager can handle changing the shape of an existing array
+    // when the underlying target column can do it.
+    virtual Bool canChangeShape() const;
 
     // Make a table column object for the given column.
     // This has to be used in the create function, otherwise it could not
