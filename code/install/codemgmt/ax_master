@@ -2181,3 +2181,4 @@
 09 025 sys rm bin/map
 09 025 sys rm bin/mar
 09 047 src rm trial/apps/unused/templates
+09 047 src rm trial/apps/measures/aipsrc.help
