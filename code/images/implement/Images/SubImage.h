@@ -239,6 +239,8 @@ private:
   // Set the other members in the parent.
   void setMembers (const ImageInterface<T>& image);
 
+  // Helper
+   void convertIPosition(Vector<Float>& x, const IPosition& pos) const;
 
   //# itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;

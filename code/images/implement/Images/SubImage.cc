@@ -34,6 +34,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
+#include <aips/Arrays.h>
+
 
 template<class T>
 SubImage<T>::SubImage()
@@ -73,9 +75,12 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
 							   image.shape()),
 				    axesSpec);
   const Slicer& slicer = itsSubLatPtr->getRegionPtr()->slicer();
-  setCoords (image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector(),
-                                           slicer.length().asVector()));
+//
+  Vector<Float> blc, inc;
+  convertIPosition(blc, slicer.start());
+  convertIPosition(inc, slicer.stride());
+//
+  setCoords (image.coordinates().subImage (blc, inc, slicer.length().asVector()));
   setMembers (*itsImagePtr);
 }
 
@@ -92,9 +97,12 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
                                     writableIfPossible,
 				    axesSpec);
   const Slicer& slicer = itsSubLatPtr->getRegionPtr()->slicer();
-  setCoords (image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector(),
-                                           slicer.length().asVector()));
+//
+  Vector<Float> blc, inc;
+  convertIPosition(blc, slicer.start());
+  convertIPosition(inc, slicer.stride());
+//
+  setCoords (image.coordinates().subImage (blc, inc, slicer.length().asVector()));
   setMembers (*itsImagePtr);
 }
 
@@ -106,9 +114,11 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
 {
   itsSubLatPtr = new SubLattice<T> (image, slicer, axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
-  setCoords (image.coordinates().subImage (refslicer.start().asVector(),
-					   refslicer.stride().asVector(),
-                                           refslicer.length().asVector()));
+//
+  Vector<Float> blc, inc;
+  convertIPosition(blc, refslicer.start());
+  convertIPosition(inc, refslicer.stride());
+  setCoords (image.coordinates().subImage (blc, inc, refslicer.length().asVector()));
   setMembers (*itsImagePtr);
 }
 
@@ -122,9 +132,11 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   itsSubLatPtr = new SubLattice<T> (image, slicer, writableIfPossible,
 				    axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
-  setCoords (image.coordinates().subImage (refslicer.start().asVector(),
-					   refslicer.stride().asVector(),
-                                           refslicer.length().asVector()));
+//
+  Vector<Float> blc, inc;
+  convertIPosition(blc, refslicer.start());
+  convertIPosition(inc, refslicer.stride());
+  setCoords (image.coordinates().subImage (blc, inc, refslicer.length().asVector()));
   setMembers (*itsImagePtr);
 }
 
@@ -383,4 +395,11 @@ template<class T>
 void SubImage<T>::reopen()
 {
   itsImagePtr->reopen();
+}
+
+template<class T>
+void SubImage<T>::convertIPosition(Vector<Float>& x, const IPosition& pos) const
+{
+  x.resize(pos.nelements());
+  for (uInt i=0; i<x.nelements(); i++) x(i) = Float(pos(i));
 }
