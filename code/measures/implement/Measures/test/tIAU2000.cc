@@ -264,13 +264,15 @@ int main() {
 	era - MeasTable::ERA00(utb) << endl;
       cout << "GMST (Sofa, aips++, diff): " <<
 	gst << ", " <<
-	MeasTable::GMST00(utb, ttb) << ", " <<
-	gst - MeasTable::GMST00(utb, ttb) << endl;
+	fmod((ttb+6713.)*C::_2pi + MeasTable::GMST00(utb, ttb),
+	     C::_2pi) << ", " << gst -
+	fmod((ttb+6713.)*C::_2pi + MeasTable::GMST00(utb, ttb),
+	     C::_2pi) << endl;
       cout << "GMST82 (GMST82, GMST00, diff): " <<
 	utb+MeasTable::GMST0(utb)/MeasData::SECinDAY + 6713. << ", " <<
-	MeasTable::GMST00(utb, ttb)/C::_2pi <<", " <<
-	utb+MeasTable::GMST0(utb)/MeasData::SECinDAY + 6713. -
-	MeasTable::GMST00(utb, ttb)/C::_2pi << endl;
+	ttb+MeasTable::GMST00(utb, ttb)/C::_2pi + 6713. <<", " <<
+	utb+MeasTable::GMST0(utb)/MeasData::SECinDAY -
+	ttb-MeasTable::GMST00(utb, ttb)/C::_2pi << endl;
       SEPAR();
     }
 
