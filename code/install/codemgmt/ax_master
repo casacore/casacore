@@ -6230,3 +6230,4 @@
 17 191 src mv ./aips/implement/Functionals/NQSinusoid1D.h ./aips/implement/Functionals/Sinusoid1D.h
 17 191 src mv ./aips/implement/Functionals/NQSinusoid1D2.cc ./aips/implement/Functionals/Sinusoid1D2.cc
 17 191 src mv ./aips/implement/Functionals/NQSinusoid1DParam.cc ./aips/implement/Functionals/Sinusoid1DParam.cc
+17 191 src mv ./aips/implement/Functionals/NQSinusoid1DParam.h ./aips/implement/Functionals/Sinusoid1DParam.h
