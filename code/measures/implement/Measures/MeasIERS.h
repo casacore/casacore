@@ -35,12 +35,13 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasDetail.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableRow.h>
+#include <aips/Tables/TableRecord.h>
+#include <aips/Containers/RecordField.h>
 
 //# Forward Declarations
-class MeasureReferenceData;
 class String;
-
-//# Constants (SUN compiler does not accept non-simple default arguments)
 
 // <summary> Interface to IERS tables </summary>
 
@@ -51,7 +52,7 @@ class String;
 
 // <prerequisite>
 //   <li> <linkto class=MeasDetail>MeasDetail</linkto>
-//   <li> <linkto class=MeasureReferenceData>MRefData</linkto>
+//   <li> <linkto class=MeasTable>MeasTable</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -59,174 +60,187 @@ class String;
 // </etymology>
 //
 // <synopsis>
-// MeasIERS is the interface class to the IERS data obtained by the
-// <linkto class=MeasureReferenceData>MRefData</linkto> class.<br>
-// It was written for speed reasons (enums in stead of Strings), and
-// has only a single static instantiation.<br>
+// MeasIERS is the interface class to the IERS data.
+// It has only static memebers.<br>
+// It has a member (<src>getTable()</src>) to open and check IERS
+// (and other Measures related Tables) type tables.
+// Tables are found using the aipsrc 
+// (using <src>measures.<table>.directory</src>)
+// mechanism. If not provided they are assumed to reside in standard places
+// (i.e. in $AIPSROOT/data/aips/Measures) Tables are assumed to have the
+// VS_VERSION, VS_DATE, VS_CREATE and VS_TYPE keywords, and be of type IERS,
+// else an exception will be thrown.<br>
+// The <src>get()</src> method will obtain data from measured and predicted
+// Earth Orientation Parameters IERS tables (i.e. the <src>IERSeop97</src> and
+// the <src>IERSpredict</src> tables. If not forced, the data is taken from
+// the measured table if possible. Only if forced (see below), or if data is
+// not (yet) available in measured the predicted values are used. A warning
+// message is (once) issued if values are not available at all.
+// 
 // MeasIERS looks at some <linkto class=MeasDetail>MeasDetail</linkto>
 // values to determine actions:
 // <ul>
 //  <li> MeasIERS::B_NoTable : Do not use IERS tables to convert measures
-//  <li> MeasIERS::B_UseNEOS : Use the NEOS tables in stead of the IERS_CB
-//	(default)
 //  <li> MeasIERS::B_ForcePredict : Use values from prediction tables
 //	even if Measured table asked by program.
 //  <li> MeasIERS::D_PredictTime : Use values from prediction tables if
 //	(now - time) less than value given (default 5) (days)
 // </ul>
-// These values can be set in aipsrc as well in future.<br>
+// These values can be set in aipsrc as well as in the MeasDetail class.<br>
 // <logged>
-// 	<li> A message is Logged if an IERS table cannot be opened
+// 	<li> A message is Logged (once) if an IERS table cannot be found
+//	<li> A message is logged (once) if a date outside the range in
+//	the Tables is asked for. 
 // </logged>
+// <thrown>
+//     <li> AipsError if table opened has wrong format or otherwise corrupted.
+// </thrown>
 // </synopsis>
 //
 // <example>
+// See the <src>dUTC()</src> method in 
+// <linkto class=MeasTable>MeasTable</linkto> for an example of the
+// <src>getTable</src> method; and the <src>polarMotion()</src> method for
+// an example of <src>get()</src>.
+// 
 // </example>
 //
 // <motivation>
 // To use the IERS data for time and nutation calculations
 // </motivation>
 //
-// <todo asof="1996/07/09">
+// <todo asof="1997/07/02">
 // </todo>
 
 class MeasIERS {	
-//# Friends
-  friend class MeasIERS_init;
+
 public:
-//# Constants
-// Default interval (days) over which no measured data is expected as yet
-// if compared to 'now'
+  //# Constants
   static const Double INTV;
-//# Enumerations
-// Types of known data
-  enum Types {X,
-	      Y,
-	      dUT1,
-	      dUT1R,
-	      D,
-	      DR,
-	      dPsi,
-	      dEpsilon,
-	      OmegaR,
-	      dUTC_TAI,
-	      dUT1R_TAI,
-	      N_Types,
-	      LeapSecond=dUTC_TAI};
-// Known MeasDetails
-    enum {
-      BASE = MeasDetail::IERS_BASE,
-      // Use Predict always
-      B_ForcePredict 	= BASE + MeasDetail::BASE_B,
-      // Use no table
-      B_NoTable,
-      // Use NEOS, iso IERS
-      B_UseNEOS,
-      // Expected time after which measured available
-      D_PredictTime   	= BASE + MeasDetail::BASE_D
-    };
-
-// Types of files
-  enum Files {MEASURED,
-	      PREDICTED};
-
-//# Constructors
-// Default constructor generates interface to IERS tables
+  
+  //# Enumerations
+  // Types of known data
+  enum Types {
+    // MJD (must be first in list)
+    MJD,
+    // Polar motion x
+    X,
+    // Polar motion y
+    Y,
+    // UT1-UTC
+    dUT1,
+    // Length of Day
+    LOD,
+    // dPsi
+    dPsi,
+    // dEpsilon
+    dEps,
+    // Polar motion x error
+    DX,
+    // Polar motion y error
+    DY,
+    // UT1-UTC error
+    DdUT1,
+    // Length of Day error
+    DLOD,
+    // dPsi error
+    DdPsi,
+    // dEpsilon error
+    DdEps,
+    // Number of types
+    N_Types};
+  // Known MeasDetails
+  enum {
+    BASE = MeasDetail::IERS_BASE,
+    // Use Predict always
+    B_ForcePredict 	= BASE + MeasDetail::BASE_B,
+    // Use no table
+    B_NoTable,
+    // Expected time after which measured available
+    D_PredictTime   	= BASE + MeasDetail::BASE_D
+  };
+  
+  // Types of files
+  enum Files {
+    // Measured EOP values
+    MEASURED,
+    // Predicted EOP values
+    PREDICTED,
+    // # of known types
+    N_Files,
+    // Default
+    DEFAULT = MEASURED };
+  
+  //# General Member Functions
+  // Find and open table tab, using the rc variable, the dir and the name.
+  // An rfn list gives the N row field names to be used
+  // Returned are an open table, a row record, pointers (rfp) to row data,
+  // and the table keywordset (kws).
+  // <thrown>
+  //  <li> AipsError if missing VS_ keywords, or type is not IERS
+  // </thrown>
+  // <group>
+  static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
+		       RORecordFieldPtr<Double> rfp[],
+		       String &vs, Double &dt,
+		       Int N, const String rfn[],
+		       const String &name,
+		       const String &rc, const String &dir);
+  
+  // Get the value from an IERS table, interpolated for date(in MJD).
+  // The file can be PREDICTED or MEASURED, the type as given in enum.
+  static Bool get(Double &returnValue,
+		  MeasIERS::Files file, 
+		  MeasIERS::Types type,
+		  Double date);
+  
+private:
+  
+  //# Constructors
+  // Default constructor, NOT defined
   MeasIERS();
-
-// Destructor
-  ~MeasIERS();
-
-//# Operators
-
-//# General Member Functions
-  static Bool get(MeasIERS::Files file, 
-	   MeasIERS::Types type,
-	   Double date,
-	   Double &returnValue);
-
-private:
-//# Constructors
-// Copy constructor (not implemented)
-  MeasIERS(const MeasIERS &other);
-
-//# Operators
-// Copy assignment (not implemented)
+  
+  // Copy assign, NOT defined
   MeasIERS &operator=(const MeasIERS &other);
-
-//# General member functions
-// Initial tables
-// <group>
-  static Bool initMeas();
-  static Bool initPredict();
-// </group>
-
-//# Data members
-// Data tables
-// <group>
-  static MeasureReferenceData *measured;
-  static MeasureReferenceData *predicted;
-// </group>
-// Data tables readable
-// <group>
-  static Bool measFlag;
-  static Bool predictFlag;
+  
+  //# Destructor
+  //  Destructor, NOT defined (GNU does not like it)
+#ifdef __GNUG__
+#else
+  ~MeasIERS();
+#endif
+  
+  //# General member functions
+  // Initialise tables
+  static Bool initMeas(MeasIERS::Files which);
+  // Fill Table lines
+  static Bool fillMeas(MeasIERS::Files which, Double utf);
+  
+  //# Data members
+  // Measured data readable
+  static Bool measFlag[N_Files];
+  // Measured data present
+  static Bool measured[N_Files];
+  // Current date
   static Double dateNow;
-// </group>
+  // Open tables
+  static Table t[N_Files];
+  // Row descriptions
+  static ROTableRow row[N_Files];
+  // Field pointers
+  static RORecordFieldPtr<Double> rfp[N_Files][MeasIERS::N_Types];
+  // First (-1) MJD in list
+  static Int mjd0[N_Files];
+  // Last MJD in list
+  static Int mjdl[N_Files];
+  // Last read data (measlow - predictlow - meashigh - predicthigh)
+  static Double ldat[2*N_Files][N_Types];
+  // Message given
+  static Bool msgDone;
+  // File names
+  static const String tp[N_Files];
+
 };
-
-
-// <summary>
-// Class used to force construction of <linkto class=MeasIERS>MeasIERS</linkto>.
-// </summary>
-
-// <synopsis>
-// A static object of this class is used to make sure that
-// <linkto class=MeasIERS>MeasIERS</linkto>
-// is constructed before it is needed, and therefore that its static data
-// members are defined.  See Meyers, p. 47.
-// </synopsis>
-
-// <use visibility=local>
-
-// <linkfrom anchor="MeasIERS_init" classes="MeasIERS">
-//   <here>MeasIERS_init</here> --
-// Class used to force construction of <linkto class=MeasIERS>MeasIERS</linkto>.
-// </linkfrom>
-
-class MeasIERS_init {
-public:
-  MeasIERS_init();
-  ~MeasIERS_init();
-private:
-  static uShort count;
-};
-
-
-// <summary>
-// Object used to force construction of 
-// <linkto class=MeasIERS>MeasIERS</linkto>.
-// </summary>
-
-// <synopsis>
-// This static object of the <linkto class=MeasIERS_init>MeasIERS_init</linkto>
-// class is used to make sure that MeasIERS
-// is constructed before it is needed, and therefore that its static data
-// members are defined.  See Meyers, p. 47.
-// </synopsis>
-
-// <use visibility=local>
-
-// <linkfrom anchor="MeasIERS initialization object" classes="MeasIERS MeasIERS_init">
-//   <here>MeasIERS initialization object</here> --
-// Object used to force construction of <linkto class=MeasIERS>MeasIERS</linkto>.
-// </linkfrom>
-
-// <group name="MeasIERS initialization object">
-
-static MeasIERS_init measIERS_init;
-
-// </group>
 
 //# Inline Implementations
 
