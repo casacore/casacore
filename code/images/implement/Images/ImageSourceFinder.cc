@@ -349,7 +349,8 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                gel(3) = jj*jj;
                gel(4) = ii*ii;
                gel(5) = jj*ii;
-               fit.makeNorm(gel, 1.0 - 0.5*(abs(ii)+abs(jj)) + 0.25*abs(jj*ii),
+               fit.makeNorm(gel.data(),
+			    1.0 - 0.5*(abs(ii)+abs(jj)) + 0.25*abs(jj*ii),
                             mat(jj+off,ii+off));
                k++;
             }
