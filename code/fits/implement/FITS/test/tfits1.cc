@@ -142,16 +142,16 @@ void do_binary_table(BinaryTableExtension &x) {
 		int heapOffset = x.theap() - x.rowsize()*x.nrows();
 		// skip to the start of the heap
 		// I don't see any way except to read these bogus bytes
-		char junk[heapOffset];
+		char *junk = new char[heapOffset];
 		x.ExtensionHeaderDataUnit::read(junk, heapOffset);
 	    }
 	    theheap = new char [x.pcount()]; 
 	    // this code never checks for alloc errors, why start now
 	    x.ExtensionHeaderDataUnit::read(theheap, x.pcount());
 	}
-	FITS::ValueType vatypes[x.ncols()];
-	void* vaptr[x.ncols()];
-	VADescFitsField va[x.ncols()];
+	FITS::ValueType *vatypes = new FITS::ValueType[x.ncols()];
+	void **vaptr =  new void *[x.ncols()];
+	VADescFitsField *va = new VADescFitsField[x.ncols()];
 	// decode the TFORMs of any VADESC columns
 	for (i=0;i<x.ncols();++i) {
 	    vaptr[i] = 0;
@@ -340,6 +340,9 @@ void do_binary_table(BinaryTableExtension &x) {
 		}
 	    }
 	}
+        delete [] va;
+        delete [] vatypes;
+        delete [] vaptr;
 	delete [] theheap;
 	delete &x;
 }
