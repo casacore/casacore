@@ -1303,12 +1303,12 @@ main (int argc, char *argv[])
     // Test some performance aspects.
     {
       Input inp(1);
-      inp.Version(" ");
-      inp.Create("nx", "512", "Number of pixels along the x-axis", "int");
-      inp.Create("ny", "512", "Number of pixels along the y-axis", "int");
-      inp.ReadArguments(argc, argv);
-      const uInt nx=inp.GetInt("nx");
-      const uInt ny=inp.GetInt("ny");
+      inp.version(" ");
+      inp.create("nx", "512", "Number of pixels along the x-axis", "int");
+      inp.create("ny", "512", "Number of pixels along the y-axis", "int");
+      inp.readArguments(argc, argv);
+      const uInt nx=inp.getInt("nx");
+      const uInt ny=inp.getInt("ny");
       IPosition shape(2,nx,ny);
       PagedArray<Int> pagedArr1(shape, "tLatticeIterator_tmp.tab1");
       PagedArray<Int> pagedArr2(shape, "tLatticeIterator_tmp.tab2");

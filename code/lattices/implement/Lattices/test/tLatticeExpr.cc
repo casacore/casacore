@@ -1,5 +1,5 @@
 //# tLatticeExpr.cc:  
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -69,15 +69,15 @@ main (int argc, char *argv[])
 {
  try {
     Input inp(1);
-    inp.Version(" ");
-    inp.Create("nx", "2", "Number of pixels along the x-axis", "int");
-    inp.Create("ny", "2", "Number of pixels along the y-axis", "int");
-    inp.Create("sup", "False", "Supress expected exceptions messages", "Bool");
-    inp.ReadArguments(argc, argv);
+    inp.version(" ");
+    inp.create("nx", "2", "Number of pixels along the x-axis", "int");
+    inp.create("ny", "2", "Number of pixels along the y-axis", "int");
+    inp.create("sup", "False", "Supress expected exceptions messages", "Bool");
+    inp.readArguments(argc, argv);
 
-    const uInt nx=inp.GetInt("nx");
-    const uInt ny=inp.GetInt("ny");
-    const Bool supress=inp.GetBool("sup");
+    const uInt nx=inp.getInt("nx");
+    const uInt ny=inp.getInt("ny");
+    const Bool supress=inp.getBool("sup");
 
     IPosition shape(2,nx,ny);
     Bool ok = True;

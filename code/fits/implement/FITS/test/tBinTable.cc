@@ -41,30 +41,30 @@ main(int argc, char **argv)
     try {
 	Input inputs(1);
 
-	inputs.Create("inputFile",
+	inputs.create("inputFile",
 		      "",
 		      "The input FITS file",
 		      "String");
-	inputs.Create("baseName",
+	inputs.create("baseName",
 		      "",
 		      "The root name for all created files",
 		      "String");
-	inputs.Create("storageManager",
+	inputs.create("storageManager",
 		      "miriad",
 		      "The storage manager to use - miriad (RLE) or aipsio "
 		      "(memory)",
 		      "String");
-	inputs.Create("sdfits",
+	inputs.create("sdfits",
 		      "False",
 		      "Interpret keywords as virtual columns as in the SD-FITS convention",
 		      "Bool");
 
-	inputs.ReadArguments(argc, argv);
+	inputs.readArguments(argc, argv);
 
-	String inputFilename = inputs.GetString("inputFile");
-	String baseName = inputs.GetString("baseName");
-	String storageManagerType = inputs.GetString("storageManager");
-	Bool sdfits = inputs.GetBool("sdfits");
+	String inputFilename = inputs.getString("inputFile");
+	String baseName = inputs.getString("baseName");
+	String storageManagerType = inputs.getString("storageManager");
+	Bool sdfits = inputs.getBool("sdfits");
 
 	storageManagerType.downcase();
 

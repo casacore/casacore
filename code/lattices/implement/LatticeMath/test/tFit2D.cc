@@ -46,47 +46,47 @@ int main(int argc, char **argv)
 // Inputs
 // 
    Input inputs(1);
-   inputs.Version ("$Revision$");
-   inputs.Create("noise", "0.0", "Noise");
-   inputs.Create("height", "3.0", "Height");
-   inputs.Create("xcen", "0.0", "xcen");
-   inputs.Create("ycen", "0.0", "ycen");
-   inputs.Create("major", "10.0", "major");
-   inputs.Create("minor", "5.0", "minor");
-   inputs.Create("pa", "45", "pa");
+   inputs.version ("$Revision$");
+   inputs.create("noise", "0.0", "Noise");
+   inputs.create("height", "3.0", "Height");
+   inputs.create("xcen", "0.0", "xcen");
+   inputs.create("ycen", "0.0", "ycen");
+   inputs.create("major", "10.0", "major");
+   inputs.create("minor", "5.0", "minor");
+   inputs.create("pa", "45", "pa");
 //
-   inputs.Create("nx", "20", "nx");
-   inputs.Create("ny", "20", "ny");   
-   inputs.Create("min", "0.0", "min");  
-   inputs.Create("max", "0.0", "max");  
-   inputs.Create("nbins", "20", "nbins"); 
-   inputs.Create("plotter", "", "plotter"); 
+   inputs.create("nx", "20", "nx");
+   inputs.create("ny", "20", "ny");   
+   inputs.create("min", "0.0", "min");  
+   inputs.create("max", "0.0", "max");  
+   inputs.create("nbins", "20", "nbins"); 
+   inputs.create("plotter", "", "plotter"); 
 //
-   inputs.Create("norm", "False", "Normalize");
-   inputs.Create("mask", "1,1,1,1,1,1", "Mask");
-   inputs.Create("include", "0.0", "include");
-   inputs.Create("exclude", "0.0", "exclude");
+   inputs.create("norm", "False", "Normalize");
+   inputs.create("mask", "1,1,1,1,1,1", "Mask");
+   inputs.create("include", "0.0", "include");
+   inputs.create("exclude", "0.0", "exclude");
 //
-   inputs.ReadArguments(argc, argv);
-   const Double noise = inputs.GetDouble("noise");
-   const Double height = inputs.GetDouble("height");
-   const Double xcen = inputs.GetDouble("xcen");
-   const Double ycen = inputs.GetDouble("ycen");
-   const Double major = inputs.GetDouble("major");
-   const Double minor= inputs.GetDouble("minor");
-   const Double pa = inputs.GetDouble("pa") * 3.1415926 / 180.0;
+   inputs.readArguments(argc, argv);
+   const Double noise = inputs.getDouble("noise");
+   const Double height = inputs.getDouble("height");
+   const Double xcen = inputs.getDouble("xcen");
+   const Double ycen = inputs.getDouble("ycen");
+   const Double major = inputs.getDouble("major");
+   const Double minor= inputs.getDouble("minor");
+   const Double pa = inputs.getDouble("pa") * 3.1415926 / 180.0;
 //
-   const Int nx = inputs.GetInt("nx");   
-   const Int ny = inputs.GetInt("ny");   
-   const Int nbins = inputs.GetInt("nbins");   
-   const Double minD = inputs.GetDouble("min");
-   const Double maxD = inputs.GetDouble("max"); 
-   const String device = inputs.GetString("plotter"); 
+   const Int nx = inputs.getInt("nx");   
+   const Int ny = inputs.getInt("ny");   
+   const Int nbins = inputs.getInt("nbins");   
+   const Double minD = inputs.getDouble("min");
+   const Double maxD = inputs.getDouble("max"); 
+   const String device = inputs.getString("plotter"); 
 //
-   const Bool norm = inputs.GetBool("norm");
-   const Block<Int> mask = inputs.GetIntArray("mask");
-   const Block<Double> includeRange = inputs.GetDoubleArray("include");
-   const Block<Double> excludeRange = inputs.GetDoubleArray("exclude");
+   const Bool norm = inputs.getBool("norm");
+   const Block<Int> mask = inputs.getIntArray("mask");
+   const Block<Double> includeRange = inputs.getDoubleArray("include");
+   const Block<Double> excludeRange = inputs.getDoubleArray("exclude");
 //
 // Make data
 //

@@ -265,21 +265,21 @@ void MyLatticeProgress::done()
 void doIt (int argc, char *argv[])
 {
     Input inp(1);
-    inp.Version(" ");
-    inp.Create("nx", "32", "Number of pixels along the x-axis", "int");
-    inp.Create("ny", "32", "Number of pixels along the y-axis", "int");
-    inp.Create("nz", "64", "Number of pixels along the z-axis", "int");
-    inp.Create("tx", "0", "Number of pixels along the x-axis tile", "int");
-    inp.Create("ty", "0", "Number of pixels along the y-axis tile", "int");
-    inp.Create("tz", "0", "Number of pixels along the z-axis tile", "int");
-    inp.ReadArguments(argc, argv);
+    inp.version(" ");
+    inp.create("nx", "32", "Number of pixels along the x-axis", "int");
+    inp.create("ny", "32", "Number of pixels along the y-axis", "int");
+    inp.create("nz", "64", "Number of pixels along the z-axis", "int");
+    inp.create("tx", "0", "Number of pixels along the x-axis tile", "int");
+    inp.create("ty", "0", "Number of pixels along the y-axis tile", "int");
+    inp.create("tz", "0", "Number of pixels along the z-axis tile", "int");
+    inp.readArguments(argc, argv);
 
-    const uInt nx=inp.GetInt("nx");
-    const uInt ny=inp.GetInt("ny");
-    const uInt nz=inp.GetInt("nz");
-    const uInt tx=inp.GetInt("tx");
-    const uInt ty=inp.GetInt("ty");
-    const uInt tz=inp.GetInt("tz");
+    const uInt nx=inp.getInt("nx");
+    const uInt ny=inp.getInt("ny");
+    const uInt nz=inp.getInt("nz");
+    const uInt tx=inp.getInt("tx");
+    const uInt ty=inp.getInt("ty");
+    const uInt tz=inp.getInt("tz");
     IPosition latticeShape(3, nx, ny, nz);
     IPosition tileShape(3, tx, ty, tz);
     if (tileShape.product() == 0) {
@@ -356,9 +356,9 @@ void doIt (int argc, char *argv[])
 	Float sum = (nx-1)*nx/2;
 	IPosition pos(3,0);
 	Timer tim;
-	for (Int i=0; i<nz; i++) {
+	for (uInt i=0; i<nz; i++) {
 	    pos(2) = i;
-	    for (Int j=0; j<ny; j++) {
+	    for (uInt j=0; j<ny; j++) {
 		pos(1) = j;
 		Float value = lat.getAt (pos);
 		Float expval = -sum;

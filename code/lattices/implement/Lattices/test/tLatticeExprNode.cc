@@ -3193,13 +3193,13 @@ main (int argc, char *argv[])
 {
  try {
     Input inp(1);
-    inp.Version(" ");
-    inp.Create("nx", "2", "Number of pixels along the x-axis", "int");
-    inp.Create("ny", "2", "Number of pixels along the y-axis", "int");
-    inp.ReadArguments(argc, argv);
+    inp.version(" ");
+    inp.create("nx", "2", "Number of pixels along the x-axis", "int");
+    inp.create("ny", "2", "Number of pixels along the y-axis", "int");
+    inp.readArguments(argc, argv);
 
-    const uInt nx=inp.GetInt("nx");
-    const uInt ny=inp.GetInt("ny");
+    const uInt nx=inp.getInt("nx");
+    const uInt ny=inp.getInt("ny");
 
 //
 // The use of these tiny ArrayLattices means this test program

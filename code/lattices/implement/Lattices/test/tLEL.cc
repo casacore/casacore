@@ -96,16 +96,16 @@ main (int argc, char *argv[])
  try {
     cout << ">>>" << endl;
     Input inp(1);
-    inp.Version(" ");
-    inp.Create("nx", "2", "Number of pixels along the x-axis", "int");
-    inp.Create("ny", "2", "Number of pixels along the y-axis", "int");
-    inp.Create("sup", "False", "Suppress expected exception messages", "Bool");
-    inp.ReadArguments(argc, argv);
+    inp.version(" ");
+    inp.create("nx", "2", "Number of pixels along the x-axis", "int");
+    inp.create("ny", "2", "Number of pixels along the y-axis", "int");
+    inp.create("sup", "False", "Suppress expected exception messages", "Bool");
+    inp.readArguments(argc, argv);
     cout << "<<<" << endl;
 
-    const uInt nx=inp.GetInt("nx");
-    const uInt ny=inp.GetInt("ny");
-    const Bool suppress =inp.GetBool("sup");
+    const uInt nx=inp.getInt("nx");
+    const uInt ny=inp.getInt("ny");
+    const Bool suppress =inp.getBool("sup");
 
 //
 // The use of these tiny ArrayLattices means this test program

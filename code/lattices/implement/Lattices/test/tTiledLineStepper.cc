@@ -1,5 +1,5 @@
 //# tTiledLineStepper.cc: Test program for class TiledLineStepper
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,39 +34,39 @@
 main (int argc, char *argv[])
 {
     Input inp(1);
-    inp.Version(" ");
-    inp.Create("nx", "32", "Number of pixels along the x-axis", "int");
-    inp.Create("ny", "32", "Number of pixels along the y-axis", "int");
-    inp.Create("nz", "32", "Number of pixels along the z-axis", "int");
-    inp.Create("tx", "8", "Tile size along the x-axis", "int");
-    inp.Create("ty", "8", "Tile size along the y-axis", "int");
-    inp.Create("tz", "8", "Tile size along the z-axis", "int");
-    inp.Create("blcx", "0", "Blc along the x-axis", "int");
-    inp.Create("blcy", "0", "Blc along the y-axis", "int");
-    inp.Create("blcz", "0", "Blc along the z-axis", "int");
-    inp.Create("trcx", "1000000", "Trc along the x-axis", "int");
-    inp.Create("trcy", "1000000", "Trc along the y-axis", "int");
-    inp.Create("trcz", "1000000", "Trc along the z-axis", "int");
-    inp.Create("incx", "1", "Inc along the x-axis", "int");
-    inp.Create("incy", "1", "Inc along the y-axis", "int");
-    inp.Create("incz", "1", "Inc along the z-axis", "int");
-    inp.ReadArguments(argc, argv);
+    inp.version(" ");
+    inp.create("nx", "32", "Number of pixels along the x-axis", "int");
+    inp.create("ny", "32", "Number of pixels along the y-axis", "int");
+    inp.create("nz", "32", "Number of pixels along the z-axis", "int");
+    inp.create("tx", "8", "Tile size along the x-axis", "int");
+    inp.create("ty", "8", "Tile size along the y-axis", "int");
+    inp.create("tz", "8", "Tile size along the z-axis", "int");
+    inp.create("blcx", "0", "Blc along the x-axis", "int");
+    inp.create("blcy", "0", "Blc along the y-axis", "int");
+    inp.create("blcz", "0", "Blc along the z-axis", "int");
+    inp.create("trcx", "1000000", "Trc along the x-axis", "int");
+    inp.create("trcy", "1000000", "Trc along the y-axis", "int");
+    inp.create("trcz", "1000000", "Trc along the z-axis", "int");
+    inp.create("incx", "1", "Inc along the x-axis", "int");
+    inp.create("incy", "1", "Inc along the y-axis", "int");
+    inp.create("incz", "1", "Inc along the z-axis", "int");
+    inp.readArguments(argc, argv);
 
-    const uInt nx=inp.GetInt("nx");
-    const uInt ny=inp.GetInt("ny");
-    const uInt nz=inp.GetInt("nz");
-    const uInt tx=inp.GetInt("tx");
-    const uInt ty=inp.GetInt("ty");
-    const uInt tz=inp.GetInt("tz");
-    const uInt blcx=inp.GetInt("blcx");
-    const uInt blcy=inp.GetInt("blcy");
-    const uInt blcz=inp.GetInt("blcz");
-    const uInt trcx=inp.GetInt("trcx");
-    const uInt trcy=inp.GetInt("trcy");
-    const uInt trcz=inp.GetInt("trcz");
-    const uInt incx=inp.GetInt("incx");
-    const uInt incy=inp.GetInt("incy");
-    const uInt incz=inp.GetInt("incz");
+    const uInt nx=inp.getInt("nx");
+    const uInt ny=inp.getInt("ny");
+    const uInt nz=inp.getInt("nz");
+    const uInt tx=inp.getInt("tx");
+    const uInt ty=inp.getInt("ty");
+    const uInt tz=inp.getInt("tz");
+    const uInt blcx=inp.getInt("blcx");
+    const uInt blcy=inp.getInt("blcy");
+    const uInt blcz=inp.getInt("blcz");
+    const uInt trcx=inp.getInt("trcx");
+    const uInt trcy=inp.getInt("trcy");
+    const uInt trcz=inp.getInt("trcz");
+    const uInt incx=inp.getInt("incx");
+    const uInt incy=inp.getInt("incy");
+    const uInt incz=inp.getInt("incz");
 
     // Check/adapt the values.
     IPosition shape(3, nx, ny, nz);
