@@ -2378,3 +2378,9 @@
 09 329 src rm trial/implement/Tasking/ProcessController.cc
 09 329 src rm trial/implement/Tasking/ProcessController.h
 09 329 src rm trial/implement/Tasking/structures.h
+09 337 src rm trial/implement/MeasurementComponents/RadialWTCoh.h
+09 337 src rm trial/implement/MeasurementComponents/RadialWTCoh.cc
+09 337 src rm trial/implement/MeasurementComponents/NaturalWTCoh.h
+09 337 src rm trial/implement/MeasurementComponents/NaturalWTCoh.cc
+09 337 src rm trial/implement/MeasurementComponents/RobustUniformWTCoh.h
+09 337 src rm trial/implement/MeasurementComponents/RobustUniformWTCoh.cc
