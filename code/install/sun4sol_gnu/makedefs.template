@@ -114,7 +114,8 @@ C++OPT   += -pipe -fno-for-scope -fno-implicit-templates
 
 # Add lib to the runpath. Needed for DEBUG as well because glish can build
 # shared libraries.
-LDOPT := -Xlinker -R -Xlinker $(AIPSARCH)/lib
+#LDOPT := -Xlinker -R -Xlinker $(AIPSARCH)/lib
+LDOPT := -Xlinker -R -Xlinker $(subst $(space),:,$(strip $(foreach XLIB,$(XLIBLIST),$($(XLIB)LIBD)) /opt/SUNWspro/lib:/usr/openwin/lib:/usr/local/lib:/usr/ccs/lib:/usr/ucblib:$(AIPSARCH)/lib.))
 LDDBG := $(LDOPT)
 
 # Use do-it-yourself template instantiation.
