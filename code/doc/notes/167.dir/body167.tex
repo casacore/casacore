@@ -1,57 +1,89 @@
 \section {Introduction}
 These standards and guidelines have been chosen to promote a consistent
-style, clarity and organization in AIPS++ code.  {\em Standards} are
-coding practices which everyone must follow; {\em guidelines} are
-recommended practices, and are identified below by ($\star$).  
+style, clarity and organization in AIPS++ code.  {\em Standards} are coding
+practices which everyone must follow; {\em guidelines} are recommended
+practices, and are identified below by ($\star$).
+\bmar Use of standards and guidelines will in general reduce the number of
+initial defects by about 25\%, and make maintenance of code easier.\bmar
 
-{\it Effective C++} by Scott Meyers is a good guide to C++ programming.  
+{\it Effective C++} and {\it More Effective C++} \bmar 
+by Scott Meyers is a good guide to C++ programming.  
 Most of his guidelines apply to AIPS++. 
 %%---------------------------------------------------------------------------
 \section {Code Organization}
 %%---------------------------------------------------------------------------
-\subsection {Classes}  Every class will have a header file,\footnote{See
-{\em code/install/codedevl/template-class-h}} 
-an implementation file,\footnote {Neither totally inlined classes, nor
-abstract base classes need an implementation file.} a test program
-and (optionally) a demo program.  Very closely related
-classes\footnote {A good example is a read-only class, and a read-write
-class derived from it.}  may sometimes be combined into single header
-and implementation files.\footnote {If you do this, make sure that the
-documentation sections -- {\em synopsis, etymology, motivation}, etc. -- 
-are completed for {\em every} class contained in the file.}
+\subsection {Classes} Every class will have a header file,\footnote{See {\em
+code/install/codedevl/template-class-h}} an implementation file,\footnote
+{See {\em code/install/codedevl/template-class-cc}. Neither totally inlined
+classes, nor abstract base classes may need an implementation file.} a test
+program \footnote {See {\em code/install/codedevl/template-main-cc}} 
+and (optionally) a demo program.  Very closely related classes\footnote {A
+good example is a read-only class, and a read-write class derived from it.}
+may sometimes be combined into single header and implementation
+files.\footnote {If you do this, make sure that the documentation sections --
+{\em synopsis, etymology, motivation}, etc. -- are completed for {\em every}
+class contained in the file.}
+
+\bmar All files shall follow the latest template file as a guide for the
+standard layout.
+
+It is sometimes advisable to separate the implementation into different
+files. Examples are to separate templated and non-templated methods, and when
+a sub-set of the methods is often used. Such implementation files have in
+general names like {\it name2.cc} etc. See {\it
+code/aips/implement/Arrays/Array2.cc} for an example.
 
 The test program(s) shall exercise every member function, every exception, and 
 cover at least 90\% of the lines of code in the implementation file.\footnote
 {Special language tools can measure coverage.  See AIPS++ Note 170,
 ``The AIPS++ Code Review Process'' for suggestions on writing test programs.}
 %%---------------------------------------------------------------------------
-\subsection {Modules} Closely related classes should be organized into a module
--- which requires an appropriately named, separate directory.\footnote
-{The Tables module, {\em code/aips/implement/Tables} is a good example to 
-study.}  The module will have a ``module header file'' -- whose primary 
-purpose is to simplify things for the application programmer.  Whenever 
-possible, application programmers should not be required to learn the
-intricacies of a complicated module, nor to understand specific
-implementation classes within the module.  They should only have to
-include a single header file into their application program for each
-module they wish to use; to study the documentation contained (as
-comments) in that header file; and to start writing code.  A library
-(or infrastructure) programmer, however, will almost certainly skip
-the module header, and include only those class header files from the
-module directory which they need.  This discriminating approach ensures
-that dependency-driven recompilation is kept to a minimum.
+\subsection {Include files} \bmar Whenever possible the header files should
+use forward declarations\footnote {Explicitly or implicitly like in {\it
+iosfwd} or {\it Complexfwd}} in stead of include files. Include files should
+be reserved for the implementation files.
+%%---------------------------------------------------------------------------
+\subsection {Data Types} \bmar Only the standard AIPS++ data types 
+\footnote {Char, uChar, Int, uInt, Float, Double, lDouble, Complex, DComplex,
+String. In special circumstances the use of Long and uLong is allowed.} 
+shall be used, coded in the AIPS++ way. 
+%%---------------------------------------------------------------------------
+\subsection {Modules} Closely related classes should be organized into a
+module -- which requires an appropriately named, separate directory.\footnote
+{See {\em code/install/codedevl/template-module-h}. The Tables module,
+{\em code/aips/implement/Tables} is a good example to study.} Modules \bmar
+are assigned by the AIPS++ system manager. The module
+will have a ``module header file'' -- whose primary purpose is to simplify
+things for the application programmer by \bmar providing sufficient help
+information for the general use of the classes in the module.
+\bmar  Whenever possible, application
+programmers should not be required to learn the intricacies of a complicated
+module, nor to understand specific implementation classes within the
+module. In these cases they 
+should only have to include a single header file into their application
+program. In cases where the role of the module is more a conglomerate of
+related, but independent, classes, individual header files \bmar should be
+used.\footnote {As a rule, it is advisable for application programmers to
+include in their code the include files for the individual classes being
+used.}
 
-The module header file\footnote{See {\em
+The module header file \footnote{See {\em
 code/install/codedevl/template-module-h}} will live in the module's parent
 directory: {\em code/aips/implement/Tables.h}, for example, is the module
-header file for, and describes the classes in {\em code/aips/implement/Tables/}.
+header file for, and describes the classes in 
+{\em code/aips/implement/Tables/}.
 %%---------------------------------------------------------------------------
 \subsection {Global Functions} It is sometimes appropriate to write
 global functions to act on class objects, rather than creating
 class member functions.  As a general rule, you should do this if
 there is no class object state preserved from one function call to the next,
 and all of the information about the class object/s can be obtained
-from the public interface.  There are two places where global functions
+from the public interface.  \bmar However, for reasons of namespace
+management it
+is often advised if there exists a strong binding between the class and the
+global function, to make the global function a static member of the class; or
+use the namespace keyword.
+There are two places where global functions
 may be declared and defined:  as part of the {\em .cc} and {\em .h} files
 of the class they are most closely associated with, or in their own, separate 
 {\em .cc} and {\em .h} files.  Use these criteria to decide:
@@ -60,18 +92,27 @@ of the class they are most closely associated with, or in their own, separate
 the class, then it is probably best to use separate files.
 \item If there are a large number of related global functions, use
 separate files.
-\item If the functions are templated, using separate files will reduce
+\item If the functions are templated, using separate files (at least separate
+implementation \bmar files) will reduce
 template instantiation dependencies.
 \end{enumerate}
+%%---------------------------------------------------------------------------
+\subsection {Templates} \bmar Template instantiations are done explicitly
+within AIPS++. Make sure templates needed by your code are defined in the
+package {\it templates} file in the {\it \_Repository directory}. Templates
+needed only in your test or demo programs should exist in your {\it
+test/templates} file. See the {\em System Manual} for details about template
+management.\footnote {reident, unused, duplicates programs}
 %%---------------------------------------------------------------------------
 \subsection {File Size ($\star$)}
 Files should rarely -- if ever -- exceed 2000 lines:  a 1000 line
 maximum will usually apply.  Well-designed classes often have short header
-and implementation files, usually less than 500 lines including documentation.
+and, certainly, short implementation files, usually less than 500 lines
+including documentation.
 %%---------------------------------------------------------------------------
 \subsection {Function Length ($\star$)}
 Functions should rarely exceed 100 lines in length; shorter, well-focused
-functions should dominate, and will usually be 50 lines or fewer.
+functions should dominate, and will usually be less than 50 lines.
 %%---------------------------------------------------------------------------
 \section {Documentation and Naming}
 \subsection {Documentation in Header Files}
@@ -100,17 +141,18 @@ an uppercase letter.  Identifers which consist of more than one word
 (a recommended practice) shall use uppercase at the beginning of each
 new word (``{\em GoodClassName}'').  Local variables, class data members,
 class member functions, and global functions names shall begin with
-lowercase letters (``{\em goodVarName, goodFunctionName}'').  
+lowercase letters (``{\em goodVarName, goodFunctionName}''). \bmar Class data
+members shall have names prepended by {\it its}, or postpended with {\it \_p}
+(``{\em itsCount, blockPointer\_p}''). 
 
-Glish function names follow a different policy: they shall use lower
-case letters exclusively, and the underscore character shall be used,
-where necessary, to increase readability.  For example: ``{\em
-good\_function\_name}''\footnote {The aips++ end-user will frequently
-type Glish function names; this policy is for their typing convenience.}.
+\bmar {\em Note:} Glish function names follow a different policy: they shall
+use lower case letters exclusively.
 %%---------------------------------------------------------------------------
 \subsection {Names for Files} The only restrictions here are
-commonsense, and the Unix library archive utility ``{\em ar}''.  The
-first suggests that file names should be long enough to convey meaning
+commonsense, and the Unix library archive utility ``{\em ar}''. \bmar It is
+strongly suggested that the file name equals the name of the one or dominant
+class in the file. The
+above suggests that file names should be long enough to convey meaning
 to the reader, but not so long as to be a burden to type. This
 translates to: file names should be from about 8 to about 30
 characters long.
@@ -140,18 +182,20 @@ it is also used by the project's version control system {\em RCS}.  This
 format is {\em yyyy/mm/dd}. An example is {\em 1995/02/27}.
 %%===========================================================================
 \section {Coding}
-\subsection {Forward Declarations ($\star$)}
+\subsection {Forward Declarations}
 {\em \#include} only those header files your class absolutely requires.  Use
-forward declarations when that will suffice.\footnote {This may be difficult
-to determine, due to the complexities of template instantiation.}
+\bmar forward declarations when that will suffice.\footnote {This may sometimes
+involve the use of special forwarding include files like iosfwd.}
 %%---------------------------------------------------------------------------
 \subsection {Protected Data Members ($\star$)}
-Avoid protected data memebers, using protected member functions for access
+Avoid protected data members, using protected member functions for access
 to private data instead.
 %%---------------------------------------------------------------------------
 \subsection {Access to Private Data}
 Do not return pointers or references to private data, except to accomodate
-Fortran or C libraries, of if efficience absolutely requires it.
+Fortran or C libraries, or if efficiency absolutely requires it.\footnote {Or
+declare the references and pointers const -- but be aware of threading
+problems in that case}
 %%---------------------------------------------------------------------------
 \subsection {Label All Virtual Functions Explicitly}
 Virtual functions in a derived class shall be explicitly labelled with
@@ -164,10 +208,13 @@ tag {\em $<$todo$>$}.
 %%---------------------------------------------------------------------------
 \subsection {Standard Class Member Functions}
 Provide definitions for all of the standard member functions which the
-compiler would (otherwise) generate automatically:  default constructor,
-destructor, coy constructor, and the assignment operator.  For any of 
-these which you wish to disallow, declare them private, and create
-minimal implementations.  For example:
+compiler would (otherwise) generate automatically:  default
+constructor\footnote {Note that this is only created when
+no user constructor at all present},
+destructor\footnote {always supply a virtual destructor in a base class},
+ copy constructor, and the assignment operator.  For any of 
+these which you really wish to disallow, declare them private, and create
+minimal implementations (if any at all).  For example:
 \begin{verbatim}
    ...
    private:
@@ -175,13 +222,13 @@ minimal implementations.  For example:
    ...
 \end{verbatim}
 %%---------------------------------------------------------------------------
-\subsection {The Order of Function Arguments ($\star$)}
+\subsection {The Order of Function Arguments }
 Functions shall be declared so that their arguments (parameters) appear in 
 this order: output parameters first; input/output parameters next; 
 input parameters last.\footnote {This order may seem unnatural, but it is a 
 direct consequence of the C++ rule that default parameters appear
 {\em last} in the parameter list.}  Functions which return only one value 
-should ususally use the function's return-value to return that value, rather
+should usually use the function's return-value to return that value, rather
 than add an additional output parameter to the parameter list.  If
 a function modifies its single argument {\em in place}, then that
 argument is best understood as an input/output argument.\footnote
@@ -191,20 +238,61 @@ that same value as the function return value.}
 %%---------------------------------------------------------------------------
 \subsection {Formal Arguments and Default Parameters}
 Specify formal arguments and default parameters in the function declaration;
-use the same names in the function definition.
+use the same names in the function \bmar
+definition.\footnote {In the case of a
+``placeholder'' parameter that is not yet used in the definition, omit the
+name {\em in the definition} to stop warnings.}
 %%---------------------------------------------------------------------------
-\subsection {Return Types}
+\subsection {One argument constructors} \bmar Constructors with one argument should
+be made explicit, or have an explanation why automatic conversion is wanted
+(as an example: {\it Unit(String)} is an obvious candidate for automatic
+conversion, to be able to write e.g. ``km/s'' rather than Unit(``km/s'')).
+%%---------------------------------------------------------------------------
+\subsection {Return Types} 
 Specify explicit return types for all functions.  Return an appropriate
 integer value from {\em main}.
 %%---------------------------------------------------------------------------
+\subsection {const Functions} \bmar
+All functions that do not change the state of
+the class should be declared {\it const}. If only the ``hidden'' state (like
+a cache) changes, the function should be declared {\it const}, but with a
+{\it mutable} cache variable. {\it mutable} should be used carefully.
+%%---------------------------------------------------------------------------
+\subsection {Compound Statements} Multi-line compound statements should have
+braces. \bmar E.g.
+\begin{verbatim}
+if (condition) {
+   statement1;
+} else {
+   statement2;
+};
+\end{verbatim}
+%%---------------------------------------------------------------------------
+\subsection {Template arguments} \bmar 
+Minimize the number of template arguments by
+   utilising the {\it typename} construct for user classes, and the {\it
+   traits} methodology for fundamental types.\footnote { A good example can
+   be found in the MeasConvert class}
+%%---------------------------------------------------------------------------
+\subsection {Casting} \bmar
+Only C++ style casting is allowed. The use of
+   {\em reinterpret\_cast} is not allowed. Allowed are: {\em static\_cast},
+   {\em const\_cast} (but be aware of what you are doing) and {\em
+   dynamic\_cast}. 
+%%---------------------------------------------------------------------------
+\subsection {Macros} ($\star$) \bmar
+Macros (especially {\it \#if} type, should be limited
+   to the {\it include guard}. Other cases should be checked with the QAG,
+   who often can point out other solutions.
+%%---------------------------------------------------------------------------
 \subsection {Exceptions}
 Exceptions should be reserved for truly exceptional circumstances, and
-not used to replace status flags or condition tests.
+not used to replace status flags or condition tests. Exceptions should be
+documented with the $<$thrown$>$ tag (and maybe with the thrown declaration
+specifier). 
 %%---------------------------------------------------------------------------
 \subsection {Compiler Warnings}
 All code should compile without producing warnings from the 
-compiler.  Unfortunately, some compilers produce spurious warnings, especially
-if the highest warning level is used.  All warnings should be 
-examined, but those which are spurious may be ignored.
+\bmar compiler. Most compilers do not produce many spurious warnings any more.
 %%---------------------------------------------------------------------------
 
