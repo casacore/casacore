@@ -22,3 +22,18 @@ passed in this way includes the interval of interest, the out-of-interval
 behavior, and the default value.  
 
 The Mode facility may be replaced with a different mechanism in the future.
+
+change id: 0137
+ author:   Raymond Plante
+ date:     2003/03/26
+ avers:    1.8
+ area:     Library
+ package:  trial
+ module:   Functionals
+ type:     Code
+ category: Change
+ summary:  FunctionHolder supports new Function "Mode" facility
+The "Mode" facility was added to the Function class to facilitate the 
+passing of non-Parameter-type state between Glish and a specific Function
+on the C++ side.  Thus, FunctionHolder has been updated to use the "Mode"
+facility to pass this special state.
