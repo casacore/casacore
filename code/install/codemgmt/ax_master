@@ -2438,3 +2438,13 @@
 09 392 sys rm libexec/inputs.g
 09 392 sys rm libexec/imager.g
 09 392 sys rm libexec/tableplotter.g
+09 393 src rm trial/implement/Lattices/PixelBox.h
+09 393 src rm trial/implement/Lattices/PixelBox.cc
+09 393 src rm trial/implement/Lattices/PixelEllipsoid.h
+09 393 src rm trial/implement/Lattices/PixelEllipsoid.cc
+09 393 src rm trial/implement/Lattices/PixelPolygon.h
+09 393 src rm trial/implement/Lattices/PixelPolygon.cc
+09 393 src rm trial/implement/Lattices/PixelPrism.h
+09 393 src rm trial/implement/Lattices/PixelPrism.cc
+09 393 src rm trial/implement/Lattices/PixelRegion.h
+09 393 src rm trial/implement/Lattices/PixelRegion.cc
