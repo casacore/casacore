@@ -66,7 +66,7 @@ $(WCSLIB).$(SFXSHAR): $(WCSLIB).$(SFXSTAT)
 	   if [ "`ls *.o 2>/dev/null`" != "" ] ; then \
 	      echo "" ; \
 	      echo "Updating shared WCSLIB..." ; \
-	      $(MKSO) -o $(WCSLIB).$(SFXSHAR) *.o -lm; \
+	      $(MKSO) $(LDSOPTS) -o $(WCSLIB).$(SFXSHAR) *.o -lm; \
 	      $(RM) $(WCSTMPD)/*.o ; \
 	   fi
 
