@@ -38,6 +38,8 @@
 #include <aips/TableMeasures/ArrayQuantColumn.h>
 
 class NewMeasurementSet;
+class String;
+template <class T> class Vector;
 
 // <summary>
 // A class to provide easy read-only access to NewMeasurementSet main table columns
@@ -172,6 +174,9 @@ public:
   // Convenience function that returns the number of rows in any of the columns
   uInt nrow() const {return antenna1_p.nrow();}
   
+  // Returns the category labels for the FLAG_CATEGORY column.
+  Vector<String> flagCategories() const;
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -501,6 +506,12 @@ public:
   // can only be done when the table has no rows. Trying to do so at other
   // times will throw an exception.
   void setUVWRef(Muvw::Types ref);
+
+  // Set the flag category labels to the supplied values (in the CATEGORY
+  // keyword of the FLAG_CATEGORY column). Throws an exception, when compiled
+  // in Debug mode, if the length of the supplied Vector is not the same as the
+  // length of the third dimension of the FLAG_CATEGORY column.
+  void setFlagCategories(const Vector<String>& categories);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach

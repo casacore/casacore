@@ -29,7 +29,14 @@
 #include <aips/MeasurementSets/NewMeasurementSet.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/String.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/DataType.h>
+#include <aips/Containers/RecordFieldId.h>
+#include <aips/Exceptions/Error.h>
 
 RONewMSMainColumns::RONewMSMainColumns(const NewMeasurementSet& ms):
   antenna1_p(ms, NewMS::columnName(NewMS::ANTENNA1)),
@@ -86,6 +93,17 @@ RONewMSMainColumns::RONewMSMainColumns(const NewMeasurementSet& ms):
 }
 
 RONewMSMainColumns::~RONewMSMainColumns() {}
+
+Vector<String> RONewMSMainColumns::flagCategories() const {
+  const TableRecord& keywords = flagCategory().keywordSet();
+  const RecordFieldId key("CATEGORY");
+  DebugAssert(keywords.isDefined(key.fieldName()), AipsError);
+  DebugAssert(keywords.dataType(key) == TpString, AipsError);
+  DebugAssert(keywords.shape(key).nelements() == 1, AipsError);
+  DebugAssert(nrow() == 0 || 
+ 	      keywords.shape(key)(0) == flagCategory().shape(0)(2), AipsError);
+  return Vector<String>(keywords.asArrayString(key));
+}
 
 RONewMSMainColumns::RONewMSMainColumns():
   antenna1_p(),
@@ -282,6 +300,14 @@ NewMSMainColumns::NewMSMainColumns(NewMeasurementSet& ms):
 
 NewMSMainColumns::~NewMSMainColumns() {}
 
+void NewMSMainColumns::setFlagCategories(const Vector<String>& categories) {
+  TableRecord& keywords = flagCategory().rwKeywordSet();
+  const RecordFieldId key("CATEGORY");
+  DebugAssert(nrow() == 0 || 
+ 	      categories.nelements() == 
+	      static_cast<uInt>(flagCategory().shape(0)(2)), AipsError);
+  keywords.define(key, categories);
+}
 
 void NewMSMainColumns::setEpochRef(MEpoch::Types ref) {
   timeMeas_p.setDescRefCode(ref);
