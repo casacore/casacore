@@ -361,8 +361,8 @@ Bool ImageStatistics<T>::setList (const Bool& doList)
 
 
 template <class T>
-Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
-                                     const PGPlotter& plotter,
+Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
+                                     const Vector<Int>& statsToPlotU,
                                      const Vector<Int>& nxyU)
 //
 // Assign the desired PGPLOT device name and number
@@ -374,16 +374,25 @@ Bool ImageStatistics<T>::setPlotting(const Vector<Int>& statsToPlotU,
       return False;
    }
 
-// Is plotter attached ?
-
-   plotter_p = plotter;
-   if (!plotter_p.isAttached()) {
+// Is new plotter attached ?
+     
+   if (!plotter.isAttached()) {
       if (haveLogger_p) {
-         os_p << LogIO::SEVERE << "Plotter is not attached" << LogIO::POST; 
+         os_p << LogIO::SEVERE << "Input plotter is not attached" << LogIO::POST; 
       }
       goodParameterStatus_p = False;
       return False;
    }
+
+// Don't reattach to the same plotter.  The assignment will
+// close the previous device
+
+   if (plotter_p.isAttached()) {
+      if (plotter_p.qid() != plotter.qid()) plotter_p = plotter;
+   } else {
+      plotter_p = plotter;
+   }
+
 
 // Make sure requested statistics are valid
 
@@ -486,7 +495,7 @@ Bool ImageStatistics<T>::display()
    }
 
 
-// Open plotting device if required and set up some plotting things
+// Set up some plotting things
 
    if (plotter_p.isAttached()) {
        plotter_p.subp(nxy_p(0), nxy_p(1));
@@ -542,9 +551,9 @@ Bool ImageStatistics<T>::display()
 
    T *dummy = 0;
    DataType templateType = whatType(dummy);
-
+   
    for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
-
+ 
 // Convert accumulations to  mean, sigma, and rms.   
 // I will have to revisit this.   It will be ugly.
  
@@ -581,7 +590,6 @@ Bool ImageStatistics<T>::display()
            ;
          }
       }
-
 
 // Extract the direct (NPTS, SUM etc) values from the cursor matrix into the plot matrix
 // There is no easy way to do this other than as I have
@@ -1011,6 +1019,11 @@ Bool ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
    return True;
 }
 
+template <class T>
+void ImageStatistics<T>::closePlotting()
+{
+   if (plotter_p.isAttached()) plotter_p.detach();
+}
 
 
 
@@ -1595,6 +1608,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
    const Bool doMax   = ToBool(ImageUtilities::inVector(Int(MAX), statsToPlot_p) != -1);
    const Bool doNPts  = ToBool(ImageUtilities::inVector(Int(NPTS), statsToPlot_p) != -1);
 
+
    Bool none;
    Bool first = True;
    Int nL = 0;
@@ -1902,7 +1916,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
 
 // Write values of other display axes on plot
-   
+
    ostrstream oss;
    if (displayAxes_p.nelements() > 1) {
       Vector<String> sWorld(1);
