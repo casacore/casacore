@@ -72,19 +72,28 @@ class NewMSDataDescription;
 class RONewMSDataDescColumns
 {
 public:
-  // The copy constructor uses reference semantics
+  // Create a columns object that accesses the data in the specified Table
   RONewMSDataDescColumns(const NewMSDataDescription& msDataDesc);
   
-  // The desctructor does nothing special
+  // The destructor does nothing special
   ~RONewMSDataDescColumns();
   
-  // Access to columns
+  // Access to required columns
+  // <group>
   const ROScalarColumn<Bool>& flagRow() const {return flagRow_p;}
   const ROScalarColumn<Int>& polarizationId() const {return polarizationId_p;}
   const ROScalarColumn<Int>& spectralWindowId() const {
     return spectralWindowId_p;}
+  // </group>
+
+  // Access to optional columns
+  // <group>
   const ROScalarColumn<Int>& lagId() const {return lagId_p;}
+  // </group>
   
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return flagRow_p.nrow();}
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -102,9 +111,11 @@ private:
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSDataDescription& msDataDesc);
   
+  //# required columns
   ROScalarColumn<Bool> flagRow_p;
   ROScalarColumn<Int> polarizationId_p;
   ROScalarColumn<Int> spectralWindowId_p;
+  //# optional columns
   ROScalarColumn<Int> lagId_p;
 };
 
@@ -147,27 +158,39 @@ private:
 class NewMSDataDescColumns: public RONewMSDataDescColumns
 {
 public:
-  // The copy constructor uses reference semantics
+  // Create a columns object that accesses the data in the specified Table
   NewMSDataDescColumns(NewMSDataDescription& msDataDesc);
 
-  // The desctructor does nothing special
+  // The destructor does nothing special
   ~NewMSDataDescColumns();
 
-  // RW Access to columns
+  // Read-write access to required columns
+  // <group>
   ScalarColumn<Bool>& flagRow() {return flagRow_p;}
   ScalarColumn<Int>& polarizationId() {return polarizationId_p;}
   ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
-  ScalarColumn<Int>& lagId() {return lagId_p;}
+  // </group>
 
-  // RO Access to columns
+  // read-write access to optional columns
+  // <group>
+  ScalarColumn<Int>& lagId() {return lagId_p;}
+  // </group>
+
+  // Read-only access to required columns
+  // <group>
   const ROScalarColumn<Bool>& flagRow() const {
     return RONewMSDataDescColumns::flagRow();}
   const ROScalarColumn<Int>& polarizationId() const {
     return RONewMSDataDescColumns::polarizationId();}
   const ROScalarColumn<Int>& spectralWindowId() const {
     return RONewMSDataDescColumns::spectralWindowId();}
+  // </group>
+
+  // Read-only access to optional columns
+  // <group>
   const ROScalarColumn<Int>& lagId() const {
     return RONewMSDataDescColumns::lagId();}
+  // </group>
   
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -186,9 +209,11 @@ private:
   //# attach optional columns in the supplied Table (if they exist)
   void attachOptionalCols(NewMSDataDescription& msDataDesc);
 
+  //# required columns
   ScalarColumn<Bool> flagRow_p;
   ScalarColumn<Int> polarizationId_p;
   ScalarColumn<Int> spectralWindowId_p;
+  //# optional columns
   ScalarColumn<Int> lagId_p;
 };
 #endif

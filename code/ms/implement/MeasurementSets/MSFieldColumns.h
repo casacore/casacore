@@ -116,6 +116,9 @@ public:
   MDirection referenceDirMeas(Int row, Double time = 0) const;
   // </group>
 
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return name_p.nrow();}
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
