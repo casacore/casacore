@@ -40,13 +40,9 @@
 # include <aips/aips.h>
 # include <aips/Mathematics/Complex.h>
 
-//#  Automatically configure for LITTLE ENDIAN systems
+//#  Automatically configure for known LITTLE ENDIAN systems
 #if !(defined(AIPS_LITTLE_ENDIAN))
-#  if defined(__GNUC__)
-#    if #cpu(alpha) 
-#      define AIPS_LITTLE_ENDIAN
-#    endif
-#  elif (defined(__alpha) || defined (MSDOS))
+#  if (defined(__alpha) || defined(i386) || defined(MSDOS))
 #    define AIPS_LITTLE_ENDIAN
 #  endif
 #endif
