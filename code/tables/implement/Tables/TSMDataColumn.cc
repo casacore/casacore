@@ -118,17 +118,17 @@ void TSMDataColumn::setShapeTiled (uInt rownr, const IPosition& shape,
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
     IPosition cubeShape = hypercube->cubeShape();
     if (cubeShape.nelements() == 0) {
-	hypercube->setShape (shape, tileShape);
+	stmanPtr_p->setShape (rownr, hypercube, shape, tileShape);
     }else{
-	if (shape != cubeShape) {
+	if (! shape.isEqual(cubeShape)) {
 	    if (! canChangeShape()) {
 		throw (TSMError
 		       ("Shape of data cells in same hypercube differs"));
 	    }
 	    //# Set the new shape and take care that on the next access
 	    //# the cache size is recalculated.
-	    hypercube->setShape (shape, tileShape);
-//	    lastAccess_p = NoAccess;
+	    stmanPtr_p->setShape (rownr, hypercube, shape, tileShape);
+	    lastAccess_p = NoAccess;
 	}
     }
 }
