@@ -1,5 +1,5 @@
 //# SSMColumn.cc: The Column of the Standard Storage Manager
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -242,8 +242,10 @@ void SSMColumn::getDComplexV (uInt aRowNr,DComplex* aValue)
 void SSMColumn::getStringV (uInt aRowNr, String* aValue)
 {
   if (itsMaxLen > 0) {
-    // Allocate the maximum number of characters needed.
-    aValue->alloc(itsMaxLen);
+    // Allocate the maximum number of characters needed
+    // The +1 is to correct for the incorrect use of the chars() function
+    // Should be changed to use real Char*
+    aValue->alloc(itsMaxLen+1);
     char* sp = const_cast<char*>(aValue->chars());
     uInt  aStartRow;
     uInt  anEndRow;
@@ -273,7 +275,9 @@ void SSMColumn::getStringV (uInt aRowNr, String* aValue)
       aValue->alloc (buf[2]);
       char* sp = const_cast<char*>(aValue->chars());
       memcpy (sp, strbuf, buf[2]);
+#ifdef USE_OLD_STRING
       sp[buf[2]] = '\0';
+#endif
     } else {
       itsSSMPtr->getStringHandler()->get(*aValue, buf[0], buf[1], buf[2]);
     }
