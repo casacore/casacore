@@ -341,10 +341,7 @@ class LSQFit {
     void copyDiagonal(U &errors, LSQComplex);
   // </group>
   // Solve normal equations.
-  // The solution will be given in <src>sol</src>, with the
-  // adjustment error <src>mu</src>, and the standard
-  // deviation <swrc>sd</src>. I.e. <src>mu</src> is per unit weight,
-  // <src>sd</src> per observation.
+  // The solution will be given in <src>sol</src>.
   // <group>
   template <class U>
     void solve(U *sol);
