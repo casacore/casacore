@@ -36,15 +36,15 @@ typedef Quantum<Double> gpp_MeasConvert_bug1;
 //# Constructors
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert() :
-  model(0), unit(), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(), outref(), 
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
 }
 
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const MeasConvert<M,F,MC> &other) :
-  model(0), unit(), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     copy(other);
   }
@@ -59,8 +59,8 @@ MeasConvert<M,F,MC> &MeasConvert<M,F,MC>::operator=(const MeasConvert<M,F,MC> &o
 
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const M &ep) :
-  model(0), unit(ep.unit), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(ep.unit), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M(ep);
     create();
@@ -68,8 +68,8 @@ MeasConvert<M,F,MC>::MeasConvert(const M &ep) :
 
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const M &ep, const MeasRef<M> &mr) :
-  model(0), unit(ep.unit), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(ep.unit), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M(ep);
     outref = mr;
@@ -78,8 +78,8 @@ MeasConvert<M,F,MC>::MeasConvert(const M &ep, const MeasRef<M> &mr) :
 
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const Measure &ep, const MeasRef<M> &mr) :
-  model(0), unit(ep.getUnit()), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(ep.getUnit()), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = ep.clone();
     outref = mr;
@@ -88,8 +88,8 @@ MeasConvert<M,F,MC>::MeasConvert(const Measure &ep, const MeasRef<M> &mr) :
 
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const M &ep, uInt mr) :
-  model(0), unit(ep.unit), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(ep.unit), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M(ep);
     outref = MeasRef<M>(mr);
@@ -99,8 +99,8 @@ MeasConvert<M,F,MC>::MeasConvert(const M &ep, uInt mr) :
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const MeasRef<M> &mrin,
 				 const MeasRef<M> &mr) :
-  model(0), unit(), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M(F(), mrin);
     outref = mr;
@@ -110,8 +110,8 @@ MeasConvert<M,F,MC>::MeasConvert(const MeasRef<M> &mrin,
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const MeasRef<M> &mrin,
 				 uInt mr) :
-  model(0), unit(), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M(F(), mrin);
     outref = MeasRef<M>(mr);
@@ -121,8 +121,8 @@ MeasConvert<M,F,MC>::MeasConvert(const MeasRef<M> &mrin,
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(uInt mrin,
 				 const MeasRef<M> &mr) :
-  model(0), unit(), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M(F(), MeasRef<M>(mrin));
     outref = mr;
@@ -132,8 +132,8 @@ MeasConvert<M,F,MC>::MeasConvert(uInt mrin,
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(uInt mrin,
 				 uInt mr) :
-  model(0), unit(), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M(F(), MeasRef<M>(mrin));
     outref = MeasRef<M>(mr);
@@ -143,8 +143,8 @@ MeasConvert<M,F,MC>::MeasConvert(uInt mrin,
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, const MeasRef<M> &mrin,
 				 const MeasRef<M> &mr) :
-  model(0), unit(inunit), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(inunit), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M( F(), mrin);
     outref = mr;
@@ -154,8 +154,8 @@ MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, const MeasRef<M> &mrin,
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, const MeasRef<M> &mrin,
 				 uInt mr) :
-  model(0), unit(inunit), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(inunit), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M( F(), mrin);
     outref = MeasRef<M>(mr);
@@ -165,8 +165,8 @@ MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, const MeasRef<M> &mrin,
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, uInt mrin,
 				 const MeasRef<M> &mr) :
-  model(0), unit(inunit), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(inunit), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M( F(), MeasRef<M>(mrin));
     outref = mr;
@@ -176,8 +176,8 @@ MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, uInt mrin,
 template<class M, class F, class MC>
 MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, uInt mrin,
 				 uInt mr) :
-  model(0), unit(inunit), outref(), crout(0), cvdat(0),
-  offin(0), offout(0), lres(0), locres(0) {
+  model(0), unit(inunit), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
     init();
     model = new M( F(), MeasRef<M>(mrin));
     outref = MeasRef<M>(mr);
