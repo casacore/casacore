@@ -222,10 +222,10 @@ RPFITSINCD  =
 RPFITSLIBD  = $(RPFITSROOT)/lib
 RPFITSLIB  := -lrpfits
 
-# MIRLIB (required by BIMA).
-MIRLIBROOT := $(AIPSROOT)/code/bima/mirlib
+# MIRLIB (for supporting Miriad images and importing Miriad vis data).
+MIRLIBROOT := $(AIPSROOT)/code/aips/mirlib
 MIRLIBDEFS :=
-MIRLIBINCD  = $(AIPSROOT)/code/bima
+MIRLIBINCD  = $(AIPSROOT)/code/aips
 MIRLIBLIBD  = $(AIPSARCH)/lib
 MIRLIBLIB  := -lmir
 
