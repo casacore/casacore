@@ -1,5 +1,5 @@
 //# TwoSidedShape.h:
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -334,5 +334,16 @@ private:
   Quantum<Double> itsMajErr;
   Quantum<Double> itsMinErr;
   Quantum<Double> itsPaErr;
+//
+  Vector<Double> widthToCartesian (const Quantum<Double>& width,
+                                   const Quantum<Double>& pa, 
+                                   const MDirection& dirRef,
+                                   const DirectionCoordinate& dirCoord,
+                                   const Vector<Double>& pixelCen) const;
+//
+  MDirection directionFromCartesian (Double width, Double pa,
+                                     const DirectionCoordinate& dirCoord,
+                                     const Vector<Double>& pixelCen) const;
+
 };
 #endif
