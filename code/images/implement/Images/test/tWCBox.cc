@@ -1,5 +1,5 @@
 //# tWCBox.cc: Test program for WCBox class
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -103,8 +103,33 @@ try {
    AlwaysAssert(*pBox == box, AipsError);
    if (pWCRegion != 0) delete pWCRegion;
 
-// Test record saving
+// Test splitBox
+   {
+      IPosition axes(3,2,0,1);
+      WCBox sbox1(box.splitBox (axes));
+      Vector<Quantum<Double> > blc2(axes.nelements());
+      Vector<Quantum<Double> > trc2(axes.nelements());
+      for (uInt i=0; i<axes.nelements(); i++) {
+	blc2(i) = wBlc(axes(i));
+	trc2(i) = wTrc(axes(i));
+      }
+      WCBox sbox2(blc2, trc2, axes, cSys, absRel);
+      AlwaysAssert (sbox1 == sbox2, AipsError);
+      IPosition axesa(2,2,1);
+      WCBox sbox1a(sbox1.splitBox (axesa));
+      Vector<Quantum<Double> > blc2a(axesa.nelements());
+      Vector<Quantum<Double> > trc2a(axesa.nelements());
+      IPosition axesa2(2);
+      for (uInt i=0; i<axesa.nelements(); i++) {
+	axesa2(i) = axes(axesa(i));
+	blc2a(i) = blc2(axesa(i));
+	trc2a(i) = trc2(axesa(i));
+      }
+      WCBox sbox2a(blc2a, trc2a, axesa2, cSys, absRel);
+      AlwaysAssert (sbox1a == sbox2a, AipsError);
+   }
 
+// Test record saving
    {
      TableRecord rec =  box.toRecord("");
       
@@ -131,7 +156,7 @@ try {
 //      cout << "toLCRegion called with shape = " << shape << endl;
       LCRegion* pLCRegion = box.toLCRegion(cSys, shape);
       AlwaysAssert(*pLCRegion==checkBox, AipsError);
-      if (pLCRegion != 0) delete pLCRegion;
+      delete pLCRegion;
    }
 //   cout << endl;
 
@@ -148,10 +173,9 @@ try {
 //      cout << "toLCRegion called with shape = " << shape << endl;
       LCRegion* pLCRegion = box.toLCRegion(cSys2, shape);
       AlwaysAssert(*pLCRegion==checkBox, AipsError);
-      if (pLCRegion != 0) delete pLCRegion;
+      delete pLCRegion;
    }
 //   cout << endl;
-
 
 // Test auto extension
 
@@ -529,6 +553,3 @@ void list (const RecordInterface& record)
    cout << "axes=" << axes << endl;
    cout << "absRel=" << absRel << endl;
 }
- 
- 
-
