@@ -6093,3 +6093,4 @@
 17 151 src rm admin/system/aips2-gbt.list
 17 151 src rm admin/system/aips2-glish.list
 17 151 src rm admin/system/aips2-help.list
+17 151 src rm admin/system/aips2-inhale.list
