@@ -93,7 +93,7 @@ template<class T> class Quantum;
 //   freqs(0) = 1.4e9; freqs(1) = 1.41e9;
 //   freqs(2) = 1.43e9; freqs(3) = 1.44e9;
 //   freqs(4) = 1.47e9;
-//   SpectralCoordinate sc(MFrequency::LSR, freqs, restfreq);
+//   SpectralCoordinate sc(MFrequency::LSRK, freqs, restfreq);
 //
 //   Double world, pixel;
 //   world = 1.42e9;
