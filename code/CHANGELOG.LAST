@@ -1,0 +1,12 @@
+
+change id: 0057
+ author:   Wim Brouw
+ date:     2000/11/23
+ avers:    1.5
+ area:     Library
+ package:  aips
+ module:   Quanta
+ type:     Code
+ category: New
+ summary:  Added log, exp and root of qunatities
+Added the functions log, log10, root, exp and sqrt for quantities.
