@@ -2526,3 +2526,4 @@
 11 369 src rm trial/apps/aips2help//atomsaips.g
 11 369 src rm trial/apps/aips2help/atomsnrao.g
 11 369 src rm trial/apps/aips2help/atomssynthesis.g
+11 369 src rm trial/apps/hds
