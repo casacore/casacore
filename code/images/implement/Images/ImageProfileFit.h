@@ -164,8 +164,11 @@ public:
                       const String& xUnitOut,
                       const String& dopplerOut);
 
-    // List all elements to stream (in same units as getElement)
-    void listElements (LogIO& os, const SpectralList& list) const;
+    // Gets the internal SpectralElements (either estimate or fit
+    // depending on what function you called last) into a SpectralList
+    // Only returns False if the field is already defined. Absolute pixel 
+    // coordinate units  are 1-rel on output.
+    const SpectralList& getList () const;
 
     // Reset the internal list of SpectralElements to null 
     void reset ();
