@@ -1,5 +1,5 @@
 //# ArrayMath.cc: Arithmetic functions defined on Arrays
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/ConvertScalar.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/ArrayIter.h>
@@ -1446,13 +1447,11 @@ template<class T, class U> void convertArray(Array<T> &to,
 
     Bool deleteTo, deleteFrom;
     T *toptr = to.getStorage(deleteTo);
-    T *origTo = toptr;
     const U *fromptr = from.getStorage(deleteFrom);
-    const U *origFrom = fromptr;
-    const U *endFrom = fromptr + from.nelements();
-    while (fromptr < endFrom) {
-	*toptr++ = *fromptr++;
+    uInt n = from.nelements();
+    for (uInt i=0; i<n; i++) {
+	convertScalar (toptr[i], fromptr[i]);
     }
-    to.putStorage(origTo, deleteTo);
-    from.freeStorage(origFrom, deleteFrom);
+    to.putStorage(toptr, deleteTo);
+    from.freeStorage(fromptr, deleteFrom);
 }
