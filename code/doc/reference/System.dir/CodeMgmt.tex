@@ -182,7 +182,7 @@ directory.
 \sref{RCS directories}).  Programmers who have an account on the \aipspp\ 
 master host, \host{aips2.nrao.edu}, may instead use a related utility,
 \exeref{rai}, which invokes \exe{ai} remotely on the master host via
-\unixexe{rsh}.
+\unixexe{ssh}.
 
 \subsection*{Options}
 
@@ -344,7 +344,7 @@ The unix manual page for \unixexe{chmod}(1).\\
 \exeref{av}, \aipspp\ filename validation utility.\\
 \exeref{ax}, \aipspp\ code deletion utility.\\
 \exeref{mktree}, create \aipspp\ directory hierarchy.\\
-\exeref{rai}, invoke \exe{ai} remotely via \unixexe{rsh}(1).\\
+\exeref{rai}, invoke \exe{ai} remotely via \unixexe{ssh}(1).\\
 \exeref{xrcs}, verify the internal consistency of \rcs\ version files.
 
 \subsection*{Author}
@@ -388,7 +388,7 @@ where \file{\$AIPSMSTR} is expected to be \textsc{nfs} mounted from the
 \aipspp\ master host (see \sref{RCS directories}).  Programmers who have an
 account on the \aipspp\ master host, \host{aips2.nrao.edu}, may instead use a
 related utility, \exeref{rao}, which invokes \exe{ao} remotely on the master
-host via \unixexe{rsh}.
+host via \unixexe{ssh}.
 
 \subsection*{Options}
 
@@ -511,7 +511,7 @@ The unix manual page for \unixexe{chmod}(1).\\
 \exeref{au}, \aipspp\ code update utility.\\
 \exeref{ax}, \aipspp\ code deletion utility.\\
 \exeref{mktree}, create \aipspp\ directory hierarchy.\\
-\exeref{rao}, invoke \exe{ao} remotely via \unixexe{rsh}(1).
+\exeref{rao}, invoke \exe{ao} remotely via \unixexe{ssh}(1).
 
 \subsection*{Author}
 
@@ -1071,7 +1071,7 @@ installation.
 
 Programmers who have an account on the \aipspp\ master host,
 \host{aips2.nrao.edu}, may instead use a related utility, \exeref{rau}, which
-uses \unixexe{rsh} to transfer the \rcs\ version files in compressed form.
+uses \unixexe{ssh} to transfer the \rcs\ version files in compressed form.
 
 Programmers on a Linux or Digital UNIX platform, or on any other
 platform that does not support setuid shell scripts, should instead use
@@ -1127,7 +1127,7 @@ The unix manual page for \unixexe{chmod}(1).\\
 \exeref{amv}, \aipspp\ code rename utility.\\
 \exeref{ao}, \aipspp\ code checkout utility.\\
 \exeref{ax}, \aipspp\ code deletion utility.\\
-\exeref{rau}, update \aipspp\ sources from the master via \unixexe{rsh}(1).\\
+\exeref{rau}, update \aipspp\ sources from the master via \unixexe{ssh}(1).\\
 \exeref{sau}, \aipspp\ code update utility.\\
 \exeref{mktree}, create \aipspp\ directory hierarchy.
 
@@ -1878,7 +1878,7 @@ Original: 1992/03/07 by Peter Teuben, BIMA.
 \index{master host}
 \index{code!management!checkin|see{@\exe{rai}}}
  
-Check in \aipspp\ sources by invoking \exeref{ai} remotely via \unixexe{rsh}.
+Check in \aipspp\ sources by invoking \exeref{ai} remotely via \unixexe{ssh}.
 
 \subsection*{Synopsis}
  
@@ -1888,15 +1888,16 @@ Check in \aipspp\ sources by invoking \exeref{ai} remotely via \unixexe{rsh}.
  
 \subsection*{Description}
  
-\exe{rai} is an \unixexe{rsh}-based front-end to \exeref{ai}.  It checks in
-files by transmitting them to the \aipspp\ master host via \unixexe{rsh} as a
+\exe{rai} is an \unixexe{ssh}-based front-end to \exeref{ai}.  It checks in
+files by transmitting them to the \aipspp\ master host via \unixexe{ssh} as a
 \unixexe{gzip}'d tar file and running \aipsexe{ai} there.  This is provided as
 an alternative to invoking \aipsexe{ai} directly on a machine on which the
 \aipspp\ master directory is remotely \textsc{nfs} mounted.
 
 In order to use \exe{rai} a programmer must have an account on
-\host{aips2.nrao.edu} and it must be set up for \unixexe{rsh} access from the
-local host via a suitable entry in the \file{.rhosts} file.  The programmer
+\host{aips2.nrao.edu} and it must be set up for \unixexe{ssh} access from the
+local host via a suitable entry in the \file{.ssh/authorized\_keys} file.  The
+programmer
 must also have an up-to-date \aipspp\ workspace on \host{aips2.nrao.edu} and
 it \emph{must} be  rooted at \file{\$HOME/aips++} (see \exeref{mktree}).
 
@@ -1921,13 +1922,13 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
       It transfers files in compressed form.
 
    \item
-      Although it needs to invoke \unixexe{rsh} two or three times the
+      Although it needs to invoke \unixexe{ssh} two or three times the
       overhead involved in this is less than that of one automount of a
       remote filesystem.
    \end{itemize}
 
 \item
-   When accessing \host{aips2.nrao.edu} via \unixexe{rsh} the programmer's
+   When accessing \host{aips2.nrao.edu} via \unixexe{ssh} the programmer's
    login initialization scripts (e.g. \file{.bashrc}, \file{.cshrc},
    \file{.esrc}, \file{.login}, \file{.profile}, \file{.rcrc}, \file{.tcshrc})
    must not consume \file{stdin} or write to \file{stdout} or \file{stderr}.
@@ -1937,28 +1938,25 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
    account name an environment variable may be used to translate between them:
 
 \begin{verbatim}
-   ARSH="rsh aips2.nrao.edu -l <remotename>"
+   ARSH="ssh aips2.nrao.edu -l <remotename>"
 \end{verbatim}
 
    \noindent
-   The \file{.rhosts} file for the \acct{remotename} account on
-   \host{aips2.nrao.edu} should have an entry of the form
 
-\begin{verbatim}
-   <localhost> <localname>
-\end{verbatim}
+   The \file{.ssh/authorized\_keys} file for the \acct{remotename} account on
+   \host{aips2.nrao.edu} should have an entry for each machine you may want
+   to use remotely.
 
    \noindent
-   where \host{localhost} is the (case-sensitive) name by which the local
-   host identifies itself when \unixexe{ping -s} is run on
-   \host{aips2.nrao.edu} and \acct{localname} is the local account name.
+   you will need to run ssh-keygen and put the generated key in the 
+   \file{.ssh/authorized\_keys} on \host{aips2.nrao.edu}
 
 \item
    \exe{rai} is not failsafe in the way that \aipsexe{ai} is failsafe.  It has
    no way of determining whether a checkin succeeded and so provides no
    guarantees one way or the other.  This arises because of the difficulty in
    recovering status returns from complicated command sequences executed by
-   \unixexe{rsh}.
+   \unixexe{ssh}.
 
    If a checkin fails the error message from \unixexe{ci} will be visible on
    \file{stderr} but \exe{rai} will not catch an error return.  The only
@@ -1976,7 +1974,7 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
 
 \item
    \exe{rai} exhibits the following differencees from \aipsexe{ai} by virtue
-   of the fact that it runs \aipsexe{ai} remotely through an \unixexe{rsh}:
+   of the fact that it runs \aipsexe{ai} remotely through an \unixexe{ssh}:
 
    \begin{itemize}
    \item
@@ -1988,7 +1986,7 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
 
       you must terminate with a single ``\code{.}'' and not use \verb+^D+.
       The reason is simply that \verb+^D+ means ``end-of-file'' to the
-      \unixexe{rsh} as well as \unixexe{ci}, so if you use \verb+^D+ when
+      \unixexe{ssh} as well as \unixexe{ci}, so if you use \verb+^D+ when
       checking in multiple files \unixexe{ci} will not accept change messages
       for succeeding files.
 
@@ -1997,7 +1995,7 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
    \end{itemize}
 
 \item
-   \unixexe{rsh} is used as the transfer agent rather than \unixexe{ftp} since
+   \unixexe{ssh} is used as the transfer agent rather than \unixexe{ftp} since
    the latter requires a password to be supplied for each remote access. 
 \end{itemize}
 
@@ -2044,13 +2042,13 @@ The manual page for \unixexe{ci}(1), the \rcs\ checkin command.\\
 The GNU manual page for \unixexe{gzip}(1).\\
 The unix manual page for \unixexe{ftp}(1).\\
 The unix manual page for \unixexe{ping}(1).\\
-The unix manual page for \unixexe{rsh}(1).\\
+The unix manual page for \unixexe{ssh}(1).\\
 \exeref{ai}, \aipspp\ code checkin utility.\\
 \exeref{ao}, \aipspp\ code checkout utility.\\
 \exeref{au}, \aipspp\ code update utility.\\
 \exeref{mktree} create \aipspp\ directory hierarchy.\\
-\exeref{rao}, invoke \exe{ao} remotely via \unixexe{rsh}(1).\\
-\exeref{rau}, update \aipspp\ sources from the master via \unixexe{rsh}(1).
+\exeref{rao}, invoke \exe{ao} remotely via \unixexe{ssh}(1).\\
+\exeref{rau}, update \aipspp\ sources from the master via \unixexe{ssh}(1).
  
 \subsection*{Author}
  
@@ -2065,7 +2063,7 @@ Original: 1996/08/06 by Mark Calabretta, ATNF.
 \index{master host}
 \index{code!management!checkout|see{@\exe{rao}}}
  
-Check out \aipspp\ sources by invoking \exeref{ao} remotely via \unixexe{rsh}.
+Check out \aipspp\ sources by invoking \exeref{ao} remotely via \unixexe{ssh}.
 
 \subsection*{Synopsis}
  
@@ -2075,15 +2073,16 @@ Check out \aipspp\ sources by invoking \exeref{ao} remotely via \unixexe{rsh}.
  
 \subsection*{Description}
  
-\exe{rao} is an \unixexe{rsh}-based front-end to \exeref{ao}.  It checks out
+\exe{rao} is an \unixexe{ssh}-based front-end to \exeref{ao}.  It checks out
 files by running \aipsexe{ao} on the \aipspp\ master host and transmitting
-them to the local host via \unixexe{rsh} as a \unixexe{gzip}'d tar file.  This
+them to the local host via \unixexe{ssh} as a \unixexe{gzip}'d tar file.  This
 is provided as an alternative to invoking \aipsexe{ao} directly on a machine
 on which the \aipspp\ master directory is remotely \textsc{nfs} mounted.
  
 In order to use \exe{rao} a programmer must have an account on
-\host{aips2.nrao.edu} and it must be set up for \unixexe{rsh} access from the
-local host via a suitable entry in the \file{.rhosts} file.  The programmer
+\host{aips2.nrao.edu} and it must be set up for \unixexe{ssh} access from the
+local host via a suitable entry in the \file{.ssh/authorized\_keys} file.  The
+programmer
 must also have an up-to-date \aipspp\ workspace on \host{aips2.nrao.edu} and
 it \emph{must} be  rooted at \file{\$HOME/aips++} (see \exeref{mktree}).
  
@@ -2108,12 +2107,12 @@ Refer to the options for \exeref{ao}.  \exe{rao} itself has no options.
       It transfers files in compressed form.
  
    \item
-      The overhead involved in the invokation of \unixexe{rsh} is much less
+      The overhead involved in the invokation of \unixexe{ssh} is much less
       than that of one automount of a remote filesystem.
    \end{itemize}
  
 \item
-   When accessing \host{aips2.nrao.edu} via \unixexe{rsh} the programmer's
+   When accessing \host{aips2.nrao.edu} via \unixexe{ssh} the programmer's
    login initialization scripts (e.g. \file{.bashrc}, \file{.cshrc},
    \file{.esrc}, \file{.login}, \file{.profile}, \file{.rcrc}, \file{.tcshrc})
    must not consume \file{stdin} or write to \file{stdout} or \file{stderr}.
@@ -2123,24 +2122,20 @@ Refer to the options for \exeref{ao}.  \exe{rao} itself has no options.
    account name an environment variable may be used to translate between them:
  
 \begin{verbatim}
-   ARSH="rsh aips2.nrao.edu -l <remotename>"
+   ARSH="ssh aips2.nrao.edu -l <remotename>"
 \end{verbatim}
  
    \noindent
-   The \file{.rhosts} file for the \acct{remotename} account on
-   \host{aips2.nrao.edu} should have an entry of the form
- 
-\begin{verbatim}
-   <localhost> <localname>
-\end{verbatim}
- 
+   The \file{.ssh/authorized\_keys} file for the \acct{remotename} account on
+   \host{aips2.nrao.edu} should have an entry for each machine you may want
+   to use remotely.
+
    \noindent
-   where \host{localhost} is the (case-sensitive) name by which the local
-   host identifies itself when \unixexe{ping -s} is run on
-   \host{aips2.nrao.edu} and \acct{localname} is the local account name.
+   you will need to run ssh-keygen and put the generated key in the 
+   \file{.ssh/authorized\_keys} on \host{aips2.nrao.edu}
  
 \item
-   \unixexe{rsh} is used as the transfer agent rather than \unixexe{ftp} since
+   \unixexe{ssh} is used as the transfer agent rather than \unixexe{ftp} since
    the latter requires a password to be supplied for each remote access.
 
 \item
@@ -2195,13 +2190,13 @@ The manual page for \unixexe{co}(1), the \rcs\ checkout command.\\
 The GNU manual page for \unixexe{gzip}(1).\\
 The unix manual page for \unixexe{ftp}(1).\\
 The unix manual page for \unixexe{ping}(1).\\
-The unix manual page for \unixexe{rsh}(1).\\
+The unix manual page for \unixexe{ssh}(1).\\
 \exeref{ai}, \aipspp\ code checkin utility.\\
 \exeref{ao}, \aipspp\ code checkout utility.\\
 \exeref{au}, \aipspp\ code update utility.\\
 \exeref{mktree} create \aipspp\ directory hierarchy.\\
-\exeref{rai}, invoke \exe{ai} remotely via \unixexe{rsh}(1).\\
-\exeref{rau}, update \aipspp\ sources from the master via \unixexe{rsh}(1).
+\exeref{rai}, invoke \exe{ai} remotely via \unixexe{ssh}(1).\\
+\exeref{rau}, update \aipspp\ sources from the master via \unixexe{ssh}(1).
 
 \subsection*{Author}
  
@@ -2216,7 +2211,7 @@ Original: 1996/08/06 by Mark Calabretta, ATNF.
 \index{master host}
 \index{code!management!update|see{@\exe{rau}}}
  
-Update \aipspp\ sources from the master via \unixexe{rsh}.
+Update \aipspp\ sources from the master via \unixexe{ssh}.
 
 \subsection*{Synopsis}
  
@@ -2232,8 +2227,9 @@ alternative to \aipsexe{au} which operates on machines on which the \aipspp\
 master directory is remotely \textsc{nfs} mounted.
 
 In order to use \exe{rau} a programmer must have an account on
-\host{aips2.nrao.edu} and it must be set up for \unixexe{rsh} access from the
-local host via a suitable entry in the \file{.rhosts} file.  The programmer
+\host{aips2.nrao.edu} and it must be set up for \unixexe{ssh} access from the
+local host via a suitable entry in the \file{.ssh/authorized\_keys} file.  The
+programmer
 must also have an up-to-date \aipspp\ workspace on \host{aips2.nrao.edu} and
 it \emph{must} be  rooted at \file{\$HOME/aips++}.
 
@@ -2244,7 +2240,7 @@ path or \rcs\ \file{,v} suffix.  \exe{rau} determines the corresponding master
 directory from the current working directory.
 
 \exe{rau} transmits files from the master host to the local host via
-\unixexe{rsh} as a \unixexe{gzip}'d tar file.  It gives them a file ownership
+\unixexe{ssh} as a \unixexe{gzip}'d tar file.  It gives them a file ownesship
 defined by the owner of \exe{rau} (aips2mgr at the local site).  \exe{rau}
 must itself have the \code{setuid} bit set (see \unixexe{chmod}).
  
@@ -2278,12 +2274,12 @@ None.
       It transfers files in compressed form.
  
    \item
-      The overhead involved in the invokation of \unixexe{rsh} is much less
+      The overhead involved in the invokation of \unixexe{ssh} is much less
       than that of one automount of a remote filesystem.
    \end{itemize}
  
 \item
-   When accessing \host{aips2.nrao.edu} via \unixexe{rsh} the programmer's
+   When accessing \host{aips2.nrao.edu} via \unixexe{ssh} the programmer's
    login initialization scripts (e.g. \file{.bashrc}, \file{.cshrc},
    \file{.esrc}, \file{.login}, \file{.profile}, \file{.rcrc}, \file{.tcshrc})
    must not consume \file{stdin} or write to \file{stdout} or \file{stderr}.
@@ -2293,24 +2289,20 @@ None.
    account name an environment variable may be used to translate between them:
  
 \begin{verbatim}
-   ARSH="rsh aips2.nrao.edu -l <remotename>"
+   ARSH="ssh aips2.nrao.edu -l <remotename>"
 \end{verbatim}
  
    \noindent
-   The \file{.rhosts} file for the \acct{remotename} account on
-   \host{aips2.nrao.edu} should have an entry of the form
- 
-\begin{verbatim}
-   <localhost> <localname>
-\end{verbatim}
- 
+   The \file{.ssh/authorized\_keys} file for the \acct{remotename} account on
+   \host{aips2.nrao.edu} should have an entry for each machine you may want
+   to use remotely.
+
    \noindent
-   where \host{localhost} is the (case-sensitive) name by which the local
-   host identifies itself when \unixexe{ping -s} is run on
-   \host{aips2.nrao.edu} and \acct{localname} is the local account name.
+   you will need to run ssh-keygen and put the generated key in the 
+   \file{.ssh/authorized\_keys} on \host{aips2.nrao.edu}
  
 \item
-   \unixexe{rsh} is used as the transfer agent rather than \unixexe{ftp} since
+   \unixexe{ssh} is used as the transfer agent rather than \unixexe{ftp} since
    the latter requires a password to be supplied for each remote access.
 \end{itemize}
 
@@ -2348,13 +2340,13 @@ The manual page for \unixexe{co}(1), the \rcs\ checkout command.\\
 The GNU manual page for \unixexe{gzip}(1).\\
 The unix manual page for \unixexe{ftp}(1).\\
 The unix manual page for \unixexe{ping}(1).\\
-The unix manual page for \unixexe{rsh}(1).\\
+The unix manual page for \unixexe{ssh}(1).\\
 \exeref{ai}, \aipspp\ code checkin utility.\\
 \exeref{ao}, \aipspp\ code checkout utility.\\
 \exeref{au}, \aipspp\ code update utility.\\
 \exeref{mktree} create \aipspp\ directory hierarchy.\\
-\exeref{rai}, invoke \exe{ai} remotely via \unixexe{rsh}(1).\\
-\exeref{rao}, invoke \exe{ao} remotely via \unixexe{rsh}(1).\\
+\exeref{rai}, invoke \exe{ai} remotely via \unixexe{ssh}(1).\\
+\exeref{rao}, invoke \exe{ao} remotely via \unixexe{ssh}(1).\\
 \exeref{sau}, \aipspp\ code update utility.
  
 \subsection*{Author}
