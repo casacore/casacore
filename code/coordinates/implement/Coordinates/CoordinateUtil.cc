@@ -40,7 +40,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-void addDirAxes(CoordinateSystem & coords){
+void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
   Matrix<Double> xform(2, 2); xform = 0.0; xform.diagonal() = 1.0;
   DirectionCoordinate dirAxes(MDirection::J2000, 
 			       Projection(Projection::SIN),
@@ -57,7 +57,7 @@ void addDirAxes(CoordinateSystem & coords){
   // Add the direction coordinates to the system. 
   coords.addCoordinate(dirAxes);
 }
-void addIQUVAxis(CoordinateSystem & coords){
+void CoordinateUtil::addIQUVAxis(CoordinateSystem & coords){
   Vector<Int> pols(4);
   pols(0) = Stokes::I;
   pols(1) = Stokes::Q;
@@ -67,7 +67,7 @@ void addIQUVAxis(CoordinateSystem & coords){
   // Add the stokes coordinates to the system. 
   coords.addCoordinate(polAxis);
 }
-void addIAxis(CoordinateSystem & coords){
+void CoordinateUtil::addIAxis(CoordinateSystem & coords){
   Vector<Int> pols(1);
   pols(0) = Stokes::I;
   StokesCoordinate polAxis(pols);
@@ -75,7 +75,7 @@ void addIAxis(CoordinateSystem & coords){
   coords.addCoordinate(polAxis);
 }
 
-void addFreqAxis(CoordinateSystem & coords){
+void CoordinateUtil::addFreqAxis(CoordinateSystem & coords){
   SpectralCoordinate freqAxis(MFrequency::LSR, // Local standard of rest
 			      1415E6,          // ref. freq. = 1415MHz
 			      1E3,             // 1 kHz bandwidth/channel
@@ -84,40 +84,40 @@ void addFreqAxis(CoordinateSystem & coords){
   coords.addCoordinate(freqAxis);
 }
 
-CoordinateSystem defaultCoords2D(){
+CoordinateSystem CoordinateUtil::defaultCoords2D(){
   CoordinateSystem coords;
-  addDirAxes(coords);
+  CoordinateUtil::addDirAxes(coords);
   return coords;
 }
-CoordinateSystem defaultCoords3D(){
+CoordinateSystem CoordinateUtil::defaultCoords3D(){
   CoordinateSystem coords;
-  addDirAxes(coords);
-  addFreqAxis(coords);
+  CoordinateUtil::addDirAxes(coords);
+  CoordinateUtil::addFreqAxis(coords);
   return coords;
 }
-CoordinateSystem defaultCoords4D(){
+CoordinateSystem CoordinateUtil::defaultCoords4D(){
   CoordinateSystem coords;
-  addDirAxes(coords);
-  addIQUVAxis(coords);
-  addFreqAxis(coords);
+  CoordinateUtil::addDirAxes(coords);
+  CoordinateUtil::addIQUVAxis(coords);
+  CoordinateUtil::addFreqAxis(coords);
   return coords;
 }
 
-CoordinateSystem defaultCoords(uInt dims){
+CoordinateSystem CoordinateUtil::defaultCoords(uInt dims){
   switch (dims){
   case 2:
-    return defaultCoords2D();
+    return CoordinateUtil::defaultCoords2D();
   case 3:
-    return defaultCoords3D();
+    return CoordinateUtil::defaultCoords3D();
   case 4:
-    return defaultCoords4D();
+    return CoordinateUtil::defaultCoords4D();
   default:
     throw(AipsError("defaultCoords() - cannot create cordinates except "
 		    "for a 2, 3 or 4-dimensional image"));
   }
 }
 
-Int findSpectralAxis(const CoordinateSystem & coords) {
+Int CoordinateUtil::findSpectralAxis(const CoordinateSystem & coords) {
   const Int freqCoordAxis = coords.findCoordinate(Coordinate::SPECTRAL);
   if (freqCoordAxis < 0) 
     return freqCoordAxis;
@@ -128,7 +128,7 @@ Int findSpectralAxis(const CoordinateSystem & coords) {
   return pixelAxes(0);
 }
 
-Vector<uInt> findDirectionAxes(const CoordinateSystem & coords) {
+Vector<uInt> CoordinateUtil::findDirectionAxes(const CoordinateSystem & coords) {
   const Int dirCoordAxis = coords.findCoordinate(Coordinate::DIRECTION);
   Vector<uInt> retVal;
   if (dirCoordAxis < 0) 
@@ -153,7 +153,7 @@ Vector<uInt> findDirectionAxes(const CoordinateSystem & coords) {
   return retVal;
 }
 
-Int findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords) {
+Int CoordinateUtil::findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords) {
   const Int polCoordAxis = coords.findCoordinate(Coordinate::STOKES);
   if (polCoordAxis < 0) {
     whichPols.resize(1);
