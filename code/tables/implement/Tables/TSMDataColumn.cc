@@ -294,7 +294,7 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
     IPosition start (end.nelements(), 0);
     IPosition stride (end.nelements(), 1);
     IPosition blc, trc, inc;
-    IPosition slice = ns.inferShapeFromSource (shapeColumn(), blc, trc, inc);
+    IPosition slice = ns.inferShapeFromSource (shape(0), blc, trc, inc);
     // Set the correct start and end of the slice in the hypercube.
     // The entire column is accessed, thus all scalar coordinates.
     // A slice of each data cell is accessed, thus copy the Slicer
