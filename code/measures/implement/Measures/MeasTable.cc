@@ -249,15 +249,15 @@ void MeasTable::calcPlanArg00(Bool &need,
   if (need) {
     need = False;
     for (uInt i=0; i<5; i++) result[i] = fundArg2000(i+1);
-    for (uInt i=6; i<14; i++) {
+    for (uInt i=5; i<13; i++) {
       result[i] = Polynomial<Double>(1);
       for (uInt j=0; j<2; j++) {
 	result[i].setCoefficient(j, coeff[i-6][j]*C::arcsec);
       };
     };
-    result[14] = Polynomial<Double>(2);
+    result[13] = Polynomial<Double>(2);
     for (uInt j=0; j<3; j++) {
-      result[14].setCoefficient(j, APA[j]*C::arcsec);
+      result[13].setCoefficient(j, APA[j]*C::arcsec);
     };    
   };
 }    
@@ -2157,7 +2157,7 @@ const Vector<Double> &MeasTable::mulSC2000B(uInt which, Double T) {
   static Bool needInit = True;
   static Double checkT = -1e30;
   static Vector<Double> argArray[77];
-  static Polynomial<Double> polyArray[77];
+  static Polynomial<Double> polyArray[2*77];
   static const Long MULSC[77][6] = {
   //          Longitude                Obliquity
   //  sin       t.sin     cos     cos     t.cos   sin
@@ -2248,7 +2248,7 @@ const Vector<Double> &MeasTable::mulSC2000A(uInt which, Double T) {
   static Bool needInit = True;
   static Double checkT = -1e30;
   static Vector<Double> argArray[678];
-  static Polynomial<Double> polyArray[678];
+  static Polynomial<Double> polyArray[2*678];
   // Luni-Solar nutation coefficients, unit 1e-7 arcsec
   static const Long MULSC[678][6] = {
   //           Longitude                Obliquity
