@@ -401,6 +401,11 @@ public:
     // Tables are not reopened if they are not writable.
     void reopenRW();
 
+    // Set the attributes of subtables to te ones in the other record.
+    // It is primarily a helper function for PlainTable::syncTable
+    // and ColumnSet::syncColumns.
+    void setTableAttr (const TableRecord& other, const TableAttr& defaultAttr);
+
     // Make a unique record representation
     // (to do copy-on-write in RecordFieldPtr).
     virtual void makeUnique();

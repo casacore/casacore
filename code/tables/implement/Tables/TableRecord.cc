@@ -387,3 +387,38 @@ void TableRecord::getRecord (AipsIO& os, const TableAttr& parentAttr)
     rwRef().getRecord (os, type, parentAttr);
     recordType() = (RecordInterface::RecordType)type;
 }
+
+
+void TableRecord::setTableAttr (const TableRecord& other,
+				const TableAttr& defaultAttr)
+{
+  uInt n = other.nfields();
+  const RecordDesc& desc = description();
+  for (uInt i=0; i<n; i++) {
+    DataType dtype = desc.type(i);
+    if (dtype == TpRecord) {
+      // Handle a subrecord (which may contain subtables).
+      TableRecord& subrec = *(TableRecord*)(get_pointer (i, dtype));
+      // Take the corresponding subrecord from the other keyset.
+      // Use an empty record if undefined.
+      const String& fname = desc.name(i);
+      if (other.isDefined (fname)) {
+	subrec.setTableAttr (other.subRecord(fname), defaultAttr);
+      } else {
+	subrec.setTableAttr (TableRecord(), defaultAttr);
+      }
+    } else if (dtype == TpTable) {
+      // Handle a subtable.
+      TableKeyword& tabkey = *(TableKeyword*)(get_pointer (i, dtype));
+      // Get the attributes from other; use the default one if undefined.
+      TableAttr attr(defaultAttr);
+      const String& fname = desc.name(i);
+      if (other.isDefined (fname)) {
+	attr = other.tableAttributes (fname);
+      }
+      // Always use the new name.
+      attr.setName (tabkey.tableAttributes().name());
+      tabkey.setTableAttributes (attr);
+    }
+  }
+}
