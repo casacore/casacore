@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995, Mark Calabretta
+*   Copyright (C) 1995-1999, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -89,7 +89,9 @@
 *   $Id$
 *===========================================================================*/
 
+#include <math.h>
 #include "wcstrig.h"
+#include "sph.h"
 
 #ifndef __STDC__
 #ifndef const
