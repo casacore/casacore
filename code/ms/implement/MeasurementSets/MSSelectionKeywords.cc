@@ -118,6 +118,7 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
     map.define("ref_frequency",REF_FREQUENCY);
     map.define("rows",ROWS);
     map.define("scan_number",SCAN_NUMBER);
+    map.define("sigma",SIGMA);
     map.define("time",TIME);
     map.define("times",TIMES);
     map.define("u",U);
