@@ -62,7 +62,7 @@ T *__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
 			      T const &, __false_type);
 
 #else
-#define AIPS_MVECTORAUX_TEMPLATES(T)
+#define AIPS_VECTOR_AUX_TEMPLATES(T)
 #endif
 
 #endif
