@@ -36,7 +36,8 @@
 #include <strstream.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
-  : transform_p(naxis), names_p(naxis), units_p(naxis), crval_p(naxis)
+  : Coordinate(),
+    transform_p(naxis), names_p(naxis), units_p(naxis), crval_p(naxis)
 {
     crval_p.set(0);
 }
@@ -47,7 +48,8 @@ LinearCoordinate::LinearCoordinate(const Vector<String> &names,
 				   const Vector<Double> &inc,
 				   const Matrix<Double> &xform,
 				   const Vector<Double> &refPix)
-  : transform_p(refPix, inc, xform), 
+  : Coordinate(),
+    transform_p(refPix, inc, xform), 
     names_p(names.nelements()),
     units_p(names.nelements()), crval_p(names.nelements())
 {
@@ -66,7 +68,8 @@ LinearCoordinate::LinearCoordinate(const Vector<String> &names,
 }
 
 LinearCoordinate::LinearCoordinate(const LinearCoordinate &other)
-    : transform_p(other.transform_p), names_p(other.names_p.copy()),
+    : Coordinate(other),
+      transform_p(other.transform_p), names_p(other.names_p.copy()),
       units_p(other.units_p.copy()), crval_p(other.crval_p)
 {
     // Nothing
@@ -75,6 +78,8 @@ LinearCoordinate::LinearCoordinate(const LinearCoordinate &other)
 LinearCoordinate &LinearCoordinate::operator=(const LinearCoordinate &other)
 {
     if (this != &other) {
+        Coordinate::operator=(other);
+//
 	uInt naxis = other.nWorldAxes();
 	names_p.resize(naxis); names_p = other.names_p;
 	units_p.resize(naxis); units_p = other.units_p;
@@ -111,17 +116,16 @@ uInt LinearCoordinate::nWorldAxes() const
     return nPixelAxes();
 }
 
-    static String errmsg;
 Bool LinearCoordinate::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
    uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
-   world.resize(n);
    AlwaysAssert(pixel.nelements()==n, AipsError);
+   if (world.nelements()!=n) world.resize(n);
 //
-   Bool ok = transform_p.reverse(world, pixel, errmsg);
+   Bool ok = transform_p.reverse(world, pixel, errorMsg_p);
    if (!ok) {
-      set_error(errmsg);
+      set_error(errorMsg_p);
    } else {
       for (uInt i=0; i<n; i++) {
          world(i) += crval_p[i];
@@ -134,14 +138,15 @@ Bool LinearCoordinate::toPixel(Vector<Double> &pixel,
 			       const Vector<Double> &world) const
 {
    uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
-   pixel.resize(n);
    AlwaysAssert(world.nelements()==n, AipsError);
+   if (pixel.nelements()!=n) pixel.resize(n);
+//
    for (uInt i=0; i<n; i++) {
       pixel(i) = world(i) - crval_p[i];
    }
-   Bool ok = transform_p.forward(pixel, pixel, errmsg);
+   Bool ok = transform_p.forward(pixel, pixel, errorMsg_p);
    if (!ok) {
-      set_error(errmsg);
+      set_error(errorMsg_p);
    }
    return ok;
 }
