@@ -94,8 +94,6 @@ int main(int argc, char **argv)
 
 //cout << "pixels=" << pixels.ac() << endl;
 
-//
-
    Vector<Double> parameters(gauss2d.nAvailableParams());
    Vector<Bool> parameterMask(parameters.nelements(), True);
    Vector<Int> iMask(parameters.nelements(), 1);
@@ -124,6 +122,16 @@ int main(int argc, char **argv)
    }
    cout << "Number of models = " << fitter.nModels() << endl;
 //
+
+cout << endl << endl;
+/*
+cout << "pixels=" << pixels.ac() << endl;
+cout << "mask=" << pixelMask.ac() << endl;
+cout << "sigma=" << sigma.ac() << endl;
+cout << "norm=" << norm << endl;
+cout << endl << endl;
+*/
+
    Fit2D::ErrorTypes status = fitter.fit(pixels, pixelMask, sigma, norm);
    if (status==Fit2D::OK) {
       cout << "Number of iterations = " << fitter.numberIterations() << endl;
@@ -146,6 +154,38 @@ int main(int argc, char **argv)
      logger << fitter.errorMessage() << endl;
    }
 
+// Test copy constructor
+  
+   {
+      cout << endl << endl << "Test copy constructor" << endl;
+      Fit2D fitter2(fitter);
+      Fit2D::ErrorTypes status = fitter2.fit(pixels, pixelMask, sigma, norm);      
+      if (!allEQ(fitter.availableSolution().ac(),fitter2.availableSolution().ac()) ||
+          fitter.numberIterations() != fitter2.numberIterations() ||
+          fitter.chiSquared() != fitter2.chiSquared() ||
+          fitter.numberPoints() != fitter2.numberPoints()) {
+         cout << "Failed copy constructor test" << endl;
+      } else {
+         cout << "Copy constructor test ok" << endl;
+      }
+   }
+
+// Test assignment
+
+   {
+      cout << endl << endl << "Test assignment operator" << endl;
+      Fit2D fitter2(logger);
+      fitter2 = fitter;
+      Fit2D::ErrorTypes status = fitter2.fit(pixels, pixelMask, sigma, norm);
+      if (!allEQ(fitter.availableSolution().ac(),fitter2.availableSolution().ac()) ||
+          fitter.numberIterations() != fitter2.numberIterations() ||
+          fitter.chiSquared() != fitter2.chiSquared() ||
+          fitter.numberPoints() != fitter2.numberPoints()) {
+         cout << "Failed assignment test" << endl;
+      } else {
+         cout << "Assignment test ok" << endl;
+      }
+   }
  } catch (AipsError x) {
       cout << "Failed with message " << x.getMesg() << endl;
  } end_try;  
