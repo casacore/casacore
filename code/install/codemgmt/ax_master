@@ -4651,3 +4651,4 @@
 14 300 src mv trial/implement/MeasurementSets/test/tNewMSDerivedValues.cc trial/implement/MeasurementSets/test/tMSDerivedValues.cc
 14 300 src mv trial/implement/MeasurementSets/test/tNewMSSimulator.cc trial/implement/MeasurementSets/test/tMSSimulator.cc
 14 300 src mv trial/apps/newms/newms.cc trial/apps/newms/oldms.cc
+14 300 src mv trial/apps/newms/newmsFactory.cc trial/apps/newms/oldmsFactory.cc
