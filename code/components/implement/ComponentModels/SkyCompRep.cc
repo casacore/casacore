@@ -57,24 +57,21 @@ SkyCompRep::SkyCompRep()
 }
 
 SkyCompRep::SkyCompRep(const ComponentType::Shape & shape)
-  :itsShapePtr((ComponentShape *) 0),
+  :itsShapePtr(ComponentType::construct(shape)),
    itsSpectrumPtr(new ConstantSpectrum),
    itsFlux(),
    itsLabel()
 {
-  initShape(shape);
   DebugAssert(ok(), AipsError);
 }
 
 SkyCompRep::SkyCompRep(const ComponentType::Shape & shape,
 		       const ComponentType::SpectralShape & spectrum)
-  :itsShapePtr((ComponentShape *) 0),
-   itsSpectrumPtr((SpectralModel *) 0),
+  :itsShapePtr(ComponentType::construct(shape)),
+   itsSpectrumPtr(ComponentType::construct(spectrum)),
    itsFlux(),
    itsLabel()
 {
-  initShape(shape);
-  initSpectrum(spectrum);
   DebugAssert(ok(), AipsError);
 }
 
@@ -345,36 +342,6 @@ Bool SkyCompRep::ok() const {
     return False;
   }
   return True;
-}
-
-void SkyCompRep::initShape(ComponentType::Shape shape) {
-  switch (shape) {
-  case ComponentType::POINT: 
-    itsShapePtr = new PointShape;
-    break;
-  case ComponentType::GAUSSIAN:
-    itsShapePtr = new GaussianShape;
-    break;
-  default:
-    throw(AipsError(String("SkyCompRep::SkyCompRep(shape,spectrum) - ") + 
-		    String("Cannot construct a SkyCompRep with an ")+ 
-		    ComponentType::name(shape) + String(" shape")));
-  };
-}
-
-void SkyCompRep::initSpectrum(ComponentType::SpectralShape spectrum) {
-  switch (spectrum) {
-  case ComponentType::CONSTANT_SPECTRUM: 
-    itsSpectrumPtr = new ConstantSpectrum;
-    break;
-  case ComponentType::SPECTRAL_INDEX:
-    itsSpectrumPtr = new SpectralIndex;
-    break;
-  default:
-    throw(AipsError(String("SkyCompRep::SkyCompRep(shape,spectrum) - ") + 
-		    String("Cannot construct a SkyCompRep with an ") + 
-		    ComponentType::name(spectrum) + String(" spectrum")));
-  };
 }
 
 void SkyCompRep::project(ImageInterface<Float> & image) const {
