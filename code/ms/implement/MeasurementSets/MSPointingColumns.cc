@@ -1,5 +1,5 @@
 //# MSPointingColumns.cc:  provides easy access to MeasurementSet columns
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -112,15 +112,31 @@ Int ROMSPointingColumns::pointingIndex(Int antenna, Double ptime) const
   const Int nrow = antennaId().nrow();
   for (Int i=0; i<nrow; i++) {
     if (antennaId()(i)==antenna) {
-      Double halfInt = interval()(i)/2;
-      if (halfInt>0) {
- 	if (time()(i) >= ptime - halfInt && time()(i) <= ptime + halfInt) {
- 	  return i;
- 	}
-      } else {
+     Double halfInt=0.0;  
+     if(interval()(i)==0){
+       Int counter=0;
+       Int adder=1;
+ 
+       while(time()(i+counter)==time()(i)){
+	 counter=counter+adder;
+	 if(nrow <= i+counter){
+	   adder=-1; 
+	   counter=0;
+	 }        
+       }       
+       halfInt = abs(time()(i+counter)-time()(i))/2.0;
+     }
+     else{
+       halfInt = interval()(i)/2.0;
+     }
+     if (halfInt>0.0) {
+       if (time()(i) >= ptime - halfInt && time()(i) <= ptime + halfInt) {
+	 return i;
+       }
+     } else {
  	// valid for all times (we should also handle interval<0 -> timestamps)
- 	return i;
-      }
+       return i;
+     }
     }
   }
   return -1;
