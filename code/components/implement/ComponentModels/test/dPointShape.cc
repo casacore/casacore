@@ -1,5 +1,5 @@
 //# dPointCompRep.cc:
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/PointCompRep.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
@@ -33,7 +34,6 @@
 #include <trial/Coordinates/Projection.h>
 #include <trial/Images/PagedImage.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/Lattices/IPosition.h>
@@ -47,11 +47,7 @@ int main() {
     const Quantity J1934_ra = Quantity(19.0, "h").get("'") + Quantity(39, "'");
     const Quantity J1934_dec = Quantity(-63, "deg") + Quantity(-43, "'");
     const MDirection J1934_pos(J1934_ra, J1934_dec, MDirection::J2000);
-    Vector<Double> J1934_flux(4); // Flux has 4 elements (I,Q,U,V)
-    J1934_flux(0) = 6.28;         // Flux is measured in Jy/pixel.
-    J1934_flux(1) = 0.1;
-    J1934_flux(2) = 0.15;
-    J1934_flux(3) = 0.01;
+    Flux<Double> J1934_flux(6.28, 0.1, 0.15, 0.01);
     const PointCompRep J1934(J1934_flux, J1934_pos);
     // This component can now be projected onto an image
     CoordinateSystem coords;
