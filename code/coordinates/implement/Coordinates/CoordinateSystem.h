@@ -656,7 +656,9 @@ public:
 // (perhaps an image from which the CoordinateSystem came)
 // If you give (both of) these, they are included in the listing.  If you pass
 // in zero length <src>IPositions</src> then they are not included in
-// the listing.  
+// the listing.   If <src>postlocally=True</src> the formatted summary lines 
+// are written locally only to the sink, and then returned by the return value 
+// vector.
    Vector<String> list(LogIO& os, MDoppler::Types doppler,
                        const IPosition& latticeShape,
                        const IPosition& tileShape, Bool postLocally=False) const;
