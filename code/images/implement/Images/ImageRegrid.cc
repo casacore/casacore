@@ -114,7 +114,8 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
    IPosition inShape = inImage.shape();
    const uInt nDim = inImage.ndim();
    if (nDim != outImage.ndim()) {
-      throw(AipsError("The input and output images must have the same number of axes"));
+      throw(AipsError("The input and output images must have the same "
+		      "number of axes"));
    }
    const Bool outIsMasked = outImage.isMasked() && outImage.hasPixelMask() &&
                             outImage.pixelMask().isWritable();
@@ -173,9 +174,10 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
           first = False;
         } else {      
 
-// If inPtr == 0, it means that in the previous pass, the coordinate
-// and shape information for the regrid axis was identical (in==out) so we didn't
-// actually need to regrid, but just swap in and out pointers.
+	  // If inPtr == 0, it means that in the previous pass, the coordinate
+	  // and shape information for the regrid axis was identical (in==out)
+	  // so we didn't
+	  // actually need to regrid, but just swap in and out pointers.
 
            if (inPtr) delete inPtr;
            inPtr = outPtr;
@@ -211,9 +213,11 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                Int inCoord, inAxisInCoord;
                inCoords.findPixelAxis(inCoord, inAxisInCoord, pixelAxisMap1(j));
 
-// We might end up replacing the same coordinate more than once with this algorithm
+	       // We might end up replacing the same coordinate more than
+	       // once with this algorithm
 
-               inCoords2.replaceCoordinate(inCoords.coordinate(inCoord), inCoord2);
+               inCoords2.replaceCoordinate(inCoords.coordinate(inCoord),
+					   inCoord2);
             }
          }  
       }
@@ -274,14 +278,16 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
       oss2 << outPixelAxis+1;
       String msg = String("Output axis (") + String(oss2) + 
                    String(") of coordinate type ") + String(oss1) +
-                   String("does not have a coordinate in the input CoordinateSystem");
+                   String("does not have a coordinate in the input "
+			  "CoordinateSystem");
       os << msg << LogIO::EXCEPTION;
     }
 
-// Where are the input and output pixel axes for this  coordinate ?  Some coordinates,
-// (apart from DirectionCoordinate), e.g. LinearCoordinate may have more than 
-// one pixel axis. But we will do them in multiple passes; only DirectionCoordinate
-// is coupled
+   // Where are the input and output pixel axes for this  coordinate ?
+   //  Some coordinates,
+   // (apart from DirectionCoordinate), e.g. LinearCoordinate may have more
+   // than one pixel axis. But we will do them in multiple passes;
+   // only DirectionCoordinate is coupled
 
     Vector<Int> outPixelAxes = outCoords.pixelAxes(outCoordinate);
     Vector<Int>  inPixelAxes = inCoords.pixelAxes(inCoordinate);
@@ -306,28 +312,33 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        outShape2(outPixelAxes(0)) = outShape(outPixelAxes(0));
        outShape2(outPixelAxes(1)) = outShape(outPixelAxes(1));
        if (outShape2(outPixelAxes(0))==1 && outShape2(outPixelAxes(1))==1) {
-          os << "You cannot regrid the DirectionCoordinate as it is of shape [1,1]" 
-             << LogIO::EXCEPTION;
+	 os << "You cannot regrid the DirectionCoordinate as it is "
+	   "of shape [1,1]" << LogIO::EXCEPTION;
        }
        const IPosition inShape = inPtr->shape();
-       Bool shapeDiff = (outShape2(outPixelAxes(0)) != inShape(inPixelAxes(0))) ||
-                        (outShape2(outPixelAxes(1)) != inShape(inPixelAxes(1)));
+       Bool shapeDiff =
+	 (outShape2(outPixelAxes(0)) != inShape(inPixelAxes(0))) ||
+	 (outShape2(outPixelAxes(1)) != inShape(inPixelAxes(1)));
 
 // Get DirectionCoordinates for input and output
 
        Vector<String> units(2);
        units.set("deg");
        DirectionCoordinate inDir = inCoords.directionCoordinate(inCoordinate);
-       DirectionCoordinate outDir = outCoords.directionCoordinate(outCoordinate);
+       DirectionCoordinate outDir =
+	 outCoords.directionCoordinate(outCoordinate);
 
-// See if we really need to regrid this axis.  If the coordinates and shape are the 
-// same there is nothing to do apart from swap in and out pointers or copy on last pass
+       // See if we really need to regrid this axis.
+       //  If the coordinates and shape are the 
+       // same there is nothing to do apart from swap in and out pointers
+       // or copy on last pass
 
        Bool regridIt = shapeDiff || forceRegrid || !(inDir.near(outDir));
        Bool lastPass = allEQ(doneOutPixelAxes, True);
 //
        if (!regridIt) {
-          os << "Input and output shape/coordinate information for these axes equal - no regridding needed" << LogIO::POST;
+          os << "Input and output shape/coordinate information for these "
+	    "axes equal - no regridding needed" << LogIO::POST;
           if (lastPass) {
 
 // Can't avoid this copy
@@ -345,7 +356,8 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        if (lastPass) {
           outPtr = finalOutPtr;
        } else {
-          outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, maxMemoryInMB);
+          outPtr = new TempImage<T>(TiledShape(outShape2), outCoords,
+				    maxMemoryInMB);
           if (outIsMasked) {
              String maskName("mask0");
              TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
@@ -356,22 +368,29 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 // Set units
 
        if (!inDir.setWorldAxisUnits(units)) {
-          os << "Failed to set input DirectionCoordinate units to degrees" << LogIO::EXCEPTION;
+          os << "Failed to set input DirectionCoordinate units to degrees" <<
+	    LogIO::EXCEPTION;
        }
        if (!outDir.setWorldAxisUnits(units)) {
-          os << "Failed to set output DirectionCoordinate units to degrees" << LogIO::EXCEPTION;
+          os << "Failed to set output DirectionCoordinate units to degrees" <<
+	    LogIO::EXCEPTION;
        }
 
 
-// Possibly make Direction reference conversion machine.  We could use the internal
-// machine layer inside the DirectionCoordinate, but making the machine explicitly
-// this way is more general because it allows the ObsInfo to be different.
+       // Possibly make Direction reference conversion machine.
+       //  We could use the internal
+       // machine layer inside the DirectionCoordinate, but making
+       // the machine explicitly
+       // this way is more general because it allows the ObsInfo to be
+       // different.
 
        MDirection::Convert machine;
        Bool madeIt = False;
        if (!itsDisableConversions) {
-          madeIt = CoordinateUtil::makeDirectionMachine(os, machine, inDir, outDir, 
-                        inCoords.obsInfo(), outCoords.obsInfo());
+          madeIt =
+	    CoordinateUtil::makeDirectionMachine(os, machine, inDir, outDir, 
+						 inCoords.obsInfo(),
+						 outCoords.obsInfo());
        }
 
 // Get scaling factor to conserve flux in Jy/pixel
@@ -404,29 +423,37 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        const IPosition inShape = inPtr->shape();
        Bool shapeDiff = (outShape2(outPixelAxes(0)) != inShape(inPixelAxes(0)));
 
-// Get Coordinates.  Set world axis units for input and output coordinates for this pixel
-// axis to be the same.  We can only do this via the CoordinateSystem (or casting)
-// or by breaking polymorphism like we did for DirectionCoordinate. Ho hum.
+       // Get Coordinates.  Set world axis units for input and output
+       // coordinates for this pixel
+       // axis to be the same.  We can only do this via the
+       // CoordinateSystem (or casting)
+       // or by breaking polymorphism like we did for DirectionCoordinate.
+       // Ho hum.
 
        Vector<String> inUnits = inCoords.worldAxisUnits();
        Vector<String> outUnits = outCoords.worldAxisUnits();
        outUnits(outWorldAxis) = inUnits(inWorldAxis);
        if (!outCoords.setWorldAxisUnits(outUnits)) {
-          os << "Failed to set output CoordinateSystem units" << LogIO::EXCEPTION;
+          os << "Failed to set output CoordinateSystem units" <<
+	    LogIO::EXCEPTION;
        }
        const Coordinate& inCoord = inCoords.coordinate(inCoordinate);
        const Coordinate& outCoord = outCoords.coordinate(outCoordinate);
 
-// See if we really need to regrid this axis.  If the coordinates are the same
-// there is nothing to do apart from swap in and out pointers or copy on last pass
+       // See if we really need to regrid this axis.
+       //  If the coordinates are the same
+       // there is nothing to do apart from swap in and out pointers or
+       // copy on last pass
 
        IPosition t(1, outAxisInCoordinate);
        IPosition excludeAxes = IPosition::otherAxes(outCoord.nPixelAxes(), t);
-       Bool regridIt = shapeDiff || forceRegrid || !(inCoord.near(outCoord, excludeAxes.asVector()));
+       Bool regridIt = shapeDiff ||
+	 forceRegrid || !(inCoord.near(outCoord, excludeAxes.asVector()));
        Bool lastPass = allEQ(doneOutPixelAxes, True);
 //
        if (!regridIt) {
-          os << "Input and output shape/coordinate information for this axis equal - no regridding needed" << LogIO::POST;
+          os << "Input and output shape/coordinate information for this axis "
+	    "equal - no regridding needed" << LogIO::POST;
           if (lastPass) {
 
 // Can't avoid this copy
@@ -444,7 +471,8 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        if (lastPass) {
           outPtr = finalOutPtr;
        } else {
-          outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, maxMemoryInMB);
+          outPtr = new TempImage<T>(TiledShape(outShape2), outCoords,
+				    maxMemoryInMB);
           if (outIsMasked) {
              String maskName("mask0");
              TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
@@ -452,10 +480,13 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
           }
        }
 
-// Possibly make Frequency reference conversion machine.  We could use the internal
-// machine layer inside the SpectralCoordinate, but making the machine explicitly
-// this way is more general because it allows the ObsInfos and SpectralCoordinates
-// to be different.
+       // Possibly make Frequency reference conversion machine.
+       //  We could use the internal
+       // machine layer inside the SpectralCoordinate, but making
+       // the machine explicitly
+       // this way is more general because it allows the ObsInfos
+       // and SpectralCoordinates
+       // to be different.
 
        Bool madeIt = False;
        MFrequency::Convert machine;
@@ -491,7 +522,8 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
    LogIO os(LogOrigin("ImageRegrid", "insert(...)", WHERE));
 //
    if (outImage.ndim()!=inImage.ndim()) {
-      os << "The input and output images must have the same number of dimensions" << LogIO::EXCEPTION;
+      os << "The input and output images must have the same number of "
+	"dimensions" << LogIO::EXCEPTION;
    }
 //
    const CoordinateSystem& inCoords = inImage.coordinates();
@@ -520,12 +552,14 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
       outCoords.findPixelAxis(coordinate, axisInCoordinate, i);
       if (coordinate==-1 || axisInCoordinate==-1) {
          ostrstream oss;
-         oss << "Pixel axis " << i << " has been removed from the output CoordinateSystem" << endl;
+         oss << "Pixel axis " << i <<
+	   " has been removed from the output CoordinateSystem" << endl;
          os << String(oss) << LogIO::EXCEPTION;
       }
       Coordinate::Type type = outCoords.type(coordinate);
       if (type==Coordinate::STOKES && outShape(i)!=inShape(i)) {
-         os << "It is not possible to change the shape of the Stokes axis" << LogIO::EXCEPTION;
+         os << "It is not possible to change the shape of the Stokes axis" <<
+	   LogIO::EXCEPTION;
       }
 //
       if (locateByRefPix) {
@@ -602,10 +636,11 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
 
 
 template<class T>
-CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
-                                                      const CoordinateSystem& cSysTo,
-                                                      const CoordinateSystem& cSysFrom,
-                                                      const IPosition& outPixelAxes)
+CoordinateSystem
+ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
+				     const CoordinateSystem& cSysTo,
+				     const CoordinateSystem& cSysFrom,
+				     const IPosition& outPixelAxes)
 {
    const uInt nCoordsFrom = cSysFrom.nCoordinates();
    const uInt nPixelAxesFrom = cSysFrom.nPixelAxes();
@@ -649,9 +684,11 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
 
          Int afterCoord = -1;
          Int iCoordTo = cSysTo.findCoordinate(typeFrom, afterCoord);    
-         if (cSysTo.pixelAxes(iCoordTo).nelements() != cSysFrom.pixelAxes(i).nelements()) {
-            os << "Wrong number of pixel axes in 'To' CoordinateSystem for coordinate of type " 
-               << cSysTo.showType(iCoordTo) << LogIO::EXCEPTION;
+         if (cSysTo.pixelAxes(iCoordTo).nelements() != 
+	     cSysFrom.pixelAxes(i).nelements()) {
+            os << "Wrong number of pixel axes in 'To' CoordinateSystem for "
+	      "coordinate of type " <<
+	      cSysTo.showType(iCoordTo) << LogIO::EXCEPTION;
          }
 //
          if (iCoordTo >= 0) {
@@ -720,31 +757,37 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       }
    }
 
-// We iterate through the output image by tile.  We iterate through
-// each tile by matrix holding the Direction Coordinate axes (in 
-// some order).  We have a matrix(i=1:nrows,j=1:ncols). 
-//
-// pixelAxisMap1(i) says where pixel axis i in the output image is in the input  image
-// pixelAxisMap2(i) says where pixel axis i in the  input image is in the output image
-// pixelAxes(0)    says where Lon  is in image (in or out)
-// pixelAxes(1)    says where Lat  is in image (in or out)
-//
-// xOutAxis        is the first direction axis in the output image (associated with i)
-// yOutAxis        is the second direction axis in the output image (associated with j)
-// xInCorrAxis     is the corresponding axis to xOutAxis in the input image
-// yInCorrAxis     is the corresponding axis to yOutAxis in the input image
-//
-// xInAxis         is the first direction axis in the input image
-// yInAxis         is the second direction axis in the input image
-// xOutCorrAxis    is the corresponding axis to xInAxis in the output image
-// yOutCorrAxis    is the corresponding axis to yInAxis in the output image
+   // We iterate through the output image by tile.  We iterate through
+   // each tile by matrix holding the Direction Coordinate axes (in 
+   // some order).  We have a matrix(i=1:nrows,j=1:ncols). 
+   //
+   // pixelAxisMap1(i) says where pixel axis i in the output image is
+   //			 in the input  image
+   // pixelAxisMap2(i) says where pixel axis i in the
+   //			  input image is in the output image
+   // pixelAxes(0)    says where Lon  is in image (in or out)
+   // pixelAxes(1)    says where Lat  is in image (in or out)
+   //
+   // xOutAxis        is the first direction axis in the output image
+   //				 (associated with i)
+   // yOutAxis        is the second direction axis in the output image
+   //				 (associated with j)
+   // xInCorrAxis     is the corresponding axis to xOutAxis in the input image
+   // yInCorrAxis     is the corresponding axis to yOutAxis in the input image
+   //
+   // xInAxis         is the first direction axis in the input image
+   // yInAxis         is the second direction axis in the input image
+   // xOutCorrAxis    is the corresponding axis to xInAxis in the output image
+   // yOutCorrAxis    is the corresponding axis to yInAxis in the output image
 
 // Example: 
 //
-//   Regrid ra/dec axes with input order ra/dec/freq and output order freq/dec/ra
+//   Regrid ra/dec axes with input order ra/dec/freq and output order
+// 			freq/dec/ra
 //
 //   input  image shape = [20, 30, 40] (ra/dec/freq)
-//   output image shape = [40, 90, 60] (freq/dec/ra) - we are making ra/dec shape 3x input
+//   output image shape = [40, 90, 60] (freq/dec/ra) - we are making ra/dec
+//				 shape 3x input
 //
 //   outPixelAxes = [2,1] = [lon,lat] 
 //   The cursor matrix is of shape [nrow,ncol] = [90,60]
@@ -780,9 +823,11 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 //
    if (itsShowLevel>0) {
       cerr << "xOutAxis, yOutAxis = " << xOutAxis << ", " << yOutAxis << endl;
-      cerr << "xInCorrAxis, yInCoorrAxis = " << xInCorrAxis << ", " << yInCorrAxis << endl;
+      cerr << "xInCorrAxis, yInCoorrAxis = " << xInCorrAxis << ", " << 
+	yInCorrAxis << endl;
       cerr << "xInAxis, yInAxis = " << xInAxis << ", " << yInAxis << endl;
-      cerr << "xOutCorrAxis, yOutCoorrAxis = " << xOutCorrAxis << ", " << yOutCorrAxis << endl;
+      cerr << "xOutCorrAxis, yOutCoorrAxis = " << xOutCorrAxis << ", " <<
+	yOutCorrAxis << endl;
 //
       cerr << "cursor shape = " << niceShape << endl;
       cerr << "shape in, shape out" << inShape << outShape << endl;  
@@ -802,7 +847,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    IPosition inChunkBlc(nDim);
    IPosition inChunkTrc(nDim);
 
-// These tell us which 2D piece of inChunk to read.  This is  what we regrid from.  
+   // These tell us which 2D piece of inChunk to read. 
+   // This is  what we regrid from.  
 
    IPosition inChunkBlc2D(nDim);
    IPosition inChunkTrc2D(nDim);
@@ -813,8 +859,10 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 //
    Vector<Double> pixelScale(nDim); 
    pixelScale = 1.0;
-   pixelScale(xInAxis) = Float(outShape(xOutCorrAxis)) / Float(inShape(xInAxis));
-   pixelScale(yInAxis) = Float(outShape(yOutCorrAxis)) / Float(inShape(yInAxis));
+   pixelScale(xInAxis) = Float(outShape(xOutCorrAxis)) /
+     Float(inShape(xInAxis));
+   pixelScale(yInAxis) = Float(outShape(yOutCorrAxis)) /
+     Float(inShape(yInAxis));
    if (itsShowLevel > 0) {
       cerr << "pixelScale = " << pixelScale << endl;
    }
@@ -853,7 +901,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
          if (shp1.isEqual(shp2)) {
             its2DCoordinateGrid = itsUser2DCoordinateGrid;
          } else {
-            os << "User set 2D coordinate grid has the wrong shape" << LogIO::POST;     
+            os << "User set 2D coordinate grid has the wrong shape" <<
+	      LogIO::POST;     
          }
       }
 //
@@ -863,7 +912,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
          if (shp1.isEqual(shp2)) {
             its2DCoordinateGridMask = itsUser2DCoordinateGridMask;
          } else {
-            os << "User set 2D coordinate grid mask has the wrong shape" << LogIO::POST;     
+            os << "User set 2D coordinate grid mask has the wrong shape" <<
+	      LogIO::POST;     
          }
       }
 //
@@ -874,19 +924,24 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       missedIt = True;
       IPosition outPosFull(outLattice.ndim(),0);
       if (replicate) {
-         make2DCoordinateGrid (its2DCoordinateGrid, minInX, minInY, maxInX, maxInY,
-                               pixelScale, xInAxis, yInAxis, xOutAxis, yOutAxis,
-                               xInCorrAxis, yInCorrAxis, xOutCorrAxis, yOutCorrAxis, 
-                               outPosFull, outShape);
-         missedIt = False;
+	make2DCoordinateGrid (its2DCoordinateGrid, minInX, minInY, maxInX,
+			      maxInY,
+			      pixelScale, xInAxis, yInAxis, xOutAxis, yOutAxis,
+			      xInCorrAxis, yInCorrAxis, xOutCorrAxis,
+			      yOutCorrAxis, 
+			      outPosFull, outShape);
+	         missedIt = False;
          allFailed = False;
          its2DCoordinateGridMask.set(True);
       } else {
-         make2DCoordinateGrid (allFailed, missedIt, minInX, minInY, maxInX, maxInY,
-                               its2DCoordinateGrid, its2DCoordinateGridMask, machine, 
-                               inCoord, outCoord, xInAxis, yInAxis, xOutAxis, yOutAxis,
-                               inPixelAxes, outPixelAxes, inShape, outPosFull, 
-                               outShape, useMachine, decimate);
+	make2DCoordinateGrid (allFailed, missedIt, minInX, minInY, maxInX,
+			      maxInY,
+			      its2DCoordinateGrid, its2DCoordinateGridMask,
+			      machine, 
+			      inCoord, outCoord, xInAxis, yInAxis, xOutAxis,
+			      yOutAxis,
+			      inPixelAxes, outPixelAxes, inShape, outPosFull, 
+			      outShape, useMachine, decimate);
       }
    }
    s1 += t1.all();
@@ -933,14 +988,17 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       missedIt = True;
       allFailed = True;
       t3.mark();
-      findXYExtent (missedIt, allFailed, minInX, minInY, maxInX, maxInY,  its2DCoordinateGrid,
-                    its2DCoordinateGridMask, xInAxis, yInAxis, xOutAxis, yOutAxis, outPos, 
+      findXYExtent (missedIt, allFailed, minInX, minInY, maxInX, maxInY,
+		    its2DCoordinateGrid,
+                    its2DCoordinateGridMask, xInAxis, yInAxis, xOutAxis,
+		    yOutAxis, outPos, 
                     outCursorShape, inShape);
       s3 += t3.all();
       if (itsShowLevel>0) {
          cerr << "missedIt, allFailed, minInX, maxInX, minInY, maxInY = " << 
-                 missedIt << ", " << allFailed << ", " <<
-                 minInX << ", " << maxInX << ", " <<  minInY << ", " << maxInY << endl;
+	   missedIt << ", " << allFailed << ", " <<
+	   minInX << ", " << maxInX << ", " <<  minInY << ", " <<
+	   maxInY << endl;
       }
 //
       if (missedIt || allFailed) {
@@ -952,18 +1010,23 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
          }
       } else {
 
-// For the non-regrid axes, the input and output shapes, and hence positions, are the same. 
-// pixelAxisMap2(i) says where pixel axis i in the input image is in the output image.  
+	// For the non-regrid axes, the input and output shapes,
+	// and hence positions, are the same. 
+	// pixelAxisMap2(i) says where pixel axis i in the input
+	// image is in the output image.  
 
          for (uInt k=0; k<nDim; k++) {
             inChunkBlc(k) = outPos(pixelAxisMap2(k));
             inChunkTrc(k) = outIter.endPosition()(pixelAxisMap2(k));
          }
 
-// Now overwrite the blc/trc for the regrid axes. The interpolation schemes (Interpolate2D) use 
-// a small grid about the pixel of interest I happen to know that allowing 3 
-// pixels on either side is enough.   If this should change, the interpolation 
-// would return False at the edges
+	 // Now overwrite the blc/trc for the regrid axes.
+	 // The interpolation schemes (Interpolate2D) use 
+	 // a small grid about the pixel of interest I happen
+	 // to know that allowing 3 
+	 // pixels on either side is enough.
+	 // If this should change, the interpolation 
+	 // would return False at the edges
 
          i2 = static_cast<Int>(floor(minInX)) - 3;
          inChunkBlc(xInAxis) = max(0,i2);
@@ -977,7 +1040,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
          IPosition inChunkShape = inChunkTrc - inChunkBlc + 1;
          if (itsShowLevel>0) {
             cerr << "inChunkShape = " << inChunkShape << endl;
-            cerr << "inChunkBlc, inChunkTrc " << inChunkBlc << inChunkTrc << endl;
+            cerr << "inChunkBlc, inChunkTrc " << inChunkBlc << inChunkTrc <<
+	      endl;
          }
 
 // Get the input data and mask
@@ -985,23 +1049,31 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
          Array<T> inDataChunk = inLattice.getSlice(inChunkBlc, inChunkShape);
          Array<Bool>* inMaskChunkPtr = 0;
          if (inIsMasked) {
-            inMaskChunkPtr = new Array<Bool>(inLattice.getMaskSlice(inChunkBlc, inChunkShape));
+            inMaskChunkPtr =
+	      new Array<Bool>(inLattice.getMaskSlice(inChunkBlc,
+						     inChunkShape));
          }
-
-// Iterate through the output cursor by Matrices, each holding a Direction plane.
-// This gets us just a few percent speed up over iterating through pixel by pixel.    
+	 // Iterate through the output cursor by Matrices,
+	 // each holding a Direction plane.
+	 // This gets us just a few percent speed up over
+	 // iterating through pixel by pixel.    
 
          ArrayLattice<T> outCursor(outIter.rwCursor());    // reference copy
          t4.mark();
          if (inChunkShape(xInAxis)==1 && inChunkShape(yInAxis)==1) {
-            os << "Cannot regrid degenerate DirectionCoordinate plane" << LogIO::EXCEPTION;
+            os << "Cannot regrid degenerate DirectionCoordinate plane" <<
+	      LogIO::EXCEPTION;
          } else if (inChunkShape(xInAxis)==1 || inChunkShape(yInAxis)==1) {
-            os << "Cannot yet handle DirectionCoordinate plane with one degenerate axis" << LogIO::EXCEPTION;
+            os << "Cannot yet handle DirectionCoordinate plane with one "
+	      "degenerate axis" << LogIO::EXCEPTION;
 //          regrid2DVector();
          } else {
-            regrid2DMatrix(outCursor, outMaskIterPtr, interp, pProgressMeter, iPix, nDim, 
-                           xInAxis, yInAxis, xOutAxis, yOutAxis, scale, inIsMasked, outIsMasked,
-                           outPos, outCursorShape, inChunkShape, inChunkBlc, pixelAxisMap2,
+            regrid2DMatrix(outCursor, outMaskIterPtr, interp, pProgressMeter,
+			   iPix, nDim, 
+                           xInAxis, yInAxis, xOutAxis, yOutAxis, scale,
+			   inIsMasked, outIsMasked,
+                           outPos, outCursorShape, inChunkShape, inChunkBlc,
+			   pixelAxisMap2,
                            inDataChunk, inMaskChunkPtr, its2DCoordinateGrid, 
                            its2DCoordinateGridMask);
    
@@ -1022,9 +1094,11 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       cerr << "         Function findXYExtent took "  << s3 << endl;
       cerr << "      Iterating and regridding took "  << s2 << endl;
       if (replicate) {
-         cerr << "      Function make2DCoordinateGrid (replication) took " << s1 << endl;
+         cerr << "      Function make2DCoordinateGrid (replication) took " <<
+	   s1 << endl;
       } else {
-         cerr << "      Function make2DCoordinateGrid (regridding)  took " << s1 << endl;
+         cerr << "      Function make2DCoordinateGrid (regridding)  took " <<
+	   s1 << endl;
       }
       cerr << "    Function regrid2D took " << s0  << endl;
    }
@@ -1111,11 +1185,13 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
       }   
       jInc = nj / (nOut - 1);
       if (iInc < 1) {
-         cerr << "Illegal decimation increment computed for X; setting to unity" << endl;
+         cerr << "Illegal decimation increment computed for X; "
+	   "setting to unity" << endl;
          iInc = 1;
       }
       if (jInc < 1) {
-         cerr << "Illegal decimation increment computed for Y; setting to unity" << endl;
+         cerr << "Illegal decimation increment computed for Y; "
+	   "setting to unity" << endl;
          jInc = 1;
       }
 //
@@ -1127,7 +1203,8 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
       }
 //
       if (itsShowLevel > 0) {                 
-         cerr << "decimate, nOutI, nOutJ = " << decimate << ", " << nOutI << ", " << nOutJ << endl;
+         cerr << "decimate, nOutI, nOutJ = " << decimate << ", " << nOutI <<
+	   ", " << nOutJ << endl;
          cerr << "iInc, jInc = " << iInc << ", " << jInc << endl;
       }
    }
@@ -1172,8 +1249,10 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
             if (decimate>1) ijInMask2D(ii,jj) = False;
          } else {
 
-// This gives the 2D input pixel coordinate (relative to the start of the full Lattice)
-// to find the interpolated result at.  (,,0) pertains to inX and (,,1) to inY
+	   // This gives the 2D input pixel coordinate (relative to
+	   // the start of the full Lattice)
+	   // to find the interpolated result at.  (,,0) pertains to
+	   // inX and (,,1) to inY
 
             in2DPos(i,j,0) = inPixel(inXIdx);
             in2DPos(i,j,1) = inPixel(inYIdx);
@@ -1263,7 +1342,8 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
                   (minInY>jMax && maxInY>jMax);
    }
    if (itsShowLevel>0) {
-      cerr << "allFailed, missedIt  = " << allFailed << ", " << missedIt << endl;
+      cerr << "allFailed, missedIt  = " << allFailed << ", " << missedIt <<
+	endl;
    }
    if (itsShowLevel>1) {
       cerr << "succeed = " << succeed << endl;
@@ -1431,22 +1511,26 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
 
    IPosition axisPath;
    IPosition outCursorAxes(2, xOutAxis, yOutAxis);
-   IPosition outCursorIterShape(2, outCursorShape(xOutAxis), outCursorShape(yOutAxis));
-   LatticeStepper outCursorIterStepper(outCursor.shape(), outCursorIterShape, outCursorAxes, axisPath);
+   IPosition outCursorIterShape(2, outCursorShape(xOutAxis),
+				outCursorShape(yOutAxis));
+   LatticeStepper outCursorIterStepper(outCursor.shape(), outCursorIterShape,
+				       outCursorAxes, axisPath);
    LatticeIterator<T> outCursorIter(outCursor, outCursorIterStepper);
 //
    LatticeIterator<Bool>* outMaskCursorIterPtr = 0;
    Lattice<Bool>* outMaskCursorPtr = 0;
    if (outIsMasked) {
      outMaskCursorPtr = new ArrayLattice<Bool>(outMaskIterPtr->rwCursor());
-     outMaskCursorIterPtr = new LatticeIterator<Bool>(*outMaskCursorPtr, outCursorIterStepper);
+     outMaskCursorIterPtr = new LatticeIterator<Bool>(*outMaskCursorPtr,
+						      outCursorIterStepper);
    }
 /*
    if (itsShowLevel>0) {
       cerr << "outCursorAxisPath = " << axisPath << endl;
       cerr << "outCursorAxes" << outCursorAxes << endl;
       cerr << "outCursorIterShape = " << outCursorIterShape << endl;
-      cerr << "outMatrixCursorIterShape = " << outCursorIter.matrixCursor().shape() << endl;
+      cerr << "outMatrixCursorIterShape = " <<
+      outCursorIter.matrixCursor().shape() << endl;
    }
 */
 //
@@ -1470,9 +1554,11 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
 //
    for (outCursorIter.reset(); !outCursorIter.atEnd(); outCursorIter++) {
 
-// outCursorIter.position is the location of the BLC of the current matrix within the current
-// cursor (tile) of data. outPos3 is the location of the BLC of the current matrix within
-// the full lattice
+     // outCursorIter.position is the location of the BLC of the current matrix
+     // within the current
+     // cursor (tile) of data. outPos3 is the location of the BLC of the
+     // current matrix within
+     // the full lattice
 
       outPos3 = outPos + outCursorIter.position();
 
@@ -1492,18 +1578,27 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
       }
 */
 //      t3.mark();
-      const Matrix<T>& inDataChunk2D = inDataChunk(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape);
+      const Matrix<T>& inDataChunk2D =
+	inDataChunk(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape);
       Matrix<Bool>* inMaskChunk2DPtr = 0;
       if (inIsMasked) {
          inMaskChunk2DPtr = 
-            new Matrix<Bool>((*inMaskChunkPtr)(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape));
+            new Matrix<Bool>((*inMaskChunkPtr)(inChunkBlc2D,
+					       inChunkTrc2D).
+			     reform(inChunk2DShape));
       }
 //      s3 += t3.all();
 
-// Now work through each output pixel in the data Matrix and do the interpolation
+      // Now work through each output pixel in the data Matrix and do the
+      // interpolation
 
       uInt nCol = outCursorIter.matrixCursor().ncolumn();
       uInt nRow = outCursorIter.matrixCursor().nrow();
+      Matrix<T> &outMCursor = outCursorIter.rwMatrixCursor();
+      Matrix<Bool> *outMaskMCursor = 0;
+      if (outIsMasked) {
+	outMaskMCursor = &(outMaskCursorIterPtr->rwMatrixCursor());
+      };
       uInt ii = 0;
       uInt jj = 0;
 // 
@@ -1511,9 +1606,9 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
       for (uInt j=0; j<nCol; j++) {
          for (uInt i=0; i<nRow; i++) {
             if (!succeed(i,j)) {
-               outCursorIter.rwMatrixCursor()(i,j) = 0.0;
+               outMCursor(i,j) = 0.0;
                if (outIsMasked) {
-                  outMaskCursorIterPtr->rwMatrixCursor()(i,j) = False;
+                  outMaskMCursor->operator()(i,j) = False;
                }
             } else {
 
@@ -1532,7 +1627,8 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
 */
 //
                if (inIsMasked) {                     
-                  interpOK = interp.interp(result, pix2DPos2, inDataChunk2D, *inMaskChunk2DPtr);
+                  interpOK = interp.interp(result, pix2DPos2, inDataChunk2D,
+					   *inMaskChunk2DPtr);
                } else {
                   interpOK = interp.interp(result, pix2DPos2, inDataChunk2D);
                }
@@ -1542,9 +1638,9 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
                      cerr  << " giving result " << result << endl;
                   }
 */
-                  outCursorIter.rwMatrixCursor()(i,j) = scale * result;
+                  outMCursor(i,j) = scale * result;
                   if (outIsMasked) {
-                     outMaskCursorIterPtr->rwMatrixCursor()(i,j) = True; 
+                     outMaskMCursor->operator()(i,j) = True; 
                   }
                } else {
 /*
@@ -1552,9 +1648,9 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
                       cerr  << " giving Fail" << endl;
                   }
 */
-                  outCursorIter.rwMatrixCursor()(i,j) = 0.0;
+                  outMCursor(i,j) = 0.0;
                   if (outIsMasked) {
-                     outMaskCursorIterPtr->rwMatrixCursor()(i,j) = False; 
+                     outMaskMCursor->operator()(i,j) = False; 
                   }
                }
             }
@@ -1569,9 +1665,11 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
 //
 /*
       if (itsShowLevel>2) {
-         cerr << "output data matrix  = " << outCursorIter.matrixCursor() << endl;
+         cerr << "output data matrix  = " << outCursorIter.matrixCursor() <<
+	 endl;
          if (outIsMasked) {
-            cerr << "output mask matrix  = " << outMaskCursorIterPtr->matrixCursor() << endl;
+            cerr << "output mask matrix  = " <<
+	    outMaskCursorIterPtr->matrixCursor() << endl;
          }
       }
 */
@@ -1615,8 +1713,9 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 //
 {
    const Bool inIsMasked = inLattice.isMasked();
-   const Bool outIsMasked = outLattice.isMasked() && outLattice.hasPixelMask() &&
-                            outLattice.pixelMask().isWritable();
+   const Bool outIsMasked = outLattice.isMasked() &&
+     outLattice.hasPixelMask() &&
+     outLattice.pixelMask().isWritable();
 //
    if (itsShowLevel>0) {
       cerr << "inIsMasked = " << inIsMasked << endl;
@@ -1638,7 +1737,8 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    Bool allGood = True;
 //
    if (replicate) {
-      Float pixelScale = Float(outShape(outPixelAxis)) / Float(inShape(inPixelAxis));
+      Float pixelScale = Float(outShape(outPixelAxis)) /
+	Float(inShape(inPixelAxis));
       make1DCoordinateGrid (outX, pixelScale);
    } else {
       make1DCoordinateGrid (outX, failed, allFailed, allGood,
@@ -1696,7 +1796,8 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    inSubShape(inPixelAxis) = inShape(inPixelAxis);
 //
    if (itsShowLevel>0) {
-      cerr << "in, out pixel axis = " << inPixelAxis << ", " << outPixelAxis << endl;  
+      cerr << "in, out pixel axis = " << inPixelAxis << ", " << outPixelAxis <<
+	endl;  
       cerr << "shape in, shape out" << inShape << outShape << endl;  
       cerr << "inSubShape=" << inSubShape << endl;
    }
@@ -1727,7 +1828,8 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    ProgressMeter* pProgressMeter = 0;
    if (showProgress) {
      Double nMin = 0.0;
-     Double nMax = Double(outLattice.shape().product()) / Double(outIter.cursorShape().product());
+     Double nMax = Double(outLattice.shape().product()) /
+       Double(outIter.cursorShape().product());
      ostrstream oss;
      oss << "Axis " << outPixelAxis + 1 << " : Lines Regridded" << ends;
      pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
@@ -1746,7 +1848,8 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
       if (itsShowLevel>1) {
          cerr << endl;
          cerr << "Output lattice iterator position = " <<  outPos << endl;
-         cerr << "Output lattice iterator cursor shape = " <<  outIter.cursorShape()<< endl;
+         cerr << "Output lattice iterator cursor shape = " << 
+	   outIter.cursorShape()<< endl;
       }
 
 // Get input vector of data and mask
@@ -1755,7 +1858,8 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
          inPos(i) = outPos(pixelAxisMap(i));
       }
       const Vector<T>& inY = inLattice.getSlice(inPos, inSubShape, True);
-      const Vector<Bool>& inMask = inLattice.getMaskSlice(inPos, inSubShape, True);
+      const Vector<Bool>& inMask = inLattice.getMaskSlice(inPos, inSubShape,
+							  True);
 
       if (itsShowLevel>1) {
          cerr << "inPos=" << inPos << endl;
@@ -1766,14 +1870,17 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
       if (allGood) {
          if (outIsMasked) {
             InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                     outMaskIterPtr->rwVectorCursor(),
+                                                     outMaskIterPtr->
+						     rwVectorCursor(),
                                                      outX, inX, inY, inMask,
-                                                     method1D, goodIsTrue, extrapolate);
+                                                     method1D, goodIsTrue,
+						     extrapolate);
          } else {
             InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                      dummyOutMask,
                                                      outX, inX, inY, inMask,
-                                                     method1D, goodIsTrue, extrapolate);
+                                                     method1D, goodIsTrue,
+						     extrapolate);
          }
       } else {
 
@@ -1781,22 +1888,26 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 
          if (outIsMasked) {
             InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                     outMaskIterPtr->rwVectorCursor(),
+                                                     outMaskIterPtr->
+						     rwVectorCursor(),
                                                      outX, inX, inY, 
                                                     (failed && inMask),
-                                                     method1D, goodIsTrue, extrapolate);
+                                                     method1D, goodIsTrue,
+						     extrapolate);
          } else {
             InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                      dummyOutMask,
                                                      outX, inX, inY, 
                                                     (failed && inMask),
-                                                     method1D, goodIsTrue, extrapolate);
+                                                     method1D, goodIsTrue,
+						     extrapolate);
          }
       }
 //
       if (itsShowLevel>1) {
          cerr << "outY = " << outIter.rwVectorCursor() << endl;
-         if (outIsMasked) cerr << "outMask = " << outMaskIterPtr->rwVectorCursor() << endl;
+         if (outIsMasked) cerr << "outMask = " <<
+			    outMaskIterPtr->rwVectorCursor() << endl;
       }
 //
       if (outIsMasked) (*outMaskIterPtr)++;
@@ -1840,8 +1951,10 @@ void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
 // If we are going to Stoke up the MFrequency machine it means
 // we have a SpectralCoordinate; cast to it
 
-      const SpectralCoordinate& inSpecCoord = dynamic_cast<const SpectralCoordinate&>(inCoord);
-      const SpectralCoordinate& outSpecCoord = dynamic_cast<const SpectralCoordinate&>(outCoord);
+      const SpectralCoordinate& inSpecCoord =
+	dynamic_cast<const SpectralCoordinate&>(inCoord);
+      const SpectralCoordinate& outSpecCoord =
+	dynamic_cast<const SpectralCoordinate&>(outCoord);
 //
       for (uInt i=0; i<nLine; i++) {
 
@@ -1964,7 +2077,8 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
    Int n1 = outPixelAxes.nelements();
    const Int nOut = outShape.nelements();
    if (n1 > nOut) {
-      os << "You have specified more pixel axes than there are dimensions" << LogIO::EXCEPTION;
+      os << "You have specified more pixel axes than there are dimensions" <<
+	LogIO::EXCEPTION;
    }
 
 // Fill in all axes if null pixelAxes given
@@ -1996,7 +2110,8 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
       Coordinate::Type type = outCoords.type(outCoordinate);
 
       if (type==Coordinate::STOKES) {
-         os << LogIO::WARN << "The Stokes axis cannot be regridded - removing from list" << endl;
+         os << LogIO::WARN << "The Stokes axis cannot be regridded "
+	   "- removing from list" << endl;
       } else {
          Bool ok = True;
          if (outShape(outPixelAxes(i))==1) {
@@ -2006,7 +2121,8 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
 // Otherwise, regridding a one-pixel axis is useless.
 
             if (type!=Coordinate::DIRECTION) {
-              os << LogIO::WARN << "Cannot regrid axis " << outPixelAxes(i)+1 << " because it is of unit length - removing from list" << endl;
+              os << LogIO::WARN << "Cannot regrid axis " << outPixelAxes(i)+1 <<
+		" because it is of unit length - removing from list" << endl;
               ok = False;
             }
          } 
@@ -2129,7 +2245,8 @@ Double ImageRegrid<T>::findScaleFactor(const Unit& units,
 
 
 template<class T>
-Bool ImageRegrid<T>::minmax(Double &minX, Double &maxX, Double& minY, Double& maxY,
+Bool ImageRegrid<T>::minmax(Double &minX, Double &maxX, Double& minY,
+			    Double& maxY,
                             const Array<Double> &xData, 
                             const Array<Double> &yData, 
                             const Array<Bool>& mask)
@@ -2160,7 +2277,8 @@ Bool ImageRegrid<T>::minmax(Double &minX, Double &maxX, Double& minY, Double& ma
 }
 
 template<class T>
-void ImageRegrid<T>::get2DCoordinateGrid (Cube<Double>& grid, Matrix<Bool>& gridMask) const
+void ImageRegrid<T>::get2DCoordinateGrid (Cube<Double>& grid,
+					  Matrix<Bool>& gridMask) const
 {
    grid = its2DCoordinateGrid;
    gridMask = its2DCoordinateGridMask;
