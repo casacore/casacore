@@ -6591,3 +6591,8 @@
 19 198 src mv trial/implement/Measures/SofaTest.h aips/implement/Measures/SofaTest.h
 19 198 src mv trial/implement/Measures/SofaTest.cc aips/implement/Measures/SofaTest.cc
 19 198 src mv trial/implement/Measures/test/tIAU2000.cc aips/implement/Measures/test/tIAU2000.cc
+19 302 src rm trial/implement/Lattices/LatticeStrFun.h
+19 302 src rm trial/implement/Lattices/LatticeStrFun.cc
+19 302 src rm trial/implement/Images/ImageStrFun.cc
+19 302 src rm trial/implement/Images/ImageStrFun.h
+19 302 src rm trial/implement/Lattices/test/tLatticeStrFun.cc
