@@ -1,5 +1,5 @@
 //# ImageProfileFit.cc: Class to fit spectra from images
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -863,7 +863,7 @@ void ImageProfileFit::convertGaussianElementX (SpectralElement& el,
 }
 
 
-void ImageProfileFit::fit (RecordInterface& rec, 
+void ImageProfileFit::fit (Bool fillRecord, RecordInterface& rec, 
                            Bool xAbsOut,
                            const String& xUnitOut, 
                            const String& dopplerOut,
@@ -1014,15 +1014,17 @@ void ImageProfileFit::fit (RecordInterface& rec,
          }
       }
 //
-      Record rec4, rec3;
-      rec4.define ("pixel", inIter.position().asVector()+1);       // Make 1-rel
-      rec3.defineRecord("position", rec4);    
+      if (fillRecord) {
+         Record rec4, rec3;
+         rec4.define ("pixel", inIter.position().asVector()+1);       // Make 1-rel
+         rec3.defineRecord("position", rec4);    
 //
-      Record rec2;
-      getElements (rec2, xAbsOut, xUnitOut, dopplerOut, list);
-      rec3.defineRecord("fit", rec2);
+         Record rec2;
+         getElements (rec2, xAbsOut, xUnitOut, dopplerOut, list);
+         rec3.defineRecord("fit", rec2);
 //
-      rec.defineRecord(inIter.nsteps(), rec3);
+         rec.defineRecord(inIter.nsteps(), rec3);
+      }
 //  
       inIter++;
       if (pFitIter) (*pFitIter)++;
