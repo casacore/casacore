@@ -30,6 +30,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLock.h>
+#include <aips/Tables/TableCopy.h>
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Slice.h>
@@ -461,11 +462,36 @@ void RefTable::setNrrow (uInt nrrow)
 Bool RefTable::isWritable() const
     { return baseTabPtr_p->isWritable(); }
 
+void RefTable::deepCopy (const String& newName, int tableOption) const
+{
+    // Throw exception is new name is same as old one.
+    if (newName == name_p) {
+        throw TableError
+	       ("RefTable::deepCopy: new name equal to old name " + name_p);
+    }
+    //# Flush the data (cast is necesaary to bypass non-constness).
+    RefTable* ncThis = const_cast<RefTable*>(this);
+    ncThis->flush (True);
+    //# Prepare the copy (do some extra checks).
+    prepareCopyRename (newName, tableOption);
+    // Create the new table and copy everything.
+    Table oldtab(ncThis);
+    Table newtab = TableCopy::makeEmptyTable (newName, oldtab, Table::New);
+    TableCopy::copyRows (newtab, oldtab);
+    TableCopy::copyInfo (newtab, oldtab);
+    TableCopy::copySubTables (newtab, oldtab);
+}
+
 TableDesc RefTable::actualTableDesc() const
 {
-    TableDesc actualDesc;
     // Get the table description of reftable.
     const TableDesc& refDesc = tableDesc();
+    // Copy to another description and remove all columns.
+    // In that way we keep all keywords and private kwywords.
+    TableDesc actualDesc = refDesc;
+    for (uInt i=0; i<refDesc.ncolumn(); i++) {
+        actualDesc.removeColumn (refDesc[i].name());
+    }
     // Get actual table desc of parent.
     // Copy the relevant columns and rename (because reftable
     // can have renamed columns).
