@@ -36,10 +36,6 @@
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Tasking/AppInfo.h>
 
-#ifdef __GNUG__
-typedef Quantum<Double> gpp_mvangle_bug1;
-#endif
-
 // MVAngle class
 //# Static members
 MVAngle::Format MVAngle::defaultFormat = MVAngle::Format();

@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_mvtime_bug1;
-#endif
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVEpoch.h>

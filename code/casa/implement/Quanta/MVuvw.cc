@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_mvuvw_bug1;
-#endif
 #include <aips/Quanta/MVuvw.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>

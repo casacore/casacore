@@ -1,5 +1,5 @@
 //# dMUString.cc: test of MUString class
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,9 +30,6 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVAngle.h>
-#if defined(__GNUG__)
-typedef Quantum<Double> gpp_dmustringbug_1;
-#endif
 
 main()
 {

@@ -34,9 +34,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/Quantum.h>
-#ifdef __GNUG__
-typedef Quantum<Double> gpp_mvposition_bug2;
-#endif
 #include <aips/Quanta/MeasValue.h>
 
 //# Forward Declarations

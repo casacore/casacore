@@ -1,5 +1,5 @@
 //# QLogical.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,10 +31,6 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
-
-#ifdef __GNUG__
-    typedef Array<Bool> gnu_array_bool;
-#endif
 
 template <class Qtype>
 Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
