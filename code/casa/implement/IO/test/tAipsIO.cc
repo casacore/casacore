@@ -1,5 +1,5 @@
 //# tAipsIO.cc: This program tests the AipsIO class
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,6 @@
 #include <aips/IO/MemoryIO.h>
 #include <aips/IO/RawIO.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/DComplex.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 
