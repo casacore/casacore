@@ -337,6 +337,9 @@ private:
     // It is used by doCreate and getFile.
     void init();
 
+    // Clear the object (used by destructor and init).
+    void clear();
+
     // Put the value in all buckets from the given row on.
     void putFromRow (uInt rownr, const char* data, uInt lenData);
 
