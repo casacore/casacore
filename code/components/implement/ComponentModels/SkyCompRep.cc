@@ -755,6 +755,8 @@ Quantum<Double> SkyCompRep::peakToIntegralFlux (const DirectionCoordinate& dirCo
       tmp.scale(C::pi / 4.0 / log(2.0));
    } else if (componentShape==ComponentType::DISK) { 
       tmp.scale(C::pi);
+   } else {
+     os << "Unrecognized shape for flux density conversion" << LogIO::EXCEPTION;
    }
 //
    Quantum<Double> fluxIntegral;
@@ -810,6 +812,8 @@ Quantum<Double> SkyCompRep::integralToPeakFlux (const DirectionCoordinate& dirCo
       tmp.scale(4.0 * log(2.0) / C::pi);
    } else if (componentShape==ComponentType::DISK) { 
       tmp.scale(1.0 / C::pi);
+   } else {
+     os << "Unrecognized shape for flux density conversion" << LogIO::EXCEPTION;
    }
 
 // And divide out shape
