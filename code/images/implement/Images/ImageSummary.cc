@@ -26,12 +26,13 @@
 //# $Id$
 //
 #include <aips/aips.h>
-#include <aips/Arrays.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/IPosition.h>
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
-#include <aips/Arrays/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Quanta/Unit.h>
@@ -323,6 +324,26 @@ Bool ImageSummary<T>::frequencySystem(String& freqTypeString,
 }
 
 
+template <class T> 
+Bool ImageSummary<T>::directionSystem(String& dirTypeString, 
+                                      MDirection::Types& dirType) const
+{
+   Bool ok;
+   Vector<Int> pixelAxes, worldAxes;
+   Int coordinate;
+   CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys_p);
+   if (coordinate >= 0) {
+      ok = True;
+      dirType = cSys_p.directionCoordinate(uInt(coordinate)).directionType();
+      dirTypeString = MDirection::showType(dirType);
+   } else {
+      ok = False;
+      dirTypeString = "";
+   }
+   return ok;
+}
+
+
 
 
 
@@ -398,12 +419,10 @@ void ImageSummary<T>::list (LogIO& os,
 
 // List DirectionCoordinate type from the first DirectionCoordinate we find
 
-   Vector<Int> pixelAxes, worldAxes;
-   Int coordinate;
-   CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys_p);
-   if (coordinate >= 0) {           
-      os << "Direction system : " 
-         << MDirection::showType(cSys_p.directionCoordinate(uInt(coordinate)).directionType()) << endl;
+   String dirTypeString;
+   MDirection::Types dirType;
+   if (directionSystem(dirTypeString, dirType)) {
+      os << "Direction system : " << dirTypeString << endl;
    }
 
 // List rest frequency and reference frame from the first spectral axis we find
@@ -495,7 +514,7 @@ void ImageSummary<T>::list (LogIO& os,
 
 
    uInt pixelAxis;
-   Int axisInCoordinate;
+   Int axisInCoordinate, coordinate;
    for (pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
 
 // Find coordinate number for this pixel axis

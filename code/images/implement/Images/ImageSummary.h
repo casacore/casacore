@@ -173,6 +173,9 @@ public:
 // Return frequency system.  Returns False if none.
    Bool frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const;
 
+// Return direction system.  Returns False if none.
+   Bool directionSystem(String& dirTypeString, MDirection::Types& dirType) const;
+
 // Retrieve whether image has mask or not
    Bool hasAMask () const;
 
