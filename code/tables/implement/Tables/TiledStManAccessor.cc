@@ -120,7 +120,7 @@ void ROTiledStManAccessor::setCacheSize (uInt rownr, uInt nbytes,
 
 void ROTiledStManAccessor::clearCaches()
 {
-    dataManPtr_p->clearCaches();
+    dataManPtr_p->emptyCaches();
 }
 
 void ROTiledStManAccessor::showCacheStatistics (ostream& os) const
