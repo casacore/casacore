@@ -62,6 +62,7 @@
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
+#include <trial/Images/SepImageConvolver.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
@@ -88,7 +89,6 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
   yMin_p(T(0.0)),
   yMax_p(T(0.0)),
   out_p(""),
-  psfOut_p(""),
   smoothOut_p(""),
   goodParameterStatus_p(True),
   doWindow_p(False),
@@ -170,7 +170,6 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       yMax_p = other.yMax_p;
       plotter_p = other.plotter_p;
       out_p = other.out_p;
-      psfOut_p = other.psfOut_p;
       smoothOut_p = other.smoothOut_p;
       goodParameterStatus_p = other.goodParameterStatus_p;
       doWindow_p = other.doWindow_p;
@@ -371,7 +370,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
    if (kernelTypesU.nelements() > 0) {
       kernelTypes_p = kernelTypesU;
       for (i=0; i<Int(kernelTypes_p.nelements()); i++) {
-         if (kernelTypes_p(i) < 0 || kernelTypes_p(i) > NKERNELS-1) {
+         if (kernelTypes_p(i) < 0 || kernelTypes_p(i) > VectorKernel::NKERNELS-1) {
             os_p << LogIO::SEVERE << "Illegal smoothing kernel types given" << LogIO::POST;
             goodParameterStatus_p = False;
             return False;
@@ -399,12 +398,12 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
    kernelWidths_p.resize(smoothAxes_p.nelements());
    Int nK = kernelWidthsU.nelements();
    for (i=0; i<Int(smoothAxes_p.nelements()); i++) {
-      if (kernelTypes_p(i) == HANNING) {
+      if (kernelTypes_p(i) == VectorKernel::HANNING) {
 
 // For Hanning, width is always 3
 
          kernelWidths_p(i) = 3;
-      } else if (kernelTypes_p(i) == BOXCAR) {
+      } else if (kernelTypes_p(i) == VectorKernel::BOXCAR) {
 
 // For box must be odd number greater than 1
 
@@ -419,18 +418,10 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
                        " is too small" << LogIO::POST;
                goodParameterStatus_p = False;
                return False;
-            } else {
-
-// Make sure it's an odd integer
-
-               if(makeOdd(intKernelWidth)) {
-                  os_p << LogIO::SEVERE << "Increasing boxcar width on axis " << i+1 <<
-                          " to " << intKernelWidth << LogIO::POST;
-               }
-               kernelWidths_p(i) = Double(intKernelWidth);
             }
+            kernelWidths_p(i) = intKernelWidth;
          }
-      } else if (kernelTypes_p(i) == GAUSSIAN) {
+      } else if (kernelTypes_p(i) == VectorKernel::GAUSSIAN) {
          if (i > nK-1) {
             os_p << LogIO::SEVERE << "Not enough smoothing widths given" << LogIO::POST;
             goodParameterStatus_p = False;
@@ -524,30 +515,6 @@ Bool ImageMoments<T>::setOutName(const String& outU)
    return True;
 }
  
-
-template <class T>
-Bool ImageMoments<T>::setPsfOutName(const String& psfOutU)
-//
-// Assign the desired output PSF file name
-//
-{
-   if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
-      return False;
-   }
-//
-   if (!overWriteOutput_p) {
-      NewFile x(False);
-      String error;
-      if (!x.valueOK(psfOutU, error)) {
-         return False;
-      }
-   }
-//
-   psfOut_p = psfOutU;
-   return True;
-}
-
 
 
 template <class T>
@@ -662,44 +629,6 @@ Vector<Int> ImageMoments<T>::toMethodTypes (const String& methods)
       methodTypes.resize(0);
    }
    return methodTypes;
-} 
-
-
-template <class T>
-Vector<Int> ImageMoments<T>::toKernelTypes (const String& kernels)
-// 
-// Helper function to convert a string containing a list of desired smoothed kernel types
-// to the correct <src>Vector<Int></src> required for the
-// <src>setSmooth</src> function.
-// 
-// Inputs:
-//   kernels   Should contain some of "box", "gauss", "hann"
-//
-{
-// Convert to an array of strings
-
-   const Vector<String> kernelStrings = ImageUtilities::getStrings(kernels);
-
-// Convert strings to appropriate enumerated value
-
-   Vector<Int> kernelTypes(kernelStrings.nelements());
-
-   for (uInt i=0; i<uInt(kernelStrings.nelements()); i++) {
-      String tKernels= kernelStrings(i);
-      tKernels.upcase();
-
-      if (tKernels.contains("BOX")) {
-         kernelTypes(i) = BOXCAR;
-      } else if (tKernels.contains("GAUSS")) {
-         kernelTypes(i) = GAUSSIAN;
-      } else if (tKernels.contains("HANN")) {
-         kernelTypes(i) = HANNING;
-      }
-   }
-
-// Return result
-
-   return kernelTypes;
 } 
 
 
@@ -1343,145 +1272,6 @@ Bool ImageMoments<T>::getLoc (T& x,
 
 
 
-template <class T> 
-Bool ImageMoments<T>::makeOdd (Int& i)
-{
-   const Int j = i / 2;
-   if (2*j == i) {
-      i++;
-      return True;
-   }
-   return False;
-}
-
-
-template <class T> 
-void ImageMoments<T>::makePSF (Array<T>& psf,
-                               Matrix<T>& psfSep)
-//
-// Generate an array containing the convolving function
-//
-// Output:
-//   psf             PSF 
-//   psfSep          Separable PSF
-//
-{
-
-   uInt i, j, k;
-
-// Find the largest axis number the user wants to smooth
-
-   const uInt psfDim = max(smoothAxes_p.ac()) + 1;
-
-
-// Work out the shape of the PSF.
-
-   IPosition psfShape(psfDim);
-   Bool found;
-   for (i=0,k=0; i<psfDim; i++) {
-      if (linearSearch(found, smoothAxes_p, Int(i), smoothAxes_p.nelements())==-1) {
-         psfShape(i) = 1;
-      } else {
-         if (kernelTypes_p(k) == GAUSSIAN) { 
-            const Double sigma = kernelWidths_p(k) / sqrt(Double(8.0) * C::ln2);
-            psfShape(i) = (Int(5*sigma + 0.5) + 1) * 2;
-         } else if (kernelTypes_p(k) == BOXCAR) {
-            const uInt intKernelWidth = uInt(kernelWidths_p(k)+0.5);
-            psfShape(i) = intKernelWidth + 1;
-         } else if (kernelTypes_p(k) == HANNING) {
-            psfShape(i) = 4;
-         }
-         k++;
-      }
-   }
-
-
-// Resize separable PSF matrix
-
-   const uInt nAxes = psfDim;
-   const uInt nPts = max(psfShape.asVector().ac());
-   psfSep.resize(nPts,nAxes);
-
-
-// Now fill the separable PSF
-
-   for (i=0,k=0; i<psfDim; i++) {
-
-      if(linearSearch(found, smoothAxes_p, Int(i), smoothAxes_p.nelements())==-1) {
-
-
-// If this axis is not in the user's list, make the shape
-// of the PSF array 1
-
-         psfShape(i) = 1;
-         psfSep(0,i) = 1.0;
-      } else {
-         if (kernelTypes_p(k) == GAUSSIAN) { 
-
-// Gaussian. The volume error is less than 6e-5% for +/- 5 sigma limits
-
-            const Double sigma = kernelWidths_p(k) / sqrt(Double(8.0) * C::ln2);
-            const Int refPix = psfShape(i)/2;
-
-            const Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
-            const Double gWidth = kernelWidths_p(k);
-            const Gaussian1D<Double> gauss(norm, Double(refPix), gWidth);
-//            os_p << LogIO::NORMAL << "Volume = " << 1/norm << LogIO::POST;
-
-            for (j=0; j<uInt(psfShape(i)); j++) psfSep(j,i) = gauss(Double(j));
-         } else if (kernelTypes_p(k) == BOXCAR) {
-            const Int intKernelWidth = Int(kernelWidths_p(k)+0.5);
-            const Int refPix = psfShape(i)/2;
-
-            const Int iw = (intKernelWidth-1) / 2;
-            for (j=0; j<uInt(psfShape(i)); j++) {
-               if (abs(Int(j)-refPix) > iw) {
-                  psfSep(j,i) = 0.0;
-               } else {
-                  psfSep(j,i) = 1.0 / Float(intKernelWidth);
-               }
-            }
-         } else if (kernelTypes_p(k) == HANNING) {
-            psfSep(0,i) = 0.25;
-            psfSep(1,i) = 0.5;
-            psfSep(2,i) = 0.25;
-            psfSep(3,i) = 0.0;
-         }
-         k++;
-      }
-   }
-
-//   os_p << LogIO::NORMAL << "PSF shape = " << psfShape << LogIO::POST;
-
-
-// Resize non-separable PSF array
-
-   psf.resize(psfShape);
-
-
-// Set up position iterator
-
-   ArrayPositionIterator posIterator (psf.shape(), IPosition(psfDim,0), 0);
-
-
-// Iterate through PSF array and fill it with product of separable PSF
-
-   Float val;
-   Float sum = 0.0;
-   uInt index;
-   for (posIterator.origin(); !posIterator.pastEnd(); posIterator.next()) {
-      for (i=0,val=1.0; i<psfDim; i++) {
-         index = posIterator.pos()(i);
-         val *= psfSep(index,i);
-      }
-      psf(posIterator.pos()) = val;
-      sum = sum + val;
-   } 
-
-//   os_p << LogIO::NORMAL << "Sum of PSF = " << sum << LogIO::POST;
-
-}
-
 
 
 template <class T> 
@@ -1590,39 +1380,6 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
       return 0;
    }
       
-// Generate convolving function
-
-   Array<T> psf;
-   Matrix<T> psfSep;
-   makePSF(psf, psfSep);
-
-// Save PSF to disk. It won't be very big generally, so use an ArrayLattice
-   
-   if (!psfOut_p.empty()) {
-      os_p << LogIO::NORMAL << "Saving PSF file" << LogIO::POST;
-
-// Create ArrayLattice
-
-      ArrayLattice<T>* pPSF = new ArrayLattice<T>(psf);
-//
-// Fiddle CoordinateSystem
-//
-      CoordinateSystem psfCSys = pInImage_p->coordinates();
-      Vector<Double> refPix(psfCSys.referencePixel().copy());
-      Vector<Double> refVal(psfCSys.referenceValue().copy());
-      for (uInt i=0; i<refPix.nelements(); i++) {
-         refVal(i) = 0.0;
-         refPix(i) = Double(pPSF->shape()(i))/2.0;
-      }
-//
-// Save it
-//
-      psfCSys.setReferenceValue(refVal);
-      psfCSys.setReferencePixel(refPix);
-      PagedImage<T> psfOut(pPSF->shape(), psfCSys, psfOut_p);
-      psfOut.copyData(*pPSF);  
-      delete pPSF;
-   }
 
 // Create smoothed image as a PagedImage.  We delete it later
 // if the user doesn't want to save it
@@ -1650,46 +1407,15 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
       os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
    }
 
-// Give it a mask if the input image is masked
+// Do the convolution
 
-   LCPagedMask* pMask = 0;
-   if (pInImage_p->isMasked()) {
-      pMask = new LCPagedMask(RegionHandler::makeMask(*pSmoothedImage, "mask0"));
+   SepImageConvolver<T> sic(*pInImage_p, os_p, True);
+   for (uInt i=0; i<smoothAxes_p.nelements(); i++) {
+      VectorKernel::KernelTypes type = VectorKernel::KernelTypes(kernelTypes_p(i));
+      sic.setKernel(uInt(smoothAxes_p(i)), type, kernelWidths_p(i));
    }
-
-// First copy input to output. We must replace masked pixels
-// by zeros.  We also set the output mask to the input mask
-
-   copyAndZero(*pSmoothedImage, *pMask, *pInImage_p);
-
+   sic.convolve(*pSmoothedImage);
 //
-// Make the mask known to the image
-//
-   if (pMask!=0) {
-      pSmoothedImage->defineRegion ("mask0", ImageRegion(*pMask), 
-                                    RegionHandler::Masks);
-      pSmoothedImage->setDefaultMask(String("mask0"));
-      delete pMask;
-   }
-
-// Smooth in situ.  PSF is separable so convolve by rows for each axis.  
-
-
-   IPosition niceShape = 
-        pSmoothedImage->niceCursorShape(pSmoothedImage->maxPixels());
-   for (uInt i=0; i<psf.ndim(); i++) {
-      if (psf.shape()(i) > 1) {
-         os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
-         const Int n = pSmoothedImage->shape()(i)/niceShape(i);
-         if (n*niceShape(i)!=pSmoothedImage->shape()(i)) {
-            os_p << LogIO::WARN << "The tile shape is not integral along this axis, performance may degrade" << LogIO::POST;
-         }
-//
-         Vector<T> psfRow = psfSep.column(i);
-         psfRow.resize(psf.shape()(i),True);
-         smoothProfiles (*pSmoothedImage, i, psfRow);
-      }
-   }
    return pSmoothedImage;
 }
 
@@ -1761,54 +1487,6 @@ Bool ImageMoments<T>::setIncludeExclude (Vector<T>& range,
    }
    return True;   
 }
-
-
-template <class T> 
-void ImageMoments<T>::smoothProfiles (ImageInterface<T>& in,
-                                      const Int& axis,
-                                      const Vector<T>& psf)
-//
-// Smooth all the profiles extracted along
-// one axis of the input image
-//
-{
-  ProgressMeter* pProgressMeter = 0;
-  if (showProgress_p) {
-     Double nMin = 0.0;
-     Double nMax = 1.0;
-     for (Int i=0; i<Int(in.shape().nelements()); i++) {
-        if (i!=axis) {
-           nMax *= in.shape()(i);
-        }
-     }
-     ostrstream oss;
-     oss << "Convolve Image Axis " << axis+1 << ends;
-     pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
-                                        String("Spectrum Convolutions"), 
-                                        String(""), String(""),
-                                        True, max(1,Int(nMax/20)));
-  }
-//
-  TiledLineStepper navIn(in.shape(),
-			 in.niceCursorShape(in.maxPixels()),
-			 axis);
-  LatticeIterator<T> inIt(in, navIn);
-  Vector<T> result(in.shape()(axis));
-  IPosition sh(1, in.shape()(axis));  
-  Convolver<T> conv(psf, sh);
-
-  uInt i = 0;
-  while (!inIt.atEnd()) {
-    conv.linearConv(result, inIt.vectorCursor());
-    inIt.woVectorCursor() = result;
-//
-    if (showProgress_p) pProgressMeter->update(Double(i));
-    inIt++;
-    i++;
-  }
-  if (showProgress_p) delete pProgressMeter;
-}
-
 
 
 template <class T> 
