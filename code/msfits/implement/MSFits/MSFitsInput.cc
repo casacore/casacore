@@ -45,10 +45,11 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/StManAipsIO.h>
+#include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TiledColumnStMan.h>
+#include <aips/Tables/TiledShapeStMan.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/MeasurementSets/NewMSColumns.h>
 
@@ -408,23 +409,13 @@ void NewMSFitsInput::setupMeasurementSet(const String& NewMSFileName, Bool useTS
   // Make the MS table
   TableDesc td = NewMS::requiredTableDesc();
   
-  // We know that the data is going to be the same shape throughout
-  // so we want to have a fixed shape data column
-  NewMS::addColumnToDesc(td, NewMS::DATA, IPosition(2,nCorr,nChan), 
-		      ColumnDesc::Direct);
-  td.removeColumn(NewMS::columnName(NewMS::SIGMA));
-  NewMS::addColumnToDesc(td, NewMS::SIGMA, IPosition(1,nCorr), 
-		      ColumnDesc::Direct);
-  td.removeColumn(NewMS::columnName(NewMS::WEIGHT));
-  NewMS::addColumnToDesc(td, NewMS::WEIGHT, IPosition(1,nCorr), 
-		      ColumnDesc::Direct);
+  // Even though we know the data is going to be the same shape throughout I'll
+  // still create a column that has a variable shape as this will permit MS's
+  // with other shapes to be appended.
+  NewMS::addColumnToDesc(td, NewMS::DATA, 2);
   // add this optional column because random group fits has a
   // weight per visibility
-  NewMS::addColumnToDesc(td, NewMS::WEIGHT_SPECTRUM, 
-		      IPosition(1,nChan), ColumnDesc::Direct);
-  td.removeColumn(NewMS::columnName(NewMS::FLAG));
-  NewMS::addColumnToDesc(td, NewMS::FLAG, IPosition(2,nCorr,nChan), 
-		      ColumnDesc::Direct);
+  NewMS::addColumnToDesc(td, NewMS::WEIGHT_SPECTRUM, 1);
   
   if (useTSM) {
     td.defineHypercolumn("TiledData",3,
@@ -442,21 +433,21 @@ void NewMSFitsInput::setupMeasurementSet(const String& NewMSFileName, Bool useTS
   IncrementalStMan incrStMan ("ISMData");
   newtab.bindAll(incrStMan, True);
   // bind ANTENNA2 to the aipsStMan as it changes every row
-  StManAipsIO aipsStMan;
+  StandardStMan aipsStMan;
   newtab.bindColumn(NewMS::columnName(NewMS::ANTENNA2),aipsStMan);
   
   if (useTSM) {
     Int tileSize=nChan/10+1;
     // make the tile about 128k big
-    TiledColumnStMan tiledStMan1("TiledData",
+    TiledShapeStMan tiledStMan1("TiledData",
+				IPosition(3,nCorr,tileSize,
+					  16384/nCorr/tileSize));
+    TiledShapeStMan tiledStMan1f("TiledFlag",
 				 IPosition(3,nCorr,tileSize,
 					   16384/nCorr/tileSize));
-    TiledColumnStMan tiledStMan1f("TiledFlag",
-				  IPosition(3,nCorr,tileSize,
-					    16384/nCorr/tileSize));
-    TiledColumnStMan tiledStMan2("TiledWeight",
-				 IPosition(2,tileSize,
-					   8192/tileSize));
+    TiledShapeStMan tiledStMan2("TiledWeight",
+				IPosition(2,tileSize,
+					  8192/tileSize));
     TiledColumnStMan tiledStMan3("TiledUVW",
 				 IPosition(2,3,1024));
     // Bind the DATA, FLAG & WEIGHT_SPECTRUM columns to the tiled stman
@@ -464,8 +455,7 @@ void NewMSFitsInput::setupMeasurementSet(const String& NewMSFileName, Bool useTS
     newtab.bindColumn(NewMS::columnName(NewMS::FLAG),tiledStMan1f);
     newtab.bindColumn(NewMS::columnName(NewMS::WEIGHT_SPECTRUM),tiledStMan2);
     newtab.bindColumn(NewMS::columnName(NewMS::UVW),tiledStMan3);
-  }
-  if (!useTSM) {
+  } else {
     newtab.bindColumn(NewMS::columnName(NewMS::DATA),aipsStMan);
     newtab.bindColumn(NewMS::columnName(NewMS::FLAG),aipsStMan);
     newtab.bindColumn(NewMS::columnName(NewMS::WEIGHT_SPECTRUM),aipsStMan);
@@ -1160,4 +1150,6 @@ void NewMSFitsInput::fixEpochReferences() {
       os << LogIO::SEVERE << "Unhandled time reference frame: "<<timsys_p<<LogIO::POST;
   }
 }
-
+// Local Variables: 
+// compile-command: "gmake NewMSFitsInput"
+// End: 
