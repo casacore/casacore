@@ -196,7 +196,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
-      g1 = (*MVPOS1 * *MVDIR1)/C::c;
+      g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
       in = g2*sqrt((1+g1)/(1-g1));
     }	
@@ -221,7 +221,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getApp(*MVDIR1);
-      g1 = (*MVPOS1 * *MVDIR1)/C::c;
+      g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
       in = g2*sqrt((1+g1)/(1-g1));
     }
@@ -235,7 +235,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getApp(*MVDIR1);
-      g1 = (*MVPOS1 * *MVDIR1)/C::c;
+      g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
       in = g2*sqrt((1-g1)/(1+g1));
     }	
@@ -260,7 +260,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
 	getApp(*MVDIR1);
-      g1 = (*MVPOS1 * *MVDIR1)/C::c;
+      g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
       in = g2*sqrt((1-g1)/(1+g1));
     }
