@@ -26,6 +26,8 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSSpwParse.h>
+#include <ms/MeasurementSets/MSDataDescIndex.h>
+#include <ms/MeasurementSets/MSSpWindowIndex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -40,8 +42,43 @@ MSSpwParse::MSSpwParse ()
 //# Constructor with given ms name.
 MSSpwParse::MSSpwParse (const MeasurementSet& ms)
 : MSParse(ms, "SPW")
-{}
+{
+}
 
+TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
+{
+    // Look-up in DATA_DESC sub-table
+    MSDataDescIndex msDDI(ms().dataDescription());
+    String colName = MS::columnName(MS::DATA_DESC_ID);
+
+    node() = (ms().col(colName).in(msDDI.matchSpwId(spwIds)));
+    return &node();
+}
+
+TableExprNode *MSSpwParse::selectSpwName(const String& name)
+{
+    const String colName = MS::columnName(MS::DATA_DESC_ID);
+    bool selectName;
+
+    ROMSSpWindowColumns msSWC(ms().spectralWindow());
+    ROScalarColumn<String> names(msSWC.name());
+
+    for (uInt i = 0; i < names.getColumn().nelements(); i++)
+    {
+        if(strcmp(names(i).chars(), name.chars())==0)
+            selectName = True;
+    }
+
+    if(selectName)
+    {
+        MSSpWindowIndex msSWI(ms().spectralWindow());
+	node() = 0;
+    }
+    else
+      node() = 0;
+
+    return &node();
+}
 TableExprNode& MSSpwParse::node()
 {
     return node_p;

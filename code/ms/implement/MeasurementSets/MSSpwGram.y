@@ -39,19 +39,18 @@ using namespace casa;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
   Int ival;
-  Double dval[2];
+  char * str; 
+  Double dval;
 }
 
+%token SPW
+%token FREQUENCYUNIT
+%token VELOCITYUNIT
+%token <str> SPWNAME
+%token <ival> INDEX
+%token DASH
 %token EQASS
 %token SQUOTE
-%token <ival> NUMBER
-%token <dval> FNUMBER
-%token DASH
-%token LT
-%token GT
-%token COLON
-%token COMMA
-%token PERCENT
 
 %token LBRACKET
 %token LPAREN
@@ -59,10 +58,20 @@ using namespace casa;
 %token RPAREN
 %token LBRACE
 %token RBRACE
+%token COLON
+
+%type <node> spwstatement
+%type <node> spwexpr
+%type <node> channellistexpr
+%type <node> channellist
+%type <node> channelrangeexpr
+%type <node> rangeexpr
+%type <node> frequencyrangeexpr
+%type <node> velocityrangeexpr
+%type <node> chansstartstepexpr
 
 %left OR
-%left AND
-%nonassoc EQ EQASS GT GE LT LE NE
+%nonassoc EQ EQASS GT GE LT LE NE COMMA SLASH
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %nonassoc UNARY
@@ -74,9 +83,57 @@ int MSSpwGramlex (YYSTYPE*);
 %}
 
 %%
-statement: EQASS SQUOTE SQUOTE {
-                  cout << "selection" << endl;}
+spwstatement: SPW EQASS SQUOTE spwexpr SQUOTE {
+                $$ = $4;
+                cout << "Spw selection "<< endl;}
+            | SPW EQASS INDEX {
+                   Vector<Int> spwids(1);
+		   spwids[0] = $3;
+		   cout << ("spw index\n") << spwids[0] << endl;;
+                   $$ = MSSpwParse().selectSpwIds(spwids);}
+            ;
+
+spwexpr: SPWNAME {
+              String name($1);
+              cout << ("spw name\n") << name << endl;;
+              $$ = MSSpwParse().selectSpwName(name);
+          }
+         |channellistexpr COMMA channelrangeexpr         
+         |channellistexpr
+         |rangeexpr
+         |chansstartstepexpr          ;
+
+channellistexpr: INDEX COLON channellist {}
                ;
+
+channellist: LPAREN listexpr RPAREN {}
+           | INDEX {
+                printf("a single channel \n");}
+           ;
+listexpr : INDEX {
+                 printf("a channel selected\n");
+	       }
+         | listexpr COMMA INDEX {
+                 printf("a list channel selected\n");}
+         ;
+rangeexpr : channelrangeexpr 
+          | frequencyrangeexpr
+          | velocityrangeexpr
+          ;
+
+channelrangeexpr: INDEX COLON INDEX DASH INDEX {
+                     printf("a channel range selected\n");}  
+                ;
+frequencyrangeexpr : INDEX COLON INDEX DASH INDEX FREQUENCYUNIT {
+                       printf("a FREQUENCY range selected\n");}
+                   ;
+velocityrangeexpr : INDEX COLON INDEX DASH INDEX VELOCITYUNIT {
+                       printf("a VELOCITY range selected\n");}
+                   ;
+
+chansstartstepexpr : INDEX COLON INDEX SLASH INDEX SLASH INDEX SLASH INDEX {
+                    cout << " Given start and step \n" << endl;}
+                   ;
 
 %%
 

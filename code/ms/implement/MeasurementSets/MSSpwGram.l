@@ -39,11 +39,9 @@ WHITE     [ \t\n]*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
-FNUMBER   {INT}"."{DIGIT}*
+FNUMBER   {INT}|({INT}"."{DIGIT}*)
 TRUE      T
 FALSE     F
-
-
 
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
@@ -52,12 +50,10 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-UVDIST     [Uu][Vv][Dd][Ii][Ss][Tt]
-DISTANCEUNIT [Kk][Mm]
-ML           [Mm][Ll]
-KL           [Kk][Ll]
-L            [Ll]
-WAVELENTHUNIT {ML}|{KL}|{L}
+SPW        [Ss][Pp][Ww]
+FREQUENCYUNIT    [Mm][Hh][Zz]
+VELOCITYUNIT     [Kk][Mm]"/"[Ss]
+SPWNAME    [A-Za-z]([A-Za-z0-9])*
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -99,8 +95,6 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             return LE; }
 "<"       { msSpwGramPosition() += yyleng;
             return LT; }
-"&&"      { msSpwGramPosition() += yyleng;
-            return AND; }
 "||"      { msSpwGramPosition() += yyleng;
             return OR; }
 "!"       { msSpwGramPosition() += yyleng;
@@ -110,9 +104,9 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 "*"       { msSpwGramPosition() += yyleng;
             return TIMES; }
 "/"       { msSpwGramPosition() += yyleng;
-            return DIVIDE; }
+            return SLASH; }
 "%"       { msSpwGramPosition() += yyleng;
-            return PERCENT; }
+            return MODULO; }
 "+"       { msSpwGramPosition() += yyleng;
             return PLUS; }
 "-"       { msSpwGramPosition() += yyleng;
@@ -127,7 +121,25 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             return COMMA;
           }
 
- /* Literals */
+  /* Literals */
+{SPW}     { msSpwGramPosition() += yyleng;
+	    return SPW;
+	  }
+{FREQUENCYUNIT}  { msSpwGramPosition() += yyleng;
+                   return FREQUENCYUNIT;
+                 }
+{VELOCITYUNIT}  { msSpwGramPosition() += yyleng;
+                  return VELOCITYUNIT;
+                }
+
+{INT}     { msSpwGramPosition() += yyleng;
+            lvalp->dval = atof(MSSpwGramtext);
+            return INDEX;
+	  }
+
+{SPWNAME} { msSpwGramPosition() += yyleng;
+            return SPWNAME;
+	  }
 
 %%
 
