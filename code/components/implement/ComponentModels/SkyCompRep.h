@@ -1,5 +1,5 @@
 //# SkyCompRep.h: this defines SkyCompRep.h
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,8 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
+// This should really be forward declared but I cannot make it work!
+#include <aips/Mathematics/Complex.h>
 
 class GlishRecord;
 class MDirection;
@@ -43,6 +45,7 @@ class String;
 template<class T> class ImageInterface;
 template<class T> class Quantum;
 template<class T> class Vector;
+//class Complex;
 
 // <summary>A component of a model of the sky</summary>
 
@@ -133,6 +136,10 @@ public:
   // <group>
   virtual void setFlux(const Quantum<Vector<Double> > & newFlux) = 0;
   virtual void flux(Quantum<Vector<Double> > & compflux) const = 0;
+//   virtual void setFluxCircular(const Quantum<Vector<DComplex> > & compflux);
+//   virtual void fluxCircular(Quantum<Vector<DComplex> > & compflux) const;
+//   virtual void setFluxLinear(const Quantum<Vector<DComplex> > & compflux);
+//   virtual void fluxLinear(Quantum<Vector<DComplex> > & compflux) const;
   // </group>
 
   // set/get the direction (usually the centre) of the component.
@@ -145,8 +152,8 @@ public:
   // not store the labels and always return an empty string. Hence by default
   // labels are not supported.
   // <group>
-  virtual void setLabel(const String & newLabel) = 0;
-  virtual void label(String & compLabel) const = 0;
+  virtual void setLabel(const String & newLabel);
+  virtual void label(String & compLabel) const;
   // </group>
 
   // return the number of parameters in the component and set/get them.
@@ -156,9 +163,8 @@ public:
   virtual void parameters(Vector<Double> & compParms) const = 0;
   // </group>
 
-  // get the actual type of the component 
-  // (as an ComponentTypes::ComponentTypes enum)
-  virtual ComponentType::Type type() const = 0;
+  // get the shape of the component 
+  virtual ComponentType::Shape shapeType() const = 0;
 
   // This functions convert between a glish record and a SkyCompRep. This way
   // derived classes can interpret fields in the record in a class specific

@@ -1,5 +1,5 @@
 //# tGaussianCompRep.cc:  this defines tGaussianCompRep.cc
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -222,8 +222,8 @@ int main() {
       AlwaysAssert(near(pa.radian(), compPA.radian(), 1E-10), AipsError);
 
       // Check this is a Gaussian component
-      AlwaysAssert(B1934.type() == ComponentType::GAUSSIAN, AipsError);
-      AlwaysAssert(ComponentType::name(B1934.type()).matches("Gaussian") == 1, 
+      AlwaysAssert(B1934.shapeType() == ComponentType::GAUSSIAN, AipsError);
+      AlwaysAssert(ComponentType::name(B1934.shapeType()).matches("Gaussian") == 1, 
  		   AipsError);
 
       // Check the parameters interface
@@ -263,7 +263,7 @@ int main() {
       cout << "Passed the set/get parameters test for Gaussian components"
   	   << endl;
       const SkyCompRep * compRepPtr = B1934.clone();
-      AlwaysAssert(compRepPtr->type() == ComponentType::GAUSSIAN, AipsError);
+      AlwaysAssert(compRepPtr->shapeType() == ComponentType::GAUSSIAN, AipsError);
       flux1934 = 0.0;
       Quantum<Vector<Double> > qFlux(flux1934, "Jy");
       compRepPtr->flux(qFlux) ;

@@ -1,5 +1,5 @@
 //# SkyCompRep.cc:  this defines SkyCompRep
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,13 +26,13 @@
 //# $Id$
 
 #include <trial/ComponentModels/SkyCompRep.h>
+#include <trial/Coordinates/Coordinate.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/Coordinate.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/ArrayLattice.h>
+#include <trial/Lattices/LatticeIterator.h>
 #include <trial/Tasking/MeasureParameterAccessor.h>
 
 #include <aips/Arrays/Array.h>
@@ -45,14 +45,14 @@
 #include <aips/Glish/GlishValue.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/Unit.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/QLogical.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/Stokes.h>
+#include <aips/Measures/Unit.h>
+#include <aips/Measures/UnitVal.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <strstream.h>
@@ -202,15 +202,15 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   }
 }
 
-// void SkyCompRep::setLabel(const String & newLabel) {
-//   // Use newLabel for something to suppress a compiler warning
-//   if (newLabel == "") {
-//   }
-// }
+void SkyCompRep::setLabel(const String & newLabel) {
+  // Use newLabel for something to suppress a compiler warning
+  if (newLabel == "") {
+  }
+}
 
-// void SkyCompRep::label(String & compLabel) const {
-//   compLabel = "";
-// }
+void SkyCompRep::label(String & compLabel) const {
+  compLabel = "";
+}
 
 Bool SkyCompRep::ok() const {
   return True;
