@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1997,1998,1999,2000
+#   Copyright (C) 1997,1998,1999,2000,2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -123,9 +123,10 @@ RPFITSLIB :=
 # Preprocessor flags for system debug/optimized compilations.
 CPPDBG   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DNATIVE_EXCP -DAIPS_ARRAY_INDEX_CHECK
 CPPOPT   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DNATIVE_EXCP
+CPPSTD   += -DAIPS_STDLIB
 
 # C compiler flags for system debug/optimized compilations.
-CC       := egcs
+CC       := gcc
 CDBG    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type -Wimplicit -fPIC
 COPTLVL := -O2
 COPT    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type -Wimplicit -fPIC
