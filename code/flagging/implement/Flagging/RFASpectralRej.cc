@@ -304,8 +304,8 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
           data(ich) = mapValue(ich,irow);
         
         PGPlotterInterface &pgp( debug.pgp() );
-        Float vmax = ::max( ::max(y1,yfit) );
-        Float vmin = ::min( ::min(y1,yfit) ); 
+        Float vmax = ::max( ::max(static_cast<Array<Float> >(y1),static_cast<Array<Float> >(yfit)) );
+        Float vmin = ::min( ::min(static_cast<Array<Float> >(y1),static_cast<Array<Float> >(yfit)) ); 
         for( Bool redraw=True; redraw;  )
         {
           pgp.ask(False);
