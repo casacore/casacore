@@ -1,5 +1,5 @@
 //# ImageRegion.cc: Class to hold a region of interest in an image
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/WCRegion.h>
+#include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LCExtension.h>
 #include <trial/Lattices/RegionType.h>
@@ -41,32 +42,51 @@ typedef Vector<Int> imageregion_gppbug1;
 typedef Vector<Double> imageregion_gppbug2;
 
 
+ImageRegion::ImageRegion (const LCRegion& region)
+: itsLC     (region.cloneRegion()),
+  itsSlicer (0),
+  itsWC     (0),
+  itsNdim   (region.ndim())
+{}
+
 ImageRegion::ImageRegion (const LCSlicer& slicer)
-: itsSlicer (new LCSlicer(slicer)),
+: itsLC     (0),
+  itsSlicer (new LCSlicer(slicer)),
   itsWC     (0),
   itsNdim   (slicer.ndim())
 {}
 
 ImageRegion::ImageRegion (const WCRegion& region)
-: itsSlicer (0),
+: itsLC     (0),
+  itsSlicer (0),
   itsWC     (region.cloneRegion()),
   itsNdim   (region.ndim())
 {}
 
+ImageRegion::ImageRegion (LCRegion* region)
+: itsLC     (region),
+  itsSlicer (0),
+  itsWC     (0),
+  itsNdim   (region->ndim())
+{}
+
 ImageRegion::ImageRegion (LCSlicer* slicer)
-: itsSlicer (slicer),
+: itsLC     (0),
+  itsSlicer (slicer),
   itsWC     (0),
   itsNdim   (slicer->ndim())
 {}
 
 ImageRegion::ImageRegion (WCRegion* region)
-: itsSlicer (0),
+: itsLC     (0),
+  itsSlicer (0),
   itsWC     (region),
   itsNdim   (region->ndim())
 {}
 
 ImageRegion::ImageRegion (const ImageRegion& other)
-: itsSlicer (0),
+: itsLC     (0),
+  itsSlicer (0),
   itsWC     (0)
 {
     operator= (other);
@@ -74,6 +94,7 @@ ImageRegion::ImageRegion (const ImageRegion& other)
 
 ImageRegion::~ImageRegion()
 {
+    delete itsLC;
     delete itsSlicer;
     delete itsWC;
 }
@@ -81,11 +102,16 @@ ImageRegion::~ImageRegion()
 ImageRegion& ImageRegion::operator= (const ImageRegion& other)
 {
     if (this != &other) {
+	delete itsLC;
 	delete itsSlicer;
         delete itsWC;
+	itsLC = other.itsLC;
 	itsSlicer = other.itsSlicer;
 	itsWC = other.itsWC;
 	itsNdim = other.itsNdim;
+	if (itsLC != 0) {
+	    itsLC = itsLC->cloneRegion();
+	}
 	if (itsSlicer != 0) {
 	    itsSlicer = new LCSlicer(*itsSlicer);
 	}
@@ -99,16 +125,25 @@ ImageRegion& ImageRegion::operator= (const ImageRegion& other)
 Bool ImageRegion::operator== (const ImageRegion& other) const
 {
     if (isWCRegion()   != other.isWCRegion()
+    ||  isLCRegion()   != other.isLCRegion()
     ||  isLCSlicer()   != other.isLCSlicer()) {
 	return False;
     }
     Bool match;
-    if (isLCSlicer()) {
+    if (isLCRegion()) {
+	match = (*itsLC == other.asLCRegion());
+    } else if (isLCSlicer()) {
 	match = (*itsSlicer == other.asLCSlicer());
     } else {
 	match = (*itsWC == other.asWCRegion());
     }
     return match;
+}
+
+const LCRegion& ImageRegion::asLCRegion() const
+{
+    AlwaysAssert (isLCRegion(), AipsError);
+    return *itsLC;
 }
 
 const LCSlicer& ImageRegion::asLCSlicer() const
@@ -126,6 +161,9 @@ const WCRegion& ImageRegion::asWCRegion() const
 LatticeRegion ImageRegion::toLatticeRegion (const CoordinateSystem& cSys,
 					    const IPosition& shape) const
 {
+    if (isLCRegion()) {
+	return LatticeRegion (*itsLC);
+    }
     if (isLCSlicer()) {
 	return LatticeRegion (itsSlicer->toSlicer (cSys.referencePixel(),
 						   shape),
@@ -142,7 +180,9 @@ LCRegion* ImageRegion::toLCRegion (const CoordinateSystem& cSys,
 {
     // Convert the region to an LCRegion.
     LCRegion* region = 0;
-    if (isWCRegion()) {
+    if (isLCRegion()) {
+	region = itsLC->cloneRegion();
+    } else if (isWCRegion()) {
         region = itsWC->toLCRegion (cSys, shape);
     } else {
 	throw (AipsError ("ImageRegion::toLCRegion - "
@@ -154,6 +194,9 @@ LCRegion* ImageRegion::toLCRegion (const CoordinateSystem& cSys,
 TableRecord ImageRegion::toRecord (const String& tableName) const
 {
     TableRecord record;
+    if (isLCRegion()) {
+        return itsLC->toRecord (tableName);
+    }
     if (isWCRegion()) {
         return itsWC->toRecord (tableName);
     }
@@ -172,6 +215,9 @@ ImageRegion* ImageRegion::fromRecord (const TableRecord& record,
     // Note that in the following the ImageRegion constructors take
     // over the pointer returned by fromRecord.
     Int regionType = record.asInt ("isRegion");       
+    if (regionType == RegionType::LC) {
+	return new ImageRegion (LCRegion::fromRecord (record, tableName));
+    }
     if (regionType == RegionType::WC) {
 	return new ImageRegion (WCRegion::fromRecord (record, tableName));
     } else if (regionType != RegionType::Slicer) {
