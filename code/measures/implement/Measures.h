@@ -1,5 +1,5 @@
 //# Measures.h:  a module for coordinates
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -479,7 +479,7 @@
 // for e.g. MDirection)
 // enable the user to obtain the value of the measure.<br>
 // A <src>String tellMe()</src> will tell the type of Measure; a 
-// <src>void assure(String)</src> and <src>Bool areYou(String)</src> will
+// <src>void assured(String)</src> and <src>Bool areYou(String)</src> will
 // check the type; while a <src>String showType(Measure::TYPE)</src> will
 // return the string value of a reference type code (e.g. J2000).<br>
 // <p>
