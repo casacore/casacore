@@ -31,6 +31,7 @@
 // Define the C standard C++ include file. 
 // This is an interim solution to cater for the SGI non-existence of
 // them (e.g. <cstring>)
+// Make sure any special macros are set
 #include <aips/aips.h>
 
 #include <map>
@@ -40,5 +41,24 @@ using std::multimap;
 using std::pair;
 using std::allocator;
 using std::less;
+
+// A special macro to create the auxilliary template definitions for
+// various compilers
+// Use if defined a map<T, U> as AIPS_MAP_AUX_TEMPLATES(T, U)
+
+#if defined(AIPS_MAP_AUX_TEMPLATES)
+#undef AIPS_MAP_AUX_TEMPLATES
+#endif
+
+#if defined(AIPS_GCC)
+#define AIPS_MAP_AUX_TEMPLATES(T, U) \
+template class \
+  _Rb_tree<T, pair<T const, U >, \
+  _Select1st<pair<T const, U > >, \
+  less<T>, allocator<U > >;
+
+#else
+#define AIPS_MAP_AUX_TEMPLATES(T, U)
+#endif
 
 #endif
