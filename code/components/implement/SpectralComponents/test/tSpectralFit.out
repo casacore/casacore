@@ -240,7 +240,7 @@ Parameters: [0.602535, 1407.48, 0.0244648]
 Errors:     [0.178985, 0.00969123, 0.00969123]
 
 GAUSSIAN element: 
-  Amplitude: 5, 0
+  Amplitude: 5, 0 (fixed)
   Center:    1403, 0.00074176
   Sigma:     0.0119707, 0.000605635
 Parameters: [5, 1403, 0.0119707]
