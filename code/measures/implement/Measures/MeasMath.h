@@ -258,7 +258,7 @@ private:
   // <group>
   Euler EULER1;
   RotMatrix ROTMAT1;
-  MVPosition MVPOS1, MVPOS2, MVPOS3;
+  MVPosition MVPOS1, MVPOS2, MVPOS3, MVPOS4;
   Double g1, g2, g3, lengthE;
   Bool infoOK_p[N_FrameInfo];
   Double info_p[N_FrameDInfo];
@@ -284,6 +284,13 @@ private:
   void getInfo(FrameInfo i);
   // </group>
 
+  // Make a shift of coordinate into a rotation and apply it when doin is
+  // False. Else apply a shift.
+  // Given are the longitude and latitude codes of the direction to be used,
+  // and the shift to be applied in that system to the in coordinate.
+  void rotateShift(MVPosition &in, const MVPosition &shft,
+		   const FrameInfo lng, const FrameInfo lat,
+		   Bool doin);
 };
 
 #endif
