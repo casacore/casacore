@@ -2,7 +2,7 @@
 # makefile.ftn: Generic AIPS++ FORTRAN subroutine compilation makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-2000
+#   Copyright (C) 1992-2000,2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -93,6 +93,8 @@ endif
 #--------------
 AIPSFTNS := $(filter %.f,$(AIPSSRCS))
 PGMRFTNS := $(wildcard *.f)
+AIPSIMPL := $(filter %.cc,$(AIPSSRCS))
+PGMRIMPL := $(wildcard *.cc)
 
 
 # Lock files.
@@ -104,11 +106,27 @@ LOCKOPT  := $(PCKGOPTD)/BUILD.$(JOBIDENT)
 # Paths.
 #-------
 vpath %.f $(CODEDIR)
+vpath %.cc $(CODEDIR)
 
 
 # Pattern rules.
 #---------------
 lib(%.o) : $(addsuffix (%.o),$(AIPSLIBS)) ;
+
+$(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.cc
+	-@ echo ""
+        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (dbg)"
+	    @ $(C++) $(CPPOPT) $(AIPSINCL) -I. $(C++OPT) -c -o $(PCKGOPTD)/$(<F:cc=o) $<
+	   -@ $(TIMER)
+        endif
+        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (opt)"
+	    @ $(C++) $(CPPOPT) $(AIPSINCL) -I. $(C++OPT) -c -o $(PCKGOPTD)/$(<F:cc=o) $<
+	   -@ $(TIMER)
+        endif
+	@ [ -f $(LOCKDBG) -o -f $(LOCKOPT) ] || updatelib $(PCKGLANG)
+
 
 $(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.f
 	-@ echo ""
@@ -172,7 +190,7 @@ allsys : $(LIB)
 	-$Q $(RM) $(LIBDBG)
 	-$Q $(RM) $(LIBOPT)
 
-lib : build_lock $(foreach OBJ,$(AIPSFTNS:.f=.o), \
+lib : build_lock $(foreach OBJ,$(AIPSFTNS:.f=.o) $(AIPSIMPL:.cc=.o), \
     $(addsuffix ($(OBJ)),$(AIPSLIBS))) updatelib
 	-@ $(RM) $(LOCKDBG)
 	-@ $(RM) $(LOCKOPT)
@@ -216,7 +234,7 @@ ifeq "$(MAKEMODE)" "programmer"
 
    .PHONY : mylib mylibs update_mylib
 
-   all : $(PGMRFTNS:%.f=$(PGMRLIBR)(%.o)) update_mylib
+   all : $(PGMRFTNS:%.f=$(PGMRLIBR)(%.o)) $(PGMRIMPL:%.cc=$(PGMRLIBR)(%.o)) update_mylib
 
    .clean ::
 	-cd $(PGMRLIBD) && $(RM) *.o a.out core
@@ -231,12 +249,13 @@ ifeq "$(MAKEMODE)" "programmer"
 
    mylib : $(PGMRLIBR) ;
 
-   $(PGMRLIBR) : $(PGMRFTNS:%.f=$(PGMRLIBR)(%.o)) \
-                 $(AIPSFTNS:%.f=$(PGMRLIBR)(%.o)) update_mylib ;
+   $(PGMRLIBR) : $(PGMRFTNS:%.f=$(PGMRLIBR)(%.o)) $(PGMRIMPL:%.cc=$(PGMRLIBR)(%.o)) \
+                 $(AIPSFTNS:%.f=$(PGMRLIBR)(%.o)) $(AIPSIMPL:%.cc=$(PGMRLIBR)(%.o)) update_mylib ;
 
    update_mylib :
 	@ cd $(PGMRLIBD) ; \
-	  PGMROBJS="$(sort $(PGMRFTNS:%.f=%.o) $(AIPSFTNS:%.f=%.o))" ; \
+	  PGMROBJS="$(sort $(PGMRFTNS:%.f=%.o)$(AIPSFTNS:%.f=%.o))" 
+          PGMROBJS+="$(sort $(AIPSIMPL:%.cc=%.o))" ; $(PGMRIMPL:%.cc=%.o))"
 	  [ "$$PGMROBJS" != "" ] && PGMROBJS=`ls $$PGMROBJS 2>/dev/null` ; \
 	  if [ "$$PGMROBJS" != "" ] ; then \
 	     $(AR) $(ARFLAGS) $(PGMRLIBR) $$PGMROBJS ; \
