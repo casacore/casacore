@@ -58,14 +58,24 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 {
     itsError = 0;
     flock ls;
-    if (type == Write) {
-	ls.l_type = F_WRLCK;
-    }else{
-	ls.l_type = F_RDLCK;
-    }
     ls.l_whence = SEEK_SET;
     ls.l_start  = itsStart;
     ls.l_len    = itsLength;
+    ls.l_type   = F_WRLCK;
+    // When a read-lock is acquired, it may release an existing write-lock.
+    // We do not want that to happen, so when it is write-locked, test
+    // if the write-lock is still valid.
+    if (type == Read) {
+        if (itsWriteLocked) {
+  	    if (fcntl (itsFD, F_SETLK, &ls) != -1) {
+///	    cout << "kept " << itsReadLocked << ' ' <<itsWriteLocked <<
+///	      ' '<<itsStart<<' '<<itsLength<<endl;
+	        return True;
+	    }
+	    itsWriteLocked = False;
+	}
+	ls.l_type = F_RDLCK;
+    }
     if (nattempts == 0) {
 	// Wait until lock succeeds.
 	if (fcntl (itsFD, F_SETLKW, &ls) != -1) {
@@ -73,6 +83,8 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 	    if (type == Write) {
 		itsWriteLocked = True;
 	    }
+///	    cout << "acquired " << itsReadLocked << ' ' <<itsWriteLocked <<
+///	      ' '<<itsStart<<' '<<itsLength<<endl;
 	    return True;
 	}
 	itsError = errno;
@@ -85,6 +97,8 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 	    if (type == Write) {
 		itsWriteLocked = True;
 	    }
+///	    cout << "acquired " << itsReadLocked << ' ' <<itsWriteLocked <<
+///	      ' '<<itsStart<<' '<<itsLength<<endl;
 	    return True;
 	}
 	itsError = errno;
@@ -96,13 +110,32 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 	}
     }
     itsWriteLocked = False;
-    itsReadLocked = canLock (Read);
+    // Note that the system keeps a lock per file and not per fd.
+    // So if the same file is opened in the same process and unlocked
+    // at the same place, the read lock for this fd is also released.
+    // If we think we hold a read lock, determine if we still hold it.
+    // We certainly do not if we asked for a read lock.
+    // If asked for a write lock, we might still hold it.
+    // One attempt is enough to see if we indeed can get a read lock.
+    if (itsReadLocked) {
+        itsReadLocked = False;
+	if (type == Write) {
+	    ls.l_type = F_RDLCK;
+	    if (fcntl (itsFD, F_SETLK, &ls) != -1) {
+	        itsReadLocked = True;
+	    }
+	}
+    }
+///    cout << "failed " << itsReadLocked << ' ' <<itsWriteLocked<<' '<<type<<
+///	      ' '<<itsStart<<' '<<itsLength<<endl;
     return False;
 }
 
 // Release a lock.
 Bool FileLocker::release()
 {
+///    cout << "released " << itsReadLocked << ' ' <<itsWriteLocked<<
+///	      ' '<<itsStart<<' '<<itsLength<<endl;
     itsReadLocked  = False;
     itsWriteLocked = False;
     itsError = 0;
