@@ -1,5 +1,5 @@
 >>>
-/export/home/gvd/aips++/sun4sol_egcs/bindbg/tLatticeExprNode: Version  
+tLatticeExprNode: Version  
 <<<
 
 Constant contructors, get*, eval, shape, dataType, isScalar
@@ -323,6 +323,11 @@ replace
  Float Array
  Bool Scalar
  Bool Array
+Rebin
+  Float
+  Double
+  Complex
+  DComplex
 
 3-argument functions 
 iif
@@ -709,6 +714,11 @@ replace
  Float Array
  Bool Scalar
  Bool Array
+Rebin
+  Float
+  Double
+  Complex
+  DComplex
 
 3-argument functions 
 iif
@@ -1095,6 +1105,11 @@ replace
  Float Array
  Bool Scalar
  Bool Array
+Rebin
+  Float
+  Double
+  Complex
+  DComplex
 
 3-argument functions 
 iif
