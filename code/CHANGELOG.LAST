@@ -1,0 +1,34 @@
+
+change id: 0098
+ author:   Ger van Diepen
+ date:     2001/06/11
+ avers:    1.6
+ area:     Library
+ package:  aips
+ module:   MeasurementSets
+ type:     Code
+ category: New
+ summary:  Data compression is now possible
+The function addColumnCompression has been added to MSTable.
+It makes it possible to define in the MS table description that
+compression has to be used for the given column (using the new
+virtual column engines CompressFloat or CompressComplex).
+It can only be used for Float or Complex columns (which get compressed
+to Short and Int, resp.).
+It means that 3 extra columns get added: X_COMPRESSED, X_SCALE, X_OFFSET
+where X is the name of the original column.
+One can choose the let the engine scale automatically or to supply a
+scale and offset values before putting the data.
+Note that compression is only meaningful for bigger arrays. If e.g.
+nchan==1, compression is not useful at all.
+The MS constructor recognizes from the TableDesc that compression is
+required and will set up the data managers accordingly.
+
+In order to use compression fillers need to be changed.
+The code to use compression in a filler is e.g.:
+    TableDesc td(MS::requiredTableDesc());
+    // Add the DATA column and compress it.
+    MS::addColumnToDesc(td, MS::DATA, 2);
+    MS::addColumnCompression (td, MS::DATA);
+    SetupNewTable setup(msName, td, Table::New);
+    MeasurementSet ms(setup);
