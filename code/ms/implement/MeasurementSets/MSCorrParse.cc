@@ -26,6 +26,20 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSCorrParse.h>
+#include <ms/MeasurementSets/MSDataDescIndex.h>
+#include <ms/MeasurementSets/MSPolIndex.h>
+#include <ms/MeasurementSets/MSMainColumns.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <tables/Tables/RecordGram.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/TiledShapeStMan.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -43,6 +57,79 @@ MSCorrParse::MSCorrParse (const MeasurementSet* ms)
 {
     if(node_p) delete node_p;
     node_p = new TableExprNode();
+}
+
+// MS selection
+const TableExprNode *MSCorrParse::selectCorrType(const String& corrType)
+{
+  
+  MeasurementSet selms= Table(ms()->tableName(), Table::Update);
+  if(!selms.isWritable()) {
+    cout << "Table is not writable " << endl;
+    exit(0);
+  } 
+
+  IPosition rowShape;
+  Slicer slicer;
+  Bool corrTypeExist = False;
+
+  ROArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
+  TableDesc tdSel;
+  String colSel = "SELECTED_DATA";
+
+  if(selms.tableDesc().isColumn("SELECTED_DATA")) {
+    selms.removeColumn("SELECTED_DATA");
+  }
+
+  ColumnDesc & cdSel = tdSel.addColumn(ArrayColumnDesc<Complex>(colSel," selected data", 2));					
+  selms.addColumn(cdSel);
+  
+  ArrayColumn<Complex> selData(selms, "SELECTED_DATA");
+  
+  ROMSPolarizationColumns polc(selms.polarization());
+  Array<Int> corrtypeArray = polc.corrType().getColumn().nonDegenerate();
+  IPosition ip = corrtypeArray.shape();
+
+  Vector<Int> nCorr(corrtypeArray);
+
+  for (uInt row=0; row < selms.nrow(); row++) {
+    rowShape=data.shape(row);
+    selData.setShape(row,IPosition(2, 1, rowShape(1)) );
+  }
+
+  Vector<Int> corrtype(nCorr);
+  if(nCorr.nelements() != 0) {
+    for (uInt i = 0; i < nCorr.nelements(); i ++) {
+      if(nCorr(i) == Stokes::type(corrType)){
+	slicer = Slicer(IPosition(2, i, 0), IPosition(2, i, rowShape(1)-1 ), IPosition(2, 1, 1), Slicer::endIsLast);   
+	corrTypeExist = True;
+      }
+    }
+  }
+  if(!corrTypeExist) {
+    cout << " corrtype " << corrType << " does not exist" << endl;
+    return NULL;
+  }
+
+  Array<Complex> datacol = data.getColumn(slicer);
+
+  selData.putColumn( Slicer(IPosition(2, 0, 0), IPosition(2, 0, rowShape(1)-1 ), IPosition(2, 1, 1), Slicer::endIsLast), datacol);
+  
+  // To tableExprNode
+  MSDataDescIndex msDDI(selms.dataDescription());
+  String colName = MS::columnName(MS::DATA_DESC_ID);
+  MSPolarizationIndex msPI(selms.polarization());
+
+  TableExprNode condition = 
+    selms.col(colName).in(msDDI.matchPolId(msPI.matchCorrType(corrtype)));
+    
+  if(node_p->isNull()){
+    *node_p = condition;
+  }
+  else
+    *node_p = *node_p || condition;
+  
+  return node_p;
 }
 
 const TableExprNode* MSCorrParse::node()

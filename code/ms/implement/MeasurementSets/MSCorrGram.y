@@ -39,12 +39,14 @@ using namespace casa;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
   Int ival;
+  char * str;
   Double dval[2];
 }
 
 %token EQASS
 %token SQUOTE
 %token <ival> NUMBER
+%token <str>  CORRTYPE
 %token <dval> FNUMBER
 %token DASH
 %token LT
@@ -60,6 +62,9 @@ using namespace casa;
 %token LBRACE
 %token RBRACE
 
+%type <node> corrstatement
+%type <node> stdstokes
+
 %left OR
 %left AND
 %nonassoc EQ EQASS GT GE LT LE NE
@@ -74,8 +79,15 @@ int MSCorrGramlex (YYSTYPE*);
 %}
 
 %%
-statement: SQUOTE SQUOTE
-         ;
+corrstatement: SQUOTE stdstokes SQUOTE {
+                 $$ = $2;
+             }
+             ;
 
+stdstokes: CORRTYPE {
+                String identifier = String($1);
+                $$ = MSCorrParse().selectCorrType(identifier);
+              }
+         ;
 %%
 

@@ -92,6 +92,9 @@ public:
     // Associate the ms and the shorthand.
     MSCorrParse (const MeasurementSet* ms);
 
+    // MS selection
+    const TableExprNode * selectCorrType(const String& corrType);
+
     // Get table expression node object.
     static const TableExprNode* node();
 

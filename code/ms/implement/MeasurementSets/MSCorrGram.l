@@ -43,8 +43,6 @@ FNUMBER   {INT}"."{DIGIT}*
 TRUE      T
 FALSE     F
 
-
-
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
 UQSTRING   \"[^\"\n]*\n
@@ -52,11 +50,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-DISTANCEUNIT [Kk][Mm]
-ML           [Mm][Ll]
-KL           [Kk][Ll]
-L            [Ll]
-WAVELENTHUNIT {ML}|{KL}|{L}
+CORRTYPE  [IQUV]+|[RL]{2}|[XY]{2}
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -127,6 +121,12 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
           }
 
  /* Literals */
+
+{CORRTYPE} {
+             msCorrGramPosition() += yyleng;
+             lvalp->str = MSCorrGramtext;
+	     return CORRTYPE;
+           }
 
 %%
 
