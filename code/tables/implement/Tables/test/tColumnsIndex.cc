@@ -96,7 +96,7 @@ void a()
 
 void b()
 {
-    Table tab("tColumnsIndex_tmp.data");
+    Table tab("tColumnsIndex_tmp.data", TableLock(TableLock::UserLocking));
     const uInt nrrow = tab.nrow();
     ColumnsIndex colInx0 (tab, "abool");
     ColumnsIndex colInx1 (tab, "auchar");
@@ -324,7 +324,7 @@ void d()
     cout << "<<<" << endl;
 }
 
-main()
+int main()
 {
     try {
         a();
