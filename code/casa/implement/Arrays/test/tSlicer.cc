@@ -166,6 +166,10 @@ void a()
     cout << ns4.ndim() << ns4.start() << ns4.end() << ns4.stride()
 	 << ns4.length() << endl;
 
+    // Try equality
+    cout << (ns4==ns3) << endl;
+    cout << (ns4==ns50) << endl;
+
     // Do some erronous constructions.
     try {
 	Slicer ns(IPosition(2,0,0), IPosition(3,0,0,0));
