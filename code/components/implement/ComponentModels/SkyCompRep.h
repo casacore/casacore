@@ -189,13 +189,13 @@ protected:
   // versions of the toRecord and fromRecord member functions. But they will
   // always remain here as they are quite specific to the components module.
   // <group>
-  static void fromFlux(Vector<Double> & flux, String & errorMessage,
+  static void readFlux(Vector<Double> & flux, String & errorMessage,
 		       const GlishRecord & record);
-  static void toFlux(GlishRecord & record, const Vector<Double> & flux);
+  void addFlux(GlishRecord & record) const;
 
-  void fromParameters(Vector<Double> & parameters, String & errorMessage,
-		      const GlishRecord & record);
-  void toParameters(GlishRecord & record, const Vector<Double> & flux) const;
+  void readParameters(Vector<Double> & parameters, String & errorMessage,
+		      const GlishRecord & record) const;
+  void addParameters(GlishRecord & record) const;
   // </group>
 };
 
