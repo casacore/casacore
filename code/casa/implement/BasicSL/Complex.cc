@@ -179,3 +179,34 @@ template Complex std::conj(const Complex&);
 template DComplex std::conj(const DComplex&);
 
 #endif
+
+#if defined(AIPS_GCC3)
+template Float std::norm(const Complex&);
+template Double std::norm(const DComplex&);
+template Float std::arg(const Complex&);
+template Double std::arg(const DComplex&);
+template Float std::abs(const Complex&);
+template Double std::abs(const DComplex&);
+template Complex std::polar(const Float&, const Float&);
+template DComplex std::polar(const Double&, const Double&);
+template Complex std::sqrt(const Complex&);
+template DComplex std::sqrt(const DComplex&);
+template Complex std::conj(const Complex&);
+template DComplex std::conj(const DComplex&);
+template Complex std::pow(const Complex&, const Float&);
+template DComplex std::pow(const DComplex&, const Double&);
+template Complex std::pow(const Complex&, const Complex&);
+template DComplex std::pow(const DComplex&, const DComplex&);
+template Complex std::log(const Complex&);
+template DComplex std::log(const DComplex&);
+template Complex std::exp(const Complex&);
+template DComplex std::exp(const DComplex&);
+template Complex std::cos(const Complex&);
+template DComplex std::cos(const DComplex&);
+template Complex std::cosh(const Complex&);
+template DComplex std::cosh(const DComplex&);
+template Complex std::sin(const Complex&);
+template DComplex std::sin(const DComplex&);
+template Complex std::sinh(const Complex&);
+template DComplex std::sinh(const DComplex&);
+#endif
