@@ -203,8 +203,8 @@ public:
 // You can force the storage lattice to be disk based, otherwise
 // the decision for core or disk is taken for you.
    LatticeStatistics (const MaskedLattice<T>& lattice,
-                    Bool showProgress=True,
-                    Bool forceDisk=False);
+                      Bool showProgress=True,
+                      Bool forceDisk=False);
 
 // Copy constructor.  Copy semantics are followed.  Therefore any storage lattice 
 // that has already been created for <src>other</src> is copied to <src>*this</src>
@@ -554,13 +554,11 @@ public:
 // Constructor provides pixel selection range and whether that
 // range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
 // and an inclusion range is given, the min and max is set to
-// that inclusion range.  It also takes the location of the start 
-// of the SubLattice in the parent lattice
+// that inclusion range.  
     StatsTiledCollapser(const Vector<T>& pixelRange, 
                         Bool noInclude, 
                         Bool noExclude,
-                        Bool fixedMinMax,
-                        const IPosition& blcParent);
+                        Bool fixedMinMax);
 
 // Initialize process, making some checks
     virtual void init (uInt nOutPixelsPerCollapse);
@@ -594,7 +592,7 @@ public:
 private:
     Vector<T> range_p;
     Bool noInclude_p, noExclude_p, fixedMinMax_p;
-    IPosition minPos_p, maxPos_p, blcParent_p;
+    IPosition minPos_p, maxPos_p;
 
 // Accumulators for sum, sum squared, number of points
 // minimum, and maximum

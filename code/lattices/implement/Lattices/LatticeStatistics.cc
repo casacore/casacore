@@ -1153,7 +1153,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 // Iterate through lattice and accumulate statistical sums
 
     StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,
-                                     fixedMinMax_p, blcParent_p);
+                                     fixedMinMax_p);
 
     LattStatsProgress* pProgressMeter = 0;
     if (showProgress_p) pProgressMeter = new LattStatsProgress();
@@ -2324,19 +2324,20 @@ void LatticeStatistics<T>::summStats ()
       os_p << endl;
 
 // Min/max locations only meaningful for Float images currently.
+// We report locations relative to the start of the parent lattice
 
       if (!fixedMinMax_p) {
          os_p << "Minimum value ";
          os_p.output() << setw(oWidth) << String(os6);
          if (type==TpFloat) {
-            os_p <<  " at " << minPos_p+1;
+            os_p <<  " at " << bldParent_p + minPos_p+1;
          }
          os_p << endl;
 //
          os_p << "Maximum value ";
          os_p.output() << setw(oWidth) << String(os7);
          if (type==TpFloat) {
-            os_p <<  " at " << maxPos_p+1 << endl;
+            os_p <<  " at " << blcParent_p + maxPos_p+1 << endl;
          }
          os_p << endl;
       }
@@ -2401,15 +2402,13 @@ template <class T>
 StatsTiledCollapser<T>::StatsTiledCollapser(const Vector<T>& pixelRange, 
                                             Bool noInclude, 
                                             Bool noExclude,
-                                            Bool fixedMinMax,
-                                            const IPosition& blcParent)
+                                            Bool fixedMinMax)
 : range_p(pixelRange),
   noInclude_p(noInclude),
   noExclude_p(noExclude),
   fixedMinMax_p(fixedMinMax),
   minPos_p(0),
-  maxPos_p(0),
-  blcParent_p(blcParent)
+  maxPos_p(0)
 {;}
 
 
@@ -2587,10 +2586,10 @@ void StatsTiledCollapser<T>::process (uInt index1,
 //
    if (type==TpFloat) {
       if (minLoc != -1) {
-        minPos_p = blcParent_p + startPos + toIPositionInArray(minLoc, shape);
+        minPos_p = startPos + toIPositionInArray(minLoc, shape);
       }
       if (maxLoc != -1) {
-        maxPos_p = blcParent_p + startPos + toIPositionInArray(maxLoc, shape);
+        maxPos_p = startPos + toIPositionInArray(maxLoc, shape);
       }
    }
 }
