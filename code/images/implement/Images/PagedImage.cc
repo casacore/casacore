@@ -805,11 +805,11 @@ void PagedImage<T>::removeRegion (const String& name,
 				  Bool throwIfUnknown)
 {
   reopenRW();
-  RegionHandler::removeRegion (table_p, name, type, throwIfUnknown);
-  // Remove the default mask if it is the removed region.
+  // Remove the default mask if it is the region to be removed.
   if (name == getDefaultMask()) {
     setDefaultMask ("");
   }
+  RegionHandler::removeRegion (table_p, name, type, throwIfUnknown);
 }
 template<class T> 
 Vector<String> PagedImage<T>::regionNames (RegionHandler::GroupType type) const
