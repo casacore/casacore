@@ -41,7 +41,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-#include <iostream.h>
 
 // Force the compiler to know about these
 
@@ -193,7 +192,7 @@ WCBox* WCBox::cloneRegion() const
 TableRecord WCBox::toRecord(const String&) const
 {
    TableRecord rec;
-   rec.define ("name", className());
+   defineRecordFields(rec, className());
    rec.define ("blc", itsBlcWC);
    rec.define ("trc", itsTrcWC);
    rec.define ("offset", itsIsOffset);
