@@ -1,5 +1,5 @@
 //# MSRange.h: this defines MSRange, which determines ranges of ms values 
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -182,6 +182,12 @@ protected:
   void minMax(Float& mini, Float& maxi, 
 	      Array<Float> (*func)(const Array<Complex>&),
 	      const ROArrayColumn<Complex>& data);
+
+  // get the minimum and maximum of a Float data column
+  // This function reads the data in blocks of
+  // size blockSize, as set by the setBlockSize function.
+  void minMax(Float& mini, Float& maxi, 
+	      const ROArrayColumn<Float>& data);
 
   // Get the range of interferometer numbers given the antenna1 and antenna2
   // columns.

@@ -147,10 +147,10 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
     return out;
   }
   ROMSColumns msc(ms_p);
-  Bool wantAmp, wantPhase, wantReal, wantImag, wantData,
+  Bool wantAmp, wantPhase, wantReal, wantImag, wantData, wantFloat,
     wantCAmp, wantCPhase, wantCReal, wantCImag, wantCData,
     wantMAmp, wantMPhase, wantMReal, wantMImag, wantMData;
-  wantAmp=wantPhase=wantReal=wantImag=wantData=
+  wantAmp=wantPhase=wantReal=wantImag=wantData=wantFloat=
     wantCAmp=wantCPhase=wantCReal=wantCImag=wantCData=
     wantMAmp=wantMPhase=wantMReal=wantMImag=wantMData=False;
   // use HeapSort as it's performance is guaranteed, quicksort is often
@@ -263,6 +263,9 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
       break;
     case MSS::FIELDS:
       out.add(keyword,msc.field().name().getColumn());
+      break;
+    case MSS::FLOAT_DATA:
+      wantFloat=True;
       break;
     case MSS::IFR_NUMBER:
       {
@@ -443,39 +446,54 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
   // throw away the uvw data (if any)
   uvw.resize(0,0);
   if (wantAmp || wantPhase || wantReal || wantImag || wantData) {
-    if (checkSelection()) {
-      // this now gets the data in smaller chunks (8MB) with getColumnRange
-      // but it no longer caches the data read if more than one item is
-      // requested. Maybe we need to make a 4-fold minMax that can do
-      // 1-4 items at once if needed.
-      if (wantAmp) {
-	Vector<Float> amp(2);
-	minMax(amp(0),amp(1),amplitude,msc.data());
-	out.add("amplitude",amp);
-      }
-      if (wantPhase) {
-	Vector<Float> phas(2);
-	minMax(phas(0),phas(1),phase,msc.data());
-	out.add("phase",phas);
-      }
-      if (wantReal) {
-	Vector<Float> re(2);
-	minMax(re(0),re(1),real,msc.data());
-	out.add("real",re);
-      }
-      if (wantImag) {
-	Vector<Float> im(2);
-	minMax(im(0),im(1),imag,msc.data());
-	out.add("imaginary",im);
-      }
-      if (wantData) {
-	os << LogIO::WARN << "range not available for complex DATA"
-	   <<LogIO::POST;
+    if (!msc.data().isNull()) {
+      if (checkSelection()) {
+	// this now gets the data in smaller chunks (8MB) with getColumnRange
+	// but it no longer caches the data read if more than one item is
+	// requested. Maybe we need to make a 4-fold minMax that can do
+	// 1-4 items at once if needed.
+	if (wantAmp) {
+	  Vector<Float> amp(2);
+	  minMax(amp(0),amp(1),amplitude,msc.data());
+	  out.add("amplitude",amp);
+	}
+	if (wantPhase) {
+	  Vector<Float> phas(2);
+	  minMax(phas(0),phas(1),phase,msc.data());
+	  out.add("phase",phas);
+	}
+	if (wantReal) {
+	  Vector<Float> re(2);
+	  minMax(re(0),re(1),real,msc.data());
+	  out.add("real",re);
+	}
+	if (wantImag) {
+	  Vector<Float> im(2);
+	  minMax(im(0),im(1),imag,msc.data());
+	  out.add("imaginary",im);
+	}
+	if (wantData) {
+	  os << LogIO::WARN << "range not available for complex DATA"
+	     <<LogIO::POST;
+	}
+      } else {
+	unselectedWarning=True;
       }
     } else {
-      unselectedWarning=True;
+      os << LogIO::WARN << "DATA column doesn't exist"<<LogIO::POST;
     }
   }
+
+  if (wantFloat) {
+    if (!msc.floatData().isNull()) {
+      if (checkSelection()) {
+	Vector<Float> amp(2);
+	minMax(amp(0),amp(1),msc.floatData());
+	out.add("float_data",amp);
+      }
+    }
+  }
+
   if (wantCAmp || wantCPhase || wantCReal || wantCImag || wantCData) {
     if (!msc.correctedData().isNull()) {
       if (checkSelection()) {
@@ -581,6 +599,25 @@ Vector<Int> MSRange::scalarRange(const ROScalarColumn<Int>& id)
   Int n=GenSort<Int>::sort (idvec, order, option);
   Vector<Int> ids=idvec(Slice(0,n));
   return ids;
+}
+
+void MSRange::minMax(Float& mini, Float& maxi, 
+		     const ROArrayColumn<Float>& data)
+{
+  IPosition shp=data.shape(0);
+  Int nrow=data.nrow();
+  Int numrow=Int(blockSize_p*1.0e6/(sizeof(Float)*shp(0)*shp(1)));
+  for (Int start=0; start<nrow; start+=numrow) {
+    Int n=min(numrow,nrow-start);
+    Float minf, maxf;
+    ::minMax(minf,maxf,data.getColumnRange(Slicer(Slice(start,n))));
+    if (start==0) {
+      mini=minf; maxi=maxf;
+    } else {
+      mini=min(mini,minf);
+      maxi=max(maxi,maxf);
+    }
+  }
 }
 
 void MSRange::minMax(Float& mini, Float& maxi, 
