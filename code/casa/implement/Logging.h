@@ -32,7 +32,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogSink.h>
 #include <aips/Logging/LogFilter.h>
-#include <aips/Logging/TableLogSink.h>
+//#include <aips/Logging/TableLogSink.h>
 #include <aips/Logging/LogIO.h>
 
 // <module> 
