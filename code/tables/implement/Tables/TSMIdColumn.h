@@ -1,5 +1,5 @@
 //# TSMIdColumn.h: An id column in Tiled Storage Manager
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -101,7 +101,7 @@ public:
 
     // Get a scalar value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the Scalar/ArrayColumn get function).
+    // (which is guaranteed by the ScalarColumn get function).
     // <group>
     void getBoolV     (uInt rownr, Bool* dataPtr);
     void getIntV      (uInt rownr, Int* dataPtr);
@@ -111,6 +111,23 @@ public:
     void getComplexV  (uInt rownr, Complex* dataPtr);
     void getDComplexV (uInt rownr, DComplex* dataPtr);
     void getStringV   (uInt rownr, String* dataPtr);
+    // </group>
+
+    // Put a scalar value in the given row.
+    // The buffer pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ScalarColumn get function).
+    // The value to be put must match the value which has already
+    // been inserted by the TiledStMan::addHypercube function.
+    // The put function is only there to be fully orthogonal.
+    // <group>
+    void putBoolV     (uInt rownr, const Bool* dataPtr);
+    void putIntV      (uInt rownr, const Int* dataPtr);
+    void putuIntV     (uInt rownr, const uInt* dataPtr);
+    void putfloatV    (uInt rownr, const float* dataPtr);
+    void putdoubleV   (uInt rownr, const double* dataPtr);
+    void putComplexV  (uInt rownr, const Complex* dataPtr);
+    void putDComplexV (uInt rownr, const DComplex* dataPtr);
+    void putStringV   (uInt rownr, const String* dataPtr);
     // </group>
 
 private:

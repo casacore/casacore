@@ -1,5 +1,5 @@
 //# TSMIdColumn.cc: Tiled Hypercube Storage Manager for id columns
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Tables/TSMIdColumn.h>
 #include <aips/Tables/TiledStMan.h>
 #include <aips/Tables/TSMCube.h>
+#include <aips/Tables/DataManError.h>
 #include <aips/Containers/Record.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Vector.h>
@@ -48,6 +49,14 @@ void TSMIdColumn::getfloatV (uInt rownr, float* dataPtr)
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
     hypercube->valueRecord().get (columnName(), *dataPtr);
 }
+void TSMIdColumn::putfloatV (uInt rownr, const float* dataPtr)
+{
+    float value;
+    TSMIdColumn::getfloatV (rownr, &value);
+    if (value != *dataPtr) {
+	throw (TSMError ("TSMIdColumn::put: new value mismatches existing"));
+    }
+}
 
 
 
@@ -56,6 +65,14 @@ void TSMIdColumn::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
 { \
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr); \
     hypercube->valueRecord().get (columnName(), *dataPtr); \
+} \
+void TSMIdColumn::aips_name2(put,NM) (uInt rownr, const T* dataPtr) \
+{ \
+    T value; \
+    TSMIdColumn::aips_name2(get,NM) (rownr, &value); \
+    if (value != *dataPtr) { \
+	throw (TSMError ("TSMIdColumn::put: new value mismatches existing")); \
+    } \
 }
 
 TSMIDCOLUMN_GETPUT(Bool,BoolV)
