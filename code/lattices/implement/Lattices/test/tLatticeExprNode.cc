@@ -1424,7 +1424,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << "  Complex Array" << endl;
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2 = sum(expr1);
-      if (!checkComplex(expr2, nb*bCVal, shape, True, False)) ok = False;
+      if (!checkComplex(expr2, Float(nb)*bCVal, shape, True, False)) ok = False;
    }
     cout << "nelements" << endl;
    {
