@@ -1,5 +1,5 @@
 //# MSFitsOutput.h:  Write a MeasurementSet to a random group uvfits file
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -94,7 +94,7 @@ private:
   // Write the GC table.
   static Bool writeGC(FitsOutput *output, const MeasurementSet& ms,
 		      const Table& syscal, const Block<Int>& spwidMap,
-		      Double sensitivity,
+		      uInt nrif, Bool combineSpw, Double sensitivity,
 		      Int refPixelFreq, Double refFreq, Double chanbw);
 
   // Convert time to day and fraction.
