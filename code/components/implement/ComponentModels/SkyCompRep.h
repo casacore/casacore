@@ -37,6 +37,7 @@
 #include <trial/ComponentModels/ComponentType.h>
 
 class MDirection;
+class MVAngle;
 class String;
 template<class T> class ImageInterface;
 template<class T> class Vector;
@@ -110,9 +111,11 @@ public:
   virtual ~SkyCompRep();
 
   // Return the intensity (in Jy/pixel) of the component at the specified
-  // direction. The Vector specifies all the polarizations of the radiation.
-  virtual void sample(Vector<Double> & result, 
-		      const MDirection & samplePos) const = 0;
+  // direction. The returned Vector contains the different polarizations of the
+  // radiation and the pixel size is assumed to be square.
+  virtual void sample(Vector<Double> & result,
+		      const MDirection & samplePos,
+		      const MVAngle & pixelSize) const = 0;
 
   // Project the component onto an Image. The default implementation calls the
   // sample function once for the centre of each pixel. The image needs

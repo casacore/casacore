@@ -43,6 +43,8 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/Quantum.h>
+#include <aips/Measures/QLogical.h>
+#include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/Stokes.h>
@@ -62,14 +64,24 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   const Vector<uInt> dirAxes = findDirectionAxes(coords);
   AlwaysAssert(dirAxes.nelements() != 0, AipsError);
   const uInt nPixAxes = dirAxes.nelements();
-  const DirectionCoordinate dirCoord = 
-    coords.directionCoordinate(coords.findCoordinate(Coordinate::DIRECTION));
   Vector<Double> pixelCoord(nPixAxes); pixelCoord = 0.0;
   Vector<Double> worldCoord(2);
+
+  const DirectionCoordinate dirCoord = 
+    coords.directionCoordinate(coords.findCoordinate(Coordinate::DIRECTION));
   MDirection pixelDir(MVDirection(0.0), dirCoord.directionType());
   Vector<Quantum<Double> > dirVal(2);
-  dirVal(0).setUnit(dirCoord.worldAxisUnits()(0));
-  dirVal(1).setUnit(dirCoord.worldAxisUnits()(1));
+  MVAngle pixelSize;
+  {
+    Vector<String> units = dirCoord.worldAxisUnits();
+    dirVal(0).setUnit(units(0));
+    dirVal(1).setUnit(units(1));
+    Vector<Double> inc = dirCoord.increment();
+    Quantum<Double> inc0(inc(0), units(0));
+    Quantum<Double> inc1(inc(1), units(1));
+    AlwaysAssert(near(inc0, inc1), AipsError);
+    pixelSize = MVAngle(inc0);
+  }
   
   // Setup an iterator to step through the image in chunks that can fit into
   // memory. Go to a bit of effort to make the chunck size as large as
@@ -85,7 +97,6 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
       chunckShape(axis) = tileShape(axis);
     }
   }
-  LatticeIterator<Float> chunkIter(image, chunckShape);
 
   // Check if there is a Stokes Axes and if so which polarizations. Otherwise
   // only grid the I polarisation.
@@ -99,10 +110,12 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 		 stokes(p) == Stokes::U || stokes(p) == Stokes::V, 
 		 AipsError);
 
-  Block<IPosition> blc(nStokes);
-  Block<IPosition> trc(nStokes);
+  Block<IPosition> blc;
+  Block<IPosition> trc;
   if (nStokes > 1) {
+    blc.resize(nStokes);
     blc = IPosition(naxis,0);
+    trc.resize(nStokes);
     trc = elementShape - 1;
     for (uInt p = 0; p < nStokes; p++) {
       blc[p](polAxis) = p;
@@ -110,6 +123,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
     }
   }
 
+  LatticeIterator<Float> chunkIter(image, chunckShape);
   Vector<Double> pixelVal(4);
   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
     ArrayLattice<Float> array(chunkIter.cursor());
@@ -122,7 +136,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
       dirVal(0).setValue(worldCoord(0));
       dirVal(1).setValue(worldCoord(1));
       pixelDir.set(MVDirection(dirVal));
-      sample(pixelVal, pixelDir);
+      sample(pixelVal, pixelDir, pixelSize);
       if (nStokes == 1) {
 	switch (stokes(0)) {
 	case Stokes::I:
