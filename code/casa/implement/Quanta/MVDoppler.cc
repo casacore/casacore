@@ -35,7 +35,6 @@ typedef Quantum<Double> gpp_mvdoppler_bug1;
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/MVDoppler.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/QC.h>
 
 // MVDoppler class
 

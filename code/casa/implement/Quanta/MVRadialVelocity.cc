@@ -35,7 +35,6 @@ typedef Quantum<Double> gpp_MVRadialVelocity_bug1;
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/MVRadialVelocity.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/QC.h>
 
 // MVRadialVelocity class
 
