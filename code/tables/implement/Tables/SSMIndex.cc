@@ -31,7 +31,6 @@
 #include <aips/Utilities/BinarySearch.h>
 #include <aips/Utilities/Assert.h>
 
-////////////////// PUBLIC-FUNCTIONS ///////////////////////////////
 
 SSMIndex::SSMIndex( SSMBase* aSSMPtr, uInt rowsPerBucket) 
   :
@@ -96,7 +95,11 @@ void SSMIndex::showStatistics (ostream& anOs) const
 void SSMIndex::setNrColumns(const Int aNrColumns,const uInt aSizeUsed)
 {
   itsNrColumns=aNrColumns;
-  itsFreeSpace.define(aSizeUsed,itsSSMPtr->getBucketSize()-aSizeUsed);
+  // Determine if there is some free space left at the end of the bucket.
+  Int nfree = itsSSMPtr->getBucketSize()-aSizeUsed;
+  if (nfree > 0) {
+    itsFreeSpace.define (aSizeUsed, nfree);
+  }
 }
 
 void SSMIndex::addRow( uInt aNrRows )
