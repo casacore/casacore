@@ -93,7 +93,7 @@ public:
 //
 // <todo asof="yyyy/mm/dd">
 //   <li> Allow the psf to be specified with a
-//   	 <linkto class=Function>Function</linkto>. 
+//     <linkto class=Function>Function</linkto>. 
 // </todo>
 
 template<class T> class LatticeCleaner
@@ -232,6 +232,9 @@ private:
 
   // Make an lattice of the specified scale
   void makeScale(Lattice<T>& scale, const Float& scaleSize);
+
+  // Make Spheroidal function for scale images
+  Float spheroidal(Float nu);
 
   // Calculate index into PsfConvScales
   Int index(const Int scale, const Int otherscale);
