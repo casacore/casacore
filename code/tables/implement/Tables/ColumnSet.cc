@@ -257,8 +257,9 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc, Table& tab)
     }
     // No suitable data manager found.
     // Create the default storage manager and add the column to it.
-    String dataManager (columnDesc.dataManagerType());
-    dmptr = DataManager::getCtor(dataManager) (dataManager);
+    // Make sure the data manager name is not already used.
+    dmptr = DataManager::getCtor(columnDesc.dataManagerType())
+                      (uniqueDataManagerName (columnDesc.dataManagerGroup()));
     addColumn (columnDesc, *dmptr, tab);
     delete dmptr;
 }
@@ -291,7 +292,17 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
     }
     // No suitable data manager found.
     // Create one of this type and add the column to it.
-    dmptr = DataManager::getCtor(dataManager) (dataManager);
+    // Use the data manager as the data manager name.
+    String dmName (dataManager);
+    char str[8];
+    Int nr = 0;
+    while (! checkDataManagerName (dmName, 0)) {
+        nr++;
+	sprintf (str, "_%i", nr);
+	dmName = dataManager + str;
+    }
+    dmptr = DataManager::getCtor(dataManager)
+                                   (uniqueDataManagerName(dataManager));
     addColumn (columnDesc, *dmptr, tab);
     delete dmptr;
 }
@@ -462,18 +473,34 @@ void ColumnSet::checkDataManagerNames() const
 	checkDataManagerName (BLOCKDATAMANVAL(i)->dataManagerName(), i+1);
     }
 }
-void ColumnSet::checkDataManagerName (const String& name, uInt from) const
+Bool ColumnSet::checkDataManagerName (const String& name, uInt from,
+				      Bool doTthrow) const
 {
     // Loop through all data managers.
     // A name can appear only once (except a blank name).
     if (! name.empty()) {
 	for (uInt j=from; j<blockDataMan_p.nelements(); j++) {
 	    if (name == BLOCKDATAMANVAL(j)->dataManagerName()) {
-		throw (TableInvOper ("Data manager name " + name +
-				     " is already used"));
+	        if (doTthrow) {
+		    throw (TableInvOper ("Data manager name " + name +
+					 " is already used"));
+		}
+		return False;
 	    }
 	}
     }
+    return True;
+}
+
+String ColumnSet::uniqueDataManagerName (const String& name) const
+{
+    String dmName = name;
+    Int nr = 0;
+    while (! checkDataManagerName (dmName, 0)) {
+        nr++;
+	dmName = name + '_' + String::toString(nr);
+    }
+    return dmName;
 }
 
 
