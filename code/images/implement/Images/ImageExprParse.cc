@@ -273,6 +273,8 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 	return ntrue(arg1);
     } else if (itsSval == "nfalse") {
 	return nfalse(arg1);
+    } else if (itsSval == "isnan") {
+	return isnan(arg1);
     } else if (itsSval == "mask") {
 	return mask(arg1);
     } else if (itsSval == "value") {
@@ -315,6 +317,8 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 	return amp(arg1, arg2);
     } else if (itsSval == "pa") {
 	return pa(arg1, arg2);
+    } else if (itsSval == "spectralindex") {
+	return spectralindex(arg1, arg2);
     } else if (itsSval == "fractile") {
 	return fractile(arg1, arg2);
     } else if (itsSval == "fractilerange") {
