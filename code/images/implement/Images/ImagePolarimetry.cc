@@ -149,6 +149,27 @@ ImageExpr<Complex> ImagePolarimetry::complexLinearPolarization()
    LatticeExpr<Complex> le(node);
    ImageExpr<Complex> ie(le, String("ComplexLinearPolarization"));
    fiddleStokesCoordinate(ie, Stokes::Plinear);    // Need a Complex Linear Polarization type
+   ie.setUnits(itsInImagePtr->units());
+   ie.setImageInfo(itsInImagePtr->imageInfo());
+   return ie;
+}
+
+ImageExpr<Complex> ImagePolarimetry::complexFractionalLinearPolarization()
+{
+   LogIO os(LogOrigin("ImagePolarimetry", "complexFractionalLinearPolarization(...)", WHERE));
+   hasQU();
+   if (itsStokesPtr[ImagePolarimetry::I]==0) {
+      os << "This image does not have Stokes I so cannot provide fractional linear polarization" << LogIO::EXCEPTION;
+   }
+//
+   LatticeExprNode nodeQU(formComplex(*itsStokesPtr[ImagePolarimetry::Q], 
+                          *itsStokesPtr[ImagePolarimetry::U]));
+   LatticeExprNode nodeI(*itsStokesPtr[ImagePolarimetry::I]);
+   LatticeExpr<Complex> le(nodeQU/nodeI);
+   ImageExpr<Complex> ie(le, String("ComplexFractionalLinearPolarization"));
+   fiddleStokesCoordinate(ie, Stokes::PFlinear);    // Need a Complex Linear Polarization type
+   ie.setUnits(Unit(""));
+   ie.setImageInfo(itsInImagePtr->imageInfo());
    return ie;
 }
 
@@ -168,7 +189,8 @@ ImageExpr<Float> ImagePolarimetry::fracLinPol(Bool debias, Float clip, Float sig
 // Make expression
 
    LatticeExpr<Float> le(nodePol/nodeI);
-   ImageExpr<Float> ie(le, String("fractionalLinearPolarization"));
+   ImageExpr<Float> ie(le, String("FractionalLinearPolarization"));
+   ie.setUnits(Unit(""));
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -206,7 +228,8 @@ ImageExpr<Float> ImagePolarimetry::sigmaFracLinPol(Float clip, Float sigma)
    LatticeExprNode n1(pow(sigma2/nodePol,2));
    LatticeExprNode n2(pow(sigma2/nodeI,2));
    LatticeExpr<Float> le(n0 * sqrt(n1 + n2));
-   ImageExpr<Float> ie(le, String("fractionalLinearPolarizationError"));
+   ImageExpr<Float> ie(le, String("FractionalLinearPolarizationError"));
+   ie.setUnits(Unit(""));
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -237,7 +260,8 @@ ImageExpr<Float> ImagePolarimetry::fracTotPol(Bool debias, Float clip, Float sig
 // Make expression
 
    LatticeExpr<Float> le(nodePol/nodeI);
-   ImageExpr<Float> ie(le, String("fractionalTotalPolarization"));
+   ImageExpr<Float> ie(le, String("FractionalTotalPolarization"));
+   ie.setUnits(Unit(""));
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -278,7 +302,8 @@ ImageExpr<Float> ImagePolarimetry::sigmaFracTotPol(Float clip, Float sigma)
    LatticeExprNode n1(pow(sigma2/nodePol,2));
    LatticeExprNode n2(pow(sigma2/nodeI,2));
    LatticeExpr<Float> le(n0 * sqrt(n1 + n2));
-   ImageExpr<Float> ie(le, String("fractionalLinearPolarizationError"));
+   ImageExpr<Float> ie(le, String("FractionalLinearPolarizationError"));
+   ie.setUnits(Unit(""));
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -341,6 +366,8 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
    }
    LatticeExpr<Complex> le(node);
    ImageExpr<Complex> ie(le, String("ComplexLinearPolarization"));
+   ie.setUnits(itsInImagePtr->units());
+   ie.setImageInfo(itsInImagePtr->imageInfo());
 
 // Do FFT of spectral coordinate
 
@@ -380,7 +407,9 @@ ImageExpr<Float> ImagePolarimetry::linPolInt(Bool debias, Float clip, Float sigm
 // Make expression
 
    LatticeExpr<Float> le(node);
-   ImageExpr<Float> ie(le, String("linearlyPolarizedIntensity"));
+   ImageExpr<Float> ie(le, String("LinearlyPolarizedIntensity"));
+   ie.setUnits(itsInImagePtr->units());
+   ie.setImageInfo(itsInImagePtr->imageInfo());
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -427,7 +456,12 @@ ImageExpr<Float> ImagePolarimetry::linPolPosAng(Bool radians) const
    LatticeExprNode node(fac*pa(*itsStokesPtr[ImagePolarimetry::U], 
                                *itsStokesPtr[ImagePolarimetry::Q])); 
    LatticeExpr<Float> le(node);
-   ImageExpr<Float> ie(le, String("linearlyPolarizedPositionAngle"));
+   ImageExpr<Float> ie(le, String("LinearlyPolarizedPositionAngle"));
+   if (radians) {
+      ie.setUnits(Unit("rad"));
+   } else {
+      ie.setUnits(Unit("deg"));
+   }
 
 // Fiddle Stokes coordinate
 
@@ -460,7 +494,7 @@ ImageExpr<Float> ImagePolarimetry::sigmaLinPolPosAng(Bool radians, Float clip, F
    LatticeExprNode node(fac / 
       amp(*itsStokesPtr[ImagePolarimetry::U], *itsStokesPtr[ImagePolarimetry::Q])); 
    LatticeExpr<Float> le(node);
-   ImageExpr<Float> ie(le, String("linearlyPolarizedPositionAngleError"));
+   ImageExpr<Float> ie(le, String("LinearlyPolarizedPositionAngleError"));
    if (radians) {
       ie.setUnits(Unit("rad"));
    } else {
@@ -503,9 +537,12 @@ Float ImagePolarimetry::sigma(Float clip)
 
 
 
-void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageInterface<Float>*& rmOutErrorPtr,
-                                       ImageInterface<Float>*& pa0OutPtr, ImageInterface<Float>*& pa0OutErrorPtr,
-                                       ImageInterface<Float>*& nTurnsOutPtr, ImageInterface<Float>*& chiSqOutPtr,
+void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, 
+                                       ImageInterface<Float>*& rmOutErrorPtr,
+                                       ImageInterface<Float>*& pa0OutPtr, 
+                                       ImageInterface<Float>*& pa0OutErrorPtr,
+                                       ImageInterface<Float>*& nTurnsOutPtr, 
+                                       ImageInterface<Float>*& chiSqOutPtr,
                                        Int axis,  Float rmMax, Float maxPaErr,
                                        Float sigma, Float rmFg, Bool showProgress)
 {
@@ -1062,6 +1099,8 @@ ImageExpr<Float> ImagePolarimetry::totPolInt(Bool debias, Float clip, Float sigm
 
    LatticeExpr<Float> le(node);
    ImageExpr<Float> ie(le, String("totalPolarizedIntensity"));
+   ie.setUnits(itsInImagePtr->units());     // Dodgy. The beam is now rectified
+   ie.setImageInfo(itsInImagePtr->imageInfo());
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -1501,6 +1540,7 @@ ImageExpr<Float> ImagePolarimetry::makeStokesExpr(ImageInterface<Float>* imPtr,
 
    LatticeExpr<Float> le(node);
    ImageExpr<Float> ie(le, name);
+   ie.setUnits(itsInImagePtr->units());
    fiddleStokesCoordinate(ie, type);
 //
    return ie;
