@@ -32,10 +32,10 @@
 // Modcomp has one more bit in the exponent than IEEE and because it does not
 // have an implicit bit two less bits in the Mantissa. It does not have any
 // special numbers like NaN or Infinity. The Modcomp is big-endian (like Sun's)
-void ModcompConversion::toLocal (Float* to, const void* from, uInt nr)
-{
+uInt ModcompConversion::toLocal (Float* to, const void* from, uInt nr) {
   DebugAssert(sizeof(Short) >= 2, AipsError);
   uChar asByte[SIZE_MODCOMP_FLOAT];
+  uInt retval = 0;
 
   const uChar* data = (const uChar*) from;
   for (const Float* const last = to + nr; to < last; to++) {
@@ -190,18 +190,18 @@ void ModcompConversion::toLocal (Float* to, const void* from, uInt nr)
 	}
       }
     }
-    CanonicalConversion::toLocal(*to, asByte);
+    retval += CanonicalConversion::toLocal(*to, asByte);
   }
+  return retval;
 }
 
 // Modcomp has one more bit in the exponent than IEEE and because it does not
 // have an implicit bit two less bits in the Mantissa. It does not have any
 // special numbers like NaN or Infinity. The Modcomp is big-endian (like Sun's)
-void ModcompConversion::toLocal (Double* to, const void* from, uInt nr)
-{
+uInt ModcompConversion::toLocal (Double* to, const void* from, uInt nr) {
   DebugAssert(sizeof(Short) >= 2, AipsError);
   uChar asByte[SIZE_MODCOMP_DOUBLE];
-
+  uInt retval = 0;
   const uChar* data = (const uChar*) from;
   for (const Double* const last = to + nr; to < last; to++) {
     // Copy the data to temporary buffer
@@ -298,27 +298,30 @@ void ModcompConversion::toLocal (Double* to, const void* from, uInt nr)
       // zero. Numerically it would be better to set them randomly to zero or
       // one but I do not think the performance degradation warrents this.
     }
-    CanonicalConversion::toLocal(*to, asByte);
+    retval += CanonicalConversion::toLocal(*to, asByte);
   }
+  return retval;
 }
 
-void ModcompConversion::fromLocal(void* to, Float from) {
+uInt ModcompConversion::fromLocal(void* to, Float from) {
   // Dummy statements to suppress compiler warnings about unused variables
   if (from == 0.0f) {}
   if (to != 0) {}
   throw(AipsError("ModcompConversion::fromLocal(Float&, const void*) - "
 		  "Cannot convert floating point numbers to Modcomp format"));
+  return 0;
 }
 
-void ModcompConversion::fromLocal(void* to, Double from) {
+uInt ModcompConversion::fromLocal(void* to, Double from) {
   // Dummy statements to suppress compiler warnings about unused variables
   if (from == 0.0f) {}
   if (to != 0) {}
   throw(AipsError("ModcompConversion::fromLocal(Double&, const void*) - "
 		  "Cannot convert floating point numbers to Modcomp format"));
+  return 0;
 }
 
-// void ModcompConversion::fromLocal (void* to, const float* from,
+// uInt ModcompConversion::fromLocal (void* to, const float* from,
 // 			       uInt nr)
 // {
 //     assert (sizeof(uInt) == 4);
@@ -345,7 +348,7 @@ void ModcompConversion::fromLocal(void* to, Double from) {
 //     }
 // }
 
-// void ModcompConversion::fromLocal (void* to, const double* from,
+// uInt ModcompConversion::fromLocal (void* to, const double* from,
 // 			       uInt nr)
 // {
 //     assert (sizeof(uInt) == 4);
