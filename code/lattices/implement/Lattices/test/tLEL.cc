@@ -47,6 +47,41 @@
 
 #include <iostream.h>
 
+Bool checkFloat (LELInterface<Float>& expr, 
+                 const Float Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress);
+
+Bool checkDouble (LELInterface<Double>& expr, 
+                 const Double Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress);
+
+Bool checkComplex (LELInterface<Complex>& expr, 
+                 const Complex Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress);
+
+Bool checkDComplex (LELInterface<DComplex>& expr, 
+                 const DComplex Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress);
+
+Bool checkBool (LELInterface<Bool>& expr, 
+                 const Bool Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress);
+
 
 main (int argc, char *argv[])
 {
@@ -55,10 +90,12 @@ main (int argc, char *argv[])
     inp.Version(" ");
     inp.Create("nx", "2", "Number of pixels along the x-axis", "int");
     inp.Create("ny", "2", "Number of pixels along the y-axis", "int");
+    inp.Create("sup", "True", "Supress caught exception messages", "Bool");
     inp.ReadArguments(argc, argv);
 
     const uInt nx=inp.GetInt("nx");
     const uInt ny=inp.GetInt("ny");
+    const Bool supress =inp.GetBool("sup");
 
 //
 // The use of these tiny ArrayLattices means this test program
@@ -92,9 +129,9 @@ main (int argc, char *argv[])
     ArrayLattice<Float> cF(shape);
     Float aFVal = 0.0;
     aF.set(aFVal);
-    Float bFVal = 1.0;
-    bF.set(1.0);
-    Float cFVal = 2.0;
+    Float bFVal = 2.0;
+    bF.set(bFVal);
+    Float cFVal = 3.0;
     cF.set(cFVal);
 
 
@@ -107,9 +144,9 @@ main (int argc, char *argv[])
     ArrayLattice<Double> cD(shape);
     Double aDVal = 0.0;
     aD.set(aDVal);
-    Double bDVal = 1.0;
-    bD.set(1.0);
-    Double cDVal = 2.0;
+    Double bDVal = 2.0;
+    bD.set(bDVal);
+    Double cDVal = 3.0;
     cD.set(cDVal);
 
 
@@ -122,9 +159,9 @@ main (int argc, char *argv[])
     ArrayLattice<Complex> cC(shape);
     Complex aCVal = Complex(0.0,0.0);
     aC.set(aCVal);
-    Complex bCVal = Complex(1.0,1.0);
+    Complex bCVal = Complex(2.0,2.0);
     bC.set(bCVal);
-    Complex cCVal = Complex(2.0,2.0);
+    Complex cCVal = Complex(3.0,3.0);
     cC.set(cCVal);
 
 
@@ -137,9 +174,9 @@ main (int argc, char *argv[])
     ArrayLattice<DComplex> cDC(shape);
     DComplex aDCVal = DComplex(0.0,0.0);
     aDC.set(aDCVal);
-    DComplex bDCVal = DComplex(1.0,1.0);
+    DComplex bDCVal = DComplex(2.0,2.0);
     bDC.set(bDCVal);
-    DComplex cDCVal = DComplex(2.0,2.0);
+    DComplex cDCVal = DComplex(3.0,3.0);
     cDC.set(cDCVal);
 
 
@@ -150,7 +187,7 @@ main (int argc, char *argv[])
 
 //************************************************************************
 // 
-// LELAttribute
+// LELAttribute; coverage 100%
 //
   {
     cout << "LELAttribute" << endl;
@@ -187,35 +224,37 @@ main (int argc, char *argv[])
 
 //************************************************************************
 //
-// LELLattice 
+// LELLattice; 100% coverage
 //
   {
-
     cout << endl << "LELLattice<Float> " << endl;
-    
     LELLattice<Float> expr(bF);
-    expr.eval(FArr, region);
     FResult = bFVal;
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELLattice")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELLattice"), shape, False, supress)) ok = False;
+  }
+  {
+    cout << "LELLattice<Double> " << endl;
+    LELLattice<Double> expr(bD);
+    DResult = bDVal;
+    if (!checkDouble(expr, DResult, String("LELLattice"), shape, False, supress)) ok = False;
+  }
+  {
+    cout << "LELLattice<Complex> " << endl;
+    LELLattice<Complex> expr(bC);
+    CResult = bCVal;
+    if (!checkComplex(expr, CResult, String("LELLattice"), shape, False, supress)) ok = False;
+  }
+  {
+    cout << "LELLattice<DComplex> " << endl;
+    LELLattice<DComplex> expr(bDC);
+    DCResult = bDCVal;
+    if (!checkDComplex(expr, DCResult, String("LELLattice"), shape, False, supress)) ok = False;
+  }
+  {
+    cout << "LELLattice<Bool> " << endl;
+    LELLattice<Bool> expr(bB);
+    BResult = bBVal;
+    if (!checkBool(expr, BResult, String("LELLattice"), shape, False, supress)) ok = False;
   }
 
 //************************************************************************
@@ -225,33 +264,39 @@ main (int argc, char *argv[])
   {
 
     cout << endl << "LELUnaryConst<Float>" << endl;
-    
     LELUnaryConst<Float> expr(aFVal);
-    FResult = aFVal;
-    if (expr.getScalar() != FResult) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << expr.getScalar() << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELUnaryConst")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, aFVal, String("LELUnaryConst"), shape, True, supress)) ok = False;
 
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
   }
+  {
+    cout << "LELUnaryConst<Double>" << endl;
+    LELUnaryConst<Double> expr(aDVal);
+    if (!checkDouble(expr, aDVal, String("LELUnaryConst"), shape, True, supress)) ok = False;
+  }
+  {
+    cout << "LELUnaryConst<Complex>" << endl;
+    
+    LELUnaryConst<Complex> expr(aCVal);
+    if (!checkComplex(expr, aCVal, String("LELUnaryConst"), shape, True, supress)) ok = False;
+  }
+  {
+    cout << "LELUnaryConst<DComplex>" << endl;
+    LELUnaryConst<DComplex> expr(aDCVal);
+    if (!checkDComplex(expr, aDCVal, String("LELUnaryConst"), shape, True, supress)) ok = False;
+  }
+  {
+    cout << "LELUnaryConst<Bool>" << endl;
+    LELUnaryConst<Bool> expr(aBVal);
+    if (!checkBool(expr, aBVal, String("LELUnaryConst"), shape, True, supress)) ok = False;
+  }
+
 //
 //************************************************************************
 //
-// LELUnary
+// LELUnary; 100% coverage
 //
+   cout << endl << "LELUnary<Float>" << endl;
   {
-    cout << endl << "LELUnary<Float>" << endl;
     CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
 
 // Note that operator+ is not actually implemented in LELUnary because it
@@ -259,66 +304,65 @@ main (int argc, char *argv[])
 
     cout << "   Operator -" << endl;     
     LELUnary<Float> expr(LELUnaryEnums::MINUS, pExpr);
-    expr.eval(FArr, region);
-    FResult = -bFVal; 
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELUnary")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, -bFVal, String("LELUnary"), shape, False, supress)) ok = False;
   }
+
+   cout << "LELUnary<Double>" << endl;
+  {
+
+// Note that operator+ is not actually implemented in LELUnary because it
+// wouldn't do anything !  It is implemented in LatticeExprNode though
+
+    cout << "   Operator -" << endl;     
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
+    LELUnary<Double> expr(LELUnaryEnums::MINUS, pExpr);
+    if (!checkDouble(expr, -bDVal, String("LELUnary"), shape, False, supress)) ok = False;
+  }
+
+
+   cout << "LELUnary<Complex>" << endl;
+  {
+
+// Note that operator+ is not actually implemented in LELUnary because it
+// wouldn't do anything !  It is implemented in LatticeExprNode though
+
+    cout << "   Operator -" << endl;     
+    CountedPtr<LELInterface<Complex> > pExpr = new LELLattice<Complex>(bC);
+    LELUnary<Complex> expr(LELUnaryEnums::MINUS, pExpr);
+    if (!checkComplex(expr, -bCVal, String("LELUnary"), shape, False, supress)) ok = False;
+  }
+
+
+   cout << "LELUnary<DComplex>" << endl;
+  {
+
+// Note that operator+ is not actually implemented in LELUnary because it
+// wouldn't do anything !  It is implemented in LatticeExprNode though
+
+    cout << "   Operator -" << endl;     
+    CountedPtr<LELInterface<DComplex> > pExpr = new LELLattice<DComplex>(bDC);
+    LELUnary<DComplex> expr(LELUnaryEnums::MINUS, pExpr);
+    if (!checkDComplex(expr, -bDCVal, String("LELUnary"), shape, False, supress)) ok = False;
+  }
+
 //************************************************************************
 //
-// LELUnaryBool
+// LELUnaryBool; 100% coverage
 //
   {
     cout << endl << "LELUnaryBool" << endl;
-    CountedPtr<LELInterface<Bool> > pExpr = new LELLattice<Bool>(aB);
 
-    cout << "   Operator !" << endl;     
-    LELUnaryBool expr(LELUnaryEnums::NOT, pExpr);
-    expr.eval(BArr, region);
-    BResult = ToBool(!aBVal);
-    if (! allEQ (BArr, BResult)) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << BArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELUnaryBool")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
+    {
+      cout << "   Operator !" << endl;     
+      CountedPtr<LELInterface<Bool> > pExpr = new LELLattice<Bool>(aB);
+      LELUnaryBool expr(LELUnaryEnums::NOT, pExpr);
+      if (!checkBool(expr, ToBool(!aBVal), String("LELUnaryBool"), shape, False, supress)) ok = False;
     }
   }
 //
 //************************************************************************
 //
-// LELBinary
+// LELBinary<Float>; 100% coverage
 //
   {
     cout << endl << "LELBinary<Float>" << endl;
@@ -328,115 +372,150 @@ main (int argc, char *argv[])
     {
     cout << "   Operator +" << endl;     
     LELBinary<Float> expr(LELBinaryEnums::ADD, pExprLeft, pExprRight);
-    expr.eval(FArr, region);
     FResult = bFVal + cFVal;
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinary")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELBinary"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Operator -" << endl;     
     LELBinary<Float> expr(LELBinaryEnums::SUBTRACT, pExprLeft, pExprRight);
-    expr.eval(FArr, region);
     FResult = bFVal - cFVal;
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinary")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELBinary"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Operator *" << endl;     
     LELBinary<Float> expr(LELBinaryEnums::MULTIPLY, pExprLeft, pExprRight);
-    expr.eval(FArr, region);
     FResult = bFVal * cFVal;
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinary")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELBinary"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Operator /" << endl;     
     LELBinary<Float> expr(LELBinaryEnums::DIVIDE, pExprLeft, pExprRight);
-    expr.eval(FArr, region);
     FResult = bFVal / cFVal;
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELBinary"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELBinary")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
+  }
+//
+//
+//************************************************************************
+//
+// LELBinary<Double>; 100% coverage
+//
+  {
+    cout << endl << "LELBinary<Double>" << endl;
+    CountedPtr<LELInterface<Double> > pExprLeft = new LELLattice<Double>(bD);
+    CountedPtr<LELInterface<Double> > pExprRight = new LELLattice<Double>(cD);
+
+    {
+    cout << "   Operator +" << endl;     
+    LELBinary<Double> expr(LELBinaryEnums::ADD, pExprLeft, pExprRight);
+    DResult = bDVal + cDVal;
+    if (!checkDouble (expr, DResult, String("LELBinary"), shape, False, supress)) ok = False;
     }
 
-// From LELInterface
+    {
+    cout << "   Operator -" << endl;     
+    LELBinary<Double> expr(LELBinaryEnums::SUBTRACT, pExprLeft, pExprRight);
+    DResult = bDVal - cDVal;
+    if (!checkDouble (expr, DResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
 
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
+    {
+    cout << "   Operator *" << endl;     
+    LELBinary<Double> expr(LELBinaryEnums::MULTIPLY, pExprLeft, pExprRight);
+    DResult = bDVal * cDVal;
+    if (!checkDouble (expr, DResult, String("LELBinary"), shape, False, supress)) ok = False;
     }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+
+    {
+    cout << "   Operator /" << endl;     
+    LELBinary<Double> expr(LELBinaryEnums::DIVIDE, pExprLeft, pExprRight);
+    DResult = bDVal / cDVal;
+    if (!checkDouble (expr, DResult, String("LELBinary"), shape, False, supress)) ok = False;
     }
   }
 //
 //************************************************************************
 //
-// LELBinaryCmp
+// LELBinary<Complex>; 100% coverage
+//
+  {
+    cout << endl << "LELBinary<Complex>" << endl;
+    CountedPtr<LELInterface<Complex> > pExprLeft = new LELLattice<Complex>(bC);
+    CountedPtr<LELInterface<Complex> > pExprRight = new LELLattice<Complex>(cC);
+
+    {
+    cout << "   Operator +" << endl;     
+    LELBinary<Complex> expr(LELBinaryEnums::ADD, pExprLeft, pExprRight);
+    CResult = bCVal + cCVal;
+    if (!checkComplex (expr, CResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator -" << endl;     
+    LELBinary<Complex> expr(LELBinaryEnums::SUBTRACT, pExprLeft, pExprRight);
+    CResult = bCVal - cCVal;
+    if (!checkComplex (expr, CResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator *" << endl;     
+    LELBinary<Complex> expr(LELBinaryEnums::MULTIPLY, pExprLeft, pExprRight);
+    CResult = bCVal * cCVal;
+    if (!checkComplex (expr, CResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator /" << endl;     
+    LELBinary<Complex> expr(LELBinaryEnums::DIVIDE, pExprLeft, pExprRight);
+    CResult = bCVal / cCVal;
+    if (!checkComplex (expr, CResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
+  }
+//
+//************************************************************************
+//
+// LELBinary<DComplex>; 100% coverage
+//
+  {
+    cout << endl << "LELBinary<DComplex>" << endl;
+    CountedPtr<LELInterface<DComplex> > pExprLeft = new LELLattice<DComplex>(bDC);
+    CountedPtr<LELInterface<DComplex> > pExprRight = new LELLattice<DComplex>(cDC);
+
+    {
+    cout << "   Operator +" << endl;     
+    LELBinary<DComplex> expr(LELBinaryEnums::ADD, pExprLeft, pExprRight);
+    DCResult = bDCVal + cDCVal;
+    if (!checkDComplex (expr, DCResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator -" << endl;     
+    LELBinary<DComplex> expr(LELBinaryEnums::SUBTRACT, pExprLeft, pExprRight);
+    DCResult = bDCVal - cDCVal;
+    if (!checkDComplex (expr, DCResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator *" << endl;     
+    LELBinary<DComplex> expr(LELBinaryEnums::MULTIPLY, pExprLeft, pExprRight);
+    DCResult = bDCVal * cDCVal;
+    if (!checkDComplex (expr, DCResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator /" << endl;     
+    LELBinary<DComplex> expr(LELBinaryEnums::DIVIDE, pExprLeft, pExprRight);
+    DCResult = bDCVal / cDCVal;
+    if (!checkDComplex (expr, DCResult, String("LELBinary"), shape, False, supress)) ok = False;
+    }
+  }
+//
+//************************************************************************
+//
+// LELBinaryCmp<Float>; 100% coverage
 //
   {
     cout << endl << "LELBinaryCmp<Float>" << endl;
@@ -446,116 +525,153 @@ main (int argc, char *argv[])
     {
     cout << "   Operator ==" << endl;     
     LELBinaryCmp<Float> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
-    expr.eval(BArr, region);
     BResult = ToBool(bFVal==cFVal);
-    if (! allEQ (BArr, BResult)) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << BArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinaryCmp")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Operator !=" << endl;     
     LELBinaryCmp<Float> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
-    expr.eval(BArr, region);
     BResult = ToBool(bFVal!=cFVal);
-    if (! allEQ (BArr, BResult)) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << BArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinaryCmp")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
     }
 
 
     {
     cout << "   Operator >" << endl;     
     LELBinaryCmp<Float> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
-    expr.eval(BArr, region);
     BResult = ToBool(bFVal>cFVal);
-    if (! allEQ (BArr, BResult)) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << BArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinaryCmp")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Operator >=" << endl;     
     LELBinaryCmp<Float> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
-    expr.eval(BArr, region);
     BResult = ToBool(bFVal>=cFVal);
-    if (! allEQ (BArr, BResult)) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << BArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinaryCmp")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
     }
   }
 //
 //************************************************************************
 //
-// LELBinaryBool
+// LELBinaryCmp<Double>; 100% coverage
+//
+  {
+    cout << endl << "LELBinaryCmp<Double>" << endl;
+    CountedPtr<LELInterface<Double> > pExprLeft = new LELLattice<Double>(bD);
+    CountedPtr<LELInterface<Double> > pExprRight = new LELLattice<Double>(cD);
+
+    {
+    cout << "   Operator ==" << endl;     
+    LELBinaryCmp<Double> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
+    BResult = ToBool(bDVal==cDVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator !=" << endl;     
+    LELBinaryCmp<Double> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
+    BResult = ToBool(bDVal!=cDVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+
+    {
+    cout << "   Operator >" << endl;     
+    LELBinaryCmp<Double> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
+    BResult = ToBool(bDVal>cDVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator >=" << endl;     
+    LELBinaryCmp<Double> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
+    BResult = ToBool(bDVal>=cDVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+  }
+//
+//************************************************************************
+//
+// LELBinaryCmp<Complex>; 100% coverage
+//
+  {
+    cout << endl << "LELBinaryCmp<Complex>" << endl;
+    CountedPtr<LELInterface<Complex> > pExprLeft = new LELLattice<Complex>(bC);
+    CountedPtr<LELInterface<Complex> > pExprRight = new LELLattice<Complex>(cC);
+
+    {
+    cout << "   Operator ==" << endl;     
+    LELBinaryCmp<Complex> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
+    BResult = ToBool(bCVal==cCVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator !=" << endl;     
+    LELBinaryCmp<Complex> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
+    BResult = ToBool(bCVal!=cCVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+
+    {
+    cout << "   Operator >" << endl;     
+    LELBinaryCmp<Complex> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
+    BResult = ToBool(bCVal>cCVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator >=" << endl;     
+    LELBinaryCmp<Complex> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
+    BResult = ToBool(bCVal>=cCVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+  }
+//
+//************************************************************************
+//
+// LELBinaryCmp<DComplex>; 100% coverage
+//
+  {
+    cout << endl << "LELBinaryCmp<DComplex>" << endl;
+    CountedPtr<LELInterface<DComplex> > pExprLeft = new LELLattice<DComplex>(bDC);
+    CountedPtr<LELInterface<DComplex> > pExprRight = new LELLattice<DComplex>(cDC);
+
+    {
+    cout << "   Operator ==" << endl;     
+    LELBinaryCmp<DComplex> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
+    BResult = ToBool(bDCVal==cDCVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator !=" << endl;     
+    LELBinaryCmp<DComplex> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
+    BResult = ToBool(bDCVal!=cDCVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+
+    {
+    cout << "   Operator >" << endl;     
+    LELBinaryCmp<DComplex> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
+    BResult = ToBool(bDCVal>cDCVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Operator >=" << endl;     
+    LELBinaryCmp<DComplex> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
+    BResult = ToBool(bDCVal>=cDCVal);
+    if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, supress)) ok = False;
+    }
+  }
+//
+//************************************************************************
+//
+// LELBinaryBool; 100% coverage
 //
   {
     cout << endl << "LELBinaryBool" << endl;
@@ -565,89 +681,29 @@ main (int argc, char *argv[])
     {
     cout << "   Operator ==" << endl;     
     LELBinaryBool expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
-    expr.eval(BArr, region);
     BResult = ToBool(bBVal==cBVal);
-    if (! allEQ (BArr, BResult)) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << BArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinaryBool")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELBinaryBool"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Operator !=" << endl;     
     LELBinaryBool expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
-    expr.eval(BArr, region);
     BResult = ToBool(bBVal!=cBVal);
-    if (! allEQ (BArr, BResult)) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << BArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinaryBool")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELBinaryBool"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Operator &&" << endl;     
     LELBinaryBool expr(LELBinaryEnums::AND, pExprLeft, pExprRight);
-    expr.eval(BArr, region);
     BResult = ToBool(bBVal&&cBVal);
-    if (! allEQ (BArr, BResult)) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << BArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELBinaryBool")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELBinaryBool"), shape, False, supress)) ok = False;
     }
   }
 
 //
 //************************************************************************
 //
-// LELFunction1D
+// LELFunction1D<Float>; 100% coverage
 //
   {
     cout << endl << "LELFunction1D<Float>" << endl;
@@ -656,224 +712,58 @@ main (int argc, char *argv[])
     {
     cout << "   Function sin" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::SIN, pExpr);
-    expr.eval(FArr, region);
     FResult = sin(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function sinh" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::SINH, pExpr);
-    expr.eval(FArr, region);
     FResult = sinh(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function cos" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::COS, pExpr);
-    expr.eval(FArr, region);
     FResult = cos(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
-    }
-
 
     {
     cout << "   Function cosh" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::COSH, pExpr);
-    expr.eval(FArr, region);
     FResult = cosh(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
-    }
-
 
     {
     cout << "   Function exp" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::EXP, pExpr);
-    expr.eval(FArr, region);
     FResult = exp(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
-    }
-
 
     {
     cout << "   Function log" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::LOG, pExpr);
-    expr.eval(FArr, region);
     FResult = log(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
-    }
-
 
     {
     cout << "   Function log10" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::LOG10, pExpr);
-    expr.eval(FArr, region);
     FResult = log10(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
-    }
-
 
     {
     cout << "   Function sqrt" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::SQRT, pExpr);
-    expr.eval(FArr, region);
     FResult = sqrt(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
-    }
-
 
     {
     cout << "   Function min" << endl;     
@@ -881,26 +771,7 @@ main (int argc, char *argv[])
     bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
                 FArr.shape(), IPosition(FArr.ndim(),1));
     FResult = min(FArr);
-    if (expr.getScalar() != FResult) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << expr.getScalar() << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, True, supress)) ok = False;
     }
 
 
@@ -910,26 +781,7 @@ main (int argc, char *argv[])
     bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
                 FArr.shape(), IPosition(FArr.ndim(),1));
     FResult = max(FArr);
-    if (expr.getScalar() != FResult) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << expr.getScalar() << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, True, supress)) ok = False;
     }
 
     {
@@ -938,26 +790,7 @@ main (int argc, char *argv[])
     bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
                 FArr.shape(), IPosition(FArr.ndim(),1));
     FResult = mean(FArr);
-    if (expr.getScalar() != FResult) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << expr.getScalar() << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, True, supress)) ok = False;
     }
 
     {
@@ -966,33 +799,291 @@ main (int argc, char *argv[])
     bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
                 FArr.shape(), IPosition(FArr.ndim(),1));
     FResult = sum(FArr);
-    if (expr.getScalar() != FResult) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << expr.getScalar() << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELFunction1D"), shape, True, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunction1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
+  }
+
+//
+//
+//************************************************************************
+//
+// LELFunction1D<Double>; 100% coverage
+//
+  {
+    cout << endl << "LELFunction1D<Double>" << endl;
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
+
+    {
+    cout << "   Function sin" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::SIN, pExpr);
+    DResult = sin(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
 
-// From LELInterface
+    {
+    cout << "   Function sinh" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::SINH, pExpr);
+    DResult = sinh(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
 
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
+    {
+    cout << "   Function cos" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::COS, pExpr);
+    DResult = cos(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
+
+    {
+    cout << "   Function cosh" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::COSH, pExpr);
+    DResult = cosh(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
+
+    {
+    cout << "   Function exp" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::EXP, pExpr);
+    DResult = exp(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, False, supress)) ok = False;
     }
+
+    {
+    cout << "   Function log" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::LOG, pExpr);
+    DResult = log(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function log10" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::LOG10, pExpr);
+    DResult = log10(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function sqrt" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::SQRT, pExpr);
+    DResult = sqrt(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function min" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::MIN1D, pExpr);
+    bD.getSlice(DArr, IPosition(DArr.ndim(),0), 
+                DArr.shape(), IPosition(DArr.ndim(),1));
+    DResult = min(DArr);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, True, supress)) ok = False;
+    }
+
+
+    {
+    cout << "   Function max" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::MAX1D, pExpr);
+    bD.getSlice(DArr, IPosition(DArr.ndim(),0), 
+                DArr.shape(), IPosition(DArr.ndim(),1));
+    DResult = max(DArr);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, True, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function mean" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::MEAN1D, pExpr);
+    bD.getSlice(DArr, IPosition(DArr.ndim(),0), 
+                DArr.shape(), IPosition(DArr.ndim(),1));
+    DResult = mean(DArr);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, True, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function sum" << endl;     
+    LELFunction1D<Double> expr(LELFunctionEnums::SUM, pExpr);
+    bD.getSlice(DArr, IPosition(DArr.ndim(),0), 
+                DArr.shape(), IPosition(DArr.ndim(),1));
+    DResult = sum(DArr);
+    if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, True, supress)) ok = False;
+    }
+  }
+
+//
+//
+//************************************************************************
+//
+// LELFunction1D<Complex>; 100% coverage
+//
+  {
+    cout << endl << "LELFunction1D<Complex>" << endl;
+    CountedPtr<LELInterface<Complex> > pExpr = new LELLattice<Complex>(bC);
+
+    {
+    cout << "   Function sin" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::SIN, pExpr);
+    CResult = sin(bCVal);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function sinh" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::SINH, pExpr);
+    CResult = sinh(bCVal);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function cos" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::COS, pExpr);
+    CResult = cos(bCVal);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function cosh" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::COSH, pExpr);
+    CResult = cosh(bCVal);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function exp" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::EXP, pExpr);
+    CResult = exp(bCVal);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function log" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::LOG, pExpr);
+    CResult = log(bCVal);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function log10" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::LOG10, pExpr);
+    CResult = log10(bCVal);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function sqrt" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::SQRT, pExpr);
+    CResult = sqrt(bCVal);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function min" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::MIN1D, pExpr);
+    bC.getSlice(CArr, IPosition(CArr.ndim(),0), 
+                CArr.shape(), IPosition(CArr.ndim(),1));
+    CResult = min(CArr);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, True, supress)) ok = False;
+    }
+
+
+    {
+    cout << "   Function max" << endl;     
+    LELFunction1D<Complex> expr(LELFunctionEnums::MAX1D, pExpr);
+    bC.getSlice(CArr, IPosition(CArr.ndim(),0), 
+                CArr.shape(), IPosition(CArr.ndim(),1));
+    CResult = max(CArr);
+    if (!checkComplex (expr, CResult, String("LELFunction1D"), shape, True, supress)) ok = False;
+    }
+  }
+
+//
+//
+//************************************************************************
+//
+// LELFunction1D<DComplex>; 100% coverage
+//
+  {
+    cout << endl << "LELFunction1D<DComplex>" << endl;
+    CountedPtr<LELInterface<DComplex> > pExpr = new LELLattice<DComplex>(bDC);
+
+    {
+    cout << "   Function sin" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::SIN, pExpr);
+    DCResult = sin(bDCVal);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function sinh" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::SINH, pExpr);
+    DCResult = sinh(bDCVal);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function cos" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::COS, pExpr);
+    DCResult = cos(bDCVal);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function cosh" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::COSH, pExpr);
+    DCResult = cosh(bDCVal);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function exp" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::EXP, pExpr);
+    DCResult = exp(bDCVal);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function log" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::LOG, pExpr);
+    DCResult = log(bDCVal);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function log10" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::LOG10, pExpr);
+    DCResult = log10(bDCVal);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function sqrt" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::SQRT, pExpr);
+    DCResult = sqrt(bDCVal);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function min" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::MIN1D, pExpr);
+    bDC.getSlice(DCArr, IPosition(DCArr.ndim(),0), 
+                DCArr.shape(), IPosition(DCArr.ndim(),1));
+    DCResult = min(DCArr);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, True, supress)) ok = False;
+    }
+
+
+    {
+    cout << "   Function max" << endl;     
+    LELFunction1D<DComplex> expr(LELFunctionEnums::MAX1D, pExpr);
+    bDC.getSlice(DCArr, IPosition(DCArr.ndim(),0), 
+                DCArr.shape(), IPosition(DCArr.ndim(),1));
+    DCResult = max(DCArr);
+    if (!checkDComplex (expr, DCResult, String("LELFunction1D"), shape, True, supress)) ok = False;
+    }
+
   }
 
 //
 //************************************************************************
 //
-// LELFunctionReal1D
+// LELFunctionReal1D<Float>; 100% coverage
 //
   {
     cout << endl << "LELFunctionReal1D<Float>" << endl;
@@ -1001,170 +1092,103 @@ main (int argc, char *argv[])
     {
     cout << "   Function asin" << endl;     
     LELFunctionReal1D<Float> expr(LELFunctionEnums::ASIN, pExpr);
-    expr.eval(FArr, region);
     FResult = asin(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionReal1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function acos" << endl;     
     LELFunctionReal1D<Float> expr(LELFunctionEnums::ACOS, pExpr);
-    expr.eval(FArr, region);
     FResult = acos(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionReal1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
 
     {
     cout << "   Function tan" << endl;     
     LELFunctionReal1D<Float> expr(LELFunctionEnums::TAN, pExpr);
-    expr.eval(FArr, region);
-    FResult = tan(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionReal1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    FResult = tan(bFVal);    
+    if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function tanh" << endl;     
     LELFunctionReal1D<Float> expr(LELFunctionEnums::TANH, pExpr);
-    expr.eval(FArr, region);
     FResult = tanh(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionReal1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function ceil" << endl;     
     LELFunctionReal1D<Float> expr(LELFunctionEnums::CEIL, pExpr);
-    expr.eval(FArr, region);
     FResult = ceil(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionReal1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function floor" << endl;     
     LELFunctionReal1D<Float> expr(LELFunctionEnums::FLOOR, pExpr);
-    expr.eval(FArr, region);
     FResult = floor(bFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunctionReal1D")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
+  }
+
+//
+//************************************************************************
+//
+// LELFunctionReal1D<Double>; 100% coverage
+//
+  {
+    cout << endl << "LELFunctionReal1D<Double>" << endl;
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
+
+    {
+    cout << "   Function asin" << endl;     
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::ASIN, pExpr);
+    DResult = asin(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
-// From LELInterface
+    {
+    cout << "   Function acos" << endl;     
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::ACOS, pExpr);
+    DResult = acos(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
+    }
 
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
+
+    {
+    cout << "   Function tan" << endl;     
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::TAN, pExpr);
+    DResult = tan(bDVal);    
+    if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
+
+    {
+    cout << "   Function tanh" << endl;     
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::TANH, pExpr);
+    DResult = tanh(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
+
+    {
+    cout << "   Function ceil" << endl;     
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::CEIL, pExpr);
+    DResult = ceil(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
+    }
+
+    {
+    cout << "   Function floor" << endl;     
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::FLOOR, pExpr);
+    DResult = floor(bDVal);
+    if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
   }
 //
 //************************************************************************
 //
-// LELFunctionFloat
+// LELFunctionFloat; 100% coverage
 //
   {
     cout << endl << "LELFunctionFloat" << endl;
@@ -1177,137 +1201,37 @@ main (int argc, char *argv[])
     {
     cout << "   Function min" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::MIN, arga);
-    expr.eval(FArr, region);
     FResult = min(bFVal,cFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
 
 
     {
     cout << "   Function max" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::MAX, arga);
-    expr.eval(FArr, region);
     FResult = max(bFVal,cFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function pow" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::POW, arga);
-    expr.eval(FArr, region);
     FResult = pow(bFVal,cFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function atan2" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::ATAN2, arga);
-    expr.eval(FArr, region);
     FResult = atan2(bFVal,cFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function fmod" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::FMOD, arga);
-    expr.eval(FArr, region);
     FResult = fmod(bFVal,cFVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
 
 
@@ -1317,115 +1241,35 @@ main (int argc, char *argv[])
     {
     cout << "   Function abs" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::ABS, argb);
-    expr.eval(FArr, region);
     FResult = abs(bCVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function arg" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::ARG, argb);
-    expr.eval(FArr, region);
     FResult = Float(arg(bCVal));
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function real" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::REAL, argb);
-    expr.eval(FArr, region);
     FResult = real(bCVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function imag" << endl;     
     LELFunctionFloat expr(LELFunctionEnums::IMAG, argb);
-    expr.eval(FArr, region);
     FResult = imag(bCVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionFloat")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, supress)) ok = False;
     }
   }
 //
 //************************************************************************
 //
-// LELFunctionDouble
+// LELFunctionDouble; 100% coverage
 //
   {
     cout << endl << "LELFunctionDouble" << endl;
@@ -1437,137 +1281,37 @@ main (int argc, char *argv[])
     {
     cout << "   Function min" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::MIN, arga);
-    expr.eval(DArr, region);
-    DResult = min(bFVal,cFVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    DResult = min(bDVal,cDVal);
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
 
     {
     cout << "   Function max" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::MAX, arga);
-    expr.eval(DArr, region);
-    DResult = max(bFVal,cFVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    DResult = max(bDVal,cDVal);
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function pow" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::POW, arga);
-    expr.eval(DArr, region);
-    DResult = pow(bFVal,cFVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    DResult = pow(bDVal,cDVal);
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function atan2" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::ATAN2, arga);
-    expr.eval(DArr, region);
-    DResult = atan2(bFVal,cFVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    DResult = atan2(bDVal,cDVal);
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function fmod" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::FMOD, arga);
-    expr.eval(DArr, region);
-    DResult = fmod(bFVal,cFVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    DResult = fmod(bDVal,cDVal);
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
 
@@ -1576,110 +1320,30 @@ main (int argc, char *argv[])
 
     {
     cout << "   Function abs" << endl;     
-    LELFunctionDouble expr(LELFunctionEnums::ABS, argb);
-    expr.eval(DArr, region);
     DResult = abs(bDCVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    LELFunctionDouble expr(LELFunctionEnums::ABS, argb);
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function arg" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::ARG, argb);
-    expr.eval(DArr, region);
     DResult = Double(arg(bDCVal));
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function real" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::REAL, argb);
-    expr.eval(DArr, region);
     DResult = real(bDCVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function imag" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::IMAG, argb);
-    expr.eval(DArr, region);
     DResult = imag(bDCVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, False, supress)) ok = False;
     }
 
 
@@ -1693,26 +1357,7 @@ main (int argc, char *argv[])
     } else {
       DResult = 0.0;
     }
-    if (expr.getScalar() != DResult) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << expr.getScalar()  << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, True, supress)) ok = False;
     }
 
 
@@ -1724,58 +1369,20 @@ main (int argc, char *argv[])
     } else {
       DResult = 0.0;
     }
-    if (expr.getScalar() != DResult) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << expr.getScalar() << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, True, supress)) ok = False;
     }
 
     {
     cout << "   Function nelements" << endl;     
     LELFunctionDouble expr(LELFunctionEnums::NELEM, argc);
     DResult = shape.product();
-    if (expr.getScalar() != DResult) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << expr.getScalar()  << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDouble")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, True, supress)) ok = False;
     }
   }
 //
 //************************************************************************
 //
-// LELFunctionComplex
+// LELFunctionComplex; 100% coverage
 //
   {
     cout << endl << "LELFunctionComplex" << endl;
@@ -1788,28 +1395,8 @@ main (int argc, char *argv[])
     {
     cout << "   Function pow" << endl;     
     LELFunctionComplex expr(LELFunctionEnums::POW, arga);
-    expr.eval(CArr, region);
     CResult = pow(bCVal,cCVal);
-    if (! allEQ (CArr, CResult)) {
-       cout << "   Result should be " << CResult << endl;
-       cout << "   Result is        " << CArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionComplex")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkComplex(expr, CResult, String("LELFunctionComplex"), shape, False, supress)) ok = False;
     }
 
 
@@ -1819,35 +1406,15 @@ main (int argc, char *argv[])
     {
     cout << "   Function conj" << endl;     
     LELFunctionComplex expr(LELFunctionEnums::CONJ, argb);
-    expr.eval(CArr, region);
     CResult = conj(bCVal);
-    if (! allEQ (CArr, CResult)) {
-       cout << "   Result should be " << CResult << endl;
-       cout << "   Result is        " << CArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionComplex")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkComplex(expr, CResult, String("LELFunctionComplex"), shape, False, supress)) ok = False;
     }
 
   }
 //
 //************************************************************************
 //
-// LELFunctionDComplex
+// LELFunctionDComplex; 100% coverage
 //
   {
     cout << endl << "LELFunctionDComplex" << endl;
@@ -1860,28 +1427,8 @@ main (int argc, char *argv[])
     {
     cout << "   Function pow" << endl;     
     LELFunctionDComplex expr(LELFunctionEnums::POW, arga);
-    expr.eval(DCArr, region);
     DCResult = pow(bDCVal,cDCVal);
-    if (! allEQ (DCArr, DCResult)) {
-       cout << "   Result should be " << DCResult << endl;
-       cout << "   Result is        " << DCArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionDComplex")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkDComplex(expr, DCResult, String("LELFunctionDComplex"), shape, False, supress)) ok = False;
     }
 
 
@@ -1891,35 +1438,14 @@ main (int argc, char *argv[])
     {
     cout << "   Function conj" << endl;     
     LELFunctionDComplex expr(LELFunctionEnums::CONJ, argb);
-    expr.eval(DCArr, region);
     DCResult = conj(bDCVal);
-    if (! allEQ (DCArr, DCResult)) {
-       cout << "   Result should be " << DCResult << endl;
-       cout << "   Result is        " << DCArr.ac()(origin) << endl;
-       ok = False;
+    if (!checkDComplex(expr, DCResult, String("LELFunctionDComplex"), shape, False, supress)) ok = False;
     }
-    if (expr.className()  != String("LELFunctionDComplex")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
-    }
-
   }
 //
 //************************************************************************
 //
-// LELFunctionBool
+// LELFunctionBool; 100% coverage
 //
   {
     cout << endl << "LELFunctionBool" << endl;
@@ -1932,152 +1458,93 @@ main (int argc, char *argv[])
     cout << "   Function all" << endl;     
     LELFunctionBool expr(LELFunctionEnums::ALL, arga);
     BResult = bBVal;
-    if (expr.getScalar() != BResult) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << expr.getScalar() << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionBool")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, True, supress)) ok = False;
     }
 
     {
     cout << "   Function any" << endl;     
     LELFunctionBool expr(LELFunctionEnums::ANY, arga);
     BResult = bBVal;
-    if (expr.getScalar() != BResult) {
-       cout << "   Result should be " << BResult << endl;
-       cout << "   Result is        " << expr.getScalar() << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELFunctionBool")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (!expr.isScalar()) {
-       cout << "   Expression is a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != IPosition()) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, True, supress)) ok = False;
     }
   }
 //
 //************************************************************************
 //
-// LELConvert
+// LELConvert; 100% coverage
 //
   {
 
     {
     cout << endl << "LELConvert<Float,Double> " << endl;
-    
     CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
     LELConvert<Float,Double> expr(pExpr);
-    expr.eval(FArr, region);
     FResult = Float(bDVal);
-    if (! allEQ (FArr, FResult)) {
-       cout << "   Result should be " << FResult << endl;
-       cout << "   Result is        " << FArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELConvert")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
-    }
-
-// From LELInterface
-
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    if (!checkFloat (expr, FResult, String("LELConvert"), shape, False, supress)) ok = False;
     }
 
     {
-    cout << endl << "LELConvert<Double,Float> " << endl;
-    
+    cout << "LELConvert<Double,Float> " << endl;
     CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
     LELConvert<Double,Float> expr(pExpr);
-    expr.eval(DArr, region);
     DResult = Double(bFVal);
-    if (! allEQ (DArr, DResult)) {
-       cout << "   Result should be " << DResult << endl;
-       cout << "   Result is        " << DArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELConvert")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
+    if (!checkDouble(expr, DResult, String("LELConvert"), shape, False, supress)) ok = False;
     }
 
-// From LELInterface
+    {
+    cout << "LELConvert<Complex,DComplex> " << endl;
+    CountedPtr<LELInterface<DComplex> > pExpr = new LELLattice<DComplex>(bDC);
+    LELConvert<Complex,DComplex> expr(pExpr);
+    CResult = bDCVal;
+    if (!checkComplex(expr, CResult, String("LELConvert"), shape, False, supress)) ok = False;
+    }
 
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
-    }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+    {
+    cout << "LELConvert<DComplex,Complex> " << endl;
+    CountedPtr<LELInterface<Complex> > pExpr = new LELLattice<Complex>(bC);
+    LELConvert<DComplex,Complex> expr(pExpr);
+    DCResult = bCVal;
+    if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, False, supress)) ok = False;
     }
 
 
     {
-    cout << endl << "LELConvert<Complex,Float> " << endl;
-    
+    cout << "LELConvert<Complex,Float> " << endl;
     CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
     LELConvert<Complex,Float> expr(pExpr);
-    expr.eval(CArr, region);
     CResult = Complex(bFVal,0.0);
-    if (! allEQ (CArr, CResult)) {
-       cout << "   Result should be " << CResult << endl;
-       cout << "   Result is        " << CArr.ac()(origin) << endl;
-       ok = False;
-    }
-    if (expr.className()  != String("LELConvert")) {
-       cout << "   Class name is wrong" << endl;
-       ok = False;
+    if (!checkComplex(expr, CResult, String("LELConvert"), shape, False, supress)) ok = False;
     }
 
-// From LELInterface
+    {
+    cout << "LELConvert<Complex,Double> " << endl;
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
+    LELConvert<Complex,Double> expr(pExpr);
+    CResult = Complex(bDVal,0.0);
+    if (!checkComplex(expr, CResult, String("LELConvert"), shape, False, supress)) ok = False;
+    }
 
-    if (expr.isScalar()) {
-       cout << "   Expression is not a scalar" << endl;
-       ok = False;
+    {
+    cout << "LELConvert<DComplex,Float> " << endl;
+    CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
+    LELConvert<DComplex,Float> expr(pExpr);
+    DCResult = DComplex(bFVal,0.0);
+    if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, False, supress)) ok = False;
     }
-    if (expr.shape() != shape) {
-       cout << "   Expression has wrong shape" << endl;
-       ok = False;
-    }
+
+    {
+    cout << "LELConvert<DComplex,Double> " << endl;
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
+    LELConvert<DComplex,Double> expr(pExpr);
+    DCResult = DComplex(bDVal,0.0);
+    if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, False, supress)) ok = False;
     }
   }
 
 
+
   if (!ok) {
+    cout << "not ok" << endl;
      exit(1);
   } else {
     cout << endl << "ok" << endl;
@@ -2089,4 +1556,328 @@ main (int argc, char *argv[])
  } end_try;
  
    exit(0);
+}
+
+
+Bool checkFloat (LELInterface<Float>& expr, 
+                 const Float Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress)
+{
+    Array<Float> Arr(shape);
+    Bool ok = True;
+    IPosition origin(2,0,0);
+    PixelBox region(origin, shape-1, shape);
+
+
+    if (expr.className() != name) {
+       cout << "   Class name is wrong" << endl;
+       ok = False;
+    }
+
+    if (shouldBeScalar) {
+      if (!expr.isScalar()) {
+         cout << "   Expression is not a scalar but should be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != IPosition()) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      if (expr.getScalar() != Result) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << expr.getScalar() << endl;
+         ok = False;
+      }
+      try {
+        expr.eval(Arr, region);
+      } catch (AipsError x) {
+        if (!supress) cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    } else {
+      if (expr.isScalar()) {
+         cout << "   Expression is a scalar but shouldn't be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != shape) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      expr.eval(Arr, region);
+      if (!allEQ (Arr, Result)) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << Arr.ac()(origin) << endl;
+         ok = False;
+      }
+      try {
+       expr.getScalar();
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    }
+    expr.prepare();
+ 
+    return ok;
+}
+
+
+
+Bool checkDouble (LELInterface<Double>& expr, 
+                 const Double Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress)
+{
+    Array<Double> Arr(shape);
+    Bool ok = True;
+    IPosition origin(2,0,0);
+    PixelBox region(origin, shape-1, shape);
+
+
+    if (expr.className() != name) {
+       cout << "   Class name is wrong" << endl;
+       ok = False;
+    }
+
+    if (shouldBeScalar) {
+      if (!expr.isScalar()) {
+         cout << "   Expression is not a scalar but should be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != IPosition()) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      if (expr.getScalar() != Result) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << expr.getScalar() << endl;
+         ok = False;
+      }
+      try {
+        expr.eval(Arr, region);
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    } else {
+      if (expr.isScalar()) {
+         cout << "   Expression is a scalar but shouldn't be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != shape) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      expr.eval(Arr, region);
+      if (!allEQ (Arr, Result)) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << Arr.ac()(origin) << endl;
+         ok = False;
+      }
+      try {
+       expr.getScalar();
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    }
+    expr.prepare();
+ 
+    return ok;
+}
+
+
+
+Bool checkComplex (LELInterface<Complex>& expr, 
+                 const Complex Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress)
+{
+    Array<Complex> Arr(shape);
+    Bool ok = True;
+    IPosition origin(2,0,0);
+    PixelBox region(origin, shape-1, shape);
+
+
+    if (expr.className() != name) {
+       cout << "   Class name is wrong" << endl;
+       ok = False;
+    }
+
+    if (shouldBeScalar) {
+      if (!expr.isScalar()) {
+         cout << "   Expression is not a scalar but should be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != IPosition()) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      if (expr.getScalar() != Result) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << expr.getScalar() << endl;
+         ok = False;
+      }
+      try {
+        expr.eval(Arr, region);
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    } else {
+      if (expr.isScalar()) {
+         cout << "   Expression is a scalar but shouldn't be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != shape) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      expr.eval(Arr, region);
+      if (!allEQ (Arr, Result)) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << Arr.ac()(origin) << endl;
+         ok = False;
+      }
+      try {
+       expr.getScalar();
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    }
+    expr.prepare();
+ 
+    return ok;
+}
+
+
+
+Bool checkDComplex (LELInterface<DComplex>& expr, 
+                 const DComplex Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress)
+{
+    Array<DComplex> Arr(shape);
+    Bool ok = True;
+    IPosition origin(2,0,0);
+    PixelBox region(origin, shape-1, shape);
+
+
+    if (expr.className() != name) {
+       cout << "   Class name is wrong" << endl;
+       ok = False;
+    }
+
+    if (shouldBeScalar) {
+      if (!expr.isScalar()) {
+         cout << "   Expression is not a scalar but should be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != IPosition()) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      if (expr.getScalar() != Result) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << expr.getScalar() << endl;
+         ok = False;
+      }
+      try {
+        expr.eval(Arr, region);
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    } else {
+      if (expr.isScalar()) {
+         cout << "   Expression is a scalar but shouldn't be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != shape) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      expr.eval(Arr, region);
+      if (!allEQ (Arr, Result)) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << Arr.ac()(origin) << endl;
+         ok = False;
+      }
+      try {
+       expr.getScalar();
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    }
+    expr.prepare();
+ 
+    return ok;
+}
+
+
+
+Bool checkBool (LELInterface<Bool>& expr, 
+                 const Bool Result,
+                 const String name,
+                 const IPosition shape,
+                 const Bool shouldBeScalar,
+                 const Bool supress)
+{
+    Array<Bool> Arr(shape);
+    Bool ok = True;
+    IPosition origin(2,0,0);
+    PixelBox region(origin, shape-1, shape);
+
+
+    if (expr.className() != name) {
+       cout << "   Class name is wrong" << endl;
+       ok = False;
+    }
+
+    if (shouldBeScalar) {
+      if (!expr.isScalar()) {
+         cout << "   Expression is not a scalar but should be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != IPosition()) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      if (expr.getScalar() != Result) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << expr.getScalar() << endl;
+         ok = False;
+      }
+      try {
+        expr.eval(Arr, region);
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    } else {
+      if (expr.isScalar()) {
+         cout << "   Expression is a scalar but shouldn't be" << endl;
+         ok = False;
+      }
+      if (expr.shape() != shape) {
+         cout << "   Expression has wrong shape" << endl;
+         ok = False;
+      }
+      expr.eval(Arr, region);
+      if (!allEQ (Arr, Result)) {
+         cout << "   Result should be " << Result << endl;
+         cout << "   Result is        " << Arr.ac()(origin) << endl;
+         ok = False;
+      }
+      try {
+       expr.getScalar();
+      } catch (AipsError x) {
+       if (!supress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
+      } end_try;
+    }
+    expr.prepare();
+ 
+    return ok;
 }
