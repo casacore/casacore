@@ -42,9 +42,7 @@
 
 template<class T>
 RebinLattice<T>::RebinLattice ()
-: itsLatticePtr(0),
-  itsDataPtr(0),
-  itsMaskPtr(0)
+: itsLatticePtr(0)
 {}
 
 
@@ -52,9 +50,7 @@ RebinLattice<T>::RebinLattice ()
 template<class T>
 RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
                                const Vector<uInt>& bin)
-: itsLatticePtr(lattice.cloneML()),
-  itsDataPtr(0),
-  itsMaskPtr(0)
+: itsLatticePtr(lattice.cloneML())
 {
    LogIO os(LogOrigin("RebinLattice", "RebinLattice(...)", WHERE));
    const uInt nDim = lattice.ndim();
@@ -81,9 +77,7 @@ RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
 
 template<class T>
 RebinLattice<T>::RebinLattice (const RebinLattice<T>& other)
-: itsLatticePtr(0),
-  itsDataPtr(0),
-  itsMaskPtr(0)
+: itsLatticePtr(0)
 {
   operator= (other);
 }
@@ -91,14 +85,6 @@ RebinLattice<T>::RebinLattice (const RebinLattice<T>& other)
 template<class T>
 RebinLattice<T>::~RebinLattice()
 {
-   if (itsDataPtr) {
-      delete itsDataPtr; 
-      itsDataPtr = 0;
-   }
-   if (itsMaskPtr) {
-      delete itsMaskPtr; 
-      itsMaskPtr = 0;
-   }
    if (itsLatticePtr) {
       delete itsLatticePtr;
       itsLatticePtr = 0;
@@ -112,10 +98,10 @@ RebinLattice<T>& RebinLattice<T>::operator=(const RebinLattice<T>& other)
     delete itsLatticePtr;
     itsLatticePtr = other.itsLatticePtr->cloneML();
 //
-    delete itsDataPtr;
-    itsDataPtr = 0;
-    delete itsMaskPtr;
-    itsMaskPtr = 0;
+    itsData.resize();
+    itsData = other.itsData.copy();
+    itsMask.resize();
+    itsMask = other.itsMask.copy();
 //
     itsBin.resize(0);
     itsBin = other.itsBin;
@@ -217,37 +203,32 @@ Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 
 // If we already have the result for this section don't get it again
 
-   if (section==itsSlicer && itsDataPtr) {
-      buffer.reference(*itsDataPtr);
-      return True;
+   if (section==itsSlicer && itsData.nelements()>0) {
+      buffer.reference(itsData);
+      return False;
    }
 
 // Get input data
 
-   Array<T> dataIn;
-   Array<Bool> maskIn;
-   getDataAndMask (dataIn, maskIn, section);
-
-// Clean up cache pointers
-
-   delete itsDataPtr; itsDataPtr = 0;
-   delete itsMaskPtr; itsMaskPtr = 0;
+   Bool isRef = False;
+   if (itsAllUnity) {
+      isRef = getDataAndMask (itsData, itsMask, section);
+      buffer.resize(itsData.shape());
+      buffer.reference(itsData);
+   } else {
+      Array<T> dataIn;
+      Array<Bool> maskIn;
+      getDataAndMask (dataIn, maskIn, section);
 
 // Bin it up
 
-   const IPosition& shapeOut = section.length();
-   Bool isRef;
-   if (itsAllUnity) {                        // Fairly useless but legal...
-      buffer.resize(dataIn.shape());
-      buffer = dataIn.copy();
-      isRef = False;
-   } else {
-      itsDataPtr = new Array<T>(shapeOut);
-      itsMaskPtr = new Array<Bool>(shapeOut);
+      const IPosition& shapeOut = section.length();
+      itsData.resize(shapeOut);
+      itsMask.resize(shapeOut);
 //
-      bin (*itsDataPtr, *itsMaskPtr, dataIn, maskIn);
-      buffer.reference(*itsDataPtr);
-      isRef = True;
+      bin (itsData, itsMask, dataIn, maskIn);
+      buffer.reference(itsData);
+      isRef = False;
    }
 //
    itsSlicer = section;
@@ -258,8 +239,8 @@ Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 
 template<class T>
 void RebinLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
-				     const IPosition& where, 
-				     const IPosition& stride)
+                                  const IPosition& where, 
+                                  const IPosition& stride)
 {
   throw (AipsError ("RebinLattice::putSlice - non-writable lattice"));
 }
@@ -277,42 +258,39 @@ Bool RebinLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
 {
 // If we already have the result for this section don't get it again
 
-   if (section==itsSlicer && itsMaskPtr) {
-      buffer.reference(*itsMaskPtr);
-      return True;
+   if (section==itsSlicer && itsMask.nelements()>0) {
+      buffer.reference(itsMask);
+      return False;
    }
-
-// Clean up cache pointers
-
-   delete itsDataPtr; itsDataPtr = 0;
-   delete itsMaskPtr; itsMaskPtr = 0;
 //
    Bool isRef;
    const IPosition& shapeOut = section.length();
    if (itsLatticePtr->isMasked()) {
+      if (itsAllUnity) {
+         isRef = getDataAndMask (itsData, itsMask, section);
+         buffer.resize(itsMask.shape());
+         buffer.reference(itsMask);
+      } else {
 
 // Get input data
 
-      Array<T> dataIn;
-      Array<Bool> maskIn;
-      getDataAndMask (dataIn, maskIn, section);
+         Array<T> dataIn;
+         Array<Bool> maskIn;
+         getDataAndMask (dataIn, maskIn, section);
 
 // Bin it up
 
-      if (itsAllUnity) {                        // Fairly useless but legal...
-         buffer = maskIn.copy();
-         isRef = False;
-      } else {
-         itsDataPtr = new Array<T>(shapeOut);
-         itsMaskPtr = new Array<Bool>(shapeOut);
-         bin (*itsDataPtr, *itsMaskPtr, dataIn, maskIn);
-         buffer.reference(*itsMaskPtr);
+         itsData.resize(shapeOut);
+         itsMask.resize(shapeOut);
+         bin (itsData, itsMask, dataIn, maskIn);
+         buffer.reference(itsMask);
          isRef = True;
       }
    } else {
-       itsMaskPtr = new Array<Bool>(shapeOut, True);
-       buffer.reference(*itsMaskPtr);
-       isRef = True;
+       itsMask.resize(shapeOut);
+       itsMask = True;
+       buffer.reference(itsMask);
+       isRef = False;
    }
 //
    itsSlicer = section;
@@ -329,7 +307,7 @@ Bool RebinLattice<T>::ok() const
 
 
 template<class T>
-void RebinLattice<T>::getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section)
+Bool RebinLattice<T>::getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section)
 {
 
 // Work out the slicer for the input Lattice given the slicer for
@@ -339,8 +317,11 @@ void RebinLattice<T>::getDataAndMask (Array<T>& data, Array<Bool>& mask, const S
 
 // Fetch
 
-   itsLatticePtr->getSlice(data, sectionIn);
-   itsLatticePtr->getMaskSlice(mask, sectionIn);
+   Bool isRef = itsLatticePtr->getSlice(data, sectionIn);
+   if (itsLatticePtr->isMasked()) {
+      itsLatticePtr->getMaskSlice(mask, sectionIn);    // Assume isRef same for data/mask
+   }
+   return isRef;
 }
 
 
@@ -354,10 +335,12 @@ Bool RebinLattice<T>::bin(Array<T>& dataOut, Array<Bool>& maskOut,
    ArrayLattice<T> latDataIn (dataIn);
    ArrayLattice<Bool> latMaskIn(maskIn);
    SubLattice<T> latIn(latDataIn);
-   latIn.setPixelMask(latMaskIn, False);
+//
+   Bool doInMask  = maskIn.nelements() > 0;
+   if (doInMask) latIn.setPixelMask(latMaskIn, False);
    Bool doOutMask = maskOut.nelements() > 0;
 
-// Make iterators
+// Make Lattice iterators
 
    const uInt nDim = latIn.ndim();
    IPosition cursorShape(latIn.shape());
@@ -369,28 +352,34 @@ Bool RebinLattice<T>::bin(Array<T>& dataOut, Array<Bool>& maskOut,
    IPosition outPos(nDim);
    T sumData;
    uInt nSum = 0;
-   Bool deleteInPtr, deleteInMaskPtr;
+//
    for (inIter.reset(); !inIter.atEnd(); inIter++) {
       const Array<T>& cursor(inIter.cursor());
-      const Array<Bool>& cursorMask(inIter.getMask());
-//
-      const T* inPtr = cursor.getStorage (deleteInPtr);
-      const Bool* inMaskPtr = cursorMask.getStorage (deleteInMaskPtr);
-//
       const uInt n = cursor.nelements();
-      nSum = 0;
-      sumData = 0;
-      for (uInt i=0; i<n; i++) {
-         if (inMaskPtr[i]) {
-            sumData += inPtr[i];
-            nSum++;
+//
+      if (doInMask) {
+         nSum = 0;
+         sumData = 0;
+         const Array<Bool>& cursorMask(inIter.getMask());
+
+// Iterate through cursor with STL iterators
+
+         typename Array<T>::const_iterator dataIter;
+         typename Array<Bool>::const_iterator maskIter;
+         for (dataIter=cursor.begin(),maskIter=cursorMask.begin();
+              dataIter!=cursor.end(); ++dataIter,++maskIter) {
+            if (*maskIter) {
+               sumData += *dataIter;
+               nSum++;
+            }
          }
+      } else {
+         nSum = n;
+         sumData = sum(cursor);
       }
       if (nSum>0) sumData /= nSum;
-      cursor.freeStorage (inPtr, deleteInPtr);
-      cursorMask.freeStorage (inMaskPtr, deleteInMaskPtr);
 
-// Write output (perhaps redo this with an iterator)
+// Write output (perhaps could redo this with an iterator)
 
       const IPosition& inPos = inIter.position();
       outPos = inPos / itsBin;

@@ -62,7 +62,7 @@ class IPosition;
 //    IPosition shape(2, 10, 20);
 //    TiledShape tShape(shape);
 //    TempLattice<Float> latIn(tShape);
-//    Vector<uInt> factors(2, 2); factors(1) = 5;
+//    Vector<uInt> factors(2); factors(0) = 2; factors(1) = 5;
 //    RebinLattice<Float> rl(latIn, factors);
 //    cerr << "Binned data = " << rl.get() << endl;
 // </srcblock>
@@ -170,7 +170,7 @@ private:
   IPosition doShape(const IPosition& inShape) const;
 
   Slicer findOriginalSlicer (const Slicer& section) const;
-  void getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section);
+  Bool getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section);
   Bool bin(Array<T>& dataOut, Array<Bool>& maskOut,
            const Array<T>& dataIn, const Array<Bool>& maskIn) const;
 //
@@ -178,8 +178,8 @@ private:
   IPosition itsBin;
   Bool itsAllUnity;
 //
-  Array<T>* itsDataPtr;
-  Array<Bool>* itsMaskPtr;
+  Array<T> itsData;
+  Array<Bool> itsMask;
   Slicer itsSlicer;
 };
 
