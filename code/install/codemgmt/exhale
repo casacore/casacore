@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: exhale [-l]
+# Usage: exhale [-e] [-l]
 #-----------------------------------------------------------------------------
 # exhale generates updates for the AIPS++ code distribution system.  It
 # deposits compressed tar files in the AIPS++ master ftp directory and these
@@ -37,13 +37,21 @@
 # (on aips2.nrao.edu) where it is normally invoked twice a day as a cron job.
 #
 # Options:
-#   -l     Latchkey mode; the update produced will be invisible to 'inhale'
-#          unless it is also invoked with the "-l" option.
+#   -e     Expire mode; outdate old RCS revisions.  Only useful when
+#          exhale is creating a new base release; ignored otherwise.
+#
+#   -l     Latchkey mode; the update produced will be invisible to 
+#          'inhale' unless it is also invoked with the "-l" option.
 #
 #   -F     Force mode; turn off all sanity checks for things like
 #          running under the correct account, the proper site, etc.
 #          DO NOT USE!  This option is only intended for use as a
 #          debugging tool to maintain exhale itself.  DOT NOT USE!
+#          Also suppresses all e-mail output.
+#          (This option is not listed in any usage instructions.) 
+#
+#   -G     GNU tar mode; use options compatible with GNU tar.
+#          Also only intended for use as a debugging tool.
 #          (This option is not listed in any usage instructions.) 
 #
 # The $MSTRFTPD/VERSION file is used as a timestamp file for the update.  It
@@ -91,7 +99,7 @@
 #       directories which contain newly created files.
 #
 #    4) Known bug: exhale will break if GNU tar (gtar) is the system's
-#       default tar.  Replacing the tar option -I with -T fixes this.
+#       default tar.  Using the -G option to exhale will fix this.
 #
 # Original: 1992/04/06 by Mark Calabretta, ATNF
 # $Id$
@@ -143,11 +151,18 @@
   fi
 
 # Parse command options.
+  EXPIREOUT=""
   LATCHKEY=""
   INSANE=""
+  TAROPTS=-I
   while [ "$#" -gt 0 ]
   do
      case $1 in
+     -e)
+        EXPIREOUT=1
+	echo ""
+	echo "exhale: Expiring outdated RCS information."
+        ;;
      -l)
         LATCHKEY=1
         echo ""
@@ -158,10 +173,15 @@
         echo ""
         echo "exhale: WARNING - no sanity checking!"
         ;;
+     -G)
+        TAROPTS=-T
+        echo ""
+        echo "exhale: Using options compatible with GNU tar."
+        ;;
      *)
         exec 1>&2
         echo ""
-        echo "Usage: exhale [-l]"
+        echo "Usage: exhale [-e] [-l]"
         exit 1
         ;;
      esac
@@ -192,6 +212,9 @@
           "$LOGNAME, abort!"
      exit 1
   fi
+
+# If running in INSANE (debug) mode, use $LOGNAME as $ADMACCNT.
+  [ "$ADMACCNT" != "$LOGNAME" -a "$INSANE" != "" ] && ADMACCNT="$LOGNAME"
 
 # Set file protection mask.
   umask 022
@@ -350,7 +373,7 @@
      cat $MSTRTMPD/alog.log
      echo ""
 
-     cat $MSTRTMPD/alog.log | \
+     [ "$INSANE" = "" ] && cat $MSTRTMPD/alog.log | \
         mail -s "$MAJMIN change log" aips2-changes@nrao.edu
   fi
 
@@ -464,7 +487,7 @@
      cd $MSTRTMPD
 
 #    Outdate intermediate revisions of the antepenultimate release.
-     if [ "$NEWMAJOR" -gt 2 ]
+     if [ "$NEWMAJOR" -gt 2 -a "$EXPIREOUT" != "" ]
      then
         OUTMAJOR=`expr $NEWMAJOR + 98 | sed -e 's/^1//'`
         OUTDATE=":$OUTMAJOR.999"
@@ -656,7 +679,7 @@
 
      cd $MSTRTMPD
      tar cvfX $MSTRTMPD/master-$MAJMIN.tar $MSTRTMPD/master.excl \
-        -I $MSTRTMPD/master.incl
+        $TAROPTS $MSTRTMPD/master.incl
      if [ "$?" != 0 ]
      then
         exec 1>&2
@@ -717,7 +740,7 @@
 
      cd $AIPSROOT
      tar cvfX $MSTRTMPD/master-$MAJMIN.tar $MSTRTMPD/master.excl \
-        -I $MSTRTMPD/master.incl
+        $TAROPTS $MSTRTMPD/master.incl
      if [ "$?" != 0 ]
      then
         exec 1>&2
@@ -810,7 +833,7 @@
      echo ""
      echo "exhale: Cumulative update files for version $NEWVERSN."
      echo "------------------------------------------------------"
-     tar cvf $MSTRTMPD/master-$ALLVERS.tar -I $MSTRTMPD/master.incl
+     tar cvf $MSTRTMPD/master-$ALLVERS.tar $TAROPTS $MSTRTMPD/master.incl
      if [ "$?" != 0 ]
      then
         exec 1>&2
