@@ -242,7 +242,7 @@ void LatticeFFT::crfft(Lattice<Float>& out, const Lattice<Complex>& in,
 		       const Bool doShift){
  TempLattice<Complex> inCopy(in.shape());
  inCopy.copyData(in);
- LatticeFFT::crfft(out, inCopy.lc(), doShift);
+ LatticeFFT::crfft(out, inCopy, doShift);
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 LatticeFFT"
