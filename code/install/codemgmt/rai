@@ -72,8 +72,7 @@
   fi
 
 # Get the work directory.
-  PGMRDIR=`pwd | sed -e 's#.*/code/#code/#'`
-
+  PGMRDIR=`pwd | sed -e 's#.*/code/#code/#' -e 's#.*/code$#code#'`
 # Make sure we've got something sensible.
   case "$PGMRDIR" in
   /*)
