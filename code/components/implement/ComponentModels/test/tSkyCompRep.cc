@@ -1,5 +1,5 @@
 //# tSkyCompRep.cc:
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
@@ -50,14 +51,10 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 
-// #include <aips/Arrays/Vector.h>
-// #include <aips/Arrays/IPosition.h>
-// #include <aips/Quanta/MVAngle.h>
-// #include <trial/Coordinates/CoordinateSystem.h>
-// #include <trial/Coordinates/CoordinateUtil.h>
-// #include <trial/Coordinates/StokesCoordinate.h>
-// #include <trial/Images/PagedImage.h>
 #include <aips/iostream.h>
+
+Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
+                      const Vector<Quantum<Double> >& beam, const Unit& unit);
 
 int main() {
   try {
@@ -187,23 +184,12 @@ int main() {
 
    {
 
-// Make SkyComponent
-
-      Flux<Double> flux(1.0, 0.1, 0.2, 0.01);
-      MDirection dir(MVDirection(0.0, 0.0), MDirection::J2000);
-      Quantum<Double> majorAxis(10.0, String("deg"));
-      Quantum<Double> minorAxis(300.0, String("arcmin"));
-      Quantum<Double> pa(20.0, String("deg"));
-      GaussianShape gc(dir, majorAxis, minorAxis, pa);
-      ConstantSpectrum cs;
-      SkyCompRep sky(flux, gc, cs);
-
 // Make CoordinateSystem
 
       Matrix<Double> xform(2,2);
       xform = 0.0; xform.diagonal() = 1.0;
       DirectionCoordinate dC(MDirection::J2000, Projection::SIN, 0.0, 0.0,
-                             1.0e-4, 1.0e-4, xform, 0.0, 0.0);
+                             -1.0e-3, 1.0e-3, xform, 0.0, 0.0);
       SpectralCoordinate sC;
       CoordinateSystem cSys;
       cSys.addCoordinate(dC);
@@ -216,27 +202,117 @@ int main() {
       beam(1) = Quantum<Double>(5.0, "arcsec");
       beam(2) = Quantum<Double>(-20.0, "deg");
       Unit unit("Jy/beam");
-//
-      Vector<Double> pars1 = sky.toPixel(unit, beam, cSys, Stokes::I);
-      AlwaysAssert(pars1.nelements()==6, AipsError);
-//
-      SkyCompRep sky2;
-      Double ratio;
-      sky2.fromPixel (ratio, pars1, unit, beam, cSys, ComponentType::GAUSSIAN, Stokes::I);
-      Vector<Double> pars2 = sky2.toPixel(unit, beam, cSys, Stokes::I);
-      for (uInt i=0; i<6; i++) AlwaysAssert(near(pars1(i), pars2(i)), AipsError);
-      AlwaysAssert(near(ratio,1.0), AipsError);
-      cout << "Passed the {to,from}Pixel handling test" << endl;
-    }
 
-  }
-  catch (AipsError x) {
+// Now Flux and shape
+
+      Flux<Double> flux(100.0, 0.1, 0.2, 0.01);
+      Quantum<Double> majorAxis(20.0, String("arcmin"));
+      Quantum<Double> minorAxis(5.0, String("arcmin"));
+      Quantum<Double> pa(0.0, String("deg"));
+      ConstantSpectrum cs;
+
+// Try reflection test for a few directions
+
+      {
+         MDirection dir(MVDirection(0.0, 0.0), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         SkyCompRep sky(flux, gc, cs);
+         Bool ok = pixelReflection(sky, cSys, beam, unit);
+      }
+      {
+         MDirection dir(MVDirection(-0.5, 0.5), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         SkyCompRep sky(flux, gc, cs);
+         Bool ok = pixelReflection(sky, cSys, beam, unit);
+      }
+/*
+      {
+         MDirection dir(MVDirection(0.5, -0.5), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         SkyCompRep sky(flux, gc, cs);
+         Bool ok = pixelReflection(sky, cSys, beam, unit);
+      }
+      {
+         MDirection dir(MVDirection(-0.5, -0.5), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         SkyCompRep sky(flux, gc, cs);
+         Bool ok = pixelReflection(sky, cSys, beam, unit);
+      }
+      {
+         MDirection dir(MVDirection(0.5, 0.5), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         SkyCompRep sky(flux, gc, cs);
+         Bool ok = pixelReflection(sky, cSys, beam, unit);
+      }
+*/
+      cout << "Passed the {to,from}Pixel handling test" << endl;
+
+      {
+
+// Peak<->Integral conversions
+
+// First check the scale factor function
+
+         Unit brightnessUnit(String("mJy/beam"));
+         Double facToJy = SkyCompRep::convertToJy (brightnessUnit);
+         AlwaysAssert(near(facToJy, 1.0e-3), AipsError);      
+
+// Now convert a point source 
+
+         {
+            Quantum<Double> peakFlux(1.0, brightnessUnit);
+            Quantum<Double> integralFlux = 
+               SkyCompRep::peakToIntegralFlux (dC, ComponentType::GAUSSIAN,
+                                               peakFlux, beam(0), beam(1),
+                                               beam);
+            Quantum<Double> peakFlux2 = 
+                SkyCompRep::integralToPeakFlux (dC, ComponentType::GAUSSIAN,
+                                                integralFlux, brightnessUnit,
+                                                beam(0), beam(1), beam);
+            AlwaysAssert(near(peakFlux.getValue(),peakFlux2.getValue()), AipsError);
+         }
+
+// Now an extended source
+
+         {
+            Quantum<Double> peakFlux(1.0, brightnessUnit);
+            Quantum<Double> integralFlux = 
+               SkyCompRep::peakToIntegralFlux (dC, ComponentType::GAUSSIAN,
+                                               peakFlux, majorAxis, minorAxis,
+                                               beam);
+            Quantum<Double> peakFlux2 = 
+                SkyCompRep::integralToPeakFlux (dC, ComponentType::GAUSSIAN,
+                                                integralFlux, brightnessUnit,
+                                                majorAxis, minorAxis, beam);
+            AlwaysAssert(near(peakFlux.getValue(),peakFlux2.getValue()), AipsError);
+         }
+      }
+   }
+
+
+  } catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
   } 
   cout << "OK" << endl;
   return 0;
+}
+
+Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
+                      const Vector<Quantum<Double> >& beam, const Unit& unit)
+{
+
+   Vector<Double> pars1 = sky.toPixel(unit, beam, cSys, Stokes::I);
+   AlwaysAssert(pars1.nelements()==6, AipsError);
+//
+   SkyCompRep sky2;
+   Double ratio;
+   sky2.fromPixel (ratio, pars1, unit, beam, cSys, ComponentType::GAUSSIAN, Stokes::I);
+   Vector<Double> pars2 = sky2.toPixel(unit, beam, cSys, Stokes::I);
+//      for (uInt i=0; i<6; i++) AlwaysAssert(near(pars1(i), pars2(i), 1.0e-5), AipsError);
+   AlwaysAssert(near(ratio,1.0), AipsError);
+   return True;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 tSkyCompRep"
