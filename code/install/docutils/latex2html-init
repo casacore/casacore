@@ -189,8 +189,8 @@ sub aips2topbar {
 "          onMouseOver=\"imgOn('img5')\" \n" .
 "          onMouseOut=\"imgOff('img5')\">\n" .
 "<IMG NAME=\"img5\" SRC=\"$DOCSROOT/html/navpages/images/topcommoff.gif\" BORDER=0></A>\n" .
-"</td></tr>\n" .
-"<td><tr>\n" .
+"</td></tr>>\n" .
+"<tr><td colspan=3 align=right>\n" .
 "<A HREF=\"$DOCSROOT/html/aips++.html\" \n" .
 "          onMouseOver=\"imgOn('img6')\" \n" .
 "          onMouseOut=\"imgOff('img6')\">\n" .
@@ -232,7 +232,7 @@ sub aips2botbar {
 "          onMouseOver=\"imgOn('img5')\" \n" .
 "          onMouseOut=\"imgOff('img5')\">\n" .
 "<IMG NAME=\"img5\" SRC=\"$DOCSROOT/html/navpages/images/topcommoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
+"</td></tr>\n" .
 "<tr><td colspan=3 align=right>\n" .
 "<A HREF=\"$DOCSROOT/html/aips++.html\" \n" .
 "          onMouseOver=\"imgOn('img6')\" \n" .
