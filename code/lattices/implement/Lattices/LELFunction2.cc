@@ -691,7 +691,7 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
    {
       uInt ntrue = 0;
       Bool deleteIt, deleteMask;
-      LatticeExpr<Bool> latExpr(arg_p[0], 0);
+      LatticeExpr<Bool> latExpr(arg_p[0]);
       RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
       if (! arg_p[0].isMasked()) {
 	 while (! iter.atEnd()) {
@@ -731,7 +731,7 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
    {
       uInt nfalse = 0;
       Bool deleteIt, deleteMask;
-      LatticeExpr<Bool> latExpr(arg_p[0], 0);
+      LatticeExpr<Bool> latExpr(arg_p[0]);
       RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
       if (! arg_p[0].isMasked()) {
 	 while (! iter.atEnd()) {
@@ -817,7 +817,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    switch (expr.dataType()) {
    case TpFloat:
    {
-      LatticeExpr<Float> latExpr(expr, 0);
+      LatticeExpr<Float> latExpr(expr);
       RO_LatticeIterator<Float> iter(latExpr, latExpr.niceCursorShape());
 ////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
@@ -830,7 +830,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    }
    case TpDouble:
    {
-      LatticeExpr<Double> latExpr(expr, 0);
+      LatticeExpr<Double> latExpr(expr);
       RO_LatticeIterator<Double> iter(latExpr, latExpr.niceCursorShape());
 ////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
@@ -843,7 +843,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    }
    case TpComplex:
    {
-      LatticeExpr<Complex> latExpr(expr, 0);
+      LatticeExpr<Complex> latExpr(expr);
       RO_LatticeIterator<Complex> iter(latExpr, latExpr.niceCursorShape());
 ////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
@@ -856,7 +856,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    }
    case TpDComplex:
    {
-      LatticeExpr<DComplex> latExpr(expr, 0);
+      LatticeExpr<DComplex> latExpr(expr);
       RO_LatticeIterator<DComplex> iter(latExpr, latExpr.niceCursorShape());
 ////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
@@ -869,7 +869,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    }
    case TpBool:
    {
-      LatticeExpr<Bool> latExpr(expr, 0);
+      LatticeExpr<Bool> latExpr(expr);
       RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
 ////  RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
@@ -1048,8 +1048,7 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	    Complex *cptr = result.value().getStorage(delc);
 	    uInt n=arrayTemp.value().nelements();
 	    for (uInt i=0; i<n; i++) {
-		cptr[i].real() = scalarTemp;
-		cptr[i].imag() = rptr[i];
+		cptr[i] = Complex (scalarTemp, rptr[i]);
 	    }
 	    arrayTemp.value().freeStorage(rptr, delr);
 	    result.value().putStorage(cptr, delc);
@@ -1084,8 +1083,7 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	    Complex *cptr = result.value().getStorage(delc);
 	    uInt n=arrayTemp.value().nelements();
 	    for (uInt i=0; i<n; i++) {
-		cptr[i].real() = rptr[i];
-		cptr[i].imag() = scalarTemp;
+		cptr[i] = Complex (rptr[i], scalarTemp);
 	    }
 	    arrayTemp.value().freeStorage(rptr, delr);
 	    result.value().putStorage(cptr, delc);
@@ -1131,8 +1129,7 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	    Complex *cptr = result.value().getStorage(delc);
 	    uInt n=arrayLeft.value().nelements();
 	    for (uInt i=0; i<n; i++) {
-		cptr[i].real() = lptr[i];
-		cptr[i].imag() = rptr[i];
+		cptr[i] = Complex (lptr[i], rptr[i]);
 	    }
 	    arrayLeft.value().freeStorage(lptr, dell);
 	    arrayRight.value().freeStorage(rptr, delr);
@@ -1317,8 +1314,7 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
 	    DComplex *cptr = result.value().getStorage(delc);
 	    uInt n=arrayTemp.value().nelements();
 	    for (uInt i=0; i<n; i++) {
-		cptr[i].real() = scalarTemp;
-		cptr[i].imag() = rptr[i];
+		cptr[i] = DComplex (scalarTemp, rptr[i]);
 	    }
 	    arrayTemp.value().freeStorage(rptr, delr);
 	    result.value().putStorage(cptr, delc);
@@ -1353,8 +1349,7 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
 	    DComplex *cptr = result.value().getStorage(delc);
 	    uInt n=arrayTemp.value().nelements();
 	    for (uInt i=0; i<n; i++) {
-		cptr[i].real() = rptr[i];
-		cptr[i].imag() = scalarTemp;
+		cptr[i] = DComplex (rptr[i], scalarTemp);
 	    }
 	    arrayTemp.value().freeStorage(rptr, delr);
 	    result.value().putStorage(cptr, delc);
@@ -1400,8 +1395,7 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
 	    DComplex *cptr = result.value().getStorage(delc);
 	    uInt n=arrayLeft.value().nelements();
 	    for (uInt i=0; i<n; i++) {
-		cptr[i].real() = lptr[i];
-		cptr[i].imag() = rptr[i];
+	      cptr[i] = DComplex (lptr[i], rptr[i]);
 	    }
 	    arrayLeft.value().freeStorage(lptr, dell);
 	    arrayRight.value().freeStorage(rptr, delr);
@@ -1625,7 +1619,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
    case LELFunctionEnums::ALL :
    {
       Bool deleteIt, deleteMask;
-      LatticeExpr<Bool> latExpr(arg_p[0], 0);
+      LatticeExpr<Bool> latExpr(arg_p[0]);
       RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
       if (! arg_p[0].isMasked()) {
 	 while (! iter.atEnd()) {
@@ -1667,7 +1661,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
    case LELFunctionEnums::ANY :
    {
       Bool deleteIt, deleteMask;
-      LatticeExpr<Bool> latExpr(arg_p[0], 0);
+      LatticeExpr<Bool> latExpr(arg_p[0]);
       RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
       if (! arg_p[0].isMasked()) {
 	 while (! iter.atEnd()) {
