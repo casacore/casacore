@@ -136,7 +136,7 @@ Flux<Double> ComponentList::sample(const MDirection & sampleDir,
     compFlux = component(i).sample(sampleDir, pixelSize);
     compFlux.convertUnit(retUnit);
     compFlux.convertPol(retPol);
-    result.ac() += compFlux.value();
+    result.ac() += compFlux.value().ac();
   }
   return Flux<Double>(result, retPol);
 }
