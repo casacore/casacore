@@ -553,6 +553,17 @@ precedence) for scalars:
        \\LIKE exists for SQL compliancy. It operates on a string
        giving a pattern with special characters \% (0 or more
        characters) and \verb+_+ (any character). 
+  \item[] \textbf{EXISTS} and \textbf{NOT EXISTS}
+       \\Can be used to test if a subquery finds at least N matching rows.
+       The value for N is taken from the LIMIT clause; if LIMIT is
+       not given it defaults to 1. The subquery loop stops as soon as
+       N matching rows are found.
+       E.g.
+       \begin{verbatim}
+    EXISTS(select from ::ANTENNA where NAME=''somename'' LIMIT 2)
+       \end{verbatim}
+       results in T if at least 2 matching rows in the ANTENNA table
+       were found.
   \item[] \textbf{IN} and \textbf{NOT IN}
        \\Can be used to test if a value is an element in a set of
        values, ranges, and/or intervals.
@@ -578,7 +589,8 @@ precedence) for scalars:
        \\unary \texttt{+, -, !}
        \\\texttt{*, /, \%}
        \\\texttt{+, -}
-       \\\texttt{$==, !=, >, >=, <, <=, IN, BETWEEN$}, \verb+~+, \verb+!~+
+       \\\texttt{$==, !=, >, >=, <, <=, IN, BETWEEN, EXISTS$},
+              \verb+~+, \verb+!~+
        \\\texttt{\&\&}
        \\\texttt{$\mid\mid$}
 \end{description}
@@ -1290,6 +1302,20 @@ be returned directly. This is also easier to write.
 \end{verbatim}
 Using the DISTINCT qualifier has the effect that duplicates are
 removed which often results in a much smaller set.
+
+\item
+Testing if a subquery contains at least N elements can be done in two
+ways:
+\begin{verbatim}
+  count([select column from table where expression]) >= N
+and
+  exists (select from table where expression limit N)
+\end{verbatim}
+The second form is by far the best, because in that case the subquery
+will stop the matching process as soon as N matching rows are found.
+The second form will do the subquery for the entire table.
+\\Furthermore in the first form a column has to be selected, which is
+not needed in the second form.
 
 \item
 Sometimes operator \texttt{IN} and function \texttt{ANY} can be used to test
