@@ -77,8 +77,6 @@ main()
 
             IPosition xShape = x.shape();
 
-            IPosition xOrigin = x.origin();
-
             cout << " x=1;" << endl;
             x=1;
 

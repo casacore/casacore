@@ -1,5 +1,5 @@
 //# tMaskArrMath2.cc: Test program for MaskedArrays mathematical operations.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -77,18 +77,18 @@ main()
             cout << endl << "dg=indgen(dg) = " << endl;
             cout << dg.ac() << endl;
 
-            Vector<Double> dk(10, -1);
+            Vector<Double> dk(10);
             indgen (dk.ac());
-            dk (-1) = 0.0;
-            dk ( 0) = 1.0;
-            dk ( 1) = 5.0;
-            dk ( 2) = 3.0;
-            dk ( 3) = 9.0;
-            dk ( 4) = 2.0;
-            dk ( 5) = 7.0;
-            dk ( 6) = 7.0;
-            dk ( 7) = 4.0;
-            dk ( 8) = 3.0;
+            dk (0) = 0.0;
+            dk (1) = 1.0;
+            dk (2) = 5.0;
+            dk (3) = 3.0;
+            dk (4) = 9.0;
+            dk (5) = 2.0;
+            dk (6) = 7.0;
+            dk (7) = 7.0;
+            dk (8) = 4.0;
+            dk (9) = 3.0;
             cout << endl << "dk=" << endl << dk.ac() << endl;
 
             {

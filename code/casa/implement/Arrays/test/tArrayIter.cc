@@ -46,11 +46,10 @@ main()
 {   
     cout << "\nBEGIN.  Testing ArrayPositionIterator.  0 dim. ......\n\n";
 
-    IPosition shape(2), origin(2);
+    IPosition shape(2);
     shape(0) = shape(1) = 5;
-    origin = 0;
 
-    ArrayPositionIterator ai (shape, origin, 0);
+    ArrayPositionIterator ai (shape, 0);
     IPosition index (2);
     Int iloop;
 
@@ -66,12 +65,11 @@ main()
 {   
     cout << "\nBEGIN.  Testing ArrayPositionIterator.  1 dim. ......\n\n";
 
-    IPosition shape(2), origin(2);
+    IPosition shape(2);
     shape(0) = shape(1) = 5;
-    origin = 0;
 
-    ArrayPositionIterator ai (shape, origin, 1);
-    Array<Int> arr (shape, origin);
+    ArrayPositionIterator ai (shape, 1);
+    Array<Int> arr (shape);
 
     IPosition index (2);
     Int iloop;
@@ -107,12 +105,11 @@ main()
 {   
     cout << "\nBEGIN.  Testing double ArrayPositionIterator.  1 dim. ......\n\n";
 
-    IPosition shape(2), origin(2);
+    IPosition shape(2);
     shape(0) = shape(1) = 5;
-    origin = 0;
 
-    ArrayPositionIterator ai (shape, origin, 1);
-    Array<double> arr (shape, origin);
+    ArrayPositionIterator ai (shape, 1);
+    Array<double> arr (shape);
 
     IPosition index (2);
     Int iloop;

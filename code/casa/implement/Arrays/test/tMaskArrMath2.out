@@ -8,7 +8,7 @@ dg=indgen(dg) =
 [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 dk=
-Origin: [-1] [0, 1, 5, 3, 9, 2, 7, 7, 4, 3]
+[0, 1, 5, 3, 9, 2, 7, 7, 4, 3]
 
 Test min (MaskedArray<Double>)
  min (dk ((dk > 2.5) && (dk < 7.5)))= 3
@@ -22,8 +22,8 @@ minMax (minVal, maxVal, minPos, maxPos,
         dk((dk > 2.5) && (dk < 7.5)));
 minVal= 3
 maxVal= 7
-minPos= [2]
-maxPos= [5]
+minPos= [3]
+maxPos= [6]
 
 
 Test minMax (minVal, maxVal,

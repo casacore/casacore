@@ -1251,7 +1251,7 @@ int main ()
             Int result (0);
             indgen (a.ac());
             b = False;
-            b(b.origin()) = True;
+            b(IPosition(1,0)) = True;
 
             MaskedArray<Int> ma (a,b);
 

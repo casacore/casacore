@@ -68,26 +68,22 @@ void oldArrayTest()
 {
     {   
 	cout << "Testing multidimensional arrays......";
-	IPosition shape(2), origin(2);
+	IPosition shape(2);
 	shape(0) = shape(1) = 5;
-	origin = 0;
-	Array<Int> x(shape, origin);
+	Array<Int> x(shape);
 	AlwaysAssertExit(x.ndim() == 2);
 	AlwaysAssertExit(x.shape() == shape);
-	AlwaysAssertExit(x.origin() == origin);
 	x.set(-1);
 	IPosition index(2);
 	index = 2;
 	x(index) = 6;
 	AlwaysAssertExit(x(index) == 6);
-	Array<Int> y(shape+1,origin+1);
+	Array<Int> y(shape+1);
 	y.resize(x.shape());
 	y = x;
 	AlwaysAssertExit(y.shape() == x.shape()); 
-	AlwaysAssertExit(x.origin() == y.origin());
-	y.resize(shape+3,origin - 1);
+	y.resize(shape+3);
 	AlwaysAssertExit( y.shape() == shape + 3); 
-	AlwaysAssertExit(y.origin() == origin - 1);
 
 	// Test Array slices
 	IPosition i1(3), i2(3);
@@ -141,8 +137,8 @@ void oldArrayTest()
         i2 = 100;
         Array<Float> *a3 = new Array<Float>(i2);
         *a3 = 11.0;
-	Array<Float> a4(a3->operator()(a3->origin(), 
-					a3->end(), IPosition(1,2)));
+	Array<Float> a4(a3->operator()(IPosition(a3->ndim(),0), 
+					a3->shape()-1, IPosition(1,2)));
         delete a3;
         a4.unique();
 	AlwaysAssertExit(allEQ (a4, 11.0F));
@@ -183,10 +179,13 @@ void oldArrayTest()
 	AlwaysAssertExit(vs(2) == "Boy");
 	AlwaysAssertExit(vs(3) == "Deserves");
 	AlwaysAssertExit(vs(4) == "Fudge");
+	AlwaysAssertExit (vs.index("Good") == 1);
+	AlwaysAssertExit (vs.index("Good", -10) == 1);
+	AlwaysAssertExit (vs.index("Good", 1) == 1);
+	AlwaysAssertExit (vs.index("Good", 2) == -1);
 	
-	zzz.resize(10,-5);
+	zzz.resize(10);
 	zzz = 13;
-	AlwaysAssertExit(zzz.origin()(0) == -5);
 	AlwaysAssertExit(zzz.nelements() == 10);
 	Vector<Int> yyy(10);
 	yyy = -13;
@@ -236,24 +235,19 @@ void oldArrayTest()
 
         {
 
-            Matrix<Float> a(10,3,-5,7);
-            Matrix<Bool> mask(10,3,8,-3);
+            Matrix<Float> a(10,3);
+            Matrix<Bool> mask(10,3);
 
-            Int aorig0 = a.origin()(0);
-            Int morig0 = mask.origin()(0);
-            Int aorig1 = a.origin()(1);
-            Int morig1 = mask.origin()(1);
             Float val;
             for (Int j=0; j<3; j++) {
                 for (Int i=0; i<10; i++) {
-                    a(i + aorig0, j + aorig1) = sin( (10*j + i) * 0.6);
-                    val = a(i + aorig0, j + aorig1);
-                    mask(i + morig0, j + morig1)=
-                        (Bool)((val > 0) && (val < 0.5));
+                    a(i, j) = sin( (10*j + i) * 0.6);
+                    val = a(i, j);
+                    mask(i, j)= (Bool)((val > 0) && (val < 0.5));
                 }
             }
             for (Int i=0; i<10; i++) {
-                mask(i + morig0, morig1)= False;
+                mask(i, 0)= False;
             }
 
             Float min,max;
@@ -262,8 +256,8 @@ void oldArrayTest()
 
             minMax (min, max, minPos, maxPos, a.ac());
 
-            AlwaysAssertExit(minPos == IPosition(2, 3, 7));
-            AlwaysAssertExit(maxPos == IPosition(2, -2, 8));
+            AlwaysAssertExit(minPos == IPosition(2, 8, 0));
+            AlwaysAssertExit(maxPos == IPosition(2, 3, 1));
             AlwaysAssertExit(min == a(minPos));
             AlwaysAssertExit(max == a(maxPos));
 
@@ -278,8 +272,8 @@ void oldArrayTest()
 
             minMax (min, max, minPos, maxPos, a.ac(), mask);
 
-            AlwaysAssertExit(minPos == IPosition(2, -4, 9));
-            AlwaysAssertExit(maxPos == IPosition(2, 0, 8));
+            AlwaysAssertExit(minPos == IPosition(2, 1, 2));
+            AlwaysAssertExit(maxPos == IPosition(2, 5, 1));
             AlwaysAssertExit(min == a(minPos));
             AlwaysAssertExit(max == a(maxPos));
 
@@ -427,9 +421,9 @@ void oldArrayTest()
 	a.diagonal(-1) = 7;
 	AlwaysAssertExit(allEQ (a.diagonal(-1).ac(), 7));
 	
-	IPosition l(1), o(1);
-	l(0) = a.nelements(); o(0) = 0;
-	Vector<Int> d(a.reform(l,o));
+	IPosition l(1);
+	l(0) = a.nelements();
+	Vector<Int> d(a.reform(l));
 	for (int i = 0; i < 5; i++)
 	    for (int j = 0; j < 5; j++)
 		AlwaysAssertExit(a(i,j) == d(i + j*5));
@@ -447,20 +441,20 @@ void oldArrayTest()
  
     {
 	cout << "Cube tests...........................";
-	Cube<Int> c(3,3,3,-1,-1,-1);
+	Cube<Int> c(3,3,3);
 	c = 3;
-	for (Int k=-1; k <= 1; k++)
-	    for (Int j=-1; j <= 1; j++)
-		for (Int i=-1; i <= 1; i++)
+	for (Int k=0; k <= 2; k++)
+	    for (Int j=0; j <= 2; j++)
+		for (Int i=0; i <= 2; i++)
 		    AlwaysAssertExit(c(i,j,k) == 3);
 	
-	for (k=-1; k <= 1; k++)
+	for (k=0; k <= 2; k++)
 	    AlwaysAssertExit(allEQ (c.xyPlane(k).ac(), 3));
 	
 	// Check copy ctor
 	Cube<Int> c2(c);
-	c(0,0,0) = -3;
-	AlwaysAssertExit(c2(0,0,0) == -3);
+	c(1,1,1) = -3;
+	AlwaysAssertExit(c2(1,1,1) == -3);
 	
 	// Check assignment
 	Cube<Int> c3;
@@ -468,20 +462,20 @@ void oldArrayTest()
 	AlwaysAssertExit(allEQ (c3.ac(), c.ac()));
 	
 	// slice
-	AlwaysAssertExit(allEQ (c3 (Slice(-1,2), Slice(0,2), 0).ac(),
-                       c (Slice(-1,2), Slice(0,2), 0).ac()));
-	Cube<Int> c4(c3(Slice(-1,2),Slice(0,2),0));
+	AlwaysAssertExit(allEQ (c3 (Slice(0,2), Slice(1,2), 1).ac(),
+                       c (Slice(0,2), Slice(1,2), 1).ac()));
+	Cube<Int> c4(c3(Slice(0,2),Slice(1,2),1));
 	IPosition c4shape(c4.Array<Int>::shape());
 	AlwaysAssertExit(c4.nelements() == 4 && c4shape(2) == 1);
 	IPosition blc(3), trc(3);
 	// middle plane
-	blc(0) = -1; blc(1) = -1; blc(2) =0;
-	trc(0) = 1; trc(1) = 1; trc(2) = 0;
+	blc(0) = 0; blc(1) = 0; blc(2) = 1;
+	trc(0) = 2; trc(1) = 2; trc(2) = 1;
 // Why can't we just write   c(blc,trc) = 11; ?
 	c.Array<Int>::operator()(blc,trc) = 11;
-	AlwaysAssertExit(allEQ (c.xyPlane(0).ac(), 11));
-	AlwaysAssertExit(allEQ (c.xyPlane(-1).ac(), 3));
-	AlwaysAssertExit(allEQ (c.xyPlane(1).ac(), 3));
+	AlwaysAssertExit(allEQ (c.xyPlane(1).ac(), 11));
+	AlwaysAssertExit(allEQ (c.xyPlane(0).ac(), 3));
+	AlwaysAssertExit(allEQ (c.xyPlane(2).ac(), 3));
 	
 	
 	cout << "OK\n";
@@ -536,16 +530,7 @@ main()
 	    AlwaysAssertExit(ai2.ndim() == 5);
 	    AlwaysAssertExit(ai2.nelements() == 120);
 	    AlwaysAssertExit(ai2.shape() == ip1);
-	    AlwaysAssertExit(ai2.origin() == 0);
 
-	    IPosition ip2(5);
-	    ip2 = -1;
-	    Array<Int> ai3(ip1, ip2);            // Array<T>(IPosition,
-	    AlwaysAssertExit(ai3.ndim() == 5);             //          IPosition)
-	    AlwaysAssertExit(ai3.nelements() == 120);
-	    AlwaysAssertExit(ai3.shape() == ip1);
-	    AlwaysAssertExit(ai3.origin() == -1);
-	    
 	    Bool caught;
 	    for (i=0; i<10; i++) {               // cleanup() - should
 		caught = False;                  // check for leaks
@@ -557,20 +542,20 @@ main()
 		AlwaysAssertExit(caught);
 	    }
 	    
+	    Array<Int> ai3(ip1);
 	    IPosition ip3(1,11);
-	    IPosition ip4(1,-5);
-	    Array<Int> ai4(ip3,ip4);
+	    Array<Int> ai4(ip3);
 	    ai4.set(10);                         // set(T);
 	    IPosition ip5(1);
-	    for(i=-5; i <6; i++) {
+	    for(i=0; i <11; i++) {
 		ip5(0) = i;
 		AlwaysAssertExit(ai4(ip5) == 10);          // T operator()(IPosition)
 	    }
 
 	    ai3.reference(ai4);                  // reference()
 	    AlwaysAssertExit(ai4.nrefs() == 2 && ai3.nrefs() == 2);
-	    AlwaysAssertExit(ai3.ndim() == 1 && ai3.shape() == 11 && ai3.origin() == -5);
-	    ip5(0) = -5;
+	    AlwaysAssertExit(ai3.ndim() == 1 && ai3.shape() == 11);
+	    ip5(0) = 0;
 	    AlwaysAssertExit(&ai3(ip5) == &ai4(ip5));
             // Eventually should carry on with all member functions. Still,
             // The test coverage isn't terrible.

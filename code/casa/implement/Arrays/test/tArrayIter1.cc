@@ -43,10 +43,9 @@
 
 main()
 {
-    IPosition shape(3), origin(3);
+    IPosition shape(3);
     shape=3;
-    origin=3;
-    ArrayPositionIterator api(shape, origin, 1);
+    ArrayPositionIterator api(shape, 1);
     Int count = 0;
     while (!api.pastEnd()) {
 	count++;
@@ -101,7 +100,7 @@ main()
     // Test iterating by the same dimensionality as the array
     Vector<Int> theArray(100);
     theArray = 0;
-    ArrayPositionIterator api(theArray.shape(), theArray.origin(), 1);
+    ArrayPositionIterator api(theArray.shape(), 1);
     uInt count = 0;
     while (! api.pastEnd()) {
       count++;
