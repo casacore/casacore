@@ -773,7 +773,7 @@ Int Time::timeZoneSeconds () {
   // HP/UX and AIX do not have an altzone variable--at least not that I
   // can find--and this is also generic enough that it should work for
   // most other "reasonable" UNIX-like OS's.
-  return -timezone + (C::hour * isDST ());
+  return Int (-timezone + (C::hour * isDST ()));
 }
 #endif
 
