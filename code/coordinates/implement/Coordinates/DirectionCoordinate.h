@@ -39,6 +39,8 @@
 
 class celprm;
 class prjprm;
+template<class T> class Quantum;
+
 
 // <summary>
 // Interconvert pixel positions and directions (e.g. RA/DEC).
@@ -260,7 +262,11 @@ public:
     // For Coordinate::TIME style formatting, precision
     // refers to the places after the decimal in the SS field.
     //
-    // The worldValue must be in radians.
+    // The world value should have the units currently
+    // set in the state of the DirectionCoordinate.  The units of
+    // the formatted number are returned in <src>units</src>.
+    // You can also use the Quantum interface (see base class Coordinate). 
+    // The units can then be anything consistent with DirectionCoordinate units.
     //<group>
     virtual void getPrecision (Int& precision, 
                                Coordinate::formatType& format,
