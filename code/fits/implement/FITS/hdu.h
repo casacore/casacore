@@ -55,13 +55,13 @@ class FitsOutput;
 //<srcblock>
 //
 //				HeaderDataUnit
-//				/          \
-//			       /            \
+//				/          \ 
+//			       /            \ 
 //		     PrimaryArray	ExtensionHeaderDataUnit
-//		      /    \			          \
-//		     /      \                              \
-//	  PrimaryGroup	ImageExtension	                    \
-//					                     \
+//		      /    \			          \ 
+//		     /      \                              \ 
+//	  PrimaryGroup	ImageExtension	                    \ 
+//					                     \ 
 //							BinaryTableExtension
 //							   /
 //							  /
