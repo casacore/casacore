@@ -31,7 +31,11 @@
 #include <aips/aips.h>
 
 template<class T> class Vector;
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 
 // <summary> 
 // ObjectID:  A unique identifier for distributed and other objects.
