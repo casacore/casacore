@@ -30,6 +30,7 @@
 #define AIPS_SPECTRAL_COORDINATE_H
 
 #include <aips/aips.h>
+#include <aips/Arrays/Vector.h>
 #include <trial/Coordinates/Coordinate.h>
 #include <trial/Coordinates/TabularCoordinate.h>
 #include <aips/Measures/MFrequency.h>
@@ -225,7 +226,8 @@ public:
     // </group>
 
 
-    // Functions to convert to velocity.  There is no reference frame
+    // Functions to convert to velocity (uses the current active
+    // rest frequency).  There is no reference frame
     // change but you can specify the velocity definition and the output
     // units of the velocity.   When the input is a frequency stored 
     // as a Double it must be  in the current units of the SpectralCoordinate.  
@@ -243,7 +245,8 @@ public:
     Bool frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency);
     // </group>
 
-    // Functions to convert from velocity.  There is no reference frame
+    // Functions to convert from velocity (uses the current active
+    // rest frequency).   There is no reference frame
     // change but you can specify the velocity definition and the output
     // units of the velocity.   When the input is a frequency stored 
     // as a Double it must be  in the current units of the SpectralCoordinate.  
@@ -258,15 +261,49 @@ public:
     // Update the state of the velocity machine.  These are the
     // the units/types all velocity conversions will use for velocities
     // (input or output).  The machine
-    // is initially constructed with km/s and MDoppler::RADIO as its state.
+    // is initially constructed with km/s and MDoppler::RADIO as its state
+    // and it uses the current active rest frequency.
     void updateVelocityMachine (const String& velUnit,
                                 MDoppler::Types velType);
 
-    // Retrieve/set the rest frequency in the current units.
+    // The SpectralCoordinate can maintain a list of rest frequencies
+    // (e.g. multiple lines within a band).  However, only
+    // one of them is active (e.g. for velocity conversions) at any 
+    // one time.  Function <src>restFrequency</src> returns that
+    // frequency.    Function <src>restFrequencies</src> returns   
+    // all of the possible restfrequencies.
+    //
+    // When you construct the SpectralCoordinate, you give it one rest frequency
+    // and it is the active one.  Thereafter you can add a new restfrequency
+    // with function <src>setRestFrequency</src> (<src>append=True</src>) and 
+    // that frequency will become the active one.    With this function
+    // and <src>append=False</src>, the current active restfrequency will
+    // be replaced by the one you give.
+    //
+    // You can change the list of
+    // restfrequencies with function <src>setRestFrequencies</src>. When
+    // you do so, you can either replace the list of rest frequencies or append to it.
+    // You specify which frequency of the new (appended) list
+    // becomes active.  
+    //
+    // You can also select the active rest frequency either by an index into
+    // the current list (exception if out of range) given by
+    // <src>restFrequencies()</src> or by the value in the list
+    // nearest to the frequency you give.
+    //
+    // Whenever you change the active rest frequency, the class internals
+    // are adjusted (e.g. the velocity machine is updated).
     // <group>
     Double restFrequency() const;
-    Bool setRestFrequency(Double newFrequency);
+    const Vector<Double>& restFrequencies() const;
+    Bool setRestFrequency(Double newFrequency, Bool append=False);
+    void setRestFrequencies(const Vector<Double>& newFrequencies, uInt which=0,
+                            Bool append=False);
+    void selectRestFrequency(uInt which);
+    void selectRestFrequency(Double frequency);
+    String formatRestFrequencies () const;
     // </group>
+
   
     // Retrieve/set the frequency system.  Note that setting the
     // frequency system just changes the internal value of the
@@ -431,7 +468,8 @@ public:
 
 private:
     MFrequency::Types type_p;
-    Double restfreq_p;
+    Vector<Double> restfreqs_p;            // Lists of possible rest frequencies
+    uInt restfreqIdx_p;                    // Current active rest frequency index
     TabularCoordinate worker_p;
     VelocityMachine* pVelocityMachine_p;
     MDoppler::Types prefVelType_p;         // Preferred velocity type
