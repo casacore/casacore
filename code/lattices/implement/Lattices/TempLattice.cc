@@ -109,7 +109,7 @@ Lattice<T>* TempLattice<T>::clone() const
 template<class T>
 void TempLattice<T>::tempClose()
 {
-  if (itsTablePtr != 0) {
+  if (itsTablePtr != 0 && isPaged()) {
     // Take care that table does not get deleted, otherwise we cannot reopen.
     itsTablePtr->unmarkForDelete();
     delete itsTablePtr;
@@ -122,7 +122,7 @@ void TempLattice<T>::tempClose()
 template<class T>
 void TempLattice<T>::tempReopen() const
 {
-  if (itsIsClosed) {
+  if (itsIsClosed&&isPaged()) {
     itsTablePtr = new Table (itsTableName,
 			     TableLock(TableLock::PermanentLockingWait),
 			     Table::Update);
