@@ -1,5 +1,5 @@
 //# ValType.cc: Class describing the data types and their undefined values
-//# Copyright (C) 1993,1994,1995,1996,1998
+//# Copyright (C) 1993,1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ const Char           ValType::undefchar     = (Char)-128;
 const uChar          ValType::undefuchar    = 0;
 const Short          ValType::undefshort    = -32768;
 const uShort         ValType::undefushort   = 0;
-const Int            ValType::undefint      = (Int)-2147483648;
+const Int            ValType::undefint      = -2*Int(32768*32768);
 const uInt           ValType::undefuint     = 0;
 const float          ValType::undeffloat    = -C::minfloat;
 const Complex        ValType::undefcomplex   (-C::minfloat,  -C::minfloat);
