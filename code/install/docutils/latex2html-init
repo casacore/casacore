@@ -30,7 +30,7 @@ if(length $ENV{DOCSROOT} > 0){
    $DOCSROOT = '../..';
 }
 if(!$DOCSCOLOR) {
-   $DOCSCOLOR = '#OO66FF';
+   $DOCSCOLOR = '#OOOO9C';
 }
 
 
@@ -105,7 +105,7 @@ sub aips2script {
 }
 sub aips2topbar {
 "\n" .
-"<table bgcolor=\"\#0066ff\" cellpadding=4 cellspacing=0 border=0 width=600 height=25>\n" .
+"<table bgcolor=\"\#00009C\" cellpadding=4 cellspacing=0 border=0 width=600 height=25>\n" .
 "<tr><td>\n" .
 "<a href=\"$DOCSROOT/gettingstarted.html\" onMouseOver=\"aMenu.showAipsMenu(\'gsMenu\')\">\n" .
 "<font size=2 face=helvetica  color=\"\#ffffff\">\n" .
@@ -132,7 +132,7 @@ sub aips2topbar {
 "<tr><td><img src=\"$DOCSROOT/gif/aips2logo-sm.gif\">\n" .
 "</td><td align=right>\n" .
 "<table cellpadding=2 cellspace=2>\n" .
-"<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Latest news </a>" .
+"<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>News </a>" .
 "</font></b></td>\n" .
 "<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/faq/faq.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>FAQ</a></font>\n" .
 "</b></td></tr>\n" .
