@@ -40,6 +40,7 @@
 #include <trial/Lattices/Lattice.h>
 #include <aips/Logging/LogIO.h> 
 #include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 
 // C wrappers for PGPLOT
@@ -54,6 +55,12 @@ extern "C" {
 template <class T> 
 MomentCalcBase<T>::~MomentCalcBase()
 {;}
+
+template <class T>
+void MomentCalcBase<T>::init (uInt nOutPixelsPerCollapse)
+{
+   AlwaysAssert (nOutPixelsPerCollapse == 1, AipsError);
+}
 
 
 template <class T>
@@ -1260,7 +1267,7 @@ Int& MomentCalcBase<T>::momentAxis(ImageMoments<T>& iMom)
 }
 
 template <class T>
-String& MomentCalcBase<T>::momentAxisName(ImageMoments<T>& iMom) 
+String MomentCalcBase<T>::momentAxisName(ImageMoments<T>& iMom) 
 {
 // Return the name of the moment/profile axis
 
@@ -1695,18 +1702,18 @@ MomentClip<T>::~MomentClip()
 {;}
 
 template <class T> 
-T MomentClip<T>::collapse(const Vector<T>& vector,
-                                const IPosition& pos)
+T MomentClip<T>::process(const Vector<T>& vector,
+			 const IPosition& pos)
 {
-   throw(AipsError("MomentClip<T>::collapse(Vector<T>&, IPosition&): not implemented"));
+   throw(AipsError("MomentClip<T>::process(Vector<T>&, IPosition&): not implemented"));
    T tmp = 0;
    return tmp;
 }
 
 
 template <class T> 
-Vector<T>& MomentClip<T>::multiCollapse(const Vector<T>& profile,
-                                              const IPosition& inPos)
+Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
+				       const IPosition& inPos)
 //
 // Generate masked moments of this profile where the mask is
 // generated from the primary lattice or an ancilliary lattice
@@ -2043,18 +2050,18 @@ MomentWindow<T>::~MomentWindow()
 
 
 template <class T> 
-T MomentWindow<T>::collapse(const Vector<T>& vector,
-                            const IPosition& pos)
+T MomentWindow<T>::process(const Vector<T>& vector,
+			   const IPosition& pos)
 {
-   throw(AipsError("MomentWindow<T>::collapse(Vector<T>&, IPosition&): not implemented"));
+   throw(AipsError("MomentWindow<T>::process(Vector<T>&, IPosition&): not implemented"));
    T tmp = 0;
    return tmp;
 }
 
 
 template <class T> 
-Vector<T>& MomentWindow<T>::multiCollapse(const Vector<T>& profile,
-                                          const IPosition& inPos)
+Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
+					 const IPosition& inPos)
 //
 // Generate windowed moments of this profile 
 //
@@ -2300,10 +2307,10 @@ MomentFit<T>::~MomentFit()
 
 
 template <class T> 
-T MomentFit<T>::collapse(const Vector<T>& vector,
-                         const IPosition& inPos)
+T MomentFit<T>::process(const Vector<T>& vector,
+			const IPosition& inPos)
 {
-   throw(AipsError("MomentFit<T>::collapse(Vector<T>&, IPosition&): not implemented"));
+   throw(AipsError("MomentFit<T>::process(Vector<T>&, IPosition&): not implemented"));
    T tmp = 0;
    return tmp;
 }
@@ -2312,8 +2319,8 @@ T MomentFit<T>::collapse(const Vector<T>& vector,
 
 
 template <class T> 
-Vector<T>& MomentFit<T>::multiCollapse(const Vector<T>& profile,
-                                       const IPosition& inPos)
+Vector<T>& MomentFit<T>::multiProcess(const Vector<T>& profile,
+				      const IPosition& inPos)
 //
 // Generate moments from a Gaussian fit of this profile
 //
