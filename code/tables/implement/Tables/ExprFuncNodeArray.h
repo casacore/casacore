@@ -1,5 +1,5 @@
 //# ExprFuncNodeArray.h: Class representing an array function in table select expression
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,7 +70,8 @@ public:
     // Constructor
     TableExprFuncNodeArray (TableExprFuncNode::FunctionType,
 			    NodeDataType, ValueType,
-			    const TableExprNodeSet& source);
+			    const TableExprNodeSet& source,
+			    uInt origin);
 
     // Destructor
     ~TableExprFuncNodeArray();
@@ -106,8 +107,18 @@ private:
         { return node_p.argDataType(); }
     // </group>
 
+    // Get the collapseAxes for the partial functions.
+    // It compares the values with the #dim and removes them if too high.
+    // axarg gives the argument nr of the axes.
+    const IPosition& getCollapseAxes (const TableExprId& id,
+				      Int ndim, uInt axarg=1);
 
     TableExprFuncNode node_p;
+    Int               origin_p;        //# axes origin 0 for C++; 1 for TaQL
+    Bool              constAxes_p;     //# True = collapse axes are constant
+    IPosition         collapseAxes_p;  //# the constant collapse axes
+    IPosition         corrCollAxes_p;  //# the possibly corrected axes after
+                                       //# (in case an axis exceeds ndim)
 };
 
 

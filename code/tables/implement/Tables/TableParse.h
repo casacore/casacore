@@ -315,9 +315,12 @@ public:
     // Show the expression tree.
     void show (ostream& os) const;
 
+    // Set the distinct flag for column projection.
+    void setDistinctCol();
+
     // Keep the selection expression.
     // It takes over the pointer (and clears the input pointer).
-    void handleSelect (TableExprNode*& node, Bool distinct);
+    void handleSelect (TableExprNode*& node);
 
     // Sort the resulting table.
     // It takes over the pointer (and clears the input pointer).
@@ -337,6 +340,13 @@ public:
     // Handle a function.
     TableExprNode handleFunc (const String& name,
 			      const TableExprNodeSet& arguments);
+
+    // Make a function object node for the given function name and arguments.
+    // The ignoreFuncs vector contains invalid function codes.
+    static TableExprNode makeFuncNode (const String& name,
+				       const TableExprNodeSet& arguments,
+				       const Vector<int>& ignoreFuncs,
+				       const Table& table);
 
     // Find the function code belonging to a function name.
     // Functions to be ignored can be given (as function type values).
@@ -495,8 +505,13 @@ inline void TableParseSelect::handleSort (PtrBlock<TableParseSort*>*& sort,
     sort     = 0;
 }
 
+inline void TableParseSelect::setDistinctCol()
+{
+    distinct_p = True;
+}
+
 inline Sort::Order TableParseSelect::getOrder (const TableParseSort& key) const
-    { return (key.orderGiven()  ?   key.order() : order_p); }
+    { return (key.orderGiven()  ?  key.order() : order_p); }
 
 inline TableParseSelect* TableParseSelect::currentSelect()
     { return blockSelect_p[currentSelect_p-1]; }

@@ -1,5 +1,5 @@
 //# ExprNode.cc: Handle class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -949,8 +949,35 @@ TableExprNode TableExprNode::newFunctionNode
 
 TableExprNode TableExprNode::newFunctionNode
                                  (TableExprFuncNode::FunctionType ftype,
+			          const TableExprNode& array,
+			          const TableExprNodeSet& axes)
+{
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem(array));
+    // Turn the axes set into an array.
+    set.add (TableExprNodeSetElem(axes.setOrArray()));
+    return newFunctionNode (ftype, set, Table());
+}
+
+TableExprNode TableExprNode::newFunctionNode
+                                 (TableExprFuncNode::FunctionType ftype,
+			          const TableExprNode& array,
+			          const TableExprNode& node,
+			          const TableExprNodeSet& axes)
+{
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem(array));
+    set.add (TableExprNodeSetElem(node));
+    // Turn the axes set into an array.
+    set.add (TableExprNodeSetElem(axes.setOrArray()));
+    return newFunctionNode (ftype, set, Table());
+}
+
+TableExprNode TableExprNode::newFunctionNode
+                                 (TableExprFuncNode::FunctionType ftype,
 				  const TableExprNodeSet& set,
-				  const Table& table)
+				  const Table& table,
+				  uInt origin)
 {
     // Convert the set to a PtrBlock of the values in the set elements.
     // This requires that the set has single values.
@@ -993,7 +1020,7 @@ TableExprNode TableExprNode::newFunctionNode
     } else {
         TableExprFuncNodeArray* fnode = new TableExprFuncNodeArray
                                                          (ftype, resDT,
-							  resVT, set);
+							  resVT, set, origin);
 	return TableExprFuncNodeArray::fillNode (fnode, par, dtypeOper);
     }
 }

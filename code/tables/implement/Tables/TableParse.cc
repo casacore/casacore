@@ -522,37 +522,69 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	if (narguments == 1) {
 	    ftype = TableExprFuncNode::arrminFUNC;
 	}
+    } else if (funcName == "mins") {
+        ftype = TableExprFuncNode::arrminsFUNC;
     } else if (funcName == "max") {
 	ftype = TableExprFuncNode::maxFUNC;
 	if (narguments == 1) {
 	    ftype = TableExprFuncNode::arrmaxFUNC;
 	}
+    } else if (funcName == "maxs") {
+        ftype = TableExprFuncNode::arrmaxsFUNC;
     } else if (funcName == "sum") {
 	ftype = TableExprFuncNode::arrsumFUNC;
+    } else if (funcName == "sums") {
+	ftype = TableExprFuncNode::arrsumsFUNC;
     } else if (funcName == "product") {
 	ftype = TableExprFuncNode::arrproductFUNC;
+    } else if (funcName == "products") {
+	ftype = TableExprFuncNode::arrproductsFUNC;
     } else if (funcName == "sumsqr"  ||  funcName == "sumsquare") {
 	ftype = TableExprFuncNode::arrsumsqrFUNC;
+    } else if (funcName == "sumsqrs"  ||  funcName == "sumsquares") {
+	ftype = TableExprFuncNode::arrsumsqrsFUNC;
     } else if (funcName == "mean") {
 	ftype = TableExprFuncNode::arrmeanFUNC;
+    } else if (funcName == "means") {
+	ftype = TableExprFuncNode::arrmeansFUNC;
     } else if (funcName == "variance") {
 	ftype = TableExprFuncNode::arrvarianceFUNC;
+    } else if (funcName == "variances") {
+	ftype = TableExprFuncNode::arrvariancesFUNC;
     } else if (funcName == "stddev") {
 	ftype = TableExprFuncNode::arrstddevFUNC;
+    } else if (funcName == "stddevs") {
+	ftype = TableExprFuncNode::arrstddevsFUNC;
     } else if (funcName == "avdev") {
 	ftype = TableExprFuncNode::arravdevFUNC;
+    } else if (funcName == "avdevs") {
+	ftype = TableExprFuncNode::arravdevsFUNC;
     } else if (funcName == "median") {
 	ftype = TableExprFuncNode::arrmedianFUNC;
+    } else if (funcName == "medians") {
+	ftype = TableExprFuncNode::arrmediansFUNC;
     } else if (funcName == "fractile") {
 	ftype = TableExprFuncNode::arrfractileFUNC;
+    } else if (funcName == "fractiles") {
+	ftype = TableExprFuncNode::arrfractilesFUNC;
     } else if (funcName == "any") {
 	ftype = TableExprFuncNode::anyFUNC;
+    } else if (funcName == "anys") {
+	ftype = TableExprFuncNode::anysFUNC;
     } else if (funcName == "all") {
 	ftype = TableExprFuncNode::allFUNC;
+    } else if (funcName == "alls") {
+	ftype = TableExprFuncNode::allsFUNC;
     } else if (funcName == "ntrue") {
 	ftype = TableExprFuncNode::ntrueFUNC;
+    } else if (funcName == "ntrues") {
+	ftype = TableExprFuncNode::ntruesFUNC;
     } else if (funcName == "nfalse") {
 	ftype = TableExprFuncNode::nfalseFUNC;
+    } else if (funcName == "nfalses") {
+	ftype = TableExprFuncNode::nfalsesFUNC;
+    } else if (funcName == "isnan") {
+	ftype = TableExprFuncNode::isnanFUNC;
     } else if (funcName == "isdefined") {
 	ftype = TableExprFuncNode::isdefFUNC;
     } else if (funcName == "nelements"  ||  funcName == "count") {
@@ -638,15 +670,76 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 TableExprNode TableParseSelect::handleFunc (const String& name,
 					    const TableExprNodeSet& arguments)
 {
-    //# Determine the function type.
     //# No functions have to be ignored.
     Vector<Int> ignoreFuncs;
+    parseIter_p->toStart();
+    return makeFuncNode (name, arguments, ignoreFuncs,
+			 parseIter_p->getRight().table());
+}
+
+//# Parse the name of a function.
+TableExprNode TableParseSelect::makeFuncNode
+                                         (const String& name,
+					  const TableExprNodeSet& arguments,
+					  const Vector<int>& ignoreFuncs,
+					  const Table& table)
+{
+    //# Determine the function type.
     TableExprFuncNode::FunctionType ftype = findFunc (name,
 						      arguments.nelements(),
 						      ignoreFuncs);
-    parseIter_p->toStart();
-    return TableExprNode::newFunctionNode (ftype, arguments,
-					   parseIter_p->getRight().table());
+    // The axes of functions like SUMS can be given as a set or as
+    // individual values. Turn it into an Array object.
+    uInt axarg = 1;
+    switch (ftype) {
+    case TableExprFuncNode::arrfractilesFUNC:
+      axarg = 2;
+    case TableExprFuncNode::arrsumsFUNC:
+    case TableExprFuncNode::arrproductsFUNC:
+    case TableExprFuncNode::arrsumsqrsFUNC:
+    case TableExprFuncNode::arrminsFUNC:
+    case TableExprFuncNode::arrmaxsFUNC:
+    case TableExprFuncNode::arrmeansFUNC:
+    case TableExprFuncNode::arrvariancesFUNC:
+    case TableExprFuncNode::arrstddevsFUNC:
+    case TableExprFuncNode::arravdevsFUNC:
+    case TableExprFuncNode::arrmediansFUNC:
+    case TableExprFuncNode::anysFUNC:
+    case TableExprFuncNode::allsFUNC:
+    case TableExprFuncNode::ntruesFUNC:
+    case TableExprFuncNode::nfalsesFUNC:
+      if (arguments.nelements() > axarg) {
+	TableExprNodeSet parms;
+	// Add normal arguments to the parms.
+	for (uInt i=0; i<axarg; i++) {
+	  parms.add (arguments[i]);
+	}
+	// Now add the axes arguments.
+	// They can be given as one single array or as individual scalars.
+	Bool axesIsArray = False;
+	if (arguments.nelements() == axarg+1
+        &&  arguments[axarg].isSingle()) {
+	  const TableExprNodeSetElem& arg = arguments[axarg];
+	  if (arg.start()->valueType() == TableExprNodeRep::VTArray) {
+	    parms.add (arg);
+	    axesIsArray = True;
+	  }
+	}
+	if (!axesIsArray) {
+	  // Combine all axes in a single set and add to parms.
+	  TableExprNodeSet axes;
+	  for (uInt i=axarg; i<arguments.nelements(); i++) {
+	    axes.add (arguments[i]);
+	  }
+	  parms.add (TableExprNodeSetElem(axes.setOrArray()));
+	}
+	return TableExprNode::newFunctionNode (ftype, parms, table, 1);
+      }
+      break;
+    default:
+      break;
+    }
+    return TableExprNode::newFunctionNode (ftype, arguments, table);
 }
 
 
@@ -724,12 +817,10 @@ void TableParseSelect::handleSelectColumn (const String& name)
     }
 }
 
-void TableParseSelect::handleSelect (TableExprNode*& node,
-				     Bool distinct)
+void TableParseSelect::handleSelect (TableExprNode*& node)
 {
-    distinct_p = distinct;
-    node_p     = node;
-    node       = 0;
+    node_p = node;
+    node   = 0;
     if (distinct_p  &&  columnNames_p.nelements() == 0) {
         throw TableInvExpr ("SELECT DISTINCT can only be given with at least "
 			    "one column name");

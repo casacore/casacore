@@ -1,5 +1,5 @@
 //# ExprFuncNode.h: Class representing a function in table select expression
-//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -76,13 +76,13 @@ public:
     enum FunctionType {
 	piFUNC,
 	eFUNC,
-	    // for Double and Complex returning Bool
+	    // for Double or Complex returning Bool
 	    // (2 is with default tolerance)
 	near2FUNC,
 	near3FUNC,
 	nearabs2FUNC,
 	nearabs3FUNC,
-            // for Double and DComplex returning same data type
+            // for Double or DComplex returning same data type
 	sinFUNC,
 	sinhFUNC,
 	cosFUNC,
@@ -96,7 +96,7 @@ public:
 	conjFUNC,
 	minFUNC,
 	maxFUNC,
-            // for Double and DComplex returning Double
+            // for Double or DComplex returning Double
 	normFUNC,
 	absFUNC,
 	argFUNC,
@@ -118,26 +118,43 @@ public:
 	complexFUNC,
 	    // for Double or Complex array returning scalar
 	arrsumFUNC,
+	arrsumsFUNC,
 	arrproductFUNC,
+	arrproductsFUNC,
 	arrsumsqrFUNC,
+	arrsumsqrsFUNC,
 	    // for Double array returning Double
 	arrminFUNC,
+	arrminsFUNC,
 	arrmaxFUNC,
+	arrmaxsFUNC,
 	arrmeanFUNC,
+	arrmeansFUNC,
 	arrvarianceFUNC,
+	arrvariancesFUNC,
 	arrstddevFUNC,
+	arrstddevsFUNC,
 	arravdevFUNC,
+	arravdevsFUNC,
 	arrmedianFUNC,
+	arrmediansFUNC,
 	arrfractileFUNC,
+	arrfractilesFUNC,
 	    // for Bool array returning Bool
         anyFUNC,
+        anysFUNC,
 	allFUNC,
+	allsFUNC,
 	    // for Bool array returning Double
 	ntrueFUNC,
+	ntruesFUNC,
 	nfalseFUNC,
-	    // for any array returning Bool
+	nfalsesFUNC,
+	    // for Double or DComplex array returning Bool
+	isnanFUNC,
+	    // for any array returning Bool scalar
 	isdefFUNC,
-	    // for any array returning Double
+	    // for any array returning Double scalar
 	ndimFUNC,
 	nelemFUNC,
 	    // for any array returning Double array

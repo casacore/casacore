@@ -1,5 +1,5 @@
 //# ExprFuncNode.cc: Class representing a function in table select expression
-//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,7 @@
 #include <aips/OS/Time.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Utilities/Assert.h>
 
 
 TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
@@ -129,6 +130,11 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
 	    return allEQ (operands_p[0]->getArrayBool(id), True);
 	}
 	return operands_p[0]->getBool (id);
+    case isnanFUNC:
+	if (argDataType_p == NTDouble) {
+	    return isNaN(operands_p[0]->getDouble(id));
+	}
+	return isNaN(operands_p[0]->getDComplex(id));
     case isdefFUNC:
 	return operands_p[0]->isDefined (id);
     case near2FUNC:
@@ -659,6 +665,82 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     default:
 	break;
     }
+    // The following functions accept one array and a set of
+    // one or more scalars.
+    // They return an array.
+    switch (fType) {
+    case arrsumsFUNC:
+    case arrproductsFUNC:
+    case arrsumsqrsFUNC:
+    case arrminsFUNC:
+    case arrmaxsFUNC:
+    case arrmeansFUNC:
+    case arrvariancesFUNC:
+    case arrstddevsFUNC:
+    case arravdevsFUNC:
+    case arrmediansFUNC:
+    case arrfractilesFUNC:
+    case anysFUNC:
+    case allsFUNC:
+    case ntruesFUNC:
+    case nfalsesFUNC:
+      {
+        NodeDataType dtin = NTDouble;
+        NodeDataType dtout = NTDouble;
+	uInt axarg = 1;
+        switch (fType) {
+	case arrsumsFUNC:
+	case arrproductsFUNC:
+	case arrsumsqrsFUNC:
+	    dtin = dtout = NTNumeric;
+	    break;
+	case arrfractilesFUNC:
+	    axarg = 2;
+	    break;
+	case anysFUNC:
+	case allsFUNC:
+	    dtin = dtout = NTBool;
+	    break;
+	case ntruesFUNC:
+	case nfalsesFUNC:
+	    dtin = NTBool;
+	    break;
+	default:
+	    break;
+	}
+	// The result is an array.
+	// All arguments (except possibly first) are doubles.
+        resVT = VTArray;
+        checkNumOfArg (axarg+1, axarg+1, nodes);
+	dtypeOper.resize(axarg+1);
+	dtypeOper = NTDouble;
+	PtrBlock<TableExprNodeRep*> nodeArr(1);
+	// Check if first argument is an array with correct type.
+	nodeArr[0] = nodes[0];
+	if (nodes[0]->valueType() != VTArray) {
+	    throw TableInvExpr ("1st argument of xxxS function "
+				"has to be an array");
+	}
+	Block<Int> dtypeTmp;
+	dtout = checkDT (dtypeTmp, dtin, dtout, nodeArr);
+	dtypeOper[0] = dtypeTmp[0];
+	// If more arguments are needed, they have to be double scalars.
+	if (axarg > 1) {
+	  for (uInt i=1; i<axarg; i++) {
+	    if (nodes[i]->valueType() != VTScalar
+	    &&  nodes[i]->dataType() != NTDouble) {
+	      throw TableInvExpr ("2nd argument of xxxS "
+				  "function has to be a double scalar");
+	    }
+	  }
+	}
+	// The last argument forms the axes as an array object.
+	AlwaysAssert (nodes[axarg]->valueType() == VTArray, AipsError);
+	return dtout;
+      }
+    default:
+        break;
+    }
     // The following functions accept scalars and arrays.
     // They return a array if one of the input arguments is an array.
     // When a function has no arguments, it results in a scalar.
@@ -782,6 +864,9 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case complexFUNC:
 	checkNumOfArg (2, 2, nodes);
 	return checkDT (dtypeOper, NTDouble, NTComplex, nodes);
+    case isnanFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTBool, nodes);
     case iifFUNC:
       {
 	checkNumOfArg (3, 3, nodes);
