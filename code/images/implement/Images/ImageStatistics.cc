@@ -1508,7 +1508,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 
 
 template <class T>
-inline IPosition ImageStatistics<T>::locInImage(const IPosition& storagePosition)
+IPosition ImageStatistics<T>::locInImage(const IPosition& storagePosition)
 //
 // Given a location in the storage image, convert those locations on
 // the non-statistics axis (the last one) to account for the 
@@ -1523,7 +1523,7 @@ inline IPosition ImageStatistics<T>::locInImage(const IPosition& storagePosition
 }
 
 template <class T>
-inline IPosition ImageStatistics<T>::locInStats(const IPosition& imagePosition)
+IPosition ImageStatistics<T>::locInStats(const IPosition& imagePosition)
 //
 // Given a location in the input image, find the corresponding start 
 // location for a statistics slice in the statistics storage image
@@ -2191,7 +2191,7 @@ Bool ImageStatistics<T>::someGoodPoints ()
 
 
 template <class T>
-inline IPosition ImageStatistics<T>::statsSliceShape ()
+IPosition ImageStatistics<T>::statsSliceShape ()
 // 
 // Return the shape of a slice from the statistics storage
 // image for a single spatial location.  The last axis
