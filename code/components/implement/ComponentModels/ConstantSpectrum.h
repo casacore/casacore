@@ -31,6 +31,7 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SpectralModel.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/Unit.h>
 
 class RecordInterface;
 class String;
@@ -126,7 +127,14 @@ public:
   virtual const MFrequency & refFrequency() const;
   // </group>
 
-  // Calculate the flux at the specified frequency given the flux at the
+  // get the frequency unit, and change the default frequency unit to the
+  // specified one.
+  // <group>
+  virtual const Unit & frequencyUnit() const;
+  virtual void convertFrequencyUnit(const Unit & freqUnit);
+  // </group>
+
+    // Calculate the flux at the specified frequency given the flux at the
   // reference frequency. The flux at the reference frequency must be supplied
   // in the flux variable and the flux at the specified frequency is returned
   // in the same variable. This function does not change the Flux.
@@ -173,5 +181,6 @@ private:
   //# needed so that the refFrequency function can return a reference to
   //# something.
   MFrequency itsRefFreq;
+  Unit itsFreqUnit;
 };
 #endif

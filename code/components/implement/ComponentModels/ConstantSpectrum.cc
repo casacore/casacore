@@ -29,18 +29,22 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Containers/RecordInterface.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
 ConstantSpectrum::ConstantSpectrum()
-  :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR)
+  :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR),
+   itsFreqUnit("GHz")
 {
   DebugAssert(ok(), AipsError);
 }
 
 ConstantSpectrum::ConstantSpectrum(const ConstantSpectrum & other) 
-  :itsRefFreq(other.itsRefFreq)
+  :itsRefFreq(other.itsRefFreq),
+   itsFreqUnit(other.itsFreqUnit)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -52,6 +56,7 @@ ConstantSpectrum::~ConstantSpectrum() {
 ConstantSpectrum & ConstantSpectrum::operator=(const ConstantSpectrum & other) {
   if (this != &other) {
     itsRefFreq = other.itsRefFreq;
+    itsFreqUnit = other.itsFreqUnit;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -69,6 +74,16 @@ const MFrequency & ConstantSpectrum::refFrequency() const {
 
 void ConstantSpectrum::setRefFrequency(const MFrequency & newRefFreq) {
   itsRefFreq = newRefFreq;
+  DebugAssert(ok(), AipsError);
+}
+
+const Unit & ConstantSpectrum::frequencyUnit() const {  
+  DebugAssert(ok(), AipsError);
+  return itsFreqUnit;
+}
+
+void ConstantSpectrum::convertFrequencyUnit(const Unit & freqUnit) {
+  itsFreqUnit = freqUnit;
   DebugAssert(ok(), AipsError);
 }
 
@@ -108,21 +123,14 @@ void ConstantSpectrum::parameters(Vector<Double> & spectralParms) const {
 
 Bool ConstantSpectrum::fromRecord(String & errorMessage, 
 				  const RecordInterface & record) {
-  // Use errorMessage for something to suppress a compiler warning
-  if (&errorMessage == 0) {
-  }
-  // Use record for something to suppress a compiler warning
-  if (&record == 0) {
-  }
+  if (!SpectralModel::readFreq(errorMessage, record)) return False;
   return True;
 }
 
 Bool ConstantSpectrum::toRecord(String & errorMessage,
 				RecordInterface & record) const {
-  // Use errorMessage for something to suppress a compiler warning
-  if (&errorMessage == 0) {
-  }
   record.define(RecordFieldId("type"), ComponentType::name(type()));
+  if (!SpectralModel::addFreq(errorMessage, record)) return False;
   return True;
 }
 
@@ -136,6 +144,13 @@ Bool ConstantSpectrum::convertUnit(String & errorMessage,
 }
  
 Bool ConstantSpectrum::ok() const {
+  if (itsFreqUnit != Unit("GHz")) {
+    LogIO logErr(LogOrigin("ConstantSpectrum", "ok()"));
+    logErr << LogIO::SEVERE << "The reference frequency has units with " 
+	   << endl << " different dimensions than the Hz."
+           << LogIO::POST;
+    return False;
+  }
   return True;
 }
 // Local Variables: 

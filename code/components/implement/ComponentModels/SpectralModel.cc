@@ -33,6 +33,8 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasureHolder.h>
+#include <aips/Measures/QuantumHolder.h>
+#include <aips/Measures/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
@@ -103,6 +105,23 @@ Bool SpectralModel::addFreq(String & errorMessage,
   if (!mh.toRecord(errorMessage, freqRecord)) {
     errorMessage += "Could not convert the reference frequency to a record\n";
     return False;
+  }
+  const String m0String("m0");
+  if (freqRecord.isDefined(m0String)) {
+    const RecordFieldId m0(m0String);
+    if (freqRecord.dataType(m0) == TpRecord) {
+      Record m0Rec = freqRecord.asRecord(m0);
+      QuantumHolder qh;
+      String error;
+      if (qh.fromRecord(error, m0Rec) && qh.isQuantumDouble()) {
+	Quantum<Double> q = qh.asQuantumDouble();
+	q.convert(frequencyUnit());
+	qh = QuantumHolder(q);
+	if (qh.toRecord(error, m0Rec)) {
+	  freqRecord.defineRecord(m0, m0Rec);
+	}
+      }
+    }
   }
   record.defineRecord(RecordFieldId("frequency"), freqRecord);
   return True;

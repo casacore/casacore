@@ -57,7 +57,8 @@ SpectralIndex::SpectralIndex()
    itsIindex(itsIndex(0)),
    itsQindex(itsIndex(1)),
    itsUindex(itsIndex(2)),
-   itsVindex(itsIndex(3))     
+   itsVindex(itsIndex(3)),
+   itsUnit("GHz")
 {
   DebugAssert(ok(), AipsError);
 }
@@ -71,7 +72,8 @@ SpectralIndex::SpectralIndex(const MFrequency & refFreq, Double exponent)
    itsIindex(itsIndex(0)),
    itsQindex(itsIndex(1)),
    itsUindex(itsIndex(2)),
-   itsVindex(itsIndex(3))     
+   itsVindex(itsIndex(3)),
+   itsUnit("GHz")
 {
   itsIindex = exponent;
   DebugAssert(ok(), AipsError);
@@ -87,7 +89,8 @@ SpectralIndex::SpectralIndex(const MFrequency & refFreq,
    itsIindex(itsIndex(0)),
    itsQindex(itsIndex(1)),
    itsUindex(itsIndex(2)),
-   itsVindex(itsIndex(3))     
+   itsVindex(itsIndex(3)),
+   itsUnit("GHz")
 {
   DebugAssert(exponents.nelements() == 4, AipsError);
   itsIonly = isIonly();
@@ -103,7 +106,8 @@ SpectralIndex::SpectralIndex(const SpectralIndex & other)
    itsIindex(itsIndex(0)),
    itsQindex(itsIndex(1)),
    itsUindex(itsIndex(2)),
-   itsVindex(itsIndex(3))     
+   itsVindex(itsIndex(3)),
+   itsUnit(other.itsUnit)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -123,6 +127,7 @@ SpectralIndex & SpectralIndex::operator=(const SpectralIndex & other) {
     itsQindex = itsIndex(1);
     itsUindex = itsIndex(2);
     itsVindex = itsIndex(3);
+    itsUnit = other.itsUnit;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -142,6 +147,16 @@ void SpectralIndex::setRefFrequency(const MFrequency & newRefFrequency) {
   itsRefFreq = newRefFrequency;
   itsRefFrame = (MFrequency::Types) itsRefFreq.getRef().getType();
   itsNu0 = itsRefFreq.getValue().getValue();
+  DebugAssert(ok(), AipsError);
+}
+
+const Unit & SpectralIndex::frequencyUnit() const {  
+  DebugAssert(ok(), AipsError);
+  return itsUnit;
+}
+
+void SpectralIndex::convertFrequencyUnit(const Unit & freqUnit) {
+  itsUnit = freqUnit;
   DebugAssert(ok(), AipsError);
 }
 
