@@ -4610,3 +4610,4 @@
 14 297 src mv trial/implement/MeasurementSets/NewMSLister.cc trial/implement/MeasurementSets/MSLister.cc
 14 297 src mv trial/implement/MeasurementSets/NewMSLister.h trial/implement/MeasurementSets/MSLister.h
 14 297 src mv trial/implement/MeasurementSets/NewMSPointingIndex.cc trial/implement/MeasurementSets/MSPointingIndex.cc
+14 297 src mv trial/implement/MeasurementSets/NewMSPointingIndex.h trial/implement/MeasurementSets/MSPointingIndex.h
