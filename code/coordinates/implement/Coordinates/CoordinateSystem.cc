@@ -456,6 +456,13 @@ void CoordinateSystem::findPixelAxis(Int &coordinate, Int &axisInCoordinate,
     }
 }
 
+Int CoordinateSystem::pixelAxisToWorldAxis(uInt pixelAxis) const
+{
+   Int coordinate, axisInCoordinate;
+   findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+   return worldAxes(coordinate)(axisInCoordinate);
+}
+
 Vector<Int> CoordinateSystem::worldAxes(uInt whichCoord) const
 {
     // Implemented in terms of the public member functions. It would be more

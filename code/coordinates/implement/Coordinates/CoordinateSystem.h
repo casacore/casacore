@@ -112,8 +112,8 @@ public:
     ~CoordinateSystem();
 
     // Add another coordinate to this coordinate system. This addition is done
-    // by copying, so that if <src>coord</src> changes the change is NOT reflected
-    // in the coordinate system.
+    // by copying, so that if <src>coord</src> changes the change is NOT
+    // reflected in the coordinate system.
     void addCoordinate(const Coordinate &coord);
 
     // Transpose the coordinate system so that world axis 0 is
@@ -192,6 +192,11 @@ public:
     void findPixelAxis(Int &coordinate, Int &axisInCoordinate, 
 		       uInt axisInCoordinateSystem) const;
     // </group>
+
+    // Find the world axis for the given pixel axis in a coordinate system
+    // Returns -1 if the world axis is unavailable (e.g. if it has been
+    // removed).
+    Int pixelAxisToWorldAxis(uInt pixelAxis) const;
 
     // Returns <src>Coordinate::COORDSYS</src>
     virtual Coordinate::Type type() const;
