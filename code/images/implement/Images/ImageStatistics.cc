@@ -1374,7 +1374,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
    Int nMax = 0;
    const Int n1 = stats.shape()(0);
    for (Int j=0; j<n1; j++) nMax = max(nMax, Int(stats.column(NPTS)(j)+0.1));
-   const Int logNMax = Int(log10(nMax)) + 2;
+   const Int logNMax = Int(log10(Double(nMax))) + 2;
    const Int oIWidth = max(5, logNMax);
    const Int oDWidth = 15;
    const Int oSWidth = 7;
