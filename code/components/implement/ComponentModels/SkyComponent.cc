@@ -76,7 +76,7 @@ SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
 
 void SkyComponent::sample(Vector<Double> & result, 
 			  const MDirection & samplePos, 
-			  const MVangle & pixelSize) const {
+			  const MVAngle & pixelSize) const {
   theCompPtr->sample(result, samplePos, pixelSize);
   DebugAssert(ok(), AipsError);
 };
