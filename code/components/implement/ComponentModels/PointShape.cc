@@ -1,5 +1,5 @@
 //# PointShape.cc:
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,7 +53,7 @@ PointShape::PointShape()
   DebugAssert(ok(), AipsError);
 }
 
-PointShape::PointShape(const MDirection & direction)
+PointShape::PointShape(const MDirection& direction)
   :itsDir(direction),
    itsDirValue(itsDir.getValue()),
    itsRefFrame((MDirection::Types) itsDir.getRef().getType())
@@ -61,7 +61,7 @@ PointShape::PointShape(const MDirection & direction)
   DebugAssert(ok(), AipsError);
 }
 
-PointShape::PointShape(const PointShape & other)
+PointShape::PointShape(const PointShape& other)
   :itsDir(other.itsDir),
    itsDirValue(other.itsDirValue),
    itsRefFrame(other.itsRefFrame)
@@ -73,7 +73,7 @@ PointShape::~PointShape() {
   DebugAssert(ok(), AipsError);
 }
 
-PointShape & PointShape::operator=(const PointShape & other) {
+PointShape& PointShape::operator=(const PointShape& other) {
   if (this != &other) {
     itsDir = other.itsDir;
     itsDirValue = other.itsDirValue;
@@ -88,20 +88,20 @@ ComponentType::Shape PointShape::type() const {
   return ComponentType::POINT;
 }
 
-void PointShape::setRefDirection(const MDirection & newRefDir) {
+void PointShape::setRefDirection(const MDirection& newRefDir) {
   itsDir = newRefDir;
   itsDirValue = newRefDir.getValue();
   itsRefFrame = (MDirection::Types) newRefDir.getRef().getType();
   DebugAssert(ok(), AipsError);
 }
 
-const MDirection & PointShape::refDirection() const {
+const MDirection& PointShape::refDirection() const {
   DebugAssert(ok(), AipsError);
   return itsDir;
 }
 
-void PointShape::sample(Flux<Double> & flux, const MDirection & direction, 
-			const MVAngle & pixelSize) const {
+void PointShape::sample(Flux<Double>& flux, const MDirection& direction, 
+			const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
   MVDirection dirVal = direction.getValue();
   // Convert direction to the same frame as the reference direction
@@ -113,17 +113,17 @@ void PointShape::sample(Flux<Double> & flux, const MDirection & direction,
   }
 }
 
-void PointShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
-			    const Double & frequency) const {
+void PointShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
+			    const Double& frequency) const {
   DebugAssert(ok(), AipsError);
   if (&frequency == 0) {}; // Suppress compiler warning about unused variable
   if (&uvw == 0) {}; // Suppress compiler warning about unused variable
   if (&flux == 0) {}; // Suppress compiler warning about unused variable
 }
 
-ComponentShape * PointShape::clone() const {
+ComponentShape* PointShape::clone() const {
   DebugAssert(ok(), AipsError);
-  ComponentShape * tmpPtr = new PointShape(*this);
+  ComponentShape* tmpPtr = new PointShape(*this);
   AlwaysAssert(tmpPtr != 0, AipsError);
   return tmpPtr;
 }
@@ -133,33 +133,37 @@ uInt PointShape::nParameters() const {
   return 0;
 }
 
-void PointShape::setParameters(const Vector<Double> & newParms) {
+void PointShape::setParameters(const Vector<Double>& newParms) {
   DebugAssert(newParms.nelements() == nParameters(), AipsError);
   DebugAssert(ok(), AipsError);
+  // Suppress compiler warning about unused variable
+  if (&newParms == 0) {}; 
 }
 
-void PointShape::parameters(Vector<Double> & compParms) const {
+void PointShape::parameters(Vector<Double>& compParms) const {
   DebugAssert(ok(), AipsError);
   DebugAssert(compParms.nelements() == nParameters(), AipsError);
+  // Suppress compiler warning about unused variable
+  if (&compParms == 0) {}; 
 }
 
-Bool PointShape::fromRecord(String & errorMessage,
-			    const RecordInterface & record) {
+Bool PointShape::fromRecord(String& errorMessage,
+			    const RecordInterface& record) {
   if (!ComponentShape::readDir(errorMessage, record)) return False;
   DebugAssert(ok(), AipsError);
   return True;
 }
 
-Bool PointShape::toRecord(String & errorMessage,
-			  RecordInterface & record) const {
+Bool PointShape::toRecord(String& errorMessage,
+			  RecordInterface& record) const {
   DebugAssert(ok(), AipsError);
   record.define(RecordFieldId("type"), ComponentType::name(type()));
   if (!ComponentShape::addDir(errorMessage, record)) return False;
   return True;
 }
 
-Bool PointShape::convertUnit(String & errorMessage,
-			     const RecordInterface & record) {
+Bool PointShape::convertUnit(String& errorMessage,
+			     const RecordInterface& record) {
   // Suppress compiler warning about unused variables
   if (&errorMessage == 0) {}; 
   if (&record == 0) {};

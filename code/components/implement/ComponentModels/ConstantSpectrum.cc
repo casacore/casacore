@@ -1,5 +1,5 @@
 //# ClassFileName.cc:  this defines ClassName, which ...
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ ConstantSpectrum::ConstantSpectrum()
   DebugAssert(ok(), AipsError);
 }
 
-ConstantSpectrum::ConstantSpectrum(const ConstantSpectrum & other) 
+ConstantSpectrum::ConstantSpectrum(const ConstantSpectrum& other) 
   :itsRefFreq(other.itsRefFreq),
    itsFreqUnit(other.itsFreqUnit)
 {
@@ -53,7 +53,7 @@ ConstantSpectrum::~ConstantSpectrum() {
   DebugAssert(ok(), AipsError);
 }
 
-ConstantSpectrum & ConstantSpectrum::operator=(const ConstantSpectrum & other) {
+ConstantSpectrum& ConstantSpectrum::operator=(const ConstantSpectrum& other) {
   if (this != &other) {
     itsRefFreq = other.itsRefFreq;
     itsFreqUnit = other.itsFreqUnit;
@@ -67,28 +67,28 @@ ComponentType::SpectralShape ConstantSpectrum::type() const {
   return ComponentType::CONSTANT_SPECTRUM;
 }
 
-const MFrequency & ConstantSpectrum::refFrequency() const {
+const MFrequency& ConstantSpectrum::refFrequency() const {
   DebugAssert(ok(), AipsError);
   return itsRefFreq;
 }
 
-void ConstantSpectrum::setRefFrequency(const MFrequency & newRefFreq) {
+void ConstantSpectrum::setRefFrequency(const MFrequency& newRefFreq) {
   itsRefFreq = newRefFreq;
   DebugAssert(ok(), AipsError);
 }
 
-const Unit & ConstantSpectrum::frequencyUnit() const {  
+const Unit& ConstantSpectrum::frequencyUnit() const {  
   DebugAssert(ok(), AipsError);
   return itsFreqUnit;
 }
 
-void ConstantSpectrum::convertFrequencyUnit(const Unit & freqUnit) {
+void ConstantSpectrum::convertFrequencyUnit(const Unit& freqUnit) {
   itsFreqUnit = freqUnit;
   DebugAssert(ok(), AipsError);
 }
 
-void ConstantSpectrum::sample(Flux<Double> & flux, 
-			      const MFrequency & centerFreq) const {
+void ConstantSpectrum::sample(Flux<Double>& flux, 
+			      const MFrequency& centerFreq) const {
   DebugAssert(ok(), AipsError);
   // Use centerFreq for something to suppress a compiler warning
   if (&centerFreq == 0) {
@@ -111,31 +111,35 @@ uInt ConstantSpectrum::nParameters() const {
 }
 
 void ConstantSpectrum::
-setParameters(const Vector<Double> & newSpectralParms) {
+setParameters(const Vector<Double>& newSpectralParms) {
   DebugAssert(newSpectralParms.nelements() == nParameters(),AipsError);
   DebugAssert(ok(), AipsError);
+  // Suppress compiler warning about unused variable
+  if (&newSpectralParms == 0) {}; 
 }
 
-void ConstantSpectrum::parameters(Vector<Double> & spectralParms) const {
+void ConstantSpectrum::parameters(Vector<Double>& spectralParms) const {
   DebugAssert(ok(), AipsError);
   DebugAssert(spectralParms.nelements() == nParameters(),AipsError);
+  // Suppress compiler warning about unused variable
+  if (&spectralParms == 0) {}; 
 }
 
-Bool ConstantSpectrum::fromRecord(String & errorMessage, 
-				  const RecordInterface & record) {
+Bool ConstantSpectrum::fromRecord(String& errorMessage, 
+				  const RecordInterface& record) {
   if (!SpectralModel::readFreq(errorMessage, record)) return False;
   return True;
 }
 
-Bool ConstantSpectrum::toRecord(String & errorMessage,
-				RecordInterface & record) const {
+Bool ConstantSpectrum::toRecord(String& errorMessage,
+				RecordInterface& record) const {
   record.define(RecordFieldId("type"), ComponentType::name(type()));
   if (!SpectralModel::addFreq(errorMessage, record)) return False;
   return True;
 }
 
-Bool ConstantSpectrum::convertUnit(String & errorMessage,
-				   const RecordInterface & record) {
+Bool ConstantSpectrum::convertUnit(String& errorMessage,
+				   const RecordInterface& record) {
   // Suppress compiler warning about unused variables
   if (&errorMessage == 0) {}; 
   if (&record == 0) {};

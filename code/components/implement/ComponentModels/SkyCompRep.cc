@@ -1,5 +1,5 @@
 //# SkyCompRep.cc:  this defines SkyCompRep
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -342,7 +342,9 @@ Bool SkyCompRep::ok() const {
   return True;
 }
 
-void SkyCompRep::project(ImageInterface<Float> & image) const {
+void SkyCompRep::project(ImageInterface<Float>& image) const {
+  // Suppress compiler warning about unused variables
+  if (&image == 0) {}; 
 //   const CoordinateSystem coords = image.coordinates();
 //   const IPosition imageShape = image.shape();
 //   const uInt naxis = imageShape.nelements();
