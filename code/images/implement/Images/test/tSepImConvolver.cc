@@ -61,7 +61,7 @@ try {
    inputs.create("axis", "-1", "axis to convolve (default is all)");
    inputs.create("width", "3", "Width in pixels");
    inputs.create("type", "gauss", "Kernel type (box, gauss, hann");
-   inputs.create("peakone", "F", "Normalize so peak is unity");
+   inputs.create("autoscale", "T", "Normalize so volume is unity");
    inputs.create("show", "F", "Show kernel");
    inputs.readArguments(argc, argv);
 
@@ -70,7 +70,7 @@ try {
    const String kernelType = inputs.getString("type");
    Int axis = inputs.getInt("axis");
    Double fwhm = inputs.getDouble("width");
-   Bool peak = inputs.getBool("peakone");
+   Bool autoScale = inputs.getBool("autoscale");
    Bool show = inputs.getBool("show");
 //
    if (in.empty()) {
@@ -111,7 +111,7 @@ try {
    IPosition shape = inImage.shape();
    const Double sigma = fwhm / sqrt(Double(8.0) * C::ln2);
    Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
-   if (peak) norm = 1.0;
+   if (!autoScale) norm = 1.0;
    LogOrigin or("tSeparableImageConvolver", "main()", WHERE);
    LogIO os(or);
    VectorKernel::KernelTypes type = VectorKernel::toKernelType(kernelType);
@@ -159,11 +159,11 @@ try {
 
       if (axis<=0) {
          for (uInt j=0; j<shape.nelements(); j++) {
-            sic.setKernel(j, type, fwhm, peak);
+            sic.setKernel(j, type, fwhm, autoScale);
          }
       } else {
          axis--;
-         sic.setKernel(axis, type, fwhm, peak);
+         sic.setKernel(axis, type, fwhm, autoScale);
       }
       sic.convolve(outImage2);
    }
@@ -183,7 +183,7 @@ try {
 
 // Set/Get a kernel
       
-      sic.setKernel(0, type, fwhm, peak);
+      sic.setKernel(0, type, fwhm, autoScale);
       Vector<Float> kernel = sic.getKernel(uInt(0));
       if (show) {
          cout << "Kernel = " << kernel << endl;
