@@ -169,6 +169,7 @@ PagedImage(Table & table, uInt rowNumber)
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
   coords_p = *restoredCoords;
+  delete restoredCoords;
 
   if (table_p.tableDesc().isColumn("mask")) {
     mask_p = new PagedArray<Bool>(table_p, "mask", rowNumber);
@@ -201,6 +202,8 @@ PagedImage(const String & filename, uInt rowNumber)
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
   coords_p = * restoredCoords;
+  delete restoredCoords;
+
   if (table_p.tableDesc().isColumn("mask")) {
     mask_p = new PagedArray<Bool>(table_p, "mask", 0);
     logSink() << "A mask was also read" << LogIO::POST;
