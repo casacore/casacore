@@ -47,11 +47,15 @@
 // Global functions to fill a table from an Ascii file.
 //
 // The table columns are filled from a file containing the data values
-// separated by whitespace (one line per table row).
-// The following two lines define the columns in the table:
+// separated by a separator (optionally followed by whitespace). The
+// default separator is a comma. Non-given values default to 0, False, or
+// blank string (depending on data type). A value is not given between 2
+// consecutive separators or if less values are given than needed.
+// One line per table row should be given.
+// The following two header lines define the columns in the table:
 // <ol>
 //   <li> The first line contains the names of the variables in each column.
-//        These names may be enclosed in quotes (either single or double).     
+//        These names may be enclosed in double quotes.
 //   <li> The second line contains the data types of each column.
 //        Valid types are:
 //      <ul>
@@ -63,8 +67,8 @@
 //        <li>            DX    for Double Precision Complex data (R,I)
 //        <li>            Z     for Complex data (Amplitude, Phase)
 //        <li>            DZ    for Double Precision Complex data (A,P)
-//        <li>            A     for ASCII data (must be enclosed in quotes
-//                              if it contains one or more blanks)
+//        <li>            A     for ASCII data (must be enclosed in double
+//                              quotes if it contains one or more blanks)
 //      </ul>
 // </ol>
 // If the <src>autoHeader</src> argument is True, the column definition
