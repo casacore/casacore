@@ -1,5 +1,5 @@
 //# LatticeExprNode.cc:  this defines LatticeExprNode.cc
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1650,10 +1650,10 @@ LatticeExprNode length (const LatticeExprNode& expr,
    return ptr;
 }
 
-LatticeExprNode isnan (const LatticeExprNode& expr)
+LatticeExprNode isNaN (const LatticeExprNode& expr)
 {  
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: 1d function isnan" << endl;
+   cout << "LatticeExprNode:: 1d function isNaN" << endl;
 #endif
    Block<LatticeExprNode> arg(1, expr);
    LELFunctionBool* ptr = new LELFunctionBool(LELFunctionEnums::ISNAN, arg);
