@@ -725,24 +725,34 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 
     Int count = 0;
 
+    // Work out which axis increments fastests, pol or channel
+    // The COMPLEX axis is assumed to be first, and the IF axis is assumed
+    // to be after STOKES and FREQ.
+    Bool polFastest = (getIndex(coordType_p,"STOKES")<
+		       getIndex(coordType_p,"FREQ"));
+    const Int nx = (polFastest ? nChan : nCorr);
+    const Int ny = (polFastest ? nCorr : nChan);
+
     for (Int ifno=0; ifno<max(1,nIF_p); ifno++) {
       // IFs go to separate rows in the MS
       ms_p.addRow(); 
       row++;
-      for (Int pol=0; pol<nCorr; pol++) {
-	for (Int chan=0; chan<nChan; chan++) {
+      
+      for (Int ix=0; ix<nx; ix++) {
+	for (Int iy=0; iy<ny; iy++) {
  	  const Float visReal = priGroup_p(count++);
  	  const Float visImag = priGroup_p(count++);
  	  const Float wt = priGroup_p(count++); 
-	  const Int p = corrIndex_p[pol];
+	  const Int pol = (polFastest ? corrIndex_p[iy] : corrIndex_p[ix]);
+	  const Int chan = (polFastest ? ix : iy);
  	  if (wt <= 0.0) {
-	    weightSpec(p, chan) = -wt;
-	    flag(p, chan) = True;
+	    weightSpec(pol, chan) = -wt;
+	    flag(pol, chan) = True;
 	  } else {
-	    weightSpec(p, chan) = wt;
-	    flag(p, chan) = False;
+	    weightSpec(pol, chan) = wt;
+	    flag(pol, chan) = False;
 	  }
-	  vis(p, chan) = Complex(visReal, visImag);
+	  vis(pol, chan) = Complex(visReal, visImag);
  	}
       }
 
