@@ -431,7 +431,6 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 
 void ColumnSet::removeColumn (const Vector<String>& columnNames)
 {
-        
     // Check if the columns can be removed.
     // Also find out about the data managers.
     SimpleOrderedMap<void*,Int> dmCounts = checkRemoveColumn (columnNames);
@@ -447,12 +446,21 @@ void ColumnSet::removeColumn (const Vector<String>& columnNames)
 	        if (dmPtr == blockDataMan_p[j]) {
 		    found = True;
 		    delete dmPtr;
-		    uInt nr = blockDataMan_p.nelements() - j - 1;
+		    uInt nrb = blockDataMan_p.nelements();
+		    uInt nr = nrb - j - 1;
 		    if (nr > 0) {
 		        objmove (&blockDataMan_p[j], &blockDataMan_p[j+1], nr);
 		    }
-		    blockDataMan_p.resize (blockDataMan_p.nelements() - 1,
-					   True, True);
+		    blockDataMan_p.resize (nrb - 1, True, True);
+		    uInt nrc = dataManChanged_p.nelements();
+		    if (j < nrc) {
+		        nr = nrc - j - 1;
+			if (nr > 0) {
+			    objmove (&dataManChanged_p[j],
+				     &dataManChanged_p[j+1], nr);
+			}
+			dataManChanged_p.resize (nrc - 1, True, True);
+		    }
 		    break;
 		}
 	    }
@@ -672,7 +680,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
     Bool written = False;
     //# Only write the table data when the flag is set.
     uInt nrold = dataManChanged_p.nelements();
-    dataManChanged_p.resize (blockDataMan_p.nelements());
+    dataManChanged_p.resize (blockDataMan_p.nelements(), True);
     uInt i;
     for (i=nrold; i<dataManChanged_p.nelements(); i++) {
         dataManChanged_p[i] = False;
