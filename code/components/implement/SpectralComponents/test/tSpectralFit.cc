@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
     {
       SpectralEstimate est(rms, cutoff, minsig);
       est.setWindowing(True);
-      const SpectralList &slist = est.estimate(y);
+      const SpectralList &slist = est.estimate(xy, y);
       r = slist.nelements();
       cout << "Window (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
       q = 1;
       SpectralEstimate est(rms, cutoff, minsig);
       est.setQ(q);
-      const SpectralList &slist = est.estimate(y);
+      const SpectralList &slist = est.estimate(xy, y);
       r = slist.nelements();
       cout << "Found (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
@@ -159,7 +159,7 @@ int main(int argc, char **argv) {
       rms = cutoff = minsig = 0.0;
       SpectralEstimate est(rms, cutoff, minsig);
       est.setQ(q);
-      const SpectralList &slist = est.estimate(y);
+      const SpectralList &slist = est.estimate(xy, y);
       r = slist.nelements();
       cout << "Found (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
       rms = cutoff = minsig = 0.0;
       SpectralEstimate est(rms, cutoff, minsig);
       est.setQ(q);
-      const SpectralList &slist = est.estimate(y);
+      const SpectralList &slist = est.estimate(xy, y);
       r = slist.nelements();
       cout << "Found (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
