@@ -5400,3 +5400,4 @@
 15 152 src mv aips/implement/RTTI/test/tRegister.out aips/implement/Utilities/test/tRegister.out
 15 152 src rm aips/implement/RTTI/test/templates
 15 152 src rm aips/implement/RTTI/changelog
+15 152 src rm aips/implement/RTTI.h
