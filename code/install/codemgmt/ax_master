@@ -4899,3 +4899,4 @@
 14 316 sys rm libexec/newdish.g
 14 316 src rm trial/apps/newdish/newdish_granges.g
 14 316 sys rm libexec/newdish_granges.g
+14 316 src rm trial/apps/newdish/newdish_itbrowser.g
