@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <aips/Tables/AsciiFileIO.h>
+#include <aips/Tables/ReadAsciiTable.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableColumn.h>
