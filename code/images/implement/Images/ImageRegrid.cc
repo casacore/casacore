@@ -113,7 +113,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
       throw(AipsError("The input and output images must have the same number of axes"));
    }
    const Bool outIsMasked = outImage.isMasked() && outImage.hasPixelMask() &&
-                            outImage.isMaskWritable();
+                            outImage.pixelMask().isWritable();
    LogIO os(LogOrigin("ImageRegrid", "regrid(...)", WHERE));
 //
    const CoordinateSystem& inCoords = inImage.coordinates();
@@ -229,8 +229,6 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
                tmpPtr->attachMask(mask);
             }
-
-
 
 // Get DirectionCoordinates for input and output
 
@@ -438,7 +436,7 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
 // will be some duplication of effort because of this
 
    const Bool outIsMasked = outImage.isMasked() && outImage.hasPixelMask() &&
-                             outImage.isMaskWritable();
+                            outImage.pixelMask().isWritable();
    outImage.set(0.0);
    if (outIsMasked) {
       Lattice<Bool>& mask = outImage.pixelMask();
@@ -727,8 +725,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
          Array<T> inDataChunk = inLattice.getSlice(inChunkBlc, inChunkShape);
          Array<Bool>* inMaskChunkPtr = 0;
          if (inIsMasked) {
-            inMaskChunkPtr = new Array<Bool>(inChunkShape);
-            *inMaskChunkPtr = inLattice.getMaskSlice(inChunkBlc, inChunkShape);
+            inMaskChunkPtr = new Array<Bool>(inLattice.getMaskSlice(inChunkBlc, inChunkShape));
          }
 
 // Iterate through the output cursor by Matrix.  This gets us just a few
@@ -887,7 +884,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 {
    const Bool inIsMasked = inLattice.isMasked();
    const Bool outIsMasked = outLattice.isMasked() && outLattice.hasPixelMask() &&
-                            outLattice.isMaskWritable();
+                            outLattice.pixelMask().isWritable();
 
    if (itsShowLevel>0) {
       cerr << "inIsMasked = " << inIsMasked << endl;
@@ -1286,7 +1283,7 @@ void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
    
    IPosition cursorShape = out.niceCursorShape(); 
    LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
-   Bool doMask = out.isMasked() && out.isMaskWritable();
+   Bool doMask = out.isMasked() && out.hasPixelMask() && out.pixelMask().isWritable();
    if (itsShowLevel>0) {
       cerr << "outIsMasked = " << out.isMasked() << endl;
       cerr << "outMaskIsWritable" << out.isMaskWritable() << endl;
@@ -1298,12 +1295,13 @@ void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
  
    LatticeIterator<T> dummyIter(out);
    RO_LatticeIterator<T> iter(in, stepper);
+   Lattice<Bool>* maskOutPtr = 0;
+   if (doMask) maskOutPtr = &out.pixelMask();
    for (iter.reset(); !iter.atEnd(); iter++) {
       out.putSlice (iter.cursor(), iter.position());
       if (doMask) {
-         out.putMaskSlice(in.getMaskSlice(iter.position(),
-                                          iter.cursorShape()),
-                          iter.position());
+         maskOutPtr->putSlice(in.getMaskSlice(iter.position(),
+                              iter.cursorShape()), iter.position());
       }
    }
 }
@@ -1338,8 +1336,7 @@ void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
    for (iter.reset(); !iter.atEnd(); iter++) {
       out.putSlice (iter.cursor(), iter.position());
       outMask.putSlice(in.getMaskSlice(iter.position(),
-                                       iter.cursorShape()),
-                       iter.position());
+                       iter.cursorShape()), iter.position());
    }
 }
 
