@@ -180,6 +180,7 @@ class IPosition;
 //   <li> Undelete individual removed axes.
 //   <li> Non-integral pixel shifts/decimations in subimage operations?
 //   <li> Copy-on-write for efficiency?
+//   <li> Check if the classes are thread safe in general
 // </todo>
 
 
