@@ -1,5 +1,5 @@
 //# ISMColumn.cc: The Column of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -401,28 +401,30 @@ void ISMColumn::aips_name2(getScalarColumnCells,NM) \
         } \
     } else { \
         const Vector<uInt>& rowvec = rownrs.rowVector(); \
-        Bool delR; \
-        const uInt* rows = rowvec.getStorage (delR); \
         uInt nr = rowvec.nelements(); \
-        if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
-            aips_name2(get,NM) (0, &(value[0])); \
-        } \
-        const T* cacheValue = (const T*)(cache.dataPtr()); \
-        uInt strow = cache.start(); \
-        uInt endrow = cache.end(); \
-        AlwaysAssert (cache.incr() == 0, AipsError); \
-        for (uInt i=0; i<nr; i++) { \
-	    uInt rownr = rows[i]; \
-            if (rownr >= strow  &&  rownr <= endrow) { \
-	        value[i] = *cacheValue; \
-	    } else { \
-	        aips_name2(get,NM) (rownr, &(value[i])); \
-                cacheValue = (const T*)(cache.dataPtr()); \
-                strow = cache.start(); \
-                endrow = cache.end(); \
+        if (nr > 0) { \
+            Bool delR; \
+            const uInt* rows = rowvec.getStorage (delR); \
+            if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
+                aips_name2(get,NM) (0, &(value[0])); \
+            } \
+            const T* cacheValue = (const T*)(cache.dataPtr()); \
+            uInt strow = cache.start(); \
+            uInt endrow = cache.end(); \
+            AlwaysAssert (cache.incr() == 0, AipsError); \
+            for (uInt i=0; i<nr; i++) { \
+	        uInt rownr = rows[i]; \
+                if (rownr >= strow  &&  rownr <= endrow) { \
+	            value[i] = *cacheValue; \
+	        } else { \
+	            aips_name2(get,NM) (rownr, &(value[i])); \
+                    cacheValue = (const T*)(cache.dataPtr()); \
+                    strow = cache.start(); \
+                    endrow = cache.end(); \
+	        } \
 	    } \
-	} \
-        rowvec.freeStorage (rows, delR); \
+            rowvec.freeStorage (rows, delR); \
+        } \
     } \
     values->putStorage (value, delV); \
 }

@@ -214,27 +214,29 @@ void StManColumnAipsIO::aips_name2(getScalarColumnCells,NM) \
         } \
     } else { \
         const Vector<uInt>& rowvec = rownrs.rowVector(); \
-        Bool delR; \
-        const uInt* rows = rowvec.getStorage (delR); \
         uInt nr = rowvec.nelements(); \
-        if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
-            findExt(rows[0], True); \
-        } \
-        const T* cacheValue = (const T*)(cache.dataPtr()); \
-        uInt strow = cache.start(); \
-        uInt endrow = cache.end(); \
-        for (uInt i=0; i<nr; i++) { \
-	    uInt rownr = rows[i]; \
-            if (rownr >= strow  &&  rownr <= endrow) { \
-	        value[i] = cacheValue[rownr-strow]; \
-	    } else { \
-	        aips_name2(get,NM) (rownr, &(value[i])); \
-                cacheValue = (const T*)(cache.dataPtr()); \
-                strow = cache.start(); \
-                endrow = cache.end(); \
+        if (nr > 0) { \
+            Bool delR; \
+            const uInt* rows = rowvec.getStorage (delR); \
+            if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
+                findExt(rows[0], True); \
+            } \
+            const T* cacheValue = (const T*)(cache.dataPtr()); \
+            uInt strow = cache.start(); \
+            uInt endrow = cache.end(); \
+            for (uInt i=0; i<nr; i++) { \
+	        uInt rownr = rows[i]; \
+                if (rownr >= strow  &&  rownr <= endrow) { \
+	            value[i] = cacheValue[rownr-strow]; \
+	        } else { \
+	            aips_name2(get,NM) (rownr, &(value[i])); \
+                    cacheValue = (const T*)(cache.dataPtr()); \
+                    strow = cache.start(); \
+                    endrow = cache.end(); \
+                } \
 	    } \
+            rowvec.freeStorage (rows, delR); \
 	} \
-        rowvec.freeStorage (rows, delR); \
     } \
     values->putStorage (value, delV); \
 }
