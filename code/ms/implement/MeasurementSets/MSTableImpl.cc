@@ -425,17 +425,14 @@ Bool NewMSTableImpl::validate(const TableDesc& tabDesc,
 	      }
 #endif
 	      if (detail) {
-		detail = ToBool(reqKeySet.asRecord("MEASINFO").asRecord("Type")
-				.asString("type")
-				== keySet.asRecord("MEASINFO").asRecord("Type")
-				.asString("type"));
+		detail = ToBool(reqKeySet.asRecord("MEASINFO").asString("type")
+		             == keySet.asRecord("MEASINFO").asString("type"));
 	      }
 #if defined(AIPS_DEBUG)
 		if (!detail) {
-		  cerr <<"NewMSTableImpl::validate - column "<<colNames(colnr) <<
-		    " has invalid MEASURE TYPE: "
-		       << keySet.asRecord("MEASINFO").asRecord("Type").
-		       asString("type")<<endl;
+		  cerr << "NewMSTableImpl::validate - column "<<colNames(colnr)
+		       << " has invalid MEASURE TYPE: "
+		       << keySet.asRecord("MEASINFO").asString("type") << endl;
 		}
 #endif
 	    }
