@@ -380,6 +380,12 @@ IPosition TiledStepper::cursorShape() const {
   return theCursorShape;
 };
 
+IPosition TiledStepper::cursorAxes() const
+{
+  DebugAssert(ok() == True, AipsError);
+  return IPosition(1, theAxis);
+};
+
 IPosition TiledStepper::tileShape() const {
   DebugAssert(ok() == True, AipsError);
   return theTileShape;

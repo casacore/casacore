@@ -272,6 +272,9 @@ public:
   // all axes (ie. it includes degenerates axes)
   virtual IPosition cursorShape() const;
 
+  // Function which returns the axes of the cursor.
+  virtual IPosition cursorAxes() const;
+
   // Function which returns the shape of the "tile" the cursor will iterate
   // through before moving onto the next tile. THIS IS NOT THE SAME AS THE
   // TILE SHAPE USED BY THE LATTICE. It is nearly the same except that the

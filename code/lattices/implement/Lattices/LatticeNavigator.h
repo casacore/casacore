@@ -261,6 +261,9 @@ public:
   // same number of axes as the underlying Lattice
   virtual IPosition cursorShape() const = 0;  
 
+  // Function which returns the axes of the cursor.
+  virtual IPosition cursorAxes() const = 0;
+
   // Function which returns "True" if the increment/decrement operators have
   // moved the cursor position such that part of the cursor is hanging over
   // the edge of the Lattice. This function may always return a value of
