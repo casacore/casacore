@@ -206,6 +206,8 @@ public:
   virtual Bool toRecord(String &error, RecordInterface &out) const;
   Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
+  // Return identification
+  virtual const String &ident();
 
 private:
 

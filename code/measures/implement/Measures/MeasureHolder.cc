@@ -319,3 +319,8 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
   error += String("No Measure specified in MeasureHolder::toRecord\n");
   return False;
 }
+
+const String &MeasureHolder::ident() {
+  static String myid = "meas";
+  return myid;
+}

@@ -523,3 +523,8 @@ void QuantumHolder::toVector() {
     hold_p.set(new Quantum<Vector<DComplex> >(d1, x));
   };
 }
+
+const String &QuantumHolder::ident() {
+  static String myid = "quant";
+  return myid;
+}

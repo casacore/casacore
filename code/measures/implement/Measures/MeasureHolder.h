@@ -191,6 +191,9 @@ public:
   virtual Bool toRecord(String &error, RecordInterface &out) const;
   Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
+  // Get identification of record
+  virtual const String &ident();
+
 private:
 
 //# Data Members
