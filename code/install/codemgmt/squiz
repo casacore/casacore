@@ -228,12 +228,8 @@
 # Do it.
   if [ "$EXPRESSION" = "" ]
   then
-     [ $LOGNAME = "pmurphy" ] && \
-      echo find $PACKAGE -type f -name "$FILE" $ACTION
      find $PACKAGE -type f -name "$FILE" $ACTION
   else
-     [ $LOGNAME = "pmurphy" ] && \
-      echo find $PACKAGE -type f -name "$FILE" $ACTION -exec $GREP "$EXPRESSION" {} \;
      find $PACKAGE -type f -name "$FILE" $ACTION \
         -exec $GREP "$EXPRESSION" {} \;
   fi
