@@ -1,4 +1,4 @@
-//# RecordTransformable.cc: Interface class for converting to/from records
+//# RecordTransformable.cc:
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,29 +26,9 @@
 //# $Id$
 
 #include <trial/Utilities/RecordTransformable.h>
-#include <aips/Glish/GlishRecord.h>
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/String.h>
 
 RecordTransformable::~RecordTransformable() {
   // Nothing
-}
-
-Bool RecordTransformable::fromRecord(String &error,
-				     const GlishRecord &in) {
-  Record tmp;
-  in.toRecord(tmp);
-  if (fromRecord(error, tmp)) return True;
-  return False;
-}
-
-Bool RecordTransformable::toRecord(String &error, GlishRecord &out) const {
-  Record tmp;
-  if (toRecord(error, tmp)) {
-    out.fromRecord(tmp);
-    return True;
-  };
-  return False;
 }
 
 // Local Variables: 
