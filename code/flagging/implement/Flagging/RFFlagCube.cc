@@ -375,7 +375,9 @@ void RFFlagCube::setMSFlags()
       out_flagrow(ir) = True;
   }
   chunk.visIter().setFlag(out_flagcube);
-  chunk.visIter().setFlagRow(out_flagrow);
+  
+// commented out until Athol fixes setFlagRow() SEGV:
+//  chunk.visIter().setFlagRow(out_flagrow);
 }
 
 const Float tr_trivial_array[] = {-1,1,0,-1,0,1}; 
