@@ -3,7 +3,7 @@
 \begin{document}
 \title{Note 227: 64-Bit Compiler Considerations}
 \author{Wes Young and  Athol Kemball}
-\date{January 25, 2000}
+\date{March 09, 2000}
 \maketitle
 \begin{htmlonly}
 \htmladdnormallink{A postscript version of this note is available (100kB).}{../227.ps.gz}
@@ -150,10 +150,11 @@ System calls that return off\_t, size\_t or ssize\_t:\\
 \emph{Comments} These examples point out a need to check the return
 types of various standard function calls and not assume they are
 Int/uInt. These function calls should be embedded in specialized
-classes where possible. However, a new AIPS++ data type SizeT is
+classes where possible. However, a new AIPS++ data type Size is
 proposed, defined as the largest Int encompassing (off\_t, size\_t and
 ssize\_t), for use in interfaces which require the specification of
-file offsets, sizes in bytes or related types.
+file offsets, sizes in bytes or related types. An unsigned counterpart,
+uSize, will also be added.
 
 \subsubsection{ Equivalence of pointers and ints}
 
@@ -176,10 +177,11 @@ cc-3187 cc: WARNING File = ../../sv.c, Line = 935
 \emph{Comments} Inter-conversion of ints and pointer types, or pointer
 arithmetic using ints is not recommended. However, there are rare
 cases where it may be necessary, such as the transfer of addresses
-from C++ to Glish. It is proposed that the new type SizeT be used in
+from C++ to Glish. It is proposed that the new type Size be used in
 this case to deal with (and flag) these very limited cases. In
-addition, (char*)NULL must be used in preference to (char*)0, where
-required. Some 64-bit compilers will not accept the latter.
+addition, in C code, (char*)NULL must be used in preference to
+(char*)0, where required. Some 64-bit compilers will not accept the
+latter.
 
 \subsubsection{String conversion problems}
 
@@ -216,8 +218,10 @@ from math limits, and should be used where possible.
 \emph{Comments} We generally do the right thing. Random.cc has some
 32/64-bit dependencies of this type.  It's important to keep the word
 length in mind and take care when using the shift operators $<<$ and
-$>>$ or other bitwise operators.
-
+$>>$ or other bitwise operators, and to use standard C++ bit addressing
+schemes. Where word lengths of a fixed size are required, such as
+real-time interfaces or data fillers, \{u\}Int\{8,16,32,64,128\} types
+could be introduced.
 
 \subsubsection{FORTRAN Interface}
 
@@ -310,7 +314,7 @@ not defined using the SGI 64-bit compiler).
 \subsubsection{Persistent storage of Long and Int types}
 \emph{Comments} The system currently assumes that Longs are stored as
 8 bytes.  The IO classes should check on read whether there is an
-overflow problem when reading into a local int type.
+overflow problem when reading into a local long type.
 
 \subsubsection{Long Double and Long Long types} 
 \emph{Comments} It is recommended that the use of these types be
@@ -324,7 +328,7 @@ with these differences purely in run-time may be considered later.
 \section{Immediate impact}
 
 \begin{enumerate}
-\item Addition of type SizeT to aips.h.
+\item Addition of types Size and uSize to aips.h.
 
 \item Retrofit use of AIPS\_64BIT for current SGI and Dec Alpha 64-bit
 ifdef macros.
