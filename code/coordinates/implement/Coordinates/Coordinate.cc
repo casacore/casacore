@@ -198,7 +198,7 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units,
 }
 
 void Coordinate::checkFormat(Coordinate::formatType& format, 
-                             const Bool absolute) const
+                             const Bool ) const
 //
 //
 {
@@ -219,7 +219,7 @@ void Coordinate::getPrecision(Int &precision,
                               const Bool absolute,
                               const Int defPrecScientific,
                               const Int defPrecFixed,
-                              const Int defPrecTime) const
+                              const Int ) const
 {
 // Scientific or fixed formats only are allowed.
 // Absolute or offset is irrelevant
