@@ -4,57 +4,80 @@
 
 
 
-<SCRIPT LANGUAGE = "JavaScript">
-
+<SCRIPT LANGUAGE = "JavaScript1.2"
+src="../javascripts/menu.js"></script>
+<SCRIPT LANGUAGE = "JavaScript1.2"
+src="../javascripts/aipsmenu.js"></script>
+<SCRIPT LANGUAGE = "JavaScript1.2">
 <!--
-if (document.images) {       //if image object is available     
-; 
-
-img14on = new Image();
-img14on.src = "./images/gettingstartedon6.gif";
-img15on = new Image();
-img15on.src = "../images/documentationon6.gif";
-img20on = new Image();
-img20on.src = "../images/glishon.gif";
-img16on = new Image();
-img16on.src = "../images/learnmoreon6.gif";
-img17on = new Image();
-img17on.src = "../images/searchon6.gif";
-img18on = new Image();
-img18on.src = "../images/communicateon6.gif";
-
-                  // MouseOut Images
- 
-
-img14off = new Image();
-img14off.src = "../images/gettingstartedoff6.gif";
-img15off = new Image();
-img15off.src = "../images/documentationoff6.gif";
-img20off = new Image ();
-img20off.src ="../images/glishoff.gif";
-img16off = new Image();
-img16off.src = "../images/learnmoreoff6.gif";
-img17off = new Image();
-img17off.src = "../images/searchoff6.gif";
-img18off = new Image();
-img18off.src = "../images/communicateoff6.gif";
-
-}
-
-function imgOn(imgName) {
-        if (document.images) {
-            document[imgName].src = eval(imgName + "on.src");        }}
-                        
-function imgOff(imgName) {
-        if (document.images) {
-            document[imgName].src = eval(imgName + "off.src");        }}
-
+ // Function need to place directory relative to docs tree.
+ aMenu = new aipsMenu("..", "#3300ff");
+ function onLoad() {
+    if (document.layers) {
+        aMenu.loadMenus();
+    }
+ }
 //-->
-
 </SCRIPT>
 
 </head>
-<body background="../images3/backdrop02.gif">
+
+
+<body background="../gif/watermark.gif" bgcolor="#ffffff" text="#000000"
+link="#cc0f0f" vlink="#00009c">
+
+<table bgcolor="#3300ff" cellpadding=4 cellspacing=0 border=0 width=600
+height=25>
+<tr><td>
+<a href="../gettingstarted.html"
+onMouseOver="aMenu.showAipsMenu('gsMenu')">
+<font size=2 face=helvetica  color="#ffffff">
+<b>Getting Started</b></a></td>
+<td>
+<a href="documentation.html"
+onMouseOver="aMenu.showAipsMenu('userMenu')">
+<font size=2 face=helvetica color="#ffffff">
+<b>Documentation</b></a></td>
+<td>
+<a href="../glish/glish.html"
+onMouseOver="aMenu.showAipsMenu('glishMenu')">
+<font size=2 face=helvetica color="#ffffff">
+<b>Glish</b></a></td>
+<td>
+<a href="../learnmore.html"
+onMouseOver="aMenu.showAipsMenu('learnMenu')">
+<font size=2 face=helvetica color="#ffffff">
+<b>Learn More</b></a></td>
+<td>
+<a href="../programmer/programmer.html"
+onMouseOver="aMenu.showAipsMenu('progMenu')">
+<font size=2 face=helvetica color="#ffdd00">
+<b>Programming</b></a></td>
+<td>
+<a href="../contactus/contactus.html"
+onMouseOver="aMenu.showAipsMenu('commMenu')">
+<font size=2 face=helvetica color="#ffffff">
+<b>Contact Us</b></a>
+</td></tr></table>
+<table border=0 width=600>
+<tr><td><img src="../gif/aipslogo.gif">
+</td><td valign=middle>
+<font size=2 face=helvetica color="#cc0f0f"><a
+href="../newsletters/index.html"><img src="../gif/tri2.gif" border=0> 
+ <b>Latest News</a></font></b><P>
+<font size=2 face=helvetica color="#cc0f0f"><a
+href="../faq/faq.html"><img src="../gif/tri2.gif" border=0>  <b>FAQ</a
+></font></b><P>
+<font size=2 face=helvetica color="#cc0f0f"><a
+href="../search/search.html"><img src="../gif/tri2.gif" border=0>  <b>
+Search</a></font></b><P>
+<font size=2 face=helvetica color="#cc0f0f"><a href="../aips++.html"><img
+src="../gif/tri2.gif" border=0>  <b>Home</a
+></font></b><P>
+
+</td></tr></table>
+
+
 <table cellpadding=4 cellspacing=2 border=0>
 <tr><td valign=top>
 
