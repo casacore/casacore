@@ -1,6 +1,6 @@
 //# GenericL2Fit.cc: Generic base lass for least-squares fit.
 //#
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,8 +70,9 @@ GenericL2Fit<T>::GenericL2Fit(LSQ::normType type) :
 
 template<class T>
 GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
-  FitLSQ(other), aCount_ai(other.aCount_ai),
+  FitLSQ(other),
   COLLINEARITY(1e-8),
+  aCount_ai(other.aCount_ai),
   svd_p(other.svd_p), ptr_derive_p(0),
   pCount_p(other.pCount_p), ndim_p(other.ndim_p),
   needInit_p(other.needInit_p), solved_p(other.solved_p),
@@ -406,11 +407,12 @@ testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
 	     const Vector<typename FunctionTraits<T>::BaseType> &y,
 	     const Vector<typename FunctionTraits<T>::BaseType> *const sigma) {
   uInt xRows = (x.ndim() == 1 || x.ndim() == 2) ? x.shape()(0) : 0;
-  if (xRows != y.nelements() ||
+  if (xRows*ndim_p != y.nelements()*ndim_p ||
       (sigma && xRows != sigma->nelements())) {
     throw(AipsError("GenericL2Fit::buildNormalMatrix()"
 		    " -- Illegal argument Array sizes"));
   };
+  xRows = y.nelements();
   initfit_p(aCount_ai);
   return xRows;
 }
