@@ -2808,13 +2808,17 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
            n = naxis.nelements();
         }
 //
-	header.get(sprefix + "rval", crval);
-	header.get(sprefix + "rpix", crpix);
-	crpix -= offset;
-	header.get(sprefix + "type", ctype);
-        if (n==0) n = ctype.nelements();
-
-	// Units are optional
+	if (header.isDefined(sprefix + "crval")) {
+           header.get(sprefix + "rval", crval);
+        }
+	if (header.isDefined(sprefix + "crpix")) {
+           header.get(sprefix + "rpix", crpix);
+           crpix -= offset;
+        }
+	if (header.isDefined(sprefix + "ctype")) {
+           header.get(sprefix + "type", ctype);
+           if (n==0) n = ctype.nelements();
+        }
 	if (header.isDefined(sprefix + "unit")) {
 	    header.get(sprefix + "unit", cunit);
 	    UnitMap::addFITS();
@@ -2834,8 +2838,10 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
         } else {
 
 // Get cdelt  and PC from header
-   
-           header.get(sprefix + "delt", cdelt);
+
+           if (header.isDefined(sprefix + "ctype")) {   
+              header.get(sprefix + "delt", cdelt);
+           }
            getPCFromHeader(os, rotationAxis, pc, n, header, sprefix);
        }  
     } catch (AipsError x) {
@@ -2854,10 +2860,10 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
        if (n > n2) {
          for (Int i=n2; i<n; i++) {
             ostrstream oss;
-            oss << i << endl;
-            ctype(i) = String("dummy") + String(oss);
+            oss << String("LinAxis") << (i+1) << ends;
+            ctype(i) = String(oss);
          }
-         os << LogIO::WARN << "Padding missing ctype values with 'dummy'" << LogIO::POST;
+         os << LogIO::WARN << "Padding missing ctype values with 'LinAxis'" << LogIO::POST;
        } else {
          os << LogIO::WARN << "Discarding excess ctype values" << LogIO::POST;
        }
@@ -2886,8 +2892,8 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
        Int n2 = crpix.nelements();
        crpix.resize(n,True);
        if (n > n2) {
-         for (Int i=n2; i<n; i++) crpix(i) = 1.0;
-         os << LogIO::WARN << "Padding missing crpix values with 1.0" << LogIO::POST;
+         for (Int i=n2; i<n; i++) crpix(i) = 0.0;
+         os << LogIO::WARN << "Padding missing crpix values with 0.0" << LogIO::POST;
        } else {
          os << LogIO::WARN << "Discarding excess crpix values" << LogIO::POST;
        }
@@ -4226,7 +4232,6 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
          os << string;
       }
    }
-
 
 // Units
 
