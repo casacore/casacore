@@ -33,7 +33,7 @@
 
 template<class Container, class ElType>
 Int linearSearch (Bool& found, const Container& container, 
-		  const ElType& value, uInt n, uInt lower=0)
+		  const ElType& value, uInt n, uInt lower)
 {
     n += lower;
     while (lower < n) {
@@ -49,7 +49,7 @@ Int linearSearch (Bool& found, const Container& container,
 
 template<class Container, class ElType>
 Int linearSearch1 (const Container& container, const ElType& value,
-		   uInt lower = 0)
+		   uInt lower)
 {
     uInt n = container.nelements();
     while (lower < n) {
@@ -63,7 +63,7 @@ Int linearSearch1 (const Container& container, const ElType& value,
 
 template<class Container, class ElType>
 Int linearSearchBrackets (Bool& found, const Container& container, 
-			  const ElType& value, uInt n, uInt lower=0)
+			  const ElType& value, uInt n, uInt lower)
 {
     n += lower;
     while (lower < n) {
@@ -79,7 +79,7 @@ Int linearSearchBrackets (Bool& found, const Container& container,
 
 template<class Container, class ElType>
 Int linearSearchBrackets1 (const Container& container, const ElType& value,
-			   uInt lower = 0)
+			   uInt lower)
 {
     uInt n = container.nelements();
     while (lower < n) {
