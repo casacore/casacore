@@ -1,4 +1,4 @@
-//# ObsInfo.h: Miscellaneous information related to an observation
+//# ObsInfo.h: Store miscellaneous information related to an observation
 //# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -42,7 +42,7 @@ class ostream;
 #endif
 
 // <summary>
-// Miscellaneous information related to an observation.
+// Store miscellaneous information related to an observation.
 // </summary>
 
 // <use visibility=export>
@@ -88,14 +88,19 @@ class ostream;
 // image summary information users are used to from classic AIPS.
 // </motivation>
 //
-// <todo asof="1998/10/16">
+// <todo asof="2000/04/20">
 //   <li> Nothing known
 // </todo>
 
 class ObsInfo : public RecordTransformable
 {
 public:
+
+    // Default constructor makes an object where all the 
+    // parameters are set to their default values (see below)
     ObsInfo();
+
+    // Destructor
     ~ObsInfo();
 
     // Copy all fields from "other" to this object. Uses copy semantics.
@@ -157,6 +162,7 @@ public:
     // FITS so we can remove them so they won't be used more than once. The
     // names are in lower case.
     static Vector<String> keywordNamesFITS();
+
 private:
     String telescope_p;
     String observer_p;
