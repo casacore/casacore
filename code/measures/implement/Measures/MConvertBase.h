@@ -164,6 +164,8 @@ public:
   virtual void set(const Unit &inunit) = 0;
   // Add a method (Note: uInt should be an enum from the appropiate Measure)
   virtual void addMethod(uInt method) = 0;
+  // Add a FrameTypes used (as specified in MeasFrame::FrameTypes)
+  virtual void addFrameType(uInt tp) = 0;
   // Get number of methods
   virtual Int nMethod() const = 0;
   // Get method
