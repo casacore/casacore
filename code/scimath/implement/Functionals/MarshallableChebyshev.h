@@ -56,8 +56,8 @@
 // <synopsis>
 // This class is a specialization of the Chebyshev class that supports 
 // serialization.  That is, it allows one to write the state of the Chebyshev 
-// polynomial object into a GlishRecord.  This record can then be transmitted 
-// to another execution context (e.g. Glish or another AIPS++ DO) where it 
+// polynomial object into a Record.  This record can then be transmitted 
+// to another execution context (e.g.  or another AIPS++ DO) where it 
 // can be "reconstituted" as a new object with identical state as this one.  
 // This documentation focusses on this serialization functionality (also known 
 // as "marshalling"); for details about the general features of the Chebyshev 
@@ -70,7 +70,7 @@
 //
 // <motivation>
 // Making Chebyshev Marshallable provides a convenient way of configuring
-// the simulator tool from Glish.
+// the simulator tool from .
 // </motivation>
 //
 // <thrown>
@@ -90,7 +90,7 @@ public:
     static const String FUNCTYPE;
     static const String FUNCFIELDS[];
 
-    // definitions of the fields stored in a serialized GlishRecord.  The 
+    // definitions of the fields stored in a serialized Record.  The 
     // actual string names are stored in FUNCFIELDS
     enum FieldNames {
 	// the array of coefficients
@@ -154,9 +154,9 @@ public:
     {}
   
     // create a fully specified Chebyshev polynomial from parameters 
-    // stored in a GlishRecord.  
-    explicit MarshallableChebyshev(const GlishRecord& gr) 
-	throw(InvalidGlishSerializationError);
+    // stored in a Record.  
+    explicit MarshallableChebyshev(const Record& gr) 
+	throw(InvalidSerializationError);
 
     // create a deep copy of another Chebyshev polynomial
     // <group>
@@ -186,8 +186,8 @@ public:
     // Destructor
     virtual ~MarshallableChebyshev() {};
   
-    // store the state of this Function into a GlishRecord
-    virtual void store(GlishRecord& gr) const;
+    // store the state of this Function into a Record
+    virtual void store(Record& gr) const;
 
     // Create a copy of this object.  The caller is responsible for
     // deleting the pointer. 

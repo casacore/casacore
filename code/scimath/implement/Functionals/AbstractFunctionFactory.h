@@ -1,4 +1,4 @@
-//# FunctionFactory.h: a class for creating Function objects from GlishRecords
+//# FunctionFactory.h: a class for creating Function objects from Records
 //# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,7 +33,7 @@
 #include <trial/Functionals/FunctionFactoryErrors.h>
 
 //# Forward Declarations
-class GlishRecord;
+class Record;
 
 // <summary>
 //
@@ -97,7 +97,7 @@ public:
     FunctionFactory() {}
     FunctionFactory(const FunctionFactory<T>& factory) {}
     virtual ~FunctionFactory() {}
-    virtual Function<T> *create(const GlishRecord& gr) const 
+    virtual Function<T> *create(const Record& gr) const 
 	throw (FunctionFactoryError) = 0;
     FunctionFactory<T>& operator=(const FunctionFactory<T>& factory) {
 	return *this;

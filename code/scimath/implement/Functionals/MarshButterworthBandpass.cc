@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <trial/Functionals/MarshButterworthBandpass.h>
-#include <aips/Glish/GlishArray.h>
+#include <aips/Arrays/Array.h>
 
 template<class T> 
 const String MarshButterworthBandpass<T>::FUNCTYPE("butterworthbp");
@@ -37,36 +37,36 @@ const String MarshButterworthBandpass<T>::FUNCFIELDS[] =
         { "bpass", "order", "peak" };
 
 template<class T> 
-void MarshButterworthBandpass<T>::store(GlishRecord& out) const {
+void MarshButterworthBandpass<T>::store(Record& out) const {
     loadFuncType(out);
 
     Vector<Double> bpass(3);
     bpass(0) = getMinCutoff();
     bpass(1) = getCenter();
     bpass(2) = getMaxCutoff();
-    out.add(FUNCFIELDS[BPASS], GlishArray(bpass));
+    out.define(FUNCFIELDS[BPASS], bpass);
 
     Vector<Double> order(2);
     order(0) = getMinOrder();
     order(1) = getMaxOrder();
-    out.add(FUNCFIELDS[ORDER], GlishArray(order));
+    out.define(FUNCFIELDS[ORDER], order);
 
-    out.add(FUNCFIELDS[PEAK], GlishArray(getPeak()));
+    out.define(FUNCFIELDS[PEAK], getPeak());
 }
 
 template<class T> 
-MarshButterworthBandpass<T>::MarshButterworthBandpass(const GlishRecord& gr)
-    throw(InvalidGlishSerializationError)
+MarshButterworthBandpass<T>::MarshButterworthBandpass(const Record& gr)
+    throw(InvalidSerializationError)
     : SimButterworthBandpass<T>(), FunctionMarshallable(FUNCTYPE) 
 {
-    GlishSerialHelper input(gr);
+    SerialHelper input(gr);
     input.checkFuncType(FUNCTYPE);
 
     if (input.exists(FUNCFIELDS[BPASS])) {
 	Vector<T> bpass;
 	input.get(bpass, FUNCFIELDS[BPASS]);
 	if (bpass.nelements() < 3)
-	    throw InvalidGlishSerializationError(FUNCFIELDS[BPASS] + 
+	    throw InvalidSerializationError(FUNCFIELDS[BPASS] + 
 				 " field contains fewer than three elements");
 	setMinCutoff(bpass(0));
 	setCenter(bpass(1));
@@ -76,7 +76,7 @@ MarshButterworthBandpass<T>::MarshButterworthBandpass(const GlishRecord& gr)
 	Vector<T> order;
 	input.get(order, FUNCFIELDS[ORDER]);
 	if (order.nelements() < 2)
-	    throw InvalidGlishSerializationError(FUNCFIELDS[ORDER] + 
+	    throw InvalidSerializationError(FUNCFIELDS[ORDER] + 
 				 " field contains fewer than two elements");
 	setMinOrder(order(0));
 	setMaxOrder(order(1));

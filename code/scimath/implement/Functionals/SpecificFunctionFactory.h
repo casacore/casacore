@@ -1,4 +1,4 @@
-//# SpecificFunctionFactory.h: a class for creating a Function object from GlishRecords
+//# SpecificFunctionFactory.h: a class for creating a Function object from Records
 //# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,7 +33,7 @@
 #include <trial/Functionals/AbstractFunctionFactory.h>
 
 //# Forward Declarations
-class GlishRecord;
+class Record;
 
 // <summary>
 //
@@ -78,7 +78,7 @@ class GlishRecord;
 //
 // <templating arg=T>
 //    <li> F class must be a subclass of Function<T>
-//    <li> F class must have a constructor for the form F(const GlishRecord&)
+//    <li> F class must have a constructor for the form F(const Record&)
 // </templating>
 //
 // <thrown>
@@ -98,7 +98,7 @@ public:
     SpecificFunctionFactory() {}
     SpecificFunctionFactory(const SpecificFunctionFactory<T,F>& factory) {}
     virtual ~SpecificFunctionFactory() {}
-    virtual Function<T> *create(const GlishRecord& gr) const 
+    virtual Function<T> *create(const Record& gr) const 
 	throw (FunctionFactoryError) 
     {
 	return new F(gr);

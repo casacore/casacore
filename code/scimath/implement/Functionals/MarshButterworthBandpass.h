@@ -57,8 +57,8 @@
 // <synopsis>
 // This class is a specialization of SimButterworthBandpass class that 
 // supports serialization.  That is, it allows one to write the state of the 
-// SimButterworthBandpass function object into a GlishRecord.  This record 
-// can then be transmitted to another execution context (e.g. Glish or 
+// SimButterworthBandpass function object into a Record.  This record 
+// can then be transmitted to another execution context (e.g.  or 
 // another AIPS++ DO) where it can be "reconstituted" as a new object with 
 // identical state as this one.  This documentation focusses on this 
 // serialization functionality (also known as "marshalling"); for details 
@@ -72,7 +72,7 @@
 //
 // <motivation>
 // Making SimButterworthBandpass Marshallable provides a convenient way of 
-// configuring the simulator tool from Glish.
+// configuring the simulator tool from .
 // </motivation>
 //
 // <thrown>
@@ -92,7 +92,7 @@ public:
     static const String FUNCTYPE;
     static const String FUNCFIELDS[];
 
-    // definitions of the fields stored in a serialized GlishRecord.  The 
+    // definitions of the fields stored in a serialized Record.  The 
     // actual string names are stored in FUNCFIELDS
     enum FieldNames {
 	// the minimum cutoff, center, and maximum cutoff values
@@ -120,9 +120,9 @@ public:
     {}
 
     // create a fully specified Butterworth polynomial from parameters 
-    // stored in a GlishRecord.  
-    explicit MarshButterworthBandpass(const GlishRecord& gr) 
-	throw(InvalidGlishSerializationError);
+    // stored in a Record.  
+    explicit MarshButterworthBandpass(const Record& gr) 
+	throw(InvalidSerializationError);
 
     // create a deep copy of another Butterworth polynomial
     // <group>
@@ -152,8 +152,8 @@ public:
     // Destructor
     virtual ~MarshButterworthBandpass() {};
   
-    // store the state of this Function into a GlishRecord
-    virtual void store(GlishRecord& gr) const;
+    // store the state of this Function into a Record
+    virtual void store(Record& gr) const;
 
     // Create a copy of this object.  The caller is responsible for
     // deleting the pointer. 

@@ -1,4 +1,4 @@
-//# EclecticFunctionFactory.cc: a class for creating various Function objects from GlishRecords
+//# EclecticFunctionFactory.cc: a class for creating various Function objects from Records
 //# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 #include <trial/Functionals/EclecticFunctionFactory.h>
-#include <aips/Glish/GlishArray.h>
-#include <aips/Glish/GlishRecord.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Containers/Record.h>
 
 template<class T> 
 EclecticFunctionFactory<T>::EclecticFunctionFactory() :
@@ -49,23 +49,24 @@ EclecticFunctionFactory<T>::~EclecticFunctionFactory() {
 }
 
 template<class T> 
-Function<T> *EclecticFunctionFactory<T>::create(const GlishRecord& gr) const 
+Function<T> *EclecticFunctionFactory<T>::create(const Record& gr) const 
     throw(FunctionFactoryError)
 {
-    String type;
-    if (! gr.exists("functype")) 
-	throw InvalidGlishSerializationError("No functype field defined");
-    const GlishArray &typef = gr.get("functype");
-    if (typef.elementType() != GlishArray::STRING) 
-	throw InvalidGlishSerializationError("Wrong type for functype field");
-    if (typef.shape().product() < 1) 
-	throw InvalidGlishSerializationError("Empty value for functype field");
-    typef.get(type, 0);
-
-    if (! lookup.isDefined(type)) throw UnrecognizedFunctionError(type);
-    FunctionFactory<T> *fac = lookup(type).x();
-    if (fac == 0) throw UnrecognizedFunctionError(type);
-    return fac->create(gr);
+    if (! gr.isDefined("functype")) 
+	throw InvalidSerializationError("No functype field defined");
+    // try {
+       String ftype;
+       ftype = gr.asString(RecordFieldId("functype"));
+       if(!ftype.size() ){
+           throw InvalidSerializationError("Empty value for functype field");
+        }
+       if (! lookup.isDefined(ftype)) throw UnrecognizedFunctionError(ftype);
+       FunctionFactory<T> *fac = lookup(ftype).x();
+       if (fac == 0) throw UnrecognizedFunctionError(ftype);
+          return fac->create(gr);
+    // } catch (AipsError(x)) {
+        // throw InvalidSerializationError("Wrong type for functype field");
+    // }
 }
 
 template<class T> 

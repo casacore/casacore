@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <trial/Functionals/MarshallableChebyshev.h>
-#include <aips/Glish/GlishArray.h>
+#include <aips/Arrays/Array.h>
 
 template<class T> 
 const String MarshallableChebyshev<T>::modenames[] = 
@@ -41,25 +41,25 @@ const String MarshallableChebyshev<T>::FUNCFIELDS[] =
         { "coeffs", "mode", "def", "interval" };
 
 template<class T> 
-void MarshallableChebyshev<T>::store(GlishRecord& out) const {
+void MarshallableChebyshev<T>::store(Record& out) const {
     loadFuncType(out);
 
-    out.add(FUNCFIELDS[COEFFS], GlishArray(getCoefficients()));
-    out.add(FUNCFIELDS[MODE], GlishArray(modenames[getOutOfIntervalMode()]));
-    out.add(FUNCFIELDS[DEF], GlishArray(getDefault()));
+    out.define(FUNCFIELDS[COEFFS], getCoefficients());
+    out.define(FUNCFIELDS[MODE], modenames[getOutOfIntervalMode()]);
+    out.define(FUNCFIELDS[DEF], getDefault());
 
     Vector<Double> intv(2);
     intv(0) = getIntervalMin();
     intv(1) = getIntervalMax();
-    out.add(FUNCFIELDS[INTERVAL], GlishArray(intv));
+    out.define(FUNCFIELDS[INTERVAL], intv);
 }
 
 template<class T> 
-MarshallableChebyshev<T>::MarshallableChebyshev(const GlishRecord& gr)
-    throw(InvalidGlishSerializationError)
+MarshallableChebyshev<T>::MarshallableChebyshev(const Record& gr)
+    throw(InvalidSerializationError)
     : Chebyshev<T>(), FunctionMarshallable(FUNCTYPE) 
 {
-    GlishSerialHelper input(gr);
+    SerialHelper input(gr);
     input.checkFuncType(FUNCTYPE);
 
     if (input.exists(FUNCFIELDS[COEFFS])) {
@@ -75,7 +75,7 @@ MarshallableChebyshev<T>::MarshallableChebyshev(const GlishRecord& gr)
 	    if (modename == modenames[i]) break;
 	}
 	if (i == Chebyshev<T>::NOutOfIntervalModes) 
-	    throw InvalidGlishSerializationError(String("Unrecognized mode: ")
+	    throw InvalidSerializationError(String("Unrecognized mode: ")
 						 + modename);
 	setOutOfIntervalMode(
 	    static_cast<Chebyshev<T>::OutOfIntervalMode>(i));

@@ -27,9 +27,9 @@
 //# $Id$
 #include <trial/Functionals/FunctionFactoryErrors.h>
 
-const String InvalidGlishSerializationError::preamble("Invalid function description in Glish record: ");
+const String InvalidSerializationError::preamble("Invalid function description in record: ");
 
 FunctionFactoryError::~FunctionFactoryError() throw() { }
 UnrecognizedFunctionError::~UnrecognizedFunctionError( ) throw() { }
-InvalidGlishSerializationError::~InvalidGlishSerializationError() throw() { }
-GlishFieldNotFoundError::~GlishFieldNotFoundError() throw() { }
+InvalidSerializationError::~InvalidSerializationError() throw() { }
+FieldNotFoundError::~FieldNotFoundError() throw() { }

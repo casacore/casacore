@@ -61,7 +61,7 @@ FunctionHolder<T>::FunctionHolder(const Function<T> &in)
   : hold_p(in.clone()), mode_p(), nam_p(N_Types), isFilled(False) 
 {
     if (in.hasMode()) {
-	mode_p.set(new Record());
+	mode_p.set(new Record(RecordInterface::Variable));
 	in.getMode( *(mode_p.ptr()) );
     }
 }

@@ -1,4 +1,4 @@
-//# FunctionMarshallable.h: a class for serializing/reconstituting Function objects to/from GlishRecords
+//# FunctionMarshallable.h: a class for serializing/reconstituting Function objects to/from Records
 //# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -31,7 +31,7 @@
 
 #include <aips/Functionals/Function.h>
 #include <trial/Functionals/FunctionFactoryErrors.h>
-#include <trial/Functionals/GlishSerialHelper.h>
+#include <trial/Functionals/SerialHelper.h>
 
 // <summary>
 //
@@ -95,18 +95,18 @@ class FunctionMarshallable {
 public:
 
     // create a FunctionMarshallable.  <em>functype</em> is the name that 
-    // store() will load into the GlishRecord's <tt>functype</tt> field.
+    // store() will load into the Record's <tt>functype</tt> field.
     FunctionMarshallable(const String& functype) : ftype(functype) {}
     FunctionMarshallable(const FunctionMarshallable& other) : ftype() { 
 	ftype = other.ftype;
     }
     virtual ~FunctionMarshallable() {}
 
-    // store the state of this Function into a GlishRecord
+    // store the state of this Function into a Record
     // <thrown>
-    // InvalidGlishSerializationError  if an error during serialization
+    // InvalidSerializationError  if an error during serialization
     // </thrown>
-    virtual void store(GlishRecord& gr) const = 0;
+    virtual void store(Record& gr) const = 0;
 
     virtual FunctionMarshallable& 
          operator=(const FunctionMarshallable& other) 
@@ -116,12 +116,12 @@ public:
     }
 
     // return the name representing the Function type that will be placed 
-    // in the <tt>functype</tt> field of GlishRecord passed to store().
+    // in the <tt>functype</tt> field of Record passed to store().
     const String& getFuncType() const { return ftype; }
 
-    // load functype field into the given GlishRecord
-    void loadFuncType(GlishRecord& gr) const {
-	gr.add(GlishSerialHelper::FUNCTYPE.c_str(), ftype.c_str());
+    // load functype field into the given Record
+    void loadFuncType(Record& gr) const {
+	gr.define(SerialHelper::FUNCTYPE.c_str(), ftype.c_str());
     }
 
 private:

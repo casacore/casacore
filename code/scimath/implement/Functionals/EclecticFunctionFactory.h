@@ -1,4 +1,4 @@
-//# EclecticFunctionFactory.cc: a class for creating various Function objects from GlishRecords
+//# EclecticFunctionFactory.cc: a class for creating various Function objects from Records
 //# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -36,6 +36,8 @@
 #include <trial/Functionals/AbstractFunctionFactory.h>
 
 //# Forward Declarations
+
+class Record;
 
 // <summary>
 //
@@ -79,18 +81,18 @@
 // </motivation>
 //
 // <templating arg=T>
-//    <li> Function must have a constructor for the form T(const GlishRecord&)
+//    <li> Function must have a constructor for the form T(const Record&)
 // </templating>
 //
 // <thrown>
-//    <li> UnrecognizedFunctionError by create() if the GlishRecord field 
+//    <li> UnrecognizedFunctionError by create() if the Record field 
 //         "functype" does not match a Function added via addFactory()
-//    <li> InvalidGlishSerializationError by create() if 
+//    <li> InvalidSerializationError by create() if 
 //         <ul>
-//            <li> GlishRecord does not contain a "functype" field containing
+//            <li> Record does not contain a "functype" field containing
 //                 a string
 //            <li> the associated specific factory throws an
-//                 InvalidGlishSerializationError
+//                 InvalidSerializationError
 //         </ul>
 // </thrown>
 //
@@ -115,12 +117,12 @@ public:
     // via addFactory() with <em>own=True</em> will be deleted.
     virtual ~EclecticFunctionFactory();
 
-    // create the Function object described in the given GlishRecord.  This
+    // create the Function object described in the given Record.  This
     // implementation will use the value of the "functype" field to lookup
     // the specific factory to use to create the function.  That is, the 
     // the "functype" value will be matched against the type names loaded 
     // via addFactory().
-    virtual Function<T> *create(const GlishRecord&) const
+    virtual Function<T> *create(const Record&) const
 	throw(FunctionFactoryError);
 
     // add a factory for creating a specific type of function, associating

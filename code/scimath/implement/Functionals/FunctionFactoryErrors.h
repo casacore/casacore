@@ -54,15 +54,15 @@ private:
     String fname;
 };
 
-class InvalidGlishSerializationError : public FunctionFactoryError {
+class InvalidSerializationError : public FunctionFactoryError {
 public:
-    // create an exception indicating a GlishRecord serialization of a 
+    // create an exception indicating a Record serialization of a 
     // Function is invalid.  The error message will be a "Invalid function 
-    // description in Glish record: " + reason.
-    InvalidGlishSerializationError(const String& reason,Category c=GENERAL) : 
+    // description in  record: " + reason.
+    InvalidSerializationError(const String& reason,Category c=GENERAL) : 
 	FunctionFactoryError(preamble + reason,c), reas(reason) {}
 
-    virtual ~InvalidGlishSerializationError() throw();
+    virtual ~InvalidSerializationError() throw();
     const String& getReason() { return reas; } 
 
     static const String preamble;
@@ -71,13 +71,13 @@ private:
     String reas;
 };
 
-class GlishFieldNotFoundError : public InvalidGlishSerializationError {
+class FieldNotFoundError : public InvalidSerializationError {
 public:
-    GlishFieldNotFoundError(const String& field,Category c=GENERAL) : 
-	InvalidGlishSerializationError(String("No ") + field + " defined",c),
+    FieldNotFoundError(const String& field,Category c=GENERAL) : 
+	InvalidSerializationError(String("No ") + field + " defined",c),
 	fname(field)
     {}
-    virtual ~GlishFieldNotFoundError() throw();
+    virtual ~FieldNotFoundError() throw();
 
 private:
     String fname;
