@@ -83,8 +83,8 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
     dirVal(0).setUnit(units(0));
     dirVal(1).setUnit(units(1));
     Vector<Double> inc = dirCoord.increment();
-    Quantum<Double> inc0(inc(0), units(0));
-    Quantum<Double> inc1(inc(1), units(1));
+    Quantum<Double> inc0(abs(inc(0)), units(0));
+    Quantum<Double> inc1(abs(inc(1)), units(1));
     AlwaysAssert(near(inc0, inc1), AipsError);
     pixelSize = MVAngle(inc0);
   }
@@ -111,7 +111,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   const Int polAxis = CoordinateUtil::findStokesAxis(stokes, coords);  
   const uInt nStokes = stokes.nelements(); 
   if (polAxis >= 0)
-    AlwaysAssert(imageShape(polAxis) == nStokes, AipsError);
+    AlwaysAssert(imageShape(polAxis) == Int(nStokes), AipsError);
   for (uInt p = 0; p < nStokes; p++)
     AlwaysAssert(stokes(p) == Stokes::I || stokes(p) == Stokes::Q ||
 		 stokes(p) == Stokes::U || stokes(p) == Stokes::V, 
@@ -165,7 +165,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	    elementIter.cursor() += Float(pixelVal(3)); break;
 	  }
 	}
-	else if (elementShape.product() == nStokes)
+	else if (elementShape.product() == Int(nStokes))
 	  for (uInt p = 0; p < nStokes; p++) {
 	    switch (stokes(p)) {
 	    case Stokes::I:
@@ -505,7 +505,7 @@ void SkyCompRep::readParameters(Vector<Double> & parameters,
 	errorMessage += "\nThe 'parameters' field cannot be a string";
       else {
 	const IPosition shape = parmField.shape();
-	if (shape.nelements() != 1 || shape.product() != nParameters()) {
+	if (shape.nelements() != 1 || shape.product() != Int(nParameters())) {
 	  ostrstream buffer; buffer << nParameters();
 	  errorMessage += 
 	    String("\nThe 'parameters' field must be a vector with ") +
