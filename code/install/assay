@@ -97,6 +97,10 @@
         sh $1.exec
         STATUS=$?
         [ "$CLEANUP" != "" ] && rm -f $1.exec
+	if [ $STATUS = 3 ]
+	then
+           echo "UNTESTED: $*"
+	fi
         exit $STATUS
      fi
   fi
