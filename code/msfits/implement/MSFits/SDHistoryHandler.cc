@@ -64,7 +64,7 @@ SDHistoryHandler &SDHistoryHandler::operator=(const SDHistoryHandler &other)
 	clearAll();
 	msHis_p = new NewMSHistory(*(other.msHis_p));
 	AlwaysAssert(msHis_p, AipsError);
-	msHisCols_p = new NewMSHistoryColumns(*(other.msHisCols_p));
+	msHisCols_p = new NewMSHistoryColumns(*msHis_p);
 	AlwaysAssert(msHisCols_p, AipsError);
 	timesys_p = other.timesys_p;
     }
