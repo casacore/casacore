@@ -244,6 +244,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
       Int widthScan  =  4;
       Int widthbtime = 22;
       Int widthetime = 10;
+      Int widthFieldId = 5;
       Int widthField = 13;
 
       // Set up iteration over OBSID and ARRID:
@@ -268,7 +269,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os << endl << "   ObservationID = " << obsid+1;
 	os << "         ArrayID = " << arrid+1 << endl;
 	os << "  Date        Timerange                ";
-	os << "Scan  Field          DataDescIds" << endl;
+	os << "Scan  FldId FieldName      DataDescIds" << endl;
 
 	// Setup iteration over timestamps within this iteration:
 	Block<String> jcols(2);
@@ -374,6 +375,8 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	      os.output().setf(ios::right, ios::adjustfield);
 	      os.output().width(widthScan); os << lastscan;
 	      os.output().width(widthLead); os << "  ";
+	      os.output().setf(ios::right, ios::adjustfield);
+	      os.output().width(widthFieldId); os << lastfldids(0)+1 << " ";
 	      os.output().setf(ios::left, ios::adjustfield);
 	      os.output().width(widthField); os << fieldnames(lastfldids(0));
 	      os.output().width(widthLead); os << "  ";
@@ -425,6 +428,8 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os.output().setf(ios::right, ios::adjustfield);
 	os.output().width(widthScan); os << lastscan;
 	os.output().width(widthLead);  os << "  ";
+	os.output().setf(ios::right, ios::adjustfield);
+	os.output().width(widthFieldId); os << lastfldids(0)+1 << " ";
 	os.output().setf(ios::left, ios::adjustfield);
 	os.output().width(widthField); os << fieldnames(lastfldids(0));
 	os.output().width(widthLead);  os << "  ";
@@ -963,23 +968,30 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
 
     // Define the column widths
     Int widthLead	=  2;
-    Int widthDDId       =  6;
+    Int widthDDId       =  4;
+    Int widthFrame      =  6;
     Int widthFreq	= 12;
-    Int widthFrqNum	=  7;
-    Int widthNumChan	=  8;
+    Int widthFrqNum	= 12;
+    Int widthNumChan	=  6;
     Int widthCorrTypes	= msPolC.corrType()(0).nelements()*4;
     Int widthCorrType	=  4;
 
     // Write the column headers
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthLead);	os << "  ";
-    os.output().width(widthDDId);	os << "ID    ";
-    os.output().width(widthFreq);	os << "Ref.Freq";
-    os.output().width(widthNumChan);	os << "#Chans";
-    os.output().width(widthFreq);	os << "Resolution";
-    os.output().width(widthFreq);	os << "TotalBW";
-    os.output().width(widthCorrTypes);  os << "Correlations";
+    os.output().width(widthDDId);	os << "ID  ";
+    os.output().setf(ios::right, ios::adjustfield);
+    os.output().width(widthNumChan);	os << "#Chans" << " ";
+    os.output().setf(ios::left, ios::adjustfield);
+    os.output().width(widthFrame);      os << "Frame";
+    os.output().width(widthFreq);	os << "Ch1(MHz)";
+    os.output().width(widthFreq);	os << "Resoln(kHz)";
+    os.output().width(widthFreq);	os << "TotBW(kHz)";
+    os.output().width(widthFreq);	os << "Ref(MHz)";
+    os.output().width(widthCorrTypes);  os << "Corrs";
     os << endl;
+
+    os.output().precision(9);
 
     // For each row of the DataDesc subtable, write the info
     for (uInt i=0; i<ddId.nelements(); i++) {
@@ -990,18 +1002,26 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
       os.output().width(widthLead);		os << "  ";
       // 1th column: Data description Id
       os.output().width(widthDDId); os << (dd+1);
-      // 2nd column: reference frequency
-      os.output().width(widthFrqNum);
-      os<< msSWC.refFrequency()(spw)/1.0e6 <<"MHz  ";
       // 3rd column: number of channels in the spectral window
-      os.output().width(widthNumChan);		os << msSWC.numChan()(spw);
+      os.output().setf(ios::right, ios::adjustfield);
+      os.output().width(widthNumChan);		os << msSWC.numChan()(spw) << " ";
+      // 2nd column: Reference Frame info
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthFrame);
+      os<< msSWC.refFrequencyMeas()(spw).getRefString();
+      // 2nd column: Chan 1 freq (may be at high freq end of band!)
+      os.output().width(widthFrqNum);
+      os<< msSWC.chanFreq()(spw)(IPosition(1,0))/1.0e6;
       // 4th column: channel resolution
       os.output().width(widthFrqNum);
-      os << msSWC.resolution()(spw)(IPosition(1,0))/1000<<"kHz  ";
+      os << msSWC.resolution()(spw)(IPosition(1,0))/1000;
       // 5th column: total bandwidth of the spectral window
       os.output().width(widthFrqNum);
-      os<< msSWC.totalBandwidth()(spw)/1000<<"kHz  ";
-      // 6th column: the correlation type(s)
+      os<< msSWC.totalBandwidth()(spw)/1000;
+      // 7th column: reference frequency
+      os.output().width(widthFrqNum);
+      os<< msSWC.refFrequency()(spw)/1.0e6;
+      // 8th column: the correlation type(s)
       for (uInt j=0; j<msPolC.corrType()(pol).nelements(); j++) {
 	os.output().width(widthCorrType);
       	Int index = msPolC.corrType()(pol)(IPosition(1,j));
