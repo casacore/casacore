@@ -28,10 +28,6 @@
 #if !defined(AIPS_VECTOR_H)
 #define AIPS_VECTOR_H
 
-#if defined(_AIX)
-#pragma implementation ("Vector.cc")
-#endif
-
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/VectorRtti.h>
@@ -130,12 +126,17 @@ public:
     ~Vector();
 
     // Create a reference to "other", which must be of dimension one.
-    void reference(Array<T> &other);
+    virtual void reference(Array<T> &other);
 
     // Resize this Vector to the given length. Zero-origin.
+    // The default copyValues flag is False.
+    //# Note that the 2nd resize function is necessary, because that
+    //# function is virtual in the base class (otherwise it would
+    //# be hidden).
     // <group>
     void resize(uInt len, Bool copyValues = False);
-    void resize(const IPosition &len, Bool copyValues = False);
+    virtual void resize(const IPosition &len);
+    void resize(const IPosition &len, Bool copyValues);
     // </group>
 
     // Assign to this Vector. If this Vector is zero-length, then resize
@@ -261,13 +262,13 @@ public:
     // is True.
     // <group>
     virtual void takeStorage(const IPosition &shape, T *storage,
-		     StorageInitPolicy policy = COPY);
+			     StorageInitPolicy policy = COPY);
     // Since the pointer is const, a copy is always taken.
     virtual void takeStorage(const IPosition &shape, const T *storage);
     // </group>
 
     // Verify that dimensionality is 1 and then call Array<T>::ok()
-    Bool ok() const;
+    virtual Bool ok() const;
 
     // Macro to define the typeinfo member functions
     rtti_dcl_mbrf_p1(Vector<T>, Array<T>);

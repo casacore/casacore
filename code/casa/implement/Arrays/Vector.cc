@@ -141,6 +141,11 @@ template<class T> Vector<T>::~Vector()
 }
 
 
+template<class T> void Vector<T>::resize(const IPosition &l)
+{
+    resize (l, False);
+}
+
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
