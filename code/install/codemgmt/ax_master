@@ -3913,3 +3913,4 @@
 14 065 src mv trial/implement/Display/X11PCCaching.cc trialdisplay/implement/Display/X11PCCaching.cc
 14 065 src mv trial/implement/Display/X11PCColTblTemplates.cc trialdisplay/implement/Display/X11PCColTblTemplates.cc
 14 065 src mv trial/implement/Display/X11PCColorTable.cc trialdisplay/implement/Display/X11PCColorTable.cc
+14 065 src mv trial/implement/Display/X11PCColoredVectorGraphics.cc trialdisplay/implement/Display/X11PCColoredVectorGraphics.cc
