@@ -292,19 +292,26 @@ public:
   };
 
   // This function returns the flux values after converting it to the Stokes
-  // representation. The units of the returned Quantum are the current units.
+  // representation. The units of the returned Quantum are the current units of
+  // the FluxRep object. The length of the Vector in the Quantum will be
+  // resized to 4 elements if it is not already that length.
   void value(Quantum<Vector<T> > & value);
 
-  // This function returns the flux values. The polarisation representation is
-  // whatever is specified. The units of the returned Quantum are the current
-  // units.
-  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-	     ComponentType::Polarisation pol) {
-    uInt len = value.getValue().nelements();
-    DebugAssert(len == 4 || len == 0, AipsError);
-    convertUnit(value.getFullUnit());
-    convertPol(pol);
-    value.setValue(itsVal);
+  // This function returns the flux values. The units of the returned Quantum
+  // are the current units of the FluxRep object. Similarly the polarisation
+  // representation of the returned Quantum is the current polarisation
+  // representation. The length of the Vector in the Quantum will be resized to
+  // 4 elements if it is not already that length.
+  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value) const {
+    const Unit & curUnit = value.getFullUnit();
+    if (curUnit != itsUnit) {
+      value.setUnit(itsUnit);
+    }
+    Vector<NumericTraits<T>::ConjugateType> & newValue = value.getValue();
+    if (newValue.nelements() != 4) newValue.resize(4);
+    for (uInt s = 0 ; s < 4; s++) {
+      newValue(s) = itsVal(s);
+    }
     DebugAssert(ok(), AipsError);
   };
 
@@ -370,9 +377,9 @@ public:
   };
   // </group>
 
-  // This functions convert between a glish record and a FluxRep object and
+  // This functions convert between a RecordInterface and a FluxRep object and
   // define how the FluxRep is represented in glish.  They return False if the
-  // glish record is malformed and append an error message to the supplied
+  // RecordInterface is malformed and append an error message to the supplied
   // string giving the reason.
   // <group>
   Bool fromRecord(String & errorMessage, const RecordInterface & record);
@@ -600,16 +607,19 @@ public:
   };
 
   // This function returns the flux values after converting it to the Stokes
-  // representation. The units of the returned Quantum are the current units.
+  // representation. The units of the returned Quantum are the current units of
+  // the FluxRep object. The length of the Vector in the Quantum will be
+  // resized to 4 elements if it is not already that length.
   void value(Quantum<Vector<T> > & value);
 
-  // This function returns the flux values. The polarisation representation is
-  // whatever is specified. The units of the returned Quantum are the current
-  // units.
-  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-	     ComponentType::Polarisation pol) {
+  // This function returns the flux values. The units of the returned Quantum
+  // are the current units of the FluxRep object. Similarly the polarisation
+  // representation of the returned Quantum is the current polarisation
+  // representation. The length of the Vector in the Quantum will be resized to
+  // 4 elements if it is not already that length.
+  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value) const {
     DebugAssert(ok(), AipsError);
-    itsFluxPtr->value(value, pol);
+    itsFluxPtr->value(value);
   };
 
   // This function sets the Flux values assuming the supplied value represents
@@ -667,10 +677,10 @@ public:
   };
   // </group>
 
-  // This functions convert between a glish record and a Flux object and define
-  // how the Flux is represented in glish.  They return False if the glish
-  // record is malformed and append an error message to the supplied string
-  // giving the reason.
+  // This functions convert between a RecordInterface and a Flux object and
+  // define how the Flux is represented in glish.  They return False if the
+  // RecordInterface is malformed and append an error message to the supplied
+  // string giving the reason.
   // <group>
   Bool fromRecord(String & errorMessage, const RecordInterface & record);
   Bool toRecord(String & errorMessage, RecordInterface & record) const;

@@ -26,12 +26,13 @@
 //# $Id$
 
 #include <trial/ComponentModels/Flux.h>
+#include <trial/Measures/QuantumHolder.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Complex.h>
+#include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 
 template<class T> FluxRep<T>::
@@ -88,9 +89,7 @@ FluxRep(const Quantum<Vector<T> > & flux)
 {
   const Vector<T> & fluxVal(flux.getValue());
   DebugAssert(fluxVal.nelements() == 4, AipsError);
-  for (uInt s = 0; s < 4; s++) {
-    itsVal(s).re = fluxVal(s);
-  }
+  convertArray(itsVal.ac(), fluxVal.ac());
   DebugAssert(ok(), AipsError);
 }
 
@@ -214,11 +213,13 @@ value(Vector<T> & value) {
 
 template<class T> void FluxRep<T>::
 value(Quantum<Vector<T> > & value) {
-  uInt len = value.getValue().nelements();
-  DebugAssert(len == 4 || len == 0, AipsError);
-  convertUnit(value.getFullUnit());
+  const Unit & curUnit = value.getFullUnit();
+  if (curUnit != itsUnit) {
+    value.setUnit(itsUnit);
+  }
   convertPol(ComponentType::STOKES);
   Vector<T> & newValue = value.getValue();
+  if (newValue.nelements() != 4) newValue.resize(4);
   for (uInt s = 0 ; s < 4; s++) {
     newValue(s) = itsVal(s).re;
   }
@@ -280,136 +281,135 @@ fromRecord(String & errorMessage, const RecordInterface & record) {
   {
     const String polarisationString("polarisation");
     if (!record.isDefined(polarisationString)) {
+      LogIO logErr(LogOrigin("FluxRep", "fromRecord()"));
+      logErr << LogIO::WARN 
+	     << "The flux does not have a 'polarisation' field." << endl
+	     << "Using the default of Stokes"
+	     << LogIO::POST;
       setPol(ComponentType::STOKES);
     } else {
       const RecordFieldId polarisation(polarisationString);
       // Maybe the polarisation field should contain ["I", "Q", "U", "V"]. This
       // is harder to parse but more flexible for the future.
-      if (record.shape(polarisation) != IPosition(1,1)) {
-	errorMessage += "\nThe 'polarisation' field must have only 1 element";
+      if (record.dataType(polarisation) != TpString) {
+	errorMessage += "The 'polarisation' field must be a record\n";
 	return False;
       }      
-      String polVal;
-      try {
- 	polVal = record.asString(polarisation);
-      }
-      catch (AipsError x) {
-	errorMessage += "\nThe 'polarisation' field must be a string";
+      if (record.shape(polarisation) != IPosition(1,1)) {
+	errorMessage += "The 'polarisation' field must have only 1 element\n";
 	return False;
-      } end_try;
+      } 
+      const String polVal = record.asString(polarisation);
       const ComponentType::Polarisation 
-	pol(ComponentType::polarisation(polVal));
-      if (pol == ComponentType::UNKNOWN_POLARISATION) {
-	errorMessage += String("\nThe polarisation type is not known. ") +
-	  String("\nAllowed values are 'Stokes', 'Linear' & 'Circular'");
+	newPol(ComponentType::polarisation(polVal));
+      if (newPol == ComponentType::UNKNOWN_POLARISATION) {
+	errorMessage += String("The polarisation type is not known.\n") +
+	  String("Allowed values are 'Stokes', 'Linear' & 'Circular'\n");
 	return False;
       }
-      setPol(pol);
+      setPol(newPol);
     }
   }
   {
-    const String valueString("value");
-    if (!record.isDefined(valueString)) {
-      errorMessage += "\nThe 'flux' record must have a 'value' field";
+    QuantumHolder qh;
+    if (!qh.fromRecord(errorMessage, record)) {
+      errorMessage += "Could not parse the flux record\n";
       return False;
     }
-    const RecordFieldId value(valueString);
-    if (record.shape(value) != IPosition(1,4)) {
-      errorMessage += "\nThe 'value' field must have 4 elements";
-      return False;
-    }      
-    Vector<NumericTraits<T>::ConjugateType> fluxVal(4);
-    try {
-      switch (record.dataType(value)) {
-      case TpArrayDComplex: {
-	const Vector<DComplex> val = record.asArrayDComplex(value);
-	for (uInt i = 0; i < 4; i++) {
-	  fluxVal(i).re = T(val(i).re);
-	  fluxVal(i).im = T(val(i).im);
+    if (qh.isScalar() && pol() == ComponentType::STOKES) {
+      if (qh.isReal()) {
+	const Quantum<Double> & qVal = qh.asQuantumDouble();
+	setValue(T(qVal.getValue()));
+	setUnit(qVal.getFullUnit());
+      } else {
+	const Quantum<DComplex> & qVal = qh.asQuantumDComplex();
+	const DComplex & val = qVal.getValue();
+	if (!nearAbs(val.im, 0.0, NumericTraits<T>::minimum)) {
+	  errorMessage += "I value cannot be complex\n";
+	  return False;
 	}
+	setValue(T(val.re));
+	setUnit(qVal.getFullUnit());
       }
-      break;
-      case TpArrayComplex: {
-	const Vector<Complex> val = record.asArrayComplex(value);
-	for (uInt i = 0; i < 4; i++) {
-	  fluxVal(i).re = T(val(i).re);
-	  fluxVal(i).im = T(val(i).im);
-	}
+      LogIO logErr(LogOrigin("FluxRep", "fromRecord()"));
+      logErr << LogIO::WARN
+	     << "Only the I flux specified. Assuming Q, U, & V are zero\n" 
+	     << LogIO::POST;
+    } else {
+      if (qh.nelements() != 4u) {
+	errorMessage += String("Must specify all 4 flux values\n")
+	  + String("if the polarisation representation is not Stokes\n");
+	return False;
       }
-      break;
-      case TpArrayDouble: {
-	const Vector<Double> val = record.asArrayDouble(value);
-	for (uInt i = 0; i < 4; i++) {
-	  fluxVal(i).re = T(val(i));
-	  fluxVal(i).im = T(0);
-	}
-      }
-      break;
-      case TpArrayFloat: {
-	const Vector<Float> val = record.asArrayFloat(value);
-	for (uInt i = 0; i < 4; i++) {
-	  fluxVal(i).re = T(val(i));
-	  fluxVal(i).im = T(0);
-	}
-      }
-      break;
-      case TpArrayInt: {
-	const Vector<Int> val = record.asArrayInt(value);
-	for (uInt i = 0; i < 4; i++) {
-	  fluxVal(i).re = T(val(i));
-	  fluxVal(i).im = T(0);
-	}
-      }
-      break;
-      default:
-	throw(AipsError("FluxRep<T>::fromRecord(...) - cannot promote Array"));
+      if (qh.isQuantumVectorDouble()) {
+	const Quantum<Vector<Double> > qVal = qh.asQuantumVectorDouble();
+	setUnit(qVal.getFullUnit());
+	Vector<NumericTraits<T>::ConjugateType> val(4);
+	convertArray(val.ac(), qVal.getValue().ac());
+	setValue(val);
+      } else if (qh.isQuantumVectorDComplex()) {
+	const Quantum<Vector<DComplex> > & qVal = qh.asQuantumVectorDComplex();
+	setUnit(qVal.getFullUnit());
+	Vector<NumericTraits<T>::ConjugateType> val(4);
+	convertArray(val.ac(), qVal.getValue().ac());
+	setValue(val);
+      } else if (qh.isQuantumVectorComplex()) {
+	const Quantum<Vector<Complex> > & qVal = qh.asQuantumVectorComplex();
+	setUnit(qVal.getFullUnit());
+	Vector<NumericTraits<T>::ConjugateType> val(4);
+	convertArray(val.ac(), qVal.getValue().ac());
+	setValue(val);
+      } else if (qh.isQuantumVectorFloat()) {
+	const Quantum<Vector<Float> > & qVal = qh.asQuantumVectorFloat();
+	setUnit(qVal.getFullUnit());
+	Vector<NumericTraits<T>::ConjugateType> val(4);
+	convertArray(val.ac(), qVal.getValue().ac());
+	setValue(val);
+      } else if (qh.isQuantumVectorInt()) {
+	const Quantum<Vector<Int> > & qVal = qh.asQuantumVectorInt();
+	setUnit(qVal.getFullUnit());
+	Vector<NumericTraits<T>::ConjugateType> val(4);
+	convertArray(val.ac(), qVal.getValue().ac());
+	setValue(val);
+      } else {
+	errorMessage += "value field must be a real or complex vector\n";
+	return False;
       }
     }
-    catch (AipsError x) {
-      errorMessage += "\nThe 'value' field must be a vector of numbers";
-      return False;
-    } end_try;
-    setValue(fluxVal);
   }
-  {
-    const String unitString("unit");
-    if (!record.isDefined(unitString)) {
-      errorMessage += "\nThe 'flux' record must have a 'unit' field";
-      return False;
-    }
-    const RecordFieldId unit(unitString);
-    if (record.shape(unit) != IPosition(1,1)) {
-      errorMessage += "\nThe 'unit' field must have only 1 element";
-      return False;
-    }      
-    String unitVal;
-    try {
-      unitVal = record.asString(unit);
-    }
-    catch (AipsError x) {
-      errorMessage += "\nThe 'unit' field must be a string";
-      return False;
-    } end_try;
-    setUnit(unitVal);
+  if (unit() != Unit("Jy")) {
+    errorMessage += "The dimensions of the units must be same as the Jy\n";
+    return False;
+  }
+  if (!ok()) {
+    errorMessage += "Inconsistancies in the FluxRep object\n";
+    return False;
   }
   return True;
 }
 
 template<class T> Bool FluxRep<T>::
 toRecord(String & errorMessage, RecordInterface & record) const {
+  if (!ok()) {
+    errorMessage += "Inconsistancies in the FluxRep object\n";
+    return False;
+  }
+  QuantumHolder qh;
   if (pol() == ComponentType::STOKES) {
     FluxRep<T> fluxCopy = *this;
-    Vector<T> fluxVal(4);
-    fluxCopy.value(fluxVal);
-    record.define(RecordFieldId("value"), fluxVal.ac());
-    record.define(RecordFieldId("polarisation"), 
-		  ComponentType::name(ComponentType::STOKES));
+    Quantum<Vector<T> > qVal;
+    fluxCopy.value(qVal);
+    qh = QuantumHolder(qVal);
   } else {
-    record.define(RecordFieldId("value"), value().ac());
-    record.define(RecordFieldId("polarisation"), ComponentType::name(pol()));
+    Quantum<Vector<NumericTraits<T>::ConjugateType> > qVal;
+    value(qVal);
+    qh = QuantumHolder(qVal);
   }
-  record.define("unit", unit().getName());
-  if (errorMessage == ""); // Suppress compiler warning about unused variable
+  if (!qh.toRecord(errorMessage, record)) {
+    errorMessage += "Problem generating the flux record\n";
+    return False;
+  }
+  record.define(RecordFieldId("polarisation"), ComponentType::name(pol()));
   return True;
 }
 
@@ -429,7 +429,7 @@ ok() const {
   if (itsUnit != Unit("Jy")) {
     LogIO logErr(LogOrigin("FluxRep", "ok()"));
     logErr << LogIO::SEVERE << "The flux units have dimensions that are "
-	   << " different from 'Jy'"
+	   << "different from 'Jy'"
 	   << LogIO::POST;
     return False;
   }
