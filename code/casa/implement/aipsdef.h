@@ -59,9 +59,11 @@ extern Bool aips_debug_on;
 // Define the use of the old string and stream classes (for sgi at the moment)
 // The use of the old classes (including complex) can be overwritten
 // with the use of -DAIPS_USE_NEW_SGI.
+// It also defines and uses the std namespace as required.
 // It is the intention to use the relevant 'USE_OLD' macros only
 // if and when closely related to the String class itself; the Complex
 // class and the stream proxy includes.
+// Note that for the gcc compiler 'std::' is recognised as '::' for now.
 #if defined(__sgi)
 #if !defined(AIPS_USE_NEW_SGI)
 #define USE_OLD_STRING
@@ -72,6 +74,8 @@ extern Bool aips_debug_on;
 #undef AIPS_USE_OLD_STRING
 #undef AIPS_USE_OLD_STREAM
 #undef AIPS_USE_OLD_COMPLEX
+namespace std {}:
+using namespace std;
 #endif
 #endif
 
