@@ -177,11 +177,12 @@ public:
   // This conversion may not be accurate for some frame 
   // conversion like topo to lsr except if the spw is in the actual buffer
 
-  void lsrFrequency(const Int& spw, Vector<Double>& freq)
-    { visIter_p->lsrFrequency(spw, freq);}
+  void lsrFrequency(const Int& spw, Vector<Double>& freq, Bool convert=False)
+    { visIter_p->lsrFrequency(spw, freq, convert);}
 
-  void lsrFrequency(const Int& spw, Vector<Double>& freq) const
-    { visIter_p->lsrFrequency(spw, freq);}
+  void lsrFrequency(const Int& spw, Vector<Double>& freq, 
+		    Bool convert=False) const
+    { visIter_p->lsrFrequency(spw, freq, convert);}
   MDirection& phaseCenter() 
   { return phaseCenterOK_p ? phaseCenter_p : fillPhaseCenter();}
   const MDirection& phaseCenter() const {return This->phaseCenter();}
