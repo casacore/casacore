@@ -52,3 +52,21 @@ change id: 0164
  category: New
  summary:  Merge separate normal equations
 Added merge() option to LSQFit (and derived classes) to merge separately created normal equations (e.g. on multi-processor machines)
+
+change id: 0165
+ author:   Ger van Diepen
+ date:     2005/02/16
+ avers:    1.9
+ area:     Library
+ package:  tables
+ module:   Tables
+ type:     Code
+ category: New
+ summary:  Added a virtual column engine for a TaQL expression
+The virtual column engine VirtualTaQLColumn has been added to the Table System. It makes it possible to have a virtual column based on a TaQL CALC expression. The column can be a scalar or an array and can have any standard data type.
+For example:
+   tab.addColumn (ScalarColumnDesc<double>("MeanArrayCol"),
+                  VirtualTaQLColumn("mean(ArrayCol)"));
+
+As can be seen in the example the TaQL expression is passed to the constructor as a string. The expression can be as complex as one likes.
+Care has to be taken not to delete a column used in such an expression. The system is not robust enough (yet) to cope with that.
