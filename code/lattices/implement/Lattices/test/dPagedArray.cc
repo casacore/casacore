@@ -1,5 +1,5 @@
 //# dPagedArray.cc:  this contains the examples from the PagedArray.h file
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
       // Create a vector to cache a sampled version of this profile.
       Array<Float> profile(IPosition(4,1,1,1,shape(3)));
       indgen(profile);
-      profile.apply(g);
+////      profile.apply(g);
       // Now put this profile into every spectral channel in the paged array.
       // This is best done using an iterator.
       LatticeIterator<Float> iter(diskArray,
