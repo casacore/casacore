@@ -481,66 +481,66 @@ fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True) {
   fft0(cResult, toFrequency);
 }
 
-template<class T, class S> void FFTServer<T,S>::
-fft0(Array<T> & rValues, const Bool toFrequency) {
-  const IPosition shape = rValues.shape();
-  if (!shape.isEqual(theSize) || theComplexFlag == True)
-    resize(shape, False);
+// template<class T, class S> void FFTServer<T,S>::
+// fft0(Array<T> & rValues, const Bool toFrequency) {
+//   const IPosition shape = rValues.shape();
+//   if (!shape.isEqual(theSize) || theComplexFlag == True)
+//     resize(shape, False);
 
-  const uInt ndim = shape.nelements();
-  uInt fftLen;
-  Bool valuesIsAcopy;
-  S * dataPtr = cValues.getStorage(valuesIsAcopy);
-  T * workPtr = 0;
+//   const uInt ndim = shape.nelements();
+//   uInt fftLen;
+//   Bool valuesIsAcopy;
+//   S * dataPtr = cValues.getStorage(valuesIsAcopy);
+//   T * workPtr = 0;
 
-  // Do complex to complex transforms along all the dimensions
-  S * buffPtr = theBuffer.storage();
-  T * realBuffPtr = 0;
-  T * endRowPtr = 0;
-  S * rowPtr = 0;
-  const uInt nElements = shape.product();
-  const T scale = T(1)/T(nElements);
-  const uInt shape0t2 = shape(0) * 2;
-  uInt n, r, nffts, stride = 1u;
-  for (n = 0; n < ndim; n++) {
-    workPtr = theWork[n]->storage();
-    rowPtr = dataPtr;
-    fftLen = shape(n);
-    nffts = nElements/fftLen;
-    r = 0;
-    if (n != 0) 
-      realBuffPtr = (T *) buffPtr;
-    while (r < nffts) {
-      // Copy the data into a temporary buffer. This makes it contigious and
-      // hence it is more likely to fit into cache. With current computers
-      // this speeds up access to the data by a factors of about ten!
-      if (n != 0)
-	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
-      else
-	realBuffPtr = (T *) rowPtr;
-      // Do the FFT
-      if (toFrequency == True)
-	cfftf(fftLen, realBuffPtr, workPtr);
-      else {
-	cfftb(fftLen, realBuffPtr, workPtr);
-	if (n == 0) // Scale by 1/N while things are (hopefully) in cache
-	  for (endRowPtr = realBuffPtr+shape0t2; 
-	       realBuffPtr < endRowPtr; realBuffPtr++)
-	    *realBuffPtr *= scale;
-      }
+//   // Do complex to complex transforms along all the dimensions
+//   S * buffPtr = theBuffer.storage();
+//   T * realBuffPtr = 0;
+//   T * endRowPtr = 0;
+//   S * rowPtr = 0;
+//   const uInt nElements = shape.product();
+//   const T scale = T(1)/T(nElements);
+//   const uInt shape0t2 = shape(0) * 2;
+//   uInt n, r, nffts, stride = 1u;
+//   for (n = 0; n < ndim; n++) {
+//     workPtr = theWork[n]->storage();
+//     rowPtr = dataPtr;
+//     fftLen = shape(n);
+//     nffts = nElements/fftLen;
+//     r = 0;
+//     if (n != 0) 
+//       realBuffPtr = (T *) buffPtr;
+//     while (r < nffts) {
+//       // Copy the data into a temporary buffer. This makes it contigious and
+//       // hence it is more likely to fit into cache. With current computers
+//       // this speeds up access to the data by a factors of about ten!
+//       if (n != 0)
+// 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
+//       else
+// 	realBuffPtr = (T *) rowPtr;
+//       // Do the FFT
+//       if (toFrequency == True)
+// 	cfftf(fftLen, realBuffPtr, workPtr);
+//       else {
+// 	cfftb(fftLen, realBuffPtr, workPtr);
+// 	if (n == 0) // Scale by 1/N while things are (hopefully) in cache
+// 	  for (endRowPtr = realBuffPtr+shape0t2; 
+// 	       realBuffPtr < endRowPtr; realBuffPtr++)
+// 	    *realBuffPtr *= scale;
+//       }
       
-      // copy the data back
-      if (n != 0)
-	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
-      // indexing calculations
-      r++;
-      rowPtr++;
-      if (r%stride == 0)
-	rowPtr += stride*(fftLen-1);
-    }
-    stride *= fftLen;
-  }
-}
+//       // copy the data back
+//       if (n != 0)
+// 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
+//       // indexing calculations
+//       r++;
+//       rowPtr++;
+//       if (r%stride == 0)
+// 	rowPtr += stride*(fftLen-1);
+//     }
+//     stride *= fftLen;
+//   }
+// }
 
 template<class T, class S> IPosition FFTServer<T,S>::
 determineShape(const IPosition & rShape, const Array<S> & cData){
