@@ -492,7 +492,7 @@ SubString &SubString::operator=(const Char c) {
 
 // Create some needed templates
 #if defined(__GNUG__)
-template void __reverse(Char *, Char *, random_access_iterator_tag);
+ template void std::__reverse<Char*>(Char *, Char *, std::random_access_iterator_tag);
 #endif
 
 #if defined(AIPS_SUN_NATIVE)
@@ -501,5 +501,8 @@ template void __reverse(Char *, Char *, random_access_iterator_tag);
 #endif
 
 
-template Char *std::transform(Char *, Char *, Char *, Int (*)(Int));
-
+template Char *std::transform<Char *>(Char *, Char *, Char *, Int (*)(Int));
+#if defined(AIPS_GCC3)
+template void std::__reverse<string::iterator>(string::iterator, string::iterator, std::random_access_iterator_tag);
+template string::iterator std::transform<string::iterator>(string::iterator, string::iterator, string::iterator, Int (*)(Int));
+#endif
