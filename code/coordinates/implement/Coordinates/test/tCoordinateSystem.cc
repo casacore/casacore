@@ -542,7 +542,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       CoordinateSystem cSys2;
       cSys2.addCoordinate(makeDirectionCoordinate(False));
       StokesCoordinate stokesCoord = makeStokesCoordinate(False);
-      uInt shapeStokes = stokesCoord.nPixelAxes();
+      uInt shapeStokes = stokesCoord.stokes().nelements();
       uInt stokesAxis = 2;
       cSys2.addCoordinate(stokesCoord);
       cSys2.addCoordinate(makeSpectralCoordinate());
