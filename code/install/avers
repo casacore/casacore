@@ -40,7 +40,7 @@
 #             2) Version & time of completion of last slave RCS update.
 #             3) Version & time of completion of last code update.
 #             4) Version & time of completion of last system rebuild.
-#             5) Version currently available in Charlottesville.
+#             5) Version currently available in Socorro.
 #
 # Status return values:
 #    0:  success
@@ -154,7 +154,7 @@
 
   if [ -f "$AIPSMSTR/VERSION" ]
   then
-#    Master version in Charlottesville.
+#    Master version in Socorro.
      echo "Latest:" `cat $AIPSMSTR/VERSION`
   else
      echo "Latest: ($AIPSMSTR/VERSION is currently unavailable)"
