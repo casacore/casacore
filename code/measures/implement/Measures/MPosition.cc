@@ -139,6 +139,31 @@ const String *const MPosition::allTypes(Int &nall, Int &nextra,
   return MPosition::allMyTypes(nall, nextra, typ);
 }
 
+void MPosition::checkTypes() const {
+  MPosition::checkMyTypes();
+};
+
+void MPosition::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = MPosition::allMyTypes(nall,nex, typ);
+    MPosition::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert(MPosition::getType(tp, MPosition::showType(typ[i])) &&
+		   tp == Int(typ[i]) &&
+		   MPosition::getType(tp, tps[i]) &&
+		   tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MPosition::getType(tp, MPosition::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 MPosition::Types MPosition::castType(uInt tp) {
   AlwaysAssert(tp < MPosition::N_Types, AipsError);
   return static_cast<MPosition::Types>(tp);

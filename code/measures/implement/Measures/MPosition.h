@@ -114,50 +114,50 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   // Reference enum Types (included originally for gcc 2.95)  
   typedef Types Types;
 
-//# Constructors
-// <note role=tip> In the following constructors and other functions, all 
-// <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. </note>
-// Default constructor; generates the ITRF centre
-    MPosition();
-// Create from data and reference
-// <group>
-    MPosition(const MVPosition &dt);
-    MPosition(const MVPosition &dt, const MPosition::Ref &rf);
-    MPosition(const MVPosition &dt, MPosition::Types rf);
-    MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2);
-    MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2,
-	      const MPosition::Ref &rf);
-    MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2,
-	      MPosition::Types rf);
-    MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt);
-    MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt, 
-	      const MPosition::Ref &rf);
-    MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt, 
-	      MPosition::Types rf);
-    MPosition(const Measure *dt);
-    MPosition(const MeasValue *dt);
-// </group>
-
+  //# Constructors
+  // <note role=tip> In the following constructors and other functions, all 
+  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  // where no offsets or frames are needed in the reference. </note>
+  // Default constructor; generates the ITRF centre
+  MPosition();
+  // Create from data and reference
+  // <group>
+  MPosition(const MVPosition &dt);
+  MPosition(const MVPosition &dt, const MPosition::Ref &rf);
+  MPosition(const MVPosition &dt, MPosition::Types rf);
+  MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2);
+  MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2,
+	    const MPosition::Ref &rf);
+  MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2,
+	    MPosition::Types rf);
+  MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt);
+  MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt, 
+	    const MPosition::Ref &rf);
+  MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt, 
+	    MPosition::Types rf);
+  MPosition(const Measure *dt);
+  MPosition(const MeasValue *dt);
+  // </group>
+  
   // <group>
   MPosition(const MPosition &);
   MPosition &operator=(const MPosition &);
   // </group>
-
-//# Destructor
-    virtual ~MPosition();
-
-//# Operators
-
-//# General Member Functions
-// Tell me your type
-// <group>
-    virtual const String &tellMe() const;
-    static const String &showMe();
-    virtual uInt type() const;
-    static void assure(const Measure &in);
-// </group>
-// Translate reference code. The uInt version has a check for valid codes
+  
+  //# Destructor
+  virtual ~MPosition();
+  
+  //# Operators
+  
+  //# General Member Functions
+  // Tell me your type
+  // <group>
+  virtual const String &tellMe() const;
+  static const String &showMe();
+  virtual uInt type() const;
+  static void assure(const Measure &in);
+  // </group>
+  // Translate reference code. The uInt version has a check for valid codes
   // (i.e. it is a safe cast).
   // <thrown>
   //   <li> AipsError in the uInt interface if illegal code given
@@ -167,11 +167,11 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   static const String &showType(MPosition::Types tp);
   static const String &showType(uInt tp);
   // </group>
-// Translate string to reference code
-// <group>
+  // Translate string to reference code
+  // <group>
   static Bool getType(MPosition::Types &tp, const String &in);
   Bool giveMe(MPosition::Ref &mr, const String &in);
-// </group>
+  // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);
   // Set the reference type to the specified String. False if illegal
@@ -188,30 +188,40 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   static const String *const allMyTypes(Int &nall, Int &nextra,
 					const uInt *&typ);
   // </group>
+  // Check if all internal tables of types (both enum and String) are 
+  // complete and correct. This function is called automatically if and when
+  // necessary.
+  // <thrown>
+  //   <li> AipsError if a (programming) error in the types.
+  // </thrown>
+  // <group> 
+  virtual void checkTypes() const;
+  static void checkMyTypes();
+  // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Get my type (as Register)
   static uInt myType();
-
-// Get Measure data
-// <group>
-    Quantum<Vector<Double> > get(const Unit &inunit) const;
-    Quantum<Vector<Double> > getAngle() const;
-    Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
-// </group>
-
-// Make copy
-// <group>
-    virtual Measure *clone() const;
-// </group>
-
-private:
-//# Enumerations
-
-//# Data
-
-//# Member functions
-
+  
+  // Get Measure data
+  // <group>
+  Quantum<Vector<Double> > get(const Unit &inunit) const;
+  Quantum<Vector<Double> > getAngle() const;
+  Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
+  // </group>
+  
+  // Make copy
+  // <group>
+  virtual Measure *clone() const;
+  // </group>
+  
+ private:
+  //# Enumerations
+  
+  //# Data
+  
+  //# Member functions
+  
 };
 
 #endif

@@ -190,38 +190,38 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   // Reference enum Types (included originally for gcc 2.95)  
   typedef Types Types;
 
-//# Constructors
-// <note role=tip> In the following constructors and other functions, all 
-// <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. </note>
-// Default constructor; generates a zero rest frequency
-    MFrequency();
-// Create from data and reference
-// <group>
-    MFrequency(const MVFrequency &dt);
-    MFrequency(const MVFrequency &dt, const MFrequency::Ref &rf);
-    MFrequency(const MVFrequency &dt, MFrequency::Types rf);
-    MFrequency(const Quantity &dt);
-    MFrequency(const Quantity &dt, const MFrequency::Ref &rf);
-    MFrequency(const Quantity &dt, MFrequency::Types rf);
-    MFrequency(const Measure *dt);
-    MFrequency(const MeasValue *dt);
-// </group>
-
-//# Destructor
-    virtual ~MFrequency();
-
-//# Operators
-
-//# General Member Functions
-// Tell me your type
-// <group>
-    virtual const String &tellMe() const;
-    static const String &showMe();
-    virtual uInt type() const;
-    static void assure(const Measure &in);
-// </group>
-// Translate reference code. The uInt version has a check for valid codes
+  //# Constructors
+  // <note role=tip> In the following constructors and other functions, all 
+  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  // where no offsets or frames are needed in the reference. </note>
+  // Default constructor; generates a zero rest frequency
+  MFrequency();
+  // Create from data and reference
+  // <group>
+  MFrequency(const MVFrequency &dt);
+  MFrequency(const MVFrequency &dt, const MFrequency::Ref &rf);
+  MFrequency(const MVFrequency &dt, MFrequency::Types rf);
+  MFrequency(const Quantity &dt);
+  MFrequency(const Quantity &dt, const MFrequency::Ref &rf);
+  MFrequency(const Quantity &dt, MFrequency::Types rf);
+  MFrequency(const Measure *dt);
+  MFrequency(const MeasValue *dt);
+  // </group>
+  
+  //# Destructor
+  virtual ~MFrequency();
+  
+  //# Operators
+  
+  //# General Member Functions
+  // Tell me your type
+  // <group>
+  virtual const String &tellMe() const;
+  static const String &showMe();
+  virtual uInt type() const;
+  static void assure(const Measure &in);
+  // </group>
+  // Translate reference code. The uInt version has a check for valid codes
   // (i.e. it is a safe cast).
   // <thrown>
   //   <li> AipsError in the uInt interface if illegal code given
@@ -231,11 +231,11 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   static const String &showType(MFrequency::Types tp);
   static const String &showType(uInt tp);
   // </group>
-// Translate string to reference code
-// <group>
+  // Translate string to reference code
+  // <group>
   static Bool getType(MFrequency::Types &tp, const String &in);
   Bool giveMe(MFrequency::Ref &mr, const String &in);
-// </group>
+  // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);
   // Set the reference type to the specified String. False if illegal
@@ -252,52 +252,62 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   static const String *const allMyTypes(Int &nall, Int &nextra,
 					const uInt *&typ);
   // </group>
+  // Check if all internal tables of types (both enum and String) are 
+  // complete and correct. This function is called automatically if and when
+  // necessary.
+  // <thrown>
+  //   <li> AipsError if a (programming) error in the types.
+  // </thrown>
+  // <group> 
+  virtual void checkTypes() const;
+  static void checkMyTypes();
+  // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Get my type (as Register)
   static uInt myType();
-
-// Get frequency in specified units
-    Quantity get(const Unit &un) const;
-
-// Make a Doppler velocity from the frequency and the specified rest frequency
-// <group>
-    MDoppler toDoppler(const MVFrequency &rest);
-    MDoppler toDoppler(const MVFrequency &rest) const;
-// </group>
+  
+  // Get frequency in specified units
+  Quantity get(const Unit &un) const;
+  
+  // Make a Doppler velocity from the frequency and the specified rest frequency
+  // <group>
+  MDoppler toDoppler(const MVFrequency &rest);
+  MDoppler toDoppler(const MVFrequency &rest) const;
+  // </group>
   // Local use only
-    static MDoppler toDoppler(const Measure &in, const MVFrequency &rest);
-// Make a frequency from the Doppler velocity and the specified rest frequency
-// (default reference type LSRK)
-// <group>
-    static MFrequency fromDoppler(const MDoppler &dop,
-				  const MVFrequency &rest);
-    static MFrequency fromDoppler(const MDoppler &dop,
-				  const MVFrequency &rest,
-				  MFrequency::Types type);
-// For internal use only
-    static MFrequency fromDoppler(const Measure &dop,
-				  const MVFrequency &rest,
-				  MFrequency::Types type);
-// </group>
-
-// Make a rest frequency using a Doppler velocity
-    MFrequency toRest(const MDoppler &dop);
-// For local use only
+  static MDoppler toDoppler(const Measure &in, const MVFrequency &rest);
+  // Make a frequency from the Doppler velocity and the specified rest frequency
+  // (default reference type LSRK)
+  // <group>
+  static MFrequency fromDoppler(const MDoppler &dop,
+				const MVFrequency &rest);
+  static MFrequency fromDoppler(const MDoppler &dop,
+				const MVFrequency &rest,
+				MFrequency::Types type);
+  // For internal use only
+  static MFrequency fromDoppler(const Measure &dop,
+				const MVFrequency &rest,
+				MFrequency::Types type);
+  // </group>
+  
+  // Make a rest frequency using a Doppler velocity
+  MFrequency toRest(const MDoppler &dop);
+  // For local use only
   static MFrequency toRest(const Measure &in, const Measure &dop);
-
-// Make a copy
-// <group>
-    virtual Measure *clone() const;
-// </group>
-
-private:
-//# Enumerations
-
-//# Data
-
-//# Member functions
-
+  
+  // Make a copy
+  // <group>
+  virtual Measure *clone() const;
+  // </group>
+  
+ private:
+  //# Enumerations
+  
+  //# Data
+  
+  //# Member functions
+  
 };
 
 #endif

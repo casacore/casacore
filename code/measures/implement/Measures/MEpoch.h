@@ -216,6 +216,16 @@ public:
   static const String *const allMyTypes(Int &nall, Int &nextra,
 					const uInt *&typ);
   // </group>
+  // Check if all internal tables of types (both enum and String) are 
+  // complete and correct. This function is called automatically if and when
+  // necessary.
+  // <thrown>
+  //   <li> AipsError if a (programming) error in the types.
+  // </thrown>
+  // <group> 
+  virtual void checkTypes() const;
+  static void checkMyTypes();
+  // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Get my type (as Register)

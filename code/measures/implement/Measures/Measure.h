@@ -360,6 +360,20 @@ public:
 				       const uInt *&typ) const;
   // </group>
   //
+  // Check if all internal tables of types (both enum and String) are 
+  // complete and correct. This function is called automatically if and when
+  // necessary.
+  // <thrown>
+  //   <li> AipsError if a (programming) error in the types.
+  // </thrown>
+  // All should have
+  // <srcblock>
+  //  static void checkMyTypes();
+  // </srcblock>
+  // <group> 
+  virtual void checkTypes() const = 0;
+  // </group>
+  //
   // A general string checking routine to be used in derived measures.
   // Its arguments are the string to be converted (in), an array of
   // strings to check against (tname), and its length (N_name). The check

@@ -126,24 +126,24 @@ public:
   // an additional row and column should be coded in FromTo, and
   // in showType().</note>
   enum Types {
-      J2000,
-      JMEAN,
-      JTRUE,
-      APP,
-      B1950,
-      BMEAN,
-      BTRUE,
-      GALACTIC,
-      HADEC,
-      AZEL,
-      AZELSW,
-      JNAT,
-      ECLIPTIC,
-      MECLIPTIC,
-      TECLIPTIC,
-      SUPERGAL,
-      ITRF,
-      TOPO,
+    J2000,
+    JMEAN,
+    JTRUE,
+    APP,
+    B1950,
+    BMEAN,
+    BTRUE,
+    GALACTIC,
+    HADEC,
+    AZEL,
+    AZELSW,
+    JNAT,
+    ECLIPTIC,
+    MECLIPTIC,
+    TECLIPTIC,
+    SUPERGAL,
+    ITRF,
+    TOPO,
     N_Types,
     // Defaults
     DEFAULT=ITRF,
@@ -231,6 +231,16 @@ public:
   static const String *const allMyTypes(Int &nall, Int &nextra,
 					const uInt *&typ);
   // </group>
+  // Check if all internal tables of types (both enum and String) are 
+  // complete and correct. This function is called automatically if and when
+  // necessary.
+  // <thrown>
+  //   <li> AipsError if a (programming) error in the types.
+  // </thrown>
+  // <group> 
+  virtual void checkTypes() const;
+  static void checkMyTypes();
+  // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Get my type (as Register)
@@ -248,7 +258,7 @@ public:
   virtual Measure *clone() const;
   // </group>
   
-private:
+ private:
   //# Enumerations
   
   //# Data

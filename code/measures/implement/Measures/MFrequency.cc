@@ -155,6 +155,31 @@ Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
   return True;
 }
 
+void MFrequency::checkTypes() const {
+  MFrequency::checkMyTypes();
+};
+
+void MFrequency::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = MFrequency::allMyTypes(nall,nex, typ);
+    MFrequency::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert(MFrequency::getType(tp, MFrequency::showType(typ[i])) &&
+		   tp == Int(typ[i]) &&
+		   MFrequency::getType(tp, tps[i]) &&
+		   tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MFrequency::getType(tp, MFrequency::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 Bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
   MFrequency::Types tp;
   if (MFrequency::getType(tp, in)) mr = MFrequency::Ref(tp);

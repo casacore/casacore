@@ -165,6 +165,31 @@ const String *const MEpoch::allTypes(Int &nall, Int &nextra,
   return MEpoch::allMyTypes(nall, nextra, typ);
 }
 
+void MEpoch::checkTypes() const {
+  MEpoch::checkMyTypes();
+};
+
+void MEpoch::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = MEpoch::allMyTypes(nall,nex, typ);
+    MEpoch::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert(MEpoch::getType(tp, MEpoch::showType(typ[i])) &&
+		   tp == Int(typ[i]) &&
+		   MEpoch::getType(tp, tps[i]) &&
+		   tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MEpoch::getType(tp, MEpoch::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;

@@ -149,6 +149,33 @@ const String *const MRadialVelocity::allTypes(Int &nall, Int &nextra,
   return MRadialVelocity::allMyTypes(nall, nextra, typ);
 }
 
+void MRadialVelocity::checkTypes() const {
+  MRadialVelocity::checkMyTypes();
+};
+
+void MRadialVelocity::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = MRadialVelocity::allMyTypes(nall,nex, typ);
+    MRadialVelocity::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert
+	(MRadialVelocity::getType(tp, MRadialVelocity::showType(typ[i])) &&
+	 tp == Int(typ[i]) &&
+	 MRadialVelocity::getType(tp, tps[i]) &&
+	 tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MRadialVelocity::getType(tp,
+					    MRadialVelocity::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;

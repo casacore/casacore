@@ -138,6 +138,31 @@ const String *const MDoppler::allTypes(Int &nall, Int &nextra,
   return MDoppler::allMyTypes(nall, nextra, typ);
 }
 
+void MDoppler::checkTypes() const {
+  MDoppler::checkMyTypes();
+};
+
+void MDoppler::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = MDoppler::allMyTypes(nall,nex, typ);
+    MDoppler::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert(MDoppler::getType(tp, MDoppler::showType(typ[i])) &&
+		   tp == Int(typ[i]) &&
+		   MDoppler::getType(tp, tps[i]) &&
+		   tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MDoppler::getType(tp, MDoppler::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;

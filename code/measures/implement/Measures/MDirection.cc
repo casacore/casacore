@@ -236,6 +236,35 @@ const String *const MDirection::allTypes(Int &nall, Int &nextra,
   return MDirection::allMyTypes(nall, nextra, typ);
 }
 
+void MDirection::checkTypes() const {
+  MDirection::checkMyTypes();
+};
+
+void MDirection::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = MDirection::allMyTypes(nall,nex, typ);
+    MDirection::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert(MDirection::getType(tp, MDirection::showType(typ[i])) &&
+		   tp == Int(typ[i]) &&
+		   MDirection::getType(tp, tps[i]) &&
+		   tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MDirection::getType(tp, MDirection::showType(i)) &&
+		   tp == i, AipsError);
+    };
+    for (Int i=MERCURY; i<N_Planets; i++) {
+      AlwaysAssert(MDirection::getType(tp, MDirection::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 Bool MDirection::getType(MDirection::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;

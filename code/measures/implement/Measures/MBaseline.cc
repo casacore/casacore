@@ -181,6 +181,31 @@ const String *const MBaseline::allTypes(Int &nall, Int &nextra,
   return MBaseline::allMyTypes(nall, nextra, typ);
 }
 
+void MBaseline::checkTypes() const {
+  MBaseline::checkMyTypes();
+};
+
+void MBaseline::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = MBaseline::allMyTypes(nall,nex, typ);
+    MBaseline::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert(MBaseline::getType(tp, MBaseline::showType(typ[i])) &&
+		   tp == Int(typ[i]) &&
+		   MBaseline::getType(tp, tps[i]) &&
+		   tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MBaseline::getType(tp, MBaseline::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;

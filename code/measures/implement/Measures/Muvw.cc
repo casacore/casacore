@@ -180,6 +180,31 @@ const String *const Muvw::allTypes(Int &nall, Int &nextra,
   return Muvw::allMyTypes(nall, nextra, typ);
 }
 
+void Muvw::checkTypes() const {
+  Muvw::checkMyTypes();
+};
+
+void Muvw::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = Muvw::allMyTypes(nall,nex, typ);
+    Muvw::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert(Muvw::getType(tp, Muvw::showType(typ[i])) &&
+		   tp == Int(typ[i]) &&
+		   Muvw::getType(tp, tps[i]) &&
+		   tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(Muvw::getType(tp, Muvw::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 Bool Muvw::getType(Muvw::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;

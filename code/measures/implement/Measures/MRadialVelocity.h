@@ -137,7 +137,7 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   //# Friends
   // Conversion of data
   friend class MeasConvert<MRadialVelocity>;
-
+  
   //# Enumerations
   // Types of known MRadialVelocity
   // <note role=warning> The order defines the order in the translation
@@ -158,7 +158,7 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
     DEFAULT=LSRK,
     // Synonyms
     LSR=LSRK };
-
+  
   //# Typedefs
   // Measure value container for this class (i.e. MRadialVelocity::MVType)
   typedef class MVRadialVelocity MVType;
@@ -175,39 +175,39 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   typedef class ArrayMeasColumn<MRadialVelocity> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
   typedef Types Types;
-
-//# Constructors
-// <note role=tip> In the following constructors and other functions, all 
-// <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. </note>
-// Default constructor; generates a zero rest RadialVelocity
-    MRadialVelocity();
-// Create from data and reference
-// <group>
-    MRadialVelocity(const MVRadialVelocity &dt);
-    MRadialVelocity(const MVRadialVelocity &dt, const MRadialVelocity::Ref &rf);
-    MRadialVelocity(const MVRadialVelocity &dt, MRadialVelocity::Types rf);
-    MRadialVelocity(const Quantity &dt);
-    MRadialVelocity(const Quantity &dt, const MRadialVelocity::Ref &rf);
-    MRadialVelocity(const Quantity &dt, MRadialVelocity::Types rf);
-    MRadialVelocity(const Measure *dt);
-    MRadialVelocity(const MeasValue *dt);
-// </group>
-
-//# Destructor
-    virtual ~MRadialVelocity();
-
-//# Operators
-
-//# General Member Functions
-// Tell me your type
-// <group>
-    virtual const String &tellMe() const;
-    static const String &showMe();
-    virtual uInt type() const;
-    static void assure(const Measure &in);
-// </group>
-// Translate reference code. The uInt version has a check for valid codes
+  
+  //# Constructors
+  // <note role=tip> In the following constructors and other functions, all 
+  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  // where no offsets or frames are needed in the reference. </note>
+  // Default constructor; generates a zero rest RadialVelocity
+  MRadialVelocity();
+  // Create from data and reference
+  // <group>
+  MRadialVelocity(const MVRadialVelocity &dt);
+  MRadialVelocity(const MVRadialVelocity &dt, const MRadialVelocity::Ref &rf);
+  MRadialVelocity(const MVRadialVelocity &dt, MRadialVelocity::Types rf);
+  MRadialVelocity(const Quantity &dt);
+  MRadialVelocity(const Quantity &dt, const MRadialVelocity::Ref &rf);
+  MRadialVelocity(const Quantity &dt, MRadialVelocity::Types rf);
+  MRadialVelocity(const Measure *dt);
+  MRadialVelocity(const MeasValue *dt);
+  // </group>
+  
+  //# Destructor
+  virtual ~MRadialVelocity();
+  
+  //# Operators
+  
+  //# General Member Functions
+  // Tell me your type
+  // <group>
+  virtual const String &tellMe() const;
+  static const String &showMe();
+  virtual uInt type() const;
+  static void assure(const Measure &in);
+  // </group>
+  // Translate reference code. The uInt version has a check for valid codes
   // (i.e. it is a safe cast).
   // <thrown>
   //   <li> AipsError in the uInt interface if illegal code given
@@ -217,11 +217,11 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   static const String &showType(MRadialVelocity::Types tp);
   static const String &showType(uInt tp);
   // </group>
-// Translate string to reference code
-// <group>
+  // Translate string to reference code
+  // <group>
   static Bool getType(MRadialVelocity::Types &tp, const String &in);
   Bool giveMe(MRadialVelocity::Ref &mr, const String &in);
-// </group>
+  // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);
   // Set the reference type to the specified String. False if illegal
@@ -238,43 +238,53 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   static const String *const allMyTypes(Int &nall, Int &nextra,
 					const uInt *&typ);
   // </group>
+  // Check if all internal tables of types (both enum and String) are 
+  // complete and correct. This function is called automatically if and when
+  // necessary.
+  // <thrown>
+  //   <li> AipsError if a (programming) error in the types.
+  // </thrown>
+  // <group> 
+  virtual void checkTypes() const;
+  static void checkMyTypes();
+  // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Get my type (as Register)
   static uInt myType();
-
-// Get radial velocity in specified units
-    Quantity get(const Unit &un) const;
-
-// Make a Doppler velocity (as an MDoppler::BETA default) from the RadialVelocity.
-// <group>
-    MDoppler toDoppler();
+  
+  // Get radial velocity in specified units
+  Quantity get(const Unit &un) const;
+  
+  // Make a Doppler velocity (as an MDoppler::BETA default) from the RadialVelocity.
+  // <group>
+  MDoppler toDoppler();
   // Local use only
   static MDoppler toDoppler(const Measure &in);
-// </group>
-
-// Make a RadialVelocity from the Doppler velocity (assuming LSRK default)
-// <group>
-    static MRadialVelocity fromDoppler(const MDoppler &dop);
-    static MRadialVelocity fromDoppler(const MDoppler &dop,
-				       MRadialVelocity::Types typ);
+  // </group>
+  
+  // Make a RadialVelocity from the Doppler velocity (assuming LSRK default)
+  // <group>
+  static MRadialVelocity fromDoppler(const MDoppler &dop);
+  static MRadialVelocity fromDoppler(const MDoppler &dop,
+				     MRadialVelocity::Types typ);
   // For internal use only
-    static MRadialVelocity fromDoppler(const Measure &dop,
-				       MRadialVelocity::Types typ);
-// </group>
-
-// Make a copy
-// <group>
-    virtual Measure *clone() const;
-// </group>
-
-private:
-//# Enumerations
-
-//# Data
-
-//# Member functions
-
+  static MRadialVelocity fromDoppler(const Measure &dop,
+				     MRadialVelocity::Types typ);
+  // </group>
+  
+  // Make a copy
+  // <group>
+  virtual Measure *clone() const;
+  // </group>
+  
+ private:
+  //# Enumerations
+  
+  //# Data
+  
+  //# Member functions
+  
 };
 
 #endif

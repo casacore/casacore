@@ -219,6 +219,35 @@ Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
   return True;
 }
 
+void MEarthMagnetic::checkTypes() const {
+  MEarthMagnetic::checkMyTypes();
+};
+
+void MEarthMagnetic::checkMyTypes() {
+  static Bool first(True);
+  if (first) {
+    first = False;
+    Int nall, nex;
+    const uInt *typ;
+    const String *const tps = MEarthMagnetic::allMyTypes(nall,nex, typ);
+    MEarthMagnetic::Types tp;
+    for (Int i=0; i<nall; i++) {
+      AlwaysAssert(MEarthMagnetic::getType(tp, MEarthMagnetic::showType(typ[i])) &&
+		   tp == Int(typ[i]) &&
+		   MEarthMagnetic::getType(tp, tps[i]) &&
+		   tp == Int(typ[i]), AipsError);
+    };
+    for (Int i=0; i<N_Types; i++) {
+      AlwaysAssert(MEarthMagnetic::getType(tp, MEarthMagnetic::showType(i)) &&
+		   tp == i, AipsError);
+    };
+    for (Int i=IGRF; i<N_Models; i++) {
+      AlwaysAssert(MEarthMagnetic::getType(tp, MEarthMagnetic::showType(i)) &&
+		   tp == i, AipsError);
+    };
+  };
+}
+
 Bool MEarthMagnetic::giveMe(MEarthMagnetic::Ref &mr, const String &in) {
   MEarthMagnetic::Types tp;
   if (MEarthMagnetic::getType(tp, in)) mr = MEarthMagnetic::Ref(tp);

@@ -178,41 +178,41 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
   // Reference enum Types (included originally for gcc 2.95)  
   typedef Types Types;
 
-//# Constructors
-// <note> In the following constructors and other functions, all 
-// <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. </note>
-// Default constructor; generates the default IGRF type
-    MEarthMagnetic();
-// Create from data and reference
-// <group>
-    MEarthMagnetic(const MVEarthMagnetic &dt);
-    MEarthMagnetic(const MVEarthMagnetic &dt, const MEarthMagnetic::Ref &rf);
-    MEarthMagnetic(const MVEarthMagnetic &dt, MEarthMagnetic::Types rf);
-    MEarthMagnetic(const Measure *dt);
-    MEarthMagnetic(const MeasValue *dt);
-    MEarthMagnetic(const MEarthMagnetic::Ref &rf);
-// </group>
-
+  //# Constructors
+  // <note> In the following constructors and other functions, all 
+  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  // where no offsets or frames are needed in the reference. </note>
+  // Default constructor; generates the default IGRF type
+  MEarthMagnetic();
+  // Create from data and reference
+  // <group>
+  MEarthMagnetic(const MVEarthMagnetic &dt);
+  MEarthMagnetic(const MVEarthMagnetic &dt, const MEarthMagnetic::Ref &rf);
+  MEarthMagnetic(const MVEarthMagnetic &dt, MEarthMagnetic::Types rf);
+  MEarthMagnetic(const Measure *dt);
+  MEarthMagnetic(const MeasValue *dt);
+  MEarthMagnetic(const MEarthMagnetic::Ref &rf);
+  // </group>
+  
   // <group>
   MEarthMagnetic(const MEarthMagnetic &);
   MEarthMagnetic &operator=(const MEarthMagnetic &);
   // </group>
-
-//# Destructor
-    virtual ~MEarthMagnetic();
-
-//# Operators
-
-//# General Member Functions
-// Tell me your type
-// <group>
-    virtual const String &tellMe() const;
-    static const String &showMe();
-    virtual uInt type() const;
-    static void assure(const Measure &in);
-// </group>
-// Translate reference code. The uInt version has a check for valid codes
+  
+  //# Destructor
+  virtual ~MEarthMagnetic();
+  
+  //# Operators
+  
+  //# General Member Functions
+  // Tell me your type
+  // <group>
+  virtual const String &tellMe() const;
+  static const String &showMe();
+  virtual uInt type() const;
+  static void assure(const Measure &in);
+  // </group>
+  // Translate reference code. The uInt version has a check for valid codes
   // (i.e. it is a safe cast).
   // <thrown>
   //   <li> AipsError in the uInt interface if illegal code given
@@ -222,11 +222,11 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
   static const String &showType(MEarthMagnetic::Types tp);
   static const String &showType(uInt tp);
   // </group>
-// Translate string to reference code
-// <group>
+  // Translate string to reference code
+  // <group>
   static Bool getType(MEarthMagnetic::Types &tp, const String &in);
   Bool giveMe(MEarthMagnetic::Ref &mr, const String &in);
-// </group>
+  // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);
   // Set the reference type to the specified String. False if illegal
@@ -243,30 +243,40 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
   static const String *const allMyTypes(Int &nall, Int &nextra,
 					const uInt *&typ);
   // </group>
+  // Check if all internal tables of types (both enum and String) are 
+  // complete and correct. This function is called automatically if and when
+  // necessary.
+  // <thrown>
+  //   <li> AipsError if a (programming) error in the types.
+  // </thrown>
+  // <group> 
+  virtual void checkTypes() const;
+  static void checkMyTypes();
+  // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Get my type (as Register)
   static uInt myType();
   // Tell me if you are a pure model (e.g. a planet)
   virtual Bool isModel() const;
-
-// Get Measure data
-// <group>
-    Quantum<Vector<Double> > get(const Unit &inunit) const;
-    Quantum<Vector<Double> > getAngle() const;
-    Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
-// </group>
-
-// Make copy
+  
+  // Get Measure data
+  // <group>
+  Quantum<Vector<Double> > get(const Unit &inunit) const;
+  Quantum<Vector<Double> > getAngle() const;
+  Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
+  // </group>
+  
+  // Make copy
   virtual Measure *clone() const;
-
-private:
-//# Enumerations
-
-//# Data
-
-//# Member functions
-
+  
+ private:
+  //# Enumerations
+  
+  //# Data
+  
+  //# Member functions
+  
 };
 
 #endif
