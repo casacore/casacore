@@ -347,7 +347,7 @@ public:
     Slicer& operator= (const Slicer&);
 
     // Equality
-    Bool operator==(const Slicer&);
+    Bool operator==(const Slicer&) const;
 
     // Return the number of dimensions of the Slicer.
     uInt ndim() const;
