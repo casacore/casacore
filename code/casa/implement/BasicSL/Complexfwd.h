@@ -43,7 +43,11 @@
 #if (!defined(AIPS_USE_OLD_COMPLEX))
 
 //# Forward declarations
+#if defined(AIPS_USE_NEW_SGI)
+#include <complex>
+#else
 template<class T> class complex;
+#endif
 typedef complex<Float>  Complex;
 typedef complex<Double> DComplex;
 
