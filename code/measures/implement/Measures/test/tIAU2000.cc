@@ -214,6 +214,8 @@ int main() {
       uInt iau2000a_reg =
 	AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use2000a"),
 				      False);
+      cout << "Registrations old: " << iau2000_reg << ", " <<
+	iau2000a_reg << endl;
       MDirection md(Quantity(30., "deg"), Quantity(50., "deg"),
 		    MDirection::J2000);
       MEpoch ep(Quantity(50083.,"d"));
@@ -226,17 +228,19 @@ int main() {
       cout << mcv() << endl;
       MDirection mdcv = mcv();
       AipsrcBool::set(iau2000_reg, True);
+      MDirection::Convert mcv1(md, MDirection::Ref(MDirection::APP, frame));
       cout << "New J2000 " << AipsrcBool::get(iau2000_reg) << ", " <<
 	"J2000A " << AipsrcBool::get(iau2000a_reg) << endl;
-      cout << mcv() << endl;
-      cout << "Difference: " << (mcv().getValue().getValue()
+      cout << mcv1() << endl;
+      cout << "Difference: " << (mcv1().getValue().getValue()
 	- mdcv.getValue().getValue())*200000. << endl;
 
       AipsrcBool::set(iau2000a_reg, True);
+      MDirection::Convert mcv2(md, MDirection::Ref(MDirection::APP, frame));
       cout << "New J2000 " << AipsrcBool::get(iau2000_reg) << ", " <<
 	"J2000A " << AipsrcBool::get(iau2000a_reg) << endl;
-      cout << mcv() << endl;
-      cout << "Difference: " << (mcv().getValue().getValue()
+      cout << mcv2() << endl;
+      cout << "Difference: " << (mcv2().getValue().getValue()
 	- mdcv.getValue().getValue())*200000. << endl;
       
       SEPAR();
@@ -262,12 +266,29 @@ int main() {
 	gst << ", " <<
 	MeasTable::GMST00(utb, ttb) << ", " <<
 	gst - MeasTable::GMST00(utb, ttb) << endl;
-      cout << "GMST82 (aips++, GMST00): " <<
+      cout << "GMST82 (GMST82, GMST00, diff): " <<
 	utb+MeasTable::GMST0(utb)/MeasData::SECinDAY + 6713. << ", " <<
+	MeasTable::GMST00(utb, ttb)/C::_2pi <<", " <<
+	utb+MeasTable::GMST0(utb)/MeasData::SECinDAY + 6713. -
 	MeasTable::GMST00(utb, ttb)/C::_2pi << endl;
       SEPAR();
     }
 
+    {
+      cout << "Test Aipsrc value cross talk ..." << endl;
+      SEPAR();
+      uInt iau2000_r =
+	AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use"),
+				      False);
+      uInt iau2000a_r =
+	AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use2000a"),
+				      False);
+      cout << "Registrations now: " << iau2000_r << ", " <<
+	iau2000a_r << endl;
+      cout << "New J2000 " << AipsrcBool::get(iau2000_r) << ", " <<
+	"J2000A " << AipsrcBool::get(iau2000a_r) << endl;
+      SEPAR();
+    }
 
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
