@@ -286,12 +286,12 @@ template <class T> class ArrayBaseAccessor {
       arrayPtr_p = other.arrayPtr_p;
       ptr_p = other.ptr_p; begin_p = other.begin_p;
     }; return *this; }
-  ArrayBaseAccessor &operator=(const ArrayBaseAccessor<T> &other,
-			       const uInt ax) {
-    if (&other != this) {
-      arrayPtr_p = other.arrayPtr_p; axis_p = ax;
-      ptr_p = other.ptr_p; begin_p = other.begin_p;
-    }; return *this; }
+  ///  ArrayBaseAccessor &operator=(const ArrayBaseAccessor<T> &other,
+  ///			       const uInt ax) {
+  ///    if (&other != this) {
+  ///      arrayPtr_p = other.arrayPtr_p; axis_p = ax;
+  ///      ptr_p = other.ptr_p; begin_p = other.begin_p;
+  ///    }; return *this; }
   // </group>
   
   //# Destructor
@@ -475,12 +475,12 @@ public ArrayBaseAccessor<T> {
       ArrayBaseAccessor<T>::operator=(other);
       initStep();
     }; return *this; }
-  ArrayAccessor &operator=(const ArrayAccessor<T, AxisN> &other,
-			   const AxisN ax) {
-    if (&other != this) {
-      ArrayBaseAccessor<T>::operator=(other, ax.N);
-      initStep();
-    }; return *this; }
+  ///  ArrayAccessor &operator=(const ArrayAccessor<T, AxisN> &other,
+  ///			   const AxisN ax) {
+  ///    if (&other != this) {
+  ///      ArrayBaseAccessor<T>::operator=(other, ax.N);
+  ///      initStep();
+  ///    }; return *this; }
   template <uInt X>
     ArrayAccessor &operator=(const ArrayAccessor<T, Axis<X> > &other) {
     if (&other != this) {
