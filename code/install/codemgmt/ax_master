@@ -3455,3 +3455,4 @@
 13 270 src rm doc/cookbook/
 13 274 src rm trial/apps/measures/IGRF/table.f0i0
 13 274 src rm trial/apps/measures/IGRF/table.f0i1
+13 279 src mv trial/implement/Measures/DumComet.cc aips/implement/Measures/MeasComet.cc
