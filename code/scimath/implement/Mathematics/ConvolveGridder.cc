@@ -1,5 +1,5 @@
 //# ConvolveGridder.cc: Convolutional Gridder
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/iostream.h>
 
 #define NEED_UNDERSCORES
 #if defined(NEED_UNDERSCORES)
