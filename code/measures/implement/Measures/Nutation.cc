@@ -1,5 +1,5 @@
 //# Nutation.cc:  Nutation class
-//# Copyright (C) 1995,1996,1997,1998,1999,2002,2003
+//# Copyright (C) 1995-1999,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,12 +27,12 @@
 
 //# Includes
 #include <measures/Measures/Nutation.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MeasIERS.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Constants.h>
 #include <casa/System/AipsrcValue.h>
+#include <measures/Measures/MeasIERS.h>
+#include <measures/Measures/MeasTable.h>
 
 //# Constants
 const Double Nutation::INTV = 0.04;
@@ -75,6 +75,7 @@ void Nutation::init(NutationTypes type) {
 void Nutation::copy(const Nutation &other) {
   method_p = other.method_p;
   checkEpoch_p = other.checkEpoch_p;
+  checkDerEpoch_p = other.checkDerEpoch_p;
   eqeq_p = other.eqeq_p;
   deqeq_p = other.deqeq_p;
   neval_p = other.neval_p;
@@ -96,9 +97,10 @@ Nutation::~Nutation() {}
 const Euler &Nutation::operator()(Double epoch) {
   calcNut(epoch);
   lres_p++; lres_p %= 4;
+  for (uInt i=0; i<3; ++i) result_p[lres_p](i) = nval_p[i];
   Double dt = epoch - checkEpoch_p;
-  for (uInt i=0; i<3; i++) {
-    result_p[lres_p](i) = nval_p[i] + dt*dval_p[i];
+  if (dt != 0) {
+    for (uInt i=0; i<3; ++i) result_p[lres_p](i) += dt*dval_p[i];
   };
   return result_p[lres_p];
 }
@@ -106,19 +108,16 @@ const Euler &Nutation::operator()(Double epoch) {
 //# Member functions
 
 const Euler &Nutation::derivative(Double epoch) {
-  calcNut(epoch);
+  calcNut(epoch, True);
   lres_p++; lres_p %= 4;
-  for (uInt i=0; i<3; i++) {
-    result_p[lres_p](i) = dval_p[i];
-  };
+  for (uInt i=0; i<3; i++) result_p[lres_p](i) = dval_p[i];
   return result_p[lres_p];
 }
 
 void Nutation::fill() {
   checkEpoch_p = 1e30;
-  for (uInt i=0; i<4; i++) {
-    result_p[i].set(1,3,1);
-  };
+  checkDerEpoch_p = 1e30;
+  for (uInt i=0; i<4; i++) result_p[i].set(1,3,1);
   // Get interval and other switches
   if (!Nutation::myInterval_reg) {
     myInterval_reg = 
@@ -140,25 +139,30 @@ void Nutation::fill() {
 
 void Nutation::refresh() {
   checkEpoch_p = 1e30;
+  checkDerEpoch_p = 1e30;
 }
 
 Double Nutation::eqox(Double epoch) {
   calcNut(epoch);
-  return (Double(eqeq_p + (epoch - checkEpoch_p)*deqeq_p));
+  Double dt = epoch - checkEpoch_p;
+  if (dt == 0) return eqeq_p;
+  return (eqeq_p + dt*deqeq_p);
 }
 
 Double Nutation::derivativeEqox(Double epoch) {
-  calcNut(epoch);
+  calcNut(epoch, True);
   return deqeq_p;
 }
 
 Double Nutation::eqoxCT(Double epoch) {
   calcNut(epoch);
-  return neval_p + (epoch - checkEpoch_p)*deval_p;
+  Double dt = epoch - checkEpoch_p;
+  if (dt == 0) return neval_p;
+  return neval_p + dt*deval_p;
 }
 
 Double Nutation::derivativeEqoxCT(Double epoch) {
-  calcNut(epoch);
+  calcNut(epoch, True);
   return deval_p;
 }
 
@@ -170,10 +174,160 @@ Quantity Nutation::getEqoxAngle(Double epoch, const Unit &unit) {
   return Quantity(eqox(epoch),"rad").get(unit);
 }
 
-void Nutation::calcNut(Double t) {
+void Nutation::calcNut(Double t, Bool calcDer) {
+  // Calculate the nutation value at epoch
+  Bool renew(False);
   if (!nearAbs(t, checkEpoch_p,
 	       AipsrcValue<Double>::get(Nutation::myInterval_reg))) {
     checkEpoch_p = t;
+    renew = True;
+    Double dEps = 0;
+    Double dPsi = 0;
+    switch (method_p) {
+    case B1950:
+      t = (t - MeasData::MJDB1900)/MeasData::JDCEN;
+      break;
+    case IAU2000A:
+    case IAU2000B:
+      t = (t - MeasData::MJD2000)/MeasData::JDCEN;
+      break;
+    default:
+      if (AipsrcValue<Bool>::get(Nutation::myUseiers_reg)) {
+	dPsi = MeasTable::dPsiEps(0, t);
+	dEps = MeasTable::dPsiEps(1, t);
+      };
+      t = (t - MeasData::MJD2000)/MeasData::JDCEN;
+      break;
+    };
+    Vector<Double> fa(5), dfa(5);
+    Vector<Double> pfa(14), pdfa(14);
+    Double dtmp;
+    nval_p[1] = Double(0);
+    nval_p[2] = Double(0);
+    neval_p = 0;
+    switch (method_p) {
+    case B1950:
+      nval_p[0] = MeasTable::fundArg1950(0)(t); 	//eps0
+      for (uInt i=0; i<5; i++) {
+	fa(i) = MeasTable::fundArg1950(i+1)(t);
+      };
+      for (uInt i=0; i<69; i++) {
+	dtmp = 0;
+	for (uInt j=0; j<5; j++) {
+	  dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
+	};
+	nval_p[1] += MeasTable::mulSC1950(i,t)[0] * sin(dtmp);
+	nval_p[2] += MeasTable::mulSC1950(i,t)[1] * cos(dtmp);
+      };
+      break;
+    case IAU2000B:
+      nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
+      for (uInt i=0; i<5; i++) {
+	fa(i) = MeasTable::fundArg2000(i+1)(t);
+      };
+      for (Int i=76; i>=0; --i) {
+	dtmp = 0;
+	for (uInt j=0; j<5; j++) {
+	  dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
+	};
+	nval_p[1] += MeasTable::mulSC2000B(i,t)[0] * sin(dtmp);
+	nval_p[2] += MeasTable::mulSC2000B(i,t)[1] * cos(dtmp);
+	nval_p[1] += MeasTable::mulSC2000B(i,t)[4] * cos(dtmp);
+	nval_p[2] += MeasTable::mulSC2000B(i,t)[5] * sin(dtmp);
+      };
+      // Add an average for missing planetary precession terms
+      nval_p[2] += 0.388e0 * C::arcsec*1e-3;
+      nval_p[1] -= 0.135e0 * C::arcsec*1e-3;
+      break;
+    case IAU2000A:
+      nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
+      for (uInt i=0; i<5; i++) {
+	fa(i) = MeasTable::fundArg2000(i+1)(t);
+      };
+      for (Int i=677; i>=0; --i) {
+	dtmp = 0;
+	for (uInt j=0; j<5; j++) {
+	  dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
+	};
+	nval_p[1] += MeasTable::mulSC2000A(i,t)[0] * sin(dtmp);
+	nval_p[2] += MeasTable::mulSC2000A(i,t)[1] * cos(dtmp);
+	nval_p[1] += MeasTable::mulSC2000A(i,t)[4] * cos(dtmp);
+	nval_p[2] += MeasTable::mulSC2000A(i,t)[5] * sin(dtmp);
+      };
+      for (uInt i=0; i<14; i++) {
+	pfa(i) = MeasTable::planetaryArg2000(i)(t);
+      };
+      for (Int i=686; i>=0; --i) {
+	dtmp = 0;
+	for (uInt j=0; j<14; j++) {
+	  dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
+	};
+	nval_p[1] += MeasTable::mulPlanSC2000A(i)[0] * sin(dtmp);
+	nval_p[1] += MeasTable::mulPlanSC2000A(i)[1] * cos(dtmp);
+	nval_p[2] += MeasTable::mulPlanSC2000A(i)[2] * sin(dtmp);
+	nval_p[2] += MeasTable::mulPlanSC2000A(i)[3] * cos(dtmp);
+      };
+      break;
+    default:
+      nval_p[0] = MeasTable::fundArg(0)(t); 	//eps0
+      if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
+	const Vector<Double> &mypl =
+	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
+	nval_p[1] = mypl[0];
+	nval_p[2] = mypl[1];
+      } else {
+	for (uInt i=0; i<5; i++) {
+	  fa(i) = MeasTable::fundArg(i+1)(t);
+	};
+	for (uInt i=0; i<106; i++) {
+	  dtmp = 0;
+	  for (uInt j=0; j<5; j++) {
+	    dtmp += MeasTable::mulArg(i)[j] * fa[j];
+	  };
+	  nval_p[1] += MeasTable::mulSC(i,t)[0] * sin(dtmp);
+	  nval_p[2] += MeasTable::mulSC(i,t)[1] * cos(dtmp);
+	};
+      };
+      nval_p[2] += dEps;
+      nval_p[1] += dPsi;
+      break;
+    }
+    nval_p[1] = -nval_p[1];
+    nval_p[2] = -nval_p[0] - nval_p[2];
+    eqeq_p = -nval_p[1] * cos(nval_p[2]);
+    // Complimentary terms equation of equinoxes
+    switch (method_p) {
+    case IAU2000B:
+      for (uInt i=0; i<14; i++) {
+	pfa(i) = MeasTable::planetaryArg2000(i)(t);
+      };
+    case IAU2000A:
+      neval_p = 0;
+      for (Int i=32; i>=0; --i) {
+	dtmp = 0;
+	for (uInt j=0; j<14; j++) {
+	  dtmp += MeasTable::mulArgEqEqCT2000(i)[j] * pfa[j];
+	};
+	neval_p += MeasTable::mulSCEqEqCT2000(i)[0] * sin(dtmp);
+	neval_p += MeasTable::mulSCEqEqCT2000(i)[1] * cos(dtmp);
+      };
+      dtmp = 0;
+      for (uInt j=0; j<14; j++) {
+	dtmp += MeasTable::mulArgEqEqCT2000(33)[j] * pfa[j];
+      };
+      neval_p += t*MeasTable::mulSCEqEqCT2000(33)[0] * sin(dtmp);
+      neval_p += t*MeasTable::mulSCEqEqCT2000(33)[1] * cos(dtmp);
+      neval_p *= C::arcsec;
+      eqeq_p += neval_p;
+      break;
+    default:
+      break;
+    }
+  };
+  if ((renew && calcDer) ||
+      (!renew && t != checkEpoch_p && checkEpoch_p != checkDerEpoch_p)) {
+    t = checkEpoch_p;
+    checkDerEpoch_p = t;
     Double dEps = 0;
     Double dPsi = 0;
     switch (method_p) {
@@ -195,14 +349,11 @@ void Nutation::calcNut(Double t) {
     Vector<Double> fa(5), dfa(5);
     Vector<Double> pfa(14), pdfa(14);
     Double dtmp, ddtmp;
-    nval_p[1] = Double(0);
     dval_p[1] = Double(0);
-    nval_p[2] = Double(0);
     dval_p[2] = Double(0);
-    neval_p = deval_p = 0;
+    deval_p = 0;
     switch (method_p) {
     case B1950:
-      nval_p[0] = MeasTable::fundArg1950(0)(t); 	//eps0
       dval_p[0] = (MeasTable::fundArg1950(0).derivative())(t);
       for (uInt i=0; i<5; i++) {
 	fa(i) = MeasTable::fundArg1950(i+1)(t);
@@ -214,8 +365,6 @@ void Nutation::calcNut(Double t) {
 	  dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
 	  ddtmp += MeasTable::mulArg1950(i)[j] * dfa[j];
 	};
-	nval_p[1] += MeasTable::mulSC1950(i,t)[0] * sin(dtmp);
-	nval_p[2] += MeasTable::mulSC1950(i,t)[1] * cos(dtmp);
 	dval_p[1] += MeasTable::mulSC1950(i,t)[2] * sin(dtmp) +
 	  MeasTable::mulSC1950(i,t)[0] * cos(dtmp) * ddtmp;
 	dval_p[2] += MeasTable::mulSC1950(i,t)[3] * cos(dtmp) -
@@ -223,7 +372,6 @@ void Nutation::calcNut(Double t) {
       };
       break;
     case IAU2000B:
-      nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
       dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
       for (uInt i=0; i<5; i++) {
 	fa(i) = MeasTable::fundArg2000(i+1)(t);
@@ -235,21 +383,14 @@ void Nutation::calcNut(Double t) {
 	  dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
 	  ddtmp += MeasTable::mulArg2000B(i)[j] * dfa[j];
 	};
-	nval_p[1] += MeasTable::mulSC2000B(i,t)[0] * sin(dtmp);
-	nval_p[2] += MeasTable::mulSC2000B(i,t)[1] * cos(dtmp);
 	dval_p[1] += MeasTable::mulSC2000B(i,t)[2] * sin(dtmp) +
 	  MeasTable::mulSC2000B(i,t)[0] * cos(dtmp) * ddtmp;
 	dval_p[2] += MeasTable::mulSC2000B(i,t)[3] * cos(dtmp) -
 	  MeasTable::mulSC2000B(i,t)[1] * sin(dtmp) * ddtmp;
-	nval_p[1] += MeasTable::mulSC2000B(i,t)[4] * cos(dtmp);
-	nval_p[2] += MeasTable::mulSC2000B(i,t)[5] * sin(dtmp);
       };
       // Add an average for missing planetary precession terms
-      nval_p[2] += 0.388e0 * C::arcsec*1e-3;
-      nval_p[1] -= 0.135e0 * C::arcsec*1e-3;
       break;
     case IAU2000A:
-      nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
       dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
       for (uInt i=0; i<5; i++) {
 	fa(i) = MeasTable::fundArg2000(i+1)(t);
@@ -261,14 +402,10 @@ void Nutation::calcNut(Double t) {
 	  dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
 	  ddtmp += MeasTable::mulArg2000A(i)[j] * dfa[j];
 	};
-	nval_p[1] += MeasTable::mulSC2000A(i,t)[0] * sin(dtmp);
-	nval_p[2] += MeasTable::mulSC2000A(i,t)[1] * cos(dtmp);
 	dval_p[1] += MeasTable::mulSC2000A(i,t)[2] * sin(dtmp) +
 	  MeasTable::mulSC2000A(i,t)[0] * cos(dtmp) * ddtmp;
 	dval_p[2] += MeasTable::mulSC2000A(i,t)[3] * cos(dtmp) -
 	  MeasTable::mulSC2000A(i,t)[1] * sin(dtmp) * ddtmp;
-	nval_p[1] += MeasTable::mulSC2000A(i,t)[4] * cos(dtmp);
-	nval_p[2] += MeasTable::mulSC2000A(i,t)[5] * sin(dtmp);
       };
       for (uInt i=0; i<14; i++) {
 	pfa(i) = MeasTable::planetaryArg2000(i)(t);
@@ -280,10 +417,6 @@ void Nutation::calcNut(Double t) {
 	  dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
 	  ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
 	};
-	nval_p[1] += MeasTable::mulPlanSC2000A(i)[0] * sin(dtmp);
-	nval_p[1] += MeasTable::mulPlanSC2000A(i)[1] * cos(dtmp);
-	nval_p[2] += MeasTable::mulPlanSC2000A(i)[2] * sin(dtmp);
-	nval_p[2] += MeasTable::mulPlanSC2000A(i)[3] * cos(dtmp);
 	dval_p[1] += MeasTable::mulPlanSC2000A(i)[0] * cos(dtmp) -
 	  MeasTable::mulPlanSC2000A(i)[1] * sin(dtmp) * ddtmp;
 	dval_p[2] += MeasTable::mulPlanSC2000A(i)[2] * cos(dtmp) -
@@ -291,13 +424,10 @@ void Nutation::calcNut(Double t) {
       };
       break;
     default:
-      nval_p[0] = MeasTable::fundArg(0)(t); 	//eps0
       dval_p[0] = (MeasTable::fundArg(0).derivative())(t)/MeasData::JDCEN;
       if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
 	const Vector<Double> &mypl =
 	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
-	nval_p[1] = mypl[0];
-	nval_p[2] = mypl[1];
 	dval_p[1] = mypl[2]*MeasData::JDCEN;
 	dval_p[2] = mypl[3]*MeasData::JDCEN;
       } else {
@@ -311,23 +441,16 @@ void Nutation::calcNut(Double t) {
 	    dtmp += MeasTable::mulArg(i)[j] * fa[j];
 	    ddtmp += MeasTable::mulArg(i)[j] * dfa[j];
 	  };
-	  nval_p[1] += MeasTable::mulSC(i,t)[0] * sin(dtmp);
-	  nval_p[2] += MeasTable::mulSC(i,t)[1] * cos(dtmp);
 	  dval_p[1] += MeasTable::mulSC(i,t)[2] * sin(dtmp) +
 	    MeasTable::mulSC(i,t)[0] * cos(dtmp) * ddtmp;
 	  dval_p[2] += MeasTable::mulSC(i,t)[3] * cos(dtmp) -
 	    MeasTable::mulSC(i,t)[1] * sin(dtmp) * ddtmp;
 	};
       };
-      nval_p[2] += dEps;
-      nval_p[1] += dPsi;
       break;
     }
-    nval_p[1] = -nval_p[1];
     dval_p[1] = -dval_p[1]/MeasData::JDCEN;
-    nval_p[2] = -nval_p[0] - nval_p[2];
     dval_p[2] = (-dval_p[0] - dval_p[2])/MeasData::JDCEN;
-    eqeq_p = -nval_p[1] * cos(nval_p[2]);
     deqeq_p = -dval_p[1] * cos(nval_p[2]) +
       nval_p[1] * sin(nval_p[2]) * dval_p[2];
     // Complimentary terms equation of equinoxes
@@ -345,8 +468,6 @@ void Nutation::calcNut(Double t) {
 	  dtmp += MeasTable::mulArgEqEqCT2000(i)[j] * pfa[j];
 	  ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
 	};
-	neval_p += MeasTable::mulSCEqEqCT2000(i)[0] * sin(dtmp);
-	neval_p += MeasTable::mulSCEqEqCT2000(i)[1] * cos(dtmp);
 	deval_p += MeasTable::mulSCEqEqCT2000(i)[0] * cos(dtmp) -
 	  MeasTable::mulSCEqEqCT2000(i)[1] * sin(dtmp) * ddtmp;
       };
@@ -355,11 +476,8 @@ void Nutation::calcNut(Double t) {
 	dtmp += MeasTable::mulArgEqEqCT2000(33)[j] * pfa[j];
 	ddtmp += MeasTable::mulPlanArg2000A(33)[j] * pdfa[j];
       };
-      neval_p += t*MeasTable::mulSCEqEqCT2000(33)[0] * sin(dtmp);
-      neval_p += t*MeasTable::mulSCEqEqCT2000(33)[1] * cos(dtmp);
       deval_p += MeasTable::mulSCEqEqCT2000(33)[0] * cos(dtmp) -
 	MeasTable::mulSCEqEqCT2000(33)[1] * sin(dtmp) * ddtmp;
-      neval_p *= C::arcsec;
       eqeq_p += neval_p;
       ///      deqeq_p += deval_p*...;
       break;

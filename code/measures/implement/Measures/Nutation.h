@@ -1,5 +1,5 @@
 //# Nutation.h: Nutation class
-//# Copyright (C) 1995,1996,1997,1998,2003
+//# Copyright (C) 1995,1996,1997,1998,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -198,6 +198,8 @@ class Nutation {
   NutationTypes method_p;
   // Check epoch for linear approximation
   Double checkEpoch_p;
+  // Check epoch for calculation of derivatives
+  Double checkDerEpoch_p;
   // Cached calculated angles
   Double nval_p[3];
   // Cached derivatives
@@ -227,8 +229,8 @@ class Nutation {
   void copy(const Nutation &other);
   // Fill an empty copy
   void fill();
-  // Calculate Nutation angles for time t
-  void calcNut(Double t);
+  // Calculate Nutation angles for time t; also derivatives if True given
+  void calcNut(Double t, Bool calcDer = False);
 };
 
 #endif
