@@ -96,6 +96,7 @@
 //   storage image
 //
 #include <aips/aips.h>
+#include <aips/Tasking/Aipsrc.h>
 #include <aips/Arrays.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
@@ -126,7 +127,9 @@ try {
 
 // Get inputs
 
-   inputs.Create("in", "test_image", "Input image name");
+   String root = Aipsrc::aipsRoot();
+   String name = root + "/code/trial/implement/Images/test/test_image";
+   inputs.Create("in", name, "Input image name");
    inputs.Create("axes", "-10", "Cursor axes");
    inputs.Create("blc", "-10", "blc");
    inputs.Create("trc", "-10", "trc");
