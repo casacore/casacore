@@ -1,5 +1,5 @@
 //# PGPlotterInterface.h: Abstract base class for PGPLOT style plotting.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -115,6 +115,16 @@ public:
     // In any event, this is intended for short helpful messages (e.g.
     // saying which keys to press to mark a spectrum).
     virtual void message(const String &text);
+
+    // This is not a standard PGPLOT command.  It is only needed for
+    // the PGPlotterGlish class which connects to Glish/PGPLOT window
+    // This Glish object (actually a pgplotter/pgplotwidget.g) has an 
+    // internal counter plot counter which needs to be reset to 0
+    // when the process detaches from the plotter, so that the next
+    // plot on the device is the first one again.  Without this, the
+    // prompting behaviour of the Glish plotter  is different from native
+    // PGPLOT
+    virtual void resetPlotNumber () {;};
 
     // This is an emulated standard PGPLOT command. It returns a record
     // containing the fields:
