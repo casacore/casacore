@@ -1,5 +1,5 @@
 //# ImageExpr.cc: defines the ImageExpr class
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,9 +48,13 @@ ImageExpr<T>::ImageExpr()
 {} 
  
 template <class T>
-ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr)
+ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
+			 const String& name)
 : latticeExpr_p(latticeExpr)
 {
+  if (! name.empty()) {
+    name_p = "Expression: " + name;
+  }
    const LatticeCoordinates latticeCoordinate = latticeExpr_p.coordinates();
    const LattCoord* pLattCoord = &(latticeCoordinate.coordinates());
    if (!pLattCoord->hasCoordinates() || pLattCoord->classname()!="ImageCoord") {
@@ -70,7 +74,8 @@ template <class T>
 ImageExpr<T>::ImageExpr (const ImageExpr<T>& other)
 : ImageInterface<T>(other),
   latticeExpr_p (other.latticeExpr_p),
-  pBool_p(other.pBool_p)
+  pBool_p(other.pBool_p),
+  name_p(other.name_p)
 
 //
 // Copy constructor.  Uses reference semantics
@@ -87,6 +92,7 @@ ImageExpr<T>& ImageExpr<T>::operator=(const ImageExpr<T>& other)
       ImageInterface<T>::operator= (other);
       latticeExpr_p = other.latticeExpr_p;
       pBool_p = other.pBool_p;
+      name_p = other.name_p;
    }
    return *this;
 } 
@@ -215,10 +221,9 @@ template<class T> Unit ImageExpr<T>::units() const
 
 
 template <class T> 
-String ImageExpr<T>::name(const Bool stripPath) const
+String ImageExpr<T>::name(const Bool) const
 {
-   String string;
-   return string;
+   return name_p;
 }
 
 template <class T> 

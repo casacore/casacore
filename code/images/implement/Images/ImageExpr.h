@@ -116,8 +116,11 @@ public:
   // The default constructor
   ImageExpr();
 
-  // Construct an ImageExpr from a LatticeExpr
-  ImageExpr(const LatticeExpr<T>& latticeExpr);
+  // Construct an ImageExpr from a LatticeExpr.
+  // The name given could be the original expression string.
+  // The prefix "Expression: " is added to the name if not empty.
+  // The function name() returns this name (including possible prefix).
+  ImageExpr(const LatticeExpr<T>& latticeExpr, const String& name);
 
   // Copy constructor (reference semantics)
   ImageExpr(const ImageExpr<T>& other);
@@ -265,7 +268,7 @@ private:
 
   Lattice<Bool>* pBool_p;  
   Record rec_p;
-
+  String name_p;
 
 };
 
