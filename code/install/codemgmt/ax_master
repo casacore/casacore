@@ -1396,3 +1396,4 @@
 11 074 src rm trial/apps/pimager
 11 075 src rm trial/apps/ms/templates
 11 075 src mv trial/apps/image/image.g trial/implement/Images/image.g
+11 075 src mv trial/apps/image/image.help trial/implement/Images/image.help
