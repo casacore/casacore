@@ -34,9 +34,9 @@
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/MaskSpecifier.h>
 #include <trial/Images/ImageInfo.h>
+#include <trial/Images/ImageLogger.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Logging/LogIO.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Quanta/Unit.h>
 
@@ -47,7 +47,6 @@ template <class T> class COWPtr;
 class ImageRegion;
 class IPosition;
 class TiledShape;
-class LogIO;
 
 
 // <summary>
@@ -194,22 +193,26 @@ public:
 
   // Function to get a LELCoordinate object containing the coordinates.
   virtual LELCoordinates lelCoordinates() const;
-  
+
+  // Get access to the ImageLogger.
+  // <group>
+  ImageLogger& logger()
+    { return log_p; }
+  const ImageLogger& logger() const
+    { return log_p; }
+  // </group>
+
   // Allow messages to be logged to this ImageInterface.
   // <group>
   LogIO& logSink()
-  {
-    if (logClosed_p) reopenLog();
-    return log_p;
-  }
+    { return logger().logio(); }
   const LogIO& logSink() const
     { return const_cast<ImageInterface<T>*>(this)->logSink(); }
   // </group>
   
-  // Add the TableLogSink from other to this one.
-  // The default implementation in this class does nothing.
-  // The derived PagedImage class implements it.
-  virtual void mergeTableLogSink (const LogIO& sink);
+  // Add the messages from the other image logger to this one.
+  void appendLog (const ImageLogger& other)
+    { log_p.append (other); }
 
   // Often we have miscellaneous information we want to attach to an image.
   // This is where it goes.  
@@ -326,27 +329,17 @@ public:
   // Check class invariants. 
   virtual Bool ok() const = 0;
   
-  // Reopen the log if needed.
-  // It can be used to reopen only the log file after a tempClose is done.
-  void reopenLog();
-
  
 protected:
   // Assignment (copy semantics) is only useful for derived classes.
   ImageInterface& operator= (const ImageInterface& other);
 
-  // Set the log sink.
-  void setLogMember (const LogIO& log)
-    { log_p = log; }
-
-  // Close the log (usually only temporarily).
-  void closeLogSink (Bool temporarily);
-
-  // Let a derived class reopen the log.
-  virtual void doReopenLogSink();
-
   // Restore the image info from the record.
   Bool restoreImageInfo (const RecordInterface& rec);
+
+  // Set the image logger variable.
+  void setLogMember (const ImageLogger& imageLogger)
+    { log_p = imageLogger; }
 
   // Set the image info variable.
   void setImageInfoMember (const ImageInfo& imageInfo)
@@ -367,8 +360,7 @@ protected:
 private:
   // It is the job of the derived class to make these variables valid.
   CoordinateSystem coords_p;
-  LogIO            log_p;
-  Bool             logClosed_p;
+  ImageLogger      log_p;
   ImageInfo        imageInfo_p;
   Unit             unit_p;
   TableRecord      miscInfo_p;
