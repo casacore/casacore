@@ -917,11 +917,6 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
     const ColumnDescSet& cds=itsTable.tableDesc().columnDescSet();
     if (cds.isDefined(fluxErrName)) {
       fluxErrCol.attach(itsTable, fluxErrName);
-//      cerr << "ComponentList::readTable - Looks like a new componentlist"
-//	   << endl;
-//    } else {
-//      cerr << "ComponentList::readTable - Looks like an old componentlist"
-//	   << endl;
     }
     if (cds.isDefined(dirErrName)) {
       dirErrCol.attach(itsTable, dirErrName);
