@@ -1928,25 +1928,47 @@ LatticeExprNode LatticeExprNode::newNumBinary (LELBinaryEnums::Operation oper,
 // The result has the same data type as the combined input type.
 //
 {
-   DataType dtype = resultDataType (left.dataType(), right.dataType());
-   switch (dtype) {
-   case TpFloat:
-      return new LELBinary<Float> (oper, left.makeFloat(),
-				   right.makeFloat());
-   case TpDouble:
-      return new LELBinary<Double> (oper, left.makeDouble(),
-				    right.makeDouble());
-   case TpComplex:
-      return new LELBinary<Complex> (oper, left.makeComplex(),
-				     right.makeComplex());
-   case TpDComplex:
-      return new LELBinary<DComplex> (oper, left.makeDComplex(),
-				      right.makeDComplex());
-   default:
-      throw (AipsError ("LatticeExprNode::newNumBinary - "
-			"Bool argument used in numerical binary operation"));
-   }
-   return LatticeExprNode();
+  DataType dtype = resultDataType (left.dataType(), right.dataType());
+  LatticeExprNode expr0;
+  LatticeExprNode expr1;
+  switch (dtype) {
+  case TpFloat:
+    expr0 = left.makeFloat();
+    expr1 = right.makeFloat();
+    break;
+  case TpDouble:
+    expr0 = left.makeDouble();
+    expr1 = right.makeDouble();
+    break;
+  case TpComplex:
+    expr0 = left.makeComplex();
+    expr1 = right.makeComplex();
+    break;
+  case TpDComplex:
+    expr0 = left.makeDComplex();
+    expr1 = right.makeDComplex();
+    break;
+  default:
+    throw (AipsError ("LatticeExprNode::newNumBinary - "
+		      "Bool argument used in numerical binary operation"));
+  }
+  // Make the operands the same dimensionality (if needed and possible).
+  makeEqualDim (expr0, expr1);
+  switch (dtype) {
+  case TpFloat:
+    return new LELBinary<Float> (oper, expr0.pExprFloat_p,
+				 expr1.pExprFloat_p);
+  case TpDouble:
+    return new LELBinary<Double> (oper, expr0.pExprDouble_p,
+				  expr1.pExprDouble_p);
+  case TpComplex:
+    return new LELBinary<Complex> (oper, expr0.pExprComplex_p,
+				   expr1.pExprComplex_p);
+  default:
+    return new LELBinary<DComplex> (oper, expr0.pExprDComplex_p,
+				    expr1.pExprDComplex_p);
+  }
+  return LatticeExprNode();
 }
 
 
@@ -1958,32 +1980,59 @@ LatticeExprNode LatticeExprNode::newBinaryCmp (LELBinaryEnums::Operation oper,
 // The result has the same data type as the combined input type.
 //
 {
-   DataType dtype = resultDataType (left.dataType(), right.dataType());
-   switch (dtype) {
-   case TpFloat:
-      return new LELBinaryCmp<Float> (oper, left.makeFloat(),
-				      right.makeFloat());
-   case TpDouble:
-      return new LELBinaryCmp<Double> (oper, left.makeDouble(),
-				       right.makeDouble());
-   case TpComplex:
-      return new LELBinaryCmp<Complex> (oper, left.makeComplex(),
-					right.makeComplex());
-   case TpDComplex:
-      return new LELBinaryCmp<DComplex> (oper, left.makeDComplex(),
-					 right.makeDComplex());
-   case TpBool:
-      if (oper != LELBinaryEnums::EQ  &&  oper != LELBinaryEnums::NE) {
-	 throw (AipsError ("LatticeExprNode::newBinaryCmp - "
-			   "Bool data type cannot be used with "
-			   ">, >=, <, and <= operator"));
-      }
-      return new LELBinaryBool (oper, left.makeBool(), right.makeBool());
-   default:
+  DataType dtype = resultDataType (left.dataType(), right.dataType());
+  LatticeExprNode expr0;
+  LatticeExprNode expr1;
+  switch (dtype) {
+  case TpFloat:
+    expr0 = left.makeFloat();
+    expr1 = right.makeFloat();
+    break;
+  case TpDouble:
+    expr0 = left.makeDouble();
+    expr1 = right.makeDouble();
+    break;
+  case TpComplex:
+    expr0 = left.makeComplex();
+    expr1 = right.makeComplex();
+    break;
+  case TpDComplex:
+    expr0 = left.makeDComplex();
+    expr1 = right.makeDComplex();
+    break;
+  case TpBool:
+    if (oper != LELBinaryEnums::EQ  &&  oper != LELBinaryEnums::NE) {
       throw (AipsError ("LatticeExprNode::newBinaryCmp - "
-			"invalid data type used in comparison"));
-   }
-   return LatticeExprNode();
+			"Bool data type cannot be used with "
+			">, >=, <, and <= operator"));
+    }
+    expr0 = left.makeBool();
+    expr1 = right.makeBool();
+    break;
+  default:
+    throw (AipsError ("LatticeExprNode::newBinaryCmp - "
+		      "invalid data type used in comparison"));
+  }
+  // Make the operands the same dimensionality (if needed and possible).
+  makeEqualDim (expr0, expr1);
+  switch (dtype) {
+  case TpFloat:
+    return new LELBinaryCmp<Float> (oper, expr0.pExprFloat_p,
+				    expr1.pExprFloat_p);
+  case TpDouble:
+    return new LELBinaryCmp<Double> (oper, expr0.pExprDouble_p,
+				     expr1.pExprDouble_p);
+  case TpComplex:
+    return new LELBinaryCmp<Complex> (oper, expr0.pExprComplex_p,
+				      expr1.pExprComplex_p);
+  case TpDComplex:
+    return new LELBinaryCmp<DComplex> (oper, expr0.pExprDComplex_p,
+				       expr1.pExprDComplex_p);
+  default:
+    return new LELBinaryBool (oper, expr0.pExprBool_p,
+			      expr1.pExprBool_p);
+  }
+  return LatticeExprNode();
 }
 
 
@@ -2117,4 +2166,41 @@ CountedPtr<LELInterface<Bool> > LatticeExprNode::makeBool() const
         return new LELRegionAsBool ((const LELRegion&)(*pExprBool_p));
     }
     return pExprBool_p;
+}
+
+
+Int LatticeExprNode::makeEqualDim (LatticeExprNode& expr0,
+				   LatticeExprNode& expr1)
+{
+  const LELAttribute& attr0 = expr0.getAttribute();
+  const LELAttribute& attr1 = expr1.getAttribute();
+  if (attr0.isScalar()  ||  attr1.isScalar()) {
+    return 0;
+  }
+  // If the coordinates are equal, check if shapes are also equal.
+  Int result = attr0.coordinates().compare (attr1.coordinates());
+  if (result == 0) {
+    if (! attr0.shape().isEqual (attr1.shape())) {
+      throw AipsError ("LatticeExprNode - shapes of operands mismatch");
+    }
+  } else if (result == -1) {
+    // left is subset of right, so extend left.
+    const LELLattCoordBase* cbptr = &(attr0.coordinates().coordinates());
+    const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
+    AlwaysAssert (cptr != 0, AipsError);
+    expr0 = cptr->makeExtendLattice (expr0,
+				     attr1.shape(),
+				     attr1.coordinates().coordinates());
+  } else if (result == 1) {
+    // right is subset of left, so extend right.
+    const LELLattCoordBase* cbptr = &(attr1.coordinates().coordinates());
+    const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
+    AlwaysAssert (cptr != 0, AipsError);
+    expr1 = cptr->makeExtendLattice (expr1,
+				     attr0.shape(),
+				     attr0.coordinates().coordinates());
+  } else {
+    throw AipsError ("LatticeExprNode - coordinates of operands mismatch");
+  }
+  return result;
 }
