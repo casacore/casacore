@@ -212,14 +212,14 @@ void UVWMachine::init() {
   const MVDirection mVz(0.,0.,1.);
   const MVDirection mVy(0.,1.,0.);
   const MVDirection mVx(1.,0.,0.);
-  rot1_p = RotMatrix(Euler(C::pi_2 - in_p.getValue().get()(0), 3,
+  rot1_p = RotMatrix(Euler(-(C::pi_2 - in_p.getValue().get()(0)), 3,
 			   in_p.getValue().get()(1) - C::pi_2, 1));
   rot2_p.set(conv_p(mVx).getValue().getValue(),
 	     conv_p(mVy).getValue().getValue(),
 	     conv_p(mVz).getValue().getValue());
   rot2_p.transpose();
   rot3_p = RotMatrix(Euler(C::pi_2 - out_p.getValue().get()(1), 1,
-			   out_p.getValue().get()(0) - C::pi_2, 3));
+			   -(out_p.getValue().get()(0) - C::pi_2), 3));
   uvrot_p = rot3_p * rot2_p * rot1_p;
   uvrot_p.transpose();
   phrot_p = rot3_p * (MVPosition(out_p.getValue())
