@@ -51,15 +51,8 @@
 // </prerequisite>
 //
 // <synopsis>
-// Unlike the other classes derived from 
-// <linkto class=LogSinkInterface>LogSinkInterface</linkto>, there are utility
-// functions in this class which might be of some modest interest. In
-// particular, the member functions which define the structure of the table
-// and define the column names might be of interest.
-//
-// This class posts messages which pass the filter to an AIPS++
-// <linkto class=Table>Table</linkto>. It puts ever field of the
-// <linkto class=LogMessage>LogMessage</linkto> into its own column.
+// This class posts messages which pass the filter to 
+// memory.
 // </synopsis>
 //
 // <example>
@@ -102,7 +95,7 @@ public:
   virtual String getObjectID (uInt i) const;
   // </group>
 
-  // If the message passes the filter, write it to the log table.
+  // If the message passes the filter, write it to memory
   virtual Bool postLocally (const LogMessage& message);
 
   // Write a message (usually from another logsink) into the local one.
