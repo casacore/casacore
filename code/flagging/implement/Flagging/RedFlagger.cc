@@ -206,6 +206,8 @@ RFABase * RedFlagger::createAgent ( const String &id,RFChunkStats &chunk,const R
 // -----------------------------------------------------------------------
 void RedFlagger::setReportPanels ( Int nx,Int ny )
 {
+  if( !nx && !ny ) // reset
+    pgprep_nx=pgprep_ny=0;
   if( pgp_report.isAttached() && (pgprep_nx!=nx || pgprep_ny!=ny) )
   {  
 //    fprintf(stderr,"pgp_report.subp(%d,%d)\n",nx,ny);
@@ -627,6 +629,7 @@ void RedFlagger::cleanupPlotters ()
     pgp_screen.detach();
   if( pgp_report.isAttached() )
     pgp_report.detach();
+  setReportPanels(0,0);
 }
 
 // -----------------------------------------------------------------------
