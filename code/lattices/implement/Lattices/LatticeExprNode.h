@@ -329,6 +329,13 @@ class LatticeExprNode
    friend LatticeExprNode nfalse(const LatticeExprNode& expr);
 // </group>
 
+// This functions returns the mask of the given expression.
+// If it has no mask, the result is an array with all True values.
+   friend LatticeExprNode mask (const LatticeExprNode& expr);
+
+// This functions returns the value of the expression without a mask.
+   friend LatticeExprNode value (const LatticeExprNode& expr);
+
 // This function finds <src>sqrt(left^2+right^2)</src>.  This
 // could be used to find the (biased) polarized intensity if
 // left and right are images of Stokes Q and U.

@@ -176,6 +176,12 @@ public:
 // nfalse
    NFALSE,
 
+// mask
+   MASK,
+
+// value
+   VALUE,
+
 // iif (similar to ?: in C++)
    IIF,
 

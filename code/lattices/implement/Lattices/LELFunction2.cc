@@ -1389,6 +1389,23 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
 	setAttr (LELAttribute());                         // result is scalar
 	break;
     }
+    case LELFunctionEnums::MASK :
+    case LELFunctionEnums::VALUE :
+    {
+       if (arg_p.nelements() != 1) {
+          throw (AipsError ("LELFunctionBool::constructor - function can only"
+                            "have one argument"));
+       }
+       // The value or mask itself is unmasked.
+       const LELAttribute& argAttr = arg_p[0].getAttribute();
+       if (argAttr.isScalar()) {
+	  setAttr (LELAttribute());
+       } else {
+	  setAttr (LELAttribute (False, argAttr.shape(), argAttr.tileShape(),
+				 argAttr.coordinates()));
+       }
+       break;
+    }
     default:
 	throw (AipsError ("LELFunctionBool::constructor - unknown Bool function"));
     }
@@ -1406,15 +1423,71 @@ LELFunctionBool::~LELFunctionBool()
 }
 
 
-void LELFunctionBool::eval(LELArray<Bool>&,
-			   const Slicer&) const
+void LELFunctionBool::eval(LELArray<Bool>& result,
+			   const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionBool:: eval" << endl;
 #endif
 
-// All Bool function result in a scalar, so cannot be used.
-   throw (AipsError ("LELFunctionBool::eval - cannot be used"));
+   switch (function_p) {
+   case LELFunctionEnums::MASK :
+   {
+      result.removeMask();
+      if (! arg_p[0].isMasked()) {
+	 result.value() = True;
+      } else {
+	 switch (arg_p[0].dataType()) {
+	 case TpFloat:
+	 {
+	    LELArrayRef<Float> tmp(result.shape());
+	    arg_p[0].evalRef(tmp, section);
+	    result.value() = tmp.mask();
+	    break;
+	 }
+	 case TpDouble:
+	 {
+	    LELArrayRef<Double> tmp(result.shape());
+	    arg_p[0].evalRef(tmp, section);
+	    result.value() = tmp.mask();
+	    break;
+	 }
+	 case TpComplex:
+	 {
+	    LELArrayRef<Complex> tmp(result.shape());
+	    arg_p[0].evalRef(tmp, section);
+	    result.value() = tmp.mask();
+	    break;
+	 }
+	 case TpDComplex:
+	 {
+	    LELArrayRef<DComplex> tmp(result.shape());
+	    arg_p[0].evalRef(tmp, section);
+	    result.value() = tmp.mask();
+	    break;
+	 }
+	 case TpBool:
+	 {
+	    LELArrayRef<Bool> tmp(result.shape());
+	    arg_p[0].evalRef(tmp, section);
+	    result.value() = tmp.mask();
+	    break;
+	 }
+	 default:
+	    throw (AipsError ("LELFunction2::eval, unknown data type"));
+	 }
+      }
+      break;
+   }
+   case LELFunctionEnums::VALUE :
+   {
+      arg_p[0].eval (result, section);
+      result.removeMask();
+      break;
+   }
+   default:
+      throw(AipsError("LELFunctionBool::eval - unknown function"));
+   }
 }
 
 LELScalar<Bool> LELFunctionBool::getScalar() const
@@ -1509,6 +1582,10 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
       }
       return False;
    }
+   case LELFunctionEnums::MASK :
+      return ToBool (! arg_p[0].isInvalidScalar());
+   case LELFunctionEnums::VALUE :
+      return arg_p[0].getBool();
    default:
       throw(AipsError("LELFunctionBool::getScalar - unknown function"));
    }
@@ -1526,7 +1603,8 @@ Bool LELFunctionBool::prepareScalarExpr()
        Bool invalid = arg_p[i].replaceScalarExpr();
        if (invalid) {
 	  if (function_p != LELFunctionEnums::ALL
-          &&  function_p != LELFunctionEnums::ANY) {
+          &&  function_p != LELFunctionEnums::ANY
+          &&  function_p != LELFunctionEnums::MASK) {
 	     return True;
 	  }
       }

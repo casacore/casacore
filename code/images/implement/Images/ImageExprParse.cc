@@ -265,6 +265,10 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 	return ntrue(arg1);
     } else if (itsSval == "nfalse") {
 	return nfalse(arg1);
+    } else if (itsSval == "mask") {
+	return mask(arg1);
+    } else if (itsSval == "value") {
+	return value(arg1);
     } else if (itsSval == "float") {
 	return toFloat(arg1);
     } else if (itsSval == "double") {

@@ -1441,8 +1441,7 @@ LatticeExprNode ndim (const LatticeExprNode& expr)
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 2d function ndim" << endl;
 #endif
-   Block<LatticeExprNode> arg(1);
-   arg[0] = expr;
+   Block<LatticeExprNode> arg(1, expr);
    return new LELFunctionFloat(LELFunctionEnums::NDIM, arg);
 }
 
@@ -1456,6 +1455,30 @@ LatticeExprNode length (const LatticeExprNode& expr,
    arg[0] = expr;
    arg[1] = axis;
    return new LELFunctionFloat(LELFunctionEnums::LENGTH, arg);
+}
+
+LatticeExprNode mask (const LatticeExprNode& expr)
+{  
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function mask" << endl;
+#endif
+   Block<LatticeExprNode> arg(1, expr);
+   if (expr.isRegion()) {
+      arg[0] = toBool (expr);
+   }
+   return new LELFunctionBool(LELFunctionEnums::MASK, arg);
+}
+
+LatticeExprNode value (const LatticeExprNode& expr)
+{  
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function value" << endl;
+#endif
+   if (expr.dataType() == TpBool) {
+      Block<LatticeExprNode> arg(1, toBool(expr));
+      return new LELFunctionBool (LELFunctionEnums::VALUE, arg);
+   }
+   return LatticeExprNode::newNumFunc1D (LELFunctionEnums::VALUE, expr);
 }
 
 LatticeExprNode iif (const LatticeExprNode& condition,
@@ -1572,7 +1595,6 @@ LatticeExprNode LatticeExprNode::newNumFunc1D (LELFunctionEnums::Function func,
 // The result has the same data type as the input.
 //
 {
-   AlwaysAssert (expr.dataType() != TpBool, AipsError);
    switch (expr.dataType()) {
    case TpFloat:
       return new LELFunction1D<Float> (func, expr.pExprFloat_p);
@@ -1884,7 +1906,7 @@ CountedPtr<LELInterface<Bool> > LatticeExprNode::makeBool() const
 {
     if (dataType() != TpBool) {
 	throw (AipsError ("LatticeExprNode::makeBool - "
-			  "conversion to non-Bool not possible"));
+			  "conversion to Bool not possible"));
     }
     if (isRegion()) {
         return new LELRegionAsBool ((const LELRegion&)(*pExprBool_p));

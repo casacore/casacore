@@ -42,8 +42,8 @@
 // LELFunction1D
 template <class T>
 LELFunction1D<T>::LELFunction1D(const LELFunctionEnums::Function function,
-				const CountedPtr<LELInterface<T> >& exp)
-: function_p(function), pExpr_p(exp)
+				const CountedPtr<LELInterface<T> >& expr)
+: function_p(function), pExpr_p(expr)
 {
    switch (function_p) {
    case LELFunctionEnums::MIN1D :
@@ -52,8 +52,20 @@ LELFunction1D<T>::LELFunction1D(const LELFunctionEnums::Function function,
    case LELFunctionEnums::SUM :
       setAttr(LELAttribute());          // these result in a scalar
       break;
+   case LELFunctionEnums::VALUE :
+   {
+      // The value gets unmasked.
+      const LELAttribute& argAttr = expr->getAttribute();
+      if (argAttr.isScalar()) {
+	 setAttr (LELAttribute());
+      } else {
+	 setAttr (LELAttribute (False, argAttr.shape(), argAttr.tileShape(),
+				argAttr.coordinates()));
+      }
+      break;
+   }
    default:
-      setAttr(exp->getAttribute());
+      setAttr(expr->getAttribute());
    }
 
 #if defined(AIPS_TRACE)
@@ -131,6 +143,11 @@ void LELFunction1D<T>::eval(LELArray<T>& result,
       result.value().reference(tmp);
       break;
    }
+   case LELFunctionEnums::VALUE :
+   {
+      result.removeMask();
+      break;
+   }
    default:
       throw(AipsError("LELFunction1D::eval - unknown function"));
    }
@@ -163,6 +180,8 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       return log10(pExpr_p->getScalar().value());
    case LELFunctionEnums::SQRT :
       return sqrt(pExpr_p->getScalar().value());
+   case LELFunctionEnums::VALUE :
+      return pExpr_p->getScalar();
    case LELFunctionEnums::MIN1D :
    {
       if (pExpr_p->isScalar()) {
