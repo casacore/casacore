@@ -33,6 +33,7 @@
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/Sort.h>
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Tables/TableDesc.h>
@@ -851,6 +852,25 @@ Matrix<Float>& ROVisibilityIterator::imagingWeight(Matrix<Float>& wt) const
   }
   return wt;
 }
+
+Int ROVisibilityIterator::nSubInterval() const
+{
+// Return the number of sub-intervals in the current chunk,
+// i.e. the number of unique time stamps
+//
+  // Find all unique times in time_p
+  Int retval=0;
+  uInt nTimes=time_p.nelements();
+  if (nTimes > 0) {
+    Sort sorter;
+    Bool deleteIt;
+    sorter.sortKey(time_p.getStorage(deleteIt),TpDouble,0,Sort::Ascending);
+    Vector<uInt> indexVector, uniqueVector;
+    sorter.sort(indexVector,nTimes);
+    retval=sorter.unique(uniqueVector,indexVector);
+  };
+  return retval;
+};
 
 ROVisibilityIterator& 
 ROVisibilityIterator::selectVelocity

@@ -302,6 +302,9 @@ public:
   // Return the numbers of rows in the current chunk
   Int nRowChunk() const;
 
+  // Return the number of sub-intervals in the current chunk
+  Int nSubInterval() const;
+
   // Velocity selection - specify the output channels in velocity:
   // nChan - number of output channels, vStart - start velocity,
   // vInc - velocity increment. So channel i will have velocity 
