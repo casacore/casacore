@@ -46,6 +46,8 @@
 #include <aips/math.h>
 #include <stdarg.h>
 
+#include <trial/Flagging/RFANewMedianClip.h>
+
  LogIO RedFlagger::os( LogOrigin("RedFlagger") );
  static char str[256];
  uInt debug_ifr=9999,debug_itime=9999;
@@ -201,6 +203,7 @@ const RecordInterface & RedFlagger::setupAgentDefaults ()
 {
   agent_defaults = Record();
   agent_defaults.defineRecord("timemed",RFATimeMedian::getDefaults());
+  agent_defaults.defineRecord("newtimemed",RFANewMedianClip::getDefaults());
   agent_defaults.defineRecord("freqmed",RFAFreqMedian::getDefaults());
   agent_defaults.defineRecord("sprej",RFASpectralRej::getDefaults());
   agent_defaults.defineRecord("select",RFASelector::getDefaults());
@@ -217,6 +220,8 @@ RFABase * RedFlagger::createAgent ( const String &id,RFChunkStats &chunk,const R
 	// cerr << "Agent id: " << id << endl;
   if( id == "timemed" )
     return new RFATimeMedian(chunk,parms);
+  else if( id == "newtimemed" )
+    return new RFANewMedianClip(chunk,parms);
   else if( id == "freqmed" )
     return new RFAFreqMedian(chunk,parms);
   else if( id == "sprej" )
@@ -366,6 +371,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   Block<Int> sortCol(1);
   sortCol[0] = MeasurementSet::TIME;
   VisibilityIterator vi(ms,sortCol,1000000000);
+  //VisibilityIterator vi(ms,sortCol);
   VisBuffer vb(vi);
   RFChunkStats chunk(vi,vb,*this,&pgp_screen,&pgp_report);
 
@@ -525,50 +531,48 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
             else if( iter_mode(ival) == RFA::DRY )
               acc[ival]->startDry();
         // iterate over visbuffers
-        for( vi.origin(); vi.more() && nactive; vi++,itime++ )
-        {
-          progmeter.update(itime);
+        for( vi.origin(); vi.more() && nactive; vi++,itime++ ) {
+	  progmeter.update(itime);
           chunk.newTime();
           // now, call individual VisBuffer iterators
           for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
-            if( active(ival) )
-            {
-              // call iterTime/iterDry as appropriate
-              RFA::IterMode res = RFA::STOP;
+            if( active(ival) ) {
+	      // call iterTime/iterDry as appropriate
+	      RFA::IterMode res = RFA::STOP;
               if( iter_mode(ival) == RFA::DATA )
                 res = acc[ival]->iterTime(itime);
               else if( iter_mode(ival) == RFA::DRY ) 
                 res = acc[ival]->iterDry(itime);
               // change requested? Deactivate agent
               if( ! ( res == RFA::CONT || res == iter_mode(ival) ) )
-              {
-                active(ival) = False;
-                nactive--;
-                iter_mode(ival)==RFA::DATA ? ndata-- : ndry--;
-                iter_mode(ival) = res;
-                if( nactive <= 0 )
-                  break;
-              }
+		{
+		  active(ival) = False;
+		  nactive--;
+		  iter_mode(ival)==RFA::DATA ? ndata-- : ndry--;
+		  iter_mode(ival) = res;
+		  if( nactive <= 0 )
+		    break;
+		}
             }
           // also iterate over rows for data passes
-          for( Int ir=0; ir<vb.nRow() && ndata; ir++ )
+          for( Int ir=0; ir<vb.nRow() && ndata; ir++ ) {
             for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
               if( iter_mode(ival) == RFA::DATA )
-              {
-                RFA::IterMode res = acc[ival]->iterRow(ir);
-                if( ! ( res == RFA::CONT || res == RFA::DATA ) )
-                {
-                  ndata--; nactive--;
-                  iter_mode(ival) = res;
-                  active(ival) = False;
-                  if( ndata <= 0 )
-                    break;
-                }
-              }
+		{
+		  RFA::IterMode res = acc[ival]->iterRow(ir);
+		  if( ! ( res == RFA::CONT || res == RFA::DATA ) )
+		    {
+		      ndata--; nactive--;
+		      iter_mode(ival) = res;
+		      active(ival) = False;
+		      if( ndata <= 0 )
+			break;
+		    }
+		}
+	  }
         }
-        // end pass for all agents
-        for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
-        {
+	// end pass for all agents
+	for( uInt ival = 0; ival<acc.nelements(); ival++ ) {
           if( active(ival) )
             if( iter_mode(ival) == RFA::DATA )
               iter_mode(ival) = acc[ival]->endData();
@@ -609,7 +613,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
             iter_mode(ival) = acc[ival]->endDry();
       } // end of dry pass
     } // end loop over passes
-// generate reports
+    // generate reports
     if( pgp_screen.isAttached() )
     {
       plotAgentReports(pgp_screen);
