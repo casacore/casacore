@@ -162,6 +162,20 @@ public:
     // of the SpectralCoordinate will be Hz.
     SpectralCoordinate(MFrequency::Types type, const Quantum<Vector<Double> >& freqs,
 		       const Quantum<Double>& restFrequency = Quantum<Double>(0.0,"Hz"));
+
+    // Construct a SpectralCoordinate with the specified velocities (in km/s).
+    // They will be converted to Hz and the SpectralCoordinate constructed.
+    // This axis can be nonlinear; the increments and related 
+    // functions return the <src>average</src> values
+    // (calculated from the first and last pixel's frequencies).
+    //
+    // A linear interpolation/extrapolation is used for pixels which are
+    // not supplied. The reference pixel is chosen to be 0.
+    // The velocities must increase or decrease monotonically (otherwise
+    // the toPixel lookup would not be possible).
+    SpectralCoordinate(MFrequency::Types freqType, MDoppler::Types velType, 
+                       const Vector<Double>& velocities,  const String& velUnit,
+                       Double restFrequency = 0.0);
     
     // Copy constructor (copy semantics).
     SpectralCoordinate(const SpectralCoordinate &other);

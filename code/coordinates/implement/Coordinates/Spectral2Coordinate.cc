@@ -1,3 +1,6 @@
+
+
+
 //# Spectral2Coordinate.cc: this defines Measures related SpectralCoordinate functions
 //# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
@@ -27,13 +30,49 @@
 //# $Id$
 
 #include <trial/Coordinates/SpectralCoordinate.h>
+
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/VelocityMachine.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MDoppler.h>
 #include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/String.h>
 
+
+SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
+                                       MDoppler::Types velType,
+                                       const Vector<Double>& velocities,
+                                       const String& velUnit,
+                                       Double restFrequency = 0.0)
+: Coordinate(),
+  type_p(freqType),
+  restfreq_p(restFrequency),
+  pVelocityMachine_p(0),
+  prefVelType_p(MDoppler::RADIO),
+  prefSpecUnit_p("")
+{
+    
+// Convert to frequency.  We can't use the built in function velocityToFrequency
+// because it requires the coordinate to be fully constructed.
+                                       
+      Unit freqUnit("Hz");
+      Quantum<Double> rF(restFrequency, freqUnit);
+//
+      pVelocityMachine_p = new VelocityMachine(MFrequency::Ref(freqType), freqUnit,
+                                               MVFrequency(rF), MDoppler::Ref(velType), 
+                                               Unit(velUnit));
+      Quantum<Vector<Double> > frequencies = pVelocityMachine_p->makeFrequency(velocities);
+  
+// Construct
+   
+      Vector<Double> channels(velocities.nelements());
+      indgen(channels);
+      worker_p = TabularCoordinate(channels, frequencies.getValue(), "Hz", "Frequency");
+}                                      
+ 
 
 Bool SpectralCoordinate::toWorld(MFrequency& world, 
 				 Double pixel) const
