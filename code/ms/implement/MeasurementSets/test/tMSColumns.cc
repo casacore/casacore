@@ -1,5 +1,5 @@
 //# tNewMSColumns.cc : this program tests the NewMSColumns classes
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 //# Includes
 
 #include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/NewMeasurementSet.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables.h>
 
