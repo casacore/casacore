@@ -214,6 +214,27 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
     for (uInt i=0; i<pols.nelements(); i++) {
       polSel(i)=Stokes::name(Stokes::type(pols(i)));
     }
+    // check that other polarization ids have the same polarizations
+    Bool polVaries = False;
+    for (uInt i=1; i<polId_p.nelements(); i++) {
+      if (polId_p(i)!=polId_p(i-1)) {
+	Vector<Int> pols2=polc.corrType()(polId_p(i));
+	for (uInt j=0; j<pols2.nelements(); j++) {
+	  if (pols2(j)!=pols(j)) { 
+	    polVaries = True; 
+	    break;
+	  }
+	}
+	if (polVaries) break;
+      }
+    }
+
+    if (polVaries) {
+      os<< LogIO::WARN << "Polarization type varies with row - "<<endl<<
+	"do not use selectpolarization or results will be incorrect "
+	"Assuming (falsely) the following polarizations are present:"
+	<< LogIO::POST;
+    }
     selectPolarization(polSel);
     os<< LogIO::NORMAL << "Selection initialized ok"<< LogIO::POST;
   }
@@ -243,18 +264,26 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
   Int numChan=msc.spectralWindow().numChan()(spwId_p(0));
   Int end=start+(nChan-1)*incr+(width-1);
   ok=(ok && end < numChan);
-  //#  if (incr < 0) ok=(ok && start+(nChan-1)*incr-(width-1) >= 0);
   if (!ok) {
     os << LogIO::SEVERE << "Illegal channel selection"<<LogIO::POST;
     return False;
   }
-  haveSlicer_p=False;
-  useSlicer_p=(start>0 || end<(numChan-1) || incr>1 ||wantedOne_p>=0);
   chanSel_p.resize(4);
   chanSel_p(0)=nChan; 
   chanSel_p(1)=start; 
   chanSel_p(2)=width; 
   chanSel_p(3)=incr;
+  if (start>0 || end<(numChan-1) || incr>1 ) {
+    if (width==1) {
+      // width is one, we can use a stride
+      chanSlice_p=Slice(start,nChan,incr);
+    } else {
+      chanSlice_p=Slice(start,1+(nChan-1)*incr+(width-1));
+    }
+  }
+  useSlicer_p=(!polSlice_p.all()||!chanSlice_p.all());
+  if (useSlicer_p) slicer_p=Slicer(polSlice_p,chanSlice_p);
+
   Int nSpW=spwId_p.nelements();
   Matrix<Double> chanFreq = 
     msc.spectralWindow().chanFreq().getColumnCells(RefRows(spwId_p));
@@ -301,6 +330,17 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
   Int n=wantedPol.nelements();
   Vector<Int> wanted(n);
   for (Int i=0; i<n; i++) wanted(i)=Stokes::type(wantedPol(i));
+  
+  // check for duplicates
+  for (Int i=0; i<n-1; i++) {
+    for (Int j=i+1; j<n; j++) {
+      if (wanted(i)==wanted(j)) { 
+	os << LogIO::WARN << " Duplicate polarizations in input not allowed -"
+	   << wantedPol   << LogIO::POST;
+	return False;
+      }
+    }
+  }
 
   // now find out the input polarizations, assuming all selected data is
   // the same
@@ -308,30 +348,6 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
   Int numCorr=mspol.numCorr()(polId_p(0));
   Vector<Int> inputPol=mspol.corrType()(polId_p(0));
 
-  // shortcut two cases: we want all or 1 existing pol in the output
-  convert_p=False;
-  wantedOne_p=-1;
-  if (n==numCorr) {
-    for (Int i=0; i<numCorr; i++) {
-      if (wanted(i)!=inputPol(i)) {
-	convert_p=True;
-	break;
-      }
-    }
-  }else if (n==1) {
-    Bool found=False;
-    for (Int i=0; i<numCorr; i++) {
-      if (wanted(0)==inputPol(i)) {
-	found=True;
-	wantedOne_p=i;
-	useSlicer_p=True;
-	break;
-      }
-    }
-    if (!found) convert_p=True;
-  } else {
-    convert_p=True;
-  }
   // check if wanted is just a subset or permutation of inputPol
   subSet_p=True;
   for (Int j=0; j<n; j++) {
@@ -344,7 +360,42 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
       break;
     }
   }
-
+  if (subSet_p) {
+    polIndex_p.resize(0);
+    if (n==1) {
+      for (Int i=0; i<numCorr; i++) {
+	if (wanted(0)==inputPol(i)) {
+	  polSlice_p=Slice(i,1);
+	  break;
+	}
+      }
+    } else if (n==2) {
+      Int id1,id2;
+      for (Int i=0; i<numCorr; i++) {
+	if (inputPol(i)==wanted(0)) { id1=i; break;}
+      }
+      for (Int i=0; i<numCorr; i++) {
+	if (inputPol(i)==wanted(1)) { id2=i; break;}
+      }
+      polSlice_p=Slice(min(id1,id2),2,abs(id1-id2));
+      if (id2<=id1) {
+	polIndex_p.resize(2);
+	polIndex_p(0)=1; polIndex_p(1)=0;
+      }
+    } else {
+      polIndex_p.resize(n);
+      for (Int i=0; i<numCorr; i++) {
+	for (Int j=0; j<n; j++) {
+	  if (inputPol(i)==wanted(j)) polIndex_p(j)=i;
+	}
+      }
+      if (n==numCorr) {
+	Int j=1;
+	for (;j<n;j++) if (polIndex_p(j)<polIndex_p(j-1)) break;
+	if (j==n) polIndex_p.resize(0); // want all in correct order
+      }
+    }
+  }
   if (convert_p) {
     // check validity
     for (Int i=0; i<n; i++) {
@@ -355,19 +406,10 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
     }
     stokesConverter_p.setConversion(wanted,inputPol,True);
   }
-  if (chanSel_p.nelements()==4) {
-    Int end=chanSel_p(1)+(chanSel_p(0)-1)*chanSel_p(3)+chanSel_p(2)-1;
-    // use slicer if: start > 0, end< nChan-1, inc>1 && width<inc, one pol only
-    useSlicer_p=
-      (chanSel_p(1)>0 || 
-	     end<(chanSel_p(0)-1) || 
-	     (chanSel_p(3)>1 && chanSel_p(2)<chanSel_p(3)) 
-	     || wantedOne_p>=0);
-  }
-  if (useSlicer_p) haveSlicer_p=False;
+  useSlicer_p=(!polSlice_p.all()||!chanSlice_p.all());
+  if (useSlicer_p) slicer_p=Slicer(polSlice_p,chanSlice_p);
   polSelection_p.resize(wantedPol.nelements()); polSelection_p=wantedPol;
-  os << LogIO::NORMAL<< "Polarization selection: "<< wantedPol 
-    << LogIO::POST;
+  os << LogIO::NORMAL<< "Polarization selection: "<< wantedPol << LogIO::POST;
   return True;
 }
 
@@ -1409,12 +1451,6 @@ Bool MSSelector::putData(const GlishRecord& items)
   }
 
   MSColumns msc(selms_p);
-  if (useSlicer_p) {
-    if (!haveSlicer_p) {
-      if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
-      else makeSlicer(0,msc.data().shape(0)(0));
-    }
-  }
   Int n=items.nelements();
   for (Int i=0; i<n; i++) {
     String item=downcase(items.name(i));
@@ -1437,6 +1473,13 @@ Bool MSSelector::putData(const GlishRecord& items)
 	if (convert_p) {
 	  os << LogIO::SEVERE <<"Polarization conversion not supported "
 	     << "when writing data" << LogIO::POST;
+	  return False;
+	}
+	if (polIndex_p.nelements()>0) {
+	  os << LogIO::SEVERE << "Polarization selection must be 1,2 or "
+	     << "all correlations,"<<endl<<
+	    "in correct order (ie MeasurementSet order), when writing data"
+	     << LogIO::POST;
 	  return False;
 	}
 	Array<Complex> data;
@@ -1662,10 +1705,6 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
 {
   Array<Complex> data;
   if (useSlicer_p) {
-    if (!haveSlicer_p) {
-      if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
-      else makeSlicer(0,col.shape(0)(0));
-    }
     data=col.getColumnRange(rowSlicer,slicer_p);
   } else {
     data=col.getColumnRange(rowSlicer);
@@ -1685,26 +1724,45 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
     avData=data;
   } else {
     // Average channel by channel
+    Array<Bool> mask(!flag);
+    Array<Float> wt(flag.shape(),0.0); wt(mask)=1.0;
+    Array<Float> avWt(avData.shape(),0.0);
     for (Int i=0; i<nChan; i++) {
       // if width>1, the slice doesn't have an increment, so we take big steps
       Int chn=i*chanSel(3);
-      Array<Complex> ref(avData(IPosition(3,0,i,0),IPosition(3,nPol-1,i,nRow-1)));
-      ref=data(IPosition(3,0,chn,0),IPosition(3,nPol-1,chn,nRow-1));
+      IPosition is(3,0,i,0),ie(3,nPol-1,i,nRow-1),
+	cs(3,0,chn,0),ce(3,nPol-1,chn,nRow-1);
+      Array<Complex> ref(avData(is,ie));
+      Array<Float> wtref(avWt(is,ie));
       // average over channels
-      // TODO: take flagging into account
+      for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
+	MaskedArray<Complex> mdata(data(cs,ce),mask(cs,ce));
+	ref+=mdata;
+	wtref+=wt(cs,ce);
+      }
+      // average over channels
       for (Int j=1; j<chanSel(2); j++) {
 	ref+=data(IPosition(3,0,chn+j,0),IPosition(3,nPol-1,chn+j,nRow-1));
       }
-      // This is horrible..
-      ref/=Complex(chanSel(2));
+      ref(wtref>Float(0.0))/=wtref(wtref>Float(0.0));
     }
   }
-  // do the polarization conversion
+  // do the polarization conversion or selection
   if (convert_p) {
     Array<Complex> out;
     stokesConverter_p.convert(out,avData);
     avData.reference(out);
-  }
+  } else if (polIndex_p.nelements()>0) {
+    Int n=polIndex_p.nelements();
+    Array<Complex> out(IPosition(3,n,nChan,nRow));
+    IPosition sp(3,0,0,0),ep(3,0,nChan-1,nRow-1);
+    IPosition sav(3,0,0,0),eav(3,0,nChan-1,nRow-1);
+    for (Int i=0; i<n; i++,sp(0)++,ep(0)++) {
+      sav(0)=polIndex_p(i);eav(0)=polIndex_p(i);
+      out(sp,ep)=avData(sav,eav);
+    }
+    avData.reference(out);
+  }    
 }
 
 void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
@@ -1719,10 +1777,6 @@ void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 {
   Array<Float> data;
   if (useSlicer_p) {
-    if (!haveSlicer_p) {
-      if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
-      else makeSlicer(0,col.shape(0)(0));
-    }
     data=col.getColumnRange(rowSlicer,slicer_p);
   } else {
     data=col.getColumnRange(rowSlicer);
@@ -1769,6 +1823,16 @@ void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
     LogIO os;
     os << LogIO::WARN << "Polarization conversion for FLOAT_DATA "
       "not implemented" << LogIO::POST;
+  } else if (polIndex_p.nelements()>0) {
+    Int n=polIndex_p.nelements();
+    Array<Float> out(IPosition(3,n,nChan,nRow));
+    IPosition sp(3,0,0,0),ep(3,0,nChan-1,nRow-1);
+    IPosition sav(3,0,0,0),eav(3,0,nChan-1,nRow-1);
+    for (Int i=0; i<n; i++,sp(0)++,ep(0)++) {
+      sav(0)=polIndex_p(i);eav(0)=polIndex_p(i);
+      out(sp,ep)=avData(sav,eav);
+    }
+    avData.reference(out);
   }
 }
 
@@ -1784,10 +1848,6 @@ Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag,
 {
   Array<Bool> flag;
   if (useSlicer_p) {
-    if (!haveSlicer_p) {
-      if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
-      else makeSlicer(0,col.shape(0)(0));
-    }
     flag=col.getColumnRange(rowSlicer,slicer_p);
   } else {
     flag=col.getColumnRange(rowSlicer);
@@ -1822,6 +1882,16 @@ Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag,
     Array<Bool> out;
     stokesConverter_p.convert(out,avFlag);
     avFlag.reference(out);
+  } else if (polIndex_p.nelements()>0) {
+    Int n=polIndex_p.nelements();
+    Array<Bool> out(IPosition(3,n,nChan,nRow));
+    IPosition sp(3,0,0,0),ep(3,0,nChan-1,nRow-1);
+    IPosition sav(3,0,0,0),eav(3,0,nChan-1,nRow-1);
+    for (Int i=0; i<n; i++,sp(0)++,ep(0)++) {
+      sav(0)=polIndex_p(i);eav(0)=polIndex_p(i);
+      out(sp,ep)=avFlag(sav,eav);
+    }
+    avFlag.reference(out);
   }
   return flag; // return the raw flags for use in data averaging
 }
@@ -1830,25 +1900,28 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
 				 ArrayColumn<Bool>& col)
 {
   Array<Bool> polFlag=avFlag;
+  Array<Bool> out;
+  Int n=polIndex_p.nelements();
+  Int nRow=avFlag.shape()(2);
+  // check if we need to read the data before writing it back
+  if (convert_p || (n>2 && n<col.shape(0)(0))||
+      (chanSel_p(2)>1 && chanSel_p(3)>chanSel_p(2))) {
+    if (useSlicer_p) {
+      out=col.getColumn(slicer_p);
+    } else {
+      out=col.getColumn();
+    }
+  }
   if (convert_p) {
-    Array<Bool> out;
     stokesConverter_p.invert(out,polFlag);
     polFlag.reference(out);
-  }
-  Array<Bool> flag;
+  } 
   if (chanSel_p(2)>1) {
     // we need to undo the averaging and distribute the flags
     IPosition shape=polFlag.shape();
     shape(1)=(chanSel_p(0)-1)*chanSel_p(3)+chanSel_p(2);
-    if (chanSel_p(3)>chanSel_p(2)) {
-      // there are gaps - need to read data before writing it back
-      if (useSlicer_p) {
-	flag=col.getColumn(slicer_p);
-      } else {
-	flag=col.getColumn();
-      }
-    } else {
-      flag.resize(shape);
+    if (chanSel_p(3)<=chanSel_p(2)) {
+      if (out.nelements()==0) out.resize(shape);
     }
     Int nChan=chanSel_p(0), st=chanSel_p(1), w=chanSel_p(2), inc=chanSel_p(3),
       nRow=shape(2);
@@ -1858,14 +1931,31 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
       st2(1)=end2(1)=i;
       for (Int j=0; j<w; j++) {
 	st1(1)=end1(1)=st+i*inc+j;
-	flag(st1,end1)=polFlag(st2,end2);
+	if (n>0) {
+	  for (Int k=0; k<n; k++) {
+	    st2(0)=end2(0)=k;
+	    st1(0)=end1(0)=polIndex_p(k);
+	    out(st1,end1)=polFlag(st2,end2);
+	  }
+	} else {
+	  out(st1,end1)=polFlag(st2,end2);
+	}
       }
     }
+  } else if (n>0) { // need to rearrange polarizations
+    Int nChan=chanSel_p(0);
+    if (out.nelements()==0) out.resize(IPosition(3,n,nChan,nRow));
+    IPosition sp(3,0,0,0),ep(3,0,nChan-1,nRow-1);
+    IPosition sav(3,0,0,0),eav(3,0,nChan-1,nRow-1);
+    for (Int i=0; i<n; i++,sp(0)++,ep(0)++) {
+      sav(0)=polIndex_p(i);eav(0)=polIndex_p(i);
+      out(sav,eav)=polFlag(sp,ep);
+    }
   } else {
-    flag.reference(polFlag);
+    out.reference(polFlag);
   }
-  if (useSlicer_p) col.putColumn(slicer_p, flag);
-  else col.putColumn(flag);
+  if (useSlicer_p) col.putColumn(slicer_p, out);
+  else col.putColumn(out);
 }
 
 Array<Float> MSSelector::getWeight(const ROArrayColumn<Float>& wtCol,
@@ -1884,20 +1974,6 @@ Array<Float> MSSelector::getWeight(const ROArrayColumn<Float>& wtCol,
     wt.reference(outwt);
   }
   return wt;
-}
-
-void MSSelector::makeSlicer(Int start, Int nCorr) const
-{
-  if (chanSel_p(2)==1) {
-    // width is one, we can use a stride
-    slicer_p=Slicer(Slice(start,nCorr),
-		    Slice(chanSel_p(1),chanSel_p(0),chanSel_p(3)));
-  } else {
-    slicer_p=Slicer(Slice(start,nCorr),
-		    Slice(chanSel_p(1),
-			  1+(chanSel_p(0)-1)*chanSel_p(3)+(chanSel_p(2)-1)));
-  }
-  haveSlicer_p=True;
 }
 
 // reorder from 2d to 1d (removing ifr axis)

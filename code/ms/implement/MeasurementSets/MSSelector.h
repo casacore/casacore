@@ -31,6 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <trial/MeasurementComponents/StokesConverter.h>
@@ -304,6 +305,8 @@ private:
   Bool useSlicer_p;
   mutable Bool haveSlicer_p;
   mutable Slicer slicer_p;
+  Slice chanSlice_p,polSlice_p;
+  Vector<Int> polIndex_p;
   Int wantedOne_p;
   Bool convert_p, subSet_p;
   StokesConverter stokesConverter_p;
