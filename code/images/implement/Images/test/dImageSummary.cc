@@ -33,14 +33,15 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/String.h>
 #include <images/Images/ImageUtilities.h>
+#include <images/Images/ImageOpener.h>
 #include <images/Images/ImageSummary.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/FITSImage.h>
 #include <images/Images/MIRIADImage.h>
 #include <measures/Measures/MDoppler.h>
 
-
 #include <casa/namespace.h>
+
 int main (int argc, char **argv)
 {
 try {
@@ -76,8 +77,8 @@ try {
      doppler = MDoppler::RADIO;
    }     
 //
-   ImageUtilities::ImageTypes imageType = ImageUtilities::imageType(in);
-   if (imageType==ImageUtilities::AIPSPP) {
+   ImageOpener::ImageTypes imageType = ImageOpener::imageType(in);
+   if (imageType==ImageOpener::AIPSPP) {
       DataType pixelType = imagePixelType(in);
       if (pixelType==TpFloat) {    
          PagedImage<Float> im(in);
@@ -86,11 +87,11 @@ try {
       } else {
          os << "Float images only" << LogIO::EXCEPTION;
       }
-   } else if (imageType==ImageUtilities::FITS) {
+   } else if (imageType==ImageOpener::FITS) {
       FITSImage im(in);
       ImageSummary<Float> header(im);
       header.list(os, doppler);
-   } else if (imageType==ImageUtilities::MIRIAD) {  
+   } else if (imageType==ImageOpener::MIRIAD) {  
       MIRIADImage im(in);
       ImageSummary<Float> header(im);
       header.list(os, doppler);
