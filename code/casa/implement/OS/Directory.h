@@ -1,5 +1,5 @@
 //# Directory.h: Get information about, and manipulate directories
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
    
 template<class T> class Vector;
 class Regex;
+class String;
 
 // <summary>  
 // Get information about, and manipulate directories
@@ -199,6 +200,15 @@ public:
     // can be over-ridden. 
     Vector<String> find (const Regex& regexp, Bool followSymLinks=False,
                          Bool recursive=True) const;
+
+
+    // For each element of <src>files</src>, find all file names matching
+    // it using shell file-expansion rules.  Return the list of all matched files
+    // as absolute path + file names.  You may optionally drop the path and just return
+    // the file names.   Note tha if <src>files(i)</src> contains a path as well as a file
+    // name, no matching is done on the path, just the trailing file name.
+    // Throws an AipsError if the shell pattern is illegal.
+    static Vector<String> shellExpand (const Vector<String>& files, Bool stripPath=False);
 
 private:
     // Check if the path defines a directory.

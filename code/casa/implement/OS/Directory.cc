@@ -352,3 +352,59 @@ Vector<String> Directory::find (const Regex& regexp, Bool followSymLinks,
     return myentries;
 }
 
+
+
+Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPath)
+//
+// Take a list of potentially wild-carded file names, and expand
+// them into (optional) absolute path and name.  Some more development
+// needed to expand the path as well, if there are any wild cards in that.
+//
+{
+   Vector<String> expInNames;
+   uInt nExpInNames = 0;
+   uInt k = 0;
+   Regex exp;
+//
+   for (uInt i=0; i<files.nelements(); i++) {
+
+// Find the directory of this file.  
+
+      Path path(files(i));
+      Directory dir(path.dirName());
+
+// Try and expand it (minus path)
+
+      try {
+         exp = Regex::fromPattern(path.baseName());            
+      } catch (RegexExpressnError x) {
+         String msg = String("Error parsing file ") + files(i);
+         throw (AipsError(msg));
+      } end_try;
+
+// Find all the matched files
+
+      Vector<String> expFiles = dir.find(exp, True, False);    
+      nExpInNames += expFiles.nelements();
+      expInNames.resize(nExpInNames, True);
+
+// Add the path back on to each name
+      
+      if (stripPath) {
+         for (uInt j=0; j<expFiles.nelements(); j++) {
+            expInNames(k) = expFiles(j);
+            k++;
+         }
+      } else {
+         for (uInt j=0; j<expFiles.nelements(); j++) {
+            expInNames(k) = Path::addDirectory("./"+expFiles(j), path.absoluteName());  
+            k++;
+         }
+     }
+   }
+
+// Return result
+
+   return expInNames;
+}
+
