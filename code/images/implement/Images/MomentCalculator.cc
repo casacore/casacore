@@ -25,7 +25,7 @@
 //#
 //# $Id$
 //
-#include <trial/Lattices/MomentCalculator.h>
+#include <trial/Images/MomentCalculator.h>
 
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
