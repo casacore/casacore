@@ -84,13 +84,15 @@ public:
 
   // Create a SubLattice from the given lattice and region.
   // The "const Lattice" version yields a non-writable SubLattice,
-  // while the non-const version yields a writable SubLattice if the
-  // original lattice is writable.
+  // while for the non-const version one has to specify if the SubLattice
+  // should be writable (if the original lattice is non-writable, the
+  // SubLattice is always set to non-writable).
   // <br>An exception is thrown if the lattice shape used in the region
   // differs from the shape of the lattice.
   // <group>
   SubLattice (const Lattice<T>& lattice, const PixelRegion& region);
-  SubLattice (Lattice<T>& lattice, const PixelRegion& region);
+  SubLattice (Lattice<T>& lattice, const PixelRegion& region,
+	      Bool writableIfPossible);
   // </group>
   
   // Copy constructor (reference semantics).

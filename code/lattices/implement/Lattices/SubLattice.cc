@@ -53,11 +53,15 @@ SubLattice<T>::SubLattice (const Lattice<T>& lattice,
 
 template<class T>
 SubLattice<T>::SubLattice (Lattice<T>& lattice,
-			   const PixelRegion& region)
+			   const PixelRegion& region,
+			   Bool writableIfPossible)
 : itsLatticePtr (lattice.clone()),
   itsRegionPtr  (region.clone()),
-  itsWritable   (lattice.isWritable())
+  itsWritable   (writableIfPossible)
 {
+  if (itsWritable) {
+    itsWritable = lattice.isWritable();
+  }
   if (region.latticeShape() != lattice.shape()) {
     throw (AipsError ("SubLattice::SubLattice - "
 		      "lattice shape in region mismatches lattice"));
