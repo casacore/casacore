@@ -1,5 +1,5 @@
 //# ImageInfo.h: Miscellaneous information related to an image
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,6 +57,7 @@
 // At present it contains the following:
 // <ol>
 //    <li> The restoring beam
+//    <li> A parameter describing what quantity the image holds.
 // </ol>
 // This list can easily be extended if necessary.
 //
@@ -80,63 +81,125 @@
 // standard interface so it could be moved out of MiscInfo.
 // </motivation>
 //
-// <todo asof="1999/03/28">
+// <todo asof="2002/02/05">
 //   <li> Probably add the image min and max
 // </todo>
 
 class ImageInfo : public RecordTransformable
 {
 public:
+
+    // This enum defines the actual quantity being held in an image
+    // It's really only used for descriptive information.
+    enum ImageTypes {
+       Undefined=0,
+       Intensity,
+       Beam,
+       ColumnDensity,
+       DepolarizationRatio,
+       KineticTemperature,
+       MagneticField,
+       OpticalDepth,
+       RotationMeasure,
+       RotationalTemperature,
+       SpectralIndex,
+       Velocity,
+       VelocityDispersion,
+       nTypes
+    };
+
+// Default constructor
+
     ImageInfo();
+
+// Destructor
     ~ImageInfo();
 
-    // Copy constructor (copy semantics)
+// Copy constructor (copy semantics)
     ImageInfo(const ImageInfo &other);
 
-    // Assignment (copy semantics)
+// Assignment (copy semantics)
     ImageInfo &operator=(const ImageInfo &other);
 
-    // Set and get the restoring beam.  Vector beam in order
-    // major axis, minor axis, position angle.
-    // <group>
+// Set and get the restoring beam.  Vector beam in order
+// major axis, minor axis, position angle.
+// <group>
     Vector<Quantum<Double> > restoringBeam() const;
     ImageInfo& setRestoringBeam(const Vector<Quantum<Double> >& beam);
     ImageInfo& setRestoringBeam(const Quantum<Double>& major,
                                 const Quantum<Double>& minor,
                                 const Quantum<Double>& pa);
     ImageInfo& removeRestoringBeam();
-    // </group>
+// </group>
 
-    // Functions to interconvert between an ImageInfo and a record. These 
-    // functions are inherited from class
-    // <linkto class=RecordTransformable>RecordTransformable</linkto>. As new
-    // fields get added to ImageInfo these functions should be augmented. Missing
-    // fields should not generate an error to in fromRecord to allow for 
-    // backwards compatibility - null values should be supplied instead.
-    // The record field names are: "restoringbeam".
-    // <group>
+// Set and get the Image Type.  
+// <group>
+    ImageInfo::ImageTypes imageType () const;
+    ImageInfo& setImageType(ImageTypes type);
+    static String imageType(ImageInfo::ImageTypes type);
+    static ImageInfo::ImageTypes imageType(String type);
+// </group>
+
+// Functions to interconvert between an ImageInfo and a record. These 
+// functions are inherited from class
+// <linkto class=RecordTransformable>RecordTransformable</linkto>. As new
+// fields get added to ImageInfo these functions should be augmented. Missing
+// fields should not generate an error to in fromRecord to allow for 
+// backwards compatibility - null values should be supplied instead.
+// The record field names are: "restoringbeam".
+// <group>
     virtual Bool toRecord(String & error, RecordInterface & outRecord) const;
     virtual Bool fromRecord(String & error, const RecordInterface & inRecord);
-    // </group>
+// </group>
 
-    // In some circumstances it might be useful to know what the defaults for
-    // the various values are so you can check if they have been set.
-    // The default restoring beam is a null vector.
-    // <group>
+// In some circumstances it might be useful to know what the defaults for
+// the various values are so you can check if they have been set.
+// The default restoring beam is a null vector.
+// <group>
     static Vector<Quantum<Double> > defaultRestoringBeam();
-    // </group>
+    static ImageTypes defaultImageType();
+// </group>
 
-    // It might be useful to know what FITS keyword names are used in to/from
-    // FITS so we can remove them so they won't be used more than once. The
-    // names are in lower case.
+// Functions to interconvert between an ImageInfo and FITS keywords
+// (converted to a Record).    Failure of <src>fromFITS</src>
+// should probably not be regarded as fatal as the default ImageInfo
+// values are viable.  For each item contained
+// in the ImageInfo, an attempt to decode it from FITS is made.
+// If any of them fail, False is returned, but it attempts to decode
+// them all.  For those that fail an error message is held in <src>error</src> 
+// in the order restoring beam, image type.
+// <src>error</src> will be returned of length 0 if the return 
+// value is True, else it will be length 2.
+// <group>
+    Bool toFITS(String & error, RecordInterface & outRecord) const;
+    Bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
+// </group>
+
+
+// This function takes an unofficial fitsValue found on the Stokes axis
+// and returns the appropriate ImageType.  The idea is that you 
+// detect the unofficial value, drop the Stokes axis, and store
+// the value as an ImageType in ImageInfo.  Only values pertaining
+// to beam, optical depth and spectral index are handled here.  All others
+// give back Undefined.  See usage in Image FITS conversion classes.
+    static ImageInfo::ImageTypes imageTypeFromFITS(Int fitsValue);
+
+// It might be useful to know what FITS keyword names are used in to/from
+// FITS so we can remove them so they won't be used more than once. The
+// names are in lower case.
     static Vector<String> keywordNamesFITS();
 
 
 private:
     Vector<Quantum<Double> > itsRestoringBeam;
+    ImageInfo::ImageTypes itsImageType;
 
-    // Common copy ctor/assignment operator code.
+// Common copy ctor/assignment operator code.
     void copy_other(const ImageInfo &other);
+
+//
+   ImageInfo::ImageTypes MiriadImageType (const String& type) const;
+
 };
 
 // <summary> Global functions </summary>
@@ -145,4 +208,9 @@ private:
 ostream &operator<<(ostream &os, const ImageInfo &info);
 // </group>
 
+
 #endif
+
+
+
+

@@ -1,5 +1,5 @@
 //# ImageInfo.cc: Miscellaneous information related to an image
-//# Copyright (C) 1998,1999,2001
+//# Copyright (C) 1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,18 +31,17 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Containers/Record.h>
+#include <aips/Utilities/String.h>
+
 
 #include <aips/iostream.h>
 
-Vector<Quantum<Double> > ImageInfo::defaultRestoringBeam()
-{
-    Vector<Quantum<Double> > tmp;
-    return tmp;
-}
 
 ImageInfo::ImageInfo()
-: itsRestoringBeam(defaultRestoringBeam())
+: itsRestoringBeam(defaultRestoringBeam()),
+  itsImageType(defaultImageType())
 {}
 
 ImageInfo::~ImageInfo()
@@ -53,6 +52,8 @@ void ImageInfo::copy_other(const ImageInfo &other)
     if (this != &other) {
        itsRestoringBeam.resize(other.itsRestoringBeam.nelements());
        itsRestoringBeam = other.itsRestoringBeam.copy();
+//   
+       itsImageType = other.itsImageType;
     }
 }
 
@@ -64,7 +65,19 @@ ImageInfo::ImageInfo(const ImageInfo &other)
 ImageInfo &ImageInfo::operator=(const ImageInfo &other)
 {
     copy_other(other);
+//
     return *this;
+}
+
+Vector<Quantum<Double> > ImageInfo::defaultRestoringBeam()
+{
+    Vector<Quantum<Double> > tmp;
+    return tmp;
+}
+
+ImageInfo::ImageTypes ImageInfo::defaultImageType()
+{
+    return ImageInfo::Intensity;
 }
 
 Vector<Quantum<Double> > ImageInfo::restoringBeam() const
@@ -76,7 +89,7 @@ ImageInfo& ImageInfo::setRestoringBeam(const Vector<Quantum<Double> >& beam)
 {
     if (beam.nelements()!=0 && beam.nelements()!=3) {
       throw (AipsError (String("ImageInfo::setRestoringBeam - beam ") +
-                         String("vector must be of length 0 or 3")));
+                        String("vector must be of length 0 or 3")));
     }
 //
     if (beam.nelements()>uInt(0)) {
@@ -128,6 +141,100 @@ ImageInfo& ImageInfo::removeRestoringBeam()
    return *this;
 }
 
+
+ImageInfo::ImageTypes ImageInfo::imageType() const
+{
+    return itsImageType;
+}
+
+ImageInfo& ImageInfo::setImageType(ImageInfo::ImageTypes type) 
+{
+    itsImageType = type;
+//
+    return *this;
+}
+
+
+String ImageInfo::imageType(ImageInfo::ImageTypes type)
+{
+   String typeOut;
+   switch(type) {
+//
+      case ImageInfo::Undefined:
+        typeOut = String("Undefined"); 
+        break;
+      case ImageInfo::Intensity:
+        typeOut = String("Intensity"); 
+        break;
+      case ImageInfo::Beam:
+        typeOut = String("Beam"); 
+        break;
+      case ImageInfo::ColumnDensity:
+        typeOut = String("Column Density"); 
+        break;
+      case ImageInfo::DepolarizationRatio:
+        typeOut = String("Depolarization Ratio"); 
+        break;
+      case ImageInfo::KineticTemperature:
+        typeOut = String("Kinetic Temperature"); 
+        break;
+      case ImageInfo::MagneticField:
+        typeOut = String("Magneti Field"); 
+        break;
+      case ImageInfo::OpticalDepth:
+        typeOut = String("Optical Depth"); 
+        break;
+      case ImageInfo::RotationMeasure:
+        typeOut = String("Rotation Measure"); 
+        break;
+      case ImageInfo::RotationalTemperature:
+        typeOut = String("Rotational Temperature"); 
+        break;
+      case ImageInfo::SpectralIndex:
+        typeOut = String("Spectral Index"); 
+        break;
+      case ImageInfo::Velocity:
+        typeOut = String("Velocity"); 
+        break;
+      case ImageInfo::VelocityDispersion:
+        typeOut = String("Velocity Dispersion"); 
+        break;
+      default:
+        typeOut = String("Undefined"); 
+        break;
+   }
+//
+   return typeOut;
+}
+
+
+ImageInfo::ImageTypes ImageInfo::imageType(String type)
+{
+   String typeUp = upcase(type);
+   for (uInt i=0; i<ImageInfo::nTypes; i++) {
+      ImageInfo::ImageTypes t0 = static_cast<ImageInfo::ImageTypes>(i);
+      String t1Up = upcase(ImageInfo::imageType(t0));
+      if (t1Up==typeUp) return t0;     // Exact match
+   }
+//  
+   return defaultImageType();
+}
+
+ImageInfo::ImageTypes ImageInfo::imageTypeFromFITS (Int value)
+{
+    if (value==0) {
+       return ImageInfo::Beam;
+    } else if (value==8) {
+       return ImageInfo::SpectralIndex;
+    } else if (value==9) {
+       return ImageInfo::OpticalDepth;
+    } else {
+       return ImageInfo::Undefined;
+    }
+}
+
+
+
 Bool ImageInfo::toRecord(String & error, RecordInterface & outRecord) const
 {
     error = "";
@@ -148,6 +255,11 @@ Bool ImageInfo::toRecord(String & error, RecordInterface & outRecord) const
           restoringBeamRecord.defineRecord(names(i), tmp);
        }
        outRecord.defineRecord("restoringbeam", restoringBeamRecord);
+    }
+//
+    {
+       String type = ImageInfo::imageType(itsImageType);
+       outRecord.define("imagetype", type);
     }
 //
     return ok;
@@ -204,14 +316,120 @@ Bool ImageInfo::fromRecord(String & error, const RecordInterface & inRecord)
 //
        setRestoringBeam(restoringBeam);
    }
+//
+   if (inRecord.isDefined("imagetype")) {
+      String type = inRecord.asString("imagetype");
+      setImageType (ImageInfo::imageType(type));
+   }
+//
    return ok;
 }
+
+Bool ImageInfo::toFITS(String & error, RecordInterface & outRecord) const
+{
+    error = "";
+//
+
+    Vector<Quantum<Double> > beam = restoringBeam();
+    if (beam.nelements()>0) {
+       Double bmaj = beam(0).getValue(Unit("deg"));
+       Double bmin = beam(1).getValue(Unit("deg"));
+       Double bpa  = beam(2).getValue(Unit("deg"));
+//
+       outRecord.define("bmaj", bmaj);
+       outRecord.define("bmin", bmin);
+       outRecord.define("bpa", bpa);
+    } else {
+       if (!outRecord.isFixed()) {
+          Int field = outRecord.fieldNumber("bmaj");
+          if (field >= 0) outRecord.removeField(field);
+          field = outRecord.fieldNumber("bmin");
+          if (field >= 0) outRecord.removeField(field);
+          field = outRecord.fieldNumber("bpa");
+          if (field >= 0) outRecord.removeField(field);
+       } 
+    }
+//
+    ImageInfo::ImageTypes type = imageType();
+    if (type!=ImageInfo::Undefined) {
+       String type = ImageInfo::imageType(itsImageType);
+       outRecord.define("btype", type);
+    } else {
+       if (!outRecord.isFixed()) {
+          Int field = outRecord.fieldNumber("btype");
+          if (field >= 0) outRecord.removeField(field);
+       }
+    }
+//
+    return True;
+}
+
+
+
+Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header)
+{
+   error.resize(2);
+   Bool ok = True;
+   ImageInfo tmp;
+   (*this) = tmp; // Make sure we are "empty" first;
+//
+   if (header.isDefined("bmaj") && header.isDefined("bmin") &&
+       header.isDefined("bpa")) {
+      Bool ok = header.dataType("bmaj")==TpDouble && header.dataType("bmin")==TpDouble &&
+                header.dataType("bpa")==TpDouble;
+      if (!ok) ok = header.dataType("bmaj")==TpFloat && header.dataType("bmin")==TpFloat &&
+                header.dataType("bpa")==TpFloat;
+      if (ok) {
+         Double bmaj = header.asDouble("bmaj");
+         Double bmin = header.asDouble("bmin");
+         Double bpa = header.asDouble("bpa");
+//   
+         Quantum<Double> bmajq(max(bmaj,bmin), "deg");
+         Quantum<Double> bminq(min(bmaj,bmin), "deg");
+         bmajq.convert(Unit("arcsec"));
+         bminq.convert(Unit("arcsec"));
+         setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
+      } else {
+         error(0) = "BMAJ, BMIN, BPA fields are not of type Double or Float";
+         ok = False;
+      }
+   }
+//
+   if (header.isDefined("btype")) {
+      if (header.dataType("btype")==TpString) {
+         String type = header.asString("btype");
+
+// We are going to cope with aips++ values and Miriad values
+// For Miriad there are a few extra ones (which we put on the Stokes
+// axis in aips++ - e.g. position angle).  For the ones that are common
+// the Miriad ones have underscores and the aips++ ones have spaces
+
+         ImageInfo::ImageTypes imageType = ImageInfo::imageType(type);
+         if (imageType != ImageInfo::Undefined) {
+            setImageType(imageType);
+         } else {
+            imageType = MiriadImageType (type);
+            if (imageType != ImageInfo::Undefined) {
+               setImageType(imageType);
+            }
+         }
+      }  else {
+         error(1) = "BTYPE field is not of type String";
+         ok = False;
+      }
+   }
+//
+   if (ok) error.resize(0);
+   return ok;
+}
+
 
 ostream &operator<<(ostream &os, const ImageInfo &info)
 {
     if (info.restoringBeam().nelements()>0) {
        os << "Restoring beam : " << info.restoringBeam()(0) << ", " 
-          << info.restoringBeam()(1) << ", " << info.restoringBeam()(2);
+          << info.restoringBeam()(1) << ", " << info.restoringBeam()(2) << endl;
+       os << "Image Type = " << info.imageType(info.imageType()) << endl;
     }
     return os;
 }
@@ -219,10 +437,45 @@ ostream &operator<<(ostream &os, const ImageInfo &info)
 
 Vector<String> ImageInfo::keywordNamesFITS()
 {
-    Vector<String> vs(3);
+    Vector<String> vs(4);
     vs(0) = "bmaj";
     vs(1) = "bmin";
     vs(2) = "bpa";
+    vs(3) = "btype";              // Miriad convention
     return vs;
 }  
 
+
+ImageInfo::ImageTypes ImageInfo::MiriadImageType (const String& type) const
+{
+   String typeUp = upcase(type);
+   ImageInfo::ImageTypes typeOut = ImageInfo::Undefined;
+//
+   if (typeUp==String("INTENSITY")) {
+      typeOut = ImageInfo::Intensity;
+   } else if (typeUp==String("BEAM")) {
+      typeOut = ImageInfo::Beam;
+   } else if (typeUp==String("COLUMN_DENSITY")) {
+      typeOut = ImageInfo::ColumnDensity;
+   } else if (typeUp==String("DEPOLARIZATION_RATIO")) {
+      typeOut = ImageInfo::DepolarizationRatio;
+   } else if (typeUp==String("KINETIC_TEMPERATURE")) {
+      typeOut = ImageInfo::KineticTemperature;
+   } else if (typeUp==String("MAGNETIC_FIELD")) {
+      typeOut = ImageInfo::MagneticField;
+   } else if (typeUp==String("OPTICAL_DEPTH")) {
+      typeOut = ImageInfo::OpticalDepth;
+   } else if (typeUp==String("ROTATION_MEASURE")) {
+      typeOut = ImageInfo::RotationMeasure;
+   } else if (typeUp==String("ROTATIONAL_TEMPERATURE")) {
+      typeOut = ImageInfo::RotationalTemperature;
+   } else if (typeUp==String("SPECTRAL_INDEX")) {
+      typeOut = ImageInfo::SpectralIndex;
+   } else if (typeUp==String("VELOCITY")) {
+      typeOut = ImageInfo::Velocity;
+   } else if (typeUp==String("VELOCITY_DISPERSION")) {
+      typeOut = ImageInfo::VelocityDispersion;
+   }
+//
+   return typeOut;
+}
