@@ -2610,3 +2610,4 @@
 09 537 src mv trial/implement/Guiutils/barchart.g aips/implement/Guiutils/barchart.g
 09 537 src mv aips/scripts/timer.g aips/implement/Utilities/timer.g
 09 537 src mv aips/scripts/ttimer.g aips/implement/Utilities/test/ttimer.g
+10 005 src rm doc/html/navpages/learnmore/ahrecipe.tex
