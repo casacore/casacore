@@ -158,6 +158,7 @@ public:
     virtual Bool near(const Coordinate* pOther, 
                       const Vector<Int>& excludeAxes,
                       Double tol=1e-6) const;
+    // </group>
 
     // Save ourself into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
