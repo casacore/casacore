@@ -1,21 +1,21 @@
 *=======================================================================
 *
-*   PGSBOX 3.3 - a non-linear coordinate axis plotter for PGPLOT.
-*   Copyright (C) 1997-2003, Mark Calabretta
+*   PGSBOX 4.0 - a non-linear coordinate axis plotter for PGPLOT.
+*   Copyright (C) 1997-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify
-*   it under the terms of the GNU Library General Public License as
-*   published by the Free Software Foundation; either version 2 of the
-*   License, or (at your option) any later version.
+*   PGSBOX is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-*   Library General Public License for more details.
+*   PGSBOX is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public
-*   License along with this library; if not, write to the Free
-*   Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with PGSBOX; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning PGSBOX may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -25,6 +25,9 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=======================================================================
 *
 *   PGSBOX draws and labels a curvilinear coordinate grid.  The caller
@@ -34,7 +37,7 @@
 *   PGLBOX, a simplified ENTRY point to PGSBOX, has been provided for
 *   drawing simple linear axes without the need to specify NLFUNC.
 *   PGLBOX allows simplified access to formatting control for labelling
-*   world coordinate axes which is not provided by the standard PGPLOT
+*   world coordinate axes that is not provided by the standard PGPLOT
 *   routines, PGBOX or PGTBOX.  PGLBOX uses the world coordinate range
 *   set by a prior call to PGSWIN and omits the following arguments:
 *
@@ -254,7 +257,7 @@
 *                        for BLC and TRC).
 *
 *   Returned:
-*      IERR     I        Error status
+*      IERR     I        Status return value:
 *                           0: Success
 *                           1: Initialization error
 *                           2: Invalid coordinate system
@@ -362,7 +365,7 @@
 *   Given:
 *      OPCODE   I        Transformation code:
 *                           +2: Compute a set of Cartesian coordinates
-*                               which describe a path between this and
+*                               that describe a path between this and
 *                               the previous pair of world coordinates
 *                               remembered from the last call with
 *                               OPCODE = +1 or +2.  Usually only takes
@@ -411,7 +414,7 @@
 *      CONTXT   D(20)    Context elements for OPCODE = +2.
 *
 *   Returned:
-*      IERR     I        Error status
+*      IERR     I        Status return value:
 *                           0: Success.
 *                           1: Invalid parameters.
 *                           2: Invalid world coordinate.
@@ -454,8 +457,6 @@
 *       example, NLDPRM(2,NLD).  (The FORTRAN standard requires that
 *       only the last dimension is adjustable.)
 *
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *=======================================================================
       SUBROUTINE PGSBOX (BLC_, TRC_, IDENTS, OPT, LABCTL, LABDEN, CI,
      :   GCODE, TIKLEN, NG1, GRID1, NG2, GRID2, DOEQ, NLFUNC, NLC, NLI,
@@ -478,7 +479,7 @@
      :          G0(2), GSTEP(2), GRID1(0:NG1), GRID2(0:NG2),
      :          NLDPRM(NLD), STEP, SW(2), TIKLEN, TMP, VMAX(2,2),
      :          VMIN(2,2), W1PREV, W1X0, W2PREV, W2X0, WJUMP, WMAX(2),
-     :          WMIN(2), WORLD(2), XY(2)
+     :          WMIN(2), WORLD(9), XY(9)
       CHARACTER FTYPE(2), IDENTS(3)*(*), NLCPRM(NLC)*1, OPT(2)*(*)
 
       EXTERNAL NLFUNC
@@ -500,6 +501,11 @@
      :            2,  3,  5, 10,  0,  0,
      :            2,  3,  5,  7, 10,  0,
      :            2,  3,  4,  5,  7, 10/
+
+*     These are to stop compiler messages about uninitialized variables.
+      DATA LABLOK, PREVIN /2 * .FALSE./
+      DATA W1X0, W1PREV, W2X0, W2PREV /4 * 0.0/
+      DATA IW0 /0/
 *-----------------------------------------------------------------------
 *  Initialize.
       DOLBOX = .FALSE.
@@ -1303,6 +1309,7 @@
                            Y1 = YR(NP)
 
                            FSEG = 0
+                           XPOINT = 0.0
                            IF (ABS(X2-X1).GT.XTOL) THEN
                               S = (Y2-Y1)/(X2-X1)
                               IF (XR(NP).LE.BLC(1)) THEN
@@ -1389,6 +1396,7 @@
                            YR(NP) = Y2
 
                            FSEG = 0
+                           XPOINT = 0.0
                            IF (ABS(X2-X1).GT.XTOL) THEN
                               S = (Y2-Y1)/(X2-X1)
                               IF (XR(NP).LE.BLC(1)) THEN
@@ -1491,14 +1499,13 @@
  110     CONTINUE
  120  CONTINUE
 
+      IERR = 0
+      IF (OVERFL) IERR = 3
+
 
 *  Produce axis labels.
  130  IF (LABCTL.NE.-1) CALL PGCRLB (BLC, TRC, IDENTS, FTYPE, LABCTL,
      :   CJ, NC, IC, CACHE)
-
-
-*  Clean up.
-      IF (OVERFL) IERR = 3
 
 *     Restore the original viewport, window and pen colour.
  999  CALL PGSVP (XVP1, XVP2, YVP1, YVP2)
@@ -1560,6 +1567,10 @@
      :          FTYPE(2)*1, TXT(2)*80
 
       DATA ESCAPE /'\\'/
+
+*     These are to stop compiler messages about uninitialized variables.
+      DATA DODEG, DOMIN, DOYEAR /3 * .FALSE./
+      DATA XL, YL /2 * -999.0/
 *-----------------------------------------------------------------------
 *  Normalize angular table entries.
       IF (INDEX('ABDEGH',FTYPE(1)).NE.0 .OR.
@@ -1898,7 +1909,7 @@
       YW1 = BLC(2)
       YW2 = TRC(2)
 
-*     These will define a box which just contains the labels.
+*     These will define a box that just contains the labels.
       BNDRY(1) = YW1
       BNDRY(2) = XW1
       BNDRY(3) = YW2
@@ -2254,6 +2265,7 @@
             IF (XBOX(3).GT.BNDRY(4)) BNDRY(4) = XBOX(3)
 
 *           Check the distance to the previous grid line.
+            TICKIT = .FALSE.
             IF (J.GT.1) THEN
                IF (CACHE(1,J).EQ.CACHE(1,J-1)) THEN
                   IF (EDGE.EQ.1 .OR. EDGE.EQ.3) THEN

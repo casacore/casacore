@@ -1,5 +1,5 @@
 *=======================================================================
-*                              PGSBOX 3.3
+*                              PGSBOX 4.0
 *-----------------------------------------------------------------------
 *
 *   ATTENTION!
@@ -20,6 +20,7 @@
 *   New applications should use PGSBOX directly.
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
 *=======================================================================
       SUBROUTINE PGCRVL (AXEN, IDENTS, OPT, LABCTL, LABDEN, CI, GCODE,
