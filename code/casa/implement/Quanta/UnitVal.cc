@@ -1,5 +1,5 @@
 //# UnitVal.cc: defines the class describing a unit as a value and a dimension
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,8 +82,8 @@ UnitVal::~UnitVal() {}
 
 UnitVal &UnitVal::operator=(const UnitVal &other) {
   if (this != &other) {
-    kindFactor=other.kindFactor;
-    kindDim=other.kindDim;
+    kindFactor = other.kindFactor;
+    kindDim = other.kindDim;
   };
   return *this;
 }
@@ -127,9 +127,25 @@ ostream& operator<< (ostream &os, const UnitVal &ku) {
 
 UnitVal UnitVal::pow(Int p) {
   UnitVal loc;
-  loc.kindFactor=::pow(kindFactor,Double(p));
-  loc.kindDim=kindDim.pow(p);
+  loc.kindFactor = ::pow(kindFactor,Double(p));
+  loc.kindDim = kindDim.pow(p);
   return(loc);
+}
+
+UnitVal UnitVal::root(Int p) const {
+  if (p==0) throw (AipsError("UnitVal::UnitVal Illegal root zero taken"));
+  UnitVal loc;
+  loc.kindDim = kindDim;
+  for (Int i=0; i<UnitDim::Dnumber; i++) {
+    if (kindDim.unitDim[i] % p == 0) loc.kindDim.unitDim[i] /= p;
+    else throw (AipsError("UnitVal::UnitVal Illegal unit dimensions for root"));
+  };
+  loc.kindFactor = ::pow(kindFactor, 1.0/Double(p));
+  return(loc);
+}
+
+UnitVal UnitVal::sqrt() const {
+  return root(2);
 }
 
 const UnitDim &UnitVal::getDim() const {
@@ -142,12 +158,9 @@ Double UnitVal::getFac() const {
 
 Bool UnitVal::check(const String &s) {
   UnitVal loc;
-  if (UnitMap::getCache(s,loc)) {
-  } else if (UnitVal::create(s,loc)) {
-    UnitMap::putCache(s,loc);
-  } else {
-    return False;
-  };
+  if (UnitMap::getCache(s,loc)) ;
+  else if (UnitVal::create(s,loc)) UnitMap::putCache(s,loc);
+  else return False;
   return True;
 }
 
@@ -221,7 +234,7 @@ Bool UnitVal::field(MUString &str, UnitVal &res) {
       res = (loc.getVal() * loc1.getVal()); return True;
     } else if ( key.length() > 2 && UnitMap::getPref(key(0,2),loc)) {
       if (UnitMap::getUnit(key.from(2), loc1)) {
-	res=(loc.getVal() * loc1.getVal()); return True;
+	res = (loc.getVal() * loc1.getVal()); return True;
       }
     };
   };

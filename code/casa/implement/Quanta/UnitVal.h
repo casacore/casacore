@@ -97,6 +97,7 @@ class ostream;
 // <ul>
 //   <li> *, /	generates combined UnitVal (e.g. 1 yd * 1 m = 0.9 m2)
 //   <li> pow(Int)	UnitVal(2,"km")->pow(2) = 4000000 m2
+//   <li> root(Int)	UnitVal(4000000,"m2")->root(2) = 2 km
 //   <li> ==, !=	compares dimensions only: 1 yd == 5 ly: True
 //   <li> getFac()	will return the factor (Double)
 //   <li> getDim()	will return the dimensions (as UnitDim)
@@ -216,6 +217,16 @@ class UnitVal {
   
   // Raise a unit to an integer power
   UnitVal pow(Int p);
+
+  // Take integer root
+  // <thrown>
+  // <li> AipsError if power equals zero
+  // <li> AipsError if unit dimensions not multiple of power
+  // </thrown>
+  // <group>
+  UnitVal root(Int p) const;
+  UnitVal sqrt() const;
+  // </group>
   
   // Get the data parts of the unit value definition
   // <group name="get data">
