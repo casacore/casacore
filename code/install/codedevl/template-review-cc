@@ -17,9 +17,13 @@ Code Organization
 
 *** Classes: header, implementation, test files present?
 
+*** Data types: only AIPS++ fundamental types used?
+
 *** Modules: necessary and present?
 
 *** Global Functions 
+
+*** Templates explicitly initiated?
 
 *** File Size not too large?
 
@@ -69,8 +73,8 @@ Coding
 *** Are all functions that warrant it declared as const, and mutable used
     correctly if necessary?
 
-*** Compiler Warnings (using the standard compiler (egcs at the moment)  and
-    checking the other allowed compilers directly or indirectly (sgi-ntv at
+*** Are ther no compiler warnings using the standard compiler (egcs at the
+    moment) and the other allowed compilers directly or indirectly (sgi-ntv at
     the moment)
 
 *** private data members use either the '_p' or 'its' convention
