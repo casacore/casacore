@@ -2,7 +2,7 @@
 # makefile.aps: Generic AIPS++ applications makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1995
+#   Copyright (C) 1995,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -53,15 +53,6 @@ PGMREXES := $(basename \
                               $(dir \
                                  $(wildcard */*.cc)))),$(exe)/$(exe).cc))))
 ALLEXES  := $(sort $(AIPSEXES) $(PGMREXES))
-
-# Fill debug template repository?
-ifneq "$(DBGPTFIL)" ""
-   ifeq "$(PACKAGE)" "aips"
-      ifneq "$(word 1,$(LIBaips))" "defeat"
-         MAKEBINS += bindbg/ReposFiller
-      endif
-   endif
-endif
 
 # Ensure that all required libraries are available.
 BIN := $(foreach PCKG,$(LINK$(PACKAGE)),$(word 2,$(LIB$(PCKG))))
