@@ -2050,3 +2050,11 @@
 08 223 src rm trial/scripts/Gnuplot.g
 08 223 src rm trial/scripts/README
 08 241 src rm atnf/apps/pks/gBandPass.cc
+08 241 src rm atnf/apps/pks/gBandPass.g
+08 241 src rm atnf/apps/pks/gNoise.cc
+08 241 src rm atnf/apps/pks/gNoise.g
+08 241 src rm atnf/apps/pks/gRandom.cc
+08 241 src rm atnf/apps/pks/gRandom.g
+08 241 src rm atnf/apps/pks/gRobustLine.cc
+08 241 src rm atnf/apps/pks/gRobustPoly.cc
+08 241 src rm atnf/apps/pks/gfit1dnr
