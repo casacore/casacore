@@ -464,3 +464,20 @@ template Bool FunctionHolder<Double>::getType(String &,
 template Bool FunctionHolder<Double>::getRecord(String &,
 						Function<AutoDiff<Double> > *&,
 						const RecordInterface &);
+///template class FunctionHolder<Complex>;
+///template Bool FunctionHolder<Complex>::getType(String &,
+///                                              Function<Complex> *&,
+///                                              const RecordInterface &);
+///template Bool FunctionHolder<Complex>::getType(String &,
+///                                              Function<Complex> *&);
+///template Bool FunctionHolder<Complex>::getRecord(String &,
+///                                                Function<Complex> *&,
+///                                                const RecordInterface &);
+///template Bool FunctionHolder<Complex>::getType(String &,
+///                                              Function<AutoDiff<Complex> > *&,
+///                                              const RecordInterface &);
+///template Bool FunctionHolder<Complex>::getType(String &,
+///                                              Function<AutoDiff<Complex> > *&);
+///template Bool FunctionHolder<Complex>::getRecord(String &,
+///                                                Function<AutoDiff<Complex> > *&,
+///                                                const RecordInterface &);
