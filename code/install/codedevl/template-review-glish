@@ -27,7 +27,8 @@ or a distributed object.
                   obj.printsummary(printername) - prints summary to printer
    rather than    obj.summary(toprinter=F, printername='')
    Some discretion can be used with this point.
-** logging is at an appropriate level
+** logging is at an appropriate level and the origin of each message is 
+   indicated as 'tool.function'.
 ** gui functions use the functions in the guiutils module whenever
    possible to ensure that a standard layout is
    presented to the user. All gui's should conform to standards
