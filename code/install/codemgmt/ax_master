@@ -3165,3 +3165,8 @@
 13 035 sys rm libexec/xyfSet.g
 13 035 sys rm libexec/xyfdemo.g
 13 035 sys rm libexec/xyftool.g
+13 035 src rm nfra/apps/uvbrick/uvbrick_index.g
+13 035 src rm nfra/apps/uvbrick/uvbrick_aux.g
+13 035 src rm nfra/apps/jen/jen_include.g
+13 035 src rm nfra/apps/jen/jen_util.g
+13 035 src rm nfra/apps/jen/jen_math.g
