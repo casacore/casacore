@@ -2552,3 +2552,4 @@
 09 451 src rm trial/implement/ComponentModels/GaussianShape2.cc
 09 451 src rm trial/implement/ComponentModels/Constant2Spectrum.cc
 09 456 src rm trial/implement/Guiutils
+09 456 src mv trial/implement/guiutils/ trial/implement/Guiutils
