@@ -44,55 +44,63 @@ It has proven to run under SUN Solaris, HP-UX, Linux, SGI/Irix,
 and Digital Unix
 on a variety of machines. It requires little extra software.
 The public domain package Tcl/Tk is needed for the graphical
-interface provided by glish.
+interface provided by glish. Netscape is needed for browsing
+the documentation.
 
 Developing in AIPS++ requires much more software, all of it available
 in the public domain area. The following software is needed:
 \begin{itemize}
 \item C++ compiler
+\item C compiler
 \item Fortran compiler
 \item RCS
 \item GNU make 3.74
 \item latex and latex2html
 \item ghostview
 \item LAPACK
+\item WCSLIB
 \item PGPLOT
 \item Perl 5.003
-\item Tcl/Tk
+\item Tcl/Tk 8.0
 \end{itemize}
 
-The offical project C++ compiler is gcc 2.7.2, which works fine
-for all supported UNIX platforms. On some platforms the code has also been
-compiled, linked, and run with egcs 1.03 and the native SUN compiler.
+The offical project C++ compiler is egcs 1.1.2, which works fine
+for all supported UNIX platforms.
+GNU and egcs have merged again, so the newest g++ compiler is 2.95,
+which will be adopted in the future by the AIPS++ consortium.
 New compilers are often based on the EDG front-end. Ports to the
-KAI and SGI compilers, based on EDG, are well underway.
-A bit of time has been spent on using gcc 2.8 and egcs 1.1,
-but for unknown reasons some code fails to compile with them.
+KAI and SGI compilers, based on EDG, are mostly completed.
 \\The C++ code is quite heavily templated. Templates are explicitly
 instantiated, because automatic instantiation led to excessive link times.
 \\AIPS++ has some Fortran77 code, which can be compiled with g77
 or a commercial Fortran compiler.
 
-The distribution of AIPS++ is done by getting all source code and
-documentation of the latest beta release (usually via ftp).
+In October 1999 the first release of AIPS++ was distributed on CDs,
+which contain executables, libraries, documentation, and source code.
+It is possible to get updates via ftp.
+\\Sites actively developing AIPS++ can obtain and update a development
+version via ftp.
 
 
 \section{Future developments}
 
 \subsection{C++ standard and Compilers}
-C++ has now a standard which is at the edge of getting an official
-ANSI/ISO standard. If offers a few options which are of interest
-to AIPS++. These are:
+C++ has now an official ANSI/ISO standard.
+Several new possibilities in the C++ standard are already used
+in AIPS++.
 \begin{itemize}
-\item True bool data type. It should be used to conform to the standard.
-\item The scope of a variable created in a for-statement has changed.
-It should also be used to conform to the standard.
+\item Keyword explicit for one-argument constructors.
+\item True bool data type.
+\item The local scope of a variable created in a for-statement.
 \item True exceptions. Note that the AIPS++ code hardly uses AutoPtr
 to delete objects on the heap. Code should be changed to avoid
 memory leaks.
-\item Namespaces. At one time we should put all code in an AIPS++
-namespace, to prevent problems when compiling/linking with other
-libraries.
+\item Namespaces.
+\item Enums and statics in templated classes.
+\end{itemize}
+
+Some other options are of interest and might be used in the future.
+\begin{itemize}
 \item Better templates. They are needed when we want to implement
 something like Blitz++ to speed up array calculations.
 \item Standard Library of which STL is an important part.
@@ -101,19 +109,19 @@ the Standard Library is not really needed. However, it may
 be better to switch to it to make it easy to use future
 other C++ software. It may also be expected that the classes in the
 Standard Library are well optimized.
-\item Casts are done in a better way. It is not really needed, but
-leads to safer code.
+\item Casts are done in a better way. They should be used to get
+safer code.
+\item Covariant return types. An overloaded function in a derived
+class can return a derived object.
 \end{itemize}
-The gcc 2.7.2 compiler only supports the bool data type and for-scope.
-It has a few drawbacks we live with (e.g. enum's in templates
-and the cast for templates in global functions). Furthermore the
-little problems of gcc 2.7.2 on Solaris 2.6 have to be solved.
-\\In the nearby future other compilers (notably egcs) have to
-be tested on all supported platforms. When another compiler proves to be
-reliable, it can become the official project compiler.
+The AIPS++ consortium sites use the products purify, purecoverage,
+and quantify to check the code thoroughly. Unfortunately Rational
+only supports egcs 1.0.3 for these products. Therefore only those C++
+constructs can be used that are supported by egcs 1.0.3 or can easily
+be emulated.
 
 \subsection{Porting to Windows NT}
-A port to Windows NT will be done as part of the parallellization
+A port to Windows NT is underway as part of the parallellization
 efforts at NCSA to use AIPS++ on an NT cluster. Apart from that
 it is foreseen that NT will be an important platform.
 It raises the problems how to map the UNIX
@@ -180,13 +188,12 @@ and build system has a few problems:
 is lacking.
 \item Releases are not supported.
 \item Partial distribution is not supported.
-\item The bug reporting system is somewhat cumbersome to use.
 \end{itemize}
 It has to be investigated whether current subsystems have to
 be replaced by other packages (public domain or commercial).
 
 Another problem is the size of the libaips library.
-It is already quite large and will get double
+It is already quite large and will get twice
 as large once the trial code is moved to aips.
 It requires that the aips package is split into a few subpackages.
 A requirement is that they are layered and that a lower level layer
@@ -202,53 +209,46 @@ in the apps tree. One can think of an
 application group (with maybe some common source files) and in
 subdirectories the individual applications.
 
-Shared libraries and dynamically loadable code could be used more
-often to reduce the size of binaries and to make dynamically
-configurable code possible. The gtk part of glish is relying
-on shared libraries.
+Shared libraries and dynamically loadable code are used
+to make dynamically configurable code possible. The glishtk part of
+glish is relying on shared libraries.
+\\Some experiments have been done with using shared libraries to
+reduce the size of the system. So far they have not been successful,
+because too many seldomly used code got linked into the shared
+libraries. Also the use of static variables gave problems.
+After splitting the libraries another attempt can be done.
 
 \subsection{Documentation}
-The current documentation system, based on latex and latex2html,
+The current user documentation system, based on latex and latex2html,
 is fragile and hard to configure. It needs to be stabilized.
 At the moment Kate Weatherall and Wes Young are investigating
-other methods.
+other methods like SGML-based systems..
 
 Care should be taken that no latex constructs are used which
 are not (yet) supported by latex2html. Having to do very frequent
-updates can be a pain for some users.
+latex2html updates can be a pain for some users.
 
 It should regularly be checked if the search facility for the
 AIPS++ html pages is selective enough.
 
+The code documentation system is based on the Perl script cxx2html
+which extracts declarations and comments (with special tags)
+from the header files.
+It is doing a very good job, but needs some changes to make
+nicer html output.
+
 \subsection{Release support}
-Releases or snapshots should be done in a more frequent way.
-It makes it possible that improved code is sent to (beta) testers
-more rapidly.
-
-A monthly binary snapshot release
-(which includes all source code) will be done based
-on a stable inhale. Users should have little problems to
-install it on their machines.
-From time to time formal releases are done for which
-the code and documentation are more thoroughly and carefully checked.
-
-In the future it should be possible to distribute code and data in source
-or binary form via ftp or CD-ROM. When using ftp, the user
-should be able to download selectable parts of the system.
-When using CD-ROM, the user should be able to install selectable
-parts of the system. A dependency tree is needed to assure that
-parts required by a selected part are installed too.
-Once a user has installed AIPS++, it should be easily possible
-to update it or to deinstall some parts.
-
-A good configure script is needed to automate installation
-as much as possible. It should report possible problems and
-if possible solve them by ftp-ing code.
-It should be investigated if RPM's
-(as used on Linux) can be used.
+On a regular base AIPS++ releases are done on CD. In October 1999
+the first release was done. Users can get updates via ftp.
+In order the reduce ftp traffic a mechanism is needed to make the
+updates selective, i.e. that only the parts needed are ftp-ed.
+It would also be nice if the dependencies are such that linking
+a program is based on changes in the source code and not on
+changes in a library. In that way a program is only linked when
+really needed, thus also ftp-ed when really needed.
 
 \subsection{Support of industry standards}
-There are several industry standards which are of use to use.
+There are several industry standards which are of use to AIPS++.
 It has to be decided if and how they are supported in AIPS++.
 \begin{itemize}
 \item Multi-threading gets more and more common. In AIPS++ it
@@ -263,58 +263,40 @@ be tried to support them.
 \end{itemize}
 
 \section{Priorities for system}
-After the upcoming beta release in September 1998
-three formal releases are foreseen until the fall of 2000.
-The third release is meant to be used by any programmer
+After the release in October 1999
+two formal releases are foreseen until the end of 2000.
+The last release is meant to be used by any programmer
 who likes to develop code using AIPS++ classes.
 
-Before the first release the following needs to be done:
+Before the next release the following needs to be done:
 \begin{enumerate}
 \item Implement data proposal of Wim Brouw.
-\item Use the standard bool and for-scope.
-Because all compilers support the new
-C++ for-scope standard, new code can use it at will.
-This makes the change irreversible.
-\item Decide if another compiler instead of gcc 2.7.2 can be used
-as our minimal compiler. This can be done as soon as we gained
-sufficient experience on the currently supported platforms.
-\item Issue more frequent releases (snapshots).
-\item Replace the GNATS system.
-\item Investigate using native exceptions.
+\item Improve using native exceptions.
 To prevent memory leaks, all variables
 on the heap should be put into an AutoPtr object until their
-pointer is taken over. However, we have been living with leaks
-due to exceptions, so it can be changed gradually.
-\item Prepare for using shared libraries. Static variables sometimes cause
-problems, so we should get rid of them as much as possible.
-There a few probably feasible solutions. One is to use the
-Singleton approach (see Design Patterns, Gamma et al). Another
-could be to define statics only inside functions. Then they are
-created when the function is called for the first time (although
-that is not guaranteed by the C++ standard).
+pointer is taken over.
+\item Split the library into some layered subpackages.
+\item Build shared libraries from the lowest layers.
+Static variables sometimes cause problems, so we should try to
+get rid of them.
 \item Improve the stability of the documentation system.
-\item Port to Windows NT.
+\item Improve cxx2html.
+\item Have a better dependency analysis to link based on source
+code changes instead of library changes.
 \end{enumerate}
 
-Before the second release:
+Before the following release:
 \begin{enumerate}
-\item Split the library in, say, 5 layered subpackages.
-Build shared librarties from them.
+\item Use threads in DO's to make them non-blocking. It requires
+that static data is thread-safe.
+\item Port to Windows NT.
 \item See if automatic template instantiation can be used.
 This is needed when heavily templated classes in Blitz++
 or STL are going to be used.
-\item Upgrade of the code management system. Have working
-configure and installation scripts.
-\item Use threads in DO's to make them non-blocking. It requires
-that static data is thread-safe.
-\end{enumerate}
-
-Before the third release:
-\begin{enumerate}
 \item Replace some of our classes by classes from the C++ Standard
 Library. Candidates are String, Complex, Map, Block. Other classes
 like valarray should also be looked at.
 \item Use Blitz++ or techniques used in it to speed up the
 Array arithmetic.
-\item Investigate how CORBA, DCOM, OLE, ODMG, and Java can be used.
+\item Investigate how CORBA, DCOM, OLE, XML, ODMG, and Java can be used.
 \end{enumerate}
