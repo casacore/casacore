@@ -27,6 +27,7 @@
 
 #include <aips/Utilities/ValType.h>
 #include <aips/OS/CanonicalConversion.h>
+#include <aips/Mathematics/Constants.h>
 
 //# This is the implementation of the ValType class.
 //# Most functions are inlined in the header file.
@@ -42,17 +43,10 @@ const Short          ValType::undefshort    = -32768;
 const uShort         ValType::undefushort   = 0;
 const Int            ValType::undefint      = (Int)-2147483648;
 const uInt           ValType::undefuint     = 0;
-const float          ValType::undeffloat    = -MINFLOAT;
-const Complex        ValType::undefcomplex   (-MINFLOAT,  -MINFLOAT);
-#ifdef __alpha 
-//# Any double closer to zero than the following value (except 0) causes a 
-//# Floating Exception on the alpha when used in any way.
-const double         ValType::undefdouble   = -2.2250738585072017e-308;
-const DComplex       ValType::undefdcomplex  (-2.2250738585072017e-308, -2.2250738585072017e-308);
-#else
-const double         ValType::undefdouble   = -MINDOUBLE;
-const DComplex       ValType::undefdcomplex  (-MINDOUBLE, -MINDOUBLE);
-#endif
+const float          ValType::undeffloat    = -C::minfloat;
+const Complex        ValType::undefcomplex   (-C::minfloat,  -C::minfloat);
+const double         ValType::undefdouble   = -C::mindouble;
+const DComplex       ValType::undefdcomplex  (-C::mindouble, -C::mindouble);
 const String         ValType::undefstring    ("");
 
 
