@@ -1,5 +1,5 @@
 //# tTableDescHyper.cc: Test program for hypercolumns in TableDesc
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -90,15 +90,52 @@ void a()
 			  2,
 			  stringToVector ("DataScalar"),
 			  stringToVector ("Baseline,Time"));
+    td.defineHypercolumn ("TSMExample5",
+			  4,
+			  stringToVector ("Data,Weight"),
+			  stringToVector (",,,"));
+    td.defineHypercolumn ("TSMExample6",
+			  4,
+			  stringToVector ("Data,Weight"),
+			  stringToVector ("Pol,,,"));
+    td.defineHypercolumn ("TSMExample7",
+			  4,
+			  stringToVector ("Data,Weight"),
+			  stringToVector (",Freq,,"));
+    td.defineHypercolumn ("TSMExample8",
+			  4,
+			  stringToVector ("Data,Weight"),
+			  stringToVector (",,Time,"));
+    td.defineHypercolumn ("TSMExample9",
+			  4,
+			  stringToVector ("Data,Weight"),
+			  stringToVector (",,,Baseline"));
+    td.defineHypercolumn ("TSMExample10",
+			  4,
+			  stringToVector ("Data,Weight"),
+			  stringToVector (",Freq,Time,"));
+    td.defineHypercolumn ("TSMExample11",
+			  4,
+			  stringToVector ("Data,Weight"),
+			  stringToVector ("Pol,,,Baseline"));
+
+}
+
+void showHyper (const TableDesc& td, const String& name)
+{
+    Vector<String> idNames;
+    Vector<String> coordNames;
+    Vector<String> dataNames;
+    uInt ndim = td.hypercolumnDesc (name, dataNames, coordNames, idNames);
+    cout << name << ": ndim=" << ndim << endl;
+    cout << "  Data=" << dataNames.ac();
+    cout << "Coord=" << coordNames.ac();
+    cout << "Id=" << idNames.ac() << endl;
 }
 
 void b()
 {
     TableDesc td ("tTableDescHyper_tmp");
-    Vector<String> idNames;
-    Vector<String> coordNames;
-    Vector<String> dataNames;
-    uInt ndim;
     cout << td.isHypercolumn ("TSMExamplea")
 	 << td.isHypercolumn ("TSMExample1")
 	 << td.isHypercolumn ("TSMExample2")
@@ -106,26 +143,17 @@ void b()
 	 << td.isHypercolumn ("TSMExample4")
 	 << td.isHypercolumn ("TSMExampleb") << endl;
     cout << td.hypercolumnNames().ac() << endl;
-    ndim = td.hypercolumnDesc ("TSMExample1", dataNames, coordNames, idNames);
-    cout << "TSMExample1: ndim=" << ndim << endl;
-    cout << "  Data=" << dataNames.ac();
-    cout << "Coord=" << coordNames.ac();
-    cout << "Id=" << idNames.ac() << endl;
-    ndim = td.hypercolumnDesc ("TSMExample2", dataNames, coordNames, idNames);
-    cout << "TSMExample2: ndim=" << ndim << endl;
-    cout << "  Data=" << dataNames.ac();
-    cout << "Coord=" << coordNames.ac();
-    cout << "Id=" << idNames.ac() << endl;
-    ndim = td.hypercolumnDesc ("TSMExample3", dataNames, coordNames, idNames);
-    cout << "TSMExample3: ndim=" << ndim << endl;
-    cout << "  Data=" << dataNames.ac();
-    cout << "Coord=" << coordNames.ac();
-    cout << "Id=" << idNames.ac() << endl;
-    ndim = td.hypercolumnDesc ("TSMExample4", dataNames, coordNames, idNames);
-    cout << "TSMExample4: ndim=" << ndim << endl;
-    cout << "  Data=" << dataNames.ac();
-    cout << "Coord=" << coordNames.ac();
-    cout << "Id=" << idNames.ac() << endl;
+    showHyper (td, "TSMExample1");
+    showHyper (td, "TSMExample2");
+    showHyper (td, "TSMExample3");
+    showHyper (td, "TSMExample4");
+    showHyper (td, "TSMExample5");
+    showHyper (td, "TSMExample6");
+    showHyper (td, "TSMExample7");
+    showHyper (td, "TSMExample8");
+    showHyper (td, "TSMExample9");
+    showHyper (td, "TSMExample10");
+    showHyper (td, "TSMExample11");
 }
 
 void excpDesc()
@@ -240,6 +268,22 @@ void excpDesc()
 			      4,
 			      stringToVector ("Data1"),
 			      stringToVector ("Pol,Freq,Baseline,Time"));
+    } catch (AipsError x) {
+	cout << x.getMesg() << endl;             // Data #dim != #coordVector
+    } end_try;
+    try {
+	td.defineHypercolumn ("TSMExample",
+			      4,
+			      stringToVector ("Data"),
+			      stringToVector ("Pol,Time,Baseline,Time"));
+    } catch (AipsError x) {
+	cout << x.getMesg() << endl;             // Data #dim != #coordVector
+    } end_try;
+    try {
+	td.defineHypercolumn ("TSMExample",
+			      4,
+			      stringToVector ("Data"),
+			      stringToVector (",,Pol,"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Data #dim != #coordVector
     } end_try;
