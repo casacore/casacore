@@ -1,5 +1,5 @@
 //# MaskedLattice.cc: Abstract base class for array-like classes with masks
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,9 +27,12 @@
 
 
 #include <trial/Lattices/MaskedLattice.h>
+#include <trial/Lattices/LatticeRegion.h>
+#include <trial/Lattices/LCBox.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/COWPtr.h>
+#include <aips/Exceptions/Error.h>
 
 
 typedef Array<Bool> gppbug1_maskedlattice;
@@ -39,6 +42,42 @@ typedef COWPtr<Array<Bool> > gppbug2_maskedlattice;
 template <class T>
 MaskedLattice<T>::~MaskedLattice()
 {}
+
+template<class T>
+Lattice<T>* MaskedLattice<T>::clone() const
+{
+    return cloneML();
+}
+
+template<class T>
+Bool MaskedLattice<T>::isMasked() const
+{
+  const LatticeRegion* ptr = getRegionPtr();
+  if (ptr == 0) {
+    return False;
+  }
+  return ptr->hasMask();
+}
+
+template<class T>
+Bool MaskedLattice<T>::isMaskWritable() const
+{
+  const LatticeRegion* ptr = getRegionPtr();
+  if (ptr == 0) {
+    return False;
+  }
+  return ptr->isWritable();
+}
+
+template<class T>
+LatticeRegion MaskedLattice<T>::region() const
+{
+  const LatticeRegion* ptr = getRegionPtr();
+  if (ptr != 0) {
+    return *ptr;
+  }
+  return LatticeRegion (LCBox(shape()));
+}
 
 
 template<class T>
@@ -180,4 +219,47 @@ Array<Bool> MaskedLattice<T>::getMaskSlice (const Slicer& section,
   Array<Bool> tmp;
   tmp = arr;
   return tmp;
+}
+
+
+template<class T>
+Bool MaskedLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
+				       const Slicer& section)
+{
+  // Note that Slicer::inferShapeFromSource has already been called
+  // by getMaskSlice.
+  LatticeRegion* ptr = rwRegionPtr();
+  if (ptr == 0) {
+    buffer.resize (section.length());
+    buffer = True;
+    return False;
+  }
+  return ptr->doGetSlice (buffer, section);
+}
+
+
+template<class T>
+void MaskedLattice<T>::putMaskSlice (const Array<Bool>& sourceBuffer,
+				     const IPosition& where)
+{
+  doPutMaskSlice (sourceBuffer, where, IPosition(where.nelements(),1));
+}
+template<class T>
+void MaskedLattice<T>::putMask (const Array<Bool>& sourceBuffer)
+{
+  uInt nd = ndim();
+  doPutMaskSlice (sourceBuffer, IPosition(nd,0), IPosition(nd,1));
+}
+
+template<class T>
+void MaskedLattice<T>::doPutMaskSlice (const Array<Bool>& buffer,
+				       const IPosition& where,
+				       const IPosition& stride)
+{
+  LatticeRegion* ptr = rwRegionPtr();
+  if (ptr == 0  ||  !ptr->isWritable()) {
+    throw (AipsError ("MaskedLattice::putMaskSlice is not possible; "
+		      "the mask is not writable"));
+  }
+  ptr->doPutSlice (buffer, where, stride);
 }
