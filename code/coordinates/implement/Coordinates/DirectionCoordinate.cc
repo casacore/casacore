@@ -66,6 +66,8 @@ DirectionCoordinate::DirectionCoordinate()
     // Initially we are in radians
     to_degrees_p[0] = 180.0 / C::pi;
     to_degrees_p[1] = to_degrees_p[0];
+    to_radians_p[0] = 1.0;
+    to_radians_p[1] = 1.0;
     units_p = "rad";
 
     Vector<Double> crval(2), cdelt(2), crpix(2);
@@ -106,6 +108,8 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
     // Initially we are in radians
     to_degrees_p[0] = 180.0 / C::pi;
     to_degrees_p[1] = to_degrees_p[0];
+    to_radians_p[0] = 1.0;
+    to_radians_p[1] = 1.0; 
     units_p = "rad";
 
     Vector<Double> crval(2), cdelt(2), crpix(2);
@@ -141,6 +145,9 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
 {
     to_degrees_p[0] = other.to_degrees_p[0];
     to_degrees_p[1] = other.to_degrees_p[1];
+    to_radians_p[0] = other.to_radians_p[0];
+    to_radians_p[1] = other.to_radians_p[1];
+//
     copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
                            c_crval_p, other.celprm_p, other.prjprm_p,
                            other.wcs_p, other.c_ctype_p, other.c_crval_p);
@@ -165,6 +172,9 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
 	units_p = other.units_p.copy();
 	to_degrees_p[0] = other.to_degrees_p[0];
 	to_degrees_p[1] = other.to_degrees_p[1];
+	to_radians_p[0] = other.to_radians_p[0];
+	to_radians_p[1] = other.to_radians_p[1];
+//
         canDoToMix_p = other.canDoToMix_p;
         canDoToMixErrorMsg_p = other.canDoToMixErrorMsg_p;
     }
@@ -466,6 +476,9 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units,
 	if (ok) {
 	    to_degrees_p[0] /= factor(0);
 	    to_degrees_p[1] /= factor(1);
+//
+            to_radians_p[0] = to_degrees_p[0] * C::pi / 180.0;
+            to_radians_p[1] = to_degrees_p[1] * C::pi / 180.0;
 	} else {
 	    set_error(error);
 	}
