@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/Utilities/DataType.h>
+#include <aips/Utilities/Assert.h>
 
 #include <iostream.h>
 
@@ -73,4 +74,26 @@ Bool isScalar(DataType type)
 Bool isArray(DataType type)
 {
     return ToBool(type >= TpArrayBool && type <= TpArrayString);
+}
+
+DataType asScalar(DataType type)
+{
+    AlwaysAssert(type != TpOther && type != TpRecord && type != TpTable,
+		 AipsError);
+    DataType tmp = type;
+    if (isArray(tmp)) {
+	tmp = DataType(type - TpArrayBool + TpBool);
+    }
+    return tmp;
+}
+    
+DataType asArray(DataType type)
+{
+    AlwaysAssert(type != TpOther && type != TpRecord && type != TpTable,
+		 AipsError);
+    DataType tmp = type;
+    if (isScalar(tmp)) {
+	tmp = DataType(type - TpBool + TpArrayBool);
+    }
+    return tmp;
 }

@@ -59,10 +59,15 @@ class Record;
 // allow one to avoid a switch on type, and can be useful in constructing
 // templated classes which are only valid for certain types.
 //
+// Global functions are also provided which allow one to convert an
+// array type to the equivalent scalar type and vice versa.
+//
 // <note role=warning>
 // New data types should be added just before TpNumberOfTypes, and after all
 // the existing enumerations, to avoid changing the number of an existing type
 // which would cause misinterpretation of data types stored in existing  files.
+// Note also that if any new scalar and array types are added that this
+// will break the exising isScalar, isArray, asScalar and asArray functions.
 // </note>
 //
 // <note role=tip>
@@ -203,6 +208,15 @@ inline DataType whatType(const Array<Complex> *) {return TpArrayComplex ; }
 inline DataType whatType(const Array<DComplex> *) {return TpArrayDComplex ; }
 inline DataType whatType(const Array<String> *) {return TpArrayString ; }
 inline DataType whatType(const Record *) {return TpRecord ; }
+// </group>
+
+// It is sometimes useful to discover what the corresponding
+// scalar (or array) type is for a given array (or scalar) type.
+// Calling these with TpOther, TpTable, and TpRecord results
+// in an exception being thrown.
+// <group>
+DataType asScalar(DataType type);
+DataType asArray(DataType type);
 // </group>
 
 // It is occasionally useful to discover whether or not a DataType represents
