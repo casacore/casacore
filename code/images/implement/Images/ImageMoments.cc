@@ -51,6 +51,7 @@
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
 #include <trial/Coordinates.h>
+#include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/PagedImage.h>
@@ -896,6 +897,18 @@ Bool ImageMoments<T>::createMoments()
          os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
          return False;
       }
+
+// Find the noise level
+
+      Array<T> sigma;
+      ImageStatistics<T> stats(*pSmoothedImage, os_p);
+      if (!stats.getSigma(sigma)) {
+         os_p << LogIO::SEVERE << "Error finding noise level of smoothed image" << LogIO::POST;
+         return False;
+      } else {
+         os_p << LogIO::NORMAL << "The standard deviation of the noise about the mean for the smoothed image is " 
+              << sigma(IPosition(sigma.nelements(),0)) << LogIO::POST;
+      }
    }
 
 // Set output images shape
@@ -968,7 +981,6 @@ Bool ImageMoments<T>::createMoments()
       }
       stdDeviation_p = noise;
    }
-   cout << "nosie=" << stdDeviation_p << endl;
 
 // Open plot device 
          
