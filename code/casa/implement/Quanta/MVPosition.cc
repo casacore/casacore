@@ -314,8 +314,8 @@ Vector<Double> MVPosition::get() const{
   Vector<Double> tmp(3);
   tmp(0) = sqrt(operator*(*this));
   Double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
-  if (xyz(0) == 0 && xyz(1) == 0) tmp(1) = 0.0;
-  else tmp(1) = atan2(xyz(1),xyz(0));
+  if (xyz(0) != 0 || xyz(1) != 0) tmp(1) = atan2(xyz(1),xyz(0));
+  else tmp(1) = 0.0;
   tmp(2) = asin(xyz(2)/ln);
   return tmp;
 }
