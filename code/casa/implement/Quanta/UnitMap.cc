@@ -1,5 +1,5 @@
 //# UnitMap.cc: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ void UnitMap::initUM() {
   // Define the map
 
   // Make sure constants exist
-  static C_init c_init;
+  ///  static C_init c_init;
 
   // Known prefixes
 
