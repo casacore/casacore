@@ -94,11 +94,11 @@ class TableMeasValueDesc;
 //
 // The TableMeasDesc class hierarchy contains classes for defining each
 // component of the Measures to be contained in column.  A
-// <linkto class="TableMeasOffsetDesc">TableMeasOffsetDesc</linto> is used
+// <linkto class="TableMeasOffsetDesc">TableMeasOffsetDesc</linkto> is used
 // to specify the offset component, a
-// <linkto class="TableMeasRefDesc">TableMeasRefDesc</linto> to set up
+// <linkto class="TableMeasRefDesc">TableMeasRefDesc</linkto> to set up
 // the reference code component and a
-// <linkto class="TableMeasValueDesc">TableMeasValueDesc</linto> names the
+// <linkto class="TableMeasValueDesc">TableMeasValueDesc</linkto> names the
 // column is used as the main Measure column through which the 
 // Measure column is subsequently accessed.
 //
