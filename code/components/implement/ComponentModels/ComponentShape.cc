@@ -42,40 +42,46 @@
 ComponentShape::ComponentShape() 
   :itsDir()
 {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
 }
 
 ComponentShape::ComponentShape(const MDirection& direction)
   :itsDir(direction)
 {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
 }
 
 ComponentShape::ComponentShape(const ComponentShape& other)
   :itsDir(other.itsDir)
 {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
 }
 
 
 ComponentShape::~ComponentShape() {
 }
 
+const String& ComponentShape::ident() const {
+  DebugAssert(ComponentShape::ok(), AipsError);
+  static const String typeString = ComponentType::name(type());
+  return typeString;
+}
+
 ComponentShape& ComponentShape::operator=(const ComponentShape& other) {
   if (this != &other) {
     itsDir = other.itsDir;
   }
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
   return *this;
 }
 
 void ComponentShape::setRefDirection(const MDirection& newRefDir) {
   itsDir = newRefDir;
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
 }
 
 const MDirection& ComponentShape::refDirection() const {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
   return itsDir;
 }
 
@@ -83,7 +89,7 @@ void  ComponentShape::sample(Vector<Double>& scale,
 			     const Vector<MDirection::MVType>& directions, 
 			     const MDirection::Ref& refFrame,
 			     const MVAngle& pixelSize) const {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
   const uInt nSamples = directions.nelements();
   DebugAssert(scale.nelements() == nSamples, AipsError);
 
@@ -95,7 +101,7 @@ void  ComponentShape::sample(Vector<Double>& scale,
 void ComponentShape::visibility(Vector<DComplex>& scale, 
 				const Matrix<Double>& uvw,
 				const Double& frequency) const {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
   const uInt nSamples = scale.nelements();
   DebugAssert(uvw.ncolumn() == nSamples, AipsError);
   DebugAssert(uvw.nrow() == 3, AipsError);
@@ -141,13 +147,13 @@ Bool ComponentShape::fromRecord(String& errorMessage,
     return False;
   }
   setRefDirection(mh.asMDirection());
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
   return True;
 }
 
 Bool ComponentShape::toRecord(String& errorMessage,
 			      RecordInterface& record) const {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(ComponentShape::ok(), AipsError);
   record.define(RecordFieldId("type"), ComponentType::name(type()));
   Record dirRecord;
   const MeasureHolder mh(refDirection());
