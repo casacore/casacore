@@ -2483,3 +2483,4 @@
 11 312 src mv nrao/implement/VLA/test/tVLAArchiveInput.cc nrao/implement/VLA/test/tVLALogicalRecord.cc
 11 329 src rm doc/faq/faqusing.html
 11 329 src rm trial/implement/HDS
+11 336 src mv trial/scripts/display.g trial/scripts/aipsview.g
