@@ -284,6 +284,9 @@ void TiledStMan::reopenRW()
     }
 }
 
+void TiledStMan::setMaximumCacheSize (uInt nbytes)
+    { maxCacheSize_p = nbytes; }
+
 
 Bool TiledStMan::canChangeShape() const
 {

@@ -28,9 +28,6 @@
 #if !defined(AIPS_BASECOLUMN_H)
 #define AIPS_BASECOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("BaseColumn.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -244,6 +241,9 @@ public:
 
     // Get a pointer to the underlying column cache.
     virtual ColumnCache& columnCache() = 0;
+
+    // Set the maximum cache size (in bytes) to be used by a storage manager.
+    virtual void setMaximumCacheSize (uInt nbytes) = 0;
 
     // Add this column and its data to the Sort object.
     // It may allocate some storage on the heap, which will be saved

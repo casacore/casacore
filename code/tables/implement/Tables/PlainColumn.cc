@@ -82,6 +82,9 @@ Bool PlainColumn::isStored() const
 ColumnCache& PlainColumn::columnCache()
     { return dataColPtr_p->columnCache(); }
 
+void PlainColumn::setMaximumCacheSize (uInt nbytes)
+    { dataManPtr_p->setMaximumCacheSize (nbytes); }
+
 
 //# Read/write the column.
 //# Its data will be read/written by the appropriate storage manager.

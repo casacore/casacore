@@ -67,6 +67,8 @@ Bool DataManager::isStorageManager() const
 void DataManager::reopenRW()
 {}
 
+void DataManager::setMaximumCacheSize (uInt)
+{}
 
 //# Create a column object for a scalar.
 //# Check its data type.

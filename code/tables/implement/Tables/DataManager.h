@@ -28,9 +28,6 @@
 #if !defined(AIPS_DATAMANAGER_H)
 #define AIPS_DATAMANAGER_H
 
-#if defined(_AIX)
-#pragma implementation ("DataManager.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -286,6 +283,10 @@ public:
     // Does the data manager allow to delete columns? (default no)
     virtual Bool canRemoveColumn() const;
 
+    // Set the maximum cache size (in bytes) to be used by a storage manager.
+    // The default implementation does nothing.
+    virtual void setMaximumCacheSize (uInt nbytes);
+    
     // Create a column in the data manager on behalf of a table column.
     //# Should be private, but has to be public because friend
     //# declaration gave internal CFront error.

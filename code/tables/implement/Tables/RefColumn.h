@@ -28,9 +28,6 @@
 #if !defined(AIPS_REFCOLUMN_H)
 #define AIPS_REFCOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("RefColumn.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -165,6 +162,9 @@ public:
 
     // Get the underlying column cache.
     virtual ColumnCache& columnCache();
+
+    // Set the maximum cache size (in bytes) to be used by a storage manager.
+    virtual void setMaximumCacheSize (uInt nbytes);
 
     // Add this column and its data to the Sort object.
     // It may allocate some storage on the heap, which will be saved

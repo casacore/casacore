@@ -28,9 +28,6 @@
 #if !defined(AIPS_TABLECOLUMN_H)
 #define AIPS_TABLECOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("TableColumn.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -283,6 +280,10 @@ public:
     // Check if the row number is valid.
     // It throws an exception if out of range.
     void checkRowNumber (uInt rownr) const;
+
+    // Set the maximum cache size (in bytes) to be used by a storage manager.
+    void setMaximumCacheSize (uInt nbytes) const
+        { baseColPtr_p->setMaximumCacheSize (nbytes); }
 
 
 protected:

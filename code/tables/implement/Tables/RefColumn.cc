@@ -112,6 +112,9 @@ void RefColumn::putSlice (uInt rownr, const Slicer& ns, const void* dataPtr)
 ColumnCache& RefColumn::columnCache()
     { return colCache_p; }
 
+void RefColumn::setMaximumCacheSize (uInt nbytes)
+    { colPtr_p->setMaximumCacheSize (nbytes); }
+
 
 void RefColumn::makeSortKey (Sort& sortobj, ObjCompareFunc* cmpFunc,
 			     Int order, const void*& dataSave)

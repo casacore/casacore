@@ -28,9 +28,6 @@
 #if !defined(AIPS_PLAINCOLUMN_H)
 #define AIPS_PLAINCOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("PlainColumn.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -127,6 +124,9 @@ public:
 
     // Get a pointer to the underlying column cache.
     virtual ColumnCache& columnCache();
+
+    // Set the maximum cache size (in bytes) to be used by a storage manager.
+    virtual void setMaximumCacheSize (uInt nbytes);
 
     // Write the column.
     void putFile (AipsIO&, const String& tableName);
