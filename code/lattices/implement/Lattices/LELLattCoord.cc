@@ -1,5 +1,5 @@
-//# LattCoord.cc: The base letter class for lattice coordinates
-//# Copyright (C) 1998
+//# LELLattCoord.cc: The base letter class for lattice coordinates
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,31 +26,58 @@
 //# $Id$
 
 
-#include <trial/Lattices/LattCoord.h>
+#include <trial/Lattices/LELLattCoord.h>
+#include <trial/Lattices/LattRegionHolder.h>
+#include <trial/Lattices/LatticeRegion.h>
+#include <trial/Lattices/LatticeExpr.h>
+#include <trial/Lattices/SubLattice.h>
+#include <aips/Exceptions/Error.h>
 
 
-LattCoord::LattCoord()
+LELLattCoord::LELLattCoord()
 {}
 
-LattCoord::~LattCoord()
+LELLattCoord::~LELLattCoord()
 {}
 
-Bool LattCoord::hasCoordinates() const
+Bool LELLattCoord::hasCoordinates() const
 {
     return False;
 }
 
-String LattCoord::classname() const
+String LELLattCoord::classname() const
 {
-    return "LattCoord";
+    return "LELLattCoord";
 }
 
-Bool LattCoord::conform (const LattCoord&) const
+Bool LELLattCoord::conform (const LELLattCoord&) const
 {
     return True;
 }
 
-Bool LattCoord::doConform (const ImageCoord&) const
+Bool LELLattCoord::doConform (const LELImageCoord&) const
 {
     return True;
+}
+
+LatticeExprNode LELLattCoord::makeSubLattice
+                                    (const LatticeExprNode& expr,
+				     const LattRegionHolder& region) const
+{
+    LatticeRegion latReg (region.toLatticeRegion (expr.shape()));
+    switch (expr.dataType()) {
+    case TpBool:
+        return SubLattice<Bool> (LatticeExpr<Bool>(expr), latReg);
+    case TpFloat:
+        return SubLattice<Float> (LatticeExpr<Float>(expr), latReg);
+    case TpDouble:
+        return SubLattice<Double> (LatticeExpr<Double>(expr), latReg);
+    case TpComplex:
+        return SubLattice<Complex> (LatticeExpr<Complex>(expr), latReg);
+    case TpDComplex:
+        return SubLattice<DComplex> (LatticeExpr<DComplex>(expr), latReg);
+    default:
+        throw (AipsError ("LELLattCoord::makeSubLattice - unknown datatype"));
+    }
+    return LatticeExprNode();
 }
