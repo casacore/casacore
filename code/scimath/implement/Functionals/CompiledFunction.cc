@@ -30,8 +30,6 @@
 #include <trial/Functionals/FuncExpression.h>
 #include <aips/Functionals/FunctionTraits.h>
 #include <aips/Mathematics/Constants.h>
-///
-#include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/vector.h>
 
@@ -236,20 +234,3 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
   return res;
 }
-
-//# Member functions
-
-/// for now
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-template class vector<AutoDiff<Double> >;
-AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Double>)
-template class vector<AutoDiff<DComplex> >;
-AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<DComplex>)
-template class vector<AutoDiff<Complex> >;
-AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Complex>)
-template class vector<DComplex>;
-AIPS_VECTOR_AUX_TEMPLATES(DComplex)
-template class vector<Complex>;
-AIPS_VECTOR_AUX_TEMPLATES(Complex)

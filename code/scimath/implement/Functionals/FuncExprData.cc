@@ -166,10 +166,3 @@ ostream &operator<<(ostream &os, const FuncExprData &ed) {
   ed.print(os, ed.function());
   return os;
 }
-
-//# Templates (for test purposes)
-template class map<String, FuncExprData::ExprOperator>;
-AIPS_MAP_AUX_TEMPLATES(String, FuncExprData::ExprOperator)
-template class map<FuncExprData::opTypes, FuncExprData::ExprOperator>;
-AIPS_MAP_AUX_TEMPLATES(FuncExprData::opTypes, FuncExprData::ExprOperator)
-

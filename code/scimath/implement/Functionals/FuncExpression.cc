@@ -615,9 +615,3 @@ ostream &operator<<(ostream &os, const FuncExpression &ed) {
   ed.print(os);
   return os;
 }
-
-//# Templates (for test purposes)
-template class vector<FuncExprData::ExprOperator>;
-AIPS_VECTOR_AUX_TEMPLATES(FuncExprData::ExprOperator);
-template class vector<Double>;
-AIPS_VECTOR_AUX_TEMPLATES(Double);
