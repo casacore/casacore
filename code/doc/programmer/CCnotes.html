@@ -205,6 +205,7 @@ function imgOff(imgName) {
 <ul>
 <li> Default arguments in .cc files are not allowed.  Please only put default
 arguments in you .h files.
+<li> Forward declarations in header files are valid only if they forward declare pointers or references.
 </ul>
 <B>Known SGI compiler gotchas</b>
 <P>
@@ -255,6 +256,13 @@ method/function that expects a
 Lattice<T>, SubLattice<T>,  or MaskedLattice<T>, you will need to call
 the latticeCast member function.  The SGI compiler is too dumb to figure this
 out.
+<li> If you assign const pointers to non-const pointer you need to cast away the constness.
+<li> Make sure inlined functions are defined in your .h file and not the .cc file.
+<li> Statements like 
+flag ? delete pointer : 0;
+</pre>
+fail with the SGI compiler, please use an if statement.
+
 </ul>
 
 
