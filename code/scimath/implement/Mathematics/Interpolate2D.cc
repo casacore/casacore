@@ -135,8 +135,8 @@ Bool Interpolate2D<T>::interpNearest(T& result,
   }
 //
   if(ok) {
-    i = static_cast<Int>(floor(where(0)+0.5));
-    j = static_cast<Int>(floor(where(1)+0.5));
+    i = Int(where(0)+0.5);
+    j = Int(where(1)+0.5);
     result = data(i,j);
 //
 // needed for debug function "location" only
@@ -311,8 +311,8 @@ Bool Interpolate2D<T>::check(const Vector<Double>& where,
 {
   Bool ok = True;
   AlwaysAssert(where.nelements()==2, AipsError);
-  itsI = static_cast<Int>(floor(where(0)));
-  itsJ = static_cast<Int>(floor(where(1)));
+  itsI = Int(where(0));
+  itsJ = Int(where(1));
 //
   if (method==Interpolate2D<T>::NEAREST) {
 
