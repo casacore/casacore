@@ -174,8 +174,8 @@ private:
    Bool itsXAbs;
 
 //
-   const Vector<Float> collapse (uInt profileAxis,  
-                                 const MaskedLattice<Float>& lat) const;
+   void collapse (Vector<Float>& profile, Vector<Bool>& mask,
+                  uInt profileAxis,  const MaskedLattice<Float>& lat) const;
 
 // Convert model to absolute pixels
    void convertXEstimateToPixels (SpectralElement& el,

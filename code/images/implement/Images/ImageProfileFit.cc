@@ -462,8 +462,8 @@ void ImageProfileFit::model(Vector<Float>& model) const
 
 // Private functions
 
-const Vector<Float> ImageProfileFit::collapse (uInt profileAxis,
-                                               const MaskedLattice<Float>& lat) const
+void ImageProfileFit::collapse (Vector<Float>& profile, Vector<Bool>& mask,
+                                uInt profileAxis, const MaskedLattice<Float>& lat) const
 {
    AlwaysAssert(profileAxis<lat.ndim(), AipsError);
    LatticeStatistics<Float> stats(lat, False, False);
@@ -477,24 +477,43 @@ const Vector<Float> ImageProfileFit::collapse (uInt profileAxis,
    if (tmp.nelements()==0) {
       throw(AipsError("There were no good points in the region"));
    }
+   Array<Float> nPts;
+   stats.getNPts(nPts, dropDegenerateAxes);
+//
    uInt n = tmp.shape()(0);
-   Vector<Float> tmp2(tmp.reform(IPosition(1,n)));
-   return tmp2;
-}
-   
+   profile.resize(n);
+   mask.resize(n);
+//
+   profile = tmp.reform(IPosition(1,n));
+
+// Handle mask in rather ugly way...
+
+   Bool deleteN, deleteM;
+   const Float* pN = nPts.getStorage(deleteN);
+   Bool* pM = mask.getStorage(deleteM);
+//
+   for (uInt i=0; i<n; i++) {
+      pM[i] = True;
+      if (pN[i] < 0.5) pM[i] = False;
+   }   
+//  
+   nPts.freeStorage(pN, deleteN);
+   mask.putStorage(pM, deleteM);
+ }
+
+
 
 
 void ImageProfileFit::setData (const ImageInterface<Float>& image,
                                const Slicer& sl)
 {
-   Vector<Float> y = collapse(itsProfileAxis, image);
+   Vector<Float> y;
+   collapse(y, itsMask, itsProfileAxis, image);
    itsY = Quantum<Vector<Float> >(y, image.units());
 //
    Vector<Float> x(y.nelements());
    indgen(x, Float(sl.start()(itsProfileAxis)));
    itsX = Quantum<Vector<Float> >(x, Unit("pix"));
-//
-   itsMask.resize(0);
 }
 
 void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
