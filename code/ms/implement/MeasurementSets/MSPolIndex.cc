@@ -99,6 +99,41 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>&
   return maskRowNumbers.getCompressedArray();
 };
 
+// Add for MS selection 
+Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType)
+{
+// Match a set of polarization correlation types 
+// Input:
+//    corrType       const Vector<Int>&       Set of polarization correlation
+//                                            types (as defined in Stokes.h)
+// Output:
+//    matchCorrType  Vector<Int>   Matching polarization id.'s
+//
+
+  // Match the polarization correlation types by row and correlation index
+  uInt numCorr = corrType.nelements();
+  uInt nrows = msPolarizationCols_p.nrow();
+
+  Vector<Bool> corrMatch(nrows, False);
+  for (uInt row=0; row<nrows; row++) {
+    Vector<Int> rowCorrType;
+    msPolarizationCols_p.corrType().get(row, rowCorrType);
+    //    corrMatch(row) = (rowCorrType.nelements() == numCorr);
+    //    cout << " corrMatch " << corrMatch(row) << endl;
+    //    if (corrMatch(row)) {
+      for (uInt i=0; i < numCorr; i++) {
+	//corrMatch(row) = (corrMatch(row) &&
+	corrMatch(row) = (rowCorrType(i) == corrType(i));
+      };
+      //    };
+  };
+
+  LogicalArray maskArray(corrMatch);
+  MaskedArray<Int> maskRowNumbers(polarizationIds_p, maskArray);
+  return maskRowNumbers.getCompressedArray();
+};
+
+
 //-------------------------------------------------------------------------
 
 } //# NAMESPACE CASA - END
