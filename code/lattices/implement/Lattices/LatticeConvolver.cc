@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -178,7 +178,8 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   // paddedModel TempLattice so that it is more likely to be memory based.
   IPosition XFRShape(itsFFTShape);
   XFRShape(0) = (XFRShape(0)+2)/2;
-  TempLattice<NumericTraits<T>::ConjugateType> fftModel(XFRShape, maxLatSize);
+  TempLattice<typename NumericTraits<T>::ConjugateType> fftModel(XFRShape,
+								 maxLatSize);
   // Copy the model into a larger Lattice that has the appropriate padding.
   // (if necessary)
   Bool doPadding = False;
@@ -215,9 +216,9 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
 	if (tileShape(i) > otherTileShape(i)) tileShape(i) = otherTileShape(i);
       }
       TileStepper tiledNav(XFRShape, tileShape);
-      RO_LatticeIterator<NumericTraits<T>::ConjugateType> 
+      RO_LatticeIterator<typename NumericTraits<T>::ConjugateType> 
 	xfrIter(itsXfr, tiledNav);
-      LatticeIterator<NumericTraits<T>::ConjugateType> 
+      LatticeIterator<typename NumericTraits<T>::ConjugateType> 
 	fftModelIter(fftModel, tiledNav);
       for (xfrIter.reset(), fftModelIter.reset(); !fftModelIter.atEnd();
 	   xfrIter++, fftModelIter++) {
@@ -324,8 +325,8 @@ makeXfr(const Lattice<T> & psf) {
   { // calculate the transfer function
     IPosition XFRShape = itsFFTShape;
     XFRShape(0) = (XFRShape(0)+2)/2;
-    itsXfr = TempLattice<NumericTraits<T>::ConjugateType>(XFRShape, 
-							  maxLatSize);
+    itsXfr = TempLattice<typename NumericTraits<T>::ConjugateType>(XFRShape, 
+								   maxLatSize);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
       LatticeFFT::rcfft(itsXfr, psf);
     } else { // need to pad the psf 

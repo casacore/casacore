@@ -1,5 +1,5 @@
 //# Convolver.h: this defines Convolver a class for doing convolution
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -222,7 +222,7 @@ private:
   IPosition itsModelShape;
   ConvEnums::ConvType itsType;
   IPosition itsFFTShape;
-  TempLattice<NumericTraits<T>::ConjugateType> itsXfr;
+  TempLattice<typename NumericTraits<T>::ConjugateType> itsXfr;
   TempLattice<T> itsPsf;
   Bool itsCachedPsf;
 };
