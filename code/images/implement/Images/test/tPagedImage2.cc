@@ -107,6 +107,17 @@ int main()
       AlwaysAssertExit (imregptr != 0);
       delete imregptr;
 
+// Rename the region in the regions group and check it can be found.
+      pIm.renameRegion ("regr2", "regr1", RegionHandler::Regions);
+      imregptr = pIm.getImageRegionPtr ("regr2", RegionHandler::Regions, False);
+      AlwaysAssertExit (imregptr != 0);
+      delete imregptr;
+      AlwaysAssertExit (pIm.getImageRegionPtr
+                            ("regr2", RegionHandler::Masks, False) == 0);
+      imregptr = pIm.getImageRegionPtr ("regr2", RegionHandler::Any, False);
+      AlwaysAssertExit (imregptr != 0);
+      delete imregptr;
+
       pIm.setDefaultMask ("");
       AlwaysAssertExit (! pIm.isMasked());
       AlwaysAssertExit (pIm.getRegionPtr() == 0);
