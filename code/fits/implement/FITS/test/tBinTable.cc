@@ -76,13 +76,13 @@ main(int argc, char **argv)
 	} else {
 	    cout << storageManagerType << " is not a valid storage manager" << 
 	        endl;
-	    return 0;
+	    return 1;
 	}
 
 	File inputFile(inputFilename);
 	if (! inputFile.isReadable()) {
 	    cout << inputFilename << " is not readable - exiting" << endl;
-	    return 0;
+	    return 1;
 	}
 
 	Int tabCount = 0;
@@ -92,7 +92,7 @@ main(int argc, char **argv)
 	FitsInput infits(inputFilename, FITS::Disk);
 	if (infits.err() != FitsIO::OK) {
 	    cout << "Problem instantiating FITS input " << infits.err() << endl;
-	    return 0;
+	    return 1;
 	}
 
 	while (!infits.eof()) {
@@ -107,14 +107,14 @@ main(int argc, char **argv)
 		if (infits.err() != FitsIO::OK) {
 		    cout << "Problem in infits while instantiating binary table " <<
 			infits.err() << endl;
-		    return 0;
+		    return 1;
 		}
 		Table tab = bintab.fullTable(tabNameString, Table::NewNoReplace,
 					     useMiriadSM);
 		if (infits.err() != FitsIO::OK) {
 		    cout << "Problem in infits while making the table " <<
 			infits.err() << endl;
-		    return 0;
+		    return 1;
 		}
 		cout << "done." << endl;
 	    }
@@ -126,16 +126,15 @@ main(int argc, char **argv)
 		if (infits.err() != FitsIO::OK) {
 		    cout << "Problem in infits while skipping the hdu" <<
 			infits.err() << endl;
-		    return 0;
+		    return 1;
 		}
 		break;
 	    }
 	}
 	cout << "At end of file" << endl;
     } catch (AipsError x) {
-	cout << "Exception from file : " << x.thrownFile() << endl;
-	cout << "at line : " << x.thrownLine() << endl;
-	cout << "Message : " << x.getMesg() << endl;
+	cout << "Unexpected exception: " << x.getMesg() << endl;
+	return 1;
     } 
-    return 1;
+    return 0;
 }

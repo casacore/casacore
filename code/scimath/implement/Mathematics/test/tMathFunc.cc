@@ -250,12 +250,12 @@ try{
    delete p2;
 
  } catch(AipsError x) {
-   cout << "Caught exception at line " << x.thrownLine()
-      << " from file " << x.thrownFile() << endl;
-    cout << "Message is: " << x.getMesg() << endl;
+   cout << "Unexpected exception: " << x.getMesg() << endl;
+   return 1;
   } 
 
   cout << "OK" << endl; 
+  return 0;
 }
 /*
 This program should produce output similar to the following:
