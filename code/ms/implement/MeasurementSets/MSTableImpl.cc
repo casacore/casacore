@@ -415,7 +415,7 @@ SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
     if (! cname.empty()) {
       SimpleOrderedMap<String,String> old2new("");
       old2new.define (cdesc.name(), cname);
-      newtab.adjustHypercolumns (old2new);
+      newtab.adjustHypercolumns (old2new, True);
     }
   }
   return newtab;
