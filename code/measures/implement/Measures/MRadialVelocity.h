@@ -119,7 +119,7 @@ class MVDoppler;
 // <srcblock>
 //	cout << "Redshift for 100 km/s: " <<
 //		MDoppler::Convert( MRadialVelocity( Quantity(100., "km/s"),
-//				      MRadialVelocity::TOPO).toDoppler(QC::HI),
+//				      MRadialVelocity::TOPO).toDoppler(),
 //				   MDoppler::Z)() << endl;
 // </srcblock>				   
 // </example>
