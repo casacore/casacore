@@ -1,0 +1,55 @@
+\chapter{Weekly Duties}
+\section{Check for stable}
+Every Friday we do a cumulative build on all architectures.  These build constitute the stable
+candidate.  The criteria for a stable are:
+\begin{enumerate}
+\item Must be a cumulative
+\item All aips unit tests should pass. Tests may fail but the failure must be understood and
+considered to be minor (i.e. similar to tDirectory failure on linux with NFS mounts).
+\item assay().trytests() runs without failure.
+\item dishlongtests() runs without failure.
+\item no obvious failures in loading the help atoms
+\end{enumerate}
+So what does this entail?
+\begin{enumerate}
+\item Examine build logs for glaring problems. 
+\item Look at the unit tests
+\begin{enumerate}
+\item{linux\_gnu}
+\item{sun4sol\_gnu}
+\item{sun4sol\_ntv}
+\end{enumerate}
+\item Run assay
+\begin{enumerate}
+\item{linux\_gnu}
+\item{sun4sol\_gnu}
+\item{sun4sol\_ntv}
+\end{enumerate}
+\end{enumerate}
+If the build is "stable", then as aips2adm on tarzan
+\begin{enumerate}
+\item Send an email to aips2-naug aips2-aoc warning of the impending build
+\begin{verbatim}
+Greetings,
+
+Build xx.yyy has met the stable criteria.  We will begin building the new stable @hhmm MT.
+Please use weekly until the new stable has completed.
+
+aips2mgr
+
+\end{verbatim}
+\item as aips2adm; cd /export/aips++/scripts; sh ./do\_blessing xx.yyy
+This scripts marks xx.yyy as stable; inhales the stable into /aips++/stable; and begins the stable
+build for linux and solaris.  The local sgi stable build is triggered by it's own cron job.
+\item Send an email to aips2-sitemgr
+\begin{verbatim}
+Greetings,
+
+Build xx.yyy has been declared stable.  Please update your stable releases.
+
+aips2mgr
+\end{verbatim}
+\end{enumerate}
+
+Stables should be declared no later than Monday afternoon if at all possible, so remote sites can
+inhale the latest stable Monday evening.
