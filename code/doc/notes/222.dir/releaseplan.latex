@@ -27,8 +27,9 @@ in the forthcoming release.
 
 The priorities for the AIPS++ project are:
 \begin{itemize}
-\item Have a scientifically usable system for the common UNIX platforms.
-The documentation should be such that a user can find its way.
+\item Have a scientifically usable, robust, well-documented system 
+for the common UNIX platforms.
+\item Functionality visible to the end user is vital.
 \item Stabilize the development system. Configuring, building and
 releasing the system should be fully and easily supported.
 \item Make a plan for future releases. It has to be investigated and
@@ -37,28 +38,512 @@ capabilities need to be added. Changes and additions have to be
 weighed against the scientific priorities in the project.
 \end{itemize}
 
+In this version of the document, we have concentrated on the
+deliverables by the first release. The deliverables by the second
+release will be reconsidered and updated after the first release.
+
 \section{Synthesis}
 
-\section{Single Dish}
+See the system development plan by Athol Kemball.
+
+\section{Single Dish (Bob Garwood)}
+
+\subsection{a) Current state of the library}
+
+    The current state is generally good.  There are two deficiencies
+which need to be addressed before the first release.
+
+\begin{description}
+\item[FITS] This isn't really a show stopper, but it has dragged out
+      for FAR too long.  As I see it, we have three options for the
+      underlying FITS classes and one suggestion for isolating this
+      layer.
+       - Copy the current, old, FITS classes to aips and update their
+         documentation.  We loose the random access code in the
+         latest FITS classes.
+       - Start with the latest.  The amount of
+         work to document this is probably not terribly more than with
+         the old classes.  
+       - Wait for Allan Ferris to deliver something with documentation.
+
+      My suggestion is that independent of which of these we go with,
+      that we develop (really formalize the parts which are already there
+      possibly with a few additional parts) a layer of our own which
+      provides our classes with the FITS access they need without ever
+      having to know about Allan's classes.  This would also allow us to
+      use some other set of FITS classes (e.g. cfitsio if it ever 
+      supported tape devices) without disrupting our classes.  We could
+      also, I think, then most easily justify not putting any time into
+      documenting the underlying FITS classes ourselves.  In the long
+      run, I think this is the way to go - but it is a fair amount of
+      work and we need to have a body to actually do the work.
+
+\item[Fitting] Our primary need here is for a multi-component fitting
+      class.  Notice I avoided mentioning the word "Gaussian" although 
+      that is at least initially what we need.  The trick here that isn't
+      available isn't multiple-components, its the ability to hold 
+      various parameters constant at will AND the ability to hold 
+      relationships between parameters constant (which if the problem
+      is parameterized correctly isn't a problem once you can hold
+      some parameters constant).  The need here is to be able to
+      fit molecular hyperfine lines so that, for example, the relative
+      spacing between the components is held fixed and/or the 
+      relative height is held fixed.  I also suspect that users will
+      want to fit other functional forms.  In the long run, it would
+      be nice if users could specify some general functional form
+      either via a glish function or through some specialized 
+      syntax so that they could set up a more complex fit that just
+      a simple polynomial, or a sinusoid, or a Gaussian, etc.
+
+\item[Calibration] There are clearly needs for the calibration work.
+This will be merged into the synthesis development plan.
+
+\item[MS columns] 
+We are currently archiving Parkes multi beam data from MS version 1
+in SDFITS files.  For the large number of MS header words which
+are not mentioned in the SDFITS convention, we store them in
+the file as MSSUBTABLE\_COLUMNNAME, which effectively preserves
+information about MS version 1 forever.  At a minimum 
+sdfits2ms will need to do the right thing here.  It would be
+nice if there were some concise document describing how
+MS 1 columns map to MS 2 (this might also aid in helping those
+of us who will need to rewrite our fillers in doing so).
+\end{description}
+
+\subsection{(b) The current state of applications}
+
+One need which hasn't been well or widely expressed is the need to use
+pieces of aips++ such as the Measures DO without getting significant
+portions of the rest of aips++ (right now it always comes along with
+the logger which drags so many other pieces along with it).  The GBT
+folks need to be able to use the Measures DO for their Doppler
+tracking needs.  They want it to be a pure functional interface where
+they call something which goes out to the Measures system, does its
+job, and returns a value.  I think the DO and a glish to glish
+connection is perfectly adequate for the job.  But right now, that
+drags along so much other stuff that have opted for now to fall back
+on using starlink.  This might be simply solved by giving complete
+freedom as to what logger is being used and then to develop a logger
+which just ignores everything.
+
+    I would also like to be able to return a glish table
+object which corresponds to the table which is being iterated
+by an SDIterator.  Thats easy enough for the table being iterated
+is the one on disk, but its not easily done when a selection
+has been applied.  One possibility would be for the guts of
+gtable to be a true DO and not just an app so that I could
+have that DO in the sditerator app and assuming that the gtable
+DO had a constructor which worked from a Table, I think I could
+create one on the DO side.  This may be more appropriately a long
+term target of being able to share DO objects between clients
+somehow.
+
+\subsection{(c) Scientific Priorities}
+\begin{itemize}
+\item Support of GBT commissioning and observing
+\item Replace UniPOPS and comparable single dish analysis tools
+\item Modern Single Dish Imaging tools
+\item Combining single dish and synthesis data painlessly 
+\end{itemize}
+
+This last is the real prize which justifies the pain of
+using the MeasurementSet.
+
+\subsection{(d) Deliverables by first release - 15 March 1999}
+
+My aim is to have all of the GBT commissioning tools available
+by early summer.  Much of that is done or well under way.  The
+only things which are not are imaging tools and holography tools.
+
+The work here will be done by Bob unless stated otherwise.
+\begin{description}
+\item[High] Upgrade the various GBT fillers to improve speed (3w)
+\item[High] dish should be "done" in the sense that it will be a 
+     competent replacement for UniPOPS.
+      The possible exception here is calibration where its
+      very difficult to estimate how much time this will
+      require to be able to do basic things which UniPOPS
+      does the old fashioned way.
+    In addition to a number of user interface changes requested
+    or contemplated in dish, this includes:
+\begin{itemize}
+\item plotter (Joe 4w)
+\item switch to MS version 2 (2w)
+\item SDIterator understands version 2 (2w)
+\item multi-component fitting (2w once Fitter is available)
+\item calculator (Joe 4w)
+\end{itemize}
+
+\item[High] Start of calibration effort.  At least a few basic calibration
+     schemes need to be in place (4w)
+
+\item[Medium] Planning the holography support.  I know that this involves coordination
+     with others within the project who also have holography needs.
+     This doesn't necessarily need to be in the first release, but
+     work needs to have clearly begun by then.
+
+\item[Low] Initial imaging tool.  The real pressing need is for GBT
+     commissioning so that beam maps can be made.  I suspect
+     that this is effectively an on-the-fly imaging tool.
+
+\end{description}
+
+\subsection{(e) deliverables by second release}
+
+We defer further analysis of these targets until after the first release.
+\begin{itemize}
+\item standard calibration package
+\item simple pulsar reduction
+\item ready for GBT observing
+\item dish can handle the GBT spectrometer: large bandwidths, large number of channels.
+\item OTF imaging done
+\item holography done
+\end{itemize}
+
+\subsection{(f) assumptions about progress in other areas}
+
+I think I've outlined above what I think I need from other areas for
+what reasons.  I think someone else besides Joe and myself clearly
+needs to put some effort into the Holography unification effort if
+there is any hope of having that done in time.  A fall back will be to
+simply do it ourselves using what we know to do here in GB.  That
+would be a real pity.  I'm also worried about imaging.
+
+Hopefully we will have a replacement for Joe in GB by the time of
+first release or shortly thereafter.  But I can't see that person
+being up to speed and contributing to the cause until into next
+Summer.  The plan then will be to shift some of Joe's commissioning
+and observer support back to Green Bank and to spread the remaining
+work around.
 
 \section{Image Analysis}
 
-\section{Visualization}
+\subsection{(a) Current State of the Library}
 
-\section{Glish}
+Support is present for:
 
-\section{Measures}
+\begin{itemize}
+\item creation of images
+\item access to images and subimages (i.e. regions)
+\item support for (non-linear) absolute coordinates 
+\item optimal iteration through images with
+  user supplied class to operate on pixels
+\item computation of expressions with images
+\item conversion to and from FITS
+\item computation of statistics from an image
+\item computation of histograms from an image
+\item computation of moments from an image
+\item command line and GUI to create and manipulate regions of
+  interest
+\item some modest capability for the direct convolution of lattices
+\item display of images (AipsView)
+\end{itemize}
+
+\subsection{(b) Current State of Applications}
+
+All of the things in the Library are accessable via the image DO except
+direct general image convolution plus:
+
+\begin{itemize}
+\item concatenation of images along an axis (should really be in library
+  somewhere)
+\item simple hanning smoothing (added as stop gap for multi beam)
+\item placement of an image in another
+\end{itemize}
+
+\subsection{(c) Scientific Priorities}
+
+\begin{itemize}
+\item The user interface has very high scientific priority.
+Although it is a general issue, I have spent a lot of time on it for
+the regionmanager (and I'm not done yet).  I feel that the scientific
+returns will be greatly enhanced by getting this right.  I think the
+image module is in general poorly packaged at present and needs effort
+to improve it.
+
+\item Some more basic applications !  There isn't actually very much
+functionality in the image module.
+
+\item Polarimetric analysis applications
+\end{itemize}
+
+\subsection{(d) Deliverables by First Release}
+
+Neil does all of this unless specified. Probably only High priority
+can be done.
+
+\begin{description}
+\item[High] Image plane fitter: Gaussian to specified region,
+interactive. (6w)
+
+\item[High] GUI for moments calculation (2w)
+
+\item[Medium] Unification of coordinates, regions and measures.  Currently
+  these three things are loosely coupled only.  I want to
+  tighten this up and at the same time improve functionality
+  (e.g. automatic conversion of a region from J2000 to B1950,
+   a well defined coordinates object  for use throughout the   
+  system) (10w)
+
+\item[Medium] Support for regions directly in Lattice Expression Language
+  and from the user interface in the image module (Ger, 2w)
+
+\item[Low] Relative coordinates in the Coordinates classes, plus mixed
+  (world/pixel) conversions (3w)
+
+\item[Low] Masks are currently only partially in place in images (regions
+  create masks which are available on read).  Have
+  mask handling fully implemented and under user control. (4w)
+
+\item[Low] General image convolution functionality (2w)
+
+\end{description}
+
+
+\subsection{(e) Deliverables by Second Release}
+
+In order of priority:
+
+\begin{itemize}
+\item polarimetry analysis suite
+\item model fitting
+\item regridding (a la HGEOM)
+\end{itemize}
+
+Third item questionable.
+
+\subsection{(f) Assumptions about progress in other areas}
+
+\begin{itemize}
+\item Decent UI !
+\item Some of Ger's time to work on LEL and masks
+\end{itemize}
+
+\section{Visualization (David Barnes)}
+
+\subsection{(a) Current status}
+
+\subsubsection{Library}
+
+Previous to six months ago, the Display Library (DL) supported the
+display of 2d and 3d AIPS++ Images as pseudo-color raster images in a
+window built with the Xt toolkit.  Built-in event handling providing
+zooming and animation based on keyboard and mouse input on the
+Xwindow.  Infrastructure to provide built-in colormaps, and color
+cubes, was present.  There was no interface to glish.
+
+Progress on the DL (found in {\tt trial/implement/Display}) during the
+past six months has been good, and has proceeded along three main
+lines:
+\begin{enumerate}
+\item{Development of a DisplayData class hierarchy, and implementation 
+of two concrete classes: LatticeAsRaster and LatticeAsContour.}
+\item{Partial design and implementation of Glish/Tk ``wrappers'' for
+the main DL objects: PixelCanvas, WorldCanvas \&
+WorldCanvasHolder, DisplayData and Colormap.}
+\item{Continuing use and debugging of more and more components of the
+DL.}
+\end{enumerate}
+Accordingly, the on-screen display of lattice-based data (Images and
+Arrays) as raster images or contour maps is now possible, and can be
+controlled from glish.  PixelCanvas, WorldCanvas, DisplayData and
+Colormap objects can all be built and manipulated at the glish
+command-line.
+
+Very little of the code developed over the last six months has been
+checked into the system.  This is primarily related to a few
+unresolved issues regarding compiling and linking AIPS++ Library code
+against native Glish include files and libraries.
+
+\subsection{(b) The current state of applications}
+
+No applications have been developed with the DL,
+except development versions and test-beds for the Glish command-line
+interface to the DL.
+
+\subsection{(c) Scientific priorities}
+
+There are two scientific driving forces behind the DL:
+\begin{enumerate}
+\item{The provision of AIPS++-native display applications that can be
+tightly coupled to all stages of data processing: editing, imaging and 
+analysis.  This includes display ``components'' that can be
+``plugged-in'' to objects needing display services, but without the
+``added baggage'' of a complete AIPS++ application.}
+\item{The provision of programmability of the DL at the
+Glish command-line level.  The drive here is to enable the typical
+Glish programmer---or keen astronomer with a new idea and minimal
+Glish knowledge---to put together innovative visualisation
+applications that extend or complement the functionality of the
+applications provided by AIPS++ in 1.\ above.}
+\end{enumerate}
+
+\subsection{(d) First release: 1999/03/15}
+
+\subsubsection{Objectives/deliverables}
+
+A reasonable objective is to deliver a replacement for aipsview by the 
+First Release.  Without going into a detailed specification here, the
+basic capabilities would include:
+\begin{description}
+\item[High] display of lattice-based datasets (AIPS++ Images and Glish
+arrays) as pseudo-color raster images and contour maps, with overlay
+capability (1w)
+\item[Low] ``fiddling'' of built-in colormaps (1w)
+\item[High] zooming (1w)
+\item[High] Glish-controlled animation through planes of $>$2d
+datasets (2w)
+\item[High] basic axis labelling, titling, and color wedge display (4w)
+\item[High] PostScript output ({\bf see below}) (? 6w)
+\item[High] Independent and inter-changeable GUI and command-line
+interfaces, yielding full ``plugability'' for other AIPS++
+applications: eg.\ simpleimage (2w)
+\end{description}
+This application would be written in Glish, making use of Glish/Tk
+DL agents, together with internal DL
+classes.  A significant side-effect of this application would
+therefore be the provision of example Glish code showing how the
+DL functionality can be tapped from Glish.
+
+I am also hopeful that prior the the First Release, a number of new
+DisplayDatas might be developed, based heavily on the existing
+LatticeAsRaster and LatticeAsContour classes, which provide
+hue-intensity-saturation component raster images, red-green-blue
+component raster images, vector maps, and the ability to read the {\tt
+FLOAT\_DATA} and {\tt DATA} columns of MeasurementSets.  However, I do
+not wish to {\em guarantee} the presence of any of these in the First
+Release.  I do not propose to provide any form of line plotting in the 
+DL before the First Release: PgPlot is providing
+excellent tools for line plotting already.
+
+Finally, it would be extremely pleasing if we were able to produce
+a prototype Fourier analysis tool for inclusion in the First Release.
+This tool would rely on the ``plugability'' of various components of
+the aipsview replacement application, combined with bindings on the
+PixelCanvases, to present two Fourier transform pair images to
+the user, and enable some rudimentary inspection and modification of
+the images.  I will actively seek assistance in this area if there is
+sufficient interest.
+
+\subsubsection{Display library requirements}
+
+The most important parts of the DL which need further development 
+by me to achieve the above target include:
+\begin{enumerate}
+\item{Continuing work to provide DL functionality at the
+Glish level.}
+\item{More flexibility in negotiation of which data will draw: this
+will enable Images having non-conformant Lattices to display
+concurrently, if their CoordinateSystems agree.}
+\item{Development and implementation of a useful axis labelling
+scheme.}
+\item{Continuing development of the application GUI.}
+\item{Documentation of the DL and the application.}
+\end{enumerate}
+
+\subsubsection{Dependencies}
+
+\begin{itemize}
+\item{{\bf Technical issues:}
+\begin{enumerate}
+\item{The native Glish includes and libraries will need to be made
+available within the standard AIPS++ include hierarchy: the {\tt gtk}
+part of the DL depends on this.}
+\item{We need to solve the dynamic linking issues relating to statics.}
+\item{We need to resolve performance issues related to embedding the
+DL in the same execution thread as the standard Tk widgets.}
+\end{enumerate}}
+\item{{\bf Axis Labelling:}  I need to learn about Mark Calabretta's 
+non-linear PgPlot axis labelling routines; there may be a dependency
+on some FORTRAN/C/C++/PgPlot issues regarding passing C/C++ functions
+through to PgPlot FORTRAN routines being solved.}
+\item{{\bf PostScript output:}  Wim has a target to write 
+a PostScript PixelCanvas for the DL.  Obviously for any
+of the output ``promises'' made above, this class is needed.}
+\item{{\bf Mixed coordinate conversions:}  Whilst not necessary,
+these routines are highly desirable for use in position reporting
+etc., and are on Neil's ``list.''}
+\end{itemize}
+
+\subsection{(e) Second release: 1999/12/01}
+
+\subsubsection{Objectives/deliverables}
+
+With the aipsview replacement well in hand, it will be time to
+concentrate on firstly the continuing enhancement of the
+programmability of the DL from Glish, and secondly on
+developing a number of AIPS++ visualization applications.  I envisage
+that some subset of the following applications and plug-ins might be
+available in the Second Release:
+\begin{itemize}
+\item{A position-velocity slice tool}
+\item{A Fourier analysis tool, using multi-channel rasters etc.}
+\item{A region plug-in which provides region overlay and interactive
+	region editing facilities}
+\item{A colormap editor plug-in for DL applications}
+\item{A flagging tool making use of the region plug-in and the fourier
+	analysis tool}
+\end{itemize}
+
+Leading up to, but more likely beyond, the Second Release, we will
+develop volume rendering applications.
+
+\subsubsection{Display library requirements}
+
+\begin{itemize}
+\item{Support for multi-channel rasters}
+\item{Many more DisplayData classes}
+\item{Plug-in ``technology'' for the DL}
+\item{Extensive programmability from glish}
+\item{24-bit support}
+\end{itemize}
+
+\subsubsection{Dependencies}
+
+\begin{itemize}
+\item{It would be nice if ImageRegions and the Table query language became
+more closely aligned over time: they are basically providing the same
+functionality (on different datasets) using different syntax.  If they
+were to coalesce, then writing an ImageRegion selector application
+would be identical to writing a uv flagging tool, for example.}
+\item{Others: data flow paradigm for AIPS++, ...}
+\end{itemize}
+
+\section{Glish (Darrell Schiebel)}
+
+The only changes foreseen here for the first release are:
+\begin{description}
+\item[High] Ongoing cleanup of memory leaks (2w)
+\item[High] Local/global eval (2w)
+\item[High] Destructors (2w)
+\end{description}
+
+\section{Interfaces (Darrell Schiebel)}
+
+\subsection{(d) deliverables by first release}
+
+\begin{description}
+\item[High] Investigate use of TiX widgets (1w)
+\item[High] Decouple Auto-GUI from objectcatalog (Tim, 1w)
+\item[High] Parameter saving, restoring, transferring (3w)
+\item[High] Define format for Auto-GUI widgets, implement a couple
+(3w)
+\item[High] Improve help presnetation in AutoGUI (2w)
+\item[High] Standardized parsing (3w)
+\end{description}
+
+\section{Measures (Wim Brouw)}
 
 \subsection{(a) the current state of the library}
 
 \begin{enumerate}
-\item[1]. Time, 'infinite' directions, 'stable' Earth platform, magnetic field:
-       some minor improvements (more separation of calculations (90% done)
+\item[1] Time, 'infinite' directions, 'stable' Earth platform, magnetic field:
+       some minor improvements (more separation of calculations (90\% done)
        and improved iteration between forward/backward (B1950/J2000 really))
        necessary.
-\item[2]. Unstable Earth (Earth tides etc):
+\item[2] Unstable Earth (Earth tides etc):
        no support
-\item[3]. Moving directions:
+\item[3] Moving directions:
        support for major solar system objects
        almost no support for minor solar system objects
        no support for proper motions of 'far' objects
@@ -74,7 +559,6 @@ Applications are supportive only (conversion guis; specialised
 \end{itemize}
 
 \subsection{(c) scientific priorities}
-    Probably determined by others. My idea would be:
 \begin{itemize}
 \item Earth tides etc (for VLBI -- EVN especially)
 \item Proper motion
@@ -82,9 +566,9 @@ Applications are supportive only (conversion guis; specialised
 \item minor solar system bodies
 \end{itemize}
 \subsection{(d) deliverables by first release}
-\begin{itemize}
-\item Earth tides 
-\end{itemize}
+\begin{description}
+\item[High] Earth tides (2w)
+\end{description}
 \subsection{(e) deliverables by second release}
 \begin{itemize}
 \item Proper motions
@@ -98,18 +582,7 @@ Applications are supportive only (conversion guis; specialised
 \end{itemize}
 
 
-A few comments about other areas:
-- Documentation;
-  Will cxx2html updates (what about Wes' and Ger's proposal of Feb 1996?) be
-  part of the plan
-  .help generation
-
-- basic library:
-  - HashMap and Fitting and Functional related things: ideas, future
-  - Containers and 'almost base' types (String, Complex): STL?
-
-
-\section{Documentation}
+\section{Documentation (Kate Weatherall, Wes Young)}
 
 \subsection{(a) the current state of the library}
 
@@ -145,21 +618,16 @@ A few comments about other areas:
 \subsection{(d) deliverables by first release}
 
 \begin{itemize}
-\item Comprehensive tutorial(s)
-     a) single dish
-     b) VLA
-     c) VLBA
-     d) BIMA
-     e) Westerbork
-     f) ATNF
-\item A framework for presenting recipes
-\item Clean up of bug tracking system
-\item Clean up Reference manual in both terminology and presentation
+\item A framework for presenting recipes (1w)
+\item Clean up of bug tracking system (3w)
+\item Clean up Reference manual in both terminology and presentation (3w)
+\item Remove old documents, duplicates (3w)
 \end{itemize}
 
 \subsection{(e) deliverables by second release}
 
 \begin{itemize}
+\item Comprehensive tutorial for all telescopes
 \item PDF availablity of all documents
 \end{itemize}
 
@@ -186,8 +654,8 @@ Not relevant to QAG
 \subsection{(d) deliverables by first release}
 \begin{itemize}
 \item Improve out C++ testing on all supported architectures. (RGM)
-  Currently only the sun4sol\_gnu architecture is at 100% we need to get 
-  all architectures so that 100% of the test programs pass.
+  Currently only the sun4sol\_gnu architecture is at 100\% we need to get 
+  all architectures so that 100\% of the test programs pass.
 \item Regular stable releases (JEN + MH)
   I expect stable releases to occur on an approximately monthly
   timescale. These will be both binary and source releases. The
@@ -196,15 +664,17 @@ Not relevant to QAG
 \item Depopulating trial. (RGM)
   Important code in the following module will be reviewed.
   Important code means the following modules:
-  - TableMeasures
-  - Lattices
-  - Tasking
-  - Coordinates
-  - MeasurementEquations
-  - MeasurementComponents
-  - MeasurementSets
-  - ComponentModels
-  - Images
+\begin{itemize}
+\item TableMeasures
+\item Lattices
+\item Tasking
+\item Coordinates
+\item MeasurementEquations
+\item MeasurementComponents
+\item MeasurementSets
+\item ComponentModels
+\item Images
+\end{itemize}
   We will be flexible about exactly which classes in these
   modules need to be reviewed. the guideline is that we should not, by
   the first public release, be distributing code that has not been
@@ -254,3 +724,4 @@ architecture).
 
 \section{System}
 
+See the system plan by Ger van Diepen.
