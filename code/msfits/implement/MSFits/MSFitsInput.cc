@@ -482,6 +482,8 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
  			 stringToVector(MS::columnName(MS::DATA)));
     td.defineHypercolumn("TiledFlag",3,
  			 stringToVector(MS::columnName(MS::FLAG)));
+    td.defineHypercolumn("TiledFlagCategory",4,
+ 			 stringToVector(MS::columnName(MS::FLAG_CATEGORY)));
     td.defineHypercolumn("TiledWeight",3,
  			 stringToVector(MS::columnName(MS::WEIGHT_SPECTRUM)));
     td.defineHypercolumn("TiledUVW",2,
@@ -505,6 +507,9 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
     TiledShapeStMan tiledStMan1f("TiledFlag",
  				 IPosition(3,nCorr,tileSize,
  					   16384/nCorr/tileSize));
+    TiledShapeStMan tiledStMan1fc("TiledFlagCategory",
+				  IPosition(4,nCorr,tileSize,1,
+ 					   16384/nCorr/tileSize));
     TiledShapeStMan tiledStMan2("TiledWeight",
  				IPosition(3,nCorr, tileSize,
  					  16384/nCorr/tileSize));
@@ -513,6 +518,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
     // Bind the DATA, FLAG & WEIGHT_SPECTRUM columns to the tiled stman
     newtab.bindColumn(MS::columnName(MS::DATA),tiledStMan1);
     newtab.bindColumn(MS::columnName(MS::FLAG),tiledStMan1f);
+    newtab.bindColumn(MS::columnName(MS::FLAG_CATEGORY),tiledStMan1fc);
     newtab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM),tiledStMan2);
     newtab.bindColumn(MS::columnName(MS::UVW),tiledStMan3);
   } else {
