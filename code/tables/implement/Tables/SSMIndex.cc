@@ -1,5 +1,5 @@
 //# SSMIndex.cc: The bucket index for a group of columns in the SSM
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,12 +26,13 @@
 
 #include <aips/Tables/SSMIndex.h>
 #include <aips/Tables/SSMBase.h>
+#include <aips/Tables/Table.h>
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Utilities/BinarySearch.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <aips/Tables/TableError.h>
 
 
 SSMIndex::SSMIndex (SSMBase* aSSMPtr, uInt rowsPerBucket) 
@@ -208,7 +209,11 @@ uInt SSMIndex::getIndex (uInt aRowNumber) const
   Bool isFound;
   uInt anIndex = binarySearchBrackets( isFound, itsLastRow, aRowNumber, 
 				       itsNUsed );
-  AlwaysAssert (anIndex < itsNUsed, AipsError);
+  if (anIndex >= itsNUsed) {
+    throw TableError ("SSMIndex::getIndex - access to non-existing row "
+		      + String::toString(aRowNumber) + " in " +
+		      itsSSMPtr->table().tableName());
+  }
   return anIndex;
 }
 
