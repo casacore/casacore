@@ -53,54 +53,44 @@ template<class T> class Vector;
 // </etymology>
 
 // <synopsis> 
-// TiledShape is "logically" a Vector<Int> constrained so that it's origin
-// is zero-based, and in fact that used to be the way it was implemented.
-// It was split out into a separate class to make the inheritance from
-// Arrays simpler (since Arrays use TiledShapes). The
-// template instantiation mechanism is complicated enough that this
-// simplification was felt to be a good idea.
+// TiledShape is a class defining the shape and optionally the tile
+// shape of a lattice. It is used in the constructors of
+// <linkto class=PagedArray>PagedArray</linkto> and
+// <linkto class=PagedImage>PagedImage</linkto>.
 // <p>
-// TiledShape objects are normally used to index into, and define the shapes
-// of, multi-dimensional arrays. For example, if you have a 5 dimensional
-// array, you need an TiledShape of length 5 to index into the array (or
-// to define its shape, etc.).
-// <p>
-// Unlike Vectors, TiledShapes always use copy semantics.
-// <srcblock>
-// TiledShape ip1(5);                         // An TiledShape of length 5
-// ip1(0) = 11; ip1(1) = 5; ... ip1(4) = 6;  // Indices 0-based
-// TiledShape ip2(ip1);                       // Copy constructor; a COPY
-// </srcblock>
-//
-// Binary operations must take place either with a conformnat (same size)
-// TiledShape or with an integer, which behaves as if it was an TiledShape
-// of the same size (i.e., length). All the usual binary arithmetic
-// operations are available, as well as logical operations, which return
-// Booleans. These all operate "element-by-element".
-// <p>
-// All non-inlined member functions of TiledShape check invariants if the
-// preprocessor symbol AIPS_DEBUG is defined.
-// That is, the member functions check that ok() is true (constructors
-// check after construction, other functions on entry to the function).
-// If these tests fail, an AipsError exception is thrown; its message
-// contains the line number and source file of the failure (it is thrown
-// by the lAssert macro defined in aips/Assert.h).
-//
+// In principle it serves as a place holder for the lattice shape and
+// tile shape. The functions <src>shape</src> and <src>tileShape</src>
+// can be used to retrieve the shapes.
+// However, when the tile shape is not given, the function
+// <src>tileShape</src> calculates a default tile shape using the
+// given maximum tile size in pixel elements. The default tile shape
+// is calculated in such a way that the sizes of its axes
+// are proportional to the sizes of the lattice axes. Per axis it is
+// tried as much as possible to fit an integral number of tiles
+// in the lattice.
+// <br>In this way getting the tile shape is completely transparant.
+// </synopsis>
+
 // <example>
 // <srcblock>
-// TiledShape blc(5), trc(5,1,2,3,4,5);
-// blc = 0;            // OR TiledShape blc(5,0);
-// //...
-// if (blc > trc) {
-//    TiledShape tmp;
-//    tmp = trc;       // Swap
-//    trc = blc;
-//    blc = tmp;
-// }
-// //...
-// trc += 5;           // make the box 5 larger in all dimensions
+// Do not define a tile shape.
+// // This results in a default tile shape (of 32,32,32).
+// TiledShape shape(IPosition(3,128,128,128));
+// cout << shape.shape() << ' ' << shape.tileShape() << endl;
+//
+// Use with an explicitly given tile shape.
+// TiledShape shape(IPosition(3,128,128,128), IPosition(3,64,32,8));
+// cout << shape.shape() << ' ' << shape.tileShape() << endl;
 // </srcblock>
 // </example>
+
+// <motivation>
+// Classes <src>PagedArray</src> and <src>PagedImage</src> contained
+// several duplicated constructors to be able to pass a tile shape.
+// This class makes it possible to have only one constructor
+// instead of two. Furthermore it contains the logic to check if the
+// shapes are conforming and the logic to calculate a default tile shape.
+// </motivation>
 
 
 class TiledShape
@@ -112,6 +102,7 @@ public:
     TiledShape (const IPosition& shape);
 
     // Use the given shape and tile shape.
+    // Both shapes must be conforming (i.e. have same number of elements).
     TiledShape (const IPosition& shape, const IPosition& tileShape);
 
     // Copy constructor (copy semantics).
@@ -131,6 +122,8 @@ public:
     // Return the tile shape.
     // When the tile shape is undefined, the default tile shape will be
     // calculated using the given tile size and tolerance.
+    // <br> The tolerance is used to determine the boundaries where
+    // it is tried to fit an integral number of tiles.
     IPosition tileShape (uInt nrPixelsPerTile = 32768,
 			 Double tolerance = 0.5) const;
 
