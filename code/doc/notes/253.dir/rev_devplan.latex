@@ -1,0 +1,157 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsfig, longtable, aips2help}
+\input{aips2defs.tex}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{Development plan for v2.0 (revision)}
+
+
+\author{Joseph McMullin\\
+   NRAO}
+
+   \date{29 Dec, 2002}
+
+   \maketitle
+   %%---------------------------------------------------------------------------
+   \begin{htmlonly}
+   \htmladdnormallink{A postscript version of this note is available (28kB).}{../253.ps.gz}
+   \end{htmlonly}
+
+   \tableofcontents
+
+\section{Purpose}
+
+This note provides an update to the development plan for V2.0 as described in
+\begin{htmlonly}
+\htmladdnormallink{Note 251}{http://aips2.nrao.edu/daily/docs/notes/251/251.html}
+\end{htmlonly}
+
+\section{\underbar{Release priorities}}
+
+The highest priority for the project in development cycle v2.0 is to
+continue the process of scientific integration. This includes:
+
+\begin{enumerate}
+
+\item Scientific completeness: Demonstrated end-to-end reduction
+capabilities for targeted instruments in all scientifically important
+observing and reduction modes.
+
+\item Usability by the astronomical community: Quality of the user
+interface, applications presentation and user documentation.
+
+\item Robustness, correctness and accuracy: Prove the correctness and
+robustness of existing capabilities and ensure comparable performance
+to other disk-based packages.
+
+\item Continued deployment to an expanded user base: Continue to
+increase the scientific user base for AIPS++.
+
+\end{enumerate}
+
+However, in light of losses in resources (manpower) and increasing demand
+in user support, the target list has been reviewed and updated.
+
+
+\section{\underbar{Introduction}}
+
+The Development targets are listed as in Note 251. The development codes
+have been multiplied by 100 for clarity.
+
+In addition, we plan to have several 'snapshot' releases available throughout
+the release cycle as stable releases. The targets now have deadlines which
+reflect the goals of each snapshot release. The targets are presented both
+by the developer name and by the targeted release date.
+
+\vskip 0.5cm
+
+\begin{tabular}{|l|l|l|}\hline
+{\bf Abbr.}&{\bf Developer}&{\bf Affiliation}\\ \hline\hline
+BG & Bob Garwood & NRAO\\
+DMC & Dave McConnell & ATNF\\
+DG & Daniel Goscha & NCSA\\
+DK & David King & NRAO\\
+DM & Dave Mehringer & NCSA\\
+DrS & Darrell Schiebel & NRAO\\
+GvD & Ger van Diepen & ASTRON\\
+GM & George Moellenbrock & NRAO\\
+JB & Jim Braatz & NRAO\\
+JN & Jan Noordam & ASTRON\\
+JM & Joe McMullin & NRAO\\
+KG & Kumar Golap & NRAO\\
+MM & Malte Marquarding & ATNF\\
+MW & Mark Wieringa & ATNF \\
+OS & Oleg Smirnov & ASTRON\\
+PC & Paulo Cortes & NCSA\\
+PT & Peter Teuben & BIMA \\
+RN & Roger Noble & NRAL\\
+RP & Ray Plante & NCSA\\
+SB & Sanjay Bhatnagar & NRAO\\
+SL & Selfa Lucero & NRAO\\
+TC & Tim Cornwell & NRAO\\
+WB & Wim Brouw & ATNF\\
+WY & Wes Young & NRAO\\
+\hline
+\end{tabular}
+
+%%----------------------------------------------------------------------
+
+\clearpage
+
+\section{\underbar{Organization Summary}}
+
+\begin{verbatim}
+
+ org                          name                         sum of time
+ ===                          ====                         ===========
+
+ astron
+                              noordam, jan                          80
+                              smirnov, oleg                         80
+                              vandiepen, ger                       288
+ atnf
+                              brouw, wim                           742
+                              marquarding, malte                  1100
+                              mcconnell, dave                       80
+                              wieringa, mark                       428
+ bima/ncsa
+                              plante, ray                          444
+ jbo
+                              noble, roger                          40
+ ncsa
+                              cortes, paulo                        240
+                              goscha, daniel                      1030
+                              mehringer, dave                      712
+                              sarma, anuj                           12
+                              teuben, peter                        400
+ nrao
+                              bhatnagar, sanjay                   1050
+                              braatz, jim                         1050
+                              cornwell, tim                        320
+                              garwood, bob                        1050
+                              golap, kumar                        1100
+                              kemball, athol                       378
+                              king, david                         1400
+                              mcmullin, joe                       1400
+                              moellenbrock, george                1090
+                              schiebel, darrell                   1400
+                              sessoms, eric                         40
+                              young, wes                          1400
+
+\end{verbatim}
+
+\section{\underbar{Name Summary}}
+
+   \begin{htmlonly}
+   \htmladdnormallink{Name Summary}{./name.html}
+   \end{htmlonly}
+
+\section{\underbar{Release Summary}}
+
+   \begin{htmlonly}
+   \htmladdnormallink{Release Summary}{./release.html}
+   \end{htmlonly}
+
+\end{document}
