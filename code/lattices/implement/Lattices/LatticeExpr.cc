@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/PixelRegion.h>
 #include <trial/Lattices/PixelBox.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Utilities/COWPtr.h>
@@ -40,6 +39,10 @@ LatticeExpr<T>::LatticeExpr()
 
 template <class T>
 LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr, uInt)
+//
+// Construct from a LatticeExprNode object.  The LEN type is
+// converted to match the template type if possible
+//
 {
     DataType thisDT = whatType ((T*)0);
     if (expr.dataType() == thisDT) {
@@ -71,15 +74,24 @@ LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr, uInt)
 
 template <class T>
 LatticeExpr<T>::~LatticeExpr()
+//
+// Destructor does nothing
+//
 {}
 
 template <class T>
 LatticeExpr<T>::LatticeExpr (const LatticeExpr<T>& other)
 : expr_p (other.expr_p)
+//
+// Copy constructor.  Uses reference semantics
+//
 {}
 
 template <class T>
 LatticeExpr<T>& LatticeExpr<T>::operator=(const LatticeExpr<T>& other)
+//
+// Assignment. Uses reference semantics
+//
 {
    if (this != &other) {
       expr_p = other.expr_p;
@@ -90,12 +102,18 @@ LatticeExpr<T>& LatticeExpr<T>::operator=(const LatticeExpr<T>& other)
 
 template <class T>
 Lattice<T>* LatticeExpr<T>::clone() const
+//
+// Return a copy of the LatticeExpr object. Uses
+// reference semantics.
 {
    return new LatticeExpr (*this);
 }
 
 template <class T>
 Bool LatticeExpr<T>::isWritable() const
+//
+// A LatticeExpr lattice is not writable
+//
 {
    return False;
 }
@@ -113,7 +131,8 @@ Bool LatticeExpr<T>::getSlice (COWPtr<Array<T> >& buffer,
 			       const IPosition& stride, 
 			       Bool removeDegenerateAxes) const
 {
-   return getSlice (buffer, Slicer(start, shape, stride), removeDegenerateAxes);
+   return getSlice (buffer, Slicer(start, shape, stride), 
+                    removeDegenerateAxes);
 }
 
 template<class T>
@@ -122,8 +141,7 @@ Bool LatticeExpr<T>::getSlice (COWPtr<Array<T> >& buffer,
 			       Bool removeDegenerateAxes) const
 {
 // I can remove the constness because the buffer is never returned by
-// reference.
-// The COWPtr takes over the pointer to the array.
+// reference. The COWPtr takes over the pointer to the array.
 
    Array<T>* arr = new Array<T>;
    LatticeExpr<T>* This = (LatticeExpr<T>*) this;
@@ -145,6 +163,11 @@ template <class T>
 Bool LatticeExpr<T>::getSlice(Array<T>& buffer,
 			      const Slicer& section,
 			      Bool removeDegenerateAxes)
+//
+// This is the version of getSlice where the implementation
+// is fundamental.  The others are implemented in terms of
+// this one
+// 
 {
 // removeDegenerateAxes is not supported.
 
@@ -159,8 +182,12 @@ Bool LatticeExpr<T>::getSlice(Array<T>& buffer,
       buffer.resize (region.box().length());
    } else {
       AlwaysAssert (buffer.shape().isEqual(region.box().length()), AipsError);
- }
+   }
+
+// Evaluate the expression
+
    expr_p.eval (buffer, region);
+
    return False;
 }
 
