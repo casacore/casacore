@@ -27,8 +27,11 @@
 #include <trial/Flagging/RFDataMapper.h> 
 #include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Constants.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
+#include <aips/Measures/MDirection.h>
 
 // Define functions for mapping a VisBuffer to obsevred, model and corrected
 // visibility cubes
@@ -58,7 +61,8 @@ UVRowMapper(AbsU,abs(UVW(0)));
 UVRowMapper(AbsV,abs(UVW(1)));
 UVRowMapper(AbsW,abs(UVW(2)));
 UVRowMapper(UVD,sqrt(UVW(0)*UVW(0)+UVW(1)*UVW(1)));
-
+UVRowMapper(UVA,atan2(UVW(0),UVW(1))/C::pi*180);
+UVRowMapper(HA,sin_dec!=0 ? atan2(UVW(1)/sin_dec,UVW(0))/C::pi*180 : 0 );
 
 // these arrays define a mapping between column names and cube mappers
 const String 
@@ -110,6 +114,7 @@ RFDataMapper::RFDataMapper ( const Vector<String> &expr0,const String &defcol )
 //    rowmapper(dummyRowMapper),
     mytype(MAPCORR)
 {
+  sin_dec = -10; // need not be computed by default, so set to <-1
   rowmapper = &RFDataMapper::dummyRowMapper;
   Vector<String> expr( splitExpression(expr0) );
 // first, check for per-row expressions (i.e., UVW, etc.)
@@ -136,6 +141,13 @@ RFDataMapper::RFDataMapper ( const Vector<String> &expr0,const String &defcol )
     rowmapper = absof ? &RFDataMapper::AbsW_RowMapper : &RFDataMapper::W_RowMapper;
   else if( el == "UVD" || el == "UVDIST" )
     rowmapper = &RFDataMapper::UVD_RowMapper;
+  else if( el == "UVA" || el == "UVANGLE" )
+    rowmapper = &RFDataMapper::UVA_RowMapper;
+  else if( el == "HA" || el == "HANGLE" )
+  {
+    sin_dec = 0; // will need to be computed
+    rowmapper = &RFDataMapper::HA_RowMapper;
+  }
   else
     rowmapper = NULL;
 // have we set up a valid row mapper? Return then
@@ -215,6 +227,13 @@ void RFDataMapper::setVisBuffer ( VisBuffer &vb )
     puvw = &vb.uvw();
   else
     throw( AipsError( "DataMapper: unknown mytype") );
+  // extract sine of declination, if needed
+  if( sin_dec>=-1 )
+  {
+    sin_dec = sin( MDirection::Convert( vb.phaseCenter(),
+                                     MDirection::Ref(MDirection::J2000)
+                   )().getAngle().getBaseValue()(1) );
+  }
 }
 
 
