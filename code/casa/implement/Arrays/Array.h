@@ -529,6 +529,7 @@ public:
         {return 3;}
 
 
+    // <group name=STL-iterator>
     class ConstIteratorSTL
     {
     public:
@@ -616,6 +617,8 @@ public:
           return *itsEndIter; }
     const const_iterator& end() const
         { return const_cast<Array<T>*>(this)->end(); }
+    // </group>
+
     // </group>
 
 
