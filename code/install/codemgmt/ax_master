@@ -5892,3 +5892,4 @@
 16 291 sys rm libexec/pfg.g
 16 304 src rm trial/apps/ms/templates
 16 304 src mv ./trial/implement/Functionals/Function.h ./aips/implement/Functionals/Function.h
+16 304 src mv ./trial/implement/Functionals/FunctionParam.cc ./aips/implement/Functionals/FunctionParam.cc
