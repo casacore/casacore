@@ -371,11 +371,12 @@ public:
     const Array<DComplex>& asArrayDComplex(const RecordFieldId&) const;
     const Array<String>&   asArrayString  (const RecordFieldId&) const;
     virtual const RecordInterface& asRecord (const RecordFieldId&) const = 0;
+    virtual RecordInterface& asrwRecord (const RecordFieldId&) = 0;
     // </group>
 
     // Get value based on field name or number.
     // They are here for backward compatibility with the old KeywordSet
-    // classes and will be removed in the future..
+    // classes and will be removed in the future.
     Float           asfloat   (const RecordFieldId&) const;
     Double          asdouble  (const RecordFieldId&) const;
     const Array<Float>&    asArrayfloat   (const RecordFieldId&) const;
