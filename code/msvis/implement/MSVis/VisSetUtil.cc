@@ -245,8 +245,8 @@ void VisSetUtil::WeightRadial(VisSet& vs, Double& sumwt) {
 
 // Filter the MeasurementSet
 void VisSetUtil::Filter(VisSet& vs, const String& type, const Quantity& bmaj,
-		    const Quantity& bmin, const Quantity& bpa,
-		    Double& sumwt, Double& minfilter, Double& maxfilter)
+			const Quantity& bmin, const Quantity& bpa,
+			Double& sumwt, Double& minfilter, Double& maxfilter)
 {
 
   LogIO os(LogOrigin("VisSetUtil", "filter()", WHERE));
@@ -262,7 +262,7 @@ void VisSetUtil::Filter(VisSet& vs, const String& type, const Quantity& bmaj,
     
     os << "Filtering for Gaussian of shape: " 
        << bmaj.get("arcsec").getValue() << " by " 
-       << bmin.get("arcsec").getValue() << " (arcsec) at position angle "
+       << bmin.get("arcsec").getValue() << " (arcsec) at p.a. "
        << bpa.get("deg").getValue() << " (degrees)" << LogIO::POST;
     
     // Convert to values that we can use
