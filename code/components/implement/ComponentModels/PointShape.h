@@ -58,12 +58,12 @@ template <class T> class Vector;
 
 // This class like the other component shapes becomes more useful when used
 // through the <linkto class=SkyComponent>SkyComponent</linkto> class, which
-// incorperates the flux and spectral variation of the emission, or through the
+// incorporates the flux and spectral variation of the emission, or through the
 // <linkto class=ComponentList>ComponentList</linkto> class, which handles
 // groups of SkyComponent objects.
 
-// The reference direction for a point shape is the direction at which all the
-// emission comes from and is defined in celestial co-ordinates, using a
+// For a point shape all the emission comes only from the reference direction
+// which is specified in celestial co-ordinates, using a 
 // <linkto class=MDirection>MDirection</linkto> object.  The direction can be
 // specified both in the constructor or with the <src>setRefDirection</src>
 // function.
@@ -73,7 +73,7 @@ template <class T> class Vector;
 // either zero or one depending on whether the specified pixel contains the
 // point source or not.
 
-// The <src>visibility</src> functions treturn the Fourier transform of the
+// The <src>visibility</src> functions return the Fourier transform of the
 // component at a specified spatial frequency. For a point shape the Fourier
 // transform is a constant value. Hence these functions return one, regardless
 // of the input parameters.
@@ -102,12 +102,12 @@ template <class T> class Vector;
 // <example>
 // Suppose I had an image of a region of the sky and we wanted to subtract
 // a point source from it. This could be done as follows:
-// <li> 
+// <ul> 
 // <li> Construct a SkyComponent with to represent the point source
 // <li> Project the component onto an image
 // <li> Convolve the image by the point spread function
 // <li> subtract the convolved model from the dirty image.
-// </li>
+// </ul>
 // Shown below is the code to perform the first step in this process, ie
 // construct the SkyComponent. This example is also available in the
 // <src>dPointShape.cc</src> file.  Note that it is more accurate to do
@@ -143,10 +143,8 @@ template <class T> class Vector;
 //   <li> Use Measures & Quanta in the interface to the visibility functions.
 // </todo>
 
-// <linkfrom anchor="PointShape" 
-//           classes="ComponentShape GaussianShape DiskShape">
-//  <here>PointShape</here>
-// - a shape where emission comes from only one direction
+// <linkfrom anchor="PointShape" classes="ComponentShape GaussianShape DiskShape">
+//  <here>PointShape</here> - a shape where emission comes from only one direction
 // </linkfrom>
 
 class PointShape: public ComponentShape
