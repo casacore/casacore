@@ -1,5 +1,5 @@
 //# ComponentType.h: Enumerators common to the Components Module
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,7 +122,7 @@ public:
   };
   // Convert the Shape enumerator to a string
   static String name(ComponentType::Shape shapeEnum);
-  // Convert a given String to a Shape enumerator
+  // Convert a given String to a Shape enumerator (min match active)
   static ComponentType::Shape shape(const String& shapeName);
 
   // Convert the Polarisation enumerator to a string
