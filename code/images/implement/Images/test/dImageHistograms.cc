@@ -1,6 +1,6 @@
 //# dImageHistograms.cc: This program generates histograms from images
 //#
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -126,7 +126,7 @@ try {
 
 // Get inputs
 
-   inputs.Create("in", "", "Input image name");
+   inputs.Create("in", "test_image", "Input image name");
    inputs.Create("axes", "-10", "Cursor axes");
    inputs.Create("blc", "-10", "blc");
    inputs.Create("trc", "-10", "trc");
@@ -137,7 +137,7 @@ try {
    inputs.Create("cumu", "False", "Plot cumulative histogram ?");
    inputs.Create("log", "False", "Take log of y axis ?");
    inputs.Create("list", "False", "List statistics for each histogram");
-   inputs.Create("plotter", "/xs", "Plot device");
+   inputs.Create("plotter", "/null", "Plot device");
    inputs.Create("nxy", "1,1", "Number of subplots in x & y");
    inputs.ReadArguments(argc, argv);
 
