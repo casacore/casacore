@@ -114,7 +114,7 @@ void FiledesIO::write (uInt size, const void* buf)
     if (!itsWritable) {
 	throw (AipsError ("FiledesIO object is not writable"));
     }
-    if (::traceWRITE(itsFile, buf, size) != Int(size)) {
+    if (::traceWRITE(itsFile, (Char *)buf, size) != Int(size)) {
 	throw (AipsError (String("FiledesIO: write error: ")
 			  + strerror(errno)));
     }
@@ -126,7 +126,7 @@ Int FiledesIO::read (uInt size, void* buf, Bool throwException)
   if (!itsReadable) {
     throw (AipsError ("FiledesIO::read - descriptor is not readable"));
   }
-  Int bytesRead = ::traceREAD (itsFile, buf, size);
+  Int bytesRead = ::traceREAD (itsFile, (Char *)buf, size);
   if (bytesRead > Int(size)) { // Should never be executed
     throw (AipsError ("FiledesIO::read - read returned a bad value"));
   }
@@ -189,7 +189,7 @@ Bool FiledesIO::isSeekable() const
 
 int FiledesIO::create (const Char* name, int mode)
 {
-    int fd = ::trace3OPEN (name, O_RDWR | O_CREAT | O_TRUNC, mode);
+    int fd = ::trace3OPEN ((Char *)name, O_RDWR | O_CREAT | O_TRUNC, mode);
     if (fd == -1) {
 	throw (AipsError ("FiledesIO: file " + String(name) +
 			  " could not be created: " + strerror(errno)));
@@ -200,9 +200,9 @@ int FiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
 {
     int fd;
     if (writable) {
-	fd = ::trace2OPEN (name, O_RDWR);
+	fd = ::trace2OPEN ((Char *)name, O_RDWR);
     }else{
-	fd = ::trace2OPEN (name, O_RDONLY);
+	fd = ::trace2OPEN ((Char *)name, O_RDONLY);
     }
     if (throwExcp  &&  fd == -1) {
 	throw (AipsError ("FiledesIO: file " + String(name) +
