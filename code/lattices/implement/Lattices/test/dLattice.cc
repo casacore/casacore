@@ -102,7 +102,7 @@ void makePsf(Lattice<Float> & psf) {
   const IPosition centrePos = psf.shape()/2;
   psf.set(0.0f);       // this sets all the elements to zero
                        // As it uses a LatticeIterator it is efficient
-  psf(centrePos) = 1;  // This sets just the centre element to one
+  psf.putAt(1, centrePos);  // This sets just the centre element to one
   AlwaysAssert(near(psf(centrePos), 1.0f, 1E-6), AipsError);
   AlwaysAssert(near(psf(centrePos*0), 0.0f, 1E-6), AipsError);
 }
