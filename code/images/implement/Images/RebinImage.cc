@@ -29,25 +29,27 @@
 #include <trial/Lattices/RebinLattice.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
 template<class T>
 RebinImage<T>::RebinImage ()
-: itsImagePtr (0)
+: itsImagePtr (0),
+  itsRebinPtr (0)
 {}
 
 template<class T>
 RebinImage<T>::RebinImage (const ImageInterface<T>& image,
-                           const Vector<uInt>& factors)
+                           const IPosition& factors)
 : itsImagePtr (image.cloneII())
 {
   itsRebinPtr = new RebinLattice<T>(image, factors);
 //
-  CoordinateSystem cSys = makeOutputCoordinates (factors, image.coordinates(),
-                                                 image.shape(), itsRebinPtr->shape());
+  CoordinateSystem cSys = makeOutputCoordinates (factors,
+						 image.coordinates(),
+                                                 image.shape(),
+						 itsRebinPtr->shape());
   setCoordsMember (cSys);
 //
   setImageInfoMember (itsImagePtr->imageInfo());
@@ -75,10 +77,12 @@ template<class T>
 RebinImage<T>& RebinImage<T>::operator= (const RebinImage<T>& other)
 {
   if (this != &other) {
-    ImageInterface<T>::operator= (other);
     delete itsImagePtr;
-    itsImagePtr = other.itsImagePtr->cloneII();
+    itsImagePtr = 0;
     delete itsRebinPtr;
+    itsRebinPtr = 0;
+    ImageInterface<T>::operator= (other);
+    itsImagePtr = other.itsImagePtr->cloneII();
     itsRebinPtr = new RebinLattice<T> (*other.itsRebinPtr);
   }
   return *this;
@@ -253,10 +257,11 @@ void RebinImage<T>::reopen()
 
 
 template<class T>
-CoordinateSystem RebinImage<T>::makeOutputCoordinates (const Vector<uInt>& factors,
-                                                       const CoordinateSystem& cSysIn,
-                                                       const IPosition& shapeIn,
-                                                       const IPosition& shapeOut) const
+CoordinateSystem RebinImage<T>::makeOutputCoordinates
+                                  (const IPosition& factors,
+				   const CoordinateSystem& cSysIn,
+				   const IPosition& shapeIn,
+				   const IPosition& shapeOut)
 {
 // Check Stokes.
 

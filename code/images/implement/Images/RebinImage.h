@@ -34,7 +34,6 @@
 
 //# Forward Declarations
 template <class T> class RebinLattice;
-template <class T> class Vector;
 class LogIO;
 
 // <summary>
@@ -59,7 +58,7 @@ class LogIO;
 //
 // <example>
 // <srcblock>
-//    Vector<uInt> factors(2,2);
+//    IPosition factors(2,2,2);
 //    PagedImage<Float> imageIn(String("myImage")):
 //    RebinLattice<Float> rb(imageIn, factors);
 //    IPosition shapeOut = rb.shape();
@@ -87,7 +86,7 @@ public:
 
   // Constructor. The bin factors don't have to be integral. Anything left over
   // at the end is treated as a full bin.
-  RebinImage (const ImageInterface<T>&, const Vector<uInt>& factors);
+  RebinImage (const ImageInterface<T>&, const IPosition& factors);
 
   // Copy constructor (reference semantics).
   RebinImage (const RebinImage<T>& other);
@@ -185,14 +184,15 @@ public:
 
 private:
   //# itsImagePtr points to the parent image.
-  ImageInterface<T>*  itsImagePtr;
-  RebinLattice<T>* itsRebinPtr;
+  ImageInterface<T>* itsImagePtr;
+  RebinLattice<T>*   itsRebinPtr;
 
-//
-   CoordinateSystem makeOutputCoordinates (const Vector<uInt>& factors,
-                                           const CoordinateSystem& cSysIn,
-                                           const IPosition& shapeIn,
-                                           const IPosition& shapeOut) const;
+  // Create Coordinates for the rebinned image.
+  static CoordinateSystem makeOutputCoordinates
+                                         (const IPosition& factors,
+					  const CoordinateSystem& cSysIn,
+					  const IPosition& shapeIn,
+					  const IPosition& shapeOut);
 };
 
 
