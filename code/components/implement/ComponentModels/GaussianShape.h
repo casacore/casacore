@@ -35,12 +35,14 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Functionals/Gaussian2D.h>
+#include <aips/Measures/Unit.h>
 
-class MVAngle;
 class RecordInterface;
 class String;
-template <class T> class Vector;
+class MVAngle;
+template <class Qtype> class Quantum;
 template <class T> class Flux;
+template <class T> class Vector;
 
 // <summary>A Gaussian model for the spatial distribution of emission</summary>
 
@@ -167,14 +169,16 @@ public:
   // half maximum (FWHM) on both axes of 1 arc-min.
   GaussianShape();
 
-
   // Construct a Gaussian component with specified direction, width and
   // position angle (North through East).
   // <group>
-  GaussianShape(const MDirection & direction, const MVAngle & majorAxis,
-		const MVAngle & minorAxis, const MVAngle & positionAngle);
-  GaussianShape(const MDirection & direction, const MVAngle & width,
-		const Double axialRatio, const MVAngle & positionAngle);
+  GaussianShape(const MDirection & direction,
+		const Quantum<Double> & majorAxis,
+		const Quantum<Double> & minorAxis,
+		const Quantum<Double> & positionAngle);
+  GaussianShape(const MDirection & direction, const Quantum<Double> & width,
+		const Double axialRatio,
+		const Quantum<Double> & positionAngle);
   // </group>
 
   // The copy constructor uses copy semantics.
@@ -203,22 +207,23 @@ public:
   // moves the Northern edge to the East. The axial ratio is the ratio of the
   // minor to major axes widths. Hence it is always between zero and one.
   // <group>
-  void setWidth(const MVAngle & majorAxis, const MVAngle & minorAxis, 
-		const MVAngle & positionAngle);
-  void setWidth(const MVAngle & majorAxis, const Double axialRatio, 
-		const MVAngle & positionAngle);
-  void width(MVAngle & majorAxis, MVAngle & minorAxis,
-	     MVAngle & positionAngle) const;
-  void width(MVAngle & majorAxis, Double & axialRatio,
-	     MVAngle & positionAngle) const;
-  void majorAxis(MVAngle & majorAxis) const;
-  MVAngle majorAxis() const;
-  void minorAxis(MVAngle & minorAxis) const;
-  MVAngle minorAxis() const;
+  void setWidth(const Quantum<Double> & majorAxis,
+		const Quantum<Double> & minorAxis, 
+		const Quantum<Double> & positionAngle);
+  void setWidth(const Quantum<Double> & majorAxis, const Double axialRatio, 
+		const Quantum<Double> & positionAngle);
+  void width(Quantum<Double> & majorAxis, Quantum<Double> & minorAxis,
+	     Quantum<Double> & positionAngle) const;
+  void width(Quantum<Double> & majorAxis, Double & axialRatio,
+	     Quantum<Double> & positionAngle) const;
+  void majorAxis(Quantum<Double> & majorAxis) const;
+  Quantum<Double> majorAxis() const;
+  void minorAxis(Quantum<Double> & minorAxis) const;
+  Quantum<Double> minorAxis() const;
   void axialRatio(Double & axialRatio) const;
   Double axialRatio() const;
-  void positionAngle(MVAngle & positionAngle) const;
-  MVAngle positionAngle() const;
+  void positionAngle(Quantum<Double> & positionAngle) const;
+  Quantum<Double> positionAngle() const;
   // </group>
 
   // Calculate the flux at the specified direction, in a pixel of specified
@@ -292,5 +297,8 @@ private:
   MDirection::Types itsRefFrame;
   Gaussian2D<Double> itsShape;
   Gaussian2D<Double> itsFT;
+  Unit itsMajUnit;
+  Unit itsMinUnit;
+  Unit itsPaUnit;
 };
 #endif
