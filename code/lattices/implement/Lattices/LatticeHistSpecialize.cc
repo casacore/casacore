@@ -108,13 +108,15 @@ void LatticeHistSpecialize::process(const Complex* pInData,
 //
             index = rbin + offset;
             Complex& hist1 = (*pHist)[index];
-            hist1.real() += 1.0;
+	    ///            hist1.real() += 1.0;
+	    hist1 += Complex(1.0, 0.0);
          }
          if (imag(useIt) > 0.5) {
             rbin = bin(imag(datum), imag(clip(0)), imag(binWidth), nBins);
             index = rbin + offset;
             Complex& hist2 = (*pHist)[index];
-            hist2.imag() += 1.0;
+	    ///            hist2.imag() += 1.0;
+	    hist2 += Complex(0.0, 1.0);
          }
          pInData += inIncr;
       }
@@ -127,14 +129,16 @@ void LatticeHistSpecialize::process(const Complex* pInData,
                rbin = bin(real(datum), real(clip(0)), real(binWidth), nBins);
                index = rbin + offset;
                Complex& hist1 = (*pHist)[index];
-               hist1.real() += 1.0;
+	       ///               hist1.real() += 1.0;
+	       hist1 += Complex(1.0, 0.0);
             }
             if (imag(useIt) > 0.5) {
                rbin = bin(imag(datum), imag(clip(0)), imag(binWidth), nBins);
                index = rbin + offset;
                Complex& hist2 = (*pHist)[index];
-               hist2.imag() += 1.0;
-            }
+	       ///               hist2.imag() += 1.0;
+	       hist2 += Complex(0.0, 1.0);
+	    }
          }
          pInData += inIncr;
          pInMask += inIncr;
@@ -235,11 +239,23 @@ void LatticeHistSpecialize::makeLogarithmic (Vector<Complex>& counts,
 {
    yMax = 0.0;
    for (uInt i=0; i<nBins; i++) {
-     if (real(counts(i)) > 0.0) counts(i).real() = log10(counts(i).real());
-     if (imag(counts(i)) > 0.0) counts(i).imag() = log10(counts(i).imag());
+///     if (real(counts(i)) > 0.0) counts(i).real() = log10(counts(i).real());
+///     if (imag(counts(i)) > 0.0) counts(i).imag() = log10(counts(i).imag());
+     if (real(counts(i)) > 0.0) {
+       counts(i) = Complex(log10(counts(i).real()), counts(i).imag());
+     };
+     if (imag(counts(i)) > 0.0) {
+       counts(i) = Complex(counts(i).real(), log10(counts(i).imag()));
+     };
 //
-     if (real(counts(i)) > real(yMax)) yMax.real() = real(counts(i));
-     if (imag(counts(i)) > imag(yMax)) yMax.imag() = imag(counts(i));
+     ///     if (real(counts(i)) > real(yMax)) yMax.real() = real(counts(i));
+     ///     if (imag(counts(i)) > imag(yMax)) yMax.imag() = imag(counts(i));
+     if (real(counts(i)) > real(yMax)) {
+       yMax = Complex(real(counts(i)), yMax.imag());
+     };
+     if (imag(counts(i)) > imag(yMax)) {
+       yMax = Complex(yMax.real(), imag(counts(i)));
+     };
    }
 }
 
