@@ -30,13 +30,14 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Functionals/Sinusoid1D.h>
+#include <aips/Functionals/Polynomial.h>
 
 
 int main()
 {
   Vector<Float> x,y;
 
-  // Construct polynomial.
+  // Construct from straight line.
   PixelCurve1D pcurve(1.0, 2.0, 5.0, 6.0, 9);
   AlwaysAssertExit (pcurve.npoints() == 9);
   pcurve.getPixelCoord (x, y, 0, 8);
@@ -46,12 +47,80 @@ int main()
   pcurve.getPixelCoord (x, y, 1, 8, 3);
   cout << x << y << endl;
 
-  // Construct from an arbitrary function.
+  // The same, but let class determine #points.
+  {
+    PixelCurve1D pcurve1(1.0, 2.0, 5.0, 6.0);
+    AlwaysAssertExit (pcurve1.npoints() == 6);
+    pcurve1.getPixelCoord (x, y, 0, 5);
+    cout << x << y << endl;
+    pcurve1.getPixelCoord (x, y, 0, 5, 2);
+    cout << x << y << endl;
+    pcurve1.getPixelCoord (x, y, 1, 5, 3);
+    cout << x << y << endl;
+  }
+  // The same, but using a polynomial.
+  {
+    Polynomial<Float> func(1);
+    func.setCoefficient (0, 1.);
+    func.setCoefficient (1, 1.);
+    PixelCurve1D pcurve1(func, 1., 5.);
+    AlwaysAssertExit (pcurve1.npoints() == 6);
+    pcurve1.getPixelCoord (x, y, 0, 5);
+    cout << x << y << endl;
+    float dx = 1;
+    float dy = 2;
+    for (uInt i=0; i<5; i++) {
+      AlwaysAssertExit (near(x[i], dx, 0.00001));
+      AlwaysAssertExit (near(y[i], dy, 0.00001));
+      dx += 0.8;
+      dy += 0.8;
+    }
+  }
+
+  // Construct from a cosine function.
   Sinusoid1D<Float> fn;
   PixelCurve1D pcurve2(fn, 0., 2., 5);
-  AlwaysAssertExit (pcurve2.npoints() == 5);
-  pcurve2.getPixelCoord (x, y, 0, 4);
-  cout << x << y << endl;
+  {
+    AlwaysAssertExit (pcurve2.npoints() == 5);
+    pcurve2.getPixelCoord (x, y, 0, 4);
+    cout << x << y << endl;
+    double dx = x[1] - x[0];
+    double dy = y[1] - y[0];
+    double lng = sqrt(dx*dx + dy*dy);
+    for (uInt i=1; i<5; i++) {
+      double dx = x[1] - x[0];
+      double dy = y[1] - y[0];
+      AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
+    }
+  }
+  {
+    PixelCurve1D pcurve2a(fn, 0., 2.);
+    AlwaysAssertExit (pcurve2a.npoints() == 9);
+    pcurve2a.getPixelCoord (x, y, 0, 8);
+    cout << x << y << endl;
+    double dx = x[1] - x[0];
+    double dy = y[1] - y[0];
+    double lng = sqrt(dx*dx + dy*dy);
+    for (uInt i=1; i<9; i++) {
+      double dx = x[1] - x[0];
+      double dy = y[1] - y[0];
+      AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
+    }
+  }
+  {
+    PixelCurve1D pcurve2b(fn, 0., 2., 81);
+    AlwaysAssertExit (pcurve2b.npoints() == 81);
+    pcurve2b.getPixelCoord (x, y, 0, 80, 10);
+    cout << x << y << endl;
+    double dx = x[1] - x[0];
+    double dy = y[1] - y[0];
+    double lng = sqrt(dx*dx + dy*dy);
+    for (uInt i=1; i<90; i++) {
+      double dx = x[1] - x[0];
+      double dy = y[1] - y[0];
+      AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
+    }
+  }
 
   // Copy constructor and self assignment.
   PixelCurve1D pcurve3(pcurve);
@@ -66,19 +135,43 @@ int main()
   AlwaysAssertExit (pcurve2.npoints() == 5);
   pcurve2.getPixelCoord (x, y, 0, 4);
 
-  // Construct from a polyline.
-  Vector<Float> xp(5);
-  Vector<Float> yp(5);
-  xp[0]=2; xp[1]=4; xp[2]=7; xp[3]=8; xp[4]=12;
-  yp[0]=2; yp[1]=6; yp[2]=9; yp[3]=6; yp[4]=6;
-  PixelCurve1D pcurve4(xp,yp,21);
-  AlwaysAssertExit (pcurve4.npoints() == 21);
-  pcurve4 = pcurve4;
-  AlwaysAssertExit (pcurve4.npoints() == 21);
-  pcurve4.getPixelCoord (x, y, 0, 20);
-  cout << x << y << endl;
-  pcurve3 = pcurve4;
-  AlwaysAssertExit (pcurve3.npoints() == 21);
-  pcurve3.getPixelCoord (x, y, 0, 20);
-  cout << x << y << endl;
+  {
+    // Construct from a very simple polyline.
+    Vector<Float> xp(3);
+    Vector<Float> yp(3);
+    xp[0]=0; xp[1]=4; xp[2]=4;
+    yp[0]=0; yp[1]=0; yp[2]=4;
+    PixelCurve1D pcurve4(xp,yp);
+    AlwaysAssertExit (pcurve4.npoints() == 9);
+    pcurve4.getPixelCoord (x, y, 0, 8);
+    cout << x << y << endl;
+  }
+  {
+    // Construct from a square.
+    Vector<Float> xp(5);
+    Vector<Float> yp(5);
+    xp[0]=2; xp[1]=4; xp[2]=2; xp[3]=0; xp[4]=2;
+    yp[0]=0; yp[1]=2; yp[2]=4; yp[3]=2; yp[4]=0;
+    PixelCurve1D pcurve4(xp,yp,9);
+    AlwaysAssertExit (pcurve4.npoints() == 9);
+    pcurve4.getPixelCoord (x, y, 0, 8);
+    cout << x << y << endl;
+  }
+  {
+    // Construct from another polyline.
+    Vector<Float> xp(5);
+    Vector<Float> yp(5);
+    xp[0]=2; xp[1]=4; xp[2]=7; xp[3]=8; xp[4]=12;
+    yp[0]=2; yp[1]=6; yp[2]=9; yp[3]=6; yp[4]=6;
+    PixelCurve1D pcurve4(xp,yp,21);
+    AlwaysAssertExit (pcurve4.npoints() == 21);
+    pcurve4 = pcurve4;
+    AlwaysAssertExit (pcurve4.npoints() == 21);
+    pcurve4.getPixelCoord (x, y, 0, 20);
+    cout << x << y << endl;
+    pcurve3 = pcurve4;
+    AlwaysAssertExit (pcurve3.npoints() == 21);
+    pcurve3.getPixelCoord (x, y, 0, 20);
+    cout << x << y << endl;
+  }
 }
