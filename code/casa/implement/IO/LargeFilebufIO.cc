@@ -1,5 +1,5 @@
-//# LargeFilebufIO.cc: Class for IO on a large file using a filebuf object.
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# LargeFilebufIO.cc: Class for buffered IO on a large file.
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,243 +30,371 @@
 #include <aips/IO/LargeIOFuncDef.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+#include <unistd.h>
 #include <fcntl.h>
-#include <errno.h>                // needed for errno
+#include <errno.h>                     // needed for errno
 #include <aips/string.h>               // needed for strerror
 
 
 LargeFilebufIO::LargeFilebufIO()
-: itsOwner     (False),
-  itsSeekable  (False),
-  itsReadable  (False),
-  itsWritable  (False),
-  itsFile      (0),
-  itsBufSize   (0),
-  itsBuffer    (0)
+: itsSeekable   (False),
+  itsReadable   (False),
+  itsWritable   (False),
+  itsFile       (-1),
+  itsBufSize    (0),
+  itsBufLen     (0),
+  itsBuffer     (0),
+  itsBufOffset  (-1),
+  itsOffset     (-1),
+  itsSeekOffset (-1),
+  itsDirty      (False)
 {}
 
-LargeFilebufIO::LargeFilebufIO (FILE* file, uInt bufferSize)
-: itsFile   (0),
-  itsBuffer (0)
-{
-    attach (file, bufferSize);
-}
-
-LargeFilebufIO::LargeFilebufIO (FILE* file, Bool takeOver)
-: itsFile   (0),
-  itsBuffer (0)
-{
-    attach (file, takeOver);
-}
-
 LargeFilebufIO::LargeFilebufIO (int fd, uInt bufferSize)
-: itsFile   (0),
-  itsBuffer (0)
+: itsFile       (-1),
+  itsBufSize    (0),
+  itsBufLen     (0),
+  itsBuffer     (0),
+  itsBufOffset  (-1),
+  itsOffset     (-1),
+  itsSeekOffset (-1),
+  itsDirty      (False)
 {
-    attach (fd, bufferSize);
+  attach (fd, bufferSize);
 }
 
 LargeFilebufIO::~LargeFilebufIO()
 {
-    detach();
+  detach();
 }
 
-void LargeFilebufIO::attach (FILE* file, uInt bufferSize,
-			Bool readable, Bool writable)
+
+void LargeFilebufIO::attach (int fd, uInt bufSize)
 {
-    AlwaysAssert (itsFile == 0, AipsError);
-    itsFile      = file;
-    itsBufSize   = bufferSize;
-    itsOwner     = True;
-    itsReadable  = readable;
-    itsWritable  = writable;
-    itsSeekable  = False;
-    itsReadDone  = True;
-    itsWriteDone = True;
-    // When needed create a buffer for the FILE.
-    // Attach it to the file.
-    if (bufferSize > 0) {
-	itsBuffer = new char[bufferSize];
-	AlwaysAssert (itsBuffer != 0, AipsError);
-	setvbuf (itsFile, itsBuffer, _IOFBF, bufferSize);
-    }
+  AlwaysAssert (itsFile == -1, AipsError);
+  itsFile       = fd;
+  itsOffset     = 0;
+  itsSeekOffset = -1;
+  itsDirty      = False;
+  fillRWFlags (fd);
+  fillSeekable();
+  setBuffer (bufSize);
 }
 
-void LargeFilebufIO::attach (FILE* file, uInt bufferSize)
+void LargeFilebufIO::setBuffer (uInt bufSize)
 {
-    attach (file, bufferSize, False, False);
-    fillRWFlags (fileno (itsFile));
-    fillSeekable();
+  if (itsBuffer) {
+    flush();
+    delete [] itsBuffer;
+    itsBuffer    = 0;
+    itsBufSize   = 0;
+    itsBufLen    = 0;
+    itsBufOffset = -1;
+  }
+  if (bufSize > 0) {
+    itsBuffer  = new char[bufSize];
+    itsBufSize = bufSize;
+    itsBufOffset = -Int(itsBufSize+1);
+  }
 }
 
-void LargeFilebufIO::attach (FILE* file, Bool takeOver)
+void LargeFilebufIO::detach (Bool closeFile)
 {
-    attach (file, uInt(0));
-    itsOwner = takeOver;
-}
-
-void LargeFilebufIO::attach (int fd, uInt bufferSize)
-{
-    fillRWFlags (fd);
-    String opt = "rb";
-    if (itsWritable) {
-	opt = "wb";
-	if (itsReadable) {
-	    opt = "rb+";
-	}
-    }
-    FILE* file = fdopen (fd, opt.chars());
-    if (file == 0) {
-       throw (AipsError ("LargeFilebufIO: error in fdopen: " +
-                         String(strerror(errno))));
-    }
-    attach (file, bufferSize, itsReadable, itsWritable);
-    fillSeekable();
-}
-
-void LargeFilebufIO::detach()
-{
-    if (itsOwner  &&  itsFile != 0) {
-	traceFCLOSE (itsFile);
-	delete [] itsBuffer;
-	itsFile   = 0;
-	itsBuffer = 0;
-    }
+  setBuffer (0);
+  if (closeFile  &&  itsFile >= 0) {
+    ::traceCLOSE (itsFile);
+  }
+  itsFile = -1;
 }
 
 void LargeFilebufIO::fillRWFlags (int fd)
 {
-    int flags = fcntl (fd, F_GETFL);
-    if (flags & O_RDWR) {
-	itsReadable = True;
-	itsWritable = True;
-    } else if (flags & O_WRONLY) {
-	itsWritable = True;
-    } else {
-	itsReadable = True;
-    }
+  itsReadable = False;
+  itsWritable = False;
+  int flags = fcntl (fd, F_GETFL);
+  if ((flags & O_RDWR)  ==  O_RDWR) {
+    itsReadable = True;
+    itsWritable = True;
+  } else if ((flags & O_WRONLY)  ==  O_WRONLY) {
+    itsWritable = True;
+  } else {
+    itsReadable = True;
+  }
 }
 
 void LargeFilebufIO::fillSeekable()
 {
-    itsSeekable = (seek (0, ByteIO::Current)  >= 0);
+  Int64 curOff = itsOffset;
+  itsSeekable = (doSeek (0, ByteIO::End)  >= 0);
+  itsOffset = curOff;
 }
 
 
 String LargeFilebufIO::fileName() const
 {
-    return "";
+  return "";
 }
 
 
+void LargeFilebufIO::flush()
+{
+  if (itsDirty) {
+    writeBuffer (itsBufOffset, itsBuffer, itsBufLen);
+    itsDirty = False;
+  }
+}
+
+void LargeFilebufIO::resync()
+{
+  AlwaysAssert (!itsDirty, AipsError);
+  itsBufLen     = 0;
+  itsBufOffset  = -Int(itsBufSize+1);
+  itsOffset     = 0;
+  itsSeekOffset = -1;
+}
+
+
+void LargeFilebufIO::writeBuffer (Int64 offset, const char* buf, Int size)
+{
+  if (size > 0) {
+    if (offset != itsSeekOffset) {
+      ::traceLSEEK (itsFile, offset, SEEK_SET);
+      itsSeekOffset = offset;
+    }
+    if (::traceWRITE (itsFile, buf, size) != size) {
+      itsSeekOffset = -1;
+      throw AipsError (String("LargeFilebufIO: write error for file ")
+		       + fileName() + ": " + strerror(errno));
+    }
+    itsSeekOffset += size;
+  }
+}
+
+uInt LargeFilebufIO::readBuffer (Int64 offset, char* buf, uInt size,
+				 Bool throwException)
+{
+  if (offset != itsSeekOffset) {
+    ::traceLSEEK (itsFile, offset, SEEK_SET);
+    itsSeekOffset = offset;
+  }
+  Int bytesRead = ::traceREAD (itsFile, buf, size);
+  if (bytesRead > Int(size)) { // Should never be executed
+    itsSeekOffset = -1;
+    throw AipsError ("LargeFilebufIO::read - read returned a bad value"
+		     " for file " + fileName());
+  }
+  if (bytesRead != Int(size) && throwException == True) {
+    //# In case of a table reparation the remainder has to be filled with 0.
+#if defined(TABLEREPAIR)
+    memset ((char*)buf + bytesRead, 0, size-bytesRead);
+    bytesRead = size;
+#endif
+    if (bytesRead < 0) {
+      itsSeekOffset = -1;
+      throw AipsError (String("LargeFilebufIO::read error for file ")
+		       + fileName() + ": " + strerror(errno));
+    } else if (bytesRead < Int(size)) {
+      itsSeekOffset = -1;
+      throw AipsError ("LargeFilebufIO::read - incorrect number of bytes"
+		       " read for file " + fileName());
+    }
+  }
+  itsSeekOffset += bytesRead;
+  return bytesRead;
+}
+
 void LargeFilebufIO::write (uInt size, const void* buf)
 {
-    // Throw an exception if not writable.
-    if (!itsWritable) {
-	throw (AipsError ("LargeFilebufIO object is not writable"));
+  // Throw an exception if not writable.
+  if (!itsWritable) {
+    throw AipsError ("LargeFilebufIO object (file " + fileName()
+		     + "} is not writable");
+  }
+  const char* bufc = static_cast<const char*>(buf);
+  // Determine blocknr of first and last full block.
+  Int64 st = (itsOffset + itsBufSize - 1) / itsBufSize;
+  Int64 end = (itsOffset + size) / itsBufSize;
+  uInt blkst = st * itsBufSize - itsOffset;
+  uInt sz = 0;
+  if (st < end) {
+    sz = (end-st) * itsBufSize;
+    // There are one or more full blocks.
+    // Write them all.
+    writeBuffer (st*itsBufSize, bufc+blkst, sz);
+    // Discard the current buffer if within these full blocks.
+    if (st*itsBufSize <= itsBufOffset
+    &&  end*itsBufSize >= itsBufOffset+itsBufSize) {
+      itsDirty = False;
+      itsBufOffset = -Int(itsBufSize+1);
+      itsBufLen = 0;
     }
-    // After a read a seek is needed before a write can be done.
-    // (requirement of stdio).
-    if (itsReadDone) {
-	traceFSEEK (itsFile, 0, SEEK_CUR);
-	itsReadDone = False;
+  }
+  // Write the start of the user buffer (if needed).
+  // Note that by doing this after the full block write, we avoid a
+  // possible flush of the current buffer if it is within the full blocks.
+  if (blkst > 0) {
+    if (blkst > size) {
+      blkst = size;
     }
-    if (traceFWRITE ((char *)buf, 1, size, itsFile) != size) {
-	throw (AipsError ("LargeFilebufIO: error while writing "
-			  + fileName()));
-    }
-    itsWriteDone = True;
+    writeBlock (blkst, bufc);
+  }
+  // Write the remainder of the user buffer (if needed).
+  // First update the offset in the stream.
+  blkst += sz;
+  itsOffset += blkst;
+  if (blkst < size) {
+    size -= blkst;
+    writeBlock (size, bufc+blkst);
+    itsOffset += size;
+  }
 }
 
 Int LargeFilebufIO::read (uInt size, void* buf, Bool throwException)
 {
-    // Throw an exception if not readable.
-    if (!itsReadable) {
-	throw (AipsError ("LargeFilebufIO::read - file is not readable"));
+  // Throw an exception if not readable.
+  if (!itsReadable) {
+    throw AipsError ("LargeFilebufIO object (file " + fileName()
+		     + "} is not readable");
+  }
+  char* bufc = static_cast<char*>(buf);
+  // Determine blocknr of first and last full block.
+  Int64 st = (itsOffset + itsBufSize - 1) / itsBufSize;
+  Int64 end = (itsOffset + size) / itsBufSize;
+  uInt blkst = st * itsBufSize - itsOffset;
+  uInt sz = 0;
+  if (st < end) {
+    sz = (end-st) * itsBufSize;
+    // There are one or more full blocks.
+    // Read them all.
+    // Handle the case that one of them is the current buffer.
+    Int64 stoff = st*itsBufSize;
+    Int64 endoff = end*itsBufSize;
+    char* bufp = bufc+blkst;
+    if (stoff <= itsBufOffset  &&  endoff >= itsBufOffset+itsBufSize) {
+      if (stoff < itsBufOffset) {
+	readBuffer (stoff, bufp, itsBufOffset-stoff, throwException);
+	bufp += itsBufOffset-stoff;
+      }
+      // Do the get of the current block via readBlock to handle
+      // the (hardly possible) case that itsBufSize!=itsBufLen.
+      Int64 savoff = itsOffset;
+      itsOffset = itsBufOffset;
+      readBlock (itsBufSize, bufp, throwException);
+      itsOffset = savoff;
+      stoff = itsBufOffset + itsBufSize;
     }
-    // After a write a seek is needed before a read can be done.
-    // (requirement of stdio).
-    if (itsWriteDone) {
-	traceFSEEK (itsFile, 0, SEEK_CUR);
-	itsWriteDone = False;
+    // Read the remaining full blocks.
+    readBuffer (stoff, bufp, endoff-stoff, throwException);
+  }
+  // Read the start of the user buffer (if needed).
+  if (blkst > 0) {
+    if (blkst > size) {
+      blkst = size;
     }
-    Int bytesRead = traceFREAD ((char *)buf, 1, size, itsFile);
-    itsReadDone = True;
-    if (bytesRead < 0  ||  bytesRead > Int(size)) {
-      throw (AipsError ("LargeFilebufIO::read - fread returned a bad value"));
+    readBlock (blkst, bufc, throwException);
+  }
+  // Read the remainder of the user buffer (if needed).
+  // First update the offset in the stream.
+  blkst += sz;
+  itsOffset += blkst;
+  if (blkst < size) {
+    size -= blkst;
+    readBlock (size, bufc+blkst, throwException);
+    itsOffset += size;
+  }
+  return size;
+}
+
+void LargeFilebufIO::writeBlock (uInt size, const char* buf)
+{
+  // Write a part of a block.
+  // It is ensured that the buffer fits in a single block and that it
+  // is not a full block.
+  // Flush current buffer if needed.
+  if (itsOffset < itsBufOffset || itsOffset >= itsBufOffset + itsBufSize) {
+    if (itsDirty) {
+      flush();
     }
-    //# In case of a table reparation the remainder has to be filled with 0.
+    // Read the new buffer.
+    itsBufOffset = itsOffset / itsBufSize * itsBufSize;
+    itsBufLen = readBuffer (itsBufOffset, itsBuffer, itsBufSize, False);
+  }
+  uInt st = itsOffset - itsBufOffset;
+  memcpy (itsBuffer+st, buf, size);
+  itsDirty = True;
+  if (st+size > itsBufLen) {
+    itsBufLen = st+size;
+  }
+}
+
+void LargeFilebufIO::readBlock (uInt size, char* buf, Bool throwException)
+{
+  // Read a part of a block.
+  // It is ensured that the buffer fits in a single block and that it
+  // is not a full block.
+  // Read current buffer if needed. Flush if reading.
+  if (itsOffset < itsBufOffset || itsOffset >= itsBufOffset + itsBufSize) {
+    if (itsDirty) {
+      flush();
+    }
+    // Read the new buffer.
+    itsBufOffset = itsOffset / itsBufSize * itsBufSize;
+    itsBufLen = readBuffer (itsBufOffset, itsBuffer, itsBufSize, False);
+  }
+  uInt st = itsOffset - itsBufOffset;
 #if defined(TABLEREPAIR)
-    if (bytesRead < Int(size)) {
-      memset ((char*)buf + bytesRead, 0, size-bytesRead);
-      bytesRead = size;
-    }
+  if (st+size > itsBufLen) {
+    memset (itsBuffer+itsBufLen, 0, st+size-itsBufLen);
+    itsBufLen = st+size;
+  }
 #endif
-    if (bytesRead != Int(size) && throwException) {
-      String errmsg = "LargeFilebufIO::read - incorrect number of bytes read";
-      errmsg += " from file " + fileName();
-      throw (AipsError (errmsg));
-    }
-    return bytesRead;
+  if (st+size > itsBufLen  &&  throwException) {
+    throw AipsError ("LargeFilebufIO::readBlock - incorrect number of bytes"
+		     " read for file " + fileName());
+  }
+  memcpy (buf, itsBuffer+st, size);
 }
 
 Int64 LargeFilebufIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
 {
-    // On the SUN a seek (even at the same place) slows down fread
-    // tremendously. So only seek when needed.
-    switch (dir) {
-    case ByteIO::Begin:
-	// On the SUN a seek (even at the same place) slows down fread
-	// tremendously. So only seek when needed.
-	if (offset != traceFTELL(itsFile)) {
-	    traceFSEEK (itsFile, offset, SEEK_SET);
-	    itsReadDone  = False;
-	    itsWriteDone = False;
-	}
-	break;
-    case ByteIO::End:
-	traceFSEEK (itsFile, offset, SEEK_END);
-	itsReadDone  = False;
-	itsWriteDone = False;
-	break;
-    default:
-	if (offset != 0) {
-	    traceFSEEK (itsFile, offset, SEEK_CUR);
-	    itsReadDone  = False;
-	    itsWriteDone = False;
-	}
-	break;
-    }
-    return ftell (itsFile);
+  switch (dir) {
+  case ByteIO::Begin:
+    itsOffset = offset;
+    return itsOffset;
+  case ByteIO::End:
+    itsSeekOffset = ::traceLSEEK (itsFile, offset, SEEK_END);
+    itsOffset = itsSeekOffset;
+    break;
+  default:
+    itsOffset += offset;
+    break;
+  }
+  return itsOffset;
 }
+
 
 Int64 LargeFilebufIO::length()
 {
-    // Get current position to be able to reposition.
-    Int64 pos = seek (0, ByteIO::Current);
-    // Seek to the end of the stream.
-    // If it fails, we cannot seek and the current position is the length.
-    Int64 len = seek (0, ByteIO::End);
-    if (len < 0) {
-	return pos;
-    }
-    // Reposition and return the length.
-    seek (pos, ByteIO::Begin);
-    return len;
+  itsSeekOffset = ::traceLSEEK (itsFile, 0, SEEK_END);
+  Int64 len = itsBufOffset+itsBufLen;
+  if (len < itsSeekOffset) {
+    len = itsSeekOffset;
+  }
+  return len;
 }
 
    
 Bool LargeFilebufIO::isReadable() const
 {
-    return itsReadable;
+  return itsReadable;
 }
 
 Bool LargeFilebufIO::isWritable() const
 {
-    return itsWritable;
+  return itsWritable;
 }
 
 Bool LargeFilebufIO::isSeekable() const
 {
-    return itsSeekable;
+  return itsSeekable;
 }
