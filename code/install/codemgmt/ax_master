@@ -6265,3 +6265,4 @@
 17 194 src mv trial/implement/Containers/test/words.gz trial/implement/Containers/test/tHashMap.in_words.gz
 17 204 src rm trial/implement/Utilities/maker.g
 17 204 src rm trial/implement/Utilities/maker.help
+17 206 src rm trial/apps/dish/ssa.help
