@@ -1,7 +1,7 @@
 /*=============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2001, Mark Calabretta
+*   Copyright (C) 1995-2002, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -468,11 +468,11 @@ struct wcsprm *wcs;
          for (k = 0; k < nalias; k++) {
             if (strncmp(&ctype[j][5], aliases[k], 3) == 0) break;
          }
-      }
 
-      if (k == nalias) {
-         /* Not recognized. */
-         continue;
+         if (k == nalias) {
+            /* Not recognized. */
+            continue;
+         }
       }
 
       /* Parse the celestial axis type. */
