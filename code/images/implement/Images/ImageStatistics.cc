@@ -555,7 +555,12 @@ Bool ImageStatistics<T>::display()
 
    T *dummy = 0;
    DataType templateType = whatType(dummy);
-   
+
+// Get beam area
+
+   Double beamArea;
+   Bool hasBeam = getBeamArea(beamArea);
+//
    for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
  
 // Convert accumulations to  mean, sigma, and rms.   
@@ -576,6 +581,7 @@ Bool ImageStatistics<T>::display()
          case TpDouble:
            if (nPts > 0) {
               ord(i,MEAN) = matrix(i,SUM) / nPts;
+              if (hasBeam) ord(i,FLUX) = matrix(i,SUM) / beamArea;
               NumericTraits<T>::PrecisionType tmp = 0.0;
               if (nPts > 1) tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/nPts)) / 
                                   (nPts-1);
@@ -607,14 +613,14 @@ Bool ImageStatistics<T>::display()
 // Plot statistics
 
       if (plotter_p.isAttached()) {
-        if (!plotStats (pixelIterator.position(), ord, plotter_p)) return False;
+        if (!plotStats (hasBeam, pixelIterator.position(), ord, plotter_p)) return False;
       }
 
 
 // List statistics
 
       if (doList_p) {
-         if (!listStats(pixelIterator.position(), ord)) return False;
+         if (!listStats(hasBeam, pixelIterator.position(), ord)) return False;
       }
    }
 
@@ -626,6 +632,41 @@ Bool ImageStatistics<T>::display()
    }
    return True;
 }
+
+
+
+template <class T>
+Bool ImageStatistics<T>::getBeamArea (Double& beamArea) const
+//
+// Get beam volume if present.  ALl this beamy stuff should go to
+// a class called GaussianBeam and be used by GaussianCOnvert as well
+//
+{
+   beamArea = -1.0;
+   ImageInfo ii = pInImage_p->imageInfo();
+   Vector<Quantum<Double> > beam = ii.restoringBeam();
+   CoordinateSystem cSys = pInImage_p->coordinates();
+   String imageUnits = pInImage_p->units().getName();
+   imageUnits.upcase();
+//
+   Int afterCoord = -1;   
+   Int dC = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
+   if (beam.nelements()==3 && dC!=-1 && imageUnits==String("JY/BEAM")) {
+      DirectionCoordinate dCoord = cSys.directionCoordinate(dC);
+      Vector<String> units(2);
+      units(0) = "rad"; units(1) = "rad";
+      dCoord.setWorldAxisUnits(units, True);
+      Vector<Double> deltas = dCoord.increment();
+//
+      Double major = beam(0).getValue(Unit("rad"));
+      Double minor = beam(1).getValue(Unit("rad"));
+      beamArea = 1.1331 * major * minor / abs(deltas(0) * deltas(1));
+      return True;
+   } else {
+      return False;
+   }
+}
+
 
 
 template <class T>
@@ -805,6 +846,27 @@ Bool ImageStatistics<T>::getMean(Array<T>& stats)
 
 
 template <class T>
+Bool ImageStatistics<T>::getFluxDensity(Array<T>& stats)
+// 
+// This function calculates the Flux density from the
+// accumulation image if it can.
+//
+{
+
+// Check class status
+ 
+   if (!goodParameterStatus_p) {
+     error_p = "The internal status of class is bad.  You have ignored errors";
+     return False; 
+   }
+
+// Do it
+
+   return calculateStatistic(stats, Int(FLUX));
+}
+
+
+template <class T>
 Bool ImageStatistics<T>::getSigma(Array<T>& stats)
 // 
 // This function calculates the SIGMA statistics from the
@@ -924,6 +986,25 @@ Bool ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
           for (uInt i=0; i<n1; i++) {
              n = Int(real(nPtsIt.vector()(i))+0.1);
              if(n > 0) sliceIt.vector()(i) = sumIt.vector()(i) / n;
+          }
+          nPtsIt.next();
+          sumIt.next();
+          sliceIt.next();
+       }
+   } else if (ISTAT == FLUX) {
+       Double beamArea;
+       if (!getBeamArea(beamArea)) {
+          slice.resize(IPosition(0,0));
+          return False;
+       }
+//
+       Array<T> sum;
+       retrieveStorageStatistic (sum, Int(SUM));
+       ReadOnlyVectorIterator<T> sumIt(sum);
+       while (!nPtsIt.pastEnd()) {
+          for (uInt i=0; i<n1; i++) {
+             n = Int(real(nPtsIt.vector()(i))+0.1);
+             if(n > 0) sliceIt.vector()(i) = sumIt.vector()(i) / beamArea;
           }
           nPtsIt.next();
           sumIt.next();
@@ -1211,7 +1292,7 @@ void ImageStatistics<T>::lineSegments (uInt& nSeg,
 }
 
 template <class T>
-Bool ImageStatistics<T>::listStats (const IPosition& dPos,
+Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
                                     const Matrix<T>& stats)
 //
 // List the statistics for this row to the logger
@@ -1322,6 +1403,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
    os_p.output() << setw(oCWidth) << cName;
    os_p.output() << setw(oIWidth) << "Npts";
    os_p.output() << setw(oDWidth) << "Sum";
+   if (hasBeam) os_p.output() << setw(oDWidth) << "FluxDensity";
    os_p.output() << setw(oDWidth) << "Mean"; 
    os_p.output() << setw(oDWidth) << "Rms";
    os_p.output() << setw(oDWidth) << "Sigma";
@@ -1350,6 +1432,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 
       if (Int(stats.column(NPTS)(j)+0.1) > 0) {
          os_p.output() << setw(oDWidth)   << stats.column(SUM)(j);
+         if (hasBeam) os_p.output() << setw(oDWidth)   << stats.column(FLUX)(j);
          os_p.output() << setw(oDWidth)   << stats.column(MEAN)(j);
          os_p.output() << setw(oDWidth)   << stats.column(RMS)(j);
          os_p.output() << setw(oDWidth)   << stats.column(SIGMA)(j);
@@ -1565,7 +1648,8 @@ Int ImageStatistics<T>::niceColour (Bool& initColours) const
 }
 
 template <class T>
-Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
+Bool ImageStatistics<T>::plotStats (Bool hasBeam, 
+                                    const IPosition& dPos,
                                     const Matrix<T>& stats,
                                     PGPlotter& plotter) 
 //
@@ -1580,7 +1664,8 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 // Work out what we are plotting
 
    const uInt n = statsToPlot_p.nelements();
-   Bool doMean, doSigma, doVar, doRms, doSum, doSumSq, doMin, doMax, doNPts;
+   Bool doMean, doSigma, doVar, doRms, doSum, doSumSq;
+   Bool doMin, doMax, doNPts, doFlux;
    linearSearch(doMean, statsToPlot_p, Int(MEAN), n);
    linearSearch(doSigma, statsToPlot_p, Int(SIGMA), n);
    linearSearch(doVar, statsToPlot_p, Int(VARIANCE), n);
@@ -1590,6 +1675,8 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
    linearSearch(doMin, statsToPlot_p, Int(MIN), n);
    linearSearch(doMax, statsToPlot_p, Int(MAX), n);
    linearSearch(doNPts, statsToPlot_p, Int(NPTS), n);
+   linearSearch(doFlux, statsToPlot_p, Int(FLUX), n);
+   if (!hasBeam) doFlux = False;
 
    Bool none;
    Bool first = True;
@@ -1614,6 +1701,11 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
    if (doMean) {
       minMax(none, yLMin, yLMax, stats.column(MEAN), stats.column(NPTS));
+      first = False;
+      nL++;
+   }
+   if (doFlux) {
+      minMax(none, yLMin, yLMax, stats.column(FLUX), stats.column(NPTS));
       first = False;
       nL++;
    }
@@ -1729,6 +1821,10 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          yLLabel += "Mean,";
          nLLabs++;
       }
+      if (doFlux) {
+         yLLabel += "Flux,";
+         nLLabs++;
+      }
       if (doSum) {
          yLLabel += "Sum,";
          nLLabs++;
@@ -1794,6 +1890,15 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          plotter.sci (lCols(i));
 
          multiPlot(plotter, abc, stats.column(MEAN), stats.column(NPTS));
+      }
+      if (doFlux) {
+         if (++ls > 5) ls = 1;
+         plotter.sls (ls);
+
+         lCols(++i) = niceColour (initColours);
+         plotter.sci (lCols(i));
+
+         multiPlot(plotter, abc, stats.column(FLUX), stats.column(NPTS));
       }
       if (doSum) {
          if (++ls > 5) ls = 1;
@@ -2208,29 +2313,10 @@ void ImageStatistics<T>::summStats ()
    pos(0) = MAX;
    T dMax = stats(pos);
 
-// Get beam volume if present.  ALl this beamy stuff should go to
-// a class called GaussianBeam and be used by GaussianCOnvert as well
-//
-   Double beamArea = -1.0;
-   ImageInfo ii = pInImage_p->imageInfo();
-   Vector<Quantum<Double> > beam = ii.restoringBeam();
-   CoordinateSystem cSys = pInImage_p->coordinates();
-   String imageUnits = pInImage_p->units().getName();
-   imageUnits.upcase();
-//
-   Int afterCoord = -1;   
-   Int dC = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
-   if (beam.nelements()==3 && dC!=-1 && imageUnits==String("JY/BEAM")) {
-      DirectionCoordinate dCoord = cSys.directionCoordinate(dC);
-      Vector<String> units(2);
-      units(0) = "rad"; units(1) = "rad";
-      dCoord.setWorldAxisUnits(units, True);
-      Vector<Double> deltas = dCoord.increment();
-//
-      Double major = beam(0).getValue(Unit("rad"));
-      Double minor = beam(1).getValue(Unit("rad"));
-      beamArea = 1.1331 * major * minor / abs(deltas(0) * deltas(1));
-   }
+// Get bean
+
+   Double beamArea;
+   Bool hasBeam = getBeamArea(beamArea);
 
 // Have to convert LogIO object to ostream before can apply
 // the manipulators
@@ -2246,7 +2332,7 @@ void ImageStatistics<T>::summStats ()
    if ( Int(nPts+0.1) > 0) {
       os_p << "Number points = ";
       os_p.output() << setw(oWidth) << Int(nPts+0.1) << endl;
-      if (beamArea > 0) {
+      if (hasBeam) {
          os_p << "Flux density  = ";
          os_p.output() << setw(oWidth) << sum/beamArea << " Jy" << endl;
       }
