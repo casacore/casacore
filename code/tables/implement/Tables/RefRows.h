@@ -98,6 +98,11 @@ public:
     // Do this and the other object reference the same rows?
     Bool operator== (const RefRows& other) const;
 
+    // Convert this object to a Vector<uInt> by applying the given row numbers.
+    // It is used to convert the RefRows object with row numbers in a
+    // RefTable to row numbers in the original root table.
+    Vector<uInt> convert (const Vector<uInt>& rootRownrs) const;
+
     // Return the number of rows given by this object.
     // <group>
     uInt nrows() const

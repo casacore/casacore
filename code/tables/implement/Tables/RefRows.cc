@@ -47,7 +47,9 @@ RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
 	//# resulting array would exceed the input length, because
 	//# in that case we gain not anything at all.
 	Vector<uInt> rows(itsNrows+3);
-	uInt start, end, incr;
+	uInt start = 0;
+	uInt end = 0;
+	uInt incr = 0;
 	uInt nv = 0;
 	uInt nr = 0;
 	for (uInt i=0; i<itsNrows  &&  nr<itsNrows; i++) {
@@ -155,6 +157,32 @@ uInt RefRows::fillNrows() const
     return nr;
 }
 
+Vector<uInt> RefRows::convert (const Vector<uInt>& rootRownrs) const
+{
+    uInt n = nrow();
+    Vector<uInt> rownrs(n);
+    if (itsSliced) {
+	uInt nr = 0;
+        RefRowsSliceIter iter(*this);
+        while (! iter.pastEnd()) {
+            uInt rownr = iter.sliceStart();
+            uInt end = iter.sliceEnd();
+            uInt incr = iter.sliceIncr();
+            while (rownr <= end) {
+		DebugAssert (rownr <= rootRownrs.nelements(), AipsError);
+		rownrs(nr++) = rootRownrs(rownr);
+		rownr += incr;
+     	    }
+	    iter++;
+        }
+    } else {
+        for (uInt i=0; i<n; i++) {
+	    DebugAssert (itsRows(i) <= rootRownrs.nelements(), AipsError);
+	    rownrs(i) = rootRownrs(itsRows(i));
+	}
+    }
+    return rownrs;
+}
 
 
 RefRowsSliceIter::RefRowsSliceIter (const RefRows& rows)
