@@ -365,13 +365,14 @@ void LockFile::getReqId()
 uInt LockFile::showLock (uInt& pid, const String& fileName)
 {
     pid = 0;
-    File f (fileName);
+    String fullName = Path(fileName).expandedName();
+    File f (fullName);
     if (! f.exists()) {
         throw AipsError ("FileLocker::showLock - File " + fileName +
 			 " does not exist");
     }
     //# Open the lock file as readonly.
-    int fd = FiledesIO::open (fileName, False);
+    int fd = FiledesIO::open (fullName, False);
     if (fd == -1) {
         throw AipsError ("FileLocker::showLock - File " + fileName +
 			 " could not be opened");
