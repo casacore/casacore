@@ -1,5 +1,5 @@
 //# VisibilityIterator.h: Step through the MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -282,11 +282,11 @@ public:
 
   // Return True if FieldId/Source has changed since last iteration
   Bool newFieldId() const
-  { return ToBool(curStartRow_p==0 && msIter_p.newField()); }
+  { return (curStartRow_p==0 && msIter_p.newField()); }
 
   // Return True if SpectralWindow has changed since last iteration
   Bool newSpectralWindow() const
-  { return ToBool(curStartRow_p==0 && msIter_p.newSpectralWindow()); }
+  { return (curStartRow_p==0 && msIter_p.newSpectralWindow()); }
 
   // Return the index of the first channel of the current channel group 
   // in the total (selected) spectrum.
