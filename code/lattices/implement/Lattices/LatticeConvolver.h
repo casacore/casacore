@@ -63,26 +63,29 @@ public:
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeConvolver">
 // </reviewed>
 
-// <prerequisite> The mathematical concept of convolution </prerequisite>
+// <prerequisite>The mathematical concept of convolution</prerequisite>
 //
 // <etymology>
-
-// The LatticeConvolver class will convolve Lattices. This class is meant to
-// complement the Convolver class which will convolve Arrays. 
-
-
-// For a definition of Linear and
-// circular convolution see the Convolver class
-
+// The LatticeConvolver class will convolve Lattices. This class
+// complements the Convolver class which will convolve Arrays.  
 // </etymology>
 //
 // <synopsis>
-// This class will perform linear or circular convolution on arrays. 
-//
+// This class performs linear or circular convolution on Lattices. See the
+// <linkto class="Convolver">Convolver</linkto> class description of the
+// difference between linear and circular convolution. 
+
+// This class does convolutions by multiplying the Fourier transforms of the
+// supplied Lattices and returning the inverse transform of the product. This
+// is the best algorithm to use when the point spread function is large. This
+// class does all the padding with zeros necessary to implement this
+// algorithm. Hence the 
+
 // </synopsis>
 //
 // <example>
 // <srcblock>
+// 
 // </srcblock> 
 // </example>
 //
@@ -90,13 +93,12 @@ public:
 // </motivation>
 //
 // <thrown>
-// <li> AipsError: if psf has more dimensions than the model. 
+// <li> AipsError: if psf and model have a differing numbers of dimensions
 // </thrown>
 //
 // <todo asof="yyyy/mm/dd">
 //   <li> the class should detect if the psf or image is small and do the
 //        convolution directly rather than use the Fourier domain
-//   <li> Add a lattice interface, and more flexible iteration scheme
 //   <li> Allow the psf to be specified with a FunctionND. 
 // </todo>
 
@@ -205,9 +207,9 @@ public:
 private:
   //# The following functions are used in various places in the code and are
   //# documented in the .cc file. Static functions are used when the functions
-  //# do not modify the object state. They ensure that implicit assumptions
+  //# do not use the object state. They ensure that implicit assumptions
   //# about the current state and implicit side-effects are not possible
-  //# because all information must be supliied in the input arguments
+  //# because all information must be suplied in the input arguments
   static void pad(Lattice<T> & paddedLat, const Lattice<T> & inLat);
   static void unpad(Lattice<T> & result, const Lattice<T> & paddedResult);
   void makeXfr(const Lattice<T> & psf);
@@ -223,9 +225,5 @@ private:
   TempLattice<NumericTraits<T>::ConjugateType> itsXfr;
   TempLattice<T> itsPsf;
   Bool itsCachedPsf;
-  
-  
-//   void makeXfr(const Lattice<T> & psf, const IPosition & imageSize,
-// 	       const Bool & linear, const Bool & fullSize);
 };
 #endif
