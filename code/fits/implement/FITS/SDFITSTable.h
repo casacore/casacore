@@ -89,8 +89,8 @@ class SDFITSTable : public FITSTable
 public:
     // the core keywords, UNKNOWN is not a core keyword,
     // NUM_CORE_KEYWORDS is a place holder
-    enum CoreKeyword { OBJECT, TELESCOP, FREQRES, BANDWID, DATEOBS,
-		       TIME, EXPOSURE, TSYS, NUM_CORE_KEYWORDS, 
+    enum CoreKeyword { OBJECT, TELESCOP, BANDWID, DATEOBS,
+		       EXPOSURE, TSYS, NUM_CORE_KEYWORDS, 
 		       UNKNOWN=NUM_CORE_KEYWORDS };
 
     // construct from a file

@@ -41,10 +41,8 @@ void SDFITSTable::init_kwNames()
     kwNames.resize(NUM_CORE_KEYWORDS+1);
     kwNames[OBJECT]   = FITS::ResWord.aname(FITS::OBJECT);
     kwNames[TELESCOP] = FITS::ResWord.aname(FITS::TELESCOP);
-    kwNames[FREQRES]  = "FREQRES";
     kwNames[BANDWID]  = "BANDWID";
     kwNames[DATEOBS]  = FITS::ResWord.aname(FITS::DATE_OBS);
-    kwNames[TIME]     = "TIME";
     kwNames[EXPOSURE] = "EXPOSURE";
     kwNames[TSYS]     = "TSYS";
     kwNames[UNKNOWN] = "";
