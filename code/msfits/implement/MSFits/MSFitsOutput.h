@@ -56,7 +56,7 @@ public:
   static Bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms,
 			    const String& column, Bool writeSysCal = False,
 			    Bool asMultiSource = False, Bool combineSpw=False,
-			    Double sensitivity = 1.0);
+			    Bool writeStation=False, Double sensitivity = 1.0);
 
 
 private:
@@ -81,7 +81,7 @@ private:
 
   // Write the AN table.
   static Bool writeAN(FitsOutput *output, const MeasurementSet& ms,
-		      Double refFreq);
+		      Double refFreq, Bool writeStation);
 
   // Write the SU table.
   static Bool writeSU(FitsOutput *output, const MeasurementSet& ms,

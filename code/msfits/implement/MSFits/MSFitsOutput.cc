@@ -87,7 +87,8 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
 				 Bool writeSysCal,
 				 Bool asMultiSource,
 				 Bool combineSpw,
-				 Double sensitivity)
+				 Bool writeStation,
+                                 Double sensitivity)
 {
   LogIO os(LogOrigin("MSFitsOutput", "writeFitsFile"));
   const uInt nrow = ms.nrow();
@@ -169,7 +170,7 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
     os << LogIO::SEVERE << "Could not write FQ table\n" << LogIO::POST;
   } else {
     os << LogIO::NORMAL << "Writing AIPS AN table" << LogIO::POST;
-    ok = writeAN(fitsOutput, ms, refFreq);
+    ok = writeAN(fitsOutput, ms, refFreq, writeStation);
   }
   if (!ok) {
     os << LogIO::SEVERE << "Could not write AN table\n" << LogIO::POST;
@@ -884,7 +885,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 }
 
 Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
-			   Double refFreq)
+			   Double refFreq, Bool writeStation)
 {
   LogIO os(LogOrigin("MSFitsOutput", "writeAN"));
   MSObservation obsTable(ms.observation());
@@ -1084,9 +1085,11 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     // A hack for old WSRT observations which stored the antenna name
     // in the STATION column instead of the NAME column.
     // So if all NAMES are equal use STATIONS (unless they are all equal).
+    // Also: if writeStation==True use station names instead of antenna names
+    // for the output fits file (input fits file tends to have this).
     Vector<String> anames = antid.getColumn();
     if (anames.nelements() > 0) {
-      if (allEQ (anames, anames(0))) {
+      if (writeStation || allEQ (anames, anames(0))) {
 	Vector<String> stations = inantname.getColumn();
 	if (! allEQ (stations, stations(0))) {
 	  anames = stations;
