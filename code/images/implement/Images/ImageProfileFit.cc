@@ -34,7 +34,6 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageRegion.h>

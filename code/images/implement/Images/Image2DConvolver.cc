@@ -51,7 +51,6 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Unit.h>
-#include <trial/Tasking/NewFile.h>
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
 
