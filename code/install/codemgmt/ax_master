@@ -2485,3 +2485,4 @@
 11 329 src rm trial/implement/HDS
 11 336 src mv trial/scripts/display.g trial/scripts/aipsview.g
 11 336 src mv trial/scripts/display_meta.g trial/scripts/aipsview_meta.g
+11 336 src mv trial/scripts/display.help trial/scripts/aipsview.help
