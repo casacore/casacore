@@ -33,7 +33,6 @@
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Fitting/LinearFit.h>
 
-class GlishSysEventSource;
 
 // <summary> 
 // Fit every line of pixels parallel to any axis in a Lattice.
@@ -100,18 +99,13 @@ public:
 // one(s) in fitter, are lost.  If <src>returnResiduals</src> is True, 
 // return data-fit, otherwise return the fit.  For baseline and continuum 
 // subtraction, returnResiduals would normally be True.
-//
-// If a GlishSysEventSource is provided, the progress of the fit will be
-// monitored with progress events, which contains a double precision number
-// with a value between 0.0 and 1.0.
    static uInt fitProfiles (Lattice<Float>& outImage,
-		 Vector<Float>& fittedParameters,
-		 LinearFit<Float>& fitter, 
-		 const Lattice<Float>& inImage,
-		 uInt whichAxis,
-		 const Vector<Bool>& fitMask,
-		 Bool returnResiduals,
-		 GlishSysEventSource* eventStream=0);
+			    Vector<Float>& fittedParameters,
+			    LinearFit<Float>& fitter, 
+			    const Lattice<Float>& inImage,
+			    uInt whichAxis,
+			    const Vector<Bool>& fitMask,
+			    Bool returnResiduals);
 
 // Fit baseline to MaskedLattice.  Fit and residuals can be optionally
 // written (leave pointers at zero to not write out these lattices)

@@ -37,8 +37,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Glish/GlishEvent.h>
-#include <aips/Glish/GlishArray.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
@@ -51,8 +49,7 @@ uInt LatticeFit::fitProfiles (Lattice<Float> &outImage,
                               const Lattice<Float> &inImage,
                               uInt whichAxis,
                               const Vector<Bool> &fitMask,
-                              Bool returnResiduals,
-                              GlishSysEventSource *eventStream)
+                              Bool returnResiduals)
 {
     IPosition outShape = outImage.shape();
     IPosition inShape = inImage.shape();
@@ -67,12 +64,6 @@ uInt LatticeFit::fitProfiles (Lattice<Float> &outImage,
     if (Int(fitMask.nelements()) != outShape(whichAxis)) {
 	throw(AipsError("::baselineFit - improperly specified mask"));
     }
-
-    // reset any visual or other displays
-    if (eventStream && eventStream->connected()) {
-	eventStream->postEvent("progress", GlishArray(0.0));
-    }
-
 
     // These selections etc will get easier when masked arrays are available.
     Int nPointsToFit = fitMask.nelements();
@@ -113,8 +104,6 @@ uInt LatticeFit::fitProfiles (Lattice<Float> &outImage,
     Vector<Float> yall(xall.nelements());
 
     count = 0;
-    uInt nspectra = inImage.nelements() / inShape(whichAxis);
-
     fittedParameters.resize(0);
     for (inIter.reset(), outIter.reset(); 
 	 ! inIter.atEnd(); inIter++, outIter++, count++) {
@@ -128,15 +117,8 @@ uInt LatticeFit::fitProfiles (Lattice<Float> &outImage,
 	} else {
 	    outIter.woVectorCursor() = solution;
 	}
-	if (eventStream && eventStream->connected()) {
-	    eventStream->postEvent("progress",
-				   GlishArray(Double(count)/Double(nspectra)));
-	}
     }
 
-    if (eventStream && eventStream->connected()) {
-	eventStream->postEvent("progress", GlishArray(1.0));
-    }
     return count;
 }
 
