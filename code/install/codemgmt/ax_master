@@ -2713,3 +2713,4 @@
 10 052 src rm nrao/apps/dish/dish_tracewin.g
 10 052 src rm nrao/apps/dish/dish_dialogbox.g
 10 058 src rm nrao/apps/dish/dishavg.g
+10 060 src mv aips/implement/Measures/MVBaseline.cc aips/implement/Quanta/MVBaseline.cc
