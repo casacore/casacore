@@ -164,6 +164,7 @@ void ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 		       newImage, error, imageName, fitsdata, memoryInMB);
 	    }
         }
+        break;
     case FITS::FLOAT:
         {
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
