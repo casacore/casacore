@@ -980,6 +980,7 @@ VisibilityIterator::operator=(const VisibilityIterator& other)
     if (this!=&other) {
 	ROVisibilityIterator::operator=(other);
 	RWcolFlag.reference(other.RWcolFlag);
+        RWcolFlagRow.reference(other.RWcolFlagRow);
 	RWcolVis.reference(other.RWcolVis);
 	RWcolFloatVis.reference(other.RWcolFloatVis);
 	RWcolModelVis.reference(other.RWcolModelVis);
@@ -1026,7 +1027,8 @@ void VisibilityIterator::attachColumns()
   RWcolWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
   RWcolSigma.attach(selTable_p,MS::columnName(MS::SIGMA));
   RWcolFlag.attach(selTable_p,MS::columnName(MS::FLAG));
-  if (cds.isDefined("IMAGING_WEIGHT")) 
+  RWcolFlagRow.attach(selTable_p,MS::columnName(MS::FLAG_ROW));
+  if (cds.isDefined("IMAGING_WEIGHT"))
     RWcolImagingWeight.attach(selTable_p,"IMAGING_WEIGHT");
 }
 
