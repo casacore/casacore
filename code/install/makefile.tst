@@ -2,7 +2,7 @@
 # makefile.tst: Generic AIPS++ test program makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999,2000,2001,2002
+#   Copyright (C) 1992-2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -435,10 +435,8 @@ ifeq "$(MAKEMODE)" "programmer"
 	      $(CPP) $(CPPFLAGS) $(PRGAPINC) $(PGMRINCL) $< | \
 	      sed -n \
 	          -e '\%^# *[0-9][0-9]* ".*"%!d' \
-                  -e "\%.*built.in.*%d" \
-                  -e "\%.*command line.*%d"  \
 	          -e 's%.*"./\(.*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
-	          -e 's%.*"\([^/].*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
+	          -e 's%.*"\([^</].*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
 	          -e 's%.*"$(CODEDIR)/\(.*\)".*%'"$$TARGET"'\1%p' \
 	          -e 's%.*"$(PGMRCODE)\(/include/.*\)".*%'"$$TARGET"'$$(PGMRCODE)/\1%p' \
 	          -e 's%.*"$(CODEINCD)/\(.*\)".*%'"$$TARGET"'\1%p' | \
