@@ -332,7 +332,7 @@ template<class T> class MaskedArray : public Cleanup
 public:
   // Default constructor for a MaskedArray does not allocate any memory
   // for the Data array or Mask. Hence the masked array 
-  // should not be used until some data is allocated to the tool using one
+  // should not be used until some data is allocated to the object using one
   // of the set functions.
   MaskedArray();
   // Reset the data and mask of the the MaskedArray. There should perhaps be
