@@ -54,6 +54,16 @@ SkyCompRep::SkyCompRep()
   DebugAssert(ok(), AipsError);
 }
 
+SkyCompRep::SkyCompRep(const ComponentType::Shape & shape)
+  :itsShapePtr((ComponentShape *) 0),
+   itsSpectrumPtr(new ConstantSpectrum),
+   itsFlux(),
+   itsLabel()
+{
+  initShape(shape);
+  DebugAssert(ok(), AipsError);
+}
+
 SkyCompRep::SkyCompRep(const ComponentType::Shape & shape,
 		       const ComponentType::SpectralShape & spectrum)
   :itsShapePtr((ComponentShape *) 0),
@@ -61,38 +71,16 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape & shape,
    itsFlux(),
    itsLabel()
 {
-  switch (shape) {
-  case ComponentType::POINT: 
-    itsShapePtr = new PointShape;
-    break;
-  case ComponentType::GAUSSIAN:
-    itsShapePtr = new GaussianShape;
-    break;
-  default:
-    throw(AipsError(String("SkyCompRep::SkyCompRep(shape,spectrum) - ") + 
-		    String("Cannot construct a SkyCompRep with an ")+ 
-		    ComponentType::name(shape) + String(" shape")));
-  };
-  switch (spectrum) {
-  case ComponentType::CONSTANT_SPECTRUM: 
-    itsSpectrumPtr = new ConstantSpectrum;
-    break;
-  case ComponentType::SPECTRAL_INDEX:
-    itsSpectrumPtr = new SpectralIndex;
-    break;
-  default:
-    throw(AipsError(String("SkyCompRep::SkyCompRep(shape,spectrum) - ") + 
-		    String("Cannot construct a SkyCompRep with an ") + 
-		    ComponentType::name(shape) + String(" spectrum")));
-  };
+  initShape(shape);
+  initSpectrum(spectrum);
   DebugAssert(ok(), AipsError);
 }
 
 SkyCompRep::SkyCompRep(const Flux<Double> & flux,
 		       const ComponentShape & shape, 
 		       const SpectralModel & spectrum)
-  :itsShapePtr(shape.cloneShape()),
-   itsSpectrumPtr(spectrum.cloneSpectrum()),
+  :itsShapePtr(shape.clone()),
+   itsSpectrumPtr(spectrum.clone()),
    itsFlux(flux.copy()),
    itsLabel()
 {
@@ -100,8 +88,8 @@ SkyCompRep::SkyCompRep(const Flux<Double> & flux,
 }
 
 SkyCompRep::SkyCompRep(const SkyCompRep & other) 
-  :itsShapePtr(other.itsShapePtr->cloneShape()),
-   itsSpectrumPtr(other.itsSpectrumPtr->cloneSpectrum()),
+  :itsShapePtr(other.itsShapePtr->clone()),
+   itsSpectrumPtr(other.itsSpectrumPtr->clone()),
    itsFlux(other.itsFlux.copy()),
    itsLabel(other.itsLabel)
 {
@@ -114,8 +102,8 @@ SkyCompRep::~SkyCompRep() {
 
 SkyCompRep & SkyCompRep::operator=(const SkyCompRep & other) {
   if (this != &other) {
-    itsShapePtr = other.itsShapePtr->cloneShape();
-    itsSpectrumPtr = other.itsSpectrumPtr->cloneSpectrum();
+    itsShapePtr = other.itsShapePtr->clone();
+    itsSpectrumPtr = other.itsSpectrumPtr->clone();
     itsFlux = other.itsFlux.copy();
     itsLabel = other.itsLabel;
   }
@@ -133,26 +121,33 @@ Flux<Double> & SkyCompRep::flux() {
   return itsFlux;
 }
 
-ComponentType::Shape SkyCompRep::shape() const {
+const ComponentShape & SkyCompRep::shape() const {
   DebugAssert(ok(), AipsError);
-  return itsShapePtr->shape();
+  return *itsShapePtr;
 }
 
-void SkyCompRep::setRefDirection(const MDirection & newDirection) {
-  itsShapePtr->setRefDirection(newDirection);
+ComponentShape & SkyCompRep::shape() {
   DebugAssert(ok(), AipsError);
+  return *itsShapePtr;
 }
-  
-const MDirection & SkyCompRep::refDirection() const {
+
+SpectralModel & SkyCompRep::spectrum() {
   DebugAssert(ok(), AipsError);
-  return itsShapePtr->refDirection();
+  return *itsSpectrumPtr;
+}
+
+const SpectralModel & SkyCompRep::spectrum() const {
+  DebugAssert(ok(), AipsError);
+  return *itsSpectrumPtr;
 }
 
 Flux<Double> SkyCompRep::sample(const MDirection & direction, 
-			       const MVAngle & pixelSize) const {
+				const MVAngle & pixelSize, 
+				const MFrequency & centerFrequency) const {
   DebugAssert(ok(), AipsError);
   Flux<Double> flux = itsFlux.copy();
   itsShapePtr->sample(flux, direction, pixelSize);
+  itsSpectrumPtr->sample(flux, centerFrequency);
   return flux;
 }
 
@@ -163,72 +158,6 @@ Flux<Double> SkyCompRep::visibility(const Vector<Double> & uvw,
   itsShapePtr->visibility(flux, uvw, frequency);
   // I should scale by the frequency here also but I need to consult with Tim
   // first.
-  return flux;
-}
-
-uInt SkyCompRep::nShapeParameters() const {
-  DebugAssert(ok(), AipsError);
-  return itsShapePtr->nShapeParameters();
-}
-
-void SkyCompRep::setShapeParameters(const Vector<Double> & newParms) {
-  DebugAssert(newParms.nelements() == nShapeParameters(), AipsError);
-  itsShapePtr->setShapeParameters(newParms);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyCompRep::shapeParameters(Vector<Double> & compParms) const {
-  DebugAssert(compParms.nelements() == nShapeParameters(), AipsError);
-  DebugAssert(ok(), AipsError);
-  itsShapePtr->shapeParameters(compParms);
-}
-
-ComponentType::SpectralShape SkyCompRep::spectralShape() const {
-  DebugAssert(ok(), AipsError);
-  return itsSpectrumPtr->spectralShape();
-}
-
-void SkyCompRep::setRefFrequency(const MFrequency & newFrequency) {
-  itsSpectrumPtr->setRefFrequency(newFrequency);
-  DebugAssert(ok(), AipsError);
-}
-
-const MFrequency & SkyCompRep::refFrequency() const {
-  DebugAssert(ok(), AipsError);
-  return itsSpectrumPtr->refFrequency();
-}
-
-Flux<Double> SkyCompRep::sample(const MFrequency & centerFrequency) const {
-  DebugAssert(ok(), AipsError);
-  Flux<Double> flux = itsFlux.copy();
-  itsSpectrumPtr->sample(flux, centerFrequency);
-  return flux;
-}
-
-uInt SkyCompRep::nSpectralParameters() const {
-  DebugAssert(ok(), AipsError);
-  return itsSpectrumPtr->nSpectralParameters();
-}
-
-void SkyCompRep::setSpectralParameters(const Vector<Double> & newParms) {
-  DebugAssert(newParms.nelements() == nSpectralParameters(), AipsError);
-  itsSpectrumPtr->setSpectralParameters(newParms);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyCompRep::spectralParameters(Vector<Double> & compParms) const {
-  DebugAssert(compParms.nelements() == nSpectralParameters(), AipsError);
-  DebugAssert(ok(), AipsError);
-  itsSpectrumPtr->spectralParameters(compParms);
-}
-
-Flux<Double> SkyCompRep::sample(const MDirection & direction, 
-			       const MVAngle & pixelSize, 
-			       const MFrequency & centerFrequency) const {
-  DebugAssert(ok(), AipsError);
-  Flux<Double> flux = itsFlux.copy();
-  itsShapePtr->sample(flux, direction, pixelSize);
-  itsSpectrumPtr->sample(flux, centerFrequency);
   return flux;
 }
 
@@ -277,7 +206,7 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
       const Record & shapeRec = record.asRecord(shape);
       const ComponentType::Shape recShape = 
 	ComponentShape::getType(errorMessage, shapeRec);
-      const ComponentType::Shape thisShape = itsShapePtr->shape();
+      const ComponentType::Shape thisShape = itsShapePtr->type();
       if (recShape != thisShape) {
 	errorMessage += String("The shape record specifies a ") + 
 	  ComponentType::name(recShape) + String(" shape\n") +
@@ -312,8 +241,7 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
       const Record & spectrumRec = record.asRecord(spectrum);
       const ComponentType::SpectralShape recShape = 
 	SpectralModel::getType(errorMessage, spectrumRec);
-      const ComponentType::SpectralShape thisShape = 
-	itsSpectrumPtr->spectralShape();
+      const ComponentType::SpectralShape thisShape = itsSpectrumPtr->type();
       if (recShape != thisShape) {
 	errorMessage += String("The spectrum record specifies a ") + 
 	  ComponentType::name(recShape) + String(" spectrum\n") +
@@ -377,6 +305,64 @@ Bool SkyCompRep::toRecord(String & errorMessage,
   record.define(RecordFieldId("label"), itsLabel);
   DebugAssert(ok(), AipsError);
   return True;
+}
+
+Bool SkyCompRep::ok() const {
+  if (itsShapePtr == (ComponentShape *) 0) {
+    LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
+    logErr << LogIO::SEVERE << "Shape pointer is null"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsShapePtr->ok() == False) {
+    LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
+    logErr << LogIO::SEVERE << "The component shape is not ok"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsSpectrumPtr == (SpectralModel *) 0) {
+    LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
+    logErr << LogIO::SEVERE << "Spectrum pointer is null"
+           << LogIO::POST;
+    return False;
+  }
+  if (itsSpectrumPtr->ok() == False) {
+    LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
+    logErr << LogIO::SEVERE << "The component spectrum is not ok"
+           << LogIO::POST;
+    return False;
+  }
+  return True;
+}
+
+void SkyCompRep::initShape(ComponentType::Shape shape) {
+  switch (shape) {
+  case ComponentType::POINT: 
+    itsShapePtr = new PointShape;
+    break;
+  case ComponentType::GAUSSIAN:
+    itsShapePtr = new GaussianShape;
+    break;
+  default:
+    throw(AipsError(String("SkyCompRep::SkyCompRep(shape,spectrum) - ") + 
+		    String("Cannot construct a SkyCompRep with an ")+ 
+		    ComponentType::name(shape) + String(" shape")));
+  };
+}
+
+void SkyCompRep::initSpectrum(ComponentType::SpectralShape spectrum) {
+  switch (spectrum) {
+  case ComponentType::CONSTANT_SPECTRUM: 
+    itsSpectrumPtr = new ConstantSpectrum;
+    break;
+  case ComponentType::SPECTRAL_INDEX:
+    itsSpectrumPtr = new SpectralIndex;
+    break;
+  default:
+    throw(AipsError(String("SkyCompRep::SkyCompRep(shape,spectrum) - ") + 
+		    String("Cannot construct a SkyCompRep with an ") + 
+		    ComponentType::name(spectrum) + String(" spectrum")));
+  };
 }
 
 // void SkyCompRep::project(ImageInterface<Float> & image) const {
@@ -519,33 +505,6 @@ Bool SkyCompRep::toRecord(String & errorMessage,
 //   }
 // }
 
-Bool SkyCompRep::ok() const {
-  if (itsShapePtr == (ComponentShape *) 0) {
-    LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
-    logErr << LogIO::SEVERE << "Shape pointer is null"
-           << LogIO::POST;
-    return False;
-  }
-  if (itsShapePtr->ok() == False) {
-    LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
-    logErr << LogIO::SEVERE << "The component shape is not ok"
-           << LogIO::POST;
-    return False;
-  }
-  if (itsSpectrumPtr == (SpectralModel *) 0) {
-    LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
-    logErr << LogIO::SEVERE << "Spectrum pointer is null"
-           << LogIO::POST;
-    return False;
-  }
-  if (itsSpectrumPtr->ok() == False) {
-    LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
-    logErr << LogIO::SEVERE << "The component spectrum is not ok"
-           << LogIO::POST;
-    return False;
-  }
-  return True;
-}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
 // End: 
