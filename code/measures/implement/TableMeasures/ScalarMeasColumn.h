@@ -1,5 +1,5 @@
 //# ScalarMeasColumn.h: Access to Scalar Measure Columns in Tables.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #define AIPS_SCALARMEASCOLUMN_H
 
 //# Includes
+#include <aips/Measures/MeasRef.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
 
@@ -48,7 +49,6 @@ class MFrequency;
 class MVFrequency;
 class Table;
 class TableMeasRefDesc;
-template <class Ms> class MeasRef;
 template <class T> class ScalarColumn;
 template <class M, class MV> class ROScalarMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -73,10 +73,12 @@ template <class M, class MV> class ScalarMeasColumn;
 // ROScalarMeasColumn and ScalarMeasColumn objects can be used to access 
 // scalar measure columns in tables.  The ROScalarMeasColumn provides read
 // only access whereas the ScalarMeasColumn object can be used for writing
-// and reading of measures to/from a Table column.<br>
+// and reading of measures to/from a Table column.
+//
 // Before a column can be accessed it must have previously been defined as
 // a measure column by use of the
-// <linkto class=TableMeasDesc>TableMeasDesc class</linkto>.<br>
+// <linkto class="TableMeasDesc">TableMeasDesc</linkto> class.
+//
 // The (RO)ScalarMeasColumn class is templated on Measure type and MeasValue
 // type but typedefs exist for making declaration less long winded.
 // To create a (RO)ScalarMeasColumn a reference to the table containing the
@@ -86,10 +88,13 @@ template <class M, class MV> class ScalarMeasColumn;
 // MEpochScaCol ec(table, "ColumnName);     	// MEpoch Scalar Column
 // ROMDopplerScaCol dc(table, "DopplerCol");    // Read only MDoppler column
 // </srcblock>
-// Measures can then be added to the column using the put() member (at 
+// Measures can be added to the column using the put() member (at 
 // least for the ScalarMeasColumn) in a
 // way which mimics the put() member of regular Table column objects. 
 // Similarly, get() and operator() can be used to retrieve measures.
+//
+// 
+//   
 // </synopsis>
 
 // <example>
@@ -127,10 +132,10 @@ template <class M, class MV> class ScalarMeasColumn;
 // columns.  This class overcomes this limitations.
 // </motivation>
 
-//<todo asof="$DATE:$">
+// <todo asof="$DATE:$">
 // Classes do not currently support internal conversion of Measures from one
 // frame of reference to another.  This may be a useful feature.
-//</todo>
+// </todo>
 
 template <class M, class MV>
 class ROScalarMeasColumn
@@ -139,9 +144,9 @@ public:
     // The default constructor creates a null object.  Useful for creating
     // arrays of ROScalarMeasColumn objects.  Attempting to use a null object
     // will produce a segmentation fault so care needs to be taken to
-    // initialise the objects by using the attach() member before any attempt
-    // is made to use the object.  A ROScalarQuantColumn object can be tested
-    // for nullnes by using the isNull() member.
+    // initialise the objects first by using the attach().  A 
+    // ROScalarQuantColumn object can be tested for nullnes by using the 
+    // isNull() member.
     ROScalarMeasColumn();
 
     // Create the ScalarMeasColumn from the table and column Name.
@@ -160,9 +165,12 @@ public:
  
     // Get the measure in specified row..
     // <group>
-    void get(M& meas, uInt rownr);
+    void get(uInt rownr, M& meas) const;
     M operator()(uInt rownr);
     // </group>
+    
+    // Tests is a row has a defined value.
+    Bool isDefined(uInt rownr) const { return itsDataCol->isDefined(rownr); }
           
     // Do the MeasRefs vary by row?
     Bool isRefVariable() const { return itsVarRefFlag; }
@@ -179,7 +187,7 @@ public:
     
 protected:
     // Resets itsMeasRef. Needed when the MeasRef varies from row to row.
-    void setMeasRef(uInt rownr=0);
+    void setMeasRef(uInt rownr=0) const;
 
     //# Column which contains the Measure's actual data
     ArrayColumn<Double>* itsDataCol;
@@ -200,7 +208,7 @@ private:
     ROScalarMeasColumn& operator= (const ROScalarMeasColumn& that);  
 
     //# Its measure reference when the MeasRef is constant per row.
-    MeasRef<M> itsMeasRef;
+    mutable MeasRef<M> itsMeasRef;
     
     // Deletes allocated memory etc. Called by ~tor and any member which needs
     // to reallocate data.
@@ -215,7 +223,7 @@ typedef ROScalarMeasColumn<MRadialVelocity, MVRadialVelocity>
     ROMRadialVelocityScaCol;
 typedef ROScalarMeasColumn<MDoppler, MVDoppler> ROMDopplerScaCol;
 typedef ROScalarMeasColumn<MFrequency, MVFrequency> ROMFrequency;
-
+ 
 
 template <class M, class MV>
 class ScalarMeasColumn : public ROScalarMeasColumn<M, MV>
