@@ -45,7 +45,7 @@
 # else
     using std::abs;
 # endif
-# if !defined(AIPS_KAICC)
+# if !(defined(AIPS_KAICC) || defined(AIPS_GCC3))
 #  define NEEDS_POWFLOATFLOAT
 # endif
 #endif
