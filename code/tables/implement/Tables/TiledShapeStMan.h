@@ -114,7 +114,7 @@
 //       contains multiple rows). It means that the number of values in
 //       tile shape can be one more than the number of axes in the data
 //       array. The last tile shape value defaults to 1; the other
-//       tile shape values have to vbe defined.
+//       tile shape values have to be defined.
 // </ul>
 // </synopsis> 
 
@@ -163,7 +163,7 @@
 //  uInt i;
 //  for (i=0; i<64; i++) {
 //      table.addRow();
-//	image.put (i, imageValues);
+//      image.put (i, imageValues);
 //      ra.put (i, raValues);
 //      dec.put (i, decValues);
 //      velocity.put (i, float(i));
@@ -180,8 +180,6 @@
 
 class TiledShapeStMan : public TiledStMan
 {
-friend class TiledShapeStManAccessor;
-
 public:
     // Create a TiledShapeStMan storage manager for the hypercolumn
     // with the given name.
