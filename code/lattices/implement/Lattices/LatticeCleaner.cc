@@ -67,11 +67,6 @@
 #include <aips/Arrays/Matrix.h>
 
 
-void minMaxMask(Float &minVal, Float &maxVal, IPosition &minPos,
-		IPosition &maxPos, const Array<Float> &array, 
-		const Array<Float> &mask);
-
-
 
 template<class T> 
 Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
@@ -80,7 +75,7 @@ Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
   
   // Find the peak of the raw Psf
   AlwaysAssert(psf.shape().product() != 0, AipsError);
-  Float maxPsf=0;
+  T maxPsf=0;
   itsPositionPeakPsf=IPosition(psf.shape().nelements(), 0);
   findMaxAbsLattice(psf, maxPsf, itsPositionPeakPsf);
   os << "Peak of PSF = " << maxPsf << " at " << itsPositionPeakPsf+1
@@ -247,13 +242,13 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   if (itsMask)  maskSub =  new SubLattice<T>(*itsMask, centerBox);
 
   // Start the iteration
-  Vector<Float> maxima(nScalesToClean);
+  Vector<T> maxima(nScalesToClean);
   Block<IPosition> posMaximum(nScalesToClean);
-  Vector<Float> totalFluxScale(nScalesToClean); totalFluxScale=0.0;
-  Float totalFlux=0.0;
+  Vector<T> totalFluxScale(nScalesToClean); totalFluxScale=0.0;
+  T totalFlux=0.0;
   Bool converged=False;
   Int optimumScale=0;
-  Float strengthOptimum=0.0;
+  T strengthOptimum=0.0;
   IPosition positionOptimum(model.shape().nelements(), 0);
   os << "Starting iteration"<< LogIO::POST;
 
@@ -335,7 +330,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     SubLattice<T> scaleSub(*itsScales[optimumScale], subRegionPsf, True);
 
     // Now do the addition of this scale to the model image....
-    Float scaleFactor;
+    T scaleFactor;
     scaleFactor=itsGain*strengthOptimum;
     LatticeExpr<T> add(modelSub+scaleFactor*scaleSub);
     modelSub.copyData(add);
@@ -390,8 +385,8 @@ Bool LatticeCleaner<T>::findMaxAbsLattice(const Lattice<T>& lattice,
     for(li.reset();!li.atEnd();li++) {
       IPosition posMax=li.position();
       IPosition posMin=li.position();
-      Float maxVal=0.0;
-      Float minVal=0.0;
+      T maxVal=0.0;
+      T minVal=0.0;
       minMax(minVal, maxVal, posMin, posMax, li.cursor());
       if(abs(minVal)>abs(maxAbs)) {
         maxAbs=minVal;
@@ -429,10 +424,10 @@ Bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice,
     for(li.reset(),mi.reset();!li.atEnd();li++, mi++) {
       IPosition posMax=li.position();
       IPosition posMin=li.position();
-      Float maxVal=0.0;
-      Float minVal=0.0;
+      T maxVal=0.0;
+      T minVal=0.0;
       
-      minMaxMask(minVal, maxVal, posMin, posMax, li.cursor(), mi.cursor());
+      minMaxMasked(minVal, maxVal, posMin, posMax, li.cursor(), mi.cursor());
       if(abs(minVal)>abs(maxAbs)) {
         maxAbs=minVal;
 	posMaxAbs=li.position();
@@ -536,7 +531,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
 						 itsMemoryMB);
     AlwaysAssert(itsPsfConvScales[scale], AipsError);
-    LatticeExpr<Float> realWork(real(cWork));
+    LatticeExpr<T> realWork(real(cWork));
     itsPsfConvScales[scale]->copyData(realWork);
     
     // Dirty * PSF * scale
@@ -564,7 +559,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     }
   }
   itsScalesValid=True;
-  for(uInt scale=0; scale<itsNscales;scale++) {
+  for(Int scale=0; scale<itsNscales;scale++) {
     if(scaleXfr[scale]) delete scaleXfr[scale];
   }
   return True;
@@ -666,55 +661,5 @@ Bool LatticeCleaner<T>::stopnow() {
   else {
     return False;
   }
-}
-
-
-void minMaxMask(Float &minVal, Float &maxVal, 
-	    IPosition &minPos, IPosition &maxPos,
-	    const Array<Float> &array, const Array<Float> &mask) 
-{
-    if (minPos.nelements() != array.ndim() ||
-	maxPos.nelements() != array.ndim() ) {
-      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
-		       "IPosition &maxPos, const Array<T> &array) - "
-                       "minPos, maxPos dimensionality inconsistent with array"));
-    }
-    if (array.nelements() == 0) {
-      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
-		       "IPosition &maxPos, const Array<T> &array) - "
-		       "Array has no elements"));	
-    }
-    if (array.shape() != mask.shape()) {
-      throw(ArrayConformanceError("void minMaxMasked(T &min, T &max,"
-				  "IPosition &minPos, IPosition &maxPos, const Array<T> &array, "
-				  "const Array<T> &mask) - " 
-				  "array and mask do not have the same shape()"));
-    } 
-
-    ReadOnlyVectorIterator<Float> ai(array);
-    ReadOnlyVectorIterator<Float> mi(mask);
-    Float val;
-
-    // Initialize
-    minPos = maxPos = IPosition (array.ndim(), 0);
-    minVal = maxVal = array(minPos) * mask(minPos);
-    uInt n = ai.vector().nelements();
-
-    while (! ai.pastEnd()) {
-	for (uInt i=0; i<n; i++) {
-	    val = (ai.vector()(i)) * (mi.vector()(i));
-	    if (val < minVal) {
-	        minVal = val;
-		minPos = ai.pos();
-		minPos(0) += i;
-	    }
-	    if (val > maxVal) {
-	        maxVal = val;
-		maxPos = ai.pos();
-		maxPos(0) += i;
-	    }
-	}
-	ai.next(); 
-    }
 }
 
