@@ -54,6 +54,7 @@ template <class M, class F, class MC> class MeasConvert;
 // </prerequisite>
 //
 // <etymology>
+// From Measure and Baseline
 // </etymology>
 //
 // <synopsis>
@@ -163,8 +164,6 @@ public:
 // <group>
   static Bool getType(MBaseline::Types &tp, const String &in);
   Bool giveMe(MBaseline::Ref &mr, const String &in);
-// This one for historic reasons only
-  Bool giveMe(const String &in, MBaseline::Ref &mr);
 // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);
