@@ -925,56 +925,19 @@ void StManColumn::aips_name2(getScalarColumnCells,NM) \
                                              (const RefRows& rownrs, \
 					      Vector<T>* values) \
 { \
-    Bool delV; \
-    T* value = values->getStorage (delV); \
-    T* valptr = value; \
-    const ColumnCache& cache = columnCache(); \
-    if (rownrs.isSliced()) { \
-        RefRowsSliceIter iter(rownrs); \
-        while (! iter.pastEnd()) { \
-            uInt rownr = iter.sliceStart(); \
-            uInt end = iter.sliceEnd(); \
-            uInt incr = iter.sliceIncr(); \
-            while (rownr <= end) { \
-                if (rownr < cache.start()  ||  rownr > cache.end()) { \
-                    aips_name2(get,NM) (rownr, valptr); \
-                    DebugAssert (cache.incr() == 0, AipsError); \
-                } \
-                const T* cacheValue = (const T*)(cache.dataPtr()); \
-                uInt endrow = min (end, cache.end()); \
-                while (rownr <= endrow) { \
-	            *valptr++ = *cacheValue; \
-                    rownr += incr; \
-	        } \
-     	    } \
-	    iter++; \
+    Vector<T>& value = *values; \
+    uInt i=0; \
+    RefRowsSliceIter rowiter(rownrs); \
+    while (! rowiter.pastEnd()) { \
+        uInt rownr = rowiter.sliceStart(); \
+        uInt end = rowiter.sliceEnd(); \
+        uInt incr = rowiter.sliceIncr(); \
+        while (rownr <= end) { \
+	    aips_name2(get,NM) (rownr, &(value(i++))); \
+            rownr += incr; \
         } \
-    } else { \
-        const Vector<uInt>& rowvec = rownrs.rowVector(); \
-        Bool delR; \
-        const uInt* rows = rowvec.getStorage (delR); \
-        uInt nr = rowvec.nelements(); \
-        if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
-            aips_name2(get,NM) (0, &(value[0])); \
-        } \
-        const T* cacheValue = (const T*)(cache.dataPtr()); \
-        uInt strow = cache.start(); \
-        uInt endrow = cache.end(); \
-        AlwaysAssert (cache.incr() == 0, AipsError); \
-        for (uInt i=0; i<nr; i++) { \
-	    uInt rownr = rows[i]; \
-            if (rownr >= strow  &&  rownr <= endrow) { \
-	        value[i] = *cacheValue; \
-	    } else { \
-	        aips_name2(get,NM) (rownr, &(value[i])); \
-                cacheValue = (const T*)(cache.dataPtr()); \
-                strow = cache.start(); \
-                endrow = cache.end(); \
-	    } \
-	} \
-        rowvec.freeStorage (rows, delR); \
+	rowiter++; \
     } \
-    values->putStorage (value, delV); \
 } \
 void StManColumn::aips_name2(putScalarColumnCells,NM) \
                                              (const RefRows& rownrs, \
