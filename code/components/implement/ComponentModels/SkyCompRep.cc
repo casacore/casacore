@@ -94,48 +94,10 @@ void SkyCompRep::parameters(Vector<Double> & compParms) const {
   DebugAssert(compParms.nelements() == nParameters(), AipsError);
 }
 
-ComponentType::SpectralShape SkyCompRep::spectralShape() const {
-  DebugAssert(ok(), AipsError);
-  return SpectralModel::spectralShape();
-}
-
-void SkyCompRep::setRefFrequency(const MFrequency & newRefFreq) {
-  // Use newRefFreq for something to suppress a compiler warning
-  SpectralModel::setRefFrequency(newRefFreq);
-  DebugAssert(ok(), AipsError);
-}
-  
-const MFrequency & SkyCompRep::refFrequency() const {
-  DebugAssert(ok(), AipsError);
-  // Use refFreq for something to suppress a compiler warning
-  return SpectralModel::refFrequency();
-}
-
-Double SkyCompRep::scale(const MFrequency & sampleFreq) const {
-  DebugAssert(ok(), AipsError);
-  return SpectralModel::scale(sampleFreq);
-}
-
 Flux<Double> SkyCompRep::sample(const MFrequency & sampleFreq) const {
-  DebugAssert(ok(), AipsError);
-  Flux<Double> scaledFlux(flux().copy());
-  scaledFlux.scaleValue(SpectralModel::scale(sampleFreq));
-  return scaledFlux;
-}
-
-uInt SkyCompRep::nSpectralParameters() const {
-  DebugAssert(ok(), AipsError);
-  return SpectralModel::nSpectralParameters();
-}
-
-void SkyCompRep::setSpectralParameters(const Vector<Double> & newParms) {
-  SpectralModel::setSpectralParameters(newParms);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyCompRep::spectralParameters(Vector<Double> & compParms) const {
-  DebugAssert(ok(), AipsError);
-  SpectralModel::spectralParameters(compParms);
+  Flux<Double> f = flux().copy();
+  f.scaleValue(scale(sampleFreq));
+  return f;
 }
 
 void SkyCompRep::setLabel(const String & newLabel) {
