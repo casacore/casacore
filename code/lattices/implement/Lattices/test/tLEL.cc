@@ -1,5 +1,5 @@
 //# tLEL.cc:  Tests the LEL* classes directly
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <trial/Lattices/LELUnary.h>
 
 #include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/PixelBox.h>
+#include <aips/Lattices/Slicer.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -48,6 +48,7 @@
 #include <iostream.h>
 
 Bool checkAttribute (const LELAttribute& attr,
+		     const Bool isMasked,
                      const Bool isScalar,
                      const IPosition& shape,
                      const IPosition& tileShape,
@@ -184,9 +185,6 @@ main (int argc, char *argv[])
     DComplex cDCVal = DComplex(3.0,3.0);
     cDC.set(cDCVal);
 
-
-    IPosition origin(2,0,0);
-    PixelBox region(origin, shape-1, shape);
     Bool ok = True;
 
 
@@ -201,7 +199,8 @@ main (int argc, char *argv[])
 
     const IPosition nullIPos = IPosition();
     LELAttribute attr1;
-    if (!checkAttribute(attr1, True, nullIPos, nullIPos, LatticeCoordinates())) ok = False;
+    if (!checkAttribute(attr1, False, True, nullIPos, nullIPos,
+			LatticeCoordinates())) ok = False;
 
 // Now a non-scalar one; this only tests null LatticeCoordinates
 
@@ -209,11 +208,13 @@ main (int argc, char *argv[])
     IPosition shape2 = shape;
     IPosition tileShape2 = shape;
     LatticeCoordinates lattCoord2;
-    LELAttribute attr2(shape2, tileShape2, lattCoord2);
-    if (!checkAttribute(attr2, isScalar2, shape2, tileShape2, lattCoord2)) ok = False;
+    LELAttribute attr2(True, shape2, tileShape2, lattCoord2);
+    if (!checkAttribute(attr2, True, isScalar2, shape2, tileShape2,
+			lattCoord2)) ok = False;
 
     LELAttribute attr3 = attr2;
-    if (!checkAttribute(attr3, attr2.isScalar(), attr2.shape(), attr2.tileShape(),
+    if (!checkAttribute(attr3, attr2.isMasked(), attr2.isScalar(),
+			attr2.shape(), attr2.tileShape(),
                         attr2.coordinates())) {
       cout << "   Assignment failed" << endl;
       ok = False;
@@ -222,7 +223,9 @@ main (int argc, char *argv[])
 // Result of scalar and non-scalar is non-scalar
 
     LELAttribute attr4(attr1, attr2);
-    if (attr4.isScalar() || attr4.shape() != attr2.shape()) {
+    if (!checkAttribute(attr4, attr2.isMasked(), attr2.isScalar(),
+			attr2.shape(), attr2.tileShape(),
+                        attr2.coordinates())) {
       cout << "   binary constructor failed" << endl;
       ok = False;
     }    
@@ -2187,7 +2190,7 @@ Bool checkFloat (LELInterface<Float>& expr,
     Array<Float> Arr(shape);
     Bool ok = True;
     IPosition origin(2,0,0);
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
 
     if (expr.className() != name) {
@@ -2252,7 +2255,7 @@ Bool checkDouble (LELInterface<Double>& expr,
     Array<Double> Arr(shape);
     Bool ok = True;
     IPosition origin(2,0,0);
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
 
     if (expr.className() != name) {
@@ -2317,7 +2320,7 @@ Bool checkComplex (LELInterface<Complex>& expr,
     Array<Complex> Arr(shape);
     Bool ok = True;
     IPosition origin(2,0,0);
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
 
     if (expr.className() != name) {
@@ -2382,7 +2385,7 @@ Bool checkDComplex (LELInterface<DComplex>& expr,
     Array<DComplex> Arr(shape);
     Bool ok = True;
     IPosition origin(2,0,0);
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
 
     if (expr.className() != name) {
@@ -2447,7 +2450,7 @@ Bool checkBool (LELInterface<Bool>& expr,
     Array<Bool> Arr(shape);
     Bool ok = True;
     IPosition origin(2,0,0);
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
 
     if (expr.className() != name) {
