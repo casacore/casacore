@@ -26,14 +26,15 @@
 //# $Id$
 
 
-#include <aips/Exceptions.h>
 #include <aips/OS/Directory.h>
 #include <aips/OS/DirectoryIterator.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/SymLink.h>
 
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Utilities/RegexError.h>
 
 #include <unistd.h>                 // needed for rmdir, unlink
 #include <sys/stat.h>               // needed for mkdir
