@@ -135,7 +135,6 @@ const TableExprNode *MSSpwParse::selectChaninASpw(const Int spw, const Int chann
 
 const TableExprNode *MSSpwParse::selectChanRangeinASpw(const Int spw, const Int startChan, const Int endChan) 
 {
-  ////////////////// work space /////////////////////////////
   LogIO os(LogOrigin("MSSpwParse", "selectChanRangeinASpw()", WHERE)); 
   MeasurementSet selms= Table(ms()->tableName(), Table::Update);
   if(!selms.isWritable()) {
@@ -238,6 +237,7 @@ const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Doubl
     IPosition fps = freq.shape();
   } else {
     os <<" spw id is not in range " << LogIO::POST;
+    return NULL;
   }
   
   Vector<Double> freqVec(freq.nonDegenerate());
@@ -258,7 +258,8 @@ const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Doubl
     os <<" Selection is not in the range! " <<LogIO::POST;
     return NULL;
   }
-  //  cout << " adj startFreq " << adjStartFreq << " adj endFreq " << adjEndFreq << endl;
+  //  cout << " adj startFreq " << adjStartFreq << endl;
+  //  cout << " adj endFreq " << adjEndFreq << endl;
   //Channel starts from 1
   for (Int i = 0; i < numChan - 1 ; i++) {
     if ( adjStartFreq == freqVec(i)/factor ) {
@@ -286,7 +287,6 @@ const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Doubl
     return NULL;
   }
   return selectChanRangeinASpw(spw, startChan, endChan);
-  //////////////////////////////////////////////////////////////////
 }
 
 const TableExprNode *MSSpwParse::selectSpwName(const String& name)
