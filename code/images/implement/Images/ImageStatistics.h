@@ -1,5 +1,5 @@
 //# ImageStatistics.h: generate statistics from an image
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,13 +24,12 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 #if !defined(AIPS_IMAGESTATISTICS_H)
 #define AIPS_IMAGESTATISTICS_H
 
-#if defined(_AIX)
-#pragma implementation ("ImageStatistics.cc")
-#endif
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Containers/Block.h>
@@ -43,30 +42,33 @@
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/String.h>
-template <class T> class MaskedImage;
-template <class T> class PagedArray;
 
+//# Forward Declarations
+template <class T> class ImageInterface;
+template <class T> class PagedArray;
 class IPosition;
 class LogIO;
 class CoordinateSystem;
 
 
-// <summary> Displays various statistics from an image</summary>
+// <summary>
+// Displays various statistics from an image.
+// </summary>
+
 // <use visibility=export>
-// 
+
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-// 
+
 // <prerequisite>
-//   <li> ImageStatsBase (base class)
-//   <li> MaskedImafe
-//   <li> ImageInterface
+//   <li> <linkto class=ImageStatsBase>ImageStatsBase</linkto> (base class)
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 // This is a class designed to display and retrieve statistics from images
 // </etymology>
-//
+
 // <synopsis>
 // This class enable you to display and/or retrieve statistics evaluated over 
 // specified regions from an image.  The dimension of the region is arbitrary, but 
@@ -94,13 +96,25 @@ class CoordinateSystem;
 // This class generates a "storage image" into which it writes the accumulated
 // statistical sums.  It is from this storage image that the plotting and retrieval
 // arrays are drawn.  The storage image is actually put in a <src>PagedArray</src>.  This is a disk 
-// based storage medium.   The storage image is deleted when the <src>ImageStatistics</src> class 
+// based storage medium.   The storage image is deleted when the <src>ImageInterface</src> class 
 // object destructs.    However, currently, if the process is terminated ungracefully,
 // the storage image will be left over.  It has a name starting with the string
 // "ImageStatistics::" and then a unique number. You can safely delete it.
 //
-// </synopsis>
+// <note role=caution>
+// Note that if the <src>ImageInterface</src> object goes out of scope, this
+// class will retrieve and generate rubbish as it just maintains a pointer
+// to the image.
+// </note>
 //
+// <note role=tip>
+// If you ignore return error statuses from the functions that set the
+// state of the class, the internal status of the class is set to bad.
+// This means it will just  keep on returning error conditions until you
+// explicitly recover the situation.
+// </note>
+// </synopsis>
+
 // <example>
 // <srcBlock>
 //// Construct PagedImage from file name
@@ -148,33 +162,21 @@ class CoordinateSystem;
 // plotting and listing, we also retrieve the sum of the selected pixels
 // as a function of x location into an array.
 // </example>
-//
-// <note role=caution>
-// Note that if the <src>MaskedImage</src> object goes out of scope, this
-// class will retrieve and generate rubbish as it just maintains a pointer
-// to the image.
-// </note>
-//
-// <note role=tip>
-// If you ignore return error statuses from the functions that set the
-// state of the class, the internal status of the class is set to bad.
-// This means it will just  keep on returning error conditions until you
-// explicitly recover the situation.
-// </note>
-//
+
 // <motivation>
 // The generation of statistical information from an image is a basic 
 // and necessary capability.
 // </motivation>
-//
+
 // <todo asof="1996/11/26">
-//   <li> Deal with complex images at least for statistics retrieval if not plotting.
+//   <li> Deal with complex images at least for statistics retrieval if not
+//        plotting.
 //   <li> Retrieve statistics at specified location of display axes
 //   <li> Standard errors on statistical quantities
-//   <li> Median, other more exotic statistics.  Life made difficult by accumulation
-//        image approach
+//   <li> Median, other more exotic statistics. Life made difficult by
+//        accumulation image approach
 // </todo>
-//
+
 
 template <class T> class ImageStatistics : public ImageStatsBase
 {
@@ -182,14 +184,14 @@ public:
 
 // Constructor takes the image and a <src>LogIO</src> object for logging.
 // You can also specify whether you want to see progress meters or not.
-   ImageStatistics (const MaskedImage<T>& image, 
+   ImageStatistics (const ImageInterface<T>& image, 
                     LogIO& os,
                     Bool showProgress=True);
 
 // Constructor takes the image only. In the absence of a logger you get no messages.
 // This includes error messages and potential listing of the statistics.
 // You can also specify whether you want to see progress meters or not.
-   ImageStatistics (const MaskedImage<T>& image,
+   ImageStatistics (const ImageInterface<T>& image,
                     Bool showProgress=True);
 
 // Copy constructor.  Copy semantics are followed.  Therefore any storage image 
@@ -305,9 +307,9 @@ public:
 // This function allows you to reset that internal state to good.
    void resetError () {goodParameterStatus_p = True;};
 
-// Set a new MaskedImage object.  A return value of <src>False</src> indicates the 
+// Set a new ImageInterface object.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal state of the class is bad.
-   Bool setNewImage (const MaskedImage<T>& image);
+   Bool setNewImage (const ImageInterface<T>& image);
 
 private:
 
@@ -316,7 +318,7 @@ private:
 
    LogIO os_p;
 
-   const MaskedImage<T>* pInImage_p;
+   const ImageInterface<T>* pInImage_p;
    PagedArray<T>* pStoreImage_p;
    Vector<Int> cursorAxes_p, displayAxes_p;
    Vector<Int> nxy_p, statsToPlot_p;

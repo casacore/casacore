@@ -1,5 +1,5 @@
 //# ImageMoments.cc:  generate moments from an image
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -74,7 +74,7 @@
 
 
 template <class T> 
-ImageMoments<T>::ImageMoments (MaskedImage<T>& image, 
+ImageMoments<T>::ImageMoments (ImageInterface<T>& image, 
                                LogIO &os,
                                Bool showProgressU)
 : os_p(os),
@@ -241,7 +241,7 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
 
 
 template <class T> 
-Bool ImageMoments<T>::setNewImage(MaskedImage<T>& image)
+Bool ImageMoments<T>::setNewImage(ImageInterface<T>& image)
 
 //
 // Assign pointer to image
@@ -832,7 +832,7 @@ Bool ImageMoments<T>::createMoments()
 // routines can only handle convolution when the image fits fully in core
 // at present.
    
-   MaskedImage<T>* pSmoothedImage = 0;
+   ImageInterface<T>* pSmoothedImage = 0;
    String smoothName;
    if (doSmooth_p) {
       pSmoothedImage = smoothImage(smoothName);
@@ -1536,7 +1536,7 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
 
 template <class T> 
 
-MaskedImage<T>* ImageMoments<T>::smoothImage (String& smoothName)
+ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 //
 // Smooth image.  
 //
@@ -1628,7 +1628,7 @@ MaskedImage<T>* ImageMoments<T>::smoothImage (String& smoothName)
 
 // Create SubImage which can handle masks
 
-   SubImage<T> smoothedSubImage(smoothedImage, True);
+   SubImage<T>* smoothedSubImagePtr = new SubImage<T>(smoothedImage, True);
 
 
 // Smooth in situ.  PSF is separable so convolve by rows for each axis.  
@@ -1638,15 +1638,10 @@ MaskedImage<T>* ImageMoments<T>::smoothImage (String& smoothName)
          os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
          Vector<T> psfRow = psfSep.column(i);
          psfRow.resize(psf.shape()(i),True);
-         smoothProfiles (smoothedSubImage, i, psfRow);
+         smoothProfiles (*smoothedSubImagePtr, i, psfRow);
       }
    }
-
-// Reurn pointer to masked smoothed image.  This is ok because 
-// underneath the tables are reference counted.  Although 
-// "smoothedSubImage" is destructed, its storage isn't.
-
-   return smoothedSubImage.cloneMI();
+   return smoothedSubImagePtr;
 }
 
 
@@ -1750,7 +1745,7 @@ void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
 
 template <class T> 
 Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
-                                      MaskedImage<T>& image)
+                                      ImageInterface<T>& image)
 //
 // Determine the noise level in the image by first making a histogram of 
 // the image, then fitting a Gaussian between the 25% levels to give sigma

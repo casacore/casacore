@@ -1,5 +1,5 @@
 //# ImageMoments.h: generate moments from images
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,24 +24,24 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 #if !defined(AIPS_IMAGEMOMENTS_H)
 #define AIPS_IMAGEMOMENTS_H
 
-#if defined(_AIX)
-#pragma implementation ("ImageMoments.cc")
-#endif
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Quanta/QMath.h>
 #include <trial/Tasking/PGPlotter.h>
 
+//# Forward Declarations
 template <class T> class Array;
 template <class T> class Matrix;
 template <class T> class Vector;
 template <class T> class MaskedLattice;
 template <class T> class MomentCalcBase;
 template <class T> class SubImage;
-template <class T> class MaskedImage;
+template <class T> class ImageInterface;
 template <class T> class Lattice;
 class CoordinateSystem;
 class IPosition;
@@ -55,23 +55,25 @@ class ostream;
 #endif
 
 
-//
-// <summary> This class generates moments from an image. </summary>
-// 
+// <summary>
+// This class generates moments from an image.
+// </summary>
+
+// <use visibility=export>
+
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-// 
+
 // <prerequisite>
-//   <li> <linkto class="MaskedImage">ImageInterface</linkto>
 //   <li> <linkto class="ImageInterface">ImageInterface</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>   
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 //   This class computes moments from images
 // </etymology>
-//
+
 // <synopsis>
 //  The primary goal of this class is to help spectral-line astronomers analyze 
 //  their multi-dimensional images by generating moments of a specified axis.
@@ -156,8 +158,37 @@ class ostream;
 //   ----------------------------------------------------
 // </srcblock>
 //
-// </synopsis>
+// <note role=caution>
+// Note that the <src>MEDIAN_COORDINATE</src> moment is not very robust.
+// It is very useful for generating quickly a velocity field in a way
+// that is not sensitive to noise.    However, it will only give sensible
+// results under certain conditions.   It treats the spectrum as a
+// probability distribution, generates the cumulative distribution for
+// the selected pixels (via an <src>include</src> or <src>exclude</src>
+// pixel range, and finds the (interpolated) coordinate coresponding to 
+// the 50% value.  The generation of the cumulative distribution and the
+// finding of the 50% level really only makes sense if the cumulative
+// distribution is monotonically increasing.  This essentially means only
+// selecting pixels which are positive or negative.  For this reason, this
+// moment type is *only* supported with the basic method (i.e. no smoothing,
+// no windowing, no fitting) with a pixel selection range that is either
+// all positive, or all negative.
+// </note>
 //
+// <note role=caution>
+// Note that if the <src>ImageInterface</src> object goes out of scope, this
+// class will retrieve and generate rubbish as it just maintains a pointer
+// to the image.
+// </note>
+//
+// <note role=tip>
+// If you ignore return error statuses from the functions that set the
+// state of the class, the internal status of the class is set to bad.
+// This means it will just  keep on returning error conditions until you
+// explicitly recover the situation.
+// </note>
+// </synopsis>
+
 // <example>
 // <srcBlock>
 //// Set state function argument values
@@ -200,41 +231,11 @@ class ostream;
 // file names are constructed by the class from the input file name plus some 
 // internally generated suffixes.
 // </example>
-//
-// <note role=caution>
-// Note that the <src>MEDIAN_COORDINATE</src> moment is not very robust.
-// It is very useful for generating quickly a velocity field in a way
-// that is not sensitive to noise.    However, it will only give sensible
-// results under certain conditions.   It treats the spectrum as a
-// probability distribution, generates the cumulative distribution for
-// the selected pixels (via an <src>include</src> or <src>exclude</src>
-// pixel range, and finds the (interpolated) coordinate coresponding to 
-// the 50% value.  The generation of the cumulative distribution and the
-// finding of the 50% level really only makes sense if the cumulative
-// distribution is monotonically increasing.  This essentially means only
-// selecting pixels which are positive or negative.  For this reason, this
-// moment type is *only* supported with the basic method (i.e. no smoothing,
-// no windowing, no fitting) with a pixel selection range that is either
-// all positive, or all negative.
-// </note>
-//
-// <note role=caution>
-// Note that if the <src>MaskedImage</src> object goes out of scope, this
-// class will retrieve and generate rubbish as it just maintains a pointer
-// to the image.
-// </note>
-//
-// <note role=tip>
-// If you ignore return error statuses from the functions that set the
-// state of the class, the internal status of the class is set to bad.
-// This means it will just  keep on returning error conditions until you
-// explicitly recover the situation.
-// </note>
-//
+
 // <motivation>
 //  This is a fundamental and traditional piece of spectral-line image analysis.
 // </motivation>
-//
+
 // <todo asof="1996/11/26">
 //   <li> more control over histogram of image noise at start (pixel
 //        range and number of bins)
@@ -256,7 +257,7 @@ public:
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
 // You may also determine whether a progress meter is displayed or not.
-   ImageMoments (MaskedImage<T>& image, 
+   ImageMoments (ImageInterface<T>& image, 
                  LogIO &os,
                  Bool showProgress=True);
 
@@ -509,7 +510,7 @@ enum KernelTypes {
 
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type (this class only accepts Float or Double images).
-   Bool setNewImage (MaskedImage<T>& image);
+   Bool setNewImage (ImageInterface<T>& image);
 
 // Helper function to convert a string containing a list of desired methods to
 // the correct <src>Vector<Int></src> required for the <src>setWinFitMethod</src> function.
@@ -551,7 +552,7 @@ private:
    Vector<Int> moments_p;
    Vector<T> selectRange_p;
    Vector<Int> smoothAxes_p;
-   MaskedImage<T>* pInImage_p;
+   ImageInterface<T>* pInImage_p;
    PGPlotter plotter_p;
 
 
@@ -617,7 +618,7 @@ private:
                      const Int moment);
 
 // Smooth an image   
-  MaskedImage<T>* smoothImage (String& smoothName);
+  ImageInterface<T>* smoothImage (String& smoothName);
 
 // Smooth one row in situ
   void smoothProfiles (MaskedLattice<T>& in,
@@ -628,12 +629,10 @@ private:
 // of the entire image above the 25% levels.  If a plotting
 // device is set, the user can interact with this process.
    Bool whatIsTheNoise (T& noise,
-                        MaskedImage<T>& image);
-
+                        ImageInterface<T>& image);
 };
 
 
 
 
 #endif
-

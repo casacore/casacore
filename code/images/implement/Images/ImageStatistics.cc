@@ -1,5 +1,5 @@
 //# ImageStatistics.cc: generate statistics from an image
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <trial/Images/ImageUtilities.h>
-#include <trial/Images/MaskedImage.h>
+#include <trial/Images/ImageInterface.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/LatticeIterator.h>
@@ -66,7 +66,7 @@
 // Public functions
 
 template <class T>
-ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
+ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
                                      LogIO& osU, 
                                      Bool showProgressU)
 // 
@@ -105,7 +105,7 @@ ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
 
 
 template <class T>
-ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
+ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
                                      Bool showProgressU)  
 // 
 // Constructor
@@ -437,7 +437,7 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
 
 
 template <class T>
-Bool ImageStatistics<T>::setNewImage(const MaskedImage<T>& image)
+Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 //    
 // Assign pointer to image
 //

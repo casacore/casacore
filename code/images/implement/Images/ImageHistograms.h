@@ -1,5 +1,5 @@
 //# ImageHistograms.h: generate histograms from an image
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,13 +24,12 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 #if !defined(AIPS_IMAGEHISTOGRAMS_H)
 #define AIPS_IMAGEHISTOGRAMS_H
 
-#if defined(_AIX)
-#pragma implementation ("ImageHistograms.cc")
-#endif
 
+//# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/TiledCollapser.h>
 #include <trial/Images/ImageStatistics.h>
@@ -38,7 +37,8 @@
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Tasking/ProgressMeter.h>
 
-template <class T> class MaskedImage;
+//# Forward Declarations
+template <class T> class ImageInterface;
 template <class T> class PagedArray;
 template <class T> class Vector;
 template <class T> class RO_LatticeIterator;
@@ -47,21 +47,23 @@ class LogIO;
 class CoordinateSystem;
 class PGPlotter;
 
-// <summary> Displays histograms of regions from an image </summary>
+// <summary>
+// Displays histograms of regions from an image.
+// </summary>
+
 // <use visibility=export>
-// 
+
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-// 
+
 // <prerequisite>
-//   <li> ImageInterface
-//   <li> MaskedImage
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 // This is a class designed to display histograms from images
 // </etymology>
-//
+
 // <synopsis>
 // This class enable you to display and/or retrieve histograms evaluated over 
 // specified regions from an image.  The dimension of the region is arbitrary, but 
@@ -86,8 +88,20 @@ class PGPlotter;
 // They have a name starting with the string "ImageHistograms::",
 // and then a unique number. You can safely delete them in this case.
 //
-// </synopsis>
+// <note role=caution>
+// Note that if the <src>ImageInterface</src> object goes out of scope, this
+// class will retrieve and generate rubbish as it just maintains a pointer
+// to the image.
+// </note>
 //
+// <note role=tip>
+// If you ignore return error statuses from the functions that set the
+// state of the class, the internal status of the class is set to bad.
+// This means it will just  keep on returning error conditions until you
+// explicitly recover the situation.
+// </note>
+// </synopsis>
+
 // <example>
 // <srcBlock>
 //// Construct PagedImage from file name
@@ -131,21 +145,7 @@ class PGPlotter;
 // of x location on the PGPLOT device "/xs" with 9 subplots per page.
 // After the plotting we also retrieve the histograms into an array.
 // </example>
-//
-// <note role=caution>
-// Note that if the <src>MaskedImage</src> object goes out of scope, this
-// class will retrieve and generate rubbish as it just maintains a pointer
-// to the image.
-// </note>
-//
-// <note role=tip>
-// If you ignore return error statuses from the functions that set the
-// state of the class, the internal status of the class is set to bad.
-// This means it will just  keep on returning error conditions until you
-// explicitly recover the situation.
-// </note>
-//
-//
+
 // <motivation>
 // The generation of histograms from an image is a basic and necessary capability.
 // </motivation>
@@ -156,21 +156,21 @@ class PGPlotter;
 // </todo>
 //
 
-template <class T>
-class ImageHistograms 
+
+template <class T> class ImageHistograms 
 {
 public:
 
 // Constructor takes the image and a <src>LogIO</src> object for logging.
 // You can also specify whether you want to see progress meters or not.
-   ImageHistograms(const MaskedImage<T>& image, 
+   ImageHistograms(const ImageInterface<T>& image, 
                    LogIO& os,
                    Bool showProgress=True);
 
 // Constructor takes the image only. In the absence of a logger you get no messages.
 // This includes error messages and potential listing of statistics.
 // You can also specify whether you want to see progress meters or not.
-   ImageHistograms(const MaskedImage<T>& image, 
+   ImageHistograms(const ImageInterface<T>& image, 
                    Bool showProgress=True);
 
 // Copy constructor (copy semantics)
@@ -276,7 +276,7 @@ public:
 
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal status of the class is bad.
-   Bool setNewImage (const MaskedImage<T>& image);
+   Bool setNewImage (const ImageInterface<T>& image);
 
 private:
 
@@ -287,7 +287,7 @@ private:
    Bool doCumu_p, doGauss_p, doList_p, doLog_p;
    Bool haveLogger_p, showProgress_p;
    uInt nBins_p;
-   const MaskedImage<T>* pInImage_p;
+   const ImageInterface<T>* pInImage_p;
    PGPlotter plotter_p;
    Vector<Int> cursorAxes_p, displayAxes_p, nxy_p;
    Vector<T> range_p;
