@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,11 +33,13 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/OS/HostInfo.h>
 
-// This sets the maximum size, in MB of any memory based Lattices created by
-// this class. It was deteremined empirically to be tyhe best value on a
-// 64MByte Linux machine.
-const Int maxLatSize = 6;
+
+
+// This sets the maximum size, in MB by this class to 1/8th of the total
+// memory 
+const Int maxLatSize = HostInfo::memoryTotal()/1024/8;
 
 template<class T> LatticeConvolver<T>::
 LatticeConvolver()
