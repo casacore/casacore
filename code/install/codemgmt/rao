@@ -53,7 +53,7 @@
 #    1) Where the remote account name differs from the local account name an
 #       environment variable may be used to translate between them:
 #
-#          ARSH="ssh aips2.nrao.edu -l <remotename>"
+#          ARSH="ssh -C aips2.nrao.edu -l <remotename>"
 #
 #       The .rhosts file for the <remotename> account on aips2.nrao.edu should
 #       have an entry of the form
@@ -123,10 +123,14 @@
   done
 
 # The business end.
-  ARSH=${ARSH-"ssh aips2.nrao.edu"}
-  COMMAND="cd $PGMRDIR && ao -I $* && tar cf - $FILES | gzip -q ; rm -f $FILES"
-  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' |
-  gzip -d | tar pvxf - > /dev/null
+  ARSH=${ARSH-"ssh -C aips2.nrao.edu"}
+  COMMAND="cd $PGMRDIR && ao -I $* && rm -f a.tmp.tar && tar cf a.tmp.tar $FILES && rm -f $FILES"
+  COMMAND2="cd $PGMRDIR && rm -f a.tmp.tar"
+  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+  scp -qpC aips2.nrao.edu:$PGMRDIR/a.tmp.tar  a.tmp.tar
+  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND2"\"\'
+  tar xpvf a.tmp.tar > /dev/null 
+  rm -f a.tmp.tar
 
 
   exit 0
