@@ -1,5 +1,5 @@
 //# LogSink.h: Distribute LogMessages to their destination(s)
-//# Copyright (C) 1996,2000,2001
+//# Copyright (C) 1996,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,8 +85,9 @@
 // </ol>
 //
 // Every <src>LogSink</src> has an attached 
-// <linkto class=LogFilter>LogFilter</linkto> which is used to reject or pass
-// messages. The local and global sinks have their own filters, so they can
+// <linkto class=LogFilterInterface>LogFilterInterface</linkto>
+// which is used to reject or pass messages.
+// The local and global sinks have their own filters, so they can
 // pass different message priorities (e.g., global <src>DEBUGGING</src> and
 // local <src>NORMAL</src>). Generally applications code shouldn't change the
 // global filter.
@@ -119,8 +120,8 @@
 // LogSink logger2(logger1);  // logger2 references logger1
 // logger2.post(message);     // ends up in "logtable"
 // </srcblock>
-// You can even have different <src>LogFilter</src>'s attached to the different
-// <src>LogSink</src>s.
+// You can even have different <src>LogFilterInterface</src>'s 
+// attached to the different <src>LogSink</src>s.
 //
 // <motivation>
 // Logging changes to data and informing users what the software is doing in
@@ -140,24 +141,24 @@ public:
   // a memory local sink that holds the messages in memory.
   // If a filter isn't defined, default to <src>NORMAL</src>.
   // <group>
-  LogSink ();
-  LogSink (const LogFilter &filter, Bool nullSink = True);
+  explicit LogSink (LogMessage::Priority filter = LogMessage::NORMAL,
+		    Bool nullSink = True);
+  explicit LogSink (const LogFilterInterface &filter, Bool nullSink = True);
   // </group>
 
   // Log to an ostream. It is the responsiblity of the caller to ensure that
   // <src>os</src> will last as long as the <src>LogSink</src>s that use it.
   // Normally you would use <src>&cerr</src> as the argument.
-  LogSink (const LogFilter &filter, ostream *os);
-
-  // Log to an AIPS++ <linkto class=Table>Table</linkto>. If fileName does
-  // not exist it will be created, if it does exist it will be appended to.
-  // The description of the table and some useful utility functions
-  // (for manipulating log table descriptions) for log tables are
-  // available in <linkto class=TableLogSink>TableLogSink</linkto>.
   // <group>
-  LogSink (const LogFilter &filter, const String &fileName);
-  LogSink (const LogFilter &filter, const Char* fileName);
+  LogSink (LogMessage::Priority filter, ostream *os);
+  LogSink (const LogFilterInterface &filter, ostream *os);
   // </group>
+
+  // Log to the given sink.
+  // It is primarily intended to log to a
+  // <linkto class=TableLogSink>TableLogSink</linkto>.
+  LogSink (const LogFilterInterface &filter,
+	   const CountedPtr<LogSinkInterface>&);
 
   // Make a referencing copy of <src>other</src>. That is, if you post a
   // message to the new object, it behaves as if you had posted it to the
@@ -166,6 +167,16 @@ public:
   LogSink (const LogSink &other);
   LogSink &operator= (const LogSink &other);
   // </group>
+
+  // Temporary to avoid problem that the bool constructor is taken
+  // if a char* is passed.
+  // They are not implemented, so compiler should give warning.
+  // The 3rd argument is added to make it different from current
+  // version which is still in the system library.
+   LogSink (const LogFilterInterface &filter, const String &fileName, Int n=0);
+   LogSink (const LogFilterInterface &filter, const Char* fileName, Int n=0);
+   LogSink (LogMessage::Priority, const String &fileName, Int n=0);
+   LogSink (LogMessage::Priority, const Char* fileName, Int n=0);
 
   ~LogSink();
 
@@ -213,8 +224,8 @@ public:
   //# Bring out of LogSinkInterface only for documentation purposes
   // Get or set the filter of this particular <src>LogSink</src>.
   // <group>
-  virtual const LogFilter &filter() const;
-  virtual LogSinkInterface &filter (const LogFilter &filter);
+  virtual const LogFilterInterface &filter() const;
+  virtual LogSinkInterface &filter (const LogFilterInterface &filter);
   // </group>
 
   // Change the sink that this <src>LogSink</src> actually uses.
@@ -224,17 +235,17 @@ public:
   LogSink &localSink (LogSinkInterface *&fromNew);
   // </group>
 
-  // Get/set the global sink. The global sink defaults to using
-  // <src>cerr</src>. Generally applications code shouldn't change the global
-  // sink.
+  // Get/set the global sink or check if the global sink is null. The global
+  // sink defaults to using <src>cerr</src>. Generally applications code
+  // shouldn't change the global sink.
   // <group>
-  static Bool nullGlobalSink();
   static LogSinkInterface &globalSink();
   static void globalSink (LogSinkInterface *&fromNew);
+  static Bool nullGlobalSink();
   // </group>
 
-  // Write any pending output.
-  virtual void flush();
+  // Write any pending output (by default also the global sink).
+  virtual void flush (Bool global=True);
 
   // Returns the id for this class...
   static String localId( );

@@ -1,5 +1,5 @@
 //# NullLogSink.cc: Throw away all messages.
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <aips/Logging/NullLogSink.h>
-
+#include <aips/Logging/LogFilter.h>
 
 String NullLogSink::localId( ) {
     return String("NullLogSink");
@@ -42,7 +42,14 @@ NullLogSink::NullLogSink()
     // Nothing
 }
 
-NullLogSink::NullLogSink(const LogFilter &filter) : LogSinkInterface(filter)
+NullLogSink::NullLogSink(LogMessage::Priority filter)
+: LogSinkInterface(LogFilter(filter))
+{
+    // Nothing
+}
+
+NullLogSink::NullLogSink(const LogFilterInterface &filter)
+: LogSinkInterface(filter)
 {
     // Nothing
 }

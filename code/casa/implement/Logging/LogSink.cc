@@ -1,5 +1,5 @@
 //# LogSink.cc: Distribute LogMessages to their destination(s)
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 
 #include <aips/Logging/LogSink.h>
 #include <aips/Logging/LogMessage.h>
+#include <aips/Logging/LogFilter.h>
 
 #include <aips/Logging/NullLogSink.h>
 #include <aips/Logging/MemoryLogSink.h>
@@ -48,60 +49,80 @@ String LogSink::id( ) const {
     return String("LogSink");
 }
 
-LogSink::LogSink()
-: LogSinkInterface(LogFilter(LogMessage::NORMAL))
-{
-    local_sink_p = new NullLogSink(LogMessage::DEBUGGING);
-
-    if ( ! LogSink::global_sink_p )
-	LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
-
-    local_ref_to_global_p = *LogSink::global_sink_p;
-
-    AlwaysAssert(! local_sink_p.null(), AipsError);
-}
-
-LogSink::LogSink(const LogFilter &filter, Bool nullSink)
-: LogSinkInterface(filter)
+LogSink::LogSink(LogMessage::Priority filter, Bool nullSink)
+: LogSinkInterface(LogFilter(filter))
 {
     if ( ! LogSink::global_sink_p )
-	LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
+        LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
 
     local_ref_to_global_p = *LogSink::global_sink_p;
 
     if (nullSink) {
-        local_sink_p = new NullLogSink(LogMessage::DEBUGGING);
+        local_sink_p = new NullLogSink(LogFilter(LogMessage::DEBUGGING));
     } else {
-        local_sink_p = new MemoryLogSink(LogMessage::DEBUGGING);
+        local_sink_p = new MemoryLogSink(LogFilter(LogMessage::DEBUGGING));
     }
     AlwaysAssert(! local_sink_p.null(), AipsError);
 }
 
-LogSink::LogSink(const LogFilter &filter, ostream *os)
-  : LogSinkInterface(filter), 
-    local_sink_p(new StreamLogSink(LogMessage::DEBUGGING, os))
+LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
+: LogSinkInterface(filter)
 {
-
     if ( ! LogSink::global_sink_p )
-	LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
+        LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
+
+    local_ref_to_global_p = *LogSink::global_sink_p;
+
+    if (nullSink) {
+        local_sink_p = new NullLogSink(LogFilter(LogMessage::DEBUGGING));
+    } else {
+        local_sink_p = new MemoryLogSink(LogFilter(LogMessage::DEBUGGING));
+    }
+    AlwaysAssert(! local_sink_p.null(), AipsError);
+}
+
+LogSink::LogSink(LogMessage::Priority filter, ostream *os)
+  : LogSinkInterface(LogFilter(filter)), 
+    local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os))
+{
+    if ( ! LogSink::global_sink_p )
+        LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
 
     local_ref_to_global_p = *LogSink::global_sink_p;
 
     AlwaysAssert(! local_sink_p.null(), AipsError);
 }
 
-//!!! The LogSink constructor that makes a table is in LogSink2.cc. This is done
-//!!! to avoid linking in the table system if you only log to a stream.
+LogSink::LogSink(const LogFilterInterface &filter, ostream *os)
+  : LogSinkInterface(filter), 
+    local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os))
+{
+    if ( ! LogSink::global_sink_p )
+        LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
+
+    local_ref_to_global_p = *LogSink::global_sink_p;
+
+    AlwaysAssert(! local_sink_p.null(), AipsError);
+}
+
+LogSink::LogSink (const LogFilterInterface &filter,
+		  const CountedPtr<LogSinkInterface>& sink)
+  : LogSinkInterface(filter),
+    local_sink_p(sink)
+{
+    if ( ! LogSink::global_sink_p )
+        LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
+
+    local_ref_to_global_p = *LogSink::global_sink_p;
+}
 
 LogSink::LogSink(const LogSink &other) 
   : LogSinkInterface(other), local_sink_p(other.local_sink_p)
 {
-
     if ( ! LogSink::global_sink_p )
-	LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
+        LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
 
     local_ref_to_global_p = *LogSink::global_sink_p;
-
 }
 
 LogSink &LogSink::operator=(const LogSink &other)
@@ -117,7 +138,7 @@ LogSink &LogSink::operator=(const LogSink &other)
 
 LogSink::~LogSink()
 {
-       flush();
+    flush();
 }
 
 Bool LogSink::post(const LogMessage &message) 
@@ -196,12 +217,12 @@ String LogSink::getObjectID (uInt i) const
   return local_sink_p->getObjectID(i);
 }
 
-const LogFilter &LogSink::filter() const
+const LogFilterInterface &LogSink::filter() const
 {
     return this->LogSinkInterface::filter();
 }
 
-LogSinkInterface &LogSink::filter(const LogFilter &thefilter)
+LogSinkInterface &LogSink::filter(const LogFilterInterface &thefilter)
 {
     return this->LogSinkInterface::filter(thefilter);
 }
@@ -236,9 +257,6 @@ LogSinkInterface &LogSink::globalSink()
 
 void LogSink::globalSink(LogSinkInterface *&fromNew)
 {
-    if ( ! LogSink::global_sink_p )
-	LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
-
     (*global_sink_p).replace(fromNew);
     fromNew = 0;
     AlwaysAssert(!(*global_sink_p).null(), AipsError);
@@ -265,12 +283,12 @@ void LogSink::clearLocally()
     local_sink_p->clearLocally();
 }
 
-void LogSink::flush()
+void LogSink::flush (Bool global)
 {
     if (!local_sink_p.null()) {
-        local_sink_p->flush();
+        local_sink_p->flush(False);
     }
-    if (!(*global_sink_p).null()) {
-        (*global_sink_p)->flush();
+    if (global  &&  !(*global_sink_p).null()) {
+        (*global_sink_p)->flush(False);
     }
 }
