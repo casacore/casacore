@@ -5350,3 +5350,11 @@
 15 038 src rm aips/implement/Exceptions/CanDelete.cc
 15 063 src rm aips/implement/RTTI/Typeinfo.h
 15 063 src rm aips/implement/RTTI/Typeinfo2.cc
+15 063 src rm aips/implement/Arrays/ArrayRtti.h
+15 063 src rm aips/implement/Arrays/ArrayRtti.cc
+15 063 src rm aips/implement/Arrays/VectorRtti.h
+15 063 src rm aips/implement/Arrays/VectorRtti.cc
+15 063 src rm aips/implement/Arrays/MatrixRtti.h
+15 063 src rm aips/implement/Arrays/MatrixRtti.cc
+15 063 src rm aips/implement/Arrays/CubeRtti.h
+15 063 src rm aips/implement/Arrays/CubeRtti.cc
