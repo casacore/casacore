@@ -1882,3 +1882,4 @@
 08 004 top rm docs/user/aipsview.ps
 08 004 top rm docs/design/ClassTemplate.ps
 08 004 top rm docs/design/ClassTemplate.text
+08 004 top rm docs/design/OverviewTemplate.ps
