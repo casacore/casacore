@@ -202,8 +202,16 @@ void ComponentList::rename(const String & fileName,
   AlwaysAssert(option != Table::Old, AipsError);
   AlwaysAssert(theROFlag == False, AipsError);
   DebugAssert(ok(), AipsError);
+  if (fileName  == "") {
+    if (!theTable.isNull()) {
+      theTable.markForDelete();
+      theTable = Table();
+      theROFlag = False;
+    }
+    return;
+  }
   // See if this list is associated with a Table. 
-  if (!theTable.isNull())
+  if (!theTable.isNull()) 
       theTable.rename(fileName, option);
   // Otherwise construct a Table to hold the list
   else { 
