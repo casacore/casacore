@@ -182,5 +182,11 @@ public:
   // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
   virtual Bool ok() const = 0;
+
+protected:
+  //# These functions are used by derived classes implementing concrete
+  //# versions of the toRecord and fromRecord member functions.
+  Bool addFreq(String & errorMessage, RecordInterface & record) const;
+  Bool readFreq(String & errorMessage, const RecordInterface & record);
 };
 #endif
