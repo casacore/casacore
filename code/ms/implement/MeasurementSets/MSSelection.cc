@@ -1,5 +1,5 @@
 //# MSSelection.cc: Implementation of MSSelection.h
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -547,6 +547,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
 //    toTableExprNode  TableExprNode             Table expression node
 //
   TableExprNode condition;
+  Bool setCond=False;
   String colName;
 
   // Check all fields by turn in the MS selection
@@ -555,29 +556,56 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
   if (selectStartTime_p) {
     colName = MS::columnName(MS::TIME);
     MVTime mvStart(startTime_p.getValue());
-    condition = condition && (ms.col(colName) >= mvStart);
+    if(!setCond){
+      condition=(ms.col(colName) >= mvStart);
+      setCond=True;
+    }
+    else{
+      condition = condition && (ms.col(colName) >= mvStart);
+    }
   };
 
   // End time
   if (selectEndTime_p) {
     colName = MS::columnName(MS::TIME);
     MVTime mvEnd(endTime_p.getValue());
-    condition = condition && (ms.col(colName) <= mvEnd);
+    if(!setCond){
+      condition=(ms.col(colName) <= mvEnd);
+      setCond=True;
+    }
+    else{
+      condition = condition && (ms.col(colName) <= mvEnd);
+    }
   };
 
   // Field id's
   if (selectFieldIds_p) {
     colName = MS::columnName(MS::FIELD_ID);
-    condition = condition && (ms.col(colName).in(fieldIds_p));
+    if(!setCond){
+      condition=(ms.col(colName).in(fieldIds_p));
+      setCond=True;
+    }
+    else{
+      condition = condition && (ms.col(colName).in(fieldIds_p));
+    }
   };
+
+
 
   // Field names
   if (selectFieldNames_p) {
     // Look-up in FIELD sub-table
     MSFieldIndex msFI(ms.field());
     colName = MS::columnName(MS::FIELD_ID);
-    condition = condition && 
-      (ms.col(colName).in(msFI.matchFieldName(fieldNames_p)));
+
+    if(!setCond){
+      condition=(ms.col(colName).in(msFI.matchFieldName(fieldNames_p)));
+      setCond=True;
+    } 
+    else{
+      condition = condition && 
+	(ms.col(colName).in(msFI.matchFieldName(fieldNames_p)));
+    }
   };
 
   // Source names
@@ -586,15 +614,28 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
     MSSourceIndex msSI(ms.source());
     MSFieldIndex msFI(ms.field());
     colName = MS::columnName(MS::FIELD_ID);
-    condition = condition && 
+    if(!setCond){
+      condition=(ms.col(colName).in
+		 (msFI.matchSourceId(msSI.matchSourceName(sourceNames_p))));
+      setCond=True;
+    } 
+    else{
+      condition = condition && 
       (ms.col(colName).in
        (msFI.matchSourceId(msSI.matchSourceName(sourceNames_p))));
+    }
   };
 
   // Scan numbers
   if (selectScanNos_p) {
     colName = MS::columnName(MS::SCAN_NUMBER);
-    condition = condition && (ms.col(colName).in(scanNos_p));
+    if(!setCond){
+      condition=(ms.col(colName).in(scanNos_p));
+      setCond=True;
+    }
+    else{
+      condition = condition && (ms.col(colName).in(scanNos_p));
+    }
   };
 
   // Spectral window id's
@@ -602,8 +643,14 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
     // Look-up in DATA_DESC sub-table
     MSDataDescIndex msDDI(ms.dataDescription());
     colName = MS::columnName(MS::DATA_DESC_ID);
-    condition = condition &&
-      (ms.col(colName).in(msDDI.matchSpwId(spwIds_p)));
+    if(!setCond){
+      condition= (ms.col(colName).in(msDDI.matchSpwId(spwIds_p)));
+      setCond=True;
+    }
+    else{
+      condition = condition &&
+	(ms.col(colName).in(msDDI.matchSpwId(spwIds_p)));
+    }
   };
 
   // Frequency groups
@@ -612,9 +659,16 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
     MSSpWindowIndex msSPWI(ms.spectralWindow());
     MSDataDescIndex msDDI(ms.dataDescription());
     colName = MS::columnName(MS::DATA_DESC_ID);
-    condition = condition && 
-      (ms.col(colName).in
-       (msDDI.matchSpwId(msSPWI.matchFreqGrp(freqGrps_p))));
+   if(!setCond){
+     condition=(ms.col(colName).in
+		(msDDI.matchSpwId(msSPWI.matchFreqGrp(freqGrps_p))));
+     setCond=True;
+   }
+   else{
+     condition = condition && 
+       (ms.col(colName).in
+	(msDDI.matchSpwId(msSPWI.matchFreqGrp(freqGrps_p))));
+   }
   };
 
   // Antenna id's
@@ -623,7 +677,14 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
     TableExprNode antennaCondition = ms.col(colName).in(antennaIds_p);
     colName = MS::columnName(MS::ANTENNA2);
     antennaCondition = antennaCondition || (ms.col(colName).in(antennaIds_p));
-    condition = condition && antennaCondition;
+    
+    if(!setCond){
+      condition=antennaCondition;
+      setCond=True;
+    }
+    else{
+      condition = condition && antennaCondition;
+    }
   };
 
   // Antenna names
@@ -635,7 +696,15 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
     colName = MS::columnName(MS::ANTENNA2);
     antennaCondition = antennaCondition || 
       (ms.col(colName).in(msAI.matchAntennaName(antennaNames_p)));
-    condition = condition && antennaCondition;
+
+    if(!setCond){
+      condition=antennaCondition;
+      setCond=True;
+    }
+    else{
+      condition = condition && antennaCondition;
+    }
+
   };
 
   // Interferometer id's
@@ -648,7 +717,16 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
     TableExprNode feedCondition = ms.col(colName).in(feedIds_p);
     colName = MS::columnName(MS::FEED2);
     feedCondition = feedCondition || (ms.col(colName).in(feedIds_p));
-    condition = condition && feedCondition;
+ 
+    if(!setCond){
+      condition=feedCondition;
+      setCond=True;
+    }
+    else{
+      condition = condition && feedCondition;
+    }
+
+
   };
 
   // Polarization correlation types
@@ -656,7 +734,15 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
   // Array id's
   if (selectArrayIds_p) {
     colName = MS::columnName(MS::ARRAY_ID);
-    condition = condition && (ms.col(colName).in(arrayIds_p));
+
+    if(!setCond){
+      condition=(ms.col(colName).in(arrayIds_p));
+      setCond=True;
+    }
+    else{
+      condition = condition && (ms.col(colName).in(arrayIds_p));
+    }
+
   };
 
   // UV range
@@ -669,7 +755,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
     // Loop over all rows in the MS
     Vector<Int> rowsel;
     Int nRowSel = 0;
-    for (Int row=0; row<ms.nrow(); row++) {
+    for (uInt row=0; row<ms.nrow(); row++) {
       Int ddid = msMainCol.dataDescId()(row);
       Int spwid = msDataDescCol.spectralWindowId()(ddid);
       Double refFreq = msSpwCol.refFrequency()(spwid);
@@ -681,7 +767,14 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
 	rowsel(nRowSel) = row;
       };
     };
-    condition = condition && (ms.nodeRownr().in(rowsel));
+    
+    if(!setCond){
+      condition=(ms.nodeRownr().in(rowsel));
+      setCond=True;
+    }
+    else{
+      condition = condition && (ms.nodeRownr().in(rowsel));
+    }
   };
   
   // MS selection string
@@ -709,7 +802,7 @@ void MSSelection::fromSelectionItem(const GlishRecord& selectionItem)
   // Debug print statements
   cout << "MSSel::fromSI, at start, selRec.nfields=" << selRec.nfields()
        << endl;
-  for (Int fld=0; fld<selRec.nfields(); fld++) {
+  for (uInt fld=0; fld<selRec.nfields(); fld++) {
     cout << "MSSel::fromGR, fld= " << fld << ", name= "
 	 << selRec.name(fld) << ", type= "
 	 << selRec.type(fld) << endl;
