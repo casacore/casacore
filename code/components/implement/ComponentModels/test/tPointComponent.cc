@@ -29,15 +29,17 @@
 #include <trial/ComponentModels/SkyComponent.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/PagedImage.h>
-#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/String.h>
@@ -51,35 +53,38 @@ int main() {
       MVDirection defMVdir;
       MDirection defDirJ2000(defMVdir);
       MDirection defDirB1950(defMVdir, MDirection::B1950);
+      
       PointComponent defPoint;
       Vector<Double> sampledFlux(4);
       Vector<Double> expectedFlux(4); 
       expectedFlux = 0.0; expectedFlux(0) = 1.0;
-      defPoint.sample(sampledFlux, defDirJ2000);
+      const MVAngle tol = Quantity(1.0, "mas");
+      defPoint.sample(sampledFlux, defDirJ2000, tol);
       AlwaysAssert(allNear(sampledFlux.ac(), expectedFlux.ac(), 1E-12), 
- 		   AipsError);
-      defPoint.sample(sampledFlux, defDirB1950);
+		   AipsError);
+      defPoint.sample(sampledFlux, defDirB1950, tol);
       expectedFlux = 0.0;
       AlwaysAssert(allNear(sampledFlux.ac(), expectedFlux.ac(), 1E-12), 
- 		   AipsError);
+		   AipsError);
       cout << "Passed the default Point component test" << endl;
     }
     {
       // Create a point component at a defined non-J2000 position
       MVDirection dir1934(Quantity(293.5,"deg"),
- 			  Quantity(-63, "deg") + Quantity(43, "'"));
+			  Quantity(-63, "deg") + Quantity(43, "'"));
       MDirection coord1934J2000(dir1934, MDirection::J2000);
       MDirection coord1934B1950(dir1934, MDirection::B1950);
       Vector<Double> flux1934(4); flux1934 = 0.0; flux1934(0) = 6.3;
       PointComponent B1934(flux1934, coord1934B1950);
       Vector<Double> sampledFlux(4);
-      B1934.sample(sampledFlux, coord1934B1950);
+      const MVAngle tol = Quantity(1.0, "mas");
+      B1934.sample(sampledFlux, coord1934B1950, tol);
       AlwaysAssert(allNear(sampledFlux.ac(), flux1934.ac(), 1E-12), 
- 		   AipsError);
-      B1934.sample(sampledFlux, coord1934J2000);
+		   AipsError);
+      B1934.sample(sampledFlux, coord1934J2000, tol);
       AlwaysAssert(allNear(sampledFlux.ac(), flux1934.ac()*0.0, 1E-12),
- 		   AipsError);
-       cout << "Passed the arbitrary Point component test" << endl;
+		   AipsError);
+      cout << "Passed the arbitrary Point component test" << endl;
     }
     {
       // Create a default point component
@@ -90,8 +95,8 @@ int main() {
       Vector<Double> pointFlux(4);
       B1934.flux(pointFlux);
       AlwaysAssert(allNear(pointFlux.ac(), flux1934.ac(), 1E-12), 
-  		   AipsError);
-      
+ 		   AipsError);
+   
       // Set and verify the position of the point component. It is internally
       // converted to a J2000 reference frame
       MVDirection dir1934(Quantity(293.5,"deg"),Quantity(-63.8,"deg"));
@@ -100,14 +105,14 @@ int main() {
       MDirection coord1934J2000;
       B1934.position(coord1934J2000);
       AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
-  		   AipsError); 
+ 		   AipsError); 
       AlwaysAssert(coord1934J2000.getValue().near(MDirection::Convert(
- 		   coord1934B1950,MDirection::J2000)().getValue()),AipsError);
-      
+		   coord1934B1950,MDirection::J2000)().getValue()),AipsError);
+   
       // Check this is a point component
       AlwaysAssert(B1934.type() == ComponentType::POINT, AipsError);
       AlwaysAssert(ComponentType::name(B1934.type()).matches("Point") == 1, 
- 		   AipsError);
+		   AipsError);
       // Check the parameters interface (there are no parameters!)
       AlwaysAssert(B1934.nParameters() == 0, AipsError);
       Vector<Double> parms;
@@ -120,11 +125,11 @@ int main() {
   			"Parameter Vector"));
       }
       catch (AipsError x) {
- 	if (!x.getMesg().contains("newParms.nelements() == nParameters()")) {
- 	  cerr << x.getMesg() << endl;
- 	  cout << "FAIL" << endl;
- 	  return 1;
- 	}
+	if (!x.getMesg().contains("newParms.nelements() == nParameters()")) {
+	  cerr << x.getMesg() << endl;
+	  cout << "FAIL" << endl;
+	  return 1;
+	}
       }
       end_try;
       try {
