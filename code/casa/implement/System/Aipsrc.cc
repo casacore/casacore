@@ -301,7 +301,7 @@ void Aipsrc::save(const String keyword, const String val) {
     Int editCnt = 0;		// count for edits
     String kwt = keyword + ":";  // keyword test
     ifstream istr(filno, ios::in | ios::nocreate);
-    while (istr.getline(buf, sizeof(buf))) {
+    while (istr.getline(buf, 8192)) {
       buffer = buf;
       if (editSeen) {
 	if (buffer.index(kwt) == 0) {
@@ -398,7 +398,7 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
       const Regex comm("^[ 	]*#");	// Comment line
       const Regex defin(":[ 	]*");	// Line with value
       const Regex lspace("^[ 	]*");	// Leading spaces
-      while (fileAipsrc.getline(buf, sizeof(buf))) {
+      while (fileAipsrc.getline(buf, 8192)) {
 	buffer = buf;
 	if (buffer.empty() || buffer.contains(comm))	// Ignore comments
 	  continue;
