@@ -1,5 +1,5 @@
 //# Primes.h: This class provides some prime number operations using a cached table
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,10 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
 
-// <summary> 
-// Primes creates a reference table of prime numbers, and performs prime-related
-// functions, such as factoring a number.
-// </summary>
+// <summary> Creates a reference table of prime numbers, and some functions </summary>
 //
 // <reviewed reviewer="Gareth Hunt" date="94/08/19" tests="tPrimes">
 //
@@ -71,7 +68,7 @@
 // </synopsis> 
 //
 // <example>
-// <code>
+// <srcblock>
 // #include <aips/Mathematics/Primes.h>
 // #include <aips/Utilities/Assert.h>
 // #include <iostream.h>
@@ -112,7 +109,7 @@
 //     return 0;
 // }
 //
-// </code>
+// </srcblock>
 // </example>
 //
 // <motivation>
