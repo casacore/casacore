@@ -137,7 +137,7 @@ void TableRecordRep::addField (const String& name, const TableRecord& value,
     }
     // Use default ctor and assignment to be sure that the
     // new record is variable structured.
-    TableRecord* ptr = new TableRecord (type);
+    TableRecord* ptr = new TableRecord (this, type);
     *ptr = value;
     addDataPtr (ptr);
 }
