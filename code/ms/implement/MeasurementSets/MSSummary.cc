@@ -734,8 +734,19 @@ void MSSummary::listHistory (LogIO& os, Bool verbose) const
       os << "The HISTORY table is empty" << endl;
     }
     else {
-      os << "History entries: " << msHis.time().nrow() << endl;
-      // os << "HISTORY table entries" << endl;
+      uInt nmessages = msHis.message().nrow();
+      os << "History table entries: " << nmessages << endl;
+      //os << (msHis.message()).getColumn() << endl;
+      for (uInt i=0 ; i < nmessages; i++) {
+      	os << i+1 << ": " << ((msHis.message()).getColumn())(i) << endl;
+      }
+      /* The following code is incredibilty CPU and memory intensive!
+      #include <casa/Arrays/ArrayIter.h>
+      ReadOnlyArrayIterator<String> hisIter( ((msHis.message()).getColumn()), 1 );
+      while (! hisIter.pastEnd()) {
+	os << hisIter.array() << endl;
+      }
+      */
     }
   }
   os << LogIO::POST;
