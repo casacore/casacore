@@ -48,6 +48,9 @@ class Regex;
 // <srcblock>
 //	string.at(2,3) = "five";
 // </srcblock> 
+// If the SubString starts at a position outside the length of the
+// original string (like e.g. in after(1000000)), a zero length string is
+// created (not an exception thrown like in standard string operations).
 // </synopsis>
 
 class SubString {
@@ -944,9 +947,9 @@ ostream &operator<<(ostream &s, const String &x);
 //# Inlines
 inline SubString::SubString(const string &str, string::size_type pos,
 			    string::size_type len) :
-  ref_p(str), pos_p(pos),
-  len_p((len == string::npos || pos+len > str.length()) ?
-	str.length()-pos : len) {}
+  ref_p(str), pos_p((pos > str.length()) ? str.length() : pos),
+  len_p((len == string::npos || pos_p+len > str.length()) ?
+	str.length()-pos_p : len) {}
 
 inline SubString String::operator()(size_type pos, size_type len) {
   return at(pos, len); }
