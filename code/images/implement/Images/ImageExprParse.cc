@@ -273,7 +273,7 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 	return toComplex(arg1);
     } else if (itsSval == "dcomplex") {
 	return toDComplex(arg1);
-    } else if (itsSval == "bool") {
+    } else if (itsSval == "bool"  ||  itsSval == "boolean") {
 	return toBool(arg1);
     } else {
 	throw (AipsError ("1-argument function " + itsSval + " is unknown"));
