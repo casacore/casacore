@@ -285,7 +285,7 @@ void NewMeasurementSet::init()
 	colMapDef(VIDEO_POINT,"VIDEO_POINT",TpArrayComplex,
 		  "zero frequency point, needed for transform to lag","","");
 	// WEIGHT
-	colMapDef(WEIGHT, "WEIGHT", TpFloat,
+	colMapDef(WEIGHT, "WEIGHT", TpArrayFloat,
 		  "Weight for each polarization spectrum","","");
 	// WEIGHT_SPECTRUM
 	colMapDef(WEIGHT_SPECTRUM, "WEIGHT_SPECTRUM", TpArrayFloat,
@@ -382,6 +382,7 @@ void NewMeasurementSet::init()
 	// Also define columns with Arrays with their correct dimensionality
 	addColumnToDesc(requiredTD, FLAG, 2);
 	addColumnToDesc(requiredTD, FLAG_CATEGORY, 3);
+	addColumnToDesc(requiredTD, WEIGHT, 1);
 	addColumnToDesc(requiredTD, SIGMA, 1);
 	// Now define all other columns (duplicates are skipped)
 	for (i = UNDEFINED_COLUMN+1; 

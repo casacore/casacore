@@ -153,7 +153,7 @@ public:
     //
     // Weight of spectrum. This is the weight assigned by the correlator and
     // does NOT get overwritten by e.g. imaging tasks that do weighting.<BR>
-    // Float.
+    // Float(Nc).
     WEIGHT,
     //
     // Not a column, but just an enum specifying the number of required columns.
