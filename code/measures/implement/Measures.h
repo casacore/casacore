@@ -30,11 +30,12 @@
 
 //# Includes
 #include <aips/Measures/Unit.h>
+//# Next one at this place
+#include <aips/Measures/QC.h>
 #include <aips/Measures/UnitMap.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/QMath.h>
 #include <aips/Measures/QLogical.h>
-#include <aips/Measures/QC.h>
 #include <aips/Measures/Measure.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasValue.h>
