@@ -73,12 +73,18 @@
 # modification, and on Red Hat Linux 5.1 systems with only slight
 # modification (the C++EGCS definition should be uncommented), if all of
 # the prerequisite software packages have been installed "normally."
-#
+#-----------------------------------------------------------------------------
+
 # ATTENTION: If you are using the EGCS compiler suite (the default
 # compiler suite provided with Red Hat Linux version 5.1, for example),
 # uncomment the following definition:
-#-----------------------------------------------------------------------------
 #C++EGCS := -fguiding-decls -DNATIVE_EXCP
+
+# And if your EGCS C compiler is named something other than 'cc'
+# (e.g. it's 'egcs' under Red Hat Linux 5.1), uncomment--and tweak, if
+# necessary--the following definition:
+#CC := egcs
+
 
 # Libraries and include paths.
 #-----------------------------------------------------------------------------
