@@ -26,19 +26,29 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
 #include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_MCPosition_bug1;
-#endif
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Measures/MCPosition.h>
 #include <aips/Measures/MeasTable.h>
 
+//# Statics
+Bool MCPosition::stateMade_p = False;
+uInt MCPosition::ToRef_p[N_Routes][3] = {
+  {MPosition::ITRF,	MPosition::WGS84,	0},
+  {MPosition::WGS84,	MPosition::ITRF,	0} };
+uInt MCPosition::FromTo_p[MPosition::N_Types][MPosition::N_Types];
+
 //# Constructors
 MCPosition::MCPosition() :
-  DVEC1(0) {}
+  DVEC1(0) {
+  if (!stateMade_p) {
+    MCBase::makeState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
+		      MPosition::N_Types, MCPosition::N_Routes,
+		      MCPosition::ToRef_p);
+  };
+}
 
 //# Destructor
 MCPosition::~MCPosition() {
@@ -52,27 +62,16 @@ MCPosition::~MCPosition() {
 void MCPosition::getConvert(MConvertBase &mc,
 			    const MRBase &inref, 
 			    const MRBase &outref) {
-// Array of conversion routines to call
-    static const MCPosition::Routes 
-	FromTo[MPosition::N_Types][MPosition::N_Types] = {
-    { MCPosition::N_Routes,    MCPosition::ITRF_WGS84},
-    { MCPosition::WGS84_ITRF,  MCPosition::N_Routes}
-    };
 
-// List of codes converted to
-    static const MPosition::Types ToRef[MCPosition::N_Routes] = {
-	MPosition::WGS84, MPosition::ITRF
-	};
-
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    Int tmp;
-    while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-    };
+  Int iin  = inref.getType();
+  Int iout = outref.getType();
+  Int tmp;
+  while (iin != iout) {
+    tmp = FromTo_p[iin][iout];
+    iin = ToRef_p[tmp][1];
+    mc.addMethod(tmp);
+    initConvert(tmp, mc);
+  };
 }
 
 void MCPosition::clearConvert() {
@@ -81,22 +80,16 @@ void MCPosition::clearConvert() {
 
 //# Conversion routines
 void MCPosition::initConvert(uInt which, MConvertBase &mc) {
-  if (!DVEC1) {
-    DVEC1 = new Vector<Double>(3);
-  };
+
+  if (False) initConvert(which, mc);	// Stop warning
+
+  if (!DVEC1) DVEC1 = new Vector<Double>(3);
 
   switch (which) {
 
-  case ITRF_WGS84:
-    break;
-
-  case WGS84_ITRF:
-    break;
-
   default:
     break;
-	
-  }
+  };
 }
 
 void MCPosition::doConvert(MeasValue &in,
@@ -112,6 +105,8 @@ void MCPosition::doConvert(MVPosition &in,
 			   MRBase &outref,
 			   const MConvertBase &mc) {
     
+  if (False) { inref.getType(); outref.getType(); }; // to stop warnings
+
   Double g1, g2, g3;
 
   for (Int i=0; i<mc.nMethod(); i++) {
