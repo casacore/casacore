@@ -27,6 +27,10 @@
 
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/WCRegion.h>
+#include <trial/Images/WCUnion.h>
+#include <trial/Images/WCIntersection.h>
+#include <trial/Images/WCDifference.h>
+#include <trial/Images/WCComplement.h>
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LCExtension.h>
@@ -42,79 +46,61 @@ typedef Vector<Int> imageregion_gppbug1;
 typedef Vector<Double> imageregion_gppbug2;
 
 
+ImageRegion::ImageRegion()
+: LattRegionHolder (uInt(0)),
+  itsWC            (0)
+{}
+
 ImageRegion::ImageRegion (const LCRegion& region)
-: itsLC     (region.cloneRegion()),
-  itsSlicer (0),
-  itsWC     (0),
-  itsNdim   (region.ndim())
+: LattRegionHolder (region),
+  itsWC            (0)
 {}
 
 ImageRegion::ImageRegion (const LCSlicer& slicer)
-: itsLC     (0),
-  itsSlicer (new LCSlicer(slicer)),
-  itsWC     (0),
-  itsNdim   (slicer.ndim())
+: LattRegionHolder (slicer),
+  itsWC            (0)
 {}
 
 ImageRegion::ImageRegion (const WCRegion& region)
-: itsLC     (0),
-  itsSlicer (0),
-  itsWC     (region.cloneRegion()),
-  itsNdim   (region.ndim())
+: LattRegionHolder (region.ndim()),
+  itsWC            (region.cloneRegion())
 {}
 
 ImageRegion::ImageRegion (LCRegion* region)
-: itsLC     (region),
-  itsSlicer (0),
-  itsWC     (0),
-  itsNdim   (region->ndim())
+: LattRegionHolder (region),
+  itsWC            (0)
 {}
 
 ImageRegion::ImageRegion (LCSlicer* slicer)
-: itsLC     (0),
-  itsSlicer (slicer),
-  itsWC     (0),
-  itsNdim   (slicer->ndim())
+: LattRegionHolder (slicer),
+  itsWC            (0)
 {}
 
 ImageRegion::ImageRegion (WCRegion* region)
-: itsLC     (0),
-  itsSlicer (0),
-  itsWC     (region),
-  itsNdim   (region->ndim())
+: LattRegionHolder (region->ndim()),
+  itsWC            (region)
 {}
 
 ImageRegion::ImageRegion (const ImageRegion& other)
-: itsLC     (0),
-  itsSlicer (0),
-  itsWC     (0)
+: LattRegionHolder (other),
+  itsWC            (other.itsWC)
 {
-    operator= (other);
+    if (itsWC != 0) {
+	itsWC = itsWC->cloneRegion();
+    }
 }
 
 ImageRegion::~ImageRegion()
 {
-    delete itsLC;
-    delete itsSlicer;
     delete itsWC;
 }
 
 ImageRegion& ImageRegion::operator= (const ImageRegion& other)
 {
     if (this != &other) {
-	delete itsLC;
-	delete itsSlicer;
+	LattRegionHolder::operator= (other);
         delete itsWC;
-	itsLC = other.itsLC;
-	itsSlicer = other.itsSlicer;
 	itsWC = other.itsWC;
-	itsNdim = other.itsNdim;
-	if (itsLC != 0) {
-	    itsLC = itsLC->cloneRegion();
-	}
-	if (itsSlicer != 0) {
-	    itsSlicer = new LCSlicer(*itsSlicer);
-	}
 	if (itsWC != 0) {
 	    itsWC = itsWC->cloneRegion();
 	}
@@ -122,54 +108,45 @@ ImageRegion& ImageRegion::operator= (const ImageRegion& other)
     return *this;
 }
 
-Bool ImageRegion::operator== (const ImageRegion& other) const
+LattRegionHolder* ImageRegion::clone() const
 {
-    if (isWCRegion()   != other.isWCRegion()
-    ||  isLCRegion()   != other.isLCRegion()
-    ||  isLCSlicer()   != other.isLCSlicer()) {
+    return new ImageRegion (*this);
+}
+
+Bool ImageRegion::operator== (const LattRegionHolder& other) const
+{
+    if (! LattRegionHolder::operator== (other)) {
 	return False;
     }
-    Bool match;
-    if (isLCRegion()) {
-	match = (*itsLC == other.asLCRegion());
-    } else if (isLCSlicer()) {
-	match = (*itsSlicer == other.asLCSlicer());
-    } else {
-	match = (*itsWC == other.asWCRegion());
+    if (itsWC != 0) {
+	return (*itsWC == *other.asWCRegionPtr());
     }
-    return match;
+    return True;
 }
 
-const LCRegion& ImageRegion::asLCRegion() const
+Bool ImageRegion::isWCRegion() const
 {
-    AlwaysAssert (isLCRegion(), AipsError);
-    return *itsLC;
+    return ToBool (itsWC != 0);
 }
 
-const LCSlicer& ImageRegion::asLCSlicer() const
-{
-    AlwaysAssert (isLCSlicer(), AipsError);
-    return *itsSlicer;
-}
-
-const WCRegion& ImageRegion::asWCRegion() const
+const WCRegion* ImageRegion::asWCRegionPtr() const
 {
     AlwaysAssert (isWCRegion(), AipsError);
-    return *itsWC;
+    return itsWC;
 }
 
 LatticeRegion ImageRegion::toLatticeRegion (const CoordinateSystem& cSys,
 					    const IPosition& shape) const
 {
     if (isLCRegion()) {
-	return LatticeRegion (*itsLC);
+	return LatticeRegion (asLCRegion());
     }
     if (isLCSlicer()) {
-	return LatticeRegion (itsSlicer->toSlicer (cSys.referencePixel(),
-						   shape),
+	return LatticeRegion (asLCSlicer().toSlicer (cSys.referencePixel(),
+						     shape),
 			      shape);
     }
-    // LatticeRegion takes over the LCRegion pointer,
+    // LatticeRegion takes over the created LCRegion pointer,
     // so it does not need to be deleted.
     // This is the top conversion, so use all axes.
     return LatticeRegion (toLCRegion (cSys, shape));
@@ -181,7 +158,7 @@ LCRegion* ImageRegion::toLCRegion (const CoordinateSystem& cSys,
     // Convert the region to an LCRegion.
     LCRegion* region = 0;
     if (isLCRegion()) {
-	region = itsLC->cloneRegion();
+	region = asLCRegion().cloneRegion();
     } else if (isWCRegion()) {
         region = itsWC->toLCRegion (cSys, shape);
     } else {
@@ -195,12 +172,12 @@ TableRecord ImageRegion::toRecord (const String& tableName) const
 {
     TableRecord record;
     if (isLCRegion()) {
-        return itsLC->toRecord (tableName);
+        return asLCRegion().toRecord (tableName);
     }
     if (isWCRegion()) {
         return itsWC->toRecord (tableName);
     }
-    return itsSlicer->toRecord (tableName);
+    return asLCSlicer().toRecord (tableName);
 }
 
 ImageRegion* ImageRegion::fromRecord (const TableRecord& record,
@@ -225,4 +202,41 @@ ImageRegion* ImageRegion::fromRecord (const TableRecord& record,
 			  "record has an unknown region type"));
     }
     return new ImageRegion (LCSlicer::fromRecord (record, tableName));
+}
+
+
+LattRegionHolder* ImageRegion::makeUnion
+                                (const LattRegionHolder& other) const
+{
+    if (! isWCRegion()) {
+    return LattRegionHolder::makeUnion (other);
+    }
+	return new ImageRegion
+           (new WCUnion (*asWCRegionPtr(), *other.asWCRegionPtr()));
+}
+LattRegionHolder* ImageRegion::makeIntersection
+                                (const LattRegionHolder& other) const
+{
+    if (isWCRegion()) {
+	return new ImageRegion
+           (new WCIntersection (*asWCRegionPtr(), *other.asWCRegionPtr()));
+    }
+    return LattRegionHolder::makeIntersection (other);
+}
+LattRegionHolder* ImageRegion::makeDifference
+                                (const LattRegionHolder& other) const
+{
+    if (isWCRegion()) {
+	return new ImageRegion
+           (new WCDifference (*asWCRegionPtr(), *other.asWCRegionPtr()));
+    }
+    return LattRegionHolder::makeDifference (other);
+}
+LattRegionHolder* ImageRegion::makeComplement() const
+{
+    if (isWCRegion()) {
+	return new ImageRegion
+           (new WCComplement (*asWCRegionPtr()));
+    }
+    return LattRegionHolder::makeComplement();
 }
