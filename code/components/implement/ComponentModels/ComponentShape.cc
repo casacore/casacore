@@ -105,7 +105,7 @@ ComponentShape::setRefDirectionError(const Quantum<Double>& newRefDirErrLat,
 				     const Quantum<Double>& newRefDirErrLong) {
   if (badError(newRefDirErrLat) || badError(newRefDirErrLong)) {
     LogIO logErr(LogOrigin("ComponentShape", "setRefDirectionError"));
-    logErr << "The errors must be angular quantities."
+    logErr << "The errors must be non-negative angular quantities."
 	   << LogIO::EXCEPTION;
   }
   itsDirErrLat = newRefDirErrLat;
