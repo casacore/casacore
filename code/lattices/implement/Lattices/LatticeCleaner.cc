@@ -27,7 +27,6 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 
-#include <aips/Logging.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/OS/File.h>
 #include <aips/Containers/Record.h>

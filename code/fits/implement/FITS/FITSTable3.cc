@@ -40,7 +40,6 @@
 #include <aips/Arrays/Array.h>
 
 #include <aips/version.h>
-#include <aips/Logging.h>
 
 #include <aips/sstream.h>
 #include <aips/iomanip.h>
