@@ -5923,3 +5923,4 @@
 16 317 src mv trial/implement/Functionals/test/tNQGaussian2D.cc aips/implement/Functionals/test/tNQGaussian2D.cc
 16 317 src mv trial/implement/Functionals/test/tNQPolynomial.cc aips/implement/Functionals/test/tNQPolynomial.cc
 16 325 src mv trial/implement/Functionals/FunctionTraits.h aips/implement/Functionals/FunctionTraits.h
+16 325 top rm code/bima/miriad
