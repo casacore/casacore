@@ -1,5 +1,5 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997,1998,1999
+//# StokesCoordinate.cc: this defines StokesCoordinate which shoe-horns Stokes axes into a Coordinate
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -478,15 +478,14 @@ Coordinate *StokesCoordinate::clone() const
 }
 
 String StokesCoordinate::format(String& units,
-                                const Coordinate::formatType,
-                                const Double worldValue,
-                                const uInt worldAxis,
-                                const Bool,
-                                const Int) const
+                                Coordinate::formatType,
+                                Double worldValue,
+                                uInt worldAxis,
+                                Bool, Int, Bool) const
 {
    units = worldAxisUnits()(worldAxis);
 //
-// This is very hard work
+// This is very hard work !
 //
    Stokes::StokesTypes sType;
    Vector<Double> pixel(1), world(1);

@@ -1,5 +1,5 @@
 //# StokesCoordinate.h: Interconvert between pixel number and Stokes value.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -194,11 +194,12 @@ public:
     //
     // Thus, all arguments to do with formatting and precision are ignored.
     virtual String format(String& units,
-                          const Coordinate::formatType format,
-                          const Double worldValue,
-                          const uInt worldAxis,
-                          const Bool absolute,
-                          const Int precision = -1) const;
+                          Coordinate::formatType format,
+                          Double worldValue,
+                          uInt worldAxis,
+                          Bool absolute,
+                          Int precision = -1,
+                          Bool native=True) const;
 
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     
