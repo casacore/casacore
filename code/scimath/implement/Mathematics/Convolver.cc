@@ -111,8 +111,6 @@ makeXfr(const Array<FType>& psf,
   else 
     for (uInt i = 0; i < psfDim; i++)
       theFFTSize(i) = max(thePsfSize(i), convImageSize(i));
-  // set up the FFT server to do transforms of the required length
-  theFFT.Set(theFFTSize);
   {
     IPosition tmp = theXfr.shape();
     tmp = 0;
@@ -126,18 +124,17 @@ makeXfr(const Array<FType>& psf,
     paddedPsf = 0.;  
     paddedPsf(blc, trc) = psfND;
     // And do the fft
-    theXfr = theFFT.rcnyfft(paddedPsf);
+    theFFT.fft(theXfr, paddedPsf, False);
   }
   else
-    theXfr = theFFT.rcnyfft(psfND);
+    theFFT.fft(theXfr, psfND);
 }
 
 template<class FType> void Convolver<FType>::
 makePsf(Array<FType>& psf){
-  if (thePsf.nelements() == 0){
-    Array<FType> paddedPsf;
-    Int oddFFT = theFFTSize(0)-Int(theFFTSize(0)/2)*2;
-    paddedPsf = theFFT.crnyfft(theXfr, -1, oddFFT);
+  if (thePsf.nelements() == 0) {
+    Array<FType> paddedPsf(theFFTSize);
+    theFFT.fft(paddedPsf, theXfr, True);
     IPosition trc, blc;
     blc = (theFFTSize-thePsfSize)/2;
     trc = blc + thePsfSize - 1;
@@ -199,16 +196,16 @@ doConvolution(Array<FType>& result,
     paddedModel = 0.;
     paddedModel(blc, trc) = model;
     // And calculate its transform
-    fftModel = theFFT.rcnyfft(paddedModel);
+    theFFT.fft(fftModel, paddedModel);
   }
   else
-    fftModel = theFFT.rcnyfft(model);
+    theFFT.fft(fftModel, model);
   // Multiply by the transfer function
   fftModel *= theXfr;
 
   // Do the inverse transform
-  Int oddFFT = theFFTSize(0)-Int(theFFTSize(0)/2)*2;
-  Array<FType> convolvedData = theFFT.crnyfft(fftModel, -1, oddFFT);
+  Array<FType> convolvedData(theFFTSize);
+  theFFT.fft(convolvedData, fftModel);
   // Extract the required part of the convolved data
   IPosition trc, blc; 
   if (fullSize) {
@@ -277,3 +274,6 @@ getPsf(Bool cachePsf){
     thePsf.reference(psf);
   return psf;
 }
+// Local Variables: 
+// compile-command: "cd test; gmake OPTLIB=1 inst"
+// End: 
