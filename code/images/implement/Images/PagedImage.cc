@@ -561,7 +561,7 @@ template<class T>
 void PagedImage<T>::restoreMiscInfo (const TableRecord& rec)
 {
   if (rec.isDefined("miscinfo")  &&
-      rec.dataType("miscinfo") != TpRecord) {
+      rec.dataType("miscinfo") == TpRecord) {
     setMiscInfoMember (rec.asRecord ("miscinfo"));
   }
 }
