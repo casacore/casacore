@@ -1,0 +1,21 @@
+
+change id: 0050
+ author:   Tim Cornwell
+ date:     2000/09/10
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   pgplotter
+ type:     Code
+ category: Change
+ summary:  Upgraded editing capabilities in pgplotter
+
+The editing capabilities have been upgraded to use the 
+autogui. This means that the form of the editing gui
+looks more familar and also that the usual capabilities
+like cut and paste are supported. I've removed the
+distinction between the guis for adding and changing
+commands since this seems unnatural to many testers.
+(We'll see if this is any better!)
+
+Tim
