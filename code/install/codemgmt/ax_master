@@ -3270,3 +3270,7 @@
 13 177 src rm doc/faq/synthesis.html
 13 177 src rm doc/reference/online.latex
 13 179 src mv /trial/implement/ComponentModels/test/tSpectralModel.cc /trial/implement/ComponentModels/test/tConstantSpectrum.cc
+13 187 src rm trial/implement/Display/ColormapSFLinearVar.h
+13 187 src rm trial/implement/Display/ColormapSFLinearVar.cc
+13 187 src rm trial/implement/Display/ColormapShapeFunc.h
+13 187 src rm trial/implement/Display/ColormapShapeFunc.cc
