@@ -117,6 +117,18 @@ const Record &FITSTimedTable::units() const
     return table_p->units();
 }
 
+const Record &FITSTimedTable::displayFormats() const
+{
+    if (!table_p) return dummyDisps;
+    return table_p->displayFormats();
+}
+
+const Record &FITSTimedTable::nulls() const
+{
+    if (!table_p) return dummyNulls;
+    return table_p->nulls();
+}
+
 const RecordDesc &FITSTimedTable::description() const
 {
     return rowDesc_p;

@@ -88,6 +88,8 @@ public:
     virtual const TableRecord &keywords() const;
     virtual const RecordDesc &description() const;
     virtual const Record &units() const;
+    virtual const Record &displayFormats() const;
+    virtual const Record &nulls() const;
 
     virtual Bool hasChanged() const { return hasChanged_p;}
     virtual void resetChangedFlag() { hasChanged_p = False; }
@@ -130,6 +132,8 @@ private:
     uInt timeColumn_p;
     TableRecord dummyKeywords;
     Record dummyUnits;
+    Record dummyDisps;
+    Record dummyNulls;
 
     void initNowRecord(const RecordDesc& desc);
     void initNextRecord(const RecordDesc& desc);
