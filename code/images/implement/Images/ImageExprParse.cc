@@ -168,6 +168,10 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 	return ceil(arg1);
     } else if (itsSval == "floor") {
 	return floor(arg1);
+    } else if (itsSval == "round") {
+	return round(arg1);
+    } else if (itsSval == "sign") {
+	return sign(arg1);
     } else if (itsSval == "conj") {
 	return conj(arg1);
     } else if (itsSval == "abs"  ||  itsSval == "amplitude") {
@@ -184,8 +188,16 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 	return max(arg1);
     } else if (itsSval == "mean") {
 	return mean(arg1);
+    } else if (itsSval == "variance") {
+	return variance(arg1);
+    } else if (itsSval == "stddev") {
+	return stddev(arg1);
+    } else if (itsSval == "avdev") {
+	return avdev(arg1);
     } else if (itsSval == "sum") {
 	return sum(arg1);
+    } else if (itsSval == "ndim") {
+	return ndim(arg1);
     } else if (itsSval == "nelements"  ||  itsSval == "count") {
 	return nelements(arg1);
     } else if (itsSval == "any") {
