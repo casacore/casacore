@@ -90,6 +90,8 @@ friend class HostInfo;
     int pageshift;		/* log base 2 of the pagesize */
 };
 
+// </group>
+
 
 HostMachineInfo::HostMachineInfo( ) :valid(1) {
 

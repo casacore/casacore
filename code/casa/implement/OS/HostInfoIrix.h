@@ -88,6 +88,9 @@ friend class HostInfo;
 
 };
 
+// </group>
+
+
 HostMachineInfo::HostMachineInfo( )  : valid(1) {
 
 	pagesize = getpagesize();

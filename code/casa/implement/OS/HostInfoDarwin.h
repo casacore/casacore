@@ -51,6 +51,26 @@
 
 #include <mach/mach.h>
 
+// <summary>
+// HostInfo for Darwin machines.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=HostInfo>HostInfo</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// This file provides the Linux specific functions for HostInfo.
+// It is selectively included by HostInfo.cc.
+// </synopsis>
+//
+// <group name="HostInfo">
+
 /* Log base 2 of 1024 is 10 (2^10 == 1024) */
 #define LOG1024		10
 
@@ -78,6 +98,9 @@ friend class HostInfo;
     int swap_used;
     int swap_free;
 };
+
+// </group>
+
 
 HostMachineInfo::HostMachineInfo( ) : valid(1) {
     register int pagesize;

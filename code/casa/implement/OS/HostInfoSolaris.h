@@ -126,6 +126,9 @@ friend class HostInfo;
     int swap_free;
 };
 
+// </group>
+
+
 int HostMachineInfo::pageshift = 0;
 
 HostMachineInfo::~HostMachineInfo( ) { if ( kc ) kstat_close(kc); }

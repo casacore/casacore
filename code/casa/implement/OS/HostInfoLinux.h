@@ -96,6 +96,9 @@ friend class HostInfo;
     int swap_free;
 };
 
+// </group>
+
+
 static inline char *
 skip_ws(const char *p)
 {
