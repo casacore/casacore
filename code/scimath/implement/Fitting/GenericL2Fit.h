@@ -210,7 +210,7 @@ template<class T> class GenericL2Fit : public FitLSQ {
  public: 
   //# Constants
   // Default collinearity test for SVD
-  static const Double COLLINEARITY;
+  const Double COLLINEARITY;
 
   //# Constructors
   // Create a fitter: the normal way to generate a fitter object. Necessary

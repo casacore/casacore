@@ -34,12 +34,11 @@
 
 //# Constants
 // Default svd collinearity
-template<class T>
-const Double GenericL2Fit<T>::COLLINEARITY = 1e-8;
 
 template<class T>
 GenericL2Fit<T>::GenericL2Fit() :
   FitLSQ(static_cast<typename FunctionTraits<T>::BaseType *>(0)),
+  COLLINEARITY(1e-8),
   aCount_ai(0),
   svd_p(False), ptr_derive_p(0),
   pCount_p(0), ndim_p(0),
@@ -55,6 +54,7 @@ GenericL2Fit<T>::GenericL2Fit() :
 template<class T>
 GenericL2Fit<T>::GenericL2Fit(LSQ::normType type) :
   FitLSQ(static_cast<typename FunctionTraits<T>::BaseType *>(0)),
+  COLLINEARITY(1e-8),
   aCount_ai(0),
   svd_p(False), ptr_derive_p(0),
   pCount_p(0), ndim_p(0),
@@ -71,6 +71,7 @@ GenericL2Fit<T>::GenericL2Fit(LSQ::normType type) :
 template<class T>
 GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
   FitLSQ(other), aCount_ai(other.aCount_ai),
+  COLLINEARITY(1e-8),
   svd_p(other.svd_p), ptr_derive_p(0),
   pCount_p(other.pCount_p), ndim_p(other.ndim_p),
   needInit_p(other.needInit_p), solved_p(other.solved_p),
