@@ -1,5 +1,5 @@
 //# TableKeyword.cc: A keyword value representing a table
-//# Copyright (C) 1996,1997,1998,2000,2001
+//# Copyright (C) 1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -134,8 +134,8 @@ const Table& TableKeyword::table() const
 	if (attr_p.openWritable()  &&  Table::isWritable (attr_p.name())) {
 	    option = Table::Update;
 	}
-	////	*table_p = Table(attr_p.name(), attr_p.lockOptions(), option);
-	*table_p = Table(attr_p.name(), option);
+       	*table_p = Table(attr_p.name(), attr_p.lockOptions(), option);
+	//// *table_p = Table(attr_p.name(), option);
     }
     return *table_p;
 }
