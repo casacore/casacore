@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Images/ImageExprParse.h>
+#include <trial/Images/ImageExpr.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/ArrayLattice.h>
@@ -37,10 +38,66 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Containers/Block.h>
+#include <aips/Glish/GlishRecord.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
+
+
+//# This functions simulates the same function in DOImage2.cc.
+String substituteOID (Block<LatticeExprNode>& nodes,
+		      String& exprName,
+		      const String& expr)
+{
+  nodes.resize (0, False, True);
+  exprName = expr;
+  return expr;
+}
+void makeRegionBlock (PtrBlock<const ImageRegion*>& regions,
+		      const GlishRecord&,
+		      LogIO& os)
+{
+   for (uInt j=0; j<regions.nelements(); j++) {
+      delete regions[j];
+   }
+   regions.resize (0, True, True);
+}
+
+//# This function is a copy of the expr function in DOImage2.cc, which
+//# failed mysteriously on sneffels (RedHat Linux 5.2) in April 1999.
+void doExpr (const String& expr, const GlishRecord& regions)
+{
+  LogIO os(LogOrigin("image", "expr(const String& expr)", WHERE));
+
+// Get LatticeExprNode (tree) from parser
+// Convert the GlishRecord containing regions to a
+// PtrBlock<const ImageRegion*>.
+
+  if (expr.empty()) {
+    os << "You must specify an expression" << LogIO::EXCEPTION;
+  }
+  Block<LatticeExprNode> temps;
+  String exprName;
+  String newexpr = substituteOID (temps, exprName, expr);
+  PtrBlock<const ImageRegion*> tempRegs;
+  makeRegionBlock (tempRegs, regions, os);
+  LatticeExprNode node = ImageExprParse::command (newexpr, temps, tempRegs);
+  
+// Delete the ImageRegions (by using an empty GlishRecord).
+  
+  makeRegionBlock (tempRegs, GlishRecord(), os);
+  
+// Make the ImageExpr object.  It will throw an exception if there
+// are no true coordinates
+  
+  LatticeExpr<Float> latEx(node); 
+  ImageInterface<Float>* pImage = new ImageExpr<Float>(latEx, exprName);
+  if (pImage==0) {
+    os << "Failed to create PagedImage" << LogIO::EXCEPTION;
+  }
+}
 
 
 main (int argc, char *argv[])
@@ -99,6 +156,11 @@ main (int argc, char *argv[])
 
   {
     cout << endl;
+    try {
+      doExpr ("xxx", GlishRecord());
+    } catch (AipsError x) {
+      cout << x.getMesg() << endl;
+    } end_try;
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("b/a1"));
     } catch (AipsError x) {
@@ -261,7 +323,7 @@ main (int argc, char *argv[])
 	       shape, IPosition(aArr.ndim(),1));
     Double result = 3.5*bVal + cos(cVal) -
 	            10/min(cVal,dVal)*-eVal*log(bVal) - C::pi;
-    if (! allEQ (aArr, result)) {
+    if (! allNear (aArr, result, 1.0e-10)) {
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aArr.ac() << endl;
 	foundError = True;
