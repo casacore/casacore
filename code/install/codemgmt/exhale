@@ -970,7 +970,7 @@
   then
 #    Delete incremental updates which are more than 10 days old.
      find . -name tmp -prune -o -name "master-$NEWMAJOR.???.tar.gz" \
-        ! -name master-$NEWMAJOR.000.tar.gz -mtime +10 -exec rm -f {} \;
+        ! -name master-$NEWMAJOR.000.tar.gz -mtime +30 -exec rm -f {} \;
 
 #    Delete previous cumulative updates with only one link.
      find . -name tmp -prune -o -name "master-$NEWMAJOR.???.ALL.tar.gz" \
