@@ -30,6 +30,7 @@
 
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageInfo.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <aips/FITS/fitsio.h>
@@ -203,7 +204,7 @@ Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 }
 
 Bool ImageFITSConverter::ImageToFITS(String &error,
-				     ImageInterface<Float> &image,
+				     ImageInterface<Float>& image,
 				     const String &fitsName, 
 				     uInt memoryInMB,
 				     Bool preferVelocity,
@@ -325,7 +326,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
                    for (uInt i=0; i<n; i++) {
                       if (isNaN(cptr[i]) || !maskPtr[i]) {
-//                      if (cptr[i]!=cptr[i] || !maskPtr[i]) {
                          hasBlanks = True;
                       } else {
                          if (minPix > maxPix) {
@@ -340,7 +340,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
                 } else {
                    for (uInt i=0; i<n; i++) {
                       if (isNaN(cptr[i])) {
-//                    if (cptr[i] != cptr[i]) {
                          hasBlanks = True;
                       } else {
                          if (minPix > maxPix) {
@@ -387,7 +386,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     for (i=0; i < ndim; i++) {
         naxis(i) = shape(i);
     }
-    header.define("NAXIS", naxis);
+    header.define("naxis", naxis);
     header.define("bscale", bscale);
     header.setComment("bscale", "PHYSICAL = PIXEL*BSCALE + BZERO");
     header.define("bzero", bzero);
@@ -399,12 +398,26 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
         header.define("datamin", minPix);
         header.define("datamax", maxPix);
     }
+    ImageInfo ii = image.imageInfo();
+    Vector<Quantum<Double> > beam = ii.restoringBeam();
+    if (beam.nelements()>0) {
+       Float bmaj = beam(0).getValue(Unit("deg"));
+       Float bmin = beam(1).getValue(Unit("deg"));
+       Float bpa  = beam(2).getValue(Unit("deg"));
+//
+        header.define("bmaj", bmaj);
+        header.define("bmin", bmin);
+        header.define("bpa", bpa);
+    }
 
     header.define("COMMENT1", ""); // inserts spaces
 
-    // I should FITS-ize the units
+// I should FITS-ize the units
+
     header.define("BUNIT", upcase(image.units().getName()).chars());
     header.setComment("BUNIT", "Brightness (pixel) unit");
+
+  
 
     IPosition shapeCopy = shape;
     Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, 
