@@ -40,13 +40,33 @@ select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[01279]")
  2 3 V2
  7 8 V7
  9 10 V9
-select ab,ac,af from tTableGram_tmp.tab where af == pattern("?{3,5,8}")
+select ab,ac,af from tTableGram_tmp.tab where lower(af)!~m/v[01279]/
+    has been executed
+    select of 5 rows
+3 selected columns:  ab ac af
+ 3 4 V3
+ 4 5 V4
+ 5 6 V5
+ 6 7 V6
+ 8 9 V8
+select ab,ac,af from tTableGram_tmp.tab where af ~ p/?{3,5,8}/
     has been executed
     select of 3 rows
 3 selected columns:  ab ac af
  3 4 V3
  5 6 V5
  8 9 V8
+select ab,ac,af from tTableGram_tmp.tab where af != pattern("?{3,5,8}")
+    has been executed
+    select of 7 rows
+3 selected columns:  ab ac af
+ 0 1 V0
+ 1 2 V1
+ 2 3 V2
+ 4 5 V4
+ 6 7 V6
+ 7 8 V7
+ 9 10 V9
 select ab,ac,af from tTableGram_tmp.tab where af == sqlpattern("_3%")
     has been executed
     select of 1 rows
@@ -154,6 +174,18 @@ select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])
  2 3
  3 4
  4 5
+select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab)
+    has been executed
+    select of 4 rows
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 2 3
+ 3 4
+select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab LIMIT 11)
+    has been executed
+    select of 0 rows
+2 selected columns:  ab ac
 select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.tab where ab>4)
     has been executed
     select of 4 rows
@@ -217,6 +249,29 @@ select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab
  7 8
  8 9
  9 10
+select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1=:=ab]]
+    has been executed
+    select of 3 rows
+1 selected columns:  ab
+ 7
+ 8
+ 9
+select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1=:<ab]]
+    has been executed
+    select of 2 rows
+1 selected columns:  ab
+ 7
+ 8
+select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1<:=ab]]
+    has been executed
+    select of 2 rows
+1 selected columns:  ab
+ 8
+ 9
+select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1<:<ab]]
+    has been executed
+    select of 0 rows
+1 selected columns:  ab
 select ab,ac from tTableGram_tmp.tab where any(isnan(arr1)) || isnan(ab)
     has been executed
     select of 0 rows

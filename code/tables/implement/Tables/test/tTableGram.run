@@ -24,8 +24,10 @@ tTableGram 'select all ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af'
 tTableGram 'select ab from tTableGram_tmp.tab where ab==2^1^2 || ab==-2^-1*8/-2*3'
 
 tTableGram 'select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[01279]")'
+tTableGram 'select ab,ac,af from tTableGram_tmp.tab where lower(af)!~m/v[01279]/'
 
-tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af == pattern("?{3,5,8}")'
+tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af ~ p/?{3,5,8}/'
+tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af != pattern("?{3,5,8}")'
 
 tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af == sqlpattern("_3%")'
 tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af like "_3%"'
@@ -51,6 +53,9 @@ tTableGram 'select ab,ac from tTableGram_tmp.tab orderby round(2*sin(ab)),ac des
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])'
 
+tTableGram 'select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab)'
+tTableGram 'select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab LIMIT 11)'
+
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.tab where ab>4)'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4'
@@ -62,6 +67,11 @@ tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))'
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab NOT IN (2,(3))'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>4 giving [ac=:=ac+0.5]]'
+
+tTableGram 'select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1=:=ab]]'
+tTableGram 'select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1=:<ab]]'
+tTableGram 'select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1<:=ab]]'
+tTableGram 'select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1<:<ab]]'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where any(isnan(arr1)) || isnan(ab)'
 
