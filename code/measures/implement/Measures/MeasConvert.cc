@@ -95,6 +95,16 @@ MeasConvert<M>::MeasConvert(const M &ep, typename M::Types mr) :
 }
 
 template<class M>
+MeasConvert<M>::MeasConvert(const Measure &ep, typename M::Types mr) :
+  model(0), unit(ep.getUnit()), outref(),
+  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  init();
+  model = ep.clone();
+  outref = typename M::Ref(mr);
+  create();
+}
+
+template<class M>
 MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
 			    const typename M::Ref &mr) :
   model(0), unit(), outref(),

@@ -161,6 +161,7 @@ public:
   MeasConvert(const M &ep, const typename M::Ref &mr);
   MeasConvert(const Measure &ep, const typename M::Ref &mr);
   MeasConvert(const M &ep, typename M::Types mr);
+  MeasConvert(const Measure &ep, typename M::Types mr);
   MeasConvert(const typename M::Ref &mrin, const typename M::Ref &mr);
   MeasConvert(const typename M::Ref &mrin, typename M::Types mr);
   MeasConvert(typename M::Types mrin, const typename M::Ref &mr);
