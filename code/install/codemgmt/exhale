@@ -246,7 +246,7 @@
 
 # Define the list of code areas.
 # Technically, trial should not be among these, but it's necessary.
-  AREAS="install aips dish synthesis vlbi contrib doc trial display"
+  AREAS="install aips dish synthesis vlbi contrib doc trial display trialdisplay"
   CONSORTIA="atnf bima hia nfra nral nrao tifr jive npoi"
   AREAS="$AREAS $CONSORTIA"
 
@@ -362,11 +362,27 @@
   chmod 644 $MSTRETCD/av_cache.gz
   rm -f $MSTRETCD/av_cache-*.gz
 
-  cd $MSTRTMPD
 
 # Produce an incremental change log.
+# First get and clear the AIPS++ changelog.
+  cd $AIPSROOT/code
+  co -l -q -p CHANGELOG.LAST > $MSTRTMPD/alog.log
+  rm -f CHANGELOG.LAST
+  touch CHANGELOG.LAST
+  ci -q -m"cleared" CHANGELOG.LAST
+  if [ -s $MSTRTMPD/alog.log ]
+  then
+     echo "" >> $MSTRTMPD/alog.log
+     echo "" >> $MSTRTMPD/alog.log
+     echo "RCS change log" >> $MSTRTMPD/alog.log
+     echo "==============" >> $MSTRTMPD/alog.log
+     echo "" >> $MSTRTMPD/alog.log
+  fi
+
+# Append the RCS change log.
+  cd $MSTRTMPD
   sed -n -e '$s/^[^ ]* //p' $MSTRFTPD/VERSION > $MSTRTMPD/alog.time
-  alog --file=$MSTRTMPD/alog.time --master --noheader > $MSTRTMPD/alog.log
+  alog --file=$MSTRTMPD/alog.time --master --noheader >> $MSTRTMPD/alog.log
   if [ -s $MSTRTMPD/alog.log ]
   then
      echo ""
