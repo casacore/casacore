@@ -52,6 +52,13 @@ class IPosition;
 // However, a derived class could show the progress using for example
 // a <linkto class=ProgressMeter>ProgressMeter</linkto>. A derived
 // class should override the virtual functions from this class.
+//
+// The user of the LatticeProgress object should first call
+// function <src>init</src> with the total number of steps
+// that are to be done.   Thereafter, after each step has been
+// executed, function <src>nstepsDone</src> should be called
+// after each step.  Finally, function <src>done</src> should
+// be called.
 // </synopsis>
 
 // <example>
@@ -66,7 +73,7 @@ class IPosition;
 // as a bridge between the Lattice module and the ProgressMeter class
 // (or any other class showing the progress).
 // </motivation>
-
+//
 //# <todo asof="1997/08/01">   
 //#   <li> 
 //# </todo>
@@ -81,24 +88,27 @@ public:
     virtual ~LatticeProgress();
 
 // Initialize the process.
-// It sets the expected number of steps.
-// Thereafter it calls initDerived, so a derived class can initialize itself.
+// It sets the expected number of steps and 
+// calls initDerived, so a derived class can initialize itself.
     void init (uInt expectedNsteps);
 
 // Tell the number of steps done so far.
-// The default implementation does nothing.
+// The default implementation does nothing. A derived class
+// should call the ProgressMeter function <src>update</src>
     virtual void nstepsDone (uInt nsteps);
 
 // The process has ended.
     virtual void done();
 
-// Get the expected number of steps.
+// Recovers the expected number of total steps.
     uInt expectedNsteps() const
         { return itsExpectedNsteps; }
 
 protected:
     // Let a derived class initialize itself.
     // This function is called by <src>init</src>.
+    // The derived class should create the <src>ProgressMeter</src>
+    // in here.
     virtual void initDerived();
 
 private:
