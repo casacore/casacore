@@ -2588,3 +2588,4 @@
 09 513 src rm doc/newsletters/jun98/ahrecipe.tex
 09 513 src mv doc/newsletters/jun98/newsjune.latex doc/newsletters/jun98/newsjune/newsjune.latex
 09 513 src mv doc/newsletters/jun98/newsjune doc/newsletters/jun98/newsjune.dir
+09 513 src mv doc/newsletters/jun98/newsjune/newsjune.latex doc/newsletters/jun98/newsjune.latex
