@@ -30,11 +30,9 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/SumFunction.h>
-#include <aips/Functionals/Gaussian2D.h>
+#include <aips/Functionals/NQCompoundFunction.h>
 #include <aips/Mathematics/Constants.h>
-#include <trial/Functionals/FuncWithAutoDerivs.h>
-#include <aips/Fitting.h>
+#include <trial/Fitting/LQNonLinearFitLM.h>
 #include <aips/Logging.h>
 
 template<class T> class Array;
@@ -181,7 +179,8 @@ public:
     // This function does not interact with the addModel function.
     // Returns a zero length vector if it fails to make an estimate.
     //<group>
-    Vector<Double> estimate(Fit2D::Types type, const MaskedLattice<Float>& data);
+    Vector<Double> estimate(Fit2D::Types type,
+			    const MaskedLattice<Float>& data);
     Vector<Double> estimate(Fit2D::Types type, const Lattice<Float>& data);
     Vector<Double> estimate(Fit2D::Types type, const Array<Float>& data);
     Vector<Double> estimate(Fit2D::Types type, const Array<Float>& data,
@@ -267,8 +266,8 @@ private:
    Bool itsValid, itsValidSolution, itsIsNormalized, itsHasSigma;
    Bool itsInclude;
    Vector<Float> itsPixelRange;
-   SumFunction<AutoDiff<Double>,AutoDiff<Double> > itsFunction;
-   NonLinearFitLM<Double> itsFitter;
+   NQCompoundFunction<AutoDiff<Double> > itsFunction;
+   LQNonLinearFitLM<Double> itsFitter;
    Vector<Double> itsSolution;
    Double itsChiSquared;
    String itsErrorMessage;
@@ -281,8 +280,9 @@ private:
    
 
 //
-   Fit2D::ErrorTypes fit(const Vector<Double>& values, const Matrix<Double>& pos,
-                         const Vector<Double>& sigma);
+   Fit2D::ErrorTypes fit(const Vector<Double>& values,
+			   const Matrix<Double>& pos,
+			   const Vector<Double>& sigma);
 
    Vector<Double> getAvailableSolution() const;
    Vector<Double> getSolution(uInt& iStart, uInt which);
@@ -338,14 +338,7 @@ inline Bool Fit2D::includeIt (Float value, const Vector<Float>& range,
 //
    if (includeIt==1) {
       if (value >= range(0) && value <= range(1)) return True;
-      return False;
-   } else {
-      if (value < range(0) || value > range(1)) return True;
-      return False;
-   }
-//
-// Shut comiler up
-//
+   } else if (value < range(0) || value > range(1)) return True;
    return False;
 }
 
