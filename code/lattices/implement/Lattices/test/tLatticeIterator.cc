@@ -1,5 +1,5 @@
 //# tLatticeIterator.cc:  mechanical test of the LatticeIterator class
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -41,7 +41,9 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Inputs/Input.h>
 #include <iostream.h>
+
 
 void testVectorROIter (const Lattice<Int>& lattice)
 {
@@ -1058,10 +1060,64 @@ void testNonCongruentRWIter (Lattice<Int>& lattice)
     AlwaysAssert(arr(IPosition(4,15,11,0,0)) == 191, AipsError);
 }
 
-
-main ()
+void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2)
 {
-  try {
+  {
+    Timer timer;
+    LatticeIterator<Int> lat1Iter (lat1);
+    // Create dummy lat2Iter to setup cache correctly.
+    // It may not be necessary, because the Table getSlice function
+    // will setup the cache on its first access.
+    RO_LatticeIterator<Int> lat2Iter (lat2, lat1.niceCursorShape());
+    Array<Int> lat2Buffer;
+    while (! lat1Iter.atEnd()) {
+      // Do separate getSlice to use reference semantics if
+      // lat2 is an ArrayLattice.
+      // Note that it requires lat2 to be non-const.
+      lat2.getSlice (lat2Buffer, lat1Iter.position(),
+		     lat1Iter.cursorShape());
+      lat1Iter.rwCursor() += lat2Buffer;
+      lat1Iter++;
+    }
+    timer.show ("  iter-get ");
+  }
+  {
+    Timer timer;
+    // This iterator uses the TileStepper.
+    LatticeIterator<Int> lat1Iter (lat1);
+    // Use tile shape of lat1, because they have to be iterated
+    // in the same way. The cursor has to be resized if needed.
+    RO_LatticeIterator<Int> lat2Iter (lat2, LatticeStepper
+				     (lat1.shape(), lat1.niceCursorShape(),
+				      LatticeStepper::RESIZE));
+    while (! lat1Iter.atEnd()) {
+      lat1Iter.rwCursor() += lat2Iter.cursor();
+      lat1Iter++;
+      lat2Iter++;
+    }
+    timer.show ("  iter-iter");
+  }
+  {
+    Timer timer;
+    LatticeIterator<Int> lat1Iter (lat1);
+    Array<Int> lat2Buffer;
+    while (! lat1Iter.atEnd()) {
+      // Do separate getSlice to use reference semantics if
+      // lat2 is an ArrayLattice.
+      // Note that it requires lat2 to be non-const.
+      lat2.getSlice (lat2Buffer, lat1Iter.position(),
+		     lat1Iter.cursorShape());
+      lat1Iter.rwCursor() += lat2Buffer;
+      lat1Iter++;
+    }
+    timer.show ("  iter-get ");
+  }
+}
+
+
+main (int argc, char *argv[])
+{
+ try {
     {
       cout << "Creating a PagedArray on disk" << endl;
       const TiledShape latticeShape(IPosition(4, 16, 12, 4, 32),
@@ -1244,6 +1300,38 @@ main ()
       ArrayLattice<Int> arrLattice(refLattice);
       testNonCongruentRWIter (arrLattice);
     }
+    // Test some performance aspects.
+    {
+      Input inp(1);
+      inp.Version(" ");
+      inp.Create("nx", "512", "Number of pixels along the x-axis", "int");
+      inp.Create("ny", "512", "Number of pixels along the y-axis", "int");
+      inp.ReadArguments(argc, argv);
+      const uInt nx=inp.GetInt("nx");
+      const uInt ny=inp.GetInt("ny");
+      IPosition shape(2,nx,ny);
+      PagedArray<Int> pagedArr1(shape, "tLatticeIterator_tmp.tab1");
+      PagedArray<Int> pagedArr2(shape, "tLatticeIterator_tmp.tab2");
+      ArrayLattice<Int> latArr1(shape);
+      ArrayLattice<Int> latArr2(shape);
+      {
+	Array<Int> arr(latArr1.shape());
+	indgen(arr);
+	pagedArr1.put (arr);
+	pagedArr2.put (arr);
+	latArr1.put (arr);
+	latArr2.put (arr);
+      }
+      cout << "Shape " << shape << endl;
+      cout << "paged+=paged" << endl;
+      testAdd (pagedArr1, pagedArr2);
+      cout << "array+=array" << endl;
+      testAdd (latArr1, latArr2);
+      cout << "paged+=array" << endl;
+      testAdd (pagedArr1, latArr2);
+      cout << "lat+=paged" << endl;
+      testAdd (latArr1, pagedArr2);
+    }      
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
