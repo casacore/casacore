@@ -1,5 +1,5 @@
 //# ImageUtilities.h: Some utility functions handy for accessing images
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -119,13 +119,6 @@ public:
 // invalid arguments.
    static Bool setNxy (Vector<Int>& nxy,
                        ostream& os);
-
-// Return a Scratch Table where the Table name is constructed from the concatenation
-// of three strings.  These are 1) the first path with the specified available space in Mb given
-// by the entry <src>user.directories.work</src> in the user's <src>.aipsrc</src> 
-// resource file, 2) a specified string and 3) a unique number 
-// worked out by this function.  
-   static Table setScratchTable (const String &tableName, const uInt size=0);
 
 // A storage image is used to accumulate information as a function of the display
 // axes as an image is iterated through.  This function sets the storage image shape 
