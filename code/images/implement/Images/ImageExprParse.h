@@ -1,5 +1,5 @@
 //# ImageExprParse.h: Classes to hold results from image expression parser
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -216,6 +216,7 @@ public:
     ImageExprParse (Double value);
     ImageExprParse (const Complex& value);
     ImageExprParse (const DComplex& value);
+    ImageExprParse (const Char* value);
     ImageExprParse (const String& value);
     // </group>
 
