@@ -27,10 +27,12 @@
 
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeIterInterface.h>
-#include <trial/Lattices/LCBox.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+
+
+typedef Array<Bool> sublattice_gppbug1;
 
 
 template<class T>
@@ -57,7 +59,7 @@ SubLattice<T>::SubLattice (Lattice<T>& lattice,
 
 template<class T>
 SubLattice<T>::SubLattice (const Lattice<T>& lattice,
-			   const LCRegion& region)
+			   const LatticeRegion& region)
 {
   setPtr (lattice.clone(), 0, False);
   setRegion (region);
@@ -65,7 +67,7 @@ SubLattice<T>::SubLattice (const Lattice<T>& lattice,
 
 template<class T>
 SubLattice<T>::SubLattice (Lattice<T>& lattice,
-			   const LCRegion& region,
+			   const LatticeRegion& region,
 			   Bool writableIfPossible)
 {
   setPtr (lattice.clone(), 0, writableIfPossible);
@@ -74,7 +76,7 @@ SubLattice<T>::SubLattice (Lattice<T>& lattice,
 
 template<class T>
 SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice,
-			   const LCRegion& region)
+			   const LatticeRegion& region)
 {
   setPtr (0, lattice.cloneML(), False);
   setRegion (region);
@@ -82,7 +84,7 @@ SubLattice<T>::SubLattice (const MaskedLattice<T>& lattice,
 
 template<class T>
 SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
-			   const LCRegion& region,
+			   const LatticeRegion& region,
 			   Bool writableIfPossible)
 {
   setPtr (0, lattice.cloneML(), writableIfPossible);
@@ -191,19 +193,14 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
 template<class T>
 void SubLattice<T>::setRegion (const LatticeRegion& region)
 {
+  if (itsLatticePtr->shape() != region.region().latticeShape()) {
+    throw (AipsError ("SubLattice::SubLattice - "
+		      "shape of lattice mismatches lattice shape in region"));
+  }
   itsRegion = region;
   if (itsMaskLatPtr != 0) {
     itsRegion.setParent (&itsMaskLatPtr->region());
   }
-}
-template<class T>
-void SubLattice<T>::setRegion (const LCRegion& region)
-{
-  if (itsLatticePtr->shape() != region.latticeShape()) {
-    throw (AipsError ("SubLattice::SubLattice - "
-		      "shape of lattice mismatches lattice shape in region"));
-  }
-  setRegion (LatticeRegion (region));
 }
 template<class T>
 void SubLattice<T>::setRegion (const Slicer& slicer)
@@ -316,7 +313,7 @@ template<class T>
 void SubLattice<T>::putAt (const T& value, const IPosition& where)
 {
   if (!itsWritable) {
-      throw (AipsError ("SubLattice::putSlice - non-writable lattice"));
+      throw (AipsError ("SubLattice::putAt - non-writable lattice"));
   }
   if (itsMaskLatPtr != 0) {
     itsMaskLatPtr->putAt (value, itsRegion.convert (where));

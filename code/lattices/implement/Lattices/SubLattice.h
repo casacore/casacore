@@ -49,7 +49,7 @@
 
 // <prerequisite>
 //   <li> <linkto class="Lattice">Lattice</linkto>
-//   <li> <linkto class="LCRegion">LCRegion</linkto>
+//   <li> <linkto class="LatticeRegion">LatticeRegion</linkto>
 // </prerequisite>
 
 // <synopsis>
@@ -94,14 +94,17 @@ public:
   // </group>
 
   // Create a SubLattice from the given MaskedLattice and region.
+  // Note that the region can be constructed from an
+  // <linkto class=LCRegion>LCRegion</linkto> object or 
+  // <linkto class=Slicer>Slicer</linkto> object (with an optional stride).
   // <br>An exception is thrown if the lattice shape used in the region
   // differs from the shape of the lattice.
   // <group>
-  SubLattice (const Lattice<T>& lattice, const LCRegion& region);
-  SubLattice (Lattice<T>& lattice, const LCRegion& region,
+  SubLattice (const Lattice<T>& lattice, const LatticeRegion& region);
+  SubLattice (Lattice<T>& lattice, const LatticeRegion& region,
 	      Bool writableIfPossible);
-  SubLattice (const MaskedLattice<T>& lattice, const LCRegion& region);
-  SubLattice (MaskedLattice<T>& lattice, const LCRegion& region,
+  SubLattice (const MaskedLattice<T>& lattice, const LatticeRegion& region);
+  SubLattice (MaskedLattice<T>& lattice, const LatticeRegion& region,
 	      Bool writableIfPossible);
   // </group>
   
@@ -176,7 +179,6 @@ public:
   virtual LatticeIterInterface<T>*
                       makeIter (const LatticeNavigator& navigator) const;
 
-protected:
   // Do the actual get of the mask data.
   virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
 
@@ -191,6 +193,7 @@ protected:
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
+protected:
   // Set the various pointer needed to construct the object.
   // One of the pointers should be zero.
   // It takes over the pointer and deletes the object in the destructor.
@@ -204,7 +207,6 @@ protected:
   // The default region is the entire lattice.
   // <group>
   void setRegion (const LatticeRegion& region);
-  void setRegion (const LCRegion& region);
   void setRegion (const Slicer& slicer);
   void setRegion();
   // </group>
