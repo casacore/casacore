@@ -73,8 +73,7 @@ Gaussian3DParam<Type>::~Gaussian3DParam()
 
 
 template<class Type> 
-Gaussian3DParam<Type>& Gaussian3DParam<Type>::operator=(
-                                          const Gaussian3DParam<Type>& other)
+Gaussian3DParam<Type>& Gaussian3DParam<Type>::operator=(const Gaussian3DParam<Type>& other)
 {
   if (this != &other)
   {
