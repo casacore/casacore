@@ -2451,7 +2451,6 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
              cdelt(longAxis) = 1.0;          // degrees
           }
         }
-
 	DirectionCoordinate dir(radecsys,
 				projn,
 				crval(longAxis)*toRadX,	crval(latAxis)*toRadY,
@@ -2670,6 +2669,14 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 		where_j++;
 	    }
 	}
+//
+        for (uInt j=0; j<nlin; j++) {
+           if (::near(lincdelt(j),0.0)) {
+              lincdelt(j) = 1.0;
+              os << "For the LinearCoordinate, axis " << j+1 << " the increment is zero." << endl;
+              os << "I am setting this increment arbitrarily to unity" << LogIO::WARN;
+           }
+        }
 	LinearCoordinate lc(linctype, lincunit, lincrval, lincdelt,
 			    linpc, lincrpix);
 	coordsys.addCoordinate(lc);
