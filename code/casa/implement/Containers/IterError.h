@@ -1,5 +1,5 @@
 //# IterError.h:
-//# Copyright (C) 1993,1994,1995,2000
+//# Copyright (C) 1993,1994,1995,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 class IterError : public AipsError {
 public:
   IterError(const char *msg = 0);      // normal constructor
-  ~IterError ();
+  ~IterError () throw();
 };
 
 // <summary>Iteration Boundary error class</summary>
@@ -45,7 +45,7 @@ public:
 class IterBoundaryError : public IterError {
 public:
   IterBoundaryError(const char *msg = 0);      // normal constructor
-  ~IterBoundaryError ();
+  ~IterBoundaryError () throw();
 };
 
 // <summary>Iteration initialization error</summary>
@@ -53,7 +53,7 @@ public:
 class IterInitError : public IterError {
 public:
   IterInitError(const char *msg = 0);      // normal constructor
-  ~IterInitError ();
+  ~IterInitError () throw();
 };
 
 // <summary>Invalide iteration error class</summary>
@@ -61,7 +61,7 @@ public:
 class InvalidIterError : public IterError {
 public:
   InvalidIterError(const char *msg = 0);      // normal constructor
-  ~InvalidIterError ();
+  ~InvalidIterError () throw();
 };
 
 #endif

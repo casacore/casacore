@@ -1,5 +1,5 @@
 //# TableError.cc: Error classes for the table descriptor classes
-//# Copyright (C) 1994,1995,1996,1997,2000
+//# Copyright (C) 1994,1995,1996,1997,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,14 +33,14 @@ TableError::TableError ()
 TableError::TableError (const String& str)
 : AipsError(str)
 {}
-TableError::~TableError ()
+TableError::~TableError () throw()
 {}
 
 
 TableInternalError::TableInternalError (const String& str)
 : TableError("Internal Table error: " + str)
 {}
-TableInternalError::~TableInternalError ()
+TableInternalError::~TableInternalError () throw()
 {}
 
 
@@ -50,7 +50,7 @@ TableDuplFile::TableDuplFile (const String& name)
 TableDuplFile::TableDuplFile (const String& name, const String& msg)
 : TableError("Table " + name + " already exists" + msg)
 {}
-TableDuplFile::~TableDuplFile ()
+TableDuplFile::~TableDuplFile () throw()
 {}
 
 
@@ -58,49 +58,49 @@ TableNoFile::TableNoFile (const String& name)
 : TableError(name.empty()  ?  String("No table name given at open") :
 	                      "Table " + name + " does not exist")
 {}
-TableNoFile::~TableNoFile ()
+TableNoFile::~TableNoFile () throw()
 {}
 
 
 TableDescNoName::TableDescNoName ()
 : TableError ("No name for table description")
 {}
-TableDescNoName::~TableDescNoName ()
+TableDescNoName::~TableDescNoName () throw()
 {}
 
 
 TableInvOpt::TableInvOpt (const String& cl, const String& str)
 : TableError ("Invalid " + cl + " option: " + str)
 {}
-TableInvOpt::~TableInvOpt ()
+TableInvOpt::~TableInvOpt () throw()
 {}
 
 
 TableInvType::TableInvType (const String& tpin, const String& tpfil)
 : TableError ("Expected type " + tpin + ", found " + tpfil)
 {}
-TableInvType::~TableInvType ()
+TableInvType::~TableInvType () throw()
 {}
 
 
 TableInvColumnDesc::TableInvColumnDesc (const String& name, const String& msg)
 : TableError("Invalid description of column " + name + ": " + msg)
 {}
-TableInvColumnDesc::~TableInvColumnDesc ()
+TableInvColumnDesc::~TableInvColumnDesc () throw()
 {}
 
 
 TableInvHyperDesc::TableInvHyperDesc (const String& name, const String& msg)
 : TableError("Invalid description of hypercolumn " + name + ": " + msg)
 {}
-TableInvHyperDesc::~TableInvHyperDesc ()
+TableInvHyperDesc::~TableInvHyperDesc () throw()
 {}
 
 
 TableUnknownDesc::TableUnknownDesc (const String& name)
 : TableError("ColumnDesc class " + name + " unknown to ColumnDesc::register")
 {}
-TableUnknownDesc::~TableUnknownDesc ()
+TableUnknownDesc::~TableUnknownDesc () throw()
 {}
 
 
@@ -110,7 +110,7 @@ TableInvDT::TableInvDT ()
 TableInvDT::TableInvDT (const String& name)
 : TableError ("Invalid Table data type when accessing column" + name)
 {}
-TableInvDT::~TableInvDT ()
+TableInvDT::~TableInvDT () throw()
 {}
 
 
@@ -120,21 +120,21 @@ TableInvOper::TableInvOper ()
 TableInvOper::TableInvOper (const String& s)
 : TableError ("Invalid Table operation: " + s)
 {}
-TableInvOper::~TableInvOper ()
+TableInvOper::~TableInvOper () throw()
 {}
 
 
 TableArrayConformanceError::TableArrayConformanceError (const String& s)
 : TableError (s + ": Table array conformance error")
 {}
-TableArrayConformanceError::~TableArrayConformanceError ()
+TableArrayConformanceError::~TableArrayConformanceError () throw()
 {}
 
 
 TableConformanceError::TableConformanceError (const String& s)
 : TableError (s + ": Table conformance error (#rows mismatch)")
 {}
-TableConformanceError::~TableConformanceError ()
+TableConformanceError::~TableConformanceError () throw()
 {}
 
 
@@ -144,14 +144,14 @@ TableInvSort::TableInvSort ()
 TableInvSort::TableInvSort (const String& s)
 : TableError ("Invalid table sort: " + s)
 {}
-TableInvSort::~TableInvSort ()
+TableInvSort::~TableInvSort () throw()
 {}
 
 
 TableInvLogic::TableInvLogic ()
 : TableError ("Tables in logical operation have different roots")
 {}
-TableInvLogic::~TableInvLogic ()
+TableInvLogic::~TableInvLogic () throw()
 {}
 
 
@@ -161,19 +161,19 @@ TableInvExpr::TableInvExpr (const String& str)
 TableInvExpr::TableInvExpr (const String& name, const String& str)
 : TableError ("Error in select expression: column " + name + " is invalid; " + str)
 {}
-TableInvExpr::~TableInvExpr ()
+TableInvExpr::~TableInvExpr () throw()
 {}
 
 
 TableVectorNonConform::TableVectorNonConform ()
 : TableError ("Shapes of table vectors are not conformant")
 {}
-TableVectorNonConform::~TableVectorNonConform ()
+TableVectorNonConform::~TableVectorNonConform () throw()
 {}
 
 
 TableParseError::TableParseError (const String& s)
 : TableError ("Parse error in table command: " + s)
 {}
-TableParseError::~TableParseError ()
+TableParseError::~TableParseError () throw()
 {}

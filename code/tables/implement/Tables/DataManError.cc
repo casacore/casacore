@@ -1,5 +1,5 @@
 //# DataManError.cc: Storage manager error classes
-//# Copyright (C) 1994,1995,1996,2000
+//# Copyright (C) 1994,1995,1996,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,21 +35,21 @@ DataManError::DataManError ()
 DataManError::DataManError (const String& str)
 : AipsError("Table DataManager error: " + str)
 { ; }
-DataManError::~DataManError ()
+DataManError::~DataManError () throw()
 { ; }
 
 
 DataManInternalError::DataManInternalError (const String& str)
 : DataManError("Internal error: " + str)
 { ; }
-DataManInternalError::~DataManInternalError ()
+DataManInternalError::~DataManInternalError () throw()
 { ; }
 
 
 DataManUnknownCtor::DataManUnknownCtor (const String& msg)
 : DataManError(msg)
 {}
-DataManUnknownCtor::~DataManUnknownCtor ()
+DataManUnknownCtor::~DataManUnknownCtor () throw()
 {}
 
 
@@ -59,7 +59,7 @@ DataManInvDT::DataManInvDT ()
 DataManInvDT::DataManInvDT (const String& name)
 : DataManError ("Invalid data type when accessing column " + name)
 { ; }
-DataManInvDT::~DataManInvDT ()
+DataManInvDT::~DataManInvDT () throw()
 { ; }
 
 
@@ -69,7 +69,7 @@ DataManInvOper::DataManInvOper ()
 DataManInvOper::DataManInvOper (const String& s)
 : DataManError ("Invalid operation: " + s)
 { ; }
-DataManInvOper::~DataManInvOper ()
+DataManInvOper::~DataManInvOper () throw()
 { ; }
 
 
@@ -79,12 +79,12 @@ DataManUnknownVirtualColumn::DataManUnknownVirtualColumn
 : DataManError ("column " + columnName +
 		" is unknown to virtual column engine " + engineName)
 { ; }
-DataManUnknownVirtualColumn::~DataManUnknownVirtualColumn ()
+DataManUnknownVirtualColumn::~DataManUnknownVirtualColumn () throw()
 { ; }
 
 
 TSMError::TSMError (const String& s)
 : DataManError ("TiledStMan: " + s)
 { ; }
-TSMError::~TSMError ()
+TSMError::~TSMError () throw()
 { ; }

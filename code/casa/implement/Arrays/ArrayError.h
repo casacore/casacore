@@ -1,5 +1,5 @@
 //# ArrayError.h: Exception classes thrown by Array and related classes/functions
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ public:
     ArrayError(const Char *m);
     // Initialize with the supplied message.
     ArrayError(const String &m);
-    ~ArrayError();
+    ~ArrayError() throw();
 };
 
 
@@ -85,7 +85,7 @@ public:
     // of the array and a supplied message.
     ArrayIndexError(const IPosition &index, const IPosition &shape, 
 		    const Char *m="ArrayIndexError");
-    ~ArrayIndexError();
+    ~ArrayIndexError() throw();
     // The out-of-bounds index.
     IPosition index() const;
     // The shape of the violated array.
@@ -112,7 +112,7 @@ public:
     ArrayConformanceError(const Char *m);
     // Initialize with a supplied message.
     ArrayConformanceError(const String &m);
-    ~ArrayConformanceError();
+    ~ArrayConformanceError() throw();
 };
 
 
@@ -127,7 +127,7 @@ public:
     // Define the two (presumably different) messages and optionally
     // supply a message.
     ArrayNDimError(Int dim1, Int dim2, const Char *m="ArrayNDimError");
-    ~ArrayNDimError();
+    ~ArrayNDimError() throw();
     // Return the stored dimensions. NB modifies arguments.
     void ndims(Int &dim1, Int &dim2) const; // modifies arguments
 private:
@@ -147,7 +147,7 @@ public:
     // and an optional supplied message.
     ArrayShapeError(const IPosition &shape1, const IPosition &shape2,
 		     const Char *m="ArrayShapeError");
-    ~ArrayShapeError();
+    ~ArrayShapeError() throw();
     // Get back the stored shapes. NB modifies arguments.
     void shapes(IPosition &, IPosition &) const;  // modifies arguments
 private:
@@ -168,7 +168,7 @@ public:
     ArrayIteratorError(const Char *m);
     // Initialize with the supplied message
     ArrayIteratorError(const String &m);
-    ~ArrayIteratorError();
+    ~ArrayIteratorError() throw();
 };
 
 
@@ -182,7 +182,7 @@ public:
     ArraySlicerError();
     // Initialize with ArraySlicerError plus the supplied message
     ArraySlicerError(const String &m);
-    ~ArraySlicerError();
+    ~ArraySlicerError() throw();
 };
 
 #endif

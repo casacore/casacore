@@ -1,5 +1,5 @@
 //# SortError.h: Error classes for the sort class
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,7 @@ class SortError : public AipsError {
 public:
     SortError ();
     SortError (const String&);
-    ~SortError ();
+    ~SortError () throw();
 };
 
 
@@ -63,7 +63,7 @@ public:
 class SortInvDT : public SortError {
 public:
     SortInvDT ();
-    ~SortInvDT ();
+    ~SortInvDT () throw();
 };
 
 // <summary> Invalid increment used for this sort key </summary>
@@ -79,7 +79,7 @@ public:
 class SortInvIncr : public SortError {
 public:
     SortInvIncr ();
-    ~SortInvIncr ();
+    ~SortInvIncr () throw();
 };
 
 // <summary> No data array given to Sort constructor. </summary>
@@ -94,7 +94,7 @@ public:
 class SortNoData : public SortError {
 public:
     SortNoData ();
-    ~SortNoData ();
+    ~SortNoData () throw();
 };
 
 // <summary> Invalid sort option given to routine dosort. </summary>
@@ -109,7 +109,7 @@ public:
 class SortInvOpt : public SortError {
 public:
     SortInvOpt ();
-    ~SortInvOpt ();
+    ~SortInvOpt () throw();
 };
 
 #endif

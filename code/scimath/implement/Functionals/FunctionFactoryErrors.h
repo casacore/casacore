@@ -1,5 +1,5 @@
 //# FunctionFactoryErrors:  Exception classes for use by FunctionFactories & clients
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,8 @@
 class FunctionFactoryError : public AipsError {
 public:
     FunctionFactoryError(const String& message) : AipsError(message) {}
+
+    virtual ~FunctionFactoryError() throw();
 };
 
 class UnrecognizedFunctionError : public FunctionFactoryError {
@@ -47,6 +49,8 @@ public:
     {}
 
     const String& getName() { return fname; }
+
+    virtual ~UnrecognizedFunctionError() throw();
 
 private:
     String fname;
@@ -62,6 +66,8 @@ public:
 
     const String& getReason() { return reas; } 
 
+    virtual ~InvalidGlishSerializationError() throw();
+
     static const String preamble;
 
 private:
@@ -74,6 +80,8 @@ public:
 	InvalidGlishSerializationError(String("No ") + field + " defined"),
 	fname(field)
     {}
+
+    virtual ~GlishFieldNotFoundError() throw();
 
 private:
     String fname;

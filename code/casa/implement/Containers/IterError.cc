@@ -1,5 +1,5 @@
 //# IterError.cc:
-//# Copyright (C) 1993,1994,1995,2000
+//# Copyright (C) 1993,1994,1995,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,14 +32,14 @@
 IterError::IterError (const char *msg) : 
           AipsError(msg ? msg : "Iterator Error.") {}
 
-IterError::~IterError ()
+IterError::~IterError () throw()
 { ; }
 
 // The normal constructor when throwing the exception.
 IterBoundaryError::IterBoundaryError (const char *msg) : 
           IterError(msg ? msg : "Iterator boundaries exceeded.") {}
 
-IterBoundaryError::~IterBoundaryError ()
+IterBoundaryError::~IterBoundaryError () throw()
 { ; }
 
 
@@ -47,12 +47,12 @@ IterBoundaryError::~IterBoundaryError ()
 IterInitError::IterInitError (const char *msg) : 
           IterError(msg ? msg : "Iterator initialization error.") {}
 
-IterInitError::~IterInitError ()
+IterInitError::~IterInitError () throw()
 { ; }
 
 // The normal constructor when throwing the exception.
 InvalidIterError::InvalidIterError (const char *msg) : 
           IterError(msg ? msg : "Use of invalid iterator.") {}
 
-InvalidIterError::~InvalidIterError ()
+InvalidIterError::~InvalidIterError () throw()
 { ; }

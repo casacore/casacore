@@ -1,5 +1,5 @@
 //# StackError.cc: Error class for the stack class
-//# Copyright (C) 1993,1994,1995,1998,2000
+//# Copyright (C) 1993,1994,1995,1998,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,5 +32,5 @@
 EmptyStackError::EmptyStackError (const char *msg) : 
           AipsError(msg ? msg : "Invalid operation on an empty Stack.") {}
 
-EmptyStackError::~EmptyStackError ()
+EmptyStackError::~EmptyStackError () throw()
 { ; }

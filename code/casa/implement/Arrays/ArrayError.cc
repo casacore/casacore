@@ -1,5 +1,5 @@
 //# ArrayError.cc: Exception classes thrown by Array and related classes/functions
-//# Copyright (C) 1993,1994,1995,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1997,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@ ArrayError::ArrayError(const Char *m) : AipsError(m) {}
 
 ArrayError::ArrayError(const String &m) : AipsError(m) {}
 
-ArrayError::~ArrayError() {}
+ArrayError::~ArrayError() throw() {}
 
 
 
@@ -55,7 +55,7 @@ ArrayIndexError::ArrayIndexError(const IPosition &in,
     // Nothing
 }
 
-ArrayIndexError::~ArrayIndexError() {}
+ArrayIndexError::~ArrayIndexError() throw() {}
 
 IPosition ArrayIndexError::index() const
 {
@@ -79,7 +79,7 @@ ArrayConformanceError::ArrayConformanceError(const Char *m) : ArrayError(m) {}
 
 ArrayConformanceError::ArrayConformanceError(const String &m) : ArrayError(m) {}
 
-ArrayConformanceError::~ArrayConformanceError() {}
+ArrayConformanceError::~ArrayConformanceError() throw() {}
 
 
 
@@ -89,7 +89,7 @@ ArrayNDimError::ArrayNDimError(Int ndim1, Int ndim2, const Char *m)
   r2(ndim2)
 {}
 
-ArrayNDimError::~ArrayNDimError() {}
+ArrayNDimError::~ArrayNDimError() throw() {}
 
 void ArrayNDimError::ndims(Int &ndim1, Int &ndim2) const
 {
@@ -107,7 +107,7 @@ ArrayShapeError::ArrayShapeError(const IPosition &s1, const IPosition & s2,
     // Nothing
 }
 
-ArrayShapeError::~ArrayShapeError() {}
+ArrayShapeError::~ArrayShapeError() throw() {}
 
 void ArrayShapeError::shapes(IPosition &shape1, IPosition &shape2) const
 {
@@ -122,7 +122,7 @@ ArrayIteratorError::ArrayIteratorError(const Char *m) : ArrayError(m) {}
 
 ArrayIteratorError::ArrayIteratorError(const String &m) : ArrayError(m) {}
 
-ArrayIteratorError::~ArrayIteratorError() {}
+ArrayIteratorError::~ArrayIteratorError() throw() {}
 
 
 
@@ -131,4 +131,4 @@ ArraySlicerError::ArraySlicerError() : ArrayError("Slicer error") {}
 ArraySlicerError::ArraySlicerError(const String &m)
 : ArrayError("Slicer error:" + m) {}
 
-ArraySlicerError::~ArraySlicerError() {}
+ArraySlicerError::~ArraySlicerError() throw() {}

@@ -1,5 +1,5 @@
 //# MathFunc.h: Templated letter/envelope classes for single dependent variable functions
-//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,6 +53,8 @@ public:
     MathFuncError() : AipsError("MathFuncError") {}
     MathFuncError(const Char *m)   : AipsError(m) {}
     MathFuncError(const String &m) : AipsError(m) {}
+
+    virtual ~MathFuncError() throw() {}
 };
 
 // <summary>

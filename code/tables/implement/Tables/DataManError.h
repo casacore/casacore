@@ -1,5 +1,5 @@
 //# DataManError.h: Data manager error classes
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,7 +55,7 @@ public:
     DataManError ();
     // Construct with given message.
     DataManError (const String& message);
-    ~DataManError ();
+    ~DataManError () throw();
 };
 
 
@@ -75,7 +75,7 @@ class DataManInternalError : public DataManError {
 public:
     // Add given message to string "Internal Table DataManager error: ".
     DataManInternalError (const String& message);
-    ~DataManInternalError ();
+    ~DataManInternalError () throw();
 };
 
 
@@ -96,7 +96,7 @@ public:
     // This constructor generates a message that a data manager
     // with the given name is unknown (i.e. not registered).
     DataManUnknownCtor (const String& columnName);
-    ~DataManUnknownCtor ();
+    ~DataManUnknownCtor () throw();
 };
 
 
@@ -119,7 +119,7 @@ public:
     DataManInvDT ();
     // Put the name of the offending column in the "invalid data type" message.
     DataManInvDT (const String& columnName);
-    ~DataManInvDT ();
+    ~DataManInvDT () throw();
 };
 
 
@@ -145,7 +145,7 @@ public:
     DataManInvOper ();
     // Add given message to string "Invalid DataMan operation: ".
     DataManInvOper (const String& message);
-    ~DataManInvOper ();
+    ~DataManInvOper () throw();
 };
 
 
@@ -167,7 +167,7 @@ public:
     // Issue a message containing the column name.
     DataManUnknownVirtualColumn (const String& columnName,
 				 const String& engineName);
-    ~DataManUnknownVirtualColumn ();
+    ~DataManUnknownVirtualColumn () throw();
 };
 
 
@@ -189,7 +189,7 @@ class TSMError : public DataManError {
 public:
     // Issue the message prefixed by "TiledStMan: ".
     TSMError (const String& message);
-    ~TSMError ();
+    ~TSMError () throw();
 };
 
 

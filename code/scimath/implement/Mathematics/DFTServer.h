@@ -1,5 +1,5 @@
 //# DFTServer.h: This class contains methods for doing n-D slow Fourier transforms
-//# Copyright (C) 1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,6 +55,8 @@ public:
    DFTError(): AipsError("DFTError") {}
    DFTError(const Char *m) : AipsError(m) {}
    DFTError(const String &m) : AipsError(m) {}
+
+   virtual ~DFTError() throw() {}
 };
 
 // <summary>
