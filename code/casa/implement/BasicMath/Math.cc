@@ -1,5 +1,5 @@
 //# Math.cc: Implementation of miscellaneous functions in Math.h
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,8 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
+
+// Changes for SUN CC port - abs changed to fabs for double and float args.
 
 // the following is needed to get the finite function used in isInf
 #if defined (AIPS_SOLARIS) || defined(AIPS_IRIX)
@@ -70,15 +72,15 @@ Bool near(Float val1, Float val2, Double tol) {
     return True;
   }
   if (val1 == 0) {
-    return (abs(val2) <= (1+tol)*C::flt_min);
+    return (fabs(val2) <= (1+tol)*C::flt_min);
   }
   else if (val2 == 0) {
-    return (abs(val1) <= (1+tol)*C::flt_min);
+    return (fabs(val1) <= (1+tol)*C::flt_min);
   }
   if ((0<val1) != (0<val2)) {
     return False;
   }
-  return (abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+  return (fabs(val1-val2) <= tol*max(fabs(val1),fabs(val2)));
 }
 
 Bool near(Float val1, Double val2, Double tol) {
@@ -97,15 +99,15 @@ Bool near(Double val1, Double val2, Double tol) {
     return True;
   }
   if (val1 == 0) {
-    return (abs(val2) <= (1+tol)*C::dbl_min);
+    return (fabs(val2) <= (1+tol)*C::dbl_min);
   }
   else if (val2 == 0) {
-    return (abs(val1) <= (1+tol)*C::dbl_min);
+    return (fabs(val1) <= (1+tol)*C::dbl_min);
   }
   if ((0<val1) != (0<val2)) {
     return False;
   }
-  return (abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+  return (fabs(val1-val2) <= tol*max(fabs(val1),fabs(val2)));
 }
 
 Bool nearAbs(uInt val1, uInt val2, Double tol) {
@@ -123,11 +125,11 @@ Bool nearAbs(Int val1, Int val2, Double tol) {
 }
 
 Bool nearAbs(Float val1, Float val2, Double tol) {
-  return (tol > Double(abs(val2 - val1)));
+  return (tol > Double(fabs(val2 - val1)));
 }
 
 Bool nearAbs(Double val1, Double val2, Double tol) {
-  return (tol > abs(val2 - val1));
+  return (tol > fabs(val2 - val1));
 }
 
 
