@@ -203,7 +203,7 @@ template<class t> void ConstListIter<t>::notify(const Notice &note) {
 	cur = opD.ncur;
 	prev = opD.nprev;
       }
-      if ( curPos > opD.off ) {
+      if ( Int(curPos) > opD.off ) {
 	switch ( opD.mod ) {
 	case ListNotice<t>::ADD:
 		++curPos; break;
@@ -211,6 +211,8 @@ template<class t> void ConstListIter<t>::notify(const Notice &note) {
 		--curPos; break;
 	case ListNotice<t>::SWAP:
 		curPos += opD.otherOff - opD.off; break;
+	default:
+	        break;
 	}
       }
     } else {
@@ -221,7 +223,7 @@ template<class t> void ConstListIter<t>::notify(const Notice &note) {
 }
 
 template<class t> uInt ConstListIter<t>::pos(uInt where) {
-  int i;
+  uInt i;
 
   AlwaysAssert(isValid(),InvalidIterError);
 
