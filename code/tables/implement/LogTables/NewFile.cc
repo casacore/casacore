@@ -1,5 +1,5 @@
 //# NewFile.cc: Constrain a string to be a new (non-existent) file
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,7 +72,12 @@ Bool NewFile::valueOK(const String &value, String &error) const
 
     error = "";
     Bool retval = False;
-
+//
+    if (value.empty()) {
+       error = "File string is empty";
+       return False;
+    }
+//
     File thefile(value);
     if (thefile.exists()) {
 	String text = String("File '") + value + "' already exists. Remove it?";
