@@ -2195,3 +2195,4 @@
 09 096 src mv trial/implement/Lattices/tLinearSearch.cc aips/implement/Utilities/test/tLinearSearch.cc
 09 107 src rm trial/scripts/aips++path.g
 09 107 sys rm libexec/aips++path.g
+09 114 src rm trial/implement/Lattices/test.g
