@@ -1355,3 +1355,4 @@
 11 027 src mv atnf/apps/pksbandpass/pksbandpass.g atnf/apps/livedata/pksbandpass.g
 11 027 src mv atnf/apps/pksmonitor/pksmonitor.g atnf/apps/livedata/pksmonitor.g
 11 027 src mv atnf/apps/pksmscalstats/pksmscalstats.g atnf/apps/livedata/pksmscalstats.g
+11 027 src mv atnf/apps/pksmbfits/pksmbfits.g atnf/apps/livedata/pksreader.g
