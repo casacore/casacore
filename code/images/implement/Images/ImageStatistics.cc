@@ -1163,9 +1163,11 @@ Bool ImageStatistics<T>::generateStorageImage()
 
 // This is the first output axis (there is only one in IS) getting 
 // collapsed values
+// Output has to be a MaskedLattice, so make a writable SubLattice.
 
     Int newOutAxis = pStoreImage_p->ndim()-1;
-    LatticeApply<T>::tiledApply(*pStoreImage_p, *pInImage_p, 
+    SubLattice<T> outLatt (*pStoreImage_p, True);
+    LatticeApply<T>::tiledApply(outLatt, *pInImage_p, 
                                 collapser, IPosition(cursorAxes_p),
                                 newOutAxis, pProgressMeter);
     if (pProgressMeter !=0) {
