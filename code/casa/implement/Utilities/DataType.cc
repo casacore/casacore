@@ -76,7 +76,7 @@ Bool isScalar(DataType type)
 Bool isArray(DataType type)
 {
     return ToBool((type >= TpArrayBool && type <= TpArrayString) ||
-		  (type = TpArrayQuantity));
+		  (type == TpArrayQuantity));
 }
 
 DataType asScalar(DataType type)
