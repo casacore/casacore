@@ -41,6 +41,7 @@
 #include <trial/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeFFT.h>
 #include <trial/Lattices/LatticeExpr.h>
+#include <trial/Lattices/CopyLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCBox.h>
 #include <aips/Lattices/Slicer.h>
@@ -100,19 +101,8 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
   itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);
-  const IPosition tileShape = psf.niceCursorShape();
-  TiledLineStepper ls(psf.shape(), tileShape, 0);
-  {
-    RO_LatticeIterator<T> psfli(psf, ls);
-    LatticeIterator<Complex> xfrli(*itsXfr, ls);
-    for(psfli.reset(),xfrli.reset();!psfli.atEnd();psfli++,xfrli++) {
-      convertArray(xfrli.woCursor(), psfli.cursor());
-    }
-  }
-
-  //  LatticeExpr<Complex> complexPsf(psf, 0.0);
-  //  itsXfr->copyData(toComplex(psf));
-  LatticeFFT::cfft(*itsXfr);
+  convertLattice(*itsXfr,psf);
+  LatticeFFT::cfft(*itsXfr, True);
 }
 
 template <class T> LatticeCleaner<T>::
@@ -393,6 +383,8 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   AlwaysAssert(itsDirty, AipsError);
 
   TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
+  convertLattice(dirtyFT, *itsDirty);
+  LatticeFFT::cfft(dirtyFT, True);
 
   PtrBlock<TempLattice<Complex> *> scaleXfr(itsNscales);
 
@@ -401,10 +393,6 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     itsScales[scale] = new TempLattice<T>(itsDirty->shape(),
 					  itsMemoryMB);
     AlwaysAssert(itsScales[scale], AipsError);
-    itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
-						   itsMemoryMB);
-    AlwaysAssert(itsDirtyConvScales[scale], AipsError);
-    
     // First make the scale
     makeScale(*itsScales[scale], scaleSizes(scale));
     scaleXfr[scale] = new TempLattice<Complex> (itsScales[scale]->shape(),
@@ -412,16 +400,8 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     // Now store the XFR
     // Following doesn't work under egcs
     //    scaleXfr[scale]->copyData(LatticeExpr<Complex>(*itsScales[scale], 0.0));
-    // Do by hand (Tedious!)
-    const IPosition tileShape = itsScales[scale]->niceCursorShape();
-    TiledLineStepper ls(itsScales[scale]->shape(), tileShape, 0);
-    {
-      RO_LatticeIterator<T> scaleli(*itsScales[scale], ls);
-      LatticeIterator<Complex> xfrli(*scaleXfr[scale], ls);
-      for(scaleli.reset(),xfrli.reset();!scaleli.atEnd();scaleli++,xfrli++) {
-	convertArray(xfrli.woCursor(), scaleli.cursor());
-      }
-    }
+    convertLattice(*scaleXfr[scale], *itsScales[scale]);
+
     // Now FFT
     LatticeFFT::cfft(*scaleXfr[scale], True);
   }
@@ -432,32 +412,36 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   TempLattice<Complex> cWork(itsDirty->shape(), itsMemoryMB);
   for (scale=0; scale<itsNscales;scale++) {
     os << "Calculating convolutions for scale " << scale+1 << LogIO::POST;
-    itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
-						 itsMemoryMB);
     AlwaysAssert(itsPsfConvScales[scale], AipsError);
     
     // PSF * PSF * scale
-    LatticeExpr<Complex> ppsExpr((*itsXfr)*(*scaleXfr[scale])*conj(*scaleXfr[scale]));
+    LatticeExpr<Complex> ppsExpr(conj(*itsXfr)*(*itsXfr)*(*scaleXfr[scale]));
     cWork.copyData(ppsExpr);
-    LatticeFFT::cfft(cWork);
+    LatticeFFT::cfft(cWork, True);
+    itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),  itsMemoryMB);
     LatticeExpr<Float> realWork(real(cWork));
     itsPsfConvScales[scale]->copyData(realWork);
     
     // Dirty * PSF * scale
-    LatticeExpr<Complex> dpsExpr((*itsXfr)*(dirtyFT)*conj(*scaleXfr[scale]));
-    cWork.copyData(dpsExpr);
-    LatticeFFT::cfft(cWork);
+    //    LatticeExpr<Complex> dpsExpr(conj(*itsXfr)*(dirtyFT)*(*scaleXfr[scale]));
+    //    cWork.copyData(dpsExpr);
+    cWork.copyData(dirtyFT);
+    LatticeFFT::cfft(cWork, False);
+    itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
+    AlwaysAssert(itsDirtyConvScales[scale], AipsError);
     itsDirtyConvScales[scale]->copyData(realWork);
+
     for (Int otherscale=scale;otherscale<itsNscales;otherscale++) {
       
       AlwaysAssert(index(scale, otherscale)<Int(itsPsfConvScales.nelements()),
 		   AipsError);
       
       // PSF * PSF * scale * otherscale
-      LatticeExpr<Complex> ppsoExpr((*itsXfr)*(*scaleXfr[otherscale])*conj(*scaleXfr[scale]));
+      LatticeExpr<Complex> ppsoExpr(conj(*itsXfr)*(*itsXfr)*conj(*scaleXfr[scale])*(*scaleXfr[otherscale]));
       cWork.copyData(ppsoExpr);
-      LatticeFFT::cfft(cWork);
-      itsPsfConvScales[index(scale,otherscale)] = new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
+      LatticeFFT::cfft(cWork, False);
+      itsPsfConvScales[index(scale,otherscale)] =
+	new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
       AlwaysAssert(itsPsfConvScales[index(scale,otherscale)], AipsError);
       itsPsfConvScales[index(scale,otherscale)]->copyData(realWork);
     }
