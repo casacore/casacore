@@ -122,7 +122,7 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 	    break;
 	}
 	double factor = pow (nrLeft / prod, double(1) / n);
-	double maxDiff;
+	double maxDiff = 0;
 	double diff;
 	Int maxIndex = -1;
 	// Calculate the tile shape for the remaining dimensions.
