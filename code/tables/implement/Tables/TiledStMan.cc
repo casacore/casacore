@@ -1,5 +1,5 @@
 //# TiledStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -576,7 +576,7 @@ DataManagerColumn* TiledStMan::reallocateColumn (DataManagerColumn* column)
 }
     
 
-void TiledStMan::setup()
+void TiledStMan::setup (Int extraNdim)
 {
     uInt i;
     // Get the description of the hypercolumn.
@@ -584,11 +584,36 @@ void TiledStMan::setup()
     Vector<String> coordNames;
     Vector<String> idNames;
     const TableDesc& tableDesc = getDesc();
-    nrdim_p = tableDesc.hypercolumnDesc (hypercolumnName_p, dataNames,
-					 coordNames, idNames);
-    // Determine the number of vector coordinates.
-    // This is the dimensionality of the cells.
-    nrCoordVector_p = tableDesc.columnDesc(dataNames(0)).ndim();
+    if (extraNdim < 0  ||  tableDesc.isHypercolumn (hypercolumnName_p)) {
+        // If defined as a hypercolumn get the columns in it.
+        nrdim_p = tableDesc.hypercolumnDesc (hypercolumnName_p, dataNames,
+					     coordNames, idNames);
+	// Determine the number of vector coordinates.
+	// This is the dimensionality of the cells.
+	nrCoordVector_p = tableDesc.columnDesc(dataNames(0)).ndim();
+    } else {
+        // No hypercolumn definition; assume all columns are data columns.
+        Int ndim = 0;
+	dataNames.resize (ncolumn());
+	for (uInt i=0; i<ncolumn(); i++) {
+	  dataNames(i) = colSet_p[i]->columnName();
+	  Int nd = tableDesc.columnDesc(dataNames(i)).ndim();
+	  if (nd > 0) {
+	    if (ndim == 0) {
+	        ndim = nd;
+	    } else if (nd != ndim) {
+	        throw TSMError ("TiledStMan: dimensionality of column " +
+				dataNames(i) + " mismatches other columns");
+	    }
+	  }
+	}
+	if (ndim == 0) {
+	    throw TSMError ("TiledStMan: unknown dimensionality for column " +
+			    dataNames(0));
+	}
+	nrCoordVector_p = ndim;
+	nrdim_p = ndim + extraNdim;
+    }
     // Check if the required columns are bound
     // and get the pointers to those columns.
     dataCols_p.resize (dataNames.nelements());
@@ -979,7 +1004,7 @@ void TiledStMan::headerFilePut (AipsIO& headerFile, uInt nrCube)
 }
 
 void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
-				Bool firstTime)
+				Bool firstTime, Int extraNdim)
 {
     nrrow_p = tabNrrow;
     uInt i;
@@ -1025,7 +1050,7 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
     maxCacheSize_p = persMaxCacheSize_p;
     if (firstTime) {
 	// Setup the various things (i.e. initialize other variables).
-	setup();
+	setup (extraNdim);
     }
     uInt nrdim;
     headerFile >> nrdim;

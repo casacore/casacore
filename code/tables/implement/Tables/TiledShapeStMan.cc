@@ -1,5 +1,5 @@
 //# TiledShapeStMan.cc: Tiled Data Storage Manager using the shape as id
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -186,7 +186,7 @@ void TiledShapeStMan::setupCheck (const TableDesc& tableDesc,
 void TiledShapeStMan::create (uInt nrrow)
 {
     // Set up the various things.
-    setup();
+    setup(1);
     // Create a cubeset (with no file attached) for undefined cells.
     cubeSet_p.resize (1);
     cubeSet_p[0] = new TSMCube (this, 0);
@@ -224,7 +224,7 @@ void TiledShapeStMan::readHeader (uInt tabNrrow, Bool firstTime)
     AipsIO* headerFile = headerFileOpen();
     headerFile->getstart ("TiledShapeStMan");
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime);
+    headerFileGet (*headerFile, tabNrrow, firstTime, 1);
     // Read the data for this object.
     *headerFile >> defaultTileShape_p;
     *headerFile >> nrUsedRowMap_p;

@@ -1,5 +1,5 @@
 //# TiledColumnStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,7 +114,7 @@ Bool TiledColumnStMan::canAccessColumn (Bool& reask) const
 void TiledColumnStMan::create (uInt nrrow)
 {
     // Set up the various things.
-    setup();
+    setup(1);
     // Create the one and single TSMFile object.
     createFile (0);
     // Create the hypercube object.
@@ -160,7 +160,7 @@ void TiledColumnStMan::readHeader (uInt tabNrrow, Bool firstTime)
     headerFile->getstart ("TiledColumnStMan");
     *headerFile >> tileShape_p;
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime);
+    headerFileGet (*headerFile, tabNrrow, firstTime, 1);
     headerFile->getend();
     headerFileClose (headerFile);
 }
