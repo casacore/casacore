@@ -3,7 +3,7 @@
 # ax_master: Delete or rename AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1998,Wednes1998,1999
+#   Copyright (C) 1992-1998,Wednes1998,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -3346,3 +3346,6 @@
 13 240 src rm trial/implement/MeasurementEquations/test/templates
 13 242 src mv atnf/apps/atoms/templates atnf/apps/atoms/templates.txt
 13 242 src rm trial/apps/pimager/ImagerAlgorithms.cc
+13 249 src rm atnf/implement/Atoms/make.csh
+13 249 src rm atnf/implement/Atoms/servo_clnt.c
+13 249 src rm atnf/implement/Atoms/servo_svc.c
