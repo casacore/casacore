@@ -248,6 +248,8 @@ class LatticeExprNode
    friend LatticeExprNode log  (const LatticeExprNode& expr);
    friend LatticeExprNode log10(const LatticeExprNode& expr);
    friend LatticeExprNode sqrt (const LatticeExprNode& expr);
+   friend LatticeExprNode sign (const LatticeExprNode& expr);
+   friend LatticeExprNode round(const LatticeExprNode& expr);
    friend LatticeExprNode ceil (const LatticeExprNode& expr);
    friend LatticeExprNode floor(const LatticeExprNode& expr);
    friend LatticeExprNode conj (const LatticeExprNode& expr);
@@ -283,16 +285,24 @@ class LatticeExprNode
 // 1-argument functions operating on a numeric expression resulting 
 // in a scalar
 // <group>
-   friend LatticeExprNode min   (const LatticeExprNode& expr);
-   friend LatticeExprNode max   (const LatticeExprNode& expr);
-   friend LatticeExprNode mean  (const LatticeExprNode& expr);
-   friend LatticeExprNode sum   (const LatticeExprNode& expr);
+   friend LatticeExprNode min      (const LatticeExprNode& expr);
+   friend LatticeExprNode max      (const LatticeExprNode& expr);
+   friend LatticeExprNode sum      (const LatticeExprNode& expr);
+   friend LatticeExprNode mean     (const LatticeExprNode& expr);
+   friend LatticeExprNode variance (const LatticeExprNode& expr);
+   friend LatticeExprNode stddev   (const LatticeExprNode& expr);
+   friend LatticeExprNode avdev    (const LatticeExprNode& expr);
 // </group>
 
 // 1-argument function to get the number of elements in a lattice.
 // If the lattice is masked, only the True elements are counted.
 // Results in a scalar Double.
    friend LatticeExprNode nelements (const LatticeExprNode& expr);
+
+// 1-argument function to get the dimensionality of a lattice.
+// 0 is returned if it is a scalar.
+// Results in a scalar Float.
+   friend LatticeExprNode ndim (const LatticeExprNode& expr);
 
 // 2-argument function to get the length of an axis.
 // Results in a scalar Float.
