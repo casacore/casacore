@@ -1,0 +1,18 @@
+
+change id: <fail>: "/nfs/aips++/daily/linux_gnu/libexec/addchange.g", line 484: couldn't create file "< /nfs/aips2prg/wbrouw/aips++/code/CHANGELOG.LASTID"
+	File:	/nfs/aips++/daily/linux_gnu/libexec/addchange.g, Line 484
+	File:	/nfs/aips++/daily/linux_gnu/libexec/addchange.g, Line 488
+	Stack:	             open(), /nfs/aips++/daily/linux_gnu/libexec/addchange.g line 484
+		  addchangeappend(), /nfs/aips++/daily/linux_gnu/libexec/addchange.g line 52
+		        addchange(), /nfs/aips++/daily/linux_gnu/libexec/addchange.g line 538
+ author:   Wim Brouw
+ date:     2002/11/07
+ avers:    1.8
+ area:     Library
+ package:  aips
+ module:   Arrays
+ type:     Code
+ category: New
+ summary:  fast accessor for multi-dimensional arrays
+Indexing multidimensional arrays along an axis is slow if using standard indexing.
+The ArrayAccessor class makes accessing along user selectable axes faster (about 4 times faster for a full cube) than indexing; and also faster (about 30%) than using getStorage on a non-cotiguous array.
