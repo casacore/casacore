@@ -25,6 +25,8 @@
 //#
 //# $Id$
 //   
+#include <trial/Images/ImageMoments.h>
+
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -56,7 +58,6 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageMoments.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/CopyLattice.h>
