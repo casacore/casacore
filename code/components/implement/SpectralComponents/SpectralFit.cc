@@ -101,6 +101,10 @@ Bool SpectralFit::fit(const Vector<Double> &y,
   // Initial guess
   Vector<Double> v(npar);
   Vector<Bool> vb(npar);
+  // Next one necessary as long as no correct Functionals
+  Vector<Double> corsol(npar);
+  corsol = 1.0;
+  Double fc = 1./sqrt(log(16.0));
   uInt j(0);
   for (uInt i=0; i<slist_p.nelements(); i++) {
     if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
@@ -109,6 +113,7 @@ Bool SpectralFit::fit(const Vector<Double> &y,
       vb(j)  = !slist_p[i].fixedCenter();
       v(j++) = slist_p[i].getCenter();
       vb(j)  = !slist_p[i].fixedFWHM();
+      corsol(j) = fc;
       v(j++) = slist_p[i].getFWHM();
     } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
       for (uInt k=0; k<slist_p[i].getDegree()+1; k++) {
@@ -129,7 +134,7 @@ Bool SpectralFit::fit(const Vector<Double> &y,
   Vector<Double> err;
   Vector<Double> sigma(x.nelements());
   sigma = 1.0;
-  sol = fitter.fit(x, y, sigma);
+  sol = fitter.fit(x, y, sigma, &corsol);
   // Calculate the errors
   err = fitter.errors();
   // Number of iterations
@@ -179,6 +184,10 @@ Bool SpectralFit::fit(const Vector<Float> &y,
   // Initial guess
   Vector<Float> v(npar);
   Vector<Bool> vb(npar);
+  // Next one necessary as long as no correct Functionals
+  Vector<Float> corsol(npar);
+  corsol = 1.0;
+  Float fc = 1./sqrt(log(16.0));
   uInt j(0);
   for (uInt i=0; i<slist_p.nelements(); i++) {
     if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
@@ -187,6 +196,7 @@ Bool SpectralFit::fit(const Vector<Float> &y,
       vb(j)  = !slist_p[i].fixedCenter();
       v(j++) = slist_p[i].getCenter();
       vb(j)  = !slist_p[i].fixedFWHM();
+      corsol(j) = fc;
       v(j++) = slist_p[i].getFWHM();
     } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
       for (uInt k=0; k<slist_p[i].getDegree()+1; k++) {
@@ -207,7 +217,7 @@ Bool SpectralFit::fit(const Vector<Float> &y,
   Vector<Double> err;
   Vector<Float> sigma(x.nelements());
   sigma = 1.0;
-  sol = fitter.fit(x, y, sigma);
+  sol = fitter.fit(x, y, sigma, &corsol);
   fitter.getErrors(err);
   j = 0;
   Vector<Double> tmp, terr;
