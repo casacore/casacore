@@ -44,9 +44,6 @@
 #include <trial/ComponentModels/GaussianShape.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/FITSImage.h>
-#include <trial/Images/MIRIADImage.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Quanta/MVAngle.h>
@@ -122,41 +119,6 @@ ImageUtilities::ImageTypes ImageUtilities::imageType (const String& name)
     }
   }
   return UNKNOWN;
-}
-
-void ImageUtilities::openImage (ImageInterface<Float>*& pImage,
-                                const String& fileName, LogIO& os)
-{
-   if (fileName.empty()) {
-      os << "The image filename is empty" << LogIO::EXCEPTION;   
-   }
-   File file(fileName);
-   if (!file.exists()) {
-      os << "File '" << fileName << "' does not exist" << LogIO::EXCEPTION;
-   }
-//
-   ImageUtilities::ImageTypes type = ImageUtilities::imageType(fileName);
-   if (type==ImageUtilities::AIPSPP) {
-      if (!Table::isReadable(fileName)) {
-         os << "The aips++ image file " << fileName << " is not readable" << LogIO::EXCEPTION;
-      }
-      pImage = new PagedImage<Float>(fileName);
-   } else if (type==ImageUtilities::FITS) { 
-      pImage = new FITSImage(fileName);
-   } else if (type==ImageUtilities::MIRIAD) {
-      pImage = new MIRIADImage(fileName);
-   } else {
-      pImage = 0;
-      os << "Unrecognized image type, presently aips++, FITS and Miriad images are supported" 
-         << LogIO::EXCEPTION;
-   }
-}
-void ImageUtilities::openImage (PtrHolder<ImageInterface<Float> >& image,
-                                const String& fileName, LogIO& os)
-{
-   ImageInterface<Float>* p = 0;
-   ImageUtilities::openImage(p, fileName, os);
-   image.set(p);
 }
 
   
