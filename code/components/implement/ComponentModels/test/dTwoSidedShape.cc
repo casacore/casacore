@@ -1,5 +1,5 @@
 //# dTwoSidedShape.cc:
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,7 +87,7 @@ int main() {
 			     Quantity(3, "deg"));
       printShape(jupiter_shape);
       MDirection sample_dir(MVDirection(1.218, 0.37), MDirection::J2000);
-      if (jupiter_shape.sample(sample_dir, MVAngle(0.1)) > 0.0) {
+      if (jupiter_shape.sample(sample_dir, MVAngle(0.1), MVAngle(0.1)) > 0.0) {
 	cout << "The position in J2000 coordinates is near: " 
 	     << sample_dir.getAngle("deg") << endl;
       }
