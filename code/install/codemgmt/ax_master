@@ -4284,3 +4284,4 @@
 14 133 src mv trial/implement/wnbt/ trial/implement/Wnbt
 14 159 src rm nrao/implement/VLA/VLABuffer.h
 14 159 src rm nrao/implement/VLA/VLABuffer.cc
+14 166 src rm atnf/apps/pksmeasurementset/templates
