@@ -1,5 +1,5 @@
 //# ImageFITSConverter.cc: this defines templated conversion from FITS to an aips++ Float image
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,69 +82,32 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 	shape(i) = fitsImage.dim(i);
     }
 
-    CoordinateSystem coords;
+
+// Get header into a record
+
     Record header;
-
-    Vector<String> ignore(0); // You will have to increase this if
-                               // you ignore more
-
-    
-    Bool ok = FITSKeywordUtil::getKeywords(header, fitsImage.kwlist(), ignore);
-    if (! ok) {
-	os << LogIO::SEVERE << "Error retrieving keywords from fits header.\n"
-	    "Coordinate system may be in error." << LogIO::POST;
+    Vector<String> ignore(0); 
+    if (!FITSKeywordUtil::getKeywords(header, fitsImage.kwlist(), ignore)) {
+        os << LogIO::SEVERE << "Error retrieving keywords from fits header.\n"
+            "Coordinate system may be in error." << LogIO::POST;
     }
 
-    ok = CoordinateSystem::fromFITSHeader(coords, header, shape, True);
-    Int after = -1;
-    Bool hasSpectralCoordinate = (coords.findCoordinate(Coordinate::SPECTRAL, after)>=0);
-    if (! ok) {
-	os << LogIO::WARN << 
-	  "Cannot create the coordinate system from FITS keywords.\n" 
-	  "I will use a dummy linear coordinate along each axis instead.\n"
-	  "If you your FITS file actually does contain a coordinate system\n"
-	  "please submit a bug report."  << LogIO::POST;
-//
-	CoordinateSystem empty;
-        Vector<String> names(shape.nelements());
-        for (uInt i=0; i<names.nelements(); i++) {
-           ostrstream oss;
-           oss << i;
-           names(i) = String("linear") + String(oss);
-        }
-        CoordinateUtil::addLinearAxes(empty, names, shape);
-	coords = empty;
-    }
+// Get Coordinate System
 
-// Check shape and CS consistency.  Add dummy axis to shape if possible
- 
-    IPosition shape2;
-    if (shape.nelements()!=coords.nPixelAxes()) {
-       if (coords.nPixelAxes() > shape.nelements()) {
-          Int nDeg = coords.nPixelAxes() - shape.nelements();
-          shape2.resize(coords.nPixelAxes());
-          shape2 = 1;
-          for (uInt i=0; i<shape.nelements(); i++) shape2(i) = shape(i);       
-          ndim += nDeg;
-//
-          os << LogIO::WARN << "Image dimension appears to be less than number of pixel axes in CoordinateSystem" << endl;
-          os << "Adding " << nDeg << " degenerate trailing axes" << LogIO::POST;
-       } else {
-          os << "Image contains more dimensions than the CoordinateSystem defines" << LogIO::EXCEPTION;
-       }
-    } else {
-       shape2 = shape;
-    }
+    CoordinateSystem coords = ImageFITSConverter::getCoordinateSystem(header, os, shape);
+    ndim = shape.nelements();
+
+// Create image
 
     Bool isTempImage = False;
     try {
        if (imageName.empty()) {
-          pNewImage = new TempImage<Float>(shape2, coords);
-          os << LogIO::WARN << "Created (temp)image of shape" << shape2 << LogIO::POST;
+          pNewImage = new TempImage<Float>(shape, coords);
+          os << LogIO::WARN << "Created (temp)image of shape" << shape << LogIO::POST;
           isTempImage = True;
        } else {
-          pNewImage = new PagedImage<Float>(shape2, coords, imageName);
-          os << LogIO::WARN << "Created image of shape" << shape2 << LogIO::POST;
+          pNewImage = new PagedImage<Float>(shape, coords, imageName);
+          os << LogIO::WARN << "Created image of shape" << shape << LogIO::POST;
        }
     } catch (AipsError x) {
 	if (pNewImage) {
@@ -155,40 +118,29 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 	    imageName + ":" + x.getMesg();
 	return;
     } 
-
     if (pNewImage == 0) {
 	error = String("Unknown error writing ") + imageName;
 	return;
     }
 
-// Set the unit if possible
-    if (header.isDefined("bunit") && header.dataType("bunit") == TpString) {
-	String unitString;
-	header.get("bunit", unitString);
-	header.removeField("bunit");
-	UnitMap::addFITS();
-	if (UnitVal::check(unitString)) {
+// Brightness Unit
 
-// Translate units from FITS units to true aips++ units
-// There is no scale factor in this translation.
+    Unit bu = ImageFITSConverter::getBrightnessUnit(header, os);
+    pNewImage->setUnits(bu);
 
-            Unit tmp = UnitMap::fromFITS(Unit(unitString));
-	    pNewImage->setUnits(tmp);
-	} else {
-	    os << "FITS unit " << unitString << " unknown to AIPS++ - ignoring."
-	       << LogIO::POST;
-	}
-    }
 
-    // BITPIX
+// BITPIX
+
     Int bitpix;
     header.get("bitpix", bitpix);
+    header.removeField("bitpix");
 
 // BLANK Find out if we are blanked.  This is only relevant to
 // BITPIX > 0  For 32 bit floating point is is not required 
 // by FITS (illegal ?) and aips++ does not write it out.
 // Other packages may write it out, so a bit of code below
 // to handle it.
+
     Bool isBlanked = fitsImage.isablank();
     Int blankVal = fitsImage.blank();
 
@@ -201,62 +153,23 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 		"NaN's."  << LogIO::POST;
 	}
     }
-//
-    ignore.resize(23);        // resize as necessary
-    ignore(0) = "^datamax$";  // Image pixels might change
+
+
+// ImageInfo
+     
+    ImageInfo imageInfo = ImageFITSConverter::getImageInfo(header);
+    pNewImage->setImageInfo(imageInfo);
+
+// Get rid of anything else
+
+    ignore.resize(6);
+    ignore(0) = "^datamax$";
     ignore(1) = "^datamin$";
-    ignore(2) = "^date-map$";
-    ignore(3) = "^simple$";
-    ignore(4) = "^naxis";
-    ignore(5) = "^bitpix$";
-    ignore(6) = "^origin$";
-    ignore(7) = "^projp$";
-    ignore(8) = "^pc$";
-    ignore(9) = "^extend$";
-    ignore(10) = "^blocked$";
-    ignore(11) = "^blank$";
-    ignore(12) = "^equinox$";
-    ignore(13) = "^epoch$";
-    ignore(14) = "^.type";
-    ignore(15) = "^.unit";
-    ignore(16) = "^.rpix";
-    ignore(17) = "^.rval";
-    ignore(18) = "^.rota";
-    ignore(19) = "^.delt";
-    ignore(20) = "^bunit$";
-    ignore(21) = "bscale";
-    ignore(22) = "bzero";
+    ignore(2) = "^origin$";
+    ignore(3) = "^extend$";
+    ignore(4) = "^blocked$";
+    ignore(5) = "^blank$";
     FITSKeywordUtil::removeKeywords(header, ignore);
-    if (hasSpectralCoordinate) {
-       ignore.resize(1);
-       ignore(0) = "restfreq";
-       FITSKeywordUtil::removeKeywords(header, ignore);
-    }
-
-// Remove any that might have been in ObsInfo or coordinates.
-
-    FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
-
-// Store restoring beam, if any, in ImageInfo
-
-    if (header.isDefined("bmaj") && header.isDefined("bmin") &&
-        header.isDefined("bpa")) {
-       Double bmaj = header.asDouble("bmaj");
-       Double bmin = header.asDouble("bmin");
-       Double bpa = header.asDouble("bpa");
-//
-       ImageInfo imageInfo;
-       Quantum<Double> bmajq(max(bmaj,bmin), "deg");
-       Quantum<Double> bminq(min(bmaj,bmin), "deg");
-       bmajq.convert(Unit("arcsec")); 
-       bminq.convert(Unit("arcsec"));
-       imageInfo.setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
-       pNewImage->setImageInfo(imageInfo);
-//
-       header.removeField("bmaj");
-       header.removeField("bmin");
-       header.removeField("bpa");
-    }
 
 // Put whatever is left in the header into the MiscInfo bucket
 
@@ -265,8 +178,9 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 // Restore the logtable from HISTORY (this could be moved to non-templated code)
 
     if (pNewImage->logSink().localSink().isTableLogSink()) {
-	TableLogSink &logTable = 
+	TableLogSink& logTable = 
 	    pNewImage->logSink().localSink().castToTableLogSink();
+//
 	Vector<String> lines;
 	String groupType;
 	ConstFitsKeywordList kw = fitsImage.kwlist();
@@ -287,13 +201,13 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
     IPosition cursorShape(ndim), cursorOrder(ndim);
     String report;
     cursorShape = 
-      ImageFITSConverter::copyCursorShape(report, shape2, sizeof(Float),
+      ImageFITSConverter::copyCursorShape(report, shape, sizeof(Float),
                                           sizeof(HDUType::ElementType),
                                           memoryInMB);
 
     os << LogIO::NORMAL << "Copy FITS file to '" << pNewImage->name() << "' " <<
 	report << LogIO::POST;
-    LatticeStepper imStepper(shape2, cursorShape, IPosition::makeAxisPath(ndim));
+    LatticeStepper imStepper(shape, cursorShape, IPosition::makeAxisPath(ndim));
     LatticeIterator<Float> imIter(*pNewImage, imStepper);
 
     Int nIter = max(1,pNewImage->shape().product()/cursorShape.product());
@@ -316,7 +230,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
        maskReg = pNewImage->makeMask ("mask0", False, False);
        LCRegion& mask = maskReg.asMask();
 //
-       LatticeStepper pMaskStepper (shape2, cursorShape, 
+       LatticeStepper pMaskStepper (shape, cursorShape, 
 				    IPosition::makeAxisPath(ndim));
        pMaskIter = new LatticeIterator<Bool>(mask, pMaskStepper);
        pMaskIter->reset();
@@ -330,7 +244,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 	Int bufferSize = cursorShape.product();
 
 	for (imIter.reset(),meterValue=0.0; !imIter.atEnd(); imIter++) {
-	    Array<Float> &cursor = imIter.woCursor();
+	    Array<Float>& cursor = imIter.woCursor();
 	    fitsImage.read(bufferSize);                  // Read from FITS
             meterValue += nPixPerIter*1.0/2.0;
             meter.update(meterValue);
