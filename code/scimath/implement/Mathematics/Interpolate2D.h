@@ -114,26 +114,31 @@ template<class T> class Interpolate2D
 
   // Interpolation methods return status of interpolation
   // <group>
-  // do one interpolation, supply Matrix
+  // do one interpolation, supply Matrix, pixel coordinate
+  // and method
   Bool  interp(T& result, const Vector<Double>& where, 
-               const Matrix<T>& data, Interpolate2D::Method method);
+               const Matrix<T>& data, 
+               Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
 
-  // do one interpolation, supply Matrix and mask (True is good)
+  // do one interpolation, supply Matrix and mask (True is good),
+  // pixel coordinate and method
   Bool  interp(T& result, const Vector<Double>& where,
                const Matrix<T>& data, const Matrix<Bool>& mask,
-               Interpolate2D::Method method);
+               Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
 
-  // do one interpolation, supply Array
+  // do one interpolation, supply Array, pixel coordinate and method
   Bool interp(T& result, const Vector<Double>& where, 
-              const Array<T>& data, Interpolate2D::Method method);
+              const Array<T>& data, 
+              Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
 
-  // do one interpolation, supply Array and mask (True is good)
+  // do one interpolation, supply Array and mask (True is good), pixel
+  // coordinate and method
   Bool interp(T& result, const Vector<Double>& where, 
               const Array<T>& data, const Array<Bool>& mask,
-              Interpolate2D::Method method);
+              Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
 
 // Convert string ("nearest", "linear", "cubic") to Method
-// The first 3 letters will do.
+// Minimum match will do.
   static Interpolate2D<T>::Method stringToMethod(const String& method);
 
 //  void location (IPosition& nearLoc, IPosition& loc, IPosition& min, IPosition& max) const;
