@@ -250,6 +250,94 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 
 //----------------------------------------------------------------------------
 
+Bool FluxStandard::matchStandard (const String& name, 
+				  FluxStandard::FluxScale& stdEnum,
+				  String& stdName)
+{
+// Match an input string to a standard/catalog enum and descriptor
+// Inputs:
+//    name             const String&             Input string
+// Output:
+//    stdEnum          FluxStandard::FluxScale   Matching enum
+//    stdName          String                    Standard descriptor for 
+//                                               the matching enum.
+//    matchStandard    Bool                      True if matched; False
+//                                               if default returned.
+//
+  // Set default enum
+  stdEnum = FluxStandard::PERLEY_TAYLOR_99;
+
+  // Local lowercase copy of input string
+  String lname = name;
+  lname.downcase();
+  Bool matched = True;
+
+  // Case input string match of:
+  //
+  // Perley (1990)
+  if (lname.contains("perley") && 
+      (lname.contains("90") || lname.contains("1990"))) {
+    stdEnum = FluxStandard::PERLEY_90;
+  }
+  // Perley-Taylor (1995)
+  else if (lname.contains("perley") && lname.contains("taylor") &&
+      (lname.contains("95") || lname.contains("1995"))) {
+    stdEnum = FluxStandard::PERLEY_TAYLOR_95;
+  }
+  // Perley-Taylor (1999)
+  else if (lname.contains("perley") && lname.contains("taylor") &&
+      (lname.contains("99") || lname.contains("1999"))) {
+    stdEnum = FluxStandard::PERLEY_TAYLOR_95;
+  }
+  // Baars
+  else if (lname.contains("baars")) {
+    stdEnum = FluxStandard::BAARS;
+  } else {
+    //
+    matched = False;
+  };
+
+  // Retrieve standard descriptor
+  stdName = standardName (stdEnum);
+
+  return matched;
+};
+
+//----------------------------------------------------------------------------
+
+String FluxStandard::standardName (const FluxStandard::FluxScale& stdEnum)
+{
+// Return the standard descriptor for a specified standard/catalog enum
+// Inputs:
+//    stdEnum          FluxStandard::FluxScale   Standard/catalog enum
+// Output:
+//    standardName     String                    Standard descriptor
+//
+  // Case scale enum of:
+  //
+  String stdName;
+  switch (stdEnum) {
+  case BAARS: {
+    stdName = "Baars";
+    break;
+  };
+  case PERLEY_90: {
+    stdName = "Perley 90";
+    break;
+  };
+  case PERLEY_TAYLOR_95: {
+    stdName = "Perley-Taylor 95";
+    break;
+  };
+  case PERLEY_TAYLOR_99: {
+    stdName = "Perley-Taylor 99";
+    break;
+  };
+  };
+  return stdName;
+};
+
+//----------------------------------------------------------------------------
 
 
 

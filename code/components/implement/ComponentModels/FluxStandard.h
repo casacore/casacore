@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id: 
+//# $Id$
 
 #if !defined(TRIAL_FLUX_STANDARD_H)
 #define TRIAL_FLUX_STANDARD_H
@@ -97,6 +97,14 @@ class FluxStandard
   // Compute the flux density for a specified source at a specified frequency
   Bool compute (const String& sourceName, const MFrequency& mfreq,
 		Flux <Double>& value, Flux<Double>& error);
+
+  // Decode a string representation of the standard or catalog name
+  static Bool matchStandard(const String& name, 
+			    FluxStandard::FluxScale& stdEnum,
+			    String& stdName);
+
+  // Return a standard string description for each scale or catalog
+  static String standardName(const FluxStandard::FluxScale& stdEnum);
 
  private:
   // Flux scale in use
