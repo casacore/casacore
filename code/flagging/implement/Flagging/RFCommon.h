@@ -62,6 +62,7 @@ const char
     
     RF_HW[]      = "hw",
     RF_ROW_HW[]  = "rowhw",
+    RF_ROW_DISABLE[] = "norow",
 
     RF_COLUMN[]  = "column",
     RF_EXPR[]    = "expr",
@@ -79,6 +80,7 @@ const char
     RF_REGION[]  = "region",
     
     RF_NBINS[]   = "nbins",
+    RF_MINPOP[]  = "minpop",
     
     RF_CORR[]    = "corr",
     RF_ANT[]     = "ant",
