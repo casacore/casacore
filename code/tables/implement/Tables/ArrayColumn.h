@@ -356,12 +356,12 @@ class ArrayColumn : public ROArrayColumn<T>,
 {
   //# Make members of parent class known.
 protected:
-  using ArrayColumn<T>::reaskAccessSlice_p;
-  using ArrayColumn<T>::canAccessSlice_p;
-  using ArrayColumn<T>::reaskAccessColumn_p;
-  using ArrayColumn<T>::canAccessColumn_p;
-  using ArrayColumn<T>::reaskAccessColumnSlice_p;
-  using ArrayColumn<T>::canAccessColumnSlice_p;
+  using ROArrayColumn<T>::reaskAccessSlice_p;
+  using ROArrayColumn<T>::canAccessSlice_p;
+  using ROArrayColumn<T>::reaskAccessColumn_p;
+  using ROArrayColumn<T>::canAccessColumn_p;
+  using ROArrayColumn<T>::reaskAccessColumnSlice_p;
+  using ROArrayColumn<T>::canAccessColumnSlice_p;
 
 public:
 
