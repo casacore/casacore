@@ -1,5 +1,5 @@
 //# SetupNewTab.h: Create a new table - define shapes, data managers, etc.
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_SETUPNEWTABLE_H)
 #define AIPS_SETUPNEWTABLE_H
 
-#if defined(_AIX)
-#pragma implementation ("SetupNewTab.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -190,7 +187,6 @@ private:
     Bool        delete_p;
     TableDesc*  tdescPtr_p;
     ColumnSet*  colSetPtr_p;      //# 0 = object is already used by a Table
-    SimpleOrderedMap<void*,void*> dataManMap_p;
 
     // Copy constructor is forbidden, because copying a table requires
     // some more knowledge (like table name of result).
