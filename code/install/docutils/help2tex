@@ -198,7 +198,9 @@ $funItems
    if($opt_glish == 0 && $opt_outline == 0){
       print;
    }
-   print "\n";
+   if($opt_outline != 1){
+      print "\n";
+   }
    return;
 }
 
