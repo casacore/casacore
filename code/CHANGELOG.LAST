@@ -104,3 +104,24 @@ guis. Contains autogui, etc.
 	- toolmanagerguiserver: sets up top level gui for the manager
 
 Tim
+
+change id: 0042
+ author:   Tim Cornwell
+ date:     2000/08/27
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   types
+ type:     Code
+ category: Change
+ summary:  Added antennas and baselines types
+
+I've added two new types: antennas and baselines. These are arrays
+that know to use the gopher to get antenna and baseline information.
+
+I've also added a context keyword to the specification of arguments.
+The intention is that this propagates to the individual widgets and
+provides a wider context e.g. the name of a measurement set that is
+being used in the tool. This is work in progress.
+
+Tim
