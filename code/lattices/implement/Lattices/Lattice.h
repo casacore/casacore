@@ -439,9 +439,15 @@ public:
   // </group>
 
 protected:
-  // Assignment can only be used by derived classes.
+  // Define default constructor to satisfy compiler.
+  Lattice() {};
+
+  // Copy constructor and assignment can only be used by derived classes.
+  // <group>
+  Lattice (const Lattice<T>&) {};
   Lattice<T>& operator= (const Lattice<T>&)
     { return *this; }
+  // </group>
 };
 
 
