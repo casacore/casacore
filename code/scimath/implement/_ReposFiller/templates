@@ -1230,8 +1230,15 @@
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class CompiledFunction<AutoDiff<Double> > 
+     template class CompiledFunction<AutoDiff<Float> > 
 1030 scimath/Functionals/CompiledFunction.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CompiledFunction<AutoDiffA<Double> > 
+     template class CompiledFunction<AutoDiffA<Float> > 
+1040 scimath/Functionals/CompiledFunction.cc 
      template class CompiledFunction<Double> 
+     template class CompiledFunction<Float> 
 1000 scimath/Functionals/CompiledParam.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
@@ -1246,8 +1253,15 @@
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class CompiledParam<AutoDiff<Double> > 
+     template class CompiledParam<AutoDiff<Float> > 
 1030 scimath/Functionals/CompiledParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CompiledParam<AutoDiffA<Double> > 
+     template class CompiledParam<AutoDiffA<Float> > 
+1040 scimath/Functionals/CompiledParam.cc 
      template class CompiledParam<Double> 
+     template class CompiledParam<Float> 
 1000 scimath/Functionals/Compound2Function.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
@@ -1533,15 +1547,17 @@
      = casa/BasicSL/Complex.h 
      template class Gaussian1D<DComplex> 
      template class Gaussian1D<Complex> 
-1010 scimath/Functionals/Gaussian1D.cc scimath/Mathematics/AutoDiffA.h 
+1010 scimath/Functionals/Gaussian1D.cc 
+     = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class Gaussian1D<AutoDiffA<Double> > 
      template class Gaussian1D<AutoDiffA<Float> > 
 1020 scimath/Functionals/Gaussian1D.cc 
      template class Gaussian1D<Double> 
      template class Gaussian1D<Float> 
-1000 scimath/Functionals/Gaussian1D2.cc scimath/Mathematics/AutoDiff.h 
+1000 scimath/Functionals/Gaussian1D2.cc 
      = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class Gaussian1D<AutoDiff<DComplex> > 
      template class Gaussian1D<AutoDiff<Complex> > 
