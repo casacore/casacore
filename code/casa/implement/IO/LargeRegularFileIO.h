@@ -1,5 +1,5 @@
 //# LargeRegularFileIO.h: Class for IO on a regular large file
-//# Copyright (C) 1996,1997,1999,2001
+//# Copyright (C) 1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -100,8 +100,6 @@ public:
 
     // Get the file name of the file attached.
     virtual String fileName() const;
-
-    void flush();
 
 private:
     OpenOption  itsOption;
