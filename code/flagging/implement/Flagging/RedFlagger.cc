@@ -650,11 +650,11 @@ void RedFlagger::plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk
   // print per-agent flagging summary
   for( uInt i=0; i<acc.nelements(); i++ )
   {
-    pgp.text(0,y0-=dy,acc[i]->name()+": "+acc[i]->getDesc());
-    if( acc[i]->isActive() )
-      pgp.text(0,y0-=dy,String("     ")+acc[i]->getStats());
-    else
-      pgp.text(0,y0-=dy,String("     can't process this chunk"));
+    String name(acc[i]->name() + ": ");
+    pgp.text(0,y0-=dy,name+acc[i]->getDesc());
+    String stats( acc[i]->isActive() ? acc[i]->getStats() : String("can't process this chunk") );
+    pgp.text(0,y0-=dy,String("     ")+stats);
+    os<<name+stats<<LogIO::POST;
   }
   pgp.line(vec01,Vector<Float>(2,y0-dy/4));
   pgp.iden();
