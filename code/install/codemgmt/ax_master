@@ -2785,3 +2785,4 @@
 10 101 src mv trial/apps/numerics/sinusoidfitter.g trial/implement/Mathematics/sinusoidfitter.g
 10 101 src mv trial/apps/numerics/sinusoidfitter.help trial/implement/Mathematics/sinusoidfitter.help
 10 101 src mv trial/apps/numerics/sinusoidfitter_meta.g trial/implement/Mathematics/sinusoidfitter_meta.g
+10 101 src mv trial/apps/numerics/interpolate1d_meta.g trial/implement/Mathematics/interpolate1d_meta.g
