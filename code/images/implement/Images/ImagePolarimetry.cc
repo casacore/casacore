@@ -1,5 +1,5 @@
 //# ImagePolarimetry.cc: polarimetric analysis
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1432,8 +1432,8 @@ Bool ImagePolarimetry::rmLsqFit (Vector<Float>& pars, const Vector<Float>& wsq,
   
 // Return values of fit
 
-   cout << "Solution = " << solution << endl;
-   Vector<Float> cv = itsFitterPtr->compuCovariance().diagonal();
+//   cout << "Solution = " << solution << endl;
+   Vector<Double> cv = itsFitterPtr->compuCovariance().diagonal();
 //
    pars.resize(5);
    pars(0) = solution(1);
