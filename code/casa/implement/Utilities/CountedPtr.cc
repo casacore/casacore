@@ -1,5 +1,5 @@
 //# CountedPtr.cc: Referenced counted pointer classes
-//# Copyright (C) 1993,1994,1995,1996,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,15 +61,22 @@ SimpleCountedConstPtr<t>::~SimpleCountedConstPtr() {
 // newer compilers.            (Tue Jan  3 15:30:07 EST 1995)
 //
 template<class t>
-CountedPtr<t>::CountedPtr() : SimpleCountedPtr<t>(), CountedConstPtr<t>(),
-					SimpleCountedConstPtr<t>() {}
+CountedPtr<t>::CountedPtr()
+: SimpleCountedConstPtr<t>(),
+  SimpleCountedPtr<t>(),
+  CountedConstPtr<t>()
+{}
 
 template<class t>
-CountedPtr<t>::CountedPtr(t *val, Bool delit) : SimpleCountedPtr<t>(val,delit),
-					CountedConstPtr<t>(val,delit),
-					SimpleCountedConstPtr<t>(val,delit) {}
+CountedPtr<t>::CountedPtr(t *val, Bool delit)
+: SimpleCountedConstPtr<t>(val,delit),
+  SimpleCountedPtr<t>(val,delit),
+  CountedConstPtr<t>(val,delit)
+{}
 
 template<class t>
-CountedPtr<t>::CountedPtr(const CountedPtr<t> &val) : SimpleCountedPtr<t>(val),
-					CountedConstPtr<t>(val),
-					SimpleCountedConstPtr<t>(val) {}
+CountedPtr<t>::CountedPtr(const CountedPtr<t> &val)
+: SimpleCountedConstPtr<t>(val),
+  SimpleCountedPtr<t>(val),
+  CountedConstPtr<t>(val)
+{}
