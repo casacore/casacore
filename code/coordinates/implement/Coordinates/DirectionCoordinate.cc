@@ -303,7 +303,6 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
     } 
 //
     if (!ok) set_error(errorMsg);
-
 //
     return ok;
 }
@@ -374,10 +373,6 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
    AlwaysAssert(worldMin.nelements()==nWorld, AipsError);
    AlwaysAssert(worldMax.nelements()==nWorld, AipsError);
 //
-/*
-cerr << "DC:: pixelAxes, worldAxes = " << pixelAxes << worldAxes << endl;
-cerr << "DC::worldIn, pixelIn = " << worldIn << pixelIn << endl;
-*/
    for (uInt i=0; i<nPixel; i++) {   
       if (pixelAxes(i) && worldAxes(i)) {
          set_error("DirectionCoordinate::toMix - duplicate pixel/world axes");
@@ -1401,15 +1396,15 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
     prjprm_p->flag = -1;                    // Return a solution, even if ambiguous
 
 /*
-cout << "ctype = " << c_ctype_p[0] << " " << c_ctype_p[1];
-cout << "   crval = " << c_crval_p[0] << " " << c_crval_p[1] << endl;
-cout << "mixpix, mixcel = " << mixpix << mixcel << endl;
-cout << "vspan = " << mix_vspan[0] << ", " << mix_vspan[1];
+cerr << "Enter DC::toMix2" << endl;
+cerr << "ctype = " << c_ctype_p[0] << " " << c_ctype_p[1];
+cerr << "   crval = " << c_crval_p[0] << " " << c_crval_p[1] << endl;
+cerr << "mixpix, mixcel = " << mixpix << mixcel << endl;
+cerr << "vspan = " << mix_vspan[0] << ", " << mix_vspan[1];
 cerr << "  vstep, viter = " << mix_vstep << ", " << mix_viter << endl;
-cout << "input world = " << mix_world[0] << ", " << mix_world[1] << endl;
-cout << "input pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
+cerr << "input world = " << mix_world[0] << ", " << mix_world[1] << endl;
+cerr << "input pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
 */
-
     int iret = wcsmix(c_ctype_p, wcs_p, mixpix, mixcel, mix_vspan, 
                       mix_vstep, mix_viter, 
                       mix_world, c_crval_p, celprm_p, &mix_phi, &mix_theta, 
@@ -1417,9 +1412,10 @@ cout << "input pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
 
 /*
 cerr << "iret = " << iret << endl;
-cout << "output world = " << mix_world[0] << ", " << mix_world[1] << endl;
-cout << "output pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
-cout << "phi, theta=" << mix_phi << ", " << mix_theta << endl << endl;
+cerr << "output world = " << mix_world[0] << ", " << mix_world[1] << endl;
+cerr << "output pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
+cerr << "phi, theta=" << mix_phi << ", " << mix_theta << endl;
+cerr << "Exit DC::toMix2" << endl;
 */
 
     if (iret!=0) {
@@ -1727,71 +1723,112 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 }
 
 
-Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape) 
+Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
 {
+   AlwaysAssert(nWorldAxes()==nPixelAxes(), AipsError);
    const uInt n = shape.nelements();
    if (n!=nPixelAxes()) {
       set_error("Shape must be of length nPixelAxes");
       return False;
    }
-   AlwaysAssert(nWorldAxes()==nPixelAxes(), AipsError);
 //
    worldMin_p.resize(2);
    worldMax_p.resize(2);
-   Vector<Double> cdelt = increment();
+   const Vector<Double>& cdelt = increment();
 
-// Find centre of image
+// Find centre of image.
+// If the shape is -1, it means its not known for this world
+// axis (user may have removed a pixel axis in CoordinateSystem)
+// Use reference pixel in this case
 
-   Vector<Double> pixel(2);
-   Vector<Double> world(2);
-   pixel(0) = shape(0) / 2.0;
-   pixel(1) = shape(1) / 2.0;
-//
-   setDefaultWorldMixRanges();
-   Vector<Double> dwMin = worldMin_p;
-   Vector<Double> dwMax = worldMax_p;
-   if (!toWorld(world, pixel)) return False;
+   Vector<Double> pixelIn(referencePixel().copy());
+   Vector<Double> worldOut(nWorldAxes());
+   for (uInt i=0; i<nPixelAxes(); i++) {
+      if (shape(i) > 0) {
+         pixelIn(i) = shape(i) / 2.0;
+      }
+   }
+   if (!toWorld(worldOut, pixelIn)) return False;
 //
    Vector<String> units = worldAxisUnits();
-   Double cosdec = cos(world(1) * to_radians_p[1]);
+   Double cosdec = cos(worldOut(1) * to_radians_p[1]);
    Double fac = 1.0;
 
 // If the shape is -1, it means its not known for this world
 // axis (user may have removed a pixel axis in CoordinateSystem)
-// Use default value in this case
+// They might have also have removed a pixel axis  but not a world axis.
+// Really, in this case, the replacement world value should be used.
+
 
    Float frac = 0.5;
+   Int n2 = 0;
    for (uInt i=0; i<2; i++) {
       fac = 1.0;
       if (i==0) fac = cosdec;
+
+// Find number of pixels to offset from centre.
+// Do something arbitrary if the shape is <= 1
+
+      if (shape(i)<=1) {
+         n2 = 10;
+      } else  if (shape(i) > 0) { 
+         n2 = (shape(i) + Int(frac*shape(i))) / 2;
+      }
 //
-      if (shape(i) > 0) { 
-         Int n2 = (shape(i) + Int(frac*shape(i))) / 2;
-         worldMin_p(i) = world(i) - abs(cdelt(i))*n2/fac;    
-         worldMin_p(i) = max(worldMin_p(i), dwMin(i));
-         worldMax_p(i) = world(i) + abs(cdelt(i))*n2/fac;
-         worldMax_p(i) = min(worldMax_p(i),  dwMax(i));
+      worldMin_p(i) = worldOut(i) - abs(cdelt(i))*n2/fac;    
+      worldMax_p(i) = worldOut(i) + abs(cdelt(i))*n2/fac;
+//
+      if (i==0) {
+         worldMin_p(i) = putLongInPiRange (worldMin_p(i), units(i));
+         worldMax_p(i) = putLongInPiRange (worldMax_p(i), units(i));
       }
    }
-
-// Put longitude in range -180 to 180
-
-   Unit u(units(0));
-   {
-     Quantum<Double> q(worldMin_p(0), u);
-     MVAngle mva(q);
-     const MVAngle& mva2 = mva();         
-     worldMin_p(0) = mva2.get(u).getValue();
-   }
-   {
-     Quantum<Double> q(worldMax_p(0), u);
-     MVAngle mva(q);
-     const MVAngle& mva2 = mva();         
-     worldMax_p(0) = mva2.get(u).getValue();
-   }
 //
+
    return True;
 }
+
+
+
+void DirectionCoordinate::setWorldMixRanges (const Vector<Bool>& which,
+                                             const Vector<Double>& world)
+{
+   AlwaysAssert(which.nelements()==nWorldAxes(), AipsError);
+   AlwaysAssert(world.nelements()==nWorldAxes(), AipsError);
+//
+   worldMin_p.resize(2, True);
+   worldMax_p.resize(2, True);
+   const Vector<Double>& cdelt = increment();
+   const Vector<String>& units = worldAxisUnits();
+//
+   Vector<Double> pixelIn(referencePixel().copy());
+   Vector<Double> worldOut;
+   toWorld(worldOut, pixelIn);
+//
+   Double cosdec = cos(worldOut(1) * to_radians_p[1]);
+   Int n = 10;                                          // Arbitrary offset
+   for (uInt i=0; i<nWorldAxes(); i++) {
+      if (which(i)) {
+         if (i==0) {
+            worldMin_p(i) = world(i) - abs(cdelt(i))*n/cosdec;    
+            worldMax_p(i) = world(i) + abs(cdelt(i))*n/cosdec;
+
+// Put longitude  in -pi -> pi range
+
+            worldMin_p(i) = putLongInPiRange (worldMin_p(i), units(0));
+            worldMax_p(i) = putLongInPiRange (worldMax_p(i), units(0));
+         } else {
+            worldMin_p(i) = world(i) - abs(cdelt(i))*n;
+            worldMin_p(i) = max(worldMin_p(i), -90.0/to_degrees_p[1]);
+//
+            worldMax_p(i) = world(i) + abs(cdelt(i))*n;
+            worldMax_p(i) = min(worldMax_p(i),  90.0/to_degrees_p[1]);
+         }
+      }
+   }
+}
+
+
 
 void DirectionCoordinate::setDefaultWorldMixRanges ()
 {
@@ -1802,6 +1839,20 @@ void DirectionCoordinate::setDefaultWorldMixRanges ()
    worldMin_p(1) =  -90.0/to_degrees_p[1];     //lat
    worldMax_p(1) =   90.0/to_degrees_p[1];
 }
+
+
+
+Double DirectionCoordinate::putLongInPiRange (Double lon, const String& unit) const
+{  
+   Unit u(unit);
+   Quantum<Double> q(lon, u);
+   MVAngle mva(q);
+   const MVAngle& mva2 = mva();
+   Double t = mva2.get(u).getValue();
+//   if (t < 0) t += 360.0/to_degrees_p[0];
+   return t;
+}
+
 
 
 void DirectionCoordinate::listProj ()  const
