@@ -40,32 +40,6 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 
-SpectralModel::~SpectralModel() {
-}
-
-ComponentType::SpectralShape SpectralModel::
-getType(String & errorMessage, const RecordInterface & record) {
-  const String typeString("type");
-  if (!record.isDefined(typeString)) {
-    errorMessage += 
-      String("\nThe record does not have a 'type' field.");
-    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
-  }
-  const RecordFieldId type(typeString);
-  if (record.dataType(type) != TpString) {
-    errorMessage += String("\nThe 'type' field in the spectrum record,")
-      + String("must be a String");
-    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
-  }      
-  if (record.shape(type) != IPosition(1,1)) {
-    errorMessage += String("The 'type' field, in the spectrum record,") + 
-      String(" must have only 1 element\n");
-    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
-  }      
-  const String & typeVal = record.asString(type);
-  return ComponentType::spectralShape(typeVal);
-}
-
 SpectralModel::SpectralModel()
   :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR),
    itsFreqUnit("GHz")
@@ -96,6 +70,9 @@ SpectralModel& SpectralModel::operator=(const SpectralModel& other) {
   return *this;
 }
 
+SpectralModel::~SpectralModel() {
+}
+
 const MFrequency& SpectralModel::refFrequency() const {
   DebugAssert(ok(), AipsError);
   return itsRefFreq;
@@ -114,6 +91,18 @@ const Unit& SpectralModel::frequencyUnit() const {
 void SpectralModel::convertFrequencyUnit(const Unit& freqUnit) {
   itsFreqUnit = freqUnit;
   DebugAssert(ok(), AipsError);
+}
+
+void  SpectralModel::sample(Vector<Double>& scale, 
+			    const Vector<MFrequency::MVType>& frequencies, 
+			    const MFrequency::Ref& refFrame) const {
+  DebugAssert(ok(), AipsError);
+  const uInt nSamples = frequencies.nelements();
+  DebugAssert(scale.nelements() == nSamples, AipsError);
+  
+  for (uInt i = 0; i < nSamples; i++) {
+    scale(i) = sample(MFrequency(frequencies(i), refFrame));
+  }
 }
 
 Bool SpectralModel::fromRecord(String& errorMessage, 
@@ -178,6 +167,29 @@ Bool SpectralModel::toRecord(String& errorMessage,
   }
   record.defineRecord(RecordFieldId("frequency"), freqRecord);
   return True;
+}
+
+ComponentType::SpectralShape SpectralModel::
+getType(String& errorMessage, const RecordInterface& record) {
+  const String typeString("type");
+  if (!record.isDefined(typeString)) {
+    errorMessage += 
+      String("\nThe record does not have a 'type' field.");
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }
+  const RecordFieldId type(typeString);
+  if (record.dataType(type) != TpString) {
+    errorMessage += String("\nThe 'type' field in the spectrum record,")
+      + String("must be a String");
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }      
+  if (record.shape(type) != IPosition(1,1)) {
+    errorMessage += String("The 'type' field, in the spectrum record,") + 
+      String(" must have only 1 element\n");
+    return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
+  }      
+  const String& typeVal = record.asString(type);
+  return ComponentType::spectralShape(typeVal);
 }
 
 Bool SpectralModel::ok() const {
