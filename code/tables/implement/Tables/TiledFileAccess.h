@@ -106,12 +106,14 @@ public:
   // Get part of the array.
   // The Array object is resized if needed.
   // <group>
+  Array<Bool>     getBool     (const Slicer& section);
   Array<Short>    getShort    (const Slicer& section);
   Array<Int>      getInt      (const Slicer& section);
   Array<Float>    getFloat    (const Slicer& section);
   Array<Double>   getDouble   (const Slicer& section);
   Array<Complex>  getComplex  (const Slicer& section);
   Array<DComplex> getDComplex (const Slicer& section);
+  void get (Array<Bool>&, const Slicer& section);
   void get (Array<Short>&, const Slicer& section);
   void get (Array<Int>&, const Slicer& section);
   void get (Array<Float>&, const Slicer& section);
@@ -120,8 +122,20 @@ public:
   void get (Array<DComplex>&, const Slicer& section);
   // </group>
 
+  // Get the array and scale/offset the data using the given values.
+  // It is meant for FITS, so for now it can only be used for a TpShort
+  // TiledFileAccess object.
+  // A deleteValue is set to a NaN without being scaled.
+  // <group>
+  Array<Float> getFloat (const Slicer& section, Float scale, Float offset,
+			 Short deleteValue);
+  void get (Array<Float>&, const Slicer& section,
+	    Float scale, Float offset, Short deleteValue);
+  // </group>
+
   // Put part of the array.
   // <group>
+  void put (const Array<Bool>&, const Slicer& section);
   void put (const Array<Short>&, const Slicer& section);
   void put (const Array<Int>&, const Slicer& section);
   void put (const Array<Float>&, const Slicer& section);
@@ -188,6 +202,10 @@ public:
   void setCacheSize (uInt nbuckets, Bool forceSmaller=True)
     { itsCube->setCacheSize (nbuckets, forceSmaller, True); }
 
+  // Make a tile shape from the array shape to fit as closely as possible
+  // the number of pixels in the tile.
+  static IPosition makeTileShape (const IPosition& arrayShape,
+				  uInt nrPixelsPerTile = 32768);
 
 
 private:

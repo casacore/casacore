@@ -31,6 +31,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
 
@@ -61,6 +62,12 @@ TiledFileAccess::~TiledFileAccess()
   delete itsTSM;
 }
 
+Array<Bool> TiledFileAccess::getBool (const Slicer& section)
+{
+  Array<Bool> arr;
+  get (arr, section);
+  return arr;
+}
 Array<Short> TiledFileAccess::getShort (const Slicer& section)
 {
   Array<Short> arr;
@@ -96,6 +103,20 @@ Array<DComplex> TiledFileAccess::getDComplex (const Slicer& section)
   Array<DComplex> arr;
   get (arr, section);
   return arr;
+}
+
+void TiledFileAccess::get (Array<Bool>& buffer, const Slicer& section)
+{
+  AlwaysAssert (itsDataType == TpBool, AipsError);
+  IPosition start, end, stride;
+  IPosition shp = section.inferShapeFromSource (itsCube->cubeShape(),
+						start, end, stride);
+  buffer.resize (shp);
+  Bool deleteIt;
+  Bool* dataPtr = buffer.getStorage (deleteIt);
+  itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
+  			  itsLocalPixelSize, False);
+  buffer.putStorage (dataPtr, deleteIt);
 }
 
 void TiledFileAccess::get (Array<Short>& buffer, const Slicer& section)
@@ -182,6 +203,51 @@ void TiledFileAccess::get (Array<DComplex>& buffer, const Slicer& section)
   buffer.putStorage (dataPtr, deleteIt);
 }
 
+
+Array<Float> TiledFileAccess::getFloat (const Slicer& section,
+					Float scale, Float offset,
+					Short deleteValue)
+{
+  Array<Float> arr;
+  get (arr, section, scale, offset, deleteValue);
+  return arr;
+}
+
+void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
+			   Float scale, Float offset, Short deleteValue)
+{
+  Array<Short> arr = getShort (section);
+  buffer.resize (arr.shape());
+  Bool deleteArr, deleteBuf;
+  const Short* arrPtr = arr.getStorage (deleteArr);
+  Float* bufPtr = buffer.getStorage (deleteBuf);
+  uInt n = arr.nelements();
+  for (uInt i=0; i<n; i++) {
+    if (arrPtr[i] == deleteValue) {
+      setNaN (bufPtr[i]);
+    } else {
+      bufPtr[i] = arrPtr[i] * scale + offset;
+    }
+  }
+  arr.freeStorage (arrPtr, deleteArr);
+  buffer.putStorage (bufPtr, deleteBuf);
+}
+
+
+void TiledFileAccess::put (const Array<Bool>& buffer, const Slicer& section)
+{
+  AlwaysAssert (isWritable(), AipsError);
+  AlwaysAssert (itsDataType == TpBool, AipsError);
+  IPosition start, end, stride;
+  IPosition shp = section.inferShapeFromSource (itsCube->cubeShape(),
+						start, end, stride);
+  AlwaysAssert (shp.isEqual (buffer.shape()), AipsError);
+  Bool deleteIt;
+  const Bool* dataPtr = buffer.getStorage (deleteIt);
+  itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
+  			  itsLocalPixelSize, True);
+  buffer.freeStorage (dataPtr, deleteIt);
+}
 
 void TiledFileAccess::put (const Array<Short>& buffer, const Slicer& section)
 {
@@ -283,4 +349,43 @@ void TiledFileAccess::setMaximumCacheSize (uInt nbytes)
 uInt TiledFileAccess::maximumCacheSize() const
 {
   return itsTSM->maximumCacheSize();
+}
+
+IPosition TiledFileAccess::makeTileShape (const IPosition& arrayShape,
+					  uInt nrPixelsPerTile)
+{
+  Float nrPixels = nrPixelsPerTile;
+  uInt ndim = arrayShape.nelements();
+  IPosition tileShape (ndim, 1);
+  for (uInt i=0; i<ndim; i++) {
+    uInt leng = arrayShape(i);
+    if (leng <= nrPixels) {
+      tileShape(i) = leng;
+      nrPixels /= tileShape(i);
+    } else {
+      // Take a part of the axis as the tile shape.
+      // The part must be exactly divisible, so we may have some work to do.
+      uInt tileLeng = Int(nrPixels + 0.5);
+      if (leng % tileLeng  ==  0) {
+	tileShape(i) = tileLeng;
+      } else {
+	// Not exact, so try around this value until we find something.
+	uInt nr = min (tileLeng, leng - tileLeng + 1);
+	for (uInt j=1; j<nr; j++) {
+	  if (leng % (tileLeng-j) == 0) {
+	    tileShape(i) = tileLeng-j;
+	    break;
+	  }
+	  if (leng % (tileLeng+j) == 0) {
+	    tileShape(i) = tileLeng+j;
+	    break;
+	  }
+	}
+	// It should always find a value; either 1 or leng.
+	AlwaysAssert (tileShape(i) > 0, AipsError);
+      }
+      break;
+    }
+  }
+  return tileShape;
 }
