@@ -1,5 +1,5 @@
 //# ArrayIO.cc: text output and binary IO for an array of any dimensionality.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
 #include <aips/Utilities/Register.h>
 #include <aips/iostream.h>
 #include <aips/fstream.h>
-#include <aips/strstream.h>           // needed for internal IO
+#include <aips/sstream.h>           // needed for internal IO
 
 template<class T>
 ostream &operator<<(ostream &s, const Array<T> &a)
@@ -289,7 +289,8 @@ void readAsciiMatrix (Matrix<T>& mat, const Char* filein)
 		if (buf[i2] == '\0' || buf[i2] == ' ') {
 		    if (ch > 0) {
 			buf2[ch] = ' ';
-			istrstream(buf2,sizeof(buf2)) >>  temp[havePoint];
+			// istringstream(buf2,sizeof(buf2)) >>  temp[havePoint];
+			istringstream(buf2) >>  temp[havePoint];
 			havePoint += 1;
 			ch = 0;
 		    }
@@ -386,7 +387,7 @@ void readAsciiVector (Vector<T>& vect, const Char* filein)
 			    blockSize *= 2;
 			    temp.resize(blockSize);
 			}
-			istrstream(buf2,sizeof(buf2)) >> temp[havePoint];
+			istringstream(buf2) >> temp[havePoint];
 			havePoint +=1;
 			if (buf[i2] == ' ')
 			    ch = 0;
@@ -624,7 +625,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	if (ix >= 0) {	/// if yes
 	  while ((ix = st.index(',')) >= 0) {
 	    sts = st.before(ix);
-	    istrstream ins(sts.chars()); /// Necessary for template
+	    istringstream ins(sts.chars()); /// Necessary for template
 	    ins >> r;				/// expansion
 	    st = st.after(ix);
 	    if (x.nelements() <= cnt) {
@@ -635,7 +636,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	  };
 	  if ((ix = st.index(']')) >= 0) {
 	    sts = st.before(ix);
-	    istrstream ins(sts.chars()); /// Necessary for template
+	    istringstream ins(sts.chars()); /// Necessary for template
 	    ins >> r;				/// expansion
 	    st = st.from(ix);
 	    if (x.nelements() <= cnt) {
@@ -652,7 +653,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	    s.putback(st[i1]);	///
 	  };			///
 	} else {
-	  istrstream ins(st.chars()); /// Necessary for template
+	  istringstream ins(st.chars()); /// Necessary for template
 	  ins >> r;				/// expansion
 	  if (x.nelements() <= cnt) {
 	    x.resize(2*x.nelements() + 1);
