@@ -151,9 +151,16 @@ public:
     // interface to wcsmix().  Get this pointer and use it
     // immediately, but do NOT delete it !
     linprm* linprmWCS() const {return linprm_p;}
+
 private:
     // A WCSLIB C-structure.
     linprm* linprm_p;
+
+//
+    linprm* make_linprm(int naxis) const;
+    void delete_linprm(linprm *&to) const;
+    void set_linprm(linprm *to, const Vector<double> &crpix,
+                    const Vector<double> &cdelt, const Matrix<double> &pc) const;
 };
 
 #endif

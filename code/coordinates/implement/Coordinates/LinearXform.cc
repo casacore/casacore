@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,78 +35,6 @@
 #include <wcslib/lin.h>
 #include <stdlib.h>
 
-static linprm *make_linprm(int naxis)
-{
-  linprm *tmp = new linprm;
-  if (! tmp) {
-      return 0;
-  }
-
-  tmp->flag  = 0;
-  tmp->naxis = naxis;
- 
- tmp->crpix = new double[naxis];
-  if (! tmp->crpix) {
-      delete tmp; return 0;
-  }
- 
-  tmp->pc = new double[naxis*naxis];
-  if (! tmp->pc) {
-      delete [] tmp->crpix;
-      delete tmp; 
-      return 0;
-  }
-
-  tmp->cdelt = new double[naxis];
-  if (! tmp->cdelt){
-      delete[] tmp->pc; 
-      delete[] tmp->crpix; 
-      delete tmp; 
-      return 0;
-  }
-
-  tmp->piximg = 0; // linset will set these
-  tmp->imgpix = 0;
-  return tmp;
-}
-
-static void delete_linprm(linprm *&to)
-{
-  if (to) {
-      delete [] to->crpix;
-      delete [] to->cdelt;
-      delete [] to->pc;
-      free(to->piximg);
-      free(to->imgpix);
-      delete to;
-  }
-  to = 0;
-}
-
-static void set_linprm(linprm *to, const Vector<double> &crpix,
-		const Vector<double> &cdelt, const Matrix<double> &pc)
-{
-    uInt naxis = crpix.nelements();
-    DebugAssert(naxis == cdelt.nelements() &&
-		naxis == pc.ncolumn() && naxis == pc.nrow(), AipsError);
-
-    uInt count = 0;
-    for (uInt i=0; i<naxis; i++) {
-        to->crpix[i] = crpix(i);
-        to->cdelt[i] = cdelt(i);
-	for (uInt j=0; j<naxis; j++) {
-  	    to->pc[count] = pc(j,i);
-	    count++;
-	}
-    }
-    to->flag = 0;
-    int err = linset(to);
-    if (err) {
-        String errmsg = "wcs linset_error: ";
-	errmsg += linset_errmsg[err];
-	throw(AipsError(errmsg));
-    }
-}
 
 LinearXform::LinearXform(uInt naxis)
   : linprm_p(make_linprm(naxis))
@@ -359,4 +287,77 @@ Bool LinearXform::near(const LinearXform& other,
    return True;
 }
 
+
+linprm* LinearXform::make_linprm(int naxis) const
+{
+  linprm *tmp = new linprm;
+  if (! tmp) {
+      return 0;
+  }
+
+  tmp->flag  = 0;
+  tmp->naxis = naxis;
+ 
+ tmp->crpix = new double[naxis];
+  if (! tmp->crpix) {
+      delete tmp; return 0;
+  }
+ 
+  tmp->pc = new double[naxis*naxis];
+  if (! tmp->pc) {
+      delete [] tmp->crpix;
+      delete tmp; 
+      return 0;
+  }
+
+  tmp->cdelt = new double[naxis];
+  if (! tmp->cdelt){
+      delete[] tmp->pc; 
+      delete[] tmp->crpix; 
+      delete tmp; 
+      return 0;
+  }
+
+  tmp->piximg = 0; // linset will set these
+  tmp->imgpix = 0;
+  return tmp;
+}
+
+void LinearXform::delete_linprm(linprm *&to) const
+{
+  if (to) {
+      delete [] to->crpix;
+      delete [] to->cdelt;
+      delete [] to->pc;
+      free(to->piximg);
+      free(to->imgpix);
+      delete to;
+  }
+  to = 0;
+}
+
+void LinearXform::set_linprm(linprm *to, const Vector<double> &crpix,
+                             const Vector<double> &cdelt, const Matrix<double> &pc) const
+{
+    uInt naxis = crpix.nelements();
+    DebugAssert(naxis == cdelt.nelements() &&
+		naxis == pc.ncolumn() && naxis == pc.nrow(), AipsError);
+
+    uInt count = 0;
+    for (uInt i=0; i<naxis; i++) {
+        to->crpix[i] = crpix(i);
+        to->cdelt[i] = cdelt(i);
+	for (uInt j=0; j<naxis; j++) {
+  	    to->pc[count] = pc(j,i);
+	    count++;
+	}
+    }
+    to->flag = 0;
+    int err = linset(to);
+    if (err) {
+        String errmsg = "wcs linset_error: ";
+	errmsg += linset_errmsg[err];
+	throw(AipsError(errmsg));
+    }
+}
 
