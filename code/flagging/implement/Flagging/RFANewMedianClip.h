@@ -36,8 +36,7 @@
 #include <scimath/Mathematics/MedianSlider.h> 
 
 // <summary>
-// RFANewMedianClip: RedFlagger Agent for clipping relative to median over time
-// slots
+// RFANewMedianClip:RedFlagger Agent;clips relative to median over time slots
 // </summary>
 
 // <use visibility=local>
