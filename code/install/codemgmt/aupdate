@@ -74,7 +74,7 @@
      ;;
   *)
      cp $0 $0-
-     exec $0- $*
+     exec sh -x $0- $*
      ;;
   esac
 
@@ -144,7 +144,7 @@
 #
   DATA=""
   DOCS=""
-  BINARY=""
+  BINARY="no"
   LIBEXEC=""
   CODE=""
   GUI=""
@@ -187,7 +187,7 @@
 	   BINARY="bin"
 	   ;;
         nobinary)
-	   BINARY=""
+	   BINARY="no"
 	   ;;
         libexec)
 	   LIBEXEC="libexec"
@@ -252,7 +252,7 @@ esac
 #Add the necessary base to what we need to get
 
 RELARCH=""
-if [ $BINARY != "" ]; then
+if [ $BINARY != "no" ]; then
    RELARCH=$BASE$MYARCH
 fi
 
