@@ -83,30 +83,43 @@ ImageMoments<T>::ImageMoments (const ImageInterface<T>& image,
 {
    goodParameterStatus_p = True;
 
+   momentAxisDefault_p = -10;
+   momentAxis_p = momentAxisDefault_p;
+   moments_p.resize(1);
+   moments_p(0) = INTEGRATED;
+   kernelTypes_p.resize(0);
+   kernelWidths_p.resize(0);
+   nxy_p.resize(0);
+   range_p.resize(0);
+   smoothAxes_p.resize(0);
+   blc_p.resize(0);
+   trc_p.resize(0);
+   inc_p.resize(0);
+   peakSNR_p = 3;
+   stdDeviation_p = 0.0;
+   device_p = "";
+   out_p = "";
+   psfOut_p = "";
+   smoothOut_p = "";
+   doWindow_p = False;
+   doFit_p = False;
+   doAuto_p = True;   
+   doSmooth_p = False;
+   noInclude_p = True;
+   noExclude_p = True;
+
    if (setNewImage(image)) {
-      momentAxisDefault_p = -10;
-      momentAxis_p = momentAxisDefault_p;
-      moments_p.resize(1);
-      moments_p(0) = INTEGRATED;
-      kernelTypes_p.resize(0);
-      kernelWidths_p.resize(0);
-      nxy_p.resize(0);
-      range_p.resize(0);
-      smoothAxes_p.resize(0);
+
+// Coordinate conversion vectors
+
       pixelIn_p.resize (pInImage_p->ndim());
       worldOut_p.resize(pInImage_p->ndim());
-      peakSNR_p = 3;
-      stdDeviation_p = 0.0;
-      device_p = "";
-      out_p = "";
-      psfOut_p = "";
-      smoothOut_p = "";
-      doWindow_p = False;
-      doFit_p = False;
-      doAuto_p = True;   
-      doSmooth_p = False;
-      noInclude_p = True;
-      noExclude_p = True;
+ 
+// Region defaults to entire image
+                                     
+      IPosition blc, trc, inc;
+      goodParameterStatus_p = setRegion(blc, trc, inc, False);
+
    } else {
       goodParameterStatus_p = False;
    }
@@ -125,6 +138,9 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
                         range_p(other.range_p),
                         smoothAxes_p(other.smoothAxes_p),
                         worldOut_p(other.worldOut_p),
+                        blc_p(other.blc_p),
+                        trc_p(other.trc_p),
+                        inc_p(other.inc_p),
                         peakSNR_p(other.peakSNR_p),
                         stdDeviation_p(other.stdDeviation_p),
                         device_p(other.device_p),
@@ -185,6 +201,9 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       range_p = other.range_p;
       smoothAxes_p = other.smoothAxes_p;
       worldOut_p = other.worldOut_p;
+      blc_p = other.blc_p;
+      trc_p = other.trc_p;  
+      inc_p = other.inc_p;
       peakSNR_p = other.peakSNR_p;
       stdDeviation_p = other.stdDeviation_p;
       device_p = other.device_p;
@@ -201,7 +220,6 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
 
       return *this;
    }
-   
 }
 
 
@@ -312,7 +330,45 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
 
 
 template <class T>
+Bool ImageMoments<T>::setRegion(const IPosition& blcU,
+                                const IPosition& trcU,
+                                const IPosition& incU,
+                                const Bool& listRegion)
+//
+// Select the region of interest
+//
+{   
+   if (!goodParameterStatus_p) {
+      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      return False;
+   }
+ 
+// Check OK
+  
+   blc_p.resize(0);
+   blc_p = blcU;
+   trc_p.resize(0);
+   trc_p = trcU;
+   inc_p.resize(0);
+   inc_p = incU;   
+   ImageUtilities::verifyRegion(blc_p, trc_p, inc_p, pInImage_p->shape());
+   if (listRegion) {
+      os_p << LogIO::NORMAL << "Selected region : " << blc_p+1<< " to "
+           << trc_p+1 << LogIO::POST;
+   }
 
+// For now there is no region selection in TiledStepper
+
+   blc_p = 0;
+   trc_p = pInImage_p->shape();
+   inc_p = 1;
+    
+   return True;
+}
+ 
+
+
+template <class T>
 Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
 //
 // Assign the desired windowing and fitting methods
@@ -338,9 +394,9 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
 
 // Assign Boooools
 
-   doWindow_p = Bool(ImageUtilities::inVector(WINDOW, methodU)!=-1);
-   doFit_p    = Bool(ImageUtilities::inVector(FIT, methodU)!=-1);
-   doAuto_p   = Bool(ImageUtilities::inVector(INTERACTIVE, methodU)==-1);
+   doWindow_p = ToBool(ImageUtilities::inVector(WINDOW, methodU)!=-1);
+   doFit_p    = ToBool(ImageUtilities::inVector(FIT, methodU)!=-1);
+   doAuto_p   = ToBool(ImageUtilities::inVector(INTERACTIVE, methodU)==-1);
 
    return True;
 }
@@ -742,21 +798,6 @@ Bool ImageMoments<T>::createMoments()
    if (!checkMethod()) return False;
 
 
-// Fish out the coordinate systems and remove the collapsed moment pixel axis, 
-// Tell the output image CoordinateSystem that when it makes conversions 
-// involving the removed axis, to use the average pixel of that axis.  
-
-   Int coordinate, axisInCoordinate;
-   pInImage_p->coordinates().findPixelAxis(coordinate, axisInCoordinate, momentAxis_p);
-   Int momentWorldAxis = pInImage_p->coordinates().worldAxes(coordinate)(axisInCoordinate);
-   os_p << LogIO::NORMAL << endl << "Moment axis type is "
-        << pInImage_p->coordinates().worldAxisNames()(momentWorldAxis) << LogIO::POST;
-
-   CoordinateSystem outImageCoord = pInImage_p->coordinates();
-   uInt removeAxis = momentAxis_p;
-   outImageCoord.removePixelAxis(removeAxis, pInImage_p->shape()(momentAxis_p)/2.0);
-
-
 // Create a vector, each element of which points to the appropriate
 // moment in the moments array
          
@@ -767,13 +808,7 @@ Bool ImageMoments<T>::createMoments()
    Int outDim = pInImage_p->ndim() - 1;
 
 
-// Create array of pointers for output images and create shape array
-
-   PagedImage<T>* outPt[NMOMENTS];
-   for (i=0; i<NMOMENTS; i++)  outPt[i] = 0;
-
-
-// Create map to map input to output axes
+// Create table to map input to output axes
 
    IPosition ioMap(outDim);
    for (i=0,j=0; i<inDim; i++) {
@@ -783,16 +818,117 @@ Bool ImageMoments<T>::createMoments()
       }
    }            
 
-
-// Loop over the user specified moments and assign output image pointers and the
-// selection array
+// Set up image iterator.  Use the TiledStepper navigator because it knows 
+// the shape of tiles and will return the profiles in the optimal order
+// We do this one first so we can do the lattice subsectioning and
+// recover the shape of the lattice which is required to create the output
+// images
    
+   TiledStepper navigator (pInImage_p->shape(), 
+                           pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
+                           momentAxis_p);
+//      navigator.subSection(blc_p, trc_p);
+//   IPosition latticeShape = navigator.subLatticeShape();
+
+   IPosition latticeShape = navigator.latticeShape();
+   RO_LatticeIterator<T> imageIterator(*pInImage_p, navigator);
+
+
+// We only smooth the image if we are doing the smooth/clip method
+// or possibly the interactive window method.  Note that the convolution
+// routines can only handle convolution when the image fits fully in core
+// at present.
+   
+   PagedImage<T>* pSmoothedImage = 0;
+   String smoothName;
+
+   if (doSmooth_p) {
+      Int axMax = max(smoothAxes_p.ac()) + 1;
+      if (axMax > pInImage_p->ndim()) {
+         os_p << LogIO::SEVERE << "You have specified a smoothing axis larger" << endl;
+         os_p <<                  "than the number of axes in the image" << LogIO::POST;
+         return False;
+      }
+      
+
+// Create smoothed image as a PagedImage.  We delete it later
+// if the user doesn't want to save it
+/*
+      {
+         File inputImageName(pInImage_p->name());
+         const String path = inputImageName.path().dirName() + "/";
+         Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
+         smoothName = fileName.absoluteName();
+         Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),  
+                                String("ImageMoments_Smooth_"));
+         pSmoothedImage = new PagedArray<T>(pInImage_p->shape(), myTable,
+             pInImage_p->niceCursorShape(pInImage_p->maxPixels()));
+         pSmoothedImage->set(0.0);
+      }
+*/
+      if (smoothOut_p.empty()) {
+         File inputImageName(pInImage_p->name());
+         const String path = inputImageName.path().dirName() + "/";
+         Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
+         smoothName = fileName.absoluteName();
+      } else {
+         smoothName = smoothOut_p;
+      }
+
+// Set coordinate system
+         
+      CoordinateSystem cSys = pInImage_p->coordinates();
+      cSys.subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
+
+// Create image
+       
+      pSmoothedImage = new PagedImage<T>(latticeShape, cSys, smoothName);
+      pSmoothedImage->set(0.0);
+      os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
+          
+
+// Smooth it
+
+      if (!smoothImage(pSmoothedImage)) {
+         os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
+         return False;
+      }
+   }
+
+// Set output images shape
+   
+   IPosition outImageShape(outDim);
+   for (j=0; j<outDim; j++) outImageShape(j) = latticeShape(ioMap(j));
+
+
+// Account for subsectioning and removal of the collapsed moment pixel axis
+// in the coordinate system.  Tell the output image CoordinateSystem that 
+// when it makes conversions involving the removed axis, to use the average 
+// pixel of that axis.  
+
+   CoordinateSystem outImageCoord = pInImage_p->coordinates();
+   outImageCoord.subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
+
+   Int coordinate, axisInCoordinate;
+   pInImage_p->coordinates().findPixelAxis(coordinate, axisInCoordinate, momentAxis_p);
+   Int momentWorldAxis = pInImage_p->coordinates().worldAxes(coordinate)(axisInCoordinate);
+   os_p << LogIO::NORMAL << endl << "Moment axis type is "
+        << pInImage_p->coordinates().worldAxisNames()(momentWorldAxis) << LogIO::POST;
+
+   uInt removeAxis = momentAxis_p;
+   outImageCoord.removePixelAxis(removeAxis, (blc_p(momentAxis_p)+trc_p(momentAxis_p))/2.0);
+
+
+// Create array of pointers for output images 
+
+   PagedImage<T>* outPt[NMOMENTS];
+   for (i=0; i<NMOMENTS; i++)  outPt[i] = 0;
    String suffix;
    Bool doMedianI = False;
    Bool doMedianV = False;
    Bool doAbsDev = False;
-   IPosition outImageShape(outDim);
-   for (j=0; j<outDim; j++) outImageShape(j) = pInImage_p->shape()(ioMap(j));
+
+// Loop over desired output moments
 
    for (i=0; i<moments_p.nelements(); i++) {
       selectMoment (doMedianI, doMedianV, doAbsDev, suffix, selMom(i), i);
@@ -813,112 +949,11 @@ Bool ImageMoments<T>::createMoments()
    }
 
 
-
-// We only smooth the image if we are doing the smooth/clip method
-// or possibly the interactive window method.  Note that the convolution
-// routines can only handle convolution when the image fits fully in core
-// at present.
-   
-   PagedArray<Bool>* pMaskImage = 0;
-   PagedImage<T>* pSmoothedImage = 0;
-   String smoothName;
-
-   if (doSmooth_p) {
-
-      Int axMax = max(smoothAxes_p.ac()) + 1;
-      if (axMax > pInImage_p->ndim()) {
-         os_p << LogIO::SEVERE << "You have specified a smoothing axis larger" << endl;
-         os_p <<                  "than the number of axes in the image" << LogIO::POST;
-         return False;
-      }
-      
-
-// Create smoothed image as a PagedImage on disk.  We delete it later
-// if the user doesn't want to save it
-
-      if (smoothOut_p.empty()) {
-         File inputImageName(pInImage_p->name());
-         const String path = inputImageName.path().dirName() + "/";
-         Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
-         smoothName = fileName.absoluteName();
-      } else {         
-         smoothName = smoothOut_p;
-      }
-      pSmoothedImage = new PagedImage<T>(pInImage_p->shape(), 
-                                         pInImage_p->coordinates(),
-                                         smoothName);
-      if (!smoothImage(pSmoothedImage)) {
-         os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
-         return False;
-      }
-
-        
-      if (!doWindow_p) {
-   
-// We only require the mask for the smooth and clip method, not the smooth/window method
-// Make sure it has the same tile shape as the image
-         {   
-            Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),  
-                                   String("ImageMoments_Mask_"));
-            pMaskImage = new PagedArray<Bool>(pInImage_p->shape(), myTable,
-                pInImage_p->niceCursorShape(pInImage_p->maxPixels()));
-         }
-         pMaskImage->set(True);
-         makeMask (pMaskImage, pSmoothedImage);
-
-// We do not further require the smoothed image for smooth and clip method,
-// we only need it for the smooth/window method, so we can delete its 
-// pointer here
-
-         delete pSmoothedImage;   
-         pSmoothedImage = 0;
-
-// Since the smoothed image was written as a PagedImage on disk, delete
-// the disk file if the user didn't  want to save it
-
-         if (smoothOut_p.empty()) {
-             Directory dir(smoothName);
-             dir.removeRecursive();
-         }
-      }
-   }
-
-
-// Set up image iterator.  Use the TiledStepper navigator because it knows 
-// the shape of tiles and will return the profiles in the optimal order
-   
-   TiledStepper imageNavigator (pInImage_p->shape(), 
-                                pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
-                                momentAxis_p);
-   RO_LatticeIterator<T> imageIterator(*pInImage_p, imageNavigator);
-   
-      
-// Set up smoothed image iterator and navigator
-         
-   RO_LatticeIterator<T>* pSmoothedImageIterator = 0;
-   if (pSmoothedImage) {
-      TiledStepper smoothedImageNavigator (pSmoothedImage->shape(),
-           pSmoothedImage->niceCursorShape(pSmoothedImage->maxPixels()),
-           momentAxis_p);
-      pSmoothedImageIterator = new RO_LatticeIterator<T>(*pSmoothedImage, smoothedImageNavigator);
-   }
-
-
-// Set up mask iterator and navigator if required
-         
-   RO_LatticeIterator<Bool>* pMaskIterator = 0;
-   if (pMaskImage) {
-      TiledStepper maskNavigator (pMaskImage->shape(),
-                                  pMaskImage->niceCursorShape(pMaskImage->maxPixels()),
-                                  momentAxis_p);
-      pMaskIterator = new RO_LatticeIterator<Bool>(*pMaskImage, maskNavigator);
-   }
-            
             
 // If the user is using the automatic, non-fitting window method, it
 // it needs a good assement of the noise.  The user can input that value, but
 // if they don't, we work it out here.
-    
+
    Double noise;
    if ( stdDeviation_p <=0 && ( (doWindow_p && doAuto_p) || (doFit_p && !doWindow_p && doAuto_p) ) ) {
       if (pSmoothedImage) {
@@ -931,8 +966,7 @@ Bool ImageMoments<T>::createMoments()
       stdDeviation_p = noise;
    }
 
-
-// Open plot device before we do any hard work in case it fails
+// Open plot device 
          
    Bool doPlot = False;
    if (doWindow_p || (!doWindow_p && doFit_p)) {
@@ -946,7 +980,6 @@ Bool ImageMoments<T>::createMoments()
          doPlot = True;
       }
    }        
-   
 
 // Array to hold moments
    
@@ -969,44 +1002,66 @@ Bool ImageMoments<T>::createMoments()
 */
    IPosition outPos(outDim);
       
+
+   Int nProfiles = imageIterator.latticeShape().product()/imageIterator.vectorCursor().nelements();
+   Int percentInc = 20;
+   Int inc = max(1, Int(Float(percentInc)/100.0*nProfiles));
+   Int iProfile = 1;
+   Int percent = percentInc;
+   IPosition stride, sliceShape;
+   if (pSmoothedImage) {
+      stride.resize(pSmoothedImage->ndim());
+      stride = 1;
+      sliceShape.resize(pSmoothedImage->ndim());
+      sliceShape = 1;
+      sliceShape(momentAxis_p) = pSmoothedImage->shape()(momentAxis_p);
+   }
+
+
 // Iterate through image and do all the wonderful things
 
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
-
-   Int nProfiles = imageIterator.latticeShape().product()/imageIterator.vectorCursor().nelements();
-   Int inc = max(1, Int(0.2*nProfiles));
-   Int iProfile = 1;
    while (!imageIterator.atEnd()) {
-     if (iProfile%inc == 0) 
-         os_p << LogIO::NORMAL << "Completed " << Int(100*Float(iProfile)/Float(nProfiles)+0.5) 
-              << "%" << LogIO::POST;
+     if (iProfile%inc == 0) {
+         os_p << LogIO::NORMAL << "Completed " << percent << "%" << LogIO::POST;
+         percent += percentInc;
+     }
 
 // Set pixel values of all axes (used for coordinate transformation)
 // to be start of cursor array.  The desired value for the moment axis 
-// is set in getMomentCoord
+// is set in getMomentCoord. 
 
-      for (i=0; i<pixelIn_p.nelements(); i++) {pixelIn_p(i) = imageIterator.position()(i);}
+      for (i=0; i<pixelIn_p.nelements(); i++) {
+         pixelIn_p(i) = imageIterator.position()(i);
+      }
+
+// Fish out smoothed image slice
+
+      Array<T> smoothSlice;
+      Vector<T> smoothSliceRef;
+      if (pSmoothedImage) {
+         pSmoothedImage->getSlice(smoothSlice, (imageIterator.position()-blc_p),
+                                  sliceShape, stride, True);
+         smoothSliceRef.reference(smoothSlice);
+      }
+
 
 // Choose method
 
       if (doSmooth_p && !doWindow_p) {
       
 // Smooth and clip
-   
-         doMomSm (calcMoments, imageIterator.vectorCursor(),
-                  pMaskIterator->vectorCursor(),
-                  doMedianI, doMedianV, doAbsDev);
+
+         doMomSm(calcMoments, imageIterator.vectorCursor(),
+                 smoothSliceRef, doMedianI, doMedianV, doAbsDev);
       } else if (doWindow_p) {
     
 // Window
-     
-         const Vector<T>* pSmoothedVector = 0;
-         if (pSmoothedImage) {
-            pSmoothedVector = &(pSmoothedImageIterator->vectorCursor());
-         }
-         doMomWin (calcMoments, imageIterator.vectorCursor(), pSmoothedVector,
-                   doMedianI, doMedianV, doAbsDev, doPlot,
-                   momAxisType, imageIterator.position(), ks);
+
+         doMomWin (calcMoments, imageIterator.vectorCursor(), 
+                   smoothSliceRef, doMedianI, doMedianV, doAbsDev, 
+                   doPlot, momAxisType, imageIterator.position(), ks);
+
       } else if (doFit_p) {
 
 // Fit   
@@ -1024,13 +1079,19 @@ Bool ImageMoments<T>::createMoments()
 
 // Fill output images; set position of output image (has one
 // axis removed) and assign value
-
-
 // The one point slice is slower than the direct access method.
 // Need to iterate through output images and buffer up slices
 //
-      for (Int j=0; j<outDim; j++) outPos(j) = imageIterator.position()(ioMap(j));
-      for (i=0; i<moments_p.nelements(); i++) (*(outPt[i]))(outPos) = calcMoments(selMom(i));
+
+      for (Int j=0; j<outDim; j++) {
+         outPos(j) = imageIterator.position()(ioMap(j)) - blc_p(ioMap(j));
+      }
+      for (i=0; i<moments_p.nelements(); i++) {
+//         cout << "moments=" << calcMoments.ac() << endl;
+//         cout << "selMom=" << selMom.ac() << endl;
+         (*(outPt[i]))(outPos) = calcMoments(selMom(i));
+      }
+
 
 /*
       for (i=0; i<moments_p.nelements(); i++) {
@@ -1042,28 +1103,37 @@ Bool ImageMoments<T>::createMoments()
 // Increment iterators
                   
       imageIterator++;
-      if (pMaskIterator) (*pMaskIterator)++;
-      if (pSmoothedImageIterator) (*pSmoothedImageIterator)++;
       iProfile++;
    }
 
 // Delete memory
          
    for (i=0; i<moments_p.nelements(); i++) delete outPt[i];
-   if (pMaskIterator) delete pMaskIterator;
-   if (pSmoothedImageIterator) delete pSmoothedImageIterator;
 
-   if (pMaskImage) delete pMaskImage;
+/*
+// Now, if the user wants to save the smoothed image, copy it to
+// a PagedImage and subsection it appropriately.
+
+   if (!smoothOut_p.empty()) {
+      os_p << LogIO::NORMAL << "Saving " << smoothOut_p << endl;
+      saveLattice (pSmoothedImage, pInImage_p->coordinates(),
+                   blc_p, trc_p, smoothOut_p);
+   }
+*/
+
+
    if (pSmoothedImage) {
       delete pSmoothedImage;
-
+       
 // Remove the disk file if they don't want to save it
-
+ 
       if (smoothOut_p.empty()) {
          Directory dir(smoothName);
          dir.removeRecursive();
       }
    }
+   
+
 
 
 // Success guarenteed !
@@ -1210,7 +1280,7 @@ Bool ImageMoments<T>::checkMethod ()
 // Make sure we can do what the user wants
 //  
 {
-   const Bool doInter = Bool(!doAuto_p);
+   const Bool doInter = ToBool(!doAuto_p);
 
    if (!( (!doSmooth_p && !doWindow_p && !doFit_p && ( noInclude_p &&  noExclude_p) && !doInter) ||
           ( doSmooth_p && !doWindow_p && !doFit_p && (!noInclude_p || !noExclude_p) && !doInter) ||
@@ -1356,14 +1426,14 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
 //   doMedian   Don't bother with median unless we really have to
 //   doAbsDev   Don't bother with absolute deviations unless we really have to
 {
-   const Bool doInclude = Bool(!noInclude_p);
-   const Bool doExclude = Bool(!noExclude_p);
+   const Bool doInclude = ToBool(!noInclude_p);
+   const Bool doExclude = ToBool(!noExclude_p);
    
 // Assign array for median.  Is resized appropriately later
       
    Int nPts = data.nelements();
-   Vector<T> medianArray(nPts);
-   Vector<Int> medianArrayIndex(nPts);
+   Vector<T> selectedData(nPts);
+   Vector<Int> selectedDataIndex(nPts);
                     
        
 // Compute moments
@@ -1384,8 +1454,8 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
             coord = getMomentCoord (Double(i));
             accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                        dMin, dMax, i, data(i), coord);
-            medianArray(j) = data(i);
-            medianArrayIndex(j) = i;
+            selectedData(j) = data(i);
+            selectedDataIndex(j) = i;
             j++;
          }
       }
@@ -1396,8 +1466,8 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
             Double coord = getMomentCoord (Double(i));
             accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                        dMin, dMax, i, data(i), coord);
-            medianArray(j) = data(i);
-            medianArrayIndex(j) = i;
+            selectedData(j) = data(i);
+            selectedDataIndex(j) = i;
             j++;
          }
       }
@@ -1407,8 +1477,8 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
          Double coord = getMomentCoord (Double(i));
          accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                     dMin, dMax, i, data(i), coord);
-         medianArray(i) = data(i);
-         medianArrayIndex(i) = i;
+         selectedData(i) = data(i);
+         selectedDataIndex(i) = i;
       }   
    }
          
@@ -1425,8 +1495,8 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
             
    T dMedian = 0.0;
    if (doMedianI) {
-      medianArray.resize(nPts,True);
-      dMedian = median(medianArray.ac());
+      selectedData.resize(nPts,True);
+      dMedian = median(selectedData.ac());
    }
               
 
@@ -1441,12 +1511,12 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
 // and generate cumulative probability (it's already sorted
 // of course).
 
-         medianArray.resize(nPts,True);
-         medianArray(0) = abs(medianArray(0));
-         T dataMax = medianArray(0);
+         selectedData.resize(nPts,True);
+         selectedData(0) = abs(selectedData(0));
+         T dataMax = selectedData(0);
          for (Int i=1; i<nPts; i++) {
-            medianArray(i) += abs(medianArray(i-1));
-            dataMax = max(dataMax,medianArray(i));
+            selectedData(i) += abs(selectedData(i-1));
+            dataMax = max(dataMax,selectedData(i));
          }
 
 // Find 1/2 way value (well, the first one that occurs)
@@ -1454,7 +1524,7 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
          T halfMax = dataMax/2.0;
          Int iVal;
          for (i=0; i<nPts; i++) {
-            if (medianArray(i) >= halfMax) {
+            if (selectedData(i) >= halfMax) {
                iVal = i;
                break;
             }
@@ -1464,12 +1534,12 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
 
          Double interpPixel;
          if (iVal > 0) {
-            Double m = (medianArray(iVal) - medianArray(iVal-1)) /
-                      (medianArrayIndex(iVal) - medianArrayIndex(iVal-1));
-            Double b = medianArray(iVal) - m*medianArrayIndex(iVal);
-            interpPixel = (medianArray(iVal) -b) / m;
+            Double m = (selectedData(iVal) - selectedData(iVal-1)) /
+                      (selectedDataIndex(iVal) - selectedDataIndex(iVal-1));
+            Double b = selectedData(iVal) - m*selectedDataIndex(iVal);
+            interpPixel = (selectedData(iVal) -b) / m;
          } else {
-            interpPixel = medianArrayIndex(iVal);
+            interpPixel = selectedDataIndex(iVal);
          }           
 
 // Find world coordinate of that pixel on the moment axis
@@ -1484,20 +1554,20 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
    Double sumAbsDev = 0.0;
    if (doAbsDev) {
       Double iMean = s0 / nPts;
-      nPts = data.nelements();
+      Int nPts2 = data.nelements();
 
       if (doInclude) {
-         for (Int i=0; i<nPts; i++) {
+         for (Int i=0; i<nPts2; i++) {
             if (data(i) >= range_p(0) && data(i) <= range_p(1))
                sumAbsDev += abs(data(i) - iMean);
          }
       } else if (doExclude) {
-         for (Int i=0; i<nPts; i++) {
+         for (Int i=0; i<nPts2; i++) {
             if (data(i) <= range_p(0) || data(i) >= range_p(1))
                sumAbsDev += abs(data(i) - iMean);
          }
       } else
-         for (Int i=0; i<nPts; i++) sumAbsDev += abs(Double(data(i)) - iMean);
+         for (Int i=0; i<nPts2; i++) sumAbsDev += abs(Double(data(i)) - iMean);
    }
 
 
@@ -1583,7 +1653,7 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 
 // Assign array for median.
 
-   Vector<T> medianArray(nPts); 
+   Vector<T> medianData(nPts); 
 
    
 // Compute moments
@@ -1602,13 +1672,13 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
       coord = getMomentCoord (Double(i));
       accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                  dMin, dMax, i, gData(i), coord);
-      medianArray(i) = gData(i);
+      medianData(i) = gData(i);
    }
 
 // Medians
    
    T dMedian = 0.0;
-   if (doMedianI) dMedian = median(medianArray.ac());
+   if (doMedianI) dMedian = median(medianData.ac());
 
    T vMedian = 0.0;
    
@@ -1633,7 +1703,7 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 template <class T> 
 void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
                                const Vector<T>& data, 
-                               const Vector<Bool>& mask,
+                               const Vector<T>& smoothedData,
                                const Bool& doMedianI,
                                const Bool& doMedianV,
                                const Bool& doAbsDev)
@@ -1643,18 +1713,19 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 // Output:
 //   calcMomentsThe many moments
 // Input:    
-//   data       The data chunk
-//   mask       The mask
-//   doMedian   Don't bother with median unless we really have to
-//   doAbsDev   Don't bother with absolute deviations unless we really have to
+//   data          The profile
+//   smoothedData  The smoothed profile
+//   doMedian      Don't bother with median unless we really have to
+//   doAbsDev      Don't bother with absolute deviations unless we really have to
 //
 {
 
 // Assign array for median.  
 
    Int nPts = data.nelements();
-   Vector<T> medianArray(nPts);
-
+   Vector<T> selectedData(nPts);
+   Vector<Int> selectedDataIndex(nPts);
+ 
 
 // Compute moments
 
@@ -1667,14 +1738,35 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
    Double dMin =  1.0e30;
    Double dMax = -1.0e30;
    Double coord;
- 
-   for (Int i=0,j=0; i<nPts; i++) {
-      if (mask(i)) {
-         coord = getMomentCoord (Double(i));
-         accumSums (s0, s0Sq, s1, s2, iMin, iMax, dMin, dMax,
-                    i, data(i), coord);
-         medianArray(j) = data(i);
-         j++;
+   Bool doInclude = ToBool(!noInclude_p);
+   Int i,j;
+
+
+// We won't be in this method unless the range is set and either noInclude_p
+// or noExclude_p are set.  So we don't have to check them both.
+
+   if (doInclude) {
+      for (i=0,j=0; i<nPts; i++) {
+         if (smoothedData(i) >= range_p(0) && smoothedData(i) <= range_p(1)) {
+            coord = getMomentCoord (Double(i));
+            accumSums (s0, s0Sq, s1, s2, iMin, iMax,
+                       dMin, dMax, i, data(i), coord);
+            selectedData(j) = data(i);
+            selectedDataIndex(j) = i;
+            j++;
+         }
+      }
+      nPts = j;
+   } else {
+      for (i=0,j=0; i<nPts; i++) {
+         if (smoothedData(i) <= range_p(0) || smoothedData(i) >= range_p(1)) {
+            Double coord = getMomentCoord (Double(i));
+            accumSums (s0, s0Sq, s1, s2, iMin, iMax,
+                       dMin, dMax, i, data(i), coord);
+            selectedData(j) = data(i);
+            selectedDataIndex(j) = i;
+            j++;
+         }
       }
    }
    nPts = j;
@@ -1692,8 +1784,8 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 
    T dMedian = 0.0;
    if (doMedianI) {
-      medianArray.resize(nPts,True);
-      dMedian = median(medianArray.ac());
+      selectedData.resize(nPts,True);
+      dMedian = median(selectedData.ac());
    }
 
    T vMedian = 0.0;
@@ -1703,9 +1795,23 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
    Double sumAbsDev = 0.0;
    if (doAbsDev) {
       Double iMean = s0 / nPts;
-      Int nPts = data.nelements();
-      for (Int i=0; i<nPts; i++) if (mask(i)) sumAbsDev += abs(Double(data(i) - iMean));
-    }
+      Int nPts2 = data.nelements();
+
+      if (doInclude) {
+         for (Int i=0; i<nPts2; i++) {
+            if (smoothedData(i) >= range_p(0) && smoothedData(i) <= range_p(1)) {
+               sumAbsDev += abs(Double(data(i) - iMean));
+            }
+         }
+         nPts = j;
+      } else {
+         for (Int i=0; i<nPts2; i++) {
+            if (smoothedData(i) <= range_p(0) || smoothedData(i) >= range_p(1)) {
+               sumAbsDev += abs(Double(data(i) - iMean));
+            }
+         }
+      }
+   }
 
 
 // Fill moments array
@@ -1718,13 +1824,14 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 template <class T> 
 void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
                                 const Vector<T>& data, 
-                                const Vector<T>* pSmoothedData, 
+                                const Vector<T>& smoothedData, 
                                 const Bool& doMedianI,
                                 const Bool& doMedianV,
                                 const Bool& doAbsDev,
                                 const Bool& doPlot,
                                 const String& momAxisType,
-                                const IPosition& pos, const Double& ks)
+                                const IPosition& pos, 
+                                const Double& ks)
 //   
 // Generate windowed moments of this profile
 //
@@ -1733,13 +1840,13 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
 // Input:    
 //   os          Output stream
 //   data        The spectrum
-//   pSmoothedData
-//               Pointer to the smoothed spectrum
+//   smoothedData
+//               The smoothed spectrum
 //   doMedian    Don't bother with median unless we really have to
 //   doAbsDev    Don't bother with absolute deviations unless we really have to
 //   doPlot      Plotting device is active
 //   momAxisType Name of moment axis
-//   pos         Position in image of start of data vector
+//   pos         Position in image of start of profile
 //
 {
 
@@ -1752,10 +1859,11 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
    Vector<T> abcissa;
    makeAbcissa (abcissa, data.nelements());
    String xLabel;
-   if (momAxisType.empty())
+   if (momAxisType.empty()) {
       xLabel = "x (pixels)";
-   else 
+   } else {
       xLabel = momAxisType + " (pixels)";
+   }
    const String yLabel("Intensity");
    String title;
    setPosLabel (title, pos);
@@ -1764,10 +1872,10 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
 // Set up pointer to the smoothed or unsmoothed data
 
    const Vector<T>* pData;
-   if (pSmoothedData == 0) {
+   if (&smoothedData == 0) {
       pData = &data;
    } else {
-      pData = pSmoothedData;
+      pData = &smoothedData;
    }
 
 
@@ -1812,7 +1920,7 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
 
 // Assign array for median.  
 
-   Vector<T> medianArray(nPts);
+   Vector<T> selectedData(nPts);
 
 
 // Compute moments
@@ -1831,13 +1939,13 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
       coord = getMomentCoord (Double(i));
       accumSums (s0, s0Sq, s1, s2, iMin, iMax, 
                  dMin, dMax, i, data(i), coord);
-                 medianArray(i-window(0)) = data(i);
+                 selectedData(i-window(0)) = data(i);
    }
 
 // Medians
 
    T dMedian = 0.0;
-   if (doMedianI) dMedian = median(medianArray.ac());
+   if (doMedianI) dMedian = median(selectedData.ac());
 
    T vMedian = 0.0;
 
@@ -2259,9 +2367,14 @@ Double ImageMoments<T>::getMomentCoord (const Double& momentPixel)
 //
 // Find the value of the world coordinate on the moment axis
 // for the given moment axis pixel value.  The pixel coordinate
-// for the other axes are input already set 
+// for the other axes are already set and intrinsically have
+// the blc_p added to them
+// 
+// Input
+//   momentPixel   is the index in the profile extracted from the data 
+//
 {
-   pixelIn_p(momentAxis_p) = momentPixel;
+   pixelIn_p(momentAxis_p) = momentPixel + blc_p(momentAxis_p);
    Bool ok = pInImage_p->coordinates().toWorld(worldOut_p, pixelIn_p);
    return worldOut_p(momentAxis_p);
 }
@@ -2422,7 +2535,7 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
    Bool miss=True;
    while (miss) {
      cpgcurs (&x, &y, &ch);
-     miss = Bool(x<x1 || x>x2 || y<y1 || y>y2);
+     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
      if (miss) os_p << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
    }
    String str(ch);
@@ -2451,7 +2564,7 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
    miss = True;
    while (miss) {
      cpgcurs (&x, &y, &ch);
-     miss = Bool(x<x1 || x>x2 || y<y1 || y>y2);
+     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
      if (miss) os_p << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
    }
    str = ch;
@@ -2477,7 +2590,7 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
    miss=True;
    while (miss) {
      cpgcurs (&x, &y, &ch);
-     miss = Bool(x<x1 || x>x2 || y<y1 || y>y2);
+     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
      if (miss) os_p << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
    }
    str = ch;
@@ -2501,7 +2614,7 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
    miss = True;
    while (miss) {
      cpgcurs (&x, &y, &ch);
-     miss = Bool(x<x1 || x>x2 || y<y1 || y>y2);
+     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
      if (miss) os_p << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
    }
    str.upcase();
@@ -2907,75 +3020,9 @@ Bool ImageMoments<T>::makeOdd (Int& i)
    return False;
 }
 
-typedef Lattice<Bool> gpp_LatticeBool;
-template <class T>
-void ImageMoments<T>::makeMask (gpp_LatticeBool* pMaskImage,
-                                const Lattice<T>* pSmoothedImage)
-//
-// Generate a mask which signals bad values when the
-// smoothed image is outside of a given pixel range
-//
-// Inputs:
-//   pSmoothedImage   Pointer to the smoothed image
-// Input/Output:
-//   pMaskImage       Pointer to mask lattice.  All true on input, so just set 
-//                    the bad ones
-{
-
-// Construct tile shaped iterators. 
-
-   const IPosition tileShape = pSmoothedImage->niceCursorShape(pSmoothedImage->maxPixels());
-   RO_LatticeIterator<T> imageIt(*pSmoothedImage, tileShape);
-   LatticeIterator<Bool>  maskIt(*pMaskImage, tileShape);
-   Int n1;
-   T datum;
-
-// Iterate and create mask.   We might do better by using a TiledStepper
-// to iterate through the images.  Then there would not be the overhead
-// of VectorIterator creations.  I am not sure what is faster.  My gut
-// feeling is the overheads in reading the image from disk would dominate
-  
-   if (!noInclude_p) {
-      while (!imageIt.atEnd()) {      
-         ReadOnlyVectorIterator<T> inIt(imageIt.cursor());
-         VectorIterator<Bool> outIt(maskIt.cursor());
-         n1 = inIt.vector().nelements();
-
-         while (!inIt.pastEnd()) {
-            for (Int i=0; i<n1; i++) {
-               datum = inIt.vector()(i);
-               if (Float(datum) < range_p(0) || Float(datum) > range_p(1)) 
-                  outIt.vector()(i) = False;
-            }
-            inIt.next(); outIt.next();
-         }
-         imageIt++;
-         maskIt++;
-      }
-   } else {
-      while (!imageIt.atEnd()) {      
-         ReadOnlyVectorIterator<T> inIt(imageIt.cursor());
-         VectorIterator<Bool> outIt(maskIt.cursor());
-         n1 = inIt.vector().nelements();
-
-         while (!inIt.pastEnd()) {
-            for (Int i=0; i<n1; i++) {
-               datum = inIt.vector()(i);
-               if (Float(datum) >= range_p(0) && Float(datum) <= range_p(1)) 
-                  outIt.vector()(i) = False;
-            }
-            inIt.next(); outIt.next();
-         }
-         imageIt++;
-         maskIt++;
-      }
-   }
-}
-
 
 template <class T> 
-Bool ImageMoments<T>::makePSF (Array<T>& psf, 
-                               const IPosition& imageShape)
+Bool ImageMoments<T>::makePSF (Array<T>& psf)
 //
 // Generate an array containing the convolving function
 //
@@ -2985,8 +3032,6 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf,
 //                      FWHM  for Gaussian
 //                     Width for boxcar
 //                     3     for Hanning
-// Input:
-//   imageShape    Shape of image to be convolved
 // Output:
 //   psf           The PSF to convolve by
 //   Bool          True if successfull
@@ -3298,37 +3343,57 @@ Bool ImageMoments<T>::getBosmaWindow (Vector<Int>& window,
 
 
 template <class T> 
-void ImageMoments<T>::saveLattice (const Lattice<T>* pLattice,
+void ImageMoments<T>::saveLattice (const Lattice<T>* const pLattice,
                                    const CoordinateSystem& cSys,
+                                   const IPosition& blc, 
+                                   const IPosition& trc,
                                    const String& fileName)
 //
 // Save a Lattice to disk as a Paged Image
 //
 // Inputs:
 //  fileName    name of disk file
-//  coordinate  Coordinate to construct image with
-//  pLattice    Pointer to Lattice
+//  coordinate  Coordinate System of an image from which we wish to
+//              construct the Coordinates for the saved PagedImage
+//  blc, trc    Region
+//  pLattice  Pointer to Lattice to save
 {
 
 // Create output image
 
-   IPosition outShape(pLattice->shape());
-   PagedImage<T> outImage(outShape, cSys, fileName);
+   Int inDim = pLattice->ndim();
+
+   IPosition outShape(inDim,1);
+   for (Int i=0; i<inDim; i++) {
+      outShape(i) = trc(i) - blc(i) + 1;
+   }
+
+   CoordinateSystem outCSys = cSys;
+   outCSys.subImage(blc.asVector(), IPosition(inDim,1).asVector());
+   PagedImage<T> outImage(outShape, outCSys, fileName);
 
 
-// Construct iterator to iterate through in optimal tiles
+// Construct iterator to iterate through in output image tiles.
+// Since a) this tile shape may be different from the input 
+// Lattice tile shape and b) we may have subsectioned the input
+// Lattice, this might not be very efficient.
 
    IPosition shape(outImage.niceCursorShape(outImage.maxPixels())); 
-   RO_LatticeIterator<T> inImageIterator(*pLattice, shape);
-   LatticeIterator<T>   outImageIterator(outImage, shape);
+   LatticeStepper navOut(outImage.shape(), IPosition(outImage.ndim(),1));
+   navOut.subSection (blc, trc);
+   LatticeIterator<T> outIt(outImage, shape);
+
+   LatticeStepper navIn(pLattice->shape(), 
+                        IPosition(pLattice->ndim(),1));
+   navIn.subSection (blc, trc);
+   RO_LatticeIterator<T> inIt(*pLattice, shape);
 
 
 // Save
 
-   while (!inImageIterator.atEnd()) {
-      outImageIterator.cursor() = inImageIterator.cursor();
-      inImageIterator++;
-      outImageIterator++; 
+   while (!inIt.atEnd()) {
+      outIt.cursor() = inIt.cursor();
+      inIt++; outIt++; 
    }
 }
 
@@ -3519,20 +3584,20 @@ void ImageMoments<T>::showGaussFit   (const T& peak,
 
 
 template <class T> 
-Bool ImageMoments<T>::smoothImage (Lattice<T>* pSmoothedImage)
+Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
 //
 // Smooth image
 //
-// Input/output
-//   pSmoothedImage Pointer to smoothed image
+// Input
+//   pSmoothedImage Pointer to smoothed Lattice
+// Output
 //   Bool           True for success
 {
 
 // Generate convolving function
 
    Array<T> psf;
-   if (!makePSF(psf, pInImage_p->shape())) return False;
-
+   if (!makePSF(psf)) return False;
 
 // Save PSF to disk. It won't be very big generally, so use an ArrayLattice
    
@@ -3544,61 +3609,99 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* pSmoothedImage)
       ArrayLattice<T>* pPSF = new ArrayLattice<T>(psf);
 
 // Fiddle CoordinateSystem
-
+ 
       CoordinateSystem cSys = pInImage_p->coordinates();
       Int coordinate, axisInCoordinate, worldAxis, pixelAxis;
-      for (pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+      Vector<Double> refPix(smoothAxes_p.nelements());
+      Int i;
+      for (i=0,pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
          if (ImageUtilities::inVector(pixelAxis, smoothAxes_p) == -1) {
             cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
             worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
 
-            cSys.removePixelAxis(pixelAxis,
-                                 Double(pInImage_p->shape()(pixelAxis))/2.0);
-            cSys.removeWorldAxis(worldAxis,
-                                 cSys.referenceValue()(worldAxis));
+            cSys.removePixelAxis(pixelAxis, 0.0);
+            cSys.removeWorldAxis(worldAxis, 0.0);
+         } else {
+            refPix(i) = psf.shape()(i)/2.0;
+            i++;
          }
       }
-      saveLattice (pPSF, cSys, psfOut_p);
+    
+      IPosition blc(IPosition(pPSF->ndim(),0));
+      IPosition trc(pPSF->shape());
+      trc = trc - IPosition(pPSF->ndim(),1);
+      saveLattice (pPSF, cSys, blc, trc, psfOut_p);
       delete pPSF;
    }
 
 
-// Convolve.  The convolution classes cannot handle a kernel 
+// Create iterator to work though input image and retrieve slices
+// for convolution.  The convolution classes cannot handle a kernel 
 // like [nx,1,nz] or [1,1,nz] so we have to do some extra 
 // iterating outside of the convolution
 
+/*
    IPosition cursorShape(pInImage_p->ndim(),1);
    for (Int i=0; i<min(pInImage_p->ndim(),psf.ndim()); i++) {
       if (psf.shape()(i) > 1) cursorShape(i) = pInImage_p->shape()(i);
    }
-//   cout << "Convolution cursor iterator shape = " << cursorShape << endl;   
-
    RO_LatticeIterator<T> imageIterator(*pInImage_p, cursorShape);
+*/
+
+   LatticeStepper imageNavigator(pInImage_p->shape(),
+                                 IPosition(pInImage_p->ndim(),1));   
+   imageNavigator.subSection(blc_p, trc_p);
+   IPosition latticeShape = imageNavigator.subLatticeShape();
+ 
+   IPosition cursorShape(pInImage_p->ndim(),1);
+   for (Int i=0; i<min(pInImage_p->ndim(),psf.ndim()); i++) {
+      if (psf.shape()(i) > 1) cursorShape(i) = latticeShape(i);
+   }
+   imageNavigator.setCursorShape(cursorShape);
+   RO_LatticeIterator<T> imageIterator(*pInImage_p, imageNavigator);
+
+
+// Create iterator for output smoothed image
+
    LatticeIterator<T> smoothedImageIterator(*pSmoothedImage, cursorShape);
+
+
+// Iterate and convolve
 
    os_p << LogIO::NORMAL << "Begin convolution" << LogIO::POST;
    Convolver<T> conv(psf, cursorShape);
-   Int k=0;
+   Int nIter = latticeShape.product() / cursorShape.product();
+   Int percentInc = 20;
+   Int inc = max(1, Int(Float(percentInc)/100.0*nIter));
+   Int iIter = 1;
+   Int percent = percentInc;
+
    while (!imageIterator.atEnd()) {
-//      if (k%10 ==0) cout << "Convolving iteration " << k << endl;
+     if (iIter%inc == 0) {
+         os_p << LogIO::NORMAL << "Completed " << percent << "%" << LogIO::POST;
+         percent += percentInc;
+     }
+
       conv.linearConv(smoothedImageIterator.cursor(), imageIterator.cursor());
       imageIterator++;
       smoothedImageIterator++;
-      k++;
+      iIter++;
    }
-
 
    return True;
 }
+
 
 
 template <class T> 
 Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
                                       const Lattice<T>* pI)
 //
-// Determine the noise level in the image by first
-// making a histogram of the image, then fitting a
-// Gaussian between the 25% levels to give sigma
+// Determine the noise level in the image by first making a histogram of 
+// the image, then fitting a Gaussian between the 25% levels to give sigma
+// Use the whole image.  If its the input unsmoothed image, then this
+// will be all of it.  If its the smoothed image, it will be whatever
+// subsection the user has asked for.
 //
 {
    os_p << LogIO::NORMAL << "First determine the noise -- requires two passes through the image" << LogIO::POST;
@@ -3608,7 +3711,6 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
    IPosition cursorShape(pI->ndim());
    cursorShape = pI->niceCursorShape(pI->maxPixels());
    RO_LatticeIterator<T> iterator(*pI, cursorShape);
-
 
 // First pass to get data min and max
 
@@ -3845,4 +3947,3 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
    if (!device_p.empty()) cpgend();
    return True;
 }
-
