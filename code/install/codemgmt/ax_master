@@ -2120,3 +2120,4 @@
 11 105 src mv trial/implement/Lattices/ScaRecordColData.h aips/implement/Tables/ScaRecordColData.h
 11 105 src mv trial/implement/Lattices/test/tScalarRecordColumn.cc aips/implement/Tables/test/tScalarRecordColumn.cc
 11 105 src mv trial/implement/Lattices/test/tScalarRecordColumn.out aips/implement/Tables/test/tScalarRecordColumn.out
+11 108 src mv doc/papers/bgadass93.latex doc/papers/adass93/bgadass93.latex
