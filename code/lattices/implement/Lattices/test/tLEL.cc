@@ -35,6 +35,7 @@
 #include <trial/Lattices/LELFunction.h>
 #include <trial/Lattices/LELLattice.h>
 #include <trial/Lattices/LELUnary.h>
+#include <trial/Lattices/LELLattCoord.h>
 #include <aips/Lattices/ArrayLattice.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
@@ -202,15 +203,15 @@ main (int argc, char *argv[])
 
     const IPosition nullIPos = IPosition();
     LELAttribute attr1;
+    LELCoordinates lattCoord2 (new LELLattCoord());
     if (!checkAttribute(attr1, False, True, nullIPos, nullIPos,
-			LELCoordinates())) ok = False;
+			lattCoord2)) ok = False;
 
 // Now a non-scalar one; this only tests null LELCoordinates
 
     Bool isScalar2 = False;
     IPosition shape2 = shape;
     IPosition tileShape2 = shape;
-    LELCoordinates lattCoord2;
     LELAttribute attr2(True, shape2, tileShape2, lattCoord2);
     if (!checkAttribute(attr2, True, isScalar2, shape2, tileShape2,
 			lattCoord2)) ok = False;
