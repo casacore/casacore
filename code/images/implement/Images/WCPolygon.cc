@@ -34,7 +34,7 @@
 #include <aips/Lattices/IPosition.h>
 #include <trial/Lattices/LCPolygon.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
