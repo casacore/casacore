@@ -356,7 +356,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
       }	
       break;
 
@@ -371,15 +371,15 @@ void MFrequency::doConvert(MVFrequency &in,
 	  getLat(g3);
 	solpos = (MVPosition *) mc.getStruct(MFrequency::MVPOS1);
 	g2 = MeasData::diurnalAber(lengthE, tdbTime);
-	*solpos = MVDirection(g1, g3);
-	solpos->readjust(g2);
+	*solpos = MVDirection(C::pi_2 + g1, 0.0);
+	solpos->readjust(g2 * cos(g3));
 	respos = (MVDirection *) mc.getStruct(MFrequency::MVDIR1);
 	MFrequency::Ref::frameDirection(outref, inref).
 	  getApp(*respos);
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
       }
       break;
 
@@ -396,7 +396,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
       }	
       break;
 
@@ -411,7 +411,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	  getLat(g3);
 	solpos = (MVPosition *) mc.getStruct(MFrequency::MVPOS1);
 	g2 = MeasData::diurnalAber(lengthE, tdbTime);
-	*solpos = MVDirection(g1, g3);
+	*solpos = MVDirection(C::pi_2 + g1, 0.0);
 	solpos->readjust(g2);
 	respos = (MVDirection *) mc.getStruct(MFrequency::MVDIR1);
 	MFrequency::Ref::frameDirection(outref, inref).
@@ -419,7 +419,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
       }
       break;
 
