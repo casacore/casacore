@@ -2419,3 +2419,4 @@
 09 351 src rm aips/implement/Functionals/BinaryTranscendental.h
 09 352 src rm aips/implement/Functionals/test/tBinaryOperation.cc
 09 352 src rm aips/implement/Functionals/test/tBinaryOperation.out
+09 361 src rm nrao/apps/sdcalc
