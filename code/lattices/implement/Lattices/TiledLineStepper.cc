@@ -29,6 +29,7 @@
 #include <aips/Tables/TiledStManAccessor.h>
 //#include <aips/Logging/LogIO.h>
 //#include <aips/Logging/LogOrigin.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
@@ -258,10 +259,11 @@ void TiledLineStepper::reset()
   //# Make sure the tiler starts on a tile boundary.
   //# Set itsTiler subsection (its increment is always one).
   //# For itsTiler we are not interested in the length of itsAxis axis,
-  //# so make it the tile shape for convenience.
+  //# so make it the tile shape for convenience (but not exceeding lattice).
   IPosition tilerBlc = itsBlc / itsTileShape * itsTileShape;
   IPosition tilerTrc = itsTrc;
-  tilerTrc(itsAxis) = tilerBlc(itsAxis) + itsTileShape(itsAxis) - 1;
+  tilerTrc(itsAxis) = min(latticeShape()(itsAxis) - 1,
+			  tilerBlc(itsAxis) + itsTileShape(itsAxis) - 1);
   itsTiler.fullSize();
   itsTiler.subSection (tilerBlc, tilerTrc);
   itsTilerCursorPos = 0;
