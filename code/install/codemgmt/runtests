@@ -29,7 +29,13 @@
  
 # Get the current version number.
   VERSION=`avers | awk '{printf("%.6s",$1)}'`
- 
+
+# HP-UX needs to use mailx (for the -s switch). Other systems use mail.
+  if [ `uname` = "HP-UX" ] ; then
+    MAILCMD=mailx
+  else
+    MAILCMD=mail
+  fi 
  
 # Do it, sending the results to aips2-inhale.
   {  exec 2>&1
@@ -55,7 +61,7 @@
      cat $BINTESTD/runtests.report
      echo ""
      cat $BINTESTD/runtests.log
-  } | mail aips2-inhale@nrao.edu
+  } | $MAILCMD aips2-inhale@nrao.edu
 
  
 # Mail a summary to aips2-workers.
@@ -65,6 +71,6 @@
    echo "$BINTESTD on aips2.nrao.edu (for those with access)." ;
    echo "") |
      cat - runtests.report |
-     mail -s "AIPS++ test results" aips2-workers@nrao.edu
+     $MAILCMD -s "AIPS++ test results" aips2-workers@nrao.edu
  
   exit 0
