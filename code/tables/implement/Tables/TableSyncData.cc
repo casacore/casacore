@@ -83,8 +83,10 @@ void TableSyncData::write (uInt nrrow, uInt nrcolumn, Bool tableChanged,
     itsAipsIO << itsNrrow;
     itsAipsIO << itsNrcolumn;
     itsAipsIO << itsModifyCounter;
-    itsAipsIO << itsTableChangeCounter;
-    itsAipsIO << itsDataManChangeCounter;
+    if (itsNrcolumn > 0) {
+	itsAipsIO << itsTableChangeCounter;
+	itsAipsIO << itsDataManChangeCounter;
+    }
     itsAipsIO.putend();
 }
 
