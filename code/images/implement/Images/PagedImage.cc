@@ -237,6 +237,7 @@ name(const Bool stripPath) const {
 // Full path included
  
       return table_p.tableName();
+
    } else {
 
 // Strip off path

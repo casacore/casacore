@@ -229,8 +229,9 @@ public:
   void setUnits(const Unit &newUnits);
 
   // Return the name of the current ImageInterface object. This will generally 
-  // be a file name for images that have a persistent form.
-  virtual String name() const = 0;
+  // be a file name for images that have a persistent form.  Any path
+  // before teh actual file name can be optionally stripped off.
+  virtual String name(const Bool stripPath=False) const = 0;
 
   // Function to return the units of the map
   const Unit &units() const;
