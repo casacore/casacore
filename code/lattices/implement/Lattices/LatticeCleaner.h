@@ -133,6 +133,28 @@ public:
   // Set the mask
   void setMask(Lattice<T> & mask);
 
+  // Tell the algorithm to NOT clean just the inner quarter
+  // (This is useful when multiscale clean is being used
+  // inside a major cycle for MF or WF algorithms)
+  // if True, the full image deconvolution will be attempted
+  void ignoreCenterBox(Bool huh) { itsIgnoreCenterBox = huh; }
+
+  // Consider the case of a point source: 
+  // the flux on all scales is the same, and the first scale will be chosen.
+  // Now, consider the case of a point source with a *little* bit of extended structure:
+  // thats right, the largest scale will be chosen.  In this case, we should provide some
+  // bias towards the small scales, or against the large scales.  We do this in
+  // an ad hoc manner, multiplying the maxima found at each scale by
+  // 1.0 - itsSmallScaleBias * itsScaleSizes(scale)/itsScaleSizes(nScalesToClean-1);
+  // Typical bias values range from 0.2 to 1.0.
+  void setSmallScaleBias(const Float x=0.5) { itsSmallScaleBias = x; }
+
+  // During early iterations of a cycled MS Clean in mosaicing, it common
+  // to come across an ocsilatory pattern going between positive and
+  // negative in the large scale.  If this is set, we stop at the first
+  // negative in the largest scale.
+  void stopAtLargeScaleNegative() {itsStopAtLargeScaleNegative = True; }
+
   // speedup() will speed the clean iteration by raising the
   // threshold.  This may be required if the threshold is
   // accidentally set too low (ie, lower than can be achieved
@@ -216,8 +238,9 @@ private:
 
   Bool makeScaleMasks();
   Bool oldMakeScaleMasks();
-
-  
+  Bool itsIgnoreCenterBox;
+  Float itsSmallScaleBias;
+  Bool itsStopAtLargeScaleNegative;
   
 };
 #endif
