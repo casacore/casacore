@@ -282,8 +282,14 @@ public:
   // otherwise returns False.
   virtual Bool ok() const;
 
-// Convert component shape to absolute pixels (major, minor, position angle [rad])
-   virtual Vector<Double> toPixel (const DirectionCoordinate& dirCoord) const;
+  // Convert component shape to absolute pixels (longitude, latitude, major axis, 
+  // minor axis, position angle [positive +x -> +y ; rad])
+  virtual Vector<Double> toPixel (const DirectionCoordinate& dirCoord) const;
+
+  // Fill the shape from the vector (longitude, latitude, major axis, 
+  // minor axis, position angle [positive +x -> +y ; rad])
+  virtual void fromPixel (const Vector<Double>& parameters,
+                          const DirectionCoordinate& dirCoord);
 
 protected:
   // The constructors and assignment operator are protected as only derived

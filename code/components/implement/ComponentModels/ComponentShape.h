@@ -250,10 +250,14 @@ public:
   static ComponentType::Shape getType(String& errorMessage,
 				      const RecordInterface& record);
 
-// Convert component shape to absolute pixels (e.g. major/minor etc)
-// The default implementation is to throw an exception.
-// It is currently implemented only for TwoSided shape
-   virtual Vector<Double> toPixel (const DirectionCoordinate& dirCoord) const;
+  // Convert component shape to absolute pixels.  The returned
+  // vector is the longitude and latitude location in absolute pixels.
+  virtual Vector<Double> toPixel (const DirectionCoordinate& dirCoord) const;
+
+  // Fill the shape direction from the vector (longitude and latitude
+  // in absolute pixels)
+  virtual void fromPixel (const Vector<Double>& parameters,
+                          const DirectionCoordinate& dirCoord);
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
