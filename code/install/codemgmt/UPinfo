@@ -73,17 +73,14 @@ endif
 #
 # Set all the switches to initial state
 #
-foreach i (a c d h n r f g l s t u z)
+foreach i (a c d h n r f g l s t u z E P Q 0 1 2 3 4 5 6 7 8 9)
     set upsw$i = 0
 end
 #
 # Special switches:
-# P   = pattern             Q = quiet
+# P   = pattern             Q = quiet       E = embedde
 # 0-9 = extensions
 #
-foreach i (P Q 0 1 2 3 4 5 6 7 8 9)
-    set upsw$i = 0
-end
 foreach i (0 1 2 3 4 5 6 7 8 9)
     set upswp0$i = 0
 end
@@ -96,20 +93,18 @@ while ($# > 0)
 	shift x
 	shift x
 	while ($#x > 0)
-	    if ("$upsw" =~ *"$x[1]"*) then
+	    if ("EPQ$upsw" =~ *"$x[1]"*) then
 		set upsw$x[1] = 1
+	    else if ("EPQ" =~ *"$x[1]"*) then
+		set upsw$x[1] = 1
+	    else if ("$x[1]" == "0" && $upswP) then
+		set upsw$x[1] = 1
+	    else if ("123456789" =~ *"$x[1]"* && $upsw0) then
+		set upswP = 0
+		set upsw0 = 0
+		set upswp0$x[1] = 1
 	    else
-		if ("$x[1]" == "P" || "$x[1]" == "Q") then
-		    set upsw$x[1] = 1
-		else if ("$x[1]" == "0" && $upswP) then
-		    set upsw$x[1] = 1
-		else if ("123456789" =~ *"$x[1]"* && $upsw0) then
-		    set upswP = 0
-		    set upsw0 = 0
-		    set upswp0$x[1] = 1
-		else
-	            echo "Illegal or unknown switch '$x[1]' given: discarded"
-		endif
+	        echo "Illegal or unknown switch '$x[1]' given: discarded"
 	    endif
 	    shift x
         end
@@ -118,7 +113,7 @@ while ($# > 0)
 	shift x
 	shift x
 	while ($#x > 0)
-	    if ("$upsw" =~ *"$x[1]"* && $#x > 1 && \
+	    if ("EQ$upsw" =~ *"$x[1]"* || "$x[1]" == "Q" && $#x > 1 && \
 		("$x[2]" == "0" || "$x[2]" == "1")) then
 		set upsw$x[1] = $x[2]
 		shift x
@@ -136,6 +131,8 @@ if ($upswP || $upsw0) then
     echo "Illegal standard pattern P* given."
     exit 1
 endif
+set upswQE = 0
+if ($upswQ || $upswE) set upswQE = 1
 #
 # Help
 #
@@ -172,6 +169,8 @@ if ($upswh) then
     echo "  -u clear all but the general defining information in .def"
     echo "  -d give some debug information (mostly not implemented)"
     echo "  -n run script only to get defining information, without executing"
+    echo "  -Q run quietly"
+    echo "  -h this information"
   endif
   cat << '_EOF_'
 
@@ -270,7 +269,7 @@ endif
 #
 # Get info
 #
-if (! $upswQ) echo "Getting info..."
+if (! $upswQE) echo "Getting info..."
 #
 # Clear info if asked
 #
@@ -326,7 +325,7 @@ set hasm = $lhasm
 if (! $?dir) then
    set dir = $apath[1]
    set x = ""
-   if (! $upswQ) then
+   if (! $upswQE) then
      echo "Make sure you have a proper mktree built before proceeding..."
    endif
    while ("$x" == "" || ! -d $x/code)
@@ -343,7 +342,7 @@ endif
 if (! $?mdir) then
    set x = "~/aips++"
    while (! -d $x/code) 
-      if (! $upswQ) then
+      if (! $upswQE) then
         echo "Path to local aips++ tree root is not $x"
       endif
       echo -n "Specify your local aips++ tree root [$x]: "
