@@ -24,7 +24,6 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-/// 24.05 : add neg, exp, derivatives(res)
 
 //# Includes
 #include <trial/Mathematics/AutoDiffRep.h>

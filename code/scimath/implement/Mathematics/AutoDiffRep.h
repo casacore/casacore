@@ -25,7 +25,6 @@
 //#
 //#
 //# $Id$
-/// 24.05 : add neg, exp, derivatives(res)
 
 #if !defined(AIPS_AUTODIFFREP_H)
 #define AIPS_AUTODIFFREP_H
@@ -78,7 +77,7 @@ template <class T> class Vector;
 // </templating>
 //
 // <todo asof="20001/06/07">
-// <li> Noting I know off
+// <li> Nothing I know off
 // </todo>
 
 template <class T> class AutoDiffRep {
@@ -133,8 +132,6 @@ template <class T> class AutoDiffRep {
   // Returns a vector with the partial derivatives of the represented
   // function
   // <group>
-  Vector<T> &derivatives();
-  const Vector<T> &derivatives() const;
   void derivatives(Vector<T> &res) const;
   // </group>
 
@@ -152,7 +149,6 @@ template <class T> class AutoDiffRep {
   // Is it a constant, i.e., with zero derivatives?
   Bool isConstant() const { return nd_p == 0; };
 
-  ///private:
   //# Data
   // A zero value
   static T aZero;
