@@ -562,7 +562,7 @@ class LSQFit {
   // Get the rank deficiency <note role=warning>Note that the numberf is
   // eturned assuming real values. For complex values it has to be halved
   // </note>
-  uInt getDeficiency() { return nun_p-r_p; };
+  uInt getDeficiency() const { return nun_p-r_p; };
   // Get chi^2 (both are identical); the standard deviation (per observation)
   // and the standard deviation per weight unit.
   // <group>
