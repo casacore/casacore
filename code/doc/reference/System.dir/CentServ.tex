@@ -432,7 +432,73 @@ version.
 \subsection*{Author}
  
 Original: 1994/02/10 by Mark Calabretta, ATNF
+% ----------------------------------------------------------------------------
 
+\newpage
+\section{\exe{help2tex}}
+\label{system:help2tex}
+\index{help2tex@\exe{help2tex}}
+\index{documentation help}
+\index{documentation!|see{\exe{help2tex}}}
+
+Generate standard LaTeX or *atoms.g files from a .help file.
+
+\subsection*{Synopsis}
+ 
+\begin{synopsis}
+   \code{\exe{help2tex} [options] | \exe{help2tex}}
+\end{synopsis}
+ 
+\subsection*{Description}
+ 
+\exe{help2tex} is a perl script which translates aips2help.sty commands and
+enviornments into standard LaTeX and into glish help atoms. \exe{help2tex} also
+does some formatting/rearranging of the help text to provide a bit of
+consistency for the user's manual.
+ 
+\subsection*{Options}
+
+ 
+\begin{description}
+\item[-noheaders] Do not put standard latex2e document headers around the help text.
+\item[-glish -package packagename] Generate glish help atoms (glish
+attributes) which belong to package packagename.
+\end{description}
+ 
+\subsection*{Notes}
+ 
+\begin{itemize}
+\item Output goes to standard out so it need to be redirected to be saved.
+
+\item Most folks should run thier .help files through \exe{help2tex} to check
+the output before checking the .help file into the system.
+\end{itemize}
+
+\subsection*{Examples}
+
+\begin{verbatim}
+   help2tex measures.help > measures.htex
+   help2tex -noheaders aips.help > aips.htex
+   help2tex -glish -package aips > aipsatoms.g
+\end{verbatim}
+
+\noindent
+\begin{itemize}
+\item Turns aips2help.sty functions and enviornments into standard LaTeX, can
+be run through latex2e.
+\item Generate standard LaTeX, without the headers (used in the make system)
+\item Create the atoms.g file used in generating command-line glish help.
+\end{itemize}
+ 
+\subsection*{See also}
+\begin{itemize}
+\htmlref{Note 197, How to Write an AIPS++ Application, Documentation Your Application}{sec:documenting} 
+\htmladdnormallink{Note 215, AIPS++ Documentation}{../../notes/215/215.html}
+\end{itemize}
+ 
+\subsection*{Author}
+ 
+Original: 1997/11/12 by Wes Young, NRAO
 % ----------------------------------------------------------------------------
 
 \newpage
