@@ -1365,3 +1365,4 @@
 11 038 src mv drao hia
 11 039 src mv trial/apps/ms/UVFitsFiller.cc trial/implement/MeasurementSet/MSFitsInput.cc
 11 039 src mv trial/apps/ms/UVFitsFiller.h trial/implement/MeasurementSet/MSFitsInput.h
+11 039 src mv trial/apps/ms/UVFitsWriter.h trial/implement/MeasurementSet/MSFitsOutput.h
