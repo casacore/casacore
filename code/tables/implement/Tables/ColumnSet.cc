@@ -251,11 +251,14 @@ void ColumnSet::addRow (uInt nrrow)
 void ColumnSet::removeRow (uInt rownr)
 {
     if (!canRemoveRow()) {
-	throw (TableInvOper ("Rows cannot be removed from this table; "
-			     "its storage managers do not support it"));
+	throw (TableInvOper ("Rows cannot be removed from table " +
+			     plainTablePtr_p->tableName() + 
+			     "; its storage managers do not support it"));
     }
     if (rownr >= nrrow_p) {
-	throw (TableInvOper ("removeRow: rownr out of bounds"));
+	throw (TableInvOper ("removeRow: rownr " + String::toString(rownr) +
+			     " too high in table " + plainTablePtr_p->tableName() +
+			     " (#rows=" + String::toString(nrrow_p) + ")"));
     }
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	BLOCKDATAMANVAL(i)->removeRow (rownr);
@@ -293,7 +296,9 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 {
     // Give an error when no data manager name/type given.
     if (dataManager.empty()) {
-	throw (TableInvOper ("Table::addColumn: no name/type given"));
+	throw (TableInvOper ("Table::addColumn: no datamanager name/type given "
+			     "when adding column " + columnDesc.name() +
+			     " to table " + plainTablePtr_p->tableName()));
     }
     // When given by name, find the data manager and add the column to it.
     // findDataManager throws an exception when the data manager is unknown.
@@ -331,7 +336,8 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
       throw TableError ("Table::addColumn - DataManager " +
 			dataManPtr->dataManagerName() + " (" +
 			dataManPtr->dataManagerType() +
-			") does not support column addition");
+			") does not support column addition to table " +
+			plainTablePtr_p->tableName());
     }
     checkWriteLock (True);
     //# When the column already exists, TableDesc::addColumn throws
@@ -519,7 +525,8 @@ SimpleOrderedMap<void*,Int> ColumnSet::checkRemoveColumn
         DataManager* dmPtr = COLMAPNAME(columnNames(i))->dataManager();
         if (dmCounts(dmPtr) >= 0  &&  ! dmPtr->canRemoveColumn()) {
 	    throw TableInvOper ("Table::removeColumn - column " +
-				columnNames(i) + " cannot be removed");
+				columnNames(i) + " cannot be removed from table " +
+				plainTablePtr_p->tableName());
 	}
     }
     return dmCounts;
@@ -529,11 +536,13 @@ void ColumnSet::renameColumn (const String& newName, const String& oldName)
 {
     if (! tdescPtr_p->isColumn (oldName)) {
         throw (TableInvOper ("Table::renameColumn; column " + oldName +
-			     " does not exist"));
+			     " does not exist in table " +
+			     plainTablePtr_p->tableName()));
     }
     if (tdescPtr_p->isColumn (newName)) {
         throw (TableInvOper ("Table::renameColumn; new column " + newName +
-			     " already exists"));
+			     " already exists in table " +
+			     plainTablePtr_p->tableName()));
     }
     checkWriteLock (True);
     tdescPtr_p->renameColumn (newName, oldName);
@@ -551,7 +560,9 @@ DataManager* ColumnSet::findDataManager (const String& dataManagerName) const
 	    return dmp;
 	}
     }
-    throw (TableInvOper ("Data manager " + dataManagerName + " is unknown"));
+    throw (TableInvOper ("Data manager " + dataManagerName +
+			 " is unknown in table " +
+			 plainTablePtr_p->tableName()));
     return 0;
 }
 
@@ -574,7 +585,8 @@ Bool ColumnSet::checkDataManagerName (const String& name, uInt from,
 	    if (name == BLOCKDATAMANVAL(j)->dataManagerName()) {
 	        if (doTthrow) {
 		    throw (TableInvOper ("Data manager name " + name +
-					 " is already used"));
+					 " is already used in table " +
+					 plainTablePtr_p->tableName()));
 		}
 		return False;
 	    }
@@ -838,8 +850,13 @@ Bool ColumnSet::userLock (FileLocker::LockType type, Bool wait)
 void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
 {
     if (lockPtr_p->option() != TableLock::AutoLocking) {
-	throw (TableError ("ColumnSet::doLock: table should be locked "
-			   "when using PermanentLocking or UserLocking"));
+        String str = "PermanentLocking";
+        if (lockPtr_p->option() == TableLock::UserLocking) {
+	    String str = "UserLocking";
+	}
+	throw (TableError ("ColumnSet::doLock: table " +
+			   plainTablePtr_p->tableName() +
+			   " should be locked when using " + str));
     }
     uInt nattempts = (wait  ?  plainTablePtr_p->lockOptions().maxWait() : 1);
     plainTablePtr_p->lock (type, nattempts);
@@ -856,7 +873,8 @@ void ColumnSet::syncColumns (const ColumnSet& other,
     uInt ncol = colMap_p.ndefined();
     if (other.colMap_p.ndefined() != ncol) {
 	throw (TableError ("ColumnSet::syncColumns; another process "
-			   "changed the number of columns"));
+			   "changed the number of columns of table " +
+			   plainTablePtr_p->tableName()));
     }
     for (uInt i=0; i<ncol; i++) {
 	PlainColumn* thiscol = getColumn(i);
@@ -864,7 +882,8 @@ void ColumnSet::syncColumns (const ColumnSet& other,
 	if (thiscol->columnDesc() != othercol->columnDesc()) {
 	    throw (TableError ("ColumnSet::syncColumns; another process "
 			       "changed the description of column " +
-		               thiscol->columnDesc().name()));
+		               thiscol->columnDesc().name() + " in table " +
+			       plainTablePtr_p->tableName()));
 	}
 	// Adjust the attributes of subtables.
 	// Update the table keywords.
