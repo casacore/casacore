@@ -32,10 +32,13 @@
 #include <aips/Tables/TableRecord.h>
 
 #include <aips/Arrays/Vector.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Measures/MPosition.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/UnitVal.h>
+#include <aips/Utilities/Assert.h>
 
 RONewMSAntennaColumns::RONewMSAntennaColumns(const NewMSAntenna& msAntenna):
   dishDiameter_p(msAntenna, NewMSAntenna::
@@ -143,7 +146,6 @@ Int RONewMSAntennaColumns::matchPosition(const MPosition& antennaPosition,
       }
     }
   }
-  cerr << "No match" << endl;
   return -1;
 }
 
