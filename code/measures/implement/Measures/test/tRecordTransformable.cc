@@ -45,15 +45,15 @@ int main() {
     {
       MeasureHolder measure;
       {
-	const MDirection tmp;
-	measure = MeasureHolder(tmp);
+ 	const MDirection tmp;
+ 	measure = MeasureHolder(tmp);
       }
       printAsRecord(measure);
       String errorMessage;
       if (!measure.toRecord(errorMessage, rec)) {
-	throw(AipsError
-	      (String("Cannot convert class to a Record. The reason is:\n"
-		      + errorMessage)));
+ 	throw(AipsError
+ 	      (String("Cannot convert class to a Record. The reason is:\n")
+	       + errorMessage));
       }
     }
     AlwaysAssert(rec.isDefined("refer"), AipsError);
@@ -63,9 +63,23 @@ int main() {
       MeasureHolder m;
       String errorMessage;
       if (!m.fromRecord(errorMessage, rec)) {
-	throw(AipsError
-	      (String("Cannot update class from a Record. The reason is:\n"
-		      + errorMessage)));
+ 	throw(AipsError
+ 	      (String("Cannot update class from a Record. The reason is:\n"
+ 		      + errorMessage)));
+      }
+      AlwaysAssert(m.isMDirection(), AipsError);
+      MDirection md = m.asMDirection();
+      AlwaysAssert(md.getRef().getType() == MDirection::B1950, AipsError);
+    }
+    {
+      MeasureHolder m;
+      String errorMessage;
+      GlishRecord gRec;
+      gRec.fromRecord(rec);
+      if (!m.fromRecord(errorMessage, gRec)) {
+ 	throw(AipsError
+ 	      (String("Cannot update class from a GlishRecord. The reason is:\n"
+ 		      + errorMessage)));
       }
       AlwaysAssert(m.isMDirection(), AipsError);
       MDirection md = m.asMDirection();
@@ -83,16 +97,13 @@ int main() {
 
 void printAsRecord(const RecordTransformable & myClass) {
   String errorMessage;
-  Record rec;
+  GlishRecord rec;
   if (!myClass.toRecord(errorMessage, rec)) {
     cout << "Cannot convert class to a Record. The reason is:" << endl; 
     cout << errorMessage << endl;
+  } else {
+    cout << rec.format() << endl;
   }
-  // Eventually GlishRecords will be derived from RecordInterface. Then it 
-  // will not be necessary to use the Record class.
-  GlishRecord gRec;
-  gRec.fromRecord(rec);
-  cout << gRec.format() << endl;
 }
 
 // Local Variables: 
