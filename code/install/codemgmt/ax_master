@@ -4736,3 +4736,4 @@
 14 306 src mv trial/apps/newsditerator/templates trial/apps/sditerator/templates
 14 306 src mv trial/implement/SDIterators/NewSDIterator.h trial/implement/SDIterators/SDIterator.h
 14 306 src mv trial/implement/SDIterators/NewSDIterator.cc trial/implement/SDIterators/SDIterator.cc
+14 306 src mv trial/implement/SDIterators/NewSDRecord.h trial/implement/SDIterators/SDRecord.h
