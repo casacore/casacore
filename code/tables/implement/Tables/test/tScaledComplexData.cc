@@ -43,6 +43,7 @@
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Tables/TableError.h>
+#include <aips/Utilities/Assert.h>
 
 // <summary> Test program for class ScaledComplexData </summary>
 
