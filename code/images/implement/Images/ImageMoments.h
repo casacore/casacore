@@ -494,8 +494,13 @@ enum MethodTypes {
 // after the </src>set</src> functions.  A return value of  <src>False</src>
 // indicates that additional checking of the combined methods that you
 // have requested has shown that you have not given consistent state to the class.
-   Bool createMoments();
-
+// If the axis being collapsed comes from a coordinate with one axis only,
+// the axis and its coordinate are physically removed from the output image.  Otherwise,
+// if <src>removeAxes=True</src> then the output axis is logically removed from the
+// the output CoordinateSystem.  If <src>removeAxes=False</src> then the axis
+// is retained with shape=1 and with its original coordinate information (which
+// is probably meaningless).
+   Bool createMoments(Bool removeAxes=True);
 
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type (this class only accepts Float or Double images).
@@ -609,7 +614,7 @@ private:
    CoordinateSystem makeOutputCoordinates (IPosition& outShape,
                                            const CoordinateSystem& cSysIn,
                                            const IPosition& inShape,
-                                           Int momentAxis);
+                                           Int momentAxis, Bool remove);
 };
 
 #endif
