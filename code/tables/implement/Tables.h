@@ -54,6 +54,7 @@
 
 //#   table access
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableLock.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -106,7 +107,7 @@
 // Tables are the fundamental storage mechanism for AIPS++. This document
 // explains <A HREF="#Tables:motivation">why</A> they had to be made,
 // <A HREF="#Tables:properties">what</A> their properties are, and 
-// <A HREF="#Tables:creation">how</A> to use them. The last subject is
+// <A HREF="#Tables:open">how</A> to use them. The last subject is
 // discussed and illustrated in a sequence of sections:
 // <UL>
 //  <LI> <A HREF="#Tables:open">opening</A> an existing table,
@@ -118,6 +119,8 @@
 //       (also <A HREF=../../notes/199/199.html>Table Query Language</A>),
 //  <LI> <A HREF="#Tables:iterate">iterating</A> through a table, and
 //  <LI> <A HREF="#Tables:vectors">vector operations</A> on a column.
+//  <LI> <A HREF="#Tables:LockSync">locking/synchronization</A>
+//       for concurrent access.
 // </UL>
 
 
@@ -194,6 +197,10 @@
 //       data storage per column. The choice of data manager determines
 //       whether a column is filled or virtual.
 // </ul>
+// Concurrent access from different processes to the same table is
+// fully supported by means of a <A HREF="#Tables:LockSync">
+// locking/synchronization</A> mechanism. Concurrent access over NFS is also
+// supported.
 
 // <A NAME="Tables:open">
 // <h3>Opening an Existing Table</h3></A>
@@ -832,7 +839,7 @@
 //     // Define keyword subkey (integer) having value 10.
 //     // Define columns ra and dec (double).
 //     TableDesc subTableDesc("tTableDesc_sub", "1", TableDesc::New);
-//     subTableDesc.keywordSet().define ("subkey", Int(10));
+//     subTableDesc.rwKeywordSet().define ("subkey", Int(10));
 //     subTableDesc.addColumn (ScalarColumnDesc<double> ("ra"));
 //     subTableDesc.addColumn (ScalarColumnDesc<double> ("dec"));
 //
@@ -842,9 +849,9 @@
 //     ColumnDesc colDesc1, colDesc2;
 //     TableDesc td("tTableDesc", "1", TableDesc::New);
 //     td.comment() = "A test of class TableDesc";
-//     td.keywordSet().define ("ra" float(3.14));
-//     td.keywordSet().define ("equinox", double(1950));
-//     td.keywordSet().define ("aa", Int(1));
+//     td.rwKeywordSet().define ("ra" float(3.14));
+//     td.rwKeywordSet().define ("equinox", double(1950));
+//     td.rwKeywordSet().define ("aa", Int(1));
 //
 //     // Define an integer column ab.
 //     td.addColumn (ScalarColumnDesc<Int> ("ab", "Comment for column ab"));
@@ -853,11 +860,11 @@
 //     // and define a default value 0.
 //     // Overwrite the value of keyword unit.
 //     ScalarColumnDesc<Int> acColumn("ac");
-//     acColumn.keywordSet().define ("scale" Complex(0,0));;
-//     acColumn.keywordSet().define ("unit", "");
+//     acColumn.rwKeywordSet().define ("scale" Complex(0,0));;
+//     acColumn.rwKeywordSet().define ("unit", "");
 //     acColumn.setDefault (0);
 //     td.addColumn (acColumn);
-//     td.rwColumnDesc("ac").keywordSet().define ("unit", "DEG");
+//     td.rwColumnDesc("ac").rwKeywordSet().define ("unit", "DEG");
 //
 //     // Add a scalar string column ad and define its comment string.
 //     td.addColumn (ScalarColumnDesc<String> ("ad","comment for ad"));
@@ -1157,6 +1164,99 @@
 // <linkto class="VSCEngine:description">VSCEngine</linkto>
 // has been written. An example of how to use this class can be
 // found in the demo program <src>dVSCEngine.cc</src>.
+
+// <A NAME="Tables:LockSync">
+// <h3>Table locking and synchronization</h3></A>
+//
+// Multiple concurrent readers and writers (also via NFS) of a
+// table are supported by means of a locking/synchronization mechanism.
+// This mechanism is not very sophisticated because it is
+// very coarse grained. When locking, the entire table gets locked.
+// A special lock file is used to lock the table. This lock file also
+// contains some synchronization data.
+// <p>
+// Three ways of locking are supported (see class
+// <linkto class=TableLock>TableLock</linkto>):
+// <dl>
+//  <dt> TableLock::PermanentLocking(Wait)
+//  <dd> locks the table permanently (from open till close). This means
+//       that one writer OR multiple readers are possible.
+//  <dt> TableLock::AutoLocking
+//  <dd> does the locking automatically. This is the default mode.
+//       This mode makes it possible that a table is shared amongst
+//       processes without the user needing to write any special code.
+//       It also means that a lock is only released when needed.
+//  <dt> TableLock::UserLocking
+//  <dd> requires that the programmer explicitly acquires and releases
+//       a lock on the table. This makes some kind of transaction
+//       processing possible. E.g. set a write lock, add a row,
+//       write all data into the row and release the lock.
+//       The Table functions <src>lock</src> and <src>unlock</src>
+//       have to be used to acquire and release a (read or write) lock.
+// </dl>
+// Synchronization of the processes accessing the same table is done
+// by means of the lock file. When a lock is released, the storage
+// managers flush their data into the table files. Some synchronization data
+// is written into the lock file telling the new number of table rows
+// and telling which storage managers have written data.
+// This information is read when another process acquires the lock
+// and is used to determine which storage managers have to refresh
+// their internal caches.
+// <p>
+// The function <src>Table::hasDataChanged</src> can be used to check
+// if a table is (being) changed by another process. In this way
+// a program can react on it. E.g. the table browser can refresh its
+// screen when the underlying table is changed.
+// <p>
+// In general the default locking option will do.
+// From the above it should be clear that heavy concurrent access
+// results in a lot of flushing, thus will have a negative impact on
+// performance. When uninterrupted access to a table is needed,
+// the <src>PermanentLocking</src> option should be used.
+// When transaction-like processing is done (e.g. updating a table
+// containing an observation catalogue), the <src>UserLocking</src>
+// option is probably best.
+// <p>
+// Some examples:
+// <p>
+// The following example wants to read the table uninterrupted, thus it uses
+// the <src>PermanentLocking</src> option. It also wants to wait
+// until the lock is actually acquired.
+// Note that the destructor closes the table and releases the lock.
+// <srcblock>
+// // Open the table (readonly).
+// // Acquire a permanent (read) lock.
+// // It waits until the lock is acquired.
+// Table tab ("some.name",
+//            TableLock(TableLock::PermanentLockingWait));
+// </srcblock>
+//
+// The following example uses the automatic locking..
+// It tells the system to check about every 20 seconds if another
+// process wants access to the table.
+// <srcblock>
+// // Open the table (readonly).
+// Table tab ("some.name",
+//            TableLock(TableLock::AutoLocking, 20));
+// </srcblock>
+//
+// The following example gets data (say from a GUI) and writes it
+// as a row into the table. The lock the table as little as possible
+// the lock is acquired just before writing and released immediately
+// thereafter.
+// <srcblock>
+// // Open the table (writable).
+// Table tab ("some.name",
+//            TableLock(TableLock::UserLocking),
+//            Table::Update);
+// while (True) {
+//     get input data
+//     tab.lock();     // Acquire a write lock and wait for it.
+//     tab.addRow();
+//     write data into the row
+//     tab.unlock();   // Release the lock.
+// }
+// </srcblock>
 
 // </synopsis>
 
