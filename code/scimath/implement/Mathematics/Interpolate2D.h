@@ -23,17 +23,14 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//#
+//# $Id$
 
 #if !defined(AIPS_INTERPOLATE2D_H)
 #define AIPS_INTERPOLATE2D_H
 
-#if defined(_AIX)
-#pragma implementation ("Interpolate2D.cc")
-#endif
-
+//# Includes
 #include <aips/aips.h>
-#include <trial/Lattices/Lattice.h>
+#include <aips/Lattices/Lattice.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Array.h>
