@@ -53,11 +53,6 @@
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
-#ifdef __GNUG__
-typedef MeasConvert<MDirection,MVDirection,MCDirection> 
-        gpp_measconvert_mdirection_mvdirection_mcdirection;
-#endif
-
 int main() {
   try {
 
