@@ -126,8 +126,8 @@ public:
 
     void setPolTypes(const String &types) {
 	if (types.length() < nrecp_p) 
-	    throw AipsError("Insufficient no. of pols passed in '" + types +
-			    "'; expected " + nrecp_p + ", got " + 
+	    throw AipsError(String("Insufficient no. of pols passed in '") 
+			    + types + "'; expected " + nrecp_p + ", got " + 
 			    types.length());
 	pols_p = types;
     }
