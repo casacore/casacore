@@ -2321,3 +2321,4 @@
 09 293 src rm trial/implement/Measures/test/dParseExpr.cc
 09 293 src rm trial/implement/Measures/test/tParseExpr.cc
 09 293 src rm trial/implement/Measures/test/tParseExpr.out
+09 300 src mv trial/implement/Measures/DO_measures.h trial/implement/Measures/DOmeasures.h
