@@ -135,8 +135,11 @@ void Image2DConvolver<T>::convolve(LogIO& os,
                                    Bool copyMiscellaneous)
 {
 
-// Check convolution axes
+// Checks
 
+   if (parameters.nelements() != 3) {
+      os << "The world parameters vector must be of length 3" << LogIO::EXCEPTION;
+   }                        
    if (pixelAxes.nelements() != 2) {
       os << "You must give two pixel axes to convolve" << LogIO::EXCEPTION;
    }                        
@@ -145,9 +148,7 @@ void Image2DConvolver<T>::convolve(LogIO& os,
        pixelAxes(1)<0 || pixelAxes(1)>=nDim) {
       os << "The pixel axes " << pixelAxes << " are illegal" << LogIO::EXCEPTION;
    }
-
-// Check shapes
-
+//
    if (nDim < 2) {
       os << "The image axes must have at least 2 pixel axes" << LogIO::EXCEPTION;
    }
@@ -172,10 +173,11 @@ void Image2DConvolver<T>::convolve(LogIO& os,
    const Unit& brightnessUnit = imageIn.units();
    String brightnessUnitOut;
 //
-   dealWithRestoringBeam (os, brightnessUnitOut, beamOut, kernel, kernelVolume, 
+  dealWithRestoringBeam (os, brightnessUnitOut, beamOut, kernel, kernelVolume, 
                           kernelType, parameters,
                           pixelAxes, cSys, imageInfo, brightnessUnit,
                           autoScale, scale);
+
 // Convolve
 
    ArrayImageConvolver<T> aic;
@@ -213,7 +215,7 @@ template <class T>
 T Image2DConvolver<T>::makeKernel(LogIO& os, Array<T>& kernelArray, 
                                   VectorKernel::KernelTypes kernelType,
                                   const Vector<Quantum<Double> >& parameters,
-                                  const IPosition& axes,
+                                  const IPosition& pixelAxes,
                                   const ImageInterface<T>& imageIn) const
 {
 
@@ -226,22 +228,36 @@ T Image2DConvolver<T>::makeKernel(LogIO& os, Array<T>& kernelArray,
 
    Vector<Double> dParameters;
    const CoordinateSystem cSys = imageIn.coordinates();
-   ImageUtilities::worldWidthsToPixel (os, dParameters, parameters, cSys, axes);
+
+// Use the reference value for the shape conversion direction
+
+   Vector<Quantum<Double> > wParameters(5);
+   for (uInt i=0; i<3; i++) {
+      wParameters(i+2) = parameters(i);
+   }
+//
+   const Vector<Double> refVal = cSys.referenceValue();
+   const Vector<String> units = cSys.worldAxisUnits();
+   Int wAxis = cSys.pixelAxisToWorldAxis(pixelAxes(0));
+   wParameters(0) = Quantum<Double>(refVal(wAxis), units(wAxis));
+   wAxis = cSys.pixelAxisToWorldAxis(pixelAxes(1));
+   wParameters(1) = Quantum<Double>(refVal(wAxis), units(wAxis));
+   ImageUtilities::worldWidthsToPixel (os, dParameters, wParameters, cSys, pixelAxes, False);
 
 // Create n-Dim kernel array shape
 
-   IPosition kernelShape = shapeOfKernel (kernelType, dParameters, imageIn.ndim(), axes);
+   IPosition kernelShape = shapeOfKernel (kernelType, dParameters, imageIn.ndim(), pixelAxes);
 
 // Create kernel array. We will fill the n-Dim array (shape non-unity
 // only for pixelAxes) through its 2D Matrix incarnation. Aren't we clever.
       
    kernelArray.resize(kernelShape);
-   Array<T> kernelArray2 = kernelArray.nonDegenerate (axes);
+   Array<T> kernelArray2 = kernelArray.nonDegenerate (pixelAxes);
    Matrix<T> kernelMatrix = static_cast<Matrix<T> >(kernelArray2);
 
 // Fill kernel Matrix with functional (height unity)
 
-   return fillKernel (kernelMatrix, kernelType, kernelShape, axes, dParameters);
+   return fillKernel (kernelMatrix, kernelType, kernelShape, pixelAxes, dParameters);
 }
 
 
@@ -253,7 +269,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
                                                  T kernelVolume,
                                                  VectorKernel::KernelTypes kernelType,
                                                  const Vector<Quantum<Double> >& parameters,
-                                                 const IPosition& axes,
+                                                 const IPosition& pixelAxes,
                                                  const CoordinateSystem& cSys,
                                                  const ImageInfo& imageInfo,
                                                  const Unit& brightnessUnitIn,
@@ -264,7 +280,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
 // Jy/beam and Jy/pixel only really makes sense if this is True
 
    Bool holdsOneSkyAxis;
-   Bool hasSky = CoordinateUtil::holdsSky (holdsOneSkyAxis, cSys, axes.asVector());
+   Bool hasSky = CoordinateUtil::holdsSky (holdsOneSkyAxis, cSys, pixelAxes.asVector());
    if (hasSky) {
       os << "You are convolving the sky" << LogIO::POST;
    } else {
@@ -280,6 +296,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
          
    String bUnitIn = upcase(brightnessUnitIn.getName());
 //
+   const Vector<Double>& refPix = cSys.referencePixel();
    if (hasSky && bUnitIn==String("JY/PIXEL")) {
 
 // Easy case.  Peak of convolution kernel must be unity
@@ -292,13 +309,16 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
 // Exception already generated if only one of major and minor in pixel units
 
       if (parameters(0).getFullUnit().getName()==String("pix")) {
-         Vector<Double> pixelParameters(3);
-         pixelParameters(0) = parameters(0).getValue();
-         pixelParameters(1) = parameters(1).getValue();
-         pixelParameters(2) = parameters(2).getValue(Unit("rad"));
+         Vector<Double> pixelParameters(5);
+         pixelParameters(0) = refPix(pixelAxes(0));
+         pixelParameters(1) = refPix(pixelAxes(1));
+         pixelParameters(2) = parameters(0).getValue();
+         pixelParameters(3) = parameters(1).getValue();
+         pixelParameters(4) = parameters(2).getValue(Unit("rad"));
          Vector<Quantum<Double> > worldParameters;
 //
-         ImageUtilities::pixelWidthsToWorld (os, worldParameters, pixelParameters, cSys, axes);
+         ImageUtilities::pixelWidthsToWorld (os, worldParameters, pixelParameters, 
+                                             cSys, pixelAxes, False);
 //
          beamOut(0) = worldParameters(0);
          beamOut(1) = worldParameters(1);
@@ -323,9 +343,19 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
       if (hasSky && bUnitIn==String("JY/BEAM") && beamIn.nelements()==3) {
 
 // Convert restoring beam parameters to pixels.  Output pa is pos +x -> +y in pixel frame.
-         
+
+         Vector<Quantum<Double> > wParameters(5);
+         const Vector<Double> refVal = cSys.referenceValue();
+         const Vector<String> units = cSys.worldAxisUnits();
+         Int wAxis = cSys.pixelAxisToWorldAxis(pixelAxes(0));
+         wParameters(0) = Quantum<Double>(refVal(wAxis), units(wAxis));
+         wAxis = cSys.pixelAxisToWorldAxis(pixelAxes(1));
+         wParameters(1) = Quantum<Double>(refVal(wAxis), units(wAxis));
+         for (uInt i=0; i<3; i++) {
+            wParameters(i+2) = beamIn(i);
+         }
          Vector<Double> dParameters;
-         ImageUtilities::worldWidthsToPixel (os, dParameters, beamIn, cSys, axes);
+         ImageUtilities::worldWidthsToPixel (os, dParameters, wParameters, cSys, pixelAxes, False);
          
 // Create 2-D beam array shape
 
@@ -341,7 +371,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
 
 // Get 2-D version of convolution kenrel
 
-         Array<T> kernelArray2 = kernelArray.nonDegenerate (axes);
+         Array<T> kernelArray2 = kernelArray.nonDegenerate (pixelAxes);
          Matrix<T> kernelMatrix = static_cast<Matrix<T> >(kernelArray2);
          
 // Convolve input restoring beam array by convolution kernel array
@@ -392,12 +422,14 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
 
 // Convert to world units. Ho hum.
                             
-         Vector<Double> pixelParameters(3);
-         pixelParameters(0) = bSolution(3);
-         pixelParameters(1) = bSolution(4);
-         pixelParameters(2) = bSolution(5);
+         Vector<Double> pixelParameters(5);
+         pixelParameters(0) = refPix(pixelAxes(0));
+         pixelParameters(1) = refPix(pixelAxes(1));
+         pixelParameters(2) = bSolution(3);
+         pixelParameters(3) = bSolution(4);
+         pixelParameters(4) = bSolution(5);
 //
-         ImageUtilities::pixelWidthsToWorld (os, beamOut, pixelParameters, cSys, axes);
+         ImageUtilities::pixelWidthsToWorld (os, beamOut, pixelParameters, cSys, pixelAxes, False);
       } else {
          if (autoScale) {
     

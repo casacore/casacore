@@ -118,8 +118,10 @@ public:
                  Bool autoScale, Double scale,
                  Bool copyMiscellaneous=True);
 //
-// Convolve.   You specify the output image name.  If empty 
-// String, the ImageInterface object will be a TempImage.
+// Convolve.   You specify the output image name 
+// (if empty String, the ImageInterface object will be a TempImage),
+// the  convolution parameters (major, minor, position angle)
+// and the pixel axes which you are convolving.
 // If the output image needs a mask and doesn't have one,
 // it will be given one if possible.  The miscInfo, imageInfo,
 // units and logger will be copied from the input to the output.
