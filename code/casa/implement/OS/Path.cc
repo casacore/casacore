@@ -1,5 +1,5 @@
 //# Path.cc: Class to define a pathname
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -370,12 +370,19 @@ String Path::makeAbsoluteName (const String& inString) const
     // Otherwise we have a relative pathname.
     // Remove a possible leading . or ./
     String workString (inString);
-    if (workString.length() > 0) {
+    if(workString.length() > 0) {
 	if (workString[0] == '.') {
-	    Int from = 1;
-	    if (workString.length() > 1  &&  workString[1] == '/') {
-		from = 2;
-	    }
+	    Int from(1);
+	    if (workString.length() > 1){
+               switch(workString[1]) {
+                case '/' :
+		   from = 2;
+                   break;
+                case '.' :
+                   from = 0;
+                   break;
+               }
+	    } 
 	    workString = workString.from (from);
 	}
     }
