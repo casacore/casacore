@@ -1,5 +1,5 @@
 //# MeasFrame.cc: Container for Measure frame
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,13 +44,12 @@ class FrameRep {
 public:
   // Constructor
   FrameRep() :
-    epval(0), posval(0), dirval(0), radval(0),
-    epset(False), epreset(False),
-    posset(False), posreset(False),
-    dirset(False), dirreset(False),
-    radset(False), radreset(False),
+    epval(0), epset(False), epreset(False),
+    posval(0), posset(False), posreset(False),
+    dirval(0), dirset(False), dirreset(False),
+    radval(0), radset(False), radreset(False),
     mymcf(0), delmcf(0),
-    getdbl(0), getmvdir(0),
+    getdbl(0), getmvdir(0), getmvpos(0),
     cnt(1) {;};
   // Destructor
   ~FrameRep() {
@@ -87,6 +86,8 @@ public:
   Bool (*getdbl)(void*, uInt, Double &);
   // Pointer to get an MVDirection
   Bool (*getmvdir)(void*, uInt, MVDirection &);
+  // Pointer to get an MVPosition
+  Bool (*getmvpos)(void*, uInt, MVPosition &);
   // Usage count
   Int cnt;
 };
@@ -399,6 +400,10 @@ void MeasFrame::setMCFrameGetmvdir(Bool (*in)(void *, uInt, MVDirection &)) {
   if (rep) rep->getmvdir = in;
 }
 
+void MeasFrame::setMCFrameGetmvpos(Bool (*in)(void *, uInt, MVPosition &)) {
+  if (rep) rep->getmvpos = in;
+}
+
 void *MeasFrame::getMCFramePoint() const {
   if (rep) return rep->mymcf;
   return 0;
@@ -426,6 +431,12 @@ Bool MeasFrame::getLong(Double &tdb) {
 
 Bool MeasFrame::getLat(Double &tdb) {
   if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLat, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getITRF(MVPosition &tdb) {
+  if (rep && rep->mymcf) return rep->getmvpos(rep->mymcf, GetITRF, tdb);
   tdb = 0;
   return False; 
 }

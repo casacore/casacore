@@ -1,5 +1,5 @@
 //# MCFrame.cc: Measure frame calculations proxy
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,17 +55,19 @@ typedef MeasConvert<MRadialVelocity,MVRadialVelocity,MCRadialVelocity> gpp_mcfra
  
 //# Constructors
 MCFrame::MCFrame(MeasFrame &inf) :
+  myf(inf),
   epConvTDB(0), epTDBp(0), 
   epConvLAST(0), epLASTp(0), 
-  posConvLong(0), posLongp(0),
+  posConvLong(0), posLongp(0), posITRFp(0),
   dirConvJ2000(0), dirJ2000p(0),
   dirConvB1950(0), dirB1950p(0),
   dirConvApp(0), dirAppp(0),
-  radConvLSR(0), radLSRp(0), myf(inf) {
+  radConvLSR(0), radLSRp(0) {
     myf.setMCFramePoint((void *) this);
     myf.setMCFrameDelete(MCFrameDelete);
     myf.setMCFrameGetdbl(MCFrameGetdbl);
     myf.setMCFrameGetmvdir(MCFrameGetmvdir);
+    myf.setMCFrameGetmvpos(MCFrameGetmvpos);
     create();
     myf.unlock();
 }
@@ -78,6 +80,7 @@ MCFrame::~MCFrame() {
   delete epLASTp;
   delete (MPosition::Convert *) posConvLong;
   delete posLongp;
+  delete posITRFp;
   delete (MDirection::Convert *) dirConvJ2000;
   delete dirJ2000p;
   delete (MDirection::Convert *) dirConvB1950;
@@ -95,6 +98,7 @@ MCFrame::~MCFrame() {
 void MCFrame::make(MeasFrame &in) {
   if (!in.empty() && !in.getMCFramePoint()) {
     MCFrame *tmp = new MCFrame(in);
+    if (!tmp) {};		// to stop compiler warnings
   };
   if (!in.empty()) {
     ((MCFrame *)(in.getMCFramePoint()))->create();
@@ -119,6 +123,7 @@ void MCFrame::resetEpoch() {
 void MCFrame::resetPosition() {
   if (posLongp) {
     delete posLongp; posLongp = 0;
+    delete posITRFp; posITRFp = 0;
   };
   if (epLASTp) {
     delete epLASTp; epLASTp = 0;
@@ -164,8 +169,10 @@ Bool MCFrame::getLong(Double &tdb) {
   if (myf.position()) {
     if (!posLongp) {
       posLongp = new Vector<Double>(3);
-      *(posLongp) = (*(MPosition::Convert *)
-		     (posConvLong))().getValue().get();
+      posITRFp = new MVPosition;
+      *(posITRFp) = (*(MPosition::Convert *)
+		     (posConvLong))().getValue();
+      *(posLongp) = posITRFp->get();
     };
     tdb = MVAngle(posLongp->operator()(1))(-0.5);
     return True;
@@ -178,8 +185,10 @@ Bool MCFrame::getLat(Double &tdb) {
   if (myf.position()) {
     if (!posLongp) {
       posLongp = new Vector<Double>(3);
-      *(posLongp) = (*(MPosition::Convert *)
-		     (posConvLong))().getValue().get();
+      posITRFp = new MVPosition;
+      *(posITRFp) = (*(MPosition::Convert *)
+		     (posConvLong))().getValue();
+      *(posLongp) = posITRFp->get();
     };
     tdb = posLongp->operator()(2);
     return True;
@@ -188,12 +197,30 @@ Bool MCFrame::getLat(Double &tdb) {
   return False;
 }
 
+Bool MCFrame::getITRF(MVPosition &tdb) {
+  if (myf.position()) {
+    if (!posLongp) {
+      posLongp = new Vector<Double>(3);
+      posITRFp = new MVPosition;
+      *(posITRFp) = (*(MPosition::Convert *)
+		     (posConvLong))().getValue();
+      *(posLongp) = posITRFp->get();
+    };
+    tdb = *posITRFp;
+    return True;
+  };
+  tdb = (Double) 0.0;
+  return False;
+}
+
 Bool MCFrame::getRadius(Double &tdb) {
   if (myf.position()) {
     if (!posLongp) {
       posLongp = new Vector<Double>(3);
-      *(posLongp) = (*(MPosition::Convert *)
-		     (posConvLong))().getValue().get();
+      posITRFp = new MVPosition;
+      *(posITRFp) = (*(MPosition::Convert *)
+		     (posConvLong))().getValue();
+      *(posLongp) = posITRFp->get();
     };
     tdb = posLongp->operator()(0);
     return True;
@@ -355,6 +382,7 @@ void MCFrame::makePosition() {
 				       REFLONG);
   if (posLongp) {
     delete posLongp; posLongp = 0;
+    delete posITRFp; posITRFp = 0;
   };
   if (epLASTp) {
     delete epLASTp; epLASTp = 0;
@@ -479,6 +507,24 @@ Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result) {
   } catch (AipsError x) {
   } end_try;
   MVDirection tmp;
+  result = tmp;
+  return False;
+}
+
+Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result) {
+  try {
+    switch (tp) {
+       
+    case MeasFrame::GetITRF:
+      return ((MCFrame *) dmf)->getITRF(result);
+      break;
+      
+    default:
+      break;
+    };
+  } catch (AipsError x) {
+  } end_try;
+  MVPosition tmp;
   result = tmp;
   return False;
 }

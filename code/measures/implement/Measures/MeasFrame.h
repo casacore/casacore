@@ -1,5 +1,5 @@
 //# MeasFrame.h: Container for Measure frame
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -147,6 +147,7 @@ class MeasFrame {
   friend class MCFrame;
   friend Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
   friend Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
+  friend Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
   // </group>
 
   //# Constructors
@@ -232,6 +233,8 @@ class MeasFrame {
   Bool getLong(Double &tdb);
   // Get the latitude (in rad)
   Bool getLat(Double &tdb);
+  // Get the position
+  Bool getITRF(MVPosition &tdb);
   // Get the gecentric position (in m)
   Bool getRadius(Double &tdb);
   // Get the LAST (in days)
@@ -276,7 +279,9 @@ private:
     // Get apparent coordinates (direction cosines)
     GetApp,
     // Get LSR radial velocity (m/s)
-    GetLSR
+    GetLSR,
+    // Get the position
+    GetITRF
   };
   
   //# Data
@@ -328,6 +333,8 @@ private:
   void setMCFrameGetdbl(Bool (*in)(void *, uInt, Double &));
   // Set the get MVDirection routine
   void setMCFrameGetmvdir(Bool (*in)(void *, uInt, MVDirection &));
+  // Set the get MVPosition routine
+  void setMCFrameGetmvpos(Bool (*in)(void *, uInt, MVPosition &));
   // Lock the frame to make sure deletion occurs when needed
   void lock();
   // Unlock the frame
