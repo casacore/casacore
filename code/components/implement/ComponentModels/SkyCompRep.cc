@@ -180,7 +180,7 @@ void SkyCompRep::sample(Matrix<Flux<Double> >& samples,
   DebugAssert(ok(), AipsError);
   const uInt nDirSamples = directions.nelements();
   DebugAssert(samples.nrow() == nDirSamples, AipsError);
-  const uInt nFreqSamples = directions.nelements();
+  const uInt nFreqSamples = frequencies.nelements();
   DebugAssert(samples.ncolumn() == nFreqSamples, AipsError);
   DebugAssert(pixelSize.radian() > 0.0, AipsError);
   
