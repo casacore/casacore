@@ -158,7 +158,7 @@ void ROScalarMeasColumn<M, MV>::attach(const Table& tab,
 }
     
 template<class M, class MV>
-void ROScalarMeasColumn<M, MV>::get(M& meas, uInt rownr)
+void ROScalarMeasColumn<M, MV>::get(uInt rownr, M& meas) const
 {
     MV measVal;
     measVal.putVector((*itsDataCol)(rownr));
@@ -172,7 +172,7 @@ template<class M, class MV>
 M ROScalarMeasColumn<M, MV>::operator()(uInt rownr)
 {
     M meas;
-    get(meas, rownr);
+    get(rownr, meas);
     return meas;
 }
 
@@ -183,7 +183,7 @@ const MeasRef<M>& ROScalarMeasColumn<M, MV>::getMeasRef() const
 }
 
 template<class M, class MV>
-void ROScalarMeasColumn<M, MV>::setMeasRef(uInt rownr)
+void ROScalarMeasColumn<M, MV>::setMeasRef(uInt rownr) const
 {
     if (itsRefCodeCol != 0) {
 	itsMeasRef.set((*itsRefCodeCol)(rownr));
@@ -197,7 +197,7 @@ template<class M, class MV>
 void ROScalarMeasColumn<M, MV>::throwIfNull() const
 {
     if (isNull()) {
-        throw (TableInvOper("Quantum table column is null"));
+        throw (TableInvOper("Measure table column is null"));
     }
 }
  
@@ -243,8 +243,11 @@ void ScalarMeasColumn<M, MV>::put(uInt rownr, const M& meas)
 	itsRefCodeCol->put(rownr, meas.getRef().getType());
     }
     if (itsOffsetCol != 0) {
-	M offset = meas.getRef().offset();
-	itsOffsetCol->put(rownr, offset);
+	if (meas.getRef().offset() != 0) {
+    	    itsOffsetCol->put(rownr, meas.getRef().offset());
+	} else {
+    	    itsOffsetCol->put(rownr, M());
+    	}
     }
     itsDataCol->put(rownr, meas.getValue().getVector());
 }
