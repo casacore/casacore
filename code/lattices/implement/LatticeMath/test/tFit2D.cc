@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Fitting.h>
+#include <aips/Fitting.h>
 #include <trial/Fitting/Fit2D.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Functionals/Gaussian2D.h>

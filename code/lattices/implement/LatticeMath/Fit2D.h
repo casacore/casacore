@@ -33,7 +33,7 @@
 #include <aips/Functionals/SumFunction.h>
 #include <aips/Functionals/Gaussian2D.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
-#include <trial/Fitting.h>
+#include <aips/Fitting.h>
 #include <aips/Logging.h>
 
 template<class T> class Array;
