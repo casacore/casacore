@@ -2850,6 +2850,17 @@ const RotMatrix &MeasTable::posToRect() {
     return rot;
 }
 
+const RotMatrix &MeasTable::rectToPos() {
+    static Bool needInit = True;
+    static RotMatrix rot;
+    if (needInit) {
+        needInit = False;
+	rot = MeasTable::posToRect();
+	rot.transpose();
+    }
+    return rot;
+}
+
 // Position related routines
 Double MeasTable::WGS84(uInt which) {
     static const Double data[2] = {

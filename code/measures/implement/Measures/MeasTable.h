@@ -278,6 +278,8 @@ public:
   // </group>
   // Get the rotation matrix to change position from ecliptic to rectangular
   static const RotMatrix &posToRect();
+  // Get the rotation matrix to change position from rectangular to ecliptic
+  static const RotMatrix &rectToPos();
   // </group>
   
   // Position related routines
