@@ -1,5 +1,5 @@
 //# TableParse.h: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -190,10 +190,11 @@ private:
 class TableParseVal
 {
 public:
-    Int      type;              //# i=Int, f=Double, c=DComplex, s=String
-    String   str;               //# string literal; table name; field name
-    Int      ival;              //# integer literal
-    Double   dval[2];           //# Double/DComplex literal
+    Int      type;          //# i=Int, f=Double, c=DComplex, s=String t=Table
+    String   str;           //# string literal; table name; field name
+    Int      ival;          //# integer literal
+    Double   dval[2];       //# Double/DComplex literal
+    Table    tab;           //# Table (from query in FROM clause)
 
     // Make a new TableParseVal object (for the flex actions).
     static TableParseVal* makeValue();
@@ -301,7 +302,12 @@ public:
     ~TableParseSelect();
 
     // Execute the select command (select/sort/projection/giving).
-    void execute();
+    // The flag tells if a set in the GIVING part is allowed.
+    void execute (Bool setInGiving);
+
+    // Execute a query in a from clause and create an appropriate value
+    // for the result.
+    TableParseVal* doFromQuery();
 
     // Execute a subquery and create an appropriate node for the result.
     TableExprNode doSubQuery();
