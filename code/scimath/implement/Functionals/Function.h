@@ -195,9 +195,9 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   // Constructors for FunctionParam
   // <group>
   Function() : param_p() {};
-  explicit Function(const uInt n) : param_p(n) {};
-  explicit Function(const Vector<T> &in) : param_p(in) {};
-  Function(const FunctionParam<T> &other) : param_p(other) {};
+  explicit Function(const uInt n) : param_p(n), arg_p(0) {};
+  explicit Function(const Vector<T> &in) : param_p(in), arg_p(0) {};
+  Function(const FunctionParam<T> &other) : param_p(other), arg_p(0) {};
   Function(const Function<T> &other) : param_p(other.param_p),
     arg_p(other.arg_p) {};
   // </group>
@@ -214,7 +214,7 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
   virtual T &operator[](const uInt n) { return param_p[n]; };
-  virtual const T &operator[](const uInt n) const{ return param_p[n]; };
+  virtual const T &operator[](const uInt n) const { return param_p[n]; };
   // </group>
   // Evaluate this function object at <src>x</src>or at <src>x, y</src>.
   // The length of <src>x</src> must be greater than or equal to
@@ -255,7 +255,7 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   // The parameters and masks
   FunctionParam<T> param_p;
   // Aid for non-contiguous argument storage
-  mutable Vector<typename FunctionTraits<T>::ArgType> arg_p;
+  mutable Vector<ArgType> arg_p;
 
 };
 

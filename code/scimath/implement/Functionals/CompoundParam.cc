@@ -42,7 +42,7 @@ NQCompoundParam<T>::NQCompoundParam(const NQCompoundParam<T> &other) :
   funpar_p(other.funpar_p.nelements()), 
   locpar_p(other.locpar_p.nelements()) { 
   for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
-    functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
+    functionPtr_p[i] = other.functionPtr_p[i]->clone();
     paroff_p[i] = other.paroff_p[i];
   };
   for (uInt i=0; i<funpar_p.nelements(); ++i) {
@@ -74,7 +74,7 @@ operator=(const NQCompoundParam<T> &other) {
     funpar_p = Block<uInt>(other.funpar_p.nelements());
     locpar_p = Block<uInt>(other.locpar_p.nelements());
     for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
-      functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
+      functionPtr_p[i] = other.functionPtr_p[i]->clone();
       paroff_p[i] = other.paroff_p[i];
     };
     for (uInt i=0; i<funpar_p.nelements(); ++i) {
@@ -110,7 +110,7 @@ uInt NQCompoundParam<T>::addFunction(const Function<T> &newFunction) {
   uInt i = functionPtr_p.nelements();
   functionPtr_p.resize(i+1);
   functionPtr_p[i] = newFunction.clone();
-  ndim_p = (*(functionPtr_p[i])).ndim();
+  ndim_p = functionPtr_p[i]->ndim();
   // Set parameters
   uInt np = nparameters();
   paroff_p.resize(i+1);
@@ -131,13 +131,13 @@ uInt NQCompoundParam<T>::addFunction(const Function<T> &newFunction) {
 template <class T>
 Bool &NQCompoundParam<T>::mask(const uInt n) {
   fromParam_p();
-  return (*functionPtr_p[funpar_p[n]]).mask(locpar_p[n]);
+  return functionPtr_p[funpar_p[n]]->mask(locpar_p[n]);
 }
 
 template <class T>
 const Bool &NQCompoundParam<T>::mask(const uInt n) const {
   fromParam_p();
-  return (*functionPtr_p[funpar_p[n]]).mask(locpar_p[n]);
+  return functionPtr_p[funpar_p[n]]->mask(locpar_p[n]);
 }
 
 template <class T>

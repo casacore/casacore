@@ -104,11 +104,10 @@ template<class T> class NQCompoundParam : public Function<T> {
   // Make this object a (deep) copy of other.
   // <group>
   NQCompoundParam(const NQCompoundParam<T> &other);
-  NQCompoundParam<T> 
-    &operator=(const NQCompoundParam<T> &other);
+  NQCompoundParam<T> &operator=(const NQCompoundParam<T> &other);
   // </group>
   
-  ~NQCompoundParam();
+  virtual ~NQCompoundParam();
 
   //# Operators
   // Manipulate the nth parameter (0-based) with no index check

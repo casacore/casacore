@@ -46,6 +46,6 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   };
   for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
   // function value
-  for (uInt i = 0; i< nFunctions(); ++i) tmp += (function(i))(x);
+  for (uInt i = 0; i< nFunctions(); ++i) tmp += function(i)(x);
   return tmp;
 }
