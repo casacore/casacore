@@ -1772,26 +1772,34 @@ Vector<Double> DirectionCoordinate::longLatPoles () const
 
 void DirectionCoordinate::makeWorldRelative (Vector<Double>& world) const
 {
+    static MVDirection mv;
     AlwaysAssert(world.nelements()==2, AipsError);
 //
-    MVDirection mv(world(0)*to_radians_p[0], world(1)*to_radians_p[1]);
+    mv.setAngle(world[0]*to_radians_p[0], world[1]*to_radians_p[1]);
     mv *= rot_p;
 //
-    world[0] = mv.getLong() / to_radians_p[0];
+    world[0] = cos(mv.getLat()) * mv.getLong() / to_radians_p[0];
     world[1] = mv.getLat()  / to_radians_p[1];
 }
 
 void DirectionCoordinate::makeWorldRelative (MDirection& world) const
 {
-    world.set(world.getValue() * rot_p);
+    static MVDirection mv;
+    mv = world.getValue() * rot_p;
+    Double lon = mv.getLong();
+    Double lat = mv.getLat();
+    mv.setAngle(cos(lat)*lon, lat);
+    world.set(mv);
 }
 
 
 void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 {
+    static MVDirection mv;
     AlwaysAssert(world.nelements()==2, AipsError);
 //   
-    MVDirection mv(world(0)*to_radians_p[0], world(1)*to_radians_p[1]);
+    Double lat = world[1]*to_radians_p[1];
+    mv.setAngle(world[0]*to_radians_p[0]/cos(lat), lat);
     mv = rot_p * mv;
 //
     world[0] = mv.getLong() / to_radians_p[0];
@@ -1800,7 +1808,13 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 
 void DirectionCoordinate::makeWorldAbsolute (MDirection& world) const
 {
-    world.set(rot_p * world.getValue());
+    static MVDirection mv;
+//
+    Double lon = world.getValue().getLong();
+    Double lat = world.getValue().getLat();
+    mv.setAngle(lon/cos(lat), lat);
+//
+    world.set(rot_p * mv);
 }
 
 
