@@ -45,7 +45,7 @@ with the following UNIX command:
 	$ . /aips++/beta/aipsinit.sh
 \end{verbatim}
 
-Note that the directory name, \verb!aips++/beta!  may vary depending upon your
+Note that the directory name, \verb!/aips++/beta!, may vary depending upon your
 installation; see \htmladdnormallink{Getting Started in
 AIPS++}{../../user/gettingstarted/gettingstarted.html} for more details.
 
@@ -97,8 +97,8 @@ boolean, byte, short, integer, float, double, complex, and double complex.
 Floating point constants are assumed to be double, and integer constants
 are assumed to be integer.  In most cases the data type is self-evident,
 but, if your code needs to know a variable's type, there are built-in test
-functions such as is\_boolean(), is\_float(), etc., which return a boolean
-value T or F.  For example,
+functions such as is\_boolean(), is\_float(), is\_dcomplex(), etc., which 
+return a boolean value T or F.  For example,
 
 \begin{verbatim}
 	- is_float(z)
@@ -371,9 +371,9 @@ data vectors against it.
 	- times := t1.getcol('Time')
 	- times -:= as_integer(times)		# remove day numbers
 	- clear()				# clear the plot screen
-	- plotxy(times[1:32], data[1:32], 'All data')
+	- dp.plotxy(times[1:32], data[1:32], 'All data')
 	- sometimes := (times[1:32])[mask[1:32]]
-	- plotxy(sometimes, data_cal_1[length(sometimes)], 'Selected data');
+	- dp.plotxy(sometimes, data_cal_1[1:length(sometimes)], 'Selected data');
 \end{verbatim}
 
 The second line above illustrates one of the combined arithmetic and
@@ -389,7 +389,7 @@ Kelvins, we can plot a calibrated scan with the additional commands
 	- dataK := 1.4 * ((data_cal_1 + data_cal_off_1) / 2.0) /
 	+ (data_cal_1 - data_cal_off_1)
 	- clear()
-	- ploty(dataK, '')
+	- dp.ploty(dataK, '')
 \end{verbatim}
 
 You should see four scans through a radio source placed end to end.  These
@@ -401,7 +401,7 @@ and not an indication that you should type the plus character.
     All of the other column names in this table may be listed with
 
 \begin{verbatim}
-	- t1.colnames(t1)
+	- t1.colnames()
 \end{verbatim}
 
     Here are some additional indexing ideas.
@@ -483,11 +483,11 @@ scan in a table.
 	    mask := scan == scan_no & receiver == (rcvr + 1);
 	    scan_data := data[mask];
 	    if (length(scan_data) == 0) {
-		fail paste('No data found for scan', scan_no, 
-                           'receiver', receiver);
+	        fail paste('No data found for scan', scan_no, 
+	                   'receiver', receiver);
 	    }
 	    return dp.ploty(data[mask], paste('Scan', scan_no, 
-                           'Receiver', receiver));
+	                   'Receiver', receiver));
 	}
 \end{verbatim}
 
@@ -559,7 +559,7 @@ execution of two functions defined below.
 	6
 \end{verbatim}
 
-The \verb!F! that appears after you the functions is the glish
+The \verb!F! that appears after you execute the functions is the glish
 boolean, False.  This is the default return value for functions
 which do not explicitly return a value.
  
@@ -695,8 +695,8 @@ created all at once or added to piece by piece.
     Record members may be strings, any of the numeric data types
 including arrays, as well as other records.  In fact, the default
 plotter, dp, and the two tables you have been interacting
-with, t1, and t7, are actually records where the individual members
-are the functions that are operate on that data or client.
+with, t1 and t7, are actually records where the individual members
+are functions.
 See the \htmladdnormallink{AIPS++ User
 Reference Manual}{../../user/Refman/Refman.html} for a list of
 all currently available modules and functions.
@@ -945,7 +945,7 @@ we'd have
 	fft := client('fft_engine')
 	whenever fft->fft_done do {
 	   clear()
-	   ploty($value, 'FFT Result')
+	   dp.ploty($value, 'FFT Result')
 	}
 \end{verbatim}
 
@@ -998,7 +998,7 @@ glish code looks something like
 	}
 	whenever a->stderr do {
 	    print 'Error !', $value
-        }
+	}
 \end{verbatim}
 
 The async=T parameter assignment causes the shell() function to return an
@@ -1020,7 +1020,8 @@ the script.  Glish guarantees that events are held until the full script
 file is read.
 
     An example of where an AIPS++ event communication with a client is
-hidden in a function can be seen in the definition of the ploty() that we
+hidden in a function can be seen in the definition of the dp.ploty() 
+function that we
 used earlier (there are some additional features found in the
 actual function that are beyond the scope of this tutorial, this is
 a simplified version).
@@ -1174,10 +1175,10 @@ included. Similarly, maket1() will make the t1 table.
 The resulting table is actually a directory called t7 with the files
 
 \begin{verbatim}
-	-rw-r--r--   1 rfisher  staff      12546 Mar 20 14:22 table.dat
-	-rw-r--r--   1 rfisher  staff     308054 Mar 20 14:22 table.f0
+	-rw-r--r--   1 rfisher  staff      11960 Mar 20 14:22 table.dat
+	-rw-r--r--   1 rfisher  staff     293642 Mar 20 14:22 table.f0
 	-rw-r--r--   1 rfisher  staff        562 Mar 20 14:22 table.f1
-	-rw-r--r--   1 rfisher  staff     131345 Mar 20 14:22 table.f1i0
+	-rw-r--r--   1 rfisher  staff     131344 Mar 20 14:22 table.f1i0
 	-rw-r--r--   1 rfisher  staff         20 Mar 20 14:22 table.info
 \end{verbatim}
 
