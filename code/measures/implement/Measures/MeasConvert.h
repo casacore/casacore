@@ -1,5 +1,5 @@
 //# MeasConvert.h: Conversion of Measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -90,6 +90,9 @@ class MeasVal;
 // output reference frame, and construct a pointer (in practice a list
 // of pointers to bypass the necessity of creating too many conversion
 // functions) to a conversion routine.
+// 
+// An <src>isNOP()</src> function is available to test if the created
+// conversion engine is empty.
 //
 // Actual conversions are done with the () operator, which produces a new
 // MEpoch (or other appropiate Measure).<br>
@@ -221,6 +224,8 @@ public:
   virtual Int nMethod() const;
   // Get method
   virtual uInt getMethod(uInt which) const;
+  // Is the conversion engine empty?
+  Bool isNOP() { return crout.nelements() == 0; };
   // Print conversion engine
   virtual void print(ostream &os) const;
   
