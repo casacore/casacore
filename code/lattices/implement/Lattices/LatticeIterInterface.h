@@ -141,6 +141,10 @@ protected:
   // Clone the object.
   virtual LatticeIterInterface<T>* clone() const;
 
+  // Return the underlying lattice.
+  Lattice<T>& lattice()
+    { return *itsLattPtr; }
+
   // Increment operator - increment the cursor to the next position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>

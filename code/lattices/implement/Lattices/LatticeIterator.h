@@ -256,6 +256,10 @@ public:
   // Is the iterator object empty?
   Bool isNull() const
     { return itsIterPtr.null(); }
+
+  // Return the underlying lattice.
+  Lattice<T>& lattice() const
+    { return itsIterPtr->lattice(); }
     
   // Increment operator - increment the cursor to the next position.  These
   // functions are forwarded to the current LatticeNavigator and both
