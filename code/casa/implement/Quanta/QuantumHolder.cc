@@ -176,16 +176,6 @@ Bool QuantumHolder::isQuantumVectorDComplex() const {
 Int QuantumHolder::nelements() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for nelements"));
-  } else if (isQuantumVectorDouble()) {
-    return ((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue().nelements();
-  } else if (isQuantumVectorFloat()) {
-    return ((Quantum<Vector<Float> > *)(hold_p.ptr()))->getValue().nelements();
-  } else if (isQuantumVectorInt()) {
-    return ((Quantum<Vector<Int> > *)(hold_p.ptr()))->getValue().nelements();
-  } else if (isQuantumVectorComplex()) {
-    return ((Quantum<Vector<Complex> > *)(hold_p.ptr()))->getValue().nelements();
-  } else if (isQuantumVectorDComplex()) {
-    return ((Quantum<Vector<DComplex> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumArrayDouble()) {
     return ((Quantum<Array<Double> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumArrayFloat()) {
@@ -203,16 +193,6 @@ Int QuantumHolder::nelements() const {
 Int QuantumHolder::ndim() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for ndim"));
-  } else if (isQuantumVectorDouble()) {
-    return ((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue().ndim();
-  } else if (isQuantumVectorFloat()) {
-    return ((Quantum<Vector<Float> > *)(hold_p.ptr()))->getValue().ndim();
-  } else if (isQuantumVectorInt()) {
-    return ((Quantum<Vector<Int> > *)(hold_p.ptr()))->getValue().ndim();
-  } else if (isQuantumVectorComplex()) {
-    return ((Quantum<Vector<Complex> > *)(hold_p.ptr()))->getValue().ndim();
-  } else if (isQuantumVectorDComplex()) {
-    return ((Quantum<Vector<DComplex> > *)(hold_p.ptr()))->getValue().ndim();
   } else if (isQuantumArrayDouble()) {
     return ((Quantum<Array<Double> > *)(hold_p.ptr()))->getValue().ndim();
   } else if (isQuantumArrayFloat()) {
@@ -574,21 +554,6 @@ Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
     } else if (isQuantumDComplex()) {
       out.define(RecordFieldId("value"),
                  (((Quantum<DComplex> *)(hold_p.ptr()))->getValue()));
-    } else if (isQuantumArrayDouble()) {
-      out.define(RecordFieldId("value"),
-		 (((Quantum<Array<Double> > *)(hold_p.ptr()))->getValue()));
-    } else if (isQuantumArrayFloat()) {
-      out.define(RecordFieldId("value"),
-		 (((Quantum<Array<Float> > *)(hold_p.ptr()))->getValue()));
-    } else if (isQuantumArrayInt()) {
-      out.define(RecordFieldId("value"),
-		 (((Quantum<Array<Int> > *)(hold_p.ptr()))->getValue()));
-    } else if (isQuantumArrayComplex()) {
-      out.define(RecordFieldId("value"),
-		 (((Quantum<Array<Complex> > *)(hold_p.ptr()))->getValue()));
-    } else if (isQuantumArrayDComplex()) {
-      out.define(RecordFieldId("value"),
-		 (((Quantum<Array<DComplex> > *)(hold_p.ptr()))->getValue()));
     } else if (isQuantumVectorDouble()) {
       out.define(RecordFieldId("value"),
 		 (((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue()));
@@ -604,6 +569,21 @@ Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
     } else if (isQuantumVectorDComplex()) {
       out.define(RecordFieldId("value"),
 		 (((Quantum<Vector<DComplex> > *)(hold_p.ptr()))->getValue()));
+    } else if (isQuantumArrayDouble()) {
+      out.define(RecordFieldId("value"),
+		 (((Quantum<Array<Double> > *)(hold_p.ptr()))->getValue()));
+    } else if (isQuantumArrayFloat()) {
+      out.define(RecordFieldId("value"),
+		 (((Quantum<Array<Float> > *)(hold_p.ptr()))->getValue()));
+    } else if (isQuantumArrayInt()) {
+      out.define(RecordFieldId("value"),
+		 (((Quantum<Array<Int> > *)(hold_p.ptr()))->getValue()));
+    } else if (isQuantumArrayComplex()) {
+      out.define(RecordFieldId("value"),
+		 (((Quantum<Array<Complex> > *)(hold_p.ptr()))->getValue()));
+    } else if (isQuantumArrayDComplex()) {
+      out.define(RecordFieldId("value"),
+		 (((Quantum<Array<DComplex> > *)(hold_p.ptr()))->getValue()));
     };
     out.define(RecordFieldId("unit"),
 	       String(hold_p.ptr()->getFullUnit().getName()));
