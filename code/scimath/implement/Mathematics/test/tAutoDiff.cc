@@ -277,7 +277,7 @@ int main() {
     
     y = Float(2.0) / x;
     if (!near(y.value(),Float(2.0) / x.value()) ||
-	!allNear(y.derivatives(), -x.derivatives()*Float(2.0)/(x.value()*x.value()),1.0e-5)) {
+	!allNearAbs(y.derivatives(), -x.derivatives()*Float(2.0)/(x.value()*x.value()),1.0e-5)) {
       cerr << "operator/(const T&, const AutoDiff<T> &) failed" << endl;
       nerr++;
     };
@@ -328,7 +328,7 @@ int main() {
     
     // cos(x) : derivative = -sin(x)
     y = cos(x);
-    if (y.value() != Float(cos(x.value())) ||
+    if (!nearAbs(y.value(), Float(cos(x.value())) ) ||
 	!allEQ(y.derivatives(),-Float(sin(x.value()))*x.derivatives())) {
       cerr << "cos(const AutoDiff<T> &) failed" << endl;
       nerr++;
@@ -390,7 +390,7 @@ int main() {
     
     // sin(x) : derivative = cos(x)
     y = sin(x);
-    if (y.value() != Float(sin(x.value())) ||
+    if (!allNearAbs(y.value(), Float(sin(x.value())) ) ||
 	!allEQ(y.derivatives(), Float(cos(x.value()))*x.derivatives())) {
       cerr << "sin(const AutoDiff<T> &) failed" << endl;
       nerr++;
@@ -398,7 +398,7 @@ int main() {
     
     // sinh(x) : derivative = cosh(x)
     y = sinh(x);
-    if (y.value() != Float(sinh(x.value())) ||
+    if (!allNearAbs(y.value(), Float(sinh(x.value()))) ||
 	!allEQ(y.derivatives(), Float(cosh(x.value()))*x.derivatives())) {
       cerr << "sinh(const AutoDiff<T> &) failed" << endl;
       nerr++;
@@ -414,7 +414,7 @@ int main() {
     
     // tan(x) : derivative = sec(x)*sec(x) = 1/(cos(x)*cos(x))
     y = tan(x);
-    if (y.value() != Float(tan(x.value())) ||
+    if (!allNearAbs(y.value(), Float(tan(x.value())) ) ||
 	!allEQ(y.derivatives(), 
 	       x.derivatives()/Float(cos(x.value())*cos(x.value())))) {
       cerr << "tan(const AutoDiff<T> &) failed" << endl;
@@ -423,7 +423,7 @@ int main() {
     
     // tanh(x) : derivative = sech(x)*sech(x) = 1/(cosh(x)*cosh(x))
     y = tanh(x);
-    if (y.value() !=Float(tanh(x.value())) ||
+    if (!allNearAbs(y.value(), Float(tanh(x.value())) ) ||
 	!allEQ(y.derivatives(), 
 	       x.derivatives()/Float(cosh(x.value())*cosh(x.value())))) {
       cerr << "sinh(const AutoDiff<T> &) failed" << endl;
