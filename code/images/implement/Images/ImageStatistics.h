@@ -279,6 +279,7 @@ public:
 // <group>
    Bool getNPts (Array<T>&);
    Bool getSum (Array<T>&);
+   Bool getFluxDensity (Array<T>&);
    Bool getSumSquared (Array<T>&);
    Bool getMin (Array<T>&);
    Bool getMax (Array<T>&);
@@ -361,6 +362,9 @@ private:
 // Create a new storage image
    Bool generateStorageImage (); 
 
+// Get beam volume if possible
+   Bool getBeamArea (Double& beamArea) const;
+
 // Examine an array and determine how many segments of good points it consists 
 // of.    A good point occurs if the array value is greater than zero.
    void lineSegments (uInt& nSeg,
@@ -369,7 +373,7 @@ private:
                       const Vector<T>& mask) const;
 
 // List the statistics
-   Bool listStats         (const IPosition& dPos,
+   Bool listStats         (Bool hasBeam, const IPosition& dPos,
                            const Matrix<T>& ord);
 
 // Given a location in the storage image, convert those locations on the   
@@ -408,7 +412,7 @@ private:
                            const Int& prec);
 
 // Plot the statistics
-   Bool plotStats         (const IPosition& dPos, 
+   Bool plotStats         (Bool hasBeam, const IPosition& dPos, 
                            const Matrix<T>& ord,
                            PGPlotter& plotter);
 
