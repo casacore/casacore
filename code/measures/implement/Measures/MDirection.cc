@@ -80,6 +80,9 @@ MDirection::MDirection(const MeasValue *dt) :
   MeasBase<MVDirection,MDirection::Ref>(*(MVDirection*)dt,
 					MDirection::DEFAULT) {}
 
+MDirection::MDirection(const MDirection::Ref &rf) : 
+  MeasBase<MVDirection,MDirection::Ref>(rf) {}
+
 //# Destructor
 MDirection::~MDirection() {}
 
@@ -119,13 +122,31 @@ const String &MDirection::showType(uInt tp) {
 	"GALACTIC",
 	"HADEC",
 	"AZEL",
-        "AZELSW"};
-    DebugAssert(tp < MDirection::N_Types, AipsError);
-    return tname[tp];
+        "AZELSW",
+	"JNAT" };
+    static const String pname[MDirection::N_Planets - MDirection::MERCURY] = {
+	"MERCURY",
+	"VENUS",
+	"MARS",
+	"JUPITER",
+	"SATURN",
+	"URANUS",
+	"NEPTUNE",
+	"PLUTO",
+	"SUN",
+	"MOON" };
+
+    if ((tp & MDirection::EXTRA) == 0) {
+      DebugAssert(tp < MDirection::N_Types, AipsError);
+      return tname[tp];
+    };
+    DebugAssert((tp & ~MDirection::EXTRA) < 
+		(MDirection::N_Planets - MDirection::MERCURY), AipsError);
+    return pname[tp & ~MDirection::EXTRA];
 }
 
 Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
-    static const Int N_name = 12;
+    static const Int N_name = 23;
     static const String tname[N_name] = {
 	"J2000",
 	"JMEAN",
@@ -138,7 +159,18 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
 	"HADEC",
 	"AZEL",
         "AZELSW",
-	"AZELNE"};
+	"AZELNE",
+	"JNAT",
+	"MERCURY",
+	"VENUS",
+	"MARS",
+	"JUPITER",
+	"SATURN",
+	"URANUS",
+	"NEPTUNE",
+	"PLUTO",
+	"SUN",
+	"MOON" };
 
     static const uInt oname[N_name] = {
 	MDirection::J2000,
@@ -152,7 +184,18 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
 	MDirection::HADEC,
 	MDirection::AZEL,
         MDirection::AZELSW,
-	MDirection::AZEL};
+	MDirection::AZEL,
+	MDirection::JNAT,
+	MDirection::MERCURY,
+	MDirection::VENUS,
+	MDirection::MARS,
+	MDirection::JUPITER,
+	MDirection::SATURN,
+	MDirection::URANUS,
+	MDirection::NEPTUNE,
+	MDirection::PLUTO,
+	MDirection::SUN,
+	MDirection::MOON };
 
     uInt i = Measure::giveMe(in, N_name, tname);
 
@@ -178,7 +221,9 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 	MDirection::GLONGLAT,
 	MDirection::GHADEC,
 	MDirection::GAZEL,
-        MDirection::GAZEL};
+        MDirection::GAZEL,
+	MDirection::GRADEC };
+    if ((tp & MDirection::EXTRA) != 0) tp = 0;
     DebugAssert(tp < MDirection::N_Types, AipsError);
 
     return oname[tp];

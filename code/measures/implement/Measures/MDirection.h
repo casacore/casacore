@@ -71,6 +71,7 @@ template <class M, class F, class MC> class MeasConvert;
 // The different reference types that can be used for a Direction are:
 // <ul>
 //  <li>MDirection::J2000 -- mean equator and equinox at J2000.0
+//  <li>MDirection::JNAT --- geocentric natural frame
 //  <li>MDirection::JMEAN -- mean equator and equinox at frame epoch
 //  <li>MDirection::JTRUE -- true equator and equinox at frame epoch
 //  <li>MDirection::APP ---- apparent geocentric position
@@ -82,6 +83,17 @@ template <class M, class F, class MC> class MeasConvert;
 //  <li>MDirection::AZEL --- topocentric Azimuth and Elevation (N through E)
 //  <li>MDirection::AZELSW - topocentric Azimuth and Elevation (S through W)
 //  <li>MDirection::AZELNE - topocentric Azimuth and Elevation (N through E)
+//  <li>MDirection::MERCURY -- the planet: has no data attached
+//  <li>MDirection::VENUS
+//  <li>MDirection::MARS
+//  <li>MDirection::JUPITER
+//  <li>MDirection::SATURN
+//  <li>MDirection::URANUS
+//  <li>MDirection::NEPTUNE
+//  <li>MDirection::PLUTO
+//  <li>MDirection::SUN
+//  <li>MDirection::MOON
+
 //  <li>MDirection::DEFAULT = J2000
 // </ul>
 // <p>
@@ -150,26 +162,45 @@ public:
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
 // in showType().</note>
-    enum Types {J2000,
-		JMEAN,
-		JTRUE,
-		APP,
-		B1950,
-		BMEAN,
-		BTRUE,
-		GALACTIC,
-		HADEC,
-		AZEL,
-		AZELSW,
-		N_Types,
-		DEFAULT=J2000,
-	        AZELNE=AZEL};
+    enum Types {
+      J2000,
+      JMEAN,
+      JTRUE,
+      APP,
+      B1950,
+      BMEAN,
+      BTRUE,
+      GALACTIC,
+      HADEC,
+      AZEL,
+      AZELSW,
+      JNAT,
+      N_Types,
+      // Planets. First one should be Mercury
+      MERCURY = 32,
+      VENUS,
+      MARS,
+      JUPITER,
+      SATURN,
+      URANUS,
+      NEPTUNE,
+      PLUTO,
+      SUN,
+      MOON,
+      N_Planets,
+      // All extra bits
+      EXTRA = 32,
+      // Defaults
+      DEFAULT=J2000,
+      // Synonyms
+      AZELNE=AZEL};
   // Global types
-  enum GlobalTypes {GRADEC,
-		    GHADEC,
-		    GAZEL,
-		    GLONGLAT,
-		    N_GTypes};
+  enum GlobalTypes {
+    GRADEC,
+    GHADEC,
+    GAZEL,
+    GLONGLAT,
+    N_GTypes};
 
 //# Typedefs
 // MeasRef use
@@ -203,6 +234,7 @@ public:
 	       uInt rf);
     MDirection(const Measure *dt);
     MDirection(const MeasValue *dt);
+    MDirection(const MDirection::Ref &rf);
 // </group>
 
 //# Destructor
