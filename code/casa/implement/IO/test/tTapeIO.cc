@@ -67,9 +67,10 @@ int main(int argc, char* argv[]) {
       TapeIO tape(device, True);
       AlwaysAssert(tape.isWritable(), AipsError);
       tape.rewind();
-      RandomInteger rand(0L, 255L, new ACG());
+      ACG g;
+      DiscreteUniform rand(&g, 0, 255);
       for (uInt i = 0; i < recordSize; i++) {
-	writeBuffer[i] = (uChar) rand.asInt();
+	writeBuffer[i] = static_cast<uChar>(rand.asInt());
       }
       Timer clock;
       for (uInt i = 0; i < nRecords; i++) {

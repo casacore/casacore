@@ -1,5 +1,5 @@
 //# tHistAcc.cc: Test program for class HistAcc
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,7 +57,7 @@ main()
       Block<Float> bvf(nv);            // values of required type
 
       ACG gen(10,20);                  // random number generator
-      Normal rnd(-5.0, 10.0, &gen);     // Normal distr (mean, variance)
+      Normal rnd(& gen, -5.0, 10.0);     // Normal distr (mean, variance)
       cout << " Nr of input values= " << nv << endl;
       
       for (i=0; i<nv; i++) {
