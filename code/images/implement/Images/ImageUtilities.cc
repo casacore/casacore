@@ -839,7 +839,7 @@ Bool ImageUtilities::verifyAxes (const Int& nDim,
 }
 
 
-void ImageUtilities::verifyRegion (IPosition& blc,
+Bool ImageUtilities::verifyRegion (IPosition& blc,
                                    IPosition& trc,
                                    IPosition& inc,
                                    const IPosition& imageShape)
@@ -847,7 +847,9 @@ void ImageUtilities::verifyRegion (IPosition& blc,
 // Make sure a region specification is within an image.  Currently,
 // just a hyper cube can be set in image pixels (zero relative).
 // 
-// 
+// Returns
+//  Bool      Retruns True if any of the inout objects are
+//            changed on output, else False
 // Input/output
 //   blc,trc  The blc and trc.  Any illegal or missing blc values
 //            are set to 0.  Any illegal or missing trc values
@@ -862,7 +864,9 @@ void ImageUtilities::verifyRegion (IPosition& blc,
 //         The image shape
 //
 {
-
+   IPosition inBlc(blc);
+   IPosition inTrc(trc);
+   IPosition inInc(inc);
    const Int nDim = imageShape.nelements();
 
    const Int blcDim = blc.nelements();
@@ -915,5 +919,11 @@ void ImageUtilities::verifyRegion (IPosition& blc,
          trc(i) = imageShape(i) - 1;
       }
    }
+
+   Bool changed = ToBool(blc.nelements()!=inBlc.nelements() || 
+                         trc.nelements()!=inTrc.nelements() || 
+                         inc.nelements()!=inInc.nelements());
+   if (!changed) changed = ToBool(blc!=inBlc || trc!=inTrc || inc!=inInc);
+   return changed;
 }
 
