@@ -1,0 +1,21 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+
+\begin{document}
+
+\title{NOTE 209 -- AIPS++ OPERATIONS PLAN}
+  
+
+\author{Gustaaf van Moorsel and Tim Cornwell}
+
+\date{Draft 21 May 1997}
+
+\maketitle
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (100kB).}{../209.ps}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{opplan.latex}
+\end{document}
