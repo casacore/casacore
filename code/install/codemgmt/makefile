@@ -2,7 +2,7 @@
 # AIPS++ code management directory makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999,2000,2001,2002
+#   Copyright (C) 1992-1997,1998,1999,2000,2001,2002,2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
