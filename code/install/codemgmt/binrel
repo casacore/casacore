@@ -141,12 +141,10 @@ if ( -e $logdir ) {
 die "couldn't create log directory: $logdir" unless mkdir($logdir,0755);
 
 %ahosts = ();
-%known_archs = ();
 die "couldn't open aipshosts" unless open(AHOSTS,"< aipshosts");
 while ( <AHOSTS> ) {
     ($h,$a,@junk) = split(/\s+/);
     $ahosts{$h} = $a;
-    $known_archs{$a} = 1 unless defined $known_archs{$a};
 }
 close(AHOSTS);
 
@@ -210,8 +208,13 @@ $FIND_DIR = "";
 ##
 push(@EXCLUDE_RE,'RCS$');
 push(@EXCLUDE_RE,'/tmplinst/');
-while (($key, $val) = each %known_archs) {
-    push(@EXCLUDE_RE,"glish/\.*/$key");
+%been_there = ();
+while (($key, $val) = each %ahosts) {
+    $val =~ s@^(\w+?)(?:_\w+)?$@$1(?:_\\w+)?@;
+    if ( ! defined $been_there{$val} ) {
+	push(@EXCLUDE_RE,"glish/(?:.+/)?$val");
+	$been_there{$val} = 1;
+    }
 }
 
 ##
