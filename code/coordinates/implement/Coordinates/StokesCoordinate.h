@@ -52,31 +52,29 @@
 // <synopsis>
 // Although not really a "coordinate", an axis where pixel numbers are used
 // for different Stokes values is in wide use.     The StokesCoordinate
-// is a somewhat poor fit to the Coordinate polymorphic model.
+// is a poor fit to the Coordinate polymorphic model.
 // You will probably find that if you try to use the Coordinate
 // classes polymorphically, that StokesCoordinate will cause you
 // to break the polymorphism.  I.e. you may have to deal with
 // a specific StokesCoordinate)
 //
-// In particular, the StokesCoordinate really just maintains
-// a list (given in the constructor) of possibly non-monotonic
-// Stokes values.    A simple equation is used to convert between 
-// an index of that list, and  workld value.  The formula
-// is index = (pixel - crpix)*cdelt*linear + crval
-// Now you could use the set* functions to change crval or cdelt etc
-// However, you run the risk of breaking your StokesCoordinate
-// if you do so.   This is because you may cause the computed
-// index to be outside of the range of the Stokes actually
-// contained in the StokesCoordinate and pixel/world conversion
-// will fail.  This is quite different behaviour to the other 
-// Coordinates, where you can change these coordinate descriptors
-// as you wish.     So use these functions very carefully, if
-// you must.
+// The StokesCoordinate just maintains a list (given in the constructor) of 
+// possibly non-monotonic  Stokes values.   The values of the list are the
+// world values (they are values from the Stokes::StokesTypes enum).
+// Thus  world = list[pixel]  where pixel is the pixel coordinate (0,1, ...)
+// 
+// This means that concepts such as reference pixel, reference value,
+// increment etc are meaningless for StokesCoordinate.  You can recover these
+// these attributes, but the functions to set these attributes have no effect.
+//
+// Note also that for the StokesCoordinate relative world coordinates are defined to be the 
+// as absolute, since there is no meaning for a relative Stokes world value (e.g.
+// what is XX -RL ??   Relative pixel coordinates are defined.
 //
 // </synopsis>
 //
 // <note role=caution>
-// All pixels coordinates are zero relative.
+// All pixel coordinates are zero relative.
 // </note>
 //
 // </note>
@@ -136,23 +134,7 @@ public:
     // Convert a pixel to a world coordinate or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
     // <src>errorMessage</src> returns an error message.
-    //
-    // The calculation that takes place in going from pixel to world is the
-    // following.
-    // <srcblock>
-    // index = (pixel - crpix)*cdelt*linear + crval
-    // </srcblock>
-    // Where <src>pixel</src> is the pixel position, <src>crpix</src> is the
-    // reference pixel, <src>cdelt</src> is the increment, <src>linear</src> is
-    // the (1-pixel!) linear transformation matrix, and <src>crval</src> is the
-    // reference value. Usually <src>crpix</src> and <src>crval</src> are 0.0, 
-    // and <src>cdelt</src> and <src>linear</src> are 1.0. Once 
-    // the index is calculated, it is used to look up the world
-    // (Stokes) value from the internal list of stokes values (which is the
-    // same as the vector which was given at construction time). The nearest
-    // integer is taken, and values less than zero or beyond the end of the
-    // vector result in an error. For world to pixel the reverse operation
-    // happens.  The output vectors are appropriately resized before use.
+    // The output vectors are appropriately resized before use.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;
@@ -160,16 +142,39 @@ public:
 			 const Vector<Double> &world) const;
     // </group>
 
-    // Interconvert between pixel number and Stokes type.
+    // Interconvert between pixel and world as a Stokes type.
     // <group>
     Bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
     Bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
     // </group>
 
+    // Interconvert between world stored as a Double and world stored as
+    // a Stokes type.  Since these functions are static, any valid
+    // Stokes type can be used.
+    // <group>
+    static Double toWorld (Stokes::StokesTypes stokes);
+    static Stokes::StokesTypes toWorld (Double world);
+    // </group>
+
+    // Make absolute coordinates relative and vice-versa. 
+    // For the StokesCoordinate relative world coordinates are defined to be the 
+    // same as absolute world coordinates.  Relative pixels do have meaning
+    // and are implemented (rel = abs - refPix)
+    // <group>
+    virtual void makePixelRelative (Vector<Double>& pixel) const;
+    virtual void makePixelAbsolute (Vector<Double>& pixel) const;
+    virtual void makeWorldRelative (Vector<Double>& world) const;
+    virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    // </group>
+ 
+
     // Get the Stokes values (Stokes::StokesType) that we constructed 
-   // with into a vector
+    // with into a vector
     Vector<Int> stokes() const;
 
+    // Set a new vector of Stokes values (a vector of Stokes::StokesType) 
+    void setStokes (const Vector<Int> &whichStokes);
+   
     // Report the value of the requested attribute.
     // <group>
     virtual Vector<String> worldAxisNames() const;
@@ -180,8 +185,8 @@ public:
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
-    // Set the value of the requested attribute.  Note that these just
-    // change the internal values, they do not cause any recomputation.
+    // Set the value of the requested attribute.  For the StokesCoordinate,
+    // these have no effect (always return True) except for setWorldAxisNames.
     // <group>
     virtual Bool setWorldAxisNames(const Vector<String> &names);
     virtual Bool setReferencePixel(const Vector<Double> &refPix);
@@ -190,8 +195,8 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval) ;
     // </group>
 
-    // The units must be an empty string as there is no actual unit
-    // for the Stokes axis.
+    // This function has no effect as the units must be empty for a StokesCoordinate
+    // Always returns True
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Format a StokesCoordinate world value with the common format 
@@ -240,11 +245,17 @@ public:
     virtual Coordinate *clone() const;
 
 private:
+
+    Bool toWorld(Double& world,  const Double pixel) const;
+    Bool toPixel(Double& pixel,  const Double world) const;
+//
     Block<Int> values_p;
+
     // Keep these for subimaging purposes.
     Double crval_p, crpix_p, matrix_p, cdelt_p;
     String name_p;
     String unit_p;
+    Int nValues_p;
 
     // Undefined and inaccessible
     StokesCoordinate();

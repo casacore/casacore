@@ -29,6 +29,7 @@
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayMath.h>
 
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/Assert.h>
@@ -42,20 +43,8 @@ StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
       values_p(whichStokes.nelements()), crval_p(0), crpix_p(0), matrix_p(1),
       cdelt_p(1), name_p("Stokes"), unit_p("")
 {
-    AlwaysAssert(whichStokes.nelements()>0, AipsError);
-//
-    Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
-    if (whichStokes.nelements() > 0) {
-	crval_p = whichStokes(0);
-    }
-    whichStokes.toBlock(values_p);
-    // Make sure the stokes occur at most once
-    alreadyUsed = False;
-    for (uInt i=0; i<values_p.nelements(); i++) {
-	AlwaysAssert(Stokes::type(values_p[i]) != Stokes::Undefined, AipsError);
-	AlwaysAssert(!alreadyUsed[whichStokes(i)], AipsError);
-	alreadyUsed[whichStokes(i)] = True;
-    }
+    setStokes(whichStokes);
+    nValues_p = values_p.nelements();
 }
 
 StokesCoordinate::StokesCoordinate(const StokesCoordinate &other)
@@ -66,7 +55,8 @@ StokesCoordinate::StokesCoordinate(const StokesCoordinate &other)
   matrix_p(other.matrix_p),
   cdelt_p(other.cdelt_p),
   name_p(other.name_p),
-  unit_p(other.unit_p)
+  unit_p(other.unit_p),
+  nValues_p(other.nValues_p)
 {  
 }
 
@@ -81,6 +71,7 @@ StokesCoordinate &StokesCoordinate::operator=(const StokesCoordinate &other)
 	cdelt_p = other.cdelt_p;
 	name_p = other.name_p;
 	unit_p = other.unit_p;
+        nValues_p = other.nValues_p;
     }
 
     return *this;
@@ -111,65 +102,43 @@ uInt StokesCoordinate::nWorldAxes() const
     return 1;
 }
 
+
 Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 {
-// Avoid going to the Vector version for efficiency reasons.
-
-    Double index = floor((pixel - crpix_p)*cdelt_p*matrix_p + 0.5);
-    Double nValues = Double(values_p.nelements());
-    if (index >= 0.0 && index < nValues) {
-	stokes = Stokes::type(values_p[Int(index)]);
-	return True;
-    } else {
-	ostrstream os;
-	os << "Index value of " << index << " is out of range [0.." <<
-	    values_p.nelements()-1 << "]";
-	set_error(os);
-	return False;
+    Double world;
+    if (toWorld (world, static_cast<Double>(pixel))) {
+       stokes = Stokes::type(values_p[pixel]);
+       return True;
     }
+    return False;
 }
 
-Bool StokesCoordinate::toPixel(Int &pixel, Stokes::StokesTypes stokes) const
+
+Bool StokesCoordinate::toPixel(Int& pixel, Stokes::StokesTypes stokes) const
 {
-    Bool found = False;
-    uInt index;
-    for (index=0; index<values_p.nelements(); index++) {
-	if (values_p[index] == Int(stokes)) {
-	    found = True;
-	    break;
-	}
+    Double tmp;
+    if (toPixel(tmp, static_cast<Double>(stokes))) {
+       pixel = Int(tmp + 0.5);    
+       return True;
     }
-    if (!found) {
-	ostrstream os;
-        os << "Stokes value " << Stokes::name(stokes) <<
-	    " is not found on any axis position";
-	set_error(os);
-	return False;
-    }
-    
-    pixel = Int(floor((Double(index))/cdelt_p/matrix_p + 
-		      crpix_p + 0.5));
-    return True;
+    return False;
 }
 
-Bool StokesCoordinate::toWorld(Vector<Double> &world, 
-			       const Vector<Double> &pixel) const
+
+Bool StokesCoordinate::toWorld(Vector<Double>& world, 
+			       const Vector<Double>& pixel) const
 {
     AlwaysAssert(pixel.nelements()==1, AipsError);
     if (world.nelements()!=1) world.resize(1);
-    Double index = floor((pixel(0) - crpix_p)*cdelt_p*matrix_p + 0.5);
-    Double nValues = Double(values_p.nelements()) - 1.0;
-    if (index < 0.0 || index > nValues) {
-	ostrstream os;
-	os << "Index value of " << index << " is out of range [0.." <<
-	    values_p.nelements()-1 << "]";
-	set_error(os);
-	return False;
+//
+    Double tmp;
+    if (toWorld(tmp, pixel(0))) {
+       world(0) = tmp;
+       return True;
     }
-    world(0) = values_p[Int(index)];
-
-    return True;
+    return False;
 }
+
 
 Bool StokesCoordinate::toPixel(Vector<Double> &pixel, 
     	                       const Vector<Double> &world) const
@@ -177,33 +146,66 @@ Bool StokesCoordinate::toPixel(Vector<Double> &pixel,
     AlwaysAssert(world.nelements()==1, AipsError);
     if (pixel.nelements()!=1) pixel.resize(1);
 //
-    // First find the index;
-    Bool found = False;
-    uInt index;
-    for (index=0; index<values_p.nelements(); index++) {
-	found = ::near(world(0), Double(values_p[index]));
-	if (found) {
-	    break;
-	}
+    Double tmp;
+    if (toPixel(tmp, world(0))) {
+       pixel(0) = tmp;
+       return True;
     }
-    if (!found) {
-	ostrstream os;
-	os << "Stokes value " << world(0) << 
-	    " is not found on any axis position";
-	set_error(os);
-	return False;
-    }
-
-    // OK, we found it, compute pixel position
-    pixel(0) = (Double(index))/cdelt_p/matrix_p + crpix_p;
-    
-    return True;
+    return False;
 }
+
+Double StokesCoordinate::toWorld (Stokes::StokesTypes stokes) 
+{
+    return static_cast<Double>(stokes);
+}
+
+
+Stokes::StokesTypes StokesCoordinate::toWorld (Double world) 
+{
+    Int i = Int(world + 0.5);
+    if (i < 0 ||  i>=Stokes::NumberOfTypes) {
+       throw(AipsError("Invalid StokesCoordinate world value"));
+    }
+//
+    return static_cast<Stokes::StokesTypes>(i);
+}
+
+
 
 Vector<Int> StokesCoordinate::stokes() const
 {
     return Vector<Int>(values_p);
 }
+
+
+void StokesCoordinate::setStokes (const Vector<Int> &whichStokes)
+{
+    AlwaysAssert(whichStokes.nelements()>0, AipsError);
+
+// Make sure the stokes occur at most once
+
+    Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
+    alreadyUsed = False;
+    for (uInt i=0; i<whichStokes.nelements(); i++) {
+	if (Stokes::type(whichStokes(i))== Stokes::Undefined) {
+           throw(AipsError("You have specified an Undefined Stokes type"));
+        }
+	if (alreadyUsed[whichStokes(i)]) {
+           throw(AipsError("You have specified the same Stokes more than once"));
+        }
+	alreadyUsed[whichStokes(i)] = True;
+    }
+//
+    values_p.resize(whichStokes.nelements());
+    whichStokes.toBlock(values_p);
+    nValues_p = values_p.nelements();
+//
+    crval_p = whichStokes(0);
+    crpix_p = 0;
+    matrix_p = 1.0;
+    cdelt_p = 1.0;
+}
+
 
 
 Vector<String> StokesCoordinate::worldAxisNames() const
@@ -261,54 +263,29 @@ Bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names)
 
 Bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
-    Bool ok = ToBool(units.nelements()==1);
-    if (!ok) {
-       set_error ("units vector must be of length 1");
-    } else {
-       if (units(0) == "") return True;
-    }
-    return ok;
+    return True;
 }
 
 
 Bool StokesCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
-    Bool ok = ToBool(refPix.nelements()==1);
-    if (!ok) {
-       set_error ("reference pixel vector must be of length 1");
-    } else {
-       crpix_p = refPix(0);
-    }
-    return ok;
+   return True;
 }
+
 
 Bool StokesCoordinate::setLinearTransform(const Matrix<Double> &xform)
 {
-    Bool ok = ToBool(xform.nelements()==1);
-    if (!ok) {
-       set_error ("linear transform matrix must be of length 1");
-    } else {
-       matrix_p = xform(0,0);
-    }
-    return ok;
+   return True;
 }
 
 Bool StokesCoordinate::setIncrement(const Vector<Double> &inc) 
 {
-    AlwaysAssert(inc.nelements() == 1, AipsError);
-    cdelt_p = inc(0);
-    return True;
+   return True;
 }
 
 Bool StokesCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
-    Bool ok = ToBool(refval.nelements()==1);
-    if (!ok) {
-       set_error ("reference value vector must be of length 1");
-    } else {
-       crval_p = refval(0);
-    }
-    return ok;
+   return True;
 }
 
 
@@ -328,121 +305,79 @@ Bool StokesCoordinate::near(const Coordinate& other,
       return False;
    }
 
+// Check name
+
    const StokesCoordinate& sCoord = dynamic_cast<const StokesCoordinate&>(other);
-
-// Check name and units
-
    if (name_p != sCoord.name_p) {
       set_error("The StokesCoordinates have differing world axis names");
       return False;
    }
-   if (unit_p != sCoord.unit_p) {
-      set_error("The StokesCoordinates have differing axis units");
-      return False;
-   }
-
 
 // Number of pixel and world axes is the same for a StokesCoordinate
 // and it always 1.   SO if excludeAxes contains "0" we are done.
 // Add an assertion check should this change 
  
-   AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
-   AlwaysAssert(nPixelAxes()==1, AipsError);
    Bool found;
-   if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0)
-      return True;
+   if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0)  return True;
 
 
 // The only other thing that really matters in the STokesCoordinate
 // is the values along the axis.    Nothing else (e.g. crval_p etc)
 // is ever actually used.
 
-   for (Int i=0; i<Int(values_p.nelements()); i++) {
-      if (!::near(values_p[i],sCoord.values_p[i],tol)) {
-         set_error("The StokesCoordinates have different Stokes values on the axis");
+   for (Int i=0; i<nValues_p; i++) {
+      if (values_p[i] != sCoord.values_p[i]) {
+         set_error("The StokesCoordinates have different Stokes values");
          return False;
       }
    }
- 
+// 
    return True;
 }
 
 
 Bool StokesCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
+
+//
+// Things like increment, refpix refval etc are meaningless to
+// StokesCoordinate
+//
 {
     Bool ok = ToBool(!container.isDefined(fieldName));
     if (ok) {
 	Record subrec;
-	subrec.define("crval", referenceValue());
-	subrec.define("crpix", referencePixel());
-	subrec.define("cdelt", increment());
-	subrec.define("pc", linearTransform());
 	subrec.define("axes", worldAxisNames());
-	// subrec.define("units", worldAxisUnits()); // it never makes sense to set the units
-
-	Vector<String> stokes(values_p.nelements());
-	for (uInt i=0; i<stokes.nelements(); i++) {
-	    Int dummy = values_p[i];
-	    stokes(i) = Stokes::name((Stokes::StokesTypes)dummy);
+//
+	Vector<String> stokes(nValues_p);
+	for (Int i=0; i<nValues_p; i++) {
+	    stokes(i) = Stokes::name(Stokes::type(values_p[i]));
 	}
 	subrec.define("stokes", stokes);
-
 	container.defineRecord(fieldName, subrec);
     }
     return ok;
 }
 
 StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
-					   const String &fieldName)
+                                            const String &fieldName)
+//
+// Things like increment, refpix refval etc are meaningless to
+// StokesCoordinate
+//
 {
     if (! container.isDefined(fieldName)) {
 	return 0;
     }
 
     Record subrec(container.asRecord(fieldName));
-    
-    // We should probably do more type-checking as well as checking
-    // for existence of the fields.
-    Vector<Double> crval;
-    subrec.get("crval", crval);
 
-    if (!subrec.isDefined("crpix")) {
-	return 0;
-    }
-    Vector<Double> crpix;
-    subrec.get("crpix", crpix);
-
-    if (!subrec.isDefined("cdelt")) {
-	return 0;
-    }
-    Vector<Double> cdelt;
-    subrec.get("cdelt", cdelt);
-
-    if (!subrec.isDefined("pc")) {
-	return 0;
-    }
-    Matrix<Double> pc;
-    subrec.get("pc", pc);
-
-    
     if (!subrec.isDefined("axes")) {
 	return 0;
     }
     Vector<String> axes;
     subrec.get("axes", axes);
-
-    
-// ignore units for stokes axes as there are none of sense.  The
-// StokesCoordinate is not constructed with units
-// and only accepts blank Strings in setWorldAxisUnits
 //
-//     if (!subrec.isDefined("units")) {
-// 	return 0;
-//     }
-//     Vector<String> units;
-//     subrec.get("units", units);
-
     if (!subrec.isDefined("stokes")) {
 	return 0;
     }
@@ -452,19 +387,12 @@ StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
     for (uInt i=0; i<istokes.nelements(); i++) {
 	istokes(i) = Stokes::type(stokes(i));
     }
-    
-
-    StokesCoordinate *retval = new StokesCoordinate(istokes);
+//
+    StokesCoordinate* retval = new StokesCoordinate(istokes);
     AlwaysAssert(retval, AipsError);
-
-    // retval->setWorldAxisUnits(units); // It never makes sense to set the units
     retval->setWorldAxisNames(axes);
-    retval-> setIncrement(cdelt);
-    retval->setReferenceValue(crval);
-    retval->setReferencePixel(crpix);
-
     AlwaysAssert(retval, AipsError);
-							  
+//							  
     return retval;
 }
 
@@ -477,18 +405,110 @@ String StokesCoordinate::format(String& units,
                                 Coordinate::formatType,
                                 Double worldValue,
                                 uInt worldAxis,
-                                Bool, Int, Bool) const
+                                Bool abs, Int, Bool) const
 {
    units = worldAxisUnits()(worldAxis);
+   Vector<Double> tmp(1); 
+   tmp(0) = worldValue;
+   if (!abs) {
+     makeWorldAbsolute (tmp);
+   } 
 //
-// This is very hard work !
-//
-   Stokes::StokesTypes sType;
-   Vector<Double> pixel(1), world(1);
-   world(0) = worldValue;
-   Bool ok = toPixel(pixel, world);
-   Int pixel2 = Int(pixel(0)+0.5);
-   ok = toWorld(sType, pixel2);
-//
-   return Stokes::name(sType);
+   return Stokes::name(StokesCoordinate::toWorld (tmp(0)));
 }
+
+
+
+void StokesCoordinate::makePixelRelative (Vector<Double>& pixel) const
+//       
+// rel = abs - ref
+//
+{ 
+   AlwaysAssert(pixel.nelements()==1, AipsError);
+//
+   Int index = Int(pixel(0) + 0.5);
+   if (index >= 0 && index < nValues_p) {
+      pixel -= referencePixel();
+   } else {
+      ostrstream os;
+      os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
+      String s(os);
+      throw(AipsError(s));
+   }
+}
+   
+   
+ 
+void StokesCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
+//
+// abs = rel + ref
+//
+{ 
+   AlwaysAssert(pixel.nelements()==1, AipsError);
+   pixel += referencePixel();
+//
+   Int index = Int(pixel(0) + 0.5);
+   if (index < 0 ||  index >= nValues_p) {
+      ostrstream os;
+      os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
+      String s(os);
+      throw(AipsError(s));
+   }
+} 
+   
+
+void StokesCoordinate::makeWorldRelative (Vector<Double>& world) const
+//
+// By definition, for StokesCoordinate, world abs = rel
+//
+{
+}
+
+
+void StokesCoordinate::makeWorldAbsolute (Vector<Double>& world) const
+//
+// By definition, for StokesCoordinate, world abs = rel
+//
+{
+}
+
+
+
+// Private functions
+
+
+Bool StokesCoordinate::toWorld(Double& world, const Double pixel) const
+{
+    Int index = Int(pixel + 0.5);
+    if (index >= 0 && index < nValues_p) {
+	world = values_p[index];
+	return True;
+    } else {
+	ostrstream os;
+	os << "Pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
+	set_error(os);
+	return False;
+    }
+}
+
+
+Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
+{
+    Bool found = False;
+    Int index;
+    for (index=0; index<nValues_p; index++) {
+	found = ::near(world, Double(values_p[index]));
+	if (found) break;
+    }
+    if (!found) {
+	ostrstream os;
+	os << "Stokes value " << world << " is not contained in this StokesCoordinate";
+	set_error(os);
+	return False;
+    }
+//
+    pixel = Double(index);
+    return True;
+}
+
+
