@@ -125,7 +125,7 @@ public:
 
 //# Enumerations
 // Types of known precession calculations (at 1995/09/04 STANDARD == IAU1976)
-    enum PrecessionTypes {STANDARD,NONE,IAU1976,B1950};
+    enum PrecessionTypes {STANDARD,NONE,IAU1976,B1950,IAU2000};
 
 //# Constructors
 // Default constructor, generates default J2000 precession identification
