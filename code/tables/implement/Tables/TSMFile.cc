@@ -1,5 +1,5 @@
 //# TSMFile.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,10 +55,7 @@ TSMFile::TSMFile (TiledStMan* stman, AipsIO& ios, uInt seqnr)
 : stmanPtr_p (stman),
   file_p     (0)
 {
-    uInt version;
-    ios >> version;
-    ios >> fileSeqnr_p;
-    ios >> length_p;
+    getObject (ios);
     if (seqnr != fileSeqnr_p) {
 	throw (DataManInternalError ("TSMFile::TSMFile"));
     }
@@ -82,4 +79,12 @@ void TSMFile::putObject (AipsIO& ios) const
     ios << 1;                    // version 1
     ios << fileSeqnr_p;
     ios << length_p;
+}
+
+void TSMFile::getObject (AipsIO& ios)
+{
+    uInt version;
+    ios >> version;
+    ios >> fileSeqnr_p;
+    ios >> length_p;
 }
