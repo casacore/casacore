@@ -110,8 +110,8 @@ public:
 
     // Get access to the column keyword set.
     // <group>
+    virtual TableRecord& rwKeywordSet() = 0;
     virtual TableRecord& keywordSet() = 0;
-    virtual const TableRecord& keywordSet() const = 0;
     // </group>
 
     // Get const access to the column description.
