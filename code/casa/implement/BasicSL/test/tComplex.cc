@@ -144,11 +144,11 @@ int main() {
   cout << endl;
 
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
-  if (! near (pow(f1,3), Complex(19283.3,42518.8))) {
-    cout << "pow(" << f1 << ",3) = " << pow(f1,3) << endl;
+  if (! near (pow(f1,3.0f), Complex(19283.3,42518.8))) {
+    cout << "pow(" << f1 << ",3) = " << pow(f1,3.0f) << endl;
   }
-  if (! near (pow(f1,-8), Complex(-3.52463e-13,-3.11743e-14))) {
-    cout << "pow(" << f1 << ",-8) = " << pow(f1,-8) << endl;
+  if (! near (pow(f1,-8.0f), Complex(-3.52463e-13,-3.11743e-14))) {
+    cout << "pow(" << f1 << ",-8) = " << pow(f1,-8.0f) << endl;
   }
   if (! near (pow(f1,0.214f), Complex(2.14595,0.175667))) {
     cout << "pow(" << f1 << ",0.214) = " << pow(f1,0.214f) << endl;
