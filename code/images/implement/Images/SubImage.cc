@@ -35,9 +35,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-typedef Vector<Int> gppbug1_subimage;
-typedef Array<Bool> gppbug2_subimage;
-
 
 template<class T>
 SubImage<T>::SubImage()
@@ -46,83 +43,92 @@ SubImage<T>::SubImage()
 {}
 
 template<class T>
-SubImage<T>::SubImage (const ImageInterface<T>& image)
+SubImage<T>::SubImage (const ImageInterface<T>& image,
+		       AxesSpecifier axesSpec)
 : itsImagePtr (image.cloneII())
 {
-  itsSubLatPtr = new SubLattice<T> (image);
-  coords_p = image.coordinates();
-  log_p    = image.logSink();
-  imageInfo_p = image.imageInfo();
+  itsSubLatPtr = new SubLattice<T> (image, axesSpec);
+  setCoords (image.coordinates());
+  setLogMember (image.logSink());
+  setImageInfoMember (image.imageInfo());
 }
 
 template<class T>
 SubImage<T>::SubImage (ImageInterface<T>& image,
-		       Bool writableIfPossible)
+		       Bool writableIfPossible,
+		       AxesSpecifier axesSpec)
 : itsImagePtr (image.cloneII())
 {
-  itsSubLatPtr = new SubLattice<T> (image, writableIfPossible);
-  coords_p = image.coordinates();
-  log_p    = image.logSink();
-  imageInfo_p = image.imageInfo();
+  itsSubLatPtr = new SubLattice<T> (image, writableIfPossible, axesSpec);
+  setCoords (image.coordinates());
+  setLogMember (image.logSink());
+  setImageInfoMember (image.imageInfo());
 }
 
 template<class T>
 SubImage<T>::SubImage (const ImageInterface<T>& image,
-		       const LattRegionHolder& region)
+		       const LattRegionHolder& region,
+		       AxesSpecifier axesSpec)
 : itsImagePtr (image.cloneII())
 {
   itsSubLatPtr = new SubLattice<T> (image,
-				    region.toLatticeRegion (image.coordinates(),
-							    image.shape()));
+				    region.toLatticeRegion(image.coordinates(),
+							   image.shape()),
+				    axesSpec);
   const Slicer& slicer = itsSubLatPtr->getRegionPtr()->slicer();
-  coords_p = image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector());
-  log_p    = image.logSink();
-  imageInfo_p = image.imageInfo();
+  setCoords (image.coordinates().subImage (slicer.start().asVector(),
+					   slicer.stride().asVector()));
+  setLogMember (image.logSink());
+  setImageInfoMember (image.imageInfo());
 }
 
 template<class T>
 SubImage<T>::SubImage (ImageInterface<T>& image,
 		       const LattRegionHolder& region,
-		       Bool writableIfPossible)
+		       Bool writableIfPossible,
+		       AxesSpecifier axesSpec)
 : itsImagePtr (image.cloneII())
 {
   itsSubLatPtr = new SubLattice<T> (image, 
-				    region.toLatticeRegion (image.coordinates(),
-							    image.shape()),
-                                    writableIfPossible);
+				    region.toLatticeRegion(image.coordinates(),
+							   image.shape()),
+                                    writableIfPossible,
+				    axesSpec);
   const Slicer& slicer = itsSubLatPtr->getRegionPtr()->slicer();
-  coords_p = image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector());
-  log_p    = image.logSink();
-  imageInfo_p = image.imageInfo();
+  setCoords (image.coordinates().subImage (slicer.start().asVector(),
+					   slicer.stride().asVector()));
+  setLogMember (image.logSink());
+  setImageInfoMember (image.imageInfo());
 }
 
 template<class T>
 SubImage<T>::SubImage (const ImageInterface<T>& image,
-		       const Slicer& slicer)
+		       const Slicer& slicer,
+		       AxesSpecifier axesSpec)
 : itsImagePtr (image.cloneII())
 {
-  itsSubLatPtr = new SubLattice<T> (image, slicer);
+  itsSubLatPtr = new SubLattice<T> (image, slicer, axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
-  coords_p = image.coordinates().subImage (refslicer.start().asVector(),
-					   refslicer.stride().asVector());
-  log_p    = image.logSink();
-  imageInfo_p = image.imageInfo();
+  setCoords (image.coordinates().subImage (refslicer.start().asVector(),
+					   refslicer.stride().asVector()));
+  setLogMember (image.logSink());
+  setImageInfoMember (image.imageInfo());
 }
 
 template<class T>
 SubImage<T>::SubImage (ImageInterface<T>& image,
 		       const Slicer& slicer,
-		       Bool writableIfPossible)
+		       Bool writableIfPossible,
+		       AxesSpecifier axesSpec)
 : itsImagePtr (image.cloneII())
 {
-  itsSubLatPtr = new SubLattice<T> (image, slicer, writableIfPossible);
+  itsSubLatPtr = new SubLattice<T> (image, slicer, writableIfPossible,
+				    axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
-  coords_p = image.coordinates().subImage (refslicer.start().asVector(),
-					   refslicer.stride().asVector());
-  log_p    = image.logSink();
-  imageInfo_p = image.imageInfo();
+  setCoords (image.coordinates().subImage (refslicer.start().asVector(),
+					   refslicer.stride().asVector()));
+  setLogMember (image.logSink());
+  setImageInfoMember (image.imageInfo());
 }
 
 template<class T>
@@ -157,6 +163,31 @@ template<class T>
 ImageInterface<T>* SubImage<T>::cloneII() const
 {
   return new SubImage<T> (*this);
+}
+
+template<class T>
+void SubImage<T>::setCoords (const CoordinateSystem& coords)
+{
+  const AxesMapping& axesMap = itsSubLatPtr->getAxesMap();
+  AlwaysAssert (!axesMap.isReordered(), AipsError);
+  if (! axesMap.isRemoved()) {
+    setCoordsMember (coords);
+  } else {
+    const IPosition& map = axesMap.getToNew();
+    const uInt naxes = map.nelements();
+    Vector<Double> pixels(naxes);
+    pixels = 0;
+    Vector<Double> world(naxes);
+    coords.toWorld (world, pixels);
+    CoordinateSystem crd(coords);
+    for (Int i=naxes; i>0; ) {
+      i--;
+      if (map(i) < 0) {
+	crd.removeWorldAxis (i, world(i));
+      }
+    }
+    setCoordsMember (crd);
+  }
 }
 
 
@@ -256,15 +287,9 @@ Unit SubImage<T>::units() const
 }
 
 template<class T>
-String SubImage<T>::name (const Bool stripPath) const
+String SubImage<T>::name (Bool stripPath) const
 {
   return itsImagePtr->name (stripPath);
-}
-  
-template<class T>
-Bool SubImage<T>::setCoordinateInfo (const CoordinateSystem&)
-{
-  return False;
 }
   
 template<class T>
@@ -340,10 +365,8 @@ Bool SubImage<T>::lock (FileLocker::LockType type, uInt nattempts)
 template<class T>
 void SubImage<T>::unlock()
 {
-  // Unlock both the image and the sublattice, so all possible
-  // mask tables are unlocked too.
-  itsImagePtr->unlock();
   itsSubLatPtr->unlock();
+  itsImagePtr->unlock();
 }
 template<class T>
 Bool SubImage<T>::hasLock (FileLocker::LockType type) const
@@ -353,6 +376,30 @@ Bool SubImage<T>::hasLock (FileLocker::LockType type) const
 template<class T>
 void SubImage<T>::resync()
 {
-  itsImagePtr->resync();
   itsSubLatPtr->resync();
+  itsImagePtr->resync();
+}
+template<class T>
+void SubImage<T>::flush()
+{
+  itsImagePtr->flush();
+}
+template<class T>
+void SubImage<T>::tempClose()
+{
+  itsSubLatPtr->tempClose();
+  itsImagePtr->tempClose();
+  closeLogSink (True);
+}
+template<class T>
+void SubImage<T>::reopen()
+{
+  itsImagePtr->reopen();
+  reopenLog();
+}
+
+template<class T>
+void SubImage<T>::doReopenLogSink()
+{
+  setLogMember (itsImagePtr->logSink());
 }
