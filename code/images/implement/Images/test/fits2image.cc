@@ -1,6 +1,6 @@
 //# fits2image.cc: conversion to aips++ native tables
 //# Copyright (C) 1996,1997
-n//# Associated Universities, Inc. Washington DC, USA.
+//# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU General Public License as published by the Free
