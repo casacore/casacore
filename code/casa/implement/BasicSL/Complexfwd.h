@@ -1,5 +1,5 @@
 //# Complexfwd.h: Forward declaration complex classes
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,19 +40,25 @@
 
 // <group name=declare>
 
+#if (!defined(AIPS_USE_OLD_COMPLEX))
+
+//# Forward declarations
+template<class T> class complex;
+typedef complex<Float>  Complex;
+typedef complex<Double> DComplex;
+
+#else
+
 //# Forward declarations
 class floatG_COMPLEX;
 class doubleG_COMPLEX;
-class intG_COMPLEX;
-
 //# Typedefs
 typedef floatG_COMPLEX Complex;
 typedef doubleG_COMPLEX DComplex;
-typedef intG_COMPLEX IComplex;
-// </group>
 
 #endif
 
+class IComplex;
+// </group>
 
-
-
+#endif
