@@ -352,8 +352,8 @@ void TableExprNodeSetElem::fillVector (Vector<MVTime>& vec, uInt& cnt,
 				       uInt rownr) const
 {
     DebugAssert (itsDiscrete, AipsError);
-    Double start = itsStart==0  ?  0 : itsStart->getDate (rownr);
-    Double end   = itsEnd==0  ?  start : itsEnd->getDate (rownr);
+    Double start = itsStart==0  ?  0 : Double(itsStart->getDate (rownr));
+    Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (rownr));
     Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (rownr);
     if (start > end) {
 	return;
@@ -481,8 +481,8 @@ void TableExprNodeSetElem::matchString (Bool* match, const String* value,
 void TableExprNodeSetElem::matchDate (Bool* match, const MVTime* value,
 				      uInt nval, uInt rownr) const
 {
-    Double start = itsStart==0  ?  0 : itsStart->getDate (rownr);
-    Double end   = itsEnd==0  ?  start : itsEnd->getDate (rownr);
+    Double start = itsStart==0  ?  0 : Double(itsStart->getDate (rownr));
+    Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (rownr));
     Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (rownr);
     if (start > end) {
 	return;
@@ -575,10 +575,10 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
 
 TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSetElem& elem)
 : TableExprNodeRep (elem.dataType(), VTSet, OtUndef, 0),
+  itsElems         (n),
   itsSingle        (elem.isSingle()),
   itsDiscrete      (elem.isDiscrete()),
-  itsBounded       (True),
-  itsElems         (n)
+  itsBounded       (True)
 {
     // Set is not bounded if the element is not discrete and if end is defined.
     if (!(itsSingle  ||  (itsDiscrete && elem.end() != 0))) {
