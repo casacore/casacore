@@ -40,7 +40,8 @@
 
 
 Table TableCopy::makeEmptyTable (const String& newName, const Table& tab,
-				 Table::TableOption option, Bool replaceTSM)
+				 Table::TableOption option, Bool replaceTSM,
+				 Bool noRows)
 {
   SetupNewTable newtab (newName, tab.actualTableDesc(), Table::New);
   // Get the data manager info.
@@ -55,7 +56,7 @@ Table TableCopy::makeEmptyTable (const String& newName, const Table& tab,
     }
   }
   newtab.bindCreate (dminfo);
-  return Table(newtab, tab.nrow());
+  return Table(newtab, (noRows ? 0 : tab.nrow()));
 }
 
    
