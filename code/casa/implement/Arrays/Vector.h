@@ -209,12 +209,6 @@ public:
         {return ((Array<T> *)this)->operator()(blc,trc);}
     // </group>
 
-    // Return the index of the first value matching the given value.
-    // By default it starts at the beginning of the vector.
-    // -1 is returned when no matching element is found.
-    Int index (const T& value, Int startpos = 0) const;
-
-
     // The array is masked by the input LogicalArray.
     // This mask must conform to the array.
     // <group>

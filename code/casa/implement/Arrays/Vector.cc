@@ -266,19 +266,6 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     return vp;
 }
 
-template<class T> Int Vector<T>::index (const T& value, Int startpos) const
-{
-    if (startpos < 0) startpos = 0;
-    Int n = nelements();
-    for (Int i=startpos; i<n; i++) {
-	if (value == (*this)(i)) {
-	    return i;
-	}
-    }
-    return -1;
-}
-
-
 template<class T> IPosition Vector<T>::end() const
 {
     DebugAssert(ok(), ArrayError);
