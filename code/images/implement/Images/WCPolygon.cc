@@ -423,6 +423,7 @@ LCRegion* WCPolygon::doToLCRegion (const CoordinateSystem& cSys,
                                    const IPosition& pixelAxesMap,
                                    const IPosition& outOrder) const
 {
+
 // Make sure that we are not using a null Polygon 
 
    if (itsNull) {
@@ -442,19 +443,22 @@ LCRegion* WCPolygon::doToLCRegion (const CoordinateSystem& cSys,
    String yUnits = itsY.getUnit();
    Vector<String> units = cSys.worldAxisUnits();
 //
+   Bool xIsWorld = True;
+   Bool yIsWorld = True;
    Vector<Double> xValue;
    if (xUnits!="pix" && xUnits!="frac") {
       xValue = itsX.getValue(units(xWorldAxis));  
    } else {
+      xIsWorld  = False;
       xValue = itsX.getValue();
    }
    Vector<Double> yValue;
    if (yUnits!="pix" && yUnits!="frac") {
       yValue = itsY.getValue(units(yWorldAxis));
    } else {
+      yIsWorld  = False;
       yValue = itsY.getValue();
    }
-
 
 
 // Prepare  world and pixel vectors for conversion per vertex
@@ -467,8 +471,11 @@ LCRegion* WCPolygon::doToLCRegion (const CoordinateSystem& cSys,
 //
    Vector<Double> refPix = cSys.referencePixel();
    for (uInt i=0; i<nValues; i++) {
-      world(xWorldAxis) = xValue(i);
-      world(yWorldAxis) = yValue(i);
+
+// For pix/frac use reference value.  
+
+      if (xIsWorld) world(xWorldAxis) = xValue(i);
+      if (yIsWorld) world(yWorldAxis) = yValue(i);
 
 // Convert to pixel
 
