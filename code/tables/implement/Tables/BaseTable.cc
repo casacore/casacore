@@ -730,7 +730,8 @@ BaseTable* BaseTable::tabNot()
 void BaseTable::logicCheck (BaseTable* that)
 {
     if (root() != that->root()) {
-	throw (TableInvLogic());
+        TableInvLogic tmp;
+	throw (tmp);
     }
 }
 
