@@ -167,7 +167,6 @@ void SolarPos::refresh() {
 }
 
 void SolarPos::calcEarth(Double t) {
-    Double intv;
     if (!nearAbs(t, checkEpoch,
 		 AipsrcValue<Double>::get(SolarPos::interval_reg))) {
 	checkEpoch = t;
@@ -232,8 +231,7 @@ void SolarPos::calcEarth(Double t) {
 }
     
 void SolarPos::calcSun(Double t) {
-    Double intv;
-    if (!nearAbs(t, checkEpoch,
+    if (!nearAbs(t, checkSunEpoch,
 		 AipsrcValue<Double>::get(SolarPos::interval_reg))) {
 	checkSunEpoch = t;
 	switch (method) {
