@@ -1,0 +1,12 @@
+
+change id: 0015
+ author:   Darrell Schiebel
+ date:     2000/07/10
+ avers:    1.4
+ area:     Glish
+ package:  Glish
+ module:   glish intrepreter
+ type:     Code
+ category: Change
+ summary:  ^ (exponentiation) now has higher precedence than - (unary minus)
+Glish precedence rules have been changed so that the exponentiation operator has higher precedence then the unary minus. This means that "-2^2" now returns "-4" where previously it returned "4".
