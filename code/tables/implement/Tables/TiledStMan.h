@@ -446,7 +446,7 @@ protected:
     // hypercube compared to the data array (usually 0 or 1).
     // It is only used if no hypercolumn definition exists.
     // -1 means that the hypercolumn definition has to be present.
-    void setup (Int extraNdim);
+    void setup (Int extraNdim=-1);
 
     // Create a TSMFile object and store its pointer at the given index
     // in the block.
