@@ -37,7 +37,7 @@
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MVDoppler.h>
+#include <aips/Quanta/MVDoppler.h>
 
 //# Forward Declarations
 class MDoppler;

@@ -34,7 +34,7 @@ typedef Quantum<Double> gpp_mvfrequency_bug1;
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
-#include <aips/Measures/MVFrequency.h>
+#include <aips/Quanta/MVFrequency.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
 

@@ -1,5 +1,5 @@
 //# MeasJPL.h: Interface to JPL DE tables
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -94,7 +94,7 @@ class MVEpoch;
 // <example>
 // <srcblock>
 //	#include <aips/aips.h>
-//	#include <aips/Measures/MVEpoch.h>
+//	#include <aips/Quanta/MVEpoch.h>
 //     	#include <aips/Measures/MeasJPL.h>
 //	#include <aips/Arrays/Vector.h>
 //    	const MVEpoch dat = 51116; // a date (1998/10/30) in TDB

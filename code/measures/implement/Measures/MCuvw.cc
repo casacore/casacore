@@ -38,7 +38,7 @@ typedef Quantum<Double> gpp_uvw_bug1;
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Quanta/RotMatrix.h>
-#include <aips/Measures/MVPosition.h>
+#include <aips/Quanta/MVPosition.h>
 #include <aips/Measures/Precession.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>

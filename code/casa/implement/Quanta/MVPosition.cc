@@ -34,7 +34,7 @@ typedef Quantum<Double> gpp_mvposition_bug1;
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
-#include <aips/Measures/MVPosition.h>
+#include <aips/Quanta/MVPosition.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/QMath.h>

@@ -34,11 +34,11 @@
 #include <aips/Quanta/Euler.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Measures/MVDirection.h>
-#include <aips/Measures/MVBaseline.h>
+#include <aips/Quanta/MVDirection.h>
+#include <aips/Quanta/MVBaseline.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/Muvw.h>
-#include <aips/Measures/MVuvw.h>
+#include <aips/Quanta/MVuvw.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>

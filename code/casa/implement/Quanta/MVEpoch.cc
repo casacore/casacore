@@ -36,7 +36,7 @@ typedef Quantum<Double> gpp_mvepoch_bug1;
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
-#include <aips/Measures/MVEpoch.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Mathematics/Math.h>
 

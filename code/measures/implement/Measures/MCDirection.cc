@@ -38,7 +38,7 @@ typedef Quantum<Double> gpp_direction_bug1;
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Quanta/RotMatrix.h>
-#include <aips/Measures/MVPosition.h>
+#include <aips/Quanta/MVPosition.h>
 #include <aips/Measures/SolarPos.h>
 #include <aips/Measures/Aberration.h>
 #include <aips/Measures/Precession.h>

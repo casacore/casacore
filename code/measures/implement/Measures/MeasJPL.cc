@@ -34,7 +34,7 @@ typedef Quantum<Double> gpp_MeasJPL_bug1;
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MeasJPL.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Measures/MVEpoch.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Measures/MeasIERS.h>
 #include <aips/OS/Time.h>
 #include <aips/Logging.h>

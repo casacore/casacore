@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Measures/MVPosition.h>
+#include <aips/Quanta/MVPosition.h>
 
 //# Forward Declarations
 

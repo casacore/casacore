@@ -34,8 +34,8 @@ typedef Quantum<Double> gpp_mepoch_bug1;
 #include <aips/Quanta/QMath.h>
 #include <aips/Measures/MCRadialVelocity.h>
 #include <aips/Measures/MCFrame.h>
-#include <aips/Measures/MVPosition.h>
-#include <aips/Measures/MVDirection.h>
+#include <aips/Quanta/MVPosition.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Measures/Aberration.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MDoppler.h>

@@ -33,7 +33,7 @@ typedef Quantum<Double> gpp_mvdouble_bug1;
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
-#include <aips/Measures/MVDouble.h>
+#include <aips/Quanta/MVDouble.h>
 #include <aips/Mathematics/Math.h>
 
 // MVDouble class

@@ -31,8 +31,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures.h>
-#include <aips/Measures/MVDirection.h>
-#include <aips/Measures/MVPosition.h>
+#include <aips/Quanta/MVDirection.h>
+#include <aips/Quanta/MVPosition.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/Euler.h>
 #include <aips/Measures/MeasTable.h>
@@ -40,7 +40,7 @@
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/Aberration.h>
 #include <aips/Measures/SolarPos.h>
-#include <aips/Measures/MVEpoch.h>
+#include <aips/Quanta/MVEpoch.h>
 
 main()
 {

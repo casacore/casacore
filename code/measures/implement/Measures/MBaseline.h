@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MVBaseline.h>
+#include <aips/Quanta/MVBaseline.h>
 
 //# Forward Declarations
 class MBaseline;

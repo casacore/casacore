@@ -34,7 +34,7 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/Euler.h>
-#include <aips/Measures/MVEpoch.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasIERS.h>

@@ -32,9 +32,9 @@
 #include <aips/aips.h>
 #include <aips/Measures.h>
 #include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MVPosition.h>
+#include <aips/Quanta/MVPosition.h>
 #include <aips/Measures/EarthField.h>
-#include <aips/Measures/MVEarthMagnetic.h>
+#include <aips/Quanta/MVEarthMagnetic.h>
 
 //# Forward Declarations
 class MeasFrame;

@@ -36,7 +36,7 @@ typedef Quantum<Double> gpp_mvdirection_bug1;
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
-#include <aips/Measures/MVDirection.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Quanta/Unit.h>

@@ -1,5 +1,5 @@
 //# tMeasJPL.cc: This program test JPL DE functions
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,8 +32,8 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Measures.h>
 #include <aips/Measures/MeasJPL.h>
-#include <aips/Measures/MVEpoch.h>
-#include <aips/Measures/MVDirection.h>
+#include <aips/Quanta/MVEpoch.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MCFrame.h>

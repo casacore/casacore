@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MVuvw.h>
+#include <aips/Quanta/MVuvw.h>
 
 //# Forward Declarations
 class Muvw;

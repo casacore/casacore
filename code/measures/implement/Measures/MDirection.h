@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MVDirection.h>
+#include <aips/Quanta/MVDirection.h>
 
 //# Forward Declarations
 class MDirection;

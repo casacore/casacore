@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MeasValue.h>
+#include <aips/Quanta/MeasValue.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Arrays/Vector.h>
 

@@ -30,7 +30,7 @@
 #include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mvuvw_bug1;
 #endif
-#include <aips/Measures/MVuvw.h>
+#include <aips/Quanta/MVuvw.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
@@ -40,8 +40,8 @@ typedef Quantum<Double> gpp_mvuvw_bug1;
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Quanta/QLogical.h>
-#include <aips/Measures/MVDirection.h>
-#include <aips/Measures/MVBaseline.h>
+#include <aips/Quanta/MVDirection.h>
+#include <aips/Quanta/MVBaseline.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 

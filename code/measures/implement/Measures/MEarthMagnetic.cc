@@ -39,8 +39,8 @@ typedef Quantum<Double> gpp_mEarthMagnetic_bug1;
 #include <aips/Mathematics/Constants.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/Euler.h>
-#include <aips/Measures/MVPosition.h>
-#include <aips/Measures/MVDirection.h>
+#include <aips/Quanta/MVPosition.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/QMath.h>
 
 //# Constructors

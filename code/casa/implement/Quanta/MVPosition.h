@@ -40,7 +40,7 @@
 #ifdef __GNUG__
 typedef Quantum<Double> gpp_mvposition_bug2;
 #endif
-#include <aips/Measures/MeasValue.h>
+#include <aips/Quanta/MeasValue.h>
 
 //# Forward Declarations
 class RotMatrix;
