@@ -395,8 +395,8 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 	if (j==n) polIndex_p.resize(0); // want all in correct order
       }
     }
-  }
-  if (convert_p) {
+  } else {
+    convert_p=True;
     // check validity
     for (Int i=0; i<n; i++) {
       if (wanted(i)==Stokes::Undefined) {
