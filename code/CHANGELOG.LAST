@@ -28,3 +28,18 @@ change id: 0059
  summary:  Support added for relative coordinates
 The coordinates classes have been imporved to offer
 support for relative coordinates (world or pixel)
+
+change id: 0060
+ author:   Neil Killeen
+ date:     2000/12/04
+ avers:    1.5
+ area:     Library
+ package:  trial
+ module:   Coordinates
+ type:     Code
+ category: Change
+ summary:  StokesCoordinate  internals changed
+The StokesCoordinate class has had its internals changed
+so that referencepixel, reference value, increment, 
+and linear transform matrix are all no longer used.
+The functions to change these attributes now take no action.
