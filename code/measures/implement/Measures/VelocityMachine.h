@@ -80,7 +80,8 @@ template <class T> class Vector;
 //	observing). This frame is necessary if, in addition to
 //	converting between velocity and frequency, you also want to
 //	convert between different types (e.g. given an 'LSR' velocity,
-//	you want to know the 'TOPO' frequency). However, the MeasFrame
+//	you want to know the 'TOPO' frequency), and if the offset is
+//	in a different reference type. However, the MeasFrame
 //	can also be given explicitly in the machine constructor as an
 //	optional argument.
 //   <li> Preferred 'frequency' units (e.g. GHz, or cm). These units are used
@@ -102,7 +103,7 @@ template <class T> class Vector;
 // To be able to convert between different types (say a velocity
 // referenced with respect to the 'LSR', and a frequency referenced
 // with respect to 'TOPO', the following additional, optional
-// information can be included in the constructors:
+// information can be included explicitly in the constructors:
 // <ul>
 //   <li> A reference code for the velocity (given as a frequency reference
 // 	code (e.g. MFrequency::TOPO)). If given, all input frequencies
@@ -191,7 +192,7 @@ public:
 		  const MDoppler::Ref &velRef, const Unit &velUnits);
 
   // Construct a machine from the input values (no frame conversion, explicit
-  // frame)
+  // frame will be added to freqRef)
   VelocityMachine(const MFrequency::Ref &freqRef, const Unit &freqUnits,
 		  const MVFrequency &restFreq,
 		  const MDoppler::Ref &velRef, const Unit &velUnits,
@@ -202,15 +203,15 @@ public:
   // specified.
   VelocityMachine(const MFrequency::Ref &freqRef, const Unit &freqUnits,
 		  const MVFrequency &restFreq,
-		  const MFrequency::Types &freqConvertType,
+		  const MFrequency::Types &convertRef,
 		  const MDoppler::Ref &velRef, const Unit &velUnits);
 
   // Construct a machine from the input values (frame conversion, explicit
   // frame) with explicit velocity reference frame
-  // specified.
-  VelocityMachine(const MFrequency::Ref &frqref, const Unit &frqun,
+  // specified, and added to freqref.
+  VelocityMachine(const MFrequency::Ref &freqref, const Unit &freqUnits,
 		  const MVFrequency &restFreq,
-		  const MFrequency::Types &freqConvertType,
+		  const MFrequency::Types &convertRef,
 		  const MDoppler::Ref &velRef, const Unit &velUnits,
 		  const MeasFrame &frame);
 
@@ -239,17 +240,34 @@ public:
   // Set or reset the specified part of the machine. The machinery will be
   // reset to reflect the changes made.
   // <group>
+  // Sets a new frequency reference. Note that if an explicit frame has been
+  // used in earlier constructors, the frame should again be set explicitly
+  // with set(MeasFrame).
   void set(const MFrequency::Ref &in);
   void set(const Unit &in);
+  // Sets the rest frequency
   void set(const MVFrequency &in);
   void set(const MFrequency::Types &in);
   void set(const MDoppler::Ref &in);
+  // Sets the MeasFrame to be used in conversions.
   void set(const MeasFrame &in);
   // </group>
 
+  // Get the general information used in the machine (shadows the sets above
+  // and the constructor arguments. The MeasFrame should be explicitly
+  // asked for from the frequency reference by the user
+  // <group>
+  const MFrequency::Ref &getFrequencyReference() const;
+  const Unit &getFrequencyUnits() const;
+  const MDoppler::Ref &getDopplerReference() const;
+  const Unit &getDopplerUnits() const;
+  const MVFrequency &getRestFrequency() const;
+  const MFrequency::Types &getConversionReference() const;
+  // </group>
   // Recalculate the machinery from the original inputs. Note that in all
   // normal circumstances this function does not have to be used (the set()
-  // methods will do it automatically).
+  // methods will do it automatically). At the moment I cannot think of
+  // any circumstance it should be used explicitly.
   void reCalculate();
 
 private:

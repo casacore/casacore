@@ -62,10 +62,10 @@ VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef,
 VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef, 
 				 const Unit &freqUnits,
 				 const MVFrequency &restFreq,
-				 const MFrequency::Types &freqConvertType,
+				 const MFrequency::Types &convertRef,
 				 const MDoppler::Ref &velRef, 
 				 const Unit &velUnits) :
-  fref_p(freqRef), fun_p(freqUnits), rest_p(restFreq), vfm_p(freqConvertType),
+  fref_p(freqRef), fun_p(freqUnits), rest_p(restFreq), vfm_p(convertRef),
   vref_p(velRef), vun_p(velUnits) {
     init();
 }
@@ -73,11 +73,11 @@ VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef,
 VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef, 
 				 const Unit &freqUnits,
 				 const MVFrequency &restFreq,
-				 const MFrequency::Types &freqConvertType,
+				 const MFrequency::Types &convertRef,
 				 const MDoppler::Ref &velRef, 
 				 const Unit &velUnits,
 				 const MeasFrame &frame) :
-  fref_p(freqRef), fun_p(freqUnits), rest_p(restFreq), vfm_p(freqConvertType),
+  fref_p(freqRef), fun_p(freqUnits), rest_p(restFreq), vfm_p(convertRef),
   vref_p(velRef), vun_p(velUnits) {
     fref_p.set(frame);
     init();
@@ -207,6 +207,30 @@ void VelocityMachine::set(const MeasFrame &in) {
   init();
 }
 
+const MFrequency::Ref &VelocityMachine::getFrequencyReference() const {
+  return fref_p;
+}
+
+const Unit &VelocityMachine::getFrequencyUnits() const {
+  return fun_p;
+}
+
+const MDoppler::Ref &VelocityMachine::getDopplerReference() const {
+  return vref_p;
+}
+
+const Unit &VelocityMachine::getDopplerUnits() const {
+  return vun_p;
+}
+
+const MVFrequency &VelocityMachine::getRestFrequency() const {
+  return rest_p;
+}
+
+const MFrequency::Types &VelocityMachine::getConversionReference() const {
+  return vfm_p;
+}
+ 
 //# Private member functions
 void VelocityMachine::init() {
   // Get factor to convert user velocity units to base units
