@@ -1,5 +1,5 @@
 //# MCFrame.cc: Measure frame calculations proxy
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,6 +50,7 @@ MCFrame::MCFrame(MeasFrame &inf) :
   epConvTDB(0), epTDBp(0), 
   epConvLAST(0), epLASTp(0), 
   posConvLong(0), posLongp(0), posITRFp(0),
+  posConvLongGeo(0), posLongGeop(0), posGeop(0),
   dirConvJ2000(0), j2000Longp(0), dirJ2000p(0),
   dirConvB1950(0), b1950Longp(0), dirB1950p(0),
   dirConvApp(0), appLongp(0), dirAppp(0),
@@ -73,6 +74,9 @@ MCFrame::~MCFrame() {
   delete static_cast<MPosition::Convert *>(posConvLong);
   delete posLongp;
   delete posITRFp;
+  delete static_cast<MPosition::Convert *>(posConvLongGeo);
+  delete posLongGeop;
+  delete posGeop;
   delete static_cast<MDirection::Convert *>(dirConvJ2000);
   delete j2000Longp;
   delete dirJ2000p;
@@ -119,6 +123,8 @@ void MCFrame::resetPosition() {
   if (posLongp) {
     delete posLongp; posLongp = 0;
     delete posITRFp; posITRFp = 0;
+    delete posLongGeop; posLongGeop = 0;
+    delete posGeop; posGeop = 0;
   };
   if (epLASTp) {
     delete epLASTp; epLASTp = 0;
@@ -195,6 +201,23 @@ Bool MCFrame::getLat(Double &tdb) {
       *posLongp = posITRFp->get();
     };
     tdb = posLongp->operator()(2);
+    return True;
+  };
+  tdb = 0.0;
+  return False;
+}
+
+Bool MCFrame::getLatGeo(Double &tdb) {
+  if (myf.position()) {
+    if (!posLongGeop) {
+      posLongGeop = new Vector<Double>(3);
+      posGeop = new MVPosition;
+      *posGeop = static_cast<MPosition::Convert *>(posConvLongGeo)->operator()
+        (*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
+        getValue();
+      *posLongGeop = posGeop->get();
+    };
+    tdb = posLongGeop->operator()(2);
     return True;
   };
   tdb = 0.0;
@@ -533,6 +556,15 @@ void MCFrame::makePosition() {
   if (radLSRp) {
     delete radLSRp; radLSRp = 0;
   };
+  static const MPosition::Ref REFGEO
+    = MPosition::Ref(MPosition::WGS84);
+  delete static_cast<MPosition::Convert *>(posConvLongGeo);
+  posConvLongGeo = new MPosition::Convert(*(myf.position()),
+					  REFGEO);
+  if (posLongGeop) {
+    delete posLongGeop; posLongGeop = 0;
+    delete posGeop; posGeop = 0;
+  };
 }
 
 void MCFrame::makeDirection() {
@@ -624,6 +656,10 @@ Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result) {
       
     case MeasFrame::GetRadius:
       return static_cast<MCFrame *>(dmf)->getRadius(result);
+      break;
+
+    case MeasFrame::GetLatGeo:
+      return static_cast<MCFrame *>(dmf)->getLatGeo(result);
       break;
       
     case MeasFrame::GetJ2000Long:
