@@ -39,6 +39,7 @@ class TableRecord;
 
 template <class T> class ImageSummary;
 template <class T> class MaskedLattice;
+template <class T> class Vector;
 
 
 // <summary>
@@ -288,6 +289,8 @@ private:
                           const ImageSummary<T>& sum1,
                           const ImageSummary<T>& sum2,
                           uInt axis, Bool relax);
+   Vector<Int> makeNewStokes(const Vector<Int>& stokes1,
+                             const Vector<Int>& stokes2);
    void setCoordinates();
 
 };
