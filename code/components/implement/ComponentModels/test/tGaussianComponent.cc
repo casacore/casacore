@@ -58,29 +58,33 @@ int main() {
     {
       // Create a Gaussian component at the default position
       GaussianComponent defGaussian;
+      const MVAngle pixelSize(Quantity(1.0,"''"));
       // Sample the Gaussian at the Maximum and half an arc-min on either side.
       MVDirection sampleDirVal(Quantity(0,"deg"), 
 			       Quantity(90, "deg") - Quantity(.5, "'"));
       MDirection sampleDir(sampleDirVal, MDirection::J2000);
       RotMatrix rotDec(Euler(Quantity(0.5, "'").get().getValue(), 2u));
       
-      const Double peak = 4. * 3600 * pow(180.,2.) * C::ln2 * pow(C::pi,-3.0);
+      // This is not exact. To be exact I should do a integration over the
+      // pixel area. Instead I set the pixel size to be something small enough!
+      const Double peak = 4. * 3600 * pow(180.,2.) * C::ln2 * pow(C::pi,-3.0) *
+	pixelSize.radian() * pixelSize.radian();
       Vector<Double> expectedSample(4);
       Vector<Double> actualSample(4);
       expectedSample = 0.0; expectedSample(0) = peak*0.5;
-      defGaussian.sample(actualSample, sampleDir);
+      defGaussian.sample(actualSample, sampleDir, pixelSize);
       AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
 		   AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
-      defGaussian.sample(actualSample, sampleDir);
+      defGaussian.sample(actualSample, sampleDir, pixelSize);
       expectedSample(0) = peak;
       AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
 		   AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
       expectedSample(0) = peak*0.5;
-      defGaussian.sample(actualSample, sampleDir);
+      defGaussian.sample(actualSample, sampleDir, pixelSize);
       AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
 		   AipsError);
       cout << "Passed the default Gaussian component test" << endl;
@@ -110,18 +114,19 @@ int main() {
       // Sample at a set of MDirections equidistant from the position of the
       // component. All these points should have the same flux (in Jy/pixel)
       // of half the maximum. 
+      const MVAngle pixelSize(Quantity(1.0,"''"));
       MDirection sampledDirection;
       Vector<Double> sampledFlux(4);
       Vector<Double> peak(4);
       peak = flux1934.ac() * 4. * pow(180. *60. *60. *1000. /2. ,2.) 
-	                   * C::ln2 * pow(C::pi,-3.);
+	                   * C::ln2 * pow(C::pi,-3.) 
+	                   * pixelSize.radian() * pixelSize.radian();
       for (uInt i = 0; i < 6; i++){
  	sampledDirection = MDirection(sampleDir*pole2src, MDirection::J2000);
-	J1934.sample(sampledFlux, sampledDirection);
+	J1934.sample(sampledFlux, sampledDirection, pixelSize);
 	// Precision is lost because of the subtraction done in the
 	// MVPosition::separation member function
- 	AlwaysAssert(allNear(sampledFlux.ac(), peak.ac()*0.5, 1E-6), 
-		     AipsError);
+ 	AlwaysAssert(allNear(sampledFlux.ac(), peak.ac()*0.5, 1E-6), AipsError);
  	sampleDir *= rotater;
       }
       cout << "Passed the arbitrary Gaussian component test" << endl;
@@ -159,7 +164,7 @@ int main() {
       AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
  		   AipsError); 
       AlwaysAssert(coord1934J2000.getValue().near(
-  	  MDirection::Convert(initialPosition,MDirection::J2000)().getValue()),
+  	   MDirection::Convert(initialPosition,MDirection::J2000)().getValue()),
  		   AipsError);
       B1934.setPosition(coord1934B1950);
       B1934.position(coord1934J2000);
@@ -320,7 +325,9 @@ int main() {
       MDirection coord00(ra0dec0, MDirection::J2000);
       defComp.setPosition(coord00);
       defComp.project(image);
-      Float peak = 60.*60.* pow(180.,2.) * C::ln2 * pow(C::pi,-3.0);
+      Double pixelSize = Quantity(1.0, "'").getValue("rad");
+      Float peak = 60.*60.* pow(180.,2.) * C::ln2 * pow(C::pi,-3.0) 
+	* pixelSize * pixelSize;
       AlwaysAssert(near(image(IPosition(4, 4, 1, 0, 0)), peak), AipsError);
       AlwaysAssert(near(image(IPosition(4, 4, 0, 0, 0)),peak*0.5f), AipsError);
       AlwaysAssert(near(image(IPosition(4, 4, 2, 0, 0)),peak*0.5f), AipsError);
