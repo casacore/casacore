@@ -27,6 +27,7 @@
 
 #include <ms/MeasurementSets/MSFieldParse.h>
 #include <ms/MeasurementSets/MSFieldIndex.h>
+#include <ms/MeasurementSets/MSSourceIndex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -58,19 +59,69 @@ const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
     return node_p;
 }
 
-const TableExprNode *MSFieldParse::selectFieldNames(const Vector<String>& fieldNames)
+const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
 {
-    MSFieldIndex msFI(ms()->field());
 
-    TableExprNode condition =
-        (ms()->col(colName).in(msFI.matchFieldName(fieldNames)));
+  Vector<Int> SourceIdsFromSN ;
+  Vector<Int> SourceIdsFromSC ;
+  Vector<Int> SourceIdsFromFN ;
+  Vector<Int> SourceIdsFromFC ;
 
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
+  MSFieldIndex msFI(ms()->field());
+  cout << " field table created " << endl;
+  String colName = MS::columnName(MS::FIELD_ID);
+  cout << " column name " << colName << endl;
+  TableExprNode condition = 0;
+  
+  Bool searchField = False;
 
-    return node_p;
+  if( !ms()->source().isNull()) {
+    MSSourceIndex msSI(ms()->source());
+    cout << " source table created " << endl;
+    SourceIdsFromSN = msSI.matchSourceName(fieldName);
+    SourceIdsFromSC = msSI.matchSourceCode(fieldName);;
+    //Source name selection  
+    if(SourceIdsFromSN.nelements() > 0) {
+      cout << " source name found " << endl;
+      condition=(ms()->col(colName).in
+		 (msFI.matchSourceId(msSI.matchSourceName(fieldName))));
+    } else if (SourceIdsFromSC.nelements() > 0) {
+      //Source Code selection  
+      cout << " source code found " << endl;
+      condition=(ms()->col(colName).in
+		 (msFI.matchSourceId(msSI.matchSourceCode(fieldName))));
+    } else {
+      cout << " No matched Souce name(code), search for field  "<< endl;
+      searchField = True;
+    }
+  } 
+
+  if(ms()->source().isNull() ||searchField) {
+    
+    SourceIdsFromFN = msFI.matchFieldName(fieldName);
+    SourceIdsFromFC = msFI.matchFieldCode(fieldName);
+    
+    if (SourceIdsFromFN.nelements() > 0) {
+      //Field name selection
+      cout << " field name found " << endl;
+      condition =
+	(ms()->col(colName).in(msFI.matchFieldName(fieldName)));
+    } else if (SourceIdsFromFC.nelements() > 0) {
+      //Field code selection
+      cout << " field code found " << endl;
+      condition =
+	(ms()->col(colName).in(msFI.matchFieldCode(fieldName)));
+    } else {
+      cout << " No matched field name(code) or Souce name(code) "<< endl;
+    }
+  }
+
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node_p;
 }
 
 const TableExprNode* MSFieldParse::node()
