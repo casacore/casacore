@@ -414,11 +414,11 @@ ostream &operator<<(ostream &os, const SpectralElement &elem) {
 
   switch (elem.getType()) {
   case SpectralElement::GAUSSIAN:
-    os << "  Amplitude: " << elem.getAmpl();
+    os << "  Amplitude: " << elem.getAmpl() << ", " << elem.getAmplErr();
     if (elem.fixedAmpl()) os << " (fixed)";
-    os << endl << "  Center:    " << elem.getCenter();
+    os << endl << "  Center:    " << elem.getCenter() << ", " << elem.getCenterErr();
     if (elem.fixedCenter()) os << " (fixed)";
-    os << endl << "  Sigma:     " << elem.getSigma();
+    os << endl << "  Sigma:     " << elem.getSigma() << ", " << elem.getSigmaErr();
     if (elem.fixedSigma()) os << " (fixed)";
     os << endl;
     break;
