@@ -1,5 +1,5 @@
 //# tScaledComplexData.cc: Test program for class ScaledComplexData
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -44,6 +44,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 // <summary> Test program for class ScaledComplexData </summary>
 
