@@ -52,9 +52,11 @@ int main(int argc, char **argv)
     inp.Create("out", "out.image", "Output AIPS++ Image name", "string");
     inp.Create("overwrite", "True", "Allow output to be overwritten?",
                 "Bool");
+    inp.Create("zero", "False", "Zero blanks?", "Bool");
     inp.ReadArguments(argc, argv);
 
     Bool overwrite=inp.GetBool("overwrite");
+    Bool zero =inp.GetBool("zero");
     String fitsFile = inp.GetString("in");
     String outFile = inp.GetString("out");
     if(outFile.empty() ) {
@@ -65,7 +67,7 @@ int main(int argc, char **argv)
     String error;
     PagedImage<Float>* pOutImage;
     Bool ok = ImageFITSConverter::FITSToImage(pOutImage, error, outFile, fitsFile, 0,
-                                    AppInfo::memoryInMB(), overwrite);
+                                    AppInfo::memoryInMB(), overwrite, zero);
     LogIO os(LogOrigin("fits2image", "main()", WHERE));
     if (!ok) {
         os << LogIO::SEVERE << error << LogIO::EXCEPTION;
