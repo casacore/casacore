@@ -930,15 +930,15 @@ Bool ImageMoments<T>::createMoments()
 // methods only plot the smoothed data.
 
       if (doPlot && fixedYLimits_p && (smoothClipMethod || windowMethod)) {
-         LogSink sink;
-         LogIO oss(sink);
-         ImageStatistics<T> stats(*pSmoothedImage, oss);
+         os_p.priority(LogMessage::SEVERE);
+         ImageStatistics<T> stats(*pSmoothedImage, os_p);
 
          Array<T> data;
          stats.getMin(data);
          yMin_p = data(IPosition(data.nelements(),0));
          stats.getMax(data);
          yMax_p = data(IPosition(data.nelements(),0));
+         os_p.priority(LogMessage::NORMAL);
       }
    }
 
@@ -948,9 +948,8 @@ Bool ImageMoments<T>::createMoments()
 
    if (fixedYLimits_p && doPlot) {
       if (!doSmooth_p && (windowMethod || fitMethod)) {
-         LogSink sink;
-         LogIO oss(sink);
-         ImageStatistics<T> stats(*pInImage_p, oss);
+         os_p.priority(LogMessage::SEVERE);
+         ImageStatistics<T> stats(*pInImage_p, os_p);
          stats.setRegion (blc_p, trc_p, inc_p, False);
 
          Array<T> data;
@@ -961,6 +960,7 @@ Bool ImageMoments<T>::createMoments()
          yMin_p = data(IPosition(data.nelements(),0));
          stats.getMax(data);
          yMax_p = data(IPosition(data.nelements(),0));
+         os_p.priority(LogMessage::NORMAL);
       }
       ImageUtilities::stretchMinMax(yMin_p, yMax_p);
    }
@@ -1132,11 +1132,12 @@ Bool ImageMoments<T>::createMoments()
       } else if (clipMethod) {
             
 // no clip or clip
-         
+
          doMomCl (calcMoments, imageIterator.vectorCursor(), 
                   doMedianI, doMedianV, doAbsDev);
       }  else {
          os_p << LogIO::SEVERE << "Internal logic error.  Big trouble." << LogIO::POST;
+         return False;
       }
 
 // Fill output images; set position of output image (has one
@@ -1153,7 +1154,7 @@ Bool ImageMoments<T>::createMoments()
       }
 
 // Increment iterators
-                  
+
       imageIterator++;
       iProfile++;
    }
@@ -1173,8 +1174,6 @@ Bool ImageMoments<T>::createMoments()
       }
    }
    
-
-
 
 // Success guarenteed !
 
