@@ -560,6 +560,12 @@ void TSMCube::setCacheSize (const IPosition& sliceShape,
         end(i) = min (windowLength(i), cubeShape_p(i) - start(i));
     }
     end += start;
+    // When extensible, set end to the end of the start tile.
+    // Otherwise all reused values may get 0 in extensible hypercubes.
+    if (extensible_p) {
+	i = nrdim_p - 1;
+	end(i) += tileShape_p(i) * (1 + start(i) / tileShape_p(i));
+    }
     end -= 1;
     // Check if the specified traversal axes are correct and unique.
     IPosition path(nrdim_p);
