@@ -155,6 +155,28 @@ int main() {
       timer.mark();
       for (uInt cnt=0; cnt<Ncnt; cnt++) {
 	Int inx=0;
+	for (ArrayAccessor<Int, Axis<2> > i(cub); i != i.end() ; ++i) {
+	  for (ArrayAccessor<Int, AxisN > j(i, AxisN(1)); j != j.end() ; ++j) {
+	    for (ArrayAccessor<Int, AxisN> k(j, AxisN(0)); k != k.end() ;
+		 ++k) {
+	      if (*k != inx) {
+		cout << inx << ' ' << *k << endl;
+	      };
+	      inx++;
+	    };
+	  };
+	};
+	if (inx != Int(cub.nelements())) {
+	  cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
+	};
+      }
+      timer.show("ArrayAccessor run2 ");
+    }
+
+    {
+      timer.mark();
+      for (uInt cnt=0; cnt<Ncnt; cnt++) {
+	Int inx=0;
 	ArrayAccessor<Int, Axis<2> > i;
 	ArrayAccessor<Int, Axis<1> > j;
 	ArrayAccessor<Int, Axis<0> > k;
