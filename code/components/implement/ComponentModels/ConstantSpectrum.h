@@ -97,6 +97,10 @@ template <class T> class Vector;
 //   <li> Nothing I hope!
 // </todo>
 
+// <linkfrom anchor="ConstantSpectrum" classes="SpectralModel SpectralIndex">
+//  <here>ConstantSpectrum</here> - Models the spectrum as constant
+// </linkfrom>
+
 class ConstantSpectrum: public SpectralModel
 {
 public:
