@@ -2360,3 +2360,6 @@
 11 206 src rm trial/implement/Widgets/vectorentry.g
 11 206 src rm trial/implement/Widgets/choiceentry.g
 11 206 src rm trial/implement/Widgets/checkentry.g
+11 206 src rm trial/implement/Widgets/regionentry.g
+11 206 src rm trial/implement/Widgets/recordentry.g
+11 206 src rm trial/implement/Widgets/untypedentry.g
