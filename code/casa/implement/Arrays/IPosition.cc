@@ -471,9 +471,11 @@ Bool IPosition::isSubSet (const IPosition& other) const
     uInt nrthat = other.nelements();
     uInt j=0;
     for (uInt i=0; i<nrthis; i++) {
-	if (j < nrthat  &&  data_p[i] == other(j)) {
-	    j++;
+      if (j < nrthat) {
+	if (other(j) == data_p[i]  ||  other(j) == 1) {
+	  j++;
 	}
+      }
     }
     return (j == nrthat);
 }
