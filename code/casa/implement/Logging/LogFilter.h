@@ -84,11 +84,10 @@
 class LogFilter
 {
 public:
-    // Construct a filter with the LOWEST priority that you want passed. 
-    // Thus <src>DEBUGGING</src> passes everything. Note that it is
-    // not possible to block <src>SEVERE</src> level messages, although you can
-    // use a <linkto class="NullLogSink">NullLogSink</linkto> which will have this
-    // effect.
+    // Construct a filter with the LOWEST priority that you want passed.  Thus
+    // <src>DEBUGGING</src> passes everything. Note that it is not possible to
+    // block <src>SEVERE</src> level messages, although you can use a <linkto
+    // class="NullLogSink">NullLogSink</linkto> which will have this effect.
     LogFilter(LogMessage::Priority lowest=LogMessage::NORMAL);
 
     // Copy <src>other</src> to <src>this</src>.
