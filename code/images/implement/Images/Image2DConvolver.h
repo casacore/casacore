@@ -117,23 +117,7 @@ public:
                  const Vector<Quantum<Double> >& parameters,
                  Bool autoScale, Double scale,
                  Bool copyMiscellaneous=True);
-//
-// Convolve.   You specify the output image name 
-// (if empty String, the ImageInterface object will be a TempImage),
-// the  convolution parameters (major, minor, position angle)
-// and the pixel axes which you are convolving.
-// If the output image needs a mask and doesn't have one,
-// it will be given one if possible and the input mask transferred
-// to it.  The miscInfo, imageInfo, units and logger
-// will be copied from the input to the output.
-// The output file will be overwritten if it pre-exists.
-// The calling routine must delete the returned pointer.
-   ImageInterface<T>* convolve(LogIO& os, const String& outFile,
-                               ImageInterface<T>& imageIn,
-                               VectorKernel::KernelTypes kernelType,
-                               const IPosition& pixelAxes,
-                               const Vector<Quantum<Double> >& parameters,
-                               Bool autoScale, Double scale);
+
 private:
 
 // Check kernel parameters

@@ -40,7 +40,7 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Fitting/Fit2D.h>
 #include <aips/Functionals/Gaussian2D.h>
-#include <trial/Images/ArrayImageConvolver.h>
+#include <trial/Images/ImageConvolver.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/TempImage.h>
 #include <trial/Images/ImageInterface.h>
@@ -76,42 +76,6 @@ Image2DConvolver<T> &Image2DConvolver<T>::operator=(const Image2DConvolver<T> &o
    if (this != &other) {
    }
    return *this;
-}
-
-
-template <class T>
-ImageInterface<T>* Image2DConvolver<T>::convolve(LogIO& os,  
-                                                 const String& outFile,
-                                                 ImageInterface<T>& imageIn,
-                                                 VectorKernel::KernelTypes kernelType,
-                                                 const IPosition& pixelAxes,
-                                                 const Vector<Quantum<Double> >& parameters,   
-                                                 Bool autoScale, Double scale)
-{
-
-// Make output image.  TempImage or PagedImage
-
-   ImageInterface<Float>* pImOut = 0;
-   if (outFile.empty()) {
-      pImOut = new TempImage<Float>(imageIn.shape(), imageIn.coordinates());
-   } else {
-      pImOut = new PagedImage<Float>(imageIn.shape(), imageIn.coordinates(), outFile);
-   }
-
-// Convolve. Clean up pointer if trouble.
-
-   try {
-      convolve(os, *pImOut, imageIn, kernelType, pixelAxes, parameters,
-               autoScale, scale, True);
-   } catch (AipsError x) {
-      delete pImOut; 
-      pImOut = 0;
-      os << x.getMesg() << LogIO::EXCEPTION;
-   }
-
-// Return pointer
-
-   return pImOut;
 }
 
 
@@ -168,10 +132,13 @@ void Image2DConvolver<T>::convolve(LogIO& os,
                           pixelAxes, cSys, imageInfo, brightnessUnit,
                           autoScale, scale);
 
-// Convolve
+// Convolve.  We have already scaled the convolution kernel (with some 
+// trickery cleverer than what ImageConvolver can do) so no more scaling
 
-   ArrayImageConvolver<T> aic;
-   aic.convolve (os, imageOut, imageIn, kernel, copyMiscellaneous);
+   Double scale2 = 1.0;
+   ImageConvolver<T> aic;
+   aic.convolve (os, imageOut, imageIn, kernel, ImageConvolver<T>::NONE, 
+                 scale2, copyMiscellaneous);
 
 // Overwrite some bits and pieces in the output image to do with the
 // restoring beam  and image units
