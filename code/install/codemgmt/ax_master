@@ -3840,3 +3840,4 @@
 14 065 src mv trial/implement/Display/StandAloneDisplayApp.h trialdisplay/implement/Display/StandAloneDisplayApp.h
 14 065 src mv trial/implement/Display/WCPGFilter.h trialdisplay/implement/Display/WCPGFilter.h
 14 065 src mv trial/implement/Display/WorldCanvas.h trialdisplay/implement/Display/WorldCanvas.h
+14 065 src mv trial/implement/Display/WorldCanvasHolder.h trialdisplay/implement/Display/WorldCanvasHolder.h
