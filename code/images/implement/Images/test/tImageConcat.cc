@@ -1,5 +1,5 @@
 //# tImageConcat.cc: This program tests the ImageConcat class
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/SubLattice.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 

@@ -31,8 +31,8 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 typedef Vector<Int> lcbox_gppbug1;
 

@@ -1,5 +1,5 @@
 //# tImageSourceFinder.cc: test ImageSourceFinder class
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@
 #include <trial/ComponentModels/SkyComponent.h>
 #include <trial/ComponentModels/ComponentList.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 SkyComponent makeSkyComponent (const Vector<Double>& pixel, 
                                const Flux<Double>& flux,

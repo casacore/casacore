@@ -37,7 +37,7 @@
 #include <aips/Inputs/Input.h>
 #include <aips/OS/Timer.cc>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 int main (int argc, char *argv[])

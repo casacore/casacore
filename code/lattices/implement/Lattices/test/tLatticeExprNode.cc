@@ -52,7 +52,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/DataType.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 Bool checkInfo (const LatticeExprNode& expr,
 		const IPosition& shape,

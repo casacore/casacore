@@ -38,7 +38,7 @@
 #include <aips/Utilities/String.h>
 
 #include <aips/stdlib.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 main()
 {

@@ -39,7 +39,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 void setValues (IPosition& blcI,
                 IPosition& trcI,

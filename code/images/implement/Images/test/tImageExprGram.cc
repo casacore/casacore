@@ -44,7 +44,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 //# This functions simulates the same function in DOImage2.cc.

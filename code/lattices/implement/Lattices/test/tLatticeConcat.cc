@@ -1,5 +1,5 @@
 //# tLatticeConcat.cc: This program tests the LatticeConcat class
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -45,7 +45,7 @@
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageRegion.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 void check (uInt axis, MaskedLattice<Float>& ml,

@@ -1,5 +1,5 @@
 //# tImageFFT.cc: test ImageFFT class
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 #include <trial/Images/PagedImage.h>
 #include <trial/Lattices/LCPagedMask.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 void checkNumbers (const ImageInterface<Float>& rIn,
                    const ImageInterface<Float>& rOut,

@@ -46,8 +46,8 @@
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
 
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 WCBox::WCBox()
 //

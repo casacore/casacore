@@ -51,7 +51,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 

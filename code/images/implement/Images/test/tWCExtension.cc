@@ -34,7 +34,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 void doIt()

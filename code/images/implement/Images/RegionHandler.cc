@@ -33,7 +33,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 
 RegionHandler::~RegionHandler()

@@ -34,7 +34,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 void doIt (const LCRegion& region,

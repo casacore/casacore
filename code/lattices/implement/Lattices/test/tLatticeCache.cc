@@ -50,7 +50,7 @@
 #include <aips/Mathematics/Random.h>
 
 #include <aips/stdlib.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 void a() {
     Int arraySize=2048;

@@ -77,7 +77,7 @@
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/NewFile.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/iomanip.h>
 
 

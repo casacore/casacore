@@ -1,5 +1,5 @@
 //# tLatticeFit.cc: test the baselineFit function
-//# Copyright (C) 1995,1996,1998,1999,2000
+//# Copyright (C) 1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include<aips/Lattices/ArrayLattice.h>
 #include<aips/Utilities/Assert.h>
 
-#include<iostream.h>
+#include <aips/iostream.h>
 
 int main() {
     uInt nx = 10, ny = 20, nz = 30;

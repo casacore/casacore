@@ -19,8 +19,8 @@
 #include <trial/Mathematics/Interpolate2D.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/Assert.h>
-#include <strstream.h>
-#include <iostream.h>
+#include <aips/strstream.h>
+#include <aips/iostream.h>
 
 
 

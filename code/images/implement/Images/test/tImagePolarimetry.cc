@@ -1,5 +1,5 @@
 //# tImagePolarimetry.cc: test ImagePolarimetry class
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Utilities/String.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 void addNoise (Array<Float>& slice, Normal& noiseGen);
 ImageInterface<Float>* makeQUImage (Double& sigma, Double pa0, Double rm, 

@@ -48,7 +48,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 class MyLineCollapser : public LineCollapser<Int>

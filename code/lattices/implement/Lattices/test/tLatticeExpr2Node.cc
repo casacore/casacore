@@ -37,7 +37,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 Bool checkFloat (const LatticeExprNode& expr, 

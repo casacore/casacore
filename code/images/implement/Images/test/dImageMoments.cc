@@ -179,7 +179,7 @@
 #include <trial/Lattices/LCBox.h>
 #include <trial/Mathematics/VectorKernel.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 enum defaults {IN, MOMENTS, AXIS, REGION, METHOD, SMOOTH, RANGE, SNR, OUT, SMOUT, 
                PLOTTING, NDEFAULTS};

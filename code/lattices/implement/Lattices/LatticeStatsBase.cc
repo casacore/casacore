@@ -34,7 +34,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 Vector<Int> LatticeStatsBase::toStatisticTypes (const String& statsU, 

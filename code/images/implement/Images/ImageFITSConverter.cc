@@ -54,7 +54,7 @@
 #include <aips/Containers/Record.h>
 #include <trial/Tasking/ProgressMeter.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 
 // At least the Coordinate and header related things could be factored out
 // into template independent code.

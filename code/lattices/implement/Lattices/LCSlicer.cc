@@ -32,8 +32,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 
 LCSlicer::LCSlicer()

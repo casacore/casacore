@@ -47,8 +47,8 @@
 #include <trial/Mathematics/AutoDiff.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 
 Fit2D::Fit2D(LogIO& logger)

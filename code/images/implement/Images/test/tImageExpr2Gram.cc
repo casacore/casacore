@@ -1,5 +1,5 @@
 //# tImageExpr2Gram.cc: Test program for WC regions in image expression parser
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 main (int argc, char *argv[])

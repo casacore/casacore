@@ -56,7 +56,7 @@
 
 #include <aips/iomanip.h>
 #include <aips/stdlib.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 
 

@@ -41,7 +41,7 @@
 
 
 #include <trial/Images/PagedImage.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 

@@ -52,7 +52,7 @@
 
 
 #include <aips/stdlib.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 Float const_arg_func(const Float& val)
 {

@@ -58,7 +58,7 @@
 #include <aips/Logging/LogIO.h>
 #include <trial/Tasking/ProgressMeter.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/iomanip.h>
 
 

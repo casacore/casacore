@@ -30,7 +30,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Tables/Table.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 // This program tests concurrent access to lattices.

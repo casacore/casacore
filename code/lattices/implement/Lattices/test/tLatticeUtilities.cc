@@ -1,5 +1,5 @@
 //# tLatticeUtilities.cc:
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeUtilities.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 int main()

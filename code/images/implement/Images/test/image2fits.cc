@@ -1,5 +1,5 @@
 //# image2fits.cc: conversion from aips++ native tables to FITS
-//# Copyright (C) 1994,1995,1997,1999,2000
+//# Copyright (C) 1994,1995,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -47,7 +47,7 @@
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 int main(int argc, char *argv[])

@@ -1,5 +1,5 @@
 //# LatticeCache.cc: Cache for accessing a Lattice in Tiles
-//# Copyright (C) 1995,1996,1997,1999,2000
+//# Copyright (C) 1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,8 +43,8 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 #include <trial/Lattices/LatticeCache.h>
 

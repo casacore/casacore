@@ -1,5 +1,5 @@
 //# ImageRegrid.cc: Regrids images
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,8 +63,8 @@
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/Assert.h>
 
-#include <strstream.h>
-#include <fstream.h>
+#include <aips/strstream.h>
+#include <aips/fstream.h>
 
 
 template<class T>

@@ -1,5 +1,5 @@
 //# ImageExpr.cc: defines the ImageExpr class
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Unit.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 template <class T>

@@ -36,7 +36,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,

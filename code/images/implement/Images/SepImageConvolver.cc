@@ -50,7 +50,7 @@
 #include <trial/Mathematics/VectorKernel.h>
 #include <trial/Tasking/ProgressMeter.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/iomanip.h>
 
 

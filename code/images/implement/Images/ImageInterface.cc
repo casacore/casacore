@@ -44,7 +44,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/TableLogSink.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 
 template <class T> 

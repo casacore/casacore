@@ -33,7 +33,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 Vector<Quantum<Double> > ImageInfo::defaultRestoringBeam()
 {

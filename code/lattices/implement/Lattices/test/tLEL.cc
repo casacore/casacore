@@ -46,7 +46,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Complex.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 Bool checkAttribute (const LELAttribute& attr,

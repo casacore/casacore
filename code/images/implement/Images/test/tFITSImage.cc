@@ -42,7 +42,7 @@
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
               const Array<Float>& fits, const Array<Bool>& fitsMask, Float tol=1.0e-5);

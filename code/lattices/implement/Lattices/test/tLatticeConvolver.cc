@@ -1,5 +1,5 @@
 //# tLatticeConvolver.cc:
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/TempLattice.h>
 #include <aips/Lattices/PagedArray.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 void print(const Lattice<Float> & psf, const Lattice<Float> & model,
 	   const Lattice<Float> & result) {

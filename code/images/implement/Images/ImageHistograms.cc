@@ -34,7 +34,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/String.h>
 
-#include <strstream.h>
+#include <aips/strstream.h>
 
 // Public functions
 

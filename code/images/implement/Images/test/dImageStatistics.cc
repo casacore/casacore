@@ -115,7 +115,7 @@
 #include <trial/Lattices/LCBox.h>
 #include <trial/Tasking/PGPlotter.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 enum defaults {AXES, REGION, STATS, RANGE, PLOTTING, NDEFAULTS=5};
 

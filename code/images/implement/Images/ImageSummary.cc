@@ -48,7 +48,7 @@
 #include <aips/Utilities/ValType.h>
 
 #include <aips/iomanip.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #include <trial/Images/ImageSummary.h>
 

@@ -1,5 +1,5 @@
 //# LCEllipsoid.cc: Define an N-dimensional ellipsoidal region of interest
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,8 +32,8 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 typedef Vector<Int> lcellipsoid_gppbug1;
 

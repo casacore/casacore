@@ -55,10 +55,10 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/ValType.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 #include <aips/stdlib.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 #include <aips/OS/Timer.h>
 

@@ -1,5 +1,5 @@
 //# tLatticeExprNode3.cc:  Test program for regions in LatticeExprNode
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 Bool checkFloat (const LatticeExprNode& expr, 
