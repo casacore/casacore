@@ -213,8 +213,8 @@ void doIt (Bool doExcp, Bool& success)
 		      == "abc");
     AlwaysAssertExit (Path::stripDirectory ("abc", "abc/de")
 		      == "abc");
-    AlwaysAssertExit (Path::stripDirectory ("././abc/ef", "././././abc/de")
-		      == "./ef");
+    AlwaysAssertExit (Path::stripDirectory ("././abc/de/ef", "././././abc/de")
+		      == "././ef");
     AlwaysAssertExit (Path::stripDirectory ("abc/ef", "abc/de")
 		      == "./ef");
     AlwaysAssertExit (Path::stripDirectory ("ef", "de")
@@ -223,12 +223,14 @@ void doIt (Bool doExcp, Bool& success)
 		      == "$HOME/ef");
     AlwaysAssertExit (Path::stripDirectory ("/de/abc/ab/ef", "/de/abc/de")
 		      == "./ab/ef");
+    AlwaysAssertExit (Path::stripDirectory ("/de/abc/ab/ef", "/de/abc/ab")
+		      == "././ef");
     AlwaysAssertExit (Path::addDirectory ("de/ab", "/ghi/a")
 		      == "de/ab");
     AlwaysAssertExit (Path::addDirectory ("./de/ab", "/ghi/a")
 		      == "/ghi/de/ab");
     AlwaysAssertExit (Path::addDirectory ("././de/ab", "/ghi/a")
-		      == "/ghi/de/ab");
+		      == "/ghi/a/de/ab");
 }
 
 
