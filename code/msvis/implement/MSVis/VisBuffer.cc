@@ -61,6 +61,7 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       channelOK_p=other.channelOK_p;
       ant1OK_p=other.ant1OK_p;
       ant2OK_p=other.ant2OK_p;
+      corrTypeOK_p=other.corrTypeOK_p;
       cjonesOK_p=other.cjonesOK_p;
       fieldIdOK_p=other.fieldIdOK_p;
       flagOK_p=other.flagOK_p;
@@ -74,7 +75,11 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       timeOK_p=other.timeOK_p;
       uvwOK_p=other.uvwOK_p;
       visOK_p=other.visOK_p;
+      modelVisOK_p=other.modelVisOK_p;
+      correctedVisOK_p=other.correctedVisOK_p;
       visCubeOK_p=other.visCubeOK_p;
+      modelVisCubeOK_p=other.modelVisCubeOK_p;
+      correctedVisCubeOK_p=other.correctedVisCubeOK_p;
       weightOK_p=other.weightOK_p;
       weightMatOK_p=other.weightMatOK_p;
     }
@@ -91,6 +96,10 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
     if (ant2OK_p) {
       antenna2_p.resize(other.antenna2_p.nelements()); 
       antenna2_p=other.antenna2_p;
+    }
+    if (corrTypeOK_p) {
+      corrType_p.resize(other.corrType_p.nelements()); 
+      corrType_p=other.corrType_p;
     }
     if (cjonesOK_p) {
       cjones_p.resize(other.cjones_p.nelements()); 
@@ -132,9 +141,25 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       visibility_p.resize(other.visibility_p.shape());
       visibility_p=other.visibility_p;
     }
+    if (modelVisOK_p) {
+      modelVisibility_p.resize(other.modelVisibility_p.shape());
+      modelVisibility_p=other.modelVisibility_p;
+    }
+    if (correctedVisOK_p) {
+      correctedVisibility_p.resize(other.correctedVisibility_p.shape());
+      correctedVisibility_p=other.correctedVisibility_p;
+    }
     if (visCubeOK_p) {
       visCube_p.resize(other.visCube_p.shape());
       visCube_p=other.visCube_p;
+    }
+    if (modelVisCubeOK_p) {
+      modelVisCube_p.resize(other.modelVisCube_p.shape());
+      modelVisCube_p=other.modelVisCube_p;
+    }
+    if (correctedVisCubeOK_p) {
+      correctedVisCube_p.resize(other.correctedVisCube_p.shape());
+      correctedVisCube_p=other.correctedVisCube_p;
     }
     if (weightOK_p) {
       weight_p.resize(other.weight_p.nelements()); 
@@ -190,16 +215,18 @@ void VisBuffer::invalidate()
 {
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=phaseCenterOK_p=polFrameOK_p=
-    sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = False;
+    sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p= False;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=False;
+  modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=False;
 }
 
 void VisBuffer::validate()
 {
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=phaseCenterOK_p=polFrameOK_p=
-    sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = True;
+    sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = corrTypeOK_p=True;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=True;  
+  modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=True;
 }
 
 void VisBuffer::freqAverage() 
@@ -296,15 +323,49 @@ Vector<Double>& VisBuffer::fillTime()
 { timeOK_p=True; return visIter_p->time(time_p);}
 Vector<RigidVector<Double,3> >& VisBuffer::filluvw()
 { uvwOK_p=True; return visIter_p->uvw(uvw_p);}
-Matrix<CStokesVector>& VisBuffer::fillVis()
-{ visOK_p=True; return visIter_p->visibility(visibility_p);}
-Cube<Complex>& VisBuffer::fillVisCube()
-{ visCubeOK_p=True; return visIter_p->visibility(visCube_p);}
+Matrix<CStokesVector>& 
+VisBuffer::fillVis(VisibilityIterator::DataColumn whichOne)
+{
+  switch (whichOne) {
+  case VisibilityIterator::Observed:
+    visOK_p=True; 
+    return visIter_p->visibility(visibility_p,whichOne);
+    break;
+  case VisibilityIterator::Model:
+    modelVisOK_p=True;
+    return visIter_p->visibility(modelVisibility_p,whichOne);
+    break;
+  case VisibilityIterator::Corrected:
+    correctedVisOK_p=True;
+    return visIter_p->visibility(correctedVisibility_p,whichOne);
+    break;    
+  }
+}
+
+Cube<Complex>& VisBuffer::fillVisCube(VisibilityIterator::DataColumn whichOne)
+{ 
+  switch(whichOne) {
+  case VisibilityIterator::Observed:
+    visCubeOK_p=True; 
+    return visIter_p->visibility(visCube_p,whichOne);
+    break;
+  case VisibilityIterator::Model:
+    modelVisCubeOK_p=True; 
+    return visIter_p->visibility(modelVisCube_p,whichOne);
+    break;
+  case VisibilityIterator::Corrected:
+    correctedVisCubeOK_p=True; 
+    return visIter_p->visibility(correctedVisCube_p,whichOne);
+    break;
+  }
+}
+
 Vector<Float>& VisBuffer::fillWeight()
 { weightOK_p=True; return visIter_p->weight(weight_p);}
-Matrix<Float>& VisBuffer::fillWeightMat()
-{ weightMatOK_p=True; return visIter_p->weightSpectrum(weightMat_p);}
+Matrix<Float>& VisBuffer::fillImagingWeight()
+{ weightMatOK_p=True; return visIter_p->imagingWeight(weightMat_p);}
 
 const Vector<Float>& VisBuffer::feed_pa(Double time) const
 {return visIter_p->feed_pa(time);}
+
 

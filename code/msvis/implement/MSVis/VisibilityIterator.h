@@ -1,5 +1,5 @@
 //# VisibilityIterator.h: Step through the MeasurementEquation by visibility
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,6 +105,14 @@ public:
     Linear=1
   };
 
+  enum DataColumn {
+    // Observed data
+    Observed=0,
+    // Model data
+    Model,
+    // Corrected data
+    Corrected
+  };
   // Default constructor - useful only to assign another iterator later
   ROVisibilityIterator();
 
@@ -220,12 +228,14 @@ public:
   Vector<Double>& time(Vector<Double>& t) const;
 
   // Return the visibilities as found in the MS, Cube(npol,nchan,nrow).
-  Cube<Complex>& visibility(Cube<Complex>& vis) const;
+  Cube<Complex>& visibility(Cube<Complex>& vis,
+			    DataColumn whichOne) const;
 
   // Return the visibility 4-vector of polarizations for each channel.
   // If the MS doesn't contain all polarizations, it is assumed it
   // contains one or two parallel hand polarizations.
-  Matrix<CStokesVector>& visibility(Matrix<CStokesVector>& vis) const;
+  Matrix<CStokesVector>& visibility(Matrix<CStokesVector>& vis, 
+				    DataColumn whichOne) const;
 
   // Return u,v and w (in meters)
   Vector<RigidVector<Double,3> >& 
@@ -234,13 +244,12 @@ public:
   // Return weight
   Vector<Float>& weight(Vector<Float>& wt) const;
 
-  // Return weight_spectrum
-  Matrix<Float>& weightSpectrum(Matrix<Float>& wt) const;
+  // Return imaging weight (a weight for each channel)
+  Matrix<Float>& imagingWeight(Matrix<Float>& wt) const;
 
   // Return True if FieldId/Source has changed since last iteration
   Bool newFieldId() const
   { return ToBool(curStartRow_p==0 && msIter_p.newField()); }
-
 
   // Return True if SpectralWindow has changed since last iteration
   Bool newSpectralWindow() const
@@ -316,7 +325,7 @@ protected:
   // attach the column objects to the currently selected table
   virtual void attachColumns();
   // get the (velocity selected) interpolated visibilities, flags and weights
-  void getInterpolatedVisFlagWeight() const;
+  void getInterpolatedVisFlagWeight(DataColumn whichOne) const;
 
   ROVisibilityIterator* This;
   MSIter msIter_p;
@@ -339,11 +348,12 @@ protected:
   Bool useSlicer_p;
   Vector<Double> time_p;
   Vector<Double> frequency_p;
-  Bool freqCacheOK_p, flagOK_p, visOK_p, weightSpOK_p;
+  Bool freqCacheOK_p, flagOK_p, weightSpOK_p;
+  Block<Bool> visOK_p;
   Cube<Bool> flagCube_p;
   Cube<Complex> visCube_p;
   Matrix<Double> uvwMat_p;
-  Matrix<Float> weightSpectrum_p;
+  Matrix<Float> imagingWeight_p;
   Vector<Float> pa_p;
 
   // for PA calculations
@@ -366,8 +376,11 @@ protected:
   ROScalarColumn<Int> colAntenna1, colAntenna2;
   ROScalarColumn<Double> colTime;
   ROScalarColumn<Float> colWeight;
-  ROArrayColumn<Float> colWeightSpectrum;
+  ROArrayColumn<Float> colImagingWeight;
   ROArrayColumn<Complex> colVis;
+  ROArrayColumn<Complex> colModelVis;
+  ROArrayColumn<Complex> colCorrVis;
+  PtrBlock<ROArrayColumn<Complex>* > colVisPtr;
   ROArrayColumn<Float> colSigma;
   ROArrayColumn<Bool> colFlag;
   ROScalarColumn<Bool> colFlagRow;
@@ -432,20 +445,21 @@ public:
   // in the original MS.
   // If the MS does not contain all polarizations, only the parallel
   // hand polarizations are used.
-  void setVis(const Matrix<CStokesVector>& vis);
+  void setVis(const Matrix<CStokesVector>& vis, DataColumn whichOne);
 
   // Set/modify the visibilities
   // This sets the data as found in the MS, Cube(npol,nchan,nrow).
   //  void setVis(const Cube<Complex>& vis);
 
   // Set the visibility and flags, and interpolate from velocities if needed
-  void setVisAndFlag(const Cube<Complex>& vis, const Cube<Bool>& flag);
+  void setVisAndFlag(const Cube<Complex>& vis, const Cube<Bool>& flag,
+		     DataColumn whichOne);
 
   // Set/modify the weights
   void setWeight(const Vector<Float>& wt);
 
-  // Set/modify the weight spectrum
-  void setWeightSpectrum(const Matrix<Float>& wt);
+  // Set/modify the imaging weights
+  void setImagingWeight(const Matrix<Float>& wt);
 
 protected:
   virtual void attachColumns();
@@ -455,8 +469,11 @@ protected:
 
   // column access functions
   ArrayColumn<Complex> RWcolVis;
+  ArrayColumn<Complex> RWcolModelVis;
+  ArrayColumn<Complex> RWcolCorrVis;
+  PtrBlock<ArrayColumn<Complex>* > RWcolVisPtr;
   ScalarColumn<Float> RWcolWeight;
-  ArrayColumn<Float> RWcolWeightSpectrum;
+  ArrayColumn<Float> RWcolImagingWeight;
   ArrayColumn<Bool> RWcolFlag;
 
 };

@@ -64,5 +64,5 @@
 
 void makePSFVisBuffer(VisBuffer& vb) {
   CStokesVector coh(Complex(1.0), Complex(0.0), Complex(0.0), Complex(1.0));
-  vb.visibility()=coh;
+  vb.correctedVisibility()=coh;
 }

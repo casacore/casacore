@@ -73,6 +73,7 @@ ROVisibilityIterator::~ROVisibilityIterator() {}
 ROVisibilityIterator& 
 ROVisibilityIterator::operator=(const ROVisibilityIterator& other) 
 {
+  if (this==&other) return *this;
   This=(ROVisibilityIterator*)this;
   msIter_p=other.msIter_p;
   selTable_p=other.selTable_p;
@@ -130,8 +131,14 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   colAntenna2.reference(other.colAntenna2);
   colTime.reference(other.colTime);
   colWeight.reference(other.colWeight);
-  colWeightSpectrum.reference(other.colWeightSpectrum);
+  colImagingWeight.reference(other.colImagingWeight);
   colVis.reference(other.colVis);
+  colModelVis.reference(other.colModelVis);
+  colCorrVis.reference(other.colCorrVis);
+  colVisPtr.resize(3);
+  colVisPtr[0]=&colVis;
+  colVisPtr[1]=&colModelVis;
+  colVisPtr[2]=&colCorrVis;
   colSigma.reference(other.colSigma);
   colFlag.reference(other.colFlag);
   colFlagRow.reference(other.colFlagRow);
@@ -149,7 +156,8 @@ void ROVisibilityIterator::origin()
     newChanGroup_p=True;
     curStartRow_p=0;
     freqCacheOK_p=False;
-    flagOK_p = visOK_p = weightSpOK_p = False;
+    flagOK_p = weightSpOK_p = False;
+    visOK_p.resize(3); visOK_p[0]=visOK_p[1]=visOK_p[2]=False;
     setSelTable();
     getTopoFreqs();
     updateSlicer();
@@ -173,7 +181,7 @@ void ROVisibilityIterator::originChunks()
 void ROVisibilityIterator::advance()
 {
   newChanGroup_p=False;
-  flagOK_p = visOK_p = weightSpOK_p = False;
+  flagOK_p = visOK_p[0] = visOK_p[1] = visOK_p[2] = weightSpOK_p = False;
   curStartRow_p=curEndRow_p+1;
   if (curStartRow_p>=curTableNumRow_p) {
     if (++curChanGroup_p >= curNumChanGroup_p) {
@@ -257,7 +265,8 @@ void ROVisibilityIterator::setState()
 {
   curTableNumRow_p = msIter_p.table().nrow();
   // get the times for this iteration
-  ScalarColumn<Double> colTime(msIter_p.table(),MS::columnName(MS::TIME));
+  // Don't understand why this next line was here: TJC 1997/8/7
+  //  ScalarColumn<Double> colTime(msIter_p.table(),MS::columnName(MS::TIME));
   time_p.resize(curTableNumRow_p); colTime.getColumn(time_p);
   curStartRow_p=0;
   setSelTable();
@@ -303,18 +312,26 @@ void ROVisibilityIterator::updateSlicer()
 
 void ROVisibilityIterator::attachColumns()
 {
+  const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
   colAntenna1.attach(selTable_p,MS::columnName(MS::ANTENNA1));
   colAntenna2.attach(selTable_p,MS::columnName(MS::ANTENNA2));
   colTime.attach(selTable_p,MS::columnName(MS::TIME));
   colVis.attach(selTable_p,MS::columnName(MS::DATA));
+  if (cds.isDefined("MODEL_DATA")) 
+    colModelVis.attach(selTable_p,"MODEL_DATA");
+  if (cds.isDefined("CORRECTED_DATA"))
+    colCorrVis.attach(selTable_p,"CORRECTED_DATA");
+  colVisPtr.resize(3);
+  colVisPtr[0]=&colVis;
+  colVisPtr[1]=&colModelVis;
+  colVisPtr[2]=&colCorrVis;
   colUVW.attach(selTable_p,MS::columnName(MS::UVW));
   colFlag.attach(selTable_p,MS::columnName(MS::FLAG));
   colFlagRow.attach(selTable_p,MS::columnName(MS::FLAG_ROW));
   colSigma.attach(selTable_p,MS::columnName(MS::SIGMA));
   colWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
-  const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
-  if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) 
-    colWeightSpectrum.attach(selTable_p,MS::columnName(MS::WEIGHT_SPECTRUM));
+  if (cds.isDefined("IMAGING_WEIGHT")) 
+    colImagingWeight.attach(selTable_p,"IMAGING_WEIGHT");
 }
 
 ROVisibilityIterator & ROVisibilityIterator::operator++(int)
@@ -368,7 +385,8 @@ Cube<Bool>& ROVisibilityIterator::flag(Cube<Bool>& flags) const
   if (velSelection_p) {
     if (!flagOK_p) {
       // need to do the interpolation
-      getInterpolatedVisFlagWeight();
+      getInterpolatedVisFlagWeight(Corrected);
+      This->flagOK_p=This->visOK_p[Corrected]=This->weightSpOK_p=True;
     }
     flags.resize(flagCube_p.shape());  flags=flagCube_p; 
   } else {
@@ -447,16 +465,17 @@ Vector<Double>& ROVisibilityIterator::time(Vector<Double>& t) const
 }
 
 Cube<Complex>& 
-ROVisibilityIterator::visibility(Cube<Complex>& vis) const
+ROVisibilityIterator::visibility(Cube<Complex>& vis, DataColumn whichOne) const
 {
   if (velSelection_p) {
-    if (!visOK_p) {
-      getInterpolatedVisFlagWeight();
+    if (!visOK_p[whichOne]) {
+      getInterpolatedVisFlagWeight(whichOne);
+      This->visOK_p[whichOne]=This->flagOK_p=This->weightSpOK_p=True;
     }
     vis.resize(visCube_p.shape()); vis=visCube_p;
   } else { 
-    if (useSlicer_p) colVis.getColumn(slicer_p,vis,True);
-    else colVis.getColumn(vis,True);
+    if (useSlicer_p) colVisPtr[whichOne]->getColumn(slicer_p,vis,True);
+    else colVisPtr[whichOne]->getColumn(vis,True);
   }
   return vis;
 }
@@ -515,15 +534,16 @@ void transpose(Matrix<Float>& out, const Matrix<Float>& in)
   out.putStorage(pout,deleteOut);
   in.freeStorage(pin,deleteIn);
 }
-void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
+void ROVisibilityIterator::getInterpolatedVisFlagWeight(DataColumn whichOne)
+     const
 {
   // get vis, flags & weights
   // tricky.. to avoid recursion we need to set velSelection_p to False
   // temporarily.
   This->velSelection_p = False; 
-  visibility(This->visCube_p);
+  visibility(This->visCube_p, whichOne);
   flag(This->flagCube_p); 
-  weightSpectrum(This->weightSpectrum_p);
+  imagingWeight(This->imagingWeight_p);
   Vector<Double> freq; frequency(freq);
   This->velSelection_p = True;
 
@@ -543,7 +563,7 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
   Cube<Bool> flag,intFlag;
   swapyz(flag,flagCube_p);
   Matrix<Float> wt,intWt;
-  transpose(wt,weightSpectrum_p);
+  transpose(wt,imagingWeight_p);
   InterpolateArray1D<Float,Complex>::InterpolationMethod method1=
     InterpolateArray1D<Float,Complex>::linear;
   InterpolateArray1D<Float,Float>::InterpolationMethod method2=
@@ -557,14 +577,16 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
   InterpolateArray1D<Float,Float>::interpolate(intWt,sfreq,xfreq,wt,method2);
   swapyz(This->visCube_p,intVis);
   swapyz(This->flagCube_p,intFlag);
-  transpose(This->weightSpectrum_p,intWt);
+  transpose(This->imagingWeight_p,intWt);
 }
 
 Matrix<CStokesVector>& 
-ROVisibilityIterator::visibility(Matrix<CStokesVector>& vis) const
+ROVisibilityIterator::visibility(Matrix<CStokesVector>& vis,
+				 DataColumn whichOne) const
 {
-  if (useSlicer_p) colVis.getColumn(slicer_p,This->visCube_p,True);
-  else colVis.getColumn(This->visCube_p,True);
+  if (useSlicer_p) colVisPtr[whichOne]->
+		     getColumn(slicer_p,This->visCube_p,True);
+  else colVisPtr[whichOne]->getColumn(This->visCube_p,True);
   vis.resize(channelGroupSize_p,curNumRow_p);
   Bool deleteIt;
   Complex* pcube=This->visCube_p.getStorage(deleteIt);
@@ -676,16 +698,17 @@ Vector<Float>& ROVisibilityIterator::weight(Vector<Float>& wt) const
   return wt;
 }
 
-Matrix<Float>& ROVisibilityIterator::weightSpectrum(Matrix<Float>& wt) const
+Matrix<Float>& ROVisibilityIterator::imagingWeight(Matrix<Float>& wt) const
 {
   if (velSelection_p) {
     if (!weightSpOK_p) {
-      getInterpolatedVisFlagWeight();
+      getInterpolatedVisFlagWeight(Corrected);
+      This->weightSpOK_p=This->visOK_p[Corrected]=This->flagOK_p=True;
     }
-    wt.resize(weightSpectrum_p.shape()); wt=weightSpectrum_p; 
+    wt.resize(imagingWeight_p.shape()); wt=imagingWeight_p; 
   } else {
-    if (useSlicer_p) colWeightSpectrum.getColumn(weightSlicer_p,wt,True);
-    else colWeightSpectrum.getColumn(wt,True);
+    if (useSlicer_p) colImagingWeight.getColumn(weightSlicer_p,wt,True);
+    else colImagingWeight.getColumn(wt,True);
   }
   return wt;
 }
@@ -709,6 +732,7 @@ ROVisibilityIterator::selectVelocity
   }
   // have to reset the iterator so all caches get filled
   originChunks();
+  return *this;
 }
 
 
@@ -780,8 +804,14 @@ VisibilityIterator::operator=(const VisibilityIterator& other)
 	ROVisibilityIterator::operator=(other);
 	RWcolFlag.reference(other.RWcolFlag);
 	RWcolVis.reference(other.RWcolVis);
+	RWcolModelVis.reference(other.RWcolModelVis);
+	RWcolCorrVis.reference(other.RWcolCorrVis);
+	RWcolVisPtr.resize(3);
+	RWcolVisPtr[0]=&RWcolVis;
+	RWcolVisPtr[1]=&RWcolModelVis;
+	RWcolVisPtr[2]=&RWcolCorrVis;
 	RWcolWeight.reference(other.RWcolWeight);
-	RWcolWeightSpectrum.reference(other.RWcolWeightSpectrum);
+	RWcolImagingWeight.reference(other.RWcolImagingWeight);
     }
     return *this;
 }
@@ -803,14 +833,23 @@ VisibilityIterator & VisibilityIterator::operator++()
 void VisibilityIterator::attachColumns()
 {
   ROVisibilityIterator::attachColumns();
-  RWcolVis.attach(selTable_p,MS::columnName(MS::DATA));
-  RWcolWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
-  RWcolFlag.attach(selTable_p,MS::columnName(MS::FLAG));
   //todo: should cache this (update once per ms)
   const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
-  if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) 
-    RWcolWeightSpectrum.attach(selTable_p,MS::columnName(MS::WEIGHT_SPECTRUM));
+  RWcolVis.attach(selTable_p,MS::columnName(MS::DATA));
+  if (cds.isDefined("MODEL_DATA")) 
+    RWcolModelVis.attach(selTable_p,"MODEL_DATA");
+  if (cds.isDefined("CORRECTED_DATA")) 
+    RWcolCorrVis.attach(selTable_p,"CORRECTED_DATA");
+  RWcolVisPtr.resize(3);
+  RWcolVisPtr[0]=&RWcolVis;
+  RWcolVisPtr[1]=&RWcolModelVis;
+  RWcolVisPtr[2]=&RWcolCorrVis;
+  RWcolWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
+  RWcolFlag.attach(selTable_p,MS::columnName(MS::FLAG));
+  if (cds.isDefined("IMAGING_WEIGHT")) 
+    RWcolImagingWeight.attach(selTable_p,"IMAGING_WEIGHT");
 }
+
 void VisibilityIterator::setFlag(const Matrix<Bool>& flag)
 {
   // use same value for all polarizations
@@ -840,7 +879,8 @@ void VisibilityIterator::setFlag(const Cube<Bool>& flags)
   else RWcolFlag.putColumn(flags);
 }
 
-void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis)
+void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis,
+				DataColumn whichOne)
 {
   // two problems: 1. channel selection -> we can only write to reference
   // MS with 'processed' channels
@@ -869,21 +909,22 @@ void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis)
       }
     }
   }
-  if (useSlicer_p) RWcolVis.putColumn(slicer_p,visCube_p);
-  else RWcolVis.putColumn(visCube_p);
+  if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,visCube_p);
+  else RWcolVisPtr[whichOne]->putColumn(visCube_p);
 }
 
 void VisibilityIterator::setVisAndFlag(const Cube<Complex>& vis,
-				       const Cube<Bool>& flag)
+				       const Cube<Bool>& flag,
+				       DataColumn whichOne)
 {
   if (velSelection_p) {
     setInterpolatedVisFlag(vis,flag);
-    if (useSlicer_p) RWcolVis.putColumn(slicer_p,visCube_p);
+    if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,visCube_p);
     else RWcolVis.putColumn(visCube_p);
     if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flagCube_p);
     else RWcolFlag.putColumn(flagCube_p);
   } else {
-    if (useSlicer_p) RWcolVis.putColumn(slicer_p,vis);
+    if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,vis);
     else RWcolVis.putColumn(vis);
     if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flag);
     else RWcolFlag.putColumn(flag);
@@ -895,15 +936,15 @@ void VisibilityIterator::setWeight(const Vector<Float>& weight)
     RWcolWeight.putColumn(weight);
 }
 
-void VisibilityIterator::setWeightSpectrum(const Matrix<Float>& wt)
+void VisibilityIterator::setImagingWeight(const Matrix<Float>& wt)
 {
   if (velSelection_p) {
     setInterpolatedWeight(wt);
-    if (useSlicer_p) RWcolWeightSpectrum.putColumn(weightSlicer_p,weightSpectrum_p);
-    else RWcolWeightSpectrum.putColumn(weightSpectrum_p);
+    if (useSlicer_p) RWcolImagingWeight.putColumn(weightSlicer_p,imagingWeight_p);
+    else RWcolImagingWeight.putColumn(imagingWeight_p);
   } else {
-    if (useSlicer_p) RWcolWeightSpectrum.putColumn(weightSlicer_p,wt);
-    else RWcolWeightSpectrum.putColumn(wt);
+    if (useSlicer_p) RWcolImagingWeight.putColumn(weightSlicer_p,wt);
+    else RWcolImagingWeight.putColumn(wt);
   }
 }
 
@@ -968,7 +1009,7 @@ void VisibilityIterator::setInterpolatedWeight(const Matrix<Float>& wt)
   }
   InterpolateArray1D<Float,Float>::
     interpolate(intWt,xfreq,sfreq,twt,method2);
-  transpose(weightSpectrum_p,intWt);
+  transpose(imagingWeight_p,intWt);
 }
 
 

@@ -71,6 +71,8 @@ public:
 
   void setOffset(const Vector<Int>& off);
 
+  void setOffset(const IPosition& off);
+
 protected:
 
   Int nint(Double val) {return Int(floor(val+0.5));};

@@ -135,6 +135,12 @@ void Gridder<Domain, Range>::setOffset(const Vector<Int>& off)
   offsetVec=off;
 }
 
+template <class Domain, class Range>
+void Gridder<Domain, Range>::setOffset(const IPosition& off)
+{
+  offsetVec=off.asVector().ac();
+}
+
 // Return correction factor. This is the value that
 // must be divided to get a correct flux.
 template <class Domain, class Range>

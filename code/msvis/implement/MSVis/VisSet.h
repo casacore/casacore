@@ -1,5 +1,5 @@
 //# VisSet.h: VisSet definitions
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,10 +52,10 @@
 // <synopsis> 
 // The VisSet is a class that simplifies access to the visibility data
 // for the synthesis processing code. It holds a reference to an original
-// MeasurementSet with observed data, but also keeps two 'reference' copies
-// with their own DATA column for the storage of model visibilities and
-// corrected visibilities. All access to these MeasurementSets is done via
-// three VisibilityIterators for observed, corrected and model data.
+// MeasurementSet with observed data and creates two extra data
+// columns for the storage of model visibilities and
+// corrected visibilities. All access to the MeasurementSet is done via
+// the VisibilityIterator.
 //
 // The VisSet allows selection and sorting of the MeasurementSet to be applied.
 // A number of columns can be specified to define the iteration order, a
@@ -78,9 +78,8 @@
 // </example>
 //
 // <motivation>
-// The MeasurementSet interface is a bit cumbersome to use directly if lots
-// of iteration through an observed MS and 2 reference MSs is needed.
-// This class provides an easy interface. It also keeps the iterators around
+// This class provides an easy interface to the MS. 
+// It keeps the iterator around
 // for reuse, thus avoiding repeated sorting of the data.
 // </motivation>
 //
@@ -102,6 +101,7 @@ class VisSet {
 public:
   // default constructor, only useful to assign to later.
   VisSet() {}
+
   // Construct from a MeasurementSet, with iteration order specified in
   // columns (giving the MS enum for the column) 
   // Specify channel selection as a Matrix(3,nSpw) where for each
@@ -110,12 +110,15 @@ public:
   // all channels selected.
   // Specify a time interval for iterating in 'chunks' of time.
   // The default time interval of 0 groups all times together.
-  // This constructor creates two referencing MeasurementSets,
-  // -model and -corrected, these have their own DATA column to store
-  // model and corrected visibilities. If they already exist and have the
+  // This constructor creates three new columns:
+  // MODEL_DATA and CORRECTED_DATA and IMAGING_WEIGHT
+  // If they already exist and have the
   // same channel selection applied, they are reused.
-  VisSet(const MeasurementSet & ms, const Block<Int>& columns, 
+  // Note that the contents of these columns are NOT initialized,
+  // you should fill them before trying to read the data.
+  VisSet(MeasurementSet & ms, const Block<Int>& columns, 
 	 const Matrix<Int>& chanSelection, Double timeInterval=0);
+
   // Construct from an existing VisSet, this references the underlying
   // MeasurementSet(s) but allows a new iteration order and time interval
   // to be specified.
@@ -126,18 +129,12 @@ public:
   VisSet& operator=(const VisSet& other);
   // Flushes the data to disk
   void flush();
-  // Iterator access to the observed data
-  VisIter& observedCoherence();
-  // Iterator access to the
-  // observed coherence corrected for non-position dependent effects
-  VisIter& correctedCoherence();
-  // Iterator access to the 
-  // predicted coherence, without applying the non-position dependent
-  // effects (G, D, C, ..). I.e., the model for the calibratedCoherence(). 
-  VisIter& modelCoherence(); 
+  // Iterator access to the  data
+  VisIter& iter();
+
   // Reset the channel selection. Only subsets of the original selection
   // (set in constructor) can be specified.
-  // Note: this calls origin on the iterators.
+  // Note: this calls origin on the iterator.
   void selectChannel(Int nGroup,Int start, Int width, Int increment, 
 		     Int spectralWindow);
   // number of antennas
@@ -151,18 +148,14 @@ public:
   // number of coherences
   Int numberCoh() const;
 private:
-  // make a reference copy of the MS table, with the exception of
-  // the DATA column and the 'extraWritableColumns'. 
-  // We want a new writable data column with the same tile index column 
-  // (if any).
-  // Zero fills the new data column if fill=="zero", copies the data from
-  // the input (applying selection) if fill=="copy".
-  Table referenceCopy(const Table& tab, const String& extension, 
-		      const Vector<String>& extraWritableColumns,
-		      const String& fill);
+  // add the MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns
+  void addColumns(Table& tab);
+
+  // remove the MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns
+  void removeColumns(Table& tab);
   
-  MeasurementSet obsCoh_p, corrCoh_p, modelCoh_p;
-  VisIter obsIter_p, corrIter_p, modelIter_p;
+  MeasurementSet ms_p;
+  VisIter iter_p;
   Matrix<Int> selection_p;
 };
 
