@@ -1,5 +1,7 @@
 Begin tTableQuantum.cc.
 Adding column descriptors to the table...
+[MHz, GHz]
+[kHz, MHz]
 Testing TableQuantumDesc constructor exceptions...
 A no such column message should follow
 TableQuantum::checkColumn; No such column: SillyName
@@ -90,6 +92,21 @@ Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
  1.4921e+06 Hz, 1.22e+09 Hz
  1411.1 Hz, 1.09091 Hz]
 
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+06 kHz, 1.4003e-06 MHz
+ 1.4921 MHz, 1.22e+06 kHz
+ 1.4111 kHz, 1.09091e-06 MHz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+06 kHz, 1.4003e-06 MHz
+ 1.4921 MHz, 1.22e+06 kHz
+ 1.4111 kHz, 1.09091e-06 MHz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+
 Array quantum column: units are variable.
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
 [1.41212 GHz, 1.4003e-09 GHz
@@ -121,11 +138,25 @@ Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
  1.4921 MHz, 1220 MHz
  0.0014111 MHz, 1.09091e-06 MHz]
 
+[MHz, GHz]
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[0.00141212 MHz, 1.4003e-09 GHz
+ 0.0014921 GHz, 1220 MHz
+ 0.0014111 MHz, 1.09091e-09 GHz]
+
 Column's quantum units are: deg
 Quantum 0: 0 deg
 Quantum 1: 178.763 deg
 Quantum 2: 357.526 deg
 Quantum 3: 536.288 deg
 Quantum 4: 715.051 deg
+>>>
+put tq var arrays       2.04 real        1.18 user        0.77 system
+put tq fix arrays       0.98 real        0.62 user        0.33 system
+put tab    arrays       0.28 real        0.16 user        0.11 system
+get tq var arrays       5.96 real        2.46 user        3.21 system
+get tq fix arrays       1.88 real        0.37 user         1.4 system
+get tab    arrays        1.6 real         0.2 user        1.36 system
+<<<
 
 Execution of tTableQuantum.cc ended normally.
