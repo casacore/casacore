@@ -320,19 +320,15 @@ Bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec)
 // Save the current ImageInterface object to an output state record
 // 
    Vector<Int> shape=this->shape().asVector();
-
    outRec.define("shape", shape);
+//
    CoordinateSystem coordsys = coordinates();
    Record coordinateRecord;
    coordsys.save(coordinateRecord, "coordsys");
    outRec.defineRecord("coordsys", coordinateRecord, Record::Variable);
-   LCBox imageBox(IPosition(4,0,0,0,0), 
-		  IPosition(4,shape(0)-1,shape(1)-1,shape(2)-1,shape(3)-1),
-		  this->shape());
-   SubLattice<T> imageSubLattice(*this, imageBox, True);
-   Array<T> imageArray;
-   imageSubLattice.get(imageArray);
-   outRec.define("imagearray", static_cast<Array<T> >(imageArray), False);
+//
+   outRec.define("imagearray", this->get(), False);
+//
    Record imageInfoRecord;
    String errorString;             
    imageInfo_p.toRecord(errorString, imageInfoRecord);
@@ -348,19 +344,22 @@ Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
 //
 // Restore the current ImageInterface object from an input state record
 // 
+//
    Vector<Int> shape;
    inRec.get("shape", shape);
+   IPosition shape2(shape);
+   TiledShape newShape(shape2);  
+   resize(newShape);
+//
    const Record& coordinateRecord(inRec.asRecord("coordsys"));
+   CoordinateSystem* pCSys = CoordinateSystem::restore(coordinateRecord, "coordsys");
+   setCoordinateInfo(*pCSys);
+   delete pCSys;
+//
    Array<T> imageArray;
    inRec.get("imagearray",imageArray);
-   CoordinateSystem coordsystem=CoordinateSystem();
-   CoordinateSystem tempcoord;
-   tempcoord =* coordsystem.restore(coordinateRecord, "coordsys");
-   IPosition ipos(4,shape(0),shape(1),shape(2),shape(3));
-   TiledShape newShape(ipos);             
-   resize(newShape);
-   setCoordinateInfo(tempcoord);
-   putSlice(imageArray,IPosition(4,0,0,0,0));
+   this->put(imageArray);
+//
    Record imageInfoRecord(inRec.asRecord("imageinfo"));
    String errorString; 
    imageInfo_p.fromRecord(errorString, imageInfoRecord); 
@@ -368,7 +367,3 @@ Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
    error = "";
    return True;
 }
-
-
-
-
