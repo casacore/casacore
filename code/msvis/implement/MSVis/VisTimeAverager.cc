@@ -70,7 +70,6 @@ void VisTimeAverager::reset()
   firstInterval_p = True;
   nChan_p = 0;
   avrow_p = 0;
-  avBuf_p.nRow() = 0;
 };
 
 //----------------------------------------------------------------------------
@@ -104,6 +103,10 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
 	tStart_p = startTime;
 	firstInterval_p = False;
 	nChan_p = vb.nChannel();
+	// Initialize the averaging buffer
+	avBuf_p = vb;
+	avBuf_p.nRow();
+	avBuf_p.nRow() = 0;
 	// Initialize the first accumulation interval
 	initialize();
       };
@@ -137,7 +140,7 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
       avBuf_p.weight()(outrow) += wt;
       CStokesVector tmp;
       for (Int chn=0; chn<vb.nChannel(); chn++) {
-	if (vb.flag()(chn,row) == False) {
+	if (!vb.flag()(chn,row)) {
 	  avBuf_p.flag()(chn,outrow) = False;
 	  tmp = vb.visibility()(chn,row);
 	  tmp *= wt;
@@ -191,6 +194,7 @@ void VisTimeAverager::initialize()
       row++;
     }
   }
+
   avBuf_p.time().resize(nRow, True); 
   Matrix<CStokesVector> tmpVis = avBuf_p.visibility();
   avBuf_p.visibility().resize(nChan_p, nRow);
@@ -202,8 +206,8 @@ void VisTimeAverager::initialize()
   };
   avBuf_p.weight().resize(nRow, True); 
   avBuf_p.flagRow().resize(nRow, True); 
-  avBuf_p.flag().resize(nChan_p, nRow);
   Matrix<Bool> tmpFlag = avBuf_p.flag();
+  avBuf_p.flag().resize(nChan_p, nRow);
   for (row = 0; row < nRow-nRowAdd; row++) {
     for (chn = 0; chn < nChan_p; chn++) {
       avBuf_p.flag()(chn,row) = tmpFlag(chn,row);
@@ -232,11 +236,11 @@ void VisTimeAverager::normalize()
   for (Int row=avrow_p; row<avBuf_p.nRow(); row++) {
     Float wt=avBuf_p.weight()(row);
     if (wt==0.0f) avBuf_p.flagRow()(row)=True;
-    if (avBuf_p.flagRow()(row)==False) {
+    if (!avBuf_p.flagRow()(row)) {
       avBuf_p.time()(row)/=wt;
       avBuf_p.time()(row)+=tStart_p;
       for (Int chn=0; chn<avBuf_p.nChannel(); chn++) {
-	if (avBuf_p.flag()(chn,row)==False) {
+	if (!avBuf_p.flag()(chn,row)) {
 	  avBuf_p.visibility()(chn,row)*=1.0f/wt;
 	}
       }
