@@ -246,7 +246,9 @@ which is as follows:
 \begin{enumerate}
 \item
    The host name.  A catch-all value ``\code{DEFAULT}'' applies to any host
-   which does not have a specific entry.
+   which does not have a specific entry. If the default is ``\code{NONE}''
+   then the aipsinit scripts will not setup \code{AIPSPATH} for any host
+   not explicitly listed in \file{aipshosts}.
 
 \item
    The host architecture.  This specifies a subdirectory of \file{\$AIPSROOT},
