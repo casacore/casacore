@@ -49,7 +49,7 @@ template<class T> class Quantum;
 // </prerequisite>
 
 // <synopsis> 
-// Converts Gaussian parameetrs between world and pixel
+// Converts Gaussian parameters between world and pixel
 // </synopsis> 
 
 // <example>
@@ -116,6 +116,20 @@ public:
     Bool toWorld(Vector<Quantum<Double> >& world,
                  const Vector<Double>& pixel);
     // </group>
+
+    // Deconvolve the parameters of a source Gaussian from a beam Gaussian 
+    // to give a model Gaussian.  The return is True of the model appears
+    // to be a point source.  If the units of the model are not given,
+    // they will be set to the units of the source.
+    static Bool deconvolve(Quantum<Double>& majorAxisModel, 
+                           Quantum<Double>& minorAxisModel,
+                           Quantum<Double>& positionAngleModel, 
+                           const Quantum<Double>& majorAxisSource,
+                           const Quantum<Double>& minorAxisSource,
+                           const Quantum<Double>& positionAngleSource,
+                           const Quantum<Double>& majorAxisBeam,
+                           const Quantum<Double>& minorAxisBeam,
+                           const Quantum<Double>& positionAngleBeam);
 
     // Recover error messages from the conversion functions
     String errorMessage() const {return itsErrorMessage;}
