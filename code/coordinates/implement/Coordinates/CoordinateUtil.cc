@@ -57,7 +57,7 @@ void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
 			       );
   // reset the increment to 1 minute of arc on both axes
   Vector<String> units(2); units = String("'"); 
-  Vector<Double> inc(2); inc = 1.0;
+  Vector<Double> inc(2); inc(0) = -1.0; inc(1) = 1.0;
   dirAxes.setWorldAxisUnits(units);
   AlwaysAssert(dirAxes.setIncrement(inc) == True, AipsError);
   // Add the direction coordinates to the system. 
