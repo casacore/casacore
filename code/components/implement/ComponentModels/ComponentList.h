@@ -1,5 +1,5 @@
 //# ComponentList: this defines ComponentList.h
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,6 +99,9 @@ template <class Ms> class MeasRef;
 // created that is not associated with a Table. To save the list to disk it
 // must be given a name. This is done using the rename function. This will
 // rename the Table if the ComponentList was already associated with a Table.
+// Saving changes to the table on disk happens automatically when the list
+// is destructed or reset via the assignment operator (unless the table was
+// opened read-only).
 
 // The elements of a componentlist (ie., SkyComponents) are accessed via the
 // component functions. These functions return the SkyComponent by reference
@@ -149,8 +152,9 @@ public:
   ComponentList();
 
   // Read a componentList from an existing table. By default the Table is
-  // opened read-write. It is recommended that you create a const ComponentList
-  // if you open the Table readOnly.
+  // opened read-write.  Any subsequent changes made to a list opened 
+  // read-only (i.e. via add(), remove(), or editing a non-const member 
+  // component returned by component()) will not be saved to disk.
   ComponentList(const Path& fileName, const Bool readOnly=False);
 
   // The Copy constructor uses reference semantics
@@ -196,11 +200,9 @@ public:
 
   // Add a SkyComponent to the end of the ComponentList. The list length is
   // increased by one when using this function. By default the newly added
-  // component is not selected.
-  // <thrown>
-  // <li> AipsError - If the list is associated with a table that was opened
-  //                  readonly.
-  // </thrown>
+  // component is not selected.  Note that it is possible to add a component
+  // to a list that was opened read-only; however, the table on disk will 
+  // not be updated with new component.  
   void add(SkyComponent component);
 
   // Remove the specified SkyComponent(s) from the ComponentList. After
@@ -208,10 +210,10 @@ public:
   // one will be reduced by one. For example in a five element list removing
   // elements [0,2,4] will result in a two element list, now indexed as
   // elements zero and one, containing what was previously the second and
-  // fourth components.
+  // fourth components.  Note that it is possible to remove a component
+  // from a list that was opened read-only; however, the table on disk will 
+  // not be updated accordingly.  
   // <thrown>
-  // <li> AipsError - If the list is associated with a table that was opened
-  //                  readonly.
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or is negative.
   // </thrown>
