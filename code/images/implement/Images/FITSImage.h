@@ -259,7 +259,7 @@ private:
 // Fish things out of the FITS file
    void getImageAttributes (CoordinateSystem& cSys,
                             IPosition& shape, ImageInfo& info,
-                            Unit& brightnessUnit, TableRecord& miscInfo, 
+                            Unit& brightnessUnit, RecordInterface& miscInfo, 
                             Int& recsize, Int& recno,
 			    FITS::ValueType& dataType, 
                             Float& scale, Float& offset, Short& magic, 
@@ -269,12 +269,12 @@ private:
 // <group>
    void crackHeaderFloat (CoordinateSystem& cSys,
                           IPosition& shape, ImageInfo& imageInfo,
-                          Unit& brightnessUnit, TableRecord& miscInfo,
+                          Unit& brightnessUnit, RecordInterface& miscInfo,
                           LogIO&os, FitsInput& infile);
 
    void crackHeaderShort (CoordinateSystem& cSys,
                           IPosition& shape, ImageInfo& imageInfo,
-                          Unit& brightnessUnit, TableRecord& miscInfo,
+                          Unit& brightnessUnit, RecordInterface& miscInfo,
                           Float& scale, Float& offset, Short& magic,
                           Bool& hasBlanks, LogIO& os, FitsInput& infile);
 // </group>
