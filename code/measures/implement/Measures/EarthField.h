@@ -79,7 +79,7 @@ const Double DER_INTV = 10000;
 // <ul>
 //   <li> MVPosition: a position on Earth (ITRF)
 // </ul>
-// The returned value is a 3D vector of the field in ITRF coordinates.
+// The returned value is a 3D vector of the field (nT) in ITRF coordinates.
 // The derivative (d<sup>-1</sup>) can be obtained as well by 
 // derivative(MVPosition). <br>
 // An EarthField can be re-initialed with a different method and/or other
@@ -96,7 +96,7 @@ const Double DER_INTV = 10000;
 //	(km is default unit) over which linear approximation
 //	is used
 // </ul>
-// The field is assumed to be constant over 10 days.
+// The field is assumed to be constant over the time-span the class is used.
 //
 // The calculations are based on a routine provided by the IGRF community. See
 // ftp.ngdc.noaa.gov/Solid_Earth/Mainfld_Mag/Models/IAGA, routine IGRFLIB.FOR.
