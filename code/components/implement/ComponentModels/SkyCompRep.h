@@ -1,5 +1,5 @@
 //# SkyCompRep.h: A model component of the sky brightness
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -277,7 +277,8 @@ public:
   // internally for the SkyComponent.  So as to be able to handle
   // /beam units, the restoring beam must also be supplied.  It can be obtained 
   // from the ImageInfo class.  It should be of length 3 or 0 (no beam).  
-  // You must specify the type of shape to convert to.
+  // Multiplying by fluxRatio converts the brightness units to Jy/whatever (e.g. mJy/beam
+  // to Jy/beam). You must specify the type of shape to convert to.
   // The SkyComponent is given a  constant spectrum.
   void fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
                   const Unit& brightnessUnitIn,
