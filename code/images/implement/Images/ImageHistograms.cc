@@ -60,9 +60,11 @@ extern "C" {
 };
 
 // enums for min/max and statistics storage images
+// stats enum also used for location of items in vector 
+// returned by getStats
 
-enum minmax {MIN=0, MAX=1, NMINMAX=2};
-enum stats  {SUM=0, SUMSQ=1, NPTS=2, NSTATS=3};
+enum minmax {MIN, MAX, NMINMAX};
+enum stats  {SUM, SUMSQ, NPTS, MEAN, SIGMA, VAR, RMS, NSTATS2, NSTATS=NPTS+1};
 
 
 // Public functions
@@ -449,8 +451,8 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 
 // Set up iterator to work through histogram storage image line by line
 // Since I already set the tile shape to be unity on all but the first 
-// axis, just use the default Navigatgor, which will also guarentee the 
-// access pattern
+// axis, just use the LatticeStepper (default) navigator, which will also 
+// guarentee the access pattern
   
    IPosition cursorShape(pHistImage_p->ndim(),1);
    cursorShape(0) = pHistImage_p->shape()(0);
@@ -461,44 +463,26 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 
    counts.resize(pHistImage_p->shape());
    values.resize(pHistImage_p->shape());
+
    VectorIterator<Float> valuesIterator(values);
    VectorIterator<Float> countsIterator(counts);
 
-
-// Create storage image indexing IPositions and slice arrays. 
-// Fill them in as much as we can outside of the iteration loop  
- 
-   IPosition minMaxPos(pMinMaxImage_p->ndim());
-   IPosition minMaxShape = sliceMinMaxShape();
-   Array<T> minMaxSlice(minMaxShape);   
-   IPosition minMaxStride(pMinMaxImage_p->ndim(),1);
-   Int lastMinMaxAxis = pMinMaxImage_p->ndim() - 1;
-
-   Int lastHistAxis = pHistImage_p->ndim() - 1;
    Vector<T> range(2);
+   Float linearSum, linearYMax;
 
 // Iterate through histogram storage image
    
    for (histIterator.reset(),valuesIterator.origin(),countsIterator.origin(); 
        !histIterator.atEnd(); histIterator++,valuesIterator.next(),countsIterator.next()) {
-   
-// Set indexing IPositions
-   
-       minMaxPos(lastMinMaxAxis) = 0;
-       for (Int i=0; i<lastHistAxis; i++) minMaxPos(i) = histIterator.position()(i+1);
  
 // Work out the range for this histogram from the min/max storage image
- 
-      pMinMaxImage_p->getSlice (minMaxSlice, minMaxPos, minMaxShape, minMaxStride);
-      minMaxPos = 0;
-      minMaxPos(lastMinMaxAxis) = MIN;
-      range(0) = minMaxSlice(minMaxPos);
-      minMaxPos(lastMinMaxAxis) = MAX;
-      range(1) = minMaxSlice(minMaxPos);
+
+      getMinMax(range, histIterator.position(), False);
 
 // Extract the histogram in the appropriate form
 
-      extractOneHistogram (valuesIterator.vector(), countsIterator.vector(), range, 
+      extractOneHistogram (linearSum, linearYMax, valuesIterator.vector(), 
+                           countsIterator.vector(), range, 
                            histIterator.vectorCursor());
    }
 
@@ -529,23 +513,10 @@ void ImageHistograms<T>::accumulate (const IPosition& imageCursorPos,
 // Fish out the min and max for this chunk of the data from the min max
 // storage image.  
 
-   IPosition shape = sliceMinMaxShape();
-   Array<T> slice(shape);
-
-   IPosition start = locInMinMax(imageCursorPos);
-   pMinMaxImage_p->getSlice (slice, start, shape, 
-                             IPosition(pMinMaxImage_p->ndim(),1));
-
-   Int lastAxis = pMinMaxImage_p->ndim()-1;
    Vector<T> clip(2);
-   start = 0;
-   start(lastAxis) = MIN;
-   clip(0) = slice(start);
-       
-   start(lastAxis) = MAX;
-   clip(1) = slice(start);
-
+   getMinMax(clip, imageCursorPos, True);
          
+
 // Set histogram bin width
    
    Int nBins = nBins_p;
@@ -628,33 +599,22 @@ Bool ImageHistograms<T>::displayHistograms ()
       
       
 // Set up iterator to work through histogram storage image
-// line by line
+// line by line.  We don't use the TiledStepper because we already
+// set the tile shape sensibly, and this will guarentee the access
+// pattern is row based rather than tile based
  
    IPosition cursorShape(pHistImage_p->ndim(),1);
    cursorShape(0) = pHistImage_p->shape()(0);
-   TiledStepper histNavigator(pHistImage_p->shape(), pHistImage_p->tileShape(), 0);
-   RO_LatticeIterator<Int> histIterator(*pHistImage_p, histNavigator);
+   RO_LatticeIterator<Int> histIterator(*pHistImage_p, cursorShape);
 
 
-// Create storage image indexing IPositions and slice arrays. 
-// Fill them in as much as we can outside of the iteration loop  
- 
-   IPosition minMaxPos(pMinMaxImage_p->ndim());
-   IPosition minMaxShape = sliceMinMaxShape();
-   Array<T> minMaxSlice(minMaxShape);   
-   IPosition minMaxStride(pMinMaxImage_p->ndim(),1);
-   Int lastMinMaxAxis = pMinMaxImage_p->ndim() - 1;
-
-   IPosition statsPos(pStatsImage_p->ndim());
-   IPosition statsShape = sliceStatsShape();
-   Array<Double> statsSlice(statsShape);
-   IPosition statsStride(pStatsImage_p->ndim(),1);    
-   Int lastStatsAxis = pStatsImage_p->ndim() - 1;
-
-   Int lastHistAxis = pHistImage_p->ndim() - 1;
+// Histogram vectors and other bits and pieces
       
+   Vector<Float> counts(pHistImage_p->shape()(0));
+   Vector<Float> values(pHistImage_p->shape()(0));
    Vector<T> range(2);
-   Double sum, sumSq, mean, sigma, var;
+   Vector<Double> stats(NSTATS2);
+   Float linearSum, linearYMax;
    Int nPts;   
   
 
@@ -662,47 +622,24 @@ Bool ImageHistograms<T>::displayHistograms ()
 
    for (histIterator.reset(); !histIterator.atEnd(); histIterator++) {
    
-
-// Fill in the rest of the indexing IPositions
-   
-      for (Int i=0; i<lastHistAxis; i++) {
-         minMaxPos(i) = statsPos(i) = histIterator.position()(i+1);
-      }
-      minMaxPos(lastMinMaxAxis) = 0;
-      statsPos(lastStatsAxis) = 0;
- 
 // Work out the range for this histogram from the min/max storage image
 
-      pMinMaxImage_p->getSlice (minMaxSlice, minMaxPos, minMaxShape, minMaxStride);
-      minMaxPos = 0;
-      minMaxPos(lastMinMaxAxis) = MIN;
-      range(0) = minMaxSlice(minMaxPos);
-      minMaxPos(lastMinMaxAxis) = MAX;
-      range(1) = minMaxSlice(minMaxPos);
-
+      getMinMax(range, histIterator.position(), False);
 
 // Work out the mean and sigma from the data that made this histogram
 // from the statistics storage image
-   
-      pStatsImage_p->getSlice (statsSlice, statsPos, statsShape, statsStride);
-      statsPos = 0;
-      statsPos(lastStatsAxis) = SUM;
-      sum = statsSlice(statsPos);
-      statsPos(lastStatsAxis) = SUMSQ;
-      sumSq = statsSlice(statsPos);
-      statsPos(lastStatsAxis) = NPTS;
-      nPts = Int(statsSlice(statsPos) + 0.1);
-   
-      mean = sum/nPts;
-      var = (sumSq - sum*sum/nPts)/(nPts-1);
-      sigma = 0.0;
-      if (var > 0.0) sigma = sqrt(var);
-   
-   
+
+      getStats (stats, histIterator.position(), False);
+
+// Extract histogram in the form requested for plotting
+
+      extractOneHistogram (linearSum, linearYMax, values, counts, range,
+                           histIterator.vectorCursor());
+
 // Display the histogram
 
-      displayOneHistogram (histIterator.vectorCursor(), histIterator.position(),
-                           range, nPts, sum, mean, sigma, var);
+      displayOneHistogram (linearSum, linearYMax, histIterator.position(), 
+                           range, stats, values, counts);
  
    }
       
@@ -713,16 +650,15 @@ Bool ImageHistograms<T>::displayHistograms ()
 }
  
  
-
 template <class T>
-void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
-                                              const IPosition& histPos,   
+void ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
+                                              const Float &linearYMax,
+                                              const IPosition& histPos,
                                               const Vector<T>& range,
-                                              const Int& nStatsPts,
-                                              const Double& statsSum,
-                                              const Double& statsMean,
-                                              const Double& statsSigma,
-                                              const Double& statsVar)
+                                              const Vector<Double> &stats,
+                                              const Vector<Float>& values,
+                                              const Vector<Float>& counts)
+
 //
 // Display the histogram and optionally the equivalent Gaussian
 //
@@ -736,14 +672,7 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
 // Are we going to see the Gaussian ?
  
    Bool doGauss2 = False;
-   if (doGauss_p && statsSigma>0) doGauss2 = True;
- 
-   
-// Make a floating copy of the histogram counts for log taking
-// and easy conversion to a plot array
- 
-   Vector<Float> counts(intCounts.nelements());
-   for (Int i=0; i<intCounts.nelements(); i++) counts(i) = intCounts(i);
+   if (doGauss_p && stats(SIGMA)>0) doGauss2 = True;
  
  // Set bin width  
       
@@ -755,32 +684,17 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
       
    Float xMin = Float(range(0));
    Float xMax = Float(range(1));
-   Float yMax = max(counts.ac());
- 
+   Float yMin = 0.0;
+   Float yMax = linearYMax; 
    
-// Get integral of linear histogram
-   
-   Float dSum = 0.0;
-   if (doGauss2) dSum = sum(counts.ac()) * binWidth;
- 
- 
-// Make histogram cumulative if desired
-      
-   if (doCumu_p) makeCumulative (counts, yMax, nBins, 1.0);
-   
-          
-// Make histogram logarithmic if desired
-         
-   if (doLog_p) makeLogarithmic (counts, yMax, nBins);
-   
- 
+
 // Generate the equivalent Gaussian if desired
       
    Vector<Float> gX, gY;
    Int nGPts;
    Float gMax;
    if (doGauss2) {
-      makeGauss (nGPts, gMax, gX, gY, statsMean, statsSigma, dSum,
+      makeGauss (nGPts, gMax, gX, gY, stats(MEAN), stats(SIGMA), linearSum,
                  xMin, xMax, binWidth);   
       yMax = max(yMax, gMax);
    }
@@ -788,7 +702,6 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
  
 // Stretch extrema by 5%
          
-   Float yMin = 0.0;
    ImageUtilities::stretchMinMax(xMin, xMax);
    ImageUtilities::stretchMinMax(yMin, yMax);
 
@@ -830,20 +743,22 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
       os_p.output().setf(ios::left, ios::adjustfield);
    
       os_p << endl << "No. binned = ";
-      os_p.output() << setw(oWidth) << nStatsPts << endl;
+      os_p.output() << setw(oWidth) << Int(stats(NPTS)+0.1) << endl;
 
       os_p << "Sum        = ";
-      os_p.output() << setw(oWidth) << statsSum <<   "       Mean     = ";
-      os_p.output() << setw(oWidth) << statsMean << endl;
+      os_p.output() << setw(oWidth) << stats(SUM) <<   "       Mean     = ";
+      os_p.output() << setw(oWidth) << stats(MEAN) << endl;
 
       os_p << "Variance   = ";
-      os_p.output() << setw(oWidth) << statsVar;
-      if (statsVar > 0.0) {
+      os_p.output() << setw(oWidth) << stats(VAR);
+      if (stats(VAR)> 0.0) {
          os_p << "       Sigma    = ";
-         os_p.output() << setw(oWidth) << statsSigma << endl;
+         os_p.output() << setw(oWidth) << stats(SIGMA) << endl;
       } else {
          os_p << endl;
       }
+      os_p << "Rms        = ";
+      os_p.output() << setw(oWidth) << stats(RMS) << endl;
  
       os_p << endl;  
       os_p << "Bin width  = ";
@@ -854,14 +769,10 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
       os_p.post();
    }
       
-// Generate abcissa and ordinate arrays
+// Generate abcissa and ordinate arrays for plotting
     
-   float* px = new float[nBins];
-   Float xx = range(0) + binWidth/2.0;
-   for (i=0; i<nBins; i++) {
-     px[i] = xx;
-     xx += binWidth;
-   }
+   Bool deleteItX;
+   const float* px = values.getStorage(deleteItX);
    Bool deleteItY;
    const float* py = counts.getStorage(deleteItY);
     
@@ -873,11 +784,9 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
    cpgbox("BCNST", 0.0, 0, "BCNST", 0.0, 0);
    plotHist (nBins, px, py);
       
-   delete [] px;
+   counts.freeStorage(px, deleteItX);
    counts.freeStorage(py, deleteItY);
    
-//    
- 
    if (doGauss2) {
       Bool deleteItX;
       const float* px = gX.getStorage(deleteItX); 
@@ -914,10 +823,13 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
  
 
 template <class T>
-void ImageHistograms<T>::extractOneHistogram (Vector<Float>& values, 
+void ImageHistograms<T>::extractOneHistogram (Float &linearSum,
+                                              Float &linearYMax,
+                                              Vector<Float>& values, 
                                               Vector<Float>& counts,
                                               const Vector<T>& range, 
                                               const Vector<Int>& intCounts)
+
 //
 // Extract this histogram, convert to the appropriate form
 // and return the values and counts
@@ -928,29 +840,32 @@ void ImageHistograms<T>::extractOneHistogram (Vector<Float>& values,
       
    Int nBins = nBins_p;
    Float binWidth = Float(setBinWidth(range, nBins));
-      
+
 
 // Copy histogram counts into output Float array and generate
 // values (abcissa) array
  
    Float xx = range(0) + binWidth/2.0;
-   Float yMax = -1.0;
+   linearYMax = -1.0;
+   linearSum = 0.0;
    for (Int i=0; i<intCounts.nelements(); i++) {
       values(i) = xx;
       counts(i) = intCounts(i);
       xx += binWidth;
-      yMax = max(yMax,counts(i));
+      linearYMax = max(linearYMax,counts(i));
+      linearSum += counts(i);
    }
+   linearSum = linearSum*binWidth;
  
    
 // Make histogram cumulative if desired
       
-   if (doCumu_p) makeCumulative (counts, yMax, nBins, 1.0);
+   if (doCumu_p) makeCumulative (counts, linearYMax, nBins, 1.0);
    
           
 // Make histogram logarithmic if desired
          
-   if (doLog_p) makeLogarithmic (counts, yMax, nBins);
+   if (doLog_p) makeLogarithmic (counts, linearYMax, nBins);
 
 }
 
@@ -992,7 +907,7 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 
 
 template <class T>
-void ImageHistograms<T>::findMinMax (RO_LatticeIterator<T>* imageIterator)
+void ImageHistograms<T>::fillMinMax (RO_LatticeIterator<T>* imageIterator)
                
 //    
 // In order to work out a histogram we need to know the min and max
@@ -1196,18 +1111,18 @@ void ImageHistograms<T>::generateStorageImage()
 
    {
 
-// Set storage image shape.  The last axis is the statistics axis
+// Set storage image shape.  The first axis is the statistics axis
       
       IPosition storeImageShape;
-      ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NSTATS),
+      ImageUtilities::setStorageImageShape(storeImageShape, False, Int(NSTATS),
                                            displayAxes_p, pInImage_p->shape());
 
 // Set tile shape.   The statistics storage image is accessed by slices along the
-// last axis (length NSTATS) only. So the tile shape is set to unity on all  
+// first axis (length NSTATS) only. So the tile shape is set to unity on all  
 // the other axes.  
 
       IPosition tileShape(storeImageShape.nelements(),1);
-      tileShape(tileShape.nelements()-1) = storeImageShape(tileShape.nelements()-1);
+      tileShape(0) = storeImageShape(0);
       
 // Create new statistics storage image.   
 
@@ -1237,7 +1152,7 @@ void ImageHistograms<T>::generateStorageImage()
 // not give us the range to histogram, we must work it out by making an
 // extra pass through the data.  
 
-   findMinMax (pPixelIterator);
+   fillMinMax (pPixelIterator);
    
 
 // Iterate through image and accumulate histogram and statistics images
@@ -1248,6 +1163,103 @@ void ImageHistograms<T>::generateStorageImage()
    }
 
    delete pPixelIterator;
+}
+
+
+template <class T> 
+void ImageHistograms<T>::getMinMax (Vector<T> &range,
+                                    const IPosition &pos,
+                                    const Bool &posInImage)
+//
+// Extract the min/max slice from the given position in either the
+// the input image or the histogram storage image.  Tests show
+// that the creation of the temporaries in this function cause
+// no performance loss.  This function is called once per
+// cursor chunk when creating the histograms, and once per
+// histogram when reading them from the storage image.
+//
+// Inputs
+//  posInImage   If this is True, then the given position, "pos" is that
+//               in the input image.  If it is False, then it is a 
+//               position in the histogram image
+{
+// Set location in min/max image to extract slice
+
+   IPosition minMaxPos(pMinMaxImage_p->ndim());
+   Int lastMinMaxAxis = pMinMaxImage_p->ndim() - 1;
+   if (posInImage) {
+      minMaxPos = locInMinMax(pos);
+   } else {
+      minMaxPos(lastMinMaxAxis) = 0;
+      for (Int i=0; i<lastMinMaxAxis; i++) minMaxPos(i) = pos(i+1);
+   }
+
+// Get the slice
+
+   IPosition minMaxShape = sliceMinMaxShape();
+   Array<T> minMaxSlice(minMaxShape);   
+   pMinMaxImage_p->getSlice (minMaxSlice, minMaxPos, minMaxShape, 
+                             IPosition(pMinMaxImage_p->ndim(),1));
+
+// Fill return vector
+
+   minMaxPos = 0;
+   minMaxPos(lastMinMaxAxis) = MIN;
+   range(0) = minMaxSlice(minMaxPos);
+   minMaxPos(lastMinMaxAxis) = MAX;
+   range(1) = minMaxSlice(minMaxPos);
+}
+
+
+
+template <class T> 
+void ImageHistograms<T>::getStats (Vector<Double> &stats, 
+                                   const IPosition &pos,
+                                   const Bool &posInImage)
+//
+// Extract statistical sums slice from the given position in either the
+// the input image or the histogram storage image.  Tests show that the
+// creation of the temporaries in this function cause no performance loss.  
+// This function is called once per cursor chunk when creating the histograms, 
+// and once per histogram when reading them from the storage image.
+//
+// Inputs
+//  posInImage   If this is True, then the given position, "pos" is that
+//               in the input image.  If it is False, then it is a 
+//               position in the histogram image
+// Outputs
+//  stats        Must already be correct shape on input
+{
+// Set position of start of slice
+
+   IPosition statsPos;
+   if (posInImage) {
+      statsPos = locInStats(pos);
+   } else {
+      statsPos = pos;
+   }
+
+// Get slice
+
+   IPosition statsShape = sliceStatsShape();
+   Array<Double> statsSlice(statsShape);
+   pStatsImage_p->getSlice (statsSlice, statsPos, statsShape, IPosition(pStatsImage_p->ndim(),1));
+
+// Return values
+
+   statsPos = 0;
+   statsPos(0) = SUM;
+   stats(SUM) = statsSlice(statsPos);
+   statsPos(0) = SUMSQ;
+   stats(SUMSQ) = statsSlice(statsPos);
+   statsPos(0) = NPTS;
+   stats(NPTS) = Int(statsSlice(statsPos) + 0.1);
+   
+   stats(MEAN) = stats(SUM) / stats(NPTS);
+   stats(VAR) = (stats(SUMSQ) - stats(SUM)*stats(SUM)/stats(NPTS))/(stats(NPTS)-1);
+   stats(SIGMA) = 0.0;
+   if (stats(VAR) > 0.0) stats(SIGMA) = sqrt(stats(VAR));
+   stats(RMS) = sqrt(stats(SUMSQ)/stats(NPTS));
 }
 
 
@@ -1281,6 +1293,7 @@ inline IPosition ImageHistograms<T>::locInHist (const IPosition& imageCursorPos)
    return pos;
 }
 
+
 template <class T>
 inline IPosition ImageHistograms<T>::locInMinMax (const IPosition& imageCursorPos)
 //
@@ -1298,11 +1311,12 @@ template <class T>
 inline IPosition ImageHistograms<T>::locInStats (const IPosition& imageCursorPos)
 //
 // Given a location in the input image, find the start location for a 
-// statistics slice in the statistics storage image at this location
+// statistics slice in the statistics storage image.  The first axis
+// is the statistics axis
 //
 {
    IPosition pos(pStatsImage_p->ndim(),0);
-   for (Int j=0; j<pStatsImage_p->ndim()-1; j++) pos(j) = imageCursorPos(displayAxes_p(j));
+   for (Int j=1; j<pStatsImage_p->ndim(); j++) pos(j) = imageCursorPos(displayAxes_p(j-1));
 
    return pos;
 }
@@ -1592,7 +1606,6 @@ void ImageHistograms<T>::putInHist (const IPosition& imageCursorPos,
 
    IPosition pos = locInHist(imageCursorPos);
 
-
 // Get current histogram for this location
    
    IPosition stride(pHistImage_p->ndim(),1);
@@ -1622,43 +1635,39 @@ template <class T>
 void ImageHistograms<T>::putInStats (const IPosition& imageCursorPos,
                                      const Vector<Double>& newStats)
 //
-// Increment the statistics storage image.  
+// Increment the statistics storage image.   First axis is the
+// statistics axis
 //
 // Inputs
 //   imageCursorPos  This is the location in the input image for the
 //                   start of the current cursor chunk
 //   newStats        Statistical sums
+//
 {     
 
+// Get statistics 
 
-// Location of current statistics vector in storage image
-
-   IPosition pos = locInStats(imageCursorPos);
-
-// Get statistics slice 
-   
-
-   IPosition shape = sliceStatsShape();
-   Array<Double> slice(shape);   
-   IPosition stride(pStatsImage_p->ndim(),1);
-   pStatsImage_p->getSlice (slice, pos, shape, stride);
+   Vector<Double> oldStats(NSTATS2);
+   getStats(oldStats, imageCursorPos, True);
 
 // Update
 
-   Int lastAxis = pStatsImage_p->ndim()-1;
+   IPosition shape = sliceStatsShape();
+   Array<Double> slice(shape);   
 
-   IPosition pos2(pStatsImage_p->ndim(),0);  
-   pos2(lastAxis) = SUM;
-   slice(pos2) += newStats(SUM);
-   pos2(lastAxis) = SUMSQ;
-   slice(pos2) += newStats(SUMSQ);
-   pos2(lastAxis) = NPTS;
-   slice(pos2) += newStats(NPTS);
+   IPosition pos(pStatsImage_p->ndim(),0);  
+   pos(0) = SUM;
+   slice(pos) = oldStats(SUM) + newStats(SUM);
+   pos(0) = SUMSQ;
+   slice(pos) = oldStats(SUMSQ) + newStats(SUMSQ);
+   pos(0) = NPTS;
+   slice(pos) = oldStats(NPTS) + newStats(NPTS);
 
 
 // Put it back
 
-   pStatsImage_p->putSlice (slice, pos, stride);
+   pStatsImage_p->putSlice (slice, locInStats(imageCursorPos), 
+                            IPosition(pStatsImage_p->ndim(),1));
 
 }
 
@@ -1694,13 +1703,10 @@ template <class T>
 inline IPosition ImageHistograms<T>::sliceStatsShape ()
 //
 // Return the shape of a statistics storage image slice. 
+// The first axis is the statistics axis
 {
-//
-// stats on last axis.  
-
-   Int lastAxis =  pStatsImage_p->ndim() - 1;
    IPosition shape(pStatsImage_p->ndim(),1);
-   shape(lastAxis) = pStatsImage_p->shape()(lastAxis);
+   shape(0) = pStatsImage_p->shape()(0);
    return shape;
 }
 
