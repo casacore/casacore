@@ -229,8 +229,8 @@ class MUString;
 // To be able to format angle-like values in user-required ways.
 // </motivation>
 //
-// <todo asof="1996/11/15">
-//   <li> Nothing I know of
+// <todo asof="1997/09/16">
+//   <li> Use AipsrcData once moved to aips from trial
 // </todo>
 
 class MVAngle {
