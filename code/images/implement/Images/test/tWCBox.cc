@@ -30,7 +30,6 @@
 #include <aips/Measures.h>
 #include <trial/Coordinates.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Glish/GlishRecord.h>
 #include <trial/Images/WCBox.h>
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/LCBox.h>
@@ -55,7 +54,7 @@ void listBB(const LCRegion* pLCRegion);
 void list (const RecordInterface& record);
 
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 try {
 
