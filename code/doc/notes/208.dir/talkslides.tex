@@ -35,7 +35,18 @@ display, {\em etc.}
 processing of data from radio-telescopes, both single dishs and
 synthesis arrays
 \end{description}
-See {\em http://aips2.nrao.edu} for more information
+See {\em http://www.nrao.edu/aips++} for more information
+\end{slide}
+
+\begin{slide}{What is AIPS++ being used for now?}
+\begin{description}
+\item[ATNF] At the Parkes telescope for Parkes Multibeam 
+observing.
+\item[NRAO] At Green Bank, for support of the Green Bank
+Telescope engineering.
+\item[NFRA] At WSRT, integrated into the Telescope Management
+System.
+\end{description}
 \end{slide}
 
 \begin{slide}{AIPS++ Project timeline}
@@ -49,16 +60,17 @@ See {\em http://aips2.nrao.edu} for more information
 \begin{itemize}
 \item Spectral line additions to synthesis processing
 \end{itemize}
-\item[Third beta release {\em Late 97}]:
+\item[Third beta release {\em Early 98}]:
 \begin{itemize}
 \item GUIs for many standard objects
+\item More synthesis functionality
 \end{itemize}
-\item[V1.0 {\em Early 98}]: Limited Public Release
-\item[V1.5 {\em Mid 1998}]: Code development release
+\item[V1.0 {\em Mid 98}]: Limited Public Release
+\item[V1.5 {\em Late 98}]: Code development release
 \begin{itemize}
 \item Code development system (documentation, examples, templates). 
 \end{itemize}
-\item[V2.0 {\em Late 98}]: Full release
+\item[V2.0 {\em Early 99}]: Full release
 \begin{itemize}
 \item Completed connected element synthesis package
 \item Initial VLBI capabilities
@@ -70,24 +82,40 @@ See {\em http://aips2.nrao.edu} for more information
 
 \begin{slide}{AIPS++ Personnel}
 \begin{description}
-\item[ATNF]: Neil Killeen, Wim Brouw, Tom Oosterloo and Mark
+\item[ATNF]: Neil Killeen, David Barnes, Wim Brouw, and Mark
 Wieringa
 
 \item[BIMA/NCSA]: Dick Crutcher, Dan Briggs, John Pixton,
 Harold Ravlin, Doug Roberts, and Peter Teuben
 
-\item[NFRA]:  Jan Noordam, Michael Haller, 
-Friso Olnon, Ger van Diepen, Henk Vosmeijer
+\item[NFRA]:  Jan Noordam, Michael Haller, Friso Olnon, 
+Ger van Diepen, Henk Vosmeijer
 
 \item[NRAO]: Tim Cornwell, Bob Garwood, Brian
 Glendenning, Athol Kemball, Ralph Marson, Joe McMullin, Pat Murphy,
-Darrell Schiebel, Jeff Uphoff, and Wes Young.
+Darrell Schiebel, Jeff Uphoff, Kate Weatherall and Wes Young.
 
 \end{description}
 \end{slide}
 
 \begin{slide}{What's available in First Beta Release (0.8)?}
 \begin{itemize}
+\item The synthesis capabilities of AIPS++ are as follows:
+\begin{itemize}
+\item Filling from and writing to a UVFITS file,
+\item Filling from WSRT format,
+\item Full imaging, deconvolution, and self-calibration,
+\item Joint deconvolution of Stokes IQUV,
+\item Robust, uniform and natural weighting,
+\item Flexible windowing in the deconvolution,
+\item Non-Negative Least Squares Deconvolution,
+\item Flexible construction of models for self-calibration,
+\item A sophisticated multi-component model for gain effects,
+\item Interactive editing,
+\item Flagging of gain solutions by antenna, spectral window, and
+time interval.
+\item Writing of final images to FITS files.
+\end{itemize}
 \item AIPS++ has a powerful command line interpreter called Glish.
 \item AIPS++ has a number of general purpose tools that are accessible
 from Glish.
@@ -113,22 +141,6 @@ to a postscript printer or to ghostview.
 configuration information, the help utility, 
 a printer tool (including a gui), execution of shell commands, reading and 
 writing to external files using C-like commands, {\em etc.}
-\end{itemize}
-\item The synthesis capabilities of AIPS++ are as follows:
-\begin{itemize}
-\item Filling from and writing to a UVFITS file,
-\item Filling from WSRT format,
-\item Full imaging, deconvolution, and self-calibration,
-\item Joint deconvolution of Stokes IQUV,
-\item Robust, uniform and natural weighting,
-\item Flexible windowing in the deconvolution,
-\item Non-Negative Least Squares Deconvolution,
-\item Flexible construction of models for self-calibration,
-\item A sophisticated multi-component model for gain effects,
-\item Interactive editing,
-\item Flagging of gain solutions by antenna, spectral window, and
-time interval.
-\item Writing of final images to FITS files.
 \end{itemize}
 \item All user capabilities of AIPS++ are documented via the
 AIPS++ User Reference Manual
@@ -177,13 +189,12 @@ written in Glish (as opposed to C++).
 \item[Aipsview] Many improvements to facilitate control of the
      program. Can also provide flexible slicing through multidimensional
      images.  
-\item[Glish] Now considerably more robust. It traps {\tt control C}, and
-{\tt Control $\backslash$} will exit.
+\item[Glish] Now considerably more robust. 
 \item[Image DO] Production of moments images, Hanning smoothing and 
 numerous small improvements have been made to the Glish/image
 interface. FITS history cards are now preserved for
 images. Asynchronous execution is possible (as for other Distributed
-Objects). 
+Objects). No transpose necessary.
 \item[imager] Many changes involving spectral line processing.
 A demonstration of spectral line processing is available as {\tt
 imagerspectraltest()}. There have been improvements to the speed of
@@ -199,6 +210,15 @@ robust now.
 \end{description}
 \end{slide}
 
+\begin{slide}{Responses to Second Beta release (0.9)}
+
+\begin{itemize}
+\item Some errors in FITS processing
+\item Some worries over channel zero processing
+\item That's it!
+\end{itemize}
+\end{slide}
+
 \begin{slide}{What's planned for the Third Beta Release?}
 \begin{description}
 \item[GUIs for standard Distributed Objects]: Beta testing showed that
@@ -207,14 +227,15 @@ autogenerated for most Distributed Objects.
 \item[A GUI for imager]: The imager interface will be redesigned
 and a GUI added.
 \item[Visibility visualization tool]: Glish-based Visibility visualization
-tool
+tool {\em written by an astronomer with no C++ needed!}
+\item[More synthesis capabilities]: Need more functionality asap
 \item[Single Dish processing]: GUI-based tool for Single Dish processing
 \item[Improved tools]: {\em e.g.} much improved table browser with editing,
 selection of columns to display, user-controlled format, SQL-like queries,
 flexible plotting, {\em etc.}
 \item[AIPS/AIPS++ Interoperability]: Can access AIPS Tasks from Glish,
 also AIPS++ Data and Functions available via client-server interface
-(mainly for testing/debugging).
+%(mainly for testing/debugging).
 \item[Cookbook]: Once the look and feel of the interfaces has stabilized,
 we plan to start on a cook-book.
 \end{description}
@@ -224,12 +245,53 @@ we plan to start on a cook-book.
 \begin{description}
 \item[Synthesis]: to include wide-field (3D) imaging, mosaicing, improved
 calibration methodology. Also working on parallelization of synthesis code.
+Great team effort: Briggs, Brouw, Kemball, Marson, Noordam, Wieringa, and 
+Cornwell.
 \item[Visualization library]: C++-based visualization library. Available
 to application programmers as a service. Some initial applications will
 be available soonish. Eventually plan {\em e.g.} better visibility
 visualization tool based on this library.
 \item[Internals]: Rearrangement of internal directory structure, {\em etc.}
-\item[Developer's release]: Sometime next year.
+\item[Developer's release]: Sometime late 98 or early 99.
+\end{description}
+\end{slide}
+
+\begin{slide}{Why would I want to use AIPS++ now?}
+\begin{description}
+\item[Synthesis] unique capabilities:
+\begin{description}
+\item[Non-Negative Least Squares deconvolution]
+\item[IQUV Simultaneous CLEAN]
+\item[Polarization leakage self-cal]
+\end{description}
+\item[Ad Hoc processing] {\em e.g.} Strange image or visibility
+processing.
+\item[AIPS GUI Tool] Can run AIPS from a GUI (in next beta, or in daily
+version now).
+\end{description}
+\end{slide}
+
+\begin{slide}{Examples of Ad Hoc processing}
+\begin{description}
+\item[ASCII Table]: can convert ASCII table to AIPS++ Table then
+use AIPS++ and Glish-based math, plotting, browsing tools.
+\item[Image]:
+\begin{itemize}
+\item Convert FITS to/from AIPS++ Image
+\item Read/write AIPS++ Image to/from Glish
+\item Do strange math in Glish
+\end{itemize}
+\item[Visibility Data]: For example, removal of Cygnus A from
+75 MHz data:
+\begin{itemize}
+\item Can convert UVFITS to/from AIPS++ MeasurementSet
+\item Use {\tt componentmodel} DO to hold model of Cygnus A
+\item Use {\tt measures} DO to do angle conversions, {\em etc.}
+\item Use {\tt ms} DO to read/write {\bf any} part of visibility
+data to/from a MeasurementSet
+\item Use Glish to do math
+\item Use {\tt mathematics} DO to help math
+\end{itemize}
 \end{description}
 \end{slide}
 
