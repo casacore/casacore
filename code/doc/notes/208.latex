@@ -1,9 +1,9 @@
 \documentclass[11pt]{article}
 \usepackage{html}
 %\begin{latexonly}
-\setlength{\textheight}{7in}
-\setlength{\textwidth}{8in}
-\setlength{\topmargin}{-0.5in}
+%\setlength{\textheight}{7in}
+%\setlength{\textwidth}{8in}
+%\setlength{\topmargin}{-0.5in}
 \special{landscape}
 %\end{latexonly}
 
