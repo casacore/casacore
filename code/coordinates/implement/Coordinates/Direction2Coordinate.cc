@@ -45,6 +45,7 @@ Bool DirectionCoordinate::toWorld(MDirection &world,
        world.set(world_tmp, MDirection::Ref(type_p));
        return True;
     }
+//
     return False;
 }
 
@@ -74,8 +75,8 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 
 // Convert to current units
 
-   world_tmp(0) = world.getLong() / C::degree / to_degrees_p[0]; 
-   world_tmp(1) = world.getLat()  / C::degree / to_degrees_p[1];
+   world_tmp(0) = world.getLong() / to_radians_p[0]; 
+   world_tmp(1) = world.getLat()  / to_radians_p[1];
 //
    return toPixel(pixel, world_tmp);
 }
