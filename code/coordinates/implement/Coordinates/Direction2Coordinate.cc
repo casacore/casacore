@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# Direction2Coordinate.cc: this defines measures related DirectionCoordinate code
 //# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -73,9 +73,7 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 // Convert to current units
 
     lonlat = world.getAngle();
-
-// Don't think this can be done more easily
-
+//
     lonlat.convert(units_p(0));
     lonlatVal(0) = lonlat.getValue()(0);
 //
