@@ -55,6 +55,8 @@ main()
 				 -3200483.75028), 
 		      MPosition::ITRF);
 	MeasFrame mf(tbm, pos);
+	mf.set(MDirection(Quantity(10, "deg"), Quantity(80, "deg"),
+			  MDirection::HADEC));
 	MVBaseline mvb0(100 ,10, 0);
 	cout << "Baseline: " << mvb0 << endl;
 
@@ -79,9 +81,9 @@ main()
 	if (allNearAbs(mb0.getValue().getValue(),
 		       bconvb(bconv()).getValue().getValue(),
 		       1e-8)) {
-	  cout << "Back      " << bconv() << " : ok" << endl;
+	  cout << "Back      " << mb0 << " : ok" << endl;
 	} else {
-	  cout << "Back      " << bconv() << " : not ok" << endl <<
+	  cout << "Back      " << mb0 << " : not ok" << endl <<
 	  " as " << bconvb(bconv()) << endl;
 	};
 
