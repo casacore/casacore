@@ -1,5 +1,5 @@
 //# MSFeedIndex: index into a MeasurementSet FEED subtable
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 #include <trial/MeasurementSets/MSTableIndex.h>
 
+#include <aips/MeasurementSets/MSFeedColumns.h>
 #include <aips/Containers/RecordField.h>
 
 //# forward declarations
@@ -93,6 +94,18 @@ public:
 
   // access to the spectral window ID key, throws an exception if isNull() is False
   Int &spectralWindowId() {return *spwId_p;}
+
+  // return feed id.'s (and associated row numbers) for a given antenna id., 
+  // polzn type and receptor angle
+  Vector<Int> matchFeedPolznAndAngle(const Int& antennaId, 
+				     const Vector<String>& polznType,
+				     const Vector<Float>& receptorAngle,
+				     const Float& tol,
+				     Vector<Int>& rowNumbers);
+
+  // return feed id.'s (and associated row numbers) for a given antenna id.
+  Vector<Int> matchAntennaId(const Int& antennaId, Vector<Int>& rowNumbers);
+
 protected:
   // the specialized compare function to pass to the
   // <linkto class=ColumnsIndex>ColumnsIndex</linkto> object.  This supports -1
@@ -104,6 +117,9 @@ protected:
   
 private:
   RecordFieldPtr<Int> antennaId_p, feedId_p, spwId_p;
+
+  // Pointer to FEED columns accessor
+  ROMSFeedColumns* msFeedCols_p;
 
   void attachIds();
 };

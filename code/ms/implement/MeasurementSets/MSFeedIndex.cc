@@ -1,5 +1,5 @@
 //# MSFeedIndex.cc:  this defined MSFeedIndex
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,16 +28,23 @@
 #include <trial/MeasurementSets/MSFeedIndex.h>
 
 #include <aips/Arrays/ArrayUtil.h>
+#include <aips/Arrays/MaskedArray.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/MeasurementSets/MSFeed.h>
 #include <aips/Tables/TableError.h>
+#include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/QLogical.h>
+#include <aips/Mathematics/Math.h>
 
 MSFeedIndex::MSFeedIndex() 
     : MSTableIndex()
 {;}
 
 MSFeedIndex::MSFeedIndex(const MSFeed &feed)
-    : MSTableIndex(feed, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"),
-                   compare)
+  : MSTableIndex(feed, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"),
+		 compare)
 { attachIds();}
 
 MSFeedIndex::MSFeedIndex(const MSFeedIndex &other)
@@ -45,7 +52,9 @@ MSFeedIndex::MSFeedIndex(const MSFeedIndex &other)
 { attachIds();}
 
 MSFeedIndex::~MSFeedIndex()
-{;}
+{
+  if (msFeedCols_p) delete(msFeedCols_p);
+}
 
 MSFeedIndex &MSFeedIndex::operator=(const MSFeedIndex &other)
 {
@@ -68,6 +77,9 @@ void MSFeedIndex::attachIds()
     antennaId_p.attachToRecord(accessKey(), "ANTENNA_ID");
     feedId_p.attachToRecord(accessKey(), "FEED_ID");
     spwId_p.attachToRecord(accessKey(), "SPECTRAL_WINDOW_ID");
+
+    // Attach the MSFeed columns accessor
+    msFeedCols_p = new MSFeedColumns(static_cast<MSFeed&>(table()));
 }
 
 Int MSFeedIndex::compare (const Block<void*>& fieldPtrs,
@@ -102,3 +114,68 @@ Int MSFeedIndex::compare (const Block<void*>& fieldPtrs,
   }
   return 0;
 }
+
+Vector<Int> MSFeedIndex::matchFeedPolznAndAngle (const Int& antennaId,
+						 const Vector<String>& 
+						 polznType,
+						 const Vector<Float>& 
+						 receptorAngle,
+						 const Float& tol,
+						 Vector<Int>& rowNumbers)
+{
+  // Return all matching row numbers for a given antenna id., and set
+  // of feed receptor polarizations and receptor angles. The receptor
+  // angles are matched to within the specified tolerance in deg.
+  //
+  // Do the receptor polarization match per row
+  uInt nReceptors = min (polznType.nelements(), receptorAngle.nelements());
+  uInt nrows = msFeedCols_p->nrow();
+  Vector<Bool> receptorMatch(nrows, False);
+  for (uInt row=0; row<nrows; row++) {
+    Vector<Quantity> rowAngle;
+    msFeedCols_p->receptorAngleQuant().get(row, rowAngle);
+    Vector<String> rowType;
+    msFeedCols_p->polarizationType().get(row, rowType);
+    receptorMatch(row) = (rowAngle.nelements() == nReceptors &&
+			  rowType.nelements() == nReceptors);
+
+    if (receptorMatch(row)) {
+      for (uInt i=0; i<nReceptors; i++) {
+	receptorMatch(row) = (receptorMatch(row) &&
+			      nearAbs(Quantity(receptorAngle(i),"deg"), 
+				      rowAngle(i), tol) &&
+			      rowType(i)==polznType(i));
+      };
+    };
+  };
+
+  LogicalArray maskArray = (msFeedCols_p->antennaId().getColumn()==antennaId &&
+			    receptorMatch);
+  Vector<Int> rows(nrows);
+  indgen(rows);
+  MaskedArray<Int> maskRowNumbers(rows, maskArray);
+  rowNumbers = maskRowNumbers.getCompressedArray();
+  MaskedArray<Int> maskFeedIds(msFeedCols_p->feedId().getColumn(), maskArray);
+  return maskFeedIds.getCompressedArray();
+};
+
+
+Vector<Int> MSFeedIndex::matchAntennaId (const Int& antennaId,
+					 Vector<Int>& rowNumbers)
+{
+  // Return all matching row numbers for a given antenna id.
+  // 
+  LogicalArray maskArray = (msFeedCols_p->antennaId().getColumn()==antennaId);
+  uInt nrows = msFeedCols_p->nrow();
+  Vector<Int> rows(nrows);
+  indgen(rows);
+  MaskedArray<Int> maskRowNumbers(rows, maskArray);
+  return maskRowNumbers.getCompressedArray();
+  rowNumbers = maskRowNumbers.getCompressedArray();
+  MaskedArray<Int> maskFeedIds(msFeedCols_p->feedId().getColumn(), maskArray);
+  return maskFeedIds.getCompressedArray();
+};
+
+
+
+
