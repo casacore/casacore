@@ -45,9 +45,7 @@ RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator
 					   Bool useRef)
 : RO_LatticeIterator<T> (mlattice, useRef)
 {
-  Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
-  itsMaskLattPtr = dynamic_cast<MaskedLattice<T>*>(lptr);
-  AlwaysAssert (itsMaskLattPtr, AipsError);
+  fillPtr (mlattice);
 }
 
 template <class T>
@@ -57,9 +55,7 @@ RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator
 					   Bool useRef)
 : RO_LatticeIterator<T> (mlattice, method, useRef)
 {
-  Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
-  itsMaskLattPtr = dynamic_cast<MaskedLattice<T>*>(lptr);
-  AlwaysAssert (itsMaskLattPtr, AipsError);
+  fillPtr (mlattice);
 }
 
 template <class T>
@@ -69,34 +65,24 @@ RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator
 					   Bool useRef)
 : RO_LatticeIterator<T> (mlattice, cursorShape, useRef)
 {
-  Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
-  itsMaskLattPtr = dynamic_cast<MaskedLattice<T>*>(lptr);
-  AlwaysAssert (itsMaskLattPtr, AipsError);
+  fillPtr (mlattice);
 }
 
 template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator
                                  (const RO_MaskedLatticeIterator<T>& other)
 : RO_LatticeIterator<T> (other),
-  itsMaskLattPtr (0)
-{
-  if (!isNull()) {
-    Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
-    itsMaskLattPtr = dynamic_cast<MaskedLattice<T>*>(lptr);
-    AlwaysAssert (itsMaskLattPtr, AipsError);
-  }
-}
+  itsMaskLattPtr (other.itsMaskLattPtr)
+{}
 
 template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator
-                                 (const RO_LatticeIterator<T>& other)
-: RO_LatticeIterator<T> (other),
-  itsMaskLattPtr (0)
+                                 (const RO_LatticeIterator<T>& other,
+				  const RO_MaskedLatticeIterator<T>& otherm)
+: RO_LatticeIterator<T> (other)
 {
   if (!isNull()) {
-    Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
-    itsMaskLattPtr = dynamic_cast<MaskedLattice<T>*>(lptr);
-    AlwaysAssert (itsMaskLattPtr, AipsError);
+    fillPtr (otherm.lattice());
   }
 }
 
@@ -110,12 +96,7 @@ RO_MaskedLatticeIterator<T>& RO_MaskedLatticeIterator<T>::operator=
 {
   if (this != &other) {
     RO_LatticeIterator<T>::operator= (other);
-    itsMaskLattPtr = 0;
-    if (!isNull()) {
-      Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
-      itsMaskLattPtr = dynamic_cast<MaskedLattice<T>*>(lptr);
-      AlwaysAssert (itsMaskLattPtr, AipsError);
-    }
+    itsMaskLattPtr = other.itsMaskLattPtr;
   }
   return *this;
 }
@@ -126,7 +107,19 @@ RO_MaskedLatticeIterator<T> RO_MaskedLatticeIterator<T>::copy() const
   if (isNull()) {
     return RO_MaskedLatticeIterator<T>();
   }
-  return RO_MaskedLatticeIterator<T>(RO_LatticeIterator<T>::copy());
+  return RO_MaskedLatticeIterator<T>(RO_LatticeIterator<T>::copy(), *this);
+}
+
+template <class T>
+void RO_MaskedLatticeIterator<T>::fillPtr (const MaskedLattice<T>& mlattice)
+{
+  Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
+  MaskedLattice<T>* mptr = dynamic_cast<MaskedLattice<T>*>(lptr);
+  if (mptr) {
+    itsMaskLattPtr = CountedPtr<MaskedLattice<T> > (mptr, False);
+  } else {
+    itsMaskLattPtr = mlattice.cloneML();
+  }
 }
 
 template <class T>

@@ -164,7 +164,7 @@ public:
 
   // Return the underlying MaskedLattice object.
   MaskedLattice<T>& lattice() const
-    { return *itsMaskLattPtr; }
+    { return const_cast<MaskedLattice<T>&>(*itsMaskLattPtr); }
 
   // Is the underlying MaskedLattice really masked?
   Bool isMasked() const
@@ -181,14 +181,20 @@ public:
 
 private:
   // Construct from a LatticeIterator (for copy function).
-  RO_MaskedLatticeIterator (const RO_LatticeIterator<T>&);
+  RO_MaskedLatticeIterator (const RO_LatticeIterator<T>&,
+			    const RO_MaskedLatticeIterator<T>&);
 
-  //# This pointer is a casted copy of the lattice pointer in the base class.
-  //# In this way they share the same MaskedLattice object, which is needed
-  //# for optimal performance of e.g. LatticeExpr.
-  //# Otherwise getting data from the lattice and from the mask would
-  //# result in 2 evaluations of the expression.
-  MaskedLattice<T>* itsMaskLattPtr;
+  // Fill the pointer with a pointer to the masked lattice.
+  // This pointer is a casted copy of the lattice pointer in the base class.
+  // In this way they share the same MaskedLattice object, which is needed
+  // for optimal performance of e.g. LatticeExpr.
+  // Otherwise getting data from the lattice and from the mask would
+  // result in 2 evaluations of the expression.
+  // However, the lattice can be a PagedArray (for example, for PagedImage).
+  // In that case a clone of the original MaskedLattice is used.
+  void fillPtr (const MaskedLattice<T>& mlattice);
+
+  CountedPtr<MaskedLattice<T> > itsMaskLattPtr;
 };
 
 
