@@ -28,10 +28,10 @@
 #if !defined(AIPS_LCPAGEDMASK_H)
 #define AIPS_LCPAGEDMASK_H
 
+
 //# Includes
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/PagedArray.h>
-#include <aips/Lattices/Slicer.h>
 
 
 // <summary>
@@ -60,18 +60,19 @@
 // <todo asof="1997/11/11">
 // </todo>
 
-class LCPagedMask: public LCBox
+class LCPagedMask: public LCRegionSingle
 {
 public:
     LCPagedMask();
 
     // Construct a PagedMask object for (part of) a lattice.
+    // The box defines the position of the mask.
     // The default mask shape is the lattice shape.
-    // The slicer may not contain a stride.
     // <group>
     LCPagedMask (const TiledShape& latticeShape, const String& tableName);
-    LCPagedMask (const TiledShape& maskShape, const String& tableName,
-		 const IPosition& blc, const IPosition& latticeShape);
+    LCPagedMask (const TiledShape& maskShape, const LCBox& box,
+		 const String& tableName);
+    LCPagedMask (PagedArray<Bool>& mask, const LCBox& box);
     // </group>
 
     // Copy constructor (copy semantics).
@@ -89,16 +90,10 @@ public:
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
-    // Construct another LCPagedMask (for e.g. another lattice) by moving
-    // this one. However, the mask values are not copied across.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
-
     // Get the class name (to store in the record).
     static String className();
 
-    // Region type. Returns class name
+    // Region type. Returns class name.
     virtual String type() const;
 
     // Convert the (derived) object to a record.
@@ -111,6 +106,13 @@ public:
     // An LCPagedMask is writable if the underlying PagedArray is.
     virtual Bool isWritable() const;
 
+protected:
+    // Construct another LCMask (for e.g. another lattice) by moving
+    // this one. It recalculates the bounding mask.
+    // A positive translation value indicates "to right".
+    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const;
+
 private:
     // Create the object from a record (for an existing mask).
     LCPagedMask (PagedArray<Bool>& mask,
@@ -118,6 +120,7 @@ private:
 		 const IPosition& latticeShape);
 
 
+    LCBox            itsBox;
     PagedArray<Bool> itsMask;
 };
 
