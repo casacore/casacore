@@ -1,5 +1,5 @@
 //# ImageMoments.cc:  generate moments from an image
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,6 @@
 //#
 //# $Id$
 //   
-#include <trial/Images/ImageMoments.h>
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
@@ -67,6 +66,8 @@
 #include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/ApplicationEnvironment.h>
 #include <trial/Tasking/PGPlotter.h>
+
+#include <trial/Images/ImageMoments.h>
 
 #include <strstream.h>
 #include <iomanip.h>

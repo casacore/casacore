@@ -1,5 +1,5 @@
 //# ImageHistograms.cc: generate histograms from an image
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@
   
 #include <trial/Coordinates.h>  
 #include <trial/Images/ImageUtilities.h>
+#include <trial/Tasking/PGPlotter.h>
 #include <trial/Images/ImageHistograms.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/CopyLattice.h>
@@ -48,7 +49,6 @@
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/ProgressMeter.h>
-#include <trial/Tasking/PGPlotter.h>
 
 #include <iomanip.h>
 #include <stdlib.h>
