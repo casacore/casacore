@@ -33,6 +33,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Quanta.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Measures/Stokes.h>
@@ -205,41 +206,99 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 
 void MSSummary::listAntenna (LogIO& os, Bool verbose) const 
 {
-  // Do nothing in terse mode
-  if (verbose) {
 
-    // Make a MS-antenna object
-    MSAntenna antennaTable(pMS->antenna());
-    ROMSAntennaColumns antCol(antennaTable);
+  // Make a MS-antenna object
+  MSAntenna antennaTable(pMS->antenna());
+  uInt nrow(antennaTable.nrow());
 
-    if (antennaTable.nrow()<=0) {
-      os << "The ANTENNA table is empty" << endl;
-    }
-    else {
-      os << "Antennas: " << antennaTable.nrow() << endl;
-      String line, leader;
-      Int last=-1;
-      for (uInt row=0; row<antCol.station().nrow(); row++) {
-	// Build the line
-	line = line + " " + antCol.station()(row);
-	if (line.length()>65) {
-	  // This line is finished, dump it after the line leader
-	  leader = String::toString(last+2) +"-" +String::toString(row+1) +":";
-	  os << "   " << leader << line << endl;
-	  line = "";
-	  last = row;
-	}
-      }
-      if (line.length()>0) {
-	// Prepend and dump last line
-	leader =  String::toString(last+2) +"-"
-		+ String::toString(antCol.station().nrow()) +":";
-	os << "   " << leader << line << endl;
-      }
-    }
-    os << LogIO::POST;
+  // Quit if no antennas
+  if (nrow<=0) {
+    os << "The ANTENNA table is empty" << endl;
+    return;
   }
+
+  // Get Antenna table columns:
+  ROMSAntennaColumns antCol(antennaTable);
+
+  if (verbose) {
+    // Detailed antenna list
+
+    String title;
+    title="Antennas: "+String::toString(nrow)+":";
+    String indent("   ");
+    uInt indwidth =5;
+    uInt namewidth=6;
+    uInt statwidth=10;
+    uInt diamwidth=5;
+    Int diamprec=1;
+    uInt latwidth=13;
+    uInt longwidth=14;
+    
+    os.output().setf(ios::fixed, ios::floatfield);
+    os.output().setf(ios::left, ios::adjustfield);
+    
+    // Write the title:
+    os << title << endl;
+    // Write the column headings:
+    os << indent;
+    os.output().width(indwidth);    os << "ID";
+    os.output().width(namewidth);   os << "Name";
+    os.output().width(statwidth);   os << "Station";
+    os.output().width(diamwidth+4); os << "Diam.";
+    os.output().width(longwidth);   os << "Long.";
+    os.output().width(latwidth);    os << "Lat.";
+    os << endl;
+    
+    // For each row
+    for (uInt row=0; row<nrow; row++) {
+
+      // Get diameter
+      Quantity diam=antCol.dishDiameterQuant()(row);     
+      Unit diamUnit="m";
+
+      // Get position
+      MPosition mLongLat=antCol.positionMeas()(row);
+      MVAngle mvLong= mLongLat.getAngle().getValue()(0);
+      MVAngle mvLat= mLongLat.getAngle().getValue()(1);
+
+      // write the row
+      os << indent;
+      os.output().width(indwidth);  os << row+1;
+      os.output().width(namewidth); os << antCol.name()(row);
+      os.output().width(statwidth); os << antCol.station()(row);
+      os.output().precision(diamprec);
+      os.output().width(diamwidth); os << diam.getValue(diamUnit)<<"m   ";
+      os.output().width(longwidth); os << mvLong.string(MVAngle::ANGLE,7);
+      os.output().width(latwidth);  os << mvLat.string(MVAngle::DIG2,7);
+      os << endl;
+    }
+    
+  } else {
+    // Horizontal list of the stations names:
+    os << "Antennas: " << nrow << endl;
+    String line, leader;
+    Int last=-1;
+    for (uInt row=0; row<nrow; row++) {
+      // Build the line
+      line = line + antCol.name()(row) + "=";
+      line = line + antCol.station()(row);
+      // Add comma if not at the end
+      if (row != (nrow-1)) line = line + ", ";
+      if (line.length()>55 || row==(nrow-1)) {
+	// This line is finished, dump it after the line leader
+	leader = String::toString(last+2) +"-" +String::toString(row+1) +": ";
+	os << "   ID=";
+        os.output().setf(ios::right, ios::adjustfield);
+        os.output().width(8); os << leader;
+        os << line << endl;
+	line = "";
+	last = row;
+      }
+    }
+  }
+  os << LogIO::POST;
 }
+
 
 void MSSummary::listFeed (LogIO& os, Bool verbose) const 
 {
@@ -253,7 +312,7 @@ void MSSummary::listFeed (LogIO& os, Bool verbose) const
       os << "The FEED table is empty" << endl;
     }
     else {
-      os << "Feeds = " << msFC.antennaId().nrow();
+      os << "Feeds: " << msFC.antennaId().nrow();
       os << ": printing first row only";
       // Line is	FeedID SpWinID NumRecept PolTypes
       Int widthLead	=  3;
@@ -307,7 +366,6 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
     Int widthType  =  8;
 
     if (verbose) {
-      os << endl;
       // Line is	ID Date Time Name RA Dec Type
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthLead);	os << "   ";
