@@ -89,11 +89,6 @@ TempImage<T>::~TempImage()
 
 
 template <class T>
-Lattice<T>* TempImage<T>::clone() const
-{
-    return new TempImage (*this);
-}   
-template <class T>
 ImageInterface<T>* TempImage<T>::cloneII() const
 {
     return new TempImage (*this);
@@ -110,6 +105,12 @@ template <class T>
 Bool TempImage<T>::isWritable() const
 {  
     return mapPtr_p->isWritable();
+}
+
+template<class T>
+const LatticeRegion* TempImage<T>::getRegionPtr() const
+{
+    return 0;
 }
 
 template <class T>
