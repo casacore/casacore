@@ -2291,3 +2291,4 @@
 09 243 src mv nfra/apps/ms2scn/mdl2csm.cc nfra/apps/mdl2csm/mdl2csm.cc
 09 267 src mv trial/implement/Lattices/VectorCollapser.h trial/implement/Lattices/LineCollapser.h
 09 271 src mv trial/implement/Lattices/PixelCircle.cc trial/implement/Lattices/PixelEllipsoid.cc
+09 271 src mv trial/implement/Lattices/PixelCircle.h trial/implement/Lattices/PixelEllipsoid.h
