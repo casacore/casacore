@@ -71,13 +71,15 @@
 template<class T>
 ImageRegrid<T>::ImageRegrid()
 : itsShowLevel(0),
-  itsDisableConversions(False)
+  itsDisableConversions(False),
+  itsNotify(False)
 {;}
 
 template<class T>
 ImageRegrid<T>::ImageRegrid(const ImageRegrid& other)  
 : itsShowLevel(other.itsShowLevel),
-  itsDisableConversions(other.itsDisableConversions)
+  itsDisableConversions(other.itsDisableConversions),
+  itsNotify(other.itsNotify)
 {;}
 
 
@@ -91,6 +93,7 @@ ImageRegrid<T>& ImageRegrid<T>::operator=(const ImageRegrid& other)
   if (this != &other) {
     itsShowLevel = other.itsShowLevel;
     itsDisableConversions = other.itsDisableConversions;
+    itsNotify = other.itsNotify;
   }
   return *this;
 }
@@ -840,7 +843,9 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    t1.mark();
    if (itsUser2DCoordinateGrid.nelements() > 0 &&
        itsUser2DCoordinateGridMask.nelements() > 0) {
-      os << "Using user set DirectionCoordinate grid" << LogIO::POST;
+      if (itsNotify) {
+         os << "Using user set DirectionCoordinate grid" << LogIO::POST;
+      }
 //
       {
          IPosition shp1 = its2DCoordinateGrid.shape();
@@ -2163,7 +2168,9 @@ void ImageRegrid<T>::get2DCoordinateGrid (Cube<Double>& grid, Matrix<Bool>& grid
 
 
 template<class T>
-void ImageRegrid<T>::set2DCoordinateGrid (const Cube<Double>& grid, const Matrix<Bool>& gridMask)
+void ImageRegrid<T>::set2DCoordinateGrid (const Cube<Double>& grid, 
+                                          const Matrix<Bool>& gridMask,
+                                          Bool notify)
 {
    itsUser2DCoordinateGrid.resize();
    itsUser2DCoordinateGrid = grid;

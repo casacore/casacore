@@ -158,7 +158,7 @@ public:
 // is True for successfull coordinate conversions, and False otherwise.
 // <group>
   void get2DCoordinateGrid (Cube<Double>& grid, Matrix<Bool>& gridMask) const;
-  void set2DCoordinateGrid (const Cube<Double>& grid, const Matrix<Bool>& gridMask);
+  void set2DCoordinateGrid (const Cube<Double>& grid, const Matrix<Bool>& gridMask, Bool notify=False);
 // </group>
 //
   // Inserts inImage into outImage.  The alignment is done by
@@ -203,6 +203,7 @@ public:
 //
   Cube<Double> itsUser2DCoordinateGrid;
   Matrix<Bool> itsUser2DCoordinateGridMask;
+  Bool itsNotify;
 //  
   // Check shape and axes.  Exception if no good.  If pixelAxes
   // of length 0, set to all axes according to shape
