@@ -2244,3 +2244,5 @@
 09 152 src rm trial/hds/makefile
 09 153 src rm trial/hds
 09 154 src mv aips/implement/Tasking/test/tAipsrcValue.c aips/implement/Tasking/test/tAipsrcValue.cc
+09 154 src rm aips/implement/Tasking/AipsrcData.h
+09 154 src rm aips/implement/Tasking/AipsrcData.cc
