@@ -22,5 +22,5 @@ $ARGS = join (' ', @ARGV);
 if ($ARGS =~ /(.*)/) {
   $ARGS = $1;
 }
-exec "$AIPSPATH/master/etc/sai_master.sh $ARGS" ||
+exec ("$AIPSPATH/master/etc/sai_master.sh $ARGS") ||
   die "can't exec $AIPSPATH/master/etc/sai_master.sh\n";
