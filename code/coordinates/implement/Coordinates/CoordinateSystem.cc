@@ -1054,6 +1054,7 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
 //
                Int where2;
                if (j==0) {      // 0 or 1
+                  where2 = world_maps_p[i]->operator[](1);
                   worldMin_tmps_p[i]->operator()(0) = coordinates_p[i]->worldMixMin()(0);
                   worldMax_tmps_p[i]->operator()(0) = coordinates_p[i]->worldMixMax()(0);
                } else {
